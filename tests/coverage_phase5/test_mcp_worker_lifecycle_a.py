@@ -35,17 +35,19 @@ class Worker:
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_worker_lifecycle_start():
     """Test worker start transition."""
     worker = Worker("test")
-    assert worker.state == WorkerState.IDLE
+    assert worker.state == WorkerState.IDLE, "state is not valid"
 
     await worker.start()
 
-    assert worker.state == WorkerState.RUNNING
+    assert worker.state == WorkerState.RUNNING, "state is not valid"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_worker_lifecycle_pause():
     """Test worker pause transition."""
     worker = Worker("test")
@@ -53,10 +55,11 @@ async def test_worker_lifecycle_pause():
     await worker.start()
     await worker.pause()
 
-    assert worker.state == WorkerState.PAUSED
+    assert worker.state == WorkerState.PAUSED, "state is not valid"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_worker_lifecycle_resume():
     """Test worker resume transition."""
     worker = Worker("test")
@@ -65,10 +68,11 @@ async def test_worker_lifecycle_resume():
     await worker.pause()
     await worker.resume()
 
-    assert worker.state == WorkerState.RUNNING
+    assert worker.state == WorkerState.RUNNING, "state is not valid"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_worker_lifecycle_stop():
     """Test worker stop transition."""
     worker = Worker("test")
@@ -76,20 +80,22 @@ async def test_worker_lifecycle_stop():
     await worker.start()
     await worker.stop()
 
-    assert worker.state == WorkerState.STOPPED
+    assert worker.state == WorkerState.STOPPED, "state is not valid"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_worker_invalid_transition():
     """Test invalid state transitions."""
     worker = Worker("test")
 
     # Cannot pause from idle
     await worker.pause()
-    assert worker.state == WorkerState.IDLE
+    assert worker.state == WorkerState.IDLE, "state is not valid"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_worker_multiple_starts():
     """Test starting an already running worker."""
     worker = Worker("test")
@@ -97,4 +103,4 @@ async def test_worker_multiple_starts():
     await worker.start()
     await worker.start()  # Should be idempotent or handle gracefully
 
-    assert worker.state == WorkerState.RUNNING
+    assert worker.state == WorkerState.RUNNING, "state is not valid"

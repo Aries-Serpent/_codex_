@@ -26,7 +26,7 @@ def test_env_var_removed_when_log_event_raises(monkeypatch):
     with pytest.raises(RuntimeError), cs:
         pass
 
-    assert "CODEX_SESSION_ID" not in os.environ
+    assert "CODEX_SESSION_ID" not in os.environ, "Condition must be true"
 
 
 def test_env_cleared_when_body_and_log_fail(monkeypatch):
@@ -43,4 +43,4 @@ def test_env_cleared_when_body_and_log_fail(monkeypatch):
     with pytest.raises(RuntimeError), ChatSession("boom"):
         pass
 
-    assert "CODEX_SESSION_ID" not in os.environ
+    assert "CODEX_SESSION_ID" not in os.environ, "Condition must be true"

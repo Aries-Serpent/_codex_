@@ -13,7 +13,7 @@ class TestKnowledgeBaseImports:
         try:
             from src.codex.knowledge import base
 
-            assert base is not None
+            assert base is not None, "base must be initialized"
         except ImportError:
             pytest.skip("Module not available or has unmet dependencies")
 
@@ -28,7 +28,7 @@ class TestKnowledgeBaseOperations:
 
             if hasattr(base, "KnowledgeBase"):
                 kb = base.KnowledgeBase()
-                assert kb is not None
+                assert kb is not None, "kb must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("KnowledgeBase not available")
 
@@ -41,7 +41,7 @@ class TestKnowledgeBaseOperations:
                 with patch.object(base, "add_knowledge") as mock_add:
                     mock_add.return_value = {"id": "k1"}
                     result = base.add_knowledge("test knowledge")
-                    assert result["id"] == "k1"
+                    assert result["id"] == "k1", "Result must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("add_knowledge not available")
 
@@ -54,7 +54,7 @@ class TestKnowledgeBaseOperations:
                 with patch.object(base, "query") as mock_query:
                     mock_query.return_value = ["result1"]
                     results = base.query("test query")
-                    assert len(results) == 1
+                    assert len(results) == 1, "Results must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("query not available")
 
@@ -73,7 +73,7 @@ class TestKnowledgeBasePersistence:
                     with patch.object(kb, "save") as mock_save:
                         mock_save.return_value = True
                         result = kb.save("/tmp/kb.json")
-                        assert result is True
+                        assert result is True, "Result must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("KnowledgeBase.save not available")
 
@@ -86,6 +86,6 @@ class TestKnowledgeBasePersistence:
                 with patch.object(base.KnowledgeBase, "load") as mock_load:
                     mock_load.return_value = base.KnowledgeBase()
                     kb = base.KnowledgeBase.load("/tmp/kb.json")
-                    assert kb is not None
+                    assert kb is not None, "kb must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("KnowledgeBase.load not available")

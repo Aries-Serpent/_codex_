@@ -13,6 +13,6 @@ def test_batch_metrics_text_metrics():
 
     metrics = batch_metrics(outputs, batch)
 
-    assert metrics["exact_match"] == 0.5
-    assert 0.0 <= metrics["bleu1"] <= 1.0
-    assert 0.0 <= metrics["rouge1"] <= 1.0
+    assert metrics["exact_match"] == 0.5, "Condition must be true"
+    assert 0.0 <= metrics["bleu1"] <= 1.0, "0 is not valid"
+    assert 0.0 <= metrics["rouge1"] <= 1.0, "0 is not valid"

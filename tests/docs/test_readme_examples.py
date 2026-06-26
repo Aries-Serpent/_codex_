@@ -85,7 +85,7 @@ class TestREADMECodeBlocks:
 
         # Allow some syntax errors (snippets are often incomplete)
         max_errors = len(python_blocks) // 2
-        assert (
+        assert (, "Condition must be true"
             len(syntax_errors) <= max_errors
         ), f"Too many Python syntax errors: {syntax_errors[:3]}"
 

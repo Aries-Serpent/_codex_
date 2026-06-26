@@ -72,13 +72,13 @@ class TestModelLoading:
     def test_load_model_float32(self, mock_model):
         """Test loading model with float32 dtype"""
         # This test validates the model loading interface
-        assert mock_model is not None
-        assert mock_model.config.vocab_size == 50257
+        assert mock_model is not None, "mock_model must be initialized"
+        assert mock_model.config.vocab_size == 50257, "vocab_size is not valid"
 
     def test_load_model_with_device_map(self, mock_model):
         """Test loading model with device_map"""
         # Validates device_map configuration
-        assert mock_model is not None
+        assert mock_model is not None, "mock_model must be initialized"
 
 
 class TestDeterministicSeeding:
@@ -94,7 +94,7 @@ class TestDeterministicSeeding:
         # Skip if torch is not properly initialized (returns 0)
         if initial == 0:
             pytest.skip("torch.initial_seed() returns 0 - torch may be stub or not initialized")
-        assert initial != 0
+        assert initial != 0, "initial is not valid"
 
     def test_reproducible_initialization(self):
         """Test reproducible model initialization"""

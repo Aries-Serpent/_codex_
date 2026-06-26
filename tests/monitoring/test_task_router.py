@@ -26,7 +26,7 @@ class TestTaskRoutingTable:
     """Verify the static routing table structure."""
 
     def test_has_seven_categories(self):
-        assert len(TASK_ROUTING_TABLE) == 7
+        assert len(TASK_ROUTING_TABLE) == 7, "Task_routing_table must not be empty"
 
     def test_required_categories_present(self):
         expected = {
@@ -38,7 +38,7 @@ class TestTaskRoutingTable:
             "configuration",
             "repository",
         }
-        assert set(TASK_ROUTING_TABLE.keys()) == expected
+        assert set(TASK_ROUTING_TABLE.keys()) == expected, "Condition must be true"
 
     def test_each_category_has_required_keys(self):
         for cat, entry in TASK_ROUTING_TABLE.items():
@@ -60,59 +60,59 @@ class TestTaskRouter:
 
     def test_routes_ci_task(self, router):
         result = router.route_task("fix the CI pipeline workflow failure")
-        assert result["category"] == "ci_cd"
-        assert result["agent"] == "ci-testing-agent"
-        assert result["confidence"] > 0
+        assert result["category"] == "ci_cd", "Result must not be empty"
+        assert result["agent"] == "ci-testing-agent", "Result must not be empty"
+        assert result["confidence"] > 0, "Value must be greater than zero"
 
     def test_routes_test_task(self, router):
         result = router.route_task("the pytest coverage assertion is flaky")
-        assert result["category"] == "testing"
-        assert result["agent"] == "ci-testing-agent"
+        assert result["category"] == "testing", "Result must not be empty"
+        assert result["agent"] == "ci-testing-agent", "Result must not be empty"
 
     def test_routes_security_task(self, router):
         result = router.route_task("security vulnerability with secret credential token exposure")
-        assert result["category"] == "security"
-        assert result["agent"] == "security-alert-verification-agent"
+        assert result["category"] == "security", "Result must not be empty"
+        assert result["agent"] == "security-alert-verification-agent", "Result must not be empty"
 
     def test_routes_documentation_task(self, router):
         result = router.route_task("fix broken link in documentation markdown")
-        assert result["category"] == "documentation"
-        assert result["agent"] == "documentation-quality-agent"
+        assert result["category"] == "documentation", "Result must not be empty"
+        assert result["agent"] == "documentation-quality-agent", "Result must not be empty"
 
     def test_routes_rag_task(self, router):
         result = router.route_task("the rag embedding model tensor is broken")
-        assert result["category"] == "rag_ml"
-        assert result["agent"] == "meta-tensor-validator"
+        assert result["category"] == "rag_ml", "Result must not be empty"
+        assert result["agent"] == "meta-tensor-validator", "Result must not be empty"
 
     def test_routes_config_task(self, router):
         result = router.route_task("migrate hydra configuration yaml settings")
-        assert result["category"] == "configuration"
-        assert result["agent"] == "config-validator"
+        assert result["category"] == "configuration", "Result must not be empty"
+        assert result["agent"] == "config-validator", "Result must not be empty"
 
     def test_routes_repo_task(self, router):
         result = router.route_task("repository cleanup and lint dependency import")
-        assert result["category"] == "repository"
-        assert result["agent"] == "repository-hygiene-agent"
+        assert result["category"] == "repository", "Result must not be empty"
+        assert result["agent"] == "repository-hygiene-agent", "Result must not be empty"
 
     # --- fallback behaviour ---
 
     def test_unknown_task_returns_default(self, router):
         result = router.route_task("do something completely unrelated to anything")
-        assert result["agent"] == "ci-testing-agent"
-        assert result["category"] == "general"
-        assert result["confidence"] == 0.0
+        assert result["agent"] == "ci-testing-agent", "Result must not be empty"
+        assert result["category"] == "general", "Result must not be empty"
+        assert result["confidence"] == 0.0, "Result must not be empty"
 
     def test_fallbacks_populated(self, router):
         result = router.route_task("fix the CI pipeline workflow failure deploy")
         assert isinstance(result["fallbacks"], list)
-        assert len(result["fallbacks"]) >= 1
+        assert len(result["fallbacks"]) >= 1, "Collection must not be empty"
 
     # --- confidence scoring ---
 
     def test_more_keywords_yield_higher_confidence(self, router):
         low = router.route_task("ci")
         high = router.route_task("ci pipeline workflow build failure github actions deploy")
-        assert high["confidence"] >= low["confidence"]
+        assert high["confidence"] >= low["confidence"], "Value must be greater than zero"
 
     # --- custom routing table ---
 
@@ -126,24 +126,24 @@ class TestTaskRouter:
         }
         router = TaskRouter(routing_table=custom)
         result = router.route_task("run the alpha test")
-        assert result["agent"] == "alpha-agent"
-        assert result["category"] == "alpha"
+        assert result["agent"] == "alpha-agent", "Result must not be empty"
+        assert result["category"] == "alpha", "Result must not be empty"
 
     # --- list_categories ---
 
     def test_list_categories(self, router):
         cats = router.list_categories()
-        assert len(cats) == 7
+        assert len(cats) == 7, "Cats must not be empty"
         for c in cats:
-            assert "category" in c
-            assert "primary_agent" in c
-            assert "agent_count" in c
+            assert "category" in c, "Condition must be true"
+            assert "primary_agent" in c, "Condition must be true"
+            assert "agent_count" in c, "Count must be greater than zero"
 
     # --- all_scores ---
 
     def test_all_scores_in_result(self, router):
         result = router.route_task("fix the CI test failures")
-        assert "all_scores" in result
+        assert "all_scores" in result, "Result must not be empty"
         assert isinstance(result["all_scores"], list)
 
 
@@ -153,10 +153,10 @@ class TestRouteTaskConvenience:
     def test_route_task_returns_dict(self):
         result = route_task("fix CI build failure")
         assert isinstance(result, dict)
-        assert "agent" in result
-        assert "confidence" in result
+        assert "agent" in result, "Result must not be empty"
+        assert "confidence" in result, "Result must not be empty"
 
     def test_route_task_with_kwargs(self):
         result = route_task("fix CI build failure", default_agent="my-agent")
         # should not fall back for a task with keywords
-        assert result["agent"] != "my-agent" or result["confidence"] == 0.0
+        assert result["agent"] != "my-agent" or result["confidence"] == 0.0, "Result must not be empty"

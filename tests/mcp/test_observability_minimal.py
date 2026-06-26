@@ -11,8 +11,8 @@ class TestMCPObservabilityMinimal:
         """Test MCP observability initialization."""
         observability_config = {"enabled": True, "log_level": "INFO", "metrics_enabled": True}
 
-        assert observability_config["enabled"] is True
-        assert observability_config["log_level"] == "INFO"
+        assert observability_config["enabled"] is True, "Condition must be true"
+        assert observability_config["log_level"] == "INFO", "Condition must be true"
 
     def test_mcp_event_logging(self):
         """Test MCP event logging."""
@@ -22,26 +22,26 @@ class TestMCPObservabilityMinimal:
         event = {"type": "request", "method": "test.method", "timestamp": "2026-06-23T16:00:00Z"}
         events.append(event)
 
-        assert len(events) == 1
-        assert events[0]["type"] == "request"
+        assert len(events) == 1, "Events must not be empty"
+        assert events[0]["type"] == "request", "Condition must be true"
 
     def test_mcp_metrics_collection(self):
         """Test metrics collection."""
         metrics = {"requests_total": 100, "errors_total": 5, "latency_avg_ms": 45}
 
-        assert metrics["requests_total"] == 100
-        assert metrics["errors_total"] == 5
+        assert metrics["requests_total"] == 100, "Condition must be true"
+        assert metrics["errors_total"] == 5, "Error should be raised or set"
 
     def test_mcp_observer_lifecycle(self):
         """Test observer lifecycle management."""
         observer_state = "initialized"
-        assert observer_state == "initialized"
+        assert observer_state == "initialized", "observer_state is not valid"
 
         observer_state = "active"
-        assert observer_state == "active"
+        assert observer_state == "active", "observer_state is not valid"
 
         observer_state = "stopped"
-        assert observer_state == "stopped"
+        assert observer_state == "stopped", "observer_state is not valid"
 
 
 class TestMCPEventTypes:
@@ -50,17 +50,17 @@ class TestMCPEventTypes:
     def test_mcp_request_event(self):
         """Test request event logging."""
         request_event = {"type": "request", "method": "compute", "id": 1}
-        assert request_event["type"] == "request"
+        assert request_event["type"] == "request", "Condition must be true"
 
     def test_mcp_response_event(self):
         """Test response event logging."""
         response_event = {"type": "response", "result": {"status": "success"}, "id": 1}
-        assert response_event["type"] == "response"
+        assert response_event["type"] == "response", "Response must not be empty"
 
     def test_mcp_error_event(self):
         """Test error event logging."""
         error_event = {"type": "error", "code": -32600, "message": "Invalid Request"}
-        assert error_event["type"] == "error"
+        assert error_event["type"] == "error", "Error should be raised or set"
 
     def test_mcp_notification_event(self):
         """Test notification event logging."""
@@ -69,7 +69,7 @@ class TestMCPEventTypes:
             "method": "progress",
             "params": {"percent": 50},
         }
-        assert notification_event["type"] == "notification"
+        assert notification_event["type"] == "notification", "Condition must be true"
 
 
 class TestMCPMetrics:
@@ -80,7 +80,7 @@ class TestMCPMetrics:
         latencies = [10, 20, 15, 25, 30]
         avg_latency = sum(latencies) / len(latencies)
 
-        assert avg_latency == 20
+        assert avg_latency == 20, "avg_latency is not valid"
 
     def test_mcp_error_rate_calculation(self):
         """Test error rate calculation."""
@@ -88,7 +88,7 @@ class TestMCPMetrics:
         error_count = 50
         error_rate = (error_count / total_requests) * 100
 
-        assert error_rate == 5.0
+        assert error_rate == 5.0, "Error should be raised or set"
 
     def test_mcp_throughput_calculation(self):
         """Test throughput calculation."""
@@ -96,7 +96,7 @@ class TestMCPMetrics:
         duration_seconds = 10
         throughput = request_count / duration_seconds
 
-        assert throughput == 100
+        assert throughput == 100, "throughput is not valid"
 
 
 class TestMCPLogging:
@@ -110,8 +110,8 @@ class TestMCPLogging:
             "timestamp": "2026-06-23T16:00:00Z",
         }
 
-        assert "INFO" in log_entry["level"]
-        assert "timestamp" in log_entry
+        assert "INFO" in log_entry["level"], "Condition must be true"
+        assert "timestamp" in log_entry, "Condition must be true"
 
     def test_mcp_log_filtering(self):
         """Test log filtering."""
@@ -122,11 +122,11 @@ class TestMCPLogging:
         ]
 
         errors_only = [l for l in logs if l["level"] == "ERROR"]
-        assert len(errors_only) == 1
+        assert len(errors_only) == 1, "Errors_only must not be empty"
 
     def test_mcp_context_tracking(self):
         """Test context tracking in logs."""
         context = {"request_id": "req-12345", "method": "test.method", "user_id": "user-456"}
 
-        assert "request_id" in context
-        assert context["method"] == "test.method"
+        assert "request_id" in context, "Condition must be true"
+        assert context["method"] == "test.method", "Condition must be true"

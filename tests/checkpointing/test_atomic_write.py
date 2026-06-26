@@ -16,6 +16,6 @@ def test_atomic_write_json_creates_file(tmp_path: Path) -> None:
 
     atomic_write_json(target, payload)
 
-    assert target.exists()
+    assert target.exists(), "Condition must be true"
     loaded = json.loads(target.read_text(encoding="utf-8"))
-    assert loaded == payload
+    assert loaded == payload, "loaded is not valid"

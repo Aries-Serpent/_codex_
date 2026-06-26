@@ -18,43 +18,43 @@ import rate_limit_handler as rlh
 
 class TestIsRateLimitError:
     def test_detects_user_weekly_rate_limited_code(self):
-        assert rlh.is_rate_limit_error({"code": "user_weekly_rate_limited"})
+        assert rlh.is_rate_limit_error({"code": "user_weekly_rate_limited"}), "Error should be raised or set"
 
     def test_detects_429_status(self):
-        assert rlh.is_rate_limit_error({"status": "429"})
+        assert rlh.is_rate_limit_error({"status": "429"}), "Error should be raised or set"
 
     def test_detects_message_phrase(self):
-        assert rlh.is_rate_limit_error({"message": "You've exceeded your weekly rate limit."})
+        assert rlh.is_rate_limit_error({"message": "You've exceeded your weekly rate limit."}), "Error should be raised or set"
 
     def test_detects_text_phrase(self):
-        assert rlh.is_rate_limit_error({"text": "reset in 6 hours 5 minutes"})
+        assert rlh.is_rate_limit_error({"text": "reset in 6 hours 5 minutes"}), "Error should be raised or set"
 
     def test_rejects_unrelated_error(self):
         assert not rlh.is_rate_limit_error({"code": "not_found", "message": "repo missing"})
 
     def test_empty_payload_is_not_rate_limit(self):
-        assert not rlh.is_rate_limit_error({})
+        assert not rlh.is_rate_limit_error({}), "Error should be raised or set"
 
 
 class TestExtractResetMinutes:
     def test_hours_and_minutes(self):
         minutes = rlh.extract_reset_minutes({"text": "reset in 6 hours 5 minutes"})
-        assert minutes == 6 * 60 + 5
+        assert minutes == 6 * 60 + 5, "minutes is not valid"
 
     def test_hours_only(self):
         minutes = rlh.extract_reset_minutes({"text": "reset in 2 hours"})
-        assert minutes == 120
+        assert minutes == 120, "minutes is not valid"
 
     def test_minutes_only(self):
         minutes = rlh.extract_reset_minutes({"text": "reset in 45 minutes"})
-        assert minutes == 45
+        assert minutes == 45, "minutes is not valid"
 
     def test_missing_returns_none(self):
-        assert rlh.extract_reset_minutes({"text": "unknown error"}) is None
+        assert rlh.extract_reset_minutes({"text": "unknown error"}) is None, "Error should be raised or set"
 
     def test_searches_message_field_too(self):
         minutes = rlh.extract_reset_minutes({"message": "reset in 1 hour 30 minutes"})
-        assert minutes == 90
+        assert minutes == 90, "minutes is not valid"
 
 
 class TestSaveCheckpoint:
@@ -68,45 +68,45 @@ class TestSaveCheckpoint:
             pending=["Fix C", "Fix D"],
             session="S923",
         )
-        assert (tmp_path / "cp.json").exists()
-        assert cp["pr_number"] == 4389
-        assert cp["session"] == "S923"
-        assert cp["resolution"] == "pending"
-        assert cp["tasks"]["completed"] == ["Fix A"]
-        assert cp["tasks"]["in_progress"] == ["Fix B"]
+        assert (tmp_path / "cp.json").exists(), "Condition must be true"
+        assert cp["pr_number"] == 4389, "Condition must be true"
+        assert cp["session"] == "S923", "Condition must be true"
+        assert cp["resolution"] == "pending", "Condition must be true"
+        assert cp["tasks"]["completed"] == ["Fix A"], "Condition must be true"
+        assert cp["tasks"]["in_progress"] == ["Fix B"], "Condition must be true"
         assert cp["tasks"]["pending"] == ["Fix C", "Fix D"]
-        assert cp["rate_limit"]["reset_minutes"] == 365
+        assert cp["rate_limit"]["reset_minutes"] == 365, "Condition must be true"
 
     def test_schema_version_present(self, tmp_path, monkeypatch):
         monkeypatch.setattr(rlh, "CHECKPOINT_FILE", tmp_path / "cp.json")
         cp = rlh.save_checkpoint(4389, {}, [], [], [])
-        assert "schema_version" in cp
+        assert "schema_version" in cp, "Condition must be true"
 
     def test_push_conflict_risk_documented(self, tmp_path, monkeypatch):
         monkeypatch.setattr(rlh, "CHECKPOINT_FILE", tmp_path / "cp.json")
         cp = rlh.save_checkpoint(4389, {}, [], [], [])
-        assert "push_conflict_risk" in cp
-        assert "resolver_script" in cp["push_conflict_risk"]
+        assert "push_conflict_risk" in cp, "Condition must be true"
+        assert "resolver_script" in cp["push_conflict_risk"], "Condition must be true"
 
 
 class TestLoadCheckpoint:
     def test_returns_none_when_missing(self, tmp_path, monkeypatch):
         monkeypatch.setattr(rlh, "CHECKPOINT_FILE", tmp_path / "nonexistent.json")
-        assert rlh.load_checkpoint() is None
+        assert rlh.load_checkpoint() is None, "Condition must be true"
 
     def test_returns_dict_when_present(self, tmp_path, monkeypatch):
         cp_path = tmp_path / "cp.json"
         cp_path.write_text(json.dumps({"pr_number": 4389, "resolution": "pending"}))
         monkeypatch.setattr(rlh, "CHECKPOINT_FILE", cp_path)
         result = rlh.load_checkpoint()
-        assert result is not None
-        assert result["pr_number"] == 4389
+        assert result is not None, "result must be initialized"
+        assert result["pr_number"] == 4389, "Result must not be empty"
 
     def test_returns_none_on_corrupt_json(self, tmp_path, monkeypatch):
         cp_path = tmp_path / "cp.json"
         cp_path.write_text("{bad json")
         monkeypatch.setattr(rlh, "CHECKPOINT_FILE", cp_path)
-        assert rlh.load_checkpoint() is None
+        assert rlh.load_checkpoint() is None, "Condition must be true"
 
 
 class TestMarkCheckpointResolved:
@@ -116,9 +116,9 @@ class TestMarkCheckpointResolved:
         monkeypatch.setattr(rlh, "CHECKPOINT_FILE", cp_path)
         rlh.mark_checkpoint_resolved(session="S924")
         result = json.loads(cp_path.read_text())
-        assert result["resolution"] == "resolved"
-        assert result["resolved_by_session"] == "S924"
-        assert "resolved_at" in result
+        assert result["resolution"] == "resolved", "Result must not be empty"
+        assert result["resolved_by_session"] == "S924", "Result must not be empty"
+        assert "resolved_at" in result, "Result must not be empty"
 
 
 class TestPostPrComment:
@@ -127,7 +127,7 @@ class TestPostPrComment:
         monkeypatch.setattr(rlh, "GH_TOKEN", "")
         cp = {"rate_limit": {}, "tasks": {}, "session": "S923"}
         result = rlh.post_pr_comment(4389, cp)
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_posts_new_comment(self, monkeypatch):
         monkeypatch.setattr(rlh, "REPO", "Aries-Serpent/_codex_")
@@ -148,8 +148,8 @@ class TestPostPrComment:
             "created_at": "2026-05-10T04:00:00Z",
         }
         result = rlh.post_pr_comment(4389, cp)
-        assert result is True
-        assert any("POST" in str(c) for c in calls)
+        assert result is True, "Result must not be empty"
+        assert any("POST" in str(c) for c in calls), "Condition must be true"
 
     def test_updates_existing_comment(self, monkeypatch):
         monkeypatch.setattr(rlh, "REPO", "Aries-Serpent/_codex_")
@@ -168,7 +168,7 @@ class TestPostPrComment:
             "created_at": "2026-05-10T04:00:00Z",
         }
         result = rlh.post_pr_comment(4389, cp)
-        assert result is True
+        assert result is True, "Result must not be empty"
 
 
 # ── push_conflict_resolver tests ────────────────────────────────────────────────
@@ -189,8 +189,8 @@ class TestResolveKnownConflicts:
 
         monkeypatch.setattr(pcr, "_run", fake_run)
         resolved, unresolved = pcr._resolve_known_conflicts(["CODEX_MANIFEST.json"])
-        assert any("THEIRS:CODEX_MANIFEST.json" == r for r in resolved)
-        assert not unresolved
+        assert any("THEIRS:CODEX_MANIFEST.json" == r for r in resolved), "Condition must be true"
+        assert not unresolved, "Condition must be true"
 
     def test_prefer_ours_for_secrets_baseline(self, monkeypatch):
         calls = []
@@ -204,13 +204,13 @@ class TestResolveKnownConflicts:
 
         monkeypatch.setattr(pcr, "_run", fake_run)
         resolved, unresolved = pcr._resolve_known_conflicts([".secrets.baseline"])
-        assert any("OURS:.secrets.baseline" == r for r in resolved)
-        assert not unresolved
+        assert any("OURS:.secrets.baseline" == r for r in resolved), "Condition must be true"
+        assert not unresolved, "Condition must be true"
 
     def test_unknown_file_is_unresolved(self, monkeypatch):
         resolved, unresolved = pcr._resolve_known_conflicts(["src/my_module.py"])
-        assert not resolved
-        assert "src/my_module.py" in unresolved
+        assert not resolved, "Condition must be true"
+        assert "src/my_module.py" in unresolved, "Condition must be true"
 
     def test_dry_run_makes_no_calls(self, monkeypatch):
         calls = []
@@ -224,7 +224,7 @@ class TestResolveKnownConflicts:
 
         monkeypatch.setattr(pcr, "_run", fake_run)
         pcr._resolve_known_conflicts(["CODEX_MANIFEST.json"], dry_run=True)
-        assert not calls  # no git calls in dry-run
+        assert not calls, "Condition must be true"
 
 
 class TestResolveUpToDate:
@@ -244,9 +244,9 @@ class TestResolveUpToDate:
 
         monkeypatch.setattr(pcr, "_run", fake_run)
         result = pcr.resolve(branch="copilot/my-branch")
-        assert result["success"] is True
-        assert result["action"] == "no-op"
-        assert result["commits_behind"] == 0
+        assert result["success"] is True, "Result must not be empty"
+        assert result["action"] == "no-op", "Result must not be empty"
+        assert result["commits_behind"] == 0, "Result must not be empty"
 
     def test_fetch_failure_reported(self, monkeypatch):
         def fake_run(cmd, **kwargs):
@@ -261,8 +261,8 @@ class TestResolveUpToDate:
 
         monkeypatch.setattr(pcr, "_run", fake_run)
         result = pcr.resolve(branch="my-branch")
-        assert result["success"] is False
-        assert result["action"] == "fetch-failed"
+        assert result["success"] is False, "Result must not be empty"
+        assert result["action"] == "fetch-failed", "Result must not be empty"
 
     def test_dry_run_reports_behind(self, monkeypatch):
         def fake_run(cmd, **kwargs):
@@ -278,6 +278,6 @@ class TestResolveUpToDate:
 
         monkeypatch.setattr(pcr, "_run", fake_run)
         result = pcr.resolve(branch="my-branch", dry_run=True)
-        assert result["action"] == "dry-run"
-        assert result["commits_behind"] == 3
-        assert result["success"] is False
+        assert result["action"] == "dry-run", "Result must not be empty"
+        assert result["commits_behind"] == 3, "Result must not be empty"
+        assert result["success"] is False, "Result must not be empty"

@@ -46,8 +46,8 @@ class TestTrainingLargeDatasets:
         elapsed_time = time.time() - start_time
 
         # Verify efficient loading
-        assert batches_loaded == 100
-        assert elapsed_time < 1.0  # Should be fast for mocked data
+        assert batches_loaded == 100, "batches_loaded is not valid"
+        assert elapsed_time < 1.0, "elapsed_time is not valid"
 
     def test_training_memory_usage_with_large_batches(self):
         """Test memory usage with large batch sizes."""
@@ -63,8 +63,8 @@ class TestTrainingLargeDatasets:
             memory_usage[batch_size] = estimated_memory
 
         # Verify memory scales linearly
-        assert memory_usage[256] > memory_usage[16]
-        assert memory_usage[128] == 1256
+        assert memory_usage[256] > memory_usage[16], "mem must be greater than zero"
+        assert memory_usage[128] == 1256, "mem is not valid"
 
     def test_gradient_checkpointing_reduces_memory(self):
         """Test gradient checkpointing reduces memory usage."""
@@ -78,8 +78,8 @@ class TestTrainingLargeDatasets:
         memory_with = (checkpoint_layers * 100) + (model_layers * 10)
 
         # Verify memory reduction
-        assert memory_with < memory_without
-        assert memory_with == 640
+        assert memory_with < memory_without, "memory_with is not valid"
+        assert memory_with == 640, "memory_with is not valid"
 
     def test_dataloader_num_workers_performance(self):
         """Test dataloader performance with different worker counts."""
@@ -99,8 +99,8 @@ class TestTrainingLargeDatasets:
             throughput[num_workers] = samples_per_sec
 
         # Verify scaling
-        assert throughput[4] > throughput[0]
-        assert throughput[4] == throughput[8]  # Diminishing returns
+        assert throughput[4] > throughput[0], "Value must be greater than zero"
+        assert throughput[4] == throughput[8], "Condition must be true"
 
     def test_mixed_precision_training_speedup(self):
         """Test mixed precision training speedup."""
@@ -118,8 +118,8 @@ class TestTrainingLargeDatasets:
         speedup_ratio = fp32_total / fp16_total
 
         # Verify speedup
-        assert speedup_ratio == pytest.approx(2.5)
-        assert fp16_total < fp32_total
+        assert speedup_ratio == pytest.approx(2.5), "speedup_ratio is not valid"
+        assert fp16_total < fp32_total, "fp16_total is not valid"
 
     def test_dataset_sharding_for_distributed_training(self):
         """Test dataset sharding for distributed training."""
@@ -136,9 +136,9 @@ class TestTrainingLargeDatasets:
             shards.append({"rank": rank, "start": start_idx, "end": end_idx, "size": shard_size})
 
         # Verify sharding
-        assert len(shards) == world_size
-        assert all(s["size"] == 2500 for s in shards)
-        assert sum(s["size"] for s in shards) == dataset_size
+        assert len(shards) == world_size, "Shards must not be empty"
+        assert all(s["size"] == 2500 for s in shards), "Condition must be true"
+        assert sum(s["size"] for s in shards) == dataset_size, "Data must not be empty"
 
     def test_prefetching_improves_throughput(self):
         """Test prefetching improves training throughput."""
@@ -155,8 +155,8 @@ class TestTrainingLargeDatasets:
         speedup = total_without / total_with
 
         # Verify improvement
-        assert speedup > 1.0
-        assert speedup == pytest.approx(1.5)
+        assert speedup > 1.0, "speedup must be greater than zero"
+        assert speedup == pytest.approx(1.5), "speedup is not valid"
 
     def test_training_checkpointing_overhead(self):
         """Test checkpointing overhead on training time."""
@@ -176,8 +176,8 @@ class TestTrainingLargeDatasets:
         overhead_pct = (checkpoint_time / total_time) * 100
 
         # Verify overhead is acceptable
-        assert num_checkpoints == 10
-        assert overhead_pct < 50  # Less than 50% overhead
+        assert num_checkpoints == 10, "num_checkpoints is not valid"
+        assert overhead_pct < 50, "overhead_pct is not valid"
 
 
 # =============================================================================
@@ -206,8 +206,8 @@ class TestRAGLargeCorpus:
             batches_processed += 1
 
         # Verify complete processing
-        assert total_embeddings == num_documents
-        assert batches_processed == 100
+        assert total_embeddings == num_documents, "total_embeddings is not valid"
+        assert batches_processed == 100, "batches_processed is not valid"
 
     def test_index_building_performance(self):
         """Test index building performance."""
@@ -223,8 +223,8 @@ class TestRAGLargeCorpus:
         ivf_index_time = num_vectors * math.log(num_vectors) * 0.00001
 
         # Verify both index times are reasonable
-        assert ivf_index_time > 0
-        assert flat_index_time > 0
+        assert ivf_index_time > 0, "ivf_index_time must be greater than zero"
+        assert flat_index_time > 0, "flat_index_time must be greater than zero"
 
     def test_vector_search_latency(self):
         """Test vector search latency at scale."""
@@ -237,8 +237,8 @@ class TestRAGLargeCorpus:
             search_times[size] = search_time_ms
 
         # Verify latency scaling
-        assert search_times[1000000] > search_times[1000]
-        assert search_times[1000000] == 1000  # 1 second for 1M
+        assert search_times[1000000] > search_times[1000], "Value must be greater than zero"
+        assert search_times[1000000] == 1000, "Condition must be true"
 
     def test_batch_retrieval_optimization(self):
         """Test batch retrieval optimization."""
@@ -255,7 +255,7 @@ class TestRAGLargeCorpus:
         speedup = individual_time / batch_time
 
         # Verify batch is faster
-        assert speedup > 1.0
+        assert speedup > 1.0, "speedup must be greater than zero"
 
     def test_index_memory_footprint(self):
         """Test index memory footprint."""
@@ -271,7 +271,7 @@ class TestRAGLargeCorpus:
 
         # Verify memory calculation
         assert vector_memory_mb == pytest.approx(293.0, rel=0.1)
-        assert total_memory_mb < 350
+        assert total_memory_mb < 350, "total_memory_mb is not valid"
 
     def test_incremental_index_updates(self):
         """Test incremental index update performance."""
@@ -290,7 +290,7 @@ class TestRAGLargeCorpus:
             index_size += updates_per_batch
 
         # Verify update time increases
-        assert update_times[-1] > update_times[0]
+        assert update_times[-1] > update_times[0], "Value must be greater than zero"
 
     def test_rag_caching_effectiveness(self):
         """Test RAG caching effectiveness."""
@@ -309,7 +309,7 @@ class TestRAGLargeCorpus:
         speedup = time_without_cache / time_with_cache
 
         # Verify caching benefit
-        assert speedup > 1.5
+        assert speedup > 1.5, "speedup must be greater than zero"
 
     def test_parallel_embedding_generation(self):
         """Test parallel embedding generation."""
@@ -326,7 +326,7 @@ class TestRAGLargeCorpus:
         speedup = sequential_time / parallel_time
 
         # Verify parallel speedup
-        assert speedup == 4.0
+        assert speedup == 4.0, "speedup is not valid"
 
 
 # =============================================================================
@@ -352,8 +352,8 @@ class TestAgentOrchestrationLoad:
             agent["status"] = "idle"
 
         # Verify all agents completed
-        assert all(a["tasks_completed"] == 5 for a in agents)
-        assert all(a["status"] == "idle" for a in agents)
+        assert all(a["tasks_completed"] == 5 for a in agents), "Condition must be true"
+        assert all(a["status"] == "idle" for a in agents), "Condition must be true"
 
     def test_agent_task_queue_management(self):
         """Test agent task queue under load."""
@@ -372,8 +372,8 @@ class TestAgentOrchestrationLoad:
                 task_queue.append(task_id)
 
         # Verify queue management
-        assert len(task_queue) == max_queue_size
-        assert processed_tasks == 50
+        assert len(task_queue) == max_queue_size, "Task_queue must not be empty"
+        assert processed_tasks == 50, "processed_tasks is not valid"
 
     def test_agent_resource_allocation(self):
         """Test agent resource allocation under load."""
@@ -392,9 +392,9 @@ class TestAgentOrchestrationLoad:
             agent["allocated"] = int(total_resources * weight)
 
         # Verify allocation
-        assert agents[0]["allocated"] == 50
-        assert agents[1]["allocated"] == 30
-        assert agents[2]["allocated"] == 20
+        assert agents[0]["allocated"] == 50, "Condition must be true"
+        assert agents[1]["allocated"] == 30, "Condition must be true"
+        assert agents[2]["allocated"] == 20, "Condition must be true"
 
     def test_agent_throughput_measurement(self):
         """Test agent throughput under load."""
@@ -412,8 +412,8 @@ class TestAgentOrchestrationLoad:
         throughput = agent_stats["tasks_completed"] / duration if duration > 0 else 0
 
         # Verify measurement
-        assert agent_stats["tasks_completed"] == 1000
-        assert throughput > 0
+        assert agent_stats["tasks_completed"] == 1000, "Condition must be true"
+        assert throughput > 0, "throughput must be greater than zero"
 
     def test_agent_failure_handling_under_load(self):
         """Test agent failure handling under load."""
@@ -429,8 +429,8 @@ class TestAgentOrchestrationLoad:
                 successful.append(task_id)
 
         # Verify handling
-        assert len(successful) == 90
-        assert len(failed) == 10
+        assert len(successful) == 90, "Successful must not be empty"
+        assert len(failed) == 10, "Failed must not be empty"
 
     def test_agent_auto_scaling(self):
         """Test agent auto-scaling based on load."""
@@ -446,8 +446,8 @@ class TestAgentOrchestrationLoad:
         new_agent_count = current_agents + agents_to_add
 
         # Verify scaling
-        assert new_agent_count == 5
-        assert agents_to_add == 3
+        assert new_agent_count == 5, "Count must be greater than zero"
+        assert agents_to_add == 3, "agents_to_add is not valid"
 
     def test_agent_coordination_overhead(self):
         """Test coordination overhead with multiple agents."""
@@ -465,7 +465,7 @@ class TestAgentOrchestrationLoad:
         overhead_pct = ((time_with - time_without) / time_without) * 100
 
         # Verify overhead
-        assert overhead_pct == pytest.approx(20.0)
+        assert overhead_pct == pytest.approx(20.0), "overhead_pct is not valid"
 
     def test_agent_memory_management_under_load(self):
         """Test agent memory management under load."""
@@ -485,8 +485,8 @@ class TestAgentOrchestrationLoad:
                 active_tasks.append(task_id)
 
         # Verify memory limit respected
-        assert len(active_tasks) == max_concurrent
-        assert len(active_tasks) * memory_per_task <= max_memory_mb
+        assert len(active_tasks) == max_concurrent, "Active_tasks must not be empty"
+        assert len(active_tasks) * memory_per_task <= max_memory_mb, "Active_tasks must not be empty"
 
 
 # =============================================================================
@@ -513,7 +513,7 @@ class TestConcurrentCLIOperations:
             session["active"] = False
 
         # Verify all sessions completed
-        assert all(s["commands_executed"] == 10 for s in sessions)
+        assert all(s["commands_executed"] == 10 for s in sessions), "Condition must be true"
 
     def test_cli_command_queue_processing(self):
         """Test CLI command queue processing."""
@@ -535,7 +535,7 @@ class TestConcurrentCLIOperations:
             processed.append(cmd)
 
         # Verify processing
-        assert len(processed) == max_queue_size
+        assert len(processed) == max_queue_size, "Processed must not be empty"
 
     def test_cli_output_buffer_management(self):
         """Test CLI output buffer management."""
@@ -553,7 +553,7 @@ class TestConcurrentCLIOperations:
             output_buffer.append(output_line)
 
         # Verify buffer limit
-        assert len(output_buffer) == max_buffer_size
+        assert len(output_buffer) == max_buffer_size, "Output_buffer must not be empty"
 
     def test_cli_parallel_command_execution(self):
         """Test parallel CLI command execution."""
@@ -572,8 +572,8 @@ class TestConcurrentCLIOperations:
         speedup = sequential_time / parallel_time
 
         # Verify parallel benefit
-        assert speedup > 1.0
-        assert speedup == pytest.approx(2.25)
+        assert speedup > 1.0, "speedup must be greater than zero"
+        assert speedup == pytest.approx(2.25), "speedup is not valid"
 
     def test_cli_rate_limiting(self):
         """Test CLI rate limiting."""
@@ -593,7 +593,7 @@ class TestConcurrentCLIOperations:
             commands_in_window.append(cmd_id)
 
         # Verify rate limiting
-        assert len(commands_in_window) <= max_commands_per_second
+        assert len(commands_in_window) <= max_commands_per_second, "Commands_in_window must not be empty"
 
     def test_cli_resource_contention(self):
         """Test CLI resource contention handling."""
@@ -610,8 +610,8 @@ class TestConcurrentCLIOperations:
                 shared_resource["wait_queue"].append(session_id)
 
         # Verify contention handling
-        assert shared_resource["in_use"] is True
-        assert len(shared_resource["wait_queue"]) == 4
+        assert shared_resource["in_use"] is True, "Condition must be true"
+        assert len(shared_resource["wait_queue"]) == 4, "Collection must not be empty"
 
     def test_cli_batch_operation_performance(self):
         """Test CLI batch operation performance."""
@@ -630,8 +630,8 @@ class TestConcurrentCLIOperations:
         efficiency_gain = individual_ops / batched_ops
 
         # Verify batching benefit
-        assert num_batches == 10
-        assert efficiency_gain == 100.0
+        assert num_batches == 10, "num_batches is not valid"
+        assert efficiency_gain == 100.0, "efficiency_gain is not valid"
 
 
 # =============================================================================
@@ -662,7 +662,7 @@ class TestAdditionalPerformance:
             access_count[key] = 0
 
         # Verify cache size maintained
-        assert len(cache) == max_cache_size
+        assert len(cache) == max_cache_size, "Cache must not be empty"
 
     def test_connection_pool_performance(self):
         """Test connection pool performance."""
@@ -678,8 +678,8 @@ class TestAdditionalPerformance:
                 waiting_requests += 1
 
         # Verify pool management
-        assert active_connections == pool_size
-        assert waiting_requests == 40
+        assert active_connections == pool_size, "active_connections is not valid"
+        assert waiting_requests == 40, "waiting_requests is not valid"
 
     def test_data_serialization_performance(self):
         """Test data serialization performance."""
@@ -691,8 +691,8 @@ class TestAdditionalPerformance:
         json_time = time.time() - json_start
 
         # Verify serialization
-        assert len(json_str) > 0
-        assert json_time < 0.1
+        assert len(json_str) > 0, "Json_str must not be empty"
+        assert json_time < 0.1, "json_time is not valid"
 
     def test_query_optimization_impact(self):
         """Test query optimization impact."""
@@ -707,7 +707,7 @@ class TestAdditionalPerformance:
         speedup = unoptimized_time / optimized_time
 
         # Verify optimization benefit
-        assert speedup == 1000.0
+        assert speedup == 1000.0, "speedup is not valid"
 
     def test_memory_pooling_efficiency(self):
         """Test memory pooling efficiency."""
@@ -722,4 +722,4 @@ class TestAdditionalPerformance:
         efficiency_gain = alloc_time_without / alloc_time_with
 
         # Verify pooling benefit
-        assert efficiency_gain == 10.0
+        assert efficiency_gain == 10.0, "efficiency_gain is not valid"

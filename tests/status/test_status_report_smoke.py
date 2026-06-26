@@ -41,6 +41,6 @@ def test_status_report_template_mode(tmp_path: Path) -> None:
     assert out.exists(), "STATUS_REPORT.md was not created"
     text = out.read_text(encoding="utf-8")
     # Basic template sections should be present
-    assert "Gates Summary" in text
-    assert "Repo Map" in text
-    assert "Capability Audit Table" in text
+    assert "Gates Summary" in text, "Condition must be true"
+    assert "Repo Map" in text, "Condition must be true"
+    assert "Capability Audit Table" in text, "Condition must be true"

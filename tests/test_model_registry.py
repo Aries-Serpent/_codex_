@@ -50,7 +50,7 @@ def test_gpt2_offline_loads_local_checkpoint(tmp_path):
 
     loaded = get_model("gpt2-offline", {"local_path": str(target)})
     assert isinstance(loaded, GPT2LMHeadModel)
-    assert loaded.config.vocab_size == 32
+    assert loaded.config.vocab_size == 32, "vocab_size is not valid"
 
 
 def test_gpt2_offline_missing_path(tmp_path):
@@ -109,7 +109,7 @@ def test_tinyllama_offline_loads_local_checkpoint(tmp_path):
 
     loaded = get_model("tinyllama-offline", {"local_path": str(target)})
     assert isinstance(loaded, LlamaForCausalLM)
-    assert loaded.config.hidden_size == 64
+    assert loaded.config.hidden_size == 64, "hidden_size is not valid"
 
 
 def test_tinyllama_offline_missing_path(tmp_path):
@@ -158,7 +158,7 @@ def test_plugins_cli_lists_offline_models():
 
     runner = CliRunner()
     result = runner.invoke(plugins_cli.app, ["list", "models"])
-    assert result.exit_code == 0
+    assert result.exit_code == 0, "Result must not be empty"
     output = result.stdout.splitlines()
-    assert any("gpt2-offline" in line for line in output)
-    assert any("tinyllama-offline" in line for line in output)
+    assert any("gpt2-offline" in line for line in output), "Condition must be true"
+    assert any("tinyllama-offline" in line for line in output), "Condition must be true"

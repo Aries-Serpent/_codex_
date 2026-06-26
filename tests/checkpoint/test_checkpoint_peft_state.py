@@ -18,7 +18,7 @@ sys.path.insert(0, str(src_dir))
 spec = importlib.util.spec_from_file_location(
     "training.checkpointing", src_dir / "training" / "checkpointing.py"
 )
-assert spec and spec.loader
+assert spec and spec.loader, "spec is not valid"
 checkpointing = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = checkpointing
 spec.loader.exec_module(checkpointing)
@@ -83,7 +83,7 @@ def test_checkpoint_includes_lora_state(tmp_path: Path):
     payload = torch.load(
         ckpt_files[0], map_location="cpu", weights_only=False
     )  # nosec B614 - Test checkpoint with optimizer state requires weights_only=False
-    assert "peft_state" in payload
+    assert "peft_state" in payload, "Condition must be true"
     assert payload["peft_state"], "peft_state payload should not be empty"
 
     restored = _make_model()
@@ -92,6 +92,6 @@ def test_checkpoint_includes_lora_state(tmp_path: Path):
             param.data.zero_()
     load_checkpoint(ckpt_files[0], restored, optimizer=None, restore_rng=False)
     state_after = get_peft_model_state_dict(restored)
-    assert set(state_before.keys()) == set(state_after.keys())
+    assert set(state_before.keys()) == set(state_after.keys()), "Condition must be true"
     for key in state_before:
         assert torch.allclose(state_before[key], state_after[key])

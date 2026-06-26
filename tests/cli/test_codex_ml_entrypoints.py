@@ -58,7 +58,7 @@ def test_cli_modules_importable(module_name):
     """Modules should import without raising to satisfy readiness checks."""
 
     module = importlib.import_module(module_name)
-    assert module is not None
+    assert module is not None, "module must be initialized"
 
 
 def _maybe_invoke(app_factory: Callable[[], object]) -> None:
@@ -71,8 +71,8 @@ def _maybe_invoke(app_factory: Callable[[], object]) -> None:
 
     runner = CliRunner()
     result = runner.invoke(app_factory(), ["--help"])
-    assert result.exit_code == 0
-    assert "--help" in result.output
+    assert result.exit_code == 0, "Result must not be empty"
+    assert "--help" in result.output, "Result must not be empty"
 
 
 def test_tracking_decide_cli_help():

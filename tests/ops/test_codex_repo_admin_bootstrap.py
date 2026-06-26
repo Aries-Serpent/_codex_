@@ -17,9 +17,9 @@ def _m():
 def test_dry_run_plan_shape(capsys):
     m = _m()
     rc = m.main(["--owner", "o", "--repo", "r"])  # dry-run
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
     out = json.loads(capsys.readouterr().out)
-    assert out["dry_run"] is True
+    assert out["dry_run"] is True, "Condition must be true"
     plan = out["plan"]
     assert plan["target"] == {"owner": "o", "repo": "r", "branch": "main"}
     assert isinstance(plan["repo_settings"], dict)

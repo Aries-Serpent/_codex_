@@ -24,7 +24,7 @@ class TestMLflowEnablement:
             result = _enable_mlflow("file:./test_mlruns")
 
             assert isinstance(result, dict)
-            assert "tracking_uri" in result or "enabled" in result
+            assert "tracking_uri" in result or "enabled" in result, "Result must not be empty"
 
     def test_enable_mlflow_without_uri(self):
         """Test _enable_mlflow with default URI."""
@@ -35,7 +35,7 @@ class TestMLflowEnablement:
             result = _enable_mlflow(None)
 
         assert isinstance(result, dict)
-        assert result.get("tracking_uri") == "mlruns" or "warning" in result
+        assert result.get("tracking_uri") == "mlruns" or "warning" in result, "Result must not be empty"
 
     @patch.dict(os.environ, {}, clear=False)
     def test_enable_mlflow_sets_env_var(self):
@@ -45,7 +45,7 @@ class TestMLflowEnablement:
         result = _enable_mlflow("file:./custom_path")
 
         # Either MLflow is available and env is set, or warning is returned
-        assert "enabled" in result or "warning" in result
+        assert "enabled" in result or "warning" in result, "Result must not be empty"
 
     def test_enable_mlflow_handles_import_error(self):
         """Test _enable_mlflow handles missing mlflow gracefully."""
@@ -68,7 +68,7 @@ class TestWandbEnablement:
             result = _enable_wandb(project="test_project", mode="offline")
 
             assert isinstance(result, dict)
-            assert "enabled" in result or "warning" in result
+            assert "enabled" in result or "warning" in result, "Result must not be empty"
 
     def test_enable_wandb_disabled_mode(self):
         """Test _enable_wandb in disabled mode."""
@@ -107,8 +107,8 @@ class TestArgumentParser:
         from codex_ml.cli.tracking_cli import _mk_parser
 
         parser = _mk_parser()
-        assert parser is not None
-        assert parser.prog == "codex tracking"
+        assert parser is not None, "parser must be initialized"
+        assert parser.prog == "codex tracking", "prog is not valid"
 
     def test_parser_has_bootstrap_subcommand(self):
         """Test parser has bootstrap subcommand."""
@@ -117,7 +117,7 @@ class TestArgumentParser:
         parser = _mk_parser()
         # Parse with bootstrap subcommand
         args = parser.parse_args(["bootstrap"])
-        assert args.subcommand == "bootstrap"
+        assert args.subcommand == "bootstrap", "subcommand is not valid"
 
     def test_parser_bootstrap_mlflow_flag(self):
         """Test parser handles --mlflow flag."""
@@ -125,7 +125,7 @@ class TestArgumentParser:
 
         parser = _mk_parser()
         args = parser.parse_args(["bootstrap", "--mlflow"])
-        assert args.mlflow is True
+        assert args.mlflow is True, "mlflow is not valid"
 
     def test_parser_bootstrap_wandb_flag(self):
         """Test parser handles --wandb flag."""
@@ -133,7 +133,7 @@ class TestArgumentParser:
 
         parser = _mk_parser()
         args = parser.parse_args(["bootstrap", "--wandb"])
-        assert args.wandb is True
+        assert args.wandb is True, "wandb is not valid"
 
     def test_parser_bootstrap_mlflow_uri(self):
         """Test parser handles --mlflow-uri option."""
@@ -141,7 +141,7 @@ class TestArgumentParser:
 
         parser = _mk_parser()
         args = parser.parse_args(["bootstrap", "--mlflow", "--mlflow-uri", "file:./custom"])
-        assert args.mlflow_uri == "file:./custom"
+        assert args.mlflow_uri == "file:./custom", "mlflow_uri is not valid"
 
     def test_parser_bootstrap_project(self):
         """Test parser handles --project option."""
@@ -149,7 +149,7 @@ class TestArgumentParser:
 
         parser = _mk_parser()
         args = parser.parse_args(["bootstrap", "--wandb", "--project", "my_project"])
-        assert args.project == "my_project"
+        assert args.project == "my_project", "project is not valid"
 
     def test_parser_bootstrap_mode_choices(self):
         """Test parser validates mode choices."""
@@ -160,7 +160,7 @@ class TestArgumentParser:
         # Valid modes
         for mode in ["online", "offline", "disabled"]:
             args = parser.parse_args(["bootstrap", "--mode", mode])
-            assert args.mode == mode
+            assert args.mode == mode, "mode is not valid"
 
     def test_parser_default_mode(self):
         """Test parser default mode is offline."""
@@ -168,7 +168,7 @@ class TestArgumentParser:
 
         parser = _mk_parser()
         args = parser.parse_args(["bootstrap"])
-        assert args.mode == "offline"
+        assert args.mode == "offline", "mode is not valid"
 
     def test_parser_default_mlflow_uri(self):
         """Test parser default mlflow-uri."""
@@ -176,7 +176,7 @@ class TestArgumentParser:
 
         parser = _mk_parser()
         args = parser.parse_args(["bootstrap"])
-        assert args.mlflow_uri == "file:./mlruns"
+        assert args.mlflow_uri == "file:./mlruns", "mlflow_uri is not valid"
 
 
 class TestBootstrapCommand:
@@ -200,7 +200,7 @@ class TestBootstrapCommand:
         args = parser.parse_args(["bootstrap", "--mlflow"])
 
         result = _cmd_bootstrap(args)
-        assert result == 0
+        assert result == 0, "Result must not be empty"
 
     def test_bootstrap_with_wandb_only(self):
         """Test _cmd_bootstrap with W&B only."""
@@ -210,7 +210,7 @@ class TestBootstrapCommand:
         args = parser.parse_args(["bootstrap", "--wandb", "--mode", "disabled"])
 
         result = _cmd_bootstrap(args)
-        assert result == 0
+        assert result == 0, "Result must not be empty"
 
     def test_bootstrap_with_both(self):
         """Test _cmd_bootstrap with both MLflow and W&B."""
@@ -220,7 +220,7 @@ class TestBootstrapCommand:
         args = parser.parse_args(["bootstrap", "--mlflow", "--wandb", "--mode", "disabled"])
 
         result = _cmd_bootstrap(args)
-        assert result == 0
+        assert result == 0, "Result must not be empty"
 
     def test_bootstrap_without_trackers(self):
         """Test _cmd_bootstrap without any trackers."""
@@ -230,7 +230,7 @@ class TestBootstrapCommand:
         args = parser.parse_args(["bootstrap"])
 
         result = _cmd_bootstrap(args)
-        assert result == 0
+        assert result == 0, "Result must not be empty"
 
 
 class TestTrackingCLIIntegration:

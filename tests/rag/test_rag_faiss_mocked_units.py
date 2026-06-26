@@ -35,7 +35,7 @@ def test_cached_embedding_provider_cache_hit(tmp_path):
     cached = CachedEmbeddingProvider(provider=provider, cache_dir=str(tmp_path))
     first = cached.encode(["a", "b"], cache_key="k1")
     second = cached.encode(["a", "b"], cache_key="k1")
-    assert provider.calls == 1
+    assert provider.calls == 1, "calls is not valid"
     np.testing.assert_allclose(first, second)
 
 
@@ -67,8 +67,8 @@ def test_persist_index_with_faiss_mock(monkeypatch, tmp_path):
         tenant_id="tenant",
         index_dir=str(tmp_path),
     )
-    assert (out / "index.faiss").exists()
-    assert (out / "chunks.json").exists()
+    assert (out / "index.faiss").exists(), "Condition must be true"
+    assert (out / "chunks.json").exists(), "Condition must be true"
     assert json.loads((out / "metadata.json").read_text(encoding="utf-8"))["num_vectors"] == 2
 
 
@@ -101,12 +101,12 @@ def test_retriever_query_with_mocked_faiss(monkeypatch):
 
     retriever = Retriever(index_dir=".", index_name="x", tenant_id="t")
     results = retriever.query("query", top_k=2, min_score=0.5)
-    assert len(results) == 1
-    assert results[0]["file"] == "a.py"
+    assert len(results) == 1, "Results must not be empty"
+    assert results[0]["file"] == "a.py", "Result must not be empty"
 
 
 def test_embedding_cache_set_get_non_numeric_value():
     cache = EmbeddingCache(max_size=10)
     cache.set("string-key", "value")
     result = cache.get("string-key")
-    assert result is not None
+    assert result is not None, "result must be initialized"

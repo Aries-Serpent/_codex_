@@ -38,7 +38,7 @@ def test_manifest_checksum_stability():
     """
     a = permute_indices(100, seed=42)
     b = permute_indices(100, seed=42)
-    assert checksum(a) == checksum(b)
+    assert checksum(a) == checksum(b), "Condition must be true"
 
 
 def test_seed_change_changes_ordering():
@@ -47,8 +47,8 @@ def test_seed_change_changes_ordering():
     """
     a = permute_indices(100, seed=1)
     b = permute_indices(100, seed=2)
-    assert a != b
-    assert checksum(a) != checksum(b)
+    assert a != b, "a is not valid"
+    assert checksum(a) != checksum(b), "Condition must be true"
 
 
 @pytest.mark.parametrize("world", [1, 2, 3, 4])
@@ -62,10 +62,10 @@ def test_shard_coverage_and_disjoint(world):
     parts = [set(shard_indices(n, r, world)) for r in range(world)]
     # Disjoint
     for a, b in itertools.combinations(parts, 2):
-        assert a.isdisjoint(b)
+        assert a.isdisjoint(b), "Condition must be true"
     # Coverage
     union = set().union(*parts)
-    assert len(union) == n
+    assert len(union) == n, "Union must not be empty"
 
 
 def test_utf8_fallback_mixed_encodings():
@@ -79,4 +79,4 @@ def test_utf8_fallback_mixed_encodings():
         b = s.encode("utf-8", errors="strict")
         h.update(b)
     # Stable digest regardless of platform default encodings
-    assert len(h.hexdigest()) == 64
+    assert len(h.hexdigest()) == 64, "Collection must not be empty"

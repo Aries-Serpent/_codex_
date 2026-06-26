@@ -16,37 +16,42 @@ class TestMockBackend:
         return MockBackend(simulated_latency_ms=0)
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_connect(self, backend):
         """Test connection to mock backend."""
         result = await backend.connect()
 
-        assert result is True
-        assert backend.is_connected is True
+        assert result is True, "Result must not be empty"
+        assert backend.is_connected is True, "is_connected is not valid"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_disconnect(self, backend):
         """Test disconnection from mock backend."""
         await backend.connect()
         await backend.disconnect()
 
-        assert backend.is_connected is False
+        assert backend.is_connected is False, "is_connected is not valid"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_health_check_connected(self, backend):
         """Test health check when connected."""
         await backend.connect()
         healthy = await backend.health_check()
 
-        assert healthy is True
+        assert healthy is True, "healthy is not valid"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_health_check_disconnected(self, backend):
         """Test health check when disconnected."""
         healthy = await backend.health_check()
 
-        assert healthy is False
+        assert healthy is False, "healthy is not valid"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_query_returns_results(self, backend):
         """Test querying mock backend."""
         await backend.connect()
@@ -61,19 +66,21 @@ class TestMockBackend:
 
         result = await backend.query("test query", top_k=5)
 
-        assert result.success is True
-        assert "matches" in result.data
-        assert len(result.data["matches"]) <= 5
+        assert result.success is True, "Result must not be empty"
+        assert "matches" in result.data, "Result must not be empty"
+        assert len(result.data["matches"]) <= 5, "Collection must not be empty"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_query_when_disconnected(self, backend):
         """Test query fails when not connected."""
         result = await backend.query("test")
 
-        assert result.success is False
-        assert result.error == "Not connected"
+        assert result.success is False, "Result must not be empty"
+        assert result.error == "Not connected", "Result must not be empty"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_upsert_vectors(self, backend):
         """Test upserting vectors."""
         await backend.connect()
@@ -85,11 +92,12 @@ class TestMockBackend:
             ]
         )
 
-        assert result.success is True
-        assert result.data["upserted_count"] == 2
-        assert backend.get_vector_count() == 2
+        assert result.success is True, "Result must not be empty"
+        assert result.data["upserted_count"] == 2, "Result must not be empty"
+        assert backend.get_vector_count() == 2, "Count must be greater than zero"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_call_count(self, backend):
         """Test call counting."""
         await backend.connect()
@@ -98,9 +106,10 @@ class TestMockBackend:
         await backend.query("q2")
         await backend.upsert([{"id": "1", "values": []}])
 
-        assert backend.get_call_count() == 3
+        assert backend.get_call_count() == 3, "Count must be greater than zero"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_reset(self, backend):
         """Test resetting mock backend."""
         await backend.connect()
@@ -108,12 +117,12 @@ class TestMockBackend:
 
         backend.reset()
 
-        assert backend.get_call_count() == 0
-        assert backend.get_vector_count() == 0
+        assert backend.get_call_count() == 0, "Count must be greater than zero"
+        assert backend.get_vector_count() == 0, "Count must be greater than zero"
 
     def test_adapter_name(self, backend):
         """Test adapter name."""
-        assert backend.adapter_name == "mock"
+        assert backend.adapter_name == "mock", "adapter_name is not valid"
 
 
 class TestMCPMetrics:
@@ -136,8 +145,8 @@ class TestMCPMetrics:
         )
 
         summary = metrics.get_summary()
-        assert "counters" in summary
-        assert "histograms" in summary
+        assert "counters" in summary, "Count must be greater than zero"
+        assert "histograms" in summary, "Condition must be true"
 
     def test_record_upsert(self, metrics):
         """Test recording upsert metrics."""
@@ -149,7 +158,7 @@ class TestMCPMetrics:
         )
 
         summary = metrics.get_summary()
-        assert summary is not None
+        assert summary is not None, "summary must be initialized"
 
     def test_record_error(self, metrics):
         """Test recording error metrics."""
@@ -158,7 +167,7 @@ class TestMCPMetrics:
 
         # Verify errors are counted
         summary = metrics.get_summary()
-        assert "counters" in summary
+        assert "counters" in summary, "Count must be greater than zero"
 
     def test_set_connection_status(self, metrics):
         """Test setting connection status gauge."""
@@ -166,7 +175,7 @@ class TestMCPMetrics:
         metrics.set_connection_status("pinecone", False)
 
         summary = metrics.get_summary()
-        assert "gauges" in summary
+        assert "gauges" in summary, "Condition must be true"
 
 
 class TestMetricCollector:
@@ -185,7 +194,7 @@ class TestMetricCollector:
         collector.increment("requests")
         collector.increment("requests", value=3)
 
-        assert collector.get_counter("requests") == 5
+        assert collector.get_counter("requests") == 5, "Count must be greater than zero"
 
     def test_counter_with_labels(self, collector):
         """Test counters with labels."""
@@ -199,10 +208,10 @@ class TestMetricCollector:
     def test_set_gauge(self, collector):
         """Test setting gauges."""
         collector.set_gauge("connections", 5)
-        assert collector.get_gauge("connections") == 5
+        assert collector.get_gauge("connections") == 5, "collect is not valid"
 
         collector.set_gauge("connections", 3)
-        assert collector.get_gauge("connections") == 3
+        assert collector.get_gauge("connections") == 3, "collect is not valid"
 
     def test_observe_histogram(self, collector):
         """Test histogram observations."""
@@ -212,11 +221,11 @@ class TestMetricCollector:
 
         summary = collector.get_histogram_summary("latency")
 
-        assert summary is not None
-        assert summary.count == 3
-        assert summary.min_value == 100
-        assert summary.max_value == 200
-        assert summary.avg_value == 150
+        assert summary is not None, "summary must be initialized"
+        assert summary.count == 3, "Count must be greater than zero"
+        assert summary.min_value == 100, "Value must be initialized"
+        assert summary.max_value == 200, "Value must be initialized"
+        assert summary.avg_value == 150, "Value must be initialized"
 
     def test_reset(self, collector):
         """Test resetting collector."""
@@ -225,5 +234,5 @@ class TestMetricCollector:
 
         collector.reset()
 
-        assert collector.get_counter("test") == 0
-        assert collector.get_gauge("gauge") == 0
+        assert collector.get_counter("test") == 0, "Count must be greater than zero"
+        assert collector.get_gauge("gauge") == 0, "collect is not valid"

@@ -45,7 +45,7 @@ def test_visual_compare_identical(tmp_path):
             "0.99",
         ]
     )
-    assert code == 0
+    assert code == 0, "code is not valid"
 
 
 def test_visual_compare_different(tmp_path):

@@ -38,7 +38,7 @@ class TestFileOperationExceptions:
                 result = f.read()
         except FileNotFoundError:
             result = "default_content"
-        assert result == "default_content"
+        assert result == "default_content", "Result must not be empty"
 
     def test_permission_error_handler(self) -> None:
         """Test PermissionError handling."""
@@ -49,7 +49,7 @@ class TestFileOperationExceptions:
                     result = f.read()
             except PermissionError:
                 result = "permission_denied"
-            assert result == "permission_denied"
+            assert result == "permission_denied", "Result must not be empty"
 
     def test_io_error_handler(self) -> None:
         """Test IOError handling."""
@@ -60,7 +60,7 @@ class TestFileOperationExceptions:
                     result = f.read()
             except IOError:
                 result = "io_error"
-            assert result == "io_error"
+            assert result == "io_error", "Result must not be empty"
 
     def test_is_a_directory_error_handler(self) -> None:
         """Test IsADirectoryError handling."""
@@ -71,7 +71,7 @@ class TestFileOperationExceptions:
                     result = f.read()
             except IsADirectoryError:
                 result = "is_directory"
-            assert result == "is_directory"
+            assert result == "is_directory", "Result must not be empty"
 
 
 # ============================================================================
@@ -90,7 +90,7 @@ class TestJSONExceptions:
             result = json.loads(invalid_json)
         except json.JSONDecodeError:
             result = {"error": "invalid_json"}
-        assert result == {"error": "invalid_json"}
+        assert result == {"error": "invalid_json"}, "Result must not be empty"
 
     def test_json_decode_error_with_default(self) -> None:
         """Test JSONDecodeError with default value."""
@@ -100,7 +100,7 @@ class TestJSONExceptions:
             data = json.loads(invalid_json)
         except json.JSONDecodeError:
             data = default
-        assert data == default
+        assert data == default, "Data must not be empty"
 
     def test_json_type_error_handler(self) -> None:
         """Test TypeError in JSON serialization."""
@@ -113,7 +113,7 @@ class TestJSONExceptions:
             result = json.dumps(NonSerializable())
         except TypeError:
             result = "serialization_error"
-        assert result == "serialization_error"
+        assert result == "serialization_error", "Result must not be empty"
 
     def test_json_encode_with_default_handler(self) -> None:
         """Test JSON encoding with default handler."""
@@ -125,7 +125,7 @@ class TestJSONExceptions:
             raise TypeError(f"Cannot serialize {type(obj)}")
 
         result = json.dumps(data, default=default_handler)
-        assert "1" in result
+        assert "1" in result, "Result must not be empty"
 
 
 # ============================================================================
@@ -146,7 +146,7 @@ class TestNetworkExceptions:
                 urllib.request.urlopen("http://example.com")
             except ConnectionError:
                 result = "connection_error"
-            assert result == "connection_error"
+            assert result == "connection_error", "Result must not be empty"
 
     def test_timeout_error_handler(self) -> None:
         """Test TimeoutError handling."""
@@ -155,7 +155,7 @@ class TestNetworkExceptions:
             raise TimeoutError("Request timed out")
         except TimeoutError:
             result = "timeout"
-        assert result == "timeout"
+        assert result == "timeout", "Result must not be empty"
 
     def test_connection_refused_handler(self) -> None:
         """Test ConnectionRefusedError handling."""
@@ -164,7 +164,7 @@ class TestNetworkExceptions:
             raise ConnectionRefusedError("Connection refused")
         except ConnectionRefusedError:
             result = "refused"
-        assert result == "refused"
+        assert result == "refused", "Result must not be empty"
 
 
 # ============================================================================
@@ -182,7 +182,7 @@ class TestValueExceptions:
             int("not_a_number")
         except ValueError:
             result = "invalid_value"
-        assert result == "invalid_value"
+        assert result == "invalid_value", "Result must not be empty"
 
     def test_type_error_handler(self) -> None:
         """Test TypeError handling."""
@@ -191,7 +191,7 @@ class TestValueExceptions:
             "string" + 123  # type: ignore  # noqa: B018
         except TypeError:
             result = "type_error"
-        assert result == "type_error"
+        assert result == "type_error", "Result must not be empty"
 
     def test_key_error_handler(self) -> None:
         """Test KeyError handling."""
@@ -201,7 +201,7 @@ class TestValueExceptions:
             _ = data["nonexistent"]
         except KeyError:
             result = "key_not_found"
-        assert result == "key_not_found"
+        assert result == "key_not_found", "Result must not be empty"
 
     def test_index_error_handler(self) -> None:
         """Test IndexError handling."""
@@ -211,7 +211,7 @@ class TestValueExceptions:
             _ = items[100]
         except IndexError:
             result = "index_out_of_range"
-        assert result == "index_out_of_range"
+        assert result == "index_out_of_range", "Result must not be empty"
 
     def test_attribute_error_handler(self) -> None:
         """Test AttributeError handling."""
@@ -221,7 +221,7 @@ class TestValueExceptions:
             _ = obj.nonexistent_attribute  # type: ignore
         except AttributeError:
             result = "attribute_not_found"
-        assert result == "attribute_not_found"
+        assert result == "attribute_not_found", "Result must not be empty"
 
 
 # ============================================================================
@@ -239,7 +239,7 @@ class TestImportExceptions:
             importlib.import_module("nonexistent_module_xyz")
         except ImportError:
             result = "import_failed"
-        assert result == "import_failed"
+        assert result == "import_failed", "Result must not be empty"
 
     def test_module_not_found_handler(self) -> None:
         """Test ModuleNotFoundError handling."""
@@ -248,7 +248,7 @@ class TestImportExceptions:
             importlib.import_module("another_nonexistent_module")
         except ModuleNotFoundError:
             result = "module_not_found"
-        assert result == "module_not_found"
+        assert result == "module_not_found", "Result must not be empty"
 
     def test_optional_dependency_handler(self) -> None:
         """Test optional dependency handling pattern."""
@@ -257,7 +257,7 @@ class TestImportExceptions:
             has_optional = True
         except ImportError:
             has_optional = False
-        assert has_optional is False
+        assert has_optional is False, "has_optional is not valid"
 
 
 # ============================================================================
@@ -277,7 +277,7 @@ class TestConfigurationExceptions:
                 raise ValueError("Learning rate must be positive")
         except ValueError:
             result = "invalid_config"
-        assert result == "invalid_config"
+        assert result == "invalid_config", "Result must not be empty"
 
     def test_missing_required_config(self) -> None:
         """Test missing required configuration handling."""
@@ -287,7 +287,7 @@ class TestConfigurationExceptions:
             _ = config["required_key"]
         except KeyError:
             result = "missing_required"
-        assert result == "missing_required"
+        assert result == "missing_required", "Result must not be empty"
 
     def test_config_type_mismatch(self) -> None:
         """Test configuration type mismatch handling."""
@@ -297,7 +297,7 @@ class TestConfigurationExceptions:
             int(config["epochs"])  # type: ignore
         except ValueError:
             result = "type_mismatch"
-        assert result == "type_mismatch"
+        assert result == "type_mismatch", "Result must not be empty"
 
 
 # ============================================================================
@@ -315,7 +315,7 @@ class TestResourceExceptions:
             raise MemoryError("Out of memory")
         except MemoryError:
             result = "out_of_memory"
-        assert result == "out_of_memory"
+        assert result == "out_of_memory", "Result must not be empty"
 
     def test_resource_cleanup_on_exception(self) -> None:
         """Test resource cleanup in finally block."""
@@ -326,7 +326,7 @@ class TestResourceExceptions:
             _ = None  # suppressed: no action needed
         finally:
             cleanup_performed = True
-        assert cleanup_performed is True
+        assert cleanup_performed is True, "cleanup_performed is not valid"
 
     def test_context_manager_exception(self) -> None:
         """Test exception in context manager."""
@@ -348,7 +348,7 @@ class TestResourceExceptions:
                 raise ValueError("Error inside context")
         except ValueError:
             _ = None  # suppressed: no action needed
-        assert resource.closed is True
+        assert resource.closed is True, "closed is not valid"
 
 
 # ============================================================================
@@ -366,7 +366,7 @@ class TestAsyncExceptions:
             raise RuntimeError("Coroutine error simulation")
         except RuntimeError:
             result = "coroutine_error"
-        assert result == "coroutine_error"
+        assert result == "coroutine_error", "Result must not be empty"
 
     def test_cancelled_error_handler(self) -> None:
         """Test task cancellation handling."""
@@ -377,7 +377,7 @@ class TestAsyncExceptions:
             raise asyncio.CancelledError("Task cancelled")
         except asyncio.CancelledError:
             result = "cancelled"
-        assert result == "cancelled"
+        assert result == "cancelled", "Result must not be empty"
 
 
 # ============================================================================
@@ -395,12 +395,12 @@ class TestDataProcessingExceptions:
             b"\xff\xfe".decode("utf-8", errors="strict")
         except UnicodeDecodeError:
             result = "decode_error"
-        assert result == "decode_error"
+        assert result == "decode_error", "Result must not be empty"
 
     def test_unicode_decode_with_replace(self) -> None:
         """Test UnicodeDecodeError with replace strategy."""
         result = b"\xff\xfe".decode("utf-8", errors="replace")
-        assert "�" in result or result  # Contains replacement character
+        assert "�" in result or result, "Result must not be empty"
 
     def test_overflow_error_handler(self) -> None:
         """Test OverflowError handling."""
@@ -411,7 +411,7 @@ class TestDataProcessingExceptions:
             math.exp(1000)  # Will overflow
         except OverflowError:
             result = "overflow"
-        assert result == "overflow"
+        assert result == "overflow", "Result must not be empty"
 
     def test_zero_division_handler(self) -> None:
         """Test ZeroDivisionError handling."""
@@ -420,7 +420,7 @@ class TestDataProcessingExceptions:
             _ = 1 / 0
         except ZeroDivisionError:
             result = "division_by_zero"
-        assert result == "division_by_zero"
+        assert result == "division_by_zero", "Result must not be empty"
 
 
 # ============================================================================
@@ -442,7 +442,7 @@ class TestChainedExceptions:
 
         with pytest.raises(RuntimeError) as exc_info:
             _chained_raise()
-        assert exc_info.value.__cause__ is not None
+        assert exc_info.value.__cause__ is not None, "__cause__ must be initialized"
 
     def test_exception_chaining_implicit(self) -> None:
         """Test implicit exception chaining."""
@@ -455,7 +455,7 @@ class TestChainedExceptions:
 
         with pytest.raises(RuntimeError) as exc_info:
             _implicit_raise()
-        assert exc_info.value.__context__ is not None
+        assert exc_info.value.__context__ is not None, "__context__ must be initialized"
 
     def test_suppress_exception_chain(self) -> None:
         """Test suppressing exception chain."""
@@ -468,4 +468,4 @@ class TestChainedExceptions:
 
         with pytest.raises(RuntimeError) as exc_info:
             _suppressed_raise()
-        assert exc_info.value.__cause__ is None
+        assert exc_info.value.__cause__ is None, "Value must be initialized"

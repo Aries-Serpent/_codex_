@@ -44,4 +44,4 @@ def test_setup_group_parsing() -> None:
         text=True,
         cwd=Path(__file__).resolve().parents[1],
     )
-    assert "--group dev --group cpu --group test" in result.stdout
+    assert "--group dev --group cpu --group test" in result.stdout, "Result must not be empty"

@@ -19,6 +19,6 @@ def test_sqlite_uri_preserved_offline(monkeypatch, tmp_path):
         mlruns_dir=tmp_path / "mlruns",
     )
 
-    assert decision.mlflow_tracking_uri == sqlite_uri
-    assert decision.offline is True
-    assert decision.reason == "respecting existing MLFLOW_TRACKING_URI"
+    assert decision.mlflow_tracking_uri == sqlite_uri, "mlflow_tracking_uri is not valid"
+    assert decision.offline is True, "offline is not valid"
+    assert decision.reason == "respecting existing MLFLOW_TRACKING_URI", "reason is not valid"

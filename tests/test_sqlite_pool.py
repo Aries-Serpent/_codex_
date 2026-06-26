@@ -46,10 +46,10 @@ def test_sqlite_pool_allows_concurrent_writes(tmp_path, monkeypatch):
         # threads can finish quickly enough for thread identifiers to be reused
         # on some platforms. Validate pooling happened without assuming all five
         # worker thread IDs stay distinct for the full test duration.
-        assert min_expected_pool_size <= len(sqlite_patch._CONN_POOL) <= max_expected_pool_size
+        assert min_expected_pool_size <= len(sqlite_patch._CONN_POOL) <= max_expected_pool_size, "Min_expected_pool_size must not be empty"
 
         total = sqlite3.connect(str(db)).execute("SELECT COUNT(*) FROM t").fetchone()[0]
-        assert total == 100
+        assert total == 100, "total is not valid"
     finally:
         sqlite_patch.disable_pooling()
         sqlite_patch._close_all()

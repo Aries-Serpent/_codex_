@@ -59,7 +59,7 @@ def test_depth_restriction():
     idx_restrict = load_index()
     count_restrict = idx_restrict["count"]
 
-    assert count_restrict <= count_full
+    assert count_restrict <= count_full, "Count must be greater than zero"
 
     manifest = load_manifest()
     # depth_restriction_active warning is emitted when AUDIT_DEPTH is respected;

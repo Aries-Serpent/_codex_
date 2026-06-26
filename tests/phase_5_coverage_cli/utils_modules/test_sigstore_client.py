@@ -14,8 +14,7 @@ Test Coverage Goals:
 from __future__ import annotations
 
 import json
-from typing import Any
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 import pytest
 
@@ -32,11 +31,11 @@ class TestSignerInitialization:
     def test_signer_creation(self) -> None:
         """Test creating a Signer instance."""
         signer = sigstore_client.Signer()
-        assert signer is not None
+        assert signer is not None, "signer must be initialized"
 
     def test_signer_is_callable(self) -> None:
         """Test that Signer is callable."""
-        assert callable(sigstore_client.Signer)
+        assert callable(sigstore_client.Signer), "Condition must be true"
 
     def test_signer_has_attributes(self) -> None:
         """Test Signer has expected attributes."""
@@ -50,7 +49,7 @@ class TestSignerInitialization:
         # Reload to pick up new environment
         import importlib
         importlib.reload(sigstore_client)
-        assert sigstore_client is not None
+        assert sigstore_client is not None, "sigstore_client must be initialized"
 
 
 class TestSignOperations:
@@ -102,7 +101,7 @@ class TestSignOperations:
         with patch.object(signer, 'sign', return_value=b"signature"):
             sig1 = signer.sign(b"data")
             sig2 = signer.sign(b"data")
-            assert sig1 == sig2
+            assert sig1 == sig2, "sig1 is not valid"
 
 
 class TestVerificationOperations:
@@ -111,31 +110,31 @@ class TestVerificationOperations:
     def test_verifier_creation(self) -> None:
         """Test creating a Verifier instance."""
         verifier = sigstore_client.Verifier()
-        assert verifier is not None
+        assert verifier is not None, "verifier must be initialized"
 
     def test_verifier_is_callable(self) -> None:
         """Test that Verifier is callable."""
-        assert callable(sigstore_client.Verifier)
+        assert callable(sigstore_client.Verifier), "Condition must be true"
 
     def test_verify_signature_valid(self) -> None:
         """Test verifying a valid signature."""
         verifier = sigstore_client.Verifier()
         data = b"test data"
         signature = b"valid_signature"
-        
+
         with patch.object(verifier, 'verify', return_value=True):
             result = verifier.verify(data, signature)
-            assert result is True
+            assert result is True, "Result must not be empty"
 
     def test_verify_signature_invalid(self) -> None:
         """Test verifying an invalid signature."""
         verifier = sigstore_client.Verifier()
         data = b"test data"
         signature = b"invalid_signature"
-        
+
         with patch.object(verifier, 'verify', return_value=False):
             result = verifier.verify(data, signature)
-            assert result is False
+            assert result is False, "Result must not be empty"
 
     def test_verify_empty_data(self) -> None:
         """Test verifying signature of empty data."""
@@ -149,7 +148,7 @@ class TestVerificationOperations:
         verifier = sigstore_client.Verifier()
         with patch.object(verifier, 'verify', return_value=False):
             result = verifier.verify(b"data", b"")
-            assert result is False
+            assert result is False, "Result must not be empty"
 
 
 class TestSigningFallback:
@@ -166,14 +165,14 @@ class TestSigningFallback:
         data = b"test"
         hash1 = hashlib.sha256(data).digest()
         hash2 = hashlib.sha256(data).digest()
-        assert hash1 == hash2
+        assert hash1 == hash2, "hash1 is not valid"
 
     def test_fallback_produces_valid_hash(self) -> None:
         """Test fallback produces valid SHA-256 hash."""
         import hashlib
         data = b"test data"
         result = hashlib.sha256(data).digest()
-        assert len(result) == 32  # SHA-256 produces 32 bytes
+        assert len(result) == 32, "Result must not be empty"
 
     def test_fallback_different_data_different_hash(self) -> None:
         """Test fallback produces different hash for different data."""
@@ -182,14 +181,14 @@ class TestSigningFallback:
         data2 = b"test2"
         hash1 = hashlib.sha256(data1).digest()
         hash2 = hashlib.sha256(data2).digest()
-        assert hash1 != hash2
+        assert hash1 != hash2, "hash1 is not valid"
 
     def test_fallback_empty_data(self) -> None:
         """Test fallback hashing empty data."""
         import hashlib
         result = hashlib.sha256(b"").digest()
         assert isinstance(result, bytes)
-        assert len(result) == 32
+        assert len(result) == 32, "Result must not be empty"
 
 
 class TestSigningInterface:
@@ -210,13 +209,13 @@ class TestSigningInterface:
         """Test signing enabled via environment variable."""
         # Environment variable check should work
         import os
-        assert os.environ.get('CODEX_ENABLE_SIGNING') == 'true'
+        assert os.environ.get('CODEX_ENABLE_SIGNING') == 'true', "Condition must be true"
 
     @patch.dict('os.environ', {}, clear=True)
     def test_disable_signing_by_default(self) -> None:
         """Test signing disabled by default."""
         import os
-        assert os.environ.get('CODEX_ENABLE_SIGNING') is None
+        assert os.environ.get('CODEX_ENABLE_SIGNING') is None, "Condition must be true"
 
 
 class TestDataEncoding:
@@ -232,21 +231,21 @@ class TestDataEncoding:
         text = "test"
         data = text.encode('utf-8')
         assert isinstance(data, bytes)
-        assert data == b"test"
+        assert data == b"test", "Data must not be empty"
 
     def test_utf8_encoding(self) -> None:
         """Test UTF-8 encoding."""
         text = "hello 世界 мир"
         data = text.encode('utf-8')
         decoded = data.decode('utf-8')
-        assert decoded == text
+        assert decoded == text, "decoded is not valid"
 
     def test_binary_data_handling(self) -> None:
         """Test handling of binary data."""
         data = bytes([0, 1, 2, 255, 254])
-        assert len(data) == 5
-        assert data[0] == 0
-        assert data[4] == 254
+        assert len(data) == 5, "Data must not be empty"
+        assert data[0] == 0, "Data must not be empty"
+        assert data[4] == 254, "Data must not be empty"
 
     def test_json_serialization(self) -> None:
         """Test JSON can be serialized for signing."""
@@ -332,25 +331,25 @@ class TestIntegration:
         data = b"test data"
         signer = sigstore_client.Signer()
         verifier = sigstore_client.Verifier()
-        
+
         with patch.object(signer, 'sign', return_value=b"signature"):
             signature = signer.sign(data)
-            
+
             with patch.object(verifier, 'verify', return_value=True):
                 result = verifier.verify(data, signature)
-                assert result is True
+                assert result is True, "Result must not be empty"
 
     def test_modified_data_fails_verification(self) -> None:
         """Test that modified data fails verification."""
         original_data = b"test data"
         modified_data = b"tampered data"
-        
+
         signer = sigstore_client.Signer()
         verifier = sigstore_client.Verifier()
-        
+
         with patch.object(signer, 'sign', return_value=b"signature"):
             signature = signer.sign(original_data)
-            
+
             with patch.object(verifier, 'verify', return_value=False):
                 result = verifier.verify(modified_data, signature)
-                assert result is False
+                assert result is False, "Result must not be empty"

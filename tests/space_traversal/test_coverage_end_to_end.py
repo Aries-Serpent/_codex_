@@ -21,8 +21,8 @@ def test_coverage_ingest_end_to_end(tmp_path: Path):
     out_json.parent.mkdir(parents=True, exist_ok=True)
     cmd = [sys.executable, SCRIPT, "--input", FIXTURE, "--out", str(out_json)]
     res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-    assert res.returncode == 0
-    assert out_json.exists()
+    assert res.returncode == 0, "returncode is not valid"
+    assert out_json.exists(), "Condition must be true"
     with open(out_json, "r", encoding="utf-8") as fh:
         data = json.load(fh)
     assert isinstance(data, dict)

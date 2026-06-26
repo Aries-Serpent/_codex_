@@ -64,7 +64,7 @@ class TestDatabaseRollback:
 
         # Action: Perform rollback
         current = database.get_current_state()
-        assert current["version"] == "v2"
+        assert current["version"] == "v2", "Condition must be true"
 
         snapshot = backup_manager.get_snapshot("v1")
         restore_result = database.restore_from_snapshot(snapshot)
@@ -74,10 +74,10 @@ class TestDatabaseRollback:
         final_state = database.get_current_state()
 
         # Assert: Rollback successful
-        assert restore_result["success"] is True
-        assert final_state["version"] == "v1"
-        assert len(final_state["tables"]["users"]) == 2
-        assert final_state["tables"]["users"][0]["status"] == "active"
+        assert restore_result["success"] is True, "Result must not be empty"
+        assert final_state["version"] == "v1", "Condition must be true"
+        assert len(final_state["tables"]["users"]) == 2, "Collection must not be empty"
+        assert final_state["tables"]["users"][0]["status"] == "active", "Condition must be true"
 
     @pytest.mark.rollback
     @pytest.mark.critical
@@ -117,9 +117,9 @@ class TestDatabaseRollback:
         rollback_users = database.rollback_table("users_table")
 
         # Assert: Only users_table rolled back
-        assert rollback_users["table"] == "users_table"
-        assert rollback_users["rows_affected"] == 2
-        assert database.rollback_table.call_count == 1
+        assert rollback_users["table"] == "users_table", "Condition must be true"
+        assert rollback_users["rows_affected"] == 2, "Condition must be true"
+        assert database.rollback_table.call_count == 1, "Data must not be empty"
 
     @pytest.mark.rollback
     @pytest.mark.critical
@@ -157,10 +157,10 @@ class TestDatabaseRollback:
         ref_integrity = integrity_checker.check_referential_integrity()
 
         # Assert: Data consistency verified
-        assert restore_result["success"] is True
-        assert constraint_check["valid"] is True
-        assert constraint_check["orphaned_records"] == 0
-        assert ref_integrity is True
+        assert restore_result["success"] is True, "Result must not be empty"
+        assert constraint_check["valid"] is True, "Condition must be true"
+        assert constraint_check["orphaned_records"] == 0, "Condition must be true"
+        assert ref_integrity is True, "ref_integrity is not valid"
 
 
 class TestServiceVersionRollback:
@@ -198,19 +198,19 @@ class TestServiceVersionRollback:
 
         # Action: Perform version rollback
         current = deployment_manager.get_current_version()
-        assert current["version"] == "2.0"
+        assert current["version"] == "2.0", "Condition must be true"
 
         rollback_result = deployment_manager.rollback_to_version("1.0")
-        assert rollback_result["success"] is True
+        assert rollback_result["success"] is True, "Result must not be empty"
 
         # Verify service is ready and responds correctly
         ready = health_check.service_ready()
         service_info = service.get_info()
 
         # Assert: Rollback successful
-        assert ready is True
-        assert service_info["version"] == "1.0"
-        assert service_info["feature_x"] is False
+        assert ready is True, "ready is not valid"
+        assert service_info["version"] == "1.0", "Condition must be true"
+        assert service_info["feature_x"] is False, "Condition must be true"
 
     @pytest.mark.rollback
     @pytest.mark.critical
@@ -237,7 +237,7 @@ class TestServiceVersionRollback:
 
         # Action: Perform rollback with traffic rerouting
         initial_dist = load_balancer.get_traffic_distribution()
-        assert initial_dist["v2"] == 100
+        assert initial_dist["v2"] == 100, "Condition must be true"
 
         # Step 1: Stop v2
         v2_stopped = v2_instance.stop()
@@ -253,9 +253,9 @@ class TestServiceVersionRollback:
         final_dist = load_balancer.get_traffic_distribution()
 
         # Assert: Traffic successfully rerouted
-        assert v2_stopped is True
-        assert v1_started is True
-        assert final_dist["v1"] == 100
+        assert v2_stopped is True, "v2_stopped is not valid"
+        assert v1_started is True, "v1_started is not valid"
+        assert final_dist["v1"] == 100, "Condition must be true"
 
     @pytest.mark.rollback
     @pytest.mark.critical
@@ -280,8 +280,8 @@ class TestServiceVersionRollback:
         post_rollback_health = health_checker.check()
 
         # Assert: Service became healthy
-        assert pre_rollback_health["state"] == "DEGRADED"
-        assert post_rollback_health["state"] == "HEALTHY"
+        assert pre_rollback_health["state"] == "DEGRADED", "Condition must be true"
+        assert post_rollback_health["state"] == "HEALTHY", "Condition must be true"
 
 
 class TestConfigurationRollback:
@@ -319,9 +319,9 @@ class TestConfigurationRollback:
         restart_result = service_manager.restart_with_config(restored_config)
 
         # Assert: Configuration rolled back
-        assert current_config["db_pool_size"] == 5
-        assert restored_config["db_pool_size"] == 10
-        assert restart_result["started"] is True
+        assert current_config["db_pool_size"] == 5, "Condition must be true"
+        assert restored_config["db_pool_size"] == 10, "rest is not valid"
+        assert restart_result["started"] is True, "Result must not be empty"
 
     @pytest.mark.rollback
     @pytest.mark.critical
@@ -339,8 +339,8 @@ class TestConfigurationRollback:
         validation_result = config_validator.validate(restored_config)
 
         # Assert: Configuration valid
-        assert validation_result["valid"] is True
-        assert len(validation_result["errors"]) == 0
+        assert validation_result["valid"] is True, "Result must not be empty"
+        assert len(validation_result["errors"]) == 0, "Collection must not be empty"
 
 
 class TestDataMigrationRollback:
@@ -382,9 +382,9 @@ class TestDataMigrationRollback:
         rollback_result = migration_manager.execute_rollback()
 
         # Assert: Migration rolled back successfully
-        assert forward_result["success"] is True
-        assert rollback_result["success"] is True
-        assert "audit_log" in rollback_result["tables_reverted"]
+        assert forward_result["success"] is True, "Result must not be empty"
+        assert rollback_result["success"] is True, "Result must not be empty"
+        assert "audit_log" in rollback_result["tables_reverted"], "Result must not be empty"
 
     @pytest.mark.rollback
     @pytest.mark.critical
@@ -409,8 +409,8 @@ class TestDataMigrationRollback:
         comparison = migration_validator.compare_states(pre_migration_state, post_rollback_state)
 
         # Assert: Data integrity maintained
-        assert comparison["match"] is True
-        assert len(comparison["differences"]) == 0
+        assert comparison["match"] is True, "Condition must be true"
+        assert len(comparison["differences"]) == 0, "Collection must not be empty"
 
 
 class TestCrashRecovery:
@@ -446,15 +446,15 @@ class TestCrashRecovery:
 
         # Action: Crash detected and recovery initiated
         crash = monitoring.detect_crash()
-        assert crash["crashed"] is True
+        assert crash["crashed"] is True, "Condition must be true"
 
         recovery = recovery_manager.trigger_recovery()
-        assert recovery["recovery_started"] is True
+        assert recovery["recovery_started"] is True, "Condition must be true"
 
         state_sync = service.sync_state()
 
         # Assert: Recovery successful
-        assert state_sync["synced"] is True
+        assert state_sync["synced"] is True, "Condition must be true"
 
     @pytest.mark.rollback
     @pytest.mark.critical
@@ -490,8 +490,8 @@ class TestCrashRecovery:
         replay_result = transaction_log.replay(last_state)
 
         # Assert: State recovered successfully
-        assert replay_result["final_state"] == "CONSISTENT"
-        assert replay_result["failed"] == 0
+        assert replay_result["final_state"] == "CONSISTENT", "Result must not be empty"
+        assert replay_result["failed"] == 0, "Result must not be empty"
 
 
 class TestDowngradeCompatibility:
@@ -526,6 +526,6 @@ class TestDowngradeCompatibility:
         downgrade_result = migration_executor.downgrade("v2", "v1")
 
         # Assert: Downgrade successful
-        assert current["version"] == "v2"
-        assert downgrade_result["success"] is True
-        assert "audit_log" in downgrade_result["tables_removed"]
+        assert current["version"] == "v2", "Condition must be true"
+        assert downgrade_result["success"] is True, "Result must not be empty"
+        assert "audit_log" in downgrade_result["tables_removed"], "Result must not be empty"

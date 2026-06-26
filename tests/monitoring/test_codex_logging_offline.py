@@ -38,6 +38,6 @@ def test_logging_bootstrap_offline(monkeypatch, tmp_path):
         "mlflow": {"enable": True, "tracking_uri": "uri"},
     }
     loggers = cl._codex_logging_bootstrap(argparse.Namespace(hydra_cfg=cfg))
-    assert calls["tb"] == str(tmp_path)
-    assert calls["wb"]["mode"] == "offline"
-    assert loggers.mlflow_active and calls["ml"] == "uri"
+    assert calls["tb"] == str(tmp_path), "Condition must be true"
+    assert calls["wb"]["mode"] == "offline", "Condition must be true"
+    assert loggers.mlflow_active and calls["ml"] == "uri", "Condition must be true"

@@ -17,12 +17,12 @@ def _m():
 def test_dry_run_shape_and_flags(capsys):
     m = _m()
     rc = m.main(["--owner", "o", "--repo", "r"])
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
     out = json.loads(capsys.readouterr().out)
-    assert out["dry_run"] is True
+    assert out["dry_run"] is True, "Condition must be true"
     plan = out["plan"]
-    assert plan["target"]["owner"] == "o"
-    assert plan["target"]["repo"] == "r"
+    assert plan["target"]["owner"] == "o", "Condition must be true"
+    assert plan["target"]["repo"] == "r", "Condition must be true"
     assert isinstance(plan["repo_settings"], dict)
     assert isinstance(plan["branch_protection"], dict)
     assert isinstance(plan["labels"], list)
@@ -57,5 +57,5 @@ def test_detect_default_branch_in_apply_mode(monkeypatch):
     mod.GitHubSession._request = fake_request  # type: ignore[method-assign]
 
     rc = m.main(["--owner", "o", "--repo", "r", "--apply", "--detect-default-branch"])
-    assert rc == 0
-    assert calls["get_repo"] == 1
+    assert rc == 0, "rc is not valid"
+    assert calls["get_repo"] == 1, "Condition must be true"

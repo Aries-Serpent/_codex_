@@ -42,5 +42,5 @@ def test_codex_logging_bootstrap(monkeypatch):
 
     loggers = codex_logging._codex_logging_bootstrap(args)
     assert isinstance(loggers.tb, DummyTB)
-    assert loggers.wb == "wb"
-    assert loggers.mlflow_active is True
+    assert loggers.wb == "wb", "wb is not valid"
+    assert loggers.mlflow_active is True, "mlflow_active is not valid"

@@ -41,9 +41,9 @@ def test_save_checkpoint_writes_manifest(tmp_path: Path) -> None:
     )
 
     manifest_path = checkpoint_path.parent / "manifest.json"
-    assert manifest_path.exists()
+    assert manifest_path.exists(), "Condition must be true"
 
     with manifest_path.open("r", encoding="utf-8") as handle:
         saved_manifest = json.load(handle)
 
-    assert saved_manifest == manifest
+    assert saved_manifest == manifest, "saved_manifest is not valid"

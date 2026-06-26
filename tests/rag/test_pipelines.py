@@ -37,7 +37,7 @@ class TestRetrievalPipeline:
         try:
             from src.rag.pipelines.retrieval import RetrievalPipeline
 
-            assert RetrievalPipeline is not None
+            assert RetrievalPipeline is not None, "RetrievalPipeline must be initialized"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -46,7 +46,7 @@ class TestRetrievalPipeline:
         try:
             from src.rag.pipelines.retrieval import RetrievalConfig
 
-            assert RetrievalConfig is not None
+            assert RetrievalConfig is not None, "RetrievalConfig must be initialized"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -56,7 +56,7 @@ class TestRetrievalPipeline:
             from src.rag.pipelines.retrieval import RetrievalPipeline
 
             pipeline = RetrievalPipeline()
-            assert pipeline is not None
+            assert pipeline is not None, "pipeline must be initialized"
             assert hasattr(pipeline, "retrieve")
         except ImportError:
             pytest.skip("Module not available")
@@ -105,6 +105,6 @@ class TestRagPackage:
         try:
             from src.rag import pipelines
 
-            assert pipelines is not None
+            assert pipelines is not None, "pipelines must be initialized"
         except ImportError:
             pytest.skip("Module not available")

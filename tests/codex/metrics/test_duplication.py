@@ -19,11 +19,11 @@ class TestDuplicateBlock:
             hash="abc123", lines=(1, 10), occurrences=[{"file": "test.py", "start": 1, "end": 10}]
         )
 
-        assert block.hash == "abc123"
+        assert block.hash == "abc123", "hash is not valid"
         assert block.lines == (1, 10)
-        assert len(block.occurrences) == 1
-        assert block.severity == "medium"
-        assert block.clone_type == "Type-1"
+        assert len(block.occurrences) == 1, "Collection must not be empty"
+        assert block.severity == "medium", "severity is not valid"
+        assert block.clone_type == "Type-1", "clone_type is not valid"
 
     def test_custom_values(self):
         """Test DuplicateBlock with custom values."""
@@ -40,9 +40,9 @@ class TestDuplicateBlock:
             clone_type="Type-2",
         )
 
-        assert block.severity == "high"
-        assert block.clone_type == "Type-2"
-        assert len(block.occurrences) == 2
+        assert block.severity == "high", "severity is not valid"
+        assert block.clone_type == "Type-2", "clone_type is not valid"
+        assert len(block.occurrences) == 2, "Collection must not be empty"
 
     def test_to_dict(self):
         """Test DuplicateBlock serialization."""
@@ -58,11 +58,11 @@ class TestDuplicateBlock:
 
         result = block.to_dict()
 
-        assert result["hash"] == "abc123"
+        assert result["hash"] == "abc123", "Result must not be empty"
         assert result["lines"] == [1, 10]  # Converted to list
         assert result["occurrences"] == [{"file": "test.py", "start": 1, "end": 10}]
-        assert result["severity"] == "low"
-        assert result["clone_type"] == "Type-3"
+        assert result["severity"] == "low", "Result must not be empty"
+        assert result["clone_type"] == "Type-3", "Result must not be empty"
 
 
 class TestDuplicationRatio:
@@ -74,12 +74,12 @@ class TestDuplicationRatio:
 
         ratio = DuplicationRatio(ratio=0.15, total_lines=1000, duplicate_lines=150)
 
-        assert ratio.ratio == 0.15
-        assert ratio.total_lines == 1000
-        assert ratio.duplicate_lines == 150
-        assert ratio.duplicate_blocks == []
-        assert ratio.files_scanned == 0
-        assert ratio.files_with_duplicates == 0
+        assert ratio.ratio == 0.15, "ratio is not valid"
+        assert ratio.total_lines == 1000, "total_lines is not valid"
+        assert ratio.duplicate_lines == 150, "duplicate_lines is not valid"
+        assert ratio.duplicate_blocks == [], "duplicate_blocks is not valid"
+        assert ratio.files_scanned == 0, "files_scanned is not valid"
+        assert ratio.files_with_duplicates == 0, "files_with_duplicates is not valid"
 
     def test_custom_values(self):
         """Test DuplicationRatio with custom values."""
@@ -99,9 +99,9 @@ class TestDuplicationRatio:
             files_with_duplicates=3,
         )
 
-        assert ratio.files_scanned == 10
-        assert ratio.files_with_duplicates == 3
-        assert len(ratio.duplicate_blocks) == 2
+        assert ratio.files_scanned == 10, "files_scanned is not valid"
+        assert ratio.files_with_duplicates == 3, "files_with_duplicates is not valid"
+        assert len(ratio.duplicate_blocks) == 2, "Collection must not be empty"
 
     def test_to_dict(self):
         """Test DuplicationRatio serialization."""
@@ -113,12 +113,12 @@ class TestDuplicationRatio:
 
         result = ratio.to_dict()
 
-        assert result["ratio"] == 0.1
-        assert result["total_lines"] == 100
-        assert result["duplicate_lines"] == 10
-        assert result["duplicate_blocks"] == []
-        assert result["files_scanned"] == 5
-        assert result["files_with_duplicates"] == 2
+        assert result["ratio"] == 0.1, "Result must not be empty"
+        assert result["total_lines"] == 100, "Result must not be empty"
+        assert result["duplicate_lines"] == 10, "Result must not be empty"
+        assert result["duplicate_blocks"] == [], "Result must not be empty"
+        assert result["files_scanned"] == 5, "Result must not be empty"
+        assert result["files_with_duplicates"] == 2, "Result must not be empty"
 
 
 class TestDuplicationDetector:
@@ -134,9 +134,9 @@ class TestDuplicationDetector:
 
         detector = DuplicationDetector()
 
-        assert detector.min_lines == DEFAULT_MIN_LINES
-        assert detector.min_tokens == DEFAULT_MIN_TOKENS
-        assert detector.ignore_trivial is True
+        assert detector.min_lines == DEFAULT_MIN_LINES, "min_lines is not valid"
+        assert detector.min_tokens == DEFAULT_MIN_TOKENS, "min_tokens is not valid"
+        assert detector.ignore_trivial is True, "ignore_trivial is not valid"
 
     def test_init_custom(self):
         """Test DuplicationDetector with custom parameters."""
@@ -144,9 +144,9 @@ class TestDuplicationDetector:
 
         detector = DuplicationDetector(min_lines=10, min_tokens=100, ignore_trivial=False)
 
-        assert detector.min_lines == 10
-        assert detector.min_tokens == 100
-        assert detector.ignore_trivial is False
+        assert detector.min_lines == 10, "min_lines is not valid"
+        assert detector.min_tokens == 100, "min_tokens is not valid"
+        assert detector.ignore_trivial is False, "ignore_trivial is not valid"
 
     @patch("codex.metrics.duplication.subprocess.run")
     def test_detect_with_pylint_not_found(self, mock_run):
@@ -158,7 +158,7 @@ class TestDuplicationDetector:
         detector = DuplicationDetector()
         result = detector.detect_with_pylint(Path("/tmp"))
 
-        assert result == []
+        assert result == [], "Result must not be empty"
 
     @patch("codex.metrics.duplication.subprocess.run")
     def test_detect_with_pylint_timeout(self, mock_run):
@@ -172,7 +172,7 @@ class TestDuplicationDetector:
         detector = DuplicationDetector()
         result = detector.detect_with_pylint(Path("/tmp"))
 
-        assert result == []
+        assert result == [], "Result must not be empty"
 
     @patch("codex.metrics.duplication.subprocess.run")
     def test_detect_with_pylint_error(self, mock_run):
@@ -184,7 +184,7 @@ class TestDuplicationDetector:
         detector = DuplicationDetector()
         result = detector.detect_with_pylint(Path("/tmp"))
 
-        assert result == []
+        assert result == [], "Result must not be empty"
 
 
 class TestModuleConstants:
@@ -194,26 +194,26 @@ class TestModuleConstants:
         """Test DEFAULT_MIN_LINES constant."""
         from codex.metrics.duplication import DEFAULT_MIN_LINES
 
-        assert DEFAULT_MIN_LINES == 4
+        assert DEFAULT_MIN_LINES == 4, "DEFAULT_MIN_LINES is not valid"
 
     def test_default_min_tokens(self):
         """Test DEFAULT_MIN_TOKENS constant."""
         from codex.metrics.duplication import DEFAULT_MIN_TOKENS
 
-        assert DEFAULT_MIN_TOKENS == 50
+        assert DEFAULT_MIN_TOKENS == 50, "DEFAULT_MIN_TOKENS is not valid"
 
     def test_trivial_patterns(self):
         """Test TRIVIAL_PATTERNS constant."""
         from codex.metrics.duplication import TRIVIAL_PATTERNS
 
         assert isinstance(TRIVIAL_PATTERNS, list)
-        assert len(TRIVIAL_PATTERNS) > 0
+        assert len(TRIVIAL_PATTERNS) > 0, "Trivial_patterns must not be empty"
         # Check first pattern
-        assert r"^import\s+" in TRIVIAL_PATTERNS
+        assert r"^import\s+" in TRIVIAL_PATTERNS, "Condition must be true"
 
     def test_logger_exists(self):
         """Test logger is configured."""
         from codex.metrics.duplication import logger
 
-        assert logger is not None
-        assert logger.name == "codex.metrics.duplication"
+        assert logger is not None, "logger must be initialized"
+        assert logger.name == "codex.metrics.duplication", "name is not valid"

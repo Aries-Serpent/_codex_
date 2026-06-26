@@ -17,11 +17,11 @@ def test_archival_bundling_detector_basic():
 
     result = detect(file_index)
 
-    assert result["id"] == "archival-bundling"
-    assert len(result["evidence_files"]) > 0
-    assert "archive" in result["found_patterns"] or "manifest" in result["found_patterns"]
+    assert result["id"] == "archival-bundling", "Result must not be empty"
+    assert len(result["evidence_files"]) > 0, "Collection must not be empty"
+    assert "archive" in result["found_patterns"] or "manifest" in result["found_patterns"], "Result must not be empty"
     assert result["required_patterns"] == ["archive", "bundle", "manifest"]
-    assert result["meta"]["layer"] == "storage"
+    assert result["meta"]["layer"] == "storage", "Result must not be empty"
 
 
 def test_archival_bundling_detector_no_evidence():
@@ -30,9 +30,9 @@ def test_archival_bundling_detector_no_evidence():
 
     result = detect(file_index)
 
-    assert result["id"] == "archival-bundling"
-    assert len(result["evidence_files"]) == 0
-    assert len(result["found_patterns"]) == 0
+    assert result["id"] == "archival-bundling", "Result must not be empty"
+    assert len(result["evidence_files"]) == 0, "Collection must not be empty"
+    assert len(result["found_patterns"]) == 0, "Collection must not be empty"
 
 
 def test_archival_bundling_detector_pointer_files():
@@ -46,9 +46,9 @@ def test_archival_bundling_detector_pointer_files():
 
     result = detect(file_index)
 
-    assert result["id"] == "archival-bundling"
-    assert "manifest" in result["found_patterns"]
-    assert len(result["evidence_files"]) > 0
+    assert result["id"] == "archival-bundling", "Result must not be empty"
+    assert "manifest" in result["found_patterns"], "Result must not be empty"
+    assert len(result["evidence_files"]) > 0, "Collection must not be empty"
 
 
 def test_archival_bundling_detector_validation():
@@ -62,9 +62,9 @@ def test_archival_bundling_detector_validation():
 
     result = detect(file_index)
 
-    assert result["id"] == "archival-bundling"
-    assert "archive" in result["found_patterns"]
-    assert len(result["evidence_files"]) > 0
+    assert result["id"] == "archival-bundling", "Result must not be empty"
+    assert "archive" in result["found_patterns"], "Result must not be empty"
+    assert len(result["evidence_files"]) > 0, "Collection must not be empty"
 
 
 def test_archival_bundling_detector_sorted_output():
@@ -80,6 +80,6 @@ def test_archival_bundling_detector_sorted_output():
     result = detect(file_index)
 
     # Check that evidence files are sorted
-    assert result["evidence_files"] == sorted(result["evidence_files"])
+    assert result["evidence_files"] == sorted(result["evidence_files"]), "Result must not be empty"
     # Check that found patterns are sorted
-    assert result["found_patterns"] == sorted(result["found_patterns"])
+    assert result["found_patterns"] == sorted(result["found_patterns"]), "Result must not be empty"

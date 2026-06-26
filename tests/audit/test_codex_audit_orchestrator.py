@@ -44,10 +44,10 @@ def test_orchestrator_steps_create_artifacts(tmp_path):
 
     assert stub_index.exists(), "stub index should be written"
     stub_data = json.loads(stub_index.read_text())
-    assert "stubs" in stub_data
+    assert "stubs" in stub_data, "Data must not be empty"
 
     assert repro_doc.exists(), "repro checklist proposal is expected"
-    assert "Reproducibility Checklist" in repro_doc.read_text()
+    assert "Reproducibility Checklist" in repro_doc.read_text(), "Condition must be true"
 
 
 def test_list_steps_subprocess(tmp_path):
@@ -62,8 +62,8 @@ def test_list_steps_subprocess(tmp_path):
         cwd=tmp_path,
     )
 
-    assert result.returncode == 0
-    assert "1.1" in result.stdout or "1.2" in result.stdout
+    assert result.returncode == 0, "Result must not be empty"
+    assert "1.1" in result.stdout or "1.2" in result.stdout, "Result must not be empty"
 
 
 def test_main_exits_non_zero_on_step_failure(tmp_path, monkeypatch):
@@ -79,4 +79,4 @@ def test_main_exits_non_zero_on_step_failure(tmp_path, monkeypatch):
 
     exit_code = orchestrator.main(["--steps", "1.1"])
 
-    assert exit_code == 1
+    assert exit_code == 1, "exit_code is not valid"

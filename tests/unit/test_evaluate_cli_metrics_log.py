@@ -89,9 +89,9 @@ def test_evaluate_cli_writes_ndjson(tmp_path, monkeypatch) -> None:
     line = text.splitlines()[-1]
     rec = json.loads(line)
     assert rec.get("metrics", {}).get("accuracy") == 0.9
-    assert rec.get("num_records") == 5
-    assert "timestamp" in rec
+    assert rec.get("num_records") == 5, "Condition must be true"
+    assert "timestamp" in rec, "Condition must be true"
 
     # dataset_path resolved & config_path absolute
-    assert rec.get("dataset_path").endswith("data/eval.jsonl")
-    assert rec.get("config_path").endswith("dummy.yaml")
+    assert rec.get("dataset_path").endswith("data/eval.jsonl"), "Data must not be empty"
+    assert rec.get("config_path").endswith("dummy.yaml"), "Condition must be true"

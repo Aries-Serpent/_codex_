@@ -495,7 +495,7 @@ class GitHubTokenProvider(TokenProvider):
         Returns:
             True if the API returned 200/204.  False when the request failed,
             prerequisites are missing, or the ``requests`` library is unavailable.
-        """
+        """  # noqa: E501
         try:
             logger.info(
                 "Updating GitHub access scopes (grant_id: %s, scope_count: %d)",
@@ -516,7 +516,7 @@ class GitHubTokenProvider(TokenProvider):
                     "scopes have NOT been updated."
                 )
                 return False
-  # codeql[py/clear-text-logging-sensitive-data]
+            # codeql[py/clear-text-logging-sensitive-data]
             # Resolve installation_id: prefer config/env, fall back to secret_id
             installation_id = self.config.get(
                 "installation_id", os.environ.get("GITHUB_APP_INSTALLATION_ID", secret_id)
@@ -532,9 +532,7 @@ class GitHubTokenProvider(TokenProvider):
                 url, json={"permissions": permissions}, headers=headers, timeout=10
             )
             if resp.status_code in (200, 204):
-                logger.info(
-                    "GitHub access scopes updated successfully."
-                )
+                logger.info("GitHub access scopes updated successfully.")
                 return True
             logger.warning(
                 "update_token_scopes(): GitHub API returned %d; scopes may not be updated.",

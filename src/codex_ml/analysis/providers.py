@@ -229,7 +229,7 @@ class ExternalWebSearch(SearchProvider):
             response.raise_for_status()
         except (ValueError, TypeError, RuntimeError) as exc:
             error_type = type(exc).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             result["status"] = "error"
             if status_code is not None:
                 result["status_code"] = status_code
@@ -251,7 +251,7 @@ class ExternalWebSearch(SearchProvider):
                 payload = response.json()
             except (ValueError, TypeError) as exc:
                 error_type = type(exc).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.debug("Exception: <ERROR_TYPE>")
                 result["status"] = "error"
                 result["error"] = f"invalid-json: {exc}"
                 return result
@@ -267,15 +267,15 @@ class ExternalWebSearch(SearchProvider):
             raw_text = path.read_text(encoding="utf-8")
         except FileNotFoundError as e:
             error_type = type(e).__name__
-            logger.debug(f"FileNotFoundError: <ERROR_TYPE>")
-            logger.warning(f"FileNotFoundError: <ERROR_TYPE>", exc_info=True)
+            logger.debug("FileNotFoundError: <ERROR_TYPE>")
+            logger.warning("FileNotFoundError: <ERROR_TYPE>", exc_info=True)
             result["status"] = "error"
             result["reason"] = "offline-missing"
             result["error"] = f"offline index not found: {path}"
             return result
         except OSError as exc:
             error_type = type(exc).__name__
-            logger.debug(f"OSError: <ERROR_TYPE>")
+            logger.debug("OSError: <ERROR_TYPE>")
             result["status"] = "error"
             result["reason"] = "offline-unreadable"
             result["error"] = str(exc)
@@ -289,7 +289,7 @@ class ExternalWebSearch(SearchProvider):
                 payload = json.loads(raw_text)
             except (ValueError, TypeError) as exc:
                 error_type = type(exc).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.debug("Exception: <ERROR_TYPE>")
                 result["status"] = "error"
                 result["reason"] = "offline-invalid"
                 result["error"] = str(exc)

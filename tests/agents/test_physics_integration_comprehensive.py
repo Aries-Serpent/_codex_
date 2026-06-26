@@ -43,26 +43,26 @@ class TestHybridPhysicsOrchestrator:
 
     def test_orchestrator_initialization(self, orchestrator):
         """Test basic initialization."""
-        assert orchestrator is not None
-        assert orchestrator.session_id == "hybrid_physics"
+        assert orchestrator is not None, "orchestrator must be initialized"
+        assert orchestrator.session_id == "hybrid_physics", "session_id is not valid"
         assert isinstance(orchestrator.decision_history, list)
-        assert len(orchestrator.decision_history) == 0
+        assert len(orchestrator.decision_history) == 0, "Collection must not be empty"
 
     def test_orchestrator_with_custom_session(self, orchestrator_with_session):
         """Test initialization with custom session ID."""
-        assert orchestrator_with_session.session_id == "test-integration-session"
+        assert orchestrator_with_session.session_id == "test-integration-session", "session_id is not valid"
 
     def test_orchestrator_initializes_available_modules(self, orchestrator):
         """Test that available modules are initialized."""
         if PHYSICS_ORCHESTRATOR_AVAILABLE:
-            assert orchestrator.classical_orchestrator is not None
+            assert orchestrator.classical_orchestrator is not None, "classical_orchestrator must be initialized"
         else:
-            assert orchestrator.classical_orchestrator is None
+            assert orchestrator.classical_orchestrator is None, "classical_orchestrator is not valid"
 
         if ADVANCED_PHYSICS_AVAILABLE:
-            assert orchestrator.advanced_orchestrator is not None
+            assert orchestrator.advanced_orchestrator is not None, "advanced_orchestrator must be initialized"
         else:
-            assert orchestrator.advanced_orchestrator is None
+            assert orchestrator.advanced_orchestrator is None, "advanced_orchestrator is not valid"
 
     # ========== ORCHESTRATION TESTS ==========
 
@@ -72,9 +72,9 @@ class TestHybridPhysicsOrchestrator:
 
         result = orchestrator.orchestrate_with_all_paradigms(decision_space)
 
-        assert result is not None
-        assert "paradigms_used" in result
-        assert "recommendations" in result
+        assert result is not None, "result must be initialized"
+        assert "paradigms_used" in result, "Result must not be empty"
+        assert "recommendations" in result, "Result must not be empty"
         assert isinstance(result["paradigms_used"], list)
 
     def test_orchestrate_with_complete_decision_space(self, orchestrator):
@@ -88,9 +88,9 @@ class TestHybridPhysicsOrchestrator:
 
         result = orchestrator.orchestrate_with_all_paradigms(decision_space)
 
-        assert result is not None
-        assert "paradigms_used" in result
-        assert isinstance(
+        assert result is not None, "result must be initialized"
+        assert "paradigms_used" in result, "Result must not be empty"
+        assert isinstance(, "Condition must be true"
             result["paradigms_used"], (list, tuple, set, dict)
         )  # was: len() >= 0 (always true)
 
@@ -103,7 +103,7 @@ class TestHybridPhysicsOrchestrator:
         orchestrator.orchestrate_with_all_paradigms(decision_space)
 
         # History might be updated (implementation dependent)
-        assert len(orchestrator.decision_history) >= initial_count
+        assert len(orchestrator.decision_history) >= initial_count, "Collection must not be empty"
 
     # ========== CLASSICAL PHYSICS INTEGRATION TESTS ==========
 
@@ -112,26 +112,26 @@ class TestHybridPhysicsOrchestrator:
     )
     def test_classical_physics_integration(self, orchestrator):
         """Test integration with classical physics orchestrator."""
-        assert orchestrator.classical_orchestrator is not None
+        assert orchestrator.classical_orchestrator is not None, "classical_orchestrator must be initialized"
 
         decision_space = {"current_position": "state_1", "goal_position": "state_2"}
 
         result = orchestrator.orchestrate_with_all_paradigms(decision_space)
 
-        assert "classical_physics" in result
+        assert "classical_physics" in result, "Result must not be empty"
 
     # ========== ADVANCED PHYSICS INTEGRATION TESTS ==========
 
     @pytest.mark.skipif(not ADVANCED_PHYSICS_AVAILABLE, reason="Advanced physics not available")
     def test_advanced_physics_integration(self, orchestrator):
         """Test integration with advanced physics orchestrator."""
-        assert orchestrator.advanced_orchestrator is not None
+        assert orchestrator.advanced_orchestrator is not None, "advanced_orchestrator must be initialized"
 
         decision_space = {"current_position": "start", "goal_position": "end"}
 
         result = orchestrator.orchestrate_with_all_paradigms(decision_space)
 
-        assert "advanced_physics" in result
+        assert "advanced_physics" in result, "Result must not be empty"
 
     # ========== ERROR HANDLING TESTS ==========
 
@@ -140,8 +140,8 @@ class TestHybridPhysicsOrchestrator:
         result = orchestrator.orchestrate_with_all_paradigms({})
 
         # Should handle gracefully
-        assert result is not None
-        assert "paradigms_used" in result
+        assert result is not None, "result must be initialized"
+        assert "paradigms_used" in result, "Result must not be empty"
 
     def test_orchestrate_with_missing_required_fields(self, orchestrator):
         """Test handling missing required fields."""
@@ -153,7 +153,7 @@ class TestHybridPhysicsOrchestrator:
         result = orchestrator.orchestrate_with_all_paradigms(decision_space)
 
         # Should handle gracefully with defaults
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     def test_orchestrate_with_invalid_data_types(self, orchestrator):
         """Test handling invalid data types."""
@@ -165,7 +165,7 @@ class TestHybridPhysicsOrchestrator:
         # Should either work or raise appropriate error
         try:
             result = orchestrator.orchestrate_with_all_paradigms(decision_space)
-            assert result is not None
+            assert result is not None, "result must be initialized"
         except (TypeError, ValueError, AttributeError):
             # Acceptable to raise error for invalid types
             _ = None  # suppressed: no action needed
@@ -180,7 +180,7 @@ class TestHybridPhysicsOrchestrator:
         decision_space = {"current_position": "A", "goal_position": "B"}
         result = orch.orchestrate_with_all_paradigms(decision_space)
 
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     def test_orchestrator_works_without_advanced_physics(self):
         """Test orchestrator works when advanced physics unavailable."""
@@ -189,7 +189,7 @@ class TestHybridPhysicsOrchestrator:
         decision_space = {"current_position": "X", "goal_position": "Y"}
         result = orch.orchestrate_with_all_paradigms(decision_space)
 
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     # ========== INTEGRATION WORKFLOW TESTS ==========
 
@@ -219,8 +219,8 @@ class TestHybridPhysicsOrchestrator:
             result = orchestrator.orchestrate_with_all_paradigms(decision)
             results.append(result)
 
-        assert len(results) == 3
-        assert all(r is not None for r in results)
+        assert len(results) == 3, "Results must not be empty"
+        assert all(r is not None for r in results), "r must be initialized"
 
     # ========== DATA TRANSFORMATION TESTS ==========
 
@@ -235,7 +235,7 @@ class TestHybridPhysicsOrchestrator:
         result = orchestrator.orchestrate_with_all_paradigms(input_space)
 
         # Result should contain recommendations
-        assert "recommendations" in result
+        assert "recommendations" in result, "Result must not be empty"
         assert isinstance(result["recommendations"], list)
 
     def test_result_structure_consistency(self, orchestrator):
@@ -252,7 +252,7 @@ class TestHybridPhysicsOrchestrator:
             "recommendations",
         ]
         for field in required_fields:
-            assert field in result
+            assert field in result, "Result must not be empty"
 
     # ========== LOGGING TESTS ==========
 
@@ -268,7 +268,7 @@ class TestHybridPhysicsOrchestrator:
         """Test logging uses custom session ID."""
         orchestrator_with_session._log("user", "Custom session log")
         # Should complete without error
-        assert True
+        assert True, "True is not valid"
 
 
 class TestPhysicsIntegrationEdgeCases:
@@ -285,7 +285,7 @@ class TestPhysicsIntegrationEdgeCases:
         }
 
         result = orch.orchestrate_with_all_paradigms(large_space)
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     def test_deeply_nested_decision_space(self):
         """Test with deeply nested structure."""
@@ -298,7 +298,7 @@ class TestPhysicsIntegrationEdgeCases:
         }
 
         result = orch.orchestrate_with_all_paradigms(nested_space)
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     def test_special_characters_in_positions(self):
         """Test with special characters."""
@@ -310,7 +310,7 @@ class TestPhysicsIntegrationEdgeCases:
         }
 
         result = orch.orchestrate_with_all_paradigms(decision_space)
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     def test_unicode_in_decision_space(self):
         """Test with Unicode characters."""
@@ -319,7 +319,7 @@ class TestPhysicsIntegrationEdgeCases:
         decision_space = {"current_position": "状態A", "goal_position": "目標B"}
 
         result = orch.orchestrate_with_all_paradigms(decision_space)
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     def test_null_and_none_values(self):
         """Test handling null/None values."""
@@ -333,7 +333,7 @@ class TestPhysicsIntegrationEdgeCases:
 
         try:
             result = orch.orchestrate_with_all_paradigms(decision_space)
-            assert result is not None
+            assert result is not None, "result must be initialized"
         except (TypeError, ValueError):
             # Acceptable to reject None values
             _ = None  # suppressed: no action needed
@@ -354,8 +354,8 @@ class TestPhysicsIntegrationPerformance:
         duration = time.time() - start
 
         # Should complete in < 1 second for simple case
-        assert duration < 1.0
-        assert result is not None
+        assert duration < 1.0, "duration is not valid"
+        assert result is not None, "result must be initialized"
 
     def test_multiple_rapid_orchestrations(self):
         """Test handling rapid sequential calls."""
@@ -370,9 +370,9 @@ class TestPhysicsIntegrationPerformance:
                 "goal_position": f"target_{i}",
             }
             result = orch.orchestrate_with_all_paradigms(decision_space)
-            assert result is not None
+            assert result is not None, "result must be initialized"
 
         duration = time.time() - start
 
         # 10 calls should complete reasonably fast
-        assert duration < 5.0  # 5 seconds for 10 calls
+        assert duration < 5.0, "duration is not valid"

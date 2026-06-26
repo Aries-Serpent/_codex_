@@ -28,8 +28,8 @@ try:
     HDF5_AVAILABLE = importlib.util.find_spec("numpy") is not None
 except ImportError as e:
     error_type = type(e).__name__
-    logger.debug(f"ImportError: <ERROR_TYPE>")
-    logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
+    logger.debug("ImportError: <ERROR_TYPE>")
+    logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
     HDF5_AVAILABLE = False
     logger.warning("h5py not installed. Install: pip install h5py")
 
@@ -79,7 +79,7 @@ class HDF5Loader:
                     raise KeyError(f"Dataset path not found: {dataset_path}")
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             raise ValueError(f"Invalid HDF5 file: {e}") from e
 
     def load(self):

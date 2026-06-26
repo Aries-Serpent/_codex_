@@ -16,11 +16,11 @@ def test_compute_checksum():
     checksum = compute_checksum(data)
 
     # SHA-256 produces 64 character hex string
-    assert len(checksum) == 64
-    assert all(c in "0123456789abcdef" for c in checksum)
+    assert len(checksum) == 64, "Checksum must not be empty"
+    assert all(c in "0123456789abcdef" for c in checksum), "Condition must be true"
 
     # Same data should produce same checksum
-    assert compute_checksum(data) == checksum
+    assert compute_checksum(data) == checksum, "Data must not be empty"
 
 
 def test_tool_definition_from_dict():
@@ -32,9 +32,9 @@ def test_tool_definition_from_dict():
     }
 
     tool = ToolDefinition.from_dict(data)
-    assert tool.name == "test_tool"
-    assert tool.description == "A test tool"
-    assert tool.endpoint == "http://example.com/tool"
+    assert tool.name == "test_tool", "name is not valid"
+    assert tool.description == "A test tool", "description is not valid"
+    assert tool.endpoint == "http://example.com/tool", "endpoint is not valid"
 
 
 def test_mcp_config_load():
@@ -42,13 +42,13 @@ def test_mcp_config_load():
     config = MCPConfig.load()
 
     # Should have loaded successfully
-    assert config.name is not None
+    assert config.name is not None, "name must be initialized"
     assert isinstance(config.tools, list)
-    assert config.ita_url is not None
+    assert config.ita_url is not None, "ita_url must be initialized"
 
     # Should have computed checksum
-    assert config.config_checksum is not None
-    assert len(config.config_checksum) == 64
+    assert config.config_checksum is not None, "config_checksum must be initialized"
+    assert len(config.config_checksum) == 64, "Collection must not be empty"
 
 
 def test_mcp_config_get_tool():
@@ -59,15 +59,15 @@ def test_mcp_config_get_tool():
         # Get first tool
         tool_name = config.tools[0].name
         tool = config.get_tool(tool_name)
-        assert tool is not None
-        assert tool.name == tool_name
+        assert tool is not None, "tool must be initialized"
+        assert tool.name == tool_name, "name is not valid"
 
 
 def test_mcp_config_get_nonexistent_tool():
     """Test that getting nonexistent tool returns None."""
     config = MCPConfig.load()
     tool = config.get_tool("nonexistent_tool_xyz")
-    assert tool is None
+    assert tool is None, "tool is not valid"
 
 
 def test_mcp_config_verify_integrity():
@@ -83,13 +83,13 @@ def test_mcp_config_verify_integrity():
         config = MCPConfig.load(temp_path)
 
         # Verify integrity - should pass
-        assert config.verify_integrity(temp_path)
+        assert config.verify_integrity(temp_path), "Condition must be true"
 
         # Modify file
         temp_path.write_text('{"modified": true}')
 
         # Verify integrity - should fail
-        assert not config.verify_integrity(temp_path)
+        assert not config.verify_integrity(temp_path), "Condition must be true"
 
     finally:
         temp_path.unlink()
@@ -106,8 +106,8 @@ def test_mcp_config_env_override():
     try:
         config = MCPConfig.load()
 
-        assert config.ita_url == "http://custom-url:9999"
-        assert config.ita_api_key == "custom_key_123"
+        assert config.ita_url == "http://custom-url:9999", "ita_url is not valid"
+        assert config.ita_api_key == "custom_key_123", "ita_api_key is not valid"
 
     finally:
         # Clean up

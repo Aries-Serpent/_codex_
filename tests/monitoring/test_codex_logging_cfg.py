@@ -41,7 +41,7 @@ def test_logging_bootstrap_hydra_cfg(monkeypatch, tmp_path):
         "mlflow": {"enable": True, "tracking_uri": "uri", "experiment": "exp"},
     }
     loggers = cl._codex_logging_bootstrap(argparse.Namespace(hydra_cfg=cfg))
-    assert called["tb"] == str(tmp_path)
-    assert called["wb"]["project"] == "proj" and called["wb"]["mode"] == "offline"
-    assert loggers.wb == "wandb_obj"
+    assert called["tb"] == str(tmp_path), "Condition must be true"
+    assert called["wb"]["project"] == "proj" and called["wb"]["mode"] == "offline", "Condition must be true"
+    assert loggers.wb == "wandb_obj", "Object must be initialized"
     assert loggers.mlflow_active and called["ml_uri"] == "uri" and called["ml_exp"] == "exp"

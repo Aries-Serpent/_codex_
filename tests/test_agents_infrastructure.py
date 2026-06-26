@@ -25,9 +25,9 @@ class TestEnvironmentManager:
             from codex.config.env_vars import EnvironmentManager
 
             env = EnvironmentManager()
-            assert env.get("CODEX_ENV_PYTHON_VERSION") == "3.12"
-            assert env.get("CODEX_FORCE_CPU") == "1"
-            assert env.get("CODEX_SESSION_LOG_DIR") == ".codex/sessions"
+            assert env.get("CODEX_ENV_PYTHON_VERSION") == "3.12", "Condition must be true"
+            assert env.get("CODEX_FORCE_CPU") == "1", "Condition must be true"
+            assert env.get("CODEX_SESSION_LOG_DIR") == ".codex/sessions", "Condition must be true"
 
     def test_session_id_generation(self):
         """Test automatic session ID generation."""
@@ -36,10 +36,10 @@ class TestEnvironmentManager:
 
             env = EnvironmentManager()
             session_id = env.get_session_id()
-            assert session_id is not None
-            assert len(session_id) == 36  # UUID format
+            assert session_id is not None, "session_id must be initialized"
+            assert len(session_id) == 36, "Session_id must not be empty"
             # Second call should return same ID
-            assert env.get_session_id() == session_id
+            assert env.get_session_id() == session_id, "Condition must be true"
 
     def test_validation_failure(self):
         """Test validation of invalid values."""
@@ -57,8 +57,8 @@ class TestEnvironmentManager:
 
             env = EnvironmentManager()
             log_dir = env.get_log_dir()
-            assert log_dir.exists()
-            assert log_dir.is_dir()
+            assert log_dir.exists(), "Condition must be true"
+            assert log_dir.is_dir(), "Condition must be true"
 
     def test_dump_config(self):
         """Test configuration dump."""
@@ -67,8 +67,8 @@ class TestEnvironmentManager:
         env = EnvironmentManager()
         config = env.dump_config()
         assert isinstance(config, dict)
-        assert "CODEX_ENV_PYTHON_VERSION" in config
-        assert "CODEX_SESSION_ID" in config
+        assert "CODEX_ENV_PYTHON_VERSION" in config, "Condition must be true"
+        assert "CODEX_SESSION_ID" in config, "Condition must be true"
 
 
 class TestErrorHandler:
@@ -89,10 +89,10 @@ class TestErrorHandler:
         error_logs = list(tmp_path.glob("errors_*.log"))
         assert len(error_logs) > 0, "No error log files created"
         error_log = error_logs[0]
-        assert error_log.exists()
+        assert error_log.exists(), "Error should be raised or set"
         content = error_log.read_text()
-        assert "ValueError: Test error" in content
-        assert "test" in content
+        assert "ValueError: Test error" in content, "Value must be initialized"
+        assert "test" in content, "Content must not be empty"
 
     def test_decorator(self, tmp_path):
         """Test error logging decorator."""
@@ -112,8 +112,8 @@ class TestErrorHandler:
         assert len(error_logs) > 0, "No error log files created"
         error_log = error_logs[0]
         content = error_log.read_text()
-        assert "RuntimeError: Decorated error" in content
-        assert "failing_function" in content
+        assert "RuntimeError: Decorated error" in content, "Content must not be empty"
+        assert "failing_function" in content, "Content must not be empty"
 
     def test_fatal_error_exits(self, tmp_path):
         """Test fatal error handling exits."""
@@ -139,7 +139,7 @@ class TestSessionLogger:
             logger = SessionLogger(session_id="test-session")
             logger.log(role="user", message="Test message")
             # Verify log was written (implementation dependent)
-            assert (tmp_path / "test.db").exists()
+            assert (tmp_path / "test.db").exists(), "Condition must be true"
 
     def test_context_manager(self, tmp_path):
         """Test SessionLogger as context manager."""
@@ -149,7 +149,7 @@ class TestSessionLogger:
             with SessionLogger(session_id="test-session") as logger:
                 logger.log(role="user", message="Test message")
 
-            assert (tmp_path / "test.db").exists()
+            assert (tmp_path / "test.db").exists(), "Condition must be true"
 
 
 class TestCLI:
@@ -164,9 +164,9 @@ class TestCLI:
         runner = CliRunner()
         result = runner.invoke(validate_env_cmd)
 
-        assert result.exit_code == 0
-        assert "Environment validation passed" in result.output
-        assert "CODEX_ENV_PYTHON_VERSION" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "Environment validation passed" in result.output, "Result must not be empty"
+        assert "CODEX_ENV_PYTHON_VERSION" in result.output, "Result must not be empty"
 
     def test_session_logger_command(self):
         """Test session-logger CLI command."""
@@ -183,7 +183,7 @@ class TestCLI:
             # Should succeed (or fail gracefully with clear error)
             assert result.exit_code in (0, 1)
             if result.exit_code == 0:
-                assert "Logged" in result.output
+                assert "Logged" in result.output, "Result must not be empty"
 
     def test_query_logs_command_no_results(self):
         """Test query-logs CLI command with no results."""
@@ -213,14 +213,14 @@ class TestDBManager:
         manager.init_schema()
 
         # Verify database exists
-        assert db_path.exists()
+        assert db_path.exists(), "Condition must be true"
 
         # Verify tables created
         with manager.connection(auto_init=False) as conn:
             cursor = conn.execute(
                 "SELECT name FROM sqlite_master WHERE type='table' AND name='session_events'"
             )
-            assert cursor.fetchone() is not None
+            assert cursor.fetchone() is not None, "curs must be initialized"
 
     def test_connection_pooling(self, tmp_path):
         """Test connection pooling when enabled."""
@@ -242,7 +242,7 @@ class TestDBManager:
             conn2 = manager.get_connection()
             # Note: Due to implementation, we can't guarantee same connection
             # but pool should exist
-            assert True  # was: 'manager.db_path in DBManager._CONNECTION_POOL' or True (always true); intent: optional env check
+            assert True, "True is not valid"
 
             manager.close_connection(conn2)
         finally:
@@ -259,7 +259,7 @@ class TestDBManager:
         # Use context manager
         with manager.connection() as conn:
             cursor = conn.execute("SELECT 1")
-            assert cursor.fetchone()[0] == 1
+            assert cursor.fetchone()[0] == 1, "curs is not valid"
 
     def test_init_db_cli_command(self):
         """Test init-db CLI command."""
@@ -272,8 +272,8 @@ class TestDBManager:
             result = runner.invoke(init_db_cmd, ["--db-path", "test.db"])
 
             # Should succeed
-            assert result.exit_code == 0
-            assert "initialized successfully" in result.output.lower()
+            assert result.exit_code == 0, "Result must not be empty"
+            assert "initialized successfully" in result.output.lower(), "Result must not be empty"
 
     def test_close_all_pools_integration(self, pooling_db_manager, pool_state_tracker):
         """Integration test for pool cleanup using fixtures.
@@ -375,8 +375,8 @@ class TestNewCLICommands:
         runner = CliRunner()
         result = runner.invoke(export_env_cmd, ["--format", "text"])
 
-        assert result.exit_code == 0
-        assert "CODEX_ENV_PYTHON_VERSION" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "CODEX_ENV_PYTHON_VERSION" in result.output, "Result must not be empty"
 
     def test_export_env_json(self):
         """Test export-env command with JSON format."""
@@ -387,12 +387,12 @@ class TestNewCLICommands:
         runner = CliRunner()
         result = runner.invoke(export_env_cmd, ["--format", "json"])
 
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
         # Should be valid JSON
         import json
 
         data = json.loads(result.output)
-        assert "CODEX_ENV_PYTHON_VERSION" in data
+        assert "CODEX_ENV_PYTHON_VERSION" in data, "Data must not be empty"
 
     def test_list_sessions(self, tmp_path):
         """Test list-sessions command."""
@@ -440,7 +440,7 @@ class TestNewCLICommands:
         result = runner.invoke(clean_logs_cmd, ["--dry-run", "--older-than", "30"])
 
         # Should succeed (may find nothing to clean)
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
 
 class TestMissingMethods:
@@ -455,17 +455,17 @@ class TestMissingMethods:
         handler = CodexErrorHandler(log_dir=tmp_path)
 
         # Default should be ERROR
-        assert handler.logger.level == logging.ERROR
+        assert handler.logger.level == logging.ERROR, "Error should be raised or set"
 
         # Test valid levels
         handler.set_log_level("DEBUG")
-        assert handler.logger.level == logging.DEBUG
+        assert handler.logger.level == logging.DEBUG, "level is not valid"
 
         handler.set_log_level("warning")  # case-insensitive
-        assert handler.logger.level == logging.WARNING
+        assert handler.logger.level == logging.WARNING, "level is not valid"
 
         handler.set_log_level("INFO")
-        assert handler.logger.level == logging.INFO
+        assert handler.logger.level == logging.INFO, "level is not valid"
 
         # Test invalid level
 
@@ -483,15 +483,15 @@ class TestMissingMethods:
             env = EnvironmentManager(lazy_validation=True)
 
             # Should not crash on init
-            assert not env._validated
+            assert not env._validated, "Condition must be true"
 
             # Explicit validation
             env.validate()
-            assert env._validated
+            assert env._validated, "Condition must be true"
 
             # Idempotent - second call should be safe
             env.validate()
-            assert env._validated
+            assert env._validated, "Condition must be true"
 
     def test_validate_with_invalid_env(self):
         """Test validate() detects invalid environment."""
@@ -521,7 +521,7 @@ class TestEdgeCases:
         fake_path = Path("/tmp/codex_test_nonexistent_" + str(time.time()))
         CodexErrorHandler(log_dir=fake_path)
 
-        assert fake_path.exists()
+        assert fake_path.exists(), "Condition must be true"
 
         # Cleanup
         import shutil
@@ -550,8 +550,8 @@ class TestEdgeCases:
             env = EnvironmentManager()
 
             # Should use defaults for optional vars
-            assert env.get("CODEX_ENV_PYTHON_VERSION") == "3.12"
-            assert env.get("CODEX_SESSION_LOG_DIR") == ".codex/sessions"
+            assert env.get("CODEX_ENV_PYTHON_VERSION") == "3.12", "Condition must be true"
+            assert env.get("CODEX_SESSION_LOG_DIR") == ".codex/sessions", "Condition must be true"
 
     def test_db_manager_empty_database(self, tmp_path):
         """Test querying empty database."""
@@ -564,7 +564,7 @@ class TestEdgeCases:
         with db.connection() as conn:
             cursor = conn.execute("SELECT COUNT(*) FROM session_events")
             count = cursor.fetchone()[0]
-            assert count == 0
+            assert count == 0, "Count must be greater than zero"
 
     def test_export_env_with_empty_config(self):
         """Test export-env with minimal environment."""
@@ -578,13 +578,13 @@ class TestEdgeCases:
 
         with patch.dict(os.environ, {}, clear=True):
             result = runner.invoke(export_env_cmd, ["--format=json"])
-            assert result.exit_code == 0
+            assert result.exit_code == 0, "Result must not be empty"
 
             # Should have at least defaults
             import json
 
             config = json.loads(result.output)
-            assert "CODEX_ENV_PYTHON_VERSION" in config
+            assert "CODEX_ENV_PYTHON_VERSION" in config, "Condition must be true"
 
     def test_clean_logs_with_no_old_logs(self):
         """Test clean-logs when no old logs exist."""
@@ -594,7 +594,7 @@ class TestEdgeCases:
 
         runner = CliRunner()
         result = runner.invoke(clean_logs_cmd, ["--older-than=30", "--dry-run"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
         assert "0" in result.output or "No" in result.output or "no" in result.output.lower()
 
 
@@ -679,7 +679,7 @@ class TestFullSessionLifecycle:
         # Step 1: Initialize database via CLI
         result = runner.invoke(init_db_cmd, ["--db-path", str(db_path)])
         assert result.exit_code == 0, f"init-db failed: {result.output}"
-        assert db_path.exists()
+        assert db_path.exists(), "Condition must be true"
 
         # Step 2: Log test messages via DBManager (direct API)
         manager = DBManager(db_path=db_path)
@@ -769,7 +769,7 @@ class TestViewerCLIWrapper:
             viewer.view(session_id=session_id, output_format="text")
 
             # Verify main was called once
-            assert mock_main.call_count == 1
+            assert mock_main.call_count == 1, "Count must be greater than zero"
 
             # Verify first argument is a list of strings (argv), not Namespace
             call_args = mock_main.call_args[0]
@@ -779,10 +779,10 @@ class TestViewerCLIWrapper:
             assert all(isinstance(arg, str) for arg in argv), "All argv elements should be strings"
 
             # Verify correct arguments
-            assert "--session-id" in argv
-            assert session_id in argv
-            assert "--format" in argv
-            assert "text" in argv
+            assert "--session-id" in argv, "Condition must be true"
+            assert session_id in argv, "Condition must be true"
+            assert "--format" in argv, "Condition must be true"
+            assert "text" in argv, "Condition must be true"
 
     def test_viewer_wrapper_with_actual_main(self, tmp_path):
         """Test that viewer wrapper works end-to-end with actual main()."""

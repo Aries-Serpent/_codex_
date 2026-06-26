@@ -25,9 +25,9 @@ class TestRegistry:
     def test_create_empty_registry(self):
         """Test creating an empty registry."""
         registry = Registry(kind="test")
-        assert len(registry) == 0
-        assert registry.list() == []
-        assert registry.kind == "test"
+        assert len(registry) == 0, "Registry must not be empty"
+        assert registry.list() == [], "Condition must be true"
+        assert registry.kind == "test", "kind is not valid"
 
     def test_register_single_item(self):
         """Test registering a single item."""
@@ -37,9 +37,9 @@ class TestRegistry:
         def my_func():
             return 42
 
-        assert len(registry) == 1
-        assert "my_func" in registry
-        assert registry.get("my_func") == my_func
+        assert len(registry) == 1, "Registry must not be empty"
+        assert "my_func" in registry, "Condition must be true"
+        assert registry.get("my_func") == my_func, "Condition must be true"
 
     def test_register_multiple_items(self):
         """Test registering multiple items."""
@@ -57,10 +57,10 @@ class TestRegistry:
         def func3():
             pass
 
-        assert len(registry) == 3
-        assert "func1" in registry
-        assert "func2" in registry
-        assert "func3" in registry
+        assert len(registry) == 3, "Registry must not be empty"
+        assert "func1" in registry, "Condition must be true"
+        assert "func2" in registry, "Condition must be true"
+        assert "func3" in registry, "Condition must be true"
 
     def test_idempotent_registration_same_object(self):
         """Test that registering the same object twice is idempotent."""
@@ -71,12 +71,12 @@ class TestRegistry:
 
         # Register once
         registry.register("my_func", my_func)
-        assert len(registry) == 1
+        assert len(registry) == 1, "Registry must not be empty"
 
         # Register again with same object - should be no-op
         registry.register("my_func", my_func)
-        assert len(registry) == 1
-        assert registry.get("my_func") == my_func
+        assert len(registry) == 1, "Registry must not be empty"
+        assert registry.get("my_func") == my_func, "Condition must be true"
 
     def test_re_registration_different_object_warns(self, caplog):
         """Test that re-registering with different object warns."""
@@ -96,10 +96,10 @@ class TestRegistry:
             registry.register("my_func", func_v2)
 
         # Should have warning about re-registration
-        assert "re-registering" in caplog.text.lower()
+        assert "re-registering" in caplog.text.lower(), "Condition must be true"
 
         # Should have the new function
-        assert registry.get("my_func") == func_v2
+        assert registry.get("my_func") == func_v2, "Condition must be true"
 
     def test_list_returns_stable_order(self):
         """Test that list() returns items in stable sorted order."""
@@ -115,7 +115,7 @@ class TestRegistry:
         assert names == ["apple", "banana", "zebra"]
 
         # Multiple calls should return same order
-        assert registry.list() == names
+        assert registry.list() == names, "Condition must be true"
 
     def test_list_deterministic_across_runs(self):
         """Test that list() is deterministic across multiple registrations."""
@@ -130,7 +130,7 @@ class TestRegistry:
         registry2.register("c", 3)
 
         # Both should have same stable order despite different registration order
-        assert registry1.list() == registry2.list()
+        assert registry1.list() == registry2.list(), "Condition must be true"
         assert registry1.list() == ["a", "b", "c"]
 
     def test_names_alias(self):
@@ -139,7 +139,7 @@ class TestRegistry:
         registry.register("item1", 1)
         registry.register("item2", 2)
 
-        assert registry.names() == registry.list()
+        assert registry.names() == registry.list(), "Condition must be true"
 
     def test_items_in_stable_order(self):
         """Test that items() returns (name, item) pairs in stable order."""
@@ -159,8 +159,8 @@ class TestRegistry:
         registry = Registry(kind="test")
         registry.register("exists", 42)
 
-        assert registry.get("exists") == 42
-        assert registry.get("missing") is None
+        assert registry.get("exists") == 42, "Condition must be true"
+        assert registry.get("missing") is None, "Condition must be true"
         assert registry.get("missing", default="default") == "default"
 
     def test_contains(self):
@@ -168,19 +168,19 @@ class TestRegistry:
         registry = Registry(kind="test")
         registry.register("item", 1)
 
-        assert "item" in registry
-        assert "missing" not in registry
+        assert "item" in registry, "Item must not be empty"
+        assert "missing" not in registry, "Condition must be true"
 
     def test_len(self):
         """Test __len__ for registry size."""
         registry = Registry(kind="test")
-        assert len(registry) == 0
+        assert len(registry) == 0, "Registry must not be empty"
 
         registry.register("item1", 1)
-        assert len(registry) == 1
+        assert len(registry) == 1, "Registry must not be empty"
 
         registry.register("item2", 2)
-        assert len(registry) == 2
+        assert len(registry) == 2, "Registry must not be empty"
 
     def test_repr(self):
         """Test __repr__ for string representation."""
@@ -188,17 +188,17 @@ class TestRegistry:
         registry.register("accuracy", lambda: 1)
 
         repr_str = repr(registry)
-        assert "Registry" in repr_str
-        assert "metrics" in repr_str
-        assert "count=1" in repr_str
+        assert "Registry" in repr_str, "Condition must be true"
+        assert "metrics" in repr_str, "Condition must be true"
+        assert "count=1" in repr_str, "Count must be greater than zero"
 
     def test_create_registry_factory(self):
         """Test create_registry factory function."""
         registry = create_registry("models")
 
         assert isinstance(registry, Registry)
-        assert registry.kind == "models"
-        assert len(registry) == 0
+        assert registry.kind == "models", "kind is not valid"
+        assert len(registry) == 0, "Registry must not be empty"
 
 
 class TestRegistryNames:
@@ -206,35 +206,35 @@ class TestRegistryNames:
 
     def test_metric_names_are_stable(self):
         """Test that METRIC_NAMES contains expected stable names."""
-        assert "token_accuracy" in METRIC_NAMES
-        assert "ppl" in METRIC_NAMES
-        assert "exact_match" in METRIC_NAMES
-        assert "f1" in METRIC_NAMES
+        assert "token_accuracy" in METRIC_NAMES, "Condition must be true"
+        assert "ppl" in METRIC_NAMES, "Condition must be true"
+        assert "exact_match" in METRIC_NAMES, "Condition must be true"
+        assert "f1" in METRIC_NAMES, "Condition must be true"
 
         # Descriptions should be present
         assert isinstance(METRIC_NAMES["token_accuracy"], str)
-        assert len(METRIC_NAMES["token_accuracy"]) > 0
+        assert len(METRIC_NAMES["token_accuracy"]) > 0, "Collection must not be empty"
 
     def test_all_registry_names_structure(self):
         """Test that ALL_REGISTRY_NAMES has expected structure."""
-        assert "metrics" in ALL_REGISTRY_NAMES
-        assert "models" in ALL_REGISTRY_NAMES
-        assert "data_loaders" in ALL_REGISTRY_NAMES
-        assert "tokenizers" in ALL_REGISTRY_NAMES
-        assert "trainers" in ALL_REGISTRY_NAMES
+        assert "metrics" in ALL_REGISTRY_NAMES, "Condition must be true"
+        assert "models" in ALL_REGISTRY_NAMES, "Condition must be true"
+        assert "data_loaders" in ALL_REGISTRY_NAMES, "Data must not be empty"
+        assert "tokenizers" in ALL_REGISTRY_NAMES, "Condition must be true"
+        assert "trainers" in ALL_REGISTRY_NAMES, "Condition must be true"
 
         # Each category should map to a dict of names->descriptions
         for kind, names_dict in ALL_REGISTRY_NAMES.items():
             assert isinstance(names_dict, dict)
-            assert len(names_dict) > 0
+            assert len(names_dict) > 0, "Names_dict must not be empty"
 
     def test_get_all_stable_names(self):
         """Test get_all_stable_names() returns a copy."""
         names1 = get_all_stable_names()
         names2 = get_all_stable_names()
 
-        assert names1 == names2
-        assert names1 is not names2  # Should be a copy
+        assert names1 == names2, "names1 is not valid"
+        assert names1 is not names2, "names1 is not valid"
 
     def test_is_stable_name(self):
         """Test is_stable_name() checks."""
@@ -245,9 +245,9 @@ class TestRegistryNames:
     def test_get_description(self):
         """Test get_description() lookups."""
         desc = get_description("metrics", "token_accuracy")
-        assert desc is not None
+        assert desc is not None, "desc must be initialized"
         assert isinstance(desc, str)
-        assert len(desc) > 0
+        assert len(desc) > 0, "Desc must not be empty"
 
         # Missing name
         assert get_description("metrics", "nonexistent") is None
@@ -270,7 +270,7 @@ class TestRegistryIntegration:
         # list() should return in stable sorted order
         registered = registry.list()
         expected_sorted = sorted(METRIC_NAMES.keys())
-        assert registered == expected_sorted
+        assert registered == expected_sorted, "registered is not valid"
 
     def test_decorator_pattern(self):
         """Test using registry as decorator."""
@@ -285,8 +285,8 @@ class TestRegistryIntegration:
             return 2
 
         # Both should be registered
-        assert registry.get("func1")() == 1
-        assert registry.get("func2")() == 2
+        assert registry.get("func1")() == 1, "Condition must be true"
+        assert registry.get("func2")() == 2, "Condition must be true"
 
         # list() should be sorted
         assert registry.list() == ["func1", "func2"]

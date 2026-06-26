@@ -14,10 +14,10 @@ def test_split_dataset_deterministic():
     texts = [f"sample-{i}" for i in range(10)]
     train1, val1 = split_dataset(texts, train_ratio=0.8, seed=123)
     train2, val2 = split_dataset(texts, train_ratio=0.8, seed=123)
-    assert train1 == train2
-    assert val1 == val2
-    assert len(train1) == 8
-    assert len(val1) == 2
+    assert train1 == train2, "train1 is not valid"
+    assert val1 == val2, "val1 is not valid"
+    assert len(train1) == 8, "Train1 must not be empty"
+    assert len(val1) == 2, "Val1 must not be empty"
 
 
 def test_split_dataset_cache(tmp_path: Path):
@@ -31,9 +31,9 @@ def test_split_dataset_cache(tmp_path: Path):
     texts[0] = "changed"
     train3, val3 = split_dataset(texts, train_ratio=0.5, seed=1, cache_path=cache)
     assert (train3, val3) != (train1, val1)
-    assert cache.exists()
+    assert cache.exists(), "Condition must be true"
     data = json.loads(cache.read_text())
-    assert "checksum" in data
+    assert "checksum" in data, "Data must not be empty"
 
 
 def test_stream_texts(tmp_path: Path):
@@ -41,5 +41,5 @@ def test_stream_texts(tmp_path: Path):
     file_path = tmp_path / "data.txt"
     file_path.write_text(content)
     chunks = list(stream_texts(file_path, chunk_size=3))
-    assert "".join(chunks) == content
-    assert all(len(c) <= 3 for c in chunks)
+    assert "".join(chunks) == content, "Content must not be empty"
+    assert all(len(c) <= 3 for c in chunks), "C must not be empty"

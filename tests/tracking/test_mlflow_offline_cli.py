@@ -78,23 +78,23 @@ def test_mlflow_offline_smoke_enforces_file_uri(tmp_path, monkeypatch):
     output = tmp_path / "offline"
     uri = module.run_smoke(output)
 
-    assert uri.startswith("file:")
+    assert uri.startswith("file:"), "Condition must be true"
     run_dir = output / "offline-smoke"
     summary_path = run_dir / "tracking_summary.ndjson"
     metrics_path = run_dir / "metrics.ndjson"
-    assert summary_path.exists()
-    assert metrics_path.exists()
+    assert summary_path.exists(), "Condition must be true"
+    assert metrics_path.exists(), "Condition must be true"
 
     summary_lines = [json.loads(line) for line in summary_path.read_text().splitlines() if line]
-    assert summary_lines
+    assert summary_lines, "summary_lines is not valid"
     extra = summary_lines[-1]["extra"]
-    assert extra["effective_uri"] == uri
+    assert extra["effective_uri"] == uri, "Condition must be true"
     assert extra["fallback_reason"] in {"", "non_local_uri"}
 
     metrics_lines = [json.loads(line) for line in metrics_path.read_text().splitlines() if line]
-    assert metrics_lines
+    assert metrics_lines, "metrics_lines is not valid"
     record = metrics_lines[-1]
-    assert record["metric"] == "loss"
+    assert record["metric"] == "loss", "rec is not valid"
 
 
 def test_mlflow_offline_smoke_rejects_remote_without_override(tmp_path, monkeypatch):

@@ -193,7 +193,7 @@ No Python security anti-patterns detected in modified files.
 |--------|----------------|------------------|--------|
 | Total Dependencies | 87 packages | 87 packages | No change |
 | Known CVEs | 35 | 35 | ✅ No new CVEs introduced |
-| Exposed Secrets | 0 new | 0 new | ✅ No secrets committed |
+| Exposed Secrets | 0 new | 0 new | ✅ No secrets committed | <!-- pragma: allowlist secret -->
 | CodeQL Alerts | 0 critical | 0 critical | ✅ No new alerts |
 | Bandit Issues | 0 | 0 | ✅ Clean scan |
 | SBOM Status | Current | Current | ✅ Up-to-date |
@@ -216,7 +216,7 @@ All 6 pre-merge CI validation gates **PASSED**:
 | Gate # | Gate Name | Status | Details |
 |--------|-----------|--------|---------|
 | 1 | Dependency Conflict Detection | ✅ PASS | No conflicts, 87 packages resolved |
-| 2 | Secret Detection Baseline | ✅ PASS | 27 baseline secrets verified, 0 new |
+| 2 | Secret Detection Baseline | ✅ PASS | 27 baseline secrets verified, 0 new | <!-- pragma: allowlist secret -->
 | 3 | CodeQL Security Scan | ✅ PASS | 0 critical findings |
 | 4 | Bandit Static Analysis | ✅ PASS | 0 security anti-patterns |
 | 5 | Import Safety Validation | ✅ PASS | All critical imports functional |
@@ -364,7 +364,7 @@ pip install 'idna>=3.15'
 | Role | Validation | Status | Date |
 |------|-----------|--------|------|
 | **Unified Security Scanner** | Dependency vulnerabilities | ✅ PASS | 2026-06-25 |
-| **Secret Detection Agent** | Credential exposure | ✅ PASS | 2026-06-25 |
+| **Secret Detection Agent** | Credential exposure | ✅ PASS | 2026-06-25 | <!-- pragma: allowlist secret -->
 | **CodeQL Security Scan** | Code quality & SAST | ✅ PASS | 2026-06-25 |
 | **Pre-Merge Validation Gates** | Infrastructure gates | ✅ PASS | 2026-06-25 |
 | **Post-Merge Validator** | Overall approval | ✅ APPROVED | 2026-06-25 |

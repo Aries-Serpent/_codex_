@@ -82,28 +82,28 @@ class TestAccuracyFunction:
     def test_accuracy_partial_predictions(self, sample_numpy_data):
         """Test accuracy with mixed predictions."""
         acc = accuracy(sample_numpy_data["preds"], sample_numpy_data["labels"])
-        assert 0.0 <= acc <= 1.0
-        assert acc == 0.8  # 4 correct out of 5
+        assert 0.0 <= acc <= 1.0, "0 is not valid"
+        assert acc == 0.8, "acc is not valid"
 
     def test_accuracy_torch_tensors(self, sample_numpy_data):
         """Test accuracy with torch tensors."""
         acc_torch = accuracy(sample_numpy_data["torch_preds"], sample_numpy_data["torch_labels"])
         acc_numpy = accuracy(sample_numpy_data["preds"], sample_numpy_data["labels"])
-        assert acc_torch == acc_numpy
+        assert acc_torch == acc_numpy, "acc_torch is not valid"
 
     def test_accuracy_with_ignore_index(self):
         """Test accuracy with ignore_index parameter."""
         preds = np.array([1, 0, 1, -1, 0])
         labels = np.array([1, 0, 1, -1, 0])
         acc = accuracy(preds, labels, ignore_index=-1)
-        assert acc == 1.0  # Only 4 samples counted
+        assert acc == 1.0, "acc is not valid"
 
     def test_accuracy_ignore_index_partial(self):
         """Test accuracy with ignore_index and partial correctness."""
         preds = np.array([1, 0, 1, -1, 0])
         labels = np.array([1, 0, 0, -1, 1])
         acc = accuracy(preds, labels, ignore_index=-1)
-        assert acc == 0.75  # 3 correct out of 4 (excluding -1)
+        assert acc == 0.75, "acc is not valid"
 
     def test_accuracy_single_sample(self):
         """Test accuracy with single sample."""
@@ -115,7 +115,7 @@ class TestAccuracyFunction:
         preds = np.array([0.9, 0.1, 0.8, 0.2])
         labels = np.array([1, 0, 1, 0])
         acc = accuracy(preds, labels)
-        assert 0.5 <= acc <= 1.0
+        assert 0.5 <= acc <= 1.0, "5 is not valid"
 
     def test_accuracy_large_batch(self):
         """Test accuracy with large batch of data."""
@@ -124,7 +124,7 @@ class TestAccuracyFunction:
         labels = np.random.randint(0, 2, 10000)
         acc = accuracy(preds, labels)
         # With random predictions, accuracy should be around 0.5
-        assert 0.4 < acc < 0.6
+        assert 0.4 < acc < 0.6, "4 is not valid"
 
 
 class TestPrecisionFunction:
@@ -153,7 +153,7 @@ class TestPrecisionFunction:
         preds = np.array([2, 2, 0, 0])
         labels = np.array([2, 0, 0, 0])
         prec = precision(preds, labels, positive=2)
-        assert prec == 0.5  # 1 TP, 1 FP
+        assert prec == 0.5, "prec is not valid"
 
     def test_precision_multiclass_as_binary(self):
         """Test precision treating multiclass as binary."""
@@ -161,7 +161,7 @@ class TestPrecisionFunction:
         labels = np.array([0, 1, 1, 1, 1, 2])
         # Treating 1 as positive
         prec = precision(preds, labels, positive=1)
-        assert 0.0 <= prec <= 1.0
+        assert 0.0 <= prec <= 1.0, "0 is not valid"
 
     def test_precision_single_sample_positive(self):
         """Test precision with single positive sample."""
@@ -181,7 +181,7 @@ class TestPrecisionFunction:
         preds = np.random.randint(0, 2, 1000)
         labels = np.random.randint(0, 2, 1000)
         prec = precision(preds, labels)
-        assert 0.0 <= prec <= 1.0
+        assert 0.0 <= prec <= 1.0, "0 is not valid"
 
 
 class TestRecallFunction:
@@ -204,19 +204,19 @@ class TestRecallFunction:
         preds = np.array([1, 0, 1, 1])
         labels = np.array([1, 1, 0, 1])
         rec = recall(preds, labels)
-        assert rec == 2.0 / 3.0  # 2 TP out of 3 positive labels
+        assert rec == 2.0 / 3.0, "rec is not valid"
 
     def test_recall_custom_positive_class(self):
         """Test recall with custom positive class."""
         preds = np.array([2, 0, 2, 0])
         labels = np.array([2, 2, 0, 0])
         rec = recall(preds, labels, positive=2)
-        assert rec == 0.5  # 1 TP out of 2 positive labels
+        assert rec == 0.5, "rec is not valid"
 
     def test_recall_imbalanced_data(self, imbalanced_data):
         """Test recall with imbalanced data."""
         rec = recall(imbalanced_data["preds"], imbalanced_data["labels"])
-        assert 0.0 <= rec <= 1.0
+        assert 0.0 <= rec <= 1.0, "0 is not valid"
 
 
 class TestF1Function:
@@ -239,7 +239,7 @@ class TestF1Function:
         preds = np.array([1, 1, 0, 0])
         labels = np.array([1, 0, 1, 0])
         score = f1(preds, labels)
-        assert 0.0 <= score <= 1.0
+        assert 0.0 <= score <= 1.0, "0 is not valid"
 
     def test_f1_imbalanced_precision_recall(self):
         """Test F1 with imbalanced precision and recall."""
@@ -253,14 +253,14 @@ class TestF1Function:
         labels = np.array([1, 0, 0, 0])
         score_low_precision = f1(preds, labels)
 
-        assert score_low_recall == score_low_precision  # Both are 2/3
+        assert score_low_recall == score_low_precision, "score_low_recall is not valid"
 
     def test_f1_custom_positive_class(self):
         """Test F1 with custom positive class."""
         preds = np.array([2, 2, 0, 0])
         labels = np.array([2, 0, 0, 0])
         score = f1(preds, labels, positive=2)
-        assert 0.0 <= score <= 1.0
+        assert 0.0 <= score <= 1.0, "0 is not valid"
 
 
 class TestStreamingAccuracyClass:
@@ -270,7 +270,7 @@ class TestStreamingAccuracyClass:
         """Test streaming accuracy with single update."""
         metric = StreamingAccuracy()
         metric.update(np.array([1, 0, 1]), np.array([1, 0, 1]))
-        assert metric.compute() == 1.0
+        assert metric.compute() == 1.0, "Condition must be true"
 
     def test_streaming_accuracy_multiple_updates(self):
         """Test streaming accuracy with multiple updates."""
@@ -278,48 +278,48 @@ class TestStreamingAccuracyClass:
         metric.update(np.array([1, 0]), np.array([1, 0]))
         metric.update(np.array([1, 0]), np.array([1, 1]))
         # 3 correct out of 4 total
-        assert metric.compute() == 0.75
+        assert metric.compute() == 0.75, "Condition must be true"
 
     def test_streaming_accuracy_reset(self):
         """Test streaming accuracy reset."""
         metric = StreamingAccuracy()
         metric.update(np.array([1, 0]), np.array([1, 0]))
-        assert metric.compute() == 1.0
+        assert metric.compute() == 1.0, "Condition must be true"
         metric.reset()
-        assert metric.compute() == 0.0
+        assert metric.compute() == 0.0, "Condition must be true"
 
     def test_streaming_accuracy_ignore_index(self):
         """Test streaming accuracy with ignore_index."""
         metric = StreamingAccuracy(ignore_index=-1)
         metric.update(np.array([1, 0, -1]), np.array([1, 0, -1]))
-        assert metric.compute() == 1.0
+        assert metric.compute() == 1.0, "Condition must be true"
 
     def test_streaming_accuracy_ignore_index_mixed(self):
         """Test streaming accuracy with ignore_index and mixed data."""
         metric = StreamingAccuracy(ignore_index=-1)
         metric.update(np.array([1, 0, -1]), np.array([1, 1, -1]))
-        assert metric.compute() == 0.5  # 1 correct out of 2 non-ignored
+        assert metric.compute() == 0.5, "Condition must be true"
 
     def test_streaming_accuracy_torch_input(self):
         """Test streaming accuracy with torch tensor input."""
         metric = StreamingAccuracy()
         metric.update(torch.tensor([1, 0, 1]), torch.tensor([1, 0, 1]))
-        assert metric.compute() == 1.0
+        assert metric.compute() == 1.0, "Condition must be true"
 
     def test_streaming_accuracy_meta(self):
         """Test metadata method."""
         metric = StreamingAccuracy()
         meta = metric.meta()
-        assert "name" in meta
-        assert meta["name"] == "StreamingAccuracy"
+        assert "name" in meta, "Condition must be true"
+        assert meta["name"] == "StreamingAccuracy", "Condition must be true"
 
     def test_streaming_accuracy_empty_after_reset(self):
         """Test streaming accuracy is empty after reset."""
         metric = StreamingAccuracy()
         metric.update(np.array([1]), np.array([1]))
         metric.reset()
-        assert metric._total == 0
-        assert metric._correct == 0
+        assert metric._total == 0, "_total is not valid"
+        assert metric._correct == 0, "_correct is not valid"
 
 
 # ============================================================================
@@ -339,7 +339,7 @@ class TestMetricsIntegration:
 
         acc_np = accuracy(preds_np, labels_np)
         acc_torch = accuracy(preds_torch, labels_torch)
-        assert acc_np == acc_torch
+        assert acc_np == acc_torch, "acc_np is not valid"
 
     def test_precision_recall_relationship(self):
         """Test precision-recall tradeoff."""
@@ -368,7 +368,7 @@ class TestMetricsIntegration:
         # F1 should be close to harmonic mean
         if prec + rec > 0:
             expected_f1 = 2 * prec * rec / (prec + rec)
-            assert abs(f1_score - expected_f1) < 1e-6
+            assert abs(f1_score - expected_f1) < 1e-6, "Condition must be true"
 
     def test_batch_vs_streaming_accuracy(self):
         """Test that batch accuracy matches streaming."""
@@ -386,7 +386,7 @@ class TestMetricsIntegration:
         streaming_metric.update(batch2[0], batch2[1])
         streaming_acc = streaming_metric.compute()
 
-        assert batch_acc == streaming_acc
+        assert batch_acc == streaming_acc, "batch_acc is not valid"
 
     def test_registry_register_and_compute(self, metric_registry):
         """Test metric registry register and compute."""
@@ -402,7 +402,7 @@ class TestMetricsIntegration:
             labels=[1, 0, 1, 0],
             predictions=[1, 0, 1, 0],
         )
-        assert result["accuracy"] == 1.0
+        assert result["accuracy"] == 1.0, "Result must not be empty"
 
     def test_registry_multiple_metrics(self, metric_registry):
         """Test registry with multiple metrics."""
@@ -425,8 +425,8 @@ class TestMetricsIntegration:
             labels=labels,
             predictions=preds,
         )
-        assert "accuracy" in result
-        assert "precision" in result
+        assert "accuracy" in result, "Result must not be empty"
+        assert "precision" in result, "Result must not be empty"
 
 
 # ============================================================================
@@ -447,7 +447,7 @@ class TestEdgeCases:
         labels = np.array([-1, -1, -1])
         acc = accuracy(preds, labels, ignore_index=-1)
         # All ignored, should return 0/0 which becomes 0.0
-        assert acc == 0.0
+        assert acc == 0.0, "acc is not valid"
 
     def test_metrics_with_boolean_arrays(self):
         """Test metrics with boolean input arrays."""
@@ -466,14 +466,14 @@ class TestEdgeCases:
         preds_int = np.array([1, 0, 1], dtype=np.int32)
         labels_float = np.array([1.0, 0.0, 1.0], dtype=np.float32)
         acc = accuracy(preds_int, labels_float)
-        assert acc == 1.0
+        assert acc == 1.0, "acc is not valid"
 
     def test_large_ignore_index_value(self):
         """Test ignore_index with large value."""
         preds = np.array([1, 0, 1, 999])
         labels = np.array([1, 0, 1, 999])
         acc = accuracy(preds, labels, ignore_index=999)
-        assert acc == 1.0
+        assert acc == 1.0, "acc is not valid"
 
     def test_negative_predictions_accuracy(self):
         """Test accuracy with negative prediction values."""
@@ -489,7 +489,7 @@ class TestEdgeCases:
             labels = np.random.randint(0, 2, 1000)
             metric.update(preds, labels)
         # Should have processed 100K samples
-        assert metric._total == 100000
+        assert metric._total == 100000, "_total is not valid"
 
 
 # ============================================================================
@@ -521,7 +521,7 @@ class TestErrorHandling:
         # All correct negatives, precision and recall are 0
         # F1 should handle gracefully
         score = f1(preds, labels)
-        assert score == 0.0
+        assert score == 0.0, "score is not valid"
 
     def test_streaming_accuracy_mismatched_shapes(self):
         """Test streaming accuracy with mismatched shapes."""
@@ -564,7 +564,7 @@ class TestPerformance:
             start = time.time()
             accuracy(preds, labels)
             elapsed = time.time() - start
-            assert elapsed < 1.0  # Should be very fast
+            assert elapsed < 1.0, "elapsed is not valid"
 
     def test_streaming_accuracy_batched_performance(self):
         """Test streaming accuracy performance with many batches."""
@@ -577,7 +577,7 @@ class TestPerformance:
             labels = np.random.randint(0, 2, 100)
             metric.update(preds, labels)
         elapsed = time.time() - start
-        assert elapsed < 5.0  # Process 100K samples in < 5 seconds
+        assert elapsed < 5.0, "elapsed is not valid"
 
 
 if __name__ == "__main__":

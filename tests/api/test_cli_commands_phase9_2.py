@@ -44,25 +44,25 @@ class TestWorkflowNavigatorCLI:
 
     def test_exits_zero(self) -> None:
         result = _run_module("agents.workflow_navigator")
-        assert (
+        assert (, "Condition must be true"
             result.returncode == 0
         ), f"workflow_navigator exited {result.returncode}:\n{result.stderr}"
 
     def test_output_contains_workflow_navigator(self) -> None:
         result = _run_module("agents.workflow_navigator")
         combined = result.stdout + result.stderr
-        assert "WORKFLOW" in combined.upper()
+        assert "WORKFLOW" in combined.upper(), "Condition must be true"
 
     def test_output_contains_available_workflows(self) -> None:
         result = _run_module("agents.workflow_navigator")
         combined = result.stdout + result.stderr
-        assert "AUDIT" in combined.upper() or "workflow" in combined.lower()
+        assert "AUDIT" in combined.upper() or "workflow" in combined.lower(), "Condition must be true"
 
     def test_dry_run_output_in_stdout(self) -> None:
         result = _run_module("agents.workflow_navigator")
         # dry_run=True should produce "DRY RUN" in output
         combined = result.stdout + result.stderr
-        assert "DRY RUN" in combined.upper() or "dry" in combined.lower()
+        assert "DRY RUN" in combined.upper() or "dry" in combined.lower(), "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -75,14 +75,14 @@ class TestQuantumGameTheoryCLI:
 
     def test_exits_zero(self) -> None:
         result = _run_module("agents.quantum_game_theory")
-        assert (
+        assert (, "Condition must be true"
             result.returncode == 0
         ), f"quantum_game_theory exited {result.returncode}:\n{result.stderr}"
 
     def test_output_contains_game_term(self) -> None:
         result = _run_module("agents.quantum_game_theory")
         combined = result.stdout + result.stderr
-        assert any(
+        assert any(, "Condition must be true"
             tok in combined.lower()
             for tok in ("game", "quantum", "strategy", "blue", "red", "payoff")
         ), f"Expected game-related output, got:\n{combined[:300]}"
@@ -98,14 +98,14 @@ class TestPhysicsOrchestratorCLI:
 
     def test_exits_zero(self) -> None:
         result = _run_module("agents.physics_orchestrator")
-        assert (
+        assert (, "Condition must be true"
             result.returncode == 0
         ), f"physics_orchestrator exited {result.returncode}:\n{result.stderr}"
 
     def test_output_contains_physics_term(self) -> None:
         result = _run_module("agents.physics_orchestrator")
         combined = result.stdout + result.stderr
-        assert any(
+        assert any(, "Condition must be true"
             tok in combined.lower()
             for tok in ("physics", "orchestrat", "action", "decision", "path")
         ), f"Expected physics-related output, got:\n{combined[:300]}"
@@ -122,6 +122,6 @@ class TestDeveloperOrchestratorCLI:
     def test_exits_zero(self) -> None:
         result = _run_module("agents.developer_orchestrator")
         # The __main__ block may print output and exit 0; accept any clean exit
-        assert (
+        assert (, "Condition must be true"
             result.returncode == 0
         ), f"developer_orchestrator exited {result.returncode}:\n{result.stderr[:300]}"

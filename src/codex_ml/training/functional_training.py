@@ -224,8 +224,8 @@ def train(
                 metrics_path.unlink()
             except (IOError, OSError) as e:
                 error_type = type(e).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
-                logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
+                logger.debug("Exception: <ERROR_TYPE>")
+                logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
         try:
             config_snapshot = artifact_root / "config.json"
             config_snapshot.write_text(
@@ -249,8 +249,8 @@ def train(
                     return int(size_attr(0))
                 except (ValueError, TypeError, RuntimeError) as e:
                     error_type = type(e).__name__
-                    logger.debug(f"Exception: <ERROR_TYPE>")
-                    logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
+                    logger.debug("Exception: <ERROR_TYPE>")
+                    logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
             try:
                 return len(tensor)
             except (ValueError, TypeError, RuntimeError):
@@ -293,8 +293,8 @@ def train(
                 fh.write(json.dumps(record, sort_keys=True) + "\n")
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 
     global_step = 0
     num_batches = math.ceil(len(train_ids) / config.batch_size)
@@ -340,8 +340,8 @@ def train(
                 log_params_safe(_as_flat_params(params))
             except (ValueError, TypeError, RuntimeError) as e:
                 error_type = type(e).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
-                logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
+                logger.debug("Exception: <ERROR_TYPE>")
+                logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 
         grad_accum = max(int(config.gradient_accumulation_steps), 1)
 
@@ -392,15 +392,15 @@ def train(
                                 writer.add_scalar("train/loss", loss_value, global_step)
                             except (IOError, OSError) as e:
                                 error_type = type(e).__name__
-                                logger.debug(f"Exception: <ERROR_TYPE>")
-                                logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
+                                logger.debug("Exception: <ERROR_TYPE>")
+                                logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
                         if config.mlflow_enable:
                             try:
                                 log_metric_safe("train/loss", float(loss_value), step=global_step)
                             except (ValueError, TypeError, RuntimeError) as e:
                                 error_type = type(e).__name__
-                                logger.debug(f"Exception: <ERROR_TYPE>")
-                                logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
+                                logger.debug("Exception: <ERROR_TYPE>")
+                                logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
                             _append_metric(
                                 {
                                     "phase": "train",
@@ -414,8 +414,8 @@ def train(
                                 wb.log({"train/loss": loss_value}, step=global_step)
                             except (ValueError, TypeError, RuntimeError) as e:
                                 error_type = type(e).__name__
-                                logger.debug(f"Exception: <ERROR_TYPE>")
-                                logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
+                                logger.debug("Exception: <ERROR_TYPE>")
+                                logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 
             if step_since_update != 0:
                 _optimizer_step()
@@ -487,8 +487,8 @@ def train(
                         )
                     except (IOError, OSError) as e:
                         error_type = type(e).__name__
-                        logger.debug(f"Exception: <ERROR_TYPE>")
-                        logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
+                        logger.debug("Exception: <ERROR_TYPE>")
+                        logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
                 if config.mlflow_enable:
                     try:
                         log_metric_safe(
@@ -503,8 +503,8 @@ def train(
                         )
                     except (ValueError, TypeError, RuntimeError) as e:
                         error_type = type(e).__name__
-                        logger.debug(f"Exception: <ERROR_TYPE>")
-                        logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
+                        logger.debug("Exception: <ERROR_TYPE>")
+                        logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
                     _append_metric(
                         {
                             "phase": "eval",
@@ -525,8 +525,8 @@ def train(
                             wb.log(wb_payload, step=global_step)
                     except (ValueError, TypeError, RuntimeError) as e:
                         error_type = type(e).__name__
-                        logger.debug(f"Exception: <ERROR_TYPE>")
-                        logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
+                        logger.debug("Exception: <ERROR_TYPE>")
+                        logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 
         if config.mlflow_enable:
             try:
@@ -557,8 +557,8 @@ def train(
                     log_artifact_safe(str(artifact))
             except (ValueError, TypeError, RuntimeError) as e:
                 error_type = type(e).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
-                logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
+                logger.debug("Exception: <ERROR_TYPE>")
+                logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
         if config.wandb_enable:
             try:
                 final_payload = {
@@ -570,8 +570,8 @@ def train(
                     wb.log(final_payload, step=global_step)
             except (IOError, OSError) as e:
                 error_type = type(e).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
-                logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
+                logger.debug("Exception: <ERROR_TYPE>")
+                logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 
     if stop_event is not None and system_thread is not None:
         try:
@@ -579,8 +579,8 @@ def train(
             system_thread.join(timeout=5.0)
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 
     if writer is not None:
         try:
@@ -588,7 +588,7 @@ def train(
             writer.close()
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 
     return metrics

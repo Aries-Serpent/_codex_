@@ -55,7 +55,7 @@ class TestComplexWorkflows:
             results = retriever.retrieve(query, top_k=3)
 
             # Should return results
-            assert results is not None or results == []
+            assert results is not None or results == [], "results must be initialized"
         except ImportError:
             pytest.skip("Modules not available")
 
@@ -82,7 +82,7 @@ class TestComplexWorkflows:
                     all_results.append([])
 
             # Should handle multiple queries
-            assert len(all_results) == len(queries)
+            assert len(all_results) == len(queries), "All_results must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -112,7 +112,7 @@ class TestComplexWorkflows:
                         _ = None
 
             # Should have added documents incrementally
-            assert doc_count == sum(batch_sizes)
+            assert doc_count == sum(batch_sizes), "Count must be greater than zero"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -144,7 +144,7 @@ class TestComplexWorkflows:
                 ):  # Expected: document may not exist or update operation may not be supported
                     _ = None
 
-            assert True
+            assert True, "True is not valid"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -247,8 +247,8 @@ class TestStressTests:
             assert duration < 30.0, f"Embedding took too long: {duration}s"
 
             # Verify embeddings
-            assert len(embeddings) == 1000
-            assert embeddings.shape[0] == 1000
+            assert len(embeddings) == 1000, "Embeddings must not be empty"
+            assert embeddings.shape[0] == 1000, "Condition must be true"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -275,7 +275,7 @@ class TestStressTests:
             growth = final_size - initial_size
 
             # Reasonable memory growth (< 100MB)
-            assert growth < 100 * 1024 * 1024 or True  # May not track accurately
+            assert growth < 100 * 1024 * 1024 or True, "growth is not valid"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -313,7 +313,7 @@ class TestConcurrentAccess:
 
             # Should complete without errors
             assert len(errors) == 0, f"Errors in threads: {errors}"
-            assert len(results) == 10
+            assert len(results) == 10, "Results must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -347,7 +347,7 @@ class TestConcurrentAccess:
 
             # May have some errors if not thread-safe, but shouldn't crash
             # Thread safety is nice-to-have, not required
-            assert True
+            assert True, "True is not valid"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -381,7 +381,7 @@ class TestConcurrentAccess:
                 t.join()
 
             # Should handle concurrent reads
-            assert len(errors) == 0 or True  # Some implementations may not be thread-safe
+            assert len(errors) == 0 or True, "Errors must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -427,7 +427,7 @@ class TestConcurrentAccess:
                 t.join()
 
             # Should handle concurrent read/write
-            assert True  # Implementation may or may not be thread-safe
+            assert True, "True is not valid"
         except ImportError:
             pytest.skip("Modules not available")
 
@@ -459,7 +459,7 @@ class TestPerformanceBenchmarks:
             # Larger batches should have better throughput
             # (or at least reasonable throughput)
             for batch_size, throughput in throughputs:
-                assert (
+                assert (, "Condition must be true"
                     throughput > 10
                 ), f"Low throughput for batch {batch_size}: {throughput} docs/sec"
         except ImportError:
@@ -555,7 +555,7 @@ class TestScalability:
 
             # Ratios should be roughly similar for linear scaling
             # Allow for variance
-            assert 0.5 < ratio_1 / ratio_2 < 2.5 or True
+            assert 0.5 < ratio_1 / ratio_2 < 2.5 or True, "5 is not valid"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -583,7 +583,7 @@ class TestScalability:
 
             # Second call may be faster if cached
             # (but not required)
-            assert time2 <= time1 * 2  # Allow some variance
+            assert time2 <= time1 * 2, "time2 is not valid"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -610,7 +610,7 @@ class TestResourceManagement:
                     indexer.cleanup()
 
                 # Should complete without errors
-                assert True
+                assert True, "True is not valid"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -637,6 +637,6 @@ class TestResourceManagement:
                 indexer.shutdown()
 
             # Should shutdown cleanly
-            assert True
+            assert True, "True is not valid"
         except ImportError:
             pytest.skip("Module not available")

@@ -53,4 +53,4 @@ def test_cli_smoke(tmp_path):
     assert cp.returncode == 0, cp.stderr
     data = json.loads(cp.stdout)
     messages = [r["message"] for r in data]
-    assert "hi" in messages and "yo" in messages
+    assert "hi" in messages and "yo" in messages, "Condition must be true"

@@ -22,23 +22,23 @@ def test_prometheus_fallback_writes_ndjson(monkeypatch, tmp_path, capsys):
     monkeypatch.setattr(builtins, "__import__", fake_import)
 
     counters, gauges = module.maybe_export_metrics(port=0, fallback_dir=tmp_path)
-    assert counters
-    assert gauges
+    assert counters, "Count must be greater than zero"
+    assert gauges, "gauges is not valid"
     counters["requests_total"].inc()
     gauges["queue_depth"].set(5)
 
     sink = tmp_path / "prometheus.ndjson"
-    assert sink.exists()
+    assert sink.exists(), "Condition must be true"
     records = [
         json.loads(line) for line in sink.read_text(encoding="utf-8").splitlines() if line.strip()
     ]
-    assert any(rec.get("metric") == "requests_total" for rec in records)
-    assert any(rec.get("metric") == "queue_depth" for rec in records)
+    assert any(rec.get("metric") == "requests_total" for rec in records), "Condition must be true"
+    assert any(rec.get("metric") == "queue_depth" for rec in records), "Condition must be true"
 
     active, path, reason = module.fallback_status()
-    assert active is True
-    assert path == sink
-    assert "prometheus_client missing" in (reason or "")
+    assert active is True, "active is not valid"
+    assert path == sink, "path is not valid"
+    assert "prometheus_client missing" in (reason or ""), "Condition must be true"
 
     captured = capsys.readouterr()
-    assert "falling back to NDJSON" in captured.err
+    assert "falling back to NDJSON" in captured.err, "Condition must be true"

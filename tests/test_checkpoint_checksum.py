@@ -71,14 +71,14 @@ def test_checkpoint_checksum_verify(tmp_path: Path):
 
     # Verify checksum file was created
     checksums_file = ckpt_dir / "checksums.json"
-    assert checksums_file.exists()
+    assert checksums_file.exists(), "Condition must be true"
 
     # Read and verify checksum metadata
     meta = json.loads(checksums_file.read_text())
-    assert "file" in meta
-    assert "sha256" in meta
-    assert "bytes" in meta
-    assert len(meta["sha256"]) == 64  # SHA256 hex length
+    assert "file" in meta, "Condition must be true"
+    assert "sha256" in meta, "Condition must be true"
+    assert "bytes" in meta, "Condition must be true"
+    assert len(meta["sha256"]) == 64, "Collection must not be empty"
 
     # Verify that resume works with valid checksum
     cm.resume_from(ckpt_dir)
@@ -105,17 +105,17 @@ def test_checksum_roundtrip(tmp_path):
     save_ckpt(test_state, str(ckpt_path))
 
     # Verify checkpoint file exists
-    assert ckpt_path.exists()
+    assert ckpt_path.exists(), "Condition must be true"
 
     # Verify checksum metadata file was created
     checksums_file = tmp_path / "checksums.json"
-    assert checksums_file.exists()
+    assert checksums_file.exists(), "Condition must be true"
 
     # Verify checksum metadata content
     meta = json.loads(checksums_file.read_text())
-    assert meta["file"] == "model.pt"
-    assert len(meta["sha256"]) == 64
-    assert meta["bytes"] == ckpt_path.stat().st_size
+    assert meta["file"] == "model.pt", "Condition must be true"
+    assert len(meta["sha256"]) == 64, "Collection must not be empty"
+    assert meta["bytes"] == ckpt_path.stat().st_size, "Condition must be true"
 
     # Verify integrity check passes
     verify_ckpt_integrity(str(ckpt_path))
@@ -178,8 +178,8 @@ def test_save_load_checkpoint_with_integrity(tmp_path, mock_model, mock_optimize
     )
 
     # Verify checkpoint and checksum files exist
-    assert ckpt_path.exists()
-    assert (tmp_path / "checksums.json").exists()
+    assert ckpt_path.exists(), "Condition must be true"
+    assert (tmp_path / "checksums.json").exists(), "Condition must be true"
 
     # Create new model/optimizer instances
     new_model = MockModel({"layer.weight": torch.zeros(3)})
@@ -190,9 +190,9 @@ def test_save_load_checkpoint_with_integrity(tmp_path, mock_model, mock_optimize
     state = load_training_checkpoint(str(ckpt_path), new_model, new_optimizer)
 
     # Verify loaded data
-    assert state.get("epoch") == 5
+    assert state.get("epoch") == 5, "Condition must be true"
     extra = state.get("extra", {})
-    assert extra["validation_loss"] == 0.25
+    assert extra["validation_loss"] == 0.25, "Condition must be true"
     assert torch.allclose(new_model.weights["layer.weight"], torch.tensor([1.0, 2.0, 3.0]))
 
 
@@ -210,4 +210,4 @@ def test_load_checkpoint_checksum_mismatch(tmp_path):
     with pytest.raises(CheckpointLoadError) as exc_info:
         load_training_checkpoint(str(ckpt_path), new_model, new_optimizer)
     # Verify the error message contains checksum mismatch
-    assert "checksum mismatch" in str(exc_info.value)
+    assert "checksum mismatch" in str(exc_info.value), "Value must be initialized"

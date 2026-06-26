@@ -17,10 +17,10 @@ def test_inference_serving_detector_basic_path_signals():
         ]
     }
     result = detect(file_index)
-    assert result["id"] == "inference-serving"
-    assert any("server" in p for p in result["evidence_files"])
+    assert result["id"] == "inference-serving", "Result must not be empty"
+    assert any("server" in p for p in result["evidence_files"]), "Result must not be empty"
     # signals detected from path/content heuristics
-    assert "serve" in result["found_patterns"]
+    assert "serve" in result["found_patterns"], "Result must not be empty"
     # required patterns declared
-    assert "fastapi" in result["required_patterns"]
-    assert "serve" in result["required_patterns"]
+    assert "fastapi" in result["required_patterns"], "Result must not be empty"
+    assert "serve" in result["required_patterns"], "Result must not be empty"

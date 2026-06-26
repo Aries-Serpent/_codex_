@@ -62,29 +62,29 @@ def test_run_evaluation_generates_reports(tmp_path: Path) -> None:
     ndjson_path = Path(result["records_path"])
     manifest_path = Path(result["manifest_path"])
     metrics_path = Path(result["metrics_path"])
-    assert result["metrics_sink"] == "ndjson"
-    assert result["metrics_sink_path"] == str(metrics_path)
-    assert summary_path.exists()
-    assert ndjson_path.exists()
-    assert manifest_path.exists()
-    assert metrics_path.exists()
+    assert result["metrics_sink"] == "ndjson", "Result must not be empty"
+    assert result["metrics_sink_path"] == str(metrics_path), "Result must not be empty"
+    assert summary_path.exists(), "Condition must be true"
+    assert ndjson_path.exists(), "Condition must be true"
+    assert manifest_path.exists(), "Condition must be true"
+    assert metrics_path.exists(), "Condition must be true"
     summary = json.loads(summary_path.read_text(encoding="utf-8"))
-    assert summary["num_records"] == 2
-    assert summary["metrics"]["accuracy"] == pytest.approx(0.5)
-    assert summary["metrics"]["micro_f1"] == pytest.approx(0.5)
+    assert summary["num_records"] == 2, "Condition must be true"
+    assert summary["metrics"]["accuracy"] == pytest.approx(0.5), "Condition must be true"
+    assert summary["metrics"]["micro_f1"] == pytest.approx(0.5), "Condition must be true"
     expected_ppl = math.exp((0.0 + math.log(4.0) * 3) / 4)
-    assert summary["metrics"]["perplexity"] == pytest.approx(expected_ppl)
+    assert summary["metrics"]["perplexity"] == pytest.approx(expected_ppl), "Condition must be true"
     metric_rows = [
         json.loads(line) for line in metrics_path.read_text(encoding="utf-8").splitlines() if line
     ]
     logged = {row["metric"]: row["value"] for row in metric_rows}
-    assert logged["accuracy"] == pytest.approx(0.5)
-    assert logged["micro_f1"] == pytest.approx(0.5)
-    assert logged["perplexity"] == pytest.approx(expected_ppl)
+    assert logged["accuracy"] == pytest.approx(0.5), "Condition must be true"
+    assert logged["micro_f1"] == pytest.approx(0.5), "Condition must be true"
+    assert logged["perplexity"] == pytest.approx(expected_ppl), "Condition must be true"
     for row in metric_rows:
-        assert row["dataset_path"].endswith("dataset.jsonl")
-        assert row["num_records"] == 2
-        assert "timestamp" in row
+        assert row["dataset_path"].endswith("dataset.jsonl"), "Data must not be empty"
+        assert row["num_records"] == 2, "Condition must be true"
+        assert "timestamp" in row, "Condition must be true"
 
 
 def test_run_evaluation_missing_tokens_errors(tmp_path: Path) -> None:
@@ -179,5 +179,5 @@ def test_run_evaluation_shared_label_mapping(tmp_path: Path) -> None:
     )
     result = run_evaluation(cfg)
     summary = json.loads(Path(result["summary_path"]).read_text(encoding="utf-8"))
-    assert summary["metrics"]["micro_f1"] == pytest.approx(0.0)
-    assert summary["metrics"]["macro_f1"] == pytest.approx(0.0)
+    assert summary["metrics"]["micro_f1"] == pytest.approx(0.0), "Condition must be true"
+    assert summary["metrics"]["macro_f1"] == pytest.approx(0.0), "Condition must be true"

@@ -168,18 +168,18 @@ class TestIncidentDetection:
 
     def test_incident_created_from_alert(self, incident_config: dict[str, Any]):
         """Test incident is created from alert."""
-        assert incident_config["detected_by"].startswith("alert_rule:")
+        assert incident_config["detected_by"].startswith("alert_rule:"), "Condition must be true"
 
     def test_incident_has_required_fields(self, incident_config: dict[str, Any]):
         """Test incident has all required fields."""
         required_fields = ["id", "title", "severity", "status", "created_at"]
         for field in required_fields:
-            assert field in incident_config
+            assert field in incident_config, "Condition must be true"
 
     def test_incident_severity_valid(self, incident_config: dict[str, Any]):
         """Test incident severity is valid."""
         valid_severities = ["P1", "P2", "P3", "P4"]
-        assert incident_config["severity"] in valid_severities
+        assert incident_config["severity"] in valid_severities, "Condition must be true"
 
     def test_incident_status_valid(self, incident_config: dict[str, Any]):
         """Test incident status is valid."""
@@ -190,12 +190,12 @@ class TestIncidentDetection:
             "monitoring",
             "resolved",
         ]
-        assert incident_config["status"] in valid_statuses
+        assert incident_config["status"] in valid_statuses, "Condition must be true"
 
     def test_affected_services_listed(self, incident_config: dict[str, Any]):
         """Test affected services are listed."""
-        assert "affected_services" in incident_config
-        assert len(incident_config["affected_services"]) > 0
+        assert "affected_services" in incident_config, "Condition must be true"
+        assert len(incident_config["affected_services"]) > 0, "Collection must not be empty"
 
 
 # ============================================================================
@@ -217,7 +217,7 @@ class TestIncidentClassification:
 
         impact = "critical_service_down"
         severity = impact_scores.get(impact, "P3")
-        assert severity == "P1"
+        assert severity == "P1", "severity is not valid"
 
     def test_classify_by_affected_users(self):
         """Test classifying incident by affected user count."""
@@ -231,10 +231,10 @@ class TestIncidentClassification:
                 return "P3"
             return "P4"
 
-        assert _classify(5000) == "P1"
-        assert _classify(500) == "P2"
-        assert _classify(50) == "P3"
-        assert _classify(5) == "P4"
+        assert _classify(5000) == "P1", "Condition must be true"
+        assert _classify(500) == "P2", "Condition must be true"
+        assert _classify(50) == "P3", "Condition must be true"
+        assert _classify(5) == "P4", "Condition must be true"
 
     def test_auto_upgrade_severity(self):
         """Test automatic severity upgrade based on duration."""
@@ -247,7 +247,7 @@ class TestIncidentClassification:
         else:
             new_severity = current_severity
 
-        assert new_severity == "P1"
+        assert new_severity == "P1", "new_severity is not valid"
 
 
 # ============================================================================
@@ -261,31 +261,31 @@ class TestIncidentEscalation:
     def test_p1_response_time(self, escalation_matrix: dict[str, Any]):
         """Test P1 response time requirement."""
         p1_config = escalation_matrix["P1"]
-        assert p1_config["response_time_minutes"] == 5
+        assert p1_config["response_time_minutes"] == 5, "Response must not be empty"
 
     def test_p1_resolution_target(self, escalation_matrix: dict[str, Any]):
         """Test P1 resolution target."""
         p1_config = escalation_matrix["P1"]
-        assert p1_config["resolution_target_hours"] == 1
+        assert p1_config["resolution_target_hours"] == 1, "Condition must be true"
 
     def test_escalation_notifications(self, escalation_matrix: dict[str, Any]):
         """Test escalation includes appropriate notifications."""
         p1_config = escalation_matrix["P1"]
-        assert "pagerduty" in p1_config["notify"]
-        assert len(p1_config["notify"]) >= 2
+        assert "pagerduty" in p1_config["notify"], "Condition must be true"
+        assert len(p1_config["notify"]) >= 2, "Collection must not be empty"
 
     def test_on_call_team_assignment(self, escalation_matrix: dict[str, Any]):
         """Test on-call team is assigned by severity."""
         p1_config = escalation_matrix["P1"]
         p4_config = escalation_matrix["P4"]
 
-        assert p1_config["on_call_team"] == "sre"
-        assert p4_config["on_call_team"] == "platform"
+        assert p1_config["on_call_team"] == "sre", "Condition must be true"
+        assert p4_config["on_call_team"] == "platform", "Condition must be true"
 
     def test_escalation_timer(self, escalation_matrix: dict[str, Any]):
         """Test escalation timer configuration."""
         p1_config = escalation_matrix["P1"]
-        assert p1_config["escalate_after_minutes"] == 15
+        assert p1_config["escalate_after_minutes"] == 15, "Condition must be true"
 
 
 # ============================================================================
@@ -305,9 +305,9 @@ class TestIncidentCommunication:
             "timestamp": datetime.utcnow().isoformat(),
         }
 
-        assert "incident_id" in status_update
-        assert "status" in status_update
-        assert "message" in status_update
+        assert "incident_id" in status_update, "Condition must be true"
+        assert "status" in status_update, "Condition must be true"
+        assert "message" in status_update, "Condition must be true"
 
     def test_notification_template(self, incident_config: dict[str, Any]):
         """Test notification message template."""
@@ -319,8 +319,8 @@ class TestIncidentCommunication:
         Status: {incident_config["status"]}
         """
 
-        assert incident_config["severity"] in template
-        assert incident_config["title"] in template
+        assert incident_config["severity"] in template, "Condition must be true"
+        assert incident_config["title"] in template, "Condition must be true"
 
     def test_stakeholder_notification_routing(self, escalation_matrix: dict[str, Any]):
         """Test stakeholder notifications by severity."""
@@ -328,9 +328,9 @@ class TestIncidentCommunication:
         p4_notify = escalation_matrix["P4"]["notify"]
 
         # P1 should notify executives
-        assert "email-executives" in p1_notify
+        assert "email-executives" in p1_notify, "Condition must be true"
         # P4 should be less urgent
-        assert "email-executives" not in p4_notify
+        assert "email-executives" not in p4_notify, "Condition must be true"
 
 
 # ============================================================================
@@ -344,24 +344,24 @@ class TestIncidentTimeline:
     def test_timeline_events_ordered(self, incident_timeline: list[dict[str, Any]]):
         """Test timeline events are in chronological order."""
         timestamps = [event["timestamp"] for event in incident_timeline]
-        assert timestamps == sorted(timestamps)
+        assert timestamps == sorted(timestamps), "timestamps is not valid"
 
     def test_timeline_has_detection_event(self, incident_timeline: list[dict[str, Any]]):
         """Test timeline includes detection event."""
         detection_events = [e for e in incident_timeline if e["type"] == "detection"]
-        assert len(detection_events) == 1
+        assert len(detection_events) == 1, "Detection_events must not be empty"
 
     def test_timeline_has_resolution_event(self, incident_timeline: list[dict[str, Any]]):
         """Test timeline includes resolution event."""
         resolution_events = [e for e in incident_timeline if e["type"] == "resolution"]
-        assert len(resolution_events) == 1
+        assert len(resolution_events) == 1, "Resolution_events must not be empty"
 
     def test_timeline_event_structure(self, incident_timeline: list[dict[str, Any]]):
         """Test timeline event has required fields."""
         required_fields = ["timestamp", "type", "description", "actor"]
         for event in incident_timeline:
             for field in required_fields:
-                assert field in event
+                assert field in event, "Condition must be true"
 
     def test_calculate_time_to_acknowledge(self, incident_timeline: list[dict[str, Any]]):
         """Test calculating time to acknowledge."""
@@ -372,7 +372,7 @@ class TestIncidentTimeline:
         ack_time = datetime.fromisoformat(ack["timestamp"])
 
         tta_minutes = (ack_time - detect_time).total_seconds() / 60
-        assert tta_minutes > 0
+        assert tta_minutes > 0, "tta_minutes must be greater than zero"
 
     def test_calculate_time_to_resolve(self, incident_timeline: list[dict[str, Any]]):
         """Test calculating time to resolve."""
@@ -383,7 +383,7 @@ class TestIncidentTimeline:
         resolve_time = datetime.fromisoformat(resolution["timestamp"])
 
         ttr_minutes = (resolve_time - detect_time).total_seconds() / 60
-        assert ttr_minutes > 0
+        assert ttr_minutes > 0, "ttr_minutes must be greater than zero"
 
 
 # ============================================================================
@@ -396,28 +396,28 @@ class TestRunbookAutomation:
 
     def test_runbook_has_steps(self, runbook_config: dict[str, Any]):
         """Test runbook has defined steps."""
-        assert "steps" in runbook_config
-        assert len(runbook_config["steps"]) > 0
+        assert "steps" in runbook_config, "Condition must be true"
+        assert len(runbook_config["steps"]) > 0, "Collection must not be empty"
 
     def test_runbook_steps_ordered(self, runbook_config: dict[str, Any]):
         """Test runbook steps are numbered sequentially."""
         step_numbers = [s["step"] for s in runbook_config["steps"]]
-        assert step_numbers == sorted(step_numbers)
+        assert step_numbers == sorted(step_numbers), "step_numbers is not valid"
 
     def test_automated_steps_identified(self, runbook_config: dict[str, Any]):
         """Test automated steps are identified."""
         automated_steps = [s for s in runbook_config["steps"] if s.get("automated")]
-        assert len(automated_steps) > 0
+        assert len(automated_steps) > 0, "Automated_steps must not be empty"
 
     def test_approval_required_steps(self, runbook_config: dict[str, Any]):
         """Test approval-required steps are identified."""
         approval_steps = [s for s in runbook_config["steps"] if s.get("requires_approval")]
-        assert len(approval_steps) > 0
+        assert len(approval_steps) > 0, "Approval_steps must not be empty"
 
     def test_runbook_trigger_specified(self, runbook_config: dict[str, Any]):
         """Test runbook has trigger specified."""
-        assert "trigger" in runbook_config
-        assert runbook_config["trigger"].startswith("alert:")
+        assert "trigger" in runbook_config, "Condition must be true"
+        assert runbook_config["trigger"].startswith("alert:"), "Condition must be true"
 
 
 # ============================================================================
@@ -461,7 +461,7 @@ class TestPostIncidentReview:
 
         required_sections = ["summary", "root_cause", "impact", "action_items"]
         for section in required_sections:
-            assert section in postmortem
+            assert section in postmortem, "Condition must be true"
 
     def test_action_items_have_owners(self):
         """Test action items have assigned owners."""
@@ -471,8 +471,8 @@ class TestPostIncidentReview:
         ]
 
         for item in action_items:
-            assert "owner" in item
-            assert len(item["owner"]) > 0
+            assert "owner" in item, "Item must not be empty"
+            assert len(item["owner"]) > 0, "Collection must not be empty"
 
     def test_action_items_have_due_dates(self):
         """Test action items have due dates."""
@@ -481,7 +481,7 @@ class TestPostIncidentReview:
         ]
 
         for item in action_items:
-            assert "due" in item
+            assert "due" in item, "Item must not be empty"
             # Validate date format
             datetime.fromisoformat(item["due"])
 
@@ -501,5 +501,5 @@ class TestPostIncidentReview:
             "time_to_resolve_minutes": (resolve_time - detect_time).total_seconds() / 60,
         }
 
-        assert metrics["time_to_acknowledge_minutes"] > 0
-        assert metrics["time_to_resolve_minutes"] > metrics["time_to_acknowledge_minutes"]
+        assert metrics["time_to_acknowledge_minutes"] > 0, "Value must be greater than zero"
+        assert metrics["time_to_resolve_minutes"] > metrics["time_to_acknowledge_minutes"], "Value must be greater than zero"

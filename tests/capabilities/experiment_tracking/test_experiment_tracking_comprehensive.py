@@ -82,29 +82,29 @@ class TestExperimentRun:
     def test_create_run(self):
         """Create experiment run."""
         run = ExperimentRun("run-001", "exp-001")
-        assert run.status == RunStatus.PENDING
+        assert run.status == RunStatus.PENDING, "status is not valid"
 
     def test_run_lifecycle(self):
         """Run lifecycle: start -> end."""
         run = ExperimentRun("run-001", "exp-001")
         run.start()
-        assert run.status == RunStatus.RUNNING
+        assert run.status == RunStatus.RUNNING, "status is not valid"
         run.end()
-        assert run.status == RunStatus.COMPLETED
+        assert run.status == RunStatus.COMPLETED, "status is not valid"
 
     def test_log_params(self):
         """Log parameters."""
         run = ExperimentRun("run-001", "exp-001")
         run.log_param("lr", 0.001)
         run.log_param("batch_size", 32)
-        assert run.params["lr"] == 0.001
+        assert run.params["lr"] == 0.001, "Condition must be true"
 
     def test_log_metrics(self):
         """Log metrics."""
         run = ExperimentRun("run-001", "exp-001")
         run.log_metric("loss", 0.5)
         run.log_metric("loss", 0.3)
-        assert len(run.metrics["loss"]) == 2
+        assert len(run.metrics["loss"]) == 2, "Collection must not be empty"
 
 
 # --- Offline Mode Tests ---
@@ -143,15 +143,15 @@ class TestOfflineMode:
         """Create run in offline mode."""
         tracker = OfflineTracker("/tmp/mlruns")
         run = tracker.create_run("exp-001")
-        assert run.run_id.startswith("offline-")
+        assert run.run_id.startswith("offline-"), "Condition must be true"
 
     def test_sync_pending(self):
         """Sync pending data."""
         tracker = OfflineTracker("/tmp/mlruns")
         tracker.pending_uploads.append({"type": "metric", "data": {}})
         synced = tracker.sync()
-        assert synced == 1
-        assert len(tracker.pending_uploads) == 0
+        assert synced == 1, "synced is not valid"
+        assert len(tracker.pending_uploads) == 0, "Collection must not be empty"
 
 
 # --- Artifact Management Tests ---
@@ -204,7 +204,7 @@ class TestArtifactManagement:
         store = ArtifactStore()
         artifact = Artifact("model.pkl", "/path/to/model.pkl")
         key = store.store("run-001", artifact)
-        assert "run-001" in key
+        assert "run-001" in key, "Condition must be true"
 
     def test_list_artifacts(self):
         """List artifacts for run."""
@@ -213,7 +213,7 @@ class TestArtifactManagement:
         store.store("run-001", Artifact("config.json", "/path"))
         store.store("run-002", Artifact("other.pkl", "/path"))
         artifacts = store.list_for_run("run-001")
-        assert len(artifacts) == 2
+        assert len(artifacts) == 2, "Artifacts must not be empty"
 
 
 # --- Run Resumption Tests ---
@@ -259,14 +259,14 @@ class TestRunResumption:
         checkpoint.step = 1000
         checkpoint.epoch = 5
         data = checkpoint.save()
-        assert data["step"] == 1000
+        assert data["step"] == 1000, "Data must not be empty"
 
     def test_load_checkpoint(self):
         """Load run checkpoint."""
         data = {"run_id": "run-001", "step": 500, "epoch": 2}
         checkpoint = RunCheckpoint.load(data)
-        assert checkpoint.step == 500
-        assert checkpoint.epoch == 2
+        assert checkpoint.step == 500, "step is not valid"
+        assert checkpoint.epoch == 2, "epoch is not valid"
 
 
 # --- Cross-Run Comparison Tests ---
@@ -322,8 +322,8 @@ class TestRunComparison:
         comparison.add_run(run2)
 
         result = comparison.compare_metric("loss")
-        assert result["run-001"]["last"] == 0.3
-        assert result["run-002"]["last"] == 0.2
+        assert result["run-001"]["last"] == 0.3, "Result must not be empty"
+        assert result["run-002"]["last"] == 0.2, "Result must not be empty"
 
     def test_get_best_run(self):
         """Get best run by metric."""
@@ -338,7 +338,7 @@ class TestRunComparison:
         comparison.add_run(run2)
 
         best = comparison.get_best_run("loss", mode="min")
-        assert best == "run-002"
+        assert best == "run-002", "best is not valid"
 
 
 # --- Experiment Registry Tests ---
@@ -387,7 +387,7 @@ class TestExperimentRegistry:
         """Create experiment."""
         registry = ExperimentRegistry()
         exp = registry.create_experiment("My Experiment")
-        assert exp.name == "My Experiment"
+        assert exp.name == "My Experiment", "name is not valid"
 
     def test_search_experiments(self):
         """Search experiments."""
@@ -395,7 +395,7 @@ class TestExperimentRegistry:
         registry.create_experiment("NLP Experiment")
         registry.create_experiment("CV Experiment")
         results = registry.search_experiments("nlp")
-        assert len(results) == 1
+        assert len(results) == 1, "Results must not be empty"
 
 
 # --- Metric History Tests ---
@@ -442,7 +442,7 @@ class TestMetricHistory:
         history = MetricHistory("loss")
         history.record(0.5)
         history.record(0.3)
-        assert len(history.values) == 2
+        assert len(history.values) == 2, "Collection must not be empty"
 
     def test_best_value(self):
         """Get best value."""
@@ -450,11 +450,11 @@ class TestMetricHistory:
         history.record(0.5)
         history.record(0.3)
         history.record(0.4)
-        assert history.best("min") == 0.3
+        assert history.best("min") == 0.3, "hist is not valid"
 
     def test_trend(self):
         """Get trend direction."""
         history = MetricHistory("loss")
         history.record(0.5)
         history.record(0.3)
-        assert history.trend() == "decreasing"
+        assert history.trend() == "decreasing", "hist is not valid"

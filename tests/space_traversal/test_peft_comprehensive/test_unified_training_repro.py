@@ -37,6 +37,6 @@ def test_unified_training_captures_environment(monkeypatch, tmp_path):
     cfg = unified_training.UnifiedTrainingConfig(output_dir=str(tmp_path / "run"), epochs=1)
     result = unified_training.run_unified_training(cfg, callbacks=[], ndjson_log_path=None)
 
-    assert env_calls["path"].name == "environment"
-    assert result["config_version"] == cfg.config_version
-    assert result["dataset_version"] == cfg.dataset_version
+    assert env_calls["path"].name == "environment", "name is not valid"
+    assert result["config_version"] == cfg.config_version, "Result must not be empty"
+    assert result["dataset_version"] == cfg.dataset_version, "Result must not be empty"

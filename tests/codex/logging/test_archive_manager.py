@@ -15,7 +15,7 @@ import tempfile
 from datetime import datetime, timedelta
 from pathlib import Path  # pragma: allowlist secret
 
-import pytest # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+import pytest  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
 # Conditionally import pandas for testing
 pd = None
@@ -182,8 +182,8 @@ class TestArchiveManager:
         manager = ArchiveManager(db_path=str(test_db), archive_dir=str(archive_dir))
         candidates = manager.identify_archive_candidates(days=90)
 
-        assert "old-session" in candidates
-        assert "recent-session" not in candidates
+        assert "old-session" in candidates, "Condition must be true"
+        assert "recent-session" not in candidates, "Condition must be true"
 
     def test_archive_session(self, test_db, archive_dir, test_session_data):
         """Test archiving a session."""
@@ -194,13 +194,13 @@ class TestArchiveManager:
         manager = ArchiveManager(db_path=str(test_db), archive_dir=str(archive_dir))
         archived = manager.archive_session(test_session_data["session_id"])
 
-        assert archived is not None
-        assert archived.session_id == test_session_data["session_id"]
-        assert archived.file_size_bytes > 0
+        assert archived is not None, "archived must be initialized"
+        assert archived.session_id == test_session_data["session_id"], "Data must not be empty"
+        assert archived.file_size_bytes > 0, "file_size_bytes must be greater than zero"
 
         # Verify archive file exists
         archive_path = Path(archived.archive_location)
-        assert archive_path.exists()
+        assert archive_path.exists(), "Condition must be true"
 
         # Verify SQLite metadata updated
         conn = sqlite3.connect(str(test_db))
@@ -213,8 +213,8 @@ class TestArchiveManager:
         row = cursor.fetchone()
         conn.close()
 
-        assert row["archive_status"] == "archived"
-        assert row["archive_location"] is not None
+        assert row["archive_status"] == "archived", "Condition must be true"
+        assert row["archive_location"] is not None, "Value must be initialized"
 
     def test_get_archived_session(self, test_db, archive_dir, test_session_data):
         """Test retrieving archived session."""
@@ -228,8 +228,8 @@ class TestArchiveManager:
         # Retrieve archived session
         retrieved = manager.get_archived_session(test_session_data["session_id"])
 
-        assert retrieved is not None
-        assert retrieved["session_id"] == test_session_data["session_id"]
+        assert retrieved is not None, "retrieved must be initialized"
+        assert retrieved["session_id"] == test_session_data["session_id"], "Data must not be empty"
 
     def test_cache_performance(self, test_db, archive_dir, test_session_data):
         """Test LRU caching improves retrieval performance."""
@@ -253,7 +253,7 @@ class TestArchiveManager:
         warm_time = time.time() - start
 
         # Cached retrieval should be faster
-        assert warm_time < cold_time
+        assert warm_time < cold_time, "warm_time is not valid"
 
     def test_update_archive_index(self, test_db, archive_dir, test_session_data):
         """Test building archive index."""
@@ -267,16 +267,16 @@ class TestArchiveManager:
         # Update index
         index = manager.update_archive_index()
 
-        assert index["statistics"]["total_sessions"] == 1
-        assert index["statistics"]["total_size_mb"] > 0
-        assert len(index["sessions"]) == 1
-        assert index["sessions"][0]["session_id"] == test_session_data["session_id"]
+        assert index["statistics"]["total_sessions"] == 1, "Condition must be true"
+        assert index["statistics"]["total_size_mb"] > 0, "Value must be greater than zero"
+        assert len(index["sessions"]) == 1, "Collection must not be empty"
+        assert index["sessions"][0]["session_id"] == test_session_data["session_id"], "Data must not be empty"
 
         # Verify index file written
-        assert manager.archive_index_path.exists()
+        assert manager.archive_index_path.exists(), "Condition must be true"
         with open(manager.archive_index_path) as f:
             saved_index = json.load(f)
-        assert saved_index["statistics"]["total_sessions"] == 1
+        assert saved_index["statistics"]["total_sessions"] == 1, "Condition must be true"
 
     def test_purge_old_archives(self, test_db, archive_dir):
         """Test retention policy enforcement."""
@@ -329,7 +329,7 @@ class TestArchiveManager:
         # Purge with 30-iteration threshold
         report = manager.purge_old_archives(iterations=30)
 
-        assert len(report["deleted_sessions"]) == 1
+        assert len(report["deleted_sessions"]) == 1, "Collection must not be empty"
         # File should be deleted and freed bytes recorded
         assert report["total_bytes_freed"] == actual_file_size or report["total_bytes_freed"] > 0
 
@@ -344,12 +344,12 @@ class TestArchiveManager:
 
         # Verify archive file is valid Parquet
         archive_path = archive_dir / "2026" / "03" / f"{test_session_data['session_id']}.parquet"
-        assert archive_path.exists()
+        assert archive_path.exists(), "Condition must be true"
 
         # Should be able to read it back
         df = pd.read_parquet(str(archive_path))
-        assert len(df) == 1
-        assert df.iloc[0]["session_id"] == test_session_data["session_id"]
+        assert len(df) == 1, "Df must not be empty"
+        assert df.iloc[0]["session_id"] == test_session_data["session_id"], "Data must not be empty"
 
     def test_non_existent_session_retrieval(self, test_db, archive_dir):
         """Test retrieving non-existent session."""
@@ -358,7 +358,7 @@ class TestArchiveManager:
         manager = ArchiveManager(db_path=str(test_db), archive_dir=str(archive_dir))
         retrieved = manager.get_archived_session("non-existent-session")
 
-        assert retrieved is None
+        assert retrieved is None, "retrieved is not valid"
 
     def test_archive_multiple_sessions(self, test_db, archive_dir):
         """Test archiving multiple sessions."""
@@ -379,7 +379,7 @@ class TestArchiveManager:
         manager = ArchiveManager(db_path=str(test_db), archive_dir=str(archive_dir))
         candidates = manager.identify_archive_candidates(days=90)
 
-        assert len(candidates) == 5
+        assert len(candidates) == 5, "Candidates must not be empty"
 
         # Archive all
         success_count = 0
@@ -388,11 +388,11 @@ class TestArchiveManager:
             if archived:
                 success_count += 1
 
-        assert success_count == 5
+        assert success_count == 5, "Count must be greater than zero"
 
         # Verify index
         index = manager.update_archive_index()
-        assert index["statistics"]["total_sessions"] == 5
+        assert index["statistics"]["total_sessions"] == 5, "Condition must be true"
 
 
 class TestArchiveIntegration:
@@ -418,25 +418,25 @@ class TestArchiveIntegration:
 
         # Step 1: Identify candidates
         candidates = manager.identify_archive_candidates(days=90)
-        assert "workflow-test" in candidates
+        assert "workflow-test" in candidates, "Condition must be true"
 
         # Step 2: Archive
         archived = manager.archive_session("workflow-test")
-        assert archived is not None
+        assert archived is not None, "archived must be initialized"
 
         # Step 3: Update index
         index = manager.update_archive_index()
-        assert index["statistics"]["total_sessions"] == 1
+        assert index["statistics"]["total_sessions"] == 1, "Condition must be true"
 
         # Step 4: Retrieve
         retrieved = manager.get_archived_session("workflow-test")
-        assert retrieved is not None
+        assert retrieved is not None, "retrieved must be initialized"
 
         # Step 5: Verify in index
-        assert manager.archive_index_path.exists()
+        assert manager.archive_index_path.exists(), "Condition must be true"
         with open(manager.archive_index_path) as f:
             saved_index = json.load(f)
-        assert len(saved_index["sessions"]) == 1
+        assert len(saved_index["sessions"]) == 1, "Collection must not be empty"
 
 
 if __name__ == "__main__":

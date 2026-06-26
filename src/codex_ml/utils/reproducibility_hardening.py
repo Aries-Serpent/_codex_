@@ -60,9 +60,9 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
         logger.debug("✓ Python random seeded")
     except (ValueError, TypeError, RuntimeError) as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         status["python_random"] = False
-        logger.warning(f"Failed to seed Python random: <ERROR_TYPE>")
+        logger.warning("Failed to seed Python random: <ERROR_TYPE>")
 
     # 2. Python hash seed (for dict/set order)
     try:
@@ -71,9 +71,9 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
         logger.debug("✓ PYTHONHASHSEED set")
     except (ImportError, AttributeError) as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         status["python_hash_seed"] = False
-        logger.warning(f"Failed to set PYTHONHASHSEED: <ERROR_TYPE>")
+        logger.warning("Failed to set PYTHONHASHSEED: <ERROR_TYPE>")
 
     # 3. NumPy
     try:
@@ -84,14 +84,14 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
         logger.debug("✓ NumPy seeded")
     except ImportError as e:
         error_type = type(e).__name__
-        logger.debug(f"ImportError: <ERROR_TYPE>")
+        logger.debug("ImportError: <ERROR_TYPE>")
         status["numpy"] = None  # Not installed
         logger.debug("NumPy not available (skipped)")
     except AttributeError as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         status["numpy"] = False
-        logger.warning(f"Failed to seed NumPy: <ERROR_TYPE>")
+        logger.warning("Failed to seed NumPy: <ERROR_TYPE>")
 
     # 4. PyTorch
     try:
@@ -131,15 +131,15 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
                 logger.debug("✓ PyTorch deterministic algorithms enabled (strict mode)")
             except (ValueError, TypeError, RuntimeError) as e:
                 error_type = type(e).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.debug("Exception: <ERROR_TYPE>")
                 status["torch_deterministic_algorithms"] = False
-                logger.warning(f"Failed to enable deterministic algorithms: <ERROR_TYPE>")
+                logger.warning("Failed to enable deterministic algorithms: <ERROR_TYPE>")
         else:
             status["torch_deterministic_algorithms"] = None  # Not enabled in non-strict mode
 
     except ImportError as e:
         error_type = type(e).__name__
-        logger.debug(f"ImportError: <ERROR_TYPE>")
+        logger.debug("ImportError: <ERROR_TYPE>")
         status["torch"] = None  # Not installed
         status["torch_cuda"] = None
         status["cudnn_deterministic"] = None
@@ -148,9 +148,9 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
         logger.debug("PyTorch not available (skipped)")
     except AttributeError as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         status["torch"] = False
-        logger.warning(f"Failed to seed PyTorch: <ERROR_TYPE>")
+        logger.warning("Failed to seed PyTorch: <ERROR_TYPE>")
 
     # 5. TensorFlow (if available)
     try:
@@ -171,15 +171,15 @@ def enable_deterministic_training(seed: int = 42, *, strict: bool = False) -> di
 
     except ImportError as e:
         error_type = type(e).__name__
-        logger.debug(f"ImportError: <ERROR_TYPE>")
+        logger.debug("ImportError: <ERROR_TYPE>")
         status["tensorflow"] = None  # Not installed
         status["tensorflow_deterministic"] = None
         logger.debug("TensorFlow not available (skipped)")
     except (ValueError, TypeError, RuntimeError) as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         status["tensorflow"] = False
-        logger.warning(f"Failed to seed TensorFlow: <ERROR_TYPE>")
+        logger.warning("Failed to seed TensorFlow: <ERROR_TYPE>")
 
     # Log summary
     enabled_count = sum(1 for v in status.values() if v is True)
@@ -261,10 +261,10 @@ def save_env_snapshot(output_path: Path | str, include_pip_freeze: bool = True) 
 
     except (ValueError, TypeError, RuntimeError) as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         snapshot["git_commit"] = None
         snapshot["git_dirty"] = None
-        logger.debug(f"Git information not available: <ERROR_TYPE>")
+        logger.debug("Git information not available: <ERROR_TYPE>")
 
     # 4. Pip freeze (installed packages)
     if include_pip_freeze:
@@ -275,9 +275,9 @@ def save_env_snapshot(output_path: Path | str, include_pip_freeze: bool = True) 
             snapshot["pip_freeze"] = pip_freeze.strip().split("\n")
         except (ValueError, TypeError, RuntimeError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             snapshot["pip_freeze"] = []
-            logger.warning(f"Failed to capture pip freeze: <ERROR_TYPE>")
+            logger.warning("Failed to capture pip freeze: <ERROR_TYPE>")
     else:
         snapshot["pip_freeze"] = None
 
@@ -307,7 +307,7 @@ def save_env_snapshot(output_path: Path | str, include_pip_freeze: bool = True) 
 
     except ImportError as e:
         error_type = type(e).__name__
-        logger.debug(f"ImportError: <ERROR_TYPE>")
+        logger.debug("ImportError: <ERROR_TYPE>")
         snapshot["cuda_available"] = None
         snapshot["cuda_version"] = None
         snapshot["cudnn_version"] = None
@@ -315,8 +315,8 @@ def save_env_snapshot(output_path: Path | str, include_pip_freeze: bool = True) 
         snapshot["gpu_devices"] = None
     except (ValueError, TypeError, RuntimeError) as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
-        logger.warning(f"Failed to capture GPU information: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
+        logger.warning("Failed to capture GPU information: <ERROR_TYPE>")
 
     # 6. Selected environment variables
     env_vars_to_capture = [

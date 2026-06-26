@@ -19,7 +19,7 @@ def test_list_plugins_json_includes_programmatic_names() -> None:
         "lp.main()"
     )
     proc = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True)
-    assert proc.returncode == 0
+    assert proc.returncode == 0, "returncode is not valid"
     stdout = proc.stdout
     try:
         payload = json.loads(stdout)

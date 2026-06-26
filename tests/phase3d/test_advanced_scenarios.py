@@ -34,10 +34,10 @@ class TestFileIOEdgeCases:
             filename = f.name
 
         try:
-            assert os.path.exists(filename)
+            assert os.path.exists(filename), "Condition must be true"
             with open(filename, "r") as f:
                 content = f.read()
-            assert content == "test content"
+            assert content == "test content", "Content must not be empty"
         finally:
             os.unlink(filename)
 
@@ -49,7 +49,7 @@ class TestFileIOEdgeCases:
         try:
             with open(filename, "r") as f:
                 content = f.read()
-            assert content == ""
+            assert content == "", "Content must not be empty"
         finally:
             os.unlink(filename)
 
@@ -64,7 +64,7 @@ class TestFileIOEdgeCases:
         try:
             with open(filename, "r") as f:
                 content = f.read()
-            assert len(content) == 100000
+            assert len(content) == 100000, "Content must not be empty"
         finally:
             os.unlink(filename)
 
@@ -79,7 +79,7 @@ class TestFileIOEdgeCases:
         try:
             with open(filename, "rb") as f:
                 data = f.read()
-            assert data == binary_data
+            assert data == binary_data, "Data must not be empty"
         finally:
             os.unlink(filename)
 
@@ -94,7 +94,7 @@ class TestFileIOEdgeCases:
         try:
             with open(filename, "r") as f:
                 lines = f.readlines()
-            assert len(lines) == 3
+            assert len(lines) == 3, "Lines must not be empty"
         finally:
             os.unlink(filename)
 
@@ -110,18 +110,18 @@ class TestFileIOEdgeCases:
 
             with open(filename, "r") as f:
                 content = f.read()
-            assert "line1" in content
-            assert "line2" in content
+            assert "line1" in content, "Content must not be empty"
+            assert "line2" in content, "Content must not be empty"
         finally:
             os.unlink(filename)
 
     def test_path_operations_edge_cases(self):
         """Test path operations with edge cases."""
         p = Path("/")
-        assert p.is_absolute()
+        assert p.is_absolute(), "Condition must be true"
 
         p = Path(".")
-        assert not p.is_absolute()
+        assert not p.is_absolute(), "Condition must be true"
 
         p = Path("../../../")
         assert isinstance(p, Path)
@@ -139,55 +139,55 @@ class TestStringEdgeCases:
     def test_empty_string_operations(self):
         """Test operations on empty strings."""
         s = ""
-        assert len(s) == 0
-        assert s.strip() == ""
-        assert s.split() == []
+        assert len(s) == 0, "S must not be empty"
+        assert s.strip() == "", "Condition must be true"
+        assert s.split() == [], "Condition must be true"
         assert s.replace("a", "b") == ""
 
     def test_single_character_string(self):
         """Test single character string."""
         s = "x"
-        assert len(s) == 1
-        assert s.upper() == "X"
-        assert s.lower() == "x"
+        assert len(s) == 1, "S must not be empty"
+        assert s.upper() == "X", "Condition must be true"
+        assert s.lower() == "x", "Condition must be true"
 
     def test_whitespace_only_string(self):
         """Test whitespace-only string."""
         s = "   \n\t  "
-        assert len(s) > 0
-        assert s.strip() == ""
+        assert len(s) > 0, "S must not be empty"
+        assert s.strip() == "", "Condition must be true"
 
     def test_string_with_nulls(self):
         """Test string with null characters."""
         s = "hello\x00world"
-        assert len(s) == 11
-        assert "\x00" in s
+        assert len(s) == 11, "S must not be empty"
+        assert "\x00" in s, "Condition must be true"
 
     def test_unicode_string_operations(self):
         """Test unicode string operations."""
         s = "你好世界 🎉✨"
-        assert len(s) > 0
-        assert "你好" in s
-        assert "🎉" in s
+        assert len(s) > 0, "S must not be empty"
+        assert "你好" in s, "Condition must be true"
+        assert "🎉" in s, "Condition must be true"
 
     def test_string_concatenation_chain(self):
         """Test string concatenation chain."""
         result = "a" + "b" + "c" + "d"
-        assert result == "abcd"
+        assert result == "abcd", "Result must not be empty"
 
     def test_string_repetition(self):
         """Test string repetition."""
-        assert "x" * 0 == ""
-        assert "x" * 1 == "x"
-        assert "x" * 5 == "xxxxx"
+        assert "x" * 0 == "", "0 is not valid"
+        assert "x" * 1 == "x", "1 is not valid"
+        assert "x" * 5 == "xxxxx", "5 is not valid"
 
     def test_string_slicing_edge_cases(self):
         """Test string slicing edge cases."""
         s = "abcdef"
-        assert s[0:0] == ""
-        assert s[0:100] == "abcdef"
-        assert s[-100:100] == "abcdef"
-        assert s[::-1] == "fedcba"
+        assert s[0:0] == "", "Condition must be true"
+        assert s[0:100] == "abcdef", "Condition must be true"
+        assert s[-100:100] == "abcdef", "Condition must be true"
+        assert s[::-1] == "fedcba", "Condition must be true"
 
 
 class TestListEdgeCases:
@@ -196,41 +196,41 @@ class TestListEdgeCases:
     def test_empty_list_operations(self):
         """Test operations on empty list."""
         lst = []
-        assert len(lst) == 0
-        assert lst.count("x") == 0
-        assert all(x > 0 for x in lst)  # vacuously true
+        assert len(lst) == 0, "Lst must not be empty"
+        assert lst.count("x") == 0, "Count must be greater than zero"
+        assert all(x > 0 for x in lst), "x must be greater than zero"
 
     def test_single_element_list(self):
         """Test single element list."""
         lst = [42]
-        assert len(lst) == 1
-        assert lst[0] == 42
-        assert lst[-1] == 42
+        assert len(lst) == 1, "Lst must not be empty"
+        assert lst[0] == 42, "Condition must be true"
+        assert lst[-1] == 42, "Condition must be true"
 
     def test_list_with_none_values(self):
         """Test list containing None."""
         lst = [1, None, 3, None]
-        assert len(lst) == 4
-        assert lst.count(None) == 2
+        assert len(lst) == 4, "Lst must not be empty"
+        assert lst.count(None) == 2, "Count must be greater than zero"
 
     def test_list_with_mixed_types(self):
         """Test list with mixed types."""
         lst = [1, "string", None, [], {}]
-        assert len(lst) == 5
+        assert len(lst) == 5, "Lst must not be empty"
         assert isinstance(lst[1], str)
 
     def test_nested_list_operations(self):
         """Test nested list operations."""
         lst = [[1, 2], [3, 4], [5, 6]]
-        assert len(lst) == 3
-        assert lst[0][0] == 1
-        assert lst[-1][-1] == 6
+        assert len(lst) == 3, "Lst must not be empty"
+        assert lst[0][0] == 1, "Condition must be true"
+        assert lst[-1][-1] == 6, "Condition must be true"
 
     def test_list_slicing_edge_cases(self):
         """Test list slicing edge cases."""
         lst = [1, 2, 3, 4, 5]
-        assert lst[0:0] == []
-        assert lst[10:20] == []
+        assert lst[0:0] == [], "Condition must be true"
+        assert lst[10:20] == [], "Condition must be true"
         assert lst[::-1] == [5, 4, 3, 2, 1]
 
     def test_list_extend_with_empty(self):
@@ -242,7 +242,7 @@ class TestListEdgeCases:
     def test_list_multiplication(self):
         """Test list multiplication."""
         lst = [1] * 5
-        assert len(lst) == 5
+        assert len(lst) == 5, "Lst must not be empty"
         assert lst == [1, 1, 1, 1, 1]
 
 
@@ -252,15 +252,15 @@ class TestDictEdgeCases:
     def test_empty_dict_operations(self):
         """Test operations on empty dict."""
         dct = {}
-        assert len(dct) == 0
-        assert list(dct.keys()) == []
-        assert list(dct.values()) == []
+        assert len(dct) == 0, "Dct must not be empty"
+        assert list(dct.keys()) == [], "Condition must be true"
+        assert list(dct.values()) == [], "Value must be initialized"
 
     def test_dict_with_none_key(self):
         """Test dict with None as key."""
         dct = {None: "value"}
-        assert dct[None] == "value"
-        assert None in dct
+        assert dct[None] == "value", "Value must be initialized"
+        assert None in dct, "Condition must be true"
 
     def test_dict_with_tuple_key(self):
         """Test dict with tuple as key."""
@@ -270,28 +270,28 @@ class TestDictEdgeCases:
     def test_dict_get_with_default(self):
         """Test dict.get with default."""
         dct = {"a": 1}
-        assert dct.get("a") == 1
-        assert dct.get("b") is None
+        assert dct.get("a") == 1, "Condition must be true"
+        assert dct.get("b") is None, "Condition must be true"
         assert dct.get("b", "default") == "default"
 
     def test_dict_nested_operations(self):
         """Test nested dict operations."""
         dct = {"a": {"b": {"c": 42}}}
-        assert dct["a"]["b"]["c"] == 42
+        assert dct["a"]["b"]["c"] == 42, "Condition must be true"
 
     def test_dict_pop_operations(self):
         """Test dict pop operations."""
         dct = {"a": 1, "b": 2}
         value = dct.pop("a")
-        assert value == 1
-        assert "a" not in dct
+        assert value == 1, "Value must be initialized"
+        assert "a" not in dct, "Condition must be true"
 
     def test_dict_setdefault(self):
         """Test dict setdefault."""
         dct = {}
         value = dct.setdefault("key", 42)
-        assert value == 42
-        assert dct["key"] == 42
+        assert value == 42, "Value must be initialized"
+        assert dct["key"] == 42, "Condition must be true"
 
 
 class TestSetEdgeCases:
@@ -300,15 +300,15 @@ class TestSetEdgeCases:
     def test_empty_set_operations(self):
         """Test operations on empty set."""
         s = set()
-        assert len(s) == 0
+        assert len(s) == 0, "S must not be empty"
         assert s & {1, 2} == set()
         assert s | {1, 2} == {1, 2}
 
     def test_set_with_none(self):
         """Test set containing None."""
         s = {None, 1, 2}
-        assert len(s) == 3
-        assert None in s
+        assert len(s) == 3, "S must not be empty"
+        assert None in s, "Condition must be true"
 
     def test_set_operations_union(self):
         """Test set union."""
@@ -329,15 +329,15 @@ class TestSetEdgeCases:
         s1 = {1, 2, 3}
         s2 = {2, 3, 4}
         result = s1 - s2
-        assert result == {1}
+        assert result == {1}, "Result must not be empty"
 
     def test_set_add_and_remove(self):
         """Test set add and remove."""
         s = {1, 2, 3}
         s.add(4)
-        assert 4 in s
+        assert 4 in s, "Condition must be true"
         s.remove(4)
-        assert 4 not in s
+        assert 4 not in s, "Condition must be true"
 
 
 class TestTupleEdgeCases:
@@ -346,21 +346,21 @@ class TestTupleEdgeCases:
     def test_empty_tuple(self):
         """Test empty tuple."""
         t = ()
-        assert len(t) == 0
-        assert tuple() == ()
+        assert len(t) == 0, "T must not be empty"
+        assert tuple() == (), "Condition must be true"
 
     def test_single_element_tuple(self):
         """Test single element tuple."""
         t = (42,)
-        assert len(t) == 1
-        assert t[0] == 42
+        assert len(t) == 1, "T must not be empty"
+        assert t[0] == 42, "Condition must be true"
 
     def test_tuple_unpacking(self):
         """Test tuple unpacking."""
         a, b, c = (1, 2, 3)
-        assert a == 1
-        assert b == 2
-        assert c == 3
+        assert a == 1, "a is not valid"
+        assert b == 2, "b is not valid"
+        assert c == 3, "c is not valid"
 
     def test_tuple_slicing(self):
         """Test tuple slicing."""
@@ -371,8 +371,8 @@ class TestTupleEdgeCases:
     def test_nested_tuple(self):
         """Test nested tuples."""
         t = ((1, 2), (3, 4))
-        assert t[0][0] == 1
-        assert t[1][1] == 4
+        assert t[0][0] == 1, "Condition must be true"
+        assert t[1][1] == 4, "Condition must be true"
 
 
 class TestBoundaryConditions:
@@ -380,33 +380,33 @@ class TestBoundaryConditions:
 
     def test_zero_operations(self):
         """Test operations around zero."""
-        assert 0 == 0
-        assert -0 == 0
-        assert 0 + 1 == 1
-        assert 0 * 100 == 0
+        assert 0 == 0, "0 is not valid"
+        assert -0 == 0, "0 is not valid"
+        assert 0 + 1 == 1, "1 is not valid"
+        assert 0 * 100 == 0, "100 is not valid"
 
     def test_max_min_operations(self):
         """Test max and min operations."""
-        assert max([1]) == 1
-        assert min([1]) == 1
+        assert max([1]) == 1, "Condition must be true"
+        assert min([1]) == 1, "Condition must be true"
         assert max([5, 3, 8, 1]) == 8
         assert min([5, 3, 8, 1]) == 1
 
     def test_range_operations(self):
         """Test range operations."""
-        assert list(range(0)) == []
+        assert list(range(0)) == [], "Condition must be true"
         assert list(range(5)) == [0, 1, 2, 3, 4]
         assert list(range(2, 5)) == [2, 3, 4]
         assert list(range(0, 10, 2)) == [0, 2, 4, 6, 8]
 
     def test_boolean_edge_cases(self):
         """Test boolean edge cases."""
-        assert True == 1
-        assert False == 0
-        assert bool(0) is False
-        assert bool(1) is True
-        assert bool("") is False
-        assert bool("x") is True
+        assert True == 1, "True is not valid"
+        assert False == 0, "False is not valid"
+        assert bool(0) is False, "Condition must be true"
+        assert bool(1) is True, "Condition must be true"
+        assert bool("") is False, "Condition must be true"
+        assert bool("x") is True, "Condition must be true"
 
 
 class TestExceptionHandling:
@@ -429,7 +429,7 @@ class TestExceptionHandling:
             raise RuntimeError("test")
         except RuntimeError:
             handled = True
-        assert handled
+        assert handled, "handled is not valid"
 
     def test_exception_finally(self):
         """Test finally block execution."""
@@ -440,7 +440,7 @@ class TestExceptionHandling:
             pass
         finally:
             finally_executed = True
-        assert finally_executed
+        assert finally_executed, "finally_executed is not valid"
 
     def test_nested_exception_handling(self):
         """Test nested exception handling."""
@@ -453,7 +453,7 @@ class TestExceptionHandling:
         except ValueError:
             result.append("outer_caught")
 
-        assert result == ["outer_caught"]
+        assert result == ["outer_caught"], "Result must not be empty"
 
 
 class TestIOEdgeCases:
@@ -465,7 +465,7 @@ class TestIOEdgeCases:
         with redirect_stdout(f):
             print("test output")
         output = f.getvalue()
-        assert "test output" in output
+        assert "test output" in output, "Condition must be true"
 
     def test_stderr_redirection(self):
         """Test stderr redirection."""
@@ -473,7 +473,7 @@ class TestIOEdgeCases:
         with redirect_stderr(f):
             print("error", file=sys.stderr)
         output = f.getvalue()
-        assert "error" in output
+        assert "error" in output, "Error should be raised or set"
 
     def test_stringio_operations(self):
         """Test StringIO operations."""
@@ -482,8 +482,8 @@ class TestIOEdgeCases:
         f.write("line2\n")
         f.seek(0)
         content = f.read()
-        assert "line1" in content
-        assert "line2" in content
+        assert "line1" in content, "Content must not be empty"
+        assert "line2" in content, "Content must not be empty"
 
 
 class TestConcurrencyEdgeCases:
@@ -500,7 +500,7 @@ class TestConcurrencyEdgeCases:
         t.start()
         t.join(timeout=5)
 
-        assert len(result) == 1
+        assert len(result) == 1, "Result must not be empty"
 
     def test_thread_daemon(self):
         """Test daemon thread."""
@@ -510,28 +510,28 @@ class TestConcurrencyEdgeCases:
 
         t = threading.Thread(target=worker, daemon=True)
         t.start()
-        assert t.daemon is True
+        assert t.daemon is True, "daemon is not valid"
 
     def test_thread_lock(self):
         """Test thread locking."""
         lock = threading.Lock()
 
         with lock:
-            assert not lock.acquire(blocking=False)
+            assert not lock.acquire(blocking=False), "Condition must be true"
 
-        assert lock.acquire(blocking=False)
+        assert lock.acquire(blocking=False), "Condition must be true"
         lock.release()
 
     def test_thread_event(self):
         """Test thread event."""
         event = threading.Event()
-        assert not event.is_set()
+        assert not event.is_set(), "Condition must be true"
 
         event.set()
-        assert event.is_set()
+        assert event.is_set(), "Condition must be true"
 
         event.clear()
-        assert not event.is_set()
+        assert not event.is_set(), "Condition must be true"
 
 
 class TestMockingEdgeCases:
@@ -540,21 +540,21 @@ class TestMockingEdgeCases:
     def test_mock_return_value(self):
         """Test mock return value."""
         mock = Mock(return_value=42)
-        assert mock() == 42
+        assert mock() == 42, "Condition must be true"
 
     def test_mock_side_effect(self):
         """Test mock side effect."""
         mock = Mock(side_effect=[1, 2, 3])
-        assert mock() == 1
-        assert mock() == 2
-        assert mock() == 3
+        assert mock() == 1, "Condition must be true"
+        assert mock() == 2, "Condition must be true"
+        assert mock() == 3, "Condition must be true"
 
     def test_mock_call_count(self):
         """Test mock call count."""
         mock = Mock()
         mock()
         mock()
-        assert mock.call_count == 2
+        assert mock.call_count == 2, "Count must be greater than zero"
 
     def test_mock_exception(self):
         """Test mock raising exception."""
@@ -590,7 +590,7 @@ def test_type_checking(value, expected_type):
 )
 def test_string_length(text, expected):
     """Parametrized test for string length."""
-    assert len(text) == expected
+    assert len(text) == expected, "Text must not be empty"
 
 
 @pytest.mark.parametrize(
@@ -603,7 +603,7 @@ def test_string_length(text, expected):
 )
 def test_max_operations(numbers, expected):
     """Parametrized test for max operations."""
-    assert max(numbers) == expected
+    assert max(numbers) == expected, "Condition must be true"
 
 
 class TestComparisonOperators:
@@ -611,30 +611,30 @@ class TestComparisonOperators:
 
     def test_equality_operators(self):
         """Test equality operators."""
-        assert 0 == 0
-        assert "" == ""
-        assert [] == []
-        assert {} == {}
-        assert None is None
+        assert 0 == 0, "0 is not valid"
+        assert "" == "", "Condition must be true"
+        assert [] == [], "Condition must be true"
+        assert {} == {}, "Condition must be true"
+        assert None is None, "None is not valid"
 
     def test_inequality_operators(self):
         """Test inequality operators."""
-        assert 1 != 0
-        assert "a" != "b"
-        assert [1] != [2]
-        assert {"a": 1} != {"a": 2}
+        assert 1 != 0, "1 is not valid"
+        assert "a" != "b", "Condition must be true"
+        assert [1] != [2], "Condition must be true"
+        assert {"a": 1} != {"a": 2}, "Condition must be true"
 
     def test_ordering_operators(self):
         """Test ordering operators."""
-        assert 1 < 2
-        assert 2 > 1
-        assert 1 <= 1
-        assert 2 >= 2
+        assert 1 < 2, "1 is not valid"
+        assert 2 > 1, "2 must be greater than zero"
+        assert 1 <= 1, "1 is not valid"
+        assert 2 >= 2, "2 must be greater than zero"
 
     def test_membership_operators(self):
         """Test membership operators."""
         assert 1 in [1, 2, 3]
-        assert "a" in "abc"
+        assert "a" in "abc", "Condition must be true"
         assert "x" not in [1, 2, 3]
 
 

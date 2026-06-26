@@ -32,7 +32,7 @@ class TestAgentCommunicationPatterns:
 
             # Agent 1 can read its own message
             memories = agent1.recall_all(limit=10)
-            assert len(memories) >= 1
+            assert len(memories) >= 1, "Memories must not be empty"
 
     def test_agent_context_passing(self):
         """Test passing context between agents."""
@@ -43,7 +43,7 @@ class TestAgentCommunicationPatterns:
 
         # Agent 1 retrieves and verifies result
         results = agent1.recall_all()
-        assert len(results) >= 1
+        assert len(results) >= 1, "Results must not be empty"
 
     def test_multi_agent_session_coordination(self):
         """Test multiple agents coordinating in same session."""
@@ -58,7 +58,7 @@ class TestAgentCommunicationPatterns:
 
         # Verify all messages were stored
         all_memories = agent.recall_all(limit=10)
-        assert len(all_memories) >= 3
+        assert len(all_memories) >= 3, "All_memories must not be empty"
 
     def test_agent_response_chain(self):
         """Test chain of agent responses."""
@@ -72,7 +72,7 @@ class TestAgentCommunicationPatterns:
 
         # Verify chain
         final_memories = agent.recall_all()
-        assert len(final_memories) >= 3
+        assert len(final_memories) >= 3, "Final_memories must not be empty"
 
 
 class TestConfigurationMigration:
@@ -94,8 +94,8 @@ class TestConfigurationMigration:
             new_manager.get_db_path()
 
             # Both should work
-            assert old_log_dir is not None
-            assert new_log_dir is not None
+            assert old_log_dir is not None, "old_log_dir must be initialized"
+            assert new_log_dir is not None, "new_log_dir must be initialized"
 
     def test_config_backward_compatibility(self):
         """Test configuration maintains backward compatibility."""
@@ -103,7 +103,7 @@ class TestConfigurationMigration:
 
         # Both old and new names should work
         config = manager.dump_config()
-        assert "CODEX_LOG_DB_PATH" in config or "CODEX_DB_PATH" in config
+        assert "CODEX_LOG_DB_PATH" in config or "CODEX_DB_PATH" in config, "Condition must be true"
 
     def test_env_var_deprecation_handling(self):
         """Test handling of deprecated environment variables."""
@@ -133,7 +133,7 @@ class TestEndToEndWorkflows:
 
         # Step 4: Retrieve all
         all_memories = manager.recall_all(limit=10)
-        assert len(all_memories) >= 5
+        assert len(all_memories) >= 5, "All_memories must not be empty"
 
     def test_workflow_session_switching(self):
         """Test switching between workflow sessions."""
@@ -169,7 +169,7 @@ class TestEndToEndWorkflows:
 
         # Verify all states recorded
         all_memories = manager.recall_all()
-        assert len(all_memories) >= 3
+        assert len(all_memories) >= 3, "All_memories must not be empty"
 
     def test_workflow_data_aggregation(self):
         """Test aggregating data across workflow steps."""
@@ -185,7 +185,7 @@ class TestEndToEndWorkflows:
 
         # Retrieve all
         results = manager.recall_all(limit=10)
-        assert len(results) >= 5
+        assert len(results) >= 5, "Results must not be empty"
 
     def test_workflow_rollback_handling(self):
         """Test workflow with rollback capability."""
@@ -198,7 +198,7 @@ class TestEndToEndWorkflows:
 
         # Clear session to simulate rollback
         cleared_count = manager.clear_session(session_id)
-        assert cleared_count >= 2
+        assert cleared_count >= 2, "cleared_count must be positive"
 
 
 class TestCrossPlatformBridges:
@@ -227,7 +227,7 @@ class TestCrossPlatformBridges:
         config2 = manager2.dump_config()
 
         # Both should have same configs
-        assert set(config1.keys()) == set(config2.keys())
+        assert set(config1.keys()) == set(config2.keys()), "Condition must be true"
 
     def test_memory_backend_protocol_compliance(self):
         """Test that memory backends comply with protocol."""
@@ -256,7 +256,7 @@ class TestAgentBridgeInterfaces:
 
         # Should support deserialization
         restored = MemoryEntry.from_dict(data)
-        assert restored.content == entry.content
+        assert restored.content == entry.content, "Content must not be empty"
 
     def test_memory_query_protocol(self):
         """Test MemoryQuery protocol compliance."""
@@ -264,8 +264,8 @@ class TestAgentBridgeInterfaces:
 
         query = MemoryQuery(text="test query", agent_id="test", session_id="test", limit=10)
 
-        assert query.text == "test query"
-        assert query.limit == 10
+        assert query.text == "test query", "text is not valid"
+        assert query.limit == 10, "limit is not valid"
 
     def test_environment_manager_interface(self):
         """Test EnvironmentManager interface compliance."""
@@ -288,7 +288,7 @@ class TestIntegrationErrorHandling:
         manager = MemoryManager(agent_id="test-agent", session_id="test-session")
         # Clearing non-existent session should work gracefully
         count = manager.clear_session("non-existent-session")
-        assert count >= 0
+        assert count >= 0, "count must be positive"
 
     def test_recall_with_invalid_agent_id(self):
         """Test recalling from non-existent agent."""
@@ -338,7 +338,7 @@ class TestIntegrationPerformance:
 
         # Recall should complete
         memories = manager.recall_all(limit=50)
-        assert len(memories) <= 50
+        assert len(memories) <= 50, "Memories must not be empty"
 
     def test_multiple_session_overhead(self):
         """Test overhead of managing multiple sessions."""
@@ -361,4 +361,4 @@ class TestIntegrationPerformance:
         large_metadata = {f"key_{i}": f"value_{i}" * 100 for i in range(100)}
 
         entry = manager.store("Test", metadata=large_metadata)
-        assert entry.metadata == large_metadata
+        assert entry.metadata == large_metadata, "Data must not be empty"

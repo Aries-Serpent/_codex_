@@ -47,7 +47,7 @@ def _make_success(return_value: object = "ok") -> MagicMock:
 
 def test_initial_state_is_closed():
     cb = CircuitBreaker()
-    assert cb.state is CircuitState.CLOSED
+    assert cb.state is CircuitState.CLOSED, "state is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -60,8 +60,8 @@ def test_success_keeps_circuit_closed():
     fn = _make_success()
     for _ in range(10):
         result = cb.call(fn)
-    assert result == "ok"
-    assert cb.state is CircuitState.CLOSED
+    assert result == "ok", "Result must not be empty"
+    assert cb.state is CircuitState.CLOSED, "state is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -75,7 +75,7 @@ def test_failures_below_threshold_keep_circuit_closed():
     for _ in range(4):
         with pytest.raises(RuntimeError):
             cb.call(fn)
-    assert cb.state is CircuitState.CLOSED
+    assert cb.state is CircuitState.CLOSED, "state is not valid"
 
 
 def test_failures_at_threshold_open_circuit():
@@ -84,7 +84,7 @@ def test_failures_at_threshold_open_circuit():
     for _ in range(3):
         with pytest.raises(RuntimeError):
             cb.call(fn)
-    assert cb.state is CircuitState.OPEN
+    assert cb.state is CircuitState.OPEN, "state is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -111,14 +111,14 @@ def test_circuit_open_error_has_retry_after():
     with pytest.raises(CircuitOpenError) as exc_info:
         cb.call(_make_success())
 
-    assert exc_info.value.retry_after is not None
-    assert 0 < exc_info.value.retry_after <= 30
+    assert exc_info.value.retry_after is not None, "retry_after must be initialized"
+    assert 0 < exc_info.value.retry_after <= 30, "Value must be initialized"
 
 
 def test_circuit_open_error_is_exception():
     err = CircuitOpenError("test")
     assert isinstance(err, Exception)
-    assert str(err) == "test"
+    assert str(err) == "test", "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -130,10 +130,10 @@ def test_open_transitions_to_half_open_after_timeout(monkeypatch):
     cb = CircuitBreaker(failure_threshold=1, recovery_timeout=0.05)
     with pytest.raises(RuntimeError):
         cb.call(_make_failing())
-    assert cb.state is CircuitState.OPEN
+    assert cb.state is CircuitState.OPEN, "state is not valid"
 
     time.sleep(0.06)
-    assert cb.state is CircuitState.HALF_OPEN
+    assert cb.state is CircuitState.HALF_OPEN, "state is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -147,13 +147,13 @@ def test_half_open_closes_after_consecutive_successes():
         cb.call(_make_failing())
 
     time.sleep(0.06)
-    assert cb.state is CircuitState.HALF_OPEN
+    assert cb.state is CircuitState.HALF_OPEN, "state is not valid"
 
     cb.call(_make_success())
-    assert cb.state is CircuitState.HALF_OPEN  # only 1 success
+    assert cb.state is CircuitState.HALF_OPEN, "state is not valid"
 
     cb.call(_make_success())
-    assert cb.state is CircuitState.CLOSED
+    assert cb.state is CircuitState.CLOSED, "state is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -167,11 +167,11 @@ def test_half_open_failure_reopens_circuit():
         cb.call(_make_failing())
 
     time.sleep(0.06)
-    assert cb.state is CircuitState.HALF_OPEN
+    assert cb.state is CircuitState.HALF_OPEN, "state is not valid"
 
     with pytest.raises(RuntimeError):
         cb.call(_make_failing())
-    assert cb.state is CircuitState.OPEN
+    assert cb.state is CircuitState.OPEN, "state is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -183,11 +183,11 @@ def test_reset_closes_open_circuit():
     cb = CircuitBreaker(failure_threshold=1)
     with pytest.raises(RuntimeError):
         cb.call(_make_failing())
-    assert cb.state is CircuitState.OPEN
+    assert cb.state is CircuitState.OPEN, "state is not valid"
 
     cb.reset()
-    assert cb.state is CircuitState.CLOSED
-    assert cb._failure_count == 0
+    assert cb.state is CircuitState.CLOSED, "state is not valid"
+    assert cb._failure_count == 0, "Count must be greater than zero"
 
 
 def test_reset_allows_calls_again():
@@ -197,7 +197,7 @@ def test_reset_allows_calls_again():
 
     cb.reset()
     result = cb.call(_make_success(return_value=42))
-    assert result == 42
+    assert result == 42, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -215,8 +215,8 @@ def test_success_resets_failure_count_in_closed():
             cb.call(fn_fail)
 
     cb.call(fn_ok)  # success should reset count
-    assert cb._failure_count == 0
-    assert cb.state is CircuitState.CLOSED
+    assert cb._failure_count == 0, "Count must be greater than zero"
+    assert cb.state is CircuitState.CLOSED, "state is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -259,5 +259,5 @@ def test_concurrent_calls_do_not_corrupt_state():
     for t in threads:
         t.join()
 
-    assert not errors
-    assert cb.state is CircuitState.CLOSED
+    assert not errors, "Error should be raised or set"
+    assert cb.state is CircuitState.CLOSED, "state is not valid"

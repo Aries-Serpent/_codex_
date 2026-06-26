@@ -74,19 +74,19 @@ def test_atomic_diff_sections_placeholder_only() -> None:
     ]
     for snippet in placeholder_snippets:
         assert snippet in text, f"Atomic diff placeholder missing: {snippet}"
-    assert "{{atomic_diff_1_why}}" in text
-    assert "{{atomic_diff_1_risk}}" in text
-    assert "{{atomic_diff_1_tests}}" in text
+    assert "{{atomic_diff_1_why}}" in text, "Condition must be true"
+    assert "{{atomic_diff_1_risk}}" in text, "Condition must be true"
+    assert "{{atomic_diff_1_tests}}" in text, "Condition must be true"
 
 
 def test_task_sequence_and_script_templates() -> None:
     text = read_status()
     assert "```yaml" in text, "Codex-ready task sequence must be fenced as YAML"
-    assert "{{task_sequence_preparation_step_1}}" in text
+    assert "{{task_sequence_preparation_step_1}}" in text, "Condition must be true"
     assert "```python" in text, "Executable script must be provided in fenced python block"
-    assert '"""Codex remediation workflow template."""' in text
-    assert 'raise NotImplementedError("{{implement_context_loader}}")' in text
-    assert "{{script_completion_message}}" in text
+    assert '"""Codex remediation workflow template."""' in text, "Condition must be true"
+    assert 'raise NotImplementedError("{{implement_context_loader}}")' in text, "Error should be raised or set"
+    assert "{{script_completion_message}}" in text, "Condition must be true"
 
 
 def test_supplied_tasks_placeholders_present() -> None:
@@ -122,9 +122,9 @@ def test_reproducibility_table_placeholders() -> None:
 def test_error_capture_placeholder_present() -> None:
     text = read_status()
     assert "{{error_capture_summary}}" in text, "Error capture placeholder missing"
-    assert (
+    assert (, "Condition must be true"
         "{{task_sequence_error_capture_step_1}}" in text
     ), "Error capture phase placeholder missing"
-    assert (
+    assert (, "Condition must be true"
         "Question for ChatGPT @codex" not in text
     ), "Template should not contain filled error capture block"

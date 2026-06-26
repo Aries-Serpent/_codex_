@@ -15,6 +15,7 @@ import time
 import pytest
 
 from codex.auth.token_manager import TokenClaims, TokenManager, TokenType
+
  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 # ============================================================================
 # Fixtures
@@ -37,42 +38,42 @@ class TestTokenCreation:
 
     def test_create_access_token(self, token_manager):
         token = token_manager.create_token(subject="user123", token_type=TokenType.ACCESS)
-        assert token
-        assert len(token) > 0
+        assert token, "token is not valid"
+        assert len(token) > 0, "Token must not be empty"
 
     def test_create_refresh_token(self, token_manager):
         token = token_manager.create_token(subject="user456", token_type=TokenType.REFRESH)
-        assert token
-        assert len(token) > 0
+        assert token, "token is not valid"
+        assert len(token) > 0, "Token must not be empty"
 
     def test_create_session_token(self, token_manager):
         token = token_manager.create_token(subject="user789", token_type=TokenType.SESSION)
-        assert token
-        assert len(token) > 0
+        assert token, "token is not valid"
+        assert len(token) > 0, "Token must not be empty"
 
     def test_create_token_with_scope(self, token_manager):
         token = token_manager.create_token(
             subject="user123", token_type=TokenType.ACCESS, scope="read:repo write:repo"
         )
         claims = token_manager.validate_token(token, expected_type=TokenType.ACCESS)
-        assert claims.scope == "read:repo write:repo"
+        assert claims.scope == "read:repo write:repo", "scope is not valid"
 
     def test_create_token_with_custom_expiry(self, token_manager):
         custom_exp = 7200  # 2 hours
         token = token_manager.create_token(
             subject="user123", token_type=TokenType.ACCESS, expires_in=custom_exp
         )
-        assert token
+        assert token, "token is not valid"
 
     def test_token_contains_subject(self, token_manager):
         token = token_manager.create_token(subject="user_test", token_type=TokenType.ACCESS)
         claims = token_manager.validate_token(token)
-        assert claims.sub == "user_test"
+        assert claims.sub == "user_test", "sub is not valid"
 
     def test_token_contains_type(self, token_manager):
         token = token_manager.create_token(subject="user123", token_type=TokenType.REFRESH)
         claims = token_manager.validate_token(token, expected_type=TokenType.REFRESH)
-        assert claims.type == TokenType.REFRESH
+        assert claims.type == TokenType.REFRESH, "type is not valid"
 
 
 class TestTokenClaims:
@@ -87,8 +88,8 @@ class TestTokenClaims:
             scope="read:user",
         )
         claims_dict = claims.to_dict()
-        assert claims_dict["sub"] == "user123"
-        assert claims_dict["scope"] == "read:user"
+        assert claims_dict["sub"] == "user123", "Condition must be true"
+        assert claims_dict["scope"] == "read:user", "Condition must be true"
 
     def test_claims_from_dict(self, token_manager):
         {
@@ -103,12 +104,12 @@ class TestTokenClaims:
     def test_claims_issuer(self, token_manager):
         token = token_manager.create_token("user123", TokenType.ACCESS)
         claims = token_manager.validate_token(token)
-        assert claims.iss == "codex"
+        assert claims.iss == "codex", "iss is not valid"
 
     def test_claims_audience(self, token_manager):
         token = token_manager.create_token("user123", TokenType.ACCESS)
         claims = token_manager.validate_token(token)
-        assert claims.aud == "codex-api"
+        assert claims.aud == "codex-api", "aud is not valid"
 
 
 # ============================================================================
@@ -122,7 +123,7 @@ class TestTokenValidation:
     def test_validate_valid_token(self, token_manager):
         token = token_manager.create_token("user123", TokenType.ACCESS)
         claims = token_manager.validate_token(token, expected_type=TokenType.ACCESS)
-        assert claims.sub == "user123"
+        assert claims.sub == "user123", "sub is not valid"
 
     def test_validate_wrong_token_type(self, token_manager):
         token = token_manager.create_token("user123", TokenType.ACCESS)
@@ -165,9 +166,9 @@ class TestTokenRefresh:
     def test_refresh_access_token(self, token_manager):
         refresh_token = token_manager.create_token("user123", TokenType.REFRESH)
         new_access = token_manager.refresh_token(refresh_token)
-        assert new_access
+        assert new_access, "new_access is not valid"
         claims = token_manager.validate_token(new_access)
-        assert claims.type == TokenType.ACCESS
+        assert claims.type == TokenType.ACCESS, "type is not valid"
 
     def test_refresh_with_invalid_token(self, token_manager):
         with pytest.raises(Exception):
@@ -177,7 +178,7 @@ class TestTokenRefresh:
         refresh_token = token_manager.create_token("user456", TokenType.REFRESH)
         new_access = token_manager.refresh_token(refresh_token)
         claims = token_manager.validate_token(new_access)
-        assert claims.sub == "user456"
+        assert claims.sub == "user456", "sub is not valid"
 
     def test_cannot_refresh_access_token(self, token_manager):
         access_token = token_manager.create_token("user123", TokenType.ACCESS)
@@ -222,7 +223,7 @@ class TestTokenRevocation:
 
         # token2 should still be valid
         claims = token_manager.validate_token(token2)
-        assert claims.sub == "user2"
+        assert claims.sub == "user2", "sub is not valid"
 
 
 # ============================================================================
@@ -236,25 +237,25 @@ class TestTokenScopes:
     def test_token_with_single_scope(self, token_manager):
         token = token_manager.create_token("user123", TokenType.ACCESS, scope="read:user")
         claims = token_manager.validate_token(token)
-        assert "read:user" in claims.scope
+        assert "read:user" in claims.scope, "Condition must be true"
 
     def test_token_with_multiple_scopes(self, token_manager):
         token = token_manager.create_token(
             "user123", TokenType.ACCESS, scope="read:user write:user read:repo"
         )
         claims = token_manager.validate_token(token)
-        assert "read:user" in claims.scope
-        assert "write:user" in claims.scope
+        assert "read:user" in claims.scope, "Condition must be true"
+        assert "write:user" in claims.scope, "Condition must be true"
 
     def test_token_without_scope(self, token_manager):
         token = token_manager.create_token("user123", TokenType.ACCESS)
         claims = token_manager.validate_token(token)
-        assert claims.scope is None or claims.scope == ""
+        assert claims.scope is None or claims.scope == "", "scope is not valid"
 
     def test_scope_in_access_only(self, token_manager):
         token = token_manager.create_token("user123", TokenType.ACCESS, scope="read:user")
         claims = token_manager.validate_token(token)
-        assert claims.scope is not None
+        assert claims.scope is not None, "scope must be initialized"
 
 
 # ============================================================================
@@ -274,7 +275,7 @@ class TestTokenIdentifier:
 
         # Should have different JTI
         if claims1.jti and claims2.jti:
-            assert claims1.jti != claims2.jti
+            assert claims1.jti != claims2.jti, "jti is not valid"
 
     def test_jti_in_revocation(self, token_manager):
         token = token_manager.create_token("user123", TokenType.ACCESS)
@@ -297,30 +298,30 @@ class TestEdgeCases:
         long_subject = "u" * 1000
         token = token_manager.create_token(long_subject, TokenType.ACCESS)
         claims = token_manager.validate_token(token)
-        assert claims.sub == long_subject
+        assert claims.sub == long_subject, "sub is not valid"
 
     def test_unicode_subject(self, token_manager):
         token = token_manager.create_token("用户123", TokenType.ACCESS)
         claims = token_manager.validate_token(token)
-        assert claims.sub == "用户123"
+        assert claims.sub == "用户123", "sub is not valid"
 
     def test_very_long_scope(self, token_manager):
         long_scope = "scope1:read scope2:write " * 50
         token = token_manager.create_token("user123", TokenType.ACCESS, scope=long_scope)
         claims = token_manager.validate_token(token)
-        assert long_scope in claims.scope
+        assert long_scope in claims.scope, "Condition must be true"
 
     def test_special_characters_in_subject(self, token_manager):
         special_subject = "user@domain.com+tag"
         token = token_manager.create_token(special_subject, TokenType.ACCESS)
         claims = token_manager.validate_token(token)
-        assert claims.sub == special_subject
+        assert claims.sub == special_subject, "sub is not valid"
 
     def test_token_with_zero_expiry(self, token_manager):
         # Should use default
         token = token_manager.create_token("user123", TokenType.ACCESS, expires_in=0)
         claims = token_manager.validate_token(token)
-        assert claims.sub == "user123"
+        assert claims.sub == "user123", "sub is not valid"
 
     def test_token_with_negative_expiry(self, token_manager):
         # Should already be expired
@@ -349,8 +350,8 @@ class TestTokenManagementFlow:
         )
 
         # Validate both
-        assert token_manager.validate_token(access_token)
-        assert token_manager.validate_token(refresh_token)
+        assert token_manager.validate_token(access_token), "Condition must be true"
+        assert token_manager.validate_token(refresh_token), "Condition must be true"
 
     def test_session_token_lifecycle(self, token_manager):
         # Create session
@@ -358,7 +359,7 @@ class TestTokenManagementFlow:
 
         # Use session
         claims = token_manager.validate_token(session_token)
-        assert claims.sub == "user123"
+        assert claims.sub == "user123", "sub is not valid"
 
         # Logout (revoke)
         token_manager.revoke_token(session_token)
@@ -373,14 +374,14 @@ class TestTokenManagementFlow:
         token2 = token_manager.create_token("user1", TokenType.SESSION)
 
         # Both valid
-        assert token_manager.validate_token(token1)
-        assert token_manager.validate_token(token2)
+        assert token_manager.validate_token(token1), "Condition must be true"
+        assert token_manager.validate_token(token2), "Condition must be true"
 
         # Revoke one
         token_manager.revoke_token(token1)
 
         # Other still valid
-        assert token_manager.validate_token(token2)
+        assert token_manager.validate_token(token2), "Condition must be true"
 
 
 # ============================================================================
@@ -400,7 +401,7 @@ class TestPerformance:
         elapsed = time.time() - start
 
         # Should complete in reasonable time
-        assert elapsed < 10  # 10 seconds for 100 tokens
+        assert elapsed < 10, "elapsed is not valid"
 
     def test_token_validation_performance(self, token_manager):
         pass  # removed redundant `import time` (top-level import used)
@@ -414,10 +415,10 @@ class TestPerformance:
         elapsed = time.time() - start
 
         # Should validate quickly
-        assert elapsed < 10
+        assert elapsed < 10, "elapsed is not valid"
 
     def test_token_size(self, token_manager):
         token = token_manager.create_token("user123", TokenType.ACCESS)
         # JWT tokens are base64url encoded
-        assert len(token) > 0
-        assert len(token) < 2000  # Reasonable size
+        assert len(token) > 0, "Token must not be empty"
+        assert len(token) < 2000, "Token must not be empty"

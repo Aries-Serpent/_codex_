@@ -69,14 +69,14 @@ def unique_function2():
 
             # Verify all steps
             assert isinstance(duplicates, list)
-            assert ratio.total_lines > 0
-            assert "json_path" in result
-            assert "sqlite_id" in result
+            assert ratio.total_lines > 0, "total_lines must be greater than zero"
+            assert "json_path" in result, "Result must not be empty"
+            assert "sqlite_id" in result, "Result must not be empty"
 
             # Verify storage
             latest = storage.load_latest()
-            assert latest is not None
-            assert latest["commit_sha"] == "test123"
+            assert latest is not None, "latest must be initialized"
+            assert latest["commit_sha"] == "test123", "Condition must be true"
 
     def test_baseline_comparison_workflow(self):
         """Test baseline tracking and comparison workflow"""
@@ -118,8 +118,8 @@ def unique_function2():
             difference = current_ratio - baseline_ratio
 
             # Verify comparison logic
-            assert difference == pytest.approx(0.05)
-            assert difference > 0.02  # Would fail threshold
+            assert difference == pytest.approx(0.05), "difference is not valid"
+            assert difference > 0.02, "difference must be greater than zero"
 
             # Simulate improvement (update baseline)
             if current_ratio < baseline_ratio:
@@ -127,7 +127,7 @@ def unique_function2():
                 pass
 
             # In this case, current is worse
-            assert current_ratio > baseline_ratio
+            assert current_ratio > baseline_ratio, "current_ratio must be greater than zero"
 
 
 if __name__ == "__main__":

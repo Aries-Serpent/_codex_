@@ -81,7 +81,7 @@ class TestCLIHelpCommands:
             pytest.skip("Version command not available")
 
         # Should output a version
-        assert len(stdout.strip()) > 0 or len(stderr.strip()) > 0
+        assert len(stdout.strip()) > 0 or len(stderr.strip()) > 0, "Collection must not be empty"
 
 
 class TestCLIConfigWorkflow:
@@ -170,8 +170,8 @@ class TestCLIOutputWorkflow:
         with tempfile.TemporaryDirectory() as tmpdir:
             output_path = Path(tmpdir) / "test_output"
             output_path.mkdir()
-            assert output_path.exists()
-            assert output_path.is_dir()
+            assert output_path.exists(), "Condition must be true"
+            assert output_path.is_dir(), "Condition must be true"
 
     def test_artifacts_directory_structure(self):
         """Check artifacts directory structure."""
@@ -181,4 +181,4 @@ class TestCLIOutputWorkflow:
         ]
         for path in artifacts_paths:
             if path.exists():
-                assert path.is_dir()
+                assert path.is_dir(), "Condition must be true"

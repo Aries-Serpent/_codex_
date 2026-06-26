@@ -109,7 +109,7 @@ class TestDBManagerPoolCleanup:
             pytest.fail(f"close_all_pools() on empty pool should not raise: {e}")
 
         # Pool should still be empty
-        assert len(DBManager._CONNECTION_POOL) == 0
+        assert len(DBManager._CONNECTION_POOL) == 0, "Collection must not be empty"
 
     def test_close_all_pools_multiple_databases(self, tmp_path):
         """Test pool cleanup with multiple database pools."""
@@ -144,7 +144,7 @@ class TestDBManagerPoolCleanup:
             DBManager.close_all_pools()
 
             # Verify all pools cleared
-            assert len(DBManager._CONNECTION_POOL) == 0
+            assert len(DBManager._CONNECTION_POOL) == 0, "Collection must not be empty"
 
     def test_logger_accessible_from_classmethod(self):
         """Test that _logger is accessible from classmethod (regression test)."""
@@ -159,7 +159,7 @@ class TestDBManagerPoolCleanup:
         assert isinstance(DBManager._logger, logging.Logger), "_logger should be a Logger instance"
 
         # Verify name is correct
-        assert DBManager._logger.name == "codex.logging.db_manager"
+        assert DBManager._logger.name == "codex.logging.db_manager", "name is not valid"
 
     def test_instance_logger_access(self, tmp_path):
         """Test that instance methods can still access logger."""
@@ -210,4 +210,4 @@ class TestDBManagerPoolCleanup:
             # Verify error was logged (if occurred)
             # Note: May not always trigger error depending on SQLite version
             # Just verify no exception raised
-            assert len(DBManager._CONNECTION_POOL) == 0
+            assert len(DBManager._CONNECTION_POOL) == 0, "Collection must not be empty"

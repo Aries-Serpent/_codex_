@@ -27,7 +27,7 @@ def test_quantization_string_mode_sets_flags() -> None:
         config={"quantization": "8bit"},
     )
 
-    assert recorded["load_in_8bit"] is True
+    assert recorded["load_in_8bit"] is True, "rec is not valid"
 
 
 def test_quantization_mapping_uses_bitsandbytes(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -52,11 +52,11 @@ def test_quantization_mapping_uses_bitsandbytes(monkeypatch: pytest.MonkeyPatch)
         },
     )
 
-    assert recorded["load_in_4bit"] is True
+    assert recorded["load_in_4bit"] is True, "rec is not valid"
     config_obj = recorded["quantization_config"]
     assert isinstance(config_obj, FakeBitsAndBytesConfig)
-    assert config_obj.kwargs["bnb_4bit_compute_dtype"] == "float16"
-    assert config_obj.kwargs["bnb_4bit_use_double_quant"] is True
+    assert config_obj.kwargs["bnb_4bit_compute_dtype"] == "float16", "Object must be initialized"
+    assert config_obj.kwargs["bnb_4bit_use_double_quant"] is True, "Object must be initialized"
 
 
 def test_quantization_mapping_requires_bitsandbytes(monkeypatch: pytest.MonkeyPatch) -> None:

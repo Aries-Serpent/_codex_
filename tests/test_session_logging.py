@@ -113,9 +113,9 @@ def test_context_manager_emits_start_end(tmp_path, monkeypatch):
         assert cp.returncode == 0, cp.stderr
 
     # Assert NDJSON exists and has start/end markers
-    assert ndjson_file.exists()
+    assert ndjson_file.exists(), "Condition must be true"
     data = ndjson_file.read_text(encoding="utf-8").strip().splitlines()
-    assert any(
+    assert any(, "Condition must be true"
         "session_start" in line or '"event":"start"' in line or '"start"' in line for line in data
     )
     assert any("session_end" in line or '"event":"end"' in line or '"end"' in line for line in data)
@@ -140,7 +140,7 @@ def test_context_manager_recreates_missing_dir(tmp_path, monkeypatch):
         pass
 
     ndjson_file = sessions_dir / f"{session_id}.ndjson"
-    assert ndjson_file.exists()
+    assert ndjson_file.exists(), "Condition must be true"
 
 
 def test_log_conversation_helper(tmp_path, monkeypatch):
@@ -161,13 +161,13 @@ def test_log_conversation_helper(tmp_path, monkeypatch):
     rows = _discover_rows(db_path, session_id)
     msgs = {r.get("message") or r.get("content") for r in rows}
     roles = {r.get("role") or r.get("kind") for r in rows}
-    assert "hello from user" in msgs
-    assert "hello from assistant" in msgs
-    assert ("user" in roles) or ("assistant" in roles)
+    assert "hello from user" in msgs, "Condition must be true"
+    assert "hello from assistant" in msgs, "Condition must be true"
+    assert ("user" in roles) or ("assistant" in roles), "Condition must be true"
     con = sqlite3.connect(str(db_path))
     try:
         idxs = con.execute("PRAGMA index_list('session_events')").fetchall()
-        assert any(r[1] == "session_events_sid_ts_idx" for r in idxs)
+        assert any(r[1] == "session_events_sid_ts_idx" for r in idxs), "Condition must be true"
     finally:
         con.close()
 
@@ -192,10 +192,10 @@ def test_ndjson_and_db_alignment(tmp_path, monkeypatch):
         pass
 
     ndjson_file = tmp_path / ".codex" / "sessions" / f"{session_id}.ndjson"
-    assert ndjson_file.exists()
+    assert ndjson_file.exists(), "Condition must be true"
     lines = [json.loads(line) for line in ndjson_file.read_text().splitlines() if line.strip()]
     rows = logger_mod.fetch_messages(session_id, db_path=db_path)
-    assert len(lines) == len(rows)
+    assert len(lines) == len(rows), "Lines must not be empty"
 
 
 def test_cli_query_returns_expected_rows(tmp_path, monkeypatch):
@@ -235,8 +235,8 @@ def test_cli_query_returns_expected_rows(tmp_path, monkeypatch):
             except (ValueError, TypeError) as _err:
                 # Tolerate non-JSON lines containing messages
                 messages = [line for line in out.splitlines() if "hi" in line or "hey" in line]
-            assert any("hi" in m for m in messages)
-            assert any("hey" in m for m in messages)
+            assert any("hi" in m for m in messages), "Condition must be true"
+            assert any("hey" in m for m in messages), "Condition must be true"
             return
     pytest.skip("query_logs module is not available or failed")
 
@@ -266,8 +266,8 @@ def test_export_cli_reads_session_logger(tmp_path, monkeypatch):
                 messages = [r.get("message") or r.get("content") for r in data]
             except (ValueError, TypeError) as _err:
                 messages = [line for line in out.splitlines() if "hi" in line or "hey" in line]
-            assert any("hi" in m for m in messages)
-            assert any("hey" in m for m in messages)
+            assert any("hi" in m for m in messages), "Condition must be true"
+            assert any("hey" in m for m in messages), "Condition must be true"
             return
     pytest.skip("export module is not available or failed")
 
@@ -310,7 +310,7 @@ def test_codex_session_start_read_only_dir(tmp_path, monkeypatch):
             _, _err = proc.communicate()
         err_lower = (_err or "").lower()
         has_error_message = "failed" in err_lower or "permission" in err_lower
-        assert proc.returncode != 0 and has_error_message
+        assert proc.returncode != 0 and has_error_message, "Error should be raised or set"
     finally:
         sessions_dir.chmod(0o755)
         shutil.rmtree(sessions_dir, ignore_errors=True)

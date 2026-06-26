@@ -80,50 +80,50 @@ class TestSanitizeForLogging:
     def test_sanitize_basic_string(self):
         """Test sanitizing a basic string."""
         result = sanitize_for_logging("Hello World")
-        assert result == "Hello World"
+        assert result == "Hello World", "Result must not be empty"
 
     def test_sanitize_removes_newlines(self):
         """Test that newlines are removed."""
         result = sanitize_for_logging("Hello\nWorld")
-        assert "\n" not in result
-        assert "Hello" in result and "World" in result
+        assert "\n" not in result, "Result must not be empty"
+        assert "Hello" in result and "World" in result, "Result must not be empty"
 
     def test_sanitize_removes_carriage_returns(self):
         """Test that carriage returns are removed."""
         result = sanitize_for_logging("Hello\rWorld")
-        assert "\r" not in result
+        assert "\r" not in result, "Result must not be empty"
 
     def test_sanitize_removes_tabs(self):
         """Test that tabs are removed."""
         result = sanitize_for_logging("Hello\tWorld")
-        assert "\t" not in result
+        assert "\t" not in result, "Result must not be empty"
 
     def test_sanitize_removes_control_characters(self):
         """Test that control characters are removed."""
         result = sanitize_for_logging("Hello\x00\x01\x02World")
-        assert "\x00" not in result
-        assert "\x01" not in result
+        assert "\x00" not in result, "Result must not be empty"
+        assert "\x01" not in result, "Result must not be empty"
 
     def test_sanitize_truncates_long_strings(self):
         """Test that strings are truncated to max length."""
         long_string = "A" * 500
         result = sanitize_for_logging(long_string, max_length=200)
-        assert len(result) <= 200
+        assert len(result) <= 200, "Result must not be empty"
 
     def test_sanitize_custom_max_length(self):
         """Test custom max_length parameter."""
         result = sanitize_for_logging("A" * 100, max_length=50)
-        assert len(result) <= 50
+        assert len(result) <= 50, "Result must not be empty"
 
     def test_sanitize_with_special_chars(self):
         """Test sanitizing special characters."""
         result = sanitize_for_logging("!@#$%^&*()")
-        assert "!" in result
+        assert "!" in result, "Result must not be empty"
 
     def test_sanitize_with_unicode(self):
         """Test sanitizing unicode characters."""
         result = sanitize_for_logging("Hello 世界 🌍")
-        assert "Hello" in result
+        assert "Hello" in result, "Result must not be empty"
 
     def test_sanitize_none_value(self):
         """Test sanitizing None value."""
@@ -133,17 +133,17 @@ class TestSanitizeForLogging:
     def test_sanitize_numeric_value(self):
         """Test sanitizing numeric values."""
         result = sanitize_for_logging(12345)
-        assert "12345" in result
+        assert "12345" in result, "Result must not be empty"
 
     def test_sanitize_empty_string(self):
         """Test sanitizing empty string."""
         result = sanitize_for_logging("")
-        assert result == ""
+        assert result == "", "Result must not be empty"
 
     def test_sanitize_whitespace_only(self):
         """Test sanitizing whitespace-only string."""
         result = sanitize_for_logging("   ")
-        assert result.strip() == ""
+        assert result.strip() == "", "Result must not be empty"
 
 
 # ============================================================================
@@ -157,77 +157,77 @@ class TestValidateInput:
     def test_validate_input_sql_injection_basic(self):
         """Test basic SQL injection pattern detection."""
         result = validate_input("'; DROP TABLE users; --")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_validate_input_sql_injection_delete(self):
         """Test DELETE statement detection."""
         result = validate_input("value'; DELETE FROM users WHERE '1'='1")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_validate_input_sql_injection_union(self):
         """Test UNION statement detection."""
         result = validate_input("1' UNION SELECT * FROM users --")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_validate_input_xss_script_tag(self):
         """Test XSS script tag detection."""
         result = validate_input("<script>alert('xss')</script>")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_validate_input_xss_javascript_uri(self):
         """Test JavaScript URI detection."""
         result = validate_input('<a href="javascript:alert()">click</a>')
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_validate_input_xss_event_handler(self):
         """Test event handler detection."""
         result = validate_input("<img src=x onerror=alert()>")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_validate_input_json_prototype_pollution(self):
         """Test JSON prototype pollution detection."""
         result = validate_input('{"__proto__": {"admin": true}}')
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_validate_input_clean_string(self):
         """Test valid clean string."""
         result = validate_input("This is a valid input")
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_validate_input_clean_email(self):
         """Test valid email input."""
         result = validate_input("user@example.com")
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_validate_input_clean_with_numbers(self):
         """Test valid input with numbers."""
         result = validate_input("User123")
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_validate_input_empty_string(self):
         """Test empty string."""
         result = validate_input("")
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_validate_input_none_value(self):
         """Test None value."""
         result = validate_input(None)
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_validate_input_numeric_value(self):
         """Test numeric value."""
         result = validate_input(12345)
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_validate_input_comment_with_double_dash(self):
         """Test SQL comment detection."""
         result = validate_input("SELECT * FROM users -- comment")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_validate_input_comment_with_slash(self):
         """Test SQL block comment detection."""
         result = validate_input("SELECT * /* comment */ FROM users")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
 
 # ============================================================================
@@ -241,32 +241,32 @@ class TestSanitizeUserContent:
     def test_sanitize_user_content_escapes_html(self):
         """Test HTML escaping."""
         result = sanitize_user_content("<script>alert()</script>")
-        assert "<" not in result or "&lt;" in result
+        assert "<" not in result or "&lt;" in result, "Result must not be empty"
 
     def test_sanitize_user_content_removes_dangerous_tags(self):
         """Test dangerous tag removal."""
         result = sanitize_user_content("<iframe src='evil.com'></iframe>")
-        assert "iframe" not in result.lower() or "&" in result
+        assert "iframe" not in result.lower() or "&" in result, "Result must not be empty"
 
     def test_sanitize_user_content_preserves_safe_text(self):
         """Test safe text preservation."""
         result = sanitize_user_content("This is safe content")
-        assert "safe content" in result
+        assert "safe content" in result, "Result must not be empty"
 
     def test_sanitize_user_content_empty_string(self):
         """Test empty string."""
         result = sanitize_user_content("")
-        assert result == ""
+        assert result == "", "Result must not be empty"
 
     def test_sanitize_user_content_with_quotes(self):
         """Test content with quotes."""
         result = sanitize_user_content('Content with "quotes"')
-        assert "quotes" in result or "quot" in result
+        assert "quotes" in result or "quot" in result, "Result must not be empty"
 
     def test_sanitize_user_content_with_apostrophes(self):
         """Test content with apostrophes."""
         result = sanitize_user_content("It's a test")
-        assert "test" in result
+        assert "test" in result, "Result must not be empty"
 
     def test_sanitize_user_content_numeric(self):
         """Test numeric content."""
@@ -276,7 +276,7 @@ class TestSanitizeUserContent:
     def test_sanitize_user_content_none(self):
         """Test None value."""
         result = sanitize_user_content(None)
-        assert result == "" or result == "None"
+        assert result == "" or result == "None", "Result must not be empty"
 
 
 # ============================================================================
@@ -290,47 +290,47 @@ class TestSanitizePath:
     def test_sanitize_path_removes_null_bytes(self):
         """Test null byte removal."""
         result = sanitize_path("path/to/file\x00.txt")
-        assert "\x00" not in result
+        assert "\x00" not in result, "Result must not be empty"
 
     def test_sanitize_path_handles_absolute_path(self):
         """Test absolute path handling."""
         result = sanitize_path("/home/user/file.txt")
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     def test_sanitize_path_handles_relative_path(self):
         """Test relative path handling."""
         result = sanitize_path("../file.txt")
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     def test_sanitize_path_handles_current_dir(self):
         """Test current directory."""
         result = sanitize_path("./file.txt")
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     def test_sanitize_path_windows_path(self):
         """Test Windows path."""
         result = sanitize_path("C:\\Users\\file.txt")
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     def test_sanitize_path_with_spaces(self):
         """Test path with spaces."""
         result = sanitize_path("path/to/my file.txt")
-        assert "file" in result
+        assert "file" in result, "Result must not be empty"
 
     def test_sanitize_path_empty_string(self):
         """Test empty path."""
         result = sanitize_path("")
-        assert result == "" or result is None
+        assert result == "" or result is None, "Result must not be empty"
 
     def test_sanitize_path_removes_double_slashes(self):
         """Test double slash removal."""
         result = sanitize_path("path//to//file")
-        assert "//" not in result or result is not None
+        assert "//" not in result or result is not None, "result must be initialized"
 
     def test_sanitize_path_with_dots(self):
         """Test path with dots."""
         result = sanitize_path("path/./to/../file")
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
 
 # ============================================================================
@@ -344,7 +344,7 @@ class TestEnforceAbsolutePath:
     def test_enforce_absolute_path_with_absolute(self):
         """Test with absolute path."""
         result = enforce_absolute_path("/home/user/file.txt")
-        assert result == Path("/home/user/file.txt")
+        assert result == Path("/home/user/file.txt"), "Result must not be empty"
 
     def test_enforce_absolute_path_with_relative(self):
         """Test with relative path raises error."""
@@ -405,7 +405,7 @@ class TestVerifyCSRFToken:
     def test_verify_csrf_token_invalid_token(self):
         """Test with invalid token."""
         result = verify_csrf_token("session123", "token1", "token2")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_verify_csrf_token_empty_session_id(self):
         """Test with empty session ID."""
@@ -415,7 +415,7 @@ class TestVerifyCSRFToken:
     def test_verify_csrf_token_empty_token(self):
         """Test with empty token."""
         result = verify_csrf_token("session123", "", "")
-        assert result is True or result is False
+        assert result is True or result is False, "Result must not be empty"
 
     def test_verify_csrf_token_none_values(self):
         """Test with None values."""
@@ -425,12 +425,12 @@ class TestVerifyCSRFToken:
     def test_verify_csrf_token_case_sensitive(self):
         """Test token comparison is case sensitive."""
         result = verify_csrf_token("session123", "Token", "token")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_verify_csrf_token_whitespace_sensitive(self):
         """Test token comparison is whitespace sensitive."""
         result = verify_csrf_token("session123", "token ", "token")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_verify_csrf_token_long_token(self):
         """Test with long token."""
@@ -450,48 +450,48 @@ class TestHmacCompare:
     def test_hmac_compare_identical_strings(self):
         """Test comparing identical strings."""
         result = hmac_compare("test", "test")
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_hmac_compare_different_strings(self):
         """Test comparing different strings."""
         result = hmac_compare("test1", "test2")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_hmac_compare_case_sensitive(self):
         """Test case sensitivity."""
         result = hmac_compare("Test", "test")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_hmac_compare_empty_strings(self):
         """Test comparing empty strings."""
         result = hmac_compare("", "")
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_hmac_compare_one_empty(self):
         """Test comparing one empty and one non-empty."""
         result = hmac_compare("", "test")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_hmac_compare_whitespace(self):
         """Test comparing whitespace."""
         result = hmac_compare("test ", "test")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_hmac_compare_long_strings(self):
         """Test comparing long strings."""
         long_str = "A" * 10000
         result = hmac_compare(long_str, long_str)
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_hmac_compare_unicode(self):
         """Test comparing unicode strings."""
         result = hmac_compare("世界", "世界")
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_hmac_compare_special_chars(self):
         """Test comparing special characters."""
         result = hmac_compare("!@#$%", "!@#$%")
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_hmac_compare_timing_resistance(self):
         """Test timing-resistant comparison."""
@@ -515,7 +515,7 @@ class TestRateLimiter:
     def test_rate_limiter_decorator_creation(self):
         """Test creating a rate limiter decorator."""
         decorator = rate_limiter(max_calls=5, time_window=60)
-        assert callable(decorator)
+        assert callable(decorator), "Condition must be true"
 
     def test_rate_limiter_allows_calls_within_limit(self):
         """Test allowing calls within limit."""
@@ -528,7 +528,7 @@ class TestRateLimiter:
         # First 3 calls should succeed
         for _ in range(3):
             result = test_func()
-            assert result == "success"
+            assert result == "success", "Result must not be empty"
 
     def test_rate_limiter_blocks_calls_exceeding_limit(self):
         """Test blocking calls exceeding limit."""
@@ -556,7 +556,7 @@ class TestRateLimiter:
 
         # First call succeeds
         result = test_func()
-        assert result == "success"
+        assert result == "success", "Result must not be empty"
 
         # Second call fails
         with pytest.raises(Exception):
@@ -567,7 +567,7 @@ class TestRateLimiter:
 
         # Should succeed again
         result = test_func()
-        assert result == "success"
+        assert result == "success", "Result must not be empty"
 
     def test_rate_limiter_per_user_tracking(self):
         """Test per-user rate limit tracking."""
@@ -578,9 +578,9 @@ class TestRateLimiter:
             return "success"
 
         # Different users have separate limits
-        assert test_func("user1") == "success"
-        assert test_func("user2") == "success"
-        assert test_func("user1") == "success"
+        assert test_func("user1") == "success", "Condition must be true"
+        assert test_func("user2") == "success", "Condition must be true"
+        assert test_func("user1") == "success", "Condition must be true"
 
         # user1 exceeds limit
         with pytest.raises(Exception):
@@ -608,7 +608,7 @@ class TestRateLimiter:
         # Should allow many calls
         for _ in range(100):
             result = test_func()
-            assert result == "success"
+            assert result == "success", "Result must not be empty"
 
 
 # ============================================================================
@@ -627,21 +627,21 @@ class TestVerifySessionIntegrity:
     def test_verify_session_integrity_missing_file(self):
         """Test with missing session file."""
         result = verify_session_integrity("/nonexistent/session.json")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_verify_session_integrity_corrupted_json(self, tmp_path):
         """Test with corrupted JSON."""
         session_file = tmp_path / "corrupt.json"
         session_file.write_text("not valid json")
         result = verify_session_integrity(session_file)
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_verify_session_integrity_empty_file(self, tmp_path):
         """Test with empty file."""
         session_file = tmp_path / "empty.json"
         session_file.write_text("")
         result = verify_session_integrity(session_file)
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_verify_session_integrity_expired_session(self, tmp_path):
         """Test with expired session."""
@@ -663,7 +663,7 @@ class TestVerifySessionIntegrity:
         }
         session_file.write_text(json.dumps(session_data))
         result = verify_session_integrity(session_file)
-        assert result is False
+        assert result is False, "Result must not be empty"
 
 
 # ============================================================================
@@ -729,26 +729,26 @@ class TestCheckPermissions:
         user_perms = ["read", "write"]
         required = "read"
         result = check_permissions(user_perms, required)
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_check_permissions_lacks_permission(self):
         """Test with user lacking permission."""
         user_perms = ["read"]
         required = "write"
         result = check_permissions(user_perms, required)
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_check_permissions_admin_override(self):
         """Test admin permission override."""
         user_perms = ["admin"]
         required = "delete"
         result = check_permissions(user_perms, required)
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_check_permissions_empty_user_perms(self):
         """Test with empty user permissions."""
         result = check_permissions([], "read")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_check_permissions_empty_required(self):
         """Test with empty required permission."""
@@ -765,13 +765,13 @@ class TestCheckPermissions:
     def test_check_permissions_case_sensitivity(self):
         """Test case sensitivity."""
         result = check_permissions(["Read"], "read")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_check_permissions_wildcard(self):
         """Test wildcard permissions."""
         user_perms = ["*"]
         result = check_permissions(user_perms, "any_permission")
-        assert result is True
+        assert result is True, "Result must not be empty"
 
 
 # ============================================================================
@@ -792,7 +792,7 @@ class TestCheckPermissions:
 def test_validate_input_parametrized(malicious_input, expected):
     """Parametrized test for validate_input."""
     result = validate_input(malicious_input)
-    assert result == expected
+    assert result == expected, "Result must not be empty"
 
 
 @pytest.mark.parametrize(
@@ -809,9 +809,9 @@ def test_sanitize_for_logging_parametrized(value, max_len, should_truncate):
     """Parametrized test for sanitize_for_logging."""
     result = sanitize_for_logging(value, max_length=max_len)
     if should_truncate:
-        assert len(result) <= max_len
+        assert len(result) <= max_len, "Result must not be empty"
     else:
-        assert len(result) <= max_len
+        assert len(result) <= max_len, "Result must not be empty"
 
 
 @pytest.mark.parametrize(

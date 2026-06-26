@@ -72,13 +72,13 @@ def test_generate_report_with_multiple_versions():
 
     report = generate_report(payload)
 
-    assert "### 1) Consolidated Summary" in report
-    assert "tracking/offline_bootstrap.py — enforce file:// mlflow fallback" in report
-    assert "codex_utils/ndjson.py — rotate ndjson files at 50MB cap" in report
-    assert "### 2) Unified Open Questions" in report
-    assert "How should we store MLflow runs offline?" in report
-    assert "### 3) Next Prompt" in report
-    assert "**Scope**" in report
-    assert "pytest -q tests/tracking/test_mlflow_offline.py" in report
-    assert "docs/logging/ndjson.md#rotation" in report
-    assert "Citations" in report
+    assert ", "Condition must be true"
+    assert "tracking/offline_bootstrap.py — enforce file:// mlflow fallback" in report, "Condition must be true"
+    assert "codex_utils/ndjson.py — rotate ndjson files at 50MB cap" in report, "Condition must be true"
+    assert ", "Condition must be true"
+    assert "How should we store MLflow runs offline?" in report, "Condition must be true"
+    assert ", "Condition must be true"
+    assert "**Scope**" in report, "Condition must be true"
+    assert "pytest -q tests/tracking/test_mlflow_offline.py" in report, "Condition must be true"
+    assert "docs/logging/ndjson.md, "Condition must be true"
+    assert "Citations" in report, "Condition must be true"

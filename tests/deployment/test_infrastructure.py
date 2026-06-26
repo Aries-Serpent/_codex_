@@ -24,9 +24,9 @@ class TestDeploymentInfrastructureDetector:
         result = detect({"files": []})
 
         # Required fields
-        assert "id" in result
+        assert "id" in result, "Result must not be empty"
         assert isinstance(result["id"], str)
-        assert result["id"] == "deployment-infrastructure"
+        assert result["id"] == "deployment-infrastructure", "Result must not be empty"
 
     def test_detect_with_deployment_files(self):
         """Test detection with deployment files present"""
@@ -42,8 +42,8 @@ class TestDeploymentInfrastructureDetector:
 
         result = detect(file_index)
 
-        assert result["id"] == "deployment-infrastructure"
-        assert "evidence_files" in result
+        assert result["id"] == "deployment-infrastructure", "Result must not be empty"
+        assert "evidence_files" in result, "Result must not be empty"
 
 
 class TestDeploymentConfiguration:
@@ -72,8 +72,8 @@ class TestDeploymentConfiguration:
         with open(config_file, "r") as f:
             loaded = yaml.safe_load(f)
 
-        assert loaded["deployment"]["environment"] == "production"
-        assert loaded["deployment"]["replicas"] == 3
+        assert loaded["deployment"]["environment"] == "production", "Condition must be true"
+        assert loaded["deployment"]["replicas"] == 3, "Condition must be true"
 
     def test_deployment_config_validation(self):
         """Test deployment configuration validation"""
@@ -83,10 +83,10 @@ class TestDeploymentConfiguration:
         }
 
         # Validate required fields
-        assert "environment" in config
-        assert "replicas" in config
+        assert "environment" in config, "Condition must be true"
+        assert "replicas" in config, "Condition must be true"
         assert isinstance(config["replicas"], int)
-        assert config["replicas"] > 0
+        assert config["replicas"] > 0, "Value must be greater than zero"
 
     def test_deployment_environment_values(self):
         """Test valid deployment environment values"""
@@ -94,7 +94,7 @@ class TestDeploymentConfiguration:
 
         for env in valid_envs:
             config = {"environment": env}
-            assert config["environment"] in valid_envs
+            assert config["environment"] in valid_envs, "Condition must be true"
 
 
 class TestDeploymentInfrastructure:
@@ -121,7 +121,7 @@ class TestDeploymentInfrastructure:
     def test_deployment_orchestrator_exists(self):
         """Test that deployment orchestrator script exists"""
         orchestrator_path = Path("scripts/deployment_orchestrator.py")
-        assert orchestrator_path.exists() or True  # May not exist in all environments
+        assert orchestrator_path.exists() or True, "orchestrat is not valid"
 
 
 class TestDeploymentValidation:
@@ -139,10 +139,10 @@ class TestDeploymentValidation:
         }
 
         # Validate required fields
-        assert "deployment" in valid_config
-        assert "name" in valid_config["deployment"]
-        assert "environment" in valid_config["deployment"]
-        assert "replicas" in valid_config["deployment"]
+        assert "deployment" in valid_config, "Condition must be true"
+        assert "name" in valid_config["deployment"], "Condition must be true"
+        assert "environment" in valid_config["deployment"], "Condition must be true"
+        assert "replicas" in valid_config["deployment"], "Condition must be true"
 
     def test_validate_resource_limits(self):
         """Test resource limit validation"""
@@ -155,7 +155,7 @@ class TestDeploymentValidation:
         # Validate types and formats
         assert isinstance(resources["cpu"], str)
         assert isinstance(resources["memory"], str)
-        assert resources["memory"].endswith("Gi") or resources["memory"].endswith("Mi")
+        assert resources["memory"].endswith("Gi") or resources["memory"].endswith("Mi"), "Condition must be true"
 
     def test_validate_replica_count(self):
         """Test replica count validation"""
@@ -163,8 +163,8 @@ class TestDeploymentValidation:
 
         for count in valid_counts:
             assert isinstance(count, int)
-            assert count > 0
-            assert count <= 100  # Reasonable upper limit
+            assert count > 0, "count must be positive"
+            assert count <= 100, "Count must be greater than zero"
 
 
 class TestDeploymentHealthChecks:
@@ -179,11 +179,11 @@ class TestDeploymentHealthChecks:
             "timeout": 5,
         }
 
-        assert health_check["path"].startswith("/")
+        assert health_check["path"].startswith("/"), "Condition must be true"
         assert isinstance(health_check["port"], int)
-        assert health_check["port"] > 0
-        assert health_check["interval"] > 0
-        assert health_check["timeout"] > 0
+        assert health_check["port"] > 0, "Value must be greater than zero"
+        assert health_check["interval"] > 0, "Value must be greater than zero"
+        assert health_check["timeout"] > 0, "Value must be greater than zero"
 
     def test_readiness_check(self):
         """Test readiness check structure"""
@@ -193,8 +193,8 @@ class TestDeploymentHealthChecks:
             "period": 5,
         }
 
-        assert readiness["initial_delay"] >= 0
-        assert readiness["period"] > 0
+        assert readiness["initial_delay"] >= 0, "Value must be greater than zero"
+        assert readiness["period"] > 0, "Value must be greater than zero"
 
 
 if __name__ == "__main__":

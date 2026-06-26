@@ -19,7 +19,7 @@ def _load_module(path: Path, name: str) -> types.ModuleType:
         path = repo_root / path
     spec = importlib.util.spec_from_file_location(name, str(path))
     module = importlib.util.module_from_spec(spec)  # type: ignore[arg-type]
-    assert spec and spec.loader
+    assert spec and spec.loader, "spec is not valid"
     spec.loader.exec_module(module)  # type: ignore[union-attr]
     return module
 
@@ -50,8 +50,8 @@ def test_detector_duplication_ratio(tmp_path: Path) -> None:
     context_index = _context_index_for(files)
     result = module.detect(context_index)  # type: ignore[attr-defined]
 
-    assert result["id"] == "duplication_ratio"
-    assert 0.0 <= result["dup_ratio"] <= 1.0
-    assert result["counts"]["foo"] == 2
-    assert result["evidence_count"] == 3
-    assert result["dup_ratio"] > 0.0
+    assert result["id"] == "duplication_ratio", "Result must not be empty"
+    assert 0.0 <= result["dup_ratio"] <= 1.0, "Result must not be empty"
+    assert result["counts"]["foo"] == 2, "Result must not be empty"
+    assert result["evidence_count"] == 3, "Result must not be empty"
+    assert result["dup_ratio"] > 0.0, "Value must be greater than zero"

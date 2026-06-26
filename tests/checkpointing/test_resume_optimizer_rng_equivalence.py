@@ -23,10 +23,10 @@ def test_resume_optimizer_rng_equivalence(tmp_path) -> None:
 
     sequence_after_save = [random.random() for _ in range(4)]
     loaded_state, loaded_meta = checkpoint_core.load_checkpoint(ckpt_dir)
-    assert loaded_state["optimizer_state"] == payload["optimizer_state"]
+    assert loaded_state["optimizer_state"] == payload["optimizer_state"], "Condition must be true"
 
     rng_payload = loaded_meta.rng
-    assert rng_payload is not None
+    assert rng_payload is not None, "rng_payload must be initialized"
     checkpoint_core.restore_rng_state(rng_payload)
     sequence_after_restore = [random.random() for _ in range(4)]
-    assert sequence_after_restore == sequence_after_save
+    assert sequence_after_restore == sequence_after_save, "sequence_after_restore is not valid"

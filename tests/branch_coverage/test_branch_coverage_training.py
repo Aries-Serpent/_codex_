@@ -28,25 +28,25 @@ class TestTrainingLoopBranches:
         """Test training mode enabled branch."""
         training = True
         mode = "train" if training else "eval"
-        assert mode == "train"
+        assert mode == "train", "mode is not valid"
 
     def test_training_mode_disabled_branch(self) -> None:
         """Test training mode disabled (eval) branch."""
         training = False
         mode = "train" if training else "eval"
-        assert mode == "eval"
+        assert mode == "eval", "mode is not valid"
 
     def test_gradient_accumulation_enabled_branch(self) -> None:
         """Test gradient accumulation enabled branch."""
         accumulation_steps = 4
         accumulate = accumulation_steps > 1
-        assert accumulate is True
+        assert accumulate is True, "accumulate is not valid"
 
     def test_gradient_accumulation_disabled_branch(self) -> None:
         """Test gradient accumulation disabled branch."""
         accumulation_steps = 1
         accumulate = accumulation_steps > 1
-        assert accumulate is False
+        assert accumulate is False, "accumulate is not valid"
 
     def test_mixed_precision_enabled_branch(self) -> None:
         """Test mixed precision enabled branch."""
@@ -58,7 +58,7 @@ class TestTrainingLoopBranches:
             dtype = "bfloat16"
         else:
             dtype = "float32"
-        assert dtype == "float16"
+        assert dtype == "float16", "dtype is not valid"
 
     def test_mixed_precision_bf16_branch(self) -> None:
         """Test BF16 mixed precision branch."""
@@ -70,7 +70,7 @@ class TestTrainingLoopBranches:
             dtype = "bfloat16"
         else:
             dtype = "float32"
-        assert dtype == "bfloat16"
+        assert dtype == "bfloat16", "dtype is not valid"
 
     def test_mixed_precision_disabled_branch(self) -> None:
         """Test mixed precision disabled branch."""
@@ -82,21 +82,21 @@ class TestTrainingLoopBranches:
             dtype = "bfloat16"
         else:
             dtype = "float32"
-        assert dtype == "float32"
+        assert dtype == "float32", "dtype is not valid"
 
     def test_early_stopping_triggered_branch(self) -> None:
         """Test early stopping triggered branch."""
         patience = 3
         epochs_no_improve = 4
         action = "stop" if epochs_no_improve >= patience else "continue"
-        assert action == "stop"
+        assert action == "stop", "action is not valid"
 
     def test_early_stopping_not_triggered_branch(self) -> None:
         """Test early stopping not triggered branch."""
         patience = 3
         epochs_no_improve = 2
         action = "stop" if epochs_no_improve >= patience else "continue"
-        assert action == "continue"
+        assert action == "continue", "action is not valid"
 
 
 # ============================================================================
@@ -111,53 +111,53 @@ class TestCheckpointBranches:
         """Test checkpoint save enabled branch."""
         save_strategy = "epoch"
         save = bool(save_strategy == "epoch" or save_strategy == "steps")
-        assert save is True
+        assert save is True, "save is not valid"
 
     def test_checkpoint_save_disabled_branch(self) -> None:
         """Test checkpoint save disabled branch."""
         save_strategy = "no"
         save = bool(save_strategy == "epoch" or save_strategy == "steps")
-        assert save is False
+        assert save is False, "save is not valid"
 
     def test_best_checkpoint_update_branch(self) -> None:
         """Test best checkpoint update branch."""
         current_metric = 0.95
         best_metric = 0.90
         action = "update_best" if current_metric > best_metric else "keep_best"
-        assert action == "update_best"
+        assert action == "update_best", "action is not valid"
 
     def test_best_checkpoint_keep_branch(self) -> None:
         """Test best checkpoint keep branch."""
         current_metric = 0.88
         best_metric = 0.90
         action = "update_best" if current_metric > best_metric else "keep_best"
-        assert action == "keep_best"
+        assert action == "keep_best", "action is not valid"
 
     def test_checkpoint_limit_exceeded_branch(self) -> None:
         """Test checkpoint limit exceeded branch."""
         saved_checkpoints = 5
         max_checkpoints = 3
         action = "delete_oldest" if saved_checkpoints > max_checkpoints else "keep_all"
-        assert action == "delete_oldest"
+        assert action == "delete_oldest", "action is not valid"
 
     def test_checkpoint_limit_not_exceeded_branch(self) -> None:
         """Test checkpoint limit not exceeded branch."""
         saved_checkpoints = 2
         max_checkpoints = 3
         action = "delete_oldest" if saved_checkpoints > max_checkpoints else "keep_all"
-        assert action == "keep_all"
+        assert action == "keep_all", "action is not valid"
 
     def test_resume_from_checkpoint_branch(self) -> None:
         """Test resume from checkpoint branch."""
         resume_path = str(Path.home() / "checkpoints" / "model.pt")
         action = "resume" if resume_path else "start_fresh"
-        assert action == "resume"
+        assert action == "resume", "action is not valid"
 
     def test_start_fresh_training_branch(self) -> None:
         """Test start fresh training branch."""
         resume_path = None
         action = "resume" if resume_path else "start_fresh"
-        assert action == "start_fresh"
+        assert action == "start_fresh", "action is not valid"
 
 
 # ============================================================================
@@ -186,26 +186,26 @@ class TestOptimizerBranches:
             "adafactor": "Adafactor",
         }
         result = optimizer_map.get(optimizer_name, "AdamW")
-        assert result == expected_class
+        assert result == expected_class, "Result must not be empty"
 
     def test_optimizer_unknown_default_branch(self) -> None:
         """Test unknown optimizer defaults to AdamW branch."""
         optimizer_name = "unknown"
         optimizer_map = {"adamw": "AdamW", "adam": "Adam"}
         result = optimizer_map.get(optimizer_name, "AdamW")
-        assert result == "AdamW"
+        assert result == "AdamW", "Result must not be empty"
 
     def test_weight_decay_enabled_branch(self) -> None:
         """Test weight decay enabled branch."""
         weight_decay = 0.01
         regularization = "l2" if weight_decay > 0 else "none"
-        assert regularization == "l2"
+        assert regularization == "l2", "regularization is not valid"
 
     def test_weight_decay_disabled_branch(self) -> None:
         """Test weight decay disabled branch."""
         weight_decay = 0.0
         regularization = "l2" if weight_decay > 0 else "none"
-        assert regularization == "none"
+        assert regularization == "none", "regularization is not valid"
 
 
 # ============================================================================
@@ -234,19 +234,19 @@ class TestLRSchedulerBranches:
             "cosine_with_restarts": "cosine_restarts_schedule",
         }
         result = scheduler_map.get(scheduler_type, "linear_schedule")
-        assert result == expected
+        assert result == expected, "Result must not be empty"
 
     def test_warmup_enabled_branch(self) -> None:
         """Test warmup enabled branch."""
         warmup_ratio = 0.1
         has_warmup = warmup_ratio > 0
-        assert has_warmup is True
+        assert has_warmup is True, "has_warmup is not valid"
 
     def test_warmup_disabled_branch(self) -> None:
         """Test warmup disabled branch."""
         warmup_ratio = 0.0
         has_warmup = warmup_ratio > 0
-        assert has_warmup is False
+        assert has_warmup is False, "has_warmup is not valid"
 
     def test_warmup_steps_vs_ratio_branch(self) -> None:
         """Test warmup steps takes precedence over ratio branch."""
@@ -258,7 +258,7 @@ class TestLRSchedulerBranches:
             warmup_source = "ratio"
         else:
             warmup_source = "none"
-        assert warmup_source == "steps"
+        assert warmup_source == "steps", "warmup_source is not valid"
 
     def test_warmup_ratio_only_branch(self) -> None:
         """Test warmup ratio only branch."""
@@ -270,7 +270,7 @@ class TestLRSchedulerBranches:
             warmup_source = "ratio"
         else:
             warmup_source = "none"
-        assert warmup_source == "ratio"
+        assert warmup_source == "ratio", "warmup_source is not valid"
 
 
 # ============================================================================
@@ -285,37 +285,37 @@ class TestDistributedTrainingBranches:
         """Test distributed training enabled branch."""
         world_size = 4
         distributed = world_size > 1
-        assert distributed is True
+        assert distributed is True, "distributed is not valid"
 
     def test_distributed_disabled_branch(self) -> None:
         """Test distributed training disabled branch."""
         world_size = 1
         distributed = world_size > 1
-        assert distributed is False
+        assert distributed is False, "distributed is not valid"
 
     def test_ddp_backend_nccl_branch(self) -> None:
         """Test NCCL backend selection branch."""
         gpu_available = True
         backend = "nccl" if gpu_available else "gloo"
-        assert backend == "nccl"
+        assert backend == "nccl", "backend is not valid"
 
     def test_ddp_backend_gloo_branch(self) -> None:
         """Test Gloo backend selection branch."""
         gpu_available = False
         backend = "nccl" if gpu_available else "gloo"
-        assert backend == "gloo"
+        assert backend == "gloo", "backend is not valid"
 
     def test_main_process_branch(self) -> None:
         """Test main process branch."""
         local_rank = 0
         is_main = local_rank == 0
-        assert is_main is True
+        assert is_main is True, "is_main is not valid"
 
     def test_worker_process_branch(self) -> None:
         """Test worker process branch."""
         local_rank = 2
         is_main = local_rank == 0
-        assert is_main is False
+        assert is_main is False, "is_main is not valid"
 
 
 # ============================================================================
@@ -331,13 +331,13 @@ class TestModelLoadingBranches:
         model_path = str(Path.home() / "models" / "bert-base")
         with patch.object(Path, "exists", return_value=True):
             source = "local" if Path(model_path).is_absolute() else "hub"
-            assert source == "local"
+            assert source == "local", "source is not valid"
 
     def test_model_hub_path_branch(self) -> None:
         """Test model loading from hub branch."""
         model_path = "bert-base-uncased"
         source = "local" if Path(model_path).is_absolute() else "hub"
-        assert source == "hub"
+        assert source == "hub", "source is not valid"
 
     def test_model_dtype_float32_branch(self) -> None:
         """Test model dtype float32 branch."""
@@ -350,7 +350,7 @@ class TestModelLoadingBranches:
             dtype_str = "torch.bfloat16"
         else:
             dtype_str = "auto"
-        assert dtype_str == "torch.float32"
+        assert dtype_str == "torch.float32", "dtype_str is not valid"
 
     def test_model_dtype_auto_branch(self) -> None:
         """Test model dtype auto branch."""
@@ -363,7 +363,7 @@ class TestModelLoadingBranches:
             dtype_str = "torch.bfloat16"
         else:
             dtype_str = "auto"
-        assert dtype_str == "auto"
+        assert dtype_str == "auto", "dtype_str is not valid"
 
 
 # ============================================================================
@@ -378,13 +378,13 @@ class TestPEFTConfigBranches:
         """Test LoRA enabled branch."""
         use_lora = True
         adapter_type = "lora" if use_lora else "full_fine_tuning"
-        assert adapter_type == "lora"
+        assert adapter_type == "lora", "adapter_type is not valid"
 
     def test_lora_disabled_branch(self) -> None:
         """Test LoRA disabled (full fine-tuning) branch."""
         use_lora = False
         adapter_type = "lora" if use_lora else "full_fine_tuning"
-        assert adapter_type == "full_fine_tuning"
+        assert adapter_type == "full_fine_tuning", "adapter_type is not valid"
 
     def test_lora_rank_high_branch(self) -> None:
         """Test high LoRA rank branch."""
@@ -395,7 +395,7 @@ class TestPEFTConfigBranches:
             rank_category = "medium"
         else:
             rank_category = "low"
-        assert rank_category == "high"
+        assert rank_category == "high", "rank_category is not valid"
 
     def test_lora_rank_medium_branch(self) -> None:
         """Test medium LoRA rank branch."""
@@ -406,7 +406,7 @@ class TestPEFTConfigBranches:
             rank_category = "medium"
         else:
             rank_category = "low"
-        assert rank_category == "medium"
+        assert rank_category == "medium", "rank_category is not valid"
 
     def test_lora_rank_low_branch(self) -> None:
         """Test low LoRA rank branch."""
@@ -417,7 +417,7 @@ class TestPEFTConfigBranches:
             rank_category = "medium"
         else:
             rank_category = "low"
-        assert rank_category == "low"
+        assert rank_category == "low", "rank_category is not valid"
 
     def test_lora_target_modules_default_branch(self) -> None:
         """Test LoRA target modules default branch."""
@@ -429,4 +429,4 @@ class TestPEFTConfigBranches:
         """Test LoRA target modules custom branch."""
         target_modules = ["q_proj", "k_proj", "v_proj", "o_proj"]
         modules = target_modules or ["q_proj", "v_proj"]
-        assert len(modules) == 4
+        assert len(modules) == 4, "Modules must not be empty"

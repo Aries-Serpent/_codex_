@@ -61,4 +61,4 @@ def test_entropy_scan():
         pytest.skip("Report not generated")
 
     data = json.loads(rep.read_text())
-    assert data["count"] > 0
+    assert data["count"] > 0, "Value must be greater than zero"

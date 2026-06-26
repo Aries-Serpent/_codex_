@@ -28,21 +28,21 @@ from codex.cognitive.knowledge_distiller import (
 
 class TestKnowledgeType:
     def test_members(self):
-        assert KnowledgeType.FACTUAL.value == "factual"
-        assert KnowledgeType.PROCEDURAL.value == "procedural"
-        assert KnowledgeType.CONTEXTUAL.value == "contextual"
-        assert KnowledgeType.DECISION.value == "decision"
-        assert KnowledgeType.PATTERN.value == "pattern"
+        assert KnowledgeType.FACTUAL.value == "factual", "Value must be initialized"
+        assert KnowledgeType.PROCEDURAL.value == "procedural", "Value must be initialized"
+        assert KnowledgeType.CONTEXTUAL.value == "contextual", "Value must be initialized"
+        assert KnowledgeType.DECISION.value == "decision", "Value must be initialized"
+        assert KnowledgeType.PATTERN.value == "pattern", "Value must be initialized"
 
     def test_from_value(self):
-        assert KnowledgeType("factual") is KnowledgeType.FACTUAL
+        assert KnowledgeType("factual") is KnowledgeType.FACTUAL, "Condition must be true"
 
 
 class TestKnowledgePriority:
     def test_ordering(self):
         vals = [p.value for p in KnowledgePriority]
-        assert "critical" in vals
-        assert "low" in vals
+        assert "critical" in vals, "Condition must be true"
+        assert "low" in vals, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -85,16 +85,16 @@ class TestKnowledgeItem:
             "related_files",
             "confidence",
         }
-        assert expected_keys == set(d.keys())
+        assert expected_keys == set(d.keys()), "expected_keys is not valid"
 
     def test_roundtrip(self, item):
         d = item.to_dict()
         restored = KnowledgeItem.from_dict(d)
-        assert restored.id == item.id
-        assert restored.knowledge_type == item.knowledge_type
-        assert restored.priority == item.priority
-        assert restored.confidence == item.confidence
-        assert restored.tags == item.tags
+        assert restored.id == item.id, "Item must not be empty"
+        assert restored.knowledge_type == item.knowledge_type, "Item must not be empty"
+        assert restored.priority == item.priority, "Item must not be empty"
+        assert restored.confidence == item.confidence, "Item must not be empty"
+        assert restored.tags == item.tags, "Item must not be empty"
 
     def test_defaults(self):
         now = datetime.now(timezone.utc)
@@ -108,9 +108,9 @@ class TestKnowledgeItem:
             created_at=now,
             last_accessed=now,
         )
-        assert item.access_count == 0
-        assert item.tags == []
-        assert item.confidence == 1.0
+        assert item.access_count == 0, "Item must not be empty"
+        assert item.tags == [], "Item must not be empty"
+        assert item.confidence == 1.0, "Item must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -133,9 +133,9 @@ class TestSessionSummary:
             pending_work=["w1"],
         )
         d = s.to_dict()
-        assert d["session_id"] == "S42"
-        assert d["end_time"] is None
-        assert d["files_modified"] == ["a.py"]
+        assert d["session_id"] == "S42", "Condition must be true"
+        assert d["end_time"] is None, "Condition must be true"
+        assert d["files_modified"] == ["a.py"], "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -165,12 +165,12 @@ class TestKnowledgeStore:
         item = self._make_item()
         store.add(item)
         retrieved = store.get("KN-00001")
-        assert retrieved is not None
-        assert retrieved.content == "test content"
-        assert retrieved.access_count == 1  # incremented on get
+        assert retrieved is not None, "retrieved must be initialized"
+        assert retrieved.content == "test content", "Content must not be empty"
+        assert retrieved.access_count == 1, "Count must be greater than zero"
 
     def test_get_missing(self, store):
-        assert store.get("nonexistent") is None
+        assert store.get("nonexistent") is None, "st is not valid"
 
     def test_persistence(self, tmp_path):
         path = tmp_path / "store.json"
@@ -178,36 +178,36 @@ class TestKnowledgeStore:
         store1.add(self._make_item())
 
         store2 = KnowledgeStore(store_path=path)
-        assert store2.get("KN-00001") is not None
+        assert store2.get("KN-00001") is not None, "st must be initialized"
 
     def test_search_by_content(self, store):
         store.add(self._make_item("KN-1"))
         results = store.search("test content")
-        assert len(results) >= 1
+        assert len(results) >= 1, "Results must not be empty"
 
     def test_search_by_type(self, store):
         store.add(self._make_item("KN-1"))
         results = store.search("test", knowledge_type=KnowledgeType.FACTUAL)
-        assert len(results) >= 1
+        assert len(results) >= 1, "Results must not be empty"
 
     def test_search_filters_type(self, store):
         store.add(self._make_item("KN-1"))
         results = store.search("test", knowledge_type=KnowledgeType.PATTERN)
-        assert len(results) == 0
+        assert len(results) == 0, "Results must not be empty"
 
     def test_get_by_type(self, store):
         store.add(self._make_item("KN-1"))
         items = store.get_by_type(KnowledgeType.FACTUAL)
-        assert len(items) == 1
+        assert len(items) == 1, "Items must not be empty"
 
     def test_get_critical(self, store):
         store.add(self._make_item("KN-1", KnowledgePriority.CRITICAL))
-        assert len(store.get_critical()) == 1
+        assert len(store.get_critical()) == 1, "Collection must not be empty"
 
     def test_count(self, store):
-        assert store.count() == 0
+        assert store.count() == 0, "Count must be greater than zero"
         store.add(self._make_item("KN-1"))
-        assert store.count() == 1
+        assert store.count() == 1, "Count must be greater than zero"
 
     def test_prune_low_priority(self, store):
         item = self._make_item("KN-1", KnowledgePriority.LOW)
@@ -217,14 +217,14 @@ class TestKnowledgeStore:
         item.last_accessed = datetime.now(timezone.utc) - timedelta(days=60)
         store._knowledge[item.id] = item
         removed = store.prune_low_priority(max_age_days=30)
-        assert removed == 1
-        assert store.count() == 0
+        assert removed == 1, "removed is not valid"
+        assert store.count() == 0, "Count must be greater than zero"
 
     def test_corrupt_store_file(self, tmp_path):
         path = tmp_path / "store.json"
         path.write_text("{bad json")
         store = KnowledgeStore(store_path=path)
-        assert store.count() == 0
+        assert store.count() == 0, "Count must be greater than zero"
 
 
 # ---------------------------------------------------------------------------
@@ -240,19 +240,19 @@ class TestLearningExtractor:
     def test_extract_from_text(self, extractor):
         text = "The issue was broken imports.\nResolved by adding __init__.py."
         results = extractor.extract_from_text(text)
-        assert len(results) >= 1
-        assert any("issue" in r.lower() or "resolved" in r.lower() for r in results)
+        assert len(results) >= 1, "Results must not be empty"
+        assert any("issue" in r.lower() or "resolved" in r.lower() for r in results), "Result must not be empty"
 
     def test_extract_from_commit_messages(self, extractor):
         msgs = ["Fix broken import in training module", "Add new config option"]
         results = extractor.extract_from_commit_messages(msgs)
-        assert len(results) >= 2
-        assert any("Fix pattern:" in r for r in results)
-        assert any("Implementation:" in r for r in results)
+        assert len(results) >= 2, "Results must not be empty"
+        assert any("Fix pattern:" in r for r in results), "Result must not be empty"
+        assert any("Implementation:" in r for r in results), "Result must not be empty"
 
     def test_no_matches(self, extractor):
         text = "Nothing notable here."
-        assert extractor.extract_from_text(text) == []
+        assert extractor.extract_from_text(text) == [], "extract is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -268,10 +268,10 @@ class TestDecisionExtractor:
     def test_extract_decisions(self, extractor):
         text = "We decided to use Ruff for linting.\nChoosing extractive strategy."
         results = extractor.extract_from_text(text)
-        assert len(results) >= 1
+        assert len(results) >= 1, "Results must not be empty"
 
     def test_no_decisions(self, extractor):
-        assert extractor.extract_from_text("Just some code.") == []
+        assert extractor.extract_from_text("Just some code.") == [], "extract is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -290,8 +290,8 @@ class TestKnowledgeDistiller:
             files_modified=["a.py", "b.py"],
             commit_messages=["Fix broken import in module X"],
         )
-        assert len(items) >= 1
-        assert items[0].knowledge_type == KnowledgeType.PROCEDURAL
+        assert len(items) >= 1, "Items must not be empty"
+        assert items[0].knowledge_type == KnowledgeType.PROCEDURAL, "Item must not be empty"
 
     def test_distill_from_session_notes(self, distiller):
         items = distiller.distill_from_session(
@@ -300,10 +300,10 @@ class TestKnowledgeDistiller:
             commit_messages=[],
             session_notes="The issue was a race condition.\nResolved by adding a lock.",
         )
-        assert len(items) >= 1
+        assert len(items) >= 1, "Items must not be empty"
 
     def test_unique_ids(self, distiller):
         items1 = distiller.distill_from_session("S1", [], ["Fix A"])
         items2 = distiller.distill_from_session("S2", [], ["Fix B"])
         all_ids = [i.id for i in items1 + items2]
-        assert len(all_ids) == len(set(all_ids))
+        assert len(all_ids) == len(set(all_ids)), "All_ids must not be empty"

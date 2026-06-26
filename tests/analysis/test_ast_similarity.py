@@ -48,17 +48,17 @@ def test_ast_similarity_enabled():
     )
 
     out = ART / "ast_similarity.json"
-    assert out.exists()
+    assert out.exists(), "Condition must be true"
     data = json.loads(out.read_text())
 
     # Alpha should have ast_uniqueness computed
     alpha = next(c for c in data["capabilities"] if c["id"] == "alpha")
-    assert 0.0 <= alpha["ast_uniqueness"] <= 1.0
-    assert alpha["python_files_analyzed"] == 2
+    assert 0.0 <= alpha["ast_uniqueness"] <= 1.0, "0 is not valid"
+    assert alpha["python_files_analyzed"] == 2, "Condition must be true"
 
     # Beta has no Python files
     beta = next(c for c in data["capabilities"] if c["id"] == "beta")
-    assert beta["python_files_analyzed"] == 0
+    assert beta["python_files_analyzed"] == 0, "Condition must be true"
 
 
 def test_ast_similarity_disabled():
@@ -71,4 +71,4 @@ def test_ast_similarity_disabled():
         env=env,
     )
 
-    assert not (ART / "ast_similarity.json").exists()
+    assert not (ART / "ast_similarity.json").exists(), "Condition must be true"

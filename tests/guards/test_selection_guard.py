@@ -69,8 +69,8 @@ def test_ranks_candidate_with_required_signals(tmp_path: Path) -> None:
     }
     data = {"turn_mapping": tm}
     candidates = sg._iter_candidates(data, RULES)
-    assert len(candidates) == 4
-    assert not candidates[2].missing
+    assert len(candidates) == 4, "Candidates must not be empty"
+    assert not candidates[2].missing, "Condition must be true"
 
 
 def test_cli_selected_fails_when_missing(tmp_path: Path, monkeypatch) -> None:
@@ -91,6 +91,6 @@ def test_cli_selected_fails_when_missing(tmp_path: Path, monkeypatch) -> None:
     data_path.write_text(json.dumps(data), encoding="utf-8")
 
     rc = sg.main(["--rules", str(rules_path), "--input", str(data_path), "--selected", "1"])
-    assert rc == 1
+    assert rc == 1, "rc is not valid"
     rc2 = sg.main(["--rules", str(rules_path), "--input", str(data_path), "--selected", "2"])
-    assert rc2 == 0
+    assert rc2 == 0, "rc2 is not valid"

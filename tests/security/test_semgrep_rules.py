@@ -42,7 +42,7 @@ def test_semgrep_rules(tmp_path: Path) -> None:
         check=False,
     )
     output = f"{res.stdout}\n{res.stderr}" if res.stdout or res.stderr else ""
-    assert "semgrep_rules.python.python.requests.no-timeout" in output
-    assert "semgrep_rules.py-requests-verify-disabled" in output
-    assert "semgrep_rules.py-subprocess-shell-true" in output
-    assert "semgrep_rules.py-pickle-load" in output
+    assert "semgrep_rules.python.python.requests.no-timeout" in output, "Condition must be true"
+    assert "semgrep_rules.py-requests-verify-disabled" in output, "Condition must be true"
+    assert "semgrep_rules.py-subprocess-shell-true" in output, "Condition must be true"
+    assert "semgrep_rules.py-pickle-load" in output, "Condition must be true"

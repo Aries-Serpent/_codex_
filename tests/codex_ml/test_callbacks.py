@@ -52,7 +52,7 @@ class TestCallbackRegistration:
         manager.register(TrainingEvent.EPOCH_END, lambda **k: results.append("epoch_end"))
         manager.trigger(TrainingEvent.EPOCH_END)
 
-        assert results == ["epoch_end"]
+        assert results == ["epoch_end"], "Result must not be empty"
 
     def test_multiple_callbacks(self):
         """Multiple callbacks can be registered for same event."""
@@ -111,13 +111,13 @@ class TestEarlyStoppingCallback:
         callback.on_epoch_end(1.0)
         callback.on_epoch_end(0.9)
         callback.on_epoch_end(0.8)
-        assert not callback.should_stop
+        assert not callback.should_stop, "Condition must be true"
 
         # Not improving
         callback.on_epoch_end(0.85)
         callback.on_epoch_end(0.86)
         callback.on_epoch_end(0.87)
-        assert callback.should_stop
+        assert callback.should_stop, "Condition must be true"
 
     def test_early_stopping_min_delta(self):
         """Early stopping considers min_delta."""
@@ -141,7 +141,7 @@ class TestEarlyStoppingCallback:
         callback.on_epoch_end(1.0)
         callback.on_epoch_end(0.995)  # Not enough improvement
 
-        assert callback.counter == 1
+        assert callback.counter == 1, "Count must be greater than zero"
 
 
 class TestModelCheckpointCallback:
@@ -189,7 +189,7 @@ class TestModelCheckpointCallback:
         assert not callback.on_epoch_end(3, 0.9)  # Worse
         assert callback.on_epoch_end(4, 0.7)  # Better
 
-        assert callback.best_epoch == 4
+        assert callback.best_epoch == 4, "best_epoch is not valid"
 
 
 class TestLoggingCallback:
@@ -212,7 +212,7 @@ class TestLoggingCallback:
         for batch in range(1, 51):
             callback.on_batch_end(batch, 1.0 - batch * 0.01)
 
-        assert len(callback.logs) == 5  # 10, 20, 30, 40, 50
+        assert len(callback.logs) == 5, "Collection must not be empty"
 
     def test_metrics_logging(self):
         """Metrics are logged correctly."""
@@ -280,17 +280,17 @@ class TestLearningRateSchedulerCallback:
 
         callback = WarmupCallback(warmup_steps=100, target_lr=0.01)
 
-        assert callback.get_lr() == 0.0  # Step 0
+        assert callback.get_lr() == 0.0, "Condition must be true"
 
         for _ in range(50):
             callback.on_batch_end()
 
-        assert callback.get_lr() == pytest.approx(0.005)  # 50% warmup
+        assert callback.get_lr() == pytest.approx(0.005), "Condition must be true"
 
         for _ in range(50):
             callback.on_batch_end()
 
-        assert callback.get_lr() == 0.01  # Full LR
+        assert callback.get_lr() == 0.01, "Condition must be true"
 
 
 class TestGradientClippingCallback:
@@ -310,7 +310,7 @@ class TestGradientClippingCallback:
         clipped = clip_gradient_norm(gradients, max_norm=1.0)
 
         clipped_norm = sum(g**2 for g in clipped) ** 0.5
-        assert clipped_norm == pytest.approx(1.0)
+        assert clipped_norm == pytest.approx(1.0), "clipped_norm is not valid"
 
     def test_gradient_value_clipping(self):
         """Gradients are clipped by value."""
@@ -354,4 +354,4 @@ class TestProgressCallback:
         callback.on_epoch_begin(5)
         callback.on_batch_end(50)
 
-        assert callback.progress() == pytest.approx(0.55)
+        assert callback.progress() == pytest.approx(0.55), "Condition must be true"

@@ -22,7 +22,7 @@ _MIGRATION_FILE = (
     / "001_userstore_to_sqlite.py"
 )
 _spec = importlib.util.spec_from_file_location("migration_001", _MIGRATION_FILE)
-assert _spec is not None and _spec.loader is not None
+assert _spec is not None and _spec.loader is not None, "_spec must be initialized"
 _migration = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(_migration)  # type: ignore[attr-defined]
 
@@ -53,14 +53,14 @@ class TestMigration001RoundTrip:
         store = _populate_store(10)
         snapshot = tmp_path / "snapshot.json"
         n = export_userstore_snapshot(store, snapshot)
-        assert n == 10
+        assert n == 10, "n is not valid"
         data = json.loads(snapshot.read_text())
-        assert data["version"] == 1
-        assert len(data["users"]) == 10
+        assert data["version"] == 1, "Data must not be empty"
+        assert len(data["users"]) == 10, "Collection must not be empty"
         # password_hash must be included for migration
         for record in data["users"]:
-            assert "password_hash" in record
-            assert ":" in record["password_hash"]
+            assert "password_hash" in record, "Condition must be true"
+            assert ":" in record["password_hash"], "Condition must be true"
 
     def test_import_to_sqlite(self, tmp_path: Path) -> None:
         store = _populate_store(10)
@@ -69,11 +69,11 @@ class TestMigration001RoundTrip:
 
         db_path = str(tmp_path / "users.db")
         imported = import_snapshot_to_sqlite(snapshot, db_path)
-        assert imported == 10
+        assert imported == 10, "imported is not valid"
 
         repo = SQLiteUserRepository(db_path)
         all_users = repo.list_all()
-        assert len(all_users) == 10
+        assert len(all_users) == 10, "All_users must not be empty"
 
     def test_imported_users_match_original(self, tmp_path: Path) -> None:
         store = _populate_store(5)
@@ -89,11 +89,11 @@ class TestMigration001RoundTrip:
         for orig_user in original:
             migrated = repo.get_by_id(orig_user.user_id)
             assert migrated is not None, f"User {orig_user.username} missing after migration"
-            assert migrated.username == orig_user.username
-            assert migrated.email == orig_user.email
-            assert migrated.password_hash == orig_user.password_hash
-            assert migrated.roles == orig_user.roles
-            assert migrated.display_name == orig_user.display_name
+            assert migrated.username == orig_user.username, "username is not valid"
+            assert migrated.email == orig_user.email, "email is not valid"
+            assert migrated.password_hash == orig_user.password_hash, "password_hash is not valid"
+            assert migrated.roles == orig_user.roles, "roles is not valid"
+            assert migrated.display_name == orig_user.display_name, "display_name is not valid"
 
     def test_verify_migration_passes(self, tmp_path: Path) -> None:
         store = _populate_store(10)
@@ -124,11 +124,11 @@ class TestMigration001RoundTrip:
         first = import_snapshot_to_sqlite(snapshot, db_path)
         second = import_snapshot_to_sqlite(snapshot, db_path)
 
-        assert first == 5
-        assert second == 0  # all skipped as already exists
+        assert first == 5, "first is not valid"
+        assert second == 0, "second is not valid"
 
         repo = SQLiteUserRepository(db_path)
-        assert len(repo.list_all()) == 5
+        assert len(repo.list_all()) == 5, "Collection must not be empty"
 
     def test_export_includes_inactive_users(self, tmp_path: Path) -> None:
         store = _populate_store(2)
@@ -137,14 +137,14 @@ class TestMigration001RoundTrip:
 
         snapshot = tmp_path / "snapshot.json"
         n = export_userstore_snapshot(store, snapshot)
-        assert n == 2  # inactive user is still exported
+        assert n == 2, "n is not valid"
 
         data = json.loads(snapshot.read_text())
         inactive = [r for r in data["users"] if not r["is_active"]]
-        assert len(inactive) == 1
+        assert len(inactive) == 1, "Inactive must not be empty"
 
     def test_main_missing_snapshot_returns_exit_code_2(self, tmp_path: Path) -> None:
         """main() with --import pointing to a non-existent file exits with code 2."""
         missing = str(tmp_path / "does_not_exist.json")
         result = _migration.main(["--import", missing, "--db-path", str(tmp_path / "out.db")])
-        assert result == 2
+        assert result == 2, "Result must not be empty"

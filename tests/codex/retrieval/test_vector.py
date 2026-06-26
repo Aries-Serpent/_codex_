@@ -13,7 +13,7 @@ class TestRetrievalVectorImports:
         try:
             from src.codex.retrieval import vector
 
-            assert vector is not None
+            assert vector is not None, "vector must be initialized"
         except ImportError:
             pytest.skip("Module not available or has unmet dependencies")
 
@@ -28,7 +28,7 @@ class TestRetrievalVectorOperations:
 
             if hasattr(vector, "VectorStore"):
                 store = vector.VectorStore()
-                assert store is not None
+                assert store is not None, "store must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("VectorStore not available")
 
@@ -41,7 +41,7 @@ class TestRetrievalVectorOperations:
                 with patch.object(vector, "add_vectors") as mock_add:
                     mock_add.return_value = {"added": 10}
                     result = vector.add_vectors([[0.1, 0.2], [0.3, 0.4]])
-                    assert result["added"] == 10
+                    assert result["added"] == 10, "Result must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("add_vectors not available")
 
@@ -54,7 +54,7 @@ class TestRetrievalVectorOperations:
                 with patch.object(vector, "search") as mock_search:
                     mock_search.return_value = [{"id": 1, "score": 0.95}]
                     results = vector.search([0.1, 0.2], k=5)
-                    assert len(results) == 1
+                    assert len(results) == 1, "Results must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("search not available")
 
@@ -73,7 +73,7 @@ class TestRetrievalVectorIndexing:
                     with patch.object(store, "build_index") as mock_build:
                         mock_build.return_value = True
                         result = store.build_index()
-                        assert result is True
+                        assert result is True, "Result must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("VectorStore.build_index not available")
 
@@ -88,6 +88,6 @@ class TestRetrievalVectorIndexing:
                     with patch.object(store, "save") as mock_save:
                         mock_save.return_value = True
                         result = store.save("/tmp/index.bin")
-                        assert result is True
+                        assert result is True, "Result must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("VectorStore.save not available")

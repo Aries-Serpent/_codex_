@@ -25,6 +25,6 @@ def test_dedup_records_filters_near_duplicates() -> None:
         "alpha beta gamma",  # identical to first
     ]
     keep = dedup_records(texts, threshold=3)
-    assert len(keep) == 2
-    assert 0 in keep  # first entry kept
-    assert 2 in keep  # unrelated entry kept
+    assert len(keep) == 2, "Keep must not be empty"
+    assert 0 in keep, "Condition must be true"
+    assert 2 in keep, "Condition must be true"

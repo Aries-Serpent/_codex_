@@ -24,4 +24,4 @@ def test_run_worker_upserts(tmp_path, monkeypatch):
 
     metrics = snapshot()
     assert metrics["counters"].get("worker_batch_total", 0) >= 1
-    assert checkpoint.exists()
+    assert checkpoint.exists(), "Condition must be true"

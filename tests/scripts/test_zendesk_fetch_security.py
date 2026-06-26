@@ -48,7 +48,7 @@ class TestURLValidation:
         mock_urlopen.return_value = mock_response
 
         result = _fetch("https://developer.zendesk.com/api-reference/")
-        assert result == b"test content"
+        assert result == b"test content", "Result must not be empty"
         mock_urlopen.assert_called_once()
 
     @patch("urllib.request.urlopen")
@@ -62,7 +62,7 @@ class TestURLValidation:
 
         # RFC 3986: schemes are case-insensitive
         result = _fetch("HTTPS://example.com/page")
-        assert result == b"test content"
+        assert result == b"test content", "Result must not be empty"
 
     @patch("urllib.request.urlopen")
     def test_retry_on_failure(self, mock_urlopen: Mock) -> None:
@@ -76,4 +76,4 @@ class TestURLValidation:
         with pytest.raises(RuntimeError, match="Failed to fetch"):
             _fetch("https://example.com/page", retries=3, backoff=0.1)
 
-        assert mock_urlopen.call_count == 3
+        assert mock_urlopen.call_count == 3, "Count must be greater than zero"

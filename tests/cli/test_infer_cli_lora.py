@@ -69,7 +69,7 @@ def test_infer_passes_lora_args(monkeypatch, tmp_path: Path) -> None:
         ]
     )
 
-    assert called["lora_enabled"] is True
-    assert called["lora_r"] == 4
-    assert called["lora_alpha"] == 32
-    assert called["lora_dropout"] == 0.1
+    assert called["lora_enabled"] is True, "Condition must be true"
+    assert called["lora_r"] == 4, "Condition must be true"
+    assert called["lora_alpha"] == 32, "Condition must be true"
+    assert called["lora_dropout"] == 0.1, "Condition must be true"

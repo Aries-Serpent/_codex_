@@ -128,8 +128,8 @@ class TestCopilotSessionRetriever:
         """Test retriever initialization."""
         retriever = CopilotSessionRetriever(db_path=str(temp_db), repo_root=str(temp_repo))
 
-        assert retriever.db_path == temp_db
-        assert retriever.repo_root == temp_repo
+        assert retriever.db_path == temp_db, "db_path is not valid"
+        assert retriever.repo_root == temp_repo, "repo_root is not valid"
 
     def test_create_schema(self, temp_db):
         """Test database schema creation."""
@@ -143,8 +143,8 @@ class TestCopilotSessionRetriever:
         result = cursor.fetchone()
         conn.close()
 
-        assert result is not None
-        assert result[0] == "logs"
+        assert result is not None, "result must be initialized"
+        assert result[0] == "logs", "Result must not be empty"
 
     def test_list_sessions(self, temp_db, sample_session_data):
         """Test listing sessions."""
@@ -153,9 +153,9 @@ class TestCopilotSessionRetriever:
         retriever = CopilotSessionRetriever(db_path=str(temp_db))
         sessions = retriever.list_sessions(limit=10)
 
-        assert len(sessions) == 2
-        assert sessions[0]["session_id"] == "test-session-2"  # Most recent first
-        assert sessions[1]["session_id"] == "test-session-1"
+        assert len(sessions) == 2, "Sessions must not be empty"
+        assert sessions[0]["session_id"] == "test-session-2", "Condition must be true"
+        assert sessions[1]["session_id"] == "test-session-1", "Condition must be true"
 
     def test_get_last_n_sessions(self, temp_db, sample_session_data):
         """Test getting last N sessions."""
@@ -164,8 +164,8 @@ class TestCopilotSessionRetriever:
         retriever = CopilotSessionRetriever(db_path=str(temp_db))
         session_ids = retriever.get_last_n_sessions(n=1)
 
-        assert len(session_ids) == 1
-        assert session_ids[0] == "test-session-2"
+        assert len(session_ids) == 1, "Session_ids must not be empty"
+        assert session_ids[0] == "test-session-2", "Condition must be true"
 
     def test_get_session_logs(self, temp_db, sample_session_data):
         """Test retrieving session logs."""
@@ -174,10 +174,10 @@ class TestCopilotSessionRetriever:
         retriever = CopilotSessionRetriever(db_path=str(temp_db))
         logs = retriever.get_session_logs("test-session-1")
 
-        assert len(logs) == 3
+        assert len(logs) == 3, "Logs must not be empty"
         assert all(isinstance(log, SessionLogEntry) for log in logs)
-        assert logs[0].role == "user"
-        assert logs[1].role == "assistant"
+        assert logs[0].role == "user", "role is not valid"
+        assert logs[1].role == "assistant", "role is not valid"
 
     def test_extract_expected_files(self, temp_db, sample_session_data):
         """Test extracting expected files from logs."""
@@ -187,12 +187,12 @@ class TestCopilotSessionRetriever:
         logs = retriever.get_session_logs("test-session-1")
         expected_files = retriever.extract_expected_files(logs)
 
-        assert len(expected_files) > 0
+        assert len(expected_files) > 0, "Expected_files must not be empty"
 
         # Check that we extracted the files mentioned
         paths = [f.path for f in expected_files]
-        assert "src/new_module.py" in paths
-        assert "README.md" in paths
+        assert "src/new_module.py" in paths, "Condition must be true"
+        assert "README.md" in paths, "Condition must be true"
 
     def test_verify_files_existing(self, temp_db, temp_repo):
         """Test verifying existing files."""
@@ -211,9 +211,9 @@ class TestCopilotSessionRetriever:
 
         verified = retriever.verify_files([expected])
 
-        assert len(verified) == 1
-        assert verified[0].exists is True
-        assert verified[0].verified is True
+        assert len(verified) == 1, "Verified must not be empty"
+        assert verified[0].exists is True, "exists is not valid"
+        assert verified[0].verified is True, "verified is not valid"
 
     def test_verify_files_missing(self, temp_db, temp_repo):
         """Test verifying missing files."""
@@ -228,9 +228,9 @@ class TestCopilotSessionRetriever:
 
         verified = retriever.verify_files([expected])
 
-        assert len(verified) == 1
-        assert verified[0].exists is False
-        assert verified[0].verified is False
+        assert len(verified) == 1, "Verified must not be empty"
+        assert verified[0].exists is False, "exists is not valid"
+        assert verified[0].verified is False, "verified is not valid"
 
     def test_analyze_session(self, temp_db, temp_repo, sample_session_data):
         """Test analyzing a complete session."""
@@ -244,11 +244,11 @@ class TestCopilotSessionRetriever:
         summary = retriever.analyze_session("test-session-1")
 
         assert isinstance(summary, SessionSummary)
-        assert summary.session_id == "test-session-1"
-        assert summary.message_count == 3
-        assert len(summary.expected_files) > 0
+        assert summary.session_id == "test-session-1", "session_id is not valid"
+        assert summary.message_count == 3, "Count must be greater than zero"
+        assert len(summary.expected_files) > 0, "Collection must not be empty"
         # At least README.md should be verified
-        assert summary.verified_files >= 1
+        assert summary.verified_files >= 1, "verified_files must be greater than zero"
 
     def test_process_sessions_in_batches(self, temp_db, temp_repo, sample_session_data):
         """Test processing multiple sessions in batches."""
@@ -259,7 +259,7 @@ class TestCopilotSessionRetriever:
         session_ids = ["test-session-1", "test-session-2"]
         summaries = retriever.process_sessions_in_batches(session_ids, batch_size=2)
 
-        assert len(summaries) == 2
+        assert len(summaries) == 2, "Summaries must not be empty"
         assert all(isinstance(s, SessionSummary) for s in summaries)
 
     def test_generate_report(self, temp_db, temp_repo, sample_session_data):
@@ -271,9 +271,9 @@ class TestCopilotSessionRetriever:
         summary = retriever.analyze_session("test-session-1")
         report = retriever.generate_report([summary])
 
-        assert "Copilot Session Log Verification Report" in report
-        assert "test-session-1" in report
-        assert "Overall Statistics" in report
+        assert "Copilot Session Log Verification Report" in report, "Condition must be true"
+        assert "test-session-1" in report, "Condition must be true"
+        assert "Overall Statistics" in report, "Condition must be true"
 
     def test_file_operation_patterns(self):
         """Test file operation pattern matching."""
@@ -312,10 +312,10 @@ class TestCopilotSessionRetriever:
         retriever._create_schema()
 
         sessions = retriever.list_sessions()
-        assert sessions == []
+        assert sessions == [], "sessions is not valid"
 
         session_ids = retriever.get_last_n_sessions(n=10)
-        assert session_ids == []
+        assert session_ids == [], "session_ids is not valid"
 
     def test_missing_session(self, temp_db, temp_repo):
         """Test handling of missing session."""
@@ -326,9 +326,9 @@ class TestCopilotSessionRetriever:
 
         summary = retriever.analyze_session("nonexistent-session")
 
-        assert summary.message_count == 0
-        assert len(summary.expected_files) == 0
-        assert "No logs found" in summary.notes
+        assert summary.message_count == 0, "Count must be greater than zero"
+        assert len(summary.expected_files) == 0, "Collection must not be empty"
+        assert "No logs found" in summary.notes, "Condition must be true"
 
 
 if __name__ == "__main__":

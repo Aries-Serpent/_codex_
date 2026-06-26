@@ -21,7 +21,7 @@ class TestConfigModuleImport:
         try:
             from codex_ml.cli import config
 
-            assert config is not None
+            assert config is not None, "config must be initialized"
         except ImportError as e:
             pytest.skip(f"Module import failed: {e}")
 

@@ -134,7 +134,7 @@ class TestKeyManagement:
         # Assert
         for salt in salts:
             derived = hashlib.pbkdf2_hmac("sha256", b"password", salt, 100000)
-            assert len(derived) == 32
+            assert len(derived) == 32, "Derived must not be empty"
 
     def test_master_key_rotation_scenario(self):
         """Test master key rotation in multi-key systems."""
@@ -146,7 +146,7 @@ class TestKeyManagement:
         rotation_complete = old_master_key != new_master_key
 
         # Assert
-        assert rotation_complete
+        assert rotation_complete, "rotation_complete is not valid"
 
 
 class TestHashFunctions:
@@ -161,8 +161,8 @@ class TestHashFunctions:
         hash_digest = hashlib.sha256(empty_data).hexdigest()
 
         # Assert
-        assert len(hash_digest) == 64  # SHA256 produces 64 hex chars
-        assert hash_digest == hashlib.sha256(b"").hexdigest()
+        assert len(hash_digest) == 64, "Hash_digest must not be empty"
+        assert hash_digest == hashlib.sha256(b"").hexdigest(), "hash_digest is not valid"
 
     def test_hash_collision_resistance(self):
         """Test hash collision detection."""
@@ -218,7 +218,7 @@ class TestHMACOperations:
         hmac_digest = hmac.new(empty_key, message, hashlib.sha256).hexdigest()
 
         # Assert
-        assert len(hmac_digest) == 64
+        assert len(hmac_digest) == 64, "Hmac_digest must not be empty"
 
     def test_hmac_over_length_key(self):
         """Test HMAC with key longer than hash block size."""
@@ -230,7 +230,7 @@ class TestHMACOperations:
         hmac_digest = hmac.new(long_key, message, hashlib.sha256).hexdigest()
 
         # Assert
-        assert len(hmac_digest) == 64
+        assert len(hmac_digest) == 64, "Hmac_digest must not be empty"
 
     def test_hmac_timing_attack_resistance(self):
         """Test HMAC timing-safe comparison."""
@@ -385,5 +385,5 @@ class TestCryptographicRandomness:
         min_count = min(distribution)
         max_count = max(distribution)
         # Allow 20% deviation from expected
-        assert min_count > bucket_size * 0.8
-        assert max_count < bucket_size * 1.2
+        assert min_count > bucket_size * 0.8, "min_count must be positive"
+        assert max_count < bucket_size * 1.2, "Count must be greater than zero"

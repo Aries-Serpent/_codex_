@@ -56,8 +56,8 @@ def test_pad_sequences_attention_mask():
 def test_deprecated_legacy_access():
     with pytest.warns(DeprecationWarning):
         val = deprecated_legacy_access("BOS_TOKEN")
-    assert val == BOS_TOKEN
+    assert val == BOS_TOKEN, "val is not valid"
 
 
 def test_deprecated_legacy_access_none():
-    assert deprecated_legacy_access("UNKNOWN_THING") is None
+    assert deprecated_legacy_access("UNKNOWN_THING") is None, "Condition must be true"

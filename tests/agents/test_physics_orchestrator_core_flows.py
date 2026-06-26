@@ -140,11 +140,11 @@ class TestPhysicsOrchestratorCoreFlows:
         assessment = orchestrator.assess_situation(decision_state_standard)
 
         # Verify all metrics present
-        assert "distance_to_goal" in assessment
-        assert "system_entropy" in assessment
-        assert "attractive_potential" in assessment
-        assert "repulsive_potential" in assessment
-        assert "net_potential" in assessment
+        assert "distance_to_goal" in assessment, "Condition must be true"
+        assert "system_entropy" in assessment, "Condition must be true"
+        assert "attractive_potential" in assessment, "Condition must be true"
+        assert "repulsive_potential" in assessment, "Condition must be true"
+        assert "net_potential" in assessment, "Condition must be true"
 
         # Verify types
         assert isinstance(assessment["distance_to_goal"], float)
@@ -153,10 +153,10 @@ class TestPhysicsOrchestratorCoreFlows:
         assert isinstance(assessment["repulsive_potential"], float)
 
         # Verify reasonable ranges
-        assert 0.0 <= assessment["distance_to_goal"] <= 10.0
-        assert 0.0 <= assessment["system_entropy"] <= 1.0
-        assert assessment["attractive_potential"] >= 0.0
-        assert assessment["repulsive_potential"] >= 0.0
+        assert 0.0 <= assessment["distance_to_goal"] <= 10.0, "0 is not valid"
+        assert 0.0 <= assessment["system_entropy"] <= 1.0, "0 is not valid"
+        assert assessment["attractive_potential"] >= 0.0, "Value must be greater than zero"
+        assert assessment["repulsive_potential"] >= 0.0, "Value must be greater than zero"
 
     def test_assess_situation_high_resources(self, orchestrator):
         """Test assessment with abundant resources."""
@@ -171,18 +171,18 @@ class TestPhysicsOrchestratorCoreFlows:
         assessment = orchestrator.assess_situation(state)
 
         # High resources → low distance, low entropy, high attractive potential
-        assert assessment["distance_to_goal"] < 2.0
-        assert assessment["system_entropy"] < 0.3
-        assert assessment["attractive_potential"] > 5.0
+        assert assessment["distance_to_goal"] < 2.0, "Condition must be true"
+        assert assessment["system_entropy"] < 0.3, "Condition must be true"
+        assert assessment["attractive_potential"] > 5.0, "Value must be greater than zero"
 
     def test_assess_situation_low_resources(self, orchestrator, decision_state_constrained):
         """Test assessment with limited resources."""
         assessment = orchestrator.assess_situation(decision_state_constrained)
 
         # Low resources → high distance, high entropy, low attractive potential
-        assert assessment["distance_to_goal"] > 5.0
-        assert assessment["system_entropy"] > 0.5
-        assert assessment["attractive_potential"] < 3.0
+        assert assessment["distance_to_goal"] > 5.0, "Value must be greater than zero"
+        assert assessment["system_entropy"] > 0.5, "Value must be greater than zero"
+        assert assessment["attractive_potential"] < 3.0, "Condition must be true"
 
     def test_assess_situation_zero_resources(self, orchestrator):
         """Test assessment edge case: zero resources."""
@@ -197,10 +197,10 @@ class TestPhysicsOrchestratorCoreFlows:
         assessment = orchestrator.assess_situation(state)
 
         # Zero resources → maximum distance and entropy
-        assert assessment["distance_to_goal"] == 10.0
-        assert assessment["system_entropy"] == 1.0
-        assert assessment["attractive_potential"] == 0.0
-        assert assessment["repulsive_potential"] == 5.0
+        assert assessment["distance_to_goal"] == 10.0, "Condition must be true"
+        assert assessment["system_entropy"] == 1.0, "Condition must be true"
+        assert assessment["attractive_potential"] == 0.0, "Condition must be true"
+        assert assessment["repulsive_potential"] == 5.0, "Condition must be true"
 
     # ========== DELIBERATE STAGE TESTS ==========
 
@@ -211,18 +211,18 @@ class TestPhysicsOrchestratorCoreFlows:
         ranked = orchestrator.deliberate_paths(decision_state_standard, action_paths_standard)
 
         # Verify all paths processed
-        assert len(ranked) == len(action_paths_standard)
+        assert len(ranked) == len(action_paths_standard), "Ranked must not be empty"
 
         # Verify all paths have calculated properties
         for path in ranked:
             assert hasattr(path, "optimization_score")
             assert hasattr(path, "total_energy")
-            assert path.optimization_score > 0
-            assert path.total_energy > 0
+            assert path.optimization_score > 0, "optimization_score must be greater than zero"
+            assert path.total_energy > 0, "total_energy must be greater than zero"
 
         # Verify ranking (highest score first)
         scores = [p.optimization_score for p in ranked]
-        assert scores == sorted(
+        assert scores == sorted(, "scores is not valid"
             scores, reverse=True
         ), "Paths should be ranked by optimization score"
 
@@ -240,14 +240,14 @@ class TestPhysicsOrchestratorCoreFlows:
 
         ranked = orchestrator.deliberate_paths(decision_state_standard, single_path)
 
-        assert len(ranked) == 1
-        assert ranked[0].optimization_score > 0
+        assert len(ranked) == 1, "Ranked must not be empty"
+        assert ranked[0].optimization_score > 0, "optimization_score must be greater than zero"
 
     def test_deliberate_paths_empty_list(self, orchestrator, decision_state_standard):
         """Test deliberation with no actions."""
         ranked = orchestrator.deliberate_paths(decision_state_standard, [])
 
-        assert ranked == []
+        assert ranked == [], "ranked is not valid"
 
     def test_deliberate_paths_tie_breaking(self, orchestrator, decision_state_standard):
         """Test deliberation when multiple paths have similar scores."""
@@ -271,7 +271,7 @@ class TestPhysicsOrchestratorCoreFlows:
 
         # All should have identical scores (within floating point precision)
         scores = [p.optimization_score for p in ranked]
-        assert (
+        assert (, "Condition must be true"
             len(set(round(s, 6) for s in scores)) == 1
         ), "Identical paths should have identical scores"
 
@@ -284,10 +284,10 @@ class TestPhysicsOrchestratorCoreFlows:
         ranked = orchestrator.deliberate_paths(decision_state_standard, action_paths_standard)
         optimal = orchestrator.optimize_path(ranked, decision_state_standard)
 
-        assert optimal is not None
-        assert optimal.confidence >= orchestrator.config["confidence_threshold"]
-        assert optimal.total_energy <= orchestrator.config["energy_budget"]
-        assert optimal.risk <= orchestrator.config["risk_tolerance"]
+        assert optimal is not None, "optimal must be initialized"
+        assert optimal.confidence >= orchestrator.config["confidence_threshold"], "confidence must be greater than zero"
+        assert optimal.total_energy <= orchestrator.config["energy_budget"], "total_energy is not valid"
+        assert optimal.risk <= orchestrator.config["risk_tolerance"], "risk is not valid"
 
     def test_optimize_path_no_path_meets_constraints(
         self, orchestrator, decision_state_standard, action_paths_low_confidence
@@ -296,7 +296,7 @@ class TestPhysicsOrchestratorCoreFlows:
         ranked = orchestrator.deliberate_paths(decision_state_standard, action_paths_low_confidence)
         optimal = orchestrator.optimize_path(ranked, decision_state_standard)
 
-        assert optimal is None
+        assert optimal is None, "optimal is not valid"
 
     def test_optimize_path_energy_budget_exceeded(
         self, orchestrator, decision_state_standard, action_paths_high_energy
@@ -305,7 +305,7 @@ class TestPhysicsOrchestratorCoreFlows:
         ranked = orchestrator.deliberate_paths(decision_state_standard, action_paths_high_energy)
         optimal = orchestrator.optimize_path(ranked, decision_state_standard)
 
-        assert optimal is None
+        assert optimal is None, "optimal is not valid"
 
     def test_optimize_path_relaxed_constraints(
         self, orchestrator, decision_state_standard, action_paths_high_energy
@@ -318,8 +318,8 @@ class TestPhysicsOrchestratorCoreFlows:
         ranked = orchestrator.deliberate_paths(decision_state_standard, action_paths_high_energy)
         optimal = orchestrator.optimize_path(ranked, decision_state_standard)
 
-        assert optimal is not None
-        assert optimal.potential_energy > 100.0
+        assert optimal is not None, "optimal must be initialized"
+        assert optimal.potential_energy > 100.0, "potential_energy must be greater than zero"
 
     # ========== ACT STAGE TESTS ==========
 
@@ -333,25 +333,25 @@ class TestPhysicsOrchestratorCoreFlows:
         result = orchestrator.act(optimal, decision_state_standard)
 
         # Verify result structure
-        assert result["action_taken"] != "wait"
-        assert "confidence" in result
-        assert "expected_impact" in result
-        assert "energy_required" in result
-        assert "optimization_score" in result
-        assert "timestamp" in result
+        assert result["action_taken"] != "wait", "Result must not be empty"
+        assert "confidence" in result, "Result must not be empty"
+        assert "expected_impact" in result, "Result must not be empty"
+        assert "energy_required" in result, "Result must not be empty"
+        assert "optimization_score" in result, "Result must not be empty"
+        assert "timestamp" in result, "Result must not be empty"
 
         # Verify decision recorded
-        assert len(orchestrator.decision_history) == 1
-        assert orchestrator.decision_history[0] == result
+        assert len(orchestrator.decision_history) == 1, "Collection must not be empty"
+        assert orchestrator.decision_history[0] == result, "Result must not be empty"
 
     def test_act_with_no_path_waits(self, orchestrator, decision_state_standard):
         """Test action when no optimal path found triggers wait state."""
         result = orchestrator.act(None, decision_state_standard)
 
-        assert result["action_taken"] == "wait"
-        assert result["rationale"] == "No path met constraints"
-        assert "recommendation" in result
-        assert "timestamp" in result
+        assert result["action_taken"] == "wait", "Result must not be empty"
+        assert result["rationale"] == "No path met constraints", "Result must not be empty"
+        assert "recommendation" in result, "Result must not be empty"
+        assert "timestamp" in result, "Result must not be empty"
 
     def test_act_records_in_history(
         self, orchestrator, decision_state_standard, action_paths_standard
@@ -363,7 +363,7 @@ class TestPhysicsOrchestratorCoreFlows:
             optimal = orchestrator.optimize_path(ranked, decision_state_standard)
             orchestrator.act(optimal, decision_state_standard)
 
-        assert len(orchestrator.decision_history) == 3
+        assert len(orchestrator.decision_history) == 3, "Collection must not be empty"
 
     # ========== FULL ORCHESTRATION CYCLE TESTS ==========
 
@@ -374,12 +374,12 @@ class TestPhysicsOrchestratorCoreFlows:
         result = orchestrator.orchestrate(decision_state_standard, action_paths_standard)
 
         # Verify all stages executed
-        assert "action_taken" in result
-        assert "timestamp" in result
+        assert "action_taken" in result, "Result must not be empty"
+        assert "timestamp" in result, "Result must not be empty"
 
         # Verify decision recorded
-        assert len(orchestrator.decision_history) == 1
-        assert orchestrator.decision_history[0] == result
+        assert len(orchestrator.decision_history) == 1, "Collection must not be empty"
+        assert orchestrator.decision_history[0] == result, "Result must not be empty"
 
     def test_orchestrate_multiple_cycles_maintain_history(
         self, orchestrator, decision_state_standard, action_paths_standard
@@ -391,9 +391,9 @@ class TestPhysicsOrchestratorCoreFlows:
             results.append(result)
 
         # Verify history
-        assert len(orchestrator.decision_history) == 5
+        assert len(orchestrator.decision_history) == 5, "Collection must not be empty"
         for i, result in enumerate(results):
-            assert orchestrator.decision_history[i] == result
+            assert orchestrator.decision_history[i] == result, "Result must not be empty"
 
     def test_orchestrate_no_viable_paths_returns_wait(
         self, orchestrator, decision_state_standard, action_paths_high_energy
@@ -401,7 +401,7 @@ class TestPhysicsOrchestratorCoreFlows:
         """Test orchestration with no viable paths returns wait recommendation."""
         result = orchestrator.orchestrate(decision_state_standard, action_paths_high_energy)
 
-        assert result["action_taken"] == "wait"
+        assert result["action_taken"] == "wait", "Result must not be empty"
 
     # ========== STATE EVOLUTION TESTS ==========
     # Note: These tests removed because PhysicsInspiredOrchestrator.evolve_state()
@@ -417,30 +417,30 @@ class TestPhysicsOrchestratorCoreFlows:
         """Test complete workflow from assessment through action."""
         # Step 1: Assess
         assessment = orchestrator.assess_situation(decision_state_standard)
-        assert assessment["net_potential"] != 0  # Some potential exists
+        assert assessment["net_potential"] != 0, "Condition must be true"
 
         # Step 2: Deliberate
         ranked = orchestrator.deliberate_paths(decision_state_standard, action_paths_standard)
-        assert len(ranked) > 0
+        assert len(ranked) > 0, "Ranked must not be empty"
 
         # Step 3: Optimize
         optimal = orchestrator.optimize_path(ranked, decision_state_standard)
-        assert optimal is not None
+        assert optimal is not None, "optimal must be initialized"
 
         # Step 4: Act
         result = orchestrator.act(optimal, decision_state_standard)
-        assert result["action_taken"] != "wait"
+        assert result["action_taken"] != "wait", "Result must not be empty"
 
     def test_load_config_updates_thresholds(self, orchestrator):
         """Test loading configuration updates decision thresholds."""
         original_threshold = orchestrator.config["confidence_threshold"]
 
         new_config = orchestrator.load_config()
-        assert new_config["confidence_threshold"] == original_threshold
+        assert new_config["confidence_threshold"] == original_threshold, "Condition must be true"
 
         # Modify and verify
         orchestrator.config["confidence_threshold"] = 0.8
-        assert orchestrator.config["confidence_threshold"] == 0.8
+        assert orchestrator.config["confidence_threshold"] == 0.8, "orchestrat is not valid"
 
 
 class TestDiffusionFlowModel:
@@ -453,7 +453,7 @@ class TestDiffusionFlowModel:
         model = DiffusionFlowModel(dimensions=2, resolution=10, diffusion_coefficient=0.3)
 
         assert hasattr(model, "diffusion_coefficient")
-        assert model.diffusion_coefficient == 0.3
+        assert model.diffusion_coefficient == 0.3, "diffusion_coefficient is not valid"
 
     def test_diffusion_coefficient_default_value(self):
         """Test default diffusion coefficient value."""
@@ -461,7 +461,7 @@ class TestDiffusionFlowModel:
 
         model = DiffusionFlowModel()
 
-        assert model.diffusion_coefficient == 0.5
+        assert model.diffusion_coefficient == 0.5, "diffusion_coefficient is not valid"
 
     def test_add_attractor_and_repulsor(self):
         """Test adding attractors and repulsors."""
@@ -471,11 +471,11 @@ class TestDiffusionFlowModel:
 
         # Add attractor
         model.add_attractor((0.5, 0.5), strength=1.0)
-        assert len(model.attractors) == 1
+        assert len(model.attractors) == 1, "Collection must not be empty"
 
         # Add repulsor
         model.add_repulsor((0.2, 0.2), strength=0.5)
-        assert len(model.repulsors) == 1
+        assert len(model.repulsors) == 1, "Collection must not be empty"
 
     def test_potential_field_calculation(self):
         """Test potential field is calculated correctly."""
@@ -485,4 +485,4 @@ class TestDiffusionFlowModel:
         model.add_attractor((0.5, 0.5), strength=1.0)
 
         # Field should be recalculated
-        assert len(model.potential_field) > 0
+        assert len(model.potential_field) > 0, "Collection must not be empty"

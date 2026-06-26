@@ -37,19 +37,19 @@ def test_is_distributed_false_by_default():
 def test_get_rank_single_process():
     """Test get_rank returns 0 in single process."""
     if not is_distributed():
-        assert get_rank() == 0
+        assert get_rank() == 0, "Condition must be true"
 
 
 def test_get_world_size_single_process():
     """Test get_world_size returns 1 in single process."""
     if not is_distributed():
-        assert get_world_size() == 1
+        assert get_world_size() == 1, "get_w is not valid"
 
 
 def test_is_main_process_single():
     """Test is_main_process returns True in single process."""
     if not is_distributed():
-        assert is_main_process() is True
+        assert is_main_process() is True, "Condition must be true"
 
 
 def test_setup_distributed_no_env_vars():
@@ -61,7 +61,7 @@ def test_setup_distributed_no_env_vars():
 
     try:
         result = setup_distributed()
-        assert result is False
+        assert result is False, "Result must not be empty"
     finally:
         # Restore env vars
         for key, value in env_backup.items():
@@ -75,7 +75,7 @@ def test_setup_ddp_model_single_process():
 
     if not is_distributed():
         wrapped = setup_ddp_model(model)
-        assert wrapped is model  # Should return original model
+        assert wrapped is model, "wrapped is not valid"
 
 
 def test_get_distributed_sampler_single_process():
@@ -86,7 +86,7 @@ def test_get_distributed_sampler_single_process():
 
     if not is_distributed():
         sampler = get_distributed_sampler(dataset)
-        assert sampler is None
+        assert sampler is None, "sampler is not valid"
 
 
 def test_reduce_tensor_single_process():
@@ -126,9 +126,9 @@ def test_distributed_functions_with_mock(mock_world_size, mock_rank, mock_init):
         is_main_process,
     )
 
-    assert get_rank() == 1
-    assert get_world_size() == 4
-    assert is_main_process() is False
+    assert get_rank() == 1, "Condition must be true"
+    assert get_world_size() == 4, "get_w is not valid"
+    assert is_main_process() is False, "Condition must be true"
 
 
 @patch("codex_ml.training.distributed_setup.torch.distributed.is_available")
@@ -141,10 +141,10 @@ def test_is_distributed_with_mock(mock_init, mock_available):
     # Import after patching
     from codex_ml.training.distributed_setup import is_distributed
 
-    assert is_distributed() is True
+    assert is_distributed() is True, "Condition must be true"
 
     mock_init.return_value = False
-    assert is_distributed() is False
+    assert is_distributed() is False, "Condition must be true"
 
 
 def test_cleanup_distributed():

@@ -91,7 +91,7 @@ class TestCLIHelpVersion:
         has_help = any(
             term in output.lower() for term in ["usage", "options", "commands", "help", "train"]
         )
-        assert (
+        assert (, "Condition must be true"
             result.returncode == 0 or has_help
         ), f"Help command failed: exit={result.returncode}, output={output[:500]}"
 
@@ -107,7 +107,7 @@ class TestCLIHelpVersion:
         )
         # Version should be importable or have version info
         output = result.stdout + result.stderr
-        assert (
+        assert (, "Condition must be true"
             result.returncode == 0
             or "version" in output.lower()
             or any(c.isdigit() for c in output)
@@ -159,7 +159,7 @@ class TestTrainCommand:
         output = result.stdout + result.stderr
         # Train help should show options
         if result.returncode == 0:
-            assert any(
+            assert any(, "Condition must be true"
                 opt in output.lower()
                 for opt in ["--config", "--model", "--epochs", "help", "options"]
             ), f"Train help missing options: {output[:500]}"
@@ -188,7 +188,7 @@ class TestTrainCommand:
         if "No such command" in output or "Error" in output:
             pytest.skip("Train command not available")
         # Option should be documented
-        assert (
+        assert (, "Condition must be true"
             option in output or expected in output.lower()
         ), f"Option {option} not documented in train help"
 
@@ -206,7 +206,7 @@ class TestConfigurationLoading:
         try:
             from codex_ml.cli import _load_training_config
 
-            assert callable(_load_training_config)
+            assert callable(_load_training_config), "Condition must be true"
         except ImportError:
             pytest.skip("_load_training_config not available")
 
@@ -216,7 +216,7 @@ class TestConfigurationLoading:
             from codex_ml.cli import _load_training_config
 
             config = _load_training_config(str(temp_config_yaml))
-            assert config is not None
+            assert config is not None, "config must be initialized"
         except ImportError:
             pytest.skip("_load_training_config not available")
         except (ValueError, TypeError) as e:
@@ -233,7 +233,7 @@ class TestConfigurationLoading:
             missing_file = tmp_path / "nonexistent.yaml"
             result = _load_training_config(str(missing_file))
             # Should return empty config or raise FileNotFoundError
-            assert result == {} or result is None
+            assert result == {} or result is None, "Result must not be empty"
         except (ImportError, FileNotFoundError):
             _ = None  # Expected behavior
 
@@ -273,7 +273,7 @@ class TestValueFromConfig:
                     {"key": "config_value"},  # cfg
                     "key",  # keys
                 )
-                assert result == "cli_value"
+                assert result == "cli_value", "Result must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("_value_from_config not accessible")
 
@@ -289,7 +289,7 @@ class TestValueFromConfig:
                     {"key": "config_value"},  # cfg
                     "key",  # keys
                 )
-                assert result == "config_value"
+                assert result == "config_value", "Result must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("_value_from_config not accessible")
 
@@ -308,7 +308,7 @@ class TestTyperAppRegistration:
             import codex_ml.cli.main as cli_main
 
             if hasattr(cli_main, "app"):
-                assert cli_main.app is not None
+                assert cli_main.app is not None, "app must be initialized"
         except ImportError:
             pytest.skip("CLI main not importable")
 
@@ -351,7 +351,7 @@ class TestEnvironmentContext:
         )
         output = result.stdout + result.stderr
         if result.returncode == 0 and "train" in output.lower():
-            assert "--seed" in output or "seed" in output.lower()
+            assert "--seed" in output or "seed" in output.lower(), "Condition must be true"
 
     def test_cli_respects_output_dir_option(self) -> None:
         """Verify --output-dir option is properly parsed."""
@@ -364,7 +364,7 @@ class TestEnvironmentContext:
         )
         output = result.stdout + result.stderr
         if result.returncode == 0 and "train" in output.lower():
-            assert "--output" in output or "output" in output.lower()
+            assert "--output" in output or "output" in output.lower(), "Condition must be true"
 
 
 # =============================================================================
@@ -387,7 +387,7 @@ class TestErrorHandling:
         )
         # Should exit with non-zero or show error
         output = result.stdout + result.stderr
-        assert (
+        assert (, "Condition must be true"
             result.returncode != 0
             or "error" in output.lower()
             or "invalid" in output.lower()
@@ -431,7 +431,7 @@ class TestBackendStrategy:
         output = result.stdout + result.stderr
         # Backend option should be documented
         if result.returncode == 0:
-            assert "--backend" in output or "backend" in output.lower()
+            assert "--backend" in output or "backend" in output.lower(), "Condition must be true"
 
 
 # =============================================================================
@@ -455,7 +455,7 @@ class TestTrackingIntegration:
         output = result.stdout + result.stderr
         if result.returncode == 0 and "train" in output.lower():
             # MLflow flag should be available
-            assert "--mlflow" in output or "mlflow" in output.lower()
+            assert "--mlflow" in output or "mlflow" in output.lower(), "Condition must be true"
 
     def test_wandb_flag_documented(self) -> None:
         """Verify --wandb flag is documented."""
@@ -469,7 +469,7 @@ class TestTrackingIntegration:
         output = result.stdout + result.stderr
         if result.returncode == 0 and "train" in output.lower():
             # WandB flag should be available
-            assert "--wandb" in output or "wandb" in output.lower()
+            assert "--wandb" in output or "wandb" in output.lower(), "Condition must be true"
 
 
 # =============================================================================
@@ -517,7 +517,7 @@ class TestResumeCheckpoint:
         )
         output = result.stdout + result.stderr
         if result.returncode == 0 and "train" in output.lower():
-            assert (
+            assert (, "Condition must be true"
                 "--resume" in output or "resume" in output.lower() or "checkpoint" in output.lower()
             )
 
@@ -543,7 +543,7 @@ class TestCorpusCurriculum:
         output = result.stdout + result.stderr
         if result.returncode == 0 and "train" in output.lower():
             # Corpus options should be available
-            assert "--corpus" in output or "corpus" in output.lower()
+            assert "--corpus" in output or "corpus" in output.lower(), "Condition must be true"
 
     def test_curriculum_option_documented(self) -> None:
         """Verify --curriculum option is documented."""
@@ -557,4 +557,4 @@ class TestCorpusCurriculum:
         output = result.stdout + result.stderr
         if result.returncode == 0 and "train" in output.lower():
             # Curriculum option should be available
-            assert "--curriculum" in output or "curriculum" in output.lower()
+            assert "--curriculum" in output or "curriculum" in output.lower(), "Condition must be true"

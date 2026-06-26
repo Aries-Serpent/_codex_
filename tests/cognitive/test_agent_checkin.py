@@ -45,17 +45,17 @@ class TestBuildResearchComment:
 
     def test_contains_session_marker(self):
         body = _mod._build_research_comment("S215-test", "abc123def456")
-        assert "<!-- agent-checkin-research:S215-test -->" in body
+        assert "<!-- agent-checkin-research:S215-test -->" in body, "Condition must be true"
 
     def test_contains_links(self):
         body = _mod._build_research_comment("S215-test", "abc123def456")
         for topic in _mod.RESEARCH_TOPICS:
-            assert topic["link"] in body
+            assert topic["link"] in body, "Condition must be true"
 
     def test_contains_categories(self):
         body = _mod._build_research_comment("S215-test", "abc123def456")
         for topic in _mod.RESEARCH_TOPICS:
-            assert topic["category"] in body
+            assert topic["category"] in body, "Condition must be true"
 
     def test_sha_short_appears(self):
         body = _mod._build_research_comment("S215-test", "deadbeef1234")  # pragma: allowlist secret
@@ -64,15 +64,15 @@ class TestBuildResearchComment:
     def test_no_raw_github_head_ref_expression(self):
         """Research comment body must NOT contain raw ${{ ... }} expressions."""
         body = _mod._build_research_comment("S215-test", "abc123def456")
-        assert "${{" not in body
+        assert "${{" not in body, "Condition must be true"
 
     def test_rag_topics_content_is_current(self):
         """RAG topic should no longer say '90%' as a target — it's at 95% already."""
         rag_topic = next(t for t in _mod.RESEARCH_TOPICS if "RAG" in t["title"])
         # Must NOT say "path to 95%" (old stale phrasing)
-        assert "path to 95%" not in rag_topic["summary"]
+        assert "path to 95%" not in rag_topic["summary"], "Condition must be true"
         # Must say 95% is achieved
-        assert "95%" in rag_topic["summary"]
+        assert "95%" in rag_topic["summary"], "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -93,53 +93,53 @@ class TestBuildOpenCheckinComment:
 
     def test_contains_session_marker(self):
         body = self._make()
-        assert "<!-- agent-checkin-open:S215-test -->" in body
+        assert "<!-- agent-checkin-open:S215-test -->" in body, "Condition must be true"
 
     def test_contains_three_questions(self):
         body = self._make()
-        assert "**Q1" in body
-        assert "**Q2" in body
-        assert "**Q3" in body
+        assert "**Q1" in body, "Condition must be true"
+        assert "**Q2" in body, "Condition must be true"
+        assert "**Q3" in body, "Condition must be true"
 
     def test_contains_deep_reflection_question(self):
         body = self._make()
-        assert "Deep Reflection Question" in body
-        assert "Cognitive Brain" in body
+        assert "Deep Reflection Question" in body, "Condition must be true"
+        assert "Cognitive Brain" in body, "Condition must be true"
 
     def test_contains_cognitive_brain_url(self):
         body = self._make()
-        assert _mod.COGNITIVE_BRAIN_URL in body
+        assert _mod.COGNITIVE_BRAIN_URL in body, "Condition must be true"
 
     def test_q2_content_is_not_stale(self):
         """Q2 must say RAG is at 95% (achieved), not that it's still a target."""
         body = self._make()
         # Old stale phrasing was "now at 90%"
-        assert "now at 90%" not in body
+        assert "now at 90%" not in body, "Condition must be true"
         # New content references 95% as achieved
-        assert "95%" in body
+        assert "95%" in body, "Condition must be true"
 
     def test_contains_pr_ref(self):
         body = self._make(pr_number=1234)
-        assert "PR #1234" in body
+        assert "PR, "Condition must be true"
 
     def test_no_pr_linked(self):
         body = self._make(pr_number=None)
-        assert "no linked PR" in body
+        assert "no linked PR" in body, "Condition must be true"
 
     def test_includes_session_memories_from_state(self):
         cb_state = {"session_memories": ["## SESSION SUMMARY — S213", "## SESSION SUMMARY — S214"]}
         body = self._make(cb_state=cb_state)
-        assert "S213" in body
-        assert "S214" in body
+        assert "S213" in body, "Condition must be true"
+        assert "S214" in body, "Condition must be true"
 
     def test_includes_ci_patterns_from_state(self):
         cb_state = {"ci_patterns": ["pattern-alpha", "pattern-beta"]}
         body = self._make(cb_state=cb_state)
-        assert "pattern-alpha" in body
+        assert "pattern-alpha" in body, "Condition must be true"
 
     def test_no_raw_github_context_expressions(self):
         body = self._make()
-        assert "${{" not in body
+        assert "${{" not in body, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -159,22 +159,22 @@ class TestBuildCloseCheckinComment:
 
     def test_contains_close_marker(self):
         body = self._make()
-        assert "<!-- agent-checkin-close:S215-test -->" in body
+        assert "<!-- agent-checkin-close:S215-test -->" in body, "Condition must be true"
 
     def test_all_answered(self):
         body = self._make(answered=["Q1: resolved"], unanswered=[])
-        assert "✅ Q1: resolved" in body
-        assert "_All questions answered!_" in body
+        assert "✅ Q1: resolved" in body, "Condition must be true"
+        assert "_All questions answered!_" in body, "Condition must be true"
 
     def test_all_unanswered(self):
         body = self._make(answered=[], unanswered=["Q1: pending", "Q2: pending"])
-        assert "⏳ Q1: pending" in body
-        assert "⏳ Q2: pending" in body
-        assert "_None answered_" in body
+        assert "⏳ Q1: pending" in body, "Condition must be true"
+        assert "⏳ Q2: pending" in body, "Condition must be true"
+        assert "_None answered_" in body, "Condition must be true"
 
     def test_aftermath_included(self):
         body = self._make(aftermath="PLAN: S215 fixes done")
-        assert "PLAN: S215 fixes done" in body
+        assert "PLAN: S215 fixes done" in body, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -192,7 +192,7 @@ class TestActionOpen:
             repo="Aries-Serpent/_codex_",
             discussion_number=3756,
         )
-        assert rc == 0
+        assert rc == 0, "rc is not valid"
 
     def test_offline_prints_body(self, monkeypatch: pytest.MonkeyPatch, capsys):
         _offline(monkeypatch)
@@ -204,7 +204,7 @@ class TestActionOpen:
             discussion_number=3756,
         )
         out = capsys.readouterr().out
-        assert "[OFFLINE]" in out
+        assert "[OFFLINE]" in out, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -223,7 +223,7 @@ class TestActionClose:
             no_block=True,
             aftermath_plan="PLAN: done",
         )
-        assert rc == 0
+        assert rc == 0, "rc is not valid"
 
     def test_offline_prints_body(self, monkeypatch: pytest.MonkeyPatch, capsys):
         _offline(monkeypatch)
@@ -236,7 +236,7 @@ class TestActionClose:
             aftermath_plan="PLAN: done",
         )
         out = capsys.readouterr().out
-        assert "[OFFLINE]" in out
+        assert "[OFFLINE]" in out, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -253,7 +253,7 @@ class TestActionPostResearch:
             repo="Aries-Serpent/_codex_",
             discussion_number=3756,
         )
-        assert rc == 0
+        assert rc == 0, "rc is not valid"
 
     def test_offline_prints_research(self, monkeypatch: pytest.MonkeyPatch, capsys):
         _offline(monkeypatch)
@@ -264,7 +264,7 @@ class TestActionPostResearch:
             discussion_number=3756,
         )
         out = capsys.readouterr().out
-        assert "[OFFLINE]" in out
+        assert "[OFFLINE]" in out, "Condition must be true"
         # Should include at least one research topic title
         assert any(topic["title"] in out for topic in _mod.RESEARCH_TOPICS) or "Research" in out
 
@@ -278,7 +278,7 @@ class TestMain:
     def test_no_args_returns_zero(self):
         """main() with no action flags prints help and returns 0."""
         rc = _mod.main([])
-        assert rc == 0
+        assert rc == 0, "rc is not valid"
 
     def test_open_offline(self, monkeypatch: pytest.MonkeyPatch):
         _offline(monkeypatch)
@@ -293,7 +293,7 @@ class TestMain:
                 "--no-block",
             ]
         )
-        assert rc == 0
+        assert rc == 0, "rc is not valid"
 
     def test_close_offline(self, monkeypatch: pytest.MonkeyPatch):
         _offline(monkeypatch)
@@ -308,7 +308,7 @@ class TestMain:
                 "--no-block",
             ]
         )
-        assert rc == 0
+        assert rc == 0, "rc is not valid"
 
     def test_post_research_offline(self, monkeypatch: pytest.MonkeyPatch):
         _offline(monkeypatch)
@@ -321,7 +321,7 @@ class TestMain:
                 "abc123def456",  # pragma: allowlist secret
             ]
         )
-        assert rc == 0
+        assert rc == 0, "rc is not valid"
 
     def test_open_and_research_combined(self, monkeypatch: pytest.MonkeyPatch):
         _offline(monkeypatch)
@@ -337,7 +337,7 @@ class TestMain:
                 "--no-block",
             ]
         )
-        assert rc == 0
+        assert rc == 0, "rc is not valid"
 
     def test_invalid_checkin_phase_raises(self):
         with pytest.raises(SystemExit):
@@ -362,37 +362,37 @@ class TestResponseDetection:
         """'Q1' in maintainer comment should mark Q1 as answered."""
         comments = [self._make_comment("mbaetiong", "Q1: I prefer option (b)")]
         answered, _unanswered = _run_detection(comments)
-        assert any("Q1" in a for a in answered)
+        assert any("Q1" in a for a in answered), "Condition must be true"
 
     def test_detects_q1_by_keyword(self):
         """detect-secrets keyword should also mark Q1 as answered."""
         comments = [self._make_comment("mbaetiong", "Let's use detect-secrets exclusion patterns")]
         answered, _unanswered = _run_detection(comments)
-        assert any("Q1" in a for a in answered)
+        assert any("Q1" in a for a in answered), "Condition must be true"
 
     def test_detects_q2_by_keyword(self):
         """'rag' keyword in maintainer response marks Q2 as answered."""
         comments = [self._make_comment("mbaetiong", "We should add a rag coverage delta gate")]
         answered, _unanswered = _run_detection(comments)
-        assert any("Q2" in a for a in answered)
+        assert any("Q2" in a for a in answered), "Condition must be true"
 
     def test_bot_comments_not_counted(self):
         """Bot comments should NOT count as maintainer responses."""
         comments = [self._make_comment("github-actions[bot]", "Q1 Q2 Q3 all answered")]
         answered, unanswered = _run_detection(comments)
-        assert len(answered) == 0
-        assert len(unanswered) == 3
+        assert len(answered) == 0, "Answered must not be empty"
+        assert len(unanswered) == 3, "Unanswered must not be empty"
 
     def test_copilot_bot_comments_not_counted(self):
         """copilot-swe-agent[bot] comments should NOT count as responses."""
         comments = [self._make_comment("copilot-swe-agent[bot]", "Q1 Q2 Q3 detect-secrets rag")]
         answered, _unanswered = _run_detection(comments)
-        assert len(answered) == 0
+        assert len(answered) == 0, "Answered must not be empty"
 
     def test_all_unanswered_when_no_comments(self):
         answered, unanswered = _run_detection([])
-        assert len(unanswered) == 3
-        assert len(answered) == 0
+        assert len(unanswered) == 3, "Unanswered must not be empty"
+        assert len(answered) == 0, "Answered must not be empty"
 
 
 def _run_detection(comments: list[dict]) -> tuple[list[str], list[str]]:

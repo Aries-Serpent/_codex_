@@ -27,13 +27,13 @@ def test_tiny_vocab_roundtrip_and_padding():
     ids = tok.encode(text)
     assert ids == [2, 4]  # hello, world per fixture vocab
     dec = tok.decode(ids)
-    assert dec == text
+    assert dec == text, "dec is not valid"
 
     # Pad manually to length 5 using pad id from vocab (0)
     pad_id = tok.vocab.get("<pad>")
-    assert pad_id == 0
+    assert pad_id == 0, "pad_id is not valid"
     padded = ids + [pad_id] * (5 - len(ids))
-    assert len(padded) == 5
+    assert len(padded) == 5, "Padded must not be empty"
     # Decoding includes pad tokens verbatim (implementation choice)
     dec_padded = tok.decode(padded)
-    assert dec_padded.endswith("<pad> <pad> <pad>")
+    assert dec_padded.endswith("<pad> <pad> <pad>"), "Condition must be true"

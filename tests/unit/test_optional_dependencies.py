@@ -14,15 +14,15 @@ from codex_ml.utils.optional_dependencies import (
 class TestFormatOptionalDependencyError:
     def test_contains_package_name(self):
         msg = format_optional_dependency_error("mypackage", "feature X")
-        assert "mypackage" in msg
+        assert "mypackage" in msg, "Condition must be true"
 
     def test_contains_feature_name(self):
         msg = format_optional_dependency_error("mypackage", "feature X")
-        assert "feature X" in msg
+        assert "feature X" in msg, "Condition must be true"
 
     def test_contains_pip_install_hint(self):
         msg = format_optional_dependency_error("mypackage", "feature X")
-        assert "pip install mypackage" in msg
+        assert "pip install mypackage" in msg, "Condition must be true"
 
     def test_returns_string(self):
         assert isinstance(format_optional_dependency_error("pkg", "feat"), str)
@@ -35,8 +35,8 @@ class TestBuildOptionalDependencyError:
 
     def test_message_matches_format(self):
         err = build_optional_dependency_error("numpy", "array ops")
-        assert "numpy" in str(err)
-        assert "array ops" in str(err)
+        assert "numpy" in str(err), "Condition must be true"
+        assert "array ops" in str(err), "Condition must be true"
 
 
 class TestRaiseOptionalDependencyError:

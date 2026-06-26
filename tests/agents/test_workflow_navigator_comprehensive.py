@@ -23,26 +23,26 @@ class TestWorkflowEnums:
         """Test WorkflowFrequency enum values."""
         from agents.workflow_navigator import WorkflowFrequency
 
-        assert WorkflowFrequency.HIGH is not None
-        assert WorkflowFrequency.MEDIUM is not None
-        assert WorkflowFrequency.LOW is not None
+        assert WorkflowFrequency.HIGH is not None, "HIGH must be initialized"
+        assert WorkflowFrequency.MEDIUM is not None, "MEDIUM must be initialized"
+        assert WorkflowFrequency.LOW is not None, "LOW must be initialized"
 
-        assert WorkflowFrequency.HIGH.value == "high"
-        assert WorkflowFrequency.MEDIUM.value == "medium"
-        assert WorkflowFrequency.LOW.value == "low"
+        assert WorkflowFrequency.HIGH.value == "high", "Value must be initialized"
+        assert WorkflowFrequency.MEDIUM.value == "medium", "Value must be initialized"
+        assert WorkflowFrequency.LOW.value == "low", "Value must be initialized"
 
     def test_step_status_values(self):
         """Test StepStatus enum values."""
         from agents.workflow_navigator import StepStatus
 
-        assert StepStatus.PENDING is not None
-        assert StepStatus.RUNNING is not None
-        assert StepStatus.COMPLETED is not None
-        assert StepStatus.FAILED is not None
-        assert StepStatus.SKIPPED is not None
+        assert StepStatus.PENDING is not None, "PENDING must be initialized"
+        assert StepStatus.RUNNING is not None, "RUNNING must be initialized"
+        assert StepStatus.COMPLETED is not None, "COMPLETED must be initialized"
+        assert StepStatus.FAILED is not None, "FAILED must be initialized"
+        assert StepStatus.SKIPPED is not None, "SKIPPED must be initialized"
 
-        assert StepStatus.PENDING.value == "pending"
-        assert StepStatus.COMPLETED.value == "completed"
+        assert StepStatus.PENDING.value == "pending", "Value must be initialized"
+        assert StepStatus.COMPLETED.value == "completed", "Value must be initialized"
 
 
 # ============================================================================
@@ -59,10 +59,10 @@ class TestWorkflowStep:
 
         step = WorkflowStep(id="step1", action="Run tests")
 
-        assert step.id == "step1"
-        assert step.action == "Run tests"
-        assert step.command is None
-        assert step.optional is False
+        assert step.id == "step1", "id is not valid"
+        assert step.action == "Run tests", "action is not valid"
+        assert step.command is None, "command is not valid"
+        assert step.optional is False, "optional is not valid"
 
     def test_workflow_step_with_command(self):
         """Test WorkflowStep with command."""
@@ -72,9 +72,9 @@ class TestWorkflowStep:
             id="test_step", action="Echo test", command="echo 'test'", optional=True
         )
 
-        assert step.command == "echo 'test'"
-        assert step.optional is True
-        assert step.status == StepStatus.PENDING
+        assert step.command == "echo 'test'", "command is not valid"
+        assert step.optional is True, "optional is not valid"
+        assert step.status == StepStatus.PENDING, "status is not valid"
 
     def test_workflow_step_execute_with_command(self):
         """Test executing a step with a command."""
@@ -85,9 +85,9 @@ class TestWorkflowStep:
         result = step.execute({"working_dir": "."})
 
         assert isinstance(result, dict)
-        assert "success" in result
+        assert "success" in result, "Result must not be empty"
         if result["success"]:
-            assert step.status == StepStatus.COMPLETED
+            assert step.status == StepStatus.COMPLETED, "status is not valid"
             assert "hello" in result.get("stdout", "")
 
     def test_workflow_step_execute_no_action(self):
@@ -98,8 +98,8 @@ class TestWorkflowStep:
 
         result = step.execute({})
 
-        assert result["success"] is True
-        assert step.status == StepStatus.SKIPPED
+        assert result["success"] is True, "Result must not be empty"
+        assert step.status == StepStatus.SKIPPED, "status is not valid"
 
     def test_workflow_step_execute_with_uses(self):
         """Test executing a step that references another workflow."""
@@ -111,8 +111,8 @@ class TestWorkflowStep:
 
         result = step.execute({})
 
-        assert result["success"] is True
-        assert step.status == StepStatus.COMPLETED
+        assert result["success"] is True, "Result must not be empty"
+        assert step.status == StepStatus.COMPLETED, "status is not valid"
 
 
 # ============================================================================
@@ -135,11 +135,11 @@ class TestWorkflow:
             steps=[],
         )
 
-        assert workflow.workflow_id == "WF001"
-        assert workflow.name == "Test Workflow"
-        assert workflow.description == "A test workflow"
-        assert workflow.frequency == WorkflowFrequency.HIGH
-        assert len(workflow.steps) == 0
+        assert workflow.workflow_id == "WF001", "workflow_id is not valid"
+        assert workflow.name == "Test Workflow", "name is not valid"
+        assert workflow.description == "A test workflow", "description is not valid"
+        assert workflow.frequency == WorkflowFrequency.HIGH, "frequency is not valid"
+        assert len(workflow.steps) == 0, "Collection must not be empty"
 
     def test_workflow_with_steps(self):
         """Test Workflow with multiple steps."""
@@ -158,9 +158,9 @@ class TestWorkflow:
             steps=steps,
         )
 
-        assert len(workflow.steps) == 2
-        assert workflow.steps[0].id == "step1"
-        assert workflow.steps[1].id == "step2"
+        assert len(workflow.steps) == 2, "Collection must not be empty"
+        assert workflow.steps[0].id == "step1", "id is not valid"
+        assert workflow.steps[1].id == "step2", "id is not valid"
 
     def test_workflow_to_dict(self):
         """Test Workflow.to_dict() method."""
@@ -178,10 +178,10 @@ class TestWorkflow:
         workflow_dict = workflow.to_dict()
 
         assert isinstance(workflow_dict, dict)
-        assert workflow_dict["workflow_id"] == "WF003"
-        assert workflow_dict["name"] == "Test"
-        assert workflow_dict["frequency"] == "low"
-        assert len(workflow_dict["steps"]) == 1
+        assert workflow_dict["workflow_id"] == "WF003", "w is not valid"
+        assert workflow_dict["name"] == "Test", "w is not valid"
+        assert workflow_dict["frequency"] == "low", "w is not valid"
+        assert len(workflow_dict["steps"]) == 1, "Collection must not be empty"
 
 
 # ============================================================================
@@ -198,7 +198,7 @@ class TestWorkflowNavigator:
 
         nav = WorkflowNavigator()
 
-        assert nav is not None
+        assert nav is not None, "nav must be initialized"
         assert hasattr(nav, "workflows")
         assert hasattr(nav, "workspace_dir")
         assert isinstance(nav.workflows, dict)
@@ -211,7 +211,7 @@ class TestWorkflowNavigator:
             workspace = Path(tmpdir)
             nav = WorkflowNavigator(workspace_dir=workspace)
 
-            assert nav.workspace_dir == workspace
+            assert nav.workspace_dir == workspace, "workspace_dir is not valid"
 
     def test_list_workflows(self):
         """Test listing all workflows."""
@@ -222,7 +222,7 @@ class TestWorkflowNavigator:
 
         assert isinstance(workflows, list)
         # Should have at least some default workflows
-        assert len(workflows) > 0
+        assert len(workflows) > 0, "Workflows must not be empty"
 
     def test_get_workflow(self):
         """Test getting a workflow by ID."""
@@ -235,8 +235,8 @@ class TestWorkflowNavigator:
             workflow_id = workflows[0].workflow_id
             workflow = nav.get_workflow(workflow_id)
 
-            assert workflow is not None
-            assert workflow.workflow_id == workflow_id
+            assert workflow is not None, "workflow must be initialized"
+            assert workflow.workflow_id == workflow_id, "workflow_id is not valid"
 
     def test_register_workflow(self):
         """Test registering a new workflow."""
@@ -260,8 +260,8 @@ class TestWorkflowNavigator:
 
         # Verify it was registered
         retrieved = nav.get_workflow("CUSTOM001")
-        assert retrieved is not None
-        assert retrieved.workflow_id == "CUSTOM001"
+        assert retrieved is not None, "retrieved must be initialized"
+        assert retrieved.workflow_id == "CUSTOM001", "workflow_id is not valid"
 
     def test_execute_workflow(self):
         """Test executing a workflow."""
@@ -346,9 +346,9 @@ class TestDynamicWorkflows:
 
         workflow = nav._create_dynamic_workflow("test_coverage")
 
-        assert workflow is not None
-        assert workflow.workflow_id == "TEST_COVERAGE_DYNAMIC"
-        assert len(workflow.steps) > 0
+        assert workflow is not None, "workflow must be initialized"
+        assert workflow.workflow_id == "TEST_COVERAGE_DYNAMIC", "workflow_id is not valid"
+        assert len(workflow.steps) > 0, "Collection must not be empty"
 
     def test_create_dynamic_self_heal_workflow(self):
         """Test creating self_heal dynamic workflow."""
@@ -358,9 +358,9 @@ class TestDynamicWorkflows:
 
         workflow = nav._create_dynamic_workflow("self_heal")
 
-        assert workflow is not None
-        assert workflow.workflow_id == "SELF_HEAL_DYNAMIC"
-        assert len(workflow.steps) > 0
+        assert workflow is not None, "workflow must be initialized"
+        assert workflow.workflow_id == "SELF_HEAL_DYNAMIC", "workflow_id is not valid"
+        assert len(workflow.steps) > 0, "Collection must not be empty"
 
     def test_create_dynamic_audit_coverage_workflow(self):
         """Test creating audit_coverage dynamic workflow."""
@@ -370,9 +370,9 @@ class TestDynamicWorkflows:
 
         workflow = nav._create_dynamic_workflow("audit_coverage")
 
-        assert workflow is not None
-        assert workflow.workflow_id == "AUDIT_COVERAGE_DYNAMIC"
-        assert len(workflow.steps) > 0
+        assert workflow is not None, "workflow must be initialized"
+        assert workflow.workflow_id == "AUDIT_COVERAGE_DYNAMIC", "workflow_id is not valid"
+        assert len(workflow.steps) > 0, "Collection must not be empty"
 
     def test_create_dynamic_test_run_workflow(self):
         """Test creating test_run dynamic workflow."""
@@ -382,9 +382,9 @@ class TestDynamicWorkflows:
 
         workflow = nav._create_dynamic_workflow("test_run")
 
-        assert workflow is not None
-        assert workflow.workflow_id == "TEST_RUN_DYNAMIC"
-        assert len(workflow.steps) > 0
+        assert workflow is not None, "workflow must be initialized"
+        assert workflow.workflow_id == "TEST_RUN_DYNAMIC", "workflow_id is not valid"
+        assert len(workflow.steps) > 0, "Collection must not be empty"
 
     def test_create_dynamic_unknown_workflow(self):
         """Test creating unknown workflow type raises error."""
@@ -432,7 +432,7 @@ class TestWorkflowState:
 
                 # Verify state file was created in workflow_state_dir
                 state_files = list(nav.workflow_state_dir.glob("*.json"))
-                assert isinstance(
+                assert isinstance(, "Condition must be true"
                     state_files, (list, tuple, set, dict)
                 )  # May be 0 if dir doesn't exist yet
             except (AttributeError, NotImplementedError, TypeError) as e:
@@ -479,7 +479,7 @@ class TestWorkflowIntegration:
 
         # Retrieve
         retrieved = nav.get_workflow("LIFECYCLE_TEST")
-        assert retrieved is not None
+        assert retrieved is not None, "retrieved must be initialized"
 
         # Execute
         result = nav.execute("LIFECYCLE_TEST", {})

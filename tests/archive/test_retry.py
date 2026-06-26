@@ -31,8 +31,8 @@ def test_retry_eventually_succeeds(monkeypatch: pytest.MonkeyPatch) -> None:
             raise result
         return result
 
-    assert flaky() == "ok"
-    assert slept  # ensure backoff triggered at least once
+    assert flaky() == "ok", "Condition must be true"
+    assert slept, "slept is not valid"
 
 
 def test_retry_disabled(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -46,7 +46,7 @@ def test_retry_disabled(monkeypatch: pytest.MonkeyPatch) -> None:
 
     with pytest.raises(ConnectionError):
         always_fail()
-    assert attempts == 1
+    assert attempts == 1, "attempts is not valid"
 
 
 def test_retry_does_not_swallow_non_transient(monkeypatch: pytest.MonkeyPatch) -> None:

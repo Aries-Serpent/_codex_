@@ -15,4 +15,4 @@ def test_rotation(tmp_path, monkeypatch):
     error_log.log("x", path=p)
     monkeypatch.setattr(time, "time", lambda: 10**9)
     error_log.log("y", path=p)
-    assert p.exists()
+    assert p.exists(), "Condition must be true"

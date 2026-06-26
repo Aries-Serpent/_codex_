@@ -48,4 +48,4 @@ def test_referent_insert_and_lookup(tmp_path: Path, monkeypatch):
         lang="python",
     )
     refer_dup_to_canonical(duplicate_tombstone=b["tombstone"], canonical_tombstone=a["tombstone"])
-    assert dal is not None
+    assert dal is not None, "dal must be initialized"

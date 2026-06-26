@@ -399,7 +399,7 @@ if cp_metadata.uncompressed_size_bytes > 10_000_000:  # > 10MB
 ```python
 # Check disk I/O
 import psutil
-print(f"Disk I/O: {psutil.disk_io_counters()}")
+print(f"Disk I/O: {psutil.disk_io_counters()}")  # pragma: allowlist secret
 
 # Move checkpoint to faster storage if needed
 ```

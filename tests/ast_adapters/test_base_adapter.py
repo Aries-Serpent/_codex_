@@ -22,11 +22,11 @@ def test_standardized_ast_node_creation():
     """Test creating a StandardizedASTNode."""
     node = StandardizedASTNode(node_id="test_1", node_type="function", name="test_function")
 
-    assert node.node_id == "test_1"
-    assert node.node_type == "function"
-    assert node.name == "test_function"
-    assert node.depth == 0
-    assert len(node.children) == 0
+    assert node.node_id == "test_1", "node_id is not valid"
+    assert node.node_type == "function", "node_type is not valid"
+    assert node.name == "test_function", "name is not valid"
+    assert node.depth == 0, "depth is not valid"
+    assert len(node.children) == 0, "Collection must not be empty"
 
 
 def test_standardized_ast_node_with_parent():
@@ -39,9 +39,9 @@ def test_standardized_ast_node_with_parent():
 
     parent.children.append(child)
 
-    assert child.depth == 1
-    assert child.parent == parent
-    assert len(parent.children) == 1
+    assert child.depth == 1, "depth is not valid"
+    assert child.parent == parent, "parent is not valid"
+    assert len(parent.children) == 1, "Collection must not be empty"
 
 
 def test_standardized_ast_node_full_name():
@@ -52,8 +52,8 @@ def test_standardized_ast_node_full_name():
         node_id="child_1", node_type="function", name="test_method", parent=parent
     )
 
-    assert child.full_name == "TestClass.test_method"
-    assert parent.full_name == "TestClass"
+    assert child.full_name == "TestClass.test_method", "full_name is not valid"
+    assert parent.full_name == "TestClass", "full_name is not valid"
 
 
 def test_standardized_ast_node_to_dict():
@@ -69,21 +69,21 @@ def test_standardized_ast_node_to_dict():
 
     node_dict = node.to_dict()
 
-    assert node_dict["node_id"] == "test_1"
-    assert node_dict["node_type"] == "function"
-    assert node_dict["name"] == "test_func"
-    assert node_dict["line_start"] == 10
-    assert node_dict["line_end"] == 20
-    assert node_dict["metadata"]["decorator"] == "@pytest.fixture"
+    assert node_dict["node_id"] == "test_1", "Condition must be true"
+    assert node_dict["node_type"] == "function", "Condition must be true"
+    assert node_dict["name"] == "test_func", "Condition must be true"
+    assert node_dict["line_start"] == 10, "Condition must be true"
+    assert node_dict["line_end"] == 20, "Condition must be true"
+    assert node_dict["metadata"]["decorator"] == "@pytest.fixture", "Data must not be empty"
 
 
 def test_base_adapter_initialization():
     """Test BaseASTAdapter initialization."""
     adapter = MockAdapter()
 
-    assert adapter.file_path is None
-    assert adapter.root_node is None
-    assert adapter._node_counter == 0
+    assert adapter.file_path is None, "file_path is not valid"
+    assert adapter.root_node is None, "root_node is not valid"
+    assert adapter._node_counter == 0, "Count must be greater than zero"
 
 
 def test_base_adapter_generate_node_id():
@@ -93,8 +93,8 @@ def test_base_adapter_generate_node_id():
     id1 = adapter._generate_node_id()
     id2 = adapter._generate_node_id()
 
-    assert id1 == "node_1"
-    assert id2 == "node_2"
+    assert id1 == "node_1", "id1 is not valid"
+    assert id2 == "node_2", "id2 is not valid"
 
 
 def test_base_adapter_parse():
@@ -102,10 +102,10 @@ def test_base_adapter_parse():
     adapter = MockAdapter()
     root = adapter.parse("mock source code")
 
-    assert root is not None
-    assert root.node_type == "root"
-    assert root.name == "mock_root"
-    assert adapter.root_node == root
+    assert root is not None, "root must be initialized"
+    assert root.node_type == "root", "node_type is not valid"
+    assert root.name == "mock_root", "name is not valid"
+    assert adapter.root_node == root, "root_node is not valid"
 
 
 def test_base_adapter_traverse():
@@ -130,9 +130,9 @@ def test_base_adapter_traverse():
 
     nodes = adapter.traverse()
 
-    assert len(nodes) == 4
-    assert nodes[0] == root
-    assert grandchild in nodes
+    assert len(nodes) == 4, "Nodes must not be empty"
+    assert nodes[0] == root, "Condition must be true"
+    assert grandchild in nodes, "gr is not valid"
 
 
 def test_base_adapter_find_nodes_by_type():
@@ -152,9 +152,9 @@ def test_base_adapter_find_nodes_by_type():
 
     functions = adapter.find_nodes_by_type("function")
 
-    assert len(functions) == 2
-    assert func1 in functions
-    assert func2 in functions
+    assert len(functions) == 2, "Functions must not be empty"
+    assert func1 in functions, "Condition must be true"
+    assert func2 in functions, "Condition must be true"
 
 
 def test_base_adapter_get_stats():
@@ -172,6 +172,6 @@ def test_base_adapter_get_stats():
 
     stats = adapter.get_stats()
 
-    assert stats["module"] == 1
-    assert stats["function"] == 1
-    assert stats["class"] == 1
+    assert stats["module"] == 1, "Condition must be true"
+    assert stats["function"] == 1, "Condition must be true"
+    assert stats["class"] == 1, "Condition must be true"

@@ -60,15 +60,15 @@ class TestCheckpointSaveLoad:
         checkpoint = {"model_state_dict": mock_model.state_dict(), "epoch": 5, "step": 1000}
         torch.save(checkpoint, checkpoint_path)
 
-        assert checkpoint_path.exists()
+        assert checkpoint_path.exists(), "Condition must be true"
 
         # Verify contents
         loaded = torch.load(
             checkpoint_path, weights_only=True
         )  # nosec B614 - weights_only=True ensures safe loading
-        assert "model_state_dict" in loaded
-        assert loaded["epoch"] == 5
-        assert loaded["step"] == 1000
+        assert "model_state_dict" in loaded, "Condition must be true"
+        assert loaded["epoch"] == 5, "Condition must be true"
+        assert loaded["step"] == 1000, "Condition must be true"
 
     def test_load_checkpoint_basic(self, mock_model, temp_checkpoint_dir):
         """Test basic checkpoint loading"""
@@ -105,7 +105,7 @@ class TestRNGState:
         checkpoint = torch.load(
             checkpoint_path, weights_only=True
         )  # nosec B614 - weights_only=True ensures safe loading
-        assert "rng_state" in checkpoint
+        assert "rng_state" in checkpoint, "Condition must be true"
 
     def test_restore_rng_state(self, temp_checkpoint_dir):
         """Test restoring RNG state"""

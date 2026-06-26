@@ -28,7 +28,7 @@ def test_full_read_default_encoding(tmp_path: Path) -> None:
     p.write_text(text, encoding="utf-8")
     out = _call_ingest(p)
     assert isinstance(out, str)
-    assert out == text
+    assert out == text, "out is not valid"
 
 
 @pytest.mark.parametrize(
@@ -45,7 +45,7 @@ def test_read_various_encodings(tmp_path: Path, enc: str, text: str) -> None:
     p = tmp_path / f"sample_{file_enc.replace('-', '')}.txt"
     p.write_text(text, encoding=file_enc)
     out = _call_ingest(p, encoding=enc)
-    assert out == text
+    assert out == text, "out is not valid"
 
 
 def test_chunked_read_and_reassembly(tmp_path: Path) -> None:
@@ -54,15 +54,15 @@ def test_chunked_read_and_reassembly(tmp_path: Path) -> None:
     p.write_text(text, encoding="utf-8")
     chunks = list(_call_ingest(p, chunk_size=4096))
     assert all(isinstance(c, str) for c in chunks)
-    assert "".join(chunks) == text
-    assert all(len(c) <= 4096 for c in chunks)
+    assert "".join(chunks) == text, "Condition must be true"
+    assert all(len(c) <= 4096 for c in chunks), "C must not be empty"
 
 
 def test_accepts_str_path(tmp_path: Path) -> None:
     p = tmp_path / "s.txt"
     p.write_text("OK", encoding="utf-8")
     out = _call_ingest(str(p))
-    assert out == "OK"
+    assert out == "OK", "out is not valid"
 
 
 def test_directory_raises_filenotfound(tmp_path: Path) -> None:

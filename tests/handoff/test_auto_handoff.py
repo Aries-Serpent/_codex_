@@ -26,14 +26,14 @@ class TestHandoffContext:
     def test_init_default(self):
         """Test default initialization."""
         context = HandoffContext()
-        assert context.from_agent == "copilot"
-        assert context.to_agent == "codex"
-        assert context.phase == ""
-        assert context.pr_number is None
-        assert context.session_id is None
-        assert context.completed_tasks == []
-        assert context.pending_tasks == []
-        assert context.deliverables == []
+        assert context.from_agent == "copilot", "from_agent is not valid"
+        assert context.to_agent == "codex", "to_agent is not valid"
+        assert context.phase == "", "phase is not valid"
+        assert context.pr_number is None, "pr_number is not valid"
+        assert context.session_id is None, "session_id is not valid"
+        assert context.completed_tasks == [], "completed_tasks is not valid"
+        assert context.pending_tasks == [], "pending_tasks is not valid"
+        assert context.deliverables == [], "deliverables is not valid"
 
     def test_init_with_values(self):
         """Test initialization with custom values."""
@@ -44,11 +44,11 @@ class TestHandoffContext:
             pr_number=3160,
             session_id="test-session",
         )
-        assert context.from_agent == "user"
-        assert context.to_agent == "copilot"
-        assert context.phase == "Plan 1"
-        assert context.pr_number == 3160
-        assert context.session_id == "test-session"
+        assert context.from_agent == "user", "from_agent is not valid"
+        assert context.to_agent == "copilot", "to_agent is not valid"
+        assert context.phase == "Plan 1", "phase is not valid"
+        assert context.pr_number == 3160, "pr_number is not valid"
+        assert context.session_id == "test-session", "session_id is not valid"
 
     def test_to_dict(self):
         """Test conversion to dictionary."""
@@ -58,12 +58,12 @@ class TestHandoffContext:
 
         result = context.to_dict()
 
-        assert result["from_agent"] == "copilot"
-        assert result["to_agent"] == "codex"
-        assert result["phase"] == "Test Phase"
-        assert len(result["completed_tasks"]) == 2
-        assert len(result["deliverables"]) == 1
-        assert "timestamp" in result
+        assert result["from_agent"] == "copilot", "Result must not be empty"
+        assert result["to_agent"] == "codex", "Result must not be empty"
+        assert result["phase"] == "Test Phase", "Result must not be empty"
+        assert len(result["completed_tasks"]) == 2, "Collection must not be empty"
+        assert len(result["deliverables"]) == 1, "Collection must not be empty"
+        assert "timestamp" in result, "Result must not be empty"
 
 
 class TestAutoHandoff:
@@ -83,12 +83,12 @@ class TestAutoHandoff:
     def test_init_default_hours(self):
         """Test default hours initialization."""
         handoff = AutoHandoff()
-        assert handoff.hours == 24
+        assert handoff.hours == 24, "hours is not valid"
 
     def test_init_custom_hours(self):
         """Test custom hours initialization."""
         handoff = AutoHandoff(hours=48)
-        assert handoff.hours == 48
+        assert handoff.hours == 48, "hours is not valid"
 
     def test_cutoff_time_calculated(self):
         """Test cutoff time is calculated correctly."""
@@ -98,32 +98,32 @@ class TestAutoHandoff:
 
         # Allow 1 second tolerance
         diff = abs((handoff.cutoff_time - expected_cutoff).total_seconds())
-        assert diff < 1
+        assert diff < 1, "diff is not valid"
 
     def test_init_tracking_data_structure(self, handoff):
         """Test tracking data initialization structure."""
         data = handoff._init_tracking_data()
 
-        assert "version" in data
-        assert "created" in data
-        assert "last_updated" in data
-        assert "handoffs" in data
-        assert "metrics" in data
-        assert "settings" in data
-        assert data["handoffs"] == []
-        assert data["metrics"]["total_handoffs"] == 0
+        assert "version" in data, "Data must not be empty"
+        assert "created" in data, "Data must not be empty"
+        assert "last_updated" in data, "Data must not be empty"
+        assert "handoffs" in data, "Data must not be empty"
+        assert "metrics" in data, "Data must not be empty"
+        assert "settings" in data, "Data must not be empty"
+        assert data["handoffs"] == [], "Data must not be empty"
+        assert data["metrics"]["total_handoffs"] == 0, "Data must not be empty"
 
     def test_generate_handoff_id_first(self, handoff):
         """Test first handoff ID generation."""
         data = {"handoffs": []}
         handoff_id = handoff.generate_handoff_id(data)
-        assert handoff_id == "HO-001"
+        assert handoff_id == "HO-001", "handoff_id is not valid"
 
     def test_generate_handoff_id_subsequent(self, handoff):
         """Test subsequent handoff ID generation."""
         data = {"handoffs": [{"id": "HO-001"}, {"id": "HO-002"}]}
         handoff_id = handoff.generate_handoff_id(data)
-        assert handoff_id == "HO-003"
+        assert handoff_id == "HO-003", "handoff_id is not valid"
 
     def test_create_handoff_record(self, handoff):
         """Test handoff record creation."""
@@ -135,22 +135,22 @@ class TestAutoHandoff:
 
         record = handoff.create_handoff_record("HO-001", context)
 
-        assert record["id"] == "HO-001"
-        assert record["from_agent"] == "copilot"
-        assert record["to_agent"] == "codex"
-        assert record["phase"] == "Test Phase"
-        assert record["pr_number"] == 1234
-        assert record["status"] == "pending"
-        assert record["context_summary"]["completed_tasks"] == 1
-        assert record["context_summary"]["deliverables"] == 1
+        assert record["id"] == "HO-001", "rec is not valid"
+        assert record["from_agent"] == "copilot", "rec is not valid"
+        assert record["to_agent"] == "codex", "rec is not valid"
+        assert record["phase"] == "Test Phase", "rec is not valid"
+        assert record["pr_number"] == 1234, "rec is not valid"
+        assert record["status"] == "pending", "rec is not valid"
+        assert record["context_summary"]["completed_tasks"] == 1, "rec is not valid"
+        assert record["context_summary"]["deliverables"] == 1, "rec is not valid"
 
     def test_extract_session_context_no_log(self, handoff):
         """Test context extraction when no action log exists."""
         with patch.object(type(ACTION_LOG_PATH), "exists", return_value=False):
             context = handoff.extract_session_context()
 
-        assert context.files_modified == []
-        assert context.completed_tasks == []
+        assert context.files_modified == [], "files_modified is not valid"
+        assert context.completed_tasks == [], "completed_tasks is not valid"
 
     def test_generate_handoff_comment_structure(self, handoff):
         """Test generated comment has expected structure."""
@@ -160,19 +160,19 @@ class TestAutoHandoff:
 
         comment = handoff.generate_handoff_comment(context, "HO-001")
 
-        assert "## 📤 HANDOFF:" in comment
-        assert "Copilot → Codex" in comment
-        assert "Plan 1 Complete" in comment
-        assert "HO-001" in comment
-        assert "Implemented feature X" in comment
-        assert "feature.py" in comment
+        assert ", "Condition must be true"
+        assert "Copilot → Codex" in comment, "Condition must be true"
+        assert "Plan 1 Complete" in comment, "Condition must be true"
+        assert "HO-001" in comment, "Condition must be true"
+        assert "Implemented feature X" in comment, "Condition must be true"
+        assert "feature.py" in comment, "Condition must be true"
 
     def test_generate_handoff_comment_empty_context(self, handoff):
         """Test generated comment with empty context."""
         context = HandoffContext()
         comment = handoff.generate_handoff_comment(context, "HO-001")
 
-        assert "No deliverables" in comment or "No tasks recorded" in comment
+        assert "No deliverables" in comment or "No tasks recorded" in comment, "Condition must be true"
 
     def test_load_patterns_no_file(self, handoff):
         """Test pattern loading when file doesn't exist."""
@@ -180,15 +180,15 @@ class TestAutoHandoff:
             mock_path.exists.return_value = False
             patterns = handoff.load_patterns()
 
-        assert patterns == []
+        assert patterns == [], "patterns is not valid"
 
     def test_load_tracking_data_no_file(self, handoff, temp_dir):
         """Test tracking data loading when file doesn't exist."""
         with patch("auto_handoff.TRACKING_FILE", temp_dir / "tracking.json"):
             data = handoff.load_tracking_data()
 
-        assert "handoffs" in data
-        assert "metrics" in data
+        assert "handoffs" in data, "Data must not be empty"
+        assert "metrics" in data, "Data must not be empty"
 
     def test_save_tracking_data(self, handoff, temp_dir):
         """Test saving tracking data."""
@@ -198,10 +198,10 @@ class TestAutoHandoff:
             data = {"handoffs": [], "metrics": {}}
             handoff.save_tracking_data(data)
 
-            assert tracking_file.exists()
+            assert tracking_file.exists(), "Condition must be true"
             with open(tracking_file) as f:
                 saved = json.load(f)
-            assert "last_updated" in saved
+            assert "last_updated" in saved, "Condition must be true"
 
     def test_update_handoff_status_success(self, handoff, temp_dir):
         """Test successful status update."""
@@ -225,7 +225,7 @@ class TestAutoHandoff:
             handoff.tracking_data = initial_data
             result = handoff.update_handoff_status("HO-001", "complete")
 
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_update_handoff_status_not_found(self, handoff):
         """Test status update for non-existent handoff."""
@@ -234,14 +234,14 @@ class TestAutoHandoff:
         ):
             result = handoff.update_handoff_status("HO-999", "complete")
 
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_list_handoffs_empty(self, handoff):
         """Test listing handoffs when empty."""
         with patch.object(handoff, "load_tracking_data", return_value={"handoffs": []}):
             result = handoff.list_handoffs()
 
-        assert result == []
+        assert result == [], "Result must not be empty"
 
     def test_list_handoffs_with_filter(self, handoff):
         """Test listing handoffs with status filter."""
@@ -256,8 +256,8 @@ class TestAutoHandoff:
         with patch.object(handoff, "load_tracking_data", return_value=mock_data):
             result = handoff.list_handoffs(status_filter="pending")
 
-        assert len(result) == 2
-        assert all(h["status"] == "pending" for h in result)
+        assert len(result) == 2, "Result must not be empty"
+        assert all(h["status"] == "pending" for h in result), "Result must not be empty"
 
     def test_list_handoffs_with_limit(self, handoff):
         """Test listing handoffs with limit."""
@@ -271,7 +271,7 @@ class TestAutoHandoff:
         with patch.object(handoff, "load_tracking_data", return_value=mock_data):
             result = handoff.list_handoffs(limit=5)
 
-        assert len(result) == 5
+        assert len(result) == 5, "Result must not be empty"
 
     def test_get_handoff_status_found(self, handoff):
         """Test getting status of existing handoff."""
@@ -280,16 +280,16 @@ class TestAutoHandoff:
         with patch.object(handoff, "load_tracking_data", return_value=mock_data):
             result = handoff.get_handoff_status("HO-001")
 
-        assert result is not None
-        assert result["id"] == "HO-001"
-        assert result["status"] == "complete"
+        assert result is not None, "result must be initialized"
+        assert result["id"] == "HO-001", "Result must not be empty"
+        assert result["status"] == "complete", "Result must not be empty"
 
     def test_get_handoff_status_not_found(self, handoff):
         """Test getting status of non-existent handoff."""
         with patch.object(handoff, "load_tracking_data", return_value={"handoffs": []}):
             result = handoff.get_handoff_status("HO-999")
 
-        assert result is None
+        assert result is None, "Result must not be empty"
 
 
 class TestAutoHandoffIntegration:
@@ -328,10 +328,10 @@ class TestAutoHandoffIntegration:
                 output_path=output_file,
             )
 
-        assert handoff_id == "HO-001"
-        assert "Test Phase" in comment
-        assert output_file.exists()
-        assert tracking_file.exists()
+        assert handoff_id == "HO-001", "handoff_id is not valid"
+        assert "Test Phase" in comment, "Condition must be true"
+        assert output_file.exists(), "Condition must be true"
+        assert tracking_file.exists(), "Condition must be true"
 
     def test_full_handoff_workflow(self, temp_env):
         """Test complete handoff workflow."""
@@ -346,7 +346,7 @@ class TestAutoHandoffIntegration:
 
             # Create first handoff
             handoff_id1, _ = handoff.execute_handoff(phase="Phase 1")
-            assert handoff_id1 == "HO-001"
+            assert handoff_id1 == "HO-001", "handoff_id1 is not valid"
 
             # Update status
             handoff.update_handoff_status(handoff_id1, "complete")
@@ -354,8 +354,8 @@ class TestAutoHandoffIntegration:
             # Reload and verify
             handoff2 = AutoHandoff()
             status = handoff2.get_handoff_status(handoff_id1)
-            assert status["status"] == "complete"
+            assert status["status"] == "complete", "Condition must be true"
 
             # Create second handoff
             handoff_id2, _ = handoff2.execute_handoff(phase="Phase 2")
-            assert handoff_id2 == "HO-002"
+            assert handoff_id2 == "HO-002", "handoff_id2 is not valid"

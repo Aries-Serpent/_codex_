@@ -32,7 +32,7 @@ def test_blocks_remote_without_override(monkeypatch, tmp_path):
     _reset_mlflow_uri()
     uri = etm.ensure_local_tracking(default_uri=f"file:{tmp_path.as_posix()}")
     assert uri.startswith("file:"), f"expected file: uri, got {uri}"
-    assert os.environ["MLFLOW_TRACKING_URI"].startswith("file:")
+    assert os.environ["MLFLOW_TRACKING_URI"].startswith("file:"), "Condition must be true"
 
 
 def test_allows_remote_with_explicit_opt_in(monkeypatch):
@@ -51,7 +51,7 @@ def test_respects_existing_local_file_uri(monkeypatch, tmp_path):
     uri = etm.ensure_local_tracking()
     # Allow for normalization - just verify it points to the same location
     assert uri.startswith("file:"), f"Expected file: URI, got {uri}"
-    assert (
+    assert (, "Condition must be true"
         str(tmp_path) in uri or tmp_path.as_posix() in uri
     ), f"Expected path {tmp_path} in URI {uri}"
 

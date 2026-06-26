@@ -33,7 +33,7 @@ class TestMemoryEntryAdvanced:
         for i in range(10):
             e = MemoryEntry(f"id{i}", f"cat{i}", f"content{i}", {})
             entries.append(e)
-        assert len(entries) == 10
+        assert len(entries) == 10, "Entries must not be empty"
 
     def test_memory_entry_large_context_dict(self):
         """MemoryEntry with large nested context"""
@@ -41,39 +41,39 @@ class TestMemoryEntryAdvanced:
             "level1": {"level2": {"level3": {"data": list(range(100)), "nested": {"a": 1, "b": 2}}}}
         }
         entry = MemoryEntry("id", "cat", "content", ctx)
-        assert len(str(entry.context)) > 100
+        assert len(str(entry.context)) > 100, "Collection must not be empty"
 
     def test_memory_entry_unicode_content(self):
         """MemoryEntry with unicode content"""
         entry = MemoryEntry("id", "cat", "🚀 Unicode test ñ 中文", {})
-        assert "🚀" in entry.content
+        assert "🚀" in entry.content, "Content must not be empty"
 
     def test_memory_entry_very_long_content(self):
         """MemoryEntry with very long content"""
         long_content = "x" * 10000
         entry = MemoryEntry("id", "cat", long_content, {})
-        assert len(entry.content) == 10000
+        assert len(entry.content) == 10000, "Collection must not be empty"
 
     def test_memory_entry_many_tags(self):
         """MemoryEntry with many tags"""
         tags = [f"tag{i}" for i in range(50)]
         entry = MemoryEntry("id", "cat", "content", {}, tags=tags)
-        assert len(entry.tags) == 50
+        assert len(entry.tags) == 50, "Collection must not be empty"
 
     def test_memory_entry_special_characters_in_fields(self):
         """MemoryEntry with special characters"""
         entry = MemoryEntry("id@#$%", "cat/\\", "content!@#$%^&*()", {"key": "value\n\t"})
-        assert "@" in entry.memory_id
+        assert "@" in entry.memory_id, "Condition must be true"
 
     def test_memory_entry_numeric_string_ids(self):
         """MemoryEntry with numeric string IDs"""
         entry = MemoryEntry("12345", "67890", "content", {})
-        assert entry.memory_id == "12345"
+        assert entry.memory_id == "12345", "memory_id is not valid"
 
     def test_memory_entry_timestamp_format(self):
         """MemoryEntry created_at timestamp is valid ISO format"""
         entry = MemoryEntry("id", "cat", "content", {})
-        assert "T" in entry.created_at or ":" in entry.created_at
+        assert "T" in entry.created_at or ":" in entry.created_at, "Condition must be true"
 
 
 class TestContextFrameAdvanced:
@@ -83,48 +83,48 @@ class TestContextFrameAdvanced:
         """ContextFrame with many active memories"""
         mems = [f"mem{i}" for i in range(100)]
         frame = ContextFrame("f1", "task", datetime.now().isoformat(), active_memories=mems)
-        assert len(frame.active_memories) == 100
+        assert len(frame.active_memories) == 100, "Collection must not be empty"
 
     def test_context_frame_large_decisions_list(self):
         """ContextFrame with many decisions"""
         decs = [{"decision": f"d{i}", "confidence": 0.5} for i in range(50)]
         frame = ContextFrame("f1", "task", datetime.now().isoformat(), decisions_made=decs)
-        assert len(frame.decisions_made) == 50
+        assert len(frame.decisions_made) == 50, "Collection must not be empty"
 
     def test_context_frame_many_files_modified(self):
         """ContextFrame with many modified files"""
         files = [f"file{i}.py" for i in range(100)]
         frame = ContextFrame("f1", "task", datetime.now().isoformat(), files_modified=files)
-        assert len(frame.files_modified) == 100
+        assert len(frame.files_modified) == 100, "Collection must not be empty"
 
     def test_context_frame_token_accumulation(self):
         """ContextFrame token usage accumulation"""
         frame = ContextFrame("f1", "task", datetime.now().isoformat())
         for i in range(10):
             frame.tokens_used += 1000
-        assert frame.tokens_used == 10000
+        assert frame.tokens_used == 10000, "tokens_used is not valid"
 
     def test_context_frame_error_tracking(self):
         """ContextFrame error accumulation"""
         frame = ContextFrame("f1", "task", datetime.now().isoformat())
         for i in range(5):
             frame.errors_encountered += 1
-        assert frame.errors_encountered == 5
+        assert frame.errors_encountered == 5, "Error should be raised or set"
 
     def test_context_frame_actions_taken_increment(self):
         """ContextFrame actions_taken increment"""
         frame = ContextFrame("f1", "task", datetime.now().isoformat())
         for i in range(20):
             frame.actions_taken += 1
-        assert frame.actions_taken == 20
+        assert frame.actions_taken == 20, "actions_taken is not valid"
 
     def test_context_frame_repository_and_branch_combo(self):
         """ContextFrame with repo and branch set"""
         frame = ContextFrame(
             "f1", "task", datetime.now().isoformat(), repository="owner/repo", branch="feature/test"
         )
-        assert "owner" in frame.repository
-        assert "feature" in frame.branch
+        assert "owner" in frame.repository, "Condition must be true"
+        assert "feature" in frame.branch, "Condition must be true"
 
     def test_context_frame_lessons_learned_accumulation(self):
         """ContextFrame accumulate lessons"""
@@ -132,7 +132,7 @@ class TestContextFrameAdvanced:
         lessons = ["lesson1", "lesson2", "lesson3"]
         for l in lessons:
             frame.lessons_learned.append(l)
-        assert len(frame.lessons_learned) == 3
+        assert len(frame.lessons_learned) == 3, "Collection must not be empty"
 
 
 class TestForceVectorAdvanced:
@@ -141,12 +141,12 @@ class TestForceVectorAdvanced:
     def test_force_vector_with_name(self):
         """ForceVector with custom name"""
         fv = ForceVector(name="gravity", x=0, y=-9.8, z=0)
-        assert fv.name == "gravity"
+        assert fv.name == "gravity", "name is not valid"
 
     def test_force_vector_with_magnitude(self):
         """ForceVector with explicit magnitude"""
         fv = ForceVector(magnitude=10.0, x=0, y=0, z=0)
-        assert fv.magnitude == 10.0
+        assert fv.magnitude == 10.0, "magnitude is not valid"
 
     def test_force_vector_with_direction(self):
         """ForceVector with direction angle"""
@@ -156,13 +156,13 @@ class TestForceVectorAdvanced:
     def test_force_vector_with_priority(self):
         """ForceVector with priority weighting"""
         fv = ForceVector(priority=2.5, x=1, y=2, z=3)
-        assert fv.priority == 2.5
+        assert fv.priority == 2.5, "priority is not valid"
 
     def test_force_vector_default_values(self):
         """ForceVector with all defaults"""
         fv = ForceVector()
-        assert fv.magnitude == 0.0
-        assert fv.x == 0.0
+        assert fv.magnitude == 0.0, "magnitude is not valid"
+        assert fv.x == 0.0, "x is not valid"
 
     def test_force_vector_pythagorean_triple(self):
         """ForceVector 3-4-5 triangle magnitude"""
@@ -172,22 +172,22 @@ class TestForceVectorAdvanced:
     def test_force_vector_large_values(self):
         """ForceVector with very large component values"""
         fv = ForceVector(x=1e6, y=1e6, z=1e6)
-        assert fv.x == 1e6
+        assert fv.x == 1e6, "x is not valid"
 
     def test_force_vector_negative_values(self):
         """ForceVector with negative component values"""
         fv = ForceVector(x=-100, y=-200, z=-300)
-        assert fv.x == -100
+        assert fv.x == -100, "x is not valid"
 
     def test_force_vector_direction_as_list(self):
         """ForceVector direction as list"""
         fv = ForceVector(direction=[1.0, 0.0, 0.0], x=1, y=0, z=0)
-        assert fv.direction is not None
+        assert fv.direction is not None, "direction must be initialized"
 
     def test_force_vector_multiple_instances(self):
         """Multiple ForceVector instances"""
         vectors = [ForceVector(x=i, y=i * 2, z=i * 3) for i in range(10)]
-        assert len(vectors) == 10
+        assert len(vectors) == 10, "Vectors must not be empty"
 
 
 class TestActionPathAdvanced:
@@ -196,83 +196,83 @@ class TestActionPathAdvanced:
     def test_action_path_analyze_type(self):
         """ActionPath with ANALYZE action type"""
         ap = ActionPath(action_type=ActionType.ANALYZE)
-        assert ap.action_type == ActionType.ANALYZE
+        assert ap.action_type == ActionType.ANALYZE, "action_type is not valid"
 
     def test_action_path_test_type(self):
         """ActionPath with TEST action type"""
         ap = ActionPath(action_type=ActionType.TEST)
-        assert ap.action_type == ActionType.TEST
+        assert ap.action_type == ActionType.TEST, "action_type is not valid"
 
     def test_action_path_implement_type(self):
         """ActionPath with IMPLEMENT action type"""
         ap = ActionPath(action_type=ActionType.IMPLEMENT)
-        assert ap.action_type == ActionType.IMPLEMENT
+        assert ap.action_type == ActionType.IMPLEMENT, "action_type is not valid"
 
     def test_action_path_refactor_type(self):
         """ActionPath with REFACTOR action type"""
         ap = ActionPath(action_type=ActionType.REFACTOR)
-        assert ap.action_type == ActionType.REFACTOR
+        assert ap.action_type == ActionType.REFACTOR, "action_type is not valid"
 
     def test_action_path_deploy_type(self):
         """ActionPath with DEPLOY action type"""
         ap = ActionPath(action_type=ActionType.DEPLOY)
-        assert ap.action_type == ActionType.DEPLOY
+        assert ap.action_type == ActionType.DEPLOY, "action_type is not valid"
 
     def test_action_path_with_description(self):
         """ActionPath with description"""
         ap = ActionPath(action_type=ActionType.ANALYZE, description="Analyze code structure")
-        assert "code" in ap.description or ap.description == "Analyze code structure"
+        assert "code" in ap.description or ap.description == "Analyze code structure", "description is not valid"
 
     def test_action_path_potential_energy(self):
         """ActionPath potential_energy property"""
         ap = ActionPath(potential_energy=50.0)
-        assert ap.potential_energy == 50.0
+        assert ap.potential_energy == 50.0, "potential_energy is not valid"
 
     def test_action_path_kinetic_energy(self):
         """ActionPath kinetic_energy property"""
         ap = ActionPath(kinetic_energy=30.0)
-        assert ap.kinetic_energy == 30.0
+        assert ap.kinetic_energy == 30.0, "kinetic_energy is not valid"
 
     def test_action_path_friction_property(self):
         """ActionPath friction property"""
         ap = ActionPath(friction=0.1)
-        assert ap.friction == 0.1
+        assert ap.friction == 0.1, "friction is not valid"
 
     def test_action_path_momentum_property(self):
         """ActionPath momentum property"""
         ap = ActionPath(momentum=2.5)
-        assert ap.momentum == 2.5
+        assert ap.momentum == 2.5, "momentum is not valid"
 
     def test_action_path_confidence_property(self):
         """ActionPath confidence property"""
         ap = ActionPath(confidence=0.85)
-        assert ap.confidence == 0.85
+        assert ap.confidence == 0.85, "confidence is not valid"
 
     def test_action_path_risk_property(self):
         """ActionPath risk property"""
         ap = ActionPath(risk=0.2)
-        assert ap.risk == 0.2
+        assert ap.risk == 0.2, "risk is not valid"
 
     def test_action_path_impact_property(self):
         """ActionPath impact property"""
         ap = ActionPath(impact=0.7)
-        assert ap.impact == 0.7
+        assert ap.impact == 0.7, "impact is not valid"
 
     def test_action_path_urgency_property(self):
         """ActionPath urgency property"""
         ap = ActionPath(urgency=0.5)
-        assert ap.urgency == 0.5
+        assert ap.urgency == 0.5, "urgency is not valid"
 
     def test_action_path_energy_property(self):
         """ActionPath energy property"""
         ap = ActionPath(energy=75.0)
-        assert ap.energy == 75.0
+        assert ap.energy == 75.0, "energy is not valid"
 
     def test_action_path_trajectory_list(self):
         """ActionPath trajectory list"""
         traj = [(0, 0), (1, 1), (2, 2)]
         ap = ActionPath(trajectory=traj)
-        assert len(ap.trajectory) == 3
+        assert len(ap.trajectory) == 3, "Collection must not be empty"
 
     def test_action_path_all_physics_properties(self):
         """ActionPath with all physics properties set"""
@@ -288,8 +288,8 @@ class TestActionPathAdvanced:
             urgency=0.6,
             energy=60.0,
         )
-        assert ap.potential_energy == 40.0
-        assert ap.kinetic_energy == 20.0
+        assert ap.potential_energy == 40.0, "potential_energy is not valid"
+        assert ap.kinetic_energy == 20.0, "kinetic_energy is not valid"
 
 
 class TestPatternLibraryAdvanced:
@@ -298,7 +298,7 @@ class TestPatternLibraryAdvanced:
     def test_pattern_library_creation(self):
         """PatternLibrary can be created"""
         lib = PatternLibrary()
-        assert lib is not None
+        assert lib is not None, "lib must be initialized"
 
     def test_pattern_library_add_complex_pattern(self):
         """PatternLibrary add_pattern with full signature"""
@@ -376,7 +376,7 @@ class TestIntegrationScenarios:
         entry = MemoryEntry(
             "action_mem", "action", f"ActionPath: {ap.action_type}", {"type": "action_path"}
         )
-        assert entry.content is not None
+        assert entry.content is not None, "content must be initialized"
 
     def test_context_frame_with_force_vectors(self):
         """ContextFrame tracking force vectors"""
@@ -386,7 +386,7 @@ class TestIntegrationScenarios:
         frame.decisions_made.append(
             {"force1": f"{fv1.x},{fv1.y},{fv1.z}", "force2": f"{fv2.x},{fv2.y},{fv2.z}"}
         )
-        assert len(frame.decisions_made) == 1
+        assert len(frame.decisions_made) == 1, "Collection must not be empty"
 
     def test_pattern_library_action_path_matching(self):
         """PatternLibrary patterns for ActionPath types"""
@@ -416,7 +416,7 @@ class TestIntegrationScenarios:
         # Create frame with active memories
         frame = ContextFrame("frame1", "task", now, active_memories=entries)
 
-        assert len(frame.active_memories) == 3
+        assert len(frame.active_memories) == 3, "Collection must not be empty"
 
 
 class TestBoundaryAndErrorConditions:
@@ -425,24 +425,24 @@ class TestBoundaryAndErrorConditions:
     def test_memory_entry_empty_category(self):
         """MemoryEntry with empty category is allowed"""
         entry = MemoryEntry("id", "", "content", {})
-        assert entry.category == ""
+        assert entry.category == "", "category is not valid"
 
     def test_context_frame_empty_task_description(self):
         """ContextFrame with empty task description"""
         frame = ContextFrame("f1", "", datetime.now().isoformat())
-        assert frame.task_description == ""
+        assert frame.task_description == "", "task_description is not valid"
 
     def test_force_vector_fractional_components(self):
         """ForceVector with fractional components"""
         fv = ForceVector(x=1.5, y=2.7, z=3.14159)
-        assert abs(fv.x - 1.5) < 0.001
+        assert abs(fv.x - 1.5) < 0.001, "Condition must be true"
 
     def test_action_path_zero_all_energy_metrics(self):
         """ActionPath with all energy metrics at zero"""
         ap = ActionPath(
             potential_energy=0.0, kinetic_energy=0.0, friction=0.0, momentum=0.0, energy=0.0
         )
-        assert ap.potential_energy == 0.0
+        assert ap.potential_energy == 0.0, "potential_energy is not valid"
 
     def test_action_path_maximum_all_metrics(self):
         """ActionPath with maximum metric values"""
@@ -457,7 +457,7 @@ class TestBoundaryAndErrorConditions:
             urgency=1.0,
             energy=100.0,
         )
-        assert ap.potential_energy == 100.0
+        assert ap.potential_energy == 100.0, "potential_energy is not valid"
 
 
 if __name__ == "__main__":

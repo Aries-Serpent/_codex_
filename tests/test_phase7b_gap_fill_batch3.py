@@ -37,7 +37,7 @@ class TestTokenCache:
         """Test importing token_cache module."""
         from codex_ml.registry.token_cache import TokenCache
 
-        assert TokenCache is not None
+        assert TokenCache is not None, "TokenCache must be initialized"
 
     def test_token_cache_init(self):
         """Test TokenCache initialization."""
@@ -45,7 +45,7 @@ class TestTokenCache:
 
         try:
             cache = TokenCache()
-            assert cache is not None
+            assert cache is not None, "cache must be initialized"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -55,7 +55,7 @@ class TestTokenCache:
 
         try:
             cache = TokenCache(max_size=1000)
-            assert cache is not None
+            assert cache is not None, "cache must be initialized"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -67,7 +67,7 @@ class TestTokenCache:
             cache = TokenCache()
             cache.set("token1", "value1")
             result = cache.get("token1")
-            assert result == "value1"
+            assert result == "value1", "Result must not be empty"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -80,7 +80,7 @@ class TestTokenCache:
             for i in range(10):
                 cache.set(f"token_{i}", f"value_{i}")
             result = cache.get("token_5")
-            assert result == "value_5"
+            assert result == "value_5", "Result must not be empty"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -93,7 +93,7 @@ class TestTokenCache:
             cache.set("token", "value")
             cache.delete("token")
             result = cache.get("token")
-            assert result is None
+            assert result is None, "Result must not be empty"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -107,7 +107,7 @@ class TestTokenCache:
                 cache.set(f"token_{i}", f"value_{i}")
             cache.clear()
             result = cache.get("token_0")
-            assert result is None
+            assert result is None, "Result must not be empty"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -120,7 +120,7 @@ class TestTokenCache:
             cache.set("token1", "value1")
             cache.set("token2", "value2")
             size = cache.size()
-            assert size >= 2
+            assert size >= 2, "size must be greater than zero"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -132,7 +132,7 @@ class TestTokenCache:
             cache = TokenCache()
             cache.set("token", "value")
             result = cache.contains("token")
-            assert result is True
+            assert result is True, "Result must not be empty"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -143,7 +143,7 @@ class TestTokenCache:
         try:
             cache = TokenCache()
             result = cache.get("nonexistent")
-            assert result is None
+            assert result is None, "Result must not be empty"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -157,7 +157,7 @@ class TestTokenCache:
                 cache.set(f"token_{i}", f"value_{i}")
             # First tokens might be evicted
             result = cache.size()
-            assert result <= 3
+            assert result <= 3, "Result must not be empty"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -174,7 +174,7 @@ class TestTokenizerHF:
         """Test importing tokenizer_hf module."""
         from codex_ml.interfaces.tokenizer_hf import HFTokenizer
 
-        assert HFTokenizer is not None
+        assert HFTokenizer is not None, "HFTokenizer must be initialized"
 
     def test_tokenizer_hf_init(self):
         """Test HFTokenizer initialization."""
@@ -182,7 +182,7 @@ class TestTokenizerHF:
 
         try:
             tokenizer = HFTokenizer()
-            assert tokenizer is not None
+            assert tokenizer is not None, "tokenizer must be initialized"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -192,7 +192,7 @@ class TestTokenizerHF:
 
         try:
             tokenizer = HFTokenizer(model_name="gpt2")
-            assert tokenizer is not None
+            assert tokenizer is not None, "tokenizer must be initialized"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -228,7 +228,7 @@ class TestTokenizerHF:
             text = "Hello world test"
             tokens = tokenizer.encode(text)
             decoded = tokenizer.decode(tokens)
-            assert decoded is not None
+            assert decoded is not None, "decoded must be initialized"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -239,7 +239,7 @@ class TestTokenizerHF:
         try:
             tokenizer = HFTokenizer()
             size = tokenizer.vocab_size()
-            assert size > 0
+            assert size > 0, "size must be greater than zero"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -261,7 +261,7 @@ class TestTokenizerHF:
         try:
             tokenizer = HFTokenizer()
             tokenizer.add_tokens(["<CUSTOM>", "<TOKEN>"])
-            assert True
+            assert True, "True is not valid"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -290,7 +290,7 @@ class TestDataloaderUtils:
         """Test importing dataloader_utils module."""
         from codex_ml.training.dataloader_utils import create_dataloader
 
-        assert create_dataloader is not None
+        assert create_dataloader is not None, "create_dataloader must be initialized"
 
     def test_create_dataloader_basic(self):
         """Test creating basic dataloader."""
@@ -299,7 +299,7 @@ class TestDataloaderUtils:
         try:
             data = [1, 2, 3, 4, 5]
             loader = create_dataloader(data, batch_size=2)
-            assert loader is not None
+            assert loader is not None, "loader must be initialized"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -311,7 +311,7 @@ class TestDataloaderUtils:
             data = list(range(100))
             loader = create_dataloader(data, batch_size=32)
             batches = list(loader)
-            assert len(batches) > 0
+            assert len(batches) > 0, "Batches must not be empty"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -322,7 +322,7 @@ class TestDataloaderUtils:
         try:
             data = list(range(50))
             loader = create_dataloader(data, batch_size=10, shuffle=True)
-            assert loader is not None
+            assert loader is not None, "loader must be initialized"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -333,7 +333,7 @@ class TestDataloaderUtils:
         try:
             data = list(range(100))
             loader = create_dataloader(data, batch_size=16, num_workers=2)
-            assert loader is not None
+            assert loader is not None, "loader must be initialized"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -347,7 +347,7 @@ class TestDataloaderUtils:
             count = 0
             for batch in loader:
                 count += 1
-            assert count > 0
+            assert count > 0, "count must be positive"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -362,7 +362,7 @@ class TestDataloaderUtils:
                 return sum(batch)
 
             loader = create_dataloader(data, batch_size=2, collate_fn=custom_collate)
-            assert loader is not None
+            assert loader is not None, "loader must be initialized"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -373,7 +373,7 @@ class TestDataloaderUtils:
         try:
             data = list(range(100))
             loader = create_dataloader(data, batch_size=10)
-            assert loader is not None
+            assert loader is not None, "loader must be initialized"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -384,7 +384,7 @@ class TestDataloaderUtils:
         try:
             data = list(range(50))
             loader = create_dataloader(data, batch_size=10, pin_memory=True)
-            assert loader is not None
+            assert loader is not None, "loader must be initialized"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -396,7 +396,7 @@ class TestDataloaderUtils:
             data = list(range(25))  # Not divisible by 10
             loader = create_dataloader(data, batch_size=10, drop_last=True)
             batches = list(loader)
-            assert len(batches) > 0
+            assert len(batches) > 0, "Batches must not be empty"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -413,7 +413,7 @@ class TestManifest:
         """Test importing manifest module."""
         from data.manifest import Manifest
 
-        assert Manifest is not None
+        assert Manifest is not None, "Manifest must be initialized"
 
     def test_manifest_init(self):
         """Test Manifest initialization."""
@@ -421,7 +421,7 @@ class TestManifest:
 
         try:
             manifest = Manifest()
-            assert manifest is not None
+            assert manifest is not None, "manifest must be initialized"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -432,7 +432,7 @@ class TestManifest:
         try:
             manifest = Manifest()
             manifest.add_file("test.txt", size=1024)
-            assert True
+            assert True, "True is not valid"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -444,7 +444,7 @@ class TestManifest:
             manifest = Manifest()
             for i in range(10):
                 manifest.add_file(f"file_{i}.txt", size=i * 100)
-            assert True
+            assert True, "True is not valid"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -456,7 +456,7 @@ class TestManifest:
             manifest = Manifest()
             manifest.add_file("test.txt", size=1024)
             info = manifest.get_file("test.txt")
-            assert info is not None
+            assert info is not None, "info must be initialized"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -481,7 +481,7 @@ class TestManifest:
             manifest = Manifest()
             manifest.add_file("test.txt", size=1024)
             manifest.remove_file("test.txt")
-            assert True
+            assert True, "True is not valid"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -494,7 +494,7 @@ class TestManifest:
             manifest.add_file("file1.txt", size=100)
             manifest.add_file("file2.txt", size=200)
             total = manifest.total_size()
-            assert total >= 300
+            assert total >= 300, "total must be greater than zero"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -517,7 +517,7 @@ class TestManifest:
         try:
             manifest_dict = {"files": [{"name": "test.txt", "size": 1024}]}
             manifest = Manifest.from_dict(manifest_dict)
-            assert manifest is not None
+            assert manifest is not None, "manifest must be initialized"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -534,7 +534,7 @@ class TestRegistryBase:
         """Test importing registry base module."""
         from codex_ml.registry.base import BaseRegistry
 
-        assert BaseRegistry is not None
+        assert BaseRegistry is not None, "BaseRegistry must be initialized"
 
     def test_registry_base_init(self):
         """Test BaseRegistry initialization."""
@@ -542,7 +542,7 @@ class TestRegistryBase:
 
         try:
             registry = BaseRegistry()
-            assert registry is not None
+            assert registry is not None, "registry must be initialized"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -553,7 +553,7 @@ class TestRegistryBase:
         try:
             registry = BaseRegistry()
             registry.register("item1", {"data": "value"})
-            assert True
+            assert True, "True is not valid"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -565,7 +565,7 @@ class TestRegistryBase:
             registry = BaseRegistry()
             registry.register("item1", {"data": "value"})
             item = registry.get("item1")
-            assert item is not None
+            assert item is not None, "item must be initialized"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -590,7 +590,7 @@ class TestRegistryBase:
             registry = BaseRegistry()
             registry.register("item1", "value1")
             registry.remove("item1")
-            assert True
+            assert True, "True is not valid"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -604,7 +604,7 @@ class TestRegistryBase:
                 registry.register(f"item_{i}", f"value_{i}")
             registry.clear()
             items = registry.list()
-            assert len(items) == 0
+            assert len(items) == 0, "Items must not be empty"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -616,7 +616,7 @@ class TestRegistryBase:
             registry = BaseRegistry()
             registry.register("item1", "value1")
             result = registry.contains("item1")
-            assert result is True
+            assert result is True, "Result must not be empty"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -629,7 +629,7 @@ class TestRegistryBase:
             for i in range(3):
                 registry.register(f"item_{i}", f"value_{i}")
             size = registry.size()
-            assert size == 3
+            assert size == 3, "size is not valid"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -642,7 +642,7 @@ class TestRegistryBase:
             registry.register("item1", "value1")
             registry.register("item1", "value2")  # Update
             item = registry.get("item1")
-            assert item == "value2"
+            assert item == "value2", "Value must be initialized"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -659,7 +659,7 @@ class TestTextMetrics:
         """Test importing text metrics module."""
         from codex_ml.metrics.text import calculate_perplexity
 
-        assert calculate_perplexity is not None
+        assert calculate_perplexity is not None, "calculate_perplexity must be initialized"
 
     def test_calculate_perplexity_basic(self):
         """Test basic perplexity calculation."""
@@ -667,7 +667,7 @@ class TestTextMetrics:
 
         try:
             result = calculate_perplexity(logits=[1.0, 2.0, 3.0])
-            assert result is not None
+            assert result is not None, "result must be initialized"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -677,7 +677,7 @@ class TestTextMetrics:
 
         try:
             result = calculate_perplexity(logits=[0.0])
-            assert result is not None
+            assert result is not None, "result must be initialized"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -689,7 +689,7 @@ class TestTextMetrics:
             reference = "the quick brown fox"
             hypothesis = "the quick brown fox"
             score = calculate_bleu(reference, hypothesis)
-            assert score is not None
+            assert score is not None, "score must be initialized"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -701,7 +701,7 @@ class TestTextMetrics:
             reference = "the quick brown fox jumps"
             hypothesis = "quick brown fox"
             score = calculate_rouge(reference, hypothesis)
-            assert score is not None
+            assert score is not None, "score must be initialized"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -713,7 +713,7 @@ class TestTextMetrics:
             text1 = "hello world"
             text2 = "hello world"
             score = calculate_similarity(text1, text2)
-            assert 0 <= score <= 1 or score is not None
+            assert 0 <= score <= 1 or score is not None, "0 must be initialized"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -725,7 +725,7 @@ class TestTextMetrics:
             pred_tokens = ["the", "cat", "sat"]
             true_tokens = ["the", "cat", "sat"]
             accuracy = calculate_token_accuracy(pred_tokens, true_tokens)
-            assert accuracy is not None
+            assert accuracy is not None, "accuracy must be initialized"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -737,7 +737,7 @@ class TestTextMetrics:
             text1 = "hello world"
             text2 = "hello"
             ratio = calculate_length_ratio(text1, text2)
-            assert ratio is not None
+            assert ratio is not None, "ratio must be initialized"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -749,7 +749,7 @@ class TestTextMetrics:
             pred = "the quick brown fox"
             true = "the quick brown fox"
             f1 = calculate_f1(pred, true)
-            assert f1 is not None
+            assert f1 is not None, "f1 must be initialized"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -759,7 +759,7 @@ class TestTextMetrics:
 
         try:
             score = calculate_bleu("", "")
-            assert score is not None or score == 0.0
+            assert score is not None or score == 0.0, "score must be initialized"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -791,7 +791,7 @@ class TestCoverageCompletionCases:
             for i in range(20):
                 cache.set(f"token_{i}", f"value_{i}")
                 cache.get(f"token_{(i-1) % 20}")
-            assert True
+            assert True, "True is not valid"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -803,7 +803,7 @@ class TestCoverageCompletionCases:
             tokenizer = HFTokenizer()
             long_text = " ".join(["word"] * 1000)
             tokens = tokenizer.encode(long_text)
-            assert len(tokens) > 0
+            assert len(tokens) > 0, "Tokens must not be empty"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -814,7 +814,7 @@ class TestCoverageCompletionCases:
         try:
             loader = create_dataloader([], batch_size=10)
             batches = list(loader)
-            assert len(batches) == 0
+            assert len(batches) == 0, "Batches must not be empty"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -831,7 +831,7 @@ class TestCoverageCompletionCases:
             ]
             for fname in filenames:
                 manifest.add_file(fname, size=100)
-            assert True
+            assert True, "True is not valid"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -844,7 +844,7 @@ class TestCoverageCompletionCases:
             registry.register("item", "value1")
             registry.register("item", "value2")  # Overwrite
             item = registry.get("item")
-            assert item is not None
+            assert item is not None, "item must be initialized"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -856,7 +856,7 @@ class TestCoverageCompletionCases:
             text1 = "Héllo wörld 你好"
             text2 = "Héllo wörld 你好"
             score = calculate_similarity(text1, text2)
-            assert score is not None
+            assert score is not None, "score must be initialized"
         except (AttributeError, OSError, RuntimeError):
             pass
 

@@ -18,4 +18,4 @@ def test_ensure_torch_available_raises(monkeypatch):
 def test_torch_supports_weights_only(monkeypatch):
     mock_torch = types.SimpleNamespace(load=lambda filename=None, weights_only=True: None)
     monkeypatch.setattr(checkpoint, "_torch", mock_torch)
-    assert checkpoint._torch_supports_weights_only() is True
+    assert checkpoint._torch_supports_weights_only() is True, "Condition must be true"

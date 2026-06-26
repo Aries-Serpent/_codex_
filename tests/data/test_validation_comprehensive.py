@@ -48,9 +48,9 @@ class TestValidationResult:
             is_valid=True,
             message="Validation passed",
         )
-        assert result.rule_name == "test_rule"
-        assert result.is_valid is True
-        assert result.message == "Validation passed"
+        assert result.rule_name == "test_rule", "Result must not be empty"
+        assert result.is_valid is True, "Result must not be empty"
+        assert result.message == "Validation passed", "Result must not be empty"
 
     def test_validation_result_defaults(self):
         """Test ValidationResult default values."""
@@ -59,9 +59,9 @@ class TestValidationResult:
             is_valid=True,
             message="Test",
         )
-        assert result.errors == []
-        assert result.warnings == []
-        assert result.metadata == {}
+        assert result.errors == [], "Result must not be empty"
+        assert result.warnings == [], "Result must not be empty"
+        assert result.metadata == {}, "Result must not be empty"
 
     def test_validation_result_to_dict(self):
         """Test ValidationResult to_dict conversion."""
@@ -74,10 +74,10 @@ class TestValidationResult:
         )
         d = result.to_dict()
         assert isinstance(d, dict)
-        assert d["rule_name"] == "test_rule"
-        assert d["is_valid"] is False
-        assert len(d["errors"]) == 2
-        assert len(d["warnings"]) == 1
+        assert d["rule_name"] == "test_rule", "Condition must be true"
+        assert d["is_valid"] is False, "Condition must be true"
+        assert len(d["errors"]) == 2, "Collection must not be empty"
+        assert len(d["warnings"]) == 1, "Collection must not be empty"
 
 
 class TestValidationRule:
@@ -104,28 +104,28 @@ class TestRequiredColumnsRule:
     def test_required_columns_rule_creation(self):
         """Test creating RequiredColumnsRule."""
         rule = validation.RequiredColumnsRule(["id", "name", "age"])
-        assert rule.name == "required_columns"
-        assert "id" in rule.required_columns
-        assert "name" in rule.required_columns
+        assert rule.name == "required_columns", "name is not valid"
+        assert "id" in rule.required_columns, "Condition must be true"
+        assert "name" in rule.required_columns, "Condition must be true"
 
     def test_required_columns_validation_pass(self, sample_dataframe):
         """Test validation passes with all required columns."""
         rule = validation.RequiredColumnsRule(["id", "name", "age"])
         result = rule.validate(sample_dataframe)
-        assert result.is_valid is True
+        assert result.is_valid is True, "Result must not be empty"
 
     def test_required_columns_validation_fail(self, sample_dataframe):
         """Test validation fails with missing columns."""
         rule = validation.RequiredColumnsRule(["id", "name", "missing_col"])
         result = rule.validate(sample_dataframe)
-        assert result.is_valid is False
-        assert len(result.errors) > 0
+        assert result.is_valid is False, "Result must not be empty"
+        assert len(result.errors) > 0, "Collection must not be empty"
 
     def test_required_columns_empty_list(self):
         """Test RequiredColumnsRule with empty column list."""
         rule = validation.RequiredColumnsRule([])
         # Should create rule without error
-        assert rule.required_columns == set()
+        assert rule.required_columns == set(), "required_columns is not valid"
 
 
 class TestNullCheckRule:
@@ -135,14 +135,14 @@ class TestNullCheckRule:
         """Test creating NullCheckRule."""
         if hasattr(validation, "NullCheckRule"):
             rule = validation.NullCheckRule(["id", "name"])
-            assert rule.name == "null_check"
+            assert rule.name == "null_check", "name is not valid"
 
     def test_null_check_validation_pass(self, sample_dataframe):
         """Test validation passes with no nulls."""
         if hasattr(validation, "NullCheckRule"):
             rule = validation.NullCheckRule(["id", "name", "age"])
             result = rule.validate(sample_dataframe)
-            assert result.is_valid is True
+            assert result.is_valid is True, "Result must not be empty"
 
     def test_null_check_validation_fail(self):
         """Test validation fails with nulls."""
@@ -158,7 +158,7 @@ class TestNullCheckRule:
                 )
                 rule = validation.NullCheckRule(["id"])
                 result = rule.validate(df)
-                assert result.is_valid is False
+                assert result.is_valid is False, "Result must not be empty"
             except ImportError:
                 pytest.skip("pandas not available")
 
@@ -170,7 +170,7 @@ class TestDataTypeRule:
         """Test creating DataTypeRule."""
         if hasattr(validation, "DataTypeRule"):
             rule = validation.DataTypeRule({"id": int, "name": str})
-            assert rule.name == "data_type"
+            assert rule.name == "data_type", "Data must not be empty"
 
     def test_data_type_validation_pass(self, sample_dataframe):
         """Test validation passes with correct types."""
@@ -207,21 +207,21 @@ class TestRangeCheckRule:
         """Test creating RangeCheckRule."""
         if hasattr(validation, "RangeCheckRule"):
             rule = validation.RangeCheckRule({"age": {"min": 0, "max": 120}})
-            assert rule.name == "range_check"
+            assert rule.name == "range_check", "name is not valid"
 
     def test_range_check_validation_pass(self, sample_dataframe):
         """Test validation passes within range."""
         if hasattr(validation, "RangeCheckRule"):
             rule = validation.RangeCheckRule({"age": {"min": 0, "max": 100}})
             result = rule.validate(sample_dataframe)
-            assert result.is_valid is True
+            assert result.is_valid is True, "Result must not be empty"
 
     def test_range_check_validation_fail(self, sample_dataframe):
         """Test validation fails outside range."""
         if hasattr(validation, "RangeCheckRule"):
             rule = validation.RangeCheckRule({"age": {"min": 50, "max": 60}})
             result = rule.validate(sample_dataframe)
-            assert result.is_valid is False
+            assert result.is_valid is False, "Result must not be empty"
 
 
 class TestUniqueCheckRule:
@@ -231,14 +231,14 @@ class TestUniqueCheckRule:
         """Test creating UniqueCheckRule."""
         if hasattr(validation, "UniqueCheckRule"):
             rule = validation.UniqueCheckRule("id")
-            assert rule.name == "unique_check"
+            assert rule.name == "unique_check", "name is not valid"
 
     def test_unique_check_validation_pass(self, sample_dataframe):
         """Test validation passes with unique values."""
         if hasattr(validation, "UniqueCheckRule"):
             rule = validation.UniqueCheckRule("id")
             result = rule.validate(sample_dataframe)
-            assert result.is_valid is True
+            assert result.is_valid is True, "Result must not be empty"
 
     def test_unique_check_validation_fail(self):
         """Test validation fails with duplicate values."""
@@ -254,7 +254,7 @@ class TestUniqueCheckRule:
                 )
                 rule = validation.UniqueCheckRule("id")
                 result = rule.validate(df)
-                assert result.is_valid is False
+                assert result.is_valid is False, "Result must not be empty"
             except ImportError:
                 pytest.skip("pandas not available")
 
@@ -270,7 +270,7 @@ class TestSchemaValidationRule:
                 "name": {"type": str, "required": True},
             }
             rule = validation.SchemaValidationRule(schema)
-            assert rule.name == "schema_validation"
+            assert rule.name == "schema_validation", "name is not valid"
 
     def test_schema_validation_pass(self, sample_dataframe):
         """Test schema validation passes."""
@@ -292,7 +292,7 @@ class TestDataValidator:
         """Test creating DataValidator."""
         if hasattr(validation, "DataValidator"):
             validator = validation.DataValidator()
-            assert validator is not None
+            assert validator is not None, "validator must be initialized"
 
     def test_data_validator_add_rule(self):
         """Test adding validation rule."""

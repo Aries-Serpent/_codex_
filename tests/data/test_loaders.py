@@ -28,14 +28,14 @@ def test_stream_paths_seed_same_order(tmp_path: Path):
     paths = _make_files(tmp_path, 5)
     a = [pc.prompt for pc in stream_paths(paths, seed=123)]
     b = [pc.prompt for pc in stream_paths(paths, seed=123)]
-    assert a == b
+    assert a == b, "a is not valid"
 
 
 def test_stream_paths_seed_differs(tmp_path: Path):
     paths = _make_files(tmp_path, 5)
     a = [pc.prompt for pc in stream_paths(paths, seed=1)]
     b = [pc.prompt for pc in stream_paths(paths, seed=2)]
-    assert a != b
+    assert a != b, "a is not valid"
 
 
 def test_stream_paths_connector_uri(tmp_path: Path, monkeypatch) -> None:
@@ -57,9 +57,9 @@ def test_stream_paths_connector_uri(tmp_path: Path, monkeypatch) -> None:
     )
 
     samples = list(stream_paths(["connector://test-remote/datasets/sample.jsonl"]))
-    assert [sample.prompt for sample in samples] == ["p0"]
+    assert [sample.prompt for sample in samples] == ["p0"], "Condition must be true"
     cached = cache_root / "test-remote" / "datasets" / "sample.jsonl"
-    assert cached.exists()
+    assert cached.exists(), "Condition must be true"
 
 
 def test_stream_paths_connector_errors_propagate(tmp_path: Path, monkeypatch) -> None:
@@ -102,6 +102,6 @@ def test_stream_paths_mixed_sources_reuse_cache(tmp_path: Path, monkeypatch) -> 
     assert set(prompts) == {"p0", "p1", "remote"}
 
     cached_remote = cache_root / "mixed-remote" / "datasets" / "remote.jsonl"
-    assert cached_remote.exists()
+    assert cached_remote.exists(), "Condition must be true"
     cached_content = cached_remote.read_text(encoding="utf-8").strip()
     assert cached_content == json.dumps({"prompt": "remote", "completion": "c"})

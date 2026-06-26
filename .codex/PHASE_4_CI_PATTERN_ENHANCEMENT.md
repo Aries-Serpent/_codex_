@@ -40,7 +40,7 @@ Pattern Coverage: 30/30 active
 | P-002 | Unused Variables | Code Quality | ❌ | Detection Only | Medium |
 | P-003 | YAML Indentation | Config | ❌ | Detection Only | Medium |
 | P-004 | Coverage Thresholds | Config | ✅ | Mature | High |
-| P-005 | Tokenizer Fallbacks | Code Quality | ❌ | Detection Only | Low |
+| P-005 | Tokenizer Fallbacks | Code Quality | ❌ | Detection Only | Low | <!-- pragma: allowlist secret -->
 | P-006 | Test Assertions | Code Quality | ✅ | Active | High |
 | P-007 | Redundant Imports | Code Quality | ❌ | Detection Only | Low |
 | P-008 | CodeQL Alerts | Security | ✅ | Mature | High |
@@ -58,11 +58,11 @@ Pattern Coverage: 30/30 active
 | P-020 | YAML Multiline | Config | ✅ | Detection Only | Low |
 | P-021 | Node.js 20 Actions | Infrastructure | ✅ | Mature | Low |
 | P-022 | Tracked File Sync | Repository | ✅ | Mature | Medium |
-| P-023 | Secrets Baseline | Security | ✅ | Mature | Low |
-| P-024 | Codecov Token | CI Config | ✅ | Mature | Low |
+| P-023 | Secrets Baseline | Security | ✅ | Mature | Low | <!-- pragma: allowlist secret -->
+| P-024 | Codecov Token | CI Config | ✅ | Mature | Low | <!-- pragma: allowlist secret -->
 | P-025 | Last-Commit Accountability | Governance | ✅ | Active | High |
 | P-026 | Auto-Post Rebase Race | Git Workflow | ✅ | Mature | Low |
-| P-027 | Secrets False-Positive | Security | ✅ | Mature | Low |
+| P-027 | Secrets False-Positive | Security | ✅ | Mature | Low | <!-- pragma: allowlist secret -->
 | P-028 | Copilot Sandbox Guard | Infrastructure | ✅ | Mature | Low |
 | P-029 | PR Comment Triage | Workflow | ✅ | Mature | Medium |
 | P-030 | Merge Readiness | Quality Gate | ✅ | Mature | High |

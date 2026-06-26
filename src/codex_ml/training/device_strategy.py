@@ -164,7 +164,7 @@ class DeviceConfig:
             return model
         except (ValueError, TypeError, RuntimeError) as exc:
             error_type = type(exc).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             LOGGER.warning(
                 "[codex] failed to place model on %s (%s); falling back to CPU fp32",
                 self.device,
@@ -189,7 +189,7 @@ class DeviceConfig:
             return tensor.to(device=torch.device(self.device), dtype=self.dtype)
         except (ValueError, TypeError, RuntimeError) as exc:
             error_type = type(exc).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             LOGGER.warning(
                 "[codex] failed to move tensor to %s (%s); returning CPU copy",
                 self.device,
@@ -234,7 +234,7 @@ class DeviceMapper:
             return cls._STRATEGIES[key]
         except KeyError as exc:
             error_type = type(exc).__name__
-            logger.debug(f"KeyError: <ERROR_TYPE>")
+            logger.debug("KeyError: <ERROR_TYPE>")
             raise KeyError(f"device strategy not registered: {name}") from exc
 
     @classmethod

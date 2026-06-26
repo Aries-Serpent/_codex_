@@ -57,4 +57,4 @@ def test_visual_compare_config_uses_template_threshold(tmp_path):
             str(cand),
         ]
     )
-    assert code == 0
+    assert code == 0, "code is not valid"

@@ -55,7 +55,7 @@ class TestZendeskConfig:
             email="agent@example.com",
             api_token="token123",
         )
-        assert config.base_url == "https://mycompany.zendesk.com/api/v2"
+        assert config.base_url == "https://mycompany.zendesk.com/api/v2", "base_url is not valid"
 
     def test_config_stores_all_fields(self) -> None:
         """Test that config stores all provided fields."""
@@ -64,9 +64,9 @@ class TestZendeskConfig:
             email="test@test.com",
             api_token="abc123",
         )
-        assert config.subdomain == "test"
-        assert config.email == "test@test.com"
-        assert config.api_token == "abc123"
+        assert config.subdomain == "test", "subdomain is not valid"
+        assert config.email == "test@test.com", "email is not valid"
+        assert config.api_token == "abc123", "api_token is not valid"
 
 
 # ==============================================================================
@@ -96,8 +96,8 @@ class TestTicketsAPI:
 
         result = api_client.get_ticket(12345)
 
-        assert result["ticket"]["id"] == 12345
-        assert result["ticket"]["subject"] == "Test Ticket"
+        assert result["ticket"]["id"] == 12345, "Result must not be empty"
+        assert result["ticket"]["subject"] == "Test Ticket", "Result must not be empty"
 
     @responses.activate
     def test_list_tickets(self, api_client: ZendeskAPIClient) -> None:
@@ -123,8 +123,8 @@ class TestTicketsAPI:
 
         result = api_client.list_tickets(per_page=50)
 
-        assert len(result["tickets"]) == 2
-        assert result["count"] == 2
+        assert len(result["tickets"]) == 2, "Collection must not be empty"
+        assert result["count"] == 2, "Result must not be empty"
 
     @responses.activate
     def test_create_ticket(self, api_client: ZendeskAPIClient) -> None:
@@ -150,8 +150,8 @@ class TestTicketsAPI:
             priority="high",
         )
 
-        assert result["ticket"]["id"] == 99999
-        assert result["ticket"]["subject"] == "New Ticket"
+        assert result["ticket"]["id"] == 99999, "Result must not be empty"
+        assert result["ticket"]["subject"] == "New Ticket", "Result must not be empty"
 
     @responses.activate
     def test_create_ticket_with_requester(self, api_client: ZendeskAPIClient) -> None:
@@ -169,7 +169,7 @@ class TestTicketsAPI:
             requester_email="customer@example.com",
         )
 
-        assert "ticket" in result
+        assert "ticket" in result, "Result must not be empty"
 
     @responses.activate
     def test_create_ticket_with_tags(self, api_client: ZendeskAPIClient) -> None:
@@ -187,7 +187,7 @@ class TestTicketsAPI:
             tags=["urgent", "billing"],
         )
 
-        assert "ticket" in result
+        assert "ticket" in result, "Result must not be empty"
 
     @responses.activate
     def test_update_ticket(self, api_client: ZendeskAPIClient) -> None:
@@ -201,8 +201,8 @@ class TestTicketsAPI:
 
         result = api_client.update_ticket(12345, status="pending", priority="high")
 
-        assert result["ticket"]["status"] == "pending"
-        assert result["ticket"]["priority"] == "high"
+        assert result["ticket"]["status"] == "pending", "Result must not be empty"
+        assert result["ticket"]["priority"] == "high", "Result must not be empty"
 
     @responses.activate
     def test_bulk_update_tickets(self, api_client: ZendeskAPIClient) -> None:
@@ -222,8 +222,8 @@ class TestTicketsAPI:
 
         result = api_client.bulk_update_tickets([1, 2, 3], status="solved")
 
-        assert result["job_status"]["status"] == "queued"
-        assert result["job_status"]["total"] == 3
+        assert result["job_status"]["status"] == "queued", "Result must not be empty"
+        assert result["job_status"]["total"] == 3, "Result must not be empty"
 
     @responses.activate
     def test_merge_tickets(self, api_client: ZendeskAPIClient) -> None:
@@ -239,7 +239,7 @@ class TestTicketsAPI:
             source_ticket_id=200, target_ticket_id=100, source_comment="Merged"
         )
 
-        assert "ticket" in result
+        assert "ticket" in result, "Result must not be empty"
 
 
 # ==============================================================================
@@ -269,8 +269,8 @@ class TestUsersAPI:
 
         result = api_client.get_user(1001)
 
-        assert result["user"]["id"] == 1001
-        assert result["user"]["name"] == "John Doe"
+        assert result["user"]["id"] == 1001, "Result must not be empty"
+        assert result["user"]["name"] == "John Doe", "Result must not be empty"
 
     @responses.activate
     def test_list_users(self, api_client: ZendeskAPIClient) -> None:
@@ -290,7 +290,7 @@ class TestUsersAPI:
 
         result = api_client.list_users()
 
-        assert len(result["users"]) == 2
+        assert len(result["users"]) == 2, "Collection must not be empty"
 
     @responses.activate
     def test_list_users_with_role_filter(self, api_client: ZendeskAPIClient) -> None:
@@ -305,7 +305,7 @@ class TestUsersAPI:
 
         result = api_client.list_users(role="agent")
 
-        assert len(result["users"]) == 1
+        assert len(result["users"]) == 1, "Collection must not be empty"
 
     @responses.activate
     def test_create_user(self, api_client: ZendeskAPIClient) -> None:
@@ -326,8 +326,8 @@ class TestUsersAPI:
 
         result = api_client.create_user(name="New User", email="newuser@example.com")
 
-        assert result["user"]["id"] == 9999
-        assert result["user"]["email"] == "newuser@example.com"
+        assert result["user"]["id"] == 9999, "Result must not be empty"
+        assert result["user"]["email"] == "newuser@example.com", "Result must not be empty"
 
     @responses.activate
     def test_update_user_role(self, api_client: ZendeskAPIClient) -> None:
@@ -348,8 +348,8 @@ class TestUsersAPI:
 
         result = api_client.update_user(1001, role="agent")
 
-        assert result["user"]["id"] == 1001
-        assert result["user"]["role"] == "agent"
+        assert result["user"]["id"] == 1001, "Result must not be empty"
+        assert result["user"]["role"] == "agent", "Result must not be empty"
 
     @responses.activate
     def test_update_user_multiple_fields(self, api_client: ZendeskAPIClient) -> None:
@@ -370,9 +370,9 @@ class TestUsersAPI:
 
         result = api_client.update_user(1001, name="Jane Doe", role="admin", phone="+15551234567")
 
-        assert result["user"]["name"] == "Jane Doe"
-        assert result["user"]["role"] == "admin"
-        assert result["user"]["phone"] == "+15551234567"
+        assert result["user"]["name"] == "Jane Doe", "Result must not be empty"
+        assert result["user"]["role"] == "admin", "Result must not be empty"
+        assert result["user"]["phone"] == "+15551234567", "Result must not be empty"
 
 
 # ==============================================================================
@@ -401,8 +401,8 @@ class TestOrganizationsAPI:
 
         result = api_client.get_organization(500)
 
-        assert result["organization"]["id"] == 500
-        assert result["organization"]["name"] == "Acme Corp"
+        assert result["organization"]["id"] == 500, "Result must not be empty"
+        assert result["organization"]["name"] == "Acme Corp", "Result must not be empty"
 
     @responses.activate
     def test_list_organizations(self, api_client: ZendeskAPIClient) -> None:
@@ -422,7 +422,7 @@ class TestOrganizationsAPI:
 
         result = api_client.list_organizations()
 
-        assert len(result["organizations"]) == 2
+        assert len(result["organizations"]) == 2, "Collection must not be empty"
 
 
 # ==============================================================================
@@ -451,8 +451,8 @@ class TestSLAPoliciesAPI:
 
         result = api_client.get_sla_policy(10)
 
-        assert result["sla_policy"]["id"] == 10
-        assert result["sla_policy"]["title"] == "Premium SLA"
+        assert result["sla_policy"]["id"] == 10, "Result must not be empty"
+        assert result["sla_policy"]["title"] == "Premium SLA", "Result must not be empty"
 
     @responses.activate
     def test_list_sla_policies(self, api_client: ZendeskAPIClient) -> None:
@@ -471,7 +471,7 @@ class TestSLAPoliciesAPI:
 
         result = api_client.list_sla_policies()
 
-        assert len(result["sla_policies"]) == 2
+        assert len(result["sla_policies"]) == 2, "Collection must not be empty"
 
 
 # ==============================================================================
@@ -500,8 +500,8 @@ class TestSearchAPI:
 
         result = api_client.search("type:ticket status:open")
 
-        assert len(result["results"]) == 1
-        assert result["results"][0]["result_type"] == "ticket"
+        assert len(result["results"]) == 1, "Collection must not be empty"
+        assert result["results"][0]["result_type"] == "ticket", "Result must not be empty"
 
     @responses.activate
     def test_search_with_type_filter(self, api_client: ZendeskAPIClient) -> None:
@@ -520,7 +520,7 @@ class TestSearchAPI:
 
         result = api_client.search("email:*@example.com", search_type="user")
 
-        assert result["count"] == 1
+        assert result["count"] == 1, "Result must not be empty"
 
 
 # ==============================================================================
@@ -548,7 +548,7 @@ class TestViewsAPI:
 
         result = api_client.list_views()
 
-        assert len(result["views"]) == 2
+        assert len(result["views"]) == 2, "Collection must not be empty"
 
     @responses.activate
     def test_execute_view(self, api_client: ZendeskAPIClient) -> None:
@@ -567,7 +567,7 @@ class TestViewsAPI:
 
         result = api_client.execute_view(1)
 
-        assert len(result["rows"]) == 2
+        assert len(result["rows"]) == 2, "Collection must not be empty"
 
 
 # ==============================================================================
@@ -595,7 +595,7 @@ class TestMacrosAPI:
 
         result = api_client.list_macros()
 
-        assert len(result["macros"]) == 2
+        assert len(result["macros"]) == 2, "Collection must not be empty"
 
     @responses.activate
     def test_apply_macro(self, api_client: ZendeskAPIClient) -> None:
@@ -609,7 +609,7 @@ class TestMacrosAPI:
 
         result = api_client.apply_macro(ticket_id=100, macro_id=1)
 
-        assert "result" in result
+        assert "result" in result, "Result must not be empty"
 
 
 # ==============================================================================
@@ -637,7 +637,7 @@ class TestTriggersAPI:
 
         result = api_client.list_triggers()
 
-        assert len(result["triggers"]) == 2
+        assert len(result["triggers"]) == 2, "Collection must not be empty"
 
 
 # ==============================================================================
@@ -665,7 +665,7 @@ class TestAutomationsAPI:
 
         result = api_client.list_automations()
 
-        assert len(result["automations"]) == 2
+        assert len(result["automations"]) == 2, "Collection must not be empty"
 
 
 # ==============================================================================
@@ -697,7 +697,7 @@ class TestAuditLogsAPI:
 
         result = api_client.list_audit_logs()
 
-        assert len(result["audit_logs"]) == 1
+        assert len(result["audit_logs"]) == 1, "Collection must not be empty"
 
     @responses.activate
     def test_list_audit_logs_with_filter(self, api_client: ZendeskAPIClient) -> None:
@@ -712,7 +712,7 @@ class TestAuditLogsAPI:
 
         result = api_client.list_audit_logs(filter_type="update")
 
-        assert len(result["audit_logs"]) == 1
+        assert len(result["audit_logs"]) == 1, "Collection must not be empty"
 
 
 # ==============================================================================
@@ -736,7 +736,7 @@ class TestErrorHandling:
         with pytest.raises(Exception) as exc_info:
             api_client.get_ticket(99999)
 
-        assert "404" in str(exc_info.value)
+        assert "404" in str(exc_info.value), "Value must be initialized"
 
     @responses.activate
     def test_401_unauthorized(self, api_client: ZendeskAPIClient) -> None:
@@ -751,7 +751,7 @@ class TestErrorHandling:
         with pytest.raises(Exception) as exc_info:
             api_client.get_ticket(1)
 
-        assert "401" in str(exc_info.value)
+        assert "401" in str(exc_info.value), "Value must be initialized"
 
     @responses.activate
     def test_429_rate_limit(self, api_client: ZendeskAPIClient) -> None:
@@ -767,7 +767,7 @@ class TestErrorHandling:
         with pytest.raises(Exception) as exc_info:
             api_client.list_tickets()
 
-        assert "429" in str(exc_info.value)
+        assert "429" in str(exc_info.value), "Value must be initialized"
 
     @responses.activate
     def test_500_server_error(self, api_client: ZendeskAPIClient) -> None:
@@ -782,7 +782,7 @@ class TestErrorHandling:
         with pytest.raises(Exception) as exc_info:
             api_client.get_user(1)
 
-        assert "500" in str(exc_info.value)
+        assert "500" in str(exc_info.value), "Value must be initialized"
 
     @responses.activate
     def test_422_validation_error(self, api_client: ZendeskAPIClient) -> None:
@@ -800,4 +800,4 @@ class TestErrorHandling:
         with pytest.raises(Exception) as exc_info:
             api_client.create_ticket(subject="", description="")
 
-        assert "422" in str(exc_info.value)
+        assert "422" in str(exc_info.value), "Value must be initialized"

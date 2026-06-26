@@ -40,7 +40,7 @@ class TestModuleImports:
 
     def test_module_imports(self):
         """Test train module can be imported."""
-        assert train is not None
+        assert train is not None, "train must be initialized"
 
     def test_hydra_available(self):
         """Test Hydra availability."""
@@ -58,7 +58,7 @@ class TestToPath:
         """Test _to_path with None returns None."""
         if hasattr(train, "_to_path"):
             result = train._to_path(None)
-            assert result is None
+            assert result is None, "Result must not be empty"
 
     def test_to_path_with_string(self):
         """Test _to_path with string returns Path."""
@@ -82,14 +82,14 @@ class TestCfgToDict:
             data = {"key": "value", "nested": {"inner": 1}}
             result = train._cfg_to_dict(data)
             assert isinstance(result, dict)
-            assert result == data
+            assert result == data, "Result must not be empty"
 
     def test_cfg_to_dict_with_none(self):
         """Test _cfg_to_dict with None input."""
         if hasattr(train, "_cfg_to_dict"):
             result = train._cfg_to_dict(None)
             assert isinstance(result, dict)
-            assert result == {}
+            assert result == {}, "Result must not be empty"
 
     @patch("codex_ml.cli.train.OmegaConf")
     def test_cfg_to_dict_with_dictconfig(self, mock_omegaconf):
@@ -110,21 +110,21 @@ class TestCfgToList:
             data = [1, 2, 3]
             result = train._cfg_to_list(data)
             assert isinstance(result, list)
-            assert result == data
+            assert result == data, "Result must not be empty"
 
     def test_cfg_to_list_with_none(self):
         """Test _cfg_to_list with None input."""
         if hasattr(train, "_cfg_to_list"):
             result = train._cfg_to_list(None)
             assert isinstance(result, list)
-            assert result == []
+            assert result == [], "Result must not be empty"
 
     def test_cfg_to_list_with_single_value(self):
         """Test _cfg_to_list with single value."""
         if hasattr(train, "_cfg_to_list"):
             result = train._cfg_to_list("single")
             assert isinstance(result, list)
-            assert result == ["single"]
+            assert result == ["single"], "Result must not be empty"
 
 
 class TestCoerceSequence:
@@ -134,14 +134,14 @@ class TestCoerceSequence:
         """Test _coerce_sequence with None."""
         if hasattr(train, "_coerce_sequence"):
             result = train._coerce_sequence(None)
-            assert result is None
+            assert result is None, "Result must not be empty"
 
     def test_coerce_sequence_with_list(self):
         """Test _coerce_sequence with list."""
         if hasattr(train, "_coerce_sequence"):
             data = [1, 2, 3]
             result = train._coerce_sequence(data)
-            assert result == data
+            assert result == data, "Result must not be empty"
 
     def test_coerce_sequence_with_tuple(self):
         """Test _coerce_sequence with tuple."""
@@ -162,7 +162,7 @@ class TestCoerceSequence:
         """Test _coerce_sequence with string."""
         if hasattr(train, "_coerce_sequence"):
             result = train._coerce_sequence("test")
-            assert result == ["test"]
+            assert result == ["test"], "Result must not be empty"
 
 
 class TestSanitizePromptSequence:
@@ -185,8 +185,8 @@ class TestSanitizePromptSequence:
             values = ["prompt1", "prompt2"]
             with patch.dict(sys.modules, {"codex_ml.safety": None}):
                 result, changed = train._sanitize_prompt_sequence(values)
-                assert result == values
-                assert changed is False
+                assert result == values, "Result must not be empty"
+                assert changed is False, "changed is not valid"
 
 
 class TestRunTraining:
@@ -198,7 +198,7 @@ class TestRunTraining:
         if hasattr(train, "run_training"):
             mock_run_training.return_value = {"loss": 0.5, "accuracy": 0.9}
             # Mock call would happen through Hydra entrypoint
-            assert mock_run_training is not None
+            assert mock_run_training is not None, "mock_run_training must be initialized"
 
     @patch("codex_ml.cli.train.run_training")
     def test_run_training_error_handling(self, mock_run_training):
@@ -215,7 +215,7 @@ class TestLoggerConfiguration:
     def test_logger_has_name(self):
         """Test logger has correct name."""
         if hasattr(train, "LOGGER"):
-            assert train.LOGGER.name == "codex_ml.cli.train"
+            assert train.LOGGER.name == "codex_ml.cli.train", "name is not valid"
 
     def test_logger_can_log(self):
         """Test logger can emit messages."""

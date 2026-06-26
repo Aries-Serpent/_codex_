@@ -37,13 +37,13 @@ class TestPhase2_TimeEvolution:
                 temperature=1.0,
             )
             evolved = orchestrator.evolve_state(initial_state, dt=0.1)
-            assert evolved is not None
+            assert evolved is not None, "evolved must be initialized"
 
             # Check that the evolved state has expected attributes
             assert hasattr(evolved, "energy")
             assert hasattr(evolved, "configuration")
             # Verify energy dissipation occurred (should be lower than initial)
-            assert evolved.energy <= initial_state.energy
+            assert evolved.energy <= initial_state.energy, "energy is not valid"
 
     def test_hamiltonian_evolution(self):
         """Test Hamiltonian time evolution"""
@@ -54,10 +54,10 @@ class TestPhase2_TimeEvolution:
             # evolve requires (q0, p0, hamiltonian, dt, steps) not (state, time)
             try:
                 trajectory = evolver.evolve(q0=0.0, p0=1.0, dt=0.1, steps=10)
-                assert trajectory is not None
+                assert trajectory is not None, "trajectory must be initialized"
             except TypeError:
                 # Different signature - just verify evolver works
-                assert evolver is not None
+                assert evolver is not None, "evolver must be initialized"
 
     def test_schrodinger_evolution(self):
         """Test Schrödinger equation evolution"""
@@ -68,7 +68,7 @@ class TestPhase2_TimeEvolution:
         hbar = 1.0
         phase = -E * t / hbar
         evolution_factor = np.exp(1j * phase)
-        assert abs(abs(evolution_factor) - 1.0) < 1e-10
+        assert abs(abs(evolution_factor) - 1.0) < 1e-10, "Condition must be true"
 
     def test_unitary_evolution(self):
         """Test evolution is unitary"""
@@ -84,7 +84,7 @@ class TestPhase2_TimeEvolution:
         # ψ(-t) should be related to ψ(t)
         psi = np.array([1.0, 1j])
         psi_reversed = np.conjugate(psi)
-        assert psi_reversed is not None
+        assert psi_reversed is not None, "psi_reversed must be initialized"
 
 
 class TestPhase2_SelfHealing:
@@ -98,7 +98,7 @@ class TestPhase2_SelfHealing:
         from agents.self_healing import SelfHealingEngine
 
         engine = SelfHealingEngine()
-        assert engine is not None
+        assert engine is not None, "engine must be initialized"
 
     def test_diagnose_no_issues(self):
         """Test diagnostics with no issues"""
@@ -106,7 +106,7 @@ class TestPhase2_SelfHealing:
 
         engine = SelfHealingEngine()
         result = engine.diagnose(run_checks=False)
-        assert result is not None
+        assert result is not None, "result must be initialized"
         assert hasattr(result, "issues")
 
     def test_detect_issue_types(self):
@@ -137,8 +137,8 @@ class TestPhase2_SelfHealing:
             location="test.py:10",
             details={},
         )
-        assert issue is not None
-        assert issue.issue_type == IssueType.IMPORT_ERROR
+        assert issue is not None, "issue must be initialized"
+        assert issue.issue_type == IssueType.IMPORT_ERROR, "Error should be raised or set"
 
     def test_remediation_action_creation(self):
         """Test creating RemediationAction"""
@@ -150,16 +150,16 @@ class TestPhase2_SelfHealing:
             command="pip install numpy",
             auto_apply=False,
         )
-        assert action is not None
-        assert action.action_type == "install_package"
+        assert action is not None, "action must be initialized"
+        assert action.action_type == "install_package", "action_type is not valid"
 
     def test_diagnostic_result_structure(self):
         """Test DiagnosticResult structure"""
         from agents.self_healing import DiagnosticResult
 
         result = DiagnosticResult(issues=[], health_score=1.0, remediation_actions=[])
-        assert result is not None
-        assert result.health_score == 1.0
+        assert result is not None, "result must be initialized"
+        assert result.health_score == 1.0, "Result must not be empty"
 
     def test_calculate_health_score(self):
         """Test health score calculation"""
@@ -169,7 +169,7 @@ class TestPhase2_SelfHealing:
         # Health score with no issues should be high
         if hasattr(engine, "_calculate_health_score"):
             score = engine._calculate_health_score([])
-            assert score >= 0.9
+            assert score >= 0.9, "score must be greater than zero"
 
     def test_suggest_remediation(self):
         """Test remediation suggestion"""
@@ -197,7 +197,7 @@ class TestPhase2_SelfHealing:
         from agents.self_healing import run_diagnostics
 
         result = run_diagnostics()
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
 
 class TestPhase2_ErrorBounds:
@@ -212,7 +212,7 @@ class TestPhase2_ErrorBounds:
         dt1 = 0.1
         dt2 = 0.05
         error_ratio = (dt1 / dt2) ** 2
-        assert error_ratio == 4.0
+        assert error_ratio == 4.0, "Error should be raised or set"
 
     def test_runge_kutta_error_bound(self):
         """Test RK4 error bound O(dt⁵)"""
@@ -220,7 +220,7 @@ class TestPhase2_ErrorBounds:
         dt1 = 0.1
         dt2 = 0.05
         error_ratio = (dt1 / dt2) ** 5
-        assert error_ratio == 32.0
+        assert error_ratio == 32.0, "Error should be raised or set"
 
     def test_numerical_stability_check(self):
         """Test numerical stability condition"""
@@ -228,8 +228,8 @@ class TestPhase2_ErrorBounds:
         lambda_max = 10.0
         dt_stable = 0.15  # < 2/10 = 0.2
         dt_unstable = 0.25  # > 0.2
-        assert dt_stable < 2.0 / lambda_max
-        assert dt_unstable > 2.0 / lambda_max
+        assert dt_stable < 2.0 / lambda_max, "dt_stable is not valid"
+        assert dt_unstable > 2.0 / lambda_max, "dt_unstable must be greater than zero"
 
     def test_courant_condition(self):
         """Test Courant-Friedrichs-Lewy condition"""
@@ -238,7 +238,7 @@ class TestPhase2_ErrorBounds:
         dx = 0.1
         dt_max = dx / c
         dt_stable = 0.08
-        assert dt_stable < dt_max
+        assert dt_stable < dt_max, "dt_stable is not valid"
 
     def test_error_accumulation(self):
         """Test error accumulation over steps"""
@@ -246,7 +246,7 @@ class TestPhase2_ErrorBounds:
         n_steps = 100
         local_error = 0.001
         global_error_bound = n_steps * local_error
-        assert global_error_bound == 0.1
+        assert global_error_bound == 0.1, "Error should be raised or set"
 
     def test_convergence_order(self):
         """Test convergence order verification"""
@@ -254,7 +254,7 @@ class TestPhase2_ErrorBounds:
         errors = [0.01, 0.0025, 0.000625]  # dt halved each time
         ratios = [errors[i] / errors[i + 1] for i in range(len(errors) - 1)]
         # Should be approximately 4 for 2nd order
-        assert all(3.5 < r < 4.5 for r in ratios)
+        assert all(3.5 < r < 4.5 for r in ratios), "5 is not valid"
 
 
 class TestPhase2_Telemetry:
@@ -273,7 +273,7 @@ class TestPhase2_Telemetry:
 
             orchestrator = QuantumRelativisticDiracOrchestrator()
             collector = MetricsCollector(orchestrator)
-            assert collector is not None
+            assert collector is not None, "collector must be initialized"
         except ImportError:
             pytest.skip("MLOps bridge not available")
 
@@ -299,9 +299,9 @@ class TestPhase2_Telemetry:
                 metric_type=MetricType.GAUGE,
                 labels={"env": "test"},
             )
-            assert metric is not None
-            assert metric.name == "test_metric"
-            assert metric.value == 42.0
+            assert metric is not None, "metric must be initialized"
+            assert metric.name == "test_metric", "name is not valid"
+            assert metric.value == 42.0, "Value must be initialized"
         except ImportError:
             pytest.skip("MLOps bridge not available")
 
@@ -317,8 +317,8 @@ class TestPhase2_Telemetry:
                 labels={"job": "test"},
             )
             prom_str = metric.to_prometheus()
-            assert "test_counter" in prom_str
-            assert "100" in prom_str
+            assert "test_counter" in prom_str, "Count must be greater than zero"
+            assert "100" in prom_str, "Condition must be true"
         except ImportError:
             pytest.skip("MLOps bridge not available")
 
@@ -344,14 +344,14 @@ class TestPhase2_Telemetry:
         engine = SelfHealingEngine()
         result = engine.diagnose(run_checks=False)
         assert hasattr(result, "health_score")
-        assert 0.0 <= result.health_score <= 1.0
+        assert 0.0 <= result.health_score <= 1.0, "Result must not be empty"
 
     def test_coherence_metric(self):
         """Test coherence metric Σρ = 1 (Eq #52)"""
         # Probability conservation
         rho = np.array([0.3, 0.5, 0.2])
         total = np.sum(rho)
-        assert abs(total - 1.0) < 1e-10
+        assert abs(total - 1.0) < 1e-10, "Condition must be true"
 
     def test_distributed_coherence(self):
         """Test distributed coherence monitoring"""
@@ -360,7 +360,7 @@ class TestPhase2_Telemetry:
         partition2_rho = 0.35
         partition3_rho = 0.25
         total_rho = partition1_rho + partition2_rho + partition3_rho
-        assert abs(total_rho - 1.0) < 1e-10
+        assert abs(total_rho - 1.0) < 1e-10, "Condition must be true"
 
 
 class TestPhase2_AdaptiveDynamics:
@@ -377,7 +377,7 @@ class TestPhase2_AdaptiveDynamics:
         error = setpoint - current
         kp = 0.5
         control = kp * error
-        assert control > 0  # Should increase to reach setpoint
+        assert control > 0, "control must be greater than zero"
 
     def test_adaptive_timestep(self):
         """Test adaptive timestep selection"""
@@ -386,7 +386,7 @@ class TestPhase2_AdaptiveDynamics:
         dt_max = 0.1
         safety_factor = 0.9
         dt_adaptive = safety_factor * dt_max * (1.0 / (1.0 + error))
-        assert dt_adaptive < dt_max
+        assert dt_adaptive < dt_max, "dt_adaptive is not valid"
 
     def test_error_based_refinement(self):
         """Test error-based mesh refinement"""
@@ -394,17 +394,17 @@ class TestPhase2_AdaptiveDynamics:
         errors = [0.001, 0.05, 0.002, 0.08, 0.001]
         threshold = 0.01
         refine_indices = [i for i, e in enumerate(errors) if e > threshold]
-        assert len(refine_indices) == 2
-        assert 1 in refine_indices
-        assert 3 in refine_indices
+        assert len(refine_indices) == 2, "Refine_indices must not be empty"
+        assert 1 in refine_indices, "Condition must be true"
+        assert 3 in refine_indices, "Condition must be true"
 
     def test_learning_rate_decay(self):
         """Test learning rate decay"""
         initial_lr = 0.1
         decay_rate = 0.9
         lr_after_10_steps = initial_lr * (decay_rate**10)
-        assert lr_after_10_steps < initial_lr
-        assert abs(lr_after_10_steps - 0.0349) < 0.001
+        assert lr_after_10_steps < initial_lr, "lr_after_10_steps is not valid"
+        assert abs(lr_after_10_steps - 0.0349) < 0.001, "Condition must be true"
 
     def test_momentum_adaptation(self):
         """Test momentum adaptation in optimization"""
@@ -414,7 +414,7 @@ class TestPhase2_AdaptiveDynamics:
         momentum = 0.9
         learning_rate = 0.1
         velocity = momentum * velocity + learning_rate * gradient
-        assert velocity < 0  # Moving in negative gradient direction
+        assert velocity < 0, "velocity is not valid"
 
 
 class TestPhase2_StabilityAnalysis:
@@ -428,7 +428,7 @@ class TestPhase2_StabilityAnalysis:
         # System is stable if all eigenvalues have negative real part
         A = np.array([[-1.0, 0.0], [0.0, -2.0]])
         eigenvalues = np.linalg.eigvals(A)
-        assert all(np.real(ev) < 0 for ev in eigenvalues)
+        assert all(np.real(ev) < 0 for ev in eigenvalues), "Value must be initialized"
 
     def test_lyapunov_function(self):
         """Test Lyapunov function for stability"""
@@ -436,8 +436,8 @@ class TestPhase2_StabilityAnalysis:
         V_0 = 10.0
         V_1 = 8.0
         V_2 = 6.5
-        assert V_1 < V_0
-        assert V_2 < V_1
+        assert V_1 < V_0, "V_1 is not valid"
+        assert V_2 < V_1, "V_2 is not valid"
 
     def test_fixed_point_stability(self):
         """Test fixed point stability"""
@@ -446,7 +446,7 @@ class TestPhase2_StabilityAnalysis:
         dt = 0.01
         for _ in range(10):
             x = x - x * dt  # Euler step
-        assert abs(x) < 0.1  # Converging to 0
+        assert abs(x) < 0.1, "Condition must be true"
 
     def test_periodic_orbit(self):
         """Test periodic orbit detection"""
@@ -456,7 +456,7 @@ class TestPhase2_StabilityAnalysis:
         period = 2 * np.pi / omega
         # After one period, should return
         theta_final = theta + omega * period
-        assert abs(theta_final - 2 * np.pi) < 1e-10
+        assert abs(theta_final - 2 * np.pi) < 1e-10, "Condition must be true"
 
     def test_bifurcation_parameter(self):
         """Test system behavior near bifurcation"""
@@ -466,7 +466,7 @@ class TestPhase2_StabilityAnalysis:
         for _ in range(100):
             x = r * x * (1 - x)
         # Should converge to fixed point or cycle
-        assert 0 < x < 1
+        assert 0 < x < 1, "0 is not valid"
 
 
 class TestPhase2_EvolutionStrategies:
@@ -485,7 +485,7 @@ class TestPhase2_EvolutionStrategies:
             y = y + y * dt
             t += dt
         # Approximate e^{0.1}
-        assert abs(y - np.exp(0.1)) < 0.01
+        assert abs(y - np.exp(0.1)) < 0.01, "Condition must be true"
 
     def test_rk4_integration(self):
         """Test Runge-Kutta 4th order"""
@@ -506,7 +506,7 @@ class TestPhase2_EvolutionStrategies:
         y_new = y + dt * (k1 + 2 * k2 + 2 * k3 + k4) / 6
 
         # Should be more accurate than Euler
-        assert abs(y_new - np.exp(dt)) < 1e-6
+        assert abs(y_new - np.exp(dt)) < 1e-6, "Condition must be true"
 
     def test_leapfrog_integration(self):
         """Test leapfrog (Verlet) integration"""
@@ -520,7 +520,7 @@ class TestPhase2_EvolutionStrategies:
         # Full-step position
         x_new = x + dt * v_half
         # Half-step velocity
-        assert abs(x_new - 0.1) < 0.01
+        assert abs(x_new - 0.1) < 0.01, "Condition must be true"
 
     def test_symplectic_integrator(self):
         """Test symplectic integration preserves phase space"""
@@ -536,7 +536,7 @@ class TestPhase2_EvolutionStrategies:
         H_1 = 0.5 * q_new**2 + 0.5 * p_new**2
 
         # Energy should be approximately conserved
-        assert abs(H_1 - H_0) < 0.01
+        assert abs(H_1 - H_0) < 0.01, "Condition must be true"
 
 
 class TestPhase2_PerformanceMetrics:
@@ -550,7 +550,7 @@ class TestPhase2_PerformanceMetrics:
         # O(n²) algorithm cost
         n = 100
         operations = n * n
-        assert operations == 10000
+        assert operations == 10000, "operations is not valid"
 
     def test_cache_efficiency(self):
         """Test cache access patterns"""
@@ -558,7 +558,7 @@ class TestPhase2_PerformanceMetrics:
         data = np.arange(1000)
         # Sequential sum
         total = np.sum(data)
-        assert total == 499500
+        assert total == 499500, "total is not valid"
 
     def test_vectorization_speedup(self):
         """Test vectorization benefits"""
@@ -567,7 +567,7 @@ class TestPhase2_PerformanceMetrics:
         b = np.arange(1000)
         # Vectorized
         c = a + b
-        assert len(c) == 1000
+        assert len(c) == 1000, "C must not be empty"
 
     def test_memory_footprint(self):
         """Test memory usage estimation"""
@@ -575,7 +575,7 @@ class TestPhase2_PerformanceMetrics:
         n = 1000
         bytes_per_float64 = 8
         memory_bytes = n * bytes_per_float64
-        assert memory_bytes == 8000
+        assert memory_bytes == 8000, "memory_bytes is not valid"
 
     def test_parallel_efficiency(self):
         """Test parallel efficiency metrics"""
@@ -584,8 +584,8 @@ class TestPhase2_PerformanceMetrics:
         t_parallel_4 = 30.0
         speedup = t_serial / t_parallel_4
         efficiency = speedup / 4.0
-        assert speedup > 1.0
-        assert efficiency <= 1.0
+        assert speedup > 1.0, "speedup must be greater than zero"
+        assert efficiency <= 1.0, "efficiency is not valid"
 
 
 if __name__ == "__main__":

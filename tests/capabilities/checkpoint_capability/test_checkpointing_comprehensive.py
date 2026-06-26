@@ -78,26 +78,26 @@ class TestRNGState:
         """Serialize RNG state to dict."""
         state = RNGState(python_state="test_state")
         data = state.to_dict()
-        assert data["python_state"] == "test_state"
+        assert data["python_state"] == "test_state", "Data must not be empty"
 
     def test_deserialize_rng_state(self):
         """Deserialize RNG state from dict."""
         data = {"python_state": "test", "numpy_state": "np_test"}
         state = RNGState.from_dict(data)
-        assert state.python_state == "test"
-        assert state.numpy_state == "np_test"
+        assert state.python_state == "test", "python_state is not valid"
+        assert state.numpy_state == "np_test", "numpy_state is not valid"
 
     def test_validate_complete_state(self):
         """Complete state should pass validation."""
         state = RNGState(python_state=[1, 2, 3])
         errors = state.validate()
-        assert len(errors) == 0
+        assert len(errors) == 0, "Errors must not be empty"
 
     def test_validate_incomplete_state(self):
         """Incomplete state should report errors."""
         state = RNGState()
         errors = state.validate()
-        assert len(errors) > 0
+        assert len(errors) > 0, "Errors must not be empty"
 
 
 # --- Optimizer State Tests ---
@@ -145,13 +145,13 @@ class TestOptimizerState:
         """Create optimizer state."""
         state = OptimizerState()
         state.add_param_group({"lr": 0.001, "weight_decay": 0.01})
-        assert len(state.param_groups) == 1
+        assert len(state.param_groups) == 1, "Collection must not be empty"
 
     def test_save_state(self):
         """Save parameter state."""
         state = OptimizerState()
         state.save_state("param_0", {"step": 100, "exp_avg": [0.1, 0.2]})
-        assert "param_0" in state.state
+        assert "param_0" in state.state, "Condition must be true"
 
     def test_serialize_optimizer(self):
         """Serialize optimizer state."""
@@ -159,14 +159,14 @@ class TestOptimizerState:
         state.add_param_group({"lr": 0.001})
         state.save_state("p0", {"step": 1})
         data = state.to_dict()
-        assert "state" in data
-        assert "param_groups" in data
+        assert "state" in data, "Data must not be empty"
+        assert "param_groups" in data, "Data must not be empty"
 
     def test_deserialize_optimizer(self):
         """Deserialize optimizer state."""
         data = {"state": {"p0": {"step": 1}}, "param_groups": [{"lr": 0.001}]}
         state = OptimizerState.from_dict(data)
-        assert state.state["p0"]["step"] == 1
+        assert state.state["p0"]["step"] == 1, "Condition must be true"
 
 
 # --- Scheduler State Tests ---
@@ -210,15 +210,15 @@ class TestSchedulerState:
         """Create scheduler state."""
         sched = SchedulerState()
         sched.base_lrs = [0.01, 0.001]
-        assert len(sched.base_lrs) == 2
+        assert len(sched.base_lrs) == 2, "Collection must not be empty"
 
     def test_step_scheduler(self):
         """Step scheduler increments epoch."""
         sched = SchedulerState()
         sched.step()
         sched.step()
-        assert sched.last_epoch == 2
-        assert sched._step_count == 2
+        assert sched.last_epoch == 2, "last_epoch is not valid"
+        assert sched._step_count == 2, "Count must be greater than zero"
 
     def test_serialize_scheduler(self):
         """Serialize scheduler state."""
@@ -226,13 +226,13 @@ class TestSchedulerState:
         sched.last_epoch = 5
         sched.base_lrs = [0.01]
         data = sched.to_dict()
-        assert data["last_epoch"] == 5
+        assert data["last_epoch"] == 5, "Data must not be empty"
 
     def test_deserialize_scheduler(self):
         """Deserialize scheduler state."""
         data = {"last_epoch": 10, "base_lrs": [0.001], "_step_count": 10}
         sched = SchedulerState.from_dict(data)
-        assert sched.last_epoch == 10
+        assert sched.last_epoch == 10, "last_epoch is not valid"
 
 
 # --- Checkpoint Checksum Tests ---
@@ -271,34 +271,34 @@ class TestCheckpointChecksum:
         """Compute checkpoint checksum."""
         data = {"epoch": 1, "loss": 0.5}
         checksum = compute_checkpoint_checksum(data)
-        assert len(checksum) == 64  # SHA-256 hex
+        assert len(checksum) == 64, "Checksum must not be empty"
 
     def test_checksum_deterministic(self):
         """Checksum should be deterministic."""
         data = {"epoch": 1, "loss": 0.5}
         h1 = compute_checkpoint_checksum(data)
         h2 = compute_checkpoint_checksum(data)
-        assert h1 == h2
+        assert h1 == h2, "h1 is not valid"
 
     def test_different_data_different_checksum(self):
         """Different data should have different checksums."""
         h1 = compute_checkpoint_checksum({"epoch": 1})
         h2 = compute_checkpoint_checksum({"epoch": 2})
-        assert h1 != h2
+        assert h1 != h2, "h1 is not valid"
 
     def test_validator_valid(self):
         """Valid checkpoint passes validation."""
         validator = CheckpointValidator()
         checkpoint = {"epoch": 1, "model_state": {}, "optimizer_state": {}}
         errors = validator.validate(checkpoint)
-        assert len(errors) == 0
+        assert len(errors) == 0, "Errors must not be empty"
 
     def test_validator_missing_keys(self):
         """Missing keys should be reported."""
         validator = CheckpointValidator()
         checkpoint = {"epoch": 1}
         errors = validator.validate(checkpoint)
-        assert len(errors) == 2
+        assert len(errors) == 2, "Errors must not be empty"
 
     @given(st.dictionaries(st.text(min_size=1, max_size=10), st.integers()))
     @settings(max_examples=30)
@@ -306,7 +306,7 @@ class TestCheckpointChecksum:
         """Property: checksum is deterministic."""
         h1 = compute_checkpoint_checksum(data)
         h2 = compute_checkpoint_checksum(data)
-        assert h1 == h2
+        assert h1 == h2, "h1 is not valid"
 
 
 # --- Best-K Retention Tests ---
@@ -355,7 +355,7 @@ class TestBestKRetention:
         for i in range(5):
             manager.add_checkpoint(f"ckpt_{i}", {"loss": float(i)})
         to_delete = manager.get_checkpoints_to_delete()
-        assert len(to_delete) == 2
+        assert len(to_delete) == 2, "To_delete must not be empty"
 
     def test_best_checkpoint_min(self):
         """Best checkpoint for min mode."""
@@ -363,7 +363,7 @@ class TestBestKRetention:
         manager.add_checkpoint("ckpt_1", {"loss": 0.5})
         manager.add_checkpoint("ckpt_2", {"loss": 0.3})
         manager.add_checkpoint("ckpt_3", {"loss": 0.7})
-        assert manager.get_best_checkpoint() == "ckpt_2"
+        assert manager.get_best_checkpoint() == "ckpt_2", "Condition must be true"
 
     def test_best_checkpoint_max(self):
         """Best checkpoint for max mode."""
@@ -371,7 +371,7 @@ class TestBestKRetention:
         manager.add_checkpoint("ckpt_1", {"accuracy": 0.8})
         manager.add_checkpoint("ckpt_2", {"accuracy": 0.9})
         manager.add_checkpoint("ckpt_3", {"accuracy": 0.7})
-        assert manager.get_best_checkpoint() == "ckpt_2"
+        assert manager.get_best_checkpoint() == "ckpt_2", "Condition must be true"
 
 
 # --- Corruption Detection and Auto-Heal Tests ---
@@ -443,14 +443,14 @@ class TestCorruptionHandling:
         detector = CorruptionDetector()
         checkpoint = {"model_state": {}}
         issues = detector.detect_corruption(checkpoint)
-        assert "Missing epoch field" in issues
+        assert "Missing epoch field" in issues, "in is not valid"
 
     def test_detect_checksum_mismatch(self):
         """Detect checksum mismatch."""
         detector = CorruptionDetector()
         checkpoint = {"epoch": 1, "model_state": {}}
         issues = detector.detect_corruption(checkpoint, checksum="wrong_checksum")
-        assert "Checksum mismatch" in issues
+        assert "Checksum mismatch" in issues, "in is not valid"
 
     def test_valid_checkpoint_no_issues(self):
         """Valid checkpoint should have no issues."""
@@ -458,7 +458,7 @@ class TestCorruptionHandling:
         checkpoint = {"epoch": 1, "model_state": {}}
         checksum = compute_checkpoint_checksum(checkpoint)
         issues = detector.detect_corruption(checkpoint, checksum=checksum)
-        assert len(issues) == 0
+        assert len(issues) == 0, "Issues must not be empty"
 
     def test_auto_heal_with_backup(self):
         """Auto-heal should find backup."""
@@ -469,8 +469,8 @@ class TestCorruptionHandling:
 
             healer = AutoHealManager(backup_dir)
             result = healer.heal("ckpt_1.pt", ["corruption"])
-            assert result["backup_found"]
-            assert result["healed"]
+            assert result["backup_found"], "Result must not be empty"
+            assert result["healed"], "Result must not be empty"
 
 
 # --- Checkpoint Manifest Tests ---
@@ -512,8 +512,8 @@ class TestCheckpointManifest:
         manifest = CheckpointManifest()
         manifest.add_entry("ckpt_1.pt", epoch=1, checksum="abc123", metrics={"loss": 0.5})
         entry = manifest.get_entry("ckpt_1.pt")
-        assert entry is not None
-        assert entry["epoch"] == 1
+        assert entry is not None, "entry must be initialized"
+        assert entry["epoch"] == 1, "Condition must be true"
 
     def test_list_by_epoch(self):
         """List checkpoints by epoch."""
@@ -522,7 +522,7 @@ class TestCheckpointManifest:
         manifest.add_entry("ckpt_2.pt", epoch=1, checksum="def", metrics={})
         manifest.add_entry("ckpt_3.pt", epoch=2, checksum="ghi", metrics={})
         epoch_1_ckpts = manifest.list_by_epoch(1)
-        assert len(epoch_1_ckpts) == 2
+        assert len(epoch_1_ckpts) == 2, "Epoch_1_ckpts must not be empty"
 
     def test_export_json(self):
         """Export manifest as JSON."""
@@ -530,4 +530,4 @@ class TestCheckpointManifest:
         manifest.add_entry("ckpt_1.pt", epoch=1, checksum="abc", metrics={})
         output = manifest.to_json()
         parsed = json.loads(output)
-        assert "ckpt_1.pt" in parsed
+        assert "ckpt_1.pt" in parsed, "Condition must be true"

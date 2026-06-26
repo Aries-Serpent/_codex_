@@ -39,17 +39,17 @@ def test_metrics_correctness():
     import math
 
     ppl = M.perplexity([math.log(4), math.log(4)], [0, 1], from_logits=False)
-    assert ppl == pytest.approx(4.0)
+    assert ppl == pytest.approx(4.0), "ppl is not valid"
     acc = M.token_accuracy([1, 2, 3], [1, 2, 0], ignore_index=0)
-    assert acc == pytest.approx(2 / 2)
+    assert acc == pytest.approx(2 / 2), "acc is not valid"
 
     pytest.importorskip("sacrebleu")
     score = M.bleu(["a b"], ["a b"])
-    assert score == pytest.approx(1.0)
+    assert score == pytest.approx(1.0), "score is not valid"
 
     pytest.importorskip("rouge_score")
     r = M.rouge_l(["a b c"], ["a b c"])
-    assert r is not None and r["rougeL_f"] == pytest.approx(1.0)
+    assert r is not None and r["rougeL_f"] == pytest.approx(1.0), "r must be initialized"
 
 
 # Reproducibility test
@@ -61,8 +61,8 @@ def test_set_reproducible_repeatable():
     t1 = torch.rand(1)
 
     set_reproducible(123)
-    assert py1 == random.random()
-    assert np1 == pytest.importorskip("numpy").random.rand()
+    assert py1 == random.random(), "py1 is not valid"
+    assert np1 == pytest.importorskip("numpy").random.rand(), "np1 is not valid"
     assert torch.allclose(t1, torch.rand(1))
 
 
@@ -93,9 +93,9 @@ def test_logging_initialization(monkeypatch, tmp_path):
     }
     loggers = cl._codex_logging_bootstrap(SimpleNamespace(hydra_cfg=cfg))
     assert isinstance(loggers.tb, DummyWriter)
-    assert calls["wb"]["mode"] == "offline" and calls["wb"]["project"] == "proj"
+    assert calls["wb"]["mode"] == "offline" and calls["wb"]["project"] == "proj", "Condition must be true"
     # Verify that the mlflow tracking URI and experiment from the config are propagated
-    assert calls["ml_uri"] == "uri" and calls["ml_exp"] == "exp"
+    assert calls["ml_uri"] == "uri" and calls["ml_exp"] == "exp", "Condition must be true"
 
 
 # Interface loader
@@ -108,7 +108,7 @@ def test_interface_loader_env(tmp_path):
     os.environ["CODEX_TOKENIZER_PATH"] = "dummy_tok:Tok"
     try:
         inst = get_component("CODEX_TOKENIZER_PATH", "dummy_tok:Tok")
-        assert inst.ok
+        assert inst.ok, "Condition must be true"
     finally:
         sys.path.remove(str(tmp_path))
         os.environ.pop("CODEX_TOKENIZER_PATH", None)

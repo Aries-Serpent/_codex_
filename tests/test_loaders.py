@@ -27,28 +27,28 @@ def test_jsonl_stream_basic(tmp_path: Path):
     ]
     f = _write(tmp_path, "a.jsonl", data)
     rows = list(iter_jsonl(f))
-    assert len(rows) == 2
-    assert rows[0].prompt == "p1" and rows[0].completion == "c1"
+    assert len(rows) == 2, "Rows must not be empty"
+    assert rows[0].prompt == "p1" and rows[0].completion == "c1", "prompt is not valid"
 
 
 def test_txt_stream_basic(tmp_path: Path):
     f = _write(tmp_path, "a.txt", ["p1\tc1", "p2\tc2"])
     rows = list(iter_txt(f))
-    assert rows[1].prompt == "p2"
+    assert rows[1].prompt == "p2", "prompt is not valid"
 
 
 def test_stream_paths_with_limits(tmp_path: Path):
     f1 = _write(tmp_path, "a.jsonl", ['{"prompt":"x","completion":"y"}'] * 5)
     out = list(stream_paths([f1], fmt="jsonl", max_samples=3))
-    assert len(out) == 3
+    assert len(out) == 3, "Out must not be empty"
 
 
 def test_collect_stats(tmp_path: Path):
     f1 = _write(tmp_path, "a.txt", ["hello\tworld", "foo\tbar baz"])
     stats = collect_stats(iter_txt(f1))
-    assert stats["samples"] == 2
-    assert stats["avg_prompt_len"] > 0
-    assert stats["avg_completion_tokens"] > 0
+    assert stats["samples"] == 2, "Condition must be true"
+    assert stats["avg_prompt_len"] > 0, "Count must be positive"
+    assert stats["avg_completion_tokens"] > 0, "Value must be greater than zero"
 
 
 def test_validation_errors(tmp_path: Path):
@@ -63,10 +63,10 @@ def test_stream_paths_generates_manifest(tmp_path: Path):
     cfg = SimpleNamespace(dataset=SimpleNamespace(generate_manifest=True))
     list(stream_paths([f1], fmt="jsonl", cfg=cfg))
     manifest = Path(f"{f1}.manifest.json")
-    assert manifest.exists()
+    assert manifest.exists(), "Condition must be true"
     data = json.loads(manifest.read_text())
-    assert data["num_records"] == 3
-    assert data["path"].endswith("samples.jsonl")
+    assert data["num_records"] == 3, "Data must not be empty"
+    assert data["path"].endswith("samples.jsonl"), "Data must not be empty"
 
 
 # END: CODEX_DATA_TESTS

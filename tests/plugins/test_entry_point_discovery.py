@@ -41,6 +41,6 @@ def test_entry_point_discovery(monkeypatch) -> None:
 
     reg = Registry("x")
     count, errs = reg.load_from_entry_points("codex_ml.x", require_api="v1")
-    assert count == 1
-    assert "bad" in errs and "boom" in errs["bad"]
-    assert "inc" not in errs
+    assert count == 1, "Count must be greater than zero"
+    assert "bad" in errs and "boom" in errs["bad"], "Condition must be true"
+    assert "inc" not in errs, "Condition must be true"

@@ -161,8 +161,8 @@ def create_scheduler(
 
     except (ImportError, TypeError) as e:
         error_type = type(e).__name__
-        logger.debug(f"ImportError or TypeError: <ERROR_TYPE>")
-        logger.debug(f"transformers error: <ERROR_TYPE>")
+        logger.debug("ImportError or TypeError: <ERROR_TYPE>")
+        logger.debug("transformers error: <ERROR_TYPE>")
         LOGGER.warning(
             "transformers not available or TypeError, falling back to PyTorch schedulers"
         )
@@ -197,7 +197,7 @@ def _create_pytorch_scheduler(
         from torch.optim import lr_scheduler
     except ImportError as e:
         error_type = type(e).__name__
-        logger.debug(f"ImportError: <ERROR_TYPE>")
+        logger.debug("ImportError: <ERROR_TYPE>")
         raise ImportError(
             "PyTorch is required for scheduler creation. Install with: pip install torch"
         ) from e

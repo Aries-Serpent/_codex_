@@ -20,12 +20,12 @@ def _load_spec() -> dict:
 def test_image_pull_policy_prefers_cache() -> None:
     spec = _load_spec()
     image = spec.get("image", {})
-    assert image.get("pullPolicy") == "IfNotPresent"
+    assert image.get("pullPolicy") == "IfNotPresent", "Condition must be true"
 
 
 def test_offline_environment_defaults() -> None:
     spec = _load_spec()
     env = {item["name"]: item.get("value") for item in spec.get("env", [])}
-    assert env.get("WANDB_MODE") == "offline"
-    assert env.get("HF_HUB_OFFLINE") == "1"
-    assert env.get("LOG_LEVEL") == "INFO"
+    assert env.get("WANDB_MODE") == "offline", "Condition must be true"
+    assert env.get("HF_HUB_OFFLINE") == "1", "Condition must be true"
+    assert env.get("LOG_LEVEL") == "INFO", "Condition must be true"

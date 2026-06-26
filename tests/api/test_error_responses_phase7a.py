@@ -71,9 +71,9 @@ class TestErrorMessageFormat:
         response = test_client.post(
             "/auth/register", json={"username": "test"}  # Missing required fields
         )
-        assert response.status_code == 422
+        assert response.status_code == 422, "Response must not be empty"
         data = response.json()
-        assert "detail" in data
+        assert "detail" in data, "Data must not be empty"
 
     def test_error_response_is_json(self, test_client):
         """Error response should be valid JSON."""
@@ -98,7 +98,7 @@ class TestErrorMessageFormat:
         response = test_client.get("/auth/user/99999")
         if response.status_code == 404:
             data = response.json()
-            assert "detail" in data or "message" in data
+            assert "detail" in data or "message" in data, "Data must not be empty"
 
     def test_400_error_includes_field_info(self, test_client):
         """400 error should indicate which field is wrong."""
@@ -109,7 +109,7 @@ class TestErrorMessageFormat:
         if response.status_code >= 400:
             data = response.json()
             # Should mention which field
-            assert "detail" in data or "message" in data
+            assert "detail" in data or "message" in data, "Data must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -129,7 +129,7 @@ class TestErrorCodeConsistency:
             "/auth/login", json={"username": "nonexistent2", "password": "wrong"}
         )
         # Both should return same error code
-        assert response1.status_code == response2.status_code
+        assert response1.status_code == response2.status_code, "Response must not be empty"
 
     def test_validation_errors_consistent(self, test_client):
         """Validation errors should be consistent."""
@@ -142,8 +142,8 @@ class TestErrorCodeConsistency:
             json={"username": None, "email": "test@example.com", "password": "Pass1!"},
         )
         # Both should return validation error
-        assert response1.status_code == 422 or response1.status_code == 400
-        assert response2.status_code == 422 or response2.status_code == 400
+        assert response1.status_code == 422 or response1.status_code == 400, "Response must not be empty"
+        assert response2.status_code == 422 or response2.status_code == 400, "Response must not be empty"
 
     def test_authentication_errors_consistent(self, test_client):
         """Authentication errors should be consistent."""
@@ -154,7 +154,7 @@ class TestErrorCodeConsistency:
             "/auth/login", json={"username": "user2", "password": "wrongpass"}
         )
         # Both should return same auth error code
-        assert response1.status_code == response2.status_code
+        assert response1.status_code == response2.status_code, "Response must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -172,8 +172,8 @@ class TestStackTraceHandling:
             data = response.json()
             data_str = str(data)
             # Should not contain traceback indicators
-            assert "traceback" not in data_str.lower()
-            assert "file " not in data_str.lower() or "line " not in data_str.lower()
+            assert "traceback" not in data_str.lower(), "Data must not be empty"
+            assert "file " not in data_str.lower() or "line " not in data_str.lower(), "Data must not be empty"
 
     def test_500_error_no_internal_details(self, test_client):
         """500 errors should not expose internal implementation details."""
@@ -190,8 +190,8 @@ class TestStackTraceHandling:
             if response.status_code == 500:
                 data = response.json()
                 # Should not mention database
-                assert "database" not in str(data).lower()
-                assert "connection" not in str(data).lower()
+                assert "database" not in str(data).lower(), "Data must not be empty"
+                assert "connection" not in str(data).lower(), "Data must not be empty"
 
     def test_error_response_sanitized(self, test_client):
         """Error responses should be sanitized."""
@@ -204,8 +204,8 @@ class TestStackTraceHandling:
             for field, value in data.items():
                 if isinstance(value, str):
                     # Should not contain system paths
-                    assert "/home/" not in value
-                    assert "/var/" not in value
+                    assert "/home/" not in value, "Value must be initialized"
+                    assert "/var/" not in value, "Value must be initialized"
 
 
 # ---------------------------------------------------------------------------
@@ -222,7 +222,7 @@ class TestErrorHTTPHeaders:
             "/auth/login", json={"username": "nonexistent", "password": "wrong"}
         )
         if response.status_code >= 400:
-            assert "content-type" in response.headers
+            assert "content-type" in response.headers, "Response must not be empty"
             assert "json" in response.headers.get("content-type", "").lower()
 
     def test_error_response_has_status_code_header(self, test_client):
@@ -233,7 +233,7 @@ class TestErrorHTTPHeaders:
     def test_validation_error_content_type(self, test_client):
         """Validation error should be JSON."""
         response = test_client.post("/auth/register", json={})
-        assert response.status_code == 422
+        assert response.status_code == 422, "Response must not be empty"
         assert "application/json" in response.headers.get("content-type", "")
 
     def test_unauthorized_error_includes_www_authenticate(self, test_client):
@@ -242,7 +242,7 @@ class TestErrorHTTPHeaders:
         # May return 401 or 404 depending on endpoint
         if response.status_code == 401:
             # May have WWW-Authenticate header
-            assert "www-authenticate" in response.headers or True
+            assert "www-authenticate" in response.headers or True, "Response must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -257,17 +257,17 @@ class TestRateLimitingErrors:
         """Rate limit error should return 429."""
         # Would need to trigger rate limiting
         # This is a placeholder
-        assert True
+        assert True, "True is not valid"
 
     def test_rate_limit_headers_present(self, test_client):
         """Rate limit response should include relevant headers."""
         # Would need to trigger rate limiting
-        assert True
+        assert True, "True is not valid"
 
     def test_rate_limit_retry_after_header(self, test_client):
         """Rate limit error should include Retry-After header."""
         # Would need to trigger rate limiting
-        assert True
+        assert True, "True is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -283,10 +283,10 @@ class TestAuthenticationErrors:
         response = test_client.post(
             "/auth/login", json={"username": "nonexistent", "password": "wrong"}
         )
-        assert response.status_code == 400
+        assert response.status_code == 400, "Response must not be empty"
         data = response.json()
         # Message should be generic for security
-        assert "detail" in data or "message" in data
+        assert "detail" in data or "message" in data, "Data must not be empty"
 
     def test_expired_token_error_message(self, test_client):
         """Expired token should return appropriate message."""
@@ -300,7 +300,7 @@ class TestAuthenticationErrors:
         # May return 401 or 404
         if response.status_code == 401:
             data = response.json()
-            assert "token" in str(data).lower() or "authorization" in str(data).lower()
+            assert "token" in str(data).lower() or "authorization" in str(data).lower(), "Data must not be empty"
 
     def test_invalid_token_format_error(self, test_client):
         """Invalid token format should return appropriate error."""
@@ -332,9 +332,9 @@ class TestBusinessLogicErrors:
                 "password": "SecurePass123!",
             },
         )
-        assert response.status_code == 400
+        assert response.status_code == 400, "Response must not be empty"
         data = response.json()
-        assert "detail" in data or "message" in data
+        assert "detail" in data or "message" in data, "Data must not be empty"
 
     def test_weak_password_error_message(self, test_client):
         """Weak password error should be informative."""
@@ -345,7 +345,7 @@ class TestBusinessLogicErrors:
         assert response.status_code in [400, 422]
         data = response.json()
         # Should indicate password requirement
-        assert "password" in str(data).lower()
+        assert "password" in str(data).lower(), "Data must not be empty"
 
     def test_invalid_email_error_message(self, test_client):
         """Invalid email error should be clear."""
@@ -356,17 +356,17 @@ class TestBusinessLogicErrors:
         assert response.status_code in [400, 422]
         data = response.json()
         # Should indicate email requirement
-        assert "email" in str(data).lower() or "invalid" in str(data).lower()
+        assert "email" in str(data).lower() or "invalid" in str(data).lower(), "Data must not be empty"
 
     def test_missing_required_field_error(self, test_client):
         """Missing required field should have clear error."""
         response = test_client.post(
             "/auth/register", json={"username": "test", "email": "test@example.com"}
         )
-        assert response.status_code == 422
+        assert response.status_code == 422, "Response must not be empty"
         data = response.json()
         # Should indicate which field is missing
-        assert "password" in str(data).lower() or "field" in str(data).lower()
+        assert "password" in str(data).lower() or "field" in str(data).lower(), "Data must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -389,9 +389,9 @@ class TestErrorResponseConsistency:
     def test_validation_error_structure(self, test_client):
         """Validation errors should have consistent structure."""
         response = test_client.post("/auth/register", json={})
-        assert response.status_code == 422
+        assert response.status_code == 422, "Response must not be empty"
         data = response.json()
-        assert "detail" in data
+        assert "detail" in data, "Data must not be empty"
 
     def test_multiple_validation_errors_format(self, test_client):
         """Multiple validation errors should be formatted consistently."""
@@ -406,7 +406,7 @@ class TestErrorResponseConsistency:
         assert response.status_code in [400, 422]
         data = response.json()
         # Should indicate all errors
-        assert "detail" in data
+        assert "detail" in data, "Data must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -425,7 +425,7 @@ class TestErrorMessageContent:
         if response.status_code >= 400:
             data = response.json()
             detail = data.get("detail", "")
-            assert len(str(detail)) > 0
+            assert len(str(detail)) > 0, "Collection must not be empty"
 
     def test_error_is_readable(self, test_client):
         """Error message should be human-readable."""
@@ -434,7 +434,7 @@ class TestErrorMessageContent:
             data = response.json()
             # Should contain readable text, not just codes
             detail = str(data.get("detail", ""))
-            assert any(c.isalpha() for c in detail)
+            assert any(c.isalpha() for c in detail), "Condition must be true"
 
     def test_error_language_professional(self, test_client):
         """Error messages should be professional."""
@@ -443,8 +443,8 @@ class TestErrorMessageContent:
             data = response.json()
             detail = str(data).lower()
             # Should not contain profanity or slang
-            assert "fuck" not in detail
-            assert "shit" not in detail
+            assert "fuck" not in detail, "Condition must be true"
+            assert "shit" not in detail, "Condition must be true"
 
     def test_error_not_revealing_internals(self, test_client):
         """Error messages should not reveal internal information."""
@@ -452,9 +452,9 @@ class TestErrorMessageContent:
         if response.status_code >= 400:
             data = str(response.json()).lower()
             # Should not reveal implementation details
-            assert "sql" not in data
-            assert "/usr/" not in data
-            assert "config" not in data or "configuration" not in data
+            assert "sql" not in data, "Data must not be empty"
+            assert "/usr/" not in data, "Data must not be empty"
+            assert "config" not in data or "configuration" not in data, "Data must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -478,7 +478,7 @@ class TestSpecificErrorConditions:
         if response.status_code in [400, 422]:
             data = response.json()
             # Should mention password requirement
-            assert "password" in str(data).lower()
+            assert "password" in str(data).lower(), "Data must not be empty"
 
     def test_email_validation_error_specificity(self, test_client):
         """Email error should indicate format issue."""
@@ -489,7 +489,7 @@ class TestSpecificErrorConditions:
         if response.status_code in [400, 422]:
             data = response.json()
             # Should mention email
-            assert "email" in str(data).lower() or "invalid" in str(data).lower()
+            assert "email" in str(data).lower() or "invalid" in str(data).lower(), "Data must not be empty"
 
     def test_username_conflict_error_specificity(self, test_client, registered_user):
         """Username conflict should be clearly indicated."""
@@ -501,7 +501,7 @@ class TestSpecificErrorConditions:
                 "password": "SecurePass123!",
             },
         )
-        assert response.status_code == 400
+        assert response.status_code == 400, "Response must not be empty"
         data = response.json()
         # Should mention username or already exists
         error_msg = str(data).lower()

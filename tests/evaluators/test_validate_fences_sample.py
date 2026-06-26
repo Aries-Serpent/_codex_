@@ -39,13 +39,13 @@ echo hello
 """,
     )
     ok, problems = vf.validate_file(str(bad))
-    assert not ok
-    assert any("mixed fence types" in p for p in problems)
+    assert not ok, "Condition must be true"
+    assert any("mixed fence types" in p for p in problems), "Condition must be true"
 
 
 def test_repo_sample_is_broken_when_present():
     sample = Path("samples/broken_fence.sample.md")
     if sample.exists():
         ok, problems = vf.validate_file(str(sample))
-        assert not ok
-        assert any("mixed fence types" in p for p in problems)
+        assert not ok, "Condition must be true"
+        assert any("mixed fence types" in p for p in problems), "Condition must be true"

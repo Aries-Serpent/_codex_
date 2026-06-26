@@ -38,9 +38,9 @@ def test_gaps_analyzer_produces_output(tmp_path, monkeypatch):
             "0.8",
         ]
     )
-    assert code == 0
-    assert out_path.exists()
+    assert code == 0, "code is not valid"
+    assert out_path.exists(), "Condition must be true"
     data = json.loads(out_path.read_text(encoding="utf-8"))
     assert "items" in data and isinstance(data["items"], list)
     # Expect at least one flagged item
-    assert len(data["items"]) >= 1
+    assert len(data["items"]) >= 1, "Collection must not be empty"

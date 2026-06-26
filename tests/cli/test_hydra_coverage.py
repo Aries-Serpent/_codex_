@@ -68,7 +68,7 @@ class TestModuleImport:
         try:
             from codex_ml.cli import hydra_main
 
-            assert hydra_main is not None
+            assert hydra_main is not None, "hydra_main must be initialized"
         except ImportError as e:
             pytest.skip(f"hydra_main module not available: {e}")
 
@@ -77,7 +77,7 @@ class TestModuleImport:
         try:
             from codex_ml.cli import hydra_entry
 
-            assert hydra_entry is not None
+            assert hydra_entry is not None, "hydra_entry must be initialized"
         except ImportError as e:
             pytest.skip(f"hydra_entry module not available: {e}")
 
@@ -125,7 +125,7 @@ class TestHydraConfiguration:
         output = result.stdout + result.stderr
         # Hydra should support config-path
         if result.returncode == 0:
-            assert "--config-path" in output or "config" in output.lower()
+            assert "--config-path" in output or "config" in output.lower(), "Condition must be true"
 
     def test_hydra_config_name_option(self) -> None:
         """Verify --config-name option is supported."""
@@ -138,7 +138,7 @@ class TestHydraConfiguration:
         )
         output = result.stdout + result.stderr
         if result.returncode == 0:
-            assert "--config-name" in output or "config" in output.lower()
+            assert "--config-name" in output or "config" in output.lower(), "Condition must be true"
 
 
 # =============================================================================

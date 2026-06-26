@@ -45,7 +45,7 @@ try:
     from codex.auth import MFAProvider
 except ImportError as e:
     error_type = type(e).__name__
-    print(f"Error: <ERROR_TYPE>")
+    print("Error: <ERROR_TYPE>")
     sys.exit(1)
 
 class MFAEnrollmentAutomator:

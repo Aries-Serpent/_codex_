@@ -72,6 +72,6 @@ def test_dp_training_runs(monkeypatch, tmp_path):
 
     result = run_custom_trainer(DummyModel(), None, dataset, None, cfg)
 
-    assert result.get("history")
-    assert engine.calls["noise_multiplier"] == pytest.approx(1.0)
-    assert engine.calls["max_grad_norm"] == pytest.approx(1.0)
+    assert result.get("history"), "Result must not be empty"
+    assert engine.calls["noise_multiplier"] == pytest.approx(1.0), "Condition must be true"
+    assert engine.calls["max_grad_norm"] == pytest.approx(1.0), "Condition must be true"

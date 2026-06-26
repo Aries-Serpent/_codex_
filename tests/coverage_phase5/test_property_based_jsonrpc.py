@@ -31,7 +31,7 @@ def test_json_serialization_preserves_structure(messages: list[Dict[str, Any]]):
     for msg in messages:
         encoded = json.dumps(msg)
         decoded = json.loads(encoded)
-        assert decoded == msg
+        assert decoded == msg, "decoded is not valid"
 
 
 @given(st.integers(min_value=1, max_value=2**31 - 1))
@@ -42,7 +42,7 @@ def test_message_ids_are_valid(msg_id: int):
     encoded = json.dumps(message)
     decoded = json.loads(encoded)
 
-    assert decoded["id"] == msg_id
+    assert decoded["id"] == msg_id, "Condition must be true"
 
 
 @given(st.text(min_size=1, max_size=255, alphabet=st.characters(blacklist_characters='\\/"')))
@@ -55,6 +55,6 @@ def test_method_names_preserved(method_name: str):
     try:
         encoded = json.dumps(message)
         decoded = json.loads(encoded)
-        assert decoded["method"] == method_name
+        assert decoded["method"] == method_name, "Condition must be true"
     except (ValueError, OverflowError):
         pass

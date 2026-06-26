@@ -31,8 +31,8 @@ class TestLargeFileHandling:
             for _ in range(num_chunks):
                 f.write(b"X" * chunk_size)
 
-        assert large_file.exists()
-        assert large_file.stat().st_size == chunk_size * num_chunks
+        assert large_file.exists(), "Condition must be true"
+        assert large_file.stat().st_size == chunk_size * num_chunks, "st_size is not valid"
 
     def test_archive_large_file_in_chunks(self, tmp_path):
         """Test archiving large file using chunked reading"""
@@ -46,8 +46,8 @@ class TestLargeFileHandling:
         with tarfile.open(archive_path, "w:gz") as tar:
             tar.add(large_file, arcname=large_file.name)
 
-        assert archive_path.exists()
-        assert archive_path.stat().st_size > 0
+        assert archive_path.exists(), "Condition must be true"
+        assert archive_path.stat().st_size > 0, "st_size must be greater than zero"
 
     def test_extract_large_file_streaming(self, tmp_path):
         """Test extracting large file with streaming"""
@@ -67,8 +67,8 @@ class TestLargeFileHandling:
         safe_extract_tarfile(archive_path, extract_dir)
 
         extracted_file = extract_dir / "large_source.bin"
-        assert extracted_file.exists()
-        assert extracted_file.stat().st_size == source_file.stat().st_size
+        assert extracted_file.exists(), "Condition must be true"
+        assert extracted_file.stat().st_size == source_file.stat().st_size, "st_size is not valid"
 
     def test_checksum_large_file_chunked(self, tmp_path):
         """Test checksumming large file in chunks (memory efficient)"""
@@ -91,7 +91,7 @@ class TestLargeFileHandling:
                 sha256_hash.update(chunk)
 
         checksum = sha256_hash.hexdigest()
-        assert len(checksum) == 64
+        assert len(checksum) == 64, "Checksum must not be empty"
 
     def test_multiple_large_files_bundling(self, tmp_path):
         """Test bundling multiple large files"""
@@ -110,12 +110,12 @@ class TestLargeFileHandling:
         with tarfile.open(archive_path, "w:gz") as tar:
             tar.add(source_dir, arcname=".")
 
-        assert archive_path.exists()
+        assert archive_path.exists(), "Condition must be true"
 
         # Verify all files in archive
         with tarfile.open(archive_path, "r:gz") as tar:
             members = [m for m in tar.getmembers() if m.isfile()]
-            assert len(members) == num_files
+            assert len(members) == num_files, "Members must not be empty"
 
     def test_sparse_file_handling(self, tmp_path):
         """Test handling of sparse file-like structures"""
@@ -133,7 +133,7 @@ class TestLargeFileHandling:
         with tarfile.open(archive_path, "w:gz") as tar:
             tar.add(sparse_file, arcname="sparse.bin")
 
-        assert archive_path.exists()
+        assert archive_path.exists(), "Condition must be true"
 
     def test_large_file_count_handling(self, tmp_path):
         """Test handling archives with many files"""
@@ -153,7 +153,7 @@ class TestLargeFileHandling:
         with tarfile.open(archive_path, "r:gz") as tar:
             members = tar.getmembers()
             file_members = [m for m in members if m.isfile()]
-            assert len(file_members) == num_files
+            assert len(file_members) == num_files, "File_members must not be empty"
 
     def test_zip_large_file_compression(self, tmp_path):
         """Test ZIP format with large file"""
@@ -171,7 +171,7 @@ class TestLargeFileHandling:
             zf.write(large_file, arcname=large_file.name)
 
         # Should achieve compression
-        assert archive_path.stat().st_size < large_file.stat().st_size
+        assert archive_path.stat().st_size < large_file.stat().st_size, "st_size is not valid"
 
 
 class TestMemoryEfficientOperations:
@@ -193,7 +193,7 @@ class TestMemoryEfficientOperations:
             for file_path in sorted(source_dir.iterdir()):
                 tar.add(file_path, arcname=file_path.name)
 
-        assert archive_path.exists()
+        assert archive_path.exists(), "Condition must be true"
 
     def test_incremental_checksum_calculation(self, tmp_path):
         """Test calculating checksums incrementally"""
@@ -217,8 +217,8 @@ class TestMemoryEfficientOperations:
                 sha256.update(chunk)
 
         checksum = sha256.hexdigest()
-        assert len(checksum) == 64
-        assert checksum.isalnum()
+        assert len(checksum) == 64, "Checksum must not be empty"
+        assert checksum.isalnum(), "Condition must be true"
 
     def test_generator_based_file_processing(self, tmp_path):
         """Test processing files using generators (memory efficient)"""
@@ -238,10 +238,10 @@ class TestMemoryEfficientOperations:
         # Process using generator
         file_count = 0
         for file_path in file_generator(source_dir):
-            assert file_path.exists()
+            assert file_path.exists(), "Condition must be true"
             file_count += 1
 
-        assert file_count == 20
+        assert file_count == 20, "Count must be greater than zero"
 
     def test_buffered_extraction(self, tmp_path):
         """Test extraction with buffering for memory efficiency"""
@@ -267,7 +267,7 @@ class TestMemoryEfficientOperations:
 
         # Verify extraction
         extracted_files = list(extract_dir.rglob("*.txt"))
-        assert len(extracted_files) == 15
+        assert len(extracted_files) == 15, "Extracted_files must not be empty"
 
 
 if __name__ == "__main__":

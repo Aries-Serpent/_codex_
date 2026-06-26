@@ -44,8 +44,8 @@ def test_tracking_decide_rewrites_remote_when_offline(monkeypatch: pytest.Monkey
     assert result.exit_code == 0, result.stdout
     payload = json.loads(result.stdout)
     assert payload["effective_uri"].startswith("file:"), payload
-    assert payload["fallback_reason"] is not None
-    assert payload["allow_remote"] is False
+    assert payload["fallback_reason"] is not None, "Value must be initialized"
+    assert payload["allow_remote"] is False, "Condition must be true"
 
 
 def test_tracking_decide_honours_allow_remote(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -63,6 +63,6 @@ def test_tracking_decide_honours_allow_remote(monkeypatch: pytest.MonkeyPatch) -
     )
     assert result.exit_code == 0, result.stdout
     payload = json.loads(result.stdout)
-    assert payload["effective_uri"] == "http://remote-host:5000"
-    assert payload["allow_remote"] is True
-    assert payload["fallback_reason"] is None
+    assert payload["effective_uri"] == "http://remote-host:5000", "Condition must be true"
+    assert payload["allow_remote"] is True, "Condition must be true"
+    assert payload["fallback_reason"] is None, "Condition must be true"

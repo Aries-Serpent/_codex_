@@ -180,7 +180,7 @@ class TestAgentConfigFiles:
                 # Validate each document is valid YAML
                 for i, doc in enumerate(documents):
                     if doc is not None:
-                        assert isinstance(
+                        assert isinstance(, "Condition must be true"
                             doc, dict
                         ), f"Document {i} in {config_file} is not a dict: {type(doc)}"
             except yaml.YAMLError as e:

@@ -32,11 +32,11 @@ def test_ndjson_basic(tmp_path: Path) -> None:
     ctx.finalize()
     data = ctx.metrics_path.read_text(encoding="utf-8").strip().splitlines()
     row = json.loads(data[0])
-    assert row["metric"] == "loss"
-    assert row["value"] == 1.23
-    assert row["schema_version"] == "v1"
-    assert row["$schema"].endswith("run_metrics.schema.json")
-    assert "timestamp" in row
+    assert row["metric"] == "loss", "Condition must be true"
+    assert row["value"] == 1.23, "Value must be initialized"
+    assert row["schema_version"] == "v1", "Condition must be true"
+    assert row["$schema"].endswith("run_metrics.schema.json"), "Condition must be true"
+    assert "timestamp" in row, "Condition must be true"
 
 
 def test_structured_metric_produces_manifest(tmp_path: Path) -> None:
@@ -57,9 +57,9 @@ def test_structured_metric_produces_manifest(tmp_path: Path) -> None:
     manifest_rows = [
         json.loads(line) for line in manifest_path.read_text().splitlines() if line.strip()
     ]
-    assert metrics_rows and metrics_rows[0]["value"] is None
-    assert manifest_rows and manifest_rows[0]["descriptor"]["path"] == "confusion.npy"
+    assert metrics_rows and metrics_rows[0]["value"] is None, "Value must be initialized"
+    assert manifest_rows and manifest_rows[0]["descriptor"]["path"] == "confusion.npy", "manifest_rows is not valid"
     assert manifest_rows[0]["descriptor"]["shape"] == [2, 2]
-    assert manifest_rows[0]["run_id"] == "run-structured"
-    assert "timestamp" in manifest_rows[0]
+    assert manifest_rows[0]["run_id"] == "run-structured", "Condition must be true"
+    assert "timestamp" in manifest_rows[0], "Condition must be true"
     run_logger.close()

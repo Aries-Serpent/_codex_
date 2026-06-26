@@ -12,14 +12,14 @@ class TestDocRetrieverRun:
     def test_empty_query_returns_error(self):
         """Empty query should return error."""
         result = run({"query": ""})
-        assert result["error"] == "query is required"
-        assert result["results"] == []
+        assert result["error"] == "query is required", "Result must not be empty"
+        assert result["results"] == [], "Result must not be empty"
 
     def test_missing_query_returns_error(self):
         """Missing query should return error."""
         result = run({})
-        assert result["error"] == "query is required"
-        assert result["results"] == []
+        assert result["error"] == "query is required", "Result must not be empty"
+        assert result["results"] == [], "Result must not be empty"
 
     def test_search_with_valid_query(self):
         """Search with valid query should find matching documents."""
@@ -41,11 +41,11 @@ class TestDocRetrieverRun:
                 }
             )
 
-            assert "results" in result
-            assert "total_found" in result
+            assert "results" in result, "Result must not be empty"
+            assert "total_found" in result, "Result must not be empty"
             # Should find the matching document
             if result["results"]:
-                assert "guide.md" in result["results"][0]["path"]
+                assert "guide.md" in result["results"][0]["path"], "Result must not be empty"
 
     def test_query_with_multiple_terms(self):
         """Query with multiple terms should match documents containing any term."""
@@ -67,7 +67,7 @@ class TestDocRetrieverRun:
                 }
             )
 
-            assert "results" in result
+            assert "results" in result, "Result must not be empty"
 
     def test_top_k_limit(self):
         """top_k parameter should limit results."""
@@ -90,7 +90,7 @@ class TestDocRetrieverRun:
                 }
             )
 
-            assert len(result["results"]) <= 2
+            assert len(result["results"]) <= 2, "Collection must not be empty"
 
     def test_case_insensitive_search(self):
         """Search should be case-insensitive."""
@@ -118,7 +118,7 @@ class TestDocRetrieverRun:
             )
 
             # Both should find the same results
-            assert len(result_lower["results"]) == len(result_upper["results"])
+            assert len(result_lower["results"]) == len(result_upper["results"]), "Collection must not be empty"
 
     def test_excerpt_generation(self):
         """Excerpts should be generated around matching terms."""
@@ -143,9 +143,9 @@ class TestDocRetrieverRun:
                 }
             )
 
-            assert len(result["results"]) > 0
-            assert "excerpt" in result["results"][0]
-            assert len(result["results"][0]["excerpt"]) > 0
+            assert len(result["results"]) > 0, "Collection must not be empty"
+            assert "excerpt" in result["results"][0], "Result must not be empty"
+            assert len(result["results"][0]["excerpt"]) > 0, "Collection must not be empty"
 
     def test_scoring_based_on_hits(self):
         """Documents with more hits should score higher."""
@@ -172,7 +172,7 @@ class TestDocRetrieverRun:
 
             # Results should be sorted by score
             if len(result["results"]) >= 2:
-                assert result["results"][0]["score"] >= result["results"][1]["score"]
+                assert result["results"][0]["score"] >= result["results"][1]["score"], "Value must be greater than zero"
 
     def test_nested_markdown_files(self):
         """Should find markdown files in nested directories."""
@@ -194,7 +194,7 @@ class TestDocRetrieverRun:
                 }
             )
 
-            assert "results" in result
+            assert "results" in result, "Result must not be empty"
 
 
 class TestDocRetrieverSafeRelative:
@@ -206,7 +206,7 @@ class TestDocRetrieverSafeRelative:
         path = Path("/home/user/docs/api.md")
 
         result = _safe_relative(path, base)
-        assert result == "api.md"
+        assert result == "api.md", "Result must not be empty"
 
     def test_safe_relative_nested_path(self):
         """_safe_relative should handle nested paths."""
@@ -214,7 +214,7 @@ class TestDocRetrieverSafeRelative:
         path = Path("/home/user/docs/guides/tutorial.md")
 
         result = _safe_relative(path, base)
-        assert "tutorial.md" in result
+        assert "tutorial.md" in result, "Result must not be empty"
 
     def test_safe_relative_fallback(self):
         """_safe_relative should fallback when relative path fails."""

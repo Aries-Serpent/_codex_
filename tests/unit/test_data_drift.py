@@ -43,15 +43,15 @@ class TestDetectPsiNoDrift:
         result = detector.detect_psi(_UNIFORM_4, _UNIFORM_4)
 
         assert isinstance(result, DriftResult)
-        assert result.method == "psi"
+        assert result.method == "psi", "Result must not be empty"
         assert result.score == pytest.approx(0.0, abs=1e-6)
-        assert result.drifted is False
-        assert result.severity == "none"
+        assert result.drifted is False, "Result must not be empty"
+        assert result.severity == "none", "Result must not be empty"
 
     def test_identical_distributions_drifted_false(self):
         detector = DataDriftDetector(psi_threshold=0.2)
         result = detector.detect_psi([0.1, 0.6, 0.3], [0.1, 0.6, 0.3])
-        assert result.drifted is False
+        assert result.drifted is False, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -64,19 +64,19 @@ class TestDetectPsiDrift:
         detector = DataDriftDetector(psi_threshold=0.2)
         result = detector.detect_psi(_UNIFORM_4, _SHIFTED_4)
 
-        assert result.drifted is True
-        assert result.score > 0.2
+        assert result.drifted is True, "Result must not be empty"
+        assert result.score > 0.2, "score must be greater than zero"
         assert result.severity in {"slight", "significant"}
 
     def test_bin_scores_list_has_correct_length(self):
         detector = DataDriftDetector()
         result = detector.detect_psi(_UNIFORM_4, _SHIFTED_4)
-        assert len(result.details["bin_scores"]) == 4
+        assert len(result.details["bin_scores"]) == 4, "Collection must not be empty"
 
     def test_psi_score_is_finite(self):
         detector = DataDriftDetector()
         result = detector.detect_psi([0.3, 0.4, 0.3], [0.1, 0.7, 0.2])
-        assert math.isfinite(result.score)
+        assert math.isfinite(result.score), "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -89,10 +89,10 @@ class TestDetectKlNoDrift:
         detector = DataDriftDetector()
         result = detector.detect_kl(_UNIFORM_4, _UNIFORM_4)
 
-        assert result.method == "kl"
+        assert result.method == "kl", "Result must not be empty"
         assert result.score == pytest.approx(0.0, abs=1e-6)
-        assert result.drifted is False
-        assert result.severity == "none"
+        assert result.drifted is False, "Result must not be empty"
+        assert result.severity == "none", "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -106,19 +106,19 @@ class TestDetectKlDrift:
         detector = DataDriftDetector(kl_threshold=0.1)
         result = detector.detect_kl(_UNIFORM_4, _SHIFTED_4)
 
-        assert result.drifted is True
-        assert result.score > 0.0
+        assert result.drifted is True, "Result must not be empty"
+        assert result.score > 0.0, "score must be greater than zero"
 
     def test_kl_score_non_negative(self):
         """KL divergence must always be ≥ 0 (Gibbs' inequality)."""
         detector = DataDriftDetector()
         result = detector.detect_kl([0.2, 0.3, 0.5], [0.4, 0.1, 0.5])
-        assert result.score >= 0.0
+        assert result.score >= 0.0, "score must be greater than zero"
 
     def test_kl_bin_scores_length(self):
         detector = DataDriftDetector()
         result = detector.detect_kl(_UNIFORM_4, _SHIFTED_4)
-        assert len(result.details["bin_scores"]) == 4
+        assert len(result.details["bin_scores"]) == 4, "Collection must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -131,8 +131,8 @@ class TestCheckEpoch:
         detector = DataDriftDetector()
         results = detector.check_epoch(_UNIFORM_4, _UNIFORM_4, epoch=1)
 
-        assert "psi" in results
-        assert "kl" in results
+        assert "psi" in results, "Result must not be empty"
+        assert "kl" in results, "Result must not be empty"
         assert isinstance(results["psi"], DriftResult)
         assert isinstance(results["kl"], DriftResult)
 
@@ -140,16 +140,16 @@ class TestCheckEpoch:
         detector = DataDriftDetector()
         results = detector.check_epoch(_UNIFORM_4, _UNIFORM_4, epoch=5, feature_name="loss_hist")
 
-        assert results["psi"].drifted is False
-        assert results["kl"].drifted is False
+        assert results["psi"].drifted is False, "Result must not be empty"
+        assert results["kl"].drifted is False, "Result must not be empty"
 
     def test_epoch_drift_scenario(self):
         detector = DataDriftDetector(psi_threshold=0.01, kl_threshold=0.01)
         results = detector.check_epoch(_UNIFORM_4, _SHIFTED_4, epoch=3)
 
         # With very low thresholds, shifted distribution should trigger both
-        assert results["psi"].drifted is True
-        assert results["kl"].drifted is True
+        assert results["psi"].drifted is True, "Result must not be empty"
+        assert results["kl"].drifted is True, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -230,12 +230,12 @@ class TestCustomThresholds:
         detector = DataDriftDetector(psi_threshold=0.0005)
         result = detector.detect_psi(_UNIFORM_4, [0.26, 0.25, 0.25, 0.24])
         # Even a tiny shift should trigger drift with a near-zero threshold
-        assert result.drifted is True
+        assert result.drifted is True, "Result must not be empty"
 
     def test_high_psi_threshold_ignores_mild_shift(self):
         detector = DataDriftDetector(psi_threshold=10.0)
         result = detector.detect_psi(_UNIFORM_4, _SHIFTED_4)
-        assert result.drifted is False
+        assert result.drifted is False, "Result must not be empty"
 
     def test_invalid_threshold_raises(self):
         with pytest.raises(ValueError):
@@ -254,12 +254,12 @@ class TestEpsilonSmoothing:
         detector = DataDriftDetector()
         # Should not raise ZeroDivisionError or math domain error
         result = detector.detect_psi(_ZERO_BIN_4, _UNIFORM_4)
-        assert math.isfinite(result.score)
+        assert math.isfinite(result.score), "Result must not be empty"
 
     def test_zero_bin_kl_does_not_raise(self):
         detector = DataDriftDetector()
         result = detector.detect_kl(_ZERO_BIN_4, _UNIFORM_4)
-        assert math.isfinite(result.score)
+        assert math.isfinite(result.score), "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -272,7 +272,7 @@ class TestSingleBin:
         detector = DataDriftDetector()
         result = detector.detect_psi([1.0], [1.0])
         assert result.score == pytest.approx(0.0, abs=1e-6)
-        assert result.drifted is False
+        assert result.drifted is False, "Result must not be empty"
 
     def test_kl_single_bin_identical(self):
         detector = DataDriftDetector()
@@ -293,9 +293,9 @@ class TestSymmetricDistribution:
         cur = [1.0 / n] * n
         detector = DataDriftDetector()
         result = detector.detect_psi(ref, cur)
-        assert result.score < 0.01
+        assert result.score < 0.01, "Result must not be empty"
 
     def test_feature_name_propagated(self):
         detector = DataDriftDetector()
         result = detector.detect_psi(_UNIFORM_4, _UNIFORM_4, feature_name="token_freq")
-        assert result.details["feature_name"] == "token_freq"
+        assert result.details["feature_name"] == "token_freq", "Result must not be empty"

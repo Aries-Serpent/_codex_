@@ -63,7 +63,7 @@ def test_encode_decode_round_trip():
     ids = tok.encode(text)
     assert isinstance(ids, list) and ids
     decoded = tok.decode(ids)
-    assert "hello" in decoded.lower()
+    assert "hello" in decoded.lower(), "Condition must be true"
 
 
 @pytest.mark.tokenizer
@@ -85,7 +85,7 @@ def test_tokenizer_basic(tmp_path):
     tk = HFTokenizer(name_or_path=None, artifacts_dir=str(out))
     toks = tk.encode("Run pre-commit --all-files now.")
     assert isinstance(toks, list)
-    assert len(toks) > 0
+    assert len(toks) > 0, "Toks must not be empty"
 
 
 def test_whitespace_tokenizer_deterministic():
@@ -95,7 +95,7 @@ def test_whitespace_tokenizer_deterministic():
     text = "deterministic hashing is important"
     tokens_first = tokenizer.encode(text)
     tokens_second = tokenizer.encode(text)
-    assert tokens_first == tokens_second
+    assert tokens_first == tokens_second, "tokens_first is not valid"
 
     src_root = Path(__file__).resolve().parent.parent / "src"
     script = (
@@ -139,4 +139,4 @@ def test_whitespace_tokenizer_deterministic():
     stdout = result.stdout.strip()
     assert stdout, "subprocess should emit encoded tokens"
     tokens_subprocess = json.loads(stdout)
-    assert tokens_first == tokens_subprocess
+    assert tokens_first == tokens_subprocess, "tokens_first is not valid"

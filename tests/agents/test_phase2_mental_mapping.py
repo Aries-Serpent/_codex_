@@ -22,7 +22,7 @@ class TestPhase2_MentalMapping_Table4_Eq1:
         from agents.mental_mapping import MentalMapping
 
         mapping = MentalMapping()
-        assert mapping is not None
+        assert mapping is not None, "mapping must be initialized"
 
     def test_reasoning_step_init(self):
         """Test ReasoningStep initialization."""
@@ -30,7 +30,7 @@ class TestPhase2_MentalMapping_Table4_Eq1:
             from agents.mental_mapping import ReasoningStep
 
             step = ReasoningStep()
-            assert step is not None
+            assert step is not None, "step must be initialized"
         except (ImportError, AttributeError, TypeError):
             pytest.skip("ReasoningStep not available or requires params")
 
@@ -40,7 +40,7 @@ class TestPhase2_MentalMapping_Table4_Eq1:
             from agents.mental_mapping import ConceptNode
 
             node = ConceptNode()
-            assert node is not None
+            assert node is not None, "node must be initialized"
         except (ImportError, AttributeError, TypeError):
             pytest.skip("ConceptNode not available or requires params")
 
@@ -50,7 +50,7 @@ class TestPhase2_MentalMapping_Table4_Eq1:
             from agents.mental_mapping import RelationshipEdge
 
             edge = RelationshipEdge()
-            assert edge is not None
+            assert edge is not None, "edge must be initialized"
         except (ImportError, AttributeError, TypeError):
             pytest.skip("RelationshipEdge not available or requires params")
 
@@ -60,7 +60,7 @@ class TestPhase2_MentalMapping_Table4_Eq1:
             from agents.mental_mapping import KnowledgeGraph
 
             graph = KnowledgeGraph()
-            assert graph is not None
+            assert graph is not None, "graph must be initialized"
         except (ImportError, AttributeError, TypeError):
             pytest.skip("KnowledgeGraph not available or requires params")
 
@@ -84,10 +84,10 @@ class TestPhase2_MentalMapping_Table4_Eq2:
                         enum_found = True
                         # Test enum values
                         enum_values = list(attr)
-                        assert len(enum_values) > 0
+                        assert len(enum_values) > 0, "Enum_values must not be empty"
 
                         for value in enum_values:
-                            assert value.name is not None
+                            assert value.name is not None, "name must be initialized"
                             assert isinstance(value.name, str)
 
         if not enum_found:
@@ -99,10 +99,10 @@ class TestPhase2_MentalMapping_Table4_Eq2:
             from agents.mental_mapping import NodeType
 
             node_types = list(NodeType)
-            assert len(node_types) > 0
+            assert len(node_types) > 0, "Node_types must not be empty"
 
             for node_type in node_types:
-                assert node_type.name is not None
+                assert node_type.name is not None, "name must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("NodeType enum not found")
 
@@ -112,10 +112,10 @@ class TestPhase2_MentalMapping_Table4_Eq2:
             from agents.mental_mapping import EdgeType
 
             edge_types = list(EdgeType)
-            assert len(edge_types) > 0
+            assert len(edge_types) > 0, "Edge_types must not be empty"
 
             for edge_type in edge_types:
-                assert edge_type.name is not None
+                assert edge_type.name is not None, "name must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("EdgeType enum not found")
 
@@ -138,7 +138,7 @@ class TestPhase2_MentalMapping_GraphOperations:
                     content="test content",
                 )
                 mapping.add_node(node)
-                assert "test_node" in mapping.nodes
+                assert "test_node" in mapping.nodes, "Condition must be true"
             except (TypeError, ValueError, ImportError) as e:
                 pytest.skip(f"add_node requires MentalNode: {e}")
 
@@ -156,7 +156,7 @@ class TestPhase2_MentalMapping_GraphOperations:
                     mapping.add_node("node2", data={})
 
                 mapping.add_edge("node1", "node2")
-                assert True
+                assert True, "True is not valid"
             except (TypeError, ValueError, KeyError):
                 # Different signature or nodes don't exist
                 pytest.skip("add_edge operation failed")
@@ -173,7 +173,7 @@ class TestPhase2_MentalMapping_GraphOperations:
                 if hasattr(mapping, "add_node"):
                     mapping.add_node("temp_node", data={})
                     mapping.remove_node("temp_node")
-                    assert True
+                    assert True, "True is not valid"
             except (TypeError, ValueError, KeyError):
                 pytest.skip("remove_node operation failed")
 
@@ -191,7 +191,7 @@ class TestPhase2_MentalMapping_GraphOperations:
                     mapping.add_node("n2", data={})
                     mapping.add_edge("n1", "n2")
                     mapping.remove_edge("n1", "n2")
-                    assert True
+                    assert True, "True is not valid"
             except (TypeError, ValueError, KeyError):
                 pytest.skip("remove_edge operation failed")
 
@@ -206,7 +206,7 @@ class TestPhase2_MentalMapping_GraphOperations:
                 if hasattr(mapping, "add_node"):
                     mapping.add_node("test", data={"key": "value"})
                     node = mapping.get_node("test")
-                    assert node is not None
+                    assert node is not None, "node must be initialized"
             except (TypeError, ValueError, KeyError):
                 pytest.skip("get_node operation failed")
 
@@ -245,7 +245,7 @@ class TestPhase2_MentalMapping_TraversalOperations:
                 if hasattr(mapping, "add_node"):
                     mapping.add_node("center", data={})
                     neighbors = mapping.get_neighbors("center")
-                    assert neighbors is not None
+                    assert neighbors is not None, "neighbors must be initialized"
             except (TypeError, ValueError, KeyError):
                 pytest.skip("get_neighbors operation failed")
 
@@ -270,8 +270,8 @@ class TestPhase2_MentalMapping_TraversalOperations:
         mapping.connect_nodes(source_id="r", target_id="c2")
         result = mapping.bfs(start_node="r")
         assert isinstance(result, list)
-        assert "r" in result
-        assert result[0] == "r"  # BFS starts at root
+        assert "r" in result, "Result must not be empty"
+        assert result[0] == "r", "Result must not be empty"
 
     def test_traverse_depth_first(self):
         """Test depth-first traversal returns all reachable nodes."""
@@ -290,8 +290,8 @@ class TestPhase2_MentalMapping_TraversalOperations:
         mapping.connect_nodes(source_id="r", target_id="c1")
         result = mapping.dfs(start_node="r")
         assert isinstance(result, list)
-        assert "r" in result
-        assert "c1" in result
+        assert "r" in result, "Result must not be empty"
+        assert "c1" in result, "Result must not be empty"
 
     def test_shortest_path_operation(self):
         """Test shortest path finds correct route between nodes."""
@@ -308,9 +308,9 @@ class TestPhase2_MentalMapping_TraversalOperations:
         mapping.connect_nodes(source_id="a", target_id="b")
         mapping.connect_nodes(source_id="b", target_id="c")
         path = mapping.shortest_path(start_id="a", end_id="c")
-        assert path is not None
+        assert path is not None, "path must be initialized"
         assert isinstance(path, list)
-        assert len(path) >= 2
+        assert len(path) >= 2, "Path must not be empty"
 
 
 class TestPhase2_MentalMapping_ReasoningChains:
@@ -337,7 +337,7 @@ class TestPhase2_MentalMapping_ReasoningChains:
                 if v.default is inspect.Parameter.empty:
                     kwargs[p] = f"test_{p}"
             step = ReasoningStep(**kwargs)
-            assert step is not None
+            assert step is not None, "step must be initialized"
         except (ImportError, TypeError, AttributeError):
             pytest.skip("ReasoningStep not available or requires params")
 
@@ -365,10 +365,10 @@ class TestPhase2_MentalMapping_UpdateOperations:
             node_id="upd", node_type=NodeType.CONCEPT, content="original", timestamp=ts
         )
         mapping.add_node(node)
-        assert "upd" in mapping.nodes
+        assert "upd" in mapping.nodes, "Condition must be true"
         # Verify node is retrievable and has content
         stored = mapping.nodes["upd"]
-        assert stored.content == "original"
+        assert stored.content == "original", "Content must not be empty"
 
     def test_update_edge_weight(self):
         """Test edges are created with expected weight via connect_nodes."""
@@ -385,9 +385,9 @@ class TestPhase2_MentalMapping_UpdateOperations:
             MentalNode(node_id="y", node_type=NodeType.CONCEPT, content="y", timestamp=ts)
         )
         mapping.connect_nodes(source_id="x", target_id="y", weight=2.5)
-        assert len(mapping.edges) == 1
+        assert len(mapping.edges) == 1, "Collection must not be empty"
         edge = next(iter(mapping.edges.values()))
-        assert edge.weight == 2.5
+        assert edge.weight == 2.5, "weight is not valid"
 
     def test_merge_nodes_operation(self):
         """Test cluster_nodes (merge-equivalent) is available on MentalMapping."""
@@ -409,7 +409,7 @@ class TestPhase2_MentalMapping_QueryOperations:
         if hasattr(mapping, "find_nodes"):
             try:
                 nodes = mapping.find_nodes(lambda n: True)
-                assert nodes is not None or nodes is None
+                assert nodes is not None or nodes is None, "nodes must be initialized"
             except (TypeError, ValueError):
                 pytest.skip("find_nodes operation failed")
 
@@ -445,7 +445,7 @@ class TestPhase2_MentalMapping_QueryOperations:
                 MentalNode(node_id=nid, node_type=NodeType.CONCEPT, content=nid, timestamp=ts)
             )
         assert isinstance(mapping.nodes, dict)
-        assert len(mapping.nodes) == 3
+        assert len(mapping.nodes) == 3, "Collection must not be empty"
 
     def test_get_all_edges(self):
         """Test edges dict returns all connected edges."""
@@ -463,7 +463,7 @@ class TestPhase2_MentalMapping_QueryOperations:
         )
         mapping.connect_nodes(source_id="e1", target_id="e2")
         assert isinstance(mapping.edges, dict)
-        assert len(mapping.edges) == 1
+        assert len(mapping.edges) == 1, "Collection must not be empty"
 
 
 class TestPhase2_MentalMapping_EdgeCases:
@@ -485,9 +485,9 @@ class TestPhase2_MentalMapping_EdgeCases:
                 node_id="dup", node_type=NodeType.CONCEPT, content="second", timestamp=ts
             )
             mapping.add_node(node2)
-            assert len(mapping.nodes) == 1  # overwrite
+            assert len(mapping.nodes) == 1, "Collection must not be empty"
         except ValueError:
-            assert "dup" in mapping.nodes  # original preserved
+            assert "dup" in mapping.nodes, "Condition must be true"
 
     def test_add_self_loop_edge(self):
         """Test connecting a node to itself is handled gracefully."""
@@ -516,7 +516,7 @@ class TestPhase2_MentalMapping_EdgeCases:
         # Should not raise; node count unchanged
         initial_count = len(mapping.nodes)
         mapping.nodes.pop("nonexistent", None)
-        assert len(mapping.nodes) == initial_count
+        assert len(mapping.nodes) == initial_count, "Collection must not be empty"
 
     def test_graph_with_many_nodes(self):
         """Test graph scales to 100 nodes without error."""
@@ -532,7 +532,7 @@ class TestPhase2_MentalMapping_EdgeCases:
                     node_id=f"n{i}", node_type=NodeType.CONCEPT, content=f"node {i}", timestamp=ts
                 )
             )
-        assert len(mapping.nodes) == 100
+        assert len(mapping.nodes) == 100, "Collection must not be empty"
 
     def test_deeply_nested_reasoning_chain(self):
         """Test deeply nested reasoning chain."""
@@ -547,6 +547,6 @@ class TestPhase2_MentalMapping_EdgeCases:
                 if hasattr(steps[i], "next"):
                     steps[i].next = steps[i + 1]
 
-            assert len(steps) == 50
+            assert len(steps) == 50, "Steps must not be empty"
         except (TypeError, AttributeError, MemoryError):
             pytest.skip("Deep nesting not supported")

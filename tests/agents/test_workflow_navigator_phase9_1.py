@@ -28,9 +28,9 @@ class TestWorkflowFrequency:
 
     def test_frequency_values(self) -> None:
         """Test frequency enum values."""
-        assert WorkflowFrequency.HIGH.value == "high"
-        assert WorkflowFrequency.MEDIUM.value == "medium"
-        assert WorkflowFrequency.LOW.value == "low"
+        assert WorkflowFrequency.HIGH.value == "high", "Value must be initialized"
+        assert WorkflowFrequency.MEDIUM.value == "medium", "Value must be initialized"
+        assert WorkflowFrequency.LOW.value == "low", "Value must be initialized"
 
 
 class TestStepStatus:
@@ -38,14 +38,14 @@ class TestStepStatus:
 
     def test_status_values(self) -> None:
         """Test step status enum values."""
-        assert StepStatus.PENDING.value == "pending"
-        assert StepStatus.RUNNING.value == "running"
-        assert StepStatus.IN_PROGRESS.value == "in_progress"
-        assert StepStatus.COMPLETED.value == "completed"
-        assert StepStatus.FAILED.value == "failed"
-        assert StepStatus.SKIPPED.value == "skipped"
-        assert StepStatus.BLOCKED.value == "blocked"
-        assert StepStatus.CANCELLED.value == "cancelled"
+        assert StepStatus.PENDING.value == "pending", "Value must be initialized"
+        assert StepStatus.RUNNING.value == "running", "Value must be initialized"
+        assert StepStatus.IN_PROGRESS.value == "in_progress", "Value must be initialized"
+        assert StepStatus.COMPLETED.value == "completed", "Value must be initialized"
+        assert StepStatus.FAILED.value == "failed", "Value must be initialized"
+        assert StepStatus.SKIPPED.value == "skipped", "Value must be initialized"
+        assert StepStatus.BLOCKED.value == "blocked", "Value must be initialized"
+        assert StepStatus.CANCELLED.value == "cancelled", "Value must be initialized"
 
 
 class TestWorkflowStep:
@@ -59,10 +59,10 @@ class TestWorkflowStep:
             command="pytest tests/",
         )
 
-        assert step.id == "step1"
-        assert step.action == "Run tests"
-        assert step.command == "pytest tests/"
-        assert step.status == StepStatus.PENDING
+        assert step.id == "step1", "id is not valid"
+        assert step.action == "Run tests", "action is not valid"
+        assert step.command == "pytest tests/", "command is not valid"
+        assert step.status == StepStatus.PENDING, "status is not valid"
 
     def test_step_with_outputs(self) -> None:
         """Test step with output specifications."""
@@ -72,8 +72,8 @@ class TestWorkflowStep:
             outputs=["artifact.zip", "build.log"],
         )
 
-        assert len(step.outputs) == 2
-        assert "artifact.zip" in step.outputs
+        assert len(step.outputs) == 2, "Collection must not be empty"
+        assert "artifact.zip" in step.outputs, "Condition must be true"
 
     def test_step_optional_flag(self) -> None:
         """Test optional step flag."""
@@ -83,7 +83,7 @@ class TestWorkflowStep:
             optional=True,
         )
 
-        assert step.optional is True
+        assert step.optional is True, "optional is not valid"
 
     @patch("subprocess.run")
     def test_step_execute_command_success(self, mock_run: Mock) -> None:
@@ -98,8 +98,8 @@ class TestWorkflowStep:
 
         result = step.execute({"working_dir": "/tmp"})
 
-        assert result["success"] is True
-        assert step.status == StepStatus.COMPLETED
+        assert result["success"] is True, "Result must not be empty"
+        assert step.status == StepStatus.COMPLETED, "status is not valid"
 
     @patch("subprocess.run")
     def test_step_execute_command_failure(self, mock_run: Mock) -> None:
@@ -114,8 +114,8 @@ class TestWorkflowStep:
 
         result = step.execute({})
 
-        assert result["success"] is False
-        assert step.status == StepStatus.FAILED
+        assert result["success"] is False, "Result must not be empty"
+        assert step.status == StepStatus.FAILED, "status is not valid"
         assert "error" in result.get("error", "")
 
     @patch("subprocess.run")
@@ -133,7 +133,7 @@ class TestWorkflowStep:
         _ = step.execute({})
 
         # Optional steps can fail without causing workflow failure
-        assert step.status == StepStatus.COMPLETED
+        assert step.status == StepStatus.COMPLETED, "status is not valid"
 
     def test_step_execute_uses_reference(self) -> None:
         """Test step with uses reference."""
@@ -145,8 +145,8 @@ class TestWorkflowStep:
 
         result = step.execute({})
 
-        assert result["success"] is True
-        assert step.status == StepStatus.COMPLETED
+        assert result["success"] is True, "Result must not be empty"
+        assert step.status == StepStatus.COMPLETED, "status is not valid"
 
     def test_step_execute_no_action(self) -> None:
         """Test step with no action defined."""
@@ -157,8 +157,8 @@ class TestWorkflowStep:
 
         result = step.execute({})
 
-        assert result["success"] is True
-        assert step.status == StepStatus.SKIPPED
+        assert result["success"] is True, "Result must not be empty"
+        assert step.status == StepStatus.SKIPPED, "status is not valid"
 
     @patch("subprocess.run")
     def test_step_execute_exception_handling(self, mock_run: Mock) -> None:
@@ -173,9 +173,9 @@ class TestWorkflowStep:
 
         result = step.execute({})
 
-        assert result["success"] is False
-        assert step.status == StepStatus.FAILED
-        assert "Unexpected error" in result["error"]
+        assert result["success"] is False, "Result must not be empty"
+        assert step.status == StepStatus.FAILED, "status is not valid"
+        assert "Unexpected error" in result["error"], "Result must not be empty"
 
 
 class TestWorkflow:
@@ -190,10 +190,10 @@ class TestWorkflow:
             frequency=WorkflowFrequency.HIGH,
         )
 
-        assert workflow.workflow_id == "test_workflow"
-        assert workflow.name == "Test Workflow"
-        assert workflow.frequency == WorkflowFrequency.HIGH
-        assert workflow.deterministic is True
+        assert workflow.workflow_id == "test_workflow", "workflow_id is not valid"
+        assert workflow.name == "Test Workflow", "name is not valid"
+        assert workflow.frequency == WorkflowFrequency.HIGH, "frequency is not valid"
+        assert workflow.deterministic is True, "deterministic is not valid"
 
     def test_workflow_with_steps(self) -> None:
         """Test workflow with multiple steps."""
@@ -210,8 +210,8 @@ class TestWorkflow:
             steps=steps,
         )
 
-        assert len(workflow.steps) == 2
-        assert workflow.steps[0].id == "step1"
+        assert len(workflow.steps) == 2, "Collection must not be empty"
+        assert workflow.steps[0].id == "step1", "id is not valid"
 
     def test_workflow_with_aliases(self) -> None:
         """Test workflow with aliases."""
@@ -223,8 +223,8 @@ class TestWorkflow:
             aliases=["alias1", "alias2"],
         )
 
-        assert len(workflow.aliases) == 2
-        assert "alias1" in workflow.aliases
+        assert len(workflow.aliases) == 2, "Collection must not be empty"
+        assert "alias1" in workflow.aliases, "Condition must be true"
 
     def test_workflow_non_deterministic(self) -> None:
         """Test non-deterministic workflow flag."""
@@ -236,7 +236,7 @@ class TestWorkflow:
             deterministic=False,
         )
 
-        assert workflow.deterministic is False
+        assert workflow.deterministic is False, "deterministic is not valid"
 
 
 class TestWorkflowNavigator:
@@ -246,9 +246,9 @@ class TestWorkflowNavigator:
         """Test creating a workflow navigator."""
         navigator = WorkflowNavigator(workspace_dir=tmp_path)
 
-        assert navigator.workspace_dir == tmp_path
+        assert navigator.workspace_dir == tmp_path, "workspace_dir is not valid"
         assert isinstance(navigator.workflows, dict)
-        assert navigator.workflow_state_dir.exists()
+        assert navigator.workflow_state_dir.exists(), "navigat is not valid"
 
     def test_navigator_register_workflow(self, tmp_path: Path) -> None:
         """Test registering a workflow."""
@@ -263,7 +263,7 @@ class TestWorkflowNavigator:
 
         navigator.workflows[workflow.workflow_id] = workflow
 
-        assert "test_wf" in navigator.workflows
+        assert "test_wf" in navigator.workflows, "Condition must be true"
 
     def test_navigator_get_workflow(self, tmp_path: Path) -> None:
         """Test retrieving a workflow from navigator."""
@@ -280,15 +280,15 @@ class TestWorkflowNavigator:
 
         retrieved = navigator.workflows.get("retrieve_test")
 
-        assert retrieved is not None
-        assert retrieved.workflow_id == "retrieve_test"
+        assert retrieved is not None, "retrieved must be initialized"
+        assert retrieved.workflow_id == "retrieve_test", "workflow_id is not valid"
 
     def test_navigator_list_workflows(self, tmp_path: Path) -> None:
         """Test listing all workflows."""
         navigator = WorkflowNavigator(workspace_dir=tmp_path)
 
         # Navigator should have default workflows registered
-        assert isinstance(
+        assert isinstance(, "Condition must be true"
             navigator.workflows, (list, tuple, set, dict)
         )  # was: len() >= 0 (always true)
 
@@ -297,8 +297,8 @@ class TestWorkflowNavigator:
         navigator = WorkflowNavigator(workspace_dir=tmp_path)
 
         expected_dir = tmp_path / ".codex" / "workflows" / "state"
-        assert expected_dir.exists()
-        assert expected_dir == navigator.workflow_state_dir
+        assert expected_dir.exists(), "Condition must be true"
+        assert expected_dir == navigator.workflow_state_dir, "expected_dir is not valid"
 
 
 class TestWorkflowSerialization:
@@ -318,10 +318,10 @@ class TestWorkflowSerialization:
 
         data = workflow.to_dict()
 
-        assert data["workflow_id"] == "serialize_test"
-        assert data["name"] == "Serialize Test"
-        assert len(data["steps"]) == 1
-        assert data["steps"][0]["id"] == "step1"
+        assert data["workflow_id"] == "serialize_test", "Data must not be empty"
+        assert data["name"] == "Serialize Test", "Data must not be empty"
+        assert len(data["steps"]) == 1, "Collection must not be empty"
+        assert data["steps"][0]["id"] == "step1", "Data must not be empty"
 
     def test_workflow_to_dict_with_all_fields(self) -> None:
         """Test serialization with all fields."""
@@ -347,10 +347,10 @@ class TestWorkflowSerialization:
 
         data = workflow.to_dict()
 
-        assert data["deterministic"] is False
-        assert "alias1" in data["aliases"]
-        assert "main.py" in data["entry_points"]
-        assert data["category"] == "testing"
+        assert data["deterministic"] is False, "Data must not be empty"
+        assert "alias1" in data["aliases"], "Data must not be empty"
+        assert "main.py" in data["entry_points"], "Data must not be empty"
+        assert data["category"] == "testing", "Data must not be empty"
 
 
 class TestWorkflowTokenization:
@@ -374,5 +374,5 @@ class TestWorkflowTokenization:
             deterministic=False,
         )
 
-        assert wf1.deterministic is True
-        assert wf2.deterministic is False
+        assert wf1.deterministic is True, "deterministic is not valid"
+        assert wf2.deterministic is False, "deterministic is not valid"

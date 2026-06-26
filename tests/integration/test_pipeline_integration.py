@@ -77,14 +77,14 @@ class TestRAGIndexingQueryPipeline:
         docs_dir, _documents = sample_documents
         doc_files = list(docs_dir.glob("*.json"))
 
-        assert len(doc_files) == 5
+        assert len(doc_files) == 5, "Doc_files must not be empty"
 
         # Verify each document is readable
         for doc_file in doc_files:
             doc_data = json.loads(doc_file.read_text())
-            assert "id" in doc_data
-            assert "content" in doc_data
-            assert "metadata" in doc_data
+            assert "id" in doc_data, "Data must not be empty"
+            assert "content" in doc_data, "Data must not be empty"
+            assert "metadata" in doc_data, "Data must not be empty"
 
     def test_index_creation(self, pipeline_workspace, sample_documents):
         """Test index creation from documents."""
@@ -109,9 +109,9 @@ class TestRAGIndexingQueryPipeline:
         index_file = index_dir / "index.json"
         index_file.write_text(json.dumps(index_data))
 
-        assert index_file.exists()
+        assert index_file.exists(), "Condition must be true"
         loaded_index = json.loads(index_file.read_text())
-        assert loaded_index["metadata"]["total"] == 5
+        assert loaded_index["metadata"]["total"] == 5, "Data must not be empty"
 
     def test_embedding_generation(self, pipeline_workspace, sample_documents):
         """Test embedding generation for documents."""
@@ -124,9 +124,9 @@ class TestRAGIndexingQueryPipeline:
             embedding = [float(i) / content_len for i in range(10)]
             embeddings[doc["id"]] = embedding
 
-        assert len(embeddings) == 5
+        assert len(embeddings) == 5, "Embeddings must not be empty"
         for doc_id, emb in embeddings.items():
-            assert len(emb) == 10
+            assert len(emb) == 10, "Emb must not be empty"
             assert all(isinstance(v, float) for v in emb)
 
     def test_query_processing(self, pipeline_workspace):
@@ -140,9 +140,9 @@ class TestRAGIndexingQueryPipeline:
             "embedding": [0.5, 0.6, 0.7],
         }
 
-        assert processed_query["text"] == query
-        assert len(processed_query["tokens"]) == 4
-        assert len(processed_query["embedding"]) == 3
+        assert processed_query["text"] == query, "Condition must be true"
+        assert len(processed_query["tokens"]) == 4, "Collection must not be empty"
+        assert len(processed_query["embedding"]) == 3, "Collection must not be empty"
 
     def test_similarity_search(self, pipeline_workspace, sample_documents):
         """Test similarity search in index."""
@@ -175,8 +175,8 @@ class TestRAGIndexingQueryPipeline:
 
         results.sort(key=lambda x: x["score"], reverse=True)
 
-        assert len(results) == 5
-        assert all("score" in r for r in results)
+        assert len(results) == 5, "Results must not be empty"
+        assert all("score" in r for r in results), "Result must not be empty"
 
     def test_result_ranking(self, pipeline_workspace):
         """Test result ranking and ordering."""
@@ -191,9 +191,9 @@ class TestRAGIndexingQueryPipeline:
         # Sort by score
         ranked = sorted(results, key=lambda x: x["score"], reverse=True)
 
-        assert ranked[0]["doc_id"] == "doc4"  # Highest score
-        assert ranked[0]["score"] == 0.95
-        assert ranked[-1]["doc_id"] == "doc3"  # Lowest score
+        assert ranked[0]["doc_id"] == "doc4", "Condition must be true"
+        assert ranked[0]["score"] == 0.95, "Condition must be true"
+        assert ranked[-1]["doc_id"] == "doc3", "Condition must be true"
 
     def test_metadata_filtering(self, pipeline_workspace, sample_documents):
         """Test metadata-based filtering."""
@@ -203,8 +203,8 @@ class TestRAGIndexingQueryPipeline:
         ml_docs = [d for d in documents if d["metadata"].get("category") == "ml"]
         prog_docs = [d for d in documents if d["metadata"].get("category") == "programming"]
 
-        assert len(ml_docs) == 2
-        assert len(prog_docs) == 2
+        assert len(ml_docs) == 2, "Ml_docs must not be empty"
+        assert len(prog_docs) == 2, "Prog_docs must not be empty"
         assert ml_docs[0]["id"] in ["doc2", "doc4"]
         assert prog_docs[0]["id"] in ["doc1", "doc5"]
 
@@ -215,7 +215,7 @@ class TestRAGIndexingQueryPipeline:
 
         # Step 1: Ingest documents
         doc_count = len(list(docs_dir.glob("*.json")))
-        assert doc_count == 5
+        assert doc_count == 5, "Count must be greater than zero"
 
         # Step 2: Build index
         index = []
@@ -252,9 +252,9 @@ class TestRAGIndexingQueryPipeline:
         top_result = results[0]
 
         # Verify end-to-end
-        assert len(results) == 5
-        assert top_result["score"] >= 0.8
-        assert "machine learning" in top_result["content"].lower()
+        assert len(results) == 5, "Results must not be empty"
+        assert top_result["score"] >= 0.8, "Value must be greater than zero"
+        assert "machine learning" in top_result["content"].lower(), "Result must not be empty"
 
 
 class TestTrainingEvaluationCheckpointPipeline:
@@ -269,9 +269,9 @@ class TestTrainingEvaluationCheckpointPipeline:
         optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
 
         # Verify setup
-        assert model is not None
-        assert optimizer is not None
-        assert len(list(model.parameters())) == 2  # weights and bias
+        assert model is not None, "model must be initialized"
+        assert optimizer is not None, "optimizer must be initialized"
+        assert len(list(model.parameters())) == 2, "Collection must not be empty"
 
     def test_training_step_execution(self, pipeline_workspace):
         """Test single training step execution."""
@@ -294,7 +294,7 @@ class TestTrainingEvaluationCheckpointPipeline:
         optimizer.step()
 
         # Verify step executed
-        assert initial_loss is not None
+        assert initial_loss is not None, "initial_loss must be initialized"
         assert isinstance(initial_loss, float)
 
     def test_training_metrics_collection(self, pipeline_workspace):
@@ -311,8 +311,8 @@ class TestTrainingEvaluationCheckpointPipeline:
             metrics["step"] = step
             metrics["loss"] = 1.0 / (step + 1)  # Mock decreasing loss
 
-        assert metrics["step"] == 4
-        assert metrics["loss"] == 0.2
+        assert metrics["step"] == 4, "Condition must be true"
+        assert metrics["loss"] == 0.2, "Condition must be true"
 
     def test_evaluation_phase(self, pipeline_workspace):
         """Test evaluation phase in pipeline."""
@@ -333,8 +333,8 @@ class TestTrainingEvaluationCheckpointPipeline:
 
         avg_eval_loss = eval_loss / 3
 
-        assert avg_eval_loss is not None
-        assert avg_eval_loss >= 0
+        assert avg_eval_loss is not None, "avg_eval_loss must be initialized"
+        assert avg_eval_loss >= 0, "avg_eval_loss must be greater than zero"
 
     def test_checkpoint_saving(self, pipeline_workspace):
         """Test checkpoint saving during training."""
@@ -355,10 +355,10 @@ class TestTrainingEvaluationCheckpointPipeline:
         }
         torch.save(checkpoint, checkpoint_path)
 
-        assert checkpoint_path.exists()
+        assert checkpoint_path.exists(), "Condition must be true"
         loaded = torch.load(checkpoint_path, weights_only=False)
-        assert loaded["step"] == 10
-        assert "model_state_dict" in loaded
+        assert loaded["step"] == 10, "Condition must be true"
+        assert "model_state_dict" in loaded, "Condition must be true"
 
     def test_checkpoint_resumption(self, pipeline_workspace):
         """Test resuming from checkpoint."""
@@ -374,7 +374,7 @@ class TestTrainingEvaluationCheckpointPipeline:
         checkpoint = torch.load(checkpoint_path, weights_only=False)
         new_model.load_state_dict(checkpoint["model_state_dict"])
 
-        assert checkpoint["step"] == 5
+        assert checkpoint["step"] == 5, "Condition must be true"
 
     def test_learning_rate_scheduling(self, pipeline_workspace):
         """Test learning rate scheduling in pipeline."""
@@ -390,8 +390,8 @@ class TestTrainingEvaluationCheckpointPipeline:
             scheduler.step()
 
         # Verify LR decreases
-        assert lrs[0] == 0.1
-        assert lrs[3] == 0.05  # After step_size=3
+        assert lrs[0] == 0.1, "Condition must be true"
+        assert lrs[3] == 0.05, "Condition must be true"
 
     @pytest.mark.slow
     def test_end_to_end_training_pipeline(self, pipeline_workspace):
@@ -438,10 +438,10 @@ class TestTrainingEvaluationCheckpointPipeline:
         )
 
         # Verify pipeline completion
-        assert len(train_losses) == 5
-        assert checkpoint_path.exists()
+        assert len(train_losses) == 5, "Train_losses must not be empty"
+        assert checkpoint_path.exists(), "Condition must be true"
         loaded = torch.load(checkpoint_path, weights_only=False)
-        assert "eval_loss" in loaded
+        assert "eval_loss" in loaded, "Condition must be true"
 
 
 class TestDataIngestionProcessingStorage:
@@ -457,7 +457,7 @@ class TestDataIngestionProcessingStorage:
             (data_dir / f"data_{i}.txt").write_text(f"Sample data {i}")
 
         files = list(data_dir.glob("*.txt"))
-        assert len(files) == 5
+        assert len(files) == 5, "Files must not be empty"
 
     def test_data_loading(self, pipeline_workspace):
         """Test loading data from files."""
@@ -471,8 +471,8 @@ class TestDataIngestionProcessingStorage:
 
         # Load
         loaded = json.loads(data_file.read_text())
-        assert len(loaded["items"]) == 1
-        assert loaded["items"][0]["id"] == 1
+        assert len(loaded["items"]) == 1, "Collection must not be empty"
+        assert loaded["items"][0]["id"] == 1, "Item must not be empty"
 
     def test_data_validation(self, pipeline_workspace):
         """Test data validation in pipeline."""
@@ -483,7 +483,7 @@ class TestDataIngestionProcessingStorage:
         ]
 
         valid_items = [item for item in data_items if "content" in item]
-        assert len(valid_items) == 2
+        assert len(valid_items) == 2, "Valid_items must not be empty"
 
     def test_data_transformation(self, pipeline_workspace):
         """Test data transformation processing."""
@@ -503,8 +503,8 @@ class TestDataIngestionProcessingStorage:
                 }
             )
 
-        assert transformed[0]["text"] == "hello world"
-        assert transformed[0]["length"] == 11
+        assert transformed[0]["text"] == "hello world", "transf is not valid"
+        assert transformed[0]["length"] == 11, "Length must be greater than zero"
 
     def test_data_batching(self, pipeline_workspace):
         """Test batching data for processing."""
@@ -513,9 +513,9 @@ class TestDataIngestionProcessingStorage:
 
         batches = [data[i : i + batch_size] for i in range(0, len(data), batch_size)]
 
-        assert len(batches) == 10
-        assert len(batches[0]) == 10
-        assert batches[0][0] == 0
+        assert len(batches) == 10, "Batches must not be empty"
+        assert len(batches[0]) == 10, "Collection must not be empty"
+        assert batches[0][0] == 0, "Condition must be true"
 
     def test_data_storage_write(self, pipeline_workspace):
         """Test writing processed data to storage."""
@@ -527,9 +527,9 @@ class TestDataIngestionProcessingStorage:
         output_file = storage_dir / "output.json"
         output_file.write_text(json.dumps(processed_data))
 
-        assert output_file.exists()
+        assert output_file.exists(), "Condition must be true"
         loaded = json.loads(output_file.read_text())
-        assert loaded["processed"] is True
+        assert loaded["processed"] is True, "Condition must be true"
 
     def test_data_storage_append(self, pipeline_workspace):
         """Test appending to existing storage."""
@@ -544,7 +544,7 @@ class TestDataIngestionProcessingStorage:
 
         # Read back
         lines = storage_file.read_text().strip().split("\n")
-        assert len(lines) == 5
+        assert len(lines) == 5, "Lines must not be empty"
 
     def test_data_compression(self, pipeline_workspace):
         """Test data compression for storage."""
@@ -560,8 +560,8 @@ class TestDataIngestionProcessingStorage:
         original_size = len(data)
         compressed_size = compressed_file.stat().st_size
 
-        assert compressed_size < original_size
-        assert compressed_file.exists()
+        assert compressed_size < original_size, "compressed_size is not valid"
+        assert compressed_file.exists(), "Condition must be true"
 
     @pytest.mark.slow
     def test_end_to_end_data_pipeline(self, pipeline_workspace):
@@ -598,9 +598,9 @@ class TestDataIngestionProcessingStorage:
         output_file.write_text(json.dumps(processed))
 
         # Verify end-to-end
-        assert raw_file.exists()
-        assert output_file.exists()
+        assert raw_file.exists(), "Condition must be true"
+        assert output_file.exists(), "Condition must be true"
         final_data = json.loads(output_file.read_text())
-        assert len(final_data) == 3
-        assert final_data[0]["text"] == "sample text one"
-        assert "word_count" in final_data[0]
+        assert len(final_data) == 3, "Final_data must not be empty"
+        assert final_data[0]["text"] == "sample text one", "Data must not be empty"
+        assert "word_count" in final_data[0], "Data must not be empty"

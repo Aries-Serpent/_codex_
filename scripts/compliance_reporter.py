@@ -50,7 +50,7 @@ try:
     from codex.auth import MFAProvider, TokenManager
 except ImportError as e:
     error_type = type(e).__name__
-    print(f"Error: Missing required dependencies: <ERROR_TYPE>", file=sys.stderr)
+    print("Error: Missing required dependencies: <ERROR_TYPE>", file=sys.stderr)
     print("\nPlease install the package with:", file=sys.stderr)
     print("  pip install -e .", file=sys.stderr)
     print("\nOr install missing dependencies:", file=sys.stderr)

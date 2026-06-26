@@ -23,8 +23,8 @@ def test_toy_trainer_runs(tmp_path):
             str(log),
         ]
     )
-    assert code == 0
-    assert log.exists()
+    assert code == 0, "code is not valid"
+    assert log.exists(), "Condition must be true"
     content = log.read_text(encoding="utf-8")
-    assert "epoch=1" in content
-    assert "loss=" in content
+    assert "epoch=1" in content, "Content must not be empty"
+    assert "loss=" in content, "Content must not be empty"

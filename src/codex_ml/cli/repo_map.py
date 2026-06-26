@@ -76,8 +76,8 @@ def _extract_scalars_from_text(path: Path, keys: Sequence[str]) -> dict[str, str
         content = path.read_text(encoding="utf-8")
     except OSError as e:
         error_type = type(e).__name__
-        logger.debug(f"OSError: <ERROR_TYPE>")
-        logger.warning(f"OSError: <ERROR_TYPE>", exc_info=True)
+        logger.debug("OSError: <ERROR_TYPE>")
+        logger.warning("OSError: <ERROR_TYPE>", exc_info=True)
         return {}
     results: dict[str, str] = {}
     for key in keys:

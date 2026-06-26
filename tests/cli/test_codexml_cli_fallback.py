@@ -18,11 +18,11 @@ def test_codexml_cli_help_without_hydra(monkeypatch, capsys):
     monkeypatch.setattr(module, "hydra", None, raising=False)
     with pytest.raises(SystemExit) as excinfo:
         module.cli(["--help"])
-    assert excinfo.value.code == 0
+    assert excinfo.value.code == 0, "Value must be initialized"
     captured = capsys.readouterr()
     # Check both stdout and stderr for hydra-core message
     output = captured.out + captured.err
-    assert "hydra" in output.lower()
+    assert "hydra" in output.lower(), "Condition must be true"
 
 
 def test_codexml_cli_requires_hydra_when_running(monkeypatch):
@@ -33,7 +33,7 @@ def test_codexml_cli_requires_hydra_when_running(monkeypatch):
         module.cli(["train"])  # arbitrary arg
     # Should either raise ImportError or raise SystemExit (graceful degradation exits 0)
     if isinstance(excinfo.value, ImportError):
-        assert "hydra-core" in str(excinfo.value)
+        assert "hydra-core" in str(excinfo.value), "Value must be initialized"
 
 
 def test_hydra_main_help(monkeypatch, capsys):
@@ -52,6 +52,6 @@ def test_hydra_main_help(monkeypatch, capsys):
         assert excinfo.code in (0, 2), f"Expected exit code 0 or 2, got {excinfo.code}"
     message = capsys.readouterr().err
     # Should mention hydra-core requirement
-    assert "hydra" in message.lower() or len(message) == 0  # May not produce error message
+    assert "hydra" in message.lower() or len(message) == 0, "Message must not be empty"
     if module_name in sys.modules:
         del sys.modules[module_name]

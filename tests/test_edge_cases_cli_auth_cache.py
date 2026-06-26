@@ -73,8 +73,8 @@ class TestCLICommandParsing:
         parser = CommandParser()
         result = parser.parse([])
 
-        assert result["command"] is None
-        assert result["args"] == {}
+        assert result["command"] is None, "Result must not be empty"
+        assert result["args"] == {}, "Result must not be empty"
 
     def test_single_command_only(self):
         """Test parsing single command without arguments"""
@@ -87,7 +87,7 @@ class TestCLICommandParsing:
 
         parser = CommandParser()
         result = parser.parse(["help"])
-        assert result == "help"
+        assert result == "help", "Result must not be empty"
 
     def test_command_with_flags(self):
         """Test parsing command with flags"""
@@ -119,9 +119,9 @@ class TestCLICommandParsing:
         parser = CommandParser()
         result = parser.parse(["cmd", "--verbose", "--output", "file.txt"])
 
-        assert result["command"] == "cmd"
-        assert result["flags"]["verbose"] is True
-        assert result["flags"]["output"] == "file.txt"
+        assert result["command"] == "cmd", "Result must not be empty"
+        assert result["flags"]["verbose"] is True, "Result must not be empty"
+        assert result["flags"]["output"] == "file.txt", "Result must not be empty"
 
     def test_command_args_with_special_chars(self, command_args):
         """Test command arguments with special characters"""
@@ -131,7 +131,7 @@ class TestCLICommandParsing:
         if args and args != [None, "arg", None]:
             # Filter out None values
             clean_args = [a for a in args if a is not None]
-            assert len(clean_args) >= 0
+            assert len(clean_args) >= 0, "Clean_args must not be empty"
 
     @pytest.mark.parametrize(
         "arg_string",
@@ -165,7 +165,7 @@ class TestCLICommandParsing:
 
         parser = ArgParser()
         result = parser.parse_arg(arg_string)
-        assert result is not None or arg_string == ""
+        assert result is not None or arg_string == "", "result must be initialized"
 
 
 # ============================================================================
@@ -212,7 +212,7 @@ class TestAuthenticationEdgeCases:
 
         for user, pwd in special_creds:
             result = auth.authenticate(user, pwd)
-            assert result is True
+            assert result is True, "Result must not be empty"
 
     def test_very_long_credentials(self):
         """Test very long credentials"""
@@ -230,12 +230,12 @@ class TestAuthenticationEdgeCases:
         long_pass = "p" * 5000
 
         result = auth.authenticate(long_user, long_pass)
-        assert result is True
+        assert result is True, "Result must not be empty"
 
         # Over limit
         over_user = "u" * 15000
         result = auth.authenticate(over_user, "password")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     @pytest.mark.parametrize(
         "token",
@@ -268,9 +268,9 @@ class TestAuthenticationEdgeCases:
         result = validator.validate(token)
 
         if token and token.startswith("Bearer ") and len(token) > 17:
-            assert result is True
+            assert result is True, "Result must not be empty"
         else:
-            assert result is False
+            assert result is False, "Result must not be empty"
 
 
 # ============================================================================
@@ -294,10 +294,10 @@ class TestCacheOperationsEdgeCases:
         cache = SimpleCache()
 
         result = cache.get("missing")
-        assert result is None
+        assert result is None, "Result must not be empty"
 
         result = cache.get("missing", "default")
-        assert result == "default"
+        assert result == "default", "Result must not be empty"
 
     def test_cache_set_and_get(self):
         """Test cache set and get operations"""
@@ -316,7 +316,7 @@ class TestCacheOperationsEdgeCases:
 
         cache.set("key", "value")
         result = cache.get("key")
-        assert result == "value"
+        assert result == "value", "Result must not be empty"
 
     def test_cache_with_none_value(self):
         """Test cache storing None values"""
@@ -338,10 +338,10 @@ class TestCacheOperationsEdgeCases:
         # Store None explicitly
         cache.set("key", None)
         result = cache.get("key")
-        assert result is None
+        assert result is None, "Result must not be empty"
 
         # Key should exist even though value is None
-        assert "key" in cache.data
+        assert "key" in cache.data, "Data must not be empty"
 
     def test_cache_eviction_on_limit(self):
         """Test cache eviction when size limit reached"""
@@ -363,12 +363,12 @@ class TestCacheOperationsEdgeCases:
 
         cache.set("key1", "value1")
         cache.set("key2", "value2")
-        assert len(cache.data) == 2
+        assert len(cache.data) == 2, "Collection must not be empty"
 
         cache.set("key3", "value3")
         # One key should be evicted
-        assert len(cache.data) == 2
-        assert "key3" in cache.data
+        assert len(cache.data) == 2, "Collection must not be empty"
+        assert "key3" in cache.data, "Data must not be empty"
 
     @pytest.mark.parametrize("cache_size", [0, 1, 10, 1000])
     def test_cache_size_scaling(self, cache_size):
@@ -388,7 +388,7 @@ class TestCacheOperationsEdgeCases:
         cache = SimpleCache()
         cache.populate(cache_size)
 
-        assert cache.size() == cache_size
+        assert cache.size() == cache_size, "Condition must be true"
 
 
 # ============================================================================
@@ -410,7 +410,7 @@ class TestConfigurationLoadingEdgeCases:
 
         loader = ConfigLoader()
         result = loader.load({})
-        assert result == {}
+        assert result == {}, "Result must not be empty"
 
     def test_load_config_with_defaults(self):
         """Test loading config with defaults"""
@@ -431,12 +431,12 @@ class TestConfigurationLoadingEdgeCases:
         loader = ConfigLoader()
 
         result = loader.load({})
-        assert result["debug"] is False
-        assert result["port"] == 8080
+        assert result["debug"] is False, "Result must not be empty"
+        assert result["port"] == 8080, "Result must not be empty"
 
         result = loader.load({"debug": True})
-        assert result["debug"] is True
-        assert result["port"] == 8080
+        assert result["debug"] is True, "Result must not be empty"
+        assert result["port"] == 8080, "Result must not be empty"
 
     def test_load_config_from_file(self):
         """Test loading config from file"""
@@ -459,8 +459,8 @@ class TestConfigurationLoadingEdgeCases:
             loader = ConfigLoader()
             config = loader.load_file(config_file)
 
-            assert config["key"] == "value"
-            assert config["number"] == 42
+            assert config["key"] == "value", "Value must be initialized"
+            assert config["number"] == 42, "Condition must be true"
 
     def test_load_invalid_config_file(self):
         """Test loading invalid config file"""
@@ -501,13 +501,13 @@ class TestConfigurationLoadingEdgeCases:
 
         # Valid config
         valid, errors = validator.validate({"port": 8080, "timeout": 30})
-        assert valid is True
-        assert errors == []
+        assert valid is True, "valid is not valid"
+        assert errors == [], "Error should be raised or set"
 
         # Invalid port
         valid, errors = validator.validate({"port": 99999})
-        assert valid is False
-        assert len(errors) > 0
+        assert valid is False, "valid is not valid"
+        assert len(errors) > 0, "Errors must not be empty"
 
 
 # ============================================================================
@@ -532,10 +532,10 @@ class TestErrorMessageHandlingEdgeCases:
         formatter = ErrorFormatter()
 
         result = formatter.format(None)
-        assert result == "Unknown error"
+        assert result == "Unknown error", "Result must not be empty"
 
         result = formatter.format("Error message", None)
-        assert result == "Error message"
+        assert result == "Error message", "Result must not be empty"
 
     def test_error_message_with_special_chars(self):
         """Test error messages with special characters"""
@@ -548,10 +548,10 @@ class TestErrorMessageHandlingEdgeCases:
         formatter = ErrorFormatter()
 
         result = formatter.format("Error\nwith\nnewlines")
-        assert "\\n" in result
+        assert "\\n" in result, "Result must not be empty"
 
         result = formatter.format("Error\twith\ttabs")
-        assert "\\t" in result
+        assert "\\t" in result, "Result must not be empty"
 
     def test_very_long_error_message(self):
         """Test very long error messages"""
@@ -570,7 +570,7 @@ class TestErrorMessageHandlingEdgeCases:
         long_error = "x" * 2000
         result = formatter.format(long_error)
 
-        assert len(result) == 1003  # 1000 + '...'
+        assert len(result) == 1003, "Result must not be empty"
 
 
 # ============================================================================
@@ -607,7 +607,7 @@ class TestConcurrentAccessEdgeCases:
         for t in threads:
             t.join()
 
-        assert all(r == 42 for r in results)
+        assert all(r == 42 for r in results), "Result must not be empty"
 
     def test_shared_resource_write_protection(self):
         """Test shared resource with write protection"""
@@ -641,7 +641,7 @@ class TestConcurrentAccessEdgeCases:
 
         # Due to race conditions without proper locking, this might not be 50
         # but should be > 0
-        assert resource.read() > 0
+        assert resource.read() > 0, "Value must be greater than zero"
 
 
 if __name__ == "__main__":

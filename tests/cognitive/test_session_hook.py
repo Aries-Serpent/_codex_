@@ -116,19 +116,19 @@ def test_apply_allowlist_strips_unknown_fields():
         "foo": "bar",
     }
     result = _apply_allowlist(raw)
-    assert "private_info" not in result
-    assert "foo" not in result
-    assert "session_id" in result
-    assert "pattern_ids" in result
+    assert "private_info" not in result, "Result must not be empty"
+    assert "foo" not in result, "Result must not be empty"
+    assert "session_id" in result, "Result must not be empty"
+    assert "pattern_ids" in result, "Result must not be empty"
 
 
 def test_apply_allowlist_all_known():
     raw = {"session_id": "x", "store_memory_facts": ["f1"]}
-    assert _apply_allowlist(raw) == raw
+    assert _apply_allowlist(raw) == raw, "Condition must be true"
 
 
 def test_apply_allowlist_empty():
-    assert _apply_allowlist({}) == {}
+    assert _apply_allowlist({}) == {}, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -143,8 +143,8 @@ def test_recency_ranking_newer_first():
         {"id": "P-038", "introduced_session": 105},
     ]
     ranked = _apply_recency_ranking(patterns, current_session_num=108)
-    assert ranked[0] == "P-043"
-    assert "P-001" in ranked  # oldest still present but last
+    assert ranked[0] == "P-043", "Condition must be true"
+    assert "P-001" in ranked, "Condition must be true"
 
 
 def test_recency_ranking_empty():
@@ -154,7 +154,7 @@ def test_recency_ranking_empty():
 def test_recency_ranking_max_five():
     patterns = [{"id": f"P-{i:03d}", "introduced_session": i} for i in range(20)]
     ranked = _apply_recency_ranking(patterns, current_session_num=20)
-    assert len(ranked) == 5
+    assert len(ranked) == 5, "Ranked must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -163,9 +163,9 @@ def test_recency_ranking_max_five():
 
 
 def test_estimate_tokens_basic():
-    assert _estimate_tokens("abcd") == 1  # 4 chars → 1 token
-    assert _estimate_tokens("") == 0
-    assert _estimate_tokens("a" * 400) == 100
+    assert _estimate_tokens("abcd") == 1, "Condition must be true"
+    assert _estimate_tokens("") == 0, "Condition must be true"
+    assert _estimate_tokens("a" * 400) == 100, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -183,11 +183,11 @@ def test_prompt_block_contains_session_id():
         token_estimate=20,
     )
     block = payload.to_prompt_block()
-    assert "🧠 Cognitive Brain Context" in block
-    assert "s108" in block
-    assert "P-043" in block
-    assert "HF leak fixed" in block
-    assert "continue with next phase task" in block
+    assert "🧠 Cognitive Brain Context" in block, "Condition must be true"
+    assert "s108" in block, "Condition must be true"
+    assert "P-043" in block, "Condition must be true"
+    assert "HF leak fixed" in block, "Condition must be true"
+    assert "continue with next phase task" in block, "Condition must be true"
 
 
 def test_prompt_block_reconstruction_warning():
@@ -202,8 +202,8 @@ def test_prompt_block_reconstruction_warning():
         reconstruction_method="quantum_wave_collapse+entropy_minimization",
     )
     block = payload.to_prompt_block()
-    assert "⚠️ Context reconstructed via" in block
-    assert "quantum_wave_collapse" in block
+    assert "⚠️ Context reconstructed via" in block, "Condition must be true"
+    assert "quantum_wave_collapse" in block, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -213,17 +213,17 @@ def test_prompt_block_reconstruction_warning():
 
 def test_inject_live_api_success(injector, mock_api):
     payload = injector.inject({"session_number": 108})
-    assert payload.reconstructed is False
+    assert payload.reconstructed is False, "reconstructed is not valid"
     assert isinstance(payload.injected_patterns, list)
-    assert payload.session_id == "s108"
+    assert payload.session_id == "s108", "session_id is not valid"
 
 
 def test_inject_writes_cache(injector, tmp_path):
     injector.inject({"session_number": 108})
     cache_file = tmp_path / ".session_context_cache.json"
-    assert cache_file.exists()
+    assert cache_file.exists(), "Condition must be true"
     data = json.loads(cache_file.read_text())
-    assert data["session_id"] == "s108"
+    assert data["session_id"] == "s108", "Data must not be empty"
 
 
 def test_inject_hf_pr_surfaces_p043(mock_api, tmp_path):
@@ -241,7 +241,7 @@ def test_inject_hf_pr_surfaces_p043(mock_api, tmp_path):
         cache_path=tmp_path / ".cache.json",
     )
     payload = injector.inject({"session_number": 108, "pr_title": "HF training fix"})
-    assert "P-043" in payload.injected_patterns
+    assert "P-043" in payload.injected_patterns, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -267,9 +267,9 @@ def test_inject_cache_restore_on_api_failure(failing_injector, tmp_path):
         )
     )
     payload = failing_injector.inject({"session_number": 108})
-    assert payload.reconstructed is True
-    assert payload.reconstruction_method == "cache_restore"
-    assert payload.session_id == "cached-s107"
+    assert payload.reconstructed is True, "reconstructed is not valid"
+    assert payload.reconstruction_method == "cache_restore", "reconstruction_method is not valid"
+    assert payload.session_id == "cached-s107", "session_id is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -279,14 +279,14 @@ def test_inject_cache_restore_on_api_failure(failing_injector, tmp_path):
 
 def test_quantum_reconstruction_fires_on_cache_miss(failing_injector):
     payload = failing_injector.inject({"session_number": 108, "pr_title": "misc"})
-    assert payload.reconstructed is True
-    assert payload.reconstruction_method is not None
-    assert "quantum" in payload.reconstruction_method
+    assert payload.reconstructed is True, "reconstructed is not valid"
+    assert payload.reconstruction_method is not None, "reconstruction_method must be initialized"
+    assert "quantum" in payload.reconstruction_method, "Condition must be true"
 
 
 def test_reconstruction_emits_continuation_trigger(failing_injector):
     payload = failing_injector.inject({"session_number": 108})
-    assert payload.continuation_trigger == "continue with next phase task"
+    assert payload.continuation_trigger == "continue with next phase task", "continuation_trigger is not valid"
 
 
 def test_reconstruction_stores_lesson(failing_api, tmp_path):
@@ -297,8 +297,8 @@ def test_reconstruction_stores_lesson(failing_api, tmp_path):
     injector.inject({"session_number": 108, "pr_title": "training pipeline"})
     failing_api.store_memory.assert_called_once()
     lesson = failing_api.store_memory.call_args[0][0]
-    assert "LESSON" in lesson
-    assert "quantum" in lesson.lower()
+    assert "LESSON" in lesson, "Condition must be true"
+    assert "quantum" in lesson.lower(), "Condition must be true"
 
 
 def test_keyword_wave_collapse_surfaces_hf_pattern(failing_api, tmp_path, pattern_library):
@@ -322,7 +322,7 @@ def test_keyword_wave_collapse_surfaces_hf_pattern(failing_api, tmp_path, patter
             }
         )
     # Wave-collapse should find P-043 based on keyword overlap
-    assert (
+    assert (, "Condition must be true"
         any("043" in pid or "038" in pid for pid in payload.injected_patterns)
         or payload.reconstructed
     )
@@ -363,4 +363,4 @@ def test_token_budget_trimming(mock_api, tmp_path):
         cache_path=tmp_path / ".cache.json",
     )
     payload = injector.inject({"session_number": 108})
-    assert payload.token_estimate <= MAX_CONTEXT_TOKENS
+    assert payload.token_estimate <= MAX_CONTEXT_TOKENS, "token_estimate is not valid"

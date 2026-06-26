@@ -29,9 +29,9 @@ class TestToPlainContainer:
 
     def test_plain_scalar(self):
         """Verify scalar passthrough."""
-        assert _to_plain_container(42) == 42
-        assert _to_plain_container("test") == "test"
-        assert _to_plain_container(3.14) == 3.14
+        assert _to_plain_container(42) == 42, "Condition must be true"
+        assert _to_plain_container("test") == "test", "Condition must be true"
+        assert _to_plain_container(3.14) == 3.14, "Condition must be true"
 
     def test_plain_dict(self):
         """Verify dict conversion."""
@@ -55,7 +55,7 @@ class TestToPlainContainer:
         """Verify set conversion to list."""
         result = _to_plain_container({1, 2, 3})
         assert isinstance(result, list)
-        assert len(result) == 3
+        assert len(result) == 3, "Result must not be empty"
 
     def test_plain_nested_complex(self):
         """Verify complex nested structure."""
@@ -67,7 +67,7 @@ class TestToPlainContainer:
         result = _to_plain_container(input_data)
         assert isinstance(result["list"], list)
         assert isinstance(result["tuple"], list)
-        assert result["dict"]["a"]["b"] == "c"
+        assert result["dict"]["a"]["b"] == "c", "Result must not be empty"
 
 
 class TestMaterialiseMapping:
@@ -76,7 +76,7 @@ class TestMaterialiseMapping:
     def test_materialise_none(self):
         """Verify None returns empty dict."""
         result = _materialise_mapping(None)
-        assert result == {}
+        assert result == {}, "Result must not be empty"
         assert isinstance(result, dict)
 
     def test_materialise_dict(self):
@@ -108,21 +108,21 @@ class TestContinualPhase:
     def test_continual_phase_basic(self):
         """Verify basic phase creation."""
         phase = ContinualPhase(name="phase1", epochs=5)
-        assert phase.name == "phase1"
-        assert phase.epochs == 5
-        assert phase.dataset == {}
-        assert phase.replay_ratio is None
+        assert phase.name == "phase1", "name is not valid"
+        assert phase.epochs == 5, "epochs is not valid"
+        assert phase.dataset == {}, "Data must not be empty"
+        assert phase.replay_ratio is None, "replay_ratio is not valid"
 
     def test_continual_phase_with_dataset(self):
         """Verify phase with dataset config."""
         dataset_config = {"path": "/data", "batch_size": 32}
         phase = ContinualPhase(name="train_phase", epochs=10, dataset=dataset_config)
-        assert phase.dataset == dataset_config
+        assert phase.dataset == dataset_config, "Data must not be empty"
 
     def test_continual_phase_with_replay_ratio(self):
         """Verify phase with replay ratio."""
         phase = ContinualPhase(name="replay_phase", epochs=3, replay_ratio=0.5)
-        assert phase.replay_ratio == 0.5
+        assert phase.replay_ratio == 0.5, "replay_ratio is not valid"
 
     def test_continual_phase_invalid_epochs(self):
         """Verify epochs validation."""
@@ -143,21 +143,21 @@ class TestContinualPhase:
     def test_continual_phase_replay_ratio_bounds(self):
         """Verify replay ratio boundary values."""
         phase0 = ContinualPhase(name="p1", epochs=1, replay_ratio=0.0)
-        assert phase0.replay_ratio == 0.0
+        assert phase0.replay_ratio == 0.0, "replay_ratio is not valid"
 
         phase1 = ContinualPhase(name="p2", epochs=1, replay_ratio=1.0)
-        assert phase1.replay_ratio == 1.0
+        assert phase1.replay_ratio == 1.0, "replay_ratio is not valid"
 
     def test_continual_phase_epochs_conversion(self):
         """Verify epochs converted to int."""
         phase = ContinualPhase(name="test", epochs="10")
-        assert phase.epochs == 10
+        assert phase.epochs == 10, "epochs is not valid"
         assert isinstance(phase.epochs, int)
 
     def test_continual_phase_with_notes(self):
         """Verify notes field."""
         phase = ContinualPhase(name="documented", epochs=1, notes="This is a test phase")
-        assert phase.notes == "This is a test phase"
+        assert phase.notes == "This is a test phase", "notes is not valid"
 
 
 class TestUnifiedTrainingConfig:
@@ -166,32 +166,32 @@ class TestUnifiedTrainingConfig:
     def test_config_minimal(self):
         """Verify minimal config creation."""
         config = UnifiedTrainingConfig(model_name="test_model", epochs=1)
-        assert config.model_name == "test_model"
-        assert config.epochs == 1
+        assert config.model_name == "test_model", "model_name is not valid"
+        assert config.epochs == 1, "epochs is not valid"
 
     def test_config_with_seed(self):
         """Verify seed configuration."""
         config = UnifiedTrainingConfig(model_name="test", epochs=1, seed=42)
-        assert config.seed == 42
+        assert config.seed == 42, "seed is not valid"
 
     def test_config_with_device(self):
         """Verify device configuration."""
         config = UnifiedTrainingConfig(model_name="test", epochs=1, device="cuda")
-        assert config.device == "cuda"
+        assert config.device == "cuda", "device is not valid"
 
     def test_config_with_checkpoint_dir(self):
         """Verify checkpoint directory config."""
         config = UnifiedTrainingConfig(
             model_name="test", epochs=1, checkpoint_dir="/tmp/checkpoints"
         )
-        assert config.checkpoint_dir == "/tmp/checkpoints"
+        assert config.checkpoint_dir == "/tmp/checkpoints", "checkpoint_dir is not valid"
 
     def test_config_with_resume_path(self):
         """Verify resume path configuration."""
         config = UnifiedTrainingConfig(
             model_name="test", epochs=1, resume_from="/path/to/checkpoint.pt"
         )
-        assert config.resume_from == "/path/to/checkpoint.pt"
+        assert config.resume_from == "/path/to/checkpoint.pt", "resume_from is not valid"
 
 
 class TestTrainingCallbacks:
@@ -211,7 +211,7 @@ class TestTrainingCallbacks:
 
         # This would need the full run_unified_training function
         # Just testing config accepts callbacks
-        assert callback in config.callbacks
+        assert callback in config.callbacks, "Condition must be true"
 
     def test_multiple_callbacks(self):
         """Verify multiple callbacks configuration."""
@@ -221,7 +221,7 @@ class TestTrainingCallbacks:
 
         config = UnifiedTrainingConfig(model_name="test", epochs=1, callbacks=[cb1, cb2, cb3])
 
-        assert len(config.callbacks) == 3
+        assert len(config.callbacks) == 3, "Collection must not be empty"
 
 
 class TestDeviceStrategy:
@@ -230,17 +230,17 @@ class TestDeviceStrategy:
     def test_device_strategy_cpu(self):
         """Verify CPU device strategy."""
         config = UnifiedTrainingConfig(model_name="test", epochs=1, device="cpu")
-        assert config.device == "cpu"
+        assert config.device == "cpu", "device is not valid"
 
     def test_device_strategy_cuda(self):
         """Verify CUDA device strategy."""
         config = UnifiedTrainingConfig(model_name="test", epochs=1, device="cuda")
-        assert config.device == "cuda"
+        assert config.device == "cuda", "device is not valid"
 
     def test_device_strategy_auto(self):
         """Verify auto device selection."""
         config = UnifiedTrainingConfig(model_name="test", epochs=1, device="auto")
-        assert config.device == "auto"
+        assert config.device == "auto", "device is not valid"
 
 
 class TestCheckpointHandling:
@@ -253,7 +253,7 @@ class TestCheckpointHandling:
 
         # This would require full training run
         # Just test that save_checkpoint is importable and mockable
-        assert mock_save is not None
+        assert mock_save is not None, "mock_save must be initialized"
 
     @patch("codex_ml.training.unified_training.load_checkpoint")
     def test_checkpoint_resume(self, mock_load):
@@ -261,7 +261,7 @@ class TestCheckpointHandling:
         mock_load.return_value = {"epoch": 5, "model_state": {}, "optimizer_state": {}}
 
         # Verify load is callable
-        assert mock_load is not None
+        assert mock_load is not None, "mock_load must be initialized"
 
 
 class TestErrorHandling:
@@ -294,8 +294,8 @@ class TestContinualLearning:
         """Verify single continual phase."""
         phase = ContinualPhase(name="phase1", epochs=5)
         config = UnifiedTrainingConfig(model_name="test", epochs=1, continual_phases=[phase])
-        assert len(config.continual_phases) == 1
-        assert config.continual_phases[0].name == "phase1"
+        assert len(config.continual_phases) == 1, "Collection must not be empty"
+        assert config.continual_phases[0].name == "phase1", "name is not valid"
 
     def test_multiple_phases(self):
         """Verify multiple continual phases."""
@@ -305,7 +305,7 @@ class TestContinualLearning:
             ContinualPhase(name="p3", epochs=3),
         ]
         config = UnifiedTrainingConfig(model_name="test", epochs=1, continual_phases=phases)
-        assert len(config.continual_phases) == 3
+        assert len(config.continual_phases) == 3, "Collection must not be empty"
 
     def test_phases_with_replay(self):
         """Verify phases with experience replay."""
@@ -315,7 +315,7 @@ class TestContinualLearning:
             ContinualPhase(name="p3", epochs=5, replay_ratio=0.5),
         ]
         config = UnifiedTrainingConfig(model_name="test", epochs=1, continual_phases=phases)
-        assert config.continual_phases[1].replay_ratio == 0.3
+        assert config.continual_phases[1].replay_ratio == 0.3, "replay_ratio is not valid"
 
 
 class TestDeterministicSeeding:
@@ -327,19 +327,19 @@ class TestDeterministicSeeding:
         config = UnifiedTrainingConfig(model_name="test", epochs=1, seed=42)
 
         # Seed would be set during run_unified_training
-        assert config.seed == 42
+        assert config.seed == 42, "seed is not valid"
 
     def test_no_seed_allows_randomness(self):
         """Verify None seed allows randomness."""
         config = UnifiedTrainingConfig(model_name="test", epochs=1, seed=None)
-        assert config.seed is None
+        assert config.seed is None, "seed is not valid"
 
     def test_different_seeds(self):
         """Verify different seed values."""
         config1 = UnifiedTrainingConfig(model_name="test", epochs=1, seed=42)
         config2 = UnifiedTrainingConfig(model_name="test", epochs=1, seed=123)
 
-        assert config1.seed != config2.seed
+        assert config1.seed != config2.seed, "seed is not valid"
 
 
 class TestMLFlowIntegration:
@@ -352,13 +352,13 @@ class TestMLFlowIntegration:
         """Verify MLFlow logging when enabled."""
         config = UnifiedTrainingConfig(model_name="test", epochs=1, mlflow_tracking=True)
 
-        assert config.mlflow_tracking is True
+        assert config.mlflow_tracking is True, "mlflow_tracking is not valid"
 
     def test_mlflow_logging_disabled(self):
         """Verify MLFlow can be disabled."""
         config = UnifiedTrainingConfig(model_name="test", epochs=1, mlflow_tracking=False)
 
-        assert config.mlflow_tracking is False
+        assert config.mlflow_tracking is False, "mlflow_tracking is not valid"
 
 
 class TestEdgeCases:
@@ -367,27 +367,27 @@ class TestEdgeCases:
     def test_zero_replay_ratio(self):
         """Verify zero replay ratio (no replay)."""
         phase = ContinualPhase(name="test", epochs=1, replay_ratio=0.0)
-        assert phase.replay_ratio == 0.0
+        assert phase.replay_ratio == 0.0, "replay_ratio is not valid"
 
     def test_full_replay_ratio(self):
         """Verify full replay ratio."""
         phase = ContinualPhase(name="test", epochs=1, replay_ratio=1.0)
-        assert phase.replay_ratio == 1.0
+        assert phase.replay_ratio == 1.0, "replay_ratio is not valid"
 
     def test_single_epoch(self):
         """Verify single epoch training."""
         config = UnifiedTrainingConfig(model_name="test", epochs=1)
-        assert config.epochs == 1
+        assert config.epochs == 1, "epochs is not valid"
 
     def test_many_epochs(self):
         """Verify large epoch count."""
         config = UnifiedTrainingConfig(model_name="test", epochs=1000)
-        assert config.epochs == 1000
+        assert config.epochs == 1000, "epochs is not valid"
 
     def test_empty_dataset_config(self):
         """Verify empty dataset configuration."""
         phase = ContinualPhase(name="test", epochs=1, dataset={})
-        assert phase.dataset == {}
+        assert phase.dataset == {}, "Data must not be empty"
 
     def test_complex_dataset_config(self):
         """Verify complex dataset configuration."""
@@ -399,8 +399,8 @@ class TestEdgeCases:
             "transforms": ["normalize", "augment"],
         }
         phase = ContinualPhase(name="test", epochs=1, dataset=dataset_config)
-        assert phase.dataset["num_workers"] == 4
-        assert "normalize" in phase.dataset["transforms"]
+        assert phase.dataset["num_workers"] == 4, "Data must not be empty"
+        assert "normalize" in phase.dataset["transforms"], "Data must not be empty"
 
 
 if __name__ == "__main__":

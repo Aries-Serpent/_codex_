@@ -23,11 +23,11 @@ def test_env_check_invokes_subtools(monkeypatch, tmp_path: Path):
     monkeypatch.setattr(env_check, "_run", fake_run)
 
     result = env_check.run_health_check(tmp_path)
-    assert result["env_snapshot_rc"] == 0
-    assert result["dependency_audit_rc"] == 0
-    assert result["secret_scan_rc"] == 0
+    assert result["env_snapshot_rc"] == 0, "Result must not be empty"
+    assert result["dependency_audit_rc"] == 0, "Result must not be empty"
+    assert result["secret_scan_rc"] == 0, "Result must not be empty"
 
     cmds = [c[0] for c in called]
-    assert "codex_env_snapshot.py" in cmds[0]
-    assert any("codex_dependency_audit.py" in c for c in cmds)
-    assert any("codex_secret_scan_stub.py" in c for c in cmds)
+    assert "codex_env_snapshot.py" in cmds[0], "Condition must be true"
+    assert any("codex_dependency_audit.py" in c for c in cmds), "Condition must be true"
+    assert any("codex_secret_scan_stub.py" in c for c in cmds), "Condition must be true"

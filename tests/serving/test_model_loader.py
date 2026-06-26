@@ -24,12 +24,12 @@ class TestModelConfig:
     def test_init_defaults(self):
         """Test initialization with defaults"""
         config = ModelConfig(model_name_or_path="test-model")
-        assert config.model_name_or_path == "test-model"
-        assert config.revision is None
-        assert config.device == "cpu"
-        assert config.quantization == "none"
-        assert config.torch_dtype == "auto"
-        assert config.low_cpu_mem_usage is True
+        assert config.model_name_or_path == "test-model", "model_name_or_path is not valid"
+        assert config.revision is None, "revision is not valid"
+        assert config.device == "cpu", "device is not valid"
+        assert config.quantization == "none", "quantization is not valid"
+        assert config.torch_dtype == "auto", "torch_dtype is not valid"
+        assert config.low_cpu_mem_usage is True, "low_cpu_mem_usage is not valid"
 
     def test_init_custom(self):
         """Test initialization with custom values"""
@@ -42,13 +42,13 @@ class TestModelConfig:
             trust_remote_code=True,
             torch_dtype="float16",
         )
-        assert config.model_name_or_path == "gpt2"
-        assert config.revision == "main"
-        assert config.device == "cuda"
-        assert config.quantization == "int8"
-        assert config.cache_dir == "/tmp/cache"
-        assert config.trust_remote_code is True
-        assert config.torch_dtype == "float16"
+        assert config.model_name_or_path == "gpt2", "model_name_or_path is not valid"
+        assert config.revision == "main", "revision is not valid"
+        assert config.device == "cuda", "device is not valid"
+        assert config.quantization == "int8", "quantization is not valid"
+        assert config.cache_dir == "/tmp/cache", "cache_dir is not valid"
+        assert config.trust_remote_code is True, "trust_remote_code is not valid"
+        assert config.torch_dtype == "float16", "torch_dtype is not valid"
 
     def test_validate_invalid_device(self):
         """Test validation fails with invalid device"""
@@ -71,10 +71,10 @@ class TestModelConfig:
             model_name_or_path="test-model", revision="v1.0", device="cpu", quantization="fp16"
         )
         config_dict = config.to_dict()
-        assert config_dict["model_name_or_path"] == "test-model"
-        assert config_dict["revision"] == "v1.0"
-        assert config_dict["device"] == "cpu"
-        assert config_dict["quantization"] == "fp16"
+        assert config_dict["model_name_or_path"] == "test-model", "Condition must be true"
+        assert config_dict["revision"] == "v1.0", "Condition must be true"
+        assert config_dict["device"] == "cpu", "Condition must be true"
+        assert config_dict["quantization"] == "fp16", "Condition must be true"
 
     def test_get_cache_key(self):
         """Test cache key generation"""
@@ -83,16 +83,16 @@ class TestModelConfig:
         config3 = ModelConfig(model_name_or_path="test", device="cuda")
 
         # Same configs should have same key
-        assert config1.get_cache_key() == config2.get_cache_key()
+        assert config1.get_cache_key() == config2.get_cache_key(), "Condition must be true"
         # Different device should have different key
-        assert config1.get_cache_key() != config3.get_cache_key()
+        assert config1.get_cache_key() != config3.get_cache_key(), "Condition must be true"
 
     def test_get_cache_key_with_revision(self):
         """Test cache key includes revision"""
         config1 = ModelConfig(model_name_or_path="test", revision="v1.0")
         config2 = ModelConfig(model_name_or_path="test", revision="v2.0")
 
-        assert config1.get_cache_key() != config2.get_cache_key()
+        assert config1.get_cache_key() != config2.get_cache_key(), "Condition must be true"
 
 
 class TestModelLoader:
@@ -101,9 +101,9 @@ class TestModelLoader:
     def test_init(self):
         """Test initialization"""
         loader = ModelLoader(cache_size=5)
-        assert loader.cache_size == 5
-        assert len(loader.cache) == 0
-        assert len(loader.cache_order) == 0
+        assert loader.cache_size == 5, "cache_size is not valid"
+        assert len(loader.cache) == 0, "Collection must not be empty"
+        assert len(loader.cache_order) == 0, "Collection must not be empty"
 
     def test_cache_hit(self):
         """Test cache hit returns cached model"""
@@ -115,7 +115,7 @@ class TestModelLoader:
             mock_load.return_value = {"type": "stub", "model": "test"}
             result1 = loader.load_model(config)
 
-        assert mock_load.call_count == 1
+        assert mock_load.call_count == 1, "Count must be greater than zero"
 
         # Load same model again - should hit cache
         with patch.object(loader, "_load_from_source") as mock_load:
@@ -123,9 +123,9 @@ class TestModelLoader:
             result2 = loader.load_model(config)
 
         # Should not call _load_from_source again
-        assert mock_load.call_count == 0
+        assert mock_load.call_count == 0, "Count must be greater than zero"
         # Should return same data
-        assert result1 == result2
+        assert result1 == result2, "Result must not be empty"
 
     def test_cache_eviction(self):
         """Test LRU cache eviction"""
@@ -140,10 +140,10 @@ class TestModelLoader:
                 loader.load_model(config)
 
         # Cache should have 2 models (last two)
-        assert len(loader.cache) == 2
+        assert len(loader.cache) == 2, "Collection must not be empty"
         # First model should be evicted
         cache_key_0 = configs[0].get_cache_key()
-        assert cache_key_0 not in loader.cache
+        assert cache_key_0 not in loader.cache, "Condition must be true"
 
     def test_load_from_dict_config(self):
         """Test loading with dict config"""
@@ -154,8 +154,8 @@ class TestModelLoader:
             mock_load.return_value = {"type": "stub"}
             result = loader.load_model(config_dict)
 
-        assert mock_load.called
-        assert result["type"] == "stub"
+        assert mock_load.called, "Condition must be true"
+        assert result["type"] == "stub", "Result must not be empty"
 
     def test_clear_cache(self):
         """Test clearing cache"""
@@ -167,13 +167,13 @@ class TestModelLoader:
             mock_load.return_value = {"type": "stub"}
             loader.load_model(config)
 
-        assert len(loader.cache) == 1
+        assert len(loader.cache) == 1, "Collection must not be empty"
 
         # Clear cache
         loader.clear_cache()
-        assert len(loader.cache) == 0
-        assert len(loader.cache_order) == 0
-        assert len(loader.load_times) == 0
+        assert len(loader.cache) == 0, "Collection must not be empty"
+        assert len(loader.cache_order) == 0, "Collection must not be empty"
+        assert len(loader.load_times) == 0, "Collection must not be empty"
 
     def test_get_cache_stats(self):
         """Test getting cache statistics"""
@@ -186,10 +186,10 @@ class TestModelLoader:
             loader.load_model(config)
 
         stats = loader.get_cache_stats()
-        assert stats["cache_size"] == 1
-        assert stats["max_size"] == 5
-        assert len(stats["cached_models"]) == 1
-        assert len(stats["load_times"]) == 1
+        assert stats["cache_size"] == 1, "Condition must be true"
+        assert stats["max_size"] == 5, "Condition must be true"
+        assert len(stats["cached_models"]) == 1, "Collection must not be empty"
+        assert len(stats["load_times"]) == 1, "Collection must not be empty"
 
     def test_load_local_nonexistent(self):
         """Test loading from nonexistent local path"""
@@ -212,9 +212,9 @@ class TestModelLoader:
             config = ModelConfig(model_name_or_path=str(model_dir))
             result = loader.load_model(config)
 
-            assert result["type"] == "local"
-            assert result["path"] == str(model_dir)
-            assert result["device"] == "cpu"
+            assert result["type"] == "local", "Result must not be empty"
+            assert result["path"] == str(model_dir), "Result must not be empty"
+            assert result["device"] == "cpu", "Result must not be empty"
 
     def test_validate_checkpoint_dir_valid(self):
         """Test checkpoint validation with valid directory"""
@@ -225,7 +225,7 @@ class TestModelLoader:
             model_dir.mkdir()
             (model_dir / "config.json").write_text("{}")
 
-            assert loader.validate_checkpoint(model_dir) is True
+            assert loader.validate_checkpoint(model_dir) is True, "Condition must be true"
 
     def test_validate_checkpoint_dir_missing_config(self):
         """Test checkpoint validation with missing config.json"""
@@ -235,7 +235,7 @@ class TestModelLoader:
             model_dir = Path(tmpdir) / "model"
             model_dir.mkdir()
 
-            assert loader.validate_checkpoint(model_dir) is False
+            assert loader.validate_checkpoint(model_dir) is False, "Condition must be true"
 
     def test_validate_checkpoint_file_valid(self):
         """Test checkpoint validation with valid file"""
@@ -247,7 +247,7 @@ class TestModelLoader:
             path = Path(tmpfile.name)
 
         try:
-            assert loader.validate_checkpoint(path) is True
+            assert loader.validate_checkpoint(path) is True, "Condition must be true"
         finally:
             path.unlink()
 
@@ -261,14 +261,14 @@ class TestModelLoader:
             path = Path(tmpfile.name)
 
         try:
-            assert loader.validate_checkpoint(path) is False
+            assert loader.validate_checkpoint(path) is False, "Condition must be true"
         finally:
             path.unlink()
 
     def test_validate_checkpoint_nonexistent(self):
         """Test checkpoint validation with nonexistent path"""
         loader = ModelLoader()
-        assert loader.validate_checkpoint("/nonexistent/path") is False
+        assert loader.validate_checkpoint("/nonexistent/path") is False, "Condition must be true"
 
     def test_load_huggingface_stub(self):
         """Test loading HuggingFace model (stub)"""
@@ -285,16 +285,16 @@ class TestModelLoader:
             config = ModelConfig(model_name_or_path="bert-base-uncased", revision="main")
             result = loader.load_model(config)
 
-            assert result["type"] == "huggingface"
-            assert result["model_name"] == "bert-base-uncased"
-            assert result["revision"] == "main"
-            assert "model_config" in result
+            assert result["type"] == "huggingface", "Result must not be empty"
+            assert result["model_name"] == "bert-base-uncased", "Result must not be empty"
+            assert result["revision"] == "main", "Result must not be empty"
+            assert "model_config" in result, "Result must not be empty"
 
     def test_get_torch_dtype_auto(self):
         """Test getting torch dtype for auto"""
         loader = ModelLoader()
         dtype = loader._get_torch_dtype("auto")
-        assert dtype is None
+        assert dtype is None, "dtype is not valid"
 
     def test_get_torch_dtype_float16(self):
         """Test getting torch dtype for float16"""
@@ -304,7 +304,7 @@ class TestModelLoader:
         import torch
 
         dtype = loader._get_torch_dtype("float16")
-        assert dtype == torch.float16
+        assert dtype == torch.float16, "dtype is not valid"
 
 
 class TestEnums:
@@ -312,12 +312,12 @@ class TestEnums:
 
     def test_device_type_enum(self):
         """Test DeviceType enum"""
-        assert DeviceType.CPU.value == "cpu"
-        assert DeviceType.CUDA.value == "cuda"
-        assert DeviceType.MPS.value == "mps"
+        assert DeviceType.CPU.value == "cpu", "Value must be initialized"
+        assert DeviceType.CUDA.value == "cuda", "Value must be initialized"
+        assert DeviceType.MPS.value == "mps", "Value must be initialized"
 
     def test_quantization_type_enum(self):
         """Test QuantizationType enum"""
-        assert QuantizationType.NONE.value == "none"
-        assert QuantizationType.INT8.value == "int8"
-        assert QuantizationType.FP16.value == "fp16"
+        assert QuantizationType.NONE.value == "none", "Value must be initialized"
+        assert QuantizationType.INT8.value == "int8", "Value must be initialized"
+        assert QuantizationType.FP16.value == "fp16", "Value must be initialized"

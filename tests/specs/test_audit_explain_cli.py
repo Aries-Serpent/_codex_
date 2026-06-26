@@ -49,5 +49,5 @@ def test_audit_explain_cli_smoke(tmp_path, monkeypatch):
     exp = _run([str(runner), "explain", cap_id])
     assert exp.returncode == 0, exp.stderr
     # Expect header and contribution lines
-    assert f"Explain: {cap_id}" in exp.stdout
-    assert "contribution=" in exp.stdout
+    assert f"Explain: {cap_id}" in exp.stdout, "Condition must be true"
+    assert "contribution=" in exp.stdout, "Condition must be true"

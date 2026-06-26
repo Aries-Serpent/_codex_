@@ -24,12 +24,12 @@ class TestMetricTypes:
         """Test all metric types are defined."""
         from codex.cognitive.objective_analyzer import MetricType
 
-        assert MetricType.COVERAGE.value == "coverage"
-        assert MetricType.SECURITY.value == "security"
-        assert MetricType.CI_CD.value == "ci_cd"
-        assert MetricType.DOCUMENTATION.value == "documentation"
-        assert MetricType.BUILD_TIME.value == "build_time"
-        assert MetricType.TEST_SUCCESS_RATE.value == "test_success_rate"
+        assert MetricType.COVERAGE.value == "coverage", "Value must be initialized"
+        assert MetricType.SECURITY.value == "security", "Value must be initialized"
+        assert MetricType.CI_CD.value == "ci_cd", "Value must be initialized"
+        assert MetricType.DOCUMENTATION.value == "documentation", "Value must be initialized"
+        assert MetricType.BUILD_TIME.value == "build_time", "Value must be initialized"
+        assert MetricType.TEST_SUCCESS_RATE.value == "test_success_rate", "Value must be initialized"
 
 
 class TestTrendDirection:
@@ -39,10 +39,10 @@ class TestTrendDirection:
         """Test all trend directions."""
         from codex.cognitive.objective_analyzer import TrendDirection
 
-        assert TrendDirection.IMPROVING.value == "improving"
-        assert TrendDirection.STABLE.value == "stable"
-        assert TrendDirection.DEGRADING.value == "degrading"
-        assert TrendDirection.UNKNOWN.value == "unknown"
+        assert TrendDirection.IMPROVING.value == "improving", "Value must be initialized"
+        assert TrendDirection.STABLE.value == "stable", "Value must be initialized"
+        assert TrendDirection.DEGRADING.value == "degrading", "Value must be initialized"
+        assert TrendDirection.UNKNOWN.value == "unknown", "Value must be initialized"
 
 
 class TestMetricValue:
@@ -57,9 +57,9 @@ class TestMetricValue:
             metric_type=MetricType.COVERAGE, value=75.5, timestamp=now, context={"source": "pytest"}
         )
 
-        assert metric.metric_type == MetricType.COVERAGE
-        assert metric.value == 75.5
-        assert metric.context["source"] == "pytest"
+        assert metric.metric_type == MetricType.COVERAGE, "metric_type is not valid"
+        assert metric.value == 75.5, "Value must be initialized"
+        assert metric.context["source"] == "pytest", "Condition must be true"
 
     def test_metric_value_to_dict(self):
         """Test serialization to dict."""
@@ -69,9 +69,9 @@ class TestMetricValue:
         metric = MetricValue(MetricType.SECURITY, 0, now)
         data = metric.to_dict()
 
-        assert data["metric_type"] == "security"
-        assert data["value"] == 0
-        assert "timestamp" in data
+        assert data["metric_type"] == "security", "Data must not be empty"
+        assert data["value"] == 0, "Data must not be empty"
+        assert "timestamp" in data, "Data must not be empty"
 
     def test_metric_value_from_dict(self):
         """Test deserialization from dict."""
@@ -85,8 +85,8 @@ class TestMetricValue:
         }
         metric = MetricValue.from_dict(data)
 
-        assert metric.metric_type == MetricType.COVERAGE
-        assert metric.value == 80.0
+        assert metric.metric_type == MetricType.COVERAGE, "metric_type is not valid"
+        assert metric.value == 80.0, "Value must be initialized"
 
 
 class TestMetricThreshold:
@@ -105,8 +105,8 @@ class TestMetricThreshold:
         )
 
         is_ok, severity = threshold.check_value(75.0)
-        assert is_ok is True
-        assert severity is None
+        assert is_ok is True, "is_ok is not valid"
+        assert severity is None, "severity is not valid"
 
     def test_threshold_gte_warning(self):
         """Test threshold check for >= comparison (warning level)."""
@@ -125,8 +125,8 @@ class TestMetricThreshold:
         )
 
         is_ok, severity = threshold.check_value(65.0)
-        assert is_ok is False
-        assert severity == AlertSeverity.WARNING
+        assert is_ok is False, "is_ok is not valid"
+        assert severity == AlertSeverity.WARNING, "severity is not valid"
 
     def test_threshold_gte_critical(self):
         """Test threshold check for >= comparison (critical level)."""
@@ -145,8 +145,8 @@ class TestMetricThreshold:
         )
 
         is_ok, severity = threshold.check_value(45.0)
-        assert is_ok is False
-        assert severity == AlertSeverity.CRITICAL
+        assert is_ok is False, "is_ok is not valid"
+        assert severity == AlertSeverity.CRITICAL, "severity is not valid"
 
     def test_threshold_lte(self):
         """Test threshold check for <= comparison."""
@@ -166,17 +166,17 @@ class TestMetricThreshold:
 
         # 0 vulnerabilities - OK (at or below target)
         is_ok, _ = threshold.check_value(0)
-        assert is_ok is True
+        assert is_ok is True, "is_ok is not valid"
 
         # 2 vulnerabilities - WARNING (above target but at or below warning)
         is_ok, severity = threshold.check_value(2)
-        assert is_ok is False
-        assert severity == AlertSeverity.WARNING
+        assert is_ok is False, "is_ok is not valid"
+        assert severity == AlertSeverity.WARNING, "severity is not valid"
 
         # 5 vulnerabilities - CRITICAL (above warning threshold)
         is_ok, severity = threshold.check_value(5)
-        assert is_ok is False
-        assert severity == AlertSeverity.CRITICAL
+        assert is_ok is False, "is_ok is not valid"
+        assert severity == AlertSeverity.CRITICAL, "severity is not valid"
 
 
 class TestMetricStore:
@@ -198,8 +198,8 @@ class TestMetricStore:
             store.add_metric(metric)
 
             metrics = store.get_metrics(MetricType.COVERAGE, days=1)
-            assert len(metrics) == 1
-            assert metrics[0].value == 75.0
+            assert len(metrics) == 1, "Metrics must not be empty"
+            assert metrics[0].value == 75.0, "Value must be initialized"
 
     def test_get_latest_metric(self):
         """Test getting latest metric."""
@@ -219,8 +219,8 @@ class TestMetricStore:
                 store.add_metric(metric)
 
             latest = store.get_latest(MetricType.COVERAGE)
-            assert latest is not None
-            assert latest.value == 80.0
+            assert latest is not None, "latest must be initialized"
+            assert latest.value == 80.0, "Value must be initialized"
 
 
 class TestTrendAnalyzer:
@@ -247,9 +247,9 @@ class TestTrendAnalyzer:
         ]
 
         result = analyzer.analyze(metrics, period_days=7)
-        assert result is not None
-        assert result.direction == TrendDirection.IMPROVING
-        assert result.slope > 0
+        assert result is not None, "result must be initialized"
+        assert result.direction == TrendDirection.IMPROVING, "Result must not be empty"
+        assert result.slope > 0, "slope must be greater than zero"
 
     def test_analyze_degrading_trend(self):
         """Test detecting degrading trend."""
@@ -272,9 +272,9 @@ class TestTrendAnalyzer:
         ]
 
         result = analyzer.analyze(metrics, period_days=7)
-        assert result is not None
-        assert result.direction == TrendDirection.DEGRADING
-        assert result.slope < 0
+        assert result is not None, "result must be initialized"
+        assert result.direction == TrendDirection.DEGRADING, "Result must not be empty"
+        assert result.slope < 0, "Result must not be empty"
 
     def test_analyze_insufficient_data(self):
         """Test with insufficient data."""
@@ -292,7 +292,7 @@ class TestTrendAnalyzer:
         ]
 
         result = analyzer.analyze(metrics, period_days=7)
-        assert result is None
+        assert result is None, "Result must not be empty"
 
 
 class TestAnomalyDetector:
@@ -320,10 +320,10 @@ class TestAnomalyDetector:
         ]
 
         anomalies = detector.detect(metrics)
-        assert len(anomalies) >= 1
+        assert len(anomalies) >= 1, "Anomalies must not be empty"
         # The outlier should be detected
         anomaly_values = [a.value for a in anomalies]
-        assert 10.0 in anomaly_values
+        assert 10.0 in anomaly_values, "Value must be initialized"
 
 
 class TestObjectiveAnalyzer:
@@ -342,7 +342,7 @@ class TestObjectiveAnalyzer:
             analyzer = ObjectiveAnalyzer(store=store)
 
             metric = analyzer.record_metric(MetricType.COVERAGE, 75.0)
-            assert metric.value == 75.0
+            assert metric.value == 75.0, "Value must be initialized"
 
     def test_check_threshold_ok(self):
         """Test threshold check when OK."""
@@ -357,8 +357,8 @@ class TestObjectiveAnalyzer:
             analyzer = ObjectiveAnalyzer(store=store)
 
             is_ok, alert = analyzer.check_threshold(MetricType.COVERAGE, 80.0)
-            assert is_ok is True
-            assert alert is None
+            assert is_ok is True, "is_ok is not valid"
+            assert alert is None, "alert is not valid"
 
     def test_check_threshold_breach(self):
         """Test threshold breach detection."""
@@ -373,8 +373,8 @@ class TestObjectiveAnalyzer:
             analyzer = ObjectiveAnalyzer(store=store)
 
             is_ok, alert = analyzer.check_threshold(MetricType.COVERAGE, 45.0)
-            assert is_ok is False
-            assert alert is not None
+            assert is_ok is False, "is_ok is not valid"
+            assert alert is not None, "alert must be initialized"
 
     def test_generate_health_report(self):
         """Test health report generation."""
@@ -394,7 +394,7 @@ class TestObjectiveAnalyzer:
 
             report = analyzer.generate_health_report()
             assert report.overall_status in ["healthy", "warning", "critical"]
-            assert "recommendations" in report.to_dict()
+            assert "recommendations" in report.to_dict(), "Condition must be true"
 
 
 # ============================================================================
@@ -409,9 +409,9 @@ class TestAdjustmentTypes:
         """Test all adjustment types."""
         from codex.cognitive.objective_adjuster import AdjustmentType
 
-        assert AdjustmentType.PRIORITY_INCREASE.value == "priority_increase"
-        assert AdjustmentType.ADD_OBJECTIVE.value == "add_objective"
-        assert AdjustmentType.PAUSE_OBJECTIVE.value == "pause_objective"
+        assert AdjustmentType.PRIORITY_INCREASE.value == "priority_increase", "Value must be initialized"
+        assert AdjustmentType.ADD_OBJECTIVE.value == "add_objective", "Value must be initialized"
+        assert AdjustmentType.PAUSE_OBJECTIVE.value == "pause_objective", "Value must be initialized"
 
 
 class TestObjectivePriority:
@@ -421,8 +421,8 @@ class TestObjectivePriority:
         """Test priority values are ordered correctly."""
         from codex.cognitive.objective_adjuster import ObjectivePriority
 
-        assert ObjectivePriority.P0_CRITICAL.value < ObjectivePriority.P1_HIGH.value
-        assert ObjectivePriority.P1_HIGH.value < ObjectivePriority.P2_MEDIUM.value
+        assert ObjectivePriority.P0_CRITICAL.value < ObjectivePriority.P1_HIGH.value, "Value must be initialized"
+        assert ObjectivePriority.P1_HIGH.value < ObjectivePriority.P2_MEDIUM.value, "Value must be initialized"
 
 
 class TestObjective:
@@ -448,8 +448,8 @@ class TestObjective:
             tags=["test"],
         )
 
-        assert objective.id == "OBJ-001"
-        assert objective.priority == ObjectivePriority.P2_MEDIUM
+        assert objective.id == "OBJ-001", "Object must be initialized"
+        assert objective.priority == ObjectivePriority.P2_MEDIUM, "Object must be initialized"
 
     def test_objective_serialization(self):
         """Test objective serialization."""
@@ -471,8 +471,8 @@ class TestObjective:
 
         data = objective.to_dict()
         restored = Objective.from_dict(data)
-        assert restored.id == objective.id
-        assert restored.priority == objective.priority
+        assert restored.id == objective.id, "Object must be initialized"
+        assert restored.priority == objective.priority, "Object must be initialized"
 
 
 class TestAdjustmentRule:
@@ -497,15 +497,15 @@ class TestAdjustmentRule:
         )
 
         # Should be able to apply (no last_applied)
-        assert rule.can_apply() is True
+        assert rule.can_apply() is True, "Condition must be true"
 
         # After applying
         rule.last_applied = datetime.now(timezone.utc)
-        assert rule.can_apply() is False
+        assert rule.can_apply() is False, "Condition must be true"
 
         # After cooldown
         rule.last_applied = datetime.now(timezone.utc) - timedelta(hours=25)
-        assert rule.can_apply() is True
+        assert rule.can_apply() is True, "Condition must be true"
 
 
 class TestObjectiveStore:
@@ -539,8 +539,8 @@ class TestObjectiveStore:
             store.add_objective(objective)
             retrieved = store.get_objective("OBJ-001")
 
-            assert retrieved is not None
-            assert retrieved.id == "OBJ-001"
+            assert retrieved is not None, "retrieved must be initialized"
+            assert retrieved.id == "OBJ-001", "Object must be initialized"
 
     def test_get_all_objectives_by_status(self):
         """Test filtering objectives by status."""
@@ -571,7 +571,7 @@ class TestObjectiveStore:
                 store.add_objective(obj)
 
             active = store.get_all_objectives(status="active")
-            assert len(active) == 2
+            assert len(active) == 2, "Active must not be empty"
 
 
 class TestObjectiveAdjuster:
@@ -604,8 +604,8 @@ class TestObjectiveAdjuster:
                 target_value=80.0,
             )
 
-            assert objective.title == "Coverage Sprint"
-            assert objective.priority == ObjectivePriority.P1_HIGH
+            assert objective.title == "Coverage Sprint", "Object must be initialized"
+            assert objective.priority == ObjectivePriority.P1_HIGH, "Object must be initialized"
 
     def test_complete_objective(self):
         """Test completing an objective."""
@@ -627,10 +627,10 @@ class TestObjectiveAdjuster:
             )
 
             result = adjuster.complete_objective(objective.id)
-            assert result is True
+            assert result is True, "Result must not be empty"
 
             updated = obj_store.get_objective(objective.id)
-            assert updated.status == "completed"
+            assert updated.status == "completed", "status is not valid"
 
 
 # ============================================================================
@@ -645,9 +645,9 @@ class TestAutomationLevel:
         """Test automation level values."""
         from codex.cognitive.autonomous_executor import AutomationLevel
 
-        assert AutomationLevel.LEVEL_1_ADVISORY.value == 1
-        assert AutomationLevel.LEVEL_2_SEMI_AUTONOMOUS.value == 2
-        assert AutomationLevel.LEVEL_3_FULLY_AUTONOMOUS.value == 3
+        assert AutomationLevel.LEVEL_1_ADVISORY.value == 1, "Value must be initialized"
+        assert AutomationLevel.LEVEL_2_SEMI_AUTONOMOUS.value == 2, "Value must be initialized"
+        assert AutomationLevel.LEVEL_3_FULLY_AUTONOMOUS.value == 3, "Value must be initialized"
 
 
 class TestExecutionPolicy:
@@ -672,8 +672,8 @@ class TestExecutionPolicy:
         )
 
         can_execute, reason = policy.can_auto_execute(adjustment)
-        assert can_execute is False
-        assert "Advisory mode" in reason
+        assert can_execute is False, "can_execute is not valid"
+        assert "Advisory mode" in reason, "Condition must be true"
 
     def test_semi_autonomous_auto_approves_priority_change(self):
         """Test semi-autonomous auto-approves priority changes."""
@@ -694,7 +694,7 @@ class TestExecutionPolicy:
         )
 
         can_execute, _ = policy.can_auto_execute(adjustment)
-        assert can_execute is True
+        assert can_execute is True, "can_execute is not valid"
 
     def test_semi_autonomous_requires_approval_for_add(self):
         """Test semi-autonomous requires approval for adding objectives."""
@@ -715,8 +715,8 @@ class TestExecutionPolicy:
         )
 
         can_execute, reason = policy.can_auto_execute(adjustment)
-        assert can_execute is False
-        assert "requires approval" in reason
+        assert can_execute is False, "can_execute is not valid"
+        assert "requires approval" in reason, "Condition must be true"
 
     def test_fully_autonomous_approves_all(self):
         """Test fully autonomous approves everything."""
@@ -737,7 +737,7 @@ class TestExecutionPolicy:
         )
 
         can_execute, _ = policy.can_auto_execute(adjustment)
-        assert can_execute is True
+        assert can_execute is True, "can_execute is not valid"
 
 
 class TestAutonomousExecutor:
@@ -750,8 +750,8 @@ class TestAutonomousExecutor:
         executor = AutonomousExecutor()
         status = executor.get_status()
 
-        assert "automation_level" in status
-        assert "pending_approvals" in status
+        assert "automation_level" in status, "Condition must be true"
+        assert "pending_approvals" in status, "Condition must be true"
 
 
 # ============================================================================
@@ -766,8 +766,8 @@ class TestAuditEventType:
         """Test audit event types."""
         from codex.cognitive.safety_guards import AuditEventType
 
-        assert AuditEventType.ADJUSTMENT_EXECUTED.value == "adjustment_executed"
-        assert AuditEventType.RATE_LIMIT_HIT.value == "rate_limit_hit"
+        assert AuditEventType.ADJUSTMENT_EXECUTED.value == "adjustment_executed", "Value must be initialized"
+        assert AuditEventType.RATE_LIMIT_HIT.value == "rate_limit_hit", "Value must be initialized"
 
 
 class TestRateLimit:
@@ -782,12 +782,12 @@ class TestRateLimit:
         # First 3 should be allowed
         for _ in range(3):
             allowed, _ = limit.check_and_increment()
-            assert allowed is True
+            assert allowed is True, "allowed is not valid"
 
         # 4th should be blocked
         allowed, reason = limit.check_and_increment()
-        assert allowed is False
-        assert "exceeded" in reason
+        assert allowed is False, "allowed is not valid"
+        assert "exceeded" in reason, "Condition must be true"
 
     def test_rate_limit_resets_after_window(self):
         """Test rate limit resets after window expires."""
@@ -801,14 +801,14 @@ class TestRateLimit:
 
         # Should be blocked
         allowed, _ = limit.check_and_increment()
-        assert allowed is False
+        assert allowed is False, "allowed is not valid"
 
         # Simulate window expiry
         limit.window_start = datetime.now(timezone.utc) - timedelta(hours=2)
 
         # Should be allowed now
         allowed, _ = limit.check_and_increment()
-        assert allowed is True
+        assert allowed is True, "allowed is not valid"
 
 
 class TestScopeRestriction:
@@ -833,7 +833,7 @@ class TestScopeRestriction:
         )
 
         allowed, _ = scope.check_adjustment(adjustment)
-        assert allowed is True
+        assert allowed is True, "allowed is not valid"
 
     def test_scope_blocks_adjustment_type(self):
         """Test scope blocks specific adjustment types."""
@@ -856,8 +856,8 @@ class TestScopeRestriction:
         )
 
         allowed, reason = scope.check_adjustment(adjustment)
-        assert allowed is False
-        assert "blocked" in reason
+        assert allowed is False, "allowed is not valid"
+        assert "blocked" in reason, "Condition must be true"
 
 
 class TestAuditLog:
@@ -874,8 +874,8 @@ class TestAuditLog:
                 AuditEventType.ADJUSTMENT_EXECUTED, "test_user", {"adjustment_id": "ADJ-001"}
             )
 
-            assert event.id.startswith("AUD-")
-            assert event.actor == "test_user"
+            assert event.id.startswith("AUD-"), "Condition must be true"
+            assert event.actor == "test_user", "actor is not valid"
 
     def test_get_events_filtered(self):
         """Test getting filtered events."""
@@ -889,7 +889,7 @@ class TestAuditLog:
             log.log_event(AuditEventType.ADJUSTMENT_EXECUTED, "user2", {})
 
             executed = log.get_events(event_type=AuditEventType.ADJUSTMENT_EXECUTED)
-            assert len(executed) == 2
+            assert len(executed) == 2, "Executed must not be empty"
 
 
 class TestSafetyGuard:
@@ -903,13 +903,13 @@ class TestSafetyGuard:
             audit_log = AuditLog(Path(tmpdir) / "audit.json")
             guard = SafetyGuard(audit_log=audit_log)
 
-            assert guard.is_paused is False
+            assert guard.is_paused is False, "is_paused is not valid"
 
             guard.pause_automation("admin", "Maintenance")
-            assert guard.is_paused is True
+            assert guard.is_paused is True, "is_paused is not valid"
 
             guard.resume_automation("admin")
-            assert guard.is_paused is False
+            assert guard.is_paused is False, "is_paused is not valid"
 
     def test_block_and_unblock_rule(self):
         """Test blocking and unblocking rules."""
@@ -920,10 +920,10 @@ class TestSafetyGuard:
             guard = SafetyGuard(audit_log=audit_log)
 
             guard.block_rule("test-rule", "admin", "Testing")
-            assert "test-rule" in guard.scope.blocked_rules
+            assert "test-rule" in guard.scope.blocked_rules, "Condition must be true"
 
             guard.unblock_rule("test-rule", "admin")
-            assert "test-rule" not in guard.scope.blocked_rules
+            assert "test-rule" not in guard.scope.blocked_rules, "Condition must be true"
 
     def test_check_adjustment_when_paused(self):
         """Test adjustment blocked when paused."""
@@ -948,8 +948,8 @@ class TestSafetyGuard:
             )
 
             allowed, reason = guard.check_adjustment(adjustment)
-            assert allowed is False
-            assert "paused" in reason
+            assert allowed is False, "allowed is not valid"
+            assert "paused" in reason, "Condition must be true"
 
     def test_generate_governance_report(self):
         """Test governance report generation."""
@@ -965,9 +965,9 @@ class TestSafetyGuard:
 
             report = guard.generate_governance_report(period_days=7)
 
-            assert "total_events" in report
-            assert "events_by_type" in report
-            assert report["total_events"] == 2
+            assert "total_events" in report, "Condition must be true"
+            assert "events_by_type" in report, "Condition must be true"
+            assert report["total_events"] == 2, "rep is not valid"
 
     def test_get_safety_status(self):
         """Test getting safety status."""
@@ -979,9 +979,9 @@ class TestSafetyGuard:
 
             status = guard.get_safety_status()
 
-            assert "is_paused" in status
-            assert "blocked_rules" in status
-            assert "rate_limits" in status
+            assert "is_paused" in status, "Condition must be true"
+            assert "blocked_rules" in status, "Condition must be true"
+            assert "rate_limits" in status, "Condition must be true"
 
 
 # ============================================================================
@@ -1026,11 +1026,11 @@ class TestPlan3Integration:
 
             # Generate health report
             report = analyzer.generate_health_report()
-            assert report.overall_status == "critical"
+            assert report.overall_status == "critical", "overall_status is not valid"
 
             # Run evaluation cycle
             result = executor.run_evaluation_cycle()
-            assert "adjustments_proposed" in result
+            assert "adjustments_proposed" in result, "Result must not be empty"
 
     def test_convenience_functions(self):
         """Test convenience functions work."""
@@ -1041,6 +1041,6 @@ class TestPlan3Integration:
         # These should not raise
         # Note: They use default paths which may not exist in test
         # So we just check they're callable
-        assert callable(get_health_report)
-        assert callable(run_advisory_mode)
-        assert callable(get_governance_report)
+        assert callable(get_health_report), "Condition must be true"
+        assert callable(run_advisory_mode), "Condition must be true"
+        assert callable(get_governance_report), "Condition must be true"

@@ -287,7 +287,7 @@ class SelfHealingValidator:
                 results.append((name, passed))
             except Exception as e:
                 error_type = type(e).__name__
-                print(f"  ✗ Validation failed with exception: <ERROR_TYPE>")
+                print("  ✗ Validation failed with exception: <ERROR_TYPE>")
                 self.log_issue(name, f"Validation threw exception: {e}")
                 results.append((name, False))
 

@@ -23,10 +23,10 @@ def test_save_checkpoint_tolerates_integrity_fail(monkeypatch, tmp_path: Path) -
     ckpt_dir = tmp_path / "ckpts"
     ckpt_path, meta = core.save_checkpoint(str(ckpt_dir), {"w": 1})
 
-    assert ckpt_path.exists()
+    assert ckpt_path.exists(), "Condition must be true"
 
     index_path = ckpt_dir / "index.json"
     index = json.loads(index_path.read_text(encoding="utf-8"))
-    assert index.get("entries")
+    assert index.get("entries"), "Condition must be true"
 
     assert getattr(meta, "sha256", None)

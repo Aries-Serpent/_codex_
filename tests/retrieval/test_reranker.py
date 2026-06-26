@@ -30,11 +30,11 @@ class TestRankedResult:
             rank=1,
         )
 
-        assert result.document_id == "doc1"
-        assert result.content == "Test content"
-        assert result.original_score == 0.8
-        assert result.reranked_score == 0.9
-        assert result.rank == 1
+        assert result.document_id == "doc1", "Result must not be empty"
+        assert result.content == "Test content", "Result must not be empty"
+        assert result.original_score == 0.8, "Result must not be empty"
+        assert result.reranked_score == 0.9, "Result must not be empty"
+        assert result.rank == 1, "Result must not be empty"
 
     def test_to_dict(self):
         """Test converting to dictionary."""
@@ -48,9 +48,9 @@ class TestRankedResult:
         )
 
         d = result.to_dict()
-        assert d["document_id"] == "doc1"
-        assert d["reranked_score"] == 0.6
-        assert d["metadata"]["source"] == "test"
+        assert d["document_id"] == "doc1", "Condition must be true"
+        assert d["reranked_score"] == 0.6, "Condition must be true"
+        assert d["metadata"]["source"] == "test", "Data must not be empty"
 
 
 class TestRerankingConfig:
@@ -60,9 +60,9 @@ class TestRerankingConfig:
         """Test default configuration."""
         config = RerankingConfig()
 
-        assert config.strategy == RerankingStrategy.SCORE_FUSION
-        assert config.top_k == 10
-        assert config.mmr_lambda == 0.5
+        assert config.strategy == RerankingStrategy.SCORE_FUSION, "strategy is not valid"
+        assert config.top_k == 10, "top_k is not valid"
+        assert config.mmr_lambda == 0.5, "mmr_lambda is not valid"
 
     def test_custom_config(self):
         """Test custom configuration."""
@@ -72,9 +72,9 @@ class TestRerankingConfig:
             mmr_lambda=0.7,
         )
 
-        assert config.strategy == RerankingStrategy.MMR
-        assert config.top_k == 5
-        assert config.mmr_lambda == 0.7
+        assert config.strategy == RerankingStrategy.MMR, "strategy is not valid"
+        assert config.top_k == 5, "top_k is not valid"
+        assert config.mmr_lambda == 0.7, "mmr_lambda is not valid"
 
 
 class TestScoreFusionReranker:
@@ -96,22 +96,22 @@ class TestScoreFusionReranker:
     def test_rerank_empty(self, reranker):
         """Test re-ranking empty results."""
         results = reranker.rerank("query", [])
-        assert len(results) == 0
+        assert len(results) == 0, "Results must not be empty"
 
     def test_rerank_preserves_order_for_similar_scores(self, reranker, sample_results):
         """Test re-ranking preserves relative order."""
         results = reranker.rerank("query", sample_results)
 
-        assert len(results) == 3
+        assert len(results) == 3, "Results must not be empty"
         # First result should be doc1 (highest score)
-        assert results[0].document_id == "doc1"
+        assert results[0].document_id == "doc1", "Result must not be empty"
 
     def test_rerank_assigns_ranks(self, reranker, sample_results):
         """Test that ranks are assigned correctly."""
         results = reranker.rerank("query", sample_results)
 
         for i, result in enumerate(results):
-            assert result.rank == i + 1
+            assert result.rank == i + 1, "Result must not be empty"
 
     def test_rerank_respects_top_k(self):
         """Test that top_k is respected."""
@@ -121,7 +121,7 @@ class TestScoreFusionReranker:
         results = [{"id": f"doc{i}", "content": f"Content {i}", "score": 0.5} for i in range(10)]
 
         reranked = reranker.rerank("query", results)
-        assert len(reranked) == 2
+        assert len(reranked) == 2, "Reranked must not be empty"
 
 
 class TestMMRReranker:
@@ -150,9 +150,9 @@ class TestMMRReranker:
         """Test MMR re-ranking."""
         results = reranker.rerank("query", sample_results)
 
-        assert len(results) == 5
+        assert len(results) == 5, "Results must not be empty"
         # First result should still be highest relevance
-        assert results[0].document_id == "doc1"
+        assert results[0].document_id == "doc1", "Result must not be empty"
 
     def test_mmr_with_embeddings(self, reranker, sample_results):
         """Test MMR with provided embeddings."""
@@ -161,7 +161,7 @@ class TestMMRReranker:
 
         results = reranker.rerank("query", sample_results, embeddings)
 
-        assert len(results) == 5
+        assert len(results) == 5, "Results must not be empty"
 
     def test_mmr_respects_lambda(self):
         """Test that lambda affects diversity."""
@@ -179,8 +179,8 @@ class TestMMRReranker:
         reranker_low = MMRReranker(config_low)
         results_low = reranker_low.rerank("query", sample_results)
 
-        assert len(results_high) == 3
-        assert len(results_low) == 3
+        assert len(results_high) == 3, "Results_high must not be empty"
+        assert len(results_low) == 3, "Results_low must not be empty"
 
 
 class TestReranker:
@@ -199,7 +199,7 @@ class TestReranker:
 
         reranked = reranker.rerank("query", results)
 
-        assert len(reranked) == 2  # Respects top_k
+        assert len(reranked) == 2, "Reranked must not be empty"
         assert all(isinstance(r, RankedResult) for r in reranked)
 
     def test_score_fusion_strategy(self):
@@ -212,7 +212,7 @@ class TestReranker:
         ]
 
         reranked = reranker.rerank("query", results)
-        assert len(reranked) == 1
+        assert len(reranked) == 1, "Reranked must not be empty"
 
     def test_mmr_strategy(self):
         """Test MMR strategy."""
@@ -224,7 +224,7 @@ class TestReranker:
         ]
 
         reranked = reranker.rerank("query", results)
-        assert len(reranked) == 1
+        assert len(reranked) == 1, "Reranked must not be empty"
 
     def test_hybrid_strategy(self):
         """Test HYBRID strategy."""
@@ -237,13 +237,13 @@ class TestReranker:
         ]
 
         reranked = reranker.rerank("query", results)
-        assert len(reranked) >= 1
+        assert len(reranked) >= 1, "Reranked must not be empty"
 
     def test_empty_results(self):
         """Test with empty results."""
         reranker = Reranker()
         reranked = reranker.rerank("query", [])
-        assert len(reranked) == 0
+        assert len(reranked) == 0, "Reranked must not be empty"
 
 
 class TestRerankResultsFunction:
@@ -258,7 +258,7 @@ class TestRerankResultsFunction:
 
         reranked = rerank_results("query", results)
 
-        assert len(reranked) >= 1
+        assert len(reranked) >= 1, "Reranked must not be empty"
         assert all(isinstance(r, RankedResult) for r in reranked)
 
     def test_with_custom_strategy(self):
@@ -274,4 +274,4 @@ class TestRerankResultsFunction:
             top_k=5,
         )
 
-        assert len(reranked) == 1
+        assert len(reranked) == 1, "Reranked must not be empty"

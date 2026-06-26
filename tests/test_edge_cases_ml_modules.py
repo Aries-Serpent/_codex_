@@ -109,13 +109,13 @@ class TestTrainingLoopBoundaries:
         # LR >= 0 validation
         if lr == 0.0:
             # Zero LR means no update
-            assert lr == 0.0
+            assert lr == 0.0, "lr is not valid"
         elif lr > 0 and lr != float("inf"):
             # Valid positive LR
-            assert lr > 0
+            assert lr > 0, "lr must be greater than zero"
         elif lr == float("inf"):
             # Inf LR should be flagged
-            assert lr == float("inf")
+            assert lr == float("inf"), "lr is not valid"
 
     def test_batch_size_boundaries(self, batch_size):
         """Test batch size edge cases"""
@@ -128,7 +128,7 @@ class TestTrainingLoopBoundaries:
                     raise ValueError("batch_size must be > 0")
         else:
             # Valid batch size
-            assert bs > 0 or bs < 0
+            assert bs > 0 or bs < 0, "bs must be greater than zero"
 
     def test_epoch_count_boundaries(self, epoch_count):
         """Test epoch count edge cases"""
@@ -140,21 +140,21 @@ class TestTrainingLoopBoundaries:
                 if epochs <= 0:
                     raise ValueError("epochs must be > 0")
         else:
-            assert epochs > 0
+            assert epochs > 0, "epochs must be greater than zero"
 
     def test_loss_value_boundaries(self, loss_value):
         """Test loss value edge cases"""
         loss = loss_value
 
         if loss == float("inf"):
-            assert loss == float("inf")
+            assert loss == float("inf"), "loss is not valid"
         elif loss == float("-inf"):
-            assert loss == float("-inf")
+            assert loss == float("-inf"), "loss is not valid"
         elif str(loss) == "nan":
             # NaN comparisons always false
-            assert loss != loss
+            assert loss != loss, "loss is not valid"
         elif loss >= 0:
-            assert loss >= 0
+            assert loss >= 0, "loss must be greater than zero"
 
     def test_metric_dict_edge_cases(self, metric_dict):
         """Test metrics dictionary edge cases"""
@@ -164,13 +164,13 @@ class TestTrainingLoopBoundaries:
 
         if not metrics:
             # Empty metrics
-            assert len(metrics) == 0
+            assert len(metrics) == 0, "Metrics must not be empty"
         else:
             # Check for NaN values
             for key, value in metrics.items():
                 if isinstance(value, float):
                     if str(value) == "nan":
-                        assert value != value
+                        assert value != value, "Value must be initialized"
 
     @pytest.mark.parametrize(
         "step,total_steps",
@@ -192,13 +192,13 @@ class TestTrainingLoopBoundaries:
                 if progress is None:
                     raise ValueError("total_steps cannot be 0")
         elif step < 0:
-            assert step < 0
+            assert step < 0, "step is not valid"
         elif step > total_steps:
             progress = step / total_steps
-            assert progress > 1.0
+            assert progress > 1.0, "progress must be greater than zero"
         else:
             progress = step / total_steps
-            assert 0 <= progress <= 1
+            assert 0 <= progress <= 1, "0 is not valid"
 
     def test_learning_rate_scheduling(self):
         """Test LR scheduling edge cases"""
@@ -219,14 +219,14 @@ class TestTrainingLoopBoundaries:
 
         # Test with zero decay
         scheduler = LRScheduler(0.1, 0.0)
-        assert scheduler.get_lr() == 0.1
+        assert scheduler.get_lr() == 0.1, "Condition must be true"
 
         # Test with decay
         scheduler = LRScheduler(0.1, 0.01)
         lr1 = scheduler.get_lr()
         scheduler.step_epoch()
         lr2 = scheduler.get_lr()
-        assert lr2 < lr1
+        assert lr2 < lr1, "lr2 is not valid"
 
 
 # ============================================================================
@@ -240,15 +240,15 @@ class TestCheckpointingEdgeCases:
     def test_empty_checkpoint_creation(self):
         """Test creating checkpoint with empty state"""
         checkpoint = {}
-        assert len(checkpoint) == 0
+        assert len(checkpoint) == 0, "Checkpoint must not be empty"
 
         # Serialize empty checkpoint
         json_str = json.dumps(checkpoint)
-        assert json_str == "{}"
+        assert json_str == "{}", "json_str is not valid"
 
         # Deserialize
         loaded = json.loads(json_str)
-        assert loaded == {}
+        assert loaded == {}, "loaded is not valid"
 
     def test_large_checkpoint_serialization(self):
         """Test serializing large checkpoint"""
@@ -256,12 +256,12 @@ class TestCheckpointingEdgeCases:
 
         # Serialize
         json_str = json.dumps(checkpoint)
-        assert len(json_str) > 1000
+        assert len(json_str) > 1000, "Json_str must not be empty"
 
         # Deserialize
         loaded = json.loads(json_str)
-        assert len(loaded) == 1000
-        assert loaded["key_0"].startswith("value_0")
+        assert len(loaded) == 1000, "Loaded must not be empty"
+        assert loaded["key_0"].startswith("value_0"), "Value must be initialized"
 
     def test_checkpoint_with_special_values(self):
         """Test checkpoint with special numeric values"""
@@ -276,9 +276,9 @@ class TestCheckpointingEdgeCases:
         json_str = json.dumps(checkpoint)
         loaded = json.loads(json_str)
 
-        assert loaded["zero"] == 0
-        assert loaded["negative"] == -1
-        assert loaded["float"] == 1.5
+        assert loaded["zero"] == 0, "Condition must be true"
+        assert loaded["negative"] == -1, "Condition must be true"
+        assert loaded["float"] == 1.5, "Condition must be true"
 
     def test_checkpoint_corruption_detection(self):
         """Test checkpoint corruption scenarios"""
@@ -304,7 +304,7 @@ class TestCheckpointingEdgeCases:
 
             # Load it back
             loaded = manager.load()
-            assert loaded == state
+            assert loaded == state, "loaded is not valid"
 
             # Corrupt checkpoint
             with open(manager.path, "w") as f:
@@ -322,7 +322,7 @@ class TestCheckpointingEdgeCases:
         json_str = json.dumps(state)
         loaded = json.loads(json_str)
 
-        assert len(loaded) == state_size
+        assert len(loaded) == state_size, "Loaded must not be empty"
 
 
 # ============================================================================
@@ -338,9 +338,9 @@ class TestMetricsWriterEdgeCases:
         metrics = {}
 
         # Should handle gracefully
-        assert len(metrics) == 0
+        assert len(metrics) == 0, "Metrics must not be empty"
         json_str = json.dumps(metrics)
-        assert json_str == "{}"
+        assert json_str == "{}", "json_str is not valid"
 
     def test_write_nan_metrics(self):
         """Test writing NaN metrics - should handle specially"""
@@ -373,9 +373,9 @@ class TestMetricsWriterEdgeCases:
         json_str = json.dumps(metrics)
         loaded = json.loads(json_str)
 
-        assert loaded["int_metric"] == 10
-        assert loaded["string_metric"] == "N/A"
-        assert loaded["none_metric"] is None
+        assert loaded["int_metric"] == 10, "Condition must be true"
+        assert loaded["string_metric"] == "N/A", "Condition must be true"
+        assert loaded["none_metric"] is None, "Condition must be true"
 
     def test_metric_name_edge_cases(self):
         """Test metric names with special characters"""
@@ -391,8 +391,8 @@ class TestMetricsWriterEdgeCases:
         json_str = json.dumps(metrics)
         loaded = json.loads(json_str)
 
-        assert len(loaded) == 6
-        assert loaded[""] == 1.0
+        assert len(loaded) == 6, "Loaded must not be empty"
+        assert loaded[""] == 1.0, "Condition must be true"
 
 
 # ============================================================================
@@ -416,7 +416,7 @@ class TestOrchestratorStateEdgeCases:
                 return self.tasks.pop(0)
 
         orch = SimpleOrchestrator()
-        assert orch.get_next_task() is None
+        assert orch.get_next_task() is None, "Condition must be true"
 
     def test_single_task_execution(self):
         """Test orchestrator with single task"""
@@ -439,9 +439,9 @@ class TestOrchestratorStateEdgeCases:
         orch.add_task("task_1")
 
         result = orch.execute_next()
-        assert result == "task_1"
-        assert len(orch.tasks) == 0
-        assert len(orch.completed) == 1
+        assert result == "task_1", "Result must not be empty"
+        assert len(orch.tasks) == 0, "Collection must not be empty"
+        assert len(orch.completed) == 1, "Collection must not be empty"
 
     def test_task_ordering_preserved(self):
         """Test task execution order is preserved"""
@@ -461,7 +461,7 @@ class TestOrchestratorStateEdgeCases:
             orch.add_task(f"task_{i}")
 
         order = orch.get_order()
-        assert order == [f"task_{i}" for i in range(10)]
+        assert order == [f"task_{i}" for i in range(10)], "order is not valid"
 
     @pytest.mark.parametrize("task_count", [1, 10, 100, 1000])
     def test_orchestrator_task_scaling(self, task_count):
@@ -481,7 +481,7 @@ class TestOrchestratorStateEdgeCases:
         tasks = [f"task_{i}" for i in range(task_count)]
         orch.add_tasks(tasks)
 
-        assert orch.task_count() == task_count
+        assert orch.task_count() == task_count, "Count must be greater than zero"
 
     def test_orchestrator_state_transitions(self):
         """Test orchestrator state transitions"""
@@ -513,20 +513,20 @@ class TestOrchestratorStateEdgeCases:
         orch = Orchestrator()
 
         # Idle -> running
-        assert orch.start()
-        assert orch.state == "running"
+        assert orch.start(), "Condition must be true"
+        assert orch.state == "running", "state is not valid"
 
         # Running -> paused
-        assert orch.pause()
-        assert orch.state == "paused"
+        assert orch.pause(), "Condition must be true"
+        assert orch.state == "paused", "state is not valid"
 
         # Paused -> running
-        assert orch.resume()
-        assert orch.state == "running"
+        assert orch.resume(), "Condition must be true"
+        assert orch.state == "running", "state is not valid"
 
         # Invalid transition
-        assert not orch.start()
-        assert orch.state == "running"
+        assert not orch.start(), "not is not valid"
+        assert orch.state == "running", "state is not valid"
 
 
 # ============================================================================
@@ -567,8 +567,8 @@ class TestErrorRecoveryEdgeCases:
             return "success"
 
         result = handler.execute(failing_func)
-        assert result == "success"
-        assert handler.attempts == 2
+        assert result == "success", "Result must not be empty"
+        assert handler.attempts == 2, "attempts is not valid"
 
     def test_max_retries_exceeded(self):
         """Test when max retries exceeded"""
@@ -612,7 +612,7 @@ class TestErrorRecoveryEdgeCases:
             return "result"
 
         result = handler.execute(func)
-        assert result == "result"
+        assert result == "result", "Result must not be empty"
 
 
 # ============================================================================
@@ -634,7 +634,7 @@ class TestDataPipelineEdgeCases:
 
         pipeline = DataPipeline()
         result = pipeline.process([])
-        assert result == []
+        assert result == [], "Result must not be empty"
 
     def test_single_item_batch(self):
         """Test processing single item batch"""
@@ -645,7 +645,7 @@ class TestDataPipelineEdgeCases:
 
         pipeline = DataPipeline()
         result = pipeline.process([5])
-        assert result == [10]
+        assert result == [10], "Result must not be empty"
 
     def test_large_batch_processing(self):
         """Test processing large batch"""
@@ -658,9 +658,9 @@ class TestDataPipelineEdgeCases:
         large_batch = list(range(10000))
         result = pipeline.process(large_batch)
 
-        assert len(result) == 10000
-        assert result[0] == 0
-        assert result[-1] == 19998
+        assert len(result) == 10000, "Result must not be empty"
+        assert result[0] == 0, "Result must not be empty"
+        assert result[-1] == 19998, "Result must not be empty"
 
     def test_batch_with_none_values(self):
         """Test batch containing None values"""
@@ -687,7 +687,7 @@ class TestDataPipelineEdgeCases:
         batch = list(range(batch_size))
         result = pipeline.process(batch)
 
-        assert result == batch_size
+        assert result == batch_size, "Result must not be empty"
 
 
 if __name__ == "__main__":

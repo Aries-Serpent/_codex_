@@ -18,12 +18,12 @@ def test_dp_config_as_dict_disabled():
         enabled=False, epsilon=0.5, delta=1e-6, max_grad_norm=0.5, noise_multiplier=1.2
     )
     result = cfg.as_dict()
-    assert result["enabled"] is False
+    assert result["enabled"] is False, "Result must not be empty"
     model, opt, loader, engine = make_private_model("m", "o", "d", cfg)
-    assert model == "m"
-    assert opt == "o"
-    assert loader == "d"
-    assert engine is None
+    assert model == "m", "model is not valid"
+    assert opt == "o", "opt is not valid"
+    assert loader == "d", "loader is not valid"
+    assert engine is None, "engine is not valid"
 
 
 def test_dp_config_requires_opacus(monkeypatch):

@@ -32,12 +32,12 @@ def test_validate_ok_and_strict(tmp_path):
     path.write_text(json.dumps(manifest), encoding="utf-8")
     runner = CliRunner()
     res = runner.invoke(cli.app, ["validate", "--path", str(path)])
-    assert res.exit_code == 0
+    assert res.exit_code == 0, "exit_code is not valid"
 
     manifest["foo"] = 1
     path.write_text(json.dumps(manifest), encoding="utf-8")
     res2 = runner.invoke(cli.app, ["validate", "--path", str(path), "--strict"])
-    assert res2.exit_code == 2
+    assert res2.exit_code == 2, "exit_code is not valid"
 
 
 def test_validate_rejects_wrong_schema(tmp_path):
@@ -52,5 +52,5 @@ def test_validate_rejects_wrong_schema(tmp_path):
     runner = CliRunner()
     res = runner.invoke(cli.app, ["validate", "--path", str(path)])
 
-    assert res.exit_code == 2
-    assert "invalid schema" in res.stdout
+    assert res.exit_code == 2, "exit_code is not valid"
+    assert "invalid schema" in res.stdout, "Condition must be true"

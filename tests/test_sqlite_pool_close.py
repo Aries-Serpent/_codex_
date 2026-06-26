@@ -48,6 +48,6 @@ def test_proxy_close_handles_varied_pool_types():
                 pool.append(conn)
             proxy = sqlite_patch.PooledConnectionProxy(conn, key)
             proxy.close()
-            assert not pool  # nosec B101
+            assert not pool, "Condition must be true"
     finally:
         sqlite_patch._CONN_POOL = original_pool

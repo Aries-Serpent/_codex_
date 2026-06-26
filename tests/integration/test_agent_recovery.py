@@ -61,7 +61,7 @@ class TestAgentHealthDetection:
             return
         # Real .codex/cognitive_brain/metadata.json currently tracks pattern coverage
         # rather than legacy completion booleans; verify that metadata feed is populated.
-        assert "total_patterns" in agent_metadata
+        assert "total_patterns" in agent_metadata, "Data must not be empty"
         assert isinstance(agent_metadata["total_patterns"], int)
 
     def test_agent_list_not_empty(self, agent_metadata: dict) -> None:
@@ -69,9 +69,9 @@ class TestAgentHealthDetection:
         agents = agent_metadata.get("agents", [])
         if agents:
             return
-        assert "pattern_types" in agent_metadata
+        assert "pattern_types" in agent_metadata, "Data must not be empty"
         assert isinstance(agent_metadata["pattern_types"], dict)
-        assert len(agent_metadata["pattern_types"]) > 0
+        assert len(agent_metadata["pattern_types"]) > 0, "Collection must not be empty"
 
     def test_agent_status_field_present(self, agent_metadata: dict) -> None:
         """Each agent must expose a status field."""
@@ -120,9 +120,9 @@ class TestAgentRecoveryFlow:
         initial_state = {"task_id": "T-001", "progress": 0.6, "checkpoint": "step_3"}
         recovered_state = initial_state.copy()  # Simulate state reload
 
-        assert recovered_state["task_id"] == initial_state["task_id"]
-        assert recovered_state["progress"] == initial_state["progress"]
-        assert recovered_state["checkpoint"] == initial_state["checkpoint"]
+        assert recovered_state["task_id"] == initial_state["task_id"], "Condition must be true"
+        assert recovered_state["progress"] == initial_state["progress"], "Condition must be true"
+        assert recovered_state["checkpoint"] == initial_state["checkpoint"], "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -145,7 +145,7 @@ class TestHealthCheckWorkflow:
     def test_health_check_workflow_has_schedule(self) -> None:
         """Workflow must have a schedule trigger for rolling window."""
         content = self.HEALTH_CHECK_WORKFLOW.read_text(encoding="utf-8")
-        assert (
+        assert (, "Condition must be true"
             "schedule" in content or "workflow_dispatch" in content
         ), "agent-health-check.yml must have schedule or workflow_dispatch trigger"
 

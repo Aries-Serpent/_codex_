@@ -39,8 +39,8 @@ def test_run_hygiene_checks_only_returns_requested_issue_types() -> None:
     request = RepoHygieneRequest(diff=diff, checks=["secrets"])
     issues = run_hygiene_checks(request)
 
-    assert issues
-    assert {issue.type for issue in issues} == {"secrets"}
+    assert issues, "issues is not valid"
+    assert {issue.type for issue in issues} == {"secrets"}, "for is not valid"
 
 
 def test_run_hygiene_checks_clean_diff_returns_no_issues() -> None:
@@ -54,4 +54,4 @@ def test_run_hygiene_checks_clean_diff_returns_no_issues() -> None:
     request = RepoHygieneRequest(diff=diff, checks=["format", "lint", "secrets", "license"])
     issues = run_hygiene_checks(request)
 
-    assert issues == []
+    assert issues == [], "issues is not valid"

@@ -11,7 +11,7 @@ def test_length_reward_model_basic():
     rm = LengthRewardModel()
     short = rm.evaluate("p", "hi")
     long = rm.evaluate("p", "hello")
-    assert long > short
+    assert long > short, "long must be greater than zero"
 
 
 def test_length_reward_model_batch_and_learn():
@@ -19,4 +19,4 @@ def test_length_reward_model_batch_and_learn():
     scores = rm.batch_evaluate([("p", "ab"), ("p", "abcd")])
     assert scores == [2.0, 4.0]
     metrics = rm.learn([("p", "a")])
-    assert metrics == {"loss": 0.0}
+    assert metrics == {"loss": 0.0}, "metrics is not valid"

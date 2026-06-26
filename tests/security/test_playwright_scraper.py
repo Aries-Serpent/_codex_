@@ -41,7 +41,7 @@ class TestPlaywrightScraperImportGuard:
         import playwright_scraper as ps
 
         monkeypatch.setattr(ps, "HAS_PLAYWRIGHT", False)
-        assert ps.HAS_PLAYWRIGHT is False
+        assert ps.HAS_PLAYWRIGHT is False, "HAS_PLAYWRIGHT is not valid"
 
     def test_scraper_raises_import_error_without_playwright(self, monkeypatch):
         """PlaywrightScraper raises ImportError when HAS_PLAYWRIGHT is False."""
@@ -63,19 +63,19 @@ class TestExportJson:
         out = tmp_path / "out.json"
         ps.export_json(alerts, out)
 
-        assert out.exists()
+        assert out.exists(), "Condition must be true"
         data = json.loads(out.read_text())
-        assert data["total_alerts"] == 2
-        assert data["source"] == "playwright_scraper"
-        assert len(data["alerts"]) == 2
-        assert "exported_at" in data
+        assert data["total_alerts"] == 2, "Data must not be empty"
+        assert data["source"] == "playwright_scraper", "Data must not be empty"
+        assert len(data["alerts"]) == 2, "Collection must not be empty"
+        assert "exported_at" in data, "Data must not be empty"
 
     def test_creates_parent_dirs(self, tmp_path):
         import playwright_scraper as ps
 
         out = tmp_path / "a" / "b" / "alerts.json"
         ps.export_json([], out)
-        assert out.exists()
+        assert out.exists(), "Condition must be true"
 
 
 class TestExportCsv:
@@ -87,18 +87,18 @@ class TestExportCsv:
         ps.export_csv(alerts, out)
 
         content = out.read_text()
-        assert "alert_number" in content
-        assert "severity" in content
-        assert "low" in content
+        assert "alert_number" in content, "Content must not be empty"
+        assert "severity" in content, "Content must not be empty"
+        assert "low" in content, "Content must not be empty"
 
     def test_empty_alerts_writes_header_only(self, tmp_path):
         import playwright_scraper as ps
 
         out = tmp_path / "empty.csv"
         ps.export_csv([], out)
-        assert out.exists()
+        assert out.exists(), "Condition must be true"
         content = out.read_text()
-        assert "alert_number" in content
+        assert "alert_number" in content, "Content must not be empty"
 
 
 class TestPlaywrightScraperParser:
@@ -107,21 +107,21 @@ class TestPlaywrightScraperParser:
 
         parser = ps.build_parser()
         args = parser.parse_args([])
-        assert "Aries-Serpent" in args.repo
+        assert "Aries-Serpent" in args.repo, "Condition must be true"
 
     def test_custom_repo(self):
         import playwright_scraper as ps
 
         parser = ps.build_parser()
         args = parser.parse_args(["--repo", "https://github.com/foo/bar"])
-        assert args.repo == "https://github.com/foo/bar"
+        assert args.repo == "https://github.com/foo/bar", "repo is not valid"
 
     def test_headless_flag(self):
         import playwright_scraper as ps
 
         parser = ps.build_parser()
         args = parser.parse_args(["--no-headless"])
-        assert args.headless is False
+        assert args.headless is False, "headless is not valid"
 
 
 class TestPlaywrightScraperMainNoPlaywright:
@@ -130,7 +130,7 @@ class TestPlaywrightScraperMainNoPlaywright:
 
         monkeypatch.setattr(ps, "HAS_PLAYWRIGHT", False)
         with patch("sys.argv", ["ps", "--repo", "https://github.com/a/b"]):
-            assert ps.main() == 1
+            assert ps.main() == 1, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -144,10 +144,10 @@ class TestPipelineResult:
 
         result = PipelineResult(alerts_collected=10, codemods_applied=3)
         d = result.to_dict()
-        assert d["alerts_collected"] == 10
-        assert d["codemods_applied"] == 3
-        assert "elapsed_s" in d
-        assert "errors" in d
+        assert d["alerts_collected"] == 10, "Condition must be true"
+        assert d["codemods_applied"] == 3, "Condition must be true"
+        assert "elapsed_s" in d, "Condition must be true"
+        assert "errors" in d, "Error should be raised or set"
 
 
 class TestResolutionPipelineCollect:
@@ -165,7 +165,7 @@ class TestResolutionPipelineCollect:
         with patch.object(pipeline, "_collect_via_api", return_value=0):
             with patch.object(pipeline, "_collect_via_playwright", return_value=0):
                 count = pipeline.collect()
-        assert count == 0
+        assert count == 0, "Count must be greater than zero"
 
     def test_collect_uses_playwright_fallback_when_api_returns_zero(self, tmp_path):
         from resolution_pipeline import ResolutionPipeline
@@ -181,7 +181,7 @@ class TestResolutionPipelineCollect:
             with patch.object(pipeline, "_collect_via_playwright", return_value=42) as mock_pw:
                 count = pipeline.collect()
 
-        assert count == 42
+        assert count == 42, "Count must be greater than zero"
         mock_pw.assert_called_once()
 
     def test_collect_skips_playwright_when_api_succeeds(self, tmp_path):
@@ -198,7 +198,7 @@ class TestResolutionPipelineCollect:
             with patch.object(pipeline, "_collect_via_playwright", return_value=0) as mock_pw:
                 count = pipeline.collect()
 
-        assert count == 100
+        assert count == 100, "Count must be greater than zero"
         mock_pw.assert_not_called()
 
 
@@ -213,8 +213,8 @@ class TestResolutionPipelineAnalyse:
             report_path=tmp_path / "report.md",
         )
         result = pipeline.analyse()
-        assert result == {}
-        assert any("inventory_missing" in e for e in pipeline.result.errors)
+        assert result == {}, "Result must not be empty"
+        assert any("inventory_missing" in e for e in pipeline.result.errors), "Result must not be empty"
 
     def test_analyse_loads_summary_from_inventory(self, tmp_path):
         from resolution_pipeline import ResolutionPipeline
@@ -243,10 +243,10 @@ class TestResolutionPipelineAnalyse:
         with patch.object(pipeline, "_run", return_value=0):
             summary = pipeline.analyse()
 
-        assert summary["total"] == 3
-        assert summary["by_severity"]["critical"] == 1
-        assert summary["by_priority"]["P0"] == 1
-        assert summary["by_priority"]["P1"] == 1
+        assert summary["total"] == 3, "Condition must be true"
+        assert summary["by_severity"]["critical"] == 1, "Condition must be true"
+        assert summary["by_priority"]["P0"] == 1, "Condition must be true"
+        assert summary["by_priority"]["P1"] == 1, "Condition must be true"
 
 
 class TestResolutionPipelineRemediate:
@@ -257,7 +257,7 @@ class TestResolutionPipelineRemediate:
         # All codemods are in a path that doesn't exist — should return 0
         with patch("resolution_pipeline._CODEMODS", {}):
             applied = pipeline.remediate()
-        assert applied == 0
+        assert applied == 0, "applied is not valid"
 
     def test_remediate_counts_successful_codemods(self, tmp_path):
         from resolution_pipeline import ResolutionPipeline
@@ -270,8 +270,8 @@ class TestResolutionPipelineRemediate:
             with patch.object(pipeline, "_run", return_value=0):
                 applied = pipeline.remediate(categories=["fake"])
 
-        assert applied == 1
-        assert pipeline.result.codemods_applied == 1
+        assert applied == 1, "applied is not valid"
+        assert pipeline.result.codemods_applied == 1, "Result must not be empty"
 
 
 class TestResolutionPipelineValidate:
@@ -283,8 +283,8 @@ class TestResolutionPipelineValidate:
         with patch.object(pipeline, "_run", return_value=0):
             passed = pipeline.validate()
 
-        assert passed is True
-        assert pipeline.result.validation_passed is True
+        assert passed is True, "passed is not valid"
+        assert pipeline.result.validation_passed is True, "Result must not be empty"
 
     def test_validate_fails_when_ruff_errors(self):
         from resolution_pipeline import ResolutionPipeline
@@ -299,8 +299,8 @@ class TestResolutionPipelineValidate:
         with patch.object(pipeline, "_run", side_effect=fake_run):
             passed = pipeline.validate()
 
-        assert passed is False
-        assert "ruff_failed" in pipeline.result.errors
+        assert passed is False, "passed is not valid"
+        assert "ruff_failed" in pipeline.result.errors, "Result must not be empty"
 
 
 class TestResolutionPipelineClose:
@@ -309,7 +309,7 @@ class TestResolutionPipelineClose:
 
         pipeline = ResolutionPipeline("owner", "repo", dry_run=True)
         closed = pipeline.close_alerts(alert_numbers=[1, 2, 3])
-        assert closed == 0
+        assert closed == 0, "closed is not valid"
 
     def test_close_respects_max_batch(self, tmp_path):
         from resolution_pipeline import ResolutionPipeline
@@ -321,7 +321,7 @@ class TestResolutionPipelineClose:
                 closer.write_text("")
                 closed = pipeline.close_alerts(alert_numbers=list(range(200)), max_batch=5)
 
-        assert closed == 5
+        assert closed == 5, "closed is not valid"
 
 
 class TestResolutionPipelineSeverityMapping:
@@ -339,7 +339,7 @@ class TestResolutionPipelineSeverityMapping:
     def test_severity_priority_mapping(self, severity, expected_priority):
         from resolution_pipeline import SEVERITY_PRIORITY
 
-        assert SEVERITY_PRIORITY[severity] == expected_priority
+        assert SEVERITY_PRIORITY[severity] == expected_priority, "Condition must be true"
 
 
 class TestResolutionPipelineRun:
@@ -362,7 +362,7 @@ class TestResolutionPipelineRun:
         m_analyse.assert_called_once()
         m_remediate.assert_called_once()
         m_validate.assert_called_once()
-        assert result.elapsed_s >= 0
+        assert result.elapsed_s >= 0, "elapsed_s must be greater than zero"
 
 
 class TestResolutionPipelineParser:
@@ -370,22 +370,22 @@ class TestResolutionPipelineParser:
         from resolution_pipeline import build_parser
 
         args = build_parser().parse_args([])
-        assert args.owner == "Aries-Serpent"
-        assert args.repo == "_codex_"
-        assert "collect" in args.stages
+        assert args.owner == "Aries-Serpent", "owner is not valid"
+        assert args.repo == "_codex_", "repo is not valid"
+        assert "collect" in args.stages, "Condition must be true"
 
     def test_dry_run_flag(self):
         from resolution_pipeline import build_parser
 
         args = build_parser().parse_args(["--dry-run"])
-        assert args.dry_run is True
+        assert args.dry_run is True, "dry_run is not valid"
 
     def test_stages_parsing(self):
         from resolution_pipeline import build_parser
 
         args = build_parser().parse_args(["--stages", "collect,close"])
-        assert "collect" in args.stages
-        assert "close" in args.stages
+        assert "collect" in args.stages, "Condition must be true"
+        assert "close" in args.stages, "Condition must be true"
 
 
 class TestCountAlerts:
@@ -395,7 +395,7 @@ class TestCountAlerts:
         p = tmp_path / "inv.json"
         p.write_text(json.dumps({"total_alerts": 99, "alerts": []}))
         pipeline = ResolutionPipeline("o", "r")
-        assert pipeline._count_alerts(p) == 99
+        assert pipeline._count_alerts(p) == 99, "Count must be greater than zero"
 
     def test_count_from_alerts_list(self, tmp_path):
         from resolution_pipeline import ResolutionPipeline
@@ -403,13 +403,13 @@ class TestCountAlerts:
         p = tmp_path / "inv.json"
         p.write_text(json.dumps({"alerts": [{}, {}, {}]}))
         pipeline = ResolutionPipeline("o", "r")
-        assert pipeline._count_alerts(p) == 3
+        assert pipeline._count_alerts(p) == 3, "Count must be greater than zero"
 
     def test_count_returns_zero_on_bad_file(self, tmp_path):
         from resolution_pipeline import ResolutionPipeline
 
         pipeline = ResolutionPipeline("o", "r")
-        assert pipeline._count_alerts(tmp_path / "nonexistent.json") == 0
+        assert pipeline._count_alerts(tmp_path / "nonexistent.json") == 0, "Count must be greater than zero"
 
 
 if __name__ == "__main__":
@@ -433,19 +433,19 @@ class TestPlaywrightScraperInit:
 
     def test_trailing_slash_stripped(self, monkeypatch):
         scraper = self._make(monkeypatch, url="https://github.com/owner/repo/")
-        assert scraper.repo_url == "https://github.com/owner/repo"
+        assert scraper.repo_url == "https://github.com/owner/repo", "repo_url is not valid"
 
     def test_no_trailing_slash_unchanged(self, monkeypatch):
         scraper = self._make(monkeypatch)
-        assert scraper.repo_url == "https://github.com/owner/repo"
+        assert scraper.repo_url == "https://github.com/owner/repo", "repo_url is not valid"
 
     def test_security_url_constructed(self, monkeypatch):
         scraper = self._make(monkeypatch)
-        assert scraper._security_url == "https://github.com/owner/repo/security/code-scanning"
+        assert scraper._security_url == "https://github.com/owner/repo/security/code-scanning", "_security_url is not valid"
 
     def test_explicit_token_stored(self, monkeypatch):
         scraper = self._make(monkeypatch, github_token="explicit_tok")
-        assert scraper.github_token == "explicit_tok"
+        assert scraper.github_token == "explicit_tok", "github_token is not valid"
 
     def test_token_falls_back_to_env(self, monkeypatch):
         import playwright_scraper as ps
@@ -453,24 +453,24 @@ class TestPlaywrightScraperInit:
         monkeypatch.setattr(ps, "HAS_PLAYWRIGHT", True)
         monkeypatch.setenv("GITHUB_TOKEN", "env_tok_xyz")
         scraper = ps.PlaywrightScraper("https://github.com/owner/repo")
-        assert scraper.github_token == "env_tok_xyz"
+        assert scraper.github_token == "env_tok_xyz", "github_token is not valid"
 
     def test_no_token_and_no_env_gives_empty_string(self, monkeypatch):
         scraper = self._make(monkeypatch)
-        assert scraper.github_token == ""
+        assert scraper.github_token == "", "github_token is not valid"
 
     def test_default_headless_true(self, monkeypatch):
         scraper = self._make(monkeypatch, github_token="tok")
-        assert scraper.headless is True
+        assert scraper.headless is True, "headless is not valid"
 
     def test_default_timeout(self, monkeypatch):
         scraper = self._make(monkeypatch, github_token="tok")
-        assert scraper.timeout_ms == 30_000
+        assert scraper.timeout_ms == 30_000, "timeout_ms is not valid"
 
     def test_custom_headless_and_timeout(self, monkeypatch):
         scraper = self._make(monkeypatch, github_token="tok", headless=False, timeout_ms=5_000)
-        assert scraper.headless is False
-        assert scraper.timeout_ms == 5_000
+        assert scraper.headless is False, "headless is not valid"
+        assert scraper.timeout_ms == 5_000, "timeout_ms is not valid"
 
 
 class TestAuthenticate:
@@ -486,7 +486,7 @@ class TestAuthenticate:
     def test_no_token_returns_false(self, monkeypatch):
         scraper = self._make_scraper(monkeypatch, token="")
         page = MagicMock()
-        assert scraper._authenticate(page) is False
+        assert scraper._authenticate(page) is False, "Condition must be true"
 
     def test_token_registers_routes_returns_true(self, monkeypatch):
         """With a token, two page.route() calls are registered and True is returned."""
@@ -495,12 +495,12 @@ class TestAuthenticate:
 
         result = scraper._authenticate(page)
 
-        assert result is True
+        assert result is True, "Result must not be empty"
         # Verify that route interception was registered for both github.com origins.
-        assert page.route.call_count == 2
+        assert page.route.call_count == 2, "Count must be greater than zero"
         call_urls = [call[0][0] for call in page.route.call_args_list]
-        assert "https://github.com/**" in call_urls
-        assert "https://api.github.com/**" in call_urls
+        assert "https://github.com/**" in call_urls, "Condition must be true"
+        assert "https://api.github.com/**" in call_urls, "Condition must be true"
 
     def test_token_route_handler_injects_auth_header(self, monkeypatch):
         """The registered route handler merges the Authorization header."""
@@ -519,22 +519,22 @@ class TestAuthenticate:
 
         # The handler should have merged in the Authorization header
         merged = mock_route.continue_.call_args[1]["headers"]
-        assert merged["Authorization"] == "token mytoken"
-        assert merged["Accept"] == "text/html"
+        assert merged["Authorization"] == "token mytoken", "Condition must be true"
+        assert merged["Accept"] == "text/html", "Condition must be true"
 
     def test_token_status_401_still_returns_true(self, monkeypatch):
         """No longer calls requests.get — route interception returns True regardless."""
         scraper = self._make_scraper(monkeypatch, token="bad_token")
         page = MagicMock()
         result = scraper._authenticate(page)
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_token_status_403_still_returns_true(self, monkeypatch):
         """No longer calls requests.get — route interception returns True regardless."""
         scraper = self._make_scraper(monkeypatch, token="limited_token")
         page = MagicMock()
         result = scraper._authenticate(page)
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_route_registration_failure_returns_false(self, monkeypatch):
         """When page.route() raises, _authenticate returns False gracefully."""
@@ -542,7 +542,7 @@ class TestAuthenticate:
         page = MagicMock()
         page.route.side_effect = RuntimeError("CDP unavailable")
         result = scraper._authenticate(page)
-        assert result is False
+        assert result is False, "Result must not be empty"
 
 
 class TestExtractRowData:
@@ -584,11 +584,11 @@ class TestExtractRowData:
 
         result = scraper._extract_row_data(page, row)
 
-        assert result is not None
-        assert result["url"] == "https://github.com/owner/repo/security/code-scanning/42"
-        assert result["title"] == "Alert Title"
-        assert result["severity"] == "high"
-        assert result["alert_number"] == 42
+        assert result is not None, "result must be initialized"
+        assert result["url"] == "https://github.com/owner/repo/security/code-scanning/42", "Result must not be empty"
+        assert result["title"] == "Alert Title", "Result must not be empty"
+        assert result["severity"] == "high", "Result must not be empty"
+        assert result["alert_number"] == 42, "Result must not be empty"
 
     def test_href_not_starting_with_slash_kept_as_is(self, monkeypatch):
         scraper = self._make_scraper(monkeypatch)
@@ -597,9 +597,9 @@ class TestExtractRowData:
 
         result = scraper._extract_row_data(page, row)
 
-        assert result is not None
-        assert result["url"] == "https://github.com/owner/repo/security/code-scanning/7"
-        assert result["alert_number"] == 7
+        assert result is not None, "result must be initialized"
+        assert result["url"] == "https://github.com/owner/repo/security/code-scanning/7", "Result must not be empty"
+        assert result["alert_number"] == 7, "Result must not be empty"
 
     def test_no_severity_elem_gives_unknown(self, monkeypatch):
         scraper = self._make_scraper(monkeypatch)
@@ -608,8 +608,8 @@ class TestExtractRowData:
 
         result = scraper._extract_row_data(page, row)
 
-        assert result is not None
-        assert result["severity"] == "unknown"
+        assert result is not None, "result must be initialized"
+        assert result["severity"] == "unknown", "Result must not be empty"
 
     def test_non_numeric_href_gives_none_alert_number(self, monkeypatch):
         scraper = self._make_scraper(monkeypatch)
@@ -618,8 +618,8 @@ class TestExtractRowData:
 
         result = scraper._extract_row_data(page, row)
 
-        assert result is not None
-        assert result["alert_number"] is None
+        assert result is not None, "result must be initialized"
+        assert result["alert_number"] is None, "Result must not be empty"
 
     def test_severity_text_lowercased(self, monkeypatch):
         scraper = self._make_scraper(monkeypatch)
@@ -628,7 +628,7 @@ class TestExtractRowData:
 
         result = scraper._extract_row_data(page, row)
 
-        assert result["severity"] == "critical"
+        assert result["severity"] == "critical", "Result must not be empty"
 
     def test_trailing_slash_in_href_still_parses_number(self, monkeypatch):
         scraper = self._make_scraper(monkeypatch)
@@ -637,7 +637,7 @@ class TestExtractRowData:
 
         result = scraper._extract_row_data(page, row)
 
-        assert result["alert_number"] == 99
+        assert result["alert_number"] == 99, "Result must not be empty"
 
 
 class TestIterPages:
@@ -672,8 +672,8 @@ class TestIterPages:
         ):
             results = list(scraper._iter_pages(page))
 
-        assert len(results) == 1
-        assert results[0] == [alert_data]
+        assert len(results) == 1, "Results must not be empty"
+        assert results[0] == [alert_data], "Result must not be empty"
 
     def test_single_page_rows_extract_returns_none_filtered(self, monkeypatch):
         """Rows present but _extract_row_data returns None → empty batch yielded."""
@@ -687,8 +687,8 @@ class TestIterPages:
         with patch("time.sleep"), patch.object(scraper, "_extract_row_data", return_value=None):
             results = list(scraper._iter_pages(page))
 
-        assert len(results) == 1
-        assert results[0] == []
+        assert len(results) == 1, "Results must not be empty"
+        assert results[0] == [], "Result must not be empty"
 
     def test_no_rows_links_present_no_next(self, monkeypatch):
         """No rows, fallback links present, no next → link-based batch yielded."""
@@ -707,13 +707,13 @@ class TestIterPages:
         with patch("time.sleep"):
             results = list(scraper._iter_pages(page))
 
-        assert len(results) == 1
+        assert len(results) == 1, "Results must not be empty"
         batch = results[0]
-        assert len(batch) == 1
-        assert batch[0]["title"] == "Link Alert"
-        assert batch[0]["alert_number"] == 55
-        assert batch[0]["severity"] == "unknown"
-        assert urlparse(batch[0]["url"]).hostname == "github.com"
+        assert len(batch) == 1, "Batch must not be empty"
+        assert batch[0]["title"] == "Link Alert", "Condition must be true"
+        assert batch[0]["alert_number"] == 55, "Condition must be true"
+        assert batch[0]["severity"] == "unknown", "Condition must be true"
+        assert urlparse(batch[0]["url"]).hostname == "github.com", "hostname is not valid"
 
     def test_no_rows_no_links_stops_immediately(self, monkeypatch):
         """No rows and no links → generator yields nothing."""
@@ -726,7 +726,7 @@ class TestIterPages:
         with patch("time.sleep"):
             results = list(scraper._iter_pages(page))
 
-        assert results == []
+        assert results == [], "Result must not be empty"
 
     def test_next_btn_without_disabled_paginates(self, monkeypatch):
         """next_btn present and not disabled → click + wait; second page has no next."""
@@ -750,7 +750,7 @@ class TestIterPages:
         ):
             results = list(scraper._iter_pages(page))
 
-        assert len(results) == 2
+        assert len(results) == 2, "Results must not be empty"
         mock_next_btn.click.assert_called_once()
         page.wait_for_load_state.assert_called_once_with("networkidle", timeout=scraper.timeout_ms)
 
@@ -773,7 +773,7 @@ class TestIterPages:
         ):
             results = list(scraper._iter_pages(page))
 
-        assert len(results) == 1
+        assert len(results) == 1, "Results must not be empty"
         mock_next_btn.click.assert_not_called()
 
     def test_link_with_non_numeric_tail_gives_none_alert_number(self, monkeypatch):
@@ -792,7 +792,7 @@ class TestIterPages:
         with patch("time.sleep"):
             results = list(scraper._iter_pages(page))
 
-        assert results[0][0]["alert_number"] is None
+        assert results[0][0]["alert_number"] is None, "Result must not be empty"
 
 
 class TestScrape:
@@ -838,7 +838,7 @@ class TestScrape:
             result = scraper.scrape()
 
         assert isinstance(result, list)
-        assert result == expected
+        assert result == expected, "Result must not be empty"
 
     def test_scrape_calls_browser_close_on_success(self, monkeypatch):
         import playwright_scraper as ps
@@ -893,9 +893,9 @@ class TestScrape:
         ):
             result = scraper.scrape()
 
-        assert len(result) == 2
-        assert result[0]["title"] == "A"
-        assert result[1]["title"] == "B"
+        assert len(result) == 2, "Result must not be empty"
+        assert result[0]["title"] == "A", "Result must not be empty"
+        assert result[1]["title"] == "B", "Result must not be empty"
 
     def test_scrape_headless_passed_to_launch(self, monkeypatch):
         import playwright_scraper as ps
@@ -935,8 +935,8 @@ class TestMainWithPlaywright:
         ):
             result = ps.main()
 
-        assert result == 0
-        assert out.exists()
+        assert result == 0, "Result must not be empty"
+        assert out.exists(), "Condition must be true"
 
     def test_main_with_csv_writes_csv(self, monkeypatch, tmp_path):
         import playwright_scraper as ps
@@ -964,11 +964,11 @@ class TestMainWithPlaywright:
         ):
             result = ps.main()
 
-        assert result == 0
-        assert csv_out.exists()
+        assert result == 0, "Result must not be empty"
+        assert csv_out.exists(), "Condition must be true"
         content = csv_out.read_text()
-        assert "severity" in content
-        assert "high" in content
+        assert "severity" in content, "Content must not be empty"
+        assert "high" in content, "Content must not be empty"
 
     def test_main_scrape_exception_returns_1(self, monkeypatch, tmp_path):
         import playwright_scraper as ps
@@ -983,7 +983,7 @@ class TestMainWithPlaywright:
         ):
             result = ps.main()
 
-        assert result == 1
+        assert result == 1, "Result must not be empty"
 
     def test_main_no_playwright_returns_1(self, monkeypatch):
         import playwright_scraper as ps
@@ -993,7 +993,7 @@ class TestMainWithPlaywright:
         with patch("sys.argv", ["ps"]):
             result = ps.main()
 
-        assert result == 1
+        assert result == 1, "Result must not be empty"
 
     def test_main_custom_token_and_timeout(self, monkeypatch, tmp_path):
         import playwright_scraper as ps
@@ -1028,9 +1028,9 @@ class TestMainWithPlaywright:
         ):
             result = ps.main()
 
-        assert result == 0
-        assert captured["token"] == "my_secret_tok"
-        assert captured["timeout"] == 5000
+        assert result == 0, "Result must not be empty"
+        assert captured["token"] == "my_secret_tok", "Condition must be true"
+        assert captured["timeout"] == 5000, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -1068,7 +1068,7 @@ class TestCollectViaApi:
         ):
             count = pipeline._collect_via_api()
 
-        assert count == 7
+        assert count == 7, "Count must be greater than zero"
 
     def test_api_fetcher_failure_returns_zero(self, tmp_path):
         """Fetcher exists but _run returns 1 → returns 0."""
@@ -1088,7 +1088,7 @@ class TestCollectViaApi:
         ):
             count = pipeline._collect_via_api()
 
-        assert count == 0
+        assert count == 0, "Count must be greater than zero"
 
     def test_api_includes_token_in_cmd_when_set(self, tmp_path):
         """Token is appended to the command when self.token is truthy."""
@@ -1114,7 +1114,7 @@ class TestCollectViaApi:
         ):
             pipeline._collect_via_api()
 
-        assert any("--token" in cmd and "mytoken" in cmd for cmd in captured)
+        assert any("--token" in cmd and "mytoken" in cmd for cmd in captured), "Condition must be true"
 
 
 class TestCollectViaPlaywright:
@@ -1144,8 +1144,8 @@ class TestCollectViaPlaywright:
         ):
             count = pipeline._collect_via_playwright()
 
-        assert count == 5
-        assert inventory.exists()
+        assert count == 5, "Count must be greater than zero"
+        assert inventory.exists(), "invent is not valid"
 
     def test_playwright_failure_returns_zero(self, tmp_path):
         """Scraper exists but _run returns 1 → returns 0."""
@@ -1164,7 +1164,7 @@ class TestCollectViaPlaywright:
         ):
             count = pipeline._collect_via_playwright()
 
-        assert count == 0
+        assert count == 0, "Count must be greater than zero"
 
     def test_playwright_scraper_missing_returns_zero(self, tmp_path):
         """playwright_scraper.py absent → returns 0 immediately."""
@@ -1175,7 +1175,7 @@ class TestCollectViaPlaywright:
         with patch("resolution_pipeline._SCRIPTS_DIR", tmp_path):
             count = pipeline._collect_via_playwright()
 
-        assert count == 0
+        assert count == 0, "Count must be greater than zero"
 
 
 class TestAnalyseUncoveredPaths:
@@ -1195,9 +1195,9 @@ class TestAnalyseUncoveredPaths:
         with patch("resolution_pipeline._SCRIPTS_DIR", tmp_path):
             result = pipeline.analyse()
 
-        assert result == {}
+        assert result == {}, "Result must not be empty"
         # No "inventory_missing" error — we exited before checking inventory
-        assert not any("inventory_missing" in e for e in pipeline.result.errors)
+        assert not any("inventory_missing" in e for e in pipeline.result.errors), "Result must not be empty"
 
     def test_analyse_records_error_on_nonzero_run_exit(self, tmp_path):
         """Lines 234-235: _run returns 1 → error appended, summary is empty."""
@@ -1220,8 +1220,8 @@ class TestAnalyseUncoveredPaths:
         ):
             result = pipeline.analyse()
 
-        assert result == {}
-        assert "analysis_exit_1" in pipeline.result.errors
+        assert result == {}, "Result must not be empty"
+        assert "analysis_exit_1" in pipeline.result.errors, "Result must not be empty"
 
 
 class TestLoadAnalysisSummaryException:
@@ -1236,7 +1236,7 @@ class TestLoadAnalysisSummaryException:
         pipeline = rp.ResolutionPipeline("owner", "repo", inventory_path=inventory)
         result = pipeline._load_analysis_summary()
 
-        assert result == {}
+        assert result == {}, "Result must not be empty"
 
 
 class TestRemediateUncoveredPaths:
@@ -1249,7 +1249,7 @@ class TestRemediateUncoveredPaths:
         pipeline = rp.ResolutionPipeline("owner", "repo")
         with patch("resolution_pipeline._CODEMODS", {}):
             applied = pipeline.remediate(categories=["totally_unknown"])
-        assert applied == 0
+        assert applied == 0, "applied is not valid"
 
     def test_registered_but_missing_file_is_skipped(self, tmp_path):
         """Lines 287-288: codemod registered but file path doesn't exist."""
@@ -1262,8 +1262,8 @@ class TestRemediateUncoveredPaths:
         with patch("resolution_pipeline._CODEMODS", {"ghost": nonexistent}):
             applied = pipeline.remediate(categories=["ghost"])
 
-        assert applied == 0
-        assert pipeline.result.codemods_failed == 0
+        assert applied == 0, "applied is not valid"
+        assert pipeline.result.codemods_failed == 0, "Result must not be empty"
 
     def test_dry_run_appends_flag_to_cmd(self, tmp_path):
         """Line 293: dry_run=True → --dry-run is included in the subprocess cmd."""
@@ -1284,7 +1284,7 @@ class TestRemediateUncoveredPaths:
             pipeline.remediate(categories=["myfix"])
 
         assert captured, "Expected _run to be called"
-        assert "--dry-run" in captured[0]
+        assert "--dry-run" in captured[0], "Condition must be true"
 
     def test_failed_codemod_increments_counter(self, tmp_path):
         """Lines 300-301: _run returns 1 → codemods_failed incremented."""
@@ -1300,8 +1300,8 @@ class TestRemediateUncoveredPaths:
         ):
             applied = pipeline.remediate(categories=["myfix"])
 
-        assert applied == 0
-        assert pipeline.result.codemods_failed == 1
+        assert applied == 0, "applied is not valid"
+        assert pipeline.result.codemods_failed == 1, "Result must not be empty"
 
 
 class TestValidateBanditFailure:
@@ -1322,9 +1322,9 @@ class TestValidateBanditFailure:
         with patch.object(pipeline, "_run", side_effect=fake_run):
             passed = pipeline.validate()
 
-        assert passed is False
-        assert "bandit_high_severity" in pipeline.result.errors
-        assert pipeline.result.validation_passed is False
+        assert passed is False, "passed is not valid"
+        assert "bandit_high_severity" in pipeline.result.errors, "Result must not be empty"
+        assert pipeline.result.validation_passed is False, "Result must not be empty"
 
 
 class TestCloseAlertsUncoveredPaths:
@@ -1339,7 +1339,7 @@ class TestCloseAlertsUncoveredPaths:
         with patch("resolution_pipeline._SCRIPTS_DIR", tmp_path):
             closed = pipeline.close_alerts(alert_numbers=[1, 2])
 
-        assert closed == 0
+        assert closed == 0, "closed is not valid"
 
     def test_none_alert_numbers_resolves_p0_p1_from_inventory(self, tmp_path):
         """Line 383: alert_numbers=None → _resolve_p0_p1_alerts() provides them."""
@@ -1373,7 +1373,7 @@ class TestCloseAlertsUncoveredPaths:
             closed = pipeline.close_alerts()  # alert_numbers=None
 
         # Only critical (P0) and high (P1) → 2 closed
-        assert closed == 2
+        assert closed == 2, "closed is not valid"
 
     def test_token_included_in_close_cmd(self, tmp_path):
         """Lines 395→398: when token is set, --token is appended to cmd."""
@@ -1394,8 +1394,8 @@ class TestCloseAlertsUncoveredPaths:
             pipeline.close_alerts(alert_numbers=[99])
 
         assert captured, "Expected _run to be called"
-        assert "--token" in captured[0]
-        assert "secret_tok" in captured[0]
+        assert "--token" in captured[0], "Condition must be true"
+        assert "secret_tok" in captured[0], "Condition must be true"
 
     def test_failed_close_increments_no_closed_count(self, tmp_path):
         """Line 401: _run returns 1 → alert not counted as closed."""
@@ -1411,8 +1411,8 @@ class TestCloseAlertsUncoveredPaths:
         ):
             closed = pipeline.close_alerts(alert_numbers=[1])
 
-        assert closed == 0
-        assert pipeline.result.alerts_closed == 0
+        assert closed == 0, "closed is not valid"
+        assert pipeline.result.alerts_closed == 0, "Result must not be empty"
 
 
 class TestResolveP0P1Alerts:
@@ -1437,10 +1437,10 @@ class TestResolveP0P1Alerts:
         pipeline = rp.ResolutionPipeline("owner", "repo", inventory_path=inventory)
         result = pipeline._resolve_p0_p1_alerts()
 
-        assert 10 in result
-        assert 20 in result
-        assert 30 not in result
-        assert 40 not in result
+        assert 10 in result, "Result must not be empty"
+        assert 20 in result, "Result must not be empty"
+        assert 30 not in result, "Result must not be empty"
+        assert 40 not in result, "Result must not be empty"
 
     def test_excludes_entries_with_null_alert_number(self, tmp_path):
         import resolution_pipeline as rp
@@ -1459,8 +1459,8 @@ class TestResolveP0P1Alerts:
         pipeline = rp.ResolutionPipeline("owner", "repo", inventory_path=inventory)
         result = pipeline._resolve_p0_p1_alerts()
 
-        assert None not in result
-        assert 5 in result
+        assert None not in result, "Result must not be empty"
+        assert 5 in result, "Result must not be empty"
 
     def test_returns_empty_list_when_inventory_missing(self, tmp_path):
         import resolution_pipeline as rp
@@ -1472,7 +1472,7 @@ class TestResolveP0P1Alerts:
         )
         result = pipeline._resolve_p0_p1_alerts()
 
-        assert result == []
+        assert result == [], "Result must not be empty"
 
     def test_returns_empty_list_when_inventory_bad_json(self, tmp_path):
         import resolution_pipeline as rp
@@ -1483,7 +1483,7 @@ class TestResolveP0P1Alerts:
         pipeline = rp.ResolutionPipeline("owner", "repo", inventory_path=inventory)
         result = pipeline._resolve_p0_p1_alerts()
 
-        assert result == []
+        assert result == [], "Result must not be empty"
 
 
 class TestRunMethod:
@@ -1495,7 +1495,7 @@ class TestRunMethod:
         pipeline = rp.ResolutionPipeline("owner", "repo")
         ret = pipeline._run(["echo", "hello from test"], label="echo-test")
 
-        assert ret == 0
+        assert ret == 0, "ret is not valid"
 
     def test_real_stderr_command_returns_zero(self):
         import resolution_pipeline as rp
@@ -1505,7 +1505,7 @@ class TestRunMethod:
             [sys.executable, "-c", "import sys; sys.stderr.write('stderr line\\n')"],
             label="stderr-test",
         )
-        assert ret == 0
+        assert ret == 0, "ret is not valid"
 
     def test_nonexistent_command_returns_zero(self):
         """Lines 441-443: FileNotFoundError → returns 0 (non-blocking)."""
@@ -1514,7 +1514,7 @@ class TestRunMethod:
         pipeline = rp.ResolutionPipeline("owner", "repo")
         ret = pipeline._run(["__nonexistent_cmd_xyz_99__"], label="missing-tool")
 
-        assert ret == 0
+        assert ret == 0, "ret is not valid"
 
     def test_failing_command_returns_nonzero(self):
         """_run propagates the real exit code on subprocess failure."""
@@ -1525,7 +1525,7 @@ class TestRunMethod:
             [sys.executable, "-c", "import sys; sys.exit(3)"],
             label="exit-3",
         )
-        assert ret == 3
+        assert ret == 3, "ret is not valid"
 
 
 class TestRunStageAliases:
@@ -1604,7 +1604,7 @@ class TestMainFunction:
         ):
             ret = rp.main()
 
-        assert ret == 0
+        assert ret == 0, "ret is not valid"
 
     def test_main_returns_1_when_errors_present(self):
         import resolution_pipeline as rp
@@ -1617,7 +1617,7 @@ class TestMainFunction:
         ):
             ret = rp.main()
 
-        assert ret == 1
+        assert ret == 1, "ret is not valid"
 
     def test_main_output_json_writes_file(self, tmp_path):
         import resolution_pipeline as rp
@@ -1645,11 +1645,11 @@ class TestMainFunction:
         ):
             rp.main()
 
-        assert out_json.exists()
+        assert out_json.exists(), "Condition must be true"
         data = json.loads(out_json.read_text())
-        assert data["alerts_collected"] == 3
-        assert "errors" in data
-        assert "elapsed_s" in data
+        assert data["alerts_collected"] == 3, "Data must not be empty"
+        assert "errors" in data, "Data must not be empty"
+        assert "elapsed_s" in data, "Data must not be empty"
 
     def test_main_prints_passed_when_validation_passes(self, capsys):
         import resolution_pipeline as rp
@@ -1662,7 +1662,7 @@ class TestMainFunction:
             rp.main()
 
         captured = capsys.readouterr()
-        assert "passed" in captured.out
+        assert "passed" in captured.out, "Condition must be true"
 
     def test_main_prints_errors_when_present(self, capsys):
         import resolution_pipeline as rp
@@ -1675,7 +1675,7 @@ class TestMainFunction:
             rp.main()
 
         captured = capsys.readouterr()
-        assert "ruff_failed" in captured.out
+        assert "ruff_failed" in captured.out, "Condition must be true"
 
     def test_main_use_playwright_flag(self, tmp_path):
         """--use-playwright reaches ResolutionPipeline constructor."""
@@ -1698,4 +1698,4 @@ class TestMainFunction:
         ):
             rp.main()
 
-        assert constructed and constructed[0] is True
+        assert constructed and constructed[0] is True, "constructed is not valid"

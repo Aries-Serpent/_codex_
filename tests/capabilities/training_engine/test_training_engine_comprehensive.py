@@ -61,26 +61,26 @@ class TestDistributedTraining:
     def test_single_device(self):
         """Single device is not distributed."""
         config = DistributedConfig()
-        assert not config.is_distributed()
-        assert config.is_main_process()
+        assert not config.is_distributed(), "Condition must be true"
+        assert config.is_main_process(), "Condition must be true"
 
     def test_ddp_config(self):
         """DDP configuration."""
         config = DistributedConfig(DistributedStrategy.DDP, world_size=4, local_rank=2)
-        assert config.is_distributed()
-        assert not config.is_main_process()
+        assert config.is_distributed(), "Condition must be true"
+        assert not config.is_main_process(), "Condition must be true"
 
     def test_effective_batch_size(self):
         """Effective batch size scales with world size."""
         config = DistributedConfig(DistributedStrategy.DDP, world_size=4)
-        assert config.effective_batch_size(8) == 32
+        assert config.effective_batch_size(8) == 32, "Condition must be true"
 
     @given(st.integers(min_value=1, max_value=8), st.integers(min_value=1, max_value=64))
     @settings(max_examples=20)
     def test_batch_size_scaling(self, world_size: int, batch: int):
         """Property: effective batch = per_device * world_size."""
         config = DistributedConfig(DistributedStrategy.DDP, world_size=world_size)
-        assert config.effective_batch_size(batch) == batch * world_size
+        assert config.effective_batch_size(batch) == batch * world_size, "Condition must be true"
 
 
 # --- Gradient Accumulation Tests ---
@@ -117,23 +117,23 @@ class TestGradientAccumulation:
     def test_no_accumulation(self):
         """No accumulation syncs every step."""
         acc = GradientAccumulator(1)
-        assert acc.step()
-        assert acc.step()
+        assert acc.step(), "Condition must be true"
+        assert acc.step(), "Condition must be true"
 
     def test_accumulation_every_n(self):
         """Accumulation syncs every n steps."""
         acc = GradientAccumulator(4)
         # Steps 1-3 should not sync
-        assert not acc.step()  # step 1
-        assert not acc.step()  # step 2
-        assert not acc.step()  # step 3
+        assert not acc.step(), "Condition must be true"
+        assert not acc.step(), "Condition must be true"
+        assert not acc.step(), "Condition must be true"
         # Step 4 should sync
-        assert acc.step()  # step 4
+        assert acc.step(), "Condition must be true"
 
     def test_effective_lr(self):
         """Effective LR scales with accumulation."""
         acc = GradientAccumulator(4)
-        assert acc.effective_lr(0.001) == 0.004
+        assert acc.effective_lr(0.001) == 0.004, "Condition must be true"
 
 
 # --- Mixed Precision Tests ---
@@ -188,23 +188,23 @@ class TestMixedPrecision:
     def test_disabled_uses_float32(self):
         """Disabled mixed precision uses float32."""
         config = MixedPrecisionConfig(enabled=False)
-        assert config.get_context_dtype() == "float32"
+        assert config.get_context_dtype() == "float32", "Condition must be true"
 
     def test_enabled_uses_dtype(self):
         """Enabled mixed precision uses specified dtype."""
         config = MixedPrecisionConfig(enabled=True, dtype="bfloat16")
-        assert config.get_context_dtype() == "bfloat16"
+        assert config.get_context_dtype() == "bfloat16", "Condition must be true"
 
     def test_grad_scaler_scale(self):
         """Gradient scaler scales loss."""
         scaler = GradScaler(init_scale=1024.0)
-        assert scaler.scale_loss(1.0) == 1024.0
+        assert scaler.scale_loss(1.0) == 1024.0, "Condition must be true"
 
     def test_grad_scaler_overflow(self):
         """Scaler reduces scale on overflow."""
         scaler = GradScaler(init_scale=1024.0)
         scaler.update(overflow=True)
-        assert scaler.scale == 512.0
+        assert scaler.scale == 512.0, "scale is not valid"
 
 
 # --- Resume Logic Tests ---
@@ -273,14 +273,14 @@ class TestResumeLogic:
         state.epoch = 5
         state.global_step = 1000
         path = manager.save_checkpoint(state)
-        assert "checkpoint_5" in path
+        assert "checkpoint_5" in path, "Condition must be true"
 
     def test_can_resume(self):
         """Check if can resume."""
         manager = ResumeManager("/tmp/checkpoints")
-        assert not manager.can_resume()
+        assert not manager.can_resume(), "Condition must be true"
         manager.save_checkpoint(TrainingState())
-        assert manager.can_resume()
+        assert manager.can_resume(), "Condition must be true"
 
     def test_state_roundtrip(self):
         """State roundtrip through dict."""
@@ -290,8 +290,8 @@ class TestResumeLogic:
         state.best_metric = 0.95
         data = state.to_dict()
         restored = TrainingState.from_dict(data)
-        assert restored.epoch == 10
-        assert restored.global_step == 5000
+        assert restored.epoch == 10, "epoch is not valid"
+        assert restored.global_step == 5000, "global_step is not valid"
 
 
 # --- Hyperparameter Sweep Tests ---
@@ -355,7 +355,7 @@ class TestHyperparameterSweep:
         config = SweepConfig()
         config.add_range("lr", 1e-5, 1e-3)
         config.add_choice("optimizer", ["adam", "sgd"])
-        assert len(config.parameters) == 2
+        assert len(config.parameters) == 2, "Collection must not be empty"
 
     def test_sample_config(self):
         """Sample configuration."""
@@ -364,8 +364,8 @@ class TestHyperparameterSweep:
         config.add_choice("batch_size", [8, 16, 32])
         runner = SweepRunner(config)
         sampled = runner.sample_config()
-        assert "lr" in sampled
-        assert "batch_size" in sampled
+        assert "lr" in sampled, "Condition must be true"
+        assert "batch_size" in sampled, "Condition must be true"
 
     def test_get_best(self):
         """Get best result."""
@@ -374,8 +374,8 @@ class TestHyperparameterSweep:
         runner.record_result({"lr": 0.001}, {"accuracy": 0.8})
         runner.record_result({"lr": 0.01}, {"accuracy": 0.9})
         best = runner.get_best("accuracy", "max")
-        assert best is not None
-        assert best["metrics"]["accuracy"] == 0.9
+        assert best is not None, "best must be initialized"
+        assert best["metrics"]["accuracy"] == 0.9, "Condition must be true"
 
 
 # --- Training Loop Tests ---
@@ -430,24 +430,24 @@ class TestTrainingLoop:
         config = TrainingLoopConfig(eval_steps=100)
         loop = TrainingLoop(config)
         loop.current_step = 100
-        assert loop.should_evaluate()
+        assert loop.should_evaluate(), "Condition must be true"
         loop.current_step = 99
-        assert not loop.should_evaluate()
+        assert not loop.should_evaluate(), "Condition must be true"
 
     def test_stop_by_epochs(self):
         """Stop by epoch count."""
         config = TrainingLoopConfig(max_epochs=5)
         loop = TrainingLoop(config)
         loop.current_epoch = 4
-        assert not loop.should_stop()
+        assert not loop.should_stop(), "Condition must be true"
         loop.current_epoch = 5
-        assert loop.should_stop()
+        assert loop.should_stop(), "Condition must be true"
 
     def test_stop_by_steps(self):
         """Stop by step count."""
         config = TrainingLoopConfig(max_steps=1000)
         loop = TrainingLoop(config)
         loop.current_step = 999
-        assert not loop.should_stop()
+        assert not loop.should_stop(), "Condition must be true"
         loop.current_step = 1000
-        assert loop.should_stop()
+        assert loop.should_stop(), "Condition must be true"

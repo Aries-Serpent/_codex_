@@ -44,30 +44,30 @@ class TestChunkText:
     def test_chunk_empty_text(self):
         """Test chunking empty text returns empty list."""
         chunks = chunk_text("")
-        assert chunks == []
+        assert chunks == [], "chunks is not valid"
 
     def test_chunk_none_text_handled(self):
         """Test chunking handles falsy text."""
         chunks = chunk_text(None or "")
-        assert chunks == []
+        assert chunks == [], "chunks is not valid"
 
     def test_chunk_small_text(self):
         """Test chunking text smaller than chunk size."""
         text = "Hello world"
         chunks = chunk_text(text, chunk_size=100)
 
-        assert len(chunks) == 1
-        assert chunks[0][2] == "Hello world"
-        assert chunks[0][0] == 0
+        assert len(chunks) == 1, "Chunks must not be empty"
+        assert chunks[0][2] == "Hello world", "Condition must be true"
+        assert chunks[0][0] == 0, "Condition must be true"
 
     def test_chunk_large_text(self):
         """Test chunking text larger than chunk size."""
         text = "A" * 1000
         chunks = chunk_text(text, chunk_size=100, overlap=10)
 
-        assert len(chunks) > 1
+        assert len(chunks) > 1, "Chunks must not be empty"
         for start, end, chunk in chunks:
-            assert len(chunk) <= 100
+            assert len(chunk) <= 100, "Chunk must not be empty"
 
     def test_chunk_overlap(self):
         """Test chunk overlap is respected."""
@@ -75,12 +75,12 @@ class TestChunkText:
         chunks = chunk_text(text, chunk_size=100, overlap=20)
 
         # Check that consecutive chunks overlap
-        assert len(chunks) >= 2
+        assert len(chunks) >= 2, "Chunks must not be empty"
         if len(chunks) >= 2:
             first_end = chunks[0][1]
             second_start = chunks[1][0]
             # Second chunk should start before first ends (overlap)
-            assert second_start < first_end
+            assert second_start < first_end, "second_start is not valid"
 
     def test_chunk_boundaries_at_sentences(self):
         """Test chunking prefers sentence boundaries."""
@@ -88,7 +88,7 @@ class TestChunkText:
         chunks = chunk_text(text, chunk_size=30, overlap=5)
 
         # At least one chunk should end with period
-        assert any(chunk[2].rstrip().endswith(".") for chunk in chunks)
+        assert any(chunk[2].rstrip().endswith(".") for chunk in chunks), "Condition must be true"
 
     def test_chunk_size_validation(self):
         """Test chunk_size must be positive."""
@@ -118,9 +118,9 @@ class TestChunkText:
             assert isinstance(start, int)
             assert isinstance(end, int)
             assert isinstance(chunk_content, str)
-            assert start >= 0
-            assert end > start
-            assert end <= len(text)
+            assert start >= 0, "start must be greater than zero"
+            assert end > start, "end must be greater than zero"
+            assert end <= len(text), "Text must not be empty"
 
     def test_chunk_preserves_text_content(self):
         """Test that chunked text can reconstruct original (roughly)."""
@@ -129,17 +129,17 @@ class TestChunkText:
 
         # Check that all chunks are from original text
         for start, end, chunk in chunks:
-            assert chunk.strip() in text or text[start:end].strip() == chunk.strip()
+            assert chunk.strip() in text or text[start:end].strip() == chunk.strip(), "Condition must be true"
 
     def test_chunk_strips_whitespace(self):
         """Test chunks are stripped of surrounding whitespace."""
         text = "  Lots   of   spaces  "
         chunks = chunk_text(text, chunk_size=50)
 
-        assert len(chunks) >= 1
+        assert len(chunks) >= 1, "Chunks must not be empty"
         # Chunks should be stripped
         for _, _, chunk in chunks:
-            assert chunk == chunk.strip()
+            assert chunk == chunk.strip(), "chunk is not valid"
 
     def test_chunk_empty_chunks_skipped(self):
         """Test that empty chunks are not included."""
@@ -148,25 +148,25 @@ class TestChunkText:
 
         # All chunks should have content
         for _, _, chunk in chunks:
-            assert len(chunk) > 0
+            assert len(chunk) > 0, "Chunk must not be empty"
 
     def test_chunk_with_newlines(self):
         """Test chunking text with newlines."""
         text = "Line 1\nLine 2\nLine 3\nLine 4\nLine 5"
         chunks = chunk_text(text, chunk_size=15, overlap=3)
 
-        assert len(chunks) >= 1
+        assert len(chunks) >= 1, "Chunks must not be empty"
         # Should preserve newlines in chunks
         combined = "".join([c[2] for c in chunks])
         # Most of original text should be in chunks
-        assert len(combined) > 0
+        assert len(combined) > 0, "Combined must not be empty"
 
     def test_chunk_different_delimiters(self):
         """Test chunking respects different sentence delimiters."""
         text = "Question? Another question? Statement. Exclamation!"
         chunks = chunk_text(text, chunk_size=30, overlap=5)
 
-        assert len(chunks) >= 1
+        assert len(chunks) >= 1, "Chunks must not be empty"
 
     def test_chunk_metadata_positions(self):
         """Test chunk positions are accurate."""
@@ -175,14 +175,14 @@ class TestChunkText:
 
         for start, end, chunk in chunks:
             # Verify position matches actual text
-            assert text[start:end].strip() == chunk
+            assert text[start:end].strip() == chunk, "Condition must be true"
 
     def test_chunk_very_small_chunk_size(self):
         """Test chunking with very small chunk size."""
         text = "Hello world"
         chunks = chunk_text(text, chunk_size=5, overlap=1)
 
-        assert len(chunks) >= 1
+        assert len(chunks) >= 1, "Chunks must not be empty"
 
 
 class TestEmbedChunks:
@@ -204,7 +204,7 @@ class TestEmbedChunks:
         embeddings = embed_chunks([])
 
         assert isinstance(embeddings, np.ndarray)
-        assert embeddings.shape[0] == 0
+        assert embeddings.shape[0] == 0, "Condition must be true"
 
     def test_embed_chunks_basic(self, mock_model):
         """Test embedding chunks generates embeddings."""
@@ -218,7 +218,7 @@ class TestEmbedChunks:
             embeddings = embed_chunks(chunks)
 
             assert isinstance(embeddings, np.ndarray)
-            assert embeddings.shape[0] == 3
+            assert embeddings.shape[0] == 3, "Condition must be true"
             mock_model.encode.assert_called_once()
 
     def test_embed_chunks_with_model_profile(self, mock_model):
@@ -236,7 +236,7 @@ class TestEmbedChunks:
             # Check model was initialized with correct params
             mock_st.assert_called_once()
             call_args = mock_st.call_args
-            assert model_profile["model_name"] in call_args[0]
+            assert model_profile["model_name"] in call_args[0], "Condition must be true"
 
     def test_embed_chunks_default_model(self, mock_model):
         """Test embedding uses default model when no profile provided."""
@@ -247,7 +247,7 @@ class TestEmbedChunks:
 
             # Should use default model
             call_args = mock_st.call_args[0]
-            assert "all-MiniLM-L6-v2" in call_args[0]
+            assert "all-MiniLM-L6-v2" in call_args[0], "Condition must be true"
 
     def test_embed_chunks_import_error(self):
         """Test embed_chunks raises error if sentence-transformers not installed."""
@@ -273,8 +273,8 @@ class TestEmbedChunks:
 
             # Check that encode was called with the text parts
             call_args = mock_model.encode.call_args[0]
-            assert "Hello" in call_args[0]
-            assert "World" in call_args[0]
+            assert "Hello" in call_args[0], "Condition must be true"
+            assert "World" in call_args[0], "Condition must be true"
 
 
 class TestPersistIndex:
@@ -302,8 +302,8 @@ class TestPersistIndex:
                 index_dir=str(tmp_path),
             )
 
-            assert index_path.exists()
-            assert index_path.name == "test_index"
+            assert index_path.exists(), "Condition must be true"
+            assert index_path.name == "test_index", "name is not valid"
 
     def test_persist_index_empty_embeddings_error(self, tmp_path):
         """Test persisting empty embeddings raises error."""
@@ -343,7 +343,7 @@ class TestPersistIndex:
             )
 
             # Check directory structure
-            assert (tmp_path / "tenant1" / "my_index").exists()
+            assert (tmp_path / "tenant1" / "my_index").exists(), "Condition must be true"
 
     def test_persist_index_saves_metadata(self, tmp_path):
         """Test index metadata is saved correctly."""
@@ -369,12 +369,12 @@ class TestPersistIndex:
 
             # Load and verify metadata
             metadata_file = index_path / "metadata.json"
-            assert metadata_file.exists()
+            assert metadata_file.exists(), "Data must not be empty"
 
             with open(metadata_file) as f:
                 saved_metadata = json.load(f)
-                assert saved_metadata["source"] == "test_source"
-                assert saved_metadata["version"] == "1.0"
+                assert saved_metadata["source"] == "test_source", "Data must not be empty"
+                assert saved_metadata["version"] == "1.0", "Data must not be empty"
 
     def test_persist_index_saves_chunks(self, tmp_path):
         """Test chunk metadata is saved correctly."""
@@ -397,13 +397,13 @@ class TestPersistIndex:
 
             # Load and verify chunks
             chunks_file = index_path / "chunks.json"
-            assert chunks_file.exists()
+            assert chunks_file.exists(), "Condition must be true"
 
             with open(chunks_file) as f:
                 saved_chunks = json.load(f)
-                assert len(saved_chunks) == 2
-                assert saved_chunks[0]["text"] == "First"
-                assert saved_chunks[1]["text"] == "Second"
+                assert len(saved_chunks) == 2, "Saved_chunks must not be empty"
+                assert saved_chunks[0]["text"] == "First", "Condition must be true"
+                assert saved_chunks[1]["text"] == "Second", "Condition must be true"
 
     def test_persist_index_faiss_not_installed(self, tmp_path):
         """Test error when FAISS not installed."""
@@ -450,9 +450,9 @@ class TestLoadIndex:
                 index_name="test_index", tenant_id="tenant1", index_dir=str(tmp_path)
             )
 
-            assert index is not None
-            assert len(chunks) == 1
-            assert meta["index_name"] == "test_index"
+            assert index is not None, "index must be initialized"
+            assert len(chunks) == 1, "Chunks must not be empty"
+            assert meta["index_name"] == "test_index", "Condition must be true"
 
     def test_load_index_faiss_not_installed(self, tmp_path):
         """Test error when FAISS not installed."""
@@ -508,15 +508,15 @@ class TestRAGIndexer:
 
         # Model loading is attempted but silently skipped in CI (no network/model cache)
         indexer = RAGIndexer()
-        assert indexer.index_dir == Path(".")
-        assert indexer.device == "cpu"
+        assert indexer.index_dir == Path("."), "index_dir is not valid"
+        assert indexer.device == "cpu", "device is not valid"
 
     def test_initialization_custom_dir(self, tmp_path):
         """Test RAGIndexer with custom index directory."""
         from codex.rag.indexer import RAGIndexer
 
         indexer = RAGIndexer(index_dir=str(tmp_path))
-        assert indexer.index_dir == tmp_path
+        assert indexer.index_dir == tmp_path, "index_dir is not valid"
 
     def test_list_tenants_empty_when_dir_missing(self, tmp_path):
         """Test list_tenants returns [] when index_dir doesn't exist (line 829-830)."""
@@ -524,7 +524,7 @@ class TestRAGIndexer:
 
         missing_dir = tmp_path / "no_such_dir"
         indexer = RAGIndexer(index_dir=str(missing_dir))
-        assert indexer.list_tenants() == []
+        assert indexer.list_tenants() == [], "Condition must be true"
 
     def test_list_tenants_returns_subdirs(self, tmp_path):
         """Test list_tenants returns visible subdirectories (line 831-833)."""
@@ -536,9 +536,9 @@ class TestRAGIndexer:
         (tmp_path / "file.txt").touch()
         indexer = RAGIndexer(index_dir=str(tmp_path))
         tenants = indexer.list_tenants()
-        assert "tenantA" in tenants
-        assert "tenantB" in tenants
-        assert ".hidden" not in tenants
+        assert "tenantA" in tenants, "Condition must be true"
+        assert "tenantB" in tenants, "Condition must be true"
+        assert ".hidden" not in tenants, "Condition must be true"
 
     def test_move_to_device_with_no_model(self, tmp_path):
         """Test move_to_device when model is None (line 857 branch not taken)."""
@@ -547,7 +547,7 @@ class TestRAGIndexer:
         indexer = RAGIndexer(index_dir=str(tmp_path))
         indexer.model = None  # Ensure model is None
         indexer.move_to_device("cpu")  # Should not raise
-        assert indexer.device == "cpu"
+        assert indexer.device == "cpu", "device is not valid"
 
     def test_move_to_device_with_mock_model(self, tmp_path):
         """Test move_to_device calls safe_model_to_device when model present (lines 857-860)."""
@@ -560,7 +560,7 @@ class TestRAGIndexer:
             mock_mtd.side_effect = lambda d: setattr(indexer, "device", d)
             indexer.move_to_device("cpu")
         # At minimum, device should be updated
-        assert indexer.device == "cpu"
+        assert indexer.device == "cpu", "device is not valid"
 
     def test_build_index_delegates(self, tmp_path):
         """Test build_index delegates to build_index_from_files (line 819)."""
@@ -573,4 +573,4 @@ class TestRAGIndexer:
         ) as mock_bif:
             result = indexer.build_index(files=["a.txt", "b.txt"], index_name="test_index")
         mock_bif.assert_called_once()
-        assert result == expected_path
+        assert result == expected_path, "Result must not be empty"

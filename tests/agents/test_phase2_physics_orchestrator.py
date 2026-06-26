@@ -23,7 +23,7 @@ class TestPhase2_PhysicsOrchestrator_Table4_Eq1:
 
         try:
             orch = PhysicsInspiredOrchestrator()
-            assert orch is not None
+            assert orch is not None, "orch must be initialized"
 
             # Test state initialization
             assert hasattr(orch, "__dict__")
@@ -37,7 +37,7 @@ class TestPhase2_PhysicsOrchestrator_Table4_Eq1:
             from agents.physics_orchestrator import DiffusionFlowModel
 
             model = DiffusionFlowModel()
-            assert model is not None
+            assert model is not None, "model must be initialized"
         except (ImportError, AttributeError, TypeError):
             pytest.skip("DiffusionFlowModel not available or requires params")
 
@@ -47,7 +47,7 @@ class TestPhase2_PhysicsOrchestrator_Table4_Eq1:
             from agents.physics_orchestrator import EnergyLandscape
 
             landscape = EnergyLandscape()
-            assert landscape is not None
+            assert landscape is not None, "landscape must be initialized"
         except (ImportError, AttributeError, TypeError):
             pytest.skip("EnergyLandscape not available or requires params")
 
@@ -57,7 +57,7 @@ class TestPhase2_PhysicsOrchestrator_Table4_Eq1:
             from agents.physics_orchestrator import SwarmIntelligence
 
             swarm = SwarmIntelligence()
-            assert swarm is not None
+            assert swarm is not None, "swarm must be initialized"
         except (ImportError, AttributeError, TypeError):
             pytest.skip("SwarmIntelligence not available or requires params")
 
@@ -67,7 +67,7 @@ class TestPhase2_PhysicsOrchestrator_Table4_Eq1:
             from agents.physics_orchestrator import ReflectionLoop
 
             loop = ReflectionLoop()
-            assert loop is not None
+            assert loop is not None, "loop must be initialized"
         except (ImportError, AttributeError, TypeError):
             pytest.skip("ReflectionLoop not available")
 
@@ -77,7 +77,7 @@ class TestPhase2_PhysicsOrchestrator_Table4_Eq1:
             from agents.physics_orchestrator import TaskDecomposition
 
             decomp = TaskDecomposition()
-            assert decomp is not None
+            assert decomp is not None, "decomp must be initialized"
         except (ImportError, AttributeError, TypeError):
             pytest.skip("TaskDecomposition not available")
 
@@ -129,9 +129,9 @@ class TestPhase2_PhysicsOrchestrator_Table4_Eq7:
             # Test Hamiltonian-related methods
             if hasattr(orch, "get_hamiltonian"):
                 h = orch.get_hamiltonian()
-                assert h is not None
+                assert h is not None, "h must be initialized"
             elif hasattr(orch, "hamiltonian"):
-                assert orch.hamiltonian is not None
+                assert orch.hamiltonian is not None, "hamiltonian must be initialized"
         except (TypeError, AttributeError):
             pytest.skip("Hamiltonian access not available")
 
@@ -155,7 +155,7 @@ class TestPhase2_PhysicsOrchestrator_Table4_Eq19:
         state = DecisionState()
         result = orch.assess_situation(state)
         assert isinstance(result, dict)
-        assert len(result) > 0
+        assert len(result) > 0, "Result must not be empty"
 
     def test_act_method(self):
         """Test act method is callable on PhysicsInspiredOrchestrator."""
@@ -174,7 +174,7 @@ class TestPhase2_PhysicsOrchestrator_Table4_Eq19:
 
         orch = PhysicsInspiredOrchestrator()
         # Empty list → None
-        assert orch.optimize([]) is None
+        assert orch.optimize([]) is None, "Condition must be true"
         # Single path → that path
         path = ActionPath(
             action_type=ActionType.ANALYZE,
@@ -184,7 +184,7 @@ class TestPhase2_PhysicsOrchestrator_Table4_Eq19:
             energy=0.1,
         )
         result = orch.optimize([path])
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     def test_deliberate_method(self):
         """Test deliberate_paths method returns a list of ActionPaths."""
@@ -230,7 +230,7 @@ class TestPhase2_PhysicsOrchestrator_Table4_Eq20:
             orch.evolve_state(state)
         except AttributeError:
             pytest.skip("evolve_state needs additional state attributes")
-        assert True  # did not raise
+        assert True, "True is not valid"
 
     def test_time_step_configuration(self):
         """Test config dict contains time-step related configuration."""
@@ -254,10 +254,10 @@ class TestPhase2_PhysicsOrchestrator_BranchCoverage:
                 context={"label": "test_context"},
                 constraints=[],
             )
-            assert state is not None
-            assert state.context["label"] == "test_context"
-            assert state.constraints == []
-            assert state.available_resources == 1.0
+            assert state is not None, "state must be initialized"
+            assert state.context["label"] == "test_context", "Condition must be true"
+            assert state.constraints == [], "constraints is not valid"
+            assert state.available_resources == 1.0, "available_resources is not valid"
         except (TypeError, ValueError):
             pytest.skip("DecisionState signature different")
 
@@ -266,7 +266,7 @@ class TestPhase2_PhysicsOrchestrator_BranchCoverage:
         from agents.physics_orchestrator import DecisionState
 
         state = DecisionState()
-        assert state is not None
+        assert state is not None, "state must be initialized"
         assert hasattr(state, "available_resources")
         assert hasattr(state, "constraints")
 
@@ -276,7 +276,7 @@ class TestPhase2_PhysicsOrchestrator_BranchCoverage:
 
         try:
             force = ForceVector(magnitude=10.0, direction="forward")
-            assert force.magnitude > 0
+            assert force.magnitude > 0, "magnitude must be greater than zero"
         except (TypeError, AttributeError):
             pytest.skip("ForceVector signature different")
 
@@ -295,7 +295,7 @@ class TestPhase2_PhysicsOrchestrator_BranchCoverage:
                 if sig.parameters[p].default is inspect.Parameter.empty
             }
             force = ForceVector(**params) if params else ForceVector()
-            assert force is not None
+            assert force is not None, "force must be initialized"
         except (ImportError, TypeError, AttributeError):
             pytest.skip("ForceVector not available")
 
@@ -305,7 +305,7 @@ class TestPhase2_PhysicsOrchestrator_BranchCoverage:
 
         try:
             path = ActionPath(steps=["step1"])
-            assert len(path.steps) == 1
+            assert len(path.steps) == 1, "Collection must not be empty"
         except (TypeError, AttributeError):
             pytest.skip("ActionPath signature different")
 
@@ -315,7 +315,7 @@ class TestPhase2_PhysicsOrchestrator_BranchCoverage:
 
         try:
             path = ActionPath(steps=["step1", "step2", "step3", "step4", "step5"])
-            assert len(path.steps) == 5
+            assert len(path.steps) == 5, "Collection must not be empty"
         except (TypeError, AttributeError):
             pytest.skip("ActionPath signature different")
 
@@ -337,14 +337,14 @@ class TestPhase2_PhysicsOrchestrator_EdgeCases:
 
         state = DecisionState()
         state.constraints = {"max_cost": 100, "min_quality": 0.8}
-        assert state.constraints["max_cost"] == 100
+        assert state.constraints["max_cost"] == 100, "Condition must be true"
 
     def test_force_vector_zero_magnitude(self):
         """Test ForceVector class is importable."""
         try:
             from agents.physics_orchestrator import ForceVector
 
-            assert ForceVector is not None
+            assert ForceVector is not None, "ForceVector must be initialized"
         except ImportError:
             pytest.skip("ForceVector not available")
 
@@ -354,6 +354,6 @@ class TestPhase2_PhysicsOrchestrator_EdgeCases:
 
         try:
             force = ForceVector(magnitude=1e10, direction="forward")
-            assert force.magnitude > 0
+            assert force.magnitude > 0, "magnitude must be greater than zero"
         except (TypeError, ValueError, AttributeError):
             pytest.skip("Large values not supported")

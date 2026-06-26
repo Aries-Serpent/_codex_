@@ -24,4 +24,4 @@ def test_mlflow_utils_tolerant_when_missing():
     MU.log_params({"lr": 1e-3})
     MU.log_metrics({"loss": 0.1}, step=1)
     MU.log_artifacts([])
-    assert True
+    assert True, "True is not valid"

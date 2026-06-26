@@ -14,7 +14,7 @@ def test_shard_cover():
     for r in range(w):
         s, e = shard_range(r, w, n)
         cov |= set(range(s, e))
-    assert len(cov) == n
+    assert len(cov) == n, "Cov must not be empty"
 
 
 # END: CODEX_TEST_DATA_CACHE_SHARD

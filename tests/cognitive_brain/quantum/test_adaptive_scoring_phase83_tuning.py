@@ -17,8 +17,8 @@ def test_tune_k1_from_pda_history(tmp_path):
     optimizer = AdaptiveScoringOptimizer()
     tuned = optimizer.tune_k1_from_pda_history(pda)
 
-    assert 0.20 <= tuned <= 0.45
-    assert optimizer.get_current_k1() == tuned
+    assert 0.20 <= tuned <= 0.45, "20 is not valid"
+    assert optimizer.get_current_k1() == tuned, "Condition must be true"
 
 
 def test_tune_k1_from_pda_history_ignores_invalid_lines(tmp_path):
@@ -27,13 +27,13 @@ def test_tune_k1_from_pda_history_ignores_invalid_lines(tmp_path):
 
     optimizer = AdaptiveScoringOptimizer()
     tuned = optimizer.tune_k1_from_pda_history(pda)
-    assert tuned < 0.40
+    assert tuned < 0.40, "tuned is not valid"
 
 
 def test_extract_success_signal_ignores_boolean_ci_counts():
     optimizer = AdaptiveScoringOptimizer()
 
-    assert (
+    assert (, "Condition must be true"
         optimizer._extract_success_signal({"ci_checks_green": True, "ci_checks_red": False}) is None
     )
     assert optimizer._extract_success_signal({"ci_checks_green": 3, "ci_checks_red": False}) is None

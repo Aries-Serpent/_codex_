@@ -13,9 +13,9 @@ def test_repo_root_detection(monkeypatch):
     monkeypatch.delenv("CODEX_AUTO_RUN", raising=False)
     mod = importlib.reload(importlib.import_module("scripts.deep_research_task_process"))
     repo_root = Path(mod.REPO_ROOT)
-    assert (repo_root / ".pre-commit-config.yaml").exists()
-    assert (repo_root / "src" / "codex" / "logging").exists()
-    assert (repo_root / ".git").exists()
+    assert (repo_root / ".pre-commit-config.yaml").exists(), "Condition must be true"
+    assert (repo_root / "src" / "codex" / "logging").exists(), "Condition must be true"
+    assert (repo_root / ".git").exists(), "Condition must be true"
 
 
 def test_single_execution_guard(monkeypatch):
@@ -32,11 +32,11 @@ def test_single_execution_guard(monkeypatch):
     monkeypatch.setattr(mod, "run_all", fake_run_all)
 
     mod._maybe_auto_run_on_import()
-    assert calls["count"] == 0
+    assert calls["count"] == 0, "Count must be greater than zero"
 
     monkeypatch.setenv("CODEX_AUTO_RUN", "1")
     mod._maybe_auto_run_on_import()
-    assert calls["count"] == 1
+    assert calls["count"] == 1, "Count must be greater than zero"
 
     mod._maybe_auto_run_on_import()
-    assert calls["count"] == 1
+    assert calls["count"] == 1, "Count must be greater than zero"

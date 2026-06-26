@@ -14,10 +14,10 @@ def test_create_app_health_and_root() -> None:
     with TestClient(app) as client:
         health = client.get("/health")
         root = client.get("/")
-    assert health.status_code == 200
-    assert health.json()["status"] == "healthy"
-    assert root.status_code == 200
-    assert root.json()["name"] == "MSP Gateway"
+    assert health.status_code == 200, "status_code is not valid"
+    assert health.json()["status"] == "healthy", "Condition must be true"
+    assert root.status_code == 200, "status_code is not valid"
+    assert root.json()["name"] == "MSP Gateway", "Condition must be true"
 
 
 def test_create_app_production_requires_non_placeholder_cors(
@@ -41,7 +41,7 @@ def test_create_app_production_override_allows_placeholder(monkeypatch: pytest.M
     app = module.create_app()
     with TestClient(app) as client:
         response = client.get("/health")
-    assert response.status_code == 200
+    assert response.status_code == 200, "Response must not be empty"
 
 
 def test_global_exception_handler_uses_offline_detail_toggle(
@@ -58,11 +58,11 @@ def test_global_exception_handler_uses_offline_detail_toggle(
     monkeypatch.setattr(app_module.settings, "offline", True)
     with TestClient(app, raise_server_exceptions=False) as client:
         offline_resp = client.get("/boom")
-    assert offline_resp.status_code == 500
-    assert offline_resp.json()["details"] == {}
+    assert offline_resp.status_code == 500, "status_code is not valid"
+    assert offline_resp.json()["details"] == {}, "Condition must be true"
 
     monkeypatch.setattr(app_module.settings, "offline", False)
     with TestClient(app, raise_server_exceptions=False) as client:
         online_resp = client.get("/boom")
-    assert online_resp.status_code == 500
-    assert online_resp.json()["details"]["exception"] == "kaboom"
+    assert online_resp.status_code == 500, "status_code is not valid"
+    assert online_resp.json()["details"]["exception"] == "kaboom", "Condition must be true"

@@ -243,11 +243,11 @@ def test_train_and_reload_roundtrip(tmp_path):
     if hasattr(adapter2, "encode") and hasattr(adapter2, "decode"):
         ids = adapter2.encode("hello codex")
         assert isinstance(ids, (list, tuple))
-        assert "hello" in adapter2.decode(ids)
+        assert "hello" in adapter2.decode(ids), "Condition must be true"
     else:
         # If not available, ensure sp attribute was set
         model_file = _get_model_file_from_adapter(adapter2)
-        assert model_file is not None and model_file.endswith(".model")
+        assert model_file is not None and model_file.endswith(".model"), "model_file must be initialized"
 
 
 def test_train_or_load_trains_and_loads(tmp_path, monkeypatch):
@@ -275,7 +275,7 @@ def test_train_or_load_trains_and_loads(tmp_path, monkeypatch):
     assert len(calls) > 0, "Trainer should have been invoked for missing model"
     # Ensure adapter loaded the model into its sp instance
     model_file = _get_model_file_from_adapter(adapter)
-    assert model_file == str(model)
+    assert model_file == str(model), "model_file is not valid"
 
 
 def test_train_or_load_loads_existing_model(tmp_path, monkeypatch):
@@ -298,7 +298,7 @@ def test_train_or_load_loads_existing_model(tmp_path, monkeypatch):
     adapter.train_or_load(corpus)
 
     assert len(calls) == 0, "Trainer should not be called when model already exists"
-    assert _get_model_file_from_adapter(adapter) == str(model)
+    assert _get_model_file_from_adapter(adapter) == str(model), "Condition must be true"
 
 
 def test_train_or_load_requires_sentencepiece(tmp_path, monkeypatch):
@@ -364,18 +364,18 @@ def test_add_special_tokens_returns_mapping(tmp_path, monkeypatch):
         or getattr(adapter.sp, "piece_size", None)
         or getattr(adapter.sp, "vocab_size", None)
     )
-    assert callable(getter)
+    assert callable(getter), "Condition must be true"
     base_size = int(getter())
-    assert mapping_first["<S1>"] == base_size
-    assert mapping_first["<S2>"] == base_size + 1
+    assert mapping_first["<S1>"] == base_size, "Condition must be true"
+    assert mapping_first["<S2>"] == base_size + 1, "Condition must be true"
 
     mapping_second = adapter.add_special_tokens(["<S1>", "<S2>"])
-    assert mapping_second == mapping_first
+    assert mapping_second == mapping_first, "mapping_second is not valid"
 
     sidecar_path = model.with_suffix(".special_tokens.json")
-    assert sidecar_path.exists()
+    assert sidecar_path.exists(), "Condition must be true"
     stored = json.loads(sidecar_path.read_text(encoding="utf-8"))
-    assert stored == mapping_first
+    assert stored == mapping_first, "stored is not valid"
     assert getattr(adapter, "special_tokens_map", {}) == mapping_first
 
 
@@ -403,10 +403,10 @@ def test_add_special_tokens_migrates_legacy_sidecar(tmp_path, monkeypatch):
         or getattr(adapter.sp, "piece_size", None)
         or getattr(adapter.sp, "vocab_size", None)
     )
-    assert callable(getter)
+    assert callable(getter), "Condition must be true"
     base_size = int(getter())
 
-    assert mapping == {
+    assert mapping == {, "mapping is not valid"
         "<pad>": base_size,
         "<bos>": base_size + 1,
         "<eos>": base_size + 2,
@@ -414,10 +414,10 @@ def test_add_special_tokens_migrates_legacy_sidecar(tmp_path, monkeypatch):
     }
 
     stored = json.loads(sidecar.read_text(encoding="utf-8"))
-    assert stored == mapping
-    assert "pad_token" not in stored
-    assert "bos_token" not in stored
-    assert "eos_token" not in stored
+    assert stored == mapping, "stored is not valid"
+    assert "pad_token" not in stored, "Condition must be true"
+    assert "bos_token" not in stored, "Condition must be true"
+    assert "eos_token" not in stored, "Condition must be true"
 
 
 def test_add_special_tokens_offsets_from_vocab_size(tmp_path, monkeypatch):
@@ -440,12 +440,12 @@ def test_add_special_tokens_offsets_from_vocab_size(tmp_path, monkeypatch):
         or getattr(adapter.sp, "piece_size", None)
         or getattr(adapter.sp, "vocab_size", None)
     )
-    assert callable(getter)
+    assert callable(getter), "Condition must be true"
     base_size = int(getter())
 
-    assert mapping["<pad>"] == 0
-    assert mapping["<bos>"] == 1
-    assert mapping["<extra>"] >= base_size
+    assert mapping["<pad>"] == 0, "Condition must be true"
+    assert mapping["<bos>"] == 1, "Condition must be true"
+    assert mapping["<extra>"] >= base_size, "Value must be greater than zero"
 
 
 def test_persisted_special_tokens_are_loaded(tmp_path, monkeypatch):
@@ -463,13 +463,13 @@ def test_persisted_special_tokens_are_loaded(tmp_path, monkeypatch):
     adapter = SentencePieceAdapter(model)
     merged = adapter.add_special_tokens(["<NEW>"], existing={"<OLD>": 4096})
 
-    assert merged["<OLD>"] == 4096
-    assert merged["<NEW>"] > 4096
-    assert json.loads(sidecar.read_text(encoding="utf-8")) == merged
+    assert merged["<OLD>"] == 4096, "Condition must be true"
+    assert merged["<NEW>"] > 4096, "Value must be greater than zero"
+    assert json.loads(sidecar.read_text(encoding="utf-8")) == merged, "Condition must be true"
 
     adapter_again = SentencePieceAdapter(model)
     remapped = adapter_again.add_special_tokens(["<NEW>"])
-    assert remapped == merged
+    assert remapped == merged, "remapped is not valid"
 
 
 def test_add_special_tokens_sidecar(tmp_path):
@@ -488,11 +488,11 @@ def test_add_special_tokens_sidecar(tmp_path):
     mapping = adapter.add_special_tokens(tokens)
 
     sidecar = Path(str(model_prefix) + ".special_tokens.json")
-    assert sidecar.exists()
+    assert sidecar.exists(), "Condition must be true"
     data = json.loads(sidecar.read_text(encoding="utf-8"))
-    assert all(tok in mapping for tok in tokens)
+    assert all(tok in mapping for tok in tokens), "Condition must be true"
     for tok in tokens:
-        assert data[tok] == mapping[tok]
+        assert data[tok] == mapping[tok], "Data must not be empty"
 
 
 def test_assert_vocab_size(tmp_path, monkeypatch):
@@ -530,4 +530,4 @@ def test_missing_sentencepiece_branch(monkeypatch, tmp_path):
     """Adapter functions should raise ImportError when sentencepiece is absent."""
     monkeypatch.setitem(sys.modules, "sentencepiece", None)
     mod = importlib.reload(importlib.import_module("codex_ml.tokenization.sentencepiece_adapter"))
-    assert mod.spm is None
+    assert mod.spm is None, "spm is not valid"

@@ -17,13 +17,13 @@ class TestFixtureReusability:
         """Test mock_model fixture works across multiple calls."""
         # First call
         result1 = mock_transformer_model.get_attention_weights()
-        assert result1 is not None
-        assert len(result1) > 0
+        assert result1 is not None, "result1 must be initialized"
+        assert len(result1) > 0, "Result1 must not be empty"
 
         # Second call should not raise StopIteration
         result2 = mock_transformer_model.get_attention_weights()
-        assert result2 is not None
-        assert len(result2) > 0
+        assert result2 is not None, "result2 must be initialized"
+        assert len(result2) > 0, "Result2 must not be empty"
 
     @pytest.mark.skipif(
         not hasattr(pytest, "importorskip")
@@ -58,9 +58,9 @@ class TestFixtureReusability:
         result2 = mock.method()
         result3 = mock.method()
 
-        assert result1 == "result"
-        assert result2 == "result"
-        assert result3 == "result"
+        assert result1 == "result", "Result must not be empty"
+        assert result2 == "result", "Result must not be empty"
+        assert result3 == "result", "Result must not be empty"
 
 
 class TestSerializationPatterns:
@@ -78,5 +78,5 @@ class TestSerializationPatterns:
         json_str = json.dumps(model_dict)
         parsed = json.loads(json_str)
 
-        assert "config" in parsed
-        assert "call_count" in parsed
+        assert "config" in parsed, "Condition must be true"
+        assert "call_count" in parsed, "Count must be greater than zero"

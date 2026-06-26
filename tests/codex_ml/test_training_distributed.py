@@ -10,7 +10,7 @@ class TestDistributedTraining:
         world_size = 4
 
         # Assert
-        assert world_size > 0
+        assert world_size > 0, "world_size must be greater than zero"
 
     def test_distributed_rank(self):
         """Test distributed rank."""
@@ -19,7 +19,7 @@ class TestDistributedTraining:
         world_size = 4
 
         # Assert
-        assert 0 <= rank < world_size
+        assert 0 <= rank < world_size, "0 is not valid"
 
     def test_distributed_local_rank(self):
         """Test distributed local rank."""
@@ -27,7 +27,7 @@ class TestDistributedTraining:
         local_rank = 0
 
         # Assert
-        assert local_rank >= 0
+        assert local_rank >= 0, "local_rank must be greater than zero"
 
     def test_distributed_backend_nccl(self):
         """Test NCCL backend for distributed training."""
@@ -35,7 +35,7 @@ class TestDistributedTraining:
         backend = "nccl"
 
         # Assert
-        assert backend == "nccl"
+        assert backend == "nccl", "backend is not valid"
 
     def test_distributed_backend_gloo(self):
         """Test Gloo backend for distributed training."""
@@ -43,7 +43,7 @@ class TestDistributedTraining:
         backend = "gloo"
 
         # Assert
-        assert backend == "gloo"
+        assert backend == "gloo", "backend is not valid"
 
     def test_data_parallel_wrapping(self):
         """Test data parallel model wrapping."""
@@ -51,7 +51,7 @@ class TestDistributedTraining:
         use_ddp = True
 
         # Assert
-        assert use_ddp is True
+        assert use_ddp is True, "use_ddp is not valid"
 
     def test_gradient_accumulation(self):
         """Test gradient accumulation steps."""
@@ -59,7 +59,7 @@ class TestDistributedTraining:
         gradient_accumulation_steps = 4
 
         # Assert
-        assert gradient_accumulation_steps > 0
+        assert gradient_accumulation_steps > 0, "gradient_accumulation_steps must be greater than zero"
 
     def test_gradient_synchronization(self):
         """Test gradient synchronization."""
@@ -67,7 +67,7 @@ class TestDistributedTraining:
         sync_gradients = True
 
         # Assert
-        assert sync_gradients is True
+        assert sync_gradients is True, "sync_gradients is not valid"
 
     def test_model_sharding(self):
         """Test model sharding."""
@@ -83,7 +83,7 @@ class TestDistributedTraining:
         save_on_all_ranks = False  # Usually only rank 0 saves
 
         # Assert
-        assert save_on_all_ranks is False
+        assert save_on_all_ranks is False, "save_on_all_ranks is not valid"
 
     def test_distributed_sampler(self):
         """Test distributed sampler."""
@@ -91,7 +91,7 @@ class TestDistributedTraining:
         use_distributed_sampler = True
 
         # Assert
-        assert use_distributed_sampler is True
+        assert use_distributed_sampler is True, "use_distributed_sampler is not valid"
 
     def test_batch_size_per_gpu(self):
         """Test batch size per GPU."""
@@ -99,7 +99,7 @@ class TestDistributedTraining:
         per_device_batch_size = 8
 
         # Assert
-        assert per_device_batch_size > 0
+        assert per_device_batch_size > 0, "per_device_batch_size must be greater than zero"
 
     def test_effective_batch_size(self):
         """Test effective batch size calculation."""
@@ -110,7 +110,7 @@ class TestDistributedTraining:
         effective = per_device * world_size * grad_accum
 
         # Assert
-        assert effective == 64
+        assert effective == 64, "effective is not valid"
 
     def test_learning_rate_scaling(self):
         """Test learning rate scaling for distributed."""
@@ -120,7 +120,7 @@ class TestDistributedTraining:
         scaled_lr = base_lr * scale_factor
 
         # Assert
-        assert scaled_lr == 4e-4
+        assert scaled_lr == 4e-4, "scaled_lr is not valid"
 
     def test_communication_timeout(self):
         """Test communication timeout."""
@@ -128,7 +128,7 @@ class TestDistributedTraining:
         timeout_minutes = 30
 
         # Assert
-        assert timeout_minutes > 0
+        assert timeout_minutes > 0, "timeout_minutes must be greater than zero"
 
     def test_find_unused_parameters(self):
         """Test find unused parameters option."""
@@ -136,7 +136,7 @@ class TestDistributedTraining:
         find_unused = False
 
         # Assert
-        assert find_unused is False
+        assert find_unused is False, "find_unused is not valid"
 
     def test_broadcast_buffers(self):
         """Test broadcast buffers option."""
@@ -144,7 +144,7 @@ class TestDistributedTraining:
         broadcast = True
 
         # Assert
-        assert broadcast is True
+        assert broadcast is True, "broadcast is not valid"
 
     def test_mixed_precision_distributed(self):
         """Test mixed precision in distributed training."""
@@ -152,7 +152,7 @@ class TestDistributedTraining:
         use_amp = True
 
         # Assert
-        assert use_amp is True
+        assert use_amp is True, "use_amp is not valid"
 
     def test_gradient_clipping_distributed(self):
         """Test gradient clipping in distributed."""
@@ -160,7 +160,7 @@ class TestDistributedTraining:
         max_grad_norm = 1.0
 
         # Assert
-        assert max_grad_norm > 0
+        assert max_grad_norm > 0, "max_grad_norm must be greater than zero"
 
     def test_all_reduce_operation(self):
         """Test all-reduce operation."""
@@ -176,7 +176,7 @@ class TestDistributedTraining:
         use_barrier = True
 
         # Assert
-        assert use_barrier is True
+        assert use_barrier is True, "use_barrier is not valid"
 
     def test_process_group_creation(self):
         """Test process group creation."""
@@ -184,4 +184,4 @@ class TestDistributedTraining:
         init_method = "env://"
 
         # Assert
-        assert init_method.startswith("env://") or init_method.startswith("tcp://")
+        assert init_method.startswith("env://") or init_method.startswith("tcp://"), "Condition must be true"

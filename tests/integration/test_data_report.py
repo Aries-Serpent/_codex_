@@ -32,5 +32,5 @@ def test_data_report_smoke(tmp_path: Path) -> None:
     json_path = tmp_path / "drift.json"
     summary = build_data_drift(reference, current, html_path, json_path, tracked_columns=["value"])
 
-    assert html_path.exists() and json_path.exists()
-    assert "drift_share" in summary
+    assert html_path.exists() and json_path.exists(), "Condition must be true"
+    assert "drift_share" in summary, "Condition must be true"

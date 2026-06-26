@@ -68,8 +68,8 @@ def test_list_displays_stubbed_plugin(
 
     result = cli_runner.invoke(plugins_cli.app, ["list", group])
 
-    assert result.exit_code == 0
-    assert plugin in result.stdout
+    assert result.exit_code == 0, "Result must not be empty"
+    assert plugin in result.stdout, "Result must not be empty"
 
 
 def test_diagnose_reports_registered_count(
@@ -79,8 +79,8 @@ def test_diagnose_reports_registered_count(
 
     result = cli_runner.invoke(plugins_cli.app, ["diagnose", group])
 
-    assert result.exit_code == 0
-    assert "registered=1" in result.stdout
+    assert result.exit_code == 0, "Result must not be empty"
+    assert "registered=1" in result.stdout, "Result must not be empty"
 
 
 def test_explain_outputs_module_and_docstring(
@@ -90,10 +90,10 @@ def test_explain_outputs_module_and_docstring(
 
     result = cli_runner.invoke(plugins_cli.app, ["explain", group, plugin])
 
-    assert result.exit_code == 0
-    assert "module: tests.test_plugins_cli" in result.stdout
-    assert "Return a predictable value" in result.stdout
-    assert "(multiplier: int = 2) -> int" in result.stdout
+    assert result.exit_code == 0, "Result must not be empty"
+    assert "module: tests.test_plugins_cli" in result.stdout, "Result must not be empty"
+    assert "Return a predictable value" in result.stdout, "Result must not be empty"
+    assert "(multiplier: int = 2) -> int" in result.stdout, "Result must not be empty"
 
 
 def test_diagnose_entry_point_mode(
@@ -103,13 +103,13 @@ def test_diagnose_entry_point_mode(
 
     result = cli_runner.invoke(plugins_cli.app, ["diagnose", group, "--use-entry-points"])
 
-    assert result.exit_code == 0
-    assert "registered=1" in result.stdout
+    assert result.exit_code == 0, "Result must not be empty"
+    assert "registered=1" in result.stdout, "Result must not be empty"
 
 
 @pytest.mark.usefixtures("stubbed_registry")
 def test_unknown_group_exits_with_error(cli_runner: CliRunner) -> None:
     result = cli_runner.invoke(plugins_cli.app, ["list", "unknown"])
 
-    assert result.exit_code != 0
-    assert "unknown group" in result.stderr or "unknown group" in result.stdout
+    assert result.exit_code != 0, "Result must not be empty"
+    assert "unknown group" in result.stderr or "unknown group" in result.stdout, "Result must not be empty"

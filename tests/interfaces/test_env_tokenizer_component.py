@@ -17,7 +17,7 @@ def test_get_component_env_tokenizer(tmp_path):
     os.environ["CODEX_TOKENIZER_PATH"] = "tok_mod:Tok"
     try:
         inst = get_component("CODEX_TOKENIZER_PATH", "tok_mod:Tok")
-        assert inst.name == "tok"
+        assert inst.name == "tok", "name is not valid"
     finally:
         sys.path.remove(str(tmp_path))
         os.environ.pop("CODEX_TOKENIZER_PATH", None)

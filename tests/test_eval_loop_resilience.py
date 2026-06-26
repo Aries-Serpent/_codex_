@@ -49,8 +49,8 @@ def test_evaluate_returns_only_loss_when_metrics_failures() -> None:
         device="cpu",
     )
 
-    assert metrics == {"eval_loss": pytest.approx(0.25)}
-    assert model.training is True
+    assert metrics == {"eval_loss": pytest.approx(0.25)}, "metrics is not valid"
+    assert model.training is True, "training is not valid"
 
 
 def test_evaluate_handles_empty_dataloader() -> None:
@@ -63,5 +63,5 @@ def test_evaluate_handles_empty_dataloader() -> None:
         device="cpu",
     )
 
-    assert metrics == {}
-    assert model.training is True
+    assert metrics == {}, "metrics is not valid"
+    assert model.training is True, "training is not valid"

@@ -31,34 +31,34 @@ def _import():
 class TestExtractHeadings:
     def test_empty_text(self):
         mod = _import()
-        assert mod._extract_headings("") == []
+        assert mod._extract_headings("") == [], "Condition must be true"
 
     def test_single_h1(self):
         mod = _import()
         result = mod._extract_headings("# My Title\nsome content")
-        assert len(result) == 1
-        assert result[0]["title"] == "My Title"
-        assert result[0]["level"] == 1
+        assert len(result) == 1, "Result must not be empty"
+        assert result[0]["title"] == "My Title", "Result must not be empty"
+        assert result[0]["level"] == 1, "Result must not be empty"
 
     def test_multiple_headings(self):
         mod = _import()
         text = "# H1\nContent 1\n## H2\nContent 2\n### H3\n"
         result = mod._extract_headings(text)
-        assert len(result) == 3
-        assert result[0]["level"] == 1
-        assert result[1]["level"] == 2
-        assert result[2]["level"] == 3
+        assert len(result) == 3, "Result must not be empty"
+        assert result[0]["level"] == 1, "Result must not be empty"
+        assert result[1]["level"] == 2, "Result must not be empty"
+        assert result[2]["level"] == 3, "Result must not be empty"
 
     def test_content_captured(self):
         mod = _import()
         text = "# Title\nline one\nline two\n"
         result = mod._extract_headings(text)
-        assert "line one" in result[0]["content"]
+        assert "line one" in result[0]["content"], "Result must not be empty"
 
     def test_no_headings_returns_empty(self):
         mod = _import()
         text = "Just some plain text without headings."
-        assert mod._extract_headings(text) == []
+        assert mod._extract_headings(text) == [], "Condition must be true"
 
 
 # ── _count_words ─────────────────────────────────────────────────────────────
@@ -67,11 +67,11 @@ class TestExtractHeadings:
 class TestCountWords:
     def test_empty_string(self):
         mod = _import()
-        assert mod._count_words("") == 0
+        assert mod._count_words("") == 0, "Count must be greater than zero"
 
     def test_basic_sentence(self):
         mod = _import()
-        assert mod._count_words("hello world foo bar") == 4
+        assert mod._count_words("hello world foo bar") == 4, "Count must be greater than zero"
 
     def test_with_punctuation(self):
         mod = _import()
@@ -79,7 +79,7 @@ class TestCountWords:
 
     def test_with_numbers(self):
         mod = _import()
-        assert mod._count_words("version 1 2 3") == 4
+        assert mod._count_words("version 1 2 3") == 4, "Count must be greater than zero"
 
 
 # ── parse_document ───────────────────────────────────────────────────────────
@@ -97,9 +97,9 @@ class TestParseDocument:
             result = mod.parse_document(doc)
         finally:
             mod.REPO_ROOT = original
-        assert result["heading_count"] == 2
-        assert result["word_count"] > 0
-        assert result["line_count"] > 0
+        assert result["heading_count"] == 2, "Result must not be empty"
+        assert result["word_count"] > 0, "Value must be greater than zero"
+        assert result["line_count"] > 0, "Value must be greater than zero"
 
     def test_returns_required_keys(self, tmp_path):
         mod = _import()
@@ -120,7 +120,7 @@ class TestParseDocument:
             "concepts",
             "action_items",
         ]:
-            assert key in result
+            assert key in result, "Result must not be empty"
 
     def test_extracts_action_items(self, tmp_path):
         mod = _import()
@@ -132,7 +132,7 @@ class TestParseDocument:
             result = mod.parse_document(doc)
         finally:
             mod.REPO_ROOT = original
-        assert len(result["action_items"]) == 2
+        assert len(result["action_items"]) == 2, "Collection must not be empty"
 
     def test_extracts_concepts(self, tmp_path):
         mod = _import()
@@ -146,7 +146,7 @@ class TestParseDocument:
             result = mod.parse_document(doc)
         finally:
             mod.REPO_ROOT = original
-        assert any("Learning" in c or "Networks" in c for c in result["concepts"])
+        assert any("Learning" in c or "Networks" in c for c in result["concepts"]), "Result must not be empty"
 
 
 # ── cmd_parse ────────────────────────────────────────────────────────────────
@@ -160,20 +160,20 @@ class TestCmdParse:
         monkeypatch.setattr(mod, "REPO_ROOT", tmp_path)
         # Parse a specific file
         rc = mod.cmd_parse(str(doc))
-        assert rc == 0
+        assert rc == 0, "rc is not valid"
 
     def test_parse_nonexistent_file_returns_1(self, tmp_path, monkeypatch):
         mod = _import()
         monkeypatch.setattr(mod, "REPO_ROOT", tmp_path)
         rc = mod.cmd_parse(str(tmp_path / "does_not_exist.md"))
-        assert rc == 1
+        assert rc == 1, "rc is not valid"
 
     def test_scan_no_docs_found(self, tmp_path, monkeypatch):
         mod = _import()
         monkeypatch.setattr(mod, "REPO_ROOT", tmp_path)
         monkeypatch.setattr(mod, "DOCS_DIR", tmp_path / "docs")
         rc = mod.cmd_parse()  # no path_arg, scan mode
-        assert rc == 0
+        assert rc == 0, "rc is not valid"
 
     def test_scan_with_matching_docs(self, tmp_path, monkeypatch):
         mod = _import()
@@ -185,7 +185,7 @@ class TestCmdParse:
         monkeypatch.setattr(mod, "DOCS_DIR", docs_dir)
         monkeypatch.setattr(mod, "PHILOSOPHY_DIR", tmp_path / "philosophy")
         rc = mod.cmd_parse()
-        assert rc == 0
+        assert rc == 0, "rc is not valid"
 
 
 # ── cmd_write ────────────────────────────────────────────────────────────────
@@ -198,10 +198,10 @@ class TestCmdWrite:
         monkeypatch.setattr(mod, "PHILOSOPHY_DIR", phil_dir)
         monkeypatch.setattr(mod, "REPO_ROOT", tmp_path)
         rc = mod.cmd_write(topic="Test Topic", template="basic")
-        assert rc == 0
+        assert rc == 0, "rc is not valid"
         docs = list(phil_dir.glob("*.md"))
-        assert len(docs) == 1
-        assert "Test Topic" in docs[0].read_text()
+        assert len(docs) == 1, "Docs must not be empty"
+        assert "Test Topic" in docs[0].read_text(), "Condition must be true"
 
     def test_structured_template(self, tmp_path, monkeypatch):
         mod = _import()
@@ -209,7 +209,7 @@ class TestCmdWrite:
         monkeypatch.setattr(mod, "PHILOSOPHY_DIR", phil_dir)
         monkeypatch.setattr(mod, "REPO_ROOT", tmp_path)
         rc = mod.cmd_write(topic="Structured Topic", template="structured")
-        assert rc == 0
+        assert rc == 0, "rc is not valid"
 
     def test_unknown_template_falls_back(self, tmp_path, monkeypatch):
         mod = _import()
@@ -217,7 +217,7 @@ class TestCmdWrite:
         monkeypatch.setattr(mod, "PHILOSOPHY_DIR", phil_dir)
         monkeypatch.setattr(mod, "REPO_ROOT", tmp_path)
         rc = mod.cmd_write(topic="X", template="unknown_template")
-        assert rc == 0
+        assert rc == 0, "rc is not valid"
 
     def test_incorporates_session_observations(self, tmp_path, monkeypatch):
         mod = _import()
@@ -237,7 +237,7 @@ class TestCmdWrite:
         monkeypatch.setattr(mod, "PHILOSOPHY_DIR", phil_dir)
         monkeypatch.setattr(mod, "REPO_ROOT", tmp_path)
         rc = mod.cmd_write(topic="Session Synthesis")
-        assert rc == 0
+        assert rc == 0, "rc is not valid"
 
 
 # ── cmd_status ───────────────────────────────────────────────────────────────
@@ -248,7 +248,7 @@ class TestCmdStatus:
         mod = _import()
         monkeypatch.setattr(mod, "PHILOSOPHY_DIR", tmp_path / "philosophy")
         rc = mod.cmd_status()
-        assert rc == 0
+        assert rc == 0, "rc is not valid"
 
     def test_status_with_docs(self, tmp_path, monkeypatch):
         mod = _import()
@@ -258,7 +258,7 @@ class TestCmdStatus:
         (phil_dir / "doc2.md").write_text("# Another\nMore content\n")
         monkeypatch.setattr(mod, "PHILOSOPHY_DIR", phil_dir)
         rc = mod.cmd_status()
-        assert rc == 0
+        assert rc == 0, "rc is not valid"
 
 
 # ── main ─────────────────────────────────────────────────────────────────────
@@ -271,14 +271,14 @@ class TestMain:
         monkeypatch.setattr(mod, "REPO_ROOT", tmp_path)
         with patch("sys.argv", ["philosophy_parser.py", "write", "--topic", "Test"]):
             rc = mod.main()
-        assert rc == 0
+        assert rc == 0, "rc is not valid"
 
     def test_main_status(self, tmp_path, monkeypatch):
         mod = _import()
         monkeypatch.setattr(mod, "PHILOSOPHY_DIR", tmp_path / "philosophy")
         with patch("sys.argv", ["philosophy_parser.py", "status"]):
             rc = mod.main()
-        assert rc == 0
+        assert rc == 0, "rc is not valid"
 
     def test_main_parse_no_args(self, tmp_path, monkeypatch):
         mod = _import()
@@ -286,7 +286,7 @@ class TestMain:
         monkeypatch.setattr(mod, "DOCS_DIR", tmp_path / "docs")
         with patch("sys.argv", ["philosophy_parser.py", "parse"]):
             rc = mod.main()
-        assert rc == 0
+        assert rc == 0, "rc is not valid"
 
     def test_main_unknown_command_raises_system_exit(self, tmp_path):
         mod = _import()

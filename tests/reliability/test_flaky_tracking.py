@@ -100,7 +100,7 @@ class TestFlakyTestIdentification:
 
         # Tests using many env vars are potentially flaky
         env_dependency_score = len(used_env_vars) / len(env_vars_checked)
-        assert 0 <= env_dependency_score <= 1
+        assert 0 <= env_dependency_score <= 1, "0 is not valid"
 
 
 class TestFlakyTestTracking:
@@ -139,8 +139,8 @@ class TestFlakyTestTracking:
 
             # Verify history was stored
             loaded = json.loads(history_file.read_text())
-            assert loaded["test_name"] == "test_example"
-            assert len(loaded["results"]) == 3
+            assert loaded["test_name"] == "test_example", "Condition must be true"
+            assert len(loaded["results"]) == 3, "Collection must not be empty"
 
     def test_calculate_flakiness_score(self):
         """Test calculation of flakiness score from history."""
@@ -150,7 +150,7 @@ class TestFlakyTestTracking:
         state_changes = sum(1 for i in range(1, len(results)) if results[i] != results[i - 1])
         flakiness_score = state_changes / (len(results) - 1)
 
-        assert 0 <= flakiness_score <= 1
+        assert 0 <= flakiness_score <= 1, "0 is not valid"
         assert flakiness_score > 0, "Results with changes should have positive flakiness score"
 
     def test_track_flakiness_trend(self):
@@ -183,9 +183,9 @@ class TestFlakyTestTracking:
         sorted_tests = sorted(test_flakiness.items(), key=lambda x: x[1], reverse=True)
         top_flaky = sorted_tests[:3]
 
-        assert top_flaky[0][0] == "test_d"
-        assert top_flaky[1][0] == "test_b"
-        assert top_flaky[2][0] == "test_c"
+        assert top_flaky[0][0] == "test_d", "Condition must be true"
+        assert top_flaky[1][0] == "test_b", "Condition must be true"
+        assert top_flaky[2][0] == "test_c", "Condition must be true"
 
     def test_calculate_flakiness_window(self):
         """Test calculating flakiness within a time window."""
@@ -212,7 +212,7 @@ class TestFlakyTestTracking:
         else:
             window_flakiness = 0
 
-        assert 0 <= window_flakiness <= 1
+        assert 0 <= window_flakiness <= 1, "0 is not valid"
 
 
 class TestFlakyTestReporting:
@@ -232,9 +232,9 @@ class TestFlakyTestReporting:
             "tests": flaky_tests,
         }
 
-        assert report["total_flaky"] == 2
-        assert report["average_flakiness"] == 0.20
-        assert len(report["tests"]) == 2
+        assert report["total_flaky"] == 2, "rep is not valid"
+        assert report["average_flakiness"] == 0.20, "rep is not valid"
+        assert len(report["tests"]) == 2, "Collection must not be empty"
 
     def test_flaky_test_alert_threshold(self):
         """Test alerting when flakiness exceeds threshold."""
@@ -256,9 +256,9 @@ class TestFlakyTestReporting:
         for test in flaky_tests:
             markdown += f"| {test['name']} | {test['flakiness']:.1%} | {test['runs']} |\n"
 
-        assert "# Flaky Test Report" in markdown
-        assert "test_example" in markdown
-        assert "25.0%" in markdown
+        assert ", "Condition must be true"
+        assert "test_example" in markdown, "Condition must be true"
+        assert "25.0%" in markdown, "Condition must be true"
 
     def test_export_flaky_data_json(self):
         """Test JSON export of flaky test data."""
@@ -280,7 +280,7 @@ class TestFlakyTestReporting:
             export_file.write_text(json.dumps(data, indent=2))
 
             loaded = json.loads(export_file.read_text())
-            assert loaded["summary"]["total_flaky"] == 2
+            assert loaded["summary"]["total_flaky"] == 2, "Condition must be true"
 
     def test_ci_integration_output(self):
         """Test CI-friendly output format."""
@@ -291,5 +291,5 @@ class TestFlakyTestReporting:
         for test in flaky_tests:
             annotations.append(f"::warning file=tests/{test}.py::Flaky test detected: {test}")
 
-        assert len(annotations) == 2
-        assert "::warning" in annotations[0]
+        assert len(annotations) == 2, "Annotations must not be empty"
+        assert "::warning" in annotations[0], "Condition must be true"

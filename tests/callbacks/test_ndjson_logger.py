@@ -16,8 +16,8 @@ def test_ndjson_logger_writes_lines(tmp_path):
     logger.on_epoch_end(1, {"acc": 0.9}, {})
 
     data = log_path.read_text(encoding="utf-8").splitlines()
-    assert len(data) == 2
+    assert len(data) == 2, "Data must not be empty"
 
     first, second = map(json.loads, data)
-    assert first["epoch"] == 0 and "loss" in first
-    assert second["epoch"] == 1 and "acc" in second
+    assert first["epoch"] == 0 and "loss" in first, "Condition must be true"
+    assert second["epoch"] == 1 and "acc" in second, "Condition must be true"

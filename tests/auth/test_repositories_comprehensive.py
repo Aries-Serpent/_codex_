@@ -43,7 +43,7 @@ class TestInMemoryUserRepository:
 
         repo.create_user(user)
         retrieved = repo.get_by_username("alice")
-        assert retrieved.user_id == "user1"
+        assert retrieved.user_id == "user1", "user_id is not valid"
 
     def test_get_user_by_id(self, repo):
         hasher = PasswordHasher()
@@ -56,7 +56,7 @@ class TestInMemoryUserRepository:
 
         repo.create_user(user)
         retrieved = repo.get_by_user_id("user2")
-        assert retrieved.username == "bob"
+        assert retrieved.username == "bob", "username is not valid"
 
     def test_get_user_by_email(self, repo):
         hasher = PasswordHasher()
@@ -69,7 +69,7 @@ class TestInMemoryUserRepository:
 
         repo.create_user(user)
         retrieved = repo.get_by_email("charlie@example.com")
-        assert retrieved.username == "charlie"
+        assert retrieved.username == "charlie", "username is not valid"
 
     def test_duplicate_username(self, repo):
         hasher = PasswordHasher()
@@ -110,7 +110,7 @@ class TestInMemoryUserRepository:
         repo.update_user(updated_user)
 
         retrieved = repo.get_by_user_id("user6")
-        assert retrieved.email == "eve.new@example.com"
+        assert retrieved.email == "eve.new@example.com", "email is not valid"
 
     def test_delete_user(self, repo):
         hasher = PasswordHasher()
@@ -139,7 +139,7 @@ class TestInMemoryUserRepository:
             repo.create_user(user)
 
         users = repo.list_users()
-        assert len(users) == 5
+        assert len(users) == 5, "Users must not be empty"
 
     def test_user_count(self, repo):
         hasher = PasswordHasher()
@@ -153,7 +153,7 @@ class TestInMemoryUserRepository:
             repo.create_user(user)
 
         count = repo.get_user_count()
-        assert count == 3
+        assert count == 3, "Count must be greater than zero"
 
     def test_nonexistent_user(self, repo):
         with pytest.raises((ValueError, Exception)):
@@ -173,7 +173,7 @@ class TestInMemoryUserRepository:
         # Begin transaction
         with repo.transaction():
             retrieved = repo.get_by_username("txuser")
-            assert retrieved.user_id == "user_tx"
+            assert retrieved.user_id == "user_tx", "user_id is not valid"
 
 
 # ============================================================================
@@ -209,7 +209,7 @@ class TestSQLiteUserRepository:
 
         repo.create_user(user)
         retrieved = repo.get_by_username("sql_alice")
-        assert retrieved.user_id == "sql_user1"
+        assert retrieved.user_id == "sql_user1", "user_id is not valid"
 
     def test_persistence_across_sessions(self, db_path):
         hasher = PasswordHasher()
@@ -228,7 +228,7 @@ class TestSQLiteUserRepository:
         # Session 2: Retrieve user
         repo2 = SQLiteUserRepository(db_path)
         retrieved = repo2.get_by_username("persistent")
-        assert retrieved.user_id == "persist1"
+        assert retrieved.user_id == "persist1", "user_id is not valid"
         repo2.close()
 
     def test_concurrent_access(self, db_path):
@@ -256,7 +256,7 @@ class TestSQLiteUserRepository:
         # Verify all users created
         repo = SQLiteUserRepository(db_path)
         users = repo.list_users()
-        assert len(users) == 5
+        assert len(users) == 5, "Users must not be empty"
         repo.close()
 
     def test_update_user(self, repo):
@@ -279,7 +279,7 @@ class TestSQLiteUserRepository:
         repo.update_user(updated_user)
 
         retrieved = repo.get_by_user_id("sql_user2")
-        assert retrieved.email == "sql_bob.new@example.com"
+        assert retrieved.email == "sql_bob.new@example.com", "email is not valid"
 
     def test_delete_user(self, repo):
         hasher = PasswordHasher()
@@ -308,7 +308,7 @@ class TestSQLiteUserRepository:
             repo.create_user(user)
 
         users = repo.list_users()
-        assert len(users) == 3
+        assert len(users) == 3, "Users must not be empty"
 
     def test_get_by_email(self, repo):
         hasher = PasswordHasher()
@@ -321,7 +321,7 @@ class TestSQLiteUserRepository:
 
         repo.create_user(user)
         retrieved = repo.get_by_email("sql_diana@example.com")
-        assert retrieved.username == "sql_diana"
+        assert retrieved.username == "sql_diana", "username is not valid"
 
     def test_duplicate_username_constraint(self, repo):
         hasher = PasswordHasher()
@@ -354,13 +354,13 @@ class TestSQLiteUserRepository:
         with repo.transaction():
             repo.create_user(user)
             retrieved = repo.get_by_username("sql_txuser")
-            assert retrieved.user_id == "sql_tx"
+            assert retrieved.user_id == "sql_tx", "user_id is not valid"
 
     def test_database_schema(self, repo):
         # Verify schema is properly initialized
         cursor = repo._get_connection().cursor()
         cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='users'")
-        assert cursor.fetchone() is not None
+        assert cursor.fetchone() is not None, "curs must be initialized"
 
     def test_user_count(self, repo):
         hasher = PasswordHasher()
@@ -374,7 +374,7 @@ class TestSQLiteUserRepository:
             repo.create_user(user)
 
         count = repo.get_user_count()
-        assert count == 4
+        assert count == 4, "Count must be greater than zero"
 
     def test_close_connection(self, db_path):
         repo = SQLiteUserRepository(db_path)
@@ -444,14 +444,14 @@ class TestRepositoryBehaviorConsistency:
         sqlite_repo.create_user(user)
 
         # Both should support get by id, username, email
-        assert in_memory_repo.get_by_user_id("test3").user_id == "test3"
-        assert sqlite_repo.get_by_user_id("test3").user_id == "test3"
+        assert in_memory_repo.get_by_user_id("test3").user_id == "test3", "user_id is not valid"
+        assert sqlite_repo.get_by_user_id("test3").user_id == "test3", "user_id is not valid"
 
-        assert in_memory_repo.get_by_username("testget").user_id == "test3"
-        assert sqlite_repo.get_by_username("testget").user_id == "test3"
+        assert in_memory_repo.get_by_username("testget").user_id == "test3", "user_id is not valid"
+        assert sqlite_repo.get_by_username("testget").user_id == "test3", "user_id is not valid"
 
-        assert in_memory_repo.get_by_email("test@example.com").user_id == "test3"
-        assert sqlite_repo.get_by_email("test@example.com").user_id == "test3"
+        assert in_memory_repo.get_by_email("test@example.com").user_id == "test3", "user_id is not valid"
+        assert sqlite_repo.get_by_email("test@example.com").user_id == "test3", "user_id is not valid"
 
 
 # ============================================================================
@@ -479,7 +479,7 @@ class TestRepositoryEdgeCases:
 
         repo.create_user(user)
         retrieved = repo.get_by_username(long_username)
-        assert retrieved.user_id == "long_user"
+        assert retrieved.user_id == "long_user", "user_id is not valid"
 
     def test_unicode_username(self, repo):
         hasher = PasswordHasher()
@@ -492,7 +492,7 @@ class TestRepositoryEdgeCases:
 
         repo.create_user(user)
         retrieved = repo.get_by_username("用户")
-        assert retrieved.user_id == "unicode_user"
+        assert retrieved.user_id == "unicode_user", "user_id is not valid"
 
     def test_special_characters_email(self, repo):
         hasher = PasswordHasher()
@@ -505,12 +505,12 @@ class TestRepositoryEdgeCases:
 
         repo.create_user(user)
         retrieved = repo.get_by_email("user+tag@example.co.uk")
-        assert retrieved.user_id == "special_user"
+        assert retrieved.user_id == "special_user", "user_id is not valid"
 
     def test_empty_list_when_no_users(self, repo):
         users = repo.list_users()
-        assert users == [] or len(users) == 0
+        assert users == [] or len(users) == 0, "Users must not be empty"
 
     def test_zero_count_when_no_users(self, repo):
         count = repo.get_user_count()
-        assert count == 0
+        assert count == 0, "Count must be greater than zero"

@@ -30,9 +30,9 @@ def test_mlflow_tracker_initialization():
             tracking_uri=tmpdir,
         )
 
-        assert tracker.experiment_name == "test_exp"
-        assert tracker.tracking_uri == tmpdir
-        assert tracker.active is True
+        assert tracker.experiment_name == "test_exp", "experiment_name is not valid"
+        assert tracker.tracking_uri == tmpdir, "tracking_uri is not valid"
+        assert tracker.active is True, "active is not valid"
 
 
 def test_mlflow_tracker_graceful_degradation():
@@ -44,7 +44,7 @@ def test_mlflow_tracker_graceful_degradation():
         )
 
         # Should initialize but not be active
-        assert tracker.active is False
+        assert tracker.active is False, "active is not valid"
 
         # These should not raise errors even when inactive
         tracker.log_metrics({"loss": 0.5}, step=1)
@@ -62,8 +62,8 @@ def test_mlflow_tracker_sets_file_store_env_for_local_uri():
                     del os.environ["MLFLOW_ALLOW_FILE_STORE"]
                     tracker = MLflowTracker("test_exp", tracking_uri=tmpdir)
 
-                    assert os.environ["MLFLOW_ALLOW_FILE_STORE"] == "true"
-                    assert tracker.active is True
+                    assert os.environ["MLFLOW_ALLOW_FILE_STORE"] == "true", "Condition must be true"
+                    assert tracker.active is True, "active is not valid"
                     mlflow_mock.set_tracking_uri.assert_called_once_with(tmpdir)
 
 
@@ -77,8 +77,8 @@ def test_mlflow_tracker_sets_file_store_env_for_file_scheme_uri():
                     del os.environ["MLFLOW_ALLOW_FILE_STORE"]
                     tracker = MLflowTracker("test_exp", tracking_uri=tracking_uri)
 
-                    assert os.environ["MLFLOW_ALLOW_FILE_STORE"] == "true"
-                    assert tracker.active is True
+                    assert os.environ["MLFLOW_ALLOW_FILE_STORE"] == "true", "Condition must be true"
+                    assert tracker.active is True, "active is not valid"
                     mlflow_mock.set_tracking_uri.assert_called_once_with(tracking_uri)
 
 
@@ -90,8 +90,8 @@ def test_mlflow_tracker_does_not_set_file_store_env_for_remote_uri():
                 del os.environ["MLFLOW_ALLOW_FILE_STORE"]
                 tracker = MLflowTracker("test_exp", tracking_uri="http://localhost:5000")
 
-                assert "MLFLOW_ALLOW_FILE_STORE" not in os.environ
-                assert tracker.active is True
+                assert "MLFLOW_ALLOW_FILE_STORE" not in os.environ, "Condition must be true"
+                assert tracker.active is True, "active is not valid"
                 mlflow_mock.set_tracking_uri.assert_called_once_with("http://localhost:5000")
 
 
@@ -103,8 +103,8 @@ def test_mlflow_tracker_preserves_existing_file_store_env():
                 with patch.dict(os.environ, {"MLFLOW_ALLOW_FILE_STORE": "true"}):
                     tracker = MLflowTracker("test_exp", tracking_uri=tmpdir)
 
-                    assert os.environ["MLFLOW_ALLOW_FILE_STORE"] == "true"
-                    assert tracker.active is True
+                    assert os.environ["MLFLOW_ALLOW_FILE_STORE"] == "true", "Condition must be true"
+                    assert tracker.active is True, "active is not valid"
 
 
 def test_mlflow_tracker_preserves_non_true_file_store_env():
@@ -115,8 +115,8 @@ def test_mlflow_tracker_preserves_non_true_file_store_env():
                 with patch.dict(os.environ, {"MLFLOW_ALLOW_FILE_STORE": "false"}):
                     tracker = MLflowTracker("test_exp", tracking_uri=tmpdir)
 
-                    assert os.environ["MLFLOW_ALLOW_FILE_STORE"] == "false"
-                    assert tracker.active is True
+                    assert os.environ["MLFLOW_ALLOW_FILE_STORE"] == "false", "Condition must be true"
+                    assert tracker.active is True, "active is not valid"
 
 
 @pytest.mark.skipif(not is_mlflow_available(), reason="MLflow not installed")
@@ -124,12 +124,12 @@ def test_mlflow_tracker_context_manager():
     """Test MLflowTracker as context manager."""
     with tempfile.TemporaryDirectory() as tmpdir:
         with MLflowTracker("test_exp", tracking_uri=tmpdir) as tracker:
-            assert tracker.active is True
+            assert tracker.active is True, "active is not valid"
             tracker.log_params({"batch_size": 32})
             tracker.log_metrics({"accuracy": 0.95}, step=0)
 
         # Run should be ended
-        assert tracker.run_id is None
+        assert tracker.run_id is None, "run_id is not valid"
 
 
 @pytest.mark.skipif(not is_mlflow_available(), reason="MLflow not installed")
@@ -168,8 +168,8 @@ def test_init_mlflow_function():
                 auto_start=False,
             )
 
-            assert tracker.experiment_name == "test"
-            assert tracker.run_name == "run1"
+            assert tracker.experiment_name == "test", "experiment_name is not valid"
+            assert tracker.run_name == "run1", "run_name is not valid"
 
 
 @pytest.mark.skipif(not is_mlflow_available(), reason="MLflow not installed")

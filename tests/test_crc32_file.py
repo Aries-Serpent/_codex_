@@ -17,4 +17,4 @@ def test_crc32_matches_zlib(tmp_path):
     target.write_bytes(payload)
 
     expected = zlib.crc32(payload) & 0xFFFFFFFF
-    assert crc32_file(target) == expected
+    assert crc32_file(target) == expected, "Condition must be true"

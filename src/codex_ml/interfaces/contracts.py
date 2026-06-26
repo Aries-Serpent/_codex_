@@ -94,8 +94,8 @@ def validate_tokenizer_contract(adapter: Any) -> None:
         tokens = adapter.encode("contract smoke test")
     except (ValueError, TypeError) as e:
         error_type = type(e).__name__
-        logger.debug(f"TypeError/ValueError: <ERROR_TYPE>")
-        logger.warning(f"TypeError/ValueError: <ERROR_TYPE>", exc_info=True)
+        logger.debug("TypeError/ValueError: <ERROR_TYPE>")
+        logger.warning("TypeError/ValueError: <ERROR_TYPE>", exc_info=True)
         raise TokenizationContractError(f"encode failed: {e}") from e
 
     if not isinstance(tokens, list) or not all(isinstance(t, int) for t in tokens):
@@ -103,10 +103,10 @@ def validate_tokenizer_contract(adapter: Any) -> None:
 
     try:
         adapter.encode(None)
-    except (TypeError, ValueError) as e:
+    except (TypeError, ValueError):
         # HuggingFace fast tokenizers raise ValueError for non-string input;
         # slow/custom tokenizers may raise TypeError.  Both are acceptable.
-        logger.debug(f"TypeError/ValueError on encode(None): <ERROR_TYPE>")
+        logger.debug("TypeError/ValueError on encode(None): <ERROR_TYPE>")
     else:  # pragma: no cover - enforce strict error mode
         raise TokenizationContractError(
             "encode must reject non-string input with TypeError or ValueError"
@@ -119,10 +119,10 @@ def validate_tokenizer_contract(adapter: Any) -> None:
 
     try:
         adapter.decode(["bad"])
-    except (ValueError, TypeError) as e:
+    except (ValueError, TypeError):
         # HuggingFace fast tokenizers may raise TypeError for non-integer ids;
         # slow tokenizers may raise ValueError.  Both are acceptable.
-        logger.debug(f"ValueError/TypeError on decode(['bad']): <ERROR_TYPE>")
+        logger.debug("ValueError/TypeError on decode(['bad']): <ERROR_TYPE>")
     else:  # pragma: no cover - enforce strict error mode
         raise TokenizationContractError(
             "decode must raise ValueError or TypeError for non-integer ids"

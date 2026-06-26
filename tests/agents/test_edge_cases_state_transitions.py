@@ -37,14 +37,14 @@ class TestContextFrameStateTransitions:
             start_time=datetime.now(UTC).isoformat(),
             status="active",
         )
-        assert frame.status == "active"
+        assert frame.status == "active", "status is not valid"
 
         # Simulate completion
         frame.status = "completed"
         frame.end_time = datetime.now(UTC).isoformat()
 
-        assert frame.status == "completed"
-        assert frame.end_time is not None
+        assert frame.status == "completed", "status is not valid"
+        assert frame.end_time is not None, "end_time must be initialized"
 
     def test_context_frame_active_to_paused(self) -> None:
         """Test context frame transition from active to paused."""
@@ -55,7 +55,7 @@ class TestContextFrameStateTransitions:
             status="active",
         )
         frame.status = "paused"
-        assert frame.status == "paused"
+        assert frame.status == "paused", "status is not valid"
 
     def test_context_frame_paused_to_active(self) -> None:
         """Test context frame transition from paused back to active."""
@@ -66,10 +66,10 @@ class TestContextFrameStateTransitions:
             status="active",
         )
         frame.status = "paused"
-        assert frame.status == "paused"
+        assert frame.status == "paused", "status is not valid"
 
         frame.status = "active"
-        assert frame.status == "active"
+        assert frame.status == "active", "status is not valid"
 
     def test_context_frame_active_to_failed(self) -> None:
         """Test context frame transition from active to failed."""
@@ -83,8 +83,8 @@ class TestContextFrameStateTransitions:
         frame.end_time = datetime.now(UTC).isoformat()
         frame.errors_encountered += 1
 
-        assert frame.status == "failed"
-        assert frame.errors_encountered == 1
+        assert frame.status == "failed", "status is not valid"
+        assert frame.errors_encountered == 1, "Error should be raised or set"
 
     def test_context_frame_failed_to_completed(self) -> None:
         """Test context frame recovery from failed to completed."""
@@ -98,8 +98,8 @@ class TestContextFrameStateTransitions:
         frame.status = "completed"
         frame.errors_encountered = 1  # Still records the error
 
-        assert frame.status == "completed"
-        assert frame.errors_encountered == 1
+        assert frame.status == "completed", "status is not valid"
+        assert frame.errors_encountered == 1, "Error should be raised or set"
 
     def test_context_frame_all_transitions(self) -> None:
         """Test all possible state transitions."""
@@ -123,7 +123,7 @@ class TestContextFrameStateTransitions:
         for from_state, to_state in transitions:
             frame.status = from_state
             frame.status = to_state
-            assert frame.status == to_state
+            assert frame.status == to_state, "status is not valid"
 
 
 class TestMemoryEntryLifecycle:
@@ -141,7 +141,7 @@ class TestMemoryEntryLifecycle:
             context={"created": True},
             access_count=0,
         )
-        assert entry.access_count == 0
+        assert entry.access_count == 0, "Count must be greater than zero"
 
         memory.store_memory(entry)
 
@@ -152,8 +152,8 @@ class TestMemoryEntryLifecycle:
         memory.store_memory(entry)
 
         retrieved = memory.retrieve_memory("lifecycle_test")
-        assert retrieved is not None
-        assert retrieved.access_count == 1
+        assert retrieved is not None, "retrieved must be initialized"
+        assert retrieved.access_count == 1, "Count must be greater than zero"
 
     def test_memory_entry_confidence_degradation(self, tmp_path: Path) -> None:
         """Test memory entry confidence decrease over time."""
@@ -180,8 +180,8 @@ class TestMemoryEntryLifecycle:
         memory.store_memory(entry)
 
         retrieved = memory.retrieve_memory("confidence_test")
-        assert retrieved is not None
-        assert retrieved.confidence == 0.7
+        assert retrieved is not None, "retrieved must be initialized"
+        assert retrieved.confidence == 0.7, "confidence is not valid"
 
     def test_memory_entry_update_atomicity(self, tmp_path: Path) -> None:
         """Test that memory entry updates are atomic."""
@@ -205,10 +205,10 @@ class TestMemoryEntryLifecycle:
         memory.store_memory(entry)
 
         retrieved = memory.retrieve_memory("atomic_test")
-        assert retrieved is not None
-        assert retrieved.content == "updated"
-        assert retrieved.confidence == 0.5
-        assert retrieved.access_count == 5
+        assert retrieved is not None, "retrieved must be initialized"
+        assert retrieved.content == "updated", "Content must not be empty"
+        assert retrieved.confidence == 0.5, "confidence is not valid"
+        assert retrieved.access_count == 5, "Count must be greater than zero"
 
 
 class TestPatternLibraryStateTransitions:
@@ -228,13 +228,13 @@ class TestPatternLibraryStateTransitions:
             tags=["test"],
         )
 
-        assert lib.patterns["pattern1"]["usage_count"] == 0
+        assert lib.patterns["pattern1"]["usage_count"] == 0, "Count must be greater than zero"
 
         lib.record_pattern_usage("pattern1", success=True)
-        assert lib.patterns["pattern1"]["usage_count"] == 1
+        assert lib.patterns["pattern1"]["usage_count"] == 1, "Count must be greater than zero"
 
         lib.record_pattern_usage("pattern1", success=True)
-        assert lib.patterns["pattern1"]["usage_count"] == 2
+        assert lib.patterns["pattern1"]["usage_count"] == 2, "Count must be greater than zero"
 
     def test_pattern_success_rate_tracks_correctly(self) -> None:
         """Test pattern success rate updates correctly."""
@@ -255,7 +255,7 @@ class TestPatternLibraryStateTransitions:
         # Record success
         lib.record_pattern_usage("pattern1", success=True)
         new_rate = lib.patterns["pattern1"]["success_rate"]
-        assert new_rate >= initial_rate  # Success should increase rate
+        assert new_rate >= initial_rate, "new_rate must be greater than zero"
 
     def test_pattern_failure_decreases_rate(self) -> None:
         """Test pattern failure decreases success rate."""
@@ -276,7 +276,7 @@ class TestPatternLibraryStateTransitions:
         # Record failure
         lib.record_pattern_usage("pattern1", success=False)
         new_rate = lib.patterns["pattern1"]["success_rate"]
-        assert new_rate < initial_rate  # Failure should decrease rate
+        assert new_rate < initial_rate, "new_rate is not valid"
 
     def test_pattern_many_successes_converges_to_one(self) -> None:
         """Test many successes increases rate toward 1.0."""
@@ -297,7 +297,7 @@ class TestPatternLibraryStateTransitions:
             lib.record_pattern_usage("pattern1", success=True)
 
         final_rate = lib.patterns["pattern1"]["success_rate"]
-        assert final_rate > 0.8  # Should be significantly higher
+        assert final_rate > 0.8, "final_rate must be greater than zero"
 
     def test_pattern_many_failures_converges_to_zero(self) -> None:
         """Test many failures decreases rate toward 0.0."""
@@ -318,7 +318,7 @@ class TestPatternLibraryStateTransitions:
             lib.record_pattern_usage("pattern1", success=False)
 
         final_rate = lib.patterns["pattern1"]["success_rate"]
-        assert final_rate < 0.2  # Should be significantly lower
+        assert final_rate < 0.2, "final_rate is not valid"
 
 
 class TestConcurrentStateAccess:
@@ -351,7 +351,7 @@ class TestConcurrentStateAccess:
         memory = AgentMemory(db_path=db_path)
         for i in range(10):
             retrieved = memory.retrieve_memory(f"entry_{i}")
-            assert retrieved is not None
+            assert retrieved is not None, "retrieved must be initialized"
 
     def test_concurrent_memory_reads(self, tmp_path: Path) -> None:
         """Test concurrent reads from memory."""
@@ -385,8 +385,8 @@ class TestConcurrentStateAccess:
             t.join()
 
         # All reads should succeed
-        assert len(read_results) == 10
-        assert all(r is not None for r in read_results)
+        assert len(read_results) == 10, "Read_results must not be empty"
+        assert all(r is not None for r in read_results), "r must be initialized"
 
     def test_concurrent_read_write_race_condition(self, tmp_path: Path) -> None:
         """Test read-write race conditions."""
@@ -436,8 +436,8 @@ class TestConcurrentStateAccess:
         t_read.join()
 
         # Verify we got reads
-        assert len(results["reads"]) > 0
-        assert len(results["writes"]) == 5
+        assert len(results["reads"]) > 0, "Collection must not be empty"
+        assert len(results["writes"]) == 5, "Collection must not be empty"
 
 
 class TestIncompleteStateRecovery:
@@ -460,8 +460,8 @@ class TestIncompleteStateRecovery:
         frame.status = "active"
         frame.end_time = None
 
-        assert frame.status == "active"
-        assert frame.end_time is None
+        assert frame.status == "active", "status is not valid"
+        assert frame.end_time is None, "end_time is not valid"
 
     def test_recover_from_failed_context(self) -> None:
         """Test recovery from failed context frame."""
@@ -477,8 +477,8 @@ class TestIncompleteStateRecovery:
         frame.status = "active"
         frame.errors_encountered = 0
 
-        assert frame.status == "active"
-        assert frame.errors_encountered == 0
+        assert frame.status == "active", "status is not valid"
+        assert frame.errors_encountered == 0, "Error should be raised or set"
 
     def test_partial_memory_update_recovery(self, tmp_path: Path) -> None:
         """Test recovery from partial memory update."""
@@ -500,9 +500,9 @@ class TestIncompleteStateRecovery:
 
         # Verify recovery
         retrieved = memory.retrieve_memory("partial_test")
-        assert retrieved is not None
-        assert retrieved.content == "updated"
-        assert retrieved.context["version"] == 2
+        assert retrieved is not None, "retrieved must be initialized"
+        assert retrieved.content == "updated", "Content must not be empty"
+        assert retrieved.context["version"] == 2, "Condition must be true"
 
 
 class TestStateConsistencyVerification:
@@ -526,14 +526,14 @@ class TestStateConsistencyVerification:
         reconstructed = MemoryEntry.from_dict(data)
 
         # Verify consistency
-        assert reconstructed.memory_id == entry.memory_id
-        assert reconstructed.category == entry.category
-        assert reconstructed.content == entry.content
-        assert reconstructed.context == entry.context
-        assert reconstructed.confidence == entry.confidence
-        assert reconstructed.access_count == entry.access_count
-        assert reconstructed.tags == entry.tags
-        assert reconstructed.related_memories == entry.related_memories
+        assert reconstructed.memory_id == entry.memory_id, "memory_id is not valid"
+        assert reconstructed.category == entry.category, "category is not valid"
+        assert reconstructed.content == entry.content, "Content must not be empty"
+        assert reconstructed.context == entry.context, "context is not valid"
+        assert reconstructed.confidence == entry.confidence, "confidence is not valid"
+        assert reconstructed.access_count == entry.access_count, "Count must be greater than zero"
+        assert reconstructed.tags == entry.tags, "tags is not valid"
+        assert reconstructed.related_memories == entry.related_memories, "related_memories is not valid"
 
     def test_context_frame_consistency_after_serialization(self) -> None:
         """Test context frame consistency after to_dict."""
@@ -554,13 +554,13 @@ class TestStateConsistencyVerification:
         data = frame.to_dict()
 
         # Verify all fields present
-        assert data["frame_id"] == frame.frame_id
-        assert data["task_description"] == frame.task_description
-        assert data["status"] == frame.status
-        assert data["tokens_used"] == 100
-        assert data["actions_taken"] == 5
-        assert data["errors_encountered"] == 0
-        assert len(data["files_modified"]) == 2
+        assert data["frame_id"] == frame.frame_id, "Data must not be empty"
+        assert data["task_description"] == frame.task_description, "Data must not be empty"
+        assert data["status"] == frame.status, "Data must not be empty"
+        assert data["tokens_used"] == 100, "Data must not be empty"
+        assert data["actions_taken"] == 5, "Data must not be empty"
+        assert data["errors_encountered"] == 0, "Data must not be empty"
+        assert len(data["files_modified"]) == 2, "Collection must not be empty"
 
     def test_pattern_library_serialization_consistency(self) -> None:
         """Test pattern library consistency through serialization."""
@@ -580,9 +580,9 @@ class TestStateConsistencyVerification:
         reconstructed = PatternLibrary.from_dict(data)
 
         # Verify consistency
-        assert "pattern1" in reconstructed.patterns
-        assert reconstructed.patterns["pattern1"]["name"] == "Pattern 1"
-        assert reconstructed.patterns["pattern1"]["success_rate"] == 0.8
+        assert "pattern1" in reconstructed.patterns, "Condition must be true"
+        assert reconstructed.patterns["pattern1"]["name"] == "Pattern 1", "Condition must be true"
+        assert reconstructed.patterns["pattern1"]["success_rate"] == 0.8, "Condition must be true"
 
 
 class TestDatabaseStateConsistency:
@@ -599,17 +599,17 @@ class TestDatabaseStateConsistency:
 
             # Check memories table
             cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='memories'")
-            assert cursor.fetchone() is not None
+            assert cursor.fetchone() is not None, "curs must be initialized"
 
             # Check context_frames table
             cursor.execute(
                 "SELECT name FROM sqlite_master WHERE type='table' AND name='context_frames'"
             )
-            assert cursor.fetchone() is not None
+            assert cursor.fetchone() is not None, "curs must be initialized"
 
             # Check patterns table
             cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='patterns'")
-            assert cursor.fetchone() is not None
+            assert cursor.fetchone() is not None, "curs must be initialized"
 
     def test_database_state_after_many_operations(self, tmp_path: Path) -> None:
         """Test database state consistency after many operations."""
@@ -631,4 +631,4 @@ class TestDatabaseStateConsistency:
             cursor = conn.cursor()
             cursor.execute("SELECT COUNT(*) FROM memories")
             count = cursor.fetchone()[0]
-            assert count == 100
+            assert count == 100, "Count must be greater than zero"

@@ -14,5 +14,5 @@ def test_split_rows_keeps_validation_non_empty_for_small_inputs() -> None:
 
     train, valid = _split_rows(rows, split=0.2, seed=None)
 
-    assert len(train) == 1
-    assert len(valid) == 1
+    assert len(train) == 1, "Train must not be empty"
+    assert len(valid) == 1, "Valid must not be empty"

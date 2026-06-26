@@ -12,7 +12,7 @@ def test_jsonrpc_version_compliance():
     """Test JSON-RPC 2.0 version compliance."""
     request = {"jsonrpc": "2.0", "id": 1, "method": "test"}
 
-    assert request["jsonrpc"] == "2.0"
+    assert request["jsonrpc"] == "2.0", "Condition must be true"
 
 
 def test_jsonrpc_request_format():
@@ -20,9 +20,9 @@ def test_jsonrpc_request_format():
     request = {"jsonrpc": "2.0", "id": 123, "method": "listTools", "params": {}}
 
     # Required fields
-    assert "jsonrpc" in request
-    assert "method" in request
-    assert "id" in request
+    assert "jsonrpc" in request, "Condition must be true"
+    assert "method" in request, "Condition must be true"
+    assert "id" in request, "Condition must be true"
 
     # Correct types
     assert isinstance(request["id"], int)
@@ -33,10 +33,10 @@ def test_jsonrpc_response_format():
     """Test JSON-RPC response message format."""
     success_response = {"jsonrpc": "2.0", "id": 123, "result": {"tools": []}}
 
-    assert "jsonrpc" in success_response
-    assert "id" in success_response
-    assert "result" in success_response
-    assert "error" not in success_response
+    assert "jsonrpc" in success_response, "Response must not be empty"
+    assert "id" in success_response, "Response must not be empty"
+    assert "result" in success_response, "Response must not be empty"
+    assert "error" not in success_response, "Response must not be empty"
 
 
 def test_jsonrpc_error_response_format():
@@ -47,14 +47,14 @@ def test_jsonrpc_error_response_format():
         "error": {"code": -32600, "message": "Invalid Request", "data": {}},
     }
 
-    assert "jsonrpc" in error_response
-    assert "id" in error_response
-    assert "error" in error_response
-    assert "result" not in error_response
+    assert "jsonrpc" in error_response, "Response must not be empty"
+    assert "id" in error_response, "Response must not be empty"
+    assert "error" in error_response, "Response must not be empty"
+    assert "result" not in error_response, "Response must not be empty"
 
     # Error object structure
-    assert "code" in error_response["error"]
-    assert "message" in error_response["error"]
+    assert "code" in error_response["error"], "Response must not be empty"
+    assert "message" in error_response["error"], "Response must not be empty"
     assert isinstance(error_response["error"]["code"], int)
 
 
@@ -62,9 +62,9 @@ def test_jsonrpc_notification_format():
     """Test JSON-RPC notification format (no id field)."""
     notification = {"jsonrpc": "2.0", "method": "ping", "params": {}}
 
-    assert "jsonrpc" in notification
-    assert "method" in notification
-    assert "id" not in notification  # Notifications have no id
+    assert "jsonrpc" in notification, "Condition must be true"
+    assert "method" in notification, "Condition must be true"
+    assert "id" not in notification, "Condition must be true"
 
 
 def test_jsonrpc_batch_request_format():
@@ -76,18 +76,18 @@ def test_jsonrpc_batch_request_format():
     ]
 
     assert isinstance(batch, list)
-    assert len(batch) == 3
+    assert len(batch) == 3, "Batch must not be empty"
 
     for req in batch:
-        assert req["jsonrpc"] == "2.0"
-        assert "method" in req
+        assert req["jsonrpc"] == "2.0", "Condition must be true"
+        assert "method" in req, "Condition must be true"
 
 
 def test_mcp_listtools_method():
     """Test MCP listTools method definition."""
     request = {"jsonrpc": "2.0", "id": 1, "method": "listTools", "params": {}}
 
-    assert request["method"] == "listTools"
+    assert request["method"] == "listTools", "Condition must be true"
     assert isinstance(request["params"], dict)
 
 
@@ -100,9 +100,9 @@ def test_mcp_calltool_method():
         "params": {"name": "tool_name", "params": {"arg1": "value1"}},
     }
 
-    assert request["method"] == "callTool"
-    assert "name" in request["params"]
-    assert "params" in request["params"]
+    assert request["method"] == "callTool", "Condition must be true"
+    assert "name" in request["params"], "Condition must be true"
+    assert "params" in request["params"], "Condition must be true"
 
 
 def test_mcp_negotiate_version_method():
@@ -114,8 +114,8 @@ def test_mcp_negotiate_version_method():
         "params": {"versions": ["1.0", "2.0"]},
     }
 
-    assert request["method"] == "negotiateVersion"
-    assert "versions" in request["params"]
+    assert request["method"] == "negotiateVersion", "Condition must be true"
+    assert "versions" in request["params"], "Condition must be true"
     assert isinstance(request["params"]["versions"], list)
 
 
@@ -126,8 +126,8 @@ def test_error_code_ranges():
     invalid_request = -32600
 
     # Verify standard JSON-RPC error codes are in valid range
-    assert -32768 <= parse_error <= -32000
-    assert -32768 <= invalid_request <= -32000
+    assert -32768 <= parse_error <= -32000, "Error should be raised or set"
+    assert -32768 <= invalid_request <= -32000, "32768 is not valid"
 
 
 def test_mcp_error_mappings():
@@ -149,8 +149,8 @@ def test_mcp_error_mappings():
     ]
 
     for error, expected_code, expected_http in error_mappings:
-        assert error.jsonrpc_code == expected_code
-        assert error.http_status == expected_http
+        assert error.jsonrpc_code == expected_code, "Error should be raised or set"
+        assert error.http_status == expected_http, "Error should be raised or set"
 
 
 def test_protocol_version_negotiation():
@@ -159,14 +159,14 @@ def test_protocol_version_negotiation():
 
     # Server supports certain versions
     assert isinstance(MCP_VERSIONS, list)
-    assert len(MCP_VERSIONS) > 0
+    assert len(MCP_VERSIONS) > 0, "Mcp_versions must not be empty"
 
     # Client requests compatible version
     client_versions = ["1.0", "2.0"]
     negotiated = negotiate_version(client_versions)
 
     # Should return highest compatible version
-    assert negotiated in MCP_VERSIONS
+    assert negotiated in MCP_VERSIONS, "Condition must be true"
 
 
 def test_request_id_types():
@@ -185,8 +185,8 @@ def test_request_id_types():
             request["id"] = req_id
 
         # Should be valid
-        assert "jsonrpc" in request
-        assert "method" in request
+        assert "jsonrpc" in request, "Condition must be true"
+        assert "method" in request, "Condition must be true"
 
 
 def test_params_optional():
@@ -194,12 +194,12 @@ def test_params_optional():
     # Params can be omitted
     request_no_params = {"jsonrpc": "2.0", "id": 1, "method": "test"}
 
-    assert "params" not in request_no_params
+    assert "params" not in request_no_params, "Condition must be true"
 
     # Or explicitly set
     request_with_params = {"jsonrpc": "2.0", "id": 2, "method": "test", "params": {}}
 
-    assert "params" in request_with_params
+    assert "params" in request_with_params, "Condition must be true"
 
 
 def test_unicode_support():
@@ -210,7 +210,7 @@ def test_unicode_support():
     json_str = json.dumps(request, ensure_ascii=False)
     parsed = json.loads(json_str)
 
-    assert parsed["params"]["text"] == "Hello 世界 🌍"
+    assert parsed["params"]["text"] == "Hello 世界 🌍", "Condition must be true"
 
 
 def test_large_payloads():
@@ -221,7 +221,7 @@ def test_large_payloads():
 
     # Should be serializable
     json_str = json.dumps(request)
-    assert len(json_str) > 10000
+    assert len(json_str) > 10000, "Json_str must not be empty"
 
 
 def test_nested_params():
@@ -230,7 +230,7 @@ def test_nested_params():
 
     request = {"jsonrpc": "2.0", "id": 1, "method": "test", "params": nested_params}
 
-    assert request["params"]["level1"]["level2"]["level3"]["value"] == "deep"
+    assert request["params"]["level1"]["level2"]["level3"]["value"] == "deep", "Value must be initialized"
 
 
 def test_array_params():
@@ -243,7 +243,7 @@ def test_array_params():
     }
 
     assert isinstance(request["params"], list)
-    assert len(request["params"]) == 5
+    assert len(request["params"]) == 5, "Collection must not be empty"
 
 
 def test_null_values():
@@ -255,8 +255,8 @@ def test_null_values():
         "params": {"nullable": None, "not_null": "value"},
     }
 
-    assert request["params"]["nullable"] is None
-    assert request["params"]["not_null"] == "value"
+    assert request["params"]["nullable"] is None, "Condition must be true"
+    assert request["params"]["not_null"] == "value", "Value must be initialized"
 
 
 def test_boolean_values():
@@ -268,8 +268,8 @@ def test_boolean_values():
         "params": {"flag1": True, "flag2": False},
     }
 
-    assert request["params"]["flag1"] is True
-    assert request["params"]["flag2"] is False
+    assert request["params"]["flag1"] is True, "Condition must be true"
+    assert request["params"]["flag2"] is False, "Condition must be true"
 
 
 def test_numeric_precision():
@@ -287,7 +287,7 @@ def test_numeric_precision():
 
     assert isinstance(request["params"]["int_val"], int)
     assert isinstance(request["params"]["float_val"], float)
-    assert request["params"]["large_int"] == 9007199254740991
+    assert request["params"]["large_int"] == 9007199254740991, "Condition must be true"
 
 
 def test_empty_responses():
@@ -295,12 +295,12 @@ def test_empty_responses():
     # Minimal success response
     response = {"jsonrpc": "2.0", "id": 1, "result": None}
 
-    assert "result" in response
+    assert "result" in response, "Response must not be empty"
 
     # Minimal error response
     error_response = {"jsonrpc": "2.0", "id": 1, "error": {"code": -32000, "message": "Error"}}
 
-    assert "error" in error_response
+    assert "error" in error_response, "Response must not be empty"
 
 
 def test_method_naming():
@@ -311,7 +311,7 @@ def test_method_naming():
     for method in methods:
         request = {"jsonrpc": "2.0", "id": 1, "method": method}
 
-        assert request["method"] in methods
+        assert request["method"] in methods, "Condition must be true"
 
 
 def test_reserved_method_names():
@@ -321,4 +321,4 @@ def test_reserved_method_names():
 
     request = {"jsonrpc": "2.0", "id": 1, "method": reserved_method}
 
-    assert request["method"].startswith("rpc.")
+    assert request["method"].startswith("rpc."), "Condition must be true"

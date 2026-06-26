@@ -39,49 +39,49 @@ from security.scope_validator import (
 class TestTokenScopeFromString:
     def test_repo_shorthand(self) -> None:
         s = TokenScope.from_string("repo")
-        assert s & TokenScope.READ_REPO
-        assert s & TokenScope.WRITE_REPO
+        assert s & TokenScope.READ_REPO, "Condition must be true"
+        assert s & TokenScope.WRITE_REPO, "Condition must be true"
 
     def test_repo_read(self) -> None:
         s = TokenScope.from_string("repo:read")
-        assert s & TokenScope.READ_REPO
-        assert not (s & TokenScope.WRITE_REPO)
+        assert s & TokenScope.READ_REPO, "Condition must be true"
+        assert not (s & TokenScope.WRITE_REPO), "Condition must be true"
 
     def test_repo_write_implies_read(self) -> None:
         s = TokenScope.from_string("repo:write")
-        assert s & TokenScope.WRITE_REPO
-        assert s & TokenScope.READ_REPO
+        assert s & TokenScope.WRITE_REPO, "Condition must be true"
+        assert s & TokenScope.READ_REPO, "Condition must be true"
 
     def test_repo_admin_implies_write_and_read(self) -> None:
         s = TokenScope.from_string("repo:admin")
-        assert s & TokenScope.ADMIN_REPO
-        assert s & TokenScope.WRITE_REPO
-        assert s & TokenScope.READ_REPO
+        assert s & TokenScope.ADMIN_REPO, "Condition must be true"
+        assert s & TokenScope.WRITE_REPO, "Condition must be true"
+        assert s & TokenScope.READ_REPO, "Condition must be true"
 
     def test_workflow_read(self) -> None:
         s = TokenScope.from_string("workflow:read")
-        assert s & TokenScope.READ_WORKFLOW
+        assert s & TokenScope.READ_WORKFLOW, "Condition must be true"
 
     def test_issues_write(self) -> None:
         s = TokenScope.from_string("issues:write")
-        assert s & TokenScope.WRITE_ISSUES
-        assert s & TokenScope.READ_ISSUES
+        assert s & TokenScope.WRITE_ISSUES, "Condition must be true"
+        assert s & TokenScope.READ_ISSUES, "Condition must be true"
 
     def test_security_admin(self) -> None:
         s = TokenScope.from_string("security:admin")
-        assert s & TokenScope.ADMIN_SECURITY
-        assert s & TokenScope.WRITE_SECURITY
-        assert s & TokenScope.READ_SECURITY
+        assert s & TokenScope.ADMIN_SECURITY, "Condition must be true"
+        assert s & TokenScope.WRITE_SECURITY, "Condition must be true"
+        assert s & TokenScope.READ_SECURITY, "Condition must be true"
 
     def test_user_write(self) -> None:
         s = TokenScope.from_string("user:write")
-        assert s & TokenScope.WRITE_USER
-        assert s & TokenScope.READ_USER
+        assert s & TokenScope.WRITE_USER, "Condition must be true"
+        assert s & TokenScope.READ_USER, "Condition must be true"
 
     def test_org_shorthand(self) -> None:
         s = TokenScope.from_string("org")
-        assert s & TokenScope.READ_ORG
-        assert s & TokenScope.WRITE_ORG
+        assert s & TokenScope.READ_ORG, "Condition must be true"
+        assert s & TokenScope.WRITE_ORG, "Condition must be true"
 
     def test_invalid_scope_raises(self) -> None:
         with pytest.raises(InvalidScopeError, match="Unknown scope"):
@@ -89,11 +89,11 @@ class TestTokenScopeFromString:
 
     def test_whitespace_stripped(self) -> None:
         s = TokenScope.from_string("  repo:read  ")
-        assert s & TokenScope.READ_REPO
+        assert s & TokenScope.READ_REPO, "Condition must be true"
 
     def test_case_insensitive(self) -> None:
         s = TokenScope.from_string("REPO:READ")
-        assert s & TokenScope.READ_REPO
+        assert s & TokenScope.READ_REPO, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -104,17 +104,17 @@ class TestTokenScopeFromString:
 class TestTokenScopeFromList:
     def test_empty_list_returns_none(self) -> None:
         s = TokenScope.from_list([])
-        assert s == TokenScope.NONE
+        assert s == TokenScope.NONE, "s is not valid"
 
     def test_single_scope(self) -> None:
         s = TokenScope.from_list(["repo:read"])
-        assert s & TokenScope.READ_REPO
+        assert s & TokenScope.READ_REPO, "Condition must be true"
 
     def test_multiple_scopes_combined(self) -> None:
         s = TokenScope.from_list(["repo:read", "workflow:write"])
-        assert s & TokenScope.READ_REPO
-        assert s & TokenScope.WRITE_WORKFLOW
-        assert s & TokenScope.READ_WORKFLOW  # implied
+        assert s & TokenScope.READ_REPO, "Condition must be true"
+        assert s & TokenScope.WRITE_WORKFLOW, "Condition must be true"
+        assert s & TokenScope.READ_WORKFLOW, "Condition must be true"
 
     def test_invalid_in_list_raises(self) -> None:
         with pytest.raises(InvalidScopeError):
@@ -130,19 +130,19 @@ class TestTokenScopeToStrings:
     def test_read_repo_roundtrip(self) -> None:
         s = TokenScope.READ_REPO
         strings = s.to_strings()
-        assert "repo:read" in strings
+        assert "repo:read" in strings, "Condition must be true"
 
     def test_none_scope_empty(self) -> None:
-        assert TokenScope.NONE.to_strings() == set()
+        assert TokenScope.NONE.to_strings() == set(), "Condition must be true"
 
     def test_has_all_required(self) -> None:
         s = TokenScope.READ_REPO | TokenScope.WRITE_REPO
-        assert s.has(TokenScope.READ_REPO)
-        assert s.has(TokenScope.WRITE_REPO)
+        assert s.has(TokenScope.READ_REPO), "Condition must be true"
+        assert s.has(TokenScope.WRITE_REPO), "Condition must be true"
 
     def test_has_missing_flag_false(self) -> None:
         s = TokenScope.READ_REPO
-        assert not s.has(TokenScope.WRITE_REPO)
+        assert not s.has(TokenScope.WRITE_REPO), "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -153,21 +153,21 @@ class TestTokenScopeToStrings:
 class TestScopeValidator:
     def test_init_from_list(self) -> None:
         v = ScopeValidator(["repo:write"])
-        assert v.has_scope(TokenScope.WRITE_REPO)
+        assert v.has_scope(TokenScope.WRITE_REPO), "Condition must be true"
 
     def test_init_from_token_scope(self) -> None:
         v = ScopeValidator(TokenScope.READ_REPO)
-        assert v.has_scope(TokenScope.READ_REPO)
+        assert v.has_scope(TokenScope.READ_REPO), "Condition must be true"
 
     def test_has_scope_true(self) -> None:
         v = ScopeValidator(["repo:admin"])
-        assert v.has_scope(TokenScope.READ_REPO)
-        assert v.has_scope(TokenScope.WRITE_REPO)
-        assert v.has_scope(TokenScope.ADMIN_REPO)
+        assert v.has_scope(TokenScope.READ_REPO), "Condition must be true"
+        assert v.has_scope(TokenScope.WRITE_REPO), "Condition must be true"
+        assert v.has_scope(TokenScope.ADMIN_REPO), "Condition must be true"
 
     def test_has_scope_false(self) -> None:
         v = ScopeValidator(["repo:read"])
-        assert not v.has_scope(TokenScope.WRITE_REPO)
+        assert not v.has_scope(TokenScope.WRITE_REPO), "Condition must be true"
 
     def test_has_any_scope_first_match(self) -> None:
         v = ScopeValidator(["repo:read"])
@@ -199,21 +199,21 @@ class TestScopeValidator:
         v = ScopeValidator(["repo:write"])
         result = v.validate(TokenScope.READ_REPO)
         assert isinstance(result, ScopeValidationResult)
-        assert result.valid is True
-        assert result.message == "Scope validation successful"
+        assert result.valid is True, "Result must not be empty"
+        assert result.message == "Scope validation successful", "Result must not be empty"
 
     def test_validate_failure(self) -> None:
         v = ScopeValidator(["repo:read"])
         result = v.validate(TokenScope.WRITE_REPO)
-        assert result.valid is False
-        assert result.missing_scopes is not None
-        assert "Missing scopes" in result.message
+        assert result.valid is False, "Result must not be empty"
+        assert result.missing_scopes is not None, "missing_scopes must be initialized"
+        assert "Missing scopes" in result.message, "Result must not be empty"
 
     def test_get_granted_scopes(self) -> None:
         v = ScopeValidator(["repo:read", "workflow:read"])
         scopes = v.get_granted_scopes()
         assert isinstance(scopes, set)
-        assert "repo:read" in scopes
+        assert "repo:read" in scopes, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -226,25 +226,25 @@ class TestContextHelpers:
         clear_scope_validator()
 
     def test_get_returns_none_initially(self) -> None:
-        assert get_scope_validator() is None
+        assert get_scope_validator() is None, "get_scope_validat is not valid"
 
     def test_set_and_get(self) -> None:
         v = ScopeValidator(["repo:read"])
         set_scope_validator(v)
-        assert get_scope_validator() is v
+        assert get_scope_validator() is v, "get_scope_validat is not valid"
 
     def test_clear_resets_to_none(self) -> None:
         v = ScopeValidator(["repo:read"])
         set_scope_validator(v)
         clear_scope_validator()
-        assert get_scope_validator() is None
+        assert get_scope_validator() is None, "get_scope_validat is not valid"
 
     def test_overwrite_validator(self) -> None:
         v1 = ScopeValidator(["repo:read"])
         v2 = ScopeValidator(["workflow:write"])
         set_scope_validator(v1)
         set_scope_validator(v2)
-        assert get_scope_validator() is v2
+        assert get_scope_validator() is v2, "get_scope_validat is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -264,7 +264,7 @@ class TestRequireScopeDecorator:
         def fn() -> str:
             return "ok"
 
-        assert fn() == "ok"
+        assert fn() == "ok", "Condition must be true"
 
     def test_raises_with_insufficient_scope(self) -> None:
         v = ScopeValidator(["repo:read"])
@@ -290,7 +290,7 @@ class TestRequireScopeDecorator:
         def my_special_fn() -> None:
             pass
 
-        assert my_special_fn.__name__ == "my_special_fn"
+        assert my_special_fn.__name__ == "my_special_fn", "__name__ is not valid"
 
     def test_stores_required_scopes_metadata(self) -> None:
         @require_scope("repo:write", "workflow:read")
@@ -298,7 +298,7 @@ class TestRequireScopeDecorator:
             pass
 
         assert fn.__required_scopes__ == ("repo:write", "workflow:read")
-        assert fn.__scope_protected__ is True
+        assert fn.__scope_protected__ is True, "__scope_protected__ is not valid"
 
     def test_passes_args_kwargs(self) -> None:
         v = ScopeValidator(["repo:write"])
@@ -318,7 +318,7 @@ class TestRequireScopeDecorator:
         def fn() -> str:
             return "multi"
 
-        assert fn() == "multi"
+        assert fn() == "multi", "Condition must be true"
 
     def test_multiple_scopes_partial_fails(self) -> None:
         v = ScopeValidator(["repo:read"])
@@ -349,7 +349,7 @@ class TestRequireAnyScopeDecorator:
         def fn() -> str:
             return "any"
 
-        assert fn() == "any"
+        assert fn() == "any", "Condition must be true"
 
     def test_raises_with_no_matching_scope(self) -> None:
         v = ScopeValidator(["issues:read"])
@@ -375,8 +375,8 @@ class TestRequireAnyScopeDecorator:
         def fn() -> None:
             pass
 
-        assert fn.__scope_any__ is True
-        assert fn.__scope_protected__ is True
+        assert fn.__scope_any__ is True, "__scope_any__ is not valid"
+        assert fn.__scope_protected__ is True, "__scope_protected__ is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -393,7 +393,7 @@ class TestOptionalScopeDecorator:
         def fn() -> str:
             return "no validator"
 
-        assert fn() == "no validator"
+        assert fn() == "no validator", "Condition must be true"
 
     def test_executes_with_validator_and_scope(self) -> None:
         v = ScopeValidator(["repo:write"])
@@ -403,7 +403,7 @@ class TestOptionalScopeDecorator:
         def fn() -> str:
             return "has scope"
 
-        assert fn() == "has scope"
+        assert fn() == "has scope", "Condition must be true"
 
     def test_executes_with_validator_missing_scope(self) -> None:
         v = ScopeValidator(["repo:read"])
@@ -413,14 +413,14 @@ class TestOptionalScopeDecorator:
         def fn() -> str:
             return "no write but ok"
 
-        assert fn() == "no write but ok"
+        assert fn() == "no write but ok", "Condition must be true"
 
     def test_stores_optional_metadata(self) -> None:
         @optional_scope("repo:write")
         def fn() -> None:
             pass
 
-        assert fn.__scope_optional__ is True
+        assert fn.__scope_optional__ is True, "__scope_optional__ is not valid"
         assert fn.__optional_scopes__ == ("repo:write",)
 
 
@@ -435,10 +435,10 @@ class TestScopeMetadata:
             pass
 
         meta = scope_metadata(plain)
-        assert meta["protected"] is False
-        assert meta["optional"] is False
-        assert meta["required"] == []
-        assert meta["any"] is False
+        assert meta["protected"] is False, "Condition must be true"
+        assert meta["optional"] is False, "Condition must be true"
+        assert meta["required"] == [], "Condition must be true"
+        assert meta["any"] is False, "Condition must be true"
 
     def test_require_scope_metadata(self) -> None:
         @require_scope("repo:write")
@@ -446,10 +446,10 @@ class TestScopeMetadata:
             pass
 
         meta = scope_metadata(fn)
-        assert meta["protected"] is True
+        assert meta["protected"] is True, "Condition must be true"
         assert meta["required"] == ("repo:write",)
-        assert meta["any"] is False
-        assert meta["optional"] is False
+        assert meta["any"] is False, "Condition must be true"
+        assert meta["optional"] is False, "Condition must be true"
 
     def test_require_any_scope_metadata(self) -> None:
         @require_any_scope("repo:read", "workflow:read")
@@ -457,8 +457,8 @@ class TestScopeMetadata:
             pass
 
         meta = scope_metadata(fn)
-        assert meta["any"] is True
-        assert meta["protected"] is True
+        assert meta["any"] is True, "Condition must be true"
+        assert meta["protected"] is True, "Condition must be true"
 
     def test_optional_scope_metadata(self) -> None:
         @optional_scope("repo:read")
@@ -466,5 +466,5 @@ class TestScopeMetadata:
             pass
 
         meta = scope_metadata(fn)
-        assert meta["optional"] is True
-        assert meta["protected"] is False
+        assert meta["optional"] is True, "Condition must be true"
+        assert meta["protected"] is False, "Condition must be true"

@@ -73,7 +73,7 @@ def _assert_step_bool(es: Any, value: float, expected: bool):
             f"EarlyStopping.step({value}) returned non-bool value: {result!r}"
         )
 
-    assert result is expected
+    assert result is expected, "Result must not be empty"
 
 
 def test_early_stopping_improves_and_plateaus():

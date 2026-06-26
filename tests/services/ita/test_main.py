@@ -21,11 +21,11 @@ def main_module(monkeypatch: pytest.MonkeyPatch):
 def test_get_request_id_and_authenticate_request(main_module) -> None:
     scope = {"type": "http", "headers": [], "method": "GET", "path": "/"}
     request = Request(scope)
-    assert main_module._get_request_id(request) == "unknown"
+    assert main_module._get_request_id(request) == "unknown", "Condition must be true"
 
     with pytest.raises(HTTPException) as exc:
         main_module._authenticate_request(None, "key")
-    assert exc.value.status_code == 400
+    assert exc.value.status_code == 400, "Value must be initialized"
 
 
 def test_get_request_context_missing_raises(main_module) -> None:
@@ -34,7 +34,7 @@ def test_get_request_context_missing_raises(main_module) -> None:
         import asyncio
 
         asyncio.run(main_module.get_request_context(request))
-    assert exc.value.status_code == 401
+    assert exc.value.status_code == 401, "Value must be initialized"
 
 
 def test_main_endpoints_with_valid_headers(main_module) -> None:
@@ -54,10 +54,10 @@ def test_main_endpoints_with_valid_headers(main_module) -> None:
             },
         )
 
-    assert health.status_code == 200
-    assert health.headers["X-Request-Id"] == "req-123"
-    assert kb.status_code == 200
-    assert pr_guard.status_code == 412
+    assert health.status_code == 200, "status_code is not valid"
+    assert health.headers["X-Request-Id"] == "req-123", "Condition must be true"
+    assert kb.status_code == 200, "status_code is not valid"
+    assert pr_guard.status_code == 412, "status_code is not valid"
 
 
 def test_main_middleware_returns_500_for_unhandled_exception(
@@ -72,5 +72,5 @@ def test_main_middleware_returns_500_for_unhandled_exception(
         response = client.get(
             "/healthz", headers={"X-API-Key": "ita-test-key", "X-Request-Id": "req-1"}
         )
-    assert response.status_code == 500
-    assert response.json()["detail"] == "Internal server error"
+    assert response.status_code == 500, "Response must not be empty"
+    assert response.json()["detail"] == "Internal server error", "Response must not be empty"

@@ -172,8 +172,8 @@ class CurriculumScheduler:
                 return CurriculumState.from_dict(data)
             except (IOError, OSError) as e:
                 error_type = type(e).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
-                logger.warning(f"Failed to load state, creating new: <ERROR_TYPE>")
+                logger.debug("Exception: <ERROR_TYPE>")
+                logger.warning("Failed to load state, creating new: <ERROR_TYPE>")
 
         return CurriculumState(curriculum_name=self.curriculum_name)
 
@@ -185,8 +185,8 @@ class CurriculumScheduler:
             logger.info(f"Saved curriculum state to {self.state_file}")
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.error(f"Failed to save state: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.error("Failed to save state: <ERROR_TYPE>")
             raise
 
     def get_current_phase(self) -> Optional[TrainingPhase]:
@@ -417,8 +417,8 @@ def load_curriculum_from_config(config_path: str) -> list[TrainingPhase]:
         import yaml
     except ImportError as e:
         error_type = type(e).__name__
-        logger.debug(f"ImportError: <ERROR_TYPE>")
-        logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
+        logger.debug("ImportError: <ERROR_TYPE>")
+        logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
         raise RuntimeError("PyYAML not installed. Install with: pip install pyyaml") from e
 
     with open(config_path) as f:

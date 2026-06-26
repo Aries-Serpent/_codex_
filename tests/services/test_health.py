@@ -36,8 +36,8 @@ class TestHealthChecks:
 
         result = health_check()
 
-        assert result["status"] == "healthy"
-        assert "timestamp" in result
+        assert result["status"] == "healthy", "Result must not be empty"
+        assert "timestamp" in result, "Result must not be empty"
 
     def test_component_health_aggregation(self):
         """Component health is aggregated correctly."""
@@ -56,15 +56,15 @@ class TestHealthChecks:
             {"name": "db", "status": HealthStatus.HEALTHY},
             {"name": "cache", "status": HealthStatus.HEALTHY},
         ]
-        assert aggregate_health(components) == HealthStatus.HEALTHY
+        assert aggregate_health(components) == HealthStatus.HEALTHY, "Condition must be true"
 
         # One unhealthy
         components[1]["status"] = HealthStatus.UNHEALTHY
-        assert aggregate_health(components) == HealthStatus.UNHEALTHY
+        assert aggregate_health(components) == HealthStatus.UNHEALTHY, "Condition must be true"
 
         # One degraded
         components[1]["status"] = HealthStatus.DEGRADED
-        assert aggregate_health(components) == HealthStatus.DEGRADED
+        assert aggregate_health(components) == HealthStatus.DEGRADED, "Condition must be true"
 
     def test_health_check_timeout(self):
         """Health checks have timeouts."""
@@ -83,7 +83,7 @@ class TestHealthChecks:
         checker = HealthChecker(timeout_seconds=5)
 
         result = checker.check(lambda: {"status": HealthStatus.HEALTHY})
-        assert result["status"] == HealthStatus.HEALTHY
+        assert result["status"] == HealthStatus.HEALTHY, "Result must not be empty"
 
 
 class TestReadinessProbes:
@@ -101,11 +101,11 @@ class TestReadinessProbes:
                 return self.dependencies_ready and self.warmup_complete
 
         readiness = ServiceReadiness()
-        assert not readiness.is_ready()
+        assert not readiness.is_ready(), "Condition must be true"
 
         readiness.dependencies_ready = True
         readiness.warmup_complete = True
-        assert readiness.is_ready()
+        assert readiness.is_ready(), "Condition must be true"
 
     def test_startup_probe(self):
         """Startup probe indicates initialization progress."""
@@ -126,15 +126,15 @@ class TestReadinessProbes:
 
         probe = StartupProbe({"config_loaded", "db_connected", "cache_warmed"})
 
-        assert not probe.is_started()
-        assert probe.progress() == 0
+        assert not probe.is_started(), "Condition must be true"
+        assert probe.progress() == 0, "Condition must be true"
 
         probe.complete_step("config_loaded")
         assert probe.progress() == pytest.approx(33.33, rel=0.1)
 
         probe.complete_step("db_connected")
         probe.complete_step("cache_warmed")
-        assert probe.is_started()
+        assert probe.is_started(), "Condition must be true"
 
 
 class TestLivenessProbes:
@@ -148,7 +148,7 @@ class TestLivenessProbes:
             return {"alive": True, "uptime_seconds": 3600}
 
         result = liveness_check()
-        assert result["alive"] is True
+        assert result["alive"] is True, "Result must not be empty"
 
     def test_deadlock_detection(self):
         """Deadlock detection affects liveness."""
@@ -170,7 +170,7 @@ class TestLivenessProbes:
                 return False
 
         detector = DeadlockDetector()
-        assert not detector.has_deadlock()
+        assert not detector.has_deadlock(), "Condition must be true"
 
 
 class TestHealthEndpoints:
@@ -191,9 +191,9 @@ class TestHealthEndpoints:
 
         response = health_endpoint_handler()
 
-        assert response["status"] == "healthy"
-        assert "checks" in response
-        assert "database" in response["checks"]
+        assert response["status"] == "healthy", "Response must not be empty"
+        assert "checks" in response, "Response must not be empty"
+        assert "database" in response["checks"], "Response must not be empty"
 
     def test_health_endpoint_status_codes(self):
         """Health endpoint returns correct HTTP status."""
@@ -205,9 +205,9 @@ class TestHealthEndpoints:
                 return 200  # Still 200 but with degraded status
             return 503  # Service Unavailable
 
-        assert get_status_code(HealthStatus.HEALTHY) == 200
-        assert get_status_code(HealthStatus.DEGRADED) == 200
-        assert get_status_code(HealthStatus.UNHEALTHY) == 503
+        assert get_status_code(HealthStatus.HEALTHY) == 200, "Condition must be true"
+        assert get_status_code(HealthStatus.DEGRADED) == 200, "Condition must be true"
+        assert get_status_code(HealthStatus.UNHEALTHY) == 503, "Condition must be true"
 
 
 class TestDependencyHealth:
@@ -227,7 +227,7 @@ class TestDependencyHealth:
         mock_conn.execute.return_value = True
 
         result = check_database(mock_conn)
-        assert result["status"] == HealthStatus.HEALTHY
+        assert result["status"] == HealthStatus.HEALTHY, "Result must not be empty"
 
     def test_cache_health_check(self):
         """Cache health check tests connectivity."""
@@ -243,7 +243,7 @@ class TestDependencyHealth:
         mock_cache.ping.return_value = "PONG"
 
         result = check_cache(mock_cache)
-        assert result["status"] == HealthStatus.HEALTHY
+        assert result["status"] == HealthStatus.HEALTHY, "Result must not be empty"
 
     def test_external_service_health(self):
         """External service health check with timeout."""
@@ -253,4 +253,4 @@ class TestDependencyHealth:
             return {"status": HealthStatus.HEALTHY, "url": url, "latency_ms": 100}
 
         result = check_external_service("https://api.example.com/health")
-        assert result["status"] == HealthStatus.HEALTHY
+        assert result["status"] == HealthStatus.HEALTHY, "Result must not be empty"

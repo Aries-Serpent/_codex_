@@ -21,8 +21,8 @@ class TestStructuralSplitBrain:
             ]
         }
         result = structure_integrity.detect(file_index)
-        assert "split-brain" in result["found_patterns"]
-        assert "myapp" in result["meta"]["split_dirs"]
+        assert "split-brain" in result["found_patterns"], "Result must not be empty"
+        assert "myapp" in result["meta"]["split_dirs"], "Result must not be empty"
 
     def test_split_brain_multiple_modules(self):
         """Test split-brain with multiple modules."""
@@ -35,8 +35,8 @@ class TestStructuralSplitBrain:
             ]
         }
         result = structure_integrity.detect(file_index)
-        assert "split-brain" in result["found_patterns"]
-        assert len(result["meta"]["split_dirs"]) == 2
+        assert "split-brain" in result["found_patterns"], "Result must not be empty"
+        assert len(result["meta"]["split_dirs"]) == 2, "Collection must not be empty"
 
     def test_no_split_brain_src_only(self):
         """Test no split-brain when only src/ exists."""
@@ -47,7 +47,7 @@ class TestStructuralSplitBrain:
             ]
         }
         result = structure_integrity.detect(file_index)
-        assert "split-brain" not in result["found_patterns"]
+        assert "split-brain" not in result["found_patterns"], "Result must not be empty"
 
 
 class TestStructuralShadowing:
@@ -61,8 +61,8 @@ class TestStructuralShadowing:
             ]
         }
         result = structure_integrity.detect(file_index)
-        assert "lib-shadowing" in result["found_patterns"]
-        assert "torch" in result["meta"]["shadow_dirs"]
+        assert "lib-shadowing" in result["found_patterns"], "Result must not be empty"
+        assert "torch" in result["meta"]["shadow_dirs"], "Result must not be empty"
 
     def test_numpy_shadowing(self):
         """Test numpy library shadowing detection."""
@@ -72,8 +72,8 @@ class TestStructuralShadowing:
             ]
         }
         result = structure_integrity.detect(file_index)
-        assert "lib-shadowing" in result["found_patterns"]
-        assert "numpy" in result["meta"]["shadow_dirs"]
+        assert "lib-shadowing" in result["found_patterns"], "Result must not be empty"
+        assert "numpy" in result["meta"]["shadow_dirs"], "Result must not be empty"
 
     def test_multiple_shadows(self):
         """Test multiple library shadowing."""
@@ -85,8 +85,8 @@ class TestStructuralShadowing:
             ]
         }
         result = structure_integrity.detect(file_index)
-        assert "lib-shadowing" in result["found_patterns"]
-        assert len(result["meta"]["shadow_dirs"]) >= 2
+        assert "lib-shadowing" in result["found_patterns"], "Result must not be empty"
+        assert len(result["meta"]["shadow_dirs"]) >= 2, "Collection must not be empty"
 
 
 class TestStructuralDeterminism:
@@ -98,7 +98,7 @@ class TestStructuralDeterminism:
         results = [structure_integrity.detect(file_index) for _ in range(5)]
         baseline = results[0]
         for r in results[1:]:
-            assert r["found_patterns"] == baseline["found_patterns"]
+            assert r["found_patterns"] == baseline["found_patterns"], "Condition must be true"
 
     def test_deterministic_evidence(self):
         """Test evidence is deterministic (manifest-stable)."""
@@ -106,7 +106,7 @@ class TestStructuralDeterminism:
         results = [structure_integrity.detect(file_index) for _ in range(5)]
         baseline = results[0]
         for r in results[1:]:
-            assert r["evidence_files"] == baseline["evidence_files"]
+            assert r["evidence_files"] == baseline["evidence_files"], "Condition must be true"
 
     def test_sorted_output(self):
         """Test all outputs are sorted (checksum-stable)."""
@@ -119,5 +119,5 @@ class TestStructuralDeterminism:
             ]
         }
         result = structure_integrity.detect(file_index)
-        assert result["evidence_files"] == sorted(result["evidence_files"])
-        assert result["meta"]["split_dirs"] == sorted(result["meta"]["split_dirs"])
+        assert result["evidence_files"] == sorted(result["evidence_files"]), "Result must not be empty"
+        assert result["meta"]["split_dirs"] == sorted(result["meta"]["split_dirs"]), "Result must not be empty"

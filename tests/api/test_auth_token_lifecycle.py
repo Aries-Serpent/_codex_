@@ -63,7 +63,7 @@ def logged_in_user(client):
         "/auth/login",
         json={"username_or_email": "alice", "password": "Str0ngPass!"},  # pragma: allowlist secret
     )
-    assert resp.status_code == 200
+    assert resp.status_code == 200, "status_code is not valid"
     return client, resp.json()
 
 
@@ -82,11 +82,11 @@ class TestTokenRotation:
             "/auth/refresh",
             json={"refresh_token": data["refresh_token"]},
         )
-        assert resp.status_code == 200
+        assert resp.status_code == 200, "status_code is not valid"
         new_access = resp.json()["access_token"]
-        assert new_access
+        assert new_access, "new_access is not valid"
         # Must be different from original (new jti / exp)
-        assert new_access != data["access_token"]
+        assert new_access != data["access_token"], "Data must not be empty"
 
     def test_rotated_token_has_same_subject(self, logged_in_user, auth_components):
         """Rotated access token preserves user identity (sub claim)."""
@@ -97,12 +97,12 @@ class TestTokenRotation:
             "/auth/refresh",
             json={"refresh_token": data["refresh_token"]},
         )
-        assert resp.status_code == 200
+        assert resp.status_code == 200, "status_code is not valid"
         new_access = resp.json()["access_token"]
 
         # Validate the new token points to the same user
         claims = tokens.validate_token(new_access, TokenType.ACCESS)
-        assert claims.sub == data["user_id"]
+        assert claims.sub == data["user_id"], "Data must not be empty"
 
     def test_refresh_with_invalid_token_returns_401(self, client):
         """POST /auth/refresh with an invalid token returns 401."""
@@ -110,7 +110,7 @@ class TestTokenRotation:
             "/auth/refresh",
             json={"refresh_token": "not-a-valid-jwt"},
         )
-        assert resp.status_code == 401
+        assert resp.status_code == 401, "status_code is not valid"
 
     def test_refresh_with_access_token_returns_401(self, logged_in_user):
         """Using an access token (wrong type) for refresh returns 401."""
@@ -119,7 +119,7 @@ class TestTokenRotation:
             "/auth/refresh",
             json={"refresh_token": data["access_token"]},
         )
-        assert resp.status_code == 401
+        assert resp.status_code == 401, "status_code is not valid"
 
     def test_multiple_refreshes_succeed(self, logged_in_user):
         """Multiple sequential refreshes should all succeed."""
@@ -132,9 +132,9 @@ class TestTokenRotation:
                 "/auth/refresh",
                 json={"refresh_token": refresh_token},
             )
-            assert resp.status_code == 200
+            assert resp.status_code == 200, "status_code is not valid"
             new = resp.json()["access_token"]
-            assert new not in tokens_seen
+            assert new not in tokens_seen, "Condition must be true"
             tokens_seen.add(new)
 
 
@@ -153,8 +153,8 @@ class TestTokenRevocation:
             "/auth/logout",
             json={"session_token": data["session_token"]},
         )
-        assert resp.status_code == 200
-        assert resp.json()["revoked"] is True
+        assert resp.status_code == 200, "status_code is not valid"
+        assert resp.json()["revoked"] is True, "Condition must be true"
 
     def test_revoked_session_token_fails_validation(self, logged_in_user, auth_components):
         """After logout, the session token fails TokenManager.validate_token."""
@@ -180,14 +180,14 @@ class TestTokenRevocation:
             "/auth/logout",
             json={"session_token": data["session_token"]},
         )
-        assert resp1.json()["revoked"] is True
+        assert resp1.json()["revoked"] is True, "Condition must be true"
 
         # Second logout (token already revoked — add to set is idempotent)
         resp2 = client.post(
             "/auth/logout",
             json={"session_token": data["session_token"]},
         )
-        assert resp2.json()["revoked"] is True
+        assert resp2.json()["revoked"] is True, "Condition must be true"
 
     def test_logout_invalid_token_returns_revoked_false(self, client):
         """Logout with a garbage token returns revoked=False (graceful)."""
@@ -195,8 +195,8 @@ class TestTokenRevocation:
             "/auth/logout",
             json={"session_token": "totally-invalid-token"},
         )
-        assert resp.status_code == 200
-        assert resp.json()["revoked"] is False
+        assert resp.status_code == 200, "status_code is not valid"
+        assert resp.json()["revoked"] is False, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -236,12 +236,12 @@ class TestSessionIsolation:
                 "password": "Str0ngPass!",
             },  # pragma: allowlist secret
         )
-        assert login1.status_code == 200
-        assert login2.status_code == 200
+        assert login1.status_code == 200, "status_code is not valid"
+        assert login2.status_code == 200, "status_code is not valid"
 
         data1 = login1.json()
         data2 = login2.json()
-        assert data1["session_id"] != data2["session_id"]
+        assert data1["session_id"] != data2["session_id"], "Data must not be empty"
 
         # Logout session 1
         client.post(
@@ -254,7 +254,7 @@ class TestSessionIsolation:
             "/auth/refresh",
             json={"refresh_token": data2["refresh_token"]},
         )
-        assert resp.status_code == 200
+        assert resp.status_code == 200, "status_code is not valid"
 
     def test_revoke_all_user_tokens(self, auth_components):
         """revoke_all_user_tokens invalidates every session for a user."""
@@ -270,7 +270,7 @@ class TestSessionIsolation:
 
         # Revoke all
         count = tokens.revoke_all_user_tokens(result1.user_id)
-        assert count >= 2
+        assert count >= 2, "count must be positive"
 
         # Both should now fail
         with pytest.raises(ValueError):

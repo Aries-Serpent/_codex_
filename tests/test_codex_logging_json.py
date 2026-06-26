@@ -15,7 +15,7 @@ def test_json_logger_format(monkeypatch, capsys):
     logger.info("hello")
     captured = capsys.readouterr()
     combined = (captured.out + captured.err).strip()
-    assert '"msg": "hello"' in combined
+    assert '"msg": "hello"' in combined, "Condition must be true"
 
 
 def test_nvml_disabled(monkeypatch):
@@ -24,4 +24,4 @@ def test_nvml_disabled(monkeypatch):
     import importlib
 
     mod = importlib.reload(importlib.import_module("codex_ml.monitoring.codex_logging"))
-    assert mod.pynvml is None
+    assert mod.pynvml is None, "pynvml is not valid"

@@ -40,8 +40,8 @@ class TestChunkText:
         """Test chunk_text can be imported."""
         from codex.rag.indexer import chunk_text
 
-        assert chunk_text is not None
-        assert callable(chunk_text)
+        assert chunk_text is not None, "chunk_text must be initialized"
+        assert callable(chunk_text), "Condition must be true"
 
     def test_chunk_text_basic(self):
         """Test chunk_text with basic input."""
@@ -51,9 +51,9 @@ class TestChunkText:
         chunks = chunk_text(text, chunk_size=20, overlap=5)
 
         assert isinstance(chunks, list)
-        assert len(chunks) > 0
+        assert len(chunks) > 0, "Chunks must not be empty"
         for chunk in chunks:
-            assert len(chunk) == 3  # (start, end, text)
+            assert len(chunk) == 3, "Chunk must not be empty"
 
     def test_chunk_text_empty_returns_empty(self):
         """Test chunk_text with empty string returns empty list."""
@@ -61,7 +61,7 @@ class TestChunkText:
 
         chunks = chunk_text("", chunk_size=100, overlap=10)
 
-        assert chunks == []
+        assert chunks == [], "chunks is not valid"
 
     def test_chunk_text_invalid_chunk_size_raises(self):
         """Test chunk_text raises on invalid chunk_size."""
@@ -95,7 +95,7 @@ class TestChunkText:
         chunks = chunk_text(text, chunk_size=30, overlap=10)
 
         # Should have multiple chunks with overlap
-        assert len(chunks) > 1
+        assert len(chunks) > 1, "Chunks must not be empty"
 
 
 class TestEmbedChunks:
@@ -105,8 +105,8 @@ class TestEmbedChunks:
         """Test embed_chunks can be imported."""
         from codex.rag.indexer import embed_chunks
 
-        assert embed_chunks is not None
-        assert callable(embed_chunks)
+        assert embed_chunks is not None, "embed_chunks must be initialized"
+        assert callable(embed_chunks), "Condition must be true"
 
     def test_embed_chunks_empty_returns_empty(self):
         """Test embed_chunks with empty list."""
@@ -115,7 +115,7 @@ class TestEmbedChunks:
         result = embed_chunks([])
 
         # Should return empty array or handle gracefully
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     def test_embed_chunks_requires_model(self):
         """Test embed_chunks requires model or profile."""
@@ -127,7 +127,7 @@ class TestEmbedChunks:
         try:
             result = embed_chunks(chunks)
             # If it succeeds, should return something
-            assert result is not None
+            assert result is not None, "result must be initialized"
         except (ImportError, RuntimeError):
             # Expected if dependencies missing
             _ = None  # suppressed: no action needed
@@ -154,7 +154,7 @@ class TestIndexerMetadata:
         for start, end, text_chunk in chunks:
             assert isinstance(start, int)
             assert isinstance(end, int)
-            assert start < end
+            assert start < end, "start is not valid"
             assert isinstance(text_chunk, str)
 
 
@@ -166,7 +166,7 @@ class TestIndexSaveLoad:
         try:
             from codex.rag.indexer import save_index
 
-            assert save_index is not None
+            assert save_index is not None, "save_index must be initialized"
         except ImportError:
             pytest.skip("save_index not available")
 
@@ -175,7 +175,7 @@ class TestIndexSaveLoad:
         try:
             from codex.rag.indexer import load_index
 
-            assert load_index is not None
+            assert load_index is not None, "load_index must be initialized"
         except ImportError:
             pytest.skip("load_index not available")
 
@@ -188,7 +188,7 @@ class TestFAISSIntegration:
         from codex.rag import indexer
 
         # Should import without error even if FAISS unavailable
-        assert indexer is not None
+        assert indexer is not None, "indexer must be initialized"
 
     def test_faiss_optional_dependency(self):
         """Test FAISS is treated as optional dependency."""
@@ -196,4 +196,4 @@ class TestFAISSIntegration:
         # Should not crash if FAISS unavailable
         from codex.rag import indexer
 
-        assert indexer is not None
+        assert indexer is not None, "indexer must be initialized"

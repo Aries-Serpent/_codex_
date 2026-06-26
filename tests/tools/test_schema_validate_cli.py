@@ -24,4 +24,4 @@ def test_cli_passes_on_example(tmp_path):
         text=True,
     )
     assert proc.returncode == 0, proc.stderr + proc.stdout
-    assert "[PASS]" in proc.stdout
+    assert "[PASS]" in proc.stdout, "Condition must be true"

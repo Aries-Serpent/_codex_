@@ -41,8 +41,8 @@ def test_validate_file_default_shape(tmp_path: Path, ok_markdown: Path) -> None:
 
     target = _copy_fixture(tmp_path, ok_markdown)
     ok, problems = validate_fences.validate_file(target)
-    assert ok is True
-    assert problems == []
+    assert ok is True, "ok is not valid"
+    assert problems == [], "problems is not valid"
 
 
 def test_iter_files_skips_known_paths(tmp_path: Path) -> None:
@@ -61,10 +61,10 @@ def test_iter_files_skips_known_paths(tmp_path: Path) -> None:
 
     discovered = {Path(path) for path in validate_fences.iter_files(tmp_path)}
 
-    assert allowed in discovered
-    assert all(tmp_path in path.parents for path in discovered)
-    assert not any(path.name == "ignored.md" for path in discovered)
-    assert not any("bad_fences.md" in str(path) for path in discovered)
+    assert allowed in discovered, "Condition must be true"
+    assert all(tmp_path in path.parents for path in discovered), "Condition must be true"
+    assert not any(path.name == "ignored.md" for path in discovered), "name is not valid"
+    assert not any("bad_fences.md" in str(path) for path in discovered), "Condition must be true"
 
 
 def test_warn_inner_emits_warning(tmp_path: Path, bad_markdown: Path) -> None:
@@ -80,5 +80,5 @@ def test_warn_inner_emits_warning(tmp_path: Path, bad_markdown: Path) -> None:
         stderr=subprocess.PIPE,
     )
 
-    assert result.returncode == 0
-    assert "WARN — nested code fence detected" in result.stdout
+    assert result.returncode == 0, "Result must not be empty"
+    assert "WARN — nested code fence detected" in result.stdout, "Result must not be empty"

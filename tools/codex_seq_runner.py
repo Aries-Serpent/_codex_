@@ -341,5 +341,5 @@ if __name__ == "__main__":
     except Exception as e:
         record_rq("PH0", "Runner crash", str(e), "Top-level exception")
         error_type = type(e).__name__
-        print(f"[fatal] <ERROR_TYPE>", file=sys.stderr)
+        print("[fatal] <ERROR_TYPE>", file=sys.stderr)
         sys.exit(1)

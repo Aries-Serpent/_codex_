@@ -19,8 +19,8 @@ class TestContextNormalizer:
 
         # Test whitespace compaction
         result = normalizer.normalize("  hello   world  ")
-        assert "  " not in result
-        assert result == "hello world"
+        assert "  " not in result, "Result must not be empty"
+        assert result == "hello world", "Result must not be empty"
 
     def test_normalize_lowercase(self):
         """Test lowercase conversion."""
@@ -28,7 +28,7 @@ class TestContextNormalizer:
 
         normalizer = ContextNormalizer(lowercase=True)
         result = normalizer.normalize("Hello WORLD")
-        assert result == "hello world"
+        assert result == "hello world", "Result must not be empty"
 
     def test_normalize_unicode(self):
         """Test unicode normalization."""
@@ -37,7 +37,7 @@ class TestContextNormalizer:
         normalizer = ContextNormalizer(normalize_unicode=True)
         # Test with combining characters
         result = normalizer.normalize("café")
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     def test_unicode_nfc_nfd_cafe_equivalence(self):
         """NFC precomposed and NFD decomposed forms of café normalize to the same output."""
@@ -51,7 +51,7 @@ class TestContextNormalizer:
         nfd_cafe = "cafe\u0301"
 
         # Confirm raw strings differ
-        assert nfc_cafe != nfd_cafe
+        assert nfc_cafe != nfd_cafe, "nfc_cafe is not valid"
         assert unicodedata.is_normalized("NFC", nfc_cafe)
         assert not unicodedata.is_normalized("NFC", nfd_cafe)
 
@@ -86,8 +86,8 @@ class TestContextNormalizer:
         # Output must be NFC
         assert unicodedata.is_normalized("NFC", result)
         # Composed codepoints: ï = U+00EF, é = U+00E9
-        assert "\u00ef" in result  # ï
-        assert "\u00e9" in result  # é
+        assert "\u00ef" in result, "Result must not be empty"
+        assert "\u00e9" in result, "Result must not be empty"
 
     def test_unicode_multiple_combining_marks(self):
         """Strings with stacked combining diacritical marks are handled."""
@@ -101,7 +101,7 @@ class TestContextNormalizer:
         result = normalizer.normalize(text_with_marks)
 
         assert isinstance(result, str)
-        assert len(result) > 0
+        assert len(result) > 0, "Result must not be empty"
         # Result should be NFC normalized
         assert unicodedata.is_normalized("NFC", result)
 
@@ -117,7 +117,7 @@ class TestContextNormalizer:
         result_nfd = normalizer.normalize(nfd_cafe)
 
         # Without normalization the forms remain distinct
-        assert result_nfc != result_nfd
+        assert result_nfc != result_nfd, "Result must not be empty"
 
     def test_strip_ansi(self):
         """Test ANSI code stripping."""
@@ -125,8 +125,8 @@ class TestContextNormalizer:
 
         normalizer = ContextNormalizer(strip_ansi=True)
         result = normalizer.normalize("\x1b[31mred text\x1b[0m")
-        assert "\x1b" not in result
-        assert "red text" in result
+        assert "\x1b" not in result, "Result must not be empty"
+        assert "red text" in result, "Result must not be empty"
 
     def test_extract_key_signals(self):
         """Test key signal extraction."""
@@ -142,12 +142,12 @@ class TestContextNormalizer:
 
         signals = normalizer.extract_key_signals(text)
 
-        assert "errors" in signals
-        assert "file_paths" in signals
-        assert "test_names" in signals
-        assert "correlation_ids" in signals
-        assert len(signals["file_paths"]) > 0
-        assert len(signals["test_names"]) > 0
+        assert "errors" in signals, "Error should be raised or set"
+        assert "file_paths" in signals, "Condition must be true"
+        assert "test_names" in signals, "Condition must be true"
+        assert "correlation_ids" in signals, "Condition must be true"
+        assert len(signals["file_paths"]) > 0, "Collection must not be empty"
+        assert len(signals["test_names"]) > 0, "Collection must not be empty"
 
 
 class TestStatementFingerprinter:
@@ -160,10 +160,10 @@ class TestStatementFingerprinter:
         fp = StatementFingerprinter()
         result = fp.fingerprint("This is a test statement")
 
-        assert result.exact_hash is not None
-        assert result.semantic_hash is not None
-        assert result.structure_hash is not None
-        assert len(result.ngram_hashes) > 0
+        assert result.exact_hash is not None, "exact_hash must be initialized"
+        assert result.semantic_hash is not None, "semantic_hash must be initialized"
+        assert result.structure_hash is not None, "structure_hash must be initialized"
+        assert len(result.ngram_hashes) > 0, "Collection must not be empty"
 
     def test_fingerprint_exact_match(self):
         """Test exact hash matching."""
@@ -175,7 +175,7 @@ class TestStatementFingerprinter:
         fp1 = fp.fingerprint(text)
         fp2 = fp.fingerprint(text)
 
-        assert fp1.exact_hash == fp2.exact_hash
+        assert fp1.exact_hash == fp2.exact_hash, "exact_hash is not valid"
 
     def test_fingerprint_semantic_match(self):
         """Test semantic hash matching."""
@@ -190,7 +190,7 @@ class TestStatementFingerprinter:
         fp2 = fp.fingerprint(text2)
 
         # Should have same semantic hash after lowercasing
-        assert fp1.semantic_hash == fp2.semantic_hash
+        assert fp1.semantic_hash == fp2.semantic_hash, "semantic_hash is not valid"
 
     def test_similarity_calculation(self):
         """Test similarity calculation."""
@@ -210,7 +210,7 @@ class TestStatementFingerprinter:
         sim_13 = fp.similarity(fp1, fp3)
 
         # Similar texts should have higher similarity
-        assert sim_12 > sim_13
+        assert sim_12 > sim_13, "sim_12 must be greater than zero"
 
 
 class TestSemanticDeduplicator:
@@ -231,10 +231,10 @@ class TestSemanticDeduplicator:
 
         result = dedup.deduplicate(statements)
 
-        assert result.original_count == 4
-        assert result.deduplicated_count == 3
-        assert result.removed_count == 1
-        assert len(result.duplicates_found) == 1
+        assert result.original_count == 4, "Result must not be empty"
+        assert result.deduplicated_count == 3, "Result must not be empty"
+        assert result.removed_count == 1, "Result must not be empty"
+        assert len(result.duplicates_found) == 1, "Collection must not be empty"
 
     def test_deduplicate_semantic(self):
         """Test semantic duplicate removal."""
@@ -251,7 +251,7 @@ class TestSemanticDeduplicator:
         result = dedup.deduplicate(statements)
 
         # At least some deduplication should happen
-        assert result.removed_count >= 0
+        assert result.removed_count >= 0, "removed_count must be positive"
 
     def test_is_duplicate(self):
         """Test duplicate checking."""
@@ -262,10 +262,10 @@ class TestSemanticDeduplicator:
         dedup.add_statement("First statement")
 
         is_dup, _original = dedup.is_duplicate("First statement")
-        assert is_dup is True
+        assert is_dup is True, "is_dup is not valid"
 
         is_dup, _original = dedup.is_duplicate("Different statement")
-        assert is_dup is False
+        assert is_dup is False, "is_dup is not valid"
 
 
 class TestTokenBudgetEnforcer:
@@ -278,10 +278,10 @@ class TestTokenBudgetEnforcer:
         enforcer = TokenBudgetEnforcer(hard_limit=1000, soft_limit=800)
 
         result = enforcer.add_content("Test content", priority=ContentPriority.MEDIUM)
-        assert result is True
+        assert result is True, "Result must not be empty"
 
         status = enforcer.get_budget_status()
-        assert status["current_usage"] > 0
+        assert status["current_usage"] > 0, "Value must be greater than zero"
 
     def test_budget_limits(self):
         """Test budget limit enforcement."""
@@ -291,7 +291,7 @@ class TestTokenBudgetEnforcer:
 
         # Add content that fits
         result = enforcer.add_content("Short", priority=ContentPriority.HIGH)
-        assert result is True
+        assert result is True, "Result must not be empty"
 
         # Add content that exceeds limits
         long_content = "x" * 500
@@ -308,7 +308,7 @@ class TestTokenBudgetEnforcer:
         enforcer.add_content("Second content", priority=ContentPriority.MEDIUM)
 
         context = enforcer.get_context()
-        assert "First content" in context or "Second content" in context
+        assert "First content" in context or "Second content" in context, "Content must not be empty"
 
 
 class TestLoopGuardrail:
@@ -322,10 +322,10 @@ class TestLoopGuardrail:
 
         # Record different actions - should not trigger
         violation = guardrail.record_action("action1", produced_artifacts=True)
-        assert violation is None
+        assert violation is None, "violation is not valid"
 
         violation = guardrail.record_action("action2", produced_artifacts=True)
-        assert violation is None
+        assert violation is None, "violation is not valid"
 
     def test_detect_consecutive_repeats(self):
         """Test consecutive repeat detection."""
@@ -338,8 +338,8 @@ class TestLoopGuardrail:
         guardrail.record_action("same_action", tool_name="test")
         violation = guardrail.record_action("same_action", tool_name="test")
 
-        assert violation is not None
-        assert violation.violation_type == "consecutive_repeat"
+        assert violation is not None, "violation must be initialized"
+        assert violation.violation_type == "consecutive_repeat", "violation_type is not valid"
 
     def test_no_violation_with_artifacts(self):
         """Test no violation when producing artifacts."""
@@ -352,7 +352,7 @@ class TestLoopGuardrail:
         guardrail.record_action("action", produced_artifacts=True)
         violation = guardrail.record_action("action", produced_artifacts=True)
 
-        assert violation is None
+        assert violation is None, "violation is not valid"
 
     def test_check_before_action(self):
         """Test pre-action checking."""
@@ -365,7 +365,7 @@ class TestLoopGuardrail:
 
         # Check if next same action would trigger
         result = guardrail.check_before_action("action")
-        assert result is not None  # Should suggest alternative
+        assert result is not None, "result must be initialized"
 
 
 class TestContextMemory:
@@ -378,10 +378,10 @@ class TestContextMemory:
         memory = ContextMemory(max_chunk_tokens=1000)
 
         chunk_ids = memory.store("This is test content to store")
-        assert len(chunk_ids) > 0
+        assert len(chunk_ids) > 0, "Chunk_ids must not be empty"
 
         result = memory.retrieve()
-        assert len(result.chunks) > 0
+        assert len(result.chunks) > 0, "Collection must not be empty"
 
     def test_chunking(self):
         """Test content chunking."""
@@ -394,7 +394,7 @@ class TestContextMemory:
         chunk_ids = memory.store(long_content)
 
         # Should create multiple chunks
-        assert len(chunk_ids) > 1
+        assert len(chunk_ids) > 1, "Chunk_ids must not be empty"
 
     def test_map_reduce_summarize(self):
         """Test map-reduce summarization."""
@@ -410,7 +410,7 @@ class TestContextMemory:
         memory.store("Second chunk of content")
 
         summary = memory.map_reduce_summarize()
-        assert summary is not None
+        assert summary is not None, "summary must be initialized"
 
     def test_persistence(self):
         """Test persistence to disk."""
@@ -427,7 +427,7 @@ class TestContextMemory:
             memory2 = ContextMemory(storage_path=path)
 
             result = memory2.retrieve()
-            assert len(result.chunks) > 0
+            assert len(result.chunks) > 0, "Collection must not be empty"
 
 
 class TestContextObserver:
@@ -443,8 +443,8 @@ class TestContextObserver:
         observer.info("Test message", source="test")
 
         logs = observer.get_recent_logs(10)
-        assert len(logs) > 0
-        assert logs[0]["correlation_id"] == "test-123"
+        assert len(logs) > 0, "Logs must not be empty"
+        assert logs[0]["correlation_id"] == "test-123", "Condition must be true"
 
     def test_metrics(self):
         """Test metrics collection."""
@@ -456,8 +456,8 @@ class TestContextObserver:
         observer.gauge("test_gauge", 42.0)
 
         summary = observer.get_metrics_summary()
-        assert "counters" in summary
-        assert len(summary["counters"]) > 0
+        assert "counters" in summary, "Count must be greater than zero"
+        assert len(summary["counters"]) > 0, "Collection must not be empty"
 
     def test_alerts(self):
         """Test alert generation."""
@@ -467,11 +467,11 @@ class TestContextObserver:
 
         alert = observer.alert(AlertSeverity.WARNING, "Test alert", source="test")
 
-        assert alert is not None
-        assert alert.severity == AlertSeverity.WARNING
+        assert alert is not None, "alert must be initialized"
+        assert alert.severity == AlertSeverity.WARNING, "severity is not valid"
 
         active = observer.get_active_alerts()
-        assert len(active) == 1
+        assert len(active) == 1, "Active must not be empty"
 
     def test_correlation_context(self):
         """Test correlation ID context management."""
@@ -482,7 +482,7 @@ class TestContextObserver:
         with observer:
             observer.info("Inside context")
             logs = observer.get_recent_logs(1)
-            assert logs[0]["correlation_id"] is not None
+            assert logs[0]["correlation_id"] is not None, "Value must be initialized"
 
 
 class TestPriorityPruner:
@@ -496,8 +496,8 @@ class TestPriorityPruner:
 
         result = pruner.prune("Some test content to prune")
 
-        assert result.original_text is not None
-        assert result.pruned_text is not None
+        assert result.original_text is not None, "original_text must be initialized"
+        assert result.pruned_text is not None, "pruned_text must be initialized"
 
     def test_prune_keep_errors(self):
         """Test that errors are kept."""
@@ -508,7 +508,7 @@ class TestPriorityPruner:
         error_text = "Error: Something went wrong"
         result = pruner.prune(error_text)
 
-        assert result.strategy_used == PruneStrategy.KEEP
+        assert result.strategy_used == PruneStrategy.KEEP, "Result must not be empty"
 
     def test_prune_batch(self):
         """Test batch pruning."""
@@ -524,7 +524,7 @@ class TestPriorityPruner:
 
         results, _tokens_saved = pruner.prune_batch(texts, target_tokens=50)
 
-        assert len(results) == len(texts)
+        assert len(results) == len(texts), "Results must not be empty"
 
 
 # Integration tests
@@ -575,14 +575,14 @@ class TestContextManagementIntegration:
             # Record action (simulating agent loop)
             violation = guardrail.record_action("process_content", produced_artifacts=True)
 
-            assert violation is None
+            assert violation is None, "violation is not valid"
 
             # Get final context
             context = budget.get_context()
-            assert len(context) > 0
+            assert len(context) > 0, "Context must not be empty"
 
             observer.info("Processing complete")
 
         # Verify metrics
         metrics = observer.get_metrics_summary()
-        assert metrics["total_observations"] > 0
+        assert metrics["total_observations"] > 0, "Value must be greater than zero"

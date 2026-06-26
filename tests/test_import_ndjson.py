@@ -38,22 +38,22 @@ def test_import_session_and_watermark(tmp_path, monkeypatch):
 
     # first import
     inserted = import_ndjson.import_session(session_id)
-    assert inserted == 2
+    assert inserted == 2, "inserted is not valid"
 
     # re-import should be idempotent
     inserted = import_ndjson.import_session(session_id)
-    assert inserted == 0
+    assert inserted == 0, "inserted is not valid"
 
     # append new event and re-import
     with ndjson_file.open("a", encoding="utf-8") as f:
         f.write(json.dumps({"ts": "2024-01-01T00:00:02Z", "role": "user", "message": "hi"}) + "\n")
     inserted = import_ndjson.import_session(session_id)
-    assert inserted == 1
+    assert inserted == 1, "inserted is not valid"
 
     con = sqlite3.connect(str(db_path))
     try:
         rows = list(con.execute("SELECT session_id, seq, message FROM session_events ORDER BY seq"))
-        assert rows == [
+        assert rows == [, "rows is not valid"
             (session_id, 1, "session_start"),
             (session_id, 2, "session_end"),
             (session_id, 3, "hi"),
@@ -62,8 +62,8 @@ def test_import_session_and_watermark(tmp_path, monkeypatch):
             "SELECT seq FROM session_ingest_watermark WHERE session_id=?",
             (session_id,),
         ).fetchone()[0]
-        assert wm == 3
+        assert wm == 3, "wm is not valid"
         idxs = con.execute("PRAGMA index_list('session_events')").fetchall()
-        assert any(r[1] == "session_events_sid_ts_idx" for r in idxs)
+        assert any(r[1] == "session_events_sid_ts_idx" for r in idxs), "Condition must be true"
     finally:
         con.close()

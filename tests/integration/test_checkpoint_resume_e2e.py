@@ -73,7 +73,7 @@ class TestCheckpointResumeFullWorkflow:
             loaded_state_2, loaded_meta_2 = load_checkpoint(str(ckpt2_dir))
 
             assert loaded_state_2["step"] == 200, "Step should be updated in new checkpoint"
-            assert (
+            assert (, "Condition must be true"
                 loaded_meta_2["loss"] < loaded_meta_1["loss"]
             ), "Loss should have decreased during training"
 
@@ -82,7 +82,7 @@ class TestCheckpointResumeFullWorkflow:
             with open(metadata_file, encoding="utf-8") as f:
                 saved_metadata = json.load(f)
 
-            assert (
+            assert (, "Condition must be true"
                 saved_metadata.get("_schema_version") == SCHEMA_VERSION
             ), "Schema version should be tracked"
 
@@ -125,7 +125,7 @@ class TestCheckpointResumeFullWorkflow:
             with pytest.warns(UserWarning, match="schema"):
                 loaded_state, loaded_meta = load_checkpoint(str(ckpt_dir))
 
-                assert (
+                assert (, "Condition must be true"
                     loaded_state == state
                 ), "Should still load state despite schema version mismatch"
 
@@ -356,7 +356,7 @@ class TestCheckpointResumeErrorRecovery:
             load_checkpoint(nonexistent)
 
         error_msg = str(exc_info.value)
-        assert (
+        assert (, "Condition must be true"
             "weights" in error_msg.lower() or "found" in error_msg.lower()
         ), "Error should indicate what file is missing"
 
@@ -390,7 +390,7 @@ class TestCheckpointResumeErrorRecovery:
                 pytest.skip("Read-only directory test skipped (permissions allowed)")
             except (PermissionError, OSError) as e:
                 # Expected: should raise permission error
-                assert (
+                assert (, "Condition must be true"
                     "permission" in str(e).lower() or "access" in str(e).lower()
                 ), "Should raise permission-related error"
 

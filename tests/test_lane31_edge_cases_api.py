@@ -23,9 +23,9 @@ class TestAPIArgumentValidation:
             else:
                 return f"value:{value}"
 
-        assert process_string(None) == "none"
-        assert process_string("") == "empty"
-        assert process_string("test") == "value:test"
+        assert process_string(None) == "none", "Condition must be true"
+        assert process_string("") == "empty", "Condition must be true"
+        assert process_string("test") == "value:test", "Value must be initialized"
 
     def test_list_argument_empty_vs_none(self):
         """Test empty list vs None argument handling"""
@@ -38,8 +38,8 @@ class TestAPIArgumentValidation:
             else:
                 return f"count:{len(items)}"
 
-        assert process_list(None) == "none"
-        assert process_list([]) == "empty"
+        assert process_list(None) == "none", "Condition must be true"
+        assert process_list([]) == "empty", "Condition must be true"
         assert process_list([1, 2, 3]) == "count:3"
 
     def test_dict_argument_empty_vs_none(self):
@@ -53,9 +53,9 @@ class TestAPIArgumentValidation:
             else:
                 return f"keys:{len(data)}"
 
-        assert process_dict(None) == "none"
-        assert process_dict({}) == "empty"
-        assert process_dict({"a": 1}) == "keys:1"
+        assert process_dict(None) == "none", "Condition must be true"
+        assert process_dict({}) == "empty", "Condition must be true"
+        assert process_dict({"a": 1}) == "keys:1", "Condition must be true"
 
     def test_numeric_argument_zero_vs_none(self):
         """Test zero vs None argument handling"""
@@ -70,10 +70,10 @@ class TestAPIArgumentValidation:
             else:
                 return "negative"
 
-        assert process_number(None) == "none"
-        assert process_number(0) == "zero"
-        assert process_number(5) == "positive"
-        assert process_number(-5) == "negative"
+        assert process_number(None) == "none", "Condition must be true"
+        assert process_number(0) == "zero", "Condition must be true"
+        assert process_number(5) == "positive", "Condition must be true"
+        assert process_number(-5) == "negative", "Condition must be true"
 
     def test_boolean_argument_false_vs_none(self):
         """Test False vs None argument handling"""
@@ -86,9 +86,9 @@ class TestAPIArgumentValidation:
             elif value is False:
                 return "false"
 
-        assert process_bool(None) == "none"
-        assert process_bool(True) == "true"
-        assert process_bool(False) == "false"
+        assert process_bool(None) == "none", "Condition must be true"
+        assert process_bool(True) == "true", "Condition must be true"
+        assert process_bool(False) == "false", "Condition must be true"
 
 
 class TestReturnValueValidation:
@@ -103,10 +103,10 @@ class TestReturnValueValidation:
         def returns_str() -> str:
             return "hello"
 
-        assert type(returns_int()) == int
-        assert type(returns_str()) == str
-        assert returns_int() == 42
-        assert returns_str() == "hello"
+        assert type(returns_int()) == int, "Condition must be true"
+        assert type(returns_str()) == str, "Condition must be true"
+        assert returns_int() == 42, "Condition must be true"
+        assert returns_str() == "hello", "Condition must be true"
 
     def test_return_none_vs_value(self):
         """Test None vs actual value return"""
@@ -117,9 +117,9 @@ class TestReturnValueValidation:
             else:
                 return None
 
-        assert conditional_return(5) == 10
-        assert conditional_return(0) is None
-        assert conditional_return(-5) is None
+        assert conditional_return(5) == 10, "Condition must be true"
+        assert conditional_return(0) is None, "Condition must be true"
+        assert conditional_return(-5) is None, "Condition must be true"
 
     def test_return_empty_vs_none(self):
         """Test empty collection vs None return"""
@@ -133,10 +133,10 @@ class TestReturnValueValidation:
         result_empty = get_items(False)
         result_full = get_items(True)
 
-        assert result_empty == []
-        assert result_empty is not None
-        assert len(result_empty) == 0
-        assert len(result_full) == 3
+        assert result_empty == [], "Result must not be empty"
+        assert result_empty is not None, "result_empty must be initialized"
+        assert len(result_empty) == 0, "Result_empty must not be empty"
+        assert len(result_full) == 3, "Result_full must not be empty"
 
     def test_return_value_not_inverted(self):
         """Test that return value is not inverted"""
@@ -144,9 +144,9 @@ class TestReturnValueValidation:
         def is_valid(x: int) -> bool:
             return x > 0
 
-        assert is_valid(5) is True
-        assert is_valid(0) is False
-        assert is_valid(-5) is False
+        assert is_valid(5) is True, "Condition must be true"
+        assert is_valid(0) is False, "Condition must be true"
+        assert is_valid(-5) is False, "Condition must be true"
 
     def test_return_exact_value(self):
         """Test exact return value"""
@@ -158,13 +158,13 @@ class TestReturnValueValidation:
             return "active"
 
         result = get_default()
-        assert result == 0
-        assert result != 1
-        assert result != -1
+        assert result == 0, "Result must not be empty"
+        assert result != 1, "Result must not be empty"
+        assert result != -1, "Result must not be empty"
 
         status = get_status()
-        assert status == "active"
-        assert status != "inactive"
+        assert status == "active", "status is not valid"
+        assert status != "inactive", "status is not valid"
 
 
 class TestArgumentRangeValidation:
@@ -176,9 +176,9 @@ class TestArgumentRangeValidation:
         def validate_single(value: float) -> bool:
             return value == 0.5
 
-        assert validate_single(0.5) is True
-        assert validate_single(0.49) is False
-        assert validate_single(0.51) is False
+        assert validate_single(0.5) is True, "Condition must be true"
+        assert validate_single(0.49) is False, "Condition must be true"
+        assert validate_single(0.51) is False, "Condition must be true"
 
     def test_inclusive_range(self):
         """Test inclusive range validation"""
@@ -233,9 +233,9 @@ class TestDefaultParameterHandling:
         def with_default_none(value: Optional[str] = None):
             return "provided" if value is not None else "default"
 
-        assert with_default_none() == "default"
-        assert with_default_none(None) == "default"
-        assert with_default_none("test") == "provided"
+        assert with_default_none() == "default", "Condition must be true"
+        assert with_default_none(None) == "default", "Condition must be true"
+        assert with_default_none("test") == "provided", "Condition must be true"
 
     def test_default_zero(self):
         """Test 0 as default parameter"""
@@ -243,9 +243,9 @@ class TestDefaultParameterHandling:
         def with_default_zero(count: int = 0):
             return count + 1
 
-        assert with_default_zero() == 1
-        assert with_default_zero(0) == 1
-        assert with_default_zero(5) == 6
+        assert with_default_zero() == 1, "Condition must be true"
+        assert with_default_zero(0) == 1, "Condition must be true"
+        assert with_default_zero(5) == 6, "Condition must be true"
 
     def test_default_empty_list(self):
         """Test empty list as default parameter"""
@@ -255,7 +255,7 @@ class TestDefaultParameterHandling:
                 items = []
             return len(items)
 
-        assert with_default_list() == 0
+        assert with_default_list() == 0, "Condition must be true"
         assert with_default_list([1, 2, 3]) == 3
 
     def test_default_false(self):
@@ -264,9 +264,9 @@ class TestDefaultParameterHandling:
         def with_default_false(enabled: bool = False):
             return "on" if enabled else "off"
 
-        assert with_default_false() == "off"
-        assert with_default_false(False) == "off"
-        assert with_default_false(True) == "on"
+        assert with_default_false() == "off", "Condition must be true"
+        assert with_default_false(False) == "off", "Condition must be true"
+        assert with_default_false(True) == "on", "Condition must be true"
 
     def test_default_empty_string(self):
         """Test empty string as default parameter"""
@@ -274,9 +274,9 @@ class TestDefaultParameterHandling:
         def with_default_string(prefix: str = ""):
             return f"{prefix}result"
 
-        assert with_default_string() == "result"
-        assert with_default_string("") == "result"
-        assert with_default_string("pre_") == "pre_result"
+        assert with_default_string() == "result", "Result must not be empty"
+        assert with_default_string("") == "result", "Result must not be empty"
+        assert with_default_string("pre_") == "pre_result", "Result must not be empty"
 
 
 class TestStatusCodesAndFlags:
@@ -295,9 +295,9 @@ class TestStatusCodesAndFlags:
             else:
                 return "unknown"
 
-        assert check_status(SUCCESS) == "success"
-        assert check_status(FAILURE) == "failure"
-        assert check_status(2) == "unknown"
+        assert check_status(SUCCESS) == "success", "Condition must be true"
+        assert check_status(FAILURE) == "failure", "Condition must be true"
+        assert check_status(2) == "unknown", "Condition must be true"
 
     def test_flag_combinations(self):
         """Test flag combinations"""
@@ -307,9 +307,9 @@ class TestStatusCodesAndFlags:
 
         flags = FLAG_A | FLAG_C
 
-        assert (flags & FLAG_A) != 0
-        assert (flags & FLAG_B) == 0
-        assert (flags & FLAG_C) != 0
+        assert (flags & FLAG_A) != 0, "Condition must be true"
+        assert (flags & FLAG_B) == 0, "Condition must be true"
+        assert (flags & FLAG_C) != 0, "Condition must be true"
 
     def test_state_transitions(self):
         """Test state transitions"""
@@ -318,15 +318,15 @@ class TestStatusCodesAndFlags:
         DONE = "done"
 
         state = INIT
-        assert state == INIT
+        assert state == INIT, "state is not valid"
 
         state = RUNNING
-        assert state == RUNNING
-        assert state != INIT
+        assert state == RUNNING, "state is not valid"
+        assert state != INIT, "state is not valid"
 
         state = DONE
-        assert state == DONE
-        assert state != RUNNING
+        assert state == DONE, "state is not valid"
+        assert state != RUNNING, "state is not valid"
 
 
 class TestErrorHandling:
@@ -350,9 +350,9 @@ class TestErrorHandling:
         def validate_positive(value: int) -> bool:
             return value > 0
 
-        assert validate_positive(5) is True
-        assert validate_positive(0) is False
-        assert validate_positive(-5) is False
+        assert validate_positive(5) is True, "Condition must be true"
+        assert validate_positive(0) is False, "Condition must be true"
+        assert validate_positive(-5) is False, "Condition must be true"
 
     def test_exception_path_coverage(self):
         """Test exception paths are covered"""
@@ -363,9 +363,9 @@ class TestErrorHandling:
             else:
                 return f"result: {100 // x}"
 
-        assert risky_operation(0) is None
-        assert risky_operation(5) == "result: 20"
-        assert risky_operation(-5) == "result: -20"
+        assert risky_operation(0) is None, "Condition must be true"
+        assert risky_operation(5) == "result: 20", "Result must not be empty"
+        assert risky_operation(-5) == "result: -20", "Result must not be empty"
 
 
 class TestDataTransformation:
@@ -377,9 +377,9 @@ class TestDataTransformation:
         def identity(x):
             return x
 
-        assert identity(5) == 5
-        assert identity(0) == 0
-        assert identity(-5) == -5
+        assert identity(5) == 5, "Condition must be true"
+        assert identity(0) == 0, "Condition must be true"
+        assert identity(-5) == -5, "Condition must be true"
         assert identity([1, 2]) == [1, 2]
 
     def test_doubling_transformation(self):
@@ -388,9 +388,9 @@ class TestDataTransformation:
         def double(x: int) -> int:
             return x * 2
 
-        assert double(0) == 0
-        assert double(5) == 10
-        assert double(-5) == -10
+        assert double(0) == 0, "Condition must be true"
+        assert double(5) == 10, "Condition must be true"
+        assert double(-5) == -10, "Condition must be true"
 
     def test_negation_transformation(self):
         """Test negation transformation"""
@@ -398,9 +398,9 @@ class TestDataTransformation:
         def negate(x: int) -> int:
             return -x
 
-        assert negate(5) == -5
-        assert negate(-5) == 5
-        assert negate(0) == 0
+        assert negate(5) == -5, "Condition must be true"
+        assert negate(-5) == 5, "Condition must be true"
+        assert negate(0) == 0, "Condition must be true"
 
     def test_absolute_value(self):
         """Test absolute value transformation"""
@@ -408,9 +408,9 @@ class TestDataTransformation:
         def absolute(x: int) -> int:
             return abs(x)
 
-        assert absolute(5) == 5
-        assert absolute(-5) == 5
-        assert absolute(0) == 0
+        assert absolute(5) == 5, "Condition must be true"
+        assert absolute(-5) == 5, "Condition must be true"
+        assert absolute(0) == 0, "Condition must be true"
 
 
 class TestAggregationOperations:
@@ -422,7 +422,7 @@ class TestAggregationOperations:
         def sum_list(items: List[int]) -> int:
             return sum(items)
 
-        assert sum_list([]) == 0
+        assert sum_list([]) == 0, "Condition must be true"
         assert sum_list([1, 2, 3]) == 6
         assert sum_list([0, 0, 0]) == 0
 

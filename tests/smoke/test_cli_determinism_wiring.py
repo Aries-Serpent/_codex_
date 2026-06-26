@@ -28,4 +28,4 @@ def test_cli_env_wires_determinism(monkeypatch):
     summary = cs._init_determinism_from_env()
     # Should return a dict when enabled
     assert isinstance(summary, dict)
-    assert summary.get("seed") == 123
+    assert summary.get("seed") == 123, "Condition must be true"

@@ -19,5 +19,5 @@ def test_link_audit_reports_missing(tmp_path, monkeypatch):
     monkeypatch.setattr(link_audit, "OUTPUT_PATH", tmp_path / "report.json")
     link_audit.main()
     data = json.loads((tmp_path / "report.json").read_text())
-    assert str(docs / "index.md") in data
-    assert data[str(docs / "index.md")] == ["missing.md"]
+    assert str(docs / "index.md") in data, "Data must not be empty"
+    assert data[str(docs / "index.md")] == ["missing.md"], "Data must not be empty"

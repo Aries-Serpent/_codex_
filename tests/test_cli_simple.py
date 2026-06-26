@@ -27,8 +27,8 @@ def test_cli_infer_uses_codex_model(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(simple_cli, "CodexModel", lambda *a, **k: DummyModel())
     runner = CliRunner()
     result = runner.invoke(simple_cli.cli, ["infer", "--model", "foo", "--prompt", "hi"])
-    assert result.exit_code == 0
-    assert "generated:hi" in result.output
+    assert result.exit_code == 0, "Result must not be empty"
+    assert "generated:hi" in result.output, "Result must not be empty"
 
 
 @pytest.mark.infra
@@ -46,9 +46,9 @@ def test_cli_train_model_invokes_trainer(monkeypatch: pytest.MonkeyPatch, tmp_pa
     result = runner.invoke(
         simple_cli.cli, ["train-model", "--config", str(config_path), "--resume"]
     )
-    assert result.exit_code == 0
-    assert captured["config"] == {"epochs": 1}
-    assert captured["resume"] is True
+    assert result.exit_code == 0, "Result must not be empty"
+    assert captured["config"] == {"epochs": 1}, "Condition must be true"
+    assert captured["resume"] is True, "Condition must be true"
 
 
 @pytest.mark.infra
@@ -71,7 +71,7 @@ def test_cli_build_tokenizer_invokes_pipeline(
     result = runner.invoke(
         simple_cli.cli, ["build-tokenizer", "--config", str(config_path), "--dry-run"]
     )
-    assert result.exit_code == 0
-    assert str(config_path) == captured["path"]
-    assert captured["dry_run"] is True
-    assert "tokenizer" in result.output
+    assert result.exit_code == 0, "Result must not be empty"
+    assert str(config_path) == captured["path"], "Condition must be true"
+    assert captured["dry_run"] is True, "Condition must be true"
+    assert "tokenizer" in result.output, "Result must not be empty"

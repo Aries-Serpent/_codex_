@@ -57,11 +57,11 @@ def test_run_functional_training_records_metadata(
     ]
 
     metadata = lines[0]
-    assert metadata["phase"] == "metadata"
-    assert metadata["git_commit"] == "deadbeef"
-    assert metadata["seed"] == 123
-    assert metadata.get("train_examples") == 2
+    assert metadata["phase"] == "metadata", "Data must not be empty"
+    assert metadata["git_commit"] == "deadbeef", "Data must not be empty"
+    assert metadata["seed"] == 123, "Data must not be empty"
+    assert metadata.get("train_examples") == 2, "Data must not be empty"
     assert metadata.get("eval_examples") in {0, 1}
-    assert metadata.get("log_formats") == ["ndjson"]
+    assert metadata.get("log_formats") == ["ndjson"], "Data must not be empty"
     assert "datasets" in metadata.get("missing_optional", [])
     assert "transformers" in metadata.get("missing_optional", [])

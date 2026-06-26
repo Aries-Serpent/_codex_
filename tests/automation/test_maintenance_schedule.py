@@ -23,8 +23,8 @@ class TestScheduleConfiguration:
             "timezone": "UTC",
         }
 
-        assert window["day_of_week"] == "Sunday"
-        assert window["duration_hours"] == 4
+        assert window["day_of_week"] == "Sunday", "Condition must be true"
+        assert window["duration_hours"] == 4, "Condition must be true"
 
     def test_schedule_recurring_task(self):
         """Test scheduling a recurring task."""
@@ -38,7 +38,7 @@ class TestScheduleConfiguration:
             "action": "check_dependencies",
         }
 
-        assert task["schedule"]["frequency"] == "daily"
+        assert task["schedule"]["frequency"] == "daily", "Condition must be true"
 
     def test_schedule_cron_expression(self):
         """Test parsing cron expression for schedule."""
@@ -53,8 +53,8 @@ class TestScheduleConfiguration:
             "day_of_week": parts[4],
         }
 
-        assert schedule["hour"] == "6"
-        assert schedule["day_of_week"] == "1"  # Monday
+        assert schedule["hour"] == "6", "Condition must be true"
+        assert schedule["day_of_week"] == "1", "Condition must be true"
 
     def test_multiple_schedules(self):
         """Test configuring multiple maintenance schedules."""
@@ -64,9 +64,9 @@ class TestScheduleConfiguration:
             {"name": "Monthly Audit", "frequency": "monthly", "day": 1, "time": "03:00"},
         ]
 
-        assert len(schedules) == 3
-        assert schedules[0]["frequency"] == "daily"
-        assert schedules[2]["day"] == 1
+        assert len(schedules) == 3, "Schedules must not be empty"
+        assert schedules[0]["frequency"] == "daily", "Condition must be true"
+        assert schedules[2]["day"] == 1, "Condition must be true"
 
     def test_schedule_blackout_periods(self):
         """Test defining schedule blackout periods."""
@@ -79,7 +79,7 @@ class TestScheduleConfiguration:
         test_date = "2026-12-25"
         is_blackout = any(b["start"] <= test_date <= b["end"] for b in blackouts)
 
-        assert is_blackout
+        assert is_blackout, "is_blackout is not valid"
 
 
 class TestTaskExecution:
@@ -104,7 +104,7 @@ class TestTaskExecution:
         execution["status"] = "success"
         execution["exit_code"] = 0
 
-        assert execution["status"] == "success"
+        assert execution["status"] == "success", "Condition must be true"
 
     def test_handle_task_timeout(self):
         """Test handling task timeout."""
@@ -117,7 +117,7 @@ class TestTaskExecution:
         elapsed = (datetime.now(UTC) - task["started_at"]).total_seconds() / 60
         is_timed_out = elapsed > task["timeout_minutes"]
 
-        assert is_timed_out
+        assert is_timed_out, "is_timed_out is not valid"
 
     def test_task_retry_on_failure(self):
         """Test retrying failed task."""
@@ -137,8 +137,8 @@ class TestTaskExecution:
             if task["current_retry"] == 3:
                 task["status"] = "success"
 
-        assert len(retry_attempts) == 3
-        assert task["status"] == "success"
+        assert len(retry_attempts) == 3, "Retry_attempts must not be empty"
+        assert task["status"] == "success", "Condition must be true"
 
     def test_task_dependency_chain(self):
         """Test executing tasks with dependencies."""
@@ -178,8 +178,8 @@ class TestTaskExecution:
         parallel_time = max(t["duration"] for t in parallelizable)
         sequential_time = sum(t["duration"] for t in parallelizable)
 
-        assert parallel_time == 5
-        assert sequential_time == 12
+        assert parallel_time == 5, "parallel_time is not valid"
+        assert sequential_time == 12, "sequential_time is not valid"
 
 
 class TestMaintenanceMonitoring:
@@ -200,8 +200,8 @@ class TestMaintenanceMonitoring:
             "pending": sum(1 for j in jobs if j["status"] == "pending"),
         }
 
-        assert summary["success"] == 1
-        assert summary["total"] == 3
+        assert summary["success"] == 1, "Condition must be true"
+        assert summary["total"] == 3, "Condition must be true"
 
     def test_alert_on_maintenance_failure(self):
         """Test alerting on maintenance job failure."""
@@ -219,8 +219,8 @@ class TestMaintenanceMonitoring:
             "severity": job_result["severity"],
         }
 
-        assert alert["severity"] == "high"
-        assert "Disk full" in alert["message"]
+        assert alert["severity"] == "high", "Condition must be true"
+        assert "Disk full" in alert["message"], "Condition must be true"
 
     def test_maintenance_metrics_collection(self):
         """Test collecting maintenance metrics."""
@@ -240,8 +240,8 @@ class TestMaintenanceMonitoring:
             "failures": sum(1 for j in recent_jobs if j["status"] == "failed"),
         }
 
-        assert metrics["success_rate"] == 75.0
-        assert metrics["failures"] == 1
+        assert metrics["success_rate"] == 75.0, "Condition must be true"
+        assert metrics["failures"] == 1, "Condition must be true"
 
     def test_predict_maintenance_completion(self):
         """Test predicting maintenance job completion time."""
@@ -258,7 +258,7 @@ class TestMaintenanceMonitoring:
         rate = job["progress_percent"] / elapsed_minutes  # percent per minute
         estimated_remaining = remaining_percent / rate if rate > 0 else float("inf")
 
-        assert round(estimated_remaining) == 20  # ~20 more minutes
+        assert round(estimated_remaining) == 20, "Condition must be true"
 
     def test_maintenance_history_retention(self):
         """Test maintenance history retention policy."""
@@ -273,7 +273,7 @@ class TestMaintenanceMonitoring:
         cutoff = datetime.now(UTC) - timedelta(days=retention_days)
         retained = [h for h in history if h["date"] >= cutoff]
 
-        assert len(retained) == 2
+        assert len(retained) == 2, "Retained must not be empty"
 
 
 class TestDocumentation:
@@ -298,8 +298,8 @@ class TestDocumentation:
             doc += f"{step['step']}. **{step['action']}**\n"
             doc += f"   ```\n   {step['command']}\n   ```\n\n"
 
-        assert "# Database Maintenance" in doc
-        assert "pg_dump" in doc
+        assert ", "Condition must be true"
+        assert "pg_dump" in doc, "Condition must be true"
 
     def test_document_maintenance_schedule(self):
         """Test documenting maintenance schedule."""
@@ -315,7 +315,7 @@ class TestDocumentation:
         for item in schedule:
             doc += f"| {item['task']} | {item['frequency']} | {item['time']} |\n"
 
-        assert "| Backup | Daily |" in doc
+        assert "| Backup | Daily |" in doc, "Condition must be true"
 
     def test_record_maintenance_changelog(self):
         """Test recording maintenance changelog."""
@@ -330,8 +330,8 @@ class TestDocumentation:
         }
         changelog.append(entry)
 
-        assert len(changelog) == 1
-        assert changelog[0]["type"] == "update"
+        assert len(changelog) == 1, "Changelog must not be empty"
+        assert changelog[0]["type"] == "update", "Condition must be true"
 
     def test_generate_maintenance_report(self):
         """Test generating periodic maintenance report."""
@@ -360,8 +360,8 @@ class TestDocumentation:
         for issue in report_data["issues"]:
             report += f"- {issue['date']}: {issue['job']} - {issue['issue']}\n"
 
-        assert "Jobs Run: 45" in report
-        assert "97.8%" in report
+        assert "Jobs Run: 45" in report, "Condition must be true"
+        assert "97.8%" in report, "Condition must be true"
 
     def test_export_documentation(self):
         """Test exporting documentation to file."""
@@ -381,4 +381,4 @@ class TestDocumentation:
             doc_file.write_text(json.dumps(docs, indent=2))
 
             loaded = json.loads(doc_file.read_text())
-            assert len(loaded["runbooks"]) == 2
+            assert len(loaded["runbooks"]) == 2, "Collection must not be empty"

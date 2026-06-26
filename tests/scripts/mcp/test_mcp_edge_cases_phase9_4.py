@@ -36,27 +36,27 @@ class TestFilterByGlobsEdgeCases:
     def test_empty_pattern_string_returns_empty_set(self, tmp_path: Path) -> None:
         # A blank string yields no patterns after split
         result = filter_by_globs("", tmp_path)
-        assert result == set()
+        assert result == set(), "Result must not be empty"
 
     def test_whitespace_only_pattern_returns_empty_set(self, tmp_path: Path) -> None:
         result = filter_by_globs("   ,   ", tmp_path)
-        assert result == set()
+        assert result == set(), "Result must not be empty"
 
     def test_pattern_matching_no_files_returns_empty_set(self, tmp_path: Path) -> None:
         result = filter_by_globs("nonexistent_dir/**/*.xyz", tmp_path)
-        assert result == set()
+        assert result == set(), "Result must not be empty"
 
     def test_pattern_matching_files_returns_paths(self, tmp_path: Path) -> None:
         (tmp_path / "src").mkdir()
         (tmp_path / "src" / "module.py").write_text("# py\n")
         result = filter_by_globs("src/*.py", tmp_path)
-        assert len(result) == 1
+        assert len(result) == 1, "Result must not be empty"
 
     def test_multiple_patterns_comma_separated(self, tmp_path: Path) -> None:
         (tmp_path / "a.py").write_text("")
         (tmp_path / "b.md").write_text("")
         result = filter_by_globs("*.py,*.md", tmp_path)
-        assert len(result) == 2
+        assert len(result) == 2, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -69,36 +69,36 @@ class TestExpandGlobsEdgeCases:
 
     def test_empty_patterns_list_returns_empty_set(self, tmp_path: Path) -> None:
         result = expand_globs([], tmp_path)
-        assert result == set()
+        assert result == set(), "Result must not be empty"
 
     def test_patterns_match_nothing_returns_empty_set(self, tmp_path: Path) -> None:
         result = expand_globs(["*.xyz", "no_match/**"], tmp_path)
-        assert result == set()
+        assert result == set(), "Result must not be empty"
 
     def test_exclude_removes_matched_files(self, tmp_path: Path) -> None:
         (tmp_path / "keep.py").write_text("")
         (tmp_path / "remove.py").write_text("")
         result = expand_globs(["*.py"], tmp_path, exclude_patterns=["remove.py"])
         paths = {p.name for p in result}
-        assert "keep.py" in paths
-        assert "remove.py" not in paths
+        assert "keep.py" in paths, "Condition must be true"
+        assert "remove.py" not in paths, "Condition must be true"
 
     def test_exclude_all_returns_empty_set(self, tmp_path: Path) -> None:
         (tmp_path / "file.py").write_text("")
         result = expand_globs(["*.py"], tmp_path, exclude_patterns=["*.py"])
-        assert result == set()
+        assert result == set(), "Result must not be empty"
 
     def test_recursive_pattern_missing_prefix_dir(self, tmp_path: Path) -> None:
         # Pattern with ** but nonexistent prefix dir → no matches, no error
         result = expand_globs(["missing_prefix/**/*.py"], tmp_path)
-        assert result == set()
+        assert result == set(), "Result must not be empty"
 
     def test_recursive_pattern_finds_nested_files(self, tmp_path: Path) -> None:
         sub = tmp_path / "sub" / "deep"
         sub.mkdir(parents=True)
         (sub / "nested.py").write_text("")
         result = expand_globs(["sub/**/*.py"], tmp_path)
-        assert len(result) == 1
+        assert len(result) == 1, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -119,13 +119,13 @@ class TestLoadTopicsEdgeCases:
         empty_file = tmp_path / "empty.json"
         empty_file.write_text("{}")
         result = load_topics(empty_file)
-        assert result == {}
+        assert result == {}, "Result must not be empty"
 
     def test_valid_topics_file_returns_dict(self, tmp_path: Path) -> None:
         topics_file = tmp_path / "topics.json"
         topics_file.write_text(json.dumps({"agents": ["agents/**/*.py"]}))
         result = load_topics(topics_file)
-        assert "agents" in result
+        assert "agents" in result, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -153,9 +153,9 @@ class TestMainEdgeCases:
         ]
         with patch("sys.argv", argv):
             result = main()
-        assert result == 0
-        assert output.exists()
-        assert output.read_text() == ""
+        assert result == 0, "Result must not be empty"
+        assert output.exists(), "Condition must be true"
+        assert output.read_text() == "", "Condition must be true"
 
     def test_overrides_with_matching_files_returns_0(self, tmp_path: Path) -> None:
         (tmp_path / "hello.py").write_text("# hi\n")
@@ -175,9 +175,9 @@ class TestMainEdgeCases:
         ]
         with patch("sys.argv", argv):
             result = main()
-        assert result == 0
+        assert result == 0, "Result must not be empty"
         content = output.read_text()
-        assert "hello.py" in content
+        assert "hello.py" in content, "Content must not be empty"
 
     def test_exclude_via_main_removes_files(self, tmp_path: Path) -> None:
         (tmp_path / "keep.py").write_text("")
@@ -200,7 +200,7 @@ class TestMainEdgeCases:
         ]
         with patch("sys.argv", argv):
             result = main()
-        assert result == 0
+        assert result == 0, "Result must not be empty"
         content = output.read_text()
-        assert "keep.py" in content
-        assert "skip.py" not in content
+        assert "keep.py" in content, "Content must not be empty"
+        assert "skip.py" not in content, "Content must not be empty"

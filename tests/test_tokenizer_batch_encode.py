@@ -74,7 +74,7 @@ def dummy_adapter():
 def test_batch_encode_shapes(dummy_adapter):
     """Test that batch encoding returns consistent tensor shapes."""
     enc = dummy_adapter.batch_encode(["a", "bb"], max_length=6, return_dict=True)
-    assert enc["input_ids"].shape == enc["attention_mask"].shape
+    assert enc["input_ids"].shape == enc["attention_mask"].shape, "shape is not valid"
     assert enc["input_ids"].shape == (2, 6)
     assert enc["attention_mask"].shape == (2, 6)
 
@@ -84,24 +84,24 @@ def test_batch_encode_masks_and_lengths(hf_tok):
     adp = hf_tok
     enc = adp.batch_encode(["a", "longer sentence"], max_length=8, return_dict=True)
 
-    assert "input_ids" in enc and "attention_mask" in enc
-    assert enc["input_ids"].shape == enc["attention_mask"].shape
-    assert enc["input_ids"].shape[0] == 2
-    assert enc["input_ids"].shape[1] == 8
+    assert "input_ids" in enc and "attention_mask" in enc, "Condition must be true"
+    assert enc["input_ids"].shape == enc["attention_mask"].shape, "shape is not valid"
+    assert enc["input_ids"].shape[0] == 2, "Condition must be true"
+    assert enc["input_ids"].shape[1] == 8, "Condition must be true"
 
     mask1_sum = int(enc["attention_mask"][0].sum())
     mask2_sum = int(enc["attention_mask"][1].sum())
-    assert mask1_sum <= mask2_sum
+    assert mask1_sum <= mask2_sum, "mask1_sum is not valid"
 
     enc2 = adp.batch_encode(["1234567890"], max_length=5, return_dict=True)
-    assert enc2["input_ids"].shape[1] == 5
+    assert enc2["input_ids"].shape[1] == 5, "Condition must be true"
 
 
 def test_batch_encode_truncation(hf_tok):
     """Ensure truncation respects max_length."""
     adp = hf_tok
     enc = adp.batch_encode(["one two three four five"], max_length=3, return_dict=True)
-    assert enc["input_ids"].shape[-1] == 3
+    assert enc["input_ids"].shape[-1] == 3, "Condition must be true"
 
 
 def test_batch_encode_respects_string_padding(hf_tok):
@@ -111,7 +111,7 @@ def test_batch_encode_respects_string_padding(hf_tok):
     max_len = max(len(adp.tokenizer.encode(t)) for t in texts)
 
     enc_longest = adp.batch_encode(texts, padding="longest", return_dict=True)
-    assert enc_longest["input_ids"].shape[-1] == max_len
+    assert enc_longest["input_ids"].shape[-1] == max_len, "Condition must be true"
 
     enc_no_pad = adp.batch_encode(
         texts,
@@ -120,7 +120,7 @@ def test_batch_encode_respects_string_padding(hf_tok):
         return_dict=True,
     )
     lengths = [len(ids) for ids in enc_no_pad["input_ids"]]
-    assert lengths == [len(adp.tokenizer.encode(t)) for t in texts]
+    assert lengths == [len(adp.tokenizer.encode(t)) for t in texts], "Lengths must not be empty"
 
 
 def test_batch_encode_empty_input():
@@ -128,7 +128,7 @@ def test_batch_encode_empty_input():
     dummy = HFTokenizerAdapter(DummyTokenizer())
 
     enc_empty = dummy.batch_encode([], max_length=4, return_dict=True)
-    assert enc_empty["input_ids"].shape[0] == 0
+    assert enc_empty["input_ids"].shape[0] == 0, "Condition must be true"
 
     enc_empty_str = dummy.batch_encode([""], max_length=4, return_dict=True)
     assert enc_empty_str["input_ids"].shape == (1, 4)
@@ -150,7 +150,7 @@ def test_batch_encode_no_max_length():
     dummy = HFTokenizerAdapter(DummyTokenizer(max_length=8))
 
     enc = dummy.batch_encode(["no", "max", "length"], max_length=None, return_dict=True)
-    assert enc["input_ids"].shape[1] == 8
+    assert enc["input_ids"].shape[1] == 8, "Condition must be true"
 
 
 @pytest.mark.parametrize("max_length", [1, 5, 10, 100])
@@ -159,8 +159,8 @@ def test_batch_encode_parametrized_lengths(max_length):
     dummy = HFTokenizerAdapter(DummyTokenizer())
 
     enc = dummy.batch_encode(["test text"], max_length=max_length, return_dict=True)
-    assert enc["input_ids"].shape[1] == max_length
-    assert enc["attention_mask"].shape[1] == max_length
+    assert enc["input_ids"].shape[1] == max_length, "Length must be greater than zero"
+    assert enc["attention_mask"].shape[1] == max_length, "Length must be greater than zero"
 
 
 def test_batch_encode_consistency():
@@ -171,8 +171,8 @@ def test_batch_encode_consistency():
     enc1 = dummy.batch_encode(texts, max_length=6, return_dict=True)
     enc2 = dummy.batch_encode(texts, max_length=6, return_dict=True)
 
-    assert enc1["input_ids"].shape == enc2["input_ids"].shape
-    assert enc1["attention_mask"].shape == enc2["attention_mask"].shape
+    assert enc1["input_ids"].shape == enc2["input_ids"].shape, "shape is not valid"
+    assert enc1["attention_mask"].shape == enc2["attention_mask"].shape, "shape is not valid"
 
 
 def test_batch_encode_padding_and_truncation(hf_tok):
@@ -181,9 +181,9 @@ def test_batch_encode_padding_and_truncation(hf_tok):
     texts = ["hi", "this is a much longer sentence"]
     enc = adp.batch_encode(texts, max_length=5, return_dict=False)
     first, second = enc
-    assert len(first) == len(second) == 5
-    assert first[-1] == adp.pad_id
-    assert second[-1] != adp.pad_id
+    assert len(first) == len(second) == 5, "First must not be empty"
+    assert first[-1] == adp.pad_id, "Condition must be true"
+    assert second[-1] != adp.pad_id, "Condition must be true"
 
 
 __all__ = [

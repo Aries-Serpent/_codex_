@@ -52,8 +52,8 @@ def test_manifest_collects_external_warnings():
         env=env,
     )
     mpath = Path("audit_run_manifest.json")
-    assert mpath.exists()
+    assert mpath.exists(), "Condition must be true"
     mf = json.loads(mpath.read_text())
     warns = mf.get("warnings", [])
-    assert any("invalid_regex" in w for w in warns)
-    assert any("pointer_style_degraded" in w for w in warns)
+    assert any("invalid_regex" in w for w in warns), "Condition must be true"
+    assert any("pointer_style_degraded" in w for w in warns), "Condition must be true"

@@ -20,15 +20,15 @@ def test_collect_without_nvml(monkeypatch):
 
     # Sanity: module should surface NVML availability flag.
     assert hasattr(mod, "_NVML_AVAILABLE")
-    assert not mod._NVML_AVAILABLE or mod.pynvml is None
+    assert not mod._NVML_AVAILABLE or mod.pynvml is None, "pynvml is not valid"
 
     callback = mod.SystemMetricsCallback()
     metrics: dict = {}
     callback.on_epoch_end(epoch=0, metrics=metrics, state={})
 
     # CPU-only fallback should provide stable GPU keys with numeric values.
-    assert "gpu0_util" in metrics
-    assert "gpu0_mem" in metrics
+    assert "gpu0_util" in metrics, "Condition must be true"
+    assert "gpu0_mem" in metrics, "Condition must be true"
     assert isinstance(metrics["gpu0_util"], (int, float))
     assert isinstance(metrics["gpu0_mem"], (int, float))
 
@@ -53,5 +53,5 @@ def test_runtime_nvml_failure_advisory(monkeypatch):
     callback = mod.SystemMetricsCallback()
     metrics: dict[str, float] = {}
     callback.on_epoch_end(epoch=0, metrics=metrics, state={})
-    assert "gpu0_util" in metrics
-    assert "gpu0_mem" in metrics
+    assert "gpu0_util" in metrics, "Condition must be true"
+    assert "gpu0_mem" in metrics, "Condition must be true"

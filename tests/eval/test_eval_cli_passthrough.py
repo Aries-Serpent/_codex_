@@ -26,4 +26,4 @@ def test_eval_cli_env_override_and_passthrough(monkeypatch) -> None:
 
     rc = eval_main()
 
-    assert rc == 123
+    assert rc == 123, "rc is not valid"

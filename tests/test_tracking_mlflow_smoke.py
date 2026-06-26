@@ -21,4 +21,4 @@ def test_mlflow_local_file_backend(tmp_path: Path, monkeypatch: pytest.MonkeyPat
         mlflow.log_param("p", 1)
         mlflow.log_metric("m", 0.123)
 
-    assert any((tmp_path / "mlruns").glob("**/meta.yaml"))
+    assert any((tmp_path / "mlruns").glob("**/meta.yaml")), "Condition must be true"

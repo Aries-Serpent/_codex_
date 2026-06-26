@@ -42,8 +42,8 @@ class AIRepositorySearch:
                 self.content_index = json.load(f)
         except FileNotFoundError as e:
             error_type = type(e).__name__
-            logger.debug(f"FileNotFoundError: <ERROR_TYPE>")
-            logger.warning(f"FileNotFoundError: <ERROR_TYPE>", exc_info=True)
+            logger.debug("FileNotFoundError: <ERROR_TYPE>")
+            logger.warning("FileNotFoundError: <ERROR_TYPE>", exc_info=True)
             print("⚠ Warning: content_index.json not found", file=sys.stderr)
 
         try:
@@ -51,8 +51,8 @@ class AIRepositorySearch:
                 self.semantic_index = json.load(f)
         except FileNotFoundError as e:
             error_type = type(e).__name__
-            logger.debug(f"FileNotFoundError: <ERROR_TYPE>")
-            logger.warning(f"FileNotFoundError: <ERROR_TYPE>", exc_info=True)
+            logger.debug("FileNotFoundError: <ERROR_TYPE>")
+            logger.warning("FileNotFoundError: <ERROR_TYPE>", exc_info=True)
             print("⚠ Warning: semantic_index.json not found", file=sys.stderr)
 
         try:
@@ -60,8 +60,8 @@ class AIRepositorySearch:
                 self.structural_index = json.load(f)
         except FileNotFoundError as e:
             error_type = type(e).__name__
-            logger.debug(f"FileNotFoundError: <ERROR_TYPE>")
-            logger.warning(f"FileNotFoundError: <ERROR_TYPE>", exc_info=True)
+            logger.debug("FileNotFoundError: <ERROR_TYPE>")
+            logger.warning("FileNotFoundError: <ERROR_TYPE>", exc_info=True)
             print("⚠ Warning: structural_index.json not found", file=sys.stderr)
 
         try:
@@ -69,8 +69,8 @@ class AIRepositorySearch:
                 self.entity_index = json.load(f)
         except FileNotFoundError as e:
             error_type = type(e).__name__
-            logger.debug(f"FileNotFoundError: <ERROR_TYPE>")
-            logger.warning(f"FileNotFoundError: <ERROR_TYPE>", exc_info=True)
+            logger.debug("FileNotFoundError: <ERROR_TYPE>")
+            logger.warning("FileNotFoundError: <ERROR_TYPE>", exc_info=True)
             print("⚠ Warning: entity_index.json not found", file=sys.stderr)
 
         try:
@@ -78,8 +78,8 @@ class AIRepositorySearch:
                 self.metadata_index = json.load(f)
         except FileNotFoundError as e:
             error_type = type(e).__name__
-            logger.debug(f"FileNotFoundError: <ERROR_TYPE>")
-            logger.warning(f"FileNotFoundError: <ERROR_TYPE>", exc_info=True)
+            logger.debug("FileNotFoundError: <ERROR_TYPE>")
+            logger.warning("FileNotFoundError: <ERROR_TYPE>", exc_info=True)
             print("⚠ Warning: metadata_index.json not found", file=sys.stderr)
 
     def search_by_keyword(self, keyword: str, max_results: int = 10) -> list[SearchResult]:

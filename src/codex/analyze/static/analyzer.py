@@ -313,14 +313,14 @@ def _run_ruff(source_dir: Path) -> list[LintIssue]:
                 )
     except FileNotFoundError as e:
         error_type = type(e).__name__
-        logger.debug(f"FileNotFoundError: <ERROR_TYPE>")
-        logger.warning(f"FileNotFoundError: <ERROR_TYPE>", exc_info=True)
+        logger.debug("FileNotFoundError: <ERROR_TYPE>")
+        logger.warning("FileNotFoundError: <ERROR_TYPE>", exc_info=True)
         logger.warning("ruff not found, skipping lint check")
     except subprocess.TimeoutExpired:
         logger.warning("ruff timed out")
     except (IOError, OSError) as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         logger.warning("ruff failed: %s", e)
 
     return issues
@@ -361,14 +361,14 @@ def _run_bandit(source_dir: Path) -> list[SecurityIssue]:
                 )
     except FileNotFoundError as e:
         error_type = type(e).__name__
-        logger.debug(f"FileNotFoundError: <ERROR_TYPE>")
-        logger.warning(f"FileNotFoundError: <ERROR_TYPE>", exc_info=True)
+        logger.debug("FileNotFoundError: <ERROR_TYPE>")
+        logger.warning("FileNotFoundError: <ERROR_TYPE>", exc_info=True)
         logger.warning("bandit not found, skipping security scan")
     except subprocess.TimeoutExpired:
         logger.warning("bandit timed out")
     except (IOError, OSError) as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         logger.warning("bandit failed: %s", e)
 
     return issues
@@ -399,7 +399,7 @@ def analyze_file(file_path: Path, base_dir: Path) -> Optional[FileAnalysis]:
             tree = ast.parse(content)
         except SyntaxError as e:
             error_type = type(e).__name__
-            logger.debug(f"SyntaxError: <ERROR_TYPE>")
+            logger.debug("SyntaxError: <ERROR_TYPE>")
             logger.warning("Syntax error in %s: %s", file_path, e)
             return FileAnalysis(
                 path=str(file_path.relative_to(base_dir)),
@@ -429,7 +429,7 @@ def analyze_file(file_path: Path, base_dir: Path) -> Optional[FileAnalysis]:
 
     except (IOError, OSError) as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         logger.error("Error analyzing %s: %s", file_path, e)
         return None
 

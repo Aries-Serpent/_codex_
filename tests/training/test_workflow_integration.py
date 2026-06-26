@@ -57,9 +57,9 @@ class TestDataPreparation:
         data = list(range(100))
         splits = split_dataset(data)
 
-        assert len(splits["train"]) == 80
-        assert len(splits["val"]) == 10
-        assert len(splits["test"]) == 10
+        assert len(splits["train"]) == 80, "Collection must not be empty"
+        assert len(splits["val"]) == 10, "Collection must not be empty"
+        assert len(splits["test"]) == 10, "Collection must not be empty"
 
     def test_data_shuffling(self):
         """Data is shuffled with reproducible seed."""
@@ -77,8 +77,8 @@ class TestDataPreparation:
         shuffled2 = shuffle_with_seed(data, seed=42)
         shuffled3 = shuffle_with_seed(data, seed=43)
 
-        assert shuffled1 == shuffled2  # Same seed = same result
-        assert shuffled1 != shuffled3  # Different seed
+        assert shuffled1 == shuffled2, "shuffled1 is not valid"
+        assert shuffled1 != shuffled3, "shuffled1 is not valid"
 
     def test_batch_creation(self):
         """Batches are created correctly."""
@@ -92,8 +92,8 @@ class TestDataPreparation:
         data = list(range(100))
         batches = create_batches(data, batch_size=32)
 
-        assert len(batches) == 4  # 32 + 32 + 32 + 4
-        assert len(batches[-1]) == 4  # Last batch is smaller
+        assert len(batches) == 4, "Batches must not be empty"
+        assert len(batches[-1]) == 4, "Collection must not be empty"
 
 
 class TestTrainingLoop:
@@ -119,8 +119,8 @@ class TestTrainingLoop:
         trainer = MockTrainer(epochs=5)
         trainer.train()
 
-        assert len(trainer.epoch_losses) == 5
-        assert trainer.epoch_losses[-1] < trainer.epoch_losses[0]
+        assert len(trainer.epoch_losses) == 5, "Collection must not be empty"
+        assert trainer.epoch_losses[-1] < trainer.epoch_losses[0], "Condition must be true"
 
     def test_gradient_update(self):
         """Gradients update parameters correctly."""
@@ -140,9 +140,9 @@ class TestTrainingLoop:
 
         optimizer.step(gradients)
 
-        assert params[0] == pytest.approx(0.99)
-        assert params[1] == pytest.approx(1.98)
-        assert params[2] == pytest.approx(2.97)
+        assert params[0] == pytest.approx(0.99), "Condition must be true"
+        assert params[1] == pytest.approx(1.98), "Condition must be true"
+        assert params[2] == pytest.approx(2.97), "Condition must be true"
 
     def test_loss_aggregation(self):
         """Loss is aggregated correctly over batches."""
@@ -165,7 +165,7 @@ class TestTrainingLoop:
         aggregator.update(0.6, batch_size=32)
 
         avg_loss = aggregator.average()
-        assert avg_loss == pytest.approx(0.8)
+        assert avg_loss == pytest.approx(0.8), "avg_loss is not valid"
 
 
 class TestEvaluationPhase:
@@ -182,7 +182,7 @@ class TestEvaluationPhase:
         labels = [1, 0, 0, 1, 0]
 
         accuracy = compute_accuracy(predictions, labels)
-        assert accuracy == pytest.approx(0.8)  # 4/5
+        assert accuracy == pytest.approx(0.8), "accuracy is not valid"
 
     def test_f1_score_computation(self):
         """F1 score is computed correctly."""
@@ -204,7 +204,7 @@ class TestEvaluationPhase:
 
         f1 = compute_f1(predictions, labels)
         # TP=2, FP=1, FN=1 -> precision=2/3, recall=2/3 -> F1=2/3
-        assert f1 == pytest.approx(2 / 3)
+        assert f1 == pytest.approx(2 / 3), "f1 is not valid"
 
     def test_evaluation_no_grad(self):
         """Evaluation runs without gradient computation."""
@@ -220,10 +220,10 @@ class TestEvaluationPhase:
                 self.training = True
 
         model = MockModel()
-        assert model.training is True
+        assert model.training is True, "training is not valid"
 
         model.eval()
-        assert model.training is False
+        assert model.training is False, "training is not valid"
 
 
 class TestCheckpointing:
@@ -257,8 +257,8 @@ class TestCheckpointing:
             metrics={"loss": 0.5, "accuracy": 0.9},
         )
 
-        assert "epoch_5" in path
-        assert len(manager.saved) == 1
+        assert "epoch_5" in path, "Condition must be true"
+        assert len(manager.saved) == 1, "Collection must not be empty"
 
     def test_checkpoint_loading(self):
         """Checkpoints are loaded correctly."""
@@ -276,8 +276,8 @@ class TestCheckpointing:
 
         checkpoint = MockCheckpoint.load("/models/checkpoint.pt")
 
-        assert checkpoint["epoch"] == 5
-        assert "weights" in checkpoint["model_state"]
+        assert checkpoint["epoch"] == 5, "Condition must be true"
+        assert "weights" in checkpoint["model_state"], "Condition must be true"
 
     def test_best_checkpoint_tracking(self):
         """Best checkpoint is tracked by metric."""
@@ -304,12 +304,12 @@ class TestCheckpointing:
         tracker = BestCheckpointTracker("loss", mode="min")
 
         is_best_1 = tracker.update("/ckpt/e1.pt", {"loss": 1.0})
-        assert is_best_1
+        assert is_best_1, "is_best_1 is not valid"
         is_best_2 = tracker.update("/ckpt/e2.pt", {"loss": 0.8})
-        assert is_best_2
+        assert is_best_2, "is_best_2 is not valid"
         assert not tracker.update("/ckpt/e3.pt", {"loss": 0.9})
 
-        assert tracker.best_checkpoint == "/ckpt/e2.pt"
+        assert tracker.best_checkpoint == "/ckpt/e2.pt", "best_checkpoint is not valid"
 
 
 class TestWorkflowOrchestration:
@@ -339,19 +339,19 @@ class TestWorkflowOrchestration:
 
         workflow = TrainingWorkflow("run-1")
 
-        assert workflow.run.state == WorkflowState.PENDING
+        assert workflow.run.state == WorkflowState.PENDING, "state is not valid"
 
         workflow.prepare()
-        assert workflow.run.state == WorkflowState.PREPARING
+        assert workflow.run.state == WorkflowState.PREPARING, "state is not valid"
 
         workflow.train()
-        assert workflow.run.state == WorkflowState.TRAINING
+        assert workflow.run.state == WorkflowState.TRAINING, "state is not valid"
 
         workflow.evaluate()
-        assert workflow.run.state == WorkflowState.EVALUATING
+        assert workflow.run.state == WorkflowState.EVALUATING, "state is not valid"
 
         workflow.complete()
-        assert workflow.run.state == WorkflowState.COMPLETED
+        assert workflow.run.state == WorkflowState.COMPLETED, "state is not valid"
 
     def test_workflow_error_recovery(self):
         """Workflow can recover from errors."""
@@ -380,8 +380,8 @@ class TestWorkflowOrchestration:
             return "success"
 
         result = workflow.run_with_retry(flaky_operation)
-        assert result == "success"
-        assert workflow.attempts == 2
+        assert result == "success", "Result must not be empty"
+        assert workflow.attempts == 2, "attempts is not valid"
 
     def test_distributed_training_coordination(self):
         """Distributed training coordinates across workers."""
@@ -407,10 +407,10 @@ class TestWorkflowOrchestration:
 
         # Simulate 4 workers reaching barrier
         for _ in range(3):
-            assert not coordinator.barrier("epoch_end")
-        assert coordinator.barrier("epoch_end")
+            assert not coordinator.barrier("epoch_end"), "Condition must be true"
+        assert coordinator.barrier("epoch_end"), "coordinat is not valid"
 
         # All-reduce sum
         worker_losses = [0.5, 0.6, 0.4, 0.5]
         total_loss = coordinator.all_reduce(worker_losses)
-        assert total_loss == 2.0
+        assert total_loss == 2.0, "total_loss is not valid"

@@ -32,8 +32,8 @@ class TestFeatureStoreImports:
         try:
             from codex_ml.cli.feature_store import app
 
-            assert app.info.name == "feature-store"
-            assert app.info.help == "Feature store management CLI"
+            assert app.info.name == "feature-store", "name is not valid"
+            assert app.info.help == "Feature store management CLI", "help is not valid"
         except ImportError:
             pytest.skip("typer not available")
 
@@ -100,7 +100,7 @@ class TestFeatureRegistration:
             # Verify custom path was used
             if mock_store_class.called:
                 call_args = mock_store_class.call_args
-                assert "/custom/path" in str(call_args)
+                assert "/custom/path" in str(call_args), "Condition must be true"
         except ImportError:
             pytest.skip("typer not available")
 
@@ -175,7 +175,7 @@ class TestFeatureStoreHelpers:
         try:
             from codex_ml.cli.feature_store import FeatureGroup
 
-            assert FeatureGroup is not None
+            assert FeatureGroup is not None, "FeatureGroup must be initialized"
         except ImportError:
             pytest.skip("Feature store dependencies not available")
 
@@ -184,7 +184,7 @@ class TestFeatureStoreHelpers:
         try:
             from codex_ml.cli.feature_store import FeatureStore
 
-            assert FeatureStore is not None
+            assert FeatureStore is not None, "FeatureStore must be initialized"
         except ImportError:
             pytest.skip("Feature store dependencies not available")
 
@@ -193,7 +193,7 @@ class TestFeatureStoreHelpers:
         try:
             from codex_ml.cli.feature_store import FeatureHealthMonitor
 
-            assert FeatureHealthMonitor is not None
+            assert FeatureHealthMonitor is not None, "FeatureHealthMonitor must be initialized"
         except ImportError:
             pytest.skip("Feature store dependencies not available")
 
@@ -215,7 +215,7 @@ class TestFeatureStoreErrorHandling:
             result = runner.invoke(app, ["register", "test", "1.0.0"])
 
             # Should exit with error code 1
-            assert result.exit_code == 1
+            assert result.exit_code == 1, "Result must not be empty"
         except ImportError:
             pytest.skip("typer not available")
 
@@ -235,7 +235,7 @@ class TestFeatureStoreErrorHandling:
             result = runner.invoke(app, ["list"])
 
             # Should show "No features registered" message
-            assert result.exit_code == 0 or "No features" in result.output
+            assert result.exit_code == 0 or "No features" in result.output, "Result must not be empty"
         except ImportError:
             pytest.skip("typer not available")
 

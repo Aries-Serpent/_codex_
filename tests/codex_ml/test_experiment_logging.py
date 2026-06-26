@@ -24,12 +24,12 @@ def test_experiment_tracker_writes_meta(tmp_path: Path):
     )
 
     meta_path = run_dir / "experiment_meta.json"
-    assert meta_path.exists()
+    assert meta_path.exists(), "Condition must be true"
     data = json.loads(meta_path.read_text(encoding="utf-8"))
-    assert data["experiment_name"] == "exp-test"
-    assert data["mode"] == "train"
-    assert data["run_id"] == "train-run"
-    assert data["labels"]["k"] == "v"
+    assert data["experiment_name"] == "exp-test", "Data must not be empty"
+    assert data["mode"] == "train", "Data must not be empty"
+    assert data["run_id"] == "train-run", "Data must not be empty"
+    assert data["labels"]["k"] == "v", "Data must not be empty"
 
 
 def _write_dummy_config(path: Path) -> None:
@@ -64,14 +64,14 @@ def test_train_minimal_integration_with_experiment_tracker(tmp_path: Path):
             "exp-train",
         ]
     )
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
 
     train_root = runs_dir / "train"
     run_dirs = [p for p in train_root.iterdir() if p.is_dir()]
-    assert run_dirs
+    assert run_dirs, "run_dirs is not valid"
     meta = (run_dirs[0] / "experiment_meta.json").read_text(encoding="utf-8")
     data = json.loads(meta)
-    assert data["experiment_name"] == "exp-train"
+    assert data["experiment_name"] == "exp-train", "Data must not be empty"
 
 
 def test_eval_minimal_integration_with_experiment_tracker(tmp_path: Path):
@@ -98,12 +98,12 @@ def test_eval_minimal_integration_with_experiment_tracker(tmp_path: Path):
             "exp-eval",
         ]
     )
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
 
     eval_root = runs_dir / "eval"
     run_dirs = [p for p in eval_root.iterdir() if p.is_dir()]
-    assert run_dirs
+    assert run_dirs, "run_dirs is not valid"
     meta = (run_dirs[0] / "experiment_meta.json").read_text(encoding="utf-8")
     data = json.loads(meta)
-    assert data["experiment_name"] == "exp-eval"
-    assert data["labels"]["checkpoint"].endswith("train")
+    assert data["experiment_name"] == "exp-eval", "Data must not be empty"
+    assert data["labels"]["checkpoint"].endswith("train"), "Data must not be empty"

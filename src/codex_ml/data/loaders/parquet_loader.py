@@ -29,8 +29,8 @@ try:
     PARQUET_AVAILABLE = importlib.util.find_spec("pandas") is not None
 except ImportError as e:
     error_type = type(e).__name__
-    logger.debug(f"ImportError: <ERROR_TYPE>")
-    logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
+    logger.debug("ImportError: <ERROR_TYPE>")
+    logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
     PARQUET_AVAILABLE = False
     logger.warning("PyArrow not installed. Install: pip install pyarrow")
 
@@ -80,7 +80,7 @@ class ParquetLoader:
             self.metadata = self.parquet_file.metadata
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             raise ValueError(f"Invalid Parquet file: {e}") from e
 
     def load(self) -> list[dict[str, Any]]:

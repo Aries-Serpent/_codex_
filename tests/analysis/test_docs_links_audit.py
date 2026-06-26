@@ -48,18 +48,18 @@ Tests reference: tests/unit/test_example.py
 
     payload = run_audit(repo)
 
-    assert (
+    assert (, "Condition must be true"
         payload["pytest_ini"]
         == "replace --cov=src with --cov=src/codex_ml in configs/development/pytest.ini"
     )
-    assert "docs/index.md" in payload["mkdocs_nav"]
-    assert "docs/guide.md" in payload["mkdocs_nav"]
+    assert "docs/index.md" in payload["mkdocs_nav"], "Condition must be true"
+    assert "docs/guide.md" in payload["mkdocs_nav"], "Condition must be true"
 
     broken = {(item["source"], item["target"]) for item in payload["broken_links"]}
     assert ("docs/index.md", "guide.md") in broken
     assert ("mkdocs.yml", "docs/guide.md") in broken
 
-    assert payload["missing_tests"] == ["tests/unit/test_example.py"]
+    assert payload["missing_tests"] == ["tests/unit/test_example.py"], "Condition must be true"
 
 
 def test_audit_succeeds_when_everything_present(tmp_path: Path) -> None:
@@ -94,9 +94,9 @@ Tests reference: tests/unit/test_example.py
 
     payload = run_audit(repo)
 
-    assert payload["pytest_ini"] is None
-    assert payload["broken_links"] == []
-    assert payload["missing_tests"] == []
+    assert payload["pytest_ini"] is None, "Condition must be true"
+    assert payload["broken_links"] == [], "Condition must be true"
+    assert payload["missing_tests"] == [], "Condition must be true"
 
     # Ensure the output can be serialised (matches CLI behaviour).
     json.dumps(payload)

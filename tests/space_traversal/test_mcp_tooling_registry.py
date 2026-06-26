@@ -18,10 +18,10 @@ def test_detect_no_registry():
 
     result = mcp_tooling_registry.detect(file_index)
 
-    assert result["id"] == "mcp-tooling-registry"
-    assert result["found_patterns"] == []
-    assert "registry" in result["required_patterns"]
-    assert "mcp.json" in result["required_patterns"]
+    assert result["id"] == "mcp-tooling-registry", "Result must not be empty"
+    assert result["found_patterns"] == [], "Result must not be empty"
+    assert "registry" in result["required_patterns"], "Result must not be empty"
+    assert "mcp.json" in result["required_patterns"], "Result must not be empty"
 
 
 def test_detect_registry_file():
@@ -35,8 +35,8 @@ def test_detect_registry_file():
 
     result = mcp_tooling_registry.detect(file_index)
 
-    assert "registry" in result["found_patterns"]
-    assert "mcp/registry.py" in result["evidence_files"]
+    assert "registry" in result["found_patterns"], "Result must not be empty"
+    assert "mcp/registry.py" in result["evidence_files"], "Result must not be empty"
 
 
 def test_detect_mcp_json():
@@ -50,8 +50,8 @@ def test_detect_mcp_json():
 
     result = mcp_tooling_registry.detect(file_index)
 
-    assert "mcp.json" in result["found_patterns"]
-    assert "mcp.json" in result["evidence_files"]
+    assert "mcp.json" in result["found_patterns"], "Result must not be empty"
+    assert "mcp.json" in result["evidence_files"], "Result must not be empty"
 
 
 def test_detect_both_patterns():
@@ -65,9 +65,9 @@ def test_detect_both_patterns():
 
     result = mcp_tooling_registry.detect(file_index)
 
-    assert "registry" in result["found_patterns"]
-    assert "mcp.json" in result["found_patterns"]
-    assert len(result["evidence_files"]) == 2
+    assert "registry" in result["found_patterns"], "Result must not be empty"
+    assert "mcp.json" in result["found_patterns"], "Result must not be empty"
+    assert len(result["evidence_files"]) == 2, "Collection must not be empty"
 
 
 def test_detect_tool_directory():
@@ -81,8 +81,8 @@ def test_detect_tool_directory():
 
     result = mcp_tooling_registry.detect(file_index)
 
-    assert "registry" in result["found_patterns"]
-    assert "tools/registry.py" in result["evidence_files"]
+    assert "registry" in result["found_patterns"], "Result must not be empty"
+    assert "tools/registry.py" in result["evidence_files"], "Result must not be empty"
 
 
 def test_detect_mcp_directory_registry():
@@ -96,8 +96,8 @@ def test_detect_mcp_directory_registry():
 
     result = mcp_tooling_registry.detect(file_index)
 
-    assert "registry" in result["found_patterns"]
-    assert "mcp/tools/registry.py" in result["evidence_files"]
+    assert "registry" in result["found_patterns"], "Result must not be empty"
+    assert "mcp/tools/registry.py" in result["evidence_files"], "Result must not be empty"
 
 
 def test_detect_nested_mcp_json():
@@ -111,8 +111,8 @@ def test_detect_nested_mcp_json():
 
     result = mcp_tooling_registry.detect(file_index)
 
-    assert "mcp.json" in result["found_patterns"]
-    assert "config/mcp.json" in result["evidence_files"]
+    assert "mcp.json" in result["found_patterns"], "Result must not be empty"
+    assert "config/mcp.json" in result["evidence_files"], "Result must not be empty"
 
 
 def test_case_insensitive_matching():
@@ -127,8 +127,8 @@ def test_case_insensitive_matching():
     result = mcp_tooling_registry.detect(file_index)
 
     # Should detect patterns regardless of case
-    assert "registry" in result["found_patterns"]
-    assert "mcp.json" in result["found_patterns"]
+    assert "registry" in result["found_patterns"], "Result must not be empty"
+    assert "mcp.json" in result["found_patterns"], "Result must not be empty"
 
 
 def test_tool_registry_variants():
@@ -143,9 +143,9 @@ def test_tool_registry_variants():
 
     result = mcp_tooling_registry.detect(file_index)
 
-    assert "registry" in result["found_patterns"]
+    assert "registry" in result["found_patterns"], "Result must not be empty"
     # All should be detected as they contain "registry"
-    assert len(result["evidence_files"]) == 3
+    assert len(result["evidence_files"]) == 3, "Collection must not be empty"
 
 
 def test_evidence_deduplication():
@@ -160,7 +160,7 @@ def test_evidence_deduplication():
     result = mcp_tooling_registry.detect(file_index)
 
     # Check no duplicates
-    assert len(result["evidence_files"]) == len(set(result["evidence_files"]))
+    assert len(result["evidence_files"]) == len(set(result["evidence_files"])), "Collection must not be empty"
 
 
 def test_sorted_output():
@@ -176,9 +176,9 @@ def test_sorted_output():
     result = mcp_tooling_registry.detect(file_index)
 
     # found_patterns should be sorted
-    assert result["found_patterns"] == sorted(result["found_patterns"])
+    assert result["found_patterns"] == sorted(result["found_patterns"]), "Result must not be empty"
     # evidence_files should be sorted
-    assert result["evidence_files"] == sorted(result["evidence_files"])
+    assert result["evidence_files"] == sorted(result["evidence_files"]), "Result must not be empty"
 
 
 def test_docs_keywords_present():
@@ -187,7 +187,7 @@ def test_docs_keywords_present():
 
     result = mcp_tooling_registry.detect(file_index)
 
-    assert "docs_keywords" in result
+    assert "docs_keywords" in result, "Result must not be empty"
     expected_keywords = [
         "mcp",
         "tools",
@@ -201,7 +201,7 @@ def test_docs_keywords_present():
         "management",
     ]
     for keyword in expected_keywords:
-        assert keyword in result["docs_keywords"]
+        assert keyword in result["docs_keywords"], "Result must not be empty"
 
 
 def test_safeguards_metadata():
@@ -210,8 +210,8 @@ def test_safeguards_metadata():
 
     result = mcp_tooling_registry.detect(file_index)
 
-    assert "meta" in result
-    assert "safeguards" in result["meta"]
+    assert "meta" in result, "Result must not be empty"
+    assert "safeguards" in result["meta"], "Result must not be empty"
     expected_safeguards = [
         "validation",
         "timeout",
@@ -220,7 +220,7 @@ def test_safeguards_metadata():
         "audit-trail",
     ]
     for safeguard in expected_safeguards:
-        assert safeguard in result["meta"]["safeguards"]
+        assert safeguard in result["meta"]["safeguards"], "Result must not be empty"
 
 
 def test_detector_version():
@@ -229,8 +229,8 @@ def test_detector_version():
 
     result = mcp_tooling_registry.detect(file_index)
 
-    assert "detector_version" in result["meta"]
-    assert result["meta"]["detector_version"] == "1.1"
+    assert "detector_version" in result["meta"], "Result must not be empty"
+    assert result["meta"]["detector_version"] == "1.1", "Result must not be empty"
 
 
 def test_category_mcp():
@@ -239,7 +239,7 @@ def test_category_mcp():
 
     result = mcp_tooling_registry.detect(file_index)
 
-    assert result["meta"]["category"] == "mcp"
+    assert result["meta"]["category"] == "mcp", "Result must not be empty"
 
 
 def test_empty_file_index():
@@ -248,9 +248,9 @@ def test_empty_file_index():
 
     result = mcp_tooling_registry.detect(file_index)
 
-    assert result["id"] == "mcp-tooling-registry"
-    assert result["found_patterns"] == []
-    assert result["evidence_files"] == []
+    assert result["id"] == "mcp-tooling-registry", "Result must not be empty"
+    assert result["found_patterns"] == [], "Result must not be empty"
+    assert result["evidence_files"] == [], "Result must not be empty"
 
 
 def test_missing_path_key():
@@ -265,9 +265,9 @@ def test_missing_path_key():
     # Should handle gracefully
     result = mcp_tooling_registry.detect(file_index)
 
-    assert result["id"] == "mcp-tooling-registry"
+    assert result["id"] == "mcp-tooling-registry", "Result must not be empty"
     # Should still find mcp.json
-    assert "mcp.json" in result["found_patterns"]
+    assert "mcp.json" in result["found_patterns"], "Result must not be empty"
 
 
 def test_deterministic_output():
@@ -285,8 +285,8 @@ def test_deterministic_output():
 
     # All results should be identical
     for i in range(1, len(results)):
-        assert results[i]["found_patterns"] == results[0]["found_patterns"]
-        assert results[i]["evidence_files"] == results[0]["evidence_files"]
+        assert results[i]["found_patterns"] == results[0]["found_patterns"], "Result must not be empty"
+        assert results[i]["evidence_files"] == results[0]["evidence_files"], "Result must not be empty"
 
 
 def test_mcp_and_tool_keywords():
@@ -299,5 +299,5 @@ def test_mcp_and_tool_keywords():
     result_tool = mcp_tooling_registry.detect(file_index_tool)
 
     # Both should detect registry
-    assert "registry" in result_mcp["found_patterns"]
-    assert "registry" in result_tool["found_patterns"]
+    assert "registry" in result_mcp["found_patterns"], "Result must not be empty"
+    assert "registry" in result_tool["found_patterns"], "Result must not be empty"

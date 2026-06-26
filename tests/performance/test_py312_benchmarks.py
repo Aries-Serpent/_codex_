@@ -247,7 +247,7 @@ class TestPerformanceComparisons:
         elapsed = time.perf_counter() - start
 
         assert elapsed < 0.5, f"Generator took {elapsed:.3f}s, expected < 0.5s"
-        assert len(result) == iterations
+        assert len(result) == iterations, "Result must not be empty"
 
     def test_exception_handling_performance(self):
         """Test exception handling performance."""
@@ -273,7 +273,7 @@ class TestPerformanceComparisons:
 
         # Both should complete reasonably
         assert elapsed_no_exception < 0.2, f"Try/except (no error) took {elapsed_no_exception:.3f}s"
-        assert (
+        assert (, "Condition must be true"
             elapsed_with_exception < 1.0
         ), f"Try/except (with error) took {elapsed_with_exception:.3f}s"
 
@@ -320,7 +320,7 @@ class TestRealWorldPerformance:
         elapsed = time.perf_counter() - start
 
         assert elapsed < 0.5, f"Data pipeline took {elapsed:.3f}s, expected < 0.5s"
-        assert len(stats) == 2  # Two categories (True/False)
+        assert len(stats) == 2, "Stats must not be empty"
 
     @pytest.mark.skipif(sys.version_info < (3, 11), reason="Requires 3.11+")
     def test_tomllib_parsing_performance(self, tmp_path):

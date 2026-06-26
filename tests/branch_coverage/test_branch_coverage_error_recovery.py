@@ -32,7 +32,7 @@ class TestRetryLogicBranches:
         else:
             result = "failed"
 
-        assert result == "success"
+        assert result == "success", "Result must not be empty"
 
     def test_retry_success_second_attempt_branch(self) -> None:
         """Test success on second attempt."""
@@ -47,7 +47,7 @@ class TestRetryLogicBranches:
         else:
             result = "failed"
 
-        assert result == "success"
+        assert result == "success", "Result must not be empty"
 
     def test_retry_exhausted_attempts_branch(self) -> None:
         """Test all retry attempts exhausted."""
@@ -62,7 +62,7 @@ class TestRetryLogicBranches:
         else:
             result = "failed"
 
-        assert result == "failed"
+        assert result == "failed", "Result must not be empty"
 
     def test_retry_with_exponential_backoff_branch(self) -> None:
         """Test exponential backoff calculation."""
@@ -78,7 +78,7 @@ class TestRetryLogicBranches:
         else:
             delay = base_delay * 8
 
-        assert delay == 4.0
+        assert delay == 4.0, "delay is not valid"
 
     def test_retry_with_max_backoff_cap_branch(self) -> None:
         """Test backoff capped at maximum."""
@@ -87,7 +87,7 @@ class TestRetryLogicBranches:
 
         actual_delay = max_delay if calculated_delay > max_delay else calculated_delay
 
-        assert actual_delay == 60.0
+        assert actual_delay == 60.0, "actual_delay is not valid"
 
     def test_retry_with_jitter_branch(self) -> None:
         """Test retry with jitter enabled."""
@@ -100,7 +100,7 @@ class TestRetryLogicBranches:
         else:
             jittered_delay = base_delay
 
-        assert jittered_delay < base_delay
+        assert jittered_delay < base_delay, "jittered_delay is not valid"
 
     def test_retry_disabled_branch(self) -> None:
         """Test retry disabled."""
@@ -108,7 +108,7 @@ class TestRetryLogicBranches:
 
         retry_enabled = not max_attempts <= 1
 
-        assert retry_enabled is False
+        assert retry_enabled is False, "retry_enabled is not valid"
 
 
 # ============================================================================
@@ -125,7 +125,7 @@ class TestGracefulDegradationBranches:
 
         service = "primary" if primary_available else "fallback"
 
-        assert service == "primary"
+        assert service == "primary", "service is not valid"
 
     def test_degradation_fallback_to_secondary_branch(self) -> None:
         """Test fallback to secondary service."""
@@ -139,7 +139,7 @@ class TestGracefulDegradationBranches:
         else:
             service = "none"
 
-        assert service == "secondary"
+        assert service == "secondary", "service is not valid"
 
     def test_degradation_no_service_available_branch(self) -> None:
         """Test no service available."""
@@ -153,7 +153,7 @@ class TestGracefulDegradationBranches:
         else:
             service = "none"
 
-        assert service == "none"
+        assert service == "none", "service is not valid"
 
     def test_degradation_feature_disabled_branch(self) -> None:
         """Test feature gracefully disabled."""
@@ -166,8 +166,8 @@ class TestGracefulDegradationBranches:
             feature_enabled = True
             mode = "full"
 
-        assert feature_enabled is False
-        assert mode == "basic"
+        assert feature_enabled is False, "feature_enabled is not valid"
+        assert mode == "basic", "mode is not valid"
 
     def test_degradation_cached_response_branch(self) -> None:
         """Test using cached response on error."""
@@ -181,7 +181,7 @@ class TestGracefulDegradationBranches:
         else:
             response = "error"
 
-        assert response == "cached_data"
+        assert response == "cached_data", "Response must not be empty"
 
     def test_degradation_partial_results_branch(self) -> None:
         """Test returning partial results on error."""
@@ -195,7 +195,7 @@ class TestGracefulDegradationBranches:
         else:
             status = "failed"
 
-        assert status == "partial"
+        assert status == "partial", "status is not valid"
 
 
 # ============================================================================
@@ -217,7 +217,7 @@ class TestFallbackChainBranches:
         else:
             result = "all_failed"
 
-        assert result == "primary_success"
+        assert result == "primary_success", "Result must not be empty"
 
     def test_fallback_chain_second_succeeds_branch(self) -> None:
         """Test second fallback option succeeds."""
@@ -231,7 +231,7 @@ class TestFallbackChainBranches:
         else:
             result = "tertiary"
 
-        assert result == "secondary"
+        assert result == "secondary", "Result must not be empty"
 
     def test_fallback_chain_all_fail_branch(self) -> None:
         """Test all fallback options fail."""
@@ -248,7 +248,7 @@ class TestFallbackChainBranches:
         else:
             result = "all_failed"
 
-        assert result == "all_failed"
+        assert result == "all_failed", "Result must not be empty"
 
     def test_fallback_with_timeout_branch(self) -> None:
         """Test fallback with timeout."""
@@ -261,7 +261,7 @@ class TestFallbackChainBranches:
         else:
             result = "primary_used"
 
-        assert result == "fallback_used"
+        assert result == "fallback_used", "Result must not be empty"
 
     def test_fallback_skip_unavailable_branch(self) -> None:
         """Test skipping unavailable fallback options."""
@@ -278,7 +278,7 @@ class TestFallbackChainBranches:
         else:
             result = "none"
 
-        assert result == "secondary"
+        assert result == "secondary", "Result must not be empty"
 
 
 # ============================================================================
@@ -296,7 +296,7 @@ class TestCircuitBreakerBranches:
 
         state = "open" if failure_count >= threshold else "closed"
 
-        assert state == "closed"
+        assert state == "closed", "state is not valid"
 
     def test_circuit_breaker_open_state_branch(self) -> None:
         """Test circuit breaker in open state."""
@@ -305,7 +305,7 @@ class TestCircuitBreakerBranches:
 
         state = "open" if failure_count >= threshold else "closed"
 
-        assert state == "open"
+        assert state == "open", "state is not valid"
 
     def test_circuit_breaker_half_open_state_branch(self) -> None:
         """Test circuit breaker in half-open state."""
@@ -315,7 +315,7 @@ class TestCircuitBreakerBranches:
 
         new_state = "half_open" if state == "open" and time_since_open > timeout else state
 
-        assert new_state == "half_open"
+        assert new_state == "half_open", "new_state is not valid"
 
     def test_circuit_breaker_reset_branch(self) -> None:
         """Test circuit breaker reset after success."""
@@ -333,8 +333,8 @@ class TestCircuitBreakerBranches:
             new_state = state
             failure_count = 0
 
-        assert new_state == "closed"
-        assert failure_count == 0
+        assert new_state == "closed", "new_state is not valid"
+        assert failure_count == 0, "Count must be greater than zero"
 
     def test_circuit_breaker_reopen_branch(self) -> None:
         """Test circuit breaker reopening on failure."""
@@ -343,7 +343,7 @@ class TestCircuitBreakerBranches:
 
         new_state = ("closed" if request_success else "open") if state == "half_open" else state
 
-        assert new_state == "open"
+        assert new_state == "open", "new_state is not valid"
 
     def test_circuit_breaker_call_allowed_branch(self) -> None:
         """Test call allowed when circuit closed."""
@@ -351,7 +351,7 @@ class TestCircuitBreakerBranches:
 
         allowed = state != "open"
 
-        assert allowed is True
+        assert allowed is True, "allowed is not valid"
 
     def test_circuit_breaker_call_blocked_branch(self) -> None:
         """Test call blocked when circuit open."""
@@ -359,7 +359,7 @@ class TestCircuitBreakerBranches:
 
         allowed = state != "open"
 
-        assert allowed is False
+        assert allowed is False, "allowed is not valid"
 
 
 # ============================================================================
@@ -381,7 +381,7 @@ class TestErrorRecoveryStrategyBranches:
         else:
             strategy = "fail"
 
-        assert strategy == "retry"
+        assert strategy == "retry", "strategy is not valid"
 
     def test_recovery_fallback_strategy_branch(self) -> None:
         """Test fallback recovery strategy."""
@@ -394,7 +394,7 @@ class TestErrorRecoveryStrategyBranches:
         else:
             strategy = "fail"
 
-        assert strategy == "fallback"
+        assert strategy == "fallback", "strategy is not valid"
 
     def test_recovery_fail_fast_branch(self) -> None:
         """Test fail fast strategy."""
@@ -407,7 +407,7 @@ class TestErrorRecoveryStrategyBranches:
         else:
             strategy = "fail"
 
-        assert strategy == "fail"
+        assert strategy == "fail", "strategy is not valid"
 
     def test_recovery_cleanup_on_error_branch(self) -> None:
         """Test cleanup executed on error."""
@@ -416,7 +416,7 @@ class TestErrorRecoveryStrategyBranches:
 
         cleanup_done = (bool(cleanup_required)) if error_occurred else False
 
-        assert cleanup_done is True
+        assert cleanup_done is True, "cleanup_done is not valid"
 
     def test_recovery_resource_release_branch(self) -> None:
         """Test resource release on error."""
@@ -425,7 +425,7 @@ class TestErrorRecoveryStrategyBranches:
 
         resources_released = bool(error_occurred and resources_acquired)
 
-        assert resources_released is True
+        assert resources_released is True, "resources_released is not valid"
 
 
 # ============================================================================
@@ -448,7 +448,7 @@ class TestHealthCheckRecoveryBranches:
         else:
             health = "unhealthy"
 
-        assert health == "healthy"
+        assert health == "healthy", "health is not valid"
 
     def test_health_check_degraded_branch(self) -> None:
         """Test degraded status."""
@@ -462,7 +462,7 @@ class TestHealthCheckRecoveryBranches:
         else:
             health = "unhealthy"
 
-        assert health == "degraded"
+        assert health == "degraded", "health is not valid"
 
     def test_health_check_unhealthy_branch(self) -> None:
         """Test unhealthy status."""
@@ -476,7 +476,7 @@ class TestHealthCheckRecoveryBranches:
         else:
             health = "unhealthy"
 
-        assert health == "unhealthy"
+        assert health == "unhealthy", "health is not valid"
 
     def test_auto_recovery_triggered_branch(self) -> None:
         """Test automatic recovery triggered."""
@@ -485,7 +485,7 @@ class TestHealthCheckRecoveryBranches:
 
         recovery_triggered = bool(health == "unhealthy" and auto_recovery_enabled)
 
-        assert recovery_triggered is True
+        assert recovery_triggered is True, "recovery_triggered is not valid"
 
     def test_auto_recovery_disabled_branch(self) -> None:
         """Test automatic recovery disabled."""
@@ -494,4 +494,4 @@ class TestHealthCheckRecoveryBranches:
 
         recovery_triggered = bool(health == "unhealthy" and auto_recovery_enabled)
 
-        assert recovery_triggered is False
+        assert recovery_triggered is False, "recovery_triggered is not valid"

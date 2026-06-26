@@ -41,6 +41,6 @@ def test_evaluate_runs_in_no_grad_and_restores_mode() -> None:
 
     metrics = evaluate(model, batches, loss_fn=lambda outputs, _: outputs.loss)
 
-    assert metrics["eval_loss"] == pytest.approx(0.5)
-    assert model.training is True
+    assert metrics["eval_loss"] == pytest.approx(0.5), "Condition must be true"
+    assert model.training is True, "training is not valid"
     assert model.grad_flags == [False, False]

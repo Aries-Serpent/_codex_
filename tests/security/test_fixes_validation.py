@@ -16,7 +16,7 @@ def test_audit_logger_log_dir_parameter(tmp_path):
     # Should not raise TypeError
     test_dir = tmp_path / "test_audit"
     logger = AuditLogger(log_dir=test_dir)
-    assert logger.path == test_dir / "audit.log"
+    assert logger.path == test_dir / "audit.log", "path is not valid"
 
 
 def test_sanitize_log_alias_exists():
@@ -44,7 +44,7 @@ def test_encryption_error_not_frozen():
 
         # Should be able to instantiate with message
         error = EncryptionError("test error")
-        assert error.message == "test error"
+        assert error.message == "test error", "Error should be raised or set"
         assert isinstance(error, Exception)
     except ImportError:
         pytest.skip("encryption module not available")

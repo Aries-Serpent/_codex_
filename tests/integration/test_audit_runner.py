@@ -33,7 +33,7 @@ class TestTrendAggregation:
         trend = scores[-1] - scores[0]
         avg_score = sum(scores) / len(scores)
 
-        assert trend == 5  # Positive trend
+        assert trend == 5, "trend is not valid"
         assert avg_score == pytest.approx(87.33, rel=0.01)
 
     def test_aggregate_weekly_metrics(self):
@@ -50,8 +50,8 @@ class TestTrendAggregation:
             weeks[i + 1]["avg_score"] - weeks[i]["avg_score"] for i in range(len(weeks) - 1)
         ]
 
-        assert all(imp > 0 for imp in improvements)  # All positive
-        assert sum(improvements) == 8  # Total improvement
+        assert all(imp > 0 for imp in improvements), "imp must be greater than zero"
+        assert sum(improvements) == 8, "Condition must be true"
 
     def test_trend_detection_positive(self):
         """Test detection of positive trends."""
@@ -66,7 +66,7 @@ class TestTrendAggregation:
         denominator = sum((i - x_mean) ** 2 for i in range(n))
         slope = numerator / denominator if denominator else 0
 
-        assert slope > 0  # Positive trend
+        assert slope > 0, "slope must be greater than zero"
 
     def test_trend_detection_negative(self):
         """Test detection of negative trends."""
@@ -80,7 +80,7 @@ class TestTrendAggregation:
         denominator = sum((i - x_mean) ** 2 for i in range(n))
         slope = numerator / denominator if denominator else 0
 
-        assert slope < 0  # Negative trend
+        assert slope < 0, "slope is not valid"
 
 
 class TestVisualizationGeneration:
@@ -110,9 +110,9 @@ class TestVisualizationGeneration:
             },
         }
 
-        assert chart_data["type"] == "line"
-        assert len(chart_data["data"]["labels"]) == 5
-        assert chart_data["data"]["datasets"][0]["data"] == scores
+        assert chart_data["type"] == "line", "Data must not be empty"
+        assert len(chart_data["data"]["labels"]) == 5, "Collection must not be empty"
+        assert chart_data["data"]["datasets"][0]["data"] == scores, "Data must not be empty"
 
     def test_generate_coverage_pie_data(self):
         """Test generation of coverage pie chart data."""
@@ -135,8 +135,8 @@ class TestVisualizationGeneration:
         }
 
         total = sum(pie_data["data"]["datasets"][0]["data"])
-        assert total == 1000
-        assert pie_data["data"]["datasets"][0]["data"][0] == 720
+        assert total == 1000, "total is not valid"
+        assert pie_data["data"]["datasets"][0]["data"][0] == 720, "Data must not be empty"
 
     def test_generate_markdown_report(self):
         """Test generation of markdown report."""
@@ -164,9 +164,9 @@ class TestVisualizationGeneration:
         for h in report_data["highlights"]:
             markdown += f"- {h}\n"
 
-        assert "Weekly Audit Report" in markdown
-        assert "92/100" in markdown
-        assert "+5%" in markdown
+        assert "Weekly Audit Report" in markdown, "Condition must be true"
+        assert "92/100" in markdown, "Condition must be true"
+        assert "+5%" in markdown, "Condition must be true"
 
 
 class TestCIIntegration:
@@ -182,7 +182,7 @@ class TestCIIntegration:
         }
 
         assert payload["state"] in ["success", "failure", "pending", "error"]
-        assert "audit-runner" in payload["context"]
+        assert "audit-runner" in payload["context"], "Condition must be true"
 
     def test_ci_artifact_upload_structure(self):
         """Test CI artifact structure."""
@@ -197,8 +197,8 @@ class TestCIIntegration:
             ],
         }
 
-        assert artifact["retention_days"] <= 90
-        assert len(artifact["files"]) >= 1
+        assert artifact["retention_days"] <= 90, "Condition must be true"
+        assert len(artifact["files"]) >= 1, "Collection must not be empty"
 
     def test_ci_environment_detection(self):
         """Test CI environment detection."""
@@ -215,7 +215,7 @@ class TestCIIntegration:
 
         # In GitHub Actions, should detect github_actions
         if os.getenv("GITHUB_ACTIONS"):
-            assert "github_actions" in detected
+            assert "github_actions" in detected, "Condition must be true"
 
 
 class TestWebhookNotification:
@@ -234,9 +234,9 @@ class TestWebhookNotification:
             },
         }
 
-        assert "event" in payload
-        assert "timestamp" in payload
-        assert "results" in payload
+        assert "event" in payload, "Condition must be true"
+        assert "timestamp" in payload, "Condition must be true"
+        assert "results" in payload, "Result must not be empty"
         assert isinstance(payload["results"]["passed"], bool)
 
     def test_webhook_retry_logic(self):
@@ -296,8 +296,8 @@ class TestMaturityScoreCalculation:
         # Weighted average
         overall = sum(scores[k] * weights[k] for k in scores)
 
-        assert 80 <= overall <= 100
-        assert sum(weights.values()) == pytest.approx(1.0)
+        assert 80 <= overall <= 100, "80 is not valid"
+        assert sum(weights.values()) == pytest.approx(1.0), "Value must be initialized"
 
     def test_score_normalization(self):
         """Test score normalization to 0-100 range."""
@@ -306,7 +306,7 @@ class TestMaturityScoreCalculation:
 
         normalized = [min(100, (score / max_score) * 100) for score in raw_scores]
 
-        assert all(0 <= s <= 100 for s in normalized)
+        assert all(0 <= s <= 100 for s in normalized), "0 is not valid"
 
     def test_score_grade_mapping(self):
         """Test score to grade mapping."""
@@ -324,11 +324,11 @@ class TestMaturityScoreCalculation:
                     return grade
             return "F"
 
-        assert get_grade(95) == "A"
-        assert get_grade(85) == "B"
-        assert get_grade(72) == "C"
-        assert get_grade(65) == "D"
-        assert get_grade(50) == "F"
+        assert get_grade(95) == "A", "Condition must be true"
+        assert get_grade(85) == "B", "Condition must be true"
+        assert get_grade(72) == "C", "Condition must be true"
+        assert get_grade(65) == "D", "Condition must be true"
+        assert get_grade(50) == "F", "Condition must be true"
 
     def test_mlops_capability_score(self):
         """Test MLOps capability score calculation."""
@@ -346,7 +346,7 @@ class TestMaturityScoreCalculation:
             * 100
         )
 
-        assert score == 100.0
+        assert score == 100.0, "score is not valid"
 
 
 if __name__ == "__main__":

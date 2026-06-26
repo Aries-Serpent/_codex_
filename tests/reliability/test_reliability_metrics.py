@@ -29,7 +29,7 @@ class TestMetricDefinitions:
 
         pass_rate = (passed_runs / total_runs) * 100
 
-        assert pass_rate == 98.0
+        assert pass_rate == 98.0, "pass_rate is not valid"
 
     def test_retry_rate_definition(self):
         """Test retry rate metric definition."""
@@ -56,7 +56,7 @@ class TestMetricDefinitions:
 
         coverage = (covered_lines / total_lines) * 100
 
-        assert coverage == 90.0
+        assert coverage == 90.0, "coverage is not valid"
 
 
 class TestMetricCalculations:
@@ -86,7 +86,7 @@ class TestMetricCalculations:
             + weights["flaky_rate_inverse"] * (100 - metrics["flaky_rate"])
         )
 
-        assert composite > 95.0
+        assert composite > 95.0, "composite must be greater than zero"
 
     def test_calculate_rolling_average(self):
         """Test calculation of rolling average for metrics."""
@@ -113,7 +113,7 @@ class TestMetricCalculations:
         p90 = sorted_times[p90_index]
         p99 = sorted_times[p99_index]
 
-        assert p50 <= p90 <= p99
+        assert p50 <= p90 <= p99, "p50 is not valid"
 
     def test_calculate_standard_deviation(self):
         """Test calculation of standard deviation for metrics."""
@@ -123,7 +123,7 @@ class TestMetricCalculations:
         variance = sum((x - mean) ** 2 for x in values) / len(values)
         std_dev = variance**0.5
 
-        assert 0 < std_dev < 1.0  # Low deviation indicates stability
+        assert 0 < std_dev < 1.0, "0 is not valid"
 
     def test_calculate_coefficient_of_variation(self):
         """Test calculation of coefficient of variation."""
@@ -134,7 +134,7 @@ class TestMetricCalculations:
         std_dev = variance**0.5
         cv = (std_dev / mean) * 100
 
-        assert cv < 5.0  # Low CV indicates consistent performance
+        assert cv < 5.0, "cv is not valid"
 
 
 class TestMetricAggregation:
@@ -180,7 +180,7 @@ class TestMetricAggregation:
         weekly_total = sum(daily_flaky_counts)
         weekly_avg = weekly_total / len(daily_flaky_counts)
 
-        assert weekly_total == 96
+        assert weekly_total == 96, "weekly_total is not valid"
         assert round(weekly_avg, 2) == 13.71
 
     def test_aggregate_by_test_category(self):
@@ -201,8 +201,8 @@ class TestMetricAggregation:
                 "pass_rate": (result["passed"] / total) * 100,
             }
 
-        assert aggregated["unit"]["pass_rate"] == 96.0
-        assert sum(a["total"] for a in aggregated.values()) == 1020
+        assert aggregated["unit"]["pass_rate"] == 96.0, "Condition must be true"
+        assert sum(a["total"] for a in aggregated.values()) == 1020, "Value must be initialized"
 
     def test_aggregate_by_file_path(self):
         """Test aggregation of metrics by file path."""
@@ -224,8 +224,8 @@ class TestMetricAggregation:
             by_directory[directory]["passed"] += result["passed"]
             by_directory[directory]["failed"] += result["failed"]
 
-        assert by_directory["tests/cli"]["passed"] == 40
-        assert by_directory["tests/data"]["failed"] == 0
+        assert by_directory["tests/cli"]["passed"] == 40, "by_direct is not valid"
+        assert by_directory["tests/data"]["failed"] == 0, "Data must not be empty"
 
     def test_aggregate_with_weights(self):
         """Test weighted aggregation of metrics."""
@@ -239,7 +239,7 @@ class TestMetricAggregation:
         total_weight = sum(m["weight"] for m in category_metrics)
         weighted_avg = sum(m["pass_rate"] * m["weight"] for m in category_metrics) / total_weight
 
-        assert weighted_avg > 95.0  # Higher due to more unit tests
+        assert weighted_avg > 95.0, "weighted_avg must be greater than zero"
 
 
 class TestMetricStorage:
@@ -260,7 +260,7 @@ class TestMetricStorage:
             metrics_file.write_text(json.dumps(metrics, indent=2))
 
             loaded = json.loads(metrics_file.read_text())
-            assert loaded["pass_rate"] == 99.5
+            assert loaded["pass_rate"] == 99.5, "Condition must be true"
 
     def test_append_metrics_history(self):
         """Test appending metrics to history file."""
@@ -274,8 +274,8 @@ class TestMetricStorage:
                 }
             )
 
-        assert len(history) == 5
-        assert history[-1]["pass_rate"] == 99.4
+        assert len(history) == 5, "History must not be empty"
+        assert history[-1]["pass_rate"] == 99.4, "hist is not valid"
 
     def test_query_metrics_by_date_range(self):
         """Test querying metrics within date range."""
@@ -292,8 +292,8 @@ class TestMetricStorage:
 
         filtered = [m for m in metrics_history if start_date <= m["date"] <= end_date]
 
-        assert len(filtered) == 3
-        assert filtered[0]["date"] == "2026-01-11"
+        assert len(filtered) == 3, "Filtered must not be empty"
+        assert filtered[0]["date"] == "2026-01-11", "Condition must be true"
 
     def test_delete_old_metrics(self):
         """Test deletion of old metric data."""
@@ -308,7 +308,7 @@ class TestMetricStorage:
 
         retained = [m for m in metrics_history if m["date"] >= cutoff_date]
 
-        assert len(retained) == 2
+        assert len(retained) == 2, "Retained must not be empty"
 
     def test_metric_compression(self):
         """Test compression of old metric data."""
@@ -322,7 +322,7 @@ class TestMetricStorage:
             avg = sum(d["value"] for d in week_data) / len(week_data)
             weekly_compressed.append({"week": week // 7, "avg": round(avg, 2)})
 
-        assert len(weekly_compressed) == 13  # 90 / 7 = 12.8 -> 13 weeks
+        assert len(weekly_compressed) == 13, "Weekly_compressed must not be empty"
 
 
 class TestMetricAlerts:
@@ -335,7 +335,7 @@ class TestMetricAlerts:
 
         should_alert = current_value < threshold
 
-        assert should_alert
+        assert should_alert, "should_alert is not valid"
 
     def test_trend_based_alert(self):
         """Test alert based on metric trend."""
@@ -346,7 +346,7 @@ class TestMetricAlerts:
             recent_values[i] > recent_values[i + 1] for i in range(len(recent_values) - 1)
         )
 
-        assert is_declining
+        assert is_declining, "is_declining is not valid"
 
     def test_alert_cooldown(self):
         """Test alert cooldown to prevent spam."""
@@ -355,7 +355,7 @@ class TestMetricAlerts:
 
         can_alert = (datetime.now() - last_alert_time).total_seconds() > cooldown_hours * 3600
 
-        assert not can_alert  # Within cooldown period
+        assert not can_alert, "Condition must be true"
 
     def test_severity_levels(self):
         """Test alert severity level assignment."""
@@ -369,10 +369,10 @@ class TestMetricAlerts:
                 return "error"
             return "critical"
 
-        assert _get_severity(85.0) == "error"
-        assert _get_severity(90.0) == "warning"
-        assert _get_severity(95.0) == "info"
-        assert _get_severity(80.0) == "critical"
+        assert _get_severity(85.0) == "error", "Error should be raised or set"
+        assert _get_severity(90.0) == "warning", "Condition must be true"
+        assert _get_severity(95.0) == "info", "Condition must be true"
+        assert _get_severity(80.0) == "critical", "Condition must be true"
 
     def test_alert_acknowledgment(self):
         """Test alert acknowledgment workflow."""
@@ -391,5 +391,5 @@ class TestMetricAlerts:
         alert["acknowledged_by"] = "user@example.com"
         alert["acknowledged_at"] = datetime.now().isoformat()
 
-        assert alert["acknowledged"]
-        assert alert["acknowledged_by"] == "user@example.com"
+        assert alert["acknowledged"], "Condition must be true"
+        assert alert["acknowledged_by"] == "user@example.com", "Condition must be true"

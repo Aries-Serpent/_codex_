@@ -147,7 +147,7 @@ def _load_callable(path_str: str) -> Callable[[str, Any, int], dict[str, torch.T
         module_path, func_name = path_str.split(":", maxsplit=1)
     except Exception as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         raise TypeError(
             f"preprocessor_override must be 'module_path:callable'; got: {path_str}"
         ) from e
@@ -156,7 +156,7 @@ def _load_callable(path_str: str) -> Callable[[str, Any, int], dict[str, torch.T
         module = importlib.import_module(module_path)
     except Exception as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         raise ImportError(
             f"Failed to import module '{module_path}' for override '{path_str}': {e}"
         ) from e
@@ -169,7 +169,7 @@ def _load_callable(path_str: str) -> Callable[[str, Any, int], dict[str, torch.T
         sig.bind(None, None, None)
     except TypeError as e:
         error_type = type(e).__name__
-        logger.debug(f"TypeError: <ERROR_TYPE>")
+        logger.debug("TypeError: <ERROR_TYPE>")
         raise TypeError(
             "Preprocessor override must accept (text, tokenizer, max_input_length) "
             "as positional arguments"

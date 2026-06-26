@@ -25,6 +25,6 @@ def test_codex_maintenance_summary(tmp_path):
     out = proc.stdout
     if not out:
         pytest.skip("maintenance summary not produced")
-    assert "- ok: success" in out
-    assert "- fail: failure" in out
-    assert proc.returncode != 0
+    assert "- ok: success" in out, "Condition must be true"
+    assert "- fail: failure" in out, "Condition must be true"
+    assert proc.returncode != 0, "returncode is not valid"

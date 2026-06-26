@@ -62,7 +62,7 @@ class TestSafetyFiltersIntegration:
             chain.add_filter("token")
 
             # Assert: Chain properly configured
-            assert chain.add_filter.call_count == 2
+            assert chain.add_filter.call_count == 2, "Count must be greater than zero"
 
     def test_content_filter_blocks_harmful_content(self):
         """Test: Content filter detects and blocks harmful content."""
@@ -83,7 +83,7 @@ class TestSafetyFiltersIntegration:
             filter_instance = mock_filter_cls()
             for text in harmful_texts:
                 result = filter_instance.check(text)
-                assert result is True  # Content blocked
+                assert result is True, "Result must not be empty"
 
     def test_token_filter_detects_harmful_tokens(self):
         """Test: Token filter identifies harmful token sequences."""
@@ -101,8 +101,8 @@ class TestSafetyFiltersIntegration:
             result = filter_instance.filter_tokens(test_text)
 
             # Assert
-            assert result["filtered"] is True
-            assert result["removed_tokens"] == 2
+            assert result["filtered"] is True, "Result must not be empty"
+            assert result["removed_tokens"] == 2, "Result must not be empty"
 
     def test_filter_chain_execution_workflow(self):
         """Test: Complete filter chain execution from input to output."""
@@ -128,8 +128,8 @@ class TestSafetyFiltersIntegration:
             result = chain.apply_filters(input_text)
 
             # Assert: All filters executed
-            assert result["filters_applied"] == 3
-            assert result["passed"] is True
+            assert result["filters_applied"] == 3, "Result must not be empty"
+            assert result["passed"] is True, "Result must not be empty"
 
     def test_safety_violation_exception_handling(self):
         """Test: Safety violations are properly caught and reported."""
@@ -166,7 +166,7 @@ class TestSafetyFiltersIntegration:
                 result = mock_filter.check_tokens([1, 2, 3, 4, 5])
 
                 # Assert: Integration successful
-                assert result["safe"] is True
+                assert result["safe"] is True, "Result must not be empty"
 
     def test_error_recovery_on_filter_failure(self):
         """Test: System recovers gracefully when filter fails."""
@@ -186,7 +186,7 @@ class TestSafetyFiltersIntegration:
             except RuntimeError:
                 # Recovery: Use fallback
                 result = chain.fallback_filter()
-                assert result["filtered"] is False
+                assert result["filtered"] is False, "Result must not be empty"
 
     def test_filter_chain_state_consistency(self):
         """Test: Filter chain maintains consistent state across execution."""
@@ -208,9 +208,9 @@ class TestSafetyFiltersIntegration:
             state_transitions.append(mock_chain.state.copy())
 
             # Assert: State properly tracked
-            assert len(state_transitions) == 2
-            assert state_transitions[0]["filters"] == 0
-            assert state_transitions[1]["filters"] == 1
+            assert len(state_transitions) == 2, "State_transitions must not be empty"
+            assert state_transitions[0]["filters"] == 0, "Condition must be true"
+            assert state_transitions[1]["filters"] == 1, "Condition must be true"
 
     def test_batch_content_filtering(self):
         """Test: Multiple texts filtered in batch."""
@@ -234,8 +234,8 @@ class TestSafetyFiltersIntegration:
             results = chain.apply_filters_batch(batch)
 
             # Assert: All texts filtered
-            assert len(results) == 3
-            assert all(r["passed"] for r in results)
+            assert len(results) == 3, "Results must not be empty"
+            assert all(r["passed"] for r in results), "Result must not be empty"
 
     def test_filter_performance_metrics(self):
         """Test: Filter chain tracks performance metrics."""
@@ -256,8 +256,8 @@ class TestSafetyFiltersIntegration:
             metrics = chain.get_metrics()
 
             # Assert: Metrics available
-            assert metrics["total_texts"] == 100
-            assert metrics["blocked"] == 5
+            assert metrics["total_texts"] == 100, "Condition must be true"
+            assert metrics["blocked"] == 5, "Condition must be true"
 
     def test_cross_module_filter_composition(self):
         """Test: Multiple filter types composed in workflow."""
@@ -286,8 +286,8 @@ class TestSafetyFiltersIntegration:
                     result = chain.apply_filters("test")
 
                     # Assert: Both filters applied
-                    assert result["content_safe"] is True
-                    assert result["tokens_safe"] is True
+                    assert result["content_safe"] is True, "Result must not be empty"
+                    assert result["tokens_safe"] is True, "Result must not be empty"
 
 
 @pytest.mark.skipif(not SAFETY_FILTERS_AVAILABLE, reason="Safety filters not available")
@@ -342,7 +342,7 @@ class TestSafetyFiltersWithTransformers:
             tokens = tokenizer.encode("test text")
 
             # Assert: Integration works
-            assert len(tokens) == 3
+            assert len(tokens) == 3, "Tokens must not be empty"
 
     def test_safety_filter_on_tokenized_input(self):
         """Test: Safety filter applied to tokenized sequences."""
@@ -360,7 +360,7 @@ class TestSafetyFiltersWithTransformers:
             result = filter_instance.check_tokens(token_ids)
 
             # Assert
-            assert result["safe"] is True
+            assert result["safe"] is True, "Result must not be empty"
 
 
 @pytest.mark.skipif(not SAFETY_FILTERS_AVAILABLE, reason="Safety filters not available")
@@ -383,7 +383,7 @@ class TestSafetyFiltersResourceManagement:
             chain.add_to_cache("key2", "value2")
 
             # Assert: Cache populated
-            assert chain.add_to_cache.call_count == 2
+            assert chain.add_to_cache.call_count == 2, "Count must be greater than zero"
 
     def test_filter_cleanup_on_completion(self):
         """Test: Resources cleaned up after filtering."""
@@ -398,7 +398,7 @@ class TestSafetyFiltersResourceManagement:
             result = chain.cleanup()
 
             # Assert: Cleanup executed
-            assert result is True
+            assert result is True, "Result must not be empty"
             mock_chain.cleanup.assert_called_once()
 
     def test_memory_efficient_batch_filtering(self):
@@ -418,7 +418,7 @@ class TestSafetyFiltersResourceManagement:
             results = chain.apply_filters_batch(large_batch)
 
             # Assert: All processed
-            assert len(results) == 1000
+            assert len(results) == 1000, "Results must not be empty"
 
 
 @pytest.mark.skipif(not SAFETY_FILTERS_AVAILABLE, reason="Safety filters not available")
@@ -456,8 +456,8 @@ class TestSafetyFiltersEndToEnd:
             result = chain.apply_filters(input_text)
 
             # Assert: Pipeline complete
-            assert result["passed"] is True
-            assert result["violations"] == 0
+            assert result["passed"] is True, "Result must not be empty"
+            assert result["violations"] == 0, "Result must not be empty"
 
     def test_multi_stage_filtering_with_fallback(self):
         """Test: Multi-stage filtering with fallback mechanisms."""
@@ -478,4 +478,4 @@ class TestSafetyFiltersEndToEnd:
                 chain.apply_filters("test")
             except Exception as _err:
                 result = chain.fallback_filter()
-                assert result["filtered"] is False
+                assert result["filtered"] is False, "Result must not be empty"

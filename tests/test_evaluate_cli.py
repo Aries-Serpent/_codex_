@@ -47,6 +47,6 @@ def test_evaluate_cli_runs(tmp_path):
     # The CLI writes output to the directory given by output_dir, not to a
     # Hydra-managed "outputs/" subdirectory.
     ndjson_files = list(output_dir.glob("**/predictions.ndjson"))
-    assert ndjson_files
+    assert ndjson_files, "ndjson_files is not valid"
     summary = json.loads((ndjson_files[0].parent / "summary.json").read_text(encoding="utf-8"))
-    assert "metrics" in summary
+    assert "metrics" in summary, "Condition must be true"

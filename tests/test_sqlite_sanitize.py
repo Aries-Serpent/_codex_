@@ -6,7 +6,7 @@ from codex.logging.db_utils import _sanitize_table
 
 
 def test_sanitize_table_accepts_valid() -> None:
-    assert _sanitize_table("good_name") == "good_name"
+    assert _sanitize_table("good_name") == "good_name", "Condition must be true"
 
 
 def test_sanitize_table_rejects_invalid() -> None:

@@ -15,7 +15,10 @@ from datetime import datetime
 
 import pytest
 
-from codex.auth.token_manager import TokenManager, TokenType # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+from codex.auth.token_manager import (  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+    TokenManager,
+    TokenType,
+)
 
 # ============================================================================
 # FIXTURES
@@ -48,15 +51,15 @@ class TestTokenType:
 
     def test_token_type_access(self):
         """Test ACCESS token type."""
-        assert TokenType.ACCESS.value == "access"
+        assert TokenType.ACCESS.value == "access", "Value must be initialized"
 
     def test_token_type_refresh(self):
         """Test REFRESH token type."""
-        assert TokenType.REFRESH.value == "refresh"
+        assert TokenType.REFRESH.value == "refresh", "Value must be initialized"
 
     def test_token_type_session(self):
         """Test SESSION token type."""
-        assert TokenType.SESSION.value == "session"
+        assert TokenType.SESSION.value == "session", "Value must be initialized"
 
 
 # ============================================================================
@@ -70,54 +73,54 @@ class TestTokenCreation:
     def test_create_access_token(self, token_manager):
         """Test creating access token."""
         token = token_manager.create_access_token("user123")
-        assert token is not None
+        assert token is not None, "token must be initialized"
         assert isinstance(token, str)
-        assert len(token) > 0
+        assert len(token) > 0, "Token must not be empty"
 
     def test_create_refresh_token(self, token_manager):
         """Test creating refresh token."""
         token = token_manager.create_refresh_token("user123")
-        assert token is not None
+        assert token is not None, "token must be initialized"
         assert isinstance(token, str)
-        assert len(token) > 0
+        assert len(token) > 0, "Token must not be empty"
 
     def test_create_session_token(self, token_manager):
         """Test creating session token."""
         token = token_manager.create_session_token("user123", "session_123")
-        assert token is not None
+        assert token is not None, "token must be initialized"
         assert isinstance(token, str)
 
     def test_create_token_with_scopes(self, token_manager):
         """Test creating token with scopes."""
         scopes = ["read:repo", "write:repo"]
         token = token_manager.create_access_token("user123", scopes=scopes)
-        assert token is not None
+        assert token is not None, "token must be initialized"
 
     def test_create_token_with_metadata(self, token_manager):
         """Test creating token with metadata."""
         metadata = {"ip_address": "192.168.1.1", "user_agent": "Mozilla/5.0"}
         token = token_manager.create_access_token("user123", metadata=metadata)
-        assert token is not None
+        assert token is not None, "token must be initialized"
 
     def test_create_token_with_custom_expiry(self, token_manager):
         """Test creating token with custom expiry."""
         expires_in = 7200  # 2 hours
         token = token_manager.create_access_token("user123", expires_in=expires_in)
-        assert token is not None
+        assert token is not None, "token must be initialized"
 
     def test_access_token_default_expiry(self, token_manager):
         """Test access token has default expiry."""
         token = token_manager.create_access_token("user123")
         # Token should be valid for some time
-        assert token is not None
+        assert token is not None, "token must be initialized"
 
     def test_refresh_token_longer_expiry(self, token_manager):
         """Test refresh token has longer expiry than access."""
         access = token_manager.create_access_token("user123")
         refresh = token_manager.create_refresh_token("user123")
         # Both should be valid but created successfully
-        assert access is not None
-        assert refresh is not None
+        assert access is not None, "access must be initialized"
+        assert refresh is not None, "refresh must be initialized"
 
 
 # ============================================================================
@@ -132,23 +135,23 @@ class TestTokenValidation:
         """Test validating valid token."""
         token = token_manager.create_access_token("user123")
         result = token_manager.validate_token(token)
-        assert result is not None
-        assert result.get("user_id") == "user123"
+        assert result is not None, "result must be initialized"
+        assert result.get("user_id") == "user123", "Result must not be empty"
 
     def test_validate_invalid_token(self, token_manager):
         """Test validating invalid token."""
         result = token_manager.validate_token("invalid_token")
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_validate_empty_token(self, token_manager):
         """Test validating empty token."""
         result = token_manager.validate_token("")
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_validate_malformed_token(self, token_manager):
         """Test validating malformed token."""
         result = token_manager.validate_token("invalid.malformed.token")
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_validate_token_signature(self, token_manager):
         """Test token signature validation."""
@@ -159,29 +162,29 @@ class TestTokenValidation:
             parts[2] = "invalidsignature"
             modified_token = ".".join(parts)
             result = token_manager.validate_token(modified_token)
-            assert result is None
+            assert result is None, "Result must not be empty"
 
     def test_validate_token_extracts_claims(self, token_manager):
         """Test token validation extracts claims."""
         scopes = ["read:repo", "write:repo"]
         token = token_manager.create_access_token("user123", scopes=scopes)
         claims = token_manager.validate_token(token)
-        assert claims is not None
-        assert "user_id" in claims
-        assert claims.get("user_id") == "user123"
+        assert claims is not None, "claims must be initialized"
+        assert "user_id" in claims, "Condition must be true"
+        assert claims.get("user_id") == "user123", "Condition must be true"
 
     def test_validate_token_with_metadata(self, token_manager):
         """Test token validation includes metadata."""
         metadata = {"ip_address": "192.168.1.1"}
         token = token_manager.create_access_token("user123", metadata=metadata)
         claims = token_manager.validate_token(token)
-        assert claims is not None
+        assert claims is not None, "claims must be initialized"
 
     def test_is_token_valid(self, token_manager):
         """Test is_token_valid convenience method."""
         token = token_manager.create_access_token("user123")
-        assert token_manager.is_token_valid(token) is True
-        assert token_manager.is_token_valid("invalid") is False
+        assert token_manager.is_token_valid(token) is True, "Condition must be true"
+        assert token_manager.is_token_valid("invalid") is False, "Condition must be true"
 
 
 # ============================================================================
@@ -196,13 +199,13 @@ class TestTokenRefresh:
         """Test refreshing with valid refresh token."""
         refresh = token_manager.create_refresh_token("user123")
         new_access = token_manager.refresh_access_token(refresh)
-        assert new_access is not None
+        assert new_access is not None, "new_access must be initialized"
         assert isinstance(new_access, str)
 
     def test_refresh_with_invalid_refresh_token(self, token_manager):
         """Test refresh with invalid refresh token."""
         result = token_manager.refresh_access_token("invalid_token")
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_refresh_creates_new_token(self, token_manager):
         """Test refresh creates new token."""
@@ -210,14 +213,14 @@ class TestTokenRefresh:
         access1 = token_manager.refresh_access_token(refresh)
         access2 = token_manager.refresh_access_token(refresh)
         # New tokens should be different
-        assert access1 != access2
+        assert access1 != access2, "access1 is not valid"
 
     def test_refresh_preserves_user_id(self, token_manager):
         """Test refresh preserves user ID."""
         refresh = token_manager.create_refresh_token("user123")
         new_access = token_manager.refresh_access_token(refresh)
         claims = token_manager.validate_token(new_access)
-        assert claims.get("user_id") == "user123"
+        assert claims.get("user_id") == "user123", "Condition must be true"
 
     def test_refresh_preserves_scopes(self, token_manager):
         """Test refresh preserves scopes."""
@@ -225,7 +228,7 @@ class TestTokenRefresh:
         refresh = token_manager.create_refresh_token("user123", scopes=scopes)
         new_access = token_manager.refresh_access_token(refresh)
         claims = token_manager.validate_token(new_access)
-        assert claims is not None
+        assert claims is not None, "claims must be initialized"
 
 
 # ============================================================================
@@ -242,7 +245,7 @@ class TestTokenRevocation:
         token_manager.revoke_token(token)
         # Token should no longer be valid
         result = token_manager.validate_token(token)
-        assert result is None or result.get("revoked") is True
+        assert result is None or result.get("revoked") is True, "Result must not be empty"
 
     def test_revoke_multiple_tokens(self, token_manager):
         """Test revoking multiple tokens."""
@@ -257,7 +260,7 @@ class TestTokenRevocation:
         # All should be revoked
         for token in tokens:
             result = token_manager.validate_token(token)
-            assert result is None or result.get("revoked") is True
+            assert result is None or result.get("revoked") is True, "Result must not be empty"
 
     def test_revoke_refresh_token(self, token_manager):
         """Test revoking refresh token."""
@@ -265,7 +268,7 @@ class TestTokenRevocation:
         token_manager.revoke_token(refresh)
         # Should no longer be usable for refresh
         result = token_manager.refresh_access_token(refresh)
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_revoke_invalid_token(self, token_manager):
         """Test revoking invalid token."""
@@ -275,10 +278,10 @@ class TestTokenRevocation:
     def test_is_token_revoked(self, token_manager):
         """Test checking if token is revoked."""
         token = token_manager.create_access_token("user123")
-        assert token_manager.is_token_revoked(token) is False
+        assert token_manager.is_token_revoked(token) is False, "Condition must be true"
 
         token_manager.revoke_token(token)
-        assert token_manager.is_token_revoked(token) is True
+        assert token_manager.is_token_revoked(token) is True, "Condition must be true"
 
     def test_revoke_all_user_tokens(self, token_manager):
         """Test revoking all tokens for a user."""
@@ -290,7 +293,7 @@ class TestTokenRevocation:
         token_manager.revoke_all_user_tokens("user123")
 
         for token in tokens:
-            assert token_manager.is_token_revoked(token) is True
+            assert token_manager.is_token_revoked(token) is True, "Condition must be true"
 
 
 # ============================================================================
@@ -305,7 +308,7 @@ class TestTokenExpiry:
         """Test token is not expired on creation."""
         token = token_manager.create_access_token("user123")
         is_expired = token_manager.is_token_expired(token)
-        assert is_expired is False
+        assert is_expired is False, "is_expired is not valid"
 
     def test_token_expires_after_timeout(self, token_manager_custom_timeout):
         """Test token expires after timeout."""
@@ -317,22 +320,22 @@ class TestTokenExpiry:
 
         time.sleep(1.1)
         is_expired = token_manager_custom_timeout.is_token_expired(token)
-        assert is_expired is True
+        assert is_expired is True, "is_expired is not valid"
 
     def test_get_token_expiry_time(self, token_manager):
         """Test getting token expiry time."""
         token = token_manager.create_access_token("user123", expires_in=3600)
         expiry = token_manager.get_token_expiry(token)
-        assert expiry is not None
+        assert expiry is not None, "expiry must be initialized"
         assert isinstance(expiry, datetime)
 
     def test_get_time_until_expiry(self, token_manager):
         """Test getting time until expiry."""
         token = token_manager.create_access_token("user123", expires_in=7200)
         seconds = token_manager.get_seconds_until_expiry(token)
-        assert seconds is not None
-        assert seconds > 0
-        assert seconds <= 7200
+        assert seconds is not None, "seconds must be initialized"
+        assert seconds > 0, "seconds must be greater than zero"
+        assert seconds <= 7200, "seconds is not valid"
 
     def test_should_refresh_token(self, token_manager):
         """Test checking if token should be refreshed."""
@@ -353,14 +356,14 @@ class TestSecretKeyManagement:
     def test_token_manager_with_secret_key(self):
         """Test token manager initialization with secret key."""
         tm = TokenManager(secret_key="my-secret-key")
-        assert tm is not None
+        assert tm is not None, "tm must be initialized"
 
     def test_token_manager_generate_secret_key(self):
         """Test generating a secret key."""
         secret = TokenManager.generate_secret_key()
-        assert secret is not None
+        assert secret is not None, "secret must be initialized"
         assert isinstance(secret, str)
-        assert len(secret) >= 32
+        assert len(secret) >= 32, "Secret must not be empty"
 
     def test_token_manager_rotate_secret_key(self, token_manager):
         """Test rotating secret key."""
@@ -373,7 +376,7 @@ class TestSecretKeyManagement:
 
         # Token should still be valid (during transition period)
         result = token_manager.validate_token(token)
-        assert result is not None or result is None
+        assert result is not None or result is None, "result must be initialized"
 
     def test_different_keys_create_different_tokens(self):
         """Test different secret keys create different tokens."""
@@ -384,11 +387,11 @@ class TestSecretKeyManagement:
         token2 = tm2.create_access_token("user123")
 
         # Tokens should be different
-        assert token1 != token2
+        assert token1 != token2, "token1 is not valid"
 
         # Each token should only validate with its manager
-        assert tm1.validate_token(token1) is not None
-        assert tm2.validate_token(token1) is None
+        assert tm1.validate_token(token1) is not None, "Value must be initialized"
+        assert tm2.validate_token(token1) is None, "Condition must be true"
 
 
 # ============================================================================
@@ -404,8 +407,8 @@ class TestTokenScopes:
         scopes = ["read:repo", "write:repo", "admin:org"]
         token = token_manager.create_access_token("user123", scopes=scopes)
         claims = token_manager.validate_token(token)
-        assert claims is not None
-        assert "scopes" in claims or "scope" in claims
+        assert claims is not None, "claims must be initialized"
+        assert "scopes" in claims or "scope" in claims, "Condition must be true"
 
     def test_token_scopes_validation(self, token_manager):
         """Test validating token has required scopes."""
@@ -414,20 +417,20 @@ class TestTokenScopes:
 
         # Token should have these scopes
         claims = token_manager.validate_token(token)
-        assert claims is not None
+        assert claims is not None, "claims must be initialized"
 
     def test_token_with_empty_scopes(self, token_manager):
         """Test token with no scopes."""
         token = token_manager.create_access_token("user123", scopes=[])
         claims = token_manager.validate_token(token)
-        assert claims is not None
+        assert claims is not None, "claims must be initialized"
 
     def test_token_with_many_scopes(self, token_manager):
         """Test token with many scopes."""
         scopes = [f"scope_{i}" for i in range(100)]
         token = token_manager.create_access_token("user123", scopes=scopes)
         claims = token_manager.validate_token(token)
-        assert claims is not None
+        assert claims is not None, "claims must be initialized"
 
 
 # ============================================================================
@@ -447,8 +450,8 @@ class TestTokenScopes:
 def test_token_creation_with_different_expiry_parametrized(token_manager, expires_in):
     """Parametrized test for token creation with different expiry times."""
     token = token_manager.create_access_token("user123", expires_in=expires_in)
-    assert token is not None
-    assert token_manager.validate_token(token) is not None
+    assert token is not None, "token must be initialized"
+    assert token_manager.validate_token(token) is not None, "Value must be initialized"
 
 
 @pytest.mark.parametrize(
@@ -464,7 +467,7 @@ def test_create_token_for_different_users_parametrized(token_manager, user_id):
     """Parametrized test for creating tokens for different users."""
     token = token_manager.create_access_token(user_id)
     claims = token_manager.validate_token(token)
-    assert claims.get("user_id") == user_id
+    assert claims.get("user_id") == user_id, "Condition must be true"
 
 
 @pytest.mark.parametrize(
@@ -479,7 +482,7 @@ def test_create_token_for_different_users_parametrized(token_manager, user_id):
 def test_create_token_with_scopes_parametrized(token_manager, scopes):
     """Parametrized test for token creation with different scopes."""
     token = token_manager.create_access_token("user123", scopes=scopes)
-    assert token is not None
+    assert token is not None, "token must be initialized"
 
 
 # ============================================================================
@@ -495,21 +498,21 @@ class TestEdgeCases:
         long_user_id = "user_" + "a" * 1000
         token = token_manager.create_access_token(long_user_id)
         claims = token_manager.validate_token(token)
-        assert claims.get("user_id") == long_user_id
+        assert claims.get("user_id") == long_user_id, "Condition must be true"
 
     def test_token_with_unicode_user_id(self, token_manager):
         """Test token with unicode user ID."""
         unicode_user = "用户123"
         token = token_manager.create_access_token(unicode_user)
         claims = token_manager.validate_token(token)
-        assert claims is not None
+        assert claims is not None, "claims must be initialized"
 
     def test_token_with_special_characters_in_user_id(self, token_manager):
         """Test token with special characters in user ID."""
         special_user = "user!@#$%^&*()"
         token = token_manager.create_access_token(special_user)
         claims = token_manager.validate_token(token)
-        assert claims is not None
+        assert claims is not None, "claims must be initialized"
 
     def test_create_many_tokens_sequentially(self, token_manager):
         """Test creating many tokens in sequence."""
@@ -518,11 +521,11 @@ class TestEdgeCases:
             token = token_manager.create_access_token(f"user_{i}")
             tokens.append(token)
 
-        assert len(tokens) == 100
+        assert len(tokens) == 100, "Tokens must not be empty"
 
         # All should be valid
         for token in tokens:
-            assert token_manager.validate_token(token) is not None
+            assert token_manager.validate_token(token) is not None, "Value must be initialized"
 
     def test_token_refresh_multiple_times(self, token_manager):
         """Test refreshing token multiple times."""
@@ -533,11 +536,11 @@ class TestEdgeCases:
             token = token_manager.refresh_access_token(refresh)
             tokens.append(token)
 
-        assert len(tokens) == 10
-        assert all(t is not None for t in tokens)
+        assert len(tokens) == 10, "Tokens must not be empty"
+        assert all(t is not None for t in tokens), "t must be initialized"
 
     def test_token_expiry_boundary(self, token_manager):
         """Test token at expiry boundary."""
         token = token_manager.create_access_token("user123", expires_in=3600)
         # Should be valid immediately after creation
-        assert token_manager.validate_token(token) is not None
+        assert token_manager.validate_token(token) is not None, "Value must be initialized"

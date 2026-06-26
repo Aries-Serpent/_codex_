@@ -38,9 +38,9 @@ def test_cli_checkpoint_validate_success(tmp_path: Path) -> None:
     )
     assert result.exit_code == 0, result.stdout
     info = json.loads(result.stdout)
-    assert info["schema_version"] == checkpoint_core.SCHEMA_VERSION
-    assert info["metrics"]["val_loss"] == 0.42
-    assert Path(info["checkpoint"]).exists()
+    assert info["schema_version"] == checkpoint_core.SCHEMA_VERSION, "Condition must be true"
+    assert info["metrics"]["val_loss"] == 0.42, "Condition must be true"
+    assert Path(info["checkpoint"]).exists(), "Condition must be true"
 
 
 def test_cli_checkpoint_validate_missing_payload(tmp_path: Path) -> None:
@@ -52,5 +52,5 @@ def test_cli_checkpoint_validate_missing_payload(tmp_path: Path) -> None:
         checkpoint_validate.app,
         ["validate", str(ckpt_dir)],
     )
-    assert result.exit_code == 2
-    assert "missing checkpoint payload" in result.stdout or result.stderr
+    assert result.exit_code == 2, "Result must not be empty"
+    assert "missing checkpoint payload" in result.stdout or result.stderr, "Result must not be empty"

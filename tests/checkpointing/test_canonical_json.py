@@ -24,6 +24,6 @@ def test_canonical_json_is_deterministic() -> None:
     a = {"b": 1, "a": 2, "nested": {"z": 1, "y": 2}}
     x = canonical_json_dumps(a)
     y = canonical_json_dumps(dict(reversed(list(a.items()))))
-    assert x == y
+    assert x == y, "x is not valid"
     # Round-trip ensures canonical form parses back to same structure.
-    assert json.loads(x) == a
+    assert json.loads(x) == a, "Condition must be true"

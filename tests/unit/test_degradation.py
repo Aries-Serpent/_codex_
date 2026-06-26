@@ -42,7 +42,7 @@ def test_decorator_returns_real_value_on_success():
     def good() -> str:
         return "real"
 
-    assert good() == "real"
+    assert good() == "real", "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -55,7 +55,7 @@ def test_decorator_returns_fallback_on_exception():
     def bad() -> str:
         raise RuntimeError("oops")
 
-    assert bad() == "fallback_value"
+    assert bad() == "fallback_value", "Value must be initialized"
 
 
 # ---------------------------------------------------------------------------
@@ -75,8 +75,8 @@ def test_decorator_invokes_callable_fallback():
         raise RuntimeError("oops")
 
     result = bad()
-    assert result == "from_callable"
-    assert called == [True]
+    assert result == "from_callable", "Result must not be empty"
+    assert called == [True], "called is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -92,7 +92,7 @@ def test_decorator_no_fallback_raises_degradation_error():
     with pytest.raises(DegradationError) as exc_info:
         bad()
 
-    assert exc_info.value.original is not None
+    assert exc_info.value.original is not None, "original must be initialized"
     assert isinstance(exc_info.value.original, RuntimeError)
 
 
@@ -105,7 +105,7 @@ def test_context_manager_captures_result_on_success():
     with GracefulDegradation(fallback=None) as dg:
         dg.result = "success_value"
 
-    assert dg.result == "success_value"
+    assert dg.result == "success_value", "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -121,7 +121,7 @@ def test_context_manager_sets_fallback_on_exception():
     with dg:
         _fail()
 
-    assert dg.result == "safe"
+    assert dg.result == "safe", "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -168,7 +168,7 @@ def test_context_manager_non_matching_exception_propagates():
 def test_degradation_error_is_exception():
     err = DegradationError("test", original=ValueError("cause"))
     assert isinstance(err, Exception)
-    assert str(err) == "test"
+    assert str(err) == "test", "Condition must be true"
     assert isinstance(err.original, ValueError)
 
 
@@ -183,4 +183,4 @@ def test_falsy_fallback_values_are_returned(falsy_fallback):
     def bad() -> object:
         raise RuntimeError("fail")
 
-    assert bad() == falsy_fallback
+    assert bad() == falsy_fallback, "Condition must be true"

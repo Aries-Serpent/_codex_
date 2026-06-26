@@ -31,11 +31,11 @@ def test_streaming_module_batches(tmp_path: Path) -> None:
         seed=123,
     )
     batches = list(module.iter_train(batch_size=2))
-    assert batches
+    assert batches, "batches is not valid"
     assert all(isinstance(batch, tuple) for batch in batches)
-    assert all("input" in example for batch in batches for example in batch)
+    assert all("input" in example for batch in batches for example in batch), "Condition must be true"
     snapshot = module.snapshot("train", limit=2)
-    assert len(snapshot) == 2
+    assert len(snapshot) == 2, "Snapshot must not be empty"
 
 
 def test_streaming_module_rejects_missing_keys(tmp_path: Path) -> None:
@@ -55,4 +55,4 @@ def test_buffered_shuffle_is_deterministic() -> None:
     first_pass = [ex["id"] for batch in module.iter_train(batch_size=1) for ex in batch]
     second_pass = [ex["id"] for batch in module.iter_train(batch_size=1) for ex in batch]
     assert first_pass == second_pass == ["0", "2", "3", "1", "4", "5"]
-    assert first_pass != [str(i) for i in range(6)]
+    assert first_pass != [str(i) for i in range(6)], "first_pass is not valid"

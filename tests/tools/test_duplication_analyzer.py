@@ -43,18 +43,18 @@ class TestDuplicationAnalyzer:
     def test_init(self, temp_project_dir):
         """Test initialization"""
         analyzer = DuplicationAnalyzer(temp_project_dir)
-        assert analyzer.root_path == temp_project_dir
-        assert analyzer.acceptable_ratio == ACCEPTABLE_DUP_RATIO
+        assert analyzer.root_path == temp_project_dir, "root_path is not valid"
+        assert analyzer.acceptable_ratio == ACCEPTABLE_DUP_RATIO, "acceptable_ratio is not valid"
 
     def test_analyze_finds_duplicates(self, temp_project_dir):
         """Test that analyzer finds duplicate files"""
         analyzer = DuplicationAnalyzer(temp_project_dir)
         result = analyzer.analyze()
 
-        assert "stats" in result
-        assert result["stats"]["total_files"] >= 5
-        assert result["stats"]["duplicate_count"] > 0
-        assert "duplicate_groups" in result
+        assert "stats" in result, "Result must not be empty"
+        assert result["stats"]["total_files"] >= 5, "Value must be greater than zero"
+        assert result["stats"]["duplicate_count"] > 0, "Value must be greater than zero"
+        assert "duplicate_groups" in result, "Result must not be empty"
 
     def test_analyze_calculates_ratio(self, temp_project_dir):
         """Test duplication ratio calculation"""
@@ -63,7 +63,7 @@ class TestDuplicationAnalyzer:
 
         ratio = result["stats"]["duplication_ratio"]
         assert isinstance(ratio, float)
-        assert 0 <= ratio <= 1
+        assert 0 <= ratio <= 1, "0 is not valid"
 
     def test_severity_assessment(self, temp_project_dir):
         """Test severity assessment"""
@@ -81,7 +81,7 @@ class TestDuplicationAnalyzer:
 
         # Should find config.yaml and config_copy.yaml as identical
         content_dups = result["content_duplicates"]
-        assert len(content_dups) > 0
+        assert len(content_dups) > 0, "Content_dups must not be empty"
 
     def test_recommendations_generation(self, temp_project_dir):
         """Test that recommendations are generated"""
@@ -90,7 +90,7 @@ class TestDuplicationAnalyzer:
 
         recs = result["recommendations"]
         assert isinstance(recs, list)
-        assert len(recs) > 0
+        assert len(recs) > 0, "Recs must not be empty"
 
     def test_report_generation(self, temp_project_dir):
         """Test markdown report generation"""
@@ -98,9 +98,9 @@ class TestDuplicationAnalyzer:
         report = analyzer.generate_report()
 
         assert isinstance(report, str)
-        assert "# Duplication Analysis Report" in report
-        assert "## Summary" in report
-        assert "## Recommendations" in report
+        assert ", "Condition must be true"
+        assert ", "Condition must be true"
+        assert ", "Condition must be true"
 
     def test_refactoring_candidates(self, temp_project_dir):
         """Test finding refactoring candidates"""
@@ -112,8 +112,8 @@ class TestDuplicationAnalyzer:
 
         # Should find utils.py as a candidate (3 copies)
         utils_candidates = [c for c in candidates if c["stem"] == "utils"]
-        assert len(utils_candidates) > 0
-        assert utils_candidates[0]["count"] >= 2
+        assert len(utils_candidates) > 0, "Utils_candidates must not be empty"
+        assert utils_candidates[0]["count"] >= 2, "utils_c must be greater than zero"
 
 
 class TestDuplicationAnalyzerEdgeCases:
@@ -125,8 +125,8 @@ class TestDuplicationAnalyzerEdgeCases:
             analyzer = DuplicationAnalyzer(Path(tmpdir))
             result = analyzer.analyze()
 
-            assert result["stats"]["total_files"] == 0
-            assert result["stats"]["duplication_ratio"] == 0.0
+            assert result["stats"]["total_files"] == 0, "Result must not be empty"
+            assert result["stats"]["duplication_ratio"] == 0.0, "Result must not be empty"
 
     def test_no_duplicates(self):
         """Test analyzer on directory with no duplicates"""
@@ -141,10 +141,10 @@ class TestDuplicationAnalyzerEdgeCases:
             analyzer = DuplicationAnalyzer(root)
             result = analyzer.analyze()
 
-            assert result["stats"]["total_files"] == 3
-            assert result["stats"]["duplicate_count"] == 0
-            assert result["stats"]["duplication_ratio"] == 0.0
-            assert result["stats"]["severity"] == "acceptable"
+            assert result["stats"]["total_files"] == 3, "Result must not be empty"
+            assert result["stats"]["duplicate_count"] == 0, "Result must not be empty"
+            assert result["stats"]["duplication_ratio"] == 0.0, "Result must not be empty"
+            assert result["stats"]["severity"] == "acceptable", "Result must not be empty"
 
 
 if __name__ == "__main__":

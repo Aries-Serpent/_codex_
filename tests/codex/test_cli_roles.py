@@ -61,7 +61,7 @@ def test_cli_roles_help(cli_runner: CliRunner, mock_deps):
     else:
         if result.exit_code not in (0, 2):
             pytest.skip(f"cli_roles help unavailable: {result.exit_code}")
-        assert "Usage" in result.output or "usage" in result.output.lower()
+        assert "Usage" in result.output or "usage" in result.output.lower(), "Result must not be empty"
 
 
 def test_cli_roles_list(cli_runner: CliRunner, mock_deps):

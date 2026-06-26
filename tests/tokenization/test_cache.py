@@ -18,13 +18,13 @@ class TestTokenizationCache:
     def test_cache_initialization(self):
         """Test cache initializes with default TTL."""
         cache = TokenizationCache()
-        assert cache.ttl == timedelta(hours=24)
-        assert cache.size() == 0
+        assert cache.ttl == timedelta(hours=24), "ttl is not valid"
+        assert cache.size() == 0, "Condition must be true"
 
     def test_cache_custom_ttl(self):
         """Test cache with custom TTL."""
         cache = TokenizationCache(ttl_hours=12)
-        assert cache.ttl == timedelta(hours=12)
+        assert cache.ttl == timedelta(hours=12), "ttl is not valid"
 
     def test_cache_set_and_get(self):
         """Test setting and getting cache entries."""
@@ -36,8 +36,8 @@ class TestTokenizationCache:
         cache.set(text, config, tokens)
         result = cache.get(text, config)
 
-        assert result == tokens
-        assert cache.size() == 1
+        assert result == tokens, "Result must not be empty"
+        assert cache.size() == 1, "Condition must be true"
 
     def test_cache_miss(self):
         """Test cache returns None on miss."""
@@ -46,7 +46,7 @@ class TestTokenizationCache:
         config = {"model": "test"}
 
         result = cache.get(text, config)
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_cache_different_configs(self):
         """Test different configs produce different cache entries."""
@@ -62,7 +62,7 @@ class TestTokenizationCache:
 
         assert cache.get(text, config1) == tokens1
         assert cache.get(text, config2) == tokens2
-        assert cache.size() == 2
+        assert cache.size() == 2, "Condition must be true"
 
     def test_cache_different_text_same_config(self):
         """Test different text with same config produce different entries."""
@@ -78,7 +78,7 @@ class TestTokenizationCache:
 
         assert cache.get(text1, config) == tokens1
         assert cache.get(text2, config) == tokens2
-        assert cache.size() == 2
+        assert cache.size() == 2, "Condition must be true"
 
     def test_cache_expiration(self):
         """Test cache entries expire after TTL."""
@@ -96,8 +96,8 @@ class TestTokenizationCache:
 
         # Should return None and remove entry
         result = cache.get(text, config)
-        assert result is None
-        assert cache.size() == 0
+        assert result is None, "Result must not be empty"
+        assert cache.size() == 0, "Condition must be true"
 
     def test_cache_invalidate_all(self):
         """Test invalidating all cache entries."""
@@ -106,11 +106,11 @@ class TestTokenizationCache:
         cache.set("text2", {"model": "b"}, [2])
         cache.set("text3", {"model": "c"}, [3])
 
-        assert cache.size() == 3
+        assert cache.size() == 3, "Condition must be true"
 
         cache.invalidate_all()
 
-        assert cache.size() == 0
+        assert cache.size() == 0, "Condition must be true"
         assert cache.get("text1", {"model": "a"}) is None
 
     def test_cache_invalidate_expired(self):
@@ -142,8 +142,8 @@ class TestTokenizationCache:
         # Invalidate expired
         removed = cache.invalidate_expired()
 
-        assert removed == 2
-        assert cache.size() == 1
+        assert removed == 2, "removed is not valid"
+        assert cache.size() == 1, "Condition must be true"
         assert cache.get("text3", {"model": "c"}) == [3]
 
     def test_cache_stats(self):
@@ -152,9 +152,9 @@ class TestTokenizationCache:
 
         # Empty cache
         stats = cache.stats()
-        assert stats["size"] == 0
-        assert stats["oldest_entry_age_seconds"] == 0
-        assert stats["expired_count"] == 0
+        assert stats["size"] == 0, "Condition must be true"
+        assert stats["oldest_entry_age_seconds"] == 0, "Condition must be true"
+        assert stats["expired_count"] == 0, "Count must be greater than zero"
 
         # Add entries
         cache.set("text1", {"model": "a"}, [1])
@@ -162,9 +162,9 @@ class TestTokenizationCache:
         cache.set("text2", {"model": "b"}, [2])
 
         stats = cache.stats()
-        assert stats["size"] == 2
-        assert stats["oldest_entry_age_seconds"] > 0
-        assert stats["expired_count"] == 0
+        assert stats["size"] == 2, "Condition must be true"
+        assert stats["oldest_entry_age_seconds"] > 0, "Value must be greater than zero"
+        assert stats["expired_count"] == 0, "Count must be greater than zero"
 
     def test_cache_key_generation_consistent(self):
         """Test cache key is consistent for same inputs."""
@@ -175,7 +175,7 @@ class TestTokenizationCache:
         key1 = cache._get_cache_key(text, config)
         key2 = cache._get_cache_key(text, config)
 
-        assert key1 == key2
+        assert key1 == key2, "key1 is not valid"
 
     def test_cache_key_different_for_different_inputs(self):
         """Test cache key differs for different inputs."""
@@ -185,9 +185,9 @@ class TestTokenizationCache:
         key2 = cache._get_cache_key("text2", {"model": "a"})
         key3 = cache._get_cache_key("text1", {"model": "b"})
 
-        assert key1 != key2
-        assert key1 != key3
-        assert key2 != key3
+        assert key1 != key2, "key1 is not valid"
+        assert key1 != key3, "key1 is not valid"
+        assert key2 != key3, "key2 is not valid"
 
     def test_cache_key_config_order_invariant(self):
         """Test cache key is same regardless of config key order."""
@@ -199,7 +199,7 @@ class TestTokenizationCache:
         key1 = cache._get_cache_key(text, config1)
         key2 = cache._get_cache_key(text, config2)
 
-        assert key1 == key2
+        assert key1 == key2, "key1 is not valid"
 
 
 class TestGlobalCache:
@@ -212,14 +212,14 @@ class TestGlobalCache:
         cache1 = get_global_cache()
         cache2 = get_global_cache()
 
-        assert cache1 is cache2  # Should be same instance
+        assert cache1 is cache2, "cache1 is not valid"
 
     def test_global_cache_ttl(self):
         """Test global cache respects TTL on first creation."""
         reset_global_cache()
 
         cache = get_global_cache(ttl_hours=12)
-        assert cache.ttl == timedelta(hours=12)
+        assert cache.ttl == timedelta(hours=12), "ttl is not valid"
 
     def test_reset_global_cache(self):
         """Test resetting global cache."""
@@ -229,8 +229,8 @@ class TestGlobalCache:
         reset_global_cache()
 
         cache2 = get_global_cache()
-        assert cache2 is not cache1
-        assert cache2.size() == 0
+        assert cache2 is not cache1, "cache2 is not valid"
+        assert cache2.size() == 0, "Condition must be true"
 
     def test_global_cache_persistence(self):
         """Test global cache persists across get_global_cache calls."""

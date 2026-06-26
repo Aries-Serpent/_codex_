@@ -88,10 +88,10 @@ class TestEndToEndPipeline:
                 overlap=100,
             )
 
-            assert index_path.exists()
-            assert (index_path / "index.faiss").exists()
-            assert (index_path / "chunks.json").exists()
-            assert (index_path / "metadata.json").exists()
+            assert index_path.exists(), "Condition must be true"
+            assert (index_path / "index.faiss").exists(), "Condition must be true"
+            assert (index_path / "chunks.json").exists(), "Condition must be true"
+            assert (index_path / "metadata.json").exists(), "Data must not be empty"
 
             # Step 3: Load and verify index
             faiss_index, chunks, metadata = load_index(
@@ -100,9 +100,9 @@ class TestEndToEndPipeline:
                 index_dir=str(index_dir),
             )
 
-            assert faiss_index.ntotal > 0
-            assert len(chunks) > 0
-            assert metadata["total_files"] == 3
+            assert faiss_index.ntotal > 0, "ntotal must be greater than zero"
+            assert len(chunks) > 0, "Chunks must not be empty"
+            assert metadata["total_files"] == 3, "Data must not be empty"
 
             # Step 4: Query with retriever
             retriever = Retriever(
@@ -113,29 +113,29 @@ class TestEndToEndPipeline:
 
             # Query about Python
             python_results = retriever.query("Python programming language", top_k=5)
-            assert len(python_results) > 0
-            assert python_results[0]["score"] < 100  # Reasonable similarity score
+            assert len(python_results) > 0, "Python_results must not be empty"
+            assert python_results[0]["score"] < 100, "Result must not be empty"
 
             # Verify provenance
             for result in python_results:
-                assert "text" in result
-                assert "file" in result
-                assert "start_line" in result
-                assert "end_line" in result
-                assert "score" in result
-                assert "generated_at" in result
+                assert "text" in result, "Result must not be empty"
+                assert "file" in result, "Result must not be empty"
+                assert "start_line" in result, "Result must not be empty"
+                assert "end_line" in result, "Result must not be empty"
+                assert "score" in result, "Result must not be empty"
+                assert "generated_at" in result, "Result must not be empty"
                 assert isinstance(result["score"], float)
 
             # Query about Machine Learning
             ml_results = retriever.query("machine learning algorithms", top_k=5)
-            assert len(ml_results) > 0
+            assert len(ml_results) > 0, "Ml_results must not be empty"
 
             # Query about Docker
             docker_results = retriever.query("container deployment", top_k=5)
-            assert len(docker_results) > 0
+            assert len(docker_results) > 0, "Docker_results must not be empty"
 
             # Verify different queries return different results
-            assert python_results[0]["text"] != ml_results[0]["text"]
+            assert python_results[0]["text"] != ml_results[0]["text"], "Result must not be empty"
 
 
 @pytest.mark.integration
@@ -179,20 +179,20 @@ class TestMultiTenantIsolation:
                 )
 
                 results = retriever.query("sensitive data", top_k=5)
-                assert len(results) > 0
+                assert len(results) > 0, "Results must not be empty"
 
                 # Verify results contain the tenant's data
-                assert tenant in results[0]["text"]
+                assert tenant in results[0]["text"], "Result must not be empty"
 
                 # Verify results don't contain other tenants' data
                 for other_tenant in tenants:
                     if other_tenant != tenant:
-                        assert other_tenant not in results[0]["text"]
+                        assert other_tenant not in results[0]["text"], "Result must not be empty"
 
             # Verify tenant directories are separate
             for tenant in tenants:
                 tenant_dir = index_dir / tenant / "data"
-                assert tenant_dir.exists()
+                assert tenant_dir.exists(), "Condition must be true"
 
 
 @pytest.mark.integration
@@ -218,21 +218,21 @@ class TestCacheEffectiveness:
 
             # First encoding: cache miss
             embeddings1 = provider.encode(texts, cache_key=cache_key)
-            assert provider.cache_misses == 1
-            assert provider.cache_hits == 0
+            assert provider.cache_misses == 1, "cache_misses is not valid"
+            assert provider.cache_hits == 0, "cache_hits is not valid"
 
             # Second encoding: cache hit
             embeddings2 = provider.encode(texts, cache_key=cache_key)
-            assert provider.cache_hits == 1
-            assert provider.cache_misses == 1
+            assert provider.cache_hits == 1, "cache_hits is not valid"
+            assert provider.cache_misses == 1, "cache_misses is not valid"
 
             # Verify embeddings are identical
             np.testing.assert_array_equal(embeddings1, embeddings2)
 
             # Verify cache hit rate
             stats = provider.get_stats()
-            assert stats["hit_rate"] == 0.5
-            assert stats["total_requests"] == 2
+            assert stats["hit_rate"] == 0.5, "Condition must be true"
+            assert stats["total_requests"] == 2, "Condition must be true"
 
 
 @pytest.mark.integration
@@ -275,8 +275,8 @@ class TestCrossModuleInteractions:
             )
 
             results = retriever.query("programming", top_k=3)
-            assert len(results) > 0
-            assert "Python" in results[0]["text"] or "programming" in results[0]["text"]
+            assert len(results) > 0, "Results must not be empty"
+            assert "Python" in results[0]["text"] or "programming" in results[0]["text"], "Result must not be empty"
 
 
 @pytest.mark.integration
@@ -317,17 +317,17 @@ class TestMultiIndexQueries:
             results = multi_retriever.query("content", top_k=10)
 
             # Should get results from both indices
-            assert len(results) > 0
+            assert len(results) > 0, "Results must not be empty"
 
             # Check that results have index metadata
             for result in results:
-                assert "index_name" in result
-                assert "tenant_id" in result
+                assert "index_name" in result, "Result must not be empty"
+                assert "tenant_id" in result, "Result must not be empty"
                 assert result["index_name"] in ["index_1", "index_2"]
 
             # Should have results from both indices (if top_k is large enough)
             index_names = set(r["index_name"] for r in results)
-            assert len(index_names) >= 1  # At least one index represented
+            assert len(index_names) >= 1, "Index_names must not be empty"
 
 
 @pytest.mark.integration
@@ -361,7 +361,7 @@ class TestPerformanceUnderLoad:
                 overlap=100,
             )
 
-            assert index_path.exists()
+            assert index_path.exists(), "Condition must be true"
 
             # Verify index
             faiss_index, _chunks, metadata = load_index(
@@ -370,8 +370,8 @@ class TestPerformanceUnderLoad:
                 index_dir=str(index_dir),
             )
 
-            assert faiss_index.ntotal > 0
-            assert metadata["total_files"] == 50
+            assert faiss_index.ntotal > 0, "ntotal must be greater than zero"
+            assert metadata["total_files"] == 50, "Data must not be empty"
 
             # Test queries
             retriever = Retriever(
@@ -381,7 +381,7 @@ class TestPerformanceUnderLoad:
             )
 
             results = retriever.query("document content", top_k=10)
-            assert len(results) == 10
+            assert len(results) == 10, "Results must not be empty"
 
     def test_high_query_volume(self):
         """Test system with many queries"""
@@ -420,5 +420,5 @@ class TestPerformanceUnderLoad:
                 results_list.append(results)
 
             # All queries should succeed
-            assert len(results_list) == 100
-            assert all(len(r) > 0 for r in results_list)
+            assert len(results_list) == 100, "Results_list must not be empty"
+            assert all(len(r) > 0 for r in results_list), "R must not be empty"

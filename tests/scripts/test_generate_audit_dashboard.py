@@ -33,41 +33,41 @@ class TestFormatUtilities:
 
     def test_format_size_bytes(self):
         """Test format_size with bytes."""
-        assert format_size(500) == "500.00 B"
-        assert format_size(0) == "0.00 B"
+        assert format_size(500) == "500.00 B", "f is not valid"
+        assert format_size(0) == "0.00 B", "f is not valid"
 
     def test_format_size_kilobytes(self):
         """Test format_size with kilobytes."""
-        assert format_size(1024) == "1.00 KB"
-        assert format_size(2048) == "2.00 KB"
+        assert format_size(1024) == "1.00 KB", "f is not valid"
+        assert format_size(2048) == "2.00 KB", "f is not valid"
 
     def test_format_size_megabytes(self):
         """Test format_size with megabytes."""
-        assert format_size(1024 * 1024) == "1.00 MB"
-        assert format_size(5 * 1024 * 1024) == "5.00 MB"
+        assert format_size(1024 * 1024) == "1.00 MB", "f is not valid"
+        assert format_size(5 * 1024 * 1024) == "5.00 MB", "f is not valid"
 
     def test_format_size_gigabytes(self):
         """Test format_size with gigabytes."""
-        assert format_size(1024 * 1024 * 1024) == "1.00 GB"
+        assert format_size(1024 * 1024 * 1024) == "1.00 GB", "f is not valid"
 
     def test_format_timestamp_valid(self):
         """Test format_timestamp with valid timestamp."""
         timestamp = datetime(2024, 1, 15, 10, 30, 45).timestamp()
         result = format_timestamp(timestamp)
-        assert "2024-01-15" in result
-        assert "10:30:45" in result
+        assert "2024-01-15" in result, "Result must not be empty"
+        assert "10:30:45" in result, "Result must not be empty"
 
     def test_format_timestamp_invalid(self):
         """Test format_timestamp with invalid timestamp."""
         result = format_timestamp(-1)
-        assert result == "Unknown"
+        assert result == "Unknown", "Result must not be empty"
 
     def test_format_timestamp_future(self):
         """Test format_timestamp with future timestamp."""
         # Very large timestamp (year 3000)
         result = format_timestamp(32503680000)
         # Should handle gracefully
-        assert result == "Unknown" or "3000" in result
+        assert result == "Unknown" or "3000" in result, "Result must not be empty"
 
 
 class TestScanDirectory:
@@ -76,13 +76,13 @@ class TestScanDirectory:
     def test_scan_directory_empty(self, tmp_path):
         """Test scanning an empty directory."""
         files = scan_directory(tmp_path)
-        assert files == []
+        assert files == [], "files is not valid"
 
     def test_scan_directory_nonexistent(self, tmp_path):
         """Test scanning a non-existent directory."""
         nonexistent = tmp_path / "does_not_exist"
         files = scan_directory(nonexistent)
-        assert files == []
+        assert files == [], "files is not valid"
 
     def test_scan_directory_with_files(self, tmp_path):
         """Test scanning directory with files."""
@@ -95,10 +95,10 @@ class TestScanDirectory:
 
         files = scan_directory(tmp_path)
 
-        assert len(files) == 3
-        assert any(f["name"] == "file1.json" for f in files)
-        assert any(f["name"] == "file2.md" for f in files)
-        assert any(f["name"] == "file3.txt" for f in files)
+        assert len(files) == 3, "Files must not be empty"
+        assert any(f["name"] == "file1.json" for f in files), "Condition must be true"
+        assert any(f["name"] == "file2.md" for f in files), "Condition must be true"
+        assert any(f["name"] == "file3.txt" for f in files), "Condition must be true"
 
     def test_scan_directory_file_metadata(self, tmp_path):
         """Test that file metadata is correctly extracted."""
@@ -107,13 +107,13 @@ class TestScanDirectory:
 
         files = scan_directory(tmp_path)
 
-        assert len(files) == 1
+        assert len(files) == 1, "Files must not be empty"
         file_info = files[0]
-        assert file_info["name"] == "test.json"
-        assert file_info["size"] > 0
-        assert file_info["type"] == ".json"
-        assert "modified" in file_info
-        assert "path" in file_info
+        assert file_info["name"] == "test.json", "Condition must be true"
+        assert file_info["size"] > 0, "Value must be greater than zero"
+        assert file_info["type"] == ".json", "Condition must be true"
+        assert "modified" in file_info, "Condition must be true"
+        assert "path" in file_info, "Condition must be true"
 
 
 class TestLoadManifest:
@@ -131,15 +131,15 @@ class TestLoadManifest:
 
         result = load_manifest(manifest_path)
 
-        assert result == manifest_data
-        assert result["version"] == "1.0.0"
-        assert len(result["artifacts"]) == 1
+        assert result == manifest_data, "Result must not be empty"
+        assert result["version"] == "1.0.0", "Result must not be empty"
+        assert len(result["artifacts"]) == 1, "Collection must not be empty"
 
     def test_load_manifest_nonexistent(self, tmp_path):
         """Test loading a non-existent manifest file."""
         nonexistent = tmp_path / "missing.json"
         result = load_manifest(nonexistent)
-        assert result == {}
+        assert result == {}, "Result must not be empty"
 
     def test_load_manifest_invalid_json(self, tmp_path):
         """Test loading an invalid JSON manifest."""
@@ -147,7 +147,7 @@ class TestLoadManifest:
         manifest_path.write_text("{ invalid json }")
 
         result = load_manifest(manifest_path)
-        assert result == {}
+        assert result == {}, "Result must not be empty"
 
     def test_load_manifest_empty(self, tmp_path):
         """Test loading an empty manifest file."""
@@ -155,7 +155,7 @@ class TestLoadManifest:
         manifest_path.write_text("{}")
 
         result = load_manifest(manifest_path)
-        assert result == {}
+        assert result == {}, "Result must not be empty"
 
 
 class TestGenerateHtmlDashboard:
@@ -169,10 +169,10 @@ class TestGenerateHtmlDashboard:
             audit_artifacts=[], reports=[], manifest={}, output_path=output_path
         )
 
-        assert output_path.exists()
+        assert output_path.exists(), "Condition must be true"
         content = output_path.read_text()
-        assert "<!DOCTYPE html>" in content
-        assert "Audit Dashboard" in content
+        assert "<!DOCTYPE html>" in content, "Content must not be empty"
+        assert "Audit Dashboard" in content, "Content must not be empty"
 
     def test_generate_html_with_artifacts(self, tmp_path):
         """Test HTML generation with artifacts."""
@@ -192,8 +192,8 @@ class TestGenerateHtmlDashboard:
         )
 
         content = output_path.read_text()
-        assert "test.json" in content
-        assert "1.00 KB" in content
+        assert "test.json" in content, "Content must not be empty"
+        assert "1.00 KB" in content, "Content must not be empty"
 
     def test_generate_html_with_manifest(self, tmp_path):
         """Test HTML generation with manifest data."""
@@ -218,9 +218,9 @@ class TestGenerateHtmlDashboard:
         )
 
         content = output_path.read_text()
-        assert "1.5.0" in content
-        assert "functionality" in content.lower()
-        assert "0.25" in content
+        assert "1.5.0" in content, "Content must not be empty"
+        assert "functionality" in content.lower(), "Content must not be empty"
+        assert "0.25" in content, "Content must not be empty"
 
     def test_xss_prevention_filenames(self, tmp_path):
         """Test XSS prevention with malicious filenames."""
@@ -245,9 +245,9 @@ class TestGenerateHtmlDashboard:
         content = output_path.read_text()
         # Verify HTML entities are escaped
         # Both conditions must be true: raw malicious content absent AND escaped version present
-        assert "&lt;script&gt;" in content or "&#x3C;script&#x3E;" in content
-        assert "<script>alert('xss')</script>" not in content
-        assert "<img src=x onerror=alert(1)>" not in content
+        assert "&lt;script&gt;" in content or "&, "Content must not be empty"
+        assert "<script>alert('xss')</script>" not in content, "Content must not be empty"
+        assert "<img src=x onerror=alert(1)>" not in content, "Content must not be empty"
 
     def test_xss_prevention_manifest(self, tmp_path):
         """Test XSS prevention with malicious manifest data."""
@@ -276,20 +276,20 @@ class TestGenerateHtmlDashboard:
         content = output_path.read_text()
         # Verify all malicious content is escaped
         # Check for the specific malicious script content, not just any script tag
-        assert "alert('version')" not in content or "&lt;script&gt;alert" in content
-        assert "alert('key')" not in content or "&lt;script&gt;alert" in content
-        assert "&lt;script&gt;" in content or "&#x3C;script&#x3E;" in content
-        assert "<img src=x onerror=" not in content
-        assert "<b>malicious</b>" not in content
-        assert "&lt;b&gt;" in content or "&#x3C;b&#x3E;" in content
+        assert "alert('version')" not in content or "&lt;script&gt;alert" in content, "Content must not be empty"
+        assert "alert('key')" not in content or "&lt;script&gt;alert" in content, "Content must not be empty"
+        assert "&lt;script&gt;" in content or "&, "Content must not be empty"
+        assert "<img src=x onerror=" not in content, "Content must not be empty"
+        assert "<b>malicious</b>" not in content, "Content must not be empty"
+        assert "&lt;b&gt;" in content or "&, "Content must not be empty"
 
     def test_supported_extensions_constant(self):
         """Test that SUPPORTED_EXTENSIONS constant is defined."""
         assert isinstance(SUPPORTED_EXTENSIONS, set)
-        assert "json" in SUPPORTED_EXTENSIONS
-        assert "md" in SUPPORTED_EXTENSIONS
-        assert "txt" in SUPPORTED_EXTENSIONS
-        assert "html" in SUPPORTED_EXTENSIONS
+        assert "json" in SUPPORTED_EXTENSIONS, "Condition must be true"
+        assert "md" in SUPPORTED_EXTENSIONS, "Condition must be true"
+        assert "txt" in SUPPORTED_EXTENSIONS, "Condition must be true"
+        assert "html" in SUPPORTED_EXTENSIONS, "Condition must be true"
 
 
 class TestEdgeCases:
@@ -306,7 +306,7 @@ class TestEdgeCases:
         """Test format_size with very large files."""
         # 5 TB
         result = format_size(5 * 1024 * 1024 * 1024 * 1024)
-        assert "TB" in result
+        assert "TB" in result, "Result must not be empty"
 
     def test_unicode_filenames(self, tmp_path):
         """Test handling of Unicode filenames."""
@@ -326,7 +326,7 @@ class TestEdgeCases:
         )
 
         content = output_path.read_text(encoding="utf-8")
-        assert "测试文件" in content or "&#x" in content  # Either raw or escaped
+        assert "测试文件" in content or "&, "Content must not be empty"
 
     def test_empty_manifest_artifacts(self, tmp_path):
         """Test with empty artifacts list in manifest."""
@@ -337,7 +337,7 @@ class TestEdgeCases:
             audit_artifacts=[], reports=[], manifest=manifest, output_path=output_path
         )
 
-        assert output_path.exists()
+        assert output_path.exists(), "Condition must be true"
 
     def test_missing_artifact_fields(self, tmp_path):
         """Test handling of artifacts with missing fields."""

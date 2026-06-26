@@ -24,11 +24,11 @@ def test_reproducibility_bundle_creates_manifest_and_env_snapshot(tmp_path: Path
             "manifest.json",
         ]
     )
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
 
     manifest_path = tmp_path / "manifest.json"
-    assert manifest_path.exists()
+    assert manifest_path.exists(), "Condition must be true"
     data = json.loads(manifest_path.read_text(encoding="utf-8"))
-    assert "artifacts" in data
-    assert "env_snapshot_json" in data["artifacts"]
-    assert data["artifacts"]["audit"]["exists"] is True
+    assert "artifacts" in data, "Data must not be empty"
+    assert "env_snapshot_json" in data["artifacts"], "Data must not be empty"
+    assert data["artifacts"]["audit"]["exists"] is True, "Data must not be empty"

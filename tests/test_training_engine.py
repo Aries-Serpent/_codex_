@@ -53,15 +53,15 @@ def test_training_engine_configures_mlflow(tmp_path: Path) -> None:
     engine.start_run()
     engine.log_metrics({"loss": 0.1}, step=1)
     engine.end_run()
-    assert any(call[0] == "set_tracking_uri" for call in fake.calls)
+    assert any(call[0] == "set_tracking_uri" for call in fake.calls), "Condition must be true"
     assert ("log_metrics", ({"loss": 0.1}, 1)) in fake.calls
     assert ("end_run", None) in fake.calls
 
 
 def test_training_engine_handles_missing_mlflow() -> None:
     engine = TrainingEngine(enable_mlflow=True, _mlflow_module=None)
-    assert not engine.enable_mlflow
-    assert engine.mlflow_error is not None
+    assert not engine.enable_mlflow, "Condition must be true"
+    assert engine.mlflow_error is not None, "mlflow_error must be initialized"
 
 
 def test_training_engine_logs_params_tags_and_artifacts(tmp_path: Path) -> None:
@@ -84,11 +84,11 @@ def test_training_engine_logs_params_tags_and_artifacts(tmp_path: Path) -> None:
 
     log_params_calls = [payload for name, payload in fake.calls if name == "log_params"]
     assert log_params_calls, fake.calls
-    assert any(call["amp"] == 1 for call in log_params_calls)
-    assert all("skip" not in call for call in log_params_calls)
+    assert any(call["amp"] == 1 for call in log_params_calls), "Condition must be true"
+    assert all("skip" not in call for call in log_params_calls), "Condition must be true"
 
     tag_calls = [payload for name, payload in fake.calls if name == "set_tags"]
-    assert tag_calls
-    assert any("dataset.0.name" in call for call in tag_calls)
+    assert tag_calls, "tag_calls is not valid"
+    assert any("dataset.0.name" in call for call in tag_calls), "Data must not be empty"
 
     assert ("log_artifact", (str(artifact), None)) in fake.calls

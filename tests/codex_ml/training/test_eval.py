@@ -15,8 +15,8 @@ class TestSafeFloat:
         try:
             from codex_ml.training.eval import _safe_float
 
-            assert _safe_float(42) == 42.0
-            assert _safe_float(3.14) == 3.14
+            assert _safe_float(42) == 42.0, "Condition must be true"
+            assert _safe_float(3.14) == 3.14, "Condition must be true"
         except ImportError as exc:
             pytest.skip(f"Optional dependency missing: {exc}")
 
@@ -26,7 +26,7 @@ class TestSafeFloat:
             from codex_ml.training.eval import _safe_float
 
             result = _safe_float(object())
-            assert result == 0.0
+            assert result == 0.0, "Result must not be empty"
         except ImportError as exc:
             pytest.skip(f"Optional dependency missing: {exc}")
 
@@ -41,7 +41,7 @@ class TestMoveBatchToDevice:
 
             batch = {"input": [1, 2, 3], "target": [4, 5, 6]}
             result = _move_batch_to_device(batch, None)
-            assert result == batch
+            assert result == batch, "Result must not be empty"
         except ImportError as exc:
             pytest.skip(f"Optional dependency missing: {exc}")
 
@@ -52,7 +52,7 @@ class TestMoveBatchToDevice:
 
             batch = {"value": 42}
             result = _move_batch_to_device(batch, "cpu")
-            assert result["value"] == 42
+            assert result["value"] == 42, "Result must not be empty"
         except ImportError as exc:
             pytest.skip(f"Optional dependency missing: {exc}")
 
@@ -109,7 +109,7 @@ class TestEvaluate:
             model = DummyModel()
             dataloader = [{"input": [1, 2, 3]}]
             result = evaluate(model, dataloader, loss_fn=dummy_loss)
-            assert "eval_loss" in result
-            assert result["eval_loss"] == 1.0
+            assert "eval_loss" in result, "Result must not be empty"
+            assert result["eval_loss"] == 1.0, "Result must not be empty"
         except ImportError as exc:
             pytest.skip(f"Optional dependency missing: {exc}")

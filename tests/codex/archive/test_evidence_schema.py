@@ -11,7 +11,7 @@ class TestEvidenceSchemaImports:
         try:
             from src.codex.archive import evidence_schema
 
-            assert evidence_schema is not None
+            assert evidence_schema is not None, "evidence_schema must be initialized"
         except ImportError:
             pytest.skip("Module not available or has unmet dependencies")
 
@@ -36,7 +36,7 @@ class TestEvidenceSchemaValidation:
 
             if hasattr(evidence_schema, "validate_evidence"):
                 result = evidence_schema.validate_evidence({})
-                assert result is not None
+                assert result is not None, "result must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("validate_evidence not available")
 
@@ -48,7 +48,7 @@ class TestEvidenceSchemaValidation:
 
             if hasattr(evidence_schema, "EvidenceSchema"):
                 schema = evidence_schema.EvidenceSchema()
-                assert schema is not None
+                assert schema is not None, "schema must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("EvidenceSchema not available")
 
@@ -75,7 +75,7 @@ class TestEvidenceSchemaModels:
 
             if hasattr(evidence_schema, "EvidenceModel"):
                 model = evidence_schema.EvidenceModel(type="file", path="/test/path")
-                assert model.type == "file"
+                assert model.type == "file", "type is not valid"
         except (ImportError, AttributeError):
             pytest.skip("EvidenceModel not available")
 
@@ -102,7 +102,7 @@ class TestEvidenceSchemaConstants:
             from src.codex.archive import evidence_schema
 
             if hasattr(evidence_schema, "EVIDENCE_TYPES"):
-                assert len(evidence_schema.EVIDENCE_TYPES) > 0
+                assert len(evidence_schema.EVIDENCE_TYPES) > 0, "Collection must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("EVIDENCE_TYPES not available")
 
@@ -112,6 +112,6 @@ class TestEvidenceSchemaConstants:
             from src.codex.archive import evidence_schema
 
             if hasattr(evidence_schema, "SCHEMA_VERSION"):
-                assert evidence_schema.SCHEMA_VERSION is not None
+                assert evidence_schema.SCHEMA_VERSION is not None, "SCHEMA_VERSION must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("SCHEMA_VERSION not available")

@@ -29,7 +29,7 @@ class TestEndToEndTrainingWorkflow:
         # Stage 4: Checkpointing
         pipeline_state["stage"] = "checkpointing"
 
-        assert pipeline_state["stage"] == "checkpointing"
+        assert pipeline_state["stage"] == "checkpointing", "Condition must be true"
 
     def test_data_to_model_training(self):
         """Test workflow from raw data to trained model."""
@@ -37,7 +37,7 @@ class TestEndToEndTrainingWorkflow:
 
         total_training_steps = workflow["batches"] * workflow["epochs"]
 
-        assert total_training_steps == 2970
+        assert total_training_steps == 2970, "total_training_steps is not valid"
 
     def test_training_with_validation_loop(self):
         """Test training with alternating validation."""
@@ -50,7 +50,7 @@ class TestEndToEndTrainingWorkflow:
             val_loss = 0.5 - epoch * 0.04
             history.append({"epoch": epoch, "val_loss": val_loss, "stage": "val"})
 
-        assert len(history) == 10
+        assert len(history) == 10, "History must not be empty"
 
     def test_multi_stage_metric_tracking(self):
         """Test tracking metrics across multiple stages."""
@@ -64,7 +64,7 @@ class TestEndToEndTrainingWorkflow:
 
         total_time = sum(m["time"] for m in metrics.values())
 
-        assert total_time == 160
+        assert total_time == 160, "total_time is not valid"
 
     def test_workflow_state_progression(self):
         """Test state progression through workflow stages."""
@@ -80,7 +80,7 @@ class TestEndToEndTrainingWorkflow:
         ]
 
         for stage_name, stage_idx in stages:
-            assert stage_name is not None
+            assert stage_name is not None, "stage_name must be initialized"
 
 
 class TestCrossModuleIntegration:
@@ -96,7 +96,7 @@ class TestCrossModuleIntegration:
             training["batches_processed"] += 1
             training["total_samples"] += data_pipeline["batch_size"]
 
-        assert training["total_samples"] == 3200
+        assert training["total_samples"] == 3200, "Condition must be true"
 
     def test_model_registry_integration(self):
         """Test model registry integration."""
@@ -109,7 +109,7 @@ class TestCrossModuleIntegration:
         registry = {}
         registry[training_outputs["version"]] = training_outputs
 
-        assert registry["1.0"]["metrics"]["accuracy"] == 0.87
+        assert registry["1.0"]["metrics"]["accuracy"] == 0.87, "Condition must be true"
 
     def test_checkpoint_to_evaluation_integration(self):
         """Test loading checkpoint for evaluation."""
@@ -124,7 +124,7 @@ class TestCrossModuleIntegration:
             "baseline_metrics": checkpoint["metrics"],
         }
 
-        assert eval_context["baseline_metrics"]["accuracy"] == 0.87
+        assert eval_context["baseline_metrics"]["accuracy"] == 0.87, "Condition must be true"
 
     def test_metrics_to_alerting_integration(self):
         """Test metrics feeding into alerting system."""
@@ -137,7 +137,7 @@ class TestCrossModuleIntegration:
         if current_metrics["accuracy"] < alert_thresholds["min_accuracy"]:
             alerts.append("accuracy_low")
 
-        assert len(alerts) == 0
+        assert len(alerts) == 0, "Alerts must not be empty"
 
     def test_callback_integration_with_metrics(self):
         """Test callbacks receiving metrics."""
@@ -150,7 +150,7 @@ class TestCrossModuleIntegration:
             metrics = {"epoch": epoch, "loss": 0.5 - epoch * 0.1}
             metric_callback(metrics)
 
-        assert len(callback_data) == 3
+        assert len(callback_data) == 3, "Callback_data must not be empty"
 
 
 class TestErrorRecoveryWorkflows:
@@ -167,7 +167,7 @@ class TestErrorRecoveryWorkflows:
             # Recovery: use checkpoint
             recovered_state = checkpoint_before_failure
 
-        assert recovered_state["epoch"] == 5
+        assert recovered_state["epoch"] == 5, "Condition must be true"
 
     def test_checkpoint_corruption_recovery(self):
         """Test recovering from checkpoint corruption."""
@@ -179,7 +179,7 @@ class TestErrorRecoveryWorkflows:
         else:
             active_checkpoint = primary_checkpoint
 
-        assert active_checkpoint["valid"] is True
+        assert active_checkpoint["valid"] is True, "Condition must be true"
 
     def test_multi_step_failure_recovery(self):
         """Test recovery across multiple steps."""
@@ -208,7 +208,7 @@ class TestErrorRecoveryWorkflows:
             except RuntimeError:
                 failures.append(operation)
 
-        assert failures == ["process"]
+        assert failures == ["process"], "failures is not valid"
 
     def test_partial_completion_recovery(self):
         """Test recovering with partial results."""
@@ -219,7 +219,7 @@ class TestErrorRecoveryWorkflows:
         resume_from = completed_batches
         remaining = total_batches - resume_from
 
-        assert remaining == 50
+        assert remaining == 50, "remaining is not valid"
 
 
 class TestConfigurationIntegration:
@@ -231,8 +231,8 @@ class TestConfigurationIntegration:
 
         applied_config = config.copy()
 
-        assert applied_config["batch_size"] == 32
-        assert applied_config["epochs"] == 10
+        assert applied_config["batch_size"] == 32, "Condition must be true"
+        assert applied_config["epochs"] == 10, "Condition must be true"
 
     def test_config_override_hierarchy(self):
         """Test configuration override hierarchy."""
@@ -241,8 +241,8 @@ class TestConfigurationIntegration:
 
         final_config = {**default_config, **user_config}
 
-        assert final_config["lr"] == 0.001
-        assert final_config["batch_size"] == 32
+        assert final_config["lr"] == 0.001, "Condition must be true"
+        assert final_config["batch_size"] == 32, "Condition must be true"
 
     def test_dynamic_config_updates(self):
         """Test dynamic configuration updates."""
@@ -253,7 +253,7 @@ class TestConfigurationIntegration:
             if epoch % 2 == 0:
                 config["learning_rate"] *= 0.5
 
-        assert config["learning_rate"] < 0.1
+        assert config["learning_rate"] < 0.1, "Condition must be true"
 
 
 class TestDataPipelineIntegration:
@@ -265,7 +265,7 @@ class TestDataPipelineIntegration:
 
         total_data = sum(data_sources.values())
 
-        assert total_data == 2400
+        assert total_data == 2400, "Data must not be empty"
 
     def test_data_preprocessing_pipeline(self):
         """Test data through preprocessing pipeline."""
@@ -277,7 +277,7 @@ class TestDataPipelineIntegration:
             "batched": 30,  # 980 / 32 batch_size
         }
 
-        assert data_stages["raw"] > data_stages["cleaned"]
+        assert data_stages["raw"] > data_stages["cleaned"], "Value must be greater than zero"
 
     def test_data_validation_in_pipeline(self):
         """Test validation at pipeline stages."""
@@ -287,7 +287,7 @@ class TestDataPipelineIntegration:
             is_valid = True
             pipeline_validations.append({"stage": stage, "valid": is_valid})
 
-        assert all(v["valid"] for v in pipeline_validations)
+        assert all(v["valid"] for v in pipeline_validations), "Condition must be true"
 
     def test_cache_utilization_in_pipeline(self):
         """Test cache utilization across pipeline."""
@@ -299,7 +299,7 @@ class TestDataPipelineIntegration:
         # Stage 2: Use cached data
         processed = [x * 2 for x in cache["raw_data"]]
 
-        assert len(processed) == 1000
+        assert len(processed) == 1000, "Processed must not be empty"
 
 
 class TestResourceManagement:
@@ -316,13 +316,13 @@ class TestResourceManagement:
 
         peak_memory = max(memory_usage.values())
 
-        assert peak_memory == 2048
+        assert peak_memory == 2048, "peak_memory is not valid"
 
     def test_compute_resource_allocation(self):
         """Test allocating compute resources."""
         resources = {"gpus": 2, "cpus": 8, "memory_gb": 16}
 
-        assert resources["gpus"] == 2
+        assert resources["gpus"] == 2, "Condition must be true"
 
     def test_resource_cleanup_on_workflow_end(self):
         """Test resource cleanup."""
@@ -331,7 +331,7 @@ class TestResourceManagement:
         # Cleanup
         resources_allocated.clear()
 
-        assert len(resources_allocated) == 0
+        assert len(resources_allocated) == 0, "Resources_allocated must not be empty"
 
 
 class TestTimingAndPerformance:
@@ -343,7 +343,7 @@ class TestTimingAndPerformance:
 
         total_time = sum(timings.values())
 
-        assert total_time == 150
+        assert total_time == 150, "total_time is not valid"
 
     def test_throughput_calculation(self):
         """Test calculating throughput."""
@@ -352,7 +352,7 @@ class TestTimingAndPerformance:
 
         throughput = samples_processed / time_seconds
 
-        assert throughput == 100
+        assert throughput == 100, "throughput is not valid"
 
     def test_bottleneck_identification(self):
         """Test identifying workflow bottleneck."""
@@ -360,4 +360,4 @@ class TestTimingAndPerformance:
 
         bottleneck = max(stage_times, key=stage_times.get)
 
-        assert bottleneck == "preprocess"
+        assert bottleneck == "preprocess", "bottleneck is not valid"

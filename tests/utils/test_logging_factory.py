@@ -22,6 +22,6 @@ def test_init_logging_wandb_stub(monkeypatch):
     monkeypatch.delenv("WANDB_API_KEY", raising=False)
 
     logger = logging_factory.init_logging(mode="wandb", project="demo")
-    assert logger.name == "demo"
+    assert logger.name == "demo", "name is not valid"
     # WANDB_MODE should be forced offline when no API key present
-    assert logging_factory.os.environ.get("WANDB_MODE") == "offline"
+    assert logging_factory.os.environ.get("WANDB_MODE") == "offline", "logging_fact is not valid"

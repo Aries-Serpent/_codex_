@@ -29,7 +29,7 @@ class TestEnableDeterminismReturnShape:
         """Mutant changes 'seed' → 'XXseedXX' / 'SEED' — this kills them."""
         state = enable_determinism(seed=7, deterministic=True)
         assert "seed" in state, "state dict must contain key 'seed'"
-        assert state["seed"] == 7
+        assert state["seed"] == 7, "Condition must be true"
 
     def test_returns_deterministic_key_exact_name(self):
         """Mutant changes 'deterministic' → 'XXdeterministicXX' — killed here."""
@@ -39,11 +39,11 @@ class TestEnableDeterminismReturnShape:
     def test_deterministic_flag_true(self):
         """Mutant changes default deterministic=True → False — killed here."""
         state = enable_determinism(seed=42)
-        assert state["deterministic"] is True
+        assert state["deterministic"] is True, "Condition must be true"
 
     def test_deterministic_flag_false(self):
         state = enable_determinism(seed=42, deterministic=False)
-        assert state["deterministic"] is False
+        assert state["deterministic"] is False, "Condition must be true"
 
     def test_seed_preserved_in_state(self):
         for s in (0, 1, 42, 999, 1337):
@@ -53,9 +53,9 @@ class TestEnableDeterminismReturnShape:
     def test_no_seed_returns_state_without_random(self):
         """When seed=None the state dict must NOT contain 'random'."""
         state = enable_determinism(seed=None, deterministic=True)
-        assert "random" not in state
-        assert "seed" in state
-        assert state["seed"] is None
+        assert "random" not in state, "Condition must be true"
+        assert "seed" in state, "Condition must be true"
+        assert state["seed"] is None, "Condition must be true"
 
     def test_with_seed_returns_numpy_and_torch_keys(self):
         """When seed is provided, 'numpy' and 'torch' keys must be present."""
@@ -66,8 +66,8 @@ class TestEnableDeterminismReturnShape:
     def test_num_threads_key_in_state(self):
         """When num_threads provided, key 'num_threads' must be in state."""
         state = enable_determinism(seed=5, num_threads=2)
-        assert "num_threads" in state
-        assert state["num_threads"] == 2
+        assert "num_threads" in state, "Condition must be true"
+        assert state["num_threads"] == 2, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -84,13 +84,13 @@ class TestSetDeterministic:
         """Mutant renames env key to 'XXPYTHONHASHSEEDXX' / 'pythonhashseed'."""
         os.environ.pop("PYTHONHASHSEED", None)
         set_deterministic(seed=99)
-        assert os.environ.get("PYTHONHASHSEED") == "99"
+        assert os.environ.get("PYTHONHASHSEED") == "99", "Condition must be true"
 
     def test_pythonhashseed_uses_str_seed(self):
         """Verifies the value stored is the seed as a string."""
         os.environ.pop("PYTHONHASHSEED", None)
         set_deterministic(seed=12345)
-        assert os.environ.get("PYTHONHASHSEED") == "12345"
+        assert os.environ.get("PYTHONHASHSEED") == "12345", "Condition must be true"
 
     def test_random_seed_applied(self):
         """Verifies random state is seeded — mutants changing random.seed() survive."""
@@ -105,7 +105,7 @@ class TestSetDeterministic:
         v1 = random.random()
         set_deterministic(seed=2)
         v2 = random.random()
-        assert v1 != v2
+        assert v1 != v2, "v1 is not valid"
 
     def test_default_seed_is_42(self):
         """Mutant changes default seed 42→43; calling without args and comparing."""
@@ -121,7 +121,7 @@ class TestSetDeterministic:
         """os.environ.setdefault should NOT override an existing PYTHONHASHSEED."""
         os.environ["PYTHONHASHSEED"] = "existing"
         set_deterministic(seed=77)
-        assert os.environ.get("PYTHONHASHSEED") == "existing"
+        assert os.environ.get("PYTHONHASHSEED") == "existing", "Condition must be true"
         del os.environ["PYTHONHASHSEED"]
 
 
@@ -142,7 +142,7 @@ class TestSetGlobalDeterminism:
         set_deterministic(seed=1337, deterministic=True)
         b = random.random()
 
-        assert (
+        assert (, "Condition must be true"
             a == b
         ), "set_global_determinism(1337) must produce same state as set_deterministic(1337)"
 
@@ -161,14 +161,14 @@ class TestSetGlobalDeterminism:
         a = random.random()
         set_global_determinism(seed=42)
         b = random.random()
-        assert a == b
+        assert a == b, "a is not valid"
 
     def test_different_seed_changes_output(self):
         set_global_determinism(seed=1)
         a = random.random()
         set_global_determinism(seed=2)
         b = random.random()
-        assert a != b
+        assert a != b, "a is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -185,7 +185,7 @@ class TestEnableDeterminismNoSeed:
 
     def test_no_seed_deterministic_false(self):
         state = enable_determinism(deterministic=False)
-        assert state["deterministic"] is False
+        assert state["deterministic"] is False, "Condition must be true"
 
 
 class TestSeedUtils:
@@ -193,22 +193,22 @@ class TestSeedUtils:
         """Mutant changing logic should not lose elements."""
         original = [1, 2, 3, 4, 5]
         shuffled = deterministic_shuffle(original, seed=42)
-        assert sorted(original) == sorted(shuffled)
-        assert len(original) == len(shuffled)
+        assert sorted(original) == sorted(shuffled), "s is not valid"
+        assert len(original) == len(shuffled), "Original must not be empty"
 
     def test_deterministic_shuffle_is_reproducible(self):
         """Mutant changing the seed being passed should break this."""
         original = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         shuffled1 = deterministic_shuffle(original, seed=99)
         shuffled2 = deterministic_shuffle(original, seed=99)
-        assert shuffled1 == shuffled2
+        assert shuffled1 == shuffled2, "shuffled1 is not valid"
 
     def test_deterministic_shuffle_different_seeds(self):
         """Mutant changing +1 to seed etc."""
         original = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         shuffled1 = deterministic_shuffle(original, seed=1)
         shuffled2 = deterministic_shuffle(original, seed=2)
-        assert shuffled1 != shuffled2
+        assert shuffled1 != shuffled2, "shuffled1 is not valid"
 
     def test_deterministic_shuffle_does_not_mutate_original(self):
         original = [1, 2, 3]
@@ -221,4 +221,4 @@ class TestSeedUtils:
         a = random.random()
         set_seed(42)
         b = random.random()
-        assert a == b
+        assert a == b, "a is not valid"

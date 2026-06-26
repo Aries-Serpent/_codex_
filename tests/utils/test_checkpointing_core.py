@@ -29,20 +29,20 @@ def test_rng_roundtrip(monkeypatch):
     py_val = random.random()
     random.random()
     load_rng_state(state)
-    assert random.random() == py_val
+    assert random.random() == py_val, "r is not valid"
 
     np = pytest.importorskip("numpy")
     load_rng_state(state)
     np_val = np.random.rand()
     np.random.rand()
     load_rng_state(state)
-    assert np.random.rand() == np_val
+    assert np.random.rand() == np_val, "Condition must be true"
 
     load_rng_state(state)
     t_val = torch.rand(1).item()
     torch.rand(1)
     load_rng_state(state)
-    assert torch.rand(1).item() == t_val
+    assert torch.rand(1).item() == t_val, "Item must not be empty"
 
 
 def test_checkpoint_best_k(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
@@ -55,4 +55,4 @@ def test_checkpoint_best_k(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     remaining = {p.name for p in tmp_path.glob("epoch-*")}
     assert remaining == {"epoch-2", "epoch-3"}
     best = json.loads((tmp_path / "best.json").read_text())
-    assert best["items"][0]["epoch"] == 2
+    assert best["items"][0]["epoch"] == 2, "Item must not be empty"

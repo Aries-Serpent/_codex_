@@ -82,7 +82,7 @@ def handle_data(data):
     test_file = tests_dir / "test_simple.py"
     test_file.write_text("""
 def test_simple():
-    assert True
+    assert True, "True is not valid"
 """)
 
     return tmp_path
@@ -98,10 +98,10 @@ def test_health_metric_creation():
         timestamp="2025-12-21T00:00:00",
     )
 
-    assert metric.name == "test_metric"
-    assert metric.value == 0.5
-    assert metric.threshold == 0.8
-    assert metric.status == HealthStatus.WARNING
+    assert metric.name == "test_metric", "name is not valid"
+    assert metric.value == 0.5, "Value must be initialized"
+    assert metric.threshold == 0.8, "threshold is not valid"
+    assert metric.status == HealthStatus.WARNING, "status is not valid"
 
 
 def test_proposed_action_creation():
@@ -119,18 +119,18 @@ def test_proposed_action_creation():
         proposed_at="2025-12-21T00:00:00",
     )
 
-    assert action.id == "test123"
-    assert action.type == ActionType.MAINTENANCE
-    assert action.decision_level == DecisionLevel.AUTONOMOUS
-    assert not action.approved
-    assert not action.executed
+    assert action.id == "test123", "id is not valid"
+    assert action.type == ActionType.MAINTENANCE, "type is not valid"
+    assert action.decision_level == DecisionLevel.AUTONOMOUS, "decision_level is not valid"
+    assert not action.approved, "Condition must be true"
+    assert not action.executed, "Condition must be true"
 
 
 def test_code_health_sensor_init(temp_repo):
     """Test CodeHealthSensor initialization."""
     sensor = CodeHealthSensor(temp_repo)
 
-    assert sensor.repo_path == temp_repo
+    assert sensor.repo_path == temp_repo, "repo_path is not valid"
 
 
 def test_analyze_complexity(temp_repo):
@@ -142,8 +142,8 @@ def test_analyze_complexity(temp_repo):
     assert isinstance(metrics, (list, tuple, set, dict))  # was: len() >= 0 (always true)
 
     if metrics:
-        assert metrics[0].name == "code_complexity"
-        assert metrics[0].value > 0
+        assert metrics[0].name == "code_complexity", "name is not valid"
+        assert metrics[0].value > 0, "value must be greater than zero"
 
 
 def test_detect_duplicate_code(temp_repo):
@@ -151,9 +151,9 @@ def test_detect_duplicate_code(temp_repo):
     sensor = CodeHealthSensor(temp_repo)
     metrics = sensor.detect_duplicate_code()
 
-    assert len(metrics) == 1
-    assert metrics[0].name == "code_duplication"
-    assert 0 <= metrics[0].value <= 1.0
+    assert len(metrics) == 1, "Metrics must not be empty"
+    assert metrics[0].name == "code_duplication", "name is not valid"
+    assert 0 <= metrics[0].value <= 1.0, "Value must be initialized"
 
 
 def test_check_test_coverage(temp_repo):
@@ -161,12 +161,12 @@ def test_check_test_coverage(temp_repo):
     sensor = CodeHealthSensor(temp_repo)
     metrics = sensor.check_test_coverage()
 
-    assert len(metrics) == 1
-    assert metrics[0].name == "test_coverage"
+    assert len(metrics) == 1, "Metrics must not be empty"
+    assert metrics[0].name == "test_coverage", "name is not valid"
 
     # We have 1 test file and 4 source files
     # Coverage should be 0.25
-    assert metrics[0].value > 0
+    assert metrics[0].value > 0, "value must be greater than zero"
     assert metrics[0].status in (HealthStatus.WARNING, HealthStatus.HEALTHY)
 
 
@@ -182,17 +182,17 @@ def dangerous():
     sensor = CodeHealthSensor(temp_repo)
     metrics = sensor.scan_security_issues()
 
-    assert len(metrics) == 1
-    assert metrics[0].name == "security_scan"
-    assert metrics[0].value > 0  # Should find eval()
-    assert metrics[0].status == HealthStatus.WARNING
+    assert len(metrics) == 1, "Metrics must not be empty"
+    assert metrics[0].name == "security_scan", "name is not valid"
+    assert metrics[0].value > 0, "value must be greater than zero"
+    assert metrics[0].status == HealthStatus.WARNING, "status is not valid"
 
 
 def test_action_proposer_init(temp_repo):
     """Test ActionProposer initialization."""
     proposer = ActionProposer(temp_repo)
 
-    assert proposer.repo_path == temp_repo
+    assert proposer.repo_path == temp_repo, "repo_path is not valid"
 
 
 def test_propose_actions_for_complexity(temp_repo):
@@ -218,9 +218,9 @@ def test_propose_actions_for_complexity(temp_repo):
     proposer = ActionProposer(temp_repo)
     actions = proposer.propose_actions(health)
 
-    assert len(actions) > 0
-    assert actions[0].type == ActionType.REFACTORING
-    assert "complexity" in actions[0].description.lower()
+    assert len(actions) > 0, "Actions must not be empty"
+    assert actions[0].type == ActionType.REFACTORING, "type is not valid"
+    assert "complexity" in actions[0].description.lower(), "Condition must be true"
 
 
 def test_propose_actions_for_duplication(temp_repo):
@@ -246,18 +246,18 @@ def test_propose_actions_for_duplication(temp_repo):
     proposer = ActionProposer(temp_repo)
     actions = proposer.propose_actions(health)
 
-    assert len(actions) > 0
-    assert actions[0].type == ActionType.REFACTORING
-    assert "duplicate" in actions[0].description.lower()
+    assert len(actions) > 0, "Actions must not be empty"
+    assert actions[0].type == ActionType.REFACTORING, "type is not valid"
+    assert "duplicate" in actions[0].description.lower(), "Condition must be true"
 
 
 def test_autonomous_agent_init(temp_repo):
     """Test AutonomousAgent initialization."""
     agent = AutonomousAgent(temp_repo)
 
-    assert agent.repo_path == temp_repo
-    assert agent.config is not None
-    assert agent.state_path.exists()
+    assert agent.repo_path == temp_repo, "repo_path is not valid"
+    assert agent.config is not None, "config must be initialized"
+    assert agent.state_path.exists(), "Condition must be true"
 
 
 def test_load_default_config(temp_repo):
@@ -266,9 +266,9 @@ def test_load_default_config(temp_repo):
 
     config = agent.config
 
-    assert "autonomous_actions_enabled" in config
-    assert "monitoring_interval_minutes" in config
-    assert "max_autonomous_actions_per_cycle" in config
+    assert "autonomous_actions_enabled" in config, "Condition must be true"
+    assert "monitoring_interval_minutes" in config, "Condition must be true"
+    assert "max_autonomous_actions_per_cycle" in config, "Condition must be true"
 
 
 def test_assess_health(temp_repo):
@@ -276,9 +276,9 @@ def test_assess_health(temp_repo):
     agent = AutonomousAgent(temp_repo)
     health = agent.assess_health()
 
-    assert health.timestamp
-    assert health.overall_status in HealthStatus
-    assert len(health.metrics) > 0
+    assert health.timestamp, "Condition must be true"
+    assert health.overall_status in HealthStatus, "Condition must be true"
+    assert len(health.metrics) > 0, "Collection must not be empty"
 
 
 def test_propose_improvements(temp_repo):
@@ -327,8 +327,8 @@ def test_execute_autonomous_actions(temp_repo):
     executed = agent.execute_autonomous_actions([action])
 
     # Should have executed the action
-    assert len(executed) == 1
-    assert executed[0].executed
+    assert len(executed) == 1, "Executed must not be empty"
+    assert executed[0].executed, "Condition must be true"
 
 
 def test_action_filtering_by_level(temp_repo):
@@ -365,8 +365,8 @@ def test_action_filtering_by_level(temp_repo):
     executed = agent.execute_autonomous_actions(actions)
 
     # Only autonomous action should be executed
-    assert len(executed) == 1
-    assert executed[0].id == "auto1"
+    assert len(executed) == 1, "Executed must not be empty"
+    assert executed[0].id == "auto1", "id is not valid"
 
 
 def test_save_state(temp_repo):
@@ -387,7 +387,7 @@ def test_save_state(temp_repo):
 
     # Check that state file was created
     state_files = list(agent.state_path.glob("state_*.json"))
-    assert len(state_files) > 0
+    assert len(state_files) > 0, "State_files must not be empty"
 
 
 def test_run_cycle(temp_repo):
@@ -396,31 +396,31 @@ def test_run_cycle(temp_repo):
 
     health, actions = agent.run_cycle()
 
-    assert health is not None
+    assert health is not None, "health must be initialized"
     assert isinstance(actions, list)
-    assert health.overall_status in HealthStatus
+    assert health.overall_status in HealthStatus, "Condition must be true"
 
 
 def test_health_status_enum():
     """Test HealthStatus enum."""
-    assert HealthStatus.HEALTHY.value == "healthy"
-    assert HealthStatus.WARNING.value == "warning"
-    assert HealthStatus.CRITICAL.value == "critical"
-    assert HealthStatus.DEGRADED.value == "degraded"
+    assert HealthStatus.HEALTHY.value == "healthy", "Value must be initialized"
+    assert HealthStatus.WARNING.value == "warning", "Value must be initialized"
+    assert HealthStatus.CRITICAL.value == "critical", "Value must be initialized"
+    assert HealthStatus.DEGRADED.value == "degraded", "Value must be initialized"
 
 
 def test_action_type_enum():
     """Test ActionType enum."""
-    assert ActionType.MAINTENANCE.value == "maintenance"
-    assert ActionType.OPTIMIZATION.value == "optimization"
-    assert ActionType.SECURITY.value == "security"
+    assert ActionType.MAINTENANCE.value == "maintenance", "Value must be initialized"
+    assert ActionType.OPTIMIZATION.value == "optimization", "Value must be initialized"
+    assert ActionType.SECURITY.value == "security", "Value must be initialized"
 
 
 def test_decision_level_enum():
     """Test DecisionLevel enum."""
-    assert DecisionLevel.AUTONOMOUS.value == "autonomous"
-    assert DecisionLevel.APPROVAL_REQUIRED.value == "approval_required"
-    assert DecisionLevel.ESCALATE.value == "escalate"
+    assert DecisionLevel.AUTONOMOUS.value == "autonomous", "Value must be initialized"
+    assert DecisionLevel.APPROVAL_REQUIRED.value == "approval_required", "Value must be initialized"
+    assert DecisionLevel.ESCALATE.value == "escalate", "Value must be initialized"
 
 
 def test_complexity_calculation(temp_repo):
@@ -438,7 +438,7 @@ def simple():
     func = tree.body[0]
 
     complexity = sensor._calculate_complexity(func)
-    assert complexity == 1  # Base complexity
+    assert complexity == 1, "complexity is not valid"
 
     # Create a complex function
     complex_code = """
@@ -452,7 +452,7 @@ def complex(x):
     func = tree.body[0]
 
     complexity = sensor._calculate_complexity(func)
-    assert complexity > 1  # Should be higher
+    assert complexity > 1, "complexity must be greater than zero"
 
 
 def test_security_detection_patterns(temp_repo):
@@ -471,4 +471,4 @@ def test_security_detection_patterns(temp_repo):
     metrics = sensor.scan_security_issues()
 
     # Should detect all three patterns
-    assert metrics[0].value >= 3
+    assert metrics[0].value >= 3, "value must be greater than zero"

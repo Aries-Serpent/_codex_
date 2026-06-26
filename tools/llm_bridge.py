@@ -126,7 +126,7 @@ def request_patch(
             resp_data = json.loads(resp.read().decode("utf-8"))
     except urllib.error.URLError as exc:
         error_type = type(exc).__name__
-        print(f"[llm-bridge] request failed: <ERROR_TYPE>")
+        print("[llm-bridge] request failed: <ERROR_TYPE>")
         return None
 
     patch = _extract_patch(resp_data)

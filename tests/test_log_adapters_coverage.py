@@ -27,33 +27,33 @@ class TestResolvePath:
         """Test _resolve_path returns explicit path when provided."""
         explicit_path = Path("/explicit/path/db.sqlite")
         result = _resolve_path(explicit_path)
-        assert result == explicit_path
+        assert result == explicit_path, "Result must not be empty"
 
     def test_resolve_path_with_none_uses_env(self):
         """Test _resolve_path uses env var when path is None."""
         with patch.dict(os.environ, {"CODEX_LOG_DB_PATH": "/env/path/db.sqlite"}):
             result = _resolve_path(None)
-            assert result == Path("/env/path/db.sqlite")
+            assert result == Path("/env/path/db.sqlite"), "Result must not be empty"
 
     def test_resolve_path_with_none_default_env(self):
         """Test _resolve_path uses default when env var not set."""
         with patch.dict(os.environ, {}, clear=True):
             result = _resolve_path(None)
-            assert result == Path(".codex/session_logs.db")
+            assert result == Path(".codex/session_logs.db"), "Result must not be empty"
 
     def test_resolve_path_prefers_explicit_over_env(self):
         """Test that explicit path is preferred over env var."""
         explicit = Path("/explicit/path")
         with patch.dict(os.environ, {"CODEX_LOG_DB_PATH": "/env/path"}):
             result = _resolve_path(explicit)
-            assert result == explicit
+            assert result == explicit, "Result must not be empty"
 
     def test_resolve_path_with_string_path(self):
         """Test _resolve_path with string path (converts to Path)."""
         string_path = "/string/path/db.sqlite"
         result = _resolve_path(string_path)
         assert isinstance(result, Path)
-        assert result == Path(string_path)
+        assert result == Path(string_path), "Result must not be empty"
 
 
 class TestEnsureTable:
@@ -64,7 +64,7 @@ class TestEnsureTable:
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
             _ensure_table(db_path)
-            assert db_path.exists()
+            assert db_path.exists(), "Condition must be true"
 
     def test_ensure_table_creates_app_log_table(self):
         """Test that app_log table is created with correct schema."""
@@ -78,7 +78,7 @@ class TestEnsureTable:
             table_exists = cur.fetchone() is not None
             conn.close()
 
-            assert table_exists
+            assert table_exists, "table_exists is not valid"
 
     def test_ensure_table_correct_schema(self):
         """Test that app_log table has correct columns."""
@@ -100,7 +100,7 @@ class TestEnsureTable:
                 "meta": "TEXT",
             }
             for col_name, col_type in expected_columns.items():
-                assert col_name in columns
+                assert col_name in columns, "Condition must be true"
 
     def test_ensure_table_idempotent(self):
         """Test that calling _ensure_table twice doesn't cause errors."""
@@ -108,7 +108,7 @@ class TestEnsureTable:
             db_path = Path(tmpdir) / "test.db"
             _ensure_table(db_path)
             _ensure_table(db_path)  # Call again
-            assert db_path.exists()
+            assert db_path.exists(), "Condition must be true"
 
     def test_ensure_table_pool_disabled_by_default(self):
         """Test that connection pool is disabled by default."""
@@ -165,8 +165,8 @@ class TestLogEvent:
             db_path = Path(tmpdir) / "test.db"
             result = log_event("INFO", "Test message", db_path=db_path)
 
-            assert result == db_path
-            assert db_path.exists()
+            assert result == db_path, "Result must not be empty"
+            assert db_path.exists(), "Condition must be true"
 
             # Verify record was inserted
             conn = sqlite3.connect(str(db_path))
@@ -175,7 +175,7 @@ class TestLogEvent:
             count = cur.fetchone()[0]
             conn.close()
 
-            assert count == 1
+            assert count == 1, "Count must be greater than zero"
 
     def test_log_event_with_meta(self):
         """Test log_event with metadata."""
@@ -190,7 +190,7 @@ class TestLogEvent:
             result = cur.fetchone()[0]
             conn.close()
 
-            assert result == meta
+            assert result == meta, "Result must not be empty"
 
     def test_log_event_without_meta(self):
         """Test log_event without metadata."""
@@ -204,7 +204,7 @@ class TestLogEvent:
             result = cur.fetchone()[0]
             conn.close()
 
-            assert result is None
+            assert result is None, "Result must not be empty"
 
     def test_log_event_multiple_levels(self):
         """Test log_event with different log levels."""
@@ -220,7 +220,7 @@ class TestLogEvent:
             count = cur.fetchone()[0]
             conn.close()
 
-            assert count == 1
+            assert count == 1, "Count must be greater than zero"
 
     def test_log_event_multiple_records(self):
         """Test logging multiple events."""
@@ -235,7 +235,7 @@ class TestLogEvent:
             count = cur.fetchone()[0]
             conn.close()
 
-            assert count == 5
+            assert count == 5, "Count must be greater than zero"
 
     def test_log_event_timestamp_stored(self):
         """Test that timestamp is stored."""
@@ -250,7 +250,7 @@ class TestLogEvent:
             conn.close()
 
             assert isinstance(ts, float)
-            assert ts > 0
+            assert ts > 0, "ts must be greater than zero"
 
     def test_log_event_default_path(self):
         """Test log_event with default path (uses env var)."""
@@ -258,7 +258,7 @@ class TestLogEvent:
             env_path = str(Path(tmpdir) / "default.db")
             with patch.dict(os.environ, {"CODEX_LOG_DB_PATH": env_path}):
                 result = log_event("INFO", "Test message")
-                assert result == Path(env_path)
+                assert result == Path(env_path), "Result must not be empty"
 
     def test_log_event_creates_parent_directory(self):
         """Test that log_event works with pre-existing parent directories."""
@@ -268,7 +268,7 @@ class TestLogEvent:
             db_dir.mkdir(parents=True, exist_ok=True)
             db_path = db_dir / "test.db"
             log_event("INFO", "Test message", db_path=db_path)
-            assert db_path.exists()
+            assert db_path.exists(), "Condition must be true"
 
     def test_log_event_returns_path(self):
         """Test that log_event returns the database path."""
@@ -276,7 +276,7 @@ class TestLogEvent:
             db_path = Path(tmpdir) / "test.db"
             result = log_event("INFO", "Test message", db_path=db_path)
             assert isinstance(result, Path)
-            assert str(result) == str(db_path)
+            assert str(result) == str(db_path), "Result must not be empty"
 
     def test_log_event_pool_enabled(self):
         """Test that connection is not closed when pool is enabled."""
@@ -303,8 +303,8 @@ class TestLogMessage:
             db_path = Path(tmpdir) / "test.db"
             result = log_message("Test message", db_path=db_path)
 
-            assert result == db_path
-            assert db_path.exists()
+            assert result == db_path, "Result must not be empty"
+            assert db_path.exists(), "Condition must be true"
 
     def test_log_message_default_level(self):
         """Test log_message uses INFO as default level."""
@@ -318,7 +318,7 @@ class TestLogMessage:
             level = cur.fetchone()[0]
             conn.close()
 
-            assert level == "INFO"
+            assert level == "INFO", "level is not valid"
 
     def test_log_message_custom_level(self):
         """Test log_message with custom level."""
@@ -332,7 +332,7 @@ class TestLogMessage:
             level = cur.fetchone()[0]
             conn.close()
 
-            assert level == "ERROR"
+            assert level == "ERROR", "Error should be raised or set"
 
     def test_log_message_with_meta(self):
         """Test log_message with metadata."""
@@ -347,7 +347,7 @@ class TestLogMessage:
             result = cur.fetchone()[0]
             conn.close()
 
-            assert result == meta
+            assert result == meta, "Result must not be empty"
 
     def test_log_message_calls_log_event(self):
         """Test that log_message calls log_event internally."""
@@ -359,8 +359,8 @@ class TestLogMessage:
 
                 mock_log_event.assert_called_once()
                 call_args = mock_log_event.call_args
-                assert call_args[1]["level"] == "WARNING"
-                assert call_args[1]["message"] == "Test message"
+                assert call_args[1]["level"] == "WARNING", "Condition must be true"
+                assert call_args[1]["message"] == "Test message", "Condition must be true"
 
     def test_log_message_multiple_levels(self):
         """Test log_message with different levels."""
@@ -376,7 +376,7 @@ class TestLogMessage:
             count = cur.fetchone()[0]
             conn.close()
 
-            assert count == len(levels)
+            assert count == len(levels), "Levels must not be empty"
 
     def test_log_message_default_path(self):
         """Test log_message with default path."""
@@ -384,7 +384,7 @@ class TestLogMessage:
             env_path = str(Path(tmpdir) / "default.db")
             with patch.dict(os.environ, {"CODEX_LOG_DB_PATH": env_path}):
                 result = log_message("Test message")
-                assert result == Path(env_path)
+                assert result == Path(env_path), "Result must not be empty"
 
     def test_log_message_returns_path(self):
         """Test that log_message returns the database path."""
@@ -392,7 +392,7 @@ class TestLogMessage:
             db_path = Path(tmpdir) / "test.db"
             result = log_message("Test message", db_path=db_path)
             assert isinstance(result, Path)
-            assert result == db_path
+            assert result == db_path, "Result must not be empty"
 
 
 class TestLogAdaptersIntegration:
@@ -414,7 +414,7 @@ class TestLogAdaptersIntegration:
             count = cur.fetchone()[0]
             conn.close()
 
-            assert count == 4
+            assert count == 4, "Count must be greater than zero"
 
     def test_mixed_operations(self):
         """Test mixing log_event and log_message operations."""
@@ -434,9 +434,9 @@ class TestLogAdaptersIntegration:
             levels = [row[0] for row in cur.fetchall()]
             conn.close()
 
-            assert count == 6
-            assert levels.count("INFO") == 3
-            assert levels.count("DEBUG") == 3
+            assert count == 6, "Count must be greater than zero"
+            assert levels.count("INFO") == 3, "Count must be greater than zero"
+            assert levels.count("DEBUG") == 3, "Count must be greater than zero"
 
     def test_pool_persistence(self):
         """Test that pool setting affects multiple operations."""
@@ -453,4 +453,4 @@ class TestLogAdaptersIntegration:
                     log_message("Test", db_path=db_path)
 
                     # Should not close in either call
-                    assert mock_conn.close.call_count == 0
+                    assert mock_conn.close.call_count == 0, "Count must be greater than zero"

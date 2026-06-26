@@ -207,14 +207,14 @@ def main():
     except AssertionError as e:
         print()
         print("=" * 70)
-        print(f"❌ TEST FAILED: <ERROR_TYPE>")
+        print("❌ TEST FAILED: <ERROR_TYPE>")
         print("=" * 70)
         return 1
 
     except Exception as e:
         print()
         print("=" * 70)
-        print(f"❌ UNEXPECTED ERROR: <ERROR_TYPE>")
+        print("❌ UNEXPECTED ERROR: <ERROR_TYPE>")
         print("=" * 70)
         import traceback
         traceback.print_exc()

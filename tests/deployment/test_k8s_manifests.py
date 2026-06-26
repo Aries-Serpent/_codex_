@@ -50,4 +50,4 @@ def test_deployment_parse_manifests_if_present():
                 if is_helm_chart:
                     continue
                 # K8s manifests must have apiVersion and kind
-                assert "apiVersion" in doc and "kind" in doc
+                assert "apiVersion" in doc and "kind" in doc, "Condition must be true"

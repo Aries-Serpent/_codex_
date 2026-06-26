@@ -23,10 +23,10 @@ class TestExceptionHandling_PhysicsOrchestrator:
 
         # Valid cases
         evolver = HamiltonianEvolver(grid_size=4)
-        assert evolver.grid_size == 4
+        assert evolver.grid_size == 4, "grid_size is not valid"
 
         evolver = HamiltonianEvolver(grid_size=64)
-        assert evolver.grid_size == 64
+        assert evolver.grid_size == 64, "grid_size is not valid"
 
     def test_swarm_intelligence_edge_cases(self):
         """Test SwarmIntelligence edge cases"""
@@ -34,11 +34,11 @@ class TestExceptionHandling_PhysicsOrchestrator:
 
         # Zero particles edge case
         swarm = SwarmIntelligence(num_particles=0)
-        assert swarm.num_particles == 0
+        assert swarm.num_particles == 0, "num_particles is not valid"
 
         # Large particle count
         swarm = SwarmIntelligence(num_particles=1000)
-        assert swarm.num_particles == 1000
+        assert swarm.num_particles == 1000, "num_particles is not valid"
 
     def test_energy_state_negative_values(self):
         """Test EnergyState with negative energy/entropy"""
@@ -46,11 +46,11 @@ class TestExceptionHandling_PhysicsOrchestrator:
 
         # Negative energy (allowed in some physics contexts)
         state = EnergyState(configuration={}, energy=-10.0, entropy=0.5)
-        assert state.energy == -10.0
+        assert state.energy == -10.0, "energy is not valid"
 
         # Negative entropy (thermodynamically invalid but test handling)
         state = EnergyState(configuration={}, energy=10.0, entropy=-0.1)
-        assert state.entropy == -0.1
+        assert state.entropy == -0.1, "entropy is not valid"
 
     def test_decision_state_none_positions(self):
         """Test DecisionState with None positions"""
@@ -58,11 +58,11 @@ class TestExceptionHandling_PhysicsOrchestrator:
 
         # None current position
         state = DecisionState(current_position=None, goal_position="goal")
-        assert state.current_position is None
+        assert state.current_position is None, "current_position is not valid"
 
         # None goal position
         state = DecisionState(current_position="current", goal_position=None)
-        assert state.goal_position is None
+        assert state.goal_position is None, "goal_position is not valid"
 
 
 class TestExceptionHandling_AgentMemory:
@@ -80,7 +80,7 @@ class TestExceptionHandling_AgentMemory:
             memory.store_memory(key=key, value="value")
             result = memory.retrieve_memory(key=key)
             # Should handle gracefully
-            assert result is not None or result is None
+            assert result is not None or result is None, "result must be initialized"
 
     def test_store_memory_with_large_content(self):
         """Test storing very large content"""
@@ -92,7 +92,7 @@ class TestExceptionHandling_AgentMemory:
         large_content = "x" * (10 * 1024 * 1024)
         memory.store_memory(key="large_key", value=large_content)
         # Should handle or fail gracefully
-        assert True
+        assert True, "True is not valid"
 
     def test_search_with_special_regex_chars(self):
         """Test search with regex special characters"""
@@ -140,11 +140,11 @@ class TestExceptionHandling_MentalMapping:
 
         # None properties
         node1 = model.create_node(NodeType.PROBLEM, properties=None)
-        assert node1 is not None
+        assert node1 is not None, "node1 must be initialized"
 
         # Empty dict
         node2 = model.create_node(NodeType.CONCEPT, properties={})
-        assert node2 is not None
+        assert node2 is not None, "node2 must be initialized"
 
     def test_shortest_path_nonexistent_nodes(self):
         """Test shortest_path with nodes that don't exist"""
@@ -154,7 +154,7 @@ class TestExceptionHandling_MentalMapping:
 
         # Both nodes don't exist
         path = model.shortest_path(source="fake1", target="fake2")
-        assert path is None
+        assert path is None, "path is not valid"
 
     def test_bfs_from_disconnected_component(self):
         """Test BFS from disconnected graph component"""
@@ -179,7 +179,7 @@ class TestExceptionHandling_MentalMapping:
 
         # BFS from node1 shouldn't reach node3
         result = model.bfs(start_node=node1)
-        assert node3 not in result
+        assert node3 not in result, "Result must not be empty"
 
 
 class TestExceptionHandling_QuantumGame:
@@ -191,11 +191,11 @@ class TestExceptionHandling_QuantumGame:
 
         # String team
         state = StrategyState("custom_team", np.array([0.5, 0.5]))
-        assert state.team == "custom_team"
+        assert state.team == "custom_team", "team is not valid"
 
         # Empty string team
         state = StrategyState("", np.array([1.0]))
-        assert state.team == ""
+        assert state.team == "", "team is not valid"
 
     def test_payoff_operator_empty_matrix(self):
         """Test PayoffOperator with edge case matrices"""
@@ -215,7 +215,7 @@ class TestExceptionHandling_QuantumGame:
 
         # Zero entanglement
         state = QuantumGameState(blue, red, entanglement_strength=0.0)
-        assert state.entanglement_strength == 0.0
+        assert state.entanglement_strength == 0.0, "entanglement_strength is not valid"
 
 
 class TestExceptionHandling_SelfHealing:
@@ -231,8 +231,8 @@ class TestExceptionHandling_SelfHealing:
             severity=IssueSeverity.HIGH,
             description="Test issue",
         )
-        assert issue.issue_id != ""
-        assert issue.title != ""
+        assert issue.issue_id != "", "issue_id is not valid"
+        assert issue.title != "", "title is not valid"
 
     def test_remediation_action_minimal_fields(self):
         """Test RemediationAction with minimal fields"""
@@ -240,8 +240,8 @@ class TestExceptionHandling_SelfHealing:
 
         # Minimal fields
         action = RemediationAction(action_type="fix", description="Fix the issue")
-        assert action.action_id != ""
-        assert action.issue_id != ""
+        assert action.action_id != "", "action_id is not valid"
+        assert action.issue_id != "", "issue_id is not valid"
 
     def test_diagnostic_result_empty(self):
         """Test DiagnosticResult with no issues"""
@@ -249,9 +249,9 @@ class TestExceptionHandling_SelfHealing:
 
         # Empty diagnostic
         result = DiagnosticResult()
-        assert len(result.issues) == 0
-        assert len(result.suggested_actions) == 0
-        assert result.health_score == 1.0
+        assert len(result.issues) == 0, "Collection must not be empty"
+        assert len(result.suggested_actions) == 0, "Collection must not be empty"
+        assert result.health_score == 1.0, "Result must not be empty"
 
 
 class TestExceptionHandling_WorkflowNavigator:
@@ -265,10 +265,10 @@ class TestExceptionHandling_WorkflowNavigator:
 
         # Try to navigate without setting current workflow
         result = navigator.navigate_to(step_index=0)
-        assert not result
+        assert not result, "Result must not be empty"
 
         current = navigator.current_step()
-        assert current is None
+        assert current is None, "current is not valid"
 
     def test_navigate_to_invalid_index(self):
         """Test navigation to out-of-bounds index"""
@@ -284,16 +284,16 @@ class TestExceptionHandling_WorkflowNavigator:
 
             # Navigate to invalid index
             result = navigator.navigate_to(step_index=999)
-            assert not result
+            assert not result, "Result must not be empty"
 
             result = navigator.navigate_to(step_index=-1)
-            assert not result
+            assert not result, "Result must not be empty"
         else:
             # Use existing workflows
             workflows = navigator.list_workflows()
             if workflows:
                 navigator.current_workflow_id = workflows[0].workflow_id
-            assert navigator is not None
+            assert navigator is not None, "navigator must be initialized"
 
     def test_next_step_at_end(self):
         """Test next_step when at end of workflow"""
@@ -309,9 +309,9 @@ class TestExceptionHandling_WorkflowNavigator:
 
             # Try next when already at end
             next_step = navigator.next_step()
-            assert next_step is None
+            assert next_step is None, "next_step is not valid"
         else:
-            assert navigator is not None
+            assert navigator is not None, "navigator must be initialized"
 
     def test_previous_step_at_beginning(self):
         """Test previous_step when at beginning"""
@@ -327,9 +327,9 @@ class TestExceptionHandling_WorkflowNavigator:
 
             # Try previous when at beginning
             prev_step = navigator.previous_step()
-            assert prev_step is None
+            assert prev_step is None, "prev_step is not valid"
         else:
-            assert navigator is not None
+            assert navigator is not None, "navigator must be initialized"
 
 
 class TestExceptionHandling_PhysicsIntegration:
@@ -341,7 +341,7 @@ class TestExceptionHandling_PhysicsIntegration:
 
         integration = PhysicsIntegration()
         # Should initialize without errors
-        assert integration is not None
+        assert integration is not None, "integration must be initialized"
 
     def test_transfer_data_none_values(self):
         """Test data transfer with None values"""
@@ -353,7 +353,7 @@ class TestExceptionHandling_PhysicsIntegration:
             # None data
             result = integration.transfer_data(None, source="A", target="B")
             # Should handle gracefully
-            assert result is not None or result is None
+            assert result is not None or result is None, "result must be initialized"
 
 
 class TestValidationFailures_AllModules:
@@ -364,7 +364,7 @@ class TestValidationFailures_AllModules:
         from agents.physics_orchestrator import ForceVector
 
         force = ForceVector("zero_force", magnitude=0.0, direction=[0, 0, 0])
-        assert force.magnitude == 0.0
+        assert force.magnitude == 0.0, "magnitude is not valid"
 
     def test_fluid_channel_invalid_name(self):
         """Test FluidChannel with various name values"""
@@ -372,12 +372,12 @@ class TestValidationFailures_AllModules:
 
         # Empty name
         channel = FluidChannel(name="", cross_section=1.0, length=10.0)
-        assert channel.name == ""
+        assert channel.name == "", "name is not valid"
 
         # Very long name
         long_name = "x" * 10000
         channel = FluidChannel(name=long_name, cross_section=1.0, length=10.0)
-        assert len(channel.name) == 10000
+        assert len(channel.name) == 10000, "Collection must not be empty"
 
     def test_energy_landscape_extreme_temperature(self):
         """Test EnergyLandscape with extreme temperatures"""
@@ -385,11 +385,11 @@ class TestValidationFailures_AllModules:
 
         # Very high temperature
         landscape = EnergyLandscape(temperature=10000.0)
-        assert landscape.temperature == 10000.0
+        assert landscape.temperature == 10000.0, "temperature is not valid"
 
         # Very low temperature (but positive)
         landscape = EnergyLandscape(temperature=0.001)
-        assert landscape.temperature == 0.001
+        assert landscape.temperature == 0.001, "temperature is not valid"
 
 
 if __name__ == "__main__":

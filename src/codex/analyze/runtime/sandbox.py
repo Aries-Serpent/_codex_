@@ -258,7 +258,7 @@ class SandboxManager:
 
         except (ValueError, TypeError, RuntimeError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             duration_ms = (time.time() - start_time) * 1000
 
             return ExecutionResult(
@@ -316,7 +316,7 @@ class SandboxManager:
 
         except (ValueError, OSError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             raise ValueError(f"Path validation failed: {e}") from e
 
         # Create tracing wrapper script

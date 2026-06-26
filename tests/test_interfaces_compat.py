@@ -75,12 +75,12 @@ def test_rl_agent_contract(tmp_path):
     cls = _load(RL_PATH)
     inst = cls(**RL_KW)
     a = inst.act({"obs": 1})
-    assert a is not None
+    assert a is not None, "a must be initialized"
     metrics = inst.update({"states": [], "actions": [], "rewards": []})
     assert isinstance(metrics, dict)
     p = tmp_path / "agent.bin"
     inst.save(str(p))
-    assert p.exists()
+    assert p.exists(), "Condition must be true"
     inst.load(str(p))
 
 
@@ -116,12 +116,12 @@ class _DummyRLAgent(RLAgent):
 
 def test_rl_agent_abc(tmp_path):
     agent = _DummyRLAgent()
-    assert agent.act({}) == 1
+    assert agent.act({}) == 1, "Condition must be true"
     update_result = agent.update({})
     assert isinstance(update_result, dict)
     p = tmp_path / "agent.bin"
     agent.save(str(p))
-    assert p.exists()
+    assert p.exists(), "Condition must be true"
     agent.load(str(p))
 
 
@@ -143,8 +143,8 @@ def test_tokenizer_protocol_guard(monkeypatch):
         tokenizer_mod._protocol_guard("encode")
 
     message = str(exc.value)
-    assert "TokenizerProtocol method 'encode'" in message
-    assert "hf" in message and "whitespace" in message
+    assert "TokenizerProtocol method 'encode'" in message, "Condition must be true"
+    assert "hf" in message and "whitespace" in message, "Condition must be true"
 
 
 def test_get_tokenizer_entry_points_can_enable_after_initial_disabled_call(monkeypatch):
@@ -163,6 +163,6 @@ def test_get_tokenizer_entry_points_can_enable_after_initial_disabled_call(monke
 
     monkeypatch.setenv("CODEX_PLUGINS_ENTRYPOINTS", "1")
     assert isinstance(tokenizer_mod.get_tokenizer("missing-tokenizer"), TokenizerAdapter)
-    assert calls == [True]
+    assert calls == [True], "calls is not valid"
 
     tokenizer_mod._load_tokenizer_entry_points_once.cache_clear()

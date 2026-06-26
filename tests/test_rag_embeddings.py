@@ -65,9 +65,9 @@ class TestLocalSentenceTransformerProvider:
             model_name="sentence-transformers/all-MiniLM-L6-v2"
         )
 
-        assert provider is not None
-        assert provider.model is not None
-        assert provider.model_name == "sentence-transformers/all-MiniLM-L6-v2"
+        assert provider is not None, "provider must be initialized"
+        assert provider.model is not None, "model must be initialized"
+        assert provider.model_name == "sentence-transformers/all-MiniLM-L6-v2", "model_name is not valid"
 
     @_skip_real_st_models
     def test_encode_basic(self):
@@ -78,8 +78,8 @@ class TestLocalSentenceTransformerProvider:
         embeddings = provider.encode(texts)
 
         assert isinstance(embeddings, np.ndarray)
-        assert len(embeddings) == 2
-        assert embeddings.shape[1] > 0
+        assert len(embeddings) == 2, "Embeddings must not be empty"
+        assert embeddings.shape[1] > 0, "Value must be greater than zero"
 
     @_skip_real_st_models
     def test_encode_single_text(self):
@@ -88,8 +88,8 @@ class TestLocalSentenceTransformerProvider:
 
         embeddings = provider.encode(["Single text"])
 
-        assert len(embeddings) == 1
-        assert embeddings.shape[1] > 0
+        assert len(embeddings) == 1, "Embeddings must not be empty"
+        assert embeddings.shape[1] > 0, "Value must be greater than zero"
 
     @_skip_real_st_models
     def test_encode_empty_list(self):
@@ -99,7 +99,7 @@ class TestLocalSentenceTransformerProvider:
         embeddings = provider.encode([])
 
         assert isinstance(embeddings, np.ndarray)
-        assert len(embeddings) == 0
+        assert len(embeddings) == 0, "Embeddings must not be empty"
 
     @_skip_real_st_models
     def test_get_dimension(self):
@@ -109,9 +109,9 @@ class TestLocalSentenceTransformerProvider:
         dim = provider.get_dimension()
 
         assert isinstance(dim, int)
-        assert dim > 0
+        assert dim > 0, "dim must be greater than zero"
         # all-MiniLM-L6-v2 has 384 dimensions
-        assert dim == 384
+        assert dim == 384, "dim is not valid"
 
     @_skip_real_st_models
     def test_encode_with_batch_size(self):
@@ -121,7 +121,7 @@ class TestLocalSentenceTransformerProvider:
         texts = [f"Text {i}" for i in range(10)]
         embeddings = provider.encode(texts, batch_size=2)
 
-        assert len(embeddings) == 10
+        assert len(embeddings) == 10, "Embeddings must not be empty"
 
     @_skip_real_st_models
     def test_custom_cache_dir(self):
@@ -129,7 +129,7 @@ class TestLocalSentenceTransformerProvider:
         with tempfile.TemporaryDirectory() as tmpdir:
             provider = LocalSentenceTransformerProvider(cache_dir=tmpdir)
 
-            assert provider.cache_dir == tmpdir
+            assert provider.cache_dir == tmpdir, "cache_dir is not valid"
 
 
 @pytest.mark.skipif(not OPENAI_AVAILABLE, reason="OpenAI package not installed")
@@ -141,16 +141,16 @@ class TestOpenAIEmbeddingProvider:
         with patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"}):  # pragma: allowlist secret
             provider = OpenAIEmbeddingProvider(api_key="test-key")
 
-            assert provider is not None
-            assert provider.model_name == "text-embedding-3-small"
+            assert provider is not None, "provider must be initialized"
+            assert provider.model_name == "text-embedding-3-small", "model_name is not valid"
 
     def test_initialization_from_env(self):
         """Test initialization from environment variable"""
         with patch.dict(os.environ, {"OPENAI_API_KEY": "env-key"}):  # pragma: allowlist secret
             provider = OpenAIEmbeddingProvider()
 
-            assert provider.client is not None
-            assert provider.model_name == "text-embedding-3-small"
+            assert provider.client is not None, "client must be initialized"
+            assert provider.model_name == "text-embedding-3-small", "model_name is not valid"
 
     def test_initialization_without_key(self):
         """Test initialization without API key raises error"""
@@ -162,13 +162,13 @@ class TestOpenAIEmbeddingProvider:
         """Test getting embedding dimensions for different models"""
         with patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"}):  # pragma: allowlist secret
             provider_small = OpenAIEmbeddingProvider(model_name="text-embedding-3-small")
-            assert provider_small.get_dimension() == 1536
+            assert provider_small.get_dimension() == 1536, "Condition must be true"
 
             provider_large = OpenAIEmbeddingProvider(model_name="text-embedding-3-large")
-            assert provider_large.get_dimension() == 3072
+            assert provider_large.get_dimension() == 3072, "Condition must be true"
 
             provider_ada = OpenAIEmbeddingProvider(model_name="text-embedding-ada-002")
-            assert provider_ada.get_dimension() == 1536
+            assert provider_ada.get_dimension() == 1536, "Condition must be true"
 
     @patch("codex.rag.embeddings.OpenAI")
     def test_encode_basic(self, mock_openai):
@@ -188,8 +188,8 @@ class TestOpenAIEmbeddingProvider:
             embeddings = provider.encode(["text1", "text2"])
 
             assert isinstance(embeddings, np.ndarray)
-            assert len(embeddings) == 2
-            assert embeddings.shape[1] == 1536
+            assert len(embeddings) == 2, "Embeddings must not be empty"
+            assert embeddings.shape[1] == 1536, "Condition must be true"
 
     @patch("codex.rag.embeddings.OpenAI")
     def test_encode_with_batch_size(self, mock_openai):
@@ -206,7 +206,7 @@ class TestOpenAIEmbeddingProvider:
             _ = provider.encode(texts, batch_size=2)
 
             # Should make multiple API calls
-            assert mock_client.embeddings.create.call_count >= 2
+            assert mock_client.embeddings.create.call_count >= 2, "call_count must be positive"
 
     def test_destructor_clears_key(self):
         """Test that destructor clears API key"""
@@ -214,7 +214,7 @@ class TestOpenAIEmbeddingProvider:
 
         with patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"}):  # pragma: allowlist secret
             provider = OpenAIEmbeddingProvider()
-            assert provider.client is not None
+            assert provider.client is not None, "client must be initialized"
 
             # Trigger destructor via cleanup
             del provider
@@ -237,8 +237,8 @@ class TestCachedEmbeddingProvider:
         with tempfile.TemporaryDirectory() as tmpdir:
             cached = CachedEmbeddingProvider(provider=mock_provider, cache_dir=tmpdir)
 
-            assert cached is not None
-            assert Path(tmpdir).exists()
+            assert cached is not None, "cached must be initialized"
+            assert Path(tmpdir).exists(), "Condition must be true"
 
     def test_cache_miss_and_hit(self, mock_provider):
         """Test cache miss followed by cache hit"""
@@ -250,15 +250,15 @@ class TestCachedEmbeddingProvider:
 
             # First call: cache miss
             embeddings1 = cached.encode(texts, cache_key=cache_key)
-            assert mock_provider.encode.call_count == 1
-            assert cached.cache_misses == 1
-            assert cached.cache_hits == 0
+            assert mock_provider.encode.call_count == 1, "Count must be greater than zero"
+            assert cached.cache_misses == 1, "cache_misses is not valid"
+            assert cached.cache_hits == 0, "cache_hits is not valid"
 
             # Second call: cache hit
             embeddings2 = cached.encode(texts, cache_key=cache_key)
-            assert mock_provider.encode.call_count == 1  # Not called again
-            assert cached.cache_misses == 1
-            assert cached.cache_hits == 1
+            assert mock_provider.encode.call_count == 1, "Count must be greater than zero"
+            assert cached.cache_misses == 1, "cache_misses is not valid"
+            assert cached.cache_hits == 1, "cache_hits is not valid"
 
             # Results should be identical
             np.testing.assert_array_equal(embeddings1, embeddings2)
@@ -276,9 +276,9 @@ class TestCachedEmbeddingProvider:
 
             # Cache is bypassed, so no hits or misses tracked for keyless calls
             # Provider is called twice since cache is not used
-            assert mock_provider.encode.call_count == 2
-            assert cached.cache_hits == 0  # No hits since cache is bypassed
-            assert cached.cache_misses == 0  # No misses counted for keyless calls
+            assert mock_provider.encode.call_count == 2, "Count must be greater than zero"
+            assert cached.cache_hits == 0, "cache_hits is not valid"
+            assert cached.cache_misses == 0, "cache_misses is not valid"
 
     def test_cache_invalidation_with_metadata(self, mock_provider):
         """Test cache invalidation based on metadata"""
@@ -290,15 +290,15 @@ class TestCachedEmbeddingProvider:
 
             # First call with mtime1
             _ = cached.encode(texts, cache_key=cache_key, metadata={"file_mtime": 1000})
-            assert cached.cache_misses == 1
+            assert cached.cache_misses == 1, "cache_misses is not valid"
 
             # Second call with same mtime: cache hit
             _ = cached.encode(texts, cache_key=cache_key, metadata={"file_mtime": 1000})
-            assert cached.cache_hits == 1
+            assert cached.cache_hits == 1, "cache_hits is not valid"
 
             # Third call with different mtime: cache miss
             _ = cached.encode(texts, cache_key=cache_key, metadata={"file_mtime": 2000})
-            assert cached.cache_misses == 2
+            assert cached.cache_misses == 2, "cache_misses is not valid"
 
     def test_get_dimension(self, mock_provider):
         """Test getting dimension from cached provider"""
@@ -306,7 +306,7 @@ class TestCachedEmbeddingProvider:
             cached = CachedEmbeddingProvider(provider=mock_provider, cache_dir=tmpdir)
 
             dim = cached.get_dimension()
-            assert dim == 384
+            assert dim == 384, "dim is not valid"
             mock_provider.get_dimension.assert_called_once()
 
     def test_get_stats(self, mock_provider):
@@ -321,11 +321,11 @@ class TestCachedEmbeddingProvider:
 
             stats = cached.get_stats()
 
-            assert stats["cache_hits"] == 1
-            assert stats["cache_misses"] == 2
-            assert stats["total_requests"] == 3
-            assert stats["hit_rate"] == 1 / 3
-            assert "cache_dir" in stats
+            assert stats["cache_hits"] == 1, "Condition must be true"
+            assert stats["cache_misses"] == 2, "Condition must be true"
+            assert stats["total_requests"] == 3, "Condition must be true"
+            assert stats["hit_rate"] == 1 / 3, "Condition must be true"
+            assert "cache_dir" in stats, "Condition must be true"
 
     def test_clear_cache(self, mock_provider):
         """Test clearing cache"""
@@ -336,14 +336,14 @@ class TestCachedEmbeddingProvider:
             cached.encode(["text1"], cache_key="key1")
             cached.encode(["text2"], cache_key="key2")
 
-            assert cached.cache_misses == 2
+            assert cached.cache_misses == 2, "cache_misses is not valid"
 
             # Clear cache
             cached.clear_cache()
 
-            assert cached.cache_hits == 0
-            assert cached.cache_misses == 0
-            assert Path(tmpdir).exists()
+            assert cached.cache_hits == 0, "cache_hits is not valid"
+            assert cached.cache_misses == 0, "cache_misses is not valid"
+            assert Path(tmpdir).exists(), "Condition must be true"
 
     def test_cache_with_corrupted_file(self, mock_provider):
         """Test handling of corrupted cache file"""
@@ -360,7 +360,7 @@ class TestCachedEmbeddingProvider:
 
             # Should handle corruption and regenerate
             embeddings = cached.encode(["text1"], cache_key="test")
-            assert embeddings is not None
+            assert embeddings is not None, "embeddings must be initialized"
 
 
 class TestCreateEmbeddingProvider:
@@ -387,7 +387,7 @@ class TestCreateEmbeddingProvider:
             use_cache=False,
         )
 
-        assert provider.model_name == "sentence-transformers/all-MiniLM-L6-v2"
+        assert provider.model_name == "sentence-transformers/all-MiniLM-L6-v2", "model_name is not valid"
 
     @patch.dict(os.environ, {"OPENAI_API_KEY": "test-key"})  # pragma: allowlist secret
     def test_create_openai_provider(self):
@@ -425,7 +425,7 @@ class TestCreateEmbeddingProvider:
             )
 
             assert isinstance(provider, CachedEmbeddingProvider)
-            assert str(tmpdir) in str(provider.cache_dir)
+            assert str(tmpdir) in str(provider.cache_dir), "Condition must be true"
 
 
 @_skip_real_st_models
@@ -452,8 +452,8 @@ class TestEmbeddingsIntegration:
 
             # Check stats
             stats = provider.get_stats()
-            assert stats["cache_hits"] == 1
-            assert stats["cache_misses"] == 1
+            assert stats["cache_hits"] == 1, "Condition must be true"
+            assert stats["cache_misses"] == 1, "Condition must be true"
 
     def test_different_texts_different_embeddings(self):
         """Test that different texts produce different embeddings"""
@@ -476,4 +476,4 @@ class TestEmbeddingsIntegration:
         similarity = np.dot(emb1[0], emb2[0]) / (np.linalg.norm(emb1[0]) * np.linalg.norm(emb2[0]))
 
         # Should be quite similar
-        assert similarity > 0.8
+        assert similarity > 0.8, "similarity must be greater than zero"

@@ -143,8 +143,8 @@ def _load_policy_file(path: Path) -> Optional[Mapping[str, Any]]:
         text = path.read_text(encoding="utf-8")
     except FileNotFoundError as e:
         error_type = type(e).__name__
-        logger.debug(f"FileNotFoundError: <ERROR_TYPE>")
-        logger.warning(f"FileNotFoundError: <ERROR_TYPE>", exc_info=True)
+        logger.debug("FileNotFoundError: <ERROR_TYPE>")
+        logger.warning("FileNotFoundError: <ERROR_TYPE>", exc_info=True)
         return None
     except (IOError, OSError) as exc:  # pragma: no cover - defensive
         logger.warning("Unable to read safety policy %s: %s", path, exc)
@@ -308,14 +308,14 @@ def _parse_scalar(value: str) -> Any:
         return int(value)
     except ValueError as e:
         error_type = type(e).__name__
-        logger.debug(f"ValueError: <ERROR_TYPE>")
-        logger.warning(f"ValueError: <ERROR_TYPE>", exc_info=True)
+        logger.debug("ValueError: <ERROR_TYPE>")
+        logger.warning("ValueError: <ERROR_TYPE>", exc_info=True)
         try:
             return float(value)
         except ValueError as e:
             error_type = type(e).__name__
-            logger.debug(f"ValueError: <ERROR_TYPE>")
-            logger.warning(f"ValueError: <ERROR_TYPE>", exc_info=True)
+            logger.debug("ValueError: <ERROR_TYPE>")
+            logger.warning("ValueError: <ERROR_TYPE>", exc_info=True)
     try:
         # ast.literal_eval is the *safe* alternative to eval() — it only parses
         # Python literals (str, int, float, bool, None, list, dict, tuple, set).

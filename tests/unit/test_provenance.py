@@ -33,11 +33,11 @@ def test_collect_dvc_stage_parses_lock_structure():
 
     stage = collect_dvc_stage(lock, stage="prepare")
 
-    assert stage is not None
-    assert stage.stage == "prepare"
-    assert stage.outs["data/processed/prepared"]["md5"] == "abc"
-    assert stage.deps["data/raw/input.csv"]["md5"] == "def"
-    assert stage.params["prepare"]["seed"] == 42
+    assert stage is not None, "stage must be initialized"
+    assert stage.stage == "prepare", "stage is not valid"
+    assert stage.outs["data/processed/prepared"]["md5"] == "abc", "Data must not be empty"
+    assert stage.deps["data/raw/input.csv"]["md5"] == "def", "Data must not be empty"
+    assert stage.params["prepare"]["seed"] == 42, "Condition must be true"
 
 
 def test_collect_dvc_stage_merges_list_params_entries():
@@ -57,9 +57,9 @@ def test_collect_dvc_stage_merges_list_params_entries():
 
     stage = collect_dvc_stage(lock, stage="prepare")
 
-    assert stage is not None
-    assert stage.params["prepare"]["seed"] == 41
-    assert stage.params["prepare"]["shuffle"] is True
+    assert stage is not None, "stage must be initialized"
+    assert stage.params["prepare"]["seed"] == 41, "Condition must be true"
+    assert stage.params["prepare"]["shuffle"] is True, "Condition must be true"
 
 
 def test_write_provenance_includes_dvc_metadata(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
@@ -87,10 +87,10 @@ def test_write_provenance_includes_dvc_metadata(tmp_path: Path, monkeypatch: pyt
         cfg, stage="prepare", project_root=tmp_path, out_dir=Path(".codex")
     )
 
-    assert provenance_path.exists()
+    assert provenance_path.exists(), "Condition must be true"
 
     payload = json.loads(provenance_path.read_text())
-    assert payload["git_commit"] == "deadbeef"
-    assert payload["dvc"]["outs"]["data/processed/prepared"]["md5"] == "abc123"
-    assert payload["dvc"]["deps"]["data/raw/input.csv"]["md5"] == "def456"
-    assert payload["config_fingerprint_sha256"]
+    assert payload["git_commit"] == "deadbeef", "Condition must be true"
+    assert payload["dvc"]["outs"]["data/processed/prepared"]["md5"] == "abc123", "Data must not be empty"
+    assert payload["dvc"]["deps"]["data/raw/input.csv"]["md5"] == "def456", "Data must not be empty"
+    assert payload["config_fingerprint_sha256"], "Condition must be true"

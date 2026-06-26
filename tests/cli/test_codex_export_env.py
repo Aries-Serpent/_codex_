@@ -29,9 +29,9 @@ def test_export_env_cli(tmp_path) -> None:
 
     line = result.output.strip().splitlines()[-1]
     summary = json.loads(line)
-    assert summary["command"] == "export-env"
-    assert summary["seed"] == 9
+    assert summary["command"] == "export-env", "Condition must be true"
+    assert summary["seed"] == 9, "Condition must be true"
 
-    assert (output_dir / "environment.json").exists()
-    assert (output_dir / "pip-freeze.txt").exists()
-    assert (output_dir / "environment.ndjson").exists()
+    assert (output_dir / "environment.json").exists(), "Condition must be true"
+    assert (output_dir / "pip-freeze.txt").exists(), "Condition must be true"
+    assert (output_dir / "environment.ndjson").exists(), "Condition must be true"

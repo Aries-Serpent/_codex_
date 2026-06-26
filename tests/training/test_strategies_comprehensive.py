@@ -73,11 +73,11 @@ def test_training_result_initialization():
         output_dir="/output",
         extra={"metric": 0.95},
     )
-    assert result.status == "ok"
-    assert result.backend == "functional"
-    assert result.final_epoch == 5
-    assert result.output_dir == "/output"
-    assert result.extra["metric"] == 0.95
+    assert result.status == "ok", "Result must not be empty"
+    assert result.backend == "functional", "Result must not be empty"
+    assert result.final_epoch == 5, "Result must not be empty"
+    assert result.output_dir == "/output", "Result must not be empty"
+    assert result.extra["metric"] == 0.95, "Result must not be empty"
 
 
 def test_training_result_empty_extra():
@@ -85,7 +85,7 @@ def test_training_result_empty_extra():
     result = TrainingResult(
         status="ok", backend="legacy", final_epoch=1, output_dir="/tmp", extra={}
     )
-    assert result.extra == {}
+    assert result.extra == {}, "Result must not be empty"
 
 
 def test_training_result_serialization():
@@ -96,8 +96,8 @@ def test_training_result_serialization():
         status="ok", backend="functional", final_epoch=3, output_dir="/output", extra={"loss": 0.5}
     )
     result_dict = asdict(result)
-    assert result_dict["status"] == "ok"
-    assert result_dict["extra"]["loss"] == 0.5
+    assert result_dict["status"] == "ok", "Result must not be empty"
+    assert result_dict["extra"]["loss"] == 0.5, "Result must not be empty"
 
 
 # =============================================================================
@@ -140,22 +140,22 @@ def test_safe_callbacks_with_callbacks():
     cb2 = NoOpCallback()
 
     result = _safe_callbacks([cb1, cb2])
-    assert len(result) == 2
-    assert result[0] is cb1
-    assert result[1] is cb2
+    assert len(result) == 2, "Result must not be empty"
+    assert result[0] is cb1, "Result must not be empty"
+    assert result[1] is cb2, "Result must not be empty"
 
 
 def test_safe_callbacks_empty_list():
     """Test _safe_callbacks returns NoOpCallback for empty list."""
     result = _safe_callbacks([])
-    assert len(result) == 1
+    assert len(result) == 1, "Result must not be empty"
     assert isinstance(result[0], NoOpCallback)
 
 
 def test_safe_callbacks_none():
     """Test _safe_callbacks handles None input."""
     result = _safe_callbacks(None)
-    assert len(result) == 1
+    assert len(result) == 1, "Result must not be empty"
     assert isinstance(result[0], NoOpCallback)
 
 
@@ -168,14 +168,14 @@ def test_resolve_strategy_functional():
     """Test resolve_strategy returns FunctionalStrategy."""
     strategy = resolve_strategy("functional")
     assert isinstance(strategy, FunctionalStrategy)
-    assert strategy.backend_name == "functional"
+    assert strategy.backend_name == "functional", "backend_name is not valid"
 
 
 def test_resolve_strategy_legacy():
     """Test resolve_strategy returns LegacyStrategy."""
     strategy = resolve_strategy("legacy")
     assert isinstance(strategy, LegacyStrategy)
-    assert strategy.backend_name == "legacy"
+    assert strategy.backend_name == "legacy", "backend_name is not valid"
 
 
 def test_resolve_strategy_default():
@@ -214,9 +214,9 @@ def test_functional_strategy_run_basic(mock_import, mock_config, mock_callback):
     strategy = FunctionalStrategy()
     result = strategy.run(mock_config, [mock_callback])
 
-    assert result.status == "ok"
-    assert result.backend == "functional"
-    assert result.final_epoch == mock_config.epochs
+    assert result.status == "ok", "Result must not be empty"
+    assert result.backend == "functional", "Result must not be empty"
+    assert result.final_epoch == mock_config.epochs, "Result must not be empty"
 
 
 @patch("codex_ml.training.strategies.import_module")
@@ -232,7 +232,7 @@ def test_functional_strategy_with_texts(mock_import, mock_config):
     strategy = FunctionalStrategy()
     result = strategy.run(mock_config, [])
 
-    assert result.extra.get("trained") is True
+    assert result.extra.get("trained") is True, "Result must not be empty"
 
 
 @patch("codex_ml.training.strategies.import_module")
@@ -248,8 +248,8 @@ def test_functional_strategy_error_handling(mock_import, mock_config):
     strategy = FunctionalStrategy()
     result = strategy.run(mock_config, [])
 
-    assert result.status == "error"
-    assert "exception" in result.extra
+    assert result.status == "error", "Result must not be empty"
+    assert "exception" in result.extra, "Result must not be empty"
 
 
 # =============================================================================
@@ -272,7 +272,7 @@ def test_legacy_strategy_deprecation_warning(mock_warn, mock_import, mock_config
         _ = None  # We only care about the warning
 
     # Verify deprecation warning was called
-    assert mock_warn.called
+    assert mock_warn.called, "Condition must be true"
 
 
 @patch("codex_ml.training.strategies.import_module")
@@ -289,8 +289,8 @@ def test_legacy_strategy_run_basic(mock_import, mock_config):
             strategy = LegacyStrategy()
             result = strategy.run(mock_config, [])
 
-            assert result.status == "ok"
-            assert result.backend == "legacy"
+            assert result.status == "ok", "Result must not be empty"
+            assert result.backend == "legacy", "Result must not be empty"
 
 
 # =============================================================================
@@ -327,10 +327,10 @@ def test_callback_protocol_methods():
     callback.on_step(0, 0, 0.5, {})
     callback.on_checkpoint(1, "/path", {"loss": 0.5}, {})
 
-    assert callback.epoch_started == 1
-    assert callback.epoch_ended == 1
-    assert callback.step_called is True
-    assert callback.checkpoint_saved == "/path"
+    assert callback.epoch_started == 1, "epoch_started is not valid"
+    assert callback.epoch_ended == 1, "epoch_ended is not valid"
+    assert callback.step_called is True, "step_called is not valid"
+    assert callback.checkpoint_saved == "/path", "checkpoint_saved is not valid"
 
 
 def test_mock_callback_integration(mock_callback, mock_config):
@@ -345,7 +345,7 @@ def test_mock_callback_integration(mock_callback, mock_config):
         strategy.run(mock_config, [mock_callback])
 
         # Verify callbacks were invoked
-        assert mock_callback.on_epoch_start.called
+        assert mock_callback.on_epoch_start.called, "Condition must be true"
 
 
 # =============================================================================
@@ -362,7 +362,7 @@ def test_strategy_result_consistency():
 
     for name, strategy in strategies:
         assert hasattr(strategy, "backend_name")
-        assert strategy.backend_name == name
+        assert strategy.backend_name == name, "backend_name is not valid"
 
 
 def test_functional_strategy_resume_from(mock_config):
@@ -376,7 +376,7 @@ def test_functional_strategy_resume_from(mock_config):
         strategy = FunctionalStrategy()
         result = strategy.run(mock_config, [], resume_from="/checkpoint.pt")
 
-        assert result.extra.get("resume_from") == "/checkpoint.pt"
+        assert result.extra.get("resume_from") == "/checkpoint.pt", "Result must not be empty"
 
 
 def test_backend_strategy_protocol_compliance():
@@ -389,4 +389,4 @@ def test_backend_strategy_protocol_compliance():
         assert hasattr(strategy, "run")
 
         # Check method signature
-        assert callable(strategy.run)
+        assert callable(strategy.run), "Condition must be true"

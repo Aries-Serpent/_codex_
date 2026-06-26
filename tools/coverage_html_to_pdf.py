@@ -235,7 +235,7 @@ def html_to_pdf(html_path: Path, pdf_path: Path, dpi: int = 72) -> bool:
         _ = None  # suppressed: no action needed
     except Exception as e:
         error_type = type(e).__name__
-        print(f"pdfkit failed: <ERROR_TYPE>", file=sys.stderr)
+        print("pdfkit failed: <ERROR_TYPE>", file=sys.stderr)
 
     # Last resort: Create a simple text-based PDF
     try:

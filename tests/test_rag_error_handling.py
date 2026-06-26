@@ -15,6 +15,7 @@ import pytest
 pytest.importorskip("numpy")
 
 import numpy as np
+
  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 # Check for FAISS specifically
 FAISS_AVAILABLE = importlib.util.find_spec("faiss") is not None
@@ -172,7 +173,7 @@ class TestIndexerErrorHandling:
                     index_dir=str(tmpdir),
                 )
             except ValueError as e:
-                assert "No chunks generated" in str(e) or "no text content" in str(e)
+                assert "No chunks generated" in str(e) or "no text content" in str(e), "Content must not be empty"
 
 
 class TestRetrieverErrorHandling:
@@ -189,7 +190,7 @@ class TestRetrieverErrorHandling:
             )
 
             # Should have no index loaded
-            assert retriever.faiss_index is None
+            assert retriever.faiss_index is None, "faiss_index is not valid"
 
     def test_retriever_query_without_index(self):
         """Test querying without loaded index"""
@@ -201,7 +202,7 @@ class TestRetrieverErrorHandling:
             )
 
             results = retriever.query("test query", top_k=5)
-            assert len(results) == 0
+            assert len(results) == 0, "Results must not be empty"
 
     def test_retriever_empty_query(self):
         """Test retriever with empty query"""
@@ -245,11 +246,11 @@ class TestRetrieverErrorHandling:
             )
 
             # Should have 0 loaded retrievers
-            assert len(retriever.retrievers) == 0
+            assert len(retriever.retrievers) == 0, "Collection must not be empty"
 
             # Query should return empty
             results = retriever.query("test", top_k=5)
-            assert len(results) == 0
+            assert len(results) == 0, "Results must not be empty"
 
 
 class TestEmbeddingsErrorHandling:
@@ -313,8 +314,8 @@ class TestEmbeddingsErrorHandling:
 
             # Should handle corruption and regenerate
             embeddings = cached.encode(["test"], cache_key="test_key")
-            assert embeddings is not None
-            assert mock_provider.encode.call_count == 2  # Original + regeneration
+            assert embeddings is not None, "embeddings must be initialized"
+            assert mock_provider.encode.call_count == 2, "Count must be greater than zero"
 
     def test_cached_provider_corrupted_metadata(self):
         """Test cached provider with corrupted metadata"""
@@ -337,7 +338,7 @@ class TestEmbeddingsErrorHandling:
 
             # Should handle and regenerate
             embeddings = cached.encode(["test"], cache_key="test_key")
-            assert embeddings is not None
+            assert embeddings is not None, "embeddings must be initialized"
 
     def test_create_provider_unknown_type(self):
         """Test factory with unknown provider type"""
@@ -431,7 +432,7 @@ class TestConcurrentAccess:
                 thread.join(timeout=10)
 
             # All should succeed (cache handles concurrent access)
-            assert all(results)
+            assert all(results), "Result must not be empty"
 
 
 class TestResourceExhaustion:
@@ -445,7 +446,7 @@ class TestResourceExhaustion:
 
         # Should not crash, but may skip due to memory/time
         # In real scenario, would use batch processing
-        assert len(chunks) == 1000
+        assert len(chunks) == 1000, "Chunks must not be empty"
 
     def test_very_large_top_k(self):
         """Test retrieval with extremely large top_k"""
@@ -472,7 +473,7 @@ class TestPlatformSpecific:
             index_path = Path(tmpdir) / "test_tenant" / "test_index"
             index_path.mkdir(parents=True)
 
-            assert index_path.exists()
+            assert index_path.exists(), "Condition must be true"
 
     def test_case_sensitive_filenames(self):
         """Test handling of case-sensitive filenames"""
@@ -491,4 +492,4 @@ class TestPlatformSpecific:
                 file2.write_text("Content 2")
 
             # Should handle appropriately based on platform
-            assert file1.exists()
+            assert file1.exists(), "Condition must be true"

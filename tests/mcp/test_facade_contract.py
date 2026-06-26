@@ -96,13 +96,13 @@ def test_calltool_invokes_adapter_query_top_k(fake_adapter_loader):
         "id": "test1",
     }
     resp = client.post("/jsonrpc", json=payload)
-    assert resp.status_code == 200
+    assert resp.status_code == 200, "status_code is not valid"
     body = resp.json()
-    assert "result" in body
+    assert "result" in body, "Result must not be empty"
     fake = fake_adapter_loader
-    assert len(fake.query_calls) >= 1
+    assert len(fake.query_calls) >= 1, "Collection must not be empty"
     first = fake.query_calls[0]
-    assert first["namespace"] == "tenant-1"
+    assert first["namespace"] == "tenant-1", "Condition must be true"
     assert first["query_embedding"] == [1.0, 0.0]
-    assert first["top_k"] == 3
-    assert first["filters"] == {"tag": "x"}
+    assert first["top_k"] == 3, "Condition must be true"
+    assert first["filters"] == {"tag": "x"}, "Condition must be true"

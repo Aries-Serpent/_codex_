@@ -34,8 +34,8 @@ class TestBuildParser:
 
         parser = build_parser()
         args = parser.parse_args(["apply-zd"])
-        assert args.command == "apply-zd"
-        assert args.out == ".codex/crm/zendesk"
+        assert args.command == "apply-zd", "command is not valid"
+        assert args.out == ".codex/crm/zendesk", "out is not valid"
 
     def test_apply_zd_custom_output(self):
         """Test apply-zd with custom output."""
@@ -43,7 +43,7 @@ class TestBuildParser:
 
         parser = build_parser()
         args = parser.parse_args(["apply-zd", "--out", "/custom/path"])
-        assert args.out == "/custom/path"
+        assert args.out == "/custom/path", "out is not valid"
 
     def test_apply_d365_subcommand(self):
         """Test apply-d365 subcommand parsing."""
@@ -51,8 +51,8 @@ class TestBuildParser:
 
         parser = build_parser()
         args = parser.parse_args(["apply-d365"])
-        assert args.command == "apply-d365"
-        assert args.out == ".codex/crm/d365"
+        assert args.command == "apply-d365", "command is not valid"
+        assert args.out == ".codex/crm/d365", "out is not valid"
 
     def test_import_pa_zip_subcommand(self):
         """Test import-pa-zip subcommand parsing."""
@@ -60,9 +60,9 @@ class TestBuildParser:
 
         parser = build_parser()
         args = parser.parse_args(["import-pa-zip", "--in", "input.zip", "--out", "output/"])
-        assert args.command == "import-pa-zip"
-        assert args.source == "input.zip"
-        assert args.out == "output/"
+        assert args.command == "import-pa-zip", "command is not valid"
+        assert args.source == "input.zip", "source is not valid"
+        assert args.out == "output/", "out is not valid"
 
     def test_import_zaf_zip_subcommand(self):
         """Test import-zaf-zip subcommand parsing."""
@@ -70,9 +70,9 @@ class TestBuildParser:
 
         parser = build_parser()
         args = parser.parse_args(["import-zaf-zip", "--in", "app.zip", "--out", "scaffold/"])
-        assert args.command == "import-zaf-zip"
-        assert args.source == "app.zip"
-        assert args.out == "scaffold/"
+        assert args.command == "import-zaf-zip", "command is not valid"
+        assert args.source == "app.zip", "source is not valid"
+        assert args.out == "scaffold/", "out is not valid"
 
     def test_gen_diagram_subcommand(self):
         """Test gen-diagram subcommand parsing."""
@@ -90,10 +90,10 @@ class TestBuildParser:
                 "diagram.mmd",
             ]
         )
-        assert args.command == "gen-diagram"
-        assert args.flow == "test_flow"
-        assert args.steps == "step1;step2;step3"
-        assert args.out == "diagram.mmd"
+        assert args.command == "gen-diagram", "command is not valid"
+        assert args.flow == "test_flow", "flow is not valid"
+        assert args.steps == "step1;step2;step3", "steps is not valid"
+        assert args.out == "diagram.mmd", "out is not valid"
 
     def test_evidence_pack_subcommand(self):
         """Test evidence-pack subcommand parsing."""
@@ -101,8 +101,8 @@ class TestBuildParser:
 
         parser = build_parser()
         args = parser.parse_args(["evidence-pack", "--out", "evidence/"])
-        assert args.command == "evidence-pack"
-        assert args.out == "evidence/"
+        assert args.command == "evidence-pack", "command is not valid"
+        assert args.out == "evidence/", "out is not valid"
 
 
 class TestMainFunction:
@@ -114,7 +114,7 @@ class TestMainFunction:
         from codex_crm.cli import main
 
         result = main(["apply-zd", "--out", "/tmp/zd"])
-        assert result == 0
+        assert result == 0, "Result must not be empty"
         mock_emit.assert_called_once_with("/tmp/zd")
 
     @patch("codex_crm.cli.emit_d365_config")
@@ -123,7 +123,7 @@ class TestMainFunction:
         from codex_crm.cli import main
 
         result = main(["apply-d365", "--out", "/tmp/d365"])
-        assert result == 0
+        assert result == 0, "Result must not be empty"
         mock_emit.assert_called_once_with("/tmp/d365")
 
     @patch("codex_crm.cli.write_evidence")
@@ -132,7 +132,7 @@ class TestMainFunction:
         from codex_crm.cli import main
 
         result = main(["evidence-pack", "--out", "/tmp/evidence"])
-        assert result == 0
+        assert result == 0, "Result must not be empty"
         mock_write.assert_called_once_with("/tmp/evidence")
 
     @patch("codex_crm.cli.flow_to_mermaid")
@@ -146,7 +146,7 @@ class TestMainFunction:
         result = main(
             ["gen-diagram", "--flow", "test", "--steps", "A;B", "--out", str(output_file)]
         )
-        assert result == 0
+        assert result == 0, "Result must not be empty"
         mock_flow.assert_called_once_with("test", ["A", "B"])
 
     def test_main_gen_diagram_steps_parsing(self, tmp_path):
@@ -179,16 +179,16 @@ class TestConstants:
         """Test default output root constant."""
         from codex_crm.cli import DEFAULT_OUTPUT_ROOT
 
-        assert Path(".codex") / "crm" == DEFAULT_OUTPUT_ROOT
+        assert Path(".codex") / "crm" == DEFAULT_OUTPUT_ROOT, "Condition must be true"
 
     def test_default_zendesk_output(self):
         """Test default Zendesk output constant."""
         from codex_crm.cli import DEFAULT_ZENDESK_OUTPUT
 
-        assert Path(".codex") / "crm" / "zendesk" == DEFAULT_ZENDESK_OUTPUT
+        assert Path(".codex") / "crm" / "zendesk" == DEFAULT_ZENDESK_OUTPUT, "Condition must be true"
 
     def test_default_d365_output(self):
         """Test default D365 output constant."""
         from codex_crm.cli import DEFAULT_D365_OUTPUT
 
-        assert Path(".codex") / "crm" / "d365" == DEFAULT_D365_OUTPUT
+        assert Path(".codex") / "crm" / "d365" == DEFAULT_D365_OUTPUT, "Condition must be true"

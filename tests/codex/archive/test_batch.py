@@ -18,9 +18,9 @@ class TestBatchItem:
 
         item = BatchItem(tombstone="ts_123", output=Path("/tmp/output"), actor="user@example.com")
 
-        assert item.tombstone == "ts_123"
-        assert item.output == Path("/tmp/output")
-        assert item.actor == "user@example.com"
+        assert item.tombstone == "ts_123", "Item must not be empty"
+        assert item.output == Path("/tmp/output"), "Item must not be empty"
+        assert item.actor == "user@example.com", "Item must not be empty"
 
     def test_from_dict_valid(self, tmp_path):
         """Test BatchItem.from_dict with valid data."""
@@ -30,8 +30,8 @@ class TestBatchItem:
 
         item = BatchItem.from_dict(payload, manifest_dir=tmp_path, default_actor="default")
 
-        assert item.tombstone == "ts_001"
-        assert item.actor == "test_user"
+        assert item.tombstone == "ts_001", "Item must not be empty"
+        assert item.actor == "test_user", "Item must not be empty"
 
     def test_from_dict_default_actor(self, tmp_path):
         """Test BatchItem.from_dict uses default actor."""
@@ -45,7 +45,7 @@ class TestBatchItem:
 
         item = BatchItem.from_dict(payload, manifest_dir=tmp_path, default_actor="default_user")
 
-        assert item.actor == "default_user"
+        assert item.actor == "default_user", "Item must not be empty"
 
     def test_from_dict_missing_tombstone(self, tmp_path):
         """Test BatchItem.from_dict raises on missing tombstone."""
@@ -97,11 +97,11 @@ class TestBatchResult:
             total=10, succeeded=8, failed=2, results=[{"id": 1}, {"id": 2}], metrics=None
         )
 
-        assert result.total == 10
-        assert result.succeeded == 8
-        assert result.failed == 2
-        assert len(result.results) == 2
-        assert result.metrics is None
+        assert result.total == 10, "Result must not be empty"
+        assert result.succeeded == 8, "Result must not be empty"
+        assert result.failed == 2, "Result must not be empty"
+        assert len(result.results) == 2, "Collection must not be empty"
+        assert result.metrics is None, "Result must not be empty"
 
     def test_to_dict(self):
         """Test BatchResult.to_dict method."""
@@ -111,9 +111,9 @@ class TestBatchResult:
 
         d = result.to_dict()
 
-        assert d["total"] == 5
-        assert d["succeeded"] == 3
-        assert d["failed"] == 2
+        assert d["total"] == 5, "Condition must be true"
+        assert d["succeeded"] == 3, "Condition must be true"
+        assert d["failed"] == 2, "Condition must be true"
 
 
 class TestModuleLevel:
@@ -123,5 +123,5 @@ class TestModuleLevel:
         """Test logger is configured."""
         from codex.archive.batch import logger
 
-        assert logger is not None
-        assert logger.name == "codex.archive.batch"
+        assert logger is not None, "logger must be initialized"
+        assert logger.name == "codex.archive.batch", "name is not valid"

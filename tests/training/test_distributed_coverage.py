@@ -84,13 +84,13 @@ def distributed_env(monkeypatch):
 def test_distributed_config_default():
     """Test DistributedConfig default initialization."""
     config = DistributedConfig()
-    assert config.enabled is False
-    assert config.backend == "nccl"
-    assert config.world_size == 1
-    assert config.rank == 0
-    assert config.local_rank == 0
-    assert config.master_addr == "localhost"
-    assert config.master_port == "29500"
+    assert config.enabled is False, "enabled is not valid"
+    assert config.backend == "nccl", "backend is not valid"
+    assert config.world_size == 1, "world_size is not valid"
+    assert config.rank == 0, "rank is not valid"
+    assert config.local_rank == 0, "local_rank is not valid"
+    assert config.master_addr == "localhost", "master_addr is not valid"
+    assert config.master_port == "29500", "master_port is not valid"
 
 
 def test_distributed_config_custom():
@@ -104,40 +104,40 @@ def test_distributed_config_custom():
         master_addr="10.0.0.1",
         master_port="12345",
     )
-    assert config.enabled is True
-    assert config.backend == "gloo"
-    assert config.world_size == 8
-    assert config.rank == 3
-    assert config.local_rank == 2
-    assert config.master_addr == "10.0.0.1"
-    assert config.master_port == "12345"
+    assert config.enabled is True, "enabled is not valid"
+    assert config.backend == "gloo", "backend is not valid"
+    assert config.world_size == 8, "world_size is not valid"
+    assert config.rank == 3, "rank is not valid"
+    assert config.local_rank == 2, "local_rank is not valid"
+    assert config.master_addr == "10.0.0.1", "master_addr is not valid"
+    assert config.master_port == "12345", "master_port is not valid"
 
 
 def test_distributed_config_from_env_default(clean_env):
     """Test DistributedConfig.from_env with no environment variables."""
     config = DistributedConfig.from_env()
-    assert config.enabled is False
-    assert config.world_size == 1
-    assert config.rank == 0
-    assert config.local_rank == 0
+    assert config.enabled is False, "enabled is not valid"
+    assert config.world_size == 1, "world_size is not valid"
+    assert config.rank == 0, "rank is not valid"
+    assert config.local_rank == 0, "local_rank is not valid"
 
 
 def test_distributed_config_from_env_distributed(distributed_env):
     """Test DistributedConfig.from_env with distributed environment."""
     config = DistributedConfig.from_env()
-    assert config.enabled is True  # Auto-enabled when world_size > 1
-    assert config.world_size == 4
-    assert config.rank == 2
-    assert config.local_rank == 1
-    assert config.master_addr == "192.168.1.100"
-    assert config.master_port == "29501"
+    assert config.enabled is True, "enabled is not valid"
+    assert config.world_size == 4, "world_size is not valid"
+    assert config.rank == 2, "rank is not valid"
+    assert config.local_rank == 1, "local_rank is not valid"
+    assert config.master_addr == "192.168.1.100", "master_addr is not valid"
+    assert config.master_port == "29501", "master_port is not valid"
 
 
 def test_distributed_config_from_env_explicit_enabled(monkeypatch, clean_env):
     """Test DistributedConfig.from_env with explicit enabled flag."""
     monkeypatch.setenv("DISTRIBUTED_ENABLED", "true")
     config = DistributedConfig.from_env()
-    assert config.enabled is True
+    assert config.enabled is True, "enabled is not valid"
 
 
 def test_distributed_config_to_env():
@@ -145,11 +145,11 @@ def test_distributed_config_to_env():
     config = DistributedConfig(enabled=True, backend="nccl", world_size=4, rank=1, local_rank=0)
     env_dict = config.to_env()
 
-    assert env_dict["DISTRIBUTED_ENABLED"] == "true"
-    assert env_dict["DISTRIBUTED_BACKEND"] == "nccl"
-    assert env_dict["WORLD_SIZE"] == "4"
-    assert env_dict["RANK"] == "1"
-    assert env_dict["LOCAL_RANK"] == "0"
+    assert env_dict["DISTRIBUTED_ENABLED"] == "true", "Condition must be true"
+    assert env_dict["DISTRIBUTED_BACKEND"] == "nccl", "Condition must be true"
+    assert env_dict["WORLD_SIZE"] == "4", "Condition must be true"
+    assert env_dict["RANK"] == "1", "Condition must be true"
+    assert env_dict["LOCAL_RANK"] == "0", "Condition must be true"
 
 
 def test_distributed_config_advanced_settings():
@@ -157,9 +157,9 @@ def test_distributed_config_advanced_settings():
     config = DistributedConfig(
         find_unused_parameters=True, broadcast_buffers=False, gradient_as_bucket_view=False
     )
-    assert config.find_unused_parameters is True
-    assert config.broadcast_buffers is False
-    assert config.gradient_as_bucket_view is False
+    assert config.find_unused_parameters is True, "find_unused_parameters is not valid"
+    assert config.broadcast_buffers is False, "broadcast_buffers is not valid"
+    assert config.gradient_as_bucket_view is False, "gradient_as_bucket_view is not valid"
 
 
 # =============================================================================
@@ -170,17 +170,17 @@ def test_distributed_config_advanced_settings():
 def test_distributed_manager_initialization():
     """Test DistributedManager initialization."""
     manager = DistributedManager()
-    assert manager.config is not None
+    assert manager.config is not None, "config must be initialized"
     assert hasattr(manager, "_initialized")
-    assert manager._initialized is False
+    assert manager._initialized is False, "_initialized is not valid"
 
 
 def test_distributed_manager_with_config():
     """Test DistributedManager with custom config."""
     config = DistributedConfig(enabled=True, world_size=2)
     manager = DistributedManager(config)
-    assert manager.config.enabled is True
-    assert manager.config.world_size == 2
+    assert manager.config.enabled is True, "enabled is not valid"
+    assert manager.config.world_size == 2, "world_size is not valid"
 
 
 @patch("codex_ml.training.distributed.dist")
@@ -195,7 +195,7 @@ def test_distributed_manager_initialize(mock_dist):
     # Call initialize if method exists
     if hasattr(manager, "initialize"):
         manager.initialize()
-        assert manager._initialized is True
+        assert manager._initialized is True, "_initialized is not valid"
 
 
 @patch("codex_ml.training.distributed.dist")
@@ -232,7 +232,7 @@ def test_distributed_context_manager(mock_manager_class):
     mock_manager_class.return_value = mock_manager
 
     with distributed_context() as manager:
-        assert manager is not None
+        assert manager is not None, "manager must be initialized"
 
 
 def test_distributed_context_function_signature():
@@ -245,7 +245,7 @@ def test_distributed_context_function_signature():
     # Context manager should work
     if result and hasattr(result, "__enter__"):
         with result as manager:
-            assert manager is not None
+            assert manager is not None, "manager must be initialized"
 
 
 # =============================================================================
@@ -266,7 +266,7 @@ def test_wrap_model_with_ddp(mock_torch, mock_ddp):
     # Test wrapping if method exists
     if hasattr(manager, "wrap_model"):
         wrapped = manager.wrap_model(mock_model)
-        assert wrapped is not None
+        assert wrapped is not None, "wrapped must be initialized"
 
 
 @patch("codex_ml.training.distributed.torch")
@@ -280,7 +280,7 @@ def test_get_device(mock_torch):
     # Test device getter if exists
     if hasattr(manager, "device") or hasattr(manager, "get_device"):
         device = manager.device if hasattr(manager, "device") else manager.get_device()
-        assert device is not None
+        assert device is not None, "device must be initialized"
 
 
 # =============================================================================
@@ -296,10 +296,10 @@ def test_distributed_config_round_trip():
     # Simulate loading from environment
     with patch.dict(os.environ, env_dict):
         restored = DistributedConfig.from_env()
-        assert restored.enabled == original.enabled
-        assert restored.world_size == original.world_size
-        assert restored.rank == original.rank
-        assert restored.backend == original.backend
+        assert restored.enabled == original.enabled, "enabled is not valid"
+        assert restored.world_size == original.world_size, "world_size is not valid"
+        assert restored.rank == original.rank, "rank is not valid"
+        assert restored.backend == original.backend, "backend is not valid"
 
 
 def test_distributed_manager_multiple_instances():
@@ -310,14 +310,14 @@ def test_distributed_manager_multiple_instances():
     manager1 = DistributedManager(config1)
     manager2 = DistributedManager(config2)
 
-    assert manager1.config.rank == 0
-    assert manager2.config.rank == 1
+    assert manager1.config.rank == 0, "rank is not valid"
+    assert manager2.config.rank == 1, "rank is not valid"
 
 
 def test_distributed_config_cpu_backend(clean_env):
     """Test DistributedConfig with CPU-friendly backend."""
     config = DistributedConfig(backend="gloo")
-    assert config.backend == "gloo"
+    assert config.backend == "gloo", "backend is not valid"
 
 
 def test_distributed_manager_disabled_mode():
@@ -325,8 +325,8 @@ def test_distributed_manager_disabled_mode():
     config = DistributedConfig(enabled=False)
     manager = DistributedManager(config)
 
-    assert manager.config.enabled is False
-    assert manager._initialized is False
+    assert manager.config.enabled is False, "enabled is not valid"
+    assert manager._initialized is False, "_initialized is not valid"
 
 
 # =============================================================================
@@ -339,7 +339,7 @@ def test_launch_distributed_function_exists():
     try:
         from codex_ml.training.distributed import launch_distributed
 
-        assert callable(launch_distributed)
+        assert callable(launch_distributed), "Condition must be true"
     except ImportError:
         pytest.skip("launch_distributed not available")
 

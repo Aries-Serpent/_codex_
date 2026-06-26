@@ -200,5 +200,5 @@ def validate_tls_config(
         return True
     except TLSConfigError as e:
         error_type = type(e).__name__
-        logger.error(f"TLS configuration validation failed: <ERROR_TYPE>")
+        logger.error("TLS configuration validation failed: <ERROR_TYPE>")
         return False

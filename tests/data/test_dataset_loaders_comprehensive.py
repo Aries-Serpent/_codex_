@@ -63,9 +63,9 @@ class TestJSONLLoader:
             for line in f:
                 data.append(json.loads(line))
 
-        assert len(data) == 5
-        assert "text" in data[0]
-        assert "label" in data[0]
+        assert len(data) == 5, "Data must not be empty"
+        assert "text" in data[0], "Data must not be empty"
+        assert "label" in data[0], "Data must not be empty"
 
     def test_load_jsonl_invalid_path(self):
         """Test JSONL loader with invalid path"""
@@ -83,9 +83,9 @@ class TestCSVLoader:
             reader = csv.DictReader(f)
             data = list(reader)
 
-        assert len(data) == 3
-        assert "text" in data[0]
-        assert "label" in data[0]
+        assert len(data) == 3, "Data must not be empty"
+        assert "text" in data[0], "Data must not be empty"
+        assert "label" in data[0], "Data must not be empty"
 
 
 class TestDeterministicSplitting:
@@ -106,7 +106,7 @@ class TestDeterministicSplitting:
         split2 = random.sample(dataset, 80)
 
         # Should produce identical splits
-        assert split1 == split2
+        assert split1 == split2, "split1 is not valid"
 
 
 if __name__ == "__main__":

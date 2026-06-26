@@ -52,7 +52,9 @@ def validate_actor(actor: str) -> bool:
     try:
         return default_policy_manager.evaluate_permission(actor, "inject_session_context")
     except Exception as e:  # codeql[py/catch-all-except]
-        logger.warning(f"Policy manager unavailable for actor '{actor}', falling back to allowlist: {type(e).__name__}: {e}")
+        logger.warning(
+            f"Policy manager unavailable for actor '{actor}', falling back to allowlist: {type(e).__name__}: {e}"  # noqa: E501
+        )
         return actor in ALLOWED_ACTORS
 
 

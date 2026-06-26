@@ -63,7 +63,7 @@ def run(cmd: list[str]) -> int:
         return result.returncode
     except (subprocess.CalledProcessError, FileNotFoundError) as e:
         error_type = type(e).__name__
-        print(f"error: <ERROR_TYPE>", file=sys.stderr)
+        print("error: <ERROR_TYPE>", file=sys.stderr)
         return 1
 
 

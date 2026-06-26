@@ -38,8 +38,8 @@ def test_checkpoint_serialization():
     json_str = checkpoint.to_json()
     data = json.loads(json_str)
 
-    assert data["checkpoint_id"] == "ckpt_001"
-    assert data["state"]["epoch"] == 10
+    assert data["checkpoint_id"] == "ckpt_001", "Data must not be empty"
+    assert data["state"]["epoch"] == 10, "Data must not be empty"
 
 
 def test_checkpoint_deserialization():
@@ -48,8 +48,8 @@ def test_checkpoint_deserialization():
 
     checkpoint = Checkpoint.from_json(json_str)
 
-    assert checkpoint.checkpoint_id == "ckpt_001"
-    assert checkpoint.state["model"] == "weights"
+    assert checkpoint.checkpoint_id == "ckpt_001", "checkpoint_id is not valid"
+    assert checkpoint.state["model"] == "weights", "Condition must be true"
 
 
 def test_checkpoint_roundtrip():
@@ -61,9 +61,9 @@ def test_checkpoint_roundtrip():
     json_str = original.to_json()
     restored = Checkpoint.from_json(json_str)
 
-    assert restored.checkpoint_id == original.checkpoint_id
-    assert restored.state == original.state
-    assert restored.metadata == original.metadata
+    assert restored.checkpoint_id == original.checkpoint_id, "checkpoint_id is not valid"
+    assert restored.state == original.state, "state is not valid"
+    assert restored.metadata == original.metadata, "Data must not be empty"
 
 
 def test_checkpoint_with_nested_state():

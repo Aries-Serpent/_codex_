@@ -42,7 +42,7 @@ def test_load_model_and_tokenizer_minimal(monkeypatch):
         types.SimpleNamespace(from_pretrained=fake_model_loader),
     )
     model, tok = modeling.load_model_and_tokenizer("stub", dtype="fp16")
-    assert model is fake_model and tok is fake_tok
+    assert model is fake_model and tok is fake_tok, "model is not valid"
 
 
 def test_load_model_and_tokenizer_requires_peft(monkeypatch):
@@ -64,7 +64,7 @@ def test_load_model_and_tokenizer_requires_peft(monkeypatch):
     )
     monkeypatch.setattr(modeling, "get_peft_model", None)
     model, _ = modeling.load_model_and_tokenizer("stub", lora={"r": 4})
-    assert model is fake_model
+    assert model is fake_model, "model is not valid"
 
 
 def test_bf16_guard_called_during_model_load(monkeypatch):
@@ -92,7 +92,7 @@ def test_bf16_guard_called_during_model_load(monkeypatch):
 
     config = {"model_name": "stub", "bf16_require_capability": True}
     modeling.load_model(config)
-    assert calls and calls[0][3] is True
+    assert calls and calls[0][3] is True, "calls is not valid"
 
 
 def test_assert_bf16_capability_raises_without_support(monkeypatch):

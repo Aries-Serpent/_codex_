@@ -10,14 +10,13 @@ This module makes autonomous decisions using:
 Output: Decision directive with confidence scores
 """
 
-import json
 import logging
-from dataclasses import dataclass, field, asdict
+import uuid
+from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional
 from pathlib import Path
-import uuid
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -152,68 +151,84 @@ class GuardrailValidator:
         # Check 1: No destructive operations
         destructive_keywords = ["rm ", "drop ", "delete", "truncate", "flush"]
         if any(kw in decision.description.lower() for kw in destructive_keywords):
-            checks.append(GuardrailCheck(
-                check_name="destructive_operation_check",
-                passed=False,
-                description="Destructive operations require explicit approval",
-                severity="critical",
-            ))
+            checks.append(
+                GuardrailCheck(
+                    check_name="destructive_operation_check",
+                    passed=False,
+                    description="Destructive operations require explicit approval",
+                    severity="critical",
+                )
+            )
         else:
-            checks.append(GuardrailCheck(
-                check_name="destructive_operation_check",
-                passed=True,
-                description="No destructive operations detected",
-                severity="info",
-            ))
+            checks.append(
+                GuardrailCheck(
+                    check_name="destructive_operation_check",
+                    passed=True,
+                    description="No destructive operations detected",
+                    severity="info",
+                )
+            )
 
         # Check 2: Sufficient confidence
         if confidence < 0.70:
-            checks.append(GuardrailCheck(
-                check_name="confidence_threshold_check",
-                passed=False,
-                description=f"Confidence {confidence:.2f} below threshold 0.70",
-                severity="warning",
-            ))
+            checks.append(
+                GuardrailCheck(
+                    check_name="confidence_threshold_check",
+                    passed=False,
+                    description=f"Confidence {confidence:.2f} below threshold 0.70",
+                    severity="warning",
+                )
+            )
         else:
-            checks.append(GuardrailCheck(
-                check_name="confidence_threshold_check",
-                passed=True,
-                description=f"Confidence {confidence:.2f} meets threshold",
-                severity="info",
-            ))
+            checks.append(
+                GuardrailCheck(
+                    check_name="confidence_threshold_check",
+                    passed=True,
+                    description=f"Confidence {confidence:.2f} meets threshold",
+                    severity="info",
+                )
+            )
 
         # Check 3: Agent availability
         if agent_availability < 0.5:
-            checks.append(GuardrailCheck(
-                check_name="agent_availability_check",
-                passed=False,
-                description="Insufficient agent availability",
-                severity="warning",
-            ))
+            checks.append(
+                GuardrailCheck(
+                    check_name="agent_availability_check",
+                    passed=False,
+                    description="Insufficient agent availability",
+                    severity="warning",
+                )
+            )
         else:
-            checks.append(GuardrailCheck(
-                check_name="agent_availability_check",
-                passed=True,
-                description="Sufficient agents available",
-                severity="info",
-            ))
+            checks.append(
+                GuardrailCheck(
+                    check_name="agent_availability_check",
+                    passed=True,
+                    description="Sufficient agents available",
+                    severity="info",
+                )
+            )
 
         # Check 4: No privileged operations (without D-mode)
         privileged_keywords = ["sudo ", "deploy to production", "release"]
         if any(kw in decision.description.lower() for kw in privileged_keywords):
-            checks.append(GuardrailCheck(
-                check_name="privilege_level_check",
-                passed=False,
-                description="Privileged operations require D-mode authority",
-                severity="error",
-            ))
+            checks.append(
+                GuardrailCheck(
+                    check_name="privilege_level_check",
+                    passed=False,
+                    description="Privileged operations require D-mode authority",
+                    severity="error",
+                )
+            )
         else:
-            checks.append(GuardrailCheck(
-                check_name="privilege_level_check",
-                passed=True,
-                description="Operation within standard privilege level",
-                severity="info",
-            ))
+            checks.append(
+                GuardrailCheck(
+                    check_name="privilege_level_check",
+                    passed=True,
+                    description="Operation within standard privilege level",
+                    severity="info",
+                )
+            )
 
         return checks
 
@@ -320,14 +335,16 @@ class OODADecider:
                     resource_constraints=0.9,
                 )
 
-                ranked_candidates.append(RankedAction(
-                    action=action,
-                    confidence_score=confidence,
-                    success_probability=0.85,
-                    risk_level="low",
-                    estimated_impact=0.75,
-                    required_resources=["ci_auto_healer"],
-                ))
+                ranked_candidates.append(
+                    RankedAction(
+                        action=action,
+                        confidence_score=confidence,
+                        success_probability=0.85,
+                        risk_level="low",
+                        estimated_impact=0.75,
+                        required_resources=["ci_auto_healer"],
+                    )
+                )
 
             # Sort by confidence
             ranked_candidates.sort(key=lambda a: a.confidence_score, reverse=True)
@@ -359,9 +376,7 @@ class OODADecider:
             # Get suitable agents
             assigned_agents = ["ci_auto_healer"]
             if hasattr(oriented_context, "agent_candidates"):
-                assigned_agents = [
-                    a.agent_id for a in oriented_context.agent_candidates[:3]
-                ]
+                assigned_agents = [a.agent_id for a in oriented_context.agent_candidates[:3]]
 
             # Create decision directive
             decision = DecisionDirective(
@@ -381,7 +396,9 @@ class OODADecider:
                     f"Guardrails: {'✓' if guardrails_passed else '✗'}"
                 ),
                 requires_approval=requires_approval,
-                approved=(best_confidence >= 0.95 and d_mode_authority) if guardrails_passed else False,
+                approved=(best_confidence >= 0.95 and d_mode_authority)
+                if guardrails_passed
+                else False,
             )
 
             # Log to audit trail

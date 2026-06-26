@@ -13,22 +13,17 @@ Test Coverage Goals:
 
 from __future__ import annotations
 
-import ast
-import hashlib
-import tempfile
 from pathlib import Path
-from typing import Any
-from unittest.mock import MagicMock, patch
 
 import pytest
 
 # Import the module to test
 try:
     from codex.utils.validators import (
+        validate_code_quality,
         validate_file_structure,
         validate_with_checksum,
         validate_with_diff,
-        validate_code_quality,
     )
 except ImportError:
     pytest.skip("validators module not importable", allow_module_level=True)
@@ -43,8 +38,8 @@ class TestValidateFileStructureBasic:
         test_file.write_text("#!/usr/bin/env python\nprint('hello')\n")
         result = validate_file_structure(str(test_file))
         assert isinstance(result, dict)
-        assert "balanced_braces" in result
-        assert "balanced_parens" in result
+        assert "balanced_braces" in result, "Result must not be empty"
+        assert "balanced_parens" in result, "Result must not be empty"
 
     def test_validate_shell_file_with_shebang(self, tmp_path: Path) -> None:
         """Test validation of shell script with shebang."""
@@ -52,7 +47,7 @@ class TestValidateFileStructureBasic:
         test_file.write_text("#!/bin/bash\necho 'hello'\n")
         result = validate_file_structure(str(test_file))
         assert isinstance(result, dict)
-        assert result["has_shebang"] is True
+        assert result["has_shebang"] is True, "Result must not be empty"
 
     def test_validate_file_no_shebang(self, tmp_path: Path) -> None:
         """Test validation of file without shebang."""
@@ -60,14 +55,14 @@ class TestValidateFileStructureBasic:
         test_file.write_text("just some text\n")
         result = validate_file_structure(str(test_file))
         assert isinstance(result, dict)
-        assert "has_shebang" in result
+        assert "has_shebang" in result, "Result must not be empty"
 
     def test_validate_balanced_braces(self, tmp_path: Path) -> None:
         """Test validation of balanced braces."""
         test_file = tmp_path / "test.py"
         test_file.write_text("def func():\n    d = {'a': 1, 'b': 2}\n    return d\n")
         result = validate_file_structure(str(test_file))
-        assert result["balanced_braces"] is True
+        assert result["balanced_braces"] is True, "Result must not be empty"
 
     def test_validate_unbalanced_braces(self, tmp_path: Path) -> None:
         """Test detection of unbalanced braces."""
@@ -82,7 +77,7 @@ class TestValidateFileStructureBasic:
         test_file = tmp_path / "test.py"
         test_file.write_text("result = (1 + 2) * (3 + 4)\n")
         result = validate_file_structure(str(test_file))
-        assert result["balanced_parens"] is True
+        assert result["balanced_parens"] is True, "Result must not be empty"
 
     def test_validate_unbalanced_parens(self, tmp_path: Path) -> None:
         """Test detection of unbalanced parentheses."""
@@ -97,7 +92,7 @@ class TestValidateFileStructureBasic:
         test_file = tmp_path / "test.py"
         test_file.write_text("lst = [1, 2, [3, 4], 5]\n")
         result = validate_file_structure(str(test_file))
-        assert result["balanced_brackets"] is True
+        assert result["balanced_brackets"] is True, "Result must not be empty"
 
     def test_validate_unbalanced_brackets(self, tmp_path: Path) -> None:
         """Test detection of unbalanced brackets."""
@@ -119,7 +114,7 @@ class TestValidateFileStructureBasic:
         test_file = tmp_path / "test.py"
         test_file.write_text("line1 = 'test'\nline2 = 'okay'\n")
         result = validate_file_structure(str(test_file))
-        assert result["no_trailing_whitespace"] is True
+        assert result["no_trailing_whitespace"] is True, "Result must not be empty"
 
     def test_validate_valid_python_syntax(self, tmp_path: Path) -> None:
         """Test validation of valid Python syntax."""
@@ -142,7 +137,7 @@ class TestValidateFileStructureBasic:
         test_file = tmp_path / "data.txt"
         test_file.write_text("random data {[ invalid syntax }]\n")
         result = validate_file_structure(str(test_file))
-        assert result["valid_syntax"] is True  # Skipped for non-.py
+        assert result["valid_syntax"] is True, "Result must not be empty"
 
     def test_validate_empty_file(self, tmp_path: Path) -> None:
         """Test validation of empty file."""
@@ -178,9 +173,9 @@ class TestValidateFileStructureEdgeCases:
             "data = {'a': {'b': {'c': [1, 2, (3, 4)]}}}\n"
         )
         result = validate_file_structure(str(test_file))
-        assert result["balanced_braces"] is True
-        assert result["balanced_brackets"] is True
-        assert result["balanced_parens"] is True
+        assert result["balanced_braces"] is True, "Result must not be empty"
+        assert result["balanced_brackets"] is True, "Result must not be empty"
+        assert result["balanced_parens"] is True, "Result must not be empty"
 
     def test_validate_special_characters_in_strings(self, tmp_path: Path) -> None:
         """Test validation with special characters in strings."""
@@ -223,7 +218,7 @@ class TestValidateWithChecksum:
         file1.write_text(content)
         file2.write_text(content)
         result = validate_with_checksum(str(file1), str(file2))
-        assert result.get("match") is True
+        assert result.get("match") is True, "Result must not be empty"
 
     def test_checksum_different_files(self, tmp_path: Path) -> None:
         """Test checksums of different files don't match."""
@@ -232,7 +227,7 @@ class TestValidateWithChecksum:
         file1.write_text("content 1")
         file2.write_text("content 2")
         result = validate_with_checksum(str(file1), str(file2))
-        assert result.get("match") is False
+        assert result.get("match") is False, "Result must not be empty"
 
     def test_checksum_empty_files(self, tmp_path: Path) -> None:
         """Test checksums of empty files."""
@@ -241,7 +236,7 @@ class TestValidateWithChecksum:
         file1.write_text("")
         file2.write_text("")
         result = validate_with_checksum(str(file1), str(file2))
-        assert result.get("match") is True
+        assert result.get("match") is True, "Result must not be empty"
 
     def test_checksum_large_files(self, tmp_path: Path) -> None:
         """Test checksums of large files."""

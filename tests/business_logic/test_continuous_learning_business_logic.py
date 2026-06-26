@@ -25,19 +25,19 @@ class TestRetrainingJobBasics:
         job = RetrainingJob(
             job_id="job_20240101_001", trigger=None, config={"epochs": 5, "lr": 1e-4}
         )
-        assert job.job_id == "job_20240101_001"
-        assert job.config["epochs"] == 5
-        assert job.status == "pending"
+        assert job.job_id == "job_20240101_001", "job_id is not valid"
+        assert job.config["epochs"] == 5, "Condition must be true"
+        assert job.status == "pending", "status is not valid"
 
     def test_retraining_job_status_transitions(self):
         """Test retraining job status progression."""
         job = RetrainingJob(job_id="job_001", trigger=None)
 
-        assert job.status == "pending"
+        assert job.status == "pending", "status is not valid"
         job.status = "running"
-        assert job.status == "running"
+        assert job.status == "running", "status is not valid"
         job.status = "done"
-        assert job.status == "done"
+        assert job.status == "done", "status is not valid"
 
     def test_retraining_job_config_storage(self):
         """Test job stores training configuration."""
@@ -50,8 +50,8 @@ class TestRetrainingJobBasics:
         }
         job = RetrainingJob(job_id="job_cfg", trigger=None, config=config)
 
-        assert job.config == config
-        assert job.config["batch_size"] == 32
+        assert job.config == config, "config is not valid"
+        assert job.config["batch_size"] == 32, "Condition must be true"
 
     def test_retraining_job_to_dict(self):
         """Test job serialization to dictionary."""
@@ -60,20 +60,20 @@ class TestRetrainingJobBasics:
         )
         job_dict = job.to_dict()
 
-        assert job_dict["job_id"] == "job_serial"
-        assert job_dict["config"]["epochs"] == 5
-        assert job_dict["status"] == "running"
+        assert job_dict["job_id"] == "job_serial", "Condition must be true"
+        assert job_dict["config"]["epochs"] == 5, "Condition must be true"
+        assert job_dict["status"] == "running", "Condition must be true"
 
     def test_retraining_job_empty_config(self):
         """Test job with empty configuration."""
         job = RetrainingJob(job_id="job_empty", trigger=None, config={})
-        assert job.config == {}
+        assert job.config == {}, "config is not valid"
 
     def test_retraining_job_status_failed(self):
         """Test job failure status."""
         job = RetrainingJob(job_id="job_fail", trigger=None)
         job.status = "failed"
-        assert job.status == "failed"
+        assert job.status == "failed", "status is not valid"
 
 
 class TestContinuousLearningPipelineBasics:
@@ -82,7 +82,7 @@ class TestContinuousLearningPipelineBasics:
     def test_pipeline_initialization_defaults(self):
         """Test pipeline initialization with default parameters."""
         pipeline = ContinuousLearningPipeline()
-        assert pipeline is not None
+        assert pipeline is not None, "pipeline must be initialized"
 
     def test_pipeline_with_custom_thresholds(self):
         """Test pipeline with custom drift and eval thresholds."""
@@ -92,13 +92,13 @@ class TestContinuousLearningPipelineBasics:
             eval_gate_max_loss=0.3,
             eval_gate_min_improvement_pct=2.0,
         )
-        assert pipeline is not None
+        assert pipeline is not None, "pipeline must be initialized"
 
     def test_pipeline_state_initialization(self):
         """Test pipeline initializes with clean state."""
         pipeline = ContinuousLearningPipeline()
         # Pipeline should be ready for drift detection
-        assert pipeline is not None
+        assert pipeline is not None, "pipeline must be initialized"
 
     def test_pipeline_threshold_storage(self):
         """Test thresholds are stored correctly."""
@@ -109,7 +109,7 @@ class TestContinuousLearningPipelineBasics:
             eval_gate_max_loss=thresholds["max_loss"],
             eval_gate_min_improvement_pct=thresholds["min_improvement"],
         )
-        assert pipeline is not None
+        assert pipeline is not None, "pipeline must be initialized"
 
 
 class TestDriftDetectionLogic:
@@ -123,7 +123,7 @@ class TestDriftDetectionLogic:
         should_retrain = pipeline.should_retrain(drift_info)
 
         # High drift should trigger retraining
-        assert should_retrain is True or should_retrain is False  # depends on implementation
+        assert should_retrain is True or should_retrain is False, "should_retrain is not valid"
 
     def test_should_retrain_below_threshold(self):
         """Test retraining is not triggered when drift is low."""
@@ -132,7 +132,7 @@ class TestDriftDetectionLogic:
         drift_info = {"score": 0.05, "method": "psi", "drifted": False}
         should_retrain = pipeline.should_retrain(drift_info)
 
-        assert should_retrain is not None
+        assert should_retrain is not None, "should_retrain must be initialized"
 
     def test_should_retrain_at_threshold(self):
         """Test retraining decision at exact threshold."""
@@ -191,7 +191,7 @@ class TestRetrainingTrigger:
         job1 = pipeline.trigger_retrain({"epochs": 5})
         job2 = pipeline.trigger_retrain({"epochs": 5})
 
-        assert job1.job_id != job2.job_id
+        assert job1.job_id != job2.job_id, "job_id is not valid"
 
     def test_trigger_retrain_preserves_config(self):
         """Test trigger_retrain preserves training configuration."""
@@ -200,22 +200,22 @@ class TestRetrainingTrigger:
         config = {"epochs": 10, "batch_size": 32, "learning_rate": 0.001, "optimizer": "adam"}
         job = pipeline.trigger_retrain(config)
 
-        assert job.config == config
+        assert job.config == config, "config is not valid"
 
     def test_trigger_retrain_status_pending(self):
         """Test newly triggered job has pending status."""
         pipeline = ContinuousLearningPipeline()
 
         job = pipeline.trigger_retrain({"epochs": 5})
-        assert job.status == "pending"
+        assert job.status == "pending", "status is not valid"
 
     def test_trigger_retrain_empty_config(self):
         """Test trigger_retrain works with empty config."""
         pipeline = ContinuousLearningPipeline()
 
         job = pipeline.trigger_retrain({})
-        assert job is not None
-        assert job.config == {}
+        assert job is not None, "job must be initialized"
+        assert job.config == {}, "config is not valid"
 
 
 class TestEvaluationGate:
@@ -287,7 +287,7 @@ class TestModelPromotion:
         pipeline.promote("/path/to/model.pt", registry=registry)
 
         # Model should be promoted to registry
-        assert "/path/to/model.pt" in registry or len(registry) >= 0
+        assert "/path/to/model.pt" in registry or len(registry) >= 0, "Registry must not be empty"
 
     def test_promote_model_with_metadata(self):
         """Test model promotion with metadata."""
@@ -406,7 +406,7 @@ class TestErrorHandling:
         for drift_info in test_cases:
             # Should not crash
             result = pipeline.should_retrain(drift_info)
-            assert result is not None
+            assert result is not None, "result must be initialized"
 
     def test_pipeline_handles_missing_metrics(self):
         """Test pipeline handles missing metric fields."""
@@ -415,7 +415,7 @@ class TestErrorHandling:
         # Partial metrics
         metrics = {"accuracy": 0.85}
         result = pipeline.eval_gate(metrics)
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     def test_pipeline_handles_invalid_config(self):
         """Test pipeline handles invalid training config."""
@@ -427,7 +427,7 @@ class TestErrorHandling:
             try:
                 if config is not None:
                     job = pipeline.trigger_retrain(config)
-                    assert job is not None
+                    assert job is not None, "job must be initialized"
             except Exception as _err:
                 # Expected for some invalid configs
                 pass
@@ -455,14 +455,14 @@ class TestMetricsTracking:
         metrics = {"accuracy": 0.87, "baseline_accuracy": 0.83}
 
         improvement = metrics["accuracy"] - metrics["baseline_accuracy"]
-        assert improvement == 0.04
+        assert improvement == 0.04, "improvement is not valid"
 
     def test_loss_metrics_storage(self):
         """Test storing loss metrics."""
         metrics = {"loss": 0.35, "baseline_loss": 0.45}
 
         improvement = metrics["baseline_loss"] - metrics["loss"]
-        assert improvement == 0.1
+        assert improvement == 0.1, "improvement is not valid"
 
     def test_multiple_metric_types(self):
         """Test tracking multiple metric types."""
@@ -475,8 +475,8 @@ class TestMetricsTracking:
             "val_loss": 0.38,
         }
 
-        assert len(metrics) == 6
-        assert metrics["accuracy"] > 0.8
+        assert len(metrics) == 6, "Metrics must not be empty"
+        assert metrics["accuracy"] > 0.8, "Value must be greater than zero"
 
     def test_improvement_calculation(self):
         """Test improvement percentage calculation."""
@@ -484,5 +484,5 @@ class TestMetricsTracking:
         new_accuracy = 0.85
 
         improvement_pct = ((new_accuracy - baseline_accuracy) / baseline_accuracy) * 100
-        assert improvement_pct > 0
-        assert improvement_pct < 5
+        assert improvement_pct > 0, "improvement_pct must be greater than zero"
+        assert improvement_pct < 5, "improvement_pct is not valid"

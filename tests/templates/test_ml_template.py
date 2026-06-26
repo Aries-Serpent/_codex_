@@ -150,8 +150,8 @@ class TestModelCreation:
         """Test creating a model from configuration."""
         model = MagicMock()
         model.config = sample_model_config
-        assert model is not None
-        assert model.config["hidden_size"] == 256
+        assert model is not None, "model must be initialized"
+        assert model.config["hidden_size"] == 256, "Condition must be true"
 
     @requires_torch
     def test_initializes_weights_correctly(self, sample_model_config: dict) -> None:
@@ -159,7 +159,7 @@ class TestModelCreation:
         model = MagicMock()
         model.parameters.return_value = iter([MagicMock(data=[0.1, 0.2])])
         params = list(model.parameters())
-        assert len(params) > 0
+        assert len(params) > 0, "Params must not be empty"
 
     @requires_torch
     def test_model_has_expected_layers(self, sample_model_config: dict) -> None:
@@ -184,7 +184,7 @@ class TestTrainingLoop:
         """Test that training step reduces loss."""
         mock_model.return_value = MagicMock(loss=MagicMock(item=lambda: 0.5))
         result = mock_model(sample_dataset[0])
-        assert result.loss.item() == 0.5
+        assert result.loss.item() == 0.5, "Result must not be empty"
         mock_optimizer.step()
         mock_optimizer.step.assert_called_once()
 
@@ -197,7 +197,7 @@ class TestTrainingLoop:
         trainer = MagicMock()
         trainer.train.return_value = MagicMock(final_loss=0.3, epochs_trained=3)
         result = trainer.train(sample_training_config, sample_dataset)
-        assert result.final_loss < 1.0
+        assert result.final_loss < 1.0, "Result must not be empty"
         trainer.train.assert_called_once()
 
     @requires_torch
@@ -207,7 +207,7 @@ class TestTrainingLoop:
         trainer = MagicMock()
         trainer.train.return_value = MagicMock(epochs_trained=2)
         result = trainer.train(sample_training_config, [])
-        assert result.epochs_trained == sample_training_config["max_epochs"]
+        assert result.epochs_trained == sample_training_config["max_epochs"], "Result must not be empty"
 
     @requires_torch
     def test_training_logs_metrics(self, sample_training_config, sample_dataset) -> None:
@@ -230,7 +230,7 @@ class TestCheckpointing:
         """Test saving a checkpoint."""
         ckpt_path = temp_checkpoint_dir / "ckpt.pt"
         ckpt_path.write_text("model_state")
-        assert ckpt_path.exists()
+        assert ckpt_path.exists(), "Condition must be true"
 
     @requires_torch
     def test_loads_checkpoint(self, mock_model, temp_checkpoint_dir) -> None:
@@ -240,8 +240,8 @@ class TestCheckpointing:
         ckpt_path = temp_checkpoint_dir / "ckpt.json"
         ckpt_path.write_text(json.dumps({"epoch": 1, "loss": 0.5}))
         loaded = json.loads(ckpt_path.read_text())
-        assert loaded is not None
-        assert "epoch" in loaded
+        assert loaded is not None, "loaded must be initialized"
+        assert "epoch" in loaded, "Condition must be true"
 
     @requires_torch
     def test_checkpoint_contains_optimizer_state(
@@ -254,7 +254,7 @@ class TestCheckpointing:
         ckpt_path = temp_checkpoint_dir / "full_ckpt.json"
         ckpt_path.write_text(json.dumps(ckpt))
         loaded = json.loads(ckpt_path.read_text())
-        assert "optimizer" in loaded
+        assert "optimizer" in loaded, "Condition must be true"
 
     @requires_torch
     def test_checkpoint_retention_policy(self, mock_model, temp_checkpoint_dir) -> None:
@@ -263,12 +263,12 @@ class TestCheckpointing:
         for i in range(5):
             (temp_checkpoint_dir / f"ckpt_{i}.pt").write_text(f"state_{i}")
         all_ckpts = list(temp_checkpoint_dir.glob("*.pt"))
-        assert len(all_ckpts) == 5
+        assert len(all_ckpts) == 5, "All_ckpts must not be empty"
         # Simulate retention: remove all but best 3
         for ckpt in sorted(all_ckpts)[:-3]:
             ckpt.unlink()
         remaining = list(temp_checkpoint_dir.glob("*.pt"))
-        assert len(remaining) == 3
+        assert len(remaining) == 3, "Remaining must not be empty"
 
 
 # =============================================================================
@@ -285,8 +285,8 @@ class TestEvaluation:
         evaluator = MagicMock()
         evaluator.evaluate.return_value = {"loss": 0.25, "accuracy": 0.92}
         metrics = evaluator.evaluate(mock_model, sample_dataset)
-        assert "loss" in metrics
-        assert "accuracy" in metrics
+        assert "loss" in metrics, "Condition must be true"
+        assert "accuracy" in metrics, "Condition must be true"
 
     @requires_torch
     def test_evaluation_is_deterministic(self, mock_model, sample_dataset) -> None:
@@ -295,7 +295,7 @@ class TestEvaluation:
         evaluator.evaluate.return_value = {"loss": 0.25, "accuracy": 0.92}
         metrics1 = evaluator.evaluate(mock_model, sample_dataset, seed=42)
         metrics2 = evaluator.evaluate(mock_model, sample_dataset, seed=42)
-        assert metrics1 == metrics2
+        assert metrics1 == metrics2, "metrics1 is not valid"
 
 
 # =============================================================================
@@ -359,7 +359,7 @@ class TestDistributedTraining:
         distributed = MagicMock()
         distributed.wrap_model.return_value = mock_model
         wrapped = distributed.wrap_model(mock_model)
-        assert wrapped is not None
+        assert wrapped is not None, "wrapped must be initialized"
 
 
 # =============================================================================
@@ -381,7 +381,7 @@ class TestMemory:
         trainer.train(sample_training_config, sample_dataset)
         gc.collect()
         # Mock-based training doesn't allocate GPU memory
-        assert trainer.train.called
+        assert trainer.train.called, "Condition must be true"
 
     @requires_torch
     def test_gradient_accumulation_reduces_memory(self, sample_training_config) -> None:
@@ -389,8 +389,8 @@ class TestMemory:
         config = dict(sample_training_config)
         config["batch_size"] = 2
         config["gradient_accumulation_steps"] = 4
-        assert config["gradient_accumulation_steps"] == 4
-        assert config["batch_size"] == 2
+        assert config["gradient_accumulation_steps"] == 4, "Condition must be true"
+        assert config["batch_size"] == 2, "Condition must be true"
 
 
 # =============================================================================
@@ -413,7 +413,7 @@ class TestPerformance:
         trainer.train(sample_training_config, sample_dataset)
         elapsed = time.time() - start
         # Mock call should complete in well under 1s
-        assert elapsed < 1.0
+        assert elapsed < 1.0, "elapsed is not valid"
 
     @requires_torch
     @pytest.mark.perf
@@ -427,7 +427,7 @@ class TestPerformance:
             mock_model("input")
             times.append(time.time() - start)
         avg_latency = sum(times) / len(times)
-        assert avg_latency < 1.0  # Mock calls are fast
+        assert avg_latency < 1.0, "avg_latency is not valid"
 
 
 # =============================================================================
@@ -447,8 +447,8 @@ def test_training_with_different_learning_rates(
 ) -> None:
     """Test training with different learning rates."""
     sample_training_config["learning_rate"] = learning_rate
-    assert sample_training_config["learning_rate"] == learning_rate
+    assert sample_training_config["learning_rate"] == learning_rate, "Condition must be true"
     trainer = MagicMock()
     trainer.train.return_value = MagicMock(final_loss=0.5)
     result = trainer.train(sample_training_config, sample_dataset)
-    assert result.final_loss < 10.0
+    assert result.final_loss < 10.0, "Result must not be empty"

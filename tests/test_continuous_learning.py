@@ -25,12 +25,12 @@ def test_registry_persistence(tmp_path):
     )
 
     should = pipeline.should_retrain(drift_score=0.05, samples_count=10)
-    assert should is False
+    assert should is False, "should is not valid"
 
     version = pipeline.retrain(_train_fn, {"acc": 0.9}, dataset_hash="abc", drift_score=0.2)
-    assert version.version.startswith("v1")
-    assert pipeline.registry.get_latest() == version
-    assert registry_path.exists()
+    assert version.version.startswith("v1"), "Condition must be true"
+    assert pipeline.registry.get_latest() == version, "Condition must be true"
+    assert registry_path.exists(), "Condition must be true"
 
 
 def test_model_comparison_and_rollback(tmp_path):
@@ -51,6 +51,6 @@ def test_model_comparison_and_rollback(tmp_path):
     v2 = pipeline.retrain(_train_fn, {"acc": 0.82}, dataset_hash=None, drift_score=0.3)
 
     comparison = pipeline.compare_models(v2, baseline_version=v1)
-    assert comparison["is_better"] is True
+    assert comparison["is_better"] is True, "Condition must be true"
 
     pipeline.rollback(to_version=v1.version)

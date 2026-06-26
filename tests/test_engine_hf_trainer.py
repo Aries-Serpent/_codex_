@@ -170,12 +170,12 @@ def test_hf_trainer_smoke(monkeypatch, tmp_path):
         config_path=config,
         fp16=torch.cuda.is_available(),
     )
-    assert "train_loss" in metrics
+    assert "train_loss" in metrics, "Condition must be true"
     assert metrics.get("global_step", 0) > 0
     saved = tmp_path / "pytorch_model.bin"
     if not saved.exists():
         saved = tmp_path / "model.safetensors"
-    assert saved.exists()
+    assert saved.exists(), "Condition must be true"
 
 
 def test_hf_trainer_writes_metrics(monkeypatch, tmp_path):
@@ -184,14 +184,14 @@ def test_hf_trainer_writes_metrics(monkeypatch, tmp_path):
     metrics = run_hf_trainer(texts, tmp_path, model_name="sshleifer/tiny-gpt2")
     metrics_json = tmp_path / "metrics.json"
     metrics_ndjson = tmp_path / "metrics.ndjson"
-    assert metrics_json.exists()
-    assert metrics_ndjson.exists()
+    assert metrics_json.exists(), "Condition must be true"
+    assert metrics_ndjson.exists(), "Condition must be true"
     record = json.loads(metrics_ndjson.read_text().splitlines()[-1])
-    assert record.get("global_step") == metrics.get("global_step")
+    assert record.get("global_step") == metrics.get("global_step"), "rec is not valid"
     env_json = tmp_path / "env.json"
-    assert env_json.exists()
+    assert env_json.exists(), "Condition must be true"
     info = json.loads(env_json.read_text())
-    assert info.get("git_commit")
+    assert info.get("git_commit"), "Condition must be true"
 
 
 def test_run_hf_trainer_uses_tokenizer_path_and_flag(monkeypatch, tmp_path):
@@ -243,8 +243,8 @@ def test_run_hf_trainer_uses_tokenizer_path_and_flag(monkeypatch, tmp_path):
         use_fast_tokenizer=False,
         distributed=False,
     )
-    assert calls["name"] == "tok"
-    assert calls["use_fast"] is False
+    assert calls["name"] == "tok", "Condition must be true"
+    assert calls["use_fast"] is False, "Condition must be true"
 
 
 def test_run_hf_trainer_applies_lora(monkeypatch, tmp_path):
@@ -293,7 +293,7 @@ def test_run_hf_trainer_applies_lora(monkeypatch, tmp_path):
         distributed=False,
         hydra_cfg={"lora": {"enabled": True, "r": 4}},
     )
-    assert called["cfg"]["r"] == 4
+    assert called["cfg"]["r"] == 4, "Condition must be true"
 
 
 @pytest.mark.xfail(reason="resume checkpoint path not available", strict=False)
@@ -335,7 +335,7 @@ def test_run_hf_trainer_passes_resume_from(monkeypatch, tmp_path):
     ckpt = tmp_path / "ckpt"
     ckpt.mkdir()
     run_hf_trainer(["hi"], tmp_path, resume_from=str(ckpt), distributed=False)
-    assert captured["resume"] == str(ckpt)
+    assert captured["resume"] == str(ckpt), "Condition must be true"
 
 
 def test_run_hf_trainer_respects_grad_accum(monkeypatch, tmp_path):
@@ -423,8 +423,8 @@ def test_run_hf_trainer_respects_grad_accum(monkeypatch, tmp_path):
         distributed=False,
         gradient_accumulation_steps=3,
     )
-    assert captured["grad_accum"] == 3
-    assert metrics["global_step"] == 0
+    assert captured["grad_accum"] == 3, "Condition must be true"
+    assert metrics["global_step"] == 0, "Condition must be true"
 
     captured.clear()
     run_hf_trainer(
@@ -433,7 +433,7 @@ def test_run_hf_trainer_respects_grad_accum(monkeypatch, tmp_path):
         distributed=False,
         gradient_accumulation_steps=0,
     )
-    assert captured["grad_accum"] == 1
+    assert captured["grad_accum"] == 1, "Condition must be true"
 
 
 def test_compute_metrics_smoke():
@@ -444,4 +444,4 @@ def test_compute_metrics_smoke():
     logits = np.zeros((2, 3, 5), dtype=np.float32)
     labels = np.zeros((2, 3), dtype=np.int64)
     metrics = _compute_metrics((logits, labels))
-    assert "token_accuracy" in metrics and "perplexity" in metrics
+    assert "token_accuracy" in metrics and "perplexity" in metrics, "Condition must be true"

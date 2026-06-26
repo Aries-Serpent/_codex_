@@ -78,7 +78,7 @@ class TestBaseAdapterBoundaryConditions:
         long_name = "a" * 10000
         try:
             adapter = BaseAdapter(config={"name": long_name})
-            assert len(adapter.name) == 10000
+            assert len(adapter.name) == 10000, "Collection must not be empty"
         except ValueError:
             pass  # Expected
 
@@ -90,7 +90,7 @@ class TestBaseAdapterBoundaryConditions:
         for name in special_names:
             try:
                 adapter = BaseAdapter(config={"name": name})
-                assert adapter.name == name
+                assert adapter.name == name, "name is not valid"
             except ValueError:
                 pass  # Some chars may be rejected
 
@@ -107,7 +107,7 @@ class TestBaseAdapterIntegration:
             # Should support context manager pattern or have cleanup
             if hasattr(adapter, "__enter__"):
                 with adapter as a:
-                    assert a is not None
+                    assert a is not None, "a must be initialized"
         except (NotImplementedError, TypeError):
             pass  # Expected if abstract
 
@@ -118,7 +118,7 @@ class TestBaseAdapterIntegration:
         try:
             adapter1 = BaseAdapter(config={"name": "adapter1"})
             adapter2 = BaseAdapter(config={"name": "adapter2"})
-            assert adapter1.name != adapter2.name
+            assert adapter1.name != adapter2.name, "name is not valid"
         except (NotImplementedError, TypeError):
             pass
 
@@ -156,7 +156,7 @@ class TestOrchestratorCommandDispatch:
             result = orch.execute(command="unknown_cmd_12345")
             # Should raise or return error status
             if result is not None:
-                assert "error" in str(result).lower() or "unknown" in str(result).lower()
+                assert "error" in str(result).lower() or "unknown" in str(result).lower(), "Result must not be empty"
         except (KeyError, ValueError, AttributeError):
             pass  # Expected
 
@@ -170,7 +170,7 @@ class TestOrchestratorStateManagement:
 
         try:
             orch = Orchestrator()
-            assert orch is not None
+            assert orch is not None, "orch must be initialized"
             # Check initial state
             if hasattr(orch, "state"):
                 assert orch.state in ["idle", "ready", "initialized", None]
@@ -209,7 +209,7 @@ class TestCLIArgumentParsing:
         try:
             args = parse_arguments(argv=[])
             # Should either return defaults or raise
-            assert args is not None
+            assert args is not None, "args must be initialized"
         except (SystemExit, ValueError):
             pass  # Expected
 
@@ -243,7 +243,7 @@ class TestCLICommandExecution:
             cli = CLI()
             result = cli.execute(command=command)
             # Should return some output or status
-            assert result is not None or command == "version"
+            assert result is not None or command == "version", "result must be initialized"
         except (NotImplementedError, AttributeError, SystemExit):
             pass
 
@@ -282,6 +282,7 @@ class TestGitHubLogsAPIErrors:
             GitHubLogsAPI(token=None)
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_github_logs_network_timeout(self):
         """Should handle network timeouts gracefully"""
         from codex.api.github_logs import GitHubLogsAPI
@@ -411,7 +412,7 @@ class TestConfigEnvironmentVariables:
         with patch.dict("os.environ", {"TEST_VAR": ""}):
             config = load_env_config()
             # Should handle gracefully
-            assert config is not None
+            assert config is not None, "config must be initialized"
 
     def test_env_var_with_invalid_json(self):
         """Should handle invalid JSON in env var"""
@@ -445,6 +446,7 @@ class TestAsyncConcurrencyPatterns:
     """Test async and concurrency edge cases"""
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_concurrent_api_calls(self):
         """Should handle multiple concurrent API calls"""
         from codex.api.github_logs import GitHubLogsAPI
@@ -462,6 +464,7 @@ class TestAsyncConcurrencyPatterns:
             pass
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_async_timeout_handling(self):
         """Should handle async timeouts"""
         try:
@@ -488,7 +491,7 @@ class TestMultiModuleIntegration:
             cli = CLI()
             # Attempt to use adapter through CLI
             # Should not crash even if incomplete
-            assert cli is not None
+            assert cli is not None, "cli must be initialized"
         except (NotImplementedError, ImportError, TypeError):
             pass
 
@@ -502,7 +505,7 @@ class TestMultiModuleIntegration:
             load_env_config()
             orch = Orchestrator()
             # Should initialize without error
-            assert orch is not None
+            assert orch is not None, "orch must be initialized"
         except (NotImplementedError, ImportError, TypeError):
             pass
 
@@ -539,7 +542,7 @@ class TestErrorPropagation:
                 outer()
 
             # Should have chained cause
-            assert exc_info.value.__cause__ is not None
+            assert exc_info.value.__cause__ is not None, "__cause__ must be initialized"
         except (NotImplementedError, AttributeError):
             pass
 
@@ -566,7 +569,7 @@ class TestRegressionPrevention:
                 pass
 
             # Config should not be modified
-            assert original_config == config_copy
+            assert original_config == config_copy, "original_config is not valid"
         except (NotImplementedError, ImportError):
             pass
 
@@ -583,7 +586,7 @@ class TestRegressionPrevention:
                 orch1.state = "test_state_1"
                 if hasattr(orch2, "state"):
                     # orch2 state should be independent
-                    assert orch2.state != "test_state_1"
+                    assert orch2.state != "test_state_1", "state is not valid"
         except (NotImplementedError, TypeError):
             pass
 

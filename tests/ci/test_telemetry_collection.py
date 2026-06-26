@@ -107,62 +107,62 @@ class TestTelemetryCollector:
 
     def test_initialization(self, collector):
         """Test TelemetryCollector initialization."""
-        assert collector.owner == "test-owner"
-        assert collector.repo == "test-repo"
-        assert collector.token == "test-token"
-        assert collector.base_url == "https://api.github.com"
-        assert "Authorization" in collector.headers
+        assert collector.owner == "test-owner", "owner is not valid"
+        assert collector.repo == "test-repo", "repo is not valid"
+        assert collector.token == "test-token", "token is not valid"
+        assert collector.base_url == "https://api.github.com", "base_url is not valid"
+        assert "Authorization" in collector.headers, "Condition must be true"
 
     def test_pattern_keywords_defined(self, collector):
         """Test that all core patterns have keywords defined."""
-        assert len(collector.PATTERN_KEYWORDS) >= 5
-        assert "auto-fix" in collector.PATTERN_KEYWORDS
-        assert "test-infrastructure" in collector.PATTERN_KEYWORDS
-        assert "coverage-timeout" in collector.PATTERN_KEYWORDS
-        assert "filesystem-deadlock" in collector.PATTERN_KEYWORDS
-        assert "pre-merge-cascade" in collector.PATTERN_KEYWORDS
+        assert len(collector.PATTERN_KEYWORDS) >= 5, "Collection must not be empty"
+        assert "auto-fix" in collector.PATTERN_KEYWORDS, "Condition must be true"
+        assert "test-infrastructure" in collector.PATTERN_KEYWORDS, "Condition must be true"
+        assert "coverage-timeout" in collector.PATTERN_KEYWORDS, "Condition must be true"
+        assert "filesystem-deadlock" in collector.PATTERN_KEYWORDS, "Condition must be true"
+        assert "pre-merge-cascade" in collector.PATTERN_KEYWORDS, "Condition must be true"
 
     def test_classify_failure_auto_fix(self, collector):
         """Test classification of auto-fix pattern."""
         run = {"name": "Auto-Fix Common Issues"}
         jobs = [{"name": "detect-and-fix"}]
         pattern = collector.classify_failure(run, jobs)
-        assert pattern == "auto-fix"
+        assert pattern == "auto-fix", "pattern is not valid"
 
     def test_classify_failure_coverage_timeout(self, collector):
         """Test classification of coverage timeout pattern."""
         run = {"name": "Coverage Report Generation"}
         jobs = [{"name": "pytest-cov"}]
         pattern = collector.classify_failure(run, jobs)
-        assert pattern == "coverage-timeout"
+        assert pattern == "coverage-timeout", "pattern is not valid"
 
     def test_classify_failure_test_infrastructure(self, collector):
         """Test classification of test infrastructure pattern."""
         run = {"name": "Resilient Validation Suite"}
         jobs = [{"name": "test-runner"}]
         pattern = collector.classify_failure(run, jobs)
-        assert pattern == "test-infrastructure"
+        assert pattern == "test-infrastructure", "pattern is not valid"
 
     def test_classify_failure_filesystem_deadlock(self, collector):
         """Test classification of filesystem deadlock pattern."""
         run = {"name": "Root Organization Validation"}
         jobs = [{"name": "file-validation"}]
         pattern = collector.classify_failure(run, jobs)
-        assert pattern == "filesystem-deadlock"
+        assert pattern == "filesystem-deadlock", "pattern is not valid"
 
     def test_classify_failure_pre_merge_cascade(self, collector):
         """Test classification of pre-merge cascade pattern."""
         run = {"name": "Pre-Merge Final Checks"}
         jobs = [{"name": "merge validation"}]
         pattern = collector.classify_failure(run, jobs)
-        assert pattern == "pre-merge-cascade"
+        assert pattern == "pre-merge-cascade", "pattern is not valid"
 
     def test_classify_failure_unknown(self, collector):
         """Test classification of unknown pattern."""
         run = {"name": "Some Random Workflow"}
         jobs = [{"name": "unknown-job"}]
         pattern = collector.classify_failure(run, jobs)
-        assert pattern == "unknown"
+        assert pattern == "unknown", "pattern is not valid"
 
     @patch("collect_telemetry.requests.get")
     def test_collect_workflow_runs(self, mock_get, collector, mock_workflow_runs):
@@ -174,8 +174,8 @@ class TestTelemetryCollector:
 
         runs = collector.collect_workflow_runs("main", days=7)
 
-        assert len(runs) == 3
-        assert runs[0]["name"] == "Auto-Fix Common Issues"
+        assert len(runs) == 3, "Runs must not be empty"
+        assert runs[0]["name"] == "Auto-Fix Common Issues", "Condition must be true"
         mock_get.assert_called_once()
 
     @patch("collect_telemetry.requests.get")
@@ -200,8 +200,8 @@ class TestTelemetryCollector:
 
         runs = collector.collect_workflow_runs("main", days=7, max_pages=10)
 
-        assert len(runs) == 150
-        assert mock_get.call_count == 2
+        assert len(runs) == 150, "Runs must not be empty"
+        assert mock_get.call_count == 2, "Count must be greater than zero"
 
     @patch("collect_telemetry.requests.get")
     def test_collect_job_details(self, mock_get, collector, mock_jobs):
@@ -213,8 +213,8 @@ class TestTelemetryCollector:
 
         jobs = collector.collect_job_details(1001)
 
-        assert len(jobs) == 1
-        assert jobs[0]["name"] == "auto-fix"
+        assert len(jobs) == 1, "Jobs must not be empty"
+        assert jobs[0]["name"] == "auto-fix", "Condition must be true"
 
     @patch("collect_telemetry.requests.get")
     def test_collect_artifacts(self, mock_get, collector, mock_artifacts):
@@ -226,8 +226,8 @@ class TestTelemetryCollector:
 
         artifacts = collector.collect_artifacts(1001)
 
-        assert len(artifacts) == 1
-        assert artifacts[0]["name"] == "test-results"
+        assert len(artifacts) == 1, "Artifacts must not be empty"
+        assert artifacts[0]["name"] == "test-results", "Result must not be empty"
 
     @patch("collect_telemetry.TelemetryCollector.collect_artifacts")
     @patch("collect_telemetry.TelemetryCollector.collect_job_details")
@@ -253,31 +253,31 @@ class TestTelemetryCollector:
         report = collector.generate_report("main", days=7, output=str(output_file))
 
         # Verify report structure
-        assert "generated_at" in report
-        assert "repository" in report
-        assert report["repository"] == "test-owner/test-repo"
-        assert report["branch"] == "main"
-        assert report["days_analyzed"] == 7
+        assert "generated_at" in report, "Condition must be true"
+        assert "repository" in report, "Condition must be true"
+        assert report["repository"] == "test-owner/test-repo", "rep is not valid"
+        assert report["branch"] == "main", "rep is not valid"
+        assert report["days_analyzed"] == 7, "rep is not valid"
 
         # Verify summary
-        assert report["summary"]["total_runs"] == 3
-        assert report["summary"]["failed_runs"] == 2  # failure + timed_out
-        assert report["summary"]["failure_rate"] > 0
+        assert report["summary"]["total_runs"] == 3, "rep is not valid"
+        assert report["summary"]["failed_runs"] == 2, "rep is not valid"
+        assert report["summary"]["failure_rate"] > 0, "rep must be greater than zero"
 
         # Verify pattern distribution
-        assert "auto-fix" in report["pattern_distribution"]
+        assert "auto-fix" in report["pattern_distribution"], "Condition must be true"
         # Note: coverage-timeout pattern may or may not be present depending on mock data
         # The mock data includes a timed_out conclusion which should trigger this pattern
-        assert "coverage-timeout" in report["pattern_distribution"]
+        assert "coverage-timeout" in report["pattern_distribution"], "Condition must be true"
 
         # Verify failed runs
-        assert len(report["failed_runs"]) == 2
+        assert len(report["failed_runs"]) == 2, "Collection must not be empty"
 
         # Verify file was written
-        assert output_file.exists()
+        assert output_file.exists(), "Condition must be true"
         with open(output_file) as f:
             saved_report = json.load(f)
-            assert saved_report["repository"] == "test-owner/test-repo"
+            assert saved_report["repository"] == "test-owner/test-repo", "saved_rep is not valid"
 
     def test_telemetry_report_structure(self, collector):
         """Test that telemetry report has correct structure."""
@@ -299,9 +299,9 @@ class TestTelemetryCollector:
             assert key in report, f"Missing required key: {key}"
 
         # Verify summary structure
-        assert "total_runs" in report["summary"]
-        assert "failed_runs" in report["summary"]
-        assert "failure_rate" in report["summary"]
+        assert "total_runs" in report["summary"], "Condition must be true"
+        assert "failed_runs" in report["summary"], "Condition must be true"
+        assert "failure_rate" in report["summary"], "Condition must be true"
 
 
 class TestClassifyRunCLI:
@@ -386,7 +386,7 @@ class TestClassifyRunCLI:
             ct_mod.main()
 
         captured = capsys.readouterr()
-        assert captured.out.strip() == "test-infrastructure"
+        assert captured.out.strip() == "test-infrastructure", "Condition must be true"
 
     def test_classify_run_api_error_prints_unknown(self, capsys):
         """main() with --classify-run prints 'unknown' when API call fails."""
@@ -413,7 +413,7 @@ class TestClassifyRunCLI:
             ct_mod.main()
 
         captured = capsys.readouterr()
-        assert "unknown" in captured.out
+        assert "unknown" in captured.out, "Condition must be true"
 
 
 class TestAnalyzeMultiJobCascade:
@@ -434,41 +434,41 @@ class TestAnalyzeMultiJobCascade:
     def test_no_failures_returns_no_cascade(self, collector):
         report = self._make_report({})
         result = collector.analyze_multi_job_cascade(report)
-        assert result["cascade_detected"] is False
-        assert result["cascade_rate"] == 0.0
-        assert result["self_healing_count"] == 0
-        assert result["total_failures"] == 0
+        assert result["cascade_detected"] is False, "Result must not be empty"
+        assert result["cascade_rate"] == 0.0, "Result must not be empty"
+        assert result["self_healing_count"] == 0, "Result must not be empty"
+        assert result["total_failures"] == 0, "Result must not be empty"
 
     def test_missing_pattern_distribution_key(self, collector):
         """Missing key is treated as empty → no cascade."""
         result = collector.analyze_multi_job_cascade({})
-        assert result["cascade_detected"] is False
-        assert result["cascade_rate"] == 0.0
+        assert result["cascade_detected"] is False, "Result must not be empty"
+        assert result["cascade_rate"] == 0.0, "Result must not be empty"
 
     # ── cascade NOT detected (≤50%) ─────────────────────────────────────────
 
     def test_no_cascade_when_self_healing_below_threshold(self, collector):
         dist = {"self-healing": 5, "unknown": 10, "import-error": 5}
         result = collector.analyze_multi_job_cascade(self._make_report(dist))
-        assert result["cascade_detected"] is False
-        assert result["cascade_rate"] == pytest.approx(5 / 20)
-        assert result["self_healing_count"] == 5
-        assert result["total_failures"] == 20
+        assert result["cascade_detected"] is False, "Result must not be empty"
+        assert result["cascade_rate"] == pytest.approx(5 / 20), "Result must not be empty"
+        assert result["self_healing_count"] == 5, "Result must not be empty"
+        assert result["total_failures"] == 20, "Result must not be empty"
 
     def test_no_cascade_exactly_at_50_percent(self, collector):
         """Exactly 50% is NOT considered a cascade (threshold is > 50%)."""
         dist = {"self-healing": 5, "unknown": 5}
         result = collector.analyze_multi_job_cascade(self._make_report(dist))
-        assert result["cascade_detected"] is False
-        assert result["cascade_rate"] == pytest.approx(0.5)
+        assert result["cascade_detected"] is False, "Result must not be empty"
+        assert result["cascade_rate"] == pytest.approx(0.5), "Result must not be empty"
 
     def test_no_cascade_recommended_action_contains_top_pattern(self, collector):
         dist = {"unknown": 10, "self-healing": 3, "ruff-violation": 2}
         result = collector.analyze_multi_job_cascade(self._make_report(dist))
-        assert result["cascade_detected"] is False
-        assert "unknown" in result["recommended_action"]
-        assert "10" in result["recommended_action"]
-        assert "collect_telemetry.py" in result["recommended_action"]
+        assert result["cascade_detected"] is False, "Result must not be empty"
+        assert "unknown" in result["recommended_action"], "Result must not be empty"
+        assert "10" in result["recommended_action"], "Result must not be empty"
+        assert "collect_telemetry.py" in result["recommended_action"], "Result must not be empty"
 
     # ── cascade DETECTED (>50%) ──────────────────────────────────────────────
 
@@ -484,47 +484,47 @@ class TestAnalyzeMultiJobCascade:
             "security-scan": 1,
         }
         result = collector.analyze_multi_job_cascade(self._make_report(dist))
-        assert result["cascade_detected"] is True
+        assert result["cascade_detected"] is True, "Result must not be empty"
         # cascade_rate is rounded to 4 decimal places in the implementation
         assert result["cascade_rate"] == pytest.approx(126 / 133, abs=5e-5)
-        assert result["self_healing_count"] == 126
-        assert result["total_failures"] == 133
+        assert result["self_healing_count"] == 126, "Result must not be empty"
+        assert result["total_failures"] == 133, "Result must not be empty"
 
     def test_cascade_detected_just_above_threshold(self, collector):
         """51% self-healing should trigger cascade."""
         dist = {"self-healing": 51, "other": 49}
         result = collector.analyze_multi_job_cascade(self._make_report(dist))
-        assert result["cascade_detected"] is True
-        assert result["cascade_rate"] == pytest.approx(0.51)
+        assert result["cascade_detected"] is True, "Result must not be empty"
+        assert result["cascade_rate"] == pytest.approx(0.51), "Result must not be empty"
 
     def test_cascade_root_cause_mentions_venv_recreation(self, collector):
         """Root cause string must reference venv recreation (not 'pip fallback')."""
         dist = {"self-healing": 100, "unknown": 1}
         result = collector.analyze_multi_job_cascade(self._make_report(dist))
-        assert result["cascade_detected"] is True
+        assert result["cascade_detected"] is True, "Result must not be empty"
         rc = result["root_cause"].lower()
-        assert "venv" in rc
-        assert "python3 -m venv" in result["root_cause"] or "venv_ci" in rc
+        assert "venv" in rc, "Condition must be true"
+        assert "python3 -m venv" in result["root_cause"] or "venv_ci" in rc, "Result must not be empty"
 
     def test_cascade_recommended_action_mentions_venv_recreation(self, collector):
         dist = {"self-healing": 100, "unknown": 1}
         result = collector.analyze_multi_job_cascade(self._make_report(dist))
-        assert result["cascade_detected"] is True
+        assert result["cascade_detected"] is True, "Result must not be empty"
         ra = result["recommended_action"]
-        assert "python3 -m venv" in ra
-        assert ".venv_ci/bin/pip" in ra
+        assert "python3 -m venv" in ra, "Condition must be true"
+        assert ".venv_ci/bin/pip" in ra, "Condition must be true"
         # Must NOT instruct operator to look for a system-pip fallback
-        assert "system pip" not in ra.lower()
-        assert "|| pip" not in ra
+        assert "system pip" not in ra.lower(), "Condition must be true"
+        assert "|| pip" not in ra, "Condition must be true"
 
     def test_cascade_100_percent_self_healing(self, collector):
         """All failures are self-healing — should still detect cascade."""
         dist = {"self-healing": 50}
         result = collector.analyze_multi_job_cascade(self._make_report(dist))
-        assert result["cascade_detected"] is True
-        assert result["cascade_rate"] == pytest.approx(1.0)
-        assert result["self_healing_count"] == 50
-        assert result["total_failures"] == 50
+        assert result["cascade_detected"] is True, "Result must not be empty"
+        assert result["cascade_rate"] == pytest.approx(1.0), "Result must not be empty"
+        assert result["self_healing_count"] == 50, "Result must not be empty"
+        assert result["total_failures"] == 50, "Result must not be empty"
 
     # ── result dict shape ────────────────────────────────────────────────────
 
@@ -540,7 +540,7 @@ class TestAnalyzeMultiJobCascade:
         }
         for dist in [{}, {"self-healing": 1}, {"unknown": 5, "self-healing": 6}]:
             result = collector.analyze_multi_job_cascade(self._make_report(dist))
-            assert required.issubset(
+            assert required.issubset(, "Condition must be true"
                 result.keys()
             ), f"Missing keys for dist={dist}: {required - result.keys()}"
 
@@ -595,9 +595,9 @@ class TestCancelledRunsHandling:
 
         report = collector.generate_report("main", output=str(tmp_path / "r.json"))
 
-        assert report["summary"]["failed_runs"] == 1
-        assert len(report["failed_runs"]) == 1
-        assert report["failed_runs"][0]["run_id"] == 3
+        assert report["summary"]["failed_runs"] == 1, "rep is not valid"
+        assert len(report["failed_runs"]) == 1, "Collection must not be empty"
+        assert report["failed_runs"][0]["run_id"] == 3, "rep is not valid"
 
     @patch("collect_telemetry.TelemetryCollector.collect_artifacts")
     @patch("collect_telemetry.TelemetryCollector.collect_job_details")
@@ -617,7 +617,7 @@ class TestCancelledRunsHandling:
 
         report = collector.generate_report("main", output=str(tmp_path / "r.json"))
 
-        assert report["summary"]["cancelled_runs"] == 2
+        assert report["summary"]["cancelled_runs"] == 2, "rep is not valid"
 
     @patch("collect_telemetry.TelemetryCollector.collect_artifacts")
     @patch("collect_telemetry.TelemetryCollector.collect_job_details")
@@ -643,10 +643,10 @@ class TestCancelledRunsHandling:
         report = collector.generate_report("main", output=str(tmp_path / "r.json"))
 
         # 1 failure / 5 total = 0.2, NOT 4/5 = 0.8
-        assert report["summary"]["failure_rate"] == pytest.approx(1 / 5)
-        assert report["summary"]["total_runs"] == 5
-        assert report["summary"]["failed_runs"] == 1
-        assert report["summary"]["cancelled_runs"] == 3
+        assert report["summary"]["failure_rate"] == pytest.approx(1 / 5), "rep is not valid"
+        assert report["summary"]["total_runs"] == 5, "rep is not valid"
+        assert report["summary"]["failed_runs"] == 1, "rep is not valid"
+        assert report["summary"]["cancelled_runs"] == 3, "rep is not valid"
 
     @patch("collect_telemetry.TelemetryCollector.collect_artifacts")
     @patch("collect_telemetry.TelemetryCollector.collect_job_details")
@@ -665,8 +665,8 @@ class TestCancelledRunsHandling:
 
         report = collector.generate_report("main", output=str(tmp_path / "r.json"))
 
-        assert report["summary"]["failed_runs"] == 1
-        assert report["summary"]["cancelled_runs"] == 1
+        assert report["summary"]["failed_runs"] == 1, "rep is not valid"
+        assert report["summary"]["cancelled_runs"] == 1, "rep is not valid"
 
 
 class TestApprovalCascadeClassification:
@@ -703,11 +703,11 @@ class TestApprovalCascadeClassification:
         run = {"name": "CI Tests — Optimized with Caching"}
         jobs = [{"name": "pytest", "steps": []}]
         result = collector.classify_failure(run, jobs)
-        assert result != "approval-cascade"
+        assert result != "approval-cascade", "Result must not be empty"
 
     def test_approval_cascade_bucket_defined_in_pattern_keywords(self, collector):
         """The approval-cascade bucket must exist in PATTERN_KEYWORDS."""
-        assert "approval-cascade" in collector.PATTERN_KEYWORDS
+        assert "approval-cascade" in collector.PATTERN_KEYWORDS, "Condition must be true"
         keywords = collector.PATTERN_KEYWORDS["approval-cascade"]
-        assert any("self-approve" in kw for kw in keywords)
-        assert any("pending workflow" in kw or "approve pending" in kw for kw in keywords)
+        assert any("self-approve" in kw for kw in keywords), "Condition must be true"
+        assert any("pending workflow" in kw or "approve pending" in kw for kw in keywords), "Condition must be true"

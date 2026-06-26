@@ -90,13 +90,13 @@ def test_evaluate_dataloader_averages_and_restores_training() -> None:
         device="cpu",
     )
     # Loss: (2 + 6) / 2 = 4.0
-    assert metrics["loss"] == pytest.approx(4.0)
+    assert metrics["loss"] == pytest.approx(4.0), "Condition must be true"
     # Accuracy: (1 + 3) / 2 = 2.0
-    assert metrics["accuracy"] == pytest.approx(2.0)
-    assert metrics["batches"] == pytest.approx(2)
-    assert metrics.get("samples") == pytest.approx(2)
+    assert metrics["accuracy"] == pytest.approx(2.0), "Condition must be true"
+    assert metrics["batches"] == pytest.approx(2), "Condition must be true"
+    assert metrics.get("samples") == pytest.approx(2), "Condition must be true"
     # Model training mode restored after evaluation.
-    assert model.training is True
+    assert model.training is True, "training is not valid"
 
 
 def test_evaluate_dataloader_requires_torch(monkeypatch) -> None:

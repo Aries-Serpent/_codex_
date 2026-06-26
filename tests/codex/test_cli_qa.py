@@ -24,5 +24,5 @@ except (ImportError, AttributeError):
 def test_cli_qa_help():
     runner = CliRunner()
     result = runner.invoke(cli_qa.app, ["--help"])
-    assert result.exit_code == 0
-    assert result.output
+    assert result.exit_code == 0, "Result must not be empty"
+    assert result.output, "Result must not be empty"

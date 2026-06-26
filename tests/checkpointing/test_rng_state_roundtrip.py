@@ -17,4 +17,4 @@ def test_rng_state_roundtrip() -> None:
     seq1 = [random.random() for _ in range(5)]
     checkpoint_core.restore_rng_state(state)
     seq2 = [random.random() for _ in range(5)]
-    assert seq1 == seq2
+    assert seq1 == seq2, "seq1 is not valid"

@@ -29,25 +29,25 @@ def _read_events(path: Path) -> list[dict[str, str]]:
 def test_provision_stack_dry_run_records_health(tmp_path: Path, health_dir: Path) -> None:
     summary = provision_stack(project="demo", metadata={"source": "tests"})
 
-    assert summary["status"] == "deferred"
-    assert summary["project"] == "demo"
-    assert summary["dry_run"] is True
+    assert summary["status"] == "deferred", "Condition must be true"
+    assert summary["project"] == "demo", "Condition must be true"
+    assert summary["dry_run"] is True, "Condition must be true"
 
     log_path = health_dir / "deployment.cloud.ndjson"
     events = _read_events(log_path)
     assert events, "expected a health event to be recorded"
-    assert events[-1]["event"] == "dry_run"
+    assert events[-1]["event"] == "dry_run", "Condition must be true"
 
 
 def test_provision_stack_materialises_manifest(tmp_path: Path, health_dir: Path) -> None:
     output_dir = tmp_path / "deployments"
     summary = provision_stack(project="demo", output_dir=output_dir, dry_run=False)
 
-    assert Path(summary["manifest"]).is_file()
+    assert Path(summary["manifest"]).is_file(), "Condition must be true"
     manifest = json.loads(Path(summary["manifest"]).read_text(encoding="utf-8"))
-    assert manifest["project"] == "demo"
-    assert Path(manifest["sandbox"]).is_dir()
+    assert manifest["project"] == "demo", "Condition must be true"
+    assert Path(manifest["sandbox"]).is_dir(), "Condition must be true"
 
     log_path = health_dir / "deployment.cloud.ndjson"
     events = _read_events(log_path)
-    assert any(event["event"] == "materialised" for event in events)
+    assert any(event["event"] == "materialised" for event in events), "Condition must be true"

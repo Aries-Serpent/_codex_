@@ -13,20 +13,20 @@ class TestCLIEntryPointMinimal:
         """Test help output generation."""
         # Test that help can be displayed
         help_text = "Usage: codex [OPTIONS] COMMAND [ARGS]"
-        assert "Usage" in help_text
-        assert "COMMAND" in help_text
+        assert "Usage" in help_text, "Condition must be true"
+        assert "COMMAND" in help_text, "Condition must be true"
 
     def test_cli_version_display(self):
         """Test version command."""
         version = "0.1.0"
-        assert version is not None
-        assert len(version) > 0
+        assert version is not None, "version must be initialized"
+        assert len(version) > 0, "Version must not be empty"
 
     def test_cli_argument_parsing_basic(self):
         """Test basic argument parsing."""
         args = ["--help"]
         assert isinstance(args, list)
-        assert "--help" in args
+        assert "--help" in args, "Condition must be true"
 
     def test_cli_invalid_arguments(self):
         """Test handling of invalid arguments."""
@@ -37,8 +37,8 @@ class TestCLIEntryPointMinimal:
     def test_cli_subcommand_discovery(self):
         """Test discovery of available subcommands."""
         subcommands = ["train", "eval", "serve", "validate"]
-        assert len(subcommands) > 0
-        assert "train" in subcommands
+        assert len(subcommands) > 0, "Subcommands must not be empty"
+        assert "train" in subcommands, "Condition must be true"
 
     def test_cli_default_behavior(self):
         """Test default behavior when no command specified."""
@@ -50,7 +50,7 @@ class TestCLIEntryPointMinimal:
         """Test environment variable processing."""
         with patch.dict("os.environ", {"CODEX_LOG_LEVEL": "DEBUG"}):
             env_val = __import__("os").environ.get("CODEX_LOG_LEVEL")
-            assert env_val == "DEBUG"
+            assert env_val == "DEBUG", "env_val is not valid"
 
 
 class TestCLIModuleInitialization:
@@ -59,7 +59,7 @@ class TestCLIModuleInitialization:
     def test_cli_module_imports(self):
         """Test that CLI module can be imported."""
         # Should be able to import without errors
-        assert True
+        assert True, "True is not valid"
 
     def test_cli_initialization_guard(self):
         """Test CLI initialization guard clauses."""
@@ -72,9 +72,9 @@ class TestCLIModuleInitialization:
     def test_cli_exit_handling(self):
         """Test proper exit code handling."""
         exit_code = 0
-        assert exit_code >= 0
+        assert exit_code >= 0, "exit_code must be greater than zero"
 
     def test_cli_error_exit_codes(self):
         """Test error exit codes."""
         error_codes = [1, 2, 127]
-        assert all(code > 0 for code in error_codes)
+        assert all(code > 0 for code in error_codes), "code must be greater than zero"

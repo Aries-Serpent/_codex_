@@ -165,7 +165,7 @@ class TestNumericBoundaries:
         # Operations with special floats
         if x != 0:
             result = 1.0 / x
-            assert result is not None
+            assert result is not None, "result must be initialized"
 
         # Comparisons with nan should use specific logic
         if str(x) == "nan":
@@ -173,9 +173,9 @@ class TestNumericBoundaries:
 
         # Infinity operations
         if x == float("inf"):
-            assert x > 1e308
+            assert x > 1e308, "x must be greater than zero"
         if x == float("-inf"):
-            assert x < -1e308
+            assert x < -1e308, "x is not valid"
 
     def test_zero_division_edge_cases(self):
         """Test division by zero in various contexts"""
@@ -225,7 +225,7 @@ class TestNumericBoundaries:
         # Precision-aware comparison
         if abs(precision_val - 0.3) < 1e-10:
             # Might not be exactly 0.3
-            assert abs(result - 0.3) < 0.01
+            assert abs(result - 0.3) < 0.01, "Result must not be empty"
 
 
 # ============================================================================
@@ -242,7 +242,7 @@ class TestStringBoundaries:
 
         # Length operations must not fail
         length = len(s)
-        assert length >= 0
+        assert length >= 0, "length must be positive"
 
         # Indexing with empty string
         if len(s) == 0:
@@ -250,7 +250,7 @@ class TestStringBoundaries:
                 _ = s[0]
         else:
             first_char = s[0]
-            assert first_char is not None
+            assert first_char is not None, "first_char must be initialized"
 
     def test_string_encoding_edge_cases(self, boundary_string):
         """Test string encoding with special characters"""
@@ -279,7 +279,7 @@ class TestStringBoundaries:
         ]
 
         for s in test_strings:
-            assert len(s) >= 0
+            assert len(s) >= 0, "S must not be empty"
             stripped = s.strip()
             assert isinstance(stripped, str)
 
@@ -302,7 +302,7 @@ class TestStringBoundaries:
 
         # Operations should not raise
         length = len(s)
-        assert length >= 0
+        assert length >= 0, "length must be positive"
 
         # Repr and str should work
         repr(s)
@@ -340,32 +340,32 @@ class TestCollectionBoundaries:
 
         for col in collections:
             # Empty checks
-            assert len(col) == 0
-            assert not col
+            assert len(col) == 0, "Col must not be empty"
+            assert not col, "Condition must be true"
 
             # Iteration should not fail
             count = 0
             for item in col:
                 count += 1
-            assert count == 0
+            assert count == 0, "Count must be greater than zero"
 
     @pytest.mark.parametrize("size", [0, 1, 10, 1000])
     def test_collection_size_boundaries(self, size):
         """Test collection operations at various sizes"""
         col = list(range(size))
 
-        assert len(col) == size
+        assert len(col) == size, "Col must not be empty"
 
         # Iteration
         iterated = 0
         for item in col:
             iterated += 1
-        assert iterated == size
+        assert iterated == size, "iterated is not valid"
 
         # Slicing
         if size > 0:
             slice_result = col[0:1]
-            assert len(slice_result) == 1
+            assert len(slice_result) == 1, "Slice_result must not be empty"
 
     def test_dictionary_key_edge_cases(self):
         """Test dictionary operations with edge case keys"""
@@ -380,9 +380,9 @@ class TestCollectionBoundaries:
         for d, key, expected in test_cases:
             result = d.get(key)
             if expected is not None:
-                assert result == expected
+                assert result == expected, "Result must not be empty"
             else:
-                assert result is None
+                assert result is None, "Result must not be empty"
 
 
 # ============================================================================
@@ -408,12 +408,12 @@ class TestStateTransitions:
 
         # Test with None initial state
         sm = SimpleSM(None)
-        assert sm.state is None
+        assert sm.state is None, "state is not valid"
 
         # Test with various states
         for state in ["init", 0, None, ""]:
             sm = SimpleSM(state)
-            assert sm.state == state
+            assert sm.state == state, "state is not valid"
 
     def test_state_transitions_invalid_paths(self):
         """Test invalid state transitions"""
@@ -434,7 +434,7 @@ class TestStateTransitions:
 
         # Valid transition
         sm.transition("go")
-        assert sm.state == "end"
+        assert sm.state == "end", "state is not valid"
 
         # Invalid transition from end state
         with pytest.raises(ValueError):
@@ -470,7 +470,7 @@ class TestStateTransitions:
             t.join()
 
         # All increments should be recorded
-        assert counter.get() == thread_count
+        assert counter.get() == thread_count, "Count must be greater than zero"
 
 
 # ============================================================================
@@ -488,11 +488,11 @@ class TestErrorHandling:
         # None-safe operations
         if val is None:
             result = None or "default"
-            assert result == "default"
+            assert result == "default", "Result must not be empty"
 
         # Falsy value checks
         if not val:
-            assert not bool(val)
+            assert not bool(val), "Condition must be true"
 
     @pytest.mark.parametrize(
         "exception_type",
@@ -509,7 +509,7 @@ class TestErrorHandling:
         exc = exception_type("test message")
 
         assert isinstance(exc, Exception)
-        assert exc.args[0] == "test message"
+        assert exc.args[0] == "test message", "Condition must be true"
 
         # Raising and catching
         with pytest.raises(exception_type):
@@ -523,7 +523,7 @@ class TestErrorHandling:
             except ValueError as e:
                 raise RuntimeError("wrapped") from e
         except RuntimeError as e:
-            assert e.__cause__ is not None
+            assert e.__cause__ is not None, "__cause__ must be initialized"
             assert isinstance(e.__cause__, ValueError)
 
     def test_context_manager_exceptions(self):
@@ -557,7 +557,7 @@ class TestErrorHandling:
         except ValueError:
             pass
 
-        assert cleanup_called == [True]
+        assert cleanup_called == [True], "cleanup_called is not valid"
 
 
 # ============================================================================
@@ -569,6 +569,7 @@ class TestAsyncBoundaries:
     """Edge cases for async operations"""
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_async_task_cancellation(self):
         """Test cancellation of async tasks"""
 
@@ -583,6 +584,7 @@ class TestAsyncBoundaries:
             await task
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_async_exception_propagation(self):
         """Test exception handling in async code"""
 
@@ -593,6 +595,7 @@ class TestAsyncBoundaries:
             await failing_task()
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_async_timeout(self):
         """Test async operation timeouts"""
 
@@ -604,6 +607,7 @@ class TestAsyncBoundaries:
 
     @pytest.mark.parametrize("task_count", [0, 1, 5, 10, 100])
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_many_concurrent_tasks(self, task_count):
         """Test many concurrent async tasks"""
 
@@ -617,7 +621,7 @@ class TestAsyncBoundaries:
             tasks = [dummy_task(i) for i in range(task_count)]
             results = await asyncio.gather(*tasks)
 
-        assert len(results) == task_count
+        assert len(results) == task_count, "Results must not be empty"
 
 
 # ============================================================================
@@ -646,7 +650,7 @@ class TestTypeBoundaries:
         try:
             result = target_type(value)
             # Some conversions may succeed (e.g., str([]) = '[]')
-            assert result is not None
+            assert result is not None, "result must be initialized"
         except (ValueError, TypeError):
             # Expected for many invalid conversions
             pass
@@ -672,10 +676,10 @@ class TestTypeBoundaries:
         truthy_values = [1, -1, "x", [1], {"a": 1}, True]
 
         for val in falsy_values:
-            assert not bool(val)
+            assert not bool(val), "Condition must be true"
 
         for val in truthy_values:
-            assert bool(val)
+            assert bool(val), "Condition must be true"
 
     def test_container_type_conversions(self):
         """Test conversions between container types"""
@@ -685,15 +689,15 @@ class TestTypeBoundaries:
         assert tuple_lst == (1, 2, 3)
 
         set_lst = set(lst)
-        assert len(set_lst) == 3
+        assert len(set_lst) == 3, "Set_lst must not be empty"
 
         # Empty containers
         empty_list = []
         empty_tuple = tuple(empty_list)
         empty_set = set(empty_list)
 
-        assert empty_tuple == ()
-        assert empty_set == set()
+        assert empty_tuple == (), "empty_tuple is not valid"
+        assert empty_set == set(), "empty_set is not valid"
 
 
 # ============================================================================
@@ -708,15 +712,15 @@ class TestResourceBoundaries:
         """Test operations that consume significant memory"""
         # Large list
         large_list = list(range(1000))
-        assert len(large_list) == 1000
+        assert len(large_list) == 1000, "Large_list must not be empty"
 
         # Large dict
         large_dict = {i: str(i) for i in range(1000)}
-        assert len(large_dict) == 1000
+        assert len(large_dict) == 1000, "Large_dict must not be empty"
 
         # Large string
         large_string = "x" * 1000000
-        assert len(large_string) == 1000000
+        assert len(large_string) == 1000000, "Large_string must not be empty"
 
     def test_deep_recursion_boundaries(self):
         """Test deep recursion (limited to avoid stack overflow)"""
@@ -728,7 +732,7 @@ class TestResourceBoundaries:
 
         # Safe depth
         result = factorial(100)
-        assert result > 0
+        assert result > 0, "result must be greater than zero"
 
         # Too deep should raise
         def infinite_recursion(n=0):
@@ -746,11 +750,11 @@ class TestResourceBoundaries:
 
             # Read file
             content = filepath.read_text()
-            assert content == "content"
+            assert content == "content", "Content must not be empty"
 
             # Delete file
             filepath.unlink()
-            assert not filepath.exists()
+            assert not filepath.exists(), "Condition must be true"
 
     def test_empty_file_operations(self):
         """Test empty file edge cases"""
@@ -759,8 +763,8 @@ class TestResourceBoundaries:
             filepath.write_text("")
 
             content = filepath.read_text()
-            assert content == ""
-            assert len(content) == 0
+            assert content == "", "Content must not be empty"
+            assert len(content) == 0, "Content must not be empty"
 
 
 # ============================================================================
@@ -779,7 +783,7 @@ class TestIteratorBoundaries:
             count = 0
             for item in iterable:
                 count += 1
-            assert count == 0
+            assert count == 0, "Count must be greater than zero"
 
     def test_single_item_iterator(self):
         """Test iteration with single item"""
@@ -789,7 +793,7 @@ class TestIteratorBoundaries:
             count = 0
             for item in iterable:
                 count += 1
-            assert count == 1
+            assert count == 1, "Count must be greater than zero"
 
     def test_generator_edge_cases(self):
         """Test generator function edge cases"""
@@ -804,12 +808,12 @@ class TestIteratorBoundaries:
         # Empty generator
         empty_gen = empty_generator()
         items = list(empty_gen)
-        assert items == []
+        assert items == [], "Item must not be empty"
 
         # Single yield
         single_gen = single_yield_generator()
         items = list(single_gen)
-        assert items == [1]
+        assert items == [1], "Item must not be empty"
 
     def test_generator_cleanup_on_exception(self):
         """Test generator cleanup when exception occurs"""
@@ -847,40 +851,40 @@ class TestComparisonBoundaries:
     @pytest.mark.parametrize("value", [None, 0, "", [], {}])
     def test_equality_with_none_and_falsy(self, value):
         """Test equality comparisons with None and falsy values"""
-        assert value == value
-        assert not (value != value)
+        assert value == value, "Value must be initialized"
+        assert not (value != value), "Value must be initialized"
 
         # None comparisons
         if value is None:
-            assert value is None
-            assert not (value is not None)
+            assert value is None, "Value must be initialized"
+            assert not (value is not None), "value must be initialized"
         else:
-            assert value is not None
+            assert value is not None, "value must be initialized"
 
     def test_nan_comparison_special_case(self):
         """Test NaN comparison edge case"""
         nan = float("nan")
 
         # NaN is not equal to itself
-        assert not (nan == nan)
-        assert nan != nan
+        assert not (nan == nan), "nan is not valid"
+        assert nan != nan, "nan is not valid"
 
         # NaN comparisons with other values
-        assert not (nan == 0)
-        assert nan != 0
-        assert not (nan > 0)
-        assert not (nan < 0)
+        assert not (nan == 0), "nan is not valid"
+        assert nan != 0, "nan is not valid"
+        assert not (nan > 0), "nan must be greater than zero"
+        assert not (nan < 0), "nan is not valid"
 
     def test_infinity_comparisons(self):
         """Test infinity comparison edge cases"""
         pos_inf = float("inf")
         neg_inf = float("-inf")
 
-        assert pos_inf == pos_inf
-        assert neg_inf == neg_inf
-        assert pos_inf > neg_inf
-        assert pos_inf > 1e308
-        assert neg_inf < -1e308
+        assert pos_inf == pos_inf, "pos_inf is not valid"
+        assert neg_inf == neg_inf, "neg_inf is not valid"
+        assert pos_inf > neg_inf, "pos_inf must be greater than zero"
+        assert pos_inf > 1e308, "pos_inf must be greater than zero"
+        assert neg_inf < -1e308, "neg_inf is not valid"
 
     def test_object_identity_vs_equality(self):
         """Test identity vs equality"""
@@ -889,12 +893,12 @@ class TestComparisonBoundaries:
         c = a
 
         # Different lists but same content
-        assert a == b
-        assert a is not b
+        assert a == b, "a is not valid"
+        assert a is not b, "a is not valid"
 
         # Same object
-        assert a is c
-        assert a == c
+        assert a is c, "a is not valid"
+        assert a == c, "a is not valid"
 
 
 # ============================================================================
@@ -917,7 +921,7 @@ class TestTimeoutBoundaries:
 
         thread.join(timeout=0)
         # Thread should still be running
-        assert thread.is_alive()
+        assert thread.is_alive(), "Condition must be true"
 
     def test_zero_timeout_operations(self):
         """Test operations with zero timeout"""
@@ -953,7 +957,7 @@ class TestTimeoutBoundaries:
         thread.join(timeout=10)
 
         # Should complete well before timeout
-        assert not thread.is_alive()
+        assert not thread.is_alive(), "Condition must be true"
 
 
 # ============================================================================
@@ -980,7 +984,7 @@ class TestSynchronizationBoundaries:
 
         # Try to acquire locked lock with timeout
         acquired = lock.acquire(timeout=0.01)
-        assert not acquired
+        assert not acquired, "Condition must be true"
 
         lock.release()
 
@@ -999,7 +1003,7 @@ class TestSynchronizationBoundaries:
         for t in threads:
             t.join()
 
-        assert len(results) == 5
+        assert len(results) == 5, "Results must not be empty"
 
 
 # ============================================================================
@@ -1028,7 +1032,7 @@ class TestSuiteMetadata:
             "synchronization": True,
         }
 
-        assert all(coverage_areas.values())
+        assert all(coverage_areas.values()), "Value must be initialized"
 
 
 # ============================================================================
@@ -1051,8 +1055,8 @@ def test_all_tests_are_deterministic():
         node.module or "" for node in ast.walk(module) if isinstance(node, ast.ImportFrom)
     )
 
-    assert "random" not in imported_modules
-    assert not any(
+    assert "random" not in imported_modules, "Condition must be true"
+    assert not any(, "Condition must be true"
         isinstance(decorator, ast.Attribute) and decorator.attr == "flaky"
         for node in ast.walk(module)
         if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))

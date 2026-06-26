@@ -46,7 +46,7 @@ def test_rng_snapshot_restore_consistency() -> None:
 
     checkpoint_core.restore_rng_state(state)
 
-    assert [random.random() for _ in range(3)] == baseline_rand
+    assert [random.random() for _ in range(3)] == baseline_rand, "Condition must be true"
     if np is not None and baseline_np is not None:
         assert np.allclose(np.random.random(3), baseline_np)
     if torch is not None and _torch_has_rand and baseline_torch is not None:

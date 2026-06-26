@@ -133,8 +133,8 @@ def extract_cst(module: Any) -> Extraction:  # pragma: no cover - simple
                     out.imports.append({"raw": code})
     except (ValueError, TypeError) as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
-        logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
+        logger.debug("Exception: <ERROR_TYPE>")
+        logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
     return out
 
 

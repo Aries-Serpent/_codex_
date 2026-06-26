@@ -50,8 +50,8 @@ def test_dispatch_returns_429_when_request_limit_reached(monkeypatch: pytest.Mon
     )
     with TestClient(app) as client:
         response = client.post("/v1/infer", json={"max_tokens": 3})
-    assert response.status_code == 429
-    assert "Request rate limit exceeded" in response.json()["detail"]
+    assert response.status_code == 429, "Response must not be empty"
+    assert "Request rate limit exceeded" in response.json()["detail"], "Response must not be empty"
 
 
 def test_dispatch_returns_429_when_preflight_token_quota_is_exhausted(
@@ -67,8 +67,8 @@ def test_dispatch_returns_429_when_preflight_token_quota_is_exhausted(
 
     with TestClient(app) as client:
         response = client.post("/v1/infer", json={"max_tokens": 9})
-    assert response.status_code == 429
-    assert "Token quota exceeded" in response.json()["detail"]
+    assert response.status_code == 429, "Response must not be empty"
+    assert "Token quota exceeded" in response.json()["detail"], "Response must not be empty"
 
 
 def test_dispatch_reinserts_request_body_and_handles_accounting_errors(
@@ -87,7 +87,7 @@ def test_dispatch_reinserts_request_body_and_handles_accounting_errors(
     with TestClient(app) as client:
         response = client.post("/v1/infer", json={"max_tokens": 7})
 
-    assert response.status_code == 200
-    assert response.json()["max_tokens"] == 7
+    assert response.status_code == 200, "Response must not be empty"
+    assert response.json()["max_tokens"] == 7, "Response must not be empty"
     # Current middleware gracefully handles body-iterator accounting errors.
     bucket.consume.assert_not_called()

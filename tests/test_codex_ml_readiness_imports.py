@@ -17,11 +17,11 @@ pytest.importorskip("torch", reason="PyTorch required for tests")
 
 def _assert_import_contract(mod: object, module_name: str) -> None:
     """Assert stronger import guarantees than a simple non-None check."""
-    assert mod.__name__ == module_name
+    assert mod.__name__ == module_name, "__name__ is not valid"
     assert hasattr(mod, "__spec__")
     # A real imported module should expose at least one public attribute.
     public_names = [name for name in dir(mod) if not name.startswith("_")]
-    assert public_names
+    assert public_names, "public_names is not valid"
 
 
 @pytest.fixture(autouse=True)
@@ -157,7 +157,7 @@ def test_seeding_and_worker_seed(monkeypatch):
     from codex_ml.utils import seeding, torch_det
 
     seeding.set_reproducible(123, deterministic=True)
-    assert os.environ.get("PYTHONHASHSEED") == "123"
+    assert os.environ.get("PYTHONHASHSEED") == "123", "Condition must be true"
 
     # Ensure the worker seeding helper is tolerant to stubs
     torch_det.seed_worker(0)
@@ -183,10 +183,10 @@ def test_tracking_helpers(tmp_path):
     from codex_ml.tracking import init_offline, mlflow_wrapper
 
     uri = init_offline.init_mlflow_offline(local_dir=str(tmp_path / "mlruns"))
-    assert uri.startswith("file:")
+    assert uri.startswith("file:"), "Condition must be true"
     wandb_run = init_offline.init_wandb_offline(project="demo")
     assert isinstance(wandb_run, dict)
-    assert "run" in wandb_run
+    assert "run" in wandb_run, "Condition must be true"
 
     tracker = mlflow_wrapper.MLflowTracker(enabled=True)
     with tracker.start_run():
@@ -278,18 +278,18 @@ def test_safety_and_deployment_imports():
 
     settings = moderation.ModerationSettings(enabled=False)
     decision = moderation.ModerationDecision(approved=True, stage="test", provider="offline")
-    assert decision.to_dict()["approved"]
+    assert decision.to_dict()["approved"], "Condition must be true"
     adapter = moderation.ModerationAdapter(settings)
     decision_checked = adapter.review("sample", stage="pre")
-    assert decision_checked.approved is True
+    assert decision_checked.approved is True, "approved is not valid"
 
     redactor = redaction.SecretRedactor()
-    assert "TOKEN" in redactor.redact("bearer: token-1234")
+    assert "TOKEN" in redactor.redact("bearer: token-1234"), "Condition must be true"
     sanitized = sanitizers.sanitize_output("clean")
     assert isinstance(sanitized, dict)
-    assert sanitized.get("text") == "clean"
+    assert sanitized.get("text") == "clean", "Condition must be true"
     result = sandbox.run_in_sandbox(["echo", "hi"], timeout=2)
-    assert result.returncode == 0
+    assert result.returncode == 0, "Result must not be empty"
 
     _assert_import_contract(package, "codex_ml.deployment.package")
     _assert_import_contract(serving, "codex_ml.serving.deployment")

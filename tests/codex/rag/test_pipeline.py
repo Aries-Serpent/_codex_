@@ -13,7 +13,7 @@ class TestRagPipelineImports:
         try:
             from src.codex.rag import pipeline
 
-            assert pipeline is not None
+            assert pipeline is not None, "pipeline must be initialized"
         except ImportError:
             pytest.skip("Module not available or has unmet dependencies")
 
@@ -28,7 +28,7 @@ class TestRagPipelineOperations:
 
             if hasattr(pipeline, "RagPipeline"):
                 rag = pipeline.RagPipeline()
-                assert rag is not None
+                assert rag is not None, "rag must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("RagPipeline not available")
 
@@ -41,7 +41,7 @@ class TestRagPipelineOperations:
                 with patch.object(pipeline, "ingest_document") as mock_ingest:
                     mock_ingest.return_value = {"id": "doc1"}
                     result = pipeline.ingest_document("test content")
-                    assert result["id"] == "doc1"
+                    assert result["id"] == "doc1", "Result must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("ingest_document not available")
 
@@ -54,7 +54,7 @@ class TestRagPipelineOperations:
                 with patch.object(pipeline, "process_query") as mock_query:
                     mock_query.return_value = ["result1", "result2"]
                     results = pipeline.process_query("test query")
-                    assert len(results) == 2
+                    assert len(results) == 2, "Results must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("process_query not available")
 
@@ -68,7 +68,7 @@ class TestRagPipelineConfiguration:
             from src.codex.rag import pipeline
 
             if hasattr(pipeline, "DEFAULT_CONFIG"):
-                assert pipeline.DEFAULT_CONFIG is not None
+                assert pipeline.DEFAULT_CONFIG is not None, "DEFAULT_CONFIG must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("DEFAULT_CONFIG not available")
 
@@ -79,6 +79,6 @@ class TestRagPipelineConfiguration:
 
             if hasattr(pipeline, "RagPipeline"):
                 rag = pipeline.RagPipeline(embedding_model="custom")
-                assert rag is not None
+                assert rag is not None, "rag must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("RagPipeline not available")

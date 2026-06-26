@@ -62,26 +62,26 @@ class _RaisingChannel(AlertChannel):
 
 class TestAlertSeverity:
     def test_values(self) -> None:
-        assert AlertSeverity.INFO.value == "info"
-        assert AlertSeverity.WARNING.value == "warning"
-        assert AlertSeverity.ERROR.value == "error"
-        assert AlertSeverity.CRITICAL.value == "critical"
+        assert AlertSeverity.INFO.value == "info", "Value must be initialized"
+        assert AlertSeverity.WARNING.value == "warning", "Value must be initialized"
+        assert AlertSeverity.ERROR.value == "error", "Value must be initialized"
+        assert AlertSeverity.CRITICAL.value == "critical", "Value must be initialized"
 
     def test_ordering_lt(self) -> None:
-        assert AlertSeverity.INFO < AlertSeverity.WARNING
-        assert AlertSeverity.WARNING < AlertSeverity.ERROR
-        assert AlertSeverity.ERROR < AlertSeverity.CRITICAL
+        assert AlertSeverity.INFO < AlertSeverity.WARNING, "INFO is not valid"
+        assert AlertSeverity.WARNING < AlertSeverity.ERROR, "Error should be raised or set"
+        assert AlertSeverity.ERROR < AlertSeverity.CRITICAL, "Error should be raised or set"
 
     def test_ordering_ge(self) -> None:
-        assert AlertSeverity.CRITICAL >= AlertSeverity.ERROR
-        assert AlertSeverity.ERROR >= AlertSeverity.WARNING
+        assert AlertSeverity.CRITICAL >= AlertSeverity.ERROR, "CRITICAL must be greater than zero"
+        assert AlertSeverity.ERROR >= AlertSeverity.WARNING, "ERROR must be greater than zero"
 
     def test_ordering_gt(self) -> None:
-        assert AlertSeverity.CRITICAL > AlertSeverity.WARNING
+        assert AlertSeverity.CRITICAL > AlertSeverity.WARNING, "CRITICAL must be greater than zero"
 
     def test_str_value(self) -> None:
         # AlertSeverity extends str
-        assert str(AlertSeverity.INFO) == "info"
+        assert str(AlertSeverity.INFO) == "info", "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -92,32 +92,32 @@ class TestAlertSeverity:
 class TestAlertEvent:
     def test_defaults(self) -> None:
         event = AlertEvent(title="t", message="m", severity=AlertSeverity.INFO)
-        assert event.run_id == ""
-        assert event.epoch == 0
-        assert event.metadata == {}
-        assert event.timestamp == ""
+        assert event.run_id == "", "run_id is not valid"
+        assert event.epoch == 0, "epoch is not valid"
+        assert event.metadata == {}, "Data must not be empty"
+        assert event.timestamp == "", "timestamp is not valid"
 
     def test_fill_timestamp_fills_when_empty(self) -> None:
         event = AlertEvent(title="t", message="m", severity=AlertSeverity.INFO)
         event.fill_timestamp()
-        assert event.timestamp != ""
+        assert event.timestamp != "", "timestamp is not valid"
         # Must match YYYY-MM-DDTHH:MM:SSZ — not isoformat() with +00:00
-        assert event.timestamp.endswith("Z")
-        assert "T" in event.timestamp
-        assert "+" not in event.timestamp
+        assert event.timestamp.endswith("Z"), "Condition must be true"
+        assert "T" in event.timestamp, "Condition must be true"
+        assert "+" not in event.timestamp, "Condition must be true"
 
     def test_fill_timestamp_does_not_overwrite(self) -> None:
         ts = "2024-01-01T00:00:00Z"
         event = AlertEvent(title="t", message="m", severity=AlertSeverity.INFO, timestamp=ts)
         event.fill_timestamp()
-        assert event.timestamp == ts
+        assert event.timestamp == ts, "timestamp is not valid"
 
     def test_metadata_isolation(self) -> None:
         meta: dict[str, Any] = {"k": "v"}
         event = AlertEvent(title="t", message="m", severity=AlertSeverity.INFO, metadata=meta)
         meta["extra"] = "x"
         # The stored dict is the same reference — mutation is the caller's responsibility
-        assert "extra" in event.metadata  # verifies it's not deep-copied (by design)
+        assert "extra" in event.metadata, "Data must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -133,8 +133,8 @@ class TestTrainingAlertManager:
         event = AlertEvent(title="t", message="m", severity=AlertSeverity.INFO)
         results = mgr.alert(event)
         assert results == {"ch1": True, "ch2": True}
-        assert len(ch1.received) == 1
-        assert len(ch2.received) == 1
+        assert len(ch1.received) == 1, "Collection must not be empty"
+        assert len(ch2.received) == 1, "Collection must not be empty"
 
     def test_min_severity_filtering(self) -> None:
         ch = _FakeChannel()
@@ -142,62 +142,62 @@ class TestTrainingAlertManager:
         # INFO and WARNING should be dropped
         mgr.alert(AlertEvent(title="t", message="m", severity=AlertSeverity.INFO))
         mgr.alert(AlertEvent(title="t", message="m", severity=AlertSeverity.WARNING))
-        assert len(ch.received) == 0
+        assert len(ch.received) == 0, "Collection must not be empty"
         # ERROR and CRITICAL should pass
         mgr.alert(AlertEvent(title="t", message="m", severity=AlertSeverity.ERROR))
         mgr.alert(AlertEvent(title="t", message="m", severity=AlertSeverity.CRITICAL))
-        assert len(ch.received) == 2
+        assert len(ch.received) == 2, "Collection must not be empty"
 
     def test_auto_fills_timestamp(self) -> None:
         ch = _FakeChannel()
         mgr = TrainingAlertManager(channels=[ch], min_severity=AlertSeverity.INFO)
         event = AlertEvent(title="t", message="m", severity=AlertSeverity.INFO)
         mgr.alert(event)
-        assert ch.received[0].timestamp != ""
+        assert ch.received[0].timestamp != "", "timestamp is not valid"
 
     def test_alert_training_failure(self) -> None:
         ch = _FakeChannel()
         mgr = TrainingAlertManager(channels=[ch], min_severity=AlertSeverity.CRITICAL)
         exc = ValueError("NaN loss")
         results = mgr.alert_training_failure(exc, run_id="run-1", epoch=3, lr=0.001)
-        assert results == {"fake": True}
+        assert results == {"fake": True}, "Result must not be empty"
         sent = ch.received[0]
-        assert sent.severity == AlertSeverity.CRITICAL
-        assert "ValueError" in sent.message
-        assert "NaN loss" in sent.message
-        assert sent.run_id == "run-1"
-        assert sent.epoch == 3
-        assert sent.metadata["lr"] == 0.001
+        assert sent.severity == AlertSeverity.CRITICAL, "severity is not valid"
+        assert "ValueError" in sent.message, "Value must be initialized"
+        assert "NaN loss" in sent.message, "Condition must be true"
+        assert sent.run_id == "run-1", "run_id is not valid"
+        assert sent.epoch == 3, "epoch is not valid"
+        assert sent.metadata["lr"] == 0.001, "Data must not be empty"
 
     def test_alert_training_complete(self) -> None:
         ch = _FakeChannel()
         # INFO events only reach channels when min_severity is INFO
         mgr = TrainingAlertManager(channels=[ch], min_severity=AlertSeverity.INFO)
         results = mgr.alert_training_complete(run_id="run-2", epochs=10, final_loss=0.123)
-        assert results == {"fake": True}
+        assert results == {"fake": True}, "Result must not be empty"
         sent = ch.received[0]
-        assert sent.severity == AlertSeverity.INFO
-        assert "10" in sent.message
-        assert "0.123000" in sent.message
-        assert sent.run_id == "run-2"
+        assert sent.severity == AlertSeverity.INFO, "severity is not valid"
+        assert "10" in sent.message, "Condition must be true"
+        assert "0.123000" in sent.message, "Condition must be true"
+        assert sent.run_id == "run-2", "run_id is not valid"
 
     def test_channel_failure_recorded_not_raised(self) -> None:
         failing = _FakeChannel("failing", succeed=False)
         mgr = TrainingAlertManager(channels=[failing], min_severity=AlertSeverity.INFO)
         results = mgr.alert(AlertEvent(title="t", message="m", severity=AlertSeverity.INFO))
-        assert results == {"failing": False}
+        assert results == {"failing": False}, "Result must not be empty"
 
     def test_channel_exception_does_not_propagate(self) -> None:
         raising = _RaisingChannel()
         mgr = TrainingAlertManager(channels=[raising], min_severity=AlertSeverity.INFO)
         # Must NOT raise
         results = mgr.alert(AlertEvent(title="t", message="m", severity=AlertSeverity.INFO))
-        assert results == {"raising": False}
+        assert results == {"raising": False}, "Result must not be empty"
 
     def test_empty_channels_returns_empty_dict(self) -> None:
         mgr = TrainingAlertManager(channels=[], min_severity=AlertSeverity.INFO)
         results = mgr.alert(AlertEvent(title="t", message="m", severity=AlertSeverity.INFO))
-        assert results == {}
+        assert results == {}, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -220,13 +220,13 @@ class TestFromEnv:
         }
         with patch.dict(os.environ, clean_env, clear=True):
             mgr = TrainingAlertManager.from_env()
-        assert mgr._channels == []
+        assert mgr._channels == [], "_channels is not valid"
 
     def test_slack_env_var_adds_slack_channel(self) -> None:
         env = {"CODEX_SLACK_WEBHOOK_URL": "https://hooks.slack.com/test"}
         with patch.dict(os.environ, env, clear=True):
             mgr = TrainingAlertManager.from_env()
-        assert any(c.name() == "slack" for c in mgr._channels)
+        assert any(c.name() == "slack" for c in mgr._channels), "Condition must be true"
 
     def test_email_env_vars_add_email_channel(self) -> None:
         env = {
@@ -236,19 +236,19 @@ class TestFromEnv:
         }
         with patch.dict(os.environ, env, clear=True):
             mgr = TrainingAlertManager.from_env()
-        assert any(c.name() == "email" for c in mgr._channels)
+        assert any(c.name() == "email" for c in mgr._channels), "Condition must be true"
 
     def test_min_severity_env_var(self) -> None:
         env = {"CODEX_ALERT_MIN_SEVERITY": "warning"}
         with patch.dict(os.environ, env, clear=True):
             mgr = TrainingAlertManager.from_env()
-        assert mgr._min_severity == AlertSeverity.WARNING
+        assert mgr._min_severity == AlertSeverity.WARNING, "_min_severity is not valid"
 
     def test_invalid_min_severity_defaults_to_error(self) -> None:
         env = {"CODEX_ALERT_MIN_SEVERITY": "bogus"}
         with patch.dict(os.environ, env, clear=True):
             mgr = TrainingAlertManager.from_env()
-        assert mgr._min_severity == AlertSeverity.ERROR
+        assert mgr._min_severity == AlertSeverity.ERROR, "Error should be raised or set"
 
 
 # ---------------------------------------------------------------------------
@@ -278,19 +278,19 @@ class TestSlackChannel:
             ch = SlackChannel(webhook_url="https://hooks.slack.com/services/test")
             result = ch.send(self._make_event())
 
-        assert result is True
+        assert result is True, "Result must not be empty"
         mock_open.assert_called_once()
         req = mock_open.call_args[0][0]
         import json as _json
 
         payload = _json.loads(req.data.decode())
-        assert "Training failed" in payload["text"]
-        assert payload["attachments"][0]["color"] == "#c0392b"  # critical = dark red
+        assert "Training failed" in payload["text"], "Condition must be true"
+        assert payload["attachments"][0]["color"] == ", "Condition must be true"
         field_titles = [f["title"] for f in payload["attachments"][0]["fields"]]
-        assert "Severity" in field_titles
-        assert "Run ID" in field_titles
-        assert "Epoch" in field_titles
-        assert "lr" in field_titles
+        assert "Severity" in field_titles, "Condition must be true"
+        assert "Run ID" in field_titles, "Condition must be true"
+        assert "Epoch" in field_titles, "Condition must be true"
+        assert "lr" in field_titles, "Condition must be true"
 
     def test_send_returns_false_on_url_error(self) -> None:
         import urllib.error
@@ -300,12 +300,12 @@ class TestSlackChannel:
             side_effect=urllib.error.URLError("connection refused"),
         ):
             ch = SlackChannel(webhook_url="https://hooks.slack.com/services/test")
-            assert ch.send(self._make_event()) is False
+            assert ch.send(self._make_event()) is False, "Condition must be true"
 
     def test_send_returns_false_when_no_url(self) -> None:
         with patch.dict(os.environ, {}, clear=True):
             ch = SlackChannel()
-            assert ch.send(self._make_event()) is False
+            assert ch.send(self._make_event()) is False, "Condition must be true"
 
     def test_send_returns_false_on_non_200(self) -> None:
         fake_resp = MagicMock()
@@ -315,15 +315,15 @@ class TestSlackChannel:
 
         with patch("urllib.request.urlopen", return_value=fake_resp):
             ch = SlackChannel(webhook_url="https://hooks.slack.com/services/test")
-            assert ch.send(self._make_event()) is False
+            assert ch.send(self._make_event()) is False, "Condition must be true"
 
     def test_send_returns_false_on_disallowed_webhook_host(self) -> None:
         ch = SlackChannel(webhook_url="https://example.com/not-slack")
-        assert ch.send(self._make_event()) is False
+        assert ch.send(self._make_event()) is False, "Condition must be true"
 
     def test_send_returns_false_on_disallowed_webhook_path(self) -> None:
         ch = SlackChannel(webhook_url="https://hooks.slack.com/not-a-webhook")
-        assert ch.send(self._make_event()) is False
+        assert ch.send(self._make_event()) is False, "Condition must be true"
 
     @pytest.mark.parametrize(
         "severity,expected_color",
@@ -337,14 +337,14 @@ class TestSlackChannel:
     def test_colour_mapping(self, severity: AlertSeverity, expected_color: str) -> None:
         ch = SlackChannel(webhook_url="https://hooks.slack.com/services/test")
         payload = ch._build_payload(self._make_event(severity))
-        assert payload["attachments"][0]["color"] == expected_color
+        assert payload["attachments"][0]["color"] == expected_color, "Condition must be true"
 
     def test_reads_webhook_from_env(self) -> None:
         with patch.dict(
             os.environ, {"CODEX_SLACK_WEBHOOK_URL": "https://hooks.slack.com/services/env"}
         ):
             ch = SlackChannel()
-        assert ch._webhook_url == "https://hooks.slack.com/services/env"
+        assert ch._webhook_url == "https://hooks.slack.com/services/env", "_webhook_url is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -381,7 +381,7 @@ class TestEmailChannel:
             ch = self._make_channel()
             result = ch.send(self._make_event())
 
-        assert result is True
+        assert result is True, "Result must not be empty"
         mock_cls.assert_called_once_with("smtp.example.com", 587, timeout=10)
         # STARTTLS path calls ehlo twice + starttls
         mock_smtp.return_value.ehlo.assert_called()
@@ -402,13 +402,13 @@ class TestEmailChannel:
             ch = self._make_channel()
             ch.send(self._make_event())
 
-        assert len(captured_messages) == 1
+        assert len(captured_messages) == 1, "Captured_messages must not be empty"
         from_addr, to_addrs, raw_msg = captured_messages[0]
-        assert from_addr == "noreply@example.com"
-        assert "ops@example.com" in to_addrs
+        assert from_addr == "noreply@example.com", "from_addr is not valid"
+        assert "ops@example.com" in to_addrs, "Condition must be true"
         # The subject is always plaintext in the headers
-        assert "[INFO]" in raw_msg
-        assert "Training complete" in raw_msg
+        assert "[INFO]" in raw_msg, "Condition must be true"
+        assert "Training complete" in raw_msg, "Condition must be true"
         # Body may be base64-encoded — decode and inspect
         import base64 as _b64
         import email as _email_lib
@@ -419,17 +419,17 @@ class TestEmailChannel:
             body = _b64.b64decode(payload.replace("\n", "")).decode("utf-8")
         else:
             body = payload
-        assert "run-99" in body
+        assert "run-99" in body, "Condition must be true"
 
     def test_send_returns_false_on_smtp_exception(self) -> None:
         with patch("smtplib.SMTP", side_effect=smtplib.SMTPException("connect failed")):
             ch = self._make_channel()
-            assert ch.send(self._make_event()) is False
+            assert ch.send(self._make_event()) is False, "Condition must be true"
 
     def test_send_returns_false_on_os_error(self) -> None:
         with patch("smtplib.SMTP", side_effect=OSError("network unreachable")):
             ch = self._make_channel()
-            assert ch.send(self._make_event()) is False
+            assert ch.send(self._make_event()) is False, "Condition must be true"
 
     def test_send_returns_false_when_no_host(self) -> None:
         ch = EmailChannel(
@@ -438,7 +438,7 @@ class TestEmailChannel:
             from_addr="noreply@example.com",
             to_addrs=["ops@example.com"],
         )
-        assert ch.send(self._make_event()) is False
+        assert ch.send(self._make_event()) is False, "Condition must be true"
 
     def test_send_returns_false_when_no_to_addrs(self) -> None:
         ch = EmailChannel(
@@ -447,7 +447,7 @@ class TestEmailChannel:
             from_addr="noreply@example.com",
             to_addrs=[],
         )
-        assert ch.send(self._make_event()) is False
+        assert ch.send(self._make_event()) is False, "Condition must be true"
 
     def test_from_env_reads_env_vars(self) -> None:
         env = {
@@ -460,11 +460,11 @@ class TestEmailChannel:
         }
         with patch.dict(os.environ, env, clear=True):
             ch = EmailChannel.from_env()
-        assert ch._smtp_host == "smtp.test.com"
+        assert ch._smtp_host == "smtp.test.com", "_smtp_host is not valid"
         assert ch._smtp_port == 465  # pragma: allowlist secret
-        assert ch._from_addr == "from@test.com"
+        assert ch._from_addr == "from@test.com", "_from_addr is not valid"
         assert ch._to_addrs == ["a@test.com", "b@test.com"]
-        assert ch._username == "user"
+        assert ch._username == "user", "_username is not valid"
         assert ch._password == "s3cr3t"  # pragma: allowlist secret
 
     def test_from_env_defaults_port_to_587(self) -> None:
@@ -475,7 +475,7 @@ class TestEmailChannel:
         }
         with patch.dict(os.environ, env, clear=True):
             ch = EmailChannel.from_env()
-        assert ch._smtp_port == 587
+        assert ch._smtp_port == 587, "_smtp_port is not valid"
 
     def test_from_env_invalid_port_defaults_to_587(self) -> None:
         env = {
@@ -486,7 +486,7 @@ class TestEmailChannel:
         }
         with patch.dict(os.environ, env, clear=True):
             ch = EmailChannel.from_env()
-        assert ch._smtp_port == 587
+        assert ch._smtp_port == 587, "_smtp_port is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -500,7 +500,7 @@ class TestGracefulDegradation:
         mgr = TrainingAlertManager(channels=[raising], min_severity=AlertSeverity.INFO)
         # Should not raise
         results = mgr.alert(AlertEvent(title="t", message="m", severity=AlertSeverity.INFO))
-        assert results["raising"] is False
+        assert results["raising"] is False, "Result must not be empty"
 
     def test_alert_training_failure_does_not_raise_on_bad_channel(self) -> None:
         raising = _RaisingChannel()
@@ -508,7 +508,7 @@ class TestGracefulDegradation:
         exc = RuntimeError("GPU OOM")
         # Must NOT re-raise
         results = mgr.alert_training_failure(exc, run_id="test", epoch=1)
-        assert results["raising"] is False
+        assert results["raising"] is False, "Result must not be empty"
 
     def test_slack_channel_does_not_raise_on_url_error(self) -> None:
         import urllib.error
@@ -519,7 +519,7 @@ class TestGracefulDegradation:
         ):
             ch = SlackChannel(webhook_url="https://hooks.slack.com/services/test")
             result = ch.send(AlertEvent(title="t", message="m", severity=AlertSeverity.ERROR))
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_email_channel_does_not_raise_on_smtp_error(self) -> None:
         with patch(
@@ -532,4 +532,4 @@ class TestGracefulDegradation:
                 to_addrs=["ops@example.com"],
             )
             result = ch.send(AlertEvent(title="t", message="m", severity=AlertSeverity.ERROR))
-        assert result is False
+        assert result is False, "Result must not be empty"

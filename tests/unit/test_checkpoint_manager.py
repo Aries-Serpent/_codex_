@@ -49,7 +49,7 @@ def _load_training_checkpoint_manager(
     monkeypatch.setattr(builtins, "__import__", _import)
     sys.modules.pop(module_name, None)
     spec = importlib.util.spec_from_file_location(module_name, module_path)
-    assert spec is not None and spec.loader is not None
+    assert spec is not None and spec.loader is not None, "spec must be initialized"
     module = importlib.util.module_from_spec(spec)
     sys.modules[module_name] = module
     spec.loader.exec_module(module)
@@ -62,10 +62,10 @@ def test_dump_rng_state_without_torch_uses_fallback(monkeypatch, caplog):
 
     state = module.dump_rng_state()
 
-    assert "python" in state
-    assert "numpy" not in state
-    assert "torch" not in state
-    assert (
+    assert "python" in state, "Condition must be true"
+    assert "numpy" not in state, "Condition must be true"
+    assert "torch" not in state, "Condition must be true"
+    assert (, "Condition must be true"
         "Failed to import build_payload_bytes/dump_rng_state "
         "from codex_ml.utils.checkpointing; using legacy local fallback."
     ) in caplog.text
@@ -83,11 +83,11 @@ def test_checkpoint_helper_import_success_uses_imported_helpers(monkeypatch, cap
         allow_checkpointing_import=True,
     )
 
-    assert module.build_payload_bytes is fake_checkpointing.build_payload_bytes
-    assert module.dump_rng_state is fake_checkpointing.dump_rng_state
-    assert module.build_payload_bytes({"k": "v"}) == b"ok"
+    assert module.build_payload_bytes is fake_checkpointing.build_payload_bytes, "build_payload_bytes is not valid"
+    assert module.dump_rng_state is fake_checkpointing.dump_rng_state, "dump_rng_state is not valid"
+    assert module.build_payload_bytes({"k": "v"}) == b"ok", "Condition must be true"
     assert module.dump_rng_state() == {"python": [1, 2, 3]}
-    assert "using legacy local fallback" not in caplog.text
+    assert "using legacy local fallback" not in caplog.text, "Condition must be true"
 
 
 def test_checkpoint_helper_import_passthrough_uses_real_module(monkeypatch):
@@ -96,14 +96,14 @@ def test_checkpoint_helper_import_passthrough_uses_real_module(monkeypatch):
         allow_checkpointing_import=True,
     )
 
-    assert module.build_payload_bytes.__module__ == "codex_ml.utils.checkpointing"
+    assert module.build_payload_bytes.__module__ == "codex_ml.utils.checkpointing", "__module__ is not valid"
     try:
         payload = module.build_payload_bytes(None)
     except RuntimeError as exc:  # pragma: no cover - torch-optional environment
-        assert "torch is required" in str(exc)
+        assert "torch is required" in str(exc), "torch is not valid"
     else:
         assert isinstance(payload, bytes)  # pragma: no cover - torch-optional environment
-    assert "python" in module.dump_rng_state()
+    assert "python" in module.dump_rng_state(), "Condition must be true"
 
 
 def test_dump_rng_state_numpy_only_logs_specific_failure(monkeypatch, caplog):
@@ -119,10 +119,10 @@ def test_dump_rng_state_numpy_only_logs_specific_failure(monkeypatch, caplog):
 
     state = module.dump_rng_state()
 
-    assert "python" in state
-    assert "numpy" not in state
-    assert "torch" not in state
-    assert "Failed to capture numpy random state" in caplog.text
+    assert "python" in state, "Condition must be true"
+    assert "numpy" not in state, "Condition must be true"
+    assert "torch" not in state, "Condition must be true"
+    assert "Failed to capture numpy random state" in caplog.text, "Condition must be true"
 
 
 def test_dump_rng_state_torch_cpu_without_cuda_logs_specific_failure(monkeypatch, caplog):
@@ -139,9 +139,9 @@ def test_dump_rng_state_torch_cpu_without_cuda_logs_specific_failure(monkeypatch
 
     state = module.dump_rng_state()
 
-    assert "python" in state
-    assert "torch" not in state
-    assert "Failed to capture torch CPU random state" in caplog.text
+    assert "python" in state, "Condition must be true"
+    assert "torch" not in state, "Condition must be true"
+    assert "Failed to capture torch CPU random state" in caplog.text, "Condition must be true"
 
 
 def test_dump_rng_state_cuda_failure_logs_specific_failure(monkeypatch, caplog):
@@ -162,8 +162,8 @@ def test_dump_rng_state_cuda_failure_logs_specific_failure(monkeypatch, caplog):
     state = module.dump_rng_state()
 
     assert state["torch"]["cpu"] == [1, 2, 3]
-    assert "cuda" not in state["torch"]
-    assert "Failed to capture CUDA random state" in caplog.text
+    assert "cuda" not in state["torch"], "Condition must be true"
+    assert "Failed to capture CUDA random state" in caplog.text, "Condition must be true"
 
 
 def test_best_k_zero_disables_best_tracking(monkeypatch, tmp_path):
@@ -174,9 +174,9 @@ def test_best_k_zero_disables_best_tracking(monkeypatch, tmp_path):
 
     manager._update_best(candidate, 1, {"loss": 0.5})
 
-    assert manager._best_records == []
-    assert manager._best is None
-    assert not (tmp_path / "best.json").exists()
+    assert manager._best_records == [], "_best_records is not valid"
+    assert manager._best is None, "_best is not valid"
+    assert not (tmp_path / "best.json").exists(), "Condition must be true"
 
 
 def test_update_best_drops_invalid_records_before_sort(monkeypatch, tmp_path, caplog):
@@ -195,9 +195,9 @@ def test_update_best_drops_invalid_records_before_sort(monkeypatch, tmp_path, ca
     manager._update_best(candidate, 12, {"loss": 0.5})
 
     assert [r["path"] for r in manager._best_records] == ["ckpt-12.pt", "ckpt-10.pt"]
-    assert all("value" in r and "step" in r for r in manager._best_records)
-    assert "Dropping invalid best-record entry missing required keys" in caplog.text
-    assert "Dropping invalid best-record entry with non-numeric fields" in caplog.text
+    assert all("value" in r and "step" in r for r in manager._best_records), "Value must be initialized"
+    assert "Dropping invalid best-record entry missing required keys" in caplog.text, "Condition must be true"
+    assert "Dropping invalid best-record entry with non-numeric fields" in caplog.text, "Condition must be true"
 
 
 def test_callback_on_step_end_skips_step_zero(monkeypatch, tmp_path):
@@ -224,4 +224,4 @@ def test_callback_on_step_end_skips_step_zero(monkeypatch, tmp_path):
     callback.on_step_end(None, SimpleNamespace(global_step=0), control)
     callback.on_step_end(None, SimpleNamespace(global_step=2), control)
 
-    assert saved_steps == [2]
+    assert saved_steps == [2], "saved_steps is not valid"

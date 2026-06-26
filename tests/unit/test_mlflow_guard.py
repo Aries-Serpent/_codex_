@@ -24,4 +24,4 @@ def test_ensure_local_tracking_file_uri(monkeypatch):
 
     ensure_local_tracking(cfg)
     uri = ml.get_tracking_uri()
-    assert str(uri).startswith("file:")
+    assert str(uri).startswith("file:"), "Condition must be true"

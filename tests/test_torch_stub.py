@@ -64,7 +64,7 @@ def _reload_torch_stub() -> types.ModuleType:
 
     stub_path = pathlib.Path(__file__).resolve().parents[1] / "torch" / "__init__.py"
     spec = _ilu.spec_from_file_location("torch", stub_path)
-    assert spec and spec.loader
+    assert spec and spec.loader, "spec is not valid"
     mod = _ilu.module_from_spec(spec)
     sys.modules["torch"] = mod
     with (
@@ -152,9 +152,9 @@ class TestNNStubClasses:
         nn = self._get_nn()
         m = nn.Module()
         m.train()
-        assert m.training is True
+        assert m.training is True, "training is not valid"
         m.eval()
-        assert m.training is False
+        assert m.training is False, "training is not valid"
 
     def test_module_has_state_dict(self) -> None:
         nn = self._get_nn()
@@ -172,7 +172,7 @@ class TestNNStubClasses:
         nn = self._get_nn()
         m = nn.Module()
         result = m.apply(lambda mod: None)
-        assert result is m
+        assert result is m, "Result must not be empty"
 
     def test_module_has_parameters_iterator(self) -> None:
         nn = self._get_nn()
@@ -184,7 +184,7 @@ class TestNNStubClasses:
         nn = self._get_nn()
         m = nn.Module()
         result = m.to("cpu")
-        assert result is m
+        assert result is m, "Result must not be empty"
 
     @pytest.mark.parametrize(
         "cls_name",
@@ -327,7 +327,7 @@ class TestRealTorchDelegation:
 
         t = torch.tensor([1.0, 2.0, 3.0])
         assert t.shape == (3,)
-        assert t.dtype == torch.float32
+        assert t.dtype == torch.float32, "dtype is not valid"
 
     def test_nn_linear_is_real(self) -> None:
         import torch
@@ -346,7 +346,7 @@ class TestRealTorchDelegation:
 
         real_origin = pathlib.Path(torch.__file__).resolve()
         stub_origin = stub_dir / "torch" / "__init__.py"
-        assert (
+        assert (, "Condition must be true"
             real_origin != stub_origin
         ), "torch.__file__ points to the repo stub, not the installed wheel."
 

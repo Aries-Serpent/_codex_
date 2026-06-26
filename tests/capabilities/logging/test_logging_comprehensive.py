@@ -73,15 +73,15 @@ class TestMetricsSink:
         sink = MetricsSink()
         sink.record("cpu_usage", 0.75)
         records = sink.get_metric("cpu_usage")
-        assert len(records) == 1
-        assert records[0]["value"] == 0.75
+        assert len(records) == 1, "Records must not be empty"
+        assert records[0]["value"] == 0.75, "Value must be initialized"
 
     def test_record_with_tags(self):
         """Record metric with tags."""
         sink = MetricsSink()
         sink.record("request_count", 100, tags={"endpoint": "/api/v1"})
         record = sink.get_latest("request_count")
-        assert record["tags"]["endpoint"] == "/api/v1"
+        assert record["tags"]["endpoint"] == "/api/v1", "rec is not valid"
 
     def test_global_tags(self):
         """Global tags should be applied to all metrics."""
@@ -89,8 +89,8 @@ class TestMetricsSink:
         sink.set_global_tags({"service": "codex", "env": "prod"})
         sink.record("latency", 0.5)
         record = sink.get_latest("latency")
-        assert record["tags"]["service"] == "codex"
-        assert record["tags"]["env"] == "prod"
+        assert record["tags"]["service"] == "codex", "rec is not valid"
+        assert record["tags"]["env"] == "prod", "rec is not valid"
 
     def test_multiple_records(self):
         """Multiple records should be stored."""
@@ -99,14 +99,14 @@ class TestMetricsSink:
         sink.record("counter", 2)
         sink.record("counter", 3)
         records = sink.get_metric("counter")
-        assert len(records) == 3
+        assert len(records) == 3, "Records must not be empty"
 
     def test_clear_metrics(self):
         """Clear should remove all metrics."""
         sink = MetricsSink()
         sink.record("test", 1.0)
         sink.clear()
-        assert len(sink.get_metric("test")) == 0
+        assert len(sink.get_metric("test")) == 0, "Collection must not be empty"
 
 
 # --- Prometheus Exporter Tests ---
@@ -146,7 +146,7 @@ class TestPrometheusExporter:
         sink.record("requests_total", 100)
         exporter = PrometheusExporter(sink)
         output = exporter.export()
-        assert "requests_total 100" in output
+        assert "requests_total 100" in output, "Condition must be true"
 
     def test_export_metric_with_tags(self):
         """Export metric with labels."""
@@ -154,7 +154,7 @@ class TestPrometheusExporter:
         sink.record("http_requests", 50, tags={"method": "GET"})
         exporter = PrometheusExporter(sink)
         output = exporter.export()
-        assert 'method="GET"' in output
+        assert 'method="GET"' in output, "Condition must be true"
 
     def test_metric_families(self):
         """Get metric families."""
@@ -163,8 +163,8 @@ class TestPrometheusExporter:
         sink.record("memory", 0.7)
         exporter = PrometheusExporter(sink)
         families = exporter.get_metric_families()
-        assert "cpu" in families
-        assert "memory" in families
+        assert "cpu" in families, "Condition must be true"
+        assert "memory" in families, "Condition must be true"
 
 
 # --- OTel Exporter Tests ---
@@ -213,30 +213,30 @@ class TestOTelSpan:
     def test_create_span(self):
         """Create a span."""
         span = OTelSpan("test_operation", "trace123", "span456")
-        assert span.name == "test_operation"
-        assert span.trace_id == "trace123"
+        assert span.name == "test_operation", "name is not valid"
+        assert span.trace_id == "trace123", "trace_id is not valid"
 
     def test_set_attributes(self):
         """Set span attributes."""
         span = OTelSpan("op", "t1", "s1")
         span.set_attribute("http.method", "GET")
         span.set_attribute("http.status_code", 200)
-        assert span.attributes["http.method"] == "GET"
-        assert span.attributes["http.status_code"] == 200
+        assert span.attributes["http.method"] == "GET", "Condition must be true"
+        assert span.attributes["http.status_code"] == 200, "Condition must be true"
 
     def test_add_events(self):
         """Add span events."""
         span = OTelSpan("op", "t1", "s1")
         span.add_event("request_started")
         span.add_event("request_completed", {"bytes": 1024})
-        assert len(span.events) == 2
+        assert len(span.events) == 2, "Collection must not be empty"
 
     def test_end_span(self):
         """End span sets end time."""
         span = OTelSpan("op", "t1", "s1")
-        assert span.end_time is None
+        assert span.end_time is None, "end_time is not valid"
         span.end()
-        assert span.end_time is not None
+        assert span.end_time is not None, "end_time must be initialized"
 
 
 # --- Log Rotation Tests ---
@@ -271,15 +271,15 @@ class TestLogRotation:
     def test_should_rotate_when_size_exceeded(self):
         """Should rotate when size exceeds limit."""
         rotator = LogRotator(max_size_mb=1)  # 1MB
-        assert not rotator.should_rotate(500 * 1024)  # 500KB
-        assert rotator.should_rotate(1.5 * 1024 * 1024)  # 1.5MB
+        assert not rotator.should_rotate(500 * 1024), "Condition must be true"
+        assert rotator.should_rotate(1.5 * 1024 * 1024), "rotat is not valid"
 
     def test_cleanup_old_files(self):
         """Cleanup should remove excess files."""
         rotator = LogRotator(max_files=3)
         files = [Path(f"log.{i}.txt") for i in range(5)]
         to_delete = rotator.cleanup_old_files(files)
-        assert len(to_delete) == 2
+        assert len(to_delete) == 2, "To_delete must not be empty"
 
 
 # --- PII Scrubbing Tests ---
@@ -313,29 +313,29 @@ class TestPIIScrubbing:
         """Scrub email addresses."""
         text = "Contact: john.doe@example.com for help"
         scrubbed, _found = scrub_pii(text)
-        assert "[EMAIL]" in scrubbed
-        assert "john.doe@example.com" not in scrubbed
+        assert "[EMAIL]" in scrubbed, "Condition must be true"
+        assert "john.doe@example.com" not in scrubbed, "Condition must be true"
 
     def test_scrub_phone(self):
         """Scrub phone numbers."""
         text = "Call 123-456-7890 for support"
         scrubbed, _found = scrub_pii(text)
-        assert "[PHONE]" in scrubbed
-        assert "123-456-7890" not in scrubbed
+        assert "[PHONE]" in scrubbed, "Condition must be true"
+        assert "123-456-7890" not in scrubbed, "Condition must be true"
 
     def test_scrub_ip(self):
         """Scrub IP addresses."""
         text = "Client IP: 192.168.1.100"
         scrubbed, _found = scrub_pii(text)
-        assert "[IP]" in scrubbed
-        assert "192.168.1.100" not in scrubbed
+        assert "[IP]" in scrubbed, "Condition must be true"
+        assert "192.168.1.100" not in scrubbed, "Condition must be true"
 
     def test_no_pii(self):
         """Text without PII should be unchanged."""
         text = "This is a normal log message"
         scrubbed, found = scrub_pii(text)
-        assert scrubbed == text
-        assert len(found) == 0
+        assert scrubbed == text, "scrubbed is not valid"
+        assert len(found) == 0, "Found must not be empty"
 
     @given(st.text(min_size=3, max_size=15, alphabet="abcdefghijklmnopqrstuvwxyz0123456789"))
     @settings(max_examples=20)
@@ -346,7 +346,7 @@ class TestPIIScrubbing:
         email = f"{local_part}@example.com"
         text = f"Contact: {email}"
         scrubbed, _ = scrub_pii(text)
-        assert email not in scrubbed
+        assert email not in scrubbed, "Condition must be true"
 
 
 # --- Alerting Tests ---
@@ -415,8 +415,8 @@ class TestAlerting:
     def test_alert_fires_on_threshold(self):
         """Alert should fire when threshold exceeded."""
         rule = AlertRule("high_cpu", "cpu_usage", 0.8, "gt")
-        assert rule.evaluate(0.9)
-        assert not rule.evaluate(0.7)
+        assert rule.evaluate(0.9), "Condition must be true"
+        assert not rule.evaluate(0.7), "Condition must be true"
 
     def test_alert_manager_checks(self):
         """Alert manager should check all rules."""
@@ -424,17 +424,17 @@ class TestAlerting:
         manager.add_rule(AlertRule("high_cpu", "cpu", 0.8, "gt"))
         manager.add_rule(AlertRule("low_memory", "memory", 0.1, "lt"))
         fired = manager.check_metrics({"cpu": 0.9, "memory": 0.5})
-        assert "high_cpu" in fired
-        assert "low_memory" not in fired
+        assert "high_cpu" in fired, "Condition must be true"
+        assert "low_memory" not in fired, "Condition must be true"
 
     def test_resolve_alert(self):
         """Resolving alert should clear it."""
         manager = AlertManager()
         manager.add_rule(AlertRule("test", "metric", 10, "gt"))
         manager.check_metrics({"metric": 15})
-        assert "test" in manager.active_alerts
+        assert "test" in manager.active_alerts, "Condition must be true"
         manager.resolve_alert("test")
-        assert "test" not in manager.active_alerts
+        assert "test" not in manager.active_alerts, "Condition must be true"
 
 
 # --- Structured Logging Tests ---
@@ -486,23 +486,23 @@ class TestStructuredLogging:
         """Basic log message."""
         logger = StructuredLogger("test")
         record = logger.info("Hello world")
-        assert record["level"] == "INFO"
-        assert record["message"] == "Hello world"
+        assert record["level"] == "INFO", "rec is not valid"
+        assert record["message"] == "Hello world", "rec is not valid"
 
     def test_logging_with_context(self):
         """Logging with context."""
         logger = StructuredLogger("test")
         logger.set_context(request_id="123", user_id="456")
         record = logger.info("Request processed")
-        assert record["request_id"] == "123"
-        assert record["user_id"] == "456"
+        assert record["request_id"] == "123", "rec is not valid"
+        assert record["user_id"] == "456", "rec is not valid"
 
     def test_logging_with_extra(self):
         """Logging with extra fields."""
         logger = StructuredLogger("test")
         record = logger.error("Failed", error_code=500, stack="...")
-        assert record["error_code"] == 500
-        assert record["stack"] == "..."
+        assert record["error_code"] == 500, "Error should be raised or set"
+        assert record["stack"] == "...", "rec is not valid"
 
     def test_export_json(self):
         """Export logs as JSON."""
@@ -511,7 +511,7 @@ class TestStructuredLogging:
         logger.info("Log 2")
         output = logger.to_json()
         parsed = json.loads(output)
-        assert len(parsed) == 2
+        assert len(parsed) == 2, "Parsed must not be empty"
 
 
 # --- Log Level Tests ---
@@ -524,10 +524,10 @@ class TestLogLevels:
 
     def test_level_ordering(self):
         """Log levels should be correctly ordered."""
-        assert self.LEVELS["DEBUG"] < self.LEVELS["INFO"]
-        assert self.LEVELS["INFO"] < self.LEVELS["WARNING"]
-        assert self.LEVELS["WARNING"] < self.LEVELS["ERROR"]
-        assert self.LEVELS["ERROR"] < self.LEVELS["CRITICAL"]
+        assert self.LEVELS["DEBUG"] < self.LEVELS["INFO"], "Condition must be true"
+        assert self.LEVELS["INFO"] < self.LEVELS["WARNING"], "Condition must be true"
+        assert self.LEVELS["WARNING"] < self.LEVELS["ERROR"], "Error should be raised or set"
+        assert self.LEVELS["ERROR"] < self.LEVELS["CRITICAL"], "Error should be raised or set"
 
     def test_filter_by_level(self):
         """Filter logs by minimum level."""
@@ -538,5 +538,5 @@ class TestLogLevels:
         ]
         min_level = self.LEVELS["INFO"]
         filtered = [entry for entry in logs if self.LEVELS.get(entry["level"], 0) >= min_level]
-        assert len(filtered) == 2
-        assert all(entry["level"] != "DEBUG" for entry in filtered)
+        assert len(filtered) == 2, "Filtered must not be empty"
+        assert all(entry["level"] != "DEBUG" for entry in filtered), "Condition must be true"

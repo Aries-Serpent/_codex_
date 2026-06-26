@@ -93,7 +93,7 @@ class TestCodexMLImports:
         try:
             import codex_ml
 
-            assert codex_ml is not None
+            assert codex_ml is not None, "codex_ml must be initialized"
         except ImportError:
             pytest.skip("codex_ml not importable")
 
@@ -102,7 +102,7 @@ class TestCodexMLImports:
         try:
             import codex_ml.cli
 
-            assert codex_ml.cli is not None
+            assert codex_ml.cli is not None, "cli must be initialized"
         except ImportError:
             pytest.skip("codex_ml.cli not importable")
 
@@ -120,6 +120,6 @@ class TestCodexMLImports:
             # Version may not be set in development - skip if not present
             if not has_version:
                 pytest.skip("codex_ml version not set in development")
-            assert has_version
+            assert has_version, "has_version is not valid"
         except ImportError:
             pytest.skip("codex_ml not importable")

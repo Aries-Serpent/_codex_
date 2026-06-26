@@ -22,4 +22,4 @@ def test_hook_dispatch() -> None:
     manager = HookManager(hooks)
     manager.dispatch("on_step_end", {})
     manager.dispatch("on_step_end", {})
-    assert sum(h.count for h in hooks) == 4
+    assert sum(h.count for h in hooks) == 4, "Count must be greater than zero"

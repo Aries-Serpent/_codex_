@@ -30,7 +30,7 @@ class AnalyticsCollector:
 def test_analytics_collector_3_init():
     """Test analytics collector initialization."""
     collector = AnalyticsCollector()
-    assert len(collector.events) == 0
+    assert len(collector.events) == 0, "Collection must not be empty"
 
 
 def test_analytics_collector_3_record():
@@ -38,8 +38,8 @@ def test_analytics_collector_3_record():
     collector = AnalyticsCollector()
     collector.record_event("query", 1234567890.0, query_text="test")
 
-    assert len(collector.events) == 1
-    assert collector.events[0].event_type == "query"
+    assert len(collector.events) == 1, "Collection must not be empty"
+    assert collector.events[0].event_type == "query", "event_type is not valid"
 
 
 def test_analytics_collector_3_filter():
@@ -50,7 +50,7 @@ def test_analytics_collector_3_filter():
     collector.record_event("query", 3000.0)
 
     queries = collector.get_events("query")
-    assert len(queries) == 2
+    assert len(queries) == 2, "Queries must not be empty"
 
 
 def test_analytics_collector_3_metadata():
@@ -59,5 +59,5 @@ def test_analytics_collector_3_metadata():
     collector.record_event("embedding", 5000.0, model="openai", tokens=100)
 
     event = collector.events[0]
-    assert event.metadata["model"] == "openai"
-    assert event.metadata["tokens"] == 100
+    assert event.metadata["model"] == "openai", "Data must not be empty"
+    assert event.metadata["tokens"] == 100, "Data must not be empty"

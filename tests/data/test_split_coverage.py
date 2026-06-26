@@ -60,7 +60,7 @@ class TestModuleImport:
         try:
             from codex_ml.data import split
 
-            assert split is not None
+            assert split is not None, "split must be initialized"
         except ImportError as e:
             pytest.skip(f"split module not available: {e}")
 
@@ -69,7 +69,7 @@ class TestModuleImport:
         try:
             from codex_ml.data.split import split_dataset
 
-            assert callable(split_dataset)
+            assert callable(split_dataset), "Data must not be empty"
         except ImportError:
             pytest.skip("split_dataset not available")
 
@@ -93,9 +93,9 @@ class TestTrainValTestSplit:
                 val_ratio=0.1,
                 test_ratio=0.1,
             )
-            assert len(train) == 80
-            assert len(val) == 10
-            assert len(test) == 10
+            assert len(train) == 80, "Train must not be empty"
+            assert len(val) == 10, "Val must not be empty"
+            assert len(test) == 10, "Test must not be empty"
         except (ImportError, TypeError):
             pytest.skip("split_dataset not available")
 
@@ -110,9 +110,9 @@ class TestTrainValTestSplit:
                 val_ratio=0.15,
                 test_ratio=0.15,
             )
-            assert len(train) == 70
-            assert len(val) == 15
-            assert len(test) == 15
+            assert len(train) == 70, "Train must not be empty"
+            assert len(val) == 15, "Val must not be empty"
+            assert len(test) == 15, "Test must not be empty"
         except (ImportError, TypeError):
             pytest.skip("split_dataset not available")
 
@@ -123,7 +123,7 @@ class TestTrainValTestSplit:
 
             train, val, test = split_dataset(sample_dataset)
             total = len(train) + len(val) + len(test)
-            assert total == len(sample_dataset)
+            assert total == len(sample_dataset), "Sample_dataset must not be empty"
         except ImportError:
             pytest.skip("split_dataset not available")
 
@@ -143,9 +143,9 @@ class TestDeterministicSplitting:
 
             train1, val1, test1 = split_dataset(sample_dataset, seed=42)
             train2, val2, test2 = split_dataset(sample_dataset, seed=42)
-            assert train1 == train2
-            assert val1 == val2
-            assert test1 == test2
+            assert train1 == train2, "train1 is not valid"
+            assert val1 == val2, "val1 is not valid"
+            assert test1 == test2, "test1 is not valid"
         except (ImportError, TypeError):
             pytest.skip("seeded split not available")
 
@@ -156,7 +156,7 @@ class TestDeterministicSplitting:
 
             train1, _, _ = split_dataset(sample_dataset, seed=42)
             train2, _, _ = split_dataset(sample_dataset, seed=123)
-            assert train1 != train2
+            assert train1 != train2, "train1 is not valid"
         except (ImportError, TypeError):
             pytest.skip("seeded split not available")
 
@@ -182,7 +182,7 @@ class TestStratifiedSplitting:
             )
             # Each split should have balanced labels
             train_labels = [d["label"] for d in train]
-            assert abs(sum(train_labels) - len(train) / 2) < 5
+            assert abs(sum(train_labels) - len(train) / 2) < 5, "Train must not be empty"
         except (ImportError, TypeError):
             pytest.skip("stratified split not available")
 
@@ -201,9 +201,9 @@ class TestEdgeCases:
             from codex_ml.data.split import split_dataset
 
             train, val, test = split_dataset([])
-            assert len(train) == 0
-            assert len(val) == 0
-            assert len(test) == 0
+            assert len(train) == 0, "Train must not be empty"
+            assert len(val) == 0, "Val must not be empty"
+            assert len(test) == 0, "Test must not be empty"
         except (ImportError, ValueError):
             _ = None  # Empty dataset handling varies
 
@@ -214,7 +214,7 @@ class TestEdgeCases:
 
             train, val, test = split_dataset([{"id": 1}])
             total = len(train) + len(val) + len(test)
-            assert total == 1
+            assert total == 1, "total is not valid"
         except (ImportError, ValueError):
             _ = None  # Single element handling varies
 
@@ -248,9 +248,9 @@ class TestSplitUtils:
             from codex_ml.data.split import compute_split_indices
 
             indices = compute_split_indices(100, train=0.8, val=0.1, test=0.1)
-            assert len(indices["train"]) == 80
-            assert len(indices["val"]) == 10
-            assert len(indices["test"]) == 10
+            assert len(indices["train"]) == 80, "Collection must not be empty"
+            assert len(indices["val"]) == 10, "Collection must not be empty"
+            assert len(indices["test"]) == 10, "Collection must not be empty"
         except ImportError:
             pytest.skip("compute_split_indices not available")
 
@@ -261,6 +261,6 @@ class TestSplitUtils:
 
             indices = compute_split_indices(100, train=0.8, val=0.1, test=0.1)
             all_indices = set(indices["train"]) | set(indices["val"]) | set(indices["test"])
-            assert len(all_indices) == 100
+            assert len(all_indices) == 100, "All_indices must not be empty"
         except ImportError:
             pytest.skip("compute_split_indices not available")

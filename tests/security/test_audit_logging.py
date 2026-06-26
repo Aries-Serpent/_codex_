@@ -16,4 +16,4 @@ def test_security_event_logged(caplog: pytest.LogCaptureFixture) -> None:
     # its messages even when the logger's propagate flag is False in CI.
     caplog.set_level(logging.INFO, logger="codex.security")
     log_security_event("user blocked")
-    assert "security_event" in caplog.messages
+    assert "security_event" in caplog.messages, "Condition must be true"

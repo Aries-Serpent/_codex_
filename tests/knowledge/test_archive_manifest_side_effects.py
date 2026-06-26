@@ -33,12 +33,12 @@ def test_archive_and_manifest_creates_components(
     monkeypatch.setenv("CODEX_EVIDENCE_DIR", evidence_dir.as_posix())
 
     result = build_kb(docs_root, kb_out)
-    assert kb_out.exists()
-    assert result["written"] >= 1
+    assert kb_out.exists(), "Condition must be true"
+    assert result["written"] >= 1, "Value must be greater than zero"
 
     manifest_info = archive_and_manifest(kb_out, None, None, actor="tester")
     manifest_path = Path(manifest_info["manifest"])
-    assert manifest_path.exists()
+    assert manifest_path.exists(), "Condition must be true"
 
     manifest_payload = json.loads(manifest_path.read_text(encoding="utf-8"))
     components = manifest_payload.get("components", [])

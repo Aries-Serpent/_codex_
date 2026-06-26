@@ -16,7 +16,7 @@ def test_format_context_with_none():
     from src.tokenization.cli import _format_context
 
     result = _format_context(None)
-    assert result == "None"
+    assert result == "None", "Result must not be empty"
 
 
 def test_format_context_with_string():
@@ -24,7 +24,7 @@ def test_format_context_with_string():
     from src.tokenization.cli import _format_context
 
     result = _format_context("test string")
-    assert result == "test string"
+    assert result == "test string", "Result must not be empty"
 
 
 def test_format_context_with_dict():
@@ -36,8 +36,8 @@ def test_format_context_with_dict():
 
     # Should be valid JSON
     parsed = json.loads(result)
-    assert parsed["key"] == "value"
-    assert parsed["number"] == 42
+    assert parsed["key"] == "value", "Value must be initialized"
+    assert parsed["number"] == 42, "Condition must be true"
 
 
 def test_format_context_with_exception():
@@ -68,14 +68,14 @@ def test_append_error_block(tmp_path, monkeypatch):
     _append_error_block(step="test_step", message="Test error message", context={"key": "value"})
 
     # Verify the log file was created
-    assert mock_dir.exists()
+    assert mock_dir.exists(), "Condition must be true"
     log_files = list(mock_dir.glob("errors_*.md"))
-    assert len(log_files) > 0
+    assert len(log_files) > 0, "Log_files must not be empty"
 
     # Verify content
     content = log_files[0].read_text()
-    assert "test_step" in content
-    assert "Test error message" in content
+    assert "test_step" in content, "Content must not be empty"
+    assert "Test error message" in content, "Content must not be empty"
 
 
 def test_fail_helper(tmp_path, monkeypatch):
@@ -102,7 +102,7 @@ def test_resolve_root_directory():
 
     # Should return the parent if it's a file, or the dir itself if it exists
     # Since /tmp/tokenizer doesn't exist, it treats it as a file
-    assert result == test_dir.parent or result == test_dir
+    assert result == test_dir.parent or result == test_dir, "Result must not be empty"
 
 
 def test_resolve_root_file():
@@ -115,7 +115,7 @@ def test_resolve_root_file():
     result = _resolve_root(test_file)
 
     # Should return the parent directory
-    assert result == test_file.parent
+    assert result == test_file.parent, "Result must not be empty"
 
 
 def test_load_tokenizer_helper(tmp_path):
@@ -135,7 +135,7 @@ def test_load_tokenizer_helper(tmp_path):
 
         # Verify build_tokenizer was called (it passes Path object, not string)
         mock_build.assert_called_once()
-        assert result is mock_tokenizer
+        assert result is mock_tokenizer, "Result must not be empty"
 
 
 def test_vocab_command_with_limit(tmp_path, capsys):
@@ -155,10 +155,10 @@ def test_vocab_command_with_limit(tmp_path, capsys):
         vocab(tokenizer_path, limit=3)
 
         captured = capsys.readouterr()
-        assert "Vocab size: 1000" in captured.out
-        assert "0: token_0" in captured.out
-        assert "1: token_1" in captured.out
-        assert "2: token_2" in captured.out
+        assert "Vocab size: 1000" in captured.out, "Condition must be true"
+        assert "0: token_0" in captured.out, "Condition must be true"
+        assert "1: token_1" in captured.out, "Condition must be true"
+        assert "2: token_2" in captured.out, "Condition must be true"
 
 
 def test_vocab_command_negative_limit(tmp_path):
@@ -187,9 +187,9 @@ def test_vocab_command_zero_limit(tmp_path, capsys):
         vocab(tokenizer_path, limit=0)
 
         captured = capsys.readouterr()
-        assert "Vocab size: 1000" in captured.out
+        assert "Vocab size: 1000" in captured.out, "Condition must be true"
         # Should not print any tokens
-        assert "0:" not in captured.out
+        assert "0:" not in captured.out, "Condition must be true"
 
 
 def test_vocab_command_callable_vocab_size(tmp_path, capsys):
@@ -208,7 +208,7 @@ def test_vocab_command_callable_vocab_size(tmp_path, capsys):
         vocab(tokenizer_path, limit=2)
 
         captured = capsys.readouterr()
-        assert "Vocab size: 500" in captured.out
+        assert "Vocab size: 500" in captured.out, "Condition must be true"
 
 
 def test_inspect_command(tmp_path, capsys):
@@ -231,9 +231,9 @@ def test_inspect_command(tmp_path, capsys):
         inspect(tokenizer_dir)
 
         captured = capsys.readouterr()
-        assert "vocab_size: 30000" in captured.out
-        assert "[PAD]" in captured.out or "special_tokens" in captured.out
-        assert "padding: max_length" in captured.out
+        assert "vocab_size: 30000" in captured.out, "Condition must be true"
+        assert "[PAD]" in captured.out or "special_tokens" in captured.out, "Condition must be true"
+        assert "padding: max_length" in captured.out, "Length must be greater than zero"
 
 
 def test_inspect_command_missing_manifest(tmp_path, capsys):
@@ -252,7 +252,7 @@ def test_inspect_command_missing_manifest(tmp_path, capsys):
         inspect(tokenizer_dir)
 
         captured = capsys.readouterr()
-        assert "vocab_size: 1000" in captured.out
+        assert "vocab_size: 1000" in captured.out, "Condition must be true"
 
 
 def test_inspect_command_with_tokenizer_json(tmp_path, capsys):
@@ -282,7 +282,7 @@ def test_inspect_command_with_tokenizer_json(tmp_path, capsys):
         inspect(tokenizer_dir)
 
         captured = capsys.readouterr()
-        assert "vocab_size: 5000" in captured.out
+        assert "vocab_size: 5000" in captured.out, "Condition must be true"
 
 
 def test_vocab_command_no_converter(tmp_path, capsys):
@@ -301,8 +301,8 @@ def test_vocab_command_no_converter(tmp_path, capsys):
         vocab(tokenizer_path, limit=5)
 
         captured = capsys.readouterr()
-        assert "Vocab size: 100" in captured.out
-        assert "lacks convert_ids_to_tokens" in captured.out
+        assert "Vocab size: 100" in captured.out, "Condition must be true"
+        assert "lacks convert_ids_to_tokens" in captured.out, "Condition must be true"
 
 
 def test_inspect_command_manifest_parse_error(tmp_path, capsys, monkeypatch):
@@ -329,7 +329,7 @@ def test_inspect_command_manifest_parse_error(tmp_path, capsys, monkeypatch):
 
         # Should handle parse error gracefully
         captured = capsys.readouterr()
-        assert "vocab_size: 100" in captured.out
+        assert "vocab_size: 100" in captured.out, "Condition must be true"
 
 
 def test_format_context_json_serialization():
@@ -343,5 +343,5 @@ def test_format_context_json_serialization():
     result = _format_context(context)
 
     # Should serialize using default=str
-    assert "2024" in result
-    assert "42" in result
+    assert "2024" in result, "Result must not be empty"
+    assert "42" in result, "Result must not be empty"

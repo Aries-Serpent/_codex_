@@ -44,12 +44,12 @@ def test_report_aggregates_metrics(tmp_path):
     # Run report command
     result = runner.invoke(app, ["report", "--input", str(metrics_file), "--json"])
 
-    assert result.exit_code == 0
+    assert result.exit_code == 0, "Result must not be empty"
     output = json.loads(result.stdout)
-    assert output["loss"] == 0.75
-    assert output["count"] == 20
-    assert output["metrics"]["accuracy"] == 0.85
-    assert output["batches"] == 2
+    assert output["loss"] == 0.75, "Condition must be true"
+    assert output["count"] == 20, "Count must be greater than zero"
+    assert output["metrics"]["accuracy"] == 0.85, "Condition must be true"
+    assert output["batches"] == 2, "Condition must be true"
 
 
 def test_report_determinism_match(tmp_path):
@@ -89,9 +89,9 @@ def test_report_determinism_match(tmp_path):
         ],
     )
 
-    assert result.exit_code == 0
+    assert result.exit_code == 0, "Result must not be empty"
     output = json.loads(result.stdout)
-    assert output["determinism_match"] is True
+    assert output["determinism_match"] is True, "Condition must be true"
 
 
 def test_report_determinism_mismatch(tmp_path):
@@ -145,13 +145,13 @@ def test_report_determinism_mismatch(tmp_path):
     )
 
     # Should exit with code 4 for determinism mismatch
-    assert result.exit_code == 4
+    assert result.exit_code == 4, "Result must not be empty"
     # JSON output should be present before error message
     # Split by the error message to extract JSON
     stdout_parts = result.stdout.split("Determinism mismatch detected.")
     json_part = stdout_parts[0].strip()
     output = json.loads(json_part)
-    assert output["determinism_match"] is False
+    assert output["determinism_match"] is False, "Condition must be true"
 
 
 def test_report_missing_input_file(tmp_path):
@@ -167,7 +167,7 @@ def test_report_missing_input_file(tmp_path):
         ["report", "--input", str(tmp_path / "nonexistent.ndjson")],
     )
 
-    assert result.exit_code == 2
+    assert result.exit_code == 2, "Result must not be empty"
 
 
 def test_report_no_epoch_records(tmp_path):
@@ -188,7 +188,7 @@ def test_report_no_epoch_records(tmp_path):
 
     result = runner.invoke(app, ["report", "--input", str(metrics_file)])
 
-    assert result.exit_code == 3
+    assert result.exit_code == 3, "Result must not be empty"
 
 
 def test_report_human_readable_output(tmp_path):
@@ -215,9 +215,9 @@ def test_report_human_readable_output(tmp_path):
 
     result = runner.invoke(app, ["report", "--input", str(metrics_file)])
 
-    assert result.exit_code == 0
-    assert "loss=" in result.stdout
-    assert "0.75" in result.stdout or "0.7500" in result.stdout
+    assert result.exit_code == 0, "Result must not be empty"
+    assert "loss=" in result.stdout, "Result must not be empty"
+    assert "0.75" in result.stdout or "0.7500" in result.stdout, "Result must not be empty"
 
 
 def test_report_missing_compare_file(tmp_path):
@@ -253,7 +253,7 @@ def test_report_missing_compare_file(tmp_path):
         ],
     )
 
-    assert result.exit_code == 2
+    assert result.exit_code == 2, "Result must not be empty"
 
 
 def test_report_compare_no_epoch_records(tmp_path):
@@ -292,7 +292,7 @@ def test_report_compare_no_epoch_records(tmp_path):
         ],
     )
 
-    assert result.exit_code == 3
+    assert result.exit_code == 3, "Result must not be empty"
 
 
 def test_report_handles_empty_metrics(tmp_path):
@@ -319,6 +319,6 @@ def test_report_handles_empty_metrics(tmp_path):
 
     result = runner.invoke(app, ["report", "--input", str(metrics_file), "--json"])
 
-    assert result.exit_code == 0
+    assert result.exit_code == 0, "Result must not be empty"
     output = json.loads(result.stdout)
-    assert output["metrics"] == {}
+    assert output["metrics"] == {}, "Condition must be true"

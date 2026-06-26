@@ -18,10 +18,10 @@ def test_cache_dataset_creates_lock_file(tmp_path) -> None:
     cache_dataset([{"tokens": np.array([1, 2, 3], dtype=np.int64)}], cache_dir)
 
     npz_files = list(cache_dir.glob("*.npz"))
-    assert npz_files
+    assert npz_files, "npz_files is not valid"
     lock_path = npz_files[0].with_suffix(npz_files[0].suffix + ".lock")
-    assert lock_path.exists()
+    assert lock_path.exists(), "Condition must be true"
 
     cached = list(load_cached(cache_dir))
-    assert len(cached) == 1
+    assert len(cached) == 1, "Cached must not be empty"
     assert np.all(cached[0]["tokens"].numpy() == np.array([1, 2, 3], dtype=np.int64))

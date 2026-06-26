@@ -47,26 +47,26 @@ class TestOAuthManager:
 
     def test_oauth_manager_initialization(self, oauth_manager, oauth_config):
         """Test OAuth manager initialization."""
-        assert oauth_manager.config == oauth_config
-        assert oauth_manager.config.client_id == "test_client_id"
+        assert oauth_manager.config == oauth_config, "config is not valid"
+        assert oauth_manager.config.client_id == "test_client_id", "client_id is not valid"
         assert oauth_manager.config.scopes == ["read:user", "repo"]
 
     def test_get_authorization_url(self, oauth_manager):
         """Test authorization URL generation."""
         auth_url = oauth_manager.get_authorization_url(state="test_state")
 
-        assert "client_id=test_client_id" in auth_url
-        assert "redirect_uri=https" in auth_url
-        assert "state=test_state" in auth_url
-        assert "scope=read" in auth_url or "scope=" in auth_url
+        assert "client_id=test_client_id" in auth_url, "Condition must be true"
+        assert "redirect_uri=https" in auth_url, "Condition must be true"
+        assert "state=test_state" in auth_url, "Condition must be true"
+        assert "scope=read" in auth_url or "scope=" in auth_url, "Condition must be true"
 
     def test_get_authorization_url_with_custom_scopes(self, oauth_manager):
         """Test authorization URL with custom scopes."""
         custom_scopes = ["read:user"]
         auth_url = oauth_manager.get_authorization_url(state="test_state", scopes=custom_scopes)
 
-        assert "state=test_state" in auth_url
-        assert oauth_manager.config.client_id in auth_url
+        assert "state=test_state" in auth_url, "Condition must be true"
+        assert oauth_manager.config.client_id in auth_url, "Condition must be true"
 
     @patch("requests.post")
     def test_exchange_code_for_token(self, mock_post, oauth_manager):
@@ -83,9 +83,9 @@ class TestOAuthManager:
 
         token = oauth_manager.exchange_code_for_token("auth_code_123")
 
-        assert token.access_token == "test_token"
-        assert token.token_type == "Bearer"
-        assert token.expires_in == 3600
+        assert token.access_token == "test_token", "access_token is not valid"
+        assert token.token_type == "Bearer", "token_type is not valid"
+        assert token.expires_in == 3600, "expires_in is not valid"
 
     @patch("requests.post")
     def test_exchange_code_with_invalid_code(self, mock_post, oauth_manager):
@@ -115,7 +115,7 @@ class TestOAuthManager:
             expires_at=datetime.now() + timedelta(seconds=1),
         )
 
-        assert not token.is_expired()
+        assert not token.is_expired(), "Condition must be true"
 
     def test_token_is_expired(self, oauth_manager):
         """Test expired token detection."""
@@ -126,12 +126,12 @@ class TestOAuthManager:
             expires_at=datetime.now() - timedelta(seconds=1),
         )
 
-        assert token.is_expired()
+        assert token.is_expired(), "Condition must be true"
 
     def test_scope_validation(self, oauth_manager):
         """Test scope validation."""
         valid_scopes = ["read:user", "repo"]
-        assert oauth_manager.validate_scopes(valid_scopes)
+        assert oauth_manager.validate_scopes(valid_scopes), "Condition must be true"
 
     def test_scope_validation_empty(self, oauth_manager):
         """Test empty scope validation."""
@@ -140,11 +140,11 @@ class TestOAuthManager:
 
     def test_oauth_config_validation(self, oauth_config):
         """Test OAuth config validation."""
-        assert oauth_config.client_id
-        assert oauth_config.client_secret
-        assert oauth_config.redirect_uri
-        assert oauth_config.authorization_url
-        assert oauth_config.token_url
+        assert oauth_config.client_id, "Condition must be true"
+        assert oauth_config.client_secret, "Condition must be true"
+        assert oauth_config.redirect_uri, "Condition must be true"
+        assert oauth_config.authorization_url, "Condition must be true"
+        assert oauth_config.token_url, "Condition must be true"
 
     def test_oauth_config_missing_client_id(self):
         """Test OAuth config with missing client ID."""
@@ -182,17 +182,17 @@ class TestOAuthManager:
 
         new_token = oauth_manager.refresh_token(old_token)
 
-        assert new_token.access_token == "new_token"
-        assert new_token.token_type == "Bearer"
+        assert new_token.access_token == "new_token", "access_token is not valid"
+        assert new_token.token_type == "Bearer", "token_type is not valid"
 
     def test_state_parameter_generation(self, oauth_manager):
         """Test state parameter generation for CSRF protection."""
         state1 = oauth_manager.generate_state()
         state2 = oauth_manager.generate_state()
 
-        assert state1 != state2
-        assert len(state1) > 10
-        assert len(state2) > 10
+        assert state1 != state2, "state1 is not valid"
+        assert len(state1) > 10, "State1 must not be empty"
+        assert len(state2) > 10, "State2 must not be empty"
 
     def test_state_parameter_validation(self, oauth_manager):
         """Test state parameter validation."""
@@ -222,8 +222,8 @@ class TestOAuthManager:
 
         token = oauth_manager.exchange_code_for_token("auth_code_123")
 
-        assert token.access_token == "test_token"
-        assert token.refresh_token == "refresh_123"
+        assert token.access_token == "test_token", "access_token is not valid"
+        assert token.refresh_token == "refresh_123", "refresh_token is not valid"
 
     def test_oauth_exception_handling(self):
         """Test OAuth exception handling."""
@@ -257,9 +257,9 @@ class TestOAuthToken:
             expires_in=3600,
         )
 
-        assert token.access_token == "test_token"
-        assert token.token_type == "Bearer"
-        assert token.expires_in == 3600
+        assert token.access_token == "test_token", "access_token is not valid"
+        assert token.token_type == "Bearer", "token_type is not valid"
+        assert token.expires_in == 3600, "expires_in is not valid"
 
     def test_oauth_token_with_refresh_token(self):
         """Test OAuthToken with refresh token."""
@@ -270,7 +270,7 @@ class TestOAuthToken:
             refresh_token="refresh_123",
         )
 
-        assert token.refresh_token == "refresh_123"
+        assert token.refresh_token == "refresh_123", "refresh_token is not valid"
 
     def test_oauth_token_expiration_datetime(self):
         """Test OAuthToken expiration datetime calculation."""
@@ -280,8 +280,8 @@ class TestOAuthToken:
             expires_in=3600,
         )
 
-        assert token.expires_at is not None
-        assert token.expires_at > datetime.now()
+        assert token.expires_at is not None, "expires_at must be initialized"
+        assert token.expires_at > datetime.now(), "expires_at must be greater than zero"
 
 
 class TestOAuthEdgeCases:
@@ -305,7 +305,7 @@ class TestOAuthEdgeCases:
         state = "state_with_special_chars_!@#$%"
         auth_url = oauth_manager.get_authorization_url(state=state)
 
-        assert "state=" in auth_url
+        assert "state=" in auth_url, "Condition must be true"
 
     def test_authorization_url_encoding(self, oauth_config):
         """Test that authorization URL is properly encoded."""
@@ -331,7 +331,7 @@ class TestOAuthEdgeCases:
         mock_post.return_value = mock_response
 
         token = oauth_manager.exchange_code_for_token("auth_code_123")
-        assert len(token.access_token) == 10000
+        assert len(token.access_token) == 10000, "Collection must not be empty"
 
     def test_config_with_unicode_values(self):
         """Test OAuth config with Unicode values."""
@@ -344,4 +344,4 @@ class TestOAuthEdgeCases:
             scopes=["read:user", "repo"],
         )
 
-        assert "🔐" in config.client_id
+        assert "🔐" in config.client_id, "Condition must be true"

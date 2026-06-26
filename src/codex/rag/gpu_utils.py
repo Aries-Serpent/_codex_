@@ -28,7 +28,7 @@ def check_cuda_available() -> bool:
         return False
     except (ValueError, TypeError, RuntimeError) as e:
         error_type = type(e).__name__
-        logger.debug(f"CUDA check failed: <ERROR_TYPE>")
+        logger.debug("CUDA check failed: <ERROR_TYPE>")
         return False
 
 
@@ -48,7 +48,7 @@ def get_gpu_memory() -> tuple[int, int]:
             return free, total
     except (ValueError, TypeError, RuntimeError) as e:
         error_type = type(e).__name__
-        logger.debug(f"Could not get GPU memory: <ERROR_TYPE>")
+        logger.debug("Could not get GPU memory: <ERROR_TYPE>")
     return 0, 0
 
 
@@ -141,6 +141,6 @@ def try_gpu_index(index, data, device: str = "cuda"):
 
     except (ValueError, TypeError, RuntimeError) as e:
         error_type = type(e).__name__
-        logger.warning(f"Failed to move index to GPU: <ERROR_TYPE>")
+        logger.warning("Failed to move index to GPU: <ERROR_TYPE>")
         logger.info("Continuing with CPU index")
         return index

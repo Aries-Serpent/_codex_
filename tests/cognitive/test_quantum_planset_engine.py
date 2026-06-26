@@ -84,11 +84,11 @@ class TestPhysicsParams:
 
     def test_score_zero_energy(self):
         p = PhysicsParams(energy=0.0)
-        assert p.score() == 0.0
+        assert p.score() == 0.0, "Condition must be true"
 
     def test_score_negative_energy_guarded(self):
         p = PhysicsParams(energy=-1.0)
-        assert p.score() == 0.0
+        assert p.score() == 0.0, "Condition must be true"
 
     def test_amplitude_is_sqrt_of_score(self):
         p = PhysicsParams(
@@ -98,7 +98,7 @@ class TestPhysicsParams:
 
     def test_amplitude_non_negative(self):
         p = PhysicsParams(impact=0.0)
-        assert p.amplitude() == 0.0
+        assert p.amplitude() == 0.0, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -110,7 +110,7 @@ class TestPlanStep:
 
     def test_effective_amplitude_no_decoherence(self):
         step = _make_step(decoherence_sessions=0)
-        assert math.isclose(
+        assert math.isclose(, "Condition must be true"
             step.effective_amplitude(),
             step.physics.amplitude(),
             rel_tol=1e-9,
@@ -119,8 +119,8 @@ class TestPlanStep:
     def test_effective_amplitude_decays(self):
         step_fresh = _make_step(decoherence_sessions=0)
         step_aged = _make_step(decoherence_sessions=5)  # one half-life
-        assert step_aged.effective_amplitude() < step_fresh.effective_amplitude()
-        assert math.isclose(
+        assert step_aged.effective_amplitude() < step_fresh.effective_amplitude(), "Condition must be true"
+        assert math.isclose(, "Condition must be true"
             step_aged.effective_amplitude(),
             step_fresh.effective_amplitude() * 0.5,
             rel_tol=1e-6,
@@ -128,33 +128,33 @@ class TestPlanStep:
 
     def test_is_viable_fresh(self):
         step = _make_step()
-        assert step.is_viable()
+        assert step.is_viable(), "Condition must be true"
 
     def test_is_viable_over_decohered(self):
         # After 100 half-lives amplitude → 0
         step = _make_step(decoherence_sessions=500)
-        assert not step.is_viable()
+        assert not step.is_viable(), "Condition must be true"
 
     def test_serialise_round_trip(self):
         step = _make_step(step_id="ROUND-01", entangled_with=["ROUND-02"])
         restored = PlanStep.from_dict(step.to_dict())
-        assert restored.step_id == step.step_id
-        assert restored.agent == step.agent
-        assert restored.status == step.status
+        assert restored.step_id == step.step_id, "step_id is not valid"
+        assert restored.agent == step.agent, "agent is not valid"
+        assert restored.status == step.status, "status is not valid"
         assert math.isclose(restored.physics.impact, step.physics.impact, rel_tol=1e-9)
-        assert restored.entangled_with == ["ROUND-02"]
+        assert restored.entangled_with == ["ROUND-02"], "entangled_with is not valid"
 
     def test_to_dict_contains_amplitude_and_score(self):
         step = _make_step()
         d = step.to_dict()
-        assert "effective_amplitude" in d
-        assert "physics_score" in d
-        assert d["effective_amplitude"] >= 0.0
+        assert "effective_amplitude" in d, "Condition must be true"
+        assert "physics_score" in d, "Condition must be true"
+        assert d["effective_amplitude"] >= 0.0, "Value must be greater than zero"
 
     def test_status_roundtrip(self):
         step = _make_step(status=StepStatus.COMPLETE)
         restored = PlanStep.from_dict(step.to_dict())
-        assert restored.status == StepStatus.COMPLETE
+        assert restored.status == StepStatus.COMPLETE, "status is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -175,7 +175,7 @@ class TestQuantumPlanset:
         live = _make_step("A")
         dead = _make_step("B", decoherence_sessions=500)
         ps = self._planset_with_steps(live, dead)
-        assert ps.viable_steps() == [live]
+        assert ps.viable_steps() == [live], "Condition must be true"
 
     def test_total_amplitude(self):
         s1 = _make_step(
@@ -185,7 +185,7 @@ class TestQuantumPlanset:
             "B", momentum=4.0, energy=4.0, risk=0.0, friction=0.0, impact=1.0, confidence=1.0
         )
         ps = self._planset_with_steps(s1, s2)
-        assert math.isclose(
+        assert math.isclose(, "Condition must be true"
             ps.total_amplitude(),
             s1.effective_amplitude() + s2.effective_amplitude(),
         )
@@ -199,7 +199,7 @@ class TestQuantumPlanset:
     def test_probability_zero_when_no_viable(self):
         dead = _make_step("X", decoherence_sessions=500)
         ps = self._planset_with_steps(dead)
-        assert ps.probability(dead) == 0.0
+        assert ps.probability(dead) == 0.0, "Condition must be true"
 
     def test_serialise_round_trip(self):
         step = _make_step("RT-01", entangled_with=["RT-02"])
@@ -212,10 +212,10 @@ class TestQuantumPlanset:
             context={"key": "val"},
         )
         restored = QuantumPlanset.from_dict(ps.to_dict())
-        assert restored.planset_id == ps.planset_id
-        assert len(restored.steps) == 1
-        assert len(restored.entanglement_bonds) == 1
-        assert restored.context == {"key": "val"}
+        assert restored.planset_id == ps.planset_id, "planset_id is not valid"
+        assert len(restored.steps) == 1, "Collection must not be empty"
+        assert len(restored.entanglement_bonds) == 1, "Collection must not be empty"
+        assert restored.context == {"key": "val"}, "context is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -232,32 +232,32 @@ class TestGenerate:
     @pytest.mark.parametrize("area", [a.value for a in ImprovementArea])
     def test_generate_all_templates(self, engine, area):
         ps = engine.generate(area)
-        assert ps.area == area
-        assert len(ps.steps) > 0
-        assert all(s.is_viable() for s in ps.steps)
+        assert ps.area == area, "area is not valid"
+        assert len(ps.steps) > 0, "Collection must not be empty"
+        assert all(s.is_viable() for s in ps.steps), "Condition must be true"
 
     def test_generate_planset_id_contains_area(self, engine):
         ps = engine.generate(ImprovementArea.CI_SELF_HEALING)
-        assert ImprovementArea.CI_SELF_HEALING.value in ps.planset_id
+        assert ImprovementArea.CI_SELF_HEALING.value in ps.planset_id, "Value must be initialized"
 
     def test_generate_with_extra_steps(self, engine):
         extra = _make_step("EXTRA-01")
         ps = engine.generate(ImprovementArea.COVERAGE_IMPROVEMENT, extra_steps=[extra])
         ids = [s.step_id for s in ps.steps]
-        assert "EXTRA-01" in ids
+        assert "EXTRA-01" in ids, "Condition must be true"
 
     def test_generate_builds_entanglement_bonds(self, engine):
         ps = engine.generate(ImprovementArea.SECURITY_REMEDIATION)
         bond_pairs = {(b.step_a, b.step_b) for b in ps.entanglement_bonds}
         # SEC-02 is entangled with SEC-01
-        assert any("SEC-01" in pair and "SEC-02" in pair for pair in bond_pairs)
+        assert any("SEC-01" in pair and "SEC-02" in pair for pair in bond_pairs), "Condition must be true"
 
     def test_context_momentum_boost_security(self, engine):
         ps_low = engine.generate(ImprovementArea.SECURITY_REMEDIATION, context={"open_alerts": 10})
         ps_high = engine.generate(ImprovementArea.SECURITY_REMEDIATION, context={"open_alerts": 60})
         sec01_low = next(s for s in ps_low.steps if s.step_id == "SEC-01")
         sec01_high = next(s for s in ps_high.steps if s.step_id == "SEC-01")
-        assert sec01_high.physics.momentum > sec01_low.physics.momentum
+        assert sec01_high.physics.momentum > sec01_low.physics.momentum, "momentum must be greater than zero"
 
     def test_context_momentum_boost_coverage(self, engine):
         ps_high_cov = engine.generate(
@@ -268,13 +268,13 @@ class TestGenerate:
         )
         cov01_high = next(s for s in ps_high_cov.steps if s.step_id == "COV-01")
         cov01_low = next(s for s in ps_low_cov.steps if s.step_id == "COV-01")
-        assert cov01_low.physics.momentum >= cov01_high.physics.momentum
+        assert cov01_low.physics.momentum >= cov01_high.physics.momentum, "momentum must be greater than zero"
 
     def test_generate_custom_area(self, engine):
         extra = _make_step("CUSTOM-01")
         ps = engine.generate("CUSTOM_BESPOKE", extra_steps=[extra])
-        assert ps.area == "CUSTOM_BESPOKE"
-        assert len(ps.steps) == 1
+        assert ps.area == "CUSTOM_BESPOKE", "area is not valid"
+        assert len(ps.steps) == 1, "Collection must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -293,14 +293,14 @@ class TestCollapse:
         dead = _make_step("D-01", decoherence_sessions=500)
         ps = QuantumPlanset("TEST", "CUSTOM", steps=[live, dead])
         path = engine.collapse(ps)
-        assert all(s.step_id != "D-01" for s in path)
+        assert all(s.step_id != "D-01" for s in path), "step_id is not valid"
 
     def test_collapse_ordered_by_amplitude(self, engine):
         high = _make_step("HIGH", momentum=9.0, energy=5.0)
         low = _make_step("LOW", momentum=1.0, energy=20.0)
         ps = QuantumPlanset("TEST", "CUSTOM", steps=[low, high])
         path = engine.collapse(ps)
-        assert path[0].step_id == "HIGH"
+        assert path[0].step_id == "HIGH", "step_id is not valid"
 
     def test_collapse_promotes_entangled_partner(self, engine):
         anchor = _make_step("ANCHOR", entangled_with=["PARTNER"])
@@ -312,36 +312,36 @@ class TestCollapse:
         # PARTNER must appear immediately after ANCHOR
         anchor_idx = ids.index("ANCHOR")
         partner_idx = ids.index("PARTNER")
-        assert partner_idx == anchor_idx + 1
+        assert partner_idx == anchor_idx + 1, "partner_idx is not valid"
 
     def test_collapse_empty_planset(self, engine):
         ps = QuantumPlanset("EMPTY", "CUSTOM", steps=[])
         path = engine.collapse(ps)
-        assert path == []
+        assert path == [], "path is not valid"
 
     def test_collapse_all_complete(self, engine):
         done = _make_step("D", status=StepStatus.COMPLETE)
         ps = QuantumPlanset("TEST", "CUSTOM", steps=[done])
-        assert engine.collapse(ps) == []
+        assert engine.collapse(ps) == [], "Condition must be true"
 
     def test_collapse_updates_collapsed_at(self, engine):
         ps = QuantumPlanset("TEST", "CUSTOM", steps=[_make_step("S")])
-        assert ps.collapsed_at is None
+        assert ps.collapsed_at is None, "collapsed_at is not valid"
         engine.collapse(ps)
-        assert ps.collapsed_at is not None
+        assert ps.collapsed_at is not None, "collapsed_at must be initialized"
 
     def test_collapse_security_template(self, engine):
         ps = engine.generate(ImprovementArea.SECURITY_REMEDIATION)
         path = engine.collapse(ps)
-        assert len(path) >= 3
-        assert path[0].step_id == "SEC-01"  # highest amplitude
+        assert len(path) >= 3, "Path must not be empty"
+        assert path[0].step_id == "SEC-01", "step_id is not valid"
 
     def test_collapse_no_duplicates(self, engine):
         steps = [_make_step(f"S{i}", entangled_with=[f"S{i-1}"] if i > 0 else []) for i in range(5)]
         ps = QuantumPlanset("TEST", "CUSTOM", steps=steps)
         path = engine.collapse(ps)
         ids = [s.step_id for s in path]
-        assert len(ids) == len(set(ids))
+        assert len(ids) == len(set(ids)), "Ids must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -356,7 +356,7 @@ class TestDecoherence:
         step = _make_step("D-01")
         ps = QuantumPlanset("TEST", "CUSTOM", steps=[step])
         engine.apply_decoherence(ps, sessions=3)
-        assert step.decoherence_sessions == 3
+        assert step.decoherence_sessions == 3, "decoherence_sessions is not valid"
 
     def test_decoherence_reduces_amplitude(self):
         engine = QuantumPlansetEngine()
@@ -364,14 +364,14 @@ class TestDecoherence:
         original = step.effective_amplitude()
         ps = QuantumPlanset("TEST", "CUSTOM", steps=[step])
         engine.apply_decoherence(ps, sessions=5)
-        assert step.effective_amplitude() < original
+        assert step.effective_amplitude() < original, "Condition must be true"
 
     def test_decoherence_skips_complete_steps(self):
         engine = QuantumPlansetEngine()
         step = _make_step("DONE", status=StepStatus.COMPLETE)
         ps = QuantumPlanset("TEST", "CUSTOM", steps=[step])
         engine.apply_decoherence(ps, sessions=10)
-        assert step.decoherence_sessions == 0
+        assert step.decoherence_sessions == 0, "decoherence_sessions is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -391,8 +391,8 @@ class TestInterference:
         merged = engine.interference(ps_a, ps_b)
         actions = [s.action for s in merged.steps]
         # "fix lints" should appear once (merged), "fix types" once
-        assert actions.count("fix lints") == 1
-        assert "fix types" in actions
+        assert actions.count("fix lints") == 1, "Count must be greater than zero"
+        assert "fix types" in actions, "Condition must be true"
 
     def test_interference_boosts_overlapping_momentum(self):
         engine = QuantumPlansetEngine()
@@ -410,7 +410,7 @@ class TestInterference:
         ps_a = QuantumPlanset("PA", "AREA_X", steps=[_make_step("A")])
         ps_b = QuantumPlanset("PB", "AREA_Y", steps=[_make_step("B")])
         merged = engine.interference(ps_a, ps_b)
-        assert "AREA_X" in merged.area and "AREA_Y" in merged.area
+        assert "AREA_X" in merged.area and "AREA_Y" in merged.area, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -424,29 +424,29 @@ class TestPersistence:
         engine = QuantumPlansetEngine(planset_dir=tmp_path)
         ps = engine.generate(ImprovementArea.CI_SELF_HEALING, context={"failing_checks": 7})
         saved_path = engine.save(ps)
-        assert saved_path.exists()
+        assert saved_path.exists(), "Condition must be true"
 
         restored = engine.load(saved_path)
-        assert restored.planset_id == ps.planset_id
-        assert restored.area == ps.area
-        assert len(restored.steps) == len(ps.steps)
-        assert restored.context == ps.context
+        assert restored.planset_id == ps.planset_id, "planset_id is not valid"
+        assert restored.area == ps.area, "area is not valid"
+        assert len(restored.steps) == len(ps.steps), "Collection must not be empty"
+        assert restored.context == ps.context, "context is not valid"
 
     def test_save_custom_path(self, tmp_path):
         engine = QuantumPlansetEngine()
         ps = engine.generate(ImprovementArea.DOCUMENTATION_HYGIENE)
         target = tmp_path / "custom" / "planset.json"
         engine.save(ps, path=target)
-        assert target.exists()
+        assert target.exists(), "Condition must be true"
         data = json.loads(target.read_text())
-        assert data["area"] == ImprovementArea.DOCUMENTATION_HYGIENE.value
+        assert data["area"] == ImprovementArea.DOCUMENTATION_HYGIENE.value, "Data must not be empty"
 
     def test_load_preserves_entanglement_bonds(self, tmp_path):
         engine = QuantumPlansetEngine(planset_dir=tmp_path)
         ps = engine.generate(ImprovementArea.SECURITY_REMEDIATION)
         saved = engine.save(ps)
         restored = engine.load(saved)
-        assert len(restored.entanglement_bonds) == len(ps.entanglement_bonds)
+        assert len(restored.entanglement_bonds) == len(ps.entanglement_bonds), "Collection must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -460,13 +460,13 @@ class TestSummary:
         engine = QuantumPlansetEngine()
         ps = engine.generate(ImprovementArea.COVERAGE_IMPROVEMENT)
         s = engine.summary(ps)
-        assert ps.planset_id in s
+        assert ps.planset_id in s, "Condition must be true"
 
     def test_summary_contains_area(self):
         engine = QuantumPlansetEngine()
         ps = engine.generate(ImprovementArea.DEPENDENCY_MODERNISATION)
         s = engine.summary(ps)
-        assert ImprovementArea.DEPENDENCY_MODERNISATION.value in s
+        assert ImprovementArea.DEPENDENCY_MODERNISATION.value in s, "Value must be initialized"
 
 
 # ---------------------------------------------------------------------------
@@ -483,12 +483,12 @@ class TestIntegration:
             context={"open_alerts": 100},
         )
         path = engine.collapse(ps)
-        assert path[0].step_id == "SEC-01"
+        assert path[0].step_id == "SEC-01", "step_id is not valid"
 
         saved = engine.save(ps)
         restored = engine.load(saved)
         path2 = engine.collapse(restored)
-        assert [s.step_id for s in path2] == [s.step_id for s in path]
+        assert [s.step_id for s in path2] == [s.step_id for s in path], "Condition must be true"
 
     def test_decoherence_then_collapse_shrinks_path(self):
         engine = QuantumPlansetEngine()
@@ -497,7 +497,7 @@ class TestIntegration:
 
         engine.apply_decoherence(ps, sessions=100)  # extreme ageing
         short_path = engine.collapse(ps)
-        assert len(short_path) <= len(full_path)
+        assert len(short_path) <= len(full_path), "Short_path must not be empty"
 
     def test_interference_then_collapse(self):
         engine = QuantumPlansetEngine()
@@ -505,7 +505,7 @@ class TestIntegration:
         ps_b = engine.generate(ImprovementArea.CI_SELF_HEALING)
         merged = engine.interference(ps_a, ps_b)
         path = engine.collapse(merged)
-        assert len(path) > 0
+        assert len(path) > 0, "Path must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -525,29 +525,29 @@ class TestQITesting:
 
     def test_generate_qi_testing_planset(self, engine):
         ps = engine.generate(ImprovementArea.QI_TESTING)
-        assert ps.area == ImprovementArea.QI_TESTING
-        assert len(ps.steps) == 7
+        assert ps.area == ImprovementArea.QI_TESTING, "area is not valid"
+        assert len(ps.steps) == 7, "Collection must not be empty"
         ids = [s.step_id for s in ps.steps]
         assert ids == ["QI-01", "QI-02", "QI-03", "QI-04", "QI-05", "QI-06", "QI-07"]
 
     def test_all_qi_steps_target_qi_agent(self, engine):
         ps = engine.generate(ImprovementArea.QI_TESTING)
         for step in ps.steps:
-            assert step.agent == "quantum-compliance-tuning-agent"
+            assert step.agent == "quantum-compliance-tuning-agent", "agent is not valid"
 
     def test_qi_01_is_highest_amplitude(self, engine):
         """QI-01 (baseline run) should have the highest base amplitude — confidence=0.99."""
         ps = engine.generate(ImprovementArea.QI_TESTING)
         qi01 = next(s for s in ps.steps if s.step_id == "QI-01")
         qi07 = next(s for s in ps.steps if s.step_id == "QI-07")
-        assert qi01.physics.confidence > qi07.physics.confidence
+        assert qi01.physics.confidence > qi07.physics.confidence, "confidence must be greater than zero"
 
     def test_qi_06_regression_guard_boosted_on_failing_patterns(self, engine):
         ps_low = engine.generate(ImprovementArea.QI_TESTING, context={"failing_patterns": 0})
         ps_high = engine.generate(ImprovementArea.QI_TESTING, context={"failing_patterns": 3})
         qi06_low = next(s for s in ps_low.steps if s.step_id == "QI-06")
         qi06_high = next(s for s in ps_high.steps if s.step_id == "QI-06")
-        assert qi06_high.physics.momentum > qi06_low.physics.momentum
+        assert qi06_high.physics.momentum > qi06_low.physics.momentum, "momentum must be greater than zero"
 
     def test_qi_06_extra_boost_when_k1_near_limit(self, engine):
         ps_safe = engine.generate(
@@ -558,7 +558,7 @@ class TestQITesting:
         )
         qi06_safe = next(s for s in ps_safe.steps if s.step_id == "QI-06")
         qi06_risky = next(s for s in ps_risky.steps if s.step_id == "QI-06")
-        assert qi06_risky.physics.momentum >= qi06_safe.physics.momentum
+        assert qi06_risky.physics.momentum >= qi06_safe.physics.momentum, "momentum must be greater than zero"
 
     def test_qi_entanglement_chain(self, engine):
         """Each QI step (02-07) must be entangled with its predecessor."""
@@ -574,7 +574,7 @@ class TestQITesting:
         ]
         for child_id, parent_id in pairs:
             child = step_by_id[child_id]
-            assert (
+            assert (, "Condition must be true"
                 parent_id in child.entangled_with
             ), f"{child_id} should be entangled with {parent_id}"
 
@@ -584,11 +584,11 @@ class TestQITesting:
         # No context: QI-02 leads
         ps_plain = engine.generate(ImprovementArea.QI_TESTING)
         path_plain = engine.collapse(ps_plain)
-        assert path_plain[0].step_id == "QI-02"
+        assert path_plain[0].step_id == "QI-02", "step_id is not valid"
         # With context: QI-06 momentum boosted → leads
         ps_ctx = engine.generate(ImprovementArea.QI_TESTING, context={"failing_patterns": 2})
         path_ctx = engine.collapse(ps_ctx)
-        assert path_ctx[0].step_id == "QI-06"
+        assert path_ctx[0].step_id == "QI-06", "step_id is not valid"
 
     def test_collapse_promotes_entangled_chain(self, engine):
         """QI-02 is entangled with QI-01 → QI-01 promoted to position immediately after QI-02."""
@@ -596,7 +596,7 @@ class TestQITesting:
         path = engine.collapse(ps)
         ids = [s.step_id for s in path]
         qi02_idx = ids.index("QI-02")
-        assert (
+        assert (, "Condition must be true"
             ids[qi02_idx + 1] == "QI-01"
         ), f"Expected QI-01 after QI-02 (entanglement promotion), got {ids[qi02_idx + 1]}"
 
@@ -606,9 +606,9 @@ class TestQITesting:
         )
         saved = engine.save(ps, path=tmp_path / "qi_planset.json")
         restored = engine.load(saved)
-        assert restored.area == ImprovementArea.QI_TESTING
-        assert len(restored.steps) == 7
-        assert restored.context["failing_patterns"] == 1
+        assert restored.area == ImprovementArea.QI_TESTING, "area is not valid"
+        assert len(restored.steps) == 7, "Collection must not be empty"
+        assert restored.context["failing_patterns"] == 1, "rest is not valid"
 
     def test_qi_decoherence_reduces_all_steps(self, engine):
         ps = engine.generate(ImprovementArea.QI_TESTING)
@@ -620,13 +620,13 @@ class TestQITesting:
     def test_qi_summary_contains_area(self, engine):
         ps = engine.generate(ImprovementArea.QI_TESTING)
         s = engine.summary(ps)
-        assert ImprovementArea.QI_TESTING.value in s
+        assert ImprovementArea.QI_TESTING.value in s, "Value must be initialized"
 
     def test_qi_interference_with_security_remediation(self, engine):
         """QI_TESTING + SECURITY_REMEDIATION interference should yield a merged planset."""
         ps_qi = engine.generate(ImprovementArea.QI_TESTING)
         ps_sec = engine.generate(ImprovementArea.SECURITY_REMEDIATION)
         merged = engine.interference(ps_qi, ps_sec)
-        assert ImprovementArea.QI_TESTING.value in merged.area
+        assert ImprovementArea.QI_TESTING.value in merged.area, "Value must be initialized"
         path = engine.collapse(merged)
-        assert len(path) > 0
+        assert len(path) > 0, "Path must not be empty"

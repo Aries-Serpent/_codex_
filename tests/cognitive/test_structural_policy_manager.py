@@ -53,10 +53,10 @@ def spm_with_extras(tmp_path):
 
 def test_permission_tier_ordering():
     """SYSTEM_OWNER < ORG_OWNER < DELEGATE_ADMIN < READ_ONLY_AGENT < DENIED."""
-    assert PermissionTier.SYSTEM_OWNER < PermissionTier.ORG_OWNER
-    assert PermissionTier.ORG_OWNER < PermissionTier.DELEGATE_ADMIN
-    assert PermissionTier.DELEGATE_ADMIN < PermissionTier.READ_ONLY_AGENT
-    assert PermissionTier.READ_ONLY_AGENT < PermissionTier.DENIED
+    assert PermissionTier.SYSTEM_OWNER < PermissionTier.ORG_OWNER, "SYSTEM_OWNER is not valid"
+    assert PermissionTier.ORG_OWNER < PermissionTier.DELEGATE_ADMIN, "ORG_OWNER is not valid"
+    assert PermissionTier.DELEGATE_ADMIN < PermissionTier.READ_ONLY_AGENT, "DELEGATE_ADMIN is not valid"
+    assert PermissionTier.READ_ONLY_AGENT < PermissionTier.DENIED, "READ_ONLY_AGENT is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -65,27 +65,27 @@ def test_permission_tier_ordering():
 
 
 def test_system_owner_resolved(spm):
-    assert spm.get_tier("mbaetiong") == PermissionTier.SYSTEM_OWNER
+    assert spm.get_tier("mbaetiong") == PermissionTier.SYSTEM_OWNER, "Condition must be true"
 
 
 def test_github_actions_bot_resolved(spm):
-    assert spm.get_tier("github-actions[bot]") == PermissionTier.READ_ONLY_AGENT
+    assert spm.get_tier("github-actions[bot]") == PermissionTier.READ_ONLY_AGENT, "Condition must be true"
 
 
 def test_unknown_actor_is_denied(spm):
-    assert spm.get_tier("random-stranger") == PermissionTier.DENIED
+    assert spm.get_tier("random-stranger") == PermissionTier.DENIED, "Condition must be true"
 
 
 def test_extra_actors_org_owner(spm_with_extras):
-    assert spm_with_extras.get_tier("org-member-1") == PermissionTier.ORG_OWNER
+    assert spm_with_extras.get_tier("org-member-1") == PermissionTier.ORG_OWNER, "Condition must be true"
 
 
 def test_extra_actors_delegate(spm_with_extras):
-    assert spm_with_extras.get_tier("delegate-bot") == PermissionTier.DELEGATE_ADMIN
+    assert spm_with_extras.get_tier("delegate-bot") == PermissionTier.DELEGATE_ADMIN, "Condition must be true"
 
 
 def test_extra_actors_read_only(spm_with_extras):
-    assert spm_with_extras.get_tier("ci-reader") == PermissionTier.READ_ONLY_AGENT
+    assert spm_with_extras.get_tier("ci-reader") == PermissionTier.READ_ONLY_AGENT, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -167,18 +167,18 @@ def test_unknown_action_is_denied(spm):
 
 def test_grant_org_owner(spm):
     spm.grant_org_owner("new-member")
-    assert spm.get_tier("new-member") == PermissionTier.ORG_OWNER
+    assert spm.get_tier("new-member") == PermissionTier.ORG_OWNER, "Condition must be true"
 
 
 def test_grant_delegate_admin(spm):
     spm.grant_delegate_admin("new-delegate")
-    assert spm.get_tier("new-delegate") == PermissionTier.DELEGATE_ADMIN
+    assert spm.get_tier("new-delegate") == PermissionTier.DELEGATE_ADMIN, "Condition must be true"
 
 
 def test_revoke_downgrades_to_read_only(spm):
     spm.grant_org_owner("promoted-user")
     spm.revoke("promoted-user")
-    assert spm.get_tier("promoted-user") == PermissionTier.READ_ONLY_AGENT
+    assert spm.get_tier("promoted-user") == PermissionTier.READ_ONLY_AGENT, "Condition must be true"
 
 
 def test_grant_evicts_cache(spm):
@@ -187,7 +187,7 @@ def test_grant_evicts_cache(spm):
     # Grant should evict cache
     spm.grant_org_owner("cache-test-user")
     # New resolution must return updated tier
-    assert spm.get_tier("cache-test-user") == PermissionTier.ORG_OWNER
+    assert spm.get_tier("cache-test-user") == PermissionTier.ORG_OWNER, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -199,7 +199,7 @@ def test_ttl_cache_serves_cached_value(spm):
     """Second call for same actor returns cached result."""
     tier1 = spm.get_tier("mbaetiong")
     tier2 = spm.get_tier("mbaetiong")
-    assert tier1 == tier2 == PermissionTier.SYSTEM_OWNER
+    assert tier1 == tier2 == PermissionTier.SYSTEM_OWNER, "tier1 is not valid"
 
 
 def test_ttl_cache_expires(tmp_path):
@@ -208,7 +208,7 @@ def test_ttl_cache_expires(tmp_path):
     tier1 = spm.get_tier("mbaetiong")
     time.sleep(0.01)  # TTL=0 expires immediately
     tier2 = spm.get_tier("mbaetiong")
-    assert tier1 == tier2  # same value, but re-resolved
+    assert tier1 == tier2, "tier1 is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -219,17 +219,17 @@ def test_ttl_cache_expires(tmp_path):
 def test_audit_log_written_on_allow(spm):
     spm.evaluate_permission("mbaetiong", "get_session_context")
     entries = spm.read_audit_log()
-    assert len(entries) >= 1
+    assert len(entries) >= 1, "Entries must not be empty"
     last = entries[-1]
-    assert last["actor"] == "mbaetiong"
-    assert last["action"] == "get_session_context"
-    assert last["allowed"] is True
+    assert last["actor"] == "mbaetiong", "Condition must be true"
+    assert last["action"] == "get_session_context", "Condition must be true"
+    assert last["allowed"] is True, "Condition must be true"
 
 
 def test_audit_log_written_on_deny(spm):
     spm.evaluate_permission("unknown", "store_memory")
     entries = spm.read_audit_log()
-    assert any(e["actor"] == "unknown" and e["allowed"] is False for e in entries)
+    assert any(e["actor"] == "unknown" and e["allowed"] is False for e in entries), "Condition must be true"
 
 
 def test_audit_log_is_valid_jsonl(spm, tmp_path):
@@ -239,14 +239,14 @@ def test_audit_log_is_valid_jsonl(spm, tmp_path):
     lines = log_path.read_text().splitlines()
     for line in lines:
         parsed = json.loads(line)
-        assert "actor" in parsed
-        assert "action" in parsed
-        assert "allowed" in parsed
+        assert "actor" in parsed, "Condition must be true"
+        assert "action" in parsed, "Condition must be true"
+        assert "allowed" in parsed, "Condition must be true"
 
 
 def test_read_audit_log_empty_when_no_file(tmp_path):
     spm = StructuralPolicyManager(audit_log=tmp_path / "nonexistent.jsonl")
-    assert spm.read_audit_log() == []
+    assert spm.read_audit_log() == [], "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -260,8 +260,8 @@ def test_all_actions_in_map_are_valid_tiers():
 
 
 def test_promote_pattern_requires_system_owner():
-    assert ACTION_TIER_MAP["promote_pattern"] == PermissionTier.SYSTEM_OWNER
+    assert ACTION_TIER_MAP["promote_pattern"] == PermissionTier.SYSTEM_OWNER, "Condition must be true"
 
 
 def test_get_session_context_allows_read_only():
-    assert ACTION_TIER_MAP["get_session_context"] == PermissionTier.READ_ONLY_AGENT
+    assert ACTION_TIER_MAP["get_session_context"] == PermissionTier.READ_ONLY_AGENT, "Condition must be true"

@@ -49,5 +49,5 @@ def test_pipeline_with_sample_data(tmp_path: Path, monkeypatch) -> None:
 
     monkeypatch.chdir(tmp_path)
     result = run_pipeline(cfg)
-    assert Path(result["clean_csv"]).exists()
-    assert Path(result["features_csv"]).exists()
+    assert Path(result["clean_csv"]).exists(), "Result must not be empty"
+    assert Path(result["features_csv"]).exists(), "Result must not be empty"

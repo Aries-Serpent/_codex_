@@ -32,12 +32,12 @@ def test_restricted_unpickler_find_class():
 
     # Test allowed (use a real class)
     cls = unpickler.find_class("builtins", "int")
-    assert cls is int
+    assert cls is int, "cls is not valid"
 
     # Test wildcard allowed
     with patch.dict(unpickler.SAFE_MODULES, {"os": {"*"}}, clear=False):
         cls = unpickler.find_class("os", "system")
-        assert cls == os.system
+        assert cls == os.system, "cls is not valid"
 
     # Test blocked
     with pytest.raises(pickle.UnpicklingError, match="not in whitelist"):
@@ -58,10 +58,10 @@ def test_safe_pickle_dump_and_load_unrestricted(tmp_path):
     data = {"key": "value", "num": 42}
 
     safe_pickle_dump(data, str(file_path))
-    assert file_path.exists()
+    assert file_path.exists(), "Condition must be true"
 
     loaded_data = safe_pickle_load(str(file_path), use_restricted_unpickler=False)
-    assert loaded_data == data
+    assert loaded_data == data, "Data must not be empty"
 
 
 def test_safe_pickle_dump_and_load_restricted(tmp_path):
@@ -71,7 +71,7 @@ def test_safe_pickle_dump_and_load_restricted(tmp_path):
     safe_pickle_dump(data, str(file_path))
 
     loaded_data = safe_pickle_load(str(file_path), use_restricted_unpickler=True)
-    assert loaded_data == data
+    assert loaded_data == data, "Data must not be empty"
 
 
 def test_safe_pickle_load_restricted_blocked(tmp_path):
@@ -108,7 +108,7 @@ def test_safe_pickle_dump_and_load_signed(tmp_path):
     safe_pickle_dump(data, str(file_path), add_signature=True, secret_key=secret_key)
 
     loaded_data = safe_pickle_load(str(file_path), verify_signature=True, secret_key=secret_key)
-    assert loaded_data == data
+    assert loaded_data == data, "Data must not be empty"
 
 
 def test_safe_pickle_load_signed_tampered(tmp_path):
@@ -136,10 +136,10 @@ def test_get_secret_key_create_file(tmp_path):
     # Mock Path.home() to point to tmp_path
     with patch("src.codex_ml.utils.safe_pickle.Path.home", return_value=tmp_path):
         key = _get_secret_key()
-        assert len(key) == 32
+        assert len(key) == 32, "Key must not be empty"
         key_file = tmp_path / ".codex" / "pickle.key"
-        assert key_file.exists()
-        assert key_file.read_bytes() == key
+        assert key_file.exists(), "Condition must be true"
+        assert key_file.read_bytes() == key, "Condition must be true"
 
 
 def test_get_secret_key_existing_file(tmp_path):
@@ -149,7 +149,7 @@ def test_get_secret_key_existing_file(tmp_path):
         key_file.write_bytes(b"existing_secret_key")
 
         key = _get_secret_key()
-        assert key == b"existing_secret_key"
+        assert key == b"existing_secret_key", "key is not valid"
 
 
 def test_get_secret_key_os_error(tmp_path):
@@ -169,8 +169,8 @@ def test_build_and_split_signed_pickle():
     signed_data = _build_signed_pickle(pickled_data, secret_key)
     extracted_data, signature = _split_signed_pickle(signed_data)
 
-    assert extracted_data == pickled_data
-    assert len(signature) == 32
+    assert extracted_data == pickled_data, "Data must not be empty"
+    assert len(signature) == 32, "Signature must not be empty"
 
 
 def test_split_signed_pickle_errors():
@@ -199,8 +199,8 @@ def test_split_signed_pickle_legacy():
     data = pickled_data + signature
 
     extracted_data, extracted_signature = _split_signed_pickle(data)
-    assert extracted_data == pickled_data
-    assert extracted_signature == signature
+    assert extracted_data == pickled_data, "Data must not be empty"
+    assert extracted_signature == signature, "extracted_signature is not valid"
 
 
 def test_safe_pickle_dump_without_explicit_key(tmp_path):

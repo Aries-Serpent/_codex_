@@ -88,26 +88,26 @@ class TestServiceRequests:
         """Test service request has all required fields."""
         required_fields = ["request_id", "requester", "service_type", "specifications"]
         for field in required_fields:
-            assert field in service_request_config
+            assert field in service_request_config, "Condition must be true"
 
     def test_request_id_format(self, service_request_config: dict[str, Any]):
         """Test request ID follows expected format."""
         request_id = service_request_config["request_id"]
-        assert request_id.startswith("REQ-")
-        assert len(request_id) > 8
+        assert request_id.startswith("REQ-"), "Condition must be true"
+        assert len(request_id) > 8, "Request_id must not be empty"
 
     def test_request_priority_valid(self, service_request_config: dict[str, Any]):
         """Test request priority is valid."""
         valid_priorities = ["low", "normal", "high", "critical"]
-        assert service_request_config["priority"] in valid_priorities
+        assert service_request_config["priority"] in valid_priorities, "Condition must be true"
 
     def test_request_specifications_complete(self, service_request_config: dict[str, Any]):
         """Test request specifications are complete."""
         specs = service_request_config["specifications"]
-        assert "cpu_cores" in specs
-        assert "memory_gb" in specs
-        assert specs["cpu_cores"] > 0
-        assert specs["memory_gb"] > 0
+        assert "cpu_cores" in specs, "Condition must be true"
+        assert "memory_gb" in specs, "Condition must be true"
+        assert specs["cpu_cores"] > 0, "Value must be greater than zero"
+        assert specs["memory_gb"] > 0, "Value must be greater than zero"
 
     def test_request_validation_success(self, service_request_config: dict[str, Any]):
         """Test request validation passes for valid request."""
@@ -116,14 +116,14 @@ class TestServiceRequests:
             and service_request_config.get("service_type")
             and service_request_config.get("specifications")
         )
-        assert is_valid is True
+        assert is_valid is True, "is_valid is not valid"
 
     def test_request_validation_missing_requester(self, service_request_config: dict[str, Any]):
         """Test request validation fails without requester."""
         config = service_request_config.copy()
         config["requester"] = ""
         is_valid = bool(config.get("requester"))
-        assert is_valid is False
+        assert is_valid is False, "is_valid is not valid"
 
 
 # ============================================================================
@@ -136,14 +136,14 @@ class TestProvisioning:
 
     def test_auto_provision_enabled(self, provisioning_config: dict[str, Any]):
         """Test auto-provisioning is enabled."""
-        assert provisioning_config["auto_provision"] is True
+        assert provisioning_config["auto_provision"] is True, "Condition must be true"
 
     def test_max_resources_defined(self, provisioning_config: dict[str, Any]):
         """Test maximum resources are defined."""
         max_res = provisioning_config["max_resources"]
-        assert max_res["cpu_cores"] > 0
-        assert max_res["memory_gb"] > 0
-        assert max_res["storage_gb"] > 0
+        assert max_res["cpu_cores"] > 0, "Value must be greater than zero"
+        assert max_res["memory_gb"] > 0, "Value must be greater than zero"
+        assert max_res["storage_gb"] > 0, "Value must be greater than zero"
 
     def test_resource_within_limits(
         self, service_request_config: dict[str, Any], provisioning_config: dict[str, Any]
@@ -157,17 +157,17 @@ class TestProvisioning:
             and specs["memory_gb"] <= max_res["memory_gb"]
             and specs["storage_gb"] <= max_res["storage_gb"]
         )
-        assert within_limits is True
+        assert within_limits is True, "within_limits is not valid"
 
     def test_default_ttl_set(self, provisioning_config: dict[str, Any]):
         """Test default TTL is set."""
-        assert provisioning_config["default_ttl_days"] > 0
+        assert provisioning_config["default_ttl_days"] > 0, "Value must be greater than zero"
 
     def test_notification_channels_configured(self, provisioning_config: dict[str, Any]):
         """Test notification channels are configured."""
         channels = provisioning_config["notification_channels"]
-        assert len(channels) > 0
-        assert "email" in channels
+        assert len(channels) > 0, "Channels must not be empty"
+        assert "email" in channels, "Condition must be true"
 
 
 # ============================================================================
@@ -181,31 +181,31 @@ class TestAccessManagement:
     def test_roles_defined(self, access_policy: dict[str, Any]):
         """Test roles are defined."""
         roles = access_policy["roles"]
-        assert len(roles) > 0
-        assert "developer" in roles
+        assert len(roles) > 0, "Roles must not be empty"
+        assert "developer" in roles, "Condition must be true"
 
     def test_role_permissions(self, access_policy: dict[str, Any]):
         """Test role permissions are set."""
         dev_role = access_policy["roles"]["developer"]
-        assert "can_request" in dev_role
-        assert "max_instances" in dev_role
+        assert "can_request" in dev_role, "Condition must be true"
+        assert "max_instances" in dev_role, "Condition must be true"
 
     def test_admin_has_more_permissions(self, access_policy: dict[str, Any]):
         """Test admin has more permissions than developer."""
         dev_services = access_policy["roles"]["developer"]["can_request"]
         admin_services = access_policy["roles"]["admin"]["can_request"]
-        assert len(admin_services) >= len(dev_services)
+        assert len(admin_services) >= len(dev_services), "Admin_services must not be empty"
 
     def test_approval_matrix_exists(self, access_policy: dict[str, Any]):
         """Test approval matrix is defined."""
-        assert "approval_matrix" in access_policy
-        assert len(access_policy["approval_matrix"]) > 0
+        assert "approval_matrix" in access_policy, "Condition must be true"
+        assert len(access_policy["approval_matrix"]) > 0, "Collection must not be empty"
 
     def test_approval_thresholds_set(self, access_policy: dict[str, Any]):
         """Test approval thresholds are set."""
         compute_approval = access_policy["approval_matrix"]["compute"]
-        assert "threshold_cost" in compute_approval
-        assert "approver" in compute_approval
+        assert "threshold_cost" in compute_approval, "Condition must be true"
+        assert "approver" in compute_approval, "Condition must be true"
 
 
 # ============================================================================
@@ -224,7 +224,7 @@ class TestSelfServicePortal:
             "status": "submitted",
             "submitted_at": datetime.utcnow().isoformat(),
         }
-        assert submitted["status"] == "submitted"
+        assert submitted["status"] == "submitted", "Condition must be true"
 
     def test_portal_request_tracking(self, service_request_config: dict[str, Any]):
         """Test portal request tracking."""
@@ -233,14 +233,14 @@ class TestSelfServicePortal:
             "status": "pending_approval",
             "progress": 25,
         }
-        assert tracking["progress"] >= 0
-        assert tracking["progress"] <= 100
+        assert tracking["progress"] >= 0, "Value must be greater than zero"
+        assert tracking["progress"] <= 100, "Condition must be true"
 
     def test_portal_status_updates(self):
         """Test portal provides status updates."""
         statuses = ["submitted", "pending_approval", "approved", "provisioning", "completed"]
         current_status = "pending_approval"
-        assert current_status in statuses
+        assert current_status in statuses, "Condition must be true"
 
     def test_portal_resource_catalog(self):
         """Test portal resource catalog."""
@@ -248,8 +248,8 @@ class TestSelfServicePortal:
             {"type": "compute", "sizes": ["small", "medium", "large"]},
             {"type": "storage", "sizes": ["100GB", "500GB", "1TB"]},
         ]
-        assert len(catalog) > 0
-        assert catalog[0]["type"] == "compute"
+        assert len(catalog) > 0, "Catalog must not be empty"
+        assert catalog[0]["type"] == "compute", "Condition must be true"
 
     def test_portal_cost_estimation(self, service_request_config: dict[str, Any]):
         """Test portal provides cost estimation."""
@@ -258,4 +258,4 @@ class TestSelfServicePortal:
         cost_per_cpu = 10
         cost_per_gb_memory = 2
         estimated_cost = specs["cpu_cores"] * cost_per_cpu + specs["memory_gb"] * cost_per_gb_memory
-        assert estimated_cost > 0
+        assert estimated_cost > 0, "estimated_cost must be greater than zero"

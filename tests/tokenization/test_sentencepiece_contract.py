@@ -94,10 +94,10 @@ class TestVocabSizeProperty:
         assert isinstance(adapter.vocab_size, int)
 
     def test_vocab_size_is_positive(self, adapter):
-        assert adapter.vocab_size > 0
+        assert adapter.vocab_size > 0, "vocab_size must be greater than zero"
 
     def test_vocab_size_matches_stub(self, adapter):
-        assert adapter.vocab_size == len(_STUB_VOCAB)
+        assert adapter.vocab_size == len(_STUB_VOCAB), "_stub_vocab must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -110,10 +110,10 @@ class TestNameOrPathProperty:
         assert isinstance(adapter.name_or_path, str)
 
     def test_name_or_path_is_non_empty(self, adapter):
-        assert adapter.name_or_path != ""
+        assert adapter.name_or_path != "", "name_or_path is not valid"
 
     def test_name_or_path_contains_model_file(self, adapter):
-        assert "test.model" in adapter.name_or_path
+        assert "test.model" in adapter.name_or_path, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -129,7 +129,7 @@ class TestEncodeContract:
 
     def test_encode_non_empty_string(self, adapter):
         ids = adapter.encode("hello")
-        assert len(ids) > 0
+        assert len(ids) > 0, "Ids must not be empty"
 
     def test_encode_raises_type_error_for_none(self, adapter):
         with pytest.raises(TypeError):
@@ -184,7 +184,7 @@ class TestRoundtripContract:
         decoded = adapter.decode(ids)
         # The stub is deterministic; decoded should contain the tokens
         assert isinstance(decoded, str)
-        assert len(decoded) > 0
+        assert len(decoded) > 0, "Decoded must not be empty"
 
     def test_empty_string_encodes_to_list(self, adapter):
         ids = adapter.encode("")
@@ -266,9 +266,9 @@ class TestProtocolStructuralCheck:
         # Access twice — must be idempotent
         vs1 = adapter.vocab_size
         vs2 = adapter.vocab_size
-        assert vs1 == vs2
+        assert vs1 == vs2, "vs1 is not valid"
 
     def test_name_or_path_is_property(self, adapter):
         p1 = adapter.name_or_path
         p2 = adapter.name_or_path
-        assert p1 == p2
+        assert p1 == p2, "p1 is not valid"

@@ -43,7 +43,7 @@ client = TestClient(app)
 )
 def test_secret_masking(secret):
     resp = client.post("/infer", json={"prompt": f"leak: {secret}"})
-    assert resp.status_code == 200
+    assert resp.status_code == 200, "status_code is not valid"
     data = resp.json()
     # Expect masked output
     assert "[SECRET]" in data["completion"], f"Secret not masked for pattern: {secret}"
@@ -56,8 +56,8 @@ def test_secret_filter_disabled(monkeypatch):
     monkeypatch.setenv("DISABLE_SECRET_FILTER", "1")
     secret = "sk-abc123NOFILTER"
     resp = client.post("/infer", json={"prompt": secret})
-    assert resp.status_code == 200
+    assert resp.status_code == 200, "status_code is not valid"
     data = resp.json()
     # Raw secret should appear when filter disabled
-    assert secret in data["completion"]
+    assert secret in data["completion"], "Data must not be empty"
     monkeypatch.delenv("DISABLE_SECRET_FILTER", raising=False)

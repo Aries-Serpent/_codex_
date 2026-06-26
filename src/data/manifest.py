@@ -52,8 +52,8 @@ def _default_created_at() -> int:
             return int(float(override))
         except ValueError as e:
             error_type = type(e).__name__
-            logger.debug(f"ValueError: <ERROR_TYPE>")
-            logger.warning(f"ValueError: <ERROR_TYPE>", exc_info=True)
+            logger.debug("ValueError: <ERROR_TYPE>")
+            logger.warning("ValueError: <ERROR_TYPE>", exc_info=True)
     return int(time.time())
 
 

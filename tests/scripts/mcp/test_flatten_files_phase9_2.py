@@ -15,7 +15,7 @@ Tests cover:
 
 from __future__ import annotations
 
-import hashlib # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+import hashlib  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 from pathlib import Path
 
 
@@ -31,7 +31,7 @@ class TestPathFlattening:
         flattened = path.replace("/", "__")
 
         # Assert
-        assert flattened == "src__file.py"
+        assert flattened == "src__file.py", "flattened is not valid"
 
     def test_flatten_nested_path(self) -> None:
         """Test flattening a deeply nested path."""
@@ -42,7 +42,7 @@ class TestPathFlattening:
         flattened = path.replace("/", "__")
 
         # Assert
-        assert flattened == "src__deep__nested__module__file.py"
+        assert flattened == "src__deep__nested__module__file.py", "flattened is not valid"
 
     def test_flatten_preserves_extension(self) -> None:
         """Test that file extension is preserved."""
@@ -53,7 +53,7 @@ class TestPathFlattening:
         flattened = path.replace("/", "__")
 
         # Assert
-        assert flattened.endswith(".txt")
+        assert flattened.endswith(".txt"), "Condition must be true"
 
     def test_flatten_single_file(self) -> None:
         """Test flattening a file with no directory."""
@@ -64,7 +64,7 @@ class TestPathFlattening:
         flattened = path.replace("/", "__")
 
         # Assert
-        assert flattened == "file.py"
+        assert flattened == "file.py", "flattened is not valid"
 
     def test_flatten_with_spaces(self) -> None:
         """Test flattening path with spaces."""
@@ -75,7 +75,7 @@ class TestPathFlattening:
         flattened = path.replace("/", "__")
 
         # Assert
-        assert flattened == "path with spaces__file.py"
+        assert flattened == "path with spaces__file.py", "flattened is not valid"
 
 
 class TestSHA256Computation:
@@ -90,8 +90,8 @@ class TestSHA256Computation:
         sha256 = hashlib.sha256(content).hexdigest()
 
         # Assert
-        assert len(sha256) == 64
-        assert sha256 == "dffd6021bb2bd5b0af676290809ec3a53191dd81c7f70a4b28688a362182986f"
+        assert len(sha256) == 64, "Sha256 must not be empty"
+        assert sha256 == "dffd6021bb2bd5b0af676290809ec3a53191dd81c7f70a4b28688a362182986f", "sha256 is not valid"
 
     def test_compute_sha256_empty(self) -> None:
         """Test computing SHA256 of empty content."""
@@ -102,8 +102,8 @@ class TestSHA256Computation:
         sha256 = hashlib.sha256(content).hexdigest()
 
         # Assert
-        assert len(sha256) == 64
-        assert sha256 == "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        assert len(sha256) == 64, "Sha256 must not be empty"
+        assert sha256 == "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "sha256 is not valid"
 
     def test_compute_sha256_large(self) -> None:
         """Test computing SHA256 of large content."""
@@ -114,7 +114,7 @@ class TestSHA256Computation:
         sha256 = hashlib.sha256(content).hexdigest()
 
         # Assert
-        assert len(sha256) == 64
+        assert len(sha256) == 64, "Sha256 must not be empty"
 
 
 class TestManifestStructure:
@@ -131,10 +131,10 @@ class TestManifestStructure:
         }
 
         # Act & Assert
-        assert "path" in entry
-        assert "original_path" in entry
-        assert "size" in entry
-        assert "sha256" in entry
+        assert "path" in entry, "Condition must be true"
+        assert "original_path" in entry, "Condition must be true"
+        assert "size" in entry, "Condition must be true"
+        assert "sha256" in entry, "Condition must be true"
 
     def test_manifest_with_multiple_files(self) -> None:
         """Test manifest with multiple file entries."""
@@ -150,7 +150,7 @@ class TestManifestStructure:
         file_count = len(manifest["files"])
 
         # Assert
-        assert file_count == 2
+        assert file_count == 2, "Count must be greater than zero"
 
     def test_manifest_total_size(self) -> None:
         """Test computing total size from manifest."""
@@ -165,7 +165,7 @@ class TestManifestStructure:
         total_size = sum(f["size"] for f in files)
 
         # Assert
-        assert total_size == 600
+        assert total_size == 600, "total_size is not valid"
 
 
 class TestPathEdgeCases:
@@ -180,7 +180,7 @@ class TestPathEdgeCases:
         flattened = path.lstrip("./").replace("/", "__")
 
         # Assert
-        assert flattened == "src__file.py"
+        assert flattened == "src__file.py", "flattened is not valid"
 
     def test_flatten_absolute_to_relative(self) -> None:
         """Test converting absolute to relative path."""
@@ -192,7 +192,7 @@ class TestPathEdgeCases:
         rel_path = abs_path.relative_to(repo_root)
 
         # Assert
-        assert str(rel_path) == "src/file.py"
+        assert str(rel_path) == "src/file.py", "Condition must be true"
 
     def test_flatten_windows_style(self) -> None:
         """Test flattening Windows-style path."""
@@ -203,7 +203,7 @@ class TestPathEdgeCases:
         flattened = path.replace("\\", "__")
 
         # Assert
-        assert flattened == "src__subdir__file.py"
+        assert flattened == "src__subdir__file.py", "flattened is not valid"
 
 
 # #AFTERMATH_METRIC - 15 tests created for flatten files concept

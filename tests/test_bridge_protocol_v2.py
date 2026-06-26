@@ -37,8 +37,8 @@ class TestMessageCompression:
         data = b"small message"
         compressed, was_compressed = compress_message(data)
 
-        assert was_compressed is False
-        assert compressed == data
+        assert was_compressed is False, "was_compressed is not valid"
+        assert compressed == data, "Data must not be empty"
 
     def test_compress_large_message(self):
         """Large compressible messages should be compressed."""
@@ -46,8 +46,8 @@ class TestMessageCompression:
         data = b"A" * (COMPRESSION_THRESHOLD + 1000)
         compressed, was_compressed = compress_message(data)
 
-        assert was_compressed is True
-        assert len(compressed) < len(data)
+        assert was_compressed is True, "was_compressed is not valid"
+        assert len(compressed) < len(data), "Compressed must not be empty"
 
     def test_compress_incompressible(self):
         """Random data may not compress well."""
@@ -59,7 +59,7 @@ class TestMessageCompression:
         # Random data typically doesn't compress well
         # Result depends on actual compression ratio
         if was_compressed:
-            assert len(compressed) < len(data) * EXPECTED_COMPRESSION_RATIO
+            assert len(compressed) < len(data) * EXPECTED_COMPRESSION_RATIO, "Compressed must not be empty"
 
     def test_decompress_message(self):
         """Test decompression of compressed data."""
@@ -68,13 +68,13 @@ class TestMessageCompression:
 
         if was_compressed:
             decompressed = decompress_message(compressed, True)
-            assert decompressed == original
+            assert decompressed == original, "decompressed is not valid"
 
     def test_decompress_uncompressed(self):
         """Uncompressed data passes through unchanged."""
         data = b"not compressed"
         result = decompress_message(data, False)
-        assert result == data
+        assert result == data, "Result must not be empty"
 
 
 class TestProtocolHeader:
@@ -89,8 +89,8 @@ class TestProtocolHeader:
         )
 
         data = header.to_bytes()
-        assert len(data) == ProtocolHeader.size()
-        assert data[:4] == b"CBv2"  # Magic bytes
+        assert len(data) == ProtocolHeader.size(), "Data must not be empty"
+        assert data[:4] == b"CBv2", "Data must not be empty"
 
     def test_header_from_bytes(self):
         """Test header deserialization."""
@@ -103,10 +103,10 @@ class TestProtocolHeader:
         data = header.to_bytes()
         parsed = ProtocolHeader.from_bytes(data)
 
-        assert parsed.version == PROTOCOL_VERSION
-        assert MessageFlags.COMPRESSED in parsed.flags
-        assert parsed.length == 512
-        assert parsed.checksum == 0xDEADBEEF
+        assert parsed.version == PROTOCOL_VERSION, "version is not valid"
+        assert MessageFlags.COMPRESSED in parsed.flags, "Condition must be true"
+        assert parsed.length == 512, "Length must be greater than zero"
+        assert parsed.checksum == 0xDEADBEEF, "checksum is not valid"
 
     def test_invalid_magic(self):
         """Test rejection of invalid magic bytes."""
@@ -132,7 +132,7 @@ class TestChecksum:
         checksum = compute_checksum(data)
 
         assert isinstance(checksum, int)
-        assert 0 <= checksum <= 0xFFFFFFFF
+        assert 0 <= checksum <= 0xFFFFFFFF, "0 is not valid"
 
     def test_checksum_deterministic(self):
         """Same data produces same checksum."""
@@ -141,14 +141,14 @@ class TestChecksum:
         checksum1 = compute_checksum(data)
         checksum2 = compute_checksum(data)
 
-        assert checksum1 == checksum2
+        assert checksum1 == checksum2, "checksum1 is not valid"
 
     def test_checksum_different(self):
         """Different data produces different checksums."""
         checksum1 = compute_checksum(b"data 1")
         checksum2 = compute_checksum(b"data 2")
 
-        assert checksum1 != checksum2
+        assert checksum1 != checksum2, "checksum1 is not valid"
 
 
 class TestEncodeDecodeMessage:
@@ -159,7 +159,7 @@ class TestEncodeDecodeMessage:
         payload = b"small payload"
         encoded = encode_message(payload)
 
-        assert len(encoded) == ProtocolHeader.size() + len(payload)
+        assert len(encoded) == ProtocolHeader.size() + len(payload), "Encoded must not be empty"
 
     def test_encode_large_message_compressed(self):
         """Test encoding large compressible message."""
@@ -167,7 +167,7 @@ class TestEncodeDecodeMessage:
         encoded = encode_message(payload, compress=True)
 
         # Should be smaller than header + payload
-        assert len(encoded) < ProtocolHeader.size() + len(payload)
+        assert len(encoded) < ProtocolHeader.size() + len(payload), "Encoded must not be empty"
 
     def test_decode_message(self):
         """Test decoding encoded message."""
@@ -176,8 +176,8 @@ class TestEncodeDecodeMessage:
 
         decoded, header = decode_message(encoded)
 
-        assert decoded == original
-        assert header.length > 0
+        assert decoded == original, "decoded is not valid"
+        assert header.length > 0, "length must be positive"
 
     def test_decode_compressed_message(self):
         """Test decoding compressed message."""
@@ -186,8 +186,8 @@ class TestEncodeDecodeMessage:
 
         decoded, header = decode_message(encoded)
 
-        assert decoded == original
-        assert MessageFlags.COMPRESSED in header.flags
+        assert decoded == original, "decoded is not valid"
+        assert MessageFlags.COMPRESSED in header.flags, "Condition must be true"
 
     def test_decode_corrupted_checksum(self):
         """Test detection of corrupted message."""
@@ -224,9 +224,9 @@ class TestClientInfo:
             priority=5,
         )
 
-        assert client.client_id == "client-1"
-        assert client.priority == 5
-        assert client.message_count == 0
+        assert client.client_id == "client-1", "client_id is not valid"
+        assert client.priority == 5, "priority is not valid"
+        assert client.message_count == 0, "Count must be greater than zero"
 
     def test_update_heartbeat(self):
         """Test heartbeat update."""
@@ -239,7 +239,7 @@ class TestClientInfo:
         time.sleep(0.1)
         client.update_heartbeat()
 
-        assert client.last_heartbeat > old_heartbeat
+        assert client.last_heartbeat > old_heartbeat, "last_heartbeat must be greater than zero"
 
     def test_is_alive(self):
         """Test client alive check."""
@@ -248,8 +248,8 @@ class TestClientInfo:
             socket_path="/tmp/client1.sock",
         )
 
-        assert client.is_alive(timeout=60.0) is True
-        assert client.is_alive(timeout=0.0) is False
+        assert client.is_alive(timeout=60.0) is True, "Condition must be true"
+        assert client.is_alive(timeout=0.0) is False, "Condition must be true"
 
     def test_to_dict(self):
         """Test serialization to dict."""
@@ -260,8 +260,8 @@ class TestClientInfo:
 
         d = client.to_dict()
 
-        assert d["client_id"] == "client-1"
-        assert "is_alive" in d
+        assert d["client_id"] == "client-1", "Condition must be true"
+        assert "is_alive" in d, "Condition must be true"
 
 
 class TestMultiClientBridge:
@@ -277,8 +277,8 @@ class TestMultiClientBridge:
             priority=10,
         )
 
-        assert success is True
-        assert "client-1" in bridge.clients
+        assert success is True, "success is not valid"
+        assert "client-1" in bridge.clients, "Condition must be true"
 
     def test_register_at_capacity(self):
         """Test registration at capacity."""
@@ -288,8 +288,8 @@ class TestMultiClientBridge:
         bridge.register_client("client-2", "/tmp/c2.sock")
         success = bridge.register_client("client-3", "/tmp/c3.sock")
 
-        assert success is False
-        assert len(bridge.clients) == 2
+        assert success is False, "success is not valid"
+        assert len(bridge.clients) == 2, "Collection must not be empty"
 
     def test_unregister_client(self):
         """Test unregistering a client."""
@@ -298,8 +298,8 @@ class TestMultiClientBridge:
 
         success = bridge.unregister_client("client-1")
 
-        assert success is True
-        assert "client-1" not in bridge.clients
+        assert success is True, "success is not valid"
+        assert "client-1" not in bridge.clients, "Condition must be true"
 
     def test_heartbeat(self):
         """Test heartbeat update."""
@@ -308,7 +308,7 @@ class TestMultiClientBridge:
 
         success = bridge.heartbeat("client-1")
 
-        assert success is True
+        assert success is True, "success is not valid"
 
     def test_heartbeat_unknown_client(self):
         """Test heartbeat for unknown client."""
@@ -316,7 +316,7 @@ class TestMultiClientBridge:
 
         success = bridge.heartbeat("unknown")
 
-        assert success is False
+        assert success is False, "success is not valid"
 
     def test_route_by_priority(self):
         """Test priority-based routing."""
@@ -326,7 +326,7 @@ class TestMultiClientBridge:
 
         socket = bridge.route_by_priority()
 
-        assert socket == "/tmp/high.sock"
+        assert socket == "/tmp/high.sock", "socket is not valid"
 
     def test_route_round_robin(self):
         """Test round-robin routing."""
@@ -340,7 +340,7 @@ class TestMultiClientBridge:
             if socket:
                 sockets.add(socket)
 
-        assert len(sockets) == 2
+        assert len(sockets) == 2, "Sockets must not be empty"
 
     def test_broadcast_targets(self):
         """Test getting broadcast targets."""
@@ -350,9 +350,9 @@ class TestMultiClientBridge:
 
         targets = bridge.broadcast_targets()
 
-        assert len(targets) == 2
-        assert "/tmp/c1.sock" in targets
-        assert "/tmp/c2.sock" in targets
+        assert len(targets) == 2, "Targets must not be empty"
+        assert "/tmp/c1.sock" in targets, "Condition must be true"
+        assert "/tmp/c2.sock" in targets, "Condition must be true"
 
     def test_get_stats(self):
         """Test getting bridge statistics."""
@@ -361,9 +361,9 @@ class TestMultiClientBridge:
 
         stats = bridge.get_stats()
 
-        assert stats["total_clients"] == 1
-        assert stats["max_clients"] == 10
-        assert len(stats["clients"]) == 1
+        assert stats["total_clients"] == 1, "Condition must be true"
+        assert stats["max_clients"] == 10, "Condition must be true"
+        assert len(stats["clients"]) == 1, "Collection must not be empty"
 
 
 class TestMessageFlags:
@@ -373,13 +373,13 @@ class TestMessageFlags:
         """Test combining flags."""
         flags = MessageFlags.COMPRESSED | MessageFlags.PRIORITY
 
-        assert MessageFlags.COMPRESSED in flags
-        assert MessageFlags.PRIORITY in flags
-        assert MessageFlags.ENCRYPTED not in flags
+        assert MessageFlags.COMPRESSED in flags, "Condition must be true"
+        assert MessageFlags.PRIORITY in flags, "Condition must be true"
+        assert MessageFlags.ENCRYPTED not in flags, "Condition must be true"
 
     def test_flag_none(self):
         """Test no flags."""
         flags = MessageFlags.NONE
 
-        assert int(flags) == 0
-        assert MessageFlags.COMPRESSED not in flags
+        assert int(flags) == 0, "Condition must be true"
+        assert MessageFlags.COMPRESSED not in flags, "Condition must be true"

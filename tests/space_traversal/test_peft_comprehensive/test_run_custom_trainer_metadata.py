@@ -85,10 +85,10 @@ def test_run_custom_trainer_logs_metadata(monkeypatch: pytest.MonkeyPatch, tmp_p
     ]
 
     metadata = payloads[0]
-    assert metadata["phase"] == "metadata"
-    assert metadata["git_commit"] == "cafebabe"
-    assert metadata.get("train_examples") == len(dataset)
-    assert metadata.get("log_formats") == ["ndjson"]
+    assert metadata["phase"] == "metadata", "Data must not be empty"
+    assert metadata["git_commit"] == "cafebabe", "Data must not be empty"
+    assert metadata.get("train_examples") == len(dataset), "Dataset must not be empty"
+    assert metadata.get("log_formats") == ["ndjson"], "Data must not be empty"
     fingerprint = metadata.get("hardware_fingerprint")
     assert isinstance(fingerprint, str)
-    assert fingerprint
+    assert fingerprint, "fingerprint is not valid"

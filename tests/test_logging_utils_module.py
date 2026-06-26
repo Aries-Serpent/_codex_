@@ -67,6 +67,6 @@ def test_setup_logging_mlflow(monkeypatch):
     logging_utils.log_metrics(session, {"accuracy": 0.9}, step=2)
     logging_utils.shutdown_logging(session)
 
-    assert stub.started == ["demo"]
+    assert stub.started == ["demo"], "started is not valid"
     assert stub.logged == [({"accuracy": 0.9}, 2)]
-    assert stub.ended == 1
+    assert stub.ended == 1, "ended is not valid"

@@ -109,8 +109,8 @@ class TestDuplicationReport:
             content_duplicates=[],
             recommendations=[],
         )
-        assert report.stats["total_files"] == 10
-        assert report.duplicate_groups == []
+        assert report.stats["total_files"] == 10, "rep is not valid"
+        assert report.duplicate_groups == [], "duplicate_groups is not valid"
 
     def test_report_with_data(self):
         """Test DuplicationReport with data."""
@@ -131,10 +131,10 @@ class TestDuplicationReport:
             recommendations=recommendations,
         )
 
-        assert report.stats["duplicate_count"] == 5
-        assert len(report.duplicate_groups) == 1
-        assert len(report.content_duplicates) == 1
-        assert report.recommendations[0] == "Review duplicates"
+        assert report.stats["duplicate_count"] == 5, "Count must be greater than zero"
+        assert len(report.duplicate_groups) == 1, "Collection must not be empty"
+        assert len(report.content_duplicates) == 1, "Collection must not be empty"
+        assert report.recommendations[0] == "Review duplicates", "rep is not valid"
 
 
 # =====================================================================
@@ -148,42 +148,42 @@ class TestAssessSeverity:
     def test_assess_severity_acceptable(self):
         """Test ratio within acceptable range."""
         result = _assess_severity(0.05, acceptable=0.10, warning=0.20, critical=0.30)
-        assert result == "acceptable"
+        assert result == "acceptable", "Result must not be empty"
 
     def test_assess_severity_warning(self):
         """Test ratio in warning range."""
         result = _assess_severity(0.15, acceptable=0.10, warning=0.20, critical=0.30)
-        assert result == "warning"
+        assert result == "warning", "Result must not be empty"
 
     def test_assess_severity_high(self):
         """Test ratio in high range."""
         result = _assess_severity(0.25, acceptable=0.10, warning=0.20, critical=0.30)
-        assert result == "high"
+        assert result == "high", "Result must not be empty"
 
     def test_assess_severity_critical(self):
         """Test ratio in critical range."""
         result = _assess_severity(0.35, acceptable=0.10, warning=0.20, critical=0.30)
-        assert result == "critical"
+        assert result == "critical", "Result must not be empty"
 
     def test_assess_severity_boundary_acceptable(self):
         """Test ratio at boundary of acceptable."""
         result = _assess_severity(0.10, acceptable=0.10, warning=0.20, critical=0.30)
-        assert result == "acceptable"
+        assert result == "acceptable", "Result must not be empty"
 
     def test_assess_severity_boundary_warning(self):
         """Test ratio at boundary of warning."""
         result = _assess_severity(0.20, acceptable=0.10, warning=0.20, critical=0.30)
-        assert result == "warning"
+        assert result == "warning", "Result must not be empty"
 
     def test_assess_severity_zero_ratio(self):
         """Test zero duplication ratio."""
         result = _assess_severity(0.0, acceptable=0.10, warning=0.20, critical=0.30)
-        assert result == "acceptable"
+        assert result == "acceptable", "Result must not be empty"
 
     def test_assess_severity_one_hundred_percent(self):
         """Test 100% duplication ratio."""
         result = _assess_severity(1.0, acceptable=0.10, warning=0.20, critical=0.30)
-        assert result == "critical"
+        assert result == "critical", "Result must not be empty"
 
 
 # =====================================================================
@@ -200,7 +200,7 @@ class TestHashFile:
         test_file.write_text("test content")
         result = _hash_file(test_file)
         expected = hashlib.sha256(b"test content").hexdigest()
-        assert result == expected
+        assert result == expected, "Result must not be empty"
 
     def test_hash_file_deterministic(self, tmp_path):
         """Test hash is deterministic."""
@@ -208,13 +208,13 @@ class TestHashFile:
         test_file.write_text("test content")
         hash1 = _hash_file(test_file)
         hash2 = _hash_file(test_file)
-        assert hash1 == hash2
+        assert hash1 == hash2, "hash1 is not valid"
 
     def test_hash_file_nonexistent(self, tmp_path):
         """Test hashing nonexistent file returns empty string."""
         nonexistent = tmp_path / "nonexistent.txt"
         result = _hash_file(nonexistent)
-        assert result == ""
+        assert result == "", "Result must not be empty"
 
     def test_hash_file_empty(self, tmp_path):
         """Test hashing empty file."""
@@ -222,7 +222,7 @@ class TestHashFile:
         empty_file.write_text("")
         result = _hash_file(empty_file)
         expected = hashlib.sha256(b"").hexdigest()
-        assert result == expected
+        assert result == expected, "Result must not be empty"
 
     def test_hash_file_binary(self, tmp_path):
         """Test hashing binary file."""
@@ -230,7 +230,7 @@ class TestHashFile:
         binary_file.write_bytes(b"\x00\x01\x02\x03")
         result = _hash_file(binary_file)
         expected = hashlib.sha256(b"\x00\x01\x02\x03").hexdigest()
-        assert result == expected
+        assert result == expected, "Result must not be empty"
 
     def test_hash_file_unicode(self, tmp_path):
         """Test hashing file with unicode content."""
@@ -238,7 +238,7 @@ class TestHashFile:
         unicode_file.write_text("Hello 世界 🌍", encoding="utf-8")
         result = _hash_file(unicode_file)
         expected = hashlib.sha256("Hello 世界 🌍".encode("utf-8")).hexdigest()
-        assert result == expected
+        assert result == expected, "Result must not be empty"
 
     def test_hash_file_large(self, tmp_path):
         """Test hashing large file."""
@@ -247,7 +247,7 @@ class TestHashFile:
         large_file.write_text(large_content)
         result = _hash_file(large_file)
         expected = hashlib.sha256(large_content.encode()).hexdigest()
-        assert result == expected
+        assert result == expected, "Result must not be empty"
 
 
 # =====================================================================
@@ -262,8 +262,8 @@ class TestAnalyzeDuplication:
         """Test basic duplication analysis."""
         report = analyze_duplication(temp_analysis_dir)
         assert isinstance(report, DuplicationReport)
-        assert "total_files" in report.stats
-        assert report.stats["total_files"] > 0
+        assert "total_files" in report.stats, "Condition must be true"
+        assert report.stats["total_files"] > 0, "rep must be greater than zero"
 
     def test_analyze_returns_report_type(self, temp_analysis_dir):
         """Test that analyze returns DuplicationReport."""
@@ -278,7 +278,7 @@ class TestAnalyzeDuplication:
         """Test analysis uses default extensions."""
         report = analyze_duplication(temp_analysis_dir)
         # Should find .py, .md, .yaml, .yml, .json files
-        assert report.stats["total_files"] > 0
+        assert report.stats["total_files"] > 0, "rep must be greater than zero"
 
     def test_analyze_custom_extensions(self, temp_analysis_dir):
         """Test analysis with custom extensions."""
@@ -286,20 +286,20 @@ class TestAnalyzeDuplication:
         report = analyze_duplication(temp_analysis_dir, extensions=[".py"])
         # Should find fewer files than default extensions
         py_count = report.stats["total_files"]
-        assert py_count > 0
+        assert py_count > 0, "py_count must be positive"
 
     def test_analyze_duplicate_names(self, temp_dir_with_duplicates):
         """Test detecting duplicate filenames."""
         report = analyze_duplication(temp_dir_with_duplicates)
-        assert len(report.duplicate_groups) > 0
+        assert len(report.duplicate_groups) > 0, "Collection must not be empty"
         # Should have 'config' as duplicate group
         stems = [dup["stem"] for dup in report.duplicate_groups]
-        assert "config" in stems
+        assert "config" in stems, "Condition must be true"
 
     def test_analyze_content_duplicates(self, temp_dir_with_content_duplicates):
         """Test detecting content duplicates."""
         report = analyze_duplication(temp_dir_with_content_duplicates)
-        assert len(report.content_duplicates) > 0
+        assert len(report.content_duplicates) > 0, "Collection must not be empty"
 
     def test_analyze_custom_severity_thresholds(self, temp_dir_with_duplicates):
         """Test analysis with custom severity thresholds."""
@@ -317,51 +317,51 @@ class TestAnalyzeDuplication:
         empty_dir = tmp_path / "empty"
         empty_dir.mkdir()
         report = analyze_duplication(empty_dir)
-        assert report.stats["total_files"] == 0
-        assert len(report.duplicate_groups) == 0
+        assert report.stats["total_files"] == 0, "rep is not valid"
+        assert len(report.duplicate_groups) == 0, "Collection must not be empty"
 
     def test_analyze_path_as_string(self, temp_analysis_dir):
         """Test analyze accepts path as string."""
         report = analyze_duplication(str(temp_analysis_dir))
-        assert report.stats["total_files"] > 0
+        assert report.stats["total_files"] > 0, "rep must be greater than zero"
 
     def test_analyze_path_as_pathlib(self, temp_analysis_dir):
         """Test analyze accepts path as Path object."""
         report = analyze_duplication(Path(temp_analysis_dir))
-        assert report.stats["total_files"] > 0
+        assert report.stats["total_files"] > 0, "rep must be greater than zero"
 
     def test_analyze_recommendations_generated(self, temp_analysis_dir):
         """Test that recommendations are generated."""
         report = analyze_duplication(temp_analysis_dir)
-        assert len(report.recommendations) > 0
+        assert len(report.recommendations) > 0, "Collection must not be empty"
         assert any(isinstance(r, str) for r in report.recommendations)
 
     def test_analyze_severity_in_stats(self, temp_analysis_dir):
         """Test that severity is included in stats."""
         report = analyze_duplication(temp_analysis_dir)
-        assert "severity" in report.stats
+        assert "severity" in report.stats, "Condition must be true"
 
     def test_analyze_ratio_in_stats(self, temp_analysis_dir):
         """Test that duplication ratio is in stats."""
         report = analyze_duplication(temp_analysis_dir)
-        assert "duplication_ratio" in report.stats
-        assert 0 <= report.stats["duplication_ratio"] <= 1
+        assert "duplication_ratio" in report.stats, "Condition must be true"
+        assert 0 <= report.stats["duplication_ratio"] <= 1, "0 is not valid"
 
     def test_analyze_duplicate_count_in_stats(self, temp_analysis_dir):
         """Test that duplicate count is in stats."""
         report = analyze_duplication(temp_analysis_dir)
-        assert "duplicate_count" in report.stats
-        assert report.stats["duplicate_count"] >= 0
+        assert "duplicate_count" in report.stats, "Count must be greater than zero"
+        assert report.stats["duplicate_count"] >= 0, "rep must be greater than zero"
 
     def test_analyze_group_count_in_stats(self, temp_analysis_dir):
         """Test that duplicate group count is in stats."""
         report = analyze_duplication(temp_analysis_dir)
-        assert "duplicate_groups_count" in report.stats
+        assert "duplicate_groups_count" in report.stats, "Count must be greater than zero"
 
     def test_analyze_content_dup_count_in_stats(self, temp_analysis_dir):
         """Test that content duplicate count is in stats."""
         report = analyze_duplication(temp_analysis_dir)
-        assert "content_duplicate_groups" in report.stats
+        assert "content_duplicate_groups" in report.stats, "Content must not be empty"
 
 
 # =====================================================================
@@ -376,35 +376,35 @@ class TestDuplicateGroupFormatting:
         """Test duplicate groups include stem."""
         report = analyze_duplication(temp_dir_with_duplicates)
         for group in report.duplicate_groups:
-            assert "stem" in group
+            assert "stem" in group, "Condition must be true"
             assert isinstance(group["stem"], str)
 
     def test_duplicate_groups_include_count(self, temp_dir_with_duplicates):
         """Test duplicate groups include count."""
         report = analyze_duplication(temp_dir_with_duplicates)
         for group in report.duplicate_groups:
-            assert "count" in group
+            assert "count" in group, "Count must be greater than zero"
             assert isinstance(group["count"], int)
 
     def test_duplicate_groups_include_paths(self, temp_dir_with_duplicates):
         """Test duplicate groups include relative paths."""
         report = analyze_duplication(temp_dir_with_duplicates)
         for group in report.duplicate_groups:
-            assert "paths" in group
+            assert "paths" in group, "Condition must be true"
             assert isinstance(group["paths"], list)
 
     def test_content_duplicates_include_hash(self, temp_dir_with_content_duplicates):
         """Test content duplicates include hash."""
         report = analyze_duplication(temp_dir_with_content_duplicates)
         for dup in report.content_duplicates:
-            assert "hash" in dup
+            assert "hash" in dup, "Condition must be true"
             assert isinstance(dup["hash"], str)
 
     def test_content_duplicates_include_paths(self, temp_dir_with_content_duplicates):
         """Test content duplicates include paths."""
         report = analyze_duplication(temp_dir_with_content_duplicates)
         for dup in report.content_duplicates:
-            assert "paths" in dup
+            assert "paths" in dup, "Condition must be true"
             assert isinstance(dup["paths"], list)
 
 
@@ -420,7 +420,7 @@ class TestEdgeCases:
         """Test analyzing nonexistent directory."""
         # Should not raise, but return report with no files
         report = analyze_duplication(Path("/nonexistent/path"))
-        assert report.stats["total_files"] == 0
+        assert report.stats["total_files"] == 0, "rep is not valid"
 
     def test_analyze_single_file_in_dir(self, tmp_path):
         """Test analyzing directory with single file."""
@@ -428,8 +428,8 @@ class TestEdgeCases:
         test_dir.mkdir()
         (test_dir / "file.py").write_text("# single file")
         report = analyze_duplication(test_dir)
-        assert report.stats["total_files"] == 1
-        assert len(report.duplicate_groups) == 0
+        assert report.stats["total_files"] == 1, "rep is not valid"
+        assert len(report.duplicate_groups) == 0, "Collection must not be empty"
 
     def test_analyze_many_duplicates(self, tmp_path):
         """Test analyzing directory with many duplicates."""
@@ -442,7 +442,7 @@ class TestEdgeCases:
             (dup_dir / f"file{i}.txt").write_text(content)
 
         report = analyze_duplication(dup_dir)
-        assert report.stats["total_files"] == 10
+        assert report.stats["total_files"] == 10, "rep is not valid"
 
     def test_analyze_high_duplication_ratio(self, tmp_path):
         """Test analyzing with high duplication ratio."""
@@ -455,7 +455,7 @@ class TestEdgeCases:
             (high_dup_dir / f"dup{i}.py").write_text("original")
 
         report = analyze_duplication(high_dup_dir)
-        assert report.stats["duplication_ratio"] > 0.8
+        assert report.stats["duplication_ratio"] > 0.8, "rep must be greater than zero"
 
     def test_analyze_zero_duplication(self, tmp_path):
         """Test analyzing directory with no duplicates."""
@@ -467,14 +467,14 @@ class TestEdgeCases:
             (no_dup_dir / f"unique{i}.py").write_text(f"unique content {i}")
 
         report = analyze_duplication(no_dup_dir)
-        assert report.stats["duplication_ratio"] == 0.0
-        assert len(report.duplicate_groups) == 0
+        assert report.stats["duplication_ratio"] == 0.0, "rep is not valid"
+        assert len(report.duplicate_groups) == 0, "Collection must not be empty"
 
     def test_analyze_nested_directories(self, temp_analysis_dir):
         """Test analyzing nested directory structure."""
         report = analyze_duplication(temp_analysis_dir)
         # Should find files in subdirectories
-        assert report.stats["total_files"] > 0
+        assert report.stats["total_files"] > 0, "rep must be greater than zero"
 
     def test_analyze_case_sensitivity(self, tmp_path):
         """Test that file stem comparison is case-insensitive."""
@@ -487,7 +487,7 @@ class TestEdgeCases:
         # Both should be detected as duplicates (case-insensitive comparison)
         stems = [dup["stem"] for dup in report.duplicate_groups]
         # Should have "config" in lowercase
-        assert any("config" in stem.lower() for stem in stems)
+        assert any("config" in stem.lower() for stem in stems), "Condition must be true"
 
 
 # =====================================================================
@@ -501,27 +501,27 @@ class TestIntegration:
     def test_analyze_realistic_project(self, temp_analysis_dir):
         """Test analyzing a realistic project structure."""
         report = analyze_duplication(temp_analysis_dir)
-        assert report.stats["total_files"] > 0
-        assert "duplication_ratio" in report.stats
-        assert len(report.recommendations) > 0
+        assert report.stats["total_files"] > 0, "rep must be greater than zero"
+        assert "duplication_ratio" in report.stats, "Condition must be true"
+        assert len(report.recommendations) > 0, "Collection must not be empty"
 
     def test_multiple_analyses_consistent(self, temp_analysis_dir):
         """Test that multiple analyses are consistent."""
         report1 = analyze_duplication(temp_analysis_dir)
         report2 = analyze_duplication(temp_analysis_dir)
-        assert report1.stats["total_files"] == report2.stats["total_files"]
-        assert report1.stats["duplication_ratio"] == report2.stats["duplication_ratio"]
+        assert report1.stats["total_files"] == report2.stats["total_files"], "rep is not valid"
+        assert report1.stats["duplication_ratio"] == report2.stats["duplication_ratio"], "rep is not valid"
 
     def test_report_provides_actionable_recommendations(self, temp_dir_with_duplicates):
         """Test that recommendations are actionable."""
         report = analyze_duplication(temp_dir_with_duplicates)
-        assert len(report.recommendations) > 0
+        assert len(report.recommendations) > 0, "Collection must not be empty"
         # At least one recommendation should mention duplicates or consolidation
         has_actionable = any(
             "duplicat" in rec.lower() or "consolidat" in rec.lower()
             for rec in report.recommendations
         )
-        assert has_actionable or report.stats["duplication_ratio"] == 0.0
+        assert has_actionable or report.stats["duplication_ratio"] == 0.0, "has_actionable is not valid"
 
     def test_duplication_report_file_list_structure(self, temp_dir_with_duplicates):
         """Test duplication report file list structure."""
@@ -534,4 +534,4 @@ class TestIntegration:
         report = analyze_duplication(temp_dir_with_duplicates)
         # Should have valid stats dictionary
         assert isinstance(report.stats, dict)
-        assert "total_files" in report.stats or "files" in report.stats
+        assert "total_files" in report.stats or "files" in report.stats, "Condition must be true"

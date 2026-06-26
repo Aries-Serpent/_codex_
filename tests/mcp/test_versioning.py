@@ -40,18 +40,18 @@ class TestVersionValidation:
 
     def test_validate_version_accepts_valid(self):
         """Test validation accepts correct version format."""
-        assert validate_version("1.0") is True
+        assert validate_version("1.0") is True, "Condition must be true"
 
     def test_validate_version_rejects_invalid(self):
         """Test validation rejects malformed version strings."""
         # Test bounds check on invalid version
-        assert validate_version("invalid") is False
-        assert validate_version("") is False
-        assert validate_version("a.b.c") is False
+        assert validate_version("invalid") is False, "Condition must be true"
+        assert validate_version("") is False, "Condition must be true"
+        assert validate_version("a.b.c") is False, "Condition must be true"
 
     def test_validate_version_rejects_unsupported(self):
         """Test validation rejects unsupported versions."""
-        assert validate_version("99.99") is False
+        assert validate_version("99.99") is False, "Condition must be true"
 
 
 class TestSanitization:
@@ -68,7 +68,7 @@ class TestSanitization:
         # The list should be truncated and still find 1.0 if present early
         large_list = ["1.0"] + ["0.9"] * (MAX_VERSIONS_COUNT + 10)
         result = negotiate_version(large_list)
-        assert result == "1.0"
+        assert result == "1.0", "Result must not be empty"
 
     def test_negotiate_truncates_oversized_list(self):
         """Test that version lists exceeding MAX_VERSIONS_COUNT are truncated."""
@@ -109,10 +109,10 @@ class TestDeterminism:
     def test_version_list_is_deterministic(self):
         """Test that MCP_VERSIONS has reproducible ordering."""
         # Version list should be deterministic for reproducibility
-        assert MCP_VERSIONS == ["1.0"]
+        assert MCP_VERSIONS == ["1.0"], "MCP_VERSIONS is not valid"
 
     def test_negotiate_is_deterministic(self):
         """Test that negotiation produces reproducible results."""
         # Run multiple times to verify determinism
         results = [negotiate_version(["1.0", "0.9"]) for _ in range(10)]
-        assert all(r == "1.0" for r in results)
+        assert all(r == "1.0" for r in results), "Result must not be empty"

@@ -31,4 +31,4 @@ def test_rng_restore_python_random(tmp_path: Path):
 
     # After restore, the next value should match what would have been next after save
     actual_next = random.random()
-    assert actual_next == expected_next
+    assert actual_next == expected_next, "actual_next is not valid"

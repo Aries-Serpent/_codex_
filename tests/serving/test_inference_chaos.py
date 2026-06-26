@@ -71,8 +71,8 @@ class TestModelFailures:
                 "/infer", json={"model_name": "large-model", "inputs": ["test"], "max_length": 50}
             )
 
-            assert response.status_code == 500
-            assert "memory" in response.json()["detail"].lower()
+            assert response.status_code == 500, "Response must not be empty"
+            assert "memory" in response.json()["detail"].lower(), "Response must not be empty"
 
     def test_model_corruption_detection(self, chaos_client):
         """Test detection of corrupted model weights."""
@@ -84,8 +84,8 @@ class TestModelFailures:
                 json={"model_name": "corrupted-model", "inputs": ["test"], "max_length": 50},
             )
 
-            assert response.status_code == 500
-            assert "checkpoint" in response.json()["detail"].lower()
+            assert response.status_code == 500, "Response must not be empty"
+            assert "checkpoint" in response.json()["detail"].lower(), "Response must not be empty"
 
     def test_circuit_breaker_triggers_after_failures(self, chaos_client):
         """Test circuit breaker opens after consecutive failures."""
@@ -114,7 +114,7 @@ class TestNetworkFailures:
                 "/infer",
                 json={"model_name": "slow-model", "inputs": ["test"], "max_length": 50},
             )
-            assert response.status_code == 500
+            assert response.status_code == 500, "Response must not be empty"
 
     def test_connection_reset_during_inference(self, chaos_client):
         """Test resilience to connection resets."""
@@ -142,13 +142,13 @@ class TestResourcePressure:
             mock_stats.return_value = {"size": 3, "maxsize": 3, "hits": 100, "misses": 10}
 
             response = chaos_client.get("/health")
-            assert response.status_code == 200
+            assert response.status_code == 200, "Response must not be empty"
 
     def test_disk_full_checkpoint_save(self, chaos_client):
         """Test handling of disk full errors during checkpoint saves."""
         # Test that server continues to operate even if checkpointing fails
         response = chaos_client.get("/health")
-        assert response.status_code == 200
+        assert response.status_code == 200, "Response must not be empty"
 
     def test_cpu_throttling_impact(self, chaos_client):
         """Test performance under CPU throttling."""
@@ -157,8 +157,8 @@ class TestResourcePressure:
         response = chaos_client.get("/health")
         baseline_latency = time.time() - start
 
-        assert response.status_code == 200
-        assert baseline_latency < 1.0  # Should be fast
+        assert response.status_code == 200, "Response must not be empty"
+        assert baseline_latency < 1.0, "baseline_latency is not valid"
 
 
 class TestConcurrentLoad:
@@ -178,7 +178,7 @@ class TestConcurrentLoad:
             responses.append(response)
 
         # All requests should succeed
-        assert all(r.status_code == 200 for r in responses)
+        assert all(r.status_code == 200 for r in responses), "Response must not be empty"
 
     def test_burst_traffic_handling(self, chaos_client):
         """Test handling of burst traffic patterns."""
@@ -192,7 +192,7 @@ class TestConcurrentLoad:
 
         # Most should succeed or hit rate limit
         success_or_rate_limited = sum(1 for r in responses if r.status_code in [200, 429, 503])
-        assert success_or_rate_limited >= 45  # 90%+ should be handled
+        assert success_or_rate_limited >= 45, "success_or_rate_limited must be greater than zero"
 
     def test_sustained_load_stability(self, chaos_client):
         """Test stability under sustained load."""
@@ -207,7 +207,7 @@ class TestConcurrentLoad:
 
         # Should maintain high throughput
         requests_per_second = request_count / duration
-        assert requests_per_second > 50  # At least 50 req/s
+        assert requests_per_second > 50, "requests_per_second must be greater than zero"
 
 
 class TestCircuitBreakerRecovery:
@@ -247,10 +247,10 @@ class TestCircuitBreakerRecovery:
     def test_circuit_breaker_metrics_update(self, chaos_client):
         """Test circuit breaker metrics are updated correctly."""
         response = chaos_client.get("/metrics")
-        assert response.status_code == 200
+        assert response.status_code == 200, "Response must not be empty"
         # Should contain circuit breaker metrics
         content = response.text
-        assert "circuit_breaker" in content or "request_count" in content
+        assert "circuit_breaker" in content or "request_count" in content, "Content must not be empty"
 
 
 class TestFailoverScenarios:

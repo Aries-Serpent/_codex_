@@ -48,10 +48,10 @@ def test_pickle_roundtrip(tmp_path: Path) -> None:
     fresh_model = _DummyModel()
     state = load_training_checkpoint(ckpt_path, fresh_model, None, None, format="pickle")
 
-    assert state["epoch"] == 4
-    assert state["extra"]["epoch"] == 3
-    assert state["optimizer_state_dict"]["lr"] == 0.5
-    assert fresh_model._weights["w"] == 1
+    assert state["epoch"] == 4, "Condition must be true"
+    assert state["extra"]["epoch"] == 3, "Condition must be true"
+    assert state["optimizer_state_dict"]["lr"] == 0.5, "Condition must be true"
+    assert fresh_model._weights["w"] == 1, "Condition must be true"
 
 
 def test_corrupt_pickle_checkpoint(tmp_path: Path) -> None:

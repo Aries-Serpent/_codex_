@@ -13,7 +13,7 @@ class TestSigstoreClientImports:
         try:
             from src.codex.archive import sigstore_client
 
-            assert sigstore_client is not None
+            assert sigstore_client is not None, "sigstore_client must be initialized"
         except ImportError:
             pytest.skip("Module not available or has unmet dependencies")
 
@@ -37,7 +37,7 @@ class TestSigstoreClientOperations:
 
             if hasattr(sigstore_client, "SigstoreClient"):
                 client = sigstore_client.SigstoreClient()
-                assert client is not None
+                assert client is not None, "client must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("SigstoreClient not available")
 
@@ -51,7 +51,7 @@ class TestSigstoreClientOperations:
                 with patch.object(sigstore_client, "sign_artifact") as mock_sign:
                     mock_sign.return_value = {"signature": "abc123"}
                     result = sigstore_client.sign_artifact(b"test data")
-                    assert "signature" in result
+                    assert "signature" in result, "Result must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("sign_artifact not available")
 
@@ -64,7 +64,7 @@ class TestSigstoreClientOperations:
                 with patch.object(sigstore_client, "verify_signature") as mock_verify:
                     mock_verify.return_value = True
                     result = sigstore_client.verify_signature(b"test", "sig")
-                    assert result is True
+                    assert result is True, "Result must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("verify_signature not available")
 
@@ -78,7 +78,7 @@ class TestSigstoreClientConfiguration:
             from src.codex.archive import sigstore_client
 
             if hasattr(sigstore_client, "DEFAULT_CONFIG"):
-                assert sigstore_client.DEFAULT_CONFIG is not None
+                assert sigstore_client.DEFAULT_CONFIG is not None, "DEFAULT_CONFIG must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("DEFAULT_CONFIG not available")
 
@@ -90,7 +90,7 @@ class TestSigstoreClientConfiguration:
             if hasattr(sigstore_client, "SigstoreClient"):
                 config = {"timeout": 30}
                 client = sigstore_client.SigstoreClient(config=config)
-                assert client is not None
+                assert client is not None, "client must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("SigstoreClient not available")
 

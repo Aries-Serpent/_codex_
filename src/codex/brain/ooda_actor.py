@@ -12,14 +12,12 @@ Output: Execution report with results and metrics
 """
 
 import asyncio
-import json
 import logging
-from dataclasses import dataclass, field, asdict
-from datetime import datetime
-from typing import Any, Dict, List, Optional
-from pathlib import Path
 import time
 import uuid
+from dataclasses import dataclass, field
+from datetime import datetime
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -84,7 +82,7 @@ class AgentDispatcher:
         try:
             # Filter to available agents
             available = [a for a in candidate_agents if a in self.available_agents]
-            
+
             if not available:
                 # Fall back to any available agent
                 available = list(self.available_agents.keys())[:count]
@@ -164,31 +162,37 @@ class OutcomeValidator:
         for result in results:
             # Check for errors in output
             if result.status != "success":
-                side_effects.append(SideEffect(
-                    effect_type="agent_failure",
-                    description=f"Agent {result.agent_name} failed: {result.error_message}",
-                    severity="warning",
-                    affected_component=result.agent_id,
-                ))
+                side_effects.append(
+                    SideEffect(
+                        effect_type="agent_failure",
+                        description=f"Agent {result.agent_name} failed: {result.error_message}",
+                        severity="warning",
+                        affected_component=result.agent_id,
+                    )
+                )
 
             # Check for long execution times (potential performance impact)
             if result.duration_ms > 500:
-                side_effects.append(SideEffect(
-                    effect_type="slow_execution",
-                    description=f"Agent {result.agent_name} took {result.duration_ms:.0f}ms",
-                    severity="info",
-                    affected_component=result.agent_id,
-                ))
+                side_effects.append(
+                    SideEffect(
+                        effect_type="slow_execution",
+                        description=f"Agent {result.agent_name} took {result.duration_ms:.0f}ms",
+                        severity="info",
+                        affected_component=result.agent_id,
+                    )
+                )
 
             # Check for explicit side effects reported by agent
             if result.side_effects:
                 for effect in result.side_effects:
-                    side_effects.append(SideEffect(
-                        effect_type="reported_side_effect",
-                        description=effect,
-                        severity="warning",
-                        affected_component=result.agent_id,
-                    ))
+                    side_effects.append(
+                        SideEffect(
+                            effect_type="reported_side_effect",
+                            description=effect,
+                            severity="warning",
+                            affected_component=result.agent_id,
+                        )
+                    )
 
         return side_effects
 
@@ -224,10 +228,7 @@ class OODAactor:
             )
 
             # Dispatch to agents in parallel
-            agent_tasks = [
-                self.dispatcher.dispatch_async(agent_id, task)
-                for agent_id in agents
-            ]
+            agent_tasks = [self.dispatcher.dispatch_async(agent_id, task) for agent_id in agents]
 
             # Wait for all agents to complete (with timeout)
             results = await asyncio.wait_for(
@@ -305,12 +306,14 @@ class OODAactor:
             agents_executed=[],
             results=[],
             outcomes_matched=False,
-            side_effects=[SideEffect(
-                effect_type="timeout",
-                description="Action execution exceeded timeout",
-                severity="error",
-                affected_component="orchestrator",
-            )],
+            side_effects=[
+                SideEffect(
+                    effect_type="timeout",
+                    description="Action execution exceeded timeout",
+                    severity="error",
+                    affected_component="orchestrator",
+                )
+            ],
             duration_ms=(time.time() - start_time) * 1000,
             success_rate=0.0,
             impact_score=0.0,
@@ -330,12 +333,14 @@ class OODAactor:
             agents_executed=[],
             results=[],
             outcomes_matched=False,
-            side_effects=[SideEffect(
-                effect_type="execution_error",
-                description=f"Action execution error: {error_msg}",
-                severity="error",
-                affected_component="orchestrator",
-            )],
+            side_effects=[
+                SideEffect(
+                    effect_type="execution_error",
+                    description=f"Action execution error: {error_msg}",
+                    severity="error",
+                    affected_component="orchestrator",
+                )
+            ],
             duration_ms=(time.time() - start_time) * 1000,
             success_rate=0.0,
             impact_score=0.0,

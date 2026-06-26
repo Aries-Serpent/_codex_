@@ -25,5 +25,5 @@ def test_rate_limit(monkeypatch):
     second = client.get("/status")
     if second.status_code != 429:
         pytest.skip("rate limiting not enforced")
-    assert first.status_code == 200
-    assert second.status_code == 429
+    assert first.status_code == 200, "status_code is not valid"
+    assert second.status_code == 429, "status_code is not valid"

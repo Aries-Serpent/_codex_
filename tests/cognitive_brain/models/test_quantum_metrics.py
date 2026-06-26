@@ -57,11 +57,11 @@ class TestQuantumMetricModel:
         """Test creating a basic quantum metric."""
         metric = QuantumMetric(feature="superposition", metric_name="coherence", metric_value=0.95)
 
-        assert metric.feature == "superposition"
-        assert metric.metric_name == "coherence"
-        assert metric.metric_value == 0.95
-        assert metric.metadata == {}
-        assert metric.timestamp is not None
+        assert metric.feature == "superposition", "feature is not valid"
+        assert metric.metric_name == "coherence", "metric_name is not valid"
+        assert metric.metric_value == 0.95, "Value must be initialized"
+        assert metric.metadata == {}, "Data must not be empty"
+        assert metric.timestamp is not None, "timestamp must be initialized"
 
     def test_invalid_feature_raises_error(self):
         """Test that invalid feature name raises ValueError."""
@@ -79,7 +79,7 @@ class TestQuantumMetricModel:
 
         for feature in valid_features:
             metric = QuantumMetric(feature=feature, metric_name="test", metric_value=1.0)
-            assert metric.feature == feature
+            assert metric.feature == feature, "feature is not valid"
 
 
 class TestQuantumMetricRepositoryCRUD:
@@ -91,8 +91,8 @@ class TestQuantumMetricRepositoryCRUD:
 
         created = repo.create(metric)
 
-        assert created.id is not None
-        assert created.id > 0
+        assert created.id is not None, "id must be initialized"
+        assert created.id > 0, "id must be greater than zero"
 
     def test_get_by_id(self, repo):
         """Test retrieving metric by ID."""
@@ -101,10 +101,10 @@ class TestQuantumMetricRepositoryCRUD:
 
         retrieved = repo.get_by_id(created.id)
 
-        assert retrieved is not None
-        assert retrieved.id == created.id
-        assert retrieved.feature == "superposition"
-        assert retrieved.metric_value == 0.95
+        assert retrieved is not None, "retrieved must be initialized"
+        assert retrieved.id == created.id, "id is not valid"
+        assert retrieved.feature == "superposition", "feature is not valid"
+        assert retrieved.metric_value == 0.95, "Value must be initialized"
 
     def test_delete_metric(self, repo):
         """Test deleting a metric."""
@@ -112,10 +112,10 @@ class TestQuantumMetricRepositoryCRUD:
         created = repo.create(metric)
 
         deleted = repo.delete(created.id)
-        assert deleted is True
+        assert deleted is True, "deleted is not valid"
 
         retrieved = repo.get_by_id(created.id)
-        assert retrieved is None
+        assert retrieved is None, "retrieved is not valid"
 
 
 class TestQuantumMetricRepositoryQueries:
@@ -135,8 +135,8 @@ class TestQuantumMetricRepositoryQueries:
 
         results = repo.find_by_feature("superposition")
 
-        assert len(results) == 3
-        assert all(m.feature == "superposition" for m in results)
+        assert len(results) == 3, "Results must not be empty"
+        assert all(m.feature == "superposition" for m in results), "Result must not be empty"
 
     def test_get_coherence_stats(self, repo):
         """Test getting coherence statistics."""
@@ -148,10 +148,10 @@ class TestQuantumMetricRepositoryQueries:
 
         stats = repo.get_coherence_stats("superposition")
 
-        assert stats["sample_count"] == 4
-        assert 0.85 <= stats["avg_coherence"] <= 0.95
-        assert stats["min_coherence"] == 0.85
-        assert stats["max_coherence"] == 0.95
+        assert stats["sample_count"] == 4, "Count must be greater than zero"
+        assert 0.85 <= stats["avg_coherence"] <= 0.95, "85 is not valid"
+        assert stats["min_coherence"] == 0.85, "Condition must be true"
+        assert stats["max_coherence"] == 0.95, "Condition must be true"
 
 
 class TestBatchInsert:
@@ -160,7 +160,7 @@ class TestBatchInsert:
     def test_batch_insert_empty_list(self, repo):
         """Test batch_insert() with 0 metrics (empty list)."""
         metrics = repo.batch_insert([])
-        assert metrics == []
+        assert metrics == [], "metrics is not valid"
 
     def test_batch_insert_single_metric(self, repo):
         """Test batch_insert() with 1 metric."""
@@ -173,11 +173,11 @@ class TestBatchInsert:
 
         results = repo.batch_insert([metric])
 
-        assert len(results) == 1
-        assert results[0].id is not None
-        assert results[0].id > 0
-        assert results[0].feature == "superposition"
-        assert results[0].metric_value == 0.95
+        assert len(results) == 1, "Results must not be empty"
+        assert results[0].id is not None, "id must be initialized"
+        assert results[0].id > 0, "id must be greater than zero"
+        assert results[0].feature == "superposition", "Result must not be empty"
+        assert results[0].metric_value == 0.95, "Result must not be empty"
 
     def test_batch_insert_ten_metrics(self, repo):
         """Test batch_insert() with 10 metrics."""
@@ -193,15 +193,15 @@ class TestBatchInsert:
 
         results = repo.batch_insert(metrics)
 
-        assert len(results) == 10
-        assert all(m.id is not None for m in results)
+        assert len(results) == 10, "Results must not be empty"
+        assert all(m.id is not None for m in results), "id must be initialized"
 
         # Verify all metrics persisted to database
         for metric in results:
             retrieved = repo.get_by_id(metric.id)
-            assert retrieved is not None
-            assert retrieved.feature == "superposition"
-            assert retrieved.metric_name == "coherence"
+            assert retrieved is not None, "retrieved must be initialized"
+            assert retrieved.feature == "superposition", "feature is not valid"
+            assert retrieved.metric_name == "coherence", "metric_name is not valid"
 
     def test_batch_insert_hundred_metrics(self, repo):
         """Test batch_insert() with 100 metrics."""
@@ -217,13 +217,13 @@ class TestBatchInsert:
 
         results = repo.batch_insert(metrics)
 
-        assert len(results) == 100
-        assert all(m.id is not None for m in results)
+        assert len(results) == 100, "Results must not be empty"
+        assert all(m.id is not None for m in results), "id must be initialized"
 
         # Verify sample of metrics persisted
-        assert repo.get_by_id(results[0].id) is not None
-        assert repo.get_by_id(results[50].id) is not None
-        assert repo.get_by_id(results[99].id) is not None
+        assert repo.get_by_id(results[0].id) is not None, "Value must be initialized"
+        assert repo.get_by_id(results[50].id) is not None, "Value must be initialized"
+        assert repo.get_by_id(results[99].id) is not None, "Value must be initialized"
 
     def test_batch_insert_ids_sequential(self, repo):
         """Test that batch_insert() assigns IDs sequentially."""
@@ -241,7 +241,7 @@ class TestBatchInsert:
         # Check IDs are sequential
         first_id = results[0].id
         for i, metric in enumerate(results):
-            assert metric.id == first_id + i
+            assert metric.id == first_id + i, "id is not valid"
 
     def test_batch_insert_all_persisted(self, repo):
         """Test that all metrics from batch_insert() are persisted to database."""
@@ -260,9 +260,9 @@ class TestBatchInsert:
         # Verify every single metric is in database
         for result in results:
             retrieved = repo.get_by_id(result.id)
-            assert retrieved is not None
-            assert "accuracy_" in retrieved.metric_name
-            assert retrieved.metadata.get("test_id") is not None
+            assert retrieved is not None, "retrieved must be initialized"
+            assert "accuracy_" in retrieved.metric_name, "Condition must be true"
+            assert retrieved.metadata.get("test_id") is not None, "Value must be initialized"
 
     def test_batch_insert_backward_compatibility(self, repo):
         """Test backward compatibility - create() still works after batch_insert()."""
@@ -279,10 +279,10 @@ class TestBatchInsert:
         )
         created = repo.create(single_metric)
 
-        assert created.id is not None
+        assert created.id is not None, "id must be initialized"
         retrieved = repo.get_by_id(created.id)
-        assert retrieved is not None
-        assert retrieved.metric_value == 0.95
+        assert retrieved is not None, "retrieved must be initialized"
+        assert retrieved.metric_value == 0.95, "Value must be initialized"
 
     def test_batch_insert_mixed_features(self, repo):
         """Test batch_insert() with multiple feature types."""
@@ -295,8 +295,8 @@ class TestBatchInsert:
 
         results = repo.batch_insert(metrics)
 
-        assert len(results) == 4
-        assert results[0].feature == "superposition"
-        assert results[1].feature == "entanglement"
-        assert results[2].feature == "uncertainty"
-        assert results[3].feature == "wave_collapse"
+        assert len(results) == 4, "Results must not be empty"
+        assert results[0].feature == "superposition", "Result must not be empty"
+        assert results[1].feature == "entanglement", "Result must not be empty"
+        assert results[2].feature == "uncertainty", "Result must not be empty"
+        assert results[3].feature == "wave_collapse", "Result must not be empty"

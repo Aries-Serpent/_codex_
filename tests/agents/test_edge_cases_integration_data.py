@@ -51,12 +51,12 @@ class TestMemoryContextFrameIntegration:
             active_memories=memory_ids,
         )
 
-        assert len(frame.active_memories) == 5
+        assert len(frame.active_memories) == 5, "Collection must not be empty"
 
         # Verify all referenced memories exist
         for mem_id in frame.active_memories:
             retrieved = memory.retrieve_memory(mem_id)
-            assert retrieved is not None
+            assert retrieved is not None, "retrieved must be initialized"
 
     def test_multiple_context_frames_share_memories(self, tmp_path: Path) -> None:
         """Test multiple context frames can reference same memory."""
@@ -87,8 +87,8 @@ class TestMemoryContextFrameIntegration:
         # All frames reference the same memory
         for frame in frames:
             retrieved = memory.retrieve_memory("shared_memory")
-            assert retrieved is not None
-            assert retrieved.memory_id == "shared_memory"
+            assert retrieved is not None, "retrieved must be initialized"
+            assert retrieved.memory_id == "shared_memory", "memory_id is not valid"
 
     def test_context_frame_track_memory_access_patterns(self, tmp_path: Path) -> None:
         """Test context frame tracks memory access patterns."""
@@ -109,7 +109,7 @@ class TestMemoryContextFrameIntegration:
         for i in range(5):
             # "Access" the memory by retrieving it
             retrieved = memory.retrieve_memory("accessed_memory")
-            assert retrieved is not None
+            assert retrieved is not None, "retrieved must be initialized"
 
             # Simulate tracking in context frame
             ContextFrame(
@@ -126,8 +126,8 @@ class TestMemoryContextFrameIntegration:
 
         # Verify final access count
         final = memory.retrieve_memory("accessed_memory")
-        assert final is not None
-        assert final.access_count == 5
+        assert final is not None, "final must be initialized"
+        assert final.access_count == 5, "Count must be greater than zero"
 
 
 class TestPatternLibraryMemoryIntegration:
@@ -166,7 +166,7 @@ class TestPatternLibraryMemoryIntegration:
 
         # Pattern should reference stored memory
         pattern = lib.patterns["working_pattern"]
-        assert "success_pattern" in str(pattern["recommended_actions"])
+        assert "success_pattern" in str(pattern["recommended_actions"]), "Condition must be true"
 
     def test_pattern_usage_updates_memory_confidence(self, tmp_path: Path) -> None:
         """Test pattern usage updates related memory confidence."""
@@ -201,7 +201,7 @@ class TestPatternLibraryMemoryIntegration:
             lib.record_pattern_usage("pattern1", success=True)
 
         # Pattern success rate increases
-        assert lib.patterns["pattern1"]["success_rate"] > 0.7
+        assert lib.patterns["pattern1"]["success_rate"] > 0.7, "Value must be greater than zero"
 
         # Update related memory confidence
         pattern_memory.confidence = 0.85
@@ -209,8 +209,8 @@ class TestPatternLibraryMemoryIntegration:
 
         # Verify memory was updated
         retrieved = memory.retrieve_memory("pattern_memory_1")
-        assert retrieved is not None
-        assert retrieved.confidence == 0.85
+        assert retrieved is not None, "retrieved must be initialized"
+        assert retrieved.confidence == 0.85, "confidence is not valid"
 
     def test_pattern_matching_across_multiple_memories(self, tmp_path: Path) -> None:
         """Test pattern matching considers multiple stored memories."""
@@ -242,7 +242,7 @@ class TestPatternLibraryMemoryIntegration:
 
         # Match pattern
         matches = lib.match_patterns("This is related context information")
-        assert len(matches) > 0
+        assert len(matches) > 0, "Matches must not be empty"
 
 
 class TestMemoryDataMigration:
@@ -279,9 +279,9 @@ class TestMemoryDataMigration:
             old_retrieved = old_memory.retrieve_memory(f"migrated_{i}")
             new_retrieved = new_memory.retrieve_memory(f"migrated_{i}")
 
-            assert old_retrieved is not None
-            assert new_retrieved is not None
-            assert old_retrieved.content == new_retrieved.content
+            assert old_retrieved is not None, "old_retrieved must be initialized"
+            assert new_retrieved is not None, "new_retrieved must be initialized"
+            assert old_retrieved.content == new_retrieved.content, "Content must not be empty"
 
     def test_memory_backup_and_restore(self, tmp_path: Path) -> None:
         """Test backup and restore of memories."""
@@ -313,8 +313,8 @@ class TestMemoryDataMigration:
         # Verify all data restored
         for i in range(5):
             retrieved = restored.retrieve_memory(f"backup_{i}")
-            assert retrieved is not None
-            assert retrieved.content == f"Important data {i}"
+            assert retrieved is not None, "retrieved must be initialized"
+            assert retrieved.content == f"Important data {i}", "Data must not be empty"
 
     def test_memory_consolidation_and_pruning(self, tmp_path: Path) -> None:
         """Test memory consolidation and pruning."""
@@ -343,8 +343,8 @@ class TestMemoryDataMigration:
 
         # Verify we have memories with varying confidence
         confidences = [m.confidence for m in all_memories]
-        assert max(confidences) > 0.8
-        assert min(confidences) <= 0.2
+        assert max(confidences) > 0.8, "Value must be greater than zero"
+        assert min(confidences) <= 0.2, "Condition must be true"
 
     def test_memory_deduplication(self, tmp_path: Path) -> None:
         """Test deduplication of identical memories."""
@@ -364,7 +364,7 @@ class TestMemoryDataMigration:
         # All should be stored
         for i in range(5):
             retrieved = memory.retrieve_memory(f"duplicate_{i}")
-            assert retrieved is not None
+            assert retrieved is not None, "retrieved must be initialized"
 
     def test_memory_versioning(self, tmp_path: Path) -> None:
         """Test memory versioning and updates."""
@@ -392,9 +392,9 @@ class TestMemoryDataMigration:
 
         # Final version should be 3
         retrieved = memory.retrieve_memory("versioned")
-        assert retrieved is not None
-        assert retrieved.content == "Version 3"
-        assert retrieved.context["version"] == 3
+        assert retrieved is not None, "retrieved must be initialized"
+        assert retrieved.content == "Version 3", "Content must not be empty"
+        assert retrieved.context["version"] == 3, "Condition must be true"
 
 
 class TestBatchOperationsAtomicity:
@@ -423,7 +423,7 @@ class TestBatchOperationsAtomicity:
         # Verify all stored
         for i in range(10):
             retrieved = memory.retrieve_memory(f"batch_{i}")
-            assert retrieved is not None
+            assert retrieved is not None, "retrieved must be initialized"
 
     def test_batch_with_partial_failure_consistency(self, tmp_path: Path) -> None:
         """Test consistency when batch has partial failures."""
@@ -451,7 +451,7 @@ class TestBatchOperationsAtomicity:
         # All should be accessible
         for i in range(10):
             retrieved = memory.retrieve_memory(f"partial_{i}")
-            assert retrieved is not None
+            assert retrieved is not None, "retrieved must be initialized"
 
 
 class TestCrossComponentDataConsistency:
@@ -498,14 +498,14 @@ class TestCrossComponentDataConsistency:
 
         # Memory is accessible
         retrieved_memory = memory.retrieve_memory("cross_1")
-        assert retrieved_memory is not None
+        assert retrieved_memory is not None, "retrieved_memory must be initialized"
 
         # Frame references the memory
-        assert "cross_1" in frame.active_memories
+        assert "cross_1" in frame.active_memories, "Condition must be true"
 
         # Pattern can match and recommend the memory
         matches = lib.match_patterns("Important fact")
-        assert len(matches) > 0
+        assert len(matches) > 0, "Matches must not be empty"
 
     def test_system_wide_data_integrity_check(self, tmp_path: Path) -> None:
         """Test system-wide data integrity."""
@@ -530,13 +530,13 @@ class TestCrossComponentDataConsistency:
 
         # Retrieve and verify integrity
         retrieved = memory.retrieve_memory("complex")
-        assert retrieved is not None
+        assert retrieved is not None, "retrieved must be initialized"
 
         # Check all nested data preserved
-        assert retrieved.context["nested"]["deep"]["value"] == "important"
+        assert retrieved.context["nested"]["deep"]["value"] == "important", "Value must be initialized"
         assert retrieved.context["list"] == [1, 2, 3, 4, 5]
-        assert len(retrieved.tags) == 3
-        assert len(retrieved.related_memories) == 3
+        assert len(retrieved.tags) == 3, "Collection must not be empty"
+        assert len(retrieved.related_memories) == 3, "Collection must not be empty"
 
 
 class TestDataIntegrityEdgeCases:
@@ -571,10 +571,10 @@ class TestDataIntegrityEdgeCases:
         retrieved_a = memory.retrieve_memory("mem_a")
         retrieved_b = memory.retrieve_memory("mem_b")
 
-        assert retrieved_a is not None
-        assert retrieved_b is not None
-        assert "mem_b" in retrieved_a.related_memories
-        assert "mem_a" in retrieved_b.related_memories
+        assert retrieved_a is not None, "retrieved_a must be initialized"
+        assert retrieved_b is not None, "retrieved_b must be initialized"
+        assert "mem_b" in retrieved_a.related_memories, "Condition must be true"
+        assert "mem_a" in retrieved_b.related_memories, "Condition must be true"
 
     def test_memory_reference_integrity_with_deletion(self, tmp_path: Path) -> None:
         """Test reference integrity when related memory is deleted."""
@@ -611,4 +611,4 @@ class TestDataIntegrityEdgeCases:
 
         # Parent reference should still be valid
         parent = memory.retrieve_memory("parent")
-        assert "child" in parent.related_memories
+        assert "child" in parent.related_memories, "Condition must be true"

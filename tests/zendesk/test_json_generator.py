@@ -42,23 +42,23 @@ class TestGeneratorInitialization:
     def test_generator_loads_builtin_templates(self, generator: ZendeskJSONGenerator) -> None:
         """Test that built-in templates are loaded."""
         templates = generator.list_templates()
-        assert len(templates) >= 5  # At least 5 built-in templates
+        assert len(templates) >= 5, "Templates must not be empty"
 
     def test_create_ticket_template_exists(self, generator: ZendeskJSONGenerator) -> None:
         """Test that create_ticket template exists."""
         template = generator.get_template("create_ticket")
-        assert template is not None
-        assert template.name == "create_ticket"
+        assert template is not None, "template must be initialized"
+        assert template.name == "create_ticket", "name is not valid"
 
     def test_bulk_update_template_exists(self, generator: ZendeskJSONGenerator) -> None:
         """Test that bulk_update template exists."""
         template = generator.get_template("bulk_update")
-        assert template is not None
+        assert template is not None, "template must be initialized"
 
     def test_create_sla_policy_template_exists(self, generator: ZendeskJSONGenerator) -> None:
         """Test that create_sla_policy template exists."""
         template = generator.get_template("create_sla_policy")
-        assert template is not None
+        assert template is not None, "template must be initialized"
 
 
 # ==============================================================================
@@ -86,14 +86,14 @@ class TestTemplateRegistration:
         generator.register_template(custom_template)
 
         retrieved = generator.get_template("custom_action")
-        assert retrieved is not None
-        assert retrieved.name == "custom_action"
-        assert retrieved.category == "custom"
+        assert retrieved is not None, "retrieved must be initialized"
+        assert retrieved.name == "custom_action", "name is not valid"
+        assert retrieved.category == "custom", "category is not valid"
 
     def test_get_nonexistent_template_returns_none(self, generator: ZendeskJSONGenerator) -> None:
         """Test that getting a nonexistent template returns None."""
         template = generator.get_template("nonexistent_template")
-        assert template is None
+        assert template is None, "template is not valid"
 
 
 # ==============================================================================
@@ -107,24 +107,24 @@ class TestTemplateListing:
     def test_list_all_templates(self, generator: ZendeskJSONGenerator) -> None:
         """Test listing all templates."""
         templates = generator.list_templates()
-        assert len(templates) >= 5
+        assert len(templates) >= 5, "Templates must not be empty"
 
     def test_list_templates_by_category(self, generator: ZendeskJSONGenerator) -> None:
         """Test listing templates by category."""
         ticket_templates = generator.list_templates(category="tickets")
-        assert len(ticket_templates) >= 2
-        assert all(t.category == "tickets" for t in ticket_templates)
+        assert len(ticket_templates) >= 2, "Ticket_templates must not be empty"
+        assert all(t.category == "tickets" for t in ticket_templates), "category is not valid"
 
     def test_list_templates_by_tags(self, generator: ZendeskJSONGenerator) -> None:
         """Test listing templates by tags."""
         create_templates = generator.list_templates(tags=["create"])
-        assert len(create_templates) >= 2
-        assert all(any("create" in t.tags for t in create_templates) for t in create_templates)
+        assert len(create_templates) >= 2, "Create_templates must not be empty"
+        assert all(any("create" in t.tags for t in create_templates) for t in create_templates), "Condition must be true"
 
     def test_list_templates_with_combined_filters(self, generator: ZendeskJSONGenerator) -> None:
         """Test listing templates with both category and tags filters."""
         templates = generator.list_templates(category="tickets", tags=["create"])
-        assert len(templates) >= 1
+        assert len(templates) >= 1, "Templates must not be empty"
 
 
 # ==============================================================================
@@ -150,11 +150,11 @@ class TestScriptGeneration:
             },
         )
 
-        assert "ticket" in script
-        assert script["ticket"]["subject"] == "Test Subject"
-        assert script["ticket"]["description"] == "Test Description"
-        assert script["ticket"]["priority"] == "high"
-        assert script["ticket"]["requester"]["email"] == "test@example.com"
+        assert "ticket" in script, "Condition must be true"
+        assert script["ticket"]["subject"] == "Test Subject", "Condition must be true"
+        assert script["ticket"]["description"] == "Test Description", "Condition must be true"
+        assert script["ticket"]["priority"] == "high", "Condition must be true"
+        assert script["ticket"]["requester"]["email"] == "test@example.com", "Condition must be true"
 
     def test_generate_with_defaults(self, generator: ZendeskJSONGenerator) -> None:
         """Test that defaults are applied for missing optional variables."""
@@ -167,8 +167,8 @@ class TestScriptGeneration:
             },
         )
 
-        assert script["ticket"]["priority"] == "normal"
-        assert script["ticket"]["type"] == "question"
+        assert script["ticket"]["priority"] == "normal", "Condition must be true"
+        assert script["ticket"]["type"] == "question", "Condition must be true"
 
     def test_generate_with_strict_mode(self, generator: ZendeskJSONGenerator) -> None:
         """Test strict mode raises error for missing required variables."""
@@ -194,10 +194,10 @@ class TestScriptGeneration:
             include_meta=True,
         )
 
-        assert "_generated" in script
-        assert script["_generated"]["template"] == "close_ticket"
-        assert "timestamp" in script["_generated"]
-        assert "variables_used" in script["_generated"]
+        assert "_generated" in script, "Condition must be true"
+        assert script["_generated"]["template"] == "close_ticket", "Condition must be true"
+        assert "timestamp" in script["_generated"], "Condition must be true"
+        assert "variables_used" in script["_generated"], "Condition must be true"
 
 
 # ==============================================================================
@@ -212,7 +212,7 @@ class TestPlaceholderReplacement:
         """Test simple placeholder replacement."""
         script = generator.generate("close_ticket", {"RESOLUTION_COMMENT": "All done!"})
 
-        assert script["ticket"]["comment"]["body"] == "All done!"
+        assert script["ticket"]["comment"]["body"] == "All done!", "Condition must be true"
 
     def test_placeholder_in_nested_structure(self, generator: ZendeskJSONGenerator) -> None:
         """Test placeholder replacement in nested structures."""
@@ -226,8 +226,8 @@ class TestPlaceholderReplacement:
             },
         )
 
-        assert script["user"]["name"] == "John Doe"
-        assert script["user"]["email"] == "john@example.com"
+        assert script["user"]["name"] == "John Doe", "Condition must be true"
+        assert script["user"]["email"] == "john@example.com", "Condition must be true"
 
     def test_placeholder_preserves_unreplaced_when_not_strict(
         self, generator: ZendeskJSONGenerator
@@ -249,8 +249,8 @@ class TestPlaceholderReplacement:
 
         script = generator.generate("test_template", {"VAR1": "value1"})
 
-        assert script["field1"] == "value1"
-        assert script["field2"] == "{{VAR2}}"  # Unreplaced placeholder preserved
+        assert script["field1"] == "value1", "Value must be initialized"
+        assert script["field2"] == "{{VAR2}}", "Condition must be true"
 
 
 # ==============================================================================
@@ -272,12 +272,12 @@ class TestChatGPTExport:
             },
         )
 
-        assert "name" in export
-        assert "description" in export
-        assert "api_request" in export
-        assert export["name"] == "create_ticket"
-        assert export["api_request"]["method"] == "POST"
-        assert export["api_request"]["endpoint"] == "/api/v2/tickets.json"
+        assert "name" in export, "Condition must be true"
+        assert "description" in export, "Condition must be true"
+        assert "api_request" in export, "Condition must be true"
+        assert export["name"] == "create_ticket", "exp is not valid"
+        assert export["api_request"]["method"] == "POST", "exp is not valid"
+        assert export["api_request"]["endpoint"] == "/api/v2/tickets.json", "exp is not valid"
 
     def test_export_for_chatgpt_includes_instructions(
         self, generator: ZendeskJSONGenerator
@@ -289,9 +289,9 @@ class TestChatGPTExport:
             include_instructions=True,
         )
 
-        assert "instructions" in export
-        assert "## create_ticket" in export["instructions"]
-        assert "variables" in export
+        assert "instructions" in export, "Condition must be true"
+        assert ", "Condition must be true"
+        assert "variables" in export, "Condition must be true"
 
     def test_export_for_chatgpt_without_instructions(self, generator: ZendeskJSONGenerator) -> None:
         """Test ChatGPT export without instructions."""
@@ -301,25 +301,25 @@ class TestChatGPTExport:
             include_instructions=False,
         )
 
-        assert "instructions" not in export
+        assert "instructions" not in export, "Condition must be true"
 
     def test_export_http_method_inference(self, generator: ZendeskJSONGenerator) -> None:
         """Test that HTTP methods are correctly inferred."""
         # POST for create_*
         create_export = generator.export_for_chatgpt("create_ticket", {})
-        assert create_export["api_request"]["method"] == "POST"
+        assert create_export["api_request"]["method"] == "POST", "create_exp is not valid"
 
         # POST for search_*
         search_export = generator.export_for_chatgpt("search_tickets", {"QUERY": "status:open"})
-        assert search_export["api_request"]["method"] == "POST"
+        assert search_export["api_request"]["method"] == "POST", "search_exp is not valid"
 
         # PUT for update_*
         update_export = generator.export_for_chatgpt("update_ticket", {})
-        assert update_export["api_request"]["method"] == "PUT"
+        assert update_export["api_request"]["method"] == "PUT", "update_exp is not valid"
 
         # PUT for bulk_*
         bulk_export = generator.export_for_chatgpt("bulk_update", {})
-        assert bulk_export["api_request"]["method"] == "PUT"
+        assert bulk_export["api_request"]["method"] == "PUT", "bulk_exp is not valid"
 
 
 # ==============================================================================
@@ -341,11 +341,11 @@ class TestZendeskAIExport:
             },
         )
 
-        assert "action" in export
-        assert "category" in export
-        assert "payload" in export
-        assert export["action"] == "create_ticket"
-        assert export["category"] == "tickets"
+        assert "action" in export, "Condition must be true"
+        assert "category" in export, "Condition must be true"
+        assert "payload" in export, "Condition must be true"
+        assert export["action"] == "create_ticket", "exp is not valid"
+        assert export["category"] == "tickets", "exp is not valid"
 
     def test_export_for_zendesk_ai_includes_context(self, generator: ZendeskJSONGenerator) -> None:
         """Test that Zendesk AI export includes context."""
@@ -355,10 +355,10 @@ class TestZendeskAIExport:
             include_context=True,
         )
 
-        assert "context" in export
-        assert "description" in export["context"]
-        assert "tags" in export["context"]
-        assert "variables" in export["context"]
+        assert "context" in export, "Condition must be true"
+        assert "description" in export["context"], "Condition must be true"
+        assert "tags" in export["context"], "Condition must be true"
+        assert "variables" in export["context"], "Condition must be true"
 
     def test_export_for_zendesk_ai_without_context(self, generator: ZendeskJSONGenerator) -> None:
         """Test Zendesk AI export without context."""
@@ -368,7 +368,7 @@ class TestZendeskAIExport:
             include_context=False,
         )
 
-        assert "context" not in export
+        assert "context" not in export, "Condition must be true"
 
 
 # ==============================================================================
@@ -385,16 +385,16 @@ class TestJSONSerialization:
 
         # Should be valid JSON
         parsed = json.loads(json_str)
-        assert "ticket" in parsed
-        assert parsed["ticket"]["status"] == "solved"
+        assert "ticket" in parsed, "Condition must be true"
+        assert parsed["ticket"]["status"] == "solved", "Condition must be true"
 
     def test_to_json_is_pretty_printed(self, generator: ZendeskJSONGenerator) -> None:
         """Test that to_json output is pretty printed."""
         json_str = generator.to_json("close_ticket", {"RESOLUTION_COMMENT": "Done"})
 
         # Pretty printed JSON has newlines
-        assert "\n" in json_str
-        assert "  " in json_str  # Indentation
+        assert "\n" in json_str, "Condition must be true"
+        assert "  " in json_str, "Condition must be true"
 
 
 # ==============================================================================
@@ -409,12 +409,12 @@ class TestTemplateVariables:
         """Test TemplateVariable default values."""
         var = TemplateVariable(name="TEST", description="A test variable")
 
-        assert var.name == "TEST"
-        assert var.description == "A test variable"
-        assert var.required is True
-        assert var.default is None
-        assert var.value_type == "string"
-        assert var.example is None
+        assert var.name == "TEST", "name is not valid"
+        assert var.description == "A test variable", "description is not valid"
+        assert var.required is True, "required is not valid"
+        assert var.default is None, "default is not valid"
+        assert var.value_type == "string", "Value must be initialized"
+        assert var.example is None, "example is not valid"
 
     def test_template_variable_full_specification(self) -> None:
         """Test TemplateVariable with all fields specified."""
@@ -427,11 +427,11 @@ class TestTemplateVariables:
             example=50,
         )
 
-        assert var.name == "COUNT"
-        assert var.required is False
-        assert var.default == 10
-        assert var.value_type == "number"
-        assert var.example == 50
+        assert var.name == "COUNT", "Count must be greater than zero"
+        assert var.required is False, "required is not valid"
+        assert var.default == 10, "default is not valid"
+        assert var.value_type == "number", "Value must be initialized"
+        assert var.example == 50, "example is not valid"
 
 
 # ==============================================================================
@@ -451,9 +451,9 @@ class TestScriptTemplate:
             template={"key": "value"},
         )
 
-        assert template.name == "test"
-        assert template.variables == []
-        assert template.tags == []
+        assert template.name == "test", "name is not valid"
+        assert template.variables == [], "variables is not valid"
+        assert template.tags == [], "tags is not valid"
 
     def test_script_template_full_specification(self) -> None:
         """Test ScriptTemplate with all fields specified."""
@@ -467,8 +467,8 @@ class TestScriptTemplate:
             tags=["test", "example"],
         )
 
-        assert template.name == "full_test"
-        assert len(template.variables) == 1
+        assert template.name == "full_test", "name is not valid"
+        assert len(template.variables) == 1, "Collection must not be empty"
         assert template.tags == ["test", "example"]
 
 
@@ -495,7 +495,7 @@ class TestSLAPolicyTemplate:
             },
         )
 
-        assert "sla_policy" in script
-        assert script["sla_policy"]["title"] == "Premium Support"
-        assert script["sla_policy"]["filter"]["all"][0]["value"] == "urgent"
-        assert script["sla_policy"]["policy_metrics"][0]["target"] == 30
+        assert "sla_policy" in script, "Condition must be true"
+        assert script["sla_policy"]["title"] == "Premium Support", "Condition must be true"
+        assert script["sla_policy"]["filter"]["all"][0]["value"] == "urgent", "Value must be initialized"
+        assert script["sla_policy"]["policy_metrics"][0]["target"] == 30, "Condition must be true"

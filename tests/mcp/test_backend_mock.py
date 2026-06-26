@@ -33,9 +33,9 @@ def test_upsert_and_query(mock_backend: InMemoryMockBackend):
     ]
     mock_backend.upsert_batch(namespace, items)
     results = mock_backend.query_top_k(namespace, [1.0, 0.0], top_k=2)
-    assert len(results) == 2
+    assert len(results) == 2, "Results must not be empty"
     assert results[0]["id"] in {"a", "b"}
-    assert results[0]["score"] >= results[1]["score"]
+    assert results[0]["score"] >= results[1]["score"], "Value must be greater than zero"
 
 
 def test_delete_and_health(mock_backend: InMemoryMockBackend):
@@ -43,9 +43,9 @@ def test_delete_and_health(mock_backend: InMemoryMockBackend):
     item = VectorItem({"id": "x", "embedding": [0.5, 0.5], "content": "x", "metadata": {}})
     mock_backend.upsert_batch(ns, [item])
     deleted_first = mock_backend.delete(ns, "x")
-    assert deleted_first is True
+    assert deleted_first is True, "deleted_first is not valid"
     # delete again returns False
     deleted_second = mock_backend.delete(ns, "x")
-    assert deleted_second is False
+    assert deleted_second is False, "deleted_second is not valid"
     health = mock_backend.health_check()
-    assert health["status"] == "ok"
+    assert health["status"] == "ok", "Condition must be true"

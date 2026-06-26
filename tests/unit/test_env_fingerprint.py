@@ -21,17 +21,17 @@ class TestCapture:
 
     def test_python_version_matches_runtime(self):
         fp = EnvironmentFingerprint.capture()
-        assert fp.python_version == platform.python_version()
+        assert fp.python_version == platform.python_version(), "python_version is not valid"
 
     def test_os_platform_non_empty(self):
         fp = EnvironmentFingerprint.capture()
         assert isinstance(fp.os_platform, str)
-        assert len(fp.os_platform) > 0
+        assert len(fp.os_platform) > 0, "Collection must not be empty"
 
     def test_cpu_count_positive_or_none(self):
         fp = EnvironmentFingerprint.capture()
         if fp.cpu_count is not None:
-            assert fp.cpu_count > 0
+            assert fp.cpu_count > 0, "cpu_count must be positive"
 
     def test_gpu_devices_is_list(self):
         fp = EnvironmentFingerprint.capture()
@@ -42,9 +42,9 @@ class TestCapture:
 
         with patch.object(env_mod, "torch", None):
             fp = EnvironmentFingerprint.capture()
-        assert fp.python_version == platform.python_version()
-        assert fp.cuda_version is None
-        assert fp.gpu_devices == []
+        assert fp.python_version == platform.python_version(), "python_version is not valid"
+        assert fp.cuda_version is None, "cuda_version is not valid"
+        assert fp.gpu_devices == [], "gpu_devices is not valid"
 
     def test_captures_with_mock_torch(self):
         import codex_ml.utils.env as env_mod
@@ -62,10 +62,10 @@ class TestCapture:
         with patch.object(env_mod, "torch", mock_torch):
             fp = EnvironmentFingerprint.capture()
 
-        assert fp.cuda_version == "12.1"
-        assert len(fp.gpu_devices) == 1
-        assert fp.gpu_devices[0]["name"] == "Tesla T4"
-        assert fp.gpu_devices[0]["compute_capability"] == "8.0"
+        assert fp.cuda_version == "12.1", "cuda_version is not valid"
+        assert len(fp.gpu_devices) == 1, "Collection must not be empty"
+        assert fp.gpu_devices[0]["name"] == "Tesla T4", "Condition must be true"
+        assert fp.gpu_devices[0]["compute_capability"] == "8.0", "Condition must be true"
 
     def test_no_torch_no_gpu_devices(self):
         import codex_ml.utils.env as env_mod
@@ -73,8 +73,8 @@ class TestCapture:
         with patch.object(env_mod, "torch", None), patch.object(env_mod, "_pynvml", None):
             fp = EnvironmentFingerprint.capture()
 
-        assert fp.gpu_devices == []
-        assert fp.cuda_version is None
+        assert fp.gpu_devices == [], "gpu_devices is not valid"
+        assert fp.cuda_version is None, "cuda_version is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -108,7 +108,7 @@ class TestDigest:
     def test_returns_16_char_hex(self):
         fp = EnvironmentFingerprint.capture()
         digest = fp.digest()
-        assert len(digest) == 16
+        assert len(digest) == 16, "Digest must not be empty"
         int(digest, 16)  # valid hex
 
     def test_stable_across_instances_same_hardware(self):
@@ -117,7 +117,7 @@ class TestDigest:
         fp2 = EnvironmentFingerprint.capture()
         # git_commit may differ between two fast captures only if a commit lands mid-run;
         # digest excludes git_commit so it must be identical.
-        assert fp1.digest() == fp2.digest()
+        assert fp1.digest() == fp2.digest(), "Condition must be true"
 
     def test_excludes_git_commit(self):
         fp = EnvironmentFingerprint(
@@ -130,7 +130,7 @@ class TestDigest:
             os_platform="Linux",
             git_commit=None,
         )
-        assert fp.digest() == fp_no_commit.digest()
+        assert fp.digest() == fp_no_commit.digest(), "Condition must be true"
 
     def test_differs_across_different_hardware(self):
         fp_a = EnvironmentFingerprint(
@@ -143,7 +143,7 @@ class TestDigest:
             os_platform="Linux",
             cpu_count=8,
         )
-        assert fp_a.digest() != fp_b.digest()
+        assert fp_a.digest() != fp_b.digest(), "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -159,7 +159,7 @@ class TestLog:
         )
         with caplog.at_level(logging.INFO, logger="codex_ml.utils.env"):
             fp.log()
-        assert any("fingerprint" in rec.message.lower() for rec in caplog.records)
+        assert any("fingerprint" in rec.message.lower() for rec in caplog.records), "Condition must be true"
 
     def test_uses_custom_logger(self):
         mock_logger = MagicMock()
@@ -179,21 +179,21 @@ class TestEnvironmentSummary:
         assert isinstance(summary, dict)
 
     def test_has_os_key(self):
-        assert "os" in environment_summary()
+        assert "os" in environment_summary(), "Condition must be true"
 
     def test_has_python_key(self):
-        assert "python" in environment_summary()
+        assert "python" in environment_summary(), "Condition must be true"
 
     def test_python_matches_runtime(self):
-        assert environment_summary()["python"] == platform.python_version()
+        assert environment_summary()["python"] == platform.python_version(), "Condition must be true"
 
     def test_no_torch_omits_gpu_keys(self):
         import codex_ml.utils.env as env_mod
 
         with patch.object(env_mod, "torch", None):
             summary = environment_summary()
-        assert "gpu" not in summary
-        assert "cuda_version" not in summary
+        assert "gpu" not in summary, "Condition must be true"
+        assert "cuda_version" not in summary, "Condition must be true"
 
     def test_with_torch_includes_cuda_version(self):
         import codex_ml.utils.env as env_mod
@@ -204,4 +204,4 @@ class TestEnvironmentSummary:
 
         with patch.object(env_mod, "torch", mock_torch):
             summary = environment_summary()
-        assert summary.get("cuda_version") == "12.1"
+        assert summary.get("cuda_version") == "12.1", "Condition must be true"

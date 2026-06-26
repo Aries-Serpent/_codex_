@@ -29,7 +29,7 @@ def test_repo_map_reasoning_flag_is_propagated(monkeypatch):
 
     result = runner.invoke(codex_cli.codex, ["repo-map", "--reasoning"])
     assert result.exit_code == 0, f"CLI failed: {result.output}"
-    assert result.output.strip() == "rendered"
+    assert result.output.strip() == "rendered", "Result must not be empty"
     assert calls.get("kwargs", {}).get("reasoning") is True
 
 
@@ -50,7 +50,7 @@ def test_repo_map_without_reasoning_flag(monkeypatch):
 
     result = runner.invoke(codex_cli.codex, ["repo-map"])
     assert result.exit_code == 0, f"CLI failed: {result.output}"
-    assert result.output.strip() == "rendered"
+    assert result.output.strip() == "rendered", "Result must not be empty"
     assert calls.get("kwargs", {}).get("reasoning", False) is False
 
 
@@ -74,6 +74,6 @@ def test_repo_map_reasoning_legacy_fallback(monkeypatch):
 
     result = runner.invoke(codex_cli.codex, ["repo-map", "--reasoning"])
     assert result.exit_code == 0, f"CLI failed: {result.output}"
-    assert "fallback-render" in result.output
-    assert calls[0][1].get("reasoning") is True
-    assert calls[1][1] == {}
+    assert "fallback-render" in result.output, "Result must not be empty"
+    assert calls[0][1].get("reasoning") is True, "Condition must be true"
+    assert calls[1][1] == {}, "Condition must be true"

@@ -117,7 +117,7 @@ def test_u1_gauge_probability_invariance(simple_state):
     transformed = gauge.apply_global(simple_state, theta)
     transformed_prob = transformed.tasks["task_1"].spinor.total_probability
 
-    assert abs(transformed_prob - original_prob) < 1e-10
+    assert abs(transformed_prob - original_prob) < 1e-10, "Condition must be true"
 
 
 def test_u1_gauge_verify_invariance(simple_state):
@@ -126,10 +126,10 @@ def test_u1_gauge_verify_invariance(simple_state):
 
     result = gauge.verify_invariance(simple_state, theta=np.pi / 6)
 
-    assert result.is_invariant
-    assert result.deviation < 1e-10
-    assert "theta" in result.details
-    assert "max_deviation" in result.details
+    assert result.is_invariant, "Result must not be empty"
+    assert result.deviation < 1e-10, "Result must not be empty"
+    assert "theta" in result.details, "Result must not be empty"
+    assert "max_deviation" in result.details, "Result must not be empty"
 
 
 def test_u1_gauge_local_transform(multi_task_state):
@@ -192,7 +192,7 @@ def test_translation_symmetry_apply(multi_task_state):
         # dependency_depth (index 4) is an integer field, so handle separately
         np.testing.assert_allclose(translated_pos[:4], expected[:4], rtol=1e-10)
         # Integer field: check it increased by int(displacement[4])
-        assert translated_pos[4] == original_pos[4] + int(displacement[4])
+        assert translated_pos[4] == original_pos[4] + int(displacement[4]), "Condition must be true"
 
 
 def test_translation_momentum_computation(multi_task_state):
@@ -222,9 +222,9 @@ def test_translation_momentum_conservation(multi_task_state):
 
     result = trans.verify_momentum_conservation(multi_task_state, state_after, tolerance=1e-6)
 
-    assert result.is_invariant
-    assert "momentum_before" in result.details
-    assert "momentum_after" in result.details
+    assert result.is_invariant, "Result must not be empty"
+    assert "momentum_before" in result.details, "Result must not be empty"
+    assert "momentum_after" in result.details, "Result must not be empty"
 
 
 # ============================================================================
@@ -239,7 +239,7 @@ def test_time_translation_energy_computation(multi_task_state):
     energy = time_trans.compute_total_energy(multi_task_state)
 
     # Energy should be positive (includes rest energy)
-    assert energy > 0
+    assert energy > 0, "energy must be greater than zero"
 
 
 def test_time_translation_energy_conservation(multi_task_state):
@@ -255,9 +255,9 @@ def test_time_translation_energy_conservation(multi_task_state):
 
     result = time_trans.verify_energy_conservation(multi_task_state, state_after, tolerance=1e-6)
 
-    assert result.is_invariant
-    assert "energy_before" in result.details
-    assert "energy_after" in result.details
+    assert result.is_invariant, "Result must not be empty"
+    assert "energy_before" in result.details, "Result must not be empty"
+    assert "energy_after" in result.details, "Result must not be empty"
 
 
 # ============================================================================
@@ -283,7 +283,7 @@ def test_noether_momentum_current(simple_task):
 
     # Should be proportional to velocity
     assert momentum_curr.shape == (5,)
-    assert np.allclose(
+    assert np.allclose(, "Condition must be true"
         momentum_curr, simple_task.spinor.total_probability * simple_task.velocity, rtol=1e-6
     )
 
@@ -301,9 +301,9 @@ def test_noether_continuity_equation(multi_task_state):
 
     result = noether.verify_continuity(multi_task_state, state_after, dt=0.01, tolerance=1e-3)
 
-    assert "max_violation" in result
-    assert "is_conserved" in result
-    assert "task_results" in result
+    assert "max_violation" in result, "Result must not be empty"
+    assert "is_conserved" in result, "Result must not be empty"
+    assert "task_results" in result, "Result must not be empty"
 
 
 # ============================================================================
@@ -317,11 +317,11 @@ def test_gauge_checker_check_all(multi_task_state):
 
     results = checker.check_all(multi_task_state, tolerance=1e-6)
 
-    assert "u1_invariance" in results
-    assert "total_momentum" in results
-    assert "total_energy" in results
-    assert "all_passed" in results
-    assert results["all_passed"]
+    assert "u1_invariance" in results, "Result must not be empty"
+    assert "total_momentum" in results, "Result must not be empty"
+    assert "total_energy" in results, "Result must not be empty"
+    assert "all_passed" in results, "Result must not be empty"
+    assert results["all_passed"], "Result must not be empty"
 
 
 def test_gauge_checker_verify_all(multi_task_state):
@@ -337,10 +337,10 @@ def test_gauge_checker_verify_all(multi_task_state):
 
     results = checker.verify_all(multi_task_state, state_after, dt=0.1, tolerance=1e-3)
 
-    assert "momentum_conservation" in results
-    assert "energy_conservation" in results
-    assert "continuity" in results
-    assert "all_passed" in results
+    assert "momentum_conservation" in results, "Result must not be empty"
+    assert "energy_conservation" in results, "Result must not be empty"
+    assert "continuity" in results, "Result must not be empty"
+    assert "all_passed" in results, "Result must not be empty"
 
 
 # ============================================================================
@@ -359,8 +359,8 @@ def test_conservation_enforcer_probability(simple_state):
         simple_state, tolerance=1e-10
     )
 
-    assert was_repaired
-    assert abs(repaired.tasks["task_1"].spinor.total_probability - 1.0) < 1e-10
+    assert was_repaired, "was_repaired is not valid"
+    assert abs(repaired.tasks["task_1"].spinor.total_probability - 1.0) < 1e-10, "Condition must be true"
 
 
 def test_conservation_enforcer_no_repair_needed(simple_state):
@@ -374,7 +374,7 @@ def test_conservation_enforcer_no_repair_needed(simple_state):
         simple_state, tolerance=1e-10
     )
 
-    assert not was_repaired
+    assert not was_repaired, "Condition must be true"
 
 
 def test_conservation_enforcer_logging(simple_state):
@@ -387,9 +387,9 @@ def test_conservation_enforcer_logging(simple_state):
     enforcer.enforce_probability_conservation(simple_state)
 
     violations = enforcer.get_violations()
-    assert len(violations) > 0
-    assert violations[0]["type"] == "probability_violation"
-    assert violations[0]["task_id"] == "task_1"
+    assert len(violations) > 0, "Violations must not be empty"
+    assert violations[0]["type"] == "probability_violation", "Condition must be true"
+    assert violations[0]["task_id"] == "task_1", "Condition must be true"
 
 
 def test_conservation_enforcer_clear_log(simple_state):
@@ -400,10 +400,10 @@ def test_conservation_enforcer_clear_log(simple_state):
     simple_state.tasks["task_1"].spinor.components *= 2.0
     enforcer.enforce_probability_conservation(simple_state)
 
-    assert len(enforcer.get_violations()) > 0
+    assert len(enforcer.get_violations()) > 0, "Collection must not be empty"
 
     enforcer.clear_violations()
-    assert len(enforcer.get_violations()) == 0
+    assert len(enforcer.get_violations()) == 0, "Collection must not be empty"
 
 
 def test_conservation_enforcer_no_auto_repair(simple_state):
@@ -418,10 +418,10 @@ def test_conservation_enforcer_no_auto_repair(simple_state):
     )
 
     # Should detect but not repair
-    assert not was_repaired
-    assert len(enforcer.get_violations()) > 0
+    assert not was_repaired, "Condition must be true"
+    assert len(enforcer.get_violations()) > 0, "Collection must not be empty"
     # Probability still violated
-    assert abs(repaired.tasks["task_1"].spinor.total_probability - 1.0) > 0.1
+    assert abs(repaired.tasks["task_1"].spinor.total_probability - 1.0) > 0.1, "Value must be greater than zero"
 
 
 # ============================================================================
@@ -440,12 +440,12 @@ def test_full_symmetry_workflow(multi_task_state):
 
     # 1. Check initial state
     initial_check = checker.check_all(multi_task_state)
-    assert initial_check["all_passed"]
+    assert initial_check["all_passed"], "Condition must be true"
 
     # 2. Apply U(1) transformation
     gauge.apply_global(multi_task_state, np.pi / 4)
     u1_result = gauge.verify_invariance(multi_task_state)
-    assert u1_result.is_invariant
+    assert u1_result.is_invariant, "Result must not be empty"
 
     # 3. Apply translation
     displacement = np.array([0.1, 0.0, 0.0, 0.0, 0.0])
@@ -456,14 +456,14 @@ def test_full_symmetry_workflow(multi_task_state):
 
     # 5. Final verification
     final_check = checker.check_all(repaired)
-    assert final_check["all_passed"]
+    assert final_check["all_passed"], "Condition must be true"
 
 
 def test_symmetry_type_enum():
     """Test SymmetryType enum."""
-    assert SymmetryType.U1_PHASE.value == "u1_phase"
-    assert SymmetryType.TRANSLATION.value == "translation"
-    assert SymmetryType.TIME_TRANSLATION.value == "time_translation"
+    assert SymmetryType.U1_PHASE.value == "u1_phase", "Value must be initialized"
+    assert SymmetryType.TRANSLATION.value == "translation", "Value must be initialized"
+    assert SymmetryType.TIME_TRANSLATION.value == "time_translation", "Value must be initialized"
 
 
 def test_transformation_result_serialization():
@@ -476,6 +476,6 @@ def test_transformation_result_serialization():
     )
 
     data = result.to_dict()
-    assert data["is_invariant"] is True
-    assert data["deviation"] == 1e-10
-    assert data["details"]["test"] == "value"
+    assert data["is_invariant"] is True, "Data must not be empty"
+    assert data["deviation"] == 1e-10, "Data must not be empty"
+    assert data["details"]["test"] == "value", "Data must not be empty"

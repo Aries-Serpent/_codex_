@@ -32,11 +32,11 @@ def test_external_web_search_loads_offline_index(tmp_path: Path) -> None:
     search = ExternalWebSearch(endpoint=offline_index.as_uri(), enabled=True)
     result = search.search("codex")
 
-    assert result["status"] == "ok"
+    assert result["status"] == "ok", "Result must not be empty"
     assert result["results"], "offline payload should populate results"
     entry = result["results"][0]
-    assert entry["title"] == "Codex reference"
-    assert entry["url"].endswith("/codex")
+    assert entry["title"] == "Codex reference", "Condition must be true"
+    assert entry["url"].endswith("/codex"), "Condition must be true"
 
 
 def test_external_web_search_supports_tilde_endpoint(monkeypatch, tmp_path: Path) -> None:
@@ -49,5 +49,5 @@ def test_external_web_search_supports_tilde_endpoint(monkeypatch, tmp_path: Path
     search = ExternalWebSearch(endpoint="file://~/index.json", enabled=True)
     result = search.search("codex")
 
-    assert result["status"] == "ok"
-    assert any(entry["url"].endswith("/codex") for entry in result["results"])
+    assert result["status"] == "ok", "Result must not be empty"
+    assert any(entry["url"].endswith("/codex") for entry in result["results"]), "Result must not be empty"

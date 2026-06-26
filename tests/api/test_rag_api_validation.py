@@ -50,7 +50,7 @@ class TestMergeIndicesRequestValidation:
                 tenant_id="default",
             )
         errors = exc_info.value.errors()
-        assert any(
+        assert any(, "Condition must be true"
             "source_indices" in str(e.get("loc", "")) for e in errors
         ), f"Expected source_indices validation error for: {description}"
 
@@ -85,7 +85,7 @@ class TestMergeIndicesRequestValidation:
     def test_tenant_id_defaults_to_default(self) -> None:
         """tenant_id has a default of 'default'."""
         req = MergeIndicesRequest(source_indices=["a", "b"], target_index="merged")
-        assert req.tenant_id == "default"
+        assert req.tenant_id == "default", "tenant_id is not valid"
 
     @pytest.mark.parametrize("tenant_id", ["acme", "tenant-42", "org_123"])
     def test_custom_tenant_id_accepted(self, tenant_id: str) -> None:
@@ -95,7 +95,7 @@ class TestMergeIndicesRequestValidation:
             target_index="merged",
             tenant_id=tenant_id,
         )
-        assert req.tenant_id == tenant_id
+        assert req.tenant_id == tenant_id, "tenant_id is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -108,26 +108,26 @@ class TestEnsureSubpath:
 
     def test_exact_base_is_allowed(self, tmp_path: Path) -> None:
         result = _ensure_subpath(tmp_path, tmp_path)
-        assert result == tmp_path.resolve()
+        assert result == tmp_path.resolve(), "Result must not be empty"
 
     def test_child_path_is_allowed(self, tmp_path: Path) -> None:
         child = tmp_path / "subdir" / "file.txt"
         result = _ensure_subpath(tmp_path, child)
-        assert result == child.resolve()
+        assert result == child.resolve(), "Result must not be empty"
 
     def test_parent_escape_raises_400(self, tmp_path: Path) -> None:
         """Paths that escape the base directory must raise HTTP 400."""
         escape = tmp_path / ".." / "etc" / "passwd"
         with pytest.raises(HTTPException) as exc_info:
             _ensure_subpath(tmp_path, escape)
-        assert exc_info.value.status_code == 400
+        assert exc_info.value.status_code == 400, "Value must be initialized"
 
     def test_absolute_escape_raises_400(self, tmp_path: Path) -> None:
         """An absolute path outside base must raise HTTP 400."""
         outside = Path("/etc/passwd")
         with pytest.raises(HTTPException) as exc_info:
             _ensure_subpath(tmp_path, outside)
-        assert exc_info.value.status_code == 400
+        assert exc_info.value.status_code == 400, "Value must be initialized"
 
 
 class TestValidatePathSegment:
@@ -141,4 +141,4 @@ class TestValidatePathSegment:
     def test_invalid_segments_raise_400(self, value: str) -> None:
         with pytest.raises(HTTPException) as exc_info:
             _validate_path_segment(value, "segment")
-        assert exc_info.value.status_code == 400
+        assert exc_info.value.status_code == 400, "Value must be initialized"

@@ -26,9 +26,9 @@ def test_logging_bootstrap(tmp_path):
     }
     args = SimpleNamespace(hydra_cfg=cfg)
     loggers = _codex_logging_bootstrap(args)
-    assert loggers.tb is not None
-    assert loggers.wb is not None
-    assert loggers.mlflow_active
+    assert loggers.tb is not None, "tb must be initialized"
+    assert loggers.wb is not None, "wb must be initialized"
+    assert loggers.mlflow_active, "Condition must be true"
     loggers.wb.finish()
     import mlflow
 

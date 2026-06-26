@@ -297,7 +297,7 @@ def main():
 
     except Exception as e:
         error_type = type(e).__name__
-        logger.error(f"Fatal error: <ERROR_TYPE>", exc_info=True)
+        logger.error("Fatal error: <ERROR_TYPE>", exc_info=True)
         return 1
 
 

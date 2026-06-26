@@ -66,19 +66,19 @@ class TestValidatePatch:
         """Valid RFC 3881 compliant patch should pass."""
         exit_code, output = self.run_validator(script_path, VALID_PATCH_CONTENT)
         assert exit_code == 0, f"Expected pass, got: {output}"
-        assert "PASS" in output or "passed" in output.lower()
+        assert "PASS" in output or "passed" in output.lower(), "Condition must be true"
 
     def test_missing_hunk_markers_fails(self, script_path):
         """Patch missing @@ markers should fail."""
         exit_code, output = self.run_validator(script_path, INVALID_PATCH_NO_MARKERS)
         assert exit_code != 0, f"Expected fail, got: {output}"
-        assert "FAIL" in output or "failed" in output.lower()
+        assert "FAIL" in output or "failed" in output.lower(), "Condition must be true"
 
     def test_insufficient_context_warns(self, script_path):
         """Patch with <3 context lines should warn but pass."""
         _exit_code, output = self.run_validator(script_path, INSUFFICIENT_CONTEXT_PATCH)
         # May warn but should eventually pass (git apply might accept it)
-        assert "WARN" in output or "warning" in output.lower()
+        assert "WARN" in output or "warning" in output.lower(), "Condition must be true"
 
     def test_nonexistent_file_fails(self, script_path):
         """Validator should fail gracefully on missing file."""
@@ -87,8 +87,8 @@ class TestValidatePatch:
             capture_output=True,
             text=True,
         )
-        assert result.returncode != 0
-        assert "FAIL" in result.stdout or "not found" in result.stdout.lower()
+        assert result.returncode != 0, "Result must not be empty"
+        assert "FAIL" in result.stdout or "not found" in result.stdout.lower(), "Result must not be empty"
 
     def test_no_arguments_exits_gracefully(self, script_path):
         """Validator should show usage when called without arguments."""
@@ -97,14 +97,14 @@ class TestValidatePatch:
             capture_output=True,
             text=True,
         )
-        assert result.returncode == 2
-        assert "Usage" in result.stdout or "Usage" in result.stderr
+        assert result.returncode == 2, "Result must not be empty"
+        assert "Usage" in result.stdout or "Usage" in result.stderr, "Result must not be empty"
 
     def test_git_apply_check_integration(self, script_path):
         """Validator should use git apply --check for final validation."""
         _exit_code, output = self.run_validator(script_path, VALID_PATCH_CONTENT)
         # Look for evidence of git apply check
-        assert "git apply" in output or "validated" in output.lower()
+        assert "git apply" in output or "validated" in output.lower(), "Condition must be true"
 
 
 if __name__ == "__main__":

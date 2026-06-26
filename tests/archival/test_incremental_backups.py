@@ -37,7 +37,7 @@ class TestIncrementalBackups:
         with tarfile.open(full_backup, "w:gz") as tar:
             tar.add(source_dir, arcname=".")
 
-        assert full_backup.exists()
+        assert full_backup.exists(), "Condition must be true"
 
         # Record backup metadata
         metadata = {
@@ -46,8 +46,8 @@ class TestIncrementalBackups:
             "file_count": len(list(source_dir.iterdir())),
         }
 
-        assert metadata["type"] == "full"
-        assert metadata["file_count"] == 2
+        assert metadata["type"] == "full", "Data must not be empty"
+        assert metadata["file_count"] == 2, "Data must not be empty"
 
     def test_incremental_backup_changed_files(self, tmp_path):
         """Test incremental backup of only changed files"""
@@ -78,8 +78,8 @@ class TestIncrementalBackups:
             if old_checksum != new_checksum:
                 changed_files.append(filename)
 
-        assert len(changed_files) == 1
-        assert "file1.txt" in changed_files
+        assert len(changed_files) == 1, "Changed_files must not be empty"
+        assert "file1.txt" in changed_files, "Condition must be true"
 
     def test_differential_backup_strategy(self, tmp_path):
         """Test differential backup (changes since last full backup)"""
@@ -113,8 +113,8 @@ class TestIncrementalBackups:
         # Verify differential contains only new file
         with tarfile.open(diff_backup, "r:gz") as tar:
             members = tar.getmembers()
-            assert len(members) == 1
-            assert members[0].name == "file3.txt"
+            assert len(members) == 1, "Members must not be empty"
+            assert members[0].name == "file3.txt", "name is not valid"
 
     def test_timestamp_based_incremental(self, tmp_path):
         """Test incremental backup based on modification timestamps"""
@@ -139,8 +139,8 @@ class TestIncrementalBackups:
             if file_path.stat().st_mtime > cutoff_time:
                 modified_files.append(file_path.name)
 
-        assert "new.txt" in modified_files
-        assert "old.txt" not in modified_files
+        assert "new.txt" in modified_files, "Condition must be true"
+        assert "old.txt" not in modified_files, "Condition must be true"
 
     def test_backup_chain_metadata(self, tmp_path):
         """Test maintaining backup chain metadata"""
@@ -179,10 +179,10 @@ class TestIncrementalBackups:
         )
 
         # Verify chain
-        assert len(backup_chain) == 3
-        assert backup_chain[0]["type"] == "full"
-        assert backup_chain[1]["parent"] == "backup_001"
-        assert backup_chain[2]["parent"] == "backup_002"
+        assert len(backup_chain) == 3, "Backup_chain must not be empty"
+        assert backup_chain[0]["type"] == "full", "Condition must be true"
+        assert backup_chain[1]["parent"] == "backup_001", "Condition must be true"
+        assert backup_chain[2]["parent"] == "backup_002", "Condition must be true"
 
     def test_restore_from_backup_chain(self, tmp_path):
         """Test restoring from a chain of incremental backups"""
@@ -214,8 +214,8 @@ class TestIncrementalBackups:
         safe_extract_tarfile(inc1_backup, restore_dir)
 
         # Verify both files present
-        assert (restore_dir / "file1.txt").exists()
-        assert (restore_dir / "file2.txt").exists()
+        assert (restore_dir / "file1.txt").exists(), "Condition must be true"
+        assert (restore_dir / "file2.txt").exists(), "Condition must be true"
 
 
 class TestChangeDetection:
@@ -238,7 +238,7 @@ class TestChangeDetection:
         current_files = {f.name for f in source_dir.iterdir()}
         new_files = current_files - initial_files
 
-        assert new_files == {"file3.txt"}
+        assert new_files == {"file3.txt"}, "new_files is not valid"
 
     def test_detect_deleted_files(self, tmp_path):
         """Test detecting deleted files"""
@@ -257,7 +257,7 @@ class TestChangeDetection:
         current_files = {f.name for f in source_dir.iterdir()}
         deleted_files = initial_files - current_files
 
-        assert deleted_files == {"file2.txt"}
+        assert deleted_files == {"file2.txt"}, "deleted_files is not valid"
 
     def test_detect_modified_files_by_checksum(self, tmp_path):
         """Test detecting modified files using checksums"""
@@ -286,7 +286,7 @@ class TestChangeDetection:
             if old_checksum != new_checksum:
                 modified_files.append(filename)
 
-        assert modified_files == ["file1.txt"]
+        assert modified_files == ["file1.txt"], "modified_files is not valid"
 
     def test_detect_modified_files_by_size(self, tmp_path):
         """Test detecting modified files using size"""
@@ -314,7 +314,7 @@ class TestChangeDetection:
             if file_path.stat().st_size != old_size:
                 size_changed.append(filename)
 
-        assert size_changed == ["file1.txt"]
+        assert size_changed == ["file1.txt"], "size_changed is not valid"
 
     def test_change_summary_report(self, tmp_path):
         """Test generating change summary for backup"""
@@ -332,8 +332,8 @@ class TestChangeDetection:
             "total_changes": sum(len(v) for v in changes.values()),
         }
 
-        assert summary["total_changes"] == 4
-        assert len(summary["changes"]["added"]) == 2
+        assert summary["total_changes"] == 4, "Condition must be true"
+        assert len(summary["changes"]["added"]) == 2, "Collection must not be empty"
 
 
 class TestBackupVerification:
@@ -367,7 +367,7 @@ class TestBackupVerification:
             if actual_checksum != file_entry["sha256"]:
                 all_valid = False
 
-        assert all_valid is True
+        assert all_valid is True, "all_valid is not valid"
 
     def test_backup_restoration_test(self, tmp_path):
         """Test performing restoration test of backup"""
@@ -387,8 +387,8 @@ class TestBackupVerification:
 
         # Verify restoration
         restored_file = restore_dir / "test.txt"
-        assert restored_file.exists()
-        assert restored_file.read_text() == "test data"
+        assert restored_file.exists(), "rest is not valid"
+        assert restored_file.read_text() == "test data", "Data must not be empty"
 
 
 if __name__ == "__main__":

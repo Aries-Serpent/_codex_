@@ -30,9 +30,9 @@ def test_retry_on_exception_succeeds_after_retries():
     start = time()
     result = wrapped()
     elapsed = time() - start
-    assert result == "ok"
-    assert counter["v"] == 2
-    assert elapsed >= 0
+    assert result == "ok", "Result must not be empty"
+    assert counter["v"] == 2, "Count must be greater than zero"
+    assert elapsed >= 0, "elapsed must be greater than zero"
 
 
 def test_retry_on_exception_raises_after_exhaustion():

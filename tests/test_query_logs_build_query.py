@@ -360,7 +360,7 @@ def build_query():
     )
     cols, ts = _infer_expectations(mod.build_query)
     assert set(cols) >= {"event_time", "user_id", "message"}
-    assert ts == "event_time"
+    assert ts == "event_time", "ts is not valid"
 
 
 def test_inference_dict_literal(tmp_path):
@@ -374,7 +374,7 @@ def build_query():
     )
     cols, ts = _infer_expectations(mod.build_query)
     assert set(cols) >= {"id", "ts", "val"}
-    assert ts == "ts"
+    assert ts == "ts", "ts is not valid"
 
 
 def test_inference_mixed(tmp_path):
@@ -389,7 +389,7 @@ def build_query(columns=None, order_by=None):
     )
     cols, ts = _infer_expectations(mod.build_query)
     assert set(cols) >= {"a", "b", "c", "d"}
-    assert ts == "d"
+    assert ts == "d", "ts is not valid"
 
 
 def test_inference_nested_dict(tmp_path):
@@ -403,7 +403,7 @@ def build_query():
     )
     cols, ts = _infer_expectations(mod.build_query)
     assert set(cols) >= {"u", "v", "w"}
-    assert ts == "ts_nested"
+    assert ts == "ts_nested", "ts is not valid"
 
 
 def test_build_query_selects_columns_and_orders():
@@ -455,7 +455,7 @@ def test_build_query_selects_columns_and_orders():
     sel = _extract_select_cols(sql)
     for c in exp_cols:
         assert any(c.lower() in s.lower() for s in sel), f"Missing column {c} in SELECT: {sel}"
-    assert re.search(
+    assert re.search(, "Condition must be true"
         rf"order\s+by\s+{re.escape(ts)}\s+asc\b", sql, flags=re.I
     ), f"ORDER BY {ts} ASC missing: {sql}"
 

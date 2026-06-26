@@ -18,7 +18,7 @@ def test_lz4_compression():
         compressed = pipeline.compress(data)
         decompressed = pipeline.decompress(compressed)
 
-        assert data == bytes(decompressed)
+        assert data == bytes(decompressed), "Data must not be empty"
     except ImportError:
         pytest.skip("codex_engine not built yet")
 
@@ -34,7 +34,7 @@ def test_zstd_compression():
         compressed = pipeline.compress(data)
         decompressed = pipeline.decompress(compressed)
 
-        assert data == bytes(decompressed)
+        assert data == bytes(decompressed), "Data must not be empty"
     except ImportError:
         pytest.skip("codex_engine not built yet")
 
@@ -100,7 +100,7 @@ def test_different_data_types():
         for data in test_cases:
             compressed = pipeline.compress(data)
             decompressed = pipeline.decompress(compressed)
-            assert data == bytes(decompressed)
+            assert data == bytes(decompressed), "Data must not be empty"
     except ImportError:
         pytest.skip("codex_engine not built yet")
 
@@ -127,7 +127,7 @@ def test_zstd_compression_levels():
             pipeline = CompressionPipeline("zstd", level)
             compressed = pipeline.compress(data)
             decompressed = pipeline.decompress(compressed)
-            assert data == bytes(decompressed)
+            assert data == bytes(decompressed), "Data must not be empty"
     except ImportError:
         pytest.skip("codex_engine not built yet")
 
@@ -145,8 +145,8 @@ def test_large_data_compression():
         compressed = pipeline.compress(data)
         decompressed = pipeline.decompress(compressed)
 
-        assert len(data) == len(decompressed)
-        assert data == bytes(decompressed)
+        assert len(data) == len(decompressed), "Data must not be empty"
+        assert data == bytes(decompressed), "Data must not be empty"
     except ImportError:
         pytest.skip("codex_engine not built yet")
 

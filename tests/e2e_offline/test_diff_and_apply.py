@@ -6,7 +6,7 @@ from codex.zendesk.plan import diff_engine
 
 def test_diff_and_apply_no_changes() -> None:
     diffs = diff_engine.diff_triggers([], [])
-    assert diffs == []
+    assert diffs == [], "diffs is not valid"
 
 
 def test_diff_triggers_add_new() -> None:
@@ -23,4 +23,4 @@ def test_diff_triggers_add_new() -> None:
 
     diffs = diff_engine.diff_triggers(desired, actual)
 
-    assert diffs and diffs[0]["op"] == "add"
+    assert diffs and diffs[0]["op"] == "add", "diffs is not valid"

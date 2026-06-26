@@ -32,12 +32,12 @@ class TestMetricStorage:
                 sqlite_path=sqlite_path,
             )
 
-            assert storage.json_dir == json_dir
-            assert storage.sqlite_path == sqlite_path
-            assert storage.enable_json is True
-            assert storage.enable_sqlite is True
-            assert json_dir.exists()
-            assert sqlite_path.exists()
+            assert storage.json_dir == json_dir, "json_dir is not valid"
+            assert storage.sqlite_path == sqlite_path, "sqlite_path is not valid"
+            assert storage.enable_json is True, "enable_json is not valid"
+            assert storage.enable_sqlite is True, "enable_sqlite is not valid"
+            assert json_dir.exists(), "Condition must be true"
+            assert sqlite_path.exists(), "Condition must be true"
 
     def test_init_json_only(self):
         """Test initialization with JSON only"""
@@ -49,8 +49,8 @@ class TestMetricStorage:
                 enable_sqlite=False,
             )
 
-            assert storage.enable_json is True
-            assert storage.enable_sqlite is False
+            assert storage.enable_json is True, "enable_json is not valid"
+            assert storage.enable_sqlite is False, "enable_sqlite is not valid"
 
     def test_init_sqlite_only(self):
         """Test initialization with SQLite only"""
@@ -62,8 +62,8 @@ class TestMetricStorage:
                 enable_sqlite=True,
             )
 
-            assert storage.enable_json is False
-            assert storage.enable_sqlite is True
+            assert storage.enable_json is False, "enable_json is not valid"
+            assert storage.enable_sqlite is True, "enable_sqlite is not valid"
 
     def test_save_json(self):
         """Test saving metrics to JSON"""
@@ -85,18 +85,18 @@ class TestMetricStorage:
 
             result = storage.save(ratio, commit_sha="abc123")
 
-            assert "json_path" in result
+            assert "json_path" in result, "Result must not be empty"
             json_path = Path(result["json_path"])
-            assert json_path.exists()
+            assert json_path.exists(), "Condition must be true"
 
             # Verify JSON content
             with open(json_path) as f:
                 data = json.load(f)
 
-            assert data["duplication_ratio"] == 0.15
-            assert data["total_lines"] == 1000
-            assert data["duplicate_lines"] == 150
-            assert data["commit_sha"] == "abc123"
+            assert data["duplication_ratio"] == 0.15, "Data must not be empty"
+            assert data["total_lines"] == 1000, "Data must not be empty"
+            assert data["duplicate_lines"] == 150, "Data must not be empty"
+            assert data["commit_sha"] == "abc123", "Data must not be empty"
 
     def test_save_sqlite(self):
         """Test saving metrics to SQLite"""
@@ -130,9 +130,9 @@ class TestMetricStorage:
 
             result = storage.save(ratio, commit_sha="def456")
 
-            assert "sqlite_id" in result
+            assert "sqlite_id" in result, "Result must not be empty"
             metric_id = result["sqlite_id"]
-            assert metric_id > 0
+            assert metric_id > 0, "metric_id must be greater than zero"
 
             # Verify SQLite content
             conn = sqlite3.connect(storage.sqlite_path)
@@ -142,21 +142,21 @@ class TestMetricStorage:
                 # Check metric
                 cursor.execute("SELECT * FROM metrics WHERE id = ?", (metric_id,))
                 row = cursor.fetchone()
-                assert row is not None
-                assert row[2] == "def456"  # commit_sha
-                assert row[3] == 0.20  # ratio
+                assert row is not None, "row must be initialized"
+                assert row[2] == "def456", "Condition must be true"
+                assert row[3] == 0.20, "Condition must be true"
 
                 # Check blocks
                 cursor.execute("SELECT * FROM duplicate_blocks WHERE metric_id = ?", (metric_id,))
                 blocks = cursor.fetchall()
-                assert len(blocks) == 1
-                assert blocks[0][2] == "test123"  # hash
+                assert len(blocks) == 1, "Blocks must not be empty"
+                assert blocks[0][2] == "test123", "Condition must be true"
 
                 # Check occurrences
                 block_id = blocks[0][0]
                 cursor.execute("SELECT * FROM occurrences WHERE block_id = ?", (block_id,))
                 occs = cursor.fetchall()
-                assert len(occs) == 2
+                assert len(occs) == 2, "Occs must not be empty"
 
             finally:
                 conn.close()
@@ -177,9 +177,9 @@ class TestMetricStorage:
 
             result = storage.save(ratio)
 
-            assert "json_path" in result
-            assert "sqlite_id" in result
-            assert Path(result["json_path"]).exists()
+            assert "json_path" in result, "Result must not be empty"
+            assert "sqlite_id" in result, "Result must not be empty"
+            assert Path(result["json_path"]).exists(), "Result must not be empty"
 
     def test_load_latest_empty(self):
         """Test loading from empty database"""
@@ -190,7 +190,7 @@ class TestMetricStorage:
             )
 
             latest = storage.load_latest()
-            assert latest is None
+            assert latest is None, "latest is not valid"
 
     def test_load_latest_with_data(self):
         """Test loading most recent metric"""
@@ -210,9 +210,9 @@ class TestMetricStorage:
             # Load latest
             latest = storage.load_latest()
 
-            assert latest is not None
-            assert latest["ratio"] == 0.15
-            assert latest["timestamp"] == "2025-01-02T00:00:00Z"
+            assert latest is not None, "latest must be initialized"
+            assert latest["ratio"] == 0.15, "Condition must be true"
+            assert latest["timestamp"] == "2025-01-02T00:00:00Z", "Condition must be true"
 
     def test_query_history(self):
         """Test querying historical metrics"""
@@ -233,15 +233,15 @@ class TestMetricStorage:
 
             # Query all
             history = storage.query_history(limit=10)
-            assert len(history) == 5
+            assert len(history) == 5, "History must not be empty"
 
             # Query limited
             history = storage.query_history(limit=2)
-            assert len(history) == 2
+            assert len(history) == 2, "History must not be empty"
 
             # Query since timestamp
             history = storage.query_history(since="2025-01-03T00:00:00Z")
-            assert len(history) == 3
+            assert len(history) == 3, "History must not be empty"
 
 
 if __name__ == "__main__":

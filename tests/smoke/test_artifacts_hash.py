@@ -19,6 +19,6 @@ def test_write_hash_and_meta(tmp_path: Path):
     digest = compute_sha256(p)
     out_hash = write_hash_sidecar(p)
     meta_path = write_metadata(p, extra={"kind": "test"})
-    assert out_hash == digest
-    assert (p.with_suffix(".txt.sha256")).exists()
-    assert meta_path.exists()
+    assert out_hash == digest, "out_hash is not valid"
+    assert (p.with_suffix(".txt.sha256")).exists(), "Condition must be true"
+    assert meta_path.exists(), "Condition must be true"

@@ -25,7 +25,7 @@ Usage:
 
     checkpoint_mgr = CheckpointManager()
     resume_mgr = SessionResume(checkpoint_mgr)
-    
+
     # Validate checkpoint
     if resume_mgr.validate_checkpoint("cp_20260701_001"):
         # Load and restore session
@@ -37,8 +37,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from pathlib import Path
-from typing import Any, Dict, Optional, Tuple
+from typing import Any, Dict, Optional
 
 from codex.brain.checkpoint_manager import CheckpointManager
 from codex.brain.session_serializer import SessionSerializer
@@ -201,9 +200,7 @@ class SessionResume:
         session_id = content.get("session_id", "unknown")
         session_state = content.get("session_state", {})
 
-        logger.info(
-            f"Checkpoint content loaded: agent_id={agent_id}, session_id={session_id}"
-        )
+        logger.info(f"Checkpoint content loaded: agent_id={agent_id}, session_id={session_id}")
 
         # Step 3: Restore agent state
         restored_state = self._restore_agent_state(content)
@@ -409,7 +406,6 @@ class SessionResume:
             return state_dict
 
         logger.warning(
-            f"Schema migration needed: {from_version} -> {to_version} "
-            f"(not yet implemented)"
+            f"Schema migration needed: {from_version} -> {to_version} (not yet implemented)"
         )
         return state_dict

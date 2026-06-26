@@ -68,10 +68,10 @@ class TestValidRequests:
                 "password": "SecurePass123!",
             },
         )
-        assert response.status_code == 201
+        assert response.status_code == 201, "Response must not be empty"
         data = response.json()
-        assert data["username"] == "validuser"
-        assert data["email"] == "valid@example.com"
+        assert data["username"] == "validuser", "Data must not be empty"
+        assert data["email"] == "valid@example.com", "Data must not be empty"
 
     def test_register_with_optional_roles(self, test_client):
         """Registration with optional roles field."""
@@ -84,7 +84,7 @@ class TestValidRequests:
                 "roles": ["user", "admin"],
             },
         )
-        assert response.status_code == 201
+        assert response.status_code == 201, "Response must not be empty"
 
     def test_login_with_username_and_password(self, test_client):
         """Login with username and password."""
@@ -101,9 +101,9 @@ class TestValidRequests:
         response = test_client.post(
             "/auth/login", json={"username": "logintest", "password": "SecurePass123!"}
         )
-        assert response.status_code == 200
+        assert response.status_code == 200, "Response must not be empty"
         data = response.json()
-        assert "access_token" in data
+        assert "access_token" in data, "Data must not be empty"
 
     def test_register_with_max_length_username(self, test_client):
         """Registration with maximum valid username length."""
@@ -168,7 +168,7 @@ class TestInvalidRequestBodies:
     def test_empty_json_object(self, test_client):
         """Empty JSON object should fail validation."""
         response = test_client.post("/auth/register", json={})
-        assert response.status_code == 422
+        assert response.status_code == 422, "Response must not be empty"
 
     def test_null_required_field(self, test_client):
         """Null required field should fail."""
@@ -176,7 +176,7 @@ class TestInvalidRequestBodies:
             "/auth/register",
             json={"username": None, "email": "test@example.com", "password": "SecurePass123!"},
         )
-        assert response.status_code == 422
+        assert response.status_code == 422, "Response must not be empty"
 
     def test_empty_string_username(self, test_client):
         """Empty string username should fail."""
@@ -184,7 +184,7 @@ class TestInvalidRequestBodies:
             "/auth/register",
             json={"username": "", "email": "test@example.com", "password": "SecurePass123!"},
         )
-        assert response.status_code == 400 or response.status_code == 422
+        assert response.status_code == 400 or response.status_code == 422, "Response must not be empty"
 
     def test_whitespace_only_username(self, test_client):
         """Whitespace-only username should fail."""
@@ -199,21 +199,21 @@ class TestInvalidRequestBodies:
         response = test_client.post(
             "/auth/register", json={"email": "test@example.com", "password": "SecurePass123!"}
         )
-        assert response.status_code == 422
+        assert response.status_code == 422, "Response must not be empty"
 
     def test_missing_email_field(self, test_client):
         """Missing email field should fail."""
         response = test_client.post(
             "/auth/register", json={"username": "test", "password": "SecurePass123!"}
         )
-        assert response.status_code == 422
+        assert response.status_code == 422, "Response must not be empty"
 
     def test_missing_password_field(self, test_client):
         """Missing password field should fail."""
         response = test_client.post(
             "/auth/register", json={"username": "test", "email": "test@example.com"}
         )
-        assert response.status_code == 422
+        assert response.status_code == 422, "Response must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -387,7 +387,7 @@ class TestPasswordValidation:
                 "password": strong_password,
             },
         )
-        assert response.status_code == 201
+        assert response.status_code == 201, "Response must not be empty"
 
     def test_password_with_spaces(self, test_client):
         """Password with spaces should work."""
@@ -702,7 +702,7 @@ class TestParameterCombinations:
                 "password": "SecurePass123!",
             },
         )
-        assert response1.status_code == 201
+        assert response1.status_code == 201, "Response must not be empty"
 
         # Try different combo
         response2 = test_client.post(
@@ -714,7 +714,7 @@ class TestParameterCombinations:
             },
         )
         # Should fail - duplicate username
-        assert response2.status_code == 400
+        assert response2.status_code == 400, "Response must not be empty"
 
     def test_different_username_same_email(self, test_client):
         """Different username with same email."""
@@ -727,7 +727,7 @@ class TestParameterCombinations:
                 "password": "SecurePass123!",
             },
         )
-        assert response1.status_code == 201
+        assert response1.status_code == 201, "Response must not be empty"
 
         # Try different username, same email
         response2 = test_client.post(
@@ -751,7 +751,7 @@ class TestParameterCombinations:
                 "password": "SecurePass123!",
             },
         )
-        assert response1.status_code == 201
+        assert response1.status_code == 201, "Response must not be empty"
 
         response2 = test_client.post(
             "/auth/register",
@@ -770,7 +770,7 @@ class TestParameterCombinations:
             "/auth/register",
             json={"username": "email1", "email": "Test@Example.COM", "password": "SecurePass123!"},
         )
-        assert response1.status_code == 201
+        assert response1.status_code == 201, "Response must not be empty"
 
         response2 = test_client.post(
             "/auth/register",

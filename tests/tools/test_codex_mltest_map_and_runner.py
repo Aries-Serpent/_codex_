@@ -86,11 +86,11 @@ def test_mltest_runner_invokes_pytest(monkeypatch, tmp_path: Path):
         ]
     )
 
-    assert rc == 0
-    assert "cmd" in called
-    assert called["cmd"][0] == "pytest"
-    assert "tests/some_test.py" in called["cmd"]
+    assert rc == 0, "rc is not valid"
+    assert "cmd" in called, "Condition must be true"
+    assert called["cmd"][0] == "pytest", "Condition must be true"
+    assert "tests/some_test.py" in called["cmd"], "Condition must be true"
     summary_path = tmp_path / "summary.json"
-    assert summary_path.exists()
+    assert summary_path.exists(), "Condition must be true"
     text = summary_path.read_text(encoding="utf-8")
-    assert "infra" in text
+    assert "infra" in text, "Condition must be true"

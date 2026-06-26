@@ -19,7 +19,7 @@ class TestPhysicsOrchestratorProperties:
 
         force = ForceVector(name="test", magnitude=0.5, direction=0.0)
 
-        assert force.priority == 1.0
+        assert force.priority == 1.0, "priority is not valid"
 
     def test_force_vector_components_90_degrees(self):
         """Test force vector at 90 degrees (straight up)."""
@@ -28,8 +28,8 @@ class TestPhysicsOrchestratorProperties:
         force = ForceVector(name="up", magnitude=1.0, direction=math.pi / 2, priority=1.0)
         x, y = force.get_components()
 
-        assert abs(x) < 0.001  # Should be ~0
-        assert abs(y - 1.0) < 0.001  # Should be ~1
+        assert abs(x) < 0.001, "Condition must be true"
+        assert abs(y - 1.0) < 0.001, "Condition must be true"
 
     def test_action_path_defaults(self):
         """Test ActionPath default values."""
@@ -38,14 +38,14 @@ class TestPhysicsOrchestratorProperties:
         path = ActionPath(action_type=ActionType.TEST, description="Test")
 
         # Check all defaults
-        assert path.potential_energy == 0.0
-        assert path.kinetic_energy == 0.0
-        assert path.friction == 0.0
-        assert path.momentum == 0.0
-        assert path.confidence == 0.0
-        assert path.risk == 0.0
-        assert path.impact == 0.0
-        assert path.urgency == 0.0
+        assert path.potential_energy == 0.0, "potential_energy is not valid"
+        assert path.kinetic_energy == 0.0, "kinetic_energy is not valid"
+        assert path.friction == 0.0, "friction is not valid"
+        assert path.momentum == 0.0, "momentum is not valid"
+        assert path.confidence == 0.0, "confidence is not valid"
+        assert path.risk == 0.0, "risk is not valid"
+        assert path.impact == 0.0, "impact is not valid"
+        assert path.urgency == 0.0, "urgency is not valid"
 
     def test_decision_state_defaults(self):
         """Test DecisionState default values."""
@@ -54,16 +54,16 @@ class TestPhysicsOrchestratorProperties:
         state = DecisionState(current_position="A", goal_position="B")
 
         # Check defaults
-        assert state.available_resources == 1.0
-        assert state.time_available == 1.0
+        assert state.available_resources == 1.0, "available_resources is not valid"
+        assert state.time_available == 1.0, "time_available is not valid"
 
     def test_action_type_string_values(self):
         """Test ActionType enum string values."""
         from agents.physics_orchestrator import ActionType
 
-        assert ActionType.AUDIT.value == "audit"
-        assert ActionType.TEST.value == "test"
-        assert ActionType.DEPLOY.value == "deploy"
+        assert ActionType.AUDIT.value == "audit", "Value must be initialized"
+        assert ActionType.TEST.value == "test", "Value must be initialized"
+        assert ActionType.DEPLOY.value == "deploy", "Value must be initialized"
 
 
 class TestWorkflowNavigatorProperties:
@@ -73,9 +73,9 @@ class TestWorkflowNavigatorProperties:
         """Test WorkflowFrequency enum values."""
         from agents.workflow_navigator import WorkflowFrequency
 
-        assert WorkflowFrequency.LOW is not None
-        assert WorkflowFrequency.MEDIUM is not None
-        assert WorkflowFrequency.HIGH is not None
+        assert WorkflowFrequency.LOW is not None, "LOW must be initialized"
+        assert WorkflowFrequency.MEDIUM is not None, "MEDIUM must be initialized"
+        assert WorkflowFrequency.HIGH is not None, "HIGH must be initialized"
 
     def test_workflow_step_optional_default(self):
         """Test WorkflowStep optional flag defaults to False."""
@@ -83,15 +83,15 @@ class TestWorkflowNavigatorProperties:
 
         step = WorkflowStep(id="test", action="Test action")
 
-        assert not step.optional
+        assert not step.optional, "Condition must be true"
 
     def test_step_status_enum(self):
         """Test StepStatus enum."""
         from agents.workflow_navigator import StepStatus
 
-        assert StepStatus.PENDING is not None
-        assert StepStatus.IN_PROGRESS is not None
-        assert StepStatus.COMPLETED is not None
+        assert StepStatus.PENDING is not None, "PENDING must be initialized"
+        assert StepStatus.IN_PROGRESS is not None, "IN_PROGRESS must be initialized"
+        assert StepStatus.COMPLETED is not None, "COMPLETED must be initialized"
 
 
 class TestQuantumGameTheoryProperties:
@@ -101,9 +101,9 @@ class TestQuantumGameTheoryProperties:
         """Test TeamType enum string values."""
         from agents.quantum_game_theory import TeamType
 
-        assert TeamType.BLUE.value == "blue"
-        assert TeamType.RED.value == "red"
-        assert TeamType.NEUTRAL.value == "neutral"
+        assert TeamType.BLUE.value == "blue", "Value must be initialized"
+        assert TeamType.RED.value == "red", "Value must be initialized"
+        assert TeamType.NEUTRAL.value == "neutral", "Value must be initialized"
 
     def test_strategy_state_num_strategies_property(self):
         """Test StrategyState.num_strategies property."""
@@ -111,7 +111,7 @@ class TestQuantumGameTheoryProperties:
 
         state = StrategyState(team=TeamType.BLUE, strategies=["s1", "s2", "s3", "s4"])
 
-        assert state.num_strategies == 4
+        assert state.num_strategies == 4, "num_strategies is not valid"
 
 
 class TestAdvancedPhysicsProperties:
@@ -123,7 +123,7 @@ class TestAdvancedPhysicsProperties:
 
         attractor = ChaoticAttractor(attractor_type="logistic")
 
-        assert attractor.attractor_type == "logistic"
+        assert attractor.attractor_type == "logistic", "attractor_type is not valid"
         assert hasattr(attractor, "state")
 
     def test_fluid_channel_defaults(self):
@@ -132,9 +132,9 @@ class TestAdvancedPhysicsProperties:
 
         channel = FluidChannel(channel_id="test", capacity=100.0)
 
-        assert channel.channel_id == "test"
-        assert channel.capacity == 100.0
-        assert channel.current_flow == 0.0
+        assert channel.channel_id == "test", "channel_id is not valid"
+        assert channel.capacity == 100.0, "capacity is not valid"
+        assert channel.current_flow == 0.0, "current_flow is not valid"
 
     def test_advanced_physics_orchestrator_initialization(self):
         """Test AdvancedPhysicsOrchestrator can be created."""
@@ -142,7 +142,7 @@ class TestAdvancedPhysicsProperties:
 
         try:
             orch = AdvancedPhysicsOrchestrator()
-            assert orch is not None
+            assert orch is not None, "orch must be initialized"
         except (ImportError, TypeError):
             pytest.skip("AdvancedPhysicsOrchestrator requires optional dependencies")
 
@@ -154,18 +154,18 @@ class TestSelfHealingProperties:
         """Test IssueSeverity enum values."""
         from agents.self_healing import IssueSeverity
 
-        assert IssueSeverity.LOW is not None
-        assert IssueSeverity.MEDIUM is not None
-        assert IssueSeverity.HIGH is not None
-        assert IssueSeverity.CRITICAL is not None
+        assert IssueSeverity.LOW is not None, "LOW must be initialized"
+        assert IssueSeverity.MEDIUM is not None, "MEDIUM must be initialized"
+        assert IssueSeverity.HIGH is not None, "HIGH must be initialized"
+        assert IssueSeverity.CRITICAL is not None, "CRITICAL must be initialized"
 
     def test_issue_type_values(self):
         """Test IssueType enum values."""
         from agents.self_healing import IssueType
 
-        assert IssueType.BUILD_FAILURE is not None
-        assert IssueType.TEST_FAILURE is not None
-        assert IssueType.LINT_ERROR is not None
+        assert IssueType.BUILD_FAILURE is not None, "BUILD_FAILURE must be initialized"
+        assert IssueType.TEST_FAILURE is not None, "TEST_FAILURE must be initialized"
+        assert IssueType.LINT_ERROR is not None, "LINT_ERROR must be initialized"
 
     def test_detected_issue_defaults(self):
         """Test DetectedIssue default field values."""
@@ -180,9 +180,9 @@ class TestSelfHealingProperties:
         )
 
         # Check defaults
-        assert issue.location is None
-        assert issue.file_path is None
-        assert issue.line_number is None
+        assert issue.location is None, "location is not valid"
+        assert issue.file_path is None, "file_path is not valid"
+        assert issue.line_number is None, "line_number is not valid"
 
 
 class TestMentalMappingProperties:
@@ -195,8 +195,8 @@ class TestMentalMappingProperties:
         model = MentalMappingModel()
 
         # Should start empty
-        assert len(model.nodes) == 0
-        assert len(model.edges) == 0
+        assert len(model.nodes) == 0, "Collection must not be empty"
+        assert len(model.edges) == 0, "Collection must not be empty"
 
 
 class TestDeveloperOrchestratorProperties:
@@ -206,18 +206,18 @@ class TestDeveloperOrchestratorProperties:
         """Test AppType enum string values."""
         from agents.developer_orchestrator import AppType
 
-        assert AppType.PYTHON_CONSOLE.value == "python_console"
-        assert AppType.PYTHON_CLI.value == "python_cli"
-        assert AppType.PYTHON_API.value == "python_api"
-        assert AppType.PYTHON_WEB.value == "python_web"
+        assert AppType.PYTHON_CONSOLE.value == "python_console", "Value must be initialized"
+        assert AppType.PYTHON_CLI.value == "python_cli", "Value must be initialized"
+        assert AppType.PYTHON_API.value == "python_api", "Value must be initialized"
+        assert AppType.PYTHON_WEB.value == "python_web", "Value must be initialized"
 
     def test_development_phase_enum(self):
         """Test DevelopmentPhase enum."""
         from agents.developer_orchestrator import DevelopmentPhase
 
-        assert DevelopmentPhase.REQUIREMENTS is not None
-        assert DevelopmentPhase.DESIGN is not None
-        assert DevelopmentPhase.IMPLEMENTATION is not None
+        assert DevelopmentPhase.REQUIREMENTS is not None, "REQUIREMENTS must be initialized"
+        assert DevelopmentPhase.DESIGN is not None, "DESIGN must be initialized"
+        assert DevelopmentPhase.IMPLEMENTATION is not None, "IMPLEMENTATION must be initialized"
 
     def test_orchestrator_session_id_default(self):
         """Test PhysicsGuidedDeveloperOrchestrator default session_id."""
@@ -225,7 +225,7 @@ class TestDeveloperOrchestratorProperties:
 
         orch = PhysicsGuidedDeveloperOrchestrator()
 
-        assert orch.session_id == "dev_orchestrator"
+        assert orch.session_id == "dev_orchestrator", "session_id is not valid"
 
 
 class TestPhysicsIntegrationProperties:
@@ -237,7 +237,7 @@ class TestPhysicsIntegrationProperties:
 
         orch = HybridPhysicsOrchestrator()
 
-        assert orch.session_id == "hybrid_physics"
+        assert orch.session_id == "hybrid_physics", "session_id is not valid"
 
     def test_orchestrator_decision_history_starts_empty(self):
         """Test decision_history initializes as empty list."""
@@ -245,5 +245,5 @@ class TestPhysicsIntegrationProperties:
 
         orch = HybridPhysicsOrchestrator()
 
-        assert orch.decision_history == []
+        assert orch.decision_history == [], "decision_history is not valid"
         assert isinstance(orch.decision_history, list)

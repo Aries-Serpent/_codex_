@@ -22,9 +22,9 @@ class TestCircuitBreaker:
         config = CircuitBreakerConfig(failure_threshold=3, timeout=10.0)
         cb = CircuitBreaker(config)
 
-        assert cb.state == CircuitState.CLOSED
-        assert cb.failure_count == 0
-        assert cb.config.failure_threshold == 3
+        assert cb.state == CircuitState.CLOSED, "state is not valid"
+        assert cb.failure_count == 0, "Count must be greater than zero"
+        assert cb.config.failure_threshold == 3, "failure_threshold is not valid"
 
     def test_successful_calls(self):
         """Test successful calls keep circuit closed"""
@@ -35,10 +35,10 @@ class TestCircuitBreaker:
 
         for _ in range(10):
             result = cb.call(success_func)
-            assert result == "success"
+            assert result == "success", "Result must not be empty"
 
-        assert cb.state == CircuitState.CLOSED
-        assert cb.failure_count == 0
+        assert cb.state == CircuitState.CLOSED, "state is not valid"
+        assert cb.failure_count == 0, "Count must be greater than zero"
 
     def test_circuit_opens_on_failures(self):
         """Test circuit opens after threshold failures"""
@@ -54,8 +54,8 @@ class TestCircuitBreaker:
                 cb.call(fail_func)
 
         # Circuit should be open now
-        assert cb.state == CircuitState.OPEN
-        assert cb.failure_count == 3
+        assert cb.state == CircuitState.OPEN, "state is not valid"
+        assert cb.failure_count == 3, "Count must be greater than zero"
 
     def test_circuit_rejects_when_open(self):
         """Test circuit rejects requests when open"""
@@ -70,7 +70,7 @@ class TestCircuitBreaker:
             with pytest.raises(ValueError):
                 cb.call(fail_func)
 
-        assert cb.state == CircuitState.OPEN
+        assert cb.state == CircuitState.OPEN, "state is not valid"
 
         # Subsequent calls should be rejected
         def success_func():
@@ -92,7 +92,7 @@ class TestCircuitBreaker:
             with pytest.raises(ValueError):
                 cb.call(fail_func)
 
-        assert cb.state == CircuitState.OPEN
+        assert cb.state == CircuitState.OPEN, "state is not valid"
 
         # Wait for timeout with buffer for timing precision
         time.sleep(0.8)  # 16x timeout margin for CI reliability
@@ -102,8 +102,8 @@ class TestCircuitBreaker:
             return "success"
 
         result = cb.call(success_func)
-        assert result == "success"
-        assert cb.state == CircuitState.HALF_OPEN
+        assert result == "success", "Result must not be empty"
+        assert cb.state == CircuitState.HALF_OPEN, "state is not valid"
 
     def test_circuit_closes_from_half_open(self):
         """Test circuit closes after successful calls in half-open"""
@@ -130,11 +130,11 @@ class TestCircuitBreaker:
             return "success"
 
         cb.call(success_func)  # First success
-        assert cb.state == CircuitState.HALF_OPEN
+        assert cb.state == CircuitState.HALF_OPEN, "state is not valid"
 
         cb.call(success_func)  # Second success
-        assert cb.state == CircuitState.CLOSED
-        assert cb.failure_count == 0
+        assert cb.state == CircuitState.CLOSED, "state is not valid"
+        assert cb.failure_count == 0, "Count must be greater than zero"
 
     def test_circuit_reopens_on_half_open_failure(self):
         """Test circuit reopens if half-open call fails"""
@@ -156,7 +156,7 @@ class TestCircuitBreaker:
         with pytest.raises(ValueError):
             cb.call(fail_func)
 
-        assert cb.state == CircuitState.OPEN
+        assert cb.state == CircuitState.OPEN, "state is not valid"
 
     def test_manual_reset(self):
         """Test manual circuit breaker reset"""
@@ -171,23 +171,23 @@ class TestCircuitBreaker:
             with pytest.raises(ValueError):
                 cb.call(fail_func)
 
-        assert cb.state == CircuitState.OPEN
+        assert cb.state == CircuitState.OPEN, "state is not valid"
 
         # Manual reset
         cb.reset()
 
-        assert cb.state == CircuitState.CLOSED
-        assert cb.failure_count == 0
+        assert cb.state == CircuitState.CLOSED, "state is not valid"
+        assert cb.failure_count == 0, "Count must be greater than zero"
 
     def test_get_state(self):
         """Test get_state method"""
         cb = CircuitBreaker()
 
         state = cb.get_state()
-        assert "state" in state
-        assert "failure_count" in state
-        assert "success_count" in state
-        assert state["state"] == "closed"
+        assert "state" in state, "Condition must be true"
+        assert "failure_count" in state, "Count must be greater than zero"
+        assert "success_count" in state, "Count must be greater than zero"
+        assert state["state"] == "closed", "Condition must be true"
 
 
 class TestRetryWithBackoff:
@@ -199,8 +199,8 @@ class TestRetryWithBackoff:
 
         result = retry_with_backoff(mock_func, max_retries=3)
 
-        assert result == "success"
-        assert mock_func.call_count == 1
+        assert result == "success", "Result must not be empty"
+        assert mock_func.call_count == 1, "Count must be greater than zero"
 
     def test_retries_on_failure(self):
         """Test function retries on failure"""
@@ -212,8 +212,8 @@ class TestRetryWithBackoff:
             initial_delay=0.01,  # Short delay for testing
         )
 
-        assert result == "success"
-        assert mock_func.call_count == 3
+        assert result == "success", "Result must not be empty"
+        assert mock_func.call_count == 3, "Count must be greater than zero"
 
     def test_exhausts_retries(self):
         """Test all retries exhausted"""
@@ -226,7 +226,7 @@ class TestRetryWithBackoff:
                 initial_delay=0.01,
             )
 
-        assert mock_func.call_count == 3  # Initial + 2 retries
+        assert mock_func.call_count == 3, "Count must be greater than zero"
 
     def test_exponential_backoff(self):
         """Test exponential backoff delays"""
@@ -245,14 +245,14 @@ class TestRetryWithBackoff:
             )
 
         # Check delays are increasing
-        assert len(call_times) == 3
+        assert len(call_times) == 3, "Call_times must not be empty"
         delay1 = call_times[1] - call_times[0]
         delay2 = call_times[2] - call_times[1]
 
         # Second delay should be roughly 2x first delay
-        assert delay2 > delay1
-        assert 0.04 <= delay1 <= 0.08  # ~50ms
-        assert 0.08 <= delay2 <= 0.15  # ~100ms
+        assert delay2 > delay1, "delay2 must be greater than zero"
+        assert 0.04 <= delay1 <= 0.08, "04 is not valid"
+        assert 0.08 <= delay2 <= 0.15, "08 is not valid"
 
     def test_max_delay_cap(self):
         """Test maximum delay cap"""
@@ -274,7 +274,7 @@ class TestRetryWithBackoff:
         # All delays should be capped at max_delay
         for i in range(1, len(call_times)):
             delay = call_times[i] - call_times[i - 1]
-            assert delay <= 0.06  # Should be near max_delay
+            assert delay <= 0.06, "delay is not valid"
 
 
 class TestFallbackHandler:
@@ -290,8 +290,8 @@ class TestFallbackHandler:
 
         result = handler.call_with_fallback(primary_func)
 
-        assert result == "primary"
-        assert not fallback_func.called
+        assert result == "primary", "Result must not be empty"
+        assert not fallback_func.called, "Condition must be true"
 
     def test_fallback_on_failure(self):
         """Test fallback function called on primary failure"""
@@ -303,8 +303,8 @@ class TestFallbackHandler:
 
         result = handler.call_with_fallback(primary_func)
 
-        assert result == "fallback"
-        assert fallback_func.called
+        assert result == "fallback", "Result must not be empty"
+        assert fallback_func.called, "Condition must be true"
 
     def test_cache_fallback(self):
         """Test cache used as fallback"""
@@ -318,7 +318,7 @@ class TestFallbackHandler:
 
         result = handler.call_with_fallback(primary_func, fallback_key="test_key")
 
-        assert result == "cached_result"
+        assert result == "cached_result", "Result must not be empty"
         mock_cache.get.assert_called_once_with("test_key")
 
     def test_no_fallback_available(self):
@@ -348,6 +348,6 @@ class TestFallbackHandler:
 
         result = handler.call_with_fallback(primary_func, fallback_key="test_key")
 
-        assert result == "fallback_func_result"
+        assert result == "fallback_func_result", "Result must not be empty"
         mock_cache.get.assert_called_once()
         fallback_func.assert_called_once()

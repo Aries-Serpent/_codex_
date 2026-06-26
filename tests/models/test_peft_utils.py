@@ -16,7 +16,7 @@ from src.models.peft_utils import summarize_peft
 def test_summarize_peft_graceful_without_peft() -> None:
     res = summarize_peft(object())
     assert isinstance(res, dict)
-    assert "peft" in res or "base_model_type" in res
+    assert "peft" in res or "base_model_type" in res, "Condition must be true"
 
 
 @pytest.mark.skipif(importlib.util.find_spec("peft") is None, reason="peft not installed")

@@ -23,7 +23,7 @@ DATA_DIR = REPO_ROOT / "data"
 def test_data_dir_or_skip():
     if not DATA_DIR.exists():
         pytest.skip("data/ directory not present; skipping data pipeline checks")
-    assert DATA_DIR.is_dir()
+    assert DATA_DIR.is_dir(), "Data must not be empty"
 
 
 @pytest.mark.smoke
@@ -32,4 +32,4 @@ def test_data_has_samples_if_present():
         pytest.skip("data/ directory not present")
     # Non-failing check: at least one file under data/ if directory exists
     all_files = list(DATA_DIR.rglob("*"))
-    assert all_files or all_files == []  # Always true; placeholder to keep test deterministic
+    assert all_files or all_files == [], "all_files is not valid"

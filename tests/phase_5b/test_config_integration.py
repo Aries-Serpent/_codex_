@@ -112,8 +112,8 @@ learning_rate: 5e-5
             config = mock_load(config_path=str(config_dir))
 
             # Assert: Config loaded correctly
-            assert config["model"]["name"] == "bert"
-            assert config["training"]["epochs"] == 3
+            assert config["model"]["name"] == "bert", "Condition must be true"
+            assert config["training"]["epochs"] == 3, "Condition must be true"
 
     def test_config_validation_schema_checking(self):
         """Test: Configuration validates against schema."""
@@ -135,7 +135,7 @@ learning_rate: 5e-5
             result = mock_validate(config, schema)
 
             # Assert: Validation passed
-            assert result is True
+            assert result is True, "Result must not be empty"
 
     def test_config_merge_operations(self):
         """Test: Configuration merge combines base and overrides."""
@@ -159,8 +159,8 @@ learning_rate: 5e-5
             result = mock_merge(base_config, overrides)
 
             # Assert: Merge succeeded, override applied
-            assert result["training"]["batch_size"] == 64
-            assert result["model"]["name"] == "bert"
+            assert result["training"]["batch_size"] == 64, "Result must not be empty"
+            assert result["model"]["name"] == "bert", "Result must not be empty"
 
     def test_env_variable_interpolation_in_config(self):
         """Test: Environment variables interpolated in config."""
@@ -180,7 +180,7 @@ learning_rate: 5e-5
             result = mock_resolve(config_with_env)
 
             # Assert: Environment variable resolved
-            assert result["model"]["name"] == "roberta-base"
+            assert result["model"]["name"] == "roberta-base", "Result must not be empty"
 
     def test_compose_config_with_hydra(self):
         """Test: Compose configuration using Hydra."""
@@ -196,8 +196,8 @@ learning_rate: 5e-5
             config = mock_compose(config_name="config", overrides=["training.epochs=5"])
 
             # Assert: Config composed
-            assert "model" in config
-            assert "training" in config
+            assert "model" in config, "Condition must be true"
+            assert "training" in config, "Condition must be true"
 
     def test_config_propagation_through_pipeline(self):
         """Test: Configuration propagates through entire pipeline."""
@@ -222,9 +222,9 @@ learning_rate: 5e-5
                     train_cfg = mock_train()
 
                     # Assert: Config available at all stages
-                    assert full_config["model"]["name"] == "bert"
-                    assert model_cfg["name"] == "bert"
-                    assert train_cfg["batch_size"] == 32
+                    assert full_config["model"]["name"] == "bert", "Condition must be true"
+                    assert model_cfg["name"] == "bert", "Condition must be true"
+                    assert train_cfg["batch_size"] == 32, "Condition must be true"
 
     def test_config_caching_and_reuse(self):
         """Test: Configuration is cached and reused efficiently."""
@@ -239,8 +239,8 @@ learning_rate: 5e-5
             config2 = mock_load()
 
             # Assert: Same config returned (not reloaded)
-            assert mock_load.call_count == 2
-            assert config1 == config2
+            assert mock_load.call_count == 2, "Count must be greater than zero"
+            assert config1 == config2, "config1 is not valid"
 
     def test_config_versioning_compatibility(self):
         """Test: Configuration maintains backward compatibility."""
@@ -262,8 +262,8 @@ learning_rate: 5e-5
             result = mock_migrate(old_config)
 
             # Assert: Old config migrated to new format
-            assert "model" in result
-            assert result["model"]["name"] == "bert"
+            assert "model" in result, "Result must not be empty"
+            assert result["model"]["name"] == "bert", "Result must not be empty"
 
     def test_cross_module_config_sharing(self):
         """Test: Configuration shared across different modules."""
@@ -284,8 +284,8 @@ learning_rate: 5e-5
             batch_size = config["batch_size"]
 
             # Assert: Config shared correctly
-            assert model_name == "bert"
-            assert batch_size == 32
+            assert model_name == "bert", "model_name is not valid"
+            assert batch_size == 32, "batch_size is not valid"
 
 
 @pytest.mark.skipif(not CONFIG_AVAILABLE, reason="Config system not available")
@@ -343,7 +343,7 @@ class TestConfigValidation:
         with patch("codex_ml.config.validate_config") as mock_validate:
             mock_validate.return_value = True  # No circular refs in valid config
             result = mock_validate({"model": {"name": "bert"}})
-            assert result is True
+            assert result is True, "Result must not be empty"
 
 
 @pytest.mark.skipif(not (CONFIG_AVAILABLE and HYDRA_AVAILABLE), reason="Requirements not available")
@@ -365,7 +365,7 @@ class TestHydraConfigIntegration:
                 config = mock_compose(config_name="config")
 
                 # Assert: Config composed via Hydra
-                assert config.model.name == "bert"
+                assert config.model.name == "bert", "name is not valid"
 
     def test_hydra_overrides_propagation(self):
         """Test: Command-line overrides propagate through Hydra."""
@@ -377,7 +377,7 @@ class TestHydraConfigIntegration:
             config = mock_compose(config_name="config", overrides=["training.epochs=10"])
 
             # Assert: Override applied
-            assert config["training"]["epochs"] == 10
+            assert config["training"]["epochs"] == 10, "Condition must be true"
 
 
 @pytest.mark.skipif(not CONFIG_AVAILABLE, reason="Config system not available")
@@ -422,7 +422,7 @@ class TestConfigErrorHandling:
 
             # Recovery with defaults
             config = mock_load()
-            assert config["model"]["name"] == "bert"
+            assert config["model"]["name"] == "bert", "Condition must be true"
 
 
 @pytest.mark.skipif(not CONFIG_AVAILABLE, reason="Config system not available")
@@ -462,8 +462,8 @@ training:
                 is_valid = mock_validate(config)
 
                 # Assert: Pipeline complete
-                assert config["model"]["name"] == "bert-base-uncased"
-                assert is_valid is True
+                assert config["model"]["name"] == "bert-base-uncased", "Condition must be true"
+                assert is_valid is True, "is_valid is not valid"
 
     def test_multi_stage_config_override(self):
         """Test: Configuration overridden at multiple stages."""
@@ -481,11 +481,11 @@ training:
 
             # Apply first override
             result1 = mock_merge(base_config, stage1)
-            assert result1["training"]["epochs"] == 5
+            assert result1["training"]["epochs"] == 5, "Result must not be empty"
 
             # Apply second override
             result2 = mock_merge(result1, {"training": {"batch_size": 64}})
-            assert result2["training"]["batch_size"] == 64
+            assert result2["training"]["batch_size"] == 64, "Result must not be empty"
 
     def test_config_export_and_logging(self, tmp_path):
         """Test: Configuration exported and logged correctly."""
@@ -503,4 +503,4 @@ training:
             result = mock_export(config, str(export_file))
 
             # Assert: Export successful
-            assert result is True
+            assert result is True, "Result must not be empty"

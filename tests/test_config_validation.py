@@ -33,7 +33,7 @@ def test_training_validation_errors_include_path(tmp_path: Path) -> None:
     )
     with pytest.raises(ConfigError) as exc:
         load_app_config(cfg_path)
-    assert "training.batch_size" in str(exc.value)
+    assert "training.batch_size" in str(exc.value), "Value must be initialized"
 
 
 def test_defaults_are_applied(tmp_path: Path) -> None:
@@ -45,9 +45,9 @@ def test_defaults_are_applied(tmp_path: Path) -> None:
         """,
     )
     cfg, raw = load_app_config(cfg_path)
-    assert cfg.training.batch_size == 32
-    assert raw.training.batch_size == 32
-    assert cfg.training.output_dir == "runs/test"
+    assert cfg.training.batch_size == 32, "batch_size is not valid"
+    assert raw.training.batch_size == 32, "batch_size is not valid"
+    assert cfg.training.output_dir == "runs/test", "output_dir is not valid"
 
 
 def test_override_precedence(tmp_path: Path) -> None:
@@ -59,7 +59,7 @@ def test_override_precedence(tmp_path: Path) -> None:
         """,
     )
     cfg, _ = load_app_config(cfg_path, overrides=("training.learning_rate=0.123",))
-    assert cfg.training.learning_rate == pytest.approx(0.123)
+    assert cfg.training.learning_rate == pytest.approx(0.123), "learning_rate is not valid"
 
 
 def test_tokenization_required_fields(tmp_path: Path) -> None:
@@ -72,7 +72,7 @@ def test_tokenization_required_fields(tmp_path: Path) -> None:
     )
     with pytest.raises(ConfigError) as exc:
         load_app_config(cfg_path)
-    assert "tokenization.corpus_glob" in str(exc.value)
+    assert "tokenization.corpus_glob" in str(exc.value), "Value must be initialized"
 
 
 def test_split_ratio_validation(tmp_path: Path) -> None:
@@ -87,4 +87,4 @@ def test_split_ratio_validation(tmp_path: Path) -> None:
     )
     with pytest.raises(ConfigError) as exc:
         load_app_config(cfg_path)
-    assert "data.split_ratios" in str(exc.value)
+    assert "data.split_ratios" in str(exc.value), "Data must not be empty"

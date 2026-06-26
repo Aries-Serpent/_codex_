@@ -70,12 +70,12 @@ class TestMentalMappingCoreFlows:
         )
 
         # Problem node should exist
-        assert problem_node is not None
-        assert problem_node.node_type == NodeType.PROBLEM
-        assert "Optimize slow API endpoint" in problem_node.content
+        assert problem_node is not None, "problem_node must be initialized"
+        assert problem_node.node_type == NodeType.PROBLEM, "node_type is not valid"
+        assert "Optimize slow API endpoint" in problem_node.content, "Content must not be empty"
 
         # Should have created reasoning steps
-        assert len(reasoning_steps) > 0
+        assert len(reasoning_steps) > 0, "Reasoning_steps must not be empty"
         assert all(isinstance(step, ReasoningStep) for step in reasoning_steps)
 
     def test_think_through_problem_with_decomposition(self, mental_map):
@@ -86,14 +86,14 @@ class TestMentalMappingCoreFlows:
         )
 
         # Should have problem node
-        assert problem_node is not None
-        assert problem_node.node_type == NodeType.PROBLEM
+        assert problem_node is not None, "problem_node must be initialized"
+        assert problem_node.node_type == NodeType.PROBLEM, "node_type is not valid"
 
         # Should have reasoning steps
-        assert len(reasoning_steps) > 0
+        assert len(reasoning_steps) > 0, "Reasoning_steps must not be empty"
 
         # Should have decomposition-related reasoning
-        assert any("decompos" in step.thought.lower() for step in reasoning_steps)
+        assert any("decompos" in step.thought.lower() for step in reasoning_steps), "Condition must be true"
 
     def test_think_through_problem_hypothesis_generation(self, mental_map):
         """Test hypothesis generation during problem thinking."""
@@ -105,7 +105,7 @@ class TestMentalMappingCoreFlows:
         hypothesis_nodes = [
             n for n in mental_map.nodes.values() if n.node_type == NodeType.HYPOTHESIS
         ]
-        assert len(hypothesis_nodes) > 0
+        assert len(hypothesis_nodes) > 0, "Hypothesis_nodes must not be empty"
 
     def test_think_through_problem_evidence_gathering(self, mental_map):
         """Test evidence gathering during thinking."""
@@ -114,8 +114,8 @@ class TestMentalMappingCoreFlows:
         )
 
         # Should have evidence in reasoning steps
-        assert any(step.evidence for step in reasoning_steps)
-        assert any("evidence" in str(step.evidence).lower() for step in reasoning_steps)
+        assert any(step.evidence for step in reasoning_steps), "Condition must be true"
+        assert any("evidence" in str(step.evidence).lower() for step in reasoning_steps), "Condition must be true"
 
     # ========== MAKE DECISION TESTS ==========
 
@@ -131,10 +131,10 @@ class TestMentalMappingCoreFlows:
         )
 
         # Decision node should be created
-        assert decision_node is not None
-        assert decision_node.node_type == NodeType.DECISION
-        assert "Add database index" in decision_node.content
-        assert decision_node.confidence == 0.85
+        assert decision_node is not None, "decision_node must be initialized"
+        assert decision_node.node_type == NodeType.DECISION, "node_type is not valid"
+        assert "Add database index" in decision_node.content, "Data must not be empty"
+        assert decision_node.confidence == 0.85, "confidence is not valid"
 
     def test_make_decision_selects_best_alternative(self, mental_map, problem_node):
         """Test decision with multiple alternatives."""
@@ -147,8 +147,8 @@ class TestMentalMappingCoreFlows:
         )
 
         # Should have alternatives in context
-        assert "alternatives" in decision_node.context
-        assert len(decision_node.context["alternatives"]) == 3
+        assert "alternatives" in decision_node.context, "Condition must be true"
+        assert len(decision_node.context["alternatives"]) == 3, "Collection must not be empty"
 
     def test_make_decision_creates_node_and_edges(self, mental_map, problem_node):
         """Test that decision creates proper node and connects to problem."""
@@ -164,17 +164,17 @@ class TestMentalMappingCoreFlows:
         )
 
         # Should have created new decision node
-        assert len(mental_map.nodes) == initial_node_count + 1
+        assert len(mental_map.nodes) == initial_node_count + 1, "Collection must not be empty"
 
         # Should have created edge from problem to decision
-        assert len(mental_map.edges) > initial_edge_count
+        assert len(mental_map.edges) > initial_edge_count, "Collection must not be empty"
 
         # Verify edge connects problem to decision
         edge_exists = any(
             e.source == problem_node.node_id and e.target == decision_node.node_id
             for e in mental_map.edges.values()
         )
-        assert edge_exists
+        assert edge_exists, "edge_exists is not valid"
 
     def test_make_decision_low_confidence_marks_for_review(self, mental_map, problem_node):
         """Test low confidence decisions are marked for review."""
@@ -187,10 +187,10 @@ class TestMentalMappingCoreFlows:
         )
 
         # Should have low confidence
-        assert decision_node.confidence < 0.6
+        assert decision_node.confidence < 0.6, "confidence is not valid"
 
         # Low confidence should trigger review flag
-        assert decision_node.needs_review
+        assert decision_node.needs_review, "Condition must be true"
 
     # ========== RECORD OUTCOME TESTS ==========
 
@@ -219,9 +219,9 @@ class TestMentalMappingCoreFlows:
         )
 
         # Outcome node should be created
-        assert outcome_node is not None
-        assert outcome_node.node_type == NodeType.OUTCOME
-        assert "Successful implementation" in outcome_node.content
+        assert outcome_node is not None, "outcome_node must be initialized"
+        assert outcome_node.node_type == NodeType.OUTCOME, "node_type is not valid"
+        assert "Successful implementation" in outcome_node.content, "Content must not be empty"
 
     def test_record_outcome_creates_edge(self, mental_map):
         """Test that recording outcome creates edge from decision."""
@@ -238,7 +238,7 @@ class TestMentalMappingCoreFlows:
         )
 
         # Should have created edge
-        assert len(mental_map.edges) > initial_edge_count
+        assert len(mental_map.edges) > initial_edge_count, "Collection must not be empty"
 
     def test_record_outcome_triggers_appraisal(self, mental_map):
         """Test that recording outcome triggers self-appraisal."""
@@ -260,7 +260,7 @@ class TestMentalMappingCoreFlows:
         )
 
         # Appraisal should update metrics
-        assert mental_map.appraisal_metrics["total_outcomes"] > 0
+        assert mental_map.appraisal_metrics["total_outcomes"] > 0, "Value must be greater than zero"
 
     # ========== SELF APPRAISAL TESTS ==========
 
@@ -279,7 +279,7 @@ class TestMentalMappingCoreFlows:
         reflection_nodes = [
             n for n in mental_map.nodes.values() if n.node_type == NodeType.REFLECTION
         ]
-        assert len(reflection_nodes) > 0
+        assert len(reflection_nodes) > 0, "Reflection_nodes must not be empty"
 
     def test_self_appraise_identifies_good_decision(self, mental_map):
         """Test appraisal identifies successful decisions."""
@@ -295,7 +295,7 @@ class TestMentalMappingCoreFlows:
         reflection_nodes = [
             n for n in mental_map.nodes.values() if n.node_type == NodeType.REFLECTION
         ]
-        assert len(reflection_nodes) > 0
+        assert len(reflection_nodes) > 0, "Reflection_nodes must not be empty"
 
     def test_self_appraise_identifies_poor_decision(self, mental_map):
         """Test appraisal identifies unsuccessful decisions."""
@@ -309,7 +309,7 @@ class TestMentalMappingCoreFlows:
 
         # Should create learning node from failure
         learning_nodes = [n for n in mental_map.nodes.values() if n.node_type == NodeType.LEARNING]
-        assert len(learning_nodes) > 0
+        assert len(learning_nodes) > 0, "Learning_nodes must not be empty"
 
     # ========== ITERATIVE REVIEW TESTS ==========
 
@@ -327,19 +327,19 @@ class TestMentalMappingCoreFlows:
         # UPDATED: Handle list return type (list of reviewed node IDs)
         if isinstance(review_result, dict):
             # If it returns a dict with stats
-            assert "reviewed_count" in review_result
-            assert "improved_count" in review_result
-            assert review_result["reviewed_count"] >= 0
+            assert "reviewed_count" in review_result, "Result must not be empty"
+            assert "improved_count" in review_result, "Result must not be empty"
+            assert review_result["reviewed_count"] >= 0, "Value must be greater than zero"
         elif isinstance(review_result, list):
             # If it returns a list of reviewed node IDs
             assert isinstance(review_result, list)
             # Should have reviewed at least some nodes
-            assert isinstance(
+            assert isinstance(, "Condition must be true"
                 review_result, (list, tuple, set, dict)
             )  # was: len() >= 0 (always true)
         else:
             # Method executed successfully
-            assert True
+            assert True, "True is not valid"
 
     def test_iterative_review_improves_confidence(self, mental_map):
         """Test that review improves node confidence."""
@@ -352,7 +352,7 @@ class TestMentalMappingCoreFlows:
         mental_map.iterative_review()
 
         # Confidence might improve after review
-        assert node.confidence >= initial_confidence
+        assert node.confidence >= initial_confidence, "confidence must be greater than zero"
 
     def test_iterative_review_marks_completed(self, mental_map):
         """Test that reviewed nodes are marked as complete."""
@@ -362,7 +362,7 @@ class TestMentalMappingCoreFlows:
         mental_map.iterative_review()
 
         # Node should no longer need review (or confidence improved)
-        assert not node.needs_review or node.confidence > 0.5
+        assert not node.needs_review or node.confidence > 0.5, "confidence must be greater than zero"
 
     # ========== GRAPH OPERATIONS TESTS ==========
 
@@ -374,10 +374,10 @@ class TestMentalMappingCoreFlows:
             metadata={"importance": "high"},
         )
 
-        assert node is not None
-        assert node.node_id in mental_map.nodes
-        assert node.content == "Important concept"
-        assert node.metadata["importance"] == "high"
+        assert node is not None, "node must be initialized"
+        assert node.node_id in mental_map.nodes, "Condition must be true"
+        assert node.content == "Important concept", "Content must not be empty"
+        assert node.metadata["importance"] == "high", "Data must not be empty"
 
     def test_connect_nodes(self, mental_map):
         """Test connecting nodes with edges."""
@@ -391,11 +391,11 @@ class TestMentalMappingCoreFlows:
             weight=0.8,
         )
 
-        assert edge is not None
-        assert edge.source_id == node1.node_id
-        assert edge.target_id == node2.node_id
-        assert edge.edge_type == EdgeType.LEADS_TO
-        assert edge.weight == 0.8
+        assert edge is not None, "edge must be initialized"
+        assert edge.source_id == node1.node_id, "source_id is not valid"
+        assert edge.target_id == node2.node_id, "target_id is not valid"
+        assert edge.edge_type == EdgeType.LEADS_TO, "edge_type is not valid"
+        assert edge.weight == 0.8, "weight is not valid"
 
     def test_get_connected_nodes(self, mental_map):
         """Test retrieving connected nodes."""
@@ -408,9 +408,9 @@ class TestMentalMappingCoreFlows:
 
         connected = mental_map.get_connected_nodes(node1.node_id)
 
-        assert len(connected) >= 2
-        assert node2 in connected
-        assert node3 in connected
+        assert len(connected) >= 2, "Connected must not be empty"
+        assert node2 in connected, "Condition must be true"
+        assert node3 in connected, "Condition must be true"
 
     def test_find_path_between_nodes(self, mental_map):
         """Test finding path between two nodes."""
@@ -423,11 +423,11 @@ class TestMentalMappingCoreFlows:
 
         path = mental_map.shortest_path(source=node_a, target=node_c)
 
-        assert path is not None
-        assert len(path) == 3
-        assert path[0] == node_a
-        assert path[1] == node_b
-        assert path[2] == node_c
+        assert path is not None, "path must be initialized"
+        assert len(path) == 3, "Path must not be empty"
+        assert path[0] == node_a, "Condition must be true"
+        assert path[1] == node_b, "Condition must be true"
+        assert path[2] == node_c, "Condition must be true"
 
     def test_save_and_load_mental_map(self, mental_map, tmp_path):
         """Test saving and loading mental map."""
@@ -445,8 +445,8 @@ class TestMentalMappingCoreFlows:
         loaded_map.load(save_path)
 
         # Verify loaded correctly
-        assert len(loaded_map.nodes) == len(mental_map.nodes)
-        assert len(loaded_map.edges) == len(mental_map.edges)
+        assert len(loaded_map.nodes) == len(mental_map.nodes), "Collection must not be empty"
+        assert len(loaded_map.edges) == len(mental_map.edges), "Collection must not be empty"
 
     # ========== EDGE CASES ==========
 
@@ -461,7 +461,7 @@ class TestMentalMappingCoreFlows:
         )
 
         # Should handle gracefully
-        assert decision is not None
+        assert decision is not None, "decision must be initialized"
         # Decision is a MentalNode, check its confidence
         assert hasattr(decision, "confidence")
 
@@ -470,7 +470,7 @@ class TestMentalMappingCoreFlows:
         problem_node, _reasoning_steps = mental_map.think_through_problem(problem="")
 
         # Should handle gracefully
-        assert problem_node is not None
+        assert problem_node is not None, "problem_node must be initialized"
 
     def test_get_connected_nodes_no_connections(self, mental_map):
         """Test getting connections for isolated node."""
@@ -478,4 +478,4 @@ class TestMentalMappingCoreFlows:
 
         connected = mental_map.get_connected_nodes(node.node_id)
 
-        assert len(connected) == 0
+        assert len(connected) == 0, "Connected must not be empty"

@@ -27,4 +27,4 @@ def test_encode_decode_roundtrip(model):
     out = tok.decode(ids, skip_special_tokens=True)
     assert isinstance(ids, list) and len(ids) > 0
     # Allow benign whitespace normalization
-    assert out.strip() == text.strip()
+    assert out.strip() == text.strip(), "Condition must be true"

@@ -162,7 +162,7 @@ class CodexErrorHandler:
                 return func(*args, **kwargs)
             except (ValueError, TypeError, RuntimeError) as e:
                 error_type = type(e).__name__
-                self.logger.debug(f"Exception: <ERROR_TYPE>")
+                self.logger.debug("Exception: <ERROR_TYPE>")
                 self.log_error(
                     e,
                     context={

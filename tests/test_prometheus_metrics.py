@@ -47,7 +47,7 @@ def clear_prometheus_registry():
 def test_metrics_collector_initializes():
     """Test that MetricsCollector can be initialized."""
     collector = MetricsCollector()
-    assert collector is not None
+    assert collector is not None, "collector must be initialized"
 
 
 def test_metrics_collector_available_property():
@@ -90,7 +90,7 @@ def test_get_metrics_collector_singleton():
     collector1 = get_metrics_collector()
     collector2 = get_metrics_collector()
 
-    assert collector1 is collector2
+    assert collector1 is collector2, "collector1 is not valid"
 
 
 def test_record_request_convenience_function():
@@ -123,4 +123,4 @@ def test_metrics_graceful_without_prometheus():
     collector.dec_active_requests()
 
     # Should complete without exceptions
-    assert True
+    assert True, "True is not valid"

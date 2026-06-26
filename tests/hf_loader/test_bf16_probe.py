@@ -19,9 +19,9 @@ def test_bf16_capability_probe():
     # train_loop dtype resolver should map 'bf16' to torch.bfloat16
     tl = importlib.import_module("src.codex_ml.train_loop")
     resolve_dtype = tl._resolve_dtype
-    assert resolve_dtype("bf16") == torch.bfloat16
+    assert resolve_dtype("bf16") == torch.bfloat16, "Condition must be true"
 
     # hf_loader AMP dtype mapper should map 'bf16' to torch.bfloat16
     hf = importlib.import_module("src.codex_ml.hf_loader")
     map_amp = hf._map_amp_dtype
-    assert map_amp("bf16") == torch.bfloat16
+    assert map_amp("bf16") == torch.bfloat16, "Condition must be true"

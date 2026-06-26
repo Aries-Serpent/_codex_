@@ -66,8 +66,8 @@ class TestCapability1RAGToAgentBridge:
             )
 
             module = registry.load_with_dependencies("agent")
-            assert module is not None
-            assert registry.plugins["rag"].state == PluginState.COLLAPSED
+            assert module is not None, "module must be initialized"
+            assert registry.plugins["rag"].state == PluginState.COLLAPSED, "state is not valid"
 
         elif scenario == "edge_case_1":
             # Edge: Empty dependency list
@@ -78,7 +78,7 @@ class TestCapability1RAGToAgentBridge:
             )
 
             module = registry.load_with_dependencies("standalone")
-            assert module is not None
+            assert module is not None, "module must be initialized"
 
         elif scenario == "edge_case_2":
             # Edge: Multiple dependencies
@@ -94,9 +94,9 @@ class TestCapability1RAGToAgentBridge:
             )
 
             module = registry.load_with_dependencies("multi_dep")
-            assert module is not None
-            assert registry.plugins["dep1"].state == PluginState.COLLAPSED
-            assert registry.plugins["dep2"].state == PluginState.COLLAPSED
+            assert module is not None, "module must be initialized"
+            assert registry.plugins["dep1"].state == PluginState.COLLAPSED, "state is not valid"
+            assert registry.plugins["dep2"].state == PluginState.COLLAPSED, "state is not valid"
 
     def test_rag_agent_bridge_failure_recovery(self):
         """Test failure recovery for RAG-Agent bridge."""
@@ -117,7 +117,7 @@ class TestCapability1RAGToAgentBridge:
         registry2 = QuantumPluginRegistry()
         registry2.register(QuantumPlugin(name="agent", import_path="sys"))
         module = registry2.load_with_dependencies("agent")
-        assert module is not None
+        assert module is not None, "module must be initialized"
 
 
 class TestCapability2PhysicsToTestingPipeline:
@@ -146,15 +146,15 @@ class TestCapability2PhysicsToTestingPipeline:
             results = suite.execute_with_thermodynamic_scheduling()
 
             # Verify Born rule: P = |ψ|²
-            assert results["tests"][0]["probability"] == pytest.approx(0.81)
-            assert results["tests"][1]["probability"] == pytest.approx(0.09)
+            assert results["tests"][0]["probability"] == pytest.approx(0.81), "Result must not be empty"
+            assert results["tests"][1]["probability"] == pytest.approx(0.09), "Result must not be empty"
 
         elif scenario == "edge_case_1":
             # Edge: Zero amplitude (should still work)
             suite.add_test(QuantumTest(name="zero_amp", test_func=lambda: True, amplitude=0.0))
 
             results = suite.execute_with_thermodynamic_scheduling()
-            assert results["total"] == 1
+            assert results["total"] == 1, "Result must not be empty"
 
         elif scenario == "edge_case_2":
             # Edge: Maximum amplitude
@@ -163,7 +163,7 @@ class TestCapability2PhysicsToTestingPipeline:
             )
 
             results = suite.execute_with_thermodynamic_scheduling()
-            assert results["tests"][0]["probability"] == pytest.approx(1.0)
+            assert results["tests"][0]["probability"] == pytest.approx(1.0), "Result must not be empty"
 
     def test_physics_testing_failure_recovery(self):
         """Test failure recovery in physics-based testing."""
@@ -175,8 +175,8 @@ class TestCapability2PhysicsToTestingPipeline:
         results = suite.execute_with_thermodynamic_scheduling()
 
         # Verify failure captured
-        assert results["failed"] == 1
-        assert results["entropy"] >= 0  # Entropy calculated despite failure
+        assert results["failed"] == 1, "Result must not be empty"
+        assert results["entropy"] >= 0, "Value must be greater than zero"
 
     def test_planck_einstein_energy_calculation(self):
         """
@@ -191,13 +191,13 @@ class TestCapability2PhysicsToTestingPipeline:
 
         # Verify energy calculation
         energy = test.calculate_energy()
-        assert energy > 0
-        assert energy != float("inf")
+        assert energy > 0, "energy must be greater than zero"
+        assert energy != float("inf"), "energy is not valid"
 
         # Verify formula: E = ℏω = ℏ/t
         hbar = 1.0  # Normalized
         expected_energy = hbar / test.execution_time
-        assert energy == pytest.approx(expected_energy)
+        assert energy == pytest.approx(expected_energy), "energy is not valid"
 
 
 class TestCapability3MCPToQuantumMetrics:
@@ -222,9 +222,9 @@ class TestCapability3MCPToQuantumMetrics:
             results = suite.execute_with_thermodynamic_scheduling()
 
             # Verify metrics captured
-            assert "total_energy" in results
-            assert "entropy" in results
-            assert results["entropy"] > 0  # Mixed outcomes = entropy
+            assert "total_energy" in results, "Result must not be empty"
+            assert "entropy" in results, "Result must not be empty"
+            assert results["entropy"] > 0, "Value must be greater than zero"
 
         elif scenario == "edge_case_1":
             # Edge: All tests pass (zero entropy)
@@ -232,7 +232,7 @@ class TestCapability3MCPToQuantumMetrics:
                 suite.add_test(QuantumTest(name=f"pass{i}", test_func=lambda: True))
 
             results = suite.execute_with_thermodynamic_scheduling()
-            assert results["entropy"] == pytest.approx(0.0)
+            assert results["entropy"] == pytest.approx(0.0), "Result must not be empty"
 
         elif scenario == "edge_case_2":
             # Edge: All tests fail (zero entropy)
@@ -240,7 +240,7 @@ class TestCapability3MCPToQuantumMetrics:
                 suite.add_test(QuantumTest(name=f"fail{i}", test_func=lambda: False))
 
             results = suite.execute_with_thermodynamic_scheduling()
-            assert results["entropy"] == pytest.approx(0.0)
+            assert results["entropy"] == pytest.approx(0.0), "Result must not be empty"
 
     def test_mcp_metrics_failure_recovery(self):
         """Test MCP metrics during failure scenarios."""
@@ -255,8 +255,8 @@ class TestCapability3MCPToQuantumMetrics:
         results = suite.execute_with_thermodynamic_scheduling()
 
         # Metrics should still be captured
-        assert "total_energy" in results
-        assert results["failed"] == 1
+        assert "total_energy" in results, "Result must not be empty"
+        assert results["failed"] == 1, "Result must not be empty"
 
     def test_shannon_entropy_calculation(self):
         """
@@ -318,8 +318,8 @@ class TestCapability4DependencyAwareOrchestration:
             orch.execute_thermodynamic_cycle()
 
             # Verify order: C before B before A
-            assert execution_order.index("c") < execution_order.index("b")
-            assert execution_order.index("b") < execution_order.index("a")
+            assert execution_order.index("c") < execution_order.index("b"), "execution_ is not valid"
+            assert execution_order.index("b") < execution_order.index("a"), "execution_ is not valid"
 
         elif scenario == "edge_case_1":
             # No dependencies (any order valid)
@@ -331,7 +331,7 @@ class TestCapability4DependencyAwareOrchestration:
                 )
 
             orch.execute_thermodynamic_cycle()
-            assert len(execution_order) == 3
+            assert len(execution_order) == 3, "Execution_order must not be empty"
 
         elif scenario == "edge_case_2":
             # Diamond dependency: A->B, A->C, B->D, C->D
@@ -355,8 +355,8 @@ class TestCapability4DependencyAwareOrchestration:
             orch.execute_thermodynamic_cycle()
 
             # D must come before B and C
-            assert execution_order.index("d") < execution_order.index("b")
-            assert execution_order.index("d") < execution_order.index("c")
+            assert execution_order.index("d") < execution_order.index("b"), "execution_ is not valid"
+            assert execution_order.index("d") < execution_order.index("c"), "execution_ is not valid"
 
     def test_dependency_orchestration_failure_recovery(self):
         """Test failure recovery with dependencies."""
@@ -375,7 +375,7 @@ class TestCapability4DependencyAwareOrchestration:
         results = orch.execute_thermodynamic_cycle()
 
         # Failure should be captured
-        assert len(results["failed"]) >= 1
+        assert len(results["failed"]) >= 1, "Collection must not be empty"
 
 
 class TestCapability5AdaptiveLoadingStrategy:
@@ -410,7 +410,7 @@ class TestCapability5AdaptiveLoadingStrategy:
         expected_light = math.exp(-0.5 / (k_boltzmann * temperature))
 
         # Light should always have higher priority
-        assert priorities[0][0] == "light"
+        assert priorities[0][0] == "light", "pri is not valid"
 
         # Check approximate values
         assert priorities[1][1] == pytest.approx(expected_heavy, rel=0.01)
@@ -423,12 +423,12 @@ class TestCapability5AdaptiveLoadingStrategy:
         # Edge: Single plugin
         plugins = [QuantumPlugin(name="single", import_path="sys", energy_cost=1.0)]
         priorities = calculate_thermodynamic_load_priority(plugins, 1.0)
-        assert len(priorities) == 1
+        assert len(priorities) == 1, "Priorities must not be empty"
 
         # Edge: Zero energy plugin
         plugins = [QuantumPlugin(name="zero", import_path="sys", energy_cost=0.0)]
         priorities = calculate_thermodynamic_load_priority(plugins, 1.0)
-        assert priorities[0][1] == pytest.approx(1.0)  # exp(0) = 1
+        assert priorities[0][1] == pytest.approx(1.0), "pri is not valid"
 
 
 # Due to length, I'll create the remaining capabilities in a follow-up...

@@ -83,8 +83,8 @@ class TestTrainingStateTransitions:
         sm.transition(TrainingState.CHECKPOINTING)
         sm.transition(TrainingState.COMPLETED)
 
-        assert sm.state == TrainingState.COMPLETED
-        assert TrainingState.TRAINING in sm.history
+        assert sm.state == TrainingState.COMPLETED, "state is not valid"
+        assert TrainingState.TRAINING in sm.history, "Condition must be true"
 
 
 class TestEpochManagement:
@@ -100,8 +100,8 @@ class TestEpochManagement:
             current_epoch = epoch + 1
             epochs_completed.append(current_epoch)
 
-        assert current_epoch == total_epochs
-        assert len(epochs_completed) == total_epochs
+        assert current_epoch == total_epochs, "current_epoch is not valid"
+        assert len(epochs_completed) == total_epochs, "Epochs_completed must not be empty"
 
     def test_early_stopping_condition(self):
         """Early stopping triggers on patience exhaustion."""
@@ -123,14 +123,14 @@ class TestEpochManagement:
         es = EarlyStopping(patience=3)
 
         # Improving
-        assert not es.should_stop(1.0)
-        assert not es.should_stop(0.9)
-        assert not es.should_stop(0.8)
+        assert not es.should_stop(1.0), "Condition must be true"
+        assert not es.should_stop(0.9), "Condition must be true"
+        assert not es.should_stop(0.8), "Condition must be true"
 
         # Not improving
-        assert not es.should_stop(0.85)  # counter = 1
-        assert not es.should_stop(0.86)  # counter = 2
-        assert es.should_stop(0.87)  # counter = 3, stop!
+        assert not es.should_stop(0.85), "Condition must be true"
+        assert not es.should_stop(0.86), "Condition must be true"
+        assert es.should_stop(0.87), "Condition must be true"
 
     def test_learning_rate_schedule(self):
         """Learning rate schedule follows pattern."""
@@ -175,11 +175,11 @@ class TestEpochManagement:
 
         # Test with gamma > 1 (increasing LR)
         result = step_lr(0.01, 10, 10, 2.0)
-        assert result == pytest.approx(0.02)  # LR doubles
+        assert result == pytest.approx(0.02), "Result must not be empty"
 
         # Test with gamma = 1 (no change)
         result = step_lr(0.01, 20, 10, 1.0)
-        assert result == pytest.approx(0.01)
+        assert result == pytest.approx(0.01), "Result must not be empty"
 
 
 class TestCheckpointing:
@@ -215,15 +215,15 @@ class TestCheckpointing:
         tracker = BestModelTracker()
 
         is_best_1 = tracker.update(1, 1.5)
-        assert is_best_1  # New best
+        assert is_best_1, "is_best_1 is not valid"
         is_best_2 = tracker.update(2, 1.2)
-        assert is_best_2  # New best
+        assert is_best_2, "is_best_2 is not valid"
         assert not tracker.update(3, 1.3)  # Not best
         is_best_4 = tracker.update(4, 1.0)
-        assert is_best_4  # New best
+        assert is_best_4, "is_best_4 is not valid"
 
-        assert tracker.best_epoch == 4
-        assert tracker.best_loss == 1.0
+        assert tracker.best_epoch == 4, "best_epoch is not valid"
+        assert tracker.best_loss == 1.0, "best_loss is not valid"
 
     def test_checkpoint_rotation(self):
         """Old checkpoints are rotated out."""
@@ -247,9 +247,9 @@ class TestCheckpointing:
 
         removed = manager.save("ckpt_4.pt")
 
-        assert removed == "ckpt_1.pt"
-        assert len(manager.checkpoints) == 3
-        assert "ckpt_1.pt" not in manager.checkpoints
+        assert removed == "ckpt_1.pt", "removed is not valid"
+        assert len(manager.checkpoints) == 3, "Collection must not be empty"
+        assert "ckpt_1.pt" not in manager.checkpoints, "Condition must be true"
 
 
 class TestBatchProcessing:
@@ -271,11 +271,11 @@ class TestBatchProcessing:
 
         # Check batch count
         expected_batches = (dataset_size + batch_size - 1) // batch_size
-        assert len(batches) == expected_batches
+        assert len(batches) == expected_batches, "Batches must not be empty"
 
         # Check last batch
         _last_start, last_end = batches[-1]
-        assert last_end == dataset_size
+        assert last_end == dataset_size, "Data must not be empty"
 
     def test_gradient_accumulation(self):
         """Gradient accumulation works correctly."""
@@ -293,7 +293,7 @@ class TestBatchProcessing:
                 gradients.append(accumulated_grad / accumulation_steps)
                 accumulated_grad = 0
 
-        assert len(gradients) == 4
+        assert len(gradients) == 4, "Gradients must not be empty"
 
 
 class TestLossTracking:
@@ -319,7 +319,7 @@ class TestLossTracking:
         avg.update(2.0)
         avg.update(3.0)
 
-        assert avg.value() == pytest.approx(2.0)
+        assert avg.value() == pytest.approx(2.0), "Value must be initialized"
 
     def test_loss_history_recording(self):
         """Loss history is recorded for visualization."""
@@ -329,8 +329,8 @@ class TestLossTracking:
             loss_history["train"].append(1.0 - epoch * 0.1)
             loss_history["val"].append(1.1 - epoch * 0.08)
 
-        assert len(loss_history["train"]) == 5
-        assert loss_history["train"][-1] < loss_history["train"][0]  # Decreasing
+        assert len(loss_history["train"]) == 5, "Collection must not be empty"
+        assert loss_history["train"][-1] < loss_history["train"][0], "loss_hist is not valid"
 
 
 class TestResourceManagement:
@@ -347,7 +347,7 @@ class TestResourceManagement:
             # Training step...
             cleanup_memory()
 
-        assert len(cleanup_called) == 5
+        assert len(cleanup_called) == 5, "Cleanup_called must not be empty"
 
     def test_gpu_memory_estimation(self):
         """GPU memory usage is estimated."""
@@ -362,5 +362,5 @@ class TestResourceManagement:
             batch_size=32, model_params_m=100, hidden_dim=768  # 100M params
         )
 
-        assert memory > 0
+        assert memory > 0, "memory must be greater than zero"
         assert isinstance(memory, float)

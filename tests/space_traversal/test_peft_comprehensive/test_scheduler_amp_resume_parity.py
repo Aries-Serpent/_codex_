@@ -68,5 +68,5 @@ def test_final_status_reflects_strategy_result(monkeypatch, tmp_path) -> None:
     callback = _NoOpCallback()
     cfg = unified_training.UnifiedTrainingConfig(output_dir=str(tmp_path / "run"), epochs=1)
     result = unified_training.run_unified_training(cfg, callbacks=[callback])
-    assert result["status"] == "error"
-    assert recorded["metadata"]["metrics"] == {"final_status": 0.0}
+    assert result["status"] == "error", "Result must not be empty"
+    assert recorded["metadata"]["metrics"] == {"final_status": 0.0}, "Data must not be empty"

@@ -27,8 +27,8 @@ class TestStdioTransport:
         message = {"jsonrpc": "2.0", "method": "test", "id": 1}
         framed = frame_message(message)
 
-        assert b"Content-Length:" in framed
-        assert b"\r\n\r\n" in framed
+        assert b"Content-Length:" in framed, "Content must not be empty"
+        assert b"\r\n\r\n" in framed, "Condition must be true"
 
     def test_message_parsing(self):
         """Framed messages are correctly parsed."""
@@ -54,8 +54,8 @@ class TestStdioTransport:
         raw = b'Content-Length: 42\r\n\r\n{"jsonrpc":"2.0","method":"test","id":1}'
         parsed = parse_frame(raw)
 
-        assert parsed["jsonrpc"] == "2.0"
-        assert parsed["method"] == "test"
+        assert parsed["jsonrpc"] == "2.0", "Condition must be true"
+        assert parsed["method"] == "test", "Condition must be true"
 
     def test_incomplete_frame_handling(self):
         """Incomplete frames are buffered."""
@@ -97,11 +97,11 @@ class TestStdioTransport:
 
         # Feed partial data
         buffer.feed(b'Content-Length: 18\r\n\r\n{"id":')
-        assert len(buffer.messages) == 0
+        assert len(buffer.messages) == 0, "Collection must not be empty"
 
         # Feed rest
         buffer.feed(b'1,"ok":true}')
-        assert len(buffer.messages) == 1
+        assert len(buffer.messages) == 1, "Collection must not be empty"
 
 
 class TestHTTPTransport:
@@ -123,8 +123,8 @@ class TestHTTPTransport:
 
         request = encode_http_request("POST", "/mcp", {"jsonrpc": "2.0", "method": "test", "id": 1})
 
-        assert b"POST /mcp HTTP/1.1" in request
-        assert b"Content-Type: application/json" in request
+        assert b"POST /mcp HTTP/1.1" in request, "Condition must be true"
+        assert b"Content-Type: application/json" in request, "Content must not be empty"
 
     def test_response_parsing(self):
         """HTTP responses are parsed correctly."""
@@ -151,8 +151,8 @@ class TestHTTPTransport:
         response = b'HTTP/1.1 200 OK\r\nContent-Type: application/json\r\n\r\n{"result":"ok"}'
         status, headers, _body = parse_http_response(response)
 
-        assert status == 200
-        assert headers["content-type"] == "application/json"
+        assert status == 200, "status is not valid"
+        assert headers["content-type"] == "application/json", "Content must not be empty"
 
     def test_error_status_handling(self):
         """HTTP error statuses are handled."""
@@ -165,8 +165,8 @@ class TestHTTPTransport:
         }
 
         for code, text in error_codes.items():
-            assert code >= 400
-            assert len(text) > 0
+            assert code >= 400, "code must be greater than zero"
+            assert len(text) > 0, "Text must not be empty"
 
 
 class TestWebSocketTransport:
@@ -197,8 +197,8 @@ class TestWebSocketTransport:
 
         frame = create_text_frame('{"test": true}')
 
-        assert frame[0] == 0x81  # FIN + text opcode
-        assert len(frame) > 2
+        assert frame[0] == 0x81, "Condition must be true"
+        assert len(frame) > 2, "Frame must not be empty"
 
     def test_ping_pong_handling(self):
         """Ping/pong frames are handled for keepalive."""
@@ -212,8 +212,8 @@ class TestWebSocketTransport:
 
         result = handle_control_frame(PING_OPCODE, b"keepalive")
 
-        assert result[0] == PONG_OPCODE
-        assert result[1] == b"keepalive"
+        assert result[0] == PONG_OPCODE, "Result must not be empty"
+        assert result[1] == b"keepalive", "Result must not be empty"
 
 
 class TestTransportReconnection:
@@ -225,10 +225,10 @@ class TestTransportReconnection:
         def calculate_backoff(attempt, base=1.0, max_delay=60.0):
             return min(base * (2**attempt), max_delay)
 
-        assert calculate_backoff(0) == 1.0
-        assert calculate_backoff(1) == 2.0
-        assert calculate_backoff(2) == 4.0
-        assert calculate_backoff(10) == 60.0  # Capped at max
+        assert calculate_backoff(0) == 1.0, "Condition must be true"
+        assert calculate_backoff(1) == 2.0, "Condition must be true"
+        assert calculate_backoff(2) == 4.0, "Condition must be true"
+        assert calculate_backoff(10) == 60.0, "Condition must be true"
 
     def test_retry_count_limit(self):
         """Reconnection attempts are limited."""
@@ -248,10 +248,10 @@ class TestTransportReconnection:
         manager = ReconnectionManager(MAX_RETRIES)
 
         for _ in range(MAX_RETRIES):
-            assert manager.should_retry()
+            assert manager.should_retry(), "Condition must be true"
             manager.record_attempt()
 
-        assert not manager.should_retry()
+        assert not manager.should_retry(), "Condition must be true"
 
 
 class TestTransportSecurity:
@@ -265,8 +265,8 @@ class TestTransportSecurity:
                 raise ValueError("TLS required for remote connections")
             return True
 
-        assert validate_endpoint("https://example.com/mcp")
-        assert validate_endpoint("http://localhost:8080/mcp")
+        assert validate_endpoint("https://example.com/mcp"), "Condition must be true"
+        assert validate_endpoint("http://localhost:8080/mcp"), "Condition must be true"
 
         with pytest.raises(ValueError):
             validate_endpoint("http://example.com/mcp")
@@ -278,5 +278,5 @@ class TestTransportSecurity:
         def validate_origin(origin):
             return origin in ALLOWED_ORIGINS
 
-        assert validate_origin("https://example.com")
-        assert not validate_origin("https://evil.com")
+        assert validate_origin("https://example.com"), "validate_ is not valid"
+        assert not validate_origin("https://evil.com"), "Condition must be true"

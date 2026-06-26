@@ -29,20 +29,20 @@ def _reset_env(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_mask_secrets_respects_toggle(monkeypatch: pytest.MonkeyPatch) -> None:
     secret = "sk-abcdefghi1234567890"  # pragma: allowlist secret
     monkeypatch.setenv("DISABLE_SECRET_FILTER", "1")
-    assert main._mask_secrets(secret) == secret
+    assert main._mask_secrets(secret) == secret, "Condition must be true"
 
 
 def test_mask_secrets_masks_by_default() -> None:
     secret = "the key is sk-abcdefghi1234567890"  # pragma: allowlist secret
     masked = main._mask_secrets(secret)
-    assert "[SECRET]" in masked
-    assert "sk-abcdef" not in masked
+    assert "[SECRET]" in masked, "Condition must be true"
+    assert "sk-abcdef" not in masked, "Condition must be true"
 
 
 def test_resolve_context_limit_prefers_env_override(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("API_MAX_PROMPT_TOKENS", "256")
     limit = main._resolve_context_limit(tokenizer=object(), model=object())
-    assert limit == 256
+    assert limit == 256, "limit is not valid"
 
 
 def test_resolve_context_limit_falls_back_to_model(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -50,7 +50,7 @@ def test_resolve_context_limit_falls_back_to_model(monkeypatch: pytest.MonkeyPat
     model = _DummyModel(vocab_size=512)
     tokenizer = types.SimpleNamespace(model_max_length=2048)
     limit = main._resolve_context_limit(tokenizer=tokenizer, model=model)
-    assert limit == 512
+    assert limit == 512, "limit is not valid"
 
 
 def test_project_tokens_clamps_to_vocab_size() -> None:
@@ -58,7 +58,7 @@ def test_project_tokens_clamps_to_vocab_size() -> None:
     tokens = [0, 1, 5, 9]
     model = _DummyModel(vocab_size=4)
     projected = main._project_tokens(tokens, tokenizer=tokenizer, model=model)
-    assert projected == [token % 4 for token in tokens]
+    assert projected == [token % 4 for token in tokens], "projected is not valid"
 
 
 def test_extract_logits_from_dict_payload() -> None:

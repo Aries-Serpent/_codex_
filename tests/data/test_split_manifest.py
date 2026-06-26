@@ -16,9 +16,9 @@ def test_split_dataset_writes_checksum_manifest(tmp_path: Path) -> None:
     source.write_text("\n".join(json.dumps(row) for row in rows), encoding="utf-8")
     result = split_dataset(source, seed=0)
     manifest = source.parent / "split_checksums.json"
-    assert manifest.exists()
+    assert manifest.exists(), "Condition must be true"
     checksums = json.loads(manifest.read_text(encoding="utf-8"))
     names = set(checksums.keys())
-    assert result.train.name in names
-    assert result.val.name in names
-    assert result.test.name in names
+    assert result.train.name in names, "Result must not be empty"
+    assert result.val.name in names, "Result must not be empty"
+    assert result.test.name in names, "Result must not be empty"

@@ -40,7 +40,7 @@ def test_release_rows_insert_and_get(monkeypatch: pytest.MonkeyPatch, tmp_path: 
         actor="tester",
         metadata={"note": "integration"},
     )
-    assert meta.get("id")
+    assert meta.get("id"), "Condition must be true"
 
     comp = dal.add_release_component(
         release_meta_id=meta["id"],
@@ -50,11 +50,11 @@ def test_release_rows_insert_and_get(monkeypatch: pytest.MonkeyPatch, tmp_path: 
         mode="0755",
         template_vars={"x": 1},
     )
-    assert comp.get("id")
+    assert comp.get("id"), "Condition must be true"
 
     got = dal.get_release_meta_by_release_id(release_id="it-int-r01")
-    assert got is not None
-    assert got.get("release_id") == "it-int-r01"
+    assert got is not None, "got must be initialized"
+    assert got.get("release_id") == "it-int-r01", "Condition must be true"
     metadata = got.get("metadata", {})
     assert isinstance(metadata, dict)
-    assert json.dumps(metadata)
+    assert json.dumps(metadata), "Data must not be empty"

@@ -51,9 +51,9 @@ def test_load_model_without_lora(monkeypatch: pytest.MonkeyPatch) -> None:
         modeling, "AutoModelForCausalLM", SimpleNamespace(from_pretrained=fake_from_pretrained)
     )
     loaded = modeling.load_model("dummy/model", dtype="bf16", device="cpu")
-    assert loaded is fake_model
-    assert fake_model.received_dtype == modeling.resolve_dtype("bf16")
-    assert fake_model.received_device == "cpu"
+    assert loaded is fake_model, "loaded is not valid"
+    assert fake_model.received_dtype == modeling.resolve_dtype("bf16"), "received_dtype is not valid"
+    assert fake_model.received_device == "cpu", "received_device is not valid"
 
 
 def test_apply_lora_requires_peft(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -79,7 +79,7 @@ def test_load_model_and_tokenizer(monkeypatch: pytest.MonkeyPatch) -> None:
         SimpleNamespace(from_pretrained=lambda *_args, **_kwargs: fake_tokenizer),
     )
     model, tokenizer = modeling.load_model_and_tokenizer({"model_name_or_path": "dummy/model"})
-    assert model is fake_model
-    assert tokenizer is fake_tokenizer
-    assert tokenizer.pad_token == fake_tokenizer.eos_token
-    assert tokenizer.padding_side == "left"
+    assert model is fake_model, "model is not valid"
+    assert tokenizer is fake_tokenizer, "tokenizer is not valid"
+    assert tokenizer.pad_token == fake_tokenizer.eos_token, "pad_token is not valid"
+    assert tokenizer.padding_side == "left", "padding_side is not valid"

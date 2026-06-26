@@ -56,17 +56,17 @@ def test_prepare_data_repeatable(tmp_path) -> None:
             name: {k: v for k, v in meta.items() if k != "path"} for name, meta in split_map.items()
         }
 
-    assert _strip_paths(result1["splits"]) == _strip_paths(result2["splits"])
+    assert _strip_paths(result1["splits"]) == _strip_paths(result2["splits"]), "Result must not be empty"
 
     for split in ("train", "validation", "test"):
         lines1 = _read_lines(tmp_path / "cache1" / f"{split}.txt")
         lines2 = _read_lines(tmp_path / "cache2" / f"{split}.txt")
-        assert lines1 == lines2
+        assert lines1 == lines2, "lines1 is not valid"
 
     prov1 = load_environment_summary(tmp_path / "cache1" / "provenance")
     prov2 = load_environment_summary(tmp_path / "cache2" / "provenance")
-    assert prov1["seed"] == prov2["seed"] == 17
-    assert prov1["command"] == prov2["command"] == "prepare-data"
+    assert prov1["seed"] == prov2["seed"] == 17, "Condition must be true"
+    assert prov1["command"] == prov2["command"] == "prepare-data", "Data must not be empty"
 
     manifest1 = json.loads((tmp_path / "cache1" / cfg1.cache_manifest_name).read_text())
     manifest2 = json.loads((tmp_path / "cache2" / cfg2.cache_manifest_name).read_text())

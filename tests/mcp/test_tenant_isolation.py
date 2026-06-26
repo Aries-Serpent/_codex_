@@ -21,7 +21,7 @@ def test_tenant_isolation():
     res_b = adapter.query_top_k(b_ns, [0.0, 1.0], top_k=10)
     ids_a = {r["id"] for r in res_a}
     ids_b = {r["id"] for r in res_b}
-    assert "id-a" in ids_a
-    assert "id-b" in ids_b
-    assert "id-b" not in ids_a
-    assert "id-a" not in ids_b
+    assert "id-a" in ids_a, "Condition must be true"
+    assert "id-b" in ids_b, "Condition must be true"
+    assert "id-b" not in ids_a, "Condition must be true"
+    assert "id-a" not in ids_b, "Condition must be true"

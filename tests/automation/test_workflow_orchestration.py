@@ -84,27 +84,27 @@ class TestWorkflowDefinition:
         """Test workflow has all required fields."""
         required_fields = ["id", "name", "version", "tasks"]
         for field in required_fields:
-            assert field in workflow_definition
+            assert field in workflow_definition, "Condition must be true"
 
     def test_workflow_id_format(self, workflow_definition: dict[str, Any]):
         """Test workflow ID follows expected format."""
         workflow_id = workflow_definition["id"]
-        assert workflow_id.startswith("wf-")
+        assert workflow_id.startswith("wf-"), "w is not valid"
 
     def test_workflow_has_tasks(self, workflow_definition: dict[str, Any]):
         """Test workflow has at least one task."""
-        assert len(workflow_definition["tasks"]) > 0
+        assert len(workflow_definition["tasks"]) > 0, "Collection must not be empty"
 
     def test_workflow_version_format(self, workflow_definition: dict[str, Any]):
         """Test workflow version follows semver format."""
         version = workflow_definition["version"]
         parts = version.split(".")
-        assert len(parts) == 3
-        assert all(p.isdigit() for p in parts)
+        assert len(parts) == 3, "Parts must not be empty"
+        assert all(p.isdigit() for p in parts), "Condition must be true"
 
     def test_workflow_timeout_set(self, workflow_definition: dict[str, Any]):
         """Test workflow timeout is set."""
-        assert workflow_definition["timeout_minutes"] > 0
+        assert workflow_definition["timeout_minutes"] > 0, "w must be greater than zero"
 
 
 # ============================================================================
@@ -119,27 +119,27 @@ class TestTaskScheduling:
         """Test task has required fields."""
         required_fields = ["id", "name", "type"]
         for field in required_fields:
-            assert field in task_config
+            assert field in task_config, "Condition must be true"
 
     def test_task_timeout_set(self, task_config: dict[str, Any]):
         """Test task timeout is configured."""
-        assert task_config["timeout_seconds"] > 0
+        assert task_config["timeout_seconds"] > 0, "Value must be greater than zero"
 
     def test_task_retry_configuration(self, task_config: dict[str, Any]):
         """Test task retry is configured."""
-        assert task_config["retry_count"] >= 0
-        assert task_config["retry_delay_seconds"] > 0
+        assert task_config["retry_count"] >= 0, "Value must be greater than zero"
+        assert task_config["retry_delay_seconds"] > 0, "Value must be greater than zero"
 
     def test_task_environment_variables(self, task_config: dict[str, Any]):
         """Test task environment variables are set."""
         env = task_config["environment"]
         assert isinstance(env, dict)
-        assert "NODE_ENV" in env
+        assert "NODE_ENV" in env, "Condition must be true"
 
     def test_task_artifacts_defined(self, task_config: dict[str, Any]):
         """Test task artifacts are defined."""
         artifacts = task_config["artifacts"]
-        assert len(artifacts) > 0
+        assert len(artifacts) > 0, "Artifacts must not be empty"
 
 
 # ============================================================================
@@ -153,19 +153,19 @@ class TestDependencyManagement:
     def test_first_task_no_dependencies(self, workflow_definition: dict[str, Any]):
         """Test first task has no dependencies."""
         first_task = workflow_definition["tasks"][0]
-        assert len(first_task["depends_on"]) == 0
+        assert len(first_task["depends_on"]) == 0, "Collection must not be empty"
 
     def test_subsequent_tasks_have_dependencies(self, workflow_definition: dict[str, Any]):
         """Test subsequent tasks have dependencies."""
         for task in workflow_definition["tasks"][1:]:
-            assert len(task["depends_on"]) > 0
+            assert len(task["depends_on"]) > 0, "Collection must not be empty"
 
     def test_dependency_exists_in_workflow(self, workflow_definition: dict[str, Any]):
         """Test all dependencies reference existing tasks."""
         task_ids = {t["id"] for t in workflow_definition["tasks"]}
         for task in workflow_definition["tasks"]:
             for dep in task["depends_on"]:
-                assert dep in task_ids
+                assert dep in task_ids, "Condition must be true"
 
     def test_no_circular_dependencies(self, workflow_definition: dict[str, Any]):
         """Test no circular dependencies exist."""
@@ -177,7 +177,7 @@ class TestDependencyManagement:
         for task_id in deps:
             if task_id not in visited:
                 # Simple DFS check - no task should depend on itself
-                assert task_id not in deps[task_id]
+                assert task_id not in deps[task_id], "Condition must be true"
                 visited.add(task_id)
 
     def test_topological_order_possible(self, workflow_definition: dict[str, Any]):
@@ -187,7 +187,7 @@ class TestDependencyManagement:
 
         # Simple check: first task should have no deps
         first_task = tasks[0]
-        assert len(first_task["depends_on"]) == 0
+        assert len(first_task["depends_on"]) == 0, "Collection must not be empty"
 
 
 # ============================================================================
@@ -208,14 +208,14 @@ class TestParallelExecution:
 
         # Tasks a and b can run in parallel
         no_deps = [t for t in tasks if len(t["depends_on"]) == 0]
-        assert len(no_deps) == 2
+        assert len(no_deps) == 2, "No_deps must not be empty"
 
     def test_max_parallelism_respected(self):
         """Test maximum parallelism is respected."""
         max_parallel = 4
         running_tasks = 3
         can_start_more = running_tasks < max_parallel
-        assert can_start_more is True
+        assert can_start_more is True, "can_start_more is not valid"
 
     def test_parallel_completion_tracking(self):
         """Test tracking completion of parallel tasks."""
@@ -223,11 +223,11 @@ class TestParallelExecution:
         completed = {"task-a", "task-b"}
 
         all_complete = set(parallel_tasks) == completed
-        assert all_complete is False
+        assert all_complete is False, "all_complete is not valid"
 
         completed.add("task-c")
         all_complete = set(parallel_tasks) == completed
-        assert all_complete is True
+        assert all_complete is True, "all_complete is not valid"
 
 
 # ============================================================================
@@ -243,7 +243,7 @@ class TestErrorHandling:
         task_result = {"status": "failed", "error": "Build failed", "exit_code": 1}
 
         is_failed = task_result["status"] == "failed"
-        assert is_failed is True
+        assert is_failed is True, "is_failed is not valid"
 
     def test_retry_on_failure(self, task_config: dict[str, Any]):
         """Test retry logic on failure."""
@@ -251,7 +251,7 @@ class TestErrorHandling:
         current_attempt = 1
 
         should_retry = current_attempt < max_retries
-        assert should_retry is True
+        assert should_retry is True, "should_retry is not valid"
 
     def test_workflow_abort_on_critical_failure(self):
         """Test workflow aborts on critical failure."""
@@ -259,7 +259,7 @@ class TestErrorHandling:
         continue_on_error = False
 
         should_abort = critical_failure and not continue_on_error
-        assert should_abort is True
+        assert should_abort is True, "should_abort is not valid"
 
     def test_error_notification(self):
         """Test error notification is sent."""
@@ -270,8 +270,8 @@ class TestErrorHandling:
             "timestamp": datetime.utcnow().isoformat(),
         }
 
-        assert notification["type"] == "workflow_failed"
-        assert "error" in notification
+        assert notification["type"] == "workflow_failed", "Condition must be true"
+        assert "error" in notification, "Error should be raised or set"
 
 
 # ============================================================================
@@ -291,8 +291,8 @@ class TestWorkflowMonitoring:
             "progress_percent": 20,
         }
 
-        assert status["status"] == "running"
-        assert 0 <= status["progress_percent"] <= 100
+        assert status["status"] == "running", "Condition must be true"
+        assert 0 <= status["progress_percent"] <= 100, "0 is not valid"
 
     def test_task_duration_tracking(self):
         """Test task duration is tracked."""
@@ -303,7 +303,7 @@ class TestWorkflowMonitoring:
             "duration_seconds": 300,
         }
 
-        assert task_metrics["duration_seconds"] > 0
+        assert task_metrics["duration_seconds"] > 0, "Value must be greater than zero"
 
     def test_workflow_logs_collected(self):
         """Test workflow logs are collected."""
@@ -312,7 +312,7 @@ class TestWorkflowMonitoring:
             {"timestamp": "2026-01-19T06:05:00Z", "level": "INFO", "message": "Build complete"},
         ]
 
-        assert len(logs) > 0
+        assert len(logs) > 0, "Logs must not be empty"
         assert logs[0]["level"] in ["DEBUG", "INFO", "WARNING", "ERROR"]
 
     def test_workflow_metrics_aggregation(self):
@@ -325,12 +325,12 @@ class TestWorkflowMonitoring:
             "success_rate": 0.95,
         }
 
-        assert metrics["success_rate"] == metrics["successful_runs"] / metrics["total_runs"]
+        assert metrics["success_rate"] == metrics["successful_runs"] / metrics["total_runs"], "Condition must be true"
 
     def test_workflow_history_retention(self):
         """Test workflow history is retained."""
         retention_days = 90
         history_count = 500
 
-        assert retention_days > 0
-        assert history_count > 0
+        assert retention_days > 0, "retention_days must be greater than zero"
+        assert history_count > 0, "history_count must be positive"

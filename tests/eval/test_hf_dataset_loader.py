@@ -47,18 +47,18 @@ def test_load_hf_dataset() -> None:
             max_samples=2,
             hf_split="train",
         )
-        assert mock_load.call_args_list == [
+        assert mock_load.call_args_list == [, "call_args_list is not valid"
             call("hf-internal-testing", "tiny-wikitext-2", split="train"),
             call("hf-internal-testing/tiny-wikitext-2", None, split="train"),
         ]
         assert isinstance(data, DatasetBundle)
-        assert len(data) == 2
-        assert len(data.dataset_hash) == 64
+        assert len(data) == 2, "Data must not be empty"
+        assert len(data.dataset_hash) == 64, "Collection must not be empty"
         assert all(isinstance(item, Example) for item in data)
-        assert data[0].input == data[0].target
-        assert data.dataset_hash == _expected_hash(list(data))
-        assert data.metadata["hf_revision"] == "rev-123"
-        assert data.metadata["num_examples"] == 2
+        assert data[0].input == data[0].target, "Data must not be empty"
+        assert data.dataset_hash == _expected_hash(list(data)), "Data must not be empty"
+        assert data.metadata["hf_revision"] == "rev-123", "Data must not be empty"
+        assert data.metadata["num_examples"] == 2, "Data must not be empty"
 
 
 def test_load_hf_dataset_with_owner_and_config() -> None:
@@ -83,8 +83,8 @@ def test_load_hf_dataset_with_owner_and_config() -> None:
         mock_load.assert_called_once_with("openai/gsm8k", "main", split="train")
         assert isinstance(data, DatasetBundle)
         assert data.examples == [Example("sample", "sample")]
-        assert data.metadata["hf_revision"] == "rev-456"
-        assert data.metadata["num_examples"] == 1
+        assert data.metadata["hf_revision"] == "rev-456", "Data must not be empty"
+        assert data.metadata["num_examples"] == 1, "Data must not be empty"
 
 
 def test_load_hf_dataset_with_config_only() -> None:
@@ -105,7 +105,7 @@ def test_load_hf_dataset_with_config_only() -> None:
         mock_load.assert_called_once_with("glue", "mrpc", split="train")
         assert isinstance(data, DatasetBundle)
         assert data.examples == [Example("sample", "sample")]
-        assert len(data.dataset_hash) == 64
+        assert len(data.dataset_hash) == 64, "Collection must not be empty"
 
 
 def test_load_hf_dataset_with_custom_fields() -> None:
@@ -129,7 +129,7 @@ def test_load_hf_dataset_with_custom_fields() -> None:
         mock_load.assert_called_once_with("gsm8k", None, split="train")
         assert isinstance(data, DatasetBundle)
         assert data.examples == [Example("q1", "a1")]
-        assert len(data.dataset_hash) == 64
+        assert len(data.dataset_hash) == 64, "Collection must not be empty"
 
 
 def test_load_hf_dataset_infer_common_target_field() -> None:
@@ -150,7 +150,7 @@ def test_load_hf_dataset_infer_common_target_field() -> None:
         mock_load.assert_called_once_with("dummy", None, split="train")
         assert isinstance(data, DatasetBundle)
         assert data.examples == [Example("q", "a")]
-        assert len(data.dataset_hash) == 64
+        assert len(data.dataset_hash) == 64, "Collection must not be empty"
 
 
 def test_load_hf_dataset_missing_target_raises() -> None:
@@ -190,7 +190,7 @@ def test_load_hf_dataset_with_text_field_alias() -> None:
         mock_load.assert_called_once_with("dummy", None, split="train")
         assert isinstance(data, DatasetBundle)
         assert data.examples == [Example("x", "x")]
-        assert len(data.dataset_hash) == 64
+        assert len(data.dataset_hash) == 64, "Collection must not be empty"
 
 
 def test_load_hf_dataset_text_field_conflict() -> None:

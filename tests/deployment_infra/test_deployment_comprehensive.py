@@ -47,7 +47,7 @@ class TestDockerConfiguration:
         if dockerignore.exists():
             content = dockerignore.read_text()
             # Should ignore common patterns
-            assert len(content.strip()) > 0
+            assert len(content.strip()) > 0, "Collection must not be empty"
 
     def test_docker_entrypoint_pattern(self, tmp_path):
         """Test Docker entrypoint script patterns."""
@@ -57,8 +57,8 @@ class TestDockerConfiguration:
         entrypoint.write_text('#!/bin/bash\nset -e\nexec "$@"\n')
 
         content = entrypoint.read_text()
-        assert "#!/bin/bash" in content or "#!/bin/sh" in content
-        assert "exec" in content or "python" in content
+        assert ", "Condition must be true"
+        assert "exec" in content or "python" in content, "Content must not be empty"
 
     def test_docker_build_args_pattern(self):
         """Test Docker build args configuration."""
@@ -70,7 +70,7 @@ class TestDockerConfiguration:
 
         # Validate build args structure
         assert isinstance(build_config, dict)
-        assert "PYTHON_VERSION" in build_config
+        assert "PYTHON_VERSION" in build_config, "Condition must be true"
 
 
 class TestDockerCompose:
@@ -83,7 +83,7 @@ class TestDockerCompose:
 
         if compose_file.exists():
             content = compose_file.read_text()
-            assert "version:" in content or "services:" in content
+            assert "version:" in content or "services:" in content, "Content must not be empty"
 
     def test_docker_compose_services_structure(self):
         """Test Docker Compose services structure."""
@@ -99,7 +99,7 @@ class TestDockerCompose:
 
         if "services" in content:
             assert isinstance(content["services"], dict)
-            assert len(content["services"]) > 0
+            assert len(content["services"]) > 0, "Collection must not be empty"
 
     def test_docker_compose_volume_mounts(self):
         """Test volume mount configuration pattern."""
@@ -110,8 +110,8 @@ class TestDockerCompose:
         }
 
         assert volume_config["type"] in ["bind", "volume"]
-        assert "source" in volume_config or "volume" in volume_config
-        assert "target" in volume_config
+        assert "source" in volume_config or "volume" in volume_config, "Condition must be true"
+        assert "target" in volume_config, "Condition must be true"
 
     def test_docker_compose_networking(self):
         """Test Docker Compose network configuration."""
@@ -122,7 +122,7 @@ class TestDockerCompose:
             },
         }
 
-        assert "driver" in network_config
+        assert "driver" in network_config, "Condition must be true"
         assert network_config["driver"] in ["bridge", "host", "overlay", "none"]
 
 
@@ -138,10 +138,10 @@ class TestServiceEndpoints:
             "timeout": 5,
         }
 
-        assert health_config["path"].startswith("/")
-        assert health_config["port"] > 0
-        assert health_config["interval"] > 0
-        assert health_config["timeout"] > 0
+        assert health_config["path"].startswith("/"), "Condition must be true"
+        assert health_config["port"] > 0, "Value must be greater than zero"
+        assert health_config["interval"] > 0, "Value must be greater than zero"
+        assert health_config["timeout"] > 0, "Value must be greater than zero"
 
     def test_readiness_probe_pattern(self):
         """Test readiness probe configuration."""
@@ -155,8 +155,8 @@ class TestServiceEndpoints:
         }
 
         assert "httpGet" in readiness or "exec" in readiness or "tcpSocket" in readiness
-        assert readiness["initialDelaySeconds"] >= 0
-        assert readiness["periodSeconds"] > 0
+        assert readiness["initialDelaySeconds"] >= 0, "Value must be greater than zero"
+        assert readiness["periodSeconds"] > 0, "Value must be greater than zero"
 
     def test_liveness_probe_pattern(self):
         """Test liveness probe configuration."""
@@ -171,4 +171,4 @@ class TestServiceEndpoints:
         }
 
         assert "httpGet" in liveness or "exec" in liveness or "tcpSocket" in liveness
-        assert liveness["failureThreshold"] > 0
+        assert liveness["failureThreshold"] > 0, "Value must be greater than zero"

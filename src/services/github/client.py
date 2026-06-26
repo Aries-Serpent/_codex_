@@ -310,7 +310,7 @@ class GitHubClient:
 
         except GitHubAPIError as e:
             error_type = type(e).__name__
-            logger.debug(f"GitHubAPIError: <ERROR_TYPE>")
+            logger.debug("GitHubAPIError: <ERROR_TYPE>")
             raise WorkflowTriggerError(
                 workflow=str(workflow_id),
                 reason=e.message,
@@ -439,8 +439,8 @@ class GitHubClient:
             return True
         except GitHubAPIError as e:
             error_type = type(e).__name__
-            logger.debug(f"GitHubAPIError: <ERROR_TYPE>")
-            logger.warning(f"GitHubAPIError: <ERROR_TYPE>", exc_info=True)
+            logger.debug("GitHubAPIError: <ERROR_TYPE>")
+            logger.warning("GitHubAPIError: <ERROR_TYPE>", exc_info=True)
             return False
 
     async def rerun_workflow(
@@ -469,8 +469,8 @@ class GitHubClient:
             return True
         except GitHubAPIError as e:
             error_type = type(e).__name__
-            logger.debug(f"GitHubAPIError: <ERROR_TYPE>")
-            logger.warning(f"GitHubAPIError: <ERROR_TYPE>", exc_info=True)
+            logger.debug("GitHubAPIError: <ERROR_TYPE>")
+            logger.warning("GitHubAPIError: <ERROR_TYPE>", exc_info=True)
             return False
 
     # =========================================================================

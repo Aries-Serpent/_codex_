@@ -76,8 +76,8 @@ def _run_ci() -> None:
         subprocess.run(["nox", "-s", "tests"], check=True)
     except (ValueError, TypeError, RuntimeError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
-        print(f"CI failed: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
+        print("CI failed: <ERROR_TYPE>")
         _log_error("STEP CI", "nox -s tests", str(exc), "running local CI")
         raise SystemExit(1) from exc
 
@@ -129,7 +129,7 @@ def _fix_pool(max_workers: int | None = None) -> None:
             sqlite3.connect(str(db))
         except (ConnectionError, TimeoutError) as exc:
             error_type = type(exc).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             _log_error("POOL", "warm connection", str(exc), f"db={db}")
             break
 
@@ -302,7 +302,7 @@ def logs_init(db: str) -> None:
         subprocess.run([sys.executable, str(script), "--init", "--db", db], check=True)
     except (ValueError, TypeError, RuntimeError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         click.echo(f"Failed to init logs DB: {exc}", err=True)
         _log_error("STEP logs_init", "codex_db --init", str(exc), f"db={db}")
         sys.exit(1)
@@ -325,7 +325,7 @@ def logs_ingest(changes, results, branch: str, db: str) -> None:
         subprocess.run(args, check=True)
     except (ValueError, TypeError, RuntimeError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         click.echo(f"Failed to ingest logs: {exc}", err=True)
         _log_error("STEP logs_ingest", "codex_ingest_md", str(exc), f"db={db}")
         sys.exit(1)
@@ -342,7 +342,7 @@ def logs_query(sql: str, db: str) -> None:
         subprocess.run(args, check=True)
     except (ValueError, TypeError, RuntimeError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         click.echo(f"Failed to query logs: {exc}", err=True)
         _log_error("STEP logs_query", "codex_db --query", str(exc), f"db={db}")
         sys.exit(1)
@@ -417,7 +417,7 @@ def logs_export_data(output: str, format: str, db: str) -> None:
         click.echo(f"✅ Exported {len(rows)} records to {output}")
     except (IOError, OSError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         click.echo(f"❌ Export failed: {exc}", err=True)
         sys.exit(1)
 
@@ -525,7 +525,7 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
             return
         except (IOError, OSError) as exc:
             error_type = type(exc).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             _log_error("STEP train", "run_hf_trainer", str(exc), f"texts={args.texts}")
             raise
     else:
@@ -554,7 +554,7 @@ def train_cmd(engine: str, engine_args: tuple[str, ...]) -> None:
             run_custom_train()
         except (ValueError, TypeError, RuntimeError) as exc:
             error_type = type(exc).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             _log_error("STEP train", "run_custom_train", str(exc), f"argv={argv}")
             raise
         finally:
@@ -607,7 +607,7 @@ def batch_triage(issues, from_file, output, as_json, group_by):
         subprocess.run(args, check=True)
     except (ValueError, TypeError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         click.echo(f"Batch triage failed: {exc}", err=True)
         _log_error("STEP batch_triage", "batch_triage.py", str(exc), "")
         sys.exit(1)
@@ -780,7 +780,7 @@ def tokenizer_list_models() -> None:
             click.echo("Install codex_ml with tokenizer support to enable model listing.")
     except (ValueError, TypeError, RuntimeError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         click.echo(f"⚠️  Could not list tokenizer models: {exc}", err=True)
         click.echo("Hint: Ensure codex_ml is installed with tokenization extras.")
 
@@ -898,7 +898,7 @@ def repro_checkpoint(path: Path, include_weights: bool) -> None:
         click.echo(f"   Include weights: {include_weights}")
     except (IOError, OSError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         click.echo(f"❌ Failed to create checkpoint: {exc}", err=True)
         sys.exit(1)
 
@@ -1049,7 +1049,7 @@ def session_logger_cmd(session_id: str | None, role: str, message: str) -> None:
         _log()
     except (ValueError, TypeError, RuntimeError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         click.echo(f"❌ Failed to log message: {exc}", err=True)
         sys.exit(1)
 
@@ -1083,7 +1083,7 @@ def viewer_cmd(session_id: str | None, output_format: str) -> None:
         _view()
     except (ValueError, TypeError, RuntimeError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         click.echo(f"❌ Failed to view logs: {exc}", err=True)
         sys.exit(1)
 
@@ -1120,7 +1120,7 @@ def query_logs_cmd(search: str, role: str | None) -> None:
         _query()
     except (ValueError, TypeError, RuntimeError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         click.echo(f"❌ Failed to query logs: {exc}", err=True)
         sys.exit(1)
 
@@ -1152,7 +1152,7 @@ def validate_env_cmd() -> None:
         _validate()
     except (ValueError, TypeError, RuntimeError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         click.echo(f"❌ Environment validation failed: {exc}", err=True)
         sys.exit(1)
 
@@ -1191,7 +1191,7 @@ def init_db_cmd(db_path: str | None) -> None:
         _init()
     except (IOError, OSError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         click.echo(f"❌ Failed to initialize database: {exc}", err=True)
         sys.exit(1)
 
@@ -1252,7 +1252,7 @@ def export_env_cmd(output_format: str, output: str | None) -> None:
         _export()
     except (ValueError, TypeError, RuntimeError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         click.echo(f"❌ Failed to export environment: {exc}", err=True)
         sys.exit(1)
 
@@ -1331,7 +1331,7 @@ def list_sessions_cmd(limit: int, output_format: str) -> None:
         _list()
     except (ValueError, TypeError, RuntimeError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         click.echo(f"❌ Failed to list sessions: {exc}", err=True)
         sys.exit(1)
 
@@ -1412,7 +1412,7 @@ def clean_logs_cmd(older_than: int, dry_run: bool, yes: bool) -> None:
                     deleted += 1
                 except (IOError, OSError) as e:
                     error_type = type(e).__name__
-                    logger.debug(f"Exception: <ERROR_TYPE>")
+                    logger.debug("Exception: <ERROR_TYPE>")
                     click.echo(f"⚠️  Failed to delete {f}: {e}", err=True)
 
             click.echo(f"✅ Deleted {deleted} files")
@@ -1420,7 +1420,7 @@ def clean_logs_cmd(older_than: int, dry_run: bool, yes: bool) -> None:
         _clean()
     except (IOError, OSError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         click.echo(f"❌ Failed to clean logs: {exc}", err=True)
         sys.exit(1)
 
@@ -1483,7 +1483,7 @@ def duplication_check(path: str, min_lines: int, threshold: float, output: str |
                 total_lines += len(py_file.read_text().splitlines())
             except (OSError, UnicodeDecodeError) as e:
                 error_type = type(e).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.debug("Exception: <ERROR_TYPE>")
                 click.echo(f"⚠️  Skipping {py_file}: {e}", err=True)
 
         # Calculate ratio
@@ -1525,7 +1525,7 @@ def duplication_check(path: str, min_lines: int, threshold: float, output: str |
 
     except (ImportError, AttributeError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         click.echo(f"❌ Failed to check duplicates: {exc}", err=True)
         import traceback
 
@@ -1652,7 +1652,7 @@ def duplication_report(path: str, min_lines: int, format: str, output: str, save
 
     except (ImportError, AttributeError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         click.echo(f"❌ Failed to generate report: {exc}", err=True)
         import traceback
 
@@ -1730,7 +1730,7 @@ def duplication_compare(current: str, baseline: str | None, threshold_increase: 
 
     except (ImportError, AttributeError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         click.echo(f"❌ Failed to compare metrics: {exc}", err=True)
         import traceback
 
@@ -1791,7 +1791,7 @@ def duplication_baseline(report: str, output: str, tag: str | None) -> None:
         click.echo(f"   Source: {report}")
     except (IOError, OSError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         click.echo(f"❌ Failed to create baseline: {exc}", err=True)
         sys.exit(1)
 
@@ -1839,8 +1839,8 @@ def workflow_scan(workflows_dir: str, format: str, triggerable_only: bool) -> No
         from services.workflow.inventory import WorkflowInventory
     except ImportError as e:
         error_type = type(e).__name__
-        logger.debug(f"ImportError: <ERROR_TYPE>")
-        logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
+        logger.debug("ImportError: <ERROR_TYPE>")
+        logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
         click.echo("Error: workflow services not available", err=True)
         sys.exit(1)
 
@@ -2067,7 +2067,7 @@ def auth_refresh_token(session_token: str | None) -> None:
         click.echo("   Credentials updated in cache")
     except (IOError, OSError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         click.echo(f"❌ Failed to refresh token: {exc}", err=True)
         sys.exit(1)
 

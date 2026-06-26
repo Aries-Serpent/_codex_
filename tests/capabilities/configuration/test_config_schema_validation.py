@@ -245,8 +245,8 @@ class TestSchemaEnforcement:
             epochs=3,
             seed=123,
         )
-        assert cfg.model_name == "gpt2"
-        assert cfg.learning_rate == 1e-4
+        assert cfg.model_name == "gpt2", "model_name is not valid"
+        assert cfg.learning_rate == 1e-4, "learning_rate is not valid"
 
 
 # --- Config Hashing Tests ---
@@ -266,13 +266,13 @@ class TestConfigHashing:
         """Identical configs should produce same hash."""
         cfg1 = TrainConfig(model_name="test", learning_rate=1e-3, seed=42)
         cfg2 = TrainConfig(model_name="test", learning_rate=1e-3, seed=42)
-        assert compute_config_hash(cfg1) == compute_config_hash(cfg2)
+        assert compute_config_hash(cfg1) == compute_config_hash(cfg2), "Condition must be true"
 
     def test_different_configs_different_hash(self):
         """Different configs should produce different hashes."""
         cfg1 = TrainConfig(model_name="test", seed=42)
         cfg2 = TrainConfig(model_name="test", seed=43)
-        assert compute_config_hash(cfg1) != compute_config_hash(cfg2)
+        assert compute_config_hash(cfg1) != compute_config_hash(cfg2), "Condition must be true"
 
     def test_hash_deterministic_across_serialization(self):
         """Hash should be consistent across serialization."""
@@ -281,7 +281,7 @@ class TestConfigHashing:
         # Re-create from dict
         cfg2 = TrainConfig.model_validate(cfg.model_dump())
         h2 = compute_config_hash(cfg2)
-        assert h1 == h2
+        assert h1 == h2, "h1 is not valid"
 
     @given(
         st.text(min_size=1, max_size=20, alphabet=st.characters(whitelist_categories=("L", "N"))),
@@ -294,7 +294,7 @@ class TestConfigHashing:
         cfg = TrainConfig(model_name=name or "default", learning_rate=lr, seed=seed)
         h1 = compute_config_hash(cfg)
         h2 = compute_config_hash(cfg)
-        assert h1 == h2
+        assert h1 == h2, "h1 is not valid"
 
 
 # --- Drift Detection Tests ---
@@ -336,7 +336,7 @@ class TestDriftDetection:
             seed=42,
         )
         drift = self.compute_drift(current)
-        assert len(drift) == 0
+        assert len(drift) == 0, "Drift must not be empty"
 
     def test_detect_learning_rate_drift(self):
         """Detect learning rate drift."""
@@ -348,9 +348,9 @@ class TestDriftDetection:
             seed=42,
         )
         drift = self.compute_drift(current)
-        assert "learning_rate" in drift
-        assert drift["learning_rate"]["baseline"] == 1e-4
-        assert drift["learning_rate"]["current"] == 2e-4
+        assert "learning_rate" in drift, "Condition must be true"
+        assert drift["learning_rate"]["baseline"] == 1e-4, "Condition must be true"
+        assert drift["learning_rate"]["current"] == 2e-4, "Condition must be true"
 
     def test_detect_multiple_drifts(self):
         """Detect multiple parameter drifts."""
@@ -362,10 +362,10 @@ class TestDriftDetection:
             seed=42,
         )
         drift = self.compute_drift(current)
-        assert len(drift) == 3
-        assert "model_name" in drift
-        assert "learning_rate" in drift
-        assert "epochs" in drift
+        assert len(drift) == 3, "Drift must not be empty"
+        assert "model_name" in drift, "Condition must be true"
+        assert "learning_rate" in drift, "Condition must be true"
+        assert "epochs" in drift, "Condition must be true"
 
 
 # --- Defaults Coverage Tests ---
@@ -377,43 +377,43 @@ class TestDefaultsCoverage:
     def test_all_defaults_present(self):
         """All fields should have sensible defaults."""
         cfg = TrainConfig()
-        assert cfg.model_name == "tiny"
-        assert cfg.learning_rate == 1e-3
-        assert cfg.batch_size == 8
-        assert cfg.epochs == 1
-        assert cfg.max_samples == 32
-        assert cfg.seed == 42
-        assert cfg.device == "cpu"
-        assert cfg.dtype == "float32"
-        assert cfg.grad_accum == 1
-        assert cfg.lora is None
-        assert cfg.eval_split is None
-        assert cfg.checkpoint_keep == 1
-        assert cfg.bf16_require_capability is False
-        assert cfg.dataset_cast_policy is None
-        assert cfg.config_version == 1
+        assert cfg.model_name == "tiny", "model_name is not valid"
+        assert cfg.learning_rate == 1e-3, "learning_rate is not valid"
+        assert cfg.batch_size == 8, "batch_size is not valid"
+        assert cfg.epochs == 1, "epochs is not valid"
+        assert cfg.max_samples == 32, "max_samples is not valid"
+        assert cfg.seed == 42, "seed is not valid"
+        assert cfg.device == "cpu", "device is not valid"
+        assert cfg.dtype == "float32", "dtype is not valid"
+        assert cfg.grad_accum == 1, "grad_accum is not valid"
+        assert cfg.lora is None, "lora is not valid"
+        assert cfg.eval_split is None, "eval_split is not valid"
+        assert cfg.checkpoint_keep == 1, "checkpoint_keep is not valid"
+        assert cfg.bf16_require_capability is False, "bf16_require_capability is not valid"
+        assert cfg.dataset_cast_policy is None, "Data must not be empty"
+        assert cfg.config_version == 1, "config_version is not valid"
 
     def test_lora_defaults(self):
         """LoRA config defaults should be sensible."""
         lora = LoraConfig()
-        assert lora.enable is False
-        assert lora.r == 8
-        assert lora.lora_alpha == 16
-        assert lora.lora_dropout == 0.05
-        assert lora.task_type == "CAUSAL_LM"
-        assert lora.target_modules is None
+        assert lora.enable is False, "enable is not valid"
+        assert lora.r == 8, "r is not valid"
+        assert lora.lora_alpha == 16, "lora_alpha is not valid"
+        assert lora.lora_dropout == 0.05, "lora_dropout is not valid"
+        assert lora.task_type == "CAUSAL_LM", "task_type is not valid"
+        assert lora.target_modules is None, "target_modules is not valid"
 
     def test_training_settings_defaults(self):
         """TrainingSettings defaults should match expected values."""
         settings = TrainingSettings(model_name="test")
-        assert settings.epochs == 1
-        assert settings.batch_size == 8
-        assert settings.learning_rate == 1e-3
-        assert settings.use_amp is False
-        assert settings.seed == 42
-        assert settings.device == "cpu"
-        assert settings.dtype == "float32"
-        assert settings.grad_accum == 1
+        assert settings.epochs == 1, "epochs is not valid"
+        assert settings.batch_size == 8, "batch_size is not valid"
+        assert settings.learning_rate == 1e-3, "learning_rate is not valid"
+        assert settings.use_amp is False, "use_amp is not valid"
+        assert settings.seed == 42, "seed is not valid"
+        assert settings.device == "cpu", "device is not valid"
+        assert settings.dtype == "float32", "dtype is not valid"
+        assert settings.grad_accum == 1, "grad_accum is not valid"
 
 
 # --- YAML Loading Tests ---
@@ -434,9 +434,9 @@ seed: 123
 """)
             f.flush()
             cfg = validate_config(f.name)
-            assert cfg.model_name == "test_model"
-            assert cfg.learning_rate == 0.0001
-            assert cfg.batch_size == 16
+            assert cfg.model_name == "test_model", "model_name is not valid"
+            assert cfg.learning_rate == 0.0001, "learning_rate is not valid"
+            assert cfg.batch_size == 16, "batch_size is not valid"
             Path(f.name).unlink()
 
     def test_load_nested_training_yaml(self):
@@ -450,15 +450,15 @@ training:
 """)
             f.flush()
             cfg = validate_config(f.name)
-            assert cfg.model_name == "nested_model"
-            assert cfg.learning_rate == 5e-5
+            assert cfg.model_name == "nested_model", "model_name is not valid"
+            assert cfg.learning_rate == 5e-5, "learning_rate is not valid"
             Path(f.name).unlink()
 
     def test_load_dict_config(self):
         """Load config from dictionary."""
         data = {"model_name": "dict_model", "learning_rate": 1e-4}
         cfg = validate_config_dict(data)
-        assert cfg.model_name == "dict_model"
+        assert cfg.model_name == "dict_model", "model_name is not valid"
 
 
 # --- Conversion Tests ---
@@ -471,16 +471,16 @@ class TestConfigConversion:
         """LoraSettings should convert to LoraConfig payload."""
         settings = LoraSettings(enabled=True, rank=16, alpha=32, dropout=0.1)
         payload = settings.to_payload()
-        assert payload["enable"] is True
-        assert payload["r"] == 16
-        assert payload["lora_alpha"] == 32
-        assert payload["lora_dropout"] == 0.1
+        assert payload["enable"] is True, "Condition must be true"
+        assert payload["r"] == 16, "Condition must be true"
+        assert payload["lora_alpha"] == 32, "Condition must be true"
+        assert payload["lora_dropout"] == 0.1, "Condition must be true"
 
     def test_lora_settings_disabled(self):
         """Disabled LoraSettings should only have enable=False."""
         settings = LoraSettings(enabled=False)
         payload = settings.to_payload()
-        assert payload == {"enable": False}
+        assert payload == {"enable": False}, "payload is not valid"
 
     def test_training_settings_to_train_config(self):
         """TrainingSettings should convert to TrainConfig."""
@@ -492,8 +492,8 @@ class TestConfigConversion:
         )
         cfg = settings.to_train_config()
         assert isinstance(cfg, TrainConfig)
-        assert cfg.model_name == "conv_test"
-        assert cfg.epochs == 5
+        assert cfg.model_name == "conv_test", "model_name is not valid"
+        assert cfg.epochs == 5, "epochs is not valid"
 
     def test_round_trip_conversion(self):
         """TrainConfig -> TrainingSettings -> TrainConfig should be consistent."""
@@ -506,10 +506,10 @@ class TestConfigConversion:
         )
         settings = TrainingSettings.from_train_config(original)
         restored = settings.to_train_config()
-        assert restored.model_name == original.model_name
-        assert restored.learning_rate == original.learning_rate
-        assert restored.batch_size == original.batch_size
-        assert restored.seed == original.seed
+        assert restored.model_name == original.model_name, "model_name is not valid"
+        assert restored.learning_rate == original.learning_rate, "learning_rate is not valid"
+        assert restored.batch_size == original.batch_size, "batch_size is not valid"
+        assert restored.seed == original.seed, "seed is not valid"
 
 
 # --- Property-Based Tests ---
@@ -527,27 +527,27 @@ class TestPropertyBasedConfig:
     def test_valid_ranges_accepted(self, epochs: int, batch: int, lr: float):
         """Property: valid parameter ranges should always be accepted."""
         cfg = TrainConfig(epochs=epochs, batch_size=batch, learning_rate=lr)
-        assert cfg.epochs == epochs
-        assert cfg.batch_size == batch
-        assert cfg.learning_rate == lr
+        assert cfg.epochs == epochs, "epochs is not valid"
+        assert cfg.batch_size == batch, "batch_size is not valid"
+        assert cfg.learning_rate == lr, "learning_rate is not valid"
 
     @given(st.integers(min_value=0, max_value=1000000))
     @settings(max_examples=30)
     def test_seed_accepted_any_int(self, seed: int):
         """Property: any integer seed should be accepted."""
         cfg = TrainConfig(seed=seed)
-        assert cfg.seed == seed
+        assert cfg.seed == seed, "seed is not valid"
 
     @given(st.floats(min_value=0.0, max_value=1.0, allow_nan=False))
     @settings(max_examples=30)
     def test_eval_split_valid_range(self, split: float):
         """Property: eval_split in [0, 1] should be accepted."""
         cfg = TrainConfig(eval_split=split)
-        assert cfg.eval_split == split
+        assert cfg.eval_split == split, "eval_split is not valid"
 
     @given(st.floats(min_value=0.0, max_value=1.0, allow_nan=False))
     @settings(max_examples=30)
     def test_lora_dropout_valid_range(self, dropout: float):
         """Property: lora_dropout in [0, 1] should be accepted."""
         lora = LoraConfig(lora_dropout=dropout)
-        assert lora.lora_dropout == dropout
+        assert lora.lora_dropout == dropout, "lora_dropout is not valid"

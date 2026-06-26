@@ -25,10 +25,10 @@ class TestRoutingPattern:
             d365_queue="queue_1",
         )
 
-        assert pattern.pattern_name == "test_pattern"
-        assert pattern.cdm_condition == "condition_1"
-        assert pattern.zd_destination_group == "group_a"
-        assert pattern.d365_queue == "queue_1"
+        assert pattern.pattern_name == "test_pattern", "pattern_name is not valid"
+        assert pattern.cdm_condition == "condition_1", "cdm_condition is not valid"
+        assert pattern.zd_destination_group == "group_a", "zd_destination_group is not valid"
+        assert pattern.d365_queue == "queue_1", "d365_queue is not valid"
 
     def test_from_dict(self):
         """Test RoutingPattern creation from dict."""
@@ -43,7 +43,7 @@ class TestRoutingPattern:
 
         pattern = RoutingPattern(**data)
 
-        assert pattern.pattern_name == "pattern_1"
+        assert pattern.pattern_name == "pattern_1", "pattern_name is not valid"
 
     def test_extra_fields_forbidden(self):
         """Test extra fields are forbidden."""
@@ -79,9 +79,9 @@ class TestSlaParity:
 
         sla = SlaParity(cdm_metric="response_time", zd_target_minutes=30, d365_target_minutes=45)
 
-        assert sla.cdm_metric == "response_time"
-        assert sla.zd_target_minutes == 30
-        assert sla.d365_target_minutes == 45
+        assert sla.cdm_metric == "response_time", "Response must not be empty"
+        assert sla.zd_target_minutes == 30, "zd_target_minutes is not valid"
+        assert sla.d365_target_minutes == 45, "d365_target_minutes is not valid"
 
     def test_zero_minutes(self):
         """Test SlaParity with zero minutes."""
@@ -89,8 +89,8 @@ class TestSlaParity:
 
         sla = SlaParity(cdm_metric="metric", zd_target_minutes=0, d365_target_minutes=0)
 
-        assert sla.zd_target_minutes == 0
-        assert sla.d365_target_minutes == 0
+        assert sla.zd_target_minutes == 0, "zd_target_minutes is not valid"
+        assert sla.d365_target_minutes == 0, "d365_target_minutes is not valid"
 
     def test_negative_minutes_rejected(self):
         """Test negative minutes are rejected."""
@@ -119,5 +119,5 @@ class TestModuleExports:
         """Test __all__ exports."""
         from codex.mapping.models import __all__
 
-        assert "RoutingPattern" in __all__
-        assert "SlaParity" in __all__
+        assert "RoutingPattern" in __all__, "Condition must be true"
+        assert "SlaParity" in __all__, "Condition must be true"

@@ -58,20 +58,20 @@ def test_code_entity_creation():
         type="function", name="test_func", path="test.py", line_start=10, line_end=20
     )
 
-    assert entity.type == "function"
-    assert entity.name == "test_func"
-    assert entity.hash  # Should be auto-generated
-    assert len(entity.hash) == 16
+    assert entity.type == "function", "type is not valid"
+    assert entity.name == "test_func", "name is not valid"
+    assert entity.hash, "Condition must be true"
+    assert len(entity.hash) == 16, "Collection must not be empty"
 
 
 def test_repository_indexer_init(temp_repo):
     """Test RepositoryIndexer initialization."""
     indexer = RepositoryIndexer(temp_repo)
 
-    assert indexer.repo_path == temp_repo
-    assert indexer.output_dir.exists()
-    assert indexer.content_index == {}
-    assert indexer.semantic_index == {}
+    assert indexer.repo_path == temp_repo, "repo_path is not valid"
+    assert indexer.output_dir.exists(), "Condition must be true"
+    assert indexer.content_index == {}, "Content must not be empty"
+    assert indexer.semantic_index == {}, "semantic_index is not valid"
 
 
 def test_extract_python_entities(temp_repo):
@@ -82,11 +82,11 @@ def test_extract_python_entities(temp_repo):
     entities = indexer.extract_python_entities(module_file)
 
     # Should find: TestClass, method_one, method_two, test_function
-    assert len(entities) >= 3
+    assert len(entities) >= 3, "Entities must not be empty"
 
     entity_names = [e.name for e in entities]
-    assert "TestClass" in entity_names
-    assert "test_function" in entity_names
+    assert "TestClass" in entity_names, "Condition must be true"
+    assert "test_function" in entity_names, "Condition must be true"
 
 
 def test_extract_imports(temp_repo):
@@ -104,10 +104,10 @@ from typing import List, Dict
 
     imports = indexer.extract_imports(test_file)
 
-    assert "os" in imports
-    assert "sys" in imports
-    assert "pathlib" in imports
-    assert "typing" in imports
+    assert "os" in imports, "Condition must be true"
+    assert "sys" in imports, "Condition must be true"
+    assert "pathlib" in imports, "Condition must be true"
+    assert "typing" in imports, "Condition must be true"
 
 
 def test_index_file_python(temp_repo):
@@ -117,11 +117,11 @@ def test_index_file_python(temp_repo):
 
     file_index = indexer.index_file(module_file)
 
-    assert file_index is not None
-    assert file_index.language == "python"
-    assert file_index.relative_path == "src/package/module.py"
-    assert len(file_index.entities) >= 3
-    assert file_index.size > 0
+    assert file_index is not None, "file_index must be initialized"
+    assert file_index.language == "python", "language is not valid"
+    assert file_index.relative_path == "src/package/module.py", "relative_path is not valid"
+    assert len(file_index.entities) >= 3, "Collection must not be empty"
+    assert file_index.size > 0, "size must be greater than zero"
 
 
 def test_index_file_config(temp_repo):
@@ -131,9 +131,9 @@ def test_index_file_config(temp_repo):
 
     file_index = indexer.index_file(config_file)
 
-    assert file_index is not None
-    assert file_index.language == "config"
-    assert file_index.relative_path == "config.yaml"
+    assert file_index is not None, "file_index must be initialized"
+    assert file_index.language == "config", "language is not valid"
+    assert file_index.relative_path == "config.yaml", "relative_path is not valid"
 
 
 def test_scan_repository(temp_repo):
@@ -142,11 +142,11 @@ def test_scan_repository(temp_repo):
     indexer.scan_repository()
 
     # Should have indexed Python and config files
-    assert len(indexer.content_index) >= 2
-    assert len(indexer.entity_index) >= 3
-    assert len(indexer.semantic_index) > 0
-    assert indexer.metadata_index["total_files"] >= 2
-    assert "python" in indexer.metadata_index["languages"]
+    assert len(indexer.content_index) >= 2, "Collection must not be empty"
+    assert len(indexer.entity_index) >= 3, "Collection must not be empty"
+    assert len(indexer.semantic_index) > 0, "Collection must not be empty"
+    assert indexer.metadata_index["total_files"] >= 2, "Value must be greater than zero"
+    assert "python" in indexer.metadata_index["languages"], "Data must not be empty"
 
 
 def test_save_and_load_indices(temp_repo):
@@ -158,16 +158,16 @@ def test_save_and_load_indices(temp_repo):
 
     # Check files exist
     output_dir = temp_repo / ".codex" / "ai_index"
-    assert (output_dir / "content_index.json").exists()
-    assert (output_dir / "semantic_index.json").exists()
-    assert (output_dir / "structural_index.json").exists()
-    assert (output_dir / "entity_index.json").exists()
-    assert (output_dir / "metadata_index.json").exists()
+    assert (output_dir / "content_index.json").exists(), "Content must not be empty"
+    assert (output_dir / "semantic_index.json").exists(), "Condition must be true"
+    assert (output_dir / "structural_index.json").exists(), "Condition must be true"
+    assert (output_dir / "entity_index.json").exists(), "Condition must be true"
+    assert (output_dir / "metadata_index.json").exists(), "Data must not be empty"
 
     # Load and verify
     search = AIRepositorySearch(output_dir)
-    assert len(search.content_index) >= 2
-    assert len(search.entity_index) >= 3
+    assert len(search.content_index) >= 2, "Collection must not be empty"
+    assert len(search.entity_index) >= 3, "Collection must not be empty"
 
 
 def test_search_by_keyword(temp_repo):
@@ -181,8 +181,8 @@ def test_search_by_keyword(temp_repo):
     search = AIRepositorySearch(temp_repo / ".codex" / "ai_index")
     results = search.search_by_keyword("TestClass")
 
-    assert len(results) > 0
-    assert any("module.py" in r.path for r in results)
+    assert len(results) > 0, "Results must not be empty"
+    assert any("module.py" in r.path for r in results), "Result must not be empty"
 
 
 def test_search_by_entity(temp_repo):
@@ -196,9 +196,9 @@ def test_search_by_entity(temp_repo):
     search = AIRepositorySearch(temp_repo / ".codex" / "ai_index")
     results = search.search_by_entity("TestClass", entity_type="class")
 
-    assert len(results) > 0
-    assert results[0].match_type == "entity_exact"
-    assert "line_start" in results[0].context
+    assert len(results) > 0, "Results must not be empty"
+    assert results[0].match_type == "entity_exact", "Result must not be empty"
+    assert "line_start" in results[0].context, "Result must not be empty"
 
 
 def test_search_by_path_pattern(temp_repo):
@@ -212,8 +212,8 @@ def test_search_by_path_pattern(temp_repo):
     search = AIRepositorySearch(temp_repo / ".codex" / "ai_index")
     results = search.search_by_path_pattern("test_")
 
-    assert len(results) > 0
-    assert all("test" in r.path.lower() for r in results)
+    assert len(results) > 0, "Results must not be empty"
+    assert all("test" in r.path.lower() for r in results), "Result must not be empty"
 
 
 def test_multi_search(temp_repo):
@@ -227,10 +227,10 @@ def test_multi_search(temp_repo):
     search = AIRepositorySearch(temp_repo / ".codex" / "ai_index")
     results = search.multi_search("test")
 
-    assert len(results) > 0
+    assert len(results) > 0, "Results must not be empty"
     # Results should be sorted by relevance
     if len(results) > 1:
-        assert results[0].relevance_score >= results[-1].relevance_score
+        assert results[0].relevance_score >= results[-1].relevance_score, "relevance_score must be greater than zero"
 
 
 def test_get_file_details(temp_repo):
@@ -244,9 +244,9 @@ def test_get_file_details(temp_repo):
     search = AIRepositorySearch(temp_repo / ".codex" / "ai_index")
     details = search.get_file_details("src/package/module.py")
 
-    assert details is not None
-    assert details["language"] == "python"
-    assert len(details["entities"]) >= 3
+    assert details is not None, "details must be initialized"
+    assert details["language"] == "python", "Condition must be true"
+    assert len(details["entities"]) >= 3, "Collection must not be empty"
 
 
 def test_get_repository_summary(temp_repo):
@@ -260,10 +260,10 @@ def test_get_repository_summary(temp_repo):
     search = AIRepositorySearch(temp_repo / ".codex" / "ai_index")
     summary = search.get_repository_summary()
 
-    assert "total_files" in summary
-    assert "total_entities" in summary
-    assert "languages" in summary
-    assert summary["total_files"] >= 2
+    assert "total_files" in summary, "Condition must be true"
+    assert "total_entities" in summary, "Condition must be true"
+    assert "languages" in summary, "Condition must be true"
+    assert summary["total_files"] >= 2, "Value must be greater than zero"
 
 
 def test_skip_directories(temp_repo):
@@ -282,5 +282,5 @@ def test_skip_directories(temp_repo):
     # Check that skip dirs were excluded
     indexed_paths = [data.relative_path for data in indexer.content_index.values()]
 
-    assert not any(".git" in path for path in indexed_paths)
-    assert not any("node_modules" in path for path in indexed_paths)
+    assert not any(".git" in path for path in indexed_paths), "Condition must be true"
+    assert not any("node_modules" in path for path in indexed_paths), "Condition must be true"

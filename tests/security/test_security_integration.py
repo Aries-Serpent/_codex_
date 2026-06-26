@@ -19,9 +19,9 @@ class TestSecurityMasking:
         masked = mask_token(token)
 
         # Default shows last 4 characters
-        assert "z789" in masked
-        assert "sk_live" not in masked
-        assert len(masked) == len(token)
+        assert "z789" in masked, "Condition must be true"
+        assert "sk_live" not in masked, "Condition must be true"
+        assert len(masked) == len(token), "Masked must not be empty"
 
     def test_mask_email(self):
         """Test email masking."""
@@ -30,20 +30,20 @@ class TestSecurityMasking:
         email = "user@example.com"
         masked = mask_email(email)
 
-        assert "@" in masked
+        assert "@" in masked, "Condition must be true"
         # Verify domain is preserved - this is intentional for email masking
         # Note: For URL validation, use sanitize_url() instead
         assert masked.endswith("@example.com"), f"Domain validation failed: {masked}"
-        assert "user" not in masked
+        assert "user" not in masked, "Condition must be true"
 
     def test_mask_email_preserves_domain(self):
         """Test that email masking correctly preserves the full domain."""
         from codex.security import mask_email
 
         # These should all preserve the domain correctly
-        assert mask_email("admin@example.com").endswith("@example.com")
-        assert mask_email("test@subdomain.example.com").endswith("@subdomain.example.com")
-        assert "@" in mask_email("user@test.org")
+        assert mask_email("admin@example.com").endswith("@example.com"), "Condition must be true"
+        assert mask_email("test@subdomain.example.com").endswith("@subdomain.example.com"), "Condition must be true"
+        assert "@" in mask_email("user@test.org"), "Condition must be true"
 
 
 class TestURLSanitization:
@@ -132,9 +132,9 @@ class TestURLSanitization:
         """Test password is always fully masked."""
         from codex.security import mask_password
 
-        assert mask_password("mypassword123") == "***"
-        assert mask_password("") == "(empty)"
-        assert mask_password("a") == "***"
+        assert mask_password("mypassword123") == "***", "mask_passw is not valid"
+        assert mask_password("") == "(empty)", "mask_passw is not valid"
+        assert mask_password("a") == "***", "mask_passw is not valid"
 
     def test_mask_sensitive_bidirectional(self):
         """Test mask_sensitive shows both ends."""
@@ -143,9 +143,9 @@ class TestURLSanitization:
         value = "secret_key_12345"
         masked = mask_sensitive(value, show_chars=4)
 
-        assert masked.startswith("secr")
-        assert masked.endswith("2345")
-        assert "***" in masked
+        assert masked.startswith("secr"), "Condition must be true"
+        assert masked.endswith("2345"), "Condition must be true"
+        assert "***" in masked, "Condition must be true"
 
 
 class TestLogSanitization:
@@ -158,9 +158,9 @@ class TestLogSanitization:
         malicious = "normal\nFAKE LOG: Admin access granted"
         sanitized = sanitize_log(malicious)
 
-        assert "\n" not in sanitized
-        assert "normal" in sanitized
-        assert "FAKE LOG" in sanitized  # Content preserved
+        assert "\n" not in sanitized, "Condition must be true"
+        assert "normal" in sanitized, "Condition must be true"
+        assert "FAKE LOG" in sanitized, "Condition must be true"
 
     def test_sanitize_removes_tabs(self):
         """Test tab character removal."""
@@ -169,13 +169,13 @@ class TestLogSanitization:
         data = "column1\tcolumn2\tcolumn3"
         sanitized = sanitize_log(data)
 
-        assert "\t" not in sanitized
+        assert "\t" not in sanitized, "Condition must be true"
 
     def test_sanitize_handles_none(self):
         """Test handling of None values."""
         from codex.security import sanitize_log
 
-        assert sanitize_log(None) == "None"
+        assert sanitize_log(None) == "None", "Condition must be true"
 
     def test_sanitize_truncates_long_input(self):
         """Test truncation of excessively long input."""
@@ -184,8 +184,8 @@ class TestLogSanitization:
         long_data = "a" * 1000
         sanitized = sanitize_log(long_data, max_length=100)
 
-        assert len(sanitized) <= 120  # 100 + "[truncated]"
-        assert "truncated" in sanitized or len(sanitized) == 100
+        assert len(sanitized) <= 120, "Sanitized must not be empty"
+        assert "truncated" in sanitized or len(sanitized) == 100, "Sanitized must not be empty"
 
 
 class TestSecureHashing:
@@ -200,11 +200,11 @@ class TestSecureHashing:
         hash2 = hash_secure(token)
 
         # Deterministic
-        assert hash1 == hash2
+        assert hash1 == hash2, "hash1 is not valid"
         # SHA-256 produces 64 hex characters
-        assert len(hash1) == 64
+        assert len(hash1) == 64, "Hash1 must not be empty"
         # Different input produces different hash
-        assert hash_secure("different") != hash1
+        assert hash_secure("different") != hash1, "Condition must be true"
 
     def test_hash_secure_sha512(self):
         """Test SHA-512 hashing."""
@@ -214,7 +214,7 @@ class TestSecureHashing:
         hash_val = hash_secure(token, algorithm="sha512")
 
         # SHA-512 produces 128 hex characters
-        assert len(hash_val) == 128
+        assert len(hash_val) == 128, "Hash_val must not be empty"
 
     def test_hash_secure_invalid_algorithm(self):
         """Test error on invalid algorithm."""
@@ -255,16 +255,16 @@ class TestEncryptedStorage:
 
         # Store encrypted
         storage.store_secret(filepath, secret)
-        assert os.path.exists(filepath)
+        assert os.path.exists(filepath), "Condition must be true"
 
         # Verify file is not plain text
         with open(filepath, "rb") as f:
             encrypted_content = f.read()
-        assert secret.encode() not in encrypted_content
+        assert secret.encode() not in encrypted_content, "Content must not be empty"
 
         # Load and verify
         loaded = storage.load_secret(filepath)
-        assert loaded == secret
+        assert loaded == secret, "loaded is not valid"
 
     def test_secure_file_permissions(self, temp_dir, encryption_key):
         """Test file permissions are set securely."""
@@ -282,10 +282,10 @@ class TestEncryptedStorage:
         mode = file_stat.st_mode
 
         # Should be 0o600 (owner read/write)
-        assert mode & stat.S_IRUSR  # Owner can read
-        assert mode & stat.S_IWUSR  # Owner can write
-        assert not (mode & stat.S_IRGRP)  # Group cannot read
-        assert not (mode & stat.S_IROTH)  # Others cannot read
+        assert mode & stat.S_IRUSR, "Condition must be true"
+        assert mode & stat.S_IWUSR, "Condition must be true"
+        assert not (mode & stat.S_IRGRP), "Condition must be true"
+        assert not (mode & stat.S_IROTH), "Condition must be true"
 
     def test_load_nonexistent_file(self, encryption_key):
         """Test error handling for missing files."""
@@ -303,11 +303,11 @@ class TestEncryptedStorage:
         storage = SecureStorage()
         filepath = os.path.join(temp_dir, "secret.enc")
 
-        assert not storage.secret_exists(filepath)
+        assert not storage.secret_exists(filepath), "Condition must be true"
 
         storage.store_secret(filepath, "data")
 
-        assert storage.secret_exists(filepath)
+        assert storage.secret_exists(filepath), "st is not valid"
 
 
 class TestIntegrationScenarios:
@@ -342,11 +342,11 @@ class TestIntegrationScenarios:
             # Verify log output
             log_output = log_stream.getvalue()
 
-            assert "sk_live" not in log_output  # Key is masked
-            assert "z789" in log_output  # Last 4 chars visible (default)
+            assert "sk_live" not in log_output, "Condition must be true"
+            assert "z789" in log_output, "Condition must be true"
             # Check that the malicious newline was removed from user input
             user_data_line = log_output.split("User data:")[1].strip()
-            assert "normalmalicious_injection" in user_data_line  # Newline removed, words merged
+            assert "normalmalicious_injection" in user_data_line, "Data must not be empty"
         finally:
             logger.removeHandler(handler)
             handler.close()
@@ -365,12 +365,12 @@ class TestIntegrationScenarios:
         provided_hash = hash_secure(provided_token)
 
         # Verify tokens match
-        assert stored_hash == provided_hash
+        assert stored_hash == provided_hash, "stored_hash is not valid"
 
         # Verify different token doesn't match
         wrong_token = "wrong_token"
         wrong_hash = hash_secure(wrong_token)
-        assert stored_hash != wrong_hash
+        assert stored_hash != wrong_hash, "stored_hash is not valid"
 
 
 if __name__ == "__main__":

@@ -11,7 +11,7 @@ class TestApiModelsImports:
         try:
             from src.codex.api import models
 
-            assert models is not None
+            assert models is not None, "models must be initialized"
         except ImportError:
             pytest.skip("Module not available or has unmet dependencies")
 
@@ -35,7 +35,7 @@ class TestApiRequestModels:
 
             if hasattr(models, "BaseRequest"):
                 request = models.BaseRequest()
-                assert request is not None
+                assert request is not None, "request must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("BaseRequest not available")
 
@@ -46,7 +46,7 @@ class TestApiRequestModels:
 
             if hasattr(models, "RequestModel"):
                 request = models.RequestModel(data={"key": "value"})
-                assert request.data == {"key": "value"}
+                assert request.data == {"key": "value"}, "Data must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("RequestModel not available")
 
@@ -61,7 +61,7 @@ class TestApiResponseModels:
 
             if hasattr(models, "BaseResponse"):
                 response = models.BaseResponse()
-                assert response is not None
+                assert response is not None, "response must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("BaseResponse not available")
 
@@ -72,7 +72,7 @@ class TestApiResponseModels:
 
             if hasattr(models, "SuccessResponse"):
                 response = models.SuccessResponse(data={"result": "ok"})
-                assert response.data["result"] == "ok"
+                assert response.data["result"] == "ok", "Response must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("SuccessResponse not available")
 
@@ -83,7 +83,7 @@ class TestApiResponseModels:
 
             if hasattr(models, "ErrorResponse"):
                 response = models.ErrorResponse(error="Test error", code=400)
-                assert response.error == "Test error"
+                assert response.error == "Test error", "Response must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("ErrorResponse not available")
 

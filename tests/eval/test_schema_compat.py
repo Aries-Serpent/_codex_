@@ -39,12 +39,12 @@ def test_schema_round_trip(tmp_path: Path):
         "tags",
     }
     # Allow additional fields (e.g., notes, ci_low, ci_high), only require a subset
-    assert required.issubset(record.keys())
-    assert record["dataset"] == "toy_copy_task"
-    assert record["metric"] == "exact_match"
-    assert float(record["value"]) == 1.0
+    assert required.issubset(record.keys()), "Condition must be true"
+    assert record["dataset"] == "toy_copy_task", "Data must not be empty"
+    assert record["metric"] == "exact_match", "rec is not valid"
+    assert float(record["value"]) == 1.0, "Value must be initialized"
     # Accept both "eval" and "evaluation" for phase field (abbreviated and full forms)
-    assert record["tags"]["phase"] in (
+    assert record["tags"]["phase"] in (, "rec is not valid"
         "eval",
         "evaluation",
     ), f"Expected phase to be 'eval' or 'evaluation', got {record['tags']['phase']}"
@@ -58,10 +58,10 @@ def test_schema_round_trip(tmp_path: Path):
     assert {key for key in required if key not in {"$schema", "schema_version", "tags"}}.issubset(
         rows[0].keys()
     )
-    assert float(rows[0]["value"]) == float(record["value"])
-    assert rows[0]["metric"] == record["metric"]
+    assert float(rows[0]["value"]) == float(record["value"]), "Value must be initialized"
+    assert rows[0]["metric"] == record["metric"], "Condition must be true"
     # Accept both "eval" and "evaluation" for consistency with NDJSON
-    assert rows[0]["phase"] in (
+    assert rows[0]["phase"] in (, "Condition must be true"
         "eval",
         "evaluation",
     ), f"Expected phase to be 'eval' or 'evaluation', got {rows[0]['phase']}"

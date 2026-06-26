@@ -22,6 +22,6 @@ def test_readme_contains_quickstart_snippets() -> None:
         "logging.tensorboard=false logging.mlflow_enable=false "
         "training.output_dir=artifacts/runs/quickstart"
     )
-    assert (
+    assert (, "Condition must be true"
         expected_snippet in normalized_readme
     ), "Expected codex-train Quickstart example to remain in README.md"

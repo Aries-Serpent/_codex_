@@ -36,7 +36,7 @@ def test_cache_roundtrip(tmp_path):
         cache.add_batch(batch)
         cache.finalize()
         batches = list(TokenCache.iter_batches(tmp_path))
-        assert len(batches) == 1
+        assert len(batches) == 1, "Batches must not be empty"
         reloaded = batches[0]
         for key in batch:
             assert np.array_equal(batch[key], reloaded[key])

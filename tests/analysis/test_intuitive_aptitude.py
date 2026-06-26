@@ -33,22 +33,22 @@ class TestDataClasses:
     def test_import_info_basic(self):
         """Test ImportInfo dataclass with basic module import."""
         imp = ImportInfo(module=None, name="os", alias=None, level=0)
-        assert imp.module is None
-        assert imp.name == "os"
-        assert imp.alias is None
-        assert imp.level == 0
+        assert imp.module is None, "module is not valid"
+        assert imp.name == "os", "name is not valid"
+        assert imp.alias is None, "alias is not valid"
+        assert imp.level == 0, "level is not valid"
 
     def test_import_info_from_import(self):
         """Test ImportInfo dataclass with from...import statement."""
         imp = ImportInfo(module="os", name="path", alias="p", level=0)
-        assert imp.module == "os"
-        assert imp.name == "path"
-        assert imp.alias == "p"
+        assert imp.module == "os", "module is not valid"
+        assert imp.name == "path", "name is not valid"
+        assert imp.alias == "p", "alias is not valid"
 
     def test_import_info_relative(self):
         """Test ImportInfo dataclass with relative imports."""
         imp = ImportInfo(module="utils", name="helper", alias=None, level=2)
-        assert imp.level == 2
+        assert imp.level == 2, "level is not valid"
 
     def test_function_info_basic(self):
         """Test FunctionInfo dataclass with basic function."""
@@ -65,10 +65,10 @@ class TestDataClasses:
             complexity=1,
             calls=[],
         )
-        assert func.name == "test_func"
+        assert func.name == "test_func", "name is not valid"
         assert func.args == ["x", "y"]
-        assert func.defaults == 0
-        assert func.complexity == 1
+        assert func.defaults == 0, "defaults is not valid"
+        assert func.complexity == 1, "complexity is not valid"
 
     def test_function_info_with_decorators(self):
         """Test FunctionInfo dataclass with decorators."""
@@ -86,7 +86,7 @@ class TestDataClasses:
             calls=["print", "len"],
         )
         assert function_info.decorators == ["@staticmethod", "@property"]
-        assert function_info.returns == "int"
+        assert function_info.returns == "int", "returns is not valid"
         assert function_info.calls == ["print", "len"]
 
     def test_class_info_basic(self):
@@ -100,9 +100,9 @@ class TestDataClasses:
             lineno=20,
             end_lineno=30,
         )
-        assert class_info.name == "MyClass"
-        assert class_info.bases == []
-        assert len(class_info.methods) == 0
+        assert class_info.name == "MyClass", "name is not valid"
+        assert class_info.bases == [], "bases is not valid"
+        assert len(class_info.methods) == 0, "Collection must not be empty"
 
     def test_class_info_with_methods(self):
         """Test ClassInfo dataclass with methods."""
@@ -128,9 +128,9 @@ class TestDataClasses:
             lineno=20,
             end_lineno=30,
         )
-        assert "method1" in class_info.methods
-        assert class_info.bases == ["BaseClass"]
-        assert class_info.decorators == ["@dataclass"]
+        assert "method1" in class_info.methods, "Condition must be true"
+        assert class_info.bases == ["BaseClass"], "bases is not valid"
+        assert class_info.decorators == ["@dataclass"], "Data must not be empty"
 
 
 # =============================================================================
@@ -145,13 +145,13 @@ class TestUnparse:
         """Test unparsing a simple Name node."""
         node = ast.Name(id="variable", ctx=ast.Load())
         result = _unparse(node)
-        assert result == "variable"
+        assert result == "variable", "Result must not be empty"
 
     def test_unparse_constant(self):
         """Test unparsing a Constant node."""
         node = ast.Constant(value=42)
         result = _unparse(node)
-        assert result == "42"
+        assert result == "42", "Result must not be empty"
 
     def test_unparse_binop(self):
         """Test unparsing a BinOp node."""
@@ -167,7 +167,7 @@ class TestUnparse:
         node = ast.Name(id="test", ctx=ast.Load())
         result = _unparse(node)
         expected = ast.unparse(node)
-        assert result == expected
+        assert result == expected, "Result must not be empty"
 
 
 # =============================================================================
@@ -186,8 +186,8 @@ class TestNameRenamer:
         new_tree = renamer.visit(tree)
         ast.fix_missing_locations(new_tree)
         result = _unparse(new_tree)
-        assert "y" in result
-        assert "42" in result
+        assert "y" in result, "Result must not be empty"
+        assert "42" in result, "Result must not be empty"
 
     def test_rename_function_name(self):
         """Test renaming a function name."""
@@ -197,7 +197,7 @@ class TestNameRenamer:
         new_tree = renamer.visit(tree)
         ast.fix_missing_locations(new_tree)
         result = _unparse(new_tree)
-        assert "bar" in result
+        assert "bar" in result, "Result must not be empty"
 
     def test_rename_function_argument(self):
         """Test renaming function arguments."""
@@ -207,8 +207,8 @@ class TestNameRenamer:
         new_tree = renamer.visit(tree)
         ast.fix_missing_locations(new_tree)
         result = _unparse(new_tree)
-        assert "x" in result
-        assert "y" in result
+        assert "x" in result, "Result must not be empty"
+        assert "y" in result, "Result must not be empty"
 
     def test_rename_class_name(self):
         """Test renaming a class name."""
@@ -218,7 +218,7 @@ class TestNameRenamer:
         new_tree = renamer.visit(tree)
         ast.fix_missing_locations(new_tree)
         result = _unparse(new_tree)
-        assert "NewClass" in result
+        assert "NewClass" in result, "Result must not be empty"
 
     def test_rename_multiple_identifiers(self):
         """Test renaming multiple identifiers at once."""
@@ -228,8 +228,8 @@ class TestNameRenamer:
         new_tree = renamer.visit(tree)
         ast.fix_missing_locations(new_tree)
         result = _unparse(new_tree)
-        assert "bar" in result
-        assert "y" in result
+        assert "bar" in result, "Result must not be empty"
+        assert "y" in result, "Result must not be empty"
 
     def test_rename_with_empty_mapping(self):
         """Test that empty mapping doesn't change code."""
@@ -239,8 +239,8 @@ class TestNameRenamer:
         new_tree = renamer.visit(tree)
         ast.fix_missing_locations(new_tree)
         result = _unparse(new_tree)
-        assert "func" in result
-        assert "x" in result
+        assert "func" in result, "Result must not be empty"
+        assert "x" in result, "Result must not be empty"
 
 
 # =============================================================================
@@ -254,24 +254,24 @@ class TestIntuitiveAptitudeInit:
     def test_initialization(self):
         """Test that analyzer initializes with empty state."""
         analyzer = intuitive_aptitude()
-        assert len(analyzer.functions) == 0
-        assert len(analyzer.classes) == 0
-        assert len(analyzer.imports) == 0
-        assert len(analyzer.variables) == 0
-        assert analyzer.metrics["loc"] == 0
-        assert analyzer.metrics["comment_ratio"] == 0.0
-        assert analyzer.metrics["complexity"] == 0.0
-        assert analyzer._source == ""
-        assert analyzer.ast_tree is None
-        assert analyzer.last_error is None
+        assert len(analyzer.functions) == 0, "Collection must not be empty"
+        assert len(analyzer.classes) == 0, "Collection must not be empty"
+        assert len(analyzer.imports) == 0, "Collection must not be empty"
+        assert len(analyzer.variables) == 0, "Collection must not be empty"
+        assert analyzer.metrics["loc"] == 0, "Condition must be true"
+        assert analyzer.metrics["comment_ratio"] == 0.0, "Condition must be true"
+        assert analyzer.metrics["complexity"] == 0.0, "Condition must be true"
+        assert analyzer._source == "", "_source is not valid"
+        assert analyzer.ast_tree is None, "ast_tree is not valid"
+        assert analyzer.last_error is None, "Error should be raised or set"
 
     def test_pattern_initialization(self):
         """Test that pattern dictionaries are initialized."""
         analyzer = intuitive_aptitude()
-        assert "error_handling" in analyzer.patterns
-        assert "iteration" in analyzer.patterns
-        assert "conditional" in analyzer.patterns
-        assert "function_calls" in analyzer.patterns
+        assert "error_handling" in analyzer.patterns, "Error should be raised or set"
+        assert "iteration" in analyzer.patterns, "Condition must be true"
+        assert "conditional" in analyzer.patterns, "Condition must be true"
+        assert "function_calls" in analyzer.patterns, "Condition must be true"
         assert isinstance(analyzer.patterns["error_handling"], list)
 
 
@@ -288,9 +288,9 @@ class TestIntuitiveAptitudeIngest:
         analyzer = intuitive_aptitude()
         code = "x = 42\ny = 100"
         result = analyzer.ingest(code)
-        assert result is True
-        assert analyzer.last_error is None
-        assert analyzer.metrics["loc"] == 2.0
+        assert result is True, "Result must not be empty"
+        assert analyzer.last_error is None, "Error should be raised or set"
+        assert analyzer.metrics["loc"] == 2.0, "Condition must be true"
 
     def test_ingest_with_function(self):
         """Test ingesting code with a function."""
@@ -301,11 +301,11 @@ def greet(name):
     return f"Hello, {name}"
 """
         result = analyzer.ingest(code)
-        assert result is True
-        assert "greet" in analyzer.functions
-        assert analyzer.functions["greet"].name == "greet"
-        assert analyzer.functions["greet"].args == ["name"]
-        assert analyzer.functions["greet"].docstring == "Say hello to name."
+        assert result is True, "Result must not be empty"
+        assert "greet" in analyzer.functions, "Condition must be true"
+        assert analyzer.functions["greet"].name == "greet", "name is not valid"
+        assert analyzer.functions["greet"].args == ["name"], "args is not valid"
+        assert analyzer.functions["greet"].docstring == "Say hello to name.", "docstring is not valid"
 
     def test_ingest_with_class(self):
         """Test ingesting code with a class."""
@@ -317,10 +317,10 @@ class Calculator:
         return a + b
 """
         result = analyzer.ingest(code)
-        assert result is True
-        assert "Calculator" in analyzer.classes
-        assert analyzer.classes["Calculator"].docstring == "Simple calculator."
-        assert "add" in analyzer.classes["Calculator"].methods
+        assert result is True, "Result must not be empty"
+        assert "Calculator" in analyzer.classes, "Condition must be true"
+        assert analyzer.classes["Calculator"].docstring == "Simple calculator.", "docstring is not valid"
+        assert "add" in analyzer.classes["Calculator"].methods, "Condition must be true"
 
     def test_ingest_with_imports(self):
         """Test ingesting code with import statements."""
@@ -331,39 +331,39 @@ from sys import path as syspath
 from typing import List, Dict
 """
         result = analyzer.ingest(code)
-        assert result is True
+        assert result is True, "Result must not be empty"
         # from typing import List, Dict creates 2 separate import entries
-        assert len(analyzer.imports) == 4
+        assert len(analyzer.imports) == 4, "Collection must not be empty"
         # Check that imports were captured
         import_names = [imp.name for imp in analyzer.imports]
-        assert "os" in import_names
-        assert "List" in import_names
-        assert "Dict" in import_names
+        assert "os" in import_names, "Condition must be true"
+        assert "List" in import_names, "Condition must be true"
+        assert "Dict" in import_names, "Condition must be true"
 
     def test_ingest_invalid_syntax(self):
         """Test ingesting code with syntax errors."""
         analyzer = intuitive_aptitude()
         code = "def broken( pass"
         result = analyzer.ingest(code)
-        assert result is False
-        assert analyzer.last_error is not None
-        assert "SyntaxError" in analyzer.last_error
+        assert result is False, "Result must not be empty"
+        assert analyzer.last_error is not None, "last_error must be initialized"
+        assert "SyntaxError" in analyzer.last_error, "Error should be raised or set"
 
     def test_ingest_empty_code(self):
         """Test ingesting empty code."""
         analyzer = intuitive_aptitude()
         result = analyzer.ingest("")
-        assert result is True
-        assert analyzer.metrics["loc"] == 0
+        assert result is True, "Result must not be empty"
+        assert analyzer.metrics["loc"] == 0, "Condition must be true"
 
     def test_ingest_resets_previous_state(self):
         """Test that ingest resets previous analysis."""
         analyzer = intuitive_aptitude()
         analyzer.ingest("x = 1")
-        assert len(analyzer.variables) > 0
+        assert len(analyzer.variables) > 0, "Collection must not be empty"
         analyzer.ingest("y = 2")
         # Should have only y, not x
-        assert "y" in analyzer.variables
+        assert "y" in analyzer.variables, "Condition must be true"
 
 
 # =============================================================================
@@ -379,10 +379,10 @@ class TestIntuitiveAptitudeSummary:
         analyzer = intuitive_aptitude()
         analyzer.ingest("")
         summary = analyzer.get_summary()
-        assert summary["functions_count"] == 0
-        assert summary["classes_count"] == 0
-        assert summary["imports_count"] == 0
-        assert summary["variables_count"] == 0
+        assert summary["functions_count"] == 0, "Count must be greater than zero"
+        assert summary["classes_count"] == 0, "Count must be greater than zero"
+        assert summary["imports_count"] == 0, "Count must be greater than zero"
+        assert summary["variables_count"] == 0, "Count must be greater than zero"
 
     def test_get_summary_with_content(self):
         """Test getting summary with analyzed code."""
@@ -395,11 +395,11 @@ class MyClass: pass
 """
         analyzer.ingest(code)
         summary = analyzer.get_summary()
-        assert summary["functions_count"] == 1
-        assert summary["classes_count"] == 1
-        assert summary["imports_count"] == 1
-        assert summary["variables_count"] == 1
-        assert "metrics" in summary
+        assert summary["functions_count"] == 1, "Count must be greater than zero"
+        assert summary["classes_count"] == 1, "Count must be greater than zero"
+        assert summary["imports_count"] == 1, "Count must be greater than zero"
+        assert summary["variables_count"] == 1, "Count must be greater than zero"
+        assert "metrics" in summary, "Condition must be true"
 
 
 class TestIntuitiveAptitudeDetailedStructure:
@@ -410,10 +410,10 @@ class TestIntuitiveAptitudeDetailedStructure:
         analyzer = intuitive_aptitude()
         analyzer.ingest("")
         structure = analyzer.get_detailed_structure()
-        assert "imports" in structure
-        assert "functions" in structure
-        assert "classes" in structure
-        assert "variables" in structure
+        assert "imports" in structure, "Condition must be true"
+        assert "functions" in structure, "Condition must be true"
+        assert "classes" in structure, "Condition must be true"
+        assert "variables" in structure, "Condition must be true"
 
     def test_detailed_structure_with_function(self):
         """Test detailed structure includes function info."""
@@ -425,12 +425,12 @@ def test_func(a, b=10):
 """
         analyzer.ingest(code)
         structure = analyzer.get_detailed_structure()
-        assert "test_func" in structure["functions"]
+        assert "test_func" in structure["functions"], "Condition must be true"
         func_info = structure["functions"]["test_func"]
-        assert func_info["name"] == "test_func"
-        assert "a" in func_info["args"]
-        assert func_info["defaults"] == 1
-        assert func_info["docstring"] == "Test function."
+        assert func_info["name"] == "test_func", "Condition must be true"
+        assert "a" in func_info["args"], "Condition must be true"
+        assert func_info["defaults"] == 1, "Condition must be true"
+        assert func_info["docstring"] == "Test function.", "Condition must be true"
 
     def test_detailed_structure_with_class(self):
         """Test detailed structure includes class info."""
@@ -443,11 +443,11 @@ class TestClass:
 """
         analyzer.ingest(code)
         structure = analyzer.get_detailed_structure()
-        assert "TestClass" in structure["classes"]
+        assert "TestClass" in structure["classes"], "Condition must be true"
         class_info = structure["classes"]["TestClass"]
-        assert class_info["name"] == "TestClass"
-        assert class_info["docstring"] == "Test class."
-        assert "method" in class_info["methods"]
+        assert class_info["name"] == "TestClass", "Condition must be true"
+        assert class_info["docstring"] == "Test class.", "Condition must be true"
+        assert "method" in class_info["methods"], "Condition must be true"
 
 
 # =============================================================================
@@ -464,8 +464,8 @@ class TestIntuitiveAptitudeClone:
         code = "def old_func(x): return x * 2"
         analyzer.ingest(code)
         cloned = analyzer.clone_structure({"old_func": "new_func", "x": "y"})
-        assert "new_func" in cloned
-        assert "y" in cloned
+        assert "new_func" in cloned, "Condition must be true"
+        assert "y" in cloned, "Condition must be true"
 
     def test_clone_class(self):
         """Test cloning a class with renaming."""
@@ -477,8 +477,8 @@ class OldClass:
 """
         analyzer.ingest(code)
         cloned = analyzer.clone_structure({"OldClass": "NewClass", "old_method": "new_method"})
-        assert "NewClass" in cloned
-        assert "new_method" in cloned
+        assert "NewClass" in cloned, "Condition must be true"
+        assert "new_method" in cloned, "Condition must be true"
 
     def test_clone_without_ast_raises_error(self):
         """Test that cloning without ingestion raises error."""
@@ -492,7 +492,7 @@ class OldClass:
         code = "def func(): pass"
         analyzer.ingest(code)
         cloned = analyzer.clone_structure({})
-        assert "func" in cloned
+        assert "func" in cloned, "Condition must be true"
 
 
 # =============================================================================
@@ -516,10 +516,10 @@ finally:
 """
         analyzer.ingest(code)
         patterns = analyzer.extract_patterns()
-        assert len(patterns["error_handling"]) > 0
+        assert len(patterns["error_handling"]) > 0, "Collection must not be empty"
         error_pattern = patterns["error_handling"][0]
-        assert error_pattern["has_finally"] is True
-        assert "ValueError" in error_pattern["handlers"]
+        assert error_pattern["has_finally"] is True, "Error should be raised or set"
+        assert "ValueError" in error_pattern["handlers"], "Value must be initialized"
 
     def test_extract_iteration_pattern(self):
         """Test extracting for/while loop patterns."""
@@ -533,7 +533,7 @@ while condition:
 """
         analyzer.ingest(code)
         patterns = analyzer.extract_patterns()
-        assert len(patterns["iteration"]) == 2
+        assert len(patterns["iteration"]) == 2, "Collection must not be empty"
 
     def test_extract_conditional_pattern(self):
         """Test extracting if/elif/else patterns."""
@@ -548,7 +548,7 @@ else:
 """
         analyzer.ingest(code)
         patterns = analyzer.extract_patterns()
-        assert len(patterns["conditional"]) > 0
+        assert len(patterns["conditional"]) > 0, "Collection must not be empty"
 
     def test_extract_function_call_pattern(self):
         """Test extracting function call patterns."""
@@ -559,7 +559,7 @@ print(result)
 """
         analyzer.ingest(code)
         patterns = analyzer.extract_patterns()
-        assert len(patterns["function_calls"]) > 0
+        assert len(patterns["function_calls"]) > 0, "Collection must not be empty"
 
 
 # =============================================================================
@@ -586,9 +586,9 @@ class PascalClass: pass
         analyzer.ingest(code)
         style = analyzer.analyze_code_style()
         naming = style["naming"]
-        assert naming["snake_case"] > 0
-        assert naming["camelCase"] > 0
-        assert naming["PascalCase"] > 0
+        assert naming["snake_case"] > 0, "Value must be greater than zero"
+        assert naming["camelCase"] > 0, "Value must be greater than zero"
+        assert naming["PascalCase"] > 0, "Value must be greater than zero"
 
     def test_analyze_indentation(self):
         """Test analyzing indentation style."""
@@ -602,7 +602,7 @@ def func():
         analyzer.ingest(code)
         style = analyzer.analyze_code_style()
         indent = style["indentation"]
-        assert indent["4space"] > 0
+        assert indent["4space"] > 0, "Value must be greater than zero"
 
     def test_analyze_docstring_style(self):
         """Test analyzing docstring styles."""
@@ -639,8 +639,8 @@ def sphinx_style():
         analyzer.ingest(code)
         style = analyzer.analyze_code_style()
         docstrings = style["docstrings"]
-        assert "Google" in docstrings
-        assert "Sphinx" in docstrings
+        assert "Google" in docstrings, "Condition must be true"
+        assert "Sphinx" in docstrings, "Condition must be true"
 
     def test_analyze_functional_style(self):
         """Test analyzing functional vs OOP style."""
@@ -659,10 +659,10 @@ class MyClass:
         analyzer.ingest(code)
         style = analyzer.analyze_code_style()
         paradigm = style["paradigm"]
-        assert paradigm["functional_signals"] > 0
-        assert paradigm["oop_signals"] > 0
-        assert paradigm["comprehensions"] > 0
-        assert paradigm["lambdas"] > 0
+        assert paradigm["functional_signals"] > 0, "Value must be greater than zero"
+        assert paradigm["oop_signals"] > 0, "Value must be greater than zero"
+        assert paradigm["comprehensions"] > 0, "Value must be greater than zero"
+        assert paradigm["lambdas"] > 0, "Value must be greater than zero"
 
 
 # =============================================================================
@@ -678,7 +678,7 @@ class TestIntuitiveAptitudeMetrics:
         analyzer = intuitive_aptitude()
         code = "line1\nline2\nline3"
         analyzer.ingest(code)
-        assert analyzer.metrics["loc"] == 3.0
+        assert analyzer.metrics["loc"] == 3.0, "Condition must be true"
 
     def test_compute_comment_ratio(self):
         """Test comment ratio metric."""
@@ -691,7 +691,7 @@ y = 2
 """
         analyzer.ingest(code)
         # 2 comments out of 5 lines = 0.4
-        assert analyzer.metrics["comment_ratio"] > 0
+        assert analyzer.metrics["comment_ratio"] > 0, "Value must be greater than zero"
 
     def test_compute_complexity_metric(self):
         """Test cyclomatic complexity metric."""
@@ -709,7 +709,7 @@ def complex_func(x):
 """
         analyzer.ingest(code)
         # Average complexity should be > 1
-        assert analyzer.metrics["complexity"] >= 1.0
+        assert analyzer.metrics["complexity"] >= 1.0, "Value must be greater than zero"
 
 
 # =============================================================================
@@ -723,19 +723,19 @@ class TestIntuitiveAptitudeUtilities:
     def test_expr_to_str_with_none(self):
         """Test _expr_to_str with None input."""
         result = intuitive_aptitude._expr_to_str(None)
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_expr_to_str_with_name(self):
         """Test _expr_to_str with Name node."""
         node = ast.Name(id="variable", ctx=ast.Load())
         result = intuitive_aptitude._expr_to_str(node)
-        assert result == "variable"
+        assert result == "variable", "Result must not be empty"
 
     def test_expr_to_str_with_constant(self):
         """Test _expr_to_str with Constant node."""
         node = ast.Constant(value=42)
         result = intuitive_aptitude._expr_to_str(node)
-        assert "42" in result
+        assert "42" in result, "Result must not be empty"
 
     def test_count_elifs(self):
         """Test _count_elifs utility method."""
@@ -752,7 +752,7 @@ else:
         tree = ast.parse(code)
         if_node = tree.body[0]
         count = intuitive_aptitude._count_elifs(if_node)
-        assert count == 2
+        assert count == 2, "Count must be greater than zero"
 
     def test_find_calls(self):
         """Test _find_calls utility method."""
@@ -765,8 +765,8 @@ def test():
         tree = ast.parse(code)
         func_node = tree.body[0]
         calls = intuitive_aptitude._find_calls(func_node)
-        assert len(calls) >= 3
-        assert "print" in calls or any("print" in c for c in calls)
+        assert len(calls) >= 3, "Calls must not be empty"
+        assert "print" in calls or any("print" in c for c in calls), "Condition must be true"
 
     def test_cyclomatic_complexity_simple(self):
         """Test _cyclomatic_complexity for simple function."""
@@ -774,7 +774,7 @@ def test():
         tree = ast.parse(code)
         func_node = tree.body[0]
         complexity = intuitive_aptitude._cyclomatic_complexity(func_node)
-        assert complexity == 1
+        assert complexity == 1, "complexity is not valid"
 
     def test_cyclomatic_complexity_with_branches(self):
         """Test _cyclomatic_complexity with branches."""
@@ -788,17 +788,17 @@ def complex(x):
         tree = ast.parse(code)
         func_node = tree.body[0]
         complexity = intuitive_aptitude._cyclomatic_complexity(func_node)
-        assert complexity > 1
+        assert complexity > 1, "complexity must be greater than zero"
 
     def test_reset_method(self):
         """Test reset method clears all state."""
         analyzer = intuitive_aptitude()
         analyzer.ingest("x = 42")
-        assert len(analyzer.variables) > 0
+        assert len(analyzer.variables) > 0, "Collection must not be empty"
         analyzer.reset()
-        assert len(analyzer.variables) == 0
-        assert analyzer._source == ""
-        assert analyzer.ast_tree is None
+        assert len(analyzer.variables) == 0, "Collection must not be empty"
+        assert analyzer._source == "", "_source is not valid"
+        assert analyzer.ast_tree is None, "ast_tree is not valid"
 
 
 # =============================================================================
@@ -819,8 +819,8 @@ from typing import List, Dict
 """
         analyzer.ingest(code)
         imports_str = analyzer._generate_imports()
-        assert "import os" in imports_str
-        assert "from sys import path" in imports_str
+        assert "import os" in imports_str, "Condition must be true"
+        assert "from sys import path" in imports_str, "Condition must be true"
 
     def test_generate_functions(self):
         """Test _generate_functions method."""
@@ -835,9 +835,9 @@ def func2():
 """
         analyzer.ingest(code)
         funcs_str = analyzer._generate_functions()
-        assert "func1" in funcs_str
-        assert "func2" in funcs_str
-        assert "Docstring for func1" in funcs_str
+        assert "func1" in funcs_str, "Condition must be true"
+        assert "func2" in funcs_str, "Condition must be true"
+        assert "Docstring for func1" in funcs_str, "Condition must be true"
 
     def test_generate_classes(self):
         """Test _generate_classes method."""
@@ -851,17 +851,17 @@ class MyClass:
 """
         analyzer.ingest(code)
         classes_str = analyzer._generate_classes()
-        assert "MyClass" in classes_str
-        assert "method" in classes_str
-        assert "Class docstring" in classes_str
+        assert "MyClass" in classes_str, "Condition must be true"
+        assert "method" in classes_str, "Condition must be true"
+        assert "Class docstring" in classes_str, "Condition must be true"
 
     def test_generate_error_handling_pattern(self):
         """Test _generate_error_handling_pattern method."""
         analyzer = intuitive_aptitude()
         pattern = analyzer._generate_error_handling_pattern()
-        assert "try:" in pattern
-        assert "except" in pattern
-        assert "finally:" in pattern
+        assert "try:" in pattern, "Condition must be true"
+        assert "except" in pattern, "Condition must be true"
+        assert "finally:" in pattern, "Condition must be true"
 
 
 # =============================================================================
@@ -879,21 +879,21 @@ def test_function(x):
     return x * 2
 """
         result = analyze_and_suggest(code)
-        assert result["success"] is True
-        assert result["error"] is None
-        assert "summary" in result
-        assert "patterns" in result
-        assert "style" in result
-        assert "structure" in result
-        assert "suggestions" in result
+        assert result["success"] is True, "Result must not be empty"
+        assert result["error"] is None, "Result must not be empty"
+        assert "summary" in result, "Result must not be empty"
+        assert "patterns" in result, "Result must not be empty"
+        assert "style" in result, "Result must not be empty"
+        assert "structure" in result, "Result must not be empty"
+        assert "suggestions" in result, "Result must not be empty"
 
     def test_analyze_and_suggest_invalid_code(self):
         """Test analyze_and_suggest with invalid code."""
         code = "def broken( pass"
         result = analyze_and_suggest(code)
-        assert result["success"] is False
-        assert result["error"] is not None
-        assert "SyntaxError" in result["error"]
+        assert result["success"] is False, "Result must not be empty"
+        assert result["error"] is not None, "Value must be initialized"
+        assert "SyntaxError" in result["error"], "Result must not be empty"
 
     def test_analyze_and_suggest_suggestions_for_naming(self):
         """Test that suggestions are generated for naming issues."""
@@ -906,7 +906,7 @@ WeirdVar = 1
             style = result["style"]
             naming = style.get("naming", {})
             if naming.get("other", 0) > 0:
-                assert "naming_conventions" in result["suggestions"]
+                assert "naming_conventions" in result["suggestions"], "Result must not be empty"
 
     def test_analyze_and_suggest_suggestions_for_docstrings(self):
         """Test that suggestions are generated for missing docstrings."""
@@ -922,7 +922,7 @@ class UndocumentedClass:
         if result["success"]:
             docstyles = result["style"].get("docstrings", {})
             if docstyles.get("None", 0) > 0:
-                assert "docstrings" in result["suggestions"]
+                assert "docstrings" in result["suggestions"], "Result must not be empty"
 
     def test_analyze_and_suggest_suggestions_for_complexity(self):
         """Test that suggestions are generated for high complexity."""
@@ -954,13 +954,13 @@ def very_complex_function(x):
         if result["success"]:
             complexity = result["summary"]["metrics"]["complexity"]
             if complexity and complexity > 10:
-                assert "complexity" in result["suggestions"]
+                assert "complexity" in result["suggestions"], "Result must not be empty"
 
     def test_analyze_and_suggest_empty_code(self):
         """Test analyze_and_suggest with empty code."""
         result = analyze_and_suggest("")
-        assert result["success"] is True
-        assert result["summary"]["functions_count"] == 0
+        assert result["success"] is True, "Result must not be empty"
+        assert result["summary"]["functions_count"] == 0, "Result must not be empty"
 
 
 # =============================================================================
@@ -982,7 +982,7 @@ class Outer:
 """
         result = analyzer.ingest(code)
         # Should handle nested classes without crashing
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_async_functions(self):
         """Test handling async/await syntax."""
@@ -994,7 +994,7 @@ async def async_func():
         process(item)
 """
         result = analyzer.ingest(code)
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_decorators_with_arguments(self):
         """Test handling decorators with arguments."""
@@ -1006,7 +1006,7 @@ def decorated_function():
     pass
 """
         result = analyzer.ingest(code)
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_complex_annotations(self):
         """Test handling complex type annotations."""
@@ -1021,7 +1021,7 @@ def annotated_func(
     return {}
 """
         result = analyzer.ingest(code)
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_multiline_strings(self):
         """Test handling multiline strings and docstrings."""
@@ -1040,7 +1040,7 @@ def func():
     return x
 '''
         result = analyzer.ingest(code)
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_lambda_functions(self):
         """Test handling lambda functions."""
@@ -1052,7 +1052,7 @@ def add(a, b):
     return a + b
 """
         result = analyzer.ingest(code)
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_comprehensions(self):
         """Test handling various comprehensions."""
@@ -1064,7 +1064,7 @@ set_comp = {x for x in range(10)}
 gen_expr = (x for x in range(10))
 """
         result = analyzer.ingest(code)
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_context_managers(self):
         """Test handling with statements."""
@@ -1077,7 +1077,7 @@ async with async_context() as ctx:
     await ctx.do_something()
 """
         result = analyzer.ingest(code)
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_walrus_operator(self):
         """Test walrus operator (Python 3.8+), ensuring support or graceful failure depending on Python version."""
@@ -1088,7 +1088,7 @@ if (n := len(items)) > 10:
 """
         result = analyzer.ingest(code)
         # Should handle or gracefully fail based on Python version
-        assert result is True or analyzer.last_error is not None
+        assert result is True or analyzer.last_error is not None, "result must be initialized"
 
     def test_match_statement(self):
         """Test handling match/case statements (Python 3.10+)."""
@@ -1104,11 +1104,11 @@ match value:
 """
         result = analyzer.ingest(code)
         if sys.version_info >= (3, 10):
-            assert result is True
+            assert result is True, "Result must not be empty"
         else:
             # On Python versions that do not support 'match', ensure the analyzer
             # either handles the syntax gracefully or reports an error.
-            assert result is True or analyzer.last_error is not None
+            assert result is True or analyzer.last_error is not None, "result must be initialized"
 
 
 # =============================================================================
@@ -1209,25 +1209,25 @@ if __name__ == "__main__":
 '''
         analyzer = intuitive_aptitude()
         result = analyzer.ingest(code)
-        assert result is True
+        assert result is True, "Result must not be empty"
 
         # Verify comprehensive analysis
         summary = analyzer.get_summary()
-        assert summary["functions_count"] >= 2
-        assert summary["classes_count"] >= 2
-        assert summary["imports_count"] >= 3
+        assert summary["functions_count"] >= 2, "Value must be greater than zero"
+        assert summary["classes_count"] >= 2, "Value must be greater than zero"
+        assert summary["imports_count"] >= 3, "Value must be greater than zero"
 
         # Verify patterns were extracted
         patterns = analyzer.extract_patterns()
-        assert len(patterns["error_handling"]) > 0
-        assert len(patterns["iteration"]) > 0
-        assert len(patterns["function_calls"]) > 0
+        assert len(patterns["error_handling"]) > 0, "Collection must not be empty"
+        assert len(patterns["iteration"]) > 0, "Collection must not be empty"
+        assert len(patterns["function_calls"]) > 0, "Collection must not be empty"
 
         # Verify style analysis
         style = analyzer.analyze_code_style()
-        assert "naming" in style
-        assert "docstrings" in style
-        assert style["docstrings"]["Google"] > 0
+        assert "naming" in style, "Condition must be true"
+        assert "docstrings" in style, "Condition must be true"
+        assert style["docstrings"]["Google"] > 0, "Value must be greater than zero"
 
     def test_analyze_and_suggest_comprehensive(self):
         """Test comprehensive analysis with suggestions."""
@@ -1246,9 +1246,9 @@ class badClassName:
         pass
 """
         result = analyze_and_suggest(code)
-        assert result["success"] is True
+        assert result["success"] is True, "Result must not be empty"
         # Should have suggestions for various issues
-        assert len(result["suggestions"]) > 0
+        assert len(result["suggestions"]) > 0, "Collection must not be empty"
 
 
 if __name__ == "__main__":

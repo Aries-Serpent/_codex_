@@ -43,9 +43,9 @@ def test_train_minimal_invokes_training_loop(tmp_path, monkeypatch):
         ]
     )
 
-    assert rc == 0
-    assert len(dummy.calls) == 1
+    assert rc == 0, "rc is not valid"
+    assert len(dummy.calls) == 1, "Collection must not be empty"
     call = dummy.calls[0]
-    assert call["max_steps"] == 3
+    assert call["max_steps"] == 3, "Condition must be true"
     assert "hidden_size" in call["config"].get("model", {})
-    assert Path(call["run_dir"]).exists()
+    assert Path(call["run_dir"]).exists(), "Condition must be true"

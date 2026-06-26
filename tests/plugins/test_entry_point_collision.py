@@ -38,6 +38,6 @@ def test_entry_point_collision_skips(monkeypatch) -> None:
         warnings.simplefilter("always")
         count, errs = reg.load_from_entry_points("codex_ml.x")
 
-    assert count == 0 and not errs
-    assert reg.get("dup").obj is Local
-    assert any("dup" in str(w.message) for w in rec)
+    assert count == 0 and not errs, "Count must be greater than zero"
+    assert reg.get("dup").obj is Local, "Object must be initialized"
+    assert any("dup" in str(w.message) for w in rec), "Condition must be true"

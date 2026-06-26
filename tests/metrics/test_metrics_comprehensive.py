@@ -32,7 +32,7 @@ class TestTokenAccuracy:
         labels = torch.tensor([[0, 1, 2], [3, 4, 5]])
 
         accuracy = (preds == labels).float().mean().item()
-        assert accuracy == 1.0
+        assert accuracy == 1.0, "accuracy is not valid"
 
     def test_compute_token_accuracy_partial(self):
         """Test accuracy with partial matches"""
@@ -41,7 +41,7 @@ class TestTokenAccuracy:
 
         accuracy = (preds == labels).float().mean().item()
         # 4 out of 6 tokens correct
-        assert abs(accuracy - 0.6667) < 0.01
+        assert abs(accuracy - 0.6667) < 0.01, "Condition must be true"
 
 
 class TestF1Score:
@@ -54,7 +54,7 @@ class TestF1Score:
 
         # Simple accuracy as proxy for F1 when perfect
         accuracy = (preds == labels).mean()
-        assert accuracy == 1.0
+        assert accuracy == 1.0, "accuracy is not valid"
 
     def test_compute_f1_binary(self):
         """Test F1 for binary classification"""
@@ -69,8 +69,8 @@ class TestF1Score:
         precision = tp / (tp + fp) if (tp + fp) > 0 else 0
         recall = tp / (tp + fn) if (tp + fn) > 0 else 0
 
-        assert 0.0 <= precision <= 1.0
-        assert 0.0 <= recall <= 1.0
+        assert 0.0 <= precision <= 1.0, "0 is not valid"
+        assert 0.0 <= recall <= 1.0, "0 is not valid"
 
 
 class TestPerplexity:
@@ -82,14 +82,14 @@ class TestPerplexity:
         perplexity = np.exp(loss)
 
         # Perplexity = exp(loss)
-        assert abs(perplexity - np.exp(loss)) < 0.01
+        assert abs(perplexity - np.exp(loss)) < 0.01, "Condition must be true"
 
     def test_compute_perplexity_high_loss(self):
         """Test perplexity with high loss"""
         loss = 5.0
         perplexity = np.exp(loss)
 
-        assert perplexity > 100
+        assert perplexity > 100, "perplexity must be greater than zero"
 
 
 if __name__ == "__main__":

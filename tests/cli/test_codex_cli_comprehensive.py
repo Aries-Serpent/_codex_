@@ -19,7 +19,7 @@ class TestCodexCLIHelp:
         try:
             from codex_ml.cli import codex_cli
 
-            assert codex_cli is not None
+            assert codex_cli is not None, "codex_cli must be initialized"
         except ImportError as e:
             pytest.skip(f"Module import failed: {e}")
 
@@ -40,7 +40,7 @@ class TestCodexCLIHelp:
             from codex_ml.cli import codex_cli
 
             # Check for common CLI entry points
-            assert (
+            assert (, "Condition must be true"
                 hasattr(codex_cli, "DEFAULT_TOKENIZER_CONFIG")
                 or hasattr(codex_cli, "main")
                 or hasattr(codex_cli, "cli")
@@ -63,11 +63,11 @@ class TestCodexCLIFunctions:
 
             # Test empty string
             result = _csv_list("")
-            assert result == []
+            assert result == [], "Result must not be empty"
 
             # Test single value
             result = _csv_list("single")
-            assert result == ["single"]
+            assert result == ["single"], "Result must not be empty"
 
             # Test with extra whitespace
             result = _csv_list("  x  ,  y  ,  z  ")
@@ -90,7 +90,7 @@ class TestCodexCLIFunctions:
 
             # Update nested path
             _update_path(obj, "level1.level2.value", "updated")
-            assert obj.level1.level2.value == "updated"
+            assert obj.level1.level2.value == "updated", "Value must be initialized"
         except ImportError as e:
             pytest.skip(f"Function import failed: {e}")
 
@@ -102,7 +102,7 @@ class TestCodexCLIFunctions:
             # May succeed or fail depending on tokenizers availability
             try:
                 pipeline = _get_tokenizer_pipeline()
-                assert pipeline is not None
+                assert pipeline is not None, "pipeline must be initialized"
             except Exception as _err:
                 # Expected if tokenizers not installed
                 _ = None  # suppressed: no action needed
@@ -118,11 +118,11 @@ class TestCodexCLIConstants:
         try:
             from codex_ml.cli.codex_cli import DEFAULT_TOKENIZER_CONFIG
 
-            assert DEFAULT_TOKENIZER_CONFIG is not None
+            assert DEFAULT_TOKENIZER_CONFIG is not None, "DEFAULT_TOKENIZER_CONFIG must be initialized"
             assert isinstance(DEFAULT_TOKENIZER_CONFIG, str)
             # Check path contains expected component (case-insensitive)
             config_lower = DEFAULT_TOKENIZER_CONFIG.lower()
-            assert "tokenization" in config_lower or "tokenizer" in config_lower
+            assert "tokenization" in config_lower or "tokenizer" in config_lower, "Condition must be true"
         except ImportError as e:
             pytest.skip(f"Constant import failed: {e}")
 
@@ -131,11 +131,11 @@ class TestCodexCLIConstants:
         try:
             from codex_ml.cli.codex_cli import DEFAULT_TOKENIZER_JSON
 
-            assert DEFAULT_TOKENIZER_JSON is not None
+            assert DEFAULT_TOKENIZER_JSON is not None, "DEFAULT_TOKENIZER_JSON must be initialized"
             assert isinstance(DEFAULT_TOKENIZER_JSON, str)
             # Check path contains expected component (case-insensitive)
             json_lower = DEFAULT_TOKENIZER_JSON.lower()
-            assert "tokenizer" in json_lower
+            assert "tokenizer" in json_lower, "Condition must be true"
         except ImportError as e:
             pytest.skip(f"Constant import failed: {e}")
 
@@ -148,7 +148,7 @@ class TestCodexCLIIntegration:
         try:
             from codex_ml.cli.codex_cli import build_status_report
 
-            assert callable(build_status_report)
+            assert callable(build_status_report), "Condition must be true"
         except ImportError as e:
             pytest.skip(f"Import failed: {e}")
 
@@ -161,9 +161,9 @@ class TestCodexCLIIntegration:
                 log_event,
             )
 
-            assert callable(capture_exceptions)
-            assert callable(init_json_logging)
-            assert callable(log_event)
+            assert callable(capture_exceptions), "Condition must be true"
+            assert callable(init_json_logging), "Condition must be true"
+            assert callable(log_event), "Condition must be true"
         except ImportError as e:
             pytest.skip(f"Import failed: {e}")
 
@@ -172,7 +172,7 @@ class TestCodexCLIIntegration:
         try:
             from codex_ml.cli.codex_cli import ConfigError, load_app_config
 
-            assert callable(load_app_config)
+            assert callable(load_app_config), "Condition must be true"
             assert issubclass(ConfigError, Exception)
         except ImportError as e:
             pytest.skip(f"Import failed: {e}")
@@ -184,7 +184,7 @@ class TestCodexCLIIntegration:
         try:
             from codex_ml.cli.codex_cli import SystemMetricsLogger
 
-            assert SystemMetricsLogger is not None
+            assert SystemMetricsLogger is not None, "SystemMetricsLogger must be initialized"
         except ImportError as e:
             pytest.skip(f"Import failed: {e}")
 
@@ -236,7 +236,7 @@ class TestCodexCLIErrorHandling:
             timeout=30,
         )
         # Should fail with non-zero exit code
-        assert result.returncode != 0
+        assert result.returncode != 0, "Result must not be empty"
 
     def test_missing_required_args(self):
         """Test handling of missing required arguments."""

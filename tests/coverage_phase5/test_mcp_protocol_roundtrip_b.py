@@ -24,7 +24,7 @@ def test_special_characters_in_roundtrip(text: str):
         encoded = json.dumps(message)
         decoded = json.loads(encoded)
 
-        assert decoded["content"] == text
+        assert decoded["content"] == text, "Content must not be empty"
     except (ValueError, OverflowError):
         # Some special characters might not be JSON-serializable
         pass
@@ -37,7 +37,7 @@ def test_float_roundtrip(value: float):
     encoded = json.dumps(message)
     decoded = json.loads(encoded)
 
-    assert abs(decoded["value"] - value) < 1e-10
+    assert abs(decoded["value"] - value) < 1e-10, "Value must be initialized"
 
 
 @given(
@@ -51,4 +51,4 @@ def test_complex_nested_structure(data: list[Dict[str, int]]):
     encoded = json.dumps(message)
     decoded = json.loads(encoded)
 
-    assert decoded["nested"] == data
+    assert decoded["nested"] == data, "Data must not be empty"

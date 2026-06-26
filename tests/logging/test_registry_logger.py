@@ -42,10 +42,10 @@ def test_registry_ndjson_logger_includes_system_metrics(tmp_path, monkeypatch):
     logger.close()
 
     payload = json.loads(path.read_text().splitlines()[0])
-    assert payload["loss"] == 1.0
-    assert payload["mem_rss_mb"] == 64.0
-    assert payload["cpu_percent"] == 12.5
-    assert "gpu_mem_mb" not in payload
+    assert payload["loss"] == 1.0, "Condition must be true"
+    assert payload["mem_rss_mb"] == 64.0, "Condition must be true"
+    assert payload["cpu_percent"] == 12.5, "Condition must be true"
+    assert "gpu_mem_mb" not in payload, "Condition must be true"
 
 
 def test_registry_ndjson_logger_rotates(tmp_path, monkeypatch):
@@ -67,5 +67,5 @@ def test_registry_ndjson_logger_rotates(tmp_path, monkeypatch):
     logger.close()
 
     rotated = path.with_name("metrics.ndjson.1")
-    assert rotated.exists()
-    assert path.exists()
+    assert rotated.exists(), "Condition must be true"
+    assert path.exists(), "Condition must be true"

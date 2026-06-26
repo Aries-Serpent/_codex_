@@ -60,18 +60,18 @@ class TestWorkflowOrchestrator:
 
     def test_initialization(self, orchestrator_small):
         """Test orchestrator initialization."""
-        assert orchestrator_small.pr_size == "small"
-        assert "pattern_distribution" in orchestrator_small.telemetry
-        assert len(orchestrator_small.changed_files) == 2
+        assert orchestrator_small.pr_size == "small", "pr_size is not valid"
+        assert "pattern_distribution" in orchestrator_small.telemetry, "Condition must be true"
+        assert len(orchestrator_small.changed_files) == 2, "Collection must not be empty"
 
     def test_analyze_patterns(self, orchestrator_small):
         """Test pattern analysis from telemetry."""
         patterns = orchestrator_small.analyze_patterns()
 
-        assert "auto-fix" in patterns
-        assert patterns["auto-fix"] == 5
-        assert patterns["coverage-timeout"] == 3
-        assert patterns["test-infrastructure"] == 2
+        assert "auto-fix" in patterns, "Condition must be true"
+        assert patterns["auto-fix"] == 5, "Condition must be true"
+        assert patterns["coverage-timeout"] == 3, "Condition must be true"
+        assert patterns["test-infrastructure"] == 2, "Condition must be true"
 
     def test_should_run_workflow_always(self, orchestrator_small):
         """Test workflow with 'always' trigger."""
@@ -96,16 +96,16 @@ class TestWorkflowOrchestrator:
         patterns = {"auto-fix": 5, "coverage-timeout": 3}
         workflows = orchestrator_small.get_pattern_workflows(patterns)
 
-        assert "auto-fix-validation" in workflows
-        assert "coverage-with-timeout" in workflows
+        assert "auto-fix-validation" in workflows, "Condition must be true"
+        assert "coverage-with-timeout" in workflows, "Condition must be true"
 
     def test_analyze_changed_files_python(self, orchestrator_small):
         """Test file analysis with Python files."""
         workflows = orchestrator_small.analyze_changed_files()
 
-        assert "python-tests" in workflows
-        assert "type-checking" in workflows
-        assert "linting" in workflows
+        assert "python-tests" in workflows, "Condition must be true"
+        assert "type-checking" in workflows, "Condition must be true"
+        assert "linting" in workflows, "Condition must be true"
 
     def test_analyze_changed_files_yaml(self):
         """Test file analysis with YAML files."""
@@ -116,7 +116,7 @@ class TestWorkflowOrchestrator:
         )
 
         workflows = orchestrator.analyze_changed_files()
-        assert "yaml-validation" in workflows
+        assert "yaml-validation" in workflows, "Condition must be true"
 
     def test_analyze_changed_files_docker(self):
         """Test file analysis with Docker files."""
@@ -127,7 +127,7 @@ class TestWorkflowOrchestrator:
         )
 
         workflows = orchestrator.analyze_changed_files()
-        assert "container-build" in workflows
+        assert "container-build" in workflows, "Condition must be true"
 
     def test_analyze_changed_files_docs(self):
         """Test file analysis with documentation files."""
@@ -138,77 +138,77 @@ class TestWorkflowOrchestrator:
         )
 
         workflows = orchestrator.analyze_changed_files()
-        assert "docs-build" in workflows
+        assert "docs-build" in workflows, "Condition must be true"
 
     def test_generate_plan_small_pr(self, orchestrator_small):
         """Test plan generation for small PR."""
         plan = orchestrator_small.generate_plan()
 
         # Check structure
-        assert "workflows_to_run" in plan
-        assert "workflows_to_skip" in plan
-        assert "reasons" in plan
-        assert "patterns_detected" in plan
+        assert "workflows_to_run" in plan, "Condition must be true"
+        assert "workflows_to_skip" in plan, "Condition must be true"
+        assert "reasons" in plan, "Condition must be true"
+        assert "patterns_detected" in plan, "Condition must be true"
 
         # Critical workflows should always run
-        assert "smoke-tests" in plan["workflows_to_run"]
-        assert "pr-size-analyzer" in plan["workflows_to_run"]
-        assert "security-scan" in plan["workflows_to_run"]
+        assert "smoke-tests" in plan["workflows_to_run"], "Condition must be true"
+        assert "pr-size-analyzer" in plan["workflows_to_run"], "Condition must be true"
+        assert "security-scan" in plan["workflows_to_run"], "Condition must be true"
 
         # Standard workflows for small PR
-        assert "unit-tests" in plan["workflows_to_run"]
+        assert "unit-tests" in plan["workflows_to_run"], "Condition must be true"
 
         # Comprehensive workflows for small PR
-        assert "integration-tests" in plan["workflows_to_run"]
+        assert "integration-tests" in plan["workflows_to_run"], "Condition must be true"
 
     def test_generate_plan_large_pr(self, orchestrator_large):
         """Test plan generation for large PR."""
         plan = orchestrator_large.generate_plan()
 
         # Critical workflows should always run
-        assert "smoke-tests" in plan["workflows_to_run"]
+        assert "smoke-tests" in plan["workflows_to_run"], "Condition must be true"
 
         # Standard workflows should be skipped for large PR
-        assert "unit-tests" in plan["workflows_to_skip"]
+        assert "unit-tests" in plan["workflows_to_skip"], "Condition must be true"
 
         # Comprehensive workflows should be skipped
-        assert "integration-tests" in plan["workflows_to_skip"]
+        assert "integration-tests" in plan["workflows_to_skip"], "Condition must be true"
 
     def test_generate_plan_with_patterns(self, orchestrator_small):
         """Test plan includes pattern-based workflows."""
         plan = orchestrator_small.generate_plan()
 
         # Pattern-based workflows should be added
-        assert "auto-fix-validation" in plan["workflows_to_run"]
-        assert "coverage-with-timeout" in plan["workflows_to_run"]
+        assert "auto-fix-validation" in plan["workflows_to_run"], "Condition must be true"
+        assert "coverage-with-timeout" in plan["workflows_to_run"], "Condition must be true"
 
     def test_generate_plan_with_file_workflows(self, orchestrator_small):
         """Test plan includes file-based workflows."""
         plan = orchestrator_small.generate_plan()
 
         # File-based workflows should be added
-        assert "python-tests" in plan["workflows_to_run"]
-        assert "type-checking" in plan["workflows_to_run"]
+        assert "python-tests" in plan["workflows_to_run"], "Condition must be true"
+        assert "type-checking" in plan["workflows_to_run"], "Condition must be true"
 
     def test_estimate_duration(self, orchestrator_small):
         """Test duration estimation."""
         _ = orchestrator_small.generate_plan()  # Generate plan first
         duration = orchestrator_small.estimate_duration()
 
-        assert "total_minutes" in duration
-        assert "total_hours" in duration
-        assert "workflow_durations" in duration
+        assert "total_minutes" in duration, "Condition must be true"
+        assert "total_hours" in duration, "Condition must be true"
+        assert "workflow_durations" in duration, "Condition must be true"
 
-        assert duration["total_minutes"] > 0
-        assert duration["total_hours"] > 0
+        assert duration["total_minutes"] > 0, "Value must be greater than zero"
+        assert duration["total_hours"] > 0, "Value must be greater than zero"
 
     def test_workflow_reasons(self, orchestrator_small):
         """Test that all workflows have reasons."""
         plan = orchestrator_small.generate_plan()
 
         for workflow in plan["workflows_to_run"]:
-            assert workflow in plan["reasons"]
-            assert len(plan["reasons"][workflow]) > 0
+            assert workflow in plan["reasons"], "w is not valid"
+            assert len(plan["reasons"][workflow]) > 0, "Collection must not be empty"
 
     def test_empty_telemetry(self):
         """Test orchestrator with empty telemetry."""
@@ -217,20 +217,20 @@ class TestWorkflowOrchestrator:
         plan = orchestrator.generate_plan()
 
         # Should still have critical workflows
-        assert len(plan["workflows_to_run"]) > 0
+        assert len(plan["workflows_to_run"]) > 0, "Collection must not be empty"
 
     def test_workflow_categories_exist(self, orchestrator_small):
         """Test that workflow categories are defined."""
-        assert "critical" in WorkflowOrchestrator.WORKFLOW_CATEGORIES
-        assert "standard" in WorkflowOrchestrator.WORKFLOW_CATEGORIES
-        assert "comprehensive" in WorkflowOrchestrator.WORKFLOW_CATEGORIES
-        assert "on-demand" in WorkflowOrchestrator.WORKFLOW_CATEGORIES
+        assert "critical" in WorkflowOrchestrator.WORKFLOW_CATEGORIES, "Condition must be true"
+        assert "standard" in WorkflowOrchestrator.WORKFLOW_CATEGORIES, "Condition must be true"
+        assert "comprehensive" in WorkflowOrchestrator.WORKFLOW_CATEGORIES, "Condition must be true"
+        assert "on-demand" in WorkflowOrchestrator.WORKFLOW_CATEGORIES, "Condition must be true"
 
     def test_pattern_workflows_mapping(self):
         """Test pattern to workflow mapping exists."""
-        assert "auto-fix" in WorkflowOrchestrator.PATTERN_WORKFLOWS
-        assert "test-infrastructure" in WorkflowOrchestrator.PATTERN_WORKFLOWS
-        assert "coverage-timeout" in WorkflowOrchestrator.PATTERN_WORKFLOWS
+        assert "auto-fix" in WorkflowOrchestrator.PATTERN_WORKFLOWS, "Condition must be true"
+        assert "test-infrastructure" in WorkflowOrchestrator.PATTERN_WORKFLOWS, "Condition must be true"
+        assert "coverage-timeout" in WorkflowOrchestrator.PATTERN_WORKFLOWS, "Condition must be true"
 
     def test_no_duplicate_workflows(self, orchestrator_small):
         """Test that plan doesn't contain duplicate workflows."""
@@ -239,4 +239,4 @@ class TestWorkflowOrchestrator:
         workflows_to_run = plan["workflows_to_run"]
         unique_workflows = set(workflows_to_run)
 
-        assert len(workflows_to_run) == len(unique_workflows)
+        assert len(workflows_to_run) == len(unique_workflows), "Workflows_to_run must not be empty"

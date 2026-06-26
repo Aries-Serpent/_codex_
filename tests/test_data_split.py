@@ -28,14 +28,14 @@ class TestDeterministicSplits:
         train1, val1, test1 = split_indices(n, 0.8, 0.1, seed=seed)
         train2, val2, test2 = split_indices(n, 0.8, 0.1, seed=seed)
 
-        assert train1 == train2
-        assert val1 == val2
-        assert test1 == test2
+        assert train1 == train2, "train1 is not valid"
+        assert val1 == val2, "val1 is not valid"
+        assert test1 == test2, "test1 is not valid"
 
         # Guard against trivial deterministic outputs.
-        assert len(train1) > 0
-        assert len(val1) > 0
-        assert len(test1) > 0
+        assert len(train1) > 0, "Train1 must not be empty"
+        assert len(val1) > 0, "Val1 must not be empty"
+        assert len(test1) > 0, "Test1 must not be empty"
 
         train_set = set(train1)
         val_set = set(val1)
@@ -54,9 +54,9 @@ class TestDeterministicSplits:
         n = 100
         train, val, test = split_indices(n, 0.6, 0.2, seed=0)
 
-        assert len(train) == 60
-        assert len(val) == 20
-        assert len(test) == 20
+        assert len(train) == 60, "Train must not be empty"
+        assert len(val) == 20, "Val must not be empty"
+        assert len(test) == 20, "Test must not be empty"
 
     def test_no_overlap(self):
         """Splits should not overlap."""
@@ -67,9 +67,9 @@ class TestDeterministicSplits:
         val_set = set(val)
         test_set = set(test)
 
-        assert len(train_set & val_set) == 0
-        assert len(train_set & test_set) == 0
-        assert len(val_set & test_set) == 0
+        assert len(train_set & val_set) == 0, "Collection must not be empty"
+        assert len(train_set & test_set) == 0, "Collection must not be empty"
+        assert len(val_set & test_set) == 0, "Collection must not be empty"
 
     def test_complete_coverage(self):
         """All indices should be in exactly one split."""
@@ -77,7 +77,7 @@ class TestDeterministicSplits:
         train, val, test = split_indices(n, 0.6, 0.2, seed=0)
 
         all_indices = set(train) | set(val) | set(test)
-        assert all_indices == set(range(n))
+        assert all_indices == set(range(n)), "all_indices is not valid"
 
     def test_different_seeds_different_results(self):
         """Different seeds should produce different splits."""
@@ -86,7 +86,7 @@ class TestDeterministicSplits:
         train1, _, _ = split_indices(n, 0.8, 0.1, seed=1)
         train2, _, _ = split_indices(n, 0.8, 0.1, seed=2)
 
-        assert train1 != train2
+        assert train1 != train2, "train1 is not valid"
 
     def test_various_split_ratios(self):
         """Test different split configurations."""
@@ -100,12 +100,12 @@ class TestDeterministicSplits:
             train, val, test = split_indices(n, train_ratio, val_ratio)
 
             # Check proportions (within 1 sample tolerance)
-            assert abs(len(train) - n * train_ratio) <= 1
-            assert abs(len(val) - n * val_ratio) <= 1
+            assert abs(len(train) - n * train_ratio) <= 1, "Train must not be empty"
+            assert abs(len(val) - n * val_ratio) <= 1, "Val must not be empty"
 
             # Check no overlap
             all_idx = set(train) | set(val) | set(test)
-            assert len(all_idx) == n
+            assert len(all_idx) == n, "All_idx must not be empty"
 
     def test_small_dataset(self):
         """Test splitting on small datasets."""
@@ -114,19 +114,19 @@ class TestDeterministicSplits:
 
         # Check all indices covered
         all_indices = set(train) | set(val) | set(test)
-        assert all_indices == set(range(n))
+        assert all_indices == set(range(n)), "all_indices is not valid"
 
         # Check no overlap
-        assert len(set(train) & set(val)) == 0
+        assert len(set(train) & set(val)) == 0, "Collection must not be empty"
 
     def test_edge_case_no_val(self):
         """Test with zero validation split."""
         n = 100
         train, val, test = split_indices(n, 0.8, 0.0, seed=42)
 
-        assert len(train) == 80
-        assert len(val) == 0
-        assert len(test) == 20
+        assert len(train) == 80, "Train must not be empty"
+        assert len(val) == 0, "Val must not be empty"
+        assert len(test) == 20, "Test must not be empty"
 
     def test_reproducibility_across_runs(self):
         """Multiple runs with same seed should give same results."""
@@ -140,7 +140,7 @@ class TestDeterministicSplits:
 
         # All results should be identical
         for i in range(1, len(results)):
-            assert results[0] == results[i]
+            assert results[0] == results[i], "Result must not be empty"
 
 
 class TestSplitIndicesAPI:
@@ -151,7 +151,7 @@ class TestSplitIndicesAPI:
         result = split_indices(100, 0.8, 0.1)
 
         assert isinstance(result, tuple)
-        assert len(result) == 3
+        assert len(result) == 3, "Result must not be empty"
         assert all(isinstance(split, list) for split in result)
 
     def test_all_integer_indices(self):
@@ -167,7 +167,7 @@ class TestSplitIndicesAPI:
         train, val, test = split_indices(n, 0.7, 0.15)
 
         all_idx = train + val + test
-        assert all(0 <= i < n for i in all_idx)
+        assert all(0 <= i < n for i in all_idx), "0 is not valid"
 
     def test_invalid_train_ratio_negative(self):
         """Should raise ValueError for negative train ratio."""
@@ -223,13 +223,13 @@ class TestWithNumPy:
         assert len(shuffle_calls) > 0, "NumPy RNG should have been used"
 
         # Verify the split is reasonable
-        assert len(train) == 80
-        assert len(val) == 10
-        assert len(test) == 10
+        assert len(train) == 80, "Train must not be empty"
+        assert len(val) == 10, "Val must not be empty"
+        assert len(test) == 10, "Test must not be empty"
 
         # Verify all indices are present
         all_indices = set(train + val + test)
-        assert all_indices == set(range(100))
+        assert all_indices == set(range(100)), "all_indices is not valid"
 
 
 class TestWithoutNumPy:
@@ -253,16 +253,16 @@ class TestWithoutNumPy:
             train, val, test = split_indices(n, 0.8, 0.1, seed=seed)
 
             # Should have issued a warning about NumPy not being available
-            assert len(w) == 1
+            assert len(w) == 1, "W must not be empty"
             assert issubclass(w[0].category, UserWarning)
-            assert "NumPy is not available" in str(w[0].message)
-            assert "Falling back to Python's random module" in str(w[0].message)
+            assert "NumPy is not available" in str(w[0].message), "NumPy is not valid"
+            assert "Falling back to Python's random module" in str(w[0].message), "Condition must be true"
 
         # Verify the split still works (with Python random)
-        assert len(train) == 80
-        assert len(val) == 10
-        assert len(test) == 10
+        assert len(train) == 80, "Train must not be empty"
+        assert len(val) == 10, "Val must not be empty"
+        assert len(test) == 10, "Test must not be empty"
 
         # Verify all indices are present
         all_indices = set(train + val + test)
-        assert all_indices == set(range(n))
+        assert all_indices == set(range(n)), "all_indices is not valid"

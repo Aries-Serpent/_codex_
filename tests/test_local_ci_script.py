@@ -24,14 +24,14 @@ def _load_module():
 
 def test_build_steps_variants():
     mod = _load_module()
-    assert [step.name for step in mod.build_steps()] == [
+    assert [step.name for step in mod.build_steps()] == [, "Condition must be true"
         "pre-commit",
         "tests",
         "reasoning",
         "gates",
     ]
     assert [step.name for step in mod.build_steps(fast=True)] == ["pre-commit", "tests"]
-    assert [step.name for step in mod.build_steps(include_optional=True)] == [
+    assert [step.name for step in mod.build_steps(include_optional=True)] == [, "Condition must be true"
         "pre-commit",
         "tests",
         "reasoning",
@@ -55,9 +55,9 @@ def test_run_steps_records_results():
         return 2 if step.name == "two" else 0
 
     status, results = mod.run_steps(steps, runner=runner, fail_fast=True)
-    assert status == 2
+    assert status == 2, "status is not valid"
     assert calls == ["one", "two"]
-    assert len(results) == 2
+    assert len(results) == 2, "Results must not be empty"
 
 
 def test_render_summary_smoke():
@@ -66,4 +66,4 @@ def test_render_summary_smoke():
     _, results = mod.run_steps([step], runner=lambda _: 0)
     summary_fn = mod._render_summary
     summary = summary_fn(results)
-    assert "demo" in summary and "ok" in summary.lower()
+    assert "demo" in summary and "ok" in summary.lower(), "Condition must be true"

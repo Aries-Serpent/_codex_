@@ -61,11 +61,11 @@ def test_analyze_success_outcome(analyzer, simple_context):
     )
 
     assert isinstance(outcome, LearningOutcome)
-    assert outcome.outcome_type == OutcomeType.SUCCESS
-    assert 0.0 < outcome.reward <= 1.0  # Positive reward for success
-    assert len(outcome.patterns_identified) > 0
-    assert len(outcome.lessons_learned) > 0
-    assert "Strategy effective" in outcome.lessons_learned[0]
+    assert outcome.outcome_type == OutcomeType.SUCCESS, "outcome_type is not valid"
+    assert 0.0 < outcome.reward <= 1.0, "0 is not valid"
+    assert len(outcome.patterns_identified) > 0, "Collection must not be empty"
+    assert len(outcome.lessons_learned) > 0, "Collection must not be empty"
+    assert "Strategy effective" in outcome.lessons_learned[0], "Condition must be true"
 
 
 def test_analyze_failure_outcome(analyzer, simple_context):
@@ -77,9 +77,9 @@ def test_analyze_failure_outcome(analyzer, simple_context):
         context=simple_context,
     )
 
-    assert outcome.outcome_type == OutcomeType.FAILURE
-    assert -1.0 <= outcome.reward < 0.0  # Negative reward for failure
-    assert "Strategy ineffective" in outcome.lessons_learned[0]
+    assert outcome.outcome_type == OutcomeType.FAILURE, "outcome_type is not valid"
+    assert -1.0 <= outcome.reward < 0.0, "0 is not valid"
+    assert "Strategy ineffective" in outcome.lessons_learned[0], "Condition must be true"
 
 
 def test_reward_calculation_formula(analyzer, simple_context):
@@ -103,7 +103,7 @@ def test_reward_calculation_formula(analyzer, simple_context):
     )
 
     assert outcome.reward == pytest.approx(1.0, abs=0.01)
-    assert -1.0 <= outcome.reward <= 1.0  # Always in valid range
+    assert -1.0 <= outcome.reward <= 1.0, "0 is not valid"
 
 
 def test_pattern_identification(analyzer, complex_context):
@@ -117,7 +117,7 @@ def test_pattern_identification(analyzer, complex_context):
 
     # With 3 agents and success, should detect multi-agent pattern
     patterns = outcome.patterns_identified
-    assert len(patterns) > 0
+    assert len(patterns) > 0, "Patterns must not be empty"
 
     # Check for specific pattern types
     pattern_str = " ".join(patterns)
@@ -134,13 +134,13 @@ def test_lessons_extraction(analyzer, complex_context):
     )
 
     lessons = outcome.lessons_learned
-    assert len(lessons) >= 1
+    assert len(lessons) >= 1, "Lessons must not be empty"
 
     # Should mention task type
-    assert any("architecture_design" in lesson for lesson in lessons)
+    assert any("architecture_design" in lesson for lesson in lessons), "Condition must be true"
 
     # High complexity success should be noted
-    assert any(
+    assert any(, "Condition must be true"
         "high-complexity" in lesson.lower() or "complex" in lesson.lower() for lesson in lessons
     )
 
@@ -159,10 +159,10 @@ def test_identify_patterns_batch(analyzer, simple_context):
     # Extract patterns from batch
     pattern_set = analyzer.identify_patterns(lookback_window=15)
 
-    assert len(pattern_set.patterns) > 0
-    assert pattern_set.domain == "cognitive_brain"
-    assert pattern_set.statistics["outcomes_analyzed"] == 15
-    assert pattern_set.statistics["total_patterns"] > 0
+    assert len(pattern_set.patterns) > 0, "Collection must not be empty"
+    assert pattern_set.domain == "cognitive_brain", "domain is not valid"
+    assert pattern_set.statistics["outcomes_analyzed"] == 15, "Condition must be true"
+    assert pattern_set.statistics["total_patterns"] > 0, "Value must be greater than zero"
 
 
 def test_high_confidence_patterns(analyzer, simple_context):
@@ -180,10 +180,10 @@ def test_high_confidence_patterns(analyzer, simple_context):
     high_conf = pattern_set.get_high_confidence(threshold=0.8)
 
     # With 50 similar successes, should have high-confidence patterns
-    assert len(high_conf) > 0
+    assert len(high_conf) > 0, "High_conf must not be empty"
     for pattern in high_conf:
-        assert pattern.confidence >= 0.8
-        assert pattern.support_count > 0
+        assert pattern.confidence >= 0.8, "confidence must be greater than zero"
+        assert pattern.support_count > 0, "support_count must be positive"
 
 
 def test_pattern_categories(analyzer):
@@ -213,7 +213,7 @@ def test_pattern_categories(analyzer):
     # Check that patterns from different categories exist
     categories_found = {p.category for p in pattern_set.patterns}
     # Should have at least 2 different categories
-    assert len(categories_found) >= 2
+    assert len(categories_found) >= 2, "Categories_found must not be empty"
 
 
 def test_statistics_calculation(analyzer, simple_context):
@@ -230,9 +230,9 @@ def test_statistics_calculation(analyzer, simple_context):
 
     stats = analyzer.get_statistics()
 
-    assert stats["outcomes_analyzed"] == 20
-    assert 0.0 <= stats["average_reward"] <= 1.0
-    assert 0.0 <= stats["success_rate"] <= 1.0
+    assert stats["outcomes_analyzed"] == 20, "Condition must be true"
+    assert 0.0 <= stats["average_reward"] <= 1.0, "0 is not valid"
+    assert 0.0 <= stats["success_rate"] <= 1.0, "0 is not valid"
     # With i%3 != 0 for success: 0,1,2 -> S,S,F pattern = 13 successes out of 20
     assert stats["success_rate"] == pytest.approx(13 / 20, abs=0.01)
 
@@ -248,8 +248,8 @@ def test_aftermath_integration(analyzer, simple_context):
     )
 
     # AfterMath should capture this outcome
-    assert outcome1.outcome_id in analyzer.outcomes
-    assert len(analyzer.reward_history) == 1
+    assert outcome1.outcome_id in analyzer.outcomes, "Condition must be true"
+    assert len(analyzer.reward_history) == 1, "Collection must not be empty"
 
     # Second iteration with learned patterns
     analyzer.analyze_outcome(
@@ -260,12 +260,12 @@ def test_aftermath_integration(analyzer, simple_context):
     )
 
     # Should accumulate history
-    assert len(analyzer.outcomes) == 2
-    assert len(analyzer.reward_history) == 2
+    assert len(analyzer.outcomes) == 2, "Collection must not be empty"
+    assert len(analyzer.reward_history) == 2, "Collection must not be empty"
 
     # Extract patterns (AfterMath analysis)
     pattern_set = analyzer.identify_patterns(lookback_window=10)
-    assert pattern_set.statistics["extraction_number"] == 1
+    assert pattern_set.statistics["extraction_number"] == 1, "Condition must be true"
 
 
 def test_partial_and_timeout_outcomes(analyzer, simple_context):
@@ -278,9 +278,9 @@ def test_partial_and_timeout_outcomes(analyzer, simple_context):
         context=simple_context,
     )
 
-    assert -1.0 <= partial.reward <= 1.0
-    assert partial.reward < 1.0  # Less than full success
-    assert partial.reward > -1.0  # Better than full failure
+    assert -1.0 <= partial.reward <= 1.0, "0 is not valid"
+    assert partial.reward < 1.0, "reward is not valid"
+    assert partial.reward > -1.0, "reward must be greater than zero"
 
     # Timeout
     timeout = analyzer.analyze_outcome(
@@ -290,7 +290,7 @@ def test_partial_and_timeout_outcomes(analyzer, simple_context):
         context=simple_context,
     )
 
-    assert timeout.reward < 0.0  # Negative for timeout
+    assert timeout.reward < 0.0, "reward is not valid"
 
 
 def test_pattern_confidence_calculation(analyzer, simple_context):
@@ -325,7 +325,7 @@ def test_pattern_confidence_calculation(analyzer, simple_context):
 
         if pattern_50:
             # More support should lead to higher confidence
-            assert pattern_50.support_count >= pattern_set_10.patterns[0].support_count
+            assert pattern_50.support_count >= pattern_set_10.patterns[0].support_count, "support_count must be positive"
 
 
 def test_low_resource_causal_patterns(analyzer):
@@ -347,8 +347,8 @@ def test_low_resource_causal_patterns(analyzer):
 
     # Should detect causal patterns related to resources
     patterns = outcome.patterns_identified
-    assert any("causal" in p for p in patterns)
-    assert any("resource" in p.lower() or "memory" in p.lower() for p in patterns)
+    assert any("causal" in p for p in patterns), "Condition must be true"
+    assert any("resource" in p.lower() or "memory" in p.lower() for p in patterns), "Condition must be true"
 
 
 def test_error_outcome_handling(analyzer, simple_context):
@@ -360,9 +360,9 @@ def test_error_outcome_handling(analyzer, simple_context):
         context=simple_context,
     )
 
-    assert error_outcome.outcome_type == OutcomeType.ERROR
-    assert error_outcome.reward < 0.0  # Negative reward for errors
-    assert error_outcome.reward >= -1.0  # Within bounds
+    assert error_outcome.outcome_type == OutcomeType.ERROR, "Error should be raised or set"
+    assert error_outcome.reward < 0.0, "Error should be raised or set"
+    assert error_outcome.reward >= -1.0, "reward must be greater than zero"
 
 
 def test_get_patterns_by_category(analyzer, simple_context):
@@ -390,6 +390,6 @@ def test_get_patterns_by_category(analyzer, simple_context):
 
     # Should be able to filter by category
     for pattern in contextual:
-        assert pattern.category == PatternCategory.CONTEXTUAL
+        assert pattern.category == PatternCategory.CONTEXTUAL, "category is not valid"
     for pattern in sequential:
-        assert pattern.category == PatternCategory.SEQUENTIAL
+        assert pattern.category == PatternCategory.SEQUENTIAL, "category is not valid"

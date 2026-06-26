@@ -238,7 +238,7 @@ Checkpoint File (gzip compressed)
 | description | str | "Optimized search" | Human-readable description |
 | confidence | float | 0.95 | Confidence score (0-1) |
 | outcome | str | "success", "pending", "failed" | Decision outcome |
-| work_items_affected | list[str] | ["task_001"] | Affected work items |
+| work_items_affected | list[str] | ["task_001"] | Affected work items | <!-- pragma: allowlist secret -->
 | metrics | dict | {"lines_changed": 42} | Decision metrics |
 
 ### MemorySnapshot

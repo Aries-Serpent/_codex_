@@ -10,7 +10,7 @@ class TestOptimization:
         optimizer_type = "adam"
 
         # Assert
-        assert optimizer_type == "adam"
+        assert optimizer_type == "adam", "optimizer_type is not valid"
 
     def test_optimizer_adamw(self):
         """Test AdamW optimizer configuration."""
@@ -18,7 +18,7 @@ class TestOptimization:
         optimizer_type = "adamw"
 
         # Assert
-        assert optimizer_type == "adamw"
+        assert optimizer_type == "adamw", "optimizer_type is not valid"
 
     def test_optimizer_sgd(self):
         """Test SGD optimizer configuration."""
@@ -26,7 +26,7 @@ class TestOptimization:
         optimizer_type = "sgd"
 
         # Assert
-        assert optimizer_type == "sgd"
+        assert optimizer_type == "sgd", "optimizer_type is not valid"
 
     def test_learning_rate_value(self):
         """Test learning rate value."""
@@ -34,8 +34,8 @@ class TestOptimization:
         lr = 1e-4
 
         # Assert
-        assert lr > 0
-        assert lr < 1
+        assert lr > 0, "lr must be greater than zero"
+        assert lr < 1, "lr is not valid"
 
     def test_weight_decay(self):
         """Test weight decay parameter."""
@@ -43,7 +43,7 @@ class TestOptimization:
         weight_decay = 0.01
 
         # Assert
-        assert weight_decay >= 0
+        assert weight_decay >= 0, "weight_decay must be greater than zero"
 
     def test_momentum(self):
         """Test momentum parameter."""
@@ -51,7 +51,7 @@ class TestOptimization:
         momentum = 0.9
 
         # Assert
-        assert 0 <= momentum <= 1
+        assert 0 <= momentum <= 1, "0 is not valid"
 
     def test_beta1_beta2(self):
         """Test Adam beta parameters."""
@@ -59,8 +59,8 @@ class TestOptimization:
         betas = (0.9, 0.999)
 
         # Assert
-        assert len(betas) == 2
-        assert all(0 < b < 1 for b in betas)
+        assert len(betas) == 2, "Betas must not be empty"
+        assert all(0 < b < 1 for b in betas), "0 is not valid"
 
     def test_epsilon(self):
         """Test epsilon parameter."""
@@ -68,7 +68,7 @@ class TestOptimization:
         eps = 1e-8
 
         # Assert
-        assert eps > 0
+        assert eps > 0, "eps must be greater than zero"
 
     def test_scheduler_linear(self):
         """Test linear learning rate scheduler."""
@@ -76,7 +76,7 @@ class TestOptimization:
         scheduler_type = "linear"
 
         # Assert
-        assert scheduler_type == "linear"
+        assert scheduler_type == "linear", "scheduler_type is not valid"
 
     def test_scheduler_cosine(self):
         """Test cosine learning rate scheduler."""
@@ -84,7 +84,7 @@ class TestOptimization:
         scheduler_type = "cosine"
 
         # Assert
-        assert scheduler_type == "cosine"
+        assert scheduler_type == "cosine", "scheduler_type is not valid"
 
     def test_scheduler_warmup(self):
         """Test warmup scheduler."""
@@ -92,7 +92,7 @@ class TestOptimization:
         warmup_steps = 1000
 
         # Assert
-        assert warmup_steps > 0
+        assert warmup_steps > 0, "warmup_steps must be greater than zero"
 
     def test_warmup_ratio(self):
         """Test warmup ratio."""
@@ -100,7 +100,7 @@ class TestOptimization:
         warmup_ratio = 0.1
 
         # Assert
-        assert 0 < warmup_ratio < 1
+        assert 0 < warmup_ratio < 1, "0 is not valid"
 
     def test_scheduler_step(self):
         """Test step learning rate scheduler."""
@@ -108,7 +108,7 @@ class TestOptimization:
         step_size = 10
 
         # Assert
-        assert step_size > 0
+        assert step_size > 0, "step_size must be greater than zero"
 
     def test_scheduler_exponential(self):
         """Test exponential learning rate scheduler."""
@@ -116,7 +116,7 @@ class TestOptimization:
         gamma = 0.95
 
         # Assert
-        assert 0 < gamma < 1
+        assert 0 < gamma < 1, "0 is not valid"
 
     def test_max_grad_norm(self):
         """Test max gradient norm for clipping."""
@@ -124,7 +124,7 @@ class TestOptimization:
         max_grad_norm = 1.0
 
         # Assert
-        assert max_grad_norm > 0
+        assert max_grad_norm > 0, "max_grad_norm must be greater than zero"
 
     def test_gradient_accumulation(self):
         """Test gradient accumulation steps."""
@@ -132,7 +132,7 @@ class TestOptimization:
         gradient_accumulation_steps = 4
 
         # Assert
-        assert gradient_accumulation_steps >= 1
+        assert gradient_accumulation_steps >= 1, "gradient_accumulation_steps must be greater than zero"
 
     def test_optimizer_state_management(self):
         """Test optimizer state management."""
@@ -140,7 +140,7 @@ class TestOptimization:
         state = {"step": 100, "exp_avg": {}}
 
         # Assert
-        assert "step" in state
+        assert "step" in state, "Condition must be true"
 
     def test_parameter_groups(self):
         """Test parameter groups configuration."""
@@ -148,4 +148,4 @@ class TestOptimization:
         param_groups = [{"params": [], "lr": 1e-4}, {"params": [], "lr": 1e-5}]
 
         # Assert
-        assert len(param_groups) == 2
+        assert len(param_groups) == 2, "Param_groups must not be empty"

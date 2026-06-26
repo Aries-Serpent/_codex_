@@ -60,9 +60,9 @@ def test_hydra_main_offline_compose(monkeypatch, tmp_path) -> None:
         # working directory doesn't contain configs/training/sweeps).
         pytest.skip(f"Hydra config resolution failed (SystemExit {exc.code})")
     else:
-        assert result == {"status": "ok"}
-        assert captured["training"]["max_epochs"] == 1
-        assert captured["model"]["name"] == "tiny-offline"
+        assert result == {"status": "ok"}, "Result must not be empty"
+        assert captured["training"]["max_epochs"] == 1, "Condition must be true"
+        assert captured["model"]["name"] == "tiny-offline", "Condition must be true"
 
         try:
             from hydra.core.global_hydra import GlobalHydra

@@ -34,7 +34,7 @@ def test_list_plugins_matches_schema():
         text=True,
         check=False,
     )
-    assert proc.returncode == 0
+    assert proc.returncode == 0, "returncode is not valid"
     payload = json.loads(proc.stdout or "{}")
     jsonschema.validate(instance=payload, schema=schema)
 
@@ -58,8 +58,8 @@ def test_gh_api_envelope_schema(monkeypatch, capsys):
             "--json-envelope",
         ]
     )
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
     out = capsys.readouterr().out.strip()
     payload = json.loads(out)
     jsonschema.validate(instance=payload, schema=schema)
-    assert payload["ok"] is True
+    assert payload["ok"] is True, "Condition must be true"

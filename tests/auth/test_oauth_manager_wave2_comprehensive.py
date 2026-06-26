@@ -47,18 +47,18 @@ class TestOAuthInitialization:
 
     def test_create_oauth_manager(self, oauth_manager):
         """Test creating OAuth manager."""
-        assert oauth_manager is not None
+        assert oauth_manager is not None, "oauth_manager must be initialized"
 
     def test_oauth_config_stored(self, oauth_manager, oauth_config):
         """Test that config is stored."""
-        assert oauth_manager is not None
+        assert oauth_manager is not None, "oauth_manager must be initialized"
 
     def test_oauth_manager_with_custom_config(self, oauth_config):
         """Test OAuth manager with custom configuration."""
         custom_config = oauth_config.copy()
         custom_config["scopes"] = ["read:user", "write:repo"]
         manager = OAuthManager(**custom_config)
-        assert manager is not None
+        assert manager is not None, "manager must be initialized"
 
 
 # ============================================================================
@@ -73,23 +73,23 @@ class TestAuthorizationUrl:
         """Test generating authorization URL."""
         if hasattr(oauth_manager, "get_authorization_url"):
             url = oauth_manager.get_authorization_url()
-            assert url is not None
+            assert url is not None, "url must be initialized"
             assert isinstance(url, str)
-            assert len(url) > 0
+            assert len(url) > 0, "Url must not be empty"
 
     def test_authorization_url_contains_client_id(self, oauth_manager):
         """Test that authorization URL contains client ID."""
         if hasattr(oauth_manager, "get_authorization_url"):
             url = oauth_manager.get_authorization_url()
             if url:
-                assert "client_id" in url.lower()
+                assert "client_id" in url.lower(), "Condition must be true"
 
     def test_authorization_url_contains_redirect_uri(self, oauth_manager):
         """Test that authorization URL contains redirect URI."""
         if hasattr(oauth_manager, "get_authorization_url"):
             url = oauth_manager.get_authorization_url()
             if url:
-                assert "redirect" in url.lower()
+                assert "redirect" in url.lower(), "Condition must be true"
 
     def test_authorization_url_with_scopes(self, oauth_config):
         """Test authorization URL with scopes."""
@@ -106,7 +106,7 @@ class TestAuthorizationUrl:
         if hasattr(oauth_manager, "get_authorization_url"):
             url = oauth_manager.get_authorization_url()
             if url:
-                assert "state" in url.lower() or "authorization" in url.lower()
+                assert "state" in url.lower() or "authorization" in url.lower(), "Condition must be true"
 
 
 # ============================================================================
@@ -121,7 +121,7 @@ class TestStateManagement:
         """Test generating state parameter."""
         if hasattr(oauth_manager, "generate_state"):
             state = oauth_manager.generate_state()
-            assert state is not None
+            assert state is not None, "state must be initialized"
             assert isinstance(state, str)
 
     def test_state_uniqueness(self, oauth_manager):
@@ -129,20 +129,20 @@ class TestStateManagement:
         if hasattr(oauth_manager, "generate_state"):
             state1 = oauth_manager.generate_state()
             state2 = oauth_manager.generate_state()
-            assert state1 != state2
+            assert state1 != state2, "state1 is not valid"
 
     def test_verify_state(self, oauth_manager):
         """Test state verification."""
         if hasattr(oauth_manager, "generate_state") and hasattr(oauth_manager, "verify_state"):
             state = oauth_manager.generate_state()
             is_valid = oauth_manager.verify_state(state)
-            assert is_valid is True
+            assert is_valid is True, "is_valid is not valid"
 
     def test_invalid_state_verification(self, oauth_manager):
         """Test verification of invalid state."""
         if hasattr(oauth_manager, "verify_state"):
             is_valid = oauth_manager.verify_state("invalid_state_12345")
-            assert is_valid is False
+            assert is_valid is False, "is_valid is not valid"
 
 
 # ============================================================================
@@ -165,7 +165,7 @@ class TestTokenExchange:
 
                 result = oauth_manager.exchange_code_for_token("auth_code")
                 if result:
-                    assert "access_token" in result or result is not None
+                    assert "access_token" in result or result is not None, "result must be initialized"
 
     def test_token_includes_access_token(self, oauth_manager):
         """Test that token response includes access token."""
@@ -178,7 +178,7 @@ class TestTokenExchange:
 
                 result = oauth_manager.exchange_code_for_token("auth_code")
                 if result:
-                    assert result
+                    assert result, "Result must not be empty"
 
     def test_token_exchange_with_error_response(self, oauth_manager):
         """Test handling of error in token exchange."""
@@ -218,7 +218,7 @@ class TestCallbackHandling:
                     state="valid_state",
                 )
                 if result:
-                    assert result is not None
+                    assert result is not None, "result must be initialized"
 
     def test_handle_callback_with_error(self, oauth_manager):
         """Test handling callback with error."""
@@ -277,7 +277,7 @@ class TestUserInfoRetrieval:
 
                 result = oauth_manager.get_user_info("test_token")
                 if result:
-                    assert result is not None
+                    assert result is not None, "result must be initialized"
 
 
 # ============================================================================
@@ -300,7 +300,7 @@ class TestTokenRefresh:
 
                 result = oauth_manager.refresh_token("refresh_token_value")
                 if result:
-                    assert "access_token" in result or result is not None
+                    assert "access_token" in result or result is not None, "result must be initialized"
 
     def test_refresh_token_expiration(self, oauth_manager):
         """Test that refreshed token has expiration."""
@@ -313,7 +313,7 @@ class TestTokenRefresh:
 
                 result = oauth_manager.refresh_token("refresh_token")
                 if result and "expires_in" in result:
-                    assert result["expires_in"] > 0
+                    assert result["expires_in"] > 0, "Value must be greater than zero"
 
 
 # ============================================================================
@@ -345,7 +345,7 @@ class TestErrorHandling:
             scope="read",
         )
         manager = OAuthManager(config=config)
-        assert manager.config.redirect_uri == "invalid"
+        assert manager.config.redirect_uri == "invalid", "redirect_uri is not valid"
 
     def test_network_error_handling(self, oauth_manager):
         """Test handling of network errors."""
@@ -442,7 +442,7 @@ class TestOAuthIntegration:
         if hasattr(oauth_manager, "get_authorization_url"):
             # Get authorization URL
             auth_url = oauth_manager.get_authorization_url()
-            assert auth_url is not None
+            assert auth_url is not None, "auth_url must be initialized"
 
     def test_oauth_flow_with_token_exchange(self, oauth_manager):
         """Test OAuth flow including token exchange."""
@@ -456,7 +456,7 @@ class TestOAuthIntegration:
 
                 result = oauth_manager.exchange_code_for_token("auth_code")
                 if result:
-                    assert result is not None
+                    assert result is not None, "result must be initialized"
 
     def test_oauth_flow_with_user_retrieval(self, oauth_manager):
         """Test OAuth flow including user info retrieval."""
@@ -469,7 +469,7 @@ class TestOAuthIntegration:
 
                 result = oauth_manager.get_user_info("access_token")
                 if result:
-                    assert result is not None
+                    assert result is not None, "result must be initialized"
 
     def test_multiple_oauth_managers_independent(self, oauth_config):
         """Test that multiple OAuth managers are independent."""
@@ -479,6 +479,6 @@ class TestOAuthIntegration:
         custom_config["client_id"] = "other_client_id"
         manager2 = OAuthManager(**custom_config)
 
-        assert manager1 is not manager2
-        assert manager1 is not None
-        assert manager2 is not None
+        assert manager1 is not manager2, "manager1 is not valid"
+        assert manager1 is not None, "manager1 must be initialized"
+        assert manager2 is not None, "manager2 must be initialized"

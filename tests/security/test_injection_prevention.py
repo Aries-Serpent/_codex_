@@ -32,7 +32,7 @@ class TestSQLInjectionPrevention:
         """Allow legitimate SQL-safe input."""
         safe = "user_name_123"
         result = validate_input(safe, input_type="sql")
-        assert result == safe
+        assert result == safe, "Result must not be empty"
 
     def test_sql_comment_injection_blocked(self) -> None:
         """Block comment-based SQL injection."""
@@ -66,7 +66,7 @@ class TestXSSPrevention:
         """Allow safe HTML content."""
         safe = "Hello <b>world</b>"
         result = validate_input(safe, input_type="html")
-        assert result == html.escape(safe)
+        assert result == html.escape(safe), "Result must not be empty"
 
 
 class TestPathTraversalPrevention:
@@ -94,7 +94,7 @@ class TestPathTraversalPrevention:
         """Allow safe relative paths."""
         safe = "data/models/checkpoint.pt"
         result = validate_input(safe, input_type="path")
-        assert result == safe
+        assert result == safe, "Result must not be empty"
 
 
 class TestInputSanitization:

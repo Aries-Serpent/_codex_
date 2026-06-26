@@ -32,12 +32,12 @@ def test_main_invokes_run_hf_trainer(monkeypatch, tmp_path: Path):
 
     monkeypatch.setattr(ft, "run_hf_trainer", fake_run)
     ft.main(["--output-dir", str(tmp_path), "--engine", "hf"])
-    assert called["texts"] == ["hi"]
-    assert called["output_dir"] == tmp_path
-    assert called["seed"] == 123
+    assert called["texts"] == ["hi"], "Condition must be true"
+    assert called["output_dir"] == tmp_path, "Condition must be true"
+    assert called["seed"] == 123, "Condition must be true"
     # Ensure hydra_cfg is provided for downstream compatibility
     assert isinstance(called.get("hydra_cfg"), dict)
-    assert called["hydra_cfg"].get("seed") == 123
+    assert called["hydra_cfg"].get("seed") == 123, "Condition must be true"
 
 
 def test_main_populates_labels_for_custom_engine(monkeypatch, tmp_path: Path) -> None:
@@ -53,7 +53,7 @@ def test_main_populates_labels_for_custom_engine(monkeypatch, tmp_path: Path) ->
         eos_token_id = 0
 
         def __call__(self, txts, padding=True, return_tensors="pt"):
-            assert self.pad_token is not None
+            assert self.pad_token is not None, "pad_token must be initialized"
 
             ids = torch.tensor([[5, 6, self.pad_token_id]] * len(txts))
             mask = torch.tensor([[1, 1, 0]] * len(txts))
@@ -106,11 +106,11 @@ def test_main_populates_labels_for_custom_engine(monkeypatch, tmp_path: Path) ->
 
     monkeypatch.setattr(ft, "run_custom_trainer", fake_run)
     ft.main(["--output-dir", str(tmp_path), "--engine", "custom"])
-    assert "labels" in captured["columns"]
+    assert "labels" in captured["columns"], "Condition must be true"
     assert captured["input_ids"].tolist() == [5, 6, 0]
     assert captured["labels"].tolist() == [5, 6, -100]
     assert captured["val_labels"].tolist() == [5, 6, -100]
-    assert captured["grad_accum"] == 3
+    assert captured["grad_accum"] == 3, "Condition must be true"
 
 
 def test_main_passes_lora_config(monkeypatch, tmp_path: Path):
@@ -126,8 +126,8 @@ def test_main_passes_lora_config(monkeypatch, tmp_path: Path):
 
     monkeypatch.setattr(ft, "run_hf_trainer", fake_run)
     ft.main(["--output-dir", str(tmp_path), "--engine", "hf"])
-    assert called["lora_r"] == 8
-    assert called["lora_alpha"] == 32
+    assert called["lora_r"] == 8, "Condition must be true"
+    assert called["lora_alpha"] == 32, "Condition must be true"
 
 
 def test_main_cli_overrides_lora(monkeypatch, tmp_path: Path):
@@ -154,9 +154,9 @@ def test_main_cli_overrides_lora(monkeypatch, tmp_path: Path):
             "0.2",
         ]
     )
-    assert called["lora_r"] == 4
-    assert called["lora_alpha"] == 32
-    assert called["lora_dropout"] == 0.2
+    assert called["lora_r"] == 4, "Condition must be true"
+    assert called["lora_alpha"] == 32, "Condition must be true"
+    assert called["lora_dropout"] == 0.2, "Condition must be true"
 
 
 def test_main_propagates_grad_accum_and_determinism(monkeypatch, tmp_path: Path) -> None:
@@ -178,5 +178,5 @@ def test_main_propagates_grad_accum_and_determinism(monkeypatch, tmp_path: Path)
 
     monkeypatch.setattr(ft, "run_hf_trainer", fake_run)
     ft.main(["--output-dir", str(tmp_path), "--engine", "hf"])
-    assert captured["gradient_accumulation_steps"] == 5
-    assert captured["deterministic"] is True
+    assert captured["gradient_accumulation_steps"] == 5, "Condition must be true"
+    assert captured["deterministic"] is True, "Condition must be true"

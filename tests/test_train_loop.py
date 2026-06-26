@@ -180,7 +180,7 @@ def test_cli_parsing_smoke(monkeypatch, tmp_path, capsys):
             found_grad_accum = False
             for entry in data:
                 if "grad_accum" in entry.get("metrics", {}):
-                    assert entry["metrics"]["grad_accum"] == 2
+                    assert entry["metrics"]["grad_accum"] == 2, "Condition must be true"
                     found_grad_accum = True
                     break
 

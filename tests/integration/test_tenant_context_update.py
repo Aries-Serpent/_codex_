@@ -106,38 +106,38 @@ class TestUpdateTenantSQLPath:
     def test_update_name_persists_to_db(self, registry) -> None:
         reg, _ = registry
         result = reg.update_tenant("t1", name="New Name")
-        assert result is not None
-        assert result["name"] == "New Name"
+        assert result is not None, "result must be initialized"
+        assert result["name"] == "New Name", "Result must not be empty"
         db_row = _read_row(reg.db_path if hasattr(reg, "db_path") else reg._db_path, "t1")
-        assert db_row["name"] == "New Name"
+        assert db_row["name"] == "New Name", "Condition must be true"
 
     def test_update_quota_persists_to_db(self, registry) -> None:
         reg, _ = registry
         new_quota = {"requests": 999, "tokens": 50000}
         result = reg.update_tenant("t1", quota=new_quota)
-        assert result is not None
-        assert result["quota"] == new_quota
+        assert result is not None, "result must be initialized"
+        assert result["quota"] == new_quota, "Result must not be empty"
 
     def test_update_policies_persists_to_db(self, registry) -> None:
         reg, _ = registry
         result = reg.update_tenant("t1", policies=["read", "write", "admin"])
-        assert result is not None
+        assert result is not None, "result must be initialized"
         assert result["policies"] == ["read", "write", "admin"]
 
     def test_update_metadata_persists_to_db(self, registry) -> None:
         reg, _ = registry
         new_meta = {"env": "production", "region": "us-east-1"}
         result = reg.update_tenant("t1", metadata=new_meta)
-        assert result is not None
-        assert result["metadata"] == new_meta
+        assert result is not None, "result must be initialized"
+        assert result["metadata"] == new_meta, "Result must not be empty"
 
     @pytest.mark.parametrize("active_value", [False, True])
     def test_update_active_flag(self, registry, active_value: bool) -> None:
         """active=True/False must toggle the tenant's active state."""
         reg, mock_auth = registry
         result = reg.update_tenant("t1", active=active_value)
-        assert result is not None
-        assert result["active"] == active_value
+        assert result is not None, "result must be initialized"
+        assert result["active"] == active_value, "Result must not be empty"
         if active_value:
             mock_auth.register_api_key.assert_called()
         else:
@@ -157,7 +157,7 @@ class TestUpdateTenantSQLPath:
         """Multiple fields can be updated in a single call."""
         reg, _ = registry
         result = reg.update_tenant("t1", **updates)
-        assert result is not None
+        assert result is not None, "result must be initialized"
         for field, expected in updates.items():
             assert result[field] == expected, f"Field {field!r} mismatch"
 
@@ -167,25 +167,25 @@ class TestUpdateTenantSQLPath:
         reg, _ = registry
         reg.update_tenant("t1", name="Cache Check")
         cached = reg.get_tenant("t1")
-        assert cached is not None
-        assert cached["name"] == "Cache Check"
+        assert cached is not None, "cached must be initialized"
+        assert cached["name"] == "Cache Check", "Condition must be true"
 
     # ── non-existent tenant ─────────────────────────────────────────────────
 
     def test_update_nonexistent_tenant_returns_none(self, registry) -> None:
         reg, _ = registry
         result = reg.update_tenant("does-not-exist", name="Ghost")
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     # ── deactivate_tenant delegates to update_tenant ────────────────────────
 
     def test_deactivate_tenant_calls_update(self, registry) -> None:
         reg, mock_auth = registry
         success = reg.deactivate_tenant("t1")
-        assert success is True
+        assert success is True, "success is not valid"
         tenant = reg.get_tenant("t1")
-        assert tenant is not None
-        assert tenant["active"] is False
+        assert tenant is not None, "tenant must be initialized"
+        assert tenant["active"] is False, "Condition must be true"
         mock_auth.revoke_api_key.assert_called()
 
     # ── no-op update (no fields) doesn't crash ──────────────────────────────
@@ -194,5 +194,5 @@ class TestUpdateTenantSQLPath:
         reg, _ = registry
         result = reg.update_tenant("t1")
         # Should return the tenant unchanged (updated_at only)
-        assert result is not None
-        assert result["name"] == "Initial Name"
+        assert result is not None, "result must be initialized"
+        assert result["name"] == "Initial Name", "Result must not be empty"

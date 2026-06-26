@@ -137,7 +137,7 @@ def run_gh_cli(args: list[str]) -> Optional[str]:
         return result.stdout
     except subprocess.CalledProcessError as e:
         error_type = type(e).__name__
-        logger.error(f"gh command failed: <ERROR_TYPE>")
+        logger.error("gh command failed: <ERROR_TYPE>")
         logger.error(f"stderr: {e.stderr}")
         return None
     except FileNotFoundError:

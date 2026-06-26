@@ -68,12 +68,12 @@ try:
     transformer_auto_wrap_policy = _fsdp_wrap.transformer_auto_wrap_policy
 
     # Verify torch is functional
-    _ = torch.Tensor  # type: ignore
+    _ = torch.Tensor
     TORCH_AVAILABLE = True
 except (ImportError, AttributeError) as e:
     error_type = type(e).__name__
-    logger.debug(f"ImportError: <ERROR_TYPE>")
-    logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
+    logger.debug("ImportError: <ERROR_TYPE>")
+    logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
     TORCH_AVAILABLE = False
     # Define mock classes for offline/testing
     FSDP = None

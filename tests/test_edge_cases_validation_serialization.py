@@ -91,15 +91,15 @@ class TestDataValidationEdgeCases:
         validator = EmailValidator()
 
         # Valid emails
-        assert validator.validate("user@example.com")
+        assert validator.validate("user@example.com"), "validat is not valid"
 
         # Invalid emails
-        assert not validator.validate("")
-        assert not validator.validate(None)
-        assert not validator.validate("invalid")
-        assert not validator.validate("@example.com")
-        assert not validator.validate("user@")
-        assert not validator.validate("user@domain")
+        assert not validator.validate(""), "Condition must be true"
+        assert not validator.validate(None), "Condition must be true"
+        assert not validator.validate("invalid"), "Condition must be true"
+        assert not validator.validate("@example.com"), "Condition must be true"
+        assert not validator.validate("user@"), "Condition must be true"
+        assert not validator.validate("user@domain"), "Condition must be true"
 
     def test_validate_phone_boundaries(self):
         """Test phone number validation"""
@@ -117,10 +117,10 @@ class TestDataValidationEdgeCases:
 
         validator = PhoneValidator()
 
-        assert validator.validate("1234567890")
-        assert validator.validate("+1 234 567 8900")
-        assert not validator.validate("")
-        assert not validator.validate("123")  # Too short
+        assert validator.validate("1234567890"), "validat is not valid"
+        assert validator.validate("+1 234 567 8900"), "validat is not valid"
+        assert not validator.validate(""), "Condition must be true"
+        assert not validator.validate("123"), "Condition must be true"
 
     def test_validate_url_boundaries(self):
         """Test URL validation"""
@@ -137,10 +137,10 @@ class TestDataValidationEdgeCases:
 
         validator = URLValidator()
 
-        assert validator.validate("https://example.com")
-        assert not validator.validate("")
-        assert not validator.validate(None)
-        assert not validator.validate("not_a_url")
+        assert validator.validate("https://example.com"), "validat is not valid"
+        assert not validator.validate(""), "Condition must be true"
+        assert not validator.validate(None), "Condition must be true"
+        assert not validator.validate("not_a_url"), "Condition must be true"
 
     @pytest.mark.parametrize(
         "min_len,max_len,test_str",
@@ -166,9 +166,9 @@ class TestDataValidationEdgeCases:
         result = validator.validate(test_str, min_len, max_len)
 
         if min_len <= len(test_str) <= max_len:
-            assert result is True
+            assert result is True, "Result must not be empty"
         else:
-            assert result is False
+            assert result is False, "Result must not be empty"
 
     def test_numeric_range_validation(self, numeric_range):
         """Test numeric range validation"""
@@ -183,7 +183,7 @@ class TestDataValidationEdgeCases:
         validator = RangeValidator()
         result = validator.validate(test_val, min_val, max_val)
 
-        assert result == expected
+        assert result == expected, "Result must not be empty"
 
 
 # ============================================================================
@@ -200,7 +200,7 @@ class TestSerializationEdgeCases:
         json_str = json.dumps(data)
         loaded = json.loads(json_str)
 
-        assert loaded["key"] is None
+        assert loaded["key"] is None, "Condition must be true"
 
     def test_serialize_empty_collections(self):
         """Test serializing empty collections"""
@@ -213,9 +213,9 @@ class TestSerializationEdgeCases:
         json_str = json.dumps(data)
         loaded = json.loads(json_str)
 
-        assert loaded["empty_list"] == []
-        assert loaded["empty_dict"] == {}
-        assert loaded["empty_string"] == ""
+        assert loaded["empty_list"] == [], "Condition must be true"
+        assert loaded["empty_dict"] == {}, "Condition must be true"
+        assert loaded["empty_string"] == "", "Condition must be true"
 
     def test_serialize_special_floats(self):
         """Test that special floats fail JSON serialization"""
@@ -239,7 +239,7 @@ class TestSerializationEdgeCases:
 
         # Custom encoder should work
         json_str = json.dumps(data, cls=SafeJSONEncoder)
-        assert "Infinity" in json_str or "NaN" in json_str
+        assert "Infinity" in json_str or "NaN" in json_str, "Condition must be true"
 
     def test_serialize_unicode_strings(self):
         """Test serializing unicode strings"""
@@ -253,8 +253,8 @@ class TestSerializationEdgeCases:
         json_str = json.dumps(data, ensure_ascii=False)
         loaded = json.loads(json_str)
 
-        assert loaded["emoji"] == "🔥⭐"
-        assert loaded["chinese"] == "你好"
+        assert loaded["emoji"] == "🔥⭐", "Condition must be true"
+        assert loaded["chinese"] == "你好", "Condition must be true"
 
     def test_serialize_large_nested_structure(self):
         """Test serializing deeply nested structures"""
@@ -273,7 +273,7 @@ class TestSerializationEdgeCases:
         for _ in range(99):
             current = current["nested"]
 
-        assert current["level"] == 99
+        assert current["level"] == 99, "Condition must be true"
 
     def test_serialize_circular_reference_detection(self):
         """Test detection of circular references"""
@@ -301,9 +301,9 @@ class TestSerializationEdgeCases:
                 json.loads(json_str)
 
         # Valid edge cases
-        assert json.loads("null") is None
-        assert json.loads("[]") == []
-        assert json.loads("{}") == {}
+        assert json.loads("null") is None, "Condition must be true"
+        assert json.loads("[]") == [], "Condition must be true"
+        assert json.loads("{}") == {}, "Condition must be true"
 
 
 # ============================================================================
@@ -335,7 +335,7 @@ class TestTypeCoercionEdgeCases:
         try:
             result = target_type(value)
             if should_succeed:
-                assert result is not None
+                assert result is not None, "result must be initialized"
             else:
                 # Should have raised
                 pytest.fail("Expected exception")
@@ -355,8 +355,8 @@ class TestTypeCoercionEdgeCases:
 
         for lst in test_lists:
             tup = tuple(lst)
-            assert len(tup) == len(lst)
-            assert list(tup) == lst
+            assert len(tup) == len(lst), "Tup must not be empty"
+            assert list(tup) == lst, "Condition must be true"
 
     def test_dict_to_json_conversion(self):
         """Test dict to JSON conversion edge cases"""
@@ -371,7 +371,7 @@ class TestTypeCoercionEdgeCases:
         for d in dicts:
             json_str = json.dumps(d)
             loaded = json.loads(json_str)
-            assert loaded == d
+            assert loaded == d, "loaded is not valid"
 
 
 # ============================================================================
@@ -386,17 +386,17 @@ class TestPerformanceBoundaries:
     def test_list_creation_scaling(self, size):
         """Test list creation at various scales"""
         lst = list(range(size))
-        assert len(lst) == size
-        assert lst[0] == 0
+        assert len(lst) == size, "Lst must not be empty"
+        assert lst[0] == 0, "Condition must be true"
         if size > 0:
-            assert lst[-1] == size - 1
+            assert lst[-1] == size - 1, "Condition must be true"
 
     @pytest.mark.parametrize("size", [1, 10, 100, 1000])
     def test_dict_creation_scaling(self, size):
         """Test dict creation at various scales"""
         d = {f"key_{i}": f"value_{i}" for i in range(size)}
-        assert len(d) == size
-        assert d["key_0"] == "value_0"
+        assert len(d) == size, "D must not be empty"
+        assert d["key_0"] == "value_0", "Value must be initialized"
 
     @pytest.mark.parametrize("depth", [1, 5, 10, 50])
     def test_nested_list_access(self, depth):
@@ -411,7 +411,7 @@ class TestPerformanceBoundaries:
         for _ in range(depth - 1):
             current = current[0]
 
-        assert current == 0
+        assert current == 0, "current is not valid"
 
     def test_string_concatenation_scaling(self):
         """Test string concatenation at scale"""
@@ -419,21 +419,21 @@ class TestPerformanceBoundaries:
         parts = [f"part_{i}" for i in range(1000)]
         result = "".join(parts)
 
-        assert len(result) > 0
-        assert "part_0" in result
-        assert "part_999" in result
+        assert len(result) > 0, "Result must not be empty"
+        assert "part_0" in result, "Result must not be empty"
+        assert "part_999" in result, "Result must not be empty"
 
     def test_dict_lookup_scaling(self):
         """Test dict lookup performance at scale"""
         d = {f"key_{i}": i for i in range(10000)}
 
         # Random lookups
-        assert d["key_0"] == 0
-        assert d["key_5000"] == 5000
-        assert d["key_9999"] == 9999
+        assert d["key_0"] == 0, "Condition must be true"
+        assert d["key_5000"] == 5000, "Condition must be true"
+        assert d["key_9999"] == 9999, "Condition must be true"
 
         # Missing key
-        assert d.get("key_missing") is None
+        assert d.get("key_missing") is None, "Condition must be true"
 
 
 # ============================================================================
@@ -450,9 +450,9 @@ class TestDefaultValueEdgeCases:
         def func(value=None):
             return value if value is not None else "default"
 
-        assert func() == "default"
-        assert func(None) == "default"
-        assert func("provided") == "provided"
+        assert func() == "default", "Condition must be true"
+        assert func(None) == "default", "Condition must be true"
+        assert func("provided") == "provided", "Condition must be true"
 
     def test_default_parameter_falsy(self):
         """Test function with falsy default parameters"""
@@ -460,9 +460,9 @@ class TestDefaultValueEdgeCases:
         def func(value=0):
             return value
 
-        assert func() == 0
-        assert func(1) == 1
-        assert func(0) == 0
+        assert func() == 0, "Condition must be true"
+        assert func(1) == 1, "Condition must be true"
+        assert func(0) == 0, "Condition must be true"
 
     def test_default_parameter_mutable(self):
         """Test mutable default parameters (anti-pattern)"""
@@ -478,8 +478,8 @@ class TestDefaultValueEdgeCases:
         result2 = func()
 
         # Should be independent
-        assert result1 == [1]
-        assert result2 == [1]
+        assert result1 == [1], "Result must not be empty"
+        assert result2 == [1], "Result must not be empty"
 
     def test_kwargs_with_defaults(self):
         """Test kwargs with default values"""
@@ -491,18 +491,18 @@ class TestDefaultValueEdgeCases:
             }
 
         result = func()
-        assert result["a"] == "default_a"
+        assert result["a"] == "default_a", "Result must not be empty"
 
         result = func(a="custom")
-        assert result["a"] == "custom"
-        assert result["b"] == "default_b"
+        assert result["a"] == "custom", "Result must not be empty"
+        assert result["b"] == "default_b", "Result must not be empty"
 
     def test_dict_get_with_default(self):
         """Test dict.get() with various defaults"""
         d = {"key": "value"}
 
-        assert d.get("key") == "value"
-        assert d.get("missing") is None
+        assert d.get("key") == "value", "Value must be initialized"
+        assert d.get("missing") is None, "Condition must be true"
         assert d.get("missing", "default") == "default"
         assert d.get("missing", {}) == {}
         assert d.get("missing", []) == []
@@ -533,29 +533,29 @@ class TestBoundaryConditionCombinations:
                 result = op(inp)
 
             if inp == []:
-                assert result == []
+                assert result == [], "Result must not be empty"
             elif inp == {}:
-                assert result == {}
+                assert result == {}, "Result must not be empty"
             elif inp == "":
-                assert result == ""
+                assert result == "", "Result must not be empty"
 
     def test_single_item_edge_cases(self):
         """Test operations with single item"""
         # Single item in list
         lst = [1]
-        assert len(lst) == 1
-        assert lst[0] == 1
-        assert lst[-1] == 1
+        assert len(lst) == 1, "Lst must not be empty"
+        assert lst[0] == 1, "Condition must be true"
+        assert lst[-1] == 1, "Condition must be true"
 
         # Single key in dict
         d = {"key": "value"}
-        assert len(d) == 1
-        assert d["key"] == "value"
+        assert len(d) == 1, "D must not be empty"
+        assert d["key"] == "value", "Value must be initialized"
 
         # Single char string
         s = "x"
-        assert len(s) == 1
-        assert s[0] == "x"
+        assert len(s) == 1, "S must not be empty"
+        assert s[0] == "x", "Condition must be true"
 
     def test_boundary_with_none_and_false(self):
         """Test boundaries distinguishing None from False"""
@@ -570,12 +570,12 @@ class TestBoundaryConditionCombinations:
             else:
                 return "falsy"
 
-        assert process(None) == "none"
-        assert process(False) == "false"
-        assert process(0) == "falsy"
-        assert process("") == "falsy"
-        assert process(1) == "truthy"
-        assert process("x") == "truthy"
+        assert process(None) == "none", "Condition must be true"
+        assert process(False) == "false", "Condition must be true"
+        assert process(0) == "falsy", "Condition must be true"
+        assert process("") == "falsy", "Condition must be true"
+        assert process(1) == "truthy", "Condition must be true"
+        assert process("x") == "truthy", "Condition must be true"
 
 
 if __name__ == "__main__":

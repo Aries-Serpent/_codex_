@@ -24,5 +24,5 @@ except (ImportError, AttributeError):
 def test_cli_release_help():
     runner = CliRunner()
     result = runner.invoke(cli_release.app, ["--help"])
-    assert result.exit_code == 0
-    assert result.output
+    assert result.exit_code == 0, "Result must not be empty"
+    assert result.output, "Result must not be empty"

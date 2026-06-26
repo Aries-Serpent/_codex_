@@ -39,11 +39,11 @@ def test_checkpoint_writes_checksum_and_rng(tmp_path: Path) -> None:
 
     sha_file = ckpt_dir / "model.pt.sha256"
     rng_file = ckpt_dir / "rng.json"
-    assert sha_file.exists()
-    assert rng_file.exists()
+    assert sha_file.exists(), "Condition must be true"
+    assert rng_file.exists(), "Condition must be true"
 
     payload = json.loads(rng_file.read_text())
-    assert "python" in payload
+    assert "python" in payload, "Condition must be true"
 
     # Corrupt the checkpoint and ensure strict load fails
     (ckpt_dir / "model.pt").write_bytes(b"corrupted")

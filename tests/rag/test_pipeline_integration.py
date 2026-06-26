@@ -51,8 +51,8 @@ class TestDocumentIngestion:
         content = "word " * 300  # ~1500 chars
         chunks = chunk_document(content, chunk_size=500, overlap=50)
 
-        assert len(chunks) >= 3
-        assert all(len(c) <= 500 for c in chunks)
+        assert len(chunks) >= 3, "Chunks must not be empty"
+        assert all(len(c) <= 500 for c in chunks), "C must not be empty"
 
     def test_metadata_extraction(self):
         """Metadata is extracted from documents."""
@@ -68,13 +68,13 @@ class TestDocumentIngestion:
         # Simple test content without code blocks for accurate word count
         metadata = extract_metadata("Hello world example", "test.md")
 
-        assert metadata["filename"] == "test.md"
-        assert metadata["word_count"] == 3  # Hello world example
-        assert metadata["has_code"] is False
+        assert metadata["filename"] == "test.md", "Data must not be empty"
+        assert metadata["word_count"] == 3, "Data must not be empty"
+        assert metadata["has_code"] is False, "Data must not be empty"
 
         # Test with code block
         metadata_with_code = extract_metadata("Code: ```python\nprint('test')```", "code.md")
-        assert metadata_with_code["has_code"] is True
+        assert metadata_with_code["has_code"] is True, "Data must not be empty"
 
     def test_duplicate_detection(self):
         """Duplicate documents are detected."""
@@ -101,7 +101,7 @@ class TestDocumentIngestion:
         ]
 
         duplicates = detect_duplicates(docs)
-        assert len(duplicates) == 1
+        assert len(duplicates) == 1, "Duplicates must not be empty"
         assert duplicates[0] == ("doc3", "doc1")
 
 
@@ -117,7 +117,7 @@ class TestEmbeddingGeneration:
             return [0.1] * EMBEDDING_DIM
 
         embedding = mock_embed("test query")
-        assert len(embedding) == EMBEDDING_DIM
+        assert len(embedding) == EMBEDDING_DIM, "Embedding must not be empty"
 
     def test_embedding_normalization(self):
         """Embeddings are normalized."""
@@ -133,7 +133,7 @@ class TestEmbeddingGeneration:
         normalized = normalize_embedding(embedding)
 
         norm = math.sqrt(sum(x**2 for x in normalized))
-        assert norm == pytest.approx(1.0)
+        assert norm == pytest.approx(1.0), "norm is not valid"
 
     def test_batch_embedding(self):
         """Batch embedding is more efficient."""
@@ -149,7 +149,7 @@ class TestEmbeddingGeneration:
         texts = ["text " + str(i) for i in range(100)]
         embeddings = batch_embed(texts, batch_size=32)
 
-        assert len(embeddings) == 100
+        assert len(embeddings) == 100, "Embeddings must not be empty"
 
 
 class TestVectorSearch:
@@ -205,9 +205,9 @@ class TestVectorSearch:
 
         results = retrieve_top_k([1.0, 0.0], index, k=2)
 
-        assert len(results) == 2
-        assert results[0][0] == "doc1"  # Most similar
-        assert results[1][0] == "doc2"
+        assert len(results) == 2, "Results must not be empty"
+        assert results[0][0] == "doc1", "Result must not be empty"
+        assert results[1][0] == "doc2", "Result must not be empty"
 
     def test_score_threshold_filtering(self):
         """Results below score threshold are filtered."""
@@ -224,7 +224,7 @@ class TestVectorSearch:
 
         filtered = filter_by_threshold(results, threshold=0.5)
 
-        assert len(filtered) == 2
+        assert len(filtered) == 2, "Filtered must not be empty"
         assert all(score >= 0.5 for _, score in filtered)
 
 
@@ -259,8 +259,8 @@ class TestContextAssembly:
 
         context = assemble_context(results)
 
-        assert "First document" in context
-        assert context.index("First") < context.index("Second")
+        assert "First document" in context, "Condition must be true"
+        assert context.index("First") < context.index("Second"), "Condition must be true"
 
     def test_context_deduplication(self):
         """Duplicate content is removed from context."""
@@ -283,7 +283,7 @@ class TestContextAssembly:
 
         unique = deduplicate_context(results)
 
-        assert len(unique) == 2
+        assert len(unique) == 2, "Unique must not be empty"
 
 
 class TestRAGPipelineIntegration:
@@ -322,12 +322,12 @@ class TestRAGPipelineIntegration:
 
         # Query
         results = pipeline.query("What is Python?")
-        assert len(results) == 2
+        assert len(results) == 2, "Results must not be empty"
 
         # Generate response
         context = results[0].content
         response = pipeline.generate_response("What is Python?", context)
-        assert "Based on the context" in response
+        assert "Based on the context" in response, "Response must not be empty"
 
     def test_pipeline_error_handling(self):
         """Pipeline handles errors gracefully."""
@@ -367,9 +367,9 @@ class TestRAGPipelineIntegration:
 
         # First query - not cached
         result1 = pipeline.query("test query")
-        assert pipeline.query_count == 1
+        assert pipeline.query_count == 1, "Count must be greater than zero"
 
         # Second query - cached
         result2 = pipeline.query("test query")
-        assert pipeline.query_count == 1  # Still 1
-        assert result1 == result2
+        assert pipeline.query_count == 1, "Count must be greater than zero"
+        assert result1 == result2, "Result must not be empty"

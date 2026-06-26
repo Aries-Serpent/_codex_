@@ -92,7 +92,7 @@ class LlamaCppEmbeddingProvider:
 
         except (ValueError, TypeError) as e:
             error_type = type(e).__name__
-            logger.error(f"Failed to load llama.cpp model: <ERROR_TYPE>")
+            logger.error("Failed to load llama.cpp model: <ERROR_TYPE>")
             raise
 
     def encode(
@@ -129,7 +129,7 @@ class LlamaCppEmbeddingProvider:
 
             except (ValueError, TypeError, RuntimeError) as e:
                 error_type = type(e).__name__
-                logger.error(f"Error encoding text: <ERROR_TYPE>")
+                logger.error("Error encoding text: <ERROR_TYPE>")
                 embeddings.append([0.0] * self.dimension)
 
         return np.array(embeddings, dtype=np.float32)

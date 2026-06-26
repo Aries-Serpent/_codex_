@@ -39,7 +39,7 @@ def test_encryption_roundtrip_plaintext_bytes():
     pt = b"hello-world"
     token = encrypt(pt, key)
     out = decrypt(token, key)
-    assert out == pt
+    assert out == pt, "out is not valid"
 
 
 def test_encryption_different_nonces_produce_different_tokens():
@@ -47,7 +47,7 @@ def test_encryption_different_nonces_produce_different_tokens():
     pt = b"A" * 32
     t1 = encrypt(pt, key)
     t2 = encrypt(pt, key)
-    assert t1 != t2  # probabilistic, but overwhelmingly likely
+    assert t1 != t2, "t1 is not valid"
 
 
 def test_encryption_wrong_key_fails():

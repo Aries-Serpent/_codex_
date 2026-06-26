@@ -89,7 +89,7 @@ def test_run_hf_trainer_applies_lora(monkeypatch, tmp_path: Path) -> None:
     )
 
     assert seen["cfg"] == {"r": 4, "lora_alpha": 32, "lora_dropout": 0.2}
-    assert model.peft_config == seen["cfg"]
+    assert model.peft_config == seen["cfg"], "peft_config is not valid"
 
 
 def test_run_hf_trainer_warns_on_grad_accum(monkeypatch, tmp_path: Path) -> None:
@@ -150,4 +150,4 @@ def test_run_hf_trainer_warns_on_grad_accum(monkeypatch, tmp_path: Path) -> None
             distributed=False,
         )
 
-    assert args_obj.gradient_accumulation_steps == 1
+    assert args_obj.gradient_accumulation_steps == 1, "Object must be initialized"

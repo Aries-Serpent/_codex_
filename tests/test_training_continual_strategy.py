@@ -50,12 +50,12 @@ def test_continual_replay_invokes_base(tmp_path: Path) -> None:
     strategy = ContinualReplayStrategy(base_strategy=base)
     result = strategy.run(cfg, callbacks=[], resume_from=None)
 
-    assert len(base.calls) == 2
-    assert base.calls[0][0].endswith("phase-a")
-    assert base.calls[1][1] == 2
-    assert result.status == "ok"
-    assert result.extra["phases"][0]["name"] == "phase-a"
-    assert result.final_epoch == 3
+    assert len(base.calls) == 2, "Collection must not be empty"
+    assert base.calls[0][0].endswith("phase-a"), "Condition must be true"
+    assert base.calls[1][1] == 2, "Condition must be true"
+    assert result.status == "ok", "Result must not be empty"
+    assert result.extra["phases"][0]["name"] == "phase-a", "Result must not be empty"
+    assert result.final_epoch == 3, "Result must not be empty"
 
 
 def test_continual_replay_requires_schedule(tmp_path: Path) -> None:
@@ -66,8 +66,8 @@ def test_continual_replay_requires_schedule(tmp_path: Path) -> None:
         strategy.run(cfg, callbacks=[], resume_from=None)
     except ValueError as exc:
         message = str(exc)
-        assert "continual" in message
-        assert "schedule" in message
+        assert "continual" in message, "Condition must be true"
+        assert "schedule" in message, "Condition must be true"
     else:  # pragma: no cover
         raise AssertionError("Expected ValueError for missing continual schedule")
 
@@ -115,5 +115,5 @@ def test_continual_dataset_materializes_texts(tmp_path: Path) -> None:
     assert len(warmup_functional.get("val_texts", [])) == 1
 
     eval_functional = base.configs[1].extra.get("functional", {})
-    assert eval_functional.get("val_texts") == ["gamma"]
-    assert not eval_functional.get("train_texts")
+    assert eval_functional.get("val_texts") == ["gamma"], "Condition must be true"
+    assert not eval_functional.get("train_texts"), "Condition must be true"

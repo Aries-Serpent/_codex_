@@ -10,8 +10,8 @@ def test_missing_db_returns_empty_list(tmp_path, caplog):
     caplog.set_level(logging.WARNING)
     missing = tmp_path / "nope.db"
     result = fetch_messages("SID", db_path=missing)
-    assert result == []
-    assert caplog.text == ""
+    assert result == [], "Result must not be empty"
+    assert caplog.text == "", "text is not valid"
 
 
 def test_missing_table_returns_empty_list(tmp_path, caplog):
@@ -21,5 +21,5 @@ def test_missing_table_returns_empty_list(tmp_path, caplog):
     sqlite3.connect(db).close()
 
     result = fetch_messages("SID", db_path=db)
-    assert result == []
-    assert caplog.text == ""
+    assert result == [], "Result must not be empty"
+    assert caplog.text == "", "text is not valid"

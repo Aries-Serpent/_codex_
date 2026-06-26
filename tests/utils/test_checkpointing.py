@@ -14,8 +14,8 @@ import pytest
 def test_set_seed(tmp_path):
     mod = importlib.import_module("codex_ml.utils.checkpointing")
     seeds = mod.set_seed(42, tmp_path)
-    assert seeds["python"] == 42
-    assert (tmp_path / "seeds.json").exists()
+    assert seeds["python"] == 42, "Condition must be true"
+    assert (tmp_path / "seeds.json").exists(), "Condition must be true"
 
 
 def test_load_checkpoint_corrupt(tmp_path):

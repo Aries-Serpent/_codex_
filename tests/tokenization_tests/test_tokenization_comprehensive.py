@@ -10,20 +10,20 @@ class TestEdgeCases:
         """Test empty input handling."""
         text = ""
         tokens = text.split() if text else []
-        assert tokens == []
+        assert tokens == [], "tokens is not valid"
 
     def test_unicode_handling(self):
         """Test unicode character handling."""
         text = "Hello 世界 🌍"
-        assert len(text) > 0
-        assert any(ord(c) > 127 for c in text)
+        assert len(text) > 0, "Text must not be empty"
+        assert any(ord(c) > 127 for c in text), "Value must be greater than zero"
 
     def test_max_length(self):
         """Test maximum sequence length handling."""
         max_len = 512
         tokens = list(range(1000))
         truncated = tokens[:max_len]
-        assert len(truncated) == max_len
+        assert len(truncated) == max_len, "Truncated must not be empty"
 
 
 class TestTokenizerConsistency:
@@ -35,12 +35,12 @@ class TestTokenizerConsistency:
         # Simple simulation
         encoded = [ord(c) for c in text]
         decoded = "".join(chr(c) for c in encoded)
-        assert decoded == text
+        assert decoded == text, "decoded is not valid"
 
     def test_padding_strategy(self):
         """Test padding strategies."""
         strategies = ["max_length", "longest", "do_not_pad"]
-        assert "max_length" in strategies
+        assert "max_length" in strategies, "Length must be greater than zero"
 
 
 class TestSentencePiece:
@@ -52,5 +52,5 @@ class TestSentencePiece:
             "model_type": "unigram",
             "vocab_size": 32000,
         }
-        assert "model_type" in config
-        assert config["vocab_size"] > 0
+        assert "model_type" in config, "Condition must be true"
+        assert config["vocab_size"] > 0, "Value must be greater than zero"

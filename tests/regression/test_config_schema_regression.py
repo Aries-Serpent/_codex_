@@ -45,7 +45,7 @@ class TestTrainConfigDefaults:
 
     def test_default_model_name(self):
         cfg = _make_train_config()
-        assert (
+        assert (, "Condition must be true"
             cfg.model_name == "tiny"
         ), f"Default model_name changed: expected 'tiny', got {cfg.model_name!r}"
 
@@ -167,7 +167,7 @@ class TestTrainConfigRoundTrip:
         original = TrainConfig(model_name="gpt2", learning_rate=5e-5, batch_size=16)
         data = original.model_dump()
         reloaded = TrainConfig.model_validate(data)
-        assert (
+        assert (, "Condition must be true"
             reloaded == original
         ), "TrainConfig round-trip (model_dump → model_validate) produced different object"
 
@@ -177,7 +177,7 @@ class TestTrainConfigRoundTrip:
 
         cfg = validate_config_dict({"model_name": "llama", "learning_rate": 2e-4})
         assert isinstance(cfg, TrainConfig)
-        assert cfg.model_name == "llama"
+        assert cfg.model_name == "llama", "model_name is not valid"
 
     def test_lora_config_round_trip(self):
         """LoraConfig must round-trip correctly through model_dump."""
@@ -186,4 +186,4 @@ class TestTrainConfigRoundTrip:
         lora = LoraConfig(enable=True, r=16, lora_alpha=32, lora_dropout=0.1)
         data = lora.model_dump()
         reloaded = LoraConfig.model_validate(data)
-        assert reloaded == lora
+        assert reloaded == lora, "reloaded is not valid"

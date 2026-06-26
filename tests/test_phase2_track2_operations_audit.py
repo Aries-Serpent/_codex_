@@ -25,8 +25,8 @@ class TestAuditEventLogging:
             "user_id": "user_123",
             "status": "success",
         }
-        assert event["event_type"] == "user_login"
-        assert event["user_id"] is not None
+        assert event["event_type"] == "user_login", "Condition must be true"
+        assert event["user_id"] is not None, "Value must be initialized"
 
     def test_event_logging_with_details(self):
         """Test event logging with detailed information."""
@@ -39,8 +39,8 @@ class TestAuditEventLogging:
             "details": {"region": "us-east-1", "size": "10GB"},
             "status": "success",
         }
-        assert "resource_id" in event
-        assert event["details"]["size"] == "10GB"
+        assert "resource_id" in event, "Condition must be true"
+        assert event["details"]["size"] == "10GB", "Condition must be true"
 
     def test_event_logging_with_context(self):
         """Test event logging with context."""
@@ -51,12 +51,12 @@ class TestAuditEventLogging:
             "request_id": "req_xyz789",
         }
         event = {"timestamp": datetime.now(), "event_type": "api_request", "context": context}
-        assert event["context"]["session_id"] is not None
+        assert event["context"]["session_id"] is not None, "Value must be initialized"
 
     def test_event_severity_levels(self):
         """Test event severity classification."""
         severity_levels = {"INFO": 1, "WARNING": 2, "ERROR": 3, "CRITICAL": 4}
-        assert severity_levels["ERROR"] > severity_levels["WARNING"]
+        assert severity_levels["ERROR"] > severity_levels["WARNING"], "Value must be greater than zero"
 
     def test_event_error_tracking(self):
         """Test error event tracking."""
@@ -67,7 +67,7 @@ class TestAuditEventLogging:
             "stack_trace": "...",
             "timestamp": datetime.now(),
         }
-        assert event["error_code"] is not None
+        assert event["error_code"] is not None, "Value must be initialized"
 
     def test_audit_event_filtering(self):
         """Test audit event filtering."""
@@ -77,7 +77,7 @@ class TestAuditEventLogging:
             {"event_type": "login", "user": "bob", "timestamp": datetime.now()},
         ]
         alice_events = [e for e in events if e["user"] == "alice"]
-        assert len(alice_events) == 2
+        assert len(alice_events) == 2, "Alice_events must not be empty"
 
 
 class TestAuditTrailManagement:
@@ -92,8 +92,8 @@ class TestAuditTrailManagement:
             "created_at": datetime.now(),
             "events": [],
         }
-        assert trail["id"] is not None
-        assert len(trail["events"]) == 0
+        assert trail["id"] is not None, "Value must be initialized"
+        assert len(trail["events"]) == 0, "Collection must not be empty"
 
     def test_audit_trail_event_appending(self):
         """Test appending events to trail."""
@@ -104,17 +104,17 @@ class TestAuditTrailManagement:
             {"action": "deleted", "timestamp": datetime.now()},
         ]
         trail["events"].extend(events)
-        assert len(trail["events"]) == 3
+        assert len(trail["events"]) == 3, "Collection must not be empty"
 
     def test_audit_trail_immutability(self):
         """Test audit trail immutability."""
         trail = {"id": "trail_123", "events": [{"action": "created"}], "readonly": True}
-        assert trail["readonly"]
+        assert trail["readonly"], "Condition must be true"
 
     def test_audit_trail_retention_policy(self):
         """Test retention policy application."""
         policy = {"retention_days": 365, "archive_after_days": 90, "delete_after_days": 2555}
-        assert policy["archive_after_days"] < policy["delete_after_days"]
+        assert policy["archive_after_days"] < policy["delete_after_days"], "Condition must be true"
 
     def test_audit_trail_archival(self):
         """Test audit trail archival."""
@@ -124,7 +124,7 @@ class TestAuditTrailManagement:
             "archive_location": "s3://backup/audit",
             "compression": "gzip",
         }
-        assert archival["enabled"]
+        assert archival["enabled"], "Condition must be true"
 
     def test_audit_trail_versioning(self):
         """Test audit trail versioning."""
@@ -133,7 +133,7 @@ class TestAuditTrailManagement:
             "v2": {"event_fields": ["action", "timestamp", "user", "details"]},
             "v3": {"event_fields": ["action", "timestamp", "user", "details", "context"]},
         }
-        assert len(versions["v3"]["event_fields"]) > len(versions["v1"]["event_fields"])
+        assert len(versions["v3"]["event_fields"]) > len(versions["v1"]["event_fields"]), "Collection must not be empty"
 
 
 class TestChangeDetection:
@@ -144,9 +144,9 @@ class TestChangeDetection:
         before = {"name": "Alice", "status": "active", "email": "alice@example.com"}
         after = {"name": "Alice", "status": "inactive", "email": "alice.new@example.com"}
         changes = {k: (before[k], after[k]) for k in before if before[k] != after[k]}
-        assert "status" in changes
-        assert "email" in changes
-        assert "name" not in changes
+        assert "status" in changes, "Condition must be true"
+        assert "email" in changes, "Condition must be true"
+        assert "name" not in changes, "Condition must be true"
 
     def test_change_diff_generation(self):
         """Test diff generation."""
@@ -155,8 +155,8 @@ class TestChangeDetection:
             "removed": {"fax": "555-5678"},
             "modified": {"email": ("old@example.com", "new@example.com")},
         }
-        assert len(diff["added"]) > 0
-        assert len(diff["removed"]) > 0
+        assert len(diff["added"]) > 0, "Collection must not be empty"
+        assert len(diff["removed"]) > 0, "Collection must not be empty"
 
     def test_change_reason_tracking(self):
         """Test change reason tracking."""
@@ -168,7 +168,7 @@ class TestChangeDetection:
             "reason": "user_requested_deactivation",
             "approved_by": "admin_123",
         }
-        assert change["reason"] is not None
+        assert change["reason"] is not None, "Value must be initialized"
 
     def test_bulk_change_tracking(self):
         """Test bulk change tracking."""
@@ -178,7 +178,7 @@ class TestChangeDetection:
             "timestamp": datetime.now(),
             "initiator": "batch_job",
         }
-        assert bulk_change["affected_resources"] > 0
+        assert bulk_change["affected_resources"] > 0, "Value must be greater than zero"
 
     def test_change_impact_analysis(self):
         """Test change impact analysis."""
@@ -188,7 +188,7 @@ class TestChangeDetection:
             "affected_users": 50,
             "requires_notification": True,
         }
-        assert impact["requires_notification"]
+        assert impact["requires_notification"], "Condition must be true"
 
 
 class TestComplianceVerification:
@@ -208,7 +208,7 @@ class TestComplianceVerification:
                 "required": True,
             },
         }
-        assert len(rules) == 2
+        assert len(rules) == 2, "Rules must not be empty"
 
     def test_compliance_check_execution(self):
         """Test compliance check execution."""
@@ -218,7 +218,7 @@ class TestComplianceVerification:
             "status": "compliant",
             "violations": [],
         }
-        assert check["status"] == "compliant"
+        assert check["status"] == "compliant", "Condition must be true"
 
     def test_compliance_violation_reporting(self):
         """Test compliance violation reporting."""
@@ -230,7 +230,7 @@ class TestComplianceVerification:
             "timestamp": datetime.now(),
             "status": "unresolved",
         }
-        assert violation["severity"] == "high"
+        assert violation["severity"] == "high", "Condition must be true"
 
     def test_compliance_remediation_tracking(self):
         """Test remediation tracking."""
@@ -267,7 +267,7 @@ class TestAuditReporting:
             "total_events": 10000,
             "status": "complete",
         }
-        assert report["total_events"] > 0
+        assert report["total_events"] > 0, "rep must be greater than zero"
 
     def test_audit_summary_statistics(self):
         """Test summary statistics generation."""
@@ -278,7 +278,7 @@ class TestAuditReporting:
             "resource_deletions": 50,
             "error_events": 75,
         }
-        assert summary["total_logins"] > summary["failed_logins"]
+        assert summary["total_logins"] > summary["failed_logins"], "Value must be greater than zero"
 
     def test_audit_timeline_generation(self):
         """Test timeline generation."""
@@ -290,14 +290,14 @@ class TestAuditReporting:
                 {"timestamp": datetime.now() - timedelta(days=15), "action": "update"},
             ],
         }
-        assert len(timeline["events"]) >= 2
+        assert len(timeline["events"]) >= 2, "Collection must not be empty"
 
     def test_audit_export_formats(self):
         """Test export format support."""
         formats = ["json", "csv", "pdf", "xlsx"]
         supported = formats
-        assert "json" in supported
-        assert len(supported) == 4
+        assert "json" in supported, "Condition must be true"
+        assert len(supported) == 4, "Supported must not be empty"
 
     def test_audit_report_filtering(self):
         """Test report filtering capabilities."""
@@ -307,7 +307,7 @@ class TestAuditReporting:
             "users": ["alice", "bob"],
             "severity": ["ERROR", "CRITICAL"],
         }
-        assert len(filters) == 4
+        assert len(filters) == 4, "Filters must not be empty"
 
 
 class TestAuditSearching:
@@ -316,7 +316,7 @@ class TestAuditSearching:
     def test_audit_log_query(self):
         """Test audit log querying."""
         results = [{"event_type": "resource_created", "user_id": "user_123", "date": "2024-06-15"}]
-        assert len(results) > 0
+        assert len(results) > 0, "Results must not be empty"
 
     def test_full_text_search(self):
         """Test full-text search on audit logs."""
@@ -325,12 +325,12 @@ class TestAuditSearching:
             "fields": ["error_message", "description"],
             "limit": 100,
         }
-        assert search["limit"] > 0
+        assert search["limit"] > 0, "Value must be greater than zero"
 
     def test_audit_log_pagination(self):
         """Test audit log pagination."""
         pagination = {"page": 1, "per_page": 50, "total_pages": 200, "total_records": 10000}
-        assert pagination["total_records"] > pagination["per_page"]
+        assert pagination["total_records"] > pagination["per_page"], "Value must be greater than zero"
 
     def test_audit_log_sorting(self):
         """Test audit log sorting."""
@@ -344,12 +344,12 @@ class TestAuditSecurityAndIntegrity:
     def test_audit_log_signing(self):
         """Test audit log signing."""
         config = {"signing_enabled": True, "algorithm": "SHA256", "key_rotation_days": 90}
-        assert config["signing_enabled"]
+        assert config["signing_enabled"], "Condition must be true"
 
     def test_audit_log_encryption(self):
         """Test audit log encryption."""
         encryption = {"enabled": True, "algorithm": "AES-256-GCM", "key_management": "external_kms"}
-        assert encryption["enabled"]
+        assert encryption["enabled"], "Condition must be true"
 
     def test_audit_tampering_detection(self):
         """Test tampering detection."""
@@ -359,13 +359,13 @@ class TestAuditSecurityAndIntegrity:
             "sequence_verification": True,
             "alert_on_tamper": True,
         }
-        assert detection["alert_on_tamper"]
+        assert detection["alert_on_tamper"], "Condition must be true"
 
     def test_audit_access_control(self):
         """Test audit log access control."""
         acl = {"auditor": ["read"], "admin": ["read", "archive"], "user": [], "public": []}
-        assert "read" in acl["auditor"]
-        assert len(acl["user"]) == 0
+        assert "read" in acl["auditor"], "Condition must be true"
+        assert len(acl["user"]) == 0, "Collection must not be empty"
 
     def test_audit_multi_witness(self):
         """Test multi-witness audit mechanism."""
@@ -374,7 +374,7 @@ class TestAuditSecurityAndIntegrity:
             "witness_types": ["hash", "signature", "timestamp"],
             "consensus_algorithm": "quorum",
         }
-        assert config["witnesses_required"] > 1
+        assert config["witnesses_required"] > 1, "Value must be greater than zero"
 
 
 class TestPerformanceAudit:
@@ -388,7 +388,7 @@ class TestPerformanceAudit:
             "sample_rate": 1.0,
             "log_slow_queries": True,
         }
-        assert detection["threshold_ms"] > 0
+        assert detection["threshold_ms"] > 0, "Value must be greater than zero"
 
     def test_resource_usage_audit(self):
         """Test resource usage audit."""
@@ -398,7 +398,7 @@ class TestPerformanceAudit:
             "track_disk_io": True,
             "track_network": True,
         }
-        assert audit["track_cpu"]
+        assert audit["track_cpu"], "Condition must be true"
 
     def test_performance_baseline_tracking(self):
         """Test performance baseline tracking."""
@@ -408,7 +408,7 @@ class TestPerformanceAudit:
             "alert_threshold_ms": 200,
             "update_interval_days": 30,
         }
-        assert baseline["alert_threshold_ms"] > baseline["baseline_ms"]
+        assert baseline["alert_threshold_ms"] > baseline["baseline_ms"], "Value must be greater than zero"
 
 
 class TestAuditHistoricalAnalysis:
@@ -422,7 +422,7 @@ class TestAuditHistoricalAnalysis:
             "trend": "upward",
             "growth_percent": 25.0,
         }
-        assert trends["growth_percent"] > 0
+        assert trends["growth_percent"] > 0, "Value must be greater than zero"
 
     def test_anomaly_detection(self):
         """Test anomaly detection."""
@@ -432,7 +432,7 @@ class TestAuditHistoricalAnalysis:
             "std_dev_threshold": 3.0,
             "min_baseline_samples": 100,
         }
-        assert detection["std_dev_threshold"] > 0
+        assert detection["std_dev_threshold"] > 0, "Value must be greater than zero"
 
     def test_pattern_analysis(self):
         """Test pattern analysis."""
@@ -444,7 +444,7 @@ class TestAuditHistoricalAnalysis:
             },
             "pattern_2": {"name": "weekend_maintenance", "frequency": "weekly", "day": "Saturday"},
         }
-        assert len(patterns) == 2
+        assert len(patterns) == 2, "Patterns must not be empty"
 
     def test_correlation_analysis(self):
         """Test correlation analysis."""
@@ -454,4 +454,4 @@ class TestAuditHistoricalAnalysis:
             "correlation_coefficient": 0.85,
             "significant": True,
         }
-        assert correlation["correlation_coefficient"] > 0.8
+        assert correlation["correlation_coefficient"] > 0.8, "c must be greater than zero"

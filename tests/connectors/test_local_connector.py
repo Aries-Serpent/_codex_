@@ -10,16 +10,18 @@ from codex_ml.connectors.base import ConnectorError, LocalConnector
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_local_connector_roundtrip(tmp_path):
     conn = LocalConnector(tmp_path)
     await conn.write_file("subdir/file.txt", b"hello")
     files = await conn.list_files("subdir")
-    assert files == ["subdir/file.txt"]
+    assert files == ["subdir/file.txt"], "files is not valid"
     data = await conn.read_file("subdir/file.txt")
-    assert data == b"hello"
+    assert data == b"hello", "Data must not be empty"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_local_connector_security(tmp_path):
     conn = LocalConnector(tmp_path)
     with pytest.raises(ConnectorError):
@@ -27,6 +29,7 @@ async def test_local_connector_security(tmp_path):
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_list_empty(tmp_path):
     conn = LocalConnector(tmp_path)
-    assert await conn.list_files("does-not-exist") == []
+    assert await conn.list_files("does-not-exist") == [], "Condition must be true"

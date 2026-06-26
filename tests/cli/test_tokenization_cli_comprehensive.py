@@ -64,27 +64,27 @@ class TestFormatContext:
     def test_format_context_none(self):
         """Verify None context formatting."""
         result = _format_context(None)
-        assert result == "None"
+        assert result == "None", "Result must not be empty"
 
     def test_format_context_string(self):
         """Verify string context passthrough."""
         result = _format_context("test string")
-        assert result == "test string"
+        assert result == "test string", "Result must not be empty"
 
     def test_format_context_dict(self):
         """Verify dictionary JSON serialization."""
         context = {"key": "value", "number": 42}
         result = _format_context(context)
         parsed = json.loads(result)
-        assert parsed["key"] == "value"
-        assert parsed["number"] == 42
+        assert parsed["key"] == "value", "Value must be initialized"
+        assert parsed["number"] == 42, "Condition must be true"
 
     def test_format_context_nested(self):
         """Verify nested structure serialization."""
         context = {"outer": {"inner": ["a", "b", "c"]}}
         result = _format_context(context)
-        assert "outer" in result
-        assert "inner" in result
+        assert "outer" in result, "Result must not be empty"
+        assert "inner" in result, "Result must not be empty"
 
     def test_format_context_with_datetime(self):
         """Verify datetime object handling."""
@@ -92,7 +92,7 @@ class TestFormatContext:
 
         context = {"timestamp": datetime(2024, 1, 1, 12, 0, 0)}
         result = _format_context(context)
-        assert "2024" in result
+        assert "2024" in result, "Result must not be empty"
 
     def test_format_context_unserializable_fallback(self):
         """Verify fallback for unserializable objects."""
@@ -123,7 +123,7 @@ class TestAppendErrorBlock:
 
         # Check file created
         error_files = list(error_dir.glob("errors_*.md"))
-        assert len(error_files) >= 1
+        assert len(error_files) >= 1, "Error_files must not be empty"
 
     def test_append_error_block_with_custom_question(self, tmp_path: Path, monkeypatch):
         """Verify custom question in error block."""
@@ -136,7 +136,7 @@ class TestAppendErrorBlock:
         error_files = list(error_dir.glob("errors_*.md"))
         if error_files:
             content = error_files[0].read_text()
-            assert "Custom question?" in content
+            assert "Custom question?" in content, "Content must not be empty"
 
 
 class TestTokenizerInspect:
@@ -154,7 +154,7 @@ class TestTokenizerInspect:
         result = runner.invoke(app, ["inspect", "--model", "test_tokenizer"])
 
         # Should complete without error
-        assert result.exit_code == 0 or "inspect" not in str(
+        assert result.exit_code == 0 or "inspect" not in str(, "Result must not be empty"
             app.registered_commands if hasattr(app, "registered_commands") else []
         )
 
@@ -170,7 +170,7 @@ class TestTokenizerInspect:
 
         # Command may not exist - check for reasonable response
         if result.exit_code == 0:
-            assert "50000" in result.output or "vocab" in result.output.lower()
+            assert "50000" in result.output or "vocab" in result.output.lower(), "Result must not be empty"
 
 
 class TestTokenizerEncode:
@@ -218,7 +218,7 @@ class TestTokenizerDecode:
         result = runner.invoke(app, ["decode", "--model", "test_model", "--ids", "101,2023,102"])
 
         if result.exit_code == 0:
-            assert "decoded" in result.output.lower()
+            assert "decoded" in result.output.lower(), "Result must not be empty"
 
     @pytest.mark.skipif(not HAS_TYPER, reason="Requires Typer")
     @patch("tokenization.cli.build_tokenizer")
@@ -319,7 +319,7 @@ class TestFallbackBehavior:
         from tokenization.cli import _FallbackTyper
 
         app_fallback = _FallbackTyper(help="Test app")
-        assert app_fallback is not None
+        assert app_fallback is not None, "app_fallback must be initialized"
 
     def test_fallback_command_registration(self):
         """Verify command registration in fallback."""
@@ -348,14 +348,14 @@ class TestFallbackBehavior:
         _fallback_echo("test message")
 
         sys.stdout = old_stdout
-        assert "test message" in captured.getvalue()
+        assert "test message" in captured.getvalue(), "Value must be initialized"
 
     def test_fallback_option_returns_default(self):
         """Verify fallback Option returns default value."""
         from tokenization.cli import _fallback_option
 
         result = _fallback_option(default="test_default")
-        assert result == "test_default"
+        assert result == "test_default", "Result must not be empty"
 
 
 class TestErrorHandling:
@@ -367,14 +367,14 @@ class TestErrorHandling:
         result = runner.invoke(app, ["inspect", "--model", "/nonexistent/path/to/model"])
 
         # Should fail gracefully
-        assert result.exit_code != 0 or result.exit_code == 2  # 2 = command not found
+        assert result.exit_code != 0 or result.exit_code == 2, "Result must not be empty"
 
     @pytest.mark.skipif(not HAS_TYPER, reason="Requires Typer")
     def test_invalid_corpus_path(self, runner):
         """Verify error handling for invalid corpus."""
         result = runner.invoke(app, ["train", "--corpus", "/nonexistent/corpus.txt"])
 
-        assert result.exit_code != 0 or result.exit_code == 2
+        assert result.exit_code != 0 or result.exit_code == 2, "Result must not be empty"
 
     @pytest.mark.skipif(not HAS_TYPER, reason="Requires Typer")
     @patch("tokenization.cli.build_tokenizer")
@@ -385,7 +385,7 @@ class TestErrorHandling:
         result = runner.invoke(app, ["inspect", "--model", "test_model"])
 
         # Should handle exception
-        assert result.exit_code != 0 or result.exit_code == 2
+        assert result.exit_code != 0 or result.exit_code == 2, "Result must not be empty"
 
 
 class TestParameterValidation:
@@ -399,7 +399,7 @@ class TestParameterValidation:
         )
 
         # Should reject negative value
-        assert result.exit_code != 0 or result.exit_code == 2
+        assert result.exit_code != 0 or result.exit_code == 2, "Result must not be empty"
 
     @pytest.mark.skipif(not HAS_TYPER, reason="Requires Typer")
     def test_invalid_ids_format(self, runner):
@@ -407,7 +407,7 @@ class TestParameterValidation:
         result = runner.invoke(app, ["decode", "--model", "test", "--ids", "not,a,number,list"])
 
         # Should handle invalid format
-        assert result.exit_code != 0 or result.exit_code == 2
+        assert result.exit_code != 0 or result.exit_code == 2, "Result must not be empty"
 
 
 class TestHelpOutput:
@@ -418,8 +418,8 @@ class TestHelpOutput:
         """Verify main app help output."""
         result = runner.invoke(app, ["--help"])
 
-        assert result.exit_code == 0
-        assert "Tokenizer utilities" in result.output or "help" in result.output.lower()
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "Tokenizer utilities" in result.output or "help" in result.output.lower(), "Result must not be empty"
 
     @pytest.mark.skipif(not HAS_TYPER, reason="Requires Typer")
     def test_command_help(self, runner):

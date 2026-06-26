@@ -19,8 +19,8 @@ class TestConsistentHashRing:
         ring = ConsistentHashRing(num_shards=4, virtual_nodes=10)
 
         # Should have 4 shards * 10 virtual nodes = 40 positions
-        assert len(ring._ring) == 40
-        assert ring.num_shards == 4
+        assert len(ring._ring) == 40, "Collection must not be empty"
+        assert ring.num_shards == 4, "num_shards is not valid"
 
     def test_get_shard_returns_valid_id(self):
         """Test get_shard returns valid shard IDs."""
@@ -29,7 +29,7 @@ class TestConsistentHashRing:
         # Test various keys
         for key in ["doc-1", "doc-2", "doc-3", "article-123", "page-xyz"]:
             shard_id = ring.get_shard(key)
-            assert 0 <= shard_id < 4
+            assert 0 <= shard_id < 4, "0 is not valid"
 
     def test_get_shard_consistent(self):
         """Test same key always maps to same shard."""
@@ -40,7 +40,7 @@ class TestConsistentHashRing:
         shard_id_2 = ring.get_shard(key)
         shard_id_3 = ring.get_shard(key)
 
-        assert shard_id_1 == shard_id_2 == shard_id_3
+        assert shard_id_1 == shard_id_2 == shard_id_3, "shard_id_1 is not valid"
 
     def test_get_shard_distribution(self):
         """Test shard distribution is reasonably balanced."""
@@ -62,10 +62,10 @@ class TestConsistentHashRing:
         initial_size = len(ring._ring)
         new_shard_id = ring.add_shard()
 
-        assert new_shard_id == 3
-        assert ring.num_shards == 4
+        assert new_shard_id == 3, "new_shard_id is not valid"
+        assert ring.num_shards == 4, "num_shards is not valid"
         # Should have added 10 more positions
-        assert len(ring._ring) == initial_size + 10
+        assert len(ring._ring) == initial_size + 10, "Collection must not be empty"
 
     def test_remove_shard(self):
         """Test removing shard from ring."""
@@ -74,9 +74,9 @@ class TestConsistentHashRing:
         initial_size = len(ring._ring)
         success = ring.remove_shard(2)
 
-        assert success is True
+        assert success is True, "success is not valid"
         # Should have removed 10 positions
-        assert len(ring._ring) == initial_size - 10
+        assert len(ring._ring) == initial_size - 10, "Collection must not be empty"
 
     def test_virtual_nodes_prevent_hotspots(self):
         """Test virtual nodes provide better distribution than simple modulo."""
@@ -92,7 +92,7 @@ class TestConsistentHashRing:
         std_dev = variance**0.5
 
         # Standard deviation should be relatively small (< 15% of mean)
-        assert std_dev < mean * 0.15
+        assert std_dev < mean * 0.15, "std_dev is not valid"
 
 
 class TestShardManager:
@@ -102,8 +102,8 @@ class TestShardManager:
         """Test manager initialization creates shard info."""
         manager = ShardManager(num_shards=4)
 
-        assert manager.num_shards == 4
-        assert len(manager.shards) == 4
+        assert manager.num_shards == 4, "num_shards is not valid"
+        assert len(manager.shards) == 4, "Collection must not be empty"
         assert all(isinstance(s, ShardInfo) for s in manager.shards.values())
 
     def test_route_document(self):
@@ -111,23 +111,23 @@ class TestShardManager:
         manager = ShardManager(num_shards=4)
 
         shard_id = manager.route_document("doc-12345")
-        assert 0 <= shard_id < 4
+        assert 0 <= shard_id < 4, "0 is not valid"
 
     def test_get_shard_info(self):
         """Test retrieving shard information."""
         manager = ShardManager(num_shards=4)
 
         shard_info = manager.get_shard_info(2)
-        assert shard_info is not None
-        assert shard_info.shard_id == 2
-        assert shard_info.shard_name == "shard_02"
+        assert shard_info is not None, "shard_info must be initialized"
+        assert shard_info.shard_id == 2, "shard_id is not valid"
+        assert shard_info.shard_name == "shard_02", "shard_name is not valid"
 
     def test_get_shard_name(self):
         """Test getting shard names."""
         manager = ShardManager(num_shards=4, shard_name_prefix="index")
 
         name = manager.get_shard_name(1)
-        assert name == "index_01"
+        assert name == "index_01", "name is not valid"
 
     def test_update_shard_stats(self):
         """Test updating shard statistics."""
@@ -136,15 +136,15 @@ class TestShardManager:
         manager.update_shard_stats(0, doc_count=100, size_bytes=1024000)
 
         shard_info = manager.get_shard_info(0)
-        assert shard_info.total_documents == 100
-        assert shard_info.size_bytes == 1024000
+        assert shard_info.total_documents == 100, "total_documents is not valid"
+        assert shard_info.size_bytes == 1024000, "size_bytes is not valid"
 
     def test_get_all_shards(self):
         """Test getting all shard information."""
         manager = ShardManager(num_shards=4)
 
         all_shards = manager.get_all_shards()
-        assert len(all_shards) == 4
+        assert len(all_shards) == 4, "All_shards must not be empty"
         assert all(isinstance(s, ShardInfo) for s in all_shards)
 
     def test_get_load_distribution(self):
@@ -158,9 +158,9 @@ class TestShardManager:
 
         distribution = manager.get_load_distribution()
 
-        assert distribution[0]["doc_percentage"] == 25.0  # 100/400
-        assert distribution[1]["doc_percentage"] == 50.0  # 200/400
-        assert distribution[2]["doc_percentage"] == 25.0  # 100/400
+        assert distribution[0]["doc_percentage"] == 25.0, "Condition must be true"
+        assert distribution[1]["doc_percentage"] == 50.0, "Condition must be true"
+        assert distribution[2]["doc_percentage"] == 25.0, "Condition must be true"
 
 
 class TestGetShardForId:
@@ -169,22 +169,22 @@ class TestGetShardForId:
     def test_returns_valid_shard(self):
         """Test function returns valid shard ID."""
         shard_id = get_shard_for_id("doc-123", total_shards=4)
-        assert 0 <= shard_id < 4
+        assert 0 <= shard_id < 4, "0 is not valid"
 
     def test_consistent_hashing(self):
         """Test consistent hashing mode."""
         shard_id_1 = get_shard_for_id("doc-123", total_shards=4, use_consistent_hashing=True)
         shard_id_2 = get_shard_for_id("doc-123", total_shards=4, use_consistent_hashing=True)
 
-        assert shard_id_1 == shard_id_2
+        assert shard_id_1 == shard_id_2, "shard_id_1 is not valid"
 
     def test_simple_modulo(self):
         """Test simple modulo hashing mode."""
         shard_id_1 = get_shard_for_id("doc-123", total_shards=4, use_consistent_hashing=False)
         shard_id_2 = get_shard_for_id("doc-123", total_shards=4, use_consistent_hashing=False)
 
-        assert shard_id_1 == shard_id_2
-        assert 0 <= shard_id_1 < 4
+        assert shard_id_1 == shard_id_2, "shard_id_1 is not valid"
+        assert 0 <= shard_id_1 < 4, "0 is not valid"
 
 
 class TestShardInfo:
@@ -194,10 +194,10 @@ class TestShardInfo:
         """Test creating shard info instance."""
         info = ShardInfo(shard_id=0, shard_name="shard_00", total_documents=100, size_bytes=1024000)
 
-        assert info.shard_id == 0
-        assert info.shard_name == "shard_00"
-        assert info.total_documents == 100
-        assert info.size_bytes == 1024000
+        assert info.shard_id == 0, "shard_id is not valid"
+        assert info.shard_name == "shard_00", "shard_name is not valid"
+        assert info.total_documents == 100, "total_documents is not valid"
+        assert info.size_bytes == 1024000, "size_bytes is not valid"
 
     def test_to_dict(self):
         """Test serialization to dictionary."""
@@ -205,10 +205,10 @@ class TestShardInfo:
 
         data = info.to_dict()
 
-        assert data["shard_id"] == 1
-        assert data["shard_name"] == "shard_01"
-        assert data["total_documents"] == 50
-        assert data["size_bytes"] == 512000
+        assert data["shard_id"] == 1, "Data must not be empty"
+        assert data["shard_name"] == "shard_01", "Data must not be empty"
+        assert data["total_documents"] == 50, "Data must not be empty"
+        assert data["size_bytes"] == 512000, "Data must not be empty"
 
 
 class TestDistributionQuality:
@@ -228,7 +228,7 @@ class TestDistributionQuality:
         # Each shard should get roughly 1250 documents
         for shard_id, count in distribution.items():
             # Allow 20% deviation
-            assert 1000 <= count <= 1500
+            assert 1000 <= count <= 1500, "Count must be greater than zero"
 
     def test_sequential_id_distribution(self):
         """Test distribution with sequential numeric IDs."""
@@ -241,7 +241,7 @@ class TestDistributionQuality:
 
         # Should still be reasonably balanced
         for shard_id, count in distribution.items():
-            assert 200 <= count <= 300
+            assert 200 <= count <= 300, "Count must be greater than zero"
 
     def test_hotspot_avoidance(self):
         """Test that virtual nodes avoid hotspots."""
@@ -265,4 +265,4 @@ class TestDistributionQuality:
         cv_many = cv(list(dist_many.values()))
 
         # More virtual nodes should give better distribution
-        assert cv_many < cv_few
+        assert cv_many < cv_few, "cv_many is not valid"

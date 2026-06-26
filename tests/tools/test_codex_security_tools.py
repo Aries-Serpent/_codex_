@@ -30,11 +30,11 @@ def test_secret_scan_reports_hits_for_simple_pattern(tmp_path: Path):
         ]
     )
 
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
     payload = json.loads(json_out.read_text(encoding="utf-8"))
-    assert payload["summary"]["total_hits"] >= 1
-    assert payload["hits"][0]["pattern"] == "aws_access_key"
-    assert md_out.exists()
+    assert payload["summary"]["total_hits"] >= 1, "Value must be greater than zero"
+    assert payload["hits"][0]["pattern"] == "aws_access_key", "Condition must be true"
+    assert md_out.exists(), "Condition must be true"
 
 
 def test_dep_pin_check_detects_unpinned_requirements(tmp_path: Path):
@@ -56,8 +56,8 @@ def test_dep_pin_check_detects_unpinned_requirements(tmp_path: Path):
         ]
     )
 
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
     payload = json.loads(json_out.read_text(encoding="utf-8"))
-    assert payload["issue_count"] == 1
-    assert payload["issues"][0]["requirement"] == "requests"
-    assert md_out.exists()
+    assert payload["issue_count"] == 1, "Count must be greater than zero"
+    assert payload["issues"][0]["requirement"] == "requests", "Condition must be true"
+    assert md_out.exists(), "Condition must be true"

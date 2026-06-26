@@ -40,7 +40,7 @@ class TestBudgetCap:
         def fast():
             return "done"
 
-        assert fast() == "done"
+        assert fast() == "done", "Condition must be true"
 
     @pytest.mark.flaky(reruns=2, reason="P2-timing: budget_cap timeout precision")
     @pytest.mark.timeout(90)
@@ -88,14 +88,14 @@ class TestKillSwitch:
             if "autonomy_scheduler" in sys.modules:
                 del sys.modules["autonomy_scheduler"]
             mod = _import_scheduler()
-            assert mod.KILL_SWITCH is True
+            assert mod.KILL_SWITCH is True, "KILL_SWITCH is not valid"
 
     def test_kill_switch_off_by_default(self):
         with patch.dict(os.environ, {"AGENT_KILL_SWITCH": "0"}):
             if "autonomy_scheduler" in sys.modules:
                 del sys.modules["autonomy_scheduler"]
             mod = _import_scheduler()
-            assert mod.KILL_SWITCH is False
+            assert mod.KILL_SWITCH is False, "KILL_SWITCH is not valid"
 
 
 class TestDecisionLoop:
@@ -138,8 +138,8 @@ class TestDecisionLoop:
 
     def test_budget_constants_are_positive_ints(self):
         mod = _import_scheduler()
-        assert mod.BUDGET_SECONDS > 0
-        assert mod.MAX_ITERATIONS > 0
+        assert mod.BUDGET_SECONDS > 0, "BUDGET_SECONDS must be greater than zero"
+        assert mod.MAX_ITERATIONS > 0, "MAX_ITERATIONS must be greater than zero"
 
 
 class TestSessionPersistence:
@@ -159,5 +159,5 @@ class TestSessionPersistence:
             actions=[],
         )
         data = json.loads(record_path.read_text())
-        assert data["session_id"] == "test-uuid"
-        assert data["status"] == "complete"
+        assert data["session_id"] == "test-uuid", "Data must not be empty"
+        assert data["status"] == "complete", "Data must not be empty"

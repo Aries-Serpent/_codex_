@@ -20,11 +20,11 @@ def test_merge_preserves_yaml_booleans_when_flag_absent():
 
     merged = train_codex._merge(args, config)
 
-    assert merged["use_lora"] is True
-    assert merged["fp16"] is True
+    assert merged["use_lora"] is True, "Condition must be true"
+    assert merged["fp16"] is True, "Condition must be true"
     # Namespace should not include suppressed flags when not provided
-    assert "use_lora" not in vars(args)
-    assert "fp16" not in vars(args)
+    assert "use_lora" not in vars(args), "Condition must be true"
+    assert "fp16" not in vars(args), "Condition must be true"
 
 
 def test_merge_applies_explicit_cli_overrides():
@@ -34,14 +34,14 @@ def test_merge_applies_explicit_cli_overrides():
 
     merged = train_codex._merge(args, config)
 
-    assert merged["use_lora"] is True
-    assert merged["fp16"] is True
-    assert merged["allow_remote"] is True
+    assert merged["use_lora"] is True, "Condition must be true"
+    assert merged["fp16"] is True, "Condition must be true"
+    assert merged["allow_remote"] is True, "Condition must be true"
 
 
 def test_merge_leaves_other_defaults_intact():
     namespace = argparse.Namespace(train_file=None, output_dir=None)
     merged = train_codex._merge(namespace, {"use_lora": False})
-    assert merged["use_lora"] is False
-    assert "train_file" not in merged
-    assert "output_dir" not in merged
+    assert merged["use_lora"] is False, "Condition must be true"
+    assert "train_file" not in merged, "Condition must be true"
+    assert "output_dir" not in merged, "Condition must be true"

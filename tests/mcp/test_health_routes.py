@@ -22,19 +22,19 @@ def test_load_adapter_uses_explicit_class(monkeypatch: pytest.MonkeyPatch) -> No
     adapter, cls_path = adapter_loader.load_adapter("pkg.valid.FakeAdapter")
 
     assert isinstance(adapter, FakeAdapter)
-    assert cls_path == "pkg.valid.FakeAdapter"
+    assert cls_path == "pkg.valid.FakeAdapter", "cls_path is not valid"
 
 
 def test_import_class_loads_real_symbol() -> None:
     cls = adapter_loader._import_class("mcp.server.adapter_loader.MockAdapter")
 
-    assert cls is adapter_loader.MockAdapter
+    assert cls is adapter_loader.MockAdapter, "cls is not valid"
 
 
 def test_import_class_returns_none_for_missing_module() -> None:
     cls = adapter_loader._import_class("mcp.server.does_not_exist.Missing")
 
-    assert cls is None
+    assert cls is None, "cls is not valid"
 
 
 def test_load_adapter_falls_back_to_mock_adapter_when_all_imports_fail(
@@ -45,7 +45,7 @@ def test_load_adapter_falls_back_to_mock_adapter_when_all_imports_fail(
     adapter, cls_path = adapter_loader.load_adapter("pkg.missing.Adapter")
 
     assert isinstance(adapter, adapter_loader.MockAdapter)
-    assert cls_path == adapter_loader.DEFAULT_ADAPTER
+    assert cls_path == adapter_loader.DEFAULT_ADAPTER, "cls_path is not valid"
 
 
 def test_load_adapter_uses_fallback_when_primary_is_missing(
@@ -66,10 +66,11 @@ def test_load_adapter_uses_fallback_when_primary_is_missing(
     adapter, cls_path = adapter_loader.load_adapter("pkg.missing.Adapter")
 
     assert isinstance(adapter, FallbackAdapter)
-    assert cls_path == adapter_loader.DEFAULT_ADAPTER
+    assert cls_path == adapter_loader.DEFAULT_ADAPTER, "cls_path is not valid"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_lazy_connect_all_succeeds_when_adapter_lacks_connect_method(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -85,11 +86,12 @@ async def test_lazy_connect_all_succeeds_when_adapter_lacks_connect_method(
 
     monkeypatch.setattr(adapter_loader, "load_adapter", _load_adapter)
 
-    assert await adapter_loader.lazy_connect_all() is True
-    assert called is True
+    assert await adapter_loader.lazy_connect_all() is True, "Condition must be true"
+    assert called is True, "called is not valid"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_lazy_connect_all_returns_true_on_success(monkeypatch: pytest.MonkeyPatch) -> None:
     class HealthyAdapter:
         def __init__(self) -> None:
@@ -101,11 +103,12 @@ async def test_lazy_connect_all_returns_true_on_success(monkeypatch: pytest.Monk
     adapter = HealthyAdapter()
     monkeypatch.setattr(adapter_loader, "load_adapter", lambda: (adapter, "healthy"))
 
-    assert await adapter_loader.lazy_connect_all(timeout=0.01) is True
-    assert adapter.connected is True
+    assert await adapter_loader.lazy_connect_all(timeout=0.01) is True, "Condition must be true"
+    assert adapter.connected is True, "connected is not valid"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_lazy_connect_all_returns_false_on_connect_failure(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -115,7 +118,7 @@ async def test_lazy_connect_all_returns_false_on_connect_failure(
 
     monkeypatch.setattr(adapter_loader, "load_adapter", lambda: (FailingAdapter(), "failing"))
 
-    assert await adapter_loader.lazy_connect_all(timeout=0.01) is False
+    assert await adapter_loader.lazy_connect_all(timeout=0.01) is False, "Condition must be true"
 
 
 def test_health_route_reports_adapter_status() -> None:
@@ -131,8 +134,8 @@ def test_health_route_reports_adapter_status() -> None:
 
     response = client.get("/health")
 
-    assert response.status_code == 200
-    assert response.json() == {
+    assert response.status_code == 200, "Response must not be empty"
+    assert response.json() == {, "Response must not be empty"
         "service": "mcp-facade",
         "status": "ok",
         "adapter": "fake.adapter",
@@ -154,10 +157,10 @@ def test_health_endpoints_degrade_when_health_check_raises() -> None:
     root_response = client.get("/health")
     mcp_response = client.get("/mcp/v1/health")
 
-    assert root_response.status_code == 200
-    assert root_response.json()["adapter_status"] == {"status": "degraded"}
-    assert mcp_response.status_code == 200
-    assert mcp_response.json() == {
+    assert root_response.status_code == 200, "Response must not be empty"
+    assert root_response.json()["adapter_status"] == {"status": "degraded"}, "Response must not be empty"
+    assert mcp_response.status_code == 200, "Response must not be empty"
+    assert mcp_response.json() == {, "Response must not be empty"
         "status": "ok",
         "adapter": "broken.adapter",
         "adapter_status": {"status": "degraded"},

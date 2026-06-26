@@ -15,21 +15,21 @@ class TestCLIProfile:
         """Test CLI module can be imported."""
         from codex import cli
 
-        assert cli is not None
+        assert cli is not None, "cli must be initialized"
 
     def test_cli_main_import(self):
         """Test CLI main can be imported."""
         from codex.cli import main
 
-        assert main is not None
+        assert main is not None, "main must be initialized"
 
     def test_profile_command_structure(self):
         """Test profile command basic structure."""
         command = ["python", "-m", "codex.cli", "profile", "--help"]
 
         # Command should have proper structure
-        assert len(command) >= 4
-        assert "profile" in command
+        assert len(command) >= 4, "Command must not be empty"
+        assert "profile" in command, "Condition must be true"
 
     def test_profile_with_target(self):
         """Test profile command with target specification."""
@@ -38,8 +38,8 @@ class TestCLIProfile:
             "metrics": ["latency", "throughput"],
         }
 
-        assert "target" in profile_config
-        assert len(profile_config["metrics"]) == 2
+        assert "target" in profile_config, "Condition must be true"
+        assert len(profile_config["metrics"]) == 2, "Collection must not be empty"
 
     def test_profile_memory_tracking(self):
         """Test memory profiling functionality."""
@@ -51,8 +51,8 @@ class TestCLIProfile:
 
         memory_used = memory_snapshot["after"] - memory_snapshot["before"]
 
-        assert memory_used == 50
-        assert memory_snapshot["peak"] >= memory_snapshot["after"]
+        assert memory_used == 50, "memory_used is not valid"
+        assert memory_snapshot["peak"] >= memory_snapshot["after"], "mem must be greater than zero"
 
     def test_profile_timing_measurement(self):
         """Test timing measurement in profiling."""
@@ -64,7 +64,7 @@ class TestCLIProfile:
 
         duration = end - start
 
-        assert duration >= 0.01
+        assert duration >= 0.01, "duration must be greater than zero"
 
     def test_profile_output_format(self):
         """Test profile output format."""
@@ -97,8 +97,8 @@ class TestCLIAnalyze:
             "recall": 0.92,
         }
 
-        assert len(metrics) == 4
-        assert all(0 <= v <= 1 for v in metrics.values())
+        assert len(metrics) == 4, "Metrics must not be empty"
+        assert all(0 <= v <= 1 for v in metrics.values()), "Value must be initialized"
 
     def test_analyze_comparison(self):
         """Test model comparison in analyze."""
@@ -109,8 +109,8 @@ class TestCLIAnalyze:
         accuracy_improvement = model_b["accuracy"] - model_a["accuracy"]
         latency_increase = model_b["latency"] - model_a["latency"]
 
-        assert accuracy_improvement > 0
-        assert latency_increase > 0
+        assert accuracy_improvement > 0, "accuracy_improvement must be greater than zero"
+        assert latency_increase > 0, "latency_increase must be greater than zero"
 
     def test_analyze_trend_detection(self):
         """Test trend detection in analyze."""
@@ -119,7 +119,7 @@ class TestCLIAnalyze:
         # Check if improving
         is_improving = performance_over_time[-1] > performance_over_time[0]
 
-        assert is_improving is True
+        assert is_improving is True, "is_improving is not valid"
 
     def test_analyze_anomaly_detection(self):
         """Test anomaly detection in analyze."""
@@ -130,8 +130,8 @@ class TestCLIAnalyze:
 
         anomalies = [lat for lat in latencies if lat > threshold]
 
-        assert len(anomalies) > 0
-        assert 50 in anomalies
+        assert len(anomalies) > 0, "Anomalies must not be empty"
+        assert 50 in anomalies, "Condition must be true"
 
     def test_analyze_statistical_summary(self):
         """Test statistical summary in analyze."""
@@ -144,10 +144,10 @@ class TestCLIAnalyze:
             "mean": sum(data) / len(data),
         }
 
-        assert summary["count"] == 5
-        assert summary["min"] == 1
-        assert summary["max"] == 5
-        assert summary["mean"] == 3
+        assert summary["count"] == 5, "Count must be greater than zero"
+        assert summary["min"] == 1, "Condition must be true"
+        assert summary["max"] == 5, "Condition must be true"
+        assert summary["mean"] == 3, "Condition must be true"
 
 
 class TestCLIReport:
@@ -161,8 +161,8 @@ class TestCLIReport:
             "sections": ["overview", "metrics", "recommendations"],
         }
 
-        assert "title" in report
-        assert len(report["sections"]) == 3
+        assert "title" in report, "Condition must be true"
+        assert len(report["sections"]) == 3, "Collection must not be empty"
 
     def test_report_metrics_section(self):
         """Test metrics section in report."""
@@ -183,14 +183,14 @@ class TestCLIReport:
             "y": [0.7, 0.75, 0.8, 0.82, 0.85],
         }
 
-        assert len(viz_data["x"]) == len(viz_data["y"])
+        assert len(viz_data["x"]) == len(viz_data["y"]), "Collection must not be empty"
 
     def test_report_export_format(self):
         """Test report export formats."""
         supported_formats = ["json", "html", "pdf", "markdown"]
 
-        assert "json" in supported_formats
-        assert "html" in supported_formats
+        assert "json" in supported_formats, "Condition must be true"
+        assert "html" in supported_formats, "Condition must be true"
 
     def test_report_file_creation(self):
         """Test report file creation."""
@@ -203,9 +203,9 @@ class TestCLIReport:
 
             report_file.write_text(json.dumps(report))
 
-            assert report_file.exists()
+            assert report_file.exists(), "rep is not valid"
             loaded = json.loads(report_file.read_text())
-            assert loaded["title"] == "Test Report"
+            assert loaded["title"] == "Test Report", "Condition must be true"
 
     def test_report_summary_generation(self):
         """Test summary generation in report."""
@@ -223,8 +223,8 @@ class TestCLIReport:
             "error_rate": error_rate,
         }
 
-        assert summary["accuracy"] == 0.95
-        assert summary["error_rate"] == 0.05
+        assert summary["accuracy"] == 0.95, "Condition must be true"
+        assert summary["error_rate"] == 0.05, "Error should be raised or set"
 
     def test_report_recommendations(self):
         """Test recommendations in report."""
@@ -236,7 +236,7 @@ class TestCLIReport:
             recommendations.append("Consider more training data")
             recommendations.append("Try hyperparameter tuning")
 
-        assert len(recommendations) > 0
+        assert len(recommendations) > 0, "Recommendations must not be empty"
 
 
 class TestCLIUtilities:
@@ -261,11 +261,11 @@ class TestCLIUtilities:
         }
 
         # Validate epochs
-        assert args["epochs"] > 0
+        assert args["epochs"] > 0, "Value must be greater than zero"
 
         # Validate batch_size is power of 2 (bitwise check)
         is_power_of_2 = (args["batch_size"] & (args["batch_size"] - 1)) == 0
-        assert is_power_of_2 is True
+        assert is_power_of_2 is True, "is_power_of_2 is not valid"
 
     def test_output_formatting(self):
         """Test output formatting."""
@@ -274,7 +274,7 @@ class TestCLIUtilities:
         # Format to 4 decimal places
         formatted = f"{data['metric']:.4f}"
 
-        assert formatted == "0.9512"
+        assert formatted == "0.9512", "formatted is not valid"
 
     def test_error_handling(self):
         """Test error handling in CLI."""
@@ -284,4 +284,4 @@ class TestCLIUtilities:
         except ZeroDivisionError as e:
             error_msg = str(e)
 
-            assert "division" in error_msg.lower() or len(error_msg) >= 0
+            assert "division" in error_msg.lower() or len(error_msg) >= 0, "Error_msg must not be empty"

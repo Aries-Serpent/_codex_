@@ -55,11 +55,11 @@ class TestClassicalGameEngine:
 
     def test_classical_engine_initialization(self, classical_engine):
         """Test ClassicalGameEngine initializes correctly."""
-        assert classical_engine is not None
+        assert classical_engine is not None, "classical_engine must be initialized"
         assert hasattr(classical_engine, "pi_blue")
         assert hasattr(classical_engine, "pi_red")
-        assert classical_engine.pi_blue is not None
-        assert classical_engine.pi_red is not None
+        assert classical_engine.pi_blue is not None, "pi_blue must be initialized"
+        assert classical_engine.pi_red is not None, "pi_red must be initialized"
         # Probabilities should sum to 1
         assert np.isclose(classical_engine.pi_blue.sum(), 1.0)
         assert np.isclose(classical_engine.pi_red.sum(), 1.0)
@@ -71,8 +71,8 @@ class TestClassicalGameEngine:
 
         assert isinstance(blue_payoff, (float, np.floating))
         assert isinstance(red_payoff, (float, np.floating))
-        assert blue_payoff >= 0.0
-        assert red_payoff >= 0.0
+        assert blue_payoff >= 0.0, "blue_payoff must be greater than zero"
+        assert red_payoff >= 0.0, "red_payoff must be greater than zero"
 
     def test_replicator_dynamics_step(self, classical_engine):
         """Test single replicator dynamics step."""
@@ -96,10 +96,10 @@ class TestClassicalGameEngine:
             max_iterations=50, convergence_threshold=1e-6
         )
 
-        assert "pi_blue" in results
-        assert "pi_red" in results
-        assert "payoff_blue" in results
-        assert "payoff_red" in results
+        assert "pi_blue" in results, "Result must not be empty"
+        assert "pi_red" in results, "Result must not be empty"
+        assert "payoff_blue" in results, "Result must not be empty"
+        assert "payoff_red" in results, "Result must not be empty"
 
         # Final probabilities should sum to 1
         assert np.isclose(results["pi_blue"].sum(), 1.0)
@@ -109,8 +109,8 @@ class TestClassicalGameEngine:
         """Test Nash equilibrium approximation."""
         equilibrium = classical_engine.compute_nash_equilibrium()
 
-        assert "pi_blue" in equilibrium
-        assert "pi_red" in equilibrium
+        assert "pi_blue" in equilibrium, "Condition must be true"
+        assert "pi_red" in equilibrium, "Condition must be true"
 
         # Equilibrium probabilities should sum to 1
         assert np.isclose(equilibrium["pi_blue"].sum(), 1.0)
@@ -147,8 +147,8 @@ class TestClassicalGameEngine:
         high_beta_samples = high_beta_engine.gibbs_sample(num_samples=100)
 
         # Verify we got samples
-        assert len(low_beta_samples) == 100
-        assert len(high_beta_samples) == 100
+        assert len(low_beta_samples) == 100, "Low_beta_samples must not be empty"
+        assert len(high_beta_samples) == 100, "High_beta_samples must not be empty"
 
 
 @pytest.mark.skipif(not NUMPY_AVAILABLE, reason="numpy not available")
@@ -166,10 +166,10 @@ class TestQuantumInspiredGameEngine:
 
     def test_quantum_engine_initialization(self, quantum_engine):
         """Test QuantumInspiredGameEngine initializes correctly."""
-        assert quantum_engine is not None
+        assert quantum_engine is not None, "quantum_engine must be initialized"
         assert hasattr(quantum_engine, "game_state")
-        assert quantum_engine.game_state.joint_wavefunction is not None
-        assert quantum_engine.game_state.entanglement_strength >= 0.0
+        assert quantum_engine.game_state.joint_wavefunction is not None, "joint_wavefunction must be initialized"
+        assert quantum_engine.game_state.entanglement_strength >= 0.0, "entanglement_strength must be greater than zero"
 
     def test_wavefunction_normalization(self, quantum_engine):
         """Test that wavefunction remains normalized."""
@@ -212,10 +212,10 @@ class TestQuantumInspiredGameEngine:
         """Test play_round returns valid payoff dictionary."""
         result = quantum_engine.play_round(theta_blue=0.1, theta_red=0.1)
 
-        assert "blue_payoff" in result
-        assert "red_payoff" in result
-        assert "entanglement" in result
-        assert result["entanglement"] >= 0.0
+        assert "blue_payoff" in result, "Result must not be empty"
+        assert "red_payoff" in result, "Result must not be empty"
+        assert "entanglement" in result, "Result must not be empty"
+        assert result["entanglement"] >= 0.0, "Value must be greater than zero"
 
     def test_quantum_policy_gradient_step(self, quantum_engine):
         """Test quantum policy gradient optimization."""
@@ -229,7 +229,7 @@ class TestQuantumInspiredGameEngine:
         )
 
         # Thetas should have updated
-        assert new_blue != initial_theta_blue or new_red != initial_theta_red
+        assert new_blue != initial_theta_blue or new_red != initial_theta_red, "new_blue is not valid"
 
     def test_get_payoffs_method(self, quantum_engine):
         """Test get_payoffs convenience method."""
@@ -279,44 +279,44 @@ class TestBlueRedTeamSimulator:
 
     def test_simulator_initialization_quantum(self, simulator_quantum):
         """Test simulator initializes in quantum mode."""
-        assert simulator_quantum.mode == "quantum"
-        assert simulator_quantum.entanglement == 0.3
-        assert simulator_quantum.noise_level == 0.1
+        assert simulator_quantum.mode == "quantum", "mode is not valid"
+        assert simulator_quantum.entanglement == 0.3, "entanglement is not valid"
+        assert simulator_quantum.noise_level == 0.1, "noise_level is not valid"
         assert hasattr(simulator_quantum, "quantum_engine")
 
     def test_simulator_initialization_classical(self, simulator_classical):
         """Test simulator initializes in classical mode."""
-        assert simulator_classical.mode == "classical"
+        assert simulator_classical.mode == "classical", "mode is not valid"
         assert hasattr(simulator_classical, "classical_engine")
 
     def test_run_simulation_quantum_mode(self, simulator_quantum):
         """Test running simulation in quantum mode."""
         results = simulator_quantum.run_simulation(num_rounds=10, learning_rate=0.1)
 
-        assert results["mode"] == "quantum"
-        assert results["num_rounds"] == 10
-        assert "rounds" in results
-        assert len(results["rounds"]) == 10
-        assert "final_blue_payoff" in results
-        assert "final_red_payoff" in results
+        assert results["mode"] == "quantum", "Result must not be empty"
+        assert results["num_rounds"] == 10, "Result must not be empty"
+        assert "rounds" in results, "Result must not be empty"
+        assert len(results["rounds"]) == 10, "Collection must not be empty"
+        assert "final_blue_payoff" in results, "Result must not be empty"
+        assert "final_red_payoff" in results, "Result must not be empty"
 
     def test_run_simulation_classical_mode(self, simulator_classical):
         """Test running simulation in classical mode."""
         results = simulator_classical.run_simulation(num_rounds=10, learning_rate=0.1)
 
-        assert results["mode"] == "classical"
-        assert results["num_rounds"] == 10
-        assert "rounds" in results
-        assert len(results["rounds"]) == 10
+        assert results["mode"] == "classical", "Result must not be empty"
+        assert results["num_rounds"] == 10, "Result must not be empty"
+        assert "rounds" in results, "Result must not be empty"
+        assert len(results["rounds"]) == 10, "Collection must not be empty"
 
     def test_simulation_rounds_structure(self, simulator_quantum):
         """Test that each round has correct structure."""
         results = simulator_quantum.run_simulation(num_rounds=5, learning_rate=0.05)
 
         for round_data in results["rounds"]:
-            assert "round" in round_data
-            assert "blue_payoff" in round_data
-            assert "red_payoff" in round_data
+            assert "round" in round_data, "Data must not be empty"
+            assert "blue_payoff" in round_data, "Data must not be empty"
+            assert "red_payoff" in round_data, "Data must not be empty"
 
     def test_payoff_accumulation(self, simulator_quantum):
         """Test that payoffs accumulate over rounds."""
@@ -333,10 +333,10 @@ class TestBlueRedTeamSimulator:
         """Test simulation with zero rounds."""
         results = simulator_classical.run_simulation(num_rounds=0, learning_rate=0.1)
 
-        assert results["num_rounds"] == 0
-        assert len(results["rounds"]) == 0
-        assert results["final_blue_payoff"] == 0.0
-        assert results["final_red_payoff"] == 0.0
+        assert results["num_rounds"] == 0, "Result must not be empty"
+        assert len(results["rounds"]) == 0, "Collection must not be empty"
+        assert results["final_blue_payoff"] == 0.0, "Result must not be empty"
+        assert results["final_red_payoff"] == 0.0, "Result must not be empty"
 
     def test_different_learning_rates(self, simulator_quantum):
         """Test simulation with different learning rates."""
@@ -347,8 +347,8 @@ class TestBlueRedTeamSimulator:
         results_high = simulator_quantum.run_simulation(num_rounds=5, learning_rate=0.5)
 
         # Both should complete successfully
-        assert results_low["num_rounds"] == 5
-        assert results_high["num_rounds"] == 5
+        assert results_low["num_rounds"] == 5, "Result must not be empty"
+        assert results_high["num_rounds"] == 5, "Result must not be empty"
 
 
 @pytest.mark.skipif(not NUMPY_AVAILABLE, reason="numpy not available")
@@ -367,9 +367,9 @@ class TestQuantumGameState:
             blue_state=blue_state, red_state=red_state, entanglement_strength=0.2
         )
 
-        assert state.joint_wavefunction is not None
+        assert state.joint_wavefunction is not None, "joint_wavefunction must be initialized"
         assert np.isclose(np.sum(np.abs(state.joint_wavefunction) ** 2), 1.0)
-        assert state.entanglement_strength == 0.2
+        assert state.entanglement_strength == 0.2, "entanglement_strength is not valid"
 
     def test_measurement_collapse(self):
         """Test wavefunction measurement collapses state."""
@@ -384,8 +384,8 @@ class TestQuantumGameState:
         blue_idx, red_idx = state.measure()
 
         # Indices should be valid
-        assert 0 <= blue_idx < 2
-        assert 0 <= red_idx < 2
+        assert 0 <= blue_idx < 2, "0 is not valid"
+        assert 0 <= red_idx < 2, "0 is not valid"
 
     def test_apply_entangling_gate(self):
         """Test entangling gate application."""
@@ -432,12 +432,12 @@ class TestIntegrationScenarios:
         results_quantum = sim_quantum.run_simulation(10, 0.1)
 
         # Both should produce valid results
-        assert results_classical["num_rounds"] == 10
-        assert results_quantum["num_rounds"] == 10
+        assert results_classical["num_rounds"] == 10, "Result must not be empty"
+        assert results_quantum["num_rounds"] == 10, "Result must not be empty"
 
         # Quantum might have different payoffs due to entanglement
-        assert results_classical["mode"] == "classical"
-        assert results_quantum["mode"] == "quantum"
+        assert results_classical["mode"] == "classical", "Result must not be empty"
+        assert results_quantum["mode"] == "quantum", "Result must not be empty"
 
     def test_convergence_to_nash(self):
         """Test that classical dynamics converge to Nash equilibrium."""

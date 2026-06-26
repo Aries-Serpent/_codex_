@@ -23,5 +23,5 @@ def test_cli_smoke() -> None:
         _run_cli("apply-zd", "--out", str(zd_out))
         _run_cli("apply-d365", "--out", str(d365_out))
 
-        assert (zd_out / "forms.json").exists()
-        assert (d365_out / "tables.csv").exists()
+        assert (zd_out / "forms.json").exists(), "Condition must be true"
+        assert (d365_out / "tables.csv").exists(), "Condition must be true"

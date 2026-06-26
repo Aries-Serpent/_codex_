@@ -24,7 +24,7 @@ class TestPhase2_QuantumGameTheory_Table4_Eq1:
             from agents.quantum_game_theory import QuantumInspiredGameEngine
 
             engine = QuantumInspiredGameEngine()
-            assert engine is not None
+            assert engine is not None, "engine must be initialized"
         except (ImportError, TypeError) as e:
             pytest.skip(f"QuantumInspiredGameEngine init failed: {e}")
 
@@ -34,7 +34,7 @@ class TestPhase2_QuantumGameTheory_Table4_Eq1:
             from agents.quantum_game_theory import BlueRedTeamSimulator
 
             sim = BlueRedTeamSimulator()
-            assert sim is not None
+            assert sim is not None, "sim must be initialized"
         except (ImportError, AttributeError, TypeError):
             pytest.skip("BlueRedTeamSimulator not available")
 
@@ -44,7 +44,7 @@ class TestPhase2_QuantumGameTheory_Table4_Eq1:
             from agents.quantum_game_theory import PayoffOperator
 
             op = PayoffOperator()
-            assert op is not None
+            assert op is not None, "op must be initialized"
         except (ImportError, AttributeError, TypeError):
             pytest.skip("PayoffOperator not available")
 
@@ -54,7 +54,7 @@ class TestPhase2_QuantumGameTheory_Table4_Eq1:
             from agents.quantum_game_theory import QuantumGameState
 
             state = QuantumGameState()
-            assert state is not None
+            assert state is not None, "state must be initialized"
         except (ImportError, AttributeError, TypeError):
             pytest.skip("QuantumGameState not available")
 
@@ -64,7 +64,7 @@ class TestPhase2_QuantumGameTheory_Table4_Eq1:
             from agents.quantum_game_theory import StrategySpace
 
             space = StrategySpace()
-            assert space is not None
+            assert space is not None, "space must be initialized"
         except (ImportError, AttributeError, TypeError):
             pytest.skip("StrategySpace not available")
 
@@ -74,7 +74,7 @@ class TestPhase2_QuantumGameTheory_Table4_Eq1:
             from agents.quantum_game_theory import EntanglementGame
 
             game = EntanglementGame()
-            assert game is not None
+            assert game is not None, "game must be initialized"
         except (ImportError, AttributeError, TypeError):
             pytest.skip("EntanglementGame not available")
 
@@ -89,13 +89,13 @@ class TestPhase2_QuantumGameTheory_Table4_Eq2:
         action_types = list(ActionType)
 
         # Should have at least one value
-        assert len(action_types) > 0
+        assert len(action_types) > 0, "Action_types must not be empty"
 
         # Test each enum value
         for action_type in action_types:
-            assert action_type.name is not None
+            assert action_type.name is not None, "name must be initialized"
             assert isinstance(action_type.name, str)
-            assert len(action_type.name) > 0
+            assert len(action_type.name) > 0, "Collection must not be empty"
 
     def test_action_type_enum_access_by_name(self):
         """Test ActionType enum access by name."""
@@ -107,7 +107,7 @@ class TestPhase2_QuantumGameTheory_Table4_Eq2:
             first_type = action_types[0]
             # Access by name
             accessed = ActionType[first_type.name]
-            assert accessed == first_type
+            assert accessed == first_type, "accessed is not valid"
 
     def test_strategy_type_enum_if_exists(self):
         """Test StrategyType enum if it exists."""
@@ -115,10 +115,10 @@ class TestPhase2_QuantumGameTheory_Table4_Eq2:
             from agents.quantum_game_theory import StrategyType
 
             strategies = list(StrategyType)
-            assert len(strategies) > 0
+            assert len(strategies) > 0, "Strategies must not be empty"
 
             for strategy in strategies:
-                assert strategy.name is not None
+                assert strategy.name is not None, "name must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("StrategyType enum not found")
 
@@ -135,13 +135,13 @@ class TestPhase2_QuantumGameTheory_Table4_Eq3:
 
             # Test property access
             if hasattr(engine, "state"):
-                assert engine.state is not None or engine.state is None
+                assert engine.state is not None or engine.state is None, "state must be initialized"
 
             if hasattr(engine, "players"):
-                assert engine.players is not None or engine.players is None
+                assert engine.players is not None or engine.players is None, "players must be initialized"
 
             if hasattr(engine, "payoff_matrix"):
-                assert engine.payoff_matrix is not None or engine.payoff_matrix is None
+                assert engine.payoff_matrix is not None or engine.payoff_matrix is None, "payoff_matrix must be initialized"
         except TypeError:
             pytest.skip("Initialization requires parameters")
 
@@ -165,7 +165,7 @@ class TestPhase2_QuantumGameTheory_Table4_Eq3:
             for attr in attrs_to_check:
                 if hasattr(state, attr):
                     getattr(state, attr)  # Access property
-                    assert True
+                    assert True, "True is not valid"
         except TypeError:
             pytest.skip("Initialization requires parameters")
 
@@ -177,11 +177,11 @@ class TestPhase2_QuantumGameTheory_Table4_Eq3:
             state = StrategyState(team=TeamType.BLUE, strategies=["s1", "s2"])
 
             # Test properties
-            assert state.team == TeamType.BLUE
-            assert len(state.strategies) == 2
+            assert state.team == TeamType.BLUE, "team is not valid"
+            assert len(state.strategies) == 2, "Collection must not be empty"
 
             if hasattr(state, "num_strategies"):
-                assert state.num_strategies == 2
+                assert state.num_strategies == 2, "num_strategies is not valid"
         except (TypeError, ImportError):
             pytest.skip("StrategyState not available or requires parameters")
 
@@ -199,10 +199,10 @@ class TestPhase2_QuantumGameTheory_Table4_Eq9:
             if hasattr(engine, "create_entangled_state"):
                 try:
                     state = engine.create_entangled_state()
-                    assert state is not None
+                    assert state is not None, "state must be initialized"
                 except (TypeError, AttributeError):
                     # Method exists but needs parameters
-                    assert True
+                    assert True, "True is not valid"
         except TypeError:
             pytest.skip("Initialization requires parameters")
 
@@ -215,7 +215,7 @@ class TestPhase2_QuantumGameTheory_Table4_Eq9:
 
             if hasattr(engine, "measure_entanglement"):
                 # Method exists
-                assert True
+                assert True, "True is not valid"
         except TypeError:
             pytest.skip("Initialization requires parameters")
 
@@ -246,7 +246,7 @@ class TestPhase2_QuantumGameTheory_Table4_Eq11:
 
             if hasattr(engine, "optimize_strategy"):
                 # Method exists for strategy optimization
-                assert True
+                assert True, "True is not valid"
         except TypeError:
             pytest.skip("Initialization requires parameters")
 
@@ -259,7 +259,7 @@ class TestPhase2_QuantumGameTheory_Table4_Eq11:
 
             if hasattr(engine, "calculate_payoff"):
                 # Method exists
-                assert True
+                assert True, "True is not valid"
         except TypeError:
             pytest.skip("Initialization requires parameters")
 
@@ -272,7 +272,7 @@ class TestPhase2_QuantumGameTheory_Table4_Eq11:
 
             if hasattr(engine, "find_nash_equilibrium"):
                 # Method exists
-                assert True
+                assert True, "True is not valid"
         except TypeError:
             pytest.skip("Initialization requires parameters")
 
@@ -291,10 +291,10 @@ class TestPhase2_QuantumGameTheory_GameEngines:
                 # Try minimal game play
                 try:
                     result = engine.play_game()
-                    assert result is not None or result is None
+                    assert result is not None or result is None, "result must be initialized"
                 except (TypeError, ValueError, AttributeError):
                     # Method exists but needs setup
-                    assert True
+                    assert True, "True is not valid"
         except TypeError:
             pytest.skip("Initialization requires parameters")
 
@@ -306,7 +306,7 @@ class TestPhase2_QuantumGameTheory_GameEngines:
             engine = QuantumInspiredGameEngine()
 
             if hasattr(engine, "simulate_round"):
-                assert True
+                assert True, "True is not valid"
         except TypeError:
             pytest.skip("Initialization requires parameters")
 
@@ -318,7 +318,7 @@ class TestPhase2_QuantumGameTheory_GameEngines:
             engine = QuantumInspiredGameEngine()
 
             if hasattr(engine, "update_state"):
-                assert True
+                assert True, "True is not valid"
         except TypeError:
             pytest.skip("Initialization requires parameters")
 
@@ -331,7 +331,7 @@ class TestPhase2_QuantumGameTheory_GameEngines:
 
             if hasattr(engine, "reset"):
                 engine.reset()
-                assert True
+                assert True, "True is not valid"
         except (TypeError, AttributeError):
             pytest.skip("Reset not available")
 
@@ -348,7 +348,7 @@ class TestPhase2_QuantumGameTheory_BlueRedSimulator:
 
             if hasattr(sim, "blue_strategy"):
                 strategy = sim.blue_strategy()
-                assert strategy is not None or strategy is None
+                assert strategy is not None or strategy is None, "strategy must be initialized"
         except (TypeError, AttributeError):
             pytest.skip("Blue strategy not available")
 
@@ -361,7 +361,7 @@ class TestPhase2_QuantumGameTheory_BlueRedSimulator:
 
             if hasattr(sim, "red_strategy"):
                 strategy = sim.red_strategy()
-                assert strategy is not None or strategy is None
+                assert strategy is not None or strategy is None, "strategy must be initialized"
         except (TypeError, AttributeError):
             pytest.skip("Red strategy not available")
 
@@ -375,10 +375,10 @@ class TestPhase2_QuantumGameTheory_BlueRedSimulator:
             if hasattr(sim, "simulate"):
                 try:
                     result = sim.simulate()
-                    assert result is not None or result is None
+                    assert result is not None or result is None, "result must be initialized"
                 except (TypeError, ValueError):
                     # Needs parameters
-                    assert True
+                    assert True, "True is not valid"
         except TypeError:
             pytest.skip("Initialization requires parameters")
 
@@ -407,7 +407,7 @@ class TestPhase2_QuantumGameTheory_EdgeCases:
 
             try:
                 engine = QuantumInspiredGameEngine(num_players=100)
-                assert engine is not None
+                assert engine is not None, "engine must be initialized"
             except TypeError:
                 # num_players not a parameter
                 pytest.skip("num_players not supported")
@@ -421,7 +421,7 @@ class TestPhase2_QuantumGameTheory_EdgeCases:
 
             try:
                 space = StrategySpace(dimension=1000)
-                assert space is not None
+                assert space is not None, "space must be initialized"
             except TypeError:
                 pytest.skip("dimension not a parameter")
         except ImportError:

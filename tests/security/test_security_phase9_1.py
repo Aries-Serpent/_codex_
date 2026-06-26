@@ -47,7 +47,7 @@ class TestSecurityCore:
     def test_validate_input_success(self) -> None:
         """Test input validation with valid data."""
         result = validate_input("valid_string", max_length=100)
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     def test_validate_input_too_long(self) -> None:
         """Test input validation rejects long strings."""
@@ -59,7 +59,7 @@ class TestSecurityCore:
         """Test path sanitization."""
         safe_path = tmp_path / "safe" / "file.txt"
         result = sanitize_path(safe_path, base_dir=tmp_path)
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     def test_sanitize_path_traversal_blocked(self, tmp_path: Path) -> None:
         """Test path traversal is blocked."""
@@ -73,14 +73,14 @@ class TestSecurityCore:
         test_file.write_text("content")
 
         result = check_permissions(test_file, "read")
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_check_permissions_no_access(self, tmp_path: Path) -> None:
         """Test permission checking denies unauthorized access."""
         restricted_file = tmp_path / "restricted.txt"
         result = check_permissions(restricted_file, "execute")
         # May return False or raise exception
-        assert result is False or result is True
+        assert result is False or result is True, "Result must not be empty"
 
 
 @pytest.mark.skipif(not HAS_CONTENT_FILTERS, reason="content_filters not available")
@@ -91,22 +91,22 @@ class TestContentFilters:
         """Test HTML sanitization removes dangerous scripts."""
         html = "<p>Hello</p><script>alert('xss')</script>"
         clean = sanitize_html(html)
-        assert "<script>" not in clean
-        assert "alert" not in clean
+        assert "<script>" not in clean, "Condition must be true"
+        assert "alert" not in clean, "Condition must be true"
 
     def test_sanitize_html_preserves_safe_tags(self) -> None:
         """Test HTML sanitization keeps safe tags."""
         html = "<p>Safe <strong>text</strong></p>"
         clean = sanitize_html(html)
-        assert "<p>" in clean or "Safe" in clean
-        assert "text" in clean
+        assert "<p>" in clean or "Safe" in clean, "Condition must be true"
+        assert "text" in clean, "Condition must be true"
 
     def test_filter_sql_injection_basic(self) -> None:
         """Test SQL injection filtering."""
         sql_attempt = "'; DROP TABLE users; --"
         result = filter_sql_injection(sql_attempt)
         # Should detect or sanitize SQL injection
-        assert result != sql_attempt or "DROP" not in result
+        assert result != sql_attempt or "DROP" not in result, "Result must not be empty"
 
     def test_validate_email_valid(self) -> None:
         """Test email validation accepts valid emails."""
@@ -117,7 +117,7 @@ class TestContentFilters:
         ]
 
         for email in valid_emails:
-            assert validate_email(email) is True
+            assert validate_email(email) is True, "Condition must be true"
 
     def test_validate_email_invalid(self) -> None:
         """Test email validation rejects invalid emails."""
@@ -129,7 +129,7 @@ class TestContentFilters:
         ]
 
         for email in invalid_emails:
-            assert validate_email(email) is False
+            assert validate_email(email) is False, "Condition must be true"
 
 
 class TestSecurityPatterns:
@@ -146,7 +146,7 @@ class TestSecurityPatterns:
         logger.info("User authentication successful")
 
         # Check logs don't contain password
-        assert password not in caplog.text
+        assert password not in caplog.text, "passw is not valid"
 
     def test_sanitize_log_message(self) -> None:
         """Test log message sanitization."""
@@ -156,7 +156,7 @@ class TestSecurityPatterns:
         sanitized = sanitize_log(sensitive_msg)
 
         # API keys should be redacted
-        assert "abc123def456" not in sanitized or sanitized == sensitive_msg
+        assert "abc123def456" not in sanitized or sanitized == sensitive_msg, "sanitized is not valid"
 
     def test_path_validation_absolute_only(self) -> None:
         """Test path validation enforces absolute paths."""
@@ -188,8 +188,8 @@ class TestEncryptionUtilities:
             decrypted = decrypt(encrypted, key)
 
             # Verify roundtrip
-            assert decrypted == plaintext
-            assert encrypted != plaintext
+            assert decrypted == plaintext, "decrypted is not valid"
+            assert encrypted != plaintext, "encrypted is not valid"
         except ImportError:
             pytest.skip("encryption module not available")
 
@@ -202,7 +202,7 @@ class TestEncryptionUtilities:
             hashed = hash_password(password)
 
             # Hash should be different from password
-            assert hashed != password
+            assert hashed != password, "hashed is not valid"
 
             # Verification should work
             assert verify_password(password, hashed) is True
@@ -222,7 +222,7 @@ class TestSecretsManagement:
             monkeypatch.setenv("TEST_SECRET", "secret_value")
 
             secret = get_secret("TEST_SECRET")
-            assert secret == "secret_value"
+            assert secret == "secret_value", "Value must be initialized"
         except ImportError:
             pytest.skip("secrets module not available")
 
@@ -245,8 +245,8 @@ class TestSecretsManagement:
             masked = mask_secrets(log_line)
 
             # API key should be masked
-            assert "abc123" not in masked or masked == log_line
-            assert "***" in masked or masked == log_line
+            assert "abc123" not in masked or masked == log_line, "masked is not valid"
+            assert "***" in masked or masked == log_line, "masked is not valid"
         except ImportError:
             pytest.skip("secrets module not available")
 
@@ -272,7 +272,7 @@ class TestAuditLogging:
 
             # Check log file was created
             log_files = list(log_dir.glob("*.log"))
-            assert len(log_files) > 0
+            assert len(log_files) > 0, "Log_files must not be empty"
         except ImportError:
             pytest.skip("audit_logger module not available")
 
@@ -304,9 +304,9 @@ class TestInputValidation:
         def validate_age(age: int) -> bool:
             return 0 <= age <= 150
 
-        assert validate_age(25) is True
-        assert validate_age(-1) is False
-        assert validate_age(200) is False
+        assert validate_age(25) is True, "Condition must be true"
+        assert validate_age(-1) is False, "Condition must be true"
+        assert validate_age(200) is False, "Condition must be true"
 
     def test_validate_string_pattern(self) -> None:
         """Test string pattern validation."""
@@ -316,9 +316,9 @@ class TestInputValidation:
             pattern = r"^[a-zA-Z0-9_]{3,20}$"
             return bool(re.match(pattern, username))
 
-        assert validate_username("valid_user123") is True
-        assert validate_username("ab") is False  # Too short
-        assert validate_username("user@name") is False  # Invalid char
+        assert validate_username("valid_user123") is True, "Condition must be true"
+        assert validate_username("ab") is False, "Condition must be true"
+        assert validate_username("user@name") is False, "Condition must be true"
 
     def test_sanitize_filename(self) -> None:
         """Test filename sanitization."""
@@ -331,5 +331,5 @@ class TestInputValidation:
             # Remove path traversal
             return safe.replace("..", "")
 
-        assert ".." not in sanitize_filename("../etc/passwd")
-        assert "/" not in sanitize_filename("path/to/file")
+        assert ".." not in sanitize_filename("../etc/passwd"), "Condition must be true"
+        assert "/" not in sanitize_filename("path/to/file"), "Condition must be true"

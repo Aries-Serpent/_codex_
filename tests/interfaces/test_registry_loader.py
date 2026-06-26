@@ -18,7 +18,7 @@ def test_load_and_get_component(tmp_path):
     sys.path.insert(0, str(tmp_path))
     try:
         cls = load_component("tmp_mod:Dummy")
-        assert cls.__name__ == "Dummy"
+        assert cls.__name__ == "Dummy", "__name__ is not valid"
         os.environ["CODEX_DUMMY_PATH"] = "tmp_mod:Dummy"
         inst = get_component("CODEX_DUMMY_PATH", "tmp_mod:Dummy")
         assert isinstance(inst, cls) and inst.flag

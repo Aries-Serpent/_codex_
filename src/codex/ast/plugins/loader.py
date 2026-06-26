@@ -77,10 +77,12 @@ class PluginLoader:
                         logger.debug(f"Failed to import external plugin {name}: {ie}")
                     except AttributeError as e:
                         error_type = type(e).__name__
-                        logger.warning(f"Failed to load external plugin {name}: <ERROR_TYPE>", exc_info=True)
+                        logger.warning(
+                            f"Failed to load external plugin {name}: <ERROR_TYPE>", exc_info=True
+                        )
         except (ImportError, AttributeError) as e:
             error_type = type(e).__name__
-            logger.debug(f"External plugin discovery failed: <ERROR_TYPE>")
+            logger.debug("External plugin discovery failed: <ERROR_TYPE>")
 
     def _register_from_module(self, module):
         """Register plugins from a module."""
@@ -106,7 +108,9 @@ class PluginLoader:
                         logger.info(f"Registered analysis plugin: {plugin_instance.name}")
                     except (IOError, OSError) as e:
                         error_type = type(e).__name__
-                        logger.warning(f"Failed to instantiate analysis plugin {attr_name}: <ERROR_TYPE>")
+                        logger.warning(
+                            f"Failed to instantiate analysis plugin {attr_name}: <ERROR_TYPE>"
+                        )
 
     def get_plugin_for_file(self, file_path: str) -> Optional[ASTPlugin]:
         """

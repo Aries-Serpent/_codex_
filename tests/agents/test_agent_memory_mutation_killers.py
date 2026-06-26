@@ -33,9 +33,9 @@ class TestMemoryEntryMutationKillers:
             context={},
         )
         # Exact equality check catches numeric mutations
-        assert entry.confidence == 0.8
-        assert entry.confidence != 0.7
-        assert entry.confidence != 0.9
+        assert entry.confidence == 0.8, "confidence is not valid"
+        assert entry.confidence != 0.7, "confidence is not valid"
+        assert entry.confidence != 0.9, "confidence is not valid"
 
     def test_access_count_default_is_exactly_zero(self) -> None:
         """Catch mutation: access_count: int = 0 → 1"""
@@ -46,9 +46,9 @@ class TestMemoryEntryMutationKillers:
             context={},
         )
         # Exact zero check catches off-by-one mutations
-        assert entry.access_count == 0
-        assert entry.access_count != 1
-        assert entry.access_count >= 0
+        assert entry.access_count == 0, "Count must be greater than zero"
+        assert entry.access_count != 1, "Count must be greater than zero"
+        assert entry.access_count >= 0, "access_count must be positive"
 
     def test_confidence_boundary_just_below_minimum(self) -> None:
         """Catch mutation: >= 0.5 → > 0.5"""
@@ -60,8 +60,8 @@ class TestMemoryEntryMutationKillers:
             confidence=0.49,
         )
         # Test just below typical minimum threshold
-        assert entry.confidence == 0.49
-        assert entry.confidence < 0.5
+        assert entry.confidence == 0.49, "confidence is not valid"
+        assert entry.confidence < 0.5, "confidence is not valid"
 
     def test_confidence_boundary_at_minimum(self) -> None:
         """Catch mutation: >= 0.5 → > 0.5 (boundary test)"""
@@ -73,9 +73,9 @@ class TestMemoryEntryMutationKillers:
             confidence=0.5,
         )
         # Test exact boundary
-        assert entry.confidence == 0.5
-        assert entry.confidence >= 0.5
-        assert not (entry.confidence < 0.5)
+        assert entry.confidence == 0.5, "confidence is not valid"
+        assert entry.confidence >= 0.5, "confidence must be greater than zero"
+        assert not (entry.confidence < 0.5), "confidence is not valid"
 
     def test_confidence_boundary_just_above_minimum(self) -> None:
         """Catch mutation: >= 0.5 → > 0.5 (upper boundary)"""
@@ -86,8 +86,8 @@ class TestMemoryEntryMutationKillers:
             context={},
             confidence=0.51,
         )
-        assert entry.confidence == 0.51
-        assert entry.confidence > 0.5
+        assert entry.confidence == 0.51, "confidence is not valid"
+        assert entry.confidence > 0.5, "confidence must be greater than zero"
 
     def test_default_tags_list_is_empty_not_none(self) -> None:
         """Catch mutation: default_factory=list → None"""
@@ -97,8 +97,8 @@ class TestMemoryEntryMutationKillers:
             content="test",
             context={},
         )
-        assert entry.tags == []
-        assert entry.tags is not None
+        assert entry.tags == [], "tags is not valid"
+        assert entry.tags is not None, "tags must be initialized"
         assert isinstance(entry.tags, list)
 
     def test_default_related_memories_list_is_empty_not_none(self) -> None:
@@ -109,8 +109,8 @@ class TestMemoryEntryMutationKillers:
             content="test",
             context={},
         )
-        assert entry.related_memories == []
-        assert entry.related_memories is not None
+        assert entry.related_memories == [], "related_memories is not valid"
+        assert entry.related_memories is not None, "related_memories must be initialized"
         assert isinstance(entry.related_memories, list)
 
     def test_last_accessed_default_is_none_not_empty_string(self) -> None:
@@ -121,8 +121,8 @@ class TestMemoryEntryMutationKillers:
             content="test",
             context={},
         )
-        assert entry.last_accessed is None
-        assert entry.last_accessed != ""
+        assert entry.last_accessed is None, "last_accessed is not valid"
+        assert entry.last_accessed != "", "last_accessed is not valid"
 
 
 class TestContextFrameStatusMutations:
@@ -135,10 +135,10 @@ class TestContextFrameStatusMutations:
             task_description="task",
             start_time="2025-01-01T10:00:00",
         )
-        assert frame.status == "active"
-        assert frame.status != "pending"
-        assert frame.status != "completed"
-        assert frame.status != "failed"
+        assert frame.status == "active", "status is not valid"
+        assert frame.status != "pending", "status is not valid"
+        assert frame.status != "completed", "status is not valid"
+        assert frame.status != "failed", "status is not valid"
 
     def test_default_end_time_is_none(self) -> None:
         """Catch mutation: end_time: Optional[str] = None → "" """
@@ -147,7 +147,7 @@ class TestContextFrameStatusMutations:
             task_description="task",
             start_time="2025-01-01T10:00:00",
         )
-        assert frame.end_time is None
+        assert frame.end_time is None, "end_time is not valid"
 
     @pytest.mark.parametrize(
         "status,expected",
@@ -168,7 +168,7 @@ class TestContextFrameStatusMutations:
             start_time="2025-01-01T10:00:00",
             status=status,
         )
-        assert frame.status == status
+        assert frame.status == status, "status is not valid"
 
     def test_default_numeric_fields_are_zero_not_none(self) -> None:
         """Catch mutation: tokens_used/actions_taken/errors = 0 → None or 1"""
@@ -177,10 +177,10 @@ class TestContextFrameStatusMutations:
             task_description="task",
             start_time="2025-01-01T10:00:00",
         )
-        assert frame.tokens_used == 0
-        assert frame.actions_taken == 0
-        assert frame.errors_encountered == 0
-        assert frame.tokens_used is not None
+        assert frame.tokens_used == 0, "tokens_used is not valid"
+        assert frame.actions_taken == 0, "actions_taken is not valid"
+        assert frame.errors_encountered == 0, "Error should be raised or set"
+        assert frame.tokens_used is not None, "tokens_used must be initialized"
         assert isinstance(frame.tokens_used, int)
 
 
@@ -204,7 +204,7 @@ class TestPatternLibraryMutationKillers:
 
         # With min_success_rate=0.5, patterns with success_rate=0.5 should PASS
         matches = library.match_patterns("test", min_success_rate=0.5)
-        assert len(matches) == 1  # Should include the pattern at boundary
+        assert len(matches) == 1, "Matches must not be empty"
 
     def test_match_patterns_min_success_rate_boundary_just_below(self) -> None:
         """Catch mutation: success_rate < min_success_rate → <="""
@@ -223,7 +223,7 @@ class TestPatternLibraryMutationKillers:
 
         # With min_success_rate=0.5, patterns with success_rate=0.49 should FAIL
         matches = library.match_patterns("test", min_success_rate=0.5)
-        assert len(matches) == 0  # Should exclude the pattern
+        assert len(matches) == 0, "Matches must not be empty"
 
     def test_match_patterns_min_success_rate_boundary_just_above(self) -> None:
         """Catch mutation: success_rate < min_success_rate → >"""
@@ -242,7 +242,7 @@ class TestPatternLibraryMutationKillers:
 
         # With min_success_rate=0.5, patterns with success_rate=0.51 should PASS
         matches = library.match_patterns("test", min_success_rate=0.5)
-        assert len(matches) == 1  # Should include the pattern
+        assert len(matches) == 1, "Matches must not be empty"
 
     @pytest.mark.parametrize(
         "pattern_rate,threshold,should_match",
@@ -275,9 +275,9 @@ class TestPatternLibraryMutationKillers:
 
         matches = library.match_patterns("test", min_success_rate=threshold)
         if should_match:
-            assert len(matches) == 1
+            assert len(matches) == 1, "Matches must not be empty"
         else:
-            assert len(matches) == 0
+            assert len(matches) == 0, "Matches must not be empty"
 
     def test_pattern_indexing_uses_correct_tags(self) -> None:
         """Catch mutation: tag assignment or indexing logic."""
@@ -295,12 +295,12 @@ class TestPatternLibraryMutationKillers:
         )
 
         # Verify all tags are indexed
-        assert "p1" in library.pattern_index["tag1"]
-        assert "p1" in library.pattern_index["tag2"]
-        assert "p1" in library.pattern_index["tag3"]
+        assert "p1" in library.pattern_index["tag1"], "Condition must be true"
+        assert "p1" in library.pattern_index["tag2"], "Condition must be true"
+        assert "p1" in library.pattern_index["tag3"], "Condition must be true"
 
         # Verify pattern is indexed under all tags
-        assert (
+        assert (, "Condition must be true"
             len([t for t in library.pattern_index if "p1" in library.pattern_index.get(t, [])]) == 3
         )
 
@@ -320,19 +320,19 @@ class TestPatternLibraryMutationKillers:
         )
 
         # Initial count is 0
-        assert library.patterns["p1"]["usage_count"] == 0
+        assert library.patterns["p1"]["usage_count"] == 0, "Count must be greater than zero"
 
         # After one usage, count is 1
         library.record_pattern_usage("p1", success=True)
-        assert library.patterns["p1"]["usage_count"] == 1
+        assert library.patterns["p1"]["usage_count"] == 1, "Count must be greater than zero"
 
         # After second usage, count is 2
         library.record_pattern_usage("p1", success=True)
-        assert library.patterns["p1"]["usage_count"] == 2
+        assert library.patterns["p1"]["usage_count"] == 2, "Count must be greater than zero"
 
         # Verify it increments exactly by 1 each time
         library.record_pattern_usage("p1", success=False)
-        assert library.patterns["p1"]["usage_count"] == 3
+        assert library.patterns["p1"]["usage_count"] == 3, "Count must be greater than zero"
 
 
 class TestAgentMemoryMutationKillers:
@@ -354,11 +354,11 @@ class TestAgentMemoryMutationKillers:
 
         retrieved = memory.retrieve_memory(memory_id="test_entry")
 
-        assert retrieved is not None
-        assert retrieved.category == "test_category"
-        assert retrieved.content == "test content"
-        assert retrieved.context == {"key": "value"}
-        assert retrieved.confidence == 0.95
+        assert retrieved is not None, "retrieved must be initialized"
+        assert retrieved.category == "test_category", "category is not valid"
+        assert retrieved.content == "test content", "Content must not be empty"
+        assert retrieved.context == {"key": "value"}, "Value must be initialized"
+        assert retrieved.confidence == 0.95, "confidence is not valid"
         assert retrieved.tags == ["t1", "t2"]
 
     def test_store_memory_with_tags_exact_matching(self, tmp_path) -> None:
@@ -375,11 +375,11 @@ class TestAgentMemoryMutationKillers:
         )
 
         retrieved = memory.retrieve_memory(memory_id="entry_with_tags")
-        assert retrieved is not None
-        assert len(retrieved.tags) == 3
-        assert "python" in retrieved.tags
-        assert "testing" in retrieved.tags
-        assert "mutation" in retrieved.tags
+        assert retrieved is not None, "retrieved must be initialized"
+        assert len(retrieved.tags) == 3, "Collection must not be empty"
+        assert "python" in retrieved.tags, "Condition must be true"
+        assert "testing" in retrieved.tags, "Condition must be true"
+        assert "mutation" in retrieved.tags, "Condition must be true"
 
     def test_add_memory_alias_works_correctly(self, tmp_path) -> None:
         """Catch mutation: add_memory function aliasing."""
@@ -396,8 +396,8 @@ class TestAgentMemoryMutationKillers:
         )
 
         retrieved = memory.retrieve_memory(memory_id="alias_test")
-        assert retrieved is not None
-        assert retrieved.confidence == 0.75
+        assert retrieved is not None, "retrieved must be initialized"
+        assert retrieved.confidence == 0.75, "confidence is not valid"
 
     def test_retrieve_content_returns_just_content_string(self, tmp_path) -> None:
         """Catch mutation: retrieve_content implementation."""
@@ -413,7 +413,7 @@ class TestAgentMemoryMutationKillers:
 
         content = memory.retrieve_content("content_test")
         assert isinstance(content, str)
-        assert content == "This is the content"
+        assert content == "This is the content", "Content must not be empty"
 
     def test_backward_compatibility_key_parameter(self, tmp_path) -> None:
         """Catch mutation: backward compatibility for key parameter."""
@@ -430,7 +430,7 @@ class TestAgentMemoryMutationKillers:
         # Using key parameter returns content string
         content = memory.retrieve_memory(key="key_test")
         assert isinstance(content, str)
-        assert content == "key content"
+        assert content == "key content", "Content must not be empty"
 
 
 # ==============================================================================
@@ -464,10 +464,10 @@ class TestMemoryPatternLibraryIntegration:
 
         # Should include p1 (0.5), p2 (0.7), p3 (0.9)
         # Should exclude p0 (0.3)
-        assert "p0" not in matched_ids
-        assert "p1" in matched_ids
-        assert "p2" in matched_ids
-        assert "p3" in matched_ids
+        assert "p0" not in matched_ids, "Condition must be true"
+        assert "p1" in matched_ids, "Condition must be true"
+        assert "p2" in matched_ids, "Condition must be true"
+        assert "p3" in matched_ids, "Condition must be true"
 
 
 # ==============================================================================
@@ -482,48 +482,48 @@ class TestMemoryEntryBoundaryComprehensive:
         """Fix #1: Catch boundary mutations in confidence validation."""
         # Test lower boundary values
         entry1 = MemoryEntry("id", "cat", "content", {}, confidence=-0.01)
-        assert entry1.confidence == -0.01
-        assert entry1.confidence < 0.0
+        assert entry1.confidence == -0.01, "confidence is not valid"
+        assert entry1.confidence < 0.0, "confidence is not valid"
 
         entry2 = MemoryEntry("id", "cat", "content", {}, confidence=-1.0)
-        assert entry2.confidence == -1.0
+        assert entry2.confidence == -1.0, "confidence is not valid"
 
         # Test upper boundary values
         entry3 = MemoryEntry("id", "cat", "content", {}, confidence=1.01)
-        assert entry3.confidence == 1.01
-        assert entry3.confidence > 1.0
+        assert entry3.confidence == 1.01, "confidence is not valid"
+        assert entry3.confidence > 1.0, "confidence must be greater than zero"
 
         entry4 = MemoryEntry("id", "cat", "content", {}, confidence=2.0)
-        assert entry4.confidence == 2.0
+        assert entry4.confidence == 2.0, "confidence is not valid"
 
         # Test valid boundaries
         entry5 = MemoryEntry("id", "cat", "content", {}, confidence=0.0)
-        assert entry5.confidence == 0.0
-        assert entry5.confidence >= 0.0
+        assert entry5.confidence == 0.0, "confidence is not valid"
+        assert entry5.confidence >= 0.0, "confidence must be greater than zero"
 
         entry6 = MemoryEntry("id", "cat", "content", {}, confidence=1.0)
-        assert entry6.confidence == 1.0
-        assert entry6.confidence <= 1.0
+        assert entry6.confidence == 1.0, "confidence is not valid"
+        assert entry6.confidence <= 1.0, "confidence is not valid"
 
     def test_memory_entry_access_count_boundary_comprehensive(self) -> None:
         """Fix #2: Catch boundary mutations in access count operations."""
         entry = MemoryEntry("id", "cat", "content", {})
 
         # Test initial state
-        assert entry.access_count == 0
-        assert entry.access_count >= 0
-        assert not (entry.access_count > 0)
+        assert entry.access_count == 0, "Count must be greater than zero"
+        assert entry.access_count >= 0, "access_count must be positive"
+        assert not (entry.access_count > 0), "access_count must be positive"
 
         # Test increment boundary
         entry.access_count += 1
-        assert entry.access_count == 1
-        assert entry.access_count > 0
-        assert entry.access_count >= 1
+        assert entry.access_count == 1, "Count must be greater than zero"
+        assert entry.access_count > 0, "access_count must be positive"
+        assert entry.access_count >= 1, "access_count must be positive"
 
         # Test large values
         entry.access_count = 999999
-        assert entry.access_count == 999999
-        assert entry.access_count > 0
+        assert entry.access_count == 999999, "Count must be greater than zero"
+        assert entry.access_count > 0, "access_count must be positive"
 
     def test_memory_search_range_boundary_comprehensive(self, tmp_path) -> None:
         """Fix #3: Catch boundary mutations in collection search operations."""
@@ -532,20 +532,20 @@ class TestMemoryEntryBoundaryComprehensive:
 
         # Test empty results
         results = memory.search_memories(category="decision_nonexistent")
-        assert results == []
-        assert len(results) == 0
-        assert not results
+        assert results == [], "Result must not be empty"
+        assert len(results) == 0, "Results must not be empty"
+        assert not results, "Result must not be empty"
 
         # Test single result with category filter
         memory.store_memory(memory_id="test", category="decision", content="content", context={})
         results = memory.search_memories(category="decision")
-        assert len(results) >= 1
-        assert len(results) > 0
+        assert len(results) >= 1, "Results must not be empty"
+        assert len(results) > 0, "Results must not be empty"
 
         # Test multiple results
         memory.store_memory(memory_id="test2", category="decision", content="content", context={})
         results = memory.search_memories(category="decision")
-        assert len(results) >= 2
+        assert len(results) >= 2, "Results must not be empty"
 
 
 class TestBooleanLogicComprehensive:
@@ -555,18 +555,18 @@ class TestBooleanLogicComprehensive:
         """Fix #4: Catch boolean logic mutations in validation."""
         # Test valid case: all conditions true
         entry = MemoryEntry("id", "cat", "content", {"valid": True})
-        assert entry.category  # Non-empty
-        assert entry.content  # Non-empty
-        assert entry.context is not None  # Not None
+        assert entry.category, "Condition must be true"
+        assert entry.content, "Content must not be empty"
+        assert entry.context is not None, "context must be initialized"
 
         # Test invalid cases: any condition false
         entry2 = MemoryEntry("id", "", "content", {})
-        assert entry2.category == ""
-        assert not entry2.category  # Empty category
+        assert entry2.category == "", "category is not valid"
+        assert not entry2.category, "Condition must be true"
 
         # Test negation
         is_empty = not entry.content
-        assert not is_empty  # Double negative
+        assert not is_empty, "not is not valid"
 
     def test_memory_consolidation_or_logic_comprehensive(self, tmp_path) -> None:
         """Fix #5: Catch OR logic mutations in consolidation paths."""
@@ -581,11 +581,11 @@ class TestBooleanLogicComprehensive:
         result1 = memory.consolidate_memories()
         # Result is number of consolidated memories (int)
         assert isinstance(result1, int)
-        assert result1 >= 0
+        assert result1 >= 0, "result1 must be greater than zero"
 
         result2 = memory.consolidate_memories()
         assert isinstance(result2, int)
-        assert result2 >= 0
+        assert result2 >= 0, "result2 must be greater than zero"
 
 
 class TestReturnValueComprehensive:
@@ -601,7 +601,7 @@ class TestReturnValueComprehensive:
             memory_id="valid_id", category="decision", content="content", context={}
         )
         result = memory.retrieve_memory("valid_id")
-        assert result is not None
+        assert result is not None, "result must be initialized"
         assert isinstance(result, MemoryEntry)
 
         # Test invalid memory
@@ -621,7 +621,7 @@ class TestReturnValueComprehensive:
         # Test None case
         result = memory.retrieve_memory("nonexistent")
         if result is None:
-            assert result is None
+            assert result is None, "Result must not be empty"
         else:
             # If implementation returns empty string or entry
             assert result == "" or isinstance(result, MemoryEntry)
@@ -629,9 +629,9 @@ class TestReturnValueComprehensive:
         # Test data case
         memory.store_memory(memory_id="test_id", category="decision", content="content", context={})
         result = memory.retrieve_memory("test_id")
-        assert result is not None or result == ""
+        assert result is not None or result == "", "result must be initialized"
         if result is not None and isinstance(result, MemoryEntry):
-            assert result.memory_id == "test_id"
+            assert result.memory_id == "test_id", "Result must not be empty"
 
 
 class TestStringLiteralComprehensive:
@@ -641,17 +641,17 @@ class TestStringLiteralComprehensive:
         """Fix #8: Catch string literal mutations in state values."""
         # Test exact category strings
         entry_decision = MemoryEntry("id", "decision", "content", {})
-        assert entry_decision.category == "decision"
-        assert entry_decision.category != "fact"
-        assert entry_decision.category != "pattern"
+        assert entry_decision.category == "decision", "category is not valid"
+        assert entry_decision.category != "fact", "category is not valid"
+        assert entry_decision.category != "pattern", "category is not valid"
 
         entry_fact = MemoryEntry("id", "fact", "content", {})
-        assert entry_fact.category == "fact"
-        assert entry_fact.category != "decision"
+        assert entry_fact.category == "fact", "category is not valid"
+        assert entry_fact.category != "decision", "category is not valid"
 
         # Test invalid category
         entry_invalid = MemoryEntry("id", "invalid", "content", {})
-        assert entry_invalid.category == "invalid"
+        assert entry_invalid.category == "invalid", "category is not valid"
         assert entry_invalid.category not in ["decision", "fact", "pattern"]
 
 
@@ -662,15 +662,15 @@ class TestExceptionHandlingComprehensive:
         """Fix #9: Catch exception handling mutations."""
         # Test that we can create entries with various confidence values
         entry1 = MemoryEntry("id", "cat", "content", {}, confidence=2.0)
-        assert entry1.confidence == 2.0
+        assert entry1.confidence == 2.0, "confidence is not valid"
 
         entry2 = MemoryEntry("id", "cat", "content", {}, confidence=-1.0)
-        assert entry2.confidence == -1.0
+        assert entry2.confidence == -1.0, "confidence is not valid"
 
         # Test with valid confidence
         try:
             entry = MemoryEntry("id", "cat", "content", {}, confidence=0.5)
-            assert entry.confidence == 0.5
+            assert entry.confidence == 0.5, "confidence is not valid"
         except ValueError:
             pytest.fail("Should not raise ValueError for any confidence")
 
@@ -682,7 +682,7 @@ class TestExceptionHandlingComprehensive:
 
         # Verify memory still accessible
         result = memory.retrieve_memory("mem1")
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
         # Store another memory
         memory.store_memory(memory_id="mem2", category="decision", content="content", context={})
@@ -702,19 +702,19 @@ class TestDictionarySetComprehensive:
         entry = MemoryEntry("id", "cat", "content", {"timestamp": "2024-01-01", "source": "api"})
 
         # Test correct keys exist
-        assert "timestamp" in entry.context
-        assert "source" in entry.context
-        assert entry.context["timestamp"] == "2024-01-01"
-        assert entry.context["source"] == "api"
+        assert "timestamp" in entry.context, "Condition must be true"
+        assert "source" in entry.context, "Condition must be true"
+        assert entry.context["timestamp"] == "2024-01-01", "Condition must be true"
+        assert entry.context["source"] == "api", "Condition must be true"
 
         # Test wrong keys don't exist
-        assert "date" not in entry.context
-        assert "origin" not in entry.context
+        assert "date" not in entry.context, "Condition must be true"
+        assert "origin" not in entry.context, "Condition must be true"
 
         # Test empty context case
         empty_entry = MemoryEntry("id", "cat", "content", {})
-        assert empty_entry.context == {}
-        assert not empty_entry.context or len(empty_entry.context) == 0
+        assert empty_entry.context == {}, "context is not valid"
+        assert not empty_entry.context or len(empty_entry.context) == 0, "Collection must not be empty"
 
         # Test context value types
         assert isinstance(entry.context["timestamp"], str)

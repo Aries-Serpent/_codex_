@@ -93,7 +93,7 @@ class LocalSentenceTransformerProvider:
             raise
         except (ValueError, TypeError) as e:
             error_type = type(e).__name__
-            logger.error(f"Error loading local embedding model: <ERROR_TYPE>")
+            logger.error("Error loading local embedding model: <ERROR_TYPE>")
             raise
 
     def encode(
@@ -313,7 +313,7 @@ class CachedEmbeddingProvider:
 
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.warning(f"Error saving to cache: <ERROR_TYPE>")
+            logger.warning("Error saving to cache: <ERROR_TYPE>")
 
         return embeddings
 
@@ -346,7 +346,7 @@ class CachedEmbeddingProvider:
 
         except (ValueError, TypeError, RuntimeError) as e:
             error_type = type(e).__name__
-            logger.warning(f"Error validating cache: <ERROR_TYPE>")
+            logger.warning("Error validating cache: <ERROR_TYPE>")
             return False
 
     def get_dimension(self) -> int:
@@ -444,7 +444,7 @@ def create_embedding_provider(
             logger.debug("Ollama server not running")
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Ollama unavailable: <ERROR_TYPE>")
+            logger.debug("Ollama unavailable: <ERROR_TYPE>")
 
         # Priority 3: Try llama.cpp (excellent performance, requires model file)
         if "model_path" in kwargs:
@@ -459,7 +459,7 @@ def create_embedding_provider(
                 return provider
             except (ImportError, AttributeError) as e:
                 error_type = type(e).__name__
-                logger.debug(f"llama.cpp unavailable: <ERROR_TYPE>")
+                logger.debug("llama.cpp unavailable: <ERROR_TYPE>")
 
         # Priority 4: Try GPT4All (easy setup, good quality)
         try:
@@ -474,7 +474,7 @@ def create_embedding_provider(
             return provider
         except (ValueError, TypeError, RuntimeError) as e:
             error_type = type(e).__name__
-            logger.debug(f"GPT4All unavailable: <ERROR_TYPE>")
+            logger.debug("GPT4All unavailable: <ERROR_TYPE>")
 
         # Priority 5: Fall back to TF-IDF (always works, offline)
         logger.info("Falling back to TF-IDF provider (offline-capable)")
@@ -648,7 +648,7 @@ class TfidfEmbeddingProvider:
                 )
             except (ValueError, TypeError) as e:
                 error_type = type(e).__name__
-                logger.error(f"Error fitting TF-IDF vectorizer: <ERROR_TYPE>")
+                logger.error("Error fitting TF-IDF vectorizer: <ERROR_TYPE>")
                 raise
 
         # Transform texts to embeddings
@@ -658,7 +658,7 @@ class TfidfEmbeddingProvider:
             return embeddings
         except (ValueError, TypeError) as e:
             error_type = type(e).__name__
-            logger.error(f"Error transforming texts with TF-IDF: <ERROR_TYPE>")
+            logger.error("Error transforming texts with TF-IDF: <ERROR_TYPE>")
             raise
 
     def get_dimension(self) -> int:

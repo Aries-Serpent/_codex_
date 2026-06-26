@@ -48,7 +48,7 @@ class TestMemoryEntryExceptions:
             last_accessed=None,
         )
         data = entry.to_dict()
-        assert data["last_accessed"] is None
+        assert data["last_accessed"] is None, "Data must not be empty"
 
     def test_from_dict_with_invalid_confidence_type(self) -> None:
         """Test from_dict with invalid confidence type."""
@@ -109,7 +109,7 @@ class TestMemoryEntryExceptions:
         try:
             entry = MemoryEntry.from_dict(data)
             # If accepted, verify it's stored
-            assert entry.tags is not None
+            assert entry.tags is not None, "tags must be initialized"
         except (TypeError, ValueError):
             pass  # Expected
 
@@ -130,7 +130,7 @@ class TestMemoryEntryExceptions:
         try:
             entry = MemoryEntry.from_dict(data)
             # If accepted, verify it's stored
-            assert entry.context is not None
+            assert entry.context is not None, "context must be initialized"
         except (TypeError, ValueError):
             pass  # Expected
 
@@ -157,7 +157,7 @@ class TestAgentMemoryPathTraversal:
         try:
             os.chdir(tmp_path)
             memory = AgentMemory(db_path="test.db")
-            assert memory.db_path.exists() or memory.db_path.parent.exists()
+            assert memory.db_path.exists() or memory.db_path.parent.exists(), "mem is not valid"
         finally:
             os.chdir(old_cwd)
 
@@ -165,14 +165,14 @@ class TestAgentMemoryPathTraversal:
         """Test valid path in temp directory."""
         db_path = tmp_path / "test.db"
         memory = AgentMemory(db_path=db_path)
-        assert memory.db_path == db_path.resolve()
+        assert memory.db_path == db_path.resolve(), "db_path is not valid"
 
     def test_valid_path_in_home_directory(self) -> None:
         """Test valid path in home directory."""
         home_db = Path.home() / ".test_memory.db"
         try:
             memory = AgentMemory(db_path=home_db)
-            assert memory.db_path == home_db.resolve()
+            assert memory.db_path == home_db.resolve(), "db_path is not valid"
         finally:
             # Cleanup
             if home_db.exists():
@@ -240,8 +240,8 @@ class TestAgentMemoryDatabaseErrors:
         memory2.store_memory(entry2)
 
         # Both should be retrievable
-        assert memory1.retrieve_memory("entry1") is not None
-        assert memory2.retrieve_memory("entry2") is not None
+        assert memory1.retrieve_memory("entry1") is not None, "mem must be initialized"
+        assert memory2.retrieve_memory("entry2") is not None, "mem must be initialized"
 
 
 class TestPatternLibraryExceptions:
@@ -304,7 +304,7 @@ class TestPatternLibraryExceptions:
         )
         matches = lib.match_patterns("trigger", tags=None)
         assert isinstance(matches, list)
-        assert len(matches) > 0
+        assert len(matches) > 0, "Matches must not be empty"
 
     def test_match_patterns_with_special_characters(self) -> None:
         """Test matching patterns with special characters."""
@@ -334,7 +334,7 @@ class TestContextFrameExceptions:
             start_time=datetime.now(UTC).isoformat(),
             status="invalid_status",
         )
-        assert frame.status == "invalid_status"  # No validation
+        assert frame.status == "invalid_status", "status is not valid"
 
     def test_context_frame_with_invalid_timestamp(self) -> None:
         """Test context frame with invalid timestamp format."""
@@ -343,7 +343,7 @@ class TestContextFrameExceptions:
             task_description="task",
             start_time="not_a_valid_timestamp",
         )
-        assert frame.start_time == "not_a_valid_timestamp"
+        assert frame.start_time == "not_a_valid_timestamp", "start_time is not valid"
 
     def test_context_frame_end_before_start(self) -> None:
         """Test context frame where end_time is before start_time."""
@@ -356,8 +356,8 @@ class TestContextFrameExceptions:
             end_time=end,
         )
         # System may not validate time ordering
-        assert frame.start_time == start
-        assert frame.end_time == end
+        assert frame.start_time == start, "start_time is not valid"
+        assert frame.end_time == end, "end_time is not valid"
 
     def test_context_frame_to_dict_with_none_end_time(self) -> None:
         """Test context frame to_dict with None end_time."""
@@ -368,7 +368,7 @@ class TestContextFrameExceptions:
             end_time=None,
         )
         data = frame.to_dict()
-        assert data["end_time"] is None
+        assert data["end_time"] is None, "Data must not be empty"
 
     def test_context_frame_very_large_active_memories_list(self) -> None:
         """Test context frame with very large active_memories list."""
@@ -379,7 +379,7 @@ class TestContextFrameExceptions:
             start_time=datetime.now(UTC).isoformat(),
             active_memories=active,
         )
-        assert len(frame.active_memories) == 10000
+        assert len(frame.active_memories) == 10000, "Collection must not be empty"
 
 
 class TestMemoryEntrySerializationErrors:
@@ -400,7 +400,7 @@ class TestMemoryEntrySerializationErrors:
         try:
             data = entry.to_dict()
             # If it succeeds, context should be stored as-is
-            assert "context" in data
+            assert "context" in data, "Data must not be empty"
         except (TypeError, ValueError):
             pass  # Expected for non-serializable types
 
@@ -421,7 +421,7 @@ class TestMemoryEntrySerializationErrors:
         try:
             entry = MemoryEntry.from_dict(data)
             # If accepted, verify it's stored
-            assert entry.context is not None
+            assert entry.context is not None, "context must be initialized"
         except (ValueError, TypeError):
             pass  # Expected
 
@@ -437,7 +437,7 @@ class TestAgentMemoryRetrievalErrors:
         # Try SQL injection
         malicious_id = "'; DROP TABLE memories; --"
         result = memory.retrieve_memory(malicious_id)
-        assert result is None  # Should return None, not execute injection
+        assert result is None, "Result must not be empty"
 
     def test_retrieve_with_very_long_memory_id(self, tmp_path: Path) -> None:
         """Test retrieve with very long memory ID."""
@@ -446,7 +446,7 @@ class TestAgentMemoryRetrievalErrors:
 
         long_id = "x" * 100000
         result = memory.retrieve_memory(long_id)
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_retrieve_category_empty_results(self, tmp_path: Path) -> None:
         """Test search with no matching entries."""
@@ -474,8 +474,8 @@ class TestMemoryStorageEdgeCases:
         memory.store_memory(entry)
 
         retrieved = memory.retrieve_memory("unicode_test")
-        assert retrieved is not None
-        assert "你好世界" in retrieved.content
+        assert retrieved is not None, "retrieved must be initialized"
+        assert "你好世界" in retrieved.content, "Content must not be empty"
 
     def test_store_memory_with_null_bytes(self, tmp_path: Path) -> None:
         """Test storing memory with null bytes."""
@@ -495,7 +495,7 @@ class TestMemoryStorageEdgeCases:
             memory.store_memory(entry)
             retrieved = memory.retrieve_memory("null_test")
             if retrieved is not None:
-                assert retrieved.content is not None
+                assert retrieved.content is not None, "content must be initialized"
         except (sqlite3.ProgrammingError, ValueError):
             pass  # Expected for null bytes
 
@@ -521,6 +521,6 @@ class TestMemoryStorageEdgeCases:
         memory.store_memory(entry2)
 
         retrieved = memory.retrieve_memory("duplicate")
-        assert retrieved is not None
+        assert retrieved is not None, "retrieved must be initialized"
         # Should have the latest content
-        assert retrieved.content == "content2"
+        assert retrieved.content == "content2", "Content must not be empty"

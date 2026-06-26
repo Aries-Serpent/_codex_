@@ -76,4 +76,4 @@ def test_component_caps_reduce_component_value(tmp_path):
         scored = json.loads((artifacts / "capabilities_scored.json").read_text(encoding="utf-8"))
         c0 = next(c for c in scored["capabilities"] if c["id"] == cap["id"])
         # Functionality must be capped to 0.6
-        assert abs(c0["components"]["functionality"] - 0.6) < 1e-9
+        assert abs(c0["components"]["functionality"] - 0.6) < 1e-9, "Condition must be true"

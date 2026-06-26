@@ -61,13 +61,13 @@ def test_evaluate_epoch_basic():
 
     result = evaluate_epoch(model, data, criterion, device="cpu")
 
-    assert "loss" in result
-    assert "count" in result
-    assert "batches" in result
-    assert "duration_sec" in result
-    assert result["count"] == 2
-    assert result["batches"] == 1
-    assert result["loss"] >= 0.0
+    assert "loss" in result, "Result must not be empty"
+    assert "count" in result, "Result must not be empty"
+    assert "batches" in result, "Result must not be empty"
+    assert "duration_sec" in result, "Result must not be empty"
+    assert result["count"] == 2, "Result must not be empty"
+    assert result["batches"] == 1, "Result must not be empty"
+    assert result["loss"] >= 0.0, "Value must be greater than zero"
 
 
 def test_evaluate_epoch_multiple_batches():
@@ -81,8 +81,8 @@ def test_evaluate_epoch_multiple_batches():
 
     result = evaluate_epoch(model, data, criterion, device="cpu")
 
-    assert result["count"] == 5
-    assert result["batches"] == 2
+    assert result["count"] == 5, "Result must not be empty"
+    assert result["batches"] == 2, "Result must not be empty"
 
 
 def test_evaluate_epoch_with_metrics():
@@ -94,9 +94,9 @@ def test_evaluate_epoch_with_metrics():
 
     result = evaluate_epoch(model, data, criterion, device="cpu", metrics=metrics)
 
-    assert "metrics" in result
-    assert "accuracy" in result["metrics"]
-    assert 0.0 <= result["metrics"]["accuracy"] <= 1.0
+    assert "metrics" in result, "Result must not be empty"
+    assert "accuracy" in result["metrics"], "Result must not be empty"
+    assert 0.0 <= result["metrics"]["accuracy"] <= 1.0, "Result must not be empty"
 
 
 def test_evaluate_epoch_max_batches():
@@ -111,8 +111,8 @@ def test_evaluate_epoch_max_batches():
 
     result = evaluate_epoch(model, data, criterion, device="cpu", max_batches=2)
 
-    assert result["batches"] == 2
-    assert result["count"] == 4
+    assert result["batches"] == 2, "Result must not be empty"
+    assert result["count"] == 4, "Result must not be empty"
 
 
 def test_evaluate_epoch_deterministic():
@@ -132,8 +132,8 @@ def test_evaluate_epoch_deterministic():
     model.load_state_dict(model_state)
     result2 = evaluate_epoch(model, data, criterion, device="cpu", seed=42, deterministic=True)
 
-    assert result1["loss"] == result2["loss"]
-    assert result1["count"] == result2["count"]
+    assert result1["loss"] == result2["loss"], "Result must not be empty"
+    assert result1["count"] == result2["count"], "Result must not be empty"
 
 
 def test_evaluate_epoch_with_logger(tmp_path):
@@ -157,11 +157,11 @@ def test_evaluate_epoch_with_logger(tmp_path):
     evaluate_epoch(model, data, criterion, device="cpu", logger=[logger])
 
     # Should have batch and epoch records
-    assert len(logger.records) >= 2
+    assert len(logger.records) >= 2, "Collection must not be empty"
     batch_records = [r for r in logger.records if r.get("type") == "batch"]
     epoch_records = [r for r in logger.records if r.get("type") == "epoch"]
-    assert len(batch_records) == 1
-    assert len(epoch_records) == 1
+    assert len(batch_records) == 1, "Batch_records must not be empty"
+    assert len(epoch_records) == 1, "Epoch_records must not be empty"
 
 
 def test_evaluate_epoch_metric_error_handling():
@@ -177,11 +177,11 @@ def test_evaluate_epoch_metric_error_handling():
     result = evaluate_epoch(model, data, criterion, device="cpu", metrics=metrics)
 
     # Should return NaN for broken metric
-    assert "metrics" in result
-    assert "broken" in result["metrics"]
+    assert "metrics" in result, "Result must not be empty"
+    assert "broken" in result["metrics"], "Result must not be empty"
     import math
 
-    assert math.isnan(result["metrics"]["broken"])
+    assert math.isnan(result["metrics"]["broken"]), "Result must not be empty"
 
 
 def test_evaluate_epoch_empty_dataloader():
@@ -192,8 +192,8 @@ def test_evaluate_epoch_empty_dataloader():
 
     result = evaluate_epoch(model, data, criterion, device="cpu")
 
-    assert result["count"] == 0
-    assert result["batches"] == 0
+    assert result["count"] == 0, "Result must not be empty"
+    assert result["batches"] == 0, "Result must not be empty"
 
 
 def test_evaluate_epoch_with_prediction_transform():
@@ -224,9 +224,9 @@ def test_evaluate_epoch_with_prediction_transform():
         target_transform=_target_transform,
     )
 
-    assert "metrics" in result
-    assert "accuracy" in result["metrics"]
-    assert 0.0 <= result["metrics"]["accuracy"] <= 1.0
+    assert "metrics" in result, "Result must not be empty"
+    assert "accuracy" in result["metrics"], "Result must not be empty"
+    assert 0.0 <= result["metrics"]["accuracy"] <= 1.0, "Result must not be empty"
 
 
 def test_evaluate_epoch_sets_eval_mode():
@@ -241,7 +241,7 @@ def test_evaluate_epoch_sets_eval_mode():
 
     # Model should be in eval mode during evaluation
     # (though it returns to whatever mode it was in after)
-    assert result is not None
+    assert result is not None, "result must be initialized"
 
 
 def test_evaluate_epoch_invalid_batch_shape():
@@ -261,9 +261,9 @@ def test_evaluate_epoch_aligns_devices_cpu():
 
     evaluate_epoch(model, data, criterion, device="cpu")
 
-    assert next(model.parameters()).device.type == "cpu"
-    assert model.last_seen_device is not None
-    assert model.last_seen_device.type == "cpu"
+    assert next(model.parameters()).device.type == "cpu", "type is not valid"
+    assert model.last_seen_device is not None, "last_seen_device must be initialized"
+    assert model.last_seen_device.type == "cpu", "type is not valid"
 
 
 @pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA not available")
@@ -274,6 +274,6 @@ def test_evaluate_epoch_aligns_devices_cuda():
 
     evaluate_epoch(model, data, criterion, device="cuda")
 
-    assert next(model.parameters()).device.type == "cuda"
-    assert model.last_seen_device is not None
-    assert model.last_seen_device.type == "cuda"
+    assert next(model.parameters()).device.type == "cuda", "type is not valid"
+    assert model.last_seen_device is not None, "last_seen_device must be initialized"
+    assert model.last_seen_device.type == "cuda", "type is not valid"

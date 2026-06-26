@@ -64,9 +64,9 @@ def test_list_command_prints_registered_names(
 ) -> None:
     result = runner.invoke(plugins_cli.app, ["list", "tokenizers"])
 
-    assert result.exit_code == 0
-    assert "alpha" in result.stdout
-    assert "beta" in result.stdout
+    assert result.exit_code == 0, "Result must not be empty"
+    assert "alpha" in result.stdout, "Result must not be empty"
+    assert "beta" in result.stdout, "Result must not be empty"
 
 
 def test_diagnose_command_reports_entry_point_errors(
@@ -77,9 +77,9 @@ def test_diagnose_command_reports_entry_point_errors(
         ["diagnose", "tokenizers", "--use-entry-points"],
     )
 
-    assert result.exit_code == 0
-    assert "registered=2" in result.stdout
-    assert "broken: boom" in result.stdout
+    assert result.exit_code == 0, "Result must not be empty"
+    assert "registered=2" in result.stdout, "Result must not be empty"
+    assert "broken: boom" in result.stdout, "Result must not be empty"
     assert plugin_environment.tokenizers.load_calls == [("codex_ml.tokenizers", "v1")]
 
 
@@ -88,9 +88,9 @@ def test_explain_command_prints_plugin_metadata(
 ) -> None:
     result = runner.invoke(plugins_cli.app, ["explain", "models", "fancy"])
 
-    assert result.exit_code == 0
-    assert f"module: {plugin_environment.fancy_model.__module__}" in result.stdout
-    assert "Fancy model plugin for explain coverage." in result.stdout
+    assert result.exit_code == 0, "Result must not be empty"
+    assert f"module: {plugin_environment.fancy_model.__module__}" in result.stdout, "Result must not be empty"
+    assert "Fancy model plugin for explain coverage." in result.stdout, "Result must not be empty"
     assert "(value: int, factor: float = 1.0) -> float" in result.stdout
 
 
@@ -99,4 +99,4 @@ def test_explain_command_exits_non_zero_for_missing_plugin(
 ) -> None:
     result = runner.invoke(plugins_cli.app, ["explain", "models", "missing"])
 
-    assert result.exit_code == 1
+    assert result.exit_code == 1, "Result must not be empty"

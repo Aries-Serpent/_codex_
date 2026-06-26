@@ -71,7 +71,7 @@ class TestModuleImport:
         try:
             from codex_ml.training import strategies
 
-            assert strategies is not None
+            assert strategies is not None, "strategies must be initialized"
         except ImportError as e:
             pytest.skip(f"strategies module not available: {e}")
 
@@ -80,7 +80,7 @@ class TestModuleImport:
         try:
             from codex_ml.training.strategies import resolve_strategy
 
-            assert callable(resolve_strategy)
+            assert callable(resolve_strategy), "Condition must be true"
         except ImportError:
             pytest.skip("resolve_strategy not available")
 
@@ -89,7 +89,7 @@ class TestModuleImport:
         try:
             from codex_ml.training.strategies import TrainingCallback
 
-            assert TrainingCallback is not None
+            assert TrainingCallback is not None, "TrainingCallback must be initialized"
         except ImportError:
             pytest.skip("TrainingCallback not available")
 
@@ -98,7 +98,7 @@ class TestModuleImport:
         try:
             from codex_ml.training.strategies import TrainingResult
 
-            assert TrainingResult is not None
+            assert TrainingResult is not None, "TrainingResult must be initialized"
         except ImportError:
             pytest.skip("TrainingResult not available")
 
@@ -118,7 +118,7 @@ class TestStrategyResolution:
             from codex_ml.training.strategies import resolve_strategy
 
             strategy = resolve_strategy(strategy_name)
-            assert strategy is not None
+            assert strategy is not None, "strategy must be initialized"
         except ImportError:
             pytest.skip("resolve_strategy not available")
         except (ValueError, KeyError):
@@ -160,7 +160,7 @@ class TestTrainingCallback:
             from codex_ml.training.strategies import NoOpCallback
 
             callback = NoOpCallback()
-            assert callback is not None
+            assert callback is not None, "callback must be initialized"
         except ImportError:
             pytest.skip("NoOpCallback not available")
 
@@ -173,7 +173,7 @@ class TestTrainingCallback:
             if hasattr(callback, "on_epoch_start"):
                 result = callback.on_epoch_start(epoch=0, state={})
                 # Should complete without error
-                assert result is None or result is not None
+                assert result is None or result is not None, "result must be initialized"
         except ImportError:
             pytest.skip("NoOpCallback not available")
 
@@ -185,7 +185,7 @@ class TestTrainingCallback:
             callback = NoOpCallback()
             if hasattr(callback, "on_epoch_end"):
                 result = callback.on_epoch_end(epoch=0, metrics={}, state={})
-                assert result is None or result is not None
+                assert result is None or result is not None, "result must be initialized"
         except ImportError:
             pytest.skip("NoOpCallback not available")
 
@@ -197,7 +197,7 @@ class TestTrainingCallback:
             callback = NoOpCallback()
             if hasattr(callback, "on_step"):
                 result = callback.on_step(batch_index=0, global_step=0, loss=0.5, state={})
-                assert result is None or result is not None
+                assert result is None or result is not None, "result must be initialized"
         except ImportError:
             pytest.skip("NoOpCallback not available")
 
@@ -220,7 +220,7 @@ class TestTrainingResult:
                 epochs_completed=5,
                 final_loss=0.1,
             )
-            assert result.success is True
+            assert result.success is True, "Result must not be empty"
         except (ImportError, TypeError):
             pytest.skip("TrainingResult not available")
 
@@ -234,7 +234,7 @@ class TestTrainingResult:
                 epochs_completed=1,
                 metrics={"accuracy": 0.95, "loss": 0.05},
             )
-            assert result.metrics["accuracy"] == 0.95
+            assert result.metrics["accuracy"] == 0.95, "Result must not be empty"
         except (ImportError, TypeError):
             pytest.skip("TrainingResult not available")
 
@@ -247,7 +247,7 @@ class TestTrainingResult:
                 success=False,
                 error_message="Out of memory",
             )
-            assert result.success is False
+            assert result.success is False, "Result must not be empty"
         except (ImportError, TypeError):
             pytest.skip("TrainingResult not available")
 
@@ -279,7 +279,7 @@ class TestStrategyInterface:
             strategy = resolve_strategy("functional")
             UnifiedTrainingConfig(model_name="test")
             # Strategy should be configurable
-            assert strategy is not None
+            assert strategy is not None, "strategy must be initialized"
         except ImportError:
             pytest.skip("strategy or config not available")
 
@@ -317,6 +317,6 @@ class TestCallbackRegistration:
             from codex_ml.training.strategies import NoOpCallback
 
             callbacks = [NoOpCallback() for _ in range(3)]
-            assert len(callbacks) == 3
+            assert len(callbacks) == 3, "Callbacks must not be empty"
         except ImportError:
             pytest.skip("NoOpCallback not available")

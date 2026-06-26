@@ -30,20 +30,20 @@ def test_checkpoint_meta_roundtrip_and_digest(tmp_path: Path):
         json.dumps(manifest, separators=CANON_SEPARATORS, sort_keys=True), encoding="utf-8"
     )
     on_disk = json.loads(path.read_text(encoding="utf-8"))
-    assert compute_manifest_digest(on_disk) == digest
+    assert compute_manifest_digest(on_disk) == digest, "Condition must be true"
 
 
 def test_validate_manifest_reports_missing_fields():
     problems = validate_manifest({})
-    assert "missing field" in problems[0]
+    assert "missing field" in problems[0], "Condition must be true"
     good = {"run_id": "r", "step": 1, "epoch": 0, "created_utc": 0.0}
-    assert validate_manifest(good) == []
+    assert validate_manifest(good) == [], "Condition must be true"
 
 
 def test_new_manifest_includes_digest(monkeypatch):
     monkeypatch.setattr("codex_ml.checkpointing.schema_v2.time.time", lambda: 100.0)
     manifest = new_manifest("r", 1, 0)
-    assert manifest["run_id"] == "r"
-    assert manifest["digest"] == compute_manifest_digest(
+    assert manifest["run_id"] == "r", "Condition must be true"
+    assert manifest["digest"] == compute_manifest_digest(, "Condition must be true"
         {k: v for k, v in manifest.items() if k != "digest"}
     )

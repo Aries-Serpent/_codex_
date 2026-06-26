@@ -155,7 +155,7 @@ class AttentionScorer:
                     layer_names = [f"layer_{i}" for i in range(len(attention_weights))]
             except (ValueError, TypeError, RuntimeError) as e:
                 error_type = type(e).__name__
-                logger.warning(f"Could not extract attention using standard interface: <ERROR_TYPE>")
+                logger.warning("Could not extract attention using standard interface: <ERROR_TYPE>")
                 # Try forward pass with hooks
                 self.model(input_ids=input_ids, attention_mask=attention_mask)
 

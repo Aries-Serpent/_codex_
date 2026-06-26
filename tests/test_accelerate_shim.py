@@ -35,10 +35,10 @@ def test_accelerate_shim_prints_path(capsys, monkeypatch):
     out = capsys.readouterr().out
 
     if has_dlc:
-        assert "v>=0.30: using DataLoaderConfiguration path" in out
-        assert "mapped logging_dir -> project_dir" in out
+        assert "v>=0.30: using DataLoaderConfiguration path" in out, "Value must be greater than zero"
+        assert "mapped logging_dir -> project_dir" in out, "Condition must be true"
     else:
-        assert "v<0.30: using legacy kwargs path" in out
+        assert "v<0.30: using legacy kwargs path" in out, "Condition must be true"
 
 
 def test_accelerate_shim_handles_new_kwargs_on_legacy(capsys, monkeypatch):
@@ -63,12 +63,12 @@ def test_accelerate_shim_handles_new_kwargs_on_legacy(capsys, monkeypatch):
 
     acc = eng._make_accelerator(project_dir="/tmp/logs", dataloader_config=DummyDLC())
     out = capsys.readouterr().out
-    assert "mapped project_dir -> logging_dir" in out
-    assert "translated dataloader_config -> legacy kwargs" in out
-    assert "v<0.30: using legacy kwargs path" in out
-    assert acc.kwargs["logging_dir"] == "/tmp/logs"
-    assert acc.kwargs["dispatch_batches"] is True
-    assert acc.kwargs["split_batches"] is False
-    assert acc.kwargs["even_batches"] is True
-    assert "project_dir" not in acc.kwargs
-    assert "dataloader_config" not in acc.kwargs
+    assert "mapped project_dir -> logging_dir" in out, "Condition must be true"
+    assert "translated dataloader_config -> legacy kwargs" in out, "Data must not be empty"
+    assert "v<0.30: using legacy kwargs path" in out, "Condition must be true"
+    assert acc.kwargs["logging_dir"] == "/tmp/logs", "Condition must be true"
+    assert acc.kwargs["dispatch_batches"] is True, "Condition must be true"
+    assert acc.kwargs["split_batches"] is False, "Condition must be true"
+    assert acc.kwargs["even_batches"] is True, "Condition must be true"
+    assert "project_dir" not in acc.kwargs, "Condition must be true"
+    assert "dataloader_config" not in acc.kwargs, "Data must not be empty"

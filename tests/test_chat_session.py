@@ -26,11 +26,11 @@ def test_chat_session_logs_and_env(tmp_path, monkeypatch):
     monkeypatch.delenv("CODEX_SESSION_ID", raising=False)
     messages = ["hi", "yo"]
     with ChatSession(session_id="env-session", db_path=str(db)) as chat:
-        assert os.getenv("CODEX_SESSION_ID") == "env-session"
+        assert os.getenv("CODEX_SESSION_ID") == "env-session", "Condition must be true"
         chat.log_user(messages[0])
         chat.log_assistant(messages[1])
     expected_rows = 2 + len(messages)  # start/end plus one row per message
-    assert _count(db) == expected_rows
+    assert _count(db) == expected_rows, "Count must be greater than zero"
     with sqlite3.connect(db) as c:
         pairs = dict(
             c.execute(
@@ -38,9 +38,9 @@ def test_chat_session_logs_and_env(tmp_path, monkeypatch):
                 "WHERE message IN ('session_start','session_end') GROUP BY message"
             )
         )
-    assert pairs.get("session_start") == 1
-    assert pairs.get("session_end") == 1
-    assert os.getenv("CODEX_SESSION_ID") is None
+    assert pairs.get("session_start") == 1, "Condition must be true"
+    assert pairs.get("session_end") == 1, "Condition must be true"
+    assert os.getenv("CODEX_SESSION_ID") is None, "Condition must be true"
 
 
 def test_chat_session_generates_uuid(tmp_path, monkeypatch):
@@ -48,9 +48,9 @@ def test_chat_session_generates_uuid(tmp_path, monkeypatch):
     monkeypatch.delenv("CODEX_SESSION_ID", raising=False)
     with ChatSession(db_path=str(db)) as chat:
         sid = chat.session_id
-        assert os.getenv("CODEX_SESSION_ID") == sid
+        assert os.getenv("CODEX_SESSION_ID") == sid, "Condition must be true"
         uuid.UUID(sid)
-    assert os.getenv("CODEX_SESSION_ID") is None
+    assert os.getenv("CODEX_SESSION_ID") is None, "Condition must be true"
 
 
 def _load_chatsession():
@@ -89,7 +89,7 @@ def test_exception_restores_env():
             raise RuntimeError("boom")
     except RuntimeError:
         _ = None  # suppressed: no action needed
-    assert os.environ.get("CODEX_SESSION_ID") == "dummy"
+    assert os.environ.get("CODEX_SESSION_ID") == "dummy", "Condition must be true"
 
 
 def test_nested_sessions_restore_previous(tmp_path, monkeypatch):
@@ -102,7 +102,7 @@ def test_nested_sessions_restore_previous(tmp_path, monkeypatch):
 
     with chat_session_class(session_id="outer", db_path=str(db)):
         with chat_session_class(session_id="inner", db_path=str(db)):
-            assert os.environ.get("CODEX_SESSION_ID") == "inner"
-        assert os.environ.get("CODEX_SESSION_ID") == "outer"
+            assert os.environ.get("CODEX_SESSION_ID") == "inner", "Condition must be true"
+        assert os.environ.get("CODEX_SESSION_ID") == "outer", "Condition must be true"
 
-    assert os.environ.get("CODEX_SESSION_ID") == "outer"
+    assert os.environ.get("CODEX_SESSION_ID") == "outer", "Condition must be true"

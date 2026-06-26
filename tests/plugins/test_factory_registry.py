@@ -27,9 +27,9 @@ def test_registry_list_names():
 
     # List should include both (case-insensitive)
     names = registry.names()
-    assert "item_a" in names
-    assert "item_b" in names
-    assert len(names) == 2
+    assert "item_a" in names, "Item must not be empty"
+    assert "item_b" in names, "Item must not be empty"
+    assert len(names) == 2, "Names must not be empty"
 
 
 def test_registry_case_insensitive():
@@ -43,10 +43,10 @@ def test_registry_case_insensitive():
         pass
 
     # Should find with different casings
-    assert registry.get("myplugin") is not None
-    assert registry.get("MyPlugin") is not None
-    assert registry.get("MYPLUGIN") is not None
-    assert registry.get("mYpLuGiN") is not None
+    assert registry.get("myplugin") is not None, "Value must be initialized"
+    assert registry.get("MyPlugin") is not None, "Value must be initialized"
+    assert registry.get("MYPLUGIN") is not None, "Value must be initialized"
+    assert registry.get("mYpLuGiN") is not None, "Value must be initialized"
 
 
 def test_registry_register_decorator():
@@ -60,13 +60,13 @@ def test_registry_register_decorator():
         return sum(p == lbl for p, lbl in zip(preds, labels)) / len(preds)
 
     item = registry.get("accuracy")
-    assert item is not None
-    assert item.name == "accuracy"
-    assert item.meta.get("category") == "classification"
+    assert item is not None, "item must be initialized"
+    assert item.name == "accuracy", "Item must not be empty"
+    assert item.meta.get("category") == "classification", "Item must not be empty"
 
     # Should still work as a function
     result = accuracy([1, 2, 3], [1, 2, 0])
-    assert abs(result - 0.666) < 0.01
+    assert abs(result - 0.666) < 0.01, "Result must not be empty"
 
 
 def test_registry_resolve_and_instantiate():
@@ -82,11 +82,11 @@ def test_registry_resolve_and_instantiate():
 
     # Instantiate with default args
     model1 = registry.resolve_and_instantiate("simple_model")
-    assert model1.hidden_size == 128
+    assert model1.hidden_size == 128, "hidden_size is not valid"
 
     # Instantiate with custom args
     model2 = registry.resolve_and_instantiate("simple_model", hidden_size=256)
-    assert model2.hidden_size == 256
+    assert model2.hidden_size == 256, "hidden_size is not valid"
 
 
 def test_registry_missing_key_raises():
@@ -96,7 +96,7 @@ def test_registry_missing_key_raises():
     registry = Registry(kind="test")
 
     # get() returns None for missing keys
-    assert registry.get("nonexistent") is None
+    assert registry.get("nonexistent") is None, "Condition must be true"
 
     # resolve_and_instantiate() raises KeyError
     with pytest.raises(KeyError):
@@ -113,7 +113,7 @@ def test_metrics_registry_exists():
 
         # Check for some expected stable names (if they exist)
         # This validates the registry has been populated
-        assert isinstance(
+        assert isinstance(, "Condition must be true"
             BUILTIN_METRICS, (list, tuple, set, dict)
         )  # At minimum, should be defined
 
@@ -127,7 +127,7 @@ def test_model_factory_list():
         from codex_ml.models.factory import load_model
 
         # Function should exist and be callable
-        assert callable(load_model)
+        assert callable(load_model), "Condition must be true"
 
         # Should accept a config dict (basic smoke test)
         # Don't actually load - just verify interface
@@ -147,7 +147,7 @@ def test_plugin_registry_discover():
     # Test with nonexistent group (should return empty dict, not error)
     empty = discover(group="nonexistent.group.name")
     assert isinstance(empty, dict)
-    assert len(empty) == 0
+    assert len(empty) == 0, "Empty must not be empty"
 
 
 def test_plugin_registry_get():
@@ -156,7 +156,7 @@ def test_plugin_registry_get():
 
     # Should return None for missing plugins
     result = get("nonexistent_plugin", group="codex_ml.plugins")
-    assert result is None
+    assert result is None, "Result must not be empty"
 
 
 def test_registry_load_from_entry_points():
@@ -171,12 +171,12 @@ def test_registry_load_from_entry_points():
 
     assert isinstance(count, int)
     assert isinstance(errors, dict)
-    assert count >= 0
+    assert count >= 0, "count must be positive"
 
     # Test with nonexistent group
     count2, errors2 = registry.load_from_entry_points(group="nonexistent.group")
-    assert count2 == 0
-    assert len(errors2) == 0
+    assert count2 == 0, "Count must be greater than zero"
+    assert len(errors2) == 0, "Errors2 must not be empty"
 
 
 def test_data_loader_registry():
@@ -185,7 +185,7 @@ def test_data_loader_registry():
         from codex_ml.data.registry import load_line_dataset
 
         # Function should exist and be callable
-        assert callable(load_line_dataset)
+        assert callable(load_line_dataset), "Data must not be empty"
 
     except ImportError:
         pytest.skip("codex_ml.data.registry not available")
@@ -203,8 +203,8 @@ def test_data_loader_registry():
 def test_entry_point_groups_stable(group, expected_prefix):
     """Test that entry point group names follow stable conventions."""
     # Just verify group names follow expected pattern
-    assert group.startswith(expected_prefix)
-    assert "." in group  # Should have namespace separator
+    assert group.startswith(expected_prefix), "Condition must be true"
+    assert "." in group, "Condition must be true"
 
 
 def test_registry_duplicate_warning(caplog):
@@ -224,4 +224,4 @@ def test_registry_duplicate_warning(caplog):
     # Second registration should have warned (check implementation)
     # For now, just verify the registry has the item
     item = registry.get("duplicate")
-    assert item is not None
+    assert item is not None, "item must be initialized"

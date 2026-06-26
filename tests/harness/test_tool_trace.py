@@ -15,13 +15,13 @@ def test_tool_trace_records_invocation(tmp_path):
     record = tracer.run_tool("python", ["-c", "print('trace-log')"])
 
     lines = log_path.read_text().splitlines()
-    assert len(lines) == 1
+    assert len(lines) == 1, "Lines must not be empty"
 
     entry = json.loads(lines[0])
-    assert entry["tool"] == "python"
-    assert entry["exit_code"] == 0
-    assert "trace-log" in entry["stdout"]
-    assert record.ra_gate_match is None
+    assert entry["tool"] == "python", "Condition must be true"
+    assert entry["exit_code"] == 0, "Condition must be true"
+    assert "trace-log" in entry["stdout"], "Condition must be true"
+    assert record.ra_gate_match is None, "ra_gate_match is not valid"
 
 
 def test_tool_trace_ra_gate_mismatch(tmp_path):
@@ -33,8 +33,8 @@ def test_tool_trace_ra_gate_mismatch(tmp_path):
 
     record = tracer.run_tool("python", ["-c", "import sys; sys.exit(1)"], check=False)
 
-    assert record.ra_gate_expected is True
-    assert record.ra_gate_match is False
+    assert record.ra_gate_expected is True, "ra_gate_expected is not valid"
+    assert record.ra_gate_match is False, "ra_gate_match is not valid"
 
     invocations = tracer.read_invocations()
-    assert len(invocations) == 1
+    assert len(invocations) == 1, "Invocations must not be empty"

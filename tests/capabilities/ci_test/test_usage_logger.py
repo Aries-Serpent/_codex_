@@ -31,15 +31,15 @@ class TestLogUsage:
             effective_minutes=10.0,
             tier="GREEN",
         )
-        assert tmp_log.exists()
+        assert tmp_log.exists(), "Condition must be true"
 
     def test_appends_valid_json_lines(self, tmp_log: Path) -> None:
         ul.log_usage(workflow="W1", runner="ubuntu-latest", effective_minutes=5.0, tier="GREEN")
         ul.log_usage(workflow="W2", runner="ubuntu-latest", effective_minutes=50.0, tier="YELLOW")
         lines = [json.loads(ln) for ln in tmp_log.read_text().splitlines() if ln.strip()]
-        assert len(lines) == 2
-        assert lines[0]["workflow"] == "W1"
-        assert lines[1]["tier"] == "YELLOW"
+        assert len(lines) == 2, "Lines must not be empty"
+        assert lines[0]["workflow"] == "W1", "Condition must be true"
+        assert lines[1]["tier"] == "YELLOW", "Condition must be true"
 
     def test_fields_present(self, tmp_log: Path) -> None:
         entry = ul.log_usage(
@@ -52,11 +52,11 @@ class TestLogUsage:
             sha="abc123",
             approved=True,
         )
-        assert "ts" in entry
-        assert entry["effective_minutes"] == 120.0
-        assert entry["pr"] == "42"
-        assert entry["sha"] == "abc123"
-        assert entry["approved"] is True
+        assert "ts" in entry, "Condition must be true"
+        assert entry["effective_minutes"] == 120.0, "Condition must be true"
+        assert entry["pr"] == "42", "Condition must be true"
+        assert entry["sha"] == "abc123", "Condition must be true"
+        assert entry["approved"] is True, "Condition must be true"
 
     def test_sha_truncated_to_12(self, tmp_log: Path) -> None:
         entry = ul.log_usage(
@@ -66,14 +66,14 @@ class TestLogUsage:
             tier="GREEN",
             sha="abcdefghijklmnop",
         )
-        assert len(entry["sha"]) <= 12
+        assert len(entry["sha"]) <= 12, "Collection must not be empty"
 
     def test_optional_fields_omitted_when_empty(self, tmp_log: Path) -> None:
         entry = ul.log_usage(workflow="W", runner="r", effective_minutes=1.0, tier="GREEN")
-        assert "pr" not in entry
-        assert "branch" not in entry
-        assert "sha" not in entry
-        assert "approved" not in entry
+        assert "pr" not in entry, "Condition must be true"
+        assert "branch" not in entry, "Condition must be true"
+        assert "sha" not in entry, "Condition must be true"
+        assert "approved" not in entry, "Condition must be true"
 
 
 # ── monthly_summary ────────────────────────────────────────────────────────
@@ -82,8 +82,8 @@ class TestLogUsage:
 class TestMonthlySummary:
     def test_no_log_returns_zero(self, tmp_log: Path) -> None:
         summary = ul.monthly_summary(tmp_log)
-        assert summary["total_minutes"] == 0.0
-        assert summary["entries"] == 0
+        assert summary["total_minutes"] == 0.0, "Condition must be true"
+        assert summary["entries"] == 0, "Condition must be true"
 
     def test_sums_current_month_only(self, tmp_log: Path) -> None:
         import datetime
@@ -116,8 +116,8 @@ class TestMonthlySummary:
             fh.write(json.dumps(entry_old) + "\n")
 
         summary = ul.monthly_summary(tmp_log)
-        assert summary["total_minutes"] == 30.0
-        assert summary["entries"] == 1
+        assert summary["total_minutes"] == 30.0, "Condition must be true"
+        assert summary["entries"] == 1, "Condition must be true"
 
     def test_accumulates_multiple_entries(self, tmp_log: Path) -> None:
         import datetime
@@ -134,7 +134,7 @@ class TestMonthlySummary:
 
         summary = ul.monthly_summary(tmp_log)
         assert summary["total_minutes"] == pytest.approx(90.5, rel=1e-3)
-        assert summary["entries"] == 3
+        assert summary["entries"] == 3, "Condition must be true"
 
     def test_ignores_malformed_lines(self, tmp_log: Path) -> None:
         import datetime
@@ -145,7 +145,7 @@ class TestMonthlySummary:
             fh.write(json.dumps({"ts": ts, "effective_minutes": 15.0, "tier": "GREEN"}) + "\n")
 
         summary = ul.monthly_summary(tmp_log)
-        assert summary["total_minutes"] == 15.0
+        assert summary["total_minutes"] == 15.0, "Condition must be true"
 
 
 # ── budget alert exit code ─────────────────────────────────────────────────
@@ -160,7 +160,7 @@ class TestBudgetAlert:
             fh.write(json.dumps({"ts": ts, "effective_minutes": 100.0, "tier": "GREEN"}) + "\n")
 
         summary = ul.monthly_summary(tmp_log)
-        assert summary["total_minutes"] < 2500.0
+        assert summary["total_minutes"] < 2500.0, "Condition must be true"
 
     def test_at_threshold_returns_alert(self, tmp_log: Path) -> None:
         import datetime
@@ -170,4 +170,4 @@ class TestBudgetAlert:
             fh.write(json.dumps({"ts": ts, "effective_minutes": 2500.0, "tier": "RED"}) + "\n")
 
         summary = ul.monthly_summary(tmp_log)
-        assert summary["total_minutes"] >= 2500.0
+        assert summary["total_minutes"] >= 2500.0, "Value must be greater than zero"

@@ -20,10 +20,10 @@ class TestLegacyImport:
             from training.seed_utils import set_all_seeds
 
             # Function should exist
-            assert callable(set_all_seeds)
+            assert callable(set_all_seeds), "Condition must be true"
 
     def test_all_exports(self):
         """Test __all__ exports."""
         from training.seed_utils import __all__
 
-        assert "set_all_seeds" in __all__
+        assert "set_all_seeds" in __all__, "Condition must be true"

@@ -20,9 +20,9 @@ def test_write_splits_creates_manifest(tmp_path):
     val = (out_dir / "val.txt").read_text(encoding="utf-8").splitlines()
     test = (out_dir / "test.txt").read_text(encoding="utf-8").splitlines()
 
-    assert len(train) + len(val) + len(test) == len(items)
+    assert len(train) + len(val) + len(test) == len(items), "Train must not be empty"
 
     manifest = json.loads((out_dir / "manifest.json").read_text(encoding="utf-8"))
-    assert manifest["seed"] == 123
-    assert manifest["counts"]["train"] == len(train)
-    assert manifest["dataset_hash"]
+    assert manifest["seed"] == 123, "Condition must be true"
+    assert manifest["counts"]["train"] == len(train), "Train must not be empty"
+    assert manifest["dataset_hash"], "Data must not be empty"

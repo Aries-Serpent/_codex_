@@ -137,7 +137,7 @@ class Phase6Deployer:
                 all_valid = False
             except Exception as e:
                 error_type = type(e).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.debug("Exception: <ERROR_TYPE>")
                 logger.error(f"  ✗ Error validating {config_file}: <ERROR_TYPE>")
                 self.results["validations"][config_file] = {"status": "error", "error": str(e)}
                 all_valid = False
@@ -216,8 +216,8 @@ class Phase6Deployer:
 
         except Exception as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.error(f"✗ Error initializing feature store: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.error("✗ Error initializing feature store: <ERROR_TYPE>")
             self.results["deployments"]["feature_store"] = {"status": "error", "error": str(e)}
             return False
 
@@ -284,8 +284,8 @@ class Phase6Deployer:
 
         except Exception as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.error(f"✗ Error setting up monitoring: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.error("✗ Error setting up monitoring: <ERROR_TYPE>")
             self.results["deployments"]["monitoring"] = {"status": "error", "error": str(e)}
             return False
 
@@ -350,8 +350,8 @@ class Phase6Deployer:
 
         except Exception as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.error(f"✗ Error running integration tests: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.error("✗ Error running integration tests: <ERROR_TYPE>")
             self.results["tests"]["integration"] = {"status": "error", "error": str(e)}
             return False
 
@@ -378,7 +378,7 @@ class Phase6Deployer:
                 checks.append(False)
         except Exception as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             logger.info("  ✓ Base config doesn't enforce MLflow")
             checks.append(True)
 
@@ -401,8 +401,8 @@ class Phase6Deployer:
                     checks.append(False)
         except Exception as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.warning(f"  ⚠ Could not verify training API: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.warning("  ⚠ Could not verify training API: <ERROR_TYPE>")
             checks.append(False)
 
         # Check 3: Production configs are opt-in

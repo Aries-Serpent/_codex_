@@ -32,16 +32,16 @@ These scripts are referenced in documentation but do not exist in the repository
 
 | Rank | Script Path | Count | Source Files | Classification | Action |
 |------|------------|-------|-------------|-----------------|--------|
-| 1 | `scripts/run.py` | 40 | TASK_3_NOTEBOOKLM_SKILL_SETUP.md | Hypothetical (planning) | ⚠️ Update docs or create script |
-| 4 | `scripts/security/copilot_token_decoder.py` | 12 | security/token_encryption_tool_review_2026-01-01.md | Archive path (moved) | 🗂️ Update to new location |
+| 1 | `scripts/run.py` | 40 | TASK_3_NOTEBOOKLM_SKILL_SETUP.md | Hypothetical (planning) | ⚠️ Update docs or create script | <!-- pragma: allowlist secret -->
+| 4 | `scripts/security/copilot_token_decoder.py` | 12 | security/token_encryption_tool_review_2026-01-01.md | Archive path (moved) | 🗂️ Update to new location | <!-- pragma: allowlist secret -->
 | 8 | `scripts/ai_architect_check.py` | 6 | PHASE_10_MASTER_INTEGRATION_PLANSET.md | Hypothetical (phase plan) | 🗂️ Verify location or update |
 | 9 | `scripts/generate_health_report.py` | 6 | PHASE_10_MASTER_INTEGRATION_PLANSET.md | Hypothetical (phase plan) | 🗂️ Verify location or update |
-| 12 | `scripts/manage_db_credentials.py` | 4 | SECRET_ROTATION_POLICY.md | Hypothetical (not implemented) | ⚠️ Remove or document status |
+| 12 | `scripts/manage_db_credentials.py` | 4 | SECRET_ROTATION_POLICY.md | Hypothetical (not implemented) | ⚠️ Remove or document status | <!-- pragma: allowlist secret -->
 | 13 | `scripts/phase11/auto_upload_gdrive.py` | 4 | PHASE_11_X_*.md | Hypothetical (phase11 plan) | 🗂️ Phase-specific (archive?) |
 | 14 | `scripts/ci/validate_handoff_manifest.py` | 4 | READINESS_AUDIT_ANALYSIS.md | Hypothetical (proposed) | 🗂️ Verify location or update |
 | 15 | `scripts/ci/handoff_context_population.py` | 4 | READINESS_AUDIT_ANALYSIS.md | Hypothetical (proposed) | 🗂️ Verify location or update |
 | 18 | `scripts/dev_setup_automation.py` | 3 | PLANSET_100_PERCENT_METRICS_ACHIEVEMENT.md | Hypothetical (not implemented) | ⚠️ Remove or update docs |
-| 19 | `scripts/rotate_secret.py` | 3 | INCIDENT_RESPONSE_PLAYBOOKS.md | Hypothetical (operations runbook) | ⚠️ Remove or document status |
+| 19 | `scripts/rotate_secret.py` | 3 | INCIDENT_RESPONSE_PLAYBOOKS.md | Hypothetical (operations runbook) | ⚠️ Remove or document status | <!-- pragma: allowlist secret -->
 | 20 | `scripts/aftermath/living_doc_sync.py` | 3 | copilot_agent_session_standard_operation.md | Hypothetical (proposed) | 🗂️ Verify location or update |
 
 **Subtotal: Tier 1 (Single Scripts) = 95 references across 73 files**
@@ -91,7 +91,7 @@ Scripts that likely exist but in different locations:
 
 | Original Ref | Likely Actual Location | Count | Status |
 |-------------|----------------------|-------|--------|
-| `scripts/security/copilot_token_decoder.py` | Need verification | 12 | 🔍 Investigate |
+| `scripts/security/copilot_token_decoder.py` | Need verification | 12 | 🔍 Investigate | <!-- pragma: allowlist secret -->
 | `scripts/coverage/check_coverage.py` | Check in coverage/ | 3 | 🔍 Investigate |
 | `scripts/coverage/run_coverage.sh` | Check in coverage/ | 2 | 🔍 Investigate |
 | `scripts/coverage/generate_test_template.py` | Check in coverage/ | 2 | 🔍 Investigate |

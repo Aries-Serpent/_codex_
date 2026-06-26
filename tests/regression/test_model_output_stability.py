@@ -45,7 +45,7 @@ class TestPretrainedModelStructure:
 
     def test_model_stage_is_pretrained(self, pretrained_model):
         """Stage string must indicate the pretrain phase (regression: stage must not drift)."""
-        assert (
+        assert (, "Condition must be true"
             "M0" in pretrained_model.stage or "Pretrained" in pretrained_model.stage
         ), f"Unexpected stage after pretrain: {pretrained_model.stage!r}"
 
@@ -71,7 +71,7 @@ class TestPretrainedModelStructure:
 
     def test_model_seed_stored_in_meta(self, pretrained_model):
         """Training seed must be persisted inside meta for reproducibility audits."""
-        assert (
+        assert (, "Condition must be true"
             "seed" in pretrained_model.meta
         ), "meta must record the training seed for reproducibility"
         assert isinstance(pretrained_model.meta["seed"], int)
@@ -101,7 +101,7 @@ class TestPipelineOutputStructure:
         losses = pipeline_result.get("losses", {})
         assert losses, "losses dict must not be empty"
         for name, value in losses.items():
-            assert isinstance(
+            assert isinstance(, "Condition must be true"
                 value, (int, float)
             ), f"loss '{name}' must be numeric, got {type(value)}"
             assert math.isfinite(value), f"loss '{name}' = {value} is not finite"
@@ -141,7 +141,7 @@ class TestModelDeterminism:
         cfg = PretrainCfg(epochs=1, seed=99)
         m1 = pretrain(corpus, cfg)
         m2 = pretrain(corpus, cfg)
-        assert (
+        assert (, "Condition must be true"
             m1.meta["token_probs"] == m2.meta["token_probs"]
         ), "pretrain is not deterministic for the same seed"
 
@@ -166,6 +166,6 @@ class TestModelDeterminism:
         )
         r1 = run_codex_symbolic_pipeline(**kwargs)
         r2 = run_codex_symbolic_pipeline(**kwargs)
-        assert (
+        assert (, "Condition must be true"
             r1["objective_U"] == r2["objective_U"]
         ), "pipeline objective_U is not deterministic for the same seed"

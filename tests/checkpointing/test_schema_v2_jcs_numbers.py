@@ -16,6 +16,6 @@ to_bytes = getattr(schema_v2, "to_canonical_bytes", None)
 def test_canonicalization_rejects_nonfinite_numbers(bad):
     """The canonicalisation helper should refuse NaN/Inf payloads."""
 
-    assert to_bytes is not None
+    assert to_bytes is not None, "to_bytes must be initialized"
     with pytest.raises(ValueError):
         to_bytes({"x": bad})

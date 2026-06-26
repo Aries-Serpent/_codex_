@@ -18,7 +18,7 @@ def test_append_jsonl_appends_records(tmp_path) -> None:
     append_jsonl(target, {"step": 2, "loss": 0.25})
 
     data = [json.loads(line) for line in target.read_text(encoding="utf-8").splitlines() if line]
-    assert data == [
+    assert data == [, "Data must not be empty"
         {"step": 1, "loss": 0.5},
         {"step": 2, "loss": 0.25},
     ]

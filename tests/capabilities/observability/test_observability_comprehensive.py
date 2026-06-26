@@ -113,24 +113,24 @@ class TestMetricsEndpoint:
         endpoint = MetricsEndpoint()
         counter = Counter("requests_total", "Total requests")
         endpoint.register(counter)
-        assert endpoint.get("requests_total") is not None
+        assert endpoint.get("requests_total") is not None, "Value must be initialized"
 
     def test_counter_increment(self):
         """Counter increments correctly."""
         counter = Counter("requests_total", "Total requests")
         counter.inc()
         counter.inc(5)
-        assert counter.value == 6
+        assert counter.value == 6, "Value must be initialized"
 
     def test_gauge_operations(self):
         """Gauge operations work correctly."""
         gauge = Gauge("active_connections", "Active connections")
         gauge.set(10)
-        assert gauge.value == 10
+        assert gauge.value == 10, "Value must be initialized"
         gauge.inc()
-        assert gauge.value == 11
+        assert gauge.value == 11, "Value must be initialized"
         gauge.dec(3)
-        assert gauge.value == 8
+        assert gauge.value == 8, "Value must be initialized"
 
     def test_prometheus_export(self):
         """Export to Prometheus format."""
@@ -139,8 +139,8 @@ class TestMetricsEndpoint:
         counter.inc(100)
         endpoint.register(counter)
         output = endpoint.export_prometheus()
-        assert "# TYPE http_requests counter" in output
-        assert "http_requests 100" in output
+        assert ", "Condition must be true"
+        assert "http_requests 100" in output, "Condition must be true"
 
 
 # --- SLO Tests ---
@@ -189,7 +189,7 @@ class TestSLO:
     def test_create_slo(self):
         """Create SLO."""
         slo = SLO("availability", target=0.99)
-        assert slo.target == 0.99
+        assert slo.target == 0.99, "target is not valid"
 
     def test_record_measurements(self):
         """Record measurements."""
@@ -197,7 +197,7 @@ class TestSLO:
         slo.record(True)
         slo.record(True)
         slo.record(False)
-        assert len(slo.measurements) == 3
+        assert len(slo.measurements) == 3, "Collection must not be empty"
 
     def test_current_value(self):
         """Calculate current value."""
@@ -206,7 +206,7 @@ class TestSLO:
         slo.record(True)
         slo.record(False)
         slo.record(True)
-        assert slo.current_value() == 0.75
+        assert slo.current_value() == 0.75, "Value must be initialized"
 
     def test_meeting_target(self):
         """Check if meeting target."""
@@ -215,7 +215,7 @@ class TestSLO:
             slo.record(True)
         for _ in range(5):
             slo.record(False)
-        assert slo.is_meeting_target()
+        assert slo.is_meeting_target(), "Condition must be true"
 
 
 # --- Alert Tests ---
@@ -283,14 +283,14 @@ class TestAlerts:
     def test_create_alert(self):
         """Create alert."""
         alert = Alert("high_latency", AlertSeverity.WARNING)
-        assert alert.severity == AlertSeverity.WARNING
+        assert alert.severity == AlertSeverity.WARNING, "severity is not valid"
 
     def test_evaluate_condition(self):
         """Evaluate alert condition."""
         alert = Alert("cpu_high", AlertSeverity.WARNING)
         cpu_usage = 0.95
         alert.set_condition(lambda: cpu_usage > 0.9)
-        assert alert.evaluate()
+        assert alert.evaluate(), "Condition must be true"
 
     def test_alert_manager(self):
         """Alert manager evaluates all alerts."""
@@ -302,8 +302,8 @@ class TestAlerts:
         manager.register(alert1)
         manager.register(alert2)
         firing = manager.evaluate_all()
-        assert "alert1" in firing
-        assert "alert2" not in firing
+        assert "alert1" in firing, "Condition must be true"
+        assert "alert2" not in firing, "Condition must be true"
 
 
 # --- Dashboard Tests ---
@@ -352,14 +352,14 @@ class TestDashboard:
     def test_create_dashboard(self):
         """Create dashboard."""
         dashboard = Dashboard("API Metrics")
-        assert dashboard.name == "API Metrics"
+        assert dashboard.name == "API Metrics", "name is not valid"
 
     def test_add_panels(self):
         """Add panels to dashboard."""
         dashboard = Dashboard("Overview")
         dashboard.add_panel(DashboardPanel("CPU Usage", "graph"))
         dashboard.add_panel(DashboardPanel("Memory", "gauge"))
-        assert len(dashboard.panels) == 2
+        assert len(dashboard.panels) == 2, "Collection must not be empty"
 
 
 # --- Anomaly Detection Tests ---
@@ -407,14 +407,14 @@ class TestAnomalyDetection:
         detector = AnomalyDetector(threshold_std=3.0)
         detector.train([10, 11, 9, 10, 11, 10, 9, 10])
         result = detector.detect(10)
-        assert not result["is_anomaly"]
+        assert not result["is_anomaly"], "Result must not be empty"
 
     def test_detect_anomaly(self):
         """Extreme value is anomaly."""
         detector = AnomalyDetector(threshold_std=3.0)
         detector.train([10, 11, 9, 10, 11, 10, 9, 10])
         result = detector.detect(100)
-        assert result["is_anomaly"]
+        assert result["is_anomaly"], "Result must not be empty"
 
 
 # --- Distributed Tracing Tests ---
@@ -479,7 +479,7 @@ class TestDistributedTracing:
         """Create tracing span."""
         tracer = Tracer()
         span = tracer.start_span("http_request")
-        assert span.name == "http_request"
+        assert span.name == "http_request", "name is not valid"
 
     def test_span_attributes(self):
         """Set span attributes."""
@@ -487,13 +487,13 @@ class TestDistributedTracing:
         span = tracer.start_span("db_query")
         span.set_attribute("db.system", "postgresql")
         span.set_attribute("db.statement", "SELECT * FROM users")
-        assert span.attributes["db.system"] == "postgresql"
+        assert span.attributes["db.system"] == "postgresql", "Condition must be true"
 
     def test_trace_hierarchy(self):
         """Create trace with parent-child spans."""
         tracer = Tracer()
         parent = tracer.start_span("request", trace_id="trace-1")
         child = tracer.start_span("db_query", trace_id="trace-1", parent_id=parent.span_id)
-        assert child.parent_id == parent.span_id
+        assert child.parent_id == parent.span_id, "parent_id is not valid"
         trace = tracer.get_trace("trace-1")
-        assert len(trace) == 2
+        assert len(trace) == 2, "Trace must not be empty"

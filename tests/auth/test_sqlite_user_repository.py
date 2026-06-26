@@ -38,14 +38,14 @@ class TestSQLiteUserRepositoryCreate:
         user = _make_user()
         repo.create(user)
         found = repo.get_by_id(user.user_id)
-        assert found is not None
-        assert found.user_id == user.user_id
-        assert found.username == user.username
+        assert found is not None, "found must be initialized"
+        assert found.user_id == user.user_id, "user_id is not valid"
+        assert found.username == user.username, "username is not valid"
 
     def test_create_returns_user(self, repo: SQLiteUserRepository) -> None:
         user = _make_user()
         returned = repo.create(user)
-        assert returned.user_id == user.user_id
+        assert returned.user_id == user.user_id, "user_id is not valid"
 
     def test_create_duplicate_username_raises(self, repo: SQLiteUserRepository) -> None:
         repo.create(_make_user("bob", "bob@example.com", "id-bob"))
@@ -71,11 +71,11 @@ class TestSQLiteUserRepositoryCreate:
         )
         repo.create(user)
         found = repo.get_by_id("uid-full")
-        assert found is not None
-        assert found.is_active is False
+        assert found is not None, "found must be initialized"
+        assert found.is_active is False, "is_active is not valid"
         assert found.roles == ["admin", "user"]
-        assert found.display_name == "Dave Smith"
-        assert found.created_at == pytest.approx(1_700_000_000.0)
+        assert found.display_name == "Dave Smith", "display_name is not valid"
+        assert found.created_at == pytest.approx(1_700_000_000.0), "created_at is not valid"
 
 
 class TestSQLiteUserRepositoryReadQueries:
@@ -83,38 +83,38 @@ class TestSQLiteUserRepositoryReadQueries:
         user = _make_user("eve", "eve@example.com")
         repo.create(user)
         found = repo.get_by_username("eve")
-        assert found is not None
-        assert found.email == "eve@example.com"
+        assert found is not None, "found must be initialized"
+        assert found.email == "eve@example.com", "email is not valid"
 
     def test_get_by_username_missing(self, repo: SQLiteUserRepository) -> None:
-        assert repo.get_by_username("nobody") is None
+        assert repo.get_by_username("nobody") is None, "Condition must be true"
 
     def test_get_by_email(self, repo: SQLiteUserRepository) -> None:
         user = _make_user("frank", "frank@example.com")
         repo.create(user)
         found = repo.get_by_email("frank@example.com")
-        assert found is not None
-        assert found.username == "frank"
+        assert found is not None, "found must be initialized"
+        assert found.username == "frank", "username is not valid"
 
     def test_get_by_email_case_insensitive(self, repo: SQLiteUserRepository) -> None:
         user = _make_user("grace", "grace@example.com")
         repo.create(user)
         found = repo.get_by_email("GRACE@EXAMPLE.COM")
-        assert found is not None
+        assert found is not None, "found must be initialized"
 
     def test_get_by_id_missing(self, repo: SQLiteUserRepository) -> None:
-        assert repo.get_by_id("nonexistent") is None
+        assert repo.get_by_id("nonexistent") is None, "Condition must be true"
 
     def test_list_all_returns_all_users(self, repo: SQLiteUserRepository) -> None:
         repo.create(_make_user("henry", "henry@example.com", "id-henry"))
         repo.create(_make_user("iris", "iris@example.com", "id-iris"))
         users = repo.list_all()
         ids = {u.user_id for u in users}
-        assert "id-henry" in ids
-        assert "id-iris" in ids
+        assert "id-henry" in ids, "Condition must be true"
+        assert "id-iris" in ids, "Condition must be true"
 
     def test_list_all_empty(self, repo: SQLiteUserRepository) -> None:
-        assert repo.list_all() == []
+        assert repo.list_all() == [], "Condition must be true"
 
     def test_list_all_includes_inactive(self, repo: SQLiteUserRepository) -> None:
         inactive = User(
@@ -126,7 +126,7 @@ class TestSQLiteUserRepositoryReadQueries:
         )
         repo.create(inactive)
         users = repo.list_all()
-        assert any(u.user_id == "id-inactive" for u in users)
+        assert any(u.user_id == "id-inactive" for u in users), "user_id is not valid"
 
 
 class TestSQLiteUserRepositoryUpdate:
@@ -137,8 +137,8 @@ class TestSQLiteUserRepositoryUpdate:
         user.updated_at = time.time()
         repo.update(user)
         found = repo.get_by_id(user.user_id)
-        assert found is not None
-        assert found.password_hash == "newsalt:newhash"
+        assert found is not None, "found must be initialized"
+        assert found.password_hash == "newsalt:newhash", "password_hash is not valid"
 
     def test_update_deactivates_user(self, repo: SQLiteUserRepository) -> None:
         user = _make_user("leo", "leo@example.com")
@@ -146,8 +146,8 @@ class TestSQLiteUserRepositoryUpdate:
         user.is_active = False
         repo.update(user)
         found = repo.get_by_id(user.user_id)
-        assert found is not None
-        assert found.is_active is False
+        assert found is not None, "found must be initialized"
+        assert found.is_active is False, "is_active is not valid"
 
     def test_update_nonexistent_raises(self, repo: SQLiteUserRepository) -> None:
         ghost = _make_user("ghost", "ghost@example.com", "id-ghost")
@@ -160,7 +160,7 @@ class TestSQLiteUserRepositoryDelete:
         user = _make_user("mia", "mia@example.com")
         repo.create(user)
         repo.delete(user.user_id)
-        assert repo.get_by_id(user.user_id) is None
+        assert repo.get_by_id(user.user_id) is None, "Condition must be true"
 
     def test_delete_nonexistent_raises(self, repo: SQLiteUserRepository) -> None:
         with pytest.raises(KeyError):
@@ -192,7 +192,7 @@ class TestSQLiteUserRepositoryThreadSafety:
             t.join()
 
         assert errors == [], f"Thread errors: {errors}"
-        assert len(repo.list_all()) == 20
+        assert len(repo.list_all()) == 20, "Collection must not be empty"
 
     def test_concurrent_reads_and_writes(self, repo: SQLiteUserRepository) -> None:
         """Read-while-write should not raise or deadlock."""
@@ -244,5 +244,5 @@ class TestSQLiteUserRepositoryTwoInstances:
 
         # repo_b should see the user written by repo_a
         found = repo_b.get_by_id(user.user_id)
-        assert found is not None
-        assert found.username == "shared"
+        assert found is not None, "found must be initialized"
+        assert found.username == "shared", "username is not valid"

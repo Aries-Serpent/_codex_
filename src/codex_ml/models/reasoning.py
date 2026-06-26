@@ -208,7 +208,7 @@ class ReasoningHarness:
                     return tensor, mode_used
                 except (ValueError, TypeError, RuntimeError) as exc:
                     error_type = type(exc).__name__
-                    logger.debug(f"Exception: <ERROR_TYPE>")
+                    logger.debug("Exception: <ERROR_TYPE>")
                     logger.warning(
                         "Activation vectorization failed; falling back to weights: %s",
                         exc,

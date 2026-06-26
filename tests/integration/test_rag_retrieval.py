@@ -35,7 +35,7 @@ class TestRetrieverInitialization:
         """Test Retriever can be imported."""
         from codex.rag.retriever import Retriever
 
-        assert Retriever is not None
+        assert Retriever is not None, "Retriever must be initialized"
 
     @patch("codex.rag.retriever.SentenceTransformer")
     def test_retriever_initialization_basic(self, mock_st):
@@ -48,8 +48,8 @@ class TestRetrieverInitialization:
         with patch.object(Retriever, "_load_index"):
             retriever = Retriever(index_dir="/tmp/test", model_name="test-model")
 
-            assert retriever.index_dir == "/tmp/test"
-            assert retriever.model_name == "test-model"
+            assert retriever.index_dir == "/tmp/test", "index_dir is not valid"
+            assert retriever.model_name == "test-model", "model_name is not valid"
 
     def test_retriever_has_required_attributes(self):
         """Test Retriever has required attributes."""
@@ -75,7 +75,7 @@ class TestRetrieverQuery:
             retriever = Retriever()
 
             assert hasattr(retriever, "query")
-            assert callable(retriever.query)
+            assert callable(retriever.query), "Condition must be true"
 
     def test_query_empty_returns_empty_list(self):
         """Test query with empty string returns empty list."""
@@ -87,7 +87,7 @@ class TestRetrieverQuery:
 
             result = retriever.query("")
 
-            assert result == []
+            assert result == [], "Result must not be empty"
 
     def test_query_no_index_returns_empty_list(self):
         """Test query without index returns empty list."""
@@ -99,7 +99,7 @@ class TestRetrieverQuery:
 
             result = retriever.query("test query")
 
-            assert result == []
+            assert result == [], "Result must not be empty"
 
     def test_query_invalid_top_k_uses_default(self):
         """Test query with invalid top_k uses default."""
@@ -111,10 +111,10 @@ class TestRetrieverQuery:
 
             # Should not crash with invalid top_k
             result = retriever.query("test", top_k=0)
-            assert result == []
+            assert result == [], "Result must not be empty"
 
             result = retriever.query("test", top_k=-1)
-            assert result == []
+            assert result == [], "Result must not be empty"
 
 
 class TestRetrieverModelLoading:
@@ -152,7 +152,7 @@ class TestRetrieverModelLoading:
 
             # Should have attempted to use HF_TOKEN
             call_kwargs = mock_st.call_args[1]
-            assert "use_auth_token" in call_kwargs
+            assert "use_auth_token" in call_kwargs, "Condition must be true"
 
 
 class TestRetrieverIndexLoading:
@@ -176,7 +176,7 @@ class TestRetrieverIndexLoading:
             retriever = Retriever()
 
             # Index should be None after failed load
-            assert retriever.faiss_index is None
+            assert retriever.faiss_index is None, "faiss_index is not valid"
 
     @patch("codex.rag.retriever.load_index")
     def test_load_index_success(self, mock_load):
@@ -192,8 +192,8 @@ class TestRetrieverIndexLoading:
         with patch.object(Retriever, "_load_model"):
             retriever = Retriever()
 
-            assert retriever.faiss_index == mock_index
-            assert len(retriever.chunks_metadata) == 2
+            assert retriever.faiss_index == mock_index, "faiss_index is not valid"
+            assert len(retriever.chunks_metadata) == 2, "Collection must not be empty"
 
 
 class TestRetrieverHelperMethods:
@@ -232,7 +232,7 @@ class TestRetrieverConfiguration:
         with patch.object(Retriever, "_load_index"):
             retriever = Retriever(index_dir="/custom/path")
 
-            assert retriever.index_dir == "/custom/path"
+            assert retriever.index_dir == "/custom/path", "index_dir is not valid"
 
     @patch("codex.rag.retriever.SentenceTransformer")
     def test_retriever_custom_tenant_id(self, mock_st):
@@ -245,7 +245,7 @@ class TestRetrieverConfiguration:
         with patch.object(Retriever, "_load_index"):
             retriever = Retriever(tenant_id="custom-tenant")
 
-            assert retriever.tenant_id == "custom-tenant"
+            assert retriever.tenant_id == "custom-tenant", "tenant_id is not valid"
 
     @patch("codex.rag.retriever.SentenceTransformer")
     def test_retriever_custom_cache_dir(self, mock_st):
@@ -258,4 +258,4 @@ class TestRetrieverConfiguration:
         with patch.object(Retriever, "_load_index"):
             retriever = Retriever(cache_dir="/cache/path")
 
-            assert retriever.cache_dir == "/cache/path"
+            assert retriever.cache_dir == "/cache/path", "cache_dir is not valid"

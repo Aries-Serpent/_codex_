@@ -73,20 +73,20 @@ class TestDependencyVersion:
     def test_parse_simple(self):
         """Parse simple version."""
         v = DependencyVersion.parse("1.2.3")
-        assert v.major == 1
-        assert v.minor == 2
-        assert v.patch == 3
+        assert v.major == 1, "major is not valid"
+        assert v.minor == 2, "minor is not valid"
+        assert v.patch == 3, "patch is not valid"
 
     def test_parse_prerelease(self):
         """Parse version with prerelease."""
         v = DependencyVersion.parse("1.0.0-alpha")
-        assert v.prerelease == "alpha"
+        assert v.prerelease == "alpha", "prerelease is not valid"
 
     def test_version_comparison(self):
         """Compare versions."""
         v1 = DependencyVersion.parse("1.0.0")
         v2 = DependencyVersion.parse("1.1.0")
-        assert v1 < v2
+        assert v1 < v2, "v1 is not valid"
 
 
 # --- Lockfile Tests ---
@@ -144,21 +144,21 @@ class TestLockfile:
         lockfile = Lockfile()
         entry = LockfileEntry("requests", "2.28.0", "sha256:abc123")
         lockfile.add_entry(entry)
-        assert lockfile.get_entry("requests") is not None
+        assert lockfile.get_entry("requests") is not None, "Value must be initialized"
 
     def test_lockfile_hash(self):
         """Lockfile has hash."""
         lockfile = Lockfile()
         lockfile.add_entry(LockfileEntry("pkg", "1.0.0", "sha256:123"))
-        assert len(lockfile.hash) == 64
+        assert len(lockfile.hash) == 64, "Collection must not be empty"
 
     def test_verify_integrity(self):
         """Verify lockfile integrity."""
         lockfile = Lockfile()
         lockfile.add_entry(LockfileEntry("pkg", "1.0.0", "sha256:123"))
         valid_hash = lockfile.hash
-        assert lockfile.verify(valid_hash)
-        assert not lockfile.verify("wrong_hash")
+        assert lockfile.verify(valid_hash), "Condition must be true"
+        assert not lockfile.verify("wrong_hash"), "Condition must be true"
 
 
 # --- CVE Detection Tests ---
@@ -208,7 +208,7 @@ class TestCVEDetection:
         db = CVEDatabase()
         cve = CVE("CVE-2023-0001", "HIGH", ["1.0.0", "1.0.1"])
         db.add_cve("vulnerable-pkg", cve)
-        assert len(db.cves["vulnerable-pkg"]) == 1
+        assert len(db.cves["vulnerable-pkg"]) == 1, "Collection must not be empty"
 
     def test_detect_vulnerability(self):
         """Detect vulnerability in package."""
@@ -216,7 +216,7 @@ class TestCVEDetection:
         cve = CVE("CVE-2023-0001", "HIGH", ["1.0.0", "1.0.1"])
         db.add_cve("pkg", cve)
         vulns = db.check_package("pkg", "1.0.0")
-        assert len(vulns) == 1
+        assert len(vulns) == 1, "Vulns must not be empty"
 
     def test_no_vulnerability(self):
         """No vulnerability in safe version."""
@@ -224,7 +224,7 @@ class TestCVEDetection:
         cve = CVE("CVE-2023-0001", "HIGH", ["1.0.0"])
         db.add_cve("pkg", cve)
         vulns = db.check_package("pkg", "2.0.0")
-        assert len(vulns) == 0
+        assert len(vulns) == 0, "Vulns must not be empty"
 
 
 # --- Upgrade Cadence Tests ---
@@ -263,7 +263,7 @@ class TestUpgradePolicy:
         current = DependencyVersion(1, 0, 0)
         latest = DependencyVersion(1, 1, 0)
         result = policy.should_upgrade(current, latest)
-        assert not result["should_upgrade"]
+        assert not result["should_upgrade"], "Result must not be empty"
 
     def test_upgrade_needed(self):
         """Upgrade needed when behind."""
@@ -271,8 +271,8 @@ class TestUpgradePolicy:
         current = DependencyVersion(1, 0, 0)
         latest = DependencyVersion(3, 0, 0)
         result = policy.should_upgrade(current, latest)
-        assert result["should_upgrade"]
-        assert result["urgency"] == "high"
+        assert result["should_upgrade"], "Result must not be empty"
+        assert result["urgency"] == "high", "Result must not be empty"
 
 
 # --- Dependency Graph Tests ---
@@ -338,7 +338,7 @@ class TestDependencyGraph:
         """Add package to graph."""
         graph = DependencyGraph()
         graph.add_package("requests", "2.28.0")
-        assert "requests" in graph.nodes
+        assert "requests" in graph.nodes, "Condition must be true"
 
     def test_get_dependencies(self):
         """Get direct dependencies."""
@@ -349,7 +349,7 @@ class TestDependencyGraph:
         graph.add_dependency("myapp", "requests")
         graph.add_dependency("requests", "urllib3")
         deps = graph.get_dependencies("myapp")
-        assert "requests" in deps
+        assert "requests" in deps, "Condition must be true"
 
     def test_recursive_dependencies(self):
         """Get recursive dependencies."""
@@ -360,8 +360,8 @@ class TestDependencyGraph:
         graph.add_dependency("a", "b")
         graph.add_dependency("b", "c")
         deps = graph.get_dependencies("a", recursive=True)
-        assert "b" in deps
-        assert "c" in deps
+        assert "b" in deps, "Condition must be true"
+        assert "c" in deps, "Condition must be true"
 
 
 # --- Vendor Verification Tests ---
@@ -409,7 +409,7 @@ class TestVendorVerification:
         """Compute vendor checksum."""
         entry = VendorEntry("lib", "1.0.0", "https://example.com/lib.tar.gz")
         checksum = entry.compute_checksum(b"content")
-        assert len(checksum) == 64
+        assert len(checksum) == 64, "Checksum must not be empty"
 
     def test_verify_all(self):
         """Verify all vendored entries."""
@@ -418,7 +418,7 @@ class TestVendorVerification:
         entry.checksum = "abc123"
         registry.add_entry(entry)
         results = registry.verify_all({"lib": "abc123"})
-        assert results["lib"]
+        assert results["lib"], "Result must not be empty"
 
 
 # --- Requirements File Tests ---
@@ -463,8 +463,8 @@ class TestRequirementsFile:
         """Parse simple requirement."""
         rf = RequirementsFile()
         result = rf.parse_line("requests==2.28.0")
-        assert result["name"] == "requests"
-        assert result["version"] == "2.28.0"
+        assert result["name"] == "requests", "Result must not be empty"
+        assert result["version"] == "2.28.0", "Result must not be empty"
 
     def test_parse_file(self):
         """Parse requirements file."""
@@ -475,10 +475,10 @@ class TestRequirementsFile:
         numpy>=1.20.0
         """
         deps = rf.parse(content)
-        assert len(deps) == 2
+        assert len(deps) == 2, "Deps must not be empty"
 
     def test_skip_comments(self):
         """Skip comment lines."""
         rf = RequirementsFile()
         result = rf.parse_line("# This is a comment")
-        assert result is None
+        assert result is None, "Result must not be empty"

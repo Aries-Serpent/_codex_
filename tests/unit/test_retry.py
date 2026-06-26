@@ -52,7 +52,7 @@ def test_succeeds_on_first_attempt() -> None:
     with patch("codex.resilience.retry.time.sleep") as mock_sleep:
         result = wrapped()
 
-    assert result == "success"
+    assert result == "success", "Result must not be empty"
     func.assert_called_once()
     mock_sleep.assert_not_called()
 
@@ -75,9 +75,9 @@ def test_retries_and_eventually_succeeds() -> None:
     with patch("codex.resilience.retry.time.sleep") as mock_sleep:
         result = wrapped()
 
-    assert result == "ok"
-    assert func.call_count == 3  # 2 failures + 1 success
-    assert mock_sleep.call_count == 2  # slept before retry 1 and retry 2
+    assert result == "ok", "Result must not be empty"
+    assert func.call_count == 3, "Count must be greater than zero"
+    assert mock_sleep.call_count == 2, "Count must be greater than zero"
 
 
 # ---------------------------------------------------------------------------
@@ -100,8 +100,8 @@ def test_raises_retry_exhausted_when_all_retries_fail() -> None:
             wrapped()
 
     err = exc_info.value
-    assert err.attempts == 4  # 1 initial + 3 retries
-    assert func.call_count == 4
+    assert err.attempts == 4, "attempts is not valid"
+    assert func.call_count == 4, "Count must be greater than zero"
     # The original exception must be chained as __cause__
     assert isinstance(err.__cause__, _TransientError)
 
@@ -133,7 +133,7 @@ def test_backoff_delays_follow_exponential_formula() -> None:
         base * 2**2,  # 8.0
     ]
     actual_delays = [c.args[0] for c in mock_sleep.call_args_list]
-    assert actual_delays == pytest.approx(expected_delays)
+    assert actual_delays == pytest.approx(expected_delays), "actual_delays is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -156,7 +156,7 @@ def test_max_delay_cap_is_respected() -> None:
         wrapped()
 
     for c in mock_sleep.call_args_list:
-        assert c.args[0] <= 5.0
+        assert c.args[0] <= 5.0, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -200,8 +200,8 @@ def test_retry_exhausted_attempts_count() -> None:
         with pytest.raises(RetryExhausted) as exc_info:
             wrapped()
 
-    assert exc_info.value.attempts == max_retries + 1
-    assert func.call_count == max_retries + 1
+    assert exc_info.value.attempts == max_retries + 1, "Value must be initialized"
+    assert func.call_count == max_retries + 1, "Count must be greater than zero"
 
 
 # ---------------------------------------------------------------------------
@@ -216,8 +216,8 @@ def test_decorator_preserves_function_metadata() -> None:
     def my_special_function() -> None:
         """Docstring here."""
 
-    assert my_special_function.__name__ == "my_special_function"
-    assert my_special_function.__doc__ == "Docstring here."
+    assert my_special_function.__name__ == "my_special_function", "__name__ is not valid"
+    assert my_special_function.__doc__ == "Docstring here.", "__doc__ is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -242,7 +242,7 @@ def test_jitter_adds_noise_within_bounds() -> None:
     with patch("codex.resilience.retry.time.sleep", side_effect=recorded.append):
         wrapped()
 
-    assert len(recorded) == 1
+    assert len(recorded) == 1, "Recorded must not be empty"
     lo = base * 2**0  # attempt 0 → base * 1
     hi = lo + jitter
-    assert lo <= recorded[0] <= hi
+    assert lo <= recorded[0] <= hi, "lo is not valid"

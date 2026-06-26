@@ -48,9 +48,9 @@ def test_system_metrics_logger_with_writer(monkeypatch) -> None:
     finally:
         logger.stop()
 
-    assert captured
-    assert captured[0][0] == logger._path
-    assert captured[0][1]["cpu_percent"] == 12.5
+    assert captured, "captured is not valid"
+    assert captured[0][0] == logger._path, "Condition must be true"
+    assert captured[0][1]["cpu_percent"] == 12.5, "Condition must be true"
 
 
 def test_system_metrics_logger_without_psutil(monkeypatch, capsys) -> None:
@@ -67,5 +67,5 @@ def test_system_metrics_logger_without_psutil(monkeypatch, capsys) -> None:
     logger = sm.SystemMetricsLogger(path="metrics.jsonl", interval=0.1)
     logger.start()
     captured = capsys.readouterr()
-    assert logger._thread is None
-    assert captured.out == ""
+    assert logger._thread is None, "_thread is not valid"
+    assert captured.out == "", "out is not valid"

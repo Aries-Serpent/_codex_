@@ -12,7 +12,7 @@ def test_simple_cycle():
     graph.add_edge("B", "A")
 
     cycles = graph.detect_cycles()
-    assert len(cycles) == 1
+    assert len(cycles) == 1, "Cycles must not be empty"
     assert set(cycles[0]) == {"A", "B"}
 
 
@@ -25,7 +25,7 @@ def test_complex_cycle():
     graph.add_edge("D", "A")
 
     cycles = graph.detect_cycles()
-    assert len(cycles) == 1
+    assert len(cycles) == 1, "Cycles must not be empty"
     assert set(cycles[0]) == {"A", "B", "C", "D"}
 
 
@@ -36,7 +36,7 @@ def test_no_cycles():
     graph.add_edge("B", "C")
 
     cycles = graph.detect_cycles()
-    assert len(cycles) == 0
+    assert len(cycles) == 0, "Cycles must not be empty"
 
 
 def test_topological_sort():
@@ -47,8 +47,8 @@ def test_topological_sort():
     graph.add_edge("A", "C")
 
     order = graph.topological_sort()
-    assert order.index("A") < order.index("B")
-    assert order.index("B") < order.index("C")
+    assert order.index("A") < order.index("B"), "Condition must be true"
+    assert order.index("B") < order.index("C"), "Condition must be true"
 
 
 def test_topological_sort_with_cycle():
@@ -78,9 +78,9 @@ def test_add_node():
     graph.add_node("A")
     graph.add_node("B")
 
-    assert "A" in graph.nodes
-    assert "B" in graph.nodes
-    assert len(graph.edges) == 0
+    assert "A" in graph.nodes, "Condition must be true"
+    assert "B" in graph.nodes, "Condition must be true"
+    assert len(graph.edges) == 0, "Collection must not be empty"
 
 
 def test_self_loop_detected():
@@ -89,8 +89,8 @@ def test_self_loop_detected():
     graph.add_edge("A", "A")
 
     cycles = graph.detect_cycles()
-    assert len(cycles) == 1
-    assert cycles[0] == ["A"]
+    assert len(cycles) == 1, "Cycles must not be empty"
+    assert cycles[0] == ["A"], "Condition must be true"
 
 
 def test_self_loop_topological_sort_fails():
@@ -109,7 +109,7 @@ def test_multiple_self_loops():
     graph.add_edge("B", "B")
 
     cycles = graph.detect_cycles()
-    assert len(cycles) == 2
+    assert len(cycles) == 2, "Cycles must not be empty"
     cycle_nodes = {tuple(cycle) for cycle in cycles}
     assert ("A",) in cycle_nodes
     assert ("B",) in cycle_nodes
@@ -127,7 +127,7 @@ def test_mixed_cycles_and_self_loops():
     graph.add_edge("D", "E")
 
     cycles = graph.detect_cycles()
-    assert len(cycles) == 2
+    assert len(cycles) == 2, "Cycles must not be empty"
 
     # Check we have one 2-node cycle and one 1-node cycle
     cycle_sizes = sorted([len(cycle) for cycle in cycles])
@@ -142,4 +142,4 @@ def test_no_false_positives_for_isolated_nodes():
     graph.add_edge("C", "D")
 
     cycles = graph.detect_cycles()
-    assert len(cycles) == 0
+    assert len(cycles) == 0, "Cycles must not be empty"

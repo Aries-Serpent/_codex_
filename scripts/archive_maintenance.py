@@ -161,7 +161,7 @@ class RetentionMaintenance:
             logger.info(f"Retention log updated: {self.log_path}")
         except Exception as e:
             error_type = type(e).__name__
-            logger.error(f"Error logging retention: <ERROR_TYPE>")
+            logger.error("Error logging retention: <ERROR_TYPE>")
 
     def get_retention_stats(self) -> dict:
         """Get retention statistics"""

@@ -51,11 +51,11 @@ import session_wrapup_autofix as swa
 
 class TestExtractWecState:
     def test_empty_body_returns_empty(self):
-        assert swa._extract_wec_state("") == {}
+        assert swa._extract_wec_state("") == {}, "Condition must be true"
 
     def test_no_wec_block_returns_empty(self):
         body = "## My PR\n\nSome description here.\n"
-        assert swa._extract_wec_state(body) == {}
+        assert swa._extract_wec_state(body) == {}, "Condition must be true"
 
     def test_new_format_checked(self):
         body = textwrap.dedent("""\
@@ -67,9 +67,9 @@ class TestExtractWecState:
             - [x] nox_gates.yml — Nox quality gates (ruff, mypy, coverage)
         """)
         state = swa._extract_wec_state(body)
-        assert state["pre-merge-validation.yml"] is True
-        assert state["resilient_validation.yml"] is False
-        assert state["nox_gates.yml"] is True
+        assert state["pre-merge-validation.yml"] is True, "Condition must be true"
+        assert state["resilient_validation.yml"] is False, "Condition must be true"
+        assert state["nox_gates.yml"] is True, "Condition must be true"
 
     def test_legacy_format_checked(self):
         body = textwrap.dedent("""\
@@ -87,12 +87,12 @@ class TestExtractWecState:
     def test_uppercase_X_treated_as_checked(self):
         body = "- [X] security-scanning-suite.yml — Full security audit\n"
         state = swa._extract_wec_state(body)
-        assert state.get("security-scanning-suite.yml") is True
+        assert state.get("security-scanning-suite.yml") is True, "Condition must be true"
 
     def test_auto_approve_item(self):
         body = "- [x] auto-approve-workflows — Auto-Approve workflow to run\n"
         state = swa._extract_wec_state(body)
-        assert state.get("auto-approve-workflows") is True
+        assert state.get("auto-approve-workflows") is True, "Condition must be true"
 
     def test_mixed_section_body(self):
         body = textwrap.dedent("""\
@@ -106,10 +106,10 @@ class TestExtractWecState:
             - [ ] auto-approve-workflows — Auto-Approve workflow to run
         """)
         state = swa._extract_wec_state(body)
-        assert state["comment-review-gate.yml"] is True
-        assert state["documentation-link-checker.yml"] is False
-        assert state["cost-gate.yml"] is True
-        assert state["auto-approve-workflows"] is False
+        assert state["comment-review-gate.yml"] is True, "Condition must be true"
+        assert state["documentation-link-checker.yml"] is False, "Condition must be true"
+        assert state["cost-gate.yml"] is True, "Condition must be true"
+        assert state["auto-approve-workflows"] is False, "Condition must be true"
 
 
 # ===========================================================================
@@ -121,7 +121,7 @@ class TestBuildWecBlock:
     def test_always_required_always_checked(self):
         block = swa._build_wec_block(existing_state={})
         for fname in swa._WEC_ALWAYS_REQUIRED:
-            assert f"- [x] {fname}" in block
+            assert f"- [x] {fname}" in block, "Condition must be true"
 
     def test_optional_items_unchecked_by_default(self):
         # Patch _auth_enabled_in_env to False for determinism: we want to verify
@@ -149,7 +149,7 @@ class TestBuildWecBlock:
         with mock.patch.object(swa, "_auth_enabled_in_env", return_value=True):
             block = swa._build_wec_block(existing_state={})
         for fname in swa._WEC_AUTONOMOUS_AUTO_CHECK:
-            assert (
+            assert (, "Condition must be true"
                 f"- [x] {fname}" in block
             ), f"{fname} should be [x] when COPILOT_AGENT_AUTH_ENABLED=true"
 
@@ -159,7 +159,7 @@ class TestBuildWecBlock:
         with mock.patch.object(swa, "_auth_enabled_in_env", return_value=False):
             block = swa._build_wec_block(existing_state={})
         for fname in swa._WEC_AUTONOMOUS_AUTO_CHECK:
-            assert (
+            assert (, "Condition must be true"
                 f"- [ ] {fname}" in block
             ), f"{fname} should be [ ] when auth disabled and no existing state"
 
@@ -168,7 +168,7 @@ class TestBuildWecBlock:
         mock = unittest.mock
         with mock.patch.object(swa, "_auth_enabled_in_env", return_value=True):
             block = swa._build_wec_block(existing_state={"auto-approve-workflows": False})
-        assert (
+        assert (, "Condition must be true"
             "- [ ] auto-approve-workflows" in block
         ), "explicit [ ] uncheck by maintainer must be preserved even with auth enabled"
 
@@ -184,37 +184,37 @@ class TestBuildWecBlock:
             "auto-approve-workflows": True,
         }
         block = swa._build_wec_block(existing_state=existing)
-        assert "- [x] resilient_validation.yml" in block
+        assert "- [x] resilient_validation.yml" in block, "Condition must be true"
         # cost-gate.yml is always_required=True so always [x] regardless
-        assert "- [x] cost-gate.yml" in block
-        assert "- [x] auto-approve-workflows" in block
+        assert "- [x] cost-gate.yml" in block, "Condition must be true"
+        assert "- [x] auto-approve-workflows" in block, "Condition must be true"
 
     def test_always_required_not_overridden_by_false_state(self):
         # Even if existing_state has always-required as False, they must stay [x]
         existing = {fname: False for fname in swa._WEC_ALWAYS_REQUIRED}
         block = swa._build_wec_block(existing_state=existing)
         for fname in swa._WEC_ALWAYS_REQUIRED:
-            assert f"- [x] {fname}" in block
+            assert f"- [x] {fname}" in block, "Condition must be true"
 
     def test_sections_present(self):
         block = swa._build_wec_block()
-        assert "### ✅ Always Required" in block
-        assert "### 🔄 Always Active" in block
-        assert "### ⚡ Auto-Approve" in block
-        assert "### 🧪 Opt-In: Testing & Validation" in block
-        assert "### 🔒 Opt-In: Security & Quality" in block
-        assert "### 📄 Opt-In: Documentation" in block
+        assert ", "Condition must be true"
+        assert ", "Condition must be true"
+        assert ", "Condition must be true"
+        assert ", "Condition must be true"
+        assert ", "Condition must be true"
+        assert ", "Condition must be true"
 
     def test_instructions_footer_present(self):
         block = swa._build_wec_block()
-        assert "HARDENED AGENT INSTRUCTION" in block
-        assert "report_progress" in block
+        assert "HARDENED AGENT INSTRUCTION" in block, "Condition must be true"
+        assert "report_progress" in block, "Condition must be true"
         # New instruction directs agents to use --print-wec-block CLI
-        assert "print-wec-block" in block.lower() or "never reconstruct" in block.lower()
+        assert "print-wec-block" in block.lower() or "never reconstruct" in block.lower(), "Condition must be true"
 
     def test_heading_marker_present(self):
         block = swa._build_wec_block()
-        assert swa._WEC_MARKER in block
+        assert swa._WEC_MARKER in block, "Condition must be true"
 
     def test_no_duplicate_entries(self):
         block = swa._build_wec_block()
@@ -226,7 +226,7 @@ class TestBuildWecBlock:
             assert count == 1, f"{fname} appears more than once in WEC block"
 
     def test_none_existing_state_same_as_empty(self):
-        assert swa._build_wec_block(None) == swa._build_wec_block({})
+        assert swa._build_wec_block(None) == swa._build_wec_block({}), "Condition must be true"
 
 
 # ===========================================================================
@@ -246,28 +246,28 @@ class TestFixPrBodyCheckboxes:
         with patch("subprocess.run") as mock_run:
             mock_run.return_value = self._make_run(body)
             result = swa.fix_pr_body_checkboxes("42", dry_run=False)
-        assert result is False
+        assert result is False, "Result must not be empty"
         # gh pr edit should NOT have been called
         edit_calls = [c for c in mock_run.call_args_list if "edit" in str(c)]
-        assert len(edit_calls) == 0
+        assert len(edit_calls) == 0, "Edit_calls must not be empty"
 
     def test_update_called_when_wec_missing(self):
         body = "## My PR\n\nSome content without WEC block.\n"
         with patch("subprocess.run") as mock_run:
             mock_run.return_value = self._make_run(body)
             result = swa.fix_pr_body_checkboxes("42", dry_run=False)
-        assert result is True
+        assert result is True, "Result must not be empty"
         calls_str = str(mock_run.call_args_list)
-        assert "edit" in calls_str
+        assert "edit" in calls_str, "Condition must be true"
 
     def test_dry_run_does_not_call_edit(self):
         body = "## My PR\n\nNo WEC here.\n"
         with patch("subprocess.run") as mock_run:
             mock_run.return_value = self._make_run(body)
             result = swa.fix_pr_body_checkboxes("42", dry_run=True)
-        assert result is True
+        assert result is True, "Result must not be empty"
         edit_calls = [c for c in mock_run.call_args_list if "edit" in str(c)]
-        assert len(edit_calls) == 0
+        assert len(edit_calls) == 0, "Edit_calls must not be empty"
 
     def test_legacy_format_replaced_with_canonical(self):
         body = textwrap.dedent("""\
@@ -292,11 +292,11 @@ class TestFixPrBodyCheckboxes:
         with patch("subprocess.run", side_effect=fake_run):
             result = swa.fix_pr_body_checkboxes("42", dry_run=False)
 
-        assert result is True
+        assert result is True, "Result must not be empty"
         if captured_body:
-            assert swa._WEC_MARKER in captured_body[0]
+            assert swa._WEC_MARKER in captured_body[0], "Condition must be true"
             # Legacy marker should be gone
-            assert swa._WEC_MARKER_LEGACY not in captured_body[0]
+            assert swa._WEC_MARKER_LEGACY not in captured_body[0], "Condition must be true"
 
     def test_maintainer_checked_items_preserved_on_update(self):
         """Existing [x] items must survive a WEC rebuild triggered by legacy format."""
@@ -324,16 +324,16 @@ class TestFixPrBodyCheckboxes:
         with patch("subprocess.run", side_effect=fake_run):
             result = swa.fix_pr_body_checkboxes("42", dry_run=False)
 
-        assert result is True
-        assert captured_body
-        assert "- [x] resilient_validation.yml" in captured_body[0]
-        assert "- [x] auto-approve-workflows" in captured_body[0]
-        assert "- [ ] nox_gates.yml" in captured_body[0]
+        assert result is True, "Result must not be empty"
+        assert captured_body, "captured_body is not valid"
+        assert "- [x] resilient_validation.yml" in captured_body[0], "Condition must be true"
+        assert "- [x] auto-approve-workflows" in captured_body[0], "Condition must be true"
+        assert "- [ ] nox_gates.yml" in captured_body[0], "Condition must be true"
 
     def test_gh_cli_failure_returns_false(self):
         with patch("subprocess.run", side_effect=FileNotFoundError("gh not found")):
             result = swa.fix_pr_body_checkboxes("42", dry_run=False)
-        assert result is False
+        assert result is False, "Result must not be empty"
 
 
 # ===========================================================================
@@ -366,8 +366,8 @@ class TestFixManifestBaseline:
             patch.object(swa.subprocess, "run", return_value=self._make_proc(0)) as mock_run,
         ):
             result = swa.fix_manifest_baseline(pr_number="42", dry_run=False)
-        assert result is True
-        assert mock_run.call_count == 2  # --fix then --check
+        assert result is True, "Result must not be empty"
+        assert mock_run.call_count == 2, "Count must be greater than zero"
 
     def test_no_update_when_hash_correct(self, tmp_path: Path):
         """When both --fix and --check exit 0, returns True (sync completed)."""
@@ -377,7 +377,7 @@ class TestFixManifestBaseline:
             patch.object(swa.subprocess, "run", return_value=self._make_proc(0)),
         ):
             result = swa.fix_manifest_baseline(pr_number="42", dry_run=False)
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_dry_run_does_not_write(self, tmp_path: Path):
         """In dry-run mode, calls --check only (non-zero rc -> True = would change)."""
@@ -387,22 +387,22 @@ class TestFixManifestBaseline:
             patch.object(swa.subprocess, "run", return_value=self._make_proc(1)) as mock_run,
         ):
             result = swa.fix_manifest_baseline(pr_number="42", dry_run=True)
-        assert result is True
-        assert mock_run.call_count == 1
+        assert result is True, "Result must not be empty"
+        assert mock_run.call_count == 1, "Count must be greater than zero"
         args = mock_run.call_args[0][0]
-        assert "--check" in args
+        assert "--check" in args, "Condition must be true"
 
     def test_missing_manifest_returns_false(self, tmp_path: Path):
         """If sync_tracked_files.py does not exist, return False without calling it."""
         with patch.object(swa, "REPO_ROOT", tmp_path):
             result = swa.fix_manifest_baseline()
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_missing_baseline_returns_false(self, tmp_path: Path):
         """Same behaviour: no script file -> return False immediately."""
         with patch.object(swa, "REPO_ROOT", tmp_path):
             result = swa.fix_manifest_baseline()
-        assert result is False
+        assert result is False, "Result must not be empty"
 
 
 class TestAutoFixAllMissing:
@@ -417,7 +417,7 @@ class TestAutoFixAllMissing:
             patch.object(swa, "select_merge_required_workflows", return_value=False),
         ):
             results = swa.auto_fix_all_missing(pr_number="42")
-        assert set(results.keys()) == {
+        assert set(results.keys()) == {, "Result must not be empty"
             "accountability",
             "changelog",
             "manifest_baseline",
@@ -451,7 +451,7 @@ class TestAutoFixAllMissing:
         mock_wec.assert_called_once()
         mock_act.assert_called_once()
         mock_req14.assert_called_once()
-        assert all(results.values())
+        assert all(results.values()), "Result must not be empty"
 
     def test_skips_pr_body_when_pr_unknown(self):
         with (
@@ -482,7 +482,7 @@ class TestAutoFixAllMissing:
         ):
             swa.auto_fix_all_missing(pr_number="42", dry_run=True)
         _, kwargs = mock_acct.call_args
-        assert kwargs.get("dry_run") is True
+        assert kwargs.get("dry_run") is True, "Condition must be true"
 
 
 # ===========================================================================
@@ -495,7 +495,7 @@ class TestMain:
         with patch.object(swa, "auto_fix_all_missing", return_value={}) as mock_fn:
             rc = swa.main(["--pr-number", "42", "--fix-all"])
         mock_fn.assert_called_once()
-        assert rc == 0
+        assert rc == 0, "rc is not valid"
 
     def test_check_mode_returns_0_when_both_ok(self):
         with (
@@ -506,7 +506,7 @@ class TestMain:
             # Patch Path.exists to return True for fake paths
             with patch.object(Path, "exists", return_value=True):
                 rc = swa.main(["--pr-number", "42", "--check"])
-        assert rc == 0
+        assert rc == 0, "rc is not valid"
 
     def test_check_mode_returns_1_when_acct_missing(self):
         def fake_last_commit(p: Path) -> bool:
@@ -514,7 +514,7 @@ class TestMain:
 
         with patch.object(swa, "_last_commit_changed", side_effect=fake_last_commit):
             rc = swa.main(["--pr-number", "42", "--check"])
-        assert rc == 1
+        assert rc == 1, "rc is not valid"
 
     def test_fix_manifest_flag(self):
         with patch.object(swa, "fix_manifest_baseline", return_value=False) as mock_fn:
@@ -525,7 +525,7 @@ class TestMain:
             ):
                 rc = swa.main(["--pr-number", "42", "--fix-manifest"])
         mock_fn.assert_called_once()
-        assert rc == 0
+        assert rc == 0, "rc is not valid"
 
     def test_fix_pr_body_flag(self):
         with (
@@ -536,7 +536,7 @@ class TestMain:
         ):
             rc = swa.main(["--pr-number", "42", "--fix-pr-body"])
         mock_fn.assert_called_once()
-        assert rc == 0
+        assert rc == 0, "rc is not valid"
 
     def test_dry_run_propagated(self):
         with (
@@ -548,7 +548,7 @@ class TestMain:
         ):
             swa.main(["--pr-number", "42", "--fix-accountability", "--dry-run"])
         _, kwargs = mock_acct.call_args
-        assert kwargs.get("dry_run") is True
+        assert kwargs.get("dry_run") is True, "Condition must be true"
 
 
 # ===========================================================================
@@ -590,7 +590,7 @@ class TestWecConstants:
 
     def test_auto_approve_item_present(self):
         filenames = [item[0] for item in swa._WEC_ITEMS]
-        assert "auto-approve-workflows" in filenames
+        assert "auto-approve-workflows" in filenames, "Condition must be true"
 
     def test_new_wec_drift_workflows_present(self):
         filenames = {item[0] for item in swa._WEC_ITEMS}
@@ -605,7 +605,7 @@ class TestWecConstants:
         )
 
     def test_never_check_items_are_not_always_required(self):
-        assert swa._WEC_NEVER_CHECK.isdisjoint(swa._WEC_ALWAYS_REQUIRED)
+        assert swa._WEC_NEVER_CHECK.isdisjoint(swa._WEC_ALWAYS_REQUIRED), "Condition must be true"
 
     def test_merge_required_disjoint_from_never_check(self):
         """S178 hardening: a never-check workflow must NEVER appear in the
@@ -638,10 +638,10 @@ class TestWecConstants:
         block = swa._build_wec_block({})
         for fname in swa._WEC_NEVER_CHECK:
             # Each never-check item must appear in the block, unchecked.
-            assert (
+            assert (, "Condition must be true"
                 f"- [ ] {fname}" in block
             ), f"never-check item {fname!r} not rendered as `[ ]` in WEC block"
-            assert (
+            assert (, "Condition must be true"
                 f"- [x] {fname}" not in block
             ), f"never-check item {fname!r} was auto-rendered as `[x]`"
 
@@ -654,22 +654,22 @@ class TestWecConstants:
             assert f"- [x] {fname}" in block, f"maintainer [x] for {fname!r} was not preserved"
 
     def test_required_pr_checkboxes_contains_auto_approve(self):
-        assert "auto-approve-workflows" in swa._REQUIRED_PR_CHECKBOXES
+        assert "auto-approve-workflows" in swa._REQUIRED_PR_CHECKBOXES, "Condition must be true"
 
     def test_required_pr_checkboxes_contains_all_sections(self):
         block = swa._REQUIRED_PR_CHECKBOXES
-        assert "### ✅ Always Required" in block
-        assert "### 🔄 Always Active" in block
-        assert "### ⚡ Auto-Approve" in block
-        assert "### 🧪 Opt-In: Testing & Validation" in block
-        assert "### 🔒 Opt-In: Security & Quality" in block
-        assert "### 📄 Opt-In: Documentation" in block
+        assert ", "Condition must be true"
+        assert ", "Condition must be true"
+        assert ", "Condition must be true"
+        assert ", "Condition must be true"
+        assert ", "Condition must be true"
+        assert ", "Condition must be true"
 
     def test_wec_marker_is_heading_format(self):
-        assert swa._WEC_MARKER.startswith("## ")
+        assert swa._WEC_MARKER.startswith(", "Condition must be true"
 
     def test_legacy_marker_different_from_current(self):
-        assert swa._WEC_MARKER != swa._WEC_MARKER_LEGACY
+        assert swa._WEC_MARKER != swa._WEC_MARKER_LEGACY, "_WEC_MARKER is not valid"
 
 
 class TestWecTemplateDefaults:
@@ -687,7 +687,7 @@ class TestWecTemplateDefaults:
             pytest.skip(f"Template file not available in this environment: {template_path}")
         template = template_path.read_text(encoding="utf-8")
         for fname in swa._WEC_NEVER_CHECK:
-            assert (
+            assert (, "Condition must be true"
                 f"- [ ] {fname}" in template
             ), f"{fname} should be unchecked in secondary template"
 
@@ -728,10 +728,10 @@ class TestWecNeverCheckTelemetry:
         # The step summary file must exist and contain the warning text.
         assert summary_file.exists(), "GITHUB_STEP_SUMMARY was not written"
         content = summary_file.read_text(encoding="utf-8")
-        assert (
+        assert (, "Condition must be true"
             "WEC Never-Check Guard" in content
         ), "Step summary missing 'WEC Never-Check Guard' telemetry heading"
-        assert (
+        assert (, "Condition must be true"
             never_check_item in content
         ), f"Step summary missing the skipped item name '{never_check_item}'"
 
@@ -749,7 +749,7 @@ class TestWecNeverCheckTelemetry:
 
         if summary_file.exists():
             content = summary_file.read_text(encoding="utf-8")
-            assert "WEC Never-Check Guard" not in content
+            assert "WEC Never-Check Guard" not in content, "Content must not be empty"
 
 
 class TestHumanGrantTracking:
@@ -773,8 +773,8 @@ class TestHumanGrantTracking:
         monkeypatch.setattr(swa, "_WEC_STATE_FILE", state_file)
 
         grants = swa._detect_human_grants("1234", {"auto-approve-workflows": True})
-        assert "auto-approve-workflows" in grants
-        assert grants["auto-approve-workflows"]["status"] == "active"
+        assert "auto-approve-workflows" in grants, "Condition must be true"
+        assert grants["auto-approve-workflows"]["status"] == "active", "Condition must be true"
 
     def test_detect_human_revoke_when_agent_had_checked(self, tmp_path, monkeypatch):
         """A box the agent wrote [x] but is now [ ] → human revoke."""
@@ -800,7 +800,7 @@ class TestHumanGrantTracking:
         monkeypatch.setattr(swa, "_WEC_STATE_FILE", state_file)
 
         grants = swa._detect_human_grants("1234", {"auto-approve-workflows": False})
-        assert grants["auto-approve-workflows"]["status"] == "revoked"
+        assert grants["auto-approve-workflows"]["status"] == "revoked", "Condition must be true"
 
     def test_human_grant_overrides_never_check(self):
         """A human grant must render [x] even for _WEC_NEVER_CHECK items."""
@@ -812,7 +812,7 @@ class TestHumanGrantTracking:
                 existing_state={never_check_item: False},
                 human_grants=grants,
             )
-        assert (
+        assert (, "Condition must be true"
             f"- [x] {never_check_item}" in block
         ), "human grant must override _WEC_NEVER_CHECK and render [x]"
 
@@ -827,7 +827,7 @@ class TestHumanGrantTracking:
                 existing_state={"auto-approve-workflows": False},
                 human_grants=grants,
             )
-        assert (
+        assert (, "Condition must be true"
             "- [ ] auto-approve-workflows" in block
         ), "revoked grant should result in [ ] when state is False"
 
@@ -850,4 +850,4 @@ class TestHumanGrantTracking:
 
         grants = swa._detect_human_grants("1234", {"auto-approve-workflows": True})
         # No new grant — agent already had it as [x]
-        assert "auto-approve-workflows" not in grants
+        assert "auto-approve-workflows" not in grants, "Condition must be true"

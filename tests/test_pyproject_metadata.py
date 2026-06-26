@@ -33,12 +33,12 @@ def _load_pyproject() -> dict:
 def test_project_name_and_script_exist() -> None:
     data = _load_pyproject()
     project = data.get("project", {})
-    assert project.get("name") == "codex-ml"
+    assert project.get("name") == "codex-ml", "Condition must be true"
     scripts = project.get("scripts", {})
-    assert "codex-train" in scripts
+    assert "codex-train" in scripts, "Condition must be true"
 
 
 def test_build_system_is_setuptools() -> None:
     data = _load_pyproject()
     build_system = data.get("build-system", {})
-    assert build_system.get("build-backend") == "setuptools.build_meta"
+    assert build_system.get("build-backend") == "setuptools.build_meta", "Condition must be true"

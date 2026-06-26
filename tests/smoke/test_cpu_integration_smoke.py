@@ -62,7 +62,7 @@ class TestCoreImports:
         """safety.sandbox imports cleanly; resource guard is correct."""
         from codex_ml.safety import sandbox
 
-        assert callable(sandbox.run_in_sandbox)
+        assert callable(sandbox.run_in_sandbox), "Condition must be true"
 
     def test_sandbox_enforce_limits_raises_on_missing_resource(self):
         """
@@ -85,7 +85,7 @@ class TestCoreImports:
         import codex_ml.safety as safety
 
         # The __init__ should always export run_in_sandbox (real or stub).
-        assert callable(safety.run_in_sandbox)
+        assert callable(safety.run_in_sandbox), "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -137,8 +137,8 @@ class TestBatchScanRunnerAPI:
             BatchScanRunner,
         )
 
-        assert BatchScanRunner is not None
-        assert BatchScanResult is not None
+        assert BatchScanRunner is not None, "BatchScanRunner must be initialized"
+        assert BatchScanResult is not None, "BatchScanResult must be initialized"
 
     def test_batch_scan_result_dataclass(self):
         """BatchScanResult must carry ok flag, passed, failed counts."""
@@ -155,9 +155,9 @@ class TestBatchScanRunnerAPI:
             failures=[],
             batches_run=1,
         )
-        assert result.ok is True
-        assert result.passed == 10
-        assert result.failed == 0
+        assert result.ok is True, "Result must not be empty"
+        assert result.passed == 10, "Result must not be empty"
+        assert result.failed == 0, "Result must not be empty"
 
     def test_batch_scan_runner_preview_method(self):
         """BatchScanRunner.preview() must return a string without executing tests."""
@@ -203,7 +203,7 @@ class TestEnvPreflightValidator:
             mod = sys.modules["rvs_env_preflight"]
         else:
             spec = _ilu.spec_from_file_location("rvs_env_preflight", path)
-            assert spec is not None
+            assert spec is not None, "spec must be initialized"
             mod = _ilu.module_from_spec(spec)
             sys.modules["rvs_env_preflight"] = mod
             spec.loader.exec_module(mod)  # type: ignore[union-attr]
@@ -283,6 +283,6 @@ def test_s94_cpu_readiness_checkpoint():
         except ImportError as exc:
             failed.append(f"{mod}: {exc}")
 
-    assert (
+    assert (, "Condition must be true"
         not failed
     ), "S94 CPU readiness gate FAILED — critical modules not importable:\n" + "\n".join(failed)

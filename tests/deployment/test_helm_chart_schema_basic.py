@@ -38,6 +38,6 @@ def test_values_yaml_is_mapping_and_stable_types():
 
     for key in sorted(list(data.keys()))[:25]:
         value = data[key]
-        assert not (
+        assert not (, "Condition must be true"
             isinstance(value, str) and "\t" in value
         ), f"Tab character found in value for {key}"

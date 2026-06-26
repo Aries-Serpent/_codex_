@@ -29,7 +29,7 @@ class TestPhysicsOrchestratorExhaustive:
 
         for action_type in ActionType:
             path = ActionPath(action_type=action_type, description=f"Test {action_type.value}")
-            assert path.action_type == action_type
+            assert path.action_type == action_type, "action_type is not valid"
 
     def test_decision_state_various_resources(self):
         """Test decision state with various resource levels."""
@@ -39,7 +39,7 @@ class TestPhysicsOrchestratorExhaustive:
             state = DecisionState(
                 current_position="A", goal_position="B", available_resources=resources
             )
-            assert state.available_resources == resources
+            assert state.available_resources == resources, "available_resources is not valid"
 
 
 class TestQuantumGameTheoryExhaustive:
@@ -51,7 +51,7 @@ class TestQuantumGameTheoryExhaustive:
 
         for team in TeamType:
             state = StrategyState(team=team, strategies=["s1", "s2"])
-            assert state.team == team
+            assert state.team == team, "team is not valid"
 
     def test_strategy_counts(self):
         """Test various strategy counts."""
@@ -60,7 +60,7 @@ class TestQuantumGameTheoryExhaustive:
         for count in [1, 2, 3, 5]:
             strategies = [f"s{i}" for i in range(count)]
             state = StrategyState(team=TeamType.BLUE, strategies=strategies)
-            assert state.num_strategies == count
+            assert state.num_strategies == count, "Count must be greater than zero"
 
 
 class TestWorkflowNavigatorExhaustive:
@@ -78,7 +78,7 @@ class TestWorkflowNavigatorExhaustive:
                 frequency=freq,
                 steps=[],
             )
-            assert wf.frequency == freq
+            assert wf.frequency == freq, "frequency is not valid"
 
     def test_workflow_with_multiple_steps(self):
         """Test workflow with multiple steps."""
@@ -98,7 +98,7 @@ class TestWorkflowNavigatorExhaustive:
             steps=steps,
         )
 
-        assert len(wf.steps) == 3
+        assert len(wf.steps) == 3, "Collection must not be empty"
 
 
 class TestAdvancedPhysicsExhaustive:
@@ -111,7 +111,7 @@ class TestAdvancedPhysicsExhaustive:
         for attractor_type in ["logistic", "henon", "lorenz", "rossler"]:
             try:
                 attractor = ChaoticAttractor(attractor_type=attractor_type)
-                assert attractor.attractor_type == attractor_type
+                assert attractor.attractor_type == attractor_type, "attractor_type is not valid"
             except (ValueError, KeyError):
                 # Some types might not be implemented
                 _ = None  # suppressed: no action needed
@@ -122,7 +122,7 @@ class TestAdvancedPhysicsExhaustive:
 
         for capacity in [10.0, 100.0, 1000.0]:
             channel = FluidChannel(channel_id=f"ch_{capacity}", capacity=capacity)
-            assert channel.capacity == capacity
+            assert channel.capacity == capacity, "capacity is not valid"
 
 
 class TestSelfHealingExhaustive:
@@ -140,7 +140,7 @@ class TestSelfHealingExhaustive:
                 title="Test",
                 description="Test",
             )
-            assert issue.severity == severity
+            assert issue.severity == severity, "severity is not valid"
 
     def test_all_issue_types(self):
         """Test all issue types."""
@@ -154,7 +154,7 @@ class TestSelfHealingExhaustive:
                 title="Test",
                 description="Test",
             )
-            assert issue.issue_type == issue_type
+            assert issue.issue_type == issue_type, "issue_type is not valid"
 
 
 class TestDeveloperOrchestratorExhaustive:
@@ -166,7 +166,7 @@ class TestDeveloperOrchestratorExhaustive:
 
         # Test all app type values
         for app_type in AppType:
-            assert app_type.value in [
+            assert app_type.value in [, "Value must be initialized"
                 "python_console",
                 "python_cli",
                 "python_api",
@@ -185,9 +185,9 @@ class TestMentalMappingExhaustive:
 
         # Check if edge types exist
         if hasattr(EdgeType, "SUPPORTS"):
-            assert EdgeType.SUPPORTS is not None
+            assert EdgeType.SUPPORTS is not None, "SUPPORTS must be initialized"
         if hasattr(EdgeType, "CONTRADICTS"):
-            assert EdgeType.CONTRADICTS is not None
+            assert EdgeType.CONTRADICTS is not None, "CONTRADICTS must be initialized"
 
 
 class TestExceptionsExhaustive:
@@ -212,8 +212,8 @@ class TestExceptionsExhaustive:
         for module in ["numpy", "scipy", "torch"]:
             error = AgentImportError(module)
             msg = str(error)
-            assert module in msg
-            assert "pip install" in msg
+            assert module in msg, "Condition must be true"
+            assert "pip install" in msg, "Condition must be true"
 
 
 class TestPhysicsIntegrationExhaustive:
@@ -226,11 +226,11 @@ class TestPhysicsIntegrationExhaustive:
         orch = HybridPhysicsOrchestrator()
 
         # History should start empty
-        assert len(orch.decision_history) == 0
+        assert len(orch.decision_history) == 0, "Collection must not be empty"
 
         # Should be able to append
         orch.decision_history.append({"test": "decision"})
-        assert len(orch.decision_history) == 1
+        assert len(orch.decision_history) == 1, "Collection must not be empty"
 
 
 class TestMultiOrchestratorPatternsExpanded:
@@ -248,7 +248,7 @@ class TestMultiOrchestratorPatternsExpanded:
 
         # Total energy should be conserved
         total_energy = sum(p.potential_energy for p in paths)
-        assert total_energy == 30.0
+        assert total_energy == 30.0, "total_energy is not valid"
 
     def test_coherence_invariant(self):
         """Test coherence invariant (Table 3, Eq #15, #54)."""
@@ -262,7 +262,7 @@ class TestMultiOrchestratorPatternsExpanded:
 
         # All should have valid probability structures
         for state in states:
-            assert state.probabilities is not None
+            assert state.probabilities is not None, "probabilities must be initialized"
 
     def test_sentinel_pattern_simulation(self):
         """Test sentinel monitoring pattern (Table 3, Eq #4)."""
@@ -272,4 +272,4 @@ class TestMultiOrchestratorPatternsExpanded:
         engines = [SelfHealingEngine() for _ in range(2)]
 
         # All should initialize properly
-        assert all(e is not None for e in engines)
+        assert all(e is not None for e in engines), "e must be initialized"

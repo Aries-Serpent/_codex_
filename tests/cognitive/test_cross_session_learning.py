@@ -33,8 +33,8 @@ class TestKnowledgeType:
         """Test knowledge type values."""
         from codex.cognitive.knowledge_distiller import KnowledgeType
 
-        assert KnowledgeType.FACTUAL.value == "factual"
-        assert KnowledgeType.PROCEDURAL.value == "procedural"
+        assert KnowledgeType.FACTUAL.value == "factual", "Value must be initialized"
+        assert KnowledgeType.PROCEDURAL.value == "procedural", "Value must be initialized"
 
 
 class TestKnowledgePriority:
@@ -73,10 +73,10 @@ class TestKnowledgeItem:
             last_accessed=now,
         )
 
-        assert item.id == "KN-00001"
-        assert item.knowledge_type == KnowledgeType.FACTUAL
-        assert item.priority == KnowledgePriority.HIGH
-        assert item.content == "Test content"
+        assert item.id == "KN-00001", "Item must not be empty"
+        assert item.knowledge_type == KnowledgeType.FACTUAL, "Item must not be empty"
+        assert item.priority == KnowledgePriority.HIGH, "Item must not be empty"
+        assert item.content == "Test content", "Content must not be empty"
 
     def test_knowledge_item_to_dict(self):
         """Test converting knowledge item to dict."""
@@ -100,10 +100,10 @@ class TestKnowledgeItem:
         )
 
         data = item.to_dict()
-        assert data["id"] == "KN-00001"
-        assert data["knowledge_type"] == "factual"
-        assert data["priority"] == "high"
-        assert "test" in data["tags"]
+        assert data["id"] == "KN-00001", "Data must not be empty"
+        assert data["knowledge_type"] == "factual", "Data must not be empty"
+        assert data["priority"] == "high", "Data must not be empty"
+        assert "test" in data["tags"], "Data must not be empty"
 
     def test_knowledge_item_from_dict(self):
         """Test creating knowledge item from dict."""
@@ -126,9 +126,9 @@ class TestKnowledgeItem:
         }
 
         item = KnowledgeItem.from_dict(data)
-        assert item.id == "KN-00001"
-        assert item.knowledge_type == KnowledgeType.FACTUAL
-        assert item.priority == KnowledgePriority.HIGH
+        assert item.id == "KN-00001", "Item must not be empty"
+        assert item.knowledge_type == KnowledgeType.FACTUAL, "Item must not be empty"
+        assert item.priority == KnowledgePriority.HIGH, "Item must not be empty"
 
 
 class TestKnowledgeStore:
@@ -141,7 +141,7 @@ class TestKnowledgeStore:
         with tempfile.TemporaryDirectory() as tmpdir:
             store_path = Path(tmpdir) / "knowledge_store.json"
             store = KnowledgeStore(store_path)
-            assert store.count() == 0
+            assert store.count() == 0, "Count must be greater than zero"
 
     def test_store_add_and_get(self):
         """Test adding and getting items."""
@@ -169,11 +169,11 @@ class TestKnowledgeStore:
             )
 
             store.add(item)
-            assert store.count() == 1
+            assert store.count() == 1, "Count must be greater than zero"
 
             retrieved = store.get("KN-00001")
-            assert retrieved is not None
-            assert retrieved.content == "Test content"
+            assert retrieved is not None, "retrieved must be initialized"
+            assert retrieved.content == "Test content", "Content must not be empty"
 
     def test_store_search(self):
         """Test searching the store."""
@@ -202,8 +202,8 @@ class TestKnowledgeStore:
             store.add(item)
 
             results = store.search("pytest")
-            assert len(results) == 1
-            assert results[0].id == "KN-00001"
+            assert len(results) == 1, "Results must not be empty"
+            assert results[0].id == "KN-00001", "Result must not be empty"
 
 
 class TestLearningExtractor:
@@ -217,7 +217,7 @@ class TestLearningExtractor:
         text = "The issue was a missing import.\nFixed by adding the import."
         learnings = extractor.extract_from_text(text)
 
-        assert len(learnings) >= 1
+        assert len(learnings) >= 1, "Learnings must not be empty"
 
     def test_extract_from_commit_messages(self):
         """Test extracting from commit messages."""
@@ -230,7 +230,7 @@ class TestLearningExtractor:
         ]
         learnings = extractor.extract_from_commit_messages(messages)
 
-        assert len(learnings) >= 1
+        assert len(learnings) >= 1, "Learnings must not be empty"
 
 
 class TestKnowledgeDistiller:
@@ -243,7 +243,7 @@ class TestKnowledgeDistiller:
         with tempfile.TemporaryDirectory() as tmpdir:
             store_path = Path(tmpdir) / "knowledge_store.json"
             distiller = KnowledgeDistiller(store_path)
-            assert distiller.store is not None
+            assert distiller.store is not None, "store must be initialized"
 
     def test_distill_from_session(self):
         """Test distilling from a session."""
@@ -259,7 +259,7 @@ class TestKnowledgeDistiller:
                 commit_messages=["Fix pytest error", "Add new test"],
             )
 
-            assert len(items) > 0
+            assert len(items) > 0, "Items must not be empty"
 
     def test_add_critical_knowledge(self):
         """Test adding critical knowledge."""
@@ -276,8 +276,8 @@ class TestKnowledgeDistiller:
                 tags=["security"],
             )
 
-            assert item is not None
-            assert "security" in item.tags
+            assert item is not None, "item must be initialized"
+            assert "security" in item.tags, "Item must not be empty"
 
 
 # ============================================================================
@@ -328,8 +328,8 @@ class TestCompressedContext:
             source_session="session-1",
         )
 
-        assert ctx.context_id == "CTX-00001"
-        assert ctx.compression_ratio == 0.2
+        assert ctx.context_id == "CTX-00001", "context_id is not valid"
+        assert ctx.compression_ratio == 0.2, "compression_ratio is not valid"
 
     def test_compressed_context_to_dict(self):
         """Test converting to dict."""
@@ -349,8 +349,8 @@ class TestCompressedContext:
         )
 
         data = ctx.to_dict()
-        assert data["context_id"] == "CTX-00001"
-        assert data["context_type"] == "session_log"
+        assert data["context_id"] == "CTX-00001", "Data must not be empty"
+        assert data["context_type"] == "session_log", "Data must not be empty"
 
 
 class TestTokenEstimator:
@@ -362,8 +362,8 @@ class TestTokenEstimator:
 
         text = "This is a test string with some words."
         tokens = TokenEstimator.estimate_tokens(text)
-        assert tokens > 0
-        assert tokens < len(text)
+        assert tokens > 0, "tokens must be greater than zero"
+        assert tokens < len(text), "Text must not be empty"
 
 
 class TestKeyPointExtractor:
@@ -391,8 +391,8 @@ class TestExtractiveSummarizer:
         text = "This is the first sentence. This is the second sentence. This is the third sentence. This is the fourth sentence."
         summary = summarizer.summarize(text, max_sentences=2)
 
-        assert len(summary) > 0
-        assert len(summary) < len(text)
+        assert len(summary) > 0, "Summary must not be empty"
+        assert len(summary) < len(text), "Summary must not be empty"
 
 
 class TestContextCompressor:
@@ -405,7 +405,7 @@ class TestContextCompressor:
         with tempfile.TemporaryDirectory() as tmpdir:
             index_path = Path(tmpdir) / "context_index.json"
             compressor = ContextCompressor(index_path)
-            assert compressor.index is not None
+            assert compressor.index is not None, "index must be initialized"
 
     def test_compress_session_log(self):
         """Test compressing a session log."""
@@ -418,8 +418,8 @@ class TestContextCompressor:
             log = "This is a long session log. " * 50
             ctx = compressor.compress_session_log(log, "session-1")
 
-            assert ctx is not None
-            assert ctx.compression_ratio < 1.0
+            assert ctx is not None, "ctx must be initialized"
+            assert ctx.compression_ratio < 1.0, "compression_ratio is not valid"
 
     def test_compress_commit_history(self):
         """Test compressing commit history."""
@@ -435,8 +435,8 @@ class TestContextCompressor:
             ]
             ctx = compressor.compress_commit_history(commits, "session-1")
 
-            assert ctx is not None
-            assert "2 commits" in ctx.summary
+            assert ctx is not None, "ctx must be initialized"
+            assert "2 commits" in ctx.summary, "Condition must be true"
 
     def test_get_compression_stats(self):
         """Test getting compression stats."""
@@ -447,7 +447,7 @@ class TestContextCompressor:
             compressor = ContextCompressor(index_path)
 
             stats = compressor.get_compression_stats()
-            assert "total_contexts" in stats
+            assert "total_contexts" in stats, "Condition must be true"
 
 
 # ============================================================================
@@ -497,8 +497,8 @@ class TestRetrievalResult:
             relevance_scores=[0.8],
         )
 
-        assert result.query == "pytest error"
-        assert len(result.items) == 1
+        assert result.query == "pytest error", "Result must not be empty"
+        assert len(result.items) == 1, "Collection must not be empty"
 
     def test_retrieval_result_to_dict(self):
         """Test converting to dict."""
@@ -517,8 +517,8 @@ class TestRetrievalResult:
         )
 
         data = result.to_dict()
-        assert data["query"] == "test"
-        assert data["cache_hit"] is True
+        assert data["query"] == "test", "Data must not be empty"
+        assert data["cache_hit"] is True, "Data must not be empty"
 
 
 class TestRetrievalMetrics:
@@ -543,9 +543,9 @@ class TestRetrievalMetrics:
         )
 
         metrics.record(result)
-        assert metrics.total_queries == 1
-        assert metrics.cache_hits == 1
-        assert metrics.cache_hit_rate == 1.0
+        assert metrics.total_queries == 1, "total_queries is not valid"
+        assert metrics.cache_hits == 1, "cache_hits is not valid"
+        assert metrics.cache_hit_rate == 1.0, "cache_hit_rate is not valid"
 
 
 class TestRetrievalCache:
@@ -559,8 +559,8 @@ class TestRetrievalCache:
         cache.set("key1", [{"id": "1"}])
 
         result = cache.get("key1")
-        assert result is not None
-        assert len(result) == 1
+        assert result is not None, "result must be initialized"
+        assert len(result) == 1, "Result must not be empty"
 
     def test_cache_expiry(self):
         """Test cache expiry."""
@@ -570,7 +570,7 @@ class TestRetrievalCache:
         cache.set("key1", [{"id": "1"}])
 
         result = cache.get("key1", max_age_seconds=0)
-        assert result is None  # Should be expired
+        assert result is None, "Result must not be empty"
 
 
 class TestTaskTypeDetector:
@@ -582,7 +582,7 @@ class TestTaskTypeDetector:
 
         detector = TaskTypeDetector()
         task_type = detector.detect("Fix the error in module")
-        assert task_type == TaskType.BUG_FIX
+        assert task_type == TaskType.BUG_FIX, "task_type is not valid"
 
     def test_detect_security(self):
         """Test detecting security task."""
@@ -590,7 +590,7 @@ class TestTaskTypeDetector:
 
         detector = TaskTypeDetector()
         task_type = detector.detect("Address security vulnerability")
-        assert task_type == TaskType.SECURITY
+        assert task_type == TaskType.SECURITY, "task_type is not valid"
 
 
 class TestRetrievalOptimizer:
@@ -603,7 +603,7 @@ class TestRetrievalOptimizer:
         with tempfile.TemporaryDirectory() as tmpdir:
             store_path = Path(tmpdir) / "knowledge_store.json"
             optimizer = RetrievalOptimizer(store_path)
-            assert optimizer is not None
+            assert optimizer is not None, "optimizer must be initialized"
 
     def test_get_session_startup_context(self):
         """Test getting session startup context."""
@@ -614,8 +614,8 @@ class TestRetrievalOptimizer:
             optimizer = RetrievalOptimizer(store_path)
 
             context = optimizer.get_session_startup_context(task_hint="fix bug")
-            assert "critical" in context
-            assert "recent" in context
+            assert "critical" in context, "Condition must be true"
+            assert "recent" in context, "Condition must be true"
 
     def test_retrieve(self):
         """Test retrieval."""
@@ -627,8 +627,8 @@ class TestRetrievalOptimizer:
             optimizer.initialize()
 
             result = optimizer.retrieve("pytest error")
-            assert result is not None
-            assert result.query == "pytest error"
+            assert result is not None, "result must be initialized"
+            assert result.query == "pytest error", "Result must not be empty"
 
     def test_get_metrics(self):
         """Test getting metrics."""
@@ -639,7 +639,7 @@ class TestRetrievalOptimizer:
             optimizer = RetrievalOptimizer(store_path)
 
             metrics = optimizer.get_metrics()
-            assert "total_queries" in metrics
+            assert "total_queries" in metrics, "Condition must be true"
 
 
 # ============================================================================
@@ -708,8 +708,8 @@ class TestWorkflowInfo:
             approval_required=False,
         )
 
-        assert info.name == "CodeQL"
-        assert info.category == WorkflowCategory.SECURITY
+        assert info.name == "CodeQL", "name is not valid"
+        assert info.category == WorkflowCategory.SECURITY, "category is not valid"
 
     def test_workflow_info_to_dict(self):
         """Test converting to dict."""
@@ -730,8 +730,8 @@ class TestWorkflowInfo:
         )
 
         data = info.to_dict()
-        assert data["name"] == "Test"
-        assert data["category"] == "testing"
+        assert data["name"] == "Test", "Data must not be empty"
+        assert data["category"] == "testing", "Data must not be empty"
 
 
 class TestOptimizationRecommendation:
@@ -754,8 +754,8 @@ class TestOptimizationRecommendation:
             code_changes=["Add cache step"],
         )
 
-        assert rec.optimization_type == OptimizationType.CACHING
-        assert len(rec.target_workflows) == 2
+        assert rec.optimization_type == OptimizationType.CACHING, "optimization_type is not valid"
+        assert len(rec.target_workflows) == 2, "Collection must not be empty"
 
 
 class TestWorkflowCategorizer:
@@ -770,7 +770,7 @@ class TestWorkflowCategorizer:
 
         categorizer = WorkflowCategorizer()
         category = categorizer.categorize("codeql-analysis", "codeql.yml")
-        assert category == WorkflowCategory.SECURITY
+        assert category == WorkflowCategory.SECURITY, "category is not valid"
 
     def test_categorize_testing(self):
         """Test categorizing testing workflows."""
@@ -781,7 +781,7 @@ class TestWorkflowCategorizer:
 
         categorizer = WorkflowCategorizer()
         category = categorizer.categorize("pytest-tests", "test.yml")
-        assert category == WorkflowCategory.TESTING
+        assert category == WorkflowCategory.TESTING, "category is not valid"
 
 
 class TestCacheOptimizer:
@@ -826,9 +826,9 @@ class TestCacheOptimizer:
         ]
 
         analysis = optimizer.analyze_cache_usage(workflows)
-        assert analysis["total_workflows"] == 2
-        assert analysis["using_cache"] == 1
-        assert analysis["not_using_cache"] == 1
+        assert analysis["total_workflows"] == 2, "Condition must be true"
+        assert analysis["using_cache"] == 1, "Condition must be true"
+        assert analysis["not_using_cache"] == 1, "Condition must be true"
 
 
 class TestImmutableRegistry:
@@ -841,7 +841,7 @@ class TestImmutableRegistry:
         with tempfile.TemporaryDirectory() as tmpdir:
             registry_path = Path(tmpdir) / "immutable_registry.json"
             registry = ImmutableRegistry(registry_path)
-            assert len(registry.get_all()) == 0
+            assert len(registry.get_all()) == 0, "Collection must not be empty"
 
     def test_register_component(self):
         """Test registering a component."""
@@ -859,8 +859,8 @@ class TestImmutableRegistry:
                 reason="Security-critical component",
             )
 
-            assert comp.component_id.startswith("IMM-")
-            assert len(registry.get_all()) == 1
+            assert comp.component_id.startswith("IMM-"), "Condition must be true"
+            assert len(registry.get_all()) == 1, "Collection must not be empty"
 
     def test_verify_component(self):
         """Test verifying a component."""
@@ -892,7 +892,7 @@ class TestCheckpointManager:
         with tempfile.TemporaryDirectory() as tmpdir:
             cp_path = Path(tmpdir) / "checkpoints.json"
             manager = CheckpointManager(cp_path)
-            assert manager is not None
+            assert manager is not None, "manager must be initialized"
 
     def test_create_checkpoint(self):
         """Test creating a checkpoint."""
@@ -909,8 +909,8 @@ class TestCheckpointManager:
                 metadata={"output": "success"},
             )
 
-            assert cp.checkpoint_id.startswith("CP-")
-            assert cp.workflow_name == "test-workflow"
+            assert cp.checkpoint_id.startswith("CP-"), "Condition must be true"
+            assert cp.workflow_name == "test-workflow", "workflow_name is not valid"
 
     def test_get_latest_checkpoint(self):
         """Test getting latest checkpoint."""
@@ -924,8 +924,8 @@ class TestCheckpointManager:
             manager.create_checkpoint("wf1", "step2", "completed")
 
             latest = manager.get_latest_checkpoint("wf1")
-            assert latest is not None
-            assert latest.step_name == "step2"
+            assert latest is not None, "latest must be initialized"
+            assert latest.step_name == "step2", "step_name is not valid"
 
 
 class TestWorkflowOptimizer:
@@ -940,7 +940,7 @@ class TestWorkflowOptimizer:
                 workflows_dir=Path(tmpdir) / "workflows",
                 knowledge_dir=Path(tmpdir) / "knowledge",
             )
-            assert optimizer is not None
+            assert optimizer is not None, "optimizer must be initialized"
 
     def test_analyze_all_empty(self):
         """Test analyzing with no workflows."""
@@ -953,7 +953,7 @@ class TestWorkflowOptimizer:
             )
 
             analysis = optimizer.analyze_all()
-            assert analysis["total_workflows"] == 0
+            assert analysis["total_workflows"] == 0, "Condition must be true"
 
     def test_get_optimization_report(self):
         """Test generating optimization report."""
@@ -966,7 +966,7 @@ class TestWorkflowOptimizer:
             )
 
             report = optimizer.get_optimization_report()
-            assert "Workflow Optimization Report" in report
+            assert "Workflow Optimization Report" in report, "Condition must be true"
 
 
 # ============================================================================
@@ -996,7 +996,7 @@ class TestPlan4Integration:
             optimizer.initialize()
 
             context = optimizer.get_session_startup_context()
-            assert context is not None
+            assert context is not None, "context must be initialized"
 
     def test_context_compression_flow(self):
         """Test context compression and retrieval."""
@@ -1012,8 +1012,8 @@ class TestPlan4Integration:
 
             # Get startup context
             startup = compressor.get_session_startup_context(max_tokens=500)
-            assert startup is not None
+            assert startup is not None, "startup must be initialized"
 
             # Check stats
             stats = compressor.get_compression_stats()
-            assert stats["total_contexts"] == 1
+            assert stats["total_contexts"] == 1, "Condition must be true"

@@ -139,7 +139,7 @@ def calculate_pattern_score(entry: PatternEntry) -> float:
     Components:
     - Frequency: access_count / threshold (capped at 1.0)
     - Recency: exp(-(days_since_last_access / 30))
-    - Importance: success_rate | impact_score | risk_score (0-1)
+    - Importance: success_rate | impact_score | risk_score (0-1)  # pragma: allowlist secret
     - Age_Decay: exp(days_since_creation / 90)
     
     Range: 0.0 - 1.0

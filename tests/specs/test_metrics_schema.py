@@ -37,8 +37,8 @@ def test_metrics_schema_valid_and_invalid(tmp_path: Path):
 
     for rec in valid:
         errs = sorted(validator.iter_errors(rec), key=lambda e: e.path)  # type: ignore
-        assert not errs
+        assert not errs, "Condition must be true"
 
     for rec in invalid:
         errs = sorted(validator.iter_errors(rec), key=lambda e: e.path)  # type: ignore
-        assert errs
+        assert errs, "errs is not valid"

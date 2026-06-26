@@ -55,7 +55,7 @@ def test_ndjson_writer_is_deterministic(tmp_path: Path) -> None:
         '"timestamp":"2024-01-01T00:00:00Z","run_id":"run-1","step":2,"split":"eval","metric":"loss",'
         '"value":0.5,"dataset":"data/train","tags":{"a":1,"b":2}}'
     )
-    assert payload == expected
+    assert payload == expected, "payload is not valid"
 
 
 def test_ndjson_writer_injects_defaults(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -65,7 +65,7 @@ def test_ndjson_writer_injects_defaults(tmp_path: Path, monkeypatch: pytest.Monk
     class _FakeDateTime:
         @staticmethod
         def now(tz: timezone) -> datetime:  # type: ignore[override]
-            assert tz is timezone.utc
+            assert tz is timezone.utc, "tz is not valid"
             return fake_now
 
     # Use object-based patching to avoid string-path resolution issues across
@@ -85,8 +85,8 @@ def test_ndjson_writer_injects_defaults(tmp_path: Path, monkeypatch: pytest.Monk
         }
     )
     payload = json.loads((tmp_path / "metrics.ndjson").read_text(encoding="utf-8").strip())
-    assert payload["run_id"] == "auto-run"
-    assert payload["timestamp"] == "2024-01-02T03:04:05Z"
+    assert payload["run_id"] == "auto-run", "Condition must be true"
+    assert payload["timestamp"] == "2024-01-02T03:04:05Z", "Condition must be true"
 
 
 def test_tensorboard_writer_emits_offline_summary(
@@ -101,7 +101,7 @@ def test_tensorboard_writer_emits_offline_summary(
     writer.log({})
     writer.close()
     summary = _load_summary(summary_path)
-    assert summary and summary[-1]["component"] == "tensorboard"
+    assert summary and summary[-1]["component"] == "tensorboard", "summary is not valid"
     assert summary[-1]["status"] in {"disabled", "enabled"}
 
 
@@ -125,16 +125,16 @@ def test_mlflow_writer_enforces_local_uri(
     writer.close()
 
     summary = _load_summary(summary_path)
-    assert summary and summary[-1]["component"] == "mlflow"
-    assert summary[-1]["status"] == "disabled"
+    assert summary and summary[-1]["component"] == "mlflow", "summary is not valid"
+    assert summary[-1]["status"] == "disabled", "Condition must be true"
     extra = summary[-1]["extra"]
     uri = extra.get("tracking_uri")
-    assert uri and uri.startswith("file:")
+    assert uri and uri.startswith("file:"), "uri is not valid"
     assert extra.get("effective_uri", "").startswith("file:")
     assert extra.get("requested_uri", "") == ""
     assert extra.get("fallback_reason", "") == ""
-    assert extra.get("allow_remote") is False
-    assert extra.get("system_metrics_enabled") is False
+    assert extra.get("allow_remote") is False, "Condition must be true"
+    assert extra.get("system_metrics_enabled") is False, "Condition must be true"
 
 
 def test_mlflow_writer_rejects_remote_uri(
@@ -178,16 +178,16 @@ def test_mlflow_writer_rejects_remote_uri(
     writer.log({"metric": "loss", "value": 0.1, "step": 1})
     writer.close()
 
-    assert recorded["uri"].startswith("file:")
+    assert recorded["uri"].startswith("file:"), "rec is not valid"
     summary = _load_summary(summary_path)
     extra = summary[-1]["extra"]
-    assert extra["tracking_uri"].startswith("file:")
-    assert extra["effective_uri"] == extra["tracking_uri"]
-    assert extra["requested_uri"] == "http://example.com"
-    assert extra["fallback_reason"] == "non_local_uri"
-    assert extra["allow_remote"] is False
-    assert extra["allow_remote_flag"] == ""
-    assert extra["system_metrics_enabled"] is False
+    assert extra["tracking_uri"].startswith("file:"), "Condition must be true"
+    assert extra["effective_uri"] == extra["tracking_uri"], "Condition must be true"
+    assert extra["requested_uri"] == "http://example.com", "Condition must be true"
+    assert extra["fallback_reason"] == "non_local_uri", "Condition must be true"
+    assert extra["allow_remote"] is False, "Condition must be true"
+    assert extra["allow_remote_flag"] == "", "Condition must be true"
+    assert extra["system_metrics_enabled"] is False, "Condition must be true"
 
 
 def test_wandb_writer_emits_summary(summary_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -206,8 +206,8 @@ def test_wandb_writer_emits_summary(summary_path: Path, monkeypatch: pytest.Monk
     writer.close()
 
     summary = _load_summary(summary_path)
-    assert summary and summary[-1]["component"] == "wandb"
-    assert summary[-1]["status"] == "disabled"
+    assert summary and summary[-1]["component"] == "wandb", "summary is not valid"
+    assert summary[-1]["status"] == "disabled", "Condition must be true"
 
 
 def test_run_logger_honours_legacy_toggle(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -218,6 +218,6 @@ def test_run_logger_honours_legacy_toggle(tmp_path: Path, monkeypatch: pytest.Mo
 
     metrics_path = tmp_path / "run" / "metrics.ndjson"
     payload = json.loads(metrics_path.read_text(encoding="utf-8").strip())
-    assert "run_id" not in payload
-    assert "timestamp" not in payload
-    assert payload["metric"] == "loss"
+    assert "run_id" not in payload, "Condition must be true"
+    assert "timestamp" not in payload, "Condition must be true"
+    assert payload["metric"] == "loss", "Condition must be true"

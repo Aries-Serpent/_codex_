@@ -23,11 +23,11 @@ class TestLegacyImport:
             )
 
             # All should be importable
-            assert AccelerateInitResult is not None
-            assert callable(get_distributed_env_info)
-            assert callable(is_accelerate_available)
-            assert callable(is_gpu_available)
-            assert callable(safe_accelerate_init)
+            assert AccelerateInitResult is not None, "AccelerateInitResult must be initialized"
+            assert callable(get_distributed_env_info), "Condition must be true"
+            assert callable(is_accelerate_available), "Condition must be true"
+            assert callable(is_gpu_available), "Condition must be true"
+            assert callable(safe_accelerate_init), "Condition must be true"
 
     def test_all_exports(self):
         """Test __all__ exports."""
@@ -44,7 +44,7 @@ class TestLegacyImport:
             ]
 
             for item in expected:
-                assert item in __all__
+                assert item in __all__, "Item must not be empty"
 
     def test_is_accelerate_available(self):
         """Test is_accelerate_available returns bool."""

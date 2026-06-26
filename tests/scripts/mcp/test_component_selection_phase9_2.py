@@ -46,9 +46,9 @@ class TestLoadTopics:
         result = load_topics(topics_file)
 
         # Assert
-        assert result == topics_data
-        assert "zendesk" in result
-        assert "docs" in result
+        assert result == topics_data, "Result must not be empty"
+        assert "zendesk" in result, "Result must not be empty"
+        assert "docs" in result, "Result must not be empty"
 
     def test_load_topics_empty_file(self, tmp_path: Path) -> None:
         """Test loading empty topics file."""
@@ -60,7 +60,7 @@ class TestLoadTopics:
         result = load_topics(topics_file)
 
         # Assert
-        assert result == {}
+        assert result == {}, "Result must not be empty"
 
     def test_load_topics_file_not_found(self, tmp_path: Path) -> None:
         """Test loading non-existent topics file."""
@@ -86,8 +86,8 @@ class TestExpandGlobs:
         result = expand_globs(patterns, tmp_path)
 
         # Assert
-        assert len(result) >= 1
-        assert any(p.name == "test.txt" for p in result)
+        assert len(result) >= 1, "Result must not be empty"
+        assert any(p.name == "test.txt" for p in result), "Result must not be empty"
 
     def test_expand_globs_recursive_pattern(self, tmp_path: Path) -> None:
         """Test expanding recursive glob pattern."""
@@ -101,7 +101,7 @@ class TestExpandGlobs:
         result = expand_globs(patterns, tmp_path)
 
         # Assert
-        assert len(result) >= 1
+        assert len(result) >= 1, "Result must not be empty"
 
     def test_expand_globs_no_matches(self, tmp_path: Path) -> None:
         """Test expanding pattern with no matches."""
@@ -112,7 +112,7 @@ class TestExpandGlobs:
         result = expand_globs(patterns, tmp_path)
 
         # Assert
-        assert len(result) == 0
+        assert len(result) == 0, "Result must not be empty"
 
     def test_expand_globs_multiple_patterns(self, tmp_path: Path) -> None:
         """Test expanding multiple glob patterns."""
@@ -125,7 +125,7 @@ class TestExpandGlobs:
         result = expand_globs(patterns, tmp_path)
 
         # Assert
-        assert len(result) >= 2
+        assert len(result) >= 2, "Result must not be empty"
 
     def test_expand_globs_empty_patterns(self, tmp_path: Path) -> None:
         """Test expanding empty pattern list."""
@@ -136,7 +136,7 @@ class TestExpandGlobs:
         result = expand_globs(patterns, tmp_path)
 
         # Assert
-        assert len(result) == 0
+        assert len(result) == 0, "Result must not be empty"
 
     def test_expand_globs_with_dot_prefix(self, tmp_path: Path) -> None:
         """Test pattern starting with dot."""
@@ -186,7 +186,7 @@ class TestFilterByTopic:
         result = filter_by_topic("test", topics_map, tmp_path)
 
         # Assert
-        assert len(result) == 0
+        assert len(result) == 0, "Result must not be empty"
 
     def test_filter_by_topic_multiple_patterns(self, tmp_path: Path) -> None:
         """Test filtering with multiple patterns."""
@@ -199,7 +199,7 @@ class TestFilterByTopic:
         result = filter_by_topic("test", topics_map, tmp_path)
 
         # Assert
-        assert len(result) >= 2
+        assert len(result) >= 2, "Result must not be empty"
 
 
 class TestFilterByGlobs:
@@ -215,7 +215,7 @@ class TestFilterByGlobs:
         result = filter_by_globs(glob_patterns, tmp_path)
 
         # Assert
-        assert len(result) >= 1
+        assert len(result) >= 1, "Result must not be empty"
 
     def test_filter_by_globs_multiple_patterns(self, tmp_path: Path) -> None:
         """Test filtering with multiple comma-separated patterns."""
@@ -228,7 +228,7 @@ class TestFilterByGlobs:
         result = filter_by_globs(glob_patterns, tmp_path)
 
         # Assert
-        assert len(result) >= 2
+        assert len(result) >= 2, "Result must not be empty"
 
     def test_filter_by_globs_empty_string(self, tmp_path: Path) -> None:
         """Test filtering with empty pattern string."""
@@ -239,7 +239,7 @@ class TestFilterByGlobs:
         result = filter_by_globs(glob_patterns, tmp_path)
 
         # Assert
-        assert len(result) == 0
+        assert len(result) == 0, "Result must not be empty"
 
     def test_filter_by_globs_whitespace_handling(self, tmp_path: Path) -> None:
         """Test pattern whitespace is handled correctly."""
@@ -251,7 +251,7 @@ class TestFilterByGlobs:
         result = filter_by_globs(glob_patterns, tmp_path)
 
         # Assert
-        assert len(result) >= 1
+        assert len(result) >= 1, "Result must not be empty"
 
     def test_filter_by_globs_no_matches(self, tmp_path: Path) -> None:
         """Test filtering with patterns that match nothing."""
@@ -262,7 +262,7 @@ class TestFilterByGlobs:
         result = filter_by_globs(glob_patterns, tmp_path)
 
         # Assert
-        assert len(result) == 0
+        assert len(result) == 0, "Result must not be empty"
 
 
 class TestEdgeCases:
@@ -281,7 +281,7 @@ class TestEdgeCases:
         # Assert
         # Should only include files, not directories
         for path in result:
-            assert (tmp_path / path).is_file()
+            assert (tmp_path / path).is_file(), "Condition must be true"
 
     def test_expand_globs_relative_paths(self, tmp_path: Path) -> None:
         """Test that results are relative to base_dir."""
@@ -295,7 +295,7 @@ class TestEdgeCases:
         # Assert
         for path in result:
             # Paths should be relative, not absolute
-            assert not path.is_absolute()
+            assert not path.is_absolute(), "Condition must be true"
 
     def test_filter_by_topic_preserves_topic_patterns(self, tmp_path: Path) -> None:
         """Test that topic patterns are used correctly."""
@@ -311,7 +311,7 @@ class TestEdgeCases:
 
         # Assert
         # Should only match files in specific/ directory
-        assert all("specific" in str(p) for p in result if len(result) > 0)
+        assert all("specific" in str(p) for p in result if len(result) > 0), "Result must not be empty"
 
 
 # #AFTERMATH_METRIC - 15 tests created for scripts/mcp/select_components.py

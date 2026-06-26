@@ -38,7 +38,7 @@ class TestCacheType:
         actual_types = [ct.value for ct in CacheType]
 
         for expected in expected_types:
-            assert expected in actual_types
+            assert expected in actual_types, "Condition must be true"
 
 
 class TestCacheConfig:
@@ -53,10 +53,10 @@ class TestCacheConfig:
             restore_keys=["Linux-pr-checks-pip-", "Linux-pip-"],
         )
 
-        assert config.cache_type == CacheType.PIP
-        assert config.paths == ["~/.cache/pip"]
-        assert len(config.key_components) == 1
-        assert len(config.restore_keys) == 2
+        assert config.cache_type == CacheType.PIP, "cache_type is not valid"
+        assert config.paths == ["~/.cache/pip"], "paths is not valid"
+        assert len(config.key_components) == 1, "Collection must not be empty"
+        assert len(config.restore_keys) == 2, "Collection must not be empty"
 
     def test_to_github_actions(self):
         """Test converting config to GitHub Actions format."""
@@ -69,11 +69,11 @@ class TestCacheConfig:
 
         gh_config = config.to_github_actions()
 
-        assert "path" in gh_config
-        assert "key" in gh_config
-        assert "restore-keys" in gh_config
-        assert gh_config["key"] == "Linux-pr-checks-pip-abc123"
-        assert "~/.cache/pip" in gh_config["path"]
+        assert "path" in gh_config, "Condition must be true"
+        assert "key" in gh_config, "Condition must be true"
+        assert "restore-keys" in gh_config, "Condition must be true"
+        assert gh_config["key"] == "Linux-pr-checks-pip-abc123", "Condition must be true"
+        assert "~/.cache/pip" in gh_config["path"], "Condition must be true"
 
 
 class TestCacheHealth:
@@ -89,9 +89,9 @@ class TestCacheHealth:
             is_critical=False,
         )
 
-        assert not health.is_critical
-        assert health.total_size_gb == 5.0
-        assert health.cache_hit_rate == 0.95
+        assert not health.is_critical, "Condition must be true"
+        assert health.total_size_gb == 5.0, "total_size_gb is not valid"
+        assert health.cache_hit_rate == 0.95, "cache_hit_rate is not valid"
 
     def test_critical_cache(self):
         """Test critical cache status."""
@@ -104,9 +104,9 @@ class TestCacheHealth:
             recommendations=["Run cleanup", "Review cache strategy"],
         )
 
-        assert health.is_critical
-        assert len(health.warnings) == 2
-        assert len(health.recommendations) == 2
+        assert health.is_critical, "Condition must be true"
+        assert len(health.warnings) == 2, "Collection must not be empty"
+        assert len(health.recommendations) == 2, "Collection must not be empty"
 
 
 class TestCacheManager:
@@ -128,9 +128,9 @@ class TestCacheManager:
 
     def test_manager_initialization(self, manager):
         """Test manager initializes correctly."""
-        assert manager.repo_root.exists()
+        assert manager.repo_root.exists(), "Condition must be true"
         assert isinstance(manager.github_context, dict)
-        assert "runner_os" in manager.github_context
+        assert "runner_os" in manager.github_context, "Condition must be true"
 
     def test_detect_repo_root(self, tmp_path, monkeypatch):
         """Test repository root detection."""
@@ -143,7 +143,7 @@ class TestCacheManager:
 
         manager = CacheManager()
 
-        assert manager.repo_root == tmp_path
+        assert manager.repo_root == tmp_path, "repo_root is not valid"
 
     def test_generate_cache_key_basic(self, manager, mock_env):
         """Test basic cache key generation."""
@@ -152,9 +152,9 @@ class TestCacheManager:
             workflow_name="pr-checks",
         )
 
-        assert "Linux" in key
-        assert "pr-checks" in key
-        assert "pip" in key
+        assert "Linux" in key, "Condition must be true"
+        assert "pr-checks" in key, "Condition must be true"
+        assert "pip" in key, "Condition must be true"
 
     def test_generate_cache_key_with_identifiers(self, manager, mock_env):
         """Test cache key with extra identifiers."""
@@ -164,11 +164,11 @@ class TestCacheManager:
             extra_identifiers={"job": "test", "python": "3.12"},
         )
 
-        assert "Linux" in key
-        assert "pr-checks" in key
-        assert "job-test" in key
-        assert "python-3.12" in key
-        assert "pip" in key
+        assert "Linux" in key, "Condition must be true"
+        assert "pr-checks" in key, "Condition must be true"
+        assert "job-test" in key, "Condition must be true"
+        assert "python-3.12" in key, "Condition must be true"
+        assert "pip" in key, "Condition must be true"
 
     def test_generate_cache_key_with_timestamp(self, manager, mock_env):
         """Test cache key with timestamp."""
@@ -180,17 +180,17 @@ class TestCacheManager:
 
         # Should have timestamp component
         parts = key.split("-")
-        assert len(parts) >= 4
+        assert len(parts) >= 4, "Parts must not be empty"
 
     def test_generate_restore_keys(self, manager):
         """Test restore key generation."""
         primary_key = "Linux-pr-checks-test-python312-pip-abc123def456"
         restore_keys = manager.generate_restore_keys(primary_key, fallback_levels=3)
 
-        assert len(restore_keys) == 3
-        assert restore_keys[0] == "Linux-pr-checks-test-python312-pip-"
-        assert restore_keys[1] == "Linux-pr-checks-test-python312-"
-        assert restore_keys[2] == "Linux-pr-checks-test-"
+        assert len(restore_keys) == 3, "Restore_keys must not be empty"
+        assert restore_keys[0] == "Linux-pr-checks-test-python312-pip-", "rest is not valid"
+        assert restore_keys[1] == "Linux-pr-checks-test-python312-", "rest is not valid"
+        assert restore_keys[2] == "Linux-pr-checks-test-", "rest is not valid"
 
     def test_hash_dependencies(self, manager, tmp_path):
         """Test dependency file hashing."""
@@ -198,15 +198,15 @@ class TestCacheManager:
         (tmp_path / "pyproject.toml").write_text("[project]\nname = 'test'\n")
 
         hash1 = manager._hash_dependencies(CacheType.PIP)
-        assert len(hash1) == 12
-        assert hash1.isalnum()
+        assert len(hash1) == 12, "Hash1 must not be empty"
+        assert hash1.isalnum(), "Condition must be true"
 
         # Modify file
         (tmp_path / "pyproject.toml").write_text("[project]\nname = 'modified'\n")
         hash2 = manager._hash_dependencies(CacheType.PIP)
 
         # Hash should change
-        assert hash1 != hash2
+        assert hash1 != hash2, "hash1 is not valid"
 
     def test_create_cache_config(self, manager, mock_env):
         """Test complete cache configuration creation."""
@@ -217,10 +217,10 @@ class TestCacheManager:
         )
 
         assert isinstance(config, CacheConfig)
-        assert config.cache_type == CacheType.PIP
-        assert len(config.paths) > 0
-        assert len(config.key_components) == 1
-        assert len(config.restore_keys) > 0
+        assert config.cache_type == CacheType.PIP, "cache_type is not valid"
+        assert len(config.paths) > 0, "Collection must not be empty"
+        assert len(config.key_components) == 1, "Collection must not be empty"
+        assert len(config.restore_keys) > 0, "Collection must not be empty"
 
     def test_create_cache_config_with_additional_paths(self, manager, mock_env):
         """Test cache config with additional paths."""
@@ -230,15 +230,15 @@ class TestCacheManager:
             additional_paths=["~/.cache/custom"],
         )
 
-        assert "~/.cache/custom" in config.paths
+        assert "~/.cache/custom" in config.paths, "Condition must be true"
 
     def test_validate_cache_health_no_gh_cli(self, manager):
         """Test cache health validation without GitHub CLI."""
         health = manager.validate_cache_health()
 
         assert isinstance(health, CacheHealth)
-        assert health.total_size_gb >= 0
-        assert health.total_caches >= 0
+        assert health.total_size_gb >= 0, "total_size_gb must be greater than zero"
+        assert health.total_caches >= 0, "total_caches must be greater than zero"
 
     @patch("subprocess.run")
     def test_validate_cache_health_with_gh_cli(self, mock_run, manager, mock_env):
@@ -253,9 +253,9 @@ class TestCacheManager:
         with patch.object(manager, "_is_gh_cli_available", return_value=True):
             health = manager.validate_cache_health(size_threshold_gb=0.5)
 
-        assert health.total_size_gb > 0
-        assert health.total_caches > 0
-        assert health.is_critical  # Size exceeds threshold
+        assert health.total_size_gb > 0, "total_size_gb must be greater than zero"
+        assert health.total_caches > 0, "total_caches must be greater than zero"
+        assert health.is_critical, "Condition must be true"
 
     def test_validate_cache_health_critical_size(self, manager):
         """Test cache health detects critical size."""
@@ -268,8 +268,8 @@ class TestCacheManager:
         health.is_critical = health.total_size_gb > 8.0
         health.warnings.append("Size exceeds threshold")
 
-        assert health.is_critical
-        assert len(health.warnings) > 0
+        assert health.is_critical, "Condition must be true"
+        assert len(health.warnings) > 0, "Collection must not be empty"
 
     def test_cache_paths_defined(self, manager):
         """Test that cache paths are defined for all types."""
@@ -278,8 +278,8 @@ class TestCacheManager:
                 continue
 
             paths = manager.CACHE_PATHS.get(cache_type)
-            assert paths is not None
-            assert len(paths) > 0
+            assert paths is not None, "paths must be initialized"
+            assert len(paths) > 0, "Paths must not be empty"
 
     def test_dependency_files_defined(self, manager):
         """Test that dependency files are defined for key types."""
@@ -287,8 +287,8 @@ class TestCacheManager:
 
         for cache_type in key_types:
             files = manager.DEPENDENCY_FILES.get(cache_type)
-            assert files is not None
-            assert len(files) > 0
+            assert files is not None, "files must be initialized"
+            assert len(files) > 0, "Files must not be empty"
 
 
 class TestCacheManagerCLI:
@@ -335,13 +335,13 @@ class TestCacheManagerIntegration:
         )
 
         # Validate configuration
-        assert config.cache_type == CacheType.PIP
-        assert "Linux" in config.key_components[0]
-        assert "integration-test" in config.key_components[0]
-        assert "pip" in config.key_components[0]
+        assert config.cache_type == CacheType.PIP, "cache_type is not valid"
+        assert "Linux" in config.key_components[0], "Condition must be true"
+        assert "integration-test" in config.key_components[0], "Condition must be true"
+        assert "pip" in config.key_components[0], "Condition must be true"
 
         # Check restore keys
-        assert len(config.restore_keys) > 0
+        assert len(config.restore_keys) > 0, "Collection must not be empty"
 
         # Validate health
         health = manager.validate_cache_health()
@@ -363,8 +363,8 @@ class TestCacheManagerIntegration:
 
         # Verify all have unique keys
         keys = [config.key_components[0] for config in configs.values()]
-        assert len(keys) == len(set(keys))  # All unique
+        assert len(keys) == len(set(keys)), "Keys must not be empty"
 
         # Verify all have appropriate cache type
         for cache_type, config in configs.items():
-            assert cache_type.value in config.key_components[0]
+            assert cache_type.value in config.key_components[0], "Value must be initialized"

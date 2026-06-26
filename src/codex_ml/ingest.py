@@ -106,14 +106,14 @@ def _load_config(config_path: str | Path | None) -> _DataConfig:
         mapping = _load_yaml_config(target)
     except FileNotFoundError as e:
         error_type = type(e).__name__
-        logger.debug(f"FileNotFoundError: <ERROR_TYPE>")
-        logger.warning(f"FileNotFoundError: <ERROR_TYPE>", exc_info=True)
+        logger.debug("FileNotFoundError: <ERROR_TYPE>")
+        logger.warning("FileNotFoundError: <ERROR_TYPE>", exc_info=True)
         # Fallback to baked defaults when config is missing.
         return _default_config()
     except MissingPyYAMLError as e:
         error_type = type(e).__name__
-        logger.debug(f"MissingPyYAMLError: <ERROR_TYPE>")
-        logger.warning(f"MissingPyYAMLError: <ERROR_TYPE>", exc_info=True)
+        logger.debug("MissingPyYAMLError: <ERROR_TYPE>")
+        logger.warning("MissingPyYAMLError: <ERROR_TYPE>", exc_info=True)
         return _default_config()
     except (IOError, OSError):
         logger.warning("Exception occurred", exc_info=True)

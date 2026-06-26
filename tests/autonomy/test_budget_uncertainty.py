@@ -39,8 +39,8 @@ class TestDirichletBeliefs:
         mod = _import()
         b = mod.DirichletBeliefs(options=["a", "b"])
         pm = b.posterior_means
-        assert abs(pm["a"] - 0.5) < 1e-9
-        assert abs(pm["b"] - 0.5) < 1e-9
+        assert abs(pm["a"] - 0.5) < 1e-9, "Condition must be true"
+        assert abs(pm["b"] - 0.5) < 1e-9, "Condition must be true"
 
     def test_posterior_means_after_observe(self):
         mod = _import()
@@ -48,19 +48,19 @@ class TestDirichletBeliefs:
         b.observe("pass", weight=3.0)
         pm = b.posterior_means
         # alphas: [4.0, 1.0] → pass = 4/5 = 0.8
-        assert abs(pm["pass"] - 0.8) < 1e-9
-        assert abs(pm["fail"] - 0.2) < 1e-9
+        assert abs(pm["pass"] - 0.8) < 1e-9, "Condition must be true"
+        assert abs(pm["fail"] - 0.2) < 1e-9, "Condition must be true"
 
     def test_observe_increments_alpha(self):
         mod = _import()
         b = mod.DirichletBeliefs(options=["x", "y"])
         b.observe("x")
-        assert b.alphas[0] == 2.0
+        assert b.alphas[0] == 2.0, "Condition must be true"
 
     def test_entropy_is_positive(self):
         mod = _import()
         b = mod.DirichletBeliefs(options=["a", "b", "c"])
-        assert b.entropy > 0
+        assert b.entropy > 0, "entropy must be greater than zero"
 
     def test_entropy_decreases_with_certainty(self):
         mod = _import()
@@ -68,23 +68,23 @@ class TestDirichletBeliefs:
         h_initial = b.entropy
         for _ in range(50):
             b.observe("a")
-        assert b.entropy < h_initial
+        assert b.entropy < h_initial, "entropy is not valid"
 
     def test_best_option(self):
         mod = _import()
         b = mod.DirichletBeliefs(options=["win", "lose"])
         b.observe("win", weight=10.0)
-        assert b.best_option == "win"
+        assert b.best_option == "win", "best_option is not valid"
 
     def test_to_dict_keys(self):
         mod = _import()
         b = mod.DirichletBeliefs(options=["a", "b"])
         d = b.to_dict()
-        assert "options" in d
-        assert "alphas" in d
-        assert "posterior_means" in d
-        assert "entropy" in d
-        assert "best_option" in d
+        assert "options" in d, "Condition must be true"
+        assert "alphas" in d, "Condition must be true"
+        assert "posterior_means" in d, "Condition must be true"
+        assert "entropy" in d, "Condition must be true"
+        assert "best_option" in d, "Condition must be true"
 
     def test_to_dict_entropy_rounded(self):
         mod = _import()
@@ -93,13 +93,13 @@ class TestDirichletBeliefs:
         # Entropy should have at most 4 decimal places
         entropy_str = str(d["entropy"])
         if "." in entropy_str:
-            assert len(entropy_str.split(".")[1]) <= 4
+            assert len(entropy_str.split(".")[1]) <= 4, "Collection must not be empty"
 
     def test_custom_alphas(self):
         mod = _import()
         b = mod.DirichletBeliefs(options=["a", "b"], alphas=[2.0, 5.0])
         pm = b.posterior_means
-        assert abs(pm["b"] - 5 / 7) < 1e-9
+        assert abs(pm["b"] - 5 / 7) < 1e-9, "Condition must be true"
 
     def test_observe_unknown_option_raises_clear_error(self):
         """observe() must raise ValueError with a clear message for unknown options."""
@@ -127,7 +127,7 @@ class TestBudgetCap:
         def fast_fn():
             return "ok"
 
-        assert fast_fn() == "ok"
+        assert fast_fn() == "ok", "Condition must be true"
 
     def test_raises_budget_exceeded_when_over(self):
         mod = _import()
@@ -168,7 +168,7 @@ class TestBudgetCap:
         def fn():
             return 42
 
-        assert fn() == 42
+        assert fn() == 42, "Condition must be true"
 
 
 # ── scenario functions ───────────────────────────────────────────────────────
@@ -181,7 +181,7 @@ class TestScenarios:
         monkeypatch.setattr(mod, "REPO_ROOT", tmp_path)
         result = mod.scenario_ci_health()
         assert isinstance(result, dict)
-        assert "beliefs" in result
+        assert "beliefs" in result, "Result must not be empty"
 
     def test_scenario_ci_health_with_summary_file(self, tmp_path, monkeypatch):
         mod = _import()
@@ -190,7 +190,7 @@ class TestScenarios:
         summary.write_text(json.dumps({"status": "failed"}), encoding="utf-8")
         result = mod.scenario_ci_health()
         assert isinstance(result, dict)
-        assert "beliefs" in result
+        assert "beliefs" in result, "Result must not be empty"
 
     def test_scenario_ci_health_with_pass_status(self, tmp_path, monkeypatch):
         mod = _import()
@@ -204,13 +204,13 @@ class TestScenarios:
         mod = _import()
         result = mod.scenario_decision(["option_a", "option_b", "option_c"])
         assert isinstance(result, dict)
-        assert "beliefs" in result
+        assert "beliefs" in result, "Result must not be empty"
 
     def test_scenario_decision_best_option_in_options(self):
         mod = _import()
         opts = ["alpha", "beta", "gamma"]
         result = mod.scenario_decision(opts)
-        assert result["beliefs"]["best_option"] in opts
+        assert result["beliefs"]["best_option"] in opts, "Result must not be empty"
 
 
 # ── persist_result ───────────────────────────────────────────────────────────
@@ -222,16 +222,16 @@ class TestPersistResult:
         monkeypatch.setattr(mod, "BUDGET_DIR", tmp_path / "budget")
         result = {"beliefs": {"best_option": "a"}, "scenario": "test"}
         path = mod.persist_result(result)
-        assert path.exists()
+        assert path.exists(), "Condition must be true"
         data = json.loads(path.read_text())
-        assert data["scenario"] == "test"
+        assert data["scenario"] == "test", "Data must not be empty"
 
     def test_creates_budget_dir(self, tmp_path, monkeypatch):
         mod = _import()
         budget_dir = tmp_path / "new_budget_dir"
         monkeypatch.setattr(mod, "BUDGET_DIR", budget_dir)
         mod.persist_result({"beliefs": {}, "scenario": "test"})
-        assert budget_dir.exists()
+        assert budget_dir.exists(), "Condition must be true"
 
 
 # ── main entry point ─────────────────────────────────────────────────────────
@@ -244,7 +244,7 @@ class TestMain:
         monkeypatch.setattr(mod, "BUDGET_DIR", tmp_path / "budget")
         with patch("sys.argv", ["budget_uncertainty.py", "--scenario", "ci_health"]):
             rc = mod.main()
-        assert rc == 0
+        assert rc == 0, "rc is not valid"
 
     def test_main_decision_scenario(self, tmp_path, monkeypatch):
         mod = _import()
@@ -261,4 +261,4 @@ class TestMain:
             ],
         ):
             rc = mod.main()
-        assert rc == 0
+        assert rc == 0, "rc is not valid"

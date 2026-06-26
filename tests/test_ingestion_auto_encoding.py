@@ -24,4 +24,4 @@ def test_auto_detect_handles_encodings(tmp_path: Path, enc: str) -> None:
     p = tmp_path / f"sample_{enc.replace('-', '')}.txt"
     p.write_bytes(text.encode(enc))
     out = Ingestor.ingest(p, encoding="auto")
-    assert out == text
+    assert out == text, "out is not valid"

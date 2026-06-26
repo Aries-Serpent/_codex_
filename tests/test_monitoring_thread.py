@@ -30,4 +30,4 @@ def test_offline_bootstrap(tmp_path, monkeypatch):
     sysd = m._codex_sample_system()
     assert isinstance(sysd, dict)
     if loggers.tb is not None:
-        assert (tmp_path / "tb").exists()
+        assert (tmp_path / "tb").exists(), "Condition must be true"

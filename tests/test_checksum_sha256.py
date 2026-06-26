@@ -17,7 +17,7 @@ def test_sha256sum_matches_hashlib(tmp_path):
     target.write_bytes(payload)
 
     expected = hashlib.sha256(payload).hexdigest()
-    assert sha256sum(target) == expected
+    assert sha256sum(target) == expected, "Condition must be true"
 
 
 def test_sha256sum_handles_large_files(tmp_path):
@@ -27,4 +27,4 @@ def test_sha256sum_handles_large_files(tmp_path):
     target.write_bytes(block * 4)
 
     expected = hashlib.sha256(block * 4).hexdigest()
-    assert sha256sum(target) == expected
+    assert sha256sum(target) == expected, "Condition must be true"

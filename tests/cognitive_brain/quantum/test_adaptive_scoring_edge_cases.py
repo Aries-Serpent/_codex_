@@ -125,7 +125,7 @@ class TestAdaptiveScoringEdgeCases:
         for scenario in scenarios[:5]:
             score = engine.compute_score(scenario)
             assert isinstance(score, (int, float))
-            assert score >= 0.0
+            assert score >= 0.0, "score must be greater than zero"
 
     def test_weights_at_upper_boundary(self):
         """Test weights at maximum boundary (1.0)."""
@@ -136,7 +136,7 @@ class TestAdaptiveScoringEdgeCases:
         for scenario in scenarios[:5]:
             score = engine.compute_score(scenario)
             assert isinstance(score, (int, float))
-            assert 0.0 <= score <= 100.0
+            assert 0.0 <= score <= 100.0, "0 is not valid"
 
     def test_invalid_negative_weights(self):
         """Test error handling for negative weights."""
@@ -160,7 +160,7 @@ class TestAdaptiveScoringEdgeCases:
         final_weights = (engine.compliance_score_weight, engine.risk_weight)
 
         # Weights should not change with zero learning rate
-        assert initial_weights == final_weights
+        assert initial_weights == final_weights, "initial_weights is not valid"
 
     def test_max_iterations_convergence(self):
         """Test behavior at maximum training iterations."""
@@ -173,9 +173,9 @@ class TestAdaptiveScoringEdgeCases:
         engine.train(scenarios, epochs=100)
 
         # Weights should still be valid
-        assert 0.0 <= engine.compliance_score_weight <= 1.0
-        assert 0.0 <= engine.risk_weight <= 1.0
-        assert (
+        assert 0.0 <= engine.compliance_score_weight <= 1.0, "0 is not valid"
+        assert 0.0 <= engine.risk_weight <= 1.0, "0 is not valid"
+        assert (, "Condition must be true"
             abs(
                 (
                     engine.compliance_score_weight
@@ -202,7 +202,7 @@ class TestAdaptiveScoringEdgeCases:
 
         # Should not crash with single scenario
         engine.train(scenarios, epochs=5)
-        assert engine.compliance_score_weight > 0
+        assert engine.compliance_score_weight > 0, "compliance_score_weight must be greater than zero"
 
     def test_duplicate_scenario_ids(self):
         """Test handling of duplicate scenario IDs."""
@@ -215,7 +215,7 @@ class TestAdaptiveScoringEdgeCases:
         engine = AdaptiveScoringEngine()
         # Should handle duplicates gracefully (deduplicate or process both)
         engine.train(scenarios, epochs=5)
-        assert engine.compliance_score_weight > 0
+        assert engine.compliance_score_weight > 0, "compliance_score_weight must be greater than zero"
 
     def test_missing_features_in_scenario(self):
         """Test integration with scenarios missing expected features."""
@@ -243,7 +243,7 @@ class TestAdaptiveScoringEdgeCases:
         engine = AdaptiveScoringEngine()
         score = engine.compute_score(scenarios[0])
         # Should not return NaN
-        assert not np.isnan(score)
+        assert not np.isnan(score), "Condition must be true"
 
     def test_inf_in_scenario_features(self):
         """Test handling of infinite values in features."""
@@ -255,7 +255,7 @@ class TestAdaptiveScoringEdgeCases:
         engine = AdaptiveScoringEngine()
         score = engine.compute_score(scenarios[0])
         # Should clamp or handle infinity
-        assert np.isfinite(score)
+        assert np.isfinite(score), "Condition must be true"
 
     def test_very_high_ambiguity_score(self):
         """Test scenarios with maximum ambiguity."""
@@ -266,7 +266,7 @@ class TestAdaptiveScoringEdgeCases:
         engine = AdaptiveScoringEngine()
         score = engine.compute_score(scenarios[0])
         # Should produce valid score even at max ambiguity
-        assert 0.0 <= score <= 100.0
+        assert 0.0 <= score <= 100.0, "0 is not valid"
 
     def test_convergence_with_conflicting_data(self):
         """Test training on conflicting scenario patterns."""
@@ -286,8 +286,8 @@ class TestAdaptiveScoringEdgeCases:
         engine.train(scenarios, epochs=20)
 
         # Should converge to some stable weights despite conflicts
-        assert 0.0 <= engine.compliance_score_weight <= 1.0
-        assert 0.0 <= engine.risk_weight <= 1.0
+        assert 0.0 <= engine.compliance_score_weight <= 1.0, "0 is not valid"
+        assert 0.0 <= engine.risk_weight <= 1.0, "0 is not valid"
 
     def test_weight_normalization_after_training(self):
         """Test that weights remain normalized after training."""

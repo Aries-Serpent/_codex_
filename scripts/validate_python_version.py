@@ -66,7 +66,7 @@ def check_pyproject_toml() -> bool:
         data = tomllib.loads(pyproject.read_text())
     except Exception as e:
         error_type = type(e).__name__
-        print(f"❌ Failed to parse pyproject.toml: <ERROR_TYPE>")
+        print("❌ Failed to parse pyproject.toml: <ERROR_TYPE>")
         return False
 
     requires_python = data.get("project", {}).get("requires-python", "")

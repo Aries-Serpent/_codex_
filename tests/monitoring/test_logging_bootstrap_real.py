@@ -26,9 +26,9 @@ def test_logging_bootstrap_creates_loggers(tmp_path, monkeypatch):
     }
     monkeypatch.setenv("WANDB_MODE", "offline")
     loggers = cl._codex_logging_bootstrap(Namespace(hydra_cfg=cfg))
-    assert loggers.tb is not None
-    assert loggers.wb is not None
-    assert loggers.mlflow_active
+    assert loggers.tb is not None, "tb must be initialized"
+    assert loggers.wb is not None, "wb must be initialized"
+    assert loggers.mlflow_active, "Condition must be true"
     loggers.tb.close()
     loggers.wb.finish()
     mlflow.end_run()

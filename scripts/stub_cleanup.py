@@ -322,11 +322,11 @@ def analyze_file(file_path: Path, exclude_abstract: bool = True) -> StubAnalysis
 
     except SyntaxError as e:
         error_type = type(e).__name__
-        logger.debug(f"SyntaxError: <ERROR_TYPE>")
+        logger.debug("SyntaxError: <ERROR_TYPE>")
         result.errors.append(f"Syntax error in {file_path}: {e}")
     except Exception as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         result.errors.append(f"Error analyzing {file_path}: {e}")
 
     return result

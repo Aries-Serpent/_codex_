@@ -27,13 +27,13 @@ def test_read_and_scaffold_zaf(tmp_path: Path) -> None:
     archive_path = _create_zaf_zip(tmp_path)
     bundle = read_zaf(archive_path)
 
-    assert bundle["manifest"]["name"] == "Legacy App"
-    assert "src/app.js" in bundle["files"]
+    assert bundle["manifest"]["name"] == "Legacy App", "Condition must be true"
+    assert "src/app.js" in bundle["files"], "Condition must be true"
 
     output_dir = tmp_path / "scaffold"
     created_files = scaffold_template(bundle, output_dir)
 
     expected_manifest = output_dir / "manifest.json"
-    assert expected_manifest.exists()
-    assert any(path.name == "app.js" for path in created_files)
-    assert (output_dir / "README.md").exists()
+    assert expected_manifest.exists(), "Condition must be true"
+    assert any(path.name == "app.js" for path in created_files), "name is not valid"
+    assert (output_dir / "README.md").exists(), "Condition must be true"

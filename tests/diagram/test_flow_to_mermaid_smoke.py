@@ -16,5 +16,5 @@ def test_mermaid_smoke():
         ("Assignment", "SLA", "Work"),
     ]
     mmd = flow_to_mermaid("CRM Flow", edges)
-    assert "flowchart TD" in mmd
+    assert "flowchart TD" in mmd, "Condition must be true"
     assert "Intake" in mmd and "Triage" in mmd and "Assignment" in mmd and "Work" in mmd

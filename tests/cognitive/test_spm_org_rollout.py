@@ -17,39 +17,39 @@ def test_env_actors_elevated_to_org_owner(monkeypatch):
     """Actors in COGNITIVE_BRAIN_ALLOWED_ACTORS get ORG_OWNER tier."""
     monkeypatch.setenv("COGNITIVE_BRAIN_ALLOWED_ACTORS", "alice,bob")
     spm = StructuralPolicyManager()
-    assert spm.get_tier("alice") == PermissionTier.ORG_OWNER
-    assert spm.get_tier("bob") == PermissionTier.ORG_OWNER
+    assert spm.get_tier("alice") == PermissionTier.ORG_OWNER, "Condition must be true"
+    assert spm.get_tier("bob") == PermissionTier.ORG_OWNER, "Condition must be true"
 
 
 def test_env_actors_with_whitespace(monkeypatch):
     """Whitespace around actor names is stripped."""
     monkeypatch.setenv("COGNITIVE_BRAIN_ALLOWED_ACTORS", " alice , bob , carol ")
     spm = StructuralPolicyManager()
-    assert spm.get_tier("alice") == PermissionTier.ORG_OWNER
-    assert spm.get_tier("bob") == PermissionTier.ORG_OWNER
-    assert spm.get_tier("carol") == PermissionTier.ORG_OWNER
+    assert spm.get_tier("alice") == PermissionTier.ORG_OWNER, "Condition must be true"
+    assert spm.get_tier("bob") == PermissionTier.ORG_OWNER, "Condition must be true"
+    assert spm.get_tier("carol") == PermissionTier.ORG_OWNER, "Condition must be true"
 
 
 def test_env_actors_system_owner_not_downgraded(monkeypatch):
     """SYSTEM_OWNER (mbaetiong) cannot be downgraded via env var."""
     monkeypatch.setenv("COGNITIVE_BRAIN_ALLOWED_ACTORS", "mbaetiong")
     spm = StructuralPolicyManager()
-    assert spm.get_tier("mbaetiong") == PermissionTier.SYSTEM_OWNER
+    assert spm.get_tier("mbaetiong") == PermissionTier.SYSTEM_OWNER, "Condition must be true"
 
 
 def test_env_actors_empty_string(monkeypatch):
     """Empty COGNITIVE_BRAIN_ALLOWED_ACTORS is a no-op."""
     monkeypatch.setenv("COGNITIVE_BRAIN_ALLOWED_ACTORS", "")
     spm = StructuralPolicyManager()
-    assert spm.get_tier("unknown") == PermissionTier.DENIED
+    assert spm.get_tier("unknown") == PermissionTier.DENIED, "Condition must be true"
 
 
 def test_env_actors_not_set(monkeypatch):
     """Unset COGNITIVE_BRAIN_ALLOWED_ACTORS leaves defaults intact."""
     monkeypatch.delenv("COGNITIVE_BRAIN_ALLOWED_ACTORS", raising=False)
     spm = StructuralPolicyManager()
-    assert spm.get_tier("mbaetiong") == PermissionTier.SYSTEM_OWNER
-    assert spm.get_tier("random_user") == PermissionTier.DENIED
+    assert spm.get_tier("mbaetiong") == PermissionTier.SYSTEM_OWNER, "Condition must be true"
+    assert spm.get_tier("random_user") == PermissionTier.DENIED, "Condition must be true"
 
 
 def test_env_actor_can_store_memory(monkeypatch, tmp_path):
@@ -84,7 +84,7 @@ def test_env_actor_github_actions_stays_read_only(monkeypatch):
     """github-actions[bot] remains READ_ONLY_AGENT even when listed in env."""
     monkeypatch.setenv("COGNITIVE_BRAIN_ALLOWED_ACTORS", "github-actions[bot]")
     spm = StructuralPolicyManager()
-    assert spm.get_tier("github-actions[bot]") == PermissionTier.READ_ONLY_AGENT
+    assert spm.get_tier("github-actions[bot]") == PermissionTier.READ_ONLY_AGENT, "Condition must be true"
 
 
 def test_env_actor_can_inject_session_context(monkeypatch, tmp_path):
@@ -97,7 +97,7 @@ def test_env_actor_can_inject_session_context(monkeypatch, tmp_path):
 def test_parse_allowed_actors_single():
     """Single actor parsed correctly."""
     result = StructuralPolicyManager._parse_allowed_actors("mbaetiong")
-    assert result == ["mbaetiong"]
+    assert result == ["mbaetiong"], "Result must not be empty"
 
 
 def test_parse_allowed_actors_multiple():
@@ -108,7 +108,7 @@ def test_parse_allowed_actors_multiple():
 
 def test_parse_allowed_actors_empty():
     """Empty string returns empty list."""
-    assert StructuralPolicyManager._parse_allowed_actors("") == []
+    assert StructuralPolicyManager._parse_allowed_actors("") == [], "Condition must be true"
 
 
 def test_parse_allowed_actors_trailing_comma():
@@ -143,7 +143,7 @@ def test_injection_enabled_flag_true(monkeypatch):
 
         ctx = {"actor": "mbaetiong", "system_prompt": "Base prompt"}
         result = register_mcp_session_hook(ctx)
-        assert result.get("cognitive_brain_injected") is True
+        assert result.get("cognitive_brain_injected") is True, "Result must not be empty"
 
 
 def test_injection_disabled_flag_false(monkeypatch):
@@ -155,8 +155,8 @@ def test_injection_disabled_flag_false(monkeypatch):
     ctx = {"actor": "mbaetiong", "system_prompt": "Base prompt"}
     result = register_mcp_session_hook(ctx)
     # Should be returned unmodified
-    assert "cognitive_brain_injected" not in result
-    assert result["system_prompt"] == "Base prompt"
+    assert "cognitive_brain_injected" not in result, "Result must not be empty"
+    assert result["system_prompt"] == "Base prompt", "Result must not be empty"
 
 
 def test_injection_disabled_flag_zero(monkeypatch):
@@ -167,4 +167,4 @@ def test_injection_disabled_flag_zero(monkeypatch):
 
     ctx = {"actor": "mbaetiong"}
     result = register_mcp_session_hook(ctx)
-    assert "cognitive_brain_injected" not in result
+    assert "cognitive_brain_injected" not in result, "Result must not be empty"

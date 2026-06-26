@@ -37,6 +37,6 @@ def test_compose_overrides(monkeypatch):
         cfg = compose(config_name="config", overrides=["train.epochs=2"])
     container = cfg if isinstance(cfg, dict) else OmegaConf.to_container(cfg)
 
-    assert container["train"]["epochs"] == 2
+    assert container["train"]["epochs"] == 2, "Condition must be true"
     # Verify that model config is present
-    assert "model" in container
+    assert "model" in container, "Condition must be true"

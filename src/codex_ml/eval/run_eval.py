@@ -89,10 +89,10 @@ def main(argv: Iterable[str] | None = None) -> None:
         texts = [sanitize_prompt(t, cfg)["text"] for t in texts]
     try:
         metrics = run_evaluator(args.model, texts)
-    except HFModelUnavailableError as exc:
+    except HFModelUnavailableError:
         # Model not in cache and network unavailable — exit 2 so callers
         # (e.g. tests) can distinguish "model unavailable" from real errors.
-        print(f"SKIP: <ERROR_TYPE>", file=sys.stderr)
+        print("SKIP: <ERROR_TYPE>", file=sys.stderr)
         sys.exit(2)
     print(json.dumps(metrics))
     if args.metrics_log:

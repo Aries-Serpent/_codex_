@@ -42,12 +42,12 @@ def test_config_sweep_generates_metadata(tmp_path):
     assert result.exit_code == 0, result.output
     payload = yaml.safe_load(output.read_text())
     assert payload["hydra"]["sweeper"]["params"]["training.seed"] == "1,2"
-    assert payload["reproducibility"]["dataset_version"] == "v0"
+    assert payload["reproducibility"]["dataset_version"] == "v0", "Data must not be empty"
 
     digest = hashlib.sha256()
     digest.update(dataset.read_bytes())
-    assert payload["reproducibility"]["dataset_hash"] == digest.hexdigest()
-    assert payload["locked_overrides"]["training.max_epochs"] == "2"
+    assert payload["reproducibility"]["dataset_hash"] == digest.hexdigest(), "Data must not be empty"
+    assert payload["locked_overrides"]["training.max_epochs"] == "2", "Condition must be true"
 
 
 def test_train_mlflow_flags(monkeypatch):
@@ -98,7 +98,7 @@ def test_train_mlflow_flags(monkeypatch):
     assert calls, "run_functional_training was not invoked"
     cfg = calls[0][0]
     logging_cfg = getattr(cfg, "logging", None)
-    assert logging_cfg is not None
+    assert logging_cfg is not None, "logging_cfg must be initialized"
     assert getattr(logging_cfg, "mlflow_enable", False) is True
     assert getattr(logging_cfg, "mlflow_tracking_uri", None) == "file:mlruns"
     assert getattr(logging_cfg, "mlflow_run_name", None) == "cli-run"

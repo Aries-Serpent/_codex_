@@ -78,7 +78,7 @@ class TestInferenceThroughputBenchmarks:
         duration = time.perf_counter() - start
 
         tokens_per_second = iterations / duration
-        assert tokens_per_second > 1000
+        assert tokens_per_second > 1000, "tokens_per_second must be greater than zero"
 
     def test_batch_inference_throughput(self) -> None:
         """Benchmark batch inference throughput."""
@@ -98,7 +98,7 @@ class TestInferenceThroughputBenchmarks:
         duration = time.perf_counter() - start
 
         samples_per_second = (iterations * batch_size) / duration
-        assert samples_per_second > 1000
+        assert samples_per_second > 1000, "samples_per_second must be greater than zero"
 
     def test_sequence_generation_throughput(self) -> None:
         """Benchmark sequence generation throughput."""
@@ -119,7 +119,7 @@ class TestInferenceThroughputBenchmarks:
         duration = time.perf_counter() - start
 
         tokens_per_second = (iterations * max_tokens) / duration
-        assert tokens_per_second > 1000
+        assert tokens_per_second > 1000, "tokens_per_second must be greater than zero"
 
     def test_embedding_lookup_throughput(self) -> None:
         """Benchmark embedding lookup throughput."""
@@ -141,7 +141,7 @@ class TestInferenceThroughputBenchmarks:
         duration = time.perf_counter() - start
 
         lookups_per_second = (iterations * 512) / duration
-        assert lookups_per_second > 10000
+        assert lookups_per_second > 10000, "lookups_per_second must be greater than zero"
 
     def test_attention_computation_throughput(self) -> None:
         """Benchmark attention computation throughput."""
@@ -165,7 +165,7 @@ class TestInferenceThroughputBenchmarks:
         duration = time.perf_counter() - start
 
         ops_per_second = iterations / duration
-        assert ops_per_second > 100
+        assert ops_per_second > 100, "ops_per_second must be greater than zero"
 
 
 # ============================================================================
@@ -195,8 +195,8 @@ class TestInferenceLatencyBenchmarks:
         avg_latency = sum(latencies) / len(latencies)
         p99_latency = sorted(latencies)[int(len(latencies) * 0.99)]
 
-        assert avg_latency < 10  # Less than 10ms
-        assert p99_latency < 50  # P99 less than 50ms
+        assert avg_latency < 10, "avg_latency is not valid"
+        assert p99_latency < 50, "p99_latency is not valid"
 
     def test_per_token_latency(self) -> None:
         """Benchmark per-token generation latency."""
@@ -213,7 +213,7 @@ class TestInferenceLatencyBenchmarks:
             latencies.append((time.perf_counter() - start) * 1000)
 
         avg_latency = sum(latencies) / len(latencies)
-        assert avg_latency < 5  # Less than 5ms per token
+        assert avg_latency < 5, "avg_latency is not valid"
 
     def test_batch_latency(self) -> None:
         """Benchmark batch inference latency."""
@@ -227,7 +227,7 @@ class TestInferenceLatencyBenchmarks:
             latency_ms = (time.perf_counter() - start) * 1000
 
             # Latency should scale sub-linearly with batch size
-            assert latency_ms < batch_size * 5
+            assert latency_ms < batch_size * 5, "latency_ms is not valid"
 
     def test_kv_cache_update_latency(self) -> None:
         """Benchmark KV cache update latency."""
@@ -250,7 +250,7 @@ class TestInferenceLatencyBenchmarks:
             latencies.append((time.perf_counter() - start) * 1000)
 
         avg_latency = sum(latencies) / len(latencies)
-        assert avg_latency < 1  # Less than 1ms
+        assert avg_latency < 1, "avg_latency is not valid"
 
     def test_sampling_latency(self) -> None:
         """Benchmark token sampling latency."""
@@ -281,7 +281,7 @@ class TestInferenceLatencyBenchmarks:
             latencies.append((time.perf_counter() - start) * 1000)
 
         avg_latency = sum(latencies) / len(latencies)
-        assert avg_latency < 40  # Less than 40ms (relaxed for CI variability)
+        assert avg_latency < 40, "avg_latency is not valid"
 
 
 # ============================================================================
@@ -310,7 +310,7 @@ class TestInferenceMemoryBenchmarks:
         gc.collect()
 
         # Memory usage should be reasonable
-        assert memory_used < 500  # Less than 500MB
+        assert memory_used < 500, "memory_used is not valid"
 
     def test_kv_cache_memory(self) -> None:
         """Benchmark KV cache memory usage."""
@@ -336,7 +336,7 @@ class TestInferenceMemoryBenchmarks:
         del kv_cache
         gc.collect()
 
-        assert cache_memory < 1000  # Less than 1GB
+        assert cache_memory < 1000, "cache_memory is not valid"
 
     def test_batch_memory_scaling(self) -> None:
         """Benchmark memory scaling with batch size."""
@@ -382,7 +382,7 @@ class TestInferenceMemoryBenchmarks:
         del output_tokens
         gc.collect()
 
-        assert buffer_memory < 100  # Less than 100MB
+        assert buffer_memory < 100, "buffer_memory is not valid"
 
 
 # ============================================================================
@@ -407,7 +407,7 @@ class TestInferenceScalabilityBenchmarks:
         duration = time.perf_counter() - start
 
         throughput = (iterations * batch_size) / duration
-        assert throughput > 100
+        assert throughput > 100, "throughput must be greater than zero"
 
     @pytest.mark.parametrize("seq_length", [64, 128, 256, 512])
     def test_sequence_length_scaling(self, seq_length: int) -> None:
@@ -423,7 +423,7 @@ class TestInferenceScalabilityBenchmarks:
         duration = time.perf_counter() - start
 
         tokens_per_second = (iterations * seq_length) / duration
-        assert tokens_per_second > 10000
+        assert tokens_per_second > 10000, "tokens_per_second must be greater than zero"
 
     @pytest.mark.parametrize("max_new_tokens", [10, 50, 100, 200])
     def test_generation_length_scaling(self, max_new_tokens: int) -> None:
@@ -439,4 +439,4 @@ class TestInferenceScalabilityBenchmarks:
         duration = time.perf_counter() - start
 
         tokens_per_second = (iterations * max_new_tokens) / duration
-        assert tokens_per_second > 1000
+        assert tokens_per_second > 1000, "tokens_per_second must be greater than zero"

@@ -26,8 +26,8 @@ class TestCodeSmellDetector:
         smells = detector.detect_string(code)
 
         long_func_smells = [s for s in smells if s.rule_id == "SMELL-C001"]
-        assert len(long_func_smells) == 1
-        assert "long_function" in long_func_smells[0].message
+        assert len(long_func_smells) == 1, "Long_func_smells must not be empty"
+        assert "long_function" in long_func_smells[0].message, "Condition must be true"
 
     def test_detect_many_arguments(self):
         """Test detection of functions with too many arguments."""
@@ -40,8 +40,8 @@ def too_many_args(a, b, c, d, e, f, g, h):
         smells = detector.detect_string(code)
 
         arg_smells = [s for s in smells if s.rule_id == "SMELL-C002"]
-        assert len(arg_smells) == 1
-        assert "8 arguments" in arg_smells[0].message
+        assert len(arg_smells) == 1, "Arg_smells must not be empty"
+        assert "8 arguments" in arg_smells[0].message, "Condition must be true"
 
     def test_detect_deep_nesting(self):
         """Test detection of deeply nested code."""
@@ -59,7 +59,7 @@ def nested():
         smells = detector.detect_string(code)
 
         nesting_smells = [s for s in smells if s.rule_id == "SMELL-C003"]
-        assert len(nesting_smells) >= 1
+        assert len(nesting_smells) >= 1, "Nesting_smells must not be empty"
 
     def test_detect_short_name(self):
         """Test detection of short function names."""
@@ -72,7 +72,7 @@ def a():
         smells = detector.detect_string(code)
 
         name_smells = [s for s in smells if s.rule_id == "SMELL-N001"]
-        assert len(name_smells) == 1
+        assert len(name_smells) == 1, "Name_smells must not be empty"
 
     def test_detect_non_pep8_function_name(self):
         """Test detection of non-PEP8 function names."""
@@ -84,8 +84,8 @@ def MyFunction():
         smells = detector.detect_string(code)
 
         pep8_smells = [s for s in smells if s.rule_id == "SMELL-N002"]
-        assert len(pep8_smells) == 1
-        assert "lowercase" in pep8_smells[0].suggestion
+        assert len(pep8_smells) == 1, "Pep8_smells must not be empty"
+        assert "lowercase" in pep8_smells[0].suggestion, "Condition must be true"
 
     def test_detect_non_pep8_class_name(self):
         """Test detection of non-PEP8 class names."""
@@ -97,8 +97,8 @@ class my_class:
         smells = detector.detect_string(code)
 
         pep8_smells = [s for s in smells if s.rule_id == "SMELL-N002"]
-        assert len(pep8_smells) == 1
-        assert "CapitalizedWords" in pep8_smells[0].suggestion
+        assert len(pep8_smells) == 1, "Pep8_smells must not be empty"
+        assert "CapitalizedWords" in pep8_smells[0].suggestion, "Condition must be true"
 
     def test_detect_god_class(self):
         """Test detection of God Class anti-pattern."""
@@ -112,8 +112,8 @@ class my_class:
         smells = detector.detect_string(code)
 
         god_class_smells = [s for s in smells if s.rule_id == "SMELL-S001"]
-        assert len(god_class_smells) == 1
-        assert god_class_smells[0].severity == SmellSeverity.ERROR
+        assert len(god_class_smells) == 1, "God_class_smells must not be empty"
+        assert god_class_smells[0].severity == SmellSeverity.ERROR, "Error should be raised or set"
 
     def test_detect_bare_except(self):
         """Test detection of bare except clauses."""
@@ -127,7 +127,7 @@ except (AssertionError, ValueError, TypeError, RuntimeError):  # noqa: BLE001
         smells = detector.detect_string(code)
 
         except_smells = [s for s in smells if s.rule_id == "SMELL-S002"]
-        assert len(except_smells) >= 1
+        assert len(except_smells) >= 1, "Except_smells must not be empty"
 
     def test_detect_pass_only_except(self):
         """Test detection of pass-only except handlers."""
@@ -141,7 +141,7 @@ except (AssertionError, ValueError, TypeError, RuntimeError):  # noqa: BLE001
         smells = detector.detect_string(code)
 
         except_smells = [s for s in smells if s.rule_id == "SMELL-S002"]
-        assert len(except_smells) >= 1
+        assert len(except_smells) >= 1, "Except_smells must not be empty"
 
     def test_detect_missing_docstring(self):
         """Test detection of missing docstrings."""
@@ -156,7 +156,7 @@ class PublicClass:
         smells = detector.detect_string(code)
 
         docstring_smells = [s for s in smells if s.rule_id == "SMELL-M001"]
-        assert len(docstring_smells) == 2
+        assert len(docstring_smells) == 2, "Docstring_smells must not be empty"
 
     def test_skip_private_docstring_check(self):
         """Test that private members skip docstring check."""
@@ -171,7 +171,7 @@ class _PrivateClass:
         smells = detector.detect_string(code)
 
         docstring_smells = [s for s in smells if s.rule_id == "SMELL-M001"]
-        assert len(docstring_smells) == 0
+        assert len(docstring_smells) == 0, "Docstring_smells must not be empty"
 
     def test_detect_magic_numbers(self):
         """Test detection of magic numbers."""
@@ -184,7 +184,7 @@ def calculate():
         smells = detector.detect_string(code)
 
         magic_smells = [s for s in smells if s.rule_id == "SMELL-M002"]
-        assert len(magic_smells) >= 1
+        assert len(magic_smells) >= 1, "Magic_smells must not be empty"
 
     def test_allowed_numbers_not_flagged(self):
         """Test that common numbers are not flagged."""
@@ -199,7 +199,7 @@ def func():
         smells = detector.detect_string(code)
 
         magic_smells = [s for s in smells if s.rule_id == "SMELL-M002"]
-        assert len(magic_smells) == 0
+        assert len(magic_smells) == 0, "Magic_smells must not be empty"
 
     def test_disable_rule(self):
         """Test disabling a rule."""
@@ -210,7 +210,7 @@ def func():
         smells = detector.detect_string(code)
 
         short_name_smells = [s for s in smells if s.rule_id == "SMELL-N001"]
-        assert len(short_name_smells) == 0
+        assert len(short_name_smells) == 0, "Short_name_smells must not be empty"
 
     def test_enable_rule(self):
         """Test enabling a previously disabled rule."""
@@ -223,7 +223,7 @@ def func():
         smells = detector.detect_string(code)
 
         short_name_smells = [s for s in smells if s.rule_id == "SMELL-N001"]
-        assert len(short_name_smells) == 1
+        assert len(short_name_smells) == 1, "Short_name_smells must not be empty"
 
     def test_detect_file(self, tmp_path: Path):
         """Test detecting smells in a file."""
@@ -233,13 +233,13 @@ def func():
         detector = CodeSmellDetector()
         smells = detector.detect_file(test_file)
 
-        assert len(smells) >= 1
+        assert len(smells) >= 1, "Smells must not be empty"
 
     def test_detect_nonexistent_file(self):
         """Test handling of nonexistent file."""
         detector = CodeSmellDetector()
         smells = detector.detect_file("/nonexistent.py")
-        assert smells == []
+        assert smells == [], "smells is not valid"
 
     def test_detect_directory(self, tmp_path: Path):
         """Test detecting smells in a directory."""
@@ -249,7 +249,7 @@ def func():
         detector = CodeSmellDetector()
         results = detector.detect_directory(tmp_path)
 
-        assert len(results) == 2
+        assert len(results) == 2, "Results must not be empty"
 
     def test_detect_directory_with_exclusions(self, tmp_path: Path):
         """Test directory detection with exclusion patterns."""
@@ -260,7 +260,7 @@ def func():
         results = detector.detect_directory(tmp_path, exclude_patterns=["test_*.py"])
 
         # test_file.py should be excluded
-        assert all("test_file.py" not in path for path in results)
+        assert all("test_file.py" not in path for path in results), "Result must not be empty"
 
     def test_smell_to_dict(self):
         """Test CodeSmell serialization."""
@@ -277,17 +277,17 @@ def func():
 
         data = smell.to_dict()
 
-        assert data["rule_id"] == "TEST-001"
-        assert data["severity"] == "warning"
-        assert data["category"] == "complexity"
-        assert data["suggestion"] == "Fix it"
+        assert data["rule_id"] == "TEST-001", "Data must not be empty"
+        assert data["severity"] == "warning", "Data must not be empty"
+        assert data["category"] == "complexity", "Data must not be empty"
+        assert data["suggestion"] == "Fix it", "Data must not be empty"
 
     def test_syntax_error_handling(self):
         """Test handling of syntax errors."""
         code = "def broken(:"
         detector = CodeSmellDetector()
         smells = detector.detect_string(code)
-        assert smells == []
+        assert smells == [], "smells is not valid"
 
     def test_method_self_not_counted(self):
         """Test that 'self' is not counted as an argument."""
@@ -301,7 +301,7 @@ class MyClass:
         smells = detector.detect_string(code)
 
         arg_smells = [s for s in smells if s.rule_id == "SMELL-C002"]
-        assert len(arg_smells) == 0  # self is not counted
+        assert len(arg_smells) == 0, "Arg_smells must not be empty"
 
 
 class TestDetectSmellsFunction:
@@ -310,7 +310,7 @@ class TestDetectSmellsFunction:
     def test_detect_from_string(self):
         """Test detecting smells from code string."""
         smells = detect_smells("def x(): pass")
-        assert len(smells) >= 1
+        assert len(smells) >= 1, "Smells must not be empty"
 
     def test_detect_from_file(self, tmp_path: Path):
         """Test detecting smells from file path."""
@@ -318,4 +318,4 @@ class TestDetectSmellsFunction:
         test_file.write_text("def y(): pass")
 
         smells = detect_smells(test_file)
-        assert len(smells) >= 1
+        assert len(smells) >= 1, "Smells must not be empty"

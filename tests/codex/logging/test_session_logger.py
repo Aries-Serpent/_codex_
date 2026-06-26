@@ -23,42 +23,42 @@ class TestSessionLoggerImports:
     def test_import_module(self) -> None:
         from codex.logging import session_logger
 
-        assert session_logger is not None
+        assert session_logger is not None, "session_logger must be initialized"
 
     def test_import_session_logger_class(self) -> None:
         from codex.logging.session_logger import SessionLogger
 
-        assert SessionLogger is not None
+        assert SessionLogger is not None, "SessionLogger must be initialized"
 
     def test_import_log_message(self) -> None:
         from codex.logging.session_logger import log_message
 
-        assert callable(log_message)
+        assert callable(log_message), "Condition must be true"
 
     def test_import_log_event(self) -> None:
         from codex.logging.session_logger import log_event
 
-        assert callable(log_event)
+        assert callable(log_event), "Condition must be true"
 
     def test_import_init_db(self) -> None:
         from codex.logging.session_logger import init_db
 
-        assert callable(init_db)
+        assert callable(init_db), "Condition must be true"
 
     def test_import_get_session_id(self) -> None:
         from codex.logging.session_logger import get_session_id
 
-        assert callable(get_session_id)
+        assert callable(get_session_id), "Condition must be true"
 
     def test_import_fetch_messages(self) -> None:
         from codex.logging.session_logger import fetch_messages
 
-        assert callable(fetch_messages)
+        assert callable(fetch_messages), "Condition must be true"
 
     def test_import_migrate_legacy_events(self) -> None:
         from codex.logging.session_logger import migrate_legacy_events
 
-        assert callable(migrate_legacy_events)
+        assert callable(migrate_legacy_events), "Condition must be true"
 
 
 class TestAllowedRoles:
@@ -72,32 +72,32 @@ class TestAllowedRoles:
     def test_allowed_roles_contains_system(self) -> None:
         from codex.logging.session_logger import _ALLOWED_ROLES
 
-        assert "system" in _ALLOWED_ROLES
+        assert "system" in _ALLOWED_ROLES, "Condition must be true"
 
     def test_allowed_roles_contains_user(self) -> None:
         from codex.logging.session_logger import _ALLOWED_ROLES
 
-        assert "user" in _ALLOWED_ROLES
+        assert "user" in _ALLOWED_ROLES, "Condition must be true"
 
     def test_allowed_roles_contains_assistant(self) -> None:
         from codex.logging.session_logger import _ALLOWED_ROLES
 
-        assert "assistant" in _ALLOWED_ROLES
+        assert "assistant" in _ALLOWED_ROLES, "Condition must be true"
 
     def test_allowed_roles_contains_tool(self) -> None:
         from codex.logging.session_logger import _ALLOWED_ROLES
 
-        assert "tool" in _ALLOWED_ROLES
+        assert "tool" in _ALLOWED_ROLES, "Condition must be true"
 
     def test_allowed_roles_contains_info(self) -> None:
         from codex.logging.session_logger import _ALLOWED_ROLES
 
-        assert "INFO" in _ALLOWED_ROLES
+        assert "INFO" in _ALLOWED_ROLES, "Condition must be true"
 
     def test_allowed_roles_contains_warn(self) -> None:
         from codex.logging.session_logger import _ALLOWED_ROLES
 
-        assert "WARN" in _ALLOWED_ROLES
+        assert "WARN" in _ALLOWED_ROLES, "Condition must be true"
 
 
 class TestGetSessionId:
@@ -124,7 +124,7 @@ class TestGetSessionId:
             result = get_session_id()
             # Should be a valid UUID
             uuid_obj = uuid.UUID(result)
-            assert str(uuid_obj) == result
+            assert str(uuid_obj) == result, "Result must not be empty"
         finally:
             if old_id:
                 os.environ["CODEX_SESSION_ID"] = old_id
@@ -137,7 +137,7 @@ class TestGetSessionId:
         try:
             os.environ["CODEX_SESSION_ID"] = test_id
             result = get_session_id()
-            assert result == test_id
+            assert result == test_id, "Result must not be empty"
         finally:
             if old_id:
                 os.environ["CODEX_SESSION_ID"] = old_id
@@ -150,7 +150,7 @@ class TestGetSessionId:
         old_id = os.environ.pop("CODEX_SESSION_ID", None)
         try:
             result = get_session_id()
-            assert os.environ.get("CODEX_SESSION_ID") == result
+            assert os.environ.get("CODEX_SESSION_ID") == result, "Result must not be empty"
         finally:
             if old_id:
                 os.environ["CODEX_SESSION_ID"] = old_id
@@ -165,7 +165,7 @@ class TestInitDb:
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "subdir" / "test.db"
             init_db(db_path)
-            assert db_path.parent.exists()
+            assert db_path.parent.exists(), "Condition must be true"
 
     def test_creates_database_file(self) -> None:
         from codex.logging.session_logger import init_db
@@ -173,7 +173,7 @@ class TestInitDb:
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
             init_db(db_path)
-            assert db_path.exists()
+            assert db_path.exists(), "Condition must be true"
 
     def test_returns_path(self) -> None:
         from codex.logging.session_logger import init_db
@@ -181,7 +181,7 @@ class TestInitDb:
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
             result = init_db(db_path)
-            assert result == db_path
+            assert result == db_path, "Result must not be empty"
 
     def test_creates_session_events_table(self) -> None:
         from codex.logging.session_logger import init_db
@@ -197,7 +197,7 @@ class TestInitDb:
             tables = cursor.fetchall()
             conn.close()
 
-            assert len(tables) == 1
+            assert len(tables) == 1, "Tables must not be empty"
 
     def test_idempotent(self) -> None:
         from codex.logging.session_logger import INITIALIZED_PATHS, init_db
@@ -209,7 +209,7 @@ class TestInitDb:
 
             result1 = init_db(db_path)
             result2 = init_db(db_path)
-            assert result1 == result2
+            assert result1 == result2, "Result must not be empty"
 
 
 class TestLogMessage:
@@ -271,7 +271,7 @@ class TestSessionLoggerClass:
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
             with SessionLogger(session_id="test-ctx", db_path=db_path) as sl:
-                assert sl.session_id == "test-ctx"
+                assert sl.session_id == "test-ctx", "session_id is not valid"
 
     def test_context_manager_logs_start(self) -> None:
         from codex.logging.session_logger import SessionLogger, fetch_messages
@@ -342,7 +342,7 @@ class TestFetchMessages:
             log_message("fetch-test", "user", "Hello world", db_path=db_path)
 
             messages = fetch_messages("fetch-test", db_path=db_path)
-            assert len(messages) > 0
+            assert len(messages) > 0, "Messages must not be empty"
             assert any("Hello world" in msg.get("message", "") for msg in messages)
 
 
@@ -376,8 +376,8 @@ class TestMigrateLegacyEvents:
             rows = cursor.fetchall()
             conn.close()
 
-            assert len(rows) > 0
-            assert rows[0][0] is not None
+            assert len(rows) > 0, "Rows must not be empty"
+            assert rows[0][0] is not None, "Value must be initialized"
 
 
 class TestConcurrentAccess:
@@ -410,7 +410,7 @@ class TestConcurrentAccess:
                 messages = fetch_messages(f"concurrent-{i}", db_path=db_path)
                 total += len(messages)
 
-            assert total == 50
+            assert total == 50, "total is not valid"
 
 
 class TestConnectionPooling:

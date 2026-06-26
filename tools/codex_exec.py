@@ -118,7 +118,7 @@ def main(argv=None):
         print("Codex Orchestrator completed.")
     except Exception as e:
         error_type = type(e).__name__
-        print(f"[codex] error: <ERROR_TYPE>", file=sys.stderr)
+        print("[codex] error: <ERROR_TYPE>", file=sys.stderr)
         sys.exit(1)
 
 

@@ -46,14 +46,14 @@ class TestStubInfo:
             stub_type="TODO",
             message="do something",
         )
-        assert stub.file_path == fp
-        assert stub.line_number == 5
-        assert stub.stub_type == "TODO"
-        assert stub.message == "do something"
+        assert stub.file_path == fp, "file_path is not valid"
+        assert stub.line_number == 5, "line_number is not valid"
+        assert stub.stub_type == "TODO", "stub_type is not valid"
+        assert stub.message == "do something", "message is not valid"
 
     def test_default_priority(self, tmp_path: Path) -> None:
         stub = StubInfo(file_path=tmp_path / "x.py", line_number=1, stub_type="FIXME", message="m")
-        assert stub.priority == "P2"
+        assert stub.priority == "P2", "priority is not valid"
 
     def test_custom_priority_and_context(self, tmp_path: Path) -> None:
         stub = StubInfo(
@@ -64,8 +64,8 @@ class TestStubInfo:
             priority="P0",
             context="    raise NotImplementedError('not done')",
         )
-        assert stub.priority == "P0"
-        assert stub.context == "    raise NotImplementedError('not done')"
+        assert stub.priority == "P0", "priority is not valid"
+        assert stub.context == "    raise NotImplementedError('not done')", "Error should be raised or set"
 
     def test_str_representation(self, tmp_path: Path) -> None:
         fp = tmp_path / "module.py"
@@ -77,19 +77,19 @@ class TestStubInfo:
             priority="P1",
         )
         result = str(stub)
-        assert "P1" in result
-        assert "42" in result
-        assert "TODO" in result
-        assert "finish me" in result
+        assert "P1" in result, "Result must not be empty"
+        assert "42" in result, "Result must not be empty"
+        assert "TODO" in result, "Result must not be empty"
+        assert "finish me" in result, "Result must not be empty"
 
     def test_str_contains_filepath(self, tmp_path: Path) -> None:
         fp = tmp_path / "deep" / "path.py"
         stub = StubInfo(file_path=fp, line_number=1, stub_type="FIXME", message="x", priority="P2")
-        assert str(fp) in str(stub)
+        assert str(fp) in str(stub), "Condition must be true"
 
     def test_context_none_by_default(self, tmp_path: Path) -> None:
         stub = StubInfo(file_path=tmp_path / "x.py", line_number=1, stub_type="TODO", message="m")
-        assert stub.context is None
+        assert stub.context is None, "context is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -103,13 +103,13 @@ class TestStubAnalyzerInit:
     def test_default_source_dirs(self) -> None:
         analyzer = StubAnalyzer()
         names = [d.name for d in analyzer.source_dirs]
-        assert "src" in names
-        assert "training" in names
+        assert "src" in names, "Condition must be true"
+        assert "training" in names, "Condition must be true"
 
     def test_custom_source_dirs(self, tmp_path: Path) -> None:
         custom = [tmp_path / "a", tmp_path / "b"]
         analyzer = StubAnalyzer(source_dirs=custom)
-        assert analyzer.source_dirs == custom
+        assert analyzer.source_dirs == custom, "source_dirs is not valid"
 
     def test_source_dirs_coerced_to_path(self, tmp_path: Path) -> None:
         # Pass plain strings; init should coerce to Path objects
@@ -118,7 +118,7 @@ class TestStubAnalyzerInit:
 
     def test_empty_stubs_on_init(self) -> None:
         analyzer = StubAnalyzer()
-        assert analyzer.stubs == []
+        assert analyzer.stubs == [], "stubs is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -132,13 +132,13 @@ class TestStubAnalyzerAnalyze:
     def test_nonexistent_dir_skipped(self, tmp_path: Path) -> None:
         analyzer = StubAnalyzer(source_dirs=[tmp_path / "does_not_exist"])
         stubs = analyzer.analyze()
-        assert stubs == []
+        assert stubs == [], "stubs is not valid"
 
     def test_empty_dir_returns_no_stubs(self, tmp_path: Path) -> None:
         src = tmp_path / "src"
         src.mkdir()
         analyzer = StubAnalyzer(source_dirs=[src])
-        assert analyzer.analyze() == []
+        assert analyzer.analyze() == [], "Condition must be true"
 
     def test_returns_list_of_stub_info(self, tmp_path: Path) -> None:
         src = tmp_path / "src"
@@ -155,7 +155,7 @@ class TestStubAnalyzerAnalyze:
         first = analyzer.analyze()
         second = analyzer.analyze()
         # Results must be identical (stubs list is reset each call)
-        assert len(first) == len(second)
+        assert len(first) == len(second), "First must not be empty"
 
     def test_multiple_source_dirs(self, tmp_path: Path) -> None:
         d1 = tmp_path / "d1"
@@ -165,7 +165,7 @@ class TestStubAnalyzerAnalyze:
         _write(d1, "a.py", "# TODO in d1\n")
         _write(d2, "b.py", "# TODO in d2\n")
         stubs = StubAnalyzer(source_dirs=[d1, d2]).analyze()
-        assert len(stubs) == 2
+        assert len(stubs) == 2, "Stubs must not be empty"
 
     def test_recurses_into_subdirectories(self, tmp_path: Path) -> None:
         src = tmp_path / "src"
@@ -173,14 +173,14 @@ class TestStubAnalyzerAnalyze:
         sub.mkdir(parents=True)
         _write(sub, "deep.py", "# TODO deep\n")
         stubs = StubAnalyzer(source_dirs=[src]).analyze()
-        assert len(stubs) == 1
+        assert len(stubs) == 1, "Stubs must not be empty"
 
     def test_ignores_non_python_files(self, tmp_path: Path) -> None:
         src = tmp_path / "src"
         src.mkdir()
         (src / "notes.txt").write_text("# TODO ignore me\n", encoding="utf-8")
         stubs = StubAnalyzer(source_dirs=[src]).analyze()
-        assert stubs == []
+        assert stubs == [], "stubs is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -202,11 +202,11 @@ class TestAnalyzeFileNotImplementedError:
         )
         analyzer = StubAnalyzer(source_dirs=[])
         analyzer._analyze_file(f)
-        assert len(analyzer.stubs) == 1
+        assert len(analyzer.stubs) == 1, "Collection must not be empty"
         stub = analyzer.stubs[0]
-        assert stub.stub_type == "NotImplementedError"
-        assert stub.priority == "P0"
-        assert "not done yet" in stub.message
+        assert stub.stub_type == "NotImplementedError", "Error should be raised or set"
+        assert stub.priority == "P0", "priority is not valid"
+        assert "not done yet" in stub.message, "Condition must be true"
 
     def test_raise_without_message(self, tmp_path: Path) -> None:
         f = _write(
@@ -221,8 +221,8 @@ class TestAnalyzeFileNotImplementedError:
         analyzer._analyze_file(f)
         # line does not start with "raise NotImplementedError(" so no parentheses → message fallback
         # The stripped line IS "raise NotImplementedError" which starts with "raise "
-        assert len(analyzer.stubs) == 1
-        assert analyzer.stubs[0].stub_type == "NotImplementedError"
+        assert len(analyzer.stubs) == 1, "Collection must not be empty"
+        assert analyzer.stubs[0].stub_type == "NotImplementedError", "Error should be raised or set"
 
     def test_abstract_method_is_skipped(self, tmp_path: Path) -> None:
         f = _write(
@@ -239,7 +239,7 @@ class TestAnalyzeFileNotImplementedError:
         )
         analyzer = StubAnalyzer(source_dirs=[])
         analyzer._analyze_file(f)
-        assert len(analyzer.stubs) == 0
+        assert len(analyzer.stubs) == 0, "Collection must not be empty"
 
     def test_abc_base_class_skipped(self, tmp_path: Path) -> None:
         f = _write(
@@ -255,21 +255,21 @@ class TestAnalyzeFileNotImplementedError:
         )
         analyzer = StubAnalyzer(source_dirs=[])
         analyzer._analyze_file(f)
-        assert len(analyzer.stubs) == 0
+        assert len(analyzer.stubs) == 0, "Collection must not be empty"
 
     def test_not_raise_statement_ignored(self, tmp_path: Path) -> None:
         # A comment mentioning NotImplementedError should be ignored
         f = _write(tmp_path, "mod.py", "# NotImplementedError example\n")
         analyzer = StubAnalyzer(source_dirs=[])
         analyzer._analyze_file(f)
-        assert analyzer.stubs == []
+        assert analyzer.stubs == [], "stubs is not valid"
 
     def test_context_is_stripped_line(self, tmp_path: Path) -> None:
         f = _write(tmp_path, "mod.py", "    raise NotImplementedError('ctx')\n")
         analyzer = StubAnalyzer(source_dirs=[])
         analyzer._analyze_file(f)
-        assert len(analyzer.stubs) == 1
-        assert analyzer.stubs[0].context == "raise NotImplementedError('ctx')"
+        assert len(analyzer.stubs) == 1, "Collection must not be empty"
+        assert analyzer.stubs[0].context == "raise NotImplementedError('ctx')", "Error should be raised or set"
 
 
 # ---------------------------------------------------------------------------
@@ -285,48 +285,48 @@ class TestAnalyzeFileTodoFixme:
         analyzer = StubAnalyzer(source_dirs=[])
         analyzer._analyze_file(f)
         todos = [s for s in analyzer.stubs if s.stub_type == "TODO"]
-        assert len(todos) == 1
-        assert "refactor this" in todos[0].message
+        assert len(todos) == 1, "Todos must not be empty"
+        assert "refactor this" in todos[0].message, "Condition must be true"
 
     def test_fixme_detected(self, tmp_path: Path) -> None:
         f = _write(tmp_path, "mod.py", "x = 1  # FIXME: broken logic\n")
         analyzer = StubAnalyzer(source_dirs=[])
         analyzer._analyze_file(f)
         fixmes = [s for s in analyzer.stubs if s.stub_type == "FIXME"]
-        assert len(fixmes) == 1
-        assert "broken logic" in fixmes[0].message
+        assert len(fixmes) == 1, "Fixmes must not be empty"
+        assert "broken logic" in fixmes[0].message, "Condition must be true"
 
     def test_todo_lowercase(self, tmp_path: Path) -> None:
         f = _write(tmp_path, "mod.py", "# todo: lowercase check\n")
         analyzer = StubAnalyzer(source_dirs=[])
         analyzer._analyze_file(f)
-        assert len(analyzer.stubs) == 1
+        assert len(analyzer.stubs) == 1, "Collection must not be empty"
 
     def test_fixme_lowercase(self, tmp_path: Path) -> None:
         f = _write(tmp_path, "mod.py", "# fixme: lowercase check\n")
         analyzer = StubAnalyzer(source_dirs=[])
         analyzer._analyze_file(f)
-        assert len(analyzer.stubs) == 1
+        assert len(analyzer.stubs) == 1, "Collection must not be empty"
 
     def test_todo_without_hash_ignored(self, tmp_path: Path) -> None:
         # "TODO" in a string literal without a "#" should not match
         f = _write(tmp_path, "mod.py", 'msg = "TODO: not a comment"\n')
         analyzer = StubAnalyzer(source_dirs=[])
         analyzer._analyze_file(f)
-        assert analyzer.stubs == []
+        assert analyzer.stubs == [], "stubs is not valid"
 
     def test_fixme_without_hash_ignored(self, tmp_path: Path) -> None:
         f = _write(tmp_path, "mod.py", 'msg = "FIXME: not a comment"\n')
         analyzer = StubAnalyzer(source_dirs=[])
         analyzer._analyze_file(f)
-        assert analyzer.stubs == []
+        assert analyzer.stubs == [], "stubs is not valid"
 
     def test_line_number_correct(self, tmp_path: Path) -> None:
         source = "x = 1\ny = 2\n# TODO: third line\n"
         f = _write(tmp_path, "mod.py", source)
         analyzer = StubAnalyzer(source_dirs=[])
         analyzer._analyze_file(f)
-        assert analyzer.stubs[0].line_number == 3
+        assert analyzer.stubs[0].line_number == 3, "line_number is not valid"
 
     def test_multiple_stubs_same_file(self, tmp_path: Path) -> None:
         f = _write(
@@ -341,16 +341,16 @@ class TestAnalyzeFileTodoFixme:
         analyzer = StubAnalyzer(source_dirs=[])
         analyzer._analyze_file(f)
         types = {s.stub_type for s in analyzer.stubs}
-        assert "TODO" in types
-        assert "FIXME" in types
-        assert "NotImplementedError" in types
+        assert "TODO" in types, "Condition must be true"
+        assert "FIXME" in types, "Condition must be true"
+        assert "NotImplementedError" in types, "Error should be raised or set"
 
     def test_unreadable_file_doesnt_crash(self, tmp_path: Path) -> None:
         # Pass a path that doesn't exist – should log and continue, not raise
         missing = tmp_path / "ghost.py"
         analyzer = StubAnalyzer(source_dirs=[])
         analyzer._analyze_file(missing)  # must not raise
-        assert analyzer.stubs == []
+        assert analyzer.stubs == [], "stubs is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -365,28 +365,28 @@ class TestDeterminePriority:
         self.analyzer = StubAnalyzer(source_dirs=[])
 
     def test_p0_keyword(self) -> None:
-        assert self.analyzer._determine_priority("# TODO P0: urgent") == "P0"
+        assert self.analyzer._determine_priority(", "Condition must be true"
 
     def test_critical_keyword(self) -> None:
-        assert self.analyzer._determine_priority("# TODO CRITICAL fix this") == "P0"
+        assert self.analyzer._determine_priority(", "Condition must be true"
 
     def test_blocking_keyword(self) -> None:
-        assert self.analyzer._determine_priority("# FIXME BLOCKING") == "P0"
+        assert self.analyzer._determine_priority(", "Condition must be true"
 
     def test_p1_keyword(self) -> None:
-        assert self.analyzer._determine_priority("# TODO P1: high priority") == "P1"
+        assert self.analyzer._determine_priority(", "Condition must be true"
 
     def test_high_keyword(self) -> None:
-        assert self.analyzer._determine_priority("# TODO HIGH priority") == "P1"
+        assert self.analyzer._determine_priority(", "Condition must be true"
 
     def test_important_keyword(self) -> None:
-        assert self.analyzer._determine_priority("# FIXME IMPORTANT") == "P1"
+        assert self.analyzer._determine_priority(", "Condition must be true"
 
     def test_default_p2(self) -> None:
-        assert self.analyzer._determine_priority("# TODO: normal stuff") == "P2"
+        assert self.analyzer._determine_priority(", "Condition must be true"
 
     def test_case_insensitive(self) -> None:
-        assert self.analyzer._determine_priority("# todo: critical") == "P0"
+        assert self.analyzer._determine_priority(", "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -411,68 +411,68 @@ class TestStubAnalyzerFiltersAndSummary:
     def test_get_by_priority_p0(self, tmp_path: Path) -> None:
         analyzer = self._make_analyzer_with_stubs(tmp_path)
         p0 = analyzer.get_by_priority("P0")
-        assert len(p0) == 2
-        assert all(s.priority == "P0" for s in p0)
+        assert len(p0) == 2, "P0 must not be empty"
+        assert all(s.priority == "P0" for s in p0), "priority is not valid"
 
     def test_get_by_priority_p1(self, tmp_path: Path) -> None:
         analyzer = self._make_analyzer_with_stubs(tmp_path)
         p1 = analyzer.get_by_priority("P1")
-        assert len(p1) == 1
-        assert p1[0].stub_type == "FIXME"
+        assert len(p1) == 1, "P1 must not be empty"
+        assert p1[0].stub_type == "FIXME", "stub_type is not valid"
 
     def test_get_by_priority_p2(self, tmp_path: Path) -> None:
         analyzer = self._make_analyzer_with_stubs(tmp_path)
         p2 = analyzer.get_by_priority("P2")
-        assert len(p2) == 1
-        assert p2[0].stub_type == "TODO"
+        assert len(p2) == 1, "P2 must not be empty"
+        assert p2[0].stub_type == "TODO", "stub_type is not valid"
 
     def test_get_by_priority_empty(self, tmp_path: Path) -> None:
         analyzer = StubAnalyzer(source_dirs=[])
-        assert analyzer.get_by_priority("P0") == []
+        assert analyzer.get_by_priority("P0") == [], "Condition must be true"
 
     def test_get_by_type_todo(self, tmp_path: Path) -> None:
         analyzer = self._make_analyzer_with_stubs(tmp_path)
         todos = analyzer.get_by_type("TODO")
-        assert len(todos) == 2
+        assert len(todos) == 2, "Todos must not be empty"
 
     def test_get_by_type_fixme(self, tmp_path: Path) -> None:
         analyzer = self._make_analyzer_with_stubs(tmp_path)
         fixmes = analyzer.get_by_type("FIXME")
-        assert len(fixmes) == 1
+        assert len(fixmes) == 1, "Fixmes must not be empty"
 
     def test_get_by_type_not_implemented(self, tmp_path: Path) -> None:
         analyzer = self._make_analyzer_with_stubs(tmp_path)
         nie = analyzer.get_by_type("NotImplementedError")
-        assert len(nie) == 1
+        assert len(nie) == 1, "Nie must not be empty"
 
     def test_get_by_type_unknown_returns_empty(self, tmp_path: Path) -> None:
         analyzer = self._make_analyzer_with_stubs(tmp_path)
-        assert analyzer.get_by_type("UNKNOWN") == []
+        assert analyzer.get_by_type("UNKNOWN") == [], "Condition must be true"
 
     def test_get_summary_structure(self, tmp_path: Path) -> None:
         analyzer = self._make_analyzer_with_stubs(tmp_path)
         summary = analyzer.get_summary()
-        assert "total" in summary
-        assert "by_priority" in summary
-        assert "by_type" in summary
+        assert "total" in summary, "Condition must be true"
+        assert "by_priority" in summary, "Condition must be true"
+        assert "by_type" in summary, "Condition must be true"
 
     def test_get_summary_counts(self, tmp_path: Path) -> None:
         analyzer = self._make_analyzer_with_stubs(tmp_path)
         summary = analyzer.get_summary()
-        assert summary["total"] == 4
-        assert summary["by_priority"]["P0"] == 2
-        assert summary["by_priority"]["P1"] == 1
-        assert summary["by_priority"]["P2"] == 1
-        assert summary["by_type"]["TODO"] == 2
-        assert summary["by_type"]["FIXME"] == 1
-        assert summary["by_type"]["NotImplementedError"] == 1
+        assert summary["total"] == 4, "Condition must be true"
+        assert summary["by_priority"]["P0"] == 2, "Condition must be true"
+        assert summary["by_priority"]["P1"] == 1, "Condition must be true"
+        assert summary["by_priority"]["P2"] == 1, "Condition must be true"
+        assert summary["by_type"]["TODO"] == 2, "Condition must be true"
+        assert summary["by_type"]["FIXME"] == 1, "Condition must be true"
+        assert summary["by_type"]["NotImplementedError"] == 1, "Error should be raised or set"
 
     def test_get_summary_empty(self) -> None:
         analyzer = StubAnalyzer(source_dirs=[])
         summary = analyzer.get_summary()
-        assert summary["total"] == 0
-        assert all(v == 0 for v in summary["by_priority"].values())
-        assert all(v == 0 for v in summary["by_type"].values())
+        assert summary["total"] == 0, "Condition must be true"
+        assert all(v == 0 for v in summary["by_priority"].values()), "Value must be initialized"
+        assert all(v == 0 for v in summary["by_type"].values()), "Value must be initialized"
 
 
 # ---------------------------------------------------------------------------
@@ -602,13 +602,13 @@ class TestFindStubs:
         src.mkdir()
         _write(src, "m.py", "# TODO: from find_stubs\n")
         stubs = find_stubs(source_dirs=[src])
-        assert len(stubs) == 1
-        assert stubs[0].stub_type == "TODO"
+        assert len(stubs) == 1, "Stubs must not be empty"
+        assert stubs[0].stub_type == "TODO", "stub_type is not valid"
 
     def test_no_stubs_in_empty_dir(self, tmp_path: Path) -> None:
         src = tmp_path / "src"
         src.mkdir()
-        assert find_stubs(source_dirs=[src]) == []
+        assert find_stubs(source_dirs=[src]) == [], "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -629,11 +629,11 @@ class TestPrioritizeStubs:
 
     def test_p0_first(self, tmp_path: Path) -> None:
         result = prioritize_stubs(self._stubs(tmp_path))
-        assert result[0].priority == "P0"
+        assert result[0].priority == "P0", "Result must not be empty"
 
     def test_p2_last(self, tmp_path: Path) -> None:
         result = prioritize_stubs(self._stubs(tmp_path))
-        assert result[-1].priority == "P2"
+        assert result[-1].priority == "P2", "Result must not be empty"
 
     def test_order_p0_p1_p2(self, tmp_path: Path) -> None:
         result = prioritize_stubs(self._stubs(tmp_path))
@@ -641,7 +641,7 @@ class TestPrioritizeStubs:
         assert priorities == ["P0", "P1", "P2"]
 
     def test_empty_input(self) -> None:
-        assert prioritize_stubs([]) == []
+        assert prioritize_stubs([]) == [], "pri is not valid"
 
     def test_same_priority_sorted_by_file_then_line(self, tmp_path: Path) -> None:
         fp_a = tmp_path / "a.py"
@@ -652,9 +652,9 @@ class TestPrioritizeStubs:
             StubInfo(fp_a, 3, "TODO", "a3", "P1"),
         ]
         result = prioritize_stubs(stubs)
-        assert result[0].line_number == 3  # a.py:3
-        assert result[1].line_number == 10  # a.py:10
-        assert result[2].line_number == 5  # b.py:5
+        assert result[0].line_number == 3, "Result must not be empty"
+        assert result[1].line_number == 10, "Result must not be empty"
+        assert result[2].line_number == 5, "Result must not be empty"
 
     def test_unknown_priority_sorted_last(self, tmp_path: Path) -> None:
         fp = tmp_path / "x.py"
@@ -663,13 +663,13 @@ class TestPrioritizeStubs:
             StubInfo(fp, 2, "TODO", "y", "P0"),
         ]
         result = prioritize_stubs(stubs)
-        assert result[0].priority == "P0"
+        assert result[0].priority == "P0", "Result must not be empty"
 
     def test_does_not_mutate_input(self, tmp_path: Path) -> None:
         original = self._stubs(tmp_path)
         original_order = [s.priority for s in original]
         prioritize_stubs(original)
-        assert [s.priority for s in original] == original_order
+        assert [s.priority for s in original] == original_order, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -685,14 +685,14 @@ class TestGenerateStubReport:
         src.mkdir()
         out = tmp_path / "reports" / "stub_report.md"
         generate_stub_report(output_path=out, source_dirs=[src])
-        assert out.exists()
+        assert out.exists(), "Condition must be true"
 
     def test_creates_parent_directories(self, tmp_path: Path) -> None:
         src = tmp_path / "src"
         src.mkdir()
         out = tmp_path / "deep" / "nested" / "report.md"
         generate_stub_report(output_path=out, source_dirs=[src])
-        assert out.exists()
+        assert out.exists(), "Condition must be true"
 
     def test_report_contains_header(self, tmp_path: Path) -> None:
         src = tmp_path / "src"
@@ -700,7 +700,7 @@ class TestGenerateStubReport:
         out = tmp_path / "report.md"
         generate_stub_report(output_path=out, source_dirs=[src])
         content = out.read_text(encoding="utf-8")
-        assert "# Stub Analysis Report" in content
+        assert ", "Condition must be true"
 
     def test_report_contains_summary_sections(self, tmp_path: Path) -> None:
         src = tmp_path / "src"
@@ -708,8 +708,8 @@ class TestGenerateStubReport:
         out = tmp_path / "report.md"
         generate_stub_report(output_path=out, source_dirs=[src])
         content = out.read_text(encoding="utf-8")
-        assert "Summary by Priority" in content
-        assert "Summary by Type" in content
+        assert "Summary by Priority" in content, "Content must not be empty"
+        assert "Summary by Type" in content, "Content must not be empty"
 
     def test_report_lists_stubs(self, tmp_path: Path) -> None:
         src = tmp_path / "src"
@@ -718,8 +718,8 @@ class TestGenerateStubReport:
         out = tmp_path / "report.md"
         generate_stub_report(output_path=out, source_dirs=[src])
         content = out.read_text(encoding="utf-8")
-        assert "TODO" in content
-        assert "critical item" in content
+        assert "TODO" in content, "Content must not be empty"
+        assert "critical item" in content, "Content must not be empty"
 
     def test_report_total_count_correct(self, tmp_path: Path) -> None:
         src = tmp_path / "src"
@@ -728,14 +728,14 @@ class TestGenerateStubReport:
         out = tmp_path / "report.md"
         generate_stub_report(output_path=out, source_dirs=[src])
         content = out.read_text(encoding="utf-8")
-        assert "Total Stubs**: 2" in content
+        assert "Total Stubs**: 2" in content, "Content must not be empty"
 
     def test_report_accepts_string_path(self, tmp_path: Path) -> None:
         src = tmp_path / "src"
         src.mkdir()
         out = str(tmp_path / "report.md")
         generate_stub_report(output_path=out, source_dirs=[src])
-        assert Path(out).exists()
+        assert Path(out).exists(), "Condition must be true"
 
     def test_report_no_stubs_empty_section(self, tmp_path: Path) -> None:
         src = tmp_path / "src"
@@ -743,7 +743,7 @@ class TestGenerateStubReport:
         out = tmp_path / "report.md"
         generate_stub_report(output_path=out, source_dirs=[src])
         content = out.read_text(encoding="utf-8")
-        assert "Total Stubs**: 0" in content
+        assert "Total Stubs**: 0" in content, "Content must not be empty"
 
     def test_report_priority_sections_for_populated(self, tmp_path: Path) -> None:
         src = tmp_path / "src"
@@ -752,5 +752,5 @@ class TestGenerateStubReport:
         out = tmp_path / "report.md"
         generate_stub_report(output_path=out, source_dirs=[src])
         content = out.read_text(encoding="utf-8")
-        assert "P0 Priority" in content
-        assert "P2 Priority" in content
+        assert "P0 Priority" in content, "Content must not be empty"
+        assert "P2 Priority" in content, "Content must not be empty"

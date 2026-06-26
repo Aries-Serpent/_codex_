@@ -19,8 +19,8 @@ def test_mlflow_offline_env_defaults() -> None:
     # Should set a local file store by default (no server)
     if env == {"mlflow": "unavailable"}:
         pytest.skip("mlflow not installed")
-    assert "MLFLOW_TRACKING_URI" in env
-    assert env["MLFLOW_TRACKING_URI"].startswith("file:")
+    assert "MLFLOW_TRACKING_URI" in env, "Condition must be true"
+    assert env["MLFLOW_TRACKING_URI"].startswith("file:"), "Condition must be true"
 
 
 def test_wandb_offline_default() -> None:

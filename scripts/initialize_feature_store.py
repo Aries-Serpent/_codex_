@@ -47,8 +47,8 @@ try:
     from codex_ml.features.feature_store import FeatureGroup, FeatureStore
 except ImportError as e:
     error_type = type(e).__name__
-    logger.debug(f"ImportError: <ERROR_TYPE>")
-    print(f"Error importing feature store: <ERROR_TYPE>")
+    logger.debug("ImportError: <ERROR_TYPE>")
+    print("Error importing feature store: <ERROR_TYPE>")
     print("Make sure the package is installed: pip install -e .")
     sys.exit(1)
 
@@ -134,7 +134,7 @@ def register_feature_groups(store: FeatureStore, config: dict, dry_run: bool = F
 
         except Exception as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             logger.error(f"    ✗ Failed to register {name}: <ERROR_TYPE>")
 
     if not dry_run:
@@ -170,8 +170,8 @@ def verify_feature_store(store: FeatureStore):
 
     except Exception as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
-        logger.error(f"✗ Verification failed: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
+        logger.error("✗ Verification failed: <ERROR_TYPE>")
 
 
 def main():
@@ -214,8 +214,8 @@ def main():
         config = load_config(str(config_path))
     except Exception as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
-        logger.error(f"Failed to load config: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
+        logger.error("Failed to load config: <ERROR_TYPE>")
         return 1
 
     # Initialize feature store

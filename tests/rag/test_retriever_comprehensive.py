@@ -126,9 +126,9 @@ class TestRetrieverInitialization:
             ):
                 retriever = Retriever(index_dir=str(temp_index_dir))
 
-                assert retriever.index_name == "default"
-                assert retriever.tenant_id == "default"
-                assert retriever.model is not None
+                assert retriever.index_name == "default", "index_name is not valid"
+                assert retriever.tenant_id == "default", "tenant_id is not valid"
+                assert retriever.model is not None, "model must be initialized"
 
     def test_initialization_custom_params(
         self, temp_index_dir, mock_faiss_index, mock_sentence_transformer
@@ -145,9 +145,9 @@ class TestRetrieverInitialization:
                     model_name="custom-model",
                 )
 
-                assert retriever.index_name == "custom_index"
-                assert retriever.tenant_id == "tenant123"
-                assert retriever.model_name == "custom-model"
+                assert retriever.index_name == "custom_index", "index_name is not valid"
+                assert retriever.tenant_id == "tenant123", "tenant_id is not valid"
+                assert retriever.model_name == "custom-model", "model_name is not valid"
 
     def test_initialization_loads_index(
         self, temp_index_dir, mock_faiss_index, mock_sentence_transformer
@@ -168,9 +168,9 @@ class TestRetrieverInitialization:
             retriever = Retriever(index_dir=str(temp_index_dir), index_name="test_index")
 
             mock_load.assert_called_once()
-            assert retriever.faiss_index is mock_faiss_index
-            assert retriever.chunks_metadata == chunks_metadata
-            assert retriever.index_metadata == index_metadata
+            assert retriever.faiss_index is mock_faiss_index, "faiss_index is not valid"
+            assert retriever.chunks_metadata == chunks_metadata, "Data must not be empty"
+            assert retriever.index_metadata == index_metadata, "Data must not be empty"
 
     def test_initialization_index_not_found(self, temp_index_dir, mock_sentence_transformer):
         """Test initialization handles missing index gracefully."""
@@ -183,7 +183,7 @@ class TestRetrieverInitialization:
             # Should not raise, but log warning
             retriever = Retriever(index_dir=str(temp_index_dir), index_name="nonexistent")
 
-            assert retriever.faiss_index is None
+            assert retriever.faiss_index is None, "faiss_index is not valid"
 
     def test_initialization_loads_embedding_model(self, temp_index_dir, mock_faiss_index):
         """Test that initialization loads the embedding model."""
@@ -222,7 +222,7 @@ class TestRetrieverQuery:
                 results = retriever.query("test query", top_k=3)
 
                 assert isinstance(results, list)
-                assert len(results) <= 3
+                assert len(results) <= 3, "Results must not be empty"
 
     def test_query_returns_correct_structure(
         self, temp_index_dir, mock_faiss_index, mock_sentence_transformer
@@ -239,12 +239,12 @@ class TestRetrieverQuery:
 
                 if results:
                     result = results[0]
-                    assert "text" in result
-                    assert "file" in result
-                    assert "start_line" in result
-                    assert "end_line" in result
-                    assert "score" in result
-                    assert "generated_at" in result
+                    assert "text" in result, "Result must not be empty"
+                    assert "file" in result, "Result must not be empty"
+                    assert "start_line" in result, "Result must not be empty"
+                    assert "end_line" in result, "Result must not be empty"
+                    assert "score" in result, "Result must not be empty"
+                    assert "generated_at" in result, "Result must not be empty"
 
     def test_query_empty_string(self, temp_index_dir, mock_faiss_index, mock_sentence_transformer):
         """Test query with empty string returns empty results."""
@@ -255,7 +255,7 @@ class TestRetrieverQuery:
                 retriever = Retriever(index_dir=str(temp_index_dir))
                 results = retriever.query("", top_k=5)
 
-                assert results == []
+                assert results == [], "Result must not be empty"
 
     def test_query_whitespace_only(
         self, temp_index_dir, mock_faiss_index, mock_sentence_transformer
@@ -268,7 +268,7 @@ class TestRetrieverQuery:
                 retriever = Retriever(index_dir=str(temp_index_dir))
                 results = retriever.query("   \n\t  ", top_k=5)
 
-                assert results == []
+                assert results == [], "Result must not be empty"
 
     def test_query_no_index_loaded(self, temp_index_dir, mock_sentence_transformer):
         """Test query without loaded index returns empty results."""
@@ -281,7 +281,7 @@ class TestRetrieverQuery:
             retriever = Retriever(index_dir=str(temp_index_dir))
             results = retriever.query("test", top_k=5)
 
-            assert results == []
+            assert results == [], "Result must not be empty"
 
     def test_query_top_k_respected(
         self, temp_index_dir, mock_faiss_index, mock_sentence_transformer
@@ -304,7 +304,7 @@ class TestRetrieverQuery:
                 retriever = Retriever(index_dir=str(temp_index_dir))
 
                 results = retriever.query("test", top_k=3)
-                assert len(results) <= 3
+                assert len(results) <= 3, "Results must not be empty"
 
     def test_query_invalid_top_k(self, temp_index_dir, mock_faiss_index, mock_sentence_transformer):
         """Test query with invalid top_k uses default."""
@@ -343,7 +343,7 @@ class TestRetrieverQuery:
 
                 # Only first result should pass threshold of 1.0
                 results = retriever.query("test", top_k=2, min_score=1.0)
-                assert len(results) <= 1
+                assert len(results) <= 1, "Results must not be empty"
 
     def test_query_encodes_query_text(
         self, temp_index_dir, mock_faiss_index, mock_sentence_transformer
@@ -362,7 +362,7 @@ class TestRetrieverQuery:
                 # Verify encode was called
                 mock_sentence_transformer.encode.assert_called_once()
                 call_args = mock_sentence_transformer.encode.call_args[0]
-                assert "search query" in call_args[0]
+                assert "search query" in call_args[0], "Condition must be true"
 
     def test_query_searches_index(
         self, temp_index_dir, mock_faiss_index, mock_sentence_transformer
@@ -380,7 +380,7 @@ class TestRetrieverQuery:
                 # Verify search was called
                 mock_faiss_index.search.assert_called_once()
                 _, k = mock_faiss_index.search.call_args[0]
-                assert k == 3
+                assert k == 3, "k is not valid"
 
     def test_query_handles_invalid_indices(
         self, temp_index_dir, mock_faiss_index, mock_sentence_transformer
@@ -402,7 +402,7 @@ class TestRetrieverQuery:
                 results = retriever.query("test", top_k=2)
 
                 # Should skip invalid indices
-                assert len(results) == 0
+                assert len(results) == 0, "Results must not be empty"
 
     def test_query_adds_timestamp(
         self, temp_index_dir, mock_faiss_index, mock_sentence_transformer
@@ -418,7 +418,7 @@ class TestRetrieverQuery:
                 results = retriever.query("test", top_k=1)
 
                 if results:
-                    assert "generated_at" in results[0]
+                    assert "generated_at" in results[0], "Result must not be empty"
                     # Verify it's a valid ISO timestamp
                     datetime.fromisoformat(results[0]["generated_at"])
 
@@ -437,13 +437,13 @@ class TestRetrieverHelperMethods:
                 retriever = Retriever(index_dir=str(temp_index_dir))
 
                 line_num = retriever._estimate_line_number(0)
-                assert line_num == 1
+                assert line_num == 1, "line_num is not valid"
 
                 line_num = retriever._estimate_line_number(80)
-                assert line_num == 2
+                assert line_num == 2, "line_num is not valid"
 
                 line_num = retriever._estimate_line_number(160)
-                assert line_num == 3
+                assert line_num == 3, "line_num is not valid"
 
     def test_estimate_line_number_custom_chars_per_line(
         self, temp_index_dir, mock_faiss_index, mock_sentence_transformer
@@ -456,7 +456,7 @@ class TestRetrieverHelperMethods:
                 retriever = Retriever(index_dir=str(temp_index_dir))
 
                 line_num = retriever._estimate_line_number(100, chars_per_line=50)
-                assert line_num == 3  # 100 / 50 + 1
+                assert line_num == 3, "line_num is not valid"
 
     def test_extract_file_from_chunk_metadata(
         self, temp_index_dir, mock_faiss_index, mock_sentence_transformer
@@ -471,7 +471,7 @@ class TestRetrieverHelperMethods:
                 # Test with file in chunk
                 chunk = {"file": "test.py"}
                 file = retriever._extract_file_from_metadata(chunk)
-                assert file == "test.py"
+                assert file == "test.py", "file is not valid"
 
     def test_extract_file_from_index_metadata(
         self, temp_index_dir, mock_faiss_index, mock_sentence_transformer
@@ -491,7 +491,7 @@ class TestRetrieverHelperMethods:
 
             chunk = {}  # No file in chunk
             file = retriever._extract_file_from_metadata(chunk)
-            assert file == "index_file.py"
+            assert file == "index_file.py", "file is not valid"
 
     def test_extract_file_unknown(
         self, temp_index_dir, mock_faiss_index, mock_sentence_transformer
@@ -505,7 +505,7 @@ class TestRetrieverHelperMethods:
 
                 chunk = {}
                 file = retriever._extract_file_from_metadata(chunk)
-                assert file == "unknown"
+                assert file == "unknown", "file is not valid"
 
 
 class TestRetrieverStats:
@@ -530,11 +530,11 @@ class TestRetrieverStats:
 
             stats = retriever.get_stats()
 
-            assert stats["index_name"] == "my_index"
-            assert stats["tenant_id"] == "my_tenant"
-            assert stats["num_vectors"] == 3  # from mock
-            assert stats["num_chunks"] == 5
-            assert stats["index_metadata"] == metadata
+            assert stats["index_name"] == "my_index", "Condition must be true"
+            assert stats["tenant_id"] == "my_tenant", "Condition must be true"
+            assert stats["num_vectors"] == 3, "Condition must be true"
+            assert stats["num_chunks"] == 5, "Condition must be true"
+            assert stats["index_metadata"] == metadata, "Data must not be empty"
 
     def test_get_stats_no_index(self, temp_index_dir, mock_sentence_transformer):
         """Test getting stats when no index is loaded."""
@@ -547,4 +547,4 @@ class TestRetrieverStats:
             retriever = Retriever(index_dir=str(temp_index_dir))
             stats = retriever.get_stats()
 
-            assert stats["num_vectors"] == 0
+            assert stats["num_vectors"] == 0, "Condition must be true"

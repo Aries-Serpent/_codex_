@@ -43,5 +43,5 @@ def test_build_report(tmp_path: Path) -> None:
     output = tmp_path / "report.html"
     result = serve_report.build_report(reference, current, output)
 
-    assert result.exists()
-    assert result == output
+    assert result.exists(), "Result must not be empty"
+    assert result == output, "Result must not be empty"

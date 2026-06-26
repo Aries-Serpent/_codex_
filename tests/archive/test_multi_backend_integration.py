@@ -14,8 +14,8 @@ from codex.archive import config as archive_config
 def test_backend_config_to_archive_config() -> None:
     backend = archive_config.BackendConfig(backend="postgres", url="postgresql://user@localhost/db")
     archive_backend = backend.to_archive_config()
-    assert archive_backend.backend == "postgres"
-    assert archive_backend.url.startswith("postgresql://")
+    assert archive_backend.backend == "postgres", "backend is not valid"
+    assert archive_backend.url.startswith("postgresql://"), "Condition must be true"
 
 
 def test_backend_config_rejects_empty_url() -> None:
@@ -29,7 +29,7 @@ def test_archive_config_loads_postgres_env() -> None:
         "CODEX_ARCHIVE_BACKEND": "postgres",
     }
     cfg = archive_config.ArchiveAppConfig.load(env=env)
-    assert cfg.backend.backend == "postgres"
+    assert cfg.backend.backend == "postgres", "backend is not valid"
 
 
 def test_archive_config_loads_mariadb_env() -> None:
@@ -38,8 +38,8 @@ def test_archive_config_loads_mariadb_env() -> None:
         "CODEX_ARCHIVE_URL": "mariadb://example/db",
     }
     cfg = archive_config.ArchiveAppConfig.load(env=env)
-    assert cfg.backend.backend == "mariadb"
-    assert cfg.backend.url == "mariadb://example/db"
+    assert cfg.backend.backend == "mariadb", "backend is not valid"
+    assert cfg.backend.url == "mariadb://example/db", "url is not valid"
 
 
 def test_archive_config_batch_results_path_serialisation(tmp_path) -> None:
@@ -50,4 +50,4 @@ def test_archive_config_batch_results_path_serialisation(tmp_path) -> None:
         """)
     cfg = archive_config.ArchiveAppConfig.load(config_file=config_path, env={})
     serialized = cfg.to_dict()
-    assert serialized["batch"]["results_path"].endswith("results.json")
+    assert serialized["batch"]["results_path"].endswith("results.json"), "Result must not be empty"

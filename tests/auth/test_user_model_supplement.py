@@ -15,7 +15,10 @@ import time
 import pytest
 
 from codex.auth.in_memory_user_repository import InMemoryUserRepository
-from codex.auth.user_model import PasswordHasher, User # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+from codex.auth.user_model import (  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+    PasswordHasher,
+    User,
+)
 
 # ============================================================================
 # User Model Extended Tests
@@ -38,7 +41,7 @@ class TestUserModelExtended:
             email="alice@example.com",
             password_hash="hash123",
         )
-        assert user1.user_id == user2.user_id
+        assert user1.user_id == user2.user_id, "user_id is not valid"
 
     def test_user_immutability(self):
         user = User(
@@ -59,7 +62,7 @@ class TestUserModelExtended:
             password_hash="hash123",
         )
         str_repr = str(user)
-        assert "alice" in str_repr or "123" in str_repr
+        assert "alice" in str_repr or "123" in str_repr, "Condition must be true"
 
     def test_user_with_empty_roles(self):
         user = User(
@@ -79,9 +82,9 @@ class TestUserModelExtended:
             email="alice@example.com",
             password_hash="hash123",
         )
-        assert user.user_id
-        assert user.created_at
-        assert user.username
+        assert user.user_id, "Condition must be true"
+        assert user.created_at, "Condition must be true"
+        assert user.username, "Condition must be true"
 
     def test_user_with_many_roles(self):
         roles = [f"role{i}" for i in range(100)]
@@ -92,7 +95,7 @@ class TestUserModelExtended:
             password_hash="hash123",
             roles=roles,
         )
-        assert len(user.roles) == 100 or len(user.roles) > 0
+        assert len(user.roles) == 100 or len(user.roles) > 0, "Collection must not be empty"
 
     def test_user_role_uniqueness(self):
         User(
@@ -122,7 +125,7 @@ class TestPasswordHasherExtended:
         hash2 = hasher2.hash_password(password)
 
         # Different hashes due to random salt
-        assert hash1 != hash2
+        assert hash1 != hash2, "hash1 is not valid"
 
         # But both should verify the same password
         assert hasher1.verify_password(password, hash1)
@@ -186,7 +189,7 @@ class TestRepositoryAdvanced:
             repo.create_user(user)
             users.append(user)
 
-        assert repo.get_user_count() == 50
+        assert repo.get_user_count() == 50, "Count must be greater than zero"
 
     def test_bulk_delete_users(self, repo):
         hasher = PasswordHasher()
@@ -205,7 +208,7 @@ class TestRepositoryAdvanced:
         for user_id in user_ids:
             repo.delete_user(user_id)
 
-        assert repo.get_user_count() == 0
+        assert repo.get_user_count() == 0, "Count must be greater than zero"
 
     def test_bulk_update_emails(self, repo):
         hasher = PasswordHasher()
@@ -232,7 +235,7 @@ class TestRepositoryAdvanced:
         # Verify updates
         for i in range(10):
             user = repo.get_by_user_id(f"user{i}")
-            assert user.email == f"updated{i}@example.com"
+            assert user.email == f"updated{i}@example.com", "email is not valid"
 
     def test_search_by_partial_username(self, repo):
         hasher = PasswordHasher()
@@ -255,7 +258,7 @@ class TestRepositoryAdvanced:
 
         # Exact match
         alice = repo.get_by_username("alice")
-        assert alice.username == "alice"
+        assert alice.username == "alice", "username is not valid"
 
     def test_list_with_pagination(self, repo):
         hasher = PasswordHasher()
@@ -271,7 +274,7 @@ class TestRepositoryAdvanced:
 
         # Get all users
         users = repo.list_users()
-        assert len(users) == 30
+        assert len(users) == 30, "Users must not be empty"
 
     def test_filter_by_creation_date(self, repo):
         hasher = PasswordHasher()
@@ -347,7 +350,7 @@ class TestConcurrentRepositoryOperations:
             )
             repo.create_user(user)
             retrieved = repo.get_by_user_id(user_id)
-            assert retrieved.user_id == user_id
+            assert retrieved.user_id == user_id, "user_id is not valid"
 
         threads = [threading.Thread(target=mixed_ops, name=f"worker-{i}") for i in range(5)]
         for t in threads:
@@ -388,8 +391,8 @@ class TestDataIntegrity:
         repo.update_user(updated)
 
         retrieved = repo.get_by_user_id("user1")
-        assert retrieved.email == "alice.new@example.com"
-        assert retrieved.user_id == "user1"
+        assert retrieved.email == "alice.new@example.com", "email is not valid"
+        assert retrieved.user_id == "user1", "user_id is not valid"
 
     def test_deletion_is_permanent(self, repo):
         hasher = PasswordHasher()
@@ -452,7 +455,7 @@ class TestUserStateTransitions:
 
         retrieved = repo.get_by_user_id("new_user")
         # New user should be enabled
-        assert retrieved is not None
+        assert retrieved is not None, "retrieved must be initialized"
 
     def test_email_verification_workflow(self, repo):
         hasher = PasswordHasher()
@@ -466,7 +469,7 @@ class TestUserStateTransitions:
 
         # User created with unverified email
         retrieved = repo.get_by_user_id("verify_user")
-        assert retrieved.email == "verify@example.com"
+        assert retrieved.email == "verify@example.com", "email is not valid"
 
     def test_user_deactivation(self, repo):
         hasher = PasswordHasher()
@@ -541,7 +544,7 @@ class TestSpecialCases:
         repo.create_user(user)
 
         retrieved = repo.get_by_email("user+test@example.com")
-        assert retrieved.email == "user+test@example.com"
+        assert retrieved.email == "user+test@example.com", "email is not valid"
 
     def test_user_with_international_domain(self, repo):
         hasher = PasswordHasher()
@@ -554,6 +557,6 @@ class TestSpecialCases:
         try:
             repo.create_user(user)
             retrieved = repo.get_by_email("user@münchen.de")
-            assert retrieved.email == "user@münchen.de"
+            assert retrieved.email == "user@münchen.de", "email is not valid"
         except Exception as _err:
             pass  # International domains may not be supported

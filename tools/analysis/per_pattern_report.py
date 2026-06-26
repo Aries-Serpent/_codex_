@@ -141,7 +141,7 @@ def main() -> int:
         return 1
     except json.JSONDecodeError as exc:
         error_type = type(exc).__name__
-        print(f"ERROR: Failed to parse JSON: <ERROR_TYPE>")
+        print("ERROR: Failed to parse JSON: <ERROR_TYPE>")
         return 1
 
     per_seed_results = results.get("per_seed_results", [])

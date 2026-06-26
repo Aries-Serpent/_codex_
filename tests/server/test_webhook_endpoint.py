@@ -15,6 +15,7 @@ import pytest
 
 pytest.importorskip("fastapi")
 from fastapi.testclient import TestClient
+
  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 # ---------------------------------------------------------------------------
 # Helpers
@@ -81,10 +82,10 @@ class TestWebhookValidSignature:
                     "X-GitHub-Delivery": "abc-123",
                 },
             )
-        assert resp.status_code == 200
+        assert resp.status_code == 200, "status_code is not valid"
         data = resp.json()
-        assert data["status"] == "accepted"
-        assert data["delivery_id"] == "abc-123"
+        assert data["status"] == "accepted", "Data must not be empty"
+        assert data["delivery_id"] == "abc-123", "Data must not be empty"
 
 
 class TestWebhookInvalidSignature:
@@ -103,8 +104,8 @@ class TestWebhookInvalidSignature:
                     "X-GitHub-Event": "pull_request",
                 },
             )
-        assert resp.status_code == 401
-        assert "Invalid signature" in resp.json()["error"]
+        assert resp.status_code == 401, "status_code is not valid"
+        assert "Invalid signature" in resp.json()["error"], "Error should be raised or set"
 
 
 class TestWebhookMissingSecret:
@@ -123,8 +124,8 @@ class TestWebhookMissingSecret:
                     "X-GitHub-Event": "push",
                 },
             )
-        assert resp.status_code == 401
-        assert "not configured" in resp.json()["error"]
+        assert resp.status_code == 401, "status_code is not valid"
+        assert "not configured" in resp.json()["error"], "Error should be raised or set"
 
 
 class TestWebhookInvalidJson:
@@ -143,8 +144,8 @@ class TestWebhookInvalidJson:
                     "X-GitHub-Event": "push",
                 },
             )
-        assert resp.status_code == 400
-        assert "Invalid JSON" in resp.json()["error"]
+        assert resp.status_code == 400, "status_code is not valid"
+        assert "Invalid JSON" in resp.json()["error"], "Error should be raised or set"
 
 
 class TestWebhookRecentEvents:
@@ -164,16 +165,16 @@ class TestWebhookRecentEvents:
                     "X-GitHub-Delivery": "delivery-xyz",
                 },
             )
-            assert post_resp.status_code == 200
+            assert post_resp.status_code == 200, "status_code is not valid"
 
             get_resp = client.get("/api/webhooks/recent?limit=10")
-        assert get_resp.status_code == 200
+        assert get_resp.status_code == 200, "status_code is not valid"
         data = get_resp.json()
-        assert data["total"] >= 1
+        assert data["total"] >= 1, "Value must be greater than zero"
         event = data["events"][0]
-        assert event["event_type"] == "issues"
-        assert event["delivery_id"] == "delivery-xyz"
-        assert event["payload"] == _SAMPLE_PAYLOAD
+        assert event["event_type"] == "issues", "Condition must be true"
+        assert event["delivery_id"] == "delivery-xyz", "Condition must be true"
+        assert event["payload"] == _SAMPLE_PAYLOAD, "Condition must be true"
 
 
 class TestWebhookDevMode:
@@ -192,5 +193,5 @@ class TestWebhookDevMode:
                     "X-GitHub-Delivery": "dev-mode-delivery",
                 },
             )
-        assert resp.status_code == 200
-        assert resp.json()["status"] == "accepted"
+        assert resp.status_code == 200, "status_code is not valid"
+        assert resp.json()["status"] == "accepted", "Condition must be true"

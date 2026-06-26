@@ -62,8 +62,8 @@ def test_auto_corrects_nondeterministic_cudnn(monkeypatch, tmp_path):
     _patch_cuda(monkeypatch, False)
     # S81: functional_training now auto-fixes cudnn instead of raising
     run_custom_trainer(model, tok, ds, None, cfg)
-    assert torch.backends.cudnn.deterministic is True
-    assert torch.backends.cudnn.benchmark is False
+    assert torch.backends.cudnn.deterministic is True, "deterministic is not valid"
+    assert torch.backends.cudnn.benchmark is False, "benchmark is not valid"
 
 
 def _patch_cuda_simple(monkeypatch, deterministic: bool) -> None:

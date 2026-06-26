@@ -78,6 +78,6 @@ def test_unpack(tmp_path, monkeypatch):
     )
     dest = root / "unpacked"
     unpack_bundle(bundle, dest, allow_scripts=False)
-    assert (dest / "bin" / "codex-cli").exists()
-    assert (dest / "bin" / "codex").is_symlink()
+    assert (dest / "bin" / "codex-cli").exists(), "Condition must be true"
+    assert (dest / "bin" / "codex").is_symlink(), "Condition must be true"
     assert (dest / "configs" / "app.json").read_text(encoding="utf-8").strip() == '{"name":"codex"}'

@@ -15,6 +15,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from tests.branch_coverage import branch_input
+
  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 # ============================================================================
 # Branch Coverage: Scope Validator
@@ -28,13 +29,13 @@ class TestScopeValidatorBranches:
         """Test NONE scope branch."""
         scope = 0  # NONE
         result = "no_permissions" if scope == 0 else "has_permissions"
-        assert result == "no_permissions"
+        assert result == "no_permissions", "Result must not be empty"
 
     def test_scope_has_permissions_branch(self) -> None:
         """Test scope with permissions branch."""
         scope = 1  # READ_REPO
         result = "no_permissions" if scope == 0 else "has_permissions"
-        assert result == "has_permissions"
+        assert result == "has_permissions", "Result must not be empty"
 
     def test_scope_hierarchical_admin_branch(self) -> None:
         """Test hierarchical admin scope branch."""
@@ -45,7 +46,7 @@ class TestScopeValidatorBranches:
             implied = ["read"]
         else:
             implied = []
-        assert "write" in implied and "read" in implied
+        assert "write" in implied and "read" in implied, "Condition must be true"
 
     def test_scope_hierarchical_write_branch(self) -> None:
         """Test hierarchical write scope branch."""
@@ -56,7 +57,7 @@ class TestScopeValidatorBranches:
             implied = ["read"]
         else:
             implied = []
-        assert "read" in implied
+        assert "read" in implied, "Condition must be true"
 
     def test_scope_hierarchical_read_branch(self) -> None:
         """Test hierarchical read scope branch."""
@@ -67,7 +68,7 @@ class TestScopeValidatorBranches:
             implied = ["read"]
         else:
             implied = []
-        assert len(implied) == 0
+        assert len(implied) == 0, "Implied must not be empty"
 
     def test_scope_format_with_colon_branch(self) -> None:
         """Test scope format with colon separator branch."""
@@ -79,7 +80,7 @@ class TestScopeValidatorBranches:
         else:
             resource = scope_str
             permission = "write"
-        assert resource == "repo" and permission == "read"
+        assert resource == "repo" and permission == "read", "resource is not valid"
 
     def test_scope_format_without_colon_branch(self) -> None:
         """Test scope format without colon (default) branch."""
@@ -91,7 +92,7 @@ class TestScopeValidatorBranches:
         else:
             resource = scope_str
             permission = "write"
-        assert resource == "repo" and permission == "write"
+        assert resource == "repo" and permission == "write", "resource is not valid"
 
     @pytest.mark.parametrize(
         "scope_string,expected_resource",
@@ -109,7 +110,7 @@ class TestScopeValidatorBranches:
         """Test scope resource parsing branches."""
         parts = scope_string.split(":")
         resource = parts[0]
-        assert resource == expected_resource
+        assert resource == expected_resource, "resource is not valid"
 
     def test_scope_validation_sufficient_branch(self) -> None:
         """Test scope validation sufficient branch."""
@@ -117,7 +118,7 @@ class TestScopeValidatorBranches:
         user_scopes = {"read", "write"}
         has_required = required_scopes.issubset(user_scopes)
         status = "authorized" if has_required else "unauthorized"
-        assert status == "authorized"
+        assert status == "authorized", "status is not valid"
 
     def test_scope_validation_insufficient_branch(self) -> None:
         """Test scope validation insufficient branch."""
@@ -125,7 +126,7 @@ class TestScopeValidatorBranches:
         user_scopes = {"read"}
         has_required = required_scopes.issubset(user_scopes)
         status = "authorized" if has_required else "unauthorized"
-        assert status == "unauthorized"
+        assert status == "unauthorized", "status is not valid"
 
 
 # ============================================================================
@@ -140,7 +141,7 @@ class TestAPIKeyValidatorBranches:
         """Test API key initialization from parameter branch."""
         secret_key = "test-secret-key"
         key_source = "parameter" if secret_key else "environment"
-        assert key_source == "parameter"
+        assert key_source == "parameter", "key_source is not valid"
 
     def test_api_key_from_environment_branch(self) -> None:
         """Test API key initialization from environment branch."""
@@ -151,7 +152,7 @@ class TestAPIKeyValidatorBranches:
             else:
                 env_key = os.environ.get("AUTH_SECRET_KEY")
                 key_source = "environment" if env_key else "fallback"
-            assert key_source == "environment"
+            assert key_source == "environment", "key_source is not valid"
 
     def test_api_key_development_fallback_branch(self) -> None:
         """Test API key development fallback branch."""
@@ -169,7 +170,7 @@ class TestAPIKeyValidatorBranches:
                     else:
                         is_prod = os.environ.get("CODEX_ENV") == "production"
                         key_source = "fallback" if not is_prod else "error"
-                assert key_source == "fallback"
+                assert key_source == "fallback", "key_source is not valid"
 
     def test_api_key_production_error_branch(self) -> None:
         """Test API key production error branch."""
@@ -189,39 +190,39 @@ class TestAPIKeyValidatorBranches:
                     else:
                         is_prod = os.environ.get("CODEX_ENV") == "production"
                         key_source = "fallback" if not is_prod else "error"
-                assert key_source == "error"
+                assert key_source == "error", "Error should be raised or set"
 
     def test_api_key_hash_match_branch(self) -> None:
         """Test API key hash match branch."""
         provided_hash = "abc123"
         stored_hash = "abc123"
         result = "valid" if provided_hash == stored_hash else "invalid"
-        assert result == "valid"
+        assert result == "valid", "Result must not be empty"
 
     def test_api_key_hash_mismatch_branch(self) -> None:
         """Test API key hash mismatch branch."""
         provided_hash = "abc123"
         stored_hash = "xyz789"
         result = "valid" if provided_hash == stored_hash else "invalid"
-        assert result == "invalid"
+        assert result == "invalid", "Result must not be empty"
 
     def test_api_key_revoked_check_branch(self) -> None:
         """Test API key revoked check branch."""
         key_status = "revoked"
         access = "denied" if key_status == "revoked" or key_status == "expired" else "granted"
-        assert access == "denied"
+        assert access == "denied", "access is not valid"
 
     def test_api_key_expired_check_branch(self) -> None:
         """Test API key expired check branch."""
         key_status = "expired"
         access = "denied" if key_status == "revoked" or key_status == "expired" else "granted"
-        assert access == "denied"
+        assert access == "denied", "access is not valid"
 
     def test_api_key_active_check_branch(self) -> None:
         """Test API key active check branch."""
         key_status = "active"
         access = "denied" if key_status == "revoked" or key_status == "expired" else "granted"
-        assert access == "granted"
+        assert access == "granted", "access is not valid"
 
 
 # ============================================================================
@@ -250,7 +251,7 @@ class TestAuthMethodBranches:
             "none": "no_auth",
         }
         result = auth_methods.get(method, "unknown")
-        assert result == expected
+        assert result == expected, "Result must not be empty"
 
     def test_auth_method_jwt_header_branch(self) -> None:
         """Test JWT from Authorization header branch."""
@@ -261,7 +262,7 @@ class TestAuthMethodBranches:
             auth_type = "api_key"
         else:
             auth_type = "none"
-        assert auth_type == "bearer"
+        assert auth_type == "bearer", "auth_type is not valid"
 
     def test_auth_method_api_key_header_branch(self) -> None:
         """Test API key from X-API-Key header branch."""
@@ -272,7 +273,7 @@ class TestAuthMethodBranches:
             auth_type = "api_key"
         else:
             auth_type = "none"
-        assert auth_type == "api_key"
+        assert auth_type == "api_key", "auth_type is not valid"
 
     def test_auth_method_no_headers_branch(self) -> None:
         """Test no authentication headers branch."""
@@ -283,19 +284,19 @@ class TestAuthMethodBranches:
             auth_type = "api_key"
         else:
             auth_type = "none"
-        assert auth_type == "none"
+        assert auth_type == "none", "auth_type is not valid"
 
     def test_auth_enabled_branch(self) -> None:
         """Test authentication enabled branch."""
         auth_enabled = True
         mode = "protected" if auth_enabled else "public"
-        assert mode == "protected"
+        assert mode == "protected", "mode is not valid"
 
     def test_auth_disabled_branch(self) -> None:
         """Test authentication disabled branch."""
         auth_enabled = False
         mode = "protected" if auth_enabled else "public"
-        assert mode == "public"
+        assert mode == "public", "mode is not valid"
 
 
 # ============================================================================
@@ -320,7 +321,7 @@ class TestPathExemptionBranches:
         """Test exempt path checking branches."""
         exempt_paths = {"/health", "/ready", "/metrics"}
         result = path in exempt_paths
-        assert result == is_exempt
+        assert result == is_exempt, "Result must not be empty"
 
     def test_path_prefix_exempt_branch(self) -> None:
         """Test path prefix exemption branch."""
@@ -331,7 +332,7 @@ class TestPathExemptionBranches:
             exempt = False
         else:
             exempt = False
-        assert exempt is True
+        assert exempt is True, "exempt is not valid"
 
     def test_path_prefix_api_branch(self) -> None:
         """Test path prefix API (protected) branch."""
@@ -342,7 +343,7 @@ class TestPathExemptionBranches:
             exempt = False
         else:
             exempt = False
-        assert exempt is False
+        assert exempt is False, "exempt is not valid"
 
     def test_path_prefix_other_branch(self) -> None:
         """Test path prefix other branch."""
@@ -353,7 +354,7 @@ class TestPathExemptionBranches:
             exempt = False
         else:
             exempt = False
-        assert exempt is False
+        assert exempt is False, "exempt is not valid"
 
 
 # ============================================================================
@@ -369,14 +370,14 @@ class TestRateLimitBranches:
         request_count = 150
         rate_limit = 100
         action = "reject" if request_count > rate_limit else "allow"
-        assert action == "reject"
+        assert action == "reject", "action is not valid"
 
     def test_rate_limit_within_limit_branch(self) -> None:
         """Test rate limit within limit branch."""
         request_count = 50
         rate_limit = 100
         action = "reject" if request_count > rate_limit else "allow"
-        assert action == "allow"
+        assert action == "allow", "action is not valid"
 
     def test_rate_limit_window_expired_branch(self) -> None:
         """Test rate limit window expired branch."""
@@ -386,7 +387,7 @@ class TestRateLimitBranches:
         window_size = 60  # 1 minute
         current_time = time.time()
         action = "reset_counter" if current_time - last_reset > window_size else "continue_counting"
-        assert action == "reset_counter"
+        assert action == "reset_counter", "Count must be greater than zero"
 
     def test_rate_limit_window_active_branch(self) -> None:
         """Test rate limit window active branch."""
@@ -396,19 +397,19 @@ class TestRateLimitBranches:
         window_size = 60  # 1 minute
         current_time = time.time()
         action = "reset_counter" if current_time - last_reset > window_size else "continue_counting"
-        assert action == "continue_counting"
+        assert action == "continue_counting", "Count must be greater than zero"
 
     def test_rate_limit_enabled_branch(self) -> None:
         """Test rate limiting enabled branch."""
         rate_limit_enabled = True
         checker = "rate_limiter" if rate_limit_enabled else "no_limit"
-        assert checker == "rate_limiter"
+        assert checker == "rate_limiter", "checker is not valid"
 
     def test_rate_limit_disabled_branch(self) -> None:
         """Test rate limiting disabled branch."""
         rate_limit_enabled = False
         checker = "rate_limiter" if rate_limit_enabled else "no_limit"
-        assert checker == "no_limit"
+        assert checker == "no_limit", "checker is not valid"
 
 
 # ============================================================================
@@ -426,7 +427,7 @@ class TestTokenClaimsBranches:
         exp = time.time() - 3600  # Expired 1 hour ago
         current_time = time.time()
         status = "expired" if exp < current_time else "valid"
-        assert status == "expired"
+        assert status == "expired", "status is not valid"
 
     def test_token_valid_branch(self) -> None:
         """Test token valid branch."""
@@ -435,7 +436,7 @@ class TestTokenClaimsBranches:
         exp = time.time() + 3600  # Expires in 1 hour
         current_time = time.time()
         status = "expired" if exp < current_time else "valid"
-        assert status == "valid"
+        assert status == "valid", "status is not valid"
 
     def test_token_not_before_future_branch(self) -> None:
         """Test token not before (future) branch."""
@@ -444,7 +445,7 @@ class TestTokenClaimsBranches:
         nbf = time.time() + 3600  # Not valid until 1 hour from now
         current_time = time.time()
         status = "not_yet_valid" if nbf > current_time else "valid"
-        assert status == "not_yet_valid"
+        assert status == "not_yet_valid", "status is not valid"
 
     def test_token_not_before_past_branch(self) -> None:
         """Test token not before (past/valid) branch."""
@@ -453,35 +454,35 @@ class TestTokenClaimsBranches:
         nbf = time.time() - 3600  # Valid since 1 hour ago
         current_time = time.time()
         status = "not_yet_valid" if nbf > current_time else "valid"
-        assert status == "valid"
+        assert status == "valid", "status is not valid"
 
     def test_token_issuer_match_branch(self) -> None:
         """Test token issuer match branch."""
         token_issuer = "codex-auth"
         expected_issuer = "codex-auth"
         status = "valid" if token_issuer == expected_issuer else "invalid_issuer"
-        assert status == "valid"
+        assert status == "valid", "status is not valid"
 
     def test_token_issuer_mismatch_branch(self) -> None:
         """Test token issuer mismatch branch."""
         token_issuer = "unknown-issuer"
         expected_issuer = "codex-auth"
         status = "valid" if token_issuer == expected_issuer else "invalid_issuer"
-        assert status == "invalid_issuer"
+        assert status == "invalid_issuer", "status is not valid"
 
     def test_token_audience_match_branch(self) -> None:
         """Test token audience match branch."""
         token_audience = "codex-api"
         expected_audience = "codex-api"
         status = "valid" if token_audience == expected_audience else "invalid_audience"
-        assert status == "valid"
+        assert status == "valid", "status is not valid"
 
     def test_token_audience_mismatch_branch(self) -> None:
         """Test token audience mismatch branch."""
         token_audience = "other-api"
         expected_audience = "codex-api"
         status = "valid" if token_audience == expected_audience else "invalid_audience"
-        assert status == "invalid_audience"
+        assert status == "invalid_audience", "status is not valid"
 
 
 # ============================================================================
@@ -496,37 +497,37 @@ class TestSecurityDecoratorBranches:
         """Test decorator with validator present branch."""
         validator = MagicMock()
         error = "no_validator" if validator is None else None
-        assert error is None
+        assert error is None, "Error should be raised or set"
 
     def test_decorator_validator_missing_branch(self) -> None:
         """Test decorator with validator missing branch."""
         validator = None
         error = "no_validator" if validator is None else None
-        assert error == "no_validator"
+        assert error == "no_validator", "Error should be raised or set"
 
     def test_decorator_scope_check_passed_branch(self) -> None:
         """Test decorator scope check passed branch."""
         has_scope = True
         action = "execute" if has_scope else "reject"
-        assert action == "execute"
+        assert action == "execute", "action is not valid"
 
     def test_decorator_scope_check_failed_branch(self) -> None:
         """Test decorator scope check failed branch."""
         has_scope = False
         action = "execute" if has_scope else "reject"
-        assert action == "reject"
+        assert action == "reject", "action is not valid"
 
     def test_decorator_logging_enabled_branch(self) -> None:
         """Test decorator logging enabled branch."""
         debug_mode = True
         log_action = "log_call" if debug_mode else "silent"
-        assert log_action == "log_call"
+        assert log_action == "log_call", "log_action is not valid"
 
     def test_decorator_logging_disabled_branch(self) -> None:
         """Test decorator logging disabled branch."""
         debug_mode = False
         log_action = "log_call" if debug_mode else "silent"
-        assert log_action == "silent"
+        assert log_action == "silent", "log_action is not valid"
 
 
 # ============================================================================
@@ -541,13 +542,13 @@ class TestTLSConfigBranches:
         """Test TLS enabled branch."""
         tls_enabled = True
         protocol = "https" if tls_enabled else "http"
-        assert protocol == "https"
+        assert protocol == "https", "protocol is not valid"
 
     def test_tls_disabled_branch(self) -> None:
         """Test TLS disabled branch."""
         tls_enabled = False
         protocol = "https" if tls_enabled else "http"
-        assert protocol == "http"
+        assert protocol == "http", "protocol is not valid"
 
     def test_tls_version_1_3_branch(self) -> None:
         """Test TLS version 1.3 branch."""
@@ -558,7 +559,7 @@ class TestTLSConfigBranches:
             min_version = "TLSv1_2"
         else:
             min_version = "TLSv1_2"  # Default
-        assert min_version == "TLSv1_3"
+        assert min_version == "TLSv1_3", "min_version is not valid"
 
     def test_tls_version_1_2_branch(self) -> None:
         """Test TLS version 1.2 branch."""
@@ -569,7 +570,7 @@ class TestTLSConfigBranches:
             min_version = "TLSv1_2"
         else:
             min_version = "TLSv1_2"  # Default
-        assert min_version == "TLSv1_2"
+        assert min_version == "TLSv1_2", "min_version is not valid"
 
     def test_tls_version_default_branch(self) -> None:
         """Test TLS version default branch."""
@@ -580,16 +581,16 @@ class TestTLSConfigBranches:
             min_version = "TLSv1_2"
         else:
             min_version = "TLSv1_2"  # Default
-        assert min_version == "TLSv1_2"
+        assert min_version == "TLSv1_2", "min_version is not valid"
 
     def test_tls_cert_validation_strict_branch(self) -> None:
         """Test TLS certificate validation strict branch."""
         verify_cert = True
         validation = "strict" if verify_cert else "disabled"
-        assert validation == "strict"
+        assert validation == "strict", "validation is not valid"
 
     def test_tls_cert_validation_disabled_branch(self) -> None:
         """Test TLS certificate validation disabled branch."""
         verify_cert = False
         validation = "strict" if verify_cert else "disabled"
-        assert validation == "disabled"
+        assert validation == "disabled", "validation is not valid"

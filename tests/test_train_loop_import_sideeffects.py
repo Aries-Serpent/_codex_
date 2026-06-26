@@ -16,22 +16,22 @@ def test_import_has_no_artifact_side_effects(tmp_path, monkeypatch):
 
     importlib.reload(importlib.import_module("codex_ml.train_loop"))
 
-    assert not (tmp_path / "artifacts").exists()
-    assert not (tmp_path / "artifacts" / "metrics").exists()
+    assert not (tmp_path / "artifacts").exists(), "Condition must be true"
+    assert not (tmp_path / "artifacts" / "metrics").exists(), "Condition must be true"
 
 
 def test_run_training_creates_artifacts_on_demand(tmp_path):
     module = importlib.reload(importlib.import_module("codex_ml.train_loop"))
 
     art_dir = tmp_path / "artifacts" / "metrics"
-    assert not art_dir.exists()
+    assert not art_dir.exists(), "Condition must be true"
 
     module.run_training(epochs=0, grad_accum=1, seed=1234, art_dir=art_dir)
 
-    assert art_dir.exists()
-    assert (art_dir / "metrics.json").exists()
-    assert (art_dir / "metrics.ndjson").exists()
-    assert (art_dir / "environment.json").exists()
+    assert art_dir.exists(), "Condition must be true"
+    assert (art_dir / "metrics.json").exists(), "Condition must be true"
+    assert (art_dir / "metrics.ndjson").exists(), "Condition must be true"
+    assert (art_dir / "environment.json").exists(), "Condition must be true"
 
 
 def test_train_loop_cli_custom_art_dir(monkeypatch, tmp_path):
@@ -44,5 +44,5 @@ def test_train_loop_cli_custom_art_dir(monkeypatch, tmp_path):
 
     module.main()
 
-    assert target_dir.exists()
-    assert (target_dir / "metrics.json").exists()
+    assert target_dir.exists(), "Condition must be true"
+    assert (target_dir / "metrics.json").exists(), "Condition must be true"

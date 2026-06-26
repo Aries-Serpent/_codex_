@@ -31,14 +31,14 @@ def test_roundtrip_and_integrity(tmp_path: Path):
         top_k=3,
         include_rng=False,
     )
-    assert ckpt_path.exists()
+    assert ckpt_path.exists(), "Condition must be true"
     # Verify checksum and metadata fields
     m2 = verify_checkpoint(ckpt_path)
-    assert m2.sha256 and m2.metric_key == "val_loss"
+    assert m2.sha256 and m2.metric_key == "val_loss", "metric_key is not valid"
     # Load and compare state
     s2, meta2 = load_checkpoint(ckpt_path)
-    assert s2 == state
-    assert meta2.sha256 == m2.sha256
+    assert s2 == state, "s2 is not valid"
+    assert meta2.sha256 == m2.sha256, "sha256 is not valid"
 
 
 def test_corruption_detection(tmp_path: Path):
@@ -68,10 +68,10 @@ def test_best_k_retention(tmp_path: Path):
     # Only 3 checkpoint files should remain (best / lowest metric).
     # state.pt is a compatibility alias for the latest checkpoint and is excluded.
     existing = sorted([p for p in tmp_path.glob("*.pt") if p.exists() and p.name != "state.pt"])
-    assert len(existing) == 3
+    assert len(existing) == 3, "Existing must not be empty"
     # Load best and ensure it's the smallest metric (here, the lowest retained metric is 1.0 - 0.4 = 0.6)
     _state, meta, best_path = load_best(tmp_path)
-    assert meta.metric_value is not None
+    assert meta.metric_value is not None, "metric_value must be initialized"
     # The best should be the last saved (lowest metric): approximately 0.6
     assert pytest.approx(meta.metric_value, rel=0, abs=1e-9) == 0.6
-    assert best_path.exists()
+    assert best_path.exists(), "Condition must be true"

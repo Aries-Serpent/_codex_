@@ -3849,7 +3849,7 @@ class CommonIssueFixer:
         tests_dir = self.repo_root / "tests"
         if not tests_dir.exists():
             return issues
-        
+
         # Keywords that commonly appear in assertions to generate context
         CONTEXT_KEYWORDS = {
             'response': 'Response must not be empty',
@@ -3863,7 +3863,7 @@ class CommonIssueFixer:
             'count': 'Count must be greater than zero',
             'length': 'Length must be greater than zero',
         }
-        
+
         def _extract_variable_name(condition: str) -> str:
             """Extract the primary variable from assertion condition."""
             m = re.search(r'len\((\w+)\)', condition)
@@ -3876,7 +3876,7 @@ class CommonIssueFixer:
             if m:
                 return m.group(1)
             return ""
-        
+
         def _generate_message(condition: str, var_name: str) -> str:
             """Generate a descriptive message for an assertion."""
             if 'len(' in condition:
@@ -3897,12 +3897,12 @@ class CommonIssueFixer:
             if var_name:
                 return f"{var_name} is not valid"
             return "Condition must be true"
-        
+
         for py_file in tests_dir.rglob("*.py"):
             content = py_file.read_text(encoding='utf-8', errors='ignore')
             lines = content.split('\n')
             modified = False
-            
+
             for line_num, line in enumerate(lines):
                 if '# noqa' in line or '# pragma' in line:
                     continue
@@ -3910,23 +3910,23 @@ class CommonIssueFixer:
                     continue
                 if re.search(r',\s*["\'].*["\']', line):
                     continue
-                
+
                 m = re.match(r'^(\s*)assert\s+(.+?)\s*(?:#.*)?$', line)
                 if not m:
                     continue
-                
+
                 indent = m.group(1)
                 condition = m.group(2).strip()
-                
+
                 if len(condition) > 80 or condition.count(' and ') > 1 or condition.count(' or ') > 1:
                     continue
                 if ',' in condition:
                     continue
-                
+
                 var_name = _extract_variable_name(condition)
                 message = _generate_message(condition, var_name)
                 new_line = f'{indent}assert {condition}, "{message}"'
-                
+
                 if new_line != line:
                     issues.append(
                         f"{py_file.relative_to(self.repo_root)}:{line_num + 1} - "
@@ -3935,18 +3935,18 @@ class CommonIssueFixer:
                     if not self.check_only and not self.dry_run:
                         lines[line_num] = new_line
                         modified = True
-            
+
             if modified:
                 py_file.write_text('\n'.join(lines), encoding='utf-8')
                 self.fixes_applied.setdefault("Assert Messages", 0)
                 self.fixes_applied["Assert Messages"] += 1
-        
+
         if not issues:
             print("  ✅ All assertions have descriptive messages")
         else:
             action = "Would add" if self.check_only else "Added"
             print(f"  {'⚠' if self.check_only else '✅'} {action} {len(issues)} assertion message(s)")
-        
+
         return issues
 
     # Pattern 37 — Async Tests Without Timeout (RP-032)
@@ -3961,29 +3961,29 @@ class CommonIssueFixer:
         tests_dir = self.repo_root / "tests"
         if not tests_dir.exists():
             return issues
-        
+
         ASYNCIO_DECORATOR_RE = re.compile(r'^\s*@pytest\.mark\.asyncio\s*$')
         TIMEOUT_DECORATOR_RE = re.compile(r'@pytest\.mark\.timeout')
         ASYNC_DEF_RE = re.compile(r'^\s*async\s+def\s+\w+')
         PYTEST_MARK_RE = re.compile(r'^\s*@pytest\.mark\.')
         DEFAULT_TIMEOUT_SECONDS = 30
-        
+
         for py_file in tests_dir.rglob("*.py"):
             content = py_file.read_text(encoding='utf-8', errors='ignore')
             lines = content.split('\n')
             modified = False
-            
+
             i = 0
             while i < len(lines):
                 line = lines[i]
-                
+
                 if ASYNCIO_DECORATOR_RE.match(line):
                     has_timeout = False
                     j = i + 1
-                    
+
                     while j < len(lines) and j < i + 10:
                         next_line = lines[j]
-                        
+
                         if ASYNC_DEF_RE.match(next_line):
                             if not has_timeout:
                                 indent = len(line) - len(line.lstrip())
@@ -3996,29 +3996,29 @@ class CommonIssueFixer:
                                 )
                                 i += 1
                             break
-                        
+
                         if TIMEOUT_DECORATOR_RE.match(next_line):
                             has_timeout = True
-                        
+
                         if not PYTEST_MARK_RE.match(next_line):
                             break
-                        
+
                         j += 1
-                
+
                 i += 1
-            
+
             if modified:
                 if not self.check_only and not self.dry_run:
                     py_file.write_text('\n'.join(lines), encoding='utf-8')
                 self.fixes_applied.setdefault("Async Timeouts", 0)
                 self.fixes_applied["Async Timeouts"] += 1
-        
+
         if not issues:
             print("  ✅ All async tests have timeout decorators")
         else:
             action = "Would add" if self.check_only else "Added"
             print(f"  {'⚠' if self.check_only else '✅'} {action} {len(issues)} timeout decorator(s)")
-        
+
         return issues
 
     # Pattern 38 — Mock Object Cleanup Missing (RP-033)
@@ -4033,7 +4033,7 @@ class CommonIssueFixer:
         tests_dir = self.repo_root / "tests"
         if not tests_dir.exists():
             return issues
-        
+
         MOCK_CREATION_RE = re.compile(
             r'^\s*(\w+)\s*=\s*(?:Mock|MagicMock|AsyncMock|patch|PropertyMock)\s*\('
         )
@@ -4043,7 +4043,7 @@ class CommonIssueFixer:
             r'\.clear\(\)',
             r'\.close\(\)',
         ]
-        
+
         def _has_cleanup_in_scope(lines: list[str], start_idx: int, end_idx: int, mock_name: str) -> bool:
             """Check if mock is cleaned up in the given scope."""
             scope_text = '\n'.join(lines[start_idx:end_idx + 1])
@@ -4055,7 +4055,7 @@ class CommonIssueFixer:
             if re.search(rf'with\s+.*{mock_name}', scope_text):
                 return True
             return False
-        
+
         def _find_test_function_end(lines: list[str], start_idx: int) -> int:
             """Find the end line index of a test function."""
             base_indent = len(lines[start_idx]) - len(lines[start_idx].lstrip())
@@ -4065,48 +4065,48 @@ class CommonIssueFixer:
                     continue
                 current_indent = len(line) - len(line.lstrip())
                 if current_indent <= base_indent and (
-                    line.strip().startswith('def ') or 
+                    line.strip().startswith('def ') or
                     line.strip().startswith('class ') or
                     line.strip().startswith('@')
                 ):
                     return i - 1
             return len(lines) - 1
-        
+
         for py_file in tests_dir.rglob("*.py"):
             content = py_file.read_text(encoding='utf-8', errors='ignore')
             lines = content.split('\n')
             test_func_pattern = re.compile(r'^\s*def\s+(test_\w+)')
-            
+
             for i, line in enumerate(lines):
                 m = test_func_pattern.match(line)
                 if not m:
                     continue
-                
+
                 func_name = m.group(1)
                 func_start = i
                 func_end = _find_test_function_end(lines, i)
-                
+
                 for j in range(func_start, func_end + 1):
                     func_line = lines[j]
                     mock_match = MOCK_CREATION_RE.match(func_line)
                     if not mock_match:
                         continue
-                    
+
                     mock_name = mock_match.group(1)
                     if _has_cleanup_in_scope(lines, func_start, func_end, mock_name):
                         continue
-                    
+
                     issues.append(
                         f"{py_file.relative_to(self.repo_root)}:{func_start + 1}:{func_name} - "
                         f"Mock '{mock_name}' not cleaned up"
                     )
-        
+
         if not issues:
             print("  ✅ All mock objects properly cleaned up")
         else:
             action = "Would add" if self.check_only else "Added"
             print(f"  {'⚠' if self.check_only else '✅'} {action} {len(issues)} mock cleanup(s)")
-        
+
         return issues
 
 

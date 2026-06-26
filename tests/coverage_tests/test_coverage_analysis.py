@@ -31,7 +31,7 @@ class TestCoverageReportGeneration:
         with tempfile.TemporaryDirectory() as tmpdir:
             coverage_path = Path(tmpdir) / "coverage"
             coverage_path.mkdir()
-            assert coverage_path.exists()
+            assert coverage_path.exists(), "Condition must be true"
 
     def test_coverage_json_parseable(self):
         """Verify coverage JSON reports are parseable if they exist."""

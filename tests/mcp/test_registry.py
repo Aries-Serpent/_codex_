@@ -12,7 +12,7 @@ from mcp.registry import MCPToolRegistry
 def test_registry_initialization():
     """Test registry can be initialized."""
     registry = MCPToolRegistry()
-    assert registry is not None
+    assert registry is not None, "registry must be initialized"
 
 
 def test_register_simple_tool():
@@ -25,8 +25,8 @@ def test_register_simple_tool():
     registry.register_tool("simple", simple_tool)
 
     handler = registry.get_tool("simple")
-    assert handler is not None
-    assert handler() == "simple result"
+    assert handler is not None, "handler must be initialized"
+    assert handler() == "simple result", "Result must not be empty"
 
 
 def test_register_tool_with_params():
@@ -40,7 +40,7 @@ def test_register_tool_with_params():
 
     handler = registry.get_tool("add")
     result = handler(5, 3)
-    assert result == 8
+    assert result == 8, "Result must not be empty"
 
 
 def test_register_tool_with_schema():
@@ -60,8 +60,8 @@ def test_register_tool_with_schema():
 
     handler = registry.get_tool("person")
     result = handler(name="Alice", age=30)
-    assert result["name"] == "Alice"
-    assert result["age"] == 30
+    assert result["name"] == "Alice", "Result must not be empty"
+    assert result["age"] == 30, "Result must not be empty"
 
 
 def test_register_tool_with_metadata():
@@ -75,8 +75,8 @@ def test_register_tool_with_metadata():
     tools = registry.list_tools()
     meta_tool = next(t for t in tools if t["name"] == "meta_tool")
 
-    assert meta_tool["metadata"]["version"] == "1.0.0"
-    assert meta_tool["metadata"]["author"] == "test"
+    assert meta_tool["metadata"]["version"] == "1.0.0", "Data must not be empty"
+    assert meta_tool["metadata"]["author"] == "test", "Data must not be empty"
 
 
 def test_list_all_tools():
@@ -89,11 +89,11 @@ def test_list_all_tools():
 
     tools = registry.list_tools()
 
-    assert len(tools) == 3
+    assert len(tools) == 3, "Tools must not be empty"
     tool_names = [t["name"] for t in tools]
-    assert "tool1" in tool_names
-    assert "tool2" in tool_names
-    assert "tool3" in tool_names
+    assert "tool1" in tool_names, "Condition must be true"
+    assert "tool2" in tool_names, "Condition must be true"
+    assert "tool3" in tool_names, "Condition must be true"
 
 
 def test_get_nonexistent_tool():
@@ -101,7 +101,7 @@ def test_get_nonexistent_tool():
     registry = MCPToolRegistry()
 
     handler = registry.get_tool("nonexistent")
-    assert handler is None
+    assert handler is None, "handler is not valid"
 
 
 def test_overwrite_existing_tool():
@@ -110,12 +110,12 @@ def test_overwrite_existing_tool():
 
     registry.register_tool("tool", lambda: "v1")
     result1 = registry.get_tool("tool")()
-    assert result1 == "v1"
+    assert result1 == "v1", "Result must not be empty"
 
     # Overwrite
     registry.register_tool("tool", lambda: "v2")
     result2 = registry.get_tool("tool")()
-    assert result2 == "v2"
+    assert result2 == "v2", "Result must not be empty"
 
 
 def test_tool_categories():
@@ -131,8 +131,8 @@ def test_tool_categories():
     util_tools = [t for t in tools if t.get("metadata", {}).get("category") == "utility"]
     data_tools = [t for t in tools if t.get("metadata", {}).get("category") == "data"]
 
-    assert len(util_tools) == 2
-    assert len(data_tools) == 1
+    assert len(util_tools) == 2, "Util_tools must not be empty"
+    assert len(data_tools) == 1, "Data_tools must not be empty"
 
 
 def test_tool_versioning():
@@ -148,7 +148,7 @@ def test_tool_versioning():
     tools = registry.list_tools()
     versioned_tool = next(t for t in tools if t["name"] == "versioned")
 
-    assert versioned_tool["metadata"]["version"] == "2.0"
+    assert versioned_tool["metadata"]["version"] == "2.0", "Data must not be empty"
 
 
 def test_tool_discovery_filters():
@@ -164,7 +164,7 @@ def test_tool_discovery_filters():
     # Can filter public tools
     public_tools = [t for t in all_tools if t.get("metadata", {}).get("public") is True]
 
-    assert len(public_tools) == 2
+    assert len(public_tools) == 2, "Public_tools must not be empty"
 
 
 def test_tool_with_complex_return():
@@ -178,9 +178,9 @@ def test_tool_with_complex_return():
 
     result = registry.get_tool("complex")()
 
-    assert result["status"] == "success"
+    assert result["status"] == "success", "Result must not be empty"
     assert result["data"] == [1, 2, 3]
-    assert result["metadata"]["count"] == 3
+    assert result["metadata"]["count"] == 3, "Result must not be empty"
 
 
 def test_tool_error_handling():
@@ -197,7 +197,7 @@ def test_tool_error_handling():
     with pytest.raises(ValueError) as exc_info:
         handler()
 
-    assert "Tool error" in str(exc_info.value)
+    assert "Tool error" in str(exc_info.value), "Value must be initialized"
 
 
 def test_tool_with_default_params():
@@ -213,11 +213,11 @@ def test_tool_with_default_params():
 
     # With default
     result1 = handler("test")
-    assert result1 == "test-default"
+    assert result1 == "test-default", "Result must not be empty"
 
     # Override default
     result2 = handler("test", "custom")
-    assert result2 == "test-custom"
+    assert result2 == "test-custom", "Result must not be empty"
 
 
 def test_tool_introspection():
@@ -239,7 +239,7 @@ def test_tool_introspection():
     tool = next(t for t in tools if t["name"] == "introspect")
 
     assert tool["metadata"]["parameters"] == ["param1", "param2"]
-    assert tool["metadata"]["returns"] == "string"
+    assert tool["metadata"]["returns"] == "string", "Data must not be empty"
 
 
 def test_registry_empty_state():
@@ -247,10 +247,10 @@ def test_registry_empty_state():
     registry = MCPToolRegistry()
 
     tools = registry.list_tools()
-    assert len(tools) == 0
+    assert len(tools) == 0, "Tools must not be empty"
 
     handler = registry.get_tool("anything")
-    assert handler is None
+    assert handler is None, "handler is not valid"
 
 
 def test_tool_naming_conventions():
@@ -273,7 +273,7 @@ def test_tool_naming_conventions():
     registered_names = [t["name"] for t in tools]
 
     for name in names:
-        assert name in registered_names
+        assert name in registered_names, "Condition must be true"
 
 
 def test_tool_execution_context():
@@ -289,8 +289,8 @@ def test_tool_execution_context():
 
     result = registry.get_tool("ctx_tool")(ctx=context)
 
-    assert result["context"]["user"] == "test_user"
-    assert result["context"]["session"] == "12345"
+    assert result["context"]["user"] == "test_user", "Result must not be empty"
+    assert result["context"]["session"] == "12345", "Result must not be empty"
 
 
 def test_bulk_tool_registration():
@@ -309,4 +309,4 @@ def test_bulk_tool_registration():
         registry.register_tool(name, handler, metadata=metadata)
 
     tools = registry.list_tools()
-    assert len(tools) == 5
+    assert len(tools) == 5, "Tools must not be empty"

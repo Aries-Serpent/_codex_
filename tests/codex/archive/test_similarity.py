@@ -22,7 +22,7 @@ class TestTokens:
 
         result = _tokens("")
 
-        assert result == []
+        assert result == [], "Result must not be empty"
 
     def test_punctuation_split(self):
         """Test punctuation splits tokens."""
@@ -38,9 +38,9 @@ class TestTokens:
 
         result = _tokens("def func(x):")
 
-        assert "def" in result
-        assert "func" in result
-        assert "x" in result
+        assert "def" in result, "Result must not be empty"
+        assert "func" in result, "Result must not be empty"
+        assert "x" in result, "Result must not be empty"
 
 
 class TestShingles:
@@ -53,8 +53,8 @@ class TestShingles:
         tokens = ["a", "b", "c", "d", "e"]
         result = _shingles(tokens, k=3)
 
-        assert len(result) == 3  # 5-3+1 = 3 shingles
-        assert "a b c" in result
+        assert len(result) == 3, "Result must not be empty"
+        assert "a b c" in result, "Result must not be empty"
 
     def test_shingles_short_input(self):
         """Test shingles with short input."""
@@ -64,7 +64,7 @@ class TestShingles:
         result = _shingles(tokens, k=5)
 
         # Shorter than k, returns single shingle of all tokens
-        assert "a b" in result
+        assert "a b" in result, "Result must not be empty"
 
     def test_shingles_empty(self):
         """Test shingles with empty input."""
@@ -72,7 +72,7 @@ class TestShingles:
 
         result = _shingles([], k=5)
 
-        assert result == set()
+        assert result == set(), "Result must not be empty"
 
 
 class TestJaccard:
@@ -87,7 +87,7 @@ class TestJaccard:
 
         result = jaccard(a, b)
 
-        assert result == 1.0
+        assert result == 1.0, "Result must not be empty"
 
     def test_disjoint_sets(self):
         """Test jaccard of disjoint sets."""
@@ -98,7 +98,7 @@ class TestJaccard:
 
         result = jaccard(a, b)
 
-        assert result == 0.0
+        assert result == 0.0, "Result must not be empty"
 
     def test_partial_overlap(self):
         """Test jaccard with partial overlap."""
@@ -112,7 +112,7 @@ class TestJaccard:
         # Jaccard = 2/4 = 0.5
         result = jaccard(a, b)
 
-        assert result == 0.5
+        assert result == 0.5, "Result must not be empty"
 
     def test_empty_sets(self):
         """Test jaccard with empty sets."""
@@ -133,8 +133,8 @@ class TestPyAstHash:
         code = "def foo(): pass"
         result = py_ast_hash(code)
 
-        assert result != ""
-        assert len(result) == 64  # SHA-256 hex
+        assert result != "", "Result must not be empty"
+        assert len(result) == 64, "Result must not be empty"
 
     def test_invalid_python(self):
         """Test hashing invalid Python code."""
@@ -143,7 +143,7 @@ class TestPyAstHash:
         code = "def foo(: invalid"
         result = py_ast_hash(code)
 
-        assert result == ""
+        assert result == "", "Result must not be empty"
 
     def test_deterministic(self):
         """Test hashing is deterministic."""
@@ -154,7 +154,7 @@ class TestPyAstHash:
         result1 = py_ast_hash(code)
         result2 = py_ast_hash(code)
 
-        assert result1 == result2
+        assert result1 == result2, "Result must not be empty"
 
 
 class TestSimhash64:
@@ -168,7 +168,7 @@ class TestSimhash64:
         result = simhash64(tokens)
 
         assert isinstance(result, int)
-        assert result >= 0
+        assert result >= 0, "result must be greater than zero"
 
     def test_deterministic(self):
         """Test simhash is deterministic."""
@@ -179,7 +179,7 @@ class TestSimhash64:
         result1 = simhash64(tokens)
         result2 = simhash64(tokens)
 
-        assert result1 == result2
+        assert result1 == result2, "Result must not be empty"
 
     def test_empty_tokens(self):
         """Test simhash with empty tokens."""
@@ -198,5 +198,5 @@ class TestModuleLevel:
         """Test logger is configured."""
         from codex.archive.similarity import logger
 
-        assert logger is not None
-        assert logger.name == "codex.archive.similarity"
+        assert logger is not None, "logger must be initialized"
+        assert logger.name == "codex.archive.similarity", "name is not valid"

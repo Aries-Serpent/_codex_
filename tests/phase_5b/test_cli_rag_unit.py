@@ -36,12 +36,12 @@ class TestFormatBytes:
     def test_format_bytes_zero(self):
         """Test formatting 0 bytes."""
         result = _format_bytes(0)
-        assert result == "0.00 B"
+        assert result == "0.00 B", "Result must not be empty"
 
     def test_format_bytes_single_byte(self):
         """Test formatting 1 byte."""
         result = _format_bytes(1)
-        assert result == "1.00 B"
+        assert result == "1.00 B", "Result must not be empty"
 
     @pytest.mark.parametrize(
         "size,expected",
@@ -59,7 +59,7 @@ class TestFormatBytes:
     def test_format_bytes_boundaries(self, size, expected):
         """Test byte formatting at unit boundaries."""
         result = _format_bytes(size)
-        assert result == expected
+        assert result == expected, "Result must not be empty"
 
     @pytest.mark.parametrize(
         "size",
@@ -72,7 +72,7 @@ class TestFormatBytes:
     def test_format_bytes_various_sizes(self, size):
         """Test formatting various sizes."""
         result = _format_bytes(size)
-        assert " " in result
+        assert " " in result, "Result must not be empty"
         assert any(unit in result for unit in ["B", "KB", "MB", "GB", "TB"])
 
 
@@ -89,7 +89,7 @@ class TestValidateFiles:
         pattern = str(tmp_path / "*.nonexistent")
         with pytest.raises(typer.BadParameter) as exc_info:
             _validate_files([pattern])
-        assert "No valid files found" in str(exc_info.value)
+        assert "No valid files found" in str(exc_info.value), "Value must be initialized"
 
     def test_validate_files_single_file(self, tmp_path):
         """Test validation with single file."""
@@ -97,8 +97,8 @@ class TestValidateFiles:
         test_file.write_text("test")
 
         result = _validate_files([str(test_file)])
-        assert len(result) == 1
-        assert result[0].name == "test.txt"
+        assert len(result) == 1, "Result must not be empty"
+        assert result[0].name == "test.txt", "Result must not be empty"
 
     def test_validate_files_multiple_files(self, tmp_path):
         """Test validation with multiple files."""
@@ -108,7 +108,7 @@ class TestValidateFiles:
         file2.write_text("# file 2")
 
         result = _validate_files([str(file1), str(file2)])
-        assert len(result) == 2
+        assert len(result) == 2, "Result must not be empty"
         assert all(isinstance(p, Path) for p in result)
 
     def test_validate_files_glob_pattern(self, tmp_path):
@@ -119,8 +119,8 @@ class TestValidateFiles:
 
         pattern = str(tmp_path / "*.md")
         result = _validate_files([pattern])
-        assert len(result) == 2
-        assert all(p.name.endswith(".md") for p in result)
+        assert len(result) == 2, "Result must not be empty"
+        assert all(p.name.endswith(".md") for p in result), "Result must not be empty"
 
     def test_validate_files_recursive_glob(self, tmp_path):
         """Test validation with recursive glob pattern."""
@@ -131,8 +131,8 @@ class TestValidateFiles:
 
         pattern = str(tmp_path / "**/*.py")
         result = _validate_files([pattern])
-        assert len(result) == 2
-        assert all(p.name.endswith(".py") for p in result)
+        assert len(result) == 2, "Result must not be empty"
+        assert all(p.name.endswith(".py") for p in result), "Result must not be empty"
 
     def test_validate_files_mixed_patterns(self, tmp_path):
         """Test validation with mixed file patterns."""
@@ -141,9 +141,9 @@ class TestValidateFiles:
         (tmp_path / "file3.txt").write_text("text")
 
         result = _validate_files([str(tmp_path / "*.py"), str(tmp_path / "*.md")])
-        assert len(result) == 2
-        assert any(p.name == "file1.py" for p in result)
-        assert any(p.name == "file2.md" for p in result)
+        assert len(result) == 2, "Result must not be empty"
+        assert any(p.name == "file1.py" for p in result), "Result must not be empty"
+        assert any(p.name == "file2.md" for p in result), "Result must not be empty"
 
 
 class TestListIndices:
@@ -242,7 +242,7 @@ class TestDeleteIndex:
                 index_dir=str(tmp_path),
                 confirm=True,
             )
-        assert not index_path.exists()
+        assert not index_path.exists(), "Condition must be true"
 
     def test_delete_index_without_confirmation_denied(self, tmp_path):
         """Test deleting index with confirmation denied."""
@@ -259,7 +259,7 @@ class TestDeleteIndex:
                     index_dir=str(tmp_path),
                     confirm=False,
                 )
-        assert index_path.exists()
+        assert index_path.exists(), "Condition must be true"
 
     def test_delete_index_without_confirmation_approved(self, tmp_path):
         """Test deleting index with confirmation approved."""
@@ -276,7 +276,7 @@ class TestDeleteIndex:
                     index_dir=str(tmp_path),
                     confirm=False,
                 )
-        assert not index_path.exists()
+        assert not index_path.exists(), "Condition must be true"
 
     def test_delete_index_custom_tenant(self, tmp_path):
         """Test deleting index for custom tenant."""
@@ -291,7 +291,7 @@ class TestDeleteIndex:
                 index_dir=str(tmp_path),
                 confirm=True,
             )
-        assert not index_path.exists()
+        assert not index_path.exists(), "Condition must be true"
 
 
 class TestMergeIndices:
@@ -554,10 +554,10 @@ class TestAppIntegration:
 
     def test_app_created(self):
         """Test that the Typer app is created."""
-        assert app is not None
+        assert app is not None, "app must be initialized"
         assert hasattr(app, "command")
 
     def test_app_has_commands(self):
         """Test that app has expected commands."""
         # Check if commands are registered
-        assert callable(app)
+        assert callable(app), "Condition must be true"

@@ -79,36 +79,36 @@ class TestSarifMerge:
 
     def test_sarif_schema_validation(self, sample_sarif: dict[str, Any]) -> None:
         """Test SARIF schema structure is valid."""
-        assert "$schema" in sample_sarif
-        assert sample_sarif["version"] == "2.1.0"
-        assert "runs" in sample_sarif
+        assert "$schema" in sample_sarif, "Condition must be true"
+        assert sample_sarif["version"] == "2.1.0", "Condition must be true"
+        assert "runs" in sample_sarif, "Condition must be true"
         assert isinstance(sample_sarif["runs"], list)
 
     def test_sarif_runs_structure(self, sample_sarif: dict[str, Any]) -> None:
         """Test SARIF runs have required fields."""
         run = sample_sarif["runs"][0]
-        assert "tool" in run
-        assert "driver" in run["tool"]
-        assert "name" in run["tool"]["driver"]
-        assert "results" in run
+        assert "tool" in run, "Condition must be true"
+        assert "driver" in run["tool"], "Condition must be true"
+        assert "name" in run["tool"]["driver"], "Condition must be true"
+        assert "results" in run, "Result must not be empty"
 
     def test_sarif_results_structure(self, sample_sarif: dict[str, Any]) -> None:
         """Test SARIF results have required fields."""
         result = sample_sarif["runs"][0]["results"][0]
-        assert "ruleId" in result
-        assert "message" in result
-        assert "locations" in result
+        assert "ruleId" in result, "Result must not be empty"
+        assert "message" in result, "Result must not be empty"
+        assert "locations" in result, "Result must not be empty"
 
     def test_multiple_sarif_files_discoverable(self, temp_sarif_dir: Path) -> None:
         """Test that multiple SARIF files can be discovered."""
         sarif_files = list(temp_sarif_dir.glob("*.sarif"))
-        assert len(sarif_files) == 3
+        assert len(sarif_files) == 3, "Sarif_files must not be empty"
 
         for sarif_file in sarif_files:
-            assert sarif_file.suffix == ".sarif"
+            assert sarif_file.suffix == ".sarif", "suffix is not valid"
             with open(sarif_file) as f:
                 data = json.load(f)
-            assert "runs" in data
+            assert "runs" in data, "Data must not be empty"
 
     def test_sarif_merge_preserves_runs(self, temp_sarif_dir: Path) -> None:
         """Test that merging preserves all runs."""
@@ -120,23 +120,23 @@ class TestSarifMerge:
             all_runs.extend(data.get("runs", []))
 
         # Should have 3 runs from 3 files
-        assert len(all_runs) == 3
+        assert len(all_runs) == 3, "All_runs must not be empty"
 
         # Each run should have chunk property
         for run in all_runs:
-            assert "properties" in run
-            assert "chunk" in run["properties"]
+            assert "properties" in run, "Condition must be true"
+            assert "chunk" in run["properties"], "Condition must be true"
 
     def test_sarif_result_location_parsing(self, sample_sarif: dict[str, Any]) -> None:
         """Test that result locations are correctly structured."""
         result = sample_sarif["runs"][0]["results"][0]
         location = result["locations"][0]
 
-        assert "physicalLocation" in location
-        assert "artifactLocation" in location["physicalLocation"]
-        assert "uri" in location["physicalLocation"]["artifactLocation"]
-        assert "region" in location["physicalLocation"]
-        assert "startLine" in location["physicalLocation"]["region"]
+        assert "physicalLocation" in location, "Condition must be true"
+        assert "artifactLocation" in location["physicalLocation"], "Condition must be true"
+        assert "uri" in location["physicalLocation"]["artifactLocation"], "Condition must be true"
+        assert "region" in location["physicalLocation"], "Condition must be true"
+        assert "startLine" in location["physicalLocation"]["region"], "Condition must be true"
 
 
 # =============================================================================
@@ -151,7 +151,7 @@ class TestChunkSize:
 
     def test_chunk_size_limit_constant(self) -> None:
         """Test chunk size limit is defined correctly."""
-        assert self.CHUNK_SIZE_LIMIT == 10_000_000
+        assert self.CHUNK_SIZE_LIMIT == 10_000_000, "CHUNK_SIZE_LIMIT is not valid"
 
     def test_chunk_directories_exist(self) -> None:
         """Test that chunk directories exist in the repository."""
@@ -172,9 +172,9 @@ class TestChunkSize:
         ]
 
         for chunk in chunks:
-            assert "name" in chunk
-            assert "path" in chunk
-            assert chunk["path"].endswith("/")
+            assert "name" in chunk, "Condition must be true"
+            assert "path" in chunk, "Condition must be true"
+            assert chunk["path"].endswith("/"), "Condition must be true"
 
     def test_size_calculation_method(self) -> None:
         """Test size calculation for directories."""
@@ -187,19 +187,19 @@ class TestChunkSize:
             test_file.write_text(test_content)
 
             # Verify size
-            assert test_file.stat().st_size == 1000
+            assert test_file.stat().st_size == 1000, "st_size is not valid"
 
     def test_chunk_below_limit(self) -> None:
         """Test that individual files are below chunk limit."""
         # Any single file should be well under 10MB
         test_file_size = 100_000  # 100KB
-        assert test_file_size < self.CHUNK_SIZE_LIMIT
+        assert test_file_size < self.CHUNK_SIZE_LIMIT, "test_file_size is not valid"
 
     def test_warning_threshold(self) -> None:
         """Test warning threshold is set correctly."""
         warning_threshold = 8_000_000  # 8MB
-        assert warning_threshold < self.CHUNK_SIZE_LIMIT
-        assert warning_threshold == 8_000_000
+        assert warning_threshold < self.CHUNK_SIZE_LIMIT, "warning_threshold is not valid"
+        assert warning_threshold == 8_000_000, "warning_threshold is not valid"
 
 
 # =============================================================================
@@ -214,14 +214,14 @@ class TestCodeQLConfig:
         """Test that CodeQL config file exists."""
         repo_root = Path(__file__).parents[2]
         config_path = repo_root / ".codeql" / "codeql-config.yml"
-        assert config_path.exists() or True  # Allow for test isolation
+        assert config_path.exists() or True, "Condition must be true"
 
     def test_config_paths_defined(self) -> None:
         """Test that paths are properly defined in config."""
         paths_to_analyze = ["src/", "agents/", "training/", "scripts/"]
 
         for path in paths_to_analyze:
-            assert path.endswith("/")
+            assert path.endswith("/"), "Condition must be true"
             assert isinstance(path, str)
 
     def test_config_paths_ignore_defined(self) -> None:
@@ -238,19 +238,19 @@ class TestCodeQLConfig:
             assert isinstance(pattern, str)
             # Verify glob patterns are valid
             if "**" in pattern:
-                assert pattern.count("**") >= 1
+                assert pattern.count("**") >= 1, "Value must be greater than zero"
 
     def test_query_suites_configured(self) -> None:
         """Test that security query suites are configured."""
         query_suites = ["security-extended", "security-and-quality"]
 
         for suite in query_suites:
-            assert "security" in suite
+            assert "security" in suite, "Condition must be true"
 
     def test_buildless_mode_for_python(self) -> None:
         """Test that Python uses buildless mode."""
         database_config = {"python": {"buildless": True}}
-        assert database_config["python"]["buildless"] is True
+        assert database_config["python"]["buildless"] is True, "Data must not be empty"
 
 
 # =============================================================================
@@ -265,7 +265,7 @@ class TestCodeQLWorkflow:
         """Test that workflow file exists."""
         repo_root = Path(__file__).parents[2]
         workflow_path = repo_root / ".github" / "workflows" / "codeql-chunked.yml"
-        assert workflow_path.exists() or True  # Allow for test isolation
+        assert workflow_path.exists() or True, "w is not valid"
 
     def test_workflow_triggers_defined(self) -> None:
         """Test that workflow triggers are properly defined."""
@@ -281,20 +281,20 @@ class TestCodeQLWorkflow:
             "chunks": ["core", "ml", "agents", "training", "scripts"],
         }
 
-        assert matrix_config["fail-fast"] is False
-        assert len(matrix_config["chunks"]) >= 5
+        assert matrix_config["fail-fast"] is False, "Condition must be true"
+        assert len(matrix_config["chunks"]) >= 5, "Collection must not be empty"
 
     def test_artifact_retention_days(self) -> None:
         """Test artifact retention is configured."""
         retention_days = 7
-        assert retention_days > 0
-        assert retention_days <= 90  # GitHub max
+        assert retention_days > 0, "retention_days must be greater than zero"
+        assert retention_days <= 90, "retention_days is not valid"
 
     def test_timeout_configured(self) -> None:
         """Test job timeout is configured."""
         timeout_minutes = 30
-        assert timeout_minutes > 0
-        assert timeout_minutes <= 360  # 6 hours max
+        assert timeout_minutes > 0, "timeout_minutes must be greater than zero"
+        assert timeout_minutes <= 360, "timeout_minutes is not valid"
 
 
 # =============================================================================
@@ -309,35 +309,35 @@ class TestSarifValidation:
         """Test validation of valid SARIF structure."""
         valid_sarif = {"version": "2.1.0", "runs": []}
 
-        assert "version" in valid_sarif
-        assert "runs" in valid_sarif
+        assert "version" in valid_sarif, "Condition must be true"
+        assert "runs" in valid_sarif, "Condition must be true"
         assert isinstance(valid_sarif["runs"], list)
 
     def test_invalid_sarif_missing_version(self) -> None:
         """Test detection of missing version."""
         invalid_sarif = {"runs": []}
 
-        assert "version" not in invalid_sarif
+        assert "version" not in invalid_sarif, "Condition must be true"
 
     def test_invalid_sarif_missing_runs(self) -> None:
         """Test detection of missing runs."""
         invalid_sarif = {"version": "2.1.0"}
 
-        assert "runs" not in invalid_sarif
+        assert "runs" not in invalid_sarif, "Condition must be true"
 
     def test_sarif_version_format(self) -> None:
         """Test SARIF version format."""
         version = "2.1.0"
         parts = version.split(".")
 
-        assert len(parts) == 3
-        assert all(part.isdigit() for part in parts)
+        assert len(parts) == 3, "Parts must not be empty"
+        assert all(part.isdigit() for part in parts), "Condition must be true"
 
     def test_empty_runs_is_valid(self) -> None:
         """Test that empty runs array is valid."""
         sarif = {"version": "2.1.0", "runs": []}
 
-        assert len(sarif["runs"]) == 0
+        assert len(sarif["runs"]) == 0, "Collection must not be empty"
         # Empty runs is valid - no findings
 
 
@@ -363,7 +363,7 @@ class TestResultDeduplication:
             key = (result["ruleId"], str(result["locations"]))
             unique_keys.add(key)
 
-        assert len(unique_keys) == 2  # Two unique results
+        assert len(unique_keys) == 2, "Unique_keys must not be empty"
 
     def test_results_from_different_files_not_duplicates(self) -> None:
         """Test that same rule in different files are not duplicates."""
@@ -377,7 +377,7 @@ class TestResultDeduplication:
             key = (result["ruleId"], str(result["locations"]))
             unique_keys.add(key)
 
-        assert len(unique_keys) == 2
+        assert len(unique_keys) == 2, "Unique_keys must not be empty"
 
 
 # =============================================================================
@@ -409,7 +409,7 @@ class TestErrorHandling:
         """Test handling of empty input directory."""
         with tempfile.TemporaryDirectory() as tmpdir:
             sarif_files = list(Path(tmpdir).glob("*.sarif"))
-            assert len(sarif_files) == 0
+            assert len(sarif_files) == 0, "Sarif_files must not be empty"
 
     def test_permission_error_simulation(self) -> None:
         """Test that permission errors are properly typed."""
@@ -429,7 +429,7 @@ class TestCodeQLIntegration:
         """Test the full SARIF merge workflow."""
         # Discover files
         sarif_files = list(temp_sarif_dir.glob("*.sarif"))
-        assert len(sarif_files) > 0
+        assert len(sarif_files) > 0, "Sarif_files must not be empty"
 
         # Load and merge
         merged_runs = []
@@ -450,15 +450,15 @@ class TestCodeQLIntegration:
         }
 
         # Verify merged structure
-        assert merged["version"] == "2.1.0"
-        assert len(merged["runs"]) == 3
-        assert "properties" in merged
+        assert merged["version"] == "2.1.0", "Condition must be true"
+        assert len(merged["runs"]) == 3, "Collection must not be empty"
+        assert "properties" in merged, "Condition must be true"
 
     def test_chunk_to_sarif_mapping(self) -> None:
         """Test that chunks map correctly to SARIF outputs."""
         chunk_names = ["core", "ml", "agents", "training", "scripts"]
         expected_sarif_files = [f"sarif-{name}.sarif" for name in chunk_names]
 
-        assert len(expected_sarif_files) == len(chunk_names)
+        assert len(expected_sarif_files) == len(chunk_names), "Expected_sarif_files must not be empty"
         for name, sarif in zip(chunk_names, expected_sarif_files):
-            assert name in sarif
+            assert name in sarif, "Condition must be true"

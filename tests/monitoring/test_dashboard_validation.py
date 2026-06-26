@@ -115,19 +115,19 @@ class TestDashboardConfiguration:
         """Test dashboard has all required fields."""
         required_fields = ["id", "title", "version"]
         for field in required_fields:
-            assert field in dashboard_config
+            assert field in dashboard_config, "Condition must be true"
 
     def test_dashboard_id_format(self, dashboard_config: dict[str, Any]):
         """Test dashboard ID format is valid."""
         dashboard_id = dashboard_config["id"]
         assert isinstance(dashboard_id, str)
-        assert len(dashboard_id) > 0
+        assert len(dashboard_id) > 0, "Dashboard_id must not be empty"
 
     def test_dashboard_version_numeric(self, dashboard_config: dict[str, Any]):
         """Test dashboard version is numeric."""
         version = dashboard_config["version"]
         assert isinstance(version, int)
-        assert version > 0
+        assert version > 0, "version must be greater than zero"
 
     def test_refresh_interval_format(self, dashboard_config: dict[str, Any]):
         """Test refresh interval format parsing."""
@@ -137,20 +137,20 @@ class TestDashboardConfiguration:
         value = int(interval[:-1])
         unit = interval[-1]
 
-        assert value > 0
+        assert value > 0, "value must be greater than zero"
         assert unit in ["s", "m", "h"]
 
     def test_time_range_configuration(self, dashboard_config: dict[str, Any]):
         """Test time range configuration."""
         time_range = dashboard_config["time_range"]
-        assert "from" in time_range
-        assert "to" in time_range
+        assert "from" in time_range, "Condition must be true"
+        assert "to" in time_range, "Condition must be true"
 
     def test_dashboard_tags_list(self, dashboard_config: dict[str, Any]):
         """Test dashboard tags is a list."""
         tags = dashboard_config["tags"]
         assert isinstance(tags, list)
-        assert len(tags) > 0
+        assert len(tags) > 0, "Tags must not be empty"
 
     def test_dashboard_editable_flag(self, dashboard_config: dict[str, Any]):
         """Test dashboard editable flag."""
@@ -170,7 +170,7 @@ class TestWidgetConfiguration:
         required_fields = ["id", "type", "title", "position"]
         for widget in widget_configs:
             for field in required_fields:
-                assert field in widget
+                assert field in widget, "Condition must be true"
 
     def test_widget_types_valid(self, widget_configs: list[dict[str, Any]]):
         """Test widget types are valid."""
@@ -184,49 +184,49 @@ class TestWidgetConfiguration:
             "logs",
         ]
         for widget in widget_configs:
-            assert widget["type"] in valid_types
+            assert widget["type"] in valid_types, "Condition must be true"
 
     def test_widget_position_coordinates(self, widget_configs: list[dict[str, Any]]):
         """Test widget position has all coordinates."""
         for widget in widget_configs:
             pos = widget["position"]
-            assert "x" in pos
-            assert "y" in pos
-            assert "w" in pos
-            assert "h" in pos
+            assert "x" in pos, "Condition must be true"
+            assert "y" in pos, "Condition must be true"
+            assert "w" in pos, "Condition must be true"
+            assert "h" in pos, "Condition must be true"
 
     def test_widget_position_non_negative(self, widget_configs: list[dict[str, Any]]):
         """Test widget position values are non-negative."""
         for widget in widget_configs:
             pos = widget["position"]
-            assert pos["x"] >= 0
-            assert pos["y"] >= 0
-            assert pos["w"] > 0
-            assert pos["h"] > 0
+            assert pos["x"] >= 0, "Value must be greater than zero"
+            assert pos["y"] >= 0, "Value must be greater than zero"
+            assert pos["w"] > 0, "Value must be greater than zero"
+            assert pos["h"] > 0, "Value must be greater than zero"
 
     def test_widget_no_overlapping(self, widget_configs: list[dict[str, Any]]):
         """Test widgets don't overlap (simplified check)."""
         # For now, just verify each widget has unique ID
         ids = [w["id"] for w in widget_configs]
-        assert len(ids) == len(set(ids))
+        assert len(ids) == len(set(ids)), "Ids must not be empty"
 
     def test_widget_datasource_specified(self, widget_configs: list[dict[str, Any]]):
         """Test widgets have datasource specified."""
         for widget in widget_configs:
-            assert "datasource" in widget
-            assert len(widget["datasource"]) > 0
+            assert "datasource" in widget, "Data must not be empty"
+            assert len(widget["datasource"]) > 0, "Collection must not be empty"
 
     def test_widget_query_specified(self, widget_configs: list[dict[str, Any]]):
         """Test widgets have query specified."""
         for widget in widget_configs:
-            assert "query" in widget
-            assert len(widget["query"]) > 0
+            assert "query" in widget, "Condition must be true"
+            assert len(widget["query"]) > 0, "Collection must not be empty"
 
     def test_gauge_widget_thresholds(self, widget_configs: list[dict[str, Any]]):
         """Test gauge widget has thresholds configured."""
         gauge = next(w for w in widget_configs if w["type"] == "gauge")
-        assert "thresholds" in gauge
-        assert len(gauge["thresholds"]) > 0
+        assert "thresholds" in gauge, "Condition must be true"
+        assert len(gauge["thresholds"]) > 0, "Collection must not be empty"
 
 
 # ============================================================================
@@ -242,29 +242,29 @@ class TestDataSources:
         required_fields = ["name", "type", "url"]
         for ds in data_sources:
             for field in required_fields:
-                assert field in ds
+                assert field in ds, "Condition must be true"
 
     def test_datasource_url_format(self, data_sources: list[dict[str, Any]]):
         """Test data source URL format."""
         for ds in data_sources:
             url = ds["url"]
-            assert url.startswith("http://") or url.startswith("https://")
+            assert url.startswith("http://") or url.startswith("https://"), "Condition must be true"
 
     def test_datasource_type_valid(self, data_sources: list[dict[str, Any]]):
         """Test data source types are valid."""
         valid_types = ["prometheus", "influxdb", "elasticsearch", "mysql", "postgres"]
         for ds in data_sources:
-            assert ds["type"] in valid_types
+            assert ds["type"] in valid_types, "Condition must be true"
 
     def test_default_datasource_exists(self, data_sources: list[dict[str, Any]]):
         """Test at least one default data source exists."""
         default_count = sum(1 for ds in data_sources if ds.get("is_default", False))
-        assert default_count >= 1
+        assert default_count >= 1, "default_count must be positive"
 
     def test_datasource_names_unique(self, data_sources: list[dict[str, Any]]):
         """Test data source names are unique."""
         names = [ds["name"] for ds in data_sources]
-        assert len(names) == len(set(names))
+        assert len(names) == len(set(names)), "Names must not be empty"
 
 
 # ============================================================================
@@ -286,7 +286,7 @@ class TestQueryValidation:
 
         for query in valid_queries:
             # Basic validation - non-empty string
-            assert len(query) > 0
+            assert len(query) > 0, "Query must not be empty"
             assert isinstance(query, str)
 
     def test_query_time_range_specified(self):
@@ -294,7 +294,7 @@ class TestQueryValidation:
         query = "rate(requests_total[5m])"
         # Check for time range specification
         has_time_range = "[" in query and "]" in query
-        assert has_time_range is True
+        assert has_time_range is True, "has_time_range is not valid"
 
     def test_query_aggregation_functions(self):
         """Test query aggregation functions."""
@@ -302,13 +302,13 @@ class TestQueryValidation:
         query = "sum(cpu_usage) by (host)"
 
         has_aggregation = any(agg in query for agg in aggregations)
-        assert has_aggregation is True
+        assert has_aggregation is True, "has_aggregation is not valid"
 
     def test_query_label_filtering(self):
         """Test query with label filtering."""
         query = 'http_requests_total{status="200", method="GET"}'
         has_label_filter = "{" in query and "}" in query
-        assert has_label_filter is True
+        assert has_label_filter is True, "has_label_filter is not valid"
 
 
 # ============================================================================
@@ -330,8 +330,8 @@ class TestVisualization:
             },
         }
 
-        assert graph_config["type"] == "graph"
-        assert "options" in graph_config
+        assert graph_config["type"] == "graph", "Condition must be true"
+        assert "options" in graph_config, "Condition must be true"
 
     def test_gauge_value_range(self):
         """Test gauge widget value range configuration."""
@@ -342,7 +342,7 @@ class TestVisualization:
             "value": 75,
         }
 
-        assert gauge_config["min"] <= gauge_config["value"] <= gauge_config["max"]
+        assert gauge_config["min"] <= gauge_config["value"] <= gauge_config["max"], "Value must be initialized"
 
     def test_stat_value_formatting(self):
         """Test stat widget value formatting."""
@@ -363,7 +363,7 @@ class TestVisualization:
             else:
                 formatted = str(value)
 
-        assert formatted == "1.2M"
+        assert formatted == "1.2M", "formatted is not valid"
 
     def test_table_column_configuration(self):
         """Test table widget column configuration."""
@@ -376,10 +376,10 @@ class TestVisualization:
             ],
         }
 
-        assert len(table_config["columns"]) == 3
+        assert len(table_config["columns"]) == 3, "Collection must not be empty"
         for col in table_config["columns"]:
-            assert "name" in col
-            assert "field" in col
+            assert "name" in col, "Condition must be true"
+            assert "field" in col, "Condition must be true"
 
 
 # ============================================================================
@@ -395,21 +395,21 @@ class TestDashboardPermissions:
         valid_levels = ["view", "edit", "admin"]
         user_permission = "edit"
 
-        assert user_permission in valid_levels
+        assert user_permission in valid_levels, "Condition must be true"
 
     def test_viewer_cannot_edit(self):
         """Test viewer permission cannot edit."""
         user_permission = "view"
         can_edit = user_permission in ["edit", "admin"]
 
-        assert can_edit is False
+        assert can_edit is False, "can_edit is not valid"
 
     def test_editor_can_edit(self):
         """Test editor permission can edit."""
         user_permission = "edit"
         can_edit = user_permission in ["edit", "admin"]
 
-        assert can_edit is True
+        assert can_edit is True, "can_edit is not valid"
 
     def test_admin_has_full_access(self):
         """Test admin has full access."""
@@ -419,9 +419,9 @@ class TestDashboardPermissions:
         can_edit = user_permission in ["edit", "admin"]
         can_admin = user_permission == "admin"
 
-        assert can_view is True
-        assert can_edit is True
-        assert can_admin is True
+        assert can_view is True, "can_view is not valid"
+        assert can_edit is True, "can_edit is not valid"
+        assert can_admin is True, "can_admin is not valid"
 
     def test_permission_inheritance(self):
         """Test permission inheritance from folder."""
@@ -429,4 +429,4 @@ class TestDashboardPermissions:
         dashboard_permission = None  # Not set
 
         effective_permission = dashboard_permission or folder_permission
-        assert effective_permission == "edit"
+        assert effective_permission == "edit", "effective_permission is not valid"

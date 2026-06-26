@@ -19,7 +19,7 @@ def test_bundle_smoke(tmp_path: Path) -> None:
     f = tmp_path / "a.txt"
     f.write_text("hi")
     out = bundle_run.bundle_run([str(f)], run_id="r1")
-    assert out.exists()
+    assert out.exists(), "Condition must be true"
 
 
 def test_integrity_auditor(tmp_path: Path) -> None:
@@ -47,4 +47,4 @@ def test_integrity_auditor(tmp_path: Path) -> None:
         cwd=tmp_path,
         env=env,
     )
-    assert res.returncode == 1
+    assert res.returncode == 1, "returncode is not valid"

@@ -109,8 +109,8 @@ class TestComplianceChainPrompting:
         d1 = assessor.assess({"risk": "low"}, session_id=sid)
         d2 = assessor.assess({"risk": "medium"}, session_id=sid)
 
-        assert d1.session_id == sid
-        assert d2.session_id == sid
+        assert d1.session_id == sid, "session_id is not valid"
+        assert d2.session_id == sid, "session_id is not valid"
 
     def test_session_history_accumulates(self):
         """Each decision in a chain is recorded in session history."""
@@ -122,7 +122,7 @@ class TestComplianceChainPrompting:
         assessor.assess({"risk": "critical"}, session_id=sid)
 
         history = assessor.get_session_history(sid)
-        assert len(history) == 3
+        assert len(history) == 3, "History must not be empty"
 
     def test_prior_decision_context_influences_escalation(self):
         """A chain step that receives a prior 'REJECT' decision should
@@ -131,7 +131,7 @@ class TestComplianceChainPrompting:
         sid = "session-esc-789"
 
         d1 = assessor.assess({"risk": "critical"}, session_id=sid)
-        assert d1.decision == "REJECT"
+        assert d1.decision == "REJECT", "decision is not valid"
 
         # Follow-up with prior context attached
         d2 = assessor.assess(
@@ -141,7 +141,7 @@ class TestComplianceChainPrompting:
         # A medium risk with a prior reject should not trivially become APPROVE.
         # Our stub: only "critical" → REJECT; so this checks session context
         # is threaded (d2 carries sid from d1).
-        assert d2.session_id == sid
+        assert d2.session_id == sid, "session_id is not valid"
 
     def test_independent_sessions_do_not_share_history(self):
         """Decisions in different sessions must not bleed into each other."""
@@ -156,8 +156,8 @@ class TestComplianceChainPrompting:
         h1 = assessor.get_session_history(s1)
         h2 = assessor.get_session_history(s2)
 
-        assert h1 == ["REJECT"]
-        assert h2 == ["APPROVE"]
+        assert h1 == ["REJECT"], "h1 is not valid"
+        assert h2 == ["APPROVE"], "h2 is not valid"
 
     def test_deterministic_chain_given_same_seed(self):
         """Two chains with identical payloads and session IDs must produce
@@ -171,7 +171,7 @@ class TestComplianceChainPrompting:
         decisions_1 = [a1.assess(p, session_id=sid).decision for p in payloads]
         decisions_2 = [a2.assess(p, session_id=sid).decision for p in payloads]
 
-        assert decisions_1 == decisions_2
+        assert decisions_1 == decisions_2, "decisions_1 is not valid"
 
     @pytest.mark.skipif(not _REAL_IMPL, reason="real cognitive-brain stack not available")
     def test_real_assessor_chain_session_id_preserved(self):  # pragma: no cover
@@ -181,7 +181,7 @@ class TestComplianceChainPrompting:
 
         audit1 = _make_audit(risk="low", session_id=sid)
         result1 = assessor.assess_compliance(audit1)
-        assert result1 is not None
+        assert result1 is not None, "result1 must be initialized"
 
         audit2 = _make_audit(
             risk="medium",
@@ -191,7 +191,7 @@ class TestComplianceChainPrompting:
             ),
         )
         result2 = assessor.assess_compliance(audit2)
-        assert result2 is not None
+        assert result2 is not None, "result2 must be initialized"
 
 
 class TestBayesianEMChainIntegration:
@@ -216,7 +216,7 @@ class TestBayesianEMChainIntegration:
         assessor.update_cpds_em(corpus, learning_rate=0.5)
         posterior_approve = assessor._tables["compliance"].probs[()]["approve"]
 
-        assert (
+        assert (, "Condition must be true"
             posterior_approve < prior_approve
         ), "EM update should have shifted approve probability down given reject-heavy corpus"
 
@@ -258,7 +258,7 @@ class TestBayesianEMChainIntegration:
         original = dict(assessor._tables["decision"].probs[()])
         assessor.update_cpds_em([], learning_rate=0.5)
 
-        assert assessor._tables["decision"].probs[()] == original
+        assert assessor._tables["decision"].probs[()] == original, "assess is not valid"
 
     def test_em_update_with_parent_nodes(self):
         """EM update correctly handles CPDs with parent nodes."""

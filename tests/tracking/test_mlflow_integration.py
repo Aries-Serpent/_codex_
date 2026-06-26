@@ -75,9 +75,9 @@ class TestNdjsonWriter:
 
             # Verify first metric
             first_metric = json.loads(lines[0])
-            assert first_metric["step"] == 0
-            assert first_metric["metric"] == "loss"
-            assert abs(first_metric["value"] - 1.0) < 1e-6
+            assert first_metric["step"] == 0, "Condition must be true"
+            assert first_metric["metric"] == "loss", "Condition must be true"
+            assert abs(first_metric["value"] - 1.0) < 1e-6, "Value must be initialized"
 
 
 class TestMLflowWriter:
@@ -97,7 +97,7 @@ class TestMLflowWriter:
                 )
 
                 # Should initialize without error
-                assert writer is not None
+                assert writer is not None, "writer must be initialized"
 
                 writer.close()
             except (IOError, OSError) as e:
@@ -154,7 +154,7 @@ class TestCompositeWriter:
             composite.close()
 
             # Verify NDJSON file created
-            assert ndjson_path.exists()
+            assert ndjson_path.exists(), "Condition must be true"
 
     def test_composite_writer_handles_errors(self):
         """Verify composite writer handles individual writer errors"""
@@ -340,7 +340,7 @@ class TestNdjsonFallback:
 
             # Verify all metrics logged
             lines = path.read_text().strip().split("\n")
-            assert len(lines) >= 10
+            assert len(lines) >= 10, "Lines must not be empty"
 
     def test_ndjson_fallback_when_mlflow_disabled(self):
         """Verify NDJSON fallback works when MLflow is disabled"""
@@ -366,7 +366,7 @@ class TestNdjsonFallback:
 
             composite.close()
 
-            assert ndjson_path.exists()
+            assert ndjson_path.exists(), "Condition must be true"
 
 
 class TestOfflineFirstDesign:

@@ -34,8 +34,8 @@ def test_trend():
     env["TREND_SPARKLINE"] = "1"
     subprocess.run([sys.executable, "scripts/archive/trend_aggregate.py"], check=True, env=env)
     out = ART / "trend_scores.json"
-    assert out.exists()
+    assert out.exists(), "Condition must be true"
     data = json.loads(out.read_text())
     alpha = next(c for c in data["capabilities"] if c["id"] == "alpha")
-    assert alpha["delta"] > 0
-    assert "sparkline" in alpha
+    assert alpha["delta"] > 0, "Value must be greater than zero"
+    assert "sparkline" in alpha, "Condition must be true"

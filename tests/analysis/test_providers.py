@@ -14,9 +14,9 @@ def test_internal_repo_search(tmp_path: Path):
     sample.write_text("import os\n")
     search = InternalRepoSearch(tmp_path)
     outcome = search.search("import os")
-    assert outcome["status"] == "ok"
-    assert outcome["query"] == "import os"
-    assert any("sample.py" in r["where"] for r in outcome["results"])
+    assert outcome["status"] == "ok", "Condition must be true"
+    assert outcome["query"] == "import os", "Condition must be true"
+    assert any("sample.py" in r["where"] for r in outcome["results"]), "Result must not be empty"
 
 
 def test_external_web_search_disabled(monkeypatch):
@@ -31,6 +31,6 @@ def test_external_web_search_disabled(monkeypatch):
 
     provider = ExternalWebSearch(http_get=fail_if_called)
     outcome = provider.search("anything")
-    assert outcome["status"] == "disabled"
-    assert outcome["results"] == []
-    assert not called
+    assert outcome["status"] == "disabled", "Condition must be true"
+    assert outcome["results"] == [], "Result must not be empty"
+    assert not called, "Condition must be true"

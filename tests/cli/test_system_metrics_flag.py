@@ -56,7 +56,7 @@ def test_train_starts_system_metrics(monkeypatch, tmp_path: Path):
         ],
     )
 
-    assert result.exit_code == 0
-    assert calls.get("ran")
-    assert calls.get("logger_started")
-    assert calls.get("logger_stopped")
+    assert result.exit_code == 0, "Result must not be empty"
+    assert calls.get("ran"), "Condition must be true"
+    assert calls.get("logger_started"), "Condition must be true"
+    assert calls.get("logger_stopped"), "Condition must be true"

@@ -138,8 +138,8 @@ class TestPerformance:
                     (Path(tmpdir) / f"plan_{i:03d}.md").write_text(f"# Plan {i}")
 
                 result = list_plan_documents(base_dir=Path(tmpdir))
-                assert len(result) == 100
-                assert all(p.suffix == ".md" for p in result)
+                assert len(result) == 100, "Result must not be empty"
+                assert all(p.suffix == ".md" for p in result), "Result must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -158,7 +158,7 @@ class TestPerformance:
                 result = list_plan_documents(base_dir=Path(tmpdir))
                 # Should be sorted alphabetically
                 names = [p.name for p in result]
-                assert names == sorted(names)
+                assert names == sorted(names), "names is not valid"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -177,7 +177,7 @@ class TestSecurityChecks:
 
             # All paths should be absolute and within expected directory
             for path in result:
-                assert path.is_absolute()
+                assert path.is_absolute(), "Condition must be true"
         except ImportError:
             pytest.skip("Module not available")
 

@@ -36,7 +36,7 @@ class TestEvaluationError:
     def test_error_message(self) -> None:
         """Test error message is preserved."""
         error = EvaluationError("test error message")
-        assert str(error) == "test error message"
+        assert str(error) == "test error message", "Error should be raised or set"
 
     def test_raise_and_catch(self) -> None:
         """Test raising and catching the error."""
@@ -46,7 +46,7 @@ class TestEvaluationError:
 
         with pytest.raises(EvaluationError) as exc_info:
             _do_raise()
-        assert "evaluation failed" in str(exc_info.value)
+        assert "evaluation failed" in str(exc_info.value), "Value must be initialized"
 
 
 class TestNormaliseMetricsSink:
@@ -55,13 +55,13 @@ class TestNormaliseMetricsSink:
     def test_default_to_ndjson_for_empty_string(self) -> None:
         """Test empty string defaults to ndjson."""
         result = _normalise_metrics_sink("")
-        assert result == ["ndjson"]
+        assert result == ["ndjson"], "Result must not be empty"
 
     def test_single_sink_string(self) -> None:
         """Test single sink as string."""
-        assert _normalise_metrics_sink("csv") == ["csv"]
-        assert _normalise_metrics_sink("ndjson") == ["ndjson"]
-        assert _normalise_metrics_sink("none") == ["none"]
+        assert _normalise_metrics_sink("csv") == ["csv"], "_n is not valid"
+        assert _normalise_metrics_sink("ndjson") == ["ndjson"], "_n is not valid"
+        assert _normalise_metrics_sink("none") == ["none"], "_n is not valid"
 
     def test_comma_separated_sinks(self) -> None:
         """Test comma-separated sinks."""
@@ -92,23 +92,23 @@ class TestNormaliseMetricsSink:
         """Test invalid sink raises EvaluationError."""
         with pytest.raises(EvaluationError) as exc_info:
             _normalise_metrics_sink("invalid")
-        assert "Unsupported metrics sink" in str(exc_info.value)
+        assert "Unsupported metrics sink" in str(exc_info.value), "Value must be initialized"
 
     def test_multiple_invalid_sinks(self) -> None:
         """Test multiple invalid sinks are reported."""
         with pytest.raises(EvaluationError) as exc_info:
             _normalise_metrics_sink("foo,bar,csv")
-        assert "foo" in str(exc_info.value) or "bar" in str(exc_info.value)
+        assert "foo" in str(exc_info.value) or "bar" in str(exc_info.value), "Value must be initialized"
 
     def test_empty_list_defaults_to_ndjson(self) -> None:
         """Test empty list defaults to ndjson."""
         result = _normalise_metrics_sink([])
-        assert result == ["ndjson"]
+        assert result == ["ndjson"], "Result must not be empty"
 
     def test_none_defaults_to_ndjson(self) -> None:
         """Test None-like values default to ndjson."""
         result = _normalise_metrics_sink(None)
-        assert result == ["ndjson"]
+        assert result == ["ndjson"], "Result must not be empty"
 
 
 class TestLoadRecords:
@@ -132,10 +132,10 @@ class TestLoadRecords:
                 text_field="text",
             )
 
-            assert len(result) == 2
-            assert result[0]["prediction"] == "a"
-            assert result[0]["target"] == "b"
-            assert result[1]["prediction"] == "d"
+            assert len(result) == 2, "Result must not be empty"
+            assert result[0]["prediction"] == "a", "Result must not be empty"
+            assert result[0]["target"] == "b", "Result must not be empty"
+            assert result[1]["prediction"] == "d", "Result must not be empty"
 
     def test_load_ndjson_records(self) -> None:
         """Test loading NDJSON records (same as JSONL)."""
@@ -152,8 +152,8 @@ class TestLoadRecords:
                 text_field="text",
             )
 
-            assert len(result) == 1
-            assert result[0]["prediction"] == "x"
+            assert len(result) == 1, "Result must not be empty"
+            assert result[0]["prediction"] == "x", "Result must not be empty"
 
     def test_load_csv_records(self) -> None:
         """Test loading CSV records."""
@@ -169,9 +169,9 @@ class TestLoadRecords:
                 text_field="text",
             )
 
-            assert len(result) == 2
-            assert result[0]["prediction"] == "a"
-            assert result[1]["target"] == "e"
+            assert len(result) == 2, "Result must not be empty"
+            assert result[0]["prediction"] == "a", "Result must not be empty"
+            assert result[1]["target"] == "e", "Result must not be empty"
 
     def test_load_text_records(self) -> None:
         """Test loading plain text records."""
@@ -187,10 +187,10 @@ class TestLoadRecords:
                 text_field="text",
             )
 
-            assert len(result) == 3
-            assert result[0]["text"] == "line1"
-            assert result[0]["prediction"] == "line1"
-            assert result[0]["target"] == "line1"
+            assert len(result) == 3, "Result must not be empty"
+            assert result[0]["text"] == "line1", "Result must not be empty"
+            assert result[0]["prediction"] == "line1", "Result must not be empty"
+            assert result[0]["target"] == "line1", "Result must not be empty"
 
     def test_unsupported_format_raises_error(self) -> None:
         """Test unsupported format raises EvaluationError."""
@@ -206,7 +206,7 @@ class TestLoadRecords:
                     target_field="target",
                     text_field="text",
                 )
-            assert "Unsupported dataset format" in str(exc_info.value)
+            assert "Unsupported dataset format" in str(exc_info.value), "Data must not be empty"
 
     def test_jsonl_skips_empty_lines(self) -> None:
         """Test JSONL loading skips empty lines."""
@@ -223,7 +223,7 @@ class TestLoadRecords:
                 text_field="text",
             )
 
-            assert len(result) == 2
+            assert len(result) == 2, "Result must not be empty"
 
     def test_jsonl_invalid_line_raises_error(self) -> None:
         """Test JSONL with non-object line raises error."""
@@ -239,7 +239,7 @@ class TestLoadRecords:
                     target_field="target",
                     text_field="text",
                 )
-            assert "must be an object" in str(exc_info.value)
+            assert "must be an object" in str(exc_info.value), "Value must be initialized"
 
 
 class TestEncodeLabels:
@@ -249,7 +249,7 @@ class TestEncodeLabels:
         """Test encoding integer labels."""
         ints, mapping = _encode_labels([0, 1, 2, 1, 0], "test_metric")
         assert ints == [0, 1, 2, 1, 0]
-        assert mapping == {}  # No string mapping needed
+        assert mapping == {}, "mapping is not valid"
 
     def test_encode_bool_labels(self) -> None:
         """Test encoding boolean labels."""
@@ -259,24 +259,24 @@ class TestEncodeLabels:
     def test_encode_string_labels(self) -> None:
         """Test encoding string labels."""
         ints, mapping = _encode_labels(["cat", "dog", "cat", "bird"], "test_metric")
-        assert len(ints) == 4
-        assert ints[0] == ints[2]  # "cat" maps to same value
-        assert len(mapping) == 3  # 3 unique labels
+        assert len(ints) == 4, "Ints must not be empty"
+        assert ints[0] == ints[2], "Condition must be true"
+        assert len(mapping) == 3, "Mapping must not be empty"
 
     def test_encode_with_fallback_mapping(self) -> None:
         """Test encoding with fallback mapping."""
         fallback = {"cat": 0, "dog": 1}
         ints, mapping = _encode_labels(["cat", "dog", "bird"], "test_metric", fallback=fallback)
-        assert ints[0] == 0  # cat
-        assert ints[1] == 1  # dog
-        assert ints[2] == 2  # bird (new mapping)
+        assert ints[0] == 0, "Condition must be true"
+        assert ints[1] == 1, "Condition must be true"
+        assert ints[2] == 2, "Condition must be true"
         assert mapping == {"cat": 0, "dog": 1, "bird": 2}
 
     def test_encode_none_raises_error(self) -> None:
         """Test encoding None raises EvaluationError."""
         with pytest.raises(EvaluationError) as exc_info:
             _encode_labels([1, None, 2], "test_metric")
-        assert "Missing value" in str(exc_info.value)
+        assert "Missing value" in str(exc_info.value), "Value must be initialized"
 
     def test_encode_numeric_strings(self) -> None:
         """Test encoding numeric strings."""
@@ -298,14 +298,14 @@ class TestCoerceTokenSequence:
         record = {"other": [1, 2, 3]}
         with pytest.raises(EvaluationError) as exc_info:
             _coerce_token_sequence(record, "tokens", 0)
-        assert "missing 'tokens' field" in str(exc_info.value)
+        assert "missing 'tokens' field" in str(exc_info.value), "Value must be initialized"
 
     def test_invalid_tokens_raises_error(self) -> None:
         """Test invalid tokens raise EvaluationError."""
         record = {"tokens": ["not", "integers"]}
         with pytest.raises(EvaluationError) as exc_info:
             _coerce_token_sequence(record, "tokens", 0)
-        assert "invalid 'tokens' values" in str(exc_info.value)
+        assert "invalid 'tokens' values" in str(exc_info.value), "Value must be initialized"
 
 
 class TestCollectPerplexityInputs:
@@ -318,7 +318,7 @@ class TestCollectPerplexityInputs:
             {"target_tokens": [3, 4], "logits": [0.7, 0.8]},
         ]
         values, targets, using_logits = _collect_perplexity_inputs(records)
-        assert using_logits is True
+        assert using_logits is True, "using_logits is not valid"
         assert values == [0.5, 0.6, 0.7, 0.8]
         assert targets == [1, 2, 3, 4]
 
@@ -328,7 +328,7 @@ class TestCollectPerplexityInputs:
             {"target_tokens": [1, 2], "nll": [1.0, 2.0]},
         ]
         values, targets, using_logits = _collect_perplexity_inputs(records)
-        assert using_logits is False
+        assert using_logits is False, "using_logits is not valid"
         assert values == [1.0, 2.0]
         assert targets == [1, 2]
 
@@ -337,14 +337,14 @@ class TestCollectPerplexityInputs:
         records = [{"logits": [0.5, 0.6]}]
         with pytest.raises(EvaluationError) as exc_info:
             _collect_perplexity_inputs(records)
-        assert "target_tokens" in str(exc_info.value)
+        assert "target_tokens" in str(exc_info.value), "Value must be initialized"
 
     def test_missing_logits_and_nll_raises_error(self) -> None:
         """Test missing both logits and nll raises error."""
         records = [{"target_tokens": [1, 2]}]
         with pytest.raises(EvaluationError) as exc_info:
             _collect_perplexity_inputs(records)
-        assert "logits" in str(exc_info.value) or "nll" in str(exc_info.value)
+        assert "logits" in str(exc_info.value) or "nll" in str(exc_info.value), "Value must be initialized"
 
     def test_mixed_logits_and_nll_raises_error(self) -> None:
         """Test mixing logits and nll raises error."""
@@ -354,14 +354,14 @@ class TestCollectPerplexityInputs:
         ]
         with pytest.raises(EvaluationError) as exc_info:
             _collect_perplexity_inputs(records)
-        assert "mixing" in str(exc_info.value).lower()
+        assert "mixing" in str(exc_info.value).lower(), "Value must be initialized"
 
     def test_length_mismatch_raises_error(self) -> None:
         """Test length mismatch between tokens and logits raises error."""
         records = [{"target_tokens": [1, 2, 3], "logits": [0.5, 0.6]}]  # 3 tokens, 2 logits
         with pytest.raises(EvaluationError) as exc_info:
             _collect_perplexity_inputs(records)
-        assert "length" in str(exc_info.value).lower()
+        assert "length" in str(exc_info.value).lower(), "Value must be initialized"
 
 
 class TestSafeOperation:
@@ -370,7 +370,7 @@ class TestSafeOperation:
     def test_successful_operation_returns_result(self) -> None:
         """Test successful operation returns result."""
         result = _safe_operation("test", lambda: 42)
-        assert result == 42
+        assert result == 42, "Result must not be empty"
 
     def test_exception_is_reraised(self) -> None:
         """Test exception is re-raised after logging."""
@@ -399,7 +399,7 @@ class TestAppendErrorReport:
                     error_files = list(reports_dir.glob("errors_*.md"))
                     if error_files:
                         content = error_files[0].read_text()
-                        assert "test_step" in content or "test error message" in content
+                        assert "test_step" in content or "test error message" in content, "Content must not be empty"
             finally:
                 os.chdir(original_cwd)
 
@@ -425,7 +425,7 @@ class TestMetricsSinkEdgeCases:
     def test_bytes_are_not_treated_as_sequence(self) -> None:
         """Test that bytes are not treated as a sequence."""
         result = _normalise_metrics_sink(b"csv")
-        assert result == ["ndjson"]  # Falls back to default
+        assert result == ["ndjson"], "Result must not be empty"
 
     def test_mixed_valid_invalid_sinks(self) -> None:
         """Test mixed valid and invalid sinks."""

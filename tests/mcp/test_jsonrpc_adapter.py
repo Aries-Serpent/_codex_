@@ -61,8 +61,8 @@ def test_get_adapter_caches_loader_result(monkeypatch) -> None:
     first = jsonrpc_adapter._get_adapter()
     second = jsonrpc_adapter._get_adapter()
 
-    assert first is second is adapter
-    assert calls == 1
+    assert first is second is adapter, "first is not valid"
+    assert calls == 1, "calls is not valid"
 
 
 def test_handle_jsonrpc_request_supports_batch_calls() -> None:
@@ -81,8 +81,8 @@ def test_handle_jsonrpc_request_supports_batch_calls() -> None:
     result = _run_test_async(jsonrpc_adapter.handle_jsonrpc_request(payload, adapter))
 
     assert [item["id"] for item in result] == ["list", "echo"]
-    assert result[0]["result"][0]["id"] == "mock.tool.echo"
-    assert result[1]["result"] == {"output": {"message": "hi"}}
+    assert result[0]["result"][0]["id"] == "mock.tool.echo", "Result must not be empty"
+    assert result[1]["result"] == {"output": {"message": "hi"}}, "Result must not be empty"
 
 
 def test_dispatch_method_returns_invalid_params_error() -> None:
@@ -95,8 +95,8 @@ def test_dispatch_method_returns_invalid_params_error() -> None:
         )
     )
 
-    assert result["error"]["code"] == -32602
-    assert result["error"]["message"] == "Invalid params"
+    assert result["error"]["code"] == -32602, "Result must not be empty"
+    assert result["error"]["message"] == "Invalid params", "Result must not be empty"
 
 
 def test_dispatch_method_handles_query_success_and_failure() -> None:
@@ -120,7 +120,7 @@ def test_dispatch_method_handles_query_success_and_failure() -> None:
     )
 
     assert success["result"]["hits"] == [{"id": "hit-1", "score": 0.9}]
-    assert adapter.query_calls == [
+    assert adapter.query_calls == [, "query_calls is not valid"
         {
             "namespace": "tenant-1",
             "query_embedding": [1.0],
@@ -175,7 +175,7 @@ def test_dispatch_method_handles_unknown_tool_and_method() -> None:
         )
     )
 
-    assert unknown_tool["error"]["message"] == "Unknown tool unknown.tool"
+    assert unknown_tool["error"]["message"] == "Unknown tool unknown.tool", "Error should be raised or set"
     assert unknown_method["error"] == {"code": -32601, "message": "Method not found"}
 
 
@@ -197,6 +197,6 @@ def test_register_jsonrpc_routes_uses_supplied_loader() -> None:
         },
     )
 
-    assert response.status_code == 200
+    assert response.status_code == 200, "Response must not be empty"
     assert response.json()["result"]["hits"] == [{"id": "hit-1", "score": 0.9}]
-    assert adapter.query_calls[0]["namespace"] == "default"
+    assert adapter.query_calls[0]["namespace"] == "default", "Condition must be true"

@@ -40,7 +40,7 @@ except SystemExit as exc:
     )
 
     proc = subprocess.run([sys.executable, str(runner)], capture_output=True, text=True)
-    assert proc.returncode == 2
+    assert proc.returncode == 2, "returncode is not valid"
     stderr = proc.stderr
-    assert "Missing optional dependency" in stderr
-    assert "pip install" in stderr
+    assert "Missing optional dependency" in stderr, "Condition must be true"
+    assert "pip install" in stderr, "Condition must be true"

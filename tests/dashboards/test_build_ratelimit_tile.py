@@ -48,8 +48,8 @@ def test_build_ratelimit_tile_from_history(tmp_path):
         ],
         cwd=tmp_path,
     )
-    assert code == 0
+    assert code == 0, "code is not valid"
 
     tile = json.loads((tmp_path / "reports/tiles/ratelimit_tile.json").read_text(encoding="utf-8"))
-    assert "series" in tile and "core" in tile["series"]
-    assert len(tile["series"]["core"]) >= 1
+    assert "series" in tile and "core" in tile["series"], "Condition must be true"
+    assert len(tile["series"]["core"]) >= 1, "Collection must not be empty"

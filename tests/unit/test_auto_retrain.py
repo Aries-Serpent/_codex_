@@ -66,7 +66,7 @@ def test_should_retrain_true_when_above_threshold():
     """T-01: drift_detected=True + JS divergence above threshold ⇒ True."""
     pipeline = AutoRetrainPipeline(drift_threshold=0.05)
     result = pipeline.should_retrain(_drifted(js_div=0.10))
-    assert result is True
+    assert result is True, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -78,7 +78,7 @@ def test_should_retrain_false_when_below_threshold():
     """T-02: drift_detected=False ⇒ False regardless of JS divergence."""
     pipeline = AutoRetrainPipeline(drift_threshold=0.05)
     result = pipeline.should_retrain(_stable(js_div=0.02))
-    assert result is False
+    assert result is False, "Result must not be empty"
 
 
 def test_should_retrain_false_when_drift_detected_but_jsd_at_threshold():
@@ -91,7 +91,7 @@ def test_should_retrain_false_when_drift_detected_but_jsd_at_threshold():
         reasons=["JSD=0.0500 exceeds threshold=0.05"],
     )
     result = pipeline.should_retrain(dr)
-    assert result is False
+    assert result is False, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -108,24 +108,24 @@ def test_prepare_retrain_config_valid_dict():
     cfg = pipeline.prepare_retrain_config(base, dr, samples_available=1000)
 
     # Required keys
-    assert "drift_score" in cfg
-    assert "model_id" in cfg
-    assert "triggered_by" in cfg
-    assert "reasons" in cfg
-    assert "samples_count" in cfg
-    assert "retrain_timestamp" in cfg
-    assert "js_divergence" in cfg
+    assert "drift_score" in cfg, "Condition must be true"
+    assert "model_id" in cfg, "Condition must be true"
+    assert "triggered_by" in cfg, "Condition must be true"
+    assert "reasons" in cfg, "Condition must be true"
+    assert "samples_count" in cfg, "Count must be greater than zero"
+    assert "retrain_timestamp" in cfg, "Condition must be true"
+    assert "js_divergence" in cfg, "Condition must be true"
 
     # Values
-    assert cfg["model_id"] == "test-model"
-    assert cfg["triggered_by"] == "auto_retrain_pipeline"
-    assert cfg["samples_count"] == 1000
-    assert cfg["js_divergence"] == pytest.approx(0.12)
+    assert cfg["model_id"] == "test-model", "Condition must be true"
+    assert cfg["triggered_by"] == "auto_retrain_pipeline", "Condition must be true"
+    assert cfg["samples_count"] == 1000, "Count must be greater than zero"
+    assert cfg["js_divergence"] == pytest.approx(0.12), "Condition must be true"
     assert isinstance(cfg["reasons"], list)
 
     # Base config preserved
-    assert cfg["epochs"] == 5
-    assert cfg["lr"] == pytest.approx(1e-4)
+    assert cfg["epochs"] == 5, "Condition must be true"
+    assert cfg["lr"] == pytest.approx(1e-4), "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -139,10 +139,10 @@ def test_run_triggered_true_on_drift():
     result = pipeline.run(_drifted(0.10), base_config={"epochs": 3})
 
     assert isinstance(result, RetrainResult)
-    assert result.triggered is True
-    assert result.reason != ""
+    assert result.triggered is True, "Result must not be empty"
+    assert result.reason != "", "Result must not be empty"
     assert isinstance(result.config_snapshot, dict)
-    assert "drift_score" in result.config_snapshot
+    assert "drift_score" in result.config_snapshot, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -156,8 +156,8 @@ def test_run_triggered_false_on_no_drift():
     result = pipeline.run(_stable(0.01))
 
     assert isinstance(result, RetrainResult)
-    assert result.triggered is False
-    assert result.config_snapshot == {}
+    assert result.triggered is False, "Result must not be empty"
+    assert result.config_snapshot == {}, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -172,14 +172,14 @@ def test_retrain_result_timestamp_utc_iso():
     pipeline = AutoRetrainPipeline(drift_threshold=0.05)
     result = pipeline.run(_drifted(0.10))
 
-    assert _UTC_ISO_PATTERN.match(
+    assert _UTC_ISO_PATTERN.match(, "Condition must be true"
         result.timestamp
     ), f"Timestamp {result.timestamp!r} does not match UTC ISO-8601 pattern"
 
     # Verify it can be parsed back to a timezone-aware datetime
     parsed = datetime.fromisoformat(result.timestamp)
-    assert parsed.tzinfo is not None
-    assert parsed.tzinfo.utcoffset(parsed).total_seconds() == 0
+    assert parsed.tzinfo is not None, "tzinfo must be initialized"
+    assert parsed.tzinfo.utcoffset(parsed).total_seconds() == 0, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -214,9 +214,9 @@ def test_prepare_retrain_config_merges_extra_config():
     dr = _drifted(0.08)
     cfg = pipeline.prepare_retrain_config(base, dr)
 
-    assert cfg["extra_key"] == "from_extra"
+    assert cfg["extra_key"] == "from_extra", "Condition must be true"
     # base_config should win over extra_config for overlapping keys
-    assert cfg["epochs"] == 10
+    assert cfg["epochs"] == 10, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -229,7 +229,7 @@ def test_run_none_base_config_does_not_raise():
     pipeline = AutoRetrainPipeline(drift_threshold=0.05)
     result = pipeline.run(_drifted(0.10), base_config=None)
     assert isinstance(result, RetrainResult)
-    assert result.triggered is True
+    assert result.triggered is True, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -244,7 +244,7 @@ def test_retrain_result_to_dict():
 
     d = result.to_dict()
     assert isinstance(d, dict)
-    assert d["triggered"] is True
+    assert d["triggered"] is True, "Condition must be true"
     assert isinstance(d["reason"], str)
     assert isinstance(d["config_snapshot"], dict)
     assert isinstance(d["timestamp"], str)
@@ -263,7 +263,7 @@ def test_should_retrain_no_js_divergence_but_drift_detected():
         reasons=["mean confidence 0.35 < threshold 0.50"],
     )
     pipeline = AutoRetrainPipeline(drift_threshold=0.05)
-    assert pipeline.should_retrain(dr) is True
+    assert pipeline.should_retrain(dr) is True, "Condition must be true"
 
 
 def test_invalid_drift_threshold_raises():
@@ -282,5 +282,5 @@ def test_dispatch_payload_schema_importable():
     """DISPATCH_PAYLOAD_SCHEMA is exported from the module."""
     from codex_ml.training.auto_retrain import DISPATCH_PAYLOAD_SCHEMA
 
-    assert DISPATCH_PAYLOAD_SCHEMA["type"] == "object"
-    assert "drift_score" in DISPATCH_PAYLOAD_SCHEMA["properties"]
+    assert DISPATCH_PAYLOAD_SCHEMA["type"] == "object", "Object must be initialized"
+    assert "drift_score" in DISPATCH_PAYLOAD_SCHEMA["properties"], "Condition must be true"

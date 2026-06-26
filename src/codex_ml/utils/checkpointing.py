@@ -106,8 +106,8 @@ def _random_seed_with_snapshot(a: Optional[Any] = None, version: int = 2) -> Non
         register_seed_snapshot(python_state=random.getstate())
     except (ValueError, TypeError, RuntimeError) as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
-        logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
+        logger.debug("Exception: <ERROR_TYPE>")
+        logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 
 
 if getattr(random.seed, "__codex_wrapped__", False) is False:  # pragma: no cover - guard
@@ -136,8 +136,8 @@ if TORCH_AVAILABLE:
             )
         except (ValueError, TypeError, RuntimeError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
         return result
 
     if getattr(torch.manual_seed, "__codex_wrapped__", False) is False:  # pragma: no cover - guard
@@ -180,8 +180,8 @@ class ModuleStateDictProvider(StateDictProvider):
             return loader(state_dict, strict=strict)
         except TypeError as e:
             error_type = type(e).__name__
-            logger.debug(f"TypeError: <ERROR_TYPE>")
-            logger.warning(f"TypeError: <ERROR_TYPE>", exc_info=True)
+            logger.debug("TypeError: <ERROR_TYPE>")
+            logger.warning("TypeError: <ERROR_TYPE>", exc_info=True)
             return loader(state_dict)
 
 
@@ -358,7 +358,7 @@ def _save_payload(path: Path, payload: Mapping[str, Any], *, fmt: SaveFormat) ->
             return
         except (IOError, OSError) as exc:
             error_type = type(exc).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             errors.append(exc)
             raise CheckpointLoadError(f"failed to save checkpoint via pickle: {exc}") from exc
     if errors:
@@ -387,7 +387,7 @@ def _load_payload(path: Path, *, map_location: Optional[str], fmt: SaveFormat) -
         return safe_pickle_load(str(path), use_restricted_unpickler=True)
     except (IOError, OSError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         errors.append(exc)
         raise CheckpointLoadError(f"failed to load checkpoint via pickle: {exc}") from exc
 
@@ -414,8 +414,8 @@ def _load_into_target(target: Any, state_dict: Mapping[str, Any], *, strict: boo
         loader(state_dict, strict=strict)
     except TypeError as e:
         error_type = type(e).__name__
-        logger.debug(f"TypeError: <ERROR_TYPE>")
-        logger.warning(f"TypeError: <ERROR_TYPE>", exc_info=True)
+        logger.debug("TypeError: <ERROR_TYPE>")
+        logger.warning("TypeError: <ERROR_TYPE>", exc_info=True)
         loader(state_dict)
 
 
@@ -537,7 +537,7 @@ def _safe_git_commit() -> Optional[str]:
             return _prov_git_commit()
     except (ValueError, TypeError, RuntimeError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         logger.info(
             "checkpointing._safe_git_commit: provenance hook failed: %s",
             exc,
@@ -624,7 +624,7 @@ def _compute_file_checksum(path: Path) -> Optional[str]:
         return h.hexdigest()
     except (IOError, OSError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         logger.debug("Failed to compute checksum for %s: %s", path, exc)
         return None
 
@@ -669,7 +669,7 @@ def _safe_environment_summary() -> dict[str, Any]:
                 return {k: v for k, v in env.items() if isinstance(v, safe_types)}
     except (ValueError, TypeError, RuntimeError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         logger.info(
             "checkpointing._safe_environment_summary: provenance summary failed: %s",
             exc,
@@ -809,7 +809,7 @@ def load_training_checkpoint(
         _verify_checksum_manifest(p.parent)
     except RuntimeError as exc:
         error_type = type(exc).__name__
-        logger.debug(f"RuntimeError: <ERROR_TYPE>")
+        logger.debug("RuntimeError: <ERROR_TYPE>")
         raise CheckpointLoadError(str(exc)) from exc
     except (ValueError, TypeError) as exc:  # pragma: no cover - checksum verify is best-effort
         logger.info(
@@ -823,8 +823,8 @@ def load_training_checkpoint(
         raw = _load_payload(p, map_location=map_location, fmt=_resolve_format(format))
     except CheckpointLoadError as e:
         error_type = type(e).__name__
-        logger.debug(f"CheckpointLoadError: <ERROR_TYPE>")
-        logger.warning(f"CheckpointLoadError: <ERROR_TYPE>", exc_info=True)
+        logger.debug("CheckpointLoadError: <ERROR_TYPE>")
+        logger.warning("CheckpointLoadError: <ERROR_TYPE>", exc_info=True)
         raise
     except (IOError, OSError) as exc:  # pragma: no cover - fallback path
         raise CheckpointLoadError(f"failed to load checkpoint from {p}: {exc}") from exc
@@ -1123,8 +1123,8 @@ def _rng_load(state: dict[str, Any], *, prefer_resume: bool = True) -> None:
                     setter(tensor_ctor(torch_payload["cpu"], dtype=torch.uint8))
             except (ValueError, TypeError, RuntimeError) as e:
                 error_type = type(e).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
-                logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
+                logger.debug("Exception: <ERROR_TYPE>")
+                logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
             try:
                 if (
                     "cuda" in torch_payload
@@ -1405,8 +1405,8 @@ class CheckpointManager:
             )
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
         return ckpt_path
 
     # ------------------------------------------------------------------
@@ -1535,8 +1535,8 @@ class CheckpointManager:
                     marker_value = marker.read_text(encoding="utf-8").strip()
                 except IsADirectoryError as e:
                     error_type = type(e).__name__
-                    logger.debug(f"IsADirectoryError: <ERROR_TYPE>")
-                    logger.warning(f"IsADirectoryError: <ERROR_TYPE>", exc_info=True)
+                    logger.debug("IsADirectoryError: <ERROR_TYPE>")
+                    logger.warning("IsADirectoryError: <ERROR_TYPE>", exc_info=True)
                     with contextlib.suppress(Exception):
                         marker_path = marker.resolve(strict=False)
                 except (IOError, OSError):
@@ -1598,8 +1598,8 @@ class CheckpointManager:
                 self.storage.download_directory(remote, target)
             except FileNotFoundError as e:
                 error_type = type(e).__name__
-                logger.debug(f"FileNotFoundError: <ERROR_TYPE>")
-                logger.warning(f"FileNotFoundError: <ERROR_TYPE>", exc_info=True)
+                logger.debug("FileNotFoundError: <ERROR_TYPE>")
+                logger.warning("FileNotFoundError: <ERROR_TYPE>", exc_info=True)
                 continue
             discovered.append(target)
         discovered.sort(

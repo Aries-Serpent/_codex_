@@ -58,8 +58,8 @@ def get_tb_writer(
             from torch.utils.tensorboard import SummaryWriter
         except ImportError as e:
             error_type = type(e).__name__
-            logger.debug(f"ImportError: <ERROR_TYPE>")
-            logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
+            logger.debug("ImportError: <ERROR_TYPE>")
+            logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
             # Fallback to standalone tensorboard
             from tensorboardX import SummaryWriter
 
@@ -73,8 +73,8 @@ def get_tb_writer(
 
     except ImportError as e:
         error_type = type(e).__name__
-        logger.debug(f"ImportError: <ERROR_TYPE>")
-        logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
+        logger.debug("ImportError: <ERROR_TYPE>")
+        logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
         # TensorBoard not available - gracefully degrade
         yield None
 
@@ -110,13 +110,13 @@ def is_tensorboard_available() -> bool:
             return True
         except ImportError as e:
             error_type = type(e).__name__
-            logger.debug(f"ImportError: <ERROR_TYPE>")
-            logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
+            logger.debug("ImportError: <ERROR_TYPE>")
+            logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
             from tensorboardX import SummaryWriter as SummaryWriter
 
             return True
     except ImportError as e:
         error_type = type(e).__name__
-        logger.debug(f"ImportError: <ERROR_TYPE>")
-        logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
+        logger.debug("ImportError: <ERROR_TYPE>")
+        logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
         return False

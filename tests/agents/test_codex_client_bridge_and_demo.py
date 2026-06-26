@@ -55,20 +55,20 @@ def test_bridge_request_builds_url_headers_and_closes(monkeypatch: pytest.Monkey
 
     config = ClientConfig(ita_url="https://ita.example", api_key="secret", request_timeout=12.5)
     with CodexBridgeClient(config) as client:
-        assert client.base_headers == {"X-API-Key": "secret"}
+        assert client.base_headers == {"X-API-Key": "secret"}, "base_headers is not valid"
         response = client._request(
             "POST", "/kb/search", json_body={"query": "q"}, params={"top_k": 3}
         )
 
-    assert response.json() == {"ok": True}
-    assert fake_http.closed is True
+    assert response.json() == {"ok": True}, "Response must not be empty"
+    assert fake_http.closed is True, "closed is not valid"
     method, url, json_body, params, headers = fake_http.calls[0]
-    assert method == "POST"
-    assert url == "https://ita.example/kb/search"
-    assert json_body == {"query": "q"}
-    assert params == {"top_k": 3}
-    assert headers["X-API-Key"] == "secret"
-    assert headers["X-Request-Id"] == "rid-123"
+    assert method == "POST", "method is not valid"
+    assert url == "https://ita.example/kb/search", "url is not valid"
+    assert json_body == {"query": "q"}, "json_body is not valid"
+    assert params == {"top_k": 3}, "params is not valid"
+    assert headers["X-API-Key"] == "secret", "Condition must be true"
+    assert headers["X-Request-Id"] == "rid-123", "Condition must be true"
 
 
 def test_bridge_endpoint_methods_validate_payloads(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -98,7 +98,7 @@ def test_bridge_endpoint_methods_validate_payloads(monkeypatch: pytest.MonkeyPat
                 }
             )
         if path == "/git/create-pr":
-            assert json_body == {
+            assert json_body == {, "json_body is not valid"
                 "repo": "owner/repo",
                 "title": "t",
                 "body": "b",
@@ -121,7 +121,7 @@ def test_bridge_endpoint_methods_validate_payloads(monkeypatch: pytest.MonkeyPat
     assert client.kb_search("find", top_k=2).results[0].source == "doc"
     assert client.repo_hygiene("d", checks=["lint"]).issues[0].type == "lint"
     assert client.tests_run(["tests/a.py"], timeout_s=10).summary.passed == 1
-    assert (
+    assert (, "Condition must be true"
         client.git_create_pr(
             repo="owner/repo",
             title="t",
@@ -155,7 +155,7 @@ def test_bridge_repo_hygiene_without_checks_and_git_pr_without_labels(
     monkeypatch.setattr(client, "_request", fake_request)
 
     assert client.repo_hygiene("diff", checks=[]).issues == []
-    assert (
+    assert (, "Condition must be true"
         client.git_create_pr(
             repo="owner/repo",
             title="title",
@@ -169,7 +169,7 @@ def test_bridge_repo_hygiene_without_checks_and_git_pr_without_labels(
     )
 
     assert calls[0] == ("/repo/hygiene", {"diff": "diff"}, None)
-    assert calls[1] == (
+    assert calls[1] == (, "Condition must be true"
         "/git/create-pr",
         {
             "repo": "owner/repo",
@@ -219,10 +219,10 @@ class _FakeDemoClient:
 
 def test_demo_parse_args_and_format_section() -> None:
     args = demo.parse_args(["--query", "hello", "--run-tests", "tests/a.py", "--confirm"])
-    assert args.query == "hello"
-    assert args.run_tests == ["tests/a.py"]
-    assert args.confirm is True
-    assert demo._format_section("X") == "\n=\nX\n="
+    assert args.query == "hello", "query is not valid"
+    assert args.run_tests == ["tests/a.py"], "run_tests is not valid"
+    assert args.confirm is True, "confirm is not valid"
+    assert demo._format_section("X") == "\n=\nX\n=", "Condition must be true"
 
 
 def test_demo_main_outputs_all_sections(
@@ -246,16 +246,16 @@ def test_demo_main_outputs_all_sections(
     rc = demo.main(["--query", "needle", "--run-tests", "tests/a.py", "--confirm"])
     out = capsys.readouterr().out
 
-    assert rc == 0
-    assert "Knowledge Search" in out
-    assert "Repo Hygiene" in out
-    assert "Tests" in out
-    assert "Pull Request" in out
-    assert '"simulated": true' in out
+    assert rc == 0, "rc is not valid"
+    assert "Knowledge Search" in out, "Condition must be true"
+    assert "Repo Hygiene" in out, "Condition must be true"
+    assert "Tests" in out, "Condition must be true"
+    assert "Pull Request" in out, "Condition must be true"
+    assert '"simulated": true' in out, "Condition must be true"
 
     client = created[0]
     assert ("kb", "needle") in client.calls
-    assert any(call[0] == "tests" for call in client.calls)
+    assert any(call[0] == "tests" for call in client.calls), "Condition must be true"
 
 
 def test_demo_main_skips_tests_section_without_targets(
@@ -272,8 +272,8 @@ def test_demo_main_skips_tests_section_without_targets(
     rc = demo.main(["--query", "needle"])
     out = capsys.readouterr().out
 
-    assert rc == 0
-    assert "Tests" not in out
+    assert rc == 0, "rc is not valid"
+    assert "Tests" not in out, "Condition must be true"
 
 
 def test_demo_entrypoint_raises_system_exit(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -282,7 +282,7 @@ def test_demo_entrypoint_raises_system_exit(monkeypatch: pytest.MonkeyPatch) -> 
         exec(
             "if True:\n    from agents.codex_client.codex_client import demo_plan_and_call as m\n    raise SystemExit(m.main())"
         )
-    assert exc.value.code == 3
+    assert exc.value.code == 3, "Value must be initialized"
 
 
 def test_bridge_request_propagates_http_errors(monkeypatch: pytest.MonkeyPatch) -> None:

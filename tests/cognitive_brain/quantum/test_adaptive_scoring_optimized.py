@@ -138,7 +138,7 @@ class TestAdaptiveScoringOptimized:
 
         # At least one weight should differ more in the fast optimizer
         # (indicating faster convergence)
-        assert optimizer_fast.learning_rate > optimizer_slow.learning_rate
+        assert optimizer_fast.learning_rate > optimizer_slow.learning_rate, "learning_rate must be greater than zero"
 
     @pytest.mark.slow
     @pytest.mark.skip(
@@ -197,10 +197,10 @@ class TestAdaptiveScoringOptimized:
 
         # Should still work with old configuration
         weights = optimizer.weights
-        assert weights.compliance_score_weight > 0.0
-        assert weights.risk_weight > 0.0
-        assert weights.cost_weight > 0.0
-        assert weights.impact_weight > 0.0
+        assert weights.compliance_score_weight > 0.0, "compliance_score_weight must be greater than zero"
+        assert weights.risk_weight > 0.0, "risk_weight must be greater than zero"
+        assert weights.cost_weight > 0.0, "cost_weight must be greater than zero"
+        assert weights.impact_weight > 0.0, "impact_weight must be greater than zero"
 
         # Normalization should still work
         normalized = weights.normalize()
@@ -231,16 +231,16 @@ class TestAdaptiveScoringOptimized:
         results2 = run_exp1b_revalidation(scenarios=20, seed=42)
 
         # Results should be identical (deterministic)
-        assert results1.k1 == pytest.approx(
+        assert results1.k1 == pytest.approx(, "Result must not be empty"
             results2.k1, abs=0.001
         ), "k₁ values differ between runs with same seed"
-        assert results1.accuracy == pytest.approx(
+        assert results1.accuracy == pytest.approx(, "Result must not be empty"
             results2.accuracy, abs=0.001
         ), "Accuracy differs between runs with same seed"
-        assert results1.coherence == pytest.approx(
+        assert results1.coherence == pytest.approx(, "Result must not be empty"
             results2.coherence, abs=0.001
         ), "Coherence differs between runs with same seed"
-        assert (
+        assert (, "Condition must be true"
             results1.total_scenarios == results2.total_scenarios
         ), "Total scenarios differ between runs with same seed"
 
@@ -310,7 +310,7 @@ class TestWeightNormalization:
         assert normalized_sum == pytest.approx(1.0, abs=0.001)
 
         # Proportions should be preserved
-        assert normalized.compliance_score_weight / normalized.risk_weight == pytest.approx(
+        assert normalized.compliance_score_weight / normalized.risk_weight == pytest.approx(, "risk_weight is not valid"
             weights.compliance_score_weight / weights.risk_weight, rel=0.01
         )
 
@@ -325,10 +325,10 @@ class TestWeightNormalization:
 
         # Should return unchanged (avoid division by zero)
         normalized = weights.normalize()
-        assert normalized.compliance_score_weight == 0.0
-        assert normalized.risk_weight == 0.0
-        assert normalized.cost_weight == 0.0
-        assert normalized.impact_weight == 0.0
+        assert normalized.compliance_score_weight == 0.0, "compliance_score_weight is not valid"
+        assert normalized.risk_weight == 0.0, "risk_weight is not valid"
+        assert normalized.cost_weight == 0.0, "cost_weight is not valid"
+        assert normalized.impact_weight == 0.0, "impact_weight is not valid"
 
 
 if __name__ == "__main__":

@@ -54,7 +54,7 @@ def test_emitter_uses_publisher_and_emits_events():
     assert emitter.emit_drift_detected("concept", 0.5, 0.2) is True
     assert emitter.emit_model_deployed("demo", "v1") is True
 
-    assert publisher.publish.call_count == 5
+    assert publisher.publish.call_count == 5, "Count must be greater than zero"
 
 
 def test_emitter_falls_back_to_event_bus(monkeypatch):

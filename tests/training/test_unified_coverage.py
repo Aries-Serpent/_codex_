@@ -90,7 +90,7 @@ class TestModuleImport:
         try:
             from codex_ml.training import unified_training
 
-            assert unified_training is not None
+            assert unified_training is not None, "unified_training must be initialized"
         except ImportError as e:
             pytest.fail(f"Failed to import unified_training module: {e}")
 
@@ -99,7 +99,7 @@ class TestModuleImport:
         try:
             from codex_ml.training.unified_training import UnifiedTrainingConfig
 
-            assert UnifiedTrainingConfig is not None
+            assert UnifiedTrainingConfig is not None, "UnifiedTrainingConfig must be initialized"
         except ImportError:
             pytest.skip("UnifiedTrainingConfig not available")
 
@@ -108,7 +108,7 @@ class TestModuleImport:
         try:
             from codex_ml.training.unified_training import run_unified_training
 
-            assert callable(run_unified_training)
+            assert callable(run_unified_training), "Condition must be true"
         except ImportError:
             pytest.skip("run_unified_training not available")
 
@@ -127,8 +127,8 @@ class TestUnifiedTrainingConfig:
             from codex_ml.training.unified_training import UnifiedTrainingConfig
 
             config = UnifiedTrainingConfig(model_name="test")
-            assert config.model_name == "test"
-            assert config.epochs >= 1
+            assert config.model_name == "test", "model_name is not valid"
+            assert config.epochs >= 1, "epochs must be greater than zero"
         except ImportError:
             pytest.skip("UnifiedTrainingConfig not available")
 
@@ -144,11 +144,11 @@ class TestUnifiedTrainingConfig:
                 learning_rate=2e-5,
                 seed=123,
             )
-            assert config.model_name == "custom-model"
-            assert config.epochs == 5
-            assert config.batch_size == 16
-            assert config.learning_rate == 2e-5
-            assert config.seed == 123
+            assert config.model_name == "custom-model", "model_name is not valid"
+            assert config.epochs == 5, "epochs is not valid"
+            assert config.batch_size == 16, "batch_size is not valid"
+            assert config.learning_rate == 2e-5, "learning_rate is not valid"
+            assert config.seed == 123, "seed is not valid"
         except ImportError:
             pytest.skip("UnifiedTrainingConfig not available")
 
@@ -156,8 +156,8 @@ class TestUnifiedTrainingConfig:
         """Test converting config to dictionary."""
         result = asdict(sample_training_config)
         assert isinstance(result, dict)
-        assert "model_name" in result
-        assert "epochs" in result
+        assert "model_name" in result, "Result must not be empty"
+        assert "epochs" in result, "Result must not be empty"
 
     @pytest.mark.parametrize("epochs", [1, 5, 10, 100])
     def test_config_accepts_various_epochs(self, epochs: int) -> None:
@@ -166,7 +166,7 @@ class TestUnifiedTrainingConfig:
             from codex_ml.training.unified_training import UnifiedTrainingConfig
 
             config = UnifiedTrainingConfig(model_name="test", epochs=epochs)
-            assert config.epochs == epochs
+            assert config.epochs == epochs, "epochs is not valid"
         except ImportError:
             pytest.skip("UnifiedTrainingConfig not available")
 
@@ -177,7 +177,7 @@ class TestUnifiedTrainingConfig:
             from codex_ml.training.unified_training import UnifiedTrainingConfig
 
             config = UnifiedTrainingConfig(model_name="test", batch_size=batch_size)
-            assert config.batch_size == batch_size
+            assert config.batch_size == batch_size, "batch_size is not valid"
         except ImportError:
             pytest.skip("UnifiedTrainingConfig not available")
 
@@ -196,8 +196,8 @@ class TestContinualPhase:
             from codex_ml.training.unified_training import ContinualPhase
 
             phase = ContinualPhase(name="phase1", epochs=2)
-            assert phase.name == "phase1"
-            assert phase.epochs == 2
+            assert phase.name == "phase1", "name is not valid"
+            assert phase.epochs == 2, "epochs is not valid"
         except ImportError:
             pytest.skip("ContinualPhase not available")
 
@@ -211,7 +211,7 @@ class TestContinualPhase:
                 epochs=1,
                 dataset={"path": "/data/train"},
             )
-            assert phase.dataset["path"] == "/data/train"
+            assert phase.dataset["path"] == "/data/train", "Data must not be empty"
         except ImportError:
             pytest.skip("ContinualPhase not available")
 
@@ -222,12 +222,12 @@ class TestContinualPhase:
 
             # Valid ratio
             phase = ContinualPhase(name="test", replay_ratio=0.5)
-            assert phase.replay_ratio == 0.5
+            assert phase.replay_ratio == 0.5, "replay_ratio is not valid"
             # Edge cases
             phase_zero = ContinualPhase(name="test", replay_ratio=0.0)
-            assert phase_zero.replay_ratio == 0.0
+            assert phase_zero.replay_ratio == 0.0, "replay_ratio is not valid"
             phase_one = ContinualPhase(name="test", replay_ratio=1.0)
-            assert phase_one.replay_ratio == 1.0
+            assert phase_one.replay_ratio == 1.0, "replay_ratio is not valid"
         except ImportError:
             pytest.skip("ContinualPhase not available")
 
@@ -289,10 +289,10 @@ class TestHelperFunctions:
         try:
             from codex_ml.training.unified_training import _to_plain_container
 
-            assert _to_plain_container(42) == 42
-            assert _to_plain_container("test") == "test"
-            assert _to_plain_container(3.14) == 3.14
-            assert _to_plain_container(None) is None
+            assert _to_plain_container(42) == 42, "Condition must be true"
+            assert _to_plain_container("test") == "test", "Condition must be true"
+            assert _to_plain_container(3.14) == 3.14, "Condition must be true"
+            assert _to_plain_container(None) is None, "Condition must be true"
         except ImportError:
             pytest.skip("_to_plain_container not available")
 
@@ -302,7 +302,7 @@ class TestHelperFunctions:
             from codex_ml.training.unified_training import _materialise_mapping
 
             result = _materialise_mapping(None)
-            assert result == {}
+            assert result == {}, "Result must not be empty"
         except ImportError:
             pytest.skip("_materialise_mapping not available")
 
@@ -312,7 +312,7 @@ class TestHelperFunctions:
             from codex_ml.training.unified_training import _materialise_mapping
 
             result = _materialise_mapping({"key": "value"})
-            assert result == {"key": "value"}
+            assert result == {"key": "value"}, "Result must not be empty"
         except ImportError:
             pytest.skip("_materialise_mapping not available")
 
@@ -340,7 +340,7 @@ class TestStrategyResolution:
         try:
             from codex_ml.training.strategies import resolve_strategy
 
-            assert callable(resolve_strategy)
+            assert callable(resolve_strategy), "Condition must be true"
         except ImportError:
             pytest.skip("resolve_strategy not available")
 
@@ -351,7 +351,7 @@ class TestStrategyResolution:
             from codex_ml.training.strategies import resolve_strategy
 
             strategy = resolve_strategy(backend)
-            assert strategy is not None
+            assert strategy is not None, "strategy must be initialized"
         except ImportError:
             pytest.skip("resolve_strategy not available")
         except ValueError:
@@ -372,7 +372,7 @@ class TestDeviceConfiguration:
         try:
             from codex_ml.training.device_strategy import DeviceConfig
 
-            assert DeviceConfig is not None
+            assert DeviceConfig is not None, "DeviceConfig must be initialized"
         except ImportError:
             pytest.skip("DeviceConfig not available")
 
@@ -381,7 +381,7 @@ class TestDeviceConfiguration:
         try:
             from codex_ml.training.device_strategy import DeviceMapper
 
-            assert DeviceMapper is not None
+            assert DeviceMapper is not None, "DeviceMapper must be initialized"
         except ImportError:
             pytest.skip("DeviceMapper not available")
 
@@ -399,7 +399,7 @@ class TestRNGStateManagement:
         try:
             from codex_ml.training.rng_checkpoint import RNGState
 
-            assert RNGState is not None
+            assert RNGState is not None, "RNGState must be initialized"
         except ImportError:
             pytest.skip("RNGState not available")
 
@@ -417,7 +417,7 @@ class TestCheckpointIntegration:
         try:
             from codex_ml.utils.checkpoint_core import CheckpointMeta
 
-            assert CheckpointMeta is not None
+            assert CheckpointMeta is not None, "CheckpointMeta must be initialized"
         except ImportError:
             pytest.skip("CheckpointMeta not available")
 
@@ -426,7 +426,7 @@ class TestCheckpointIntegration:
         try:
             from codex_ml.utils.checkpoint_core import save_checkpoint
 
-            assert callable(save_checkpoint)
+            assert callable(save_checkpoint), "Condition must be true"
         except ImportError:
             pytest.skip("save_checkpoint not available")
 
@@ -435,7 +435,7 @@ class TestCheckpointIntegration:
         try:
             from codex_ml.utils.checkpoint_core import load_checkpoint
 
-            assert callable(load_checkpoint)
+            assert callable(load_checkpoint), "Condition must be true"
         except ImportError:
             pytest.skip("load_checkpoint not available")
 
@@ -457,9 +457,9 @@ class TestMLflowIntegration:
                 log_params_safe,
             )
 
-            assert callable(init_mlflow_safe)
-            assert callable(log_metric_safe)
-            assert callable(log_params_safe)
+            assert callable(init_mlflow_safe), "Condition must be true"
+            assert callable(log_metric_safe), "Condition must be true"
+            assert callable(log_params_safe), "Condition must be true"
         except ImportError:
             pytest.skip("mlflow_guard not available")
 
@@ -489,7 +489,7 @@ class TestTrainingCallbacks:
         try:
             from codex_ml.training.strategies import TrainingCallback
 
-            assert TrainingCallback is not None
+            assert TrainingCallback is not None, "TrainingCallback must be initialized"
         except ImportError:
             pytest.skip("TrainingCallback not available")
 
@@ -498,7 +498,7 @@ class TestTrainingCallbacks:
         try:
             from codex_ml.training.strategies import TrainingResult
 
-            assert TrainingResult is not None
+            assert TrainingResult is not None, "TrainingResult must be initialized"
         except ImportError:
             pytest.skip("TrainingResult not available")
 
@@ -516,7 +516,7 @@ class TestReproducibility:
         try:
             from codex_ml.utils.repro import set_seed
 
-            assert callable(set_seed)
+            assert callable(set_seed), "Condition must be true"
         except ImportError:
             pytest.skip("set_seed not available")
 
@@ -525,7 +525,7 @@ class TestReproducibility:
         try:
             from codex_ml.utils.repro import capture_environment
 
-            assert callable(capture_environment)
+            assert callable(capture_environment), "Condition must be true"
         except ImportError:
             pytest.skip("capture_environment not available")
 
@@ -540,7 +540,7 @@ class TestReproducibility:
             val1 = random.random()
             set_seed(42)
             val2 = random.random()
-            assert val1 == val2
+            assert val1 == val2, "val1 is not valid"
         except ImportError:
             pytest.skip("set_seed not available")
 
@@ -560,7 +560,7 @@ class TestErrorHandling:
 
             # Empty model name may be accepted or rejected
             config = UnifiedTrainingConfig(model_name="")
-            assert config.model_name == ""
+            assert config.model_name == "", "model_name is not valid"
         except (ImportError, ValueError):
             _ = None  # Either is acceptable
 
@@ -593,7 +593,7 @@ class TestOutputDirectoryHandling:
                 model_name="test",
                 output_dir=str(temp_output_dir),
             )
-            assert config.output_dir == str(temp_output_dir)
+            assert config.output_dir == str(temp_output_dir), "output_dir is not valid"
         except ImportError:
             pytest.skip("UnifiedTrainingConfig not available")
 
@@ -615,7 +615,7 @@ class TestBackendSelection:
                 model_name="test",
                 backend="functional",
             )
-            assert config.backend == "functional"
+            assert config.backend == "functional", "backend is not valid"
         except (ImportError, TypeError):
             pytest.skip("backend parameter not available")
 
@@ -628,7 +628,7 @@ class TestBackendSelection:
                 model_name="test",
                 backend="legacy",
             )
-            assert config.backend == "legacy"
+            assert config.backend == "legacy", "backend is not valid"
         except (ImportError, TypeError):
             pytest.skip("backend parameter not available")
 
@@ -651,7 +651,7 @@ class TestGradientClipping:
                 model_name="test",
                 grad_clip_norm=grad_clip_norm,
             )
-            assert config.grad_clip_norm == grad_clip_norm
+            assert config.grad_clip_norm == grad_clip_norm, "grad_clip_norm is not valid"
         except (ImportError, TypeError):
             pytest.skip("grad_clip_norm parameter not available")
 
@@ -674,6 +674,6 @@ class TestDataTypeConfiguration:
                 model_name="test",
                 dtype=dtype,
             )
-            assert config.dtype == dtype
+            assert config.dtype == dtype, "dtype is not valid"
         except (ImportError, TypeError):
             pytest.skip("dtype parameter not available")

@@ -35,7 +35,7 @@ class TestBranchCoverage_PhysicsOrchestrator:
             constraints=[],
         )
         result = orch.assess_situation(state)
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     def test_assess_situation_with_constraints(self):
         """Test assess_situation with constraints"""
@@ -51,7 +51,7 @@ class TestBranchCoverage_PhysicsOrchestrator:
             constraints=["budget<1000", "time<24h"],
         )
         result = orch.assess_situation(state)
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     def test_optimize_path_no_ranked_paths(self):
         """Test optimize_path with no paths"""
@@ -61,7 +61,7 @@ class TestBranchCoverage_PhysicsOrchestrator:
         state = DecisionState("start", "end")
 
         result = orch.optimize_path([], state)
-        assert result is None  # No paths to optimize
+        assert result is None, "Result must not be empty"
 
     def test_evolve_state_multiple_timesteps(self):
         """Test evolve_state with multiple timesteps"""
@@ -76,7 +76,7 @@ class TestBranchCoverage_PhysicsOrchestrator:
             if evolved:
                 state = evolved
 
-        assert state is not None
+        assert state is not None, "state must be initialized"
 
 
 class TestBranchCoverage_AgentMemory:
@@ -104,7 +104,7 @@ class TestBranchCoverage_AgentMemory:
 
         memory = AgentMemory()
         success = memory.update("nonexistent_key", "new_value")
-        assert not success
+        assert not success, "Condition must be true"
 
     def test_retrieve_with_key_parameter(self):
         """Test retrieve with key parameter"""
@@ -115,7 +115,7 @@ class TestBranchCoverage_AgentMemory:
 
         # Test with key parameter
         result = memory.retrieve_memory(key="test_key")
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
 
 class TestBranchCoverage_MentalMapping:
@@ -129,7 +129,7 @@ class TestBranchCoverage_MentalMapping:
         node = model.create_node(NodeType.PROBLEM, {})
 
         path = model.shortest_path(source=node, target=node)
-        assert path == [node]
+        assert path == [node], "path is not valid"
 
     def test_shortest_path_no_path_exists(self):
         """Test shortest path when no path exists"""
@@ -141,7 +141,7 @@ class TestBranchCoverage_MentalMapping:
         # Don't connect them
 
         path = model.shortest_path(source=node1, target=node2)
-        assert path is None
+        assert path is None, "path is not valid"
 
     def test_bfs_with_empty_graph(self):
         """Test BFS on empty graph"""
@@ -149,7 +149,7 @@ class TestBranchCoverage_MentalMapping:
 
         model = MentalMappingModel()
         result = model.bfs(start_node="nonexistent")
-        assert result == []
+        assert result == [], "Result must not be empty"
 
     def test_get_node_centrality_single_node(self):
         """Test centrality with single node"""
@@ -159,7 +159,7 @@ class TestBranchCoverage_MentalMapping:
         node = model.create_node(NodeType.PROBLEM, {})
 
         centrality = model.get_node_centrality(node)
-        assert centrality == 0.0  # No other nodes to connect to
+        assert centrality == 0.0, "centrality is not valid"
 
 
 class TestExceptionHandling_AllModules:
@@ -171,7 +171,7 @@ class TestExceptionHandling_AllModules:
 
         model = MentalMappingModel()
         centrality = model.get_node_centrality("invalid_node_id")
-        assert centrality == 0.0
+        assert centrality == 0.0, "centrality is not valid"
 
     def test_agent_memory_empty_query(self):
         """Test agent memory with empty query"""
@@ -187,7 +187,7 @@ class TestExceptionHandling_AllModules:
 
         # Test with minimal array
         state = StrategyState("blue", np.array([1.0]))
-        assert state is not None
+        assert state is not None, "state must be initialized"
 
 
 class TestIntegrationDepth_MultiModule:
@@ -207,7 +207,7 @@ class TestIntegrationDepth_MultiModule:
 
         # Retrieve and use
         stored = memory.retrieve_memory("current_state")
-        assert stored is not None
+        assert stored is not None, "stored must be initialized"
 
     def test_mental_map_with_quantum_integration(self):
         """Test MentalMapping with QuantumGameTheory concepts"""
@@ -227,8 +227,8 @@ class TestIntegrationDepth_MultiModule:
 
         # Calculate metrics
         metrics = model.calculate_metrics()
-        assert metrics["num_nodes"] == 2
-        assert metrics["num_edges"] == 1
+        assert metrics["num_nodes"] == 2, "Condition must be true"
+        assert metrics["num_edges"] == 1, "Condition must be true"
 
     def test_developer_orchestrator_full_workflow(self):
         """Test DeveloperOrchestrator complete workflow"""
@@ -238,9 +238,9 @@ class TestIntegrationDepth_MultiModule:
 
         # Generate code
         code = orch.generate_code({"app_name": "test_app", "app_type": "cli"})
-        assert code is not None
+        assert code is not None, "code must be initialized"
         assert isinstance(code, str)
-        assert len(code) > 0
+        assert len(code) > 0, "Code must not be empty"
 
 
 class TestMethodDepth_ParameterVariations:
@@ -256,9 +256,9 @@ class TestMethodDepth_ParameterVariations:
         # harmonic_hamiltonian requires q and p positional arguments
         for omega in [0.5, 1.0, 2.0, 5.0]:
             H = evolver.harmonic_hamiltonian(q=1.0, p=0.5, omega=omega)
-            assert H is not None
+            assert H is not None, "H must be initialized"
             assert isinstance(H, float)
-            assert H >= 0  # Energy should be non-negative
+            assert H >= 0, "H must be greater than zero"
 
     def test_swarm_intelligence_various_dimensions(self):
         """Test SwarmIntelligence with different dimensions"""
@@ -266,7 +266,7 @@ class TestMethodDepth_ParameterVariations:
 
         for dim in [2, 3, 5, 10]:
             swarm = SwarmIntelligence(num_particles=5, dimensions=dim)
-            assert swarm.dimensions == dim
+            assert swarm.dimensions == dim, "dimensions is not valid"
 
     def test_energy_state_various_configurations(self):
         """Test EnergyState with different configurations"""
@@ -286,7 +286,7 @@ class TestMethodDepth_ParameterVariations:
                 energy=config.get("energy", 0),
                 entropy=config.get("entropy", 0),
             )
-            assert state is not None
+            assert state is not None, "state must be initialized"
 
 
 class TestEdgeCases_BoundaryConditions:
@@ -297,14 +297,14 @@ class TestEdgeCases_BoundaryConditions:
         from agents.physics_orchestrator import EnergyLandscape
 
         landscape = EnergyLandscape(temperature=0.0)
-        assert landscape.temperature == 0.0
+        assert landscape.temperature == 0.0, "temperature is not valid"
 
     def test_single_particle_swarm(self):
         """Test SwarmIntelligence with single particle"""
         from agents.physics_orchestrator import SwarmIntelligence
 
         swarm = SwarmIntelligence(num_particles=1)
-        assert swarm.num_particles == 1
+        assert swarm.num_particles == 1, "num_particles is not valid"
 
     def test_empty_workflow_steps(self):
         """Test WorkflowNavigator with empty workflow"""
@@ -315,7 +315,7 @@ class TestEdgeCases_BoundaryConditions:
         navigator.current_workflow_id = workflow_id
 
         current = navigator.current_step()
-        assert current is None
+        assert current is None, "current is not valid"
 
     def test_mental_map_single_node_metrics(self):
         """Test mental map metrics with single node"""
@@ -325,9 +325,9 @@ class TestEdgeCases_BoundaryConditions:
         model.create_node(NodeType.PROBLEM, {})
 
         metrics = model.calculate_metrics()
-        assert metrics["num_nodes"] == 1
-        assert metrics["num_edges"] == 0
-        assert metrics["density"] == 0.0
+        assert metrics["num_nodes"] == 1, "Condition must be true"
+        assert metrics["num_edges"] == 0, "Condition must be true"
+        assert metrics["density"] == 0.0, "Condition must be true"
 
 
 if __name__ == "__main__":

@@ -19,14 +19,14 @@ def test_run_gates_and_render_scorecard(tmp_path: Path) -> None:
 
     policy_map = write_policy_mapping(policy_path)
     results = run_gates(repo_root=repo_root, output_path=gate_results_path)
-    assert gate_results_path.exists()
+    assert gate_results_path.exists(), "Result must not be empty"
     assert results, "Gate results should contain entries"
 
     output = render_scorecard(
         gate_results_path=gate_results_path, policy_map=policy_map, output_path=scorecard_path
     )
-    assert output.exists()
+    assert output.exists(), "Condition must be true"
     text = output.read_text(encoding="utf-8")
-    assert "Repo Audit Scorecard" in text
-    assert "GATE-" in text
-    assert "RA-" in text
+    assert "Repo Audit Scorecard" in text, "Condition must be true"
+    assert "GATE-" in text, "Condition must be true"
+    assert "RA-" in text, "Condition must be true"

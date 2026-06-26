@@ -48,8 +48,8 @@ class TestNetworkFailuresAndRetries:
                 if retry == max_retries - 1:
                     raise
 
-        assert result is not None
-        assert attempt_count == 3
+        assert result is not None, "result must be initialized"
+        assert attempt_count == 3, "Count must be greater than zero"
 
     def test_exponential_backoff_between_retries(self):
         """Test exponential backoff delay between retries."""
@@ -81,7 +81,7 @@ class TestNetworkFailuresAndRetries:
                 attempts += 1
                 last_error = e
 
-        assert attempts == max_retries
+        assert attempts == max_retries, "attempts is not valid"
         assert isinstance(last_error, ConnectionError)
 
     def test_partial_response_handling(self):
@@ -97,8 +97,8 @@ class TestNetworkFailuresAndRetries:
             field in response.get("data", {}) for field in response["expected_fields"]
         )
 
-        assert not is_complete
-        assert response["status"] == "partial"
+        assert not is_complete, "not is not valid"
+        assert response["status"] == "partial", "Response must not be empty"
 
     def test_network_error_recovery(self):
         """Test recovery from network errors."""
@@ -121,9 +121,9 @@ class TestNetworkFailuresAndRetries:
             except ConnectionError:
                 continue
 
-        assert result is not None
-        assert result["data"] == "success"
-        assert call_count == 3
+        assert result is not None, "result must be initialized"
+        assert result["data"] == "success", "Result must not be empty"
+        assert call_count == 3, "Count must be greater than zero"
 
     def test_circuit_breaker_opens_on_failures(self):
         """Test circuit breaker pattern opens after threshold."""
@@ -142,8 +142,8 @@ class TestNetworkFailuresAndRetries:
             if failure_count >= failure_threshold:
                 circuit_open = True
 
-        assert circuit_open
-        assert failure_count == failure_threshold
+        assert circuit_open, "circuit_open is not valid"
+        assert failure_count == failure_threshold, "Count must be greater than zero"
 
     def test_fallback_on_service_unavailable(self):
         """Test fallback mechanism when service unavailable."""
@@ -159,17 +159,17 @@ class TestNetworkFailuresAndRetries:
         except ConnectionError:
             result = fallback_service()
 
-        assert result["source"] == "fallback"
-        assert "data" in result
+        assert result["source"] == "fallback", "Result must not be empty"
+        assert "data" in result, "Result must not be empty"
 
     def test_request_timeout_configuration(self):
         """Test configurable request timeouts."""
         timeout_config = {"connect_timeout": 5.0, "read_timeout": 30.0, "total_timeout": 60.0}
 
         # Verify timeout values are reasonable
-        assert timeout_config["connect_timeout"] < timeout_config["read_timeout"]
-        assert timeout_config["read_timeout"] < timeout_config["total_timeout"]
-        assert all(t > 0 for t in timeout_config.values())
+        assert timeout_config["connect_timeout"] < timeout_config["read_timeout"], "Condition must be true"
+        assert timeout_config["read_timeout"] < timeout_config["total_timeout"], "Condition must be true"
+        assert all(t > 0 for t in timeout_config.values()), "t must be greater than zero"
 
     def test_connection_pool_exhaustion_handling(self):
         """Test handling of connection pool exhaustion."""
@@ -184,8 +184,8 @@ class TestNetworkFailuresAndRetries:
             else:
                 waiting_requests.append(request_id)
 
-        assert active_connections == max_connections
-        assert len(waiting_requests) == 5
+        assert active_connections == max_connections, "active_connections is not valid"
+        assert len(waiting_requests) == 5, "Waiting_requests must not be empty"
 
     def test_dns_resolution_failure_handling(self):
         """Test handling of DNS resolution failures."""
@@ -202,8 +202,8 @@ class TestNetworkFailuresAndRetries:
             ip = "127.0.0.1"
             error_logged = True
 
-        assert ip == "127.0.0.1"
-        assert error_logged
+        assert ip == "127.0.0.1", "ip is not valid"
+        assert error_logged, "Error should be raised or set"
 
 
 # =============================================================================
@@ -223,10 +223,10 @@ class TestResourceExhaustionScenarios:
             return (current_usage_mb + size_mb) <= memory_limit_mb
 
         # Should allow small allocation
-        assert can_allocate(100) is True
+        assert can_allocate(100) is True, "Condition must be true"
 
         # Should reject large allocation
-        assert can_allocate(200) is False
+        assert can_allocate(200) is False, "Condition must be true"
 
     def test_disk_space_check_before_write(self, tmp_path):
         """Test disk space check before writing."""
@@ -244,7 +244,7 @@ class TestResourceExhaustionScenarios:
         else:
             write_successful = False
 
-        assert write_successful
+        assert write_successful, "write_successful is not valid"
 
     def test_file_descriptor_limit_handling(self):
         """Test handling of file descriptor limits."""
@@ -259,7 +259,7 @@ class TestResourceExhaustionScenarios:
                 # Would need to close old files or reject
                 break
 
-        assert len(open_files) == max_open_files
+        assert len(open_files) == max_open_files, "Open_files must not be empty"
 
     def test_thread_pool_saturation_handling(self):
         """Test handling of thread pool saturation."""
@@ -274,8 +274,8 @@ class TestResourceExhaustionScenarios:
             else:
                 queued_tasks.append(task_id)
 
-        assert active_threads == max_threads
-        assert len(queued_tasks) == 10
+        assert active_threads == max_threads, "active_threads is not valid"
+        assert len(queued_tasks) == 10, "Queued_tasks must not be empty"
 
     def test_batch_processing_memory_optimization(self):
         """Test memory optimization in batch processing."""
@@ -287,10 +287,10 @@ class TestResourceExhaustionScenarios:
         # Process in batches to limit memory
         for i in range(0, len(large_dataset), batch_size):
             batch = large_dataset[i : i + batch_size]
-            assert len(batch) <= batch_size
+            assert len(batch) <= batch_size, "Batch must not be empty"
             processed_count += len(batch)
 
-        assert processed_count == len(large_dataset)
+        assert processed_count == len(large_dataset), "Large_dataset must not be empty"
 
     def test_cache_eviction_on_memory_pressure(self):
         """Test cache eviction when memory is full."""
@@ -307,8 +307,8 @@ class TestResourceExhaustionScenarios:
                 eviction_count += 1
             cache[f"key_{i}"] = f"value_{i}"
 
-        assert len(cache) == cache_max_size
-        assert eviction_count == 50
+        assert len(cache) == cache_max_size, "Cache must not be empty"
+        assert eviction_count == 50, "Count must be greater than zero"
 
     def test_streaming_for_large_files(self, tmp_path):
         """Test streaming approach for large files."""
@@ -332,7 +332,7 @@ class TestResourceExhaustionScenarios:
                     break
                 bytes_read += len(chunk)
 
-        assert bytes_read == chunk_size * num_chunks
+        assert bytes_read == chunk_size * num_chunks, "bytes_read is not valid"
 
     def test_connection_limit_per_host(self):
         """Test connection limits per host."""
@@ -360,8 +360,8 @@ class TestResourceExhaustionScenarios:
             else:
                 rejected.append((host, req_id))
 
-        assert len(connections_per_host["host1"]) == 5
-        assert len(rejected) == 1
+        assert len(connections_per_host["host1"]) == 5, "Collection must not be empty"
+        assert len(rejected) == 1, "Rejected must not be empty"
 
     def test_graceful_degradation_on_resource_limits(self):
         """Test graceful degradation when resources limited."""
@@ -376,7 +376,7 @@ class TestResourceExhaustionScenarios:
                 selected_mode = mode
                 break
 
-        assert selected_mode == "standard_mode"
+        assert selected_mode == "standard_mode", "selected_mode is not valid"
 
     def test_request_queuing_on_overload(self):
         """Test request queuing during system overload."""
@@ -395,8 +395,8 @@ class TestResourceExhaustionScenarios:
                 # Reject request
                 pass
 
-        assert active_requests == max_concurrent_requests
-        assert len(request_queue) == 20
+        assert active_requests == max_concurrent_requests, "active_requests is not valid"
+        assert len(request_queue) == 20, "Request_queue must not be empty"
 
 
 # =============================================================================
@@ -422,14 +422,14 @@ class TestConcurrentAccessAndLocking:
             locks.pop(resource_id, None)
 
         # First thread acquires lock
-        assert acquire_lock("file1") is True
+        assert acquire_lock("file1") is True, "Condition must be true"
 
         # Second thread cannot acquire same lock
-        assert acquire_lock("file1") is False
+        assert acquire_lock("file1") is False, "Condition must be true"
 
         # After release, second thread can acquire
         release_lock("file1")
-        assert acquire_lock("file1") is True
+        assert acquire_lock("file1") is True, "Condition must be true"
 
     def test_read_write_lock_allows_concurrent_reads(self):
         """Test read-write lock allows concurrent reads."""
@@ -448,12 +448,12 @@ class TestConcurrentAccessAndLocking:
             return False
 
         # Multiple readers can acquire
-        assert acquire_read_lock() is True
-        assert acquire_read_lock() is True
-        assert lock_state["readers"] == 2
+        assert acquire_read_lock() is True, "Condition must be true"
+        assert acquire_read_lock() is True, "Condition must be true"
+        assert lock_state["readers"] == 2, "Condition must be true"
 
         # Writer cannot acquire while readers present
-        assert acquire_write_lock() is False
+        assert acquire_write_lock() is False, "Condition must be true"
 
     def test_atomic_counter_increment(self):
         """Test atomic counter increment."""
@@ -476,7 +476,7 @@ class TestConcurrentAccessAndLocking:
         for t in threads:
             t.join()
 
-        assert counter["value"] == num_increments
+        assert counter["value"] == num_increments, "Value must be initialized"
 
     def test_race_condition_in_cache_access(self):
         """Test race condition in cache access."""
@@ -495,7 +495,7 @@ class TestConcurrentAccessAndLocking:
         result2 = get_or_compute("key1", lambda: "value1_duplicate")
 
         # Both should get same value from cache
-        assert result1 == result2
+        assert result1 == result2, "Result must not be empty"
 
     def test_deadlock_prevention_with_lock_ordering(self):
         """Test deadlock prevention using lock ordering."""
@@ -522,7 +522,7 @@ class TestConcurrentAccessAndLocking:
 
         # Would not deadlock with thread 2 trying B then A
         # because both use sorted order
-        assert success1 is True
+        assert success1 is True, "success1 is not valid"
 
     def test_optimistic_locking_with_version_check(self):
         """Test optimistic locking with version checking."""
@@ -537,11 +537,11 @@ class TestConcurrentAccessAndLocking:
 
         # First update succeeds
         assert update_with_version_check(1, 150) is True
-        assert data["version"] == 2
+        assert data["version"] == 2, "Data must not be empty"
 
         # Update with stale version fails
         assert update_with_version_check(1, 200) is False
-        assert data["value"] == 150  # Unchanged
+        assert data["value"] == 150, "Data must not be empty"
 
     def test_concurrent_map_access(self):
         """Test concurrent map/dict access."""
@@ -561,7 +561,7 @@ class TestConcurrentAccessAndLocking:
         safe_put("key2", "value2")
 
         # Read
-        assert safe_get("key1") == "value1"
+        assert safe_get("key1") == "value1", "Value must be initialized"
 
     def test_lock_timeout_prevents_deadlock(self):
         """Test lock timeout prevents indefinite waiting."""
@@ -582,7 +582,7 @@ class TestConcurrentAccessAndLocking:
 
         # Timeout prevents indefinite wait
         result = try_acquire_with_timeout(0.5)
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_copy_on_write_for_concurrent_reads(self):
         """Test copy-on-write for safe concurrent reads."""
@@ -620,16 +620,16 @@ class TestConcurrentAccessAndLocking:
                 active_count -= 1
 
         # Can acquire up to max
-        assert acquire_semaphore() is True
-        assert acquire_semaphore() is True
-        assert acquire_semaphore() is True
+        assert acquire_semaphore() is True, "acquire_semaph is not valid"
+        assert acquire_semaphore() is True, "acquire_semaph is not valid"
+        assert acquire_semaphore() is True, "acquire_semaph is not valid"
 
         # Cannot exceed max
-        assert acquire_semaphore() is False
+        assert acquire_semaphore() is False, "acquire_semaph is not valid"
 
         # Can acquire after release
         release_semaphore()
-        assert acquire_semaphore() is True
+        assert acquire_semaphore() is True, "acquire_semaph is not valid"
 
 
 # =============================================================================
@@ -655,8 +655,8 @@ class TestPartialFailuresAndRollback:
         except Exception as _err:
             transaction_log.append("ROLLBACK")
 
-        assert "ROLLBACK" in transaction_log
-        assert "COMMIT" not in transaction_log
+        assert "ROLLBACK" in transaction_log, "Condition must be true"
+        assert "COMMIT" not in transaction_log, "Condition must be true"
 
     def test_checkpoint_allows_partial_recovery(self, tmp_path):
         """Test checkpoint allows recovery from partial failure."""
@@ -677,10 +677,10 @@ class TestPartialFailuresAndRollback:
 
         # Simulate failure and recovery
         last_checkpoint = checkpoint_dir / "ckpt_10.json"
-        assert last_checkpoint.exists()
+        assert last_checkpoint.exists(), "Condition must be true"
 
         recovered_items = json.loads(last_checkpoint.read_text())
-        assert len(recovered_items) == 10
+        assert len(recovered_items) == 10, "Recovered_items must not be empty"
 
     def test_compensating_transaction_on_failure(self):
         """Test compensating transactions on failure."""
@@ -719,13 +719,13 @@ class TestPartialFailuresAndRollback:
         # Idempotent can be retried
         idempotent_set(10)
         idempotent_set(10)  # Retry
-        assert state["value"] == 10
+        assert state["value"] == 10, "Value must be initialized"
 
         # Non-idempotent retry causes issues
         state["value"] = 0
         non_idempotent_increment()
         non_idempotent_increment()  # Retry causes double increment
-        assert state["value"] == 2
+        assert state["value"] == 2, "Value must be initialized"
 
     def test_partial_batch_failure_handling(self):
         """Test handling of partial batch failures."""
@@ -742,7 +742,7 @@ class TestPartialFailuresAndRollback:
                 failed.append(item)
 
         assert successful == [1, 2, 4, 5]
-        assert failed == [3]
+        assert failed == [3], "failed is not valid"
 
     def test_two_phase_commit_protocol(self):
         """Test two-phase commit for distributed transactions."""
@@ -760,7 +760,7 @@ class TestPartialFailuresAndRollback:
         # Phase 2: Commit or abort
         decision = "COMMIT" if all(prepare_votes.values()) else "ABORT"
 
-        assert decision == "ABORT"
+        assert decision == "ABORT", "decision is not valid"
 
     def test_saga_pattern_for_long_transactions(self):
         """Test saga pattern for long-running transactions."""
@@ -785,8 +785,8 @@ class TestPartialFailuresAndRollback:
                 saga_steps.append((comp_action, comp_data))
 
         # Should have compensations at end
-        assert saga_steps[-2][0] == "refund_payment"
-        assert saga_steps[-1][0] == "release_inventory"
+        assert saga_steps[-2][0] == "refund_payment", "Condition must be true"
+        assert saga_steps[-1][0] == "release_inventory", "Condition must be true"
 
     def test_write_ahead_log_for_recovery(self, tmp_path):
         """Test write-ahead log enables recovery."""
@@ -806,8 +806,8 @@ class TestPartialFailuresAndRollback:
         for line in wal_file.read_text().strip().split("\n"):
             recovered_ops.append(json.loads(line))
 
-        assert len(recovered_ops) == 3
-        assert recovered_ops[0]["key"] == "a"
+        assert len(recovered_ops) == 3, "Recovered_ops must not be empty"
+        assert recovered_ops[0]["key"] == "a", "Condition must be true"
 
     def test_circuit_breaker_prevents_cascade_failures(self):
         """Test circuit breaker prevents cascade failures."""
@@ -830,7 +830,7 @@ class TestPartialFailuresAndRollback:
                 call_service()
 
         # Circuit now open
-        assert circuit_state["open"] is True
+        assert circuit_state["open"] is True, "Condition must be true"
 
     def test_graceful_shutdown_on_failure(self):
         """Test graceful shutdown preserves state."""
@@ -849,9 +849,9 @@ class TestPartialFailuresAndRollback:
         shutdown_sequence.append("save_state")
         shutdown_sequence.append("close_connections")
 
-        assert state["in_flight_requests"] == 0
-        assert state["completed"] == 105
-        assert len(shutdown_sequence) == 3
+        assert state["in_flight_requests"] == 0, "Condition must be true"
+        assert state["completed"] == 105, "Condition must be true"
+        assert len(shutdown_sequence) == 3, "Shutdown_sequence must not be empty"
 
     def test_retry_with_jitter_prevents_thundering_herd(self):
         """Test retry with jitter prevents thundering herd."""
@@ -867,8 +867,8 @@ class TestPartialFailuresAndRollback:
             retry_delays.append(delay)
 
         # Delays should be different (not all same)
-        assert len(set(retry_delays)) > 1
-        assert all(base_delay <= d <= base_delay + max_jitter for d in retry_delays)
+        assert len(set(retry_delays)) > 1, "Collection must not be empty"
+        assert all(base_delay <= d <= base_delay + max_jitter for d in retry_delays), "base_delay is not valid"
 
     def test_failure_isolation_between_tenants(self):
         """Test failures isolated between tenants."""
@@ -883,8 +883,8 @@ class TestPartialFailuresAndRollback:
         tenant_states["tenant_b"]["healthy"] = False
 
         # Other tenants unaffected
-        assert tenant_states["tenant_a"]["healthy"] is True
-        assert tenant_states["tenant_c"]["healthy"] is True
+        assert tenant_states["tenant_a"]["healthy"] is True, "Condition must be true"
+        assert tenant_states["tenant_c"]["healthy"] is True, "Condition must be true"
 
     def test_incremental_rollback_on_partial_failure(self):
         """Test incremental rollback on partial failure."""
@@ -904,8 +904,8 @@ class TestPartialFailuresAndRollback:
             for change in reversed(applied_changes):
                 rollback_sequence.append(f"rollback_{change}")
 
-        assert len(rollback_sequence) == 3
-        assert rollback_sequence[0] == "rollback_change_3"
+        assert len(rollback_sequence) == 3, "Rollback_sequence must not be empty"
+        assert rollback_sequence[0] == "rollback_change_3", "Condition must be true"
 
     def test_async_error_handling_with_callbacks(self):
         """Test async error handling with callbacks."""
@@ -941,5 +941,5 @@ class TestPartialFailuresAndRollback:
         total_upstream = service_timeouts["service_a"] + service_timeouts["service_b"]
 
         # C's timeout should prevent cascading
-        assert safe_timeout_c < total_upstream
-        assert safe_timeout_c == 2.0
+        assert safe_timeout_c < total_upstream, "safe_timeout_c is not valid"
+        assert safe_timeout_c == 2.0, "safe_timeout_c is not valid"

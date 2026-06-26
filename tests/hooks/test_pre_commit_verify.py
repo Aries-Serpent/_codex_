@@ -28,30 +28,30 @@ class TestShouldIgnoreFile:
 
     def test_ignores_tmp_files(self):
         """Test that /tmp/ files are ignored."""
-        assert should_ignore_file("/tmp/test.txt") is True
-        assert should_ignore_file("tmp/test.txt") is True
+        assert should_ignore_file("/tmp/test.txt") is True, "should_ign is not valid"
+        assert should_ignore_file("tmp/test.txt") is True, "should_ign is not valid"
 
     def test_ignores_pycache(self):
         """Test that __pycache__ directories are ignored."""
-        assert should_ignore_file("src/__pycache__/module.pyc") is True
+        assert should_ignore_file("src/__pycache__/module.pyc") is True, "should_ign is not valid"
 
     def test_ignores_pyc_files(self):
         """Test that .pyc files are ignored."""
-        assert should_ignore_file("module.pyc") is True
+        assert should_ignore_file("module.pyc") is True, "should_ign is not valid"
 
     def test_ignores_git_directory(self):
         """Test that .git directory is ignored."""
-        assert should_ignore_file(".git/config") is True
+        assert should_ignore_file(".git/config") is True, "should_ign is not valid"
 
     def test_ignores_node_modules(self):
         """Test that node_modules is ignored."""
-        assert should_ignore_file("node_modules/package/index.js") is True
+        assert should_ignore_file("node_modules/package/index.js") is True, "should_ign is not valid"
 
     def test_allows_normal_files(self):
         """Test that normal source files are not ignored."""
-        assert should_ignore_file("src/module.py") is False
-        assert should_ignore_file("scripts/test.py") is False
-        assert should_ignore_file("docs/README.md") is False
+        assert should_ignore_file("src/module.py") is False, "should_ign is not valid"
+        assert should_ignore_file("scripts/test.py") is False, "should_ign is not valid"
+        assert should_ignore_file("docs/README.md") is False, "should_ign is not valid"
 
     def test_custom_patterns(self):
         """Test custom ignore patterns."""
@@ -75,9 +75,9 @@ class TestParseActionLog:
 
         result = parse_action_log(log_file)
 
-        assert len(result) == 2
-        assert result[0]["path"] == "src/new.py"
-        assert result[1]["path"] == "src/old.py"
+        assert len(result) == 2, "Result must not be empty"
+        assert result[0]["path"] == "src/new.py", "Result must not be empty"
+        assert result[1]["path"] == "src/old.py", "Result must not be empty"
 
     def test_filters_by_timestamp(self, tmp_path):
         """Test filtering entries by timestamp."""
@@ -91,8 +91,8 @@ class TestParseActionLog:
         since = datetime(2026, 2, 5, 0, 0, 0, tzinfo=timezone.utc)
         result = parse_action_log(log_file, since=since)
 
-        assert len(result) == 1
-        assert result[0]["path"] == "new.py"
+        assert len(result) == 1, "Result must not be empty"
+        assert result[0]["path"] == "new.py", "Result must not be empty"
 
     def test_ignores_non_file_operations(self, tmp_path):
         """Test that non-file operations are ignored."""
@@ -105,14 +105,14 @@ class TestParseActionLog:
 
         result = parse_action_log(log_file)
 
-        assert len(result) == 1
-        assert result[0]["path"] == "src/new.py"
+        assert len(result) == 1, "Result must not be empty"
+        assert result[0]["path"] == "src/new.py", "Result must not be empty"
 
     def test_handles_missing_file(self, tmp_path):
         """Test handling of missing log file."""
         log_file = tmp_path / "nonexistent.ndjson"
         result = parse_action_log(log_file)
-        assert result == []
+        assert result == [], "Result must not be empty"
 
     def test_skips_malformed_json(self, tmp_path):
         """Test skipping malformed JSON lines."""
@@ -122,7 +122,7 @@ class TestParseActionLog:
 
         result = parse_action_log(log_file)
 
-        assert len(result) == 2
+        assert len(result) == 2, "Result must not be empty"
 
 
 class TestExtractExpectedFiles:
@@ -141,8 +141,8 @@ class TestExtractExpectedFiles:
 
         result = extract_expected_files(operations, tmp_path)
 
-        assert "src/module.py" in result
-        assert "src/missing.py" not in result  # File doesn't exist
+        assert "src/module.py" in result, "Result must not be empty"
+        assert "src/missing.py" not in result, "Result must not be empty"
 
     def test_ignores_tmp_files(self, tmp_path):
         """Test that /tmp/ files are ignored."""
@@ -152,7 +152,7 @@ class TestExtractExpectedFiles:
 
         result = extract_expected_files(operations, tmp_path)
 
-        assert len(result) == 0
+        assert len(result) == 0, "Result must not be empty"
 
 
 class TestVerifyStagedFiles:
@@ -170,8 +170,8 @@ class TestVerifyStagedFiles:
         )
 
         assert staged_exp == {"a.py", "b.py"}
-        assert missing_mod == {"c.py"}
-        assert missing_untracked == set()
+        assert missing_mod == {"c.py"}, "missing_mod is not valid"
+        assert missing_untracked == set(), "missing_untracked is not valid"
 
     def test_identifies_untracked_missing(self):
         """Test identification of untracked missing files."""
@@ -184,9 +184,9 @@ class TestVerifyStagedFiles:
             expected, staged, modified, untracked
         )
 
-        assert staged_exp == set()
-        assert missing_mod == set()
-        assert missing_untracked == {"new.py"}
+        assert staged_exp == set(), "staged_exp is not valid"
+        assert missing_mod == set(), "missing_mod is not valid"
+        assert missing_untracked == {"new.py"}, "missing_untracked is not valid"
 
 
 class TestGenerateReport:
@@ -201,11 +201,11 @@ class TestGenerateReport:
 
         report = generate_report(expected, staged, missing_mod, missing_untracked)
 
-        assert "Pre-commit Verification Report" in report
-        assert "a.py" in report
-        assert "b.py" in report
-        assert "✅" in report
-        assert "⚠️" in report
+        assert "Pre-commit Verification Report" in report, "Condition must be true"
+        assert "a.py" in report, "Condition must be true"
+        assert "b.py" in report, "Condition must be true"
+        assert "✅" in report, "Condition must be true"
+        assert "⚠️" in report, "Condition must be true"
 
     def test_all_staged_report(self):
         """Test report when all files are staged."""
@@ -214,7 +214,7 @@ class TestGenerateReport:
 
         report = generate_report(expected, staged, set(), set())
 
-        assert "Missing from staging: 0" in report
+        assert "Missing from staging: 0" in report, "Condition must be true"
 
 
 class TestLoadGitignorePatterns:
@@ -227,9 +227,9 @@ class TestLoadGitignorePatterns:
 
         patterns = load_gitignore_patterns(tmp_path)
 
-        assert len(patterns) == 3
+        assert len(patterns) == 3, "Patterns must not be empty"
 
     def test_handles_missing_gitignore(self, tmp_path):
         """Test handling of missing .gitignore file."""
         patterns = load_gitignore_patterns(tmp_path)
-        assert patterns == []
+        assert patterns == [], "patterns is not valid"

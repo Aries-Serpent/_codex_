@@ -34,10 +34,10 @@ class TestManifestSchema:
         }
 
         # Act & Assert
-        assert "version" in manifest
-        assert "created_at" in manifest
-        assert "files" in manifest
-        assert "total_size" in manifest
+        assert "version" in manifest, "Condition must be true"
+        assert "created_at" in manifest, "Condition must be true"
+        assert "files" in manifest, "Condition must be true"
+        assert "total_size" in manifest, "Condition must be true"
 
     def test_manifest_version_format(self) -> None:
         """Test version field format."""
@@ -49,7 +49,7 @@ class TestManifestSchema:
 
         # Assert
         assert isinstance(version, str)
-        assert "." in version
+        assert "." in version, "Condition must be true"
 
     def test_manifest_timestamp_format(self) -> None:
         """Test timestamp format."""
@@ -58,7 +58,7 @@ class TestManifestSchema:
         manifest = {"created_at": timestamp}
 
         # Act & Assert
-        assert "T" in manifest["created_at"]
+        assert "T" in manifest["created_at"], "Condition must be true"
         # New format uses +00:00 instead of Z
         assert manifest["created_at"].endswith(("+00:00", "Z"))
 
@@ -75,8 +75,8 @@ class TestFileEntry:
         }
 
         # Act & Assert
-        assert "path" in entry
-        assert "size" in entry
+        assert "path" in entry, "Condition must be true"
+        assert "size" in entry, "Condition must be true"
         assert isinstance(entry["size"], int)
 
     def test_file_entry_with_hash(self) -> None:
@@ -89,8 +89,8 @@ class TestFileEntry:
         }
 
         # Act & Assert
-        assert "sha256" in entry
-        assert len(entry["sha256"]) > 0
+        assert "sha256" in entry, "Condition must be true"
+        assert len(entry["sha256"]) > 0, "Collection must not be empty"
 
     def test_file_entry_with_metadata(self) -> None:
         """Test file entry with additional metadata."""
@@ -103,8 +103,8 @@ class TestFileEntry:
         }
 
         # Act & Assert
-        assert "original_path" in entry
-        assert "mime_type" in entry
+        assert "original_path" in entry, "Condition must be true"
+        assert "mime_type" in entry, "Condition must be true"
 
 
 class TestManifestGeneration:
@@ -120,8 +120,8 @@ class TestManifestGeneration:
         }
 
         # Assert
-        assert len(manifest["files"]) == 0
-        assert manifest["total_size"] == 0
+        assert len(manifest["files"]) == 0, "Collection must not be empty"
+        assert manifest["total_size"] == 0, "Condition must be true"
 
     def test_generate_manifest_single_file(self) -> None:
         """Test generating manifest with one file."""
@@ -136,8 +136,8 @@ class TestManifestGeneration:
         }
 
         # Assert
-        assert len(manifest["files"]) == 1
-        assert manifest["total_size"] == 500
+        assert len(manifest["files"]) == 1, "Collection must not be empty"
+        assert manifest["total_size"] == 500, "Condition must be true"
 
     def test_generate_manifest_multiple_files(self) -> None:
         """Test generating manifest with multiple files."""
@@ -156,8 +156,8 @@ class TestManifestGeneration:
         }
 
         # Assert
-        assert len(manifest["files"]) == 3
-        assert manifest["total_size"] == 600
+        assert len(manifest["files"]) == 3, "Collection must not be empty"
+        assert manifest["total_size"] == 600, "Condition must be true"
 
     def test_compute_total_size(self) -> None:
         """Test computing total size across files."""
@@ -172,7 +172,7 @@ class TestManifestGeneration:
         total_size = sum(f["size"] for f in files)
 
         # Assert
-        assert total_size == 3584
+        assert total_size == 3584, "total_size is not valid"
 
 
 class TestJSONSerialization:
@@ -192,7 +192,7 @@ class TestJSONSerialization:
 
         # Assert
         assert isinstance(json_str, str)
-        assert "version" in json_str
+        assert "version" in json_str, "Condition must be true"
 
     def test_manifest_deserializable(self) -> None:
         """Test manifest can be deserialized from JSON."""
@@ -203,8 +203,8 @@ class TestJSONSerialization:
         manifest = json.loads(json_str)
 
         # Assert
-        assert manifest["version"] == "1.0"
-        assert manifest["files"] == []
+        assert manifest["version"] == "1.0", "Condition must be true"
+        assert manifest["files"] == [], "Condition must be true"
 
     def test_manifest_pretty_print(self) -> None:
         """Test pretty-printing manifest JSON."""
@@ -215,8 +215,8 @@ class TestJSONSerialization:
         json_str = json.dumps(manifest, indent=2)
 
         # Assert
-        assert "\n" in json_str
-        assert "  " in json_str
+        assert "\n" in json_str, "Condition must be true"
+        assert "  " in json_str, "Condition must be true"
 
 
 class TestManifestMetadata:
@@ -235,7 +235,7 @@ class TestManifestMetadata:
         }
 
         # Assert
-        assert manifest["file_count"] == 5
+        assert manifest["file_count"] == 5, "Count must be greater than zero"
 
     def test_manifest_includes_generator_info(self) -> None:
         """Test manifest includes generator information."""
@@ -247,8 +247,8 @@ class TestManifestMetadata:
         }
 
         # Act & Assert
-        assert "generator" in manifest
-        assert "generator_version" in manifest
+        assert "generator" in manifest, "Condition must be true"
+        assert "generator_version" in manifest, "Condition must be true"
 
 
 class TestEdgeCases:
@@ -266,8 +266,8 @@ class TestEdgeCases:
         }
 
         # Assert
-        assert manifest["total_size"] == 0
-        assert len(manifest["files"]) == 1
+        assert manifest["total_size"] == 0, "Condition must be true"
+        assert len(manifest["files"]) == 1, "Collection must not be empty"
 
     def test_manifest_with_large_file_count(self) -> None:
         """Test manifest with many files."""
@@ -281,8 +281,8 @@ class TestEdgeCases:
         }
 
         # Assert
-        assert len(manifest["files"]) == 1000
-        assert manifest["total_size"] == 100000
+        assert len(manifest["files"]) == 1000, "Collection must not be empty"
+        assert manifest["total_size"] == 100000, "Condition must be true"
 
     def test_manifest_path_with_special_chars(self) -> None:
         """Test file paths with special characters."""
@@ -296,7 +296,7 @@ class TestEdgeCases:
         json_str = json.dumps(entry)
 
         # Assert
-        assert "file-with-dashes_and_underscores.v2.py" in json_str
+        assert "file-with-dashes_and_underscores.v2.py" in json_str, "Condition must be true"
 
 
 # #AFTERMATH_METRIC - 15 tests created for manifest generation

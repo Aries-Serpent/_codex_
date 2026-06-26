@@ -17,8 +17,8 @@ def test_csv_sink(tmp_path: Path) -> None:
         sink.write({"metric": "accuracy", "value": 0.9})
         sink.close()
     content = path.read_text(encoding="utf-8")
-    assert "metric" in content
-    assert "accuracy" in content
+    assert "metric" in content, "Content must not be empty"
+    assert "accuracy" in content, "Content must not be empty"
 
 
 def test_ndjson_sink(tmp_path: Path) -> None:
@@ -28,7 +28,7 @@ def test_ndjson_sink(tmp_path: Path) -> None:
         sink.write({"metric": "f1", "value": 0.8})
         sink.close()
     lines = [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()]
-    assert lines[0]["metric"] == "f1"
+    assert lines[0]["metric"] == "f1", "Condition must be true"
 
 
 def test_create_sink_defaults() -> None:

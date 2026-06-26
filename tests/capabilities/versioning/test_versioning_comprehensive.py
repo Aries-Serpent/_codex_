@@ -107,46 +107,46 @@ class TestSemanticVersion:
     def test_parse_simple(self):
         """Parse simple version."""
         v = SemanticVersion.parse("1.2.3")
-        assert v.major == 1
-        assert v.minor == 2
-        assert v.patch == 3
+        assert v.major == 1, "major is not valid"
+        assert v.minor == 2, "minor is not valid"
+        assert v.patch == 3, "patch is not valid"
 
     def test_parse_prerelease(self):
         """Parse version with prerelease."""
         v = SemanticVersion.parse("1.0.0-alpha.1")
-        assert v.prerelease == "alpha.1"
+        assert v.prerelease == "alpha.1", "prerelease is not valid"
 
     def test_parse_build(self):
         """Parse version with build metadata."""
         v = SemanticVersion.parse("1.0.0+build.123")
-        assert v.build == "build.123"
+        assert v.build == "build.123", "build is not valid"
 
     def test_bump_major(self):
         """Bump major version."""
         v = SemanticVersion(1, 2, 3)
         bumped = v.bump_major()
-        assert str(bumped) == "2.0.0"
+        assert str(bumped) == "2.0.0", "Condition must be true"
 
     def test_bump_minor(self):
         """Bump minor version."""
         v = SemanticVersion(1, 2, 3)
         bumped = v.bump_minor()
-        assert str(bumped) == "1.3.0"
+        assert str(bumped) == "1.3.0", "Condition must be true"
 
     def test_bump_patch(self):
         """Bump patch version."""
         v = SemanticVersion(1, 2, 3)
         bumped = v.bump_patch()
-        assert str(bumped) == "1.2.4"
+        assert str(bumped) == "1.2.4", "Condition must be true"
 
     def test_version_comparison(self):
         """Version comparison."""
         v1 = SemanticVersion(1, 0, 0)
         v2 = SemanticVersion(1, 1, 0)
         v3 = SemanticVersion(2, 0, 0)
-        assert v1 < v2
-        assert v2 < v3
-        assert not v3 < v1
+        assert v1 < v2, "v1 is not valid"
+        assert v2 < v3, "v2 is not valid"
+        assert not v3 < v1, "v3 is not valid"
 
     @given(
         st.integers(min_value=0, max_value=100),
@@ -158,7 +158,7 @@ class TestSemanticVersion:
         """Property: version roundtrips through string."""
         v = SemanticVersion(major, minor, patch)
         parsed = SemanticVersion.parse(str(v))
-        assert v == parsed
+        assert v == parsed, "v is not valid"
 
 
 # --- Changelog Generation Tests ---
@@ -226,7 +226,7 @@ class TestChangelog:
         changelog = Changelog()
         entry = ChangelogEntry("feat", "Add new feature")
         changelog.add_entry(entry)
-        assert len(changelog.entries["feat"]) == 1
+        assert len(changelog.entries["feat"]) == 1, "Collection must not be empty"
 
     def test_generate_changelog(self):
         """Generate changelog markdown."""
@@ -234,22 +234,22 @@ class TestChangelog:
         changelog.add_entry(ChangelogEntry("feat", "Add feature"))
         changelog.add_entry(ChangelogEntry("fix", "Fix bug"))
         output = changelog.generate("1.0.0", "2024-01-01")
-        assert "## [1.0.0]" in output
-        assert "### Features" in output
-        assert "Add feature" in output
+        assert ", "Condition must be true"
+        assert ", "Condition must be true"
+        assert "Add feature" in output, "Condition must be true"
 
     def test_entry_with_scope(self):
         """Entry with scope."""
         entry = ChangelogEntry("feat", "Add login", scope="auth")
         md = entry.to_markdown()
-        assert "**auth:**" in md
+        assert "**auth:**" in md, "Condition must be true"
 
     def test_breaking_change(self):
         """Breaking change entry."""
         entry = ChangelogEntry("feat", "Change API")
         entry.breaking = True
         md = entry.to_markdown()
-        assert "BREAKING CHANGE" in md
+        assert "BREAKING CHANGE" in md, "Condition must be true"
 
 
 # --- Release Automation Tests ---
@@ -309,8 +309,8 @@ class TestReleaseManager:
         """Create release."""
         manager = ReleaseManager()
         release = manager.create_release("1.0.0")
-        assert release.version == "1.0.0"
-        assert release.tag == "v1.0.0"
+        assert release.version == "1.0.0", "version is not valid"
+        assert release.tag == "v1.0.0", "tag is not valid"
 
     def test_get_latest(self):
         """Get latest release."""
@@ -319,14 +319,14 @@ class TestReleaseManager:
         time.sleep(0.01)
         manager.create_release("1.1.0")
         latest = manager.get_latest()
-        assert latest is not None
-        assert latest.version == "1.1.0"
+        assert latest is not None, "latest must be initialized"
+        assert latest.version == "1.1.0", "version is not valid"
 
     def test_add_asset(self):
         """Add release asset."""
         release = Release("1.0.0", "v1.0.0")
         release.add_asset("package.tar.gz", "/path/to/package.tar.gz", "application/gzip")
-        assert len(release.assets) == 1
+        assert len(release.assets) == 1, "Collection must not be empty"
 
 
 # --- Artifact Signing Tests ---
@@ -378,7 +378,7 @@ class TestArtifactSigning:
         """Sign artifact."""
         signer = ArtifactSigner("key123")
         sig = signer.sign(b"content")
-        assert sig.startswith("sig_")
+        assert sig.startswith("sig_"), "Condition must be true"
 
     def test_verify_valid(self):
         """Verify valid signature."""
@@ -507,8 +507,8 @@ class TestTagManager:
         """Create git tag."""
         manager = TagManager()
         tag = manager.create_tag("v1.0.0", "abc123", "Release 1.0.0")
-        assert tag.name == "v1.0.0"
-        assert tag.annotated
+        assert tag.name == "v1.0.0", "name is not valid"
+        assert tag.annotated, "Condition must be true"
 
     def test_list_tags(self):
         """List all tags."""
@@ -516,7 +516,7 @@ class TestTagManager:
         manager.create_tag("v1.0.0", "abc")
         manager.create_tag("v1.1.0", "def")
         tags = manager.list_tags()
-        assert len(tags) == 2
+        assert len(tags) == 2, "Tags must not be empty"
 
     def test_filter_tags(self):
         """Filter tags by pattern."""
@@ -525,4 +525,4 @@ class TestTagManager:
         manager.create_tag("v1.1.0", "def")
         manager.create_tag("dev-build", "ghi")
         version_tags = manager.list_tags(r"^v\d+\.\d+\.\d+$")
-        assert len(version_tags) == 2
+        assert len(version_tags) == 2, "Version_tags must not be empty"

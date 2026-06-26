@@ -87,7 +87,7 @@ class OllamaEmbeddingProvider:
             return response.status_code == 200
         except (ValueError, TypeError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Health check failed: <ERROR_TYPE>")
+            logger.debug("Health check failed: <ERROR_TYPE>")
             return False
 
     def encode(
@@ -129,7 +129,7 @@ class OllamaEmbeddingProvider:
 
             except (ConnectionError, TimeoutError) as e:
                 error_type = type(e).__name__
-                logger.error(f"Error encoding text: <ERROR_TYPE>")
+                logger.error("Error encoding text: <ERROR_TYPE>")
                 embeddings.append([0.0] * self.dimension)
 
         return np.array(embeddings, dtype=np.float32)

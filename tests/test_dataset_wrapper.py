@@ -22,9 +22,9 @@ def test_train_val_test_split_reproducible() -> None:
     a_train, a_val, a_test = train_val_test_split(source, seed=123)
     b_train, b_val, b_test = train_val_test_split(source, seed=123)
 
-    assert list(a_train["text"]) == list(b_train["text"])
-    assert list(a_val["text"]) == list(b_val["text"])
-    assert list(a_test["text"]) == list(b_test["text"])
+    assert list(a_train["text"]) == list(b_train["text"]), "Condition must be true"
+    assert list(a_val["text"]) == list(b_val["text"]), "Condition must be true"
+    assert list(a_test["text"]) == list(b_test["text"]), "Condition must be true"
 
 
 @pytest.mark.skipif(not DATASETS_AVAILABLE, reason="datasets library not installed")
@@ -33,6 +33,6 @@ def test_train_val_test_split_respects_ratios() -> None:
 
     dataset = Dataset.from_dict({"value": list(range(30))})
     train, val, test = train_val_test_split(dataset, splits=(0.6, 0.2, 0.2), seed=7)
-    assert len(train) == 18
-    assert len(val) == 6
-    assert len(test) == 6
+    assert len(train) == 18, "Train must not be empty"
+    assert len(val) == 6, "Val must not be empty"
+    assert len(test) == 6, "Test must not be empty"

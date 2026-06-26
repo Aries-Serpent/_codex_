@@ -40,14 +40,14 @@ class TestPhysicsOrchestratorGettersProperties:
     def test_force_vector_magnitude_getter(self):
         """Test magnitude property calculation."""
         fv = ForceVector(x=3.0, y=4.0, z=0.0)
-        assert abs(fv.magnitude - 5.0) < 0.001
+        assert abs(fv.magnitude - 5.0) < 0.001, "Condition must be true"
 
     def test_force_vector_components(self):
         """Test component getters."""
         fv = ForceVector(x=1.0, y=2.0, z=3.0)
-        assert fv.x == 1.0
-        assert fv.y == 2.0
-        assert fv.z == 3.0
+        assert fv.x == 1.0, "x is not valid"
+        assert fv.y == 2.0, "y is not valid"
+        assert fv.z == 3.0, "z is not valid"
 
     def test_action_path_energy_property(self):
         """Test energy property."""
@@ -57,7 +57,7 @@ class TestPhysicsOrchestratorGettersProperties:
             momentum=5.0,
             trajectory=[],
         )
-        assert path.energy == 10.0
+        assert path.energy == 10.0, "energy is not valid"
 
     def test_action_path_momentum_property(self):
         """Test momentum property."""
@@ -67,7 +67,7 @@ class TestPhysicsOrchestratorGettersProperties:
             momentum=5.0,
             trajectory=[],
         )
-        assert path.momentum == 5.0
+        assert path.momentum == 5.0, "momentum is not valid"
 
     def test_decision_state_properties(self):
         """Test decision state property access."""
@@ -76,9 +76,9 @@ class TestPhysicsOrchestratorGettersProperties:
             energy=5.0,
             coherence=0.95,
         )
-        assert state.energy == 5.0
-        assert state.coherence == 0.95
-        assert len(state.state_vector) == 3
+        assert state.energy == 5.0, "energy is not valid"
+        assert state.coherence == 0.95, "coherence is not valid"
+        assert len(state.state_vector) == 3, "Collection must not be empty"
 
 
 class TestPhysicsOrchestratorEnumValidations:
@@ -86,15 +86,15 @@ class TestPhysicsOrchestratorEnumValidations:
 
     def test_action_type_all_values(self):
         """Validate all ActionType enum values."""
-        assert ActionType.ANALYZE.value == "analyze"
-        assert ActionType.PLAN.value == "plan"
-        assert ActionType.EXECUTE.value == "execute"
-        assert ActionType.REFLECT.value == "reflect"
+        assert ActionType.ANALYZE.value == "analyze", "Value must be initialized"
+        assert ActionType.PLAN.value == "plan", "Value must be initialized"
+        assert ActionType.EXECUTE.value == "execute", "Value must be initialized"
+        assert ActionType.REFLECT.value == "reflect", "Value must be initialized"
 
     def test_action_type_from_string(self):
         """Test enum construction from string."""
-        assert ActionType("analyze") == ActionType.ANALYZE
-        assert ActionType("plan") == ActionType.PLAN
+        assert ActionType("analyze") == ActionType.ANALYZE, "Condition must be true"
+        assert ActionType("plan") == ActionType.PLAN, "Condition must be true"
 
     def test_action_path_with_all_action_types(self):
         """Test ActionPath initialization with each enum value."""
@@ -105,7 +105,7 @@ class TestPhysicsOrchestratorEnumValidations:
                 momentum=1.0,
                 trajectory=[],
             )
-            assert path.action_type == action_type
+            assert path.action_type == action_type, "action_type is not valid"
 
 
 class TestQuantumGameTheoryGettersProperties:
@@ -120,7 +120,7 @@ class TestQuantumGameTheoryGettersProperties:
             import numpy as np
 
             state = StrategyState(team="blue", strategies=np.array([1.0, 0.0]))
-            assert len(state.state_vector) == 2
+            assert len(state.state_vector) == 2, "Collection must not be empty"
         except (TypeError, AttributeError):
             pytest.skip("StrategyState interface differs")
 
@@ -150,9 +150,9 @@ class TestMentalMappingGettersProperties:
                 content="test problem",
                 timestamp="2025-01-01T00:00:00",
             )
-            assert node.node_id == "test-1"
-            assert node.content == "test problem"
-            assert node.node_type == NodeType.PROBLEM
+            assert node.node_id == "test-1", "node_id is not valid"
+            assert node.content == "test problem", "Content must not be empty"
+            assert node.node_type == NodeType.PROBLEM, "node_type is not valid"
         except (TypeError, AttributeError):
             pytest.skip("MentalNode interface differs")
 
@@ -166,9 +166,9 @@ class TestMentalMappingGettersProperties:
                 reasoning_type="deductive",
                 confidence=0.8,
             )
-            assert step.thought == "test thought"
-            assert step.reasoning_type == "deductive"
-            assert step.confidence == 0.8
+            assert step.thought == "test thought", "thought is not valid"
+            assert step.reasoning_type == "deductive", "reasoning_type is not valid"
+            assert step.confidence == 0.8, "confidence is not valid"
         except (TypeError, AttributeError):
             pytest.skip("ReasoningStep interface differs")
 
@@ -177,7 +177,7 @@ class TestMentalMappingGettersProperties:
         map_obj = MentalMappingModel()
         try:
             initial_count = len(map_obj.nodes) if hasattr(map_obj, "nodes") else 0
-            assert initial_count >= 0
+            assert initial_count >= 0, "initial_count must be positive"
         except (TypeError, AttributeError):
             pytest.skip("MentalMappingModel nodes interface differs")
 
@@ -189,31 +189,31 @@ class TestPhysicsOrchestratorInitialization:
         """Test default orchestrator initialization."""
         orch = PhysicsInspiredOrchestrator()
         # Just verify it initializes without error
-        assert orch is not None
+        assert orch is not None, "orch must be initialized"
 
     def test_orchestrator_with_config(self):
         """Test orchestrator initialization with config."""
         try:
             orch = PhysicsInspiredOrchestrator(config={"enable_reflection": True})
-            assert orch is not None
+            assert orch is not None, "orch must be initialized"
         except TypeError:
             # Config might not be supported
             orch = PhysicsInspiredOrchestrator()
-            assert orch is not None
+            assert orch is not None, "orch must be initialized"
 
     def test_force_vector_initialization_variants(self):
         """Test various ForceVector initialization patterns."""
         # Zero vector
         fv1 = ForceVector(x=0.0, y=0.0, z=0.0)
-        assert fv1.magnitude == 0.0
+        assert fv1.magnitude == 0.0, "magnitude is not valid"
 
         # Unit vectors
         fv2 = ForceVector(x=1.0, y=0.0, z=0.0)
-        assert abs(fv2.magnitude - 1.0) < 0.001
+        assert abs(fv2.magnitude - 1.0) < 0.001, "Condition must be true"
 
         # Negative components
         fv3 = ForceVector(x=-1.0, y=-1.0, z=-1.0)
-        assert fv3.magnitude > 0.0
+        assert fv3.magnitude > 0.0, "magnitude must be greater than zero"
 
 
 class TestQuantumGameTheoryInitialization:
@@ -223,7 +223,7 @@ class TestQuantumGameTheoryInitialization:
         """Test QuantumInspiredGameEngine initialization."""
         try:
             engine = QuantumInspiredGameEngine()
-            assert engine is not None
+            assert engine is not None, "engine must be initialized"
         except TypeError as e:
             # May require parameters
             pytest.skip(f"QuantumInspiredGameEngine initialization differs: {e}")
@@ -232,7 +232,7 @@ class TestQuantumGameTheoryInitialization:
         """Test game engine with player count."""
         try:
             engine = QuantumInspiredGameEngine(num_players=2)
-            assert engine is not None
+            assert engine is not None, "engine must be initialized"
         except TypeError:
             pytest.skip("QuantumInspiredGameEngine doesn't support num_players")
 
@@ -243,7 +243,7 @@ class TestMentalMappingInitialization:
     def test_mental_map_empty_initialization(self):
         """Test empty MentalMap initialization."""
         map_obj = MentalMappingModel()
-        assert map_obj is not None
+        assert map_obj is not None, "map_obj must be initialized"
 
     def test_mental_map_add_node(self):
         """Test adding a node to mental map."""
@@ -258,7 +258,7 @@ class TestMentalMappingInitialization:
                 )
                 map_obj.add_node(node)
                 # Verify node was added
-                assert True  # If no exception, initialization worked
+                assert True, "True is not valid"
         except (TypeError, AttributeError):
             pytest.skip("MentalMap.add_node interface differs")
 
@@ -290,7 +290,7 @@ class TestCoverageUpliftQuickWins:
         # This should hit default value initialization paths
         try:
             state = DecisionState(state_vector=[1.0])
-            assert state is not None
+            assert state is not None, "state must be initialized"
         except TypeError:
             # May require all parameters
             state = DecisionState(
@@ -298,7 +298,7 @@ class TestCoverageUpliftQuickWins:
                 energy=0.0,
                 coherence=1.0,
             )
-            assert state is not None
+            assert state is not None, "state must be initialized"
 
     def test_action_path_default_trajectory(self):
         """Test ActionPath with empty trajectory."""
@@ -308,5 +308,5 @@ class TestCoverageUpliftQuickWins:
             momentum=1.0,
             trajectory=[],
         )
-        assert len(path.trajectory) == 0
-        assert path.action_type == ActionType.ANALYZE
+        assert len(path.trajectory) == 0, "Collection must not be empty"
+        assert path.action_type == ActionType.ANALYZE, "action_type is not valid"

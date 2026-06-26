@@ -23,21 +23,21 @@ class TestEvaluationLoopBasics:
             run_evaluation,
         )
 
-        assert callable(evaluate_epoch)
-        assert callable(run_evaluation)
-        assert EvaluationConfig is not None
-        assert EvaluationResult is not None
+        assert callable(evaluate_epoch), "Condition must be true"
+        assert callable(run_evaluation), "Condition must be true"
+        assert EvaluationConfig is not None, "EvaluationConfig must be initialized"
+        assert EvaluationResult is not None, "EvaluationResult must be initialized"
 
     def test_evaluation_config_defaults(self):
         """Test EvaluationConfig default values."""
         from codex_ml.evaluation import EvaluationConfig
 
         config = EvaluationConfig()
-        assert config.device == "cpu"
-        assert config.max_batches is None
-        assert config.seed is None
-        assert config.metrics is None
-        assert config.system_metrics is False
+        assert config.device == "cpu", "device is not valid"
+        assert config.max_batches is None, "max_batches is not valid"
+        assert config.seed is None, "seed is not valid"
+        assert config.metrics is None, "metrics is not valid"
+        assert config.system_metrics is False, "system_metrics is not valid"
 
     def test_evaluation_config_custom(self):
         """Test EvaluationConfig with custom values."""
@@ -49,10 +49,10 @@ class TestEvaluationLoopBasics:
             seed=42,
             system_metrics=True,
         )
-        assert config.device == "cuda"
-        assert config.max_batches == 10
-        assert config.seed == 42
-        assert config.system_metrics is True
+        assert config.device == "cuda", "device is not valid"
+        assert config.max_batches == 10, "max_batches is not valid"
+        assert config.seed == 42, "seed is not valid"
+        assert config.system_metrics is True, "system_metrics is not valid"
 
     def test_protocol_interfaces_defined(self):
         """Test that Protocol interfaces are properly defined."""
@@ -91,17 +91,17 @@ class TestEvaluationLoopEdgeCases:
             duration_sec=1.23456789,
         )
         d = result.to_dict()
-        assert d["loss"] == 0.5
-        assert d["count"] == 100
-        assert d["metrics"] == {"accuracy": 0.9}
-        assert d["batches"] == 10
-        assert d["duration_sec"] == 1.234568  # rounded to 6 decimal places
+        assert d["loss"] == 0.5, "Condition must be true"
+        assert d["count"] == 100, "Count must be greater than zero"
+        assert d["metrics"] == {"accuracy": 0.9}, "Condition must be true"
+        assert d["batches"] == 10, "Condition must be true"
+        assert d["duration_sec"] == 1.234568, "Condition must be true"
 
     def test_safe_item_with_float(self):
         """_safe_item returns float for a plain float."""
         from codex_ml.evaluation.loop import _safe_item
 
-        assert _safe_item(3.14) == 3.14
+        assert _safe_item(3.14) == 3.14, "Item must not be empty"
 
     def test_safe_item_with_item_method(self):
         """_safe_item calls .item() on tensor-like objects."""
@@ -109,7 +109,7 @@ class TestEvaluationLoopEdgeCases:
 
         tensor_like = MagicMock()
         tensor_like.item.return_value = 2.718
-        assert _safe_item(tensor_like) == 2.718
+        assert _safe_item(tensor_like) == 2.718, "Item must not be empty"
 
 
 class TestEvaluationDeterminism:
@@ -121,15 +121,15 @@ class TestEvaluationDeterminism:
 
         original = EvalResult(loss=0.1, count=50, metrics={}, batches=5, duration_sec=0.5)
         d = original.to_dict()
-        assert d["loss"] == original.loss
-        assert d["count"] == original.count
-        assert d["batches"] == original.batches
+        assert d["loss"] == original.loss, "Condition must be true"
+        assert d["count"] == original.count, "Count must be greater than zero"
+        assert d["batches"] == original.batches, "Condition must be true"
 
     def test_evaluation_result_alias(self):
         """EvaluationResult is an alias for EvalResult."""
         from codex_ml.evaluation import EvalResult, EvaluationResult
 
-        assert EvaluationResult is EvalResult
+        assert EvaluationResult is EvalResult, "Result must not be empty"
 
 
 class TestEvaluationLogging:
@@ -139,7 +139,7 @@ class TestEvaluationLogging:
         """run_evaluation is an alias for evaluate_epoch."""
         from codex_ml.evaluation import evaluate_epoch, run_evaluation
 
-        assert run_evaluation is evaluate_epoch
+        assert run_evaluation is evaluate_epoch, "run_evaluation is not valid"
 
 
 class TestCheckpointRetention:
@@ -154,10 +154,10 @@ class TestCheckpointRetention:
             save_checkpoint_with_retention,
         )
 
-        assert CheckpointEntry is not None
-        assert CheckpointIndex is not None
-        assert callable(prune_checkpoints)
-        assert callable(save_checkpoint_with_retention)
+        assert CheckpointEntry is not None, "CheckpointEntry must be initialized"
+        assert CheckpointIndex is not None, "CheckpointIndex must be initialized"
+        assert callable(prune_checkpoints), "Condition must be true"
+        assert callable(save_checkpoint_with_retention), "Condition must be true"
 
     def test_checkpoint_entry_creation(self):
         """Test CheckpointEntry dataclass."""
@@ -169,7 +169,7 @@ class TestCheckpointRetention:
             step=100,
             created_at=1234567890.0,
         )
-        assert entry.path == "checkpoint_1.pt"
-        assert entry.metric == 0.5
-        assert entry.step == 100
-        assert entry.created_at == 1234567890.0
+        assert entry.path == "checkpoint_1.pt", "path is not valid"
+        assert entry.metric == 0.5, "metric is not valid"
+        assert entry.step == 100, "step is not valid"
+        assert entry.created_at == 1234567890.0, "created_at is not valid"

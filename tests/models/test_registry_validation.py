@@ -38,5 +38,5 @@ def test_lora_validation_non_strict_warns(dummy_model_registration):
             {"lora": {"enabled": True, "dtype": "bad", "strict_validation": False}},
             adapter_loader=lambda model, cfg: {"adapted": cfg},
         )
-    assert any("Unsupported lora.dtype" in str(w.message) for w in caught)
-    assert model.get("adapted") is not None
+    assert any("Unsupported lora.dtype" in str(w.message) for w in caught), "Condition must be true"
+    assert model.get("adapted") is not None, "Value must be initialized"

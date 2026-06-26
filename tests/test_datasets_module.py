@@ -56,8 +56,8 @@ def test_build_text_classification_dataloaders(tmp_path):
     batch = next(train_iter)
     assert set(batch.keys()) == {"input_ids", "attention_mask", "labels"}
     assert batch["input_ids"].shape == (2, 32)
-    assert batch["labels"].dtype == torch.long
-    assert val_loader is not None
+    assert batch["labels"].dtype == torch.long, "dtype is not valid"
+    assert val_loader is not None, "val_loader must be initialized"
 
 
 def test_load_text_classification_dataset_missing_file(tmp_path):

@@ -127,7 +127,7 @@ Artifact 'coverage-reports' not found in workflow run
         assert report.root_cause == "rust_compile_error", "Assertion must pass"
         assert report.confidence >= 0.90, "Assertion must pass"
         assert report.severity == "critical", "Assertion must pass"
-        assert "error[E" in str(report.findings)
+        assert "error[E" in str(report.findings), "Error should be raised or set"
 
     def test_disk_full_detection(self, agent, disk_full_log):
         """Test detection of disk space issues"""
@@ -196,7 +196,7 @@ No space left on device
 
         # High confidence for clear patterns
         assert 0.0 <= report.confidence <= 1.0, "Assertion must pass"
-        assert report.confidence >= 0.85  # Disk full should be very clear
+        assert report.confidence >= 0.85, "confidence must be greater than zero"
 
     def test_json_output_schema(self, agent, import_error_log):
         """Test JSON report schema compliance"""
@@ -206,13 +206,13 @@ No space left on device
         data = json.loads(json_output)
 
         # Verify required fields
-        assert "run_id" in data
-        assert "root_cause" in data
-        assert "confidence" in data
-        assert "severity" in data
-        assert "auto_fixable" in data
-        assert "findings" in data
-        assert "remediation" in data
+        assert "run_id" in data, "Data must not be empty"
+        assert "root_cause" in data, "Data must not be empty"
+        assert "confidence" in data, "Data must not be empty"
+        assert "severity" in data, "Data must not be empty"
+        assert "auto_fixable" in data, "Data must not be empty"
+        assert "findings" in data, "Data must not be empty"
+        assert "remediation" in data, "Data must not be empty"
 
 
 class TestIntegration:
@@ -221,7 +221,7 @@ class TestIntegration:
     def test_agent_initialization(self):
         """Test agent initializes correctly"""
         agent = CIDiagnosticAgent()
-        assert agent is not None
+        assert agent is not None, "agent must be initialized"
         assert len(agent.patterns) > 0, "Length must be valid"
 
     def test_end_to_end_analysis(self, tmp_path):
@@ -236,15 +236,15 @@ class TestIntegration:
         report = agent.analyze_logs("test-e2e", log_file.read_text())
 
         # Verify report
-        assert report.root_cause is not None
+        assert report.root_cause is not None, "root_cause must be initialized"
         assert report.confidence > 0, "Assertion must pass"
 
         # Test report generation
         md_report = report.to_markdown()
-        assert "## 🔍 CI Diagnostic Report" in md_report
+        assert ", "Condition must be true"
 
         json_report = report.to_json()
-        assert json.loads(json_report) is not None
+        assert json.loads(json_report) is not None, "Value must be initialized"
 
 
 @pytest.mark.parametrize(

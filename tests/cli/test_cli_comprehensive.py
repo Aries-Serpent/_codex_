@@ -62,8 +62,8 @@ class TestArgumentParsing:
             click.echo(f"Hello {name}!")
 
         result = cli_runner.invoke(hello, ["World"])
-        assert result.exit_code == 0
-        assert "Hello World!" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "Hello World!" in result.output, "Result must not be empty"
 
     def test_missing_required_argument(self, cli_runner):
         import click
@@ -74,7 +74,7 @@ class TestArgumentParsing:
             click.echo(f"Hello {name}!")
 
         result = cli_runner.invoke(hello, [])
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     def test_optional_argument(self, cli_runner):
         import click
@@ -85,8 +85,8 @@ class TestArgumentParsing:
             click.echo(f'Hello {name or "World"}!')
 
         result = cli_runner.invoke(hello, [])
-        assert result.exit_code == 0
-        assert "Hello World!" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "Hello World!" in result.output, "Result must not be empty"
 
     def test_multiple_arguments(self, cli_runner):
         import click
@@ -98,8 +98,8 @@ class TestArgumentParsing:
             click.echo(f"{first} {last}")
 
         result = cli_runner.invoke(greet, ["John", "Doe"])
-        assert result.exit_code == 0
-        assert "John Doe" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "John Doe" in result.output, "Result must not be empty"
 
     def test_argument_with_default(self, cli_runner):
         import click
@@ -110,8 +110,8 @@ class TestArgumentParsing:
             click.echo("x" * count)
 
         result = cli_runner.invoke(repeat, [])
-        assert result.exit_code == 0
-        assert "x" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "x" in result.output, "Result must not be empty"
 
     def test_argument_type_validation(self, cli_runner):
         import click
@@ -122,7 +122,7 @@ class TestArgumentParsing:
             click.echo(count * 2)
 
         result = cli_runner.invoke(process, ["not_a_number"])
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     def test_argument_with_choices(self, cli_runner):
         import click
@@ -133,8 +133,8 @@ class TestArgumentParsing:
             click.echo(level)
 
         result = cli_runner.invoke(log, ["info"])
-        assert result.exit_code == 0
-        assert "info" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "info" in result.output, "Result must not be empty"
 
     def test_argument_invalid_choice(self, cli_runner):
         import click
@@ -145,7 +145,7 @@ class TestArgumentParsing:
             click.echo(level)
 
         result = cli_runner.invoke(log, ["invalid"])
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
 
 # ============================================================================
@@ -165,7 +165,7 @@ class TestOptionParsing:
             click.echo("verbose" if verbose else "quiet")
 
         result = cli_runner.invoke(run, ["--verbose"])
-        assert "verbose" in result.output
+        assert "verbose" in result.output, "Result must not be empty"
 
     def test_short_option(self, cli_runner):
         import click
@@ -176,7 +176,7 @@ class TestOptionParsing:
             click.echo("verbose" if verbose else "quiet")
 
         result = cli_runner.invoke(run, ["-v"])
-        assert "verbose" in result.output
+        assert "verbose" in result.output, "Result must not be empty"
 
     def test_option_with_value(self, cli_runner):
         import click
@@ -187,7 +187,7 @@ class TestOptionParsing:
             click.echo(f"Hello {name}!")
 
         result = cli_runner.invoke(greet, ["--name", "Alice"])
-        assert "Hello Alice!" in result.output
+        assert "Hello Alice!" in result.output, "Result must not be empty"
 
     def test_multiple_values_option(self, cli_runner):
         import click
@@ -199,8 +199,8 @@ class TestOptionParsing:
                 click.echo(i)
 
         result = cli_runner.invoke(process, ["--item", "a", "--item", "b"])
-        assert "a" in result.output
-        assert "b" in result.output
+        assert "a" in result.output, "Result must not be empty"
+        assert "b" in result.output, "Result must not be empty"
 
     def test_option_count(self, cli_runner):
         import click
@@ -211,7 +211,7 @@ class TestOptionParsing:
             click.echo(f"verbosity: {verbose}")
 
         result = cli_runner.invoke(run, ["-vvv"])
-        assert "verbosity: 3" in result.output
+        assert "verbosity: 3" in result.output, "Result must not be empty"
 
     def test_required_option(self, cli_runner):
         import click
@@ -222,7 +222,7 @@ class TestOptionParsing:
             click.echo(name)
 
         result = cli_runner.invoke(greet, [])
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     def test_option_with_default(self, cli_runner):
         import click
@@ -233,7 +233,7 @@ class TestOptionParsing:
             click.echo("x" * count)
 
         result = cli_runner.invoke(repeat, [])
-        assert "x" in result.output
+        assert "x" in result.output, "Result must not be empty"
 
 
 # ============================================================================
@@ -254,8 +254,8 @@ class TestFileOperations:
             click.echo(content)
 
         result = cli_runner.invoke(read, [temp_file])
-        assert result.exit_code == 0
-        assert "test content" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "test content" in result.output, "Result must not be empty"
 
     def test_write_output_file(self, cli_runner, temp_dir):
         import click
@@ -268,11 +268,11 @@ class TestFileOperations:
             filename.write("output content")
 
         result = cli_runner.invoke(write, [output_file])
-        assert result.exit_code == 0
-        assert os.path.exists(output_file)
+        assert result.exit_code == 0, "Result must not be empty"
+        assert os.path.exists(output_file), "Condition must be true"
 
         with open(output_file) as f:
-            assert f.read() == "output content"
+            assert f.read() == "output content", "Content must not be empty"
 
     def test_file_not_found(self, cli_runner):
         import click
@@ -283,7 +283,7 @@ class TestFileOperations:
             click.echo(filename.read())
 
         result = cli_runner.invoke(read, ["/nonexistent/file.txt"])
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     def test_process_file_line_by_line(self, cli_runner, temp_file):
         import click
@@ -295,7 +295,7 @@ class TestFileOperations:
                 click.echo(line.strip().upper())
 
         result = cli_runner.invoke(process, [temp_file])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
 
 # ============================================================================
@@ -312,11 +312,11 @@ class TestInputValidation:
         @click.command()
         @click.argument("count", type=int)
         def process(count):
-            assert count > 0
+            assert count > 0, "count must be positive"
             click.echo(f"Count: {count}")
 
         result = cli_runner.invoke(process, ["42"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_float_validation(self, cli_runner):
         import click
@@ -327,7 +327,7 @@ class TestInputValidation:
             click.echo(f"Ratio: {ratio}")
 
         result = cli_runner.invoke(calculate, ["3.14"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_range_validation(self, cli_runner):
         import click
@@ -338,10 +338,10 @@ class TestInputValidation:
             click.echo(f"Level: {level}")
 
         result = cli_runner.invoke(set_level, ["50"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
         result = cli_runner.invoke(set_level, ["150"])
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     def test_email_validation(self, cli_runner):
         import click
@@ -354,10 +354,10 @@ class TestInputValidation:
             click.echo(f"Subscribed: {email}")
 
         result = cli_runner.invoke(subscribe, ["user@example.com"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
         result = cli_runner.invoke(subscribe, ["invalid_email"])
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     def test_path_validation(self, cli_runner, temp_dir):
         import click
@@ -368,10 +368,10 @@ class TestInputValidation:
             click.echo(f"Processing: {path}")
 
         result = cli_runner.invoke(process, [temp_dir])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
         result = cli_runner.invoke(process, ["/nonexistent/path"])
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
 
 # ============================================================================
@@ -390,8 +390,8 @@ class TestErrorHandling:
             raise click.ClickException("Something went wrong")
 
         result = cli_runner.invoke(fail)
-        assert result.exit_code != 0
-        assert "Something went wrong" in result.output
+        assert result.exit_code != 0, "Result must not be empty"
+        assert "Something went wrong" in result.output, "Result must not be empty"
 
     def test_bad_parameter(self, cli_runner):
         import click
@@ -417,7 +417,7 @@ class TestErrorHandling:
                 raise click.ClickException(str(e))
 
         result = cli_runner.invoke(process)
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     def test_missing_argument_error_message(self, cli_runner):
         import click
@@ -428,8 +428,8 @@ class TestErrorHandling:
             click.echo(f"Hello {name}!")
 
         result = cli_runner.invoke(hello, [])
-        assert result.exit_code != 0
-        assert "Missing argument" in result.output or "required" in result.output.lower()
+        assert result.exit_code != 0, "Result must not be empty"
+        assert "Missing argument" in result.output or "required" in result.output.lower(), "Result must not be empty"
 
     def test_invalid_option_error_message(self, cli_runner):
         import click
@@ -440,7 +440,7 @@ class TestErrorHandling:
             click.echo("x" * count)
 
         result = cli_runner.invoke(repeat, ["--count", "not_a_number"])
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
 
 # ============================================================================
@@ -459,7 +459,7 @@ class TestOutputFormatting:
             click.echo("Hello, World!")
 
         result = cli_runner.invoke(hello)
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
         assert "Hello, World!" in result.output
 
     def test_colored_output(self, cli_runner):
@@ -470,7 +470,7 @@ class TestOutputFormatting:
             click.echo(click.style("Success", fg="green"))
 
         result = cli_runner.invoke(colorful)
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_progress_bar(self, cli_runner):
         import click
@@ -483,8 +483,8 @@ class TestOutputFormatting:
             click.echo("Done")
 
         result = cli_runner.invoke(progress)
-        assert result.exit_code == 0
-        assert "Done" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "Done" in result.output, "Result must not be empty"
 
     def test_table_output(self, cli_runner):
         import click
@@ -497,8 +497,8 @@ class TestOutputFormatting:
                 click.echo(f"{row[0]:<8} {row[1]}")
 
         result = cli_runner.invoke(table)
-        assert result.exit_code == 0
-        assert "Alice" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "Alice" in result.output, "Result must not be empty"
 
     def test_json_output(self, cli_runner):
         import json
@@ -511,8 +511,8 @@ class TestOutputFormatting:
             click.echo(json.dumps(data))
 
         result = cli_runner.invoke(json_output)
-        assert result.exit_code == 0
-        assert '"name": "Alice"' in result.output or '"name":"Alice"' in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert '"name": "Alice"' in result.output or '"name":"Alice"' in result.output, "Result must not be empty"
 
 
 # ============================================================================
@@ -531,7 +531,7 @@ class TestExitCodes:
             click.echo("OK")
 
         result = cli_runner.invoke(success)
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_custom_exit_code(self, cli_runner):
         import click
@@ -541,7 +541,7 @@ class TestExitCodes:
             raise SystemExit(1)
 
         result = cli_runner.invoke(failure)
-        assert result.exit_code == 1
+        assert result.exit_code == 1, "Result must not be empty"
 
     def test_validation_exit_code(self, cli_runner):
         import click
@@ -552,7 +552,7 @@ class TestExitCodes:
             click.echo(count)
 
         result = cli_runner.invoke(process, ["invalid"])
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     def test_usage_error_exit_code(self, cli_runner):
         import click
@@ -563,7 +563,7 @@ class TestExitCodes:
             click.echo(name)
 
         result = cli_runner.invoke(hello, [])
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
 
 # ============================================================================
@@ -591,8 +591,8 @@ class TestConfigurationLoading:
             click.echo(f"Key: {data['key']}")
 
         result = cli_runner.invoke(run, [config_file])
-        assert result.exit_code == 0
-        assert "Key: value" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "Key: value" in result.output, "Result must not be empty"
 
     def test_load_yaml_config(self, cli_runner, temp_dir):
         import click
@@ -609,7 +609,7 @@ class TestConfigurationLoading:
             click.echo("Configuration loaded")
 
         result = cli_runner.invoke(run, [config_file])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_missing_config_file(self, cli_runner):
         import click
@@ -620,7 +620,7 @@ class TestConfigurationLoading:
             pass
 
         result = cli_runner.invoke(run, ["/nonexistent/config.json"])
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
 
 # ============================================================================
@@ -649,12 +649,12 @@ class TestCLIIntegration:
             click.echo(f"Deleted {name}")
 
         result = cli_runner.invoke(cli, ["create", "test-item"])
-        assert result.exit_code == 0
-        assert "Created test-item" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "Created test-item" in result.output, "Result must not be empty"
 
         result = cli_runner.invoke(cli, ["delete", "test-item"])
-        assert result.exit_code == 0
-        assert "Deleted test-item" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "Deleted test-item" in result.output, "Result must not be empty"
 
     def test_subcommand_flow(self, cli_runner):
         import click
@@ -676,8 +676,8 @@ class TestCLIIntegration:
             click.echo("Database migrated")
 
         result = cli_runner.invoke(cli, ["db", "init"])
-        assert result.exit_code == 0
-        assert "Database initialized" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "Database initialized" in result.output, "Result must not be empty"
 
     def test_help_text(self, cli_runner):
         import click
@@ -689,6 +689,6 @@ class TestCLIIntegration:
             click.echo(f'Hello {name or "World"}!')
 
         result = cli_runner.invoke(hello, ["--help"])
-        assert result.exit_code == 0
-        assert "Your name" in result.output
-        assert "Say hello" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "Your name" in result.output, "Result must not be empty"
+        assert "Say hello" in result.output, "Result must not be empty"

@@ -25,17 +25,17 @@ def test_policy_scenarios():
     # Read-only path OK
     s.push()
     s.add(online, host, ro, z3.Not(adm))
-    assert s.check() == z3.sat
+    assert s.check() == z3.sat, "Condition must be true"
     s.pop()
 
     # Admin without perms should require admissible=false to be sat
     s.push()
     s.add(online, host, adm, z3.Not(admin_perms), z3.Not(ro), z3.Not(admissible))
-    assert s.check() == z3.sat
+    assert s.check() == z3.sat, "Condition must be true"
     s.pop()
 
     # Admin with perms and admissible true
     s.push()
     s.add(online, host, adm, admin_perms, admissible)
-    assert s.check() == z3.sat
+    assert s.check() == z3.sat, "Condition must be true"
     s.pop()

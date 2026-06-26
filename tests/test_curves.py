@@ -20,5 +20,5 @@ def test_append_and_summarize(tmp_path):
     append_curve(path, "loss", 2, 0.2)
 
     summary = summarize(path, "loss")
-    assert summary["count"] == 2
-    assert summary["mean"] > 0
+    assert summary["count"] == 2, "Count must be greater than zero"
+    assert summary["mean"] > 0, "Value must be greater than zero"

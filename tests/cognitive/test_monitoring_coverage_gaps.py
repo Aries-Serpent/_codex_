@@ -59,28 +59,28 @@ class TestSensorExceptionPaths:
         sensor = MonitoringSensor(state_file=tmp_path / "s.json")
         with patch.object(sensor, "_load_state", side_effect=RuntimeError("boom")):
             result = sensor.get_system_health()
-        assert result["status"] == "unknown"
-        assert "boom" in result["error"]
+        assert result["status"] == "unknown", "Result must not be empty"
+        assert "boom" in result["error"], "Result must not be empty"
 
     def test_get_active_failures_raises_returns_empty(self, tmp_path):
         sensor = MonitoringSensor(state_file=tmp_path / "s.json")
         with patch.object(sensor, "_load_state", side_effect=RuntimeError("fail")):
             result = sensor.get_active_failures()
-        assert result == []
+        assert result == [], "Result must not be empty"
 
     def test_should_propose_action_raises_returns_false(self, tmp_path):
         sensor = MonitoringSensor(state_file=tmp_path / "s.json")
         with patch.object(sensor, "get_system_health", side_effect=RuntimeError("err")):
             should_act, reason, confidence = sensor.should_propose_action()
-        assert should_act is False
-        assert confidence == 0.0
+        assert should_act is False, "should_act is not valid"
+        assert confidence == 0.0, "confidence is not valid"
 
     def test_load_state_corrupt_json_returns_empty(self, tmp_path):
         state_file = tmp_path / "s.json"
         state_file.write_text("NOT JSON")
         sensor = MonitoringSensor(state_file=state_file)
         result = sensor._load_state()
-        assert result == {}
+        assert result == {}, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -111,19 +111,19 @@ class TestSensorMain:
         sf = tmp_path / "s.json"
         sf.write_text(json.dumps({"workflows": {}, "last_run": "2026-01-22T00:00:00Z"}))
         out = self._run_main(["--health"], sf)
-        assert "healthy" in out or "status" in out
+        assert "healthy" in out or "status" in out, "Condition must be true"
 
     def test_main_failures_flag(self, tmp_path):
         sf = tmp_path / "s.json"
         sf.write_text(json.dumps({"workflows": {}}))
         out = self._run_main(["--failures"], sf)
-        assert "[]" in out or out == ""  # empty list
+        assert "[]" in out or out == "", "out is not valid"
 
     def test_main_export_flag(self, tmp_path):
         sf = tmp_path / "s.json"
         sf.write_text(json.dumps({"workflows": {}}))
         out = self._run_main(["--export"], sf)
-        assert "artifact_monitoring" in out or "sensor_type" in out
+        assert "artifact_monitoring" in out or "sensor_type" in out, "Condition must be true"
 
     def test_main_no_flags_prints_health(self, tmp_path):
         sf = tmp_path / "s.json"
@@ -158,8 +158,8 @@ class TestActionProposerExceptionPath:
         }
 
         result = proposer.execute_action(action, dry_run=False)
-        assert result["status"] == "failed"
-        assert "API failure" in result["error"]
+        assert result["status"] == "failed", "Result must not be empty"
+        assert "API failure" in result["error"], "Result must not be empty"
 
     def test_execute_action_exception_via_bad_type(self):
         """Trigger exception path inside the live execute branch and assert failed result."""
@@ -173,8 +173,8 @@ class TestActionProposerExceptionPath:
             },
             dry_run=False,
         )
-        assert result["status"] == "failed"
-        assert "isinstance broken" in result["error"]
+        assert result["status"] == "failed", "Result must not be empty"
+        assert "isinstance broken" in result["error"], "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -210,7 +210,7 @@ class TestActionProposerMain:
                     # Coverage test: these branches may exit or fail imports under patched module wiring.
                     pass
             out = captured.getvalue()
-            assert "No active failures" in out or out == ""
+            assert "No active failures" in out or out == "", "out is not valid"
 
     def test_main_propose_flag_with_failures(self, tmp_path):
         """main() --propose flag dumps actions JSON."""
@@ -241,7 +241,7 @@ class TestActionProposerMain:
                     # Coverage test: allow CLI/import-path exceptions while exercising propose branch.
                     pass
             # Either the path executed or the import failed — both exercise the code
-            assert True
+            assert True, "True is not valid"
 
     def test_main_execute_flag_with_failures(self, tmp_path):
         """main() --execute flag runs execute_action on each action."""
@@ -271,7 +271,7 @@ class TestActionProposerMain:
                 except (SystemExit, ImportError, AttributeError, ModuleNotFoundError):
                     # Coverage test: allow CLI/import-path exceptions while exercising execute branch.
                     pass
-            assert True
+            assert True, "True is not valid"
 
     def test_main_no_args_print_summary(self, tmp_path):
         """main() default (no flags) path prints proposal summary."""
@@ -301,7 +301,7 @@ class TestActionProposerMain:
                 except (SystemExit, ImportError, AttributeError, ModuleNotFoundError):
                     # Coverage test: allow CLI/import-path exceptions while exercising default summary branch.
                     pass
-            assert True
+            assert True, "True is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -325,7 +325,7 @@ class TestSelfHealingValidatorGapFill:
         history_file = tmp_path / "h.json"
         history_file.write_text("{invalid}")
         v = SelfHealingValidator(history_file=history_file)
-        assert v._load_history() == []
+        assert v._load_history() == [], "Condition must be true"
 
     def test_main_history_flag(self, tmp_path):
         """main() --history prints last 20 entries as JSON."""
@@ -345,7 +345,7 @@ class TestSelfHealingValidatorGapFill:
                 except (SystemExit, AttributeError):
                     # Coverage test: history CLI path may exit early under patched constructor behavior.
                     pass
-            assert True  # path exercised
+            assert True, "True is not valid"
 
     def test_main_stats_flag(self, tmp_path):
         """main() --stats prints statistics."""
@@ -366,7 +366,7 @@ class TestSelfHealingValidatorGapFill:
                 except (SystemExit, AttributeError, ZeroDivisionError):
                     # Coverage test: tolerate exit/attribute/math edge cases while exercising stats path.
                     pass
-            assert True
+            assert True, "True is not valid"
 
     def test_main_no_flags(self, tmp_path):
         """main() default path prints 'ready' message."""
@@ -384,7 +384,7 @@ class TestSelfHealingValidatorGapFill:
                 except (SystemExit, AttributeError):
                     # Coverage test: default CLI branch may exit under patched constructor wiring.
                     pass
-            assert True  # path exercised
+            assert True, "True is not valid"
 
     def test_get_confidence_with_empty_history(self, tmp_path):
         """Explicit path: no history → 0.7 default."""
@@ -399,5 +399,5 @@ class TestSelfHealingValidatorGapFill:
             {"status": "success"},
         )
         saved = json.loads((tmp_path / "h.json").read_text())
-        assert len(saved) == 1
-        assert saved[0]["action_type"] == "analyze_logs"
+        assert len(saved) == 1, "Saved must not be empty"
+        assert saved[0]["action_type"] == "analyze_logs", "Condition must be true"

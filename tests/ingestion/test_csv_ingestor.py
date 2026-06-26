@@ -23,8 +23,8 @@ def test_csv_ingestor_reads_rows(sample_csv_file: Path) -> None:
     from ingestion import csv_ingestor
 
     rows = csv_ingestor.load_csv(sample_csv_file)
-    assert len(rows) == 3  # includes header
-    assert rows[1][0] == "1"
+    assert len(rows) == 3, "Rows must not be empty"
+    assert rows[1][0] == "1", "Condition must be true"
 
 
 def test_csv_ingestor_iterates_batches(sample_csv_file: Path) -> None:
@@ -32,4 +32,4 @@ def test_csv_ingestor_iterates_batches(sample_csv_file: Path) -> None:
 
     # auto-detect encoding path
     rows = csv_ingestor.load_csv(sample_csv_file, encoding="auto")
-    assert rows
+    assert rows, "rows is not valid"

@@ -70,8 +70,8 @@ class TestLegacyAPIIntegration:
             result = mock_translate(legacy_config)
 
             # Assert: Translation successful
-            assert result["model"]["name"] == "bert-base-uncased"
-            assert result["training"]["epochs"] == 3
+            assert result["model"]["name"] == "bert-base-uncased", "Result must not be empty"
+            assert result["training"]["epochs"] == 3, "Result must not be empty"
 
     def test_legacy_trainer_initialization_compatibility(self):
         """Test: Legacy trainer initializes with old API."""
@@ -111,7 +111,7 @@ class TestLegacyAPIIntegration:
             result = trainer.train()
 
             # Assert: Training completed
-            assert result["final_loss"] == 0.45
+            assert result["final_loss"] == 0.45, "Result must not be empty"
 
     def test_legacy_checkpoint_format_compatibility(self):
         """Test: Legacy checkpoint format is compatible."""
@@ -130,7 +130,7 @@ class TestLegacyAPIIntegration:
             ckpt = mock_load("checkpoint.pt")
 
             # Assert: Checkpoint loaded
-            assert ckpt["epoch"] == 5
+            assert ckpt["epoch"] == 5, "Condition must be true"
 
     def test_cross_compatibility_legacy_to_new_api(self):
         """Test: Models trained in legacy mode work with new API."""
@@ -176,7 +176,7 @@ class TestLegacyAPIIntegration:
             metrics = trainer.evaluate()
 
             # Assert: Evaluation works
-            assert metrics["accuracy"] == 0.85
+            assert metrics["accuracy"] == 0.85, "Condition must be true"
 
     def test_legacy_config_validation(self):
         """Test: Legacy configuration validated."""
@@ -227,7 +227,7 @@ class TestFunctionalTrainingIntegration:
             result = mock_step(mock_batch)
 
             # Assert: Step executed
-            assert result["loss"] == 0.5
+            assert result["loss"] == 0.5, "Result must not be empty"
 
     def test_functional_training_loop(self):
         """Test: Complete functional training loop."""
@@ -246,7 +246,7 @@ class TestFunctionalTrainingIntegration:
             result = mock_train()
 
             # Assert: Training completed
-            assert result["steps"] == num_batches
+            assert result["steps"] == num_batches, "Result must not be empty"
 
     def test_functional_checkpoint_management(self):
         """Test: Checkpoints managed in functional training."""
@@ -266,11 +266,11 @@ class TestFunctionalTrainingIntegration:
 
                 # Save checkpoint
                 save_result = mock_save(checkpoint)
-                assert save_result is True
+                assert save_result is True, "Result must not be empty"
 
                 # Load checkpoint
                 loaded = mock_load("checkpoint.pt")
-                assert loaded["step"] == 100
+                assert loaded["step"] == 100, "Condition must be true"
 
     def test_functional_metric_aggregation(self):
         """Test: Metrics aggregated across functional training."""
@@ -292,7 +292,7 @@ class TestFunctionalTrainingIntegration:
             result = mock_agg(step_metrics)
 
             # Assert: Metrics aggregated
-            assert result["avg_loss"] < 0.6
+            assert result["avg_loss"] < 0.6, "Result must not be empty"
 
     def test_functional_training_with_gradient_accumulation(self):
         """Test: Functional training with gradient accumulation."""
@@ -306,7 +306,7 @@ class TestFunctionalTrainingIntegration:
             # Execute with accumulation
             for i in range(accumulation_steps):
                 result = mock_step({})
-                assert result["loss"] == 0.5
+                assert result["loss"] == 0.5, "Result must not be empty"
 
     def test_functional_training_backward_pass(self):
         """Test: Backward pass in functional training."""
@@ -324,8 +324,8 @@ class TestFunctionalTrainingIntegration:
                 mock_backward(loss)
 
                 # Assert: Loss and backward called
-                assert mock_loss_fn.called
-                assert mock_backward.called
+                assert mock_loss_fn.called, "Condition must be true"
+                assert mock_backward.called, "Condition must be true"
 
     def test_functional_training_optimization_step(self):
         """Test: Optimizer step in functional training."""
@@ -340,8 +340,8 @@ class TestFunctionalTrainingIntegration:
                 mock_zero()
 
                 # Assert: Both called
-                assert mock_opt_step.called
-                assert mock_zero.called
+                assert mock_opt_step.called, "Condition must be true"
+                assert mock_zero.called, "Condition must be true"
 
 
 @pytest.mark.skipif(
@@ -371,7 +371,7 @@ class TestLegacyFunctionalIntegration:
             result = mock_translate(legacy_config)
 
             # Assert: Mode converted
-            assert result["mode"] == "functional"
+            assert result["mode"] == "functional", "Result must not be empty"
 
     def test_legacy_checkpoint_compatible_with_functional(self):
         """Test: Legacy checkpoints load in functional training."""
@@ -394,8 +394,8 @@ class TestLegacyFunctionalIntegration:
                 func_loaded = mock_func_load("ckpt.pt")
 
                 # Assert: Both formats work
-                assert legacy_loaded["epoch"] == 1
-                assert func_loaded["epoch"] == 1
+                assert legacy_loaded["epoch"] == 1, "Condition must be true"
+                assert func_loaded["epoch"] == 1, "Condition must be true"
 
 
 @pytest.mark.skipif(not LEGACY_API_AVAILABLE, reason="Legacy API not available")
@@ -469,8 +469,8 @@ class TestLegacyFunctionalEndToEnd:
             trainer.save_checkpoint("model.pt")
 
             # Assert: Legacy workflow complete
-            assert train_result["loss"] == 0.5
-            assert eval_result["accuracy"] == 0.85
+            assert train_result["loss"] == 0.5, "Result must not be empty"
+            assert eval_result["accuracy"] == 0.85, "Result must not be empty"
 
     def test_complete_functional_training_workflow(self):
         """Test: Complete functional training workflow."""
@@ -486,8 +486,8 @@ class TestLegacyFunctionalEndToEnd:
                 metrics = mock_agg([{"loss": 0.45}] * 100)
 
                 # Assert: Functional workflow complete
-                assert result["steps"] == 100
-                assert metrics["avg_loss"] == 0.45
+                assert result["steps"] == 100, "Result must not be empty"
+                assert metrics["avg_loss"] == 0.45, "Condition must be true"
 
     def test_migration_from_legacy_to_functional(self):
         """Test: Migrate training from legacy to functional mode."""
@@ -511,5 +511,5 @@ class TestLegacyFunctionalEndToEnd:
                 func_result = mock_func()
 
                 # Assert: Migration successful
-                assert legacy_result["loss"] == 0.5
-                assert func_result["loss"] == 0.4
+                assert legacy_result["loss"] == 0.5, "Result must not be empty"
+                assert func_result["loss"] == 0.4, "Result must not be empty"

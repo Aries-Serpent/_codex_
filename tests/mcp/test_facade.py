@@ -21,10 +21,10 @@ client = TestClient(APP)
 def test_list_tools_jsonrpc():
     payload = {"jsonrpc": "2.0", "method": "mcp.listTools", "params": {}, "id": "t1"}
     resp = client.post("/jsonrpc", json=payload)
-    assert resp.status_code == 200
+    assert resp.status_code == 200, "status_code is not valid"
     body = resp.json()
-    assert body.get("jsonrpc") == "2.0"
-    assert "result" in body
+    assert body.get("jsonrpc") == "2.0", "Condition must be true"
+    assert "result" in body, "Result must not be empty"
     assert isinstance(body["result"], list)
 
 
@@ -36,10 +36,10 @@ def test_call_tool_echo():
         "id": "t2",
     }
     resp = client.post("/jsonrpc", json=payload)
-    assert resp.status_code == 200
+    assert resp.status_code == 200, "status_code is not valid"
     body = resp.json()
-    assert "result" in body
-    assert body["result"]["output"]["text"] == "hello"
+    assert "result" in body, "Result must not be empty"
+    assert body["result"]["output"]["text"] == "hello", "Result must not be empty"
 
 
 def test_invalid_params_returns_jsonrpc_error():
@@ -51,14 +51,14 @@ def test_invalid_params_returns_jsonrpc_error():
     }
     resp = client.post("/jsonrpc", json=payload)
     body = resp.json()
-    assert body["error"]["code"] == -32602
+    assert body["error"]["code"] == -32602, "Error should be raised or set"
 
 
 def test_health_endpoints():
     r = client.get("/health")
-    assert r.status_code == 200
+    assert r.status_code == 200, "status_code is not valid"
     j = r.json()
-    assert "service" in j and "adapter" in j
+    assert "service" in j and "adapter" in j, "Condition must be true"
 
 
 def test_rate_limit_429(monkeypatch):
@@ -71,4 +71,4 @@ def test_rate_limit_429(monkeypatch):
     rate_limit_middleware._BUCKETS.clear()
     rate_client = TestClient(facade_fastapi.APP)
     resp = rate_client.get("/health")
-    assert resp.status_code == 429
+    assert resp.status_code == 429, "status_code is not valid"

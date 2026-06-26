@@ -28,4 +28,4 @@ def test_duckdb_missing_dependency(monkeypatch, tmp_path: Path) -> None:
     with pytest.raises(SystemExit) as exc:
         _csv_to_duckdb(csv, tmp_path / "metrics.duckdb", "metrics")
 
-    assert "duckdb dependency missing" in str(exc.value)
+    assert "duckdb dependency missing" in str(exc.value), "Value must be initialized"

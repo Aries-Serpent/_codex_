@@ -15,13 +15,13 @@ Usage:
     from codex.brain.checkpoint_manager import CheckpointManager
 
     manager = CheckpointManager()
-    
+
     # Automatic checkpoint on triggers
     manager.maybe_checkpoint()
-    
+
     # Force immediate checkpoint
     checkpoint_id = manager.create_checkpoint(label="before_deployment")
-    
+
     # Inspect checkpoints
     latest = manager.get_latest_checkpoint()
     all_checkpoints = manager.list_checkpoints()
@@ -35,10 +35,10 @@ import json
 import logging
 import os
 import time
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Optional, Dict, Any, List
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -70,7 +70,7 @@ class CheckpointManager:
     DEFAULT_RETENTION_COUNT = 10
     DEFAULT_COMMIT_INTERVAL = 5  # Every N commits
     DEFAULT_TIME_INTERVAL_SECONDS = 1800  # Every 30 minutes
-    
+
     MANAGER_VERSION = "1.0.0"
 
     def __init__(
@@ -130,7 +130,7 @@ class CheckpointManager:
         # Check commit-based trigger
         if self._commit_count_since_checkpoint >= self.commit_interval:
             logger.info(
-                f"Commit trigger reached: {self._commit_count_since_checkpoint} >= {self.commit_interval}"
+                f"Commit trigger reached: {self._commit_count_since_checkpoint} >= {self.commit_interval}"  # noqa: E501
             )
             return self.create_checkpoint(label="commit_triggered")
 
@@ -452,7 +452,7 @@ class CheckpointManager:
             for checkpoint in checkpoints[self.retention_count :]:
                 cp_id = checkpoint["checkpoint_id"]
                 cp_file = self.checkpoint_dir / "v1" / f"{cp_id}.json.gz"
-                
+
                 # Only delete if file exists
                 if cp_file.exists():
                     try:
@@ -461,7 +461,7 @@ class CheckpointManager:
                         logger.info(f"Cleaned up old checkpoint: {cp_id}")
                     except Exception as e:
                         logger.error(f"Failed to delete checkpoint {cp_id}: {e}")
-                
+
                 # Also remove from manifest
                 manifest_file = self.checkpoint_dir / "manifest.json"
                 if manifest_file.exists():

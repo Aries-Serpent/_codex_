@@ -32,4 +32,4 @@ def test_load_checkpoint_detects_corruption(tmp_path):
     with pytest.raises(CheckpointLoadError) as exc_info:
         load_training_checkpoint(str(ckpt), model, opt)
     # Verify checksum is mentioned in the error
-    assert "checksum" in str(exc_info.value)
+    assert "checksum" in str(exc_info.value), "Value must be initialized"

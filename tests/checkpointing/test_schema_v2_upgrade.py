@@ -31,5 +31,5 @@ def test_canonical_digest_is_order_insensitive():
     validate_manifest(manifest_a)
     da = compute_manifest_digest(manifest_a)
     db = compute_manifest_digest(manifest_b)
-    assert da == db
-    assert to_canonical_bytes(manifest_a) == to_canonical_bytes(manifest_b)
+    assert da == db, "da is not valid"
+    assert to_canonical_bytes(manifest_a) == to_canonical_bytes(manifest_b), "Condition must be true"

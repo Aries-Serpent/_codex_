@@ -16,10 +16,10 @@ def test_repo_map_lists_visible_entries() -> None:
     runner = CliRunner()
     result = runner.invoke(codex_cli.codex, ["repo-map"], catch_exceptions=False)
 
-    assert result.exit_code == 0
+    assert result.exit_code == 0, "Result must not be empty"
     lines = [line.strip() for line in result.output.splitlines() if line.strip()]
-    assert any(line.startswith("[dir] src/") for line in lines)
-    assert any(line.endswith("pyproject.toml") for line in lines)
+    assert any(line.startswith("[dir] src/") for line in lines), "Condition must be true"
+    assert any(line.endswith("pyproject.toml") for line in lines), "Condition must be true"
 
 
 def test_repo_map_reasoning_surface_knobs() -> None:
@@ -32,9 +32,9 @@ def test_repo_map_reasoning_surface_knobs() -> None:
         catch_exceptions=False,
     )
 
-    assert result.exit_code == 0
+    assert result.exit_code == 0, "Result must not be empty"
     output = result.output
-    assert "reasoning_status:" in output
-    assert "trace_mode" in output
-    assert "curriculum.preset" in output
-    assert "rollout_ring" in output
+    assert "reasoning_status:" in output, "Condition must be true"
+    assert "trace_mode" in output, "Condition must be true"
+    assert "curriculum.preset" in output, "Condition must be true"
+    assert "rollout_ring" in output, "Condition must be true"

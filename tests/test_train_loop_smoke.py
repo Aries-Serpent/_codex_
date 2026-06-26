@@ -33,7 +33,7 @@ def test_run_training_smoke(tmp_path, monkeypatch):
     monkeypatch.setattr(module, "instantiate_model", lambda name, cfg: _StubModel())
 
     first_art_dir = tmp_path / "first" / "metrics"
-    assert not first_art_dir.exists()
+    assert not first_art_dir.exists(), "Condition must be true"
 
     dataset_file = tmp_path / "data" / "sample.txt"
     dataset_file.parent.mkdir(parents=True, exist_ok=True)
@@ -48,23 +48,23 @@ def test_run_training_smoke(tmp_path, monkeypatch):
         dataset_sources=[dataset_file],
     )
 
-    assert result["callback_errors"] == []
-    assert captured[0] == 42
-    assert first_art_dir.exists()
+    assert result["callback_errors"] == [], "Result must not be empty"
+    assert captured[0] == 42, "Condition must be true"
+    assert first_art_dir.exists(), "Condition must be true"
     metrics_json = first_art_dir / "metrics.json"
-    assert metrics_json.exists()
+    assert metrics_json.exists(), "Condition must be true"
     data = json.loads(metrics_json.read_text(encoding="utf-8"))
     phases = {entry.get("phase") for entry in data}
     assert {"epoch_end", "best_checkpoint"}.issubset(phases)
     env_json = first_art_dir / "environment.json"
-    assert env_json.exists()
+    assert env_json.exists(), "Condition must be true"
     env_data = json.loads(env_json.read_text(encoding="utf-8"))
-    assert "python" in env_data
+    assert "python" in env_data, "Data must not be empty"
     checksums_path = first_art_dir / "dataset_checksums.json"
-    assert checksums_path.exists()
+    assert checksums_path.exists(), "Condition must be true"
     checksums = json.loads(checksums_path.read_text(encoding="utf-8"))
     expected_hash = hashlib.sha256(dataset_file.read_bytes()).hexdigest()
-    assert checksums[dataset_file.name] == expected_hash
+    assert checksums[dataset_file.name] == expected_hash, "Data must not be empty"
 
     second_art_dir = tmp_path / "second" / "metrics"
     result_zero = module.run_training(
@@ -75,15 +75,15 @@ def test_run_training_smoke(tmp_path, monkeypatch):
         model_name="dummy",
     )
 
-    assert second_art_dir.exists()
-    assert len(captured) == 2
+    assert second_art_dir.exists(), "Condition must be true"
+    assert len(captured) == 2, "Captured must not be empty"
     assert isinstance(captured[1], int)
-    assert captured[1] != 0
+    assert captured[1] != 0, "Condition must be true"
     second_json = second_art_dir / "metrics.json"
-    assert second_json.exists()
+    assert second_json.exists(), "Condition must be true"
     second_data = json.loads(second_json.read_text(encoding="utf-8"))
-    assert second_data[-1]["phase"] == "best_checkpoint"
-    assert result_zero["callback_errors"] == []
+    assert second_data[-1]["phase"] == "best_checkpoint", "Data must not be empty"
+    assert result_zero["callback_errors"] == [], "Result must not be empty"
 
 
 def test_run_training_records_callback_errors(tmp_path, monkeypatch):
@@ -118,5 +118,5 @@ def test_run_training_records_callback_errors(tmp_path, monkeypatch):
     )
 
     errors = res["callback_errors"]
-    assert errors and errors[0]["stage"] == "on_train_start"
-    assert "boom" in errors[0]["error"]
+    assert errors and errors[0]["stage"] == "on_train_start", "Error should be raised or set"
+    assert "boom" in errors[0]["error"], "Error should be raised or set"

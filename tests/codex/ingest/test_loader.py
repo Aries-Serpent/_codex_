@@ -13,7 +13,7 @@ class TestIngestLoaderImports:
         try:
             from src.codex.ingest import loader
 
-            assert loader is not None
+            assert loader is not None, "loader must be initialized"
         except ImportError:
             pytest.skip("Module not available or has unmet dependencies")
 
@@ -28,7 +28,7 @@ class TestIngestLoaderOperations:
 
             if hasattr(loader, "Loader"):
                 ldr = loader.Loader()
-                assert ldr is not None
+                assert ldr is not None, "ldr must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("Loader not available")
 
@@ -41,7 +41,7 @@ class TestIngestLoaderOperations:
                 with patch.object(loader, "load_file") as mock_load:
                     mock_load.return_value = {"content": "test"}
                     result = loader.load_file("/test/path")
-                    assert result["content"] == "test"
+                    assert result["content"] == "test", "Result must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("load_file not available")
 
@@ -54,7 +54,7 @@ class TestIngestLoaderOperations:
                 with patch.object(loader, "load_directory") as mock_load:
                     mock_load.return_value = [{"file": "f1"}, {"file": "f2"}]
                     result = loader.load_directory("/test/dir")
-                    assert len(result) == 2
+                    assert len(result) == 2, "Result must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("load_directory not available")
 
@@ -70,7 +70,7 @@ class TestIngestLoaderFilters:
             if hasattr(loader, "filter_by_extension"):
                 files = ["a.py", "b.txt", "c.py"]
                 result = loader.filter_by_extension(files, ".py")
-                assert len(result) == 2
+                assert len(result) == 2, "Result must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("filter_by_extension not available")
 
@@ -83,7 +83,7 @@ class TestIngestLoaderFilters:
                 with patch.object(loader, "filter_by_size") as mock_filter:
                     mock_filter.return_value = ["large_file.txt"]
                     result = loader.filter_by_size(["a.txt", "b.txt"], min_size=1000)
-                    assert isinstance(
+                    assert isinstance(, "Condition must be true"
                         result, (list, tuple, set, dict)
                     )  # was: len() >= 0 (always true)
         except (ImportError, AttributeError):

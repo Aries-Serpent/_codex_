@@ -21,6 +21,6 @@ def test_programmatic_register_and_get():
     reg = registry()
     plugin = _DummyPlugin()
     reg.register(plugin, override=True)
-    assert reg.get("dummy") is plugin
+    assert reg.get("dummy") is plugin, "Condition must be true"
     names = {p.name() for p in reg.all()}
-    assert "dummy" in names
+    assert "dummy" in names, "Condition must be true"

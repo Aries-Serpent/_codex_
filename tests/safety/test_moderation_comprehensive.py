@@ -50,8 +50,8 @@ class TestModerationSettingsAdvanced:
 
         for combo in combos:
             settings = ModerationSettings(**combo)
-            assert settings.enabled == combo["enabled"]
-            assert settings.fail_open == combo["fail_open"]
+            assert settings.enabled == combo["enabled"], "enabled is not valid"
+            assert settings.fail_open == combo["fail_open"], "fail_open is not valid"
 
     def test_settings_with_custom_paths(self):
         """Test settings with custom file paths."""
@@ -61,8 +61,8 @@ class TestModerationSettingsAdvanced:
             audit_log="/var/log/moderation/audit.jsonl",
         )
 
-        assert settings.rules_path == "/custom/rules.yaml"
-        assert settings.audit_log == "/var/log/moderation/audit.jsonl"
+        assert settings.rules_path == "/custom/rules.yaml", "rules_path is not valid"
+        assert settings.audit_log == "/var/log/moderation/audit.jsonl", "audit_log is not valid"
 
     def test_settings_provider_variants(self):
         """Test different provider configurations."""
@@ -75,7 +75,7 @@ class TestModerationSettingsAdvanced:
 
         for provider in providers:
             settings = ModerationSettings(provider=provider)
-            assert settings.provider == provider
+            assert settings.provider == provider, "provider is not valid"
 
     def test_settings_label_for_tracking(self):
         """Test label field for environment tracking."""
@@ -83,7 +83,7 @@ class TestModerationSettingsAdvanced:
 
         for label in labels:
             settings = ModerationSettings(label=label)
-            assert settings.label == label
+            assert settings.label == label, "label is not valid"
 
     def test_settings_immutability(self):
         """Test that settings can be safely passed around."""
@@ -93,7 +93,7 @@ class TestModerationSettingsAdvanced:
         ModerationAdapter(settings)
 
         # Original settings should be unchanged
-        assert settings.enabled is True
+        assert settings.enabled is True, "enabled is not valid"
 
 
 # =============================================================================
@@ -120,8 +120,8 @@ class TestModerationDecisionAdvanced:
             details=details,
         )
 
-        assert decision.details["scores"]["toxicity"] == 0.1
-        assert decision.details["metadata"]["model"] == "v1"
+        assert decision.details["scores"]["toxicity"] == 0.1, "Condition must be true"
+        assert decision.details["metadata"]["model"] == "v1", "Data must not be empty"
 
     def test_decision_to_dict_comprehensive(self):
         """Test comprehensive to_dict conversion."""
@@ -137,13 +137,13 @@ class TestModerationDecisionAdvanced:
 
         result = decision.to_dict()
 
-        assert result["approved"] is False
-        assert result["stage"] == "postflight"
-        assert result["provider"] == "openai"
-        assert len(result["reasons"]) == 3
-        assert len(result["matches"]) == 2
-        assert result["sanitized_text"] == "[REDACTED] safe content"
-        assert result["details"]["score"] == 0.85
+        assert result["approved"] is False, "Result must not be empty"
+        assert result["stage"] == "postflight", "Result must not be empty"
+        assert result["provider"] == "openai", "Result must not be empty"
+        assert len(result["reasons"]) == 3, "Collection must not be empty"
+        assert len(result["matches"]) == 2, "Collection must not be empty"
+        assert result["sanitized_text"] == "[REDACTED] safe content", "Result must not be empty"
+        assert result["details"]["score"] == 0.85, "Result must not be empty"
 
     def test_decision_equality_via_dict(self):
         """Test decision equality through dict comparison."""
@@ -166,9 +166,9 @@ class TestModerationDecisionAdvanced:
         dict2 = decision2.to_dict()
 
         # Compare important fields
-        assert dict1["approved"] == dict2["approved"]
-        assert dict1["stage"] == dict2["stage"]
-        assert dict1["provider"] == dict2["provider"]
+        assert dict1["approved"] == dict2["approved"], "Condition must be true"
+        assert dict1["stage"] == dict2["stage"], "Condition must be true"
+        assert dict1["provider"] == dict2["provider"], "Condition must be true"
 
     def test_decision_with_empty_collections(self):
         """Test decision with empty reasons and matches."""
@@ -181,8 +181,8 @@ class TestModerationDecisionAdvanced:
         )
 
         result = decision.to_dict()
-        assert result["reasons"] == []
-        assert result["matches"] == []
+        assert result["reasons"] == [], "Result must not be empty"
+        assert result["matches"] == [], "Result must not be empty"
 
     def test_decision_sanitized_text_none(self):
         """Test decision with None sanitized_text."""
@@ -193,9 +193,9 @@ class TestModerationDecisionAdvanced:
             sanitized_text=None,
         )
 
-        assert decision.sanitized_text is None
+        assert decision.sanitized_text is None, "sanitized_text is not valid"
         result = decision.to_dict()
-        assert result["sanitized_text"] is None
+        assert result["sanitized_text"] is None, "Result must not be empty"
 
 
 # =============================================================================
@@ -218,8 +218,8 @@ class TestModerationRejectionAdvanced:
         rejection = ModerationRejection("preflight", decision)
         error_msg = str(rejection)
 
-        assert "preflight" in error_msg
-        assert "harmful_pattern" in error_msg or "toxic_content" in error_msg
+        assert "preflight" in error_msg, "Error should be raised or set"
+        assert "harmful_pattern" in error_msg or "toxic_content" in error_msg, "Content must not be empty"
 
     def test_rejection_with_multiple_reasons(self):
         """Test rejection with multiple reasons."""
@@ -251,8 +251,8 @@ class TestModerationRejectionAdvanced:
             provider_error=provider_error,
         )
 
-        assert rejection.provider_error == provider_error
-        assert str(rejection.provider_error) == "API timeout after 30s"
+        assert rejection.provider_error == provider_error, "Error should be raised or set"
+        assert str(rejection.provider_error) == "API timeout after 30s", "Error should be raised or set"
 
     def test_rejection_can_be_caught(self):
         """Test that rejection can be caught as exception."""
@@ -268,8 +268,8 @@ class TestModerationRejectionAdvanced:
         with pytest.raises(ModerationRejection) as exc_info:
             _do_raise(decision)
 
-        assert exc_info.value.stage == "preflight"
-        assert exc_info.value.decision == decision
+        assert exc_info.value.stage == "preflight", "Value must be initialized"
+        assert exc_info.value.decision == decision, "Value must be initialized"
 
     def test_rejection_inherits_runtime_error(self):
         """Test ModerationRejection is RuntimeError."""
@@ -301,15 +301,15 @@ class TestModerationAdapterCore:
         # Should return approved for anything
         decision = adapter.review("any text", stage="preflight")
 
-        assert decision.approved is True
-        assert decision.provider == "disabled"
+        assert decision.approved is True, "approved is not valid"
+        assert decision.provider == "disabled", "provider is not valid"
 
     def test_adapter_from_settings_classmethod(self):
         """Test creating adapter via from_settings classmethod."""
         settings = ModerationSettings(enabled=True)
         adapter = ModerationAdapter.from_settings(settings)
 
-        assert adapter.settings == settings
+        assert adapter.settings == settings, "settings is not valid"
         assert isinstance(adapter, ModerationAdapter)
 
     def test_adapter_provider_name_property(self):
@@ -328,7 +328,7 @@ class TestModerationAdapterCore:
             default_policy="/path/to/default/policy.yaml",
         )
 
-        assert adapter._default_policy == "/path/to/default/policy.yaml"
+        assert adapter._default_policy == "/path/to/default/policy.yaml", "_default_policy is not valid"
 
     @patch("codex_ml.safety.moderation.importlib.import_module")
     def test_adapter_resolve_provider_success(self, mock_import):
@@ -342,15 +342,15 @@ class TestModerationAdapterCore:
         adapter = ModerationAdapter(settings)
 
         # Should have resolved provider
-        assert adapter._provider is not None
+        assert adapter._provider is not None, "_provider must be initialized"
 
     def test_adapter_resolve_provider_offline(self):
         """Test provider resolution for offline mode."""
         settings = ModerationSettings(provider="offline")
         adapter = ModerationAdapter(settings)
 
-        assert adapter._provider is None
-        assert adapter.provider_name == "offline"
+        assert adapter._provider is None, "_provider is not valid"
+        assert adapter.provider_name == "offline", "provider_name is not valid"
 
     def test_adapter_resolve_provider_invalid(self):
         """Test handling of invalid provider format."""
@@ -358,7 +358,7 @@ class TestModerationAdapterCore:
         adapter = ModerationAdapter(settings)
 
         # Should fall back to offline
-        assert adapter._provider is None
+        assert adapter._provider is None, "_provider is not valid"
 
 
 # =============================================================================
@@ -376,8 +376,8 @@ class TestReviewAndEnforce:
 
         decision = adapter.review("dangerous content", stage="preflight")
 
-        assert decision.approved is True
-        assert decision.provider == "disabled"
+        assert decision.approved is True, "approved is not valid"
+        assert decision.provider == "disabled", "provider is not valid"
 
     @patch("codex_ml.safety.filters.SafetyFilters")
     def test_review_offline_mode(self, mock_filters):
@@ -397,8 +397,8 @@ class TestReviewAndEnforce:
 
         decision = adapter.review("test text", stage="preflight")
 
-        assert decision.approved is True
-        assert decision.provider == "offline"
+        assert decision.approved is True, "approved is not valid"
+        assert decision.provider == "offline", "provider is not valid"
 
     @patch("codex_ml.safety.moderation.SafetyFilters")
     def test_enforce_with_approval(self, mock_filters):
@@ -417,7 +417,7 @@ class TestReviewAndEnforce:
 
         # Should not raise
         decision = adapter.enforce("safe content", stage="preflight")
-        assert decision.approved is True
+        assert decision.approved is True, "approved is not valid"
 
     @patch("codex_ml.safety.moderation.SafetyFilters")
     def test_enforce_with_rejection(self, mock_filters):
@@ -466,7 +466,7 @@ class TestReviewAndEnforce:
 
         # Should not raise even though rejected
         decision = adapter.enforce("content", stage="preflight")
-        assert decision.approved is False  # Still rejected
+        assert decision.approved is False, "approved is not valid"
         # But no exception raised
 
 
@@ -485,8 +485,8 @@ class TestOfflineFilterIntegration:
 
         decision = adapter.review("any content", stage="preflight")
 
-        assert decision.approved is True
-        assert decision.provider == "disabled"
+        assert decision.approved is True, "approved is not valid"
+        assert decision.provider == "disabled", "provider is not valid"
 
     def test_offline_review_enabled_returns_decision(self):
         """Test that offline review returns a decision."""
@@ -497,8 +497,8 @@ class TestOfflineFilterIntegration:
 
         # Should return a decision object
         assert isinstance(decision, ModerationDecision)
-        assert decision.stage == "preflight"
-        assert decision.provider == "offline"
+        assert decision.stage == "preflight", "stage is not valid"
+        assert decision.provider == "offline", "provider is not valid"
 
 
 # =============================================================================
@@ -522,7 +522,7 @@ class TestProviderIntegration:
 
         normalized = adapter._normalize_payload(original_decision, "preflight")
 
-        assert normalized == original_decision
+        assert normalized == original_decision, "normalized is not valid"
 
     def test_normalize_payload_dict(self):
         """Test normalizing dict payload."""
@@ -540,12 +540,12 @@ class TestProviderIntegration:
 
         decision = adapter._normalize_payload(payload, "preflight")
 
-        assert decision.approved is True
-        assert len(decision.matches) == 2
-        assert len(decision.reasons) == 2
-        assert decision.provider == "external"
-        assert decision.sanitized_text == "clean text"
-        assert decision.details["extra_field"] == "extra_value"
+        assert decision.approved is True, "approved is not valid"
+        assert len(decision.matches) == 2, "Collection must not be empty"
+        assert len(decision.reasons) == 2, "Collection must not be empty"
+        assert decision.provider == "external", "provider is not valid"
+        assert decision.sanitized_text == "clean text", "sanitized_text is not valid"
+        assert decision.details["extra_field"] == "extra_value", "Value must be initialized"
 
     def test_normalize_payload_minimal_dict(self):
         """Test normalizing minimal dict payload."""
@@ -556,9 +556,9 @@ class TestProviderIntegration:
 
         decision = adapter._normalize_payload(payload, "preflight")
 
-        assert decision.approved is False
-        assert decision.matches == ()
-        assert decision.reasons == ()
+        assert decision.approved is False, "approved is not valid"
+        assert decision.matches == (), "matches is not valid"
+        assert decision.reasons == (), "reasons is not valid"
 
     def test_normalize_payload_invalid_type(self):
         """Test normalizing invalid payload type."""
@@ -567,7 +567,7 @@ class TestProviderIntegration:
 
         result = adapter._normalize_payload("invalid", "preflight")
 
-        assert result is None
+        assert result is None, "Result must not be empty"
 
 
 # =============================================================================
@@ -587,7 +587,7 @@ class TestAuditLogging:
         )
         adapter = ModerationAdapter(settings)
 
-        assert adapter.settings.audit_log == audit_path
+        assert adapter.settings.audit_log == audit_path, "audit_log is not valid"
 
     def test_audit_log_disabled_moderation(self):
         """Test that audit logging doesn't interfere when moderation disabled."""
@@ -598,7 +598,7 @@ class TestAuditLogging:
         adapter = ModerationAdapter(settings)
 
         decision = adapter.review("test", stage="preflight")
-        assert decision.approved is True
+        assert decision.approved is True, "approved is not valid"
 
 
 # =============================================================================
@@ -616,11 +616,11 @@ class TestIntegrationAndEdgeCases:
 
         # Review
         decision = adapter.review("safe content", stage="preflight")
-        assert decision.approved is True
+        assert decision.approved is True, "approved is not valid"
 
         # Enforce
         result = adapter.enforce("safe content", stage="preflight")
-        assert result.approved is True
+        assert result.approved is True, "Result must not be empty"
 
     def test_end_to_end_rejection_flow(self):
         """Test complete rejection flow configuration."""
@@ -629,7 +629,7 @@ class TestIntegrationAndEdgeCases:
         adapter = ModerationAdapter(settings)
 
         # Verify settings
-        assert adapter.settings.fail_open is False
+        assert adapter.settings.fail_open is False, "fail_open is not valid"
 
     def test_different_stages(self):
         """Test moderation at different stages."""
@@ -640,7 +640,7 @@ class TestIntegrationAndEdgeCases:
 
         for stage in stages:
             decision = adapter.review("test", stage=stage)
-            assert decision.stage == stage
+            assert decision.stage == stage, "stage is not valid"
 
     def test_hash_text_utility(self):
         """Test text hashing utility."""
@@ -655,9 +655,9 @@ class TestIntegrationAndEdgeCases:
         hash2 = adapter._hash_text(text2)
         hash3 = adapter._hash_text(text3)
 
-        assert hash1 == hash2
-        assert hash1 != hash3
-        assert len(hash1) == 64  # SHA256 hex digest
+        assert hash1 == hash2, "hash1 is not valid"
+        assert hash1 != hash3, "hash1 is not valid"
+        assert len(hash1) == 64, "Hash1 must not be empty"
 
     def test_very_long_text(self):
         """Test moderation with very long text."""
@@ -667,7 +667,7 @@ class TestIntegrationAndEdgeCases:
         long_text = "test " * 100000
         decision = adapter.review(long_text, stage="preflight")
 
-        assert decision.approved is True
+        assert decision.approved is True, "approved is not valid"
 
     def test_unicode_text(self):
         """Test moderation with unicode text."""
@@ -677,7 +677,7 @@ class TestIntegrationAndEdgeCases:
         unicode_text = "Hello 世界 🌍 Привет"
         decision = adapter.review(unicode_text, stage="preflight")
 
-        assert decision.approved is True
+        assert decision.approved is True, "approved is not valid"
 
     def test_empty_text(self):
         """Test moderation with empty text."""
@@ -686,4 +686,4 @@ class TestIntegrationAndEdgeCases:
 
         decision = adapter.review("", stage="preflight")
 
-        assert decision.approved is True
+        assert decision.approved is True, "approved is not valid"

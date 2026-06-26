@@ -136,7 +136,7 @@ class ConfigLoader:
             self.error_config = self._get_default_error_config()
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.warning(f"Failed to load error config: <ERROR_TYPE>")
+            logger.warning("Failed to load error config: <ERROR_TYPE>")
             self.error_config = self._get_default_error_config()
 
     @staticmethod
@@ -279,7 +279,7 @@ class ConfigLoader:
                 return cfg
             except (IOError, OSError) as e:
                 error_type = type(e).__name__
-                logger.warning(f"Hydra compose failed: <ERROR_TYPE>")
+                logger.warning("Hydra compose failed: <ERROR_TYPE>")
                 if not allow_fallback:
                     raise
 
@@ -304,7 +304,7 @@ class ConfigLoader:
                     raise
             except (ValueError, TypeError, RuntimeError) as e:
                 error_type = type(e).__name__
-                logger.error(f"Failed to load config: <ERROR_TYPE>")
+                logger.error("Failed to load config: <ERROR_TYPE>")
                 if not allow_fallback:
                     raise
 

@@ -62,7 +62,7 @@ class TestExceptionChaining:
             except ValueError as e:
                 raise RuntimeError("Wrapped error") from e
         except RuntimeError as e:
-            assert e.__cause__ is not None
+            assert e.__cause__ is not None, "__cause__ must be initialized"
 
     def test_exception_suppression(self):
         """Test exception suppression in context managers."""
@@ -80,7 +80,7 @@ class TestExceptionChaining:
                 exceptions_caught.append(e)
 
         # Assert
-        assert len(exceptions_caught) == 2
+        assert len(exceptions_caught) == 2, "Exceptions_caught must not be empty"
 
     def test_exception_in_exception_handler(self):
         """Test exception raised in exception handler."""
@@ -161,7 +161,7 @@ class TestResourceCleanup:
             finally_executed = True
 
         # Assert
-        assert finally_executed
+        assert finally_executed, "finally_executed is not valid"
 
     def test_cleanup_failure_handling(self):
         """Test handling of failure during cleanup."""
@@ -180,8 +180,8 @@ class TestResourceCleanup:
                 cleanup_failed = True
 
         # Assert
-        assert main_exception_caught
-        assert cleanup_failed
+        assert main_exception_caught, "main_exception_caught is not valid"
+        assert cleanup_failed, "cleanup_failed is not valid"
 
 
 class TestPartialFailure:
@@ -204,9 +204,9 @@ class TestPartialFailure:
                 failed.append(item)
 
         # Assert
-        assert len(processed) == 4
-        assert len(failed) == 1
-        assert failed[0] == 3
+        assert len(processed) == 4, "Processed must not be empty"
+        assert len(failed) == 1, "Failed must not be empty"
+        assert failed[0] == 3, "Condition must be true"
 
     def test_cascade_failure_prevention(self):
         """Test prevention of cascading failures."""
@@ -220,8 +220,8 @@ class TestPartialFailure:
                 failed_modules.add(module)
 
         # Assert
-        assert "module_b" in failed_modules
-        assert "module_a" not in failed_modules
+        assert "module_b" in failed_modules, "Condition must be true"
+        assert "module_a" not in failed_modules, "Condition must be true"
 
     def test_rollback_on_any_failure(self):
         """Test rollback when any operation fails."""
@@ -241,8 +241,8 @@ class TestPartialFailure:
             completed = []
 
         # Assert
-        assert should_rollback
-        assert len(completed) == 0
+        assert should_rollback, "should_rollback is not valid"
+        assert len(completed) == 0, "Completed must not be empty"
 
     def test_retry_after_partial_failure(self):
         """Test retry logic after partial failure."""
@@ -260,7 +260,7 @@ class TestPartialFailure:
                 retry_count += 1
 
         # Assert
-        assert retry_count == 2
+        assert retry_count == 2, "Count must be greater than zero"
 
 
 class TestErrorMessages:
@@ -289,7 +289,7 @@ class TestErrorMessages:
         )
 
         # Assert
-        assert is_user_friendly
+        assert is_user_friendly, "is_user_friendly is not valid"
 
     def test_error_code_mapping(self):
         """Test error code to message mapping."""
@@ -304,7 +304,7 @@ class TestErrorMessages:
         error_message = error_codes.get("E002")
 
         # Assert
-        assert error_message == "Resource not found"
+        assert error_message == "Resource not found", "Error should be raised or set"
 
     def test_localized_error_messages(self):
         """Test localized error messages."""
@@ -320,7 +320,7 @@ class TestErrorMessages:
         message = error_messages.get(locale)
 
         # Assert
-        assert message == "An error occurred"
+        assert message == "An error occurred", "Error should be raised or set"
 
     def test_error_logging_without_leakage(self):
         """Test error logging without information leakage."""
@@ -332,7 +332,7 @@ class TestErrorMessages:
         contains_api_key = api_key in error_log
 
         # Assert
-        assert not contains_api_key
+        assert not contains_api_key, "Condition must be true"
 
 
 class TestTimeoutHandling:
@@ -356,8 +356,8 @@ class TestTimeoutHandling:
             operation_active = False
 
         # Assert
-        assert not operation_active
-        assert shutdown_initiated
+        assert not operation_active, "Condition must be true"
+        assert shutdown_initiated, "shutdown_initiated is not valid"
 
     def test_partial_result_on_timeout(self):
         """Test returning partial results on timeout."""
@@ -370,7 +370,7 @@ class TestTimeoutHandling:
         results = processed_items if timed_out else total_items
 
         # Assert
-        assert results == 45
+        assert results == 45, "Result must not be empty"
 
 
 class TestRecoveryMechanisms:
@@ -385,7 +385,7 @@ class TestRecoveryMechanisms:
         can_attempt_request = not circuit_breaker_open
 
         # Assert
-        assert not can_attempt_request
+        assert not can_attempt_request, "Condition must be true"
 
     def test_circuit_breaker_half_open_state(self):
         """Test circuit breaker in half-open state."""
@@ -396,7 +396,7 @@ class TestRecoveryMechanisms:
         can_attempt_request = circuit_breaker_state == "half-open"
 
         # Assert
-        assert can_attempt_request
+        assert can_attempt_request, "can_attempt_request is not valid"
 
     def test_fallback_mechanism(self):
         """Test fallback to secondary mechanism."""
@@ -408,4 +408,4 @@ class TestRecoveryMechanisms:
         use_secondary = primary_available is False and secondary_available
 
         # Assert
-        assert use_secondary
+        assert use_secondary, "use_secondary is not valid"

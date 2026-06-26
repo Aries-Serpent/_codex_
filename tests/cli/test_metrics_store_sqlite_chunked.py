@@ -42,10 +42,10 @@ def test_sqlite_chunked_and_index(tmp_path: Path) -> None:
             "--create-index",
         ]
     )
-    assert err == ""
-    assert rc == 0
+    assert err == "", "err is not valid"
+    assert rc == 0, "rc is not valid"
     payload = json.loads(out)
-    assert payload["ok"] is True
+    assert payload["ok"] is True, "Condition must be true"
 
 
 def test_sqlite_accepts_fractional_epoch(tmp_path: Path) -> None:
@@ -69,10 +69,10 @@ def test_sqlite_accepts_fractional_epoch(tmp_path: Path) -> None:
         ]
     )
 
-    assert err == ""
-    assert rc == 0
+    assert err == "", "err is not valid"
+    assert rc == 0, "rc is not valid"
     payload = json.loads(out)
-    assert payload["ok"] is True
+    assert payload["ok"] is True, "Condition must be true"
 
     con = sqlite3.connect(db_path)
     try:

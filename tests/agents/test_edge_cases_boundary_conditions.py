@@ -35,7 +35,7 @@ class TestMemoryEntryBoundaries:
             context={},
             confidence=0.0,
         )
-        assert entry.confidence == 0.0
+        assert entry.confidence == 0.0, "confidence is not valid"
         # Verify it's valid despite being minimum
         assert isinstance(entry.confidence, float)
 
@@ -48,7 +48,7 @@ class TestMemoryEntryBoundaries:
             context={},
             confidence=1.0,
         )
-        assert entry.confidence == 1.0
+        assert entry.confidence == 1.0, "confidence is not valid"
         assert isinstance(entry.confidence, float)
 
     def test_confidence_score_just_below_zero(self) -> None:
@@ -61,7 +61,7 @@ class TestMemoryEntryBoundaries:
             confidence=-0.0001,
         )
         # System should accept negative but semantically invalid
-        assert entry.confidence == -0.0001
+        assert entry.confidence == -0.0001, "confidence is not valid"
 
     def test_confidence_score_just_above_one(self) -> None:
         """Test confidence score just above valid range."""
@@ -73,7 +73,7 @@ class TestMemoryEntryBoundaries:
             confidence=1.0001,
         )
         # System should accept > 1.0 but semantically invalid
-        assert entry.confidence == 1.0001
+        assert entry.confidence == 1.0001, "confidence is not valid"
 
     def test_confidence_score_midpoint(self) -> None:
         """Test confidence score at midpoint."""
@@ -84,7 +84,7 @@ class TestMemoryEntryBoundaries:
             context={},
             confidence=0.5,
         )
-        assert entry.confidence == 0.5
+        assert entry.confidence == 0.5, "confidence is not valid"
 
     def test_access_count_zero(self) -> None:
         """Test access count at exactly 0."""
@@ -95,7 +95,7 @@ class TestMemoryEntryBoundaries:
             context={},
             access_count=0,
         )
-        assert entry.access_count == 0
+        assert entry.access_count == 0, "Count must be greater than zero"
 
     def test_access_count_large_value(self) -> None:
         """Test access count with large value."""
@@ -106,7 +106,7 @@ class TestMemoryEntryBoundaries:
             context={},
             access_count=999999999,
         )
-        assert entry.access_count == 999999999
+        assert entry.access_count == 999999999, "Count must be greater than zero"
 
     def test_access_count_negative(self) -> None:
         """Test access count with negative value (semantically invalid)."""
@@ -118,7 +118,7 @@ class TestMemoryEntryBoundaries:
             access_count=-1,
         )
         # System should accept but is semantically invalid
-        assert entry.access_count == -1
+        assert entry.access_count == -1, "Count must be greater than zero"
 
     def test_memory_id_empty_string(self) -> None:
         """Test with empty memory ID."""
@@ -128,7 +128,7 @@ class TestMemoryEntryBoundaries:
             content="content",
             context={},
         )
-        assert entry.memory_id == ""
+        assert entry.memory_id == "", "memory_id is not valid"
 
     def test_memory_id_very_long(self) -> None:
         """Test with very long memory ID."""
@@ -139,7 +139,7 @@ class TestMemoryEntryBoundaries:
             content="content",
             context={},
         )
-        assert entry.memory_id == long_id
+        assert entry.memory_id == long_id, "memory_id is not valid"
 
     def test_content_empty_string(self) -> None:
         """Test with empty content."""
@@ -149,7 +149,7 @@ class TestMemoryEntryBoundaries:
             content="",
             context={},
         )
-        assert entry.content == ""
+        assert entry.content == "", "Content must not be empty"
 
     def test_content_very_large(self) -> None:
         """Test with very large content."""
@@ -160,7 +160,7 @@ class TestMemoryEntryBoundaries:
             content=large_content,
             context={},
         )
-        assert len(entry.content) == 1000000
+        assert len(entry.content) == 1000000, "Collection must not be empty"
 
     def test_category_empty_string(self) -> None:
         """Test with empty category."""
@@ -170,7 +170,7 @@ class TestMemoryEntryBoundaries:
             content="content",
             context={},
         )
-        assert entry.category == ""
+        assert entry.category == "", "category is not valid"
 
     def test_tags_empty_list(self) -> None:
         """Test with empty tags list."""
@@ -181,7 +181,7 @@ class TestMemoryEntryBoundaries:
             context={},
             tags=[],
         )
-        assert entry.tags == []
+        assert entry.tags == [], "tags is not valid"
 
     def test_tags_many_items(self) -> None:
         """Test with large number of tags."""
@@ -193,7 +193,7 @@ class TestMemoryEntryBoundaries:
             context={},
             tags=tags,
         )
-        assert len(entry.tags) == 1000
+        assert len(entry.tags) == 1000, "Collection must not be empty"
 
     def test_related_memories_empty_list(self) -> None:
         """Test with empty related memories list."""
@@ -204,7 +204,7 @@ class TestMemoryEntryBoundaries:
             context={},
             related_memories=[],
         )
-        assert entry.related_memories == []
+        assert entry.related_memories == [], "related_memories is not valid"
 
     def test_related_memories_circular_reference(self) -> None:
         """Test with circular memory references."""
@@ -215,7 +215,7 @@ class TestMemoryEntryBoundaries:
             context={},
             related_memories=["test_id"],  # Self-reference
         )
-        assert "test_id" in entry.related_memories
+        assert "test_id" in entry.related_memories, "Condition must be true"
 
     def test_context_empty_dict(self) -> None:
         """Test with empty context dictionary."""
@@ -225,7 +225,7 @@ class TestMemoryEntryBoundaries:
             content="content",
             context={},
         )
-        assert entry.context == {}
+        assert entry.context == {}, "context is not valid"
 
     def test_context_deeply_nested(self) -> None:
         """Test with deeply nested context."""
@@ -236,7 +236,7 @@ class TestMemoryEntryBoundaries:
             content="content",
             context=context,
         )
-        assert entry.context["level1"]["level2"]["level3"]["level4"]["level5"] == "value"
+        assert entry.context["level1"]["level2"]["level3"]["level4"]["level5"] == "value", "Value must be initialized"
 
     def test_context_large_dictionary(self) -> None:
         """Test with large context dictionary."""
@@ -247,7 +247,7 @@ class TestMemoryEntryBoundaries:
             content="content",
             context=context,
         )
-        assert len(entry.context) == 1000
+        assert len(entry.context) == 1000, "Collection must not be empty"
 
 
 class TestContextFrameBoundaries:
@@ -260,7 +260,7 @@ class TestContextFrameBoundaries:
             task_description="",
             start_time=datetime.now(UTC).isoformat(),
         )
-        assert frame.task_description == ""
+        assert frame.task_description == "", "task_description is not valid"
 
     def test_context_frame_very_long_task_description(self) -> None:
         """Test context frame with very long task description."""
@@ -270,7 +270,7 @@ class TestContextFrameBoundaries:
             task_description=description,
             start_time=datetime.now(UTC).isoformat(),
         )
-        assert len(frame.task_description) == 100000
+        assert len(frame.task_description) == 100000, "Collection must not be empty"
 
     def test_context_frame_zero_metrics(self) -> None:
         """Test context frame with zero metrics."""
@@ -282,9 +282,9 @@ class TestContextFrameBoundaries:
             actions_taken=0,
             errors_encountered=0,
         )
-        assert frame.tokens_used == 0
-        assert frame.actions_taken == 0
-        assert frame.errors_encountered == 0
+        assert frame.tokens_used == 0, "tokens_used is not valid"
+        assert frame.actions_taken == 0, "actions_taken is not valid"
+        assert frame.errors_encountered == 0, "Error should be raised or set"
 
     def test_context_frame_large_metrics(self) -> None:
         """Test context frame with large metric values."""
@@ -296,9 +296,9 @@ class TestContextFrameBoundaries:
             actions_taken=999999999,
             errors_encountered=999999999,
         )
-        assert frame.tokens_used == 999999999
-        assert frame.actions_taken == 999999999
-        assert frame.errors_encountered == 999999999
+        assert frame.tokens_used == 999999999, "tokens_used is not valid"
+        assert frame.actions_taken == 999999999, "actions_taken is not valid"
+        assert frame.errors_encountered == 999999999, "Error should be raised or set"
 
     def test_context_frame_empty_files_modified(self) -> None:
         """Test context frame with empty files modified list."""
@@ -308,7 +308,7 @@ class TestContextFrameBoundaries:
             start_time=datetime.now(UTC).isoformat(),
             files_modified=[],
         )
-        assert frame.files_modified == []
+        assert frame.files_modified == [], "files_modified is not valid"
 
     def test_context_frame_many_files_modified(self) -> None:
         """Test context frame with many files modified."""
@@ -319,7 +319,7 @@ class TestContextFrameBoundaries:
             start_time=datetime.now(UTC).isoformat(),
             files_modified=files,
         )
-        assert len(frame.files_modified) == 1000
+        assert len(frame.files_modified) == 1000, "Collection must not be empty"
 
     def test_context_frame_empty_decisions_made(self) -> None:
         """Test context frame with empty decisions."""
@@ -329,7 +329,7 @@ class TestContextFrameBoundaries:
             start_time=datetime.now(UTC).isoformat(),
             decisions_made=[],
         )
-        assert frame.decisions_made == []
+        assert frame.decisions_made == [], "decisions_made is not valid"
 
     def test_context_frame_many_decisions(self) -> None:
         """Test context frame with many decisions."""
@@ -340,7 +340,7 @@ class TestContextFrameBoundaries:
             start_time=datetime.now(UTC).isoformat(),
             decisions_made=decisions,
         )
-        assert len(frame.decisions_made) == 500
+        assert len(frame.decisions_made) == 500, "Collection must not be empty"
 
     def test_context_frame_empty_lessons_learned(self) -> None:
         """Test context frame with empty lessons."""
@@ -350,7 +350,7 @@ class TestContextFrameBoundaries:
             start_time=datetime.now(UTC).isoformat(),
             lessons_learned=[],
         )
-        assert frame.lessons_learned == []
+        assert frame.lessons_learned == [], "lessons_learned is not valid"
 
     def test_context_frame_many_lessons(self) -> None:
         """Test context frame with many lessons."""
@@ -361,7 +361,7 @@ class TestContextFrameBoundaries:
             start_time=datetime.now(UTC).isoformat(),
             lessons_learned=lessons,
         )
-        assert len(frame.lessons_learned) == 500
+        assert len(frame.lessons_learned) == 500, "Collection must not be empty"
 
 
 class TestPatternLibraryBoundaries:
@@ -370,8 +370,8 @@ class TestPatternLibraryBoundaries:
     def test_pattern_library_empty(self) -> None:
         """Test pattern library with no patterns."""
         lib = PatternLibrary()
-        assert len(lib.patterns) == 0
-        assert len(lib.pattern_index) == 0
+        assert len(lib.patterns) == 0, "Collection must not be empty"
+        assert len(lib.pattern_index) == 0, "Collection must not be empty"
 
     def test_pattern_library_many_patterns(self) -> None:
         """Test pattern library with many patterns."""
@@ -387,7 +387,7 @@ class TestPatternLibraryBoundaries:
                 examples=[],
                 tags=[f"tag_{i}"],
             )
-        assert len(lib.patterns) == 100
+        assert len(lib.patterns) == 100, "Collection must not be empty"
 
     def test_pattern_success_rate_zero(self) -> None:
         """Test pattern with zero success rate."""
@@ -402,7 +402,7 @@ class TestPatternLibraryBoundaries:
             examples=[],
             tags=["test"],
         )
-        assert lib.patterns["zero_rate"]["success_rate"] == 0.0
+        assert lib.patterns["zero_rate"]["success_rate"] == 0.0, "Condition must be true"
 
     def test_pattern_success_rate_one(self) -> None:
         """Test pattern with perfect success rate."""
@@ -417,7 +417,7 @@ class TestPatternLibraryBoundaries:
             examples=[],
             tags=["test"],
         )
-        assert lib.patterns["perfect_rate"]["success_rate"] == 1.0
+        assert lib.patterns["perfect_rate"]["success_rate"] == 1.0, "Condition must be true"
 
     def test_pattern_no_triggers(self) -> None:
         """Test pattern with no triggers."""
@@ -432,7 +432,7 @@ class TestPatternLibraryBoundaries:
             examples=[],
             tags=["test"],
         )
-        assert len(lib.patterns["no_triggers"]["triggers"]) == 0
+        assert len(lib.patterns["no_triggers"]["triggers"]) == 0, "Collection must not be empty"
 
     def test_pattern_no_tags(self) -> None:
         """Test pattern with no tags."""
@@ -447,7 +447,7 @@ class TestPatternLibraryBoundaries:
             examples=[],
             tags=[],
         )
-        assert len(lib.patterns["no_tags"]["tags"]) == 0
+        assert len(lib.patterns["no_tags"]["tags"]) == 0, "Collection must not be empty"
 
     def test_pattern_no_recommended_actions(self) -> None:
         """Test pattern with no recommended actions."""
@@ -462,13 +462,13 @@ class TestPatternLibraryBoundaries:
             examples=[],
             tags=["test"],
         )
-        assert len(lib.patterns["no_actions"]["recommended_actions"]) == 0
+        assert len(lib.patterns["no_actions"]["recommended_actions"]) == 0, "Collection must not be empty"
 
     def test_match_patterns_empty_library(self) -> None:
         """Test matching patterns in empty library."""
         lib = PatternLibrary()
         matches = lib.match_patterns("test situation")
-        assert matches == []
+        assert matches == [], "matches is not valid"
 
     def test_match_patterns_no_matches(self) -> None:
         """Test matching patterns with no matches."""
@@ -484,7 +484,7 @@ class TestPatternLibraryBoundaries:
             tags=["auth"],
         )
         matches = lib.match_patterns("networking issue")
-        assert matches == []
+        assert matches == [], "matches is not valid"
 
     def test_pattern_record_usage_zero_times(self) -> None:
         """Test recording pattern usage with zero usage count."""
@@ -500,8 +500,8 @@ class TestPatternLibraryBoundaries:
             tags=["test"],
         )
         # Don't record any usage - should stay at initial success rate
-        assert lib.patterns["pattern1"]["success_rate"] == 0.5
-        assert lib.patterns["pattern1"]["usage_count"] == 0
+        assert lib.patterns["pattern1"]["success_rate"] == 0.5, "Condition must be true"
+        assert lib.patterns["pattern1"]["usage_count"] == 0, "Count must be greater than zero"
 
     def test_pattern_record_many_usages(self) -> None:
         """Test recording pattern usage many times."""
@@ -520,8 +520,8 @@ class TestPatternLibraryBoundaries:
         for _ in range(1000):
             lib.record_pattern_usage("pattern1", success=True)
         # Success rate should increase
-        assert lib.patterns["pattern1"]["usage_count"] == 1000
-        assert lib.patterns["pattern1"]["success_rate"] > 0.5
+        assert lib.patterns["pattern1"]["usage_count"] == 1000, "Count must be greater than zero"
+        assert lib.patterns["pattern1"]["success_rate"] > 0.5, "Value must be greater than zero"
 
 
 class TestAgentMemoryStorageBoundaries:
@@ -542,8 +542,8 @@ class TestAgentMemoryStorageBoundaries:
         memory.store_memory(entry)
 
         retrieved = memory.retrieve_memory("max_conf")
-        assert retrieved is not None
-        assert retrieved.confidence == 1.0
+        assert retrieved is not None, "retrieved must be initialized"
+        assert retrieved.confidence == 1.0, "confidence is not valid"
 
     def test_store_memory_with_min_confidence(self, tmp_path: Path) -> None:
         """Test storing memory with min confidence."""
@@ -560,8 +560,8 @@ class TestAgentMemoryStorageBoundaries:
         memory.store_memory(entry)
 
         retrieved = memory.retrieve_memory("min_conf")
-        assert retrieved is not None
-        assert retrieved.confidence == 0.0
+        assert retrieved is not None, "retrieved must be initialized"
+        assert retrieved.confidence == 0.0, "confidence is not valid"
 
     def test_store_memory_large_access_count(self, tmp_path: Path) -> None:
         """Test storing memory with large access count."""
@@ -578,8 +578,8 @@ class TestAgentMemoryStorageBoundaries:
         memory.store_memory(entry)
 
         retrieved = memory.retrieve_memory("large_access")
-        assert retrieved is not None
-        assert retrieved.access_count == 999999
+        assert retrieved is not None, "retrieved must be initialized"
+        assert retrieved.access_count == 999999, "Count must be greater than zero"
 
     def test_store_many_memories(self, tmp_path: Path) -> None:
         """Test storing many memories."""
@@ -598,8 +598,8 @@ class TestAgentMemoryStorageBoundaries:
 
         # Verify retrieval
         retrieved = memory.retrieve_memory("memory_500")
-        assert retrieved is not None
-        assert retrieved.memory_id == "memory_500"
+        assert retrieved is not None, "retrieved must be initialized"
+        assert retrieved.memory_id == "memory_500", "memory_id is not valid"
 
     def test_retrieve_nonexistent_memory(self, tmp_path: Path) -> None:
         """Test retrieving non-existent memory."""
@@ -607,7 +607,7 @@ class TestAgentMemoryStorageBoundaries:
         memory = AgentMemory(db_path=db_path)
 
         retrieved = memory.retrieve_memory("nonexistent")
-        assert retrieved is None
+        assert retrieved is None, "retrieved is not valid"
 
 
 class TestMemoryEntryToFromDictBoundaries:
@@ -624,7 +624,7 @@ class TestMemoryEntryToFromDictBoundaries:
                 confidence=conf,
             )
             data = entry.to_dict()
-            assert data["confidence"] == conf
+            assert data["confidence"] == conf, "Data must not be empty"
 
     def test_from_dict_reconstructs_boundaries(self) -> None:
         """Test that from_dict reconstructs boundary values."""
@@ -641,8 +641,8 @@ class TestMemoryEntryToFromDictBoundaries:
             "related_memories": [],
         }
         entry = MemoryEntry.from_dict(data)
-        assert entry.confidence == 0.0
-        assert entry.access_count == 999999
+        assert entry.confidence == 0.0, "confidence is not valid"
+        assert entry.access_count == 999999, "Count must be greater than zero"
 
     def test_roundtrip_preserves_large_content(self) -> None:
         """Test roundtrip serialization with large content."""
@@ -655,7 +655,7 @@ class TestMemoryEntryToFromDictBoundaries:
         )
         data = entry.to_dict()
         reconstructed = MemoryEntry.from_dict(data)
-        assert reconstructed.content == large_content
+        assert reconstructed.content == large_content, "Content must not be empty"
 
     def test_roundtrip_preserves_complex_context(self) -> None:
         """Test roundtrip preserves complex nested context."""
@@ -668,4 +668,4 @@ class TestMemoryEntryToFromDictBoundaries:
         )
         data = entry.to_dict()
         reconstructed = MemoryEntry.from_dict(data)
-        assert reconstructed.context == context
+        assert reconstructed.context == context, "context is not valid"

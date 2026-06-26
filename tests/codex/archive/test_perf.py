@@ -16,9 +16,9 @@ class TestTimingMetrics:
 
         metrics = TimingMetrics(name="test_op", started_ns=time.perf_counter_ns())
 
-        assert metrics.name == "test_op"
-        assert metrics.started_ns > 0
-        assert metrics.finished_ns is None
+        assert metrics.name == "test_op", "name is not valid"
+        assert metrics.started_ns > 0, "started_ns must be greater than zero"
+        assert metrics.finished_ns is None, "finished_ns is not valid"
 
     def test_duration_ms_before_stop(self):
         """Test duration_ms returns value before stop."""
@@ -31,7 +31,7 @@ class TestTimingMetrics:
 
         duration = metrics.duration_ms
 
-        assert duration > 0
+        assert duration > 0, "duration must be greater than zero"
 
     def test_stop(self):
         """Test stop method sets finished_ns."""
@@ -39,12 +39,12 @@ class TestTimingMetrics:
 
         metrics = TimingMetrics(name="test", started_ns=time.perf_counter_ns())
 
-        assert metrics.finished_ns is None
+        assert metrics.finished_ns is None, "finished_ns is not valid"
 
         metrics.stop()
 
-        assert metrics.finished_ns is not None
-        assert metrics.finished_ns >= metrics.started_ns
+        assert metrics.finished_ns is not None, "finished_ns must be initialized"
+        assert metrics.finished_ns >= metrics.started_ns, "finished_ns must be greater than zero"
 
     def test_duration_ms_after_stop(self):
         """Test duration_ms uses finished_ns after stop."""
@@ -61,7 +61,7 @@ class TestTimingMetrics:
         duration2 = metrics.duration_ms
 
         # Duration should be fixed after stop
-        assert duration1 == duration2
+        assert duration1 == duration2, "duration1 is not valid"
 
     def test_to_dict(self):
         """Test to_dict method."""
@@ -72,8 +72,8 @@ class TestTimingMetrics:
 
         result = metrics.to_dict()
 
-        assert result["name"] == "operation"
-        assert "duration_ms" in result
+        assert result["name"] == "operation", "Result must not be empty"
+        assert "duration_ms" in result, "Result must not be empty"
         assert isinstance(result["duration_ms"], float)
 
 
@@ -87,17 +87,17 @@ class TestTimer:
         with timer("test_operation") as metrics:
             time.sleep(0.001)
 
-        assert metrics.name == "test_operation"
-        assert metrics.finished_ns is not None
-        assert metrics.duration_ms > 0
+        assert metrics.name == "test_operation", "name is not valid"
+        assert metrics.finished_ns is not None, "finished_ns must be initialized"
+        assert metrics.duration_ms > 0, "duration_ms must be greater than zero"
 
     def test_timer_metrics_accessible(self):
         """Test metrics are accessible during context."""
         from codex.archive.perf import timer
 
         with timer("op") as metrics:
-            assert metrics.name == "op"
-            assert metrics.started_ns > 0
+            assert metrics.name == "op", "name is not valid"
+            assert metrics.started_ns > 0, "started_ns must be greater than zero"
 
     def test_timer_stops_on_exception(self):
         """Test timer stops even on exception."""
@@ -111,8 +111,8 @@ class TestTimer:
         except ValueError:
             _ = None  # suppressed: no action needed
 
-        assert metrics is not None
-        assert metrics.finished_ns is not None
+        assert metrics is not None, "metrics must be initialized"
+        assert metrics.finished_ns is not None, "finished_ns must be initialized"
 
 
 class TestMeasureDecompression:
@@ -129,7 +129,7 @@ class TestMeasureDecompression:
 
         result = add(2, 3)
 
-        assert result == 5
+        assert result == 5, "Result must not be empty"
 
     def test_decorator_records_metrics(self):
         """Test decorator records timing metrics."""
@@ -142,10 +142,10 @@ class TestMeasureDecompression:
 
         result = test_func()
 
-        assert result == "done"
+        assert result == "done", "Result must not be empty"
         assert hasattr(test_func, "last_metrics")
-        assert test_func.last_metrics is not None
-        assert test_func.last_metrics.duration_ms > 0
+        assert test_func.last_metrics is not None, "last_metrics must be initialized"
+        assert test_func.last_metrics.duration_ms > 0, "duration_ms must be greater than zero"
 
     def test_decorator_preserves_name(self):
         """Test decorator preserves function name."""
@@ -155,7 +155,7 @@ class TestMeasureDecompression:
         def my_function():
             return True
 
-        assert my_function.__name__ == "my_function"
+        assert my_function.__name__ == "my_function", "__name__ is not valid"
 
     def test_decorator_custom_name(self):
         """Test decorator with custom metric name."""
@@ -167,4 +167,4 @@ class TestMeasureDecompression:
 
         some_func()
 
-        assert some_func.last_metrics.name == "custom_metric"
+        assert some_func.last_metrics.name == "custom_metric", "name is not valid"

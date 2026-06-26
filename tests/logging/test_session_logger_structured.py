@@ -20,11 +20,11 @@ def test_session_logger_redacts_sensitive_fields(tmp_path):
         for line in logfile.read_text(encoding="utf-8").splitlines()
         if line.strip()
     ]
-    assert len(records) == 1
+    assert len(records) == 1, "Records must not be empty"
     record = records[0]
-    assert record["session_id"] == "test-session"
-    assert record["role"] == "assistant"
-    assert record["event_type"] == "inference_request"
+    assert record["session_id"] == "test-session", "rec is not valid"
+    assert record["role"] == "assistant", "rec is not valid"
+    assert record["event_type"] == "inference_request", "rec is not valid"
     payload = record["data"]
-    assert payload["api_key"].startswith("[REDACTED_API_KEY]")
-    assert payload["nested"]["password"].startswith("[REDACTED_PASSWORD]")
+    assert payload["api_key"].startswith("[REDACTED_API_KEY]"), "Condition must be true"
+    assert payload["nested"]["password"].startswith("[REDACTED_PASSWORD]"), "Condition must be true"

@@ -22,7 +22,7 @@ def test_validate_pair_for_training_profile():
     config_path = REPO_ROOT / "configs" / "training" / "profiles" / "default.yaml"
     schema_path = REPO_ROOT / "configs" / "schemas" / "training_profile.schema.json"
     errors = validate_configs.validate_pair(config_path, schema_path)
-    assert errors == []
+    assert errors == [], "Error should be raised or set"
 
 
 def test_validate_pair_reports_errors(tmp_path):
@@ -40,5 +40,5 @@ def test_validate_pair_reports_errors(tmp_path):
         encoding="utf-8",
     )
     errors = validate_configs.validate_pair(config, schema)
-    assert errors
-    assert any("minimum" in err for err in errors)
+    assert errors, "Error should be raised or set"
+    assert any("minimum" in err for err in errors), "Error should be raised or set"

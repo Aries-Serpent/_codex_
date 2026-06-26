@@ -34,9 +34,9 @@ def test_cli_print_jwt(tmp_path: Path) -> None:
     repo_root = Path(__file__).resolve().parents[2]
     cmd = [sys.executable, "tools/github/app_token.py", "--print-jwt"]
     proc = subprocess.run(cmd, env=env, capture_output=True, text=True, cwd=repo_root)
-    assert proc.returncode == 0
+    assert proc.returncode == 0, "returncode is not valid"
     token = proc.stdout.strip()
-    assert token.count(".") == 2
+    assert token.count(".") == 2, "Count must be greater than zero"
 
 
 def test_cli_help(tmp_path: Path) -> None:
@@ -52,5 +52,5 @@ def test_cli_help(tmp_path: Path) -> None:
         text=True,
         cwd=repo_root,
     )
-    assert proc.returncode == 0
-    assert "GitHub App token helper" in proc.stdout
+    assert proc.returncode == 0, "returncode is not valid"
+    assert "GitHub App token helper" in proc.stdout, "Condition must be true"

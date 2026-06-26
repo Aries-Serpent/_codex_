@@ -187,8 +187,8 @@ def load_model_with_optional_lora(
         cfg = LoraConfig(task_type=task_type_value, **cfg_kwargs)
     except TypeError as e:
         error_type = type(e).__name__
-        logger.debug(f"TypeError: <ERROR_TYPE>")
-        logger.warning(f"TypeError: <ERROR_TYPE>", exc_info=True)
+        logger.debug("TypeError: <ERROR_TYPE>")
+        logger.warning("TypeError: <ERROR_TYPE>", exc_info=True)
         cfg = LoraConfig(**cfg_kwargs)
 
     return get_peft_model(model, cfg)

@@ -375,7 +375,7 @@ class HARCache:
                     self._index[key] = har_file
             except (IOError, OSError) as e:
                 error_type = type(e).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.debug("Exception: <ERROR_TYPE>")
                 logger.warning(f"Failed to index {har_file}: <ERROR_TYPE>")
 
     def _make_key(self, method: str, url: str) -> str:
@@ -392,8 +392,8 @@ class HARCache:
                         return entry
             except (IOError, OSError) as e:
                 error_type = type(e).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
-                logger.warning(f"Failed to load cached entry: <ERROR_TYPE>")
+                logger.debug("Exception: <ERROR_TYPE>")
+                logger.warning("Failed to load cached entry: <ERROR_TYPE>")
         return None
 
     def put(self, entry: HAREntry) -> None:
@@ -410,7 +410,7 @@ class HARCache:
                 cache_file.unlink()
             except (IOError, OSError) as e:
                 error_type = type(e).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.debug("Exception: <ERROR_TYPE>")
                 logger.warning(
                     f"Exception: {e}", exc_info=True
                 )  # Ignore file deletion errors during cleanup

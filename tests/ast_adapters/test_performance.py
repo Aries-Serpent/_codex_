@@ -42,7 +42,7 @@ class TestPythonPerformance:
             )
 
         source = "\n".join(functions)
-        assert len(source) > 10000  # Verify >10KB
+        assert len(source) > 10000, "Source must not be empty"
 
         adapter = PythonASTAdapter()
 
@@ -51,9 +51,9 @@ class TestPythonPerformance:
         elapsed = time.time() - start_time
 
         # Verify parsing succeeded
-        assert root is not None
+        assert root is not None, "root must be initialized"
         functions_found = adapter.find_nodes_by_type("function")
-        assert len(functions_found) == 500
+        assert len(functions_found) == 500, "Functions_found must not be empty"
 
         # Performance assertion: <2s target
         assert elapsed < 2.0, f"Python parsing took {elapsed:.2f}s (target: <2s)"
@@ -82,9 +82,9 @@ class TestPythonPerformance:
         elapsed = time.time() - start_time
 
         # Verify parsing succeeded
-        assert root is not None
+        assert root is not None, "root must be initialized"
         classes = adapter.find_nodes_by_type("class")
-        assert len(classes) == 10
+        assert len(classes) == 10, "Classes must not be empty"
 
         # Should be fast for nested structures
         assert elapsed < 1.0, f"Nested Python took {elapsed:.2f}s"
@@ -112,9 +112,9 @@ class TestYAMLPerformance:
         elapsed = time.time() - start_time
 
         # Verify parsing succeeded
-        assert root is not None
+        assert root is not None, "root must be initialized"
         mappings = adapter.find_nodes_by_type("mapping")
-        assert len(mappings) >= 10  # At least 10 sections
+        assert len(mappings) >= 10, "Mappings must not be empty"
 
         # Performance assertion: <500ms target
         assert elapsed < 0.5, f"YAML parsing took {elapsed:.2f}s (target: <0.5s)"
@@ -138,7 +138,7 @@ class TestYAMLPerformance:
         elapsed = time.time() - start_time
 
         # Verify parsing succeeded
-        assert root is not None
+        assert root is not None, "root must be initialized"
 
         # Should handle deep nesting efficiently
         assert elapsed < 0.2, f"Deep YAML took {elapsed:.2f}s"
@@ -170,7 +170,7 @@ class TestJSONPerformance:
         }
 
         json_source = json.dumps(data)
-        assert len(json_source) > 500000  # Verify large size
+        assert len(json_source) > 500000, "Json_source must not be empty"
 
         adapter = JSONASTAdapter()
 
@@ -179,9 +179,9 @@ class TestJSONPerformance:
         elapsed = time.time() - start_time
 
         # Verify parsing succeeded
-        assert root is not None
+        assert root is not None, "root must be initialized"
         arrays = adapter.find_nodes_by_type("array")
-        assert len(arrays) >= 1
+        assert len(arrays) >= 1, "Arrays must not be empty"
 
         # Performance assertion: <1s target
         assert elapsed < 1.0, f"JSON parsing took {elapsed:.2f}s (target: <1s)"
@@ -208,7 +208,7 @@ class TestJSONPerformance:
         elapsed = time.time() - start_time
 
         # Verify parsing succeeded
-        assert root is not None
+        assert root is not None, "root must be initialized"
 
         # Should handle deep nesting efficiently
         assert elapsed < 0.5, f"Deep JSON took {elapsed:.2f}s"
@@ -241,9 +241,9 @@ class TestSQLPerformance:
         elapsed = time.time() - start_time
 
         # Verify parsing succeeded
-        assert root is not None
+        assert root is not None, "root must be initialized"
         statements_found = adapter.find_nodes_by_type("sql_statement")
-        assert len(statements_found) >= 100
+        assert len(statements_found) >= 100, "Statements_found must not be empty"
 
         # Performance assertion: <1s target
         assert elapsed < 1.0, f"SQL parsing took {elapsed:.2f}s (target: <1s)"
@@ -273,9 +273,9 @@ class TestSQLPerformance:
         elapsed = time.time() - start_time
 
         # Verify parsing succeeded
-        assert root is not None
+        assert root is not None, "root must be initialized"
         statements_found = adapter.find_nodes_by_type("sql_statement")
-        assert len(statements_found) >= 50
+        assert len(statements_found) >= 50, "Statements_found must not be empty"
 
         # Should handle complex queries efficiently
         assert elapsed < 1.0, f"Complex SQL took {elapsed:.2f}s"
@@ -294,7 +294,7 @@ class TestMemoryEfficiency:
 
         for _ in range(10):
             root = adapter.parse(source)
-            assert root is not None
+            assert root is not None, "root must be initialized"
 
         print("\n✅ Python: No memory leaks detected")
 
@@ -307,7 +307,7 @@ class TestMemoryEfficiency:
 
         for _ in range(10):
             root = adapter.parse(yaml_source)
-            assert root is not None
+            assert root is not None, "root must be initialized"
 
         print("\n✅ YAML: No memory leaks detected")
 
@@ -323,7 +323,7 @@ class TestMemoryEfficiency:
 
         for _ in range(10):
             root = adapter.parse(json_source)
-            assert root is not None
+            assert root is not None, "root must be initialized"
 
         print("\n✅ JSON: No memory leaks detected")
 
@@ -336,7 +336,7 @@ class TestMemoryEfficiency:
 
         for _ in range(10):
             root = adapter.parse(sql_source)
-            assert root is not None
+            assert root is not None, "root must be initialized"
 
         print("\n✅ SQL: No memory leaks detected")
 
@@ -358,9 +358,9 @@ class TestConcurrentParsing:
         sql_root = sql_adapter.parse("SELECT * FROM table1;")
 
         # Verify all succeeded
-        assert py_root is not None
-        assert yaml_root is not None
-        assert json_root is not None
-        assert sql_root is not None
+        assert py_root is not None, "py_root must be initialized"
+        assert yaml_root is not None, "yaml_root must be initialized"
+        assert json_root is not None, "json_root must be initialized"
+        assert sql_root is not None, "sql_root must be initialized"
 
         print("\n✅ Concurrent: All adapters work simultaneously")

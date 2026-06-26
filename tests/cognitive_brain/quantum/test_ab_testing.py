@@ -74,8 +74,8 @@ class TestExperimentConfig:
             success_metric="accuracy",
         )
 
-        assert config.experiment_id == "TEST-1"
-        assert config.sample_size == 100
+        assert config.experiment_id == "TEST-1", "experiment_id is not valid"
+        assert config.sample_size == 100, "sample_size is not valid"
 
     def test_invalid_sample_size(self):
         """Test that small sample size raises error."""
@@ -109,8 +109,8 @@ class TestExperimentManagement:
         framework.create_experiment(config)
 
         retrieved = framework.get_experiment("EXP-TEST")
-        assert retrieved is not None
-        assert retrieved.experiment_id == "EXP-TEST"
+        assert retrieved is not None, "retrieved must be initialized"
+        assert retrieved.experiment_id == "EXP-TEST", "experiment_id is not valid"
 
     def test_create_duplicate_experiment(self, framework):
         """Test that duplicate experiment raises error."""
@@ -132,7 +132,7 @@ class TestExperimentManagement:
     def test_get_nonexistent_experiment(self, framework):
         """Test getting non-existent experiment returns None."""
         result = framework.get_experiment("NONEXISTENT")
-        assert result is None
+        assert result is None, "Result must not be empty"
 
 
 class TestVariantAssignment:
@@ -156,7 +156,7 @@ class TestVariantAssignment:
         variant2 = framework.assign_variant("EXP-TEST", "user-123")
         variant3 = framework.assign_variant("EXP-TEST", "user-123")
 
-        assert variant1 == variant2 == variant3
+        assert variant1 == variant2 == variant3, "variant1 is not valid"
 
     def test_different_users_different_variants(self, framework):
         """Test that different users can get different variants."""
@@ -177,7 +177,7 @@ class TestVariantAssignment:
             variants.add(variant)
 
         # Should have both variants
-        assert len(variants) == 2
+        assert len(variants) == 2, "Variants must not be empty"
 
     def test_assign_to_nonexistent_experiment(self, framework):
         """Test assigning to non-existent experiment raises error."""
@@ -200,7 +200,7 @@ class TestVariantAssignment:
         variant = framework.assign_variant("EXP-TEST", "user-123")
         retrieved = framework.get_assignment("EXP-TEST", "user-123")
 
-        assert retrieved == variant
+        assert retrieved == variant, "retrieved is not valid"
 
 
 class TestVariantDistribution:
@@ -225,9 +225,9 @@ class TestVariantDistribution:
         treatment_count = distribution[Variant.TREATMENT]
 
         # Should be approximately 50/50 (allow 40-60% range)
-        assert 400 <= control_count <= 600
-        assert 400 <= treatment_count <= 600
-        assert control_count + treatment_count == 1000
+        assert 400 <= control_count <= 600, "Count must be greater than zero"
+        assert 400 <= treatment_count <= 600, "Count must be greater than zero"
+        assert control_count + treatment_count == 1000, "Count must be greater than zero"
 
     def test_distribution_over_100_users(self, framework):
         """Test distribution over smaller sample."""
@@ -244,7 +244,7 @@ class TestVariantDistribution:
 
         distribution = framework.get_variant_distribution("EXP-TEST", n_samples=100)
 
-        assert distribution[Variant.CONTROL] + distribution[Variant.TREATMENT] == 100
+        assert distribution[Variant.CONTROL] + distribution[Variant.TREATMENT] == 100, "Condition must be true"
 
 
 class TestMetricRecording:
@@ -265,12 +265,12 @@ class TestMetricRecording:
 
         metric = framework.record_metric("EXP-TEST", "user-123", 0.95)
 
-        assert metric.id is not None
-        assert metric.feature == "superposition"
-        assert metric.metric_name == "accuracy"
-        assert metric.metric_value == 0.95
-        assert metric.metadata["experiment_id"] == "EXP-TEST"
-        assert metric.metadata["user_id"] == "user-123"
+        assert metric.id is not None, "id must be initialized"
+        assert metric.feature == "superposition", "feature is not valid"
+        assert metric.metric_name == "accuracy", "metric_name is not valid"
+        assert metric.metric_value == 0.95, "Value must be initialized"
+        assert metric.metadata["experiment_id"] == "EXP-TEST", "Data must not be empty"
+        assert metric.metadata["user_id"] == "user-123", "Data must not be empty"
 
     def test_record_metric_assigns_variant(self, framework):
         """Test that recording metric auto-assigns variant."""
@@ -329,11 +329,11 @@ class TestStatisticalAnalysis:
 
         result = framework.analyze_experiment("EXP-TEST")
 
-        assert result.control_n == 30
-        assert result.treatment_n == 30
-        assert result.treatment_mean > result.control_mean
-        assert result.p_value < 0.05
-        assert result.is_significant
+        assert result.control_n == 30, "Result must not be empty"
+        assert result.treatment_n == 30, "Result must not be empty"
+        assert result.treatment_mean > result.control_mean, "treatment_mean must be greater than zero"
+        assert result.p_value < 0.05, "Result must not be empty"
+        assert result.is_significant, "Result must not be empty"
 
     def test_analyze_insufficient_data(self, framework):
         """Test that analysis with insufficient data raises error."""
@@ -376,9 +376,9 @@ class TestStatisticalAnalysis:
         result = framework.analyze_experiment("EXP-TEST")
         result_dict = result.to_dict()
 
-        assert "experiment_id" in result_dict
-        assert "p_value" in result_dict
-        assert "is_significant" in result_dict
+        assert "experiment_id" in result_dict, "Result must not be empty"
+        assert "p_value" in result_dict, "Result must not be empty"
+        assert "is_significant" in result_dict, "Result must not be empty"
 
 
 class TestPredefinedExperiments:
@@ -386,21 +386,21 @@ class TestPredefinedExperiments:
 
     def test_exp1_config(self):
         """Test EXP-1 configuration."""
-        assert EXP_1_CONFIG.experiment_id == "EXP-1"
-        assert EXP_1_CONFIG.feature == "superposition"
-        assert EXP_1_CONFIG.sample_size == 100
+        assert EXP_1_CONFIG.experiment_id == "EXP-1", "experiment_id is not valid"
+        assert EXP_1_CONFIG.feature == "superposition", "feature is not valid"
+        assert EXP_1_CONFIG.sample_size == 100, "sample_size is not valid"
 
     def test_exp2_config(self):
         """Test EXP-2 configuration."""
-        assert EXP_2_CONFIG.experiment_id == "EXP-2"
-        assert EXP_2_CONFIG.feature == "entanglement"
-        assert EXP_2_CONFIG.sample_size == 500
+        assert EXP_2_CONFIG.experiment_id == "EXP-2", "experiment_id is not valid"
+        assert EXP_2_CONFIG.feature == "entanglement", "feature is not valid"
+        assert EXP_2_CONFIG.sample_size == 500, "sample_size is not valid"
 
     def test_exp3_config(self):
         """Test EXP-3 configuration."""
-        assert EXP_3_CONFIG.experiment_id == "EXP-3"
-        assert EXP_3_CONFIG.feature == "uncertainty"
-        assert EXP_3_CONFIG.sample_size == 50
+        assert EXP_3_CONFIG.experiment_id == "EXP-3", "experiment_id is not valid"
+        assert EXP_3_CONFIG.feature == "uncertainty", "feature is not valid"
+        assert EXP_3_CONFIG.sample_size == 50, "sample_size is not valid"
 
 
 class TestIntegration:
@@ -428,7 +428,7 @@ class TestIntegration:
         result = framework.analyze_experiment("EXP-1")
 
         # 4. Verify results
-        assert result.experiment_id == "EXP-1"
-        assert result.control_n + result.treatment_n == 50
-        assert result.p_value is not None
-        assert result.confidence_interval is not None
+        assert result.experiment_id == "EXP-1", "Result must not be empty"
+        assert result.control_n + result.treatment_n == 50, "Result must not be empty"
+        assert result.p_value is not None, "p_value must be initialized"
+        assert result.confidence_interval is not None, "confidence_interval must be initialized"

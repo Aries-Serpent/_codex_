@@ -87,9 +87,9 @@ def test_fuzz_query_request_valid(query, index_name, tenant_id, top_k, min_score
             top_k=top_k,
             min_score=min_score,
         )
-        assert req.query == query
-        assert 1 <= req.top_k <= 100
-        assert 0.0 <= req.min_score <= 1.0
+        assert req.query == query, "query is not valid"
+        assert 1 <= req.top_k <= 100, "1 is not valid"
+        assert 0.0 <= req.min_score <= 1.0, "0 is not valid"
     except ValidationError:
         pass  # invalid input rejected by Pydantic — expected behaviour
     except (ConnectionError, TimeoutError) as exc:  # noqa: BLE001
@@ -144,7 +144,7 @@ def test_fuzz_build_index_request_valid(files, index_name, chunk_size, overlap):
             files=files, index_name=index_name, chunk_size=chunk_size, overlap=overlap
         )
         assert isinstance(req.files, list)
-        assert 100 <= req.chunk_size <= 10000
+        assert 100 <= req.chunk_size <= 10000, "100 is not valid"
     except ValidationError:
         pass  # invalid input rejected by Pydantic — expected behaviour
     except (ConnectionError, TimeoutError) as exc:  # noqa: BLE001
@@ -217,7 +217,7 @@ def test_fuzz_merge_indices_request_valid(source_indices, target_index, tenant_i
             target_index=target_index,
             tenant_id=tenant_id,
         )
-        assert len(req.source_indices) >= 2
+        assert len(req.source_indices) >= 2, "Collection must not be empty"
     except ValidationError:
         pass  # invalid input rejected by Pydantic — expected behaviour in fuzz test
     except (ConnectionError, TimeoutError) as exc:  # noqa: BLE001

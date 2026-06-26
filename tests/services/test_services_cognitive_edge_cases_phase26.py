@@ -57,7 +57,7 @@ class TestServiceEdgeCases:
             t.start()
         for t in threads:
             t.join()
-        assert len(results) == 100
+        assert len(results) == 100, "Results must not be empty"
 
     def test_service_retry_exhaustion(self):
         """Test service when all retries exhausted"""
@@ -99,7 +99,7 @@ class TestCognitiveBrainEdgeCases:
             t.join()
 
         # Should handle concurrent updates safely
-        assert state["counter"] == 100
+        assert state["counter"] == 100, "Count must be greater than zero"
 
     def test_brain_decision_cycle_timeout(self):
         """Test cognitive brain decision cycle timeout"""
@@ -136,6 +136,7 @@ class TestAsyncEdgeCases:
     """Edge case tests for async operations"""
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_async_cancellation(self):
         """Test async task cancellation"""
 
@@ -149,6 +150,7 @@ class TestAsyncEdgeCases:
             _ = await task
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_async_timeout(self):
         """Test async operation timeout"""
 
@@ -159,6 +161,7 @@ class TestAsyncEdgeCases:
             await asyncio.wait_for(slow_op(), timeout=0.1)
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_async_exception_propagation(self):
         """Test async exception propagation"""
 

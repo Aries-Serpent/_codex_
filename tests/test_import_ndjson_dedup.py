@@ -30,8 +30,8 @@ def test_importer_deduplicates_start_end(tmp_path, monkeypatch):
             "WHERE message IN ('session_start','session_end') GROUP BY message"
         ).fetchall()
     pairs = dict(rows)
-    assert pairs.get("session_start") == 1
-    assert pairs.get("session_end") == 1
+    assert pairs.get("session_start") == 1, "Condition must be true"
+    assert pairs.get("session_end") == 1, "Condition must be true"
     # ensure no extra rows created beyond original two
     total = sqlite3.connect(db_path).execute("SELECT COUNT(*) FROM session_events").fetchone()[0]
-    assert total == count_before
+    assert total == count_before, "Count must be greater than zero"

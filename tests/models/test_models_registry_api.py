@@ -19,7 +19,7 @@ def test_get_minilm(disable_torch_profiler) -> None:
     model = get_model("MiniLM", cfg)
     inp = torch.randint(0, 10, (1, 4))
     out = model(inp)
-    assert out.shape[0] == 1
+    assert out.shape[0] == 1, "Condition must be true"
 
 
 def test_get_hf_masked_lm(monkeypatch) -> None:
@@ -33,9 +33,9 @@ def test_get_hf_masked_lm(monkeypatch) -> None:
             return None
 
     def fake_from_pretrained(name, **kwargs):  # pragma: no cover - patched
-        assert kwargs.get("local_files_only") is True
-        assert "trust_remote_code" not in kwargs
-        assert name == "bert-base-uncased"
+        assert kwargs.get("local_files_only") is True, "Condition must be true"
+        assert "trust_remote_code" not in kwargs, "Condition must be true"
+        assert name == "bert-base-uncased", "name is not valid"
         return DummyModel()
 
     monkeypatch.setattr(
@@ -59,7 +59,7 @@ def test_hf_model_prefers_local_path(monkeypatch, tmp_path) -> None:
     expected_path = tmp_path / "weights"
 
     def fake_from_pretrained(name, **kwargs):  # pragma: no cover - patched
-        assert name == str(expected_path)
+        assert name == str(expected_path), "name is not valid"
         return DummyModel()
 
     monkeypatch.setattr(

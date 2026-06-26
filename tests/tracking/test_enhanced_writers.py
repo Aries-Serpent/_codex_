@@ -18,7 +18,7 @@ class TestMLflowMetricWriter:
             with patch.object(writers, "MLFLOW_CLIENT_AVAILABLE", False):
                 writer = writers.MLflowMetricWriter()
                 result = writer.write({"loss": 0.5}, step=1)
-                assert result is False
+                assert result is False, "Result must not be empty"
 
     @patch("codex_ml.tracking.writers.MLFLOW_CLIENT_AVAILABLE", True)
     @patch.dict("sys.modules", {"mlflow": Mock()})
@@ -40,7 +40,7 @@ class TestMLflowMetricWriter:
 
         result = writer.write({"loss": 0.5, "accuracy": 0.9}, step=10)
 
-        assert result is True
+        assert result is True, "Result must not be empty"
         mock_mlflow.log_metrics.assert_called_once_with({"loss": 0.5, "accuracy": 0.9}, step=10)
 
     @patch("codex_ml.tracking.writers.MLFLOW_CLIENT_AVAILABLE", True)
@@ -62,7 +62,7 @@ class TestMLflowMetricWriter:
 
         result = writer.write_metric("accuracy", 0.95, step=5)
 
-        assert result is True
+        assert result is True, "Result must not be empty"
         mock_mlflow.log_metrics.assert_called_once_with({"accuracy": 0.95}, step=5)
 
     @patch("codex_ml.tracking.writers.MLFLOW_CLIENT_AVAILABLE", True)
@@ -89,8 +89,8 @@ class TestMLflowMetricWriter:
 
         success_count = writer.write_batch(batch)
 
-        assert success_count == 2
-        assert mock_mlflow.log_metrics.call_count == 2
+        assert success_count == 2, "Count must be greater than zero"
+        assert mock_mlflow.log_metrics.call_count == 2, "Count must be greater than zero"
 
 
 class TestMLflowParamWriter:
@@ -117,7 +117,7 @@ class TestMLflowParamWriter:
 
         result = param_writer.write_params({"lr": 0.001, "epochs": 10})
 
-        assert result is True
+        assert result is True, "Result must not be empty"
         mock_mlflow.log_params.assert_called_once_with({"lr": "0.001", "epochs": "10"})
 
     @patch("codex_ml.tracking.writers.MLFLOW_CLIENT_AVAILABLE", True)
@@ -146,12 +146,12 @@ class TestMLflowParamWriter:
 
         result = param_writer.write_config(config)
 
-        assert result is True
+        assert result is True, "Result must not be empty"
         # Check that params were flattened
         call_args = mock_mlflow.log_params.call_args[0][0]
-        assert "model.type" in call_args
-        assert "model.layers" in call_args
-        assert "training.lr" in call_args
+        assert "model.type" in call_args, "Condition must be true"
+        assert "model.layers" in call_args, "Condition must be true"
+        assert "training.lr" in call_args, "Condition must be true"
 
 
 class TestMLflowArtifactWriter:
@@ -182,7 +182,7 @@ class TestMLflowArtifactWriter:
 
         result = artifact_writer.log_artifact(str(tmp_file))
 
-        assert result is True
+        assert result is True, "Result must not be empty"
         mock_mlflow.log_artifact.assert_called_once()
 
 
@@ -196,7 +196,7 @@ class TestMLflowRunManager:
 
         manager = MLflowRunManager()
         with manager.start_run():
-            assert manager.run_id is None
+            assert manager.run_id is None, "run_id is not valid"
 
     @patch("codex_ml.tracking.writers.MLFLOW_CLIENT_AVAILABLE", True)
     @patch.dict("sys.modules", {"mlflow": Mock()})
@@ -221,7 +221,7 @@ class TestMLflowRunManager:
         manager.metric_writer._initialized = True
 
         with manager.start_run():
-            assert manager.run_id == "test_run_123"
+            assert manager.run_id == "test_run_123", "run_id is not valid"
 
     @patch("codex_ml.tracking.writers.MLFLOW_CLIENT_AVAILABLE", True)
     @patch.dict("sys.modules", {"mlflow": Mock()})
@@ -242,11 +242,11 @@ class TestMLflowRunManager:
 
         # Test log_metrics
         result = manager.log_metrics({"loss": 0.5}, step=1)
-        assert result is True
+        assert result is True, "Result must not be empty"
 
         # Test log_params
         result = manager.log_params({"lr": 0.001})
-        assert result is True
+        assert result is True, "Result must not be empty"
 
 
 class TestCreateMLflowTracker:
@@ -261,8 +261,8 @@ class TestCreateMLflowTracker:
             run_name="test_run",
         )
 
-        assert tracker.run_name == "test_run"
-        assert tracker.metric_writer.experiment_name == "test_exp"
+        assert tracker.run_name == "test_run", "run_name is not valid"
+        assert tracker.metric_writer.experiment_name == "test_exp", "experiment_name is not valid"
 
     def test_tracker_has_all_writers(self):
         """Test tracker has all writer types."""

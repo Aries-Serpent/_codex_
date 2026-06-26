@@ -18,7 +18,7 @@ import pytest
 )
 def test_is_even_parametrized(input_val: int, expected: bool):
     """Parametrized test for even number detection."""
-    assert (input_val % 2 == 0) == expected
+    assert (input_val % 2 == 0) == expected, "2 is not valid"
 
 
 @pytest.mark.parametrize(
@@ -33,7 +33,7 @@ def test_is_even_parametrized(input_val: int, expected: bool):
 )
 def test_addition_parametrized(a: int, b: int, expected: int):
     """Parametrized test for addition."""
-    assert a + b == expected
+    assert a + b == expected, "b is not valid"
 
 
 @pytest.mark.parametrize(
@@ -49,7 +49,7 @@ def test_addition_parametrized(a: int, b: int, expected: int):
 def test_range_check_parametrized(value: int, min_val: int, max_val: int, expected: bool):
     """Parametrized range check test."""
     result = min_val <= value <= max_val
-    assert result == expected
+    assert result == expected, "Result must not be empty"
 
 
 @pytest.mark.parametrize(
@@ -64,7 +64,7 @@ def test_range_check_parametrized(value: int, min_val: int, max_val: int, expect
 def test_status_messages_parametrized(code: int, message: str):
     """Parametrized status code message test."""
     codes = {200: "OK", 400: "Bad Request", 404: "Not Found", 500: "Internal Server Error"}
-    assert codes.get(code) == message
+    assert codes.get(code) == message, "Condition must be true"
 
 
 @pytest.mark.parametrize(
@@ -80,6 +80,6 @@ def test_list_operations_parametrized(items):
     """Parametrized list operations test."""
     # Create, modify, check
     result = list(items)
-    assert len(result) == len(items)
+    assert len(result) == len(items), "Result must not be empty"
     if items:
-        assert result[0] == items[0]
+        assert result[0] == items[0], "Result must not be empty"

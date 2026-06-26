@@ -38,8 +38,8 @@ class TestBridgeAuthentication:
                     require_auth=True,
                 )
 
-                assert bridge.auth_token == "test_token_12345"
-                assert bridge.require_auth is True
+                assert bridge.auth_token == "test_token_12345", "auth_token is not valid"
+                assert bridge.require_auth is True, "require_auth is not valid"
 
                 bridge.cleanup()
             finally:
@@ -59,7 +59,7 @@ class TestBridgeAuthentication:
             )
 
             # Auth should be disabled since token is missing
-            assert bridge.require_auth is False
+            assert bridge.require_auth is False, "require_auth is not valid"
 
             bridge.cleanup()
 
@@ -84,7 +84,7 @@ class TestBridgeAuthentication:
                 )
 
                 # Should pass authentication
-                assert bridge._verify_auth_token(message) is True
+                assert bridge._verify_auth_token(message) is True, "Condition must be true"
 
                 bridge.cleanup()
             finally:
@@ -111,7 +111,7 @@ class TestBridgeAuthentication:
                 )
 
                 # Should fail authentication
-                assert bridge._verify_auth_token(message) is False
+                assert bridge._verify_auth_token(message) is False, "Condition must be true"
 
                 bridge.cleanup()
             finally:
@@ -138,7 +138,7 @@ class TestBridgeAuthentication:
                 )
 
                 # Should fail authentication
-                assert bridge._verify_auth_token(message) is False
+                assert bridge._verify_auth_token(message) is False, "Condition must be true"
 
                 bridge.cleanup()
             finally:
@@ -162,7 +162,7 @@ class TestBridgeAuthentication:
             )
 
             # Should pass even without token
-            assert bridge._verify_auth_token(message) is True
+            assert bridge._verify_auth_token(message) is True, "Condition must be true"
 
             bridge.cleanup()
 
@@ -180,7 +180,7 @@ class TestBridgeAuditTrail:
             )
 
             # Audit file should exist
-            assert bridge.audit_file.exists()
+            assert bridge.audit_file.exists(), "Condition must be true"
 
             # Check permissions (0o600 = owner only rw)
             audit_stat = bridge.audit_file.stat()
@@ -202,13 +202,13 @@ class TestBridgeAuditTrail:
                 lines = f.readlines()
 
             # Should have at least one entry (BRIDGE_INIT)
-            assert len(lines) >= 1
+            assert len(lines) >= 1, "Lines must not be empty"
 
             # Parse first entry
             init_entry = json.loads(lines[0])
-            assert init_entry["event"] == "BRIDGE_INIT"
-            assert "mode" in init_entry["details"]
-            assert init_entry["details"]["mode"] == "named_pipe"
+            assert init_entry["event"] == "BRIDGE_INIT", "Condition must be true"
+            assert "mode" in init_entry["details"], "Condition must be true"
+            assert init_entry["details"]["mode"] == "named_pipe", "Condition must be true"
 
             bridge.cleanup()
 
@@ -246,8 +246,8 @@ class TestBridgeAuditTrail:
                     if entry["event"] == "AUTH_SUCCESS":
                         auth_entries.append(entry)
 
-                assert len(auth_entries) >= 1
-                assert auth_entries[0]["details"]["source"] == "test_client"
+                assert len(auth_entries) >= 1, "Auth_entries must not be empty"
+                assert auth_entries[0]["details"]["source"] == "test_client", "Condition must be true"
 
                 bridge.cleanup()
             finally:
@@ -287,9 +287,9 @@ class TestBridgeAuditTrail:
                     if entry["event"] == "AUTH_FAILURE":
                         failure_entries.append(entry)
 
-                assert len(failure_entries) >= 1
-                assert failure_entries[0]["details"]["reason"] == "invalid_token"
-                assert failure_entries[0]["details"]["source"] == "malicious_client"
+                assert len(failure_entries) >= 1, "Failure_entries must not be empty"
+                assert failure_entries[0]["details"]["reason"] == "invalid_token", "Condition must be true"
+                assert failure_entries[0]["details"]["source"] == "malicious_client", "Condition must be true"
 
                 bridge.cleanup()
             finally:
@@ -319,7 +319,7 @@ class TestBridgeAuditTrail:
                 if entry["event"] == "BRIDGE_CLEANUP":
                     cleanup_entries.append(entry)
 
-            assert len(cleanup_entries) >= 1
+            assert len(cleanup_entries) >= 1, "Cleanup_entries must not be empty"
 
     def test_audit_log_includes_pid_and_uid(self):
         """Test that audit log entries include process ID and user ID."""
@@ -335,10 +335,10 @@ class TestBridgeAuditTrail:
 
             # Parse first entry
             entry = json.loads(lines[0])
-            assert "pid" in entry
-            assert "uid" in entry
-            assert entry["pid"] == os.getpid()
-            assert entry["uid"] == os.getuid()
+            assert "pid" in entry, "Condition must be true"
+            assert "uid" in entry, "Condition must be true"
+            assert entry["pid"] == os.getpid(), "Condition must be true"
+            assert entry["uid"] == os.getuid(), "Condition must be true"
 
             bridge.cleanup()
 
@@ -380,8 +380,8 @@ class TestTimingAttackPrevention:
                 result1 = bridge._verify_auth_token(valid_message)
                 result2 = bridge._verify_auth_token(invalid_message)
 
-                assert result1 is True
-                assert result2 is False
+                assert result1 is True, "Result must not be empty"
+                assert result2 is False, "Result must not be empty"
 
                 bridge.cleanup()
             finally:

@@ -76,8 +76,8 @@ def set_session_id(session_id: str, *, log_dir: Path | str | None = None) -> str
         _session_logger_ctx.set(SessionLogger(resolved, directory))
     except OSError as e:
         error_type = type(e).__name__
-        logger.debug(f"OSError: <ERROR_TYPE>")
-        logger.warning(f"OSError: <ERROR_TYPE>", exc_info=True)
+        logger.debug("OSError: <ERROR_TYPE>")
+        logger.warning("OSError: <ERROR_TYPE>", exc_info=True)
         _session_logger_ctx.set(_SESSION_LOGGER_DISABLED)
     return resolved
 

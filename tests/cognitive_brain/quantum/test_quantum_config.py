@@ -20,12 +20,12 @@ class TestQuantumConfigDefaults:
         """Test that all features are disabled by default."""
         config = QuantumConfig()
 
-        assert config.quantum_mode is False
-        assert config.superposition is False
-        assert config.entanglement is False
-        assert config.uncertainty is False
-        assert config.wave_collapse is False
-        assert config.rollout_percentage == 0
+        assert config.quantum_mode is False, "quantum_mode is not valid"
+        assert config.superposition is False, "superposition is not valid"
+        assert config.entanglement is False, "entanglement is not valid"
+        assert config.uncertainty is False, "uncertainty is not valid"
+        assert config.wave_collapse is False, "wave_collapse is not valid"
+        assert config.rollout_percentage == 0, "rollout_percentage is not valid"
 
     def test_from_env_empty_environment(self, monkeypatch):
         """Test from_env() with no environment variables set."""
@@ -36,12 +36,12 @@ class TestQuantumConfigDefaults:
 
         config = QuantumConfig.from_env()
 
-        assert config.quantum_mode is False
-        assert config.superposition is False
-        assert config.entanglement is False
-        assert config.uncertainty is False
-        assert config.wave_collapse is False
-        assert config.rollout_percentage == 0
+        assert config.quantum_mode is False, "quantum_mode is not valid"
+        assert config.superposition is False, "superposition is not valid"
+        assert config.entanglement is False, "entanglement is not valid"
+        assert config.uncertainty is False, "uncertainty is not valid"
+        assert config.wave_collapse is False, "wave_collapse is not valid"
+        assert config.rollout_percentage == 0, "rollout_percentage is not valid"
 
 
 class TestQuantumConfigEnvironmentParsing:
@@ -52,7 +52,7 @@ class TestQuantumConfigEnvironmentParsing:
         monkeypatch.setenv("CODEX_QUANTUM_MODE", "true")
         config = QuantumConfig.from_env()
 
-        assert config.quantum_mode is True
+        assert config.quantum_mode is True, "quantum_mode is not valid"
 
     def test_parse_quantum_mode_various_true_values(self, monkeypatch):
         """Test that various true-like values are accepted."""
@@ -91,11 +91,11 @@ class TestQuantumConfigEnvironmentParsing:
 
         config = QuantumConfig.from_env()
 
-        assert config.quantum_mode is True
-        assert config.superposition is True
-        assert config.entanglement is True
-        assert config.uncertainty is True
-        assert config.wave_collapse is True
+        assert config.quantum_mode is True, "quantum_mode is not valid"
+        assert config.superposition is True, "superposition is not valid"
+        assert config.entanglement is True, "entanglement is not valid"
+        assert config.uncertainty is True, "uncertainty is not valid"
+        assert config.wave_collapse is True, "wave_collapse is not valid"
 
     def test_parse_rollout_percentage(self, monkeypatch):
         """Test parsing CODEX_QUANTUM_ROLLOUT_PCT."""
@@ -104,7 +104,7 @@ class TestQuantumConfigEnvironmentParsing:
 
         config = QuantumConfig.from_env()
 
-        assert config.rollout_percentage == 50
+        assert config.rollout_percentage == 50, "rollout_percentage is not valid"
 
     def test_parse_rollout_percentage_invalid(self, monkeypatch):
         """Test parsing invalid rollout percentage falls back to default."""
@@ -113,7 +113,7 @@ class TestQuantumConfigEnvironmentParsing:
 
         config = QuantumConfig.from_env()
 
-        assert config.rollout_percentage == 0
+        assert config.rollout_percentage == 0, "rollout_percentage is not valid"
 
 
 class TestQuantumConfigValidation:
@@ -142,9 +142,9 @@ class TestQuantumConfigValidation:
 
         config = QuantumConfig.from_env()
 
-        assert config.quantum_mode is False
-        assert config.superposition is False
-        assert config.entanglement is False
+        assert config.quantum_mode is False, "quantum_mode is not valid"
+        assert config.superposition is False, "superposition is not valid"
+        assert config.entanglement is False, "entanglement is not valid"
 
 
 class TestQuantumConfigMethods:
@@ -160,10 +160,10 @@ class TestQuantumConfigMethods:
             wave_collapse=True,
         )
 
-        assert config.is_enabled("superposition") is True
-        assert config.is_enabled("entanglement") is True
-        assert config.is_enabled("uncertainty") is True
-        assert config.is_enabled("wave_collapse") is True
+        assert config.is_enabled("superposition") is True, "Condition must be true"
+        assert config.is_enabled("entanglement") is True, "Condition must be true"
+        assert config.is_enabled("uncertainty") is True, "Condition must be true"
+        assert config.is_enabled("wave_collapse") is True, "Condition must be true"
 
     def test_is_enabled_mixed_features(self):
         """Test is_enabled() with some features enabled."""
@@ -175,10 +175,10 @@ class TestQuantumConfigMethods:
             wave_collapse=False,
         )
 
-        assert config.is_enabled("superposition") is True
-        assert config.is_enabled("entanglement") is False
-        assert config.is_enabled("uncertainty") is True
-        assert config.is_enabled("wave_collapse") is False
+        assert config.is_enabled("superposition") is True, "Condition must be true"
+        assert config.is_enabled("entanglement") is False, "Condition must be true"
+        assert config.is_enabled("uncertainty") is True, "Condition must be true"
+        assert config.is_enabled("wave_collapse") is False, "Condition must be true"
 
     def test_is_enabled_invalid_feature(self):
         """Test is_enabled() with invalid feature name."""
@@ -191,10 +191,10 @@ class TestQuantumConfigMethods:
         """Test is_enabled() always returns False when quantum_mode is False."""
         config = QuantumConfig(quantum_mode=False)
 
-        assert config.is_enabled("superposition") is False
-        assert config.is_enabled("entanglement") is False
-        assert config.is_enabled("uncertainty") is False
-        assert config.is_enabled("wave_collapse") is False
+        assert config.is_enabled("superposition") is False, "Condition must be true"
+        assert config.is_enabled("entanglement") is False, "Condition must be true"
+        assert config.is_enabled("uncertainty") is False, "Condition must be true"
+        assert config.is_enabled("wave_collapse") is False, "Condition must be true"
 
     def test_to_dict(self):
         """Test to_dict() conversion."""
@@ -209,7 +209,7 @@ class TestQuantumConfigMethods:
 
         result = config.to_dict()
 
-        assert result == {
+        assert result == {, "Result must not be empty"
             "quantum_mode": True,
             "superposition": True,
             "entanglement": False,
@@ -234,11 +234,11 @@ class TestQuantumConfigMethods:
 
         repr_str = repr(config)
 
-        assert "QuantumConfig" in repr_str
-        assert "mode=True" in repr_str
-        assert "rollout=25%" in repr_str
-        assert "superposition" in repr_str
-        assert "entanglement" in repr_str
+        assert "QuantumConfig" in repr_str, "Condition must be true"
+        assert "mode=True" in repr_str, "Condition must be true"
+        assert "rollout=25%" in repr_str, "Condition must be true"
+        assert "superposition" in repr_str, "Condition must be true"
+        assert "entanglement" in repr_str, "Condition must be true"
 
 
 class TestBackwardCompatibility:
@@ -249,8 +249,8 @@ class TestBackwardCompatibility:
         config = QuantumConfig()
 
         # Should not raise any exceptions
-        assert not config.quantum_mode
-        assert not any(
+        assert not config.quantum_mode, "Condition must be true"
+        assert not any(, "Condition must be true"
             [
                 config.superposition,
                 config.entanglement,
@@ -269,8 +269,8 @@ class TestBackwardCompatibility:
         config = QuantumConfig.from_env()
 
         # Should behave exactly like default config
-        assert not config.quantum_mode
-        assert config.rollout_percentage == 0
+        assert not config.quantum_mode, "Condition must be true"
+        assert config.rollout_percentage == 0, "rollout_percentage is not valid"
 
 
 class TestIntegrationScenarios:
@@ -284,9 +284,9 @@ class TestIntegrationScenarios:
 
         config = QuantumConfig.from_env()
 
-        assert config.quantum_mode is True
-        assert config.superposition is True
-        assert config.rollout_percentage == 10
+        assert config.quantum_mode is True, "quantum_mode is not valid"
+        assert config.superposition is True, "superposition is not valid"
+        assert config.rollout_percentage == 10, "rollout_percentage is not valid"
 
     def test_full_production_scenario(self, monkeypatch):
         """Test full production with all features enabled."""
@@ -299,8 +299,8 @@ class TestIntegrationScenarios:
 
         config = QuantumConfig.from_env()
 
-        assert config.quantum_mode is True
-        assert all(
+        assert config.quantum_mode is True, "quantum_mode is not valid"
+        assert all(, "Condition must be true"
             [
                 config.superposition,
                 config.entanglement,
@@ -308,7 +308,7 @@ class TestIntegrationScenarios:
                 config.wave_collapse,
             ]
         )
-        assert config.rollout_percentage == 100
+        assert config.rollout_percentage == 100, "rollout_percentage is not valid"
 
     def test_emergency_disable_scenario(self, monkeypatch):
         """Test emergency disable by setting quantum_mode=false."""
@@ -319,6 +319,6 @@ class TestIntegrationScenarios:
         config = QuantumConfig.from_env()
 
         # All features should be disabled due to quantum_mode=false
-        assert config.quantum_mode is False
-        assert config.superposition is False
-        assert config.entanglement is False
+        assert config.quantum_mode is False, "quantum_mode is not valid"
+        assert config.superposition is False, "superposition is not valid"
+        assert config.entanglement is False, "entanglement is not valid"

@@ -139,7 +139,7 @@ class StdioTransport:
             return json.loads(text)
         except UnicodeDecodeError as e:
             error_type = type(e).__name__
-            logger.debug(f"UnicodeDecodeError: <ERROR_TYPE>")
+            logger.debug("UnicodeDecodeError: <ERROR_TYPE>")
             raise InvalidMessageError(f"Invalid encoding: {e}", str(line[:100])) from e
         except json.JSONDecodeError as e:
             raise InvalidMessageError(f"Invalid JSON: {e}", text[:100] if text else None) from e
@@ -179,7 +179,7 @@ class StdioTransport:
                 yield message
             except TransportError as e:
                 error_type = type(e).__name__
-                logger.debug(f"TransportError: <ERROR_TYPE>")
+                logger.debug("TransportError: <ERROR_TYPE>")
                 self._logger.error("Transport error: %s", e)
                 # Continue reading after recoverable errors
                 continue
@@ -197,7 +197,7 @@ class StdioTransport:
                 await self._writer.wait_closed()
             except (IOError, OSError) as exc:
                 error_type = type(exc).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.debug("Exception: <ERROR_TYPE>")
                 # Ignore errors during writer closure - the stream may already be closed
                 # or in an invalid state. This is a cleanup operation and errors are non-critical.
                 self._logger.debug("Writer close failed: %s", exc)

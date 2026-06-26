@@ -28,9 +28,9 @@ class TestPhase2_PhysicsOrchestrator_TimeDimension:
         force = ForceVector(
             name="test_force", magnitude=10.0, direction=[1.0, 0.0, 0.0], priority=5
         )
-        assert force.name == "test_force"
-        assert force.magnitude == 10.0
-        assert force.priority == 5
+        assert force.name == "test_force", "name is not valid"
+        assert force.magnitude == 10.0, "magnitude is not valid"
+        assert force.priority == 5, "priority is not valid"
 
     def test_decision_state_time_evolution(self):
         """Test decision state evolution with time steps"""
@@ -47,8 +47,8 @@ class TestPhase2_PhysicsOrchestrator_TimeDimension:
             active_forces=[],
             constraints=[],
         )
-        assert decision.current_position is not None
-        assert decision.goal_position is not None
+        assert decision.current_position is not None, "current_position must be initialized"
+        assert decision.goal_position is not None, "goal_position must be initialized"
 
     def test_action_path_initialization(self):
         """Test action path with proper parameters"""
@@ -60,8 +60,8 @@ class TestPhase2_PhysicsOrchestrator_TimeDimension:
             potential_energy=100.0,
             kinetic_energy=50.0,
         )
-        assert path.action_type == ActionType.RESEARCH
-        assert path.description == "Test action"
+        assert path.action_type == ActionType.RESEARCH, "action_type is not valid"
+        assert path.description == "Test action", "description is not valid"
 
 
 class TestPhase2_PhysicsOrchestrator_FlowDimension:
@@ -75,7 +75,7 @@ class TestPhase2_PhysicsOrchestrator_FlowDimension:
         from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
-        assert orchestrator is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
         assert hasattr(orchestrator, "assess_situation")
         assert hasattr(orchestrator, "act")
 
@@ -90,14 +90,14 @@ class TestPhase2_PhysicsOrchestrator_FlowDimension:
         # Create a proper DecisionState object
         state = DecisionState(current_position="initial", goal_position="target")
         result = orchestrator.assess_situation(state)
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     def test_diffusion_flow_model_init(self):
         """Test DiffusionFlowModel initialization"""
         from agents.physics_orchestrator import DiffusionFlowModel
 
         model = DiffusionFlowModel()
-        assert model is not None
+        assert model is not None, "model must be initialized"
 
 
 class TestPhase2_QuantumGame_StateDimension:
@@ -114,8 +114,8 @@ class TestPhase2_QuantumGame_StateDimension:
 
         strategies = np.array([0.5, 0.5])
         state = StrategyState(team="blue", strategies=strategies)
-        assert state.team == "blue"
-        assert state.strategies is not None
+        assert state.team == "blue", "team is not valid"
+        assert state.strategies is not None, "strategies must be initialized"
 
     def test_quantum_game_state_basic(self):
         """Test QuantumGameState initialization"""
@@ -129,9 +129,9 @@ class TestPhase2_QuantumGame_StateDimension:
         game_state = QuantumGameState(
             blue_state=blue_state, red_state=red_state, entanglement_strength=0.0
         )
-        assert game_state.blue_state is not None
-        assert game_state.red_state is not None
-        assert not game_state.entangled
+        assert game_state.blue_state is not None, "blue_state must be initialized"
+        assert game_state.red_state is not None, "red_state must be initialized"
+        assert not game_state.entangled, "Condition must be true"
 
     def test_payoff_operator_creation(self):
         """Test PayoffOperator with matrix and players"""
@@ -141,7 +141,7 @@ class TestPhase2_QuantumGame_StateDimension:
 
         matrix = np.array([[3, 0], [5, 1]])
         operator = PayoffOperator(payoff_matrix=matrix, players=["blue", "red"])
-        assert operator.matrix is not None
+        assert operator.matrix is not None, "matrix must be initialized"
         assert operator.players == ["blue", "red"]
 
     def test_quantum_game_engine_initialization(self):
@@ -161,7 +161,7 @@ class TestPhase2_QuantumGame_StateDimension:
             payoff_blue=payoff_blue,
             payoff_red=payoff_red,
         )
-        assert engine is not None
+        assert engine is not None, "engine must be initialized"
 
 
 class TestPhase2_MentalMapping_GraphDimension:
@@ -175,7 +175,7 @@ class TestPhase2_MentalMapping_GraphDimension:
         from agents.mental_mapping import MentalMappingModel
 
         model = MentalMappingModel()
-        assert model is not None
+        assert model is not None, "model must be initialized"
 
     def test_create_node_operation(self):
         """Test node creation with proper node_type"""
@@ -183,7 +183,7 @@ class TestPhase2_MentalMapping_GraphDimension:
 
         model = MentalMappingModel()
         node_id = model.create_node(node_type=NodeType.PROBLEM, properties={})
-        assert node_id is not None
+        assert node_id is not None, "node_id must be initialized"
 
     def test_connect_nodes_operation(self):
         """Test connecting nodes with edge_type"""
@@ -199,7 +199,7 @@ class TestPhase2_MentalMapping_GraphDimension:
             edge_type=EdgeType.SIMILAR_TO,
             properties={},
         )
-        assert True  # Connection successful
+        assert True, "True is not valid"
 
     def test_enum_validations_node_type(self):
         """Test NodeType enum values (Eq #2)"""
@@ -227,7 +227,7 @@ class TestPhase2_AgentMemory_StorageDimension:
         from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
-        assert memory is not None
+        assert memory is not None, "memory must be initialized"
 
     def test_memory_store_operation(self):
         """Test storing data in memory"""
@@ -235,7 +235,7 @@ class TestPhase2_AgentMemory_StorageDimension:
 
         memory = AgentMemory()
         memory.store_memory(key="test_key", value="test_value")
-        assert True
+        assert True, "True is not valid"
 
     def test_memory_retrieve_operation(self):
         """Test retrieving data from memory"""
@@ -244,7 +244,7 @@ class TestPhase2_AgentMemory_StorageDimension:
         memory = AgentMemory()
         memory.store_memory(key="test_key", value="test_value")
         result = memory.retrieve_memory(key="test_key")
-        assert result == "test_value"
+        assert result == "test_value", "Result must not be empty"
 
     def test_memory_clear_operation(self):
         """Test clearing memory"""
@@ -254,7 +254,7 @@ class TestPhase2_AgentMemory_StorageDimension:
         memory.store_memory(key="test_key", value="test_value")
         memory.clear()
         result = memory.retrieve_memory(key="test_key")
-        assert result is None
+        assert result is None, "Result must not be empty"
 
 
 class TestPhase2_DeveloperOrchestrator_WorkflowDimension:
@@ -268,7 +268,7 @@ class TestPhase2_DeveloperOrchestrator_WorkflowDimension:
         from agents.developer_orchestrator import PhysicsGuidedDeveloperOrchestrator
 
         orchestrator = PhysicsGuidedDeveloperOrchestrator()
-        assert orchestrator is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
 
     def test_task_decomposition(self):
         """Test task decomposition functionality"""
@@ -278,10 +278,10 @@ class TestPhase2_DeveloperOrchestrator_WorkflowDimension:
         # Check if method exists and call it if available
         if hasattr(orchestrator, "decompose_task"):
             result = orchestrator.decompose_task("Build a simple feature")
-            assert result is not None
+            assert result is not None, "result must be initialized"
         else:
             # Method doesn't exist, test passes
-            assert orchestrator is not None
+            assert orchestrator is not None, "orchestrator must be initialized"
 
 
 class TestPhase2_Operators_OperatorDimension:
@@ -296,7 +296,7 @@ class TestPhase2_Operators_OperatorDimension:
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Just verify it can be instantiated, operators are internal
-        assert orchestrator is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
 
     def test_energy_operator_access(self):
         """Test energy operator is accessible"""
@@ -304,7 +304,7 @@ class TestPhase2_Operators_OperatorDimension:
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Just verify it can be instantiated
-        assert orchestrator is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
 
     def test_hamiltonian_composition(self):
         """Test Hamiltonian composition (Eq #7: Ĥ = T̂ + V̂)"""
@@ -312,7 +312,7 @@ class TestPhase2_Operators_OperatorDimension:
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Hamiltonian is composed internally
-        assert orchestrator is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
 
 
 class TestPhase2_Conservation_FlowDimension:
@@ -327,7 +327,7 @@ class TestPhase2_Conservation_FlowDimension:
         from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
-        assert orchestrator is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
 
     def test_normalization_operation(self):
         """Test normalization operations (Eq #24)"""
@@ -335,7 +335,7 @@ class TestPhase2_Conservation_FlowDimension:
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Normalization happens internally
-        assert orchestrator is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
 
     def test_probability_conservation(self):
         """Test probability conservation (Eq #35: Σρ = 1)"""
@@ -343,7 +343,7 @@ class TestPhase2_Conservation_FlowDimension:
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Conservation is maintained internally
-        assert orchestrator is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
 
 
 class TestPhase2_Integration_CouplingDimension:
@@ -365,8 +365,8 @@ class TestPhase2_Integration_CouplingDimension:
         payoff_r = np.array([[3, 5], [0, 1]])
 
         engine = QuantumInspiredGameEngine(blue, red, payoff_b, payoff_r)
-        assert orchestrator is not None
-        assert engine is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
+        assert engine is not None, "engine must be initialized"
 
     def test_cross_module_mental_memory(self):
         """Test mental mapping + agent memory integration"""
@@ -376,8 +376,8 @@ class TestPhase2_Integration_CouplingDimension:
         model = MentalMappingModel()
         memory = AgentMemory()
 
-        assert model is not None
-        assert memory is not None
+        assert model is not None, "model must be initialized"
+        assert memory is not None, "memory must be initialized"
 
 
 class TestPhase2_Properties_Getters:
@@ -391,9 +391,9 @@ class TestPhase2_Properties_Getters:
         from agents.physics_orchestrator import ForceVector
 
         force = ForceVector("test", 10.0, [1.0, 0.0, 0.0], 5)
-        assert force.name == "test"
-        assert force.magnitude == 10.0
-        assert force.priority == 5
+        assert force.name == "test", "name is not valid"
+        assert force.magnitude == 10.0, "magnitude is not valid"
+        assert force.priority == 5, "priority is not valid"
 
     def test_action_type_enum_access(self):
         """Test ActionType enum is accessible"""
@@ -421,14 +421,14 @@ class TestPhase2_EdgeCases_Invariants:
             active_forces=[],
             constraints=[],
         )
-        assert decision.active_forces == []
+        assert decision.active_forces == [], "active_forces is not valid"
 
     def test_zero_magnitude_force(self):
         """Test force with zero magnitude"""
         from agents.physics_orchestrator import ForceVector
 
         force = ForceVector("zero_force", 0.0, [0.0, 0.0, 0.0], 1)
-        assert force.magnitude == 0.0
+        assert force.magnitude == 0.0, "magnitude is not valid"
 
     def test_minimal_strategy_state(self):
         """Test minimal StrategyState"""
@@ -437,8 +437,8 @@ class TestPhase2_EdgeCases_Invariants:
         from agents.quantum_game_theory import StrategyState
 
         state = StrategyState("blue", np.array([1.0, 0.0]))
-        assert state.team == "blue"
-        assert len(state.strategies) == 2
+        assert state.team == "blue", "team is not valid"
+        assert len(state.strategies) == 2, "Collection must not be empty"
 
     def test_empty_mental_model(self):
         """Test empty mental mapping model"""
@@ -446,4 +446,4 @@ class TestPhase2_EdgeCases_Invariants:
 
         model = MentalMappingModel()
         # Model starts empty
-        assert model is not None
+        assert model is not None, "model must be initialized"

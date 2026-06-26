@@ -98,8 +98,8 @@ def setup_distributed(
 
     except (ValueError, TypeError, RuntimeError) as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
-        logger.error(f"Failed to initialize distributed: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
+        logger.error("Failed to initialize distributed: <ERROR_TYPE>")
         return False
 
 

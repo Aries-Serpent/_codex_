@@ -34,36 +34,36 @@ class TestRAGWorkflow:
         docs = [{"id": f"d{i}", "content": f"Content {i}"} for i in range(3)]
         for doc in docs:
             (e2e_workspace / "documents" / f"{doc['id']}.json").write_text(json.dumps(doc))
-        assert len(list((e2e_workspace / "documents").glob("*.json"))) == 3
+        assert len(list((e2e_workspace / "documents").glob("*.json"))) == 3, "Collection must not be empty"
 
     def test_chunking(self, e2e_workspace):
         text = "Sentence one. Sentence two. Sentence three."
         chunks = [c.strip() + "." for c in text.split(". ") if c]
-        assert len(chunks) == 3
+        assert len(chunks) == 3, "Chunks must not be empty"
 
     def test_embedding(self, e2e_workspace):
         chunks = ["text1", "text2"]
         embeddings = [[0.1, 0.2, 0.3] for _ in chunks]
-        assert len(embeddings) == 2
+        assert len(embeddings) == 2, "Embeddings must not be empty"
 
     def test_index_build(self, e2e_workspace):
         index = {"chunks": [{"id": "c1", "emb": [0.1]}]}
         (e2e_workspace / "index" / "idx.json").write_text(json.dumps(index))
-        assert (e2e_workspace / "index" / "idx.json").exists()
+        assert (e2e_workspace / "index" / "idx.json").exists(), "Condition must be true"
 
     def test_query_emb(self, e2e_workspace):
         query_emb = [0.5] * 10
-        assert len(query_emb) == 10
+        assert len(query_emb) == 10, "Query_emb must not be empty"
 
     def test_similarity(self, e2e_workspace):
         results = [{"id": "c1", "score": 0.9}, {"id": "c2", "score": 0.7}]
         ranked = sorted(results, key=lambda x: x["score"], reverse=True)
-        assert ranked[0]["id"] == "c1"
+        assert ranked[0]["id"] == "c1", "Condition must be true"
 
     def test_retrieval(self, e2e_workspace):
         results = [{"id": "c1", "score": 0.9}]
         top = results[0]
-        assert top["score"] == 0.9
+        assert top["score"] == 0.9, "Condition must be true"
 
     def test_complete_rag(self, e2e_workspace):
         docs = [{"id": "d1", "content": "ML tutorial"}]
@@ -71,10 +71,10 @@ class TestRAGWorkflow:
         query = "machine learning"
         results = [{"doc_id": "d1", "score": 0.9}]
         # Validate workflow components are used correctly
-        assert len(docs) == 1
-        assert docs[0]["id"] == index[0]["doc_id"]
-        assert query.startswith("machine")
-        assert len(results) == 1
+        assert len(docs) == 1, "Docs must not be empty"
+        assert docs[0]["id"] == index[0]["doc_id"], "Condition must be true"
+        assert query.startswith("machine"), "Condition must be true"
+        assert len(results) == 1, "Results must not be empty"
 
 
 class TestTrainingWorkflow:
@@ -83,16 +83,16 @@ class TestTrainingWorkflow:
     def test_dataset_prep(self, e2e_workspace):
         data = [{"x": [1], "y": [2]} for _ in range(10)]
         (e2e_workspace / "data" / "train.json").write_text(json.dumps(data))
-        assert (e2e_workspace / "data" / "train.json").exists()
+        assert (e2e_workspace / "data" / "train.json").exists(), "Data must not be empty"
 
     def test_model_init(self, e2e_workspace):
         model = torch.nn.Linear(10, 5)
-        assert model is not None
+        assert model is not None, "model must be initialized"
 
     def test_optimizer(self, e2e_workspace):
         model = torch.nn.Linear(10, 5)
         opt = torch.optim.Adam(model.parameters())
-        assert opt is not None
+        assert opt is not None, "opt must be initialized"
 
     def test_training_loop(self, e2e_workspace):
         model = torch.nn.Linear(10, 5)
@@ -102,26 +102,26 @@ class TestTrainingWorkflow:
             opt.zero_grad()
             loss.backward()
             opt.step()
-        assert True
+        assert True, "True is not valid"
 
     def test_validation(self, e2e_workspace):
         model = torch.nn.Linear(10, 5)
         model.eval()
         with torch.no_grad():
             loss = torch.nn.functional.mse_loss(model(torch.randn(2, 10)), torch.randn(2, 5))
-        assert loss.item() >= 0
+        assert loss.item() >= 0, "Value must be greater than zero"
 
     def test_checkpoint(self, e2e_workspace):
         model = torch.nn.Linear(10, 5)
         ckpt = {"model": model.state_dict()}
         path = e2e_workspace / "checkpoints" / "ckpt.pt"
         torch.save(ckpt, path)
-        assert path.exists()
+        assert path.exists(), "Condition must be true"
 
     def test_best_tracking(self, e2e_workspace):
         losses = [0.8, 0.6, 0.5]
         best = min(losses)
-        assert best == 0.5
+        assert best == 0.5, "best is not valid"
 
     def test_complete_training(self, e2e_workspace):
         model = torch.nn.Linear(10, 5)
@@ -133,7 +133,7 @@ class TestTrainingWorkflow:
             opt.step()
         path = e2e_workspace / "checkpoints" / "final.pt"
         torch.save({"model": model.state_dict()}, path)
-        assert path.exists()
+        assert path.exists(), "Condition must be true"
 
 
 class TestMultiComponentWorkflows:
@@ -142,12 +142,12 @@ class TestMultiComponentWorkflows:
     def test_rag_features(self, e2e_workspace):
         docs = [{"content": "text"}]
         features = [[len(d["content"])] for d in docs]
-        assert len(features) == 1
+        assert len(features) == 1, "Features must not be empty"
 
     def test_rag_augmented(self, e2e_workspace):
         contexts = ["ctx1", "ctx2"]
         data = [(torch.tensor([float(len(c))]), torch.tensor([1.0])) for c in contexts]
-        assert len(data) == 2
+        assert len(data) == 2, "Data must not be empty"
 
     def test_inference_rag(self, e2e_workspace):
         model = torch.nn.Linear(10, 5)
@@ -168,12 +168,12 @@ class TestMultiComponentWorkflows:
             opt.zero_grad()
             loss.backward()
             opt.step()
-        assert True
+        assert True, "True is not valid"
 
     def test_index_update(self, e2e_workspace):
         outputs = [{"id": "t1", "emb": [0.1]}]
         (e2e_workspace / "index" / "updated.json").write_text(json.dumps(outputs))
-        assert (e2e_workspace / "index" / "updated.json").exists()
+        assert (e2e_workspace / "index" / "updated.json").exists(), "Condition must be true"
 
     @pytest.mark.xfail(
         reason="PyTorch 2.6.x pickling bug with FloatStorage (known issue)", strict=False
@@ -184,11 +184,11 @@ class TestMultiComponentWorkflows:
         path = e2e_workspace / "checkpoints" / "combined.pt"
         torch.save(ckpt, path)
         loaded = torch.load(path, weights_only=False)
-        assert "rag" in loaded
+        assert "rag" in loaded, "Condition must be true"
 
     def test_eval_rag_metrics(self, e2e_workspace):
         metrics = {"acc": 0.85, "recall": 0.90}
-        assert metrics["acc"] > 0.8
+        assert metrics["acc"] > 0.8, "Value must be greater than zero"
 
     @pytest.mark.xfail(
         reason="PyTorch 2.6.x profiler bug with ScriptObject type mismatch (known issue)",
@@ -206,7 +206,7 @@ class TestMultiComponentWorkflows:
             opt.zero_grad()
             loss.backward()
             opt.step()
-        assert True
+        assert True, "True is not valid"
 
     @pytest.mark.xfail(
         reason="PyTorch 2.6.x profiler bug with ScriptObject type mismatch (known issue)",
@@ -226,4 +226,4 @@ class TestMultiComponentWorkflows:
             opt.step()
         path = e2e_workspace / "checkpoints" / "integrated.pt"
         torch.save({"model": model.state_dict(), "index": index}, path)
-        assert path.exists()
+        assert path.exists(), "Condition must be true"

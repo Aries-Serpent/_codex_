@@ -62,10 +62,10 @@ def test_pipeline_config_writes_summary(tmp_path, monkeypatch, sample_config):
         summary_path=str(summary_path),
     )
 
-    assert summary_path.exists()
-    assert json.loads(summary_path.read_text()) == result
-    assert result["seed"] == 321
-    assert os.getenv("CODEX_TOKENIZER_PATH") == "original"
+    assert summary_path.exists(), "Condition must be true"
+    assert json.loads(summary_path.read_text()) == result, "Result must not be empty"
+    assert result["seed"] == 321, "Result must not be empty"
+    assert os.getenv("CODEX_TOKENIZER_PATH") == "original", "Condition must be true"
 
 
 def test_pipeline_config_seed_is_reproducible(sample_config):
@@ -73,8 +73,8 @@ def test_pipeline_config_seed_is_reproducible(sample_config):
     second = run_codex_pipeline_from_config(deepcopy(sample_config), seed=11)
     third = run_codex_pipeline_from_config(deepcopy(sample_config), seed=7)
 
-    assert first["synthetic_responses"] != second["synthetic_responses"]
-    assert first["synthetic_responses"] == third["synthetic_responses"]
+    assert first["synthetic_responses"] != second["synthetic_responses"], "Response must not be empty"
+    assert first["synthetic_responses"] == third["synthetic_responses"], "Response must not be empty"
 
 
 def test_pipeline_config_respects_log_summary_toggle(caplog, sample_config):
@@ -92,8 +92,8 @@ def test_pipeline_config_respects_log_summary_toggle(caplog, sample_config):
         if record.levelno == logging.DEBUG and "codex_pipeline_summary" in record.message
     ]
 
-    assert not info_records
-    assert debug_records
+    assert not info_records, "Condition must be true"
+    assert debug_records, "debug_records is not valid"
 
 
 def test_pipeline_config_rejects_invalid_log_summary(sample_config):

@@ -11,7 +11,7 @@ class TestOutputProcessor:
         processor = OutputProcessor()
         text = "Hello world"
         result = processor.scrub_output(text)
-        assert result == "Hello world"
+        assert result == "Hello world", "Result must not be empty"
 
     def test_scrub_output_with_custom_rules(self):
         """Test scrubbing with custom redaction rules"""
@@ -19,29 +19,29 @@ class TestOutputProcessor:
         text = "My SSN is 123-45-6789"
         rules = [{"pattern": r"\d{3}-\d{2}-\d{4}", "replacement": "[REDACTED_SSN]"}]
         result = processor.scrub_output(text, rules)
-        assert "[REDACTED_SSN]" in result
-        assert "123-45-6789" not in result
+        assert "[REDACTED_SSN]" in result, "Result must not be empty"
+        assert "123-45-6789" not in result, "Result must not be empty"
 
     def test_scrub_output_removes_safety_markers(self):
         """Test removal of safety delimiters"""
         processor = OutputProcessor()
         text = "### RETRIEVED CONTEXT START ### Content ### RETRIEVED CONTEXT END ###"
         result = processor.scrub_output(text)
-        assert "RETRIEVED CONTEXT START" not in result
-        assert "RETRIEVED CONTEXT END" not in result
-        assert "Content" in result
+        assert "RETRIEVED CONTEXT START" not in result, "Result must not be empty"
+        assert "RETRIEVED CONTEXT END" not in result, "Result must not be empty"
+        assert "Content" in result, "Result must not be empty"
 
     def test_scrub_output_multiple_markers(self):
         """Test removal of all safety markers"""
         processor = OutputProcessor()
         text = "### USER QUERY START ### Query ### USER QUERY END ### ### RETRIEVED CONTEXT START ### Context ### RETRIEVED CONTEXT END ###"
         result = processor.scrub_output(text)
-        assert "USER QUERY START" not in result
-        assert "USER QUERY END" not in result
-        assert "RETRIEVED CONTEXT START" not in result
-        assert "RETRIEVED CONTEXT END" not in result
-        assert "Query" in result
-        assert "Context" in result
+        assert "USER QUERY START" not in result, "Result must not be empty"
+        assert "USER QUERY END" not in result, "Result must not be empty"
+        assert "RETRIEVED CONTEXT START" not in result, "Result must not be empty"
+        assert "RETRIEVED CONTEXT END" not in result, "Result must not be empty"
+        assert "Query" in result, "Result must not be empty"
+        assert "Context" in result, "Result must not be empty"
 
     def test_extract_evidence_tags_with_overlap(self):
         """Test evidence extraction with content overlap"""
@@ -55,9 +55,9 @@ class TestOutputProcessor:
             }
         ]
         evidence = processor.extract_evidence_tags(output, docs)
-        assert len(evidence) == 1
-        assert evidence[0]["source_id"] == "doc1"
-        assert evidence[0]["score"] == 0.95
+        assert len(evidence) == 1, "Evidence must not be empty"
+        assert evidence[0]["source_id"] == "doc1", "Condition must be true"
+        assert evidence[0]["score"] == 0.95, "Condition must be true"
 
     def test_extract_evidence_tags_no_overlap(self):
         """Test evidence extraction without overlap"""
@@ -67,13 +67,13 @@ class TestOutputProcessor:
             {"content": "The quick brown fox.", "score": 0.95, "metadata": {"source_id": "doc1"}}
         ]
         evidence = processor.extract_evidence_tags(output, docs)
-        assert len(evidence) == 0
+        assert len(evidence) == 0, "Evidence must not be empty"
 
     def test_extract_evidence_tags_empty_docs(self):
         """Test evidence extraction with empty documents"""
         processor = OutputProcessor()
         evidence = processor.extract_evidence_tags("output", [])
-        assert evidence == []
+        assert evidence == [], "evidence is not valid"
 
     def test_extract_evidence_tags_short_content(self):
         """Test evidence extraction with short content (< 20 chars)"""
@@ -87,7 +87,7 @@ class TestOutputProcessor:
             }
         ]
         evidence = processor.extract_evidence_tags(output, docs)
-        assert len(evidence) == 0
+        assert len(evidence) == 0, "Evidence must not be empty"
 
     def test_extract_evidence_tags_multiple_phrases(self):
         """Test evidence extraction with multiple matching phrases"""
@@ -104,7 +104,7 @@ class TestOutputProcessor:
         # Evidence extraction depends on phrase overlap - may or may not match
         assert isinstance(evidence, list)
         if evidence:
-            assert evidence[0]["source_id"] == "doc1"
+            assert evidence[0]["source_id"] == "doc1", "Condition must be true"
 
     def test_add_citations_inline(self):
         """Test inline citation style"""
@@ -120,7 +120,7 @@ class TestOutputProcessor:
         output = "This is the output"
         evidence = [{"source_id": "doc1", "score": 0.9}]
         result = processor.add_citations(output, evidence, "inline")
-        assert "[Sources: doc1]" in result
+        assert "[Sources: doc1]" in result, "Result must not be empty"
 
     def test_add_citations_inline_duplicate_sources(self):
         """Test inline citation with duplicate sources (should be unique)"""
@@ -141,9 +141,9 @@ class TestOutputProcessor:
         output = "This is the output"
         evidence = [{"source_id": "doc1", "score": 0.9}, {"source_id": "doc2", "score": 0.8}]
         result = processor.add_citations(output, evidence, "footnote")
-        assert "References:" in result
-        assert "[1] doc1" in result
-        assert "[2] doc2" in result
+        assert "References:" in result, "Result must not be empty"
+        assert "[1] doc1" in result, "Result must not be empty"
+        assert "[2] doc2" in result, "Result must not be empty"
 
     def test_add_citations_footnote_single(self):
         """Test footnote citation with single reference"""
@@ -151,8 +151,8 @@ class TestOutputProcessor:
         output = "This is the output"
         evidence = [{"source_id": "doc1", "score": 0.9}]
         result = processor.add_citations(output, evidence, "footnote")
-        assert "References:" in result
-        assert "[1] doc1" in result
+        assert "References:" in result, "Result must not be empty"
+        assert "[1] doc1" in result, "Result must not be empty"
 
     def test_add_citations_none(self):
         """Test no citations"""
@@ -160,21 +160,21 @@ class TestOutputProcessor:
         output = "This is the output"
         evidence = [{"source_id": "doc1", "score": 0.9}]
         result = processor.add_citations(output, evidence, "none")
-        assert result == output
+        assert result == output, "Result must not be empty"
 
     def test_add_citations_empty_evidence(self):
         """Test citations with no evidence"""
         processor = OutputProcessor()
         output = "This is the output"
         result = processor.add_citations(output, [], "inline")
-        assert result == output
+        assert result == output, "Result must not be empty"
 
     def test_add_citations_empty_evidence_footnote(self):
         """Test footnote citations with no evidence"""
         processor = OutputProcessor()
         output = "This is the output"
         result = processor.add_citations(output, [], "footnote")
-        assert result == output
+        assert result == output, "Result must not be empty"
 
 
 def test_postprocess_output_full_pipeline():
@@ -192,8 +192,8 @@ def test_postprocess_output_full_pipeline():
         output=output, retrieved_docs=docs, include_citations=True, citation_style="inline"
     )
 
-    assert "USER QUERY START" not in processed
-    assert "Response text" in processed
+    assert "USER QUERY START" not in processed, "Condition must be true"
+    assert "Response text" in processed, "Response must not be empty"
     assert isinstance(evidence, (list, tuple, set, dict))  # was: len() >= 0 (always true)
 
 
@@ -206,8 +206,8 @@ def test_postprocess_output_with_redaction():
         output=output, redaction_rules=rules, include_citations=False
     )
 
-    assert "[EMAIL]" in processed
-    assert "user@example.com" not in processed
+    assert "[EMAIL]" in processed, "Condition must be true"
+    assert "user@example.com" not in processed, "Condition must be true"
 
 
 def test_postprocess_output_no_citations():
@@ -219,7 +219,7 @@ def test_postprocess_output_no_citations():
         output=output, retrieved_docs=docs, include_citations=False
     )
 
-    assert "[Sources:" not in processed
+    assert "[Sources:" not in processed, "Condition must be true"
 
 
 def test_postprocess_output_no_docs():
@@ -230,8 +230,8 @@ def test_postprocess_output_no_docs():
         output=output, retrieved_docs=None, include_citations=True
     )
 
-    assert processed == "Response text"
-    assert evidence == []
+    assert processed == "Response text", "Response must not be empty"
+    assert evidence == [], "evidence is not valid"
 
 
 def test_postprocess_output_with_citations_and_evidence():
@@ -253,8 +253,8 @@ def test_postprocess_output_with_citations_and_evidence():
     # The important part is that processing completes without errors
     assert isinstance(evidence, list)
     if evidence:
-        assert "[Sources:" in processed
-        assert "paper123" in processed
+        assert "[Sources:" in processed, "Condition must be true"
+        assert "paper123" in processed, "Condition must be true"
 
 
 def test_postprocess_output_footnote_style():
@@ -273,8 +273,8 @@ def test_postprocess_output_footnote_style():
     )
 
     if evidence:
-        assert "References:" in processed
-        assert "[1]" in processed
+        assert "References:" in processed, "Condition must be true"
+        assert "[1]" in processed, "Condition must be true"
 
 
 def test_postprocess_output_multiple_redaction_rules():
@@ -290,12 +290,12 @@ def test_postprocess_output_multiple_redaction_rules():
         output=output, redaction_rules=rules, include_citations=False
     )
 
-    assert "[EMAIL]" in processed
-    assert "[PHONE]" in processed
-    assert "[SSN]" in processed
-    assert "user@example.com" not in processed
-    assert "555-1234" not in processed
-    assert "123-45-6789" not in processed
+    assert "[EMAIL]" in processed, "Condition must be true"
+    assert "[PHONE]" in processed, "Condition must be true"
+    assert "[SSN]" in processed, "Condition must be true"
+    assert "user@example.com" not in processed, "Condition must be true"
+    assert "555-1234" not in processed, "Condition must be true"
+    assert "123-45-6789" not in processed, "Condition must be true"
 
 
 def test_postprocess_output_preserves_content():
@@ -304,4 +304,4 @@ def test_postprocess_output_preserves_content():
 
     processed, _evidence = postprocess_output(output=output, include_citations=False)
 
-    assert processed == output.strip()
+    assert processed == output.strip(), "processed is not valid"

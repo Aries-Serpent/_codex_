@@ -73,70 +73,70 @@ class TestStableFold:
         """Test stable fold returns integer in range."""
         result = stable_fold("test_id")
         assert isinstance(result, int)
-        assert 0 <= result <= 99
+        assert 0 <= result <= 99, "Result must not be empty"
 
     def test_stable_fold_deterministic(self):
         """Test stable fold is deterministic."""
         id1 = "example_001"
         result1 = stable_fold(id1)
         result2 = stable_fold(id1)
-        assert result1 == result2
+        assert result1 == result2, "Result must not be empty"
 
     def test_stable_fold_different_ids(self):
         """Test different IDs can produce different folds."""
         fold1 = stable_fold("id_001")
         fold2 = stable_fold("id_002")
         # They could be equal, but statistically unlikely
-        assert 0 <= fold1 <= 99
-        assert 0 <= fold2 <= 99
+        assert 0 <= fold1 <= 99, "0 is not valid"
+        assert 0 <= fold2 <= 99, "0 is not valid"
 
     def test_stable_fold_case_sensitive(self):
         """Test stable fold is case sensitive and deterministic."""
         # Test 1: Verify case sensitivity - different cases should produce different fold values
         fold1 = stable_fold("TestId")
         fold2 = stable_fold("testid")
-        assert fold1 != fold2
+        assert fold1 != fold2, "fold1 is not valid"
 
         # Test 2: Verify fold values are in valid range (0-99)
-        assert 0 <= fold1 <= 99
-        assert 0 <= fold2 <= 99
+        assert 0 <= fold1 <= 99, "0 is not valid"
+        assert 0 <= fold2 <= 99, "0 is not valid"
 
         # Test 3: Verify deterministic behavior (same input produces same output)
         fold1_repeat = stable_fold("TestId")
         fold2_repeat = stable_fold("testid")
-        assert fold1 == fold1_repeat
-        assert fold2 == fold2_repeat
+        assert fold1 == fold1_repeat, "fold1 is not valid"
+        assert fold2 == fold2_repeat, "fold2 is not valid"
 
     def test_stable_fold_empty_string(self):
         """Test stable fold with empty string."""
         result = stable_fold("")
-        assert 0 <= result <= 99
+        assert 0 <= result <= 99, "Result must not be empty"
 
     def test_stable_fold_long_string(self):
         """Test stable fold with very long string."""
         long_id = "x" * 10000
         result = stable_fold(long_id)
-        assert 0 <= result <= 99
+        assert 0 <= result <= 99, "Result must not be empty"
 
     def test_stable_fold_special_characters(self):
         """Test stable fold with special characters."""
         result = stable_fold("id_!@#$%^&*()")
-        assert 0 <= result <= 99
+        assert 0 <= result <= 99, "Result must not be empty"
 
     def test_stable_fold_unicode(self):
         """Test stable fold with unicode characters."""
         result = stable_fold("id_émoji_🚀")
-        assert 0 <= result <= 99
+        assert 0 <= result <= 99, "Result must not be empty"
 
     def test_stable_fold_numeric_string(self):
         """Test stable fold with numeric string."""
         result = stable_fold("123456")
-        assert 0 <= result <= 99
+        assert 0 <= result <= 99, "Result must not be empty"
 
     def test_stable_fold_distribution(self, sample_ids):
         """Test stable fold produces reasonable distribution."""
         folds = [stable_fold(id) for id in sample_ids]
-        assert all(0 <= f <= 99 for f in folds)
+        assert all(0 <= f <= 99 for f in folds), "0 is not valid"
 
     def test_stable_fold_non_string_raises_error(self):
         """Test stable fold raises TypeError for non-string input."""
@@ -166,14 +166,14 @@ class TestAssignSplit:
         """Test assign_split returns valid split names."""
         for id in sample_ids:
             split = assign_split(id)
-            assert split in SPLITS
+            assert split in SPLITS, "Condition must be true"
 
     def test_assign_split_deterministic(self):
         """Test assign_split is deterministic."""
         id = "test_id_001"
         split1 = assign_split(id)
         split2 = assign_split(id)
-        assert split1 == split2
+        assert split1 == split2, "split1 is not valid"
 
     def test_assign_split_train_distribution(self):
         """Test ~80% of IDs are assigned to train."""
@@ -181,7 +181,7 @@ class TestAssignSplit:
         splits = [assign_split(id) for id in ids]
         train_count = sum(1 for s in splits if s == "train")
         # Should be roughly 80%
-        assert 750 < train_count < 850
+        assert 750 < train_count < 850, "Count must be greater than zero"
 
     def test_assign_split_val_distribution(self):
         """Test ~10% of IDs are assigned to val."""
@@ -189,7 +189,7 @@ class TestAssignSplit:
         splits = [assign_split(id) for id in ids]
         val_count = sum(1 for s in splits if s == "val")
         # Should be roughly 10%
-        assert 70 < val_count < 130
+        assert 70 < val_count < 130, "Count must be greater than zero"
 
     def test_assign_split_test_distribution(self):
         """Test ~10% of IDs are assigned to test."""
@@ -197,7 +197,7 @@ class TestAssignSplit:
         splits = [assign_split(id) for id in ids]
         test_count = sum(1 for s in splits if s == "test")
         # Should be roughly 10%
-        assert 70 < test_count < 130
+        assert 70 < test_count < 130, "Count must be greater than zero"
 
     def test_assign_split_edge_fold_values(self):
         """Test assign_split edge fold values."""
@@ -209,20 +209,20 @@ class TestAssignSplit:
             id = f"edge_id_{i}"
             split = assign_split(id)
             splits.append(split)
-        assert "train" in splits
-        assert "val" in splits
-        assert "test" in splits
+        assert "train" in splits, "Condition must be true"
+        assert "val" in splits, "Condition must be true"
+        assert "test" in splits, "Condition must be true"
 
     def test_assign_split_empty_string(self):
         """Test assign_split with empty string."""
         result = assign_split("")
-        assert result in SPLITS
+        assert result in SPLITS, "Result must not be empty"
 
     def test_assign_split_long_id(self):
         """Test assign_split with very long ID."""
         long_id = "x" * 10000
         result = assign_split(long_id)
-        assert result in SPLITS
+        assert result in SPLITS, "Result must not be empty"
 
 
 # ============================================================================
@@ -236,38 +236,38 @@ class TestSimpleCacheBasic:
     def test_cache_init_default(self):
         """Test SimpleCache initializes with defaults."""
         cache = SimpleCache()
-        assert cache.ttl == 3600
-        assert cache.max == 1000
-        assert len(cache._d) == 0
+        assert cache.ttl == 3600, "ttl is not valid"
+        assert cache.max == 1000, "max is not valid"
+        assert len(cache._d) == 0, "Collection must not be empty"
 
     def test_cache_init_custom(self):
         """Test SimpleCache with custom parameters."""
         cache = SimpleCache(ttl_s=60, max_items=50)
-        assert cache.ttl == 60
-        assert cache.max == 50
+        assert cache.ttl == 60, "ttl is not valid"
+        assert cache.max == 50, "max is not valid"
 
     def test_cache_set_and_get(self, simple_cache):
         """Test setting and getting from cache."""
         simple_cache.set("key1", "value1")
-        assert simple_cache.get("key1") == "value1"
+        assert simple_cache.get("key1") == "value1", "Value must be initialized"
 
     def test_cache_get_nonexistent(self, simple_cache):
         """Test getting nonexistent key returns None."""
-        assert simple_cache.get("nonexistent") is None
+        assert simple_cache.get("nonexistent") is None, "Condition must be true"
 
     def test_cache_multiple_sets(self, simple_cache):
         """Test multiple cache sets."""
         for i in range(10):
             simple_cache.set(f"key_{i}", f"value_{i}")
         for i in range(10):
-            assert simple_cache.get(f"key_{i}") == f"value_{i}"
+            assert simple_cache.get(f"key_{i}") == f"value_{i}", "Value must be initialized"
 
     def test_cache_overwrite_value(self, simple_cache):
         """Test overwriting cached value."""
         simple_cache.set("key", "value1")
-        assert simple_cache.get("key") == "value1"
+        assert simple_cache.get("key") == "value1", "Value must be initialized"
         simple_cache.set("key", "value2")
-        assert simple_cache.get("key") == "value2"
+        assert simple_cache.get("key") == "value2", "Value must be initialized"
 
     def test_cache_with_various_types(self, simple_cache):
         """Test caching various data types."""
@@ -276,10 +276,10 @@ class TestSimpleCacheBasic:
         simple_cache.set("list", [1, 2, 3])
         simple_cache.set("dict", {"a": 1})
 
-        assert simple_cache.get("int") == 42
-        assert simple_cache.get("float") == 3.14
+        assert simple_cache.get("int") == 42, "Condition must be true"
+        assert simple_cache.get("float") == 3.14, "Condition must be true"
         assert simple_cache.get("list") == [1, 2, 3]
-        assert simple_cache.get("dict") == {"a": 1}
+        assert simple_cache.get("dict") == {"a": 1}, "Condition must be true"
 
 
 class TestSimpleCacheTTL:
@@ -289,15 +289,15 @@ class TestSimpleCacheTTL:
         """Test cache value expires after TTL."""
         cache = SimpleCache(ttl_s=1)
         cache.set("key", "value")
-        assert cache.get("key") == "value"
+        assert cache.get("key") == "value", "Value must be initialized"
         time.sleep(1.1)
-        assert cache.get("key") is None
+        assert cache.get("key") is None, "Condition must be true"
 
     def test_cache_ttl_not_expired(self, simple_cache):
         """Test cache value not expired within TTL."""
         simple_cache.set("key", "value")
         time.sleep(0.5)
-        assert simple_cache.get("key") == "value"
+        assert simple_cache.get("key") == "value", "Value must be initialized"
 
     def test_cache_ttl_refresh_on_set(self):
         """Test cache TTL resets on new set."""
@@ -307,7 +307,7 @@ class TestSimpleCacheTTL:
         cache.set("key", "value1")  # Reset TTL
         time.sleep(0.6)
         # Should still be there because TTL was reset
-        assert cache.get("key") == "value1"
+        assert cache.get("key") == "value1", "Value must be initialized"
 
 
 class TestSimpleCacheEviction:
@@ -319,21 +319,21 @@ class TestSimpleCacheEviction:
         for i in range(10):
             cache.set(f"key_{i}", f"value_{i}")
         # Should have at most 5 items
-        assert len(cache._d) <= 5
+        assert len(cache._d) <= 5, "Collection must not be empty"
 
     def test_cache_zero_max_items(self):
         """Test cache with zero max items."""
         cache = SimpleCache(max_items=0)
         cache.set("key", "value")
         # Should not cache anything
-        assert cache.get("key") is None
+        assert cache.get("key") is None, "Condition must be true"
 
     def test_cache_negative_max_items(self):
         """Test cache with negative max items."""
         cache = SimpleCache(max_items=-1)
         cache.set("key", "value")
         # Should not cache anything
-        assert cache.get("key") is None
+        assert cache.get("key") is None, "Condition must be true"
 
     def test_cache_eviction_fifo(self):
         """Test cache evicts oldest item (FIFO-like)."""
@@ -346,7 +346,7 @@ class TestSimpleCacheEviction:
         time.sleep(0.01)
         # Adding 4th item should evict key1
         cache.set("key4", "value4")
-        assert cache.get("key1") is None
+        assert cache.get("key1") is None, "Condition must be true"
 
 
 # ============================================================================
@@ -360,17 +360,17 @@ class TestSplitDistribution:
     def test_init_default(self):
         """Test SplitDistribution initializes with zeros."""
         dist = SplitDistribution()
-        assert dist["train"] == 0
-        assert dist["val"] == 0
-        assert dist["test"] == 0
+        assert dist["train"] == 0, "Condition must be true"
+        assert dist["val"] == 0, "Condition must be true"
+        assert dist["test"] == 0, "Condition must be true"
 
     def test_init_with_counts(self):
         """Test SplitDistribution with counts."""
         counts = {"train": 100, "val": 10, "test": 10}
         dist = SplitDistribution(counts)
-        assert dist["train"] == 100
-        assert dist["val"] == 10
-        assert dist["test"] == 10
+        assert dist["train"] == 100, "Condition must be true"
+        assert dist["val"] == 10, "Condition must be true"
+        assert dist["test"] == 10, "Condition must be true"
 
     def test_init_invalid_split(self):
         """Test SplitDistribution with invalid split name."""
@@ -381,27 +381,27 @@ class TestSplitDistribution:
         """Test from_ids constructor."""
         ids = ["id_001", "id_002", "id_003"]
         dist = SplitDistribution.from_ids(ids)
-        assert dist["train"] + dist["val"] + dist["test"] == 3
+        assert dist["train"] + dist["val"] + dist["test"] == 3, "Condition must be true"
 
     def test_from_ids_empty(self):
         """Test from_ids with empty list."""
         dist = SplitDistribution.from_ids([])
-        assert dist.total() == 0
+        assert dist.total() == 0, "Condition must be true"
 
     def test_total_method(self):
         """Test total method."""
         counts = {"train": 80, "val": 10, "test": 10}
         dist = SplitDistribution(counts)
-        assert dist.total() == 100
+        assert dist.total() == 100, "Condition must be true"
 
     def test_proportions_method(self):
         """Test proportions method."""
         counts = {"train": 80, "val": 10, "test": 10}
         dist = SplitDistribution(counts)
         props = dist.proportions()
-        assert abs(props["train"] - 0.8) < 0.01
-        assert abs(props["val"] - 0.1) < 0.01
-        assert abs(props["test"] - 0.1) < 0.01
+        assert abs(props["train"] - 0.8) < 0.01, "Condition must be true"
+        assert abs(props["val"] - 0.1) < 0.01, "Condition must be true"
+        assert abs(props["test"] - 0.1) < 0.01, "Condition must be true"
 
     def test_proportions_empty(self):
         """Test proportions with zero total."""
@@ -424,8 +424,8 @@ class TestWriteJsonlWithCrc:
         output_path = temp_dir / "output.jsonl"
         result_path = write_jsonl_with_crc(output_path, sample_records)
 
-        assert output_path.exists()
-        assert result_path == output_path
+        assert output_path.exists(), "Condition must be true"
+        assert result_path == output_path, "Result must not be empty"
 
     def test_written_file_contains_records(self, sample_records, temp_dir):
         """Test written file contains all records."""
@@ -433,7 +433,7 @@ class TestWriteJsonlWithCrc:
         write_jsonl_with_crc(output_path, sample_records)
 
         lines = output_path.read_text().strip().split("\n")
-        assert len(lines) == len(sample_records)
+        assert len(lines) == len(sample_records), "Lines must not be empty"
 
     def test_written_records_are_valid_json(self, sample_records, temp_dir):
         """Test written records are valid JSON."""
@@ -458,9 +458,9 @@ class TestWriteJsonlWithCrc:
         output_path = temp_dir / "empty.jsonl"
         write_jsonl_with_crc(output_path, [])
 
-        assert output_path.exists()
+        assert output_path.exists(), "Condition must be true"
         content = output_path.read_text()
-        assert content == ""
+        assert content == "", "Content must not be empty"
 
     def test_write_with_unicode_content(self, temp_dir):
         """Test writing records with unicode content."""
@@ -474,7 +474,7 @@ class TestWriteJsonlWithCrc:
 
         # Read back and verify unicode is preserved
         lines = output_path.read_text(encoding="utf-8").strip().split("\n")
-        assert len(lines) == 3
+        assert len(lines) == 3, "Lines must not be empty"
 
     def test_write_large_records(self, temp_dir):
         """Test writing large records."""
@@ -484,7 +484,7 @@ class TestWriteJsonlWithCrc:
         output_path = temp_dir / "large.jsonl"
         write_jsonl_with_crc(output_path, large_records)
 
-        assert output_path.exists()
+        assert output_path.exists(), "Condition must be true"
 
     def test_write_nested_structures(self, temp_dir):
         """Test writing nested data structures."""
@@ -500,15 +500,15 @@ class TestWriteJsonlWithCrc:
 
         lines = output_path.read_text().strip().split("\n")
         data = json.loads(lines[0])
-        assert data["nested"]["a"] == 1
+        assert data["nested"]["a"] == 1, "Data must not be empty"
 
     def test_write_creates_parent_dir(self, temp_dir):
         """Test that write_jsonl_with_crc creates parent directories."""
         output_path = temp_dir / "subdir" / "deep" / "output.jsonl"
         write_jsonl_with_crc(output_path, [{"test": 1}])
 
-        assert output_path.parent.exists()
-        assert output_path.exists()
+        assert output_path.parent.exists(), "Condition must be true"
+        assert output_path.exists(), "Condition must be true"
 
 
 # ============================================================================
@@ -523,14 +523,14 @@ class TestEdgeCases:
         """Test SplitDistribution handles string counts."""
         counts = {"train": "100", "val": "10"}
         dist = SplitDistribution(counts)
-        assert dist["train"] == 100
-        assert dist["val"] == 10
+        assert dist["train"] == 100, "Condition must be true"
+        assert dist["val"] == 10, "Condition must be true"
 
     def test_stable_fold_numeric_precision(self):
         """Test stable fold with various numeric strings."""
         folds = [stable_fold(str(i)) for i in range(100)]
-        assert min(folds) >= 0
-        assert max(folds) <= 99
+        assert min(folds) >= 0, "Value must be greater than zero"
+        assert max(folds) <= 99, "Condition must be true"
 
     def test_cache_with_none_value(self, simple_cache):
         """Test caching None value."""
@@ -547,7 +547,7 @@ class TestEdgeCases:
     def test_assign_split_all_same_id(self):
         """Test assign_split consistently for same ID."""
         results = [assign_split("same_id") for _ in range(100)]
-        assert len(set(results)) == 1  # All results should be identical
+        assert len(set(results)) == 1, "Collection must not be empty"
 
 
 # ============================================================================

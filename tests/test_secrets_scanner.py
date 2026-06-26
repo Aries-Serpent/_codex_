@@ -20,8 +20,8 @@ def test_scanner_finds_obvious_tokens(tmp_path: Path) -> None:
 
     hits = scan_file(target)
     kinds = {name for (name, _line, _text) in hits}
-    assert "aws_access_key" in kinds
-    assert "slack_token" in kinds
+    assert "aws_access_key" in kinds, "Condition must be true"
+    assert "slack_token" in kinds, "Condition must be true"
 
 
 def test_scanner_reads_archive(tmp_path: Path) -> None:
@@ -32,4 +32,4 @@ def test_scanner_reads_archive(tmp_path: Path) -> None:
 
     hits = scan_file(archive)
     kinds = {name for (name, _line, _text) in hits}
-    assert "aws_access_key" in kinds
+    assert "aws_access_key" in kinds, "Condition must be true"

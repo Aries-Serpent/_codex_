@@ -47,7 +47,7 @@ def test_stage_s7_manifest_sorts_artifacts_and_reports_coverage(monkeypatch, tmp
 
     # Verify artifacts are sorted by name
     artifact_names = [entry["name"] for entry in manifest["artifacts"]]
-    assert artifact_names == sorted(artifact_names)
+    assert artifact_names == sorted(artifact_names), "artifact_names is not valid"
 
     # Verify coverage stats are correctly computed
     expected_stats = {
@@ -56,13 +56,13 @@ def test_stage_s7_manifest_sorts_artifacts_and_reports_coverage(monkeypatch, tmp
         "max_percent": 0.75,
         "avg_percent": 0.5,
     }
-    assert manifest["coverage_stats"] == expected_stats
+    assert manifest["coverage_stats"] == expected_stats, "Condition must be true"
 
     # Verify manifest is written to disk
     out_manifest = tmp_path / "audit_run_manifest.json"
-    assert out_manifest.exists()
+    assert out_manifest.exists(), "Condition must be true"
     persisted = json.loads(out_manifest.read_text())
-    assert persisted["coverage_stats"] == expected_stats
+    assert persisted["coverage_stats"] == expected_stats, "Condition must be true"
 
 
 def test_stage_s7_manifest_handles_empty_coverage(monkeypatch, tmp_path):
@@ -104,7 +104,7 @@ def test_stage_s7_manifest_handles_empty_coverage(monkeypatch, tmp_path):
         "max_percent": 0.0,
         "avg_percent": 0.0,
     }
-    assert manifest["coverage_stats"] == expected_stats
+    assert manifest["coverage_stats"] == expected_stats, "Condition must be true"
 
 
 def test_stage_s7_manifest_no_coverage_file(monkeypatch, tmp_path):
@@ -138,4 +138,4 @@ def test_stage_s7_manifest_no_coverage_file(monkeypatch, tmp_path):
     manifest = audit_runner.stage_s7_manifest(cfg)
 
     # Without coverage_map.json, no coverage_stats should be present
-    assert "coverage_stats" not in manifest
+    assert "coverage_stats" not in manifest, "Condition must be true"

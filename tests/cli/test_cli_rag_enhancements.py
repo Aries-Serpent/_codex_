@@ -67,7 +67,7 @@ class TestCLIRAGErrorHandling:
                 "0",  # Invalid: must be > 0
             ],
         )
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     def test_build_with_negative_overlap(self, runner, tmp_path):
         """Test build command rejects negative overlap."""
@@ -85,7 +85,7 @@ class TestCLIRAGErrorHandling:
                 "-100",  # Invalid: must be >= 0
             ],
         )
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     def test_query_with_empty_index_name(self, runner):
         """Test query command validates empty index name."""
@@ -99,7 +99,7 @@ class TestCLIRAGErrorHandling:
                 "",  # Empty name
             ],
         )
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     def test_delete_nonexistent_index_error(self, runner, temp_index_dir):
         """Test delete command handles nonexistent index gracefully."""
@@ -108,8 +108,8 @@ class TestCLIRAGErrorHandling:
                 app,
                 ["delete", "--index", "nonexistent", "--confirm"],
             )
-            assert result.exit_code != 0
-            assert "not found" in result.stdout.lower() or result.exit_code == 1
+            assert result.exit_code != 0, "Result must not be empty"
+            assert "not found" in result.stdout.lower() or result.exit_code == 1, "Result must not be empty"
 
     def test_stats_with_missing_metadata(self, runner, temp_index_dir):
         """Test stats command handles missing metadata gracefully."""
@@ -121,7 +121,7 @@ class TestCLIRAGErrorHandling:
             app,
             ["stats", "--index", "broken_index"],
         )
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     def test_merge_with_same_source_and_dest(self, runner):
         """Test merge command validates source != destination."""
@@ -135,7 +135,7 @@ class TestCLIRAGErrorHandling:
                 "same_index",
             ],
         )
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     def test_metrics_export_without_format(self, runner):
         """Test metrics export requires format."""
@@ -144,7 +144,7 @@ class TestCLIRAGErrorHandling:
             ["metrics"],
         )
         # Should either default or require format
-        assert result.exit_code == 0 or result.exit_code != 0
+        assert result.exit_code == 0 or result.exit_code != 0, "Result must not be empty"
 
     @patch("codex.rag.build_index_from_files", side_effect=ValueError("Invalid model"))
     def test_build_with_invalid_model_error(self, mock_build, runner, tmp_path):
@@ -163,7 +163,7 @@ class TestCLIRAGErrorHandling:
                 "invalid-model-xyz",
             ],
         )
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
 
 # ============================================================================
@@ -178,7 +178,7 @@ class TestCLIRAGArgumentValidation:
         """Test build command requires --files argument."""
         result = runner.invoke(app, ["build"])
         # Should fail due to missing required --files
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     def test_build_requires_index_name(self, runner, tmp_path):
         """Test build command requires --index-name."""
@@ -196,12 +196,12 @@ class TestCLIRAGArgumentValidation:
     def test_query_requires_query_text(self, runner):
         """Test query command requires query text."""
         result = runner.invoke(app, ["query"])
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     def test_delete_requires_index_name(self, runner):
         """Test delete command requires index name."""
         result = runner.invoke(app, ["delete"])
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     def test_tenant_id_validation(self, runner, tmp_path):
         """Test tenant ID argument validation."""
@@ -268,7 +268,7 @@ class TestCLIRAGOutputFormats:
                 app,
                 ["query", "--query", "test", "--format", "json"],
             )
-            assert result.exit_code == 0
+            assert result.exit_code == 0, "Result must not be empty"
             # Try to parse JSON to validate format
             try:
                 data = json.loads(result.stdout)
@@ -288,7 +288,7 @@ class TestCLIRAGOutputFormats:
                 app,
                 ["list"],
             )
-            assert result.exit_code == 0
+            assert result.exit_code == 0, "Result must not be empty"
 
     def test_stats_output_contains_metrics(self, runner):
         """Test stats output contains expected metrics."""
@@ -302,7 +302,7 @@ class TestCLIRAGOutputFormats:
                 app,
                 ["stats", "--index", "test"],
             )
-            assert result.exit_code == 0
+            assert result.exit_code == 0, "Result must not be empty"
 
     def test_metrics_prometheus_format(self, runner):
         """Test metrics in Prometheus format."""
@@ -316,7 +316,7 @@ class TestCLIRAGOutputFormats:
                 app,
                 ["metrics", "--format", "prometheus"],
             )
-            assert result.exit_code == 0
+            assert result.exit_code == 0, "Result must not be empty"
 
 
 # ============================================================================
@@ -352,14 +352,14 @@ class TestCLIRAGIntegration:
                         "docs",
                     ],
                 )
-                assert build_result.exit_code == 0
+                assert build_result.exit_code == 0, "Result must not be empty"
 
                 # Query
                 query_result = runner.invoke(
                     app,
                     ["query", "--query", "vectors"],
                 )
-                assert query_result.exit_code == 0
+                assert query_result.exit_code == 0, "Result must not be empty"
 
     def test_merge_indices_workflow(self, runner):
         """Test merging indices workflow."""
@@ -375,7 +375,7 @@ class TestCLIRAGIntegration:
                     "merged",
                 ],
             )
-            assert result.exit_code == 0
+            assert result.exit_code == 0, "Result must not be empty"
 
     def test_multi_tenant_workflow(self, runner, tmp_path):
         """Test multi-tenant index management."""
@@ -397,7 +397,7 @@ class TestCLIRAGIntegration:
                     "tenant_a",
                 ],
             )
-            assert result_a.exit_code == 0
+            assert result_a.exit_code == 0, "Result must not be empty"
 
             # Build for tenant B
             result_b = runner.invoke(
@@ -412,7 +412,7 @@ class TestCLIRAGIntegration:
                     "tenant_b",
                 ],
             )
-            assert result_b.exit_code == 0
+            assert result_b.exit_code == 0, "Result must not be empty"
 
 
 # ============================================================================
@@ -426,28 +426,28 @@ class TestCLIRAGHelp:
     def test_main_help_contains_commands(self, runner):
         """Test main help output lists all commands."""
         result = runner.invoke(app, ["--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
         # Should list major commands
         assert any(cmd in result.stdout for cmd in ["build", "query", "list"])
 
     def test_build_help_documents_options(self, runner):
         """Test build help documents all options."""
         result = runner.invoke(app, ["build", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
         # Should mention key options
-        assert "--files" in result.stdout or "files" in result.stdout.lower()
+        assert "--files" in result.stdout or "files" in result.stdout.lower(), "Result must not be empty"
 
     def test_query_help_documents_search(self, runner):
         """Test query help documents search functionality."""
         result = runner.invoke(app, ["query", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_help_output_readable(self, runner):
         """Test help output is properly formatted."""
         result = runner.invoke(app, ["--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
         # Help text should not be empty
-        assert len(result.stdout) > 100
+        assert len(result.stdout) > 100, "Collection must not be empty"
 
 
 # ============================================================================
@@ -475,7 +475,7 @@ class TestCLIRAGBoundary:
                     "single",
                 ],
             )
-            assert result.exit_code == 0
+            assert result.exit_code == 0, "Result must not be empty"
 
     def test_build_many_files(self, runner, tmp_path):
         """Test build with many files."""

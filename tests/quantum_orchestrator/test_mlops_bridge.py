@@ -33,12 +33,12 @@ class TestMetricsCollector:
         metrics = collector.collect_orchestrator_metrics()
 
         # Should have multiple metrics
-        assert len(metrics) > 0
+        assert len(metrics) > 0, "Metrics must not be empty"
 
         # Check for expected metrics
         metric_names = {m.name for m in metrics}
-        assert "quantum_orchestrator_tasks_total" in metric_names
-        assert "quantum_orchestrator_coherence" in metric_names
+        assert "quantum_orchestrator_tasks_total" in metric_names, "Condition must be true"
+        assert "quantum_orchestrator_coherence" in metric_names, "Condition must be true"
 
     def test_export_prometheus(self):
         """Test Prometheus format export."""
@@ -51,8 +51,8 @@ class TestMetricsCollector:
         prom_output = collector.export_prometheus()
 
         # Should contain metric lines
-        assert len(prom_output) > 0
-        assert "quantum_orchestrator" in prom_output
+        assert len(prom_output) > 0, "Prom_output must not be empty"
+        assert "quantum_orchestrator" in prom_output, "Condition must be true"
 
     def test_export_json(self):
         """Test JSON export."""
@@ -69,7 +69,7 @@ class TestMetricsCollector:
 
         data = json.loads(json_output)
         assert isinstance(data, list)
-        assert len(data) > 0
+        assert len(data) > 0, "Data must not be empty"
 
 
 class TestLoggingAdapter:
@@ -85,7 +85,7 @@ class TestLoggingAdapter:
 
         # Should not raise
         adapter.log_evolution_step()
-        assert adapter.event_count > 0
+        assert adapter.event_count > 0, "event_count must be positive"
 
     def test_log_task_completion(self):
         """Test logging task completion."""
@@ -95,7 +95,7 @@ class TestLoggingAdapter:
         adapter = LoggingAdapter(orch)
         adapter.log_task_completion("task1")
 
-        assert adapter.event_count > 0
+        assert adapter.event_count > 0, "event_count must be positive"
 
     def test_log_stability_issue(self):
         """Test logging stability issues."""
@@ -105,7 +105,7 @@ class TestLoggingAdapter:
         adapter = LoggingAdapter(orch)
         adapter.log_stability_issue("task1", "high")
 
-        assert adapter.event_count > 0
+        assert adapter.event_count > 0, "event_count must be positive"
 
     def test_log_conservation_violation(self):
         """Test logging conservation violations."""
@@ -114,7 +114,7 @@ class TestLoggingAdapter:
         adapter = LoggingAdapter(orch)
         adapter.log_conservation_violation(0.05)
 
-        assert adapter.event_count > 0
+        assert adapter.event_count > 0, "event_count must be positive"
 
 
 class TestDistributedCoordinator:
@@ -126,8 +126,8 @@ class TestDistributedCoordinator:
         coordinator.register_peer("node2")
         coordinator.register_peer("node3")
 
-        assert len(coordinator.peer_nodes) == 2
-        assert "node2" in coordinator.peer_nodes
+        assert len(coordinator.peer_nodes) == 2, "Collection must not be empty"
+        assert "node2" in coordinator.peer_nodes, "Condition must be true"
 
     def test_partition_tasks_round_robin(self):
         """Test round-robin task partitioning."""
@@ -139,11 +139,11 @@ class TestDistributedCoordinator:
         partitions = coordinator.partition_tasks(task_ids, "round_robin")
 
         # All nodes should get tasks
-        assert len(partitions) == 3
+        assert len(partitions) == 3, "Partitions must not be empty"
 
         # Total tasks should match
         total_tasks = sum(len(tasks) for tasks in partitions.values())
-        assert total_tasks == 9
+        assert total_tasks == 9, "total_tasks is not valid"
 
     def test_partition_tasks_hash(self):
         """Test hash-based task partitioning."""
@@ -154,11 +154,11 @@ class TestDistributedCoordinator:
         partitions = coordinator.partition_tasks(task_ids, "hash")
 
         # Should have partitions for all nodes
-        assert len(partitions) == 2
+        assert len(partitions) == 2, "Partitions must not be empty"
 
         # Total should match
         total_tasks = sum(len(tasks) for tasks in partitions.values())
-        assert total_tasks == 10
+        assert total_tasks == 10, "total_tasks is not valid"
 
     def test_get_local_tasks(self):
         """Test getting local task assignments."""
@@ -169,9 +169,9 @@ class TestDistributedCoordinator:
 
         local = coordinator.get_local_tasks(["task1", "task2", "task3"])
 
-        assert len(local) == 2
-        assert "task1" in local
-        assert "task3" in local
+        assert len(local) == 2, "Local must not be empty"
+        assert "task1" in local, "Condition must be true"
+        assert "task3" in local, "Condition must be true"
 
 
 class TestObservableOrchestrator:
@@ -181,9 +181,9 @@ class TestObservableOrchestrator:
         """Test factory function."""
         obs_orch = create_observable_orchestrator()
 
-        assert obs_orch.orchestrator is not None
-        assert obs_orch.metrics is not None
-        assert obs_orch.logging is not None
+        assert obs_orch.orchestrator is not None, "orchestrator must be initialized"
+        assert obs_orch.metrics is not None, "metrics must be initialized"
+        assert obs_orch.logging is not None, "logging must be initialized"
 
     def test_evolve_with_observability(self):
         """Test evolution with observability hooks."""
@@ -202,7 +202,7 @@ class TestObservableOrchestrator:
         obs_orch.evolve()
 
         # Hook should have been called
-        assert len(hook_called) > 0
+        assert len(hook_called) > 0, "Hook_called must not be empty"
 
     def test_task_completion_hooks(self):
         """Test task completion hooks."""
@@ -238,7 +238,7 @@ class TestObservableOrchestrator:
         report = obs_orch.get_metrics_report()
 
         assert isinstance(report, str)
-        assert len(report) > 0
+        assert len(report) > 0, "Report must not be empty"
 
     def test_get_health_status(self):
         """Test health status reporting."""
@@ -247,10 +247,10 @@ class TestObservableOrchestrator:
 
         health = obs_orch.get_health_status()
 
-        assert "status" in health
-        assert "issues" in health
-        assert "task_count" in health
-        assert "coherence" in health
+        assert "status" in health, "Condition must be true"
+        assert "issues" in health, "Condition must be true"
+        assert "task_count" in health, "Count must be greater than zero"
+        assert "coherence" in health, "Condition must be true"
 
         # Should be healthy initially
         assert health["status"] in ["healthy", "degraded", "unhealthy"]
@@ -263,9 +263,9 @@ class TestObservableOrchestrator:
 
         results = obs_orch.run(max_iterations=5)
 
-        assert "elapsed_time" in results
-        assert "iterations" in results
-        assert results["elapsed_time"] > 0
+        assert "elapsed_time" in results, "Result must not be empty"
+        assert "iterations" in results, "Result must not be empty"
+        assert results["elapsed_time"] > 0, "Value must be greater than zero"
 
 
 class TestMetricTypes:
@@ -282,9 +282,9 @@ class TestMetricTypes:
 
         prom_str = metric.to_prometheus()
 
-        assert "test_metric" in prom_str
-        assert "42" in prom_str
-        assert "task1" in prom_str
+        assert "test_metric" in prom_str, "Condition must be true"
+        assert "42" in prom_str, "Condition must be true"
+        assert "task1" in prom_str, "Condition must be true"
 
 
 class TestIntegration:
@@ -325,15 +325,15 @@ class TestIntegration:
         results = obs_orch.run(max_iterations=10)
 
         # Verify - tasks with lower probability need iterations to evolve
-        assert results["iterations"] >= 1  # At least 1 iteration occurred
-        assert len(events) >= 1  # At least 1 evolution step
+        assert results["iterations"] >= 1, "Value must be greater than zero"
+        assert len(events) >= 1, "Events must not be empty"
 
         # Get reports
         metrics = obs_orch.get_metrics_report()
         health = obs_orch.get_health_status()
 
-        assert len(metrics) > 0
-        assert "status" in health
+        assert len(metrics) > 0, "Metrics must not be empty"
+        assert "status" in health, "Condition must be true"
 
 
 if __name__ == "__main__":

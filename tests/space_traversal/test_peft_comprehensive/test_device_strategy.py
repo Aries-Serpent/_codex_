@@ -62,7 +62,7 @@ class TestDeviceConfig:
         config = DeviceConfig.auto_detect()
 
         assert config.device in ("cpu", "cuda", "mps") or config.device.startswith("cuda:")
-        assert config.dtype is not None
+        assert config.dtype is not None, "dtype must be initialized"
         assert isinstance(config.mixed_precision, bool)
 
     def test_auto_detect_on_cpu(self):
@@ -71,9 +71,9 @@ class TestDeviceConfig:
 
         # On CPU-only, should use float32 without mixed precision
         if config.device == "cpu":
-            assert config.dtype == torch.float32
-            assert config.mixed_precision is False
-            assert config.autocast_dtype is None
+            assert config.dtype == torch.float32, "dtype is not valid"
+            assert config.mixed_precision is False, "mixed_precision is not valid"
+            assert config.autocast_dtype is None, "autocast_dtype is not valid"
 
     @pytest.mark.requires_torch
     def test_apply_to_model(self):
@@ -85,8 +85,8 @@ class TestDeviceConfig:
 
         # Check device
         param = next(model_result.parameters())
-        assert str(param.device) == "cpu"
-        assert param.dtype == torch.float32
+        assert str(param.device) == "cpu", "Condition must be true"
+        assert param.dtype == torch.float32, "dtype is not valid"
 
     @pytest.mark.requires_torch
     def test_apply_to_model_with_mixed_precision(self):
@@ -103,7 +103,7 @@ class TestDeviceConfig:
 
         # With mixed precision, model should stay in float32
         param = next(model_result.parameters())
-        assert param.dtype == torch.float32
+        assert param.dtype == torch.float32, "dtype is not valid"
 
     @pytest.mark.requires_torch
     def test_apply_to_tensor(self):
@@ -113,8 +113,8 @@ class TestDeviceConfig:
 
         result = config.apply_to_tensor(tensor)
 
-        assert str(result.device) == "cpu"
-        assert result.dtype == torch.float32
+        assert str(result.device) == "cpu", "Result must not be empty"
+        assert result.dtype == torch.float32, "Result must not be empty"
 
     @pytest.mark.requires_torch
     def test_apply_to_tensor_dtype_conversion(self):
@@ -124,7 +124,7 @@ class TestDeviceConfig:
 
         result = config.apply_to_tensor(tensor)
 
-        assert result.dtype == torch.float16
+        assert result.dtype == torch.float16, "Result must not be empty"
 
     @pytest.mark.requires_torch
     def test_apply_to_model_fallback(self):
@@ -140,7 +140,7 @@ class TestDeviceConfig:
         model = FailingModel(2, 2)
         config = DeviceConfig(device="cuda", dtype=torch.float32)
         result = config.apply_to_model(model)
-        assert next(result.parameters()).device.type == "cpu"
+        assert next(result.parameters()).device.type == "cpu", "Result must not be empty"
 
     @pytest.mark.requires_torch
     def test_apply_to_model_invalid_device(self):
@@ -155,16 +155,16 @@ def test_auto_detect_cpu(monkeypatch: pytest.MonkeyPatch) -> None:
     """Test auto-detection on CPU-only system."""
     module = _with_stub(monkeypatch, cuda=False)
     cfg = module.DeviceConfig.auto_detect()
-    assert cfg.device == "cpu"
-    assert not cfg.mixed_precision
+    assert cfg.device == "cpu", "device is not valid"
+    assert not cfg.mixed_precision, "Condition must be true"
 
 
 def test_auto_detect_cuda_prefers_bf16(monkeypatch: pytest.MonkeyPatch) -> None:
     """Test auto-detection on CUDA system with bf16 support."""
     module = _with_stub(monkeypatch, cuda=True, bf16=True)
     cfg = module.DeviceConfig.auto_detect()
-    assert cfg.device == "cuda"
-    assert cfg.mixed_precision
+    assert cfg.device == "cuda", "device is not valid"
+    assert cfg.mixed_precision, "Condition must be true"
 
 
 @pytest.mark.requires_torch
@@ -175,7 +175,7 @@ def test_apply_to_tensor_changes_dtype(dtype: str) -> None:
     tensor = torch.ones(2, dtype=torch.float32)
     result = cfg.apply_to_tensor(tensor)
     assert result.dtype == getattr(torch, dtype)
-    assert result.device.type == "cpu"
+    assert result.device.type == "cpu", "Result must not be empty"
 
 
 class TestDeviceMapper:
@@ -190,8 +190,8 @@ class TestDeviceMapper:
         DeviceMapper.register_strategy("test_cpu", config)
 
         retrieved = DeviceMapper.get_strategy("test_cpu")
-        assert retrieved.device == "cpu"
-        assert retrieved.dtype == torch.float32
+        assert retrieved.device == "cpu", "device is not valid"
+        assert retrieved.dtype == torch.float32, "dtype is not valid"
 
     def test_get_nonexistent_strategy_raises(self):
         """Test that getting a nonexistent strategy raises KeyError."""
@@ -223,9 +223,9 @@ class TestDeviceMapper:
         DeviceMapper.register_strategy("cuda_fp16", config2)
 
         strategies = DeviceMapper.list_strategies()
-        assert "cpu_fp32" in strategies
-        assert "cuda_fp16" in strategies
-        assert len(strategies) == 2
+        assert "cpu_fp32" in strategies, "Condition must be true"
+        assert "cuda_fp16" in strategies, "Condition must be true"
+        assert len(strategies) == 2, "Strategies must not be empty"
 
 
 @pytest.mark.requires_torch
@@ -239,15 +239,15 @@ def test_get_device_config_auto_detect():
 def test_get_device_config_explicit():
     """Test get_device_config with explicit parameters."""
     config = get_device_config(device="cpu", dtype=torch.float32, mixed_precision=False)
-    assert config.device == "cpu"
-    assert config.dtype == torch.float32
-    assert config.mixed_precision is False
+    assert config.device == "cpu", "device is not valid"
+    assert config.dtype == torch.float32, "dtype is not valid"
+    assert config.mixed_precision is False, "mixed_precision is not valid"
 
 
 @pytest.mark.requires_torch
 def test_get_device_config_partial():
     """Test get_device_config with partial parameters."""
     config = get_device_config(device="cpu")
-    assert config.device == "cpu"
-    assert config.dtype == torch.float32
-    assert config.mixed_precision is False
+    assert config.device == "cpu", "device is not valid"
+    assert config.dtype == torch.float32, "dtype is not valid"
+    assert config.mixed_precision is False, "mixed_precision is not valid"

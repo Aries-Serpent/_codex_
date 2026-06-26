@@ -38,18 +38,18 @@ class TestConfigParsing:
         """Default config values are set correctly."""
         config = TrainingConfig(model_name="bert-base-uncased")
 
-        assert config.model_name == "bert-base-uncased"
-        assert config.learning_rate == 1e-4
-        assert config.batch_size == 32
-        assert config.epochs == 10
+        assert config.model_name == "bert-base-uncased", "model_name is not valid"
+        assert config.learning_rate == 1e-4, "learning_rate is not valid"
+        assert config.batch_size == 32, "batch_size is not valid"
+        assert config.epochs == 10, "epochs is not valid"
 
     def test_config_override(self):
         """Config values can be overridden."""
         config = TrainingConfig(model_name="gpt2", learning_rate=5e-5, batch_size=16, epochs=3)
 
-        assert config.learning_rate == 5e-5
-        assert config.batch_size == 16
-        assert config.epochs == 3
+        assert config.learning_rate == 5e-5, "learning_rate is not valid"
+        assert config.batch_size == 16, "batch_size is not valid"
+        assert config.epochs == 3, "epochs is not valid"
 
     def test_config_from_dict(self):
         """Config can be created from dictionary."""
@@ -65,8 +65,8 @@ class TestConfigParsing:
 
         config = config_from_dict(config_dict)
 
-        assert config.model_name == "roberta-base"
-        assert config.learning_rate == 2e-5
+        assert config.model_name == "roberta-base", "model_name is not valid"
+        assert config.learning_rate == 2e-5, "learning_rate is not valid"
 
 
 class TestConfigValidation:
@@ -82,7 +82,7 @@ class TestConfigValidation:
                 raise ValueError("Learning rate too high")
             return True
 
-        assert validate_learning_rate(1e-4)
+        assert validate_learning_rate(1e-4), "Condition must be true"
 
         with pytest.raises(ValueError):
             validate_learning_rate(0)
@@ -102,7 +102,7 @@ class TestConfigValidation:
                 raise ValueError("Batch size too large")
             return True
 
-        assert validate_batch_size(32)
+        assert validate_batch_size(32), "Condition must be true"
 
         with pytest.raises(ValueError):
             validate_batch_size(0)
@@ -118,7 +118,7 @@ class TestConfigValidation:
                 raise ValueError("Epochs must be at least 1")
             return True
 
-        assert validate_epochs(10)
+        assert validate_epochs(10), "Condition must be true"
 
         with pytest.raises(ValueError):
             validate_epochs(0)
@@ -142,9 +142,9 @@ class TestConfigMerging:
 
         merged = merge_configs(base, override)
 
-        assert merged["model_name"] == "bert"  # From base
-        assert merged["lr"] == 5e-5  # Overridden
-        assert merged["epochs"] == 5  # New key
+        assert merged["model_name"] == "bert", "Condition must be true"
+        assert merged["lr"] == 5e-5, "Condition must be true"
+        assert merged["epochs"] == 5, "Condition must be true"
 
     def test_nested_config_merge(self):
         """Nested configs merge correctly."""
@@ -163,9 +163,9 @@ class TestConfigMerging:
 
         merged = deep_merge(base, override)
 
-        assert merged["training"]["lr"] == 5e-5
-        assert merged["training"]["batch_size"] == 32
-        assert merged["model"]["dropout"] == 0.1
+        assert merged["training"]["lr"] == 5e-5, "Condition must be true"
+        assert merged["training"]["batch_size"] == 32, "Condition must be true"
+        assert merged["model"]["dropout"] == 0.1, "Condition must be true"
 
 
 class TestConfigSerialization:
@@ -178,8 +178,8 @@ class TestConfigSerialization:
         config = TrainingConfig(model_name="bert-base")
         config_dict = asdict(config)
 
-        assert config_dict["model_name"] == "bert-base"
-        assert "learning_rate" in config_dict
+        assert config_dict["model_name"] == "bert-base", "Condition must be true"
+        assert "learning_rate" in config_dict, "Condition must be true"
 
     def test_config_to_yaml(self):
         """Config can be serialized to YAML-like format."""
@@ -197,8 +197,8 @@ class TestConfigSerialization:
         config_dict = {"model": "bert", "training": {"lr": 1e-4}}
         yaml_lines = to_yaml_lines(config_dict)
 
-        assert "model: bert" in yaml_lines
-        assert "  lr: 0.0001" in yaml_lines
+        assert "model: bert" in yaml_lines, "Condition must be true"
+        assert "  lr: 0.0001" in yaml_lines, "Condition must be true"
 
     def test_config_to_json(self):
         """Config can be serialized to JSON."""
@@ -208,9 +208,9 @@ class TestConfigSerialization:
         config = TrainingConfig(model_name="bert-base")
         json_str = json.dumps(asdict(config))
 
-        assert "bert-base" in json_str
+        assert "bert-base" in json_str, "Condition must be true"
         parsed = json.loads(json_str)
-        assert parsed["model_name"] == "bert-base"
+        assert parsed["model_name"] == "bert-base", "Condition must be true"
 
 
 class TestConfigInheritance:
@@ -234,8 +234,8 @@ class TestConfigInheritance:
 
         config = get_config("base", {"dropout": 0.1})
 
-        assert config["hidden_size"] == 768
-        assert config["dropout"] == 0.1
+        assert config["hidden_size"] == 768, "Condition must be true"
+        assert config["dropout"] == 0.1, "Condition must be true"
 
     def test_config_presets(self):
         """Config presets provide common configurations."""
@@ -254,6 +254,6 @@ class TestConfigInheritance:
         config = {"model_name": "bert", "lr": 1e-4}
         debug_config = apply_preset(config, "debug")
 
-        assert debug_config["epochs"] == 1
-        assert debug_config["batch_size"] == 2
-        assert debug_config["lr"] == 1e-4  # Preserved
+        assert debug_config["epochs"] == 1, "Condition must be true"
+        assert debug_config["batch_size"] == 2, "Condition must be true"
+        assert debug_config["lr"] == 1e-4, "Condition must be true"

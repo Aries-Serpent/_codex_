@@ -43,7 +43,7 @@ class TestExpandGlobsExclude:
         (tmp_path / "b.py").write_text("b")
 
         result = select_components.expand_globs(["*.py"], tmp_path, exclude_patterns=None)
-        assert len(result) == 2
+        assert len(result) == 2, "Result must not be empty"
 
     def test_exclude_removes_matching(self, tmp_path):
         """Exclude pattern removes matching files."""
@@ -56,8 +56,8 @@ class TestExpandGlobsExclude:
             exclude_patterns=["*.txt"],
         )
         names = {p.name for p in result}
-        assert "keep.py" in names
-        assert "remove.txt" not in names
+        assert "keep.py" in names, "Condition must be true"
+        assert "remove.txt" not in names, "Condition must be true"
 
     def test_exclude_recursive(self, tmp_path):
         """Exclude with ** recursive patterns."""
@@ -74,15 +74,15 @@ class TestExpandGlobsExclude:
             exclude_patterns=["tests/**"],
         )
         names = {p.name for p in result}
-        assert "main.py" in names
-        assert "test_main.py" not in names
+        assert "main.py" in names, "Condition must be true"
+        assert "test_main.py" not in names, "Condition must be true"
 
     def test_exclude_empty_list(self, tmp_path):
         """Empty exclude list → same as None."""
         (tmp_path / "a.py").write_text("a")
 
         result = select_components.expand_globs(["*.py"], tmp_path, exclude_patterns=[])
-        assert len(result) == 1
+        assert len(result) == 1, "Result must not be empty"
 
     def test_exclude_no_match(self, tmp_path):
         """Exclude pattern that matches nothing → no effect."""
@@ -93,7 +93,7 @@ class TestExpandGlobsExclude:
             tmp_path,
             exclude_patterns=["*.nonexistent"],
         )
-        assert len(result) == 1
+        assert len(result) == 1, "Result must not be empty"
 
 
 class TestFilterByTopicExclude:
@@ -112,8 +112,8 @@ class TestFilterByTopicExclude:
             "src", topics_map, tmp_path, exclude_patterns=["**/*test*"]
         )
         names = {p.name for p in result}
-        assert "main.py" in names
-        assert "test_helper.py" not in names
+        assert "main.py" in names, "Condition must be true"
+        assert "test_helper.py" not in names, "Condition must be true"
 
 
 class TestFilterByGlobsExclude:
@@ -126,8 +126,8 @@ class TestFilterByGlobsExclude:
 
         result = select_components.filter_by_globs("*.py,*.md", tmp_path, exclude_patterns=["*.md"])
         names = {p.name for p in result}
-        assert "a.py" in names
-        assert "b.md" not in names
+        assert "a.py" in names, "Condition must be true"
+        assert "b.md" not in names, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -143,7 +143,7 @@ class TestMCPPackagerEstimate:
         mcp_mod = _load_mcp_package_module()
         packager = mcp_mod.MCPPackager(Path.cwd())
         assert hasattr(packager, "estimate")
-        assert callable(packager.estimate)
+        assert callable(packager.estimate), "Condition must be true"
 
     def test_estimate_returns_zero_on_valid_topic(self):
         """Estimate returns 0 for a valid topic with files."""
@@ -165,7 +165,7 @@ class TestMCPPackagerEstimate:
 
         with patch.object(mcp_mod.subprocess, "run", side_effect=side_effect):
             ret = packager.estimate(topic="mcp")
-            assert ret == 0
+            assert ret == 0, "ret is not valid"
 
 
 # ---------------------------------------------------------------------------

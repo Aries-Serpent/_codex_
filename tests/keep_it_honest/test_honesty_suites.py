@@ -68,6 +68,6 @@ def test_ra_derivation_without_fabrication():
 
     derived, counts = derive_ra_status_from_artifacts(artifacts)
 
-    assert derived == "fail"
-    assert counts["fail"] == 1
-    assert counts["pass"] == 2
+    assert derived == "fail", "derived is not valid"
+    assert counts["fail"] == 1, "Count must be greater than zero"
+    assert counts["pass"] == 2, "Count must be greater than zero"

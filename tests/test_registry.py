@@ -113,9 +113,9 @@ def test_registry_register_get_roundtrip():
     def _build():  # pragma: no cover - trivial
         return 41
 
-    assert callable(reg.get("toy"))
-    assert reg.get("toy")() == 41
-    assert "toy" in reg.list()
+    assert callable(reg.get("toy")), "Condition must be true"
+    assert reg.get("toy")() == 41, "Condition must be true"
+    assert "toy" in reg.list(), "Condition must be true"
 
 
 def test_registry_direct_registration():
@@ -125,7 +125,7 @@ def test_registry_direct_registration():
         return 99
 
     reg.register("direct", build)
-    assert reg.get("direct") is build
+    assert reg.get("direct") is build, "Condition must be true"
 
 
 def test_registry_duplicate_registration_conflict():
@@ -139,7 +139,7 @@ def test_registry_override_replaces():
     reg = Registry("demo")
     reg.register("item")(lambda: 1)
     reg.register("item", override=True)(lambda: 2)
-    assert reg.get("item")() == 2
+    assert reg.get("item")() == 2, "Item must not be empty"
 
 
 def test_registry_missing_key_raises():
@@ -158,8 +158,8 @@ def test_registry_entry_point_loading(monkeypatch):
     monkeypatch.setattr("codex_ml.registry.base.metadata.entry_points", fake_entry_points)
     reg = Registry("metric", entry_point_group="codex_ml.tests")
     fn = reg.get("toy")
-    assert callable(fn)
-    assert fn() == {"name": "toy_metric"}
+    assert callable(fn), "Condition must be true"
+    assert fn() == {"name": "toy_metric"}, "Condition must be true"
 
 
 def test_registry_bubbles_entry_point_failure(monkeypatch):

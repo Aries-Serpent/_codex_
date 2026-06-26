@@ -27,9 +27,9 @@ def test_seed_repro_python(seed: int) -> None:
     first = random.randint(0, 100000)
     set_seed(seed)
     second = random.randint(0, 100000)
-    assert first == second
+    assert first == second, "first is not valid"
     if seed == 123:
-        assert first == 6863
+        assert first == 6863, "first is not valid"
 
 
 def test_seed_repro_numpy() -> None:
@@ -40,7 +40,7 @@ def test_seed_repro_numpy() -> None:
     first = np.random.randint(0, 100000)
     set_seed(123)
     second = np.random.randint(0, 100000)
-    assert first == second == 15725
+    assert first == second == 15725, "first is not valid"
 
 
 def test_deterministic_shuffle_reproducible_and_non_mutating() -> None:
@@ -49,10 +49,10 @@ def test_deterministic_shuffle_reproducible_and_non_mutating() -> None:
     shuffled_b = deterministic_shuffle(original, seed=10)
     shuffled_c = deterministic_shuffle(original, seed=11)
 
-    assert shuffled_a == shuffled_b
-    assert shuffled_a != shuffled_c
+    assert shuffled_a == shuffled_b, "shuffled_a is not valid"
+    assert shuffled_a != shuffled_c, "shuffled_a is not valid"
     assert original == [1, 2, 3, 4, 5]
-    assert sorted(shuffled_a) == sorted(original)
+    assert sorted(shuffled_a) == sorted(original), "s is not valid"
 
 
 @pytest.mark.skipif(_optional_import("torch") is None, reason="torch not installed")
@@ -64,4 +64,4 @@ def test_seed_repro_torch() -> None:
     first = torch.rand(1).item()
     set_seed(123)
     second = torch.rand(1).item()
-    assert first == second
+    assert first == second, "first is not valid"

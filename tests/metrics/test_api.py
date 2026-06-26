@@ -35,7 +35,7 @@ class TestRegistryFunctions:
         register_metric("test_custom", custom_metric)
 
         # Verify it's registered
-        assert "test_custom" in list_metrics()
+        assert "test_custom" in list_metrics(), "Condition must be true"
 
         # Get and verify
         retrieved = get_metric("test_custom")
@@ -54,7 +54,7 @@ class TestRegistryFunctions:
         assert isinstance(metrics, list)
 
         # Should contain some built-in metrics
-        assert len(metrics) > 0
+        assert len(metrics) > 0, "Metrics must not be empty"
 
     def test_init_metric_plugins(self):
         """Test initializing metric plugins."""
@@ -63,7 +63,7 @@ class TestRegistryFunctions:
 
         # Should return a number
         assert isinstance(count, int)
-        assert count >= 0
+        assert count >= 0, "count must be positive"
 
 
 class TestBuiltInMetrics:
@@ -77,7 +77,7 @@ class TestBuiltInMetrics:
         # Perfect accuracy
         result = token_accuracy(preds, targets)
         assert isinstance(result, (int, float))
-        assert result == 1.0
+        assert result == 1.0, "Result must not be empty"
 
     def test_token_accuracy_partial(self):
         """Test partial token accuracy."""
@@ -86,8 +86,8 @@ class TestBuiltInMetrics:
 
         result = token_accuracy(preds, targets)
         assert isinstance(result, (int, float))
-        assert 0.0 <= result <= 1.0
-        assert result == 0.6  # 3 out of 5 correct
+        assert 0.0 <= result <= 1.0, "Result must not be empty"
+        assert result == 0.6, "Result must not be empty"
 
     def test_perplexity_basic(self):
         """Test perplexity metric."""
@@ -98,7 +98,7 @@ class TestBuiltInMetrics:
 
         result = perplexity(preds, targets)
         assert isinstance(result, (int, float))
-        assert result >= 0
+        assert result >= 0, "result must be greater than zero"
 
     def test_exact_match_perfect(self):
         """Test exact match with perfect matches."""
@@ -106,7 +106,7 @@ class TestBuiltInMetrics:
         targets = [[1, 2, 3], [4, 5, 6]]
 
         result = exact_match(preds, targets)
-        assert result == 1.0
+        assert result == 1.0, "Result must not be empty"
 
     def test_exact_match_partial(self):
         """Test exact match with partial matches."""
@@ -114,7 +114,7 @@ class TestBuiltInMetrics:
         targets = [[1, 2, 3], [4, 5, 0]]
 
         result = exact_match(preds, targets)
-        assert result == 0.5  # 1 out of 2 match
+        assert result == 0.5, "Result must not be empty"
 
     def test_f1_basic(self):
         """Test F1 score calculation."""
@@ -123,7 +123,7 @@ class TestBuiltInMetrics:
 
         result = f1(preds, targets)
         assert isinstance(result, (int, float))
-        assert 0.0 <= result <= 1.0
+        assert 0.0 <= result <= 1.0, "Result must not be empty"
 
 
 class TestNDJSONLoading:
@@ -146,15 +146,15 @@ class TestNDJSONLoading:
         # Load logs
         loaded = load_ndjson_logs(ndjson_file)
 
-        assert len(loaded) == 3
-        assert loaded[0]["epoch"] == 1
-        assert loaded[1]["loss"] == 0.3
-        assert loaded[2]["accuracy"] == 0.95
+        assert len(loaded) == 3, "Loaded must not be empty"
+        assert loaded[0]["epoch"] == 1, "Condition must be true"
+        assert loaded[1]["loss"] == 0.3, "Condition must be true"
+        assert loaded[2]["accuracy"] == 0.95, "Condition must be true"
 
     def test_load_ndjson_logs_nonexistent_file(self, tmp_path):
         """Test loading from non-existent file returns empty list."""
         result = load_ndjson_logs(tmp_path / "nonexistent.ndjson")
-        assert result == []
+        assert result == [], "Result must not be empty"
 
     def test_load_ndjson_logs_with_empty_lines(self, tmp_path):
         """Test that empty lines are skipped."""
@@ -166,7 +166,7 @@ class TestNDJSONLoading:
             f.write('{"a": 2}\n')
 
         loaded = load_ndjson_logs(ndjson_file)
-        assert len(loaded) == 2
+        assert len(loaded) == 2, "Loaded must not be empty"
 
     def test_load_ndjson_logs_with_malformed_json(self, tmp_path):
         """Test that malformed JSON lines are skipped."""
@@ -178,9 +178,9 @@ class TestNDJSONLoading:
             f.write('{"a": 2}\n')
 
         loaded = load_ndjson_logs(ndjson_file)
-        assert len(loaded) == 2
-        assert loaded[0]["a"] == 1
-        assert loaded[1]["a"] == 2
+        assert len(loaded) == 2, "Loaded must not be empty"
+        assert loaded[0]["a"] == 1, "Condition must be true"
+        assert loaded[1]["a"] == 2, "Condition must be true"
 
 
 class TestNDJSONToCSV:
@@ -204,8 +204,8 @@ class TestNDJSONToCSV:
         # Convert to CSV
         count = summarize_ndjson_to_csv(ndjson_file, csv_file)
 
-        assert count == 2
-        assert csv_file.exists()
+        assert count == 2, "Count must be greater than zero"
+        assert csv_file.exists(), "Condition must be true"
 
         # Verify CSV content
         import csv
@@ -214,9 +214,9 @@ class TestNDJSONToCSV:
             reader = csv.DictReader(f)
             rows = list(reader)
 
-        assert len(rows) == 2
-        assert rows[0]["epoch"] == "1"
-        assert rows[1]["loss"] == "0.3"
+        assert len(rows) == 2, "Rows must not be empty"
+        assert rows[0]["epoch"] == "1", "Condition must be true"
+        assert rows[1]["loss"] == "0.3", "Condition must be true"
 
     def test_summarize_ndjson_to_csv_custom_columns(self, tmp_path):
         """Test CSV conversion with custom columns."""
@@ -235,7 +235,7 @@ class TestNDJSONToCSV:
         # Convert with specific columns
         count = summarize_ndjson_to_csv(ndjson_file, csv_file, columns=["epoch", "loss"])
 
-        assert count == 2
+        assert count == 2, "Count must be greater than zero"
 
         # Verify only specified columns in CSV
         import csv
@@ -256,10 +256,10 @@ class TestNDJSONToCSV:
 
         count = summarize_ndjson_to_csv(ndjson_file, csv_file)
 
-        assert count == 0
-        assert csv_file.exists()
+        assert count == 0, "Count must be greater than zero"
+        assert csv_file.exists(), "Condition must be true"
         # Empty CSV file
-        assert csv_file.read_text(encoding="utf-8") == ""
+        assert csv_file.read_text(encoding="utf-8") == "", "Condition must be true"
 
 
 class TestNDJSONToSQLite:
@@ -282,15 +282,15 @@ class TestNDJSONToSQLite:
         # Convert to SQLite
         count = summarize_ndjson_to_sqlite(ndjson_file, db_file)
 
-        assert count == 2
-        assert db_file.exists()
+        assert count == 2, "Count must be greater than zero"
+        assert db_file.exists(), "Condition must be true"
 
         # Verify database content
         conn = sqlite3.connect(str(db_file))
         try:
             cursor = conn.execute("SELECT * FROM metrics")
             rows = cursor.fetchall()
-            assert len(rows) == 2
+            assert len(rows) == 2, "Rows must not be empty"
         finally:
             conn.close()
 
@@ -308,14 +308,14 @@ class TestNDJSONToSQLite:
         # Convert with custom table name
         count = summarize_ndjson_to_sqlite(ndjson_file, db_file, table_name="custom_table")
 
-        assert count == 1
+        assert count == 1, "Count must be greater than zero"
 
         # Verify custom table exists
         conn = sqlite3.connect(str(db_file))
         try:
             cursor = conn.execute("SELECT name FROM sqlite_master WHERE type='table'")
             tables = [row[0] for row in cursor.fetchall()]
-            assert "custom_table" in tables
+            assert "custom_table" in tables, "Condition must be true"
         finally:
             conn.close()
 
@@ -328,9 +328,9 @@ class TestNDJSONToSQLite:
 
         count = summarize_ndjson_to_sqlite(ndjson_file, db_file)
 
-        assert count == 0
+        assert count == 0, "Count must be greater than zero"
         # Database file should not be created for empty input
-        assert not db_file.exists()
+        assert not db_file.exists(), "Condition must be true"
 
     def test_summarize_ndjson_to_sqlite_complex_values(self, tmp_path):
         """Test SQLite conversion with complex nested values."""
@@ -348,7 +348,7 @@ class TestNDJSONToSQLite:
 
         count = summarize_ndjson_to_sqlite(ndjson_file, db_file)
 
-        assert count == 2
+        assert count == 2, "Count must be greater than zero"
 
         # Verify nested values are JSON serialized
         conn = sqlite3.connect(str(db_file))
@@ -357,6 +357,6 @@ class TestNDJSONToSQLite:
             row = cursor.fetchone()
             # Should be JSON string
             config = json.loads(row[0])
-            assert config["lr"] == 0.01
+            assert config["lr"] == 0.01, "Condition must be true"
         finally:
             conn.close()

@@ -37,9 +37,9 @@ def test_entry_points_loaded_from_multiple_groups(monkeypatch):
 
     reg._ensure_entry_points_loaded()
 
-    assert dataset_name in reg.list()
-    assert reg.get(dataset_name)() == "ok"
-    assert set(calls) >= set(registry._DatasetRegistry._ENTRY_POINT_GROUPS)
+    assert dataset_name in reg.list(), "Data must not be empty"
+    assert reg.get(dataset_name)() == "ok", "Data must not be empty"
+    assert set(calls) >= set(registry._DatasetRegistry._ENTRY_POINT_GROUPS), "Value must be greater than zero"
 
 
 def test_available_datasets_includes_registered_loader():
@@ -50,5 +50,5 @@ def test_available_datasets_includes_registered_loader():
         return {"name": dataset_name}
 
     available = registry.available_datasets()
-    assert dataset_name in available
-    assert available[dataset_name]() == {"name": dataset_name}
+    assert dataset_name in available, "Data must not be empty"
+    assert available[dataset_name]() == {"name": dataset_name}, "Data must not be empty"

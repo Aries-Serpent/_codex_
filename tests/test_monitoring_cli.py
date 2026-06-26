@@ -54,9 +54,9 @@ def telemetry_events(tmp_path: Path) -> Path:
 def test_inspect_reports_line_count(cli_runner: CliRunner, telemetry_events: Path) -> None:
     result = cli_runner.invoke(monitoring_cli.app, ["inspect", str(telemetry_events)])
 
-    assert result.exit_code == 0
-    assert "'lines': 2" in result.stdout
-    assert str(telemetry_events) in result.stdout
+    assert result.exit_code == 0, "Result must not be empty"
+    assert "'lines': 2" in result.stdout, "Result must not be empty"
+    assert str(telemetry_events) in result.stdout, "Result must not be empty"
 
 
 def test_export_generates_csv(cli_runner: CliRunner, tmp_path: Path) -> None:
@@ -89,13 +89,13 @@ def test_export_generates_csv(cli_runner: CliRunner, tmp_path: Path) -> None:
 
     result = cli_runner.invoke(monitoring_cli.app, ["export", str(src), str(dst)])
 
-    assert result.exit_code == 0
+    assert result.exit_code == 0, "Result must not be empty"
     output_lines = dst.read_text().splitlines()
-    assert output_lines[0].startswith(
+    assert output_lines[0].startswith(, "Condition must be true"
         "version,ts,run_id,phase,step,split,dataset,metric,value,meta"
     )
-    assert "unit-test" in output_lines[1]
-    assert "accuracy" in "".join(output_lines[1:])
+    assert "unit-test" in output_lines[1], "Condition must be true"
+    assert "accuracy" in "".join(output_lines[1:]), "Condition must be true"
 
 
 def test_export_rejects_unknown_format(cli_runner: CliRunner, telemetry_events: Path) -> None:
@@ -106,5 +106,5 @@ def test_export_rejects_unknown_format(cli_runner: CliRunner, telemetry_events: 
         ["export", str(telemetry_events), str(destination), "--fmt", "json"],
     )
 
-    assert result.exit_code != 0
-    assert "unsupported format" in result.stdout or "unsupported format" in result.stderr
+    assert result.exit_code != 0, "Result must not be empty"
+    assert "unsupported format" in result.stdout or "unsupported format" in result.stderr, "Result must not be empty"

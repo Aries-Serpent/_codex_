@@ -28,10 +28,10 @@ class TestQuantumSuperpositionNoDoubleInvoke:
 
         result = compute(5)
 
-        assert (
+        assert (, "Condition must be true"
             call_count["n"] == 1
         ), f"Expected func to be called exactly once, but it was called {call_count['n']} times."
-        assert result == 10
+        assert result == 10, "Result must not be empty"
 
     def test_func_called_exactly_once_with_side_effects(self):
         """Side-effect functions are not double-triggered by the decorator."""
@@ -45,7 +45,7 @@ class TestQuantumSuperpositionNoDoubleInvoke:
         result = emit_event("hello")
 
         assert log == ["hello"], f"Side-effect log should have exactly one entry: {log}"
-        assert result == "HELLO"
+        assert result == "HELLO", "Result must not be empty"
 
     def test_return_value_preserved(self):
         """The decorator returns the exact value produced by the function."""
@@ -78,9 +78,9 @@ class TestQuantumSuperpositionNoDoubleInvoke:
 
         result = inc(7)
         # Function should still run and return the right value
-        assert result == 8
+        assert result == 8, "Result must not be empty"
         # Should still have been called exactly once (via fallback path)
-        assert call_count["n"] >= 1
+        assert call_count["n"] >= 1, "Value must be greater than zero"
 
     def test_wrapper_preserves_function_metadata(self):
         """The decorator preserves __name__ and wraps the function correctly."""
@@ -89,7 +89,7 @@ class TestQuantumSuperpositionNoDoubleInvoke:
         def my_important_function(x: int) -> int:
             return x
 
-        assert my_important_function.__name__ == "my_important_function"
+        assert my_important_function.__name__ == "my_important_function", "__name__ is not valid"
 
     def test_multiple_calls_each_invoke_once(self):
         """Each call to the decorated function invokes the original exactly once."""
@@ -102,8 +102,8 @@ class TestQuantumSuperpositionNoDoubleInvoke:
 
         for i in range(5):
             result = identity(i)
-            assert result == i
+            assert result == i, "Result must not be empty"
 
-        assert (
+        assert (, "Condition must be true"
             call_count["n"] == 5
         ), f"Expected 5 total invocations for 5 calls, got {call_count['n']}."

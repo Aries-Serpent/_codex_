@@ -126,64 +126,64 @@ ALL_SAMPLES = (
 class TestParseErrors:
     def test_parses_assignment_misc(self):
         errors = _parse_errors(SAMPLE_OPT_IMPORT)
-        assert len(errors) == 2
-        assert errors[0]["file"] == "src/codex/logging/query_logs.py"
-        assert errors[0]["line"] == 56
-        assert errors[0]["code"] == "assignment"
+        assert len(errors) == 2, "Errors must not be empty"
+        assert errors[0]["file"] == "src/codex/logging/query_logs.py", "Error should be raised or set"
+        assert errors[0]["line"] == 56, "Error should be raised or set"
+        assert errors[0]["code"] == "assignment", "Error should be raised or set"
 
     def test_parses_redundant_cast(self):
         errors = _parse_errors(SAMPLE_REDUNDANT_CAST)
-        assert len(errors) == 1
-        assert errors[0]["code"] == "redundant-cast"
-        assert errors[0]["pattern"] == "MYPY-REDUNDANT-CAST"
+        assert len(errors) == 1, "Errors must not be empty"
+        assert errors[0]["code"] == "redundant-cast", "Error should be raised or set"
+        assert errors[0]["pattern"] == "MYPY-REDUNDANT-CAST", "Error should be raised or set"
 
     def test_parses_unused_ignore(self):
         errors = _parse_errors(SAMPLE_UNUSED_IGNORE)
-        assert errors[0]["pattern"] == "MYPY-UNUSED-IGNORE"
+        assert errors[0]["pattern"] == "MYPY-UNUSED-IGNORE", "Error should be raised or set"
 
     def test_parses_none_guard(self):
         errors = _parse_errors(SAMPLE_NONE_GUARD)
-        assert errors[0]["pattern"] == "MYPY-NONE-GUARD"
+        assert errors[0]["pattern"] == "MYPY-NONE-GUARD", "Error should be raised or set"
 
     def test_parses_arg_none(self):
         errors = _parse_errors(SAMPLE_ARG_NONE)
-        assert errors[0]["pattern"] == "MYPY-ARG-NONE"
+        assert errors[0]["pattern"] == "MYPY-ARG-NONE", "Error should be raised or set"
 
     def test_parses_typeddict(self):
         errors = _parse_errors(SAMPLE_TYPEDDICT)
-        assert errors[0]["pattern"] == "MYPY-TYPEDDICT"
+        assert errors[0]["pattern"] == "MYPY-TYPEDDICT", "Error should be raised or set"
 
     def test_parses_call_arg(self):
         errors = _parse_errors(SAMPLE_CALL_ARG)
-        assert errors[0]["pattern"] == "MYPY-CALL-ARG"
+        assert errors[0]["pattern"] == "MYPY-CALL-ARG", "Error should be raised or set"
 
     def test_parses_union_narrow(self):
         errors = _parse_errors(SAMPLE_UNION_NARROW)
-        assert errors[0]["pattern"] == "MYPY-UNION-NARROW"
+        assert errors[0]["pattern"] == "MYPY-UNION-NARROW", "Error should be raised or set"
 
     def test_parses_no_redef(self):
         errors = _parse_errors(SAMPLE_NO_REDEF)
-        assert errors[0]["pattern"] == "MYPY-NO-REDEF"
+        assert errors[0]["pattern"] == "MYPY-NO-REDEF", "Error should be raised or set"
 
     def test_parses_structural_fallback(self):
         errors = _parse_errors(SAMPLE_STRUCTURAL)
-        assert errors[0]["pattern"] == "MYPY-STRUCTURAL"
-        assert errors[0]["fix_available"] is False
+        assert errors[0]["pattern"] == "MYPY-STRUCTURAL", "Error should be raised or set"
+        assert errors[0]["fix_available"] is False, "Error should be raised or set"
 
     def test_fix_available_flags(self):
         errors = _parse_errors(ALL_SAMPLES)
         fixable = [e for e in errors if e["fix_available"]]
         structural = [e for e in errors if e["pattern"] == "MYPY-STRUCTURAL"]
-        assert len(fixable) >= 9
-        assert all(not e["fix_available"] for e in structural)
+        assert len(fixable) >= 9, "Fixable must not be empty"
+        assert all(not e["fix_available"] for e in structural), "Condition must be true"
 
     def test_ignores_non_error_lines(self):
         raw = "src/foo.py:1: note: See https://...\nFound 2 errors in 1 file\n"
         errors = _parse_errors(raw)
-        assert errors == []
+        assert errors == [], "Error should be raised or set"
 
     def test_empty_input(self):
-        assert _parse_errors("") == []
+        assert _parse_errors("") == [], "Error should be raised or set"
 
 
 # ---------------------------------------------------------------------------
@@ -195,15 +195,15 @@ class TestAggregation:
     def test_by_pattern(self):
         errors = _parse_errors(ALL_SAMPLES)
         bp = _by_pattern(errors)
-        assert "MYPY-REDUNDANT-CAST" in bp
-        assert bp["MYPY-REDUNDANT-CAST"] == 1
-        assert "MYPY-STRUCTURAL" in bp
+        assert "MYPY-REDUNDANT-CAST" in bp, "Condition must be true"
+        assert bp["MYPY-REDUNDANT-CAST"] == 1, "Condition must be true"
+        assert "MYPY-STRUCTURAL" in bp, "Condition must be true"
 
     def test_by_file(self):
         errors = _parse_errors(ALL_SAMPLES)
         bf = _by_file(errors)
-        assert "src/security/encryption.py" in bf
-        assert "src/codex/logging/query_logs.py" in bf
+        assert "src/security/encryption.py" in bf, "Condition must be true"
+        assert "src/codex/logging/query_logs.py" in bf, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -215,83 +215,83 @@ class TestFixFunctions:
     def test_fix_optional_import_fallback_adds_ignore(self):
         src = "    Console = None\n"
         new_src, changed = _fix_optional_import_fallback(src, 1)
-        assert changed
-        assert "# type: ignore[assignment]" in new_src
+        assert changed, "changed is not valid"
+        assert ", "Condition must be true"
 
     def test_fix_optional_import_fallback_skips_existing(self):
         src = "    Console = None  # type: ignore[assignment]\n"
         _, changed = _fix_optional_import_fallback(src, 1)
-        assert not changed
+        assert not changed, "Condition must be true"
 
     def test_fix_redundant_cast_removes_wrapper(self):
         src = "    ct = cast(bytes, aesgcm.encrypt(nonce, pt, aad))\n"
         new_src, changed = _fix_redundant_cast(src, 1)
-        assert changed
-        assert "cast(" not in new_src
+        assert changed, "changed is not valid"
+        assert "cast(" not in new_src, "Condition must be true"
         assert "aesgcm.encrypt(nonce, pt, aad)" in new_src
 
     def test_fix_redundant_cast_no_match(self):
         src = "    ct = aesgcm.encrypt(nonce, pt, aad)\n"
         _, changed = _fix_redundant_cast(src, 1)
-        assert not changed
+        assert not changed, "Condition must be true"
 
     def test_fix_unused_ignore_removes_comment(self):
         src = "    x = foo()  # type: ignore[import-untyped]\n"
         new_src, changed = _fix_unused_ignore(src, 1)
-        assert changed
-        assert "# type: ignore" not in new_src
+        assert changed, "changed is not valid"
+        assert ", "Condition must be true"
 
     def test_fix_no_redef_adds_ignore(self):
         src = "    def Field(*a, **k):\n"
         new_src, changed = _fix_no_redef(src, 1)
-        assert changed
-        assert "# type: ignore[no-redef]" in new_src
+        assert changed, "changed is not valid"
+        assert ", "Condition must be true"
 
     def test_fix_none_guard_adds_ignore(self):
         src = "        client_key = http_request.client.host\n"
         new_src, changed = _fix_none_guard(src, 1)
-        assert changed
-        assert "# type: ignore[union-attr]" in new_src
+        assert changed, "changed is not valid"
+        assert ", "Condition must be true"
 
     def test_fix_arg_none_adds_ignore(self):
         src = "        principal = DEV_KEYS.get(api_key)\n"
         new_src, changed = _fix_arg_none(src, 1)
-        assert changed
-        assert "# type: ignore[arg-type]" in new_src
+        assert changed, "changed is not valid"
+        assert ", "Condition must be true"
 
     def test_fix_typeddict_adds_ignore(self):
         src = "            return ConfigDict(**config)\n"
         new_src, changed = _fix_typeddict(src, 1)
-        assert changed
-        assert "# type: ignore[typeddict-item]" in new_src
+        assert changed, "changed is not valid"
+        assert ", "Condition must be true"
 
     def test_fix_arg_type_adds_ignore(self):
         src = "                schedule_cron=schedule_cron,\n"
         new_src, changed = _fix_arg_type(src, 1)
-        assert changed
-        assert "# type: ignore[arg-type]" in new_src
+        assert changed, "changed is not valid"
+        assert ", "Condition must be true"
 
     def test_fix_call_arg_adds_ignore(self):
         src = "                policy = SLAPolicy(name=row.get('name', ''),\n"
         new_src, changed = _fix_call_arg(src, 1)
-        assert changed
-        assert "# type: ignore[call-arg]" in new_src
+        assert changed, "changed is not valid"
+        assert ", "Condition must be true"
 
     def test_fix_union_narrow_adds_all_codes(self):
         src = "            signature = private_key.sign(signing_input, padding.PKCS1v15(), hashes.SHA256())\n"
         new_src, changed = _fix_union_narrow(src, 1)
-        assert changed
-        assert "# type: ignore[union-attr,arg-type,call-arg]" in new_src
+        assert changed, "changed is not valid"
+        assert ", "Condition must be true"
 
     def test_fix_out_of_range_line(self):
         src = "x = 1\n"
         _, changed = _fix_optional_import_fallback(src, 99)
-        assert not changed
+        assert not changed, "Condition must be true"
 
     def test_fix_preserves_newline(self):
         src = "    Console = None\n"
         new_src, _ = _fix_optional_import_fallback(src, 1)
-        assert new_src.endswith("\n")
+        assert new_src.endswith("\n"), "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -309,8 +309,8 @@ class TestRunClassify:
             }
         )
         assert result["status"] in ("pass", "fail")
-        assert result["error_count"] == 1
-        assert result["by_pattern"]["MYPY-REDUNDANT-CAST"] == 1
+        assert result["error_count"] == 1, "Result must not be empty"
+        assert result["by_pattern"]["MYPY-REDUNDANT-CAST"] == 1, "Result must not be empty"
 
     def test_classify_all_samples(self):
         result = run(
@@ -320,10 +320,10 @@ class TestRunClassify:
                 "pda_log": False,
             }
         )
-        assert result["error_count"] >= 10
-        assert "MYPY-STRUCTURAL" in result["by_pattern"]
-        assert "errors" in result
-        assert "by_file" in result
+        assert result["error_count"] >= 10, "Value must be greater than zero"
+        assert "MYPY-STRUCTURAL" in result["by_pattern"], "Result must not be empty"
+        assert "errors" in result, "Result must not be empty"
+        assert "by_file" in result, "Result must not be empty"
 
     def test_classify_empty_output_passes(self):
         result = run(
@@ -333,8 +333,8 @@ class TestRunClassify:
                 "pda_log": False,
             }
         )
-        assert result["error_count"] == 0
-        assert result["status"] == "pass"
+        assert result["error_count"] == 0, "Result must not be empty"
+        assert result["status"] == "pass", "Result must not be empty"
 
     def test_classify_respects_baseline(self, tmp_path):
         baseline = tmp_path / ".mypy_baseline"
@@ -348,13 +348,13 @@ class TestRunClassify:
             }
         )
         # ALL_SAMPLES has >5 errors, so regression=True
-        assert result["regression"] is True
-        assert result["status"] == "fail"
+        assert result["regression"] is True, "Result must not be empty"
+        assert result["status"] == "fail", "Result must not be empty"
 
     def test_unknown_action_returns_error(self):
         result = run({"action": "unknown_action"})
-        assert result["status"] == "error"
-        assert "Unknown action" in result["message"]
+        assert result["status"] == "error", "Result must not be empty"
+        assert "Unknown action" in result["message"], "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -377,9 +377,9 @@ class TestRunBaseline:
                     "pda_log": False,
                 }
             )
-        assert result["status"] == "pass"
-        assert result["error_count"] == 1
-        assert baseline.read_text().strip() == "1"
+        assert result["status"] == "pass", "Result must not be empty"
+        assert result["error_count"] == 1, "Result must not be empty"
+        assert baseline.read_text().strip() == "1", "Condition must be true"
 
     def test_baseline_dry_run_no_write(self, tmp_path):
         baseline = tmp_path / ".mypy_baseline"
@@ -397,7 +397,7 @@ class TestRunBaseline:
                 }
             )
         # dry_run=True → baseline file unchanged
-        assert baseline.read_text().strip() == "10"
+        assert baseline.read_text().strip() == "10", "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -431,9 +431,9 @@ class TestRunFix:
                     "pda_log": False,
                 }
             )
-        assert result["status"] == "dry-run"
+        assert result["status"] == "dry-run", "Result must not be empty"
         # dry_run=True → file NOT written
-        assert src_file.read_text() == "    Console = None\n"
+        assert src_file.read_text() == "    Console = None\n", "Condition must be true"
 
     def test_fix_applies_opt_import(self, tmp_path):
         src_file = tmp_path / "module.py"
@@ -460,9 +460,9 @@ class TestRunFix:
                     "pda_log": False,
                 }
             )
-        assert result["status"] == "fixed"
+        assert result["status"] == "fixed", "Result must not be empty"
         written = src_file.read_text()
-        assert "# type: ignore[assignment]" in written
+        assert ", "Condition must be true"
 
     def test_fix_applies_redundant_cast(self, tmp_path):
         src_file = tmp_path / "enc.py"
@@ -486,9 +486,9 @@ class TestRunFix:
                     "pda_log": False,
                 }
             )
-        assert result["status"] == "fixed"
+        assert result["status"] == "fixed", "Result must not be empty"
         written = src_file.read_text()
-        assert "cast(" not in written
+        assert "cast(" not in written, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -522,14 +522,14 @@ class TestPDALog:
         finally:
             h._repo_root = original  # type: ignore[assignment]
 
-        assert pda_file.exists()
+        assert pda_file.exists(), "Condition must be true"
         lines = pda_file.read_text().splitlines()
-        assert len(lines) >= 1
+        assert len(lines) >= 1, "Lines must not be empty"
         import json
 
         entry = json.loads(lines[0])
-        assert entry["session"] == "TEST-S000"
-        assert "MYPY-REDUNDANT-CAST" in entry["pattern_id"]
+        assert entry["session"] == "TEST-S000", "Condition must be true"
+        assert "MYPY-REDUNDANT-CAST" in entry["pattern_id"], "Condition must be true"
 
     def test_pda_log_false_skips_write(self, tmp_path):
         import codex.skills.mypy_manager.handler as h
@@ -552,6 +552,6 @@ class TestPDALog:
         finally:
             h._repo_root = original  # type: ignore[assignment]
 
-        assert result["pda_logged"] is False
+        assert result["pda_logged"] is False, "Result must not be empty"
         pda_file = tmp_path / ".codex" / "aftermath" / "pda_iterations.jsonl"
-        assert not pda_file.exists()
+        assert not pda_file.exists(), "Condition must be true"

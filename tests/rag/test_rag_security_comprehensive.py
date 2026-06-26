@@ -35,8 +35,8 @@ class TestEmbeddingProviderSecurity:
             for malicious_input in malicious_inputs:
                 # Should not raise, should handle gracefully
                 result = provider.encode([malicious_input])
-                assert result is not None
-                assert len(result) > 0
+                assert result is not None, "result must be initialized"
+                assert len(result) > 0, "Result must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -57,7 +57,7 @@ class TestEmbeddingProviderSecurity:
                 try:
                     provider = LocalSentenceTransformerProvider(model_name=invalid_name)
                     # If it doesn't raise, model_name should be sanitized
-                    assert ".." not in provider.model_name
+                    assert ".." not in provider.model_name, "Condition must be true"
                 except (ValueError, OSError, Exception):
                     # Acceptable to raise on invalid input
                     _ = None  # suppressed: no action needed
@@ -76,7 +76,7 @@ class TestEmbeddingProviderSecurity:
 
                 # Verify cache_dir is used correctly
                 if provider.cache_dir:
-                    assert Path(provider.cache_dir).is_absolute() or provider.cache_dir == str(
+                    assert Path(provider.cache_dir).is_absolute() or provider.cache_dir == str(, "cache_dir is not valid"
                         cache_dir
                     )
         except ImportError:
@@ -111,8 +111,8 @@ class TestRetrieverSecurity:
                 except Exception as e:
                     # Should not expose SQL errors
                     error_msg = str(e).lower()
-                    assert "sql" not in error_msg
-                    assert "syntax" not in error_msg
+                    assert "sql" not in error_msg, "Error should be raised or set"
+                    assert "syntax" not in error_msg, "Error should be raised or set"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -169,7 +169,7 @@ class TestIndexerSecurity:
                         if hasattr(indexer, "index_path"):
                             path = Path(indexer.index_path)
                             # Should not escape intended directory
-                            assert not str(path).startswith("/etc/")
+                            assert not str(path).startswith("/etc/"), "Condition must be true"
                     except (ValueError, OSError):
                         # Acceptable to reject invalid paths
                         _ = None  # suppressed: no action needed
@@ -190,7 +190,7 @@ class TestIndexerSecurity:
             try:
                 result = indexer.add_document(doc_id="test_large", content=large_content)
                 # If accepted, should be processed
-                assert result is not None
+                assert result is not None, "result must be initialized"
             except (ValueError, MemoryError):
                 # Acceptable to reject oversized content
                 _ = None  # suppressed: no action needed
@@ -221,7 +221,7 @@ class TestRAGUtilsSecurity:
                 # Verify chunks are reasonable
                 for chunk in chunks:
                     assert isinstance(chunk, str)
-                    assert len(chunk) <= 200  # With overlap
+                    assert len(chunk) <= 200, "Chunk must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -243,8 +243,8 @@ class TestRAGUtilsSecurity:
 
             # Test hash format (should be hex string)
             assert isinstance(hash1, str)
-            assert len(hash1) >= 32  # At least MD5 length
-            assert all(c in "0123456789abcdef" for c in hash1.lower())
+            assert len(hash1) >= 32, "Hash1 must not be empty"
+            assert all(c in "0123456789abcdef" for c in hash1.lower()), "Condition must be true"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -272,7 +272,7 @@ class TestPromptSecurity:
                 assert isinstance(prompt, str)
                 # Prompt should not expose system instructions
                 prompt_lower = prompt.lower()
-                assert "override" not in prompt_lower or "<!--" in prompt
+                assert "override" not in prompt_lower or "<!--" in prompt, "Condition must be true"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -292,7 +292,7 @@ class TestPromptSecurity:
 
             # Should handle safely
             assert isinstance(prompt, str)
-            assert len(prompt) > 0
+            assert len(prompt) > 0, "Prompt must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -312,11 +312,11 @@ class TestRAGRateLimiting:
 
             # Should handle burst requests
             embeddings = provider.encode(texts)
-            assert len(embeddings) == 100
+            assert len(embeddings) == 100, "Embeddings must not be empty"
 
             # Verify embeddings are valid
-            assert embeddings.shape[0] == 100
-            assert embeddings.shape[1] > 0
+            assert embeddings.shape[0] == 100, "Condition must be true"
+            assert embeddings.shape[1] > 0, "Value must be greater than zero"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -362,7 +362,7 @@ class TestRAGErrorHandling:
                 try:
                     result = provider.encode(invalid_input)
                     # If doesn't raise, should return valid result
-                    assert result is not None
+                    assert result is not None, "result must be initialized"
                 except (TypeError, ValueError, AttributeError):
                     # Acceptable to raise on invalid input
                     _ = None  # suppressed: no action needed

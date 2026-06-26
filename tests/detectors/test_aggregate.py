@@ -19,13 +19,13 @@ def _mk(name, s):
 
 def test_scorecard_unweighted_mean():
     sc = scorecard([_mk("a", 1.0), _mk("b", 0.0)])
-    assert 0.0 <= sc["total_score"] <= 1.0
-    assert sc["by_detector"]["a"] == 1.0
-    assert sc["by_detector"]["b"] == 0.0
-    assert abs(sc["total_score"] - 0.5) < 1e-9
+    assert 0.0 <= sc["total_score"] <= 1.0, "0 is not valid"
+    assert sc["by_detector"]["a"] == 1.0, "Condition must be true"
+    assert sc["by_detector"]["b"] == 0.0, "Condition must be true"
+    assert abs(sc["total_score"] - 0.5) < 1e-9, "Condition must be true"
 
 
 def test_scorecard_weighted_mean():
     sc = scorecard([_mk("a", 1.0), _mk("b", 0.0)], weights={"a": 3.0, "b": 1.0})
     # (3*1 + 1*0)/4 = 0.75
-    assert abs(sc["total_score"] - 0.75) < 1e-9
+    assert abs(sc["total_score"] - 0.75) < 1e-9, "Condition must be true"

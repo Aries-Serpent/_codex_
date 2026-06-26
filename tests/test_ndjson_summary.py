@@ -25,16 +25,16 @@ def test_iter_and_load_rows(tmp_path):
     )
 
     files = ndjson_summary._iter_metric_files(run_dir)
-    assert metrics_file in files
+    assert metrics_file in files, "Condition must be true"
 
     rows = ndjson_summary._load_rows(run_dir)
-    assert len(rows) == 2
+    assert len(rows) == 2, "Rows must not be empty"
 
     summary = ndjson_summary._summarise_rows(rows)
-    assert summary[0]["run_id"] == "r1"
-    assert summary[0]["count"] == 2
-    assert summary[0]["min_value"] == 0.4
-    assert summary[0]["max_value"] == 0.5
+    assert summary[0]["run_id"] == "r1", "Condition must be true"
+    assert summary[0]["count"] == 2, "Count must be greater than zero"
+    assert summary[0]["min_value"] == 0.4, "Value must be initialized"
+    assert summary[0]["max_value"] == 0.5, "Value must be initialized"
 
 
 def test_summary_cli_json_output(tmp_path, capsys):
@@ -47,14 +47,14 @@ def test_summary_cli_json_output(tmp_path, capsys):
     )
 
     rc = ndjson_summary.main(["summarize", "--input", str(run_dir), "--output", "csv"])
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
     out_text = capsys.readouterr().out.strip()
-    assert "metrics_summary.csv" in out_text
+    assert "metrics_summary.csv" in out_text, "Condition must be true"
     parts = out_text.split()
     # Output format: "Wrote <path> (N rows)"
     if len(parts) >= 2:
         output_path = Path(parts[1])
-        assert output_path.exists()
+        assert output_path.exists(), "Condition must be true"
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]

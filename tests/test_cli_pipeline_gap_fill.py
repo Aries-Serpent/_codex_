@@ -30,7 +30,7 @@ class TestPipelineValidationError:
         try:
             raise PipelineValidationError(msg)
         except PipelineValidationError as e:
-            assert str(e) == msg
+            assert str(e) == msg, "Condition must be true"
 
 
 class TestValidatePipelineConfig:
@@ -57,7 +57,7 @@ class TestValidatePipelineConfig:
         config = {}
         with pytest.raises(KeyError) as exc_info:
             validate_pipeline_config(config)
-        assert "data configuration is required" in str(exc_info.value)
+        assert "data configuration is required" in str(exc_info.value), "Data must not be empty"
 
     def test_validate_config_with_trainer_and_checkpoint_dict(self):
         """Test validation with trainer and checkpoint as dict."""
@@ -78,14 +78,14 @@ class TestValidatePipelineConfig:
         config = {"data": {}, "trainer": {"checkpoint": "/nonexistent/checkpoint.pt"}}
         with pytest.raises(ValueError) as exc_info:
             validate_pipeline_config(config)
-        assert "checkpoint file not found" in str(exc_info.value)
+        assert "checkpoint file not found" in str(exc_info.value), "Value must be initialized"
 
     def test_validate_config_with_invalid_checkpoint_type(self):
         """Test validation fails with invalid checkpoint type."""
         config = {"data": {}, "trainer": {"checkpoint": 12345}}  # Invalid type
         with pytest.raises(ValueError) as exc_info:
             validate_pipeline_config(config)
-        assert "checkpoint must be a dict or path string" in str(exc_info.value)
+        assert "checkpoint must be a dict or path string" in str(exc_info.value), "Value must be initialized"
 
     def test_validate_config_with_trainer_no_checkpoint(self):
         """Test validation with trainer config but no checkpoint."""
@@ -129,7 +129,7 @@ class TestRunPipeline:
                 result = run_pipeline(None, None, [], None, config)
 
                 # Should attempt to import and call train
-                assert result is not None
+                assert result is not None, "result must be initialized"
 
     def test_run_pipeline_with_list_train_dataset(self):
         """Test run_pipeline with list training dataset."""
@@ -143,7 +143,7 @@ class TestRunPipeline:
                 mock_train_config.return_value = mock_instance
 
                 result = run_pipeline(None, None, train_ds, None, config)
-                assert result is not None
+                assert result is not None, "result must be initialized"
 
     def test_run_pipeline_with_texts_attribute(self):
         """Test run_pipeline with dataset having texts attribute."""
@@ -160,7 +160,7 @@ class TestRunPipeline:
                 mock_train_config.return_value = mock_instance
 
                 result = run_pipeline(None, None, mock_dataset, None, config)
-                assert result is not None
+                assert result is not None, "result must be initialized"
 
     def test_run_pipeline_with_iterable_train_dataset(self):
         """Test run_pipeline with iterable training dataset."""
@@ -176,7 +176,7 @@ class TestRunPipeline:
                 mock_train_config.return_value = mock_instance
 
                 result = run_pipeline(None, None, mock_dataset, None, config)
-                assert result is not None
+                assert result is not None, "result must be initialized"
 
     def test_run_pipeline_with_non_iterable_train_dataset(self):
         """Test run_pipeline raises with non-iterable training dataset."""
@@ -185,7 +185,7 @@ class TestRunPipeline:
 
         with pytest.raises(ValueError) as exc_info:
             run_pipeline(None, None, mock_dataset, None, config)
-        assert "must be a list" in str(exc_info.value) or "iterable" in str(exc_info.value)
+        assert "must be a list" in str(exc_info.value) or "iterable" in str(exc_info.value), "Value must be initialized"
 
     def test_run_pipeline_with_validation_dataset_list(self):
         """Test run_pipeline with validation dataset as list."""
@@ -200,7 +200,7 @@ class TestRunPipeline:
                 mock_train_config.return_value = mock_instance
 
                 result = run_pipeline(None, None, train_ds, val_ds, config)
-                assert result is not None
+                assert result is not None, "result must be initialized"
 
     def test_run_pipeline_with_validation_dataset_texts_attr(self):
         """Test run_pipeline with validation dataset having texts attribute."""
@@ -217,7 +217,7 @@ class TestRunPipeline:
                 mock_train_config.return_value = mock_instance
 
                 result = run_pipeline(None, None, train_ds, mock_val_ds, config)
-                assert result is not None
+                assert result is not None, "result must be initialized"
 
     def test_run_pipeline_with_trainer_config(self):
         """Test run_pipeline with trainer configuration."""
@@ -241,7 +241,7 @@ class TestRunPipeline:
                 mock_train_config.return_value = mock_instance
 
                 result = run_pipeline(None, None, train_ds, None, config)
-                assert result is not None
+                assert result is not None, "result must be initialized"
 
 
 class TestCLIPipelineErrorHandling:

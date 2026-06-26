@@ -183,7 +183,7 @@ class ZendeskKnowledgeSyncService:
             return cache
         except (json.JSONDecodeError, OSError) as e:
             error_type = type(e).__name__
-            logger.error(f"Failed to load cache: <ERROR_TYPE>, starting fresh")
+            logger.error("Failed to load cache: <ERROR_TYPE>, starting fresh")
             return {}
 
     def _save_cache(self) -> None:
@@ -203,7 +203,7 @@ class ZendeskKnowledgeSyncService:
             logger.info(f"Saved cache with {len(self._cache)} articles to {self.api_index_path}")
         except OSError as e:
             error_type = type(e).__name__
-            logger.error(f"Failed to save cache: <ERROR_TYPE>")
+            logger.error("Failed to save cache: <ERROR_TYPE>")
 
     def _slug(self, text: str) -> str:
         """Convert text to a safe filename slug."""
@@ -844,7 +844,7 @@ def main() -> int:
 
     except (ValueError, TypeError) as e:
         error_type = type(e).__name__
-        logger.error(f"Sync failed: <ERROR_TYPE>", exc_info=True)
+        logger.error("Sync failed: <ERROR_TYPE>", exc_info=True)
         return 2
 
 

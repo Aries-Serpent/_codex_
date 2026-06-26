@@ -42,22 +42,22 @@ class TestAdminAutomationAgentIntegration:
 
     def test_agent_initialization(self, agent, mock_github_token):
         """Test that agent initializes correctly."""
-        assert agent.github_token == mock_github_token
-        assert agent.results["agent_version"] == "1.0.0"
-        assert "timestamp" in agent.results
-        assert agent.results["success"] is False  # Not complete yet
+        assert agent.github_token == mock_github_token, "github_token is not valid"
+        assert agent.results["agent_version"] == "1.0.0", "Result must not be empty"
+        assert "timestamp" in agent.results, "Result must not be empty"
+        assert agent.results["success"] is False, "Result must not be empty"
 
     def test_log_task(self, agent):
         """Test task logging functionality."""
         agent.log_task("test_task", "success", "Task completed successfully")
 
-        assert len(agent.results["tasks"]) == 1
+        assert len(agent.results["tasks"]) == 1, "Collection must not be empty"
         task = agent.results["tasks"][0]
 
-        assert task["task"] == "test_task"
-        assert task["status"] == "success"
-        assert task["message"] == "Task completed successfully"
-        assert "timestamp" in task
+        assert task["task"] == "test_task", "Condition must be true"
+        assert task["status"] == "success", "Condition must be true"
+        assert task["message"] == "Task completed successfully", "Condition must be true"
+        assert "timestamp" in task, "Condition must be true"
 
     def test_log_task_with_details(self, agent):
         """Test task logging with additional details."""
@@ -65,7 +65,7 @@ class TestAdminAutomationAgentIntegration:
         agent.log_task("test_task", "success", "Task completed", details=details)
 
         task = agent.results["tasks"][0]
-        assert task["details"] == details
+        assert task["details"] == details, "Condition must be true"
 
     @patch("agent.GitHubSecretsManager")
     def test_setup_phase10_no_secrets_manager(self, mock_secrets_mgr, agent):
@@ -75,9 +75,9 @@ class TestAdminAutomationAgentIntegration:
         result = agent.task_setup_phase10(validate=False, report=False)
 
         # Should still succeed with warnings
-        assert "tasks" in result
+        assert "tasks" in result, "Result must not be empty"
         # Environment validation should run
-        assert any("validate" in str(t) or "environment" in str(t) for t in result["tasks"])
+        assert any("validate" in str(t) or "environment" in str(t) for t in result["tasks"]), "Result must not be empty"
 
     @patch("agent.Phase10Validator")
     def test_health_check_no_validator(self, mock_validator, agent):
@@ -86,15 +86,15 @@ class TestAdminAutomationAgentIntegration:
 
         result = agent.task_health_check()
 
-        assert result["success"] is False
-        assert "error" in result
-        assert result["error"] == "Validator not available"
+        assert result["success"] is False, "Result must not be empty"
+        assert "error" in result, "Result must not be empty"
+        assert result["error"] == "Validator not available", "Result must not be empty"
 
     def test_environment_validation(self, agent):
         """Test environment validation logic."""
         env_check = agent._validate_environment()
 
-        assert "success" in env_check
+        assert "success" in env_check, "Condition must be true"
         # Check that it validates required tools
         assert isinstance(env_check["success"], bool)
 
@@ -132,7 +132,7 @@ class TestSecretsManagerIntegration:
 
             key = secrets_manager.generate_secure_key(length=32)
 
-            assert key == "YWJjZGVmZ2hpamtsbW5vcA=="
+            assert key == "YWJjZGVmZ2hpamtsbW5vcA==", "key is not valid"
             mock_run.assert_called_once()
 
     def test_get_public_key(self, secrets_manager, mock_requests):
@@ -145,8 +145,8 @@ class TestSecretsManagerIntegration:
 
         public_key, key_id = secrets_manager.get_public_key()
 
-        assert public_key == "test_public_key"
-        assert key_id == "123456"
+        assert public_key == "test_public_key", "public_key is not valid"
+        assert key_id == "123456", "key_id is not valid"
 
     def test_verify_secret_exists(self, secrets_manager, mock_requests):
         """Test secret verification when secret exists."""
@@ -156,7 +156,7 @@ class TestSecretsManagerIntegration:
 
         result = secrets_manager.verify_secret("TEST_SECRET")
 
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_verify_secret_not_exists(self, secrets_manager, mock_requests):
         """Test secret verification when secret doesn't exist."""
@@ -166,7 +166,7 @@ class TestSecretsManagerIntegration:
 
         result = secrets_manager.verify_secret("NONEXISTENT_SECRET")
 
-        assert result is False
+        assert result is False, "Result must not be empty"
 
 
 class TestWorkflowIntegration:
@@ -185,7 +185,7 @@ class TestWorkflowIntegration:
 
         # Verify each step is documented
         for step in expected_steps:
-            assert step  # Basic verification
+            assert step, "step is not valid"
 
     def test_workflow_error_recovery(self):
         """Test that workflows can recover from errors."""
@@ -195,7 +195,7 @@ class TestWorkflowIntegration:
         # Verify error handling in secrets manager
         with patch.dict(os.environ, {"GITHUB_TOKEN": "test"}):
             manager = GitHubSecretsManager("owner", "repo", "token")
-            assert manager.token is not None
+            assert manager.token is not None, "token must be initialized"
 
 
 class TestSecurityCompliance:
@@ -226,7 +226,7 @@ class TestSecurityCompliance:
         )  # codeql[py/clear-text-logging-sensitive-data]
 
         # Confirm the raw token is absent from captured log output
-        assert secret_value not in caplog.text
+        assert secret_value not in caplog.text, "Value must be initialized"
 
     def test_secret_name_redaction(self):
         """Test that sensitive secret names are redacted."""
@@ -236,7 +236,7 @@ class TestSecurityCompliance:
 
         for name in sensitive_names:
             redacted = redact_secret_name(name)
-            assert redacted == "[REDACTED_SECRET_NAME]"
+            assert redacted == "[REDACTED_SECRET_NAME]", "redacted is not valid"
 
     def test_dict_key_redaction(self):
         """Test that dictionary keys containing secrets are redacted."""
@@ -247,15 +247,15 @@ class TestSecurityCompliance:
         redacted = redact_dict_with_secret_keys(secrets_dict)
 
         # Verify original keys not present
-        assert "GITHUB_TOKEN" not in redacted
-        assert "API_KEY" not in redacted
-        assert "SECRET_KEY" not in redacted
+        assert "GITHUB_TOKEN" not in redacted, "Condition must be true"
+        assert "API_KEY" not in redacted, "Condition must be true"
+        assert "SECRET_KEY" not in redacted, "Condition must be true"
 
         # Verify redacted keys present
-        assert all(key.startswith("secret_") for key in redacted)
+        assert all(key.startswith("secret_") for key in redacted), "Condition must be true"
 
         # Verify count preserved
-        assert len(redacted) == len(secrets_dict)
+        assert len(redacted) == len(secrets_dict), "Redacted must not be empty"
 
 
 class TestEndToEndWorkflow:
@@ -298,8 +298,8 @@ class TestEndToEndWorkflow:
             result = agent.task_setup_phase10(validate=True, report=False)
 
             # Verify workflow completed
-            assert "tasks" in result
-            assert len(result["tasks"]) > 0
+            assert "tasks" in result, "Result must not be empty"
+            assert len(result["tasks"]) > 0, "Collection must not be empty"
 
     def test_audit_trail_creation(self, tmp_path):
         """Test that audit trail is created for operations."""
@@ -320,9 +320,9 @@ Status: SUCCESS
         audit_log.write_text(audit_content)
 
         # Verify audit log exists
-        assert audit_log.exists()
-        assert "Phase 10 Setup" in audit_log.read_text()
-        assert "SUCCESS" in audit_log.read_text()
+        assert audit_log.exists(), "Condition must be true"
+        assert "Phase 10 Setup" in audit_log.read_text(), "Condition must be true"
+        assert "SUCCESS" in audit_log.read_text(), "Condition must be true"
 
 
 class TestErrorScenarios:
@@ -334,7 +334,7 @@ class TestErrorScenarios:
             from scripts.phase10.automated_secrets_manager import GitHubSecretsManager
 
             manager = GitHubSecretsManager("owner", "repo", token=None)
-            assert manager.token is None
+            assert manager.token is None, "token is not valid"
 
     def test_api_rate_limit_handling(self):
         """Test handling of GitHub API rate limits."""
@@ -344,8 +344,8 @@ class TestErrorScenarios:
         mock_response.status_code = 429
         mock_response.headers = {"X-RateLimit-Remaining": "0", "Retry-After": "60"}
         # Verify rate limit response attributes are accessible
-        assert mock_response.status_code == 429
-        assert "X-RateLimit-Remaining" in mock_response.headers
+        assert mock_response.status_code == 429, "Response must not be empty"
+        assert "X-RateLimit-Remaining" in mock_response.headers, "Response must not be empty"
 
     def test_network_error_handling(self):
         """Test handling of network errors."""

@@ -14,4 +14,4 @@ def test_orchestrate_dry_run_outputs_command() -> None:
         text=True,
         check=True,
     )
-    assert "[dry-run]" in result.stdout
+    assert "[dry-run]" in result.stdout, "Result must not be empty"

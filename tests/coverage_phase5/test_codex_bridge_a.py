@@ -27,38 +27,42 @@ class BridgeProtocol:
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_bridge_protocol_0_init():
     """Test bridge protocol initialization."""
     bridge = BridgeProtocol("v2")
-    assert bridge.version == "v2"
+    assert bridge.version == "v2", "version is not valid"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_bridge_protocol_0_connect():
     """Test bridge connection."""
     bridge = BridgeProtocol("v2")
     result = await bridge.connect()
 
-    assert result is True
-    assert bridge.connected is True
+    assert result is True, "Result must not be empty"
+    assert bridge.connected is True, "connected is not valid"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_bridge_protocol_0_message():
     """Test sending message."""
     bridge = BridgeProtocol("v2")
     await bridge.connect()
 
     result = await bridge.send_message({"cmd": "test"})
-    assert result["ack"] is True
+    assert result["ack"] is True, "Result must not be empty"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_bridge_protocol_0_disconnect():
     """Test bridge disconnection."""
     bridge = BridgeProtocol("v2")
     await bridge.connect()
     result = await bridge.disconnect()
 
-    assert result is True
-    assert bridge.connected is False
+    assert result is True, "Result must not be empty"
+    assert bridge.connected is False, "connected is not valid"

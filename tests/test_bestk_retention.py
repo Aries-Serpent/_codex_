@@ -41,13 +41,13 @@ def test_bestk_retention_prunes_extras(tmp_path):
             raise
 
     index_path = tmp_path / "index.json"
-    assert index_path.exists()
+    assert index_path.exists(), "Condition must be true"
     index = json.loads(index_path.read_text())
-    assert len(index) == 2
+    assert len(index) == 2, "Index must not be empty"
 
     kept_paths = {entry["path"] for entry in index}
     assert kept_paths == {"epoch-3", "epoch-4"}
 
     # Ensure only retained checkpoints remain on disk.
     existing = {p.name for p in tmp_path.iterdir() if p.is_dir()}
-    assert existing == kept_paths
+    assert existing == kept_paths, "existing is not valid"

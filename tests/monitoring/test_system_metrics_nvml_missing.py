@@ -17,7 +17,7 @@ def test_nvml_missing_fallback() -> None:
     callback = module.SystemMetricsCallback()
     metrics: dict[str, float] = {}
     callback.on_epoch_end(epoch=0, metrics=metrics, state={})
-    assert "gpu0_util" in metrics
-    assert "gpu0_mem" in metrics
+    assert "gpu0_util" in metrics, "Condition must be true"
+    assert "gpu0_mem" in metrics, "Condition must be true"
     assert isinstance(metrics["gpu0_util"], int | float)
     assert isinstance(metrics["gpu0_mem"], int | float)

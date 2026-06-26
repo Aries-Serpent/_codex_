@@ -21,15 +21,15 @@ def test_safe_pickle_dump_writes_versioned_signature_header(tmp_path: Path) -> N
     )
 
     raw = pickle_path.read_bytes()
-    assert raw.startswith(safe_pickle_module.SIGNED_PICKLE_MAGIC)
-    assert (
+    assert raw.startswith(safe_pickle_module.SIGNED_PICKLE_MAGIC), "Condition must be true"
+    assert (, "Condition must be true"
         raw[len(safe_pickle_module.SIGNED_PICKLE_MAGIC)] == safe_pickle_module.SIGNED_PICKLE_VERSION
     )
-    assert (
+    assert (, "Condition must be true"
         raw[len(safe_pickle_module.SIGNED_PICKLE_MAGIC) + 1]
         == safe_pickle_module.SIGNED_PICKLE_ALGO_SHA256
     )
-    assert (
+    assert (, "Condition must be true"
         safe_pickle_module.safe_pickle_load(
             str(pickle_path), verify_signature=True, secret_key=key, use_restricted_unpickler=False
         )
@@ -49,7 +49,7 @@ def test_safe_pickle_load_supports_legacy_signature_format(tmp_path: Path) -> No
         str(pickle_path), verify_signature=True, secret_key=key, use_restricted_unpickler=False
     )
 
-    assert loaded == payload
+    assert loaded == payload, "loaded is not valid"
 
 
 def test_safe_pickle_load_rejects_invalid_versioned_header(tmp_path: Path) -> None:
@@ -84,8 +84,8 @@ def test_get_secret_key_creates_private_file(
     key = safe_pickle_module._get_secret_key()
     key_path = tmp_path / ".codex" / "pickle.key"
 
-    assert key_path.read_bytes() == key
-    assert os.stat(key_path).st_mode & 0o777 == 0o600
+    assert key_path.read_bytes() == key, "Condition must be true"
+    assert os.stat(key_path).st_mode & 0o777 == 0o600, "0o777 is not valid"
 
 
 def test_get_secret_key_reuses_existing_file(
@@ -100,5 +100,5 @@ def test_get_secret_key_reuses_existing_file(
     caplog.set_level(logging.DEBUG)
     second_key = safe_pickle_module._get_secret_key()
 
-    assert second_key == first_key
-    assert "Using existing pickle secret key" in caplog.text
+    assert second_key == first_key, "second_key is not valid"
+    assert "Using existing pickle secret key" in caplog.text, "Condition must be true"

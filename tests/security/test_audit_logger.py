@@ -15,17 +15,17 @@ from security.audit_logger import AuditLogger, log_audit_event
 def test_audit_logger_with_explicit_path(tmp_path: Path) -> None:
     log_path = tmp_path / "audit.log"
     al = AuditLogger(path=log_path)
-    assert al.path == log_path
+    assert al.path == log_path, "path is not valid"
 
 
 def test_audit_logger_with_log_dir(tmp_path: Path) -> None:
     al = AuditLogger(log_dir=tmp_path)
-    assert al.path == tmp_path / "audit.log"
+    assert al.path == tmp_path / "audit.log", "path is not valid"
 
 
 def test_audit_logger_default_path() -> None:
     al = AuditLogger()
-    assert "audit.log" in str(al.path)
+    assert "audit.log" in str(al.path), "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -40,8 +40,8 @@ def test_audit_logger_appends_and_verifies(tmp_path: Path) -> None:
     first = al.append({"action": "create"}, ts=0)
     second = al.append({"action": "update"}, ts=1)
 
-    assert first["hash"] != second["hash"]
-    assert al.verify_chain() is True
+    assert first["hash"] != second["hash"], "Condition must be true"
+    assert al.verify_chain() is True, "Condition must be true"
 
 
 def test_audit_logger_detects_tampering(tmp_path: Path) -> None:
@@ -54,14 +54,14 @@ def test_audit_logger_detects_tampering(tmp_path: Path) -> None:
     contents[-1] = contents[-1].replace("create", "tamper")
     log_path.write_text("\n".join(contents), encoding="utf-8")
 
-    assert al.verify_chain() is False
+    assert al.verify_chain() is False, "Condition must be true"
 
 
 def test_verify_chain_empty_log(tmp_path: Path) -> None:
     log_path = tmp_path / "audit.log"
     al = AuditLogger(log_path)
     # No file exists yet
-    assert al.verify_chain() is True
+    assert al.verify_chain() is True, "Condition must be true"
 
 
 def test_verify_chain_with_empty_lines(tmp_path: Path) -> None:
@@ -71,7 +71,7 @@ def test_verify_chain_with_empty_lines(tmp_path: Path) -> None:
     # Add blank lines between records
     existing = log_path.read_text(encoding="utf-8")
     log_path.write_text("\n" + existing + "\n\n", encoding="utf-8")
-    assert al.verify_chain() is True
+    assert al.verify_chain() is True, "Condition must be true"
 
 
 def test_verify_chain_detects_wrong_prev_hash(tmp_path: Path) -> None:
@@ -87,7 +87,7 @@ def test_verify_chain_detects_wrong_prev_hash(tmp_path: Path) -> None:
     lines[1] = json.dumps(rec, sort_keys=True)
     log_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
-    assert al.verify_chain() is False
+    assert al.verify_chain() is False, "Condition must be true"
 
 
 def test_verify_chain_detects_missing_hash_field(tmp_path: Path) -> None:
@@ -101,7 +101,7 @@ def test_verify_chain_detects_missing_hash_field(tmp_path: Path) -> None:
     lines[0] = json.dumps(rec, sort_keys=True)
     log_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
-    assert al.verify_chain() is False
+    assert al.verify_chain() is False, "Condition must be true"
 
 
 def test_audit_logger_multiple_records_chain(tmp_path: Path) -> None:
@@ -111,15 +111,15 @@ def test_audit_logger_multiple_records_chain(tmp_path: Path) -> None:
     for i in range(5):
         al.append({"seq": i}, ts=float(i))
 
-    assert al.verify_chain() is True
-    assert log_path.exists()
+    assert al.verify_chain() is True, "Condition must be true"
+    assert log_path.exists(), "Condition must be true"
 
 
 def test_append_uses_current_time_when_ts_not_provided(tmp_path: Path) -> None:
     log_path = tmp_path / "audit.log"
     al = AuditLogger(log_path)
     record = al.append({"action": "test"})
-    assert record["ts"] > 0
+    assert record["ts"] > 0, "rec must be greater than zero"
 
 
 # ---------------------------------------------------------------------------
@@ -136,12 +136,12 @@ def test_log_event_writes_structured_entry(tmp_path: Path) -> None:
         action="login",
         user="testuser",
     )
-    assert log_path.exists()
+    assert log_path.exists(), "Condition must be true"
     data = json.loads(log_path.read_text(encoding="utf-8").strip())
-    assert data["event"]["event_type"] == "authentication"
-    assert data["event"]["user"] == "testuser"
-    assert data["event"]["action"] == "login"
-    assert data["event"]["resource"] == "/api/login"
+    assert data["event"]["event_type"] == "authentication", "Data must not be empty"
+    assert data["event"]["user"] == "testuser", "Data must not be empty"
+    assert data["event"]["action"] == "login", "Data must not be empty"
+    assert data["event"]["resource"] == "/api/login", "Data must not be empty"
 
 
 def test_log_event_chain_is_valid(tmp_path: Path) -> None:
@@ -149,7 +149,7 @@ def test_log_event_chain_is_valid(tmp_path: Path) -> None:
     al = AuditLogger(log_path)
     al.log_event("auth", "/api/login", "login", "alice")
     al.log_event("access", "/api/data", "read", "alice")
-    assert al.verify_chain() is True
+    assert al.verify_chain() is True, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -160,7 +160,7 @@ def test_log_event_chain_is_valid(tmp_path: Path) -> None:
 def test_log_audit_event_creates_file(tmp_path: Path) -> None:
     log_audit_event("authentication", "testuser", "login", success=True, log_dir=tmp_path)
     log_file = tmp_path / "audit.log"
-    assert log_file.exists()
+    assert log_file.exists(), "Condition must be true"
 
 
 def test_log_audit_event_records_content(tmp_path: Path) -> None:
@@ -168,24 +168,24 @@ def test_log_audit_event_records_content(tmp_path: Path) -> None:
     log_file = tmp_path / "audit.log"
     content = log_file.read_text(encoding="utf-8")
     data = json.loads(content.strip())
-    assert data["event"]["user"] == "alice"
-    assert data["event"]["action"] == "login"
-    assert data["event"]["type"] == "authentication"
-    assert data["event"]["success"] is True
+    assert data["event"]["user"] == "alice", "Data must not be empty"
+    assert data["event"]["action"] == "login", "Data must not be empty"
+    assert data["event"]["type"] == "authentication", "Data must not be empty"
+    assert data["event"]["success"] is True, "Data must not be empty"
 
 
 def test_log_audit_event_failure_recorded(tmp_path: Path) -> None:
     log_audit_event("authentication", "bob", "login", success=False, log_dir=tmp_path)
     log_file = tmp_path / "audit.log"
     data = json.loads(log_file.read_text(encoding="utf-8").strip())
-    assert data["event"]["success"] is False
+    assert data["event"]["success"] is False, "Data must not be empty"
 
 
 def test_log_audit_event_default_success(tmp_path: Path) -> None:
     log_audit_event("access", "user1", "read", log_dir=tmp_path)
     log_file = tmp_path / "audit.log"
     data = json.loads(log_file.read_text(encoding="utf-8").strip())
-    assert data["event"]["success"] is True
+    assert data["event"]["success"] is True, "Data must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -198,7 +198,7 @@ def test_last_hash_nonexistent_file(tmp_path: Path) -> None:
     al = AuditLogger(log_path)
     # _last_hash called internally via append; verify prev_hash is zeros
     record = al.append({"action": "first"}, ts=0)
-    assert record["prev_hash"] == "0" * 64
+    assert record["prev_hash"] == "0" * 64, "rec is not valid"
 
 
 def test_last_hash_record_without_hash_field(tmp_path: Path) -> None:
@@ -209,4 +209,4 @@ def test_last_hash_record_without_hash_field(tmp_path: Path) -> None:
     log_path.write_text('{"ts": 1.0, "event": {}, "prev_hash": "abc"}\n', encoding="utf-8")
     # Should fall back to zeros
     record = al.append({"action": "after"}, ts=2)
-    assert record["prev_hash"] == "0" * 64
+    assert record["prev_hash"] == "0" * 64, "rec is not valid"

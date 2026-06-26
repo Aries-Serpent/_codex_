@@ -27,11 +27,11 @@ class TestRotationPolicy:
     def test_default_policy(self):
         """Test default policy values."""
         policy = RotationPolicy()
-        assert policy.max_age_days == 90
-        assert policy.rotate_before_expiry_days == 14
-        assert policy.grace_period_hours == 24
-        assert policy.auto_rotate_on_exposure is True
-        assert policy.auto_rotate_on_security_event is True
+        assert policy.max_age_days == 90, "max_age_days is not valid"
+        assert policy.rotate_before_expiry_days == 14, "rotate_before_expiry_days is not valid"
+        assert policy.grace_period_hours == 24, "grace_period_hours is not valid"
+        assert policy.auto_rotate_on_exposure is True, "auto_rotate_on_exposure is not valid"
+        assert policy.auto_rotate_on_security_event is True, "auto_rotate_on_security_event is not valid"
 
     def test_custom_policy(self):
         """Test custom policy configuration."""
@@ -40,17 +40,17 @@ class TestRotationPolicy:
             rotate_before_expiry_days=7,
             auto_rotate_on_exposure=False,
         )
-        assert policy.max_age_days == 30
-        assert policy.rotate_before_expiry_days == 7
-        assert policy.auto_rotate_on_exposure is False
+        assert policy.max_age_days == 30, "max_age_days is not valid"
+        assert policy.rotate_before_expiry_days == 7, "rotate_before_expiry_days is not valid"
+        assert policy.auto_rotate_on_exposure is False, "auto_rotate_on_exposure is not valid"
 
     def test_policy_serialization(self):
         """Test policy to_dict method."""
         policy = RotationPolicy()
         policy_dict = policy.to_dict()
-        assert "max_age_days" in policy_dict
-        assert "rotate_before_expiry_days" in policy_dict
-        assert policy_dict["max_age_days"] == 90
+        assert "max_age_days" in policy_dict, "Condition must be true"
+        assert "rotate_before_expiry_days" in policy_dict, "Condition must be true"
+        assert policy_dict["max_age_days"] == 90, "Condition must be true"
 
 
 class TestTokenMetadata:
@@ -65,9 +65,9 @@ class TestTokenMetadata:
             expires_at=expires,
             scopes=["repo:read", "workflow:write"],
         )
-        assert meta.token_id == "test-token-1"
-        assert meta.state == TokenState.ACTIVE
-        assert meta.rotation_count == 0
+        assert meta.token_id == "test-token-1", "token_id is not valid"
+        assert meta.state == TokenState.ACTIVE, "state is not valid"
+        assert meta.rotation_count == 0, "Count must be greater than zero"
 
     def test_is_expired_false(self):
         """Test token is not expired."""
@@ -76,7 +76,7 @@ class TestTokenMetadata:
             created_at=datetime.now(UTC),
             expires_at=datetime.now(UTC) + timedelta(days=30),
         )
-        assert meta.is_expired() is False
+        assert meta.is_expired() is False, "Condition must be true"
 
     def test_is_expired_true(self):
         """Test token is expired."""
@@ -85,7 +85,7 @@ class TestTokenMetadata:
             created_at=datetime.now(UTC) - timedelta(days=100),
             expires_at=datetime.now(UTC) - timedelta(days=1),
         )
-        assert meta.is_expired() is True
+        assert meta.is_expired() is True, "Condition must be true"
 
     def test_days_until_expiry(self):
         """Test days until expiry calculation."""
@@ -95,7 +95,7 @@ class TestTokenMetadata:
             expires_at=datetime.now(UTC) + timedelta(days=15),
         )
         days = meta.days_until_expiry()
-        assert 14 <= days <= 15
+        assert 14 <= days <= 15, "14 is not valid"
 
     def test_should_rotate_expiring(self):
         """Test should_rotate for token nearing expiry."""
@@ -106,8 +106,8 @@ class TestTokenMetadata:
             expires_at=datetime.now(UTC) + timedelta(days=10),
         )
         should_rotate, trigger = meta.should_rotate(policy)
-        assert should_rotate is True
-        assert trigger == RotationTrigger.EXPIRY
+        assert should_rotate is True, "should_rotate is not valid"
+        assert trigger == RotationTrigger.EXPIRY, "trigger is not valid"
 
     def test_should_not_rotate(self):
         """Test should_rotate for healthy token."""
@@ -118,8 +118,8 @@ class TestTokenMetadata:
             expires_at=datetime.now(UTC) + timedelta(days=60),
         )
         should_rotate, trigger = meta.should_rotate(policy)
-        assert should_rotate is False
-        assert trigger is None
+        assert should_rotate is False, "should_rotate is not valid"
+        assert trigger is None, "trigger is not valid"
 
 
 class TestTokenRotationManager:
@@ -138,9 +138,9 @@ class TestTokenRotationManager:
             provider="github",
         )
 
-        assert meta.token_id == "github-token-1"
-        assert meta.provider == "github"
-        assert "github-token-1" in manager.tokens
+        assert meta.token_id == "github-token-1", "token_id is not valid"
+        assert meta.provider == "github", "provider is not valid"
+        assert "github-token-1" in manager.tokens, "Condition must be true"
 
     def test_check_rotation_needed(self):
         """Test checking if rotation is needed."""
@@ -151,8 +151,8 @@ class TestTokenRotationManager:
         manager.register_token("test-token", "xxx", expires)
 
         needs_rotation, trigger = manager.check_rotation_needed("test-token")
-        assert needs_rotation is True
-        assert trigger == RotationTrigger.EXPIRY
+        assert needs_rotation is True, "needs_rotation is not valid"
+        assert trigger == RotationTrigger.EXPIRY, "trigger is not valid"
 
     def test_rotate_token(self):
         """Test token rotation."""
@@ -172,14 +172,14 @@ class TestTokenRotationManager:
                 metadata={"reason": "test"},
             )
 
-            assert event.success is True
-            assert event.trigger == RotationTrigger.MANUAL
-            assert len(event.old_token_hash) == 16
-            assert len(event.new_token_hash) == 16
-            assert event.old_token_hash != event.new_token_hash
+            assert event.success is True, "success is not valid"
+            assert event.trigger == RotationTrigger.MANUAL, "trigger is not valid"
+            assert len(event.old_token_hash) == 16, "Collection must not be empty"
+            assert len(event.new_token_hash) == 16, "Collection must not be empty"
+            assert event.old_token_hash != event.new_token_hash, "old_token_hash is not valid"
 
             # Check audit log
-            assert audit_path.exists()
+            assert audit_path.exists(), "Condition must be true"
 
     def test_rotation_throttling(self):
         """Test rotation throttling prevents storms."""
@@ -194,7 +194,7 @@ class TestTokenRotationManager:
             RotationTrigger.MANUAL,
             "token-value",
         )
-        assert event1.success is True
+        assert event1.success is True, "success is not valid"
 
         # Second rotation should be throttled
         event2 = manager.rotate_token(
@@ -202,8 +202,8 @@ class TestTokenRotationManager:
             RotationTrigger.MANUAL,
             "token-value",
         )
-        assert event2.success is False
-        assert "throttled" in event2.error_message.lower()
+        assert event2.success is False, "success is not valid"
+        assert "throttled" in event2.error_message.lower(), "Error should be raised or set"
 
     def test_get_rotation_schedule(self):
         """Test getting rotation schedule."""
@@ -223,10 +223,10 @@ class TestTokenRotationManager:
 
         schedule = manager.get_rotation_schedule()
 
-        assert len(schedule) == 2
+        assert len(schedule) == 2, "Schedule must not be empty"
         # Should be sorted by days until expiry
-        assert schedule[0]["token_id"] == "token-1"
-        assert schedule[0]["rotation_needed"] is True
+        assert schedule[0]["token_id"] == "token-1", "Condition must be true"
+        assert schedule[0]["rotation_needed"] is True, "Condition must be true"
 
 
 class TestSecurityEventHandling:
@@ -248,8 +248,8 @@ class TestSecurityEventHandling:
             metadata={"source": "secret-scanning"},
         )
 
-        assert len(events) == 1
-        assert events[0].trigger == RotationTrigger.SECURITY_EVENT
+        assert len(events) == 1, "Events must not be empty"
+        assert events[0].trigger == RotationTrigger.SECURITY_EVENT, "trigger is not valid"
 
     def test_disabled_auto_rotation(self):
         """Test that disabled auto-rotation is respected."""
@@ -262,7 +262,7 @@ class TestSecurityEventHandling:
         )
 
         events = manager.handle_security_event("exposure")
-        assert len(events) == 0
+        assert len(events) == 0, "Events must not be empty"
 
 
 class TestConvenienceFunctions:
@@ -274,8 +274,8 @@ class TestConvenienceFunctions:
             token_id="test",
             expires_at=datetime.now(UTC) - timedelta(days=1),
         )
-        assert needs_rotation is True
-        assert "expired" in reason.lower()
+        assert needs_rotation is True, "needs_rotation is not valid"
+        assert "expired" in reason.lower(), "Condition must be true"
 
     def test_check_token_rotation_needed_soon(self):
         """Test check for token expiring soon."""
@@ -284,8 +284,8 @@ class TestConvenienceFunctions:
             expires_at=datetime.now(UTC) + timedelta(days=5),
             rotate_before_days=14,
         )
-        assert needs_rotation is True
-        assert "expires in" in reason.lower()
+        assert needs_rotation is True, "needs_rotation is not valid"
+        assert "expires in" in reason.lower(), "Condition must be true"
 
     def test_check_token_rotation_needed_healthy(self):
         """Test check for healthy token."""
@@ -293,8 +293,8 @@ class TestConvenienceFunctions:
             token_id="test",
             expires_at=datetime.now(UTC) + timedelta(days=60),
         )
-        assert needs_rotation is False
-        assert reason is None
+        assert needs_rotation is False, "needs_rotation is not valid"
+        assert reason is None, "reason is not valid"
 
 
 class TestRotationEvent:
@@ -313,6 +313,6 @@ class TestRotationEvent:
         )
 
         jsonl = event.to_jsonl()
-        assert "evt-123" in jsonl
-        assert "scheduled" in jsonl
-        assert "abc123" in jsonl
+        assert "evt-123" in jsonl, "Condition must be true"
+        assert "scheduled" in jsonl, "Condition must be true"
+        assert "abc123" in jsonl, "Condition must be true"

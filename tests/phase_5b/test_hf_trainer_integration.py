@@ -81,7 +81,7 @@ class TestHFTrainerIntegration:
                 mock_model_cls.from_pretrained(training_config["model_name"])
 
                 # Assert: Model loaded successfully
-                assert mock_model_cls.from_pretrained.called
+                assert mock_model_cls.from_pretrained.called, "Condition must be true"
 
     def test_trainer_with_data_loader_integration(self, tmp_path, training_config):
         """Test: Trainer integrates with data loaders."""
@@ -99,7 +99,7 @@ class TestHFTrainerIntegration:
             loader = mock_loader_cls(batch_size=training_config["per_device_train_batch_size"])
 
             # Assert: Loader created
-            assert len(loader) == 10
+            assert len(loader) == 10, "Loader must not be empty"
 
     def test_training_loop_execution(self, training_config):
         """Test: Complete training loop from start to completion."""
@@ -126,8 +126,8 @@ class TestHFTrainerIntegration:
                 result = trainer.train()
 
                 # Assert: Training completed
-                assert "training_loss" in result
-                assert result["epoch"] == 1.0
+                assert "training_loss" in result, "Result must not be empty"
+                assert result["epoch"] == 1.0, "Result must not be empty"
 
     def test_checkpoint_saving_workflow(self, tmp_path, training_config):
         """Test: Checkpoints saved correctly during training."""
@@ -168,7 +168,7 @@ class TestHFTrainerIntegration:
             metrics = trainer.evaluate()
 
             # Assert: Evaluation results available
-            assert metrics["eval_accuracy"] == 0.85
+            assert metrics["eval_accuracy"] == 0.85, "Condition must be true"
 
     def test_training_resumption_from_checkpoint(self, tmp_path):
         """Test: Training can resume from checkpoint."""
@@ -217,7 +217,7 @@ class TestHFTrainerIntegration:
             trainer.add_callback(Mock())
 
             # Assert: Metrics logged
-            assert len(trainer.state.log_history) == 2
+            assert len(trainer.state.log_history) == 2, "Collection must not be empty"
 
     def test_distributed_training_setup(self):
         """Test: Distributed training configuration."""
@@ -230,7 +230,7 @@ class TestHFTrainerIntegration:
             mock_args_cls.return_value = mock_args
 
             # Assert: Distributed config available
-            assert mock_args.local_rank == 0
+            assert mock_args.local_rank == 0, "local_rank is not valid"
 
     def test_cross_module_dependency_model_to_trainer(self):
         """Test: Model loading flows correctly to trainer."""
@@ -289,7 +289,7 @@ class TestHFTrainerWithTorch:
             mock_args_cls.return_value = mock_args
 
             # Verify device setting
-            assert mock_args.device == "cpu"
+            assert mock_args.device == "cpu", "device is not valid"
 
     def test_device_strategy_with_gpu(self):
         """Test: GPU device strategy when available."""
@@ -303,7 +303,7 @@ class TestHFTrainerWithTorch:
                 mock_args_cls.return_value = mock_args
 
                 # Verify device
-                assert "cuda" in mock_args.device
+                assert "cuda" in mock_args.device, "Condition must be true"
 
     def test_gradient_accumulation_configuration(self):
         """Test: Gradient accumulation setup."""
@@ -314,7 +314,7 @@ class TestHFTrainerWithTorch:
             mock_args_cls.return_value = mock_args
 
             # Verify configuration
-            assert mock_args.gradient_accumulation_steps == 4
+            assert mock_args.gradient_accumulation_steps == 4, "gradient_accumulation_steps is not valid"
 
     def test_mixed_precision_training(self):
         """Test: Mixed precision (AMP) training setup."""
@@ -326,7 +326,7 @@ class TestHFTrainerWithTorch:
             mock_args_cls.return_value = mock_args
 
             # Verify FP16 enabled
-            assert mock_args.fp16 is True
+            assert mock_args.fp16 is True, "fp16 is not valid"
 
 
 @pytest.mark.skipif(not HF_TRAINER_AVAILABLE, reason="HF Trainer not available")
@@ -349,8 +349,8 @@ class TestHFTrainerStateManagement:
         loaded = json.loads(state_file.read_text())
 
         # Assert: State preserved
-        assert loaded["global_step"] == 1000
-        assert loaded["epoch"] == 2.5
+        assert loaded["global_step"] == 1000, "Condition must be true"
+        assert loaded["epoch"] == 2.5, "Condition must be true"
 
     def test_training_arguments_propagation(self):
         """Test: Training arguments propagate through trainer."""
@@ -369,8 +369,8 @@ class TestHFTrainerStateManagement:
 
             # Verify propagation
             args = mock_args_cls(**config)
-            assert args.num_train_epochs == 3
-            assert args.per_device_train_batch_size == 16
+            assert args.num_train_epochs == 3, "num_train_epochs is not valid"
+            assert args.per_device_train_batch_size == 16, "per_device_train_batch_size is not valid"
 
     def test_resource_cleanup_after_training(self):
         """Test: Resources cleaned up after training completes."""
@@ -382,7 +382,7 @@ class TestHFTrainerStateManagement:
             resources[key] = None
 
         # Assert: Resources released
-        assert all(v is None for v in resources.values())
+        assert all(v is None for v in resources.values()), "Value must be initialized"
 
 
 @pytest.mark.skipif(not HF_TRAINER_AVAILABLE, reason="HF Trainer not available")
@@ -454,7 +454,7 @@ class TestHFTrainerEndToEnd:
                     trainer.save_model(str(tmp_path / "final_model"))
 
                     # Assert: Complete pipeline executed
-                    assert result["training_loss"] == 0.45
+                    assert result["training_loss"] == 0.45, "Result must not be empty"
                     mock_trainer.save_model.assert_called_once()
 
     def test_training_with_evaluation_and_save(self):
@@ -476,8 +476,8 @@ class TestHFTrainerEndToEnd:
             trainer.save_model("/tmp/model")
 
             # Assert: All steps executed
-            assert train_result["training_loss"] == 0.45
-            assert eval_result["eval_accuracy"] == 0.85
+            assert train_result["training_loss"] == 0.45, "Result must not be empty"
+            assert eval_result["eval_accuracy"] == 0.85, "Result must not be empty"
             mock_trainer.save_model.assert_called_once()
 
     def test_multi_epoch_training_with_checkpoints(self):
@@ -505,5 +505,5 @@ class TestHFTrainerEndToEnd:
             result = trainer.train()
 
             # Assert: Multi-epoch completed
-            assert result["epoch"] == 3
-            assert len(trainer.state.log_history) == 3
+            assert result["epoch"] == 3, "Result must not be empty"
+            assert len(trainer.state.log_history) == 3, "Collection must not be empty"

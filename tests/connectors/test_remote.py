@@ -15,6 +15,7 @@ from codex_ml.monitoring.health import HEALTH_LOG_ENV
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_remote_connector_roundtrip(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     health_dir = tmp_path / "health"
     monkeypatch.setenv(HEALTH_LOG_ENV, str(health_dir))
@@ -22,14 +23,14 @@ async def test_remote_connector_roundtrip(tmp_path: Path, monkeypatch: pytest.Mo
     connector = RemoteConnector(cache_root=tmp_path)
     await connector.write_file("samples/data.txt", b"payload")
     files = await connector.list_files(".")
-    assert "samples/data.txt" in files
+    assert "samples/data.txt" in files, "Data must not be empty"
     data = await connector.read_file("samples/data.txt")
-    assert data == b"payload"
+    assert data == b"payload", "Data must not be empty"
 
     manifest = tmp_path / ".remote_manifest.json"
-    assert manifest.exists()
+    assert manifest.exists(), "Condition must be true"
     payload = manifest.read_text(encoding="utf-8")
-    assert "samples/data.txt" in payload
+    assert "samples/data.txt" in payload, "Data must not be empty"
 
     events = []
     for event_path in health_dir.glob("*.ndjson"):
@@ -41,6 +42,7 @@ async def test_remote_connector_roundtrip(tmp_path: Path, monkeypatch: pytest.Mo
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_remote_connector_manifest_tracks_updates(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -49,17 +51,18 @@ async def test_remote_connector_manifest_tracks_updates(
 
     manifest = tmp_path / ".remote_manifest.json"
     first = json.loads(manifest.read_text(encoding="utf-8"))
-    assert first["files"] == []
-    assert first["readonly"] is False
+    assert first["files"] == [], "Condition must be true"
+    assert first["readonly"] is False, "Condition must be true"
 
     await connector.write_file("models/model.bin", b"binary")
     updated = json.loads(manifest.read_text(encoding="utf-8"))
-    assert "models/model.bin" in updated["files"]
-    assert updated["endpoint"].startswith("offline://")
-    assert "updated_at" in updated
+    assert "models/model.bin" in updated["files"], "Condition must be true"
+    assert updated["endpoint"].startswith("offline://"), "Condition must be true"
+    assert "updated_at" in updated, "Condition must be true"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_remote_connector_readonly_records_health(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -70,8 +73,8 @@ async def test_remote_connector_readonly_records_health(
         await connector.write_file("blocked.txt", b"payload")
 
     log_path = tmp_path / "health" / "connectors.remote.ndjson"
-    assert log_path.exists()
+    assert log_path.exists(), "Condition must be true"
     events = [
         json.loads(line) for line in log_path.read_text(encoding="utf-8").splitlines() if line
     ]
-    assert any(event["event"] == "write_blocked" for event in events)
+    assert any(event["event"] == "write_blocked" for event in events), "Condition must be true"

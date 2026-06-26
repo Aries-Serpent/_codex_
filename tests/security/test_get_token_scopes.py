@@ -68,10 +68,10 @@ class TestGetTokenScopes:
                 "/protected",
                 headers={"Authorization": f"Bearer {token}"},
             )
-        assert resp.status_code == 200
+        assert resp.status_code == 200, "status_code is not valid"
         data = resp.json()
-        assert "repo:read" in data["scopes"]
-        assert "workflow:write" in data["scopes"]
+        assert "repo:read" in data["scopes"], "Data must not be empty"
+        assert "workflow:write" in data["scopes"], "Data must not be empty"
 
     def test_valid_token_no_scope_returns_empty_list(self):
         """A valid JWT with no scope claim returns an empty list (fail-closed)."""
@@ -83,8 +83,8 @@ class TestGetTokenScopes:
                 "/protected",
                 headers={"Authorization": f"Bearer {token}"},
             )
-        assert resp.status_code == 200
-        assert resp.json()["scopes"] == []
+        assert resp.status_code == 200, "status_code is not valid"
+        assert resp.json()["scopes"] == [], "Condition must be true"
 
     def test_invalid_token_returns_401(self):
         """A tampered or invalid Bearer token raises HTTP 401."""
@@ -95,7 +95,7 @@ class TestGetTokenScopes:
                 "/protected",
                 headers={"Authorization": "Bearer this.is.not.a.valid.jwt"},
             )
-        assert resp.status_code == 401
+        assert resp.status_code == 401, "status_code is not valid"
 
     def test_missing_secret_returns_503(self):
         """When CODEX_AUTH_SECRET is not set, raises HTTP 503 (service unavailable)."""
@@ -108,7 +108,7 @@ class TestGetTokenScopes:
                 "/protected",
                 headers={"Authorization": f"Bearer {token}"},
             )
-        assert resp.status_code == 503
+        assert resp.status_code == 503, "status_code is not valid"
 
     def test_expired_token_returns_401_with_www_authenticate(self):
         """An expired token raises HTTP 401 with WWW-Authenticate: Bearer header."""
@@ -126,5 +126,5 @@ class TestGetTokenScopes:
                     "/protected",
                     headers={"Authorization": f"Bearer {token}"},
                 )
-        assert resp.status_code == 401
+        assert resp.status_code == 401, "status_code is not valid"
         assert "Bearer" in resp.headers.get("WWW-Authenticate", "")

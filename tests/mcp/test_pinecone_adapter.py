@@ -75,13 +75,13 @@ def test_pinecone_adapter_upsert_query_delete():
     adapter.upsert_batch(ns, items)
     res = adapter.query_top_k(ns, [1.0, 0.0], top_k=2)
     assert isinstance(res, list)
-    assert len(res) >= 1
+    assert len(res) >= 1, "Res must not be empty"
     assert res[0]["id"] in {"i1", "i2"}
     deleted = adapter.delete(ns, "i1")
-    assert deleted is True
+    assert deleted is True, "deleted is not valid"
     res2 = adapter.query_top_k(ns, [1.0, 0.0], top_k=5)
     ids = [r["id"] for r in res2]
-    assert "i1" not in ids
+    assert "i1" not in ids, "Condition must be true"
 
 
 def test_pinecone_health_disconnected(monkeypatch):
@@ -91,5 +91,5 @@ def test_pinecone_health_disconnected(monkeypatch):
     adapter = PineconeAdapter(index_name="testidx2")
     adapter.connect()
     h = adapter.health_check()
-    assert "status" in h
-    assert h["adapter"] == "pinecone"
+    assert "status" in h, "Condition must be true"
+    assert h["adapter"] == "pinecone", "Condition must be true"

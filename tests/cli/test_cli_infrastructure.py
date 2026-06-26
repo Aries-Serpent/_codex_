@@ -46,7 +46,7 @@ class TestAdvancedCLIPatterns:
             click.echo("v1 endpoint")
 
         result = runner.invoke(cli, ["api", "v1", "endpoint"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_command_chaining(self, runner):
         import click
@@ -65,7 +65,7 @@ class TestAdvancedCLIPatterns:
 
         result = runner.invoke(cli, ["cmd1", "cmd2"])
         # Result depends on implementation
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     def test_dynamic_command_generation(self, runner):
         import click
@@ -83,7 +83,7 @@ class TestAdvancedCLIPatterns:
 
             cli.add_command(cmd)
 
-        assert cli is not None
+        assert cli is not None, "cli must be initialized"
 
     def test_command_with_lazy_loading(self, runner):
         import click
@@ -98,7 +98,7 @@ class TestAdvancedCLIPatterns:
             click.echo("Lazy loaded")
 
         result = runner.invoke(cli, ["lazy"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
 
 class TestCLILogging:
@@ -123,7 +123,7 @@ class TestCLILogging:
             click.echo("Done")
 
         result = runner.invoke(cmd, ["--verbose"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_progress_bar(self, runner):
         import click
@@ -136,7 +136,7 @@ class TestCLILogging:
             click.echo("Complete")
 
         result = runner.invoke(cmd)
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_structured_logging(self, runner):
         import click
@@ -149,7 +149,7 @@ class TestCLILogging:
             click.echo(json.dumps(log_entry))
 
         result = runner.invoke(cmd)
-        assert "Test" in result.output
+        assert "Test" in result.output, "Result must not be empty"
 
     def test_log_file_output(self, runner):
         import click
@@ -164,7 +164,7 @@ class TestCLILogging:
                 click.echo("Logged")
 
             runner.invoke(cmd)
-            assert os.path.exists(log_file)
+            assert os.path.exists(log_file), "Condition must be true"
 
 
 class TestCLIConfigManagement:
@@ -184,7 +184,7 @@ class TestCLIConfigManagement:
             click.echo(f"Key: {api_key}")
 
         result = runner.invoke(cmd, env={"API_KEY": "test_key"})
-        assert "test_key" in result.output
+        assert "test_key" in result.output, "Result must not be empty"
 
     def test_config_precedence(self, runner):
         import click
@@ -196,7 +196,7 @@ class TestCLIConfigManagement:
             click.echo("Using config")
 
         result = runner.invoke(cmd)
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_profile_based_config(self, runner):
         import click
@@ -209,7 +209,7 @@ class TestCLIConfigManagement:
             click.echo(f'Debug: {cfg["debug"]}')
 
         result = runner.invoke(cmd, ["--profile", "dev"])
-        assert "Debug: True" in result.output
+        assert "Debug: True" in result.output, "Result must not be empty"
 
     def test_config_validation(self, runner):
         import click
@@ -222,7 +222,7 @@ class TestCLIConfigManagement:
             click.echo(f"Port: {port}")
 
         result = runner.invoke(cmd, ["--port", "8080"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_config_merging(self, runner):
         import click
@@ -235,7 +235,7 @@ class TestCLIConfigManagement:
             click.echo(f"Config: {merged}")
 
         result = runner.invoke(cmd)
-        assert "Config:" in result.output
+        assert "Config:" in result.output, "Result must not be empty"
 
 
 class TestCLIAuthentication:
@@ -257,7 +257,7 @@ class TestCLIAuthentication:
             click.echo("Authenticated")
 
         result = runner.invoke(cmd, env={"API_KEY": "key123"})
-        assert "Authenticated" in result.output
+        assert "Authenticated" in result.output, "Result must not be empty"
 
     def test_token_based_auth(self, runner):
         import click
@@ -272,7 +272,7 @@ class TestCLIAuthentication:
                 raise click.ClickException("Invalid token")
 
         result = runner.invoke(cmd)
-        assert "Token valid" in result.output
+        assert "Token valid" in result.output, "Result must not be empty"
 
     def test_oauth_login_flow(self, runner):
         import click
@@ -284,7 +284,7 @@ class TestCLIAuthentication:
             click.echo(f"Visit: {auth_url}")
 
         result = runner.invoke(cmd)
-        assert "Visit:" in result.output
+        assert "Visit:" in result.output, "Result must not be empty"
 
     def test_credential_caching(self, runner):
         import click
@@ -300,7 +300,7 @@ class TestCLIAuthentication:
                     click.echo("Getting new credentials")
 
             result = runner.invoke(cmd)
-            assert result.exit_code == 0
+            assert result.exit_code == 0, "Result must not be empty"
 
 
 class TestCLIInfrastructure:
@@ -320,7 +320,7 @@ class TestCLIInfrastructure:
             click.echo(f"Deploying to {environment}")
 
         result = runner.invoke(deploy, ["production"])
-        assert "production" in result.output
+        assert "production" in result.output, "Result must not be empty"
 
     def test_health_check_command(self, runner):
         import click
@@ -332,7 +332,7 @@ class TestCLIInfrastructure:
                 click.echo(f"{service}: {state}")
 
         result = runner.invoke(health)
-        assert "ok" in result.output
+        assert "ok" in result.output, "Result must not be empty"
 
     def test_backup_command(self, runner):
         import click
@@ -347,7 +347,7 @@ class TestCLIInfrastructure:
                 click.echo(f"Backed up to {backup_file}")
 
             result = runner.invoke(backup)
-            assert "Backed up" in result.output
+            assert "Backed up" in result.output, "Result must not be empty"
 
     def test_restore_command(self, runner):
         import click
@@ -362,7 +362,7 @@ class TestCLIInfrastructure:
 
         # Without actual file
         result = runner.invoke(restore, ["nonexistent.tar.gz"])
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     def test_migration_command(self, runner):
         import click
@@ -376,7 +376,7 @@ class TestCLIInfrastructure:
                 click.echo("Migrated database")
 
         result = runner.invoke(migrate, ["--dry-run"])
-        assert "Would migrate" in result.output
+        assert "Would migrate" in result.output, "Result must not be empty"
 
 
 class TestCLIMonitoring:
@@ -397,7 +397,7 @@ class TestCLIMonitoring:
                 click.echo(f"{metric}: {value}%")
 
         result = runner.invoke(metrics)
-        assert "%" in result.output
+        assert "%" in result.output, "Result must not be empty"
 
     def test_logs_command(self, runner):
         import click
@@ -409,7 +409,7 @@ class TestCLIMonitoring:
                 click.echo(f"Log line {i+1}")
 
         result = runner.invoke(logs, ["--lines", "5"])
-        assert "Log line 5" in result.output
+        assert "Log line 5" in result.output, "Result must not be empty"
 
     def test_trace_command(self, runner):
         import click
@@ -422,7 +422,7 @@ class TestCLIMonitoring:
                 click.echo(f"{span}: {duration}")
 
         result = runner.invoke(trace, ["req123"])
-        assert "span_1" in result.output
+        assert "span_1" in result.output, "Result must not be empty"
 
 
 class TestCLIPipelineOperations:
@@ -442,7 +442,7 @@ class TestCLIPipelineOperations:
             click.echo(f"Triggered {pipeline_name}")
 
         result = runner.invoke(trigger, ["test-pipeline"])
-        assert "test-pipeline" in result.output
+        assert "test-pipeline" in result.output, "Result must not be empty"
 
     def test_pipeline_status(self, runner):
         import click
@@ -454,7 +454,7 @@ class TestCLIPipelineOperations:
             click.echo(f'Status: {statuses["success"]}')
 
         result = runner.invoke(status, ["run123"])
-        assert "Status:" in result.output
+        assert "Status:" in result.output, "Result must not be empty"
 
     def test_pipeline_logs(self, runner):
         import click
@@ -466,7 +466,7 @@ class TestCLIPipelineOperations:
             click.echo(f"Logs for {stage} in {run_id}")
 
         result = runner.invoke(logs, ["run123", "build"])
-        assert "Logs for build" in result.output
+        assert "Logs for build" in result.output, "Result must not be empty"
 
 
 class TestCLIDataOperations:
@@ -493,7 +493,7 @@ class TestCLIDataOperations:
                 click.echo(f"Imported {lines} lines")
 
             result = runner.invoke(import_data, [csv_file])
-            assert "Imported" in result.output
+            assert "Imported" in result.output, "Result must not be empty"
         finally:
             os.remove(csv_file)
 
@@ -511,7 +511,7 @@ class TestCLIDataOperations:
                 click.echo("Exported")
 
             result = runner.invoke(export, [output_file])
-            assert result.exit_code == 0
+            assert result.exit_code == 0, "Result must not be empty"
 
     def test_transform_command(self, runner):
         import click
@@ -548,7 +548,7 @@ class TestCLIInteractivity:
                 click.echo("Cancelled")
 
         result = runner.invoke(cmd, input="y\n")
-        assert "Continuing" in result.output
+        assert "Continuing" in result.output, "Result must not be empty"
 
     def test_choice_prompt(self, runner):
         import click
@@ -559,7 +559,7 @@ class TestCLIInteractivity:
             click.echo(f"Selected: {choice}")
 
         result = runner.invoke(cmd, input="a\n")
-        assert "Selected: a" in result.output
+        assert "Selected: a" in result.output, "Result must not be empty"
 
     def test_password_prompt(self, runner):
         import click
@@ -570,7 +570,7 @@ class TestCLIInteractivity:
             click.echo("Password received")
 
         result = runner.invoke(cmd, input="secret\n")
-        assert "Password received" in result.output
+        assert "Password received" in result.output, "Result must not be empty"
 
     def test_table_output(self, runner):
         import click
@@ -583,7 +583,7 @@ class TestCLIInteractivity:
             click.echo("Bob   | 30")
 
         result = runner.invoke(cmd)
-        assert "Alice" in result.output
+        assert "Alice" in result.output, "Result must not be empty"
 
 
 class TestCLIComplexScenarios:
@@ -610,7 +610,7 @@ class TestCLIComplexScenarios:
             click.echo("Step 2")
 
         result = runner.invoke(wizard, ["step1"])
-        assert "Step 1" in result.output
+        assert "Step 1" in result.output, "Result must not be empty"
 
     def test_conditional_command_flow(self, runner):
         import click
@@ -624,7 +624,7 @@ class TestCLIComplexScenarios:
                 click.echo("Slow mode")
 
         result = runner.invoke(cmd, ["--mode", "fast"])
-        assert "Fast mode" in result.output
+        assert "Fast mode" in result.output, "Result must not be empty"
 
     def test_error_recovery_flow(self, runner):
         import click
@@ -639,7 +639,7 @@ class TestCLIComplexScenarios:
                 click.echo("Recovered")
 
         result = runner.invoke(cmd)
-        assert "Recovered" in result.output
+        assert "Recovered" in result.output, "Result must not be empty"
 
     def test_parallel_operations(self, runner):
         import click
@@ -652,4 +652,4 @@ class TestCLIComplexScenarios:
             click.echo("All complete")
 
         result = runner.invoke(cmd)
-        assert "All complete" in result.output
+        assert "All complete" in result.output, "Result must not be empty"

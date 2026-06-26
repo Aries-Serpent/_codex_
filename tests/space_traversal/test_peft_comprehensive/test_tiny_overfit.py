@@ -73,7 +73,7 @@ def test_custom_trainer_tiny_overfit(tmp_path: Path) -> None:
     )
 
     result = run_custom_trainer(model, tokenizer=None, train_ds=dataset, val_ds=None, cfg=cfg)
-    assert result["global_step"] == 10
+    assert result["global_step"] == 10, "Result must not be empty"
     assert result["history"], "loss history should not be empty"
     # Final loss should decrease from initial; exact threshold varies across torch versions
     assert result["history"][-1] < result["history"][0], "loss should decrease during training"

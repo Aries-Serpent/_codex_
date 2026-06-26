@@ -19,9 +19,9 @@ class TestHybridPhysicsOrchestrator:
 
         orchestrator = HybridPhysicsOrchestrator()
 
-        assert orchestrator.classical_orchestrator is None
-        assert orchestrator.advanced_orchestrator is None
-        assert orchestrator.session_id == "hybrid_physics"
+        assert orchestrator.classical_orchestrator is None, "classical_orchestrator is not valid"
+        assert orchestrator.advanced_orchestrator is None, "advanced_orchestrator is not valid"
+        assert orchestrator.session_id == "hybrid_physics", "session_id is not valid"
 
     @patch("agents.physics_integration.ADVANCED_PHYSICS_AVAILABLE", False)
     @patch("agents.physics_integration.PHYSICS_ORCHESTRATOR_AVAILABLE", False)
@@ -31,7 +31,7 @@ class TestHybridPhysicsOrchestrator:
 
         orchestrator = HybridPhysicsOrchestrator(session_id="custom_session")
 
-        assert orchestrator.session_id == "custom_session"
+        assert orchestrator.session_id == "custom_session", "session_id is not valid"
 
     @patch("agents.physics_integration.ADVANCED_PHYSICS_AVAILABLE", False)
     @patch("agents.physics_integration.PHYSICS_ORCHESTRATOR_AVAILABLE", False)
@@ -41,7 +41,7 @@ class TestHybridPhysicsOrchestrator:
 
         orchestrator = HybridPhysicsOrchestrator()
 
-        assert orchestrator.decision_history == []
+        assert orchestrator.decision_history == [], "decision_history is not valid"
 
     @patch("agents.physics_integration.ADVANCED_PHYSICS_AVAILABLE", False)
     @patch("agents.physics_integration.PHYSICS_ORCHESTRATOR_AVAILABLE", False)
@@ -66,10 +66,10 @@ class TestHybridPhysicsOrchestrator:
 
         result = orchestrator.orchestrate_with_all_paradigms(decision_space)
 
-        assert "paradigms_used" in result
-        assert "recommendations" in result
-        assert result["classical_physics"] is None
-        assert result["advanced_physics"] is None
+        assert "paradigms_used" in result, "Result must not be empty"
+        assert "recommendations" in result, "Result must not be empty"
+        assert result["classical_physics"] is None, "Result must not be empty"
+        assert result["advanced_physics"] is None, "Result must not be empty"
 
     @patch("agents.physics_integration.ADVANCED_PHYSICS_AVAILABLE", False)
     @patch("agents.physics_integration.PHYSICS_ORCHESTRATOR_AVAILABLE", False)
@@ -98,7 +98,7 @@ class TestHybridPhysicsOrchestrator:
 
         recommendations = orchestrator._synthesize_recommendations(results)
 
-        assert any("move_forward" in rec for rec in recommendations)
+        assert any("move_forward" in rec for rec in recommendations), "Condition must be true"
 
 
 class TestModuleLevelFlags:
@@ -129,5 +129,5 @@ class TestModuleLevelFlags:
         """Test logger is configured."""
         from agents.physics_integration import logger
 
-        assert logger is not None
-        assert logger.name == "agents.physics_integration"
+        assert logger is not None, "logger must be initialized"
+        assert logger.name == "agents.physics_integration", "name is not valid"

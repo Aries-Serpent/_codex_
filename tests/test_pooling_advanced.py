@@ -62,7 +62,7 @@ class TestPoolingBehavior:
         # Should be able to get a working connection
         conn2 = pooling_db_manager.get_connection()
         cursor = conn2.execute("SELECT 1")
-        assert cursor.fetchone()[0] == 1
+        assert cursor.fetchone()[0] == 1, "curs is not valid"
         pooling_db_manager.close_connection(conn2)
 
     def test_concurrent_pool_access(self, pooling_db_manager):
@@ -81,7 +81,7 @@ class TestPoolingBehavior:
                     # Use connection
                     cursor = conn.execute("SELECT ?", (thread_id,))
                     result = cursor.fetchone()[0]
-                    assert result == thread_id
+                    assert result == thread_id, "Result must not be empty"
 
                     # Return to pool
                     pooling_db_manager.close_connection(conn)
@@ -107,7 +107,7 @@ class TestPoolingBehavior:
         total_uses = len(connection_ids)
 
         # Should have reused connections (fewer unique than total uses)
-        assert (
+        assert (, "Condition must be true"
             unique_connections < total_uses
         ), f"Expected connection reuse (unique: {unique_connections}, uses: {total_uses})"
 
@@ -159,7 +159,7 @@ class TestPoolingParametrized:
         conn = db.get_connection()
         cursor = conn.execute("SELECT 1")
         result = cursor.fetchone()[0]
-        assert result == 1
+        assert result == 1, "Result must not be empty"
 
         db.close_connection(conn)
 

@@ -45,10 +45,10 @@ class TestCompressSkill:
                 result = compress_skill("test.compress.skill", out_dir=out_dir)
 
         assert isinstance(result, CompressionResult)
-        assert Path(result.archive_path).exists()
-        assert result.size_before > 0
-        assert result.size_after > 0
-        assert result.compression_ratio > 0  # valid ratio produced
+        assert Path(result.archive_path).exists(), "Result must not be empty"
+        assert result.size_before > 0, "size_before must be greater than zero"
+        assert result.size_after > 0, "size_after must be greater than zero"
+        assert result.compression_ratio > 0, "compression_ratio must be greater than zero"
 
     def test_compress_result_has_correct_skill_id(self, tmp_path):
         skill_dir = _make_skill_dir(tmp_path / "skills", "my.test.skill")
@@ -60,8 +60,8 @@ class TestCompressSkill:
             with patch("codex.skills.compression._7Z_BIN", None):
                 result = compress_skill("my.test.skill", out_dir=out_dir)
 
-        assert result.skill_id == "my.test.skill"
-        assert result.version == "1.0.0"
+        assert result.skill_id == "my.test.skill", "Result must not be empty"
+        assert result.version == "1.0.0", "Result must not be empty"
 
     def test_compress_missing_skill_raises(self, tmp_path):
         from unittest.mock import patch
@@ -83,8 +83,8 @@ class TestCompressSkill:
                 )
 
         manifest_data = yaml.safe_load((skill_dir / "manifest.yaml").read_text())
-        assert manifest_data["compression"]["size_before"] == result.size_before
-        assert manifest_data["compression"]["size_after"] == result.size_after
+        assert manifest_data["compression"]["size_before"] == result.size_before, "Result must not be empty"
+        assert manifest_data["compression"]["size_after"] == result.size_after, "Result must not be empty"
 
 
 class TestInstallSkill:
@@ -101,8 +101,8 @@ class TestInstallSkill:
         install_root = tmp_path / "installed"
         install_root.mkdir()
         dest = install_skill(archive_path, install_root=install_root)
-        assert dest.exists()
-        assert (dest / "manifest.yaml").exists()
+        assert dest.exists(), "Condition must be true"
+        assert (dest / "manifest.yaml").exists(), "Condition must be true"
 
     def test_install_missing_archive_raises(self, tmp_path):
         with pytest.raises(FileNotFoundError):

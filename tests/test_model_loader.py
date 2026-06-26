@@ -41,8 +41,8 @@ def test_load_model_without_lora(monkeypatch):
     monkeypatch.setattr(mod, "AutoModelForCausalLM", MockAutoModel)
     model = mod.load_model_with_optional_lora("gpt2", lora_enabled=False)
 
-    assert model is not None
-    assert called["args"][0] == "gpt2"
+    assert model is not None, "model must be initialized"
+    assert called["args"][0] == "gpt2", "Condition must be true"
     # Verify kwargs are passed through appropriately
     assert isinstance(called["args"][1], dict)
 
@@ -67,7 +67,7 @@ def test_lora_disabled_returns_base_model(monkeypatch):
     )
 
     model = mod.load_model_with_optional_lora("model_stub", lora_enabled=False)
-    assert model is fake_model
+    assert model is fake_model, "model is not valid"
 
 
 def test_lora_missing_dependency_fallback(monkeypatch):
@@ -92,7 +92,7 @@ def test_lora_missing_dependency_fallback(monkeypatch):
     monkeypatch.setattr(mod, "_maybe_import_peft", lambda: (None, None, None))
 
     model = mod.load_model_with_optional_lora("model_stub", lora_enabled=True)
-    assert model is fake_model
+    assert model is fake_model, "model is not valid"
 
 
 def test_lora_enabled_with_peft_available(monkeypatch, tmp_path):
@@ -133,7 +133,7 @@ def test_lora_enabled_with_peft_available(monkeypatch, tmp_path):
         lora_path=str(lora_file),
     )
 
-    assert model is lora_model
+    assert model is lora_model, "model is not valid"
 
 
 def test_lora_remote_adapter_id_allowed(monkeypatch):
@@ -160,7 +160,7 @@ def test_lora_remote_adapter_id_allowed(monkeypatch):
         "model_stub", lora_enabled=True, lora_path="user/my-lora"
     )
 
-    assert model is lora_model
+    assert model is lora_model, "model is not valid"
 
 
 def test_model_loading_with_custom_kwargs(monkeypatch):
@@ -194,7 +194,7 @@ def test_model_loading_with_custom_kwargs(monkeypatch):
 
     # Verify custom kwargs were passed through
     for key, value in custom_kwargs.items():
-        assert called_kwargs.get(key) == value
+        assert called_kwargs.get(key) == value, "Value must be initialized"
 
 
 def test_error_handling_during_model_load(monkeypatch):
@@ -246,7 +246,7 @@ def test_model_loading_parameterized(monkeypatch, lora_enabled):
     monkeypatch.setattr(mod, "_maybe_import_peft", lambda: (None, None, None))
 
     model = mod.load_model_with_optional_lora("test_model", lora_enabled=lora_enabled)
-    assert model is test_model
+    assert model is test_model, "model is not valid"
 
 
 def test_device_map_passes_through(monkeypatch):
@@ -269,7 +269,7 @@ def test_device_map_passes_through(monkeypatch):
     )
 
     mod.load_model_with_optional_lora("m", device_map="sequential")
-    assert captured["device_map"] == "sequential"
+    assert captured["device_map"] == "sequential", "Condition must be true"
 
 
 def test_missing_lora_path_raises(tmp_path, monkeypatch):

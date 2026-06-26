@@ -27,4 +27,4 @@ def test_wrapper_logs_messages(tmp_path):
     log_message(sid, "assistant", messages[1], db_path=str(db))
     end_session(sid, db_path=str(db))
     expected_rows = 2 + len(messages)  # start/end plus one row per message
-    assert _count(db) == expected_rows
+    assert _count(db) == expected_rows, "Count must be greater than zero"

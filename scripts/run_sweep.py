@@ -38,8 +38,8 @@ def _safe_yaml_load(text: str) -> dict[str, object]:
         from yaml import YAMLError, safe_load  # type: ignore
     except ModuleNotFoundError as e:
         error_type = type(e).__name__
-        logger.debug(f"ModuleNotFoundError: <ERROR_TYPE>")
-        logger.warning(f"ModuleNotFoundError: <ERROR_TYPE>", exc_info=True)
+        logger.debug("ModuleNotFoundError: <ERROR_TYPE>")
+        logger.warning("ModuleNotFoundError: <ERROR_TYPE>", exc_info=True)
         try:
             data = _minimal_yaml_load(text)
         except Exception as exc:  # pragma: no cover - defensive

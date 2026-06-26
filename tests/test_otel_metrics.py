@@ -26,31 +26,31 @@ class TestOtelMetricsModule:
         assert isinstance(workflow_coherence_score, Histogram)
 
     def test_workflow_duration_name(self) -> None:
-        assert workflow_duration.name == "workflow.job.duration"
+        assert workflow_duration.name == "workflow.job.duration", "name is not valid"
 
     def test_workflow_step_duration_name(self) -> None:
-        assert workflow_step_duration.name == "workflow.step.duration"
+        assert workflow_step_duration.name == "workflow.step.duration", "name is not valid"
 
     def test_workflow_coherence_score_name(self) -> None:
-        assert workflow_coherence_score.name == "workflow.coherence.score"
+        assert workflow_coherence_score.name == "workflow.coherence.score", "name is not valid"
 
     def test_workflow_duration_unit(self) -> None:
-        assert workflow_duration.unit == "s"
+        assert workflow_duration.unit == "s", "unit is not valid"
 
     def test_workflow_step_duration_unit(self) -> None:
-        assert workflow_step_duration.unit == "s"
+        assert workflow_step_duration.unit == "s", "unit is not valid"
 
     def test_workflow_coherence_score_unit(self) -> None:
-        assert workflow_coherence_score.unit == "1"
+        assert workflow_coherence_score.unit == "1", "unit is not valid"
 
     def test_workflow_duration_registered_in_registry(self) -> None:
-        assert metrics.get("workflow.job.duration") is workflow_duration
+        assert metrics.get("workflow.job.duration") is workflow_duration, "Condition must be true"
 
     def test_workflow_step_duration_registered_in_registry(self) -> None:
-        assert metrics.get("workflow.step.duration") is workflow_step_duration
+        assert metrics.get("workflow.step.duration") is workflow_step_duration, "Condition must be true"
 
     def test_workflow_coherence_score_registered_in_registry(self) -> None:
-        assert metrics.get("workflow.coherence.score") is workflow_coherence_score
+        assert metrics.get("workflow.coherence.score") is workflow_coherence_score, "Condition must be true"
 
     def test_observe_records_value(self) -> None:
         # Create a fresh histogram to avoid cross-test interference.
@@ -58,15 +58,15 @@ class TestOtelMetricsModule:
         h.observe(1.5)
         h.observe(2.5)
         snap = h.snapshot()
-        assert snap["count"] == 2
-        assert abs(snap["sum"] - 4.0) < 1e-9
-        assert abs(snap["avg"] - 2.0) < 1e-9
+        assert snap["count"] == 2, "Count must be greater than zero"
+        assert abs(snap["sum"] - 4.0) < 1e-9, "Condition must be true"
+        assert abs(snap["avg"] - 2.0) < 1e-9, "Condition must be true"
 
     def test_observe_empty_snapshot(self) -> None:
         h = Histogram(name="test.empty", description="test", unit="s")
         snap = h.snapshot()
-        assert snap["count"] == 0
-        assert snap["sum"] == 0.0
+        assert snap["count"] == 0, "Count must be greater than zero"
+        assert snap["sum"] == 0.0, "Condition must be true"
 
 
 class TestComputeCoherence:
@@ -115,6 +115,6 @@ class TestComputeCoherence:
             {"lint": "success", "test": "success", "build": "success"},
         )
         # Score should be 2/3 ≈ 0.667
-        assert abs(score - 2 / 3) < 1e-9
+        assert abs(score - 2 / 3) < 1e-9, "Condition must be true"
         # Observation must not raise
         workflow_coherence_score.observe(score)

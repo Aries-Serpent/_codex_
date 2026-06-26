@@ -16,14 +16,14 @@ class TestRetryConfiguration:
         default_retries = 3
         config = {"retries": default_retries}
 
-        assert config["retries"] == 3
+        assert config["retries"] == 3, "Condition must be true"
 
     def test_custom_retry_count(self):
         """Test custom retry count configuration."""
         custom_retries = 5
         config = {"retries": custom_retries}
 
-        assert config["retries"] == 5
+        assert config["retries"] == 5, "Condition must be true"
 
     def test_retry_count_bounds(self):
         """Test retry count bounds validation."""
@@ -31,14 +31,14 @@ class TestRetryConfiguration:
         max_retries = 10
 
         for retries in range(min_retries, max_retries + 1):
-            assert min_retries <= retries <= max_retries
+            assert min_retries <= retries <= max_retries, "min_retries is not valid"
 
     def test_disable_retries(self):
         """Test disabling retries."""
         config = {"retries": 0, "enabled": False}
 
-        assert config["retries"] == 0
-        assert not config["enabled"]
+        assert config["retries"] == 0, "Condition must be true"
+        assert not config["enabled"], "Condition must be true"
 
     def test_retry_on_specific_exceptions(self):
         """Test retry configuration for specific exception types."""
@@ -50,8 +50,8 @@ class TestRetryConfiguration:
 
         config = {"retry_on": retry_exceptions}
 
-        assert "TimeoutError" in config["retry_on"]
-        assert "ValueError" not in config["retry_on"]
+        assert "TimeoutError" in config["retry_on"], "Error should be raised or set"
+        assert "ValueError" not in config["retry_on"], "Value must be initialized"
 
 
 class TestBackoffStrategies:
@@ -64,7 +64,7 @@ class TestBackoffStrategies:
 
         delays = [delay for _ in attempts]
 
-        assert all(d == 1.0 for d in delays)
+        assert all(d == 1.0 for d in delays), "d is not valid"
 
     def test_linear_backoff(self):
         """Test linear backoff strategy."""
@@ -98,8 +98,8 @@ class TestBackoffStrategies:
         jitter = random.uniform(0, jitter_factor * calculated_delay)
         final_delay = calculated_delay + jitter
 
-        assert final_delay >= calculated_delay
-        assert final_delay <= calculated_delay * (1 + jitter_factor)
+        assert final_delay >= calculated_delay, "final_delay must be greater than zero"
+        assert final_delay <= calculated_delay * (1 + jitter_factor), "final_delay is not valid"
 
     def test_capped_exponential_backoff(self):
         """Test exponential backoff with maximum cap."""
@@ -148,8 +148,8 @@ class TestRetryExecution:
             # Simulate failure
             result = "fail"
 
-        assert result == "pass"
-        assert attempts == 3  # Failed 2, succeeded on 3rd
+        assert result == "pass", "Result must not be empty"
+        assert attempts == 3, "attempts is not valid"
 
     def test_exhaust_all_retries(self):
         """Test behavior when all retries are exhausted."""
@@ -161,8 +161,8 @@ class TestRetryExecution:
             # Always fail
             success = False
 
-        assert not success
-        assert attempts == 4  # 1 initial + 3 retries
+        assert not success, "Condition must be true"
+        assert attempts == 4, "attempts is not valid"
 
     def test_success_on_first_attempt(self):
         """Test no retries needed on first success."""
@@ -176,8 +176,8 @@ class TestRetryExecution:
             result = "pass"
             break
 
-        assert result == "pass"
-        assert attempts == 1
+        assert result == "pass", "Result must not be empty"
+        assert attempts == 1, "attempts is not valid"
 
     def test_track_retry_attempts(self):
         """Test tracking of retry attempts."""
@@ -195,8 +195,8 @@ class TestRetryExecution:
             if attempt_log[-1]["result"] == "pass":
                 break
 
-        assert len(attempt_log) == 3
-        assert attempt_log[-1]["result"] == "pass"
+        assert len(attempt_log) == 3, "Attempt_log must not be empty"
+        assert attempt_log[-1]["result"] == "pass", "Result must not be empty"
 
     def test_selective_retry_by_error_type(self):
         """Test selective retry based on error type."""
@@ -211,7 +211,7 @@ class TestRetryExecution:
 
         for error_type, expected_retry in errors_encountered:
             should_retry = error_type in retryable_errors
-            assert should_retry == expected_retry
+            assert should_retry == expected_retry, "should_retry is not valid"
 
 
 class TestRetryMetrics:
@@ -229,7 +229,7 @@ class TestRetryMetrics:
         total_attempts = sum(r["attempts"] for r in test_results)
         total_retries = total_attempts - len(test_results)  # Subtract first attempts
 
-        assert total_retries == 3  # (3-1) + (2-1) = 3 retries
+        assert total_retries == 3, "total_retries is not valid"
 
     def test_calculate_retry_success_rate(self):
         """Test calculation of retry success rate."""
@@ -245,7 +245,7 @@ class TestRetryMetrics:
 
         retry_success_rate = len(successful_retries) / len(retried_tests)
 
-        assert retry_success_rate == 2 / 3
+        assert retry_success_rate == 2 / 3, "retry_success_rate is not valid"
 
     def test_track_retry_reasons(self):
         """Test tracking reasons for retries."""
@@ -259,8 +259,8 @@ class TestRetryMetrics:
         total_retries = sum(retry_reasons.values())
         most_common_reason = max(retry_reasons, key=retry_reasons.get)
 
-        assert total_retries == 11
-        assert most_common_reason == "timeout"
+        assert total_retries == 11, "total_retries is not valid"
+        assert most_common_reason == "timeout", "most_common_reason is not valid"
 
     def test_retry_time_overhead(self):
         """Test measurement of retry time overhead."""
@@ -275,7 +275,7 @@ class TestRetryMetrics:
         single_run_time = sum(t["time"] / t["attempts"] for t in test_times)
         retry_overhead = total_time - single_run_time
 
-        assert retry_overhead > 0
+        assert retry_overhead > 0, "retry_overhead must be greater than zero"
 
     def test_retry_effectiveness_score(self):
         """Test calculation of retry effectiveness."""
@@ -285,7 +285,7 @@ class TestRetryMetrics:
 
         effectiveness = recovered_by_retry / initial_failures
 
-        assert effectiveness == 0.7
+        assert effectiveness == 0.7, "effectiveness is not valid"
 
 
 class TestRetryIntegration:
@@ -300,8 +300,8 @@ class TestRetryIntegration:
             "reruns_delay": 1,
         }
 
-        assert marker_config["reruns"] == 3
-        assert marker_config["reruns_delay"] == 1
+        assert marker_config["reruns"] == 3, "Condition must be true"
+        assert marker_config["reruns_delay"] == 1, "Condition must be true"
 
     def test_retry_with_cleanup(self):
         """Test retry with cleanup between attempts."""
@@ -319,7 +319,7 @@ class TestRetryIntegration:
             if retry == 2:
                 break
 
-        assert state["cleanup_count"] == 2  # Cleanup before attempts 2 and 3
+        assert state["cleanup_count"] == 2, "Count must be greater than zero"
 
     def test_retry_preserves_fixture_state(self):
         """Test that retries properly handle fixture state."""
@@ -339,7 +339,7 @@ class TestRetryIntegration:
             if result == "pass":
                 break
 
-        assert len(fixture_state) == 6  # 3 setups + 3 teardowns
+        assert len(fixture_state) == 6, "Fixture_state must not be empty"
 
     def test_retry_output_capture(self):
         """Test output capture across retries."""
@@ -352,9 +352,9 @@ class TestRetryIntegration:
             if retry == 1:
                 break
 
-        assert len(captured_outputs) == 2
-        assert "Attempt 1" in captured_outputs[0]
-        assert "Attempt 2" in captured_outputs[1]
+        assert len(captured_outputs) == 2, "Captured_outputs must not be empty"
+        assert "Attempt 1" in captured_outputs[0], "Condition must be true"
+        assert "Attempt 2" in captured_outputs[1], "Condition must be true"
 
     def test_retry_timeout_handling(self):
         """Test timeout handling during retries."""

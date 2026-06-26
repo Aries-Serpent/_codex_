@@ -53,8 +53,8 @@ class TestSeedRegistry:
         test_state = (42, 0, 0)
         register_seed_snapshot(python_state=test_state)
         snapshot = get_last_seed_snapshot()
-        assert snapshot["python"] == test_state
-        assert snapshot["numpy"] is None
+        assert snapshot["python"] == test_state, "Condition must be true"
+        assert snapshot["numpy"] is None, "Condition must be true"
 
     def test_register_seed_snapshot_numpy_state(self):
         """Test registering NumPy RNG state."""
@@ -66,7 +66,7 @@ class TestSeedRegistry:
         test_state = {"type": "numpy", "data": [1, 2, 3]}
         register_seed_snapshot(numpy_state=test_state)
         snapshot = get_last_seed_snapshot()
-        assert snapshot["numpy"] == test_state
+        assert snapshot["numpy"] == test_state, "Condition must be true"
 
     def test_register_seed_snapshot_torch_state(self):
         """Test registering PyTorch RNG state."""
@@ -78,7 +78,7 @@ class TestSeedRegistry:
         test_state = {"type": "torch", "data": [1, 2, 3]}
         register_seed_snapshot(torch_state=test_state)
         snapshot = get_last_seed_snapshot()
-        assert snapshot["torch"] == test_state
+        assert snapshot["torch"] == test_state, "Condition must be true"
 
     def test_register_seed_snapshot_torch_cuda_state(self):
         """Test registering PyTorch CUDA RNG state."""
@@ -90,7 +90,7 @@ class TestSeedRegistry:
         test_state = {"type": "torch_cuda", "data": [1, 2, 3]}
         register_seed_snapshot(torch_cuda_state=test_state)
         snapshot = get_last_seed_snapshot()
-        assert snapshot["torch_cuda"] == test_state
+        assert snapshot["torch_cuda"] == test_state, "Condition must be true"
 
     def test_register_all_states_simultaneously(self):
         """Test registering all RNG states at once."""
@@ -112,10 +112,10 @@ class TestSeedRegistry:
         )
         snapshot = get_last_seed_snapshot()
 
-        assert snapshot["python"] == py_state
-        assert snapshot["numpy"] == np_state
-        assert snapshot["torch"] == torch_state
-        assert snapshot["torch_cuda"] == cuda_state
+        assert snapshot["python"] == py_state, "Condition must be true"
+        assert snapshot["numpy"] == np_state, "Condition must be true"
+        assert snapshot["torch"] == torch_state, "Condition must be true"
+        assert snapshot["torch_cuda"] == cuda_state, "Condition must be true"
 
     def test_register_overwrites_previous_state(self):
         """Test that new registrations overwrite previous ones."""
@@ -140,7 +140,7 @@ class TestSeedRegistry:
 
         snapshot = get_last_seed_snapshot()
         assert isinstance(snapshot, dict)
-        assert len(snapshot) == 4
+        assert len(snapshot) == 4, "Snapshot must not be empty"
         assert all(k in snapshot for k in ["python", "numpy", "torch", "torch_cuda"])
 
     def test_get_last_seed_snapshot_returns_copy(self):
@@ -173,14 +173,14 @@ class TestMetricsRegistry:
         """Test that metrics registry can be imported."""
         from codex_ml.registry.metrics import MetricsRegistry
 
-        assert MetricsRegistry is not None
+        assert MetricsRegistry is not None, "MetricsRegistry must be initialized"
 
     def test_metrics_registry_init(self):
         """Test MetricsRegistry initialization."""
         from codex_ml.registry.metrics import MetricsRegistry
 
         registry = MetricsRegistry()
-        assert registry is not None
+        assert registry is not None, "registry must be initialized"
 
     def test_metrics_registry_register_metric(self):
         """Test registering a metric."""
@@ -193,7 +193,7 @@ class TestMetricsRegistry:
 
         try:
             registry.register("dummy", dummy_metric)
-            assert True
+            assert True, "True is not valid"
         except Exception as e:
             pytest.fail(f"Failed to register metric: {e}")
 
@@ -209,7 +209,7 @@ class TestMetricsRegistry:
         try:
             registry.register("dummy", dummy_metric)
             retrieved = registry.get("dummy")
-            assert retrieved is not None
+            assert retrieved is not None, "retrieved must be initialized"
         except Exception as _err:
             pass  # Registry might not have get method yet
 
@@ -240,7 +240,7 @@ class TestMetricsRegistry:
             registry.register("metric", metric1)
             # This might raise an error or overwrite
             registry.register("metric", metric2)
-            assert True  # Both registration styles are valid
+            assert True, "True is not valid"
         except (IOError, OSError) as _err:
             pass  # Error on duplicate is also valid
 
@@ -257,7 +257,7 @@ class TestOptional:
         """Test that optional module can be imported."""
         from codex_ml.utils.optional import get_optional_module
 
-        assert get_optional_module is not None
+        assert get_optional_module is not None, "get_optional_module must be initialized"
 
     def test_optional_get_existing_module(self):
         """Test getting an existing module."""
@@ -265,7 +265,7 @@ class TestOptional:
 
         try:
             json_module = get_optional_module("json")
-            assert json_module is not None
+            assert json_module is not None, "json_module must be initialized"
             assert hasattr(json_module, "loads")
         except (AttributeError, OSError, RuntimeError):
             pass
@@ -288,7 +288,7 @@ class TestOptional:
         try:
             default = {"default": "value"}
             result = get_optional_module("nonexistent_xyz", default=default)
-            assert result is not None
+            assert result is not None, "result must be initialized"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -305,7 +305,7 @@ class TestOptionalDependencies:
         """Test importing optional_dependencies module."""
         from codex_ml.utils.optional_dependencies import check_optional
 
-        assert check_optional is not None
+        assert check_optional is not None, "check_optional must be initialized"
 
     def test_check_optional_builtin(self):
         """Test checking for built-in module."""
@@ -313,7 +313,7 @@ class TestOptionalDependencies:
 
         try:
             result = check_optional("sys")
-            assert result is True
+            assert result is True, "Result must not be empty"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -323,7 +323,7 @@ class TestOptionalDependencies:
 
         try:
             result = check_optional("nonexistent_xyz_module_123")
-            assert result is False
+            assert result is False, "Result must not be empty"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -333,7 +333,7 @@ class TestOptionalDependencies:
 
         try:
             result = check_optional("sys", ">=0")
-            assert result is True or result is False
+            assert result is True or result is False, "Result must not be empty"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -350,7 +350,7 @@ class TestSeed:
         """Test importing seed module."""
         from codex_ml.utils.seed import set_seed
 
-        assert set_seed is not None
+        assert set_seed is not None, "set_seed must be initialized"
 
     def test_set_seed_with_integer(self):
         """Test setting seed with integer value."""
@@ -358,7 +358,7 @@ class TestSeed:
 
         try:
             set_seed(42)
-            assert True
+            assert True, "True is not valid"
         except Exception as e:
             pytest.fail(f"Failed to set seed: {e}")
 
@@ -368,7 +368,7 @@ class TestSeed:
 
         try:
             set_seed(0)
-            assert True
+            assert True, "True is not valid"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -378,7 +378,7 @@ class TestSeed:
 
         try:
             set_seed(2**31 - 1)
-            assert True
+            assert True, "True is not valid"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -394,7 +394,7 @@ class TestSeed:
         set_seed(42)
         val2 = random.random()
 
-        assert val1 == val2
+        assert val1 == val2, "val1 is not valid"
 
     def test_set_seed_with_devices(self):
         """Test setting seed with specific devices."""
@@ -403,7 +403,7 @@ class TestSeed:
         try:
             # Try setting with devices parameter if supported
             set_seed(42)
-            assert True
+            assert True, "True is not valid"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -420,7 +420,7 @@ class TestHFRevision:
         """Test importing hf_revision module."""
         from codex_ml.utils.hf_revision import normalize_hf_revision
 
-        assert normalize_hf_revision is not None
+        assert normalize_hf_revision is not None, "normalize_hf_revision must be initialized"
 
     def test_normalize_hf_revision_with_tag(self):
         """Test normalizing HF revision with tag."""
@@ -428,7 +428,7 @@ class TestHFRevision:
 
         try:
             result = normalize_hf_revision("v1.0")
-            assert result is not None
+            assert result is not None, "result must be initialized"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -438,7 +438,7 @@ class TestHFRevision:
 
         try:
             result = normalize_hf_revision("main")
-            assert result is not None
+            assert result is not None, "result must be initialized"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -448,7 +448,7 @@ class TestHFRevision:
 
         try:
             result = normalize_hf_revision("abc123def456")
-            assert result is not None
+            assert result is not None, "result must be initialized"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -465,7 +465,7 @@ class TestYamlSupport:
         """Test importing yaml_support module."""
         from codex_ml.utils.yaml_support import load_yaml
 
-        assert load_yaml is not None
+        assert load_yaml is not None, "load_yaml must be initialized"
 
     def test_load_yaml_from_string(self):
         """Test loading YAML from string."""
@@ -474,7 +474,7 @@ class TestYamlSupport:
         try:
             yaml_str = "key: value\nnested:\n  key: value2"
             result = load_yaml(yaml_str)
-            assert result is not None
+            assert result is not None, "result must be initialized"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -485,7 +485,7 @@ class TestYamlSupport:
         try:
             yaml_str = "items:\n  - item1\n  - item2\n  - item3"
             result = load_yaml(yaml_str)
-            assert result is not None
+            assert result is not None, "result must be initialized"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -496,7 +496,7 @@ class TestYamlSupport:
         try:
             result = load_yaml("")
             # Should return None or empty dict
-            assert result is None or result == {}
+            assert result is None or result == {}, "Result must not be empty"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -515,7 +515,7 @@ class TestErrorPathCoverage:
 
         try:
             register_seed_snapshot(python_state=123)  # Invalid type
-            assert True
+            assert True, "True is not valid"
         except (TypeError, ValueError):
             pass  # Expected
 
@@ -525,7 +525,7 @@ class TestErrorPathCoverage:
 
         try:
             result = get_optional_module(None)
-            assert result is None or False
+            assert result is None or False, "Result must not be empty"
         except (TypeError, AttributeError):
             pass  # Expected
 
@@ -535,7 +535,7 @@ class TestErrorPathCoverage:
 
         try:
             set_seed(-1)
-            assert True  # Some implementations allow negative seeds
+            assert True, "True is not valid"
         except (ValueError, RuntimeError):
             pass  # Also valid
 
@@ -546,7 +546,7 @@ class TestErrorPathCoverage:
         registry = MetricsRegistry()
         try:
             registry.register("metric", None)
-            assert True  # Might allow None
+            assert True, "True is not valid"
         except (TypeError, ValueError):
             pass  # Or reject None
 
@@ -583,7 +583,7 @@ class TestEdgeCases:
         try:
             yaml_str = 'text: "value with: special | chars"'
             result = load_yaml(yaml_str)
-            assert result is not None
+            assert result is not None, "result must be initialized"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -593,7 +593,7 @@ class TestEdgeCases:
 
         try:
             result = normalize_hf_revision("v1.0-beta+build.123")
-            assert result is not None
+            assert result is not None, "result must be initialized"
         except (AttributeError, OSError, RuntimeError):
             pass
 

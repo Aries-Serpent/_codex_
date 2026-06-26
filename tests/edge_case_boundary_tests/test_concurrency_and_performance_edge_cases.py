@@ -43,7 +43,7 @@ class TestFileSystemOperations:
         is_symlink = True  # Hypothetically
 
         # Assert
-        assert is_symlink
+        assert is_symlink, "is_symlink is not valid"
 
     def test_permission_denial_handling(self):
         """Test handling of permission denied errors."""
@@ -54,7 +54,7 @@ class TestFileSystemOperations:
         can_read = file_readable
 
         # Assert
-        assert not can_read
+        assert not can_read, "Condition must be true"
 
     def test_disk_space_exhaustion(self):
         """Test handling of disk space exhaustion."""
@@ -66,7 +66,7 @@ class TestFileSystemOperations:
         has_space = available_space > required_space
 
         # Assert
-        assert not has_space
+        assert not has_space, "Condition must be true"
 
     def test_large_file_handling(self):
         """Test handling of large files."""
@@ -78,7 +78,7 @@ class TestFileSystemOperations:
         exceeds_limit = file_size > max_file_size
 
         # Assert
-        assert exceeds_limit
+        assert exceeds_limit, "exceeds_limit is not valid"
 
     def test_concurrent_file_access(self):
         """Test concurrent access to same file."""
@@ -98,7 +98,7 @@ class TestFileSystemOperations:
             t.join()
 
         # Assert
-        assert access_count[0] == 5
+        assert access_count[0] == 5, "Count must be greater than zero"
 
     def test_file_descriptor_limit(self):
         """Test file descriptor limit handling."""
@@ -110,7 +110,7 @@ class TestFileSystemOperations:
         exceeds_limit = open_descriptors > max_descriptors
 
         # Assert
-        assert exceeds_limit
+        assert exceeds_limit, "exceeds_limit is not valid"
 
 
 class TestConcurrencyPrimitives:
@@ -135,7 +135,7 @@ class TestConcurrencyPrimitives:
             t.join()
 
         # Assert
-        assert len(acquired) == 3
+        assert len(acquired) == 3, "Acquired must not be empty"
 
     def test_semaphore_permit_exhaustion(self):
         """Test semaphore permit exhaustion."""
@@ -148,7 +148,7 @@ class TestConcurrencyPrimitives:
         can_acquire = semaphore.acquire(blocking=False)
 
         # Assert
-        assert not can_acquire
+        assert not can_acquire, "Condition must be true"
 
     def test_condition_variable_signaling(self):
         """Test condition variable signaling."""
@@ -172,7 +172,7 @@ class TestConcurrencyPrimitives:
         thread.join()
 
         # Assert
-        assert signaled[0]
+        assert signaled[0], "Condition must be true"
 
     def test_barrier_synchronization(self):
         """Test barrier synchronization."""
@@ -192,7 +192,7 @@ class TestConcurrencyPrimitives:
             t.join()
 
         # Assert
-        assert len(ready) == 3
+        assert len(ready) == 3, "Ready must not be empty"
 
     def test_read_write_lock_fairness(self):
         """Test read-write lock fairness."""
@@ -203,7 +203,7 @@ class TestConcurrencyPrimitives:
         can_read = True
 
         # Assert
-        assert can_read
+        assert can_read, "can_read is not valid"
 
 
 class TestRaceConditions:
@@ -224,7 +224,7 @@ class TestRaceConditions:
             balance -= 60
 
         # Assert (in real scenario without lock, would be negative)
-        assert balance < 100
+        assert balance < 100, "balance is not valid"
 
     def test_lost_update_scenario(self):
         """Test lost update race condition."""
@@ -237,7 +237,7 @@ class TestRaceConditions:
         counter += 1
 
         # Assert
-        assert counter == 2
+        assert counter == 2, "Count must be greater than zero"
 
     def test_atomic_operation_importance(self):
         """Test importance of atomic operations."""
@@ -259,7 +259,7 @@ class TestRaceConditions:
             t.join()
 
         # Assert
-        assert value[0] == 100
+        assert value[0] == 100, "Value must be initialized"
 
     def test_double_checked_locking(self):
         """Test double-checked locking pattern."""
@@ -274,7 +274,7 @@ class TestRaceConditions:
                     instance[0] = "singleton"
 
         # Assert
-        assert instance[0] == "singleton"
+        assert instance[0] == "singleton", "Condition must be true"
 
 
 class TestPerformanceBoundaries:
@@ -290,7 +290,7 @@ class TestPerformanceBoundaries:
         has_sufficient_memory = required_memory <= available_memory
 
         # Assert
-        assert has_sufficient_memory
+        assert has_sufficient_memory, "has_sufficient_memory is not valid"
 
     def test_memory_limit_exceeded(self):
         """Test operation exceeding memory limit."""
@@ -302,7 +302,7 @@ class TestPerformanceBoundaries:
         has_sufficient_memory = required_memory <= available_memory
 
         # Assert
-        assert not has_sufficient_memory
+        assert not has_sufficient_memory, "Condition must be true"
 
     def test_cpu_time_boundary(self):
         """Test operation at CPU time boundary."""
@@ -314,7 +314,7 @@ class TestPerformanceBoundaries:
         within_limit = operation_time <= cpu_time_limit
 
         # Assert
-        assert within_limit
+        assert within_limit, "within_limit is not valid"
 
     def test_cache_coherency_boundary(self):
         """Test cache coherency at boundary."""
@@ -326,7 +326,7 @@ class TestPerformanceBoundaries:
         fits_in_cache = data_size <= cache_size
 
         # Assert
-        assert fits_in_cache
+        assert fits_in_cache, "fits_in_cache is not valid"
 
     def test_index_out_of_bounds_boundary(self):
         """Test array access at bounds."""
@@ -340,8 +340,8 @@ class TestPerformanceBoundaries:
         can_access_invalid = invalid_index < len(arr)
 
         # Assert
-        assert can_access_valid
-        assert not can_access_invalid
+        assert can_access_valid, "can_access_valid is not valid"
+        assert not can_access_invalid, "Condition must be true"
 
     def test_stack_overflow_boundary(self):
         """Test recursion at stack limit."""
@@ -356,7 +356,7 @@ class TestPerformanceBoundaries:
         # Assert - should handle deep recursion gracefully
         try:
             result = recursive(100)  # Well under limit
-            assert result > 0
+            assert result > 0, "result must be greater than zero"
         except RecursionError:
             pytest.fail("Should not overflow at reasonable depth")
 
@@ -370,7 +370,7 @@ class TestPerformanceBoundaries:
         at_limit = actual_throughput >= max_throughput
 
         # Assert
-        assert at_limit
+        assert at_limit, "at_limit is not valid"
 
     def test_latency_boundary(self):
         """Test latency at boundary."""
@@ -382,7 +382,7 @@ class TestPerformanceBoundaries:
         at_limit = actual_latency >= max_latency
 
         # Assert
-        assert at_limit
+        assert at_limit, "at_limit is not valid"
 
 
 class TestComplexScenarios:
@@ -410,7 +410,7 @@ class TestComplexScenarios:
             t.join()
 
         # Assert
-        assert completed[0] == num_threads
+        assert completed[0] == num_threads, "Condition must be true"
 
     def test_stress_test_at_boundaries(self):
         """Test system behavior under stress at boundaries."""
@@ -434,8 +434,8 @@ class TestComplexScenarios:
         elapsed = time.time() - start_time
 
         # Assert
-        assert counter[0] == 10
-        assert elapsed < 5  # Should complete within 5 seconds
+        assert counter[0] == 10, "Count must be greater than zero"
+        assert elapsed < 5, "elapsed is not valid"
 
     def test_cascading_resource_limits(self):
         """Test cascading effect of resource limits."""
@@ -450,5 +450,5 @@ class TestComplexScenarios:
         connections_available = max_connections - connections_used
 
         # Assert
-        assert memory_available > 0
-        assert connections_available > 0
+        assert memory_available > 0, "memory_available must be greater than zero"
+        assert connections_available > 0, "connections_available must be greater than zero"

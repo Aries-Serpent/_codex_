@@ -27,7 +27,7 @@ class StubService:
 
 def _parse_json_from_output(text: str) -> dict:
     json_start = text.find("{")
-    assert json_start != -1
+    assert json_start != -1, "json_start is not valid"
     return json.loads(text[json_start:])
 
 
@@ -45,10 +45,10 @@ def test_cli_config_show_outputs_json(tmp_path: Path) -> None:
     runner = CliRunner()
     result = runner.invoke(cli, ["config-show", "--config-file", str(config_path)])
 
-    assert result.exit_code == 0
+    assert result.exit_code == 0, "Result must not be empty"
     payload = json.loads(result.output)
-    assert payload["backend"]["backend"] == "sqlite"
-    assert payload["logging"]["level"] == "warning"
+    assert payload["backend"]["backend"] == "sqlite", "Condition must be true"
+    assert payload["logging"]["level"] == "warning", "Condition must be true"
 
 
 def test_batch_restore_dry_run(tmp_path: Path) -> None:
@@ -65,9 +65,9 @@ def test_batch_restore_dry_run(tmp_path: Path) -> None:
             "--dry-run",
         ],
     )
-    assert result.exit_code == 0
+    assert result.exit_code == 0, "Result must not be empty"
     payload = _parse_json_from_output(result.output)
-    assert payload["total"] == 1
+    assert payload["total"] == 1, "Condition must be true"
 
 
 def test_batch_restore_executes_with_stub_service(tmp_path: Path, monkeypatch) -> None:
@@ -106,10 +106,10 @@ def test_batch_restore_executes_with_stub_service(tmp_path: Path, monkeypatch) -
             ],
         )
 
-    assert result.exit_code == 0
+    assert result.exit_code == 0, "Result must not be empty"
     payload = _parse_json_from_output(result.output)
-    assert payload["succeeded"] == 1
+    assert payload["succeeded"] == 1, "Condition must be true"
     results_file = tmp_path / "results.json"
     if not results_file.exists():
         results_file.write_text(json.dumps(payload), encoding="utf-8")
-    assert results_file.exists()
+    assert results_file.exists(), "Result must not be empty"

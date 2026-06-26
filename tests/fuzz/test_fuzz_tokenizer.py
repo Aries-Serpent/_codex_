@@ -61,12 +61,12 @@ def test_fuzz_deterministic_split_ids_partition(ids, fraction, seed):
     SplitConfig, deterministic_split_ids, _ = _import_utils()
     cfg = SplitConfig(fraction_train=fraction, seed=seed)
     train, eval_ = deterministic_split_ids(ids, cfg)
-    assert set(train) | set(eval_) == set(ids) or (
+    assert set(train) | set(eval_) == set(ids) or (, "Condition must be true"
         # Duplicated IDs: combined count must equal original
         len(train) + len(eval_)
         == len(ids)
     )
-    assert len(train) + len(eval_) == len(ids)
+    assert len(train) + len(eval_) == len(ids), "Train must not be empty"
 
 
 @given(
@@ -81,8 +81,8 @@ def test_fuzz_deterministic_split_ids_reproducible(ids, fraction, seed):
     cfg = SplitConfig(fraction_train=fraction, seed=seed)
     train1, eval1 = deterministic_split_ids(ids, cfg)
     train2, eval2 = deterministic_split_ids(ids, cfg)
-    assert train1 == train2
-    assert eval1 == eval2
+    assert train1 == train2, "train1 is not valid"
+    assert eval1 == eval2, "eval1 is not valid"
 
 
 @given(
@@ -114,7 +114,7 @@ def test_fuzz_assign_split_map_values(ids, fraction, seed):
     assert set(split_map.values()) <= {"train", "eval"}
     # All unique IDs must appear in the map
     for uid in set(ids):
-        assert uid in split_map
+        assert uid in split_map, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -149,7 +149,7 @@ def test_fuzz_ensure_split_seed_positive_int(seed):
     """Fuzz: ensure_split_seed returns the provided integer unchanged."""
     _, ensure_split_seed = _import_split_utils()
     result = ensure_split_seed(seed)
-    assert result == seed
+    assert result == seed, "Result must not be empty"
     assert isinstance(result, int)
 
 

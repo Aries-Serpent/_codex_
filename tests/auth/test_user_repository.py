@@ -195,15 +195,15 @@ class TestUserRepositoryImplementation:
     def test_mock_repository_create(self, repository, test_user):
         """Test creating user in mock repository."""
         user = repository.create(test_user)
-        assert user.user_id == test_user.user_id
+        assert user.user_id == test_user.user_id, "user_id is not valid"
 
     def test_mock_repository_get_by_id(self, repository, test_user):
         """Test getting user by ID."""
         repository.create(test_user)
         retrieved = repository.get_by_id(test_user.user_id)
-        assert retrieved is not None
-        assert retrieved.user_id == test_user.user_id
-        assert retrieved.username == "testuser"
+        assert retrieved is not None, "retrieved must be initialized"
+        assert retrieved.user_id == test_user.user_id, "user_id is not valid"
+        assert retrieved.username == "testuser", "username is not valid"
 
     def test_mock_repository_update(self, repository, test_user):
         """Test updating user."""
@@ -212,7 +212,7 @@ class TestUserRepositoryImplementation:
         repository.update(test_user)
 
         retrieved = repository.get_by_id(test_user.user_id)
-        assert retrieved.email == "new@example.com"
+        assert retrieved.email == "new@example.com", "email is not valid"
 
     def test_mock_repository_delete(self, repository, test_user):
         """Test deleting user."""
@@ -243,13 +243,13 @@ class TestUserRepositoryImplementation:
         repository.create(user2)
 
         users = repository.list()
-        assert len(users) == 2
+        assert len(users) == 2, "Users must not be empty"
 
     def test_mock_repository_get_by_username(self, repository, test_user):
         """Test getting user by username."""
         repository.create(test_user)
         retrieved = repository.get_by_username("testuser")
-        assert retrieved.user_id == test_user.user_id
+        assert retrieved.user_id == test_user.user_id, "user_id is not valid"
 
     def test_repository_create_duplicate_raises_error(self, repository, test_user):
         """Test creating duplicate user raises error."""
@@ -281,7 +281,7 @@ class TestUserRepositoryImplementation:
     def test_repository_list_empty(self, repository):
         """Test listing users from empty repository."""
         users = repository.list()
-        assert users == []
+        assert users == [], "users is not valid"
 
     def test_repository_multiple_operations_sequence(self, repository):
         """Test sequence of CRUD operations."""
@@ -306,7 +306,7 @@ class TestUserRepositoryImplementation:
 
         # List
         users = repository.list()
-        assert len(users) == 2
+        assert len(users) == 2, "Users must not be empty"
 
         # Update
         user1.email = "updated@example.com"
@@ -314,12 +314,12 @@ class TestUserRepositoryImplementation:
 
         # Get
         retrieved = repository.get_by_id(user1.user_id)
-        assert retrieved.email == "updated@example.com"
+        assert retrieved.email == "updated@example.com", "email is not valid"
 
         # Delete
         repository.delete(user1.user_id)
         users = repository.list()
-        assert len(users) == 1
+        assert len(users) == 1, "Users must not be empty"
 
     def test_repository_concurrent_users(self, repository):
         """Test repository with multiple concurrent users."""
@@ -336,7 +336,7 @@ class TestUserRepositoryImplementation:
             users.append(user)
 
         all_users = repository.list()
-        assert len(all_users) == 100
+        assert len(all_users) == 100, "All_users must not be empty"
 
     def test_repository_get_by_username_unique(self, repository):
         """Test get_by_username returns single user."""
@@ -351,7 +351,7 @@ class TestUserRepositoryImplementation:
         repository.create(user)
         retrieved = repository.get_by_username("unique_user")
 
-        assert retrieved.user_id == user.user_id
+        assert retrieved.user_id == user.user_id, "user_id is not valid"
 
     def test_repository_preserves_user_data_on_update(self, repository):
         """Test that all user data is preserved on update."""
@@ -371,9 +371,9 @@ class TestUserRepositoryImplementation:
 
         # Verify other fields are preserved
         retrieved = repository.get_by_id(original_user.user_id)
-        assert retrieved.username == "testuser"
-        assert retrieved.password_hash == "hash"
-        assert retrieved.email == "new@example.com"
+        assert retrieved.username == "testuser", "username is not valid"
+        assert retrieved.password_hash == "hash", "password_hash is not valid"
+        assert retrieved.email == "new@example.com", "email is not valid"
 
 
 class TestUserRepositoryEdgeCases:
@@ -396,7 +396,7 @@ class TestUserRepositoryEdgeCases:
 
         repository.create(user)
         retrieved = repository.get_by_username("user_with-special.chars@123")
-        assert retrieved.username == user.username
+        assert retrieved.username == user.username, "username is not valid"
 
     def test_repository_with_unicode_username(self, repository):
         """Test repository with Unicode username."""
@@ -410,7 +410,7 @@ class TestUserRepositoryEdgeCases:
 
         repository.create(user)
         retrieved = repository.get_by_username("用户名")
-        assert retrieved.username == "用户名"
+        assert retrieved.username == "用户名", "username is not valid"
 
     def test_repository_with_very_long_password_hash(self, repository):
         """Test repository with very long password hash."""
@@ -425,4 +425,4 @@ class TestUserRepositoryEdgeCases:
 
         repository.create(user)
         retrieved = repository.get_by_id(user.user_id)
-        assert len(retrieved.password_hash) == 10000
+        assert len(retrieved.password_hash) == 10000, "Collection must not be empty"

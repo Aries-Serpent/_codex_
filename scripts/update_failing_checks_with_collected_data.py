@@ -111,7 +111,7 @@ def parse_artifact_data(accountability_file: Path) -> dict[str, list[str]]:
             return {'artifacts_found': artifacts}
     except Exception as e:
         error_type = type(e).__name__
-        print(f"Warning: Could not parse artifacts: <ERROR_TYPE>")
+        print("Warning: Could not parse artifacts: <ERROR_TYPE>")
 
     return {}
 

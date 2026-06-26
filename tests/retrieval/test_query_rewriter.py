@@ -31,9 +31,9 @@ class TestRewrittenQuery:
             strategy=QueryRewriteStrategy.NORMALIZE,
         )
 
-        assert query.original_query == "test query"
-        assert query.rewritten_query == "test query normalized"
-        assert query.strategy == QueryRewriteStrategy.NORMALIZE
+        assert query.original_query == "test query", "original_query is not valid"
+        assert query.rewritten_query == "test query normalized", "rewritten_query is not valid"
+        assert query.strategy == QueryRewriteStrategy.NORMALIZE, "strategy is not valid"
 
     def test_query_hash(self):
         """Test query hash generation."""
@@ -43,7 +43,7 @@ class TestRewrittenQuery:
             strategy=QueryRewriteStrategy.NONE,
         )
 
-        assert len(query.query_hash) == 12
+        assert len(query.query_hash) == 12, "Collection must not be empty"
 
     def test_to_dict(self):
         """Test converting to dictionary."""
@@ -55,9 +55,9 @@ class TestRewrittenQuery:
         )
 
         d = query.to_dict()
-        assert d["original_query"] == "test"
-        assert d["strategy"] == "normalize"
-        assert "synonym1" in d["expansions"]
+        assert d["original_query"] == "test", "Condition must be true"
+        assert d["strategy"] == "normalize", "Condition must be true"
+        assert "synonym1" in d["expansions"], "Condition must be true"
 
 
 class TestQueryRewriteConfig:
@@ -67,9 +67,9 @@ class TestQueryRewriteConfig:
         """Test default configuration."""
         config = QueryRewriteConfig()
 
-        assert config.strategy == QueryRewriteStrategy.NORMALIZE
-        assert config.lowercase is True
-        assert config.remove_punctuation is True
+        assert config.strategy == QueryRewriteStrategy.NORMALIZE, "strategy is not valid"
+        assert config.lowercase is True, "lowercase is not valid"
+        assert config.remove_punctuation is True, "remove_punctuation is not valid"
 
     def test_custom_config(self):
         """Test custom configuration."""
@@ -79,9 +79,9 @@ class TestQueryRewriteConfig:
             lowercase=False,
         )
 
-        assert config.strategy == QueryRewriteStrategy.EXPAND
-        assert config.max_expansions == 10
-        assert config.lowercase is False
+        assert config.strategy == QueryRewriteStrategy.EXPAND, "strategy is not valid"
+        assert config.max_expansions == 10, "max_expansions is not valid"
+        assert config.lowercase is False, "lowercase is not valid"
 
 
 class TestNormalizeRewriter:
@@ -95,18 +95,18 @@ class TestNormalizeRewriter:
     def test_lowercase(self, rewriter):
         """Test lowercase conversion."""
         result = rewriter.rewrite("Hello World")
-        assert result.rewritten_query == "hello world"
+        assert result.rewritten_query == "hello world", "Result must not be empty"
 
     def test_remove_punctuation(self, rewriter):
         """Test punctuation removal."""
         result = rewriter.rewrite("hello, world!")
         assert "," not in result.rewritten_query
-        assert "!" not in result.rewritten_query
+        assert "!" not in result.rewritten_query, "Result must not be empty"
 
     def test_normalize_whitespace(self, rewriter):
         """Test whitespace normalization."""
         result = rewriter.rewrite("hello    world")
-        assert result.rewritten_query == "hello world"
+        assert result.rewritten_query == "hello world", "Result must not be empty"
 
     def test_remove_stopwords(self):
         """Test stopword removal when enabled."""
@@ -114,7 +114,7 @@ class TestNormalizeRewriter:
         rewriter = NormalizeRewriter(config)
 
         result = rewriter.rewrite("the quick brown fox")
-        assert "the" not in result.rewritten_query
+        assert "the" not in result.rewritten_query, "Result must not be empty"
 
 
 class TestExpansionRewriter:
@@ -134,17 +134,17 @@ class TestExpansionRewriter:
 
         # "quick" should expand to synonyms like "fast", "rapid", "speedy"
         # "function" should expand to "method", "procedure", "routine"
-        assert len(result.expansions) > 0
+        assert len(result.expansions) > 0, "Collection must not be empty"
         # Check for any known synonyms
         known_synonyms = {"fast", "rapid", "speedy", "method", "procedure", "routine"}
-        assert any(exp in known_synonyms for exp in result.expansions)
+        assert any(exp in known_synonyms for exp in result.expansions), "Result must not be empty"
 
     def test_no_expansion_for_unknown_words(self, rewriter):
         """Test that unknown words don't expand."""
         result = rewriter.rewrite("xyzabc123")
 
         # No synonyms for made-up word
-        assert len(result.expansions) == 0
+        assert len(result.expansions) == 0, "Collection must not be empty"
 
     def test_expansion_limit(self):
         """Test that expansions are limited."""
@@ -154,7 +154,7 @@ class TestExpansionRewriter:
         result = rewriter.rewrite("quick big good")
 
         # Should be limited to max_expansions
-        assert len(result.expansions) <= 2
+        assert len(result.expansions) <= 2, "Collection must not be empty"
 
 
 class TestDecomposeRewriter:
@@ -172,20 +172,20 @@ class TestDecomposeRewriter:
         """Test decomposition on conjunctions."""
         result = rewriter.rewrite("python and javascript")
 
-        assert len(result.sub_queries) >= 1
+        assert len(result.sub_queries) >= 1, "Collection must not be empty"
 
     def test_decompose_long_query(self, rewriter):
         """Test decomposition of long query."""
         result = rewriter.rewrite("how to implement a function in python that does sorting")
 
-        assert len(result.sub_queries) >= 1
+        assert len(result.sub_queries) >= 1, "Collection must not be empty"
 
     def test_simple_query_not_decomposed(self, rewriter):
         """Test that simple queries have minimal decomposition."""
         result = rewriter.rewrite("python")
 
-        assert len(result.sub_queries) >= 1
-        assert "python" in result.sub_queries[0]
+        assert len(result.sub_queries) >= 1, "Collection must not be empty"
+        assert "python" in result.sub_queries[0], "Result must not be empty"
 
 
 class TestHybridRewriter:
@@ -200,15 +200,15 @@ class TestHybridRewriter:
         """Test that hybrid generates both dense and sparse queries."""
         result = rewriter.rewrite("quick function")
 
-        assert "dense_query" in result.metadata
-        assert "sparse_query" in result.metadata
+        assert "dense_query" in result.metadata, "Result must not be empty"
+        assert "sparse_query" in result.metadata, "Result must not be empty"
 
     def test_hybrid_weights(self, rewriter):
         """Test that weights are included."""
         result = rewriter.rewrite("test query")
 
-        assert "sparse_weight" in result.metadata
-        assert "dense_weight" in result.metadata
+        assert "sparse_weight" in result.metadata, "Result must not be empty"
+        assert "dense_weight" in result.metadata, "Result must not be empty"
 
 
 class TestMultiQueryRewriter:
@@ -227,7 +227,7 @@ class TestMultiQueryRewriter:
         result = rewriter.rewrite("find the quick brown fox function")
 
         # Should have sub_queries with variants
-        assert len(result.sub_queries) >= 1
+        assert len(result.sub_queries) >= 1, "Collection must not be empty"
 
     def test_variant_limit(self):
         """Test that variants are limited."""
@@ -236,7 +236,7 @@ class TestMultiQueryRewriter:
 
         result = rewriter.rewrite("a very long query with many words")
 
-        assert len(result.sub_queries) <= 2
+        assert len(result.sub_queries) <= 2, "Collection must not be empty"
 
 
 class TestQueryRewriter:
@@ -249,8 +249,8 @@ class TestQueryRewriter:
 
         result = rewriter.rewrite("Test Query!")
 
-        assert result.original_query == "Test Query!"
-        assert result.rewritten_query == "Test Query!"
+        assert result.original_query == "Test Query!", "Result must not be empty"
+        assert result.rewritten_query == "Test Query!", "Result must not be empty"
 
     def test_normalize_strategy(self):
         """Test NORMALIZE strategy."""
@@ -259,7 +259,7 @@ class TestQueryRewriter:
 
         result = rewriter.rewrite("Test Query!")
 
-        assert result.rewritten_query == "test query"
+        assert result.rewritten_query == "test query", "Result must not be empty"
 
     def test_expand_strategy(self):
         """Test EXPAND strategy."""
@@ -268,7 +268,7 @@ class TestQueryRewriter:
 
         result = rewriter.rewrite("quick search")
 
-        assert result.strategy == QueryRewriteStrategy.EXPAND
+        assert result.strategy == QueryRewriteStrategy.EXPAND, "Result must not be empty"
 
     def test_caching(self):
         """Test that results are cached."""
@@ -279,7 +279,7 @@ class TestQueryRewriter:
         result2 = rewriter.rewrite("test query")
 
         # Both should return same result (cached)
-        assert result1.rewritten_query == result2.rewritten_query
+        assert result1.rewritten_query == result2.rewritten_query, "Result must not be empty"
 
     def test_cache_stats(self):
         """Test cache statistics."""
@@ -290,7 +290,7 @@ class TestQueryRewriter:
         rewriter.rewrite("query2")
 
         stats = rewriter.get_cache_stats()
-        assert stats["size"] == 2
+        assert stats["size"] == 2, "Condition must be true"
 
     def test_clear_cache(self):
         """Test clearing cache."""
@@ -298,10 +298,10 @@ class TestQueryRewriter:
         rewriter = QueryRewriter(config)
 
         rewriter.rewrite("query1")
-        assert rewriter.get_cache_stats()["size"] == 1
+        assert rewriter.get_cache_stats()["size"] == 1, "Condition must be true"
 
         rewriter.clear_cache()
-        assert rewriter.get_cache_stats()["size"] == 0
+        assert rewriter.get_cache_stats()["size"] == 0, "Condition must be true"
 
     def test_batch_rewrite(self):
         """Test batch rewriting."""
@@ -310,7 +310,7 @@ class TestQueryRewriter:
         queries = ["query one", "query two", "query three"]
         results = rewriter.rewrite_batch(queries)
 
-        assert len(results) == 3
+        assert len(results) == 3, "Results must not be empty"
         assert all(isinstance(r, RewrittenQuery) for r in results)
 
     def test_empty_query(self):
@@ -318,10 +318,10 @@ class TestQueryRewriter:
         rewriter = QueryRewriter()
 
         result = rewriter.rewrite("")
-        assert result.rewritten_query == ""
+        assert result.rewritten_query == "", "Result must not be empty"
 
         result = rewriter.rewrite("   ")
-        assert result.rewritten_query == "   "
+        assert result.rewritten_query == "   ", "Result must not be empty"
 
 
 class TestRewriteQueryFunction:
@@ -332,7 +332,7 @@ class TestRewriteQueryFunction:
         result = rewrite_query("Test Query")
 
         assert isinstance(result, RewrittenQuery)
-        assert result.rewritten_query == "test query"
+        assert result.rewritten_query == "test query", "Result must not be empty"
 
     def test_with_custom_strategy(self):
         """Test with custom strategy."""
@@ -341,4 +341,4 @@ class TestRewriteQueryFunction:
             strategy=QueryRewriteStrategy.EXPAND,
         )
 
-        assert result.strategy == QueryRewriteStrategy.EXPAND
+        assert result.strategy == QueryRewriteStrategy.EXPAND, "Result must not be empty"

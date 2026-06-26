@@ -17,6 +17,6 @@ def test_refresh_creates_manifest(tmp_path: Path) -> None:
     model.write_text("", encoding="utf-8")
     cli.main(["refresh", str(model), "--notes", "demo"])
     manifest = json.loads(model.with_suffix(".provenance.json").read_text(encoding="utf-8"))
-    assert manifest["model"].endswith("toy.model")
-    assert manifest["notes"] == "demo"
-    assert manifest["timestamp"].endswith("Z")
+    assert manifest["model"].endswith("toy.model"), "Condition must be true"
+    assert manifest["notes"] == "demo", "Condition must be true"
+    assert manifest["timestamp"].endswith("Z"), "Condition must be true"

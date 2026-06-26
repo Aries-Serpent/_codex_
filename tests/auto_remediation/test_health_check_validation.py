@@ -101,9 +101,9 @@ class TestLivenessProbes:
             "checks": {"process": "running"},
         }
 
-        assert result["status"] == "alive"
-        assert "timestamp" in result
-        assert result["checks"]["process"] == "running"
+        assert result["status"] == "alive", "Result must not be empty"
+        assert "timestamp" in result, "Result must not be empty"
+        assert result["checks"]["process"] == "running", "Result must not be empty"
 
     def test_liveness_probe_failure_threshold(self, health_check_config):
         """Test liveness probe failure threshold behavior."""
@@ -117,7 +117,7 @@ class TestLivenessProbes:
         for i in range(max_failures):
             failures += 1
 
-        assert failures >= failure_threshold
+        assert failures >= failure_threshold, "failures must be greater than zero"
         # Container should be restarted after threshold
 
     def test_liveness_probe_timeout_handling(self, health_check_config):
@@ -129,7 +129,7 @@ class TestLivenessProbes:
         # Simulate check that takes too long
         elapsed = 6  # Exceeds 5 second timeout
 
-        assert elapsed > timeout
+        assert elapsed > timeout, "elapsed must be greater than zero"
         # Should mark as failed due to timeout
 
     def test_liveness_probe_recovery_after_success(self, health_check_config):
@@ -140,7 +140,7 @@ class TestLivenessProbes:
         # After failure, only need 1 success to recover
         successes = 1
 
-        assert successes >= success_threshold
+        assert successes >= success_threshold, "successes must be greater than zero"
         # Should be considered alive again
 
     def test_liveness_probe_interval_timing(self, health_check_config):
@@ -151,7 +151,7 @@ class TestLivenessProbes:
         time_elapsed = 30  # seconds
         expected_checks = time_elapsed // interval
 
-        assert expected_checks == 3
+        assert expected_checks == 3, "expected_checks is not valid"
         # Should perform 3 checks in 30 seconds
 
 
@@ -171,8 +171,8 @@ class TestReadinessProbes:
             "dependencies": {"database": "ready", "cache": "ready"},
         }
 
-        assert result["ready"] is True
-        assert all(v == "ready" for v in result["dependencies"].values())
+        assert result["ready"] is True, "Result must not be empty"
+        assert all(v == "ready" for v in result["dependencies"].values()), "Result must not be empty"
 
     def test_readiness_probe_dependency_failure(self, mock_service_dependencies):
         """Test readiness probe fails when dependency is unhealthy."""
@@ -181,7 +181,7 @@ class TestReadinessProbes:
 
         ready = all(dep["healthy"] or not dep["required"] for dep in dependencies.values())
 
-        assert ready is False
+        assert ready is False, "ready is not valid"
         # Should not be ready when required dependency fails
 
     def test_readiness_probe_optional_dependency_failure(self, mock_service_dependencies):
@@ -191,7 +191,7 @@ class TestReadinessProbes:
 
         ready = all(dep["healthy"] or not dep["required"] for dep in dependencies.values())
 
-        assert ready is True
+        assert ready is True, "ready is not valid"
         # Should still be ready when optional dependency fails
 
     def test_readiness_probe_multiple_success_threshold(self, health_check_config):
@@ -204,7 +204,7 @@ class TestReadinessProbes:
         for i in range(success_threshold):
             consecutive_successes += 1
 
-        assert consecutive_successes >= success_threshold
+        assert consecutive_successes >= success_threshold, "consecutive_successes must be greater than zero"
         # Should be ready after 2 consecutive successes
 
     def test_readiness_probe_prevents_traffic(self):
@@ -212,7 +212,7 @@ class TestReadinessProbes:
         ready = False
         receive_traffic = ready
 
-        assert receive_traffic is False
+        assert receive_traffic is False, "receive_traffic is not valid"
         # Service should not receive traffic when not ready
 
 
@@ -233,7 +233,7 @@ class TestStartupProbes:
         check_time = 35
         elapsed = check_time - start_time
 
-        assert elapsed > initial_delay
+        assert elapsed > initial_delay, "elapsed must be greater than zero"
         # First check should happen after initial delay
 
     def test_startup_probe_extended_timeout(self, health_check_config):
@@ -244,7 +244,7 @@ class TestStartupProbes:
 
         max_startup_time = timeout * failure_threshold
 
-        assert max_startup_time == 50
+        assert max_startup_time == 50, "max_startup_time is not valid"
         # Allows up to 50 seconds for startup
 
     def test_startup_probe_disables_after_success(self):
@@ -254,7 +254,7 @@ class TestStartupProbes:
         startup_complete = True
         probe_active = not startup_complete
 
-        assert probe_active is False
+        assert probe_active is False, "probe_active is not valid"
         # Startup probe should be disabled
 
     def test_startup_probe_blocks_other_probes(self):
@@ -264,8 +264,8 @@ class TestStartupProbes:
         liveness_enabled = startup_complete
         readiness_enabled = startup_complete
 
-        assert liveness_enabled is False
-        assert readiness_enabled is False
+        assert liveness_enabled is False, "liveness_enabled is not valid"
+        assert readiness_enabled is False, "readiness_enabled is not valid"
         # Other probes wait for startup completion
 
 
@@ -284,8 +284,8 @@ class TestHealthCheckDependencies:
         all_healthy = all(dep["healthy"] for dep in dependencies.values())
         required_healthy = all(dep["healthy"] for dep in dependencies.values() if dep["required"])
 
-        assert all_healthy is True
-        assert required_healthy is True
+        assert all_healthy is True, "all_healthy is not valid"
+        assert required_healthy is True, "required_healthy is not valid"
 
     def test_dependency_timeout_handling(self, mock_service_dependencies):
         """Test dependency check timeout handling."""
@@ -296,7 +296,7 @@ class TestHealthCheckDependencies:
         response_time_ms = 1200
         timed_out = response_time_ms > timeout_ms
 
-        assert timed_out is True
+        assert timed_out is True, "timed_out is not valid"
         # Should mark as unhealthy on timeout
 
     def test_dependency_circuit_breaker(self):
@@ -306,7 +306,7 @@ class TestHealthCheckDependencies:
 
         circuit_open = consecutive_failures >= circuit_breaker_threshold
 
-        assert circuit_open is True
+        assert circuit_open is True, "circuit_open is not valid"
         # Circuit should open after threshold
 
     def test_cascading_dependency_health(self):
@@ -325,7 +325,7 @@ class TestHealthCheckDependencies:
             dependencies[dep]["healthy"] for dep in dependencies["service_c"]["depends_on"]
         )
 
-        assert service_c_healthy is False
+        assert service_c_healthy is False, "service_c_healthy is not valid"
 
 
 # ============================================================================
@@ -347,7 +347,7 @@ class TestCompositeHealthChecks:
 
         overall_health = all(c["healthy"] for c in components.values())
 
-        assert overall_health is True
+        assert overall_health is True, "overall_health is not valid"
 
     def test_composite_health_partial_failure(self):
         """Test composite health with partial component failure."""
@@ -359,7 +359,7 @@ class TestCompositeHealthChecks:
         # Overall health depends on critical components only
         critical_health = all(c["healthy"] for c in components.values() if c.get("critical", False))
 
-        assert critical_health is True
+        assert critical_health is True, "critical_health is not valid"
 
     def test_weighted_health_scoring(self):
         """Test weighted health scoring across components."""
@@ -371,7 +371,7 @@ class TestCompositeHealthChecks:
 
         health_score = sum(c["weight"] for c in components.values() if c["healthy"])
 
-        assert health_score == 0.7
+        assert health_score == 0.7, "health_score is not valid"
         # 70% health score (db + cache)
 
 
@@ -390,7 +390,7 @@ class TestGracefulDegradation:
 
         degraded_mode = system_load > degradation_threshold
 
-        assert degraded_mode is True
+        assert degraded_mode is True, "degraded_mode is not valid"
 
     def test_reduced_functionality_in_degraded_mode(self):
         """Test reduced functionality during degradation."""
@@ -400,8 +400,8 @@ class TestGracefulDegradation:
 
         # In degraded mode, some features should be disabled
         total_features = len(available_features) + len(disabled_features)
-        assert len(available_features) < total_features
-        assert len(disabled_features) > 0
+        assert len(available_features) < total_features, "Available_features must not be empty"
+        assert len(disabled_features) > 0, "Disabled_features must not be empty"
 
     def test_automatic_recovery_from_degradation(self):
         """Test automatic recovery when conditions improve."""
@@ -411,7 +411,7 @@ class TestGracefulDegradation:
         can_recover = system_load < recovery_threshold
 
         # Load is still above threshold
-        assert can_recover is False
+        assert can_recover is False, "can_recover is not valid"
 
 
 # ============================================================================
@@ -432,8 +432,8 @@ class TestHealthMetricsCollection:
             "checks_passed": 98,
         }
 
-        assert "timestamp" in metrics
-        assert metrics["checks_passed"] / metrics["checks_performed"] > 0.95
+        assert "timestamp" in metrics, "Condition must be true"
+        assert metrics["checks_passed"] / metrics["checks_performed"] > 0.95, "Value must be greater than zero"
 
     def test_health_history_retention(self):
         """Test health check history retention."""
@@ -453,7 +453,7 @@ class TestHealthMetricsCollection:
         cutoff = datetime.utcnow() - timedelta(minutes=retention_period_minutes)
         recent = [h for h in history if h["timestamp"] > cutoff]
 
-        assert len(recent) <= len(history)
+        assert len(recent) <= len(history), "Recent must not be empty"
 
     def test_health_trend_analysis(self):
         """Test health trend analysis over time."""
@@ -466,7 +466,7 @@ class TestHealthMetricsCollection:
         avg_response_time = sum(h["response_time"] for h in history) / len(history)
         trending_worse = history[-1]["response_time"] > avg_response_time
 
-        assert trending_worse is True
+        assert trending_worse is True, "trending_worse is not valid"
 
 
 # ============================================================================
@@ -484,7 +484,7 @@ class TestTimeoutAndRetry:
 
         timed_out = actual_time_ms > timeout_ms
 
-        assert timed_out is True
+        assert timed_out is True, "timed_out is not valid"
 
     def test_exponential_backoff_retry(self):
         """Test exponential backoff for retries."""
@@ -505,7 +505,7 @@ class TestTimeoutAndRetry:
         while retries < max_retries and not success:
             retries += 1
 
-        assert retries == max_retries
+        assert retries == max_retries, "retries is not valid"
         # Should stop at max retries
 
     def test_retry_with_jitter(self):
@@ -516,8 +516,8 @@ class TestTimeoutAndRetry:
         min_delay = base_delay * (1 - jitter)
         max_delay = base_delay * (1 + jitter)
 
-        assert min_delay == 0.8
-        assert max_delay == 1.2
+        assert min_delay == 0.8, "min_delay is not valid"
+        assert max_delay == 1.2, "max_delay is not valid"
         # Delay should be randomized within range
 
 

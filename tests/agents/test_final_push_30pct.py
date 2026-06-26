@@ -15,14 +15,14 @@ class TestPhysicsOrchestratorAdditional:
         from agents.physics_orchestrator import ActionType
 
         # Test each enum value exists
-        assert ActionType.AUDIT is not None
-        assert ActionType.REFACTOR is not None
-        assert ActionType.TEST is not None
-        assert ActionType.DOCUMENT is not None
-        assert ActionType.DEPLOY is not None
-        assert ActionType.OPTIMIZE is not None
-        assert ActionType.DEBUG is not None
-        assert ActionType.RESEARCH is not None
+        assert ActionType.AUDIT is not None, "AUDIT must be initialized"
+        assert ActionType.REFACTOR is not None, "REFACTOR must be initialized"
+        assert ActionType.TEST is not None, "TEST must be initialized"
+        assert ActionType.DOCUMENT is not None, "DOCUMENT must be initialized"
+        assert ActionType.DEPLOY is not None, "DEPLOY must be initialized"
+        assert ActionType.OPTIMIZE is not None, "OPTIMIZE must be initialized"
+        assert ActionType.DEBUG is not None, "DEBUG must be initialized"
+        assert ActionType.RESEARCH is not None, "RESEARCH must be initialized"
 
     def test_decision_state_with_all_parameters(self):
         """Test DecisionState with all parameters."""
@@ -37,8 +37,8 @@ class TestPhysicsOrchestratorAdditional:
             context={"momentum": {"direction": "forward"}},
         )
 
-        assert state.current_velocity == 5.0
-        assert state.context["momentum"] == {"direction": "forward"}
+        assert state.current_velocity == 5.0, "current_velocity is not valid"
+        assert state.context["momentum"] == {"direction": "forward"}, "Condition must be true"
 
     def test_action_path_with_all_scores(self):
         """Test ActionPath with all score parameters."""
@@ -61,8 +61,8 @@ class TestPhysicsOrchestratorAdditional:
         total_energy = path.calculate_total_energy()
         opt_score = path.calculate_optimization_score()
 
-        assert total_energy > 0
-        assert opt_score > 0
+        assert total_energy > 0, "total_energy must be greater than zero"
+        assert opt_score > 0, "opt_score must be greater than zero"
 
 
 class TestWorkflowNavigatorAdditional:
@@ -92,9 +92,9 @@ class TestWorkflowNavigatorAdditional:
         # Retrieve it
         retrieved = nav.get_workflow("CUSTOM_TEST")
 
-        assert retrieved is not None
-        assert retrieved.workflow_id == "CUSTOM_TEST"
-        assert retrieved.name == "Custom Test"
+        assert retrieved is not None, "retrieved must be initialized"
+        assert retrieved.workflow_id == "CUSTOM_TEST", "workflow_id is not valid"
+        assert retrieved.name == "Custom Test", "name is not valid"
 
     def test_workflow_to_dict_serialization(self):
         """Test Workflow can be serialized to dict."""
@@ -111,10 +111,10 @@ class TestWorkflowNavigatorAdditional:
         data = wf.to_dict()
 
         assert isinstance(data, dict)
-        assert data["workflow_id"] == "TEST"
-        assert data["name"] == "Test"
-        assert data["frequency"] == "high"
-        assert len(data["steps"]) == 1
+        assert data["workflow_id"] == "TEST", "Data must not be empty"
+        assert data["name"] == "Test", "Data must not be empty"
+        assert data["frequency"] == "high", "Data must not be empty"
+        assert len(data["steps"]) == 1, "Collection must not be empty"
 
 
 class TestQuantumGameTheoryAdditional:
@@ -129,7 +129,7 @@ class TestQuantumGameTheoryAdditional:
         # Test collapse
         index = state.collapse_to_strategy_index()
 
-        assert 0 <= index < 3
+        assert 0 <= index < 3, "0 is not valid"
 
     def test_strategy_state_normalization(self):
         """Test wavefunction normalization."""
@@ -144,7 +144,7 @@ class TestQuantumGameTheoryAdditional:
         probs = state.get_measurement_probabilities()
         if hasattr(probs, "__iter__"):
             total = sum(probs) if isinstance(probs, list) else probs.sum()
-            assert abs(total - 1.0) < 0.01
+            assert abs(total - 1.0) < 0.01, "Condition must be true"
 
 
 class TestAdvancedPhysicsCalculatorsAdditional:
@@ -156,7 +156,7 @@ class TestAdvancedPhysicsCalculatorsAdditional:
 
         scheduler = FluidFlowScheduler()
 
-        assert scheduler is not None
+        assert scheduler is not None, "scheduler must be initialized"
         assert hasattr(scheduler, "channels")
 
     def test_fluid_channel_add(self):
@@ -169,7 +169,7 @@ class TestAdvancedPhysicsCalculatorsAdditional:
 
         scheduler.add_channel(channel)
 
-        assert "test" in scheduler.channels
+        assert "test" in scheduler.channels, "Condition must be true"
 
     def test_chaotic_neural_network_basic(self):
         """Test ChaoticNeuralNetwork initialization."""
@@ -177,7 +177,7 @@ class TestAdvancedPhysicsCalculatorsAdditional:
 
         try:
             network = ChaoticNeuralNetwork(input_size=3, hidden_size=5)
-            assert network is not None
+            assert network is not None, "network must be initialized"
         except (ImportError, TypeError):
             pytest.skip("ChaoticNeuralNetwork requires optional dependencies")
 
@@ -214,7 +214,7 @@ class TestSelfHealingAdditional:
         engine = SelfHealingEngine()
 
         # Should initialize successfully
-        assert engine is not None
+        assert engine is not None, "engine must be initialized"
 
     def test_detected_issue_to_dict(self):
         """Test DetectedIssue serialization."""
@@ -231,4 +231,4 @@ class TestSelfHealingAdditional:
         data = issue.to_dict()
 
         assert isinstance(data, dict)
-        assert data["issue_id"] == "test"
+        assert data["issue_id"] == "test", "Data must not be empty"

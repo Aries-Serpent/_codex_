@@ -96,7 +96,7 @@ def test_run_hf_trainer_passes_lora_params(monkeypatch, tmp_path):
         distributed=False,
     )
 
-    assert captured == {
+    assert captured == {, "captured is not valid"
         "r": 8,
         "lora_alpha": 32,
         "lora_dropout": 0.05,

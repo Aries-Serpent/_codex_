@@ -29,61 +29,61 @@ class TestValidateVersionString:
 
     def test_validate_version_string_valid_major_minor(self):
         """Test validation of valid MAJOR.MINOR version."""
-        assert _validate_version_string("1.0") is True
-        assert _validate_version_string("2.5") is True
-        assert _validate_version_string("10.20") is True
+        assert _validate_version_string("1.0") is True, "Condition must be true"
+        assert _validate_version_string("2.5") is True, "Condition must be true"
+        assert _validate_version_string("10.20") is True, "Condition must be true"
 
     def test_validate_version_string_valid_semantic(self):
         """Test validation of valid semantic versions."""
-        assert _validate_version_string("1.0.0") is True
-        assert _validate_version_string("2.1.3") is True
-        assert _validate_version_string("10.20.30") is True
+        assert _validate_version_string("1.0.0") is True, "Condition must be true"
+        assert _validate_version_string("2.1.3") is True, "Condition must be true"
+        assert _validate_version_string("10.20.30") is True, "Condition must be true"
 
     def test_validate_version_string_empty(self):
         """Test validation of empty string."""
-        assert _validate_version_string("") is False
+        assert _validate_version_string("") is False, "Condition must be true"
 
     def test_validate_version_string_invalid_format(self):
         """Test validation of invalid formats."""
-        assert _validate_version_string("1") is False
-        assert _validate_version_string("v1.0") is False
-        assert _validate_version_string("1.0.0.0") is False
-        assert _validate_version_string("1.0-alpha") is False
-        assert _validate_version_string("1.0+build") is False
+        assert _validate_version_string("1") is False, "Condition must be true"
+        assert _validate_version_string("v1.0") is False, "Condition must be true"
+        assert _validate_version_string("1.0.0.0") is False, "Condition must be true"
+        assert _validate_version_string("1.0-alpha") is False, "Condition must be true"
+        assert _validate_version_string("1.0+build") is False, "Condition must be true"
 
     def test_validate_version_string_too_long(self):
         """Test validation of version exceeding max length."""
         long_version = "1." + "0" * MAX_VERSION_LENGTH
-        assert _validate_version_string(long_version) is False
+        assert _validate_version_string(long_version) is False, "Condition must be true"
 
     def test_validate_version_string_at_max_length(self):
         """Test validation of version at max length."""
         # Construct a valid version at max length
         version = "1" + "." + "0" * (MAX_VERSION_LENGTH - 2)
-        assert _validate_version_string(version) is True
+        assert _validate_version_string(version) is True, "Condition must be true"
 
     def test_validate_version_string_non_numeric(self):
         """Test validation of non-numeric versions."""
-        assert _validate_version_string("a.b") is False
-        assert _validate_version_string("1.x") is False
-        assert _validate_version_string("one.zero") is False
+        assert _validate_version_string("a.b") is False, "Condition must be true"
+        assert _validate_version_string("1.x") is False, "Condition must be true"
+        assert _validate_version_string("one.zero") is False, "Condition must be true"
 
     def test_validate_version_string_leading_zeros(self):
         """Test validation with leading zeros (should be valid regex)."""
-        assert _validate_version_string("01.00") is True
-        assert _validate_version_string("001.002.003") is True
+        assert _validate_version_string("01.00") is True, "Condition must be true"
+        assert _validate_version_string("001.002.003") is True, "Condition must be true"
 
     def test_validate_version_string_whitespace(self):
         """Test validation with whitespace."""
-        assert _validate_version_string(" 1.0") is False
-        assert _validate_version_string("1.0 ") is False
-        assert _validate_version_string("1 . 0") is False
+        assert _validate_version_string(" 1.0") is False, "Condition must be true"
+        assert _validate_version_string("1.0 ") is False, "Condition must be true"
+        assert _validate_version_string("1 . 0") is False, "Condition must be true"
 
     def test_validate_version_string_special_chars(self):
         """Test validation with special characters."""
-        assert _validate_version_string("1.0!") is False
-        assert _validate_version_string("1@0") is False
-        assert _validate_version_string("1.0.0-rc1") is False
+        assert _validate_version_string("1.0!") is False, "Condition must be true"
+        assert _validate_version_string("1@0") is False, "Condition must be true"
+        assert _validate_version_string("1.0.0-rc1") is False, "Condition must be true"
 
 
 class TestSanitizeVersionList:
@@ -92,12 +92,12 @@ class TestSanitizeVersionList:
     def test_sanitize_version_list_empty(self):
         """Test sanitization of empty list."""
         result = _sanitize_version_list([])
-        assert result == []
+        assert result == [], "Result must not be empty"
 
     def test_sanitize_version_list_single_valid(self):
         """Test sanitization with single valid version."""
         result = _sanitize_version_list(["1.0"])
-        assert result == ["1.0"]
+        assert result == ["1.0"], "Result must not be empty"
 
     def test_sanitize_version_list_multiple_valid(self):
         """Test sanitization with multiple valid versions."""
@@ -112,19 +112,19 @@ class TestSanitizeVersionList:
     def test_sanitize_version_list_all_invalid(self):
         """Test sanitization with all invalid versions."""
         result = _sanitize_version_list(["invalid", "bad", "wrong"])
-        assert result == []
+        assert result == [], "Result must not be empty"
 
     def test_sanitize_version_list_exceeds_max_count(self):
         """Test sanitization truncates list exceeding max count."""
         versions = [f"{i}.0" for i in range(MAX_VERSIONS_COUNT + 10)]
         result = _sanitize_version_list(versions)
-        assert len(result) <= MAX_VERSIONS_COUNT
+        assert len(result) <= MAX_VERSIONS_COUNT, "Result must not be empty"
 
     def test_sanitize_version_list_non_list_input(self):
         """Test sanitization with non-list input."""
         with patch("mcp.versioning.logger"):
             result = _sanitize_version_list("1.0")
-            assert result == []
+            assert result == [], "Result must not be empty"
 
     def test_sanitize_version_list_non_string_elements(self):
         """Test sanitization with non-string elements."""
@@ -135,7 +135,7 @@ class TestSanitizeVersionList:
         """Test that sanitization preserves order."""
         versions = ["2.0", "1.0", "1.5", "3.0"]
         result = _sanitize_version_list(versions)
-        assert result == versions
+        assert result == versions, "Result must not be empty"
 
     def test_sanitize_version_list_duplicates(self):
         """Test sanitization with duplicate versions."""
@@ -146,7 +146,7 @@ class TestSanitizeVersionList:
     def test_sanitize_version_list_logs_warnings(self, mock_logger):
         """Test that warnings are logged."""
         _sanitize_version_list(["1.0", "invalid", "2.0"])
-        assert mock_logger.warning.called or mock_logger.debug.called
+        assert mock_logger.warning.called or mock_logger.debug.called, "Condition must be true"
 
 
 class TestNegotiateVersion:
@@ -155,12 +155,12 @@ class TestNegotiateVersion:
     def test_negotiate_version_single_supported(self):
         """Test negotiation with single supported version."""
         result = negotiate_version(["1.0"])
-        assert result == "1.0"
+        assert result == "1.0", "Result must not be empty"
 
     def test_negotiate_version_multiple_supported(self):
         """Test negotiation with multiple supported versions."""
         result = negotiate_version(["1.0", "2.0"])
-        assert result == "1.0"  # Prefer server's first preference
+        assert result == "1.0", "Result must not be empty"
 
     def test_negotiate_version_first_match_wins(self):
         """Test negotiation returns first server preference match."""
@@ -168,7 +168,7 @@ class TestNegotiateVersion:
         # Client supports: [1.0, 2.0]
         # Should return 1.0 (first in server preference)
         result = negotiate_version(["1.0", "2.0"])
-        assert result == "1.0"
+        assert result == "1.0", "Result must not be empty"
 
     def test_negotiate_version_empty_client_versions(self):
         """Test negotiation fails with empty client versions."""
@@ -188,19 +188,19 @@ class TestNegotiateVersion:
     def test_negotiate_version_mixed_valid_invalid(self):
         """Test negotiation with mixed valid/invalid versions."""
         result = negotiate_version(["1.0", "invalid", "2.0"])
-        assert result == "1.0"
+        assert result == "1.0", "Result must not be empty"
 
     def test_negotiate_version_exact_match(self):
         """Test negotiation with exact version match."""
         result = negotiate_version(["1.0"])
-        assert result == "1.0"
+        assert result == "1.0", "Result must not be empty"
 
     def test_negotiate_version_server_preference_order(self):
         """Test that server preference order is respected."""
         # MCP_VERSIONS = ["1.0"] (server preference)
         # Client supports multiple versions
         result = negotiate_version(["1.0"])
-        assert result == "1.0"
+        assert result == "1.0", "Result must not be empty"
 
 
 class TestSupportsFeature:
@@ -258,35 +258,35 @@ class TestValidateVersion:
 
     def test_validate_version_supported(self):
         """Test validation of supported version."""
-        assert validate_version("1.0") is True
+        assert validate_version("1.0") is True, "Condition must be true"
 
     def test_validate_version_unsupported(self):
         """Test validation of unsupported version."""
-        assert validate_version("2.0") is False
-        assert validate_version("0.9") is False
+        assert validate_version("2.0") is False, "Condition must be true"
+        assert validate_version("0.9") is False, "Condition must be true"
 
     def test_validate_version_invalid_format(self):
         """Test validation of invalid format."""
-        assert validate_version("invalid") is False
-        assert validate_version("v1.0") is False
+        assert validate_version("invalid") is False, "Condition must be true"
+        assert validate_version("v1.0") is False, "Condition must be true"
 
     def test_validate_version_empty(self):
         """Test validation of empty string."""
-        assert validate_version("") is False
+        assert validate_version("") is False, "Condition must be true"
 
     def test_validate_version_too_long(self):
         """Test validation of version exceeding max length."""
         long_version = "1." + "0" * MAX_VERSION_LENGTH
-        assert validate_version(long_version) is False
+        assert validate_version(long_version) is False, "Condition must be true"
 
     def test_validate_version_semantic_version(self):
         """Test validation of semantic versions."""
-        assert validate_version("1.0.0") is False  # Not in MCP_VERSIONS
-        assert validate_version("2.1.3") is False  # Not in MCP_VERSIONS
+        assert validate_version("1.0.0") is False, "Condition must be true"
+        assert validate_version("2.1.3") is False, "Condition must be true"
 
     def test_validate_version_non_string(self):
         """Test validation with non-string input."""
-        assert validate_version(None) is False
+        assert validate_version(None) is False, "Condition must be true"
 
         # Non-string numeric input causes TypeError
         with pytest.raises(TypeError):
@@ -328,16 +328,16 @@ class TestMCPVersionsConstant:
 
     def test_mcp_versions_not_empty(self):
         """Test MCP_VERSIONS is not empty."""
-        assert len(MCP_VERSIONS) > 0
+        assert len(MCP_VERSIONS) > 0, "Mcp_versions must not be empty"
 
     def test_mcp_versions_contains_valid_versions(self):
         """Test MCP_VERSIONS contains valid version strings."""
         for version in MCP_VERSIONS:
-            assert _validate_version_string(version)
+            assert _validate_version_string(version), "Condition must be true"
 
     def test_mcp_versions_current_version(self):
         """Test that expected version is in MCP_VERSIONS."""
-        assert "1.0" in MCP_VERSIONS
+        assert "1.0" in MCP_VERSIONS, "Condition must be true"
 
 
 class TestVersioningIntegration:
@@ -352,7 +352,7 @@ class TestVersioningIntegration:
         agreed_version = negotiate_version(client_versions)
 
         # Validate the agreed version
-        assert validate_version(agreed_version)
+        assert validate_version(agreed_version), "Condition must be true"
 
         # Check features available
         assert supports_feature("basic_tools", agreed_version)
@@ -371,14 +371,14 @@ class TestVersioningIntegration:
 
         # Should still work by filtering
         result = negotiate_version(client_versions)
-        assert result == "1.0"
+        assert result == "1.0", "Result must not be empty"
 
     def test_feature_availability_by_version(self):
         """Test checking all features for supported versions."""
         features = ["basic_tools", "streaming"]
 
         for version in MCP_VERSIONS:
-            assert validate_version(version)
+            assert validate_version(version), "Condition must be true"
             for feature in features:
                 # At least some features should be supported
                 result = supports_feature(feature, version)
@@ -393,5 +393,5 @@ class TestVersioningIntegration:
         agreed = negotiate_version(client_versions)
 
         # Both sides validate the agreed version
-        assert validate_version(agreed)
-        assert agreed in MCP_VERSIONS
+        assert validate_version(agreed), "Condition must be true"
+        assert agreed in MCP_VERSIONS, "Condition must be true"

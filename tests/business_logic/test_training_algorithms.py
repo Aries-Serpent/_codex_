@@ -17,7 +17,7 @@ class TestOptimizationBasics:
         """Test optimizer initialization."""
         optimizer = {"learning_rate": 0.001, "momentum": 0.9, "name": "SGD"}
 
-        assert optimizer["learning_rate"] == 0.001
+        assert optimizer["learning_rate"] == 0.001, "Condition must be true"
 
     def test_optimizer_parameter_update(self):
         """Test parameter update step."""
@@ -27,7 +27,7 @@ class TestOptimizationBasics:
 
         params["weight"] -= learning_rate * gradient["weight"]
 
-        assert params["weight"] == 0.999
+        assert params["weight"] == 0.999, "Condition must be true"
 
     def test_multiple_parameter_update(self):
         """Test updating multiple parameters."""
@@ -38,15 +38,15 @@ class TestOptimizationBasics:
         for param in params:
             params[param] -= lr * gradients[param]
 
-        assert params["w1"] == 0.999
-        assert params["w2"] == 1.998
+        assert params["w1"] == 0.999, "Condition must be true"
+        assert params["w2"] == 1.998, "Condition must be true"
 
     def test_learning_rate_scaling(self):
         """Test learning rate affects update magnitude."""
         update_large_lr = 0.1 * 0.1
         update_small_lr = 0.1 * 0.001
 
-        assert update_large_lr > update_small_lr
+        assert update_large_lr > update_small_lr, "update_large_lr must be greater than zero"
 
     def test_gradient_clipping(self):
         """Test gradient clipping prevents explosion."""
@@ -55,7 +55,7 @@ class TestOptimizationBasics:
 
         clipped = [min(g, max_grad) for g in gradients]
 
-        assert all(abs(g) <= max_grad for g in clipped)
+        assert all(abs(g) <= max_grad for g in clipped), "Condition must be true"
 
 
 class TestAdamOptimizer:
@@ -65,8 +65,8 @@ class TestAdamOptimizer:
         """Test Adam beta parameters."""
         adam = {"beta_1": 0.9, "beta_2": 0.999, "epsilon": 1e-8}  # Momentum  # RMSprop
 
-        assert adam["beta_1"] == 0.9
-        assert adam["beta_2"] == 0.999
+        assert adam["beta_1"] == 0.9, "Condition must be true"
+        assert adam["beta_2"] == 0.999, "Condition must be true"
 
     def test_adam_moment_updates(self):
         """Test Adam first and second moment updates."""
@@ -79,8 +79,8 @@ class TestAdamOptimizer:
         m = beta_1 * m + (1 - beta_1) * gradient
         v = beta_2 * v + (1 - beta_2) * (gradient**2)
 
-        assert m > 0
-        assert v > 0
+        assert m > 0, "m must be greater than zero"
+        assert v > 0, "v must be greater than zero"
 
     def test_adam_bias_correction(self):
         """Test Adam bias correction."""
@@ -93,7 +93,7 @@ class TestAdamOptimizer:
         m_hat = m / (1 - beta_1**t)
         v / (1 - beta_2**t)
 
-        assert m_hat > m  # Should be larger after bias correction
+        assert m_hat > m, "m_hat must be greater than zero"
 
 
 class TestLearningRateScheduling:
@@ -104,7 +104,7 @@ class TestLearningRateScheduling:
         lr = 0.001
 
         for epoch in range(5):
-            assert lr == 0.001
+            assert lr == 0.001, "lr is not valid"
 
     def test_step_decay_schedule(self):
         """Test step decay learning rate schedule."""
@@ -118,7 +118,7 @@ class TestLearningRateScheduling:
                 initial_lr *= decay_rate
             lrs.append(initial_lr)
 
-        assert lrs[0] > lrs[20]
+        assert lrs[0] > lrs[20], "Value must be greater than zero"
 
     def test_exponential_decay(self):
         """Test exponential decay schedule."""
@@ -130,7 +130,7 @@ class TestLearningRateScheduling:
             lr = initial_lr * (decay_rate**epoch)
             lrs.append(lr)
 
-        assert lrs[0] > lrs[-1]
+        assert lrs[0] > lrs[-1], "Value must be greater than zero"
 
     def test_cosine_annealing(self):
         """Test cosine annealing schedule."""
@@ -145,8 +145,8 @@ class TestLearningRateScheduling:
             lr = min_lr + (max_lr - min_lr) * (1 + math.cos(math.pi * epoch / total_epochs)) / 2
             lrs.append(lr)
 
-        assert lrs[0] > lrs[50]
-        assert lrs[0] > lrs[-1]
+        assert lrs[0] > lrs[50], "Value must be greater than zero"
+        assert lrs[0] > lrs[-1], "Value must be greater than zero"
 
     def test_warm_restart_schedule(self):
         """Test warm restart schedule."""
@@ -159,7 +159,7 @@ class TestLearningRateScheduling:
             lr = base_lr * (1 + math.cos(math.pi * cycle_pos / period)) / 2
             lrs.append(lr)
 
-        assert len(lrs) == 40
+        assert len(lrs) == 40, "Lrs must not be empty"
 
 
 class TestGradientComputation:
@@ -176,7 +176,7 @@ class TestGradientComputation:
 
         gradient = (f_x_plus - f_x) / dx
 
-        assert gradient > 0
+        assert gradient > 0, "gradient must be greater than zero"
 
     def test_gradient_accumulation(self):
         """Test gradient accumulation across samples."""
@@ -187,7 +187,7 @@ class TestGradientComputation:
             gradients.extend(batch_grads)
 
         total_grad = sum(gradients)
-        assert total_grad > 0
+        assert total_grad > 0, "total_grad must be greater than zero"
 
     def test_zero_gradient_skip(self):
         """Test skipping zero gradients."""
@@ -195,7 +195,7 @@ class TestGradientComputation:
 
         non_zero = [g for g in gradients if g != 0.0]
 
-        assert len(non_zero) == 2
+        assert len(non_zero) == 2, "Non_zero must not be empty"
 
     def test_gradient_threshold(self):
         """Test gradient threshold filtering."""
@@ -204,7 +204,7 @@ class TestGradientComputation:
 
         significant = [g for g in gradients if abs(g) >= threshold]
 
-        assert len(significant) == 3
+        assert len(significant) == 3, "Significant must not be empty"
 
 
 class TestBatchProcessing:
@@ -217,14 +217,14 @@ class TestBatchProcessing:
 
         average_gradient = sum(sample_gradients) / batch_size
 
-        assert average_gradient == 0.1
+        assert average_gradient == 0.1, "average_gradient is not valid"
 
     def test_variable_batch_size(self):
         """Test handling variable batch sizes."""
         batches = [32, 64, 32, 16]
 
         total_samples = sum(batches)
-        assert total_samples == 144
+        assert total_samples == 144, "total_samples is not valid"
 
     def test_batch_normalization(self):
         """Test batch normalization."""
@@ -233,7 +233,7 @@ class TestBatchProcessing:
         mean = sum(batch) / len(batch)
         sum((x - mean) ** 2 for x in batch) / len(batch)
 
-        assert mean == 2.5
+        assert mean == 2.5, "mean is not valid"
 
     def test_accumulated_batch_metrics(self):
         """Test accumulating metrics over batches."""
@@ -244,7 +244,7 @@ class TestBatchProcessing:
             metrics["accuracy"].append(0.7 + batch * 0.03)
 
         avg_loss = sum(metrics["loss"]) / len(metrics["loss"])
-        assert avg_loss < 0.5
+        assert avg_loss < 0.5, "avg_loss is not valid"
 
 
 class TestEpochManagement:
@@ -256,9 +256,9 @@ class TestEpochManagement:
         total_epochs = 10
 
         for current_epoch in range(total_epochs):
-            assert 0 <= current_epoch < total_epochs
+            assert 0 <= current_epoch < total_epochs, "0 is not valid"
 
-        assert current_epoch == 9
+        assert current_epoch == 9, "current_epoch is not valid"
 
     def test_epoch_checkpointing(self):
         """Test checkpointing at epoch intervals."""
@@ -267,7 +267,7 @@ class TestEpochManagement:
         for epoch in range(20):
             if epoch in checkpoints_at:
                 checkpoint = {"epoch": epoch}
-                assert checkpoint["epoch"] in checkpoints_at
+                assert checkpoint["epoch"] in checkpoints_at, "Condition must be true"
 
     def test_early_stopping(self):
         """Test early stopping based on metric."""
@@ -289,7 +289,7 @@ class TestEpochManagement:
                 should_stop = True
                 break
 
-        assert should_stop is True
+        assert should_stop is True, "should_stop is not valid"
 
     def test_learning_rate_reset_per_epoch(self):
         """Test learning rate adjustments per epoch."""
@@ -297,7 +297,7 @@ class TestEpochManagement:
 
         for epoch in range(15):
             lr = schedule.get(epoch, 0.001)
-            assert lr > 0
+            assert lr > 0, "lr must be greater than zero"
 
 
 class TestConvergenceDetection:
@@ -313,7 +313,7 @@ class TestConvergenceDetection:
             if abs(losses[i] - losses[i - 1]) < threshold:
                 plateaued = True
 
-        assert plateaued is True
+        assert plateaued is True, "plateaued is not valid"
 
     def test_convergence_by_gradient_magnitude(self):
         """Test convergence by gradient magnitude."""
@@ -322,7 +322,7 @@ class TestConvergenceDetection:
 
         converged = all(abs(g) < threshold for g in gradients[-2:])
 
-        assert converged is True
+        assert converged is True, "converged is not valid"
 
     def test_metric_improvement_detection(self):
         """Test detecting metric improvement."""
@@ -330,7 +330,7 @@ class TestConvergenceDetection:
 
         improved = accuracies[-1] > accuracies[0]
 
-        assert improved is True
+        assert improved is True, "improved is not valid"
 
     def test_no_improvement_threshold(self):
         """Test threshold for no improvement stopping."""
@@ -342,7 +342,7 @@ class TestConvergenceDetection:
             if metric_history[i] - metric_history[i - 1] > min_improvement:
                 no_improvement = False
 
-        assert no_improvement is True
+        assert no_improvement is True, "no_improvement is not valid"
 
 
 class TestGradientDescent:
@@ -357,7 +357,7 @@ class TestGradientDescent:
             gradient = params  # Simple gradient
             params -= lr * gradient
 
-        assert params < 1.0
+        assert params < 1.0, "params is not valid"
 
     def test_stochastic_gradient_descent(self):
         """Test SGD updates per sample."""
@@ -369,7 +369,7 @@ class TestGradientDescent:
             gradient = 0.1  # Per-sample gradient
             params -= lr * gradient
 
-        assert params < 1.0
+        assert params < 1.0, "params is not valid"
 
     def test_mini_batch_gradient_descent(self):
         """Test mini-batch gradient descent."""
@@ -383,7 +383,7 @@ class TestGradientDescent:
             gradient = sum([0.1] * batch_size) / batch_size
             params -= lr * gradient
 
-        assert params < 1.0
+        assert params < 1.0, "params is not valid"
 
     def test_momentum_updates(self):
         """Test momentum in gradient descent."""
@@ -397,4 +397,4 @@ class TestGradientDescent:
             velocity = momentum * velocity - lr * gradient
             params += velocity
 
-        assert params != 1.0
+        assert params != 1.0, "params is not valid"

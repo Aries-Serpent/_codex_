@@ -126,11 +126,11 @@ def test_unified_training_resume_flow(monkeypatch, tmp_path) -> None:
     )
     result = unified_training.run_unified_training(cfg, callbacks=[callback])
 
-    assert result["status"] == "ok"
-    assert saved["loaded"] == "/tmp/resume"
-    assert saved["out_dir"].name == "epoch-2"
-    assert saved["metadata"]["metrics"] == {"final_status": 1.0}
-    assert callback.checkpoints
+    assert result["status"] == "ok", "Result must not be empty"
+    assert saved["loaded"] == "/tmp/resume", "Condition must be true"
+    assert saved["out_dir"].name == "epoch-2", "name is not valid"
+    assert saved["metadata"]["metrics"] == {"final_status": 1.0}, "Data must not be empty"
+    assert callback.checkpoints, "Condition must be true"
     resumed_state = callback.checkpoints[0]["state"]
-    assert resumed_state.get("resume_loaded") is True
+    assert resumed_state.get("resume_loaded") is True, "Condition must be true"
     assert resumed_state.get("resume_payload_keys") == ["model_state", "optimizer_state"]

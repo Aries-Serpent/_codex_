@@ -17,41 +17,41 @@ from security import core
 
 def test_sanitize_for_logging_basic() -> None:
     result = core.sanitize_for_logging("hello world")
-    assert result == "hello world"
+    assert result == "hello world", "Result must not be empty"
 
 
 def test_sanitize_for_logging_removes_newlines() -> None:
     result = core.sanitize_for_logging("line1\nline2\r\nline3")
-    assert "\n" not in result
-    assert "\r" not in result
+    assert "\n" not in result, "Result must not be empty"
+    assert "\r" not in result, "Result must not be empty"
 
 
 def test_sanitize_for_logging_removes_control_chars() -> None:
     result = core.sanitize_for_logging("hello\x00world\x1f!")
-    assert "\x00" not in result
-    assert "\x1f" not in result
+    assert "\x00" not in result, "Result must not be empty"
+    assert "\x1f" not in result, "Result must not be empty"
 
 
 def test_sanitize_for_logging_truncates_long_input() -> None:
     long_str = "a" * 300
     result = core.sanitize_for_logging(long_str, max_length=200)
-    assert result.endswith("...[truncated]")
-    assert len(result) == 200 + len("...[truncated]")
+    assert result.endswith("...[truncated]"), "Result must not be empty"
+    assert len(result) == 200 + len("...[truncated]"), "Result must not be empty"
 
 
 def test_sanitize_for_logging_accepts_bytes() -> None:
     result = core.sanitize_for_logging(b"hello bytes")
-    assert "hello bytes" in result
+    assert "hello bytes" in result, "Result must not be empty"
 
 
 def test_sanitize_for_logging_accepts_non_string() -> None:
     result = core.sanitize_for_logging(12345)
-    assert "12345" in result
+    assert "12345" in result, "Result must not be empty"
 
 
 def test_sanitize_for_logging_removes_tabs() -> None:
     result = core.sanitize_for_logging("col1\tcol2")
-    assert "\t" not in result
+    assert "\t" not in result, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -67,7 +67,7 @@ def test_ensure_str_via_sanitize_bytes() -> None:
 
 def test_ensure_str_via_sanitize_int() -> None:
     result = core.sanitize_for_logging(42)
-    assert result == "42"
+    assert result == "42", "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -77,28 +77,28 @@ def test_ensure_str_via_sanitize_int() -> None:
 
 def test_sanitize_user_content_html() -> None:
     result = core.sanitize_user_content("<script>alert('x')</script>")
-    assert "<" not in result
+    assert "<" not in result, "Result must not be empty"
 
 
 def test_sanitize_user_content_markdown() -> None:
     result = core.sanitize_user_content("<b>bold</b>", content_type="markdown")
-    assert "&lt;" in result or "<" not in result
+    assert "&lt;" in result or "<" not in result, "Result must not be empty"
 
 
 def test_sanitize_user_content_removes_javascript_protocol() -> None:
     result = core.sanitize_user_content("javascript:alert(1)")
-    assert "javascript:" not in result
+    assert "javascript:" not in result, "Result must not be empty"
 
 
 def test_sanitize_user_content_removes_onerror() -> None:
     result = core.sanitize_user_content('<img onerror="alert(1)">')
     # onerror= pattern should be stripped
-    assert "onerror" not in result
+    assert "onerror" not in result, "Result must not be empty"
 
 
 def test_sanitize_user_content_plain_text_unchanged() -> None:
     result = core.sanitize_user_content("hello world")
-    assert "hello" in result
+    assert "hello" in result, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -113,7 +113,7 @@ def test_validate_input_sql_rejects() -> None:
 
 def test_validate_input_sql_accepts_clean() -> None:
     result = core.validate_input("SELECT * FROM users", input_type="sql")
-    assert "SELECT" in result
+    assert "SELECT" in result, "Result must not be empty"
 
 
 def test_validate_input_sql_rejects_or_pattern() -> None:
@@ -143,7 +143,7 @@ def test_validate_input_html_rejects_javascript_url() -> None:
 
 def test_validate_input_html_accepts_clean() -> None:
     result = core.validate_input("Hello world", input_type="html")
-    assert "Hello" in result
+    assert "Hello" in result, "Result must not be empty"
 
 
 def test_validate_path_traversal_blocked() -> None:
@@ -168,7 +168,7 @@ def test_validate_input_path_absolute_blocked() -> None:
 
 def test_validate_input_path_accepts_relative() -> None:
     result = core.validate_input("subdir/file.txt", input_type="path")
-    assert result == "subdir/file.txt"
+    assert result == "subdir/file.txt", "Result must not be empty"
 
 
 def test_validate_input_path_newline_blocked() -> None:
@@ -178,7 +178,7 @@ def test_validate_input_path_newline_blocked() -> None:
 
 def test_validate_input_text_accepts_normal() -> None:
     result = core.validate_input("hello world", input_type="text")
-    assert "hello" in result
+    assert "hello" in result, "Result must not be empty"
 
 
 def test_validate_input_text_rejects_null_byte() -> None:
@@ -209,7 +209,7 @@ def test_validate_input_json_blocks_constructor() -> None:
 
 def test_validate_input_json_accepts_clean() -> None:
     result = core.validate_input('{"key": "value"}', input_type="json")
-    assert '"key"' in result
+    assert '"key"' in result, "Result must not be empty"
 
 
 def test_validate_input_exceeds_max_length() -> None:
@@ -235,7 +235,7 @@ def test_validate_input_unsupported_type_raises() -> None:
 
 def test_enforce_absolute_path_valid(tmp_path: Path) -> None:
     result = core.enforce_absolute_path(str(tmp_path))
-    assert result == tmp_path
+    assert result == tmp_path, "Result must not be empty"
 
 
 def test_enforce_absolute_path_traversal_raises() -> None:
@@ -257,7 +257,7 @@ def test_sanitize_path_valid(tmp_path: Path) -> None:
     subdir = tmp_path / "sub"
     subdir.mkdir()
     result = core.sanitize_path(subdir, tmp_path)
-    assert result == subdir.resolve()
+    assert result == subdir.resolve(), "Result must not be empty"
 
 
 def test_sanitize_path_escape_raises(tmp_path: Path) -> None:
@@ -273,7 +273,7 @@ def test_sanitize_path_escape_raises(tmp_path: Path) -> None:
 
 def test_check_permissions_nonexistent_path(tmp_path: Path) -> None:
     result = core.check_permissions(tmp_path / "nonexistent.txt", "read")
-    assert result is False
+    assert result is False, "Result must not be empty"
 
 
 def test_check_permissions_read_existing(tmp_path: Path) -> None:
@@ -297,7 +297,7 @@ def test_check_permissions_unknown_mode(tmp_path: Path) -> None:
     f = tmp_path / "test.txt"
     f.write_text("hello")
     result = core.check_permissions(f, "unknown")
-    assert result is False
+    assert result is False, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -313,8 +313,8 @@ def test_rate_limiter_allows_then_blocks() -> None:
         calls.append(x)
         return x
 
-    assert fn(1) == 1
-    assert fn(2) == 2
+    assert fn(1) == 1, "Condition must be true"
+    assert fn(2) == 2, "Condition must be true"
     with pytest.raises(core.SecurityError):
         fn(3)
 
@@ -334,9 +334,9 @@ def test_rate_limiter_global_key() -> None:
     def fn() -> str:
         return "ok"
 
-    assert fn() == "ok"
-    assert fn() == "ok"
-    assert fn() == "ok"
+    assert fn() == "ok", "Condition must be true"
+    assert fn() == "ok", "Condition must be true"
+    assert fn() == "ok", "Condition must be true"
     with pytest.raises(core.SecurityError):
         fn()
 
@@ -346,8 +346,8 @@ def test_rate_limiter_key_func() -> None:
     def fn(user: str) -> str:
         return user
 
-    assert fn("alice") == "alice"
-    assert fn("bob") == "bob"  # different key, not blocked
+    assert fn("alice") == "alice", "Condition must be true"
+    assert fn("bob") == "bob", "Condition must be true"
     with pytest.raises(core.SecurityError):
         fn("alice")  # alice is now blocked
 
@@ -362,13 +362,13 @@ def test_rate_limiter_window_expires() -> None:
     def fn() -> str:
         return "ok"
 
-    assert fn() == "ok"
+    assert fn() == "ok", "Condition must be true"
     with pytest.raises(core.SecurityError):
         fn()
 
     # Advance time past window
     clock_time[0] = 6.0
-    assert fn() == "ok"
+    assert fn() == "ok", "Condition must be true"
 
 
 def test_rate_limiter_async() -> None:
@@ -377,8 +377,8 @@ def test_rate_limiter_async() -> None:
         async def async_fn() -> str:
             return "ok"
 
-        assert await async_fn() == "ok"
-        assert await async_fn() == "ok"
+        assert await async_fn() == "ok", "Condition must be true"
+        assert await async_fn() == "ok", "Condition must be true"
         with pytest.raises(core.SecurityError):
             await async_fn()
 
@@ -391,8 +391,8 @@ def test_rate_limiter_async_with_key_func() -> None:
         async def async_fn(user: str) -> str:
             return user
 
-        assert await async_fn("alice") == "alice"
-        assert await async_fn("bob") == "bob"
+        assert await async_fn("alice") == "alice", "Condition must be true"
+        assert await async_fn("bob") == "bob", "Condition must be true"
         with pytest.raises(core.SecurityError):
             await async_fn("alice")
 

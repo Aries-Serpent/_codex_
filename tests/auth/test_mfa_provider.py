@@ -27,11 +27,11 @@ class TestMFASecret: # pragma: allowlist secret # pragma: allowlist secret # pra
         )
 
         assert secret.secret == "JBSWY3DPEHPK3PXP"  # pragma: allowlist secret
-        assert secret.user_id == "user123"
-        assert secret.issuer == "Codex"
-        assert secret.algorithm == "SHA256"
-        assert secret.digits == 6
-        assert secret.period == 30
+        assert secret.user_id == "user123", "user_id is not valid"
+        assert secret.issuer == "Codex", "issuer is not valid"
+        assert secret.algorithm == "SHA256", "algorithm is not valid"
+        assert secret.digits == 6, "digits is not valid"
+        assert secret.period == 30, "period is not valid"
 
     def test_secret_creation_sha1_compatibility(self):
         """Test existing SHA1 secrets still normalize and work."""
@@ -46,8 +46,8 @@ class TestMFASecret: # pragma: allowlist secret # pragma: allowlist secret # pra
 
         code = provider.generate_totp(secret.secret, algorithm=secret.algorithm)
 
-        assert secret.algorithm == "SHA1"
-        assert (
+        assert secret.algorithm == "SHA1", "algorithm is not valid"
+        assert (, "Condition must be true"
             provider.verify_totp(secret.secret, code, secret.user_id, algorithm=secret.algorithm)
             is True
         )
@@ -62,11 +62,11 @@ class TestMFASecret: # pragma: allowlist secret # pragma: allowlist secret # pra
 
         uri = secret.get_provisioning_uri("test@example.com")
 
-        assert uri.startswith("otpauth://totp/")
-        assert "secret=JBSWY3DPEHPK3PXP" in uri
-        assert "issuer=Codex" in uri
-        assert "algorithm=SHA256" in uri
-        assert "test%40example.com" in uri
+        assert uri.startswith("otpauth://totp/"), "Condition must be true"
+        assert "secret=JBSWY3DPEHPK3PXP" in uri, "Condition must be true"
+        assert "issuer=Codex" in uri, "Condition must be true"
+        assert "algorithm=SHA256" in uri, "Condition must be true"
+        assert "test%40example.com" in uri, "Condition must be true"
 
     def test_provisioning_uri_sha1_compatibility(self):
         """Test SHA1 secrets still emit the correct provisioning metadata."""
@@ -79,7 +79,7 @@ class TestMFASecret: # pragma: allowlist secret # pragma: allowlist secret # pra
 
         uri = secret.get_provisioning_uri("test@example.com")
 
-        assert "algorithm=SHA1" in uri
+        assert "algorithm=SHA1" in uri, "Condition must be true"
 
 
 class TestBackupCode:
@@ -92,10 +92,10 @@ class TestBackupCode:
             code_hash="hash123",
         )
 
-        assert code.code == "1234-5678"
-        assert code.code_hash == "hash123"
-        assert code.used is False
-        assert code.used_at is None
+        assert code.code == "1234-5678", "code is not valid"
+        assert code.code_hash == "hash123", "code_hash is not valid"
+        assert code.used is False, "used is not valid"
+        assert code.used_at is None, "used_at is not valid"
 
 
 class TestMFAProvider:
@@ -105,21 +105,21 @@ class TestMFAProvider:
         """Test MFA provider initialization."""
         provider = MFAProvider()
 
-        assert provider is not None
-        assert provider._secret_store == {}
-        assert provider._backup_codes == {}
-        assert provider._attempts == {}
-        assert provider._locked_users == {}
+        assert provider is not None, "provider must be initialized"
+        assert provider._secret_store == {}, "_secret_store is not valid"
+        assert provider._backup_codes == {}, "_backup_codes is not valid"
+        assert provider._attempts == {}, "_attempts is not valid"
+        assert provider._locked_users == {}, "_locked_users is not valid"
 
     def test_generate_totp_secret(self):
         """Test TOTP secret generation."""
         provider = MFAProvider()
         secret = provider.generate_totp_secret("user123", "Codex")
 
-        assert secret.user_id == "user123"
-        assert secret.issuer == "Codex"
-        assert len(secret.secret) > 0
-        assert "user123" in provider._secret_store
+        assert secret.user_id == "user123", "user_id is not valid"
+        assert secret.issuer == "Codex", "issuer is not valid"
+        assert len(secret.secret) > 0, "Collection must not be empty"
+        assert "user123" in provider._secret_store, "Condition must be true"
 
     def test_generate_totp_unique_secrets(self):
         """Test that generated secrets are unique."""
@@ -127,7 +127,7 @@ class TestMFAProvider:
         secret1 = provider.generate_totp_secret("user1")
         secret2 = provider.generate_totp_secret("user2")
 
-        assert secret1.secret != secret2.secret
+        assert secret1.secret != secret2.secret, "secret is not valid"
 
     def test_generate_totp_secret_normalizes_algorithm(self):
         """Test algorithm normalization for newly generated secrets."""
@@ -135,7 +135,7 @@ class TestMFAProvider:
 
         secret = provider.generate_totp_secret("user123", algorithm="sha512")
 
-        assert secret.algorithm == "SHA512"
+        assert secret.algorithm == "SHA512", "algorithm is not valid"
 
     def test_generate_totp_secret_normalizes_mixed_case_algorithm(self):
         """Test mixed-case algorithm normalization."""
@@ -143,7 +143,7 @@ class TestMFAProvider:
 
         secret = provider.generate_totp_secret("user123", algorithm="sHa512")
 
-        assert secret.algorithm == "SHA512"
+        assert secret.algorithm == "SHA512", "algorithm is not valid"
 
     def test_generate_totp(self):
         """Test TOTP generation."""
@@ -153,9 +153,9 @@ class TestMFAProvider:
         # Generate TOTP
         totp = provider.generate_totp(secret)
 
-        assert totp is not None
-        assert len(totp) == 6
-        assert totp.isdigit()
+        assert totp is not None, "totp must be initialized"
+        assert len(totp) == 6, "Totp must not be empty"
+        assert totp.isdigit(), "Condition must be true"
 
     def test_generate_totp_consistent(self):
         """Test TOTP generation is consistent for same time."""
@@ -166,7 +166,7 @@ class TestMFAProvider:
         totp1 = provider.generate_totp(secret, timestamp)
         totp2 = provider.generate_totp(secret, timestamp)
 
-        assert totp1 == totp2
+        assert totp1 == totp2, "totp1 is not valid"
 
     def test_generate_totp_sha1_compatibility(self):
         """Test explicit SHA1 compatibility for RFC 6238 clients."""
@@ -177,7 +177,7 @@ class TestMFAProvider:
         totp1 = provider.generate_totp(secret, timestamp, algorithm="SHA1")
         totp2 = provider.generate_totp(secret, timestamp, algorithm="sha1")
 
-        assert totp1 == totp2
+        assert totp1 == totp2, "totp1 is not valid"
 
     def test_verify_totp_valid(self):
         """Test TOTP verification with valid code."""
@@ -191,7 +191,7 @@ class TestMFAProvider:
         # Verify immediately
         result = provider.verify_totp(secret, code, user_id)
 
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_verify_totp_invalid(self):
         """Test TOTP verification with invalid code."""
@@ -202,7 +202,7 @@ class TestMFAProvider:
         # Verify with wrong code
         result = provider.verify_totp(secret, "000000", user_id)
 
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_verify_totp_time_window(self):
         """Test TOTP verification with time window."""
@@ -217,7 +217,7 @@ class TestMFAProvider:
         # Should still be valid with window=1
         result = provider.verify_totp(secret, code, user_id, window=1)
 
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_verify_totp_sha1_compatibility(self):
         """Test SHA1 verification remains available for existing secrets."""
@@ -260,12 +260,12 @@ class TestMFAProvider:
             provider.verify_totp(secret, "000000", user_id)
 
         # User should be locked out
-        assert provider._is_locked_out(user_id) is True
+        assert provider._is_locked_out(user_id) is True, "Condition must be true"
 
         # Even valid code should fail now
         valid_code = provider.generate_totp(secret)
         result = provider.verify_totp(secret, valid_code, user_id)
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_lockout_expiry(self):
         """Test that lockout expires after duration."""
@@ -276,7 +276,7 @@ class TestMFAProvider:
         provider._locked_users[user_id] = time.time() - 1
 
         # Should no longer be locked out
-        assert provider._is_locked_out(user_id) is False
+        assert provider._is_locked_out(user_id) is False, "Condition must be true"
 
     def test_generate_backup_codes(self):
         """Test backup code generation."""
@@ -285,14 +285,14 @@ class TestMFAProvider:
 
         codes = provider.generate_backup_codes(user_id, count=10)
 
-        assert len(codes) == 10
-        assert user_id in provider._backup_codes
-        assert len(provider._backup_codes[user_id]) == 10
+        assert len(codes) == 10, "Codes must not be empty"
+        assert user_id in provider._backup_codes, "Condition must be true"
+        assert len(provider._backup_codes[user_id]) == 10, "Collection must not be empty"
 
         # Codes should be in format XXXX-XXXX
         for code in codes:
-            assert len(code) == 9  # 4 + 1 + 4
-            assert "-" in code
+            assert len(code) == 9, "Code must not be empty"
+            assert "-" in code, "Condition must be true"
 
     def test_backup_codes_unique(self):
         """Test that backup codes are unique."""
@@ -302,7 +302,7 @@ class TestMFAProvider:
         codes = provider.generate_backup_codes(user_id, count=10)
 
         # All codes should be unique
-        assert len(codes) == len(set(codes))
+        assert len(codes) == len(set(codes)), "Codes must not be empty"
 
     def test_verify_backup_code_valid(self):
         """Test backup code verification with valid code."""
@@ -314,7 +314,7 @@ class TestMFAProvider:
 
         result = provider.verify_backup_code(user_id, code_to_use)
 
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_verify_backup_code_invalid(self):
         """Test backup code verification with invalid code."""
@@ -325,7 +325,7 @@ class TestMFAProvider:
 
         result = provider.verify_backup_code(user_id, "INVALID-CODE")
 
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_verify_backup_code_single_use(self):
         """Test that backup codes can only be used once."""
@@ -337,11 +337,11 @@ class TestMFAProvider:
 
         # First use should succeed
         result1 = provider.verify_backup_code(user_id, code_to_use)
-        assert result1 is True
+        assert result1 is True, "Result must not be empty"
 
         # Second use should fail
         result2 = provider.verify_backup_code(user_id, code_to_use)
-        assert result2 is False
+        assert result2 is False, "Result must not be empty"
 
     def test_get_remaining_backup_codes(self):
         """Test getting count of remaining backup codes."""
@@ -349,15 +349,15 @@ class TestMFAProvider:
         user_id = "user123"
 
         # Initially no codes
-        assert provider.get_remaining_backup_codes(user_id) == 0
+        assert provider.get_remaining_backup_codes(user_id) == 0, "Condition must be true"
 
         # Generate codes
         codes = provider.generate_backup_codes(user_id, count=10)
-        assert provider.get_remaining_backup_codes(user_id) == 10
+        assert provider.get_remaining_backup_codes(user_id) == 10, "Condition must be true"
 
         # Use one code
         provider.verify_backup_code(user_id, codes[0])
-        assert provider.get_remaining_backup_codes(user_id) == 9
+        assert provider.get_remaining_backup_codes(user_id) == 9, "Condition must be true"
 
     def test_disable_mfa(self):
         """Test disabling MFA for a user."""
@@ -368,15 +368,15 @@ class TestMFAProvider:
         provider.generate_totp_secret(user_id)
         provider.generate_backup_codes(user_id)
 
-        assert provider.is_mfa_enabled(user_id) is True
+        assert provider.is_mfa_enabled(user_id) is True, "Condition must be true"
 
         # Disable MFA
         result = provider.disable_mfa(user_id)
 
-        assert result is True
-        assert provider.is_mfa_enabled(user_id) is False
-        assert user_id not in provider._secret_store
-        assert user_id not in provider._backup_codes
+        assert result is True, "Result must not be empty"
+        assert provider.is_mfa_enabled(user_id) is False, "Condition must be true"
+        assert user_id not in provider._secret_store, "Condition must be true"
+        assert user_id not in provider._backup_codes, "Condition must be true"
 
     def test_disable_mfa_not_enabled(self):
         """Test disabling MFA when not enabled."""
@@ -385,18 +385,18 @@ class TestMFAProvider:
 
         result = provider.disable_mfa(user_id)
 
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_is_mfa_enabled(self):
         """Test checking if MFA is enabled."""
         provider = MFAProvider()
         user_id = "user123"
 
-        assert provider.is_mfa_enabled(user_id) is False
+        assert provider.is_mfa_enabled(user_id) is False, "Condition must be true"
 
         provider.generate_totp_secret(user_id)
 
-        assert provider.is_mfa_enabled(user_id) is True
+        assert provider.is_mfa_enabled(user_id) is True, "Condition must be true"
 
 
 class TestMFAProviderIntegration:
@@ -410,15 +410,15 @@ class TestMFAProviderIntegration:
 
         # Step 1: Generate secret
         secret = provider.generate_totp_secret(user_id, "Codex")
-        assert provider.is_mfa_enabled(user_id) is True
+        assert provider.is_mfa_enabled(user_id) is True, "Condition must be true"
 
         # Step 2: Get provisioning URI (user would scan QR code)
         uri = secret.get_provisioning_uri(account_name)
-        assert "otpauth://" in uri
+        assert "otpauth://" in uri, "Condition must be true"
 
         # Step 3: Generate backup codes
         backup_codes = provider.generate_backup_codes(user_id, count=10)
-        assert len(backup_codes) == 10
+        assert len(backup_codes) == 10, "Backup_codes must not be empty"
 
         # Step 4: Verify TOTP
         totp_code = provider.generate_totp(secret.secret)
@@ -426,7 +426,7 @@ class TestMFAProviderIntegration:
 
         # Step 5: Verify backup code
         assert provider.verify_backup_code(user_id, backup_codes[0]) is True
-        assert provider.get_remaining_backup_codes(user_id) == 9
+        assert provider.get_remaining_backup_codes(user_id) == 9, "Condition must be true"
 
     def test_mfa_recovery_flow(self):
         """Test MFA recovery using backup codes."""
@@ -457,7 +457,7 @@ class TestMFAProviderIntegration:
             provider.verify_totp(secret.secret, "000000", user_id)
 
         # Account should be locked
-        assert provider._is_locked_out(user_id) is True
+        assert provider._is_locked_out(user_id) is True, "Condition must be true"
 
         # Even correct code should fail
         valid_code = provider.generate_totp(secret.secret)

@@ -201,9 +201,9 @@ class ASTPatternLibrary:
 def test_pattern_library_init():
     """Test pattern library initialization."""
     lib = ASTPatternLibrary()
-    assert len(lib.patterns) > 0
-    assert "abstract_method" in lib.patterns
-    assert "stub_implementation" in lib.patterns
+    assert len(lib.patterns) > 0, "Collection must not be empty"
+    assert "abstract_method" in lib.patterns, "Condition must be true"
+    assert "stub_implementation" in lib.patterns, "Condition must be true"
 
 
 def test_abstract_method_detection():
@@ -219,8 +219,8 @@ class Base:
     lib = ASTPatternLibrary()
     tree = ast.parse(source)
     matches = lib.find_matches(tree, "abstract_method")
-    assert len(matches) == 1
-    assert matches[0].name == "process"
+    assert len(matches) == 1, "Matches must not be empty"
+    assert matches[0].name == "process", "name is not valid"
 
 
 def test_stub_detection():
@@ -235,8 +235,8 @@ def real_impl():
     lib = ASTPatternLibrary()
     tree = ast.parse(source)
     matches = lib.find_matches(tree, "stub_implementation")
-    assert len(matches) == 1
-    assert matches[0].name == "not_implemented"
+    assert len(matches) == 1, "Matches must not be empty"
+    assert matches[0].name == "not_implemented", "name is not valid"
 
 
 def test_dataclass_detection():
@@ -255,8 +255,8 @@ class Regular:
     lib = ASTPatternLibrary()
     tree = ast.parse(source)
     matches = lib.find_matches(tree, "dataclass")
-    assert len(matches) == 1
-    assert matches[0].name == "Point"
+    assert len(matches) == 1, "Matches must not be empty"
+    assert matches[0].name == "Point", "name is not valid"
 
 
 def test_class_with_init_detection():
@@ -273,8 +273,8 @@ class WithoutInit:
     lib = ASTPatternLibrary()
     tree = ast.parse(source)
     matches = lib.find_matches(tree, "class_with_init")
-    assert len(matches) == 1
-    assert matches[0].name == "WithInit"
+    assert len(matches) == 1, "Matches must not be empty"
+    assert matches[0].name == "WithInit", "name is not valid"
 
 
 def test_async_function_detection():
@@ -289,7 +289,7 @@ def sync_func():
     lib = ASTPatternLibrary()
     tree = ast.parse(source)
     matches = lib.find_matches(tree, "async_function")
-    assert len(matches) == 1
+    assert len(matches) == 1, "Matches must not be empty"
 
 
 def test_analyze_file(tmp_path):
@@ -310,7 +310,7 @@ def process():
     lib = ASTPatternLibrary()
     results = lib.analyze_file(test_file)
 
-    assert "dataclass" in results
-    assert "stub_implementation" in results
-    assert len(results["dataclass"]) == 1
-    assert results["dataclass"][0]["name"] == "Config"
+    assert "dataclass" in results, "Result must not be empty"
+    assert "stub_implementation" in results, "Result must not be empty"
+    assert len(results["dataclass"]) == 1, "Collection must not be empty"
+    assert results["dataclass"][0]["name"] == "Config", "Result must not be empty"

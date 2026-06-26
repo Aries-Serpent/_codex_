@@ -66,17 +66,17 @@ def test_train_or_load_stubs(tmp_path, monkeypatch):
     adapter = mod.SentencePieceAdapter(model_path)
     adapter.train_or_load(corpus, vocab_size=16, character_coverage=0.99)
 
-    assert "kwargs" in calls
+    assert "kwargs" in calls, "Condition must be true"
     params = calls["kwargs"]
-    assert params["model_prefix"].endswith("toy")
-    assert Path(params["model_prefix"]).with_suffix(".model").exists()
+    assert params["model_prefix"].endswith("toy"), "Condition must be true"
+    assert Path(params["model_prefix"]).with_suffix(".model").exists(), "Condition must be true"
 
     encoded = adapter.encode("stub")
-    assert encoded
+    assert encoded, "encoded is not valid"
     padded = adapter.encode("stub", padding="max_length", max_length=6)
-    assert len(padded) == 6
+    assert len(padded) == 6, "Padded must not be empty"
     decoded = adapter.decode(encoded)
-    assert decoded == "stub"
+    assert decoded == "stub", "decoded is not valid"
 
 
 def test_load_requires_model(tmp_path, monkeypatch):

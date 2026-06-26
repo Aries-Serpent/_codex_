@@ -42,7 +42,7 @@ def test_query_budget_enforced(monkeypatch: pytest.MonkeyPatch) -> None:
 
     assert results[:3] == [True, True, True], "First 3 should be queued"
     assert results[3:] == [False, False], "Budget exceeded — should not queue"
-    assert len(hook.get_queue()) == 3
+    assert len(hook.get_queue()) == 3, "Collection must not be empty"
 
 
 def test_budget_resets_across_days(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -69,12 +69,12 @@ def test_budget_resets_across_days(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_budget_default_is_50() -> None:
     """Default budget is 50 per day."""
     hook = ActiveLearningHook()
-    assert hook.query_budget_per_day == 50
+    assert hook.query_budget_per_day == 50, "query_budget_per_day is not valid"
 
 
 def test_budget_zero_blocks_all(monkeypatch: pytest.MonkeyPatch) -> None:
     """Budget of 0 blocks all queries."""
     hook = ActiveLearningHook(query_budget_per_day=0)
     result = hook.record_if_uncertain(_make_audit(), _make_assessment(confidence=0.1))
-    assert result is False
-    assert len(hook.get_queue()) == 0
+    assert result is False, "Result must not be empty"
+    assert len(hook.get_queue()) == 0, "Collection must not be empty"

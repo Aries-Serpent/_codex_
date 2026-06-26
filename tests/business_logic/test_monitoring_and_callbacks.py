@@ -34,7 +34,7 @@ class TestCallbackRegistration:
 
         callbacks["on_epoch_end"] = on_epoch_end
 
-        assert "on_epoch_end" in callbacks
+        assert "on_epoch_end" in callbacks, "Condition must be true"
 
     def test_register_multiple_callbacks(self):
         """Test registering multiple callbacks."""
@@ -53,7 +53,7 @@ class TestCallbackRegistration:
         callbacks["callback2"] = callback2
         callbacks["callback3"] = callback3
 
-        assert len(callbacks) == 3
+        assert len(callbacks) == 3, "Callbacks must not be empty"
 
     def test_callback_uniqueness(self):
         """Test callbacks are unique by name."""
@@ -68,7 +68,7 @@ class TestCallbackRegistration:
         callbacks["on_event"] = callback_v1
         callbacks["on_event"] = callback_v2  # Replaces
 
-        assert len(callbacks) == 1
+        assert len(callbacks) == 1, "Callbacks must not be empty"
 
     def test_callback_list_for_event(self):
         """Test maintaining list of callbacks per event."""
@@ -82,7 +82,7 @@ class TestCallbackRegistration:
 
         event_callbacks["epoch_end"] = [callback1, callback2]
 
-        assert len(event_callbacks["epoch_end"]) == 2
+        assert len(event_callbacks["epoch_end"]) == 2, "Collection must not be empty"
 
     def test_remove_callback(self):
         """Test removing a callback."""
@@ -90,7 +90,7 @@ class TestCallbackRegistration:
 
         del callbacks["on_epoch_end"]
 
-        assert "on_epoch_end" not in callbacks
+        assert "on_epoch_end" not in callbacks, "Condition must be true"
 
 
 class TestCallbackExecution:
@@ -105,7 +105,7 @@ class TestCallbackExecution:
 
         callback()
 
-        assert "executed" in execution_log
+        assert "executed" in execution_log, "Condition must be true"
 
     def test_execute_multiple_callbacks(self):
         """Test executing multiple callbacks in sequence."""
@@ -131,7 +131,7 @@ class TestCallbackExecution:
 
         callback(5, 0.35)
 
-        assert result[0]["epoch"] == 5
+        assert result[0]["epoch"] == 5, "Result must not be empty"
 
     def test_callback_with_kwargs(self):
         """Test callback with keyword arguments."""
@@ -142,7 +142,7 @@ class TestCallbackExecution:
 
         callback({"accuracy": 0.87, "loss": 0.35})
 
-        assert result["accuracy"] == 0.87
+        assert result["accuracy"] == 0.87, "Result must not be empty"
 
     def test_callback_return_value(self):
         """Test handling callback return values."""
@@ -152,7 +152,7 @@ class TestCallbackExecution:
 
         result = callback()
 
-        assert result == "success"
+        assert result == "success", "Result must not be empty"
 
     def test_callback_error_handling(self):
         """Test error handling in callbacks."""
@@ -166,7 +166,7 @@ class TestCallbackExecution:
         except ValueError as e:
             errors.append(str(e))
 
-        assert len(errors) == 1
+        assert len(errors) == 1, "Errors must not be empty"
 
 
 class TestMetricCollection:
@@ -180,7 +180,7 @@ class TestMetricCollection:
             metrics = {"batch": batch, "loss": 0.5 - batch * 0.05, "accuracy": 0.7 + batch * 0.03}
             collected_metrics.append(metrics)
 
-        assert len(collected_metrics) == 5
+        assert len(collected_metrics) == 5, "Collected_metrics must not be empty"
 
     def test_collect_epoch_summary(self):
         """Test collecting epoch summary metrics."""
@@ -191,7 +191,7 @@ class TestMetricCollection:
             "batches_processed": 100,
         }
 
-        assert epoch_metrics["avg_accuracy"] == 0.87
+        assert epoch_metrics["avg_accuracy"] == 0.87, "Condition must be true"
 
     def test_metric_tags(self):
         """Test tagging metrics with metadata."""
@@ -203,7 +203,7 @@ class TestMetricCollection:
 
         val_metrics = [m for m in metrics if m["phase"] == "val"]
 
-        assert len(val_metrics) == 1
+        assert len(val_metrics) == 1, "Val_metrics must not be empty"
 
     def test_metric_timestamp(self):
         """Test recording metric timestamps."""
@@ -211,7 +211,7 @@ class TestMetricCollection:
 
         metrics = {"value": 0.87, "timestamp": time.time(), "epoch": 1}
 
-        assert "timestamp" in metrics
+        assert "timestamp" in metrics, "Condition must be true"
 
     def test_cumulative_metrics(self):
         """Test cumulative metric tracking."""
@@ -224,7 +224,7 @@ class TestMetricCollection:
             cumulative["total_samples"] += batch_size
             cumulative["total_loss"] += batch_loss * batch_size
 
-        assert cumulative["total_samples"] == 160
+        assert cumulative["total_samples"] == 160, "Condition must be true"
 
 
 class TestProgressTracking:
@@ -237,7 +237,7 @@ class TestProgressTracking:
 
         progress = (current_epoch / total_epochs) * 100
 
-        assert progress == 50
+        assert progress == 50, "progress is not valid"
 
     def test_eta_calculation(self):
         """Test estimating time to completion."""
@@ -248,7 +248,7 @@ class TestProgressTracking:
         rate = elapsed_time / processed
         eta = (total - processed) * rate
 
-        assert eta == 500
+        assert eta == 500, "eta is not valid"
 
     def test_speed_metrics(self):
         """Test speed metrics calculation."""
@@ -257,7 +257,7 @@ class TestProgressTracking:
 
         throughput = samples_processed / time_elapsed
 
-        assert throughput == 100
+        assert throughput == 100, "throughput is not valid"
 
     def test_batch_progress(self):
         """Test batch-level progress."""
@@ -293,7 +293,7 @@ class TestAlertTriggering:
             if loss > threshold:
                 alerts.append({"type": "high_loss", "value": loss})
 
-        assert len(alerts) == 1
+        assert len(alerts) == 1, "Alerts must not be empty"
 
     def test_alert_on_no_improvement(self):
         """Test alerting on plateau."""
@@ -313,7 +313,7 @@ class TestAlertTriggering:
                 if epochs_without_improvement == patience:
                     alerts.append("no_improvement")
 
-        assert "no_improvement" in alerts
+        assert "no_improvement" in alerts, "Condition must be true"
 
     def test_alert_on_divergence(self):
         """Test alerting on divergence."""
@@ -326,7 +326,7 @@ class TestAlertTriggering:
                 alerts.append("divergence")
                 break
 
-        assert "divergence" in alerts
+        assert "divergence" in alerts, "Condition must be true"
 
     def test_alert_on_resource_limit(self):
         """Test alerting on resource limits."""
@@ -339,7 +339,7 @@ class TestAlertTriggering:
             if usage > memory_limit:
                 alerts.append("memory_exceeded")
 
-        assert len(alerts) == 1
+        assert len(alerts) == 1, "Alerts must not be empty"
 
 
 class TestLoggingAndReporting:
@@ -356,7 +356,7 @@ class TestLoggingAndReporting:
         )
         logs.append(log_entry)
 
-        assert len(logs) == 1
+        assert len(logs) == 1, "Logs must not be empty"
 
     def test_log_level_filtering(self):
         """Test filtering logs by level."""
@@ -369,7 +369,7 @@ class TestLoggingAndReporting:
 
         errors_and_warnings = [l for l in logs if l["level"] in ["ERROR", "WARNING"]]
 
-        assert len(errors_and_warnings) == 2
+        assert len(errors_and_warnings) == 2, "Errors_and_warnings must not be empty"
 
     def test_report_generation(self):
         """Test generating training report."""
@@ -380,7 +380,7 @@ class TestLoggingAndReporting:
             "checkpoints_saved": 5,
         }
 
-        assert report["best_accuracy"] == 0.89
+        assert report["best_accuracy"] == 0.89, "rep is not valid"
 
     def test_metric_summary(self):
         """Test metric summary."""
@@ -396,7 +396,7 @@ class TestLoggingAndReporting:
             "total_epochs": len(metrics_history),
         }
 
-        assert summary["best_accuracy"] == 0.85
+        assert summary["best_accuracy"] == 0.85, "Condition must be true"
 
 
 class TestHookExecution:
@@ -412,7 +412,7 @@ class TestHookExecution:
 
         before_training()
 
-        assert setup_complete is True
+        assert setup_complete is True, "setup_complete is not valid"
 
     def test_after_training_hook(self):
         """Test after training hook."""
@@ -424,7 +424,7 @@ class TestHookExecution:
 
         after_training()
 
-        assert cleanup_done is True
+        assert cleanup_done is True, "cleanup_done is not valid"
 
     def test_hook_chain(self):
         """Test chaining hooks."""

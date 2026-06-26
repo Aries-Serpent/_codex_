@@ -30,5 +30,5 @@ def test_register_schema_and_compose_from_dataclass() -> None:
     with initialize(version_base=None):
         cfg = compose(config_name="app_schema_test", overrides=["data.dataset_name=demo"])
 
-    assert cfg.data.dataset_name == "demo"
-    assert cfg.train.seed == 1337
+    assert cfg.data.dataset_name == "demo", "Data must not be empty"
+    assert cfg.train.seed == 1337, "seed is not valid"

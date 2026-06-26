@@ -23,11 +23,11 @@ class TestEmbeddingProviderProtocol:
 
         # Should have encode method
         assert hasattr(provider, "encode")
-        assert callable(provider.encode)
+        assert callable(provider.encode), "Condition must be true"
 
         # Should have get_dimension method
         assert hasattr(provider, "get_dimension")
-        assert callable(provider.get_dimension)
+        assert callable(provider.get_dimension), "Condition must be true"
 
     def test_tfidf_encode_returns_ndarray(self):
         """Test TF-IDF encode returns numpy array."""
@@ -39,8 +39,8 @@ class TestEmbeddingProviderProtocol:
         embeddings = provider.encode(texts)
 
         assert isinstance(embeddings, np.ndarray)
-        assert embeddings.shape[0] == 2  # Two texts
-        assert embeddings.shape[1] > 0  # Non-zero dimensions
+        assert embeddings.shape[0] == 2, "Condition must be true"
+        assert embeddings.shape[1] > 0, "Value must be greater than zero"
 
     def test_tfidf_dimension_consistency(self):
         """Test TF-IDF dimension is consistent for same corpus."""
@@ -54,11 +54,11 @@ class TestEmbeddingProviderProtocol:
 
         # Second encoding with same texts - should have consistent dimension
         embeddings2 = provider.encode(texts)
-        assert embeddings2.shape[1] == embeddings1.shape[1]
+        assert embeddings2.shape[1] == embeddings1.shape[1], "Condition must be true"
 
         # Dimension should be positive
         dimension = provider.get_dimension()
-        assert dimension > 0
+        assert dimension > 0, "dimension must be greater than zero"
 
     def test_empty_text_handling(self):
         """Test handling of empty texts."""
@@ -71,7 +71,7 @@ class TestEmbeddingProviderProtocol:
         embeddings = provider.encode(texts)
 
         assert isinstance(embeddings, np.ndarray)
-        assert embeddings.shape[0] == 2
+        assert embeddings.shape[0] == 2, "Condition must be true"
 
 
 class TestCreateEmbeddingProvider:
@@ -83,7 +83,7 @@ class TestCreateEmbeddingProvider:
 
         provider = create_embedding_provider(provider_type="tfidf")
 
-        assert provider is not None
+        assert provider is not None, "provider must be initialized"
         assert hasattr(provider, "encode")
 
     def test_provider_basic_encode(self):
@@ -96,4 +96,4 @@ class TestCreateEmbeddingProvider:
         embeddings = provider.encode(texts)
 
         assert isinstance(embeddings, np.ndarray)
-        assert embeddings.shape[0] == 2
+        assert embeddings.shape[0] == 2, "Condition must be true"

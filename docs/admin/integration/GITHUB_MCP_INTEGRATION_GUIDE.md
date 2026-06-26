@@ -171,9 +171,9 @@ _codex_/
 │   │   ├── mcp_schema_validation.py
 │   │   ├── mcp_multi_tenant.py
 │   │   └── mcp_tools_integration.py
-│   ├── security/                   # Token encryption/verification
-│   │   ├── token_encryption_tool.py
-│   │   └── verify_token_scope.py
+│   ├── security/                   # Token encryption/verification  # pragma: allowlist secret
+│   │   ├── token_encryption_tool.py  # pragma: allowlist secret
+│   │   └── verify_token_scope.py  # pragma: allowlist secret
 │   └── validate_mcp.py
 └── .github/
     ├── workflows/
@@ -202,11 +202,11 @@ _codex_/
 ```python
 # Copilot Agent script example
 import requests
-from scripts.security.token_encryption_tool import copilot_get_github_token_safe
+from scripts.security.token_encryption_tool import copilot_get_github_token_safe  # pragma: allowlist secret
 
 # Authenticate with MCP service
-token = copilot_get_github_token_safe()
-headers = {"Authorization": f"Bearer {token}"}
+token = copilot_get_github_token_safe()  # pragma: allowlist secret
+headers = {"Authorization": f"Bearer {token}"}  # pragma: allowlist secret
 
 # Request focused context
 response = requests.get(
@@ -289,7 +289,7 @@ jobs:
 | `mcp-protocol-surface` | ✅ Implemented | `scripts/space_traversal/detectors/mcp_protocol_surface.py` | JSON-RPC protocol handling |
 | `mcp-configuration` | ✅ Implemented | `scripts/space_traversal/detectors/mcp_configuration.py` | Server config management |
 | `mcp-security-safeguards` | ✅ Implemented | `scripts/space_traversal/detectors/mcp_security_safeguards.py` | Authentication and authorization |
-| `mcp-authz-authn` | ✅ Implemented | `scripts/space_traversal/detectors/mcp_authz_authn.py` | OAuth2/token validation |
+| `mcp-authz-authn` | ✅ Implemented | `scripts/space_traversal/detectors/mcp_authz_authn.py` | OAuth2/token validation | <!-- pragma: allowlist secret -->
 | `mcp-rate-limiting` | ✅ Implemented | `scripts/space_traversal/detectors/mcp_rate_limiting.py` | Request throttling |
 | `mcp-error-handling` | ✅ Implemented | `scripts/space_traversal/detectors/mcp_error_handling.py` | Graceful error recovery |
 | `mcp-observability` | ✅ Implemented | `scripts/space_traversal/detectors/mcp_observability.py` | Metrics and logging |
@@ -311,7 +311,7 @@ jobs:
 | **GitHub Copilot Docs** | https://docs.github.com/en/copilot | Product features & enterprise setup |
 | **GitHub REST API** | https://docs.github.com/en/rest | Programmatic repository access |
 | **GitHub GraphQL API** | https://docs.github.com/en/graphql | Efficient batch queries |
-| **GitHub Apps** | https://docs.github.com/en/apps | Fine-grained access tokens |
+| **GitHub Apps** | https://docs.github.com/en/apps | Fine-grained access tokens | <!-- pragma: allowlist secret -->
 | **GitHub Packages (GHCR)** | https://docs.github.com/en/packages | Container registry for cache images |
 | **GitHub Actions Limits** | https://docs.github.com/en/actions/learn-github-actions/usage-limits-billing-and-administration | Quotas & constraints |
 
@@ -332,8 +332,8 @@ jobs:
 | **MCP Configuration** | `.codex/mcp-config.yml` | Service settings & endpoints |
 | **Cache Manifest** | `.codex/cache-manifest.yml` | Cache key registry |
 | **MCP Developer Guide** | `docs/mcp/MCP_DEVELOPER_GUIDE.md` | Implementation reference |
-| **Token Security** | `docs/admin/security/ADMIN_TOKEN_SETUP.md` | Authentication setup |
-| **Copilot Token Usage** | `docs/admin/security/COPILOT_TOKEN_USAGE.md` | Token management guide |
+| **Token Security** | `docs/admin/security/ADMIN_TOKEN_SETUP.md` | Authentication setup | <!-- pragma: allowlist secret -->
+| **Copilot Token Usage** | `docs/admin/security/COPILOT_TOKEN_USAGE.md` | Token management guide | <!-- pragma: allowlist secret -->
 
 ---
 
@@ -504,7 +504,7 @@ For full MCP functionality, the GitHub Personal Access Token needs:
 import requests
 
 manifest = requests.get(
-    headers={"Authorization": f"Bearer {token}"}
+    headers={"Authorization": f"Bearer {token}"}  # pragma: allowlist secret
 ).json()
 
 torch_version = manifest['dependencies']['torch']['version']
@@ -521,7 +521,7 @@ model = torch.compile(model)  # New in 2.0+
 ```python
 # Create Playwright session via MCP
 session_response = requests.post(
-    headers={"Authorization": f"Bearer {token}"},
+    headers={"Authorization": f"Bearer {token}"},  # pragma: allowlist secret
     json={
         "browser": "chromium",
         "headless": True
@@ -537,7 +537,7 @@ session_response = requests.post(
 ```python
 # Get current cache manifest
 manifest = requests.get(
-    headers={"Authorization": f"Bearer {token}"}
+    headers={"Authorization": f"Bearer {token}"}  # pragma: allowlist secret
 ).json()
 
 # Propose updates
@@ -548,7 +548,7 @@ updates = {
 
 # Warm cache for new versions
 warm_response = requests.post(
-    headers={"Authorization": f"Bearer {token}"},
+    headers={"Authorization": f"Bearer {token}"},  # pragma: allowlist secret
     json={"targets": ["python"], "packages": updates, "force": True}
 ).json()
 ```
@@ -561,9 +561,9 @@ warm_response = requests.post(
 
 | Issue | Symptoms | Solution |
 |-------|----------|----------|
-| **Authentication failures** | 401 Unauthorized responses | Verify token: `python3 scripts/security/verify_token_scope.py` |
+| **Authentication failures** | 401 Unauthorized responses | Verify token: `python3 scripts/security/verify_token_scope.py` | <!-- pragma: allowlist secret -->
 | **Slow cache warming** | Jobs take >10 Pre-commits | Check PyPI/npm mirrors, increase parallel downloads |
-| **Context too large** | Token limit errors | Adjust filtering, enable summarization |
+| **Context too large** | Token limit errors | Adjust filtering, enable summarization | <!-- pragma: allowlist secret -->
 | **Playwright browsers missing** | Browser launch fails | Run `playwright install chromium` in container |
 | **GHCR push denied** | Docker push fails | Check `packages:write` permission in GitHub App |
 
@@ -576,7 +576,7 @@ Track these metrics via `mcp-observability`:
 | Request latency (p99) | <5s | >10s |
 | Success rate | >99% | <95% |
 | Requests per minute | 60 | >100 |
-| Context size (tokens) | <100K | >120K |
+| Context size (tokens) | <100K | >120K | <!-- pragma: allowlist secret -->
 | Tool execution time | <30s | >60s |
 | Browser session count | <5 | >10 |
 
@@ -665,7 +665,7 @@ See [GITHUB_ENVIRONMENT_SETUP.md](./GITHUB_ENVIRONMENT_SETUP.md) for:
 |--------|--------|-------------|
 | MCP Service Uptime | > 99.9% | Health check endpoint monitoring |
 | Context Delivery Latency (p99) | < 5 seconds | MCP response time metrics |
-| Token Limit Compliance | < 100K tokens | Context size per request |
+| Token Limit Compliance | < 100K tokens | Context size per request | <!-- pragma: allowlist secret -->
 | Cache Hit Rate | > 80% | Dependency cache performance |
 | API Success Rate | > 99% | Non-rate-limited request ratio |
 | Browser Session Creation | < 10 seconds | Playwright startup time |

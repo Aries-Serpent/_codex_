@@ -26,7 +26,7 @@ class TestCodexClientBridge:
         try:
             from agents.codex_client.codex_client import bridge
 
-            assert bridge is not None
+            assert bridge is not None, "bridge must be initialized"
         except ImportError as e:
             pytest.skip(f"codex_client.bridge requires dependencies: {e}")
 
@@ -39,7 +39,7 @@ class TestCodexClientConfig:
         try:
             from agents.codex_client.codex_client import config
 
-            assert config is not None
+            assert config is not None, "config must be initialized"
         except ImportError as e:
             pytest.skip(f"codex_client.config requires dependencies: {e}")
 
@@ -52,7 +52,7 @@ class TestCodexClientModels:
         try:
             from agents.codex_client.codex_client import models
 
-            assert models is not None
+            assert models is not None, "models must be initialized"
         except ImportError as e:
             pytest.skip(f"codex_client.models requires dependencies: {e}")
 
@@ -65,7 +65,7 @@ class TestCodexClientDemo:
         try:
             from agents.codex_client.codex_client import demo_plan_and_call
 
-            assert demo_plan_and_call is not None
+            assert demo_plan_and_call is not None, "demo_plan_and_call must be initialized"
         except ImportError as e:
             pytest.skip(f"codex_client.demo requires dependencies: {e}")
 
@@ -87,7 +87,7 @@ class TestWorkflowNavigatorInvariants:
         workflows = nav.list_workflows()
 
         # Invariant: Should have at least 1 default workflow
-        assert len(workflows) > 0
+        assert len(workflows) > 0, "Workflows must not be empty"
 
     def test_workflow_ids_unique(self):
         """Invariant: Workflow IDs should be unique."""
@@ -98,7 +98,7 @@ class TestWorkflowNavigatorInvariants:
         workflow_ids = [w.workflow_id for w in workflows]
 
         # Invariant: No duplicate IDs
-        assert len(workflow_ids) == len(set(workflow_ids))
+        assert len(workflow_ids) == len(set(workflow_ids)), "Workflow_ids must not be empty"
 
     def test_factory_method_produces_valid_workflow(self):
         """Test factory method creates valid workflows."""
@@ -109,9 +109,9 @@ class TestWorkflowNavigatorInvariants:
         # Test factory creates valid workflow
         workflow = nav._create_dynamic_workflow("test_coverage")
 
-        assert workflow is not None
-        assert workflow.workflow_id is not None
-        assert len(workflow.steps) > 0
+        assert workflow is not None, "workflow must be initialized"
+        assert workflow.workflow_id is not None, "workflow_id must be initialized"
+        assert len(workflow.steps) > 0, "Collection must not be empty"
 
 
 # ============================================================================
@@ -132,9 +132,9 @@ class TestPhysicsIntegrationInvariants:
 
         # Invariant: Should report some capabilities
         assert isinstance(caps, dict)
-        assert len(caps) > 0
+        assert len(caps) > 0, "Caps must not be empty"
         # Should have physics-related keys
-        assert any(
+        assert any(, "Condition must be true"
             key in caps
             for key in [
                 "classical_physics",
@@ -154,7 +154,7 @@ class TestPhysicsIntegrationInvariants:
 
         # Invariant: History starts empty but is a list
         assert isinstance(orch.decision_history, list)
-        assert len(orch.decision_history) == 0
+        assert len(orch.decision_history) == 0, "Collection must not be empty"
 
 
 # ============================================================================
@@ -174,7 +174,7 @@ class TestAdvancedPhysicsInvariants:
             router = EMFieldRouter(grid_size=10)
 
             # Invariant: Grid should be initialized
-            assert router.grid_size == 10
+            assert router.grid_size == 10, "grid_size is not valid"
         except (ImportError, AttributeError):
             pytest.skip("EMFieldRouter requires optional dependencies")
 
@@ -186,7 +186,7 @@ class TestAdvancedPhysicsInvariants:
             propagator = WavePropagator(grid_size=10)
 
             # Invariant: Grid should be initialized
-            assert propagator.grid_size == 10
+            assert propagator.grid_size == 10, "grid_size is not valid"
         except (ImportError, AttributeError):
             pytest.skip("WavePropagator requires optional dependencies")
 
@@ -218,8 +218,8 @@ class TestMentalMappingCorrected:
 
         step = ReasoningStep(step_id="step1", description="Test step", inputs=[], outputs=[])
 
-        assert step.step_id == "step1"
-        assert step.description == "Test step"
+        assert step.step_id == "step1", "step_id is not valid"
+        assert step.description == "Test step", "description is not valid"
 
     def test_model_export_to_dict(self):
         """Test MentalMappingModel can export to dict."""
@@ -231,7 +231,7 @@ class TestMentalMappingCorrected:
         exported = model.to_dict()
 
         assert isinstance(exported, dict)
-        assert "nodes" in exported or "edges" in exported
+        assert "nodes" in exported or "edges" in exported, "Condition must be true"
 
 
 # ============================================================================
@@ -253,7 +253,7 @@ class TestQuantumGameTheoryCorrected:
                 red_strategies=["probe", "exploit"],
             )
 
-            assert simulator is not None
+            assert simulator is not None, "simulator must be initialized"
         except (ImportError, TypeError):
             pytest.skip("BlueRedTeamSimulator requires optional dependencies")
 
@@ -274,7 +274,7 @@ class TestSelfHealingCorrected:
         engine = SelfHealingEngine()
 
         # Should have detection capability
-        assert (
+        assert (, "Condition must be true"
             hasattr(engine, "detect_issues")
             or hasattr(engine, "detect")
             or hasattr(engine, "analyze")

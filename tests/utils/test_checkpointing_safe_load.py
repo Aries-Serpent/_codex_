@@ -55,13 +55,13 @@ def test_load_checkpoint_safe_roundtrip(tmp_path: Path) -> None:
     if supports_weights_only:
         out = load_checkpoint(ckpt_path, safe=True, map_location="cpu")
         assert isinstance(out, Mapping)
-        assert set(out.keys()) == set(state.keys())
+        assert set(out.keys()) == set(state.keys()), "Condition must be true"
         for t in out.values():
             # sanity checks that we got tensors back
             assert hasattr(t, "shape")
             assert getattr(t, "dtype", None) is not None
             # be strict: ensure values are real tensors
-            assert torch.is_tensor(t)
+            assert torch.is_tensor(t), "t is not valid"
     else:
         with pytest.raises(RuntimeError):
             load_checkpoint(ckpt_path, safe=True, map_location="cpu")
@@ -76,7 +76,7 @@ def test_load_checkpoint_trusted_path(tmp_path: Path) -> None:
 
     out = load_checkpoint(ckpt_path, safe=False, map_location="cpu")
     assert isinstance(out, Mapping)
-    assert set(out.keys()) == set(state.keys())
+    assert set(out.keys()) == set(state.keys()), "Condition must be true"
     for t in out.values():
         assert hasattr(t, "shape")
-        assert torch.is_tensor(t)
+        assert torch.is_tensor(t), "t is not valid"

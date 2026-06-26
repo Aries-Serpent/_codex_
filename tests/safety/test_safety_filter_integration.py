@@ -20,8 +20,8 @@ def test_loader_redacts_when_enabled(tmp_path):
     path.write_text(json.dumps({"prompt": "my credit card", "completion": "credit card"}) + "\n")
     cfg = _cfg(True)
     items = list(stream_paths([path], cfg=cfg))
-    assert items[0].prompt == "my " + REDACT_TOKEN
-    assert items[0].completion == REDACT_TOKEN
+    assert items[0].prompt == "my " + REDACT_TOKEN, "Item must not be empty"
+    assert items[0].completion == REDACT_TOKEN, "Item must not be empty"
 
 
 def test_loader_no_redact_when_disabled(tmp_path):
@@ -29,8 +29,8 @@ def test_loader_no_redact_when_disabled(tmp_path):
     path.write_text(json.dumps({"prompt": "my credit card", "completion": "credit card"}) + "\n")
     cfg = _cfg(False)
     items = list(stream_paths([path], cfg=cfg))
-    assert items[0].prompt == "my credit card"
-    assert items[0].completion == "credit card"
+    assert items[0].prompt == "my credit card", "Item must not be empty"
+    assert items[0].completion == "credit card", "Item must not be empty"
 
 
 def test_loader_explicit_safety_filters_bool(tmp_path):
@@ -39,8 +39,8 @@ def test_loader_explicit_safety_filters_bool(tmp_path):
 
     # Explicitly disable filtering even if defaults would redact.
     disabled = list(stream_paths([path], safety_filters=False))
-    assert disabled[0].completion == "credit card"
+    assert disabled[0].completion == "credit card", "completion is not valid"
 
     # Enabling via boolean should coerce to default filters and redact secrets.
     enabled = list(stream_paths([path], safety_filters=True))
-    assert enabled[0].completion == REDACT_TOKEN
+    assert enabled[0].completion == REDACT_TOKEN, "completion is not valid"

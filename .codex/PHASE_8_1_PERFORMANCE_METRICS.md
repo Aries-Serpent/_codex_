@@ -63,7 +63,7 @@ Duration Buckets:
 | Workflow | Duration | Category | Status |
 |----------|----------|----------|--------|
 | 🔀 Branch Rebase Gate | 45s | Validation | Fast |
-| 🩹 Secrets False-Positive Healer | 52s | Security | Fast |
+| 🩹 Secrets False-Positive Healer | 52s | Security | Fast | <!-- pragma: allowlist secret -->
 | 💰 PR Cost Check | 38s | Security | Very Fast |
 | 🔍 Issue Resolution Gate | 41s | Validation | Very Fast |
 | Duplicate Detection on PR | 1m 15s | Validation | Fast |
@@ -340,8 +340,8 @@ Dependency Audit:
 ├─ Medium:                         0
 └─ Low:                            0
 
-Secret Scanning:
-├─ Secrets Detected:               0
+Secret Scanning:  # pragma: allowlist secret
+├─ Secrets Detected:               0  # pragma: allowlist secret
 └─ False Positives:                0
 ```
 

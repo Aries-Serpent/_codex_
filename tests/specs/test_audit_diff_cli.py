@@ -34,13 +34,13 @@ def test_audit_diff_cli_with_self(tmp_path):
 
     # Ensure at least one scoring file exists
     out = _run(["-m", "scripts.space_traversal.audit_runner", "stage", "S1"])
-    assert out.returncode == 0
+    assert out.returncode == 0, "returncode is not valid"
     out = _run(["-m", "scripts.space_traversal.audit_runner", "stage", "S2"])
-    assert out.returncode == 0
+    assert out.returncode == 0, "returncode is not valid"
     out = _run(["-m", "scripts.space_traversal.audit_runner", "stage", "S3"])
-    assert out.returncode == 0
+    assert out.returncode == 0, "returncode is not valid"
     out = _run(["-m", "scripts.space_traversal.audit_runner", "stage", "S4"])
-    assert out.returncode == 0
+    assert out.returncode == 0, "returncode is not valid"
 
     scored = Path("audit_artifacts/capabilities_scored.json")
     cp = _run(

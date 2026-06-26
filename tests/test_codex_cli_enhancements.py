@@ -96,7 +96,7 @@ class TestCodexMainCommand:
     def test_codex_help(self, cli_runner):
         """Test codex --help displays help."""
         result = cli_runner.invoke(codex, ["--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
         # Should show available subcommands
         assert any(cmd in result.output.lower() for cmd in ["train", "evaluate", "tokenizer"])
 
@@ -114,7 +114,7 @@ class TestCodexMainCommand:
     def test_codex_invalid_subcommand(self, cli_runner):
         """Test codex with invalid subcommand."""
         result = cli_runner.invoke(codex, ["invalid_cmd"])
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
 
 # ============================================================================
@@ -133,7 +133,7 @@ class TestTokenizerCommand:
     def test_tokenizer_train_help(self, cli_runner):
         """Test tokenizer train --help."""
         result = cli_runner.invoke(codex, ["tokenizer", "train", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_tokenizer_train_missing_config(self, cli_runner):
         """Test tokenizer train without config."""
@@ -152,7 +152,7 @@ class TestTokenizerCommand:
     def test_tokenizer_validate_help(self, cli_runner):
         """Test tokenizer validate --help."""
         result = cli_runner.invoke(codex, ["tokenizer", "validate", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_tokenizer_encode_missing_file(self, cli_runner):
         """Test tokenizer encode without tokenizer file."""
@@ -183,12 +183,12 @@ class TestTrainCommand:
     def test_train_help(self, cli_runner):
         """Test train --help."""
         result = cli_runner.invoke(codex, ["train", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_train_missing_config(self, cli_runner):
         """Test train without required config."""
         result = cli_runner.invoke(codex, ["train"])
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     def test_train_invalid_config_path(self, cli_runner):
         """Test train with non-existent config file."""
@@ -196,7 +196,7 @@ class TestTrainCommand:
             codex,
             ["train", "--config", "/nonexistent/config.yaml"],
         )
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     def test_train_with_valid_config(self, cli_runner, sample_training_config):
         """Test train with valid config."""
@@ -252,12 +252,12 @@ class TestResumeCommand:
     def test_resume_help(self, cli_runner):
         """Test resume --help."""
         result = cli_runner.invoke(codex, ["resume", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_resume_missing_checkpoint(self, cli_runner):
         """Test resume without checkpoint path."""
         result = cli_runner.invoke(codex, ["resume"])
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     def test_resume_invalid_checkpoint(self, cli_runner):
         """Test resume with non-existent checkpoint."""
@@ -265,7 +265,7 @@ class TestResumeCommand:
             codex,
             ["resume", "--checkpoint", "/nonexistent/checkpoint"],
         )
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     def test_resume_with_valid_checkpoint(self, cli_runner, tmp_path):
         """Test resume with valid checkpoint."""
@@ -292,7 +292,7 @@ class TestEvaluateCommand:
     def test_evaluate_help(self, cli_runner):
         """Test evaluate --help."""
         result = cli_runner.invoke(codex, ["evaluate", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_evaluate_missing_model(self, cli_runner):
         """Test evaluate without model path."""
@@ -305,7 +305,7 @@ class TestEvaluateCommand:
             codex,
             ["evaluate", "--model", "/nonexistent/model"],
         )
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     def test_evaluate_with_dataset(self, cli_runner, tmp_path):
         """Test evaluate with dataset."""
@@ -343,12 +343,12 @@ class TestPrepareDataCommand:
     def test_prepare_data_help(self, cli_runner):
         """Test prepare-data --help."""
         result = cli_runner.invoke(codex, ["prepare-data", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_prepare_data_missing_config(self, cli_runner):
         """Test prepare-data without config."""
         result = cli_runner.invoke(codex, ["prepare-data"])
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     def test_prepare_data_with_config(self, cli_runner, sample_training_config):
         """Test prepare-data with config."""
@@ -380,12 +380,12 @@ class TestConfigSweepCommand:
     def test_config_sweep_help(self, cli_runner):
         """Test config-sweep --help."""
         result = cli_runner.invoke(codex, ["config-sweep", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_config_sweep_missing_config(self, cli_runner):
         """Test config-sweep without config."""
         result = cli_runner.invoke(codex, ["config-sweep"])
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     def test_config_sweep_missing_param(self, cli_runner, sample_training_config):
         """Test config-sweep without sweep parameters."""
@@ -424,7 +424,7 @@ class TestConfigSweepCommand:
                 "invalid_range",
             ],
         )
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
 
 # ============================================================================
@@ -439,7 +439,7 @@ class TestCodexCLIErrorHandling:
         """Test error handling for missing dependencies."""
         with patch("codex_ml.tokenization.pipeline", side_effect=ImportError("Missing tokenizers")):
             result = cli_runner.invoke(codex, ["tokenizer", "train"])
-            assert result.exit_code != 0
+            assert result.exit_code != 0, "Result must not be empty"
 
     def test_config_parse_error(self, cli_runner, tmp_path):
         """Test handling of invalid config files."""
@@ -450,7 +450,7 @@ class TestCodexCLIErrorHandling:
             codex,
             ["train", "--config", str(bad_config)],
         )
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     def test_permission_error(self, cli_runner, tmp_path):
         """Test handling of permission errors."""
@@ -463,7 +463,7 @@ class TestCodexCLIErrorHandling:
                 codex,
                 ["train", "--config", str(read_only_file)],
             )
-            assert result.exit_code != 0
+            assert result.exit_code != 0, "Result must not be empty"
         finally:
             read_only_file.chmod(0o644)
 
@@ -474,7 +474,7 @@ class TestCodexCLIErrorHandling:
                 codex,
                 ["train", "--config", str(sample_training_config)],
             )
-            assert result.exit_code != 0
+            assert result.exit_code != 0, "Result must not be empty"
 
 
 # ============================================================================
@@ -535,14 +535,14 @@ class TestCodexCLIWorkflows:
                         codex,
                         ["prepare-data", "--config", str(config_file)],
                     )
-                    assert prep_result.exit_code == 0
+                    assert prep_result.exit_code == 0, "Result must not be empty"
 
                     # Train
                     train_result = cli_runner.invoke(
                         codex,
                         ["train", "--config", str(config_file)],
                     )
-                    assert train_result.exit_code == 0
+                    assert train_result.exit_code == 0, "Result must not be empty"
 
     def test_tokenizer_train_encode_decode_workflow(self, cli_runner, tmp_path):
         """Test tokenizer train→encode→decode workflow."""

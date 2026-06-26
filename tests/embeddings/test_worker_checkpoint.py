@@ -45,7 +45,7 @@ def test_worker_checkpoint_resume(tmp_path, monkeypatch):
         namespace_default="testns",
         checkpoint_path=str(checkpoint),
     )
-    assert checkpoint.exists()
+    assert checkpoint.exists(), "Condition must be true"
     seen_first = set(json.loads(checkpoint.read_text()))
     first_upserts = len(fake_adapter.upsert_calls)
 
@@ -56,5 +56,5 @@ def test_worker_checkpoint_resume(tmp_path, monkeypatch):
         checkpoint_path=str(checkpoint),
     )
     seen_second = set(json.loads(checkpoint.read_text()))
-    assert seen_second.issuperset(seen_first)
-    assert len(fake_adapter.upsert_calls) == first_upserts
+    assert seen_second.issuperset(seen_first), "Condition must be true"
+    assert len(fake_adapter.upsert_calls) == first_upserts, "Collection must not be empty"

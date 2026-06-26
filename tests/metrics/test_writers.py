@@ -22,9 +22,9 @@ def test_ndjson_writer_roundtrip(tmp_path: Path) -> None:
     writer.write({"metric": "loss", "value": 1.23, "step": 1, "split": "train"})
     writer.write(MetricsRecord(metric="acc", value=0.9, step=2, split="eval"))
     data = [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
-    assert data[0]["metric"] == "loss"
-    assert data[1]["metric"] == "acc"
-    assert data[1]["split"] == "eval"
+    assert data[0]["metric"] == "loss", "Data must not be empty"
+    assert data[1]["metric"] == "acc", "Data must not be empty"
+    assert data[1]["split"] == "eval", "Data must not be empty"
 
 
 def test_csv_writer_writes_header_once(tmp_path: Path) -> None:
@@ -34,4 +34,4 @@ def test_csv_writer_writes_header_once(tmp_path: Path) -> None:
     writer.write({"metric": "loss", "value": 0.25, "step": 2, "split": "eval"})
     lines = path.read_text().splitlines()
     assert lines[0].startswith("metric,value,step,split,ts")
-    assert len(lines) == 3
+    assert len(lines) == 3, "Lines must not be empty"

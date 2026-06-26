@@ -24,17 +24,19 @@ class TestAsyncInitialization:
     """Test async context managers and initialization"""
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_async_context_empty_resource(self):
         """Should handle async context with no resource"""
         from codex.api.rag_api import RAGAPI
 
         try:
             async with RAGAPI() as api:
-                assert api is not None
+                assert api is not None, "api must be initialized"
         except (NotImplementedError, TypeError, AttributeError):
             pass
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_async_context_exception_cleanup(self):
         """Should cleanup properly on async exception"""
         from codex.api.rag_api import RAGAPI
@@ -48,6 +50,7 @@ class TestAsyncInitialization:
             pass
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_nested_async_contexts(self):
         """Should handle nested async contexts"""
         from codex.api.rag_api import RAGAPI
@@ -55,8 +58,8 @@ class TestAsyncInitialization:
         try:
             async with RAGAPI() as api1:
                 async with RAGAPI() as api2:
-                    assert api1 is not None
-                    assert api2 is not None
+                    assert api1 is not None, "api1 must be initialized"
+                    assert api2 is not None, "api2 must be initialized"
         except (NotImplementedError, TypeError, AttributeError):
             pass
 
@@ -65,6 +68,7 @@ class TestAsyncConcurrency:
     """Test concurrent async operations"""
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_concurrent_api_operations(self):
         """Should handle concurrent API calls"""
         from codex.api.github_logs import GitHubLogsAPI
@@ -83,11 +87,12 @@ class TestAsyncConcurrency:
             results = await asyncio.gather(*tasks, return_exceptions=True)
 
             # Should complete without deadlock
-            assert len(results) == 10
+            assert len(results) == 10, "Results must not be empty"
         except (NotImplementedError, AttributeError):
             pass
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_async_timeout_handling(self):
         """Should handle async operation timeout"""
 
@@ -99,6 +104,7 @@ class TestAsyncConcurrency:
             await asyncio.wait_for(slow_operation(), timeout=0.1)
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_async_cancellation(self):
         """Should handle async task cancellation"""
 
@@ -149,7 +155,7 @@ class TestThreadSafety:
                 t.join()
 
             # Should not crash
-            assert True
+            assert True, "True is not valid"
         except (NotImplementedError, AttributeError):
             pass
 
@@ -171,7 +177,7 @@ class TestThreadSafety:
             t.join()
 
         # All increments should succeed
-        assert counter["value"] == 10000
+        assert counter["value"] == 10000, "Value must be initialized"
 
 
 class TestResourceExhaustion:
@@ -196,7 +202,7 @@ class TestResourceExhaustion:
                 errors.append(str(e))
 
             # Should either succeed or fail gracefully
-            assert len(errors) >= 0
+            assert len(errors) >= 0, "Errors must not be empty"
         except (NotImplementedError, AttributeError):
             pass
 
@@ -267,7 +273,7 @@ class TestErrorRecovery:
                 policy.execute(failing_operation)
             except RuntimeError:
                 # Should exhaust retries
-                assert call_count["value"] > 0
+                assert call_count["value"] > 0, "Value must be greater than zero"
         except (NotImplementedError, AttributeError):
             pass
 
@@ -306,7 +312,7 @@ class TestGracefulDegradation:
                     results.append(None)
 
             # Should have mixed success/failure
-            assert len(results) == len(texts)
+            assert len(results) == len(texts), "Results must not be empty"
         except (NotImplementedError, AttributeError):
             pass
 
@@ -332,7 +338,7 @@ class TestStateManagement:
                 api1._state = {"custom": "value1"}
                 if hasattr(api2, "_state"):
                     # api2 should have independent state
-                    assert api2._state != api1._state
+                    assert api2._state != api1._state, "_state is not valid"
         except (NotImplementedError, AttributeError):
             pass
 
@@ -378,8 +384,8 @@ class TestEndToEndWorkflows:
 
             # Simulate CLI triggering API call
             # Should not crash even if incomplete
-            assert cli is not None
-            assert api is not None
+            assert cli is not None, "cli must be initialized"
+            assert api is not None, "api must be initialized"
         except (NotImplementedError, ImportError, AttributeError):
             pass
 
@@ -395,13 +401,14 @@ class TestEndToEndWorkflows:
             embedder = EmbeddingGenerator()
 
             # All components should initialize
-            assert ingestor is not None
-            assert tokenizer is not None
-            assert embedder is not None
+            assert ingestor is not None, "ingestor must be initialized"
+            assert tokenizer is not None, "tokenizer must be initialized"
+            assert embedder is not None, "embedder must be initialized"
         except (NotImplementedError, ImportError, AttributeError):
             pass
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_async_api_chain(self):
         """Test chained async API calls"""
         try:
@@ -463,7 +470,7 @@ class TestIntegrationErrorPropagation:
                     results.append(None)
 
             # Should have processed all items
-            assert len(results) == len(texts)
+            assert len(results) == len(texts), "Results must not be empty"
         except (NotImplementedError, AttributeError):
             pass
 
@@ -544,6 +551,7 @@ class TestEdgeCaseCombinations:
             pass
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_async_with_timeout_and_cancellation(self):
         """Test async operation with both timeout and cancellation"""
 
@@ -584,7 +592,7 @@ class TestEdgeCaseCombinations:
                     else:
                         raise
 
-            assert attempt_count["value"] == 3
+            assert attempt_count["value"] == 3, "Value must be initialized"
         except (NotImplementedError, AttributeError):
             pass
 

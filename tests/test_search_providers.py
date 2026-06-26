@@ -18,7 +18,7 @@ def test_internal_search_finds_known_string():
         pytest.skip("ripgrep not installed")
     registry = SearchRegistry(root=Path(__file__).resolve().parents[1] / "src")
     results = registry.search("Utility helpers for codex")
-    assert any("src/codex/utils/__init__.py" in r["path"] for r in results)
+    assert any("src/codex/utils/__init__.py" in r["path"] for r in results), "Result must not be empty"
 
 
 def test_external_provider_disabled_by_default():
@@ -34,4 +34,4 @@ def test_external_search_handles_network_error(monkeypatch):
 
     monkeypatch.setattr(net, "safe_fetch", fail)
     provider = ExternalWebSearch()
-    assert provider.search("python") == []
+    assert provider.search("python") == [], "Condition must be true"

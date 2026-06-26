@@ -153,7 +153,7 @@ class AutomatedPRGenerator:
 
         except Exception as e:
             error_type = type(e).__name__
-            print(f"Error creating PR: <ERROR_TYPE>")
+            print("Error creating PR: <ERROR_TYPE>")
             self._rollback_branch(branch_name)
             return None
 
@@ -181,7 +181,7 @@ class AutomatedPRGenerator:
 
         except subprocess.CalledProcessError as e:
             error_type = type(e).__name__
-            print(f"Error creating branch: <ERROR_TYPE>")
+            print("Error creating branch: <ERROR_TYPE>")
             return False
 
     def _apply_fix(self, fix: GeneratedFix) -> bool:
@@ -257,7 +257,7 @@ class AutomatedPRGenerator:
             return False
         except Exception as e:
             error_type = type(e).__name__
-            print(f"Error running tests: <ERROR_TYPE>")
+            print("Error running tests: <ERROR_TYPE>")
             return False
 
     def _commit_changes(self, message: str) -> bool:
@@ -273,7 +273,7 @@ class AutomatedPRGenerator:
 
         except subprocess.CalledProcessError as e:
             error_type = type(e).__name__
-            print(f"Error committing changes: <ERROR_TYPE>")
+            print("Error committing changes: <ERROR_TYPE>")
             return False
 
     def _push_branch(self, branch_name: str) -> bool:
@@ -288,7 +288,7 @@ class AutomatedPRGenerator:
 
         except subprocess.CalledProcessError as e:
             error_type = type(e).__name__
-            print(f"Error pushing branch: <ERROR_TYPE>")
+            print("Error pushing branch: <ERROR_TYPE>")
             return False
 
     def _create_github_pr(self, branch_name: str, title: str, body: str) -> tuple:
@@ -357,7 +357,7 @@ class AutomatedPRGenerator:
 
         except Exception as e:
             error_type = type(e).__name__
-            print(f"Error rolling back: <ERROR_TYPE>")
+            print("Error rolling back: <ERROR_TYPE>")
             return False
 
     def _generate_commit_message(self, fixes: list[dict]) -> str:
@@ -428,7 +428,7 @@ class AutomatedPRGenerator:
 
         except Exception as e:
             error_type = type(e).__name__
-            print(f"Error getting PR status: <ERROR_TYPE>")
+            print("Error getting PR status: <ERROR_TYPE>")
             return None
 
 

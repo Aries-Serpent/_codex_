@@ -14,4 +14,4 @@ def test_patterns_compile(pattern_name: str) -> None:
     pattern = getattr(regex_patterns, pattern_name)
     assert isinstance(pattern, (str, re.Pattern))
     compiled = re.compile(pattern) if isinstance(pattern, str) else pattern
-    assert compiled.search("TEST=1") is not None or pattern_name == "PEM_BLOCK"
+    assert compiled.search("TEST=1") is not None or pattern_name == "PEM_BLOCK", "pattern_name must be initialized"

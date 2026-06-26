@@ -12,7 +12,7 @@ class TestThreadSafety:
         counter = 0
 
         # Assert
-        assert counter >= 0
+        assert counter >= 0, "counter must be positive"
 
     def test_thread_safe_dict(self):
         """Test thread-safe dictionary."""
@@ -20,7 +20,7 @@ class TestThreadSafety:
         data = {"key": "value"}
 
         # Assert
-        assert "key" in data
+        assert "key" in data, "Data must not be empty"
 
     def test_thread_safe_list(self):
         """Test thread-safe list."""
@@ -28,7 +28,7 @@ class TestThreadSafety:
         items = [1, 2, 3]
 
         # Assert
-        assert len(items) == 3
+        assert len(items) == 3, "Items must not be empty"
 
     def test_thread_safe_set(self):
         """Test thread-safe set."""
@@ -36,7 +36,7 @@ class TestThreadSafety:
         items = {1, 2, 3}
 
         # Assert
-        assert len(items) == 3
+        assert len(items) == 3, "Items must not be empty"
 
     def test_thread_local_storage(self):
         """Test thread-local storage."""
@@ -44,7 +44,7 @@ class TestThreadSafety:
         use_thread_local = True
 
         # Assert
-        assert use_thread_local is True
+        assert use_thread_local is True, "use_thread_local is not valid"
 
     def test_synchronized_access(self):
         """Test synchronized access."""
@@ -52,7 +52,7 @@ class TestThreadSafety:
         synchronized = True
 
         # Assert
-        assert synchronized is True
+        assert synchronized is True, "synchronized is not valid"
 
     def test_mutex_lock(self):
         """Test mutex lock."""
@@ -61,7 +61,7 @@ class TestThreadSafety:
         lock.locked.return_value = False
 
         # Assert
-        assert lock.locked() is False
+        assert lock.locked() is False, "Condition must be true"
 
     def test_reentrant_lock(self):
         """Test reentrant lock."""
@@ -69,7 +69,7 @@ class TestThreadSafety:
         reentrant = True
 
         # Assert
-        assert reentrant is True
+        assert reentrant is True, "reentrant is not valid"
 
     def test_condition_variable(self):
         """Test condition variable."""
@@ -77,7 +77,7 @@ class TestThreadSafety:
         condition = MagicMock()
 
         # Assert
-        assert condition is not None
+        assert condition is not None, "condition must be initialized"
 
     def test_barrier(self):
         """Test barrier synchronization."""
@@ -85,7 +85,7 @@ class TestThreadSafety:
         num_threads = 4
 
         # Assert
-        assert num_threads > 0
+        assert num_threads > 0, "num_threads must be greater than zero"
 
     def test_event_signal(self):
         """Test event signal."""
@@ -94,7 +94,7 @@ class TestThreadSafety:
         event.is_set.return_value = True
 
         # Assert
-        assert event.is_set() is True
+        assert event.is_set() is True, "Condition must be true"
 
     def test_race_condition_prevention(self):
         """Test race condition prevention."""
@@ -102,7 +102,7 @@ class TestThreadSafety:
         prevent_race = True
 
         # Assert
-        assert prevent_race is True
+        assert prevent_race is True, "prevent_race is not valid"
 
     def test_atomic_compare_and_swap(self):
         """Test atomic compare and swap."""
@@ -111,7 +111,7 @@ class TestThreadSafety:
         new_value = 20
 
         # Assert
-        assert expected != new_value
+        assert expected != new_value, "Value must be initialized"
 
     def test_volatile_read(self):
         """Test volatile read."""
@@ -119,7 +119,7 @@ class TestThreadSafety:
         volatile = True
 
         # Assert
-        assert volatile is True
+        assert volatile is True, "volatile is not valid"
 
     def test_memory_barrier(self):
         """Test memory barrier."""
@@ -127,7 +127,7 @@ class TestThreadSafety:
         barrier = True
 
         # Assert
-        assert barrier is True
+        assert barrier is True, "barrier is not valid"
 
     def test_safe_singleton(self):
         """Test thread-safe singleton."""
@@ -135,7 +135,7 @@ class TestThreadSafety:
         singleton = True
 
         # Assert
-        assert singleton is True
+        assert singleton is True, "singleton is not valid"
 
     def test_double_checked_locking(self):
         """Test double-checked locking pattern."""
@@ -143,7 +143,7 @@ class TestThreadSafety:
         use_dcl = True
 
         # Assert
-        assert use_dcl is True
+        assert use_dcl is True, "use_dcl is not valid"
 
     def test_immutable_object(self):
         """Test immutable object usage."""
@@ -151,4 +151,4 @@ class TestThreadSafety:
         immutable = True
 
         # Assert
-        assert immutable is True
+        assert immutable is True, "immutable is not valid"

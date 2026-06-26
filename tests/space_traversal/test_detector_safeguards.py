@@ -19,7 +19,7 @@ def _load_module(path: Path, name: str) -> types.ModuleType:
         path = repo_root / path
     spec = importlib.util.spec_from_file_location(name, str(path))
     module = importlib.util.module_from_spec(spec)  # type: ignore[arg-type]
-    assert spec and spec.loader
+    assert spec and spec.loader, "spec is not valid"
     spec.loader.exec_module(module)  # type: ignore[union-attr]
     return module
 
@@ -46,7 +46,7 @@ def test_detector_safeguards_hits(tmp_path: Path) -> None:
     context_index = _context_index_for([file_a, file_b])
     result = module.detect(context_index)  # type: ignore[attr-defined]
 
-    assert result["id"] == "safeguards_keywords"
-    assert result["total_hits"] >= 2
-    assert result["unique_files"] == 2
-    assert "a.py" in "".join(result["evidence"].keys())
+    assert result["id"] == "safeguards_keywords", "Result must not be empty"
+    assert result["total_hits"] >= 2, "Value must be greater than zero"
+    assert result["unique_files"] == 2, "Result must not be empty"
+    assert "a.py" in "".join(result["evidence"].keys()), "Result must not be empty"

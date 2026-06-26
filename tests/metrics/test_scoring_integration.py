@@ -67,4 +67,4 @@ def test_scoring_enhancements():
     # Consistency should reflect duplication * similarity scaling
     assert comps["consistency"] < 1.0, "Consistency did not integrate similarity"
     # Safeguards elevated by severity factor
-    assert comps["safeguards"] > 0.0
+    assert comps["safeguards"] > 0.0, "Value must be greater than zero"

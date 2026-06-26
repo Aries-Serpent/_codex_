@@ -49,9 +49,9 @@ def test_summary_rotation_rolls_by_max_bytes(tmp_path, monkeypatch):
         _emit_summary(writers, summary_path, idx)
 
     variants = sorted(p.name for p in summary_path.parent.glob("tracking_summary.ndjson*"))
-    assert "tracking_summary.ndjson" in variants
-    assert "tracking_summary.ndjson.1" in variants
-    assert "tracking_summary.ndjson.2" in variants
+    assert "tracking_summary.ndjson" in variants, "Condition must be true"
+    assert "tracking_summary.ndjson.1" in variants, "Condition must be true"
+    assert "tracking_summary.ndjson.2" in variants, "Condition must be true"
 
 
 def test_summary_rotation_rolls_by_max_age(tmp_path, monkeypatch):
@@ -67,6 +67,6 @@ def test_summary_rotation_rolls_by_max_age(tmp_path, monkeypatch):
         _emit_summary(writers, summary_path, idx)
 
     variants = sorted(p.name for p in summary_path.parent.glob("tracking_summary.ndjson*"))
-    assert "tracking_summary.ndjson" in variants
-    assert "tracking_summary.ndjson.1" in variants
-    assert "tracking_summary.ndjson.2" in variants
+    assert "tracking_summary.ndjson" in variants, "Condition must be true"
+    assert "tracking_summary.ndjson.1" in variants, "Condition must be true"
+    assert "tracking_summary.ndjson.2" in variants, "Condition must be true"

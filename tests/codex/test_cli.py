@@ -20,13 +20,13 @@ class TestCLIBasics:
         """Test that CLI module can be imported."""
         from codex.cli import main
 
-        assert callable(main)
+        assert callable(main), "Condition must be true"
 
     def test_cli_main_function_exists(self):
         """Test that main entry point exists."""
         from codex.cli.main import main
 
-        assert callable(main)
+        assert callable(main), "Condition must be true"
 
 
 class TestPROperator:
@@ -36,10 +36,10 @@ class TestPROperator:
         """Test branch name sanitization."""
         from codex.cli.pr_operator import _sanitize_branch_name
 
-        assert _sanitize_branch_name("simple") == "simple"
-        assert _sanitize_branch_name("with spaces") == "with-spaces"
-        assert _sanitize_branch_name("special!@#chars") == "special-chars"
-        assert _sanitize_branch_name("---multiple---dashes---") == "multiple-dashes"
+        assert _sanitize_branch_name("simple") == "simple", "Condition must be true"
+        assert _sanitize_branch_name("with spaces") == "with-spaces", "Condition must be true"
+        assert _sanitize_branch_name("special!@, "Condition must be true"
+        assert _sanitize_branch_name("---multiple---dashes---") == "multiple-dashes", "Condition must be true"
 
     def test_sanitize_branch_name_length(self):
         """Test branch name length limiting."""
@@ -48,7 +48,7 @@ class TestPROperator:
         long_name = "a" * 200
         result = _sanitize_branch_name(long_name)
 
-        assert len(result) <= 100
+        assert len(result) <= 100, "Result must not be empty"
 
     def test_generate_pr_body(self):
         """Test PR body generation."""
@@ -65,10 +65,10 @@ class TestPROperator:
             security_issues=0,
         )
 
-        assert "test-123" in body
-        assert "Test script" in body
-        assert "85%" in body
-        assert "✅" in body
+        assert "test-123" in body, "Condition must be true"
+        assert "Test script" in body, "Condition must be true"
+        assert "85%" in body, "Condition must be true"
+        assert "✅" in body, "Condition must be true"
 
     def test_generate_pr_body_with_failures(self):
         """Test PR body generation with failures."""
@@ -85,7 +85,7 @@ class TestPROperator:
             security_issues=5,
         )
 
-        assert "❌" in body
+        assert "❌" in body, "Condition must be true"
 
     def test_pr_config_defaults(self):
         """Test PRConfig default values."""
@@ -93,9 +93,9 @@ class TestPROperator:
 
         config = PRConfig(owner="test", repo="repo")
 
-        assert config.base_branch == "main"
-        assert config.draft is True
-        assert "copilot:automated" in config.labels
+        assert config.base_branch == "main", "base_branch is not valid"
+        assert config.draft is True, "draft is not valid"
+        assert "copilot:automated" in config.labels, "Condition must be true"
 
     def test_pr_content_creation(self):
         """Test PRContent creation."""
@@ -108,8 +108,8 @@ class TestPROperator:
             snapshot_id="snap-123",
         )
 
-        assert content.title == "Test PR"
-        assert content.snapshot_id == "snap-123"
+        assert content.title == "Test PR", "Content must not be empty"
+        assert content.snapshot_id == "snap-123", "Content must not be empty"
 
     def test_pr_operator_generate_content(self):
         """Test PROperator.generate_pr_content."""
@@ -125,9 +125,9 @@ class TestPROperator:
             tier_a_count=3,
         )
 
-        assert "snap-123" in content.branch_name
-        assert "CLI tool" in content.title or "snap-123" in content.title
-        assert content.snapshot_id == "snap-123"
+        assert "snap-123" in content.branch_name, "Content must not be empty"
+        assert "CLI tool" in content.title or "snap-123" in content.title, "Content must not be empty"
+        assert content.snapshot_id == "snap-123", "Content must not be empty"
 
     def test_pr_operator_save_content(self, tmp_path: Path):
         """Test saving PR content to files."""
@@ -146,8 +146,8 @@ class TestPROperator:
         output_dir = tmp_path / "pr-output"
         result = operator.save_pr_content(content, output_dir)
 
-        assert result.exists()
-        assert (output_dir / "pr-metadata.json").exists()
+        assert result.exists(), "Result must not be empty"
+        assert (output_dir / "pr-metadata.json").exists(), "Data must not be empty"
 
     def test_pr_result_success(self):
         """Test PRResult success state."""
@@ -159,9 +159,9 @@ class TestPROperator:
             pr_url="https://github.com/test/repo/pull/123",
         )
 
-        assert result.success
-        assert result.pr_number == 123
-        assert "123" in result.pr_url
+        assert result.success, "Result must not be empty"
+        assert result.pr_number == 123, "Result must not be empty"
+        assert "123" in result.pr_url, "Result must not be empty"
 
     def test_pr_result_failure(self):
         """Test PRResult failure state."""
@@ -172,8 +172,8 @@ class TestPROperator:
             errors=["Authentication failed"],
         )
 
-        assert not result.success
-        assert "Authentication failed" in result.errors
+        assert not result.success, "Result must not be empty"
+        assert "Authentication failed" in result.errors, "Result must not be empty"
 
     def test_pr_operator_without_github(self):
         """Test PROperator behavior without GitHub access."""
@@ -191,8 +191,8 @@ class TestPROperator:
 
             result = operator.create_pr(content)
 
-            assert not result.success
-            assert len(result.errors) > 0
+            assert not result.success, "Result must not be empty"
+            assert len(result.errors) > 0, "Collection must not be empty"
 
 
 class TestRuntimeComponents:
@@ -204,9 +204,9 @@ class TestRuntimeComponents:
 
         config = SandboxConfig()
 
-        assert config.timeout_seconds == 60
-        assert config.memory_limit_mb == 512
-        assert config.network_enabled is False
+        assert config.timeout_seconds == 60, "timeout_seconds is not valid"
+        assert config.memory_limit_mb == 512, "memory_limit_mb is not valid"
+        assert config.network_enabled is False, "network_enabled is not valid"
 
     def test_sandbox_config_custom(self):
         """Test SandboxConfig custom values."""
@@ -218,9 +218,9 @@ class TestRuntimeComponents:
             network_enabled=True,
         )
 
-        assert config.timeout_seconds == 30
-        assert config.memory_limit_mb == 256
-        assert config.network_enabled is True
+        assert config.timeout_seconds == 30, "timeout_seconds is not valid"
+        assert config.memory_limit_mb == 256, "memory_limit_mb is not valid"
+        assert config.network_enabled is True, "network_enabled is not valid"
 
     def test_sandbox_manager_initialization(self):
         """Test SandboxManager initialization."""
@@ -229,7 +229,7 @@ class TestRuntimeComponents:
         config = SandboxConfig()
         manager = SandboxManager(config)
 
-        assert manager.config == config
+        assert manager.config == config, "config is not valid"
 
     def test_sandbox_manager_invalid_config(self):
         """Test SandboxManager with invalid config."""
@@ -250,9 +250,9 @@ class TestRuntimeComponents:
         manager = SandboxManager()
         result = manager.execute(script)
 
-        assert result.exit_code == 0
-        assert "hello" in result.stdout
-        assert not result.timed_out
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "hello" in result.stdout, "Result must not be empty"
+        assert not result.timed_out, "Result must not be empty"
 
     def test_sandbox_execute_with_error(self, tmp_path: Path):
         """Test executing a script with error."""
@@ -264,8 +264,8 @@ class TestRuntimeComponents:
         manager = SandboxManager()
         result = manager.execute(script)
 
-        assert result.exit_code != 0
-        assert "ValueError" in result.stderr or "error" in result.stderr.lower()
+        assert result.exit_code != 0, "Result must not be empty"
+        assert "ValueError" in result.stderr or "error" in result.stderr.lower(), "Result must not be empty"
 
     def test_sandbox_execute_nonexistent(self, tmp_path: Path):
         """Test executing nonexistent script."""
@@ -287,9 +287,9 @@ class TestRuntimeComponents:
         result = manager.execute(script)
         data = result.to_dict()
 
-        assert "exit_code" in data
-        assert "stdout_snapshot" in data
-        assert "duration_ms" in data
+        assert "exit_code" in data, "Data must not be empty"
+        assert "stdout_snapshot" in data, "Data must not be empty"
+        assert "duration_ms" in data, "Data must not be empty"
 
     def test_runtime_tracer_initialization(self):
         """Test RuntimeTracer initialization."""
@@ -297,7 +297,7 @@ class TestRuntimeComponents:
 
         tracer = RuntimeTracer("test-snapshot")
 
-        assert tracer.snapshot_id == "test-snapshot"
+        assert tracer.snapshot_id == "test-snapshot", "snapshot_id is not valid"
 
     def test_runtime_tracer_find_entry_point(self, tmp_path: Path):
         """Test finding entry point."""
@@ -310,7 +310,7 @@ class TestRuntimeComponents:
         tracer = RuntimeTracer("test-snapshot")
         entry = tracer._find_entry_point(source_dir)
 
-        assert entry == "main.py"
+        assert entry == "main.py", "entry is not valid"
 
     def test_runtime_tracer_find_entry_point_fallback(self, tmp_path: Path):
         """Test entry point fallback to first .py file."""
@@ -323,7 +323,7 @@ class TestRuntimeComponents:
         tracer = RuntimeTracer("test-snapshot")
         entry = tracer._find_entry_point(source_dir)
 
-        assert entry == "custom.py"
+        assert entry == "custom.py", "entry is not valid"
 
     def test_runtime_report_to_dict(self):
         """Test RuntimeReport serialization."""
@@ -340,9 +340,9 @@ class TestRuntimeComponents:
 
         data = report.to_dict()
 
-        assert data["snapshot_id"] == "test-123"
-        assert "timestamp" in data
-        assert len(data["execution_results"]) == 1
+        assert data["snapshot_id"] == "test-123", "Data must not be empty"
+        assert "timestamp" in data, "Data must not be empty"
+        assert len(data["execution_results"]) == 1, "Collection must not be empty"
 
     def test_runtime_report_save(self, tmp_path: Path):
         """Test saving RuntimeReport to file."""
@@ -360,4 +360,4 @@ class TestRuntimeComponents:
         output_path = tmp_path / "runtime-report.json"
         report.save(output_path)
 
-        assert output_path.exists()
+        assert output_path.exists(), "Condition must be true"

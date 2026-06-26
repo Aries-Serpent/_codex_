@@ -14,14 +14,14 @@ class TestLoraConfig:
             "target_modules": ["q_proj", "v_proj"],
             "lora_dropout": 0.1,
         }
-        assert "r" in config
-        assert config["r"] > 0
-        assert len(config["target_modules"]) > 0
+        assert "r" in config, "Condition must be true"
+        assert config["r"] > 0, "Value must be greater than zero"
+        assert len(config["target_modules"]) > 0, "Collection must not be empty"
 
     def test_lora_parameters(self):
         """Test LoRA parameter validation."""
         r, alpha = 8, 16
-        assert r > 0 and alpha >= r
+        assert r > 0 and alpha >= r, "r must be greater than zero"
 
 
 class TestPEFTAdapter:
@@ -34,8 +34,8 @@ class TestPEFTAdapter:
             "adapter_type": "lora",
             "trainable_params": 1000,
         }
-        assert "adapter_name" in adapter
-        assert adapter["trainable_params"] > 0
+        assert "adapter_name" in adapter, "Condition must be true"
+        assert adapter["trainable_params"] > 0, "Value must be greater than zero"
 
 
 class TestPEFTTraining:
@@ -47,5 +47,5 @@ class TestPEFTTraining:
             "peft_config": {"r": 8},
             "training_args": {"learning_rate": 0.001},
         }
-        assert "peft_config" in config
-        assert "training_args" in config
+        assert "peft_config" in config, "Condition must be true"
+        assert "training_args" in config, "Condition must be true"

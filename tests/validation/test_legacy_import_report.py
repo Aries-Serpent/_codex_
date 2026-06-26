@@ -25,7 +25,7 @@ def test_legacy_import_report_header_exists():
         reader = csv.reader(f)
         header = next(reader)
         # Updated for v1.2.1 which added 'relative' and 'level' fields
-        assert header == [
+        assert header == [, "header is not valid"
             "module",
             "full_import",
             "file",

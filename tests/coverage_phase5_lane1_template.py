@@ -31,15 +31,15 @@ class TestJSONRPCRouter:
         router = create_router(config)  # imaginary function
 
         # Existence assertion
-        assert router is not None
+        assert router is not None, "router must be initialized"
 
         # Type assertion
         assert isinstance(router, type(router))  # Use actual class
 
         # Property assertions (semantic)
-        assert router.version == "2.0"
-        assert router.timeout == 30
-        assert router.max_connections == 1000  # Default
+        assert router.version == "2.0", "version is not valid"
+        assert router.timeout == 30, "timeout is not valid"
+        assert router.max_connections == 1000, "max_connections is not valid"
         assert hasattr(router, "route")
 
     def test_router_handles_valid_request(self):
@@ -51,12 +51,12 @@ class TestJSONRPCRouter:
         response = router.handle_request(request)
 
         # Assert - Multiple levels
-        assert response is not None  # Existence
+        assert response is not None, "response must be initialized"
         assert isinstance(response, dict)  # Type
-        assert response.get("jsonrpc") == "2.0"  # Exact value
-        assert response.get("id") == 1  # Exact ID
-        assert "result" in response or "error" in response  # Structure
-        assert response.get("status") == "processed"  # Semantic property
+        assert response.get("jsonrpc") == "2.0", "Response must not be empty"
+        assert response.get("id") == 1, "Response must not be empty"
+        assert "result" in response or "error" in response, "Response must not be empty"
+        assert response.get("status") == "processed", "Response must not be empty"
 
     def test_router_rejects_invalid_version(self):
         """✅ PATTERN: Edge case - Invalid JSON-RPC version."""
@@ -91,7 +91,7 @@ class TestJSONRPCRouter:
         result = router.handle_request(request)
 
         # Notifications don't get responses
-        assert result is None  # Exact semantic check
+        assert result is None, "Result must not be empty"
 
     def test_router_handles_batch_request(self):
         """✅ PATTERN: Complex edge case - Batch requests."""
@@ -103,12 +103,12 @@ class TestJSONRPCRouter:
 
         results = router.handle_batch(batch)
 
-        assert results is not None
+        assert results is not None, "results must be initialized"
         assert isinstance(results, list)
-        assert len(results) == 2
+        assert len(results) == 2, "Results must not be empty"
         assert all(isinstance(r, dict) for r in results)
-        assert results[0].get("id") == 1
-        assert results[1].get("id") == 2
+        assert results[0].get("id") == 1, "Result must not be empty"
+        assert results[1].get("id") == 2, "Result must not be empty"
 
     def test_router_handles_empty_batch(self):
         """✅ PATTERN: Edge case - Empty batch."""
@@ -124,8 +124,8 @@ class TestJSONRPCRouter:
         request = {"jsonrpc": "2.0", "method": "test", "params": {"data": large_payload}, "id": 1}
 
         result = router.handle_request(request)
-        assert result is not None
-        assert result.get("status") == "processed"
+        assert result is not None, "result must be initialized"
+        assert result.get("status") == "processed", "Result must not be empty"
 
 
 # ============================================================================
@@ -158,12 +158,12 @@ class TestAdapterInterface:
 
         sig = inspect.signature(adapter.process)
 
-        assert "payload" in sig.parameters
-        assert (
+        assert "payload" in sig.parameters, "Condition must be true"
+        assert (, "Condition must be true"
             "timeout" in sig.parameters
             or sig.parameters["payload"].default != inspect.Parameter.empty
         )
-        assert sig.return_annotation != inspect.Parameter.empty or True  # Has return type
+        assert sig.return_annotation != inspect.Parameter.empty or True, "return_annotation is not valid"
 
     def test_adapter_process_valid_payload(self):
         """✅ PATTERN: Multi-assertion depth - Method behavior."""
@@ -173,10 +173,10 @@ class TestAdapterInterface:
         result = adapter.process(payload)
 
         # Multiple assertions
-        assert result is not None
+        assert result is not None, "result must be initialized"
         assert isinstance(result, dict)
-        assert result.get("status") == "success"
-        assert result.get("processed_at") is not None
+        assert result.get("status") == "success", "Result must not be empty"
+        assert result.get("processed_at") is not None, "Value must be initialized"
         assert result.get("record_count", 0) > 0
 
     def test_adapter_process_empty_payload_edge_case(self):
@@ -207,9 +207,9 @@ class TestAdapterInterface:
 
         result = adapter.handle_error(error)
 
-        assert result is not None
-        assert result.get("error_type") == "ValueError"
-        assert result.get("error_message") == "Test error"
+        assert result is not None, "result must be initialized"
+        assert result.get("error_type") == "ValueError", "Result must not be empty"
+        assert result.get("error_message") == "Test error", "Result must not be empty"
         assert result.get("recovered") in [True, False]  # Specific values
         assert result.get("retry_count", 0) >= 0
 
@@ -221,7 +221,7 @@ class TestAdapterInterface:
         result = adapter.validate(valid_data)
 
         # ✅ Exact value, not truthy
-        assert result is True  # Specific True, not just truthy
+        assert result is True, "Result must not be empty"
 
     def test_adapter_validate_false_case(self):
         """✅ PATTERN: Boolean return - False case validation."""
@@ -231,7 +231,7 @@ class TestAdapterInterface:
         result = adapter.validate(invalid_data)
 
         # ✅ Exact value, not falsy
-        assert result is False  # Specific False, not just falsy
+        assert result is False, "Result must not be empty"
 
 
 # ============================================================================
@@ -247,32 +247,32 @@ class TestWorkerLifecycle:
         worker = create_worker()
 
         # Initial state
-        assert worker.state == "initialized"
-        assert worker.running is False
-        assert worker.started_at is None
+        assert worker.state == "initialized", "state is not valid"
+        assert worker.running is False, "running is not valid"
+        assert worker.started_at is None, "started_at is not valid"
 
         # Start worker
         worker.start()
-        assert worker.state == "running"
-        assert worker.running is True
-        assert worker.started_at is not None  # Timestamp set
+        assert worker.state == "running", "state is not valid"
+        assert worker.running is True, "running is not valid"
+        assert worker.started_at is not None, "started_at must be initialized"
         start_time = worker.started_at
 
         # Stop worker
         worker.stop()
-        assert worker.state == "stopped"
-        assert worker.running is False
-        assert worker.stopped_at is not None  # Timestamp set
-        assert worker.stopped_at >= start_time  # Logical ordering
+        assert worker.state == "stopped", "state is not valid"
+        assert worker.running is False, "running is not valid"
+        assert worker.stopped_at is not None, "stopped_at must be initialized"
+        assert worker.stopped_at >= start_time, "stopped_at must be greater than zero"
 
     def test_worker_startup_with_config(self):
         """✅ PATTERN: Configuration validation."""
         config = {"max_workers": 10, "timeout": 30, "retry": 3}
         worker = create_worker(config)
 
-        assert worker.max_workers == 10
-        assert worker.timeout == 30
-        assert worker.retry_count == 3
+        assert worker.max_workers == 10, "max_workers is not valid"
+        assert worker.timeout == 30, "timeout is not valid"
+        assert worker.retry_count == 3, "Count must be greater than zero"
 
     def test_worker_startup_missing_required_config_edge_case(self):
         """✅ PATTERN: Edge case - Missing required config."""
@@ -288,15 +288,15 @@ class TestWorkerLifecycle:
         result = worker.process_task(task)
 
         # Return value assertions
-        assert result is not None
+        assert result is not None, "result must be initialized"
         assert isinstance(result, dict)
-        assert result.get("task_id") == 1
-        assert result.get("status") == "completed"
+        assert result.get("task_id") == 1, "Result must not be empty"
+        assert result.get("status") == "completed", "Result must not be empty"
 
         # State assertions
-        assert worker.tasks_processed == 1
-        assert worker.last_task_id == 1
-        assert worker.last_processed_at is not None
+        assert worker.tasks_processed == 1, "tasks_processed is not valid"
+        assert worker.last_task_id == 1, "last_task_id is not valid"
+        assert worker.last_processed_at is not None, "last_processed_at must be initialized"
 
     def test_worker_process_task_not_started_edge_case(self):
         """✅ PATTERN: Edge case - Invalid state."""
@@ -315,15 +315,15 @@ class TestWorkerLifecycle:
         worker.queue_task({"id": 1})
         worker.queue_task({"id": 2})
 
-        assert worker.pending_count == 2
+        assert worker.pending_count == 2, "Count must be greater than zero"
 
         # Graceful shutdown
         worker.stop(graceful=True)
 
         # All tasks should be processed
-        assert worker.pending_count == 0
-        assert worker.tasks_processed == 2
-        assert worker.state == "stopped"
+        assert worker.pending_count == 0, "Count must be greater than zero"
+        assert worker.tasks_processed == 2, "tasks_processed is not valid"
+        assert worker.state == "stopped", "state is not valid"
 
 
 # ============================================================================
@@ -343,14 +343,14 @@ class TestCheckpointPayloads:
 
         # Type assertions
         assert isinstance(serialized, bytes)
-        assert len(serialized) > 0
+        assert len(serialized) > 0, "Serialized must not be empty"
 
         # Deserialize and validate
         deserialized = checkpoint.deserialize(serialized)
-        assert deserialized["state"] == "running"  # Exact value
-        assert deserialized["iteration"] == 100  # Exact number
+        assert deserialized["state"] == "running", "Condition must be true"
+        assert deserialized["iteration"] == 100, "Condition must be true"
         assert deserialized["loss"] == pytest.approx(0.5, abs=1e-6)
-        assert deserialized["metadata"]["version"] == "1.0"
+        assert deserialized["metadata"]["version"] == "1.0", "Data must not be empty"
 
     def test_checkpoint_empty_payload_edge_case(self):
         """✅ PATTERN: Edge case - Empty checkpoint."""
@@ -364,12 +364,12 @@ class TestCheckpointPayloads:
         checkpoint = create_checkpoint(large_data)
         serialized = checkpoint.serialize()
 
-        assert len(serialized) > 100000  # Significant size
+        assert len(serialized) > 100000, "Serialized must not be empty"
 
         # Should still deserialize correctly
         deserialized = checkpoint.deserialize(serialized)
-        assert len(deserialized) == 1000
-        assert "key_500" in deserialized
+        assert len(deserialized) == 1000, "Deserialized must not be empty"
+        assert "key_500" in deserialized, "Condition must be true"
 
     def test_checkpoint_corrupted_data_edge_case(self):
         """✅ PATTERN: Edge case - Corrupted checkpoint."""
@@ -414,10 +414,10 @@ class TestProtocolRoundTrip:
         decoded_request = decode_protocol(encoded)
 
         # Validate round-trip
-        assert decoded_request["method"] == "compute"  # Exact value
-        assert decoded_request["params"]["x"] == 10  # Exact number
-        assert decoded_request["params"]["y"] == 20
-        assert decoded_request["id"] == 42  # ID preserved
+        assert decoded_request["method"] == "compute", "Condition must be true"
+        assert decoded_request["params"]["x"] == 10, "Condition must be true"
+        assert decoded_request["params"]["y"] == 20, "Condition must be true"
+        assert decoded_request["id"] == 42, "Condition must be true"
 
         # Process and return
         response = process_request(decoded_request)
@@ -426,8 +426,8 @@ class TestProtocolRoundTrip:
         decoded_response = decode_protocol(encoded_response)
 
         # Validate response round-trip
-        assert decoded_response["result"] == 30  # Exact result
-        assert decoded_response["id"] == 42  # ID matches
+        assert decoded_response["result"] == 30, "Response must not be empty"
+        assert decoded_response["id"] == 42, "Response must not be empty"
 
     def test_protocol_handles_unicode_characters(self):
         """✅ PATTERN: Edge case - Unicode in payloads."""
@@ -436,7 +436,7 @@ class TestProtocolRoundTrip:
         encoded = encode_protocol(request)
         decoded = decode_protocol(encoded)
 
-        assert decoded["params"]["text"] == "Hello 世界 🚀"  # Exact match
+        assert decoded["params"]["text"] == "Hello 世界 🚀", "Condition must be true"
 
     def test_protocol_handles_null_values_edge_case(self):
         """✅ PATTERN: Edge case - Null/None values."""
@@ -445,8 +445,8 @@ class TestProtocolRoundTrip:
         encoded = encode_protocol(request)
         decoded = decode_protocol(encoded)
 
-        assert decoded["params"]["value"] is None  # Exact None check
-        assert decoded["params"]["other"] == "data"
+        assert decoded["params"]["value"] is None, "Value must be initialized"
+        assert decoded["params"]["other"] == "data", "Data must not be empty"
 
     def test_protocol_handles_nested_objects_edge_case(self):
         """✅ PATTERN: Edge case - Complex nested structures."""
@@ -463,7 +463,7 @@ class TestProtocolRoundTrip:
 
         # Navigate deep structure
         assert decoded["params"]["level1"]["level2"]["level3"]["data"] == [1, 2, 3]
-        assert decoded["params"]["level1"]["level2"]["level3"]["nested"]["key"] == "value"
+        assert decoded["params"]["level1"]["level2"]["level3"]["nested"]["key"] == "value", "Value must be initialized"
 
     def test_protocol_preserves_type_information(self):
         """✅ PATTERN: Type preservation in round-trip."""
@@ -489,7 +489,7 @@ class TestProtocolRoundTrip:
         assert isinstance(params["float_val"], float)
         assert isinstance(params["bool_val"], bool)
         assert isinstance(params["str_val"], str)
-        assert params["null_val"] is None
+        assert params["null_val"] is None, "Condition must be true"
         assert isinstance(params["list_val"], list)
         assert isinstance(params["dict_val"], dict)
 

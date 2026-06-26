@@ -19,7 +19,7 @@ class TestTrainingModuleWrapper:
         """Test that training module can be imported."""
         from codex_ml import training
 
-        assert training is not None
+        assert training is not None, "training must be initialized"
         assert isinstance(training, ModuleType)
 
     def test_module_has_docstring(self) -> None:
@@ -44,7 +44,7 @@ class TestTrainingModuleWrapper:
         dir_items = dir(training)
 
         # Should include standard attributes
-        assert "__doc__" in dir_items or "__name__" in dir_items
+        assert "__doc__" in dir_items or "__name__" in dir_items, "Item must not be empty"
 
     def test_getattr_delegation(self) -> None:
         """Test __getattr__ delegates to package."""
@@ -61,7 +61,7 @@ class TestTrainingModuleWrapper:
         import codex_ml.training as training_module
 
         # The module should reference the correct package
-        assert "training" in str(training_module)
+        assert "training" in str(training_module), "Condition must be true"
 
 
 class TestPackageLoading:
@@ -73,7 +73,7 @@ class TestPackageLoading:
         from codex_ml import training
 
         # If we got here, path manipulation worked
-        assert training is not None
+        assert training is not None, "training must be initialized"
 
     def test_load_package_returns_module(self) -> None:
         """Test _load_package returns a module."""
@@ -86,7 +86,7 @@ class TestPackageLoading:
         """Test package is registered in sys.modules."""
 
         # The package should be in sys.modules
-        assert "codex_ml.training" in sys.modules
+        assert "codex_ml.training" in sys.modules, "Condition must be true"
 
 
 class TestCompatibilityShim:
@@ -97,7 +97,7 @@ class TestCompatibilityShim:
         try:
             import codex_ml.training
 
-            assert codex_ml.training is not None
+            assert codex_ml.training is not None, "training must be initialized"
 
             # Test that we can access exported items if available
             if hasattr(codex_ml.training, "__all__"):
@@ -111,7 +111,7 @@ class TestCompatibilityShim:
         try:
             from codex_ml import training
 
-            assert training is not None
+            assert training is not None, "training must be initialized"
         except ImportError:
             pytest.skip("training module not fully configured")
 
@@ -120,7 +120,7 @@ class TestCompatibilityShim:
         import codex_ml.training as first
         import codex_ml.training as second
 
-        assert first is second
+        assert first is second, "first is not valid"
 
 
 class TestEdgeCases:

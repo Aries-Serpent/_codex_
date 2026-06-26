@@ -96,7 +96,7 @@ class TestTokenExpiration:
         # Assert
         assert should_refresh, "Should attempt refresh at expiration boundary"
         assert new_token_data is not None, "Refresh should return new token data"
-        assert new_token_data["access_token"] == "new_token"
+        assert new_token_data["access_token"] == "new_token", "Data must not be empty"
 
 
 class TestTokenStructure:
@@ -164,7 +164,7 @@ class TestTokenStructure:
 
         # Assert
         assert len(missing_claims) > 0, "Missing required claims should be detected"
-        assert all(c in missing_claims for c in required_claims)
+        assert all(c in missing_claims for c in required_claims), "Condition must be true"
 
     def test_jwt_with_extra_unrecognized_claims(self):
         """Test JWT with unrecognized custom claims."""
@@ -176,8 +176,8 @@ class TestTokenStructure:
         extra_claims = {k: v for k, v in payload.items() if k not in standard_claims}
 
         # Assert
-        assert "custom_claim_1" in extra_claims
-        assert len(extra_claims) == 2
+        assert "custom_claim_1" in extra_claims, "Condition must be true"
+        assert len(extra_claims) == 2, "Extra_claims must not be empty"
 
     def test_jwt_encoding_edge_cases(self):
         """Test JWT payload with unicode and special characters."""
@@ -213,7 +213,7 @@ class TestConcurrentSessions:
 
         # Assert
         assert exceeds_limit, "Should detect when session limit exceeded"
-        assert len(user_sessions) == 6
+        assert len(user_sessions) == 6, "User_sessions must not be empty"
 
     def test_session_device_limit_boundary(self):
         """Test device limit at boundary."""
@@ -327,8 +327,8 @@ class TestMFAScenarios:
         is_within_limit = len(backup_codes) <= max_backup_codes
 
         # Assert
-        assert is_within_limit
-        assert len(backup_codes) == 3
+        assert is_within_limit, "is_within_limit is not valid"
+        assert len(backup_codes) == 3, "Backup_codes must not be empty"
 
     def test_mfa_backup_code_single_use(self):
         """Test backup codes are single-use."""
@@ -461,7 +461,7 @@ class TestSessionManagement:
 
         # Assert
         assert is_cleaned_up, "Session should be cleaned up after logout"
-        assert len(active_sessions) == 2
+        assert len(active_sessions) == 2, "Active_sessions must not be empty"
 
     def test_session_timeout_inactive(self):
         """Test session timeout for inactive sessions."""
@@ -488,5 +488,5 @@ class TestSessionManagement:
         logout_requests -= 1
 
         # Assert
-        assert session["status"] == "logging_out"
-        assert logout_requests == 1
+        assert session["status"] == "logging_out", "Condition must be true"
+        assert logout_requests == 1, "logout_requests is not valid"

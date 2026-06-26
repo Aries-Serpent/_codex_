@@ -75,9 +75,9 @@ class TestAlertThreshold:
             comparison="less_than",
         )
 
-        assert threshold.check(0.2) == AlertLevel.CRITICAL
-        assert threshold.check(0.4) == AlertLevel.WARNING
-        assert threshold.check(0.6) is None
+        assert threshold.check(0.2) == AlertLevel.CRITICAL, "Condition must be true"
+        assert threshold.check(0.4) == AlertLevel.WARNING, "Condition must be true"
+        assert threshold.check(0.6) is None, "Condition must be true"
 
     def test_greater_than_critical(self):
         """Test greater_than comparison triggers critical alert."""
@@ -88,9 +88,9 @@ class TestAlertThreshold:
             comparison="greater_than",
         )
 
-        assert threshold.check(0.15) == AlertLevel.CRITICAL
-        assert threshold.check(0.07) == AlertLevel.WARNING
-        assert threshold.check(0.02) is None
+        assert threshold.check(0.15) == AlertLevel.CRITICAL, "Condition must be true"
+        assert threshold.check(0.07) == AlertLevel.WARNING, "Condition must be true"
+        assert threshold.check(0.02) is None, "Condition must be true"
 
 
 class TestCoherenceMonitorBasics:
@@ -98,10 +98,10 @@ class TestCoherenceMonitorBasics:
 
     def test_initialization(self, monitor):
         """Test monitor initializes correctly."""
-        assert monitor.config is not None
-        assert monitor.repository is not None
-        assert len(monitor.thresholds) == 4
-        assert not monitor.is_rollback_triggered
+        assert monitor.config is not None, "config must be initialized"
+        assert monitor.repository is not None, "repository must be initialized"
+        assert len(monitor.thresholds) == 4, "Collection must not be empty"
+        assert not monitor.is_rollback_triggered, "Condition must be true"
 
     def test_record_metric(self, monitor):
         """Test recording a metric."""
@@ -112,9 +112,9 @@ class TestCoherenceMonitorBasics:
             agent_id="test-agent",
         )
 
-        assert metric.id is not None
-        assert metric.feature == "superposition"
-        assert metric.metric_value == 0.95
+        assert metric.id is not None, "id must be initialized"
+        assert metric.feature == "superposition", "feature is not valid"
+        assert metric.metric_value == 0.95, "Value must be initialized"
 
     def test_record_multiple_metrics(self, monitor):
         """Test recording multiple metrics."""
@@ -126,7 +126,7 @@ class TestCoherenceMonitorBasics:
             )
 
         health = monitor.get_feature_health("superposition")
-        assert health["coherence"]["samples"] == 5
+        assert health["coherence"]["samples"] == 5, "Condition must be true"
 
 
 class TestAlertTriggering:
@@ -141,8 +141,8 @@ class TestAlertTriggering:
         )
 
         alerts = monitor.get_active_alerts()
-        assert len(alerts) > 0
-        assert alerts[0].level == AlertLevel.CRITICAL
+        assert len(alerts) > 0, "Alerts must not be empty"
+        assert alerts[0].level == AlertLevel.CRITICAL, "level is not valid"
 
     def test_warning_error_rate_alert(self, monitor):
         """Test warning alert triggers on high error rate."""
@@ -153,14 +153,14 @@ class TestAlertTriggering:
         )
 
         alerts = monitor.get_active_alerts(level=AlertLevel.WARNING)
-        assert len(alerts) > 0
+        assert len(alerts) > 0, "Alerts must not be empty"
 
     def test_no_alert_on_healthy_metrics(self, monitor):
         """Test no alerts trigger for healthy metrics."""
         monitor.record_metric(feature="superposition", metric_name="coherence", metric_value=0.95)
 
         alerts = monitor.get_active_alerts()
-        assert len(alerts) == 0
+        assert len(alerts) == 0, "Alerts must not be empty"
 
 
 class TestAutomaticRollback:
@@ -174,7 +174,7 @@ class TestAutomaticRollback:
             metric_value=0.1,  # Critical
         )
 
-        assert monitor.is_rollback_triggered
+        assert monitor.is_rollback_triggered, "monit is not valid"
 
     def test_rollback_not_triggered_on_warning(self, monitor):
         """Test rollback doesn't trigger on warning alert."""
@@ -184,17 +184,17 @@ class TestAutomaticRollback:
             metric_value=0.4,  # Warning but not critical
         )
 
-        assert not monitor.is_rollback_triggered
+        assert not monitor.is_rollback_triggered, "Condition must be true"
 
     def test_reset_rollback_flag(self, monitor):
         """Test resetting rollback flag."""
         # Trigger rollback
         monitor.record_metric(feature="superposition", metric_name="coherence", metric_value=0.1)
-        assert monitor.is_rollback_triggered
+        assert monitor.is_rollback_triggered, "monit is not valid"
 
         # Reset
         monitor.reset_rollback_flag()
-        assert not monitor.is_rollback_triggered
+        assert not monitor.is_rollback_triggered, "Condition must be true"
 
 
 class TestHealthMonitoring:
@@ -210,8 +210,8 @@ class TestHealthMonitoring:
 
         health = monitor.get_feature_health("superposition")
 
-        assert health["feature"] == "superposition"
-        assert health["coherence"]["samples"] == 3
+        assert health["feature"] == "superposition", "Condition must be true"
+        assert health["coherence"]["samples"] == 3, "Condition must be true"
         assert health["health_status"] in ["healthy", "degraded", "critical"]
 
     def test_healthy_status(self, monitor):
@@ -219,14 +219,14 @@ class TestHealthMonitoring:
         monitor.record_metric(feature="superposition", metric_name="coherence", metric_value=0.95)
 
         health = monitor.get_feature_health("superposition")
-        assert health["health_status"] == "healthy"
+        assert health["health_status"] == "healthy", "Condition must be true"
 
     def test_critical_status(self, monitor):
         """Test critical status assessment."""
         monitor.record_metric(feature="superposition", metric_name="coherence", metric_value=0.2)
 
         health = monitor.get_feature_health("superposition")
-        assert health["health_status"] == "critical"
+        assert health["health_status"] == "critical", "Condition must be true"
 
 
 class TestAlertManagement:
@@ -239,17 +239,17 @@ class TestAlertManagement:
         monitor.flush_batch()
 
         sup_alerts = monitor.get_active_alerts(feature="superposition")
-        assert all(a.feature == "superposition" for a in sup_alerts)
+        assert all(a.feature == "superposition" for a in sup_alerts), "feature is not valid"
 
     def test_clear_all_alerts(self, monitor):
         """Test clearing all alerts."""
         monitor.record_metric("superposition", "coherence", 0.1)
         monitor.flush_batch()
-        assert len(monitor.get_active_alerts()) > 0
+        assert len(monitor.get_active_alerts()) > 0, "Collection must not be empty"
 
         cleared = monitor.clear_alerts()
-        assert cleared > 0
-        assert len(monitor.get_active_alerts()) == 0
+        assert cleared > 0, "cleared must be greater than zero"
+        assert len(monitor.get_active_alerts()) == 0, "Collection must not be empty"
 
 
 class TestCoherenceMonitorBatching:
@@ -266,11 +266,11 @@ class TestCoherenceMonitorBatching:
             )
 
         # Check buffer has 5 pending metrics
-        assert len(monitor._pending_metrics) == 5
+        assert len(monitor._pending_metrics) == 5, "Collection must not be empty"
 
         # Metrics should NOT be in database yet
         metrics_in_db = repo.find_by_feature("superposition")
-        assert len(metrics_in_db) == 0
+        assert len(metrics_in_db) == 0, "Metrics_in_db must not be empty"
 
     def test_auto_flush_at_batch_size(self, config, repo):
         """Test auto-flush at batch_size threshold (default 100)."""
@@ -283,11 +283,11 @@ class TestCoherenceMonitorBatching:
             )
 
         # Buffer should be empty (auto-flushed)
-        assert len(monitor._pending_metrics) == 0
+        assert len(monitor._pending_metrics) == 0, "Collection must not be empty"
 
         # All 10 metrics should be in database
         metrics_in_db = repo.find_by_feature("superposition")
-        assert len(metrics_in_db) == 10
+        assert len(metrics_in_db) == 10, "Metrics_in_db must not be empty"
 
     def test_manual_flush_batch(self, config, repo):
         """Test manual flush_batch() method."""
@@ -300,17 +300,17 @@ class TestCoherenceMonitorBatching:
             )
 
         # Metrics should be pending
-        assert len(monitor._pending_metrics) == 20
+        assert len(monitor._pending_metrics) == 20, "Collection must not be empty"
 
         # Manually flush
         flushed_count = monitor.flush_batch()
 
-        assert flushed_count == 20
-        assert len(monitor._pending_metrics) == 0
+        assert flushed_count == 20, "Count must be greater than zero"
+        assert len(monitor._pending_metrics) == 0, "Collection must not be empty"
 
         # All 20 metrics should be in database
         metrics_in_db = repo.find_by_feature("entanglement")
-        assert len(metrics_in_db) == 20
+        assert len(metrics_in_db) == 20, "Metrics_in_db must not be empty"
 
     def test_metrics_persisted_after_flush(self, config, repo):
         """Test that metrics are actually persisted to database after flush."""
@@ -330,12 +330,12 @@ class TestCoherenceMonitorBatching:
 
         # Verify all metrics in database with correct values
         metrics_in_db = repo.find_by_feature("uncertainty", limit=50)
-        assert len(metrics_in_db) == 30
+        assert len(metrics_in_db) == 30, "Metrics_in_db must not be empty"
 
         # Check specific values
         values = [m.metric_value for m in metrics_in_db]
-        assert min(values) >= 100.0
-        assert max(values) < 130.0
+        assert min(values) >= 100.0, "Value must be greater than zero"
+        assert max(values) < 130.0, "Value must be initialized"
 
     def test_backward_compatibility_existing_code(self, config, repo):
         """Test backward compatibility - existing code without flush_batch() still works."""
@@ -348,11 +348,11 @@ class TestCoherenceMonitorBatching:
             )
 
         # Should have auto-flushed three times (at 5, 10, and 15), with 0 pending
-        assert len(monitor._pending_metrics) == 0
+        assert len(monitor._pending_metrics) == 0, "Collection must not be empty"
 
         # All 15 should be in database
         metrics_in_db = repo.find_by_feature("superposition", limit=50)
-        assert len(metrics_in_db) == 15
+        assert len(metrics_in_db) == 15, "Metrics_in_db must not be empty"
 
     def test_flush_batch_returns_zero_when_empty(self, config, repo):
         """Test flush_batch() returns 0 when buffer is empty."""
@@ -360,7 +360,7 @@ class TestCoherenceMonitorBatching:
 
         # Flush empty buffer
         count = monitor.flush_batch()
-        assert count == 0
+        assert count == 0, "Count must be greater than zero"
 
     def test_multiple_flushes(self, config, repo):
         """Test multiple flush operations work correctly."""
@@ -370,17 +370,17 @@ class TestCoherenceMonitorBatching:
         for i in range(10):
             monitor.record_metric("superposition", "coherence", 0.9)
         count1 = monitor.flush_batch()
-        assert count1 == 10
+        assert count1 == 10, "Count must be greater than zero"
 
         # Second batch
         for i in range(15):
             monitor.record_metric("superposition", "coherence", 0.85)
         count2 = monitor.flush_batch()
-        assert count2 == 15
+        assert count2 == 15, "Count must be greater than zero"
 
         # Total in database
         metrics_in_db = repo.find_by_feature("superposition", limit=50)
-        assert len(metrics_in_db) == 25
+        assert len(metrics_in_db) == 25, "Metrics_in_db must not be empty"
 
     def test_batching_with_alert_triggering(self, config, repo):
         """Test that alert checking works even before batch flush."""
@@ -393,8 +393,8 @@ class TestCoherenceMonitorBatching:
 
         # Alert should be triggered even though not flushed to DB
         alerts = monitor.get_active_alerts()
-        assert len(alerts) > 0
-        assert alerts[0].level == AlertLevel.CRITICAL
+        assert len(alerts) > 0, "Alerts must not be empty"
+        assert alerts[0].level == AlertLevel.CRITICAL, "level is not valid"
 
     def test_custom_batch_size(self, config, repo):
         """Test custom batch_size parameter works."""
@@ -404,12 +404,12 @@ class TestCoherenceMonitorBatching:
         # Record 2 metrics (below threshold)
         monitor.record_metric("superposition", "coherence", 0.9)
         monitor.record_metric("superposition", "coherence", 0.92)
-        assert len(monitor._pending_metrics) == 2
+        assert len(monitor._pending_metrics) == 2, "Collection must not be empty"
 
         # Record 3rd metric (at threshold, should auto-flush)
         monitor.record_metric("superposition", "coherence", 0.95)
-        assert len(monitor._pending_metrics) == 0
+        assert len(monitor._pending_metrics) == 0, "Collection must not be empty"
 
         # All 3 in database
         metrics_in_db = repo.find_by_feature("superposition")
-        assert len(metrics_in_db) == 3
+        assert len(metrics_in_db) == 3, "Metrics_in_db must not be empty"

@@ -21,8 +21,8 @@ class TestDataLoadingBasics:
             {"id": 3, "text": "sample3", "label": 0},
         ]
 
-        assert len(dataset) == 3
-        assert dataset[0]["id"] == 1
+        assert len(dataset) == 3, "Dataset must not be empty"
+        assert dataset[0]["id"] == 1, "Data must not be empty"
 
     def test_load_split_train_val(self):
         """Test train/validation split."""
@@ -32,8 +32,8 @@ class TestDataLoadingBasics:
         train = data[:split_idx]
         val = data[split_idx:]
 
-        assert len(train) == 80
-        assert len(val) == 20
+        assert len(train) == 80, "Train must not be empty"
+        assert len(val) == 20, "Val must not be empty"
 
     def test_load_multiple_epochs(self):
         """Test loading data for multiple epochs."""
@@ -44,7 +44,7 @@ class TestDataLoadingBasics:
         for epoch in range(num_epochs):
             all_data.extend(dataset)
 
-        assert len(all_data) == 15
+        assert len(all_data) == 15, "All_data must not be empty"
 
     def test_load_with_filtering(self):
         """Test loading with data filtering."""
@@ -58,7 +58,7 @@ class TestDataLoadingBasics:
 
         filtered = [d for d in raw_data if d["text"].strip()]
 
-        assert len(filtered) == 3
+        assert len(filtered) == 3, "Filtered must not be empty"
 
     def test_load_large_dataset_chunked(self):
         """Test loading large dataset in chunks."""
@@ -70,8 +70,8 @@ class TestDataLoadingBasics:
             chunk = list(range(i, min(i + chunk_size, total_samples)))
             chunks.append(chunk)
 
-        assert len(chunks) == 100
-        assert len(chunks[0]) == 100
+        assert len(chunks) == 100, "Chunks must not be empty"
+        assert len(chunks[0]) == 100, "Collection must not be empty"
 
 
 class TestDataPreprocessing:
@@ -85,16 +85,16 @@ class TestDataPreprocessing:
 
         normalized = [(x - min_val) / (max_val - min_val) for x in data]
 
-        assert normalized[0] == 0.0
-        assert normalized[-1] == 1.0
+        assert normalized[0] == 0.0, "n is not valid"
+        assert normalized[-1] == 1.0, "n is not valid"
 
     def test_tokenize_text_data(self):
         """Test text tokenization."""
         text = "hello world test sample"
         tokens = text.split()
 
-        assert len(tokens) == 4
-        assert tokens[0] == "hello"
+        assert len(tokens) == 4, "Tokens must not be empty"
+        assert tokens[0] == "hello", "Condition must be true"
 
     def test_encode_categorical_labels(self):
         """Test encoding categorical labels."""
@@ -103,7 +103,7 @@ class TestDataPreprocessing:
         label_to_id = {label: idx for idx, label in enumerate(unique_labels)}
 
         encoded = [label_to_id[label] for label in labels]
-        assert len(set(encoded)) == 3
+        assert len(set(encoded)) == 3, "Collection must not be empty"
 
     def test_truncate_sequences(self):
         """Test sequence truncation."""
@@ -116,7 +116,7 @@ class TestDataPreprocessing:
 
         truncated = [seq[:max_length] for seq in sequences]
 
-        assert all(len(seq) <= max_length for seq in truncated)
+        assert all(len(seq) <= max_length for seq in truncated), "Seq must not be empty"
 
     def test_pad_sequences(self):
         """Test sequence padding."""
@@ -129,7 +129,7 @@ class TestDataPreprocessing:
             padded_seq = seq + [pad_value] * (max_length - len(seq))
             padded.append(padded_seq)
 
-        assert all(len(seq) == max_length for seq in padded)
+        assert all(len(seq) == max_length for seq in padded), "Seq must not be empty"
 
     def test_augment_training_data(self):
         """Test data augmentation."""
@@ -141,7 +141,7 @@ class TestDataPreprocessing:
             augmented.append(text)
             augmented.append(text.upper())
 
-        assert len(augmented) == 6
+        assert len(augmented) == 6, "Augmented must not be empty"
 
 
 class TestBatchCreation:
@@ -157,9 +157,9 @@ class TestBatchCreation:
             batch = data[i : i + batch_size]
             batches.append(batch)
 
-        assert len(batches) == 4
-        assert len(batches[0]) == 32
-        assert len(batches[-1]) == 4
+        assert len(batches) == 4, "Batches must not be empty"
+        assert len(batches[0]) == 32, "Collection must not be empty"
+        assert len(batches[-1]) == 4, "Collection must not be empty"
 
     def test_shuffle_batches(self):
         """Test shuffling data before batching."""
@@ -171,8 +171,8 @@ class TestBatchCreation:
         random.shuffle(shuffled)
 
         # Should be same elements, different order
-        assert set(shuffled) == set(data)
-        assert shuffled != data  # Very likely different
+        assert set(shuffled) == set(data), "Data must not be empty"
+        assert shuffled != data, "Data must not be empty"
 
     def test_stratified_sampling(self):
         """Test stratified batch sampling."""
@@ -191,7 +191,7 @@ class TestBatchCreation:
         for label, items in by_label.items():
             batch.extend(items[:3])
 
-        assert len(batch) == 9
+        assert len(batch) == 9, "Batch must not be empty"
 
     def test_weighted_sampling(self):
         """Test weighted random sampling."""
@@ -202,8 +202,8 @@ class TestBatchCreation:
 
         samples = random.choices(items, weights=weights, k=100)
 
-        assert len(samples) == 100
-        assert all(s in items for s in samples)
+        assert len(samples) == 100, "Samples must not be empty"
+        assert all(s in items for s in samples), "Item must not be empty"
 
     def test_batch_iteration(self):
         """Test iterating over batches."""
@@ -215,7 +215,7 @@ class TestBatchCreation:
             batch = data[i : i + batch_size]
             processed += len(batch)
 
-        assert processed == 100
+        assert processed == 100, "processed is not valid"
 
     def test_drop_incomplete_batch(self):
         """Test dropping incomplete final batch."""
@@ -229,8 +229,8 @@ class TestBatchCreation:
             if not drop_last or len(batch) == batch_size:
                 batches.append(batch)
 
-        assert len(batches) == 3
-        assert all(len(b) == 32 for b in batches)
+        assert len(batches) == 3, "Batches must not be empty"
+        assert all(len(b) == 32 for b in batches), "B must not be empty"
 
 
 class TestDataValidation:
@@ -245,7 +245,7 @@ class TestDataValidation:
         ]
 
         valid = [d for d in data if d["text"] is not None]
-        assert len(valid) == 2
+        assert len(valid) == 2, "Valid must not be empty"
 
     def test_validate_label_range(self):
         """Test validation for label values."""
@@ -253,7 +253,7 @@ class TestDataValidation:
         valid_range = (0, 3)
 
         valid = [l for l in labels if valid_range[0] <= l <= valid_range[1]]
-        assert len(valid) == 5
+        assert len(valid) == 5, "Valid must not be empty"
 
     def test_validate_text_length(self):
         """Test validation for text length."""
@@ -268,7 +268,7 @@ class TestDataValidation:
         max_length = 500
 
         valid = [t for t in texts if min_length <= len(t) <= max_length]
-        assert len(valid) == 3
+        assert len(valid) == 3, "Valid must not be empty"
 
     def test_validate_numeric_ranges(self):
         """Test validation for numeric ranges."""
@@ -276,7 +276,7 @@ class TestDataValidation:
         valid_range = (0.0, 1.0)
 
         valid = [v for v in values if valid_range[0] <= v <= valid_range[1]]
-        assert len(valid) == 4
+        assert len(valid) == 4, "Valid must not be empty"
 
     def test_validate_duplicate_detection(self):
         """Test detecting duplicate samples."""
@@ -295,7 +295,7 @@ class TestDataValidation:
                 duplicates.append(sample)
             seen.add(sample)
 
-        assert len(duplicates) == 2
+        assert len(duplicates) == 2, "Duplicates must not be empty"
 
     def test_validate_class_distribution(self):
         """Test validating class balance."""
@@ -305,8 +305,8 @@ class TestDataValidation:
         class_counts = {0: 80, 1: 20}
         class_ratios = {k: v / total for k, v in class_counts.items()}
 
-        assert class_ratios[0] == 0.8
-        assert class_ratios[1] == 0.2
+        assert class_ratios[0] == 0.8, "Condition must be true"
+        assert class_ratios[1] == 0.2, "Condition must be true"
 
 
 class TestPipelineOrchestration:
@@ -341,7 +341,7 @@ class TestPipelineOrchestration:
                 # Skip invalid items
                 pass
 
-        assert len(processed) == 4
+        assert len(processed) == 4, "Processed must not be empty"
 
     def test_pipeline_state_preservation(self):
         """Test pipeline preserves state across stages."""
@@ -351,7 +351,7 @@ class TestPipelineOrchestration:
         state["processed"] = 100
         state["validated"] = 95
 
-        assert state["validated"] == 95
+        assert state["validated"] == 95, "Condition must be true"
 
     def test_pipeline_with_checkpoints(self):
         """Test pipeline with checkpoint saving."""
@@ -363,7 +363,7 @@ class TestPipelineOrchestration:
             if (i + 1) % checkpoint_interval == 0:
                 checkpoints.append({"step": i + 1, "data": item})
 
-        assert len(checkpoints) == 4
+        assert len(checkpoints) == 4, "Checkpoints must not be empty"
 
 
 class TestTransformationLogic:
@@ -385,8 +385,8 @@ class TestTransformationLogic:
             }
             features.append(feature)
 
-        assert features[0]["word_count"] == 2
-        assert features[1]["char_count"] == 11
+        assert features[0]["word_count"] == 2, "Count must be greater than zero"
+        assert features[1]["char_count"] == 11, "Count must be greater than zero"
 
     def test_transform_aggregation(self):
         """Test aggregation transformation."""
@@ -405,7 +405,7 @@ class TestTransformationLogic:
             aggregated[group].append(item["value"])
 
         assert aggregated["A"] == [10, 20]
-        assert sum(aggregated["B"]) == 40
+        assert sum(aggregated["B"]) == 40, "Condition must be true"
 
     def test_transform_denormalization(self):
         """Test denormalization transformation."""
@@ -415,9 +415,9 @@ class TestTransformationLogic:
 
         denormalized = [x * (max_val - min_val) + min_val for x in normalized]
 
-        assert denormalized[0] == 10
-        assert denormalized[1] == 30
-        assert denormalized[2] == 50
+        assert denormalized[0] == 10, "den is not valid"
+        assert denormalized[1] == 30, "den is not valid"
+        assert denormalized[2] == 50, "den is not valid"
 
 
 class TestErrorHandling:
@@ -438,7 +438,7 @@ class TestErrorHandling:
             if record and "text" in record:
                 valid_records.append(record)
 
-        assert len(valid_records) == 3
+        assert len(valid_records) == 3, "Valid_records must not be empty"
 
     def test_retry_on_load_failure(self):
         """Test retry logic for load failures."""
@@ -452,8 +452,8 @@ class TestErrorHandling:
             if attempts >= 2:
                 success = True
 
-        assert success is True
-        assert attempts == 2
+        assert success is True, "success is not valid"
+        assert attempts == 2, "attempts is not valid"
 
     def test_fallback_to_default_values(self):
         """Test fallback to defaults for missing data."""
@@ -469,7 +469,7 @@ class TestErrorHandling:
             item["score"] = item.get("score", 0.5)  # Default
             with_defaults.append(item)
 
-        assert with_defaults[1]["score"] == 0.5
+        assert with_defaults[1]["score"] == 0.5, "Condition must be true"
 
     def test_log_validation_errors(self):
         """Test logging validation errors."""
@@ -482,8 +482,8 @@ class TestErrorHandling:
             except (ValueError, TypeError):
                 errors.append({"index": idx, "item": item})
 
-        assert len(errors) == 1
-        assert errors[0]["index"] == 2
+        assert len(errors) == 1, "Errors must not be empty"
+        assert errors[0]["index"] == 2, "Error should be raised or set"
 
 
 class TestConcurrentProcessing:
@@ -502,9 +502,9 @@ class TestConcurrentProcessing:
             processed = [x * 2 for x in batch]
             results.extend(processed)
 
-        assert len(results) == 30
-        assert results[0] == 0
-        assert results[-1] == 58
+        assert len(results) == 30, "Results must not be empty"
+        assert results[0] == 0, "Result must not be empty"
+        assert results[-1] == 58, "Result must not be empty"
 
     def test_queue_based_pipeline(self):
         """Test queue-based pipeline simulation."""
@@ -516,8 +516,8 @@ class TestConcurrentProcessing:
             processed = item * 2
             output_queue.append(processed)
 
-        assert len(output_queue) == 100
-        assert output_queue[0] == 0
+        assert len(output_queue) == 100, "Output_queue must not be empty"
+        assert output_queue[0] == 0, "Condition must be true"
 
     def test_producer_consumer_pattern(self):
         """Test producer-consumer pattern."""
@@ -535,4 +535,4 @@ class TestConcurrentProcessing:
             buffer.pop(0)
             consumed += 1
 
-        assert produced == consumed == 10
+        assert produced == consumed == 10, "produced is not valid"

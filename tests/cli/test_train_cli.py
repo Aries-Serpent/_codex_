@@ -39,5 +39,5 @@ def test_train_cli_invokes_unified_training(monkeypatch, tmp_path: pathlib.Path)
     )
 
     assert result.exit_code == 0, result.output
-    assert captured["cfg"].model_name == "demo"
-    assert captured["cfg"].epochs == 1
+    assert captured["cfg"].model_name == "demo", "model_name is not valid"
+    assert captured["cfg"].epochs == 1, "epochs is not valid"

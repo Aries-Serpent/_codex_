@@ -53,7 +53,7 @@ class TestAccelerateInitGuard:
             result = is_gpu_available()
 
             assert isinstance(result, bool)
-            assert result is False
+            assert result is False, "Result must not be empty"
 
         # Test with GPU available
         with patch("torch.cuda.is_available") as mock_cuda:
@@ -62,7 +62,7 @@ class TestAccelerateInitGuard:
             result = is_gpu_available()
 
             assert isinstance(result, bool)
-            assert result is True
+            assert result is True, "Result must not be empty"
 
     def test_get_distributed_env_info(self):
         """Test distributed environment variable collection."""
@@ -70,10 +70,10 @@ class TestAccelerateInitGuard:
 
         # Should return dict with expected keys
         assert isinstance(env_info, dict)
-        assert "MASTER_ADDR" in env_info
-        assert "WORLD_SIZE" in env_info
-        assert "RANK" in env_info
-        assert "ACCELERATE_TEST" in env_info
+        assert "MASTER_ADDR" in env_info, "Condition must be true"
+        assert "WORLD_SIZE" in env_info, "Condition must be true"
+        assert "RANK" in env_info, "Condition must be true"
+        assert "ACCELERATE_TEST" in env_info, "Condition must be true"
 
     def test_safe_init_cpu_only_graceful_skip(self, monkeypatch):
         """Test that CPU-only environments gracefully skip initialization."""
@@ -87,9 +87,9 @@ class TestAccelerateInitGuard:
 
         # On CPU-only with fallback, should skip gracefully
         if not is_gpu_available():
-            assert result.skip_reason == "cpu_only"
-            assert not result.success
-            assert result.error is None
+            assert result.skip_reason == "cpu_only", "Result must not be empty"
+            assert not result.success, "Result must not be empty"
+            assert result.error is None, "Result must not be empty"
 
     def test_safe_init_no_accelerate_skip(self, monkeypatch):
         """Test graceful skip when accelerate is not installed."""
@@ -100,9 +100,9 @@ class TestAccelerateInitGuard:
 
         # If accelerate not available, should skip
         if not is_accelerate_available():
-            assert result.skip_reason == "no_accelerate"
-            assert not result.success
-            assert result.error is None
+            assert result.skip_reason == "no_accelerate", "Result must not be empty"
+            assert not result.success, "Result must not be empty"
+            assert result.error is None, "Result must not be empty"
 
     @pytest.mark.skipif(
         not is_accelerate_available(),
@@ -134,7 +134,7 @@ class TestAccelerateInitGuard:
 
         # Result should have either skip_reason or error or success
         if not result.success:
-            assert result.skip_reason is not None or result.error is not None
+            assert result.skip_reason is not None or result.error is not None, "skip_reason must be initialized"
 
     def test_safe_init_does_not_raise_by_default(self):
         """Test that safe_accelerate_init does not raise exceptions by default."""
@@ -155,15 +155,15 @@ class TestAccelerateInitGuard:
 
         # With GPU and accelerate, should either succeed or have clear error
         assert isinstance(result, AccelerateInitResult)
-        assert result.gpu_available
+        assert result.gpu_available, "Result must not be empty"
 
         if result.success:
-            assert result.backend is not None
-            assert result.world_size >= 1
-            assert result.rank >= 0
+            assert result.backend is not None, "backend must be initialized"
+            assert result.world_size >= 1, "world_size must be greater than zero"
+            assert result.rank >= 0, "rank must be greater than zero"
         else:
             # If not successful, should have error message
-            assert result.error is not None or result.skip_reason is not None
+            assert result.error is not None or result.skip_reason is not None, "error must be initialized"
 
     def test_distributed_env_info_structure(self, monkeypatch):
         """Test that distributed env info returns expected structure."""
@@ -174,9 +174,9 @@ class TestAccelerateInitGuard:
 
         env_info = get_distributed_env_info()
 
-        assert env_info["WORLD_SIZE"] == "4"
-        assert env_info["RANK"] == "2"
-        assert env_info["MASTER_ADDR"] == "localhost"
+        assert env_info["WORLD_SIZE"] == "4", "Condition must be true"
+        assert env_info["RANK"] == "2", "Condition must be true"
+        assert env_info["MASTER_ADDR"] == "localhost", "Condition must be true"
 
     def test_result_string_representation(self):
         """Test that AccelerateInitResult has readable string representation."""
@@ -184,15 +184,15 @@ class TestAccelerateInitGuard:
 
         result_str = str(result)
         assert isinstance(result_str, str)
-        assert "AccelerateInitResult" in result_str
+        assert "AccelerateInitResult" in result_str, "Result must not be empty"
 
         # Should contain status information
         if result.success:
-            assert "success=True" in result_str.lower() or "backend" in result_str.lower()
+            assert "success=True" in result_str.lower() or "backend" in result_str.lower(), "Result must not be empty"
         elif result.skip_reason:
-            assert "skip" in result_str.lower() or result.skip_reason in result_str
+            assert "skip" in result_str.lower() or result.skip_reason in result_str, "Result must not be empty"
         else:
-            assert "fail" in result_str.lower() or "error" in result_str.lower()
+            assert "fail" in result_str.lower() or "error" in result_str.lower(), "Result must not be empty"
 
 
 @pytest.mark.integration

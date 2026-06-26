@@ -14,19 +14,19 @@ class TestNodeType:
         """Test MODULE type."""
         from codex.ast.node import NodeType
 
-        assert NodeType.MODULE.value == "module"
+        assert NodeType.MODULE.value == "module", "Value must be initialized"
 
     def test_function_type(self):
         """Test FUNCTION type."""
         from codex.ast.node import NodeType
 
-        assert NodeType.FUNCTION.value == "function"
+        assert NodeType.FUNCTION.value == "function", "Value must be initialized"
 
     def test_class_type(self):
         """Test CLASS type."""
         from codex.ast.node import NodeType
 
-        assert NodeType.CLASS.value == "class"
+        assert NodeType.CLASS.value == "class", "Value must be initialized"
 
     def test_all_types_exist(self):
         """Test all expected types exist."""
@@ -65,11 +65,11 @@ class TestSourceLocation:
             column_end=20,
         )
 
-        assert loc.file_path == Path("/path/to/file.py")
-        assert loc.line_start == 10
-        assert loc.column_start == 5
-        assert loc.line_end == 15
-        assert loc.column_end == 20
+        assert loc.file_path == Path("/path/to/file.py"), "file_path is not valid"
+        assert loc.line_start == 10, "line_start is not valid"
+        assert loc.column_start == 5, "column_start is not valid"
+        assert loc.line_end == 15, "line_end is not valid"
+        assert loc.column_end == 20, "column_end is not valid"
 
     def test_str_representation(self):
         """Test __str__ method."""
@@ -85,9 +85,9 @@ class TestSourceLocation:
 
         result = str(loc)
 
-        assert "src/module.py" in result
-        assert "42" in result
-        assert "8" in result
+        assert "src/module.py" in result, "Result must not be empty"
+        assert "42" in result, "Result must not be empty"
+        assert "8" in result, "Result must not be empty"
 
 
 class TestStandardizedASTNode:
@@ -105,15 +105,15 @@ class TestStandardizedASTNode:
             node_id="node_1", type=NodeType.FUNCTION, name="my_function", source_location=loc
         )
 
-        assert node.node_id == "node_1"
-        assert node.type == NodeType.FUNCTION
-        assert node.name == "my_function"
-        assert node.children == []
-        assert node.parent is None
-        assert node.docstring is None
-        assert node.decorators == []
-        assert node.type_hints == {}
-        assert node.metadata == {}
+        assert node.node_id == "node_1", "node_id is not valid"
+        assert node.type == NodeType.FUNCTION, "type is not valid"
+        assert node.name == "my_function", "name is not valid"
+        assert node.children == [], "children is not valid"
+        assert node.parent is None, "parent is not valid"
+        assert node.docstring is None, "docstring is not valid"
+        assert node.decorators == [], "decorators is not valid"
+        assert node.type_hints == {}, "type_hints is not valid"
+        assert node.metadata == {}, "Data must not be empty"
 
     def test_with_docstring(self):
         """Test node with docstring."""
@@ -129,7 +129,7 @@ class TestStandardizedASTNode:
             docstring="This is a test class.",
         )
 
-        assert node.docstring == "This is a test class."
+        assert node.docstring == "This is a test class.", "docstring is not valid"
 
     def test_with_decorators(self):
         """Test node with decorators."""
@@ -145,8 +145,8 @@ class TestStandardizedASTNode:
             decorators=["@staticmethod", "@lru_cache"],
         )
 
-        assert len(node.decorators) == 2
-        assert "@staticmethod" in node.decorators
+        assert len(node.decorators) == 2, "Collection must not be empty"
+        assert "@staticmethod" in node.decorators, "Condition must be true"
 
     def test_add_child(self):
         """Test add_child method."""
@@ -164,9 +164,9 @@ class TestStandardizedASTNode:
 
         parent.add_child(child)
 
-        assert len(parent.children) == 1
-        assert parent.children[0] is child
-        assert child.parent is parent
+        assert len(parent.children) == 1, "Collection must not be empty"
+        assert parent.children[0] is child, "Condition must be true"
+        assert child.parent is parent, "parent is not valid"
 
     def test_add_multiple_children(self):
         """Test adding multiple children."""
@@ -181,9 +181,9 @@ class TestStandardizedASTNode:
         parent.add_child(child1)
         parent.add_child(child2)
 
-        assert len(parent.children) == 2
-        assert child1.parent is parent
-        assert child2.parent is parent
+        assert len(parent.children) == 2, "Collection must not be empty"
+        assert child1.parent is parent, "parent is not valid"
+        assert child2.parent is parent, "parent is not valid"
 
     def test_type_hints(self):
         """Test node with type hints."""
@@ -199,8 +199,8 @@ class TestStandardizedASTNode:
             type_hints={"x": "int", "y": "str", "return": "bool"},
         )
 
-        assert node.type_hints["x"] == "int"
-        assert node.type_hints["return"] == "bool"
+        assert node.type_hints["x"] == "int", "Condition must be true"
+        assert node.type_hints["return"] == "bool", "Condition must be true"
 
     def test_metadata(self):
         """Test node with metadata."""
@@ -216,5 +216,5 @@ class TestStandardizedASTNode:
             metadata={"complexity": 5, "is_public": True},
         )
 
-        assert node.metadata["complexity"] == 5
-        assert node.metadata["is_public"] is True
+        assert node.metadata["complexity"] == 5, "Data must not be empty"
+        assert node.metadata["is_public"] is True, "Data must not be empty"

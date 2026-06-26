@@ -29,7 +29,7 @@ class TestPhase2_AgentMemory:
         from agents.agent_memory import AgentMemory
 
         memory = AgentMemory()
-        assert memory is not None
+        assert memory is not None, "memory must be initialized"
 
     def test_store_memory_item(self):
         """Test storing a memory item persists it for retrieval."""
@@ -38,8 +38,8 @@ class TestPhase2_AgentMemory:
         memory = AgentMemory()
         memory.store_memory(key="test_store", value="test_value")
         entry = memory.retrieve_memory("test_store")
-        assert entry is not None
-        assert entry.content == "test_value"
+        assert entry is not None, "entry must be initialized"
+        assert entry.content == "test_value", "Value must be initialized"
 
     def test_retrieve_memory_item(self):
         """Test retrieving a memory item"""
@@ -52,7 +52,7 @@ class TestPhase2_AgentMemory:
             memory.store_memory(key=key, value=str(value))
             retrieved = memory.retrieve_memory(key)
             # May not match exactly due to serialization
-            assert retrieved is not None or retrieved is None
+            assert retrieved is not None or retrieved is None, "retrieved must be initialized"
 
     def test_memory_search(self):
         """Test searching memory"""
@@ -73,7 +73,7 @@ class TestPhase2_AgentMemory:
         memory.store_memory(key="c2", value="data2")
         memory.consolidate_memories()  # actual method name
         # After consolidation memory is still accessible
-        assert memory.retrieve_memory("c1") is not None
+        assert memory.retrieve_memory("c1") is not None, "mem must be initialized"
 
     def test_memory_types(self):
         """Test different memory types (episodic, semantic, procedural)"""
@@ -81,14 +81,14 @@ class TestPhase2_AgentMemory:
 
         memory = AgentMemory()
         # Test if memory supports different types
-        assert memory is not None
+        assert memory is not None, "memory must be initialized"
 
     def test_working_memory(self):
         """Test working memory capacity"""
         # Working memory typically holds 7±2 items
         capacity = 7
         items = list(range(capacity))
-        assert len(items) == capacity
+        assert len(items) == capacity, "Items must not be empty"
 
     def test_long_term_memory_encoding(self):
         """Test encoding into long-term memory"""
@@ -99,7 +99,7 @@ class TestPhase2_AgentMemory:
             data = {"content": "important information"}
             encoded = memory.encode(data)
             # Assert that encoded data is not None and is of a valid type (e.g., str or bytes)
-            assert encoded is not None
+            assert encoded is not None, "encoded must be initialized"
             assert isinstance(encoded, (str, bytes, dict))
 
     def test_memory_decay(self):
@@ -109,8 +109,8 @@ class TestPhase2_AgentMemory:
         decay_rate = 0.1
         time = 5.0
         strength = initial_strength * np.exp(-decay_rate * time)
-        assert strength < initial_strength
-        assert strength > 0
+        assert strength < initial_strength, "strength is not valid"
+        assert strength > 0, "strength must be greater than zero"
 
 
 class TestPhase2_MentalMapping:
@@ -124,7 +124,7 @@ class TestPhase2_MentalMapping:
         from agents.mental_mapping import MentalMap
 
         mental_map = MentalMap()
-        assert mental_map is not None
+        assert mental_map is not None, "mental_map must be initialized"
 
     def test_add_concept_to_map(self):
         """Test adding a concept node to the mental map."""
@@ -138,7 +138,7 @@ class TestPhase2_MentalMapping:
             node_id="concept_test", node_type=NodeType.CONCEPT, content="test concept", timestamp=ts
         )
         mental_map.add_node(node)
-        assert "concept_test" in mental_map.nodes
+        assert "concept_test" in mental_map.nodes, "Condition must be true"
 
     def test_create_relationship(self):
         """Test creating a relationship (edge) between two concepts."""
@@ -155,7 +155,7 @@ class TestPhase2_MentalMapping:
             MentalNode(node_id="c2", node_type=NodeType.CONCEPT, content="c2", timestamp=ts)
         )
         mental_map.connect_nodes(source_id="c1", target_id="c2")
-        assert len(mental_map.edges) == 1
+        assert len(mental_map.edges) == 1, "Collection must not be empty"
 
     def test_find_path_between_concepts(self):
         """Test finding path between concepts (Eq #39)"""
@@ -201,7 +201,7 @@ class TestPhase2_MentalMapping:
         mental_map = MentalMap()
         if hasattr(mental_map, "build_model"):
             model = mental_map.build_model({"domain": "test"})
-            assert model is not None
+            assert model is not None, "model must be initialized"
 
     def test_spatial_reasoning(self):
         """Test spatial reasoning capabilities"""
@@ -223,8 +223,8 @@ class TestPhase2_GraphAlgorithms:
         """Test graph data structure"""
         # Simple adjacency list
         graph = {"A": ["B", "C"], "B": ["D"], "C": ["D"], "D": []}
-        assert "A" in graph
-        assert len(graph["A"]) == 2
+        assert "A" in graph, "Condition must be true"
+        assert len(graph["A"]) == 2, "Collection must not be empty"
 
     def test_breadth_first_search(self):
         """Test BFS traversal"""
@@ -243,7 +243,7 @@ class TestPhase2_GraphAlgorithms:
                     visited.add(neighbor)
                     queue.append(neighbor)
 
-        assert "D" in visited
+        assert "D" in visited, "Condition must be true"
 
     def test_depth_first_search(self):
         """Test DFS traversal"""
@@ -257,7 +257,7 @@ class TestPhase2_GraphAlgorithms:
 
         visited = set()
         dfs("A", visited)
-        assert len(visited) == 4
+        assert len(visited) == 4, "Visited must not be empty"
 
     def test_dijkstra_shortest_path(self):
         """Test Dijkstra's algorithm"""
@@ -266,7 +266,7 @@ class TestPhase2_GraphAlgorithms:
 
         # Find shortest path from A to D
         # Expected: A -> B -> D (cost 3)
-        assert "A" in graph
+        assert "A" in graph, "Condition must be true"
 
     def test_topological_sort(self):
         """Test topological sorting of a DAG produces a valid order."""
@@ -288,22 +288,22 @@ class TestPhase2_GraphAlgorithms:
                 topo_dfs(n)
         order = list(reversed(stack))
         # A must come before B, C, D; B and C before D
-        assert order.index("A") < order.index("D")
-        assert order.index("B") < order.index("D")
-        assert order.index("C") < order.index("D")
+        assert order.index("A") < order.index("D"), "Condition must be true"
+        assert order.index("B") < order.index("D"), "Condition must be true"
+        assert order.index("C") < order.index("D"), "Condition must be true"
 
     def test_connected_components(self):
         """Test finding connected components"""
         # Two components: {A, B} and {C, D}
         components = 2
-        assert components == 2
+        assert components == 2, "components is not valid"
 
     def test_cycle_detection(self):
         """Test cycle detection in graph"""
         # Graph with cycle
         # Has cycle: A -> B -> C -> A
         has_cycle = True
-        assert has_cycle
+        assert has_cycle, "has_cycle is not valid"
 
 
 class TestPhase2_KnowledgeRepresentation:
@@ -319,8 +319,8 @@ class TestPhase2_KnowledgeRepresentation:
             "animal": {"is_a": "living_thing"},
             "living_thing": {},
         }
-        assert "dog" in semantic_net
-        assert semantic_net["dog"]["is_a"] == "animal"
+        assert "dog" in semantic_net, "Condition must be true"
+        assert semantic_net["dog"]["is_a"] == "animal", "Condition must be true"
 
     def test_frame_representation(self):
         """Test frame-based knowledge"""
@@ -330,8 +330,8 @@ class TestPhase2_KnowledgeRepresentation:
             "age": 30,
             "relationships": {"knows": ["Mary", "Bob"]},
         }
-        assert frame["type"] == "person"
-        assert "Mary" in frame["relationships"]["knows"]
+        assert frame["type"] == "person", "Condition must be true"
+        assert "Mary" in frame["relationships"]["knows"], "Condition must be true"
 
     def test_ontology_hierarchy(self):
         """Test ontological hierarchy"""
@@ -341,15 +341,15 @@ class TestPhase2_KnowledgeRepresentation:
                 "Abstract": {"Concept": {}, "Relation": {}},
             }
         }
-        assert "Physical" in ontology["Thing"]
+        assert "Physical" in ontology["Thing"], "Condition must be true"
 
     def test_rule_based_inference(self):
         """Test rule-based reasoning"""
         # IF X is a dog AND dogs are animals THEN X is an animal
         facts = {"Fido": "dog", "dog": "animal"}
         # Inference: Fido is an animal
-        assert facts["Fido"] == "dog"
-        assert facts["dog"] == "animal"
+        assert facts["Fido"] == "dog", "Condition must be true"
+        assert facts["dog"] == "animal", "Condition must be true"
 
     def test_property_inheritance(self):
         """Test property inheritance in hierarchy"""
@@ -359,7 +359,7 @@ class TestPhase2_KnowledgeRepresentation:
             "dog": {"parent": "mammal", "loyal": True},
         }
         # Dog inherits breathes from animal
-        assert hierarchy["animal"]["breathes"]
+        assert hierarchy["animal"]["breathes"], "Condition must be true"
 
 
 class TestPhase2_CognitiveArchitecture:
@@ -373,14 +373,14 @@ class TestPhase2_CognitiveArchitecture:
         # Attention weights
         features = [0.1, 0.8, 0.3, 0.5]
         attention = np.array(features) / np.sum(features)
-        assert abs(np.sum(attention) - 1.0) < 1e-10
+        assert abs(np.sum(attention) - 1.0) < 1e-10, "Condition must be true"
 
     def test_perception_processing(self):
         """Test perceptual processing pipeline"""
         # Input -> Feature extraction -> Recognition
         input_signal = [1.0, 2.0, 3.0]
         features = np.array(input_signal) / np.max(input_signal)
-        assert np.max(features) == 1.0
+        assert np.max(features) == 1.0, "Condition must be true"
 
     def test_decision_making_process(self):
         """Test decision making"""
@@ -390,7 +390,7 @@ class TestPhase2_CognitiveArchitecture:
             {"action": "C", "utility": 0.9},
         ]
         best = max(options, key=lambda x: x["utility"])
-        assert best["action"] == "C"
+        assert best["action"] == "C", "Condition must be true"
 
     def test_learning_update(self):
         """Test learning mechanism"""
@@ -401,14 +401,14 @@ class TestPhase2_CognitiveArchitecture:
         alpha = 0.1
         gamma = 0.9
         Q_new = Q + alpha * (r + gamma * Q_next - Q)
-        assert Q_new > Q
+        assert Q_new > Q, "Q_new must be greater than zero"
 
     def test_metacognition(self):
         """Test metacognitive monitoring"""
         # Confidence in knowledge
         confidence = 0.75
         threshold = 0.7
-        assert confidence > threshold  # High confidence
+        assert confidence > threshold, "confidence must be greater than zero"
 
 
 class TestPhase2_ConceptFormation:
@@ -422,7 +422,7 @@ class TestPhase2_ConceptFormation:
         # Average of exemplars
         exemplars = [[1, 2], [2, 3], [1.5, 2.5]]
         prototype = np.mean(exemplars, axis=0)
-        assert len(prototype) == 2
+        assert len(prototype) == 2, "Prototype must not be empty"
 
     def test_feature_abstraction(self):
         """Test feature abstraction"""
@@ -433,13 +433,13 @@ class TestPhase2_ConceptFormation:
             {"size": "medium", "color": "red"},
         ]
         common = "red"  # All are red
-        assert all(inst["color"] == common for inst in instances)
+        assert all(inst["color"] == common for inst in instances), "Condition must be true"
 
     def test_analogical_reasoning(self):
         """Test analogy: A:B :: C:D"""
         # Hot:Cold :: Wet:Dry
         relation = {"opposite": True}
-        assert relation["opposite"]
+        assert relation["opposite"], "Condition must be true"
 
     def test_schema_activation(self):
         """Test schema activation"""
@@ -449,7 +449,7 @@ class TestPhase2_ConceptFormation:
             "roles": ["customer", "waiter", "chef"],
             "props": ["menu", "table", "food"],
         }
-        assert "waiter" in schema["roles"]
+        assert "waiter" in schema["roles"], "Condition must be true"
 
     def test_category_learning(self):
         """Test category learning"""
@@ -480,7 +480,7 @@ class TestPhase2_ReasoningPatterns:
         # Conclusion: Sun will rise tomorrow
         observations = [True, True, True, True, True]
         confidence = sum(observations) / len(observations)
-        assert confidence == 1.0
+        assert confidence == 1.0, "confidence is not valid"
 
     def test_abductive_reasoning(self):
         """Test abductive reasoning (inference to best explanation)"""
@@ -490,7 +490,7 @@ class TestPhase2_ReasoningPatterns:
             {"theory": "sprinkler was on", "likelihood": 0.6},
         ]
         best = max(explanations, key=lambda x: x["likelihood"])
-        assert best["theory"] == "it rained"
+        assert best["theory"] == "it rained", "Condition must be true"
 
     def test_causal_reasoning(self):
         """Test causal reasoning"""
@@ -498,14 +498,14 @@ class TestPhase2_ReasoningPatterns:
         cause = "rain"
         effect = "wet ground"
         causal_link = {"cause": cause, "effect": effect, "strength": 0.9}
-        assert causal_link["strength"] > 0.5
+        assert causal_link["strength"] > 0.5, "Value must be greater than zero"
 
     def test_counterfactual_reasoning(self):
         """Test counterfactual reasoning"""
         # If X had not happened, Y would not have happened
         actual = {"X": True, "Y": True}
         counterfactual = {"X": False, "Y": False}
-        assert actual != counterfactual
+        assert actual != counterfactual, "Count must be greater than zero"
 
 
 class TestPhase2_ProblemSolving:
@@ -519,7 +519,7 @@ class TestPhase2_ProblemSolving:
         current_state = {"position": 0}
         goal_state = {"position": 10}
         diff = goal_state["position"] - current_state["position"]
-        assert diff > 0
+        assert diff > 0, "diff must be greater than zero"
 
     def test_hill_climbing(self):
         """Test hill climbing search"""
@@ -535,7 +535,7 @@ class TestPhase2_ProblemSolving:
             elif right > current:
                 x = x + step
         # Should move toward x=0
-        assert abs(x) < 5.0
+        assert abs(x) < 5.0, "Condition must be true"
 
     def test_constraint_satisfaction(self):
         """Test constraint satisfaction"""
@@ -543,8 +543,8 @@ class TestPhase2_ProblemSolving:
         # Constraints: X + Y = 10, X > Y
         X = 6
         Y = 4
-        assert X + Y == 10
-        assert X > Y
+        assert X + Y == 10, "Y is not valid"
+        assert X > Y, "X must be greater than zero"
 
     def test_backtracking_search(self):
         """Test backtracking"""
@@ -554,7 +554,7 @@ class TestPhase2_ProblemSolving:
         # Assign A=1, B=2 is valid
         assignment["A"] = 1
         assignment["B"] = 2
-        assert assignment["A"] in domains["A"]
+        assert assignment["A"] in domains["A"], "Condition must be true"
 
     def test_heuristic_search(self):
         """Test heuristic-guided search"""
@@ -562,7 +562,7 @@ class TestPhase2_ProblemSolving:
         g = 5  # Cost so far
         h = 3  # Heuristic estimate to goal
         f = g + h
-        assert f == 8
+        assert f == 8, "f is not valid"
 
 
 if __name__ == "__main__":

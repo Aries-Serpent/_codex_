@@ -97,7 +97,7 @@ def test_train_mixed_precision_uses_autocast(monkeypatch):
     monkeypatch.setattr(trainer_module, "autocast", fake_autocast)
     trainer = _build_trainer(TrainerConfig(epochs=1, mixed_precision=True))
     trainer.train()
-    assert calls and all(calls)
+    assert calls and all(calls), "calls is not valid"
 
 
 def test_checkpoint_pointer_written_with_mocked_torch_save(monkeypatch, tmp_path: Path):
@@ -114,6 +114,6 @@ def test_checkpoint_pointer_written_with_mocked_torch_save(monkeypatch, tmp_path
     trainer = _build_trainer(cfg)
     trainer.train()
     latest = tmp_path / "ckpts" / "latest.json"
-    assert latest.exists()
+    assert latest.exists(), "Condition must be true"
     payload = json.loads(latest.read_text(encoding="utf-8"))
-    assert payload["path"].endswith(".pt")
+    assert payload["path"].endswith(".pt"), "Condition must be true"

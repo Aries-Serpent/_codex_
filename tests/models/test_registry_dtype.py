@@ -42,13 +42,13 @@ def _build_dummy(_: dict[str, Any]) -> DummyModel:
 def test_dtype_aliases_apply() -> None:
     registry.register_model("dummy_test", override=True)(_build_dummy)
     model = registry.get_model("dummy_test", {"dtype": "fp16"})
-    assert model.dtype_history[-1] == torch.float16
+    assert model.dtype_history[-1] == torch.float16, "Condition must be true"
 
     model = registry.get_model("dummy_test", {"dtype": "torch.bfloat16"})
-    assert model.dtype_history[-1] == torch.bfloat16
+    assert model.dtype_history[-1] == torch.bfloat16, "Condition must be true"
 
     model = registry.get_model("dummy_test", {"dtype": torch.float32})
-    assert model.dtype_history[-1] == torch.float32
+    assert model.dtype_history[-1] == torch.float32, "Condition must be true"
 
 
 def test_optional_adapter_loader_invoked(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -65,4 +65,4 @@ def test_optional_adapter_loader_invoked(monkeypatch: pytest.MonkeyPatch) -> Non
     assert getattr(model, "marked", False) is True
     # Verify core lora fields are passed correctly; extra fields (e.g. device, dtype) are allowed
     for key, val in cfg["lora"].items():
-        assert called["cfg"][key] == val
+        assert called["cfg"][key] == val, "Condition must be true"

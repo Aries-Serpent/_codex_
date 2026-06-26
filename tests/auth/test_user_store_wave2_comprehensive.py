@@ -57,9 +57,9 @@ class TestUserCreation:
             test_user_data["email"],
             test_user_data["password"],
         )
-        assert user.username == test_user_data["username"]
-        assert user.email == test_user_data["email"]
-        assert user.user_id is not None
+        assert user.username == test_user_data["username"], "Data must not be empty"
+        assert user.email == test_user_data["email"], "Data must not be empty"
+        assert user.user_id is not None, "user_id must be initialized"
 
     def test_create_user_with_roles(self, user_store):
         """Test creating user with roles."""
@@ -69,8 +69,8 @@ class TestUserCreation:
             "AdminPass123!",
             roles=["admin", "moderator"],
         )
-        assert "admin" in user.roles
-        assert "moderator" in user.roles
+        assert "admin" in user.roles, "Condition must be true"
+        assert "moderator" in user.roles, "Condition must be true"
 
     def test_create_user_default_roles(self, user_store):
         """Test that created user has default roles."""
@@ -79,13 +79,13 @@ class TestUserCreation:
             "alice@example.com",
             "Pass123!",
         )
-        assert "user" in user.roles
+        assert "user" in user.roles, "Condition must be true"
 
     def test_create_user_generates_unique_id(self, user_store):
         """Test that each user gets unique ID."""
         user1 = user_store.create_user("user1", "user1@example.com", "Pass123!")
         user2 = user_store.create_user("user2", "user2@example.com", "Pass123!")
-        assert user1.user_id != user2.user_id
+        assert user1.user_id != user2.user_id, "user_id is not valid"
 
     def test_create_user_with_metadata(self, user_store):
         """Test creating user with metadata."""
@@ -95,7 +95,7 @@ class TestUserCreation:
             "Pass123!",
             metadata={"department": "engineering"},
         )
-        assert user.metadata.get("department") == "engineering"
+        assert user.metadata.get("department") == "engineering", "Data must not be empty"
 
     def test_create_duplicate_username_raises_error(self, user_store):
         """Test that duplicate username raises error."""
@@ -111,7 +111,7 @@ class TestUserCreation:
         user = user_store.create_user("charlie", "charlie@example.com", password)
 
         # Password hash should not be the plaintext
-        assert user.password_hash != password
+        assert user.password_hash != password, "password_hash is not valid"
 
 
 # ============================================================================
@@ -127,30 +127,30 @@ class TestUserRetrieval:
         created = user_store.create_user("dave", "dave@example.com", "Pass123!")
         retrieved = user_store.get_user_by_username("dave")
 
-        assert retrieved is not None
-        assert retrieved.username == "dave"
-        assert retrieved.user_id == created.user_id
+        assert retrieved is not None, "retrieved must be initialized"
+        assert retrieved.username == "dave", "username is not valid"
+        assert retrieved.user_id == created.user_id, "user_id is not valid"
 
     def test_get_user_by_email(self, user_store):
         """Test retrieving user by email."""
         user_store.create_user("eve", "eve@example.com", "Pass123!")
         retrieved = user_store.get_user_by_email("eve@example.com")
 
-        assert retrieved is not None
-        assert retrieved.email == "eve@example.com"
+        assert retrieved is not None, "retrieved must be initialized"
+        assert retrieved.email == "eve@example.com", "email is not valid"
 
     def test_get_user_by_id(self, user_store):
         """Test retrieving user by ID."""
         created = user_store.create_user("frank", "frank@example.com", "Pass123!")
         retrieved = user_store.get_user_by_id(created.user_id)
 
-        assert retrieved is not None
-        assert retrieved.user_id == created.user_id
+        assert retrieved is not None, "retrieved must be initialized"
+        assert retrieved.user_id == created.user_id, "user_id is not valid"
 
     def test_get_nonexistent_user_returns_none(self, user_store):
         """Test that nonexistent user returns None."""
-        assert user_store.get_user_by_username("nonexistent") is None
-        assert user_store.get_user_by_email("nonexistent@example.com") is None
+        assert user_store.get_user_by_username("nonexistent") is None, "user_st is not valid"
+        assert user_store.get_user_by_email("nonexistent@example.com") is None, "user_st is not valid"
 
     def test_get_all_users(self, user_store):
         """Test retrieving all users."""
@@ -158,7 +158,7 @@ class TestUserRetrieval:
         user_store.create_user("user2", "user2@example.com", "Pass123!")
 
         users = user_store.get_all_users()
-        assert len(users) >= 2
+        assert len(users) >= 2, "Users must not be empty"
 
     def test_get_users_by_role(self, user_store):
         """Test retrieving users by role."""
@@ -166,7 +166,7 @@ class TestUserRetrieval:
         user_store.create_user("user1", "user1@example.com", "Pass123!", roles=["user"])
 
         admins = user_store.get_users_by_role("admin")
-        assert any(u.username == "admin1" for u in admins)
+        assert any(u.username == "admin1" for u in admins), "username is not valid"
 
 
 # ============================================================================
@@ -184,7 +184,7 @@ class TestPasswordVerification:
 
         # Verify with user_store method
         verified_user = user_store.get_user_by_username("alice")
-        assert verified_user is not None
+        assert verified_user is not None, "verified_user must be initialized"
 
     def test_verify_incorrect_password(self, user_store):
         """Test that incorrect password fails verification."""
@@ -225,7 +225,7 @@ class TestUserUpdates:
         user.email = "eve_new@example.com"
         updated = user_store.update_user(user)
 
-        assert updated.email == "eve_new@example.com"
+        assert updated.email == "eve_new@example.com", "email is not valid"
 
     def test_update_user_roles(self, user_store):
         """Test updating user roles."""
@@ -233,7 +233,7 @@ class TestUserUpdates:
         user.roles = ["admin", "moderator"]
         updated = user_store.update_user(user)
 
-        assert "admin" in updated.roles
+        assert "admin" in updated.roles, "Condition must be true"
 
     def test_update_user_metadata(self, user_store):
         """Test updating user metadata."""
@@ -241,7 +241,7 @@ class TestUserUpdates:
         user.metadata = {"department": "sales"}
         updated = user_store.update_user(user)
 
-        assert updated.metadata.get("department") == "sales"
+        assert updated.metadata.get("department") == "sales", "Data must not be empty"
 
     def test_update_nonexistent_user_raises_error(self, user_store):
         """Test updating nonexistent user raises error."""
@@ -269,7 +269,7 @@ class TestUserDeletion:
         user = user_store.create_user("henry", "henry@example.com", "Pass123!")
         user_store.delete_user(user.user_id)
 
-        assert user_store.get_user_by_id(user.user_id) is None
+        assert user_store.get_user_by_id(user.user_id) is None, "user_st is not valid"
 
     def test_delete_nonexistent_user_raises_error(self, user_store):
         """Test deleting nonexistent user raises error."""
@@ -281,7 +281,7 @@ class TestUserDeletion:
         user_store.create_user("iris", "iris@example.com", "Pass123!")
         user_store.delete_user_by_username("iris")
 
-        assert user_store.get_user_by_username("iris") is None
+        assert user_store.get_user_by_username("iris") is None, "user_st is not valid"
 
 
 # ============================================================================
@@ -298,8 +298,8 @@ class TestPasswordHashing:
         password = "TestPassword123!"
         hash1 = hasher.hash_password(password)
 
-        assert hash1 != password
-        assert len(hash1) > len(password)
+        assert hash1 != password, "hash1 is not valid"
+        assert len(hash1) > len(password), "Hash1 must not be empty"
 
     def test_same_password_different_salts(self):
         """Test that same password with different salts produces different hashes."""
@@ -309,7 +309,7 @@ class TestPasswordHashing:
         hash2 = hasher.hash_password(password)
 
         # Hashes should be different due to random salt
-        assert hash1 != hash2
+        assert hash1 != hash2, "hash1 is not valid"
 
     def test_verify_password_success(self):
         """Test password verification with correct password."""
@@ -367,7 +367,7 @@ class TestThreadSafety:
         for t in threads:
             t.join()
 
-        assert len(users_created) == 5
+        assert len(users_created) == 5, "Users_created must not be empty"
 
     def test_concurrent_user_retrieval(self, user_store):
         """Test concurrent user retrieval."""
@@ -392,8 +392,8 @@ class TestThreadSafety:
         for t in threads:
             t.join()
 
-        assert len(results) == 5
-        assert all(u is not None for u in results)
+        assert len(results) == 5, "Results must not be empty"
+        assert all(u is not None for u in results), "u must be initialized"
 
 
 # ============================================================================
@@ -407,24 +407,24 @@ class TestEdgeCases:
     def test_username_with_special_characters(self, user_store):
         """Test username with special characters."""
         user = user_store.create_user("user@domain.com", "user@example.com", "Pass123!")
-        assert user.username == "user@domain.com"
+        assert user.username == "user@domain.com", "username is not valid"
 
     def test_very_long_username(self, user_store):
         """Test very long username."""
         long_username = "a" * 255
         user = user_store.create_user(long_username, "test@example.com", "Pass123!")
-        assert len(user.username) == 255
+        assert len(user.username) == 255, "Collection must not be empty"
 
     def test_email_with_plus_sign(self, user_store):
         """Test email with plus sign."""
         user = user_store.create_user("john", "john+tag@example.com", "Pass123!")
-        assert user.email == "john+tag@example.com"
+        assert user.email == "john+tag@example.com", "email is not valid"
 
     def test_very_strong_password(self, user_store):
         """Test very long/complex password."""
         long_password = "X" * 1000 + "1!@#$%^&*()"
         user = user_store.create_user("jane", "jane@example.com", long_password)
-        assert user.user_id is not None
+        assert user.user_id is not None, "user_id must be initialized"
 
     def test_empty_roles_list(self, user_store):
         """Test creating user with empty roles list."""
@@ -435,7 +435,7 @@ class TestEdgeCases:
             roles=[],
         )
         # Should have default role
-        assert len(user.roles) > 0
+        assert len(user.roles) > 0, "Collection must not be empty"
 
     def test_user_with_many_roles(self, user_store):
         """Test user with many roles."""
@@ -446,7 +446,7 @@ class TestEdgeCases:
             "Pass123!",
             roles=many_roles,
         )
-        assert len(user.roles) >= 100
+        assert len(user.roles) >= 100, "Collection must not be empty"
 
 
 # ============================================================================
@@ -461,20 +461,20 @@ class TestUserStoreIntegration:
         """Test complete user lifecycle."""
         # Create user
         user = user_store.create_user("mia", "mia@example.com", "Pass123!")
-        assert user is not None
+        assert user is not None, "user must be initialized"
 
         # Retrieve user
         retrieved = user_store.get_user_by_username("mia")
-        assert retrieved is not None
+        assert retrieved is not None, "retrieved must be initialized"
 
         # Update user
         retrieved.email = "mia_new@example.com"
         updated = user_store.update_user(retrieved)
-        assert updated.email == "mia_new@example.com"
+        assert updated.email == "mia_new@example.com", "email is not valid"
 
         # Delete user
         user_store.delete_user(user.user_id)
-        assert user_store.get_user_by_id(user.user_id) is None
+        assert user_store.get_user_by_id(user.user_id) is None, "user_st is not valid"
 
     def test_multiple_users_management(self, user_store):
         """Test managing multiple users."""
@@ -489,7 +489,7 @@ class TestUserStoreIntegration:
 
         # Verify all created
         all_users = user_store.get_all_users()
-        assert len(all_users) >= 10
+        assert len(all_users) >= 10, "All_users must not be empty"
 
         # Update some
         for user in users[:5]:
@@ -509,7 +509,7 @@ class TestUserStoreIntegration:
 
         # Search operations
         all_users = user_store.get_all_users()
-        assert len(all_users) >= 3
+        assert len(all_users) >= 3, "All_users must not be empty"
 
         admins = user_store.get_users_by_role("admin")
-        assert any(u.username == "admin1" for u in admins)
+        assert any(u.username == "admin1" for u in admins), "username is not valid"

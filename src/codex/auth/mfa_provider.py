@@ -281,7 +281,7 @@ class MFAProvider:
             True if code is valid, False otherwise
         """
         effective_user_id = user_id
-        
+
         # Check if user is locked out
         if self._is_locked_out(effective_user_id):
             return False
@@ -489,7 +489,9 @@ class MFAProvider:
         """Backward-compatible alias for :meth:`is_mfa_enabled`."""
         return self.is_mfa_enabled(user_id)
 
-    def enroll_user(self, user_id: str, issuer: str = "Codex", algorithm: str = "SHA256") -> MFASecret:
+    def enroll_user(
+        self, user_id: str, issuer: str = "Codex", algorithm: str = "SHA256"
+    ) -> MFASecret:
         """Backward-compatible alias for :meth:`generate_totp_secret`."""
         return self.generate_totp_secret(user_id=user_id, issuer=issuer, algorithm=algorithm)
 

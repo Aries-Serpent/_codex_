@@ -18,4 +18,4 @@ def test_codex_eval_dry_run_succeeds() -> None:
         "sys.exit(E.eval_main())"
     )
     proc = subprocess.run([sys.executable, "-c", code])
-    assert proc.returncode == 0
+    assert proc.returncode == 0, "returncode is not valid"

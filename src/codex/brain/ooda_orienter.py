@@ -10,12 +10,11 @@ This module enriches observable state with:
 Output: Rich context document for decision-maker
 """
 
-import json
 import logging
-from dataclasses import dataclass, field, asdict
+from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Tuple
 from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -332,29 +331,33 @@ class OpportunityDetector:
             if hasattr(observable_state, "repository"):
                 repo = observable_state.repository
                 if repo.test_failures > 0:
-                    opportunities.append(Opportunity(
-                        opportunity_id="opp_001",
-                        description="Fix failing tests",
-                        roi_estimate=0.9,
-                        difficulty="medium",
-                        time_to_value_hours=2,
-                        required_agents=["test_pattern_guardian", "ci_auto_healer"],
-                        priority=1,
-                    ))
+                    opportunities.append(
+                        Opportunity(
+                            opportunity_id="opp_001",
+                            description="Fix failing tests",
+                            roi_estimate=0.9,
+                            difficulty="medium",
+                            time_to_value_hours=2,
+                            required_agents=["test_pattern_guardian", "ci_auto_healer"],
+                            priority=1,
+                        )
+                    )
 
             # High-impact, medium-effort improvements
             if hasattr(observable_state, "agents"):
                 agents = observable_state.agents
                 if agents.avg_latency_ms > 100:
-                    opportunities.append(Opportunity(
-                        opportunity_id="opp_002",
-                        description="Optimize agent latency",
-                        roi_estimate=0.7,
-                        difficulty="hard",
-                        time_to_value_hours=8,
-                        required_agents=["performance_monitor_agent"],
-                        priority=2,
-                    ))
+                    opportunities.append(
+                        Opportunity(
+                            opportunity_id="opp_002",
+                            description="Optimize agent latency",
+                            roi_estimate=0.7,
+                            difficulty="hard",
+                            time_to_value_hours=8,
+                            required_agents=["performance_monitor_agent"],
+                            priority=2,
+                        )
+                    )
 
             return sorted(opportunities, key=lambda o: o.roi_estimate, reverse=True)
         except Exception as e:
@@ -419,9 +422,17 @@ class OODAOrienter:
             agent_confidence = min(0.2, len(agent_candidates) * 0.05)
             risk_adjustment = 0.0 if risk_assessment.overall_risk_level == "low" else -0.1
 
-            confidence_baseline = min(1.0, max(0.0, 
-                0.2 + pattern_confidence + precedent_confidence + agent_confidence + risk_adjustment
-            ))
+            confidence_baseline = min(
+                1.0,
+                max(
+                    0.0,
+                    0.2
+                    + pattern_confidence
+                    + precedent_confidence
+                    + agent_confidence
+                    + risk_adjustment,
+                ),
+            )
 
             return Orientation(
                 timestamp=datetime.now(),

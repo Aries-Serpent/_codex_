@@ -27,10 +27,10 @@ class TestSafeLineLoader:
         # Load lines
         lines = list(safe_line_loader(test_file))
 
-        assert len(lines) == 3
-        assert lines[0] == "line1"
-        assert lines[1] == "line2"
-        assert lines[2] == "line3"
+        assert len(lines) == 3, "Lines must not be empty"
+        assert lines[0] == "line1", "Condition must be true"
+        assert lines[1] == "line2", "Condition must be true"
+        assert lines[2] == "line3", "Condition must be true"
 
     def test_safe_line_loader_with_string_path(self, tmp_path):
         """Test reading lines with string path."""
@@ -39,7 +39,7 @@ class TestSafeLineLoader:
 
         lines = list(safe_line_loader(str(test_file)))
 
-        assert len(lines) == 2
+        assert len(lines) == 2, "Lines must not be empty"
 
     def test_safe_line_loader_with_pathlib_path(self, tmp_path):
         """Test reading lines with pathlib.Path."""
@@ -48,7 +48,7 @@ class TestSafeLineLoader:
 
         lines = list(safe_line_loader(test_file))
 
-        assert len(lines) == 2
+        assert len(lines) == 2, "Lines must not be empty"
 
     def test_safe_line_loader_empty_file(self, tmp_path):
         """Test reading empty file."""
@@ -57,7 +57,7 @@ class TestSafeLineLoader:
 
         lines = list(safe_line_loader(test_file))
 
-        assert len(lines) == 0
+        assert len(lines) == 0, "Lines must not be empty"
 
     def test_safe_line_loader_file_not_found(self, tmp_path):
         """Test error when file does not exist."""
@@ -73,9 +73,9 @@ class TestSafeLineLoader:
 
         lines = list(safe_line_loader(test_file))
 
-        assert len(lines) == 2
-        assert "@#$%" in lines[0]
-        assert "<html>" in lines[1]
+        assert len(lines) == 2, "Lines must not be empty"
+        assert "@, "Condition must be true"
+        assert "<html>" in lines[1], "Condition must be true"
 
     def test_safe_line_loader_with_unicode(self, tmp_path):
         """Test reading lines with unicode characters."""
@@ -84,10 +84,10 @@ class TestSafeLineLoader:
 
         lines = list(safe_line_loader(test_file))
 
-        assert len(lines) == 3
-        assert "café" in lines[0]
-        assert "日本語" in lines[1]
-        assert "😀" in lines[2]
+        assert len(lines) == 3, "Lines must not be empty"
+        assert "café" in lines[0], "Condition must be true"
+        assert "日本語" in lines[1], "Condition must be true"
+        assert "😀" in lines[2], "Condition must be true"
 
     def test_safe_line_loader_iterator(self, tmp_path):
         """Test that safe_line_loader returns an iterator."""
@@ -98,13 +98,13 @@ class TestSafeLineLoader:
 
         # Test iterator protocol
         line1 = next(loader)
-        assert line1 == "line1"
+        assert line1 == "line1", "line1 is not valid"
 
         line2 = next(loader)
-        assert line2 == "line2"
+        assert line2 == "line2", "line2 is not valid"
 
         line3 = next(loader)
-        assert line3 == "line3"
+        assert line3 == "line3", "line3 is not valid"
 
         with pytest.raises(StopIteration):
             next(loader)
@@ -120,11 +120,11 @@ class TestSafeLineLoader:
 
         lines = list(safe_line_loader(test_file))
 
-        assert len(lines) == 3
+        assert len(lines) == 3, "Lines must not be empty"
         # Lines might contain newlines depending on validation function
-        assert "line1" in lines[0]
-        assert "line2" in lines[1]
-        assert "line3" in lines[2]
+        assert "line1" in lines[0], "Condition must be true"
+        assert "line2" in lines[1], "Condition must be true"
+        assert "line3" in lines[2], "Condition must be true"
 
     def test_safe_line_loader_with_long_lines(self, tmp_path):
         """Test reading file with very long lines."""
@@ -134,8 +134,8 @@ class TestSafeLineLoader:
 
         lines = list(safe_line_loader(test_file))
 
-        assert len(lines) == 1
-        assert len(lines[0]) >= 10000
+        assert len(lines) == 1, "Lines must not be empty"
+        assert len(lines[0]) >= 10000, "Collection must not be empty"
 
 
 class TestValidateRecords:
@@ -150,9 +150,9 @@ class TestValidateRecords:
 
         validated = validate_records(records)
 
-        assert len(validated) == 2
-        assert validated[0]["name"] == "Alice"
-        assert validated[0]["age"] == 30
+        assert len(validated) == 2, "Validated must not be empty"
+        assert validated[0]["name"] == "Alice", "Condition must be true"
+        assert validated[0]["age"] == 30, "Condition must be true"
 
     def test_validate_records_empty_list(self):
         """Test validating empty list."""
@@ -160,7 +160,7 @@ class TestValidateRecords:
 
         validated = validate_records(records)
 
-        assert len(validated) == 0
+        assert len(validated) == 0, "Validated must not be empty"
 
     def test_validate_records_with_special_characters(self):
         """Test validating records with special characters."""
@@ -171,7 +171,7 @@ class TestValidateRecords:
 
         validated = validate_records(records)
 
-        assert len(validated) == 2
+        assert len(validated) == 2, "Validated must not be empty"
 
     def test_validate_records_with_numeric_values(self):
         """Test validating records with numeric values."""
@@ -182,9 +182,9 @@ class TestValidateRecords:
 
         validated = validate_records(records)
 
-        assert len(validated) == 2
-        assert validated[0]["id"] == 123
-        assert validated[0]["score"] == 45.67
+        assert len(validated) == 2, "Validated must not be empty"
+        assert validated[0]["id"] == 123, "Condition must be true"
+        assert validated[0]["score"] == 45.67, "Condition must be true"
 
     def test_validate_records_with_boolean_values(self):
         """Test validating records with boolean values."""
@@ -195,9 +195,9 @@ class TestValidateRecords:
 
         validated = validate_records(records)
 
-        assert len(validated) == 2
-        assert validated[0]["active"] is True
-        assert validated[0]["verified"] is False
+        assert len(validated) == 2, "Validated must not be empty"
+        assert validated[0]["active"] is True, "Condition must be true"
+        assert validated[0]["verified"] is False, "Condition must be true"
 
     def test_validate_records_with_null_values(self):
         """Test validating records with null/None values."""
@@ -208,7 +208,7 @@ class TestValidateRecords:
 
         validated = validate_records(records)
 
-        assert len(validated) == 2
+        assert len(validated) == 2, "Validated must not be empty"
 
     def test_validate_records_with_nested_dicts(self):
         """Test validating records with nested dictionaries."""
@@ -219,7 +219,7 @@ class TestValidateRecords:
 
         validated = validate_records(records)
 
-        assert len(validated) == 2
+        assert len(validated) == 2, "Validated must not be empty"
 
     def test_validate_records_with_lists(self):
         """Test validating records with list values."""
@@ -230,7 +230,7 @@ class TestValidateRecords:
 
         validated = validate_records(records)
 
-        assert len(validated) == 2
+        assert len(validated) == 2, "Validated must not be empty"
 
     def test_validate_records_with_unicode_keys(self):
         """Test validating records with unicode keys."""
@@ -241,7 +241,7 @@ class TestValidateRecords:
 
         validated = validate_records(records)
 
-        assert len(validated) == 2
+        assert len(validated) == 2, "Validated must not be empty"
 
     def test_validate_records_large_dataset(self):
         """Test validating large dataset."""
@@ -249,9 +249,9 @@ class TestValidateRecords:
 
         validated = validate_records(records)
 
-        assert len(validated) == 1000
-        assert validated[0]["id"] == 0
-        assert validated[999]["id"] == 999
+        assert len(validated) == 1000, "Validated must not be empty"
+        assert validated[0]["id"] == 0, "Condition must be true"
+        assert validated[999]["id"] == 999, "Condition must be true"
 
     def test_validate_records_with_mixed_types(self):
         """Test validating records with mixed data types."""
@@ -269,7 +269,7 @@ class TestValidateRecords:
 
         validated = validate_records(records)
 
-        assert len(validated) == 1
+        assert len(validated) == 1, "Validated must not be empty"
         record = validated[0]
         assert isinstance(record["string"], str)
         assert isinstance(record["number"], int)

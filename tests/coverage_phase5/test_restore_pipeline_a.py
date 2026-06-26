@@ -38,34 +38,38 @@ class RestorePipeline:
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_restore_pipeline_0_init():
     """Test restore pipeline initialization."""
     pipeline = RestorePipeline("disaster_recovery_0")
-    assert pipeline.name == "disaster_recovery_0"
+    assert pipeline.name == "disaster_recovery_0", "name is not valid"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_restore_pipeline_0_discover():
     """Test artifact discovery."""
     pipeline = RestorePipeline("dr")
     artifacts = await pipeline.discover_artifacts()
 
-    assert len(artifacts) > 0
-    assert pipeline.phase == RestorePhase.DISCOVERING
+    assert len(artifacts) > 0, "Artifacts must not be empty"
+    assert pipeline.phase == RestorePhase.DISCOVERING, "phase is not valid"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_restore_pipeline_0_validate():
     """Test artifact validation."""
     pipeline = RestorePipeline("dr")
     await pipeline.discover_artifacts()
     result = await pipeline.validate_artifacts()
 
-    assert result is True
-    assert pipeline.phase == RestorePhase.VALIDATING
+    assert result is True, "Result must not be empty"
+    assert pipeline.phase == RestorePhase.VALIDATING, "phase is not valid"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_restore_pipeline_0_restore():
     """Test pipeline restore."""
     pipeline = RestorePipeline("dr")
@@ -73,5 +77,5 @@ async def test_restore_pipeline_0_restore():
     await pipeline.validate_artifacts()
     result = await pipeline.restore()
 
-    assert result is True
-    assert pipeline.phase == RestorePhase.VERIFIED
+    assert result is True, "Result must not be empty"
+    assert pipeline.phase == RestorePhase.VERIFIED, "phase is not valid"

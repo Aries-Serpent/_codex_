@@ -84,7 +84,7 @@ class TestCircuitBreakerUnderRandomFailures:
                 except RuntimeError:
                     failures_injected += 1
 
-        assert cb.state is CircuitState.OPEN
+        assert cb.state is CircuitState.OPEN, "state is not valid"
 
     def test_circuit_stays_closed_under_mostly_success(self) -> None:
         """With very low failure rate the circuit stays closed."""
@@ -109,7 +109,7 @@ class TestCircuitBreakerUnderRandomFailures:
         # With only ~5% failures, threshold of 5 should not be breached
         # (consecutive runs rarely produce 5 failures in a row at 5%)
         # We only assert state is not open — this is a probabilistic check.
-        assert cb.state is CircuitState.CLOSED
+        assert cb.state is CircuitState.CLOSED, "state is not valid"
 
 
 class TestRetryExhaustionUnderFlakyService:
@@ -124,8 +124,8 @@ class TestRetryExhaustionUnderFlakyService:
             return svc.call()
 
         result = call()
-        assert result == "done"
-        assert svc._calls == 3  # 2 failures + 1 success
+        assert result == "done", "Result must not be empty"
+        assert svc._calls == 3, "_calls is not valid"
 
     def test_raises_retry_exhausted_when_always_failing(self) -> None:
         """Service that never succeeds → RetryExhausted is raised."""
@@ -137,7 +137,7 @@ class TestRetryExhaustionUnderFlakyService:
 
         with pytest.raises(RetryExhausted) as exc_info:
             call()
-        assert exc_info.value.attempts == 3  # 1 initial + 2 retries
+        assert exc_info.value.attempts == 3, "Value must be initialized"
 
 
 class TestGracefulDegradationUnderTotalFailure:
@@ -187,18 +187,18 @@ class TestCircuitHalfOpenRecovery:
             with pytest.raises(RuntimeError):
                 cb.call(_fail)
 
-        assert cb.state is CircuitState.OPEN
+        assert cb.state is CircuitState.OPEN, "state is not valid"
 
         # Wait for recovery timeout to elapse
         time.sleep(0.06)
 
         # State should now be HALF_OPEN (lazily evaluated on .state access)
-        assert cb.state is CircuitState.HALF_OPEN
+        assert cb.state is CircuitState.HALF_OPEN, "state is not valid"
 
         # A successful call in HALF_OPEN should close the circuit
         result = cb.call(lambda: "probe_ok")
-        assert result == "probe_ok"
-        assert cb.state is CircuitState.CLOSED
+        assert result == "probe_ok", "Result must not be empty"
+        assert cb.state is CircuitState.CLOSED, "state is not valid"
 
     def test_half_open_failure_reopens_circuit(self) -> None:
         """A failure during HALF_OPEN re-opens the circuit."""
@@ -217,12 +217,12 @@ class TestCircuitHalfOpenRecovery:
                 cb.call(_fail)
 
         time.sleep(0.06)
-        assert cb.state is CircuitState.HALF_OPEN
+        assert cb.state is CircuitState.HALF_OPEN, "state is not valid"
 
         with pytest.raises(RuntimeError):
             cb.call(_fail)
 
-        assert cb.state is CircuitState.OPEN
+        assert cb.state is CircuitState.OPEN, "state is not valid"
 
 
 class TestCombinedCircuitPlusRetry:
@@ -248,9 +248,9 @@ class TestCombinedCircuitPlusRetry:
         cb = CircuitBreaker(failure_threshold=3, recovery_timeout=60, name="combined")
 
         result = cb.call(inner)
-        assert result == "combined_ok"
-        assert "success" in call_log
-        assert cb.state is CircuitState.CLOSED
+        assert result == "combined_ok", "Result must not be empty"
+        assert "success" in call_log, "Condition must be true"
+        assert cb.state is CircuitState.CLOSED, "state is not valid"
 
     def test_combined_behaviour_circuit_opens_when_retry_always_exhausted(self) -> None:
         """When every retry is exhausted the circuit eventually opens."""
@@ -266,6 +266,6 @@ class TestCombinedCircuitPlusRetry:
             with pytest.raises(RetryExhausted):
                 cb.call(inner)
 
-        assert cb.state is CircuitState.OPEN
+        assert cb.state is CircuitState.OPEN, "state is not valid"
         with pytest.raises(CircuitOpenError):
             cb.call(inner)

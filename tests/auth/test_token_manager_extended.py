@@ -20,7 +20,7 @@ class TestTokenManagerInitialization:
         from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret-key-12345")
-        assert tm is not None
+        assert tm is not None, "tm must be initialized"
 
     def test_init_without_secret_key_warns(self) -> None:
         from codex.auth.token_manager import TokenManager
@@ -28,22 +28,22 @@ class TestTokenManagerInitialization:
         with warnings.catch_warnings(record=True) as w:
             warnings.simplefilter("always")
             TokenManager(secret_key=None)
-            assert len(w) == 1
-            assert "Auto-generating" in str(w[0].message)
+            assert len(w) == 1, "W must not be empty"
+            assert "Auto-generating" in str(w[0].message), "Condition must be true"
 
     def test_init_creates_empty_revoked_tokens(self) -> None:
         from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
         assert isinstance(tm._revoked_tokens, set)
-        assert len(tm._revoked_tokens) == 0
+        assert len(tm._revoked_tokens) == 0, "Collection must not be empty"
 
     def test_init_creates_empty_sessions(self) -> None:
         from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
         assert isinstance(tm._sessions, dict)
-        assert len(tm._sessions) == 0
+        assert len(tm._sessions) == 0, "Collection must not be empty"
 
 
 class TestAccessTokenGeneration:
@@ -62,7 +62,7 @@ class TestAccessTokenGeneration:
         tm = TokenManager(secret_key="test-secret")
         token = tm.generate_access_token("user123")
         parts = token.split(".")
-        assert len(parts) == 3  # header.payload.signature
+        assert len(parts) == 3, "Parts must not be empty"
 
     def test_generate_access_token_with_scope(self) -> None:
         from codex.auth.token_manager import TokenManager
@@ -70,7 +70,7 @@ class TestAccessTokenGeneration:
         tm = TokenManager(secret_key="test-secret")
         token = tm.generate_access_token("user123", scope="read write")
         claims = tm.validate_token(token)
-        assert claims.scope == "read write"
+        assert claims.scope == "read write", "scope is not valid"
 
     def test_generate_access_token_has_correct_type(self) -> None:
         from codex.auth.token_manager import TokenManager, TokenType
@@ -78,7 +78,7 @@ class TestAccessTokenGeneration:
         tm = TokenManager(secret_key="test-secret")
         token = tm.generate_access_token("user123")
         claims = tm.validate_token(token)
-        assert claims.type == TokenType.ACCESS
+        assert claims.type == TokenType.ACCESS, "type is not valid"
 
 
 class TestRefreshTokenGeneration:
@@ -97,7 +97,7 @@ class TestRefreshTokenGeneration:
         tm = TokenManager(secret_key="test-secret")
         token = tm.generate_refresh_token("user123")
         parts = token.split(".")
-        assert len(parts) == 3
+        assert len(parts) == 3, "Parts must not be empty"
 
     def test_generate_refresh_token_has_correct_type(self) -> None:
         from codex.auth.token_manager import TokenManager, TokenType
@@ -105,7 +105,7 @@ class TestRefreshTokenGeneration:
         tm = TokenManager(secret_key="test-secret")
         token = tm.generate_refresh_token("user123")
         claims = tm.validate_token(token)
-        assert claims.type == TokenType.REFRESH
+        assert claims.type == TokenType.REFRESH, "type is not valid"
 
 
 class TestSessionTokenGeneration:
@@ -117,14 +117,14 @@ class TestSessionTokenGeneration:
         tm = TokenManager(secret_key="test-secret")
         result = tm.generate_session_token("user123")
         assert isinstance(result, tuple)
-        assert len(result) == 2
+        assert len(result) == 2, "Result must not be empty"
 
     def test_generate_session_token_creates_session(self) -> None:
         from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
         _token, session_id = tm.generate_session_token("user123")
-        assert session_id in tm._sessions
+        assert session_id in tm._sessions, "Condition must be true"
 
     def test_generate_session_token_with_mfa(self) -> None:
         from codex.auth.token_manager import TokenManager
@@ -132,7 +132,7 @@ class TestSessionTokenGeneration:
         tm = TokenManager(secret_key="test-secret")
         _token, session_id = tm.generate_session_token("user123", mfa_verified=True)
         session = tm.get_session(session_id)
-        assert session.mfa_verified is True
+        assert session.mfa_verified is True, "mfa_verified is not valid"
 
     def test_generate_session_token_with_ip(self) -> None:
         from codex.auth.token_manager import TokenManager
@@ -140,7 +140,7 @@ class TestSessionTokenGeneration:
         tm = TokenManager(secret_key="test-secret")
         _token, session_id = tm.generate_session_token("user123", ip_address="192.168.1.100")
         session = tm.get_session(session_id)
-        assert session.ip_address == "192.168.1.100"
+        assert session.ip_address == "192.168.1.100", "ip_address is not valid"
 
     def test_generate_session_token_with_user_agent(self) -> None:
         from codex.auth.token_manager import TokenManager
@@ -148,7 +148,7 @@ class TestSessionTokenGeneration:
         tm = TokenManager(secret_key="test-secret")
         _token, session_id = tm.generate_session_token("user123", user_agent="Mozilla/5.0")
         session = tm.get_session(session_id)
-        assert session.user_agent == "Mozilla/5.0"
+        assert session.user_agent == "Mozilla/5.0", "user_agent is not valid"
 
 
 class TestTokenValidation:
@@ -160,7 +160,7 @@ class TestTokenValidation:
         tm = TokenManager(secret_key="test-secret")
         token = tm.generate_access_token("user123")
         claims = tm.validate_token(token)
-        assert claims.sub == "user123"
+        assert claims.sub == "user123", "sub is not valid"
 
     def test_validate_expired_token_raises(self) -> None:
         from codex.auth.token_manager import TokenClaims, TokenManager, TokenType
@@ -220,7 +220,7 @@ class TestTokenRevocation:
         token = tm.generate_access_token("user123")
 
         result = tm.revoke_token(token)
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_revoke_token_prevents_validation(self) -> None:
         from codex.auth.token_manager import TokenManager
@@ -238,7 +238,7 @@ class TestTokenRevocation:
 
         tm = TokenManager(secret_key="test-secret")
         result = tm.revoke_token("invalid.token.here")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_revoke_all_user_tokens(self) -> None:
         from codex.auth.token_manager import TokenManager
@@ -251,14 +251,14 @@ class TestTokenRevocation:
         tm.generate_session_token("user123")
 
         count = tm.revoke_all_user_tokens("user123")
-        assert count == 3
+        assert count == 3, "Count must be greater than zero"
 
     def test_revoke_all_user_tokens_no_sessions(self) -> None:
         from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
         count = tm.revoke_all_user_tokens("nonexistent")
-        assert count == 0
+        assert count == 0, "Count must be greater than zero"
 
 
 class TestRefreshAccessToken:
@@ -301,15 +301,15 @@ class TestSessionManagement:
         _token, session_id = tm.generate_session_token("user123")
 
         session = tm.get_session(session_id)
-        assert session is not None
-        assert session.user_id == "user123"
+        assert session is not None, "session must be initialized"
+        assert session.user_id == "user123", "user_id is not valid"
 
     def test_get_nonexistent_session(self) -> None:
         from codex.auth.token_manager import TokenManager
 
         tm = TokenManager(secret_key="test-secret")
         session = tm.get_session("nonexistent")
-        assert session is None
+        assert session is None, "session is not valid"
 
     def test_get_user_sessions(self) -> None:
         from codex.auth.token_manager import TokenManager
@@ -320,7 +320,7 @@ class TestSessionManagement:
         tm.generate_session_token("user456")
 
         sessions = tm.get_user_sessions("user123")
-        assert len(sessions) == 2
+        assert len(sessions) == 2, "Sessions must not be empty"
 
     def test_cleanup_expired_sessions(self) -> None:
         from codex.auth.token_manager import TokenManager
@@ -333,7 +333,7 @@ class TestSessionManagement:
         session.last_activity = time.time() - 3600  # 1 hour ago
 
         count = tm.cleanup_expired_sessions()
-        assert count == 1
+        assert count == 1, "Count must be greater than zero"
 
 
 class TestSessionInfo:
@@ -349,8 +349,8 @@ class TestSessionInfo:
             created_at=now,
             last_activity=now,
         )
-        assert session.session_id == "sess123"
-        assert session.user_id == "user123"
+        assert session.session_id == "sess123", "session_id is not valid"
+        assert session.user_id == "user123", "user_id is not valid"
 
     def test_session_is_active(self) -> None:
         from codex.auth.token_manager import SessionInfo
@@ -362,7 +362,7 @@ class TestSessionInfo:
             created_at=now,
             last_activity=now,
         )
-        assert session.is_active() is True
+        assert session.is_active() is True, "Condition must be true"
 
     def test_session_is_not_active(self) -> None:
         from codex.auth.token_manager import SessionInfo
@@ -374,7 +374,7 @@ class TestSessionInfo:
             created_at=now - 3600,
             last_activity=now - 3600,  # 1 hour ago
         )
-        assert session.is_active(timeout=1800) is False
+        assert session.is_active(timeout=1800) is False, "Condition must be true"
 
     def test_session_update_activity(self) -> None:
         from codex.auth.token_manager import SessionInfo
@@ -389,7 +389,7 @@ class TestSessionInfo:
 
         old_activity = session.last_activity
         session.update_activity()
-        assert session.last_activity > old_activity
+        assert session.last_activity > old_activity, "last_activity must be greater than zero"
 
 
 class TestTokenClaims:
@@ -405,8 +405,8 @@ class TestTokenClaims:
             exp=now + 900,
             type=TokenType.ACCESS,
         )
-        assert claims.sub == "user123"
-        assert claims.type == TokenType.ACCESS
+        assert claims.sub == "user123", "sub is not valid"
+        assert claims.type == TokenType.ACCESS, "type is not valid"
 
     def test_token_claims_to_dict(self) -> None:
         from codex.auth.token_manager import TokenClaims, TokenType
@@ -422,9 +422,9 @@ class TestTokenClaims:
         )
 
         data = claims.to_dict()
-        assert data["sub"] == "user123"
-        assert data["type"] == "access"
-        assert data["scope"] == "read write"
+        assert data["sub"] == "user123", "Data must not be empty"
+        assert data["type"] == "access", "Data must not be empty"
+        assert data["scope"] == "read write", "Data must not be empty"
 
     def test_token_claims_from_dict(self) -> None:
         from codex.auth.token_manager import TokenClaims, TokenType
@@ -440,8 +440,8 @@ class TestTokenClaims:
         }
 
         claims = TokenClaims.from_dict(data)
-        assert claims.sub == "user123"
-        assert claims.type == TokenType.ACCESS
+        assert claims.sub == "user123", "sub is not valid"
+        assert claims.type == TokenType.ACCESS, "type is not valid"
 
 
 class TestTokenType:
@@ -450,16 +450,16 @@ class TestTokenType:
     def test_token_type_values(self) -> None:
         from codex.auth.token_manager import TokenType
 
-        assert TokenType.ACCESS.value == "access"
-        assert TokenType.REFRESH.value == "refresh"
-        assert TokenType.SESSION.value == "session"
+        assert TokenType.ACCESS.value == "access", "Value must be initialized"
+        assert TokenType.REFRESH.value == "refresh", "Value must be initialized"
+        assert TokenType.SESSION.value == "session", "Value must be initialized"
 
     def test_token_type_from_value(self) -> None:
         from codex.auth.token_manager import TokenType
 
-        assert TokenType("access") == TokenType.ACCESS
-        assert TokenType("refresh") == TokenType.REFRESH
-        assert TokenType("session") == TokenType.SESSION
+        assert TokenType("access") == TokenType.ACCESS, "Condition must be true"
+        assert TokenType("refresh") == TokenType.REFRESH, "Condition must be true"
+        assert TokenType("session") == TokenType.SESSION, "Condition must be true"
 
 
 class TestTokenExpiry:
@@ -468,14 +468,14 @@ class TestTokenExpiry:
     def test_access_token_expiry(self) -> None:
         from codex.auth.token_manager import TokenManager
 
-        assert TokenManager.ACCESS_TOKEN_EXPIRY == 900  # 15 minutes
+        assert TokenManager.ACCESS_TOKEN_EXPIRY == 900, "ACCESS_TOKEN_EXPIRY is not valid"
 
     def test_refresh_token_expiry(self) -> None:
         from codex.auth.token_manager import TokenManager
 
-        assert TokenManager.REFRESH_TOKEN_EXPIRY == 604800  # 7 days
+        assert TokenManager.REFRESH_TOKEN_EXPIRY == 604800, "REFRESH_TOKEN_EXPIRY is not valid"
 
     def test_session_token_expiry(self) -> None:
         from codex.auth.token_manager import TokenManager
 
-        assert TokenManager.SESSION_TOKEN_EXPIRY == 2592000  # 30 days
+        assert TokenManager.SESSION_TOKEN_EXPIRY == 2592000, "SESSION_TOKEN_EXPIRY is not valid"

@@ -39,8 +39,8 @@ def test_train_cli(tmp_path, monkeypatch):
 
     cli.main(["train", str(corpus), str(tmp_path / "tok"), "--vocab-size", "10"])
 
-    assert (tmp_path / "tok.model").exists()
-    assert (tmp_path / "tok.tokenizer.json").exists()
+    assert (tmp_path / "tok.model").exists(), "Condition must be true"
+    assert (tmp_path / "tok.tokenizer.json").exists(), "Condition must be true"
 
 
 def test_encode_cli(monkeypatch, capsys):
@@ -52,14 +52,14 @@ def test_encode_cli(monkeypatch, capsys):
             return self
 
         def encode(self, text):
-            assert text == "hi"
+            assert text == "hi", "text is not valid"
             return [1, 2]
 
     monkeypatch.setattr(cli, "SentencePieceAdapter", DummyAdapter)
 
     cli.main(["encode", "m.model", "hi"])
     out = capsys.readouterr().out.strip()
-    assert out == "1 2"
+    assert out == "1 2", "out is not valid"
 
 
 def test_stats_cli(monkeypatch, capsys):
@@ -73,4 +73,4 @@ def test_stats_cli(monkeypatch, capsys):
     monkeypatch.setattr(cli, "SentencePieceAdapter", DummyAdapter)
 
     cli.main(["stats", "m.model"])
-    assert capsys.readouterr().out.strip() == "5"
+    assert capsys.readouterr().out.strip() == "5", "Condition must be true"

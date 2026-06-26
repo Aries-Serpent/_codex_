@@ -27,12 +27,12 @@ class TestErrorHandlerImports:
     def test_import_codex_error_handler_class(self) -> None:
         from codex.logging.error_handler import CodexErrorHandler
 
-        assert CodexErrorHandler is not None
+        assert CodexErrorHandler is not None, "CodexErrorHandler must be initialized"
 
     def test_import_error_handler_singleton(self) -> None:
         from codex.logging.error_handler import error_handler
 
-        assert error_handler is not None
+        assert error_handler is not None, "error_handler must be initialized"
 
 
 class TestCodexErrorHandlerInit:
@@ -44,7 +44,7 @@ class TestCodexErrorHandlerInit:
         with tempfile.TemporaryDirectory() as tmpdir:
             log_dir = Path(tmpdir) / "logs"
             handler = CodexErrorHandler(log_dir=log_dir)
-            assert handler.log_dir == log_dir
+            assert handler.log_dir == log_dir, "log_dir is not valid"
 
     def test_init_creates_log_directory(self) -> None:
         from codex.logging.error_handler import CodexErrorHandler
@@ -52,7 +52,7 @@ class TestCodexErrorHandlerInit:
         with tempfile.TemporaryDirectory() as tmpdir:
             log_dir = Path(tmpdir) / "new_logs"
             CodexErrorHandler(log_dir=log_dir)
-            assert log_dir.exists()
+            assert log_dir.exists(), "Condition must be true"
 
     def test_init_creates_error_log_file(self) -> None:
         from codex.logging.error_handler import CodexErrorHandler
@@ -62,7 +62,7 @@ class TestCodexErrorHandlerInit:
             handler = CodexErrorHandler(log_dir=log_dir)
             # Log something to create the file
             handler.logger.error("Test error")
-            assert handler.error_log.exists()
+            assert handler.error_log.exists(), "Error should be raised or set"
 
     def test_init_custom_max_bytes(self) -> None:
         from codex.logging.error_handler import CodexErrorHandler
@@ -70,7 +70,7 @@ class TestCodexErrorHandlerInit:
         with tempfile.TemporaryDirectory() as tmpdir:
             log_dir = Path(tmpdir) / "logs"
             handler = CodexErrorHandler(log_dir=log_dir, max_bytes=1024 * 1024)
-            assert handler is not None
+            assert handler is not None, "handler must be initialized"
 
     def test_init_custom_backup_count(self) -> None:
         from codex.logging.error_handler import CodexErrorHandler
@@ -78,7 +78,7 @@ class TestCodexErrorHandlerInit:
         with tempfile.TemporaryDirectory() as tmpdir:
             log_dir = Path(tmpdir) / "logs"
             handler = CodexErrorHandler(log_dir=log_dir, backup_count=10)
-            assert handler is not None
+            assert handler is not None, "handler must be initialized"
 
 
 class TestSetLogLevel:
@@ -91,7 +91,7 @@ class TestSetLogLevel:
             log_dir = Path(tmpdir) / "logs"
             handler = CodexErrorHandler(log_dir=log_dir)
             handler.set_log_level("DEBUG")
-            assert handler.logger.level == logging.DEBUG
+            assert handler.logger.level == logging.DEBUG, "level is not valid"
 
     def test_set_log_level_info(self) -> None:
         from codex.logging.error_handler import CodexErrorHandler
@@ -100,7 +100,7 @@ class TestSetLogLevel:
             log_dir = Path(tmpdir) / "logs"
             handler = CodexErrorHandler(log_dir=log_dir)
             handler.set_log_level("INFO")
-            assert handler.logger.level == logging.INFO
+            assert handler.logger.level == logging.INFO, "level is not valid"
 
     def test_set_log_level_warning(self) -> None:
         from codex.logging.error_handler import CodexErrorHandler
@@ -109,7 +109,7 @@ class TestSetLogLevel:
             log_dir = Path(tmpdir) / "logs"
             handler = CodexErrorHandler(log_dir=log_dir)
             handler.set_log_level("WARNING")
-            assert handler.logger.level == logging.WARNING
+            assert handler.logger.level == logging.WARNING, "level is not valid"
 
     def test_set_log_level_error(self) -> None:
         from codex.logging.error_handler import CodexErrorHandler
@@ -118,7 +118,7 @@ class TestSetLogLevel:
             log_dir = Path(tmpdir) / "logs"
             handler = CodexErrorHandler(log_dir=log_dir)
             handler.set_log_level("ERROR")
-            assert handler.logger.level == logging.ERROR
+            assert handler.logger.level == logging.ERROR, "Error should be raised or set"
 
     def test_set_log_level_case_insensitive(self) -> None:
         from codex.logging.error_handler import CodexErrorHandler
@@ -127,7 +127,7 @@ class TestSetLogLevel:
             log_dir = Path(tmpdir) / "logs"
             handler = CodexErrorHandler(log_dir=log_dir)
             handler.set_log_level("debug")
-            assert handler.logger.level == logging.DEBUG
+            assert handler.logger.level == logging.DEBUG, "level is not valid"
 
     def test_set_log_level_invalid_raises(self) -> None:
         from codex.logging.error_handler import CodexErrorHandler
@@ -149,7 +149,7 @@ class TestLogErrorsDecorator:
             log_dir = Path(tmpdir) / "logs"
             handler = CodexErrorHandler(log_dir=log_dir)
             assert hasattr(handler, "log_errors")
-            assert callable(handler.log_errors)
+            assert callable(handler.log_errors), "Error should be raised or set"
 
     def test_log_errors_decorator_normal_function(self) -> None:
         from codex.logging.error_handler import CodexErrorHandler
@@ -163,7 +163,7 @@ class TestLogErrorsDecorator:
                 return "success"
 
             result = normal_func()
-            assert result == "success"
+            assert result == "success", "Result must not be empty"
 
     def test_log_errors_decorator_logs_exceptions(self) -> None:
         from codex.logging.error_handler import CodexErrorHandler
@@ -204,7 +204,7 @@ class TestLogError:
                 handler.log_error(e, context={"key": "value"})
 
             # Check log file has content
-            assert handler.error_log.exists()
+            assert handler.error_log.exists(), "Error should be raised or set"
 
 
 class TestLoggerAttributes:
@@ -216,7 +216,7 @@ class TestLoggerAttributes:
         with tempfile.TemporaryDirectory() as tmpdir:
             log_dir = Path(tmpdir) / "logs"
             handler = CodexErrorHandler(log_dir=log_dir)
-            assert handler.logger.level == logging.ERROR
+            assert handler.logger.level == logging.ERROR, "Error should be raised or set"
 
     def test_logger_does_not_propagate(self) -> None:
         from codex.logging.error_handler import CodexErrorHandler
@@ -224,7 +224,7 @@ class TestLoggerAttributes:
         with tempfile.TemporaryDirectory() as tmpdir:
             log_dir = Path(tmpdir) / "logs"
             handler = CodexErrorHandler(log_dir=log_dir)
-            assert handler.logger.propagate is False
+            assert handler.logger.propagate is False, "propagate is not valid"
 
     def test_logger_has_handlers(self) -> None:
         from codex.logging.error_handler import CodexErrorHandler
@@ -232,7 +232,7 @@ class TestLoggerAttributes:
         with tempfile.TemporaryDirectory() as tmpdir:
             log_dir = Path(tmpdir) / "logs"
             handler = CodexErrorHandler(log_dir=log_dir)
-            assert len(handler.logger.handlers) > 0
+            assert len(handler.logger.handlers) > 0, "Collection must not be empty"
 
 
 class TestErrorHandlerSingleton:
@@ -241,7 +241,7 @@ class TestErrorHandlerSingleton:
     def test_singleton_exists(self) -> None:
         from codex.logging.error_handler import error_handler
 
-        assert error_handler is not None
+        assert error_handler is not None, "error_handler must be initialized"
 
     def test_singleton_is_codex_error_handler(self) -> None:
         from codex.logging.error_handler import CodexErrorHandler, error_handler

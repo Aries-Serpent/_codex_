@@ -99,9 +99,9 @@ def test_gap_registry_applies_hardship_and_capability_map(tmp_path: Path):
     )
 
     gaps = registry["gaps"]
-    assert len(gaps) >= 1
+    assert len(gaps) >= 1, "Gaps must not be empty"
     g0 = gaps[0]
-    assert g0["capability"] == "training"
+    assert g0["capability"] == "training", "Condition must be true"
     assert g0.get("risk_level") in {None, "high"}
     assert isinstance(g0.get("location"), list)
-    assert any("training" in loc for loc in g0["location"])
+    assert any("training" in loc for loc in g0["location"]), "Condition must be true"

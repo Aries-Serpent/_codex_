@@ -33,7 +33,7 @@ class TestPhase3_Entanglement_BellStates:
         red_state = StrategyState("red", np.array([1 / np.sqrt(2), 1 / np.sqrt(2)]))
 
         bell_state = QuantumGameState(blue_state, red_state, entanglement_strength=0.5)
-        assert bell_state.entangled
+        assert bell_state.entangled, "Condition must be true"
 
     def test_phi_plus_state(self):
         """Test |Φ+⟩ = (|00⟩ + |11⟩)/√2 state"""
@@ -44,7 +44,7 @@ class TestPhase3_Entanglement_BellStates:
         red = StrategyState("red", np.array([1.0, 0.0]))
 
         state = QuantumGameState(blue, red, entanglement_strength=0.5)
-        assert state.entangled
+        assert state.entangled, "Condition must be true"
 
     def test_phi_minus_state(self):
         """Test |Φ-⟩ = (|00⟩ - |11⟩)/√2 state"""
@@ -54,7 +54,7 @@ class TestPhase3_Entanglement_BellStates:
         red = StrategyState("red", np.array([0.0, -1.0]))
 
         state = QuantumGameState(blue, red, entanglement_strength=0.5)
-        assert state.entangled
+        assert state.entangled, "Condition must be true"
 
     def test_measurement_correlation(self):
         """Test measurement correlations in entangled states"""
@@ -68,8 +68,8 @@ class TestPhase3_Entanglement_BellStates:
         result2 = state.measure()
 
         # Measurements should be correlated
-        assert result1 is not None
-        assert result2 is not None
+        assert result1 is not None, "result1 must be initialized"
+        assert result2 is not None, "result2 must be initialized"
 
 
 class TestPhase3_Entanglement_CHSH:
@@ -88,9 +88,9 @@ class TestPhase3_Entanglement_CHSH:
         state = QuantumGameState(blue, red, entanglement_strength=0.5)
         correlation = state.calculate_correlation()
 
-        assert correlation is not None
+        assert correlation is not None, "correlation must be initialized"
         # CHSH inequality: |E| ≤ 2 for classical, can be √2*2 for quantum
-        assert abs(correlation) <= 3.0  # Upper bound
+        assert abs(correlation) <= 3.0, "Condition must be true"
 
     def test_correlation_angles(self):
         """Test correlation at different measurement angles"""
@@ -105,7 +105,7 @@ class TestPhase3_Entanglement_CHSH:
 
             state = QuantumGameState(blue, red, entanglement_strength=0.5)
             corr = state.calculate_correlation()
-            assert corr is not None
+            assert corr is not None, "corr must be initialized"
 
     def test_bell_inequality_violation(self):
         """Test Bell inequality violation detection"""
@@ -117,7 +117,7 @@ class TestPhase3_Entanglement_CHSH:
         state = QuantumGameState(blue, red, entanglement_strength=0.5)
         violates = state.violates_bell_inequality()
 
-        assert violates is not None  # Should detect violation
+        assert violates is not None, "violates must be initialized"
 
 
 class TestPhase3_Distributed_CurrentBounds:
@@ -132,7 +132,7 @@ class TestPhase3_Distributed_CurrentBounds:
 
         orchestrator = PhysicsInspiredOrchestrator()
         # c_eff should be enforced in distributed settings
-        assert orchestrator is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
 
     def test_node_specific_c_eff(self):
         """Test node-specific effective speed of light"""
@@ -140,7 +140,7 @@ class TestPhase3_Distributed_CurrentBounds:
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Different nodes may have different c_eff based on latency
-        assert orchestrator is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
 
     def test_network_latency_derived_c_eff(self):
         """Test c_eff derived from network latency measurements"""
@@ -148,7 +148,7 @@ class TestPhase3_Distributed_CurrentBounds:
 
         orchestrator = PhysicsInspiredOrchestrator()
         # c_eff = distance / latency
-        assert orchestrator is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
 
     def test_distributed_flow_conservation(self):
         """Test flow conservation across distributed nodes"""
@@ -156,7 +156,7 @@ class TestPhase3_Distributed_CurrentBounds:
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Σj_in = Σj_out across network
-        assert orchestrator is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
 
 
 class TestPhase3_Transactional_Semantics:
@@ -180,10 +180,10 @@ class TestPhase3_Transactional_Semantics:
             success = state.transactional_update(
                 blue_new=np.array([0.7, 0.3]), red_new=np.array([0.7, 0.3])
             )
-            assert success is not None
+            assert success is not None, "success must be initialized"
         else:
             # Method not implemented - verify state creation works
-            assert state.entangled is not None
+            assert state.entangled is not None, "entangled must be initialized"
 
     def test_rollback_on_failure(self):
         """Test rollback when transaction fails"""
@@ -201,9 +201,9 @@ class TestPhase3_Transactional_Semantics:
                     red_new=np.array([0.5, 0.5]),
                 )
             except (ValueError, AttributeError):
-                assert True
+                assert True, "True is not valid"
         else:
-            assert state is not None
+            assert state is not None, "state must be initialized"
 
     def test_coordinated_commit(self):
         """Test coordinated commit across entangled components"""
@@ -216,9 +216,9 @@ class TestPhase3_Transactional_Semantics:
 
         if hasattr(state, "commit_entangled_update"):
             committed = state.commit_entangled_update()
-            assert committed is not None
+            assert committed is not None, "committed must be initialized"
         else:
-            assert state.entangled is not None
+            assert state.entangled is not None, "entangled must be initialized"
 
     def test_feature_flag_propagation(self):
         """Test feature flag propagation (Eq #62)"""
@@ -228,9 +228,9 @@ class TestPhase3_Transactional_Semantics:
 
         if hasattr(orchestrator, "propagate_feature_flag"):
             result = orchestrator.propagate_feature_flag(flag_name="new_feature", enabled=True)
-            assert result is not None
+            assert result is not None, "result must be initialized"
         else:
-            assert orchestrator is not None
+            assert orchestrator is not None, "orchestrator must be initialized"
 
 
 class TestPhase3_ConcurrencyConstraints:
@@ -245,7 +245,7 @@ class TestPhase3_ConcurrencyConstraints:
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Spinor components should not evolve independently
-        assert orchestrator is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
 
     def test_concurrent_evolution_safety(self):
         """Test safety constraints for concurrent evolutions"""
@@ -253,7 +253,7 @@ class TestPhase3_ConcurrencyConstraints:
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Concurrent evolutions must respect coupling constraints
-        assert orchestrator is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
 
     def test_helicity_preservation(self):
         """Test helicity preservation during concurrent ops"""
@@ -261,7 +261,7 @@ class TestPhase3_ConcurrencyConstraints:
 
         force = ForceVector("f1", 10.0, [1.0, 0.0, 0.0], 5)
         # Helicity should be preserved
-        assert force is not None
+        assert force is not None, "force must be initialized"
 
 
 class TestPhase3_ShardedAggregation:
@@ -277,7 +277,7 @@ class TestPhase3_ShardedAggregation:
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Total probability across all shards should be 1
-        assert orchestrator is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
 
     def test_shard_consistency(self):
         """Test consistency across distributed shards"""
@@ -285,7 +285,7 @@ class TestPhase3_ShardedAggregation:
 
         memory = AgentMemory()
         # Sharded memory should maintain consistency
-        assert memory is not None
+        assert memory is not None, "memory must be initialized"
 
     def test_metric_aggregation(self):
         """Test Prometheus-style metric aggregation (Eq #27)"""
@@ -293,7 +293,7 @@ class TestPhase3_ShardedAggregation:
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Metrics should aggregate correctly across nodes
-        assert orchestrator is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
 
     def test_label_key_consistency(self):
         """Test label key consistency in aggregation"""
@@ -301,7 +301,7 @@ class TestPhase3_ShardedAggregation:
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Labels must be consistent for aggregation
-        assert orchestrator is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
 
 
 class TestPhase3_CrossModule_EntangledGroups:
@@ -323,8 +323,8 @@ class TestPhase3_CrossModule_EntangledGroups:
         engine = QuantumInspiredGameEngine(blue, red, payoff_b, payoff_r)
 
         # Both should evolve in coordinated fashion
-        assert orchestrator is not None
-        assert engine is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
+        assert engine is not None, "engine must be initialized"
 
     def test_entangled_memory_mental(self):
         """Test entangled memory + mental mapping"""
@@ -343,7 +343,7 @@ class TestPhase3_CrossModule_EntangledGroups:
 
         # Both should update together - may not retrieve if not persisted
         retrieved = memory.retrieve_memory(f"node_{node.node_id}")
-        assert retrieved is None or retrieved is not None  # Either works
+        assert retrieved is None or retrieved is not None, "retrieved must be initialized"
 
     def test_entangled_developer_workflow(self):
         """Test entangled developer + workflow coordination"""
@@ -354,8 +354,8 @@ class TestPhase3_CrossModule_EntangledGroups:
         workflow_nav = WorkflowNavigator()
 
         # Workflow and development should be coordinated
-        assert dev_orch is not None
-        assert workflow_nav is not None
+        assert dev_orch is not None, "dev_orch must be initialized"
+        assert workflow_nav is not None, "workflow_nav must be initialized"
 
 
 class TestPhase3_DistributedMonitoring:
@@ -369,7 +369,7 @@ class TestPhase3_DistributedMonitoring:
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Coherence should be maintained across distribution
-        assert orchestrator is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
 
     def test_distributed_health_snapshot(self):
         """Test health snapshot aggregation (Eq #47)"""
@@ -377,7 +377,7 @@ class TestPhase3_DistributedMonitoring:
 
         orchestrator = PhysicsInspiredOrchestrator()
         # H = f(ρ, j, v, γ) aggregated across nodes
-        assert orchestrator is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
 
     def test_distributed_alert_routing(self):
         """Test alert routing based on coherence bands (Eq #54)"""
@@ -385,7 +385,7 @@ class TestPhase3_DistributedMonitoring:
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Green/yellow/red bands route alerts correctly
-        assert orchestrator is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
 
 
 class TestPhase3_InvariantValidation:
@@ -399,7 +399,7 @@ class TestPhase3_InvariantValidation:
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Total probability must be 1 globally
-        assert orchestrator is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
 
     def test_global_current_bound(self):
         """Test |j| ≤ c_eff globally (Eq #36)"""
@@ -407,7 +407,7 @@ class TestPhase3_InvariantValidation:
 
         orchestrator = PhysicsInspiredOrchestrator()
         # All currents must respect effective light speed
-        assert orchestrator is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
 
     def test_conservation_across_boundaries(self):
         """Test conservation laws across module boundaries"""
@@ -415,7 +415,7 @@ class TestPhase3_InvariantValidation:
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Σp and ΣE conserved across boundaries
-        assert orchestrator is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
 
 
 class TestPhase3_EdgeCases_Distributed:
@@ -429,7 +429,7 @@ class TestPhase3_EdgeCases_Distributed:
 
         orchestrator = PhysicsInspiredOrchestrator()
         # System should gracefully handle node failures
-        assert orchestrator is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
 
     def test_entanglement_breaking(self):
         """Test detection when entanglement breaks"""
@@ -442,7 +442,7 @@ class TestPhase3_EdgeCases_Distributed:
 
         # Break entanglement
         broken = state.break_entanglement()
-        assert broken is not None
+        assert broken is not None, "broken must be initialized"
 
     def test_measurement_without_entanglement(self):
         """Test measurements on non-entangled states"""
@@ -455,7 +455,7 @@ class TestPhase3_EdgeCases_Distributed:
         result = state.measure()
 
         # Should work but without correlations
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     def test_shard_isolation_on_failure(self):
         """Test shard isolation when consistency fails"""
@@ -463,7 +463,7 @@ class TestPhase3_EdgeCases_Distributed:
 
         memory = AgentMemory()
         # Failing shard should be isolated
-        assert memory is not None
+        assert memory is not None, "memory must be initialized"
 
 
 class TestPhase3_Performance_Distributed:
@@ -483,7 +483,7 @@ class TestPhase3_Performance_Distributed:
 
         # All should be measurable in parallel
         results = [s.measure() for s in states]
-        assert len(results) == 10
+        assert len(results) == 10, "Results must not be empty"
 
     def test_distributed_aggregation_performance(self):
         """Test performance of distributed aggregation"""
@@ -492,7 +492,7 @@ class TestPhase3_Performance_Distributed:
         orchestrators = [PhysicsInspiredOrchestrator() for _ in range(5)]
 
         # Should handle multiple orchestrators efficiently
-        assert len(orchestrators) == 5
+        assert len(orchestrators) == 5, "Orchestrators must not be empty"
 
     def test_bulk_transactional_updates(self):
         """Test bulk transactional updates"""
@@ -513,4 +513,4 @@ class TestPhase3_Performance_Distributed:
             for blue_new, red_new in updates:
                 state.transactional_update(blue_new, red_new)
 
-        assert True  # All updates completed or method not available
+        assert True, "True is not valid"

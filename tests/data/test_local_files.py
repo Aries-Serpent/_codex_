@@ -27,11 +27,11 @@ def test_load_jsonl():
     try:
         records = load_jsonl(path)
 
-        assert len(records) == 3
-        assert records[0]["text"] == "hello"
-        assert records[0]["label"] == 0
-        assert records[1]["text"] == "world"
-        assert records[2]["label"] == 2
+        assert len(records) == 3, "Records must not be empty"
+        assert records[0]["text"] == "hello", "rec is not valid"
+        assert records[0]["label"] == 0, "rec is not valid"
+        assert records[1]["text"] == "world", "rec is not valid"
+        assert records[2]["label"] == 2, "rec is not valid"
     finally:
         Path(path).unlink()
 
@@ -46,9 +46,9 @@ def test_load_json():
         data = load_json(path)
 
         assert isinstance(data, dict)
-        assert data["model"] == "gpt2"
-        assert data["lr"] == 0.001
-        assert data["epochs"] == 10
+        assert data["model"] == "gpt2", "Data must not be empty"
+        assert data["lr"] == 0.001, "Data must not be empty"
+        assert data["epochs"] == 10, "Data must not be empty"
     finally:
         Path(path).unlink()
 
@@ -63,8 +63,8 @@ def test_load_json_array():
         data = load_json(path)
 
         assert isinstance(data, list)
-        assert len(data) == 3
-        assert data[0]["id"] == 1
+        assert len(data) == 3, "Data must not be empty"
+        assert data[0]["id"] == 1, "Data must not be empty"
     finally:
         Path(path).unlink()
 
@@ -80,10 +80,10 @@ def test_load_csv():
     try:
         records = load_csv(path)
 
-        assert len(records) == 2
-        assert records[0]["text"] == "hello"
-        assert records[0]["label"] == "0"  # CSV values are strings
-        assert records[1]["text"] == "world"
+        assert len(records) == 2, "Records must not be empty"
+        assert records[0]["text"] == "hello", "rec is not valid"
+        assert records[0]["label"] == "0", "rec is not valid"
+        assert records[1]["text"] == "world", "rec is not valid"
     finally:
         Path(path).unlink()
 
@@ -99,9 +99,9 @@ def test_load_csv_custom_delimiter():
     try:
         records = load_csv(path, delimiter="\t")
 
-        assert len(records) == 2
-        assert records[0]["text"] == "hello"
-        assert records[0]["label"] == "0"
+        assert len(records) == 2, "Records must not be empty"
+        assert records[0]["text"] == "hello", "rec is not valid"
+        assert records[0]["label"] == "0", "rec is not valid"
     finally:
         Path(path).unlink()
 
@@ -119,7 +119,7 @@ def test_save_and_load_jsonl():
         save_jsonl(records, path)
         loaded = load_jsonl(path)
 
-        assert loaded == records
+        assert loaded == records, "loaded is not valid"
 
 
 def test_save_and_load_json():
@@ -132,7 +132,7 @@ def test_save_and_load_json():
         save_json(data, path)
         loaded = load_json(path)
 
-        assert loaded == data
+        assert loaded == data, "Data must not be empty"
 
 
 def test_save_and_load_csv():
@@ -148,7 +148,7 @@ def test_save_and_load_csv():
         save_csv(records, path)
         loaded = load_csv(path)
 
-        assert loaded == records
+        assert loaded == records, "loaded is not valid"
 
 
 def test_save_creates_parent_directory():
@@ -156,9 +156,9 @@ def test_save_creates_parent_directory():
     with tempfile.TemporaryDirectory() as tmpdir:
         nested_path = Path(tmpdir) / "nested" / "dir" / "file.jsonl"
 
-        assert not nested_path.parent.exists()
+        assert not nested_path.parent.exists(), "Condition must be true"
 
         save_jsonl([{"test": "data"}], nested_path)
 
-        assert nested_path.exists()
-        assert nested_path.parent.exists()
+        assert nested_path.exists(), "Condition must be true"
+        assert nested_path.parent.exists(), "Condition must be true"

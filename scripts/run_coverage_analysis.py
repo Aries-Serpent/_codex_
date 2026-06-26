@@ -79,8 +79,8 @@ class CoverageAnalyzer:
             return result.returncode == 0
         except Exception as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            print(f"Error running coverage: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
+            print("Error running coverage: <ERROR_TYPE>")
             return False
 
     def analyze_json_report(self) -> dict[str, Any]:

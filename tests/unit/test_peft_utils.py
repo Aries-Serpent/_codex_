@@ -34,4 +34,4 @@ def test_freeze_counts():
     bundle = load_bundle_or_skip()
     model = apply_lora(bundle.model, r=4, alpha=8, dropout=0.0)
     trainable = freeze_base_weights(model)
-    assert trainable > 0
+    assert trainable > 0, "trainable must be greater than zero"

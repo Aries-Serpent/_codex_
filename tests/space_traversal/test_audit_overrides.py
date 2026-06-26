@@ -29,8 +29,8 @@ def test_apply_overrides_basic():
     result = apply_overrides(capabilities, cfg)
 
     # Should merge into single capability
-    assert len(result) == 1
-    assert result[0]["id"] == "training-engine"
+    assert len(result) == 1, "Result must not be empty"
+    assert result[0]["id"] == "training-engine", "Result must not be empty"
     assert set(result[0]["evidence_files"]) == {"train.py", "loop.py"}
     assert set(result[0]["found_patterns"]) == {"train", "epoch"}
     assert set(result[0]["required_patterns"]) == {"train", "epoch"}
@@ -54,8 +54,8 @@ def test_apply_overrides_no_config():
     result = apply_overrides(capabilities, cfg)
 
     # Should return unchanged
-    assert len(result) == 1
-    assert result[0]["id"] == "cap1"
+    assert len(result) == 1, "Result must not be empty"
+    assert result[0]["id"] == "cap1", "Result must not be empty"
 
 
 def test_apply_overrides_multiple_aliases():
@@ -90,8 +90,8 @@ def test_apply_overrides_multiple_aliases():
 
     result = apply_overrides(capabilities, cfg)
 
-    assert len(result) == 1
-    assert result[0]["id"] == "ml-serving"
+    assert len(result) == 1, "Result must not be empty"
+    assert result[0]["id"] == "ml-serving", "Result must not be empty"
     assert set(result[0]["evidence_files"]) == {"serve.py", "predict.py", "api.py"}
     assert set(result[0]["found_patterns"]) == {"serve", "api"}
 
@@ -121,7 +121,7 @@ def test_apply_overrides_preserves_unrelated():
 
     result = apply_overrides(capabilities, cfg)
 
-    assert len(result) == 2
+    assert len(result) == 2, "Result must not be empty"
     ids = {cap["id"] for cap in result}
     assert ids == {"training-engine", "checkpointing"}
 

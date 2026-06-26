@@ -26,15 +26,15 @@ _MODULE_PATH = Path(__file__).resolve()
 def test_discover_repo_root_finds_repo_from_module():
     result = _discover_repo_root(_MODULE_PATH)
     # Running inside a source checkout; should find a root with tools/ and src/
-    assert result is not None
-    assert (result / "src").exists()
-    assert (result / "tools").exists()
+    assert result is not None, "result must be initialized"
+    assert (result / "src").exists(), "Result must not be empty"
+    assert (result / "tools").exists(), "Result must not be empty"
 
 
 def test_discover_repo_root_returns_none_for_isolated_path(tmp_path: Path):
     isolated = tmp_path / "some" / "module.py"
     result = _discover_repo_root(isolated)
-    assert result is None
+    assert result is None, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -49,7 +49,7 @@ def test_gather_allowed_roots_returns_tuple():
 
 def test_gather_allowed_roots_non_empty_in_repo():
     roots = _gather_allowed_roots(_MODULE_PATH)
-    assert len(roots) > 0
+    assert len(roots) > 0, "Roots must not be empty"
 
 
 def test_gather_allowed_roots_unique():
@@ -118,12 +118,12 @@ def test_assert_safe_script_passes_for_sh_inside_allowed(tmp_path: Path):
 
 def test_run_argv_basic_python_version():
     result = run_argv([sys.executable, "--version"])
-    assert result.returncode == 0
+    assert result.returncode == 0, "Result must not be empty"
 
 
 def test_run_argv_echo_like_command():
     result = run_argv([sys.executable, "-c", "import sys; sys.exit(0)"])
-    assert result.returncode == 0
+    assert result.returncode == 0, "Result must not be empty"
 
 
 def test_run_argv_raises_for_empty_argv():
@@ -138,12 +138,12 @@ def test_run_argv_raises_for_non_string_argv():
 
 def test_run_argv_captures_stdout():
     result = run_argv([sys.executable, "-c", "print('hello')"])
-    assert "hello" in result.stdout
+    assert "hello" in result.stdout, "Result must not be empty"
 
 
 def test_run_argv_check_false_allows_nonzero_exit():
     result = run_argv([sys.executable, "-c", "import sys; sys.exit(1)"], check=False)
-    assert result.returncode == 1
+    assert result.returncode == 1, "Result must not be empty"
 
 
 def test_run_argv_check_true_raises_on_failure():
@@ -153,10 +153,10 @@ def test_run_argv_check_true_raises_on_failure():
 
 def test_run_argv_with_cwd(tmp_path: Path):
     result = run_argv([sys.executable, "-c", "import os; print(os.getcwd())"], cwd=tmp_path)
-    assert str(tmp_path) in result.stdout.strip()
+    assert str(tmp_path) in result.stdout.strip(), "Result must not be empty"
 
 
 def test_run_argv_non_python_command():
     # Run a simple non-python command (python with -c works as non-script)
     result = run_argv([sys.executable, "-c", "pass"])
-    assert result.returncode == 0
+    assert result.returncode == 0, "Result must not be empty"

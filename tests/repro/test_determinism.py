@@ -65,12 +65,12 @@ def test_determinism_dual_run():
         )
 
         # Results should be identical
-        assert (
+        assert (, "Condition must be true"
             result1["loss"] == result2["loss"]
         ), f"Loss mismatch: {result1['loss']} vs {result2['loss']}"
-        assert result1["count"] == result2["count"]
-        assert result1["batches"] == result2["batches"]
-        assert abs(result1["duration_sec"] - result2["duration_sec"]) < 1.0  # Allow timing variance
+        assert result1["count"] == result2["count"], "Result must not be empty"
+        assert result1["batches"] == result2["batches"], "Result must not be empty"
+        assert abs(result1["duration_sec"] - result2["duration_sec"]) < 1.0, "Result must not be empty"
 
 
 def test_determinism_with_metrics():
@@ -124,5 +124,5 @@ def test_determinism_with_metrics():
         )
 
         # Check determinism
-        assert result1["loss"] == result2["loss"]
-        assert result1["metrics"]["accuracy"] == result2["metrics"]["accuracy"]
+        assert result1["loss"] == result2["loss"], "Result must not be empty"
+        assert result1["metrics"]["accuracy"] == result2["metrics"]["accuracy"], "Result must not be empty"

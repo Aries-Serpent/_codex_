@@ -129,7 +129,7 @@ class TestHTTPStatusCodes:
         is_client_error = 400 <= status_code < 500
 
         # Act & Assert
-        assert is_client_error
+        assert is_client_error, "Error should be raised or set"
 
     def test_401_unauthorized_handling(self):
         """Test handling of 401 Unauthorized."""
@@ -138,7 +138,7 @@ class TestHTTPStatusCodes:
         should_retry_with_auth = status_code == 401
 
         # Act & Assert
-        assert should_retry_with_auth
+        assert should_retry_with_auth, "should_retry_with_auth is not valid"
 
     def test_403_forbidden_handling(self):
         """Test handling of 403 Forbidden."""
@@ -147,7 +147,7 @@ class TestHTTPStatusCodes:
         should_not_retry = status_code == 403
 
         # Act & Assert
-        assert should_not_retry
+        assert should_not_retry, "should_not_retry is not valid"
 
     def test_404_not_found_handling(self):
         """Test handling of 404 Not Found."""
@@ -156,7 +156,7 @@ class TestHTTPStatusCodes:
         resource_not_found = status_code == 404
 
         # Act & Assert
-        assert resource_not_found
+        assert resource_not_found, "resource_not_found is not valid"
 
     def test_500_server_error_retry_logic(self):
         """Test retry logic for 500 Server Error."""
@@ -169,7 +169,7 @@ class TestHTTPStatusCodes:
         should_retry = status_code >= 500 and retry_count < max_retries
 
         # Assert
-        assert should_retry
+        assert should_retry, "should_retry is not valid"
 
     def test_503_service_unavailable_backoff(self):
         """Test exponential backoff for 503 Service Unavailable."""
@@ -181,8 +181,8 @@ class TestHTTPStatusCodes:
         should_backoff = status_code == 503
 
         # Assert
-        assert should_backoff
-        assert len(retry_delays) == 5
+        assert should_backoff, "should_backoff is not valid"
+        assert len(retry_delays) == 5, "Retry_delays must not be empty"
 
 
 class TestDNSAndNetwork:
@@ -209,7 +209,7 @@ class TestDNSAndNetwork:
         resolution_failed = resolution_result is None
 
         # Assert
-        assert resolution_failed
+        assert resolution_failed, "resolution_failed is not valid"
 
     def test_multiple_ip_addresses_resolution(self):
         """Test handling of multiple IP addresses for single hostname."""
@@ -221,8 +221,8 @@ class TestDNSAndNetwork:
         first_ip = ips[0]
 
         # Assert
-        assert ip_count == 3
-        assert first_ip == "192.0.2.1"
+        assert ip_count == 3, "Count must be greater than zero"
+        assert first_ip == "192.0.2.1", "first_ip is not valid"
 
     def test_ipv4_ipv6_fallback(self):
         """Test IPv4 fallback when IPv6 unavailable."""
@@ -235,7 +235,7 @@ class TestDNSAndNetwork:
         fallback_address = ipv4_address if should_use_ipv4 else None
 
         # Assert
-        assert fallback_address == ipv4_address
+        assert fallback_address == ipv4_address, "fallback_address is not valid"
 
     def test_network_unreachable_handling(self):
         """Test handling of network unreachable error."""
@@ -246,7 +246,7 @@ class TestDNSAndNetwork:
         can_connect = network_available
 
         # Assert
-        assert not can_connect
+        assert not can_connect, "Condition must be true"
 
 
 class TestSSLTLSCertificateValidation:
@@ -271,7 +271,7 @@ class TestSSLTLSCertificateValidation:
         is_self_signed = cert_issuer == "self"
 
         # Act & Assert
-        assert is_self_signed
+        assert is_self_signed, "is_self_signed is not valid"
 
     def test_hostname_mismatch_detection(self):
         """Test detection of hostname mismatch in certificate."""
@@ -298,7 +298,7 @@ class TestSSLTLSCertificateValidation:
         chain_length = len(cert_chain)
 
         # Assert
-        assert chain_length == 3
+        assert chain_length == 3, "Length must be greater than zero"
 
     def test_revoked_certificate_detection(self):
         """Test detection of revoked certificate."""
@@ -326,7 +326,7 @@ class TestRateLimiting:
         at_limit = requests_made >= rate_limit
 
         # Assert
-        assert at_limit
+        assert at_limit, "at_limit is not valid"
 
     def test_rate_limit_exceeded(self):
         """Test behavior when rate limit exceeded."""
@@ -338,7 +338,7 @@ class TestRateLimiting:
         exceeds_limit = requests_made > rate_limit
 
         # Assert
-        assert exceeds_limit
+        assert exceeds_limit, "exceeds_limit is not valid"
 
     def test_rate_limit_reset_timing(self):
         """Test rate limit reset timing."""
@@ -363,7 +363,7 @@ class TestRateLimiting:
         exceeds_burst = burst_requests > burst_limit
 
         # Assert
-        assert exceeds_burst
+        assert exceeds_burst, "exceeds_burst is not valid"
 
     def test_per_user_rate_limiting(self):
         """Test per-user rate limiting."""
@@ -377,8 +377,8 @@ class TestRateLimiting:
         user2_within_limit = user2_requests <= rate_limit_per_user
 
         # Assert
-        assert user1_within_limit
-        assert user2_within_limit
+        assert user1_within_limit, "user1_within_limit is not valid"
+        assert user2_within_limit, "user2_within_limit is not valid"
 
     def test_rate_limit_headers_correctness(self):
         """Test rate limit response headers."""
@@ -393,7 +393,7 @@ class TestRateLimiting:
         has_limit_header = "X-RateLimit-Limit" in response_headers
 
         # Assert
-        assert has_limit_header
+        assert has_limit_header, "has_limit_header is not valid"
 
 
 class TestProxyAndLoadBalancing:

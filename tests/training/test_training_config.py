@@ -9,8 +9,8 @@ def test_training_config_defaults() -> None:
     from src.training.config import TrainingConfig
 
     cfg = TrainingConfig()
-    assert cfg.batch_size > 0
-    assert cfg.output_dir
+    assert cfg.batch_size > 0, "batch_size must be greater than zero"
+    assert cfg.output_dir, "Condition must be true"
 
 
 def test_training_config_from_file(tmp_path: Path) -> None:
@@ -24,8 +24,8 @@ def test_training_config_from_file(tmp_path: Path) -> None:
         if hasattr(TrainingConfig, "from_file")
         else TrainingConfig(batch_size=2, learning_rate=0.01)
     )
-    assert cfg.batch_size == 2
-    assert cfg.learning_rate == 0.01
+    assert cfg.batch_size == 2, "batch_size is not valid"
+    assert cfg.learning_rate == 0.01, "learning_rate is not valid"
 
 
 def test_training_config_validation() -> None:

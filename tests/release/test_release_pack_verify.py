@@ -62,9 +62,9 @@ def test_pack_and_verify(tmp_path, monkeypatch):
         root / "work" / "release_staging",
         root / "dist" / "codex-release.tar.gz",
     )
-    assert bundle.exists()
-    assert "sha256_manifest" in locked["checks"]
+    assert bundle.exists(), "Condition must be true"
+    assert "sha256_manifest" in locked["checks"], "Condition must be true"
     # Verify
     verification = verify_bundle(bundle)
-    assert verification["ok"] is True
-    assert verification["sha256_manifest"] == locked["checks"]["sha256_manifest"]
+    assert verification["ok"] is True, "Condition must be true"
+    assert verification["sha256_manifest"] == locked["checks"]["sha256_manifest"], "Condition must be true"

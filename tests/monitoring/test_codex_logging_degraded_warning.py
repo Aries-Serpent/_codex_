@@ -17,5 +17,5 @@ def test_degraded_mode_prints_warning(monkeypatch, capsys):
     loggers = module._codex_logging_bootstrap(argparse.Namespace(hydra_cfg={}))
 
     captured = capsys.readouterr()
-    assert "[telemetry] degraded:" in captured.err
-    assert not loggers.mlflow_active
+    assert "[telemetry] degraded:" in captured.err, "Condition must be true"
+    assert not loggers.mlflow_active, "Condition must be true"

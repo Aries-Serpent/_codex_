@@ -120,8 +120,8 @@ def test_validator_failure():
             capture_output=True,
             text=True,
         )
-        assert result.returncode == 3
-        assert "dataset" in result.stderr
+        assert result.returncode == 3, "Result must not be empty"
+        assert "dataset" in result.stderr, "Result must not be empty"
 
 
 def test_validator_toml_success():
@@ -146,7 +146,7 @@ def test_validator_toml_success():
             text=True,
         )
         assert result.returncode == 0, result.stderr
-        assert "Validated 1 config file(s) successfully" in result.stdout
+        assert "Validated 1 config file(s) successfully" in result.stdout, "Result must not be empty"
 
 
 def test_validator_toml_failure():
@@ -170,8 +170,8 @@ def test_validator_toml_failure():
             capture_output=True,
             text=True,
         )
-        assert result.returncode == 3
-        assert "dataset" in result.stderr
+        assert result.returncode == 3, "Result must not be empty"
+        assert "dataset" in result.stderr, "Result must not be empty"
 
 
 def test_validator_excludes_schema_files():
@@ -211,7 +211,7 @@ def test_validator_excludes_schema_files():
         # Should succeed because it only validates exp.json (valid), not schema files
         assert result.returncode == 0, result.stderr
         # Should report only 1 file validated (exp.json), not 2 or 3
-        assert "Validated 1 config file(s) successfully" in result.stdout
+        assert "Validated 1 config file(s) successfully" in result.stdout, "Result must not be empty"
 
 
 def test_validator_missing_schema_file():
@@ -235,8 +235,8 @@ def test_validator_missing_schema_file():
             text=True,
         )
         # Should fail with appropriate error
-        assert result.returncode != 0
-        assert "schema" in result.stderr.lower() or "not found" in result.stderr.lower()
+        assert result.returncode != 0, "Result must not be empty"
+        assert "schema" in result.stderr.lower() or "not found" in result.stderr.lower(), "Result must not be empty"
 
 
 def test_validator_malformed_config_json():
@@ -262,8 +262,8 @@ def test_validator_malformed_config_json():
             text=True,
         )
         # Should fail with JSON parse error
-        assert result.returncode != 0
-        assert "json" in result.stderr.lower() or "parse" in result.stderr.lower()
+        assert result.returncode != 0, "Result must not be empty"
+        assert "json" in result.stderr.lower() or "parse" in result.stderr.lower(), "Result must not be empty"
 
 
 def test_validator_malformed_config_toml():
@@ -289,8 +289,8 @@ def test_validator_malformed_config_toml():
             text=True,
         )
         # Should fail with TOML parse error
-        assert result.returncode != 0
-        assert "toml" in result.stderr.lower() or "parse" in result.stderr.lower()
+        assert result.returncode != 0, "Result must not be empty"
+        assert "toml" in result.stderr.lower() or "parse" in result.stderr.lower(), "Result must not be empty"
 
 
 def test_validator_empty_directory():
@@ -316,8 +316,8 @@ def test_validator_empty_directory():
             text=True,
         )
         # Should succeed with 0 files validated
-        assert result.returncode == 0
-        assert "0 config file(s)" in result.stdout or "No config files found" in result.stdout
+        assert result.returncode == 0, "Result must not be empty"
+        assert "0 config file(s)" in result.stdout or "No config files found" in result.stdout, "Result must not be empty"
 
 
 def test_validator_multiple_paths():
@@ -352,4 +352,4 @@ def test_validator_multiple_paths():
             text=True,
         )
         assert result.returncode == 0, result.stderr
-        assert "Validated 2 config file(s) successfully" in result.stdout
+        assert "Validated 2 config file(s) successfully" in result.stdout, "Result must not be empty"

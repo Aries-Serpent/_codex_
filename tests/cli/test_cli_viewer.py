@@ -21,6 +21,6 @@ def test_cli_viewer_runs():
 def test_cli_viewer_reads_readme():
     cmd = [sys.executable, "-m", "scripts.cli.viewer", "--show", "README.md"]
     proc = subprocess.run(cmd, capture_output=True, text=True, cwd=REPO_ROOT)
-    assert proc.returncode == 0
+    assert proc.returncode == 0, "returncode is not valid"
     # Updated to match current README content (codex-ml, not codex-universal)
-    assert "codex-ml" in proc.stdout or "_codex_" in proc.stdout
+    assert "codex-ml" in proc.stdout or "_codex_" in proc.stdout, "Condition must be true"

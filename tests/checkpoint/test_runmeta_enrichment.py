@@ -18,10 +18,10 @@ def test_run_manifest_includes_provenance(tmp_path: Path) -> None:
     state = {"weights": [1, 2, 3]}
     checkpoint_core.save_checkpoint(str(ckpt_dir), state)
     manifest_path = ckpt_dir / "run_manifest.json"
-    assert manifest_path.exists()
+    assert manifest_path.exists(), "Condition must be true"
     payload = json.loads(manifest_path.read_text(encoding="utf-8"))
     provenance = payload.get("provenance")
     assert isinstance(provenance, dict)
-    assert "python" in provenance
-    assert "git" in provenance
-    assert "lock_sha256" in provenance
+    assert "python" in provenance, "Condition must be true"
+    assert "git" in provenance, "Condition must be true"
+    assert "lock_sha256" in provenance, "Condition must be true"

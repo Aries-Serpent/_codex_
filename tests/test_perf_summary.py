@@ -18,4 +18,4 @@ def test_perf_summary(tmp_path, monkeypatch):
 
     summarize()
     out = json.loads((tmp_path / "audit_artifacts/perf_summary.json").read_text())
-    assert out["cpu_mean"] == 15.0 and out["mem_mean"] == 35.0
+    assert out["cpu_mean"] == 15.0 and out["mem_mean"] == 35.0, "Condition must be true"

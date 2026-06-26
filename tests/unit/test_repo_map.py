@@ -50,18 +50,18 @@ def test_repo_map_lists_visible_top_level_entries() -> None:
     runner = CliRunner()
     result = runner.invoke(codex, ["repo-map"])
 
-    assert result.exit_code == 0
+    assert result.exit_code == 0, "Result must not be empty"
     lines = [line for line in result.output.splitlines() if line.strip()]
     assert lines, "expected repo-map to emit at least one entry"
 
     entries = [line.split()[-1] for line in lines]
-    assert all(not entry.startswith(".") for entry in entries)
-    assert any(entry.endswith("/") for entry in entries)
+    assert all(not entry.startswith(".") for entry in entries), "Condition must be true"
+    assert any(entry.endswith("/") for entry in entries), "Condition must be true"
 
     repo_root = Path(__file__).resolve().parents[2]
     for entry in entries:
         name = entry.rstrip("/")
-        assert (repo_root / name).exists()
+        assert (repo_root / name).exists(), "Condition must be true"
 
 
 def test_repo_map_reasoning_view_includes_control_surface() -> None:
@@ -72,8 +72,8 @@ def test_repo_map_reasoning_view_includes_control_surface() -> None:
     runner = CliRunner()
     result = runner.invoke(codex, ["repo-map", "--reasoning"])
 
-    assert result.exit_code == 0
+    assert result.exit_code == 0, "Result must not be empty"
     output = result.output
-    assert "reasoning_status:" in output
-    assert "trace_mode" in output
-    assert "metadata.rollout_ring" in output
+    assert "reasoning_status:" in output, "Condition must be true"
+    assert "trace_mode" in output, "Condition must be true"
+    assert "metadata.rollout_ring" in output, "Data must not be empty"

@@ -28,11 +28,11 @@ def test_train_tokenizer_smoke(tmp_path):
         workers=1,
     )
     out = train(cfg)
-    assert (out / "tokenizer.json").exists()
-    assert (out / "manifest.json").exists()
-    assert (out / "spm.model").exists()
-    assert (out / "spm.vocab").exists()
+    assert (out / "tokenizer.json").exists(), "Condition must be true"
+    assert (out / "manifest.json").exists(), "Condition must be true"
+    assert (out / "spm.model").exists(), "Condition must be true"
+    assert (out / "spm.vocab").exists(), "Condition must be true"
     tok = Tokenizer.from_file(str(out / "tokenizer.json"))
-    assert tok.get_vocab_size() <= cfg.vocab_size + 4
+    assert tok.get_vocab_size() <= cfg.vocab_size + 4, "Condition must be true"
     manifest = json.loads((out / "manifest.json").read_text())
-    assert manifest.get("hash")
+    assert manifest.get("hash"), "Condition must be true"

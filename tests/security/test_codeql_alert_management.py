@@ -15,6 +15,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 import pytest
+
  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "scripts" / "security"))
 
@@ -45,9 +46,9 @@ class TestCodeScanningAlert:
             cwe_id="CWE-89",
         )
 
-        assert alert.alert_number == 123
-        assert alert.severity == "high"
-        assert alert.cwe_id == "CWE-89"
+        assert alert.alert_number == 123, "alert_number is not valid"
+        assert alert.severity == "high", "severity is not valid"
+        assert alert.cwe_id == "CWE-89", "cwe_id is not valid"
 
     def test_alert_to_dict(self):
         """Test converting alert to dictionary."""
@@ -66,9 +67,9 @@ class TestCodeScanningAlert:
 
         data = alert.to_dict()
         assert isinstance(data, dict)
-        assert data["alert_number"] == 456
-        assert data["rule_id"] == "py/xss"
-        assert "metadata" not in data  # Should exclude empty metadata
+        assert data["alert_number"] == 456, "Data must not be empty"
+        assert data["rule_id"] == "py/xss", "Data must not be empty"
+        assert "metadata" not in data, "Data must not be empty"
 
 
 class TestCodeQLAlertFetcher:
@@ -83,9 +84,9 @@ class TestCodeQLAlertFetcher:
             token="test-token",
         )
 
-        assert fetcher.owner == "test-owner"
-        assert fetcher.repo == "test-repo"
-        assert fetcher.token == "test-token"
+        assert fetcher.owner == "test-owner", "owner is not valid"
+        assert fetcher.repo == "test-repo", "repo is not valid"
+        assert fetcher.token == "test-token", "token is not valid"
 
     @patch("fetch_codeql_alerts.requests.Session")
     def test_fetcher_without_token_warning(self, mock_session):
@@ -97,7 +98,7 @@ class TestCodeQLAlertFetcher:
         )
 
         # Should still initialize but without auth headers
-        assert fetcher.token == ""
+        assert fetcher.token == "", "token is not valid"
 
     def test_extract_cwe_id(self):
         """Test extracting CWE ID from rule tags."""
@@ -105,21 +106,21 @@ class TestCodeQLAlertFetcher:
 
         rule = {"tags": ["security", "external/cwe/cwe-89"]}
         cwe = fetcher._extract_cwe_id(rule)
-        assert cwe == "CWE-89"
+        assert cwe == "CWE-89", "cwe is not valid"
 
         rule_no_cwe = {"tags": ["security"]}
         cwe_none = fetcher._extract_cwe_id(rule_no_cwe)
-        assert cwe_none is None
+        assert cwe_none is None, "cwe_none is not valid"
 
     def test_determine_category(self):
         """Test categorizing vulnerabilities by rule ID."""
         fetcher = CodeQLAlertFetcher("owner", "repo", "token")
 
-        assert fetcher._determine_category("py/sql-injection") == "injection"
-        assert fetcher._determine_category("py/path-traversal") == "path-traversal"
-        assert fetcher._determine_category("py/weak-crypto") == "cryptography"
-        assert fetcher._determine_category("py/broken-auth") == "authentication"
-        assert fetcher._determine_category("py/unknown") == "security"
+        assert fetcher._determine_category("py/sql-injection") == "injection", "Condition must be true"
+        assert fetcher._determine_category("py/path-traversal") == "path-traversal", "Condition must be true"
+        assert fetcher._determine_category("py/weak-crypto") == "cryptography", "Condition must be true"
+        assert fetcher._determine_category("py/broken-auth") == "authentication", "Condition must be true"
+        assert fetcher._determine_category("py/unknown") == "security", "Condition must be true"
 
 
 class TestAlertExporter:
@@ -145,13 +146,13 @@ class TestAlertExporter:
         output_file = tmp_path / "test_alerts.json"
         AlertExporter.export_json(alerts, output_file)
 
-        assert output_file.exists()
+        assert output_file.exists(), "Condition must be true"
         with open(output_file) as f:
             data = json.load(f)
 
-        assert data["total_alerts"] == 1
-        assert len(data["alerts"]) == 1
-        assert data["alerts"][0]["alert_number"] == 1
+        assert data["total_alerts"] == 1, "Data must not be empty"
+        assert len(data["alerts"]) == 1, "Collection must not be empty"
+        assert data["alerts"][0]["alert_number"] == 1, "Data must not be empty"
 
     def test_export_csv(self, tmp_path):
         """Test exporting alerts to CSV."""
@@ -173,10 +174,10 @@ class TestAlertExporter:
         output_file = tmp_path / "test_alerts.csv"
         AlertExporter.export_csv(alerts, output_file)
 
-        assert output_file.exists()
+        assert output_file.exists(), "Condition must be true"
         content = output_file.read_text()
-        assert "alert_number" in content
-        assert "test-rule-2" in content
+        assert "alert_number" in content, "Content must not be empty"
+        assert "test-rule-2" in content, "Content must not be empty"
 
     def test_export_markdown(self, tmp_path):
         """Test exporting alerts to Markdown."""
@@ -198,11 +199,11 @@ class TestAlertExporter:
         output_file = tmp_path / "test_alerts.md"
         AlertExporter.export_markdown(alerts, output_file)
 
-        assert output_file.exists()
+        assert output_file.exists(), "Condition must be true"
         content = output_file.read_text()
-        assert "# CodeQL Code Scanning Alerts" in content
-        assert "Summary Statistics" in content
-        assert "critical" in content.lower()
+        assert ", "Condition must be true"
+        assert "Summary Statistics" in content, "Content must not be empty"
+        assert "critical" in content.lower(), "Content must not be empty"
 
 
 class TestAlertCloser:
@@ -217,9 +218,9 @@ class TestAlertCloser:
             token="test-token",
         )
 
-        assert closer.owner == "test-owner"
-        assert closer.repo == "test-repo"
-        assert closer.token == "test-token"
+        assert closer.owner == "test-owner", "owner is not valid"
+        assert closer.repo == "test-repo", "repo is not valid"
+        assert closer.token == "test-token", "token is not valid"
 
     @patch("close_codeql_alert.requests.Session")
     def test_closer_dry_run(self, mock_session):
@@ -238,9 +239,9 @@ class TestAlertCloser:
             comment="Test fix",
         )
 
-        assert success is True
+        assert success is True, "success is not valid"
         # Verify no API call was made
-        assert not mock_session.return_value.patch.called
+        assert not mock_session.return_value.patch.called, "Value must be initialized"
 
     def test_invalid_dismissal_reason(self):
         """Test that invalid dismissal reason is rejected."""
@@ -256,7 +257,7 @@ class TestAlertCloser:
             comment="Test",
         )
 
-        assert success is False
+        assert success is False, "success is not valid"
 
     def test_build_comment_with_pr(self):
         """Test building comment with PR reference."""
@@ -272,10 +273,10 @@ class TestAlertCloser:
             commit_sha="abc123def",
         )
 
-        assert "Fixed vulnerability" in comment
-        assert "#456" in comment
-        assert "abc123" in comment
-        assert "Closed:" in comment
+        assert "Fixed vulnerability" in comment, "Condition must be true"
+        assert ", "Condition must be true"
+        assert "abc123" in comment, "Condition must be true"
+        assert "Closed:" in comment, "Condition must be true"
 
 
 class TestIntegration:

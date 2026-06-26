@@ -79,17 +79,17 @@ def test_encode_decode_roundtrip(monkeypatch: pytest.MonkeyPatch, tmp_path: Path
     adapter = SentencePieceAdapter(model)
 
     ids = adapter.encode("hello", padding="max_length", truncation="only_first", max_length=6)
-    assert len(ids) == 6
+    assert len(ids) == 6, "Ids must not be empty"
     # pad id propagated from stub
-    assert ids[-1] == 7
+    assert ids[-1] == 7, "Condition must be true"
 
     decoded = adapter.decode(ids[:5])
-    assert decoded == "hello"
+    assert decoded == "hello", "decoded is not valid"
 
     # round-trip via batch_encode helpers
     batch = adapter.batch_encode(["hi", "codex"], padding="max_length", max_length=5)
-    assert batch[0][-1] == 7
-    assert adapter.decode(batch[1][:5]) == "codex"
+    assert batch[0][-1] == 7, "Condition must be true"
+    assert adapter.decode(batch[1][:5]) == "codex", "Condition must be true"
 
 
 def test_load_allows_reuse(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
@@ -103,7 +103,7 @@ def test_load_allows_reuse(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> N
     # drop processor to ensure load() repopulates
     adapter.sp = None
     adapter.load()
-    assert adapter.sp is not None
+    assert adapter.sp is not None, "sp must be initialized"
     assert getattr(adapter.sp, "model_file", None) == str(model)
 
 
@@ -117,7 +117,7 @@ def test_pad_id_fallbacks_to_zero(monkeypatch: pytest.MonkeyPatch, tmp_path: Pat
     adapter = SentencePieceAdapter(model)
 
     ids = adapter.encode("ok", padding="max_length", max_length=5)
-    assert ids[-1] == 0
+    assert ids[-1] == 0, "Condition must be true"
 
 
 def test_decode_accepts_iterable(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
@@ -132,7 +132,7 @@ def test_decode_accepts_iterable(monkeypatch: pytest.MonkeyPatch, tmp_path: Path
     ids = adapter.encode("iterable", padding="max_length", max_length=9)
     # convert to generator to ensure the helper eagerly realises values
     decoded = adapter.decode(i for i in ids[:8])
-    assert decoded == "iterable"
+    assert decoded == "iterable", "decoded is not valid"
 
 
 def test_add_special_tokens_persists_map(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
@@ -145,16 +145,16 @@ def test_add_special_tokens_persists_map(monkeypatch: pytest.MonkeyPatch, tmp_pa
     adapter = SentencePieceAdapter(model)
 
     mapping = adapter.add_special_tokens(["<pad>", "<bos>"])
-    assert mapping["<pad>"] == 13
-    assert mapping["<bos>"] == 14
+    assert mapping["<pad>"] == 13, "Condition must be true"
+    assert mapping["<bos>"] == 14, "Condition must be true"
 
     sidecar = model.with_suffix(".special_tokens.json")
-    assert sidecar.exists()
+    assert sidecar.exists(), "Condition must be true"
     persisted = json.loads(sidecar.read_text(encoding="utf-8"))
-    assert persisted == mapping
+    assert persisted == mapping, "persisted is not valid"
 
     adapter_again = SentencePieceAdapter(model)
     updated = adapter_again.add_special_tokens(["<bos>", "<eos>"])
-    assert updated["<pad>"] == 13
-    assert updated["<bos>"] == 14
-    assert updated["<eos>"] == 15
+    assert updated["<pad>"] == 13, "Condition must be true"
+    assert updated["<bos>"] == 14, "Condition must be true"
+    assert updated["<eos>"] == 15, "Condition must be true"

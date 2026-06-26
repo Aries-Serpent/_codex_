@@ -50,6 +50,6 @@ def test_logging_bootstrap_initialization(monkeypatch, tmp_path):
     loggers = cl._codex_logging_bootstrap(argparse.Namespace(hydra_cfg=cfg))
 
     assert isinstance(loggers.tb, DummyWriter)
-    assert loggers.wb is not None
-    assert calls["wb"]["mode"] == "offline" and calls["wb"]["project"] == "proj"
+    assert loggers.wb is not None, "wb must be initialized"
+    assert calls["wb"]["mode"] == "offline" and calls["wb"]["project"] == "proj", "Condition must be true"
     assert loggers.mlflow_active and calls["ml_uri"] == "uri" and calls["ml_exp"] == "exp"

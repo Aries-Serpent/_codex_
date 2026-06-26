@@ -52,9 +52,9 @@ def test_registry_lists_generative_names():
     available = list_metrics()
 
     # Check that generative metrics are registered
-    assert "bleu" in available
+    assert "bleu" in available, "Condition must be true"
     # Note: Registry key is lowercase "rougel" but decorator is "rougeL"
-    assert "rougel" in [m.lower() for m in available]
+    assert "rougel" in [m.lower() for m in available], "Condition must be true"
 
 
 def test_runner_no_generative_dependency_required(tmp_path: Path):
@@ -81,9 +81,9 @@ def test_runner_no_generative_dependency_required(tmp_path: Path):
 
     # Should succeed without generative dependencies
     result = run_evaluation(cfg)
-    assert "metrics" in result
-    assert "exact_match" in result["metrics"]
-    assert "f1" in result["metrics"]
+    assert "metrics" in result, "Result must not be empty"
+    assert "exact_match" in result["metrics"], "Result must not be empty"
+    assert "f1" in result["metrics"], "Result must not be empty"
 
 
 def test_bleu_metric_with_identical_inputs():
@@ -98,7 +98,7 @@ def test_bleu_metric_with_identical_inputs():
     # Should be None (deps missing) or 1.0 (perfect match)
     if result is not None:
         assert isinstance(result, (int, float))
-        assert result >= 0.99  # Allow for floating point precision
+        assert result >= 0.99, "result must be greater than zero"
 
 
 def test_rouge_metric_with_identical_inputs():
@@ -113,7 +113,7 @@ def test_rouge_metric_with_identical_inputs():
     # Should be None (deps missing) or close to 1.0 (perfect match)
     if result is not None:
         assert isinstance(result, (int, float))
-        assert result >= 0.99  # Allow for floating point precision
+        assert result >= 0.99, "result must be greater than zero"
 
 
 def test_runner_handles_rouge_float_return(tmp_path: Path, monkeypatch):
@@ -147,7 +147,7 @@ def test_runner_handles_rouge_float_return(tmp_path: Path, monkeypatch):
     )
 
     result = run_evaluation(cfg)
-    assert result["metrics"]["rouge_l"] == 0.95
+    assert result["metrics"]["rouge_l"] == 0.95, "Result must not be empty"
 
 
 def test_runner_handles_rouge_dict_return(tmp_path: Path, monkeypatch):
@@ -180,4 +180,4 @@ def test_runner_handles_rouge_dict_return(tmp_path: Path, monkeypatch):
     )
 
     result = run_evaluation(cfg)
-    assert result["metrics"]["rouge_l"] == 0.88
+    assert result["metrics"]["rouge_l"] == 0.88, "Result must not be empty"

@@ -165,7 +165,7 @@ class MLPScorer:
                 )
             except (ValueError, TypeError, RuntimeError) as e:
                 error_type = type(e).__name__
-                logger.error(f"Error during forward pass: <ERROR_TYPE>")
+                logger.error("Error during forward pass: <ERROR_TYPE>")
                 raise
 
         # Remove hooks

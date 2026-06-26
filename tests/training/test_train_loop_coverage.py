@@ -255,7 +255,7 @@ class TestCheckpointSavingLoading:
 
         loaded = load_checkpoint(checkpoint_path)
         assert "metadata" in loaded, "Metadata should be saved"
-        assert loaded["metadata"]["training_args"]["lr"] == 0.001
+        assert loaded["metadata"]["training_args"]["lr"] == 0.001, "Data must not be empty"
 
     def test_resume_from_checkpoint(self, simple_model, temp_checkpoint_dir, simple_dataloader):
         """Test resuming training from checkpoint."""
@@ -426,11 +426,11 @@ class TestTrainingConfiguration:
         """Test optimizer configuration."""
         # Test different optimizers
         adam = Adam(simple_model.parameters(), lr=0.001)
-        assert adam.defaults["lr"] == 0.001
+        assert adam.defaults["lr"] == 0.001, "Condition must be true"
 
         sgd = torch.optim.SGD(simple_model.parameters(), lr=0.01, momentum=0.9)
-        assert sgd.defaults["lr"] == 0.01
-        assert sgd.defaults["momentum"] == 0.9
+        assert sgd.defaults["lr"] == 0.01, "Condition must be true"
+        assert sgd.defaults["momentum"] == 0.9, "Condition must be true"
 
     def test_learning_rate_scheduling(self, simple_model):
         """Test learning rate scheduling."""
@@ -441,7 +441,7 @@ class TestTrainingConfiguration:
 
         # Initial LR
         initial_lr = optimizer.param_groups[0]["lr"]
-        assert initial_lr == 0.1
+        assert initial_lr == 0.1, "initial_lr is not valid"
 
         # After 2 steps
         scheduler.step()

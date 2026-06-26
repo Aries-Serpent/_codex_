@@ -408,7 +408,7 @@ class EmbeddingCache:
             np.save(file_path, entry.embedding)
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.warning(f"Failed to save to disk cache: <ERROR_TYPE>")
+            logger.warning("Failed to save to disk cache: <ERROR_TYPE>")
 
     def _load_from_disk(self, key: str) -> Optional[np.ndarray]:
         """Load entry from disk cache."""
@@ -421,7 +421,7 @@ class EmbeddingCache:
                 return np.load(file_path)
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.warning(f"Failed to load from disk cache: <ERROR_TYPE>")
+            logger.warning("Failed to load from disk cache: <ERROR_TYPE>")
 
         return None
 

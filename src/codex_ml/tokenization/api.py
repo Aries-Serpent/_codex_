@@ -200,8 +200,8 @@ def deprecated_legacy_access(name: str):
         value = provider()
     except ModuleNotFoundError as e:
         error_type = type(e).__name__
-        logger.debug(f"ModuleNotFoundError: <ERROR_TYPE>")
-        logger.warning(f"ModuleNotFoundError: <ERROR_TYPE>", exc_info=True)
+        logger.debug("ModuleNotFoundError: <ERROR_TYPE>")
+        logger.warning("ModuleNotFoundError: <ERROR_TYPE>", exc_info=True)
         raise
     except (ImportError, AttributeError):
         logger.warning("Exception occurred", exc_info=True)

@@ -33,7 +33,7 @@ class TestClockAbstraction:
             # Set a custom clock
             set_clock(lambda: "2025-01-01T00:00:00")
             result = get_timestamp()
-            assert result == "2025-01-01T00:00:00"
+            assert result == "2025-01-01T00:00:00", "Result must not be empty"
         finally:
             reset_clock()
 
@@ -44,7 +44,7 @@ class TestClockAbstraction:
         try:
             custom_time = "2025-06-15T12:30:00"
             set_clock(lambda: custom_time)
-            assert get_timestamp() == custom_time
+            assert get_timestamp() == custom_time, "Condition must be true"
         finally:
             reset_clock()
 
@@ -67,16 +67,16 @@ class TestNodeType:
         """Test all expected node types exist."""
         from agents.mental_mapping import NodeType
 
-        assert NodeType.PROBLEM.value == "problem"
-        assert NodeType.HYPOTHESIS.value == "hypothesis"
-        assert NodeType.EVIDENCE.value == "evidence"
+        assert NodeType.PROBLEM.value == "problem", "Value must be initialized"
+        assert NodeType.HYPOTHESIS.value == "hypothesis", "Value must be initialized"
+        assert NodeType.EVIDENCE.value == "evidence", "Value must be initialized"
 
     def test_node_type_iteration(self):
         """Test that NodeType is iterable."""
         from agents.mental_mapping import NodeType
 
         types = list(NodeType)
-        assert len(types) >= 3  # At least PROBLEM, HYPOTHESIS, EVIDENCE
+        assert len(types) >= 3, "Types must not be empty"
 
 
 class TestReasoningChain:
@@ -100,8 +100,8 @@ class TestReasoningChain:
             steps=["step1", "step2"],
             conclusion="final answer",
         )
-        assert chain.chain_id == "chain-1"
-        assert len(chain.steps) == 2
+        assert chain.chain_id == "chain-1", "chain_id is not valid"
+        assert len(chain.steps) == 2, "Collection must not be empty"
 
     def test_reasoning_chain_defaults(self, ReasoningChain):
         """Test reasoning chain with default values."""
@@ -110,8 +110,8 @@ class TestReasoningChain:
             steps=[],
             conclusion="",
         )
-        assert chain.chain_id == "chain-1"
-        assert chain.steps == []
+        assert chain.chain_id == "chain-1", "chain_id is not valid"
+        assert chain.steps == [], "steps is not valid"
 
 
 class TestMentalMapNode:
@@ -145,8 +145,8 @@ class TestMentalMapNode:
             node_type=NodeType.PROBLEM,
             content="What is the solution?",
         )
-        assert node.node_type == NodeType.PROBLEM
-        assert "solution" in node.content
+        assert node.node_type == NodeType.PROBLEM, "node_type is not valid"
+        assert "solution" in node.content, "Content must not be empty"
 
     def test_create_hypothesis_node(self, MentalMapNode, NodeType):
         """Test creating a hypothesis node."""
@@ -155,7 +155,7 @@ class TestMentalMapNode:
             node_type=NodeType.HYPOTHESIS,
             content="The solution might be X",
         )
-        assert node.node_type == NodeType.HYPOTHESIS
+        assert node.node_type == NodeType.HYPOTHESIS, "node_type is not valid"
 
     def test_create_evidence_node(self, MentalMapNode, NodeType):
         """Test creating an evidence node."""
@@ -164,7 +164,7 @@ class TestMentalMapNode:
             node_type=NodeType.EVIDENCE,
             content="Data supports hypothesis",
         )
-        assert node.node_type == NodeType.EVIDENCE
+        assert node.node_type == NodeType.EVIDENCE, "node_type is not valid"
 
 
 class TestMentalMap:
@@ -191,7 +191,7 @@ class TestMentalMap:
     def test_create_mental_map(self, MentalMap):
         """Test creating a mental map."""
         mental_map = MentalMap()
-        assert mental_map is not None
+        assert mental_map is not None, "mental_map must be initialized"
 
     def test_mental_map_create_node(self, MentalMap, NodeType):
         """Test creating a node in mental map."""
@@ -200,8 +200,8 @@ class TestMentalMap:
             node_type=NodeType.PROBLEM,
             content="Test problem",
         )
-        assert node is not None
-        assert node.node_id is not None
+        assert node is not None, "node must be initialized"
+        assert node.node_id is not None, "node_id must be initialized"
 
     def test_mental_map_get_node(self, MentalMap, NodeType):
         """Test getting a node from mental map."""
@@ -211,8 +211,8 @@ class TestMentalMap:
             content="Test problem",
         )
         retrieved = mental_map.nodes.get(node.node_id)
-        assert retrieved is not None
-        assert retrieved.content == "Test problem"
+        assert retrieved is not None, "retrieved must be initialized"
+        assert retrieved.content == "Test problem", "Content must not be empty"
 
     def test_mental_map_connect_nodes(self, MentalMap, NodeType):
         """Test connecting nodes in mental map."""
@@ -223,7 +223,7 @@ class TestMentalMap:
         edge = mental_map.connect_nodes(source_id=node1.node_id, target_id=node2.node_id)
 
         # Edge should exist
-        assert edge is not None
+        assert edge is not None, "edge must be initialized"
 
     def test_mental_map_to_dict(self, MentalMap, NodeType):
         """Test serializing mental map to dict."""
@@ -233,7 +233,7 @@ class TestMentalMap:
         result = mental_map.to_dict()
 
         assert isinstance(result, dict)
-        assert "nodes" in result or len(result) > 0
+        assert "nodes" in result or len(result) > 0, "Result must not be empty"
 
 
 class TestSelfAppraisal:
@@ -257,7 +257,7 @@ class TestSelfAppraisal:
             confidence_score=0.85,
             reasoning="Based on evidence",
         )
-        assert appraisal.confidence_score == 0.85
+        assert appraisal.confidence_score == 0.85, "confidence_score is not valid"
 
 
 class TestDecisionPath:
@@ -281,5 +281,5 @@ class TestDecisionPath:
             steps=["analyze", "hypothesize", "verify"],
             outcome="success",
         )
-        assert len(path.steps) == 3
-        assert path.outcome == "success"
+        assert len(path.steps) == 3, "Collection must not be empty"
+        assert path.outcome == "success", "outcome is not valid"

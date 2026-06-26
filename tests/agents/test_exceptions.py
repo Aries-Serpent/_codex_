@@ -31,7 +31,7 @@ class TestPackageConstant:
     """Tests for PACKAGE_NAME constant."""
 
     def test_package_name_value(self) -> None:
-        assert PACKAGE_NAME == "codex-ml"
+        assert PACKAGE_NAME == "codex-ml", "PACKAGE_NAME is not valid"
 
     def test_package_name_is_string(self) -> None:
         assert isinstance(PACKAGE_NAME, str)
@@ -46,7 +46,7 @@ class TestAgentError:
 
     def test_message(self) -> None:
         error = AgentError("Custom message")
-        assert str(error) == "Custom message"
+        assert str(error) == "Custom message", "Error should be raised or set"
 
     def test_inheritance(self) -> None:
         assert issubclass(AgentError, Exception)
@@ -57,25 +57,25 @@ class TestAgentImportError:
 
     def test_basic_error(self) -> None:
         error = AgentImportError("numpy")
-        assert "numpy" in str(error)
-        assert error.module_name == "numpy"
-        assert error.package_name == "numpy"
+        assert "numpy" in str(error), "Error should be raised or set"
+        assert error.module_name == "numpy", "Error should be raised or set"
+        assert error.package_name == "numpy", "Error should be raised or set"
 
     def test_with_package_name(self) -> None:
         error = AgentImportError("np", package_name="numpy")
-        assert error.module_name == "np"
-        assert error.package_name == "numpy"
-        assert "numpy" in str(error)
+        assert error.module_name == "np", "Error should be raised or set"
+        assert error.package_name == "numpy", "Error should be raised or set"
+        assert "numpy" in str(error), "Error should be raised or set"
 
     def test_with_extra(self) -> None:
         error = AgentImportError("torch", extra="ml")
-        assert "ml" in str(error)
-        assert f"pip install {PACKAGE_NAME}[ml]" in str(error)
-        assert error.extra == "ml"
+        assert "ml" in str(error), "Error should be raised or set"
+        assert f"pip install {PACKAGE_NAME}[ml]" in str(error), "Error should be raised or set"
+        assert error.extra == "ml", "Error should be raised or set"
 
     def test_without_extra(self) -> None:
         error = AgentImportError("scipy")
-        assert "pip install scipy" in str(error)
+        assert "pip install scipy" in str(error), "Error should be raised or set"
 
     def test_inheritance(self) -> None:
         assert issubclass(AgentImportError, AgentError)

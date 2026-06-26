@@ -23,10 +23,10 @@ def test_validate_minimal_plan() -> None:
             ],
         }
     )
-    assert plan.resource == "fields"
+    assert plan.resource == "fields", "resource is not valid"
     first_operation = plan.operations[0]
-    assert first_operation.op == "add"
-    assert first_operation.path == "/fields/New%20Field"
+    assert first_operation.op == "add", "op is not valid"
+    assert first_operation.path == "/fields/New%20Field", "path is not valid"
 
 
 def test_reject_scalar_plan() -> None:
@@ -50,8 +50,8 @@ def test_validate_patch_operation() -> None:
         }
     )
     patch_operation = plan.operations[0]
-    assert patch_operation.op == "patch"
-    assert patch_operation.patches[0].path == "/position"
+    assert patch_operation.op == "patch", "op is not valid"
+    assert patch_operation.patches[0].path == "/position", "path is not valid"
 
 
 def test_validate_action_style_operations() -> None:
@@ -83,8 +83,8 @@ def test_validate_action_style_operations() -> None:
     )
 
     create, update, delete = plan.operations
-    assert create.op == "add"
-    assert create.value == {"title": "Create Macro"}
-    assert update.op == "patch"
-    assert update.patches[0].path == "/title"
-    assert delete.op == "remove"
+    assert create.op == "add", "op is not valid"
+    assert create.value == {"title": "Create Macro"}, "Value must be initialized"
+    assert update.op == "patch", "op is not valid"
+    assert update.patches[0].path == "/title", "path is not valid"
+    assert delete.op == "remove", "op is not valid"

@@ -47,8 +47,8 @@ try:
     DataLoader = torch.utils.data.DataLoader
 except ImportError as e:
     error_type = type(e).__name__
-    logger.debug(f"ImportError: <ERROR_TYPE>")
-    logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
+    logger.debug("ImportError: <ERROR_TYPE>")
+    logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
     torch = None
     DataLoader = None
 
@@ -164,7 +164,7 @@ class EvaluationRunner:
                     return {self.name: float(result)}
                 except (ValueError, TypeError, RuntimeError) as e:
                     error_type = type(e).__name__
-                    logger.debug(f"Exception: <ERROR_TYPE>")
+                    logger.debug("Exception: <ERROR_TYPE>")
                     logger.debug("Exception caught, returning", exc_info=True)
                     return {f"{self.name}_error": str(e)}
 
@@ -273,7 +273,7 @@ class EvaluationRunner:
                 metric_results.update(computed)
             except (ValueError, TypeError, RuntimeError) as e:
                 error_type = type(e).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.debug("Exception: <ERROR_TYPE>")
                 print(f"Warning: Metric {metric.name} failed: <ERROR_TYPE>")
                 metric_results[f"{metric.name}_error"] = str(e)
 
@@ -367,8 +367,8 @@ class EvaluationRunner:
             print("Logged results to tracking writer")
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            print(f"Warning: Failed to log to tracking writer: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
+            print("Warning: Failed to log to tracking writer: <ERROR_TYPE>")
 
 
 class _nullcontext:

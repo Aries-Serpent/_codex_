@@ -24,17 +24,17 @@ class TestIssueType:
         """Test all expected issue types exist."""
         from agents.self_healing import IssueType
 
-        assert IssueType.TEST_FAILURE.value == "test_failure"
-        assert IssueType.BUILD_FAILURE.value == "build_failure"
-        assert IssueType.DEPENDENCY_CONFLICT.value == "dependency_conflict"
-        assert IssueType.SECURITY_VULNERABILITY.value == "security_vulnerability"
+        assert IssueType.TEST_FAILURE.value == "test_failure", "Value must be initialized"
+        assert IssueType.BUILD_FAILURE.value == "build_failure", "Value must be initialized"
+        assert IssueType.DEPENDENCY_CONFLICT.value == "dependency_conflict", "Value must be initialized"
+        assert IssueType.SECURITY_VULNERABILITY.value == "security_vulnerability", "Value must be initialized"
 
     def test_issue_type_iteration(self):
         """Test that IssueType is iterable."""
         from agents.self_healing import IssueType
 
         types = list(IssueType)
-        assert len(types) >= 4
+        assert len(types) >= 4, "Types must not be empty"
 
 
 class TestIssueSeverity:
@@ -44,18 +44,18 @@ class TestIssueSeverity:
         """Test all expected severity levels exist."""
         from agents.self_healing import IssueSeverity
 
-        assert IssueSeverity.CRITICAL.value == "critical"
-        assert IssueSeverity.HIGH.value == "high"
-        assert IssueSeverity.MEDIUM.value == "medium"
-        assert IssueSeverity.LOW.value == "low"
-        assert IssueSeverity.INFO.value == "info"
+        assert IssueSeverity.CRITICAL.value == "critical", "Value must be initialized"
+        assert IssueSeverity.HIGH.value == "high", "Value must be initialized"
+        assert IssueSeverity.MEDIUM.value == "medium", "Value must be initialized"
+        assert IssueSeverity.LOW.value == "low", "Value must be initialized"
+        assert IssueSeverity.INFO.value == "info", "Value must be initialized"
 
     def test_severity_ordering(self):
         """Test severity levels can be compared."""
         from agents.self_healing import IssueSeverity
 
         # Enums can be compared by name
-        assert IssueSeverity.CRITICAL.name == "CRITICAL"
+        assert IssueSeverity.CRITICAL.name == "CRITICAL", "name is not valid"
 
 
 class TestDetectedIssue:
@@ -89,8 +89,8 @@ class TestDetectedIssue:
             severity=IssueSeverity.HIGH,
             description="Test failed due to assertion error",
         )
-        assert issue.issue_type == IssueType.TEST_FAILURE
-        assert issue.severity == IssueSeverity.HIGH
+        assert issue.issue_type == IssueType.TEST_FAILURE, "issue_type is not valid"
+        assert issue.severity == IssueSeverity.HIGH, "severity is not valid"
 
     def test_issue_with_location(self, DetectedIssue, IssueType, IssueSeverity):
         """Test issue with file location."""
@@ -102,8 +102,8 @@ class TestDetectedIssue:
             file_path=Path("tests/test_example.py"),
             line_number=42,
         )
-        assert issue.location == "tests/test_example.py"
-        assert issue.line_number == 42
+        assert issue.location == "tests/test_example.py", "location is not valid"
+        assert issue.line_number == 42, "line_number is not valid"
 
     def test_issue_with_context(self, DetectedIssue, IssueType, IssueSeverity):
         """Test issue with context data."""
@@ -113,7 +113,7 @@ class TestDetectedIssue:
             description="Package version conflict",
             context={"package": "numpy", "required": "1.24.0", "found": "1.23.0"},
         )
-        assert issue.context["package"] == "numpy"
+        assert issue.context["package"] == "numpy", "Condition must be true"
 
     def test_issue_timestamp_auto_generated(self, DetectedIssue, IssueType, IssueSeverity):
         """Test that detected_at timestamp is auto-generated."""
@@ -122,7 +122,7 @@ class TestDetectedIssue:
             severity=IssueSeverity.LOW,
             description="Code style violation",
         )
-        assert issue.detected_at is not None
+        assert issue.detected_at is not None, "detected_at must be initialized"
         # Should be parseable as ISO format
         datetime.fromisoformat(issue.detected_at)
 
@@ -148,8 +148,8 @@ class TestRemediationAction:
             description="Update package version",
             command="pip install numpy==1.24.0",
         )
-        assert action.action_type == "update_dependency"
-        assert "pip install" in action.command
+        assert action.action_type == "update_dependency", "action_type is not valid"
+        assert "pip install" in action.command, "Condition must be true"
 
 
 class TestSelfHealingEngine:
@@ -169,7 +169,7 @@ class TestSelfHealingEngine:
     def test_create_engine(self, SelfHealingEngine):
         """Test creating a self-healing engine."""
         engine = SelfHealingEngine()
-        assert engine is not None
+        assert engine is not None, "engine must be initialized"
 
     def test_engine_diagnose_method(self, SelfHealingEngine):
         """Test engine has diagnose method."""
@@ -188,7 +188,7 @@ class TestSelfHealingEngine:
         # Should not raise
         if hasattr(engine, "diagnose"):
             result = engine.diagnose(test_output)
-            assert result is not None
+            assert result is not None, "result must be initialized"
 
 
 class TestDiagnosticResult:
@@ -211,5 +211,5 @@ class TestDiagnosticResult:
             issues=[],
             health_score=1.0,
         )
-        assert result.health_score == 1.0
-        assert len(result.issues) == 0
+        assert result.health_score == 1.0, "Result must not be empty"
+        assert len(result.issues) == 0, "Collection must not be empty"

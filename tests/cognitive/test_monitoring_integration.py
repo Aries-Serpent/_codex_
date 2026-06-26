@@ -83,19 +83,19 @@ class TestPipelineHealthySystem:
         sensor, proposer, validator, sf = pipeline
         _write_state(sf, {"wf_a": {"last_status": "success"}, "wf_b": {"last_status": "success"}})
         failures = sensor.get_active_failures()
-        assert failures == []
+        assert failures == [], "failures is not valid"
 
     def test_healthy_system_propose_returns_empty(self, pipeline):
         sensor, proposer, validator, sf = pipeline
         _write_state(sf, {"wf_a": {"last_status": "success"}})
         actions = proposer.propose_actions(sensor.get_active_failures())
-        assert actions == []
+        assert actions == [], "actions is not valid"
 
     def test_healthy_system_no_action_recommended(self, pipeline):
         sensor, proposer, validator, sf = pipeline
         _write_state(sf, {"wf_a": {"last_status": "success"}, "wf_b": {"last_status": "success"}})
         should_act, _, _ = sensor.should_propose_action()
-        assert should_act is False
+        assert should_act is False, "should_act is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -118,11 +118,11 @@ class TestPipelineCriticalFailure:
             },
         )
         failures = sensor.get_active_failures()
-        assert len(failures) == 1
+        assert len(failures) == 1, "Failures must not be empty"
         actions = proposer.propose_actions(failures)
-        assert len(actions) == 1
-        assert actions[0]["action_type"] == "rerun_workflow"
-        assert actions[0]["confidence"] >= proposer.confidence_threshold
+        assert len(actions) == 1, "Actions must not be empty"
+        assert actions[0]["action_type"] == "rerun_workflow", "Condition must be true"
+        assert actions[0]["confidence"] >= proposer.confidence_threshold, "Value must be greater than zero"
 
     def test_dry_run_execution_returns_simulated(self, pipeline):
         # consecutive=8, failure_rate=0.9 → severity=0.84 ≥ 0.8 AND consecutive ≥ 3
@@ -134,7 +134,7 @@ class TestPipelineCriticalFailure:
         )
         actions = proposer.propose_actions(sensor.get_active_failures())
         results = [proposer.execute_action(a, dry_run=True) for a in actions]
-        assert all(r["status"] == "simulated" for r in results)
+        assert all(r["status"] == "simulated" for r in results), "Result must not be empty"
 
     def test_live_execution_returns_executed(self, pipeline):
         # consecutive=8, failure_rate=0.9 → severity=0.84 ≥ 0.8 AND consecutive ≥ 3
@@ -146,7 +146,7 @@ class TestPipelineCriticalFailure:
         )
         actions = proposer.propose_actions(sensor.get_active_failures())
         results = [proposer.execute_action(a, dry_run=False) for a in actions]
-        assert all(r["status"] == "executed" for r in results)
+        assert all(r["status"] == "executed" for r in results), "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -163,8 +163,8 @@ class TestPipelineValidationFeedback:
         )
         actions = proposer.propose_actions(sensor.get_active_failures())
         validation = validator.validate_action_outcome(actions[0], {"status": "success"})
-        assert validation["validation_status"] == "validated"
-        assert validation["new_confidence"] > actions[0]["confidence"]
+        assert validation["validation_status"] == "validated", "Condition must be true"
+        assert validation["new_confidence"] > actions[0]["confidence"], "Value must be greater than zero"
 
     def test_failed_action_validated_with_lower_confidence(self, pipeline):
         sensor, proposer, validator, sf = pipeline
@@ -174,8 +174,8 @@ class TestPipelineValidationFeedback:
         )
         actions = proposer.propose_actions(sensor.get_active_failures())
         validation = validator.validate_action_outcome(actions[0], {"status": "failure"})
-        assert validation["validation_status"] == "failed"
-        assert validation["new_confidence"] < actions[0]["confidence"]
+        assert validation["validation_status"] == "failed", "Condition must be true"
+        assert validation["new_confidence"] < actions[0]["confidence"], "Condition must be true"
 
     def test_confidence_improves_after_repeated_successes(self, pipeline):
         """Repeated successful cycles push stored confidence above initial proposer value."""
@@ -201,7 +201,7 @@ class TestPipelineValidationFeedback:
         final_confidence = validator.get_confidence_for_action(
             actions[0]["action_type"], actions[0]["workflow"]
         )
-        assert final_confidence >= initial_confidence
+        assert final_confidence >= initial_confidence, "final_confidence must be greater than zero"
 
     def test_confidence_decreases_after_repeated_failures(self, pipeline):
         sensor, proposer, validator, sf = pipeline
@@ -225,7 +225,7 @@ class TestPipelineValidationFeedback:
         final_confidence = validator.get_confidence_for_action(
             actions[0]["action_type"], actions[0]["workflow"]
         )
-        assert final_confidence < initial_confidence
+        assert final_confidence < initial_confidence, "final_confidence is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -251,8 +251,8 @@ class TestPipelineExportIntegration:
         export = sensor.export_state_for_cognitive_brain()
         failures_from_export = export["active_failures"]
         actions = proposer.propose_actions(failures_from_export)
-        assert len(actions) >= 1
-        assert all("action_type" in a for a in actions)
+        assert len(actions) >= 1, "Actions must not be empty"
+        assert all("action_type" in a for a in actions), "Condition must be true"
 
     def test_action_recommendation_in_export_consistent_with_get_failures(self, pipeline):
         """should_propose_action() result in export matches direct sensor call."""
@@ -264,7 +264,7 @@ class TestPipelineExportIntegration:
         export = sensor.export_state_for_cognitive_brain()
         should_act_direct, _, _ = sensor.should_propose_action()
         should_act_export, _, _ = export["action_recommendation"]
-        assert should_act_export == should_act_direct
+        assert should_act_export == should_act_direct, "should_act_export is not valid"
 
     def test_full_loop_with_multiple_failures(self, pipeline):
         """Multiple high-severity failures → multiple rerun actions → all executed → all validated."""
@@ -278,14 +278,14 @@ class TestPipelineExportIntegration:
             },
         )
         failures = sensor.get_active_failures()
-        assert len(failures) == 2
+        assert len(failures) == 2, "Failures must not be empty"
         actions = proposer.propose_actions(failures)
-        assert len(actions) == 2
+        assert len(actions) == 2, "Actions must not be empty"
         for action in actions:
             result = proposer.execute_action(action, dry_run=True)
             validation = validator.validate_action_outcome(action, {"status": "success"})
-            assert result["status"] == "simulated"
-            assert validation["validation_status"] == "validated"
+            assert result["status"] == "simulated", "Result must not be empty"
+            assert validation["validation_status"] == "validated", "Condition must be true"
 
     def test_sensor_state_update_changes_pipeline_decisions(self, pipeline):
         """State change from healthy → failing should change action recommendations."""
@@ -311,5 +311,5 @@ class TestPipelineExportIntegration:
         failures_after = sensor.get_active_failures()
         actions_after = proposer.propose_actions(failures_after)
 
-        assert len(actions_before) == 0
-        assert len(actions_after) > 0
+        assert len(actions_before) == 0, "Actions_before must not be empty"
+        assert len(actions_after) > 0, "Actions_after must not be empty"

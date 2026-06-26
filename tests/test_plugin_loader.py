@@ -25,7 +25,7 @@ def test_load_plugins_monkeypatched(monkeypatch):
 
     class FakeEPs(list):
         def select(self, *, group: str):
-            assert group == "codex_ml.metrics"
+            assert group == "codex_ml.metrics", "group is not valid"
             return self
 
     def fake_entry_points(*, group: str):
@@ -49,9 +49,9 @@ def test_load_plugins_monkeypatched(monkeypatch):
     from codex_ml.plugins.loader import load_plugins
 
     count = load_plugins("codex_ml.metrics", register=register)
-    assert count == 1
+    assert count == 1, "Count must be greater than zero"
     assert calls == {"hook": 1, "registered": 1}
-    assert registered and registered[0].name == "demo"
+    assert registered and registered[0].name == "demo", "name is not valid"
 
 
 def test_metric_registry_init_uses_loader(monkeypatch):
@@ -63,13 +63,13 @@ def test_metric_registry_init_uses_loader(monkeypatch):
     from codex_ml.metrics import registry as metrics_registry
 
     def fake_load_plugins(group, register=None):
-        assert group == "codex_ml.metrics"
-        assert register is not None
+        assert group == "codex_ml.metrics", "group is not valid"
+        assert register is not None, "register must be initialized"
         register("external_metric", lambda: "metric")
         return 2
 
     monkeypatch.setattr("codex_ml.plugins.load_plugins", fake_load_plugins)
 
     metrics_registry.init_metric_plugins(force=True)
-    assert "external_metric" in metrics_registry.list_metrics()
-    assert metrics_registry.get_metric("external_metric")() == "metric"
+    assert "external_metric" in metrics_registry.list_metrics(), "Condition must be true"
+    assert metrics_registry.get_metric("external_metric")() == "metric", "Condition must be true"

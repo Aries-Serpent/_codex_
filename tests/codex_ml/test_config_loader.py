@@ -39,11 +39,11 @@ def test_load_base_and_experiment_merge(tmp_path: Path):
     )
 
     base = load.load_base_config(repo_root=tmp_path)
-    assert base["experiment"]["name"] == "base"
-    assert base["training"]["epochs"] == 1
+    assert base["experiment"]["name"] == "base", "Condition must be true"
+    assert base["training"]["epochs"] == 1, "Condition must be true"
 
     merged = load.load_config("custom", repo_root=tmp_path)
-    assert merged["experiment"]["name"] == "custom"
-    assert merged["experiment"]["seed"] == 42
-    assert merged["training"]["epochs"] == 5
-    assert merged["training"]["lr"] == 1e-3
+    assert merged["experiment"]["name"] == "custom", "Condition must be true"
+    assert merged["experiment"]["seed"] == 42, "Condition must be true"
+    assert merged["training"]["epochs"] == 5, "Condition must be true"
+    assert merged["training"]["lr"] == 1e-3, "Condition must be true"

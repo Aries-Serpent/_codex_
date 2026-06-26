@@ -54,7 +54,7 @@ def test_brevity_penalty_alignment_differs_from_buggy_case():
     expected_bp = manual_brevity_penalty(hyps, norm_refs)
     fixed_bp = compute_brevity_penalty(hyps, norm_refs)
 
-    assert buggy_bp != expected_bp
+    assert buggy_bp != expected_bp, "buggy_bp is not valid"
     assert math.isclose(fixed_bp, expected_bp, rel_tol=1e-12)
 
 

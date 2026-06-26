@@ -22,13 +22,13 @@ class TestTokenSecurityEdgeCases: # pragma: allowlist secret # pragma: allowlist
         """Test token with empty access token."""
         with pytest.raises((ValueError, AttributeError)):
             token = {"access_token": "", "token_type": "Bearer"}
-            assert not token["access_token"]
+            assert not token["access_token"], "Condition must be true"
 
     def test_token_with_none_access_token(self):
         """Test token with None access token."""
         with pytest.raises((ValueError, TypeError)):
             token = {"access_token": None, "token_type": "Bearer"}
-            assert token["access_token"] is not None
+            assert token["access_token"] is not None, "Value must be initialized"
 
     def test_token_expiration_boundary(self):
         """Test token at exact expiration time."""
@@ -42,7 +42,7 @@ class TestTokenSecurityEdgeCases: # pragma: allowlist secret # pragma: allowlist
         }
 
         # Should be considered expired or about to expire
-        assert token_data["expires_at"] <= now + timedelta(seconds=1)
+        assert token_data["expires_at"] <= now + timedelta(seconds=1), "Data must not be empty"
 
     def test_token_with_very_large_expires_in(self):
         """Test token with very large expires_in value."""
@@ -51,7 +51,7 @@ class TestTokenSecurityEdgeCases: # pragma: allowlist secret # pragma: allowlist
             "expires_in": 365 * 24 * 60 * 60,  # 1 year
         }
 
-        assert token_data["expires_in"] == 365 * 24 * 60 * 60
+        assert token_data["expires_in"] == 365 * 24 * 60 * 60, "Data must not be empty"
 
     def test_token_with_negative_expires_in(self):
         """Test token with negative expires_in."""
@@ -61,7 +61,7 @@ class TestTokenSecurityEdgeCases: # pragma: allowlist secret # pragma: allowlist
         }
 
         # Should be considered already expired
-        assert token_data["expires_in"] < 0
+        assert token_data["expires_in"] < 0, "Data must not be empty"
 
     def test_token_with_zero_expires_in(self):
         """Test token with zero expires_in."""
@@ -71,7 +71,7 @@ class TestTokenSecurityEdgeCases: # pragma: allowlist secret # pragma: allowlist
         }
 
         # Should be considered already expired
-        assert token_data["expires_in"] == 0
+        assert token_data["expires_in"] == 0, "Data must not be empty"
 
     def test_token_with_special_characters(self):
         """Test token with special characters."""
@@ -81,7 +81,7 @@ class TestTokenSecurityEdgeCases: # pragma: allowlist secret # pragma: allowlist
             "token_type": "Bearer",
         }
 
-        assert token_data["access_token"] == special_token
+        assert token_data["access_token"] == special_token, "Data must not be empty"
 
     def test_token_with_unicode_characters(self):
         """Test token with Unicode characters."""
@@ -91,7 +91,7 @@ class TestTokenSecurityEdgeCases: # pragma: allowlist secret # pragma: allowlist
             "token_type": "Bearer",
         }
 
-        assert unicode_token in token_data["access_token"]
+        assert unicode_token in token_data["access_token"], "Data must not be empty"
 
     def test_refresh_token_handling(self):
         """Test refresh token handling."""
@@ -102,8 +102,8 @@ class TestTokenSecurityEdgeCases: # pragma: allowlist secret # pragma: allowlist
         }
 
         # Should have refresh token
-        assert "refresh_token" in token_data
-        assert token_data["refresh_token"] == "refresh_token_123"
+        assert "refresh_token" in token_data, "Data must not be empty"
+        assert token_data["refresh_token"] == "refresh_token_123", "Data must not be empty"
 
     def test_token_without_refresh_token(self):
         """Test token without refresh token."""
@@ -114,7 +114,7 @@ class TestTokenSecurityEdgeCases: # pragma: allowlist secret # pragma: allowlist
         }
 
         # Should be valid even without refresh token
-        assert "access_token" in token_data
+        assert "access_token" in token_data, "Data must not be empty"
 
 
 class TestAuthenticationFlowEdgeCases:
@@ -125,13 +125,13 @@ class TestAuthenticationFlowEdgeCases:
         auth_code = "code_with_special_chars_!@#$%^&*()"
 
         # Should be able to handle special characters
-        assert len(auth_code) > 10
+        assert len(auth_code) > 10, "Auth_code must not be empty"
 
     def test_authorization_code_very_long(self):
         """Test very long authorization code."""
         auth_code = "a" * 10000
 
-        assert len(auth_code) == 10000
+        assert len(auth_code) == 10000, "Auth_code must not be empty"
 
     def test_authorization_code_empty(self):
         """Test empty authorization code."""
@@ -146,7 +146,7 @@ class TestAuthenticationFlowEdgeCases:
         state = "secure_random_state_123456789"
 
         # State should be unpredictable
-        assert len(state) >= 20 or state != "state"
+        assert len(state) >= 20 or state != "state", "State must not be empty"
 
     def test_state_parameter_validation_failure_handling(self):
         """Test handling of state parameter mismatch."""
@@ -154,7 +154,7 @@ class TestAuthenticationFlowEdgeCases:
         expected_state = "state_def456"
 
         with pytest.raises((AssertionError, ValueError)):
-            assert received_state == expected_state
+            assert received_state == expected_state, "received_state is not valid"
 
     def test_redirect_uri_validation(self):
         """Test redirect URI validation."""
@@ -165,21 +165,21 @@ class TestAuthenticationFlowEdgeCases:
         ]
 
         for uri in valid_uris:
-            assert uri.startswith("https://") or uri.startswith("http://")
+            assert uri.startswith("https://") or uri.startswith("http://"), "Condition must be true"
 
     def test_redirect_uri_with_query_parameters(self):
         """Test redirect URI with query parameters."""
         uri = "https://example.com/callback?param=value"
 
         # Should handle query parameters
-        assert "?" in uri
+        assert "?" in uri, "Condition must be true"
 
     def test_redirect_uri_with_fragment(self):
         """Test redirect URI with fragment."""
         uri = "https://example.com/callback#section"
 
         # Should handle fragments
-        assert "#" in uri
+        assert ", "Condition must be true"
 
     def test_scope_validation_boundary(self):
         """Test scope validation at boundary."""
@@ -194,7 +194,7 @@ class TestAuthenticationFlowEdgeCases:
         scope = "read:user repo:read write:org"
 
         # Scopes should be space or colon delimited
-        assert ":" in scope or " " in scope
+        assert ":" in scope or " " in scope, "Condition must be true"
 
     def test_scope_case_sensitivity(self):
         """Test scope case sensitivity."""
@@ -202,7 +202,7 @@ class TestAuthenticationFlowEdgeCases:
         scope2 = "Read:User"
 
         # Scopes typically case-sensitive
-        assert scope1 != scope2.lower() or scope1 == scope1
+        assert scope1 != scope2.lower() or scope1 == scope1, "scope1 is not valid"
 
 
 class TestMFASecurityEdgeCases:
@@ -213,8 +213,8 @@ class TestMFASecurityEdgeCases:
         mfa_code = "123456"
 
         # Standard 6-digit TOTP code
-        assert len(mfa_code) == 6
-        assert mfa_code.isdigit()
+        assert len(mfa_code) == 6, "Mfa_code must not be empty"
+        assert mfa_code.isdigit(), "Condition must be true"
 
     def test_mfa_code_with_non_numeric(self):
         """Test MFA code with non-numeric characters."""
@@ -237,14 +237,14 @@ class TestMFASecurityEdgeCases:
         mfa_code = "1234567890"  # More than 6 digits
 
         # Could be valid for some implementations
-        assert len(mfa_code) >= 6
+        assert len(mfa_code) >= 6, "Mfa_code must not be empty"
 
     def test_mfa_backup_codes_storage(self):
         """Test backup code storage."""
         backup_codes = ["code1", "code2", "code3", "code4", "code5"]
 
         # Should have multiple backup codes
-        assert len(backup_codes) >= 5
+        assert len(backup_codes) >= 5, "Backup_codes must not be empty"
 
     def test_mfa_backup_code_used_twice(self):
         """Test using backup code twice."""
@@ -261,7 +261,7 @@ class TestMFASecurityEdgeCases:
         token_time = current_time - timedelta(seconds=30)
 
         # Should accept tokens from recent time window
-        assert (current_time - token_time).total_seconds() < 60
+        assert (current_time - token_time).total_seconds() < 60, "Condition must be true"
 
     def test_mfa_time_window_expired(self):
         """Test expired TOTP time window."""
@@ -269,7 +269,7 @@ class TestMFASecurityEdgeCases:
         token_time = current_time - timedelta(minutes=2)
 
         # Should reject tokens outside time window
-        assert (current_time - token_time).total_seconds() > 60
+        assert (current_time - token_time).total_seconds() > 60, "Value must be greater than zero"
 
 
 class TestErrorHandlingEdgeCases:
@@ -281,15 +281,15 @@ class TestErrorHandlingEdgeCases:
         error_msg = "User 'admin' not found"
 
         # Should not reveal valid usernames
-        assert "admin" not in error_msg.lower() or error_msg is not None
+        assert "admin" not in error_msg.lower() or error_msg is not None, "error_msg must be initialized"
 
     def test_generic_authentication_error(self):
         """Test generic authentication error."""
         # Should use generic error for security
         error_msg = "Authentication failed"
 
-        assert "password" not in error_msg.lower()
-        assert "invalid" in error_msg.lower() or "failed" in error_msg.lower()
+        assert "password" not in error_msg.lower(), "Error should be raised or set"
+        assert "invalid" in error_msg.lower() or "failed" in error_msg.lower(), "Error should be raised or set"
 
     def test_rate_limiting_error(self):
         """Test rate limiting error."""
@@ -337,7 +337,7 @@ class TestCryptographicEdgeCases:
         hash1 = hash(password)
         hash2 = hash(password)
 
-        assert hash1 == hash2
+        assert hash1 == hash2, "hash1 is not valid"
 
     def test_password_hash_with_empty_string(self):
         """Test password hash with empty string."""
@@ -351,19 +351,19 @@ class TestCryptographicEdgeCases:
         long_password = "a" * 1000000
 
         # Should handle very long passwords
-        assert len(long_password) == 1000000
+        assert len(long_password) == 1000000, "Long_password must not be empty"
 
     def test_password_hash_with_special_characters(self):
         """Test password hash with special characters."""
         password = "P@ssw0rd!#$%^&*()"
 
-        assert len(password) > 8
+        assert len(password) > 8, "Password must not be empty"
 
     def test_password_hash_with_unicode(self):
         """Test password hash with Unicode characters."""
         password = "パスワード1234"
 
-        assert len(password) > 0
+        assert len(password) > 0, "Password must not be empty"
 
     def test_salt_randomness(self):
         """Test salt randomness."""
@@ -371,7 +371,7 @@ class TestCryptographicEdgeCases:
         salt1 = uuid4().hex
         salt2 = uuid4().hex
 
-        assert salt1 != salt2
+        assert salt1 != salt2, "salt1 is not valid"
 
     def test_encryption_decryption_roundtrip(self):
         """Test encryption/decryption roundtrip."""
@@ -381,7 +381,7 @@ class TestCryptographicEdgeCases:
         # Simulate encryption/decryption
         decrypted = plaintext  # In real impl, would decrypt
 
-        assert decrypted == plaintext
+        assert decrypted == plaintext, "decrypted is not valid"
 
 
 class TestSecurityIntegrationEdgeCases:
@@ -392,7 +392,7 @@ class TestSecurityIntegrationEdgeCases:
         # Should handle multiple simultaneous requests
         num_requests = 100
 
-        assert num_requests > 0
+        assert num_requests > 0, "num_requests must be greater than zero"
 
     def test_authentication_with_rate_limiting(self):
         """Test authentication with rate limiting."""
@@ -400,7 +400,7 @@ class TestSecurityIntegrationEdgeCases:
         max_attempts_per_minute = 5
 
         # At limit but not exceeded
-        assert attempt_count <= max_attempts_per_minute
+        assert attempt_count <= max_attempts_per_minute, "Count must be greater than zero"
 
     def test_token_revocation(self):
         """Test token revocation."""
@@ -410,7 +410,7 @@ class TestSecurityIntegrationEdgeCases:
         revoked_tokens.append(token)
 
         # Token should no longer be valid
-        assert token in revoked_tokens
+        assert token in revoked_tokens, "Condition must be true"
 
     def test_session_timeout(self):
         """Test session timeout."""
@@ -420,7 +420,7 @@ class TestSecurityIntegrationEdgeCases:
         elapsed = (datetime.now() - session_created).total_seconds()
 
         # Session should be expired
-        assert elapsed > session_timeout
+        assert elapsed > session_timeout, "elapsed must be greater than zero"
 
     def test_csrf_token_validation(self):
         """Test CSRF token validation."""
@@ -428,7 +428,7 @@ class TestSecurityIntegrationEdgeCases:
         session_csrf = "csrf_token_def456"
 
         with pytest.raises((AssertionError, ValueError)):
-            assert request_csrf == session_csrf
+            assert request_csrf == session_csrf, "request_csrf is not valid"
 
     def test_security_header_validation(self):
         """Test security header validation."""
@@ -443,4 +443,4 @@ class TestSecurityIntegrationEdgeCases:
         }
 
         for header in required_headers:
-            assert header in provided_headers
+            assert header in provided_headers, "Condition must be true"

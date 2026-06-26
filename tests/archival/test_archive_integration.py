@@ -22,8 +22,8 @@ class TestArchiveBasics:
         archive_dir = test_dir / ".codex" / "archive"
         archive_dir.mkdir(parents=True, exist_ok=True)
 
-        assert archive_dir.exists()
-        assert archive_dir.is_dir()
+        assert archive_dir.exists(), "Condition must be true"
+        assert archive_dir.is_dir(), "Condition must be true"
 
         # Cleanup
         import shutil
@@ -50,8 +50,8 @@ class TestArchiveBasics:
         manifest_file.write_text(json.dumps(manifest_data, indent=2))
         loaded = json.loads(manifest_file.read_text())
 
-        assert loaded["version"] == "1.0"
-        assert len(loaded["items"]) == 1
+        assert loaded["version"] == "1.0", "Condition must be true"
+        assert len(loaded["items"]) == 1, "Collection must not be empty"
 
         # Cleanup
         import shutil
@@ -76,9 +76,9 @@ class TestArchiveBasics:
         with evidence_file.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(entry) + "\n")
 
-        assert evidence_file.exists()
+        assert evidence_file.exists(), "Condition must be true"
         lines = evidence_file.read_text().strip().split("\n")
-        assert len(lines) >= 1
+        assert len(lines) >= 1, "Lines must not be empty"
 
         # Cleanup
         import shutil
@@ -96,8 +96,8 @@ class TestArchiveUtilities:
         content = b"Test content"
         expected_sha = hashlib.sha256(content).hexdigest()
 
-        assert len(expected_sha) == 64
-        assert all(c in "0123456789abcdef" for c in expected_sha)
+        assert len(expected_sha) == 64, "Expected_sha must not be empty"
+        assert all(c in "0123456789abcdef" for c in expected_sha), "Condition must be true"
 
     def test_compression_basics(self):
         """Test zlib compression/decompression."""
@@ -107,8 +107,8 @@ class TestArchiveUtilities:
         compressed = zlib.compress(content, level=9)
         decompressed = zlib.decompress(compressed)
 
-        assert len(compressed) < len(content)
-        assert decompressed == content
+        assert len(compressed) < len(content), "Compressed must not be empty"
+        assert decompressed == content, "Content must not be empty"
 
     def test_json_serialization(self):
         """Test JSON serialization for manifests."""
@@ -120,7 +120,7 @@ class TestArchiveUtilities:
         serialized = json.dumps(data, indent=2, sort_keys=True)
         deserialized = json.loads(serialized)
 
-        assert deserialized == data
+        assert deserialized == data, "Data must not be empty"
 
 
 class TestManifestOperations:
@@ -138,8 +138,8 @@ class TestManifestOperations:
         temp_file.write_text(json.dumps(manifest, indent=2))
         temp_file.rename(manifest_file)
 
-        assert manifest_file.exists()
-        assert not temp_file.exists()
+        assert manifest_file.exists(), "Condition must be true"
+        assert not temp_file.exists(), "Condition must be true"
 
         # Cleanup
         import shutil
@@ -155,9 +155,9 @@ class TestManifestOperations:
         }
 
         # Check required fields
-        assert "version" in manifest
-        assert "generated" in manifest
-        assert "items" in manifest
+        assert "version" in manifest, "Condition must be true"
+        assert "generated" in manifest, "Condition must be true"
+        assert "items" in manifest, "Item must not be empty"
         assert isinstance(manifest["items"], list)
 
     def test_manifest_checksum_format(self):
@@ -166,11 +166,11 @@ class TestManifestOperations:
         invalid_sha = "xyz"
 
         # Valid format
-        assert len(valid_sha) == 64
-        assert all(c in "0123456789abcdef" for c in valid_sha)
+        assert len(valid_sha) == 64, "Valid_sha must not be empty"
+        assert all(c in "0123456789abcdef" for c in valid_sha), "Condition must be true"
 
         # Invalid format
-        assert len(invalid_sha) != 64
+        assert len(invalid_sha) != 64, "Invalid_sha must not be empty"
 
 
 class TestEvidenceLogging:
@@ -193,10 +193,10 @@ class TestEvidenceLogging:
 
         # Verify all entries present
         lines = evidence_file.read_text().strip().split("\n")
-        assert len(lines) == 3
+        assert len(lines) == 3, "Lines must not be empty"
 
         entries = [json.loads(line) for line in lines]
-        assert all(entry["action"] == "ARCHIVE" for entry in entries)
+        assert all(entry["action"] == "ARCHIVE" for entry in entries), "Condition must be true"
 
         # Cleanup
         import shutil
@@ -210,7 +210,7 @@ class TestEvidenceLogging:
         ts = datetime.now(timezone.utc).isoformat()
 
         # Should be ISO format
-        assert "T" in ts
+        assert "T" in ts, "Condition must be true"
         assert ts.endswith("Z") or "+" in ts or ts.endswith(":00")
 
 
@@ -233,7 +233,7 @@ class TestArchiveScripts:
             full_path = repo_root / script_path
             # Just check file exists, don't import to avoid dependencies
             if full_path.exists():
-                assert full_path.is_file()
+                assert full_path.is_file(), "Condition must be true"
 
     def test_archive_module_importable(self):
         """Test that archive module can be imported."""
@@ -253,7 +253,7 @@ class TestArchiveTombstoneCompliance:
         from pathlib import Path
 
         test_file = Path(__file__).parent / "test_archival_tombstone_required.py"
-        assert test_file.exists()
+        assert test_file.exists(), "Condition must be true"
 
     def test_tombstone_test_can_be_imported(self):
         """Test that tombstone compliance test can be imported."""

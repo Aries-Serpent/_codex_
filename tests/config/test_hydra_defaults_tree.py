@@ -17,11 +17,11 @@ def _config_root() -> Path:
 
 def test_defaults_files_exist():
     root = _config_root()
-    assert (root / "defaults.yaml").is_file()
-    assert (root / "data" / "tiny.yaml").is_file()
-    assert (root / "model" / "toy.yaml").is_file()
-    assert (root / "train" / "small.yaml").is_file()
-    assert (root / "tracking" / "offline.yaml").is_file()
+    assert (root / "defaults.yaml").is_file(), "Condition must be true"
+    assert (root / "data" / "tiny.yaml").is_file(), "Data must not be empty"
+    assert (root / "model" / "toy.yaml").is_file(), "Condition must be true"
+    assert (root / "train" / "small.yaml").is_file(), "Condition must be true"
+    assert (root / "tracking" / "offline.yaml").is_file(), "Condition must be true"
 
 
 def test_hydra_compose_smoke():

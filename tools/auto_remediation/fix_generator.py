@@ -119,7 +119,7 @@ class IntelligentFixGenerator:
 
         except Exception as e:
             error_type = type(e).__name__
-            print(f"Error generating fix: <ERROR_TYPE>")
+            print("Error generating fix: <ERROR_TYPE>")
             return None
 
     def generate_multiple_fixes(self, context: FixContext) -> list[GeneratedFix]:
@@ -391,7 +391,7 @@ def validate_input(data, max_length=1000):
 
         except Exception as e:
             error_type = type(e).__name__
-            print(f"Error applying fix: <ERROR_TYPE>")
+            print("Error applying fix: <ERROR_TYPE>")
             return False
 
 

@@ -37,14 +37,14 @@ class TestAssignmentMappingMigration:
         v2_data = AssignmentMappingMigration.migrate_v1_to_v2(v1_file)
 
         # Verify v2 structure
-        assert v2_data["version"] == "2.0"
-        assert len(v2_data["mappings"]) == 1
+        assert v2_data["version"] == "2.0", "Data must not be empty"
+        assert len(v2_data["mappings"]) == 1, "Collection must not be empty"
         mapping = v2_data["mappings"][0]
-        assert mapping["id"] == "123"
-        assert mapping["name"] == "Test Mapping"
-        assert mapping["type"] == "test"
-        assert mapping["created_at"] == "2025-01-01T00:00:00Z"
-        assert mapping["metadata"] == {"key": "value"}
+        assert mapping["id"] == "123", "Condition must be true"
+        assert mapping["name"] == "Test Mapping", "Condition must be true"
+        assert mapping["type"] == "test", "Condition must be true"
+        assert mapping["created_at"] == "2025-01-01T00:00:00Z", "Condition must be true"
+        assert mapping["metadata"] == {"key": "value"}, "Data must not be empty"
 
     def test_migrate_v2_to_v3(self, tmp_path):
         """Test migration from v2 to v3 format."""
@@ -68,15 +68,15 @@ class TestAssignmentMappingMigration:
         v3_data = AssignmentMappingMigration.migrate_v2_to_v3(v2_file)
 
         # Verify v3 structure
-        assert v3_data["version"] == "3.0"
-        assert v3_data["schema"] == "assignment_mapping_v3"
-        assert len(v3_data["items"]) == 1
+        assert v3_data["version"] == "3.0", "Data must not be empty"
+        assert v3_data["schema"] == "assignment_mapping_v3", "Data must not be empty"
+        assert len(v3_data["items"]) == 1, "Collection must not be empty"
         item = v3_data["items"][0]
-        assert item["uuid"] == "456"
-        assert item["label"] == "Test V2"
-        assert item["category"] == "example"
-        assert item["timestamp"] == "2025-02-01T00:00:00Z"
-        assert item["attributes"] == {"foo": "bar"}
+        assert item["uuid"] == "456", "Item must not be empty"
+        assert item["label"] == "Test V2", "Item must not be empty"
+        assert item["category"] == "example", "Item must not be empty"
+        assert item["timestamp"] == "2025-02-01T00:00:00Z", "Item must not be empty"
+        assert item["attributes"] == {"foo": "bar"}, "Item must not be empty"
 
     def test_migrate_v1_with_defaults(self, tmp_path):
         """Test v1 migration handles missing optional fields."""
@@ -86,13 +86,13 @@ class TestAssignmentMappingMigration:
 
         v2_data = AssignmentMappingMigration.migrate_v1_to_v2(v1_file)
 
-        assert v2_data["version"] == "2.0"
+        assert v2_data["version"] == "2.0", "Data must not be empty"
         mapping = v2_data["mappings"][0]
-        assert mapping["id"] == "789"
-        assert mapping["name"] == ""
-        assert mapping["type"] == "default"
-        assert mapping["created_at"] == ""
-        assert mapping["metadata"] == {}
+        assert mapping["id"] == "789", "Condition must be true"
+        assert mapping["name"] == "", "Condition must be true"
+        assert mapping["type"] == "default", "Condition must be true"
+        assert mapping["created_at"] == "", "Condition must be true"
+        assert mapping["metadata"] == {}, "Data must not be empty"
 
     def test_migrate_v2_with_defaults(self, tmp_path):
         """Test v2 migration handles missing optional fields."""
@@ -102,13 +102,13 @@ class TestAssignmentMappingMigration:
 
         v3_data = AssignmentMappingMigration.migrate_v2_to_v3(v2_file)
 
-        assert v3_data["version"] == "3.0"
+        assert v3_data["version"] == "3.0", "Data must not be empty"
         item = v3_data["items"][0]
-        assert item["uuid"] == "abc"
-        assert item["label"] == ""
-        assert item["category"] == "general"
-        assert item["timestamp"] == ""
-        assert item["attributes"] == {}
+        assert item["uuid"] == "abc", "Item must not be empty"
+        assert item["label"] == "", "Item must not be empty"
+        assert item["category"] == "general", "Item must not be empty"
+        assert item["timestamp"] == "", "Item must not be empty"
+        assert item["attributes"] == {}, "Item must not be empty"
 
 
 class TestLoadAssignmentMappings:
@@ -121,7 +121,7 @@ class TestLoadAssignmentMappings:
         v3_file.write_text(json.dumps(v3_data), encoding="utf-8")
 
         result = load_assignment_mappings(v3_file)
-        assert result == v3_data
+        assert result == v3_data, "Result must not be empty"
 
     def test_load_v1_with_auto_migration(self, tmp_path):
         """Test loading v1 with auto-migration to v3."""
@@ -133,9 +133,9 @@ class TestLoadAssignmentMappings:
             result = load_assignment_mappings(v1_file, auto_migrate=True)
 
         # Should be migrated to v3
-        assert result["version"] == "3.0"
-        assert result["schema"] == "assignment_mapping_v3"
-        assert len(result["items"]) == 1
+        assert result["version"] == "3.0", "Result must not be empty"
+        assert result["schema"] == "assignment_mapping_v3", "Result must not be empty"
+        assert len(result["items"]) == 1, "Collection must not be empty"
 
     def test_load_v2_with_auto_migration(self, tmp_path):
         """Test loading v2 with auto-migration to v3."""
@@ -147,9 +147,9 @@ class TestLoadAssignmentMappings:
             result = load_assignment_mappings(v2_file, auto_migrate=True)
 
         # Should be migrated to v3
-        assert result["version"] == "3.0"
-        assert result["schema"] == "assignment_mapping_v3"
-        assert len(result["items"]) == 1
+        assert result["version"] == "3.0", "Result must not be empty"
+        assert result["schema"] == "assignment_mapping_v3", "Result must not be empty"
+        assert len(result["items"]) == 1, "Collection must not be empty"
 
     def test_load_v1_without_auto_migration(self, tmp_path):
         """Test loading v1 without auto-migration returns original."""
@@ -161,8 +161,8 @@ class TestLoadAssignmentMappings:
             result = load_assignment_mappings(v1_file, auto_migrate=False)
 
         # Should return original v1 format
-        assert result["version"] == "1.0"
-        assert "assignments" in result
+        assert result["version"] == "1.0", "Result must not be empty"
+        assert "assignments" in result, "Result must not be empty"
 
     def test_load_unknown_version(self, tmp_path):
         """Test loading file with unknown version raises error."""
@@ -198,7 +198,7 @@ class TestLoadAssignmentMappings:
             result = load_assignment_mappings(no_version_file, auto_migrate=True)
 
         # Should be treated as v1 and migrated to v3
-        assert result["version"] == "3.0"
+        assert result["version"] == "3.0", "Result must not be empty"
 
 
 class TestDataMigrationRollback:
@@ -229,13 +229,13 @@ class TestDataMigrationRollback:
         v2_data = AssignmentMappingMigration.rollback_v3_to_v2(v3_file)
 
         # Verify v2 structure after rollback
-        assert v2_data["version"] == "2.0"
-        assert len(v2_data["mappings"]) == 1
+        assert v2_data["version"] == "2.0", "Data must not be empty"
+        assert len(v2_data["mappings"]) == 1, "Collection must not be empty"
         mapping = v2_data["mappings"][0]
-        assert mapping["id"] == "123"
-        assert mapping["name"] == "Test Mapping"
-        assert mapping["type"] == "test"
-        assert mapping["created_at"] == "2025-01-01T00:00:00Z"
+        assert mapping["id"] == "123", "Condition must be true"
+        assert mapping["name"] == "Test Mapping", "Condition must be true"
+        assert mapping["type"] == "test", "Condition must be true"
+        assert mapping["created_at"] == "2025-01-01T00:00:00Z", "Condition must be true"
 
     def test_rollback_v2_to_v1(self, tmp_path):
         """Test rollback from v2 back to v1 format."""
@@ -259,12 +259,12 @@ class TestDataMigrationRollback:
         v1_data = AssignmentMappingMigration.rollback_v2_to_v1(v2_file)
 
         # Verify v1 structure after rollback
-        assert v1_data["version"] == "1.0"
-        assert len(v1_data["assignments"]) == 1
+        assert v1_data["version"] == "1.0", "Data must not be empty"
+        assert len(v1_data["assignments"]) == 1, "Collection must not be empty"
         assignment = v1_data["assignments"][0]
-        assert assignment["id"] == "456"
-        assert assignment["name"] == "Test V2"
-        assert assignment["type"] == "example"
+        assert assignment["id"] == "456", "Condition must be true"
+        assert assignment["name"] == "Test V2", "Condition must be true"
+        assert assignment["type"] == "example", "Condition must be true"
 
     def test_selective_rollback_partial_items(self, tmp_path):
         """Test rolling back only selected items, not entire dataset."""
@@ -304,16 +304,16 @@ class TestDataMigrationRollback:
         rolled_data = AssignmentMappingMigration.selective_rollback(v3_file, item_ids=["2"])
 
         # Verify that only specified item was rolled back
-        assert len(rolled_data["items"]) == 3
+        assert len(rolled_data["items"]) == 3, "Collection must not be empty"
         # Item 2 should be in v2 format after rollback (uses "id" instead of "uuid")
         [i for i in rolled_data["items"] if i.get("uuid") == "2"]
         item_2_v2 = [i for i in rolled_data["items"] if i.get("id") == "2"]
         # Should be in v2 format
-        assert len(item_2_v2) == 1
+        assert len(item_2_v2) == 1, "Item_2_v2 must not be empty"
         item_2 = item_2_v2[0]
-        assert "name" in item_2  # v2 format field
-        assert item_2["name"] == "Rollback"
-        assert item_2["id"] == "2"
+        assert "name" in item_2, "Item must not be empty"
+        assert item_2["name"] == "Rollback", "Item must not be empty"
+        assert item_2["id"] == "2", "Item must not be empty"
 
     def test_rollback_with_data_integrity_check(self, tmp_path):
         """Test that rollback preserves data integrity."""
@@ -342,11 +342,11 @@ class TestDataMigrationRollback:
 
         # Verify data integrity: all important fields preserved
         mapping = v2_data["mappings"][0]
-        assert mapping["id"] == original_uuid
-        assert mapping["name"] == original_label
-        assert mapping["created_at"] == original_timestamp
-        assert mapping["metadata"]["key1"] == "value1"
-        assert mapping["metadata"]["key2"] == "value2"
+        assert mapping["id"] == original_uuid, "Condition must be true"
+        assert mapping["name"] == original_label, "Condition must be true"
+        assert mapping["created_at"] == original_timestamp, "Condition must be true"
+        assert mapping["metadata"]["key1"] == "value1", "Data must not be empty"
+        assert mapping["metadata"]["key2"] == "value2", "Data must not be empty"
 
     def test_rollback_error_handling_corrupt_file(self, tmp_path):
         """Test rollback error handling with corrupted file."""
@@ -379,10 +379,10 @@ class TestDataMigrationRollback:
         backup_file.write_text(json.dumps(v3_data), encoding="utf-8")
 
         # Verify backup was created and can be restored
-        assert backup_file.exists()
+        assert backup_file.exists(), "Condition must be true"
         restored = json.loads(backup_file.read_text())
-        assert restored["version"] == "3.0"
-        assert len(restored["items"]) == 1
+        assert restored["version"] == "3.0", "rest is not valid"
+        assert len(restored["items"]) == 1, "Collection must not be empty"
 
     def test_migration_and_rollback_bidirectional(self, tmp_path):
         """Test that migration and rollback are bidirectional."""
@@ -416,12 +416,12 @@ class TestDataMigrationRollback:
 
         # Rollback: v3 → v2
         v2_restored = AssignmentMappingMigration.rollback_v3_to_v2(v3_file)
-        assert v2_restored["version"] == "2.0"
+        assert v2_restored["version"] == "2.0", "v2_rest is not valid"
 
         # Rollback: v2 → v1
         v1_restored = AssignmentMappingMigration.rollback_v2_to_v1(v2_file)
-        assert v1_restored["version"] == "1.0"
-        assert v1_restored["assignments"][0]["id"] == "test-123"
+        assert v1_restored["version"] == "1.0", "v1_rest is not valid"
+        assert v1_restored["assignments"][0]["id"] == "test-123", "v1_rest is not valid"
 
     def test_data_consistency_empty_dataset(self, tmp_path):
         """Test rollback with empty dataset maintains structure."""
@@ -437,8 +437,8 @@ class TestDataMigrationRollback:
 
         v2_data = AssignmentMappingMigration.rollback_v3_to_v2(v3_file)
 
-        assert v2_data["version"] == "2.0"
-        assert v2_data["mappings"] == []
+        assert v2_data["version"] == "2.0", "Data must not be empty"
+        assert v2_data["mappings"] == [], "Data must not be empty"
 
     def test_large_dataset_rollback_performance(self, tmp_path):
         """Test rollback performance with large dataset."""
@@ -470,6 +470,6 @@ class TestDataMigrationRollback:
         elapsed = time.time() - start
 
         # Verify performance (should complete in under 5 seconds)
-        assert elapsed < 5.0
-        assert len(v2_data["mappings"]) == 1000
-        assert v2_data["version"] == "2.0"
+        assert elapsed < 5.0, "elapsed is not valid"
+        assert len(v2_data["mappings"]) == 1000, "Collection must not be empty"
+        assert v2_data["version"] == "2.0", "Data must not be empty"

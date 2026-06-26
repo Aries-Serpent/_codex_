@@ -76,15 +76,15 @@ def test_vendor_audit_setup_sanitizes_policy_values(tmp_path: Path) -> None:
     )
 
     data = _load_cached_json(tmp_path, "vendor_audit.setup.json")
-    assert data["phase"] == "setup"
-    assert data["policy"]["cpu_trials"] == 1
-    assert data["policy"]["disk_trials"] == 1
-    assert data["policy"]["disk_bytes"] == 65536
-    assert data["policy"]["net_trials"] == 1
-    assert data["policy"]["net_urls"] == ["https://speed.hetzner.de/100KB.bin"]
+    assert data["phase"] == "setup", "Data must not be empty"
+    assert data["policy"]["cpu_trials"] == 1, "Data must not be empty"
+    assert data["policy"]["disk_trials"] == 1, "Data must not be empty"
+    assert data["policy"]["disk_bytes"] == 65536, "Data must not be empty"
+    assert data["policy"]["net_trials"] == 1, "Data must not be empty"
+    assert data["policy"]["net_urls"] == ["https://speed.hetzner.de/100KB.bin"], "Data must not be empty"
     assert data["policy"]["cpu_target_s"] == pytest.approx(0.05, rel=1e-3)
-    assert "nvidia-cublas-cu12" in data["lock_scan_names"]
-    assert data["system_caps"]["network"]["notes"] == "offline mode"
+    assert "nvidia-cublas-cu12" in data["lock_scan_names"], "Data must not be empty"
+    assert data["system_caps"]["network"]["notes"] == "offline mode", "Data must not be empty"
 
 
 def test_vendor_audit_setup_respects_vendor_overrides(tmp_path: Path) -> None:
@@ -116,15 +116,15 @@ def test_vendor_audit_setup_respects_vendor_overrides(tmp_path: Path) -> None:
     )
 
     data = _load_cached_json(tmp_path, "vendor_audit.setup.json")
-    assert data["policy"]["cpu_trials"] == 2
+    assert data["policy"]["cpu_trials"] == 2, "Data must not be empty"
     assert data["policy"]["cpu_target_s"] == pytest.approx(0.02, rel=1e-3)
-    assert data["policy"]["cpu_buf_kb"] == 128
-    assert data["policy"]["disk_trials"] == 1
-    assert data["policy"]["disk_bytes"] == 65536
-    assert data["policy"]["net_trials"] == 1
-    assert data["policy"]["net_urls"] == ["https://example.invalid/blob.bin"]
-    assert data["system_caps"]["network"]["notes"] == "offline mode"
-    assert not data["bootstrap_status"]["attempted"]
+    assert data["policy"]["cpu_buf_kb"] == 128, "Data must not be empty"
+    assert data["policy"]["disk_trials"] == 1, "Data must not be empty"
+    assert data["policy"]["disk_bytes"] == 65536, "Data must not be empty"
+    assert data["policy"]["net_trials"] == 1, "Data must not be empty"
+    assert data["policy"]["net_urls"] == ["https://example.invalid/blob.bin"], "Data must not be empty"
+    assert data["system_caps"]["network"]["notes"] == "offline mode", "Data must not be empty"
+    assert not data["bootstrap_status"]["attempted"], "Data must not be empty"
 
 
 def test_vendor_audit_maintenance_overrides(tmp_path: Path) -> None:
@@ -156,17 +156,17 @@ def test_vendor_audit_maintenance_overrides(tmp_path: Path) -> None:
     )
 
     data = _load_cached_json(tmp_path, "vendor_audit.maintenance.json")
-    assert data["phase"] == "maintenance"
-    assert data["policy"]["cpu_trials"] == 3
+    assert data["phase"] == "maintenance", "Data must not be empty"
+    assert data["policy"]["cpu_trials"] == 3, "Data must not be empty"
     assert data["policy"]["cpu_target_s"] == pytest.approx(0.015, rel=1e-3)
-    assert data["policy"]["cpu_buf_kb"] == 192
-    assert data["policy"]["disk_trials"] == 2
-    assert data["policy"]["disk_bytes"] == 98304
-    assert data["policy"]["net_trials"] == 1
-    assert data["policy"]["net_urls"] == ["https://example.invalid/maint.bin"]
-    assert data["system_caps"]["network"]["notes"] == "offline mode"
-    assert not data["bootstrap_status"]["attempted"]
-    assert "nvidia-cufft-cu12" in data["lock_scan_names"]
+    assert data["policy"]["cpu_buf_kb"] == 192, "Data must not be empty"
+    assert data["policy"]["disk_trials"] == 2, "Data must not be empty"
+    assert data["policy"]["disk_bytes"] == 98304, "Data must not be empty"
+    assert data["policy"]["net_trials"] == 1, "Data must not be empty"
+    assert data["policy"]["net_urls"] == ["https://example.invalid/maint.bin"], "Data must not be empty"
+    assert data["system_caps"]["network"]["notes"] == "offline mode", "Data must not be empty"
+    assert not data["bootstrap_status"]["attempted"], "Data must not be empty"
+    assert "nvidia-cufft-cu12" in data["lock_scan_names"], "Data must not be empty"
 
 
 def test_vendor_audit_stress_collects_system_datapoints(tmp_path: Path) -> None:
@@ -198,69 +198,69 @@ def test_vendor_audit_stress_collects_system_datapoints(tmp_path: Path) -> None:
     setup = _load_cached_json(tmp_path, "vendor_audit.setup.json")
     maintenance = _load_cached_json(tmp_path, "vendor_audit.maintenance.json")
 
-    assert setup["phase"] == "setup"
-    assert maintenance["phase"] == "maintenance"
+    assert setup["phase"] == "setup", "Condition must be true"
+    assert maintenance["phase"] == "maintenance", "Condition must be true"
 
     def _assert_phase_metrics(data: dict) -> None:
         policy = data["policy"]
-        assert policy["cpu_trials"] == cpu_trials
-        assert policy["disk_trials"] == disk_trials
-        assert policy["disk_bytes"] == disk_bytes
-        assert policy["net_trials"] == 1
-        assert "https://speed.hetzner.de/1MB.bin" in policy["net_urls"]
+        assert policy["cpu_trials"] == cpu_trials, "Condition must be true"
+        assert policy["disk_trials"] == disk_trials, "Condition must be true"
+        assert policy["disk_bytes"] == disk_bytes, "Condition must be true"
+        assert policy["net_trials"] == 1, "Condition must be true"
+        assert "https://speed.hetzner.de/1MB.bin" in policy["net_urls"], "Condition must be true"
         assert policy["cpu_target_s"] == pytest.approx(target_seconds, rel=1e-3)
 
         bench = data["bench"]
         cpu_bench = bench["cpu_MBps"]
-        assert cpu_bench["trials"] == cpu_trials
-        assert len(cpu_bench["speeds_MBps"]) == cpu_trials
-        assert cpu_bench["min"] <= cpu_bench["median"] <= cpu_bench["max"]
-        assert all(value > 0 for value in cpu_bench["speeds_MBps"])
+        assert cpu_bench["trials"] == cpu_trials, "Condition must be true"
+        assert len(cpu_bench["speeds_MBps"]) == cpu_trials, "Collection must not be empty"
+        assert cpu_bench["min"] <= cpu_bench["median"] <= cpu_bench["max"], "Condition must be true"
+        assert all(value > 0 for value in cpu_bench["speeds_MBps"]), "value must be greater than zero"
 
         disk_bench = bench["disk_MBps"]
-        assert len(disk_bench["write_MBps"]) == disk_trials
-        assert len(disk_bench["read_MBps"]) == disk_trials
+        assert len(disk_bench["write_MBps"]) == disk_trials, "Collection must not be empty"
+        assert len(disk_bench["read_MBps"]) == disk_trials, "Collection must not be empty"
         for stats in (disk_bench["write_stats"], disk_bench["read_stats"]):
-            assert stats["min"] <= stats["median"] <= stats["max"]
-            assert stats["max"] > 0
+            assert stats["min"] <= stats["median"] <= stats["max"], "Condition must be true"
+            assert stats["max"] > 0, "Value must be greater than zero"
 
         verdict = data["verdict"]
-        assert verdict["ok"]
-        assert verdict["violations"] == []
+        assert verdict["ok"], "Condition must be true"
+        assert verdict["violations"] == [], "Condition must be true"
 
         sync = data["sync_vendor_downloads"]
-        assert sync["nvidia_downloads"] == 0
-        assert sync["triton_downloads"] == 0
+        assert sync["nvidia_downloads"] == 0, "Condition must be true"
+        assert sync["triton_downloads"] == 0, "Condition must be true"
 
         minmax = data["minmax_installed"]
-        assert minmax["count_total"] == 0
-        assert minmax["size_total_kb"] == 0
+        assert minmax["count_total"] == 0, "Count must be greater than zero"
+        assert minmax["size_total_kb"] == 0, "Condition must be true"
 
-        assert data["lock_scan_names"] == []
+        assert data["lock_scan_names"] == [], "Data must not be empty"
 
         torch = data["torch"]
-        assert torch["source"] == "none"
-        assert torch["cuda_available"] is False
+        assert torch["source"] == "none", "t is not valid"
+        assert torch["cuda_available"] is False, "t is not valid"
 
         network = data["system_caps"]["network"]
-        assert network["notes"] == "offline mode"
-        assert network["dns_ok"] is False
-        assert network["https_443_ok"] is False
-        assert network["http_80_ok"] is False
+        assert network["notes"] == "offline mode", "netw is not valid"
+        assert network["dns_ok"] is False, "netw is not valid"
+        assert network["https_443_ok"] is False, "netw is not valid"
+        assert network["http_80_ok"] is False, "netw is not valid"
 
         cpu_caps = data["system_caps"]["cpu"]
-        assert cpu_caps["cores_logical"] >= 1
-        assert cpu_caps["cores_quota"] > 0
+        assert cpu_caps["cores_logical"] >= 1, "Value must be greater than zero"
+        assert cpu_caps["cores_quota"] > 0, "Value must be greater than zero"
 
         memory = data["system_caps"]["memory"]
-        assert memory["mem_total_bytes"] > 0
+        assert memory["mem_total_bytes"] > 0, "mem must be greater than zero"
 
         disk_caps = data["system_caps"]["disk"]
-        assert disk_caps["root_total_bytes"] > 0
-        assert disk_caps["root_free_bytes"] >= 0
+        assert disk_caps["root_total_bytes"] > 0, "Value must be greater than zero"
+        assert disk_caps["root_free_bytes"] >= 0, "Value must be greater than zero"
 
         hardware = data["system_caps"]["hardware"]
-        assert set(hardware.keys()) >= {
+        assert set(hardware.keys()) >= {, "Value must be greater than zero"
             "system",
             "board",
             "chassis",
@@ -273,40 +273,40 @@ def test_vendor_audit_stress_collects_system_datapoints(tmp_path: Path) -> None:
         system_hw = hardware["system"]
         assert isinstance(system_hw, dict)
         for field in ("brand", "model", "sku", "serial", "uuid"):
-            assert field in system_hw
+            assert field in system_hw, "Condition must be true"
 
         board_hw = hardware["board"]
         assert isinstance(board_hw, dict)
         for field in ("brand", "model", "version", "serial", "asset_tag"):
-            assert field in board_hw
+            assert field in board_hw, "Condition must be true"
 
         chassis_hw = hardware["chassis"]
         assert isinstance(chassis_hw, dict)
         for field in ("brand", "type", "serial", "version", "asset_tag"):
-            assert field in chassis_hw
+            assert field in chassis_hw, "Condition must be true"
 
         bios_hw = hardware["bios"]
         assert isinstance(bios_hw, dict)
         for field in ("brand", "version", "date"):
-            assert field in bios_hw
+            assert field in bios_hw, "Condition must be true"
 
         disks = hardware["disks"]
         assert isinstance(disks, list)
         for disk in disks:
             for field in ("name", "brand", "model", "serial", "size_bytes", "type", "bus", "rota"):
-                assert field in disk
+                assert field in disk, "Condition must be true"
 
         nics = hardware["nics"]
         assert isinstance(nics, list)
         for nic in nics:
-            assert "name" in nic
-            assert "operstate" in nic
-            assert "mtu" in nic
-            assert "speed_mbps" in nic
-            assert "mac_address" in nic or nic["name"] == "lo"
-            assert "bus_path" in nic or nic["name"] == "lo"
-            assert "vendor_id" in nic or nic["name"] == "lo"
-            assert "device_id" in nic or nic["name"] == "lo"
+            assert "name" in nic, "Condition must be true"
+            assert "operstate" in nic, "Condition must be true"
+            assert "mtu" in nic, "Condition must be true"
+            assert "speed_mbps" in nic, "Condition must be true"
+            assert "mac_address" in nic or nic["name"] == "lo", "Condition must be true"
+            assert "bus_path" in nic or nic["name"] == "lo", "Condition must be true"
+            assert "vendor_id" in nic or nic["name"] == "lo", "Condition must be true"
+            assert "device_id" in nic or nic["name"] == "lo", "Condition must be true"
 
         virtualization = hardware["virtualization"]
         assert set(virtualization.keys()) >= {"systemd_detect_virt", "hypervisor_cpu_flag"}

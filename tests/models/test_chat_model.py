@@ -77,7 +77,7 @@ def test_chat_model_generate(monkeypatch: pytest.MonkeyPatch) -> None:
     cfg = ChatModelConfig(model_name="demo")
     chat = ChatModel(cfg)
     output = chat.generate("hello")
-    assert output == "decoded"
+    assert output == "decoded", "output is not valid"
 
 
 def test_chat_model_lora_requires_peft(monkeypatch: pytest.MonkeyPatch) -> None:

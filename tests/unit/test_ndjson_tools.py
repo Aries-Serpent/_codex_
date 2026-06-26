@@ -19,9 +19,9 @@ def test_ndjson_to_csv_roundtrip(tmp_path: Path) -> None:
 
     out_csv = tmp_path / "out.csv"
     ndjson_to_csv(ndjson_path, out_csv)
-    assert out_csv.exists()
+    assert out_csv.exists(), "Condition must be true"
 
     rows = list(csv.DictReader(out_csv.open()))
-    assert len(rows) == 2
-    assert "metrics.m1" in rows[0]
-    assert "event" in rows[0]
+    assert len(rows) == 2, "Rows must not be empty"
+    assert "metrics.m1" in rows[0], "Condition must be true"
+    assert "event" in rows[0], "Condition must be true"

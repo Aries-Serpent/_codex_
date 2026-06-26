@@ -24,7 +24,7 @@ def test_unified_training_runs(backend: str, tmp_path):
     )
     result = run_unified_training(cfg)
     assert result["status"] in {"ok", "error"}
-    assert result["backend"] == backend
+    assert result["backend"] == backend, "Result must not be empty"
 
 
 def test_invalid_config_raises():

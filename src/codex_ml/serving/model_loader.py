@@ -201,8 +201,8 @@ class ModelLoader:
 
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.error(f"Failed to load model: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.error("Failed to load model: <ERROR_TYPE>")
             raise RuntimeError(f"Model loading failed: {e}") from e
 
     def _load_from_source(self, config: ModelConfig) -> dict[str, Any]:
@@ -270,8 +270,8 @@ class ModelLoader:
             from transformers import AutoTokenizer as AutoTokenizer
         except ImportError as e:
             error_type = type(e).__name__
-            logger.debug(f"ImportError: <ERROR_TYPE>")
-            logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
+            logger.debug("ImportError: <ERROR_TYPE>")
+            logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
             raise ImportError(
                 "transformers is required for HuggingFace models. "
                 "Install with: pip install transformers"
@@ -349,8 +349,8 @@ class ModelLoader:
             return dtype_map.get(dtype_str)
         except ImportError as e:
             error_type = type(e).__name__
-            logger.debug(f"ImportError: <ERROR_TYPE>")
-            logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
+            logger.debug("ImportError: <ERROR_TYPE>")
+            logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
             logger.warning("torch not available, ignoring dtype specification")
             return None
 
@@ -425,8 +425,8 @@ class ModelLoader:
                     f.read(1)
             except (IOError, OSError) as e:
                 error_type = type(e).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
-                logger.error(f"Cannot read checkpoint file: <ERROR_TYPE>")
+                logger.debug("Exception: <ERROR_TYPE>")
+                logger.error("Cannot read checkpoint file: <ERROR_TYPE>")
                 return False
 
         logger.info(f"Checkpoint validation passed: {path}")

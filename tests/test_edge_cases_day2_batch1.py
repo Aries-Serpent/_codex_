@@ -35,43 +35,43 @@ class TestMemoryEntryBoundaryConditions:
         entry = MemoryEntry(
             memory_id="test_zero", category="test", content="test_value", context={}, confidence=0.0
         )
-        assert entry.confidence == 0.0
-        assert entry.access_count == 0
+        assert entry.confidence == 0.0, "confidence is not valid"
+        assert entry.access_count == 0, "Count must be greater than zero"
 
     def test_confidence_upper_bound_one(self):
         """MemoryEntry with confidence=1.0 (upper bound)"""
         entry = MemoryEntry(
             memory_id="test_max", category="test", content="test_value", context={}, confidence=1.0
         )
-        assert entry.confidence == 1.0
+        assert entry.confidence == 1.0, "confidence is not valid"
 
     def test_confidence_midpoint(self):
         """MemoryEntry with confidence at 0.5"""
         entry = MemoryEntry(
             memory_id="test_mid", category="test", content="v", context={}, confidence=0.5
         )
-        assert entry.confidence == 0.5
+        assert entry.confidence == 0.5, "confidence is not valid"
 
     def test_confidence_overflow_stored(self):
         """MemoryEntry stores confidence > 1.0 without validation (by design)."""
         entry = MemoryEntry(
             memory_id="test_over", category="test", content="v", context={}, confidence=1.1
         )
-        assert entry.confidence == 1.1
+        assert entry.confidence == 1.1, "confidence is not valid"
 
     def test_confidence_underflow_stored(self):
         """MemoryEntry stores negative confidence without validation (by design)."""
         entry = MemoryEntry(
             memory_id="test_under", category="test", content="v", context={}, confidence=-0.1
         )
-        assert entry.confidence == -0.1
+        assert entry.confidence == -0.1, "confidence is not valid"
 
     def test_access_count_zero(self):
         """MemoryEntry with access_count=0 (never accessed)"""
         entry = MemoryEntry(
             memory_id="test_ac", category="test", content="v", context={}, confidence=0.5
         )
-        assert entry.access_count == 0
+        assert entry.access_count == 0, "Count must be greater than zero"
 
     def test_access_count_large_value(self):
         """MemoryEntry with very large access_count"""
@@ -83,40 +83,40 @@ class TestMemoryEntryBoundaryConditions:
             confidence=0.5,
             access_count=999999,
         )
-        assert entry.access_count == 999999
+        assert entry.access_count == 999999, "Count must be greater than zero"
 
     def test_access_count_negative_stored(self):
         """MemoryEntry stores negative access_count without validation (by design)."""
         entry = MemoryEntry(
             memory_id="test_neg_ac", category="test", content="v", context={}, access_count=-1
         )
-        assert entry.access_count == -1
+        assert entry.access_count == -1, "Count must be greater than zero"
 
     def test_memory_id_empty_string(self):
         """MemoryEntry with empty memory_id"""
         entry = MemoryEntry(memory_id="", category="test", content="v", context={}, confidence=0.5)
-        assert entry.memory_id == ""
+        assert entry.memory_id == "", "memory_id is not valid"
 
     def test_memory_id_none_stored(self):
         """MemoryEntry with None memory_id (no runtime type enforcement)."""
         entry = MemoryEntry(
             memory_id=None, category="test", content="v", context={}, confidence=0.5
         )
-        assert entry.memory_id is None
+        assert entry.memory_id is None, "memory_id is not valid"
 
     def test_content_empty_string(self):
         """MemoryEntry with empty string content"""
         entry = MemoryEntry(
             memory_id="test_empty", category="test", content="", context={}, confidence=0.5
         )
-        assert entry.content == ""
+        assert entry.content == "", "Content must not be empty"
 
     def test_content_none_stored(self):
         """MemoryEntry may store None content (no runtime type enforcement)."""
         entry = MemoryEntry(
             memory_id="test_none", category="test", content=None, context={}, confidence=0.5
         )
-        assert entry.content is None
+        assert entry.content is None, "Content must not be empty"
 
     def test_content_complex_type(self):
         """MemoryEntry content as stringified complex value"""
@@ -128,21 +128,21 @@ class TestMemoryEntryBoundaryConditions:
             context={},
             confidence=0.5,
         )
-        assert entry.content == complex_value
+        assert entry.content == complex_value, "Value must be initialized"
 
     def test_tags_empty_list(self):
         """MemoryEntry with empty tags list (default)"""
         entry = MemoryEntry(
             memory_id="test_tags", category="test", content="v", context={}, confidence=0.5
         )
-        assert entry.tags == []
+        assert entry.tags == [], "tags is not valid"
 
     def test_tags_single_tag(self):
         """MemoryEntry with single tag"""
         entry = MemoryEntry(
             memory_id="test_one_tag", category="test", content="v", context={}, tags=["important"]
         )
-        assert "important" in entry.tags
+        assert "important" in entry.tags, "Condition must be true"
 
     def test_tags_multiple_tags(self):
         """MemoryEntry with many tags"""
@@ -150,21 +150,21 @@ class TestMemoryEntryBoundaryConditions:
         entry = MemoryEntry(
             memory_id="test_multi_tag", category="test", content="v", context={}, tags=tag_list
         )
-        assert set(entry.tags) == set(tag_list)
+        assert set(entry.tags) == set(tag_list), "Condition must be true"
 
     def test_created_at_timestamp(self):
         """MemoryEntry created_at is an ISO-format string"""
         entry = MemoryEntry(memory_id="test_ts", category="test", content="v", context={})
         assert hasattr(entry, "created_at")
         assert isinstance(entry.created_at, str)
-        assert len(entry.created_at) > 0
+        assert len(entry.created_at) > 0, "Collection must not be empty"
 
     def test_timestamp_persistence(self):
         """MemoryEntry timestamp unchanged after access"""
         entry = MemoryEntry(memory_id="test_ts_persist", category="test", content="v", context={})
         original_time = entry.created_at
         entry.access_count += 1
-        assert entry.created_at == original_time
+        assert entry.created_at == original_time, "created_at is not valid"
 
 
 class TestMemoryEntryCircularReferences:
@@ -174,7 +174,7 @@ class TestMemoryEntryCircularReferences:
         """MemoryEntry with no related memories"""
         entry = MemoryEntry(memory_id="test_rel", category="test", content="v", context={})
         if hasattr(entry, "related_memories"):
-            assert entry.related_memories == [] or entry.related_memories == set()
+            assert entry.related_memories == [] or entry.related_memories == set(), "related_memories is not valid"
 
     def test_related_memories_self_reference_rejected(self):
         """MemoryEntry should reject self-reference in related_memories"""
@@ -184,7 +184,7 @@ class TestMemoryEntryCircularReferences:
                 entry.add_related_memory(entry)
                 # If no exception, verify self-reference was not added
                 if hasattr(entry, "related_memories"):
-                    assert entry not in entry.related_memories
+                    assert entry not in entry.related_memories, "Condition must be true"
             except (ValueError, RuntimeError):
                 pass  # Expected behavior
 
@@ -210,7 +210,7 @@ class TestContextFrameStateTransitions:
     def test_context_frame_creation(self):
         """ContextFrame initial state"""
         frame = ContextFrame(task_id="task1")
-        assert frame.task_id == "task1"
+        assert frame.task_id == "task1", "task_id is not valid"
         assert hasattr(frame, "status")
 
     def test_context_frame_status_active(self):
@@ -218,7 +218,7 @@ class TestContextFrameStateTransitions:
         frame = ContextFrame(task_id="task1")
         if hasattr(frame, "set_status"):
             frame.set_status("active")
-            assert frame.status == "active"
+            assert frame.status == "active", "status is not valid"
         else:
             frame.status = "active"
 
@@ -229,7 +229,7 @@ class TestContextFrameStateTransitions:
             frame.set_status("completed")
         else:
             frame.status = "completed"
-        assert frame.status == "completed"
+        assert frame.status == "completed", "status is not valid"
 
     def test_context_frame_status_failed(self):
         """ContextFrame transition to failed"""
@@ -238,7 +238,7 @@ class TestContextFrameStateTransitions:
             frame.set_status("failed")
         else:
             frame.status = "failed"
-        assert frame.status == "failed"
+        assert frame.status == "failed", "status is not valid"
 
     def test_context_frame_status_paused(self):
         """ContextFrame transition to paused"""
@@ -259,20 +259,20 @@ class TestContextFrameStateTransitions:
         """ContextFrame with zero token count"""
         frame = ContextFrame(task_id="task1")
         if hasattr(frame, "tokens_used"):
-            assert frame.tokens_used >= 0
+            assert frame.tokens_used >= 0, "tokens_used must be greater than zero"
 
     def test_context_frame_token_counter_large(self):
         """ContextFrame with large token count"""
         frame = ContextFrame(task_id="task1")
         if hasattr(frame, "tokens_used"):
             frame.tokens_used = 1000000
-            assert frame.tokens_used == 1000000
+            assert frame.tokens_used == 1000000, "tokens_used is not valid"
 
     def test_context_frame_error_counter_zero(self):
         """ContextFrame with zero error count"""
         frame = ContextFrame(task_id="task1")
         if hasattr(frame, "errors"):
-            assert frame.errors >= 0 or frame.errors == []
+            assert frame.errors >= 0 or frame.errors == [], "errors must be greater than zero"
 
     def test_context_frame_error_counter_increment(self):
         """ContextFrame error counter increments"""
@@ -284,7 +284,7 @@ class TestContextFrameStateTransitions:
         """ContextFrame with no modified files"""
         frame = ContextFrame(task_id="task1")
         if hasattr(frame, "files_modified"):
-            assert frame.files_modified == set() or frame.files_modified == []
+            assert frame.files_modified == set() or frame.files_modified == [], "files_modified is not valid"
 
     def test_context_frame_files_modified_add(self):
         """ContextFrame add modified file"""
@@ -292,7 +292,7 @@ class TestContextFrameStateTransitions:
         if hasattr(frame, "add_file"):
             frame.add_file("test.py")
             if hasattr(frame, "files_modified"):
-                assert "test.py" in frame.files_modified
+                assert "test.py" in frame.files_modified, "Condition must be true"
 
     def test_context_frame_files_modified_duplicate(self):
         """ContextFrame should handle duplicate file additions"""
@@ -302,7 +302,7 @@ class TestContextFrameStateTransitions:
             frame.add_file("test.py")
             if hasattr(frame, "files_modified"):
                 count = sum(1 for f in frame.files_modified if f == "test.py")
-                assert count <= 1  # Should not have duplicates in set
+                assert count <= 1, "Count must be greater than zero"
 
     def test_context_frame_multiple_files(self):
         """ContextFrame with multiple files modified"""
@@ -320,7 +320,7 @@ class TestPatternLibraryEdgeCases:
         """PatternLibrary with no patterns"""
         lib = PatternLibrary()
         if hasattr(lib, "patterns"):
-            assert len(lib.patterns) == 0
+            assert len(lib.patterns) == 0, "Collection must not be empty"
 
     def test_pattern_library_add_pattern(self):
         """PatternLibrary add single pattern"""
@@ -340,7 +340,7 @@ class TestPatternLibraryEdgeCases:
         lib = PatternLibrary()
         if hasattr(lib, "search"):
             results = lib.search(tags={"nonexistent"})
-            assert results == [] or results == set()
+            assert results == [] or results == set(), "Result must not be empty"
 
     def test_pattern_library_success_rate_boundary_zero(self):
         """PatternLibrary min_success_rate=0.0"""
@@ -396,19 +396,19 @@ class TestForceVectorBoundaryConditions:
     def test_force_vector_all_zeros(self):
         """ForceVector with x=0, y=0, z=0"""
         fv = ForceVector(x=0, y=0, z=0)
-        assert fv.x == 0
-        assert fv.y == 0
-        assert fv.z == 0
+        assert fv.x == 0, "x is not valid"
+        assert fv.y == 0, "y is not valid"
+        assert fv.z == 0, "z is not valid"
 
     def test_force_vector_large_positive(self):
         """ForceVector with large positive values"""
         fv = ForceVector(x=1000, y=1000, z=1000)
-        assert fv.x == 1000
+        assert fv.x == 1000, "x is not valid"
 
     def test_force_vector_large_negative(self):
         """ForceVector with large negative values"""
         fv = ForceVector(x=-1000, y=-1000, z=-1000)
-        assert fv.x == -1000
+        assert fv.x == -1000, "x is not valid"
 
     def test_force_vector_mixed_signs(self):
         """ForceVector with mixed positive/negative components"""
@@ -419,13 +419,13 @@ class TestForceVectorBoundaryConditions:
         """ForceVector magnitude when all components are zero"""
         fv = ForceVector(x=0, y=0, z=0)
         if hasattr(fv, "magnitude"):
-            assert fv.magnitude == 0
+            assert fv.magnitude == 0, "magnitude is not valid"
 
     def test_force_vector_magnitude_3_4_5_triangle(self):
         """ForceVector magnitude using 3-4-5 Pythagorean triple"""
         fv = ForceVector(x=3, y=4, z=0)
         if hasattr(fv, "magnitude"):
-            assert abs(fv.magnitude - 5.0) < 0.01
+            assert abs(fv.magnitude - 5.0) < 0.01, "Condition must be true"
 
     def test_force_vector_direction_zero_vector(self):
         """ForceVector direction with zero magnitude"""
@@ -455,14 +455,14 @@ class TestActionPathPhysicsProperties:
         ap = ActionPath(action_type=ActionType.MOVE)
         if hasattr(ap, "energy"):
             ap.energy = 0
-            assert ap.energy == 0
+            assert ap.energy == 0, "energy is not valid"
 
     def test_action_path_energy_max(self):
         """ActionPath with energy=100 (full energy)"""
         ap = ActionPath(action_type=ActionType.MOVE)
         if hasattr(ap, "energy"):
             ap.energy = 100
-            assert ap.energy == 100
+            assert ap.energy == 100, "energy is not valid"
 
     def test_action_path_energy_overflow_rejected(self):
         """ActionPath should reject energy > 100"""
@@ -476,42 +476,42 @@ class TestActionPathPhysicsProperties:
         ap = ActionPath(action_type=ActionType.MOVE)
         if hasattr(ap, "friction"):
             ap.friction = 0
-            assert ap.friction == 0
+            assert ap.friction == 0, "friction is not valid"
 
     def test_action_path_friction_max(self):
         """ActionPath with friction=100 (full friction)"""
         ap = ActionPath(action_type=ActionType.MOVE)
         if hasattr(ap, "friction"):
             ap.friction = 100
-            assert ap.friction == 100
+            assert ap.friction == 100, "friction is not valid"
 
     def test_action_path_confidence_boundary(self):
         """ActionPath confidence at 0.0"""
         ap = ActionPath(action_type=ActionType.MOVE)
         if hasattr(ap, "confidence"):
             ap.confidence = 0.0
-            assert ap.confidence == 0.0
+            assert ap.confidence == 0.0, "confidence is not valid"
 
     def test_action_path_confidence_boundary_one(self):
         """ActionPath confidence at 1.0"""
         ap = ActionPath(action_type=ActionType.MOVE)
         if hasattr(ap, "confidence"):
             ap.confidence = 1.0
-            assert ap.confidence == 1.0
+            assert ap.confidence == 1.0, "confidence is not valid"
 
     def test_action_path_risk_zero(self):
         """ActionPath risk=0.0 (safe action)"""
         ap = ActionPath(action_type=ActionType.MOVE)
         if hasattr(ap, "risk"):
             ap.risk = 0.0
-            assert ap.risk == 0.0
+            assert ap.risk == 0.0, "risk is not valid"
 
     def test_action_path_risk_one(self):
         """ActionPath risk=1.0 (dangerous action)"""
         ap = ActionPath(action_type=ActionType.MOVE)
         if hasattr(ap, "risk"):
             ap.risk = 1.0
-            assert ap.risk == 1.0
+            assert ap.risk == 1.0, "risk is not valid"
 
     def test_action_path_impact_zero(self):
         """ActionPath impact=0.0 (no impact)"""
@@ -544,7 +544,7 @@ class TestActionTypeEnumCompleteness:
     def test_action_type_enum_values_unique(self):
         """ActionType enum values are unique"""
         values = [e.value for e in ActionType]
-        assert len(values) == len(set(values))
+        assert len(values) == len(set(values)), "Values must not be empty"
 
 
 # ============================================================================
@@ -672,7 +672,7 @@ class TestMemoryAndPhysicsIntegration:
             access_count=1,
             tags=["physics"],
         )
-        assert entry.context["x"] == 1
+        assert entry.context["x"] == 1, "Condition must be true"
 
     def test_context_frame_with_multiple_memory_entries(self):
         """ContextFrame managing multiple MemoryEntries"""
@@ -707,8 +707,8 @@ class TestRegressionPrevention:
             entry = MemoryEntry(
                 memory_id="test", category="test", content="test", context={}, confidence=0.5
             )
-            assert entry.memory_id == "test"
-            assert entry.content == "test"
+            assert entry.memory_id == "test", "memory_id is not valid"
+            assert entry.content == "test", "Content must not be empty"
         except Exception as e:
             pytest.fail(f"MemoryEntry creation regression: {e}")
 
@@ -716,7 +716,7 @@ class TestRegressionPrevention:
         """ForceVector creation regression test"""
         try:
             fv = ForceVector(x=1, y=2, z=3)
-            assert fv.x == 1
+            assert fv.x == 1, "x is not valid"
         except Exception as e:
             pytest.fail(f"ForceVector creation regression: {e}")
 
@@ -724,7 +724,7 @@ class TestRegressionPrevention:
         """ContextFrame creation regression test"""
         try:
             frame = ContextFrame(task_id="task1")
-            assert frame.task_id == "task1"
+            assert frame.task_id == "task1", "task_id is not valid"
         except Exception as e:
             pytest.fail(f"ContextFrame creation regression: {e}")
 

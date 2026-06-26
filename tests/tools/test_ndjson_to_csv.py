@@ -17,9 +17,9 @@ def test_convert_file(tmp_path):
     ndjson_path = REPO_ROOT / "samples" / "metrics_sample.ndjson"
     csv_path = tmp_path / "metrics.csv"
     count, fields = ndjson_to_csv.convert_file(ndjson_path, csv_path)
-    assert count == 2
+    assert count == 2, "Count must be greater than zero"
     assert set(fields) >= {"epoch", "loss", "accuracy"}
     contents = csv_path.read_text(encoding="utf-8")
-    assert "epoch" in contents
-    assert "loss" in contents
-    assert "accuracy" in contents
+    assert "epoch" in contents, "Content must not be empty"
+    assert "loss" in contents, "Content must not be empty"
+    assert "accuracy" in contents, "Content must not be empty"

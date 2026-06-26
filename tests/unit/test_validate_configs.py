@@ -26,19 +26,19 @@ class TestValidateYamlSyntax:
     def test_valid_yaml_returns_none(self, tmp_path: Path) -> None:
         f = tmp_path / "ok.yaml"
         f.write_text("learning_rate: 0.001\nbatch_size: 32\n")
-        assert vc.validate_yaml_syntax(f) is None
+        assert vc.validate_yaml_syntax(f) is None, "Condition must be true"
 
     def test_invalid_yaml_returns_error_string(self, tmp_path: Path) -> None:
         f = tmp_path / "bad.yaml"
         f.write_text("key: [unclosed\n")
         result = vc.validate_yaml_syntax(f)
-        assert result is not None
-        assert "YAML parse error" in result
+        assert result is not None, "result must be initialized"
+        assert "YAML parse error" in result, "Result must not be empty"
 
     def test_empty_file_is_valid(self, tmp_path: Path) -> None:
         f = tmp_path / "empty.yaml"
         f.write_text("")
-        assert vc.validate_yaml_syntax(f) is None
+        assert vc.validate_yaml_syntax(f) is None, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -51,18 +51,18 @@ class TestIsTrainCandidate:
         assert vc._is_train_candidate({"config_version": 1, "learning_rate": 1e-4})
 
     def test_dict_without_config_version_is_not_candidate(self) -> None:
-        assert not vc._is_train_candidate({"learning_rate": 0.001})
+        assert not vc._is_train_candidate({"learning_rate": 0.001}), "Condition must be true"
 
     def test_string_config_version_is_not_candidate(self) -> None:
-        assert not vc._is_train_candidate({"config_version": "1.0"})
+        assert not vc._is_train_candidate({"config_version": "1.0"}), "Condition must be true"
 
     def test_non_dict_is_not_candidate(self) -> None:
         assert not vc._is_train_candidate([1, 2, 3])
-        assert not vc._is_train_candidate("string")
-        assert not vc._is_train_candidate(None)
+        assert not vc._is_train_candidate("string"), "Condition must be true"
+        assert not vc._is_train_candidate(None), "Condition must be true"
 
     def test_empty_dict_is_not_candidate(self) -> None:
-        assert not vc._is_train_candidate({})
+        assert not vc._is_train_candidate({}), "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -78,7 +78,7 @@ class TestShouldSkip:
         path.parent.mkdir(parents=True)
         path.write_text("x: 1")
         monkeypatch.setattr(vc, "CONFIGS_DIR", configs_dir)
-        assert vc._should_skip(path)
+        assert vc._should_skip(path), "Condition must be true"
 
     def test_does_not_skip_normal_training_config(
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
@@ -88,7 +88,7 @@ class TestShouldSkip:
         path = configs_dir / "train_base.yaml"
         path.write_text("learning_rate: 0.001\n")
         monkeypatch.setattr(vc, "CONFIGS_DIR", configs_dir)
-        assert not vc._should_skip(path)
+        assert not vc._should_skip(path), "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -101,7 +101,7 @@ class TestRun:
         configs_dir = tmp_path / "configs"
         configs_dir.mkdir()
         failures = vc.run(configs_dir)
-        assert failures == 0
+        assert failures == 0, "failures is not valid"
 
     def test_run_returns_zero_for_valid_syntax_only_yaml(
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
@@ -113,7 +113,7 @@ class TestRun:
         monkeypatch.setattr(vc, "REPO_ROOT", tmp_path)
         monkeypatch.setattr(vc, "CONFIGS_DIR", configs_dir)
         failures = vc.run(configs_dir)
-        assert failures == 0
+        assert failures == 0, "failures is not valid"
 
     def test_run_counts_invalid_yaml_as_failure(
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
@@ -125,7 +125,7 @@ class TestRun:
         monkeypatch.setattr(vc, "REPO_ROOT", tmp_path)
         monkeypatch.setattr(vc, "CONFIGS_DIR", configs_dir)
         failures = vc.run(configs_dir)
-        assert failures == 1
+        assert failures == 1, "failures is not valid"
 
     def test_run_skips_desired_directory(
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
@@ -137,7 +137,7 @@ class TestRun:
         monkeypatch.setattr(vc, "REPO_ROOT", tmp_path)
         monkeypatch.setattr(vc, "CONFIGS_DIR", configs_dir)
         failures = vc.run(configs_dir)
-        assert failures == 0
+        assert failures == 0, "failures is not valid"
 
     def test_run_verbose_flag_accepted(
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture
@@ -149,7 +149,7 @@ class TestRun:
         monkeypatch.setattr(vc, "REPO_ROOT", tmp_path)
         monkeypatch.setattr(vc, "CONFIGS_DIR", configs_dir)
         failures = vc.run(configs_dir, verbose=True)
-        assert failures == 0
+        assert failures == 0, "failures is not valid"
 
 
 # ---------------------------------------------------------------------------

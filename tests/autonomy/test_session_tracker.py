@@ -38,7 +38,7 @@ class TestSessionStart:
 
         assert isinstance(session_id, str)
         files = list(tmp_path.glob("*.json"))
-        assert any(session_id in f.name or f.name == ".current_session.json" for f in files)
+        assert any(session_id in f.name or f.name == ".current_session.json" for f in files), "name is not valid"
 
     def test_start_session_json_schema(self, tmp_path):
         mod = _import_tracker()
@@ -55,8 +55,8 @@ class TestSessionStart:
 
         if session_file.exists():
             data = json.loads(session_file.read_text())
-            assert "session_id" in data
-            assert "started_at" in data
+            assert "session_id" in data, "Data must not be empty"
+            assert "started_at" in data, "Data must not be empty"
 
 
 class TestSessionEnd:
@@ -93,7 +93,7 @@ class TestCurrentSessionPointer:
         ptr = tmp_path / ".current_session.json"
         if ptr.exists():
             data = json.loads(ptr.read_text())
-            assert "session_id" in data
+            assert "session_id" in data, "Data must not be empty"
 
     def test_multiple_sessions_no_clobber(self, tmp_path):
         mod = _import_tracker()
@@ -104,7 +104,7 @@ class TestCurrentSessionPointer:
             id1 = mod.start_session(label="first")
             id2 = mod.start_session(label="second")
 
-        assert id1 != id2
+        assert id1 != id2, "id1 is not valid"
 
 
 class TestSessionList:
@@ -120,7 +120,7 @@ class TestSessionList:
             mod.start_session(label="list-b")
             sessions = mod.list_sessions()
 
-        assert len(sessions) >= 2
+        assert len(sessions) >= 2, "Sessions must not be empty"
 
 
 class TestSessionArchive:
@@ -135,10 +135,10 @@ class TestSessionArchive:
             session_id = mod.start_session(label="to-archive")
             result = mod.archive_session(session_id=session_id, reason="test archive")
 
-        assert result["status"] == "archived"
-        assert result["outcome"] == "archived"
-        assert result.get("archive_reason") == "test archive"
-        assert "archived_at" in result
+        assert result["status"] == "archived", "Result must not be empty"
+        assert result["outcome"] == "archived", "Result must not be empty"
+        assert result.get("archive_reason") == "test archive", "Result must not be empty"
+        assert "archived_at" in result, "Result must not be empty"
 
     def test_archive_stale_session_creates_tombstone(self, tmp_path):
         """Archiving a session with no local file creates a tombstone record."""
@@ -154,12 +154,12 @@ class TestSessionArchive:
                 pr_number=3221,
             )
 
-        assert result["session_id"] == stale_id
-        assert result["status"] == "archived"
-        assert result.get("tombstone") is True
-        assert result.get("pr_number") == 3221
+        assert result["session_id"] == stale_id, "Result must not be empty"
+        assert result["status"] == "archived", "Result must not be empty"
+        assert result.get("tombstone") is True, "Result must not be empty"
+        assert result.get("pr_number") == 3221, "Result must not be empty"
         session_file = tmp_path / f"session_{stale_id}.json"
-        assert session_file.exists()
+        assert session_file.exists(), "Condition must be true"
 
     def test_archive_session_removes_current_pointer(self, tmp_path):
         mod = _import_tracker()
@@ -169,14 +169,14 @@ class TestSessionArchive:
         with patch.object(mod, "SESSION_DIR", tmp_path):
             session_id = mod.start_session(label="ptr-archive-test")
             ptr = tmp_path / ".current_session.json"
-            assert ptr.exists()
+            assert ptr.exists(), "Condition must be true"
             mod.archive_session(session_id=session_id)
-            assert not ptr.exists()
+            assert not ptr.exists(), "Condition must be true"
 
     def test_archive_session_status_constant(self):
         mod = _import_tracker()
         assert hasattr(mod, "STATUS_ARCHIVED"), "STATUS_ARCHIVED constant missing"
-        assert mod.STATUS_ARCHIVED == "archived"
+        assert mod.STATUS_ARCHIVED == "archived", "STATUS_ARCHIVED is not valid"
 
     def test_archive_session_in_list(self, tmp_path):
         mod = _import_tracker()
@@ -193,8 +193,8 @@ class TestSessionArchive:
             sessions = mod.list_sessions()
 
         archived = [s for s in sessions if s["session_id"] == session_id]
-        assert len(archived) == 1
-        assert archived[0]["status"] == "archived"
+        assert len(archived) == 1, "Archived must not be empty"
+        assert archived[0]["status"] == "archived", "Condition must be true"
 
 
 class TestSessionArchiveDryRun:
@@ -209,8 +209,8 @@ class TestSessionArchiveDryRun:
         with patch.object(mod, "SESSION_DIR", tmp_path):
             rc = mod.cmd_archive(session_id=session_id, reason="dry test", dry_run=True)
 
-        assert rc == 0
-        assert not (
+        assert rc == 0, "rc is not valid"
+        assert not (, "Condition must be true"
             tmp_path / f"session_{session_id}.json"
         ).exists(), "dry-run must not write any files"
 
@@ -225,7 +225,7 @@ class TestSessionArchiveDryRun:
             rc = mod.cmd_archive(session_id=sid, reason="dry-run check", dry_run=True)
             after_status = mod._load_json(mod._session_path(sid))["status"]
 
-        assert rc == 0
+        assert rc == 0, "rc is not valid"
         assert after_status == original_status, "dry-run must leave the session file unchanged"
 
 
@@ -240,9 +240,9 @@ class TestSessionMetrics:
         with patch.object(mod, "SESSION_DIR", tmp_path):
             result = mod.session_metrics()
 
-        assert result["total"] == 0
-        assert result["active"] == 0
-        assert result["archived"] == 0
+        assert result["total"] == 0, "Result must not be empty"
+        assert result["active"] == 0, "Result must not be empty"
+        assert result["archived"] == 0, "Result must not be empty"
 
     def test_metrics_counts_statuses(self, tmp_path):
         mod = _import_tracker()
@@ -259,9 +259,9 @@ class TestSessionMetrics:
             mod.archive_session(session_id=sid2, reason="test metrics")
             result = mod.session_metrics()
 
-        assert result["active"] >= 1
-        assert result["archived"] >= 1
-        assert (
+        assert result["active"] >= 1, "Value must be greater than zero"
+        assert result["archived"] >= 1, "Value must be greater than zero"
+        assert (, "Condition must be true"
             result["total"]
             == result["active"]
             + result["completed"]
@@ -280,8 +280,8 @@ class TestSessionMetrics:
             mod.archive_session(session_id=stale_id, reason="tombstone test")
             result = mod.session_metrics()
 
-        assert result["tombstones"] == 1
-        assert result["archived"] >= 1
+        assert result["tombstones"] == 1, "Result must not be empty"
+        assert result["archived"] >= 1, "Value must be greater than zero"
 
     def test_cmd_metrics_text_output(self, tmp_path, capsys):
         mod = _import_tracker()
@@ -292,9 +292,9 @@ class TestSessionMetrics:
             rc = mod.cmd_metrics(output_format="text")
 
         captured = capsys.readouterr()
-        assert rc == 0
-        assert "Archived" in captured.out or "archived" in captured.out.lower()
-        assert "Total" in captured.out or "total" in captured.out.lower()
+        assert rc == 0, "rc is not valid"
+        assert "Archived" in captured.out or "archived" in captured.out.lower(), "Condition must be true"
+        assert "Total" in captured.out or "total" in captured.out.lower(), "Condition must be true"
 
     def test_cmd_metrics_json_output(self, tmp_path, capsys):
         mod = _import_tracker()
@@ -305,8 +305,8 @@ class TestSessionMetrics:
             rc = mod.cmd_metrics(output_format="json")
 
         captured = capsys.readouterr()
-        assert rc == 0
+        assert rc == 0, "rc is not valid"
         data = json.loads(captured.out)
-        assert "archived" in data
-        assert "total" in data
-        assert "tombstones" in data
+        assert "archived" in data, "Data must not be empty"
+        assert "total" in data, "Data must not be empty"
+        assert "tombstones" in data, "Data must not be empty"

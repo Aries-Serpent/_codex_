@@ -37,7 +37,7 @@ def test_prefix_validator_reports_violation():
         check=True,
         env=env,
     )
-    assert REPORT.exists()
+    assert REPORT.exists(), "Condition must be true"
     data = json.loads(REPORT.read_text())
-    assert len(data["violations"]) == 1
+    assert len(data["violations"]) == 1, "Collection must not be empty"
     assert data["allowed"] == ["patchset_", "bundle_", "har_"]

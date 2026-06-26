@@ -46,9 +46,9 @@ class TestCVEEntry:
             package="requests",
             affected_versions=["2.25.0", "2.25.1"],
         )
-        assert cve.cve_id == "CVE-2024-1234"
-        assert cve.severity == "HIGH"
-        assert cve.package == "requests"
+        assert cve.cve_id == "CVE-2024-1234", "cve_id is not valid"
+        assert cve.severity == "HIGH", "severity is not valid"
+        assert cve.package == "requests", "package is not valid"
         assert cve.affected_versions == ["2.25.0", "2.25.1"]
 
     def test_full_creation(self):
@@ -62,9 +62,9 @@ class TestCVEEntry:
             description="Security vulnerability in Flask",
             published="2024-01-15",
         )
-        assert cve.fixed_in == "1.0.3"
-        assert cve.description == "Security vulnerability in Flask"
-        assert cve.published == "2024-01-15"
+        assert cve.fixed_in == "1.0.3", "fixed_in is not valid"
+        assert cve.description == "Security vulnerability in Flask", "description is not valid"
+        assert cve.published == "2024-01-15", "published is not valid"
 
     def test_default_values(self):
         """Test CVEEntry default values."""
@@ -74,9 +74,9 @@ class TestCVEEntry:
             package="test-pkg",
             affected_versions=["1.0.0"],
         )
-        assert cve.fixed_in is None
-        assert cve.description == ""
-        assert cve.published == ""
+        assert cve.fixed_in is None, "fixed_in is not valid"
+        assert cve.description == "", "description is not valid"
+        assert cve.published == "", "published is not valid"
 
     def test_affects_true(self):
         """Test affects method returns True for affected version."""
@@ -86,8 +86,8 @@ class TestCVEEntry:
             package="vulnerable-pkg",
             affected_versions=["1.0.0", "1.0.1", "1.1.0"],
         )
-        assert cve.affects("1.0.0") is True
-        assert cve.affects("1.1.0") is True
+        assert cve.affects("1.0.0") is True, "Condition must be true"
+        assert cve.affects("1.1.0") is True, "Condition must be true"
 
     def test_affects_false(self):
         """Test affects method returns False for unaffected version."""
@@ -97,8 +97,8 @@ class TestCVEEntry:
             package="vulnerable-pkg",
             affected_versions=["1.0.0", "1.0.1"],
         )
-        assert cve.affects("2.0.0") is False
-        assert cve.affects("1.0.2") is False
+        assert cve.affects("2.0.0") is False, "Condition must be true"
+        assert cve.affects("1.0.2") is False, "Condition must be true"
 
     def test_severity_levels(self):
         """Test different severity levels."""
@@ -110,7 +110,7 @@ class TestCVEEntry:
                 package="test",
                 affected_versions=["1.0"],
             )
-            assert cve.severity == severity
+            assert cve.severity == severity, "severity is not valid"
 
 
 # =============================================================================
@@ -124,9 +124,9 @@ class TestCVEDatabase:
     def test_empty_database(self):
         """Test empty database creation."""
         db = CVEDatabase()
-        assert db.entries == {}
-        assert db.last_updated == ""
-        assert db.checksum == ""
+        assert db.entries == {}, "entries is not valid"
+        assert db.last_updated == "", "last_updated is not valid"
+        assert db.checksum == "", "checksum is not valid"
 
     def test_add_single_cve(self):
         """Test adding a single CVE to database."""
@@ -139,9 +139,9 @@ class TestCVEDatabase:
         )
         db.add_cve(cve)
 
-        assert "requests" in db.entries
-        assert len(db.entries["requests"]) == 1
-        assert db.entries["requests"][0].cve_id == "CVE-2024-0001"
+        assert "requests" in db.entries, "Condition must be true"
+        assert len(db.entries["requests"]) == 1, "Collection must not be empty"
+        assert db.entries["requests"][0].cve_id == "CVE-2024-0001", "cve_id is not valid"
 
     def test_add_multiple_cves_same_package(self):
         """Test adding multiple CVEs for the same package."""
@@ -163,7 +163,7 @@ class TestCVEDatabase:
         db.add_cve(cve1)
         db.add_cve(cve2)
 
-        assert len(db.entries["requests"]) == 2
+        assert len(db.entries["requests"]) == 2, "Collection must not be empty"
 
     def test_add_cves_different_packages(self):
         """Test adding CVEs for different packages."""
@@ -185,8 +185,8 @@ class TestCVEDatabase:
         db.add_cve(cve1)
         db.add_cve(cve2)
 
-        assert "requests" in db.entries
-        assert "flask" in db.entries
+        assert "requests" in db.entries, "Condition must be true"
+        assert "flask" in db.entries, "Condition must be true"
 
     def test_checksum_updates_on_add(self):
         """Test that checksum is updated when CVE is added."""
@@ -201,13 +201,13 @@ class TestCVEDatabase:
         )
         db.add_cve(cve)
 
-        assert db.checksum != initial_checksum
-        assert len(db.checksum) == 16  # SHA256 truncated to 16 chars
+        assert db.checksum != initial_checksum, "checksum is not valid"
+        assert len(db.checksum) == 16, "Collection must not be empty"
 
     def test_last_updated_changes(self):
         """Test that last_updated is set when CVE is added."""
         db = CVEDatabase()
-        assert db.last_updated == ""
+        assert db.last_updated == "", "last_updated is not valid"
 
         cve = CVEEntry(
             cve_id="CVE-2024-0001",
@@ -217,7 +217,7 @@ class TestCVEDatabase:
         )
         db.add_cve(cve)
 
-        assert db.last_updated != ""
+        assert db.last_updated != "", "last_updated is not valid"
         # Verify it's a valid ISO timestamp
         datetime.fromisoformat(db.last_updated)
 
@@ -233,8 +233,8 @@ class TestCVEDatabase:
         db.add_cve(cve)
 
         vulns = db.check_package("requests", "2.25.0")
-        assert len(vulns) == 1
-        assert vulns[0].cve_id == "CVE-2024-0001"
+        assert len(vulns) == 1, "Vulns must not be empty"
+        assert vulns[0].cve_id == "CVE-2024-0001", "cve_id is not valid"
 
     def test_check_package_no_vulnerability(self):
         """Test checking a package without vulnerabilities."""
@@ -248,13 +248,13 @@ class TestCVEDatabase:
         db.add_cve(cve)
 
         vulns = db.check_package("requests", "2.26.0")
-        assert len(vulns) == 0
+        assert len(vulns) == 0, "Vulns must not be empty"
 
     def test_check_package_unknown(self):
         """Test checking an unknown package."""
         db = CVEDatabase()
         vulns = db.check_package("unknown-package", "1.0.0")
-        assert len(vulns) == 0
+        assert len(vulns) == 0, "Vulns must not be empty"
 
     def test_check_all_dependencies(self):
         """Test checking all dependencies at once."""
@@ -283,9 +283,9 @@ class TestCVEDatabase:
 
         results = db.check_all(dependencies)
 
-        assert "requests" in results
-        assert "flask" not in results
-        assert "django" not in results
+        assert "requests" in results, "Result must not be empty"
+        assert "flask" not in results, "Result must not be empty"
+        assert "django" not in results, "Result must not be empty"
 
     def test_to_dict(self):
         """Test converting database to dictionary."""
@@ -301,9 +301,9 @@ class TestCVEDatabase:
 
         data = db.to_dict()
 
-        assert "entries" in data
-        assert "last_updated" in data
-        assert "requests" in data["entries"]
+        assert "entries" in data, "Data must not be empty"
+        assert "last_updated" in data, "Data must not be empty"
+        assert "requests" in data["entries"], "Data must not be empty"
 
     def test_from_dict(self):
         """Test creating database from dictionary."""
@@ -323,9 +323,9 @@ class TestCVEDatabase:
 
         db = CVEDatabase.from_dict(data)
 
-        assert db.last_updated == "2024-01-15T12:00:00"
-        assert "requests" in db.entries
-        assert db.entries["requests"][0].cve_id == "CVE-2024-0001"
+        assert db.last_updated == "2024-01-15T12:00:00", "last_updated is not valid"
+        assert "requests" in db.entries, "Condition must be true"
+        assert db.entries["requests"][0].cve_id == "CVE-2024-0001", "cve_id is not valid"
 
     def test_roundtrip_dict(self):
         """Test roundtrip to/from dictionary."""
@@ -343,8 +343,8 @@ class TestCVEDatabase:
         data = db.to_dict()
         restored = CVEDatabase.from_dict(data)
 
-        assert "requests" in restored.entries
-        assert restored.entries["requests"][0].cve_id == "CVE-2024-0001"
+        assert "requests" in restored.entries, "Condition must be true"
+        assert restored.entries["requests"][0].cve_id == "CVE-2024-0001", "cve_id is not valid"
 
 
 # =============================================================================
@@ -398,9 +398,9 @@ class TestCVEDatabaseIntegration:
         vulns = db.check_all(project_deps)
 
         # Only requests should be flagged
-        assert "requests" in vulns
-        assert "urllib3" not in vulns
-        assert "certifi" not in vulns
+        assert "requests" in vulns, "Condition must be true"
+        assert "urllib3" not in vulns, "Condition must be true"
+        assert "certifi" not in vulns, "Condition must be true"
 
     def test_multiple_vulns_same_package(self):
         """Test package with multiple vulnerabilities."""
@@ -424,7 +424,7 @@ class TestCVEDatabaseIntegration:
 
         vulns = db.check_package("vulnerable-lib", "1.0.0")
 
-        assert len(vulns) == 2
+        assert len(vulns) == 2, "Vulns must not be empty"
         cve_ids = {v.cve_id for v in vulns}
-        assert "CVE-2024-0001" in cve_ids
-        assert "CVE-2024-0002" in cve_ids
+        assert "CVE-2024-0001" in cve_ids, "Condition must be true"
+        assert "CVE-2024-0002" in cve_ids, "Condition must be true"

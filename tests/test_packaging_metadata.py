@@ -55,20 +55,20 @@ def test_pyproject_core_metadata():
     # SPDX license (can be string or dict with 'text' key)
     license_val = proj.get("license")
     if isinstance(license_val, dict):
-        assert license_val.get("text") == "MIT"
+        assert license_val.get("text") == "MIT", "Condition must be true"
     else:
-        assert license_val == "MIT"
+        assert license_val == "MIT", "license_val is not valid"
 
     # Python floor
     req = proj.get("requires-python", "")
-    assert req.startswith(">=3.12") or req.startswith(">=3.10")
+    assert req.startswith(">=3.12") or req.startswith(">=3.10"), "Value must be greater than zero"
 
     # Vulnerable optional stacks should not be pulled into the base install.
-    assert all("lm-eval" not in dep for dep in dependencies)
-    assert "eval" in optional
-    assert any("lm-eval" in dep for dep in optional["eval"])
-    assert "dataops" in optional
-    assert any("dvc==" in dep for dep in optional["dataops"])
+    assert all("lm-eval" not in dep for dep in dependencies), "Condition must be true"
+    assert "eval" in optional, "Condition must be true"
+    assert any("lm-eval" in dep for dep in optional["eval"]), "Condition must be true"
+    assert "dataops" in optional, "Data must not be empty"
+    assert any("dvc==" in dep for dep in optional["dataops"]), "Data must not be empty"
 
     # Scripts presence
     scripts = proj.get("scripts", {})
@@ -83,11 +83,11 @@ def test_pyproject_core_metadata():
     # Package discovery "where" includes "." and "src"
     find = data.get("tool", {}).get("setuptools", {}).get("packages", {}).get("find", {})
     where = find.get("where", [])
-    assert "." in where and "src" in where
+    assert "." in where and "src" in where, "Condition must be true"
 
     # Include patterns cover codex_ml namespace
     include = find.get("include", [])
-    assert any(p.startswith("codex_ml") for p in include)
+    assert any(p.startswith("codex_ml") for p in include), "Condition must be true"
 
 
 def test_license_files_present():
@@ -96,11 +96,11 @@ def test_license_files_present():
     lic_files = data.get("tool", {}).get("setuptools", {}).get("license-files")
     if lic_files:
         # Should be a list of file patterns
-        assert "LICENSE" in lic_files
-        assert any("LICENSES" in p for p in lic_files)
+        assert "LICENSE" in lic_files, "Condition must be true"
+        assert any("LICENSES" in p for p in lic_files), "Condition must be true"
     else:
         # Fallback: check if LICENSE file exists in repo
         import pathlib
 
         repo_root = pathlib.Path(__file__).parent.parent
-        assert (repo_root / "LICENSE").exists()
+        assert (repo_root / "LICENSE").exists(), "Condition must be true"

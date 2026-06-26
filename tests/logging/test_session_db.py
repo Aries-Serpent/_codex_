@@ -15,7 +15,9 @@ import tempfile
 import threading  # pragma: allowlist secret # pragma: allowlist secret
 import time
 from datetime import datetime, timedelta
-from pathlib import Path # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+from pathlib import (
+    Path,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+)
 
 import pytest
 
@@ -30,7 +32,7 @@ class TestSessionDBInitialization:
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = f"{tmpdir}/test.db"
             SessionDB(db_path)
-            assert Path(db_path).exists()
+            assert Path(db_path).exists(), "Condition must be true"
 
     def test_schema_creates_tables(self):
         """Test that schema creates all required tables."""
@@ -52,7 +54,7 @@ class TestSessionDBInitialization:
                 "session_outcomes",
                 "session_events",
             }
-            assert expected_tables.issubset(tables)
+            assert expected_tables.issubset(tables), "Condition must be true"
 
     def test_schema_creates_indices(self):
         """Test that schema creates performance indices."""
@@ -74,7 +76,7 @@ class TestSessionDBInitialization:
                 "idx_session_id",
                 "idx_created_at",
             }
-            assert expected_indices.issubset(indices)
+            assert expected_indices.issubset(indices), "Condition must be true"
 
     def test_wal_mode_enabled(self):
         """Test that WAL mode is enabled for concurrent access."""
@@ -87,7 +89,7 @@ class TestSessionDBInitialization:
                 cursor.execute("PRAGMA journal_mode")
                 mode = cursor.fetchone()[0]
 
-            assert mode.upper() == "WAL"
+            assert mode.upper() == "WAL", "Condition must be true"
 
     def test_foreign_keys_enabled(self):
         """Test that foreign keys are enforced."""
@@ -100,14 +102,14 @@ class TestSessionDBInitialization:
                 cursor.execute("PRAGMA foreign_keys")
                 enabled = cursor.fetchone()[0]
 
-            assert enabled == 1
+            assert enabled == 1, "enabled is not valid"
 
     def test_connection_timeout(self):
         """Test that connection timeout is properly configured."""
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = f"{tmpdir}/test.db"
             db = SessionDB(db_path)
-            assert db.db_path == db_path
+            assert db.db_path == db_path, "db_path is not valid"
 
 
 class TestSessionInsertion:
@@ -129,13 +131,13 @@ class TestSessionInsertion:
         }
 
         result = db.insert_session(session)
-        assert result is True
+        assert result is True, "Result must not be empty"
 
         # Verify insertion
         retrieved = db.get_session("test-001")
-        assert retrieved is not None
-        assert retrieved["session_id"] == "test-001"
-        assert retrieved["status"] == "complete"
+        assert retrieved is not None, "retrieved must be initialized"
+        assert retrieved["session_id"] == "test-001", "Condition must be true"
+        assert retrieved["status"] == "complete", "Condition must be true"
 
     def test_insert_session_with_all_fields(self, db):
         """Test inserting session with all fields."""
@@ -165,16 +167,16 @@ class TestSessionInsertion:
         }
 
         result = db.insert_session(session)
-        assert result is True
+        assert result is True, "Result must not be empty"
 
         # Verify full insertion
         retrieved = db.get_session_with_details("test-002")
-        assert retrieved is not None
-        assert retrieved["pr_number"] == 123
-        assert retrieved["branch"] == "main"
-        assert retrieved["agent_name"] == "test-agent"
-        assert len(retrieved["patterns"]) == 2
-        assert retrieved["outcomes"]["ci_checks_green"] == 5
+        assert retrieved is not None, "retrieved must be initialized"
+        assert retrieved["pr_number"] == 123, "Condition must be true"
+        assert retrieved["branch"] == "main", "Condition must be true"
+        assert retrieved["agent_name"] == "test-agent", "Condition must be true"
+        assert len(retrieved["patterns"]) == 2, "Collection must not be empty"
+        assert retrieved["outcomes"]["ci_checks_green"] == 5, "Condition must be true"
 
     def test_insert_missing_required_field(self, db):
         """Test that insertion fails without required fields."""
@@ -221,7 +223,7 @@ class TestSessionInsertion:
                 "status": status,
             }
             result = db.insert_session(session)
-            assert result is True
+            assert result is True, "Result must not be empty"
 
 
 class TestSessionQuerying:
@@ -252,40 +254,40 @@ class TestSessionQuerying:
     def test_query_all_sessions(self, db_with_data):
         """Test querying all sessions."""
         results = db_with_data.query_sessions(limit=100)
-        assert len(results) == 10
+        assert len(results) == 10, "Results must not be empty"
 
     def test_query_by_status(self, db_with_data):
         """Test filtering by status."""
         results = db_with_data.query_sessions(filters={"status": "complete"}, limit=100)
-        assert len(results) > 0
-        assert all(r["status"] == "complete" for r in results)
+        assert len(results) > 0, "Results must not be empty"
+        assert all(r["status"] == "complete" for r in results), "Result must not be empty"
 
     def test_query_by_agent_name(self, db_with_data):
         """Test filtering by agent name."""
         results = db_with_data.query_sessions(filters={"agent_name": "agent-a"}, limit=100)
-        assert len(results) > 0
-        assert all(r["agent_name"] == "agent-a" for r in results)
+        assert len(results) > 0, "Results must not be empty"
+        assert all(r["agent_name"] == "agent-a" for r in results), "Result must not be empty"
 
     def test_query_by_branch(self, db_with_data):
         """Test filtering by branch."""
         results = db_with_data.query_sessions(filters={"branch": "main"}, limit=100)
-        assert len(results) > 0
-        assert all(r["branch"] == "main" for r in results)
+        assert len(results) > 0, "Results must not be empty"
+        assert all(r["branch"] == "main" for r in results), "Result must not be empty"
 
     def test_query_by_pr_number(self, db_with_data):
         """Test filtering by PR number."""
         results = db_with_data.query_sessions(filters={"pr_number": 100}, limit=100)
-        assert len(results) == 1
-        assert results[0]["pr_number"] == 100
+        assert len(results) == 1, "Results must not be empty"
+        assert results[0]["pr_number"] == 100, "Result must not be empty"
 
     def test_query_with_pagination(self, db_with_data):
         """Test pagination."""
         page1 = db_with_data.query_sessions(limit=5, offset=0)
         page2 = db_with_data.query_sessions(limit=5, offset=5)
 
-        assert len(page1) == 5
-        assert len(page2) == 5
-        assert page1[0]["session_id"] != page2[0]["session_id"]
+        assert len(page1) == 5, "Page1 must not be empty"
+        assert len(page2) == 5, "Page2 must not be empty"
+        assert page1[0]["session_id"] != page2[0]["session_id"], "Condition must be true"
 
     def test_query_date_range(self, db_with_data):
         """Test querying by date range."""
@@ -294,13 +296,13 @@ class TestSessionQuerying:
         end = now.isoformat() + "Z"
 
         results = db_with_data.query_by_date_range(start, end)
-        assert len(results) > 0
+        assert len(results) > 0, "Results must not be empty"
 
     def test_query_by_agent_last_days(self, db_with_data):
         """Test querying agent sessions in last N days."""
         results = db_with_data.query_by_agent("agent-a", days=7)
-        assert len(results) > 0
-        assert all(r["agent_name"] == "agent-a" for r in results)
+        assert len(results) > 0, "Results must not be empty"
+        assert all(r["agent_name"] == "agent-a" for r in results), "Result must not be empty"
 
     def test_query_performance_last_7_days(self, db_with_data):
         """Test that 7-day query completes in <100ms."""
@@ -313,7 +315,7 @@ class TestSessionQuerying:
         elapsed = (time.time() - start_time) * 1000  # Convert to ms
 
         assert elapsed < 100, f"Query took {elapsed}ms, expected <100ms"
-        assert len(results) > 0
+        assert len(results) > 0, "Results must not be empty"
 
 
 class TestCaching:
@@ -340,12 +342,12 @@ class TestCaching:
     def test_cache_entry_not_expired(self):
         """Test cache entry expiration logic."""
         entry = CacheEntry({"data": "test"}, time.time())
-        assert not entry.is_expired(ttl=300)
+        assert not entry.is_expired(ttl=300), "Condition must be true"
 
     def test_cache_entry_expired(self):
         """Test that cache entry expires after TTL."""
         entry = CacheEntry({"data": "test"}, time.time() - 400)
-        assert entry.is_expired(ttl=300)
+        assert entry.is_expired(ttl=300), "Condition must be true"
 
     def test_query_cached(self, db_with_data):
         """Test that identical queries use cache."""
@@ -360,9 +362,9 @@ class TestCaching:
         time2 = time.time() - start_time
 
         # Results should be identical
-        assert result1 == result2
+        assert result1 == result2, "Result must not be empty"
         # Cached query should be faster (at least 5x)
-        assert time2 < time1 or time2 < 1  # Allow for very fast queries
+        assert time2 < time1 or time2 < 1, "time2 is not valid"
 
     def test_cache_invalidated_on_insert(self, db_with_data):
         """Test that cache is invalidated on insert."""
@@ -383,7 +385,7 @@ class TestCaching:
         results2 = db_with_data.query_sessions(limit=100)
         count2 = len(results2)
 
-        assert count2 == count1 + 1
+        assert count2 == count1 + 1, "Count must be greater than zero"
 
     def test_cache_ttl_respected(self):
         """Test that cache TTL is respected."""
@@ -408,7 +410,7 @@ class TestCaching:
             # Cache should be expired, second query will hit DB
             results2 = db.query_sessions(limit=100)
 
-            assert results1 == results2
+            assert results1 == results2, "Result must not be empty"
 
 
 class TestSessionStatusUpdate:
@@ -431,15 +433,15 @@ class TestSessionStatusUpdate:
     def test_update_status_success(self, db):
         """Test successful status update."""
         result = db.update_session_status("update-test", "in-progress")
-        assert result is True
+        assert result is True, "Result must not be empty"
 
         session = db.get_session("update-test")
-        assert session["status"] == "in-progress"
+        assert session["status"] == "in-progress", "Condition must be true"
 
     def test_update_nonexistent_session(self, db):
         """Test updating nonexistent session."""
         result = db.update_session_status("nonexistent", "complete")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_update_invalid_status(self, db):
         """Test that invalid status is rejected."""
@@ -456,7 +458,7 @@ class TestSessionStatusUpdate:
 
         # Query should return updated status
         session = db.get_session("update-test")
-        assert session["status"] == "complete"
+        assert session["status"] == "complete", "Condition must be true"
 
 
 class TestPatternTracking:
@@ -481,7 +483,7 @@ class TestPatternTracking:
         result = db.add_pattern_to_session(
             "pattern-test", "pattern-1", "Test Pattern", success=True
         )
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_multiple_patterns_per_session(self, db):
         """Test adding multiple patterns to session."""
@@ -489,7 +491,7 @@ class TestPatternTracking:
         db.add_pattern_to_session("pattern-test", "p2", "Pattern 2", success=False)
 
         session = db.get_session_with_details("pattern-test")
-        assert len(session["patterns"]) == 2
+        assert len(session["patterns"]) == 2, "Collection must not be empty"
 
 
 class TestEventTracking:
@@ -512,7 +514,7 @@ class TestEventTracking:
     def test_add_event_to_session(self, db):
         """Test adding event to session."""
         result = db.add_event_to_session("event-test", "start", event_details="Session started")
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_all_event_types(self, db):
         """Test all valid event types."""
@@ -527,7 +529,7 @@ class TestEventTracking:
 
         for event_type in valid_types:
             result = db.add_event_to_session("event-test", event_type)
-            assert result is True
+            assert result is True, "Result must not be empty"
 
     def test_invalid_event_type(self, db):
         """Test that invalid event type is rejected."""
@@ -566,18 +568,18 @@ class TestAggregation:
         """Test getting all-time statistics."""
         stats = db_with_data.get_stats(timeframe="all")
 
-        assert stats["total"] == 20
-        assert "by_status" in stats
-        assert "by_agent" in stats
-        assert "by_branch" in stats
-        assert 0 <= stats["success_rate"] <= 100
+        assert stats["total"] == 20, "Condition must be true"
+        assert "by_status" in stats, "Condition must be true"
+        assert "by_agent" in stats, "Condition must be true"
+        assert "by_branch" in stats, "Condition must be true"
+        assert 0 <= stats["success_rate"] <= 100, "0 is not valid"
 
     def test_get_stats_7_days(self, db_with_data):
         """Test getting 7-day statistics."""
         stats = db_with_data.get_stats(timeframe="7d")
 
-        assert stats["total"] > 0
-        assert stats["total"] <= 20
+        assert stats["total"] > 0, "Value must be greater than zero"
+        assert stats["total"] <= 20, "Condition must be true"
 
     def test_stats_success_rate(self, db_with_data):
         """Test success rate calculation."""
@@ -593,7 +595,7 @@ class TestAggregation:
         """Test statistics breakdown by agent."""
         stats = db_with_data.get_stats(timeframe="all")
 
-        assert len(stats["by_agent"]) > 0
+        assert len(stats["by_agent"]) > 0, "Collection must not be empty"
         assert all(isinstance(count, int) for count in stats["by_agent"].values())
 
     def test_stats_caching(self, db_with_data):
@@ -608,9 +610,9 @@ class TestAggregation:
         stats2 = db_with_data.get_stats(timeframe="7d")
         time2 = time.time() - start_time
 
-        assert stats1 == stats2
+        assert stats1 == stats2, "stats1 is not valid"
         # Cached call should be faster
-        assert time2 < time1 or time2 < 1
+        assert time2 < time1 or time2 < 1, "time2 is not valid"
 
 
 class TestThreadSafety:
@@ -643,7 +645,7 @@ class TestThreadSafety:
 
             # Verify all sessions inserted
             results = db.query_sessions(limit=1000)
-            assert len(results) == 50
+            assert len(results) == 50, "Results must not be empty"
 
     def test_concurrent_queries(self):
         """Test that concurrent queries work correctly."""
@@ -677,8 +679,8 @@ class TestThreadSafety:
                 thread.join()
 
             # Verify all queries succeeded
-            assert len(results_list) == 5
-            assert all(len(r) == 20 for r in results_list)
+            assert len(results_list) == 5, "Results_list must not be empty"
+            assert all(len(r) == 20 for r in results_list), "R must not be empty"
 
 
 class TestSessionDeletion:
@@ -702,22 +704,22 @@ class TestSessionDeletion:
     def test_delete_session(self, db):
         """Test deleting a session."""
         result = db.delete_session("delete-test")
-        assert result is True
+        assert result is True, "Result must not be empty"
 
         # Verify deletion
         session = db.get_session("delete-test")
-        assert session is None
+        assert session is None, "session is not valid"
 
     def test_delete_nonexistent_session(self, db):
         """Test deleting nonexistent session."""
         result = db.delete_session("nonexistent")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_cascade_delete_patterns(self, db):
         """Test that patterns are deleted with session."""
         # Verify pattern exists
         session = db.get_session_with_details("delete-test")
-        assert len(session["patterns"]) == 1
+        assert len(session["patterns"]) == 1, "Collection must not be empty"
 
         # Delete session
         db.delete_session("delete-test")
@@ -731,7 +733,7 @@ class TestSessionDeletion:
             )
             count = cursor.fetchone()[0]
 
-        assert count == 0
+        assert count == 0, "Count must be greater than zero"
 
 
 class TestDatabaseOptimization:
@@ -757,7 +759,7 @@ class TestDatabaseOptimization:
 
             # Verify database still works
             results = db.query_sessions(limit=100)
-            assert len(results) == 10
+            assert len(results) == 10, "Results must not be empty"
 
     def test_get_connection_info(self):
         """Test getting database connection info."""
@@ -765,12 +767,12 @@ class TestDatabaseOptimization:
             db = SessionDB(f"{tmpdir}/test.db")
             info = db.get_connection_info()
 
-            assert "db_path" in info
-            assert "journal_mode" in info
-            assert "cache_size" in info
-            assert "foreign_keys" in info
-            assert info["foreign_keys"] is True
-            assert info["journal_mode"].upper() == "WAL"
+            assert "db_path" in info, "Condition must be true"
+            assert "journal_mode" in info, "Condition must be true"
+            assert "cache_size" in info, "Condition must be true"
+            assert "foreign_keys" in info, "Condition must be true"
+            assert info["foreign_keys"] is True, "Condition must be true"
+            assert info["journal_mode"].upper() == "WAL", "Condition must be true"
 
 
 class TestEdgeCases:
@@ -786,18 +788,18 @@ class TestEdgeCases:
     def test_query_empty_database(self, db):
         """Test querying empty database."""
         results = db.query_sessions(limit=100)
-        assert results == []
+        assert results == [], "Result must not be empty"
 
     def test_get_session_empty_database(self, db):
         """Test getting session from empty database."""
         session = db.get_session("nonexistent")
-        assert session is None
+        assert session is None, "session is not valid"
 
     def test_stats_empty_database(self, db):
         """Test getting stats from empty database."""
         stats = db.get_stats()
-        assert stats["total"] == 0
-        assert stats["success_rate"] == 0.0
+        assert stats["total"] == 0, "Condition must be true"
+        assert stats["success_rate"] == 0.0, "Condition must be true"
 
     def test_query_with_special_characters(self, db):
         """Test querying with special characters."""
@@ -809,10 +811,10 @@ class TestEdgeCases:
             "branch": "feature/special's-branch",
         }
         result = db.insert_session(session)
-        assert result is True
+        assert result is True, "Result must not be empty"
 
         retrieved = db.get_session("special-chars-test")
-        assert retrieved["branch"] == "feature/special's-branch"
+        assert retrieved["branch"] == "feature/special's-branch", "Condition must be true"
 
     def test_large_metadata_values(self, db):
         """Test storing large metadata values."""
@@ -827,7 +829,7 @@ class TestEdgeCases:
         }
 
         result = db.insert_session(session)
-        assert result is True
+        assert result is True, "Result must not be empty"
 
         retrieved = db.get_session_with_details("large-metadata-test")
-        assert retrieved["metadata"]["large_key"] == large_value
+        assert retrieved["metadata"]["large_key"] == large_value, "Data must not be empty"

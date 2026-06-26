@@ -16,9 +16,9 @@ class TestLifecycleManagerInitialization:
     def test_initialization(self):
         """Test basic initialization."""
         manager = LifecycleManager()
-        assert manager is not None
-        assert manager.is_healthy() is False
-        assert manager.is_ready() is False
+        assert manager is not None, "manager must be initialized"
+        assert manager.is_healthy() is False, "Condition must be true"
+        assert manager.is_ready() is False, "Condition must be true"
 
     def test_initialization_empty_hooks(self):
         """Test that hooks are initialized as empty lists."""
@@ -37,7 +37,7 @@ class TestStartupHookRegistration:
         manager = LifecycleManager()
         hook = Mock()
         manager.register_startup_hook(hook)
-        assert len(manager._startup_hooks) == 1
+        assert len(manager._startup_hooks) == 1, "Collection must not be empty"
 
     def test_register_startup_hook_async(self):
         """Test registering an asynchronous startup hook."""
@@ -47,7 +47,7 @@ class TestStartupHookRegistration:
             pass
 
         manager.register_startup_hook(async_hook)
-        assert len(manager._startup_hooks) == 1
+        assert len(manager._startup_hooks) == 1, "Collection must not be empty"
 
     def test_register_startup_hook_multiple(self):
         """Test registering multiple startup hooks."""
@@ -56,7 +56,7 @@ class TestStartupHookRegistration:
         hook2 = Mock()
         manager.register_startup_hook(hook1)
         manager.register_startup_hook(hook2)
-        assert len(manager._startup_hooks) == 2
+        assert len(manager._startup_hooks) == 2, "Collection must not be empty"
 
     def test_register_startup_hook_raises_on_non_callable(self):
         """Test that registering non-callable raises ValueError."""
@@ -79,7 +79,7 @@ class TestShutdownHookRegistration:
         manager = LifecycleManager()
         hook = Mock()
         manager.register_shutdown_hook(hook)
-        assert len(manager._shutdown_hooks) == 1
+        assert len(manager._shutdown_hooks) == 1, "Collection must not be empty"
 
     def test_register_shutdown_hook_async(self):
         """Test registering an asynchronous shutdown hook."""
@@ -89,7 +89,7 @@ class TestShutdownHookRegistration:
             pass
 
         manager.register_shutdown_hook(async_hook)
-        assert len(manager._shutdown_hooks) == 1
+        assert len(manager._shutdown_hooks) == 1, "Collection must not be empty"
 
     def test_register_shutdown_hook_multiple(self):
         """Test registering multiple shutdown hooks."""
@@ -98,7 +98,7 @@ class TestShutdownHookRegistration:
         hook2 = Mock()
         manager.register_shutdown_hook(hook1)
         manager.register_shutdown_hook(hook2)
-        assert len(manager._shutdown_hooks) == 2
+        assert len(manager._shutdown_hooks) == 2, "Collection must not be empty"
 
     def test_register_shutdown_hook_raises_on_non_callable(self):
         """Test that registering non-callable raises ValueError."""
@@ -115,7 +115,7 @@ class TestResourceRegistration:
         manager = LifecycleManager()
         resource = Mock()
         manager.register_resource("test_resource", resource)
-        assert "test_resource" in manager._resources
+        assert "test_resource" in manager._resources, "Condition must be true"
 
     def test_register_multiple_resources(self):
         """Test registering multiple resources."""
@@ -124,7 +124,7 @@ class TestResourceRegistration:
         resource2 = Mock()
         manager.register_resource("resource1", resource1)
         manager.register_resource("resource2", resource2)
-        assert len(manager._resources) == 2
+        assert len(manager._resources) == 2, "Collection must not be empty"
 
     def test_register_resource_raises_on_empty_name(self):
         """Test that empty resource name raises ValueError."""
@@ -153,7 +153,7 @@ class TestHealthCheckRegistration:
         manager = LifecycleManager()
         check = Mock(return_value=True)
         manager.register_health_check(check)
-        assert len(manager._health_checks) == 1
+        assert len(manager._health_checks) == 1, "Collection must not be empty"
 
     def test_register_health_check_async(self):
         """Test registering an asynchronous health check."""
@@ -163,7 +163,7 @@ class TestHealthCheckRegistration:
             return True
 
         manager.register_health_check(async_check)
-        assert len(manager._health_checks) == 1
+        assert len(manager._health_checks) == 1, "Collection must not be empty"
 
     def test_register_health_check_multiple(self):
         """Test registering multiple health checks."""
@@ -172,7 +172,7 @@ class TestHealthCheckRegistration:
         check2 = Mock(return_value=True)
         manager.register_health_check(check1)
         manager.register_health_check(check2)
-        assert len(manager._health_checks) == 2
+        assert len(manager._health_checks) == 2, "Collection must not be empty"
 
     def test_register_health_check_raises_on_non_callable(self):
         """Test that registering non-callable health check raises ValueError."""
@@ -185,6 +185,7 @@ class TestStartupExecution:
     """Test startup execution."""
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_startup_with_sync_hooks(self):
         """Test startup with synchronous hooks."""
         manager = LifecycleManager()
@@ -197,10 +198,11 @@ class TestStartupExecution:
 
         hook1.assert_called_once()
         hook2.assert_called_once()
-        assert manager.is_ready() is True
-        assert manager.is_healthy() is True
+        assert manager.is_ready() is True, "Condition must be true"
+        assert manager.is_healthy() is True, "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_startup_with_async_hooks(self):
         """Test startup with asynchronous hooks."""
         manager = LifecycleManager()
@@ -211,10 +213,11 @@ class TestStartupExecution:
         manager.register_startup_hook(async_hook)
         await manager.startup()
 
-        assert manager.is_ready() is True
-        assert manager.is_healthy() is True
+        assert manager.is_ready() is True, "Condition must be true"
+        assert manager.is_healthy() is True, "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_startup_with_mixed_hooks(self):
         """Test startup with mixed sync and async hooks."""
         manager = LifecycleManager()
@@ -229,9 +232,10 @@ class TestStartupExecution:
         await manager.startup()
 
         sync_hook.assert_called_once()
-        assert manager.is_ready() is True
+        assert manager.is_ready() is True, "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_startup_failure_triggers_rollback(self):
         """Test that startup failure triggers rollback."""
         manager = LifecycleManager()
@@ -244,22 +248,24 @@ class TestStartupExecution:
         with pytest.raises(RuntimeError):
             await manager.startup()
 
-        assert manager.is_ready() is False
+        assert manager.is_ready() is False, "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_startup_no_hooks(self):
         """Test startup with no hooks."""
         manager = LifecycleManager()
         await manager.startup()
 
-        assert manager.is_ready() is True
-        assert manager.is_healthy() is True
+        assert manager.is_ready() is True, "Condition must be true"
+        assert manager.is_healthy() is True, "Condition must be true"
 
 
 class TestShutdownExecution:
     """Test shutdown execution."""
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_shutdown_with_sync_hooks(self):
         """Test shutdown with synchronous hooks."""
         manager = LifecycleManager()
@@ -274,10 +280,11 @@ class TestShutdownExecution:
 
         hook1.assert_called_once()
         hook2.assert_called_once()
-        assert manager.is_ready() is False
-        assert manager.is_healthy() is False
+        assert manager.is_ready() is False, "Condition must be true"
+        assert manager.is_healthy() is False, "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_shutdown_with_async_hooks(self):
         """Test shutdown with asynchronous hooks."""
         manager = LifecycleManager()
@@ -291,9 +298,10 @@ class TestShutdownExecution:
 
         await manager.shutdown()
 
-        assert manager.is_ready() is False
+        assert manager.is_ready() is False, "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_shutdown_hook_exception_doesnt_stop_others(self):
         """Test that exception in one hook doesn't stop others."""
         manager = LifecycleManager()
@@ -313,6 +321,7 @@ class TestShutdownExecution:
         hook3.assert_called_once()
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_shutdown_no_hooks(self):
         """Test shutdown with no hooks."""
         manager = LifecycleManager()
@@ -321,14 +330,15 @@ class TestShutdownExecution:
 
         await manager.shutdown()
 
-        assert manager.is_ready() is False
-        assert manager.is_healthy() is False
+        assert manager.is_ready() is False, "Condition must be true"
+        assert manager.is_healthy() is False, "Condition must be true"
 
 
 class TestResourceCleanup:
     """Test resource cleanup."""
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_cleanup_with_sync_cleanup_method(self):
         """Test cleanup with synchronous cleanup method."""
         manager = LifecycleManager()
@@ -343,6 +353,7 @@ class TestResourceCleanup:
         resource.cleanup.assert_called_once()
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_cleanup_with_async_cleanup_method(self):
         """Test cleanup with asynchronous cleanup method."""
         manager = LifecycleManager()
@@ -357,6 +368,7 @@ class TestResourceCleanup:
         resource.cleanup.assert_called_once()
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_cleanup_with_close_method(self):
         """Test cleanup with close method when cleanup not available."""
         manager = LifecycleManager()
@@ -371,6 +383,7 @@ class TestResourceCleanup:
         resource.close.assert_called_once()
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_cleanup_exception_doesnt_stop_others(self):
         """Test that exception in one resource cleanup doesn't stop others."""
         manager = LifecycleManager()
@@ -408,8 +421,8 @@ class TestHealthCheck:
 
         result = manager.healthz()
 
-        assert result["status"] == "healthy"
-        assert result["ready"] is True
+        assert result["status"] == "healthy", "Result must not be empty"
+        assert result["ready"] is True, "Result must not be empty"
         check1.assert_called_once()
         check2.assert_called_once()
 
@@ -425,7 +438,7 @@ class TestHealthCheck:
 
         result = manager.healthz()
 
-        assert result["status"] == "unhealthy"
+        assert result["status"] == "unhealthy", "Result must not be empty"
 
     def test_health_check_sync_exception_handling(self):
         """Test health check handles exceptions gracefully."""
@@ -439,7 +452,7 @@ class TestHealthCheck:
 
         result = manager.healthz()
 
-        assert result["status"] == "unhealthy"
+        assert result["status"] == "unhealthy", "Result must not be empty"
 
     def test_health_check_not_healthy_status(self):
         """Test health check when not healthy."""
@@ -451,8 +464,8 @@ class TestHealthCheck:
 
         result = manager.healthz()
 
-        assert result["status"] == "unhealthy"
-        assert result["ready"] is False
+        assert result["status"] == "unhealthy", "Result must not be empty"
+        assert result["ready"] is False, "Result must not be empty"
 
     def test_health_check_resources_count(self):
         """Test health check includes resource count."""
@@ -464,7 +477,7 @@ class TestHealthCheck:
 
         result = manager.healthz()
 
-        assert result["resources"] == 2
+        assert result["resources"] == 2, "Result must not be empty"
 
 
 class TestStatusMethods:
@@ -473,28 +486,30 @@ class TestStatusMethods:
     def test_is_healthy_initial_state(self):
         """Test initial health state is False."""
         manager = LifecycleManager()
-        assert manager.is_healthy() is False
+        assert manager.is_healthy() is False, "Condition must be true"
 
     def test_is_ready_initial_state(self):
         """Test initial ready state is False."""
         manager = LifecycleManager()
-        assert manager.is_ready() is False
+        assert manager.is_ready() is False, "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_status_after_startup(self):
         """Test status after successful startup."""
         manager = LifecycleManager()
         await manager.startup()
 
-        assert manager.is_healthy() is True
-        assert manager.is_ready() is True
+        assert manager.is_healthy() is True, "Condition must be true"
+        assert manager.is_ready() is True, "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_status_after_shutdown(self):
         """Test status after shutdown."""
         manager = LifecycleManager()
         await manager.startup()
         await manager.shutdown()
 
-        assert manager.is_healthy() is False
-        assert manager.is_ready() is False
+        assert manager.is_healthy() is False, "Condition must be true"
+        assert manager.is_ready() is False, "Condition must be true"

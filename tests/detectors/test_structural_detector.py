@@ -16,7 +16,7 @@ def test_structural_split_brain_basic():
         ]
     }
     result = structure_integrity.detect(file_index)
-    assert "split-brain" in result["found_patterns"]
+    assert "split-brain" in result["found_patterns"], "Result must not be empty"
 
 
 def test_structural_no_split_brain():
@@ -28,7 +28,7 @@ def test_structural_no_split_brain():
         ]
     }
     result = structure_integrity.detect(file_index)
-    assert "split-brain" not in result["found_patterns"]
+    assert "split-brain" not in result["found_patterns"], "Result must not be empty"
 
 
 def test_structural_lib_shadowing():
@@ -40,7 +40,7 @@ def test_structural_lib_shadowing():
         ]
     }
     result = structure_integrity.detect(file_index)
-    assert "lib-shadowing" in result["found_patterns"]
+    assert "lib-shadowing" in result["found_patterns"], "Result must not be empty"
 
 
 def test_structural_risk_level_high():
@@ -51,7 +51,7 @@ def test_structural_risk_level_high():
         ]
     }
     result = structure_integrity.detect(file_index)
-    assert result["meta"]["risk_level"] == "high"
+    assert result["meta"]["risk_level"] == "high", "Result must not be empty"
 
 
 def test_structural_risk_level_low():
@@ -62,7 +62,7 @@ def test_structural_risk_level_low():
         ]
     }
     result = structure_integrity.detect(file_index)
-    assert result["meta"]["risk_level"] == "low"
+    assert result["meta"]["risk_level"] == "low", "Result must not be empty"
 
 
 def test_structural_evidence_sorting():
@@ -76,4 +76,4 @@ def test_structural_evidence_sorting():
         ]
     }
     result = structure_integrity.detect(file_index)
-    assert result["evidence_files"] == sorted(result["evidence_files"])
+    assert result["evidence_files"] == sorted(result["evidence_files"]), "Result must not be empty"

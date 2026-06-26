@@ -44,7 +44,7 @@ class TestTimeoutHandling:
         try:
             with timeout(10):
                 return_value = 42
-            assert return_value == 42
+            assert return_value == 42, "Value must be initialized"
         except TimeoutError:
             # Not expected for fast operation
             pass
@@ -58,7 +58,7 @@ class TestTimeoutHandling:
         time.sleep(slow_threshold * 2)
         elapsed = time.time() - start_time
 
-        assert elapsed >= slow_threshold
+        assert elapsed >= slow_threshold, "elapsed must be greater than zero"
 
     def test_timeout_thread_termination(self):
         """Test thread termination on timeout."""
@@ -72,7 +72,7 @@ class TestTimeoutHandling:
         thread.start()
         thread.join(timeout=0.1)
 
-        assert thread.is_alive()
+        assert thread.is_alive(), "Condition must be true"
 
     def test_timeout_resource_cleanup(self):
         """Test resource cleanup after timeout."""
@@ -87,7 +87,7 @@ class TestTimeoutHandling:
             # Cleanup
             file_handles.clear()
 
-        assert len(file_handles) == 0
+        assert len(file_handles) == 0, "File_handles must not be empty"
 
     def test_timeout_with_retry_logic(self):
         """Test timeout handling with retry logic."""
@@ -104,7 +104,7 @@ class TestTimeoutHandling:
                 if attempt == max_attempts - 1:
                     raise
 
-        assert attempt_count > 0
+        assert attempt_count > 0, "attempt_count must be positive"
 
     def test_timeout_exception_propagation(self):
         """Test timeout exception propagation."""
@@ -123,7 +123,7 @@ class TestResourceExhaustion:
         try:
             for i in range(max_items):
                 memory_intensive.append([0] * 100)
-            assert len(memory_intensive) > 0
+            assert len(memory_intensive) > 0, "Memory_intensive must not be empty"
         except MemoryError:
             # Expected under extreme memory pressure
             pass
@@ -174,7 +174,7 @@ class TestResourceExhaustion:
 
         try:
             result = recursive_func(0)
-            assert result >= 0
+            assert result >= 0, "result must be greater than zero"
         except RecursionError:
             # Expected for deep recursion
             pass
@@ -192,7 +192,7 @@ class TestRecoveryPaths:
         except ValueError:
             state["recovered"] = True
 
-        assert state["recovered"]
+        assert state["recovered"], "Condition must be true"
 
     def test_recovery_with_finally_block(self):
         """Test recovery using finally block."""
@@ -205,7 +205,7 @@ class TestRecoveryPaths:
         finally:
             cleaned_up = True
 
-        assert cleaned_up
+        assert cleaned_up, "cleaned_up is not valid"
 
     def test_recovery_state_restoration(self):
         """Test state restoration after error."""
@@ -218,7 +218,7 @@ class TestRecoveryPaths:
         except Exception as _err:
             state = original_state.copy()
 
-        assert state == original_state
+        assert state == original_state, "state is not valid"
 
     def test_recovery_retry_with_backoff(self):
         """Test retry with exponential backoff."""
@@ -229,7 +229,7 @@ class TestRecoveryPaths:
         for attempt in range(max_retries):
             attempts.append(attempt)
             delay = base_delay * (2**attempt)
-            assert delay > 0
+            assert delay > 0, "delay must be greater than zero"
 
     def test_recovery_graceful_degradation(self):
         """Test graceful degradation of functionality."""
@@ -255,8 +255,8 @@ class TestRecoveryPaths:
         except ValueError as e:
             error_log.append(str(e))
 
-        assert len(error_log) > 0
-        assert "Test error" in error_log[0]
+        assert len(error_log) > 0, "Error_log must not be empty"
+        assert "Test error" in error_log[0], "Error should be raised or set"
 
 
 class TestPerformanceBoundaries:
@@ -273,7 +273,7 @@ class TestPerformanceBoundaries:
                 break
         elapsed = time.time() - start
 
-        assert elapsed < 1.0  # Should be fast
+        assert elapsed < 1.0, "elapsed is not valid"
 
     def test_list_creation_performance(self):
         """Test list creation performance."""
@@ -281,8 +281,8 @@ class TestPerformanceBoundaries:
         lst = list(range(100000))
         elapsed = time.time() - start
 
-        assert elapsed < 1.0
-        assert len(lst) == 100000
+        assert elapsed < 1.0, "elapsed is not valid"
+        assert len(lst) == 100000, "Lst must not be empty"
 
     def test_dict_lookup_performance(self):
         """Test dictionary lookup performance."""
@@ -293,7 +293,7 @@ class TestPerformanceBoundaries:
             _ = dct.get(i, None)
         elapsed = time.time() - start
 
-        assert elapsed < 0.5
+        assert elapsed < 0.5, "elapsed is not valid"
 
     def test_string_concatenation_performance(self):
         """Test string concatenation performance."""
@@ -303,8 +303,8 @@ class TestPerformanceBoundaries:
         result = "".join(parts)
         elapsed = time.time() - start
 
-        assert elapsed < 1.0
-        assert len(result) > 0
+        assert elapsed < 1.0, "elapsed is not valid"
+        assert len(result) > 0, "Result must not be empty"
 
     def test_sorting_performance(self):
         """Test sorting performance."""
@@ -314,8 +314,8 @@ class TestPerformanceBoundaries:
         sorted_items = sorted(items)
         elapsed = time.time() - start
 
-        assert elapsed < 1.0
-        assert sorted_items[0] == 1
+        assert elapsed < 1.0, "elapsed is not valid"
+        assert sorted_items[0] == 1, "Item must not be empty"
 
 
 class TestConcurrentRecovery:
@@ -343,8 +343,8 @@ class TestConcurrentRecovery:
         for t in threads:
             t.join()
 
-        assert len(results) > 0
-        assert len(errors) > 0
+        assert len(results) > 0, "Results must not be empty"
+        assert len(errors) > 0, "Errors must not be empty"
 
     def test_concurrent_resource_cleanup(self):
         """Test concurrent resource cleanup."""
@@ -364,7 +364,7 @@ class TestConcurrentRecovery:
         for t in threads:
             t.join(timeout=1)
 
-        assert cleanup_count["count"] > 0
+        assert cleanup_count["count"] > 0, "Value must be greater than zero"
 
 
 class TestLongRunningOperations:
@@ -379,8 +379,8 @@ class TestLongRunningOperations:
             iterations += 1
 
         elapsed = time.time() - start
-        assert iterations == 10000
-        assert elapsed < 5.0
+        assert iterations == 10000, "iterations is not valid"
+        assert elapsed < 5.0, "elapsed is not valid"
 
     def test_long_running_async_simulation(self):
         """Test simulation of long async operation."""
@@ -395,7 +395,7 @@ class TestLongRunningOperations:
             return results
 
         result = async_operation()
-        assert len(result) == 100
+        assert len(result) == 100, "Result must not be empty"
 
     def test_background_task_monitoring(self):
         """Test monitoring of background tasks."""
@@ -412,10 +412,10 @@ class TestLongRunningOperations:
 
         # Monitor progress
         while task_status["running"]:
-            assert task_status["progress"] >= 0
+            assert task_status["progress"] >= 0, "Value must be greater than zero"
             time.sleep(0.01)
 
-        assert task_status["progress"] >= 0
+        assert task_status["progress"] >= 0, "Value must be greater than zero"
 
 
 if __name__ == "__main__":

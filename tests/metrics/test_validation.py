@@ -35,7 +35,7 @@ class TestMetricValidation:
         """Test validate_metric_exists returns False for non-existent metric."""
         # Use a metric name that definitely doesn't exist
         result = validate_metric_exists("this_metric_definitely_does_not_exist_12345")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_get_all_registered_metrics_returns_list(self):
         """Test get_all_registered_metrics returns a list."""
@@ -51,7 +51,7 @@ class TestMetricValidation:
         """Test MetricValidationError preserves message."""
         message = "Custom validation error message"
         error = MetricValidationError(message)
-        assert str(error) == message
+        assert str(error) == message, "Error should be raised or set"
 
     def test_validate_metric_exists_returns_bool(self):
         """Test validate_metric_exists always returns boolean."""
@@ -66,7 +66,7 @@ class TestMetricValidation:
     def test_get_all_registered_metrics_no_duplicates(self):
         """Test registered metrics list has no duplicates."""
         metrics = get_all_registered_metrics()
-        assert len(metrics) == len(set(metrics))
+        assert len(metrics) == len(set(metrics)), "Metrics must not be empty"
 
     def test_validate_metric_registry_returns_list_of_strings(self):
         """Test validate_metric_registry returns list of warning strings."""

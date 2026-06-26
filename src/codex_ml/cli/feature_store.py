@@ -23,8 +23,8 @@ try:
     from rich.table import Table
 except ImportError as e:
     error_type = type(e).__name__
-    logger.debug(f"ImportError: <ERROR_TYPE>")
-    logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
+    logger.debug("ImportError: <ERROR_TYPE>")
+    logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
     print("Error: typer and rich are required for CLI. Install with: pip install typer rich")
     sys.exit(1)
 
@@ -74,8 +74,8 @@ def register(
 
     except (ValueError, TypeError, RuntimeError) as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
-        console.print(f"[red]✗[/red] Error registering feature group: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
+        console.print("[red]✗[/red] Error registering feature group: <ERROR_TYPE>")
         raise typer.Exit(code=1) from e
 
 
@@ -138,8 +138,8 @@ def list(
 
     except (ValueError, TypeError, RuntimeError) as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
-        console.print(f"[red]✗[/red] Error listing features: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
+        console.print("[red]✗[/red] Error listing features: <ERROR_TYPE>")
         raise typer.Exit(code=1) from e
 
 
@@ -210,8 +210,8 @@ def health(
 
     except (ValueError, TypeError, RuntimeError) as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
-        console.print(f"[red]✗[/red] Error generating health report: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
+        console.print("[red]✗[/red] Error generating health report: <ERROR_TYPE>")
         raise typer.Exit(code=1) from e
 
 
@@ -254,8 +254,8 @@ def materialize(
 
     except (ValueError, TypeError, RuntimeError) as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
-        console.print(f"[red]✗[/red] Error materializing features: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
+        console.print("[red]✗[/red] Error materializing features: <ERROR_TYPE>")
         raise typer.Exit(code=1) from e
 
 
@@ -295,8 +295,8 @@ def versions(
 
     except (ValueError, TypeError, RuntimeError) as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
-        console.print(f"[red]✗[/red] Error listing versions: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
+        console.print("[red]✗[/red] Error listing versions: <ERROR_TYPE>")
         raise typer.Exit(code=1) from e
 
 
@@ -365,8 +365,8 @@ def info(
 
     except (ValueError, TypeError, RuntimeError) as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
-        console.print(f"[red]✗[/red] Error getting feature info: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
+        console.print("[red]✗[/red] Error getting feature info: <ERROR_TYPE>")
         raise typer.Exit(code=1) from e
 
 

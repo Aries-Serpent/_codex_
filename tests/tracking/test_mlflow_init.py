@@ -36,8 +36,8 @@ class _DummyMlflow:
         return self._active
 
     def get_run(self, run_id: str):
-        assert self._active is not None
-        assert run_id == self._active.info.run_id
+        assert self._active is not None, "_active must be initialized"
+        assert run_id == self._active.info.run_id, "run_id is not valid"
         return self._active
 
     def end_run(self):
@@ -56,9 +56,9 @@ def dummy_mlflow(monkeypatch):
 
 def test_init_run_sets_tags(dummy_mlflow):
     run = mlflow_utils.init_run(run_name="test", config={"alpha": 1})
-    assert run is dummy_mlflow.active_run()
+    assert run is dummy_mlflow.active_run(), "run is not valid"
     tags = dummy_mlflow.active_run().data.tags
-    assert tags["git_commit"] == "deadbee"
-    assert "config_hash" in tags
+    assert tags["git_commit"] == "deadbee", "Condition must be true"
+    assert "config_hash" in tags, "Condition must be true"
 
     dummy_mlflow.end_run()

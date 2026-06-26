@@ -199,7 +199,7 @@ def test_pool_toggle_invokes_helper(monkeypatch, tmp_path):
     init_db(db)
 
     with fm.get_conn(str(db)) as conn:
-        assert conn is not None
+        assert conn is not None, "conn must be initialized"
 
     for conn in list(fm._POOL.values()):
         try:
@@ -208,7 +208,7 @@ def test_pool_toggle_invokes_helper(monkeypatch, tmp_path):
             pass
     fm._POOL.clear()
 
-    assert called[
+    assert called[, "Condition must be true"
         "v"
     ], "Expected codex.db.sqlite_patch.auto_enable_from_env to be invoked when CODEX_SQLITE_POOL=1"
 
@@ -228,24 +228,24 @@ def test_get_conn_env_toggle(monkeypatch, tmp_path):
     init_db(db)
 
     with fm.get_conn(str(db)) as conn1:
-        assert conn1 is not None
-    assert str(db) not in fm._POOL
+        assert conn1 is not None, "conn1 must be initialized"
+    assert str(db) not in fm._POOL, "Condition must be true"
 
     monkeypatch.setenv("CODEX_SQLITE_POOL", "yes")
     with fm.get_conn(str(db)) as conn2:
-        assert conn2 is fm._POOL[str(db)]
+        assert conn2 is fm._POOL[str(db)], "conn2 is not valid"
 
     pooled_conn = fm._POOL[str(db)]
 
     monkeypatch.setenv("CODEX_SQLITE_POOL", "0")
     with fm.get_conn(str(db)) as conn3:
-        assert conn3 is not pooled_conn
-    assert fm._POOL[str(db)] is pooled_conn
+        assert conn3 is not pooled_conn, "conn3 is not valid"
+    assert fm._POOL[str(db)] is pooled_conn, "Condition must be true"
 
     monkeypatch.delenv("CODEX_SQLITE_POOL", raising=False)
     monkeypatch.setenv("CODEX_DB_POOL", "TRUE")
     with fm.get_conn(str(db)) as conn4:
-        assert conn4 is fm._POOL[str(db)]
+        assert conn4 is fm._POOL[str(db)], "conn4 is not valid"
 
     for connection in list(fm._POOL.values()):
         connection.close()
@@ -265,12 +265,12 @@ def test_explicit_arg_overrides_env(monkeypatch, tmp_path):
     init_db(db)
 
     with fm.get_conn(str(db), pooled=False) as conn:
-        assert conn is not None
-    assert str(db) not in fm._POOL
+        assert conn is not None, "conn must be initialized"
+    assert str(db) not in fm._POOL, "Condition must be true"
 
     monkeypatch.setenv("CODEX_SQLITE_POOL", "0")
     with fm.get_conn(str(db), pooled=True) as pooled_conn:
-        assert pooled_conn is fm._POOL[str(db)]
+        assert pooled_conn is fm._POOL[str(db)], "pooled_conn is not valid"
 
     for connection in list(fm._POOL.values()):
         connection.close()
@@ -309,7 +309,7 @@ def test_pooled_connection_multithread_reads(monkeypatch, tmp_path):
         thread.join()
 
     assert not any(isinstance(value, Exception) for value in results)
-    assert all(value == results[0] for value in results)
+    assert all(value == results[0] for value in results), "Result must not be empty"
 
     for connection in list(fm._POOL.values()):
         connection.close()
@@ -350,7 +350,7 @@ def test_session_logger_dedupe_wal(monkeypatch, tmp_path):
 
     sl._fallback_log_event("SID", "user", "hello", db_path=db)
 
-    assert wal_calls["count"] <= 1
+    assert wal_calls["count"] <= 1, "Count must be greater than zero"
 
     for connection in list(sl.CONN_POOL.values()):
         connection.close()

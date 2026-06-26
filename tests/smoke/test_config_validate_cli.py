@@ -49,5 +49,5 @@ def test_validate_bad(tmp_path: Path):
         r = runner.invoke(app, ["file", str(cfg)])
         if "Path 'file' does not exist" in r.output:
             r = runner.invoke(app, [str(cfg)])
-        assert r.exit_code != 0
-        assert "Invalid configuration" in r.output
+        assert r.exit_code != 0, "exit_code is not valid"
+        assert "Invalid configuration" in r.output, "Condition must be true"

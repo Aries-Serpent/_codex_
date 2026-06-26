@@ -22,7 +22,7 @@ def test_ita_endpoint_wrapper_pattern():
 
     handler = registry.get_tool("ita.kb.search")
     result = handler({"query": "test"})
-    assert "results" in result
+    assert "results" in result, "Result must not be empty"
 
 
 def test_tool_chaining():
@@ -37,7 +37,7 @@ def test_tool_chaining():
     step1 = registry.get_tool("upper")({"text": text})
     step2 = registry.get_tool("reverse")({"text": step1["result"]})
 
-    assert step2["result"] == "OLLEH"
+    assert step2["result"] == "OLLEH", "Result must not be empty"
 
 
 def test_tool_composition():
@@ -55,7 +55,7 @@ def test_tool_composition():
     composed = compose("double", "bracket")
     result = composed({"text": "A"})
 
-    assert result["result"] == "[AA]"
+    assert result["result"] == "[AA]", "Result must not be empty"
 
 
 def test_async_tool_execution_pattern():
@@ -74,8 +74,8 @@ def test_async_tool_execution_pattern():
     result = registry.get_tool("slow")({"test": "data"})
     elapsed = time.time() - start
 
-    assert result["status"] == "completed"
-    assert elapsed < 0.1  # Should be fast for mock
+    assert result["status"] == "completed", "Result must not be empty"
+    assert elapsed < 0.1, "elapsed is not valid"
 
 
 def test_tool_metadata_validation():
@@ -94,8 +94,8 @@ def test_tool_metadata_validation():
     tools = registry.list_tools()
     tool = next(t for t in tools if t["name"] == "validated")
 
-    assert tool["metadata"]["version"] == "1.0"
-    assert "testing" in tool["metadata"]["tags"]
+    assert tool["metadata"]["version"] == "1.0", "Data must not be empty"
+    assert "testing" in tool["metadata"]["tags"], "Data must not be empty"
 
 
 def test_tool_versioning():
@@ -108,8 +108,8 @@ def test_tool_versioning():
     tools = registry.list_tools()
     versions = [t["metadata"]["version"] for t in tools if t["name"].startswith("api_")]
 
-    assert "1.0" in versions
-    assert "2.0" in versions
+    assert "1.0" in versions, "Condition must be true"
+    assert "2.0" in versions, "Condition must be true"
 
 
 def test_tool_deprecation_pattern():
@@ -122,7 +122,7 @@ def test_tool_deprecation_pattern():
     tools = registry.list_tools()
     active = [t for t in tools if not t["metadata"].get("deprecated", False)]
 
-    assert any(t["name"] == "new_api" for t in active)
+    assert any(t["name"] == "new_api" for t in active), "Condition must be true"
 
 
 def test_tool_discovery_by_category():
@@ -136,7 +136,7 @@ def test_tool_discovery_by_category():
     tools = registry.list_tools()
     search_tools = [t for t in tools if t["metadata"].get("category") == "search"]
 
-    assert len(search_tools) == 2
+    assert len(search_tools) == 2, "Search_tools must not be empty"
 
 
 def test_tool_discovery_by_tags():
@@ -150,7 +150,7 @@ def test_tool_discovery_by_tags():
     tools = registry.list_tools()
     ml_tools = [t for t in tools if "ml" in t["metadata"].get("tags", [])]
 
-    assert len(ml_tools) == 2
+    assert len(ml_tools) == 2, "Ml_tools must not be empty"
 
 
 def test_tool_execution_with_validation():
@@ -170,7 +170,7 @@ def test_tool_execution_with_validation():
 
     # Valid
     result = handler({"param1": "a", "param2": "b"})
-    assert result["valid"]
+    assert result["valid"], "Result must not be empty"
 
     # Invalid
     with pytest.raises(ValueError):
@@ -191,7 +191,7 @@ def test_tool_error_propagation():
     handler = registry.get_tool("risky")
 
     # Success
-    assert handler({"error": False})["ok"]
+    assert handler({"error": False})["ok"], "Error should be raised or set"
 
     # Error propagates
     with pytest.raises(RuntimeError):
@@ -212,9 +212,9 @@ def test_tool_state_management():
 
     handler = registry.get_tool("counter")
 
-    assert handler({})["count"] == 1
-    assert handler({})["count"] == 2
-    assert handler({})["count"] == 3
+    assert handler({})["count"] == 1, "Count must be greater than zero"
+    assert handler({})["count"] == 2, "Count must be greater than zero"
+    assert handler({})["count"] == 3, "Count must be greater than zero"
 
 
 def test_tool_performance_tracking():
@@ -235,7 +235,7 @@ def test_tool_performance_tracking():
     handler = registry.get_tool("tracked")
     handler({"test": "data"})
 
-    assert "duration" in metrics
+    assert "duration" in metrics, "Condition must be true"
 
 
 def test_concurrent_tool_execution():
@@ -257,7 +257,7 @@ def test_concurrent_tool_execution():
     for t in threads:
         t.join()
 
-    assert len(results) == 10
+    assert len(results) == 10, "Results must not be empty"
 
 
 def test_tool_timeout_pattern():
@@ -274,7 +274,7 @@ def test_tool_timeout_pattern():
     handler = registry.get_tool("long")
     result = handler({})
 
-    assert result["completed"]
+    assert result["completed"], "Result must not be empty"
 
 
 def test_tool_retry_pattern():
@@ -297,7 +297,7 @@ def test_tool_retry_pattern():
     for i in range(max_retries):
         try:
             result = handler({})
-            assert result["success"]
+            assert result["success"], "Result must not be empty"
             break
         except RuntimeError:
             if i == max_retries - 1:
@@ -333,7 +333,7 @@ def test_tool_circuit_breaker_pattern():
             _ = None  # Expected failure to test circuit breaker mechanism
 
     # Circuit should be open
-    assert circuit["open"]
+    assert circuit["open"], "Condition must be true"
 
 
 def test_tool_fallback_pattern():
@@ -355,7 +355,7 @@ def test_tool_fallback_pattern():
         return fallback(params) if fallback else None
 
     result = execute_with_fallback("primary", "fallback", {})
-    assert result["source"] == "primary"
+    assert result["source"] == "primary", "Result must not be empty"
 
 
 def test_tool_caching_pattern():
@@ -383,8 +383,8 @@ def test_tool_caching_pattern():
     # Second call - cached
     result2 = cached_execute({"input": 5})
 
-    assert result1 == result2
-    assert call_count["count"] == 1
+    assert result1 == result2, "Result must not be empty"
+    assert call_count["count"] == 1, "Count must be greater than zero"
 
 
 def test_tool_batch_execution():
@@ -398,8 +398,8 @@ def test_tool_batch_execution():
     batch = [{"value": i} for i in range(5)]
     results = [handler(item) for item in batch]
 
-    assert len(results) == 5
-    assert results[2]["result"] == 4
+    assert len(results) == 5, "Results must not be empty"
+    assert results[2]["result"] == 4, "Result must not be empty"
 
 
 def test_tool_pipeline_execution():
@@ -417,7 +417,7 @@ def test_tool_pipeline_execution():
         data = handler(data)
 
     # (5 + 1) * 2 - 3 = 9
-    assert data["value"] == 9
+    assert data["value"] == 9, "Data must not be empty"
 
 
 def test_tool_conditional_execution():
@@ -432,8 +432,8 @@ def test_tool_conditional_execution():
         handler = registry.get_tool(tool_name)
         return handler({})
 
-    assert conditional_execute(4)["result"] == "even"
-    assert conditional_execute(5)["result"] == "odd"
+    assert conditional_execute(4)["result"] == "even", "Result must not be empty"
+    assert conditional_execute(5)["result"] == "odd", "Result must not be empty"
 
 
 def test_tool_dynamic_registration():
@@ -452,7 +452,7 @@ def test_tool_dynamic_registration():
     tools = registry.list_tools()
     dynamic_tools = [t for t in tools if t["name"].startswith("dynamic_")]
 
-    assert len(dynamic_tools) == 5
+    assert len(dynamic_tools) == 5, "Dynamic_tools must not be empty"
 
 
 def test_tool_namespace_pattern():
@@ -466,7 +466,7 @@ def test_tool_namespace_pattern():
     tools = registry.list_tools()
     search_tools = [t for t in tools if t["name"].startswith("search.")]
 
-    assert len(search_tools) == 2
+    assert len(search_tools) == 2, "Search_tools must not be empty"
 
 
 def test_tool_hot_reload_pattern():
@@ -477,13 +477,13 @@ def test_tool_hot_reload_pattern():
     registry.register_tool("api", lambda p: {"version": 1})
 
     result1 = registry.get_tool("api")({})
-    assert result1["version"] == 1
+    assert result1["version"] == 1, "Result must not be empty"
 
     # Hot reload with new version
     registry.register_tool("api", lambda p: {"version": 2})
 
     result2 = registry.get_tool("api")({})
-    assert result2["version"] == 2
+    assert result2["version"] == 2, "Result must not be empty"
 
 
 def test_tool_health_check():
@@ -501,11 +501,11 @@ def test_tool_health_check():
 
     # Health check
     health = handler({"health_check": True})
-    assert health["status"] == "healthy"
+    assert health["status"] == "healthy", "Condition must be true"
 
     # Normal operation
     data = handler({})
-    assert "data" in data
+    assert "data" in data, "Data must not be empty"
 
 
 def test_tool_load_balancing_pattern():

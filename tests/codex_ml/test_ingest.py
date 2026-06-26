@@ -34,13 +34,13 @@ class TestDataConfig:
         """Test default configuration values."""
         config = _DataConfig()
 
-        assert config.sample_mode is True
-        assert config.sample_size == 16
-        assert config.dataset_name == "local_sample"
-        assert config.shuffle is True
-        assert config.preprocess_lowercase is True
-        assert config.preprocess_max_length == 512
-        assert config.seed == 42
+        assert config.sample_mode is True, "sample_mode is not valid"
+        assert config.sample_size == 16, "sample_size is not valid"
+        assert config.dataset_name == "local_sample", "Data must not be empty"
+        assert config.shuffle is True, "shuffle is not valid"
+        assert config.preprocess_lowercase is True, "preprocess_lowercase is not valid"
+        assert config.preprocess_max_length == 512, "Length must be greater than zero"
+        assert config.seed == 42, "seed is not valid"
 
     def test_custom_values(self) -> None:
         """Test custom configuration values."""
@@ -54,10 +54,10 @@ class TestDataConfig:
             seed=123,
         )
 
-        assert config.sample_mode is False
-        assert config.sample_size == 100
-        assert config.dataset_name == "my_dataset"
-        assert config.preprocess_max_length == 1024
+        assert config.sample_mode is False, "sample_mode is not valid"
+        assert config.sample_size == 100, "sample_size is not valid"
+        assert config.dataset_name == "my_dataset", "Data must not be empty"
+        assert config.preprocess_max_length == 1024, "Length must be greater than zero"
 
 
 class TestDefaultConfig:
@@ -73,8 +73,8 @@ class TestDefaultConfig:
         """Test default config has expected values."""
         config = _default_config()
 
-        assert config.sample_mode is True
-        assert config.sample_size == 16
+        assert config.sample_mode is True, "sample_mode is not valid"
+        assert config.sample_size == 16, "sample_size is not valid"
 
 
 class TestExtractConfig:
@@ -84,9 +84,9 @@ class TestExtractConfig:
         """Test extraction from empty mapping."""
         config = _extract_config({})
 
-        assert config.sample_mode is True
-        assert config.sample_size == 16  # Default propagated via _default_config()
-        assert config.dataset_name == "local_sample"
+        assert config.sample_mode is True, "sample_mode is not valid"
+        assert config.sample_size == 16, "sample_size is not valid"
+        assert config.dataset_name == "local_sample", "Data must not be empty"
 
     def test_full_config(self) -> None:
         """Test extraction from full config mapping."""
@@ -108,12 +108,12 @@ class TestExtractConfig:
 
         config = _extract_config(mapping)
 
-        assert config.sample_mode is False
-        assert config.sample_size == 50
-        assert config.dataset_name == "test_dataset"
-        assert config.shuffle is False
-        assert config.preprocess_lowercase is False
-        assert config.preprocess_max_length == 256
+        assert config.sample_mode is False, "sample_mode is not valid"
+        assert config.sample_size == 50, "sample_size is not valid"
+        assert config.dataset_name == "test_dataset", "Data must not be empty"
+        assert config.shuffle is False, "shuffle is not valid"
+        assert config.preprocess_lowercase is False, "preprocess_lowercase is not valid"
+        assert config.preprocess_max_length == 256, "Length must be greater than zero"
 
     def test_partial_config(self) -> None:
         """Test extraction from partial config."""
@@ -125,8 +125,8 @@ class TestExtractConfig:
 
         config = _extract_config(mapping)
 
-        assert config.sample_size == 32
-        assert config.sample_mode is True  # Default
+        assert config.sample_size == 32, "sample_size is not valid"
+        assert config.sample_mode is True, "sample_mode is not valid"
 
     def test_invalid_data_block(self) -> None:
         """Test handling of invalid data block type."""
@@ -134,7 +134,7 @@ class TestExtractConfig:
         config = _extract_config(mapping)
 
         # Should fall back to defaults
-        assert config.sample_mode is True
+        assert config.sample_mode is True, "sample_mode is not valid"
 
     def test_null_max_length(self) -> None:
         """Test null max_length handling."""
@@ -147,7 +147,7 @@ class TestExtractConfig:
         }
 
         config = _extract_config(mapping)
-        assert config.preprocess_max_length is None
+        assert config.preprocess_max_length is None, "Length must be greater than zero"
 
 
 class TestNormalizeJsonItem:
@@ -164,13 +164,13 @@ class TestNormalizeJsonItem:
         """Test string items are wrapped in text key."""
         result = _normalize_json_item("hello world")
 
-        assert result == {"text": "hello world"}
+        assert result == {"text": "hello world"}, "Result must not be empty"
 
     def test_number_wrapped(self) -> None:
         """Test number items are wrapped."""
         result = _normalize_json_item(42)
 
-        assert result == {"text": 42}
+        assert result == {"text": 42}, "Result must not be empty"
 
     def test_list_wrapped(self) -> None:
         """Test list items are wrapped."""
@@ -189,7 +189,7 @@ class TestReadCsv:
 
         records = _read_csv(csv_file)
 
-        assert len(records) == 2
+        assert len(records) == 2, "Records must not be empty"
         assert records[0] == {"text": "hello", "label": "1"}
         assert records[1] == {"text": "world", "label": "2"}
 
@@ -200,7 +200,7 @@ class TestReadCsv:
 
         records = _read_csv(csv_file)
 
-        assert records == []
+        assert records == [], "records is not valid"
 
 
 class TestReadJsonl:
@@ -213,9 +213,9 @@ class TestReadJsonl:
 
         records = _read_jsonl(jsonl_file)
 
-        assert len(records) == 2
-        assert records[0] == {"text": "hello"}
-        assert records[1] == {"text": "world"}
+        assert len(records) == 2, "Records must not be empty"
+        assert records[0] == {"text": "hello"}, "rec is not valid"
+        assert records[1] == {"text": "world"}, "rec is not valid"
 
     def test_read_jsonl_with_blank_lines(self, tmp_path: Path) -> None:
         """Test JSONL with blank lines."""
@@ -224,7 +224,7 @@ class TestReadJsonl:
 
         records = _read_jsonl(jsonl_file)
 
-        assert len(records) == 2
+        assert len(records) == 2, "Records must not be empty"
 
     def test_read_jsonl_invalid_json(self, tmp_path: Path) -> None:
         """Test JSONL with invalid JSON line."""
@@ -233,10 +233,10 @@ class TestReadJsonl:
 
         records = _read_jsonl(jsonl_file)
 
-        assert len(records) == 2
-        assert records[0] == {"text": "valid"}
+        assert len(records) == 2, "Records must not be empty"
+        assert records[0] == {"text": "valid"}, "rec is not valid"
         # Malformed JSON lines should fall back to raw-text records.
-        assert records[1] == {"text": "not json"}
+        assert records[1] == {"text": "not json"}, "rec is not valid"
 
 
 class TestReadJson:
@@ -249,8 +249,8 @@ class TestReadJson:
 
         records = _read_json(json_file)
 
-        assert len(records) == 2
-        assert records[0] == {"text": "a"}
+        assert len(records) == 2, "Records must not be empty"
+        assert records[0] == {"text": "a"}, "rec is not valid"
 
     def test_read_json_object(self, tmp_path: Path) -> None:
         """Test reading JSON object."""
@@ -259,8 +259,8 @@ class TestReadJson:
 
         records = _read_json(json_file)
 
-        assert len(records) == 1
-        assert records[0] == {"text": "single"}
+        assert len(records) == 1, "Records must not be empty"
+        assert records[0] == {"text": "single"}, "rec is not valid"
 
     def test_read_invalid_json(self, tmp_path: Path) -> None:
         """Test reading invalid JSON."""
@@ -270,8 +270,8 @@ class TestReadJson:
         records = _read_json(json_file)
 
         # Should return raw text
-        assert len(records) == 1
-        assert records[0]["text"] == "not valid json"
+        assert len(records) == 1, "Records must not be empty"
+        assert records[0]["text"] == "not valid json", "rec is not valid"
 
 
 class TestReadText:
@@ -284,9 +284,9 @@ class TestReadText:
 
         records = _read_text(txt_file)
 
-        assert len(records) == 3
-        assert records[0] == {"text": "line 1"}
-        assert records[2] == {"text": "line 3"}
+        assert len(records) == 3, "Records must not be empty"
+        assert records[0] == {"text": "line 1"}, "rec is not valid"
+        assert records[2] == {"text": "line 3"}, "rec is not valid"
 
     def test_read_text_skips_empty_lines(self, tmp_path: Path) -> None:
         """Test that empty lines are skipped."""
@@ -295,7 +295,7 @@ class TestReadText:
 
         records = _read_text(txt_file)
 
-        assert len(records) == 2
+        assert len(records) == 2, "Records must not be empty"
 
 
 class TestIterDatasetFiles:
@@ -308,8 +308,8 @@ class TestIterDatasetFiles:
 
         files = list(_iter_dataset_files(data_file))
 
-        assert len(files) == 1
-        assert files[0] == data_file
+        assert len(files) == 1, "Files must not be empty"
+        assert files[0] == data_file, "Data must not be empty"
 
     def test_directory(self, tmp_path: Path) -> None:
         """Test iterating over directory."""
@@ -320,7 +320,7 @@ class TestIterDatasetFiles:
 
         files = list(_iter_dataset_files(tmp_path))
 
-        assert len(files) == 3
+        assert len(files) == 3, "Files must not be empty"
 
 
 class TestLoadRecords:
@@ -336,7 +336,7 @@ class TestLoadRecords:
         records = _load_records(tmp_path)
 
         # Should have records from all files
-        assert len(records) >= 3
+        assert len(records) >= 3, "Records must not be empty"
 
 
 class TestPublicAPI:
@@ -364,7 +364,7 @@ class TestPublicAPI:
         """Test ingest function is exported."""
         from codex_ml.ingest import ingest
 
-        assert callable(ingest)
+        assert callable(ingest), "Condition must be true"
 
 
 class TestAllExports:
@@ -376,5 +376,5 @@ class TestAllExports:
 
         expected = ["ingest", "load_dataset", "ingest_sample"]
         for name in expected:
-            assert name in ingest.__all__
+            assert name in ingest.__all__, "Condition must be true"
             assert hasattr(ingest, name)

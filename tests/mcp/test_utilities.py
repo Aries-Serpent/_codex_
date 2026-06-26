@@ -104,7 +104,7 @@ def assert_checksum_valid(data: str, expected: str) -> None:
 
 def assert_error_type(error: Exception, expected_type: type) -> None:
     """Assert that error is of expected type."""
-    assert isinstance(
+    assert isinstance(, "Condition must be true"
         error, expected_type
     ), f"Expected {expected_type.__name__}, got {type(error).__name__}"
 

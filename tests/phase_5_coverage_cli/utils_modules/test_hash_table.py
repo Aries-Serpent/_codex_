@@ -15,14 +15,14 @@ class TestMurmurHash3:
         key = b"hello"
         result = murmur_hash3_32(key)
         assert isinstance(result, int)
-        assert 0 <= result <= 0xFFFFFFFF
+        assert 0 <= result <= 0xFFFFFFFF, "Result must not be empty"
 
     def test_murmur_hash3_deterministic(self) -> None:
         """Test that hash is deterministic."""
         key = b"test_key"
         hash1 = murmur_hash3_32(key)
         hash2 = murmur_hash3_32(key)
-        assert hash1 == hash2
+        assert hash1 == hash2, "hash1 is not valid"
 
     def test_murmur_hash3_different_keys(self) -> None:
         """Test different keys produce different hashes."""
@@ -30,7 +30,7 @@ class TestMurmurHash3:
         key2 = b"key2"
         hash1 = murmur_hash3_32(key1)
         hash2 = murmur_hash3_32(key2)
-        assert hash1 != hash2
+        assert hash1 != hash2, "hash1 is not valid"
 
     def test_murmur_hash3_empty_key(self) -> None:
         """Test hashing empty key."""
@@ -43,14 +43,14 @@ class TestMurmurHash3:
         key = b"test"
         hash_seed0 = murmur_hash3_32(key, seed=0)
         hash_seed1 = murmur_hash3_32(key, seed=1)
-        assert hash_seed0 != hash_seed1
+        assert hash_seed0 != hash_seed1, "hash_seed0 is not valid"
 
     def test_murmur_hash3_large_key(self) -> None:
         """Test hashing large key."""
         key = b"x" * 1000
         result = murmur_hash3_32(key)
         assert isinstance(result, int)
-        assert 0 <= result <= 0xFFFFFFFF
+        assert 0 <= result <= 0xFFFFFFFF, "Result must not be empty"
 
     def test_murmur_hash3_unaligned_key(self) -> None:
         """Test hashing key with odd length."""
@@ -65,7 +65,7 @@ class TestMurmurHash3:
         seed = 42
         hash1 = murmur_hash3_32(key, seed=seed)
         hash2 = murmur_hash3_32(key, seed=seed)
-        assert hash1 == hash2
+        assert hash1 == hash2, "hash1 is not valid"
 
 
 class TestHashTableBasic:
@@ -74,14 +74,14 @@ class TestHashTableBasic:
     def test_hash_table_creation(self) -> None:
         """Test creating a new hash table."""
         ht = HashTable()
-        assert ht is not None
-        assert len(ht) == 0
+        assert ht is not None, "ht must be initialized"
+        assert len(ht) == 0, "Ht must not be empty"
 
     def test_hash_table_insert_and_get(self) -> None:
         """Test basic insert and get operations."""
         ht = HashTable()
         ht["key1"] = "value1"
-        assert ht["key1"] == "value1"
+        assert ht["key1"] == "value1", "Value must be initialized"
 
     def test_hash_table_multiple_inserts(self) -> None:
         """Test inserting multiple items."""
@@ -90,24 +90,24 @@ class TestHashTableBasic:
             ht[f"key_{i}"] = f"value_{i}"
 
         for i in range(10):
-            assert ht[f"key_{i}"] == f"value_{i}"
+            assert ht[f"key_{i}"] == f"value_{i}", "Value must be initialized"
 
     def test_hash_table_len(self) -> None:
         """Test __len__ returns correct count."""
         ht = HashTable()
-        assert len(ht) == 0
+        assert len(ht) == 0, "Ht must not be empty"
         ht["key1"] = "value1"
-        assert len(ht) == 1
+        assert len(ht) == 1, "Ht must not be empty"
         ht["key2"] = "value2"
-        assert len(ht) == 2
+        assert len(ht) == 2, "Ht must not be empty"
 
     def test_hash_table_delete(self) -> None:
         """Test delete operation."""
         ht = HashTable()
         ht["key1"] = "value1"
-        assert len(ht) == 1
+        assert len(ht) == 1, "Ht must not be empty"
         del ht["key1"]
-        assert len(ht) == 0
+        assert len(ht) == 0, "Ht must not be empty"
 
     def test_hash_table_delete_nonexistent(self) -> None:
         """Test deleting non-existent key raises KeyError."""
@@ -126,7 +126,7 @@ class TestHashTableBasic:
         ht = HashTable()
         ht["key1"] = "value1"
         ht["key1"] = "value2"
-        assert ht["key1"] == "value2"
+        assert ht["key1"] == "value2", "Value must be initialized"
 
 
 class TestHashTableCollisions:
@@ -141,7 +141,7 @@ class TestHashTableCollisions:
 
         # Verify all items are still retrievable
         for i in range(8):
-            assert ht[f"key_{i}"] == f"value_{i}"
+            assert ht[f"key_{i}"] == f"value_{i}", "Value must be initialized"
 
     def test_hash_table_many_collisions(self) -> None:
         """Test many items with potential collisions."""
@@ -152,7 +152,7 @@ class TestHashTableCollisions:
             ht[k] = v
 
         for k, v in items.items():
-            assert ht[k] == v
+            assert ht[k] == v, "Condition must be true"
 
 
 class TestHashTableResize:
@@ -169,7 +169,7 @@ class TestHashTableResize:
 
         # Verify all items still accessible
         for i in range(20):
-            assert ht[f"key_{i}"] == f"value_{i}"
+            assert ht[f"key_{i}"] == f"value_{i}", "Value must be initialized"
 
     def test_hash_table_stress_many_items(self) -> None:
         """Stress test with many items."""
@@ -181,15 +181,15 @@ class TestHashTableResize:
             ht[f"key_{i:04d}"] = f"value_{i}"
 
         # Verify all present
-        assert len(ht) == n_items
+        assert len(ht) == n_items, "Ht must not be empty"
         for i in range(n_items):
-            assert ht[f"key_{i:04d}"] == f"value_{i}"
+            assert ht[f"key_{i:04d}"] == f"value_{i}", "Value must be initialized"
 
         # Delete half
         for i in range(0, n_items, 2):
             del ht[f"key_{i:04d}"]
 
-        assert len(ht) == n_items // 2
+        assert len(ht) == n_items // 2, "Ht must not be empty"
 
 
 class TestHashTableIteration:
@@ -199,8 +199,8 @@ class TestHashTableIteration:
         """Test __contains__ for membership testing."""
         ht = HashTable()
         ht["key1"] = "value1"
-        assert "key1" in ht
-        assert "nonexistent" not in ht
+        assert "key1" in ht, "Condition must be true"
+        assert "nonexistent" not in ht, "Condition must be true"
 
     def test_hash_table_iteration(self) -> None:
         """Test iterating over keys."""
@@ -212,7 +212,7 @@ class TestHashTableIteration:
         # Test __iter__ if implemented
         if hasattr(ht, "__iter__"):
             keys = list(ht)
-            assert len(keys) == len(items)
+            assert len(keys) == len(items), "Keys must not be empty"
 
 
 class TestHashTableTypes:
@@ -222,19 +222,19 @@ class TestHashTableTypes:
         """Test storing string values."""
         ht = HashTable()
         ht["str_key"] = "string_value"
-        assert ht["str_key"] == "string_value"
+        assert ht["str_key"] == "string_value", "Value must be initialized"
 
     def test_hash_table_int_values(self) -> None:
         """Test storing integer values."""
         ht = HashTable()
         ht["int_key"] = 42
-        assert ht["int_key"] == 42
+        assert ht["int_key"] == 42, "Condition must be true"
 
     def test_hash_table_none_values(self) -> None:
         """Test storing None values."""
         ht = HashTable()
         ht["none_key"] = None
-        assert ht["none_key"] is None
+        assert ht["none_key"] is None, "Condition must be true"
 
     def test_hash_table_list_values(self) -> None:
         """Test storing list values."""
@@ -246,7 +246,7 @@ class TestHashTableTypes:
         """Test storing dict values."""
         ht = HashTable()
         ht["dict_key"] = {"nested": "value"}
-        assert ht["dict_key"] == {"nested": "value"}
+        assert ht["dict_key"] == {"nested": "value"}, "Value must be initialized"
 
 
 class TestHashTableEdgeCases:
@@ -256,30 +256,30 @@ class TestHashTableEdgeCases:
         """Test empty string as key."""
         ht = HashTable()
         ht[""] = "empty_key_value"
-        assert ht[""] == "empty_key_value"
+        assert ht[""] == "empty_key_value", "Value must be initialized"
 
     def test_hash_table_numeric_string_keys(self) -> None:
         """Test numeric strings as keys."""
         ht = HashTable()
         ht["123"] = "numeric_string_key"
-        assert ht["123"] == "numeric_string_key"
+        assert ht["123"] == "numeric_string_key", "Condition must be true"
 
     def test_hash_table_special_chars_keys(self) -> None:
         """Test keys with special characters."""
         ht = HashTable()
         special_key = "key!@#$%^&*()"
         ht[special_key] = "special_value"
-        assert ht[special_key] == "special_value"
+        assert ht[special_key] == "special_value", "Value must be initialized"
 
     def test_hash_table_unicode_keys(self) -> None:
         """Test unicode characters in keys."""
         ht = HashTable()
         ht["key_ñ_中文"] = "unicode_value"
-        assert ht["key_ñ_中文"] == "unicode_value"
+        assert ht["key_ñ_中文"] == "unicode_value", "Value must be initialized"
 
     def test_hash_table_very_long_key(self) -> None:
         """Test very long key."""
         ht = HashTable()
         long_key = "k" * 1000
         ht[long_key] = "long_key_value"
-        assert ht[long_key] == "long_key_value"
+        assert ht[long_key] == "long_key_value", "Value must be initialized"

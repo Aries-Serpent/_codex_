@@ -38,9 +38,9 @@ def test_cli_train_creates_checkpoint(tmp_path):
     result = runner.invoke(codex, ["train", "--config", str(cfg_path)])
 
     assert result.exit_code == 0, result.output
-    assert "Training complete" in result.output
+    assert "Training complete" in result.output, "Result must not be empty"
 
     checkpoint_root = output_dir / "checkpoints"
-    assert checkpoint_root.exists()
+    assert checkpoint_root.exists(), "Condition must be true"
     epochs = sorted(checkpoint_root.glob("epoch-*"))
     assert epochs, "No checkpoints were generated"

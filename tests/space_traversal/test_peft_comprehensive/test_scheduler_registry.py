@@ -18,8 +18,8 @@ from codex_ml.training.schedulers.registry import get_scheduler_registry
 def test_registry_lists_builtins():
     reg = get_scheduler_registry()
     names = reg.list()
-    assert "step_lr" in names
-    assert "cosine_annealing" in names
+    assert "step_lr" in names, "Condition must be true"
+    assert "cosine_annealing" in names, "Condition must be true"
     # Descriptions present
     assert isinstance(reg.describe("step_lr"), str)
 
@@ -44,9 +44,9 @@ def test_build_step_lr_and_step_once():
     initial_lr = opt.param_groups[0]["lr"]
     # Step scheduler a couple of times; LR should decay at step_size boundaries
     sched.step()  # epoch 1
-    assert opt.param_groups[0]["lr"] == pytest.approx(initial_lr)
+    assert opt.param_groups[0]["lr"] == pytest.approx(initial_lr), "Condition must be true"
     sched.step()  # epoch 2 -> decay
-    assert opt.param_groups[0]["lr"] == pytest.approx(initial_lr * 0.5)
+    assert opt.param_groups[0]["lr"] == pytest.approx(initial_lr * 0.5), "Condition must be true"
 
 
 def test_build_cosine_annealing_progression():
@@ -69,5 +69,5 @@ def test_build_cosine_annealing_progression():
         lrs.append(opt.param_groups[0]["lr"])
         sched.step()
     # LR should vary smoothly between eta_min and initial
-    assert max(lrs) <= 0.1 + 1e-9
-    assert min(lrs) >= 0.0 - 1e-9
+    assert max(lrs) <= 0.1 + 1e-9, "Condition must be true"
+    assert min(lrs) >= 0.0 - 1e-9, "Value must be greater than zero"

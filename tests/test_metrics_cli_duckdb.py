@@ -37,15 +37,15 @@ def test_csv_to_duckdb_uses_parameterized_paths(monkeypatch, tmp_path, mode):
     executed: list[tuple[str, tuple[str, ...]]] = []
 
     def fake_connect(path: str):
-        assert path == duck_db.as_posix()
+        assert path == duck_db.as_posix(), "path is not valid"
         return DummyConnection(executed)
 
     fake_duckdb = types.SimpleNamespace(connect=fake_connect)
     monkeypatch.setitem(sys.modules, "duckdb", fake_duckdb)
 
     result = _csv_to_duckdb(csv_path, duck_db, "metrics", mode=mode)
-    assert result is True
+    assert result is True, "Result must not be empty"
 
     assert executed, "expected SQL commands to be executed"
     for _, params in executed:
-        assert params and params[0] == csv_path.as_posix()
+        assert params and params[0] == csv_path.as_posix(), "params is not valid"

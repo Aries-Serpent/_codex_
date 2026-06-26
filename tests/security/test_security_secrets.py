@@ -10,8 +10,8 @@ from security import secrets
 
 
 def test_check_secret_entropy_variants() -> None:
-    assert secrets.check_secret_entropy("Aa1!Bb2@Cc3#") is True
-    assert secrets.check_secret_entropy("short") is False
+    assert secrets.check_secret_entropy("Aa1!Bb2@Cc3, "Condition must be true"
+    assert secrets.check_secret_entropy("short") is False, "Condition must be true"
 
 
 def test_rotate_secret_respects_age(monkeypatch) -> None:

@@ -162,7 +162,7 @@ class TestImportSmoke:
 
         with patch.dict(os.environ, {"GITHUB_TOKEN": "env-token-abc"}):
             client = GitHubClient(token=None)
-            assert client.token == "env-token-abc"
+            assert client.token == "env-token-abc", "token is not valid"
 
     def test_github_client_explicit_token_used(self) -> None:
         """GitHubClient(token='explicit') should use the provided token."""
@@ -170,6 +170,6 @@ class TestImportSmoke:
 
         with patch.dict(os.environ, {"GITHUB_TOKEN": "env-token-ignored"}):
             client = GitHubClient(token="explicit-token")
-            assert client.token == "explicit-token"
+            assert client.token == "explicit-token", "token is not valid"
             headers = client._get_headers()
-            assert headers.get("Authorization") == "Bearer explicit-token"
+            assert headers.get("Authorization") == "Bearer explicit-token", "Condition must be true"

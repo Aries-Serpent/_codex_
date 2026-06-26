@@ -25,5 +25,5 @@ def test_seed_everything_reproducible(seed: int) -> None:
     second_random = random.random()
     second_array = np.random.rand(3)
 
-    assert first_random == pytest.approx(second_random)
+    assert first_random == pytest.approx(second_random), "first_random is not valid"
     assert np.allclose(first_array, second_array)

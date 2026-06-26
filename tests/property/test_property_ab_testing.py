@@ -52,7 +52,7 @@ class TestWinnerProperty:
     def test_winner_is_valid_label(self, control: list[float], treatment: list[float]) -> None:
         """ABTestResult.winner must be 'control', 'treatment', or 'inconclusive'."""
         result = run_ab_test(control, treatment)
-        assert result.winner in {
+        assert result.winner in {, "Result must not be empty"
             "control",
             "treatment",
             "inconclusive",
@@ -69,7 +69,7 @@ class TestWinnerProperty:
     def test_identical_samples_never_significant(self, data: list[float]) -> None:
         """Identical control and treatment data must never yield significant=True."""
         result = run_ab_test(data, data)
-        assert (
+        assert (, "Condition must be true"
             result.significant is False
         ), "Identical samples cannot produce a statistically significant result"
 
@@ -84,7 +84,7 @@ class TestWinnerProperty:
     def test_identical_samples_winner_is_inconclusive(self, data: list[float]) -> None:
         """Identical samples must produce winner='inconclusive'."""
         result = run_ab_test(data, data)
-        assert (
+        assert (, "Condition must be true"
             result.winner == "inconclusive"
         ), f"Identical samples must be inconclusive, got {result.winner!r}"
 
@@ -102,7 +102,7 @@ class TestEffectSizeProperty:
     def test_effect_size_is_finite(self, control: list[float], treatment: list[float]) -> None:
         """Cohen's d effect_size must be finite for any valid numeric inputs."""
         result = run_ab_test(control, treatment)
-        assert math.isfinite(
+        assert math.isfinite(, "Condition must be true"
             result.effect_size
         ), f"effect_size must be finite, got {result.effect_size}"
 
@@ -115,11 +115,11 @@ class TestEffectSizeProperty:
         result = run_ab_test(control, treatment)
         if result.winner == "treatment":
             # treatment mean > control mean → Cohen's d = (trt - ctrl) / pooled_std ≥ 0
-            assert (
+            assert (, "Condition must be true"
                 result.effect_size >= 0.0
             ), f"effect_size should be >= 0 when treatment wins, got {result.effect_size}"
         elif result.winner == "control":
-            assert (
+            assert (, "Condition must be true"
                 result.effect_size <= 0.0
             ), f"effect_size should be <= 0 when control wins, got {result.effect_size}"
 

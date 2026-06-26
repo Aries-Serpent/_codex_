@@ -32,9 +32,9 @@ def test_apply_config_sets_env(monkeypatch, tmp_path):
 
     apply_config(str(path))
 
-    assert os.getenv("CODEX_TOKENIZER_PATH") == "pkg.tokenizer:Tok"
-    assert os.getenv("CODEX_REWARD_PATH") == "pkg.reward:RM"
-    assert json.loads(os.environ["CODEX_REWARD_KWARGS"]) == {"alpha": 1}
+    assert os.getenv("CODEX_TOKENIZER_PATH") == "pkg.tokenizer:Tok", "Condition must be true"
+    assert os.getenv("CODEX_REWARD_PATH") == "pkg.reward:RM", "Condition must be true"
+    assert json.loads(os.environ["CODEX_REWARD_KWARGS"]) == {"alpha": 1}, "Condition must be true"
 
 
 def test_apply_config_logs_yaml_error(monkeypatch, tmp_path, capsys):
@@ -44,5 +44,5 @@ def test_apply_config_logs_yaml_error(monkeypatch, tmp_path, capsys):
     monkeypatch.setattr(registry, "ERRORS_PATH", err_log)
     apply_config(str(bad))
     captured = capsys.readouterr().err
-    assert "Question for ChatGPT" in captured
-    assert "bad.yaml" in err_log.read_text()
+    assert "Question for ChatGPT" in captured, "Condition must be true"
+    assert "bad.yaml" in err_log.read_text(), "Condition must be true"

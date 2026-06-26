@@ -31,6 +31,7 @@ class EndToEndScenario:
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_e2e_initialization_sequence():
     """Test initialization sequence."""
     scenario = EndToEndScenario("initialization")
@@ -40,11 +41,12 @@ async def test_e2e_initialization_sequence():
 
     success = await asyncio.wait_for(scenario.run(), timeout=30)
 
-    assert success
-    assert len(scenario.results) == 3
+    assert success, "success is not valid"
+    assert len(scenario.results) == 3, "Collection must not be empty"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_e2e_request_response_cycle():
     """Test request-response cycle."""
     scenario = EndToEndScenario("request_response")
@@ -56,11 +58,12 @@ async def test_e2e_request_response_cycle():
 
     success = await asyncio.wait_for(scenario.run(), timeout=30)
 
-    assert success
-    assert len(scenario.steps) == 5
+    assert success, "success is not valid"
+    assert len(scenario.steps) == 5, "Collection must not be empty"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_e2e_error_handling():
     """Test error handling in scenario."""
     scenario = EndToEndScenario("error_handling")
@@ -70,10 +73,11 @@ async def test_e2e_error_handling():
 
     success = await asyncio.wait_for(scenario.run(), timeout=30)
 
-    assert success
+    assert success, "success is not valid"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_e2e_complex_workflow():
     """Test complex multi-step workflow."""
     scenario = EndToEndScenario("complex")
@@ -83,5 +87,5 @@ async def test_e2e_complex_workflow():
 
     success = await asyncio.wait_for(scenario.run(), timeout=30)
 
-    assert success
-    assert len(scenario.results) == 10
+    assert success, "success is not valid"
+    assert len(scenario.results) == 10, "Collection must not be empty"

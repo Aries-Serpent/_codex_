@@ -21,11 +21,11 @@ class TestMCPToolingRegistry:
 
         result = detect({"files": []})
 
-        assert "id" in result
-        assert result["id"] == "mcp-tooling-registry"
-        assert "evidence_files" in result
-        assert "found_patterns" in result
-        assert "required_patterns" in result
+        assert "id" in result, "Result must not be empty"
+        assert result["id"] == "mcp-tooling-registry", "Result must not be empty"
+        assert "evidence_files" in result, "Result must not be empty"
+        assert "found_patterns" in result, "Result must not be empty"
+        assert "required_patterns" in result, "Result must not be empty"
 
     def test_required_patterns(self):
         """Test required patterns are defined."""
@@ -33,8 +33,8 @@ class TestMCPToolingRegistry:
 
         result = detect({"files": []})
 
-        assert "registry" in result["required_patterns"]
-        assert "mcp.json" in result["required_patterns"]
+        assert "registry" in result["required_patterns"], "Result must not be empty"
+        assert "mcp.json" in result["required_patterns"], "Result must not be empty"
 
     def test_safeguards_metadata(self):
         """Test safeguards metadata is present."""
@@ -42,9 +42,9 @@ class TestMCPToolingRegistry:
 
         result = detect({"files": []})
 
-        assert "safeguards" in result
-        assert "bounded" in result["safeguards"]
-        assert "deterministic" in result["safeguards"]
+        assert "safeguards" in result, "Result must not be empty"
+        assert "bounded" in result["safeguards"], "Result must not be empty"
+        assert "deterministic" in result["safeguards"], "Result must not be empty"
 
     def test_docs_keywords(self):
         """Test docs_keywords are present."""
@@ -52,9 +52,9 @@ class TestMCPToolingRegistry:
 
         result = detect({"files": []})
 
-        assert "docs_keywords" in result
-        assert "mcp" in result["docs_keywords"]
-        assert "registry" in result["docs_keywords"]
+        assert "docs_keywords" in result, "Result must not be empty"
+        assert "mcp" in result["docs_keywords"], "Result must not be empty"
+        assert "registry" in result["docs_keywords"], "Result must not be empty"
 
 
 class TestMCPToolingDetection:
@@ -78,7 +78,7 @@ class TestMCPToolingDetection:
             ]
         }
         result = detect(file_index)
-        assert len(result["evidence_files"]) > 0
+        assert len(result["evidence_files"]) > 0, "Collection must not be empty"
 
     def test_deterministic_output(self):
         """Test deterministic detection output."""
@@ -88,17 +88,17 @@ class TestMCPToolingDetection:
 
         results = [detect(file_index) for _ in range(3)]
         for i in range(1, len(results)):
-            assert results[i]["found_patterns"] == results[0]["found_patterns"]
+            assert results[i]["found_patterns"] == results[0]["found_patterns"], "Result must not be empty"
 
     def test_related_files_defined(self):
         """Test related files are defined."""
         from scripts.space_traversal.detectors.mcp_tooling_registry import RELATED_FILES
 
-        assert len(RELATED_FILES) > 0
+        assert len(RELATED_FILES) > 0, "Related_files must not be empty"
 
     def test_meta_category(self):
         """Test meta category is mcp."""
         from scripts.space_traversal.detectors.mcp_tooling_registry import detect
 
         result = detect({"files": []})
-        assert result["meta"]["category"] == "mcp"
+        assert result["meta"]["category"] == "mcp", "Result must not be empty"

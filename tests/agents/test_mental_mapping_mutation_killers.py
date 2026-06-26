@@ -36,9 +36,9 @@ class TestReasoningStepMutationKillers:
             step_id="step1",
             thought="test thought",
         )
-        assert step.confidence == 0.5
-        assert step.confidence != 0.4
-        assert step.confidence != 0.6
+        assert step.confidence == 0.5, "confidence is not valid"
+        assert step.confidence != 0.4, "confidence is not valid"
+        assert step.confidence != 0.6, "confidence is not valid"
 
     @pytest.mark.parametrize(
         "confidence,is_valid",
@@ -61,16 +61,16 @@ class TestReasoningStepMutationKillers:
             thought="test",
             confidence=confidence,
         )
-        assert step.confidence == confidence
+        assert step.confidence == confidence, "confidence is not valid"
         if confidence >= 0.0 and confidence <= 1.0:
-            assert 0.0 <= step.confidence <= 1.0
+            assert 0.0 <= step.confidence <= 1.0, "0 is not valid"
 
     def test_reasoning_step_default_reasoning_type_is_deductive(self) -> None:
         """Catch mutation: reasoning_type: str = "deductive" → "inductive" """
         step = ReasoningStep(step_id="s1", thought="test")
-        assert step.reasoning_type == "deductive"
-        assert step.reasoning_type != "inductive"
-        assert step.reasoning_type != "abductive"
+        assert step.reasoning_type == "deductive", "reasoning_type is not valid"
+        assert step.reasoning_type != "inductive", "reasoning_type is not valid"
+        assert step.reasoning_type != "abductive", "reasoning_type is not valid"
 
     def test_evidence_property_alias_works(self) -> None:
         """Catch mutation: evidence property implementation."""
@@ -102,11 +102,11 @@ class TestMentalNodeMutationKillers:
             timestamp=now,
         )
 
-        assert node.node_id == "n1"
-        assert node.node_type == NodeType.PROBLEM
-        assert node.content == "Test problem"
-        assert node.timestamp == now
-        assert node.node_type != NodeType.HYPOTHESIS
+        assert node.node_id == "n1", "node_id is not valid"
+        assert node.node_type == NodeType.PROBLEM, "node_type is not valid"
+        assert node.content == "Test problem", "Content must not be empty"
+        assert node.timestamp == now, "timestamp is not valid"
+        assert node.node_type != NodeType.HYPOTHESIS, "node_type is not valid"
 
     def test_mental_node_confidence_default_is_exactly_0_5(self) -> None:
         """Catch mutation: confidence: float = 0.5 → 0.4 or 0.6"""
@@ -118,9 +118,9 @@ class TestMentalNodeMutationKillers:
             confidence=0.5,
         )
 
-        assert node.confidence == 0.5
-        assert node.confidence != 0.4
-        assert node.confidence != 0.6
+        assert node.confidence == 0.5, "confidence is not valid"
+        assert node.confidence != 0.4, "confidence is not valid"
+        assert node.confidence != 0.6, "confidence is not valid"
 
     def test_mental_node_importance_default_is_exactly_0_5(self) -> None:
         """Catch mutation: importance: float = 0.5 → 0.4 or 0.6"""
@@ -132,9 +132,9 @@ class TestMentalNodeMutationKillers:
             importance=0.5,
         )
 
-        assert node.importance == 0.5
-        assert node.importance != 0.4
-        assert node.importance != 0.6
+        assert node.importance == 0.5, "importance is not valid"
+        assert node.importance != 0.4, "importance is not valid"
+        assert node.importance != 0.6, "importance is not valid"
 
     def test_quality_score_default_is_exactly_zero(self) -> None:
         """Catch mutation: quality_score: float = 0.0 → 0.5"""
@@ -144,8 +144,8 @@ class TestMentalNodeMutationKillers:
             content="Test",
             timestamp="2025-01-01T10:00:00",
         )
-        assert node.quality_score == 0.0
-        assert node.quality_score != 0.5
+        assert node.quality_score == 0.0, "quality_score is not valid"
+        assert node.quality_score != 0.5, "quality_score is not valid"
 
     def test_needs_review_default_is_false_not_true(self) -> None:
         """Catch mutation: needs_review: bool = False → True"""
@@ -155,8 +155,8 @@ class TestMentalNodeMutationKillers:
             content="Test",
             timestamp="2025-01-01T10:00:00",
         )
-        assert node.needs_review is False
-        assert node.needs_review is not True
+        assert node.needs_review is False, "needs_review is not valid"
+        assert node.needs_review is not True, "needs_review is not valid"
 
     def test_review_count_default_is_zero_not_one(self) -> None:
         """Catch mutation: review_count: int = 0 → 1"""
@@ -166,8 +166,8 @@ class TestMentalNodeMutationKillers:
             content="Test",
             timestamp="2025-01-01T10:00:00",
         )
-        assert node.review_count == 0
-        assert node.review_count != 1
+        assert node.review_count == 0, "Count must be greater than zero"
+        assert node.review_count != 1, "Count must be greater than zero"
 
     def test_mark_for_review_sets_needs_review_to_true(self) -> None:
         """Catch mutation in mark_for_review logic."""
@@ -177,11 +177,11 @@ class TestMentalNodeMutationKillers:
             content="Test",
             timestamp="2025-01-01T10:00:00",
         )
-        assert node.needs_review is False
+        assert node.needs_review is False, "needs_review is not valid"
 
         node.mark_for_review()
-        assert node.needs_review is True
-        assert node.context.get("review_reason") == "low_confidence"
+        assert node.needs_review is True, "needs_review is not valid"
+        assert node.context.get("review_reason") == "low_confidence", "Condition must be true"
 
     def test_review_updates_quality_score_and_increments_count(self) -> None:
         """Catch mutation in review logic."""
@@ -192,14 +192,14 @@ class TestMentalNodeMutationKillers:
             timestamp="2025-01-01T10:00:00",
         )
 
-        assert node.quality_score == 0.0
-        assert node.review_count == 0
+        assert node.quality_score == 0.0, "quality_score is not valid"
+        assert node.review_count == 0, "Count must be greater than zero"
 
         node.review(new_quality_score=0.85, notes="Good node")
 
-        assert node.quality_score == 0.85
-        assert node.review_count == 1
-        assert node.needs_review is False
+        assert node.quality_score == 0.85, "quality_score is not valid"
+        assert node.review_count == 1, "Count must be greater than zero"
+        assert node.needs_review is False, "needs_review is not valid"
 
     def test_connected_nodes_default_is_empty_set(self) -> None:
         """Catch mutation: connected_nodes: set = field(default_factory=set)"""
@@ -209,7 +209,7 @@ class TestMentalNodeMutationKillers:
             content="Test",
             timestamp="2025-01-01T10:00:00",
         )
-        assert node.connected_nodes == set()
+        assert node.connected_nodes == set(), "connected_nodes is not valid"
         assert isinstance(node.connected_nodes, set)
 
     def test_default_lists_are_empty_not_none(self) -> None:
@@ -220,10 +220,10 @@ class TestMentalNodeMutationKillers:
             content="Test",
             timestamp="2025-01-01T10:00:00",
         )
-        assert node.tags == []
-        assert node.tags is not None
-        assert node.lessons_learned == []
-        assert node.lessons_learned is not None
+        assert node.tags == [], "tags is not valid"
+        assert node.tags is not None, "tags must be initialized"
+        assert node.lessons_learned == [], "lessons_learned is not valid"
+        assert node.lessons_learned is not None, "lessons_learned must be initialized"
 
 
 class TestMentalMappingModelMutationKillers:
@@ -234,7 +234,7 @@ class TestMentalMappingModelMutationKillers:
         model1 = MentalMappingModel(agent_id="agent1")
         model2 = MentalMappingModel(agent_id="agent1")
 
-        assert model1.map_id != model2.map_id
+        assert model1.map_id != model2.map_id, "map_id is not valid"
 
     def test_add_node_stores_node_exactly(self) -> None:
         """Catch mutation in node storage logic."""
@@ -252,12 +252,12 @@ class TestMentalMappingModelMutationKillers:
         model.add_node(node)
 
         # Verify exact node is stored
-        assert "n1" in model.nodes
+        assert "n1" in model.nodes, "Condition must be true"
         stored_node = model.nodes["n1"]
-        assert stored_node.node_id == "n1"
-        assert stored_node.content == "Test problem"
-        assert stored_node.importance == 0.75
-        assert stored_node.node_type == NodeType.PROBLEM
+        assert stored_node.node_id == "n1", "node_id is not valid"
+        assert stored_node.content == "Test problem", "Content must not be empty"
+        assert stored_node.importance == 0.75, "importance is not valid"
+        assert stored_node.node_type == NodeType.PROBLEM, "node_type is not valid"
 
     def test_get_node_returns_exact_node_via_dict_access(self) -> None:
         """Catch mutation in node retrieval logic."""
@@ -273,13 +273,13 @@ class TestMentalMappingModelMutationKillers:
         model.add_node(node)
 
         # Node exists via dict access
-        assert "n1" in model.nodes
+        assert "n1" in model.nodes, "Condition must be true"
         retrieved = model.nodes["n1"]
-        assert retrieved is not None
-        assert retrieved.node_id == "n1"
+        assert retrieved is not None, "retrieved must be initialized"
+        assert retrieved.node_id == "n1", "node_id is not valid"
 
         # Node doesn't exist
-        assert "n999" not in model.nodes
+        assert "n999" not in model.nodes, "Condition must be true"
 
     def test_connect_nodes_creates_exact_edge_type(self) -> None:
         """Catch mutation in edge creation logic."""
@@ -304,8 +304,8 @@ class TestMentalMappingModelMutationKillers:
 
         assert found_edge is not None, "Edge from n1 to n2 not found"
         # Note: edge_type might be None due to implementation, so we check if it exists
-        assert found_edge.source_id == "n1"
-        assert found_edge.target_id == "n2"
+        assert found_edge.source_id == "n1", "source_id is not valid"
+        assert found_edge.target_id == "n2", "target_id is not valid"
 
     @pytest.mark.parametrize(
         "node_count",
@@ -325,7 +325,7 @@ class TestMentalMappingModelMutationKillers:
             )
             model.add_node(node)
 
-        assert len(model.nodes) == node_count
+        assert len(model.nodes) == node_count, "Collection must not be empty"
 
 
 class TestMentalMappingClockMutationKillers:
@@ -338,8 +338,8 @@ class TestMentalMappingClockMutationKillers:
             set_clock(lambda: custom_time)
 
             timestamp = get_timestamp()
-            assert timestamp == custom_time
-            assert timestamp != "2025-06-15T12:30:45"  # Different precision
+            assert timestamp == custom_time, "timestamp is not valid"
+            assert timestamp != "2025-06-15T12:30:45", "timestamp is not valid"
         finally:
             reset_clock()
 
@@ -350,7 +350,7 @@ class TestMentalMappingClockMutationKillers:
         timestamp = get_timestamp()
 
         # Should be ISO format
-        assert "T" in timestamp  # ISO format includes T
+        assert "T" in timestamp, "Condition must be true"
 
         # Should be parseable
         datetime.fromisoformat(timestamp)
@@ -359,14 +359,14 @@ class TestMentalMappingClockMutationKillers:
         """Catch mutation in reset_clock function."""
         custom_time = "2025-01-01T00:00:00"
         set_clock(lambda: custom_time)
-        assert get_timestamp() == custom_time
+        assert get_timestamp() == custom_time, "Condition must be true"
 
         reset_clock()
 
         # After reset, should return actual ISO timestamp
         timestamp = get_timestamp()
-        assert timestamp != custom_time
-        assert "T" in timestamp
+        assert timestamp != custom_time, "timestamp is not valid"
+        assert "T" in timestamp, "Condition must be true"
 
 
 # ==============================================================================
@@ -428,9 +428,9 @@ class TestMentalMappingEndToEnd:
         model.connect_nodes("evidence1", "solution", EdgeType.SUPPORTS)
 
         # Verify graph structure
-        assert len(model.nodes) == 4
-        assert model.nodes.get("problem") is not None
-        assert model.nodes.get("evidence1") is not None
+        assert len(model.nodes) == 4, "Collection must not be empty"
+        assert model.nodes.get("problem") is not None, "Value must be initialized"
+        assert model.nodes.get("evidence1") is not None, "Value must be initialized"
 
         # Verify edges exist (check by node pairing)
         edge_pairs = [

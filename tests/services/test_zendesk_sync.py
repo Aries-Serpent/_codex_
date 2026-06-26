@@ -38,13 +38,13 @@ class TestArticleMetadata:
             last_fetched="2026-01-09T12:00:00+00:00",
         )
 
-        assert meta.url == "https://example.zendesk.com/hc/article-1"
-        assert meta.section == "getting-started"
-        assert meta.bucket == "tutorials"
-        assert meta.last_fetched == "2026-01-09T12:00:00+00:00"
-        assert meta.last_modified is None
-        assert meta.etag is None
-        assert meta.content_hash is None
+        assert meta.url == "https://example.zendesk.com/hc/article-1", "url is not valid"
+        assert meta.section == "getting-started", "section is not valid"
+        assert meta.bucket == "tutorials", "bucket is not valid"
+        assert meta.last_fetched == "2026-01-09T12:00:00+00:00", "last_fetched is not valid"
+        assert meta.last_modified is None, "last_modified is not valid"
+        assert meta.etag is None, "etag is not valid"
+        assert meta.content_hash is None, "Content must not be empty"
 
     def test_article_metadata_with_optional_fields(self):
         """Test ArticleMetadata with all optional fields."""
@@ -59,8 +59,8 @@ class TestArticleMetadata:
         )
 
         assert meta.last_modified == "Wed, 08 Jan 2026 10:00:00 GMT"
-        assert meta.etag == '"abc123"'
-        assert meta.content_hash == "sha256:deadbeef"
+        assert meta.etag == '"abc123"', "etag is not valid"
+        assert meta.content_hash == "sha256:deadbeef", "Content must not be empty"
 
 
 class TestSyncResult:
@@ -77,13 +77,13 @@ class TestSyncResult:
             timestamp="2026-01-09T12:00:00+00:00",
         )
 
-        assert result.total_articles == 100
-        assert result.checked == 95
-        assert result.updated == 10
-        assert result.failed == 5
-        assert result.skipped == 85
-        assert result.timestamp == "2026-01-09T12:00:00+00:00"
-        assert result.dataset_path is None
+        assert result.total_articles == 100, "Result must not be empty"
+        assert result.checked == 95, "Result must not be empty"
+        assert result.updated == 10, "Result must not be empty"
+        assert result.failed == 5, "Result must not be empty"
+        assert result.skipped == 85, "Result must not be empty"
+        assert result.timestamp == "2026-01-09T12:00:00+00:00", "Result must not be empty"
+        assert result.dataset_path is None, "Result must not be empty"
 
     def test_sync_result_with_dataset_path(self):
         """Test SyncResult with dataset path."""
@@ -97,7 +97,7 @@ class TestSyncResult:
             dataset_path="/tmp/dataset.json",
         )
 
-        assert result.dataset_path == "/tmp/dataset.json"
+        assert result.dataset_path == "/tmp/dataset.json", "Result must not be empty"
 
 
 class TestZendeskKnowledgeSyncService:
@@ -138,17 +138,17 @@ class TestZendeskKnowledgeSyncService:
 
     def test_service_initialization(self, service, temp_dir, mock_manifest):
         """Test service initialization with custom paths."""
-        assert service.manifest_path == mock_manifest
-        assert service.api_index_path == temp_dir / "api_index.json"
-        assert service.output_root == temp_dir / "output"
-        assert service.retries == 2
-        assert service.backoff == 0.1
-        assert service._cache == {}
+        assert service.manifest_path == mock_manifest, "manifest_path is not valid"
+        assert service.api_index_path == temp_dir / "api_index.json", "api_index_path is not valid"
+        assert service.output_root == temp_dir / "output", "output_root is not valid"
+        assert service.retries == 2, "retries is not valid"
+        assert service.backoff == 0.1, "backoff is not valid"
+        assert service._cache == {}, "_cache is not valid"
 
     def test_load_cache_empty(self, service):
         """Test loading cache when no cache file exists."""
         cache = service._load_cache()
-        assert cache == {}
+        assert cache == {}, "cache is not valid"
 
     def test_load_cache_with_data(self, temp_dir):
         """Test loading cache with existing data."""
@@ -174,11 +174,11 @@ class TestZendeskKnowledgeSyncService:
             api_index_path=cache_path, output_root=temp_dir / "output"
         )
 
-        assert len(service._cache) == 1
-        assert "https://example.zendesk.com/hc/article-1" in service._cache
+        assert len(service._cache) == 1, "Collection must not be empty"
+        assert "https://example.zendesk.com/hc/article-1" in service._cache, "Condition must be true"
         meta = service._cache["https://example.zendesk.com/hc/article-1"]
-        assert meta.section == "getting-started"
-        assert meta.etag == '"abc123"'
+        assert meta.section == "getting-started", "section is not valid"
+        assert meta.etag == '"abc123"', "etag is not valid"
 
     def test_load_cache_corrupted(self, temp_dir):
         """Test loading cache with corrupted JSON."""
@@ -190,7 +190,7 @@ class TestZendeskKnowledgeSyncService:
         )
 
         # Should fall back to empty cache
-        assert service._cache == {}
+        assert service._cache == {}, "_cache is not valid"
 
     def test_save_cache(self, service, temp_dir):
         """Test saving cache to disk."""
@@ -204,20 +204,20 @@ class TestZendeskKnowledgeSyncService:
 
         service._save_cache()
 
-        assert service.api_index_path.exists()
+        assert service.api_index_path.exists(), "Condition must be true"
         cache_data = json.loads(service.api_index_path.read_text())
 
-        assert cache_data["version"] == "2.0"
-        assert "last_sync" in cache_data
-        assert len(cache_data["articles"]) == 1
-        assert "https://example.zendesk.com/hc/article-1" in cache_data["articles"]
+        assert cache_data["version"] == "2.0", "Data must not be empty"
+        assert "last_sync" in cache_data, "Data must not be empty"
+        assert len(cache_data["articles"]) == 1, "Collection must not be empty"
+        assert "https://example.zendesk.com/hc/article-1" in cache_data["articles"], "Data must not be empty"
 
     def test_slug_generation(self, service):
         """Test URL to filename slug conversion."""
-        assert service._slug("Hello World!") == "hello-world"
-        assert service._slug("API/Reference/v2") == "api-reference-v2"
-        assert service._slug("  spaces  ") == "spaces"
-        assert service._slug("UPPERCASE") == "uppercase"
+        assert service._slug("Hello World!") == "hello-world", "Condition must be true"
+        assert service._slug("API/Reference/v2") == "api-reference-v2", "Condition must be true"
+        assert service._slug("  spaces  ") == "spaces", "Condition must be true"
+        assert service._slug("UPPERCASE") == "uppercase", "Condition must be true"
 
     @patch("urllib.request.urlopen")
     def test_fetch_success(self, mock_urlopen, service):
@@ -232,8 +232,8 @@ class TestZendeskKnowledgeSyncService:
 
         content, headers = service._fetch("https://example.zendesk.com/hc/article-1")
 
-        assert content == b"<html>content</html>"
-        assert headers["ETag"] == '"abc123"'
+        assert content == b"<html>content</html>", "Content must not be empty"
+        assert headers["ETag"] == '"abc123"', "Condition must be true"
         assert headers["Last-Modified"] == "Wed, 08 Jan 2026 10:00:00 GMT"
 
     @patch("urllib.request.urlopen")
@@ -253,8 +253,8 @@ class TestZendeskKnowledgeSyncService:
 
         content, _headers = service._fetch("https://example.zendesk.com/hc/article-1")
 
-        assert content == b"<html>content</html>"
-        assert mock_urlopen.call_count == 2
+        assert content == b"<html>content</html>", "Content must not be empty"
+        assert mock_urlopen.call_count == 2, "Count must be greater than zero"
 
     @patch("urllib.request.urlopen")
     def test_fetch_failure_after_retries(self, mock_urlopen, service):
@@ -264,7 +264,7 @@ class TestZendeskKnowledgeSyncService:
         with pytest.raises(RuntimeError, match="Failed to fetch"):
             service._fetch("https://example.zendesk.com/hc/article-1")
 
-        assert mock_urlopen.call_count == service.retries
+        assert mock_urlopen.call_count == service.retries, "Count must be greater than zero"
 
     def test_fetch_invalid_scheme(self, service):
         """Test fetching URL with invalid scheme."""
@@ -279,9 +279,9 @@ class TestZendeskKnowledgeSyncService:
 
         output_path = service._write_article(base, url, body)
 
-        assert output_path.exists()
-        assert output_path.read_bytes() == body
-        assert output_path.name.endswith(".html")
+        assert output_path.exists(), "Condition must be true"
+        assert output_path.read_bytes() == body, "Condition must be true"
+        assert output_path.name.endswith(".html"), "Condition must be true"
 
     def test_should_update_not_in_cache(self, service):
         """Test should_update returns True when article not in cache."""
@@ -335,11 +335,11 @@ class TestZendeskKnowledgeSyncService:
         """Test check_and_pull in dry-run mode."""
         result = service.check_and_pull(dry_run=True)
 
-        assert result.total_articles == 3  # 2 tutorials + 1 API ref
-        assert result.checked == 3
-        assert result.updated == 0
-        assert result.failed == 0
-        assert mock_fetch.call_count == 0  # No fetching in dry-run
+        assert result.total_articles == 3, "Result must not be empty"
+        assert result.checked == 3, "Result must not be empty"
+        assert result.updated == 0, "Result must not be empty"
+        assert result.failed == 0, "Result must not be empty"
+        assert mock_fetch.call_count == 0, "Count must be greater than zero"
 
     @patch("src.services.crawler.zendesk_sync.scrub_pii")
     @patch.object(ZendeskKnowledgeSyncService, "_fetch")
@@ -350,11 +350,11 @@ class TestZendeskKnowledgeSyncService:
 
         result = service.check_and_pull(dry_run=False, force=False)
 
-        assert result.total_articles == 3
-        assert result.checked == 3
-        assert result.updated == 3  # All new articles
-        assert result.failed == 0
-        assert len(service._cache) == 3
+        assert result.total_articles == 3, "Result must not be empty"
+        assert result.checked == 3, "Result must not be empty"
+        assert result.updated == 3, "Result must not be empty"
+        assert result.failed == 0, "Result must not be empty"
+        assert len(service._cache) == 3, "Collection must not be empty"
 
     @patch("src.services.crawler.zendesk_sync.scrub_pii")
     @patch.object(ZendeskKnowledgeSyncService, "_fetch")
@@ -367,9 +367,9 @@ class TestZendeskKnowledgeSyncService:
 
         result = service.check_and_pull(dry_run=False)
 
-        assert result.updated == 3
+        assert result.updated == 3, "Result must not be empty"
         # Verify scrubbing was called
-        assert mock_scrub.call_count == 3
+        assert mock_scrub.call_count == 3, "Count must be greater than zero"
 
     @patch("src.services.crawler.zendesk_sync.scrub_pii")
     @patch.object(ZendeskKnowledgeSyncService, "_fetch")
@@ -384,9 +384,9 @@ class TestZendeskKnowledgeSyncService:
 
         result = service.check_and_pull(dry_run=False)
 
-        assert result.total_articles == 3
-        assert result.updated == 2  # 2 successful
-        assert result.failed == 1  # 1 failed
+        assert result.total_articles == 3, "Result must not be empty"
+        assert result.updated == 2, "Result must not be empty"
+        assert result.failed == 1, "Result must not be empty"
 
     def test_check_and_pull_missing_manifest(self, temp_dir):
         """Test check_and_pull raises error when manifest missing."""
@@ -409,8 +409,8 @@ class TestZendeskKnowledgeSyncService:
         result = service.check_and_pull_incremental(dry_run=False)
 
         # Should perform full sync
-        assert result.total_articles == 3
-        assert result.updated == 3
+        assert result.total_articles == 3, "Result must not be empty"
+        assert result.updated == 3, "Result must not be empty"
 
     def test_export_json_dataset(self, service, temp_dir):
         """Test JSON dataset generation."""
@@ -424,14 +424,14 @@ class TestZendeskKnowledgeSyncService:
 
         dataset_path = service._export_json_dataset(source_dir)
 
-        assert dataset_path.exists()
+        assert dataset_path.exists(), "Data must not be empty"
         dataset = json.loads(dataset_path.read_text())
 
-        assert dataset["version"] == "1.0"
-        assert dataset["article_count"] == 2
-        assert len(dataset["articles"]) == 2
-        assert all("content" in article for article in dataset["articles"])
-        assert all("section" in article for article in dataset["articles"])
+        assert dataset["version"] == "1.0", "Data must not be empty"
+        assert dataset["article_count"] == 2, "Data must not be empty"
+        assert len(dataset["articles"]) == 2, "Collection must not be empty"
+        assert all("content" in article for article in dataset["articles"]), "Data must not be empty"
+        assert all("section" in article for article in dataset["articles"]), "Data must not be empty"
 
     def test_pipeline_to_codex_digest(self, service, temp_dir):
         """Test pipeline preparation to codex_digest."""
@@ -445,9 +445,9 @@ class TestZendeskKnowledgeSyncService:
 
         result = service.pipeline_to_codex_digest(source_dir)
 
-        assert result["files_found"] == 2
-        assert result["status"] == "ready_for_tokenization"
-        assert "source_dir" in result
+        assert result["files_found"] == 2, "Result must not be empty"
+        assert result["status"] == "ready_for_tokenization", "Result must not be empty"
+        assert "source_dir" in result, "Result must not be empty"
 
     def test_pipeline_no_source_dir(self, service):
         """Test pipeline raises error when no sync directory exists."""
@@ -491,21 +491,21 @@ class TestServiceIntegration:
         result = integration_service.check_and_pull(dry_run=False)
 
         # Verify results
-        assert result.total_articles == 1
-        assert result.updated == 1
-        assert result.failed == 0
+        assert result.total_articles == 1, "Result must not be empty"
+        assert result.updated == 1, "Result must not be empty"
+        assert result.failed == 0, "Result must not be empty"
 
         # Verify cache was updated
-        assert len(integration_service._cache) == 1
+        assert len(integration_service._cache) == 1, "Collection must not be empty"
         cached_meta = list(integration_service._cache.values())[0]
-        assert cached_meta.etag == '"integration-test"'
+        assert cached_meta.etag == '"integration-test"', "etag is not valid"
 
         # Verify cache was saved to disk
-        assert integration_service.api_index_path.exists()
+        assert integration_service.api_index_path.exists(), "Condition must be true"
 
         # Verify output files were created
         output_files = list(integration_service.output_root.rglob("*.html"))
-        assert len(output_files) == 1
+        assert len(output_files) == 1, "Output_files must not be empty"
 
 
 if __name__ == "__main__":

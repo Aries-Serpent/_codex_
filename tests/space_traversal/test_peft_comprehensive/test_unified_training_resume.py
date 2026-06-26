@@ -23,4 +23,4 @@ def test_resume_flag(tmp_path):
         resume_from=str(ckpt_dir),
     )
     result = run_unified_training(cfg)
-    assert result["resume_from"] == str(ckpt_dir)
+    assert result["resume_from"] == str(ckpt_dir), "Result must not be empty"

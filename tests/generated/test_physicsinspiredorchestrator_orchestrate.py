@@ -55,7 +55,7 @@ class TestPhysicsInspiredOrchestrator_orchestrate:
         result = orchestrator.orchestrate(state=state, possible_actions=possible_actions)
 
         # Assert
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     # ========== EDGE CASE TESTS ==========
 
@@ -66,10 +66,10 @@ class TestPhysicsInspiredOrchestrator_orchestrate:
         orchestrator = PhysicsInspiredOrchestrator()
         state = DecisionState()
         result = orchestrator.orchestrate(state=state, possible_actions=[])
-        assert result is not None
+        assert result is not None, "result must be initialized"
         assert isinstance(result, dict)
-        assert "action_taken" in result
-        assert result["action_taken"] == "wait"
+        assert "action_taken" in result, "Result must not be empty"
+        assert result["action_taken"] == "wait", "Result must not be empty"
 
     def test_orchestrate_all_actions_exceed_budget(self):
         """Test orchestrate when all actions exceed available resources — expects wait."""
@@ -98,11 +98,11 @@ class TestPhysicsInspiredOrchestrator_orchestrate:
             impact=0.8,
         )
         result = orchestrator.orchestrate(state=state, possible_actions=[a1, a2])
-        assert result is not None
+        assert result is not None, "result must be initialized"
         assert isinstance(result, dict)
-        assert "action_taken" in result
+        assert "action_taken" in result, "Result must not be empty"
         # No path should meet energy constraints
-        assert result["action_taken"] == "wait"
+        assert result["action_taken"] == "wait", "Result must not be empty"
 
     def test_orchestrate_ties_in_optimization_score(self):
         """Test orchestrate with tied optimization scores — must still return a deterministic decision."""
@@ -127,10 +127,10 @@ class TestPhysicsInspiredOrchestrator_orchestrate:
             action_type=ActionType.TEST, description="tie2", confidence=0.9, impact=0.9, energy=0.1
         )
         result = orchestrator.orchestrate(state=state, possible_actions=[a1, a2])
-        assert result is not None
-        assert "action_taken" in result
+        assert result is not None, "result must be initialized"
+        assert "action_taken" in result, "Result must not be empty"
         # Should pick one deterministically (first ranked)
-        assert result["action_taken"] in [a.value for a in ActionType]
+        assert result["action_taken"] in [a.value for a in ActionType], "Result must not be empty"
 
     def test_orchestrate_negative_energy_values(self):
         """Test orchestrate with negative energy values — negative energy still processed."""
@@ -151,10 +151,10 @@ class TestPhysicsInspiredOrchestrator_orchestrate:
             impact=0.5,
         )
         result = orchestrator.orchestrate(state=state, possible_actions=[a])
-        assert result is not None
+        assert result is not None, "result must be initialized"
         assert isinstance(result, dict)
-        assert "action_taken" in result
-        assert "timestamp" in result
+        assert "action_taken" in result, "Result must not be empty"
+        assert "timestamp" in result, "Result must not be empty"
 
     # ========== FAILURE SCENARIO TESTS ==========
 

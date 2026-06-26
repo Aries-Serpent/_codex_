@@ -94,12 +94,12 @@ class TestCodeLocation:
             category="testing",
         )
 
-        assert location.path == "src/example.py"
-        assert location.line_start == 10
-        assert location.line_end == 20
-        assert location.concept == "test fixture"
-        assert location.module == "pytest"
-        assert location.category == "testing"
+        assert location.path == "src/example.py", "path is not valid"
+        assert location.line_start == 10, "line_start is not valid"
+        assert location.line_end == 20, "line_end is not valid"
+        assert location.concept == "test fixture", "concept is not valid"
+        assert location.module == "pytest", "module is not valid"
+        assert location.category == "testing", "category is not valid"
 
     def test_code_location_serialization(self):
         """Test CodeLocation to_dict and from_dict."""
@@ -116,15 +116,15 @@ class TestCodeLocation:
 
         # Serialize
         data = location.to_dict()
-        assert data["path"] == "src/example.py"
-        assert data["concept"] == "test fixture"
-        assert data["metadata"]["importance"] == "high"
+        assert data["path"] == "src/example.py", "Data must not be empty"
+        assert data["concept"] == "test fixture", "Data must not be empty"
+        assert data["metadata"]["importance"] == "high", "Data must not be empty"
 
         # Deserialize
         restored = CodeLocation.from_dict(data)
-        assert restored.path == location.path
-        assert restored.concept == location.concept
-        assert restored.metadata == location.metadata
+        assert restored.path == location.path, "path is not valid"
+        assert restored.concept == location.concept, "concept is not valid"
+        assert restored.metadata == location.metadata, "Data must not be empty"
 
 
 class TestNavigationMap:
@@ -134,10 +134,10 @@ class TestNavigationMap:
         """Test creating a NavigationMap."""
         nav_map = NavigationMap(name="test_map", description="Test map")
 
-        assert nav_map.name == "test_map"
-        assert nav_map.description == "Test map"
-        assert len(nav_map.locations) == 0
-        assert len(nav_map.relationships) == 0
+        assert nav_map.name == "test_map", "name is not valid"
+        assert nav_map.description == "Test map", "description is not valid"
+        assert len(nav_map.locations) == 0, "Collection must not be empty"
+        assert len(nav_map.relationships) == 0, "Collection must not be empty"
 
     def test_add_location(self):
         """Test adding locations to a map."""
@@ -152,8 +152,8 @@ class TestNavigationMap:
         )
 
         nav_map.add_location(location)
-        assert len(nav_map.locations) == 1
-        assert nav_map.locations[0] == location
+        assert len(nav_map.locations) == 1, "Collection must not be empty"
+        assert nav_map.locations[0] == location, "Condition must be true"
 
     def test_add_relationship(self):
         """Test adding relationships between concepts."""
@@ -162,9 +162,9 @@ class TestNavigationMap:
         nav_map.add_relationship("concept_a", "concept_b")
         nav_map.add_relationship("concept_a", "concept_c")
 
-        assert "concept_a" in nav_map.relationships
-        assert "concept_b" in nav_map.relationships["concept_a"]
-        assert "concept_c" in nav_map.relationships["concept_a"]
+        assert "concept_a" in nav_map.relationships, "Condition must be true"
+        assert "concept_b" in nav_map.relationships["concept_a"], "Condition must be true"
+        assert "concept_c" in nav_map.relationships["concept_a"], "Condition must be true"
 
     def test_navigation_map_serialization(self):
         """Test NavigationMap to_dict and from_dict."""
@@ -183,15 +183,15 @@ class TestNavigationMap:
 
         # Serialize
         data = nav_map.to_dict()
-        assert data["name"] == "test"
-        assert len(data["locations"]) == 1
-        assert "concept_a" in data["relationships"]
+        assert data["name"] == "test", "Data must not be empty"
+        assert len(data["locations"]) == 1, "Collection must not be empty"
+        assert "concept_a" in data["relationships"], "Data must not be empty"
 
         # Deserialize
         restored = NavigationMap.from_dict(data)
-        assert restored.name == nav_map.name
-        assert len(restored.locations) == len(nav_map.locations)
-        assert restored.relationships == nav_map.relationships
+        assert restored.name == nav_map.name, "name is not valid"
+        assert len(restored.locations) == len(nav_map.locations), "Collection must not be empty"
+        assert restored.relationships == nav_map.relationships, "relationships is not valid"
 
 
 class TestTopologyManager:
@@ -199,8 +199,8 @@ class TestTopologyManager:
 
     def test_initialization(self, topology_manager, temp_repo):
         """Test TopologyManager initialization."""
-        assert topology_manager.repo_root == Path(temp_repo)
-        assert topology_manager.topology_dir.exists()
+        assert topology_manager.repo_root == Path(temp_repo), "repo_root is not valid"
+        assert topology_manager.topology_dir.exists(), "Condition must be true"
         assert isinstance(topology_manager.maps, dict)
 
     def test_create_map(self, topology_manager):
@@ -209,9 +209,9 @@ class TestTopologyManager:
             name="ci_cd", description="CI/CD infrastructure map", metadata={"version": "1.0.0"}
         )
 
-        assert nav_map.name == "ci_cd"
-        assert nav_map.description == "CI/CD infrastructure map"
-        assert "ci_cd" in topology_manager.maps
+        assert nav_map.name == "ci_cd", "name is not valid"
+        assert nav_map.description == "CI/CD infrastructure map", "description is not valid"
+        assert "ci_cd" in topology_manager.maps, "Condition must be true"
 
     def test_add_location(self, topology_manager):
         """Test adding a location to a map."""
@@ -227,9 +227,9 @@ class TestTopologyManager:
             category="testing",
         )
 
-        assert location.path == "src/test.py"
-        assert location.concept == "test fixture"
-        assert len(topology_manager.maps["test_map"].locations) == 1
+        assert location.path == "src/test.py", "path is not valid"
+        assert location.concept == "test fixture", "concept is not valid"
+        assert len(topology_manager.maps["test_map"].locations) == 1, "Collection must not be empty"
 
     def test_add_location_to_nonexistent_map(self, topology_manager):
         """Test adding location to non-existent map raises error."""
@@ -248,60 +248,60 @@ class TestTopologyManager:
         """Test finding locations by concept."""
         # Find pytest fixtures
         results = topology_manager.find("pytest fixtures")
-        assert len(results) == 1
-        assert results[0].concept == "pytest fixtures"
+        assert len(results) == 1, "Results must not be empty"
+        assert results[0].concept == "pytest fixtures", "Result must not be empty"
 
         # Find test setup
         results = topology_manager.find("test setup")
-        assert len(results) == 1
-        assert results[0].path == "tests/conftest.py"
+        assert len(results) == 1, "Results must not be empty"
+        assert results[0].path == "tests/conftest.py", "Result must not be empty"
 
     def test_find_with_category_filter(self, topology_manager, sample_map):
         """Test finding with category filter."""
         results = topology_manager.find("test", category="testing")
-        assert len(results) > 0
-        assert all(loc.category == "testing" for loc in results)
+        assert len(results) > 0, "Results must not be empty"
+        assert all(loc.category == "testing" for loc in results), "Result must not be empty"
 
     def test_find_with_module_filter(self, topology_manager, sample_map):
         """Test finding with module filter."""
         results = topology_manager.find("test", module="pytest")
-        assert len(results) == 2
-        assert all(loc.module == "pytest" for loc in results)
+        assert len(results) == 2, "Results must not be empty"
+        assert all(loc.module == "pytest" for loc in results), "Result must not be empty"
 
     def test_find_with_limit(self, topology_manager, sample_map):
         """Test finding with result limit."""
         results = topology_manager.find("test", limit=1)
-        assert len(results) == 1
+        assert len(results) == 1, "Results must not be empty"
 
     def test_find_optimal_path(self, topology_manager, sample_map):
         """Test finding optimal navigation path."""
         path = topology_manager.find_optimal_path("pytest fixtures", "mock objects")
 
-        assert path is not None
-        assert path[0] == "pytest fixtures"
-        assert path[-1] == "mock objects"
-        assert "test setup" in path
+        assert path is not None, "path must be initialized"
+        assert path[0] == "pytest fixtures", "Condition must be true"
+        assert path[-1] == "mock objects", "Object must be initialized"
+        assert "test setup" in path, "Condition must be true"
 
     def test_find_optimal_path_no_connection(self, topology_manager, sample_map):
         """Test finding path when no connection exists."""
         path = topology_manager.find_optimal_path("pytest fixtures", "nonexistent concept")
 
-        assert path is None
+        assert path is None, "path is not valid"
 
     def test_discover_related(self, topology_manager, sample_map):
         """Test discovering related concepts."""
         related = topology_manager.discover_related("pytest fixtures", max_depth=2)
 
-        assert len(related) > 0
+        assert len(related) > 0, "Related must not be empty"
         # Should find test setup (distance 1) and mock objects (distance 2)
         concepts = [concept for concept, _ in related]
-        assert "test setup" in concepts
-        assert "mock objects" in concepts
+        assert "test setup" in concepts, "Condition must be true"
+        assert "mock objects" in concepts, "Object must be initialized"
 
     def test_discover_related_with_limit(self, topology_manager, sample_map):
         """Test discovering related concepts with limit."""
         related = topology_manager.discover_related("pytest fixtures", limit=1)
-        assert len(related) == 1
+        assert len(related) == 1, "Related must not be empty"
 
     def test_save_and_load_maps(self, topology_manager, sample_map, temp_repo):
         """Test saving and loading topology maps."""
@@ -310,32 +310,32 @@ class TestTopologyManager:
 
         # Verify file was created
         map_file = Path(temp_repo) / ".codex" / "topology" / "test_map.json"
-        assert map_file.exists()
+        assert map_file.exists(), "Condition must be true"
 
         # Create new manager and verify it loads the map
         new_manager = TopologyManager(repo_root=temp_repo)
-        assert "test_map" in new_manager.maps
-        assert len(new_manager.maps["test_map"].locations) == 3
+        assert "test_map" in new_manager.maps, "Condition must be true"
+        assert len(new_manager.maps["test_map"].locations) == 3, "Collection must not be empty"
 
     def test_get_maps(self, topology_manager, sample_map):
         """Test getting all maps."""
         maps = topology_manager.get_maps()
-        assert "test_map" in maps
+        assert "test_map" in maps, "Condition must be true"
         assert isinstance(maps["test_map"], NavigationMap)
 
     def test_get_aais_contribution(self, topology_manager, sample_map):
         """Test calculating AAIS contribution."""
         contribution = topology_manager.get_aais_contribution()
 
-        assert "discovery_navigation" in contribution
-        assert "total_locations" in contribution
-        assert "total_relationships" in contribution
-        assert "maps_count" in contribution
+        assert "discovery_navigation" in contribution, "Condition must be true"
+        assert "total_locations" in contribution, "Condition must be true"
+        assert "total_relationships" in contribution, "Condition must be true"
+        assert "maps_count" in contribution, "Count must be greater than zero"
 
-        assert contribution["total_locations"] == 3
-        assert contribution["total_relationships"] == 2
-        assert contribution["maps_count"] == 1
-        assert contribution["discovery_navigation"] > 0
+        assert contribution["total_locations"] == 3, "Condition must be true"
+        assert contribution["total_relationships"] == 2, "Condition must be true"
+        assert contribution["maps_count"] == 1, "Count must be greater than zero"
+        assert contribution["discovery_navigation"] > 0, "Value must be greater than zero"
 
 
 class TestTopologyManagerIntegration:
@@ -386,8 +386,8 @@ class TestTopologyManagerIntegration:
         # Find optimal path
         path = topology_manager.find_optimal_path("CI test failure", "test fix patterns")
 
-        assert path is not None
-        assert len(path) == 3
+        assert path is not None, "path must be initialized"
+        assert len(path) == 3, "Path must not be empty"
         assert path == ["CI test failure", "test execution", "test fix patterns"]
 
     def test_concept_discovery_scenario(self, topology_manager):
@@ -426,8 +426,8 @@ class TestTopologyManagerIntegration:
 
         # Should find mock objects and test data builders at distance 1
         # Should find assertion helpers and test parametrization at distance 2
-        assert len(related) >= 4
+        assert len(related) >= 4, "Related must not be empty"
 
         concepts_found = {concept for concept, _ in related}
-        assert "mock objects" in concepts_found
-        assert "test data builders" in concepts_found
+        assert "mock objects" in concepts_found, "Object must be initialized"
+        assert "test data builders" in concepts_found, "Data must not be empty"

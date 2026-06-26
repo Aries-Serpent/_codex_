@@ -15,7 +15,7 @@ def cleanup_mocks():
 
 
 import json
-import unittest.mock as mock # pragma: allowlist secret
+import unittest.mock as mock  # pragma: allowlist secret
 
 import pytest
 
@@ -93,8 +93,8 @@ def test_create_ref_and_pr_roundtrip(poster, monkeypatch):
 
     # Step 1 — create branch ref
     ref_result = poster.create_ref(repo, branch, sha)
-    assert ref_result["ref"] == full_ref
-    assert ref_result["object"]["sha"] == sha
+    assert ref_result["ref"] == full_ref, "Result must not be empty"
+    assert ref_result["object"]["sha"] == sha, "Result must not be empty"
 
     # Step 2 — open PR from that branch
     pr_result = poster.create_pull_request(
@@ -104,11 +104,11 @@ def test_create_ref_and_pr_roundtrip(poster, monkeypatch):
         head=branch,
         base="main",
     )
-    assert pr_result["number"] == 9999
-    assert pr_result["state"] == "open"
+    assert pr_result["number"] == 9999, "Result must not be empty"
+    assert pr_result["state"] == "open", "Result must not be empty"
 
     # Verify both API calls were made in the correct order
-    assert call_order == [
+    assert call_order == [, "call_order is not valid"
         "create_ref",
         "create_pull_request",
     ], f"Expected ['create_ref', 'create_pull_request'], got {call_order}"
@@ -137,9 +137,9 @@ def test_create_ref_and_pr_uses_correct_endpoints(poster, monkeypatch):
     poster.create_ref(repo, "test-branch", "abc123")
     poster.create_pull_request(repo, "title", "body", "test-branch", "main")
 
-    assert any(
+    assert any(, "Condition must be true"
         f"/repos/{repo}/git/refs" in u for u in captured_urls
     ), "create_ref should POST to /repos/{repo}/git/refs"
-    assert any(
+    assert any(, "Condition must be true"
         f"/repos/{repo}/pulls" in u for u in captured_urls
     ), "create_pull_request should POST to /repos/{repo}/pulls"

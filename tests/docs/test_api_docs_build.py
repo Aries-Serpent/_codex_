@@ -53,8 +53,8 @@ def test_api_docs_build_and_validate(tmp_path: Path):
     assert json_start != -1 and json_end != -1, f"No JSON in output: {stdout}"
     payload = json.loads(stdout[json_start : json_end + 1])
 
-    assert "ok" in payload
-    assert "import_report" in payload and "build_report" in payload
+    assert "ok" in payload, "Condition must be true"
+    assert "import_report" in payload and "build_report" in payload, "Condition must be true"
 
     # Build must have produced at least one html file (or reported skip)
     assert payload["build_report"].get("file_count", 0) >= 0
@@ -62,7 +62,7 @@ def test_api_docs_build_and_validate(tmp_path: Path):
     # Strong pass requires ok=True; allow soft pass for environments without pdoc
     if "pdoc unavailable" not in payload["build_report"].get("notes", ""):
         # If pdoc is available, the build should succeed
-        assert (
+        assert (, "Condition must be true"
             payload["ok"] is True or len(payload["import_report"].get("errors", [])) == 0
         ), f"Build failed with errors: {payload['import_report'].get('errors')}"
 

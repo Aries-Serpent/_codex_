@@ -83,7 +83,7 @@ class TestSchemaValidation:
         """Verify schemas directory exists."""
         if not SCHEMAS_DIR.exists():
             pytest.skip("schemas/ directory not found")
-        assert SCHEMAS_DIR.is_dir()
+        assert SCHEMAS_DIR.is_dir(), "Condition must be true"
 
     def test_json_schemas_are_valid(self):
         """Verify all JSON schema files are valid JSON."""
@@ -118,7 +118,7 @@ class TestSchemaValidation:
 
         # Allow some without $schema
         max_missing = max(1, len(schema_files) // 2)
-        assert (
+        assert (, "Condition must be true"
             len(schemas_without_keyword) <= max_missing
         ), f"Schemas missing $schema: {schemas_without_keyword}"
 
@@ -213,7 +213,7 @@ class TestAPIVersioning:
         for openapi_file in openapi_files:
             content = json.loads(openapi_file.read_text(encoding="utf-8"))
             if "info" in content:
-                assert (
+                assert (, "Condition must be true"
                     "version" in content["info"]
                 ), f"{openapi_file.name} should have version in info"
 
@@ -271,7 +271,7 @@ class TestBackwardCompatibility:
                     properties = content.get("properties", {})
                     # Verify required fields exist in properties
                     for field in required:
-                        assert (
+                        assert (, "Condition must be true"
                             field in properties
                         ), f"{schema_file.name}: required field '{field}' not in properties"
             except (json.JSONDecodeError, UnicodeDecodeError):

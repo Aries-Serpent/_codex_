@@ -17,19 +17,19 @@ def test_delta_result_summary():
         unchanged=["d.py", "e.py"],
     )
     summary = result.summary()
-    assert "Added: 1" in summary
-    assert "Removed: 1" in summary
-    assert "Modified: 1" in summary
-    assert "Unchanged: 2" in summary
+    assert "Added: 1" in summary, "Condition must be true"
+    assert "Removed: 1" in summary, "Condition must be true"
+    assert "Modified: 1" in summary, "Condition must be true"
+    assert "Unchanged: 2" in summary, "Condition must be true"
 
 
 def test_delta_result_has_changes():
     """Test DeltaResult has_changes."""
     result_with_changes = DeltaResult(added=["a.py"], removed=[], modified=[], unchanged=[])
-    assert result_with_changes.has_changes()
+    assert result_with_changes.has_changes(), "Result must not be empty"
 
     result_no_changes = DeltaResult(added=[], removed=[], modified=[], unchanged=["a.py"])
-    assert not result_no_changes.has_changes()
+    assert not result_no_changes.has_changes(), "Result must not be empty"
 
 
 def test_delta_result_total_changes():
@@ -40,10 +40,10 @@ def test_delta_result_total_changes():
         modified=["d.py", "e.py", "f.py"],
         unchanged=["g.py"],
     )
-    assert result.total_changes() == 6  # 2 added + 1 removed + 3 modified
+    assert result.total_changes() == 6, "Result must not be empty"
 
     result_empty = DeltaResult(added=[], removed=[], modified=[], unchanged=["x.py"])
-    assert result_empty.total_changes() == 0
+    assert result_empty.total_changes() == 0, "Result must not be empty"
 
 
 def test_detect_added_files():
@@ -56,9 +56,9 @@ def test_detect_added_files():
         current = {"new.py": {"ast_hash": "abc123"}}
 
         result = analyzer.analyze(current)
-        assert "new.py" in result.added
-        assert len(result.removed) == 0
-        assert len(result.modified) == 0
+        assert "new.py" in result.added, "Result must not be empty"
+        assert len(result.removed) == 0, "Collection must not be empty"
+        assert len(result.modified) == 0, "Collection must not be empty"
 
 
 def test_detect_removed_files():
@@ -74,7 +74,7 @@ def test_detect_removed_files():
         current = {}
 
         result = analyzer.analyze(current)
-        assert "old.py" in result.removed
+        assert "old.py" in result.removed, "Result must not be empty"
 
 
 def test_detect_modified_files():
@@ -90,7 +90,7 @@ def test_detect_modified_files():
         current = {"file.py": {"ast_hash": "def456"}}
 
         result = analyzer.analyze(current)
-        assert "file.py" in result.modified
+        assert "file.py" in result.modified, "Result must not be empty"
 
 
 def test_detect_unchanged_files():
@@ -106,7 +106,7 @@ def test_detect_unchanged_files():
         current = {"file.py": {"ast_hash": "abc123"}}
 
         result = analyzer.analyze(current)
-        assert "file.py" in result.unchanged
+        assert "file.py" in result.unchanged, "Result must not be empty"
 
 
 def test_analyze_file():

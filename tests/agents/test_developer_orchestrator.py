@@ -22,7 +22,7 @@ class TestRequirementVariable:
             required=True,
             current_value="some_value",
         )
-        assert var.is_satisfied() is True
+        assert var.is_satisfied() is True, "Condition must be true"
 
     def test_is_satisfied_without_value_required(self):
         """Test is_satisfied returns False when required and no value."""
@@ -35,7 +35,7 @@ class TestRequirementVariable:
             required=True,
             current_value=None,
         )
-        assert var.is_satisfied() is False
+        assert var.is_satisfied() is False, "Condition must be true"
 
     def test_is_satisfied_without_value_optional(self):
         """Test is_satisfied returns True when optional and no value."""
@@ -48,7 +48,7 @@ class TestRequirementVariable:
             required=False,
             current_value=None,
         )
-        assert var.is_satisfied() is True
+        assert var.is_satisfied() is True, "Condition must be true"
 
     def test_suggest_from_chaos_no_physics(self):
         """Test suggest_from_chaos returns suggested_values when no physics."""
@@ -68,10 +68,10 @@ class TestRequirementVariable:
         from agents.developer_orchestrator import RequirementVariable
 
         var = RequirementVariable(name="test", description="Test", variable_type="str")
-        assert var.required is True
-        assert var.default_value is None
-        assert var.suggested_values == []
-        assert var.current_value is None
+        assert var.required is True, "required is not valid"
+        assert var.default_value is None, "Value must be initialized"
+        assert var.suggested_values == [], "Value must be initialized"
+        assert var.current_value is None, "Value must be initialized"
 
 
 class TestCodeComponent:
@@ -95,14 +95,14 @@ class TestCodeComponent:
 
         result = component.to_dict()
 
-        assert result["component_id"] == "comp_1"
-        assert result["name"] == "TestComponent"
-        assert result["type"] == "module"
-        assert result["description"] == "A test component"
+        assert result["component_id"] == "comp_1", "Result must not be empty"
+        assert result["name"] == "TestComponent", "Result must not be empty"
+        assert result["type"] == "module", "Result must not be empty"
+        assert result["description"] == "A test component", "Result must not be empty"
         assert result["dependencies"] == ["dep1", "dep2"]
-        assert result["priority"] == 0.8
-        assert result["complexity"] == 1.5
-        assert result["status"] == "in_progress"
+        assert result["priority"] == 0.8, "Result must not be empty"
+        assert result["complexity"] == 1.5, "Result must not be empty"
+        assert result["status"] == "in_progress", "Result must not be empty"
         # Note: 'code' is not included in to_dict
 
     def test_default_values(self):
@@ -116,11 +116,11 @@ class TestCodeComponent:
             description="Test",
         )
 
-        assert component.dependencies == []
-        assert component.priority == 0.5
-        assert component.complexity == 1.0
-        assert component.implementation_status == "pending"
-        assert component.code == ""
+        assert component.dependencies == [], "dependencies is not valid"
+        assert component.priority == 0.5, "priority is not valid"
+        assert component.complexity == 1.0, "complexity is not valid"
+        assert component.implementation_status == "pending", "implementation_status is not valid"
+        assert component.code == "", "code is not valid"
 
 
 class TestAppType:
@@ -130,18 +130,18 @@ class TestAppType:
         """Test AppType enum values."""
         from agents.developer_orchestrator import AppType
 
-        assert AppType.PYTHON_CONSOLE.value == "python_console"
-        assert AppType.PYTHON_CLI.value == "python_cli"
-        assert AppType.PYTHON_API.value == "python_api"
-        assert AppType.PYTHON_WEB.value == "python_web"
-        assert AppType.PYTHON_LIBRARY.value == "python_library"
-        assert AppType.PYTHON_SCRIPT.value == "python_script"
+        assert AppType.PYTHON_CONSOLE.value == "python_console", "Value must be initialized"
+        assert AppType.PYTHON_CLI.value == "python_cli", "Value must be initialized"
+        assert AppType.PYTHON_API.value == "python_api", "Value must be initialized"
+        assert AppType.PYTHON_WEB.value == "python_web", "Value must be initialized"
+        assert AppType.PYTHON_LIBRARY.value == "python_library", "Value must be initialized"
+        assert AppType.PYTHON_SCRIPT.value == "python_script", "Value must be initialized"
 
     def test_app_type_from_string(self):
         """Test creating AppType from string."""
         from agents.developer_orchestrator import AppType
 
-        assert AppType("python_cli") == AppType.PYTHON_CLI
+        assert AppType("python_cli") == AppType.PYTHON_CLI, "Condition must be true"
 
 
 class TestDevelopmentPhase:
@@ -151,14 +151,14 @@ class TestDevelopmentPhase:
         """Test DevelopmentPhase enum values."""
         from agents.developer_orchestrator import DevelopmentPhase
 
-        assert DevelopmentPhase.REQUIREMENTS.value == "requirements"
-        assert DevelopmentPhase.DESIGN.value == "design"
-        assert DevelopmentPhase.ARCHITECTURE.value == "architecture"
-        assert DevelopmentPhase.IMPLEMENTATION.value == "implementation"
-        assert DevelopmentPhase.TESTING.value == "testing"
-        assert DevelopmentPhase.OPTIMIZATION.value == "optimization"
-        assert DevelopmentPhase.DEPLOYMENT.value == "deployment"
-        assert DevelopmentPhase.MAINTENANCE.value == "maintenance"
+        assert DevelopmentPhase.REQUIREMENTS.value == "requirements", "Value must be initialized"
+        assert DevelopmentPhase.DESIGN.value == "design", "Value must be initialized"
+        assert DevelopmentPhase.ARCHITECTURE.value == "architecture", "Value must be initialized"
+        assert DevelopmentPhase.IMPLEMENTATION.value == "implementation", "Value must be initialized"
+        assert DevelopmentPhase.TESTING.value == "testing", "Value must be initialized"
+        assert DevelopmentPhase.OPTIMIZATION.value == "optimization", "Value must be initialized"
+        assert DevelopmentPhase.DEPLOYMENT.value == "deployment", "Value must be initialized"
+        assert DevelopmentPhase.MAINTENANCE.value == "maintenance", "Value must be initialized"
 
 
 class TestPhysicsGuidedDeveloperOrchestrator:
@@ -174,13 +174,13 @@ class TestPhysicsGuidedDeveloperOrchestrator:
 
         orchestrator = PhysicsGuidedDeveloperOrchestrator()
 
-        assert orchestrator.app_type is None
-        assert orchestrator.required_variables == {}
-        assert orchestrator.components == []
-        assert orchestrator.current_phase == DevelopmentPhase.REQUIREMENTS
-        assert orchestrator.session_id == "dev_orchestrator"
-        assert orchestrator.development_history == []
-        assert orchestrator.suggestions_cache == {}
+        assert orchestrator.app_type is None, "app_type is not valid"
+        assert orchestrator.required_variables == {}, "required_variables is not valid"
+        assert orchestrator.components == [], "components is not valid"
+        assert orchestrator.current_phase == DevelopmentPhase.REQUIREMENTS, "current_phase is not valid"
+        assert orchestrator.session_id == "dev_orchestrator", "session_id is not valid"
+        assert orchestrator.development_history == [], "development_history is not valid"
+        assert orchestrator.suggestions_cache == {}, "suggestions_cache is not valid"
 
     @patch("agents.developer_orchestrator.ADVANCED_PHYSICS", False)
     def test_init_with_session_id(self):
@@ -189,7 +189,7 @@ class TestPhysicsGuidedDeveloperOrchestrator:
 
         orchestrator = PhysicsGuidedDeveloperOrchestrator(session_id="custom_session")
 
-        assert orchestrator.session_id == "custom_session"
+        assert orchestrator.session_id == "custom_session", "session_id is not valid"
 
     @patch("agents.developer_orchestrator.ADVANCED_PHYSICS", False)
     @patch("agents.developer_orchestrator.log_message")
@@ -220,10 +220,10 @@ class TestPhysicsGuidedDeveloperOrchestrator:
 
         result = orchestrator.analyze_user_requirements(requirements)
 
-        assert result["app_type"] == "python_console"
-        assert "app_name" in result["provided_variables"]
-        assert "description" in result["provided_variables"]
-        assert orchestrator.app_type == AppType.PYTHON_CONSOLE
+        assert result["app_type"] == "python_console", "Result must not be empty"
+        assert "app_name" in result["provided_variables"], "Result must not be empty"
+        assert "description" in result["provided_variables"], "Result must not be empty"
+        assert orchestrator.app_type == AppType.PYTHON_CONSOLE, "app_type is not valid"
 
     @patch("agents.developer_orchestrator.ADVANCED_PHYSICS", False)
     @patch("agents.developer_orchestrator.log_message")
@@ -239,8 +239,8 @@ class TestPhysicsGuidedDeveloperOrchestrator:
 
         result = orchestrator.analyze_user_requirements(requirements)
 
-        assert result["app_type"] == "python_console"
-        assert orchestrator.app_type == AppType.PYTHON_CONSOLE
+        assert result["app_type"] == "python_console", "Result must not be empty"
+        assert orchestrator.app_type == AppType.PYTHON_CONSOLE, "app_type is not valid"
 
     @patch("agents.developer_orchestrator.ADVANCED_PHYSICS", False)
     @patch("agents.developer_orchestrator.log_message")
@@ -256,7 +256,7 @@ class TestPhysicsGuidedDeveloperOrchestrator:
 
         orchestrator.analyze_user_requirements(requirements)
 
-        assert orchestrator.app_type == AppType.PYTHON_CONSOLE
+        assert orchestrator.app_type == AppType.PYTHON_CONSOLE, "app_type is not valid"
 
     @patch("agents.developer_orchestrator.ADVANCED_PHYSICS", False)
     @patch("agents.developer_orchestrator.log_message")
@@ -277,8 +277,8 @@ class TestPhysicsGuidedDeveloperOrchestrator:
         result = orchestrator.analyze_user_requirements(requirements)
 
         # Completeness should be 1.0 when all variables are provided
-        assert result["completeness"] >= 0.0
-        assert result["completeness"] <= 1.0
+        assert result["completeness"] >= 0.0, "Value must be greater than zero"
+        assert result["completeness"] <= 1.0, "Result must not be empty"
 
     @patch("agents.developer_orchestrator.ADVANCED_PHYSICS", False)
     def test_define_required_variables_console(self):
@@ -292,9 +292,9 @@ class TestPhysicsGuidedDeveloperOrchestrator:
         orchestrator.app_type = AppType.PYTHON_CONSOLE
         orchestrator._define_required_variables()
 
-        assert "app_name" in orchestrator.required_variables
-        assert "description" in orchestrator.required_variables
-        assert "python_version" in orchestrator.required_variables
+        assert "app_name" in orchestrator.required_variables, "Condition must be true"
+        assert "description" in orchestrator.required_variables, "Condition must be true"
+        assert "python_version" in orchestrator.required_variables, "Condition must be true"
 
     @patch("agents.developer_orchestrator.ADVANCED_PHYSICS", False)
     def test_define_required_variables_cli(self):
@@ -308,14 +308,14 @@ class TestPhysicsGuidedDeveloperOrchestrator:
         orchestrator.app_type = AppType.PYTHON_CLI
         orchestrator._define_required_variables()
 
-        assert "cli_framework" in orchestrator.required_variables
-        assert "commands" in orchestrator.required_variables
+        assert "cli_framework" in orchestrator.required_variables, "Condition must be true"
+        assert "commands" in orchestrator.required_variables, "Condition must be true"
 
         # Check CLI-specific defaults
         cli_framework = orchestrator.required_variables["cli_framework"]
-        assert cli_framework.default_value == "argparse"
-        assert "click" in cli_framework.suggested_values
-        assert "typer" in cli_framework.suggested_values
+        assert cli_framework.default_value == "argparse", "Value must be initialized"
+        assert "click" in cli_framework.suggested_values, "Value must be initialized"
+        assert "typer" in cli_framework.suggested_values, "Value must be initialized"
 
     @patch("agents.developer_orchestrator.ADVANCED_PHYSICS", False)
     def test_define_required_variables_api(self):
@@ -329,13 +329,13 @@ class TestPhysicsGuidedDeveloperOrchestrator:
         orchestrator.app_type = AppType.PYTHON_API
         orchestrator._define_required_variables()
 
-        assert "api_framework" in orchestrator.required_variables
-        assert "endpoints" in orchestrator.required_variables
-        assert "authentication" in orchestrator.required_variables
+        assert "api_framework" in orchestrator.required_variables, "Condition must be true"
+        assert "endpoints" in orchestrator.required_variables, "Condition must be true"
+        assert "authentication" in orchestrator.required_variables, "Condition must be true"
 
         # Check API-specific defaults
         api_framework = orchestrator.required_variables["api_framework"]
-        assert api_framework.default_value == "fastapi"
+        assert api_framework.default_value == "fastapi", "Value must be initialized"
 
     @patch("agents.developer_orchestrator.ADVANCED_PHYSICS", False)
     def test_define_required_variables_web(self):
@@ -349,8 +349,8 @@ class TestPhysicsGuidedDeveloperOrchestrator:
         orchestrator.app_type = AppType.PYTHON_WEB
         orchestrator._define_required_variables()
 
-        assert "web_framework" in orchestrator.required_variables
-        assert "routes" in orchestrator.required_variables
+        assert "web_framework" in orchestrator.required_variables, "Condition must be true"
+        assert "routes" in orchestrator.required_variables, "Condition must be true"
 
     @patch("agents.developer_orchestrator.ADVANCED_PHYSICS", False)
     def test_define_required_variables_library(self):
@@ -364,8 +364,8 @@ class TestPhysicsGuidedDeveloperOrchestrator:
         orchestrator.app_type = AppType.PYTHON_LIBRARY
         orchestrator._define_required_variables()
 
-        assert "modules" in orchestrator.required_variables
-        assert "public_api" in orchestrator.required_variables
+        assert "modules" in orchestrator.required_variables, "Condition must be true"
+        assert "public_api" in orchestrator.required_variables, "Condition must be true"
 
 
 class TestModuleImports:

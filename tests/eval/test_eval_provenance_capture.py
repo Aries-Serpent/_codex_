@@ -57,23 +57,23 @@ def test_evaluation_captures_git_commit_in_provenance(
 
     # Check that provenance was exported
     provenance_dir = output_dir / "provenance"
-    assert provenance_dir.exists()
+    assert provenance_dir.exists(), "Condition must be true"
 
     env_json = provenance_dir / "environment.json"
-    assert env_json.exists()
+    assert env_json.exists(), "Condition must be true"
 
     env_data = json.loads(env_json.read_text())
-    assert env_data["git_commit"] == fake_commit
+    assert env_data["git_commit"] == fake_commit, "Data must not be empty"
 
     # Check concise NDJSON summary
     env_ndjson = provenance_dir / "environment.ndjson"
-    assert env_ndjson.exists()
+    assert env_ndjson.exists(), "Condition must be true"
 
     ndjson_data = json.loads(env_ndjson.read_text().strip())
-    assert ndjson_data["git_commit"] == fake_commit
-    assert ndjson_data["seed"] == 42
-    assert ndjson_data["command"] == "evaluate"
-    assert "dataset_path" in ndjson_data
+    assert ndjson_data["git_commit"] == fake_commit, "Data must not be empty"
+    assert ndjson_data["seed"] == 42, "Data must not be empty"
+    assert ndjson_data["command"] == "evaluate", "Data must not be empty"
+    assert "dataset_path" in ndjson_data, "Data must not be empty"
 
 
 def test_evaluation_seed_is_deterministic(sample_eval_dataset: Path, tmp_path: Path) -> None:
@@ -96,5 +96,5 @@ def test_evaluation_seed_is_deterministic(sample_eval_dataset: Path, tmp_path: P
     result2 = run_evaluation(cfg)
 
     # Results should be identical
-    assert result1["metrics"] == result2["metrics"]
-    assert result1["num_records"] == result2["num_records"]
+    assert result1["metrics"] == result2["metrics"], "Result must not be empty"
+    assert result1["num_records"] == result2["num_records"], "Result must not be empty"

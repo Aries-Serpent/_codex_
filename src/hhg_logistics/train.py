@@ -34,8 +34,8 @@ try:
     to_absolute_path = hydra.utils.to_absolute_path
 except (ImportError, AttributeError) as e:
     error_type = type(e).__name__
-    logger.debug(f"ImportError: <ERROR_TYPE>")
-    logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
+    logger.debug("ImportError: <ERROR_TYPE>")
+    logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
     try:
         import config_legacy as hydra
 

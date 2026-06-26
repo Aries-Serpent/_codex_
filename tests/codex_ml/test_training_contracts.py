@@ -27,8 +27,8 @@ class _StrictModel:
 def test_train_epoch_uses_real_batch_for_validation():
     dataloader = [{"input_ids": [1, 2], "attention_mask": [1, 1]}]
     result = train_epoch(_BatchAwareModel(), dataloader, state={"epoch": 0})
-    assert result["loss_mean"] == 1.0
-    assert result["loss_last"] == 1.0
+    assert result["loss_mean"] == 1.0, "Result must not be empty"
+    assert result["loss_last"] == 1.0, "Result must not be empty"
 
 
 def test_train_epoch_contract_rejects_invalid_batch():

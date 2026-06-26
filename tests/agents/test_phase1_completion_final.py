@@ -21,7 +21,7 @@ class TestPhase1Completion_Table1_Eq1:
         from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orchestrator = PhysicsInspiredOrchestrator()
-        assert orchestrator is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
 
     def test_decision_state_initialization(self):
         """Test DecisionState initialization."""
@@ -30,24 +30,24 @@ class TestPhase1Completion_Table1_Eq1:
         state = DecisionState(
             current_position="start", goal_position="end", context={"test": "value"}
         )
-        assert state is not None
-        assert state.context == {"test": "value"}
+        assert state is not None, "state must be initialized"
+        assert state.context == {"test": "value"}, "Value must be initialized"
 
     def test_force_vector_initialization(self):
         """Test ForceVector component initialization."""
         from agents.physics_orchestrator import ForceVector
 
         force = ForceVector(name="test_force", magnitude=1.0, direction=0.0)
-        assert force is not None
-        assert force.magnitude == 1.0
+        assert force is not None, "force must be initialized"
+        assert force.magnitude == 1.0, "magnitude is not valid"
 
     def test_action_path_initialization(self):
         """Test ActionPath initialization."""
         from agents.physics_orchestrator import ActionPath, ActionType
 
         path = ActionPath(action_type=ActionType.TEST, description="Test path")
-        assert path is not None
-        assert path.description == "Test path"
+        assert path is not None, "path must be initialized"
+        assert path.description == "Test path", "description is not valid"
 
 
 class TestPhase1Completion_Table4_Eq2:
@@ -59,11 +59,11 @@ class TestPhase1Completion_Table4_Eq2:
 
         # Test all enum values exist
         action_types = list(ActionType)
-        assert len(action_types) > 0
+        assert len(action_types) > 0, "Action_types must not be empty"
 
         # Validate each enum
         for action_type in action_types:
-            assert action_type.name is not None
+            assert action_type.name is not None, "name must be initialized"
             assert isinstance(action_type.name, str)
 
     def test_decision_mode_enum(self):
@@ -72,7 +72,7 @@ class TestPhase1Completion_Table4_Eq2:
             from agents.physics_orchestrator import DecisionMode
 
             modes = list(DecisionMode)
-            assert len(modes) > 0
+            assert len(modes) > 0, "Modes must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("DecisionMode enum not found")
 
@@ -82,7 +82,7 @@ class TestPhase1Completion_Table4_Eq2:
             from agents.quantum_game_theory import StrategyType
 
             strategies = list(StrategyType)
-            assert len(strategies) > 0
+            assert len(strategies) > 0, "Strategies must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("StrategyType enum not found")
 
@@ -108,9 +108,9 @@ class TestPhase1Completion_Table4_Eq3:
         )
 
         # Test properties
-        assert state.context is not None
-        assert state.current_position is not None
-        assert state.goal_position is not None
+        assert state.context is not None, "context must be initialized"
+        assert state.current_position is not None, "current_position must be initialized"
+        assert state.goal_position is not None, "goal_position must be initialized"
 
     def test_quantum_game_engine_properties(self):
         """Test QuantumInspiredGameEngine properties."""
@@ -118,7 +118,7 @@ class TestPhase1Completion_Table4_Eq3:
             from agents.quantum_game_theory import QuantumInspiredGameEngine
 
             engine = QuantumInspiredGameEngine()
-            assert engine is not None
+            assert engine is not None, "engine must be initialized"
         except (ImportError, TypeError) as e:
             pytest.skip(f"QuantumInspiredGameEngine init failed: {e}")
 
@@ -131,7 +131,7 @@ class TestPhase1Completion_Table1_Eq49:
         from agents.mental_mapping import MentalMapping
 
         mapping = MentalMapping()
-        assert mapping is not None
+        assert mapping is not None, "mapping must be initialized"
 
     def test_mental_mapping_add_node(self):
         """Test basic node addition."""
@@ -149,7 +149,7 @@ class TestPhase1Completion_Table1_Eq49:
             )
             mapping.add_node(node)
             # If method exists and works, assert success
-            assert True
+            assert True, "True is not valid"
         except (AttributeError, TypeError):
             # Method doesn't exist or has different signature
             pytest.skip("add_node method not available")
@@ -159,7 +159,7 @@ class TestPhase1Completion_Table1_Eq49:
         from agents.workflow_navigator import WorkflowNavigator
 
         navigator = WorkflowNavigator()
-        assert navigator is not None
+        assert navigator is not None, "navigator must be initialized"
 
         # Test basic attribute access
         assert hasattr(navigator, "__dict__")
@@ -169,7 +169,7 @@ class TestPhase1Completion_Table1_Eq49:
         from agents.self_healing import SelfHealingEngine
 
         system = SelfHealingEngine()
-        assert system is not None
+        assert system is not None, "system must be initialized"
 
 
 class TestPhase1Completion_CrossModule:
@@ -185,11 +185,11 @@ class TestPhase1Completion_CrossModule:
             workflow_navigator,
         )
 
-        assert physics_orchestrator is not None
-        assert quantum_game_theory is not None
-        assert mental_mapping is not None
-        assert workflow_navigator is not None
-        assert self_healing is not None
+        assert physics_orchestrator is not None, "physics_orchestrator must be initialized"
+        assert quantum_game_theory is not None, "quantum_game_theory must be initialized"
+        assert mental_mapping is not None, "mental_mapping must be initialized"
+        assert workflow_navigator is not None, "workflow_navigator must be initialized"
+        assert self_healing is not None, "self_healing must be initialized"
 
     def test_basic_workflow_registration(self):
         """Test basic workflow creation."""
@@ -214,7 +214,7 @@ class TestPhase1Completion_EdgeCases:
 
         try:
             state = DecisionState(context={}, constraints=[])
-            assert state is not None
+            assert state is not None, "state must be initialized"
         except (ValueError, TypeError):
             # Constructor may validate inputs
             _ = None  # suppressed: no action needed
@@ -225,7 +225,7 @@ class TestPhase1Completion_EdgeCases:
 
         try:
             force = ForceVector(magnitude=0.0, direction="none")
-            assert force is not None
+            assert force is not None, "force must be initialized"
         except (ValueError, TypeError):
             _ = None  # suppressed: no action needed
 
@@ -235,6 +235,6 @@ class TestPhase1Completion_EdgeCases:
 
         try:
             path = ActionPath(trajectory=[])
-            assert path is not None
+            assert path is not None, "path must be initialized"
         except (ValueError, TypeError):
             _ = None  # suppressed: no action needed

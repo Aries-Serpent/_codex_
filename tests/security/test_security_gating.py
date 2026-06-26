@@ -29,7 +29,7 @@ def test_precommit_config_valid_yaml():
     with open(config_path) as f:
         config = yaml.safe_load(f)
 
-    assert "repos" in config
+    assert "repos" in config, "Condition must be true"
     assert isinstance(config["repos"], list)
 
 
@@ -49,10 +49,10 @@ def test_precommit_has_pip_audit():
 
     # Check that pip-audit hook is configured
     pip_audit_repo = pip_audit_repos[0]
-    assert "hooks" in pip_audit_repo
+    assert "hooks" in pip_audit_repo, "Condition must be true"
 
     hooks = pip_audit_repo["hooks"]
-    assert any(hook.get("id") == "pip-audit" for hook in hooks)
+    assert any(hook.get("id") == "pip-audit" for hook in hooks), "Condition must be true"
 
 
 def test_precommit_has_gitleaks():
@@ -71,10 +71,10 @@ def test_precommit_has_gitleaks():
 
     # Check that gitleaks hook is configured
     gitleaks_repo = gitleaks_repos[0]
-    assert "hooks" in gitleaks_repo
+    assert "hooks" in gitleaks_repo, "Condition must be true"
 
     hooks = gitleaks_repo["hooks"]
-    assert any(hook.get("id") == "gitleaks" for hook in hooks)
+    assert any(hook.get("id") == "gitleaks" for hook in hooks), "Condition must be true"
 
 
 def test_gitleaks_config_exists():
@@ -102,7 +102,7 @@ def test_gitleaks_config_valid_toml():
     # Basic structure check
     assert isinstance(config, dict)
     # Gitleaks config typically has title and allowlist
-    assert "title" in config or "allowlist" in config
+    assert "title" in config or "allowlist" in config, "Condition must be true"
 
 
 def test_security_allowlist_exists():
@@ -129,7 +129,7 @@ def test_security_allowlist_structure():
         allowlist = json.load(f)
 
     # Should have schema reference
-    assert "$schema" in allowlist or "allowlisted_vulnerabilities" in allowlist
+    assert "$schema" in allowlist or "allowlisted_vulnerabilities" in allowlist, "Condition must be true"
 
 
 def test_noxfile_exists():
@@ -147,7 +147,7 @@ def test_noxfile_has_security_session():
 
     # Check for security session definition
     assert '@nox.session(name="security"' in content or '@nox.session("security"' in content
-    assert "def security(" in content
+    assert "def security(" in content, "Content must not be empty"
 
 
 def test_noxfile_security_session_runs_pip_audit():
@@ -158,7 +158,7 @@ def test_noxfile_security_session_runs_pip_audit():
         content = f.read()
 
     # Check for pip-audit in security session
-    assert "pip-audit" in content
+    assert "pip-audit" in content, "Content must not be empty"
 
 
 def test_noxfile_security_session_runs_gitleaks():
@@ -169,7 +169,7 @@ def test_noxfile_security_session_runs_gitleaks():
         content = f.read()
 
     # Check for gitleaks in security session
-    assert "gitleaks" in content
+    assert "gitleaks" in content, "Content must not be empty"
 
 
 def test_nox_list_sessions_includes_security():
@@ -186,7 +186,7 @@ def test_nox_list_sessions_includes_security():
         )
 
         # Check if security session is listed
-        assert "security" in result.stdout or "security" in result.stderr
+        assert "security" in result.stdout or "security" in result.stderr, "Result must not be empty"
 
     except (subprocess.TimeoutExpired, FileNotFoundError):
         pytest.skip("nox not available or timed out")
@@ -198,7 +198,7 @@ def test_security_integration_pip_audit_syntax():
     try:
         result = subprocess.run(["pip-audit", "--help"], capture_output=True, text=True, timeout=5)
         # If installed, should return help
-        assert result.returncode == 0 or result.returncode == 127  # 127 = command not found
+        assert result.returncode == 0 or result.returncode == 127, "Result must not be empty"
     except FileNotFoundError:
         # pip-audit not installed, which is ok for this test
         _ = None  # suppressed: no action needed
@@ -212,7 +212,7 @@ def test_security_integration_gitleaks_syntax():
     try:
         result = subprocess.run(["gitleaks", "version"], capture_output=True, text=True, timeout=5)
         # If installed, should return version
-        assert result.returncode == 0 or result.returncode == 127  # 127 = command not found
+        assert result.returncode == 0 or result.returncode == 127, "Result must not be empty"
     except FileNotFoundError:
         # gitleaks not installed, which is ok for this test
         _ = None  # suppressed: no action needed
@@ -263,7 +263,7 @@ def test_security_documentation_exists():
         content = f.read()
 
     # Security session should have docstring
-    assert "security" in content.lower()
+    assert "security" in content.lower(), "Content must not be empty"
 
 
 def test_integration_full_security_workflow():
@@ -271,16 +271,16 @@ def test_integration_full_security_workflow():
     repo_root = Path(__file__).parents[2]
 
     # Check all components exist
-    assert (repo_root / ".pre-commit-config.yaml").exists()
-    assert (repo_root / ".gitleaks.toml").exists()
-    assert (repo_root / "security_allowlist.json").exists()
-    assert (repo_root / "noxfile.py").exists()
+    assert (repo_root / ".pre-commit-config.yaml").exists(), "Condition must be true"
+    assert (repo_root / ".gitleaks.toml").exists(), "Condition must be true"
+    assert (repo_root / "security_allowlist.json").exists(), "Condition must be true"
+    assert (repo_root / "noxfile.py").exists(), "Condition must be true"
 
     # Verify noxfile has security session
     with open(repo_root / "noxfile.py") as f:
         nox_content = f.read()
 
-    assert "def security(" in nox_content
+    assert "def security(" in nox_content, "Content must not be empty"
 
     # Verify pre-commit has security hooks
     import yaml

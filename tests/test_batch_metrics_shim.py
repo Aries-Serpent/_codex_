@@ -31,4 +31,4 @@ def test_batch_metrics_produces_expected_keys() -> None:
     assert set(metrics) >= {"loss", "perplexity", "token_accuracy"}
     assert metrics["loss"] == pytest.approx(0.5, rel=1e-6)
     assert metrics["perplexity"] == pytest.approx(torch.exp(torch.tensor(0.5)).item(), rel=1e-6)
-    assert 0.0 <= metrics["token_accuracy"] <= 1.0
+    assert 0.0 <= metrics["token_accuracy"] <= 1.0, "0 is not valid"

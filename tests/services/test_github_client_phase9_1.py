@@ -42,12 +42,12 @@ class TestGitHubClient:
     def test_client_initialization(self) -> None:
         """Test creating a GitHub client."""
         client = GitHubClient(token="fake_token")
-        assert client is not None
+        assert client is not None, "client must be initialized"
 
     def test_client_without_token(self) -> None:
         """Test client can be created without token (unauthenticated)."""
         client = GitHubClient()
-        assert client is not None
+        assert client is not None, "client must be initialized"
 
     @patch("requests.get")
     def test_get_repository(self, mock_get: Mock) -> None:
@@ -64,9 +64,9 @@ class TestGitHubClient:
         client = GitHubClient(token="fake_token")
         repo = client.get_repository("testuser/test-repo")
 
-        assert repo is not None
+        assert repo is not None, "repo must be initialized"
         if hasattr(repo, "name"):
-            assert repo.name == "test-repo"
+            assert repo.name == "test-repo", "name is not valid"
 
     @patch("requests.get")
     def test_get_repository_not_found(self, mock_get: Mock) -> None:
@@ -100,7 +100,7 @@ class TestGitHubClient:
         client = GitHubClient(token="fake_token")
         issues = client.list_issues("user/repo")
 
-        assert len(issues) == 2
+        assert len(issues) == 2, "Issues must not be empty"
 
     @patch("requests.get")
     def test_get_issue(self, mock_get: Mock) -> None:
@@ -118,9 +118,9 @@ class TestGitHubClient:
         client = GitHubClient(token="fake_token")
         issue = client.get_issue("user/repo", 1)
 
-        assert issue is not None
+        assert issue is not None, "issue must be initialized"
         if hasattr(issue, "number"):
-            assert issue.number == 1
+            assert issue.number == 1, "number is not valid"
 
     @patch("requests.post")
     def test_create_issue(self, mock_post: Mock) -> None:
@@ -137,7 +137,7 @@ class TestGitHubClient:
         client = GitHubClient(token="fake_token")
         issue = client.create_issue("user/repo", title="New Issue", body="Issue body")
 
-        assert issue is not None
+        assert issue is not None, "issue must be initialized"
 
     @patch("requests.get")
     def test_rate_limit_handling(self, mock_get: Mock) -> None:
@@ -193,7 +193,7 @@ class TestGitHubPullRequests:
         client = GitHubClient(token="fake_token")
         pr = client.get_pull_request("user/repo", 1)
 
-        assert pr is not None
+        assert pr is not None, "pr must be initialized"
 
     @patch("requests.post")
     def test_create_pull_request(self, mock_post: Mock) -> None:
@@ -216,7 +216,7 @@ class TestGitHubPullRequests:
             body="PR description",
         )
 
-        assert pr is not None
+        assert pr is not None, "pr must be initialized"
 
 
 class TestGitHubExceptions:
@@ -225,13 +225,13 @@ class TestGitHubExceptions:
     def test_github_exception_creation(self) -> None:
         """Test creating GitHub exception."""
         error = GitHubException("Test error")
-        assert str(error) == "Test error"
+        assert str(error) == "Test error", "Error should be raised or set"
 
     def test_github_exception_with_status(self) -> None:
         """Test exception with HTTP status code."""
         if HAS_GITHUB_CLIENT:
             error = GitHubException("Not found", status_code=404)
-            assert error.status_code == 404
+            assert error.status_code == 404, "Error should be raised or set"
 
 
 class TestGitHubAuthentication:
@@ -242,7 +242,7 @@ class TestGitHubAuthentication:
         if HAS_GITHUB_CLIENT:
             client = GitHubClient(token="ghp_test_token")
             # Token should be stored securely
-            assert client is not None
+            assert client is not None, "client must be initialized"
 
     def test_client_token_not_exposed(self) -> None:
         """Test token is not exposed in logs or repr."""
@@ -251,7 +251,7 @@ class TestGitHubAuthentication:
             repr_str = repr(client)
 
             # Token should not appear in repr
-            assert "secret_token" not in repr_str
+            assert "secret_token" not in repr_str, "Condition must be true"
 
 
 class TestGitHubRateLimiting:
@@ -276,7 +276,7 @@ class TestGitHubRateLimiting:
         rate_limit = client.get_rate_limit()
 
         if rate_limit:
-            assert "remaining" in rate_limit or rate_limit
+            assert "remaining" in rate_limit or rate_limit, "Condition must be true"
 
     @pytest.mark.skipif(not HAS_GITHUB_CLIENT, reason="GitHub client not available")
     @patch("requests.get")
@@ -309,7 +309,7 @@ class TestGitHubDataTypes:
                 owner="testuser",
                 url="https://github.com/testuser/test-repo",
             )
-            assert repo.name == "test-repo"
+            assert repo.name == "test-repo", "name is not valid"
 
     def test_issue_type(self) -> None:
         """Test Issue data type."""
@@ -322,7 +322,7 @@ class TestGitHubDataTypes:
                     state="open",
                     url="https://github.com/testuser/test-repo/issues/1",
                 )
-                assert issue.number == 1
+                assert issue.number == 1, "number is not valid"
             except (NameError, TypeError):
                 pytest.skip("Issue type not available")
 
@@ -339,6 +339,6 @@ class TestGitHubDataTypes:
                     head_ref="feature",
                     base_ref="main",
                 )
-                assert pr.number == 1
+                assert pr.number == 1, "number is not valid"
             except (NameError, TypeError):
                 pytest.skip("PullRequest type not available")

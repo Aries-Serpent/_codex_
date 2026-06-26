@@ -52,5 +52,5 @@ class TestModuleExports:
         """Test __all__ exports."""
         from agents.knowledge_base_integrator import __all__
 
-        assert "build_context" in __all__
-        assert "ZendeskRAGBridge" in __all__
+        assert "build_context" in __all__, "Condition must be true"
+        assert "ZendeskRAGBridge" in __all__, "Condition must be true"

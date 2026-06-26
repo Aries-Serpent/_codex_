@@ -77,7 +77,7 @@ def _get_github_client():
         return GitHubClientSync()
     except ImportError as e:
         error_type = type(e).__name__
-        logger.error(f"GitHub client not available: <ERROR_TYPE>")
+        logger.error("GitHub client not available: <ERROR_TYPE>")
         raise HTTPException(
             status_code=500,
             detail=f"GitHub client not available: {e}. Ensure httpx and pydantic are installed.",
@@ -130,7 +130,7 @@ async def get_check_run_logs(
 
     except (ConnectionError, TimeoutError) as e:
         error_type = type(e).__name__
-        logger.error(f"Failed to fetch check run logs: <ERROR_TYPE>", exc_info=True)
+        logger.error("Failed to fetch check run logs: <ERROR_TYPE>", exc_info=True)
 
         # Convert GitHub client exceptions to HTTP exceptions
         if "not found" in str(e).lower():
@@ -181,7 +181,7 @@ async def get_job_logs(
 
     except (ConnectionError, TimeoutError) as e:
         error_type = type(e).__name__
-        logger.error(f"Failed to fetch job logs: <ERROR_TYPE>", exc_info=True)
+        logger.error("Failed to fetch job logs: <ERROR_TYPE>", exc_info=True)
 
         # Convert GitHub client exceptions to HTTP exceptions
         if "not found" in str(e).lower():
@@ -258,7 +258,7 @@ async def list_check_runs(
 
     except (ConnectionError, TimeoutError) as e:
         error_type = type(e).__name__
-        logger.error(f"Failed to list check runs: <ERROR_TYPE>", exc_info=True)
+        logger.error("Failed to list check runs: <ERROR_TYPE>", exc_info=True)
 
         # Convert GitHub client exceptions to HTTP exceptions
         if "not found" in str(e).lower():

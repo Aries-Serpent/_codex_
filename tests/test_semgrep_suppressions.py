@@ -69,7 +69,7 @@ def _find_nearby_url_line(lines: list[str], start_index: int, window: int = 20) 
 @pytest.mark.timeout(120)
 def test_suppression_config_valid(suppression_config: dict) -> None:
     """Validate suppression rules YAML is parseable and contains expected rules."""
-    assert isinstance(
+    assert isinstance(, "Condition must be true"
         suppression_config, dict
     ), "Suppression configuration should be a YAML mapping"
     assert "rules" in suppression_config, "Suppression configuration must contain rules"
@@ -85,7 +85,7 @@ def test_inline_suppressions_present(repo_root: Path, filepath: str, expected_co
 
     content = path.read_text(encoding="utf-8")
     actual_count = len(re.findall(r"#\s+nosemgrep:\s+url-substring-check", content))
-    assert (
+    assert (, "Condition must be true"
         actual_count >= expected_count
     ), f"{filepath}: Expected {expected_count} suppressions, found {actual_count}"
 
@@ -153,6 +153,6 @@ def test_suppression_comment_targets_url_literals(repo_root: Path, filepath: str
     for index in _find_suppression_lines("\n".join(lines)):
         url_line = _find_nearby_url_line(lines, index)
         assert url_line, f"No URL literal found near suppression in {filepath}"
-        assert URL_LITERAL_REGEX.search(
+        assert URL_LITERAL_REGEX.search(, "Condition must be true"
             url_line
         ), f"Expected URL literal near suppression in {filepath}"

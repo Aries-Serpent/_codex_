@@ -92,7 +92,7 @@ class TestPerplexityCalculation:
         targets = np.array([0])
 
         ppl = perplexity(predictions, targets)
-        assert ppl >= 1.0  # Perplexity is always >= 1
+        assert ppl >= 1.0, "ppl must be greater than zero"
 
     def test_perplexity_uniform_predictions(self):
         """Test perplexity with uniform predictions."""
@@ -103,7 +103,7 @@ class TestPerplexityCalculation:
         targets = np.zeros(10, dtype=int)
 
         ppl = perplexity(predictions, targets)
-        assert ppl > 1.0
+        assert ppl > 1.0, "ppl must be greater than zero"
 
     def test_perplexity_invalid_shape(self):
         """Test perplexity with mismatched shapes."""
@@ -141,7 +141,7 @@ class TestSyntheticDataHandling:
         from codex_ml.eval.evaluator import SyntheticSummary
 
         summary = SyntheticSummary()
-        assert summary is not None
+        assert summary is not None, "summary must be initialized"
 
     def test_encode_tokens_function(self):
         """Test _encode_tokens function."""
@@ -149,7 +149,7 @@ class TestSyntheticDataHandling:
 
         tokens = ["hello", "world", "test"]
         encoded = _encode_tokens(tokens)
-        assert encoded is not None
+        assert encoded is not None, "encoded must be initialized"
 
 
 # ============================================================================
@@ -165,7 +165,7 @@ class TestReasoningMetrics:
         from codex_ml.eval.reasoning_metrics import ReasoningMetrics
 
         metrics = ReasoningMetrics()
-        assert metrics is not None
+        assert metrics is not None, "metrics must be initialized"
 
     def test_calculate_win_rate_50_percent(self):
         """Test calculate_win_rate with 50% wins."""
@@ -173,7 +173,7 @@ class TestReasoningMetrics:
 
         outcomes = ["win", "loss", "win", "loss"]
         win_rate = calculate_win_rate(outcomes)
-        assert win_rate == 0.5
+        assert win_rate == 0.5, "win_rate is not valid"
 
     def test_calculate_win_rate_100_percent(self):
         """Test calculate_win_rate with 100% wins."""
@@ -181,7 +181,7 @@ class TestReasoningMetrics:
 
         outcomes = ["win", "win", "win"]
         win_rate = calculate_win_rate(outcomes)
-        assert win_rate == 1.0
+        assert win_rate == 1.0, "win_rate is not valid"
 
     def test_calculate_win_rate_0_percent(self):
         """Test calculate_win_rate with 0% wins."""
@@ -189,7 +189,7 @@ class TestReasoningMetrics:
 
         outcomes = ["loss", "loss", "loss"]
         win_rate = calculate_win_rate(outcomes)
-        assert win_rate == 0.0
+        assert win_rate == 0.0, "win_rate is not valid"
 
     def test_calculate_win_rate_empty(self):
         """Test calculate_win_rate with empty outcomes."""
@@ -209,7 +209,7 @@ class TestModelingClasses:
 
     def test_simple_model_creation(self, simple_model):
         """Test creating a simple neural network model."""
-        assert simple_model is not None
+        assert simple_model is not None, "simple_model must be initialized"
         assert isinstance(simple_model, nn.Sequential)
 
     def test_simple_model_forward_pass(self, simple_model):
@@ -221,7 +221,7 @@ class TestModelingClasses:
     def test_simple_model_parameters(self, simple_model):
         """Test model has learnable parameters."""
         params = list(simple_model.parameters())
-        assert len(params) > 0
+        assert len(params) > 0, "Params must not be empty"
 
     def test_model_gradient_flow(self, simple_model):
         """Test gradients flow through model."""
@@ -233,7 +233,7 @@ class TestModelingClasses:
         # Check gradients were computed
         for param in simple_model.parameters():
             if param.grad is not None:
-                assert not torch.all(param.grad == 0)
+                assert not torch.all(param.grad == 0), "grad is not valid"
                 break
 
 
@@ -250,7 +250,7 @@ class TestModelFactory:
         try:
             from codex_ml.modeling import factory
 
-            assert factory is not None
+            assert factory is not None, "factory must be initialized"
         except ImportError:
             pytest.skip("Factory module not available")
 
@@ -259,7 +259,7 @@ class TestModelFactory:
         try:
             from codex_ml.modeling.codex_model import CodexModel
 
-            assert CodexModel is not None
+            assert CodexModel is not None, "CodexModel must be initialized"
         except ImportError:
             pytest.skip("CodexModel not available")
 
@@ -275,17 +275,17 @@ class TestModelingIntegration:
     def test_model_train_eval_mode(self, simple_model):
         """Test switching between train and eval modes."""
         simple_model.train()
-        assert simple_model.training is True
+        assert simple_model.training is True, "training is not valid"
 
         simple_model.eval()
-        assert simple_model.training is False
+        assert simple_model.training is False, "training is not valid"
 
     def test_model_with_different_batch_sizes(self, simple_model):
         """Test model with different batch sizes."""
         for batch_size in [1, 8, 32, 128]:
             batch = torch.randn(batch_size, 10)
             output = simple_model(batch)
-            assert output.shape[0] == batch_size
+            assert output.shape[0] == batch_size, "Condition must be true"
 
     def test_model_device_handling(self, simple_model):
         """Test model device handling."""
@@ -295,7 +295,7 @@ class TestModelingIntegration:
 
         batch = torch.randn(32, 10).to(device)
         output = simple_model(batch)
-        assert output.device.type == device.type
+        assert output.device.type == device.type, "type is not valid"
 
     def test_model_state_dict_save_load(self, simple_model, tmp_path):
         """Test saving and loading model state."""
@@ -303,7 +303,7 @@ class TestModelingIntegration:
 
         # Save state
         torch.save(simple_model.state_dict(), state_path)
-        assert state_path.exists()
+        assert state_path.exists(), "Condition must be true"
 
         # Load state
         new_model = nn.Sequential(
@@ -339,7 +339,7 @@ class TestTextProcessing:
         text_path.write_text("\n".join(texts))
 
         loaded = _load_texts(str(text_path))
-        assert len(loaded) > 0
+        assert len(loaded) > 0, "Loaded must not be empty"
 
     def test_summarise_log_function(self, tmp_path):
         """Test log summarization function."""
@@ -373,7 +373,7 @@ class TestEvalEdgeCases:
         targets = np.array([1])
 
         ppl = perplexity(predictions, targets)
-        assert ppl > 0
+        assert ppl > 0, "ppl must be greater than zero"
 
     def test_win_rate_ties(self):
         """Test win rate calculation with ties."""
@@ -399,7 +399,7 @@ class TestEvalEdgeCases:
         # This tests robustness
         batch = torch.randn(32, 10)
         output = simple_model(batch)
-        assert not torch.isnan(output).any()
+        assert not torch.isnan(output).any(), "Condition must be true"
 
 
 # ============================================================================
@@ -482,8 +482,8 @@ class TestModelingUtils:
     def test_model_initialization(self):
         """Test model initializes with correct dimensions."""
         model = nn.Linear(10, 5)
-        assert model.in_features == 10
-        assert model.out_features == 5
+        assert model.in_features == 10, "in_features is not valid"
+        assert model.out_features == 5, "out_features is not valid"
 
     def test_model_weight_shapes(self):
         """Test model weight shapes are correct."""
@@ -494,8 +494,8 @@ class TestModelingUtils:
     def test_model_requires_grad(self):
         """Test model parameters require gradients by default."""
         model = nn.Linear(10, 5)
-        assert model.weight.requires_grad is True
-        assert model.bias.requires_grad is True
+        assert model.weight.requires_grad is True, "requires_grad is not valid"
+        assert model.bias.requires_grad is True, "requires_grad is not valid"
 
     def test_model_no_grad_mode(self, simple_model):
         """Test no_grad mode disables gradients."""
@@ -503,7 +503,7 @@ class TestModelingUtils:
 
         with torch.no_grad():
             output = simple_model(batch)
-            assert output.requires_grad is False
+            assert output.requires_grad is False, "requires_grad is not valid"
 
 
 if __name__ == "__main__":

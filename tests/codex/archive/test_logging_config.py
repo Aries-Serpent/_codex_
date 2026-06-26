@@ -22,11 +22,11 @@ class TestStructuredLogRecord:
             extra={"key": "value"},
         )
 
-        assert record.level == "INFO"
-        assert record.message == "Test message"
-        assert record.timestamp == "2024-01-01T00:00:00.000000Z"
-        assert record.component == "test_component"
-        assert record.extra == {"key": "value"}
+        assert record.level == "INFO", "level is not valid"
+        assert record.message == "Test message", "message is not valid"
+        assert record.timestamp == "2024-01-01T00:00:00.000000Z", "timestamp is not valid"
+        assert record.component == "test_component", "component is not valid"
+        assert record.extra == {"key": "value"}, "Value must be initialized"
 
     def test_to_dict(self):
         """Test to_dict method."""
@@ -42,11 +42,11 @@ class TestStructuredLogRecord:
 
         result = record.to_dict()
 
-        assert result["level"] == "WARNING"
-        assert result["message"] == "Warning message"
-        assert result["timestamp"] == "2024-01-01T12:00:00.000000Z"
-        assert result["component"] == "warning_component"
-        assert result["warning_type"] == "deprecation"
+        assert result["level"] == "WARNING", "Result must not be empty"
+        assert result["message"] == "Warning message", "Result must not be empty"
+        assert result["timestamp"] == "2024-01-01T12:00:00.000000Z", "Result must not be empty"
+        assert result["component"] == "warning_component", "Result must not be empty"
+        assert result["warning_type"] == "deprecation", "Result must not be empty"
 
     def test_to_json(self):
         """Test to_json method."""
@@ -64,8 +64,8 @@ class TestStructuredLogRecord:
 
         # Should be valid JSON
         parsed = json.loads(result)
-        assert parsed["level"] == "ERROR"
-        assert parsed["message"] == "Error occurred"
+        assert parsed["level"] == "ERROR", "Error should be raised or set"
+        assert parsed["message"] == "Error occurred", "Error should be raised or set"
 
     def test_to_text_with_extra(self):
         """Test to_text method with extra fields."""
@@ -81,9 +81,9 @@ class TestStructuredLogRecord:
 
         result = record.to_text()
 
-        assert "[DEBUG]" in result
-        assert "Debug info" in result
-        assert "trace_id=abc123" in result
+        assert "[DEBUG]" in result, "Result must not be empty"
+        assert "Debug info" in result, "Result must not be empty"
+        assert "trace_id=abc123" in result, "Result must not be empty"
 
     def test_to_text_without_extra(self):
         """Test to_text method without extra fields."""
@@ -99,9 +99,9 @@ class TestStructuredLogRecord:
 
         result = record.to_text()
 
-        assert "[INFO]" in result
-        assert "Simple message" in result
-        assert "--" not in result
+        assert "[INFO]" in result, "Result must not be empty"
+        assert "Simple message" in result, "Result must not be empty"
+        assert "--" not in result, "Result must not be empty"
 
 
 class TestModuleConstants:
@@ -111,12 +111,12 @@ class TestModuleConstants:
         """Test ISO_FORMAT constant."""
         from codex.archive.logging_config import ISO_FORMAT
 
-        assert "%Y-%m-%dT%H:%M:%S" in ISO_FORMAT
+        assert "%Y-%m-%dT%H:%M:%S" in ISO_FORMAT, "Condition must be true"
 
     def test_standard_fields(self):
         """Test _STANDARD_FIELDS constant."""
         from codex.archive.logging_config import _STANDARD_FIELDS
 
-        assert "name" in _STANDARD_FIELDS
-        assert "msg" in _STANDARD_FIELDS
-        assert "levelname" in _STANDARD_FIELDS
+        assert "name" in _STANDARD_FIELDS, "Condition must be true"
+        assert "msg" in _STANDARD_FIELDS, "Condition must be true"
+        assert "levelname" in _STANDARD_FIELDS, "Condition must be true"

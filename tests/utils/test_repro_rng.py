@@ -49,7 +49,7 @@ def test_rng_snapshot_roundtrip(seed: int) -> None:
         _ = np.random.random(5)
 
     restore_rng_state(state)
-    assert [random.random() for _ in range(3)] == baseline
+    assert [random.random() for _ in range(3)] == baseline, "Condition must be true"
     if np is not None:
         assert np.allclose(np.random.random(3), np_baseline)
 

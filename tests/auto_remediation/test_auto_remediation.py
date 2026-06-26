@@ -35,11 +35,11 @@ class TestFixGenerator:
 
         fix = self.generator.generate_fix(context)
 
-        assert fix is not None
-        assert fix.strategy == FixStrategy.SHELL_INJECTION
-        assert "shell=False" in fix.fixed_code
-        assert fix.confidence > 0.8
-        assert fix.validation_passed is True
+        assert fix is not None, "fix must be initialized"
+        assert fix.strategy == FixStrategy.SHELL_INJECTION, "strategy is not valid"
+        assert "shell=False" in fix.fixed_code, "Condition must be true"
+        assert fix.confidence > 0.8, "confidence must be greater than zero"
+        assert fix.validation_passed is True, "validation_passed is not valid"
 
     def test_eval_exec_fix(self):
         """Test fix for eval/exec vulnerability."""
@@ -54,10 +54,10 @@ class TestFixGenerator:
 
         fix = self.generator.generate_fix(context)
 
-        assert fix is not None
-        assert fix.strategy == FixStrategy.EVAL_EXEC_REMOVAL
-        assert "ast.literal_eval" in fix.fixed_code or "REMOVED" in fix.fixed_code
-        assert fix.confidence > 0.7
+        assert fix is not None, "fix must be initialized"
+        assert fix.strategy == FixStrategy.EVAL_EXEC_REMOVAL, "strategy is not valid"
+        assert "ast.literal_eval" in fix.fixed_code or "REMOVED" in fix.fixed_code, "Condition must be true"
+        assert fix.confidence > 0.7, "confidence must be greater than zero"
 
     def test_pickle_fix(self):
         """Test fix for unsafe pickle usage."""
@@ -72,9 +72,9 @@ class TestFixGenerator:
 
         fix = self.generator.generate_fix(context)
 
-        assert fix is not None
-        assert fix.strategy == FixStrategy.PICKLE_SECURE
-        assert "json" in fix.fixed_code or "manual review" in fix.explanation.lower()
+        assert fix is not None, "fix must be initialized"
+        assert fix.strategy == FixStrategy.PICKLE_SECURE, "strategy is not valid"
+        assert "json" in fix.fixed_code or "manual review" in fix.explanation.lower(), "Condition must be true"
 
     def test_weak_crypto_fix(self):
         """Test fix for weak cryptography."""
@@ -89,10 +89,10 @@ class TestFixGenerator:
 
         fix = self.generator.generate_fix(context)
 
-        assert fix is not None
-        assert fix.strategy == FixStrategy.WEAK_CRYPTO
-        assert "sha256" in fix.fixed_code
-        assert fix.confidence > 0.9
+        assert fix is not None, "fix must be initialized"
+        assert fix.strategy == FixStrategy.WEAK_CRYPTO, "strategy is not valid"
+        assert "sha256" in fix.fixed_code, "Condition must be true"
+        assert fix.confidence > 0.9, "confidence must be greater than zero"
 
     def test_xml_parser_fix(self):
         """Test fix for XML parser vulnerability."""
@@ -107,10 +107,10 @@ class TestFixGenerator:
 
         fix = self.generator.generate_fix(context)
 
-        assert fix is not None
-        assert fix.strategy == FixStrategy.XML_SECURE_PARSER
-        assert "defusedxml" in fix.fixed_code
-        assert fix.confidence > 0.8
+        assert fix is not None, "fix must be initialized"
+        assert fix.strategy == FixStrategy.XML_SECURE_PARSER, "strategy is not valid"
+        assert "defusedxml" in fix.fixed_code, "Condition must be true"
+        assert fix.confidence > 0.8, "confidence must be greater than zero"
 
     def test_multiple_fixes_generation(self):
         """Test generation of multiple fix options."""
@@ -125,19 +125,19 @@ class TestFixGenerator:
 
         fixes = self.generator.generate_multiple_fixes(context)
 
-        assert len(fixes) > 0
-        assert all(f.validation_passed for f in fixes)
+        assert len(fixes) > 0, "Fixes must not be empty"
+        assert all(f.validation_passed for f in fixes), "Condition must be true"
         # Fixes should be sorted by confidence
         if len(fixes) > 1:
-            assert fixes[0].confidence >= fixes[1].confidence
+            assert fixes[0].confidence >= fixes[1].confidence, "confidence must be greater than zero"
 
     def test_syntax_validation(self):
         """Test syntax validation of generated fixes."""
         # Valid Python code
-        assert self.generator._validate_syntax("x = 1\nprint(x)") is True
+        assert self.generator._validate_syntax("x = 1\nprint(x)") is True, "Condition must be true"
 
         # Invalid Python code
-        assert self.generator._validate_syntax("x = 1\nprint(x") is False
+        assert self.generator._validate_syntax("x = 1\nprint(x") is False, "Condition must be true"
 
     def test_strategy_selection(self):
         """Test correct strategy selection."""
@@ -151,11 +151,11 @@ class TestFixGenerator:
         )
 
         strategy = self.generator._select_strategy(context)
-        assert strategy == FixStrategy.SHELL_INJECTION
+        assert strategy == FixStrategy.SHELL_INJECTION, "strategy is not valid"
 
         context.vulnerability_type = "eval_usage"
         strategy = self.generator._select_strategy(context)
-        assert strategy == FixStrategy.EVAL_EXEC_REMOVAL
+        assert strategy == FixStrategy.EVAL_EXEC_REMOVAL, "strategy is not valid"
 
 
 class TestFixVerifier:
@@ -174,8 +174,8 @@ class TestFixVerifier:
         hash2 = self.verifier._calculate_hash(content2)
         hash3 = self.verifier._calculate_hash(content3)
 
-        assert hash1 == hash2
-        assert hash1 != hash3
+        assert hash1 == hash2, "hash1 is not valid"
+        assert hash1 != hash3, "hash1 is not valid"
 
     def test_complexity_calculation(self):
         """Test cyclomatic complexity calculation."""
@@ -191,8 +191,8 @@ if x > 0:
         simple_complexity = self.verifier._calculate_complexity(simple_code)
         complex_complexity = self.verifier._calculate_complexity(complex_code)
 
-        assert simple_complexity < complex_complexity
-        assert complex_complexity >= 4
+        assert simple_complexity < complex_complexity, "simple_complexity is not valid"
+        assert complex_complexity >= 4, "complex_complexity must be greater than zero"
 
     def test_security_score_calculation(self):
         """Test security score calculation."""
@@ -202,9 +202,9 @@ if x > 0:
         safe_score = self.verifier._calculate_security_score(safe_code)
         risky_score = self.verifier._calculate_security_score(risky_code)
 
-        assert safe_score > risky_score
-        assert safe_score == 100.0
-        assert risky_score < 80.0
+        assert safe_score > risky_score, "safe_score must be greater than zero"
+        assert safe_score == 100.0, "safe_score is not valid"
+        assert risky_score < 80.0, "risky_score is not valid"
 
     def test_diff_generation(self):
         """Test unified diff generation."""
@@ -213,8 +213,8 @@ if x > 0:
 
         diff = self.verifier.generate_diff(original, fixed)
 
-        assert "line1" in diff
-        assert "modified line2" in diff or "-line2" in diff
+        assert "line1" in diff, "Condition must be true"
+        assert "modified line2" in diff or "-line2" in diff, "Condition must be true"
 
     def test_improvements_detection(self):
         """Test detection of improvements."""
@@ -238,9 +238,9 @@ if x > 0:
 
         improvements = self.verifier._detect_improvements(pre, post)
 
-        assert len(improvements) > 0
-        assert any("test" in imp.lower() for imp in improvements)
-        assert any("security" in imp.lower() for imp in improvements)
+        assert len(improvements) > 0, "Improvements must not be empty"
+        assert any("test" in imp.lower() for imp in improvements), "Condition must be true"
+        assert any("security" in imp.lower() for imp in improvements), "Condition must be true"
 
     def test_regression_detection(self):
         """Test detection of regressions."""
@@ -264,9 +264,9 @@ if x > 0:
 
         regressions = self.verifier._detect_regressions(pre, post)
 
-        assert len(regressions) > 0
-        assert any("test" in reg.lower() for reg in regressions)
-        assert any("complexity" in reg.lower() for reg in regressions)
+        assert len(regressions) > 0, "Regressions must not be empty"
+        assert any("test" in reg.lower() for reg in regressions), "Condition must be true"
+        assert any("complexity" in reg.lower() for reg in regressions), "Condition must be true"
 
     def test_confidence_calculation(self):
         """Test confidence score calculation."""
@@ -290,7 +290,7 @@ if x > 0:
         )
 
         confidence_good = self.verifier._calculate_confidence(pre_good, post_good, [])
-        assert confidence_good > 0.8
+        assert confidence_good > 0.8, "confidence_good must be greater than zero"
 
         # Bad fix scenario
         post_bad = PostFixSnapshot(
@@ -302,7 +302,7 @@ if x > 0:
         )
 
         confidence_bad = self.verifier._calculate_confidence(pre_good, post_bad, ["regression"])
-        assert confidence_bad < 0.5
+        assert confidence_bad < 0.5, "confidence_bad is not valid"
 
     def test_success_rate_tracking(self):
         """Test success rate calculation."""
@@ -324,7 +324,7 @@ if x > 0:
         self.verifier.verification_history.append(result2)
 
         success_rate = self.verifier.get_success_rate()
-        assert success_rate == 0.5
+        assert success_rate == 0.5, "success_rate is not valid"
 
 
 class TestIntegration:
@@ -344,15 +344,15 @@ class TestIntegration:
         )
 
         fix = generator.generate_fix(context)
-        assert fix is not None
-        assert fix.validation_passed
+        assert fix is not None, "fix must be initialized"
+        assert fix.validation_passed, "Condition must be true"
 
         # Verify fix
         verifier = FixVerifier(test_command="echo test")
         result = verifier.verify_fix("test.py", fix.original_code, fix.fixed_code)
 
-        assert result is not None
-        assert result.confidence_score > 0
+        assert result is not None, "result must be initialized"
+        assert result.confidence_score > 0, "confidence_score must be greater than zero"
 
     def test_80_percent_success_target(self):
         """Test that success rate meets 80% target."""
@@ -399,7 +399,7 @@ class TestIntegration:
         )
 
         fix = generator.generate_fix(context)
-        assert fix is not None
+        assert fix is not None, "fix must be initialized"
 
         # Simulate failed verification by checking original code preserved
         assert fix.original_code == 'subprocess.run("ls", shell=True)'
@@ -419,9 +419,9 @@ class TestIntegration:
         )
 
         fix = generator.generate_fix(context)
-        assert fix is not None
+        assert fix is not None, "fix must be initialized"
         # Conservative approach might suggest ast.literal_eval
-        assert "ast.literal_eval" in fix.fixed_code or "REMOVED" in fix.fixed_code
+        assert "ast.literal_eval" in fix.fixed_code or "REMOVED" in fix.fixed_code, "Condition must be true"
 
     def test_confidence_scoring_accuracy(self):
         """Test confidence scoring reflects fix quality."""
@@ -438,7 +438,7 @@ class TestIntegration:
         )
 
         high_conf_fix = generator.generate_fix(high_conf_context)
-        assert high_conf_fix.confidence > 0.9
+        assert high_conf_fix.confidence > 0.9, "confidence must be greater than zero"
 
         # Lower confidence fix (complex removal)
         low_conf_context = FixContext(
@@ -452,7 +452,7 @@ class TestIntegration:
 
         low_conf_fix = generator.generate_fix(low_conf_context)
         # Should be lower confidence for eval removal
-        assert low_conf_fix.confidence <= high_conf_fix.confidence
+        assert low_conf_fix.confidence <= high_conf_fix.confidence, "confidence is not valid"
 
     def test_remediation_history_tracking(self):
         """Test tracking of remediation attempts and history."""
@@ -474,8 +474,8 @@ class TestIntegration:
         verifier.verification_history.append(result1)
         verifier.verification_history.append(result2)
 
-        assert len(verifier.verification_history) == 2
-        assert verifier.get_success_rate() == 0.5
+        assert len(verifier.verification_history) == 2, "Collection must not be empty"
+        assert verifier.get_success_rate() == 0.5, "Condition must be true"
 
     def test_learning_from_previous_failures(self):
         """Test system learns from previous remediation failures."""
@@ -498,7 +498,7 @@ class TestIntegration:
 
         # Verify we can query failure patterns
         failure_count = sum(1 for r in verifier.verification_history if not r.success)
-        assert failure_count == 3
+        assert failure_count == 3, "Count must be greater than zero"
 
     def test_fix_metadata_preservation(self):
         """Test that fix metadata is preserved through workflow."""
@@ -513,10 +513,10 @@ class TestIntegration:
         )
 
         fix = generator.generate_fix(context)
-        assert fix is not None
+        assert fix is not None, "fix must be initialized"
         # Verify context metadata is accessible
-        assert context.metadata["author"] == "security-scanner"
-        assert context.metadata["scan_id"] == "123"
+        assert context.metadata["author"] == "security-scanner", "Data must not be empty"
+        assert context.metadata["scan_id"] == "123", "Data must not be empty"
 
     def test_multi_line_vulnerability_fix(self):
         """Test fixing vulnerabilities spanning multiple lines."""
@@ -531,8 +531,8 @@ class TestIntegration:
         )
 
         fix = generator.generate_fix(context)
-        assert fix is not None
-        assert "shell=False" in fix.fixed_code or "shlex.split" in fix.fixed_code
+        assert fix is not None, "fix must be initialized"
+        assert "shell=False" in fix.fixed_code or "shlex.split" in fix.fixed_code, "Condition must be true"
 
 
 if __name__ == "__main__":

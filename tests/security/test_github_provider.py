@@ -69,7 +69,7 @@ class TestGitHubTokenRegex:
         ],
     )
     def test_valid_tokens_match(self, token: str) -> None:
-        assert _GITHUB_TOKEN_RE.match(token) is not None
+        assert _GITHUB_TOKEN_RE.match(token) is not None, "Value must be initialized"
 
     @pytest.mark.parametrize(
         "token",
@@ -82,7 +82,7 @@ class TestGitHubTokenRegex:
         ],
     )
     def test_invalid_tokens_no_match(self, token: str) -> None:
-        assert _GITHUB_TOKEN_RE.match(token) is None
+        assert _GITHUB_TOKEN_RE.match(token) is None, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -92,16 +92,16 @@ class TestGitHubTokenRegex:
 
 class TestKnownPermissions:
     def test_contains_common_permissions(self) -> None:
-        assert "contents" in _KNOWN_INSTALLATION_PERMISSIONS
-        assert "issues" in _KNOWN_INSTALLATION_PERMISSIONS
-        assert "pull_requests" in _KNOWN_INSTALLATION_PERMISSIONS
-        assert "actions" in _KNOWN_INSTALLATION_PERMISSIONS
-        assert "secrets" in _KNOWN_INSTALLATION_PERMISSIONS
+        assert "contents" in _KNOWN_INSTALLATION_PERMISSIONS, "Content must not be empty"
+        assert "issues" in _KNOWN_INSTALLATION_PERMISSIONS, "Condition must be true"
+        assert "pull_requests" in _KNOWN_INSTALLATION_PERMISSIONS, "Condition must be true"
+        assert "actions" in _KNOWN_INSTALLATION_PERMISSIONS, "Condition must be true"
+        assert "secrets" in _KNOWN_INSTALLATION_PERMISSIONS, "Condition must be true"
 
     def test_pat_scopes_not_included(self) -> None:
         # PAT-style scopes should not be in installation permissions
-        assert "repo" not in _KNOWN_INSTALLATION_PERMISSIONS
-        assert "workflow" not in _KNOWN_INSTALLATION_PERMISSIONS
+        assert "repo" not in _KNOWN_INSTALLATION_PERMISSIONS, "Condition must be true"
+        assert "workflow" not in _KNOWN_INSTALLATION_PERMISSIONS, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -112,16 +112,16 @@ class TestKnownPermissions:
 class TestGitHubTokenProviderConstruction:
     def test_provider_type(self) -> None:
         p = _make_provider()
-        assert p.provider_type == ProviderType.GITHUB
+        assert p.provider_type == ProviderType.GITHUB, "provider_type is not valid"
 
     def test_token_from_config(self) -> None:
         p = _make_provider(token=_FAKE_GHP)
-        assert p.token == _FAKE_GHP
+        assert p.token == _FAKE_GHP, "token is not valid"
 
     def test_api_url_default(self) -> None:
         config = ProviderConfig(ProviderType.GITHUB, token=_FAKE_GHP)
         p = GitHubTokenProvider(config)
-        assert p.api_url == "https://api.github.com"
+        assert p.api_url == "https://api.github.com", "api_url is not valid"
 
     def test_api_url_override(self) -> None:
         config = ProviderConfig(
@@ -130,13 +130,13 @@ class TestGitHubTokenProviderConstruction:
             api_url="https://api.github.example.com",
         )
         p = GitHubTokenProvider(config)
-        assert p.api_url == "https://api.github.example.com"
+        assert p.api_url == "https://api.github.example.com", "api_url is not valid"
 
     def test_token_from_env(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setenv("GITHUB_TOKEN", _FAKE_GHP)
         config = ProviderConfig(ProviderType.GITHUB)
         p = GitHubTokenProvider(config)
-        assert p.token == _FAKE_GHP
+        assert p.token == _FAKE_GHP, "token is not valid"
 
     def test_no_token_logs_warning(self, monkeypatch: pytest.MonkeyPatch, caplog) -> None:
         monkeypatch.delenv("GITHUB_TOKEN", raising=False)
@@ -145,7 +145,7 @@ class TestGitHubTokenProviderConstruction:
 
         with caplog.at_level(logging.WARNING, logger="security.providers.github_provider"):
             GitHubTokenProvider(config)
-        assert any("not configured" in r.message.lower() for r in caplog.records)
+        assert any("not configured" in r.message.lower() for r in caplog.records), "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -168,48 +168,48 @@ class TestValidateSecret:
         with patch("security.providers.github_provider._requests") as mock_req:
             mock_req.get.return_value = _mock_response(200)
             result = p.validate_secret("tok-id", secret_value="not_a_real_token")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_valid_format_api_200_returns_true(self) -> None:
         p = _make_provider(token=_FAKE_GHP)
         with patch("security.providers.github_provider._requests") as mock_req:
             mock_req.get.return_value = _mock_response(200)
             result = p.validate_secret("tok-id")
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_api_401_returns_false(self) -> None:
         p = _make_provider(token=_FAKE_GHP)
         with patch("security.providers.github_provider._requests") as mock_req:
             mock_req.get.return_value = _mock_response(401)
             result = p.validate_secret("tok-id")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_api_403_returns_false(self) -> None:
         p = _make_provider(token=_FAKE_GHP)
         with patch("security.providers.github_provider._requests") as mock_req:
             mock_req.get.return_value = _mock_response(403)
             result = p.validate_secret("tok-id")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_api_unexpected_status_returns_true(self) -> None:
         p = _make_provider(token=_FAKE_GHP)
         with patch("security.providers.github_provider._requests") as mock_req:
             mock_req.get.return_value = _mock_response(500)
             result = p.validate_secret("tok-id")
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_network_error_degrades_gracefully(self) -> None:
         p = _make_provider(token=_FAKE_GHP)
         with patch("security.providers.github_provider._requests") as mock_req:
             mock_req.get.side_effect = ConnectionError("network down")
             result = p.validate_secret("tok-id")
-        assert result is True  # format-only fallback
+        assert result is True, "Result must not be empty"
 
     def test_no_requests_lib_format_only(self) -> None:
         p = _make_provider(token=_FAKE_GHP)
         with patch("security.providers.github_provider.HAS_REQUESTS", False):
             result = p.validate_secret("tok-id")
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_explicit_secret_value_overrides_token(self) -> None:
         p = _make_provider(token=_FAKE_GHP)
@@ -217,7 +217,7 @@ class TestValidateSecret:
             mock_req.get.return_value = _mock_response(200)
             # Use explicit secret_value with valid format
             result = p.validate_secret("tok-id", secret_value=_FAKE_GHS)
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_expired_token_returns_false(self) -> None:
         p = _make_provider(token=_FAKE_GHP)
@@ -225,7 +225,7 @@ class TestValidateSecret:
         with patch.object(p, "get_expiration", return_value=past):
             with patch("security.providers.github_provider._requests"):
                 result = p.validate_secret("tok-id")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -238,21 +238,21 @@ class TestGetSecretMetadata:
         p = _make_provider()
         meta = p.get_secret_metadata("my-token")
         assert isinstance(meta, SecretMetadata)
-        assert meta.secret_id == "my-token"
-        assert meta.secret_type == SecretType.TOKEN
-        assert meta.provider == ProviderType.GITHUB
+        assert meta.secret_id == "my-token", "secret_id is not valid"
+        assert meta.secret_type == SecretType.TOKEN, "secret_type is not valid"
+        assert meta.provider == ProviderType.GITHUB, "provider is not valid"
 
     def test_expires_at_in_future(self) -> None:
         p = _make_provider()
         meta = p.get_secret_metadata("tok")
-        assert meta.expires_at is not None
-        assert meta.expires_at > datetime.now(UTC)
+        assert meta.expires_at is not None, "expires_at must be initialized"
+        assert meta.expires_at > datetime.now(UTC), "expires_at must be greater than zero"
 
     def test_has_scopes(self) -> None:
         p = _make_provider()
         meta = p.get_secret_metadata("tok")
         assert isinstance(meta.scopes, list)
-        assert len(meta.scopes) > 0
+        assert len(meta.scopes) > 0, "Collection must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -270,7 +270,7 @@ class TestGetExpiration:
         p = _make_provider()
         with patch.object(p, "get_secret_metadata", side_effect=RuntimeError("fail")):
             result = p.get_expiration("tok")
-        assert result is None
+        assert result is None, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -288,7 +288,7 @@ class TestGetScopes:
         p = _make_provider()
         with patch.object(p, "get_secret_metadata", side_effect=RuntimeError("fail")):
             result = p.get_scopes("tok")
-        assert result == []
+        assert result == [], "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -303,8 +303,8 @@ class TestCreateToken:
             # Remove GITHUB_APP_INSTALLATION_ID from env
             os.environ.pop("GITHUB_APP_INSTALLATION_ID", None)
             result = p.create_token("test-token", scopes=["contents"])
-        assert result.success is False
-        assert "installation_id" in result.error_message.lower()
+        assert result.success is False, "Result must not be empty"
+        assert "installation_id" in result.error_message.lower(), "Result must not be empty"
 
     def test_no_token_returns_failure(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setenv("GITHUB_APP_INSTALLATION_ID", "123")
@@ -316,23 +316,23 @@ class TestCreateToken:
         p = GitHubTokenProvider(config)
         p.token = None
         result = p.create_token("test-token", scopes=["contents"])
-        assert result.success is False
-        assert "bearer token" in result.error_message.lower()
+        assert result.success is False, "Result must not be empty"
+        assert "bearer token" in result.error_message.lower(), "Result must not be empty"
 
     def test_no_requests_returns_failure(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setenv("GITHUB_APP_INSTALLATION_ID", "123")
         p = _make_provider(installation_id="123")
         with patch("security.providers.github_provider.HAS_REQUESTS", False):
             result = p.create_token("test-token", scopes=["contents"])
-        assert result.success is False
-        assert "requests" in result.error_message.lower()
+        assert result.success is False, "Result must not be empty"
+        assert "requests" in result.error_message.lower(), "Result must not be empty"
 
     def test_invalid_permission_name_returns_failure(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setenv("GITHUB_APP_INSTALLATION_ID", "123")
         p = _make_provider(installation_id="123")
         result = p.create_token("test-token", scopes=["repo", "workflow"])
-        assert result.success is False
-        assert "Invalid installation permission" in result.error_message
+        assert result.success is False, "Result must not be empty"
+        assert "Invalid installation permission" in result.error_message, "Result must not be empty"
 
     def test_successful_creation(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setenv("GITHUB_APP_INSTALLATION_ID", "123")
@@ -344,9 +344,9 @@ class TestCreateToken:
         with patch("security.providers.github_provider._requests") as mock_req:
             mock_req.post.return_value = mock_resp
             result = p.create_token("test-token", scopes=["contents", "issues"])
-        assert result.success is True
-        assert result.new_secret_value == _FAKE_GHS
-        assert result.new_secret_id == "42"
+        assert result.success is True, "Result must not be empty"
+        assert result.new_secret_value == _FAKE_GHS, "Result must not be empty"
+        assert result.new_secret_id == "42", "Result must not be empty"
 
     def test_api_error_status_returns_failure(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setenv("GITHUB_APP_INSTALLATION_ID", "123")
@@ -355,8 +355,8 @@ class TestCreateToken:
         with patch("security.providers.github_provider._requests") as mock_req:
             mock_req.post.return_value = mock_resp
             result = p.create_token("test-token", scopes=["contents"])
-        assert result.success is False
-        assert "422" in result.error_message
+        assert result.success is False, "Result must not be empty"
+        assert "422" in result.error_message, "Result must not be empty"
 
     def test_network_error_returns_failure(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setenv("GITHUB_APP_INSTALLATION_ID", "123")
@@ -364,7 +364,7 @@ class TestCreateToken:
         with patch("security.providers.github_provider._requests") as mock_req:
             mock_req.post.side_effect = ConnectionError("timeout")
             result = p.create_token("test-token", scopes=["contents"])
-        assert result.success is False
+        assert result.success is False, "Result must not be empty"
 
     def test_201_with_no_token_field_returns_failure(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setenv("GITHUB_APP_INSTALLATION_ID", "123")
@@ -373,7 +373,7 @@ class TestCreateToken:
         with patch("security.providers.github_provider._requests") as mock_req:
             mock_req.post.return_value = mock_resp
             result = p.create_token("test-token", scopes=["contents"])
-        assert result.success is False
+        assert result.success is False, "Result must not be empty"
 
     def test_empty_scopes_allowed(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setenv("GITHUB_APP_INSTALLATION_ID", "123")
@@ -382,7 +382,7 @@ class TestCreateToken:
         with patch("security.providers.github_provider._requests") as mock_req:
             mock_req.post.return_value = mock_resp
             result = p.create_token("test-token", scopes=[])
-        assert result.success is True
+        assert result.success is True, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -395,14 +395,14 @@ class TestUpdateTokenScopes:
         p = _make_provider()
         with patch("security.providers.github_provider.HAS_REQUESTS", False):
             result = p.update_token_scopes("inst-123", ["contents"])
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_no_token_returns_false(self) -> None:
         config = ProviderConfig(ProviderType.GITHUB, api_url="https://api.github.com")
         p = GitHubTokenProvider(config)
         p.token = None
         result = p.update_token_scopes("inst-123", ["contents"])
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_success_200(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setenv("GITHUB_APP_INSTALLATION_ID", "123")
@@ -410,28 +410,28 @@ class TestUpdateTokenScopes:
         with patch("security.providers.github_provider._requests") as mock_req:
             mock_req.patch.return_value = _mock_response(200)
             result = p.update_token_scopes("123", ["contents"])
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_success_204(self) -> None:
         p = _make_provider(installation_id="123")
         with patch("security.providers.github_provider._requests") as mock_req:
             mock_req.patch.return_value = _mock_response(204)
             result = p.update_token_scopes("123", ["issues"])
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_api_error_returns_false(self) -> None:
         p = _make_provider(installation_id="123")
         with patch("security.providers.github_provider._requests") as mock_req:
             mock_req.patch.return_value = _mock_response(403)
             result = p.update_token_scopes("123", ["contents"])
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_exception_returns_false(self) -> None:
         p = _make_provider(installation_id="123")
         with patch("security.providers.github_provider._requests") as mock_req:
             mock_req.patch.side_effect = OSError("network")
             result = p.update_token_scopes("123", ["contents"])
-        assert result is False
+        assert result is False, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -445,46 +445,46 @@ class TestRevokeSecret:
         config = ProviderConfig(ProviderType.GITHUB)
         p = GitHubTokenProvider(config)
         result = p.revoke_secret("tok-id")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_no_requests_returns_false(self) -> None:
         p = _make_provider(token=_FAKE_GHS)
         with patch("security.providers.github_provider.HAS_REQUESTS", False):
             result = p.revoke_secret("tok-id")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_classic_pat_returns_false(self) -> None:
         p = _make_provider(token=_FAKE_GHP)
         result = p.revoke_secret("tok-id")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_installation_token_success(self) -> None:
         p = _make_provider(token=_FAKE_GHS)
         with patch("security.providers.github_provider._requests") as mock_req:
             mock_req.delete.return_value = _mock_response(204)
             result = p.revoke_secret("tok-id")
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_installation_token_200_success(self) -> None:
         p = _make_provider(token=_FAKE_GHS)
         with patch("security.providers.github_provider._requests") as mock_req:
             mock_req.delete.return_value = _mock_response(200)
             result = p.revoke_secret("tok-id")
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_installation_token_api_error_returns_false(self) -> None:
         p = _make_provider(token=_FAKE_GHS)
         with patch("security.providers.github_provider._requests") as mock_req:
             mock_req.delete.return_value = _mock_response(401)
             result = p.revoke_secret("tok-id")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_exception_returns_false(self) -> None:
         p = _make_provider(token=_FAKE_GHS)
         with patch("security.providers.github_provider._requests") as mock_req:
             mock_req.delete.side_effect = ConnectionError("timeout")
             result = p.revoke_secret("tok-id")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -498,13 +498,13 @@ class TestListSecrets:
         config = ProviderConfig(ProviderType.GITHUB)
         p = GitHubTokenProvider(config)
         result = p.list_secrets()
-        assert result == []
+        assert result == [], "Result must not be empty"
 
     def test_no_requests_returns_empty(self) -> None:
         p = _make_provider()
         with patch("security.providers.github_provider.HAS_REQUESTS", False):
             result = p.list_secrets()
-        assert result == []
+        assert result == [], "Result must not be empty"
 
     def test_success_200_returns_metadata(self) -> None:
         p = _make_provider()
@@ -512,24 +512,24 @@ class TestListSecrets:
         with patch("security.providers.github_provider._requests") as mock_req:
             mock_req.get.return_value = mock_resp
             result = p.list_secrets()
-        assert len(result) == 1
+        assert len(result) == 1, "Result must not be empty"
         meta = result[0]
         assert isinstance(meta, SecretMetadata)
-        assert meta.tags["github_login"] == "testuser"
+        assert meta.tags["github_login"] == "testuser", "Condition must be true"
 
     def test_api_error_returns_empty(self) -> None:
         p = _make_provider()
         with patch("security.providers.github_provider._requests") as mock_req:
             mock_req.get.return_value = _mock_response(401)
             result = p.list_secrets()
-        assert result == []
+        assert result == [], "Result must not be empty"
 
     def test_exception_returns_empty(self) -> None:
         p = _make_provider()
         with patch("security.providers.github_provider._requests") as mock_req:
             mock_req.get.side_effect = OSError("no network")
             result = p.list_secrets()
-        assert result == []
+        assert result == [], "Result must not be empty"
 
     def test_filter_tags_accepted(self) -> None:
         p = _make_provider()
@@ -537,7 +537,7 @@ class TestListSecrets:
         with patch("security.providers.github_provider._requests") as mock_req:
             mock_req.get.return_value = mock_resp
             result = p.list_secrets(filter_tags={"env": "prod"})
-        assert len(result) == 1
+        assert len(result) == 1, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -560,8 +560,8 @@ class TestRotateSecret:
         )
         with patch.object(p, "create_token", return_value=create_result):
             result = p.rotate_secret("my-token")
-        assert result.success is True
-        assert result.new_secret_value == new_token
+        assert result.success is True, "Result must not be empty"
+        assert result.new_secret_value == new_token, "Result must not be empty"
 
     def test_rotation_with_revoke_old(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setenv("GITHUB_APP_INSTALLATION_ID", "123")
@@ -575,7 +575,7 @@ class TestRotateSecret:
         with patch.object(p, "create_token", return_value=create_result):
             with patch.object(p, "revoke_secret", return_value=True) as mock_revoke:
                 result = p.rotate_secret("my-token", revoke_old=True)
-        assert result.success is True
+        assert result.success is True, "Result must not be empty"
         mock_revoke.assert_called_once_with("my-token")
 
     def test_rotation_failure_propagates(self) -> None:
@@ -587,12 +587,12 @@ class TestRotateSecret:
         )
         with patch.object(p, "create_token", return_value=create_result):
             result = p.rotate_secret("my-token")
-        assert result.success is False
-        assert result.error_message == "cannot create"
+        assert result.success is False, "Result must not be empty"
+        assert result.error_message == "cannot create", "Result must not be empty"
 
     def test_rotation_exception_returns_failure(self) -> None:
         p = _make_provider()
         with patch.object(p, "get_secret_metadata", side_effect=RuntimeError("boom")):
             result = p.rotate_secret("my-token")
-        assert result.success is False
-        assert "boom" in result.error_message
+        assert result.success is False, "Result must not be empty"
+        assert "boom" in result.error_message, "Result must not be empty"

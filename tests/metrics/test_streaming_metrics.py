@@ -18,15 +18,15 @@ class TestStreamingLoss:
     def test_initialization(self):
         """Test StreamingLoss initializes with zero state"""
         metric = StreamingLoss()
-        assert metric._sum == 0.0
-        assert metric._count == 0
-        assert metric.compute() == 0.0
+        assert metric._sum == 0.0, "_sum is not valid"
+        assert metric._count == 0, "Count must be greater than zero"
+        assert metric.compute() == 0.0, "Condition must be true"
 
     def test_single_update(self):
         """Test single loss update"""
         metric = StreamingLoss()
         metric.update(None, None, loss=1.5)
-        assert metric.compute() == 1.5
+        assert metric.compute() == 1.5, "Condition must be true"
 
     def test_multiple_updates(self):
         """Test averaging over multiple updates"""
@@ -37,7 +37,7 @@ class TestStreamingLoss:
             metric.update(None, None, loss=loss)
 
         expected_avg = sum(losses) / len(losses)
-        assert metric.compute() == expected_avg
+        assert metric.compute() == expected_avg, "Condition must be true"
 
     def test_reset_clears_state(self):
         """Test reset returns to initial state"""
@@ -45,12 +45,12 @@ class TestStreamingLoss:
         metric.update(None, None, loss=5.0)
         metric.update(None, None, loss=3.0)
 
-        assert metric.compute() == 4.0
+        assert metric.compute() == 4.0, "Condition must be true"
 
         metric.reset()
-        assert metric._sum == 0.0
-        assert metric._count == 0
-        assert metric.compute() == 0.0
+        assert metric._sum == 0.0, "_sum is not valid"
+        assert metric._count == 0, "Count must be greater than zero"
+        assert metric.compute() == 0.0, "Condition must be true"
 
     def test_tensor_fallback(self):
         """Test fallback to tensor mean when loss not provided"""
@@ -60,7 +60,7 @@ class TestStreamingLoss:
         tensor_loss = torch.tensor([1.0, 2.0, 3.0])
         metric.update(tensor_loss, None)
 
-        assert abs(metric.compute() - 2.0) < 0.01
+        assert abs(metric.compute() - 2.0) < 0.01, "Condition must be true"
 
     def test_numpy_fallback(self):
         """Test works with numpy arrays"""
@@ -69,7 +69,7 @@ class TestStreamingLoss:
         arr_loss = np.array([2.0, 4.0, 6.0])
         metric.update(arr_loss, None)
 
-        assert abs(metric.compute() - 4.0) < 0.01
+        assert abs(metric.compute() - 4.0) < 0.01, "Condition must be true"
 
 
 class TestStreamingAccuracyAdvanced:
@@ -83,7 +83,7 @@ class TestStreamingAccuracyAdvanced:
         metric.update(torch.tensor([]), torch.tensor([]))
 
         # Should return 0 for empty
-        assert metric.compute() == 0.0
+        assert metric.compute() == 0.0, "Condition must be true"
 
     def test_large_batch_accumulation(self):
         """Test accumulation over many large batches"""
@@ -102,7 +102,7 @@ class TestStreamingAccuracyAdvanced:
 
         # Should be around 75% accuracy (since we flipped 25%)
         acc = metric.compute()
-        assert 0.7 < acc < 0.8
+        assert 0.7 < acc < 0.8, "7 is not valid"
 
     def test_ignore_index_partial_masking(self):
         """Test ignore_index masks only specific tokens"""
@@ -115,7 +115,7 @@ class TestStreamingAccuracyAdvanced:
 
         # Only indices 0, 2, 4 count: 2 correct (0, 2) out of 3
         expected = 2.0 / 3.0
-        assert abs(metric.compute() - expected) < 0.01
+        assert abs(metric.compute() - expected) < 0.01, "Condition must be true"
 
     def test_mixed_correct_incorrect_batches(self):
         """Test mixed batches with varying accuracy"""
@@ -131,7 +131,7 @@ class TestStreamingAccuracyAdvanced:
         metric.update(torch.tensor([1, 0]), torch.tensor([1, 1]))
 
         # Overall: 4 correct out of 8
-        assert metric.compute() == 0.5
+        assert metric.compute() == 0.5, "Condition must be true"
 
 
 class TestStreamingMetricInteraction:
@@ -150,8 +150,8 @@ class TestStreamingMetricInteraction:
         acc_metric.update(torch.tensor([2, 2]), torch.tensor([2, 2]))
 
         # Each should have its own correct values
-        assert loss_metric.compute() == 2.0
-        assert acc_metric.compute() == 0.75
+        assert loss_metric.compute() == 2.0, "Condition must be true"
+        assert acc_metric.compute() == 0.75, "Condition must be true"
 
     def test_reset_one_doesnt_affect_other(self):
         """Test resetting one metric doesn't affect another"""
@@ -163,8 +163,8 @@ class TestStreamingMetricInteraction:
 
         metric1.reset()
 
-        assert metric1.compute() == 0.0
-        assert metric2.compute() == 3.0
+        assert metric1.compute() == 0.0, "Condition must be true"
+        assert metric2.compute() == 3.0, "Condition must be true"
 
 
 class TestStreamingEdgeCases:
@@ -176,8 +176,8 @@ class TestStreamingEdgeCases:
         loss = StreamingLoss()
 
         # Compute without any updates
-        assert acc.compute() == 0.0
-        assert loss.compute() == 0.0
+        assert acc.compute() == 0.0, "Condition must be true"
+        assert loss.compute() == 0.0, "Condition must be true"
 
     def test_very_small_values(self):
         """Test handling of very small loss values"""
@@ -188,8 +188,8 @@ class TestStreamingEdgeCases:
             metric.update(None, None, loss=loss)
 
         result = metric.compute()
-        assert result > 0
-        assert result < 1e-7
+        assert result > 0, "result must be greater than zero"
+        assert result < 1e-7, "Result must not be empty"
 
     def test_very_large_batches(self):
         """Test handling large batch sizes"""
@@ -203,7 +203,7 @@ class TestStreamingEdgeCases:
 
         result = metric.compute()
         # Should be around 1% accuracy for random 100-class
-        assert 0.0 <= result <= 0.05
+        assert 0.0 <= result <= 0.05, "Result must not be empty"
 
 
 if __name__ == "__main__":

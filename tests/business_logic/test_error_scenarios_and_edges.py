@@ -17,45 +17,45 @@ class TestBoundaryConditions:
     def test_zero_input(self):
         """Test handling zero input."""
         value = 0
-        assert value == 0
+        assert value == 0, "Value must be initialized"
 
     def test_negative_input(self):
         """Test handling negative input."""
         value = -5
-        assert value < 0
+        assert value < 0, "Value must be initialized"
 
     def test_very_large_input(self):
         """Test handling very large input."""
         value = 10**10
-        assert value > 0
+        assert value > 0, "value must be greater than zero"
 
     def test_empty_collection(self):
         """Test handling empty collection."""
         items = []
-        assert len(items) == 0
+        assert len(items) == 0, "Items must not be empty"
 
     def test_single_item(self):
         """Test handling single item."""
         items = [1]
-        assert len(items) == 1
+        assert len(items) == 1, "Items must not be empty"
 
     def test_exact_boundary(self):
         """Test exact boundary values."""
         threshold = 100
         value = 100
-        assert value == threshold
+        assert value == threshold, "Value must be initialized"
 
     def test_just_below_boundary(self):
         """Test just below boundary."""
         threshold = 100
         value = 99
-        assert value < threshold
+        assert value < threshold, "Value must be initialized"
 
     def test_just_above_boundary(self):
         """Test just above boundary."""
         threshold = 100
         value = 101
-        assert value > threshold
+        assert value > threshold, "value must be greater than zero"
 
     def test_multiple_boundaries(self):
         """Test multiple boundary conditions."""
@@ -63,18 +63,18 @@ class TestBoundaryConditions:
         max_val = 100
         test_vals = [0, 50, 100]
 
-        assert all(min_val <= v <= max_val for v in test_vals)
+        assert all(min_val <= v <= max_val for v in test_vals), "min_val is not valid"
 
     def test_boundary_with_float(self):
         """Test boundary with floating point."""
         value = 0.0
-        assert value == 0.0
+        assert value == 0.0, "Value must be initialized"
 
     def test_precision_boundary(self):
         """Test floating point precision boundary."""
         a = 0.1 + 0.2
         b = 0.3
-        assert abs(a - b) < 1e-10
+        assert abs(a - b) < 1e-10, "Condition must be true"
 
 
 class TestInvalidInputs:
@@ -83,7 +83,7 @@ class TestInvalidInputs:
     def test_none_input(self):
         """Test None input handling."""
         value = None
-        assert value is None
+        assert value is None, "Value must be initialized"
 
     def test_wrong_type(self):
         """Test wrong type input."""
@@ -92,7 +92,7 @@ class TestInvalidInputs:
             valid = False
         except ValueError:
             valid = True
-        assert valid
+        assert valid, "valid is not valid"
 
     def test_string_instead_of_number(self):
         """Test string where number expected."""
@@ -101,7 +101,7 @@ class TestInvalidInputs:
             valid = False
         except TypeError:
             valid = True
-        assert valid
+        assert valid, "valid is not valid"
 
     def test_invalid_array_index(self):
         """Test invalid array indexing."""
@@ -111,13 +111,13 @@ class TestInvalidInputs:
             valid = False
         except IndexError:
             valid = True
-        assert valid
+        assert valid, "valid is not valid"
 
     def test_invalid_dictionary_key(self):
         """Test invalid dictionary key."""
         d = {"a": 1}
         value = d.get("nonexistent", None)
-        assert value is None
+        assert value is None, "Value must be initialized"
 
     def test_invalid_operation(self):
         """Test invalid operation."""
@@ -126,7 +126,7 @@ class TestInvalidInputs:
             valid = False
         except ZeroDivisionError:
             valid = True
-        assert valid
+        assert valid, "valid is not valid"
 
     def test_invalid_file_path(self):
         """Test invalid file path."""
@@ -135,13 +135,13 @@ class TestInvalidInputs:
             valid = False
         except FileNotFoundError:
             valid = True
-        assert valid
+        assert valid, "valid is not valid"
 
     def test_invalid_configuration(self):
         """Test invalid configuration."""
         config = {}
         required_key = "key"
-        assert required_key not in config
+        assert required_key not in config, "Condition must be true"
 
     def test_malformed_json(self):
         """Test malformed JSON."""
@@ -152,7 +152,7 @@ class TestInvalidInputs:
             valid = False
         except json.JSONDecodeError:
             valid = True
-        assert valid
+        assert valid, "valid is not valid"
 
     def test_invalid_regex(self):
         """Test invalid regex pattern."""
@@ -163,7 +163,7 @@ class TestInvalidInputs:
             valid = False
         except re.error:
             valid = True
-        assert valid
+        assert valid, "valid is not valid"
 
 
 class TestResourceExhaustion:
@@ -176,7 +176,7 @@ class TestResourceExhaustion:
 
         exceeded = memory_used > memory_limit
 
-        assert exceeded
+        assert exceeded, "exceeded is not valid"
 
     def test_timeout_exceeded(self):
         """Test timeout handling."""
@@ -185,7 +185,7 @@ class TestResourceExhaustion:
 
         timed_out = elapsed_time > time_limit
 
-        assert timed_out
+        assert timed_out, "timed_out is not valid"
 
     def test_connection_limit(self):
         """Test connection limit."""
@@ -194,7 +194,7 @@ class TestResourceExhaustion:
 
         limit_exceeded = current_connections > max_connections
 
-        assert limit_exceeded
+        assert limit_exceeded, "limit_exceeded is not valid"
 
     def test_file_descriptor_limit(self):
         """Test file descriptor limit."""
@@ -203,7 +203,7 @@ class TestResourceExhaustion:
 
         limit_exceeded = used_fds > max_fds
 
-        assert limit_exceeded
+        assert limit_exceeded, "limit_exceeded is not valid"
 
     def test_queue_overflow(self):
         """Test queue overflow."""
@@ -212,7 +212,7 @@ class TestResourceExhaustion:
 
         overflowed = queue_size > queue_capacity
 
-        assert overflowed
+        assert overflowed, "overflowed is not valid"
 
     def test_storage_full(self):
         """Test storage full condition."""
@@ -221,7 +221,7 @@ class TestResourceExhaustion:
 
         is_full = used_storage >= total_storage
 
-        assert is_full
+        assert is_full, "is_full is not valid"
 
     def test_cpu_saturation(self):
         """Test CPU saturation."""
@@ -230,7 +230,7 @@ class TestResourceExhaustion:
 
         saturated = cpu_usage > cpu_threshold
 
-        assert saturated
+        assert saturated, "saturated is not valid"
 
 
 class TestConcurrencyIssues:
@@ -248,7 +248,7 @@ class TestConcurrencyIssues:
         increment()
         increment()
 
-        assert shared_value == 2
+        assert shared_value == 2, "Value must be initialized"
 
     def test_deadlock_prevention(self):
         """Test deadlock prevention."""
@@ -259,7 +259,7 @@ class TestConcurrencyIssues:
         lock1["acquired"] = True
         lock2["acquired"] = True
 
-        assert lock1["acquired"] and lock2["acquired"]
+        assert lock1["acquired"] and lock2["acquired"], "Condition must be true"
 
     def test_concurrent_modification(self):
         """Test concurrent modification safety."""
@@ -269,7 +269,7 @@ class TestConcurrencyIssues:
         items_copy = items.copy()
 
         for item in items_copy:
-            assert item is not None
+            assert item is not None, "item must be initialized"
 
     def test_stale_state_detection(self):
         """Test detecting stale state."""
@@ -278,7 +278,7 @@ class TestConcurrencyIssues:
 
         is_stale = version < current_version
 
-        assert is_stale
+        assert is_stale, "is_stale is not valid"
 
     def test_synchronization_point(self):
         """Test synchronization point."""
@@ -289,7 +289,7 @@ class TestConcurrencyIssues:
         ready = barrier_count == required_threads
 
         # After all increment
-        assert not ready  # Only 1 thread
+        assert not ready, "Condition must be true"
 
 
 class TestTimeoutScenarios:
@@ -302,7 +302,7 @@ class TestTimeoutScenarios:
 
         timed_out = elapsed > time_budget
 
-        assert timed_out
+        assert timed_out, "timed_out is not valid"
 
     def test_connection_timeout(self):
         """Test connection timeout."""
@@ -311,7 +311,7 @@ class TestTimeoutScenarios:
 
         timed_out = time_to_connect > timeout
 
-        assert timed_out
+        assert timed_out, "timed_out is not valid"
 
     def test_request_timeout(self):
         """Test HTTP request timeout."""
@@ -320,7 +320,7 @@ class TestTimeoutScenarios:
 
         timed_out = response_time > timeout
 
-        assert timed_out
+        assert timed_out, "timed_out is not valid"
 
     def test_graceful_shutdown_timeout(self):
         """Test graceful shutdown with timeout."""
@@ -329,7 +329,7 @@ class TestTimeoutScenarios:
 
         completed = actual_shutdown_time < shutdown_timeout
 
-        assert completed
+        assert completed, "completed is not valid"
 
     def test_timeout_with_partial_results(self):
         """Test timeout with partial results."""
@@ -338,7 +338,7 @@ class TestTimeoutScenarios:
 
         partial = items_processed < items_to_process
 
-        assert partial
+        assert partial, "partial is not valid"
 
 
 class TestStateInconsistencies:
@@ -350,7 +350,7 @@ class TestStateInconsistencies:
 
         valid_next = next_state in ["validating", "failed"]
 
-        assert not valid_next
+        assert not valid_next, "Condition must be true"
 
     def test_missing_state_update(self):
         """Test missing state update."""
@@ -359,7 +359,7 @@ class TestStateInconsistencies:
         expected_keys = {"initialized", "trained", "validated"}
         has_all = all(k in state for k in expected_keys)
 
-        assert not has_all
+        assert not has_all, "Condition must be true"
 
     def test_stale_data_detection(self):
         """Test detecting stale data."""
@@ -369,7 +369,7 @@ class TestStateInconsistencies:
 
         is_stale = (current_time - data_timestamp) > max_staleness
 
-        assert is_stale
+        assert is_stale, "is_stale is not valid"
 
     def test_consistency_check_failure(self):
         """Test consistency check."""
@@ -378,7 +378,7 @@ class TestStateInconsistencies:
 
         consistent = expected_sum == actual_sum
 
-        assert not consistent
+        assert not consistent, "Condition must be true"
 
     def test_version_mismatch(self):
         """Test version mismatch."""
@@ -387,7 +387,7 @@ class TestStateInconsistencies:
 
         compatible = actual_version == expected_version
 
-        assert not compatible
+        assert not compatible, "Condition must be true"
 
 
 class TestRecoveryMechanisms:
@@ -403,7 +403,7 @@ class TestRecoveryMechanisms:
             if attempts >= 2:
                 break
 
-        assert attempts == 2
+        assert attempts == 2, "attempts is not valid"
 
     def test_fallback_value(self):
         """Test fallback value."""
@@ -412,7 +412,7 @@ class TestRecoveryMechanisms:
 
         value = primary or fallback
 
-        assert value == "default"
+        assert value == "default", "Value must be initialized"
 
     def test_checkpoint_restoration(self):
         """Test checkpoint restoration."""
@@ -420,7 +420,7 @@ class TestRecoveryMechanisms:
 
         restored = checkpoint.copy()
 
-        assert restored["epoch"] == 5
+        assert restored["epoch"] == 5, "rest is not valid"
 
     def test_partial_recovery(self):
         """Test partial recovery."""
@@ -429,7 +429,7 @@ class TestRecoveryMechanisms:
 
         remaining = total - completed
 
-        assert remaining == 25
+        assert remaining == 25, "remaining is not valid"
 
     def test_recovery_logging(self):
         """Test recovery logging."""
@@ -437,7 +437,7 @@ class TestRecoveryMechanisms:
 
         recovery_log.append({"action": "restore", "status": "success"})
 
-        assert len(recovery_log) > 0
+        assert len(recovery_log) > 0, "Recovery_log must not be empty"
 
 
 class TestCornerCases:
@@ -446,27 +446,27 @@ class TestCornerCases:
     def test_empty_string(self):
         """Test empty string."""
         s = ""
-        assert len(s) == 0
+        assert len(s) == 0, "S must not be empty"
 
     def test_whitespace_only_string(self):
         """Test whitespace string."""
         s = "   "
-        assert s.strip() == ""
+        assert s.strip() == "", "Condition must be true"
 
     def test_unicode_characters(self):
         """Test unicode handling."""
         s = "你好世界"
-        assert len(s) == 4
+        assert len(s) == 4, "S must not be empty"
 
     def test_very_large_number(self):
         """Test very large number."""
         n = 10**100
-        assert n > 0
+        assert n > 0, "n must be greater than zero"
 
     def test_very_small_float(self):
         """Test very small float."""
         x = 1e-300
-        assert x > 0
+        assert x > 0, "x must be greater than zero"
 
     def test_circular_reference(self):
         """Test circular reference handling."""
@@ -474,7 +474,7 @@ class TestCornerCases:
         b = {"ref": a}
         a["ref"] = b
 
-        assert a["ref"] is b
+        assert a["ref"] is b, "Condition must be true"
 
     def test_deeply_nested_structure(self):
         """Test deeply nested structure."""
@@ -485,18 +485,18 @@ class TestCornerCases:
             current["next"] = {}
             current = current["next"]
 
-        assert d is not None
+        assert d is not None, "d must be initialized"
 
     def test_mixed_type_comparison(self):
         """Test mixed type comparison."""
-        assert "1" != 1
+        assert "1" != 1, "Condition must be true"
         assert [1] != (1,)
 
     def test_boolean_edge_cases(self):
         """Test boolean edge cases."""
-        assert bool(0) is False
-        assert bool(1) is True
-        assert bool("") is False
-        assert bool("text") is True
-        assert bool([]) is False
-        assert bool([0]) is True
+        assert bool(0) is False, "Condition must be true"
+        assert bool(1) is True, "Condition must be true"
+        assert bool("") is False, "Condition must be true"
+        assert bool("text") is True, "Condition must be true"
+        assert bool([]) is False, "Condition must be true"
+        assert bool([0]) is True, "Condition must be true"

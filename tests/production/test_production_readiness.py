@@ -68,9 +68,9 @@ class TestProductionErrorHandling:
         except ValueError as e:
             log_exception(e, {"operation": "test", "user_id": "123"})
 
-        assert len(log_entries) == 1
-        assert log_entries[0]["exception_type"] == "ValueError"
-        assert "context" in log_entries[0]
+        assert len(log_entries) == 1, "Log_entries must not be empty"
+        assert log_entries[0]["exception_type"] == "ValueError", "Value must be initialized"
+        assert "context" in log_entries[0], "Condition must be true"
 
     def test_error_categorization(self) -> None:
         """Test error categorization for different exception types."""
@@ -84,10 +84,10 @@ class TestProductionErrorHandling:
                 return "io_error"
             return "internal_error"
 
-        assert categorize_error(ValueError("bad value")) == "validation_error"
-        assert categorize_error(ConnectionError("no network")) == "network_error"
-        assert categorize_error(FileNotFoundError("missing")) == "io_error"
-        assert categorize_error(RuntimeError("unknown")) == "internal_error"
+        assert categorize_error(ValueError("bad value")) == "validation_error", "Value must be initialized"
+        assert categorize_error(ConnectionError("no network")) == "network_error", "Error should be raised or set"
+        assert categorize_error(FileNotFoundError("missing")) == "io_error", "Error should be raised or set"
+        assert categorize_error(RuntimeError("unknown")) == "internal_error", "Error should be raised or set"
 
     def test_error_recovery_with_fallback(self) -> None:
         """Test error recovery using fallback values."""
@@ -100,7 +100,7 @@ class TestProductionErrorHandling:
                 return default
 
         result = fetch_config_with_fallback("timeout_ms", 5000)
-        assert result == 5000
+        assert result == 5000, "Result must not be empty"
 
     def test_error_aggregation(self) -> None:
         """Test aggregating multiple errors."""
@@ -113,7 +113,7 @@ class TestProductionErrorHandling:
             except ValueError as e:
                 errors.append(e)
 
-        assert len(errors) == 3
+        assert len(errors) == 3, "Errors must not be empty"
 
     def test_error_rate_tracking(self) -> None:
         """Test tracking error rates."""
@@ -130,7 +130,7 @@ class TestProductionErrorHandling:
         [process_with_tracking(i < 3) for i in range(10)]
 
         error_rate = error_counts["errors"] / error_counts["total"]
-        assert error_rate == 0.3
+        assert error_rate == 0.3, "Error should be raised or set"
 
 
 # ============================================================================
@@ -168,13 +168,13 @@ class TestGracefulDegradation:
         for _ in range(3):
             cb.record_failure()
 
-        assert cb.is_open is True
-        assert cb.can_proceed() is False
+        assert cb.is_open is True, "is_open is not valid"
+        assert cb.can_proceed() is False, "Condition must be true"
 
         # Reset on success
         cb.record_success()
-        assert cb.is_open is False
-        assert cb.can_proceed() is True
+        assert cb.is_open is False, "is_open is not valid"
+        assert cb.can_proceed() is True, "Condition must be true"
 
     def test_timeout_handling(self) -> None:
         """Test timeout handling in operations."""
@@ -191,7 +191,7 @@ class TestGracefulDegradation:
 
         # Should succeed with generous timeout
         result = operation_with_timeout(1000)
-        assert result == "success"
+        assert result == "success", "Result must not be empty"
 
     def test_retry_with_backoff(self) -> None:
         """Test retry logic with exponential backoff."""
@@ -215,7 +215,7 @@ class TestGracefulDegradation:
             return None
 
         result = retry_with_backoff(lambda: None, max_retries=3)
-        assert result == "success"
+        assert result == "success", "Result must not be empty"
         assert attempts == [10, 20, 40]  # Exponential backoff
 
     def test_fallback_chain(self) -> None:
@@ -239,7 +239,7 @@ class TestGracefulDegradation:
             return "all_failed"
 
         result = execute_with_fallbacks([primary, secondary, tertiary])
-        assert result == "tertiary_result"
+        assert result == "tertiary_result", "Result must not be empty"
 
     def test_feature_flag_degradation(self) -> None:
         """Test feature flag-based degradation."""
@@ -257,7 +257,7 @@ class TestGracefulDegradation:
             return "none"
 
         result = get_analytics()
-        assert result == "basic"
+        assert result == "basic", "Result must not be empty"
 
 
 # ============================================================================
@@ -280,10 +280,10 @@ class TestHealthChecks:
             )
 
         result = check_component("database", True)
-        assert result.status == "healthy"
+        assert result.status == "healthy", "Result must not be empty"
 
         result = check_component("cache", False)
-        assert result.status == "unhealthy"
+        assert result.status == "unhealthy", "Result must not be empty"
 
     def test_aggregate_health_status(self) -> None:
         """Test aggregating multiple health checks."""
@@ -297,7 +297,7 @@ class TestHealthChecks:
         status_priority = {"healthy": 0, "degraded": 1, "unhealthy": 2}
         overall_status = max(checks, key=lambda c: status_priority[c.status]).status
 
-        assert overall_status == "degraded"
+        assert overall_status == "degraded", "overall_status is not valid"
 
     def test_health_check_timeout(self) -> None:
         """Test health check with timeout."""
@@ -313,7 +313,7 @@ class TestHealthChecks:
             return HealthCheckResult("service", "healthy", latency, "OK")
 
         result = health_check_with_timeout(1000)
-        assert result.status == "healthy"
+        assert result.status == "healthy", "Result must not be empty"
 
     def test_readiness_probe(self) -> None:
         """Test Kubernetes-style readiness probe."""
@@ -327,7 +327,7 @@ class TestHealthChecks:
         critical_deps = ["database"]
         is_ready = all(dependencies_ready.get(d, False) for d in critical_deps)
 
-        assert is_ready is True
+        assert is_ready is True, "is_ready is not valid"
 
     def test_liveness_probe(self) -> None:
         """Test Kubernetes-style liveness probe."""
@@ -336,7 +336,7 @@ class TestHealthChecks:
             # Check if main thread is responsive
             return threading.main_thread().is_alive()
 
-        assert liveness_check() is True
+        assert liveness_check() is True, "Condition must be true"
 
 
 # ============================================================================
@@ -372,15 +372,15 @@ class TestResourceManagement:
 
         # Acquire connections
         conns = [pool.acquire() for _ in range(3)]
-        assert len(pool.in_use) == 3
-        assert len(pool.available) == 2
+        assert len(pool.in_use) == 3, "Collection must not be empty"
+        assert len(pool.available) == 2, "Collection must not be empty"
 
         # Release connections
         for conn in conns:
             if conn is not None:
                 pool.release(conn)
-        assert len(pool.in_use) == 0
-        assert len(pool.available) == 5
+        assert len(pool.in_use) == 0, "Collection must not be empty"
+        assert len(pool.available) == 5, "Collection must not be empty"
 
     def test_memory_limit_enforcement(self) -> None:
         """Test memory limit enforcement."""
@@ -395,7 +395,7 @@ class TestResourceManagement:
                 items.pop(0)
                 items.append(i)
 
-        assert len(items) == max_items
+        assert len(items) == max_items, "Items must not be empty"
 
     def test_concurrent_request_limiting(self) -> None:
         """Test limiting concurrent requests."""
@@ -422,7 +422,7 @@ class TestResourceManagement:
             for f in as_completed(futures):
                 f.result()
 
-        assert max_observed <= max_concurrent
+        assert max_observed <= max_concurrent, "max_observed is not valid"
 
 
 # ============================================================================
@@ -453,9 +453,9 @@ class TestMonitoringIntegration:
         total_requests = sum(metrics["request_count"])
         total_errors = sum(metrics["error_count"])
 
-        assert avg_latency == 72.5
-        assert total_requests == 10
-        assert total_errors == 2
+        assert avg_latency == 72.5, "avg_latency is not valid"
+        assert total_requests == 10, "total_requests is not valid"
+        assert total_errors == 2, "Error should be raised or set"
 
     def test_alert_threshold_detection(self) -> None:
         """Test alert threshold detection."""
@@ -482,8 +482,8 @@ class TestMonitoringIntegration:
                     }
                 )
 
-        assert len(alerts) == 1
-        assert alerts[0]["metric"] == "error_rate"
+        assert len(alerts) == 1, "Alerts must not be empty"
+        assert alerts[0]["metric"] == "error_rate", "Error should be raised or set"
 
     def test_structured_logging(self) -> None:
         """Test structured logging format."""
@@ -501,10 +501,10 @@ class TestMonitoringIntegration:
         }
 
         # Verify structure
-        assert "timestamp" in log_entry
-        assert "level" in log_entry
-        assert "trace_id" in log_entry
-        assert "metadata" in log_entry
+        assert "timestamp" in log_entry, "Condition must be true"
+        assert "level" in log_entry, "Condition must be true"
+        assert "trace_id" in log_entry, "Condition must be true"
+        assert "metadata" in log_entry, "Data must not be empty"
 
     def test_distributed_tracing_context(self) -> None:
         """Test distributed tracing context propagation."""
@@ -524,5 +524,5 @@ class TestMonitoringIntegration:
             }
 
         child = create_child_span(trace_context)
-        assert child["trace_id"] == trace_context["trace_id"]
-        assert child["parent_span_id"] == trace_context["span_id"]
+        assert child["trace_id"] == trace_context["trace_id"], "Condition must be true"
+        assert child["parent_span_id"] == trace_context["span_id"], "Condition must be true"

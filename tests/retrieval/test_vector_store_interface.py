@@ -40,15 +40,15 @@ class TestVectorStoreInterface:
         assert hasattr(store, "health_check")
 
         # Check they're callable
-        assert callable(store.add)
-        assert callable(store.search)
-        assert callable(store.delete)
-        assert callable(store.get)
-        assert callable(store.count)
-        assert callable(store.clear)
-        assert callable(store.save)
-        assert callable(store.load)
-        assert callable(store.health_check)
+        assert callable(store.add), "Condition must be true"
+        assert callable(store.search), "Condition must be true"
+        assert callable(store.delete), "Condition must be true"
+        assert callable(store.get), "Condition must be true"
+        assert callable(store.count), "Count must be greater than zero"
+        assert callable(store.clear), "Condition must be true"
+        assert callable(store.save), "Condition must be true"
+        assert callable(store.load), "Condition must be true"
+        assert callable(store.health_check), "Condition must be true"
 
 
 class TestFAISSStoreAdd:
@@ -61,8 +61,8 @@ class TestFAISSStoreAdd:
         vectors = np.random.randn(10, 128).astype(np.float32)
         ids = store.add(vectors)
 
-        assert len(ids) == 10
-        assert store.count() == 10
+        assert len(ids) == 10, "Ids must not be empty"
+        assert store.count() == 10, "Count must be greater than zero"
         assert all(isinstance(vid, str) for vid in ids)
 
     def test_add_vectors_with_custom_ids(self):
@@ -74,8 +74,8 @@ class TestFAISSStoreAdd:
 
         ids = store.add(vectors, ids=custom_ids)
 
-        assert ids == custom_ids
-        assert store.count() == 5
+        assert ids == custom_ids, "ids is not valid"
+        assert store.count() == 5, "Count must be greater than zero"
 
     def test_add_vectors_with_metadata(self):
         """Test adding vectors with metadata"""
@@ -90,11 +90,11 @@ class TestFAISSStoreAdd:
 
         ids = store.add(vectors, metadata=metadata)
 
-        assert len(ids) == 3
+        assert len(ids) == 3, "Ids must not be empty"
 
         # Retrieve and check metadata
         results = store.get(ids[0])
-        assert results[0]["metadata"] == metadata[0]
+        assert results[0]["metadata"] == metadata[0], "Result must not be empty"
 
     def test_add_dimension_validation(self):
         """Test that dimension is validated"""
@@ -168,9 +168,9 @@ class TestFAISSStoreSearch:
         query = vectors[0]  # Use first vector as query
         results = store.search(query, top_k=5)
 
-        assert len(results) <= 5
-        assert all("score" in r for r in results)
-        assert all("document" in r for r in results)
+        assert len(results) <= 5, "Results must not be empty"
+        assert all("score" in r for r in results), "Result must not be empty"
+        assert all("document" in r for r in results), "Result must not be empty"
 
     def test_search_with_metadata(self):
         """Test search returns metadata"""
@@ -184,8 +184,8 @@ class TestFAISSStoreSearch:
         query = vectors[0]
         results = store.search(query, top_k=3)
 
-        assert len(results) > 0
-        assert "metadata" in results[0]["document"]
+        assert len(results) > 0, "Results must not be empty"
+        assert "metadata" in results[0]["document"], "Result must not be empty"
 
     def test_search_top_k(self):
         """Test that k parameter works"""
@@ -198,7 +198,7 @@ class TestFAISSStoreSearch:
 
         for k in [1, 5, 10]:
             results = store.search(query, top_k=k)
-            assert len(results) <= k
+            assert len(results) <= k, "Results must not be empty"
 
     def test_search_invalid_query(self):
         """Test search with invalid query"""
@@ -231,14 +231,14 @@ class TestFAISSStoreGetDelete:
 
         # Get single vector
         results = store.get(ids[0])
-        assert len(results) == 1
-        assert results[0]["id"] == ids[0]
+        assert len(results) == 1, "Results must not be empty"
+        assert results[0]["id"] == ids[0], "Result must not be empty"
 
         # Get multiple vectors
         results = store.get([ids[0], ids[2]])
-        assert len(results) == 2
-        assert results[0]["id"] == ids[0]
-        assert results[1]["id"] == ids[2]
+        assert len(results) == 2, "Results must not be empty"
+        assert results[0]["id"] == ids[0], "Result must not be empty"
+        assert results[1]["id"] == ids[2], "Result must not be empty"
 
     def test_get_nonexistent_id(self):
         """Test getting non-existent ID raises error"""
@@ -259,8 +259,8 @@ class TestFAISSStoreGetDelete:
 
         # Delete single vector
         deleted = store.delete(ids[0])
-        assert deleted == 1
-        assert store.count() == 9
+        assert deleted == 1, "deleted is not valid"
+        assert store.count() == 9, "Count must be greater than zero"
 
         # Verify it's gone
         with pytest.raises(VectorNotFoundError):
@@ -275,8 +275,8 @@ class TestFAISSStoreGetDelete:
 
         # Delete multiple
         deleted = store.delete([ids[0], ids[1], ids[2]])
-        assert deleted == 3
-        assert store.count() == 7
+        assert deleted == 3, "deleted is not valid"
+        assert store.count() == 7, "Count must be greater than zero"
 
 
 class TestFAISSStorePersistence:
@@ -299,13 +299,13 @@ class TestFAISSStorePersistence:
             store2 = FAISSStore(index_dir=tmpdir, index_name="test")
             store2.load()
 
-            assert store2.count() == 20
-            assert store2.dimension == 64
+            assert store2.count() == 20, "Count must be greater than zero"
+            assert store2.dimension == 64, "dimension is not valid"
 
             # Verify IDs are preserved
             results = store2.get(ids[0])
-            assert results[0]["id"] == ids[0]
-            assert results[0]["metadata"] == metadata[0]
+            assert results[0]["id"] == ids[0], "Result must not be empty"
+            assert results[0]["metadata"] == metadata[0], "Result must not be empty"
 
     def test_load_nonexistent(self):
         """Test loading non-existent index"""
@@ -323,12 +323,12 @@ class TestFAISSStoreUtilities:
         """Test count method"""
         store = FAISSStore()
 
-        assert store.count() == 0
+        assert store.count() == 0, "Count must be greater than zero"
 
         vectors = np.random.randn(10, 32).astype(np.float32)
         store.add(vectors)
 
-        assert store.count() == 10
+        assert store.count() == 10, "Count must be greater than zero"
 
     def test_clear(self):
         """Test clear method"""
@@ -337,12 +337,12 @@ class TestFAISSStoreUtilities:
         vectors = np.random.randn(15, 64).astype(np.float32)
         store.add(vectors)
 
-        assert store.count() == 15
+        assert store.count() == 15, "Count must be greater than zero"
 
         store.clear()
 
-        assert store.count() == 0
-        assert store.index is None
+        assert store.count() == 0, "Count must be greater than zero"
+        assert store.index is None, "index is not valid"
 
     def test_health_check(self):
         """Test health check"""
@@ -350,19 +350,19 @@ class TestFAISSStoreUtilities:
 
         # Empty store
         health = store.health_check()
-        assert health["healthy"] is False
-        assert health["index_loaded"] is False
-        assert health["backend"] == "faiss"
+        assert health["healthy"] is False, "Condition must be true"
+        assert health["index_loaded"] is False, "Condition must be true"
+        assert health["backend"] == "faiss", "Condition must be true"
 
         # With data
         vectors = np.random.randn(5, 32).astype(np.float32)
         store.add(vectors)
 
         health = store.health_check()
-        assert health["healthy"] is True
-        assert health["index_loaded"] is True
-        assert health["num_vectors"] == 5
-        assert health["dimension"] == 32
+        assert health["healthy"] is True, "Condition must be true"
+        assert health["index_loaded"] is True, "Condition must be true"
+        assert health["num_vectors"] == 5, "Condition must be true"
+        assert health["dimension"] == 32, "Condition must be true"
 
 
 class TestFAISSStoreIntegration:
@@ -381,7 +381,7 @@ class TestFAISSStoreIntegration:
             # Search
             query = vectors[0]
             results1 = store.search(query, top_k=10)
-            assert len(results1) == 10
+            assert len(results1) == 10, "Results1 must not be empty"
 
             # Save
             store.save()
@@ -392,10 +392,10 @@ class TestFAISSStoreIntegration:
 
             # Search again
             results2 = store2.search(query, top_k=10)
-            assert len(results2) == 10
+            assert len(results2) == 10, "Results2 must not be empty"
 
             # Results should be similar
-            assert results1[0]["document"]["id"] == results2[0]["document"]["id"]
+            assert results1[0]["document"]["id"] == results2[0]["document"]["id"], "Result must not be empty"
 
     def test_incremental_additions(self):
         """Test adding vectors incrementally"""
@@ -407,7 +407,7 @@ class TestFAISSStoreIntegration:
             metadata = [{"batch": batch, "idx": i} for i in range(10)]
             store.add(vectors, metadata=metadata)
 
-        assert store.count() == 50
+        assert store.count() == 50, "Count must be greater than zero"
 
         # Search should work across all batches
         query = np.random.randn(64).astype(np.float32)
@@ -415,7 +415,7 @@ class TestFAISSStoreIntegration:
 
         # Check we get results from different batches
         batches = set(r["document"]["metadata"]["batch"] for r in results)
-        assert len(batches) > 1
+        assert len(batches) > 1, "Batches must not be empty"
 
 
 if __name__ == "__main__":

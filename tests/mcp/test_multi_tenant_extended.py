@@ -13,9 +13,9 @@ def test_tenant_principal_creation():
     tenant1_principal = Principal(principal_id="tenant1:user1")
     tenant2_principal = Principal(principal_id="tenant2:user1")
 
-    assert tenant1_principal.principal_id != tenant2_principal.principal_id
-    assert "tenant1" in tenant1_principal.principal_id
-    assert "tenant2" in tenant2_principal.principal_id
+    assert tenant1_principal.principal_id != tenant2_principal.principal_id, "principal_id is not valid"
+    assert "tenant1" in tenant1_principal.principal_id, "Condition must be true"
+    assert "tenant2" in tenant2_principal.principal_id, "Condition must be true"
 
 
 def test_tenant_isolation_pattern():
@@ -29,9 +29,9 @@ def test_tenant_isolation_pattern():
     tenant1_data = get_tenant_data("tenant1")
     tenant2_data = get_tenant_data("tenant2")
 
-    assert "item1" in tenant1_data
-    assert "item1" not in tenant2_data
-    assert "item2" in tenant2_data
+    assert "item1" in tenant1_data, "Data must not be empty"
+    assert "item1" not in tenant2_data, "Data must not be empty"
+    assert "item2" in tenant2_data, "Data must not be empty"
 
 
 def test_tenant_specific_configuration():
@@ -41,9 +41,9 @@ def test_tenant_specific_configuration():
         "tenant2": {"rate_limit": 50, "features": ["feature_b"]},
     }
 
-    assert tenant_configs["tenant1"]["rate_limit"] == 100
-    assert "feature_a" in tenant_configs["tenant1"]["features"]
-    assert "feature_b" not in tenant_configs["tenant1"]["features"]
+    assert tenant_configs["tenant1"]["rate_limit"] == 100, "Condition must be true"
+    assert "feature_a" in tenant_configs["tenant1"]["features"], "Condition must be true"
+    assert "feature_b" not in tenant_configs["tenant1"]["features"], "Condition must be true"
 
 
 def test_tenant_resource_quota():
@@ -101,7 +101,7 @@ def test_tenant_from_principal():
         return parts[0] if len(parts) > 1 else "default"
 
     tenant_id = get_tenant_id(principal)
-    assert tenant_id == "tenant1"
+    assert tenant_id == "tenant1", "tenant_id is not valid"
 
 
 def test_tenant_specific_tools():
@@ -111,9 +111,9 @@ def test_tenant_specific_tools():
     def get_available_tools(tenant_id: str):
         return tenant_tools.get(tenant_id, [])
 
-    assert "tool_a" in get_available_tools("tenant1")
-    assert "tool_c" not in get_available_tools("tenant1")
-    assert "tool_c" in get_available_tools("tenant2")
+    assert "tool_a" in get_available_tools("tenant1"), "Condition must be true"
+    assert "tool_c" not in get_available_tools("tenant1"), "Condition must be true"
+    assert "tool_c" in get_available_tools("tenant2"), "Condition must be true"
 
 
 def test_tenant_data_encryption():
@@ -130,7 +130,7 @@ def test_tenant_data_encryption():
     encrypted2 = encrypt_tenant_data("tenant2", "secret")
 
     # Same data, different tenants = different encryption
-    assert encrypted1 != encrypted2
+    assert encrypted1 != encrypted2, "encrypted1 is not valid"
 
 
 def test_tenant_audit_logging():
@@ -144,8 +144,8 @@ def test_tenant_audit_logging():
     log_tenant_action("tenant2", "delete_resource")
 
     tenant1_logs = [entry for entry in audit_log if entry["tenant"] == "tenant1"]
-    assert len(tenant1_logs) == 1
-    assert tenant1_logs[0]["action"] == "create_resource"
+    assert len(tenant1_logs) == 1, "Tenant1_logs must not be empty"
+    assert tenant1_logs[0]["action"] == "create_resource", "Condition must be true"
 
 
 def test_multi_tenant_concurrent_access():
@@ -169,8 +169,8 @@ def test_multi_tenant_concurrent_access():
     for t in threads:
         t.join()
 
-    assert results["tenant1"] == 5
-    assert results["tenant2"] == 5
+    assert results["tenant1"] == 5, "Result must not be empty"
+    assert results["tenant2"] == 5, "Result must not be empty"
 
 
 def test_tenant_metadata():
@@ -183,6 +183,6 @@ def test_tenant_metadata():
     def get_tenant_plan(tenant_id: str) -> str:
         return tenant_metadata.get(tenant_id, {}).get("plan", "free")
 
-    assert get_tenant_plan("tenant1") == "enterprise"
-    assert get_tenant_plan("tenant2") == "basic"
-    assert get_tenant_plan("tenant3") == "free"
+    assert get_tenant_plan("tenant1") == "enterprise", "Condition must be true"
+    assert get_tenant_plan("tenant2") == "basic", "Condition must be true"
+    assert get_tenant_plan("tenant3") == "free", "Condition must be true"

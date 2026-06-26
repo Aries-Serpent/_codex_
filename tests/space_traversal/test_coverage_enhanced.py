@@ -43,17 +43,17 @@ def test_parse_coverage_xml_to_map_basic(tmp_path: Path):
     # Parse
     cov_map = ci.parse_coverage_xml_to_map(xml_path, tmp_path)
 
-    assert "src/module.py" in cov_map
+    assert "src/module.py" in cov_map, "Condition must be true"
     data = cov_map["src/module.py"]
-    assert "covered_lines" in data
-    assert "percent" in data
-    assert "total_lines" in data
-    assert 1 in data["covered_lines"]
-    assert 2 in data["covered_lines"]
-    assert 4 in data["covered_lines"]
-    assert 3 not in data["covered_lines"]
-    assert data["total_lines"] == 5
-    assert data["percent"] == 0.6  # 3/5
+    assert "covered_lines" in data, "Data must not be empty"
+    assert "percent" in data, "Data must not be empty"
+    assert "total_lines" in data, "Data must not be empty"
+    assert 1 in data["covered_lines"], "Data must not be empty"
+    assert 2 in data["covered_lines"], "Data must not be empty"
+    assert 4 in data["covered_lines"], "Data must not be empty"
+    assert 3 not in data["covered_lines"], "Data must not be empty"
+    assert data["total_lines"] == 5, "Data must not be empty"
+    assert data["percent"] == 0.6, "Data must not be empty"
 
 
 def test_parse_coverage_xml_to_map_empty():
@@ -64,7 +64,7 @@ def test_parse_coverage_xml_to_map_empty():
     with tempfile.TemporaryDirectory() as tmpdir:
         nonexistent = Path(tmpdir) / "nonexistent.xml"
         cov_map = ci.parse_coverage_xml_to_map(nonexistent)
-        assert cov_map == {}
+        assert cov_map == {}, "cov_map is not valid"
 
 
 def test_parse_coverage_xml_to_map_missing_source(tmp_path: Path):
@@ -93,10 +93,10 @@ def test_parse_coverage_xml_to_map_missing_source(tmp_path: Path):
     cov_map = ci.parse_coverage_xml_to_map(xml_path, tmp_path)
 
     # Should still parse but estimate from covered lines
-    assert "src/missing.py" in cov_map
+    assert "src/missing.py" in cov_map, "Condition must be true"
     data = cov_map["src/missing.py"]
     assert data["covered_lines"] == [1, 5]
-    assert data["total_lines"] == 5  # Estimated from max line number
+    assert data["total_lines"] == 5, "Data must not be empty"
 
 
 def test_discover_and_parse_coverage_disabled(tmp_path: Path):
@@ -104,7 +104,7 @@ def test_discover_and_parse_coverage_disabled(tmp_path: Path):
     cfg = {"scoring": {"coverage": {"enabled": False}}}
 
     result = ci.discover_and_parse_coverage(cfg, tmp_path)
-    assert result is None
+    assert result is None, "Result must not be empty"
 
 
 def test_discover_and_parse_coverage_default_patterns(tmp_path: Path):
@@ -146,15 +146,15 @@ def test_discover_and_parse_coverage_default_patterns(tmp_path: Path):
     finally:
         ci.ROOT = original_root
 
-    assert result is not None
-    assert "test.py" in result
+    assert result is not None, "result must be initialized"
+    assert "test.py" in result, "Result must not be empty"
 
     # Check that coverage_map.json was written
     map_file = artifacts_dir / "coverage_map.json"
-    assert map_file.exists()
+    assert map_file.exists(), "Condition must be true"
 
     data = json.loads(map_file.read_text())
-    assert "test.py" in data
+    assert "test.py" in data, "Data must not be empty"
 
 
 def test_discover_and_parse_coverage_custom_patterns(tmp_path: Path):
@@ -201,8 +201,8 @@ def test_discover_and_parse_coverage_custom_patterns(tmp_path: Path):
     finally:
         ci.ROOT = original_root
 
-    assert result is not None
-    assert "app.py" in result
+    assert result is not None, "result must be initialized"
+    assert "app.py" in result, "Result must not be empty"
 
 
 def test_parse_coverage_xml_backward_compat(tmp_path: Path):

@@ -46,8 +46,8 @@ def test_roundtrip_basic(tmp_path):
         max_length=4,
     )
     token_ids = tk.encode("hello world")
-    assert len(token_ids) == 4
-    assert tk.decode(token_ids).startswith("hello")
+    assert len(token_ids) == 4, "Token_ids must not be empty"
+    assert tk.decode(token_ids).startswith("hello"), "Condition must be true"
 
 
 def test_cli_encode_decode_roundtrip(monkeypatch, tmp_path):
@@ -67,7 +67,7 @@ def test_cli_encode_decode_roundtrip(monkeypatch, tmp_path):
             return self
 
         def encode(self, text):
-            assert text == "hello codex"
+            assert text == "hello codex", "text is not valid"
             return [1, 2, 3, 4]
 
         def decode(self, ids):
@@ -82,7 +82,7 @@ def test_cli_encode_decode_roundtrip(monkeypatch, tmp_path):
 
     decoded = decode_fn(ids)
     assert isinstance(decoded, str)
-    assert decoded == "hello codex"
+    assert decoded == "hello codex", "decoded is not valid"
 
 
 def test_cli_encode_decode_presence():

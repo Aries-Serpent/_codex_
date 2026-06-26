@@ -15,7 +15,7 @@ def test_offline_functional_trainer_callable():
     pytest.importorskip("numpy")
     pytest.importorskip("torch")
     trainer = trainers.resolve_and_instantiate("offline:functional")
-    assert callable(trainer)
+    assert callable(trainer), "Condition must be true"
 
 
 def test_offline_heuristic_reward_model_scores():
@@ -27,7 +27,7 @@ def test_offline_heuristic_reward_model_scores():
             {"prompt": "Prompt", "completion": "Give an example", "label": 1.0},
         ]
     )
-    assert summary["samples"] == 1
+    assert summary["samples"] == 1, "Condition must be true"
 
 
 def test_plugins_cli_lists_trainer_and_reward_entries():
@@ -38,9 +38,9 @@ def test_plugins_cli_lists_trainer_and_reward_entries():
 
     runner = CliRunner()
     trainers_result = runner.invoke(plugins_cli.app, ["list", "trainers"])
-    assert trainers_result.exit_code == 0
-    assert "offline:functional" in trainers_result.stdout
+    assert trainers_result.exit_code == 0, "Result must not be empty"
+    assert "offline:functional" in trainers_result.stdout, "Result must not be empty"
 
     reward_result = runner.invoke(plugins_cli.app, ["list", "reward_models"])
-    assert reward_result.exit_code == 0
-    assert "offline:heuristic" in reward_result.stdout
+    assert reward_result.exit_code == 0, "Result must not be empty"
+    assert "offline:heuristic" in reward_result.stdout, "Result must not be empty"

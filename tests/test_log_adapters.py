@@ -18,7 +18,7 @@ def test_log_adapters_write(tmp_path):
     cur.execute("SELECT level, message, meta FROM app_log ORDER BY id")
     rows = cur.fetchall()
     con.close()
-    assert rows == [
+    assert rows == [, "rows is not valid"
         ("INFO", "test event", None),
         ("INFO", "another event", None),
     ]

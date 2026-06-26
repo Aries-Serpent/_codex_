@@ -36,9 +36,9 @@ class TestOrchestratorCoordination:
         orch1 = PhysicsGuidedDeveloperOrchestrator(session_id="orch1")
         orch2 = PhysicsGuidedDeveloperOrchestrator(session_id="orch2")
 
-        assert orch1.session_id == "orch1"
-        assert orch2.session_id == "orch2"
-        assert orch1.session_id != orch2.session_id
+        assert orch1.session_id == "orch1", "session_id is not valid"
+        assert orch2.session_id == "orch2", "session_id is not valid"
+        assert orch1.session_id != orch2.session_id, "session_id is not valid"
 
     def test_orchestrator_isolation(self):
         """Test orchestrators maintain separate state."""
@@ -48,7 +48,7 @@ class TestOrchestratorCoordination:
         orch1.app_type = AppType.PYTHON_CLI
         orch2.app_type = AppType.PYTHON_API
 
-        assert orch1.app_type != orch2.app_type
+        assert orch1.app_type != orch2.app_type, "app_type is not valid"
 
     def test_orchestrator_shared_requirements(self):
         """Test orchestrators can work with shared requirements."""
@@ -64,7 +64,7 @@ class TestOrchestratorCoordination:
         result1 = orch1.analyze_user_requirements(shared_req)
         result2 = orch2.analyze_user_requirements(shared_req)
 
-        assert result1["app_type"] == result2["app_type"]
+        assert result1["app_type"] == result2["app_type"], "Result must not be empty"
 
 
 # ============================================================================
@@ -86,8 +86,8 @@ class TestTaskDelegation:
 
         architecture = orch.suggest_architecture(requirements)
 
-        assert "components" in architecture
-        assert len(architecture["components"]) > 0
+        assert "components" in architecture, "Condition must be true"
+        assert len(architecture["components"]) > 0, "Collection must not be empty"
 
     def test_delegate_component_generation(self):
         """Test delegating component generation."""
@@ -101,7 +101,7 @@ class TestTaskDelegation:
         architecture = orch.suggest_architecture(requirements)
         components = architecture["components"]
 
-        assert len(components) >= 2  # At least main + config
+        assert len(components) >= 2, "Components must not be empty"
 
     def test_delegation_with_dependencies(self):
         """Test task delegation respects dependencies."""
@@ -132,8 +132,8 @@ class TestPriorityManagement:
         architecture = orch.suggest_architecture(requirements)
 
         for component in architecture["components"]:
-            assert "priority" in component
-            assert 0 <= component["priority"] <= 1
+            assert "priority" in component, "Condition must be true"
+            assert 0 <= component["priority"] <= 1, "0 is not valid"
 
     def test_high_priority_components(self):
         """Test main components get high priority."""
@@ -146,8 +146,8 @@ class TestPriorityManagement:
             (c for c in architecture["components"] if c["component_id"] == "main"), None
         )
 
-        assert main_component is not None
-        assert main_component["priority"] >= 0.8
+        assert main_component is not None, "main_component must be initialized"
+        assert main_component["priority"] >= 0.8, "Value must be greater than zero"
 
     def test_implementation_order_respects_priority(self):
         """Test implementation order considers priority."""
@@ -158,7 +158,7 @@ class TestPriorityManagement:
         order = architecture.get("recommended_order", [])
 
         # Should have recommended order
-        assert len(order) > 0
+        assert len(order) > 0, "Order must not be empty"
 
 
 # ============================================================================
@@ -177,13 +177,13 @@ class TestConflictResolution:
         req1 = {"app_type": "python_cli", "app_name": "tool"}
         orch.analyze_user_requirements(req1)
 
-        assert orch.app_type == AppType.PYTHON_CLI
+        assert orch.app_type == AppType.PYTHON_CLI, "app_type is not valid"
 
         # Then set as API (should overwrite)
         req2 = {"app_type": "python_api", "app_name": "api"}
         orch.analyze_user_requirements(req2)
 
-        assert orch.app_type == AppType.PYTHON_API
+        assert orch.app_type == AppType.PYTHON_API, "app_type is not valid"
 
     def test_missing_required_variable_handling(self):
         """Test handling of missing required variables."""
@@ -197,9 +197,9 @@ class TestConflictResolution:
         result = orch.analyze_user_requirements(requirements)
 
         # Should identify missing variables
-        assert len(result["missing_variables"]) > 0
+        assert len(result["missing_variables"]) > 0, "Collection must not be empty"
         # Should not crash
-        assert result["completeness"] < 1.0
+        assert result["completeness"] < 1.0, "Result must not be empty"
 
     def test_invalid_variable_type_handling(self):
         """Test handling of invalid variable types."""
@@ -213,7 +213,7 @@ class TestConflictResolution:
 
         # Should not crash with invalid app_type
         result = orch.analyze_user_requirements(requirements)
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
 
 # ============================================================================
@@ -238,7 +238,7 @@ class TestLoadBalancing:
         arch2 = orch2.suggest_architecture(requirements)
 
         # Both should generate similar architectures
-        assert len(arch1["components"]) == len(arch2["components"])
+        assert len(arch1["components"]) == len(arch2["components"]), "Collection must not be empty"
 
     def test_component_complexity_distribution(self):
         """Test components have varying complexity."""
@@ -251,7 +251,7 @@ class TestLoadBalancing:
         complexities = [c["complexity"] for c in architecture["components"]]
 
         # Should have variety in complexity
-        assert len(set(complexities)) >= 1
+        assert len(set(complexities)) >= 1, "Collection must not be empty"
 
 
 # ============================================================================
@@ -275,7 +275,7 @@ class TestCommunicationPatterns:
             orch.analyze_user_requirements(requirements)
 
             # Should have logged messages
-            assert mock_log.call_count > 0
+            assert mock_log.call_count > 0, "call_count must be positive"
 
     def test_orchestrator_state_tracking(self):
         """Test orchestrator tracks development history."""
@@ -290,12 +290,12 @@ class TestCommunicationPatterns:
         """Test orchestrator progresses through phases."""
         orch = PhysicsGuidedDeveloperOrchestrator()
 
-        assert orch.current_phase == DevelopmentPhase.REQUIREMENTS
+        assert orch.current_phase == DevelopmentPhase.REQUIREMENTS, "current_phase is not valid"
 
         orch.app_type = AppType.PYTHON_CONSOLE
         orch.suggest_architecture({})
 
-        assert orch.current_phase == DevelopmentPhase.ARCHITECTURE
+        assert orch.current_phase == DevelopmentPhase.ARCHITECTURE, "current_phase is not valid"
 
 
 # ============================================================================
@@ -315,7 +315,7 @@ class TestPhysicsIntegration:
 
         orch = PhysicsGuidedDeveloperOrchestrator()
 
-        assert orch.physics_orchestrator == mock_instance
+        assert orch.physics_orchestrator == mock_instance, "physics_orchestrator is not valid"
 
     @patch("agents.developer_orchestrator.ADVANCED_PHYSICS", False)
     def test_works_without_physics(self):
@@ -330,8 +330,8 @@ class TestPhysicsIntegration:
 
         result = orch.analyze_user_requirements(requirements)
 
-        assert result is not None
-        assert result["completeness"] >= 0
+        assert result is not None, "result must be initialized"
+        assert result["completeness"] >= 0, "Value must be greater than zero"
 
     @patch("agents.developer_orchestrator.ADVANCED_PHYSICS", True)
     @patch("agents.developer_orchestrator.NUMPY_AVAILABLE", True)
@@ -350,7 +350,7 @@ class TestPhysicsIntegration:
         architecture = orch.suggest_architecture({})
 
         # Should still generate architecture
-        assert "components" in architecture
+        assert "components" in architecture, "Condition must be true"
 
 
 # ============================================================================
@@ -368,8 +368,8 @@ class TestErrorHandling:
         result = orch.analyze_user_requirements({})
 
         # Should not crash
-        assert result is not None
-        assert "completeness" in result
+        assert result is not None, "result must be initialized"
+        assert "completeness" in result, "Result must not be empty"
 
     def test_handle_empty_components(self):
         """Test handling empty component generation."""
@@ -379,20 +379,20 @@ class TestErrorHandling:
         architecture = orch.suggest_architecture({})
 
         # Should still generate basic components
-        assert len(architecture["components"]) > 0
+        assert len(architecture["components"]) > 0, "Collection must not be empty"
 
     def test_handle_invalid_phase_transition(self):
         """Test orchestrator handles phase transitions gracefully."""
         orch = PhysicsGuidedDeveloperOrchestrator()
 
         # Start in requirements phase
-        assert orch.current_phase == DevelopmentPhase.REQUIREMENTS
+        assert orch.current_phase == DevelopmentPhase.REQUIREMENTS, "current_phase is not valid"
 
         # Jump to architecture
         orch.current_phase = DevelopmentPhase.ARCHITECTURE
 
         # Should accept manual phase changes
-        assert orch.current_phase == DevelopmentPhase.ARCHITECTURE
+        assert orch.current_phase == DevelopmentPhase.ARCHITECTURE, "current_phase is not valid"
 
 
 # ============================================================================
@@ -418,9 +418,9 @@ class TestMultiOrchestratorScenarios:
         results = [orch.analyze_user_requirements(requirements) for orch in orchestrators]
 
         # All should succeed
-        assert all(r is not None for r in results)
+        assert all(r is not None for r in results), "r must be initialized"
         # All should get same completeness
-        assert len(set(r["completeness"] for r in results)) == 1
+        assert len(set(r["completeness"] for r in results)) == 1, "Collection must not be empty"
 
     def test_sequential_orchestrator_workflow(self):
         """Test sequential workflow through multiple orchestrators."""
@@ -440,8 +440,8 @@ class TestMultiOrchestratorScenarios:
         architecture = orch2.suggest_architecture(requirements)
 
         # Both should succeed
-        assert analysis["completeness"] >= 0
-        assert len(architecture["components"]) > 0
+        assert analysis["completeness"] >= 0, "Value must be greater than zero"
+        assert len(architecture["components"]) > 0, "Collection must not be empty"
 
     def test_orchestrator_handoff(self):
         """Test handing off work between orchestrators."""
@@ -466,7 +466,7 @@ class TestMultiOrchestratorScenarios:
 
         architecture = orch2.suggest_architecture(requirements)
 
-        assert architecture is not None
+        assert architecture is not None, "architecture must be initialized"
 
 
 # ============================================================================
@@ -497,8 +497,8 @@ class TestConcurrency:
         ]
 
         # All should succeed
-        assert all(r is not None for r in results)
-        assert len(results) == 5
+        assert all(r is not None for r in results), "r must be initialized"
+        assert len(results) == 5, "Results must not be empty"
 
     def test_thread_safety_simulation(self):
         """Test orchestrators don't interfere with each other."""
@@ -514,8 +514,8 @@ class TestConcurrency:
         orch2.suggest_architecture({"routes": ["/"]})
 
         # States should remain separate
-        assert orch1.app_type == AppType.PYTHON_CLI
-        assert orch2.app_type == AppType.PYTHON_WEB
+        assert orch1.app_type == AppType.PYTHON_CLI, "app_type is not valid"
+        assert orch2.app_type == AppType.PYTHON_WEB, "app_type is not valid"
 
 
 # ============================================================================
@@ -549,7 +549,7 @@ class TestResourceManagement:
         orch.suggest_architecture({})
 
         # Components should be stored
-        assert len(orch.components) > 0
+        assert len(orch.components) > 0, "Collection must not be empty"
         assert isinstance(orch.components, list)
 
     def test_memory_efficiency(self):
@@ -567,4 +567,4 @@ class TestResourceManagement:
             )
 
         # Required variables should be bounded
-        assert len(orch.required_variables) < 50  # Reasonable limit
+        assert len(orch.required_variables) < 50, "Collection must not be empty"

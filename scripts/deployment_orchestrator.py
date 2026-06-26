@@ -203,7 +203,7 @@ class DeploymentOrchestrator:
             return (result.returncode, result.stdout, result.stderr)
         except subprocess.CalledProcessError as e:
             error_type = type(e).__name__
-            self.logger.error(f"Command failed: <ERROR_TYPE>")
+            self.logger.error("Command failed: <ERROR_TYPE>")
             return (e.returncode, e.stdout, e.stderr)
 
     def phase_1_pre_deployment_verification(self) -> PhaseResult:
@@ -364,7 +364,7 @@ class DeploymentOrchestrator:
 
         except Exception as e:
             error_type = type(e).__name__
-            self.logger.debug(f"Exception: <ERROR_TYPE>")
+            self.logger.debug("Exception: <ERROR_TYPE>")
             result.status = PhaseStatus.FAILED
             result.errors.append(f"Phase exception: {e!s}")
             self.logger.exception(f"{phase.value} failed with exception")
@@ -430,7 +430,7 @@ class DeploymentOrchestrator:
 
         except Exception as e:
             error_type = type(e).__name__
-            self.logger.debug(f"Exception: <ERROR_TYPE>")
+            self.logger.debug("Exception: <ERROR_TYPE>")
             result.status = PhaseStatus.FAILED
             result.errors.append(f"Phase exception: {e!s}")
             self.logger.exception(f"{phase.value} failed with exception")
@@ -606,7 +606,7 @@ class DeploymentOrchestrator:
 
         except Exception as e:
             error_type = type(e).__name__
-            self.logger.debug(f"Exception: <ERROR_TYPE>")
+            self.logger.debug("Exception: <ERROR_TYPE>")
             result.status = PhaseStatus.FAILED
             result.errors.append(f"Phase exception: {e!s}")
             self.logger.exception(f"{phase.value} failed with exception")
@@ -756,7 +756,7 @@ class DeploymentOrchestrator:
 
         except Exception as e:
             error_type = type(e).__name__
-            self.logger.debug(f"Exception: <ERROR_TYPE>")
+            self.logger.debug("Exception: <ERROR_TYPE>")
             result.status = PhaseStatus.FAILED
             result.errors.append(f"Phase exception: {e!s}")
             self.logger.exception(f"{phase.value} failed with exception")
@@ -819,7 +819,7 @@ class DeploymentOrchestrator:
 
         except Exception as e:
             error_type = type(e).__name__
-            self.logger.debug(f"Exception: <ERROR_TYPE>")
+            self.logger.debug("Exception: <ERROR_TYPE>")
             result.status = PhaseStatus.FAILED
             result.errors.append(f"Phase exception: {e!s}")
             self.logger.exception(f"{phase.value} failed with exception")

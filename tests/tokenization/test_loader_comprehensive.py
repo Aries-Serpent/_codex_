@@ -30,12 +30,12 @@ def test_ensure_special_tokens_pad_fallback():
     result = _ensure_special_tokens(mock_tokenizer)
 
     # Verify pad_token falls back to eos_token
-    assert result.pad_token == "[EOS]"
+    assert result.pad_token == "[EOS]", "Result must not be empty"
 
     # Verify add_special_tokens was called
     result.add_special_tokens.assert_called_once()
     call_args = result.add_special_tokens.call_args[0][0]
-    assert "pad_token" in call_args
+    assert "pad_token" in call_args, "Condition must be true"
 
 
 def test_ensure_special_tokens_eos_fallback():
@@ -52,10 +52,10 @@ def test_ensure_special_tokens_eos_fallback():
     result = _ensure_special_tokens(mock_tokenizer)
 
     # Verify eos_token falls back to pad_token
-    assert result.eos_token == "[PAD]"
+    assert result.eos_token == "[PAD]", "Result must not be empty"
 
     # Verify result is the same tokenizer
-    assert result is mock_tokenizer
+    assert result is mock_tokenizer, "Result must not be empty"
 
 
 def test_ensure_special_tokens_default_pad():
@@ -73,8 +73,8 @@ def test_ensure_special_tokens_default_pad():
     result = _ensure_special_tokens(mock_tokenizer)
 
     # Verify pad_token gets default [PAD]
-    assert result.pad_token == "[PAD]"
-    assert result.eos_token == "[PAD]"
+    assert result.pad_token == "[PAD]", "Result must not be empty"
+    assert result.eos_token == "[PAD]", "Result must not be empty"
 
 
 def test_load_from_file_basic(tmp_path):
@@ -112,7 +112,7 @@ def test_load_from_file_basic(tmp_path):
             mock_fast_cls.assert_called_once_with(tokenizer_object=mock_tok_obj)
 
             # Verify model_max_length was set
-            assert result.model_max_length == 512
+            assert result.model_max_length == 512, "Result must not be empty"
 
 
 def test_load_from_file_special_tokens_configured(tmp_path):
@@ -140,7 +140,7 @@ def test_load_from_file_special_tokens_configured(tmp_path):
 
             # Verify special tokens were configured
             # After _ensure_special_tokens, pad_token should be set
-            assert result.add_special_tokens.called
+            assert result.add_special_tokens.called, "Result must not be empty"
 
 
 def test_load_from_model_name_remote(tmp_path):
@@ -165,8 +165,8 @@ def test_load_from_model_name_remote(tmp_path):
         # Verify load_from_pretrained was called with correct arguments
         mock_load.assert_called_once()
         call_kwargs = mock_load.call_args[1]
-        assert call_kwargs["cache_dir"] == str(cache_dir)
-        assert call_kwargs["local_files_only"] is False  # allow_remote=True
+        assert call_kwargs["cache_dir"] == str(cache_dir), "Condition must be true"
+        assert call_kwargs["local_files_only"] is False, "Condition must be true"
 
 
 def test_load_from_model_name_offline(tmp_path):
@@ -188,7 +188,7 @@ def test_load_from_model_name_offline(tmp_path):
 
         # Verify local_files_only=True when allow_remote=False
         call_kwargs = mock_load.call_args[1]
-        assert call_kwargs["local_files_only"] is True
+        assert call_kwargs["local_files_only"] is True, "Condition must be true"
 
 
 def test_load_from_model_name_with_cache_dir(tmp_path):
@@ -209,7 +209,7 @@ def test_load_from_model_name_with_cache_dir(tmp_path):
 
         # Verify cache_dir was passed as string
         call_kwargs = mock_load.call_args[1]
-        assert call_kwargs["cache_dir"] == str(cache_dir)
+        assert call_kwargs["cache_dir"] == str(cache_dir), "Condition must be true"
 
 
 def test_load_tokenizer_with_tokenizer_file(tmp_path):
@@ -230,7 +230,7 @@ def test_load_tokenizer_with_tokenizer_file(tmp_path):
 
         # Verify _load_from_file was called
         mock_load_file.assert_called_once()
-        assert result is mock_tokenizer
+        assert result is mock_tokenizer, "Result must not be empty"
 
 
 def test_load_tokenizer_with_model_name(tmp_path):
@@ -249,8 +249,8 @@ def test_load_tokenizer_with_model_name(tmp_path):
         # Verify _load_from_model_name was called with correct args
         mock_load_model.assert_called_once()
         call_args = mock_load_model.call_args[0]
-        assert call_args[0] == "gpt2"
-        assert call_args[2] is False  # allow_remote
+        assert call_args[0] == "gpt2", "Condition must be true"
+        assert call_args[2] is False, "Condition must be true"
 
 
 def test_load_tokenizer_missing_file_error():
@@ -309,7 +309,7 @@ def test_load_tokenizer_with_model_name_or_path_alias():
         # Verify model name was recognized
         mock_load_model.assert_called_once()
         call_args = mock_load_model.call_args[0]
-        assert call_args[0] == "bert-base-uncased"
+        assert call_args[0] == "bert-base-uncased", "Condition must be true"
 
 
 def test_load_tokenizer_cache_dir_creation(tmp_path):
@@ -326,7 +326,7 @@ def test_load_tokenizer_cache_dir_creation(tmp_path):
         load_tokenizer(config, cache_dir=cache_dir)
 
         # Verify cache directory was created
-        assert cache_dir.exists()
+        assert cache_dir.exists(), "Condition must be true"
 
 
 def test_load_tokenizer_none_config():

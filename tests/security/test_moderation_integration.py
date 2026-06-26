@@ -72,7 +72,7 @@ class TestSimpleCliModeration:
             runner = CliRunner()
             result = runner.invoke(cli, ["infer", "--prompt", "blocked content"])
 
-        assert (
+        assert (, "Condition must be true"
             result.exit_code != 0
         ), f"Expected non-zero exit on moderation rejection, got {result.exit_code}"
 
@@ -94,8 +94,8 @@ class TestSimpleCliModeration:
             result = runner.invoke(cli, ["infer", "--prompt", "blocked content"])
 
         # Must not leak the internal match term
-        assert "blocked_term" not in (result.output or "")
-        assert "test_policy" not in (result.output or "")
+        assert "blocked_term" not in (result.output or ""), "Result must not be empty"
+        assert "test_policy" not in (result.output or ""), "Result must not be empty"
 
     def test_accepted_input_proceeds_to_model(self) -> None:
         """Accepted prompt is passed through to the model (moderation not blocking)."""
@@ -120,7 +120,7 @@ class TestSimpleCliModeration:
             result = runner.invoke(cli, ["infer", "--prompt", "hello"])
 
         assert result.exit_code == 0, f"Expected 0, got {result.exit_code}: {result.output}"
-        assert "safe output" in result.output
+        assert "safe output" in result.output, "Result must not be empty"
 
     def test_moderation_settings_use_fail_closed(self) -> None:
         """ModerationAdapter is always instantiated with enabled=True, fail_open=False."""
@@ -215,7 +215,7 @@ class TestPredictEndpointModeration:
 
             response = client.post("/predict", json={"prompt": "blocked content"})
 
-        assert (
+        assert (, "Condition must be true"
             response.status_code == 400
         ), f"Expected 400 on moderation rejection, got {response.status_code}"
 
@@ -231,8 +231,8 @@ class TestPredictEndpointModeration:
             response = client.post("/predict", json={"prompt": "blocked content"})
 
         body = response.text
-        assert "blocked_term" not in body
-        assert "test_policy" not in body
+        assert "blocked_term" not in body, "Condition must be true"
+        assert "test_policy" not in body, "Condition must be true"
 
     def test_accepted_input_returns_200(self, client) -> None:
         """Accepted input should proceed normally (moderation not blocking)."""
@@ -243,7 +243,7 @@ class TestPredictEndpointModeration:
 
             response = client.post("/predict", json={"prompt": "hello"})
 
-        assert (
+        assert (, "Condition must be true"
             response.status_code == 200
         ), f"Expected 200 for accepted prompt, got {response.status_code}"
 
@@ -259,8 +259,8 @@ class TestPredictEndpointModeration:
         call_args = mock_cls.call_args
         assert call_args is not None, "ModerationAdapter was never instantiated"
         settings: ModerationSettings = call_args.args[0]
-        assert settings.enabled is True
-        assert settings.fail_open is False
+        assert settings.enabled is True, "enabled is not valid"
+        assert settings.fail_open is False, "fail_open is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -316,7 +316,7 @@ class TestLLMClientModeration:
             )
 
         llm._client.chat.completions.create.assert_called_once()
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     def test_summarize_code_rejected_input_raises(self) -> None:
         """summarize_code raises ModerationRejection when prompt is blocked."""
@@ -356,7 +356,7 @@ class TestLLMClientModeration:
 
             llm.summarize_code("def foo(): pass")
 
-        assert (
+        assert (, "Condition must be true"
             call_order[0] == "moderation"
         ), f"Expected moderation before API call, got order: {call_order}"
 
@@ -389,8 +389,8 @@ class TestOrchestratorModeration:
                 orchestrator.delegate_task("blocked content", task_type="general")
             )
 
-        assert result.success is False
-        assert result.error is not None
+        assert result.success is False, "Result must not be empty"
+        assert result.error is not None, "error must be initialized"
 
     def test_rejected_prompt_error_does_not_leak_reasons(self) -> None:
         """ExecutionResult.error must not expose internal moderation details."""
@@ -410,8 +410,8 @@ class TestOrchestratorModeration:
                 orchestrator.delegate_task("blocked content", task_type="general")
             )
 
-        assert "blocked_term" not in (result.error or "")
-        assert "test_policy" not in (result.error or "")
+        assert "blocked_term" not in (result.error or ""), "Result must not be empty"
+        assert "test_policy" not in (result.error or ""), "Result must not be empty"
 
     def test_moderation_called_before_rate_limits(self) -> None:
         """Moderation must be invoked before _enforce_rate_limits."""
@@ -445,7 +445,7 @@ class TestOrchestratorModeration:
 
         assert "moderation" in call_order, "Moderation was never called"
         if "rate_limit" in call_order:
-            assert call_order.index("moderation") < call_order.index(
+            assert call_order.index("moderation") < call_order.index(, "call_ is not valid"
                 "rate_limit"
             ), f"Moderation must come before rate limiting, got: {call_order}"
 
@@ -465,7 +465,7 @@ class TestOrchestratorModeration:
                 orchestrator.delegate_task("safe task", task_type="general")
             )
 
-        assert result.success is True
+        assert result.success is True, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -494,8 +494,8 @@ class TestAutonomousRunnerModeration:
                 agent.execute("blocked task content")
             )
 
-        assert result.success is False
-        assert result.error is not None
+        assert result.success is False, "Result must not be empty"
+        assert result.error is not None, "error must be initialized"
 
     def test_rejected_task_error_does_not_leak_reasons(self) -> None:
         """ExecutionResult.error must not expose internal moderation details."""
@@ -513,8 +513,8 @@ class TestAutonomousRunnerModeration:
                 agent.execute("blocked task content")
             )
 
-        assert "blocked_term" not in (result.error or "")
-        assert "test_policy" not in (result.error or "")
+        assert "blocked_term" not in (result.error or ""), "Result must not be empty"
+        assert "test_policy" not in (result.error or ""), "Result must not be empty"
 
     def test_moderation_called_before_model_selection(self) -> None:
         """Moderation must fire before select_model() is invoked."""
@@ -544,7 +544,7 @@ class TestAutonomousRunnerModeration:
 
         assert "moderation" in call_order, "Moderation was never called"
         assert "select_model" in call_order, "select_model was never called"
-        assert call_order.index("moderation") < call_order.index(
+        assert call_order.index("moderation") < call_order.index(, "call_ is not valid"
             "select_model"
         ), f"Moderation must come before model selection, got: {call_order}"
 
@@ -561,7 +561,7 @@ class TestAutonomousRunnerModeration:
 
             result = asyncio.get_event_loop().run_until_complete(agent.execute("safe task"))
 
-        assert result.success is True
+        assert result.success is True, "Result must not be empty"
 
     def test_moderation_settings_fail_closed(self) -> None:
         """ModerationAdapter must be instantiated with enabled=True, fail_open=False."""
@@ -579,8 +579,8 @@ class TestAutonomousRunnerModeration:
         call_args = mock_cls.call_args
         assert call_args is not None, "ModerationAdapter was never instantiated"
         settings: ModerationSettings = call_args.args[0]
-        assert settings.enabled is True
-        assert settings.fail_open is False
+        assert settings.enabled is True, "enabled is not valid"
+        assert settings.fail_open is False, "fail_open is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -608,4 +608,4 @@ class TestModerationCounter:
         # If it's a noop counter the call returns silently; if real Prometheus is
         # installed we just verify the call doesn't raise.
         labels_obj = _moderation_decisions_total.labels(stage="input", verdict="accepted")
-        assert labels_obj is not None
+        assert labels_obj is not None, "labels_obj must be initialized"

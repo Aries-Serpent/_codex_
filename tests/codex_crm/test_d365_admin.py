@@ -24,8 +24,8 @@ class TestEmitD365Config:
         out_dir = tmp_path / "d365" / "config"
         emit_d365_config(str(out_dir))
 
-        assert out_dir.exists()
-        assert out_dir.is_dir()
+        assert out_dir.exists(), "Condition must be true"
+        assert out_dir.is_dir(), "Condition must be true"
 
     @patch("codex_crm.d365_admin.generate.load_cdm")
     def test_emit_d365_config_creates_tables(self, mock_cdm, tmp_path):
@@ -38,15 +38,15 @@ class TestEmitD365Config:
         emit_d365_config(str(out_dir))
 
         tables_file = out_dir / "tables.csv"
-        assert tables_file.exists()
+        assert tables_file.exists(), "Condition must be true"
 
         with open(tables_file, encoding="utf-8") as f:
             reader = csv.DictReader(f)
             rows = list(reader)
 
-        assert len(rows) == 1
-        assert rows[0]["table"] == "cdx_assignment"
-        assert rows[0]["display_name"] == "Assignment"
+        assert len(rows) == 1, "Rows must not be empty"
+        assert rows[0]["table"] == "cdx_assignment", "Condition must be true"
+        assert rows[0]["display_name"] == "Assignment", "Condition must be true"
 
     @patch("codex_crm.d365_admin.generate.load_cdm")
     def test_emit_d365_config_creates_columns(self, mock_cdm, tmp_path):
@@ -77,21 +77,21 @@ class TestEmitD365Config:
         emit_d365_config(str(out_dir))
 
         columns_file = out_dir / "columns.csv"
-        assert columns_file.exists()
+        assert columns_file.exists(), "Condition must be true"
 
         with open(columns_file, encoding="utf-8") as f:
             reader = csv.DictReader(f)
             rows = list(reader)
 
-        assert len(rows) == 2
-        assert rows[0]["logical_name"] == "cdx_status"
-        assert rows[0]["display_name"] == "Status"
-        assert rows[0]["required"] == "Yes"
-        assert rows[0]["optionset"] == "open;closed"
+        assert len(rows) == 2, "Rows must not be empty"
+        assert rows[0]["logical_name"] == "cdx_status", "Condition must be true"
+        assert rows[0]["display_name"] == "Status", "Condition must be true"
+        assert rows[0]["required"] == "Yes", "Condition must be true"
+        assert rows[0]["optionset"] == "open;closed", "Condition must be true"
 
-        assert rows[1]["logical_name"] == "cdx_priority"
-        assert rows[1]["type"] == "Integer"
-        assert rows[1]["required"] == "No"
+        assert rows[1]["logical_name"] == "cdx_priority", "Condition must be true"
+        assert rows[1]["type"] == "Integer", "Condition must be true"
+        assert rows[1]["required"] == "No", "Condition must be true"
 
     @patch("codex_crm.d365_admin.generate.load_cdm")
     def test_emit_d365_config_creates_slas(self, mock_cdm, tmp_path):
@@ -104,14 +104,14 @@ class TestEmitD365Config:
         emit_d365_config(str(out_dir))
 
         slas_file = out_dir / "slas.csv"
-        assert slas_file.exists()
+        assert slas_file.exists(), "Condition must be true"
 
         with open(slas_file, encoding="utf-8") as f:
             reader = csv.DictReader(f)
             rows = list(reader)
 
-        assert len(rows) == 1
-        assert rows[0]["name"] == "cdx_assignment_standard"
+        assert len(rows) == 1, "Rows must not be empty"
+        assert rows[0]["name"] == "cdx_assignment_standard", "Condition must be true"
 
 
 class TestD365Key:
@@ -121,14 +121,14 @@ class TestD365Key:
         """Test that codex_ prefix is replaced with cdx_."""
         from codex_crm.d365_admin.generate import _d365_key
 
-        assert _d365_key("codex_status") == "cdx_status"
-        assert _d365_key("codex_priority") == "cdx_priority"
+        assert _d365_key("codex_status") == "cdx_status", "Condition must be true"
+        assert _d365_key("codex_priority") == "cdx_priority", "Condition must be true"
 
     def test_d365_key_no_prefix(self):
         """Test key without codex_ prefix."""
         from codex_crm.d365_admin.generate import _d365_key
 
-        assert _d365_key("custom_field") == "custom_field"
+        assert _d365_key("custom_field") == "custom_field", "Condition must be true"
 
 
 class TestMapType:
@@ -138,24 +138,24 @@ class TestMapType:
         """Test integer type mapping."""
         from codex_crm.d365_admin.generate import _map_type
 
-        assert _map_type("integer") == "Integer"
+        assert _map_type("integer") == "Integer", "Condition must be true"
 
     def test_map_type_choice(self):
         """Test choice type mapping."""
         from codex_crm.d365_admin.generate import _map_type
 
-        assert _map_type("choice") == "Choice"
+        assert _map_type("choice") == "Choice", "Condition must be true"
 
     def test_map_type_lookup(self):
         """Test lookup type mapping."""
         from codex_crm.d365_admin.generate import _map_type
 
-        assert _map_type("lookup") == "Lookup"
+        assert _map_type("lookup") == "Lookup", "Condition must be true"
 
     def test_map_type_unknown(self):
         """Test unknown type defaults to Text."""
         from codex_crm.d365_admin.generate import _map_type
 
-        assert _map_type("text") == "Text"
-        assert _map_type("unknown") == "Text"
-        assert _map_type("custom") == "Text"
+        assert _map_type("text") == "Text", "Condition must be true"
+        assert _map_type("unknown") == "Text", "Condition must be true"
+        assert _map_type("custom") == "Text", "Condition must be true"

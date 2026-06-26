@@ -39,19 +39,19 @@ class TestChangeType:
 
     def test_all_change_types(self):
         """Test all change type values."""
-        assert ChangeType.NO_CHANGE.value == "no_change"
-        assert ChangeType.MINOR.value == "minor"
-        assert ChangeType.MODERATE.value == "moderate"
-        assert ChangeType.MAJOR.value == "major"
-        assert ChangeType.COMPLETE.value == "complete"
+        assert ChangeType.NO_CHANGE.value == "no_change", "Value must be initialized"
+        assert ChangeType.MINOR.value == "minor", "Value must be initialized"
+        assert ChangeType.MODERATE.value == "moderate", "Value must be initialized"
+        assert ChangeType.MAJOR.value == "major", "Value must be initialized"
+        assert ChangeType.COMPLETE.value == "complete", "Value must be initialized"
 
     def test_enum_comparison(self):
         """Test enum comparison and identity."""
-        assert ChangeType.NO_CHANGE != ChangeType.MINOR
+        assert ChangeType.NO_CHANGE != ChangeType.MINOR, "NO_CHANGE is not valid"
         # Test enum identity
         minor_1 = ChangeType.MINOR
         minor_2 = ChangeType.MINOR
-        assert minor_1 is minor_2  # Enums are singletons
+        assert minor_1 is minor_2, "minor_1 is not valid"
 
 
 class TestDiffSegment:
@@ -67,11 +67,11 @@ class TestDiffSegment:
             line_end=12,
         )
 
-        assert segment.change_type == "replace"
-        assert segment.old_content == "old text"
-        assert segment.new_content == "new text"
-        assert segment.line_start == 10
-        assert segment.line_end == 12
+        assert segment.change_type == "replace", "change_type is not valid"
+        assert segment.old_content == "old text", "Content must not be empty"
+        assert segment.new_content == "new text", "Content must not be empty"
+        assert segment.line_start == 10, "line_start is not valid"
+        assert segment.line_end == 12, "line_end is not valid"
 
     def test_to_dict(self):
         """Test serialization to dictionary."""
@@ -85,9 +85,9 @@ class TestDiffSegment:
 
         data = segment.to_dict()
 
-        assert data["change_type"] == "insert"
-        assert data["new_content_preview"] == "new line"
-        assert data["line_start"] == 5
+        assert data["change_type"] == "insert", "Data must not be empty"
+        assert data["new_content_preview"] == "new line", "Data must not be empty"
+        assert data["line_start"] == 5, "Data must not be empty"
 
     def test_to_dict_truncates_long_content(self):
         """Test that long content is truncated in dict."""
@@ -102,8 +102,8 @@ class TestDiffSegment:
 
         data = segment.to_dict()
 
-        assert len(data["old_content_preview"]) <= 104  # 100 + "..."
-        assert data["old_content_preview"].endswith("...")
+        assert len(data["old_content_preview"]) <= 104, "Collection must not be empty"
+        assert data["old_content_preview"].endswith("..."), "Data must not be empty"
 
 
 class TestContentDiffResult:
@@ -119,10 +119,10 @@ class TestContentDiffResult:
             new_hash="def456",
         )
 
-        assert result.change_type == ChangeType.MINOR
-        assert result.change_ratio == 0.05
-        assert result.similarity_ratio == 0.95
-        assert len(result.segments) == 0
+        assert result.change_type == ChangeType.MINOR, "Result must not be empty"
+        assert result.change_ratio == 0.05, "Result must not be empty"
+        assert result.similarity_ratio == 0.95, "Result must not be empty"
+        assert len(result.segments) == 0, "Collection must not be empty"
 
     def test_to_dict(self):
         """Test serialization to dictionary."""
@@ -141,11 +141,11 @@ class TestContentDiffResult:
 
         data = result.to_dict()
 
-        assert data["change_type"] == "moderate"
-        assert data["change_ratio"] == 0.15
-        assert data["similarity_ratio"] == 0.85
-        assert data["lines_added"] == 15
-        assert data["segment_count"] == 0
+        assert data["change_type"] == "moderate", "Data must not be empty"
+        assert data["change_ratio"] == 0.15, "Data must not be empty"
+        assert data["similarity_ratio"] == 0.85, "Data must not be empty"
+        assert data["lines_added"] == 15, "Data must not be empty"
+        assert data["segment_count"] == 0, "Data must not be empty"
 
     def test_should_sync_above_threshold(self):
         """Test should_sync returns True above threshold."""
@@ -157,8 +157,8 @@ class TestContentDiffResult:
             new_hash="b",
         )
 
-        assert result.should_sync(min_change_ratio=0.01) is True
-        assert result.should_sync(min_change_ratio=0.10) is False
+        assert result.should_sync(min_change_ratio=0.01) is True, "Result must not be empty"
+        assert result.should_sync(min_change_ratio=0.10) is False, "Result must not be empty"
 
     def test_should_sync_no_change(self):
         """Test should_sync returns False for no change."""
@@ -170,7 +170,7 @@ class TestContentDiffResult:
             new_hash="same",
         )
 
-        assert result.should_sync(min_change_ratio=0.01) is False
+        assert result.should_sync(min_change_ratio=0.01) is False, "Result must not be empty"
 
 
 # ============================================================================
@@ -198,9 +198,9 @@ class TestContentDiffer:
             ignore_whitespace=False,
         )
 
-        assert differ.min_change_ratio == 0.05
-        assert differ.strip_html is False
-        assert differ.ignore_whitespace is False
+        assert differ.min_change_ratio == 0.05, "min_change_ratio is not valid"
+        assert differ.strip_html is False, "strip_html is not valid"
+        assert differ.ignore_whitespace is False, "ignore_whitespace is not valid"
 
     def test_hash_content(self):
         """Test content hashing."""
@@ -208,19 +208,19 @@ class TestContentDiffer:
         hash2 = ContentDiffer._hash_content("test content")
         hash3 = ContentDiffer._hash_content("different content")
 
-        assert hash1 == hash2
-        assert hash1 != hash3
-        assert len(hash1) == 16  # Truncated to 16 chars
+        assert hash1 == hash2, "hash1 is not valid"
+        assert hash1 != hash3, "hash1 is not valid"
+        assert len(hash1) == 16, "Hash1 must not be empty"
 
     def test_normalize_content_strips_html(self, differ):
         """Test HTML stripping in normalization."""
         html = "<p>Hello <b>world</b></p>"
         normalized = differ._normalize_content(html)
 
-        assert "<p>" not in normalized
-        assert "<b>" not in normalized
-        assert "Hello" in normalized
-        assert "world" in normalized
+        assert "<p>" not in normalized, "Condition must be true"
+        assert "<b>" not in normalized, "Condition must be true"
+        assert "Hello" in normalized, "Condition must be true"
+        assert "world" in normalized, "Condition must be true"
 
     def test_normalize_content_handles_whitespace(self, differ):
         """Test whitespace normalization."""
@@ -228,7 +228,7 @@ class TestContentDiffer:
         normalized = differ._normalize_content(text)
 
         # Should have normalized whitespace
-        assert "  " not in normalized or normalized.count("  ") < text.count("  ")
+        assert "  " not in normalized or normalized.count("  ") < text.count("  "), "Count must be greater than zero"
 
     def test_normalize_content_without_html_stripping(self):
         """Test normalization without HTML stripping."""
@@ -236,42 +236,42 @@ class TestContentDiffer:
         html = "<p>Hello</p>"
         normalized = differ._normalize_content(html)
 
-        assert "<p>" in normalized
+        assert "<p>" in normalized, "Condition must be true"
 
     def test_classify_change_no_change(self, differ):
         """Test classifying no change."""
         change_type = differ._classify_change(0.0)
-        assert change_type == ChangeType.NO_CHANGE
+        assert change_type == ChangeType.NO_CHANGE, "change_type is not valid"
 
     def test_classify_change_minor(self, differ):
         """Test classifying minor change."""
         change_type = differ._classify_change(0.03)
-        assert change_type == ChangeType.MINOR
+        assert change_type == ChangeType.MINOR, "change_type is not valid"
 
     def test_classify_change_moderate(self, differ):
         """Test classifying moderate change."""
         change_type = differ._classify_change(0.15)
-        assert change_type == ChangeType.MODERATE
+        assert change_type == ChangeType.MODERATE, "change_type is not valid"
 
     def test_classify_change_major(self, differ):
         """Test classifying major change."""
         change_type = differ._classify_change(0.50)
-        assert change_type == ChangeType.MAJOR
+        assert change_type == ChangeType.MAJOR, "change_type is not valid"
 
     def test_classify_change_complete(self, differ):
         """Test classifying complete rewrite."""
         change_type = differ._classify_change(0.90)
-        assert change_type == ChangeType.COMPLETE
+        assert change_type == ChangeType.COMPLETE, "change_type is not valid"
 
     def test_diff_identical_content(self, differ):
         """Test diff with identical content."""
         content = "This is the same content."
         result = differ.diff(content, content)
 
-        assert result.change_type == ChangeType.NO_CHANGE
-        assert result.change_ratio == 0.0
-        assert result.similarity_ratio == 1.0
-        assert result.old_hash == result.new_hash
+        assert result.change_type == ChangeType.NO_CHANGE, "Result must not be empty"
+        assert result.change_ratio == 0.0, "Result must not be empty"
+        assert result.similarity_ratio == 1.0, "Result must not be empty"
+        assert result.old_hash == result.new_hash, "Result must not be empty"
 
     def test_diff_minor_change(self, differ):
         """Test diff with minor change."""
@@ -280,8 +280,8 @@ class TestContentDiffer:
 
         result = differ.diff(old, new)
 
-        assert result.change_ratio < 0.1
-        assert result.similarity_ratio > 0.9
+        assert result.change_ratio < 0.1, "Result must not be empty"
+        assert result.similarity_ratio > 0.9, "similarity_ratio must be greater than zero"
         assert result.change_type in [ChangeType.MINOR, ChangeType.NO_CHANGE]
 
     def test_diff_major_change(self, differ):
@@ -291,8 +291,8 @@ class TestContentDiffer:
 
         result = differ.diff(old, new)
 
-        assert result.change_ratio > 0.3
-        assert result.similarity_ratio < 0.7
+        assert result.change_ratio > 0.3, "change_ratio must be greater than zero"
+        assert result.similarity_ratio < 0.7, "Result must not be empty"
         assert result.change_type in [ChangeType.MAJOR, ChangeType.COMPLETE]
 
     def test_diff_with_line_counts(self, differ):
@@ -303,8 +303,8 @@ class TestContentDiffer:
         result = differ.diff(old, new)
 
         # Line counts depend on normalization - just check they're positive
-        assert result.old_line_count > 0
-        assert result.new_line_count > 0
+        assert result.old_line_count > 0, "old_line_count must be positive"
+        assert result.new_line_count > 0, "new_line_count must be positive"
         assert result.lines_added > 0 or result.lines_modified > 0 or result.lines_removed > 0
 
     def test_diff_without_normalization(self, differ):
@@ -315,7 +315,7 @@ class TestContentDiffer:
         result = differ.diff(old, new, normalize=False)
 
         # Without normalization, these should be different
-        assert result.change_ratio > 0.0
+        assert result.change_ratio > 0.0, "change_ratio must be greater than zero"
 
     def test_extract_segments(self, differ):
         """Test segment extraction from diffs."""
@@ -337,7 +337,7 @@ class TestContentDiffer:
 
         assert isinstance(should_resync, bool)
         assert isinstance(change_type, ChangeType)
-        assert 0.0 <= ratio <= 1.0
+        assert 0.0 <= ratio <= 1.0, "0 is not valid"
 
     def test_should_resync_identical(self, differ):
         """Test should_resync returns False for identical content."""
@@ -345,9 +345,9 @@ class TestContentDiffer:
 
         should_resync, change_type, ratio = differ.should_resync(content, content)
 
-        assert should_resync is False
-        assert change_type == ChangeType.NO_CHANGE
-        assert ratio == 0.0
+        assert should_resync is False, "should_resync is not valid"
+        assert change_type == ChangeType.NO_CHANGE, "change_type is not valid"
+        assert ratio == 0.0, "ratio is not valid"
 
 
 # ============================================================================
@@ -373,24 +373,24 @@ class TestIncrementalSyncDecider:
             full_update_threshold=0.25,
         )
 
-        assert decider.micro_update_threshold == 0.05
-        assert decider.full_update_threshold == 0.25
+        assert decider.micro_update_threshold == 0.05, "micro_update_threshold is not valid"
+        assert decider.full_update_threshold == 0.25, "full_update_threshold is not valid"
 
     def test_initialization_with_custom_differ(self):
         """Test initialization with custom differ."""
         custom_differ = ContentDiffer(min_change_ratio=0.02)
         decider = IncrementalSyncDecider(differ=custom_differ)
 
-        assert decider.differ is custom_differ
+        assert decider.differ is custom_differ, "differ is not valid"
 
     def test_decide_no_change(self, decider):
         """Test decision for no change."""
         content = "Same content"
         decision = decider.decide(content, content)
 
-        assert decision["action"] == "skip"
-        assert "no changes" in decision["reason"].lower()
-        assert decision["change_ratio"] == 0.0
+        assert decision["action"] == "skip", "Condition must be true"
+        assert "no changes" in decision["reason"].lower(), "Condition must be true"
+        assert decision["change_ratio"] == 0.0, "Condition must be true"
 
     def test_decide_micro_update(self, decider):
         """Test decision for micro update."""
@@ -402,7 +402,7 @@ class TestIncrementalSyncDecider:
         # Should be micro update or skip (very small change)
         assert decision["action"] in ["micro_update", "skip"]
         if decision["action"] == "micro_update":
-            assert decision["change_ratio"] < 0.10
+            assert decision["change_ratio"] < 0.10, "Condition must be true"
 
     def test_decide_full_update_major_change(self, decider):
         """Test decision for full update on major change."""
@@ -411,9 +411,9 @@ class TestIncrementalSyncDecider:
 
         decision = decider.decide(old, new)
 
-        assert decision["action"] == "full_update"
-        assert "change" in decision["reason"].lower()
-        assert decision["change_ratio"] >= 0.10  # At least moderate
+        assert decision["action"] == "full_update", "Condition must be true"
+        assert "change" in decision["reason"].lower(), "Condition must be true"
+        assert decision["change_ratio"] >= 0.10, "Value must be greater than zero"
 
     def test_decide_moderate_change(self, decider):
         """Test decision for moderate change (defaults to full update)."""
@@ -424,7 +424,7 @@ class TestIncrementalSyncDecider:
 
         # Moderate changes should trigger full update
         assert decision["action"] in ["full_update", "micro_update"]
-        assert 0.0 <= decision["change_ratio"] <= 1.0
+        assert 0.0 <= decision["change_ratio"] <= 1.0, "0 is not valid"
 
     def test_decide_includes_diff_metadata(self, decider):
         """Test that decision includes diff metadata."""
@@ -433,8 +433,8 @@ class TestIncrementalSyncDecider:
 
         decision = decider.decide(old, new)
 
-        assert "diff" in decision
-        assert "change_ratio" in decision
+        assert "diff" in decision, "Condition must be true"
+        assert "change_ratio" in decision, "Condition must be true"
         assert isinstance(decision["diff"], dict)
 
 
@@ -469,8 +469,8 @@ class TestSemanticDiffer:
             use_embeddings=True,
         )
 
-        assert differ.similarity_threshold == 0.95
-        assert differ.use_embeddings is True
+        assert differ.similarity_threshold == 0.95, "similarity_threshold is not valid"
+        assert differ.use_embeddings is True, "use_embeddings is not valid"
 
     def test_initialization_without_embeddings(self):
         """Test initialization without embeddings."""
@@ -479,29 +479,29 @@ class TestSemanticDiffer:
             use_embeddings=False,
         )
 
-        assert differ.similarity_threshold == 0.99
-        assert differ._embedding_available is False
+        assert differ.similarity_threshold == 0.99, "similarity_threshold is not valid"
+        assert differ._embedding_available is False, "_embedding_available is not valid"
 
     def test_normalize_text(self, differ_with_embeddings):
         """Test text normalization."""
         text = "  Hello   World\n  With   Spaces  "
         normalized = differ_with_embeddings._normalize_text(text)
 
-        assert normalized == "hello world with spaces"
-        assert "  " not in normalized
-        assert normalized.islower()
+        assert normalized == "hello world with spaces", "normalized is not valid"
+        assert "  " not in normalized, "Condition must be true"
+        assert normalized.islower(), "n is not valid"
 
     def test_normalize_text_empty(self, differ_with_embeddings):
         """Test normalizing empty text."""
         normalized = differ_with_embeddings._normalize_text("")
-        assert normalized == ""
+        assert normalized == "", "normalized is not valid"
 
     def test_basic_similarity_identical(self, differ_with_embeddings):
         """Test basic similarity with identical text."""
         text = "This is a test"
         similarity = differ_with_embeddings._basic_similarity(text, text)
 
-        assert similarity == 1.0
+        assert similarity == 1.0, "similarity is not valid"
 
     def test_basic_similarity_different(self, differ_with_embeddings):
         """Test basic similarity with different text."""
@@ -509,7 +509,7 @@ class TestSemanticDiffer:
         text2 = "Goodbye universe"
         similarity = differ_with_embeddings._basic_similarity(text1, text2)
 
-        assert 0.0 <= similarity < 1.0
+        assert 0.0 <= similarity < 1.0, "0 is not valid"
 
     def test_basic_similarity_similar(self, differ_with_embeddings):
         """Test basic similarity with similar text."""
@@ -517,7 +517,7 @@ class TestSemanticDiffer:
         text2 = "The quick brown fox jumps"
         similarity = differ_with_embeddings._basic_similarity(text1, text2)
 
-        assert 0.7 <= similarity < 1.0
+        assert 0.7 <= similarity < 1.0, "7 is not valid"
 
     def test_compute_semantic_similarity_fallback(self):
         """Test semantic similarity falls back to basic when embeddings unavailable."""
@@ -529,7 +529,7 @@ class TestSemanticDiffer:
 
         similarity = differ.compute_semantic_similarity(text1, text2)
 
-        assert similarity == 1.0  # Identical should be 1.0
+        assert similarity == 1.0, "similarity is not valid"
 
     def test_compute_semantic_similarity_with_sklearn(self):
         """Test semantic similarity with sklearn (if available)."""
@@ -541,15 +541,15 @@ class TestSemanticDiffer:
         similarity = differ.compute_semantic_similarity(text1, text2)
 
         # Should be high similarity
-        assert 0.0 <= similarity <= 1.0
-        assert similarity > 0.7  # Very similar texts
+        assert 0.0 <= similarity <= 1.0, "0 is not valid"
+        assert similarity > 0.7, "similarity must be greater than zero"
 
     def test_compute_semantic_similarity_identical(self, differ_with_embeddings):
         """Test semantic similarity with identical text."""
         text = "This is identical text"
         similarity = differ_with_embeddings.compute_semantic_similarity(text, text)
 
-        assert similarity == 1.0
+        assert similarity == 1.0, "similarity is not valid"
 
     def test_compute_semantic_similarity_very_different(self, differ_with_embeddings):
         """Test semantic similarity with very different text."""
@@ -557,17 +557,17 @@ class TestSemanticDiffer:
         text2 = "Cooking recipes for pasta"
         similarity = differ_with_embeddings.compute_semantic_similarity(text1, text2)
 
-        assert 0.0 <= similarity < 0.5  # Should be low
+        assert 0.0 <= similarity < 0.5, "0 is not valid"
 
     def test_compute_semantic_diff_identical(self, differ_with_embeddings):
         """Test semantic diff with identical content."""
         content = "This is the same content"
         result = differ_with_embeddings.compute_semantic_diff(content, content)
 
-        assert result["semantic_similarity"] == 1.0
-        assert result["is_semantically_similar"] is True
-        assert result["significance"] == "insignificant"
-        assert result["should_update"] is False
+        assert result["semantic_similarity"] == 1.0, "Result must not be empty"
+        assert result["is_semantically_similar"] is True, "Result must not be empty"
+        assert result["significance"] == "insignificant", "Result must not be empty"
+        assert result["should_update"] is False, "Result must not be empty"
 
     def test_compute_semantic_diff_minor_change(self, differ_with_embeddings):
         """Test semantic diff with minor change."""
@@ -576,7 +576,7 @@ class TestSemanticDiffer:
 
         result = differ_with_embeddings.compute_semantic_diff(old, new)
 
-        assert result["semantic_similarity"] > 0.95
+        assert result["semantic_similarity"] > 0.95, "Value must be greater than zero"
         assert result["significance"] in ["insignificant", "minor"]
 
     def test_compute_semantic_diff_major_change(self, differ_with_embeddings):
@@ -586,24 +586,24 @@ class TestSemanticDiffer:
 
         result = differ_with_embeddings.compute_semantic_diff(old, new)
 
-        assert result["semantic_similarity"] < 0.90
+        assert result["semantic_similarity"] < 0.90, "Result must not be empty"
         assert result["significance"] in ["moderate", "major", "complete"]
-        assert result["should_update"] is True
+        assert result["should_update"] is True, "Result must not be empty"
 
     def test_compute_semantic_diff_empty_strings(self, differ_with_embeddings):
         """Test semantic diff with empty strings."""
         result = differ_with_embeddings.compute_semantic_diff("", "")
 
         # Empty strings should be identical
-        assert result["semantic_similarity"] == 1.0
+        assert result["semantic_similarity"] == 1.0, "Result must not be empty"
 
     def test_compute_semantic_diff_one_empty(self, differ_with_embeddings):
         """Test semantic diff with one empty string."""
         result = differ_with_embeddings.compute_semantic_diff("content", "")
 
         # Should show low similarity
-        assert result["semantic_similarity"] < 0.5
-        assert result["should_update"] is True
+        assert result["semantic_similarity"] < 0.5, "Result must not be empty"
+        assert result["should_update"] is True, "Result must not be empty"
 
     def test_compute_semantic_diff_classification(self, differ_with_embeddings):
         """Test significance classification boundaries."""
@@ -625,7 +625,7 @@ class TestSemanticDiffer:
                 differ_with_embeddings, "compute_semantic_similarity", return_value=similarity
             ):
                 result = differ_with_embeddings.compute_semantic_diff("old", "new")
-                assert (
+                assert (, "Condition must be true"
                     result["significance"] == expected_sig
                 ), f"Similarity {similarity} should be '{expected_sig}'"
 
@@ -634,8 +634,8 @@ class TestSemanticDiffer:
         content = "Same content"
         should_resync, diff_result = differ_with_embeddings.should_resync(content, content)
 
-        assert should_resync is False
-        assert diff_result["is_semantically_similar"] is True
+        assert should_resync is False, "should_resync is not valid"
+        assert diff_result["is_semantically_similar"] is True, "Result must not be empty"
 
     def test_should_resync_different(self, differ_with_embeddings):
         """Test should_resync with different content."""
@@ -645,7 +645,7 @@ class TestSemanticDiffer:
         should_resync, diff_result = differ_with_embeddings.should_resync(old, new)
 
         # Depends on similarity but should be consistent with diff result
-        assert should_resync == diff_result["should_update"]
+        assert should_resync == diff_result["should_update"], "Result must not be empty"
 
     def test_should_resync_above_threshold(self, differ_with_embeddings):
         """Test should_resync when similarity above threshold."""
@@ -653,7 +653,7 @@ class TestSemanticDiffer:
         with patch.object(differ_with_embeddings, "compute_semantic_similarity", return_value=0.99):
             should_resync, _diff_result = differ_with_embeddings.should_resync("old", "new")
 
-            assert should_resync is False  # Above threshold = no resync needed
+            assert should_resync is False, "should_resync is not valid"
 
     def test_should_resync_below_threshold(self, differ_with_embeddings):
         """Test should_resync when similarity below threshold."""
@@ -661,21 +661,21 @@ class TestSemanticDiffer:
         with patch.object(differ_with_embeddings, "compute_semantic_similarity", return_value=0.70):
             should_resync, _diff_result = differ_with_embeddings.should_resync("old", "new")
 
-            assert should_resync is True  # Below threshold = resync needed
+            assert should_resync is True, "should_resync is not valid"
 
     def test_embedding_method_reporting(self, differ_with_embeddings):
         """Test that diff reports which method was used."""
         result = differ_with_embeddings.compute_semantic_diff("old", "new")
 
-        assert "method" in result
+        assert "method" in result, "Result must not be empty"
         assert result["method"] in ["embeddings", "basic"]
 
     def test_threshold_in_result(self, differ_with_embeddings):
         """Test that threshold is included in result."""
         result = differ_with_embeddings.compute_semantic_diff("old", "new")
 
-        assert "threshold" in result
-        assert result["threshold"] == 0.98
+        assert "threshold" in result, "Result must not be empty"
+        assert result["threshold"] == 0.98, "Result must not be empty"
 
 
 # ============================================================================
@@ -700,8 +700,8 @@ class TestSemanticDifferIntegration:
         semantic_result = semantic_differ.compute_semantic_diff(old, new)
 
         # Both should recognize high similarity
-        assert line_result.similarity_ratio > 0.8
-        assert semantic_result["semantic_similarity"] > 0.8
+        assert line_result.similarity_ratio > 0.8, "similarity_ratio must be greater than zero"
+        assert semantic_result["semantic_similarity"] > 0.8, "Value must be greater than zero"
 
     def test_semantic_vs_line_diff_formatting_change(self):
         """Test that semantic differ ignores formatting changes."""
@@ -712,7 +712,7 @@ class TestSemanticDifferIntegration:
         content_differ = ContentDiffer(ignore_whitespace=False)
         content_diff_result = content_differ.diff(old, new, normalize=False)
         # Content-based diff detects formatting change
-        assert (
+        assert (, "Condition must be true"
             content_diff_result.change_type != ChangeType.NO_CHANGE
             or content_diff_result.semantic_similarity < 1.0
         )
@@ -721,7 +721,7 @@ class TestSemanticDifferIntegration:
         semantic_differ = SemanticDiffer()
         semantic_result = semantic_differ.compute_semantic_diff(old, new)
 
-        assert semantic_result["semantic_similarity"] > 0.95
+        assert semantic_result["semantic_similarity"] > 0.95, "Value must be greater than zero"
 
     def test_sync_decision_integration(self):
         """Test using SemanticDiffer in sync decisions."""
@@ -734,8 +734,8 @@ class TestSemanticDifferIntegration:
         should_resync, diff = semantic_differ.should_resync(old, new)
 
         # Should be consistent
-        assert should_resync == diff["should_update"]
-        assert diff["is_semantically_similar"] == (not should_resync)
+        assert should_resync == diff["should_update"], "should_resync is not valid"
+        assert diff["is_semantically_similar"] == (not should_resync), "Condition must be true"
 
 
 # ============================================================================
@@ -751,15 +751,15 @@ class TestEdgeCases:
         differ = ContentDiffer()
         result = differ.diff("", "")
 
-        assert result.change_type == ChangeType.NO_CHANGE
-        assert result.change_ratio == 0.0
+        assert result.change_type == ChangeType.NO_CHANGE, "Result must not be empty"
+        assert result.change_ratio == 0.0, "Result must not be empty"
 
     def test_one_empty_string(self):
         """Test diff with one empty string."""
         differ = ContentDiffer()
         result = differ.diff("content", "")
 
-        assert result.change_ratio > 0.5  # Major change
+        assert result.change_ratio > 0.5, "change_ratio must be greater than zero"
         assert result.change_type in [ChangeType.MAJOR, ChangeType.COMPLETE]
 
     def test_very_long_content(self):
@@ -769,7 +769,7 @@ class TestEdgeCases:
 
         result = differ.diff(long_text, long_text)
 
-        assert result.change_type == ChangeType.NO_CHANGE
+        assert result.change_type == ChangeType.NO_CHANGE, "Result must not be empty"
 
     def test_unicode_content(self):
         """Test diff with unicode characters."""
@@ -779,7 +779,7 @@ class TestEdgeCases:
 
         result = differ.diff(old, new)
 
-        assert result.change_ratio > 0.0  # Should detect change
+        assert result.change_ratio > 0.0, "change_ratio must be greater than zero"
 
     def test_semantic_differ_with_numbers(self):
         """Test semantic differ with numerical content."""
@@ -790,7 +790,7 @@ class TestEdgeCases:
         result = differ.compute_semantic_diff(old, new)
 
         # Should detect semantic difference
-        assert 0.0 <= result["semantic_similarity"] <= 1.0
+        assert 0.0 <= result["semantic_similarity"] <= 1.0, "Result must not be empty"
 
     def test_semantic_differ_error_handling(self):
         """Test semantic differ handles errors gracefully."""
@@ -801,7 +801,7 @@ class TestEdgeCases:
         similarity = differ.compute_semantic_similarity("test", "test")
 
         # Should return 1.0 for identical texts
-        assert similarity == 1.0
+        assert similarity == 1.0, "similarity is not valid"
 
     def test_diff_segment_with_empty_content(self):
         """Test diff segment with empty content."""
@@ -814,7 +814,7 @@ class TestEdgeCases:
         )
 
         data = segment.to_dict()
-        assert data["new_content_preview"] == ""
+        assert data["new_content_preview"] == "", "Data must not be empty"
 
     def test_content_diff_result_many_segments(self):
         """Test result serialization with many segments."""
@@ -832,8 +832,8 @@ class TestEdgeCases:
         data = result.to_dict()
 
         # Should limit to first 10 segments
-        assert len(data["segments"]) == 10
-        assert data["segment_count"] == 20
+        assert len(data["segments"]) == 10, "Collection must not be empty"
+        assert data["segment_count"] == 20, "Data must not be empty"
 
 
 # ============================================================================
@@ -853,9 +853,9 @@ class TestPerformance:
         result1 = differ.diff(old, new)
         result2 = differ.diff(old, new)
 
-        assert result1.change_ratio == result2.change_ratio
-        assert result1.similarity_ratio == result2.similarity_ratio
-        assert result1.change_type == result2.change_type
+        assert result1.change_ratio == result2.change_ratio, "Result must not be empty"
+        assert result1.similarity_ratio == result2.similarity_ratio, "Result must not be empty"
+        assert result1.change_type == result2.change_type, "Result must not be empty"
 
     def test_semantic_similarity_is_symmetric(self):
         """Test that semantic similarity is symmetric."""
@@ -866,7 +866,7 @@ class TestPerformance:
         sim1 = differ.compute_semantic_similarity(text1, text2)
         sim2 = differ.compute_semantic_similarity(text2, text1)
 
-        assert abs(sim1 - sim2) < 0.01  # Should be nearly identical
+        assert abs(sim1 - sim2) < 0.01, "Condition must be true"
 
     def test_semantic_similarity_bounds(self):
         """Test that semantic similarity is always in [0, 1]."""
@@ -882,4 +882,4 @@ class TestPerformance:
 
         for text1, text2 in test_cases:
             similarity = differ.compute_semantic_similarity(text1, text2)
-            assert 0.0 <= similarity <= 1.0
+            assert 0.0 <= similarity <= 1.0, "0 is not valid"

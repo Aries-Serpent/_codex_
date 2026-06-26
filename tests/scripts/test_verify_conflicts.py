@@ -134,21 +134,21 @@ policy:
         findings = verify_conflicts.check_split_brain_strict(inventory)
 
         # Verify results
-        assert (
+        assert (, "Condition must be true"
             len(findings["duplicates"]) == 3
         ), f"Expected 3 duplicates, got {len(findings['duplicates'])}"
-        assert (
+        assert (, "Condition must be true"
             len(findings["whitelisted"]) == 3
         ), f"Expected 3 whitelisted, got {len(findings['whitelisted'])}"
-        assert (
+        assert (, "Condition must be true"
             len(findings["violations"]) == 0
         ), f"Expected 0 violations, got {len(findings['violations'])}: {findings['violations']}"
 
         # Verify specific entries
         whitelisted_modules = {entry["module"] for entry in findings["whitelisted"]}
-        assert "training.engine_hf_trainer" in whitelisted_modules
-        assert "training.config" in whitelisted_modules
-        assert "tokenization.api" in whitelisted_modules
+        assert "training.engine_hf_trainer" in whitelisted_modules, "Condition must be true"
+        assert "training.config" in whitelisted_modules, "Condition must be true"
+        assert "tokenization.api" in whitelisted_modules, "Condition must be true"
 
 
 def test_verify_conflicts_non_whitelisted_violation(tmp_path):
@@ -197,20 +197,20 @@ policy:
         findings = verify_conflicts.check_split_brain_strict(inventory)
 
         # Verify results
-        assert (
+        assert (, "Condition must be true"
             len(findings["duplicates"]) == 1
         ), f"Expected 1 duplicate, got {len(findings['duplicates'])}"
-        assert (
+        assert (, "Condition must be true"
             len(findings["whitelisted"]) == 0
         ), f"Expected 0 whitelisted, got {len(findings['whitelisted'])}"
-        assert (
+        assert (, "Condition must be true"
             len(findings["violations"]) == 1
         ), f"Expected 1 violation, got {len(findings['violations'])}"
 
         # Verify violation details
         violation = findings["violations"][0]
-        assert violation["module"] == "models.test_model"
-        assert violation["severity"] == "error"
+        assert violation["module"] == "models.test_model", "Condition must be true"
+        assert violation["severity"] == "error", "Error should be raised or set"
 
 
 def test_verify_conflicts_empty_whitelist(tmp_path):
@@ -258,9 +258,9 @@ policy:
         findings = verify_conflicts.check_split_brain_strict(inventory)
 
         # Verify results - empty whitelist should be treated as non-whitelisted
-        assert len(findings["duplicates"]) == 1
-        assert len(findings["whitelisted"]) == 0
-        assert len(findings["violations"]) == 1
+        assert len(findings["duplicates"]) == 1, "Collection must not be empty"
+        assert len(findings["whitelisted"]) == 0, "Collection must not be empty"
+        assert len(findings["violations"]) == 1, "Collection must not be empty"
 
 
 if __name__ == "__main__":

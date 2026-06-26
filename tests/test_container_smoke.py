@@ -113,4 +113,4 @@ def test_container_smoke_basic(tmp_path):
     if proc.returncode != 0:
         sys.stderr.write(proc.stdout)
         sys.stderr.write(proc.stderr)
-    assert proc.returncode == 0
+    assert proc.returncode == 0, "returncode is not valid"

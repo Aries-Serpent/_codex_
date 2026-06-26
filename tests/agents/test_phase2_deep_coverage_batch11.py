@@ -37,8 +37,8 @@ class TestPhase2_MultiModuleIntegration:
         game = QuantumInspiredGameEngine(blue, red, payoff_b, payoff_r)
 
         # Both should coexist
-        assert orchestrator is not None
-        assert game is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
+        assert game is not None, "game must be initialized"
 
     def test_mental_mapping_with_agent_memory(self):
         """Test integration between MentalMapping and AgentMemory"""
@@ -48,8 +48,8 @@ class TestPhase2_MultiModuleIntegration:
         mental_map = MentalMappingModel()
         memory = AgentMemory()
 
-        assert mental_map is not None
-        assert memory is not None
+        assert mental_map is not None, "mental_map must be initialized"
+        assert memory is not None, "memory must be initialized"
 
     def test_developer_orchestrator_with_workflow(self):
         """Test integration between DeveloperOrchestrator and WorkflowNavigator"""
@@ -59,8 +59,8 @@ class TestPhase2_MultiModuleIntegration:
         dev_orch = PhysicsGuidedDeveloperOrchestrator()
         workflow_nav = WorkflowNavigator()
 
-        assert dev_orch is not None
-        assert workflow_nav is not None
+        assert dev_orch is not None, "dev_orch must be initialized"
+        assert workflow_nav is not None, "workflow_nav must be initialized"
 
     def test_self_healing_with_physics_integration(self):
         """Test integration between SelfHealing and PhysicsIntegration"""
@@ -70,8 +70,8 @@ class TestPhase2_MultiModuleIntegration:
         healing = SelfHealingEngine()
         integration = PhysicsIntegration()
 
-        assert healing is not None
-        assert integration is not None
+        assert healing is not None, "healing must be initialized"
+        assert integration is not None, "integration must be initialized"
 
     def test_advanced_physics_with_orchestrator(self):
         """Test AdvancedPhysics with PhysicsOrchestrator"""
@@ -81,8 +81,8 @@ class TestPhase2_MultiModuleIntegration:
         chaos = ChaoticNeuralNetwork(num_neurons=5)
         orchestrator = PhysicsOrchestrator()
 
-        assert chaos is not None
-        assert orchestrator is not None
+        assert chaos is not None, "chaos must be initialized"
+        assert orchestrator is not None, "orchestrator must be initialized"
 
 
 class TestPhase2_SystemLevelCoupling:
@@ -105,7 +105,7 @@ class TestPhase2_SystemLevelCoupling:
 
         # Stage 3: Output
         output = data.get("filtered", 0)
-        assert output == 20
+        assert output == 20, "output is not valid"
 
     def test_event_propagation(self):
         """Test event propagation across modules"""
@@ -122,8 +122,8 @@ class TestPhase2_SystemLevelCoupling:
         if events[-1]["type"] == "processing":
             events.append({"module": "C", "type": "completed"})
 
-        assert len(events) == 3
-        assert events[-1]["type"] == "completed"
+        assert len(events) == 3, "Events must not be empty"
+        assert events[-1]["type"] == "completed", "Condition must be true"
 
     def test_shared_resource_coordination(self):
         """Test coordinating shared resource access"""
@@ -137,7 +137,7 @@ class TestPhase2_SystemLevelCoupling:
 
         access_resource(5)
         access_resource(3)
-        assert resource["data"] == 8
+        assert resource["data"] == 8, "Data must not be empty"
 
     def test_state_synchronization(self):
         """Test synchronizing state across modules"""
@@ -146,7 +146,7 @@ class TestPhase2_SystemLevelCoupling:
 
         # Sync B to A
         module_b["state"] = module_a["state"]
-        assert module_b["state"] == module_a["state"]
+        assert module_b["state"] == module_a["state"], "Condition must be true"
 
     def test_cascading_updates(self):
         """Test cascading updates through system"""
@@ -157,7 +157,7 @@ class TestPhase2_SystemLevelCoupling:
         system["layer2"] = system["layer1"] + 3
         system["output"] = system["layer2"] / 2
 
-        assert system["output"] == 6.5
+        assert system["output"] == 6.5, "Condition must be true"
 
 
 class TestPhase2_EndToEndWorkflows:
@@ -179,8 +179,8 @@ class TestPhase2_EndToEndWorkflows:
         workflow["status"] = "completed"
         workflow["result"] = "success"
 
-        assert workflow["status"] == "completed"
-        assert workflow["steps_completed"] == 2
+        assert workflow["status"] == "completed", "w is not valid"
+        assert workflow["steps_completed"] == 2, "w is not valid"
 
     def test_decision_tree_traversal(self):
         """Test traversing decision tree end-to-end"""
@@ -213,7 +213,7 @@ class TestPhase2_EndToEndWorkflows:
         # Step 3: Aggregate
         result = sum(data)
 
-        assert result == 24  # 6 + 8 + 10 = 24
+        assert result == 24, "Result must not be empty"
 
     def test_optimization_loop(self):
         """Test optimization loop convergence"""
@@ -230,8 +230,8 @@ class TestPhase2_EndToEndWorkflows:
             if abs(x) < tolerance:
                 break
 
-        assert abs(x) < tolerance
-        assert iterations < max_iterations
+        assert abs(x) < tolerance, "Condition must be true"
+        assert iterations < max_iterations, "iterations is not valid"
 
 
 class TestPhase2_CrossDomainCoordination:
@@ -253,7 +253,7 @@ class TestPhase2_CrossDomainCoordination:
         continuous = 3.7
         discrete = int(np.round(continuous))
 
-        assert discrete == 4
+        assert discrete == 4, "discrete is not valid"
 
     def test_deterministic_stochastic_coupling(self):
         """Test coupling deterministic and stochastic processes"""
@@ -261,7 +261,7 @@ class TestPhase2_CrossDomainCoordination:
         stochastic_noise = np.random.randn() * 0.1
         coupled = deterministic + stochastic_noise
 
-        assert abs(coupled - deterministic) < 1.0
+        assert abs(coupled - deterministic) < 1.0, "Condition must be true"
 
     def test_spatial_temporal_coupling(self):
         """Test coupling spatial and temporal domains"""
@@ -271,7 +271,7 @@ class TestPhase2_CrossDomainCoordination:
 
         # Update position from velocity
         position += velocity * dt
-        assert position == 0.1
+        assert position == 0.1, "position is not valid"
 
     def test_local_global_coordination(self):
         """Test coordinating local and global scales"""
@@ -280,7 +280,7 @@ class TestPhase2_CrossDomainCoordination:
 
         # Global influences local
         normalized = [x / global_average for x in local_values]
-        assert abs(np.mean(normalized) - 1.0) < 0.01
+        assert abs(np.mean(normalized) - 1.0) < 0.01, "Condition must be true"
 
 
 class TestPhase2_DistributedIntegration:
@@ -294,7 +294,7 @@ class TestPhase2_DistributedIntegration:
         nodes = [{"id": 1, "value": 10}, {"id": 2, "value": 20}, {"id": 3, "value": 15}]
 
         total = sum(node["value"] for node in nodes)
-        assert total == 45
+        assert total == 45, "total is not valid"
 
     def test_consensus_mechanism(self):
         """Test distributed consensus"""
@@ -303,7 +303,7 @@ class TestPhase2_DistributedIntegration:
 
         counts = Counter(votes)
         winner = counts.most_common(1)[0][0]
-        assert winner == "A"
+        assert winner == "A", "winner is not valid"
 
     def test_distributed_lock(self):
         """Test distributed locking mechanism"""
@@ -318,10 +318,10 @@ class TestPhase2_DistributedIntegration:
         def release_lock(process_id):
             lock_holders.discard(process_id)
 
-        assert acquire_lock("p1")
-        assert not acquire_lock("p2")
+        assert acquire_lock("p1"), "Condition must be true"
+        assert not acquire_lock("p2"), "Condition must be true"
         release_lock("p1")
-        assert acquire_lock("p2")
+        assert acquire_lock("p2"), "Condition must be true"
 
     def test_partition_tolerance(self):
         """Test handling network partitions"""
@@ -332,7 +332,7 @@ class TestPhase2_DistributedIntegration:
 
         # Operate on available partition
         active_partition = [p for p in partitions if p["connected"]]
-        assert len(active_partition) == 1
+        assert len(active_partition) == 1, "Active_partition must not be empty"
 
     def test_data_replication(self):
         """Test data replication across nodes"""
@@ -344,7 +344,7 @@ class TestPhase2_DistributedIntegration:
             replica["data"] = primary["data"]
 
         # Verify all have same data
-        assert all(r["data"] == primary["data"] for r in replicas)
+        assert all(r["data"] == primary["data"] for r in replicas), "Data must not be empty"
 
 
 class TestPhase2_ComplexInteractions:
@@ -363,7 +363,7 @@ class TestPhase2_ComplexInteractions:
             correction = 0.1 * error
             state += correction
 
-        assert abs(state - target) < 1.0
+        assert abs(state - target) < 1.0, "Condition must be true"
 
     def test_bidirectional_communication(self):
         """Test bidirectional message exchange"""
@@ -378,8 +378,8 @@ class TestPhase2_ComplexInteractions:
         module_b["outbox"].append("response")
         module_a["inbox"].append(module_b["outbox"].pop(0))
 
-        assert len(module_a["inbox"]) == 1
-        assert module_a["inbox"][0] == "response"
+        assert len(module_a["inbox"]) == 1, "Collection must not be empty"
+        assert module_a["inbox"][0] == "response", "Response must not be empty"
 
     def test_chain_of_responsibility(self):
         """Test chain of responsibility pattern"""
@@ -397,7 +397,7 @@ class TestPhase2_ComplexInteractions:
                 handled_by = handler["name"]
                 break
 
-        assert handled_by == "h2"
+        assert handled_by == "h2", "handled_by is not valid"
 
     def test_producer_consumer(self):
         """Test producer-consumer pattern"""
@@ -427,7 +427,7 @@ class TestPhase2_ComplexInteractions:
 
         # Gather: collect results
         total_result = sum(results)
-        assert total_result == total_work
+        assert total_result == total_work, "Result must not be empty"
 
 
 class TestPhase2_StateManagement:
@@ -441,11 +441,11 @@ class TestPhase2_StateManagement:
 
         # Transition: idle -> processing
         current = "processing"
-        assert current == "processing"
+        assert current == "processing", "current is not valid"
 
         # Transition: processing -> completed
         current = "completed"
-        assert current == "completed"
+        assert current == "completed", "current is not valid"
 
     def test_hierarchical_state(self):
         """Test hierarchical state management"""
@@ -456,7 +456,7 @@ class TestPhase2_StateManagement:
             state["subsystem_a"] = "stopped"
             state["subsystem_b"] = "stopped"
 
-        assert state["subsystem_a"] == "running"
+        assert state["subsystem_a"] == "running", "Condition must be true"
 
     def test_state_persistence(self):
         """Test state save and restore"""
@@ -470,7 +470,7 @@ class TestPhase2_StateManagement:
 
         # Restore
         state = checkpoint.copy()
-        assert state["counter"] == 5
+        assert state["counter"] == 5, "Count must be greater than zero"
 
     def test_transactional_state(self):
         """Test transactional state updates"""
@@ -484,7 +484,7 @@ class TestPhase2_StateManagement:
         if temp_state["balance"] >= 0:
             state = temp_state
 
-        assert state["balance"] == 70
+        assert state["balance"] == 70, "Condition must be true"
 
 
 class TestPhase2_PerformanceIntegration:
@@ -503,7 +503,7 @@ class TestPhase2_PerformanceIntegration:
             batch = items[i : i + batch_size]
             processed += len(batch)
 
-        assert processed == 100
+        assert processed == 100, "processed is not valid"
 
     def test_lazy_evaluation(self):
         """Test lazy evaluation pattern"""
@@ -537,8 +537,8 @@ class TestPhase2_PerformanceIntegration:
         # Second call uses cache
         result2 = expensive_function(5)
 
-        assert result1 == result2 == 25
-        assert len(cache) == 1
+        assert result1 == result2 == 25, "Result must not be empty"
+        assert len(cache) == 1, "Cache must not be empty"
 
     def test_connection_pooling(self):
         """Test connection pool pattern"""
@@ -547,19 +547,19 @@ class TestPhase2_PerformanceIntegration:
         # Acquire
         initial_available = pool["available"]
         initial_connection_count = len(pool["connections"])
-        assert initial_available > 0
+        assert initial_available > 0, "initial_available must be greater than zero"
         acquired_connection = pool["connections"].pop(0)
-        assert acquired_connection.startswith("conn_")
+        assert acquired_connection.startswith("conn_"), "Condition must be true"
         pool["available"] -= 1
-        assert pool["available"] == initial_available - 1
-        assert len(pool["connections"]) == initial_connection_count - 1
+        assert pool["available"] == initial_available - 1, "Condition must be true"
+        assert len(pool["connections"]) == initial_connection_count - 1, "Collection must not be empty"
 
         # Release
         pool["connections"].append(acquired_connection)
         pool["available"] += 1
 
-        assert pool["available"] == initial_available
-        assert len(pool["connections"]) == initial_connection_count
+        assert pool["available"] == initial_available, "Condition must be true"
+        assert len(pool["connections"]) == initial_connection_count, "Collection must not be empty"
 
 
 class TestPhase2_ErrorHandlingIntegration:
@@ -588,7 +588,7 @@ class TestPhase2_ErrorHandlingIntegration:
         else:
             result = "error"
 
-        assert result == expected_result
+        assert result == expected_result, "Result must not be empty"
 
     def test_error_recovery_chain(self):
         """Test error recovery through multiple strategies"""
@@ -604,7 +604,7 @@ class TestPhase2_ErrorHandlingIntegration:
             if result is not None:
                 break
 
-        assert result == "success"
+        assert result == "success", "Result must not be empty"
 
     def test_compensating_transactions(self):
         """Test compensating transactions on rollback"""
@@ -623,7 +623,7 @@ class TestPhase2_ErrorHandlingIntegration:
             state["db"].clear()
             state["cache"].clear()
 
-        assert len(state["db"]) == 0
+        assert len(state["db"]) == 0, "Collection must not be empty"
 
     def test_bulkhead_isolation(self):
         """Test bulkhead pattern for fault isolation"""
@@ -633,7 +633,7 @@ class TestPhase2_ErrorHandlingIntegration:
         }
 
         # Failure in non-critical doesn't affect critical
-        assert services["critical"]["status"] == "running"
+        assert services["critical"]["status"] == "running", "Condition must be true"
 
 
 if __name__ == "__main__":

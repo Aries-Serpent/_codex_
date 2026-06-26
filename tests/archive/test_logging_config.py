@@ -23,8 +23,8 @@ def test_setup_logging_json_format() -> None:
     logger = logging_config.setup_logging(cfg, stream=buffer)
     logger.info("hello", extra={"tombstone": "abc"})
     output = json.loads(buffer.getvalue())
-    assert output["message"] == "hello"
-    assert output["extra"]["tombstone"] == "abc"
+    assert output["message"] == "hello", "Condition must be true"
+    assert output["extra"]["tombstone"] == "abc", "Condition must be true"
 
 
 def test_setup_logging_text_format() -> None:
@@ -33,8 +33,8 @@ def test_setup_logging_text_format() -> None:
     logger = logging_config.setup_logging(cfg, stream=buffer)
     logger.debug("example", extra={"status": "OK"})
     output = buffer.getvalue().strip()
-    assert "[DEBUG] example" in output
-    assert "status=OK" in output
+    assert "[DEBUG] example" in output, "Condition must be true"
+    assert "status=OK" in output, "Condition must be true"
 
 
 def test_setup_logging_reenables_existing_logger() -> None:
@@ -49,7 +49,7 @@ def test_setup_logging_reenables_existing_logger() -> None:
 
     payload = json.loads(buffer.getvalue())
     assert logger.disabled is False, "setup_logging() should re-enable the named logger"
-    assert payload["message"] == "hello"
+    assert payload["message"] == "hello", "Condition must be true"
 
 
 def test_log_restore_appends_evidence(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -74,10 +74,10 @@ def test_log_restore_appends_evidence(tmp_path: Path, monkeypatch: pytest.Monkey
     evidence_file = evidence_dir / "archive_ops.jsonl"
     content = evidence_file.read_text().strip()
     payload = json.loads(content)
-    assert payload["actor"] == "tester"
-    assert payload["status"] == "SUCCESS"
-    assert "***@" in payload["detail"]
-    assert payload["metrics"]["duration_ms"] >= 0
+    assert payload["actor"] == "tester", "Condition must be true"
+    assert payload["status"] == "SUCCESS", "Condition must be true"
+    assert "***@" in payload["detail"], "Condition must be true"
+    assert payload["metrics"]["duration_ms"] >= 0, "Value must be greater than zero"
 
 
 def test_log_restore_respects_performance_flag(
@@ -100,7 +100,7 @@ def test_log_restore_respects_performance_flag(
     )
 
     evidence_file = evidence_dir / "archive_ops.jsonl"
-    assert evidence_file.exists() is False
+    assert evidence_file.exists() is False, "Condition must be true"
 
 
 def test_log_restore_emits_structured_fields() -> None:
@@ -120,7 +120,7 @@ def test_log_restore_emits_structured_fields() -> None:
     )
 
     payload = json.loads(buffer.getvalue())
-    assert payload["message"] == "restore success"
-    assert payload["extra"]["actor"] == "tester"
-    assert payload["extra"]["tombstone"] == "abc"
-    assert payload["extra"]["status"] == "SUCCESS"
+    assert payload["message"] == "restore success", "Condition must be true"
+    assert payload["extra"]["actor"] == "tester", "Condition must be true"
+    assert payload["extra"]["tombstone"] == "abc", "Condition must be true"
+    assert payload["extra"]["status"] == "SUCCESS", "Condition must be true"

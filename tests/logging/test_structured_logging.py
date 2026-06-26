@@ -30,5 +30,5 @@ def test_logging_write_and_read_ndjson(tmp_path: Path):
     lines = [
         json.loads(line) for line in log.read_text(encoding="utf-8").splitlines() if line.strip()
     ]
-    assert len(lines) == 2
+    assert len(lines) == 2, "Lines must not be empty"
     assert all({"ts", "level", "msg"} <= set(e) for e in lines)

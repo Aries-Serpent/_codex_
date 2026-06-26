@@ -41,5 +41,5 @@ def test_save_and_load_checkpoint(tmp_path):
     )
     for original, copied in zip(model.state_dict().values(), reloaded.state_dict().values()):
         assert torch.allclose(original, copied)
-    assert metadata["epoch"] == 1
-    assert metadata["seed"] == 1234
+    assert metadata["epoch"] == 1, "Data must not be empty"
+    assert metadata["seed"] == 1234, "Data must not be empty"

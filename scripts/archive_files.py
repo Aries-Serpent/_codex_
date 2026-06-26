@@ -138,7 +138,7 @@ def verify_safe_to_archive(file_path: Path) -> ArchiveVerificationResult:
                 return ArchiveVerificationResult(False, f"File referenced in: {refs[0]}")
         except Exception as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             # If analysis fails, be conservative
             logger.warning(f"Could not verify references for {file_path.name}: <ERROR_TYPE>")
 

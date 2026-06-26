@@ -35,11 +35,11 @@ def test_eval_runner_smoke(tmp_path: Path):
             str(out_dir),
         ],
     )
-    assert result.exit_code == 0
+    assert result.exit_code == 0, "Result must not be empty"
     nd = out_dir / "metrics.ndjson"
     csv = out_dir / "metrics.csv"
-    assert nd.exists()
-    assert csv.exists()
+    assert nd.exists(), "Condition must be true"
+    assert csv.exists(), "Condition must be true"
     rec = json.loads(nd.read_text().strip().splitlines()[0])
-    assert rec["dataset"] == "toy_copy_task"
-    assert rec["metric"] == "exact_match"
+    assert rec["dataset"] == "toy_copy_task", "Data must not be empty"
+    assert rec["metric"] == "exact_match", "Condition must be true"

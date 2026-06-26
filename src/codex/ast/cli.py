@@ -41,8 +41,8 @@ def _analyze_path(path: Path) -> dict[str, Any]:
             )
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
     return {
         "path": str(path),
         "files": len(files),
@@ -63,7 +63,7 @@ def analyze(
             typer.echo(f"Analyze {target}: files={res['files']} lines={res['total_lines']}")
     except (IOError, OSError) as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         typer.echo(f"Analyze error: {e}", err=True)
         raise typer.Exit(code=3) from e
 
@@ -82,7 +82,7 @@ def audit(
             typer.echo(f"Audit {target}: files={res['files']} lines={res['total_lines']}")
     except (IOError, OSError) as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         typer.echo(f"Audit error: {e}", err=True)
         raise typer.Exit(code=3) from e
 
@@ -110,7 +110,7 @@ def diff(
             typer.echo(f"Diff files={delta_files:+} lines={delta_lines:+}")
     except (IOError, OSError) as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         typer.echo(f"Diff error: {e}", err=True)
         raise typer.Exit(code=3) from e
 

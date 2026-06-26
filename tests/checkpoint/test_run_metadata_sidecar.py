@@ -17,7 +17,7 @@ def test_run_manifest_sidecar_written(tmp_path: Path) -> None:
     state = {"weights": [1, 2, 3]}
     checkpoint_core.save_checkpoint(str(ckpt_dir), state)
     manifest = ckpt_dir / "run_manifest.json"
-    assert manifest.exists()
+    assert manifest.exists(), "Condition must be true"
     payload = json.loads(manifest.read_text(encoding="utf-8"))
-    assert "python" in payload
-    assert "platform" in payload
+    assert "python" in payload, "Condition must be true"
+    assert "platform" in payload, "Condition must be true"

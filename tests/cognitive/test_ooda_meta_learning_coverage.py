@@ -9,7 +9,7 @@ from pathlib import Path
 
 def _load_module(module_name: str, path: Path):
     spec = importlib.util.spec_from_file_location(module_name, path)
-    assert spec and spec.loader
+    assert spec and spec.loader, "spec is not valid"
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
@@ -59,11 +59,11 @@ def test_ooda_orchestrator_execute_and_metrics(monkeypatch):
 
     orchestrator = module.OODAOrchestrator(Planner(), MemoryImpl())
     result = orchestrator.execute({"prompt": "test"}, {"session": "s1"})
-    assert result.success is True
-    assert stores and stores[0][2] == {"type": "execution_record"}
+    assert result.success is True, "Result must not be empty"
+    assert stores and stores[0][2] == {"type": "execution_record"}, "stores is not valid"
     metrics = orchestrator.get_execution_metrics()
-    assert metrics["total_executions"] == 1
-    assert metrics["success_rate"] == 1.0
+    assert metrics["total_executions"] == 1, "Condition must be true"
+    assert metrics["success_rate"] == 1.0, "Condition must be true"
 
 
 def test_ooda_orchestrator_failure_path(monkeypatch):
@@ -104,8 +104,8 @@ def test_ooda_orchestrator_failure_path(monkeypatch):
             return None
 
     result = module.OODAOrchestrator(Planner(), MemoryImpl()).execute({"prompt": "x"})
-    assert result.success is False
-    assert result.errors and "boom" in result.errors[0]
+    assert result.success is False, "Result must not be empty"
+    assert result.errors and "boom" in result.errors[0], "Result must not be empty"
 
 
 def test_meta_learning_shared_memory_and_pattern_library(tmp_path):
@@ -118,8 +118,8 @@ def test_meta_learning_shared_memory_and_pattern_library(tmp_path):
     data_id = shared.store(
         {"key": "value"}, {"source_agent": 1, "target_agent": 2, "pattern_type": "code"}
     )
-    assert shared.retrieve(data_id) == {"key": "value"}
-    assert shared.search({"source_agent": 1}) == [data_id]
+    assert shared.retrieve(data_id) == {"key": "value"}, "Data must not be empty"
+    assert shared.search({"source_agent": 1}) == [data_id], "Data must not be empty"
 
     library = module.PatternLibrary(tmp_path / "patterns")
     p1 = module.Pattern(
@@ -139,6 +139,6 @@ def test_meta_learning_shared_memory_and_pattern_library(tmp_path):
     library.add_pattern(p1)
     library.add_pattern(p2)
     similar = library.find_similar_patterns(p1, threshold=0.5)
-    assert any(p.pattern_id == "p2" for p in similar)
+    assert any(p.pattern_id == "p2" for p in similar), "pattern_id is not valid"
     library.update_pattern_usage("p1")
-    assert library.get_pattern("p1").usage_count == 1
+    assert library.get_pattern("p1").usage_count == 1, "Count must be greater than zero"

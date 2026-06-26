@@ -44,10 +44,10 @@ def test_api_health_endpoint_returns_healthy() -> None:
 
     client = TestClient(app, raise_server_exceptions=True)
     response = client.get("/health")
-    assert response.status_code == 200
+    assert response.status_code == 200, "Response must not be empty"
     body = response.json()
-    assert body["status"] == "healthy"
-    assert "timestamp" in body
+    assert body["status"] == "healthy", "Condition must be true"
+    assert "timestamp" in body, "Condition must be true"
 
 
 @pytest.mark.integration
@@ -58,7 +58,7 @@ def test_api_readiness_probe_reports_ready() -> None:
 
     client = TestClient(app)
     response = client.get("/readiness")
-    assert response.status_code == 200
+    assert response.status_code == 200, "Response must not be empty"
     body = response.json()
     assert body.get("status") in ("ready", "ok", "healthy")
 
@@ -71,7 +71,7 @@ def test_api_liveness_probe_reports_alive() -> None:
 
     client = TestClient(app)
     response = client.get("/liveness")
-    assert response.status_code == 200
+    assert response.status_code == 200, "Response must not be empty"
     body = response.json()
     # Accept either 'status' key or top-level ok field; both indicate liveness.
     assert body.get("status") in ("alive", "ok", "healthy") or body.get("uptime_seconds", -1) >= 0
@@ -85,10 +85,10 @@ def test_api_ci_metrics_endpoint_structure() -> None:
 
     client = TestClient(app)
     response = client.get("/api/metrics/ci")
-    assert response.status_code == 200
+    assert response.status_code == 200, "Response must not be empty"
     body = response.json()
     # Structural contract: must include a timestamp field.
-    assert "timestamp" in body
+    assert "timestamp" in body, "Condition must be true"
 
 
 @pytest.mark.integration
@@ -99,10 +99,10 @@ def test_api_root_lists_known_endpoints() -> None:
 
     client = TestClient(app)
     response = client.get("/")
-    assert response.status_code == 200
+    assert response.status_code == 200, "Response must not be empty"
     body = response.json()
     endpoints = body.get("endpoints", {})
-    assert "ci_metrics" in endpoints or "alerts" in endpoints
+    assert "ci_metrics" in endpoints or "alerts" in endpoints, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -136,13 +136,13 @@ def test_alerting_fires_on_training_failure() -> None:
     exc = RuntimeError("CUDA out of memory")
     results = manager.alert_training_failure(exc, run_id="run-001", epoch=3)
 
-    assert results.get("stub") is True
-    assert len(stub.received) == 1
+    assert results.get("stub") is True, "Result must not be empty"
+    assert len(stub.received) == 1, "Collection must not be empty"
     event = stub.received[0]
-    assert event.severity == AlertSeverity.CRITICAL
-    assert "CUDA out of memory" in event.message
-    assert event.run_id == "run-001"
-    assert event.epoch == 3
+    assert event.severity == AlertSeverity.CRITICAL, "severity is not valid"
+    assert "CUDA out of memory" in event.message, "Condition must be true"
+    assert event.run_id == "run-001", "run_id is not valid"
+    assert event.epoch == 3, "epoch is not valid"
 
 
 @pytest.mark.integration
@@ -173,10 +173,10 @@ def test_alerting_delivers_to_multiple_channels() -> None:
 
     manager.alert_training_complete(run_id="run-003", epochs=10, final_loss=0.10)
 
-    assert len(ch1.received) == 1
-    assert len(ch2.received) == 1
-    assert ch1.received[0].run_id == "run-003"
-    assert ch2.received[0].run_id == "run-003"
+    assert len(ch1.received) == 1, "Collection must not be empty"
+    assert len(ch2.received) == 1, "Collection must not be empty"
+    assert ch1.received[0].run_id == "run-003", "run_id is not valid"
+    assert ch2.received[0].run_id == "run-003", "run_id is not valid"
 
 
 @pytest.mark.integration
@@ -189,11 +189,11 @@ def test_alerting_timestamp_is_filled_automatically() -> None:
         message="No timestamp yet",
         severity=AlertSeverity.WARNING,
     )
-    assert event.timestamp == ""
+    assert event.timestamp == "", "timestamp is not valid"
     event.fill_timestamp()
-    assert event.timestamp != ""
+    assert event.timestamp != "", "timestamp is not valid"
     # Must be ISO-8601 style (contains 'T')
-    assert "T" in event.timestamp
+    assert "T" in event.timestamp, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -251,8 +251,8 @@ def test_data_pipeline_dataset_registry_roundtrip() -> None:
     register_dataset(spec, overwrite=True)
     retrieved = get_dataset_spec("_gap23_test_ds_")
 
-    assert retrieved.name == "_gap23_test_ds_"
-    assert "integration" in retrieved.tags
+    assert retrieved.name == "_gap23_test_ds_", "name is not valid"
+    assert "integration" in retrieved.tags, "Condition must be true"
 
     # Cleanup to avoid polluting other tests.
     _DATASET_REGISTRY.pop("_gap23_test_ds_", None)
@@ -285,7 +285,7 @@ def test_config_load_base_config_returns_dict() -> None:
 
     cfg = load_base_config()
     assert isinstance(cfg, dict)
-    assert len(cfg) > 0
+    assert len(cfg) > 0, "Cfg must not be empty"
 
 
 @pytest.mark.integration
@@ -300,7 +300,7 @@ def test_config_experiment_basic_loads_and_merges() -> None:
     assert isinstance(merged, dict)
     # Merged config must contain keys from both layers.
     all_keys = set(base.keys()) | set(exp.keys())
-    assert all(k in merged for k in all_keys)
+    assert all(k in merged for k in all_keys), "Condition must be true"
 
 
 @pytest.mark.integration
@@ -309,9 +309,9 @@ def test_config_schema_train_config_defaults_valid() -> None:
     from codex_ml.config_schema import TrainConfig
 
     cfg = TrainConfig()
-    assert cfg.batch_size > 0
-    assert cfg.epochs >= 1
-    assert 0.0 < cfg.learning_rate < 1.0
+    assert cfg.batch_size > 0, "batch_size must be greater than zero"
+    assert cfg.epochs >= 1, "epochs must be greater than zero"
+    assert 0.0 < cfg.learning_rate < 1.0, "0 is not valid"
     assert cfg.device in ("cpu", "cuda", "mps", "auto")
 
 
@@ -328,11 +328,11 @@ def test_config_schema_train_config_custom_values() -> None:
         seed=99,
         device="cpu",
     )
-    assert cfg.model_name == "tiny-lm"
-    assert cfg.learning_rate == pytest.approx(5e-4)
-    assert cfg.batch_size == 16
-    assert cfg.epochs == 3
-    assert cfg.seed == 99
+    assert cfg.model_name == "tiny-lm", "model_name is not valid"
+    assert cfg.learning_rate == pytest.approx(5e-4), "learning_rate is not valid"
+    assert cfg.batch_size == 16, "batch_size is not valid"
+    assert cfg.epochs == 3, "epochs is not valid"
+    assert cfg.seed == 99, "seed is not valid"
 
 
 @pytest.mark.integration
@@ -356,7 +356,7 @@ def test_config_codex_schema_roundtrip() -> None:
 
     codex_cfg = CodexConfig(model=model_cfg, training=training_cfg)
 
-    assert codex_cfg.model.model_name == "test-model"
-    assert codex_cfg.model.hidden_size == 128
-    assert codex_cfg.training.batch_size == 4
-    assert codex_cfg.training.max_steps == 10
+    assert codex_cfg.model.model_name == "test-model", "model_name is not valid"
+    assert codex_cfg.model.hidden_size == 128, "hidden_size is not valid"
+    assert codex_cfg.training.batch_size == 4, "batch_size is not valid"
+    assert codex_cfg.training.max_steps == 10, "max_steps is not valid"

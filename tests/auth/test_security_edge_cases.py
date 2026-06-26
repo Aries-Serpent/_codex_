@@ -15,7 +15,9 @@ import time
 import pytest
 
 from codex.auth.authenticator import Authenticator
-from codex.auth.exceptions import InvalidCredentialsError # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+from codex.auth.exceptions import (
+    InvalidCredentialsError,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+)
 from codex.auth.token_manager import TokenManager
 from codex.auth.user_store import UserStore
 
@@ -41,7 +43,7 @@ class TestInjectionPrevention:
 
         user = auth_system.register(malicious, "test@example.com", "Str0ngPass!")
         # Should create user with literal username, not inject SQL
-        assert user.username == malicious
+        assert user.username == malicious, "username is not valid"
 
     def test_sql_injection_in_password(self, auth_system):
         """Prevent SQL injection via password."""
@@ -56,7 +58,7 @@ class TestInjectionPrevention:
 
         # Should safely handle
         user = auth_system.register("user2", "user2@example.com", "Str0ngPass!")
-        assert user.username == "user2"
+        assert user.username == "user2", "username is not valid"
 
     def test_xss_prevention_in_username(self, auth_system):
         """Prevent XSS in username."""
@@ -64,14 +66,14 @@ class TestInjectionPrevention:
 
         user = auth_system.register(xss, "xss@example.com", "Str0ngPass!")
         # Should store literally, not execute
-        assert user.username == xss
+        assert user.username == xss, "username is not valid"
 
     def test_ldap_injection_prevention(self, auth_system):
         """Prevent LDAP injection."""
         ldap_injection = "*)(uid=*))(|(uid=*"
 
         user = auth_system.register(ldap_injection, "ldap@example.com", "Str0ngPass!")
-        assert user.username == ldap_injection
+        assert user.username == ldap_injection, "username is not valid"
 
 
 # ============================================================================
@@ -96,7 +98,7 @@ class TestCryptographicSecurity:
 
         user = auth_system.user_store.get_by_username("crypto1")
         # Password should be hashed
-        assert user.password_hash != "Str0ngPass!"
+        assert user.password_hash != "Str0ngPass!", "password_hash is not valid"
 
     def test_token_contains_no_user_password(self, auth_system):
         """Tokens should not contain user passwords."""
@@ -104,8 +106,8 @@ class TestCryptographicSecurity:
         result = auth_system.login("crypto2", "Str0ngPass!")
 
         # Token should not contain password
-        assert "Str0ngPass!" not in result.access_token
-        assert "Str0ngPass!" not in result.refresh_token
+        assert "Str0ngPass!" not in result.access_token, "Result must not be empty"
+        assert "Str0ngPass!" not in result.refresh_token, "Result must not be empty"
 
     def test_token_signature_verification(self, auth_system):
         """Tokens should be properly signed."""
@@ -114,7 +116,7 @@ class TestCryptographicSecurity:
 
         # Should validate correctly
         payload = auth_system.token_manager.validate_token(result.access_token)
-        assert payload
+        assert payload, "payload is not valid"
 
     def test_password_hash_salting(self, auth_system):
         """Password hashes should use salt."""
@@ -128,7 +130,7 @@ class TestCryptographicSecurity:
         user4 = auth_system.user_store.get_by_username("user4")
 
         # Hashes should be different (salted)
-        assert user3.password_hash != user4.password_hash
+        assert user3.password_hash != user4.password_hash, "password_hash is not valid"
 
 
 # ============================================================================
@@ -167,7 +169,7 @@ class TestTimingAttackPrevention:
 
         # Times should be within reasonable bounds
         # (exact equality not expected, but should be similar order of magnitude)
-        assert abs(time_wrong_password - time_nonexistent) < 1.0
+        assert abs(time_wrong_password - time_nonexistent) < 1.0, "Condition must be true"
 
     def test_token_validation_timing(self, auth_system):
         """Token validation should be constant time."""
@@ -188,8 +190,8 @@ class TestTimingAttackPrevention:
         time_invalid = time.time() - start
 
         # Should be similar
-        assert time_valid > 0
-        assert time_invalid > 0
+        assert time_valid > 0, "time_valid must be greater than zero"
+        assert time_invalid > 0, "time_invalid must be greater than zero"
 
 
 # ============================================================================
@@ -221,7 +223,7 @@ class TestResourceExhaustion:
 
         # User should still exist
         user = auth_system.user_store.get_by_username("lockout")
-        assert user
+        assert user, "user is not valid"
 
     def test_password_reset_abuse(self, auth_system):
         """Handle password reset abuse."""
@@ -240,7 +242,7 @@ class TestResourceExhaustion:
         result = auth_system.login("large", "Str0ngPass!")
 
         # Token should be reasonably sized
-        assert len(result.access_token) < 10000
+        assert len(result.access_token) < 10000, "Collection must not be empty"
 
     def test_many_concurrent_sessions(self, auth_system):
         """Handle many concurrent sessions."""
@@ -253,7 +255,7 @@ class TestResourceExhaustion:
 
         # All sessions should be distinct
         tokens = {s.session_token for s in sessions}
-        assert len(tokens) == 50
+        assert len(tokens) == 50, "Tokens must not be empty"
 
 
 # ============================================================================
@@ -276,13 +278,13 @@ class TestBoundaryConditions:
         """Test minimum username length."""
         # Single character should work
         user = auth_system.register("a", "a@example.com", "Str0ngPass!")
-        assert user.username == "a"
+        assert user.username == "a", "username is not valid"
 
     def test_maximum_username_length(self, auth_system):
         """Test maximum username length."""
         long_username = "x" * 1000
         user = auth_system.register(long_username, "long@example.com", "Str0ngPass!")
-        assert user.username == long_username
+        assert user.username == long_username, "username is not valid"
 
     def test_minimum_password_length(self, auth_system):
         """Test minimum password requirement."""
@@ -296,7 +298,7 @@ class TestBoundaryConditions:
         user = auth_system.register("longpwd", "longpwd@example.com", long_password)
 
         result = auth_system.login("longpwd", long_password)
-        assert result.user_id == user.user_id
+        assert result.user_id == user.user_id, "Result must not be empty"
 
     def test_empty_string_inputs(self, auth_system):
         """Test empty string inputs."""
@@ -314,7 +316,7 @@ class TestBoundaryConditions:
 
         # Should handle safely
         result = auth_system.login("null", "Str0ngPass!")
-        assert result.user_id
+        assert result.user_id, "Result must not be empty"
 
 
 # ============================================================================
@@ -354,7 +356,7 @@ class TestRaceConditions:
 
         # At least one should succeed
         user = auth_system.user_store.get_by_user_id(user.user_id)
-        assert user
+        assert user, "user is not valid"
 
     def test_concurrent_token_refresh(self, auth_system):
         """Concurrent token refresh."""
@@ -379,7 +381,7 @@ class TestRaceConditions:
             t.join()
 
         # Should have some results
-        assert len(refresh_tokens) + len(errors) == 10
+        assert len(refresh_tokens) + len(errors) == 10, "Refresh_tokens must not be empty"
 
     def test_concurrent_logout(self, auth_system):
         """Concurrent logout."""
@@ -420,7 +422,7 @@ class TestPrivilegeEscalation:
         user = auth_system.register("priv1", "priv1@example.com", "Str0ngPass!")
 
         # User has no admin role
-        assert "admin" not in user.roles
+        assert "admin" not in user.roles, "Condition must be true"
 
     def test_user_cannot_modify_other_user(self, auth_system):
         """User should not modify another user."""
@@ -430,7 +432,7 @@ class TestPrivilegeEscalation:
         # Users are separate
         user2 = auth_system.user_store.get_by_username("priv2")
         user3 = auth_system.user_store.get_by_username("priv3")
-        assert user2.user_id != user3.user_id
+        assert user2.user_id != user3.user_id, "user_id is not valid"
 
     def test_token_privilege_scope(self, auth_system):
         """Token should only grant granted privileges."""
@@ -439,7 +441,7 @@ class TestPrivilegeEscalation:
 
         payload = auth_system.token_manager.validate_token(result.access_token)
         # Should have basic scope, not admin
-        assert payload
+        assert payload, "payload is not valid"
 
 
 # ============================================================================
@@ -466,7 +468,7 @@ class TestSessionSecurity:
         # New login should get new session
         result2 = auth_system.login("sess1", "Str0ngPass!")
 
-        assert result1.session_token != result2.session_token
+        assert result1.session_token != result2.session_token, "Result must not be empty"
 
     def test_session_hijacking_prevention(self, auth_system):
         """Prevent session hijacking."""
@@ -515,9 +517,9 @@ class TestDataIntegrity:
         # Retrieve and verify consistency
         retrieved = auth_system.user_store.get_by_user_id(original.user_id)
 
-        assert retrieved.username == original.username
-        assert retrieved.email == original.email
-        assert retrieved.user_id == original.user_id
+        assert retrieved.username == original.username, "username is not valid"
+        assert retrieved.email == original.email, "email is not valid"
+        assert retrieved.user_id == original.user_id, "user_id is not valid"
 
     def test_password_change_validation(self, auth_system):
         """Password changes should be validated."""
@@ -532,4 +534,4 @@ class TestDataIntegrity:
 
         # New password should work
         result = auth_system.login("integrity", "NewPass123!")
-        assert result.user_id == user.user_id
+        assert result.user_id == user.user_id, "Result must not be empty"

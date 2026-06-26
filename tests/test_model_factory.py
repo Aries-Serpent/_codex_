@@ -32,8 +32,8 @@ def test_build_model_validates_dtype(monkeypatch):
     result_name, loader_kwargs = factory.build_model(config, loader=_fake_loader)
     captured.update(loader_kwargs)
 
-    assert result_name == "stub"
-    assert captured["dtype"] == "float16"
+    assert result_name == "stub", "Result must not be empty"
+    assert captured["dtype"] == "float16", "Condition must be true"
 
 
 def test_build_model_rejects_unknown_dtype(monkeypatch):
@@ -65,8 +65,8 @@ def test_build_model_blocks_peft_without_env(monkeypatch):
     )
 
     _, loader_kwargs = factory.build_model(config, loader=_fake_loader)
-    assert loader_kwargs.get("lora_enabled") is False
-    assert "lora_path" not in loader_kwargs
+    assert loader_kwargs.get("lora_enabled") is False, "Condition must be true"
+    assert "lora_path" not in loader_kwargs, "Condition must be true"
 
 
 def test_build_model_enables_peft_with_env(monkeypatch):
@@ -83,9 +83,9 @@ def test_build_model_enables_peft_with_env(monkeypatch):
 
     _, loader_kwargs = factory.build_model(config, loader=_fake_loader)
 
-    assert loader_kwargs["lora_enabled"] is True
-    assert loader_kwargs["lora_path"] == "adapter"
-    assert loader_kwargs["lora_r"] == 4
-    assert loader_kwargs["lora_alpha"] == 8
-    assert loader_kwargs["lora_dropout"] == pytest.approx(0.1)
+    assert loader_kwargs["lora_enabled"] is True, "Condition must be true"
+    assert loader_kwargs["lora_path"] == "adapter", "Condition must be true"
+    assert loader_kwargs["lora_r"] == 4, "Condition must be true"
+    assert loader_kwargs["lora_alpha"] == 8, "Condition must be true"
+    assert loader_kwargs["lora_dropout"] == pytest.approx(0.1), "Condition must be true"
     assert loader_kwargs["lora_target_modules"] == ["q", "v"]

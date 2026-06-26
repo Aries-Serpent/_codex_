@@ -12,7 +12,7 @@ def test_requirements_lock_exists() -> None:
     """
 
     root = Path(__file__).resolve().parent.parent
-    assert (root / "requirements/lock.txt").is_file()
+    assert (root / "requirements/lock.txt").is_file(), "Condition must be true"
 
 
 def test_requirements_lock_notes_python_target() -> None:
@@ -29,4 +29,4 @@ def test_requirements_lock_notes_python_target() -> None:
             break
         header_lines.append(line.lower())
 
-    assert any("python lock target" in line for line in header_lines)
+    assert any("python lock target" in line for line in header_lines), "Condition must be true"

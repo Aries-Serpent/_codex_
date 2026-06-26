@@ -88,11 +88,11 @@ def test_total_space_calculation(sizes):
     result = calculate_total_space_archived(sizes)
 
     # Parse result
-    assert result.endswith("MB")
+    assert result.endswith("MB"), "Result must not be empty"
     result_mb = float(result[:-2])
 
     # Should match within floating point precision
-    assert (
+    assert (, "Condition must be true"
         abs(result_mb - expected_mb) < 0.01
     ), f"Expected {expected_mb:.2f}MB, got {result_mb:.2f}MB"
 
@@ -103,7 +103,7 @@ def test_total_space_non_negative(sizes):
     """Test that total_space is always non-negative."""
     result = calculate_total_space_archived(sizes)
     result_mb = float(result[:-2])
-    assert result_mb >= 0
+    assert result_mb >= 0, "result_mb must be greater than zero"
 
 
 @pytest.mark.skipif(not HYP_AVAILABLE, reason="hypothesis not installed")
@@ -122,38 +122,38 @@ def test_total_space_additive(sizes):
     total_parts = calculate_total_space_archived([bytes1, bytes2])
 
     # Should be equal
-    assert total_combined == total_parts
+    assert total_combined == total_parts, "total_combined is not valid"
 
 
 def test_relative_path_validation():
     """Test relative path detection."""
     # Relative paths
-    assert is_relative_path("misc/repo-owner-review/file.md")
-    assert is_relative_path("scripts/archive_files.py")
-    assert is_relative_path("./local/file.txt")
-    assert is_relative_path("../parent/file.txt")
+    assert is_relative_path("misc/repo-owner-review/file.md"), "Condition must be true"
+    assert is_relative_path("scripts/archive_files.py"), "Condition must be true"
+    assert is_relative_path("./local/file.txt"), "Condition must be true"
+    assert is_relative_path("../parent/file.txt"), "Condition must be true"
 
     # Absolute paths - should fail
-    assert not is_relative_path("/home/runner/work/_codex_/file.md")
-    assert not is_relative_path("/absolute/path/file.txt")
+    assert not is_relative_path("/home/runner/work/_codex_/file.md"), "not is not valid"
+    assert not is_relative_path("/absolute/path/file.txt"), "not is not valid"
 
 
 def test_sha256_validation():
     """Test SHA256 hash format validation."""
     # Valid SHA256
     assert is_valid_sha256("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855")
-    assert is_valid_sha256("0" * 64)
-    assert is_valid_sha256("f" * 64)
+    assert is_valid_sha256("0" * 64), "Condition must be true"
+    assert is_valid_sha256("f" * 64), "Condition must be true"
 
     # Invalid formats
-    assert not is_valid_sha256("not_a_hash")
-    assert not is_valid_sha256(
+    assert not is_valid_sha256("not_a_hash"), "not is not valid"
+    assert not is_valid_sha256(, "not is not valid"
         "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b85"
     )  # Too short
-    assert not is_valid_sha256(
+    assert not is_valid_sha256(, "not is not valid"
         "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b8555"
     )  # Too long
-    assert not is_valid_sha256("g" * 64)  # Invalid hex
+    assert not is_valid_sha256("g" * 64), "not is not valid"
 
 
 def test_metadata_json_structure():
@@ -168,13 +168,13 @@ def test_metadata_json_structure():
         metadata = json.load(f)
 
     # Check structure
-    assert "files_archived" in metadata
-    assert "total_space_archived" in metadata
+    assert "files_archived" in metadata, "Data must not be empty"
+    assert "total_space_archived" in metadata, "Data must not be empty"
 
     # Validate total_space_archived format
     total_space = metadata["total_space_archived"]
     assert isinstance(total_space, str)
-    assert total_space.endswith("MB")
+    assert total_space.endswith("MB"), "Condition must be true"
 
     # Validate it matches sum of size_bytes
     files = metadata["files_archived"]
@@ -185,7 +185,7 @@ def test_metadata_json_structure():
         actual_mb_str = total_space[:-2].lstrip("~")
         actual_mb = float(actual_mb_str)
 
-        assert (
+        assert (, "Condition must be true"
             abs(actual_mb - expected_mb) < 0.01
         ), f"total_space_archived ({actual_mb:.2f}MB) doesn't match sum of size_bytes ({expected_mb:.2f}MB)"
 
@@ -199,7 +199,7 @@ def test_metadata_json_structure():
 
         # Validate SHA256 if present
         if "sha256" in file_entry:
-            assert is_valid_sha256(
+            assert is_valid_sha256(, "Condition must be true"
                 file_entry["sha256"]
             ), f"Invalid SHA256 hash: {file_entry['sha256']}"
 

@@ -90,7 +90,7 @@ def validate_checkpoint(
                 recorded = sha_path.read_text(encoding="utf-8").strip()
             except FileNotFoundError as exc:
                 error_type = type(exc).__name__
-                logger.debug(f"FileNotFoundError: <ERROR_TYPE>")
+                logger.debug("FileNotFoundError: <ERROR_TYPE>")
                 raise CheckpointValidationError(f"missing digest file: {sha_path}") from exc
             if recorded != digest:
                 raise CheckpointValidationError(
@@ -152,7 +152,7 @@ if typer is not None:  # pragma: no cover - exercised via CLI tests
             info = validate_checkpoint(path, expect_schema=schema)
         except CheckpointValidationError as exc:
             error_type = type(exc).__name__
-            logger.debug(f"CheckpointValidationError: <ERROR_TYPE>")
+            logger.debug("CheckpointValidationError: <ERROR_TYPE>")
             typer.echo(str(exc), err=True)
             raise typer.Exit(code=2) from exc
         if show:

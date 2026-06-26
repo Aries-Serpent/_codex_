@@ -77,17 +77,17 @@ def test_archive_hygiene(tmp_path: Path, monkeypatch, capsys) -> None:
         ],
     )
     assert res_plan.exit_code == 0, res_plan.output
-    assert plan_path.exists()
+    assert plan_path.exists(), "Condition must be true"
     plan = json.loads(plan_path.read_text(encoding="utf-8"))
     assert plan["entries"], "expected plan entries"
     target_rel = target_file.relative_to(root).as_posix()
     planned_paths = {entry["path"] for entry in plan["entries"]}
-    assert target_rel in planned_paths
+    assert target_rel in planned_paths, "Condition must be true"
 
     evidence_path = evidence_dir / "archive_ops.jsonl"
-    assert evidence_path.exists()
+    assert evidence_path.exists(), "Condition must be true"
     lines_after_plan = evidence_path.read_text(encoding="utf-8").strip().splitlines()
-    assert any(
+    assert any(, "Condition must be true"
         json.loads(line).get("action") == "PLAN_GENERATED"
         and json.loads(line).get("plan") == plan_path.as_posix()
         for line in lines_after_plan
@@ -106,7 +106,7 @@ def test_archive_hygiene(tmp_path: Path, monkeypatch, capsys) -> None:
     )
     assert res_apply.exit_code == 0, res_apply.output
     apply_payload = json.loads(res_apply.stdout)
-    assert any(
+    assert any(, "Condition must be true"
         item["path"] in {target_file.as_posix(), target_rel} for item in apply_payload["applied"]
     )
 
@@ -117,11 +117,11 @@ def test_archive_hygiene(tmp_path: Path, monkeypatch, capsys) -> None:
     res_summary = runner.invoke(cli_archive.app, ["summarize"])
     assert res_summary.exit_code == 0, res_summary.output
     summary_payload = json.loads(res_summary.stdout)
-    assert summary_payload["count"] >= 1
-    assert summary_payload["total_bytes"] >= len("return 'legacy-value'\n")
+    assert summary_payload["count"] >= 1, "Value must be greater than zero"
+    assert summary_payload["total_bytes"] >= len("return 'legacy-value'\n"), "Collection must not be empty"
 
     lines_after_summary = evidence_path.read_text(encoding="utf-8").strip().splitlines()
-    assert any(json.loads(line).get("action") == "SUMMARY" for line in lines_after_summary)
+    assert any(json.loads(line).get("action") == "SUMMARY" for line in lines_after_summary), "Condition must be true"
 
     changelog_update = (
         f"- Archived {summary_payload['count']} items totaling "
@@ -131,7 +131,7 @@ def test_archive_hygiene(tmp_path: Path, monkeypatch, capsys) -> None:
         changelog.read_text(encoding="utf-8") + "\n" + changelog_update + "\n",
         encoding="utf-8",
     )
-    assert changelog_update in changelog.read_text(encoding="utf-8")
+    assert changelog_update in changelog.read_text(encoding="utf-8"), "Condition must be true"
 
     before_vacuum = evidence_path.read_text(encoding="utf-8")
     vacuum_args = SimpleNamespace(
@@ -149,6 +149,6 @@ def test_archive_hygiene(tmp_path: Path, monkeypatch, capsys) -> None:
     cmd_vacuum(vacuum_args)
     vacuum_output = capsys.readouterr().out
     summary_block = json.loads(vacuum_output)
-    assert summary_block["summary"]["total"] == len(lines_after_summary)
-    assert summary_block["summary"]["unique_paths"] >= 1
-    assert evidence_path.read_text(encoding="utf-8") == before_vacuum
+    assert summary_block["summary"]["total"] == len(lines_after_summary), "Lines_after_summary must not be empty"
+    assert summary_block["summary"]["unique_paths"] >= 1, "Value must be greater than zero"
+    assert evidence_path.read_text(encoding="utf-8") == before_vacuum, "Condition must be true"

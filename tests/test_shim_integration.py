@@ -45,10 +45,10 @@ def test_load_shim_inventory():
         reader = ShimInventoryReader(repo_root)
         entries = reader.load()
 
-        assert len(entries) == 1
-        assert entries[0].module == "training.engine"
-        assert entries[0].status == "shim"
-        assert "training/engine.py" in entries[0].whitelist_duplicates
+        assert len(entries) == 1, "Entries must not be empty"
+        assert entries[0].module == "training.engine", "module is not valid"
+        assert entries[0].status == "shim", "status is not valid"
+        assert "training/engine.py" in entries[0].whitelist_duplicates, "Condition must be true"
 
 
 def test_extract_whitelist():
@@ -156,9 +156,9 @@ def test_non_whitelisted():
 
     result = cross_ref.check_paths(["unknown/file.py"])
 
-    assert not result.in_shim_inventory
-    assert not result.is_whitelisted
-    assert result.shim_status is None
+    assert not result.in_shim_inventory, "Result must not be empty"
+    assert not result.is_whitelisted, "Result must not be empty"
+    assert result.shim_status is None, "Result must not be empty"
     assert any("Add to .github/SHIM_INVENTORY.yaml" in rec for rec in result.recommendations)
 
 
@@ -183,8 +183,8 @@ def test_not_in_inventory():
     # Check a path not in inventory
     result = cross_ref.check_paths(["scripts/util/helper.py"])
 
-    assert not result.in_shim_inventory
-    assert "Add to .github/SHIM_INVENTORY.yaml" in result.recommendations[0]
+    assert not result.in_shim_inventory, "Result must not be empty"
+    assert "Add to .github/SHIM_INVENTORY.yaml" in result.recommendations[0], "Result must not be empty"
 
 
 def test_recommendations():
@@ -207,11 +207,11 @@ def test_recommendations():
 
     # Whitelisted duplicate
     result1 = cross_ref.check_paths(["training/engine.py"])
-    assert result1.in_shim_inventory
-    assert result1.is_whitelisted
-    assert any("Already tracked" in rec for rec in result1.recommendations)
+    assert result1.in_shim_inventory, "Result must not be empty"
+    assert result1.is_whitelisted, "Result must not be empty"
+    assert any("Already tracked" in rec for rec in result1.recommendations), "Result must not be empty"
 
     # Not in inventory
     result2 = cross_ref.check_paths(["new/duplicate.py"])
-    assert not result2.in_shim_inventory
+    assert not result2.in_shim_inventory, "Result must not be empty"
     assert any("Add to .github/SHIM_INVENTORY.yaml" in rec for rec in result2.recommendations)

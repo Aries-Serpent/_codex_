@@ -145,8 +145,8 @@ def sample_text() -> str:
 def test_chunk_text_adjusts_overlap(sample_text: str) -> None:
     """Chunking should adjust overlap when it exceeds chunk size."""
     chunks = indexer.chunk_text(sample_text, chunk_size=10, overlap=128)
-    assert chunks
-    assert all(len(chunk[2]) <= 10 for chunk in chunks)
+    assert chunks, "chunks is not valid"
+    assert all(len(chunk[2]) <= 10 for chunk in chunks), "Collection must not be empty"
 
 
 @pytest.mark.timeout(60)
@@ -161,7 +161,7 @@ def test_embed_chunks_returns_embeddings(
     chunks = [(0, 5, "hello"), (6, 11, "world")]
     embeddings = indexer.embed_chunks(chunks, model_profile={"model_name": "fake"})
     assert embeddings.shape == (2, 3)
-    assert sentence_transformer_spy.calls
+    assert sentence_transformer_spy.calls, "sentence_transf is not valid"
 
 
 @pytest.mark.timeout(60)
@@ -189,10 +189,10 @@ def test_persist_and_load_index_roundtrip(
         tenant_id="tenant",
         index_dir=str(tmp_path),
     )
-    assert index.ntotal == len(chunks)
-    assert len(chunk_meta) == len(chunks)
-    assert meta.get("index_name") == "demo"
-    assert (index_path / "metadata.json").exists()
+    assert index.ntotal == len(chunks), "Chunks must not be empty"
+    assert len(chunk_meta) == len(chunks), "Chunk_meta must not be empty"
+    assert meta.get("index_name") == "demo", "Condition must be true"
+    assert (index_path / "metadata.json").exists(), "Data must not be empty"
 
 
 @pytest.mark.timeout(60)
@@ -237,7 +237,7 @@ def test_retriever_query_returns_results(
     )
     retriever = Retriever(index_dir=str(tmp_path), index_name="demo", tenant_id="tenant")
     results = retriever.query("hello", top_k=2)
-    assert results
+    assert results, "Result must not be empty"
     first = results[0]
     assert {"text", "file", "start_line", "end_line", "score", "generated_at"}.issubset(first)
 
@@ -267,7 +267,7 @@ def test_retriever_query_min_score_filters(
     # min_score acts as maximum L2 distance (lower is better)
     # Use a negative value to ensure all results are filtered
     results = retriever.query("hello", top_k=2, min_score=-1.0)
-    assert results == []
+    assert results == [], "Result must not be empty"
 
 
 @pytest.mark.timeout(60)
@@ -283,4 +283,4 @@ def test_retriever_query_empty_index_returns_empty(
     """Queries against missing indices should return empty lists."""
     retriever = Retriever(index_dir=str(tmp_path), index_name="missing", tenant_id="tenant")
     retriever.faiss_index = None
-    assert retriever.query("hello") == []
+    assert retriever.query("hello") == [], "Condition must be true"

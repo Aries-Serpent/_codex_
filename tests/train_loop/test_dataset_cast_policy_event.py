@@ -40,13 +40,13 @@ def test_dataset_cast_policy_emits_event(tmp_path: Path):
     ndjson = outdir / "metrics.ndjson"
     assert ndjson.exists(), "metrics.ndjson not created"
     content = ndjson.read_text(encoding="utf-8")
-    assert '"event": "dataset_cast"' in content
+    assert '"event": "dataset_cast"' in content, "Data must not be empty"
 
     telem = outdir / "telemetry.json"
     assert telem.exists(), "telemetry.json not created"
     tcontent = telem.read_text(encoding="utf-8")
-    assert '"event": "dataset_cast"' in tcontent
+    assert '"event": "dataset_cast"' in tcontent, "Data must not be empty"
     # NDJSON alternative should also exist
     tnd = outdir / "telemetry.ndjson"
-    assert tnd.exists()
-    assert '"event": "dataset_cast"' in tnd.read_text(encoding="utf-8")
+    assert tnd.exists(), "Condition must be true"
+    assert '"event": "dataset_cast"' in tnd.read_text(encoding="utf-8"), "Data must not be empty"

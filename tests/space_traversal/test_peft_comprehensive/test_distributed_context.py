@@ -14,6 +14,6 @@ def test_distributed_context_env(monkeypatch):
 
     info = distributed_context()
 
-    assert info["world_size"] == 4
-    assert info["rank"] == 2
-    assert info["local_rank"] == 1
+    assert info["world_size"] == 4, "Condition must be true"
+    assert info["rank"] == 2, "Condition must be true"
+    assert info["local_rank"] == 1, "Condition must be true"

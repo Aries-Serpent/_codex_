@@ -29,18 +29,18 @@ class TestPlanEntry:
             sloc=50,
         )
 
-        assert entry.path == "src/old_module.py"
-        assert entry.reason == "dead"
-        assert entry.age_days == 200
-        assert entry.ref_count == 0
-        assert entry.coverage == 0.0
-        assert entry.score == 0.9
-        assert entry.commit_sha == "abc123def456"
-        assert entry.mime == "text/x-python"
-        assert entry.lang == "python"
-        assert "deprecated" in entry.tags
-        assert entry.size_bytes == 1024
-        assert entry.sloc == 50
+        assert entry.path == "src/old_module.py", "path is not valid"
+        assert entry.reason == "dead", "reason is not valid"
+        assert entry.age_days == 200, "age_days is not valid"
+        assert entry.ref_count == 0, "Count must be greater than zero"
+        assert entry.coverage == 0.0, "coverage is not valid"
+        assert entry.score == 0.9, "score is not valid"
+        assert entry.commit_sha == "abc123def456", "commit_sha is not valid"
+        assert entry.mime == "text/x-python", "mime is not valid"
+        assert entry.lang == "python", "lang is not valid"
+        assert "deprecated" in entry.tags, "Condition must be true"
+        assert entry.size_bytes == 1024, "size_bytes is not valid"
+        assert entry.sloc == 50, "sloc is not valid"
 
 
 class TestHasDeprecationTag:
@@ -55,7 +55,7 @@ class TestHasDeprecationTag:
 
         result = _has_deprecation_tag(file_path)
 
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_legacy_keyword(self, tmp_path):
         """Test detecting LEGACY keyword."""
@@ -66,7 +66,7 @@ class TestHasDeprecationTag:
 
         result = _has_deprecation_tag(file_path)
 
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_prune_me_keyword(self, tmp_path):
         """Test detecting PRUNE_ME keyword."""
@@ -77,7 +77,7 @@ class TestHasDeprecationTag:
 
         result = _has_deprecation_tag(file_path)
 
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_no_deprecation(self, tmp_path):
         """Test file without deprecation markers."""
@@ -88,7 +88,7 @@ class TestHasDeprecationTag:
 
         result = _has_deprecation_tag(file_path)
 
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_nonexistent_file(self, tmp_path):
         """Test with nonexistent file."""
@@ -98,7 +98,7 @@ class TestHasDeprecationTag:
 
         result = _has_deprecation_tag(file_path)
 
-        assert result is False
+        assert result is False, "Result must not be empty"
 
 
 class TestInExcludes:
@@ -113,7 +113,7 @@ class TestInExcludes:
 
         result = _in_excludes(path, excludes)
 
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_not_matching(self):
         """Test file not matching exclude pattern."""
@@ -124,7 +124,7 @@ class TestInExcludes:
 
         result = _in_excludes(path, excludes)
 
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_multiple_patterns(self):
         """Test multiple exclude patterns."""
@@ -135,7 +135,7 @@ class TestInExcludes:
 
         result = _in_excludes(path, excludes)
 
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_empty_excludes(self):
         """Test with empty exclude list."""
@@ -146,7 +146,7 @@ class TestInExcludes:
 
         result = _in_excludes(path, excludes)
 
-        assert result is False
+        assert result is False, "Result must not be empty"
 
 
 class TestDeprecationPattern:
@@ -156,21 +156,21 @@ class TestDeprecationPattern:
         """Test DEPRECATION_PAT constant exists."""
         from codex.archive.plan import DEPRECATION_PAT
 
-        assert DEPRECATION_PAT is not None
+        assert DEPRECATION_PAT is not None, "DEPRECATION_PAT must be initialized"
 
     def test_pattern_matches_deprecated(self):
         """Test pattern matches DEPRECATED."""
         from codex.archive.plan import DEPRECATION_PAT
 
-        assert DEPRECATION_PAT.search("DEPRECATED")
-        assert DEPRECATION_PAT.search("deprecated")
+        assert DEPRECATION_PAT.search("DEPRECATED"), "Condition must be true"
+        assert DEPRECATION_PAT.search("deprecated"), "Condition must be true"
 
     def test_pattern_matches_legacy(self):
         """Test pattern matches LEGACY."""
         from codex.archive.plan import DEPRECATION_PAT
 
-        assert DEPRECATION_PAT.search("LEGACY")
-        assert DEPRECATION_PAT.search("legacy")
+        assert DEPRECATION_PAT.search("LEGACY"), "Condition must be true"
+        assert DEPRECATION_PAT.search("legacy"), "Condition must be true"
 
 
 class TestModuleLevel:
@@ -180,5 +180,5 @@ class TestModuleLevel:
         """Test logger is configured."""
         from codex.archive.plan import logger
 
-        assert logger is not None
-        assert logger.name == "codex.archive.plan"
+        assert logger is not None, "logger must be initialized"
+        assert logger.name == "codex.archive.plan", "name is not valid"

@@ -31,11 +31,11 @@ class TestCounterMetrics:
 
         counter = Counter("requests_total")
 
-        assert counter.get() == 0
+        assert counter.get() == 0, "Count must be greater than zero"
         counter.inc()
-        assert counter.get() == 1
+        assert counter.get() == 1, "Count must be greater than zero"
         counter.inc(5)
-        assert counter.get() == 6
+        assert counter.get() == 6, "Count must be greater than zero"
 
     def test_counter_labels(self):
         """Counter supports labels."""
@@ -87,10 +87,10 @@ class TestGaugeMetrics:
         gauge = Gauge("temperature")
 
         gauge.set(25.5)
-        assert gauge.get() == 25.5
+        assert gauge.get() == 25.5, "Condition must be true"
 
         gauge.set(30.0)
-        assert gauge.get() == 30.0
+        assert gauge.get() == 30.0, "Condition must be true"
 
     def test_gauge_inc_dec(self):
         """Gauge can increment and decrement."""
@@ -113,10 +113,10 @@ class TestGaugeMetrics:
 
         gauge.inc()
         gauge.inc()
-        assert gauge.get() == 2
+        assert gauge.get() == 2, "Condition must be true"
 
         gauge.dec()
-        assert gauge.get() == 1
+        assert gauge.get() == 1, "Condition must be true"
 
 
 class TestHistogramMetrics:
@@ -147,10 +147,10 @@ class TestHistogramMetrics:
         histogram.observe(0.8)  # <= 1.0
         histogram.observe(3.0)  # <= 5.0
 
-        assert histogram.count == 4
-        assert histogram.bucket_counts[0.1] == 1
-        assert histogram.bucket_counts[0.5] == 2
-        assert histogram.bucket_counts[1.0] == 3
+        assert histogram.count == 4, "Count must be greater than zero"
+        assert histogram.bucket_counts[0.1] == 1, "Count must be greater than zero"
+        assert histogram.bucket_counts[0.5] == 2, "Count must be greater than zero"
+        assert histogram.bucket_counts[1.0] == 3, "Count must be greater than zero"
 
     def test_histogram_percentiles(self):
         """Histogram can compute percentiles."""
@@ -226,7 +226,7 @@ class TestMetricsRegistry:
         metric = MockMetric("test_metric")
         registry.register(metric)
 
-        assert registry.get("test_metric") is metric
+        assert registry.get("test_metric") is metric, "Condition must be true"
 
         with pytest.raises(ValueError):
             registry.register(metric)  # Duplicate
@@ -253,8 +253,8 @@ class TestMetricsRegistry:
 
         output = export_prometheus_format(metrics)
 
-        assert "requests_total 100" in output
-        assert "errors_total 5" in output
+        assert "requests_total 100" in output, "Condition must be true"
+        assert "errors_total 5" in output, "Error should be raised or set"
 
 
 class TestMetricsAggregation:
@@ -273,7 +273,7 @@ class TestMetricsAggregation:
         values = [0, 20, 40, 60, 80, 100]
         rate = calculate_rate(values, 10)
 
-        assert rate == 10.0
+        assert rate == 10.0, "rate is not valid"
 
     def test_moving_average(self):
         """Moving average is computed correctly."""
@@ -297,4 +297,4 @@ class TestMetricsAggregation:
 
         total = sum(labeled_values.values())
 
-        assert total == 240
+        assert total == 240, "total is not valid"

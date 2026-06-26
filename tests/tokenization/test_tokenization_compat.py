@@ -36,7 +36,7 @@ def test_tokenization_compat_emits_deprecation_and_forwards_attributes(monkeypat
             warnings.simplefilter("always", DeprecationWarning)
             result = compat.load_tokenizer("demo-model", allow_remote=False)
 
-        assert result == "tokenizer"
+        assert result == "tokenizer", "Result must not be empty"
         assert captured["args"] == ("demo-model",)
-        assert captured["kwargs"] == {"allow_remote": False}
+        assert captured["kwargs"] == {"allow_remote": False}, "Condition must be true"
         assert any(w.category is DeprecationWarning for w in rec), "no DeprecationWarning emitted"

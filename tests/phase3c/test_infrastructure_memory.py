@@ -26,26 +26,26 @@ class TestMemoryManagerBasics:
         with tempfile.TemporaryDirectory() as tmpdir:
             storage_dir = Path(tmpdir)
             manager = MemoryManager(storage_dir=storage_dir)
-            assert manager.backend is not None
-            assert manager.agent_id is None
-            assert manager.session_id is None
+            assert manager.backend is not None, "backend must be initialized"
+            assert manager.agent_id is None, "agent_id is not valid"
+            assert manager.session_id is None, "session_id is not valid"
 
     def test_memory_manager_init_with_agent_id(self):
         """Test MemoryManager initialization with agent ID."""
         manager = MemoryManager(agent_id="test-agent")
-        assert manager.agent_id == "test-agent"
+        assert manager.agent_id == "test-agent", "agent_id is not valid"
 
     def test_memory_manager_init_with_session_id(self):
         """Test MemoryManager initialization with session ID."""
         manager = MemoryManager(session_id="test-session")
-        assert manager.session_id == "test-session"
+        assert manager.session_id == "test-session", "session_id is not valid"
 
     def test_memory_manager_init_with_custom_backend(self):
         """Test MemoryManager initialization with custom backend."""
         with tempfile.TemporaryDirectory() as tmpdir:
             backend = JSONLMemoryBackend(Path(tmpdir) / "test.jsonl")
             manager = MemoryManager(backend=backend)
-            assert manager.backend is backend
+            assert manager.backend is backend, "backend is not valid"
 
 
 class TestMemoryStore:
@@ -55,30 +55,30 @@ class TestMemoryStore:
         """Test storing simple text content."""
         manager = MemoryManager(agent_id="test-agent", session_id="test-session")
         entry = manager.store("Test memory content")
-        assert entry is not None
-        assert entry.content == "Test memory content"
-        assert entry.agent_id == "test-agent"
-        assert entry.session_id == "test-session"
+        assert entry is not None, "entry must be initialized"
+        assert entry.content == "Test memory content", "Content must not be empty"
+        assert entry.agent_id == "test-agent", "agent_id is not valid"
+        assert entry.session_id == "test-session", "session_id is not valid"
 
     def test_store_dict_content(self):
         """Test storing dictionary content."""
         manager = MemoryManager(agent_id="test-agent", session_id="test-session")
         content = {"key": "value", "data": [1, 2, 3]}
         entry = manager.store(content)
-        assert entry.content == content
+        assert entry.content == content, "Content must not be empty"
 
     def test_store_with_metadata(self):
         """Test storing memory with metadata."""
         manager = MemoryManager(agent_id="test-agent", session_id="test-session")
         metadata = {"importance": "high", "category": "user-preference"}
         entry = manager.store("Test content", metadata=metadata)
-        assert entry.metadata == metadata
+        assert entry.metadata == metadata, "Data must not be empty"
 
     def test_store_with_override_session_id(self):
         """Test storing with overridden session ID."""
         manager = MemoryManager(agent_id="test-agent", session_id="default-session")
         entry = manager.store("Test content", session_id="override-session")
-        assert entry.session_id == "override-session"
+        assert entry.session_id == "override-session", "session_id is not valid"
 
     def test_store_multiple_memories(self):
         """Test storing multiple memories."""
@@ -87,10 +87,10 @@ class TestMemoryStore:
         for i in range(5):
             entry = manager.store(f"Memory {i}")
             entries.append(entry)
-        assert len(entries) == 5
+        assert len(entries) == 5, "Entries must not be empty"
         # Each should have a unique ID
         ids = {e.id for e in entries}
-        assert len(ids) == 5
+        assert len(ids) == 5, "Ids must not be empty"
 
 
 class TestMemoryRecall:
@@ -100,7 +100,7 @@ class TestMemoryRecall:
         """Test recall returns empty list when no memories stored."""
         manager = MemoryManager(agent_id="test-agent", session_id="test-session")
         memories = manager.recall(query_text="nonexistent")
-        assert memories == []
+        assert memories == [], "memories is not valid"
 
     def test_recall_all_retrieves_all_memories(self):
         """Test recall_all retrieves all memories."""
@@ -109,7 +109,7 @@ class TestMemoryRecall:
             manager.store(f"Memory {i}")
 
         all_memories = manager.recall_all()
-        assert len(all_memories) >= 3
+        assert len(all_memories) >= 3, "All_memories must not be empty"
 
     def test_recall_with_limit(self):
         """Test recall respects limit parameter."""
@@ -118,7 +118,7 @@ class TestMemoryRecall:
             manager.store(f"Memory {i}")
 
         memories = manager.recall_all(limit=5)
-        assert len(memories) <= 5
+        assert len(memories) <= 5, "Memories must not be empty"
 
     def test_recall_with_session_filter(self):
         """Test recall filters by session ID."""
@@ -132,8 +132,8 @@ class TestMemoryRecall:
         session2_memories = manager2.recall_all()
 
         # At least verify we can recall from different sessions
-        assert session1_memories is not None
-        assert session2_memories is not None
+        assert session1_memories is not None, "session1_memories must be initialized"
+        assert session2_memories is not None, "session2_memories must be initialized"
 
     def test_recall_with_agent_filter(self):
         """Test recall filters by agent ID."""
@@ -146,8 +146,8 @@ class TestMemoryRecall:
         agent1_memories = manager1.recall_all()
         agent2_memories = manager2.recall_all()
 
-        assert agent1_memories is not None
-        assert agent2_memories is not None
+        assert agent1_memories is not None, "agent1_memories must be initialized"
+        assert agent2_memories is not None, "agent2_memories must be initialized"
 
 
 class TestMemoryProtocol:
@@ -161,11 +161,11 @@ class TestMemoryProtocol:
             session_id="test-session",
             metadata={"key": "value"},
         )
-        assert entry.content == "Test content"
-        assert entry.agent_id == "test-agent"
-        assert entry.session_id == "test-session"
-        assert entry.metadata == {"key": "value"}
-        assert entry.id is not None
+        assert entry.content == "Test content", "Content must not be empty"
+        assert entry.agent_id == "test-agent", "agent_id is not valid"
+        assert entry.session_id == "test-session", "session_id is not valid"
+        assert entry.metadata == {"key": "value"}, "Data must not be empty"
+        assert entry.id is not None, "id must be initialized"
 
     def test_memory_entry_to_dict(self):
         """Test converting MemoryEntry to dictionary."""
@@ -174,9 +174,9 @@ class TestMemoryProtocol:
         )
         entry_dict = entry.to_dict()
         assert isinstance(entry_dict, dict)
-        assert entry_dict["content"] == "Test content"
-        assert entry_dict["agent_id"] == "test-agent"
-        assert entry_dict["session_id"] == "test-session"
+        assert entry_dict["content"] == "Test content", "Content must not be empty"
+        assert entry_dict["agent_id"] == "test-agent", "Condition must be true"
+        assert entry_dict["session_id"] == "test-session", "Condition must be true"
 
     def test_memory_entry_from_dict(self):
         """Test creating MemoryEntry from dictionary."""
@@ -192,18 +192,18 @@ class TestMemoryProtocol:
             "timestamp": "2024-01-01T00:00:00Z",
         }
         entry = MemoryEntry.from_dict(data)
-        assert entry.content == "Test content"
-        assert entry.agent_id == "test-agent"
+        assert entry.content == "Test content", "Content must not be empty"
+        assert entry.agent_id == "test-agent", "agent_id is not valid"
 
     def test_memory_query_creation(self):
         """Test creating a MemoryQuery."""
         query = MemoryQuery(
             text="search text", agent_id="test-agent", session_id="test-session", limit=10
         )
-        assert query.text == "search text"
-        assert query.agent_id == "test-agent"
-        assert query.session_id == "test-session"
-        assert query.limit == 10
+        assert query.text == "search text", "text is not valid"
+        assert query.agent_id == "test-agent", "agent_id is not valid"
+        assert query.session_id == "test-session", "session_id is not valid"
+        assert query.limit == 10, "limit is not valid"
 
 
 class TestJSONLBackend:
@@ -213,7 +213,7 @@ class TestJSONLBackend:
         """Test JSONL backend initialization."""
         with tempfile.TemporaryDirectory() as tmpdir:
             backend = JSONLMemoryBackend(Path(tmpdir) / "memories.jsonl")
-            assert backend.storage_path.exists()
+            assert backend.storage_path.exists(), "Condition must be true"
 
     def test_jsonl_backend_store_retrieves(self):
         """Test storing and retrieving from JSONL backend."""
@@ -226,7 +226,7 @@ class TestJSONLBackend:
 
             query = MemoryQuery(text="test", limit=10)
             results = backend.retrieve(query)
-            assert len(results) >= 1
+            assert len(results) >= 1, "Results must not be empty"
 
     def test_jsonl_backend_multiple_stores(self):
         """Test multiple store operations to JSONL backend."""
@@ -240,7 +240,7 @@ class TestJSONLBackend:
 
             query = MemoryQuery(text="memory", limit=10)
             results = backend.retrieve(query)
-            assert len(results) >= 5
+            assert len(results) >= 5, "Results must not be empty"
 
 
 class TestSessionManagement:
@@ -249,9 +249,9 @@ class TestSessionManagement:
     def test_set_session_changes_current_session(self):
         """Test set_session changes the current session ID."""
         manager = MemoryManager(agent_id="test-agent", session_id="session1")
-        assert manager.session_id == "session1"
+        assert manager.session_id == "session1", "session_id is not valid"
         manager.set_session("session2")
-        assert manager.session_id == "session2"
+        assert manager.session_id == "session2", "session_id is not valid"
 
     def test_clear_session_removes_memories(self):
         """Test clear_session removes all memories for a session."""
@@ -260,7 +260,7 @@ class TestSessionManagement:
         manager.store("Memory 2")
 
         count = manager.clear_session("session1")
-        assert count >= 2
+        assert count >= 2, "count must be positive"
 
     def test_clear_session_without_session_id_raises(self):
         """Test clear_session without session ID raises ValueError."""
@@ -308,28 +308,28 @@ class TestMemoryEdgeCases:
         """Test storing empty string content."""
         manager = MemoryManager(agent_id="test-agent", session_id="test-session")
         entry = manager.store("")
-        assert entry.content == ""
+        assert entry.content == "", "Content must not be empty"
 
     def test_store_large_text_content(self):
         """Test storing large text content."""
         manager = MemoryManager(agent_id="test-agent", session_id="test-session")
         large_content = "x" * 100000  # 100KB text
         entry = manager.store(large_content)
-        assert entry.content == large_content
+        assert entry.content == large_content, "Content must not be empty"
 
     def test_store_complex_nested_dict(self):
         """Test storing complex nested dictionary."""
         manager = MemoryManager(agent_id="test-agent", session_id="test-session")
         complex_content = {"level1": {"level2": {"level3": [1, 2, 3], "data": "nested"}}}
         entry = manager.store(complex_content)
-        assert entry.content == complex_content
+        assert entry.content == complex_content, "Content must not be empty"
 
     def test_store_with_special_characters_in_metadata(self):
         """Test storing with special characters in metadata."""
         manager = MemoryManager(agent_id="test-agent", session_id="test-session")
         metadata = {"special": "!@#$%^&*()", "unicode": "你好世界🌍", "quotes": 'He said "hello"'}
         entry = manager.store("Test", metadata=metadata)
-        assert entry.metadata == metadata
+        assert entry.metadata == metadata, "Data must not be empty"
 
     def test_recall_with_none_query_text(self):
         """Test recall with None query text."""
@@ -342,7 +342,7 @@ class TestMemoryEdgeCases:
         """Test storing with None metadata."""
         manager = MemoryManager(agent_id="test-agent", session_id="test-session")
         entry = manager.store("Content", metadata=None)
-        assert entry.metadata == {}
+        assert entry.metadata == {}, "Data must not be empty"
 
     def test_agent_id_none_in_recall(self):
         """Test recall with None agent_id uses manager's agent_id."""
@@ -372,7 +372,7 @@ class TestMemoryIntegration:
 
         # Recall all
         all_memories = manager.recall_all()
-        assert len(all_memories) >= 3
+        assert len(all_memories) >= 3, "All_memories must not be empty"
 
     def test_store_recall_in_different_sessions(self):
         """Test storing in one session and recalling from another."""
@@ -399,4 +399,4 @@ class TestMemoryIntegration:
             backend2 = JSONLMemoryBackend(backend_path)
             manager2 = MemoryManager(backend=backend2, agent_id="agent1", session_id="session1")
             memories = manager2.recall_all()
-            assert len(memories) >= 1
+            assert len(memories) >= 1, "Memories must not be empty"

@@ -68,15 +68,15 @@ class TestContinuousLearningUnderRepeatedDrift:
 
         assert trigger_count == 3, f"expected 3 triggers, got {trigger_count}"
         assert no_trigger_count == 3, f"expected 3 no-triggers, got {no_trigger_count}"
-        assert pipeline.last_job is not None
-        assert pipeline.last_trigger is not None
+        assert pipeline.last_job is not None, "last_job must be initialized"
+        assert pipeline.last_trigger is not None, "last_trigger must be initialized"
 
     def test_high_score_always_triggers(self) -> None:
         """Scores far above threshold always trigger, regardless of drifted flag."""
         pipeline = ContinuousLearningPipeline(drift_threshold=0.1)
         for _ in range(10):
             result = pipeline.should_retrain({"score": 0.99, "drifted": False})
-            assert result is True
+            assert result is True, "Result must not be empty"
 
 
 class TestAutoRetrainWithCorruptConfig:
@@ -86,9 +86,9 @@ class TestAutoRetrainWithCorruptConfig:
         """None config should be tolerated and produce a valid RetrainingJob."""
         pipeline = ContinuousLearningPipeline()
         job = pipeline.trigger_retrain(config=None)
-        assert job is not None
-        assert job.config == {}
-        assert job.job_id.startswith("retrain_")
+        assert job is not None, "job must be initialized"
+        assert job.config == {}, "config is not valid"
+        assert job.job_id.startswith("retrain_"), "Condition must be true"
 
     def test_empty_dict_config_accepted(self) -> None:
         """Empty dict config should be accepted."""
@@ -145,7 +145,7 @@ class TestFeedbackLoopOverflow:
         recent = collector.get_recent(100)
         assert len(recent) == 100, f"expected 100, got {len(recent)}"
         # Most recent event should be last
-        assert recent[-1].payload["value"] == 1049
+        assert recent[-1].payload["value"] == 1049, "Value must be initialized"
 
     def test_aggregate_does_not_crash_with_large_buffer(self) -> None:
         """aggregate() must not raise after 1000 events are buffered."""
@@ -154,11 +154,11 @@ class TestFeedbackLoopOverflow:
             collector.record(_make_event(i))
 
         summary = collector.aggregate()
-        assert "total" in summary
-        assert summary["total"] == 1_000
-        assert "counts_by_type" in summary
-        assert "avg_score" in summary
-        assert summary["avg_score"] is not None
+        assert "total" in summary, "Condition must be true"
+        assert summary["total"] == 1_000, "Condition must be true"
+        assert "counts_by_type" in summary, "Count must be greater than zero"
+        assert "avg_score" in summary, "Condition must be true"
+        assert summary["avg_score"] is not None, "Value must be initialized"
 
     def test_ring_buffer_evicts_oldest_events(self) -> None:
         """When max_memory is exceeded, oldest events are dropped."""
@@ -166,10 +166,10 @@ class TestFeedbackLoopOverflow:
         for i in range(200):
             collector.record(_make_event(i))
 
-        assert len(collector) == 100
+        assert len(collector) == 100, "Collector must not be empty"
         events = collector.get_recent(100)
         # Oldest remaining event has payload value >= 100
-        assert events[0].payload["value"] >= 100
+        assert events[0].payload["value"] >= 100, "Value must be greater than zero"
 
 
 class TestABTestingWithDegenerateInputs:
@@ -192,7 +192,7 @@ class TestABTestingWithDegenerateInputs:
         trt = [5.0] * 50
         result = run_ab_test(ctrl, trt)
         # With identical values, t-stat == 0 → high p-value → inconclusive
-        assert result.winner == "inconclusive"
+        assert result.winner == "inconclusive", "Result must not be empty"
         assert result.p_value == pytest.approx(1.0, abs=0.01)
 
     def test_extreme_outliers_do_not_crash(self) -> None:

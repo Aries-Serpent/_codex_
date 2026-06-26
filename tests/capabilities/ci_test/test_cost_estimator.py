@@ -56,15 +56,15 @@ class TestTierClassification:
     )
     def test_green_tier(self, timeout, matrix):
         e = make(timeout=timeout, matrix=matrix)
-        assert e.tier == "GREEN"
-        assert e.tier_emoji == "✅"
-        assert e.exit_code == 0
+        assert e.tier == "GREEN", "tier is not valid"
+        assert e.tier_emoji == "✅", "tier_emoji is not valid"
+        assert e.exit_code == 0, "exit_code is not valid"
 
     # Exactly at GREEN ceiling
     def test_green_boundary_exactly_30(self):
         e = make(timeout=30, matrix=1)
         # 30 eff-min = YELLOW (>= TIER_GREEN_MAX of 30)
-        assert e.tier == "YELLOW"
+        assert e.tier == "YELLOW", "tier is not valid"
 
     # YELLOW: 30–90 effective min, no GHCR
     @pytest.mark.parametrize(
@@ -77,8 +77,8 @@ class TestTierClassification:
     )
     def test_yellow_tier(self, timeout, matrix):
         e = make(timeout=timeout, matrix=matrix)
-        assert e.tier == "YELLOW"
-        assert e.exit_code == 1
+        assert e.tier == "YELLOW", "tier is not valid"
+        assert e.exit_code == 1, "exit_code is not valid"
 
     # RED: > 90 effective min
     @pytest.mark.parametrize(
@@ -92,8 +92,8 @@ class TestTierClassification:
     )
     def test_red_tier_high_minutes(self, timeout, matrix):
         e = make(timeout=timeout, matrix=matrix)
-        assert e.tier == "RED"
-        assert e.exit_code == 2
+        assert e.tier == "RED", "tier is not valid"
+        assert e.exit_code == 2, "exit_code is not valid"
 
     # RED: any GHCR push, regardless of minutes
     @pytest.mark.parametrize(
@@ -107,12 +107,12 @@ class TestTierClassification:
     )
     def test_red_tier_ghcr_push(self, timeout, matrix):
         e = make(timeout=timeout, matrix=matrix, ghcr=True)
-        assert e.tier == "RED"
+        assert e.tier == "RED", "tier is not valid"
 
     # GREEN never triggers when GHCR push is set
     def test_no_green_when_ghcr(self):
         e = make(timeout=1, matrix=1, ghcr=True)
-        assert e.tier == "RED"
+        assert e.tier == "RED", "tier is not valid"
 
 
 # ── Runner multiplier ─────────────────────────────────────────────────────────
@@ -123,34 +123,34 @@ class TestRunnerMultiplier:
 
     def test_ubuntu_latest_multiplier_1x(self):
         e = make(runner="ubuntu-latest", timeout=30)
-        assert e.multiplier == 1.0
-        assert e.effective_minutes == pytest.approx(30.0)
+        assert e.multiplier == 1.0, "multiplier is not valid"
+        assert e.effective_minutes == pytest.approx(30.0), "effective_minutes is not valid"
 
     def test_ubuntu_latest_m_multiplier_2x(self):
         e = make(runner="ubuntu-latest-m", timeout=30)
-        assert e.multiplier == 2.0
-        assert e.effective_minutes == pytest.approx(60.0)
+        assert e.multiplier == 2.0, "multiplier is not valid"
+        assert e.effective_minutes == pytest.approx(60.0), "effective_minutes is not valid"
 
     def test_macos_multiplier_10x(self):
         e = make(runner="macos-latest", timeout=10)
-        assert e.multiplier == 10.0
-        assert e.effective_minutes == pytest.approx(100.0)
-        assert e.tier == "RED"
+        assert e.multiplier == 10.0, "multiplier is not valid"
+        assert e.effective_minutes == pytest.approx(100.0), "effective_minutes is not valid"
+        assert e.tier == "RED", "tier is not valid"
 
     def test_windows_multiplier_2x(self):
         e = make(runner="windows-latest", timeout=20)
-        assert e.multiplier == 2.0
-        assert e.effective_minutes == pytest.approx(40.0)
+        assert e.multiplier == 2.0, "multiplier is not valid"
+        assert e.effective_minutes == pytest.approx(40.0), "effective_minutes is not valid"
 
     def test_self_hosted_zero_cost(self):
         e = make(runner="self-hosted", timeout=120, matrix=5)
-        assert e.multiplier == 0.0
-        assert e.effective_minutes == pytest.approx(0.0)
-        assert e.tier == "GREEN"
+        assert e.multiplier == 0.0, "multiplier is not valid"
+        assert e.effective_minutes == pytest.approx(0.0), "effective_minutes is not valid"
+        assert e.tier == "GREEN", "tier is not valid"
 
     def test_unknown_runner_defaults_to_1x(self):
         e = make(runner="some-custom-runner", timeout=30)
-        assert e.multiplier == 1.0
+        assert e.multiplier == 1.0, "multiplier is not valid"
 
 
 # ── Five covered workflows (KR-1 explicit verification) ──────────────────────
@@ -168,8 +168,8 @@ class TestCoveredWorkflows:
             ghcr=True,
             name="Build & Push Preview Image",
         )
-        assert e.tier == "RED"
-        assert e.effective_minutes == pytest.approx(120.0)
+        assert e.tier == "RED", "tier is not valid"
+        assert e.effective_minutes == pytest.approx(120.0), "effective_minutes is not valid"
 
     def test_data_quality_suite(self):
         """3 jobs × 60 min = 180 eff-min = RED."""
@@ -179,8 +179,8 @@ class TestCoveredWorkflows:
             matrix=3,
             name="Art_Data Quality & Determinism Suite",
         )
-        assert e.tier == "RED"
-        assert e.effective_minutes == pytest.approx(180.0)
+        assert e.tier == "RED", "tier is not valid"
+        assert e.effective_minutes == pytest.approx(180.0), "effective_minutes is not valid"
 
     def test_scheduled_archival(self):
         """3 jobs × 60 min = 180 eff-min = RED."""
@@ -190,8 +190,8 @@ class TestCoveredWorkflows:
             matrix=3,
             name="Scheduled Archival",
         )
-        assert e.tier == "RED"
-        assert e.effective_minutes == pytest.approx(180.0)
+        assert e.tier == "RED", "tier is not valid"
+        assert e.effective_minutes == pytest.approx(180.0), "effective_minutes is not valid"
 
     def test_rust_swarm_ci(self):
         """3 jobs × 60 min = 180 eff-min = RED."""
@@ -201,8 +201,8 @@ class TestCoveredWorkflows:
             matrix=3,
             name="Rust Swarm CI",
         )
-        assert e.tier == "RED"
-        assert e.effective_minutes == pytest.approx(180.0)
+        assert e.tier == "RED", "tier is not valid"
+        assert e.effective_minutes == pytest.approx(180.0), "effective_minutes is not valid"
 
     def test_embedding_index_rebuild(self):
         """1 job × 15 min = 15 eff-min = GREEN (but scheduled concern)."""
@@ -213,8 +213,8 @@ class TestCoveredWorkflows:
             name="Embedding Index Rebuild",
         )
         # 15 min < 30 GREEN threshold — correct tier is GREEN
-        assert e.tier == "GREEN"
-        assert e.effective_minutes == pytest.approx(15.0)
+        assert e.tier == "GREEN", "tier is not valid"
+        assert e.effective_minutes == pytest.approx(15.0), "effective_minutes is not valid"
 
 
 # ── Proposal markdown ─────────────────────────────────────────────────────────
@@ -226,24 +226,24 @@ class TestProposalMarkdown:
     def test_green_proposal_contains_auto_approved(self):
         e = make(timeout=10)
         md = e.proposal_markdown
-        assert "Auto-approved" in md
-        assert "GREEN" in md
+        assert "Auto-approved" in md, "Condition must be true"
+        assert "GREEN" in md, "Condition must be true"
 
     def test_yellow_proposal_contains_warning(self):
         e = make(timeout=60)
         md = e.proposal_markdown
-        assert "Warning" in md or "YELLOW" in md
+        assert "Warning" in md or "YELLOW" in md, "Condition must be true"
 
     def test_red_proposal_contains_checkbox_instruction(self):
         e = make(timeout=120, matrix=2)
         md = e.proposal_markdown
-        assert "💰 Cost Proposal Approved" in md
-        assert "BLOCKED" in md
+        assert "💰 Cost Proposal Approved" in md, "Condition must be true"
+        assert "BLOCKED" in md, "Condition must be true"
 
     def test_proposal_contains_effective_minutes(self):
         e = make(timeout=45, matrix=2)
         md = e.proposal_markdown
-        assert "90" in md  # 45 × 1 × 2 = 90 eff-min
+        assert "90" in md, "Condition must be true"
 
     def test_to_dict_serializable(self):
         import json
@@ -253,9 +253,9 @@ class TestProposalMarkdown:
         # Must be JSON-serializable
         dumped = json.dumps(d)
         parsed = json.loads(dumped)
-        assert parsed["tier"] == "RED"
-        assert parsed["effective_minutes"] == pytest.approx(120.0)
-        assert parsed["multiplier"] == 2.0
+        assert parsed["tier"] == "RED", "Condition must be true"
+        assert parsed["effective_minutes"] == pytest.approx(120.0), "Condition must be true"
+        assert parsed["multiplier"] == 2.0, "Condition must be true"
 
 
 # ── Exit codes ────────────────────────────────────────────────────────────────
@@ -263,13 +263,13 @@ class TestProposalMarkdown:
 
 class TestExitCodes:
     def test_green_exit_0(self):
-        assert make(timeout=10).exit_code == 0
+        assert make(timeout=10).exit_code == 0, "exit_code is not valid"
 
     def test_yellow_exit_1(self):
-        assert make(timeout=60).exit_code == 1
+        assert make(timeout=60).exit_code == 1, "exit_code is not valid"
 
     def test_red_exit_2(self):
-        assert make(timeout=200).exit_code == 2
+        assert make(timeout=200).exit_code == 2, "exit_code is not valid"
 
 
 # ── Reason string ─────────────────────────────────────────────────────────────
@@ -278,11 +278,11 @@ class TestExitCodes:
 class TestReasonString:
     def test_ghcr_in_reason_when_push(self):
         e = make(ghcr=True, timeout=5)
-        assert "GHCR" in e.reason
+        assert "GHCR" in e.reason, "Condition must be true"
 
     def test_runner_in_reason_when_non_standard(self):
         e = make(runner="ubuntu-latest-m", timeout=60)
-        assert "ubuntu-latest-m" in e.reason
+        assert "ubuntu-latest-m" in e.reason, "Condition must be true"
 
     def test_matrix_in_reason(self):
         e = make(matrix=4, timeout=30)
@@ -291,5 +291,5 @@ class TestReasonString:
     def test_low_cost_reason_clean(self):
         e = make(timeout=5)
         # Should not mention GHCR or non-standard runner
-        assert "GHCR" not in e.reason
-        assert "ubuntu-latest-m" not in e.reason
+        assert "GHCR" not in e.reason, "Condition must be true"
+        assert "ubuntu-latest-m" not in e.reason, "Condition must be true"

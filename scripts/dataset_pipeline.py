@@ -127,7 +127,7 @@ class FileProcessor:
 
         except Exception as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             print(f"Warning: Could not process documentation {filepath}: <ERROR_TYPE>", file=sys.stderr)
             return None, 0.5
 
@@ -166,8 +166,8 @@ class FileProcessor:
 
                 except SyntaxError as e:
                     error_type = type(e).__name__
-                    logger.debug(f"SyntaxError: <ERROR_TYPE>")
-                    logger.warning(f"SyntaxError: <ERROR_TYPE>", exc_info=True)
+                    logger.debug("SyntaxError: <ERROR_TYPE>")
+                    logger.warning("SyntaxError: <ERROR_TYPE>", exc_info=True)
                     return None, 0.3
 
             # For other languages, basic metrics
@@ -187,7 +187,7 @@ class FileProcessor:
 
         except Exception as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             print(f"Warning: Could not process source code {filepath}: <ERROR_TYPE>", file=sys.stderr)
             return None, 0.5
 
@@ -215,7 +215,7 @@ class FileProcessor:
 
         except Exception as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             print(f"Warning: Could not process config {filepath}: <ERROR_TYPE>", file=sys.stderr)
             return None, 0.5
 
@@ -322,7 +322,7 @@ class DatasetManager:
                         tar.add(pf.path, arcname=pf.relative_path)
                     except Exception as e:
                         error_type = type(e).__name__
-                        logger.debug(f"Exception: <ERROR_TYPE>")
+                        logger.debug("Exception: <ERROR_TYPE>")
                         print(f"Warning: Could not add {pf.path}: <ERROR_TYPE>", file=sys.stderr)
 
         elif format == "zip":
@@ -332,7 +332,7 @@ class DatasetManager:
                         zf.write(pf.path, arcname=pf.relative_path)
                     except Exception as e:
                         error_type = type(e).__name__
-                        logger.debug(f"Exception: <ERROR_TYPE>")
+                        logger.debug("Exception: <ERROR_TYPE>")
                         print(f"Warning: Could not add {pf.path}: <ERROR_TYPE>", file=sys.stderr)
 
         print(f"✓ Created archive: {archive_path}")

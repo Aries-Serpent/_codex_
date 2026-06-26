@@ -23,7 +23,7 @@ class TestMetricComputations:
         correct = sum(p == t for p, t in zip(predictions, targets))
         accuracy = correct / len(predictions)
 
-        assert accuracy == 0.8
+        assert accuracy == 0.8, "accuracy is not valid"
 
     def test_precision_computation(self):
         """Test precision calculation."""
@@ -33,7 +33,7 @@ class TestMetricComputations:
 
         precision = true_positives / (true_positives + false_positives)
 
-        assert precision == 2 / 3
+        assert precision == 2 / 3, "precision is not valid"
 
     def test_recall_computation(self):
         """Test recall calculation."""
@@ -43,7 +43,7 @@ class TestMetricComputations:
 
         recall = true_positives / (true_positives + false_negatives)
 
-        assert recall == 2 / 3
+        assert recall == 2 / 3, "recall is not valid"
 
     def test_f1_score_computation(self):
         """Test F1 score calculation."""
@@ -52,7 +52,7 @@ class TestMetricComputations:
 
         f1 = 2 * (precision * recall) / (precision + recall)
 
-        assert f1 > 0.7
+        assert f1 > 0.7, "f1 must be greater than zero"
 
     def test_mean_squared_error(self):
         """Test MSE computation."""
@@ -61,7 +61,7 @@ class TestMetricComputations:
 
         mse = sum((p - t) ** 2 for p, t in zip(predictions, targets)) / len(predictions)
 
-        assert mse < 0.01
+        assert mse < 0.01, "mse is not valid"
 
     def test_loss_computation(self):
         """Test loss computation."""
@@ -69,7 +69,7 @@ class TestMetricComputations:
 
         cross_entropy = -sum(log_probs) / len(log_probs)
 
-        assert cross_entropy > 0
+        assert cross_entropy > 0, "cross_entropy must be greater than zero"
 
 
 class TestMetricAggregation:
@@ -85,7 +85,7 @@ class TestMetricAggregation:
             avg = (avg * i + val) / (i + 1)
             running_avg.append(avg)
 
-        assert running_avg[-1] == sum(values) / len(values)
+        assert running_avg[-1] == sum(values) / len(values), "Values must not be empty"
 
     def test_weighted_average(self):
         """Test weighted average of metrics."""
@@ -94,7 +94,7 @@ class TestMetricAggregation:
 
         weighted = sum(m * w for m, w in zip(metrics, weights)) / sum(weights)
 
-        assert weighted > 0.8
+        assert weighted > 0.8, "weighted must be greater than zero"
 
     def test_aggregate_multiple_metrics(self):
         """Test aggregating multiple metrics."""
@@ -107,8 +107,8 @@ class TestMetricAggregation:
         avg_loss = sum(m["loss"] for m in batch_metrics) / len(batch_metrics)
         avg_acc = sum(m["accuracy"] for m in batch_metrics) / len(batch_metrics)
 
-        assert avg_loss < 0.5
-        assert avg_acc > 0.8
+        assert avg_loss < 0.5, "avg_loss is not valid"
+        assert avg_acc > 0.8, "avg_acc must be greater than zero"
 
     def test_exponential_moving_average(self):
         """Test exponential moving average."""
@@ -119,7 +119,7 @@ class TestMetricAggregation:
         for val in values:
             ema = alpha * val + (1 - alpha) * ema
 
-        assert ema > 0
+        assert ema > 0, "ema must be greater than zero"
 
     def test_aggregate_with_batch_sizes(self):
         """Test aggregating when batch sizes vary."""
@@ -128,7 +128,7 @@ class TestMetricAggregation:
 
         avg_loss = sum(l * s for l, s in zip(batch_losses, batch_sizes)) / sum(batch_sizes)
 
-        assert avg_loss > 0
+        assert avg_loss > 0, "avg_loss must be greater than zero"
 
 
 class TestThresholdEvaluation:
@@ -141,7 +141,7 @@ class TestThresholdEvaluation:
 
         accepted = accuracy >= threshold
 
-        assert accepted is True
+        assert accepted is True, "accepted is not valid"
 
     def test_multiple_thresholds(self):
         """Test multiple threshold checks."""
@@ -151,7 +151,7 @@ class TestThresholdEvaluation:
 
         all_pass = all(metrics[k] >= thresholds[k] for k in metrics)
 
-        assert all_pass is True
+        assert all_pass is True, "all_pass is not valid"
 
     def test_threshold_failure(self):
         """Test evaluation failure below threshold."""
@@ -160,7 +160,7 @@ class TestThresholdEvaluation:
 
         is_acceptable = loss <= max_loss
 
-        assert is_acceptable is False
+        assert is_acceptable is False, "is_acceptable is not valid"
 
     def test_adaptive_thresholds(self):
         """Test adaptive thresholds based on baseline."""
@@ -171,7 +171,7 @@ class TestThresholdEvaluation:
         required = baseline_accuracy * (1 + improvement_pct)
         meets_requirement = new_accuracy >= required
 
-        assert meets_requirement is True
+        assert meets_requirement is True, "meets_requirement is not valid"
 
 
 class TestComparisonLogic:
@@ -187,7 +187,7 @@ class TestComparisonLogic:
 
         ranked = sorted(models, key=lambda x: x["accuracy"], reverse=True)
 
-        assert ranked[0]["name"] == "model_b"
+        assert ranked[0]["name"] == "model_b", "Condition must be true"
 
     def test_best_model_selection(self):
         """Test selecting best model by metric."""
@@ -195,7 +195,7 @@ class TestComparisonLogic:
 
         best_model = max(model_scores, key=model_scores.get)
 
-        assert best_model == "model_2"
+        assert best_model == "model_2", "best_model is not valid"
 
     def test_model_improvement_detection(self):
         """Test detecting model improvement."""
@@ -204,7 +204,7 @@ class TestComparisonLogic:
 
         improved = current_accuracy > previous_accuracy
 
-        assert improved is True
+        assert improved is True, "improved is not valid"
 
     def test_comparison_with_tolerance(self):
         """Test comparison with tolerance."""
@@ -214,7 +214,7 @@ class TestComparisonLogic:
 
         essentially_same = abs(model_a_loss - model_b_loss) < tolerance
 
-        assert essentially_same is True
+        assert essentially_same is True, "essentially_same is not valid"
 
 
 class TestStatisticalMeasures:
@@ -226,7 +226,7 @@ class TestStatisticalMeasures:
 
         mean = sum(values) / len(values)
 
-        assert mean == 30
+        assert mean == 30, "mean is not valid"
 
     def test_standard_deviation(self):
         """Test standard deviation."""
@@ -236,7 +236,7 @@ class TestStatisticalMeasures:
         variance = sum((x - mean) ** 2 for x in values) / len(values)
         std_dev = math.sqrt(variance)
 
-        assert std_dev > 0
+        assert std_dev > 0, "std_dev must be greater than zero"
 
     def test_percentile_calculation(self):
         """Test percentile calculation."""
@@ -246,7 +246,7 @@ class TestStatisticalMeasures:
         idx = int(0.9 * len(values))
         p90 = values[min(idx, len(values) - 1)]
 
-        assert p90 >= 9
+        assert p90 >= 9, "p90 must be greater than zero"
 
     def test_confidence_interval(self):
         """Test confidence interval calculation."""
@@ -258,7 +258,7 @@ class TestStatisticalMeasures:
         ci_lower = mean - 1.96 * stderr
         ci_upper = mean + 1.96 * stderr
 
-        assert ci_lower < mean < ci_upper
+        assert ci_lower < mean < ci_upper, "ci_lower is not valid"
 
     def test_correlation_between_metrics(self):
         """Test correlation between metrics."""
@@ -271,7 +271,7 @@ class TestStatisticalMeasures:
             for i in range(len(metric_a) - 1)
         )
 
-        assert increased_together is True
+        assert increased_together is True, "increased_together is not valid"
 
 
 class TestPerformanceTracking:
@@ -285,8 +285,8 @@ class TestPerformanceTracking:
             history["loss"].append(0.5 - epoch * 0.05)
             history["accuracy"].append(0.7 + epoch * 0.03)
 
-        assert len(history["loss"]) == 5
-        assert history["loss"][-1] < history["loss"][0]
+        assert len(history["loss"]) == 5, "Collection must not be empty"
+        assert history["loss"][-1] < history["loss"][0], "hist is not valid"
 
     def test_best_metric_tracking(self):
         """Test tracking best metric value."""
@@ -296,7 +296,7 @@ class TestPerformanceTracking:
         for acc in accuracies:
             best_accuracy = max(best_accuracy, acc)
 
-        assert best_accuracy == 0.85
+        assert best_accuracy == 0.85, "best_accuracy is not valid"
 
     def test_metric_improvement_tracking(self):
         """Test tracking metric improvements."""
@@ -310,8 +310,8 @@ class TestPerformanceTracking:
             improvements.append(improvement)
             prev_accuracy = acc
 
-        assert len(improvements) == 4
-        assert improvements[0] > 0
+        assert len(improvements) == 4, "Improvements must not be empty"
+        assert improvements[0] > 0, "Value must be greater than zero"
 
     def test_divergence_detection(self):
         """Test detecting training divergence."""
@@ -323,7 +323,7 @@ class TestPerformanceTracking:
                 diverging = True
                 break
 
-        assert diverging is True
+        assert diverging is True, "diverging is not valid"
 
     def test_overfitting_detection(self):
         """Test detecting overfitting."""
@@ -331,4 +331,4 @@ class TestPerformanceTracking:
 
         overfitting = val_loss[-1] > val_loss[-2]
 
-        assert overfitting is True
+        assert overfitting is True, "overfitting is not valid"

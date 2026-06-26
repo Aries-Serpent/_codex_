@@ -46,11 +46,11 @@ def test_tokenizer_cli_train_force(tmp_path, monkeypatch, force):
     if not force:
         with pytest.raises(FileExistsError):
             tokenizer_cli.train(config=str(config_path), seed=123, force=False)
-        assert (target_dir / "existing.txt").exists()
+        assert (target_dir / "existing.txt").exists(), "Condition must be true"
         return
 
     tokenizer_cli.train(config=str(config_path), seed=123, force=True)
-    assert "cfg" in calls
+    assert "cfg" in calls, "Condition must be true"
     cfg = calls["cfg"]
-    assert cfg.seed == 123
-    assert not target_dir.exists()
+    assert cfg.seed == 123, "seed is not valid"
+    assert not target_dir.exists(), "Condition must be true"

@@ -20,7 +20,7 @@ SCHEMA = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
 
 def _validate(payload: dict[str, Any]) -> None:
     assert isinstance(payload.get("ok"), bool)
-    assert payload.get("component") == "codex-eval"
+    assert payload.get("component") == "codex-eval", "Condition must be true"
     assert isinstance(payload.get("python"), str)
     assert isinstance(payload.get("platform"), str)
     details = payload.get("details")
@@ -42,8 +42,8 @@ def test_eval_probe_json_output() -> None:
         check=False,
     )
     assert proc.returncode == 0, proc.stderr
-    assert "Traceback" not in (proc.stderr or "")
+    assert "Traceback" not in (proc.stderr or ""), "Condition must be true"
     payload = json.loads(proc.stdout)
     _validate(payload)
     for required_key in SCHEMA["required"]:
-        assert required_key in payload
+        assert required_key in payload, "Condition must be true"

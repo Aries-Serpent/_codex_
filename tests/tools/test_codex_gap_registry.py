@@ -36,14 +36,14 @@ def test_build_registry_from_minimal_audit(tmp_path: Path):
         hardship=None,
     )
 
-    assert "gaps" in registry
+    assert "gaps" in registry, "Condition must be true"
     gaps = registry["gaps"]
     assert isinstance(gaps, list)
-    assert len(gaps) >= 2
+    assert len(gaps) >= 2, "Gaps must not be empty"
 
     first = gaps[0]
-    assert "id" in first
-    assert "capability" in first
+    assert "id" in first, "Condition must be true"
+    assert "capability" in first, "Condition must be true"
     assert first["status"] in {"missing", "partial", "stubbed", "implemented"}
 
 
@@ -54,5 +54,5 @@ def test_build_registry_handles_missing_inputs():
         errors=None,
         hardship=None,
     )
-    assert "gaps" in registry
+    assert "gaps" in registry, "Condition must be true"
     assert isinstance(registry["gaps"], list)

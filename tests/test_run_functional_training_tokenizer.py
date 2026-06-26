@@ -38,4 +38,4 @@ def test_run_functional_training_use_fast_flag(monkeypatch):
     monkeypatch.setattr("codex.training.run_codex_symbolic_pipeline", fake_pipeline)
 
     run_functional_training(["hi"], [], [], tokenizer_name="gpt2", use_fast_tokenizer=False)
-    assert called["use_fast"] is False
+    assert called["use_fast"] is False, "Condition must be true"

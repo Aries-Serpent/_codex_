@@ -24,8 +24,8 @@ class TestBrowseCommand:
         reg.list.return_value = []
         with patch("codex.skills.cli._ensure_registry", return_value=reg):
             result = runner.invoke(app, ["browse"])
-        assert result.exit_code == 0
-        assert "No skills found" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "No skills found" in result.output, "Result must not be empty"
 
     def test_browse_lists_skills(self):
         """Browse shows skills table with index numbers."""
@@ -46,15 +46,15 @@ class TestBrowseCommand:
             patch("codex.skills.cli._prompt_selection", return_value=None),
         ):
             result = runner.invoke(app, ["browse", "--no-install"])
-        assert result.exit_code == 0
-        assert "doc.retriever.core" in result.output
-        assert "1" in result.output  # index number
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "doc.retriever.core" in result.output, "Result must not be empty"
+        assert "1" in result.output, "Result must not be empty"
 
     def test_browse_dist_no_archives(self, tmp_path):
         """Browse with --dist and empty dir exits gracefully."""
         result = runner.invoke(app, ["browse", "--dist", str(tmp_path)])
-        assert result.exit_code == 0
-        assert "No .7z or .zip archives found" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "No .7z or .zip archives found" in result.output, "Result must not be empty"
 
     def test_browse_dist_lists_archives(self, tmp_path):
         """Browse with --dist shows archive list."""
@@ -63,13 +63,13 @@ class TestBrowseCommand:
 
         with patch("codex.skills.cli._prompt_selection", return_value=None):
             result = runner.invoke(app, ["browse", "--dist", str(tmp_path), "--no-install"])
-        assert result.exit_code == 0
-        assert "doc-retriever-core-1.0.0.7z" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "doc-retriever-core-1.0.0.7z" in result.output, "Result must not be empty"
 
     def test_browse_dist_missing_dir(self):
         """Browse with non-existent --dist exits with code 1."""
         result = runner.invoke(app, ["browse", "--dist", "/nonexistent/path/xyz"])
-        assert result.exit_code == 1
+        assert result.exit_code == 1, "Result must not be empty"
 
     def test_browse_dist_installs_selected(self, tmp_path):
         """Browse with --dist installs selected archive."""
@@ -89,6 +89,6 @@ class TestBrowseCommand:
         ):
             result = runner.invoke(app, ["browse", "--dist", str(tmp_path)])
 
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
         mock_install.assert_called_once_with(arc)
-        assert "Installed to" in result.output
+        assert "Installed to" in result.output, "Result must not be empty"

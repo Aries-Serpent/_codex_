@@ -35,5 +35,5 @@ def test_selection_report_smoke(tmp_path: Path) -> None:
     assert rc in (0, 1, 2), "selection_report should exit with realistic, non-crashing code"
     assert out.exists(), "SELECTION_REPORT.md not created"
     text = out.read_text(encoding="utf-8")
-    assert "Selection Report — *codex*" in text
-    assert "Recommendation" in text
+    assert "Selection Report — *codex*" in text, "Condition must be true"
+    assert "Recommendation" in text, "Condition must be true"

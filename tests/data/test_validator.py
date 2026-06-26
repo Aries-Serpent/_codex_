@@ -33,15 +33,15 @@ def _write_manifest(tmp_path: Path, **overrides) -> Path:
 def test_validate_manifest_success(tmp_path: Path) -> None:
     manifest_path = _write_manifest(tmp_path)
     (tmp_path / "train.jsonl").write_text("{}\n", encoding="utf-8")
-    assert DatasetValidator.validate_manifest(manifest_path)
-    assert DatasetValidator.validate_splits(manifest_path)
+    assert DatasetValidator.validate_manifest(manifest_path), "Data must not be empty"
+    assert DatasetValidator.validate_splits(manifest_path), "Data must not be empty"
 
 
 def test_validate_manifest_failure(tmp_path: Path) -> None:
     manifest_path = _write_manifest(tmp_path, name=123)
-    assert not DatasetValidator.validate_manifest(manifest_path)
+    assert not DatasetValidator.validate_manifest(manifest_path), "Data must not be empty"
 
 
 def test_validate_missing_files(tmp_path: Path) -> None:
     manifest_path = _write_manifest(tmp_path)
-    assert not DatasetValidator.validate_splits(manifest_path)
+    assert not DatasetValidator.validate_splits(manifest_path), "Data must not be empty"

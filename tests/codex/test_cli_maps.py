@@ -50,7 +50,7 @@ def test_cli_maps_help(cli_runner: CliRunner, mock_deps):
     result = cli_runner.invoke(cli_maps.app, ["--help"])
     if result.exit_code not in (0, 2):
         pytest.skip(f"cli_maps help unavailable: {result.exit_code}")
-    assert "Usage" in result.output
+    assert "Usage" in result.output, "Result must not be empty"
 
 
 def test_cli_maps_subcommand_help(cli_runner: CliRunner, mock_deps):

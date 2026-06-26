@@ -44,7 +44,7 @@ def test_padding_truncation_length_invariant(max_len):
     ids = encode(sample, max_len=max_len, pad=True, trunc=True)
     assert isinstance(ids, (list, tuple)) and all(isinstance(i, int) for i in ids)
     # When pad and trunc are both True, IDs should be exactly max_len long.
-    assert len(ids) == max_len
+    assert len(ids) == max_len, "Ids must not be empty"
     # Decoding should yield a non-empty string (round-trip len invariant, not content strict)
     text = decode(ids)
     assert isinstance(text, str) and text.strip()
@@ -62,7 +62,7 @@ def test_padding_equalizes_varied_lengths():
     samples = ["hi", "hello", "hello codex", "hello codex tokenizer"]
     max_len = 24
     encoded = [encode(s, max_len=max_len, pad=True, trunc=True) for s in samples]
-    assert all(len(e) == max_len for e in encoded)
+    assert all(len(e) == max_len for e in encoded), "E must not be empty"
     # Spot-check decode sanity without asserting exact text (special tokens/normalization may differ)
     for ids in encoded[:2]:
         assert isinstance(decode(ids), str)
@@ -79,7 +79,7 @@ def test_truncation_is_applied(max_len):
         return
     # Use a string that will be longer than max_len in token space for typical SP/BPE settings
     ids = encode("this string should be truncated", max_len=max_len, pad=False, trunc=True)
-    assert len(ids) <= max_len
+    assert len(ids) <= max_len, "Ids must not be empty"
 
 
 # WHY: Enforce padding/truncation invariants independent of model specifics.

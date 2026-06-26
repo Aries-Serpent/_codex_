@@ -53,11 +53,11 @@ def test_save_and_load_checkpoint(tmp_path: Path) -> None:
         str(checkpoint_path), model, optimizer, scheduler=None, epoch=1, extra={"seed": 42}
     )
 
-    assert checkpoint_path.exists()
+    assert checkpoint_path.exists(), "Condition must be true"
 
     payload = load_checkpoint(checkpoint_path)
     assert isinstance(payload, dict)
-    assert payload.get("epoch") == 1
+    assert payload.get("epoch") == 1, "Condition must be true"
     extra = payload.get("extra", {})
     if isinstance(extra, dict):
-        assert extra.get("seed") == 42
+        assert extra.get("seed") == 42, "Condition must be true"

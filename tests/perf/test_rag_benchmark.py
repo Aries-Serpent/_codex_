@@ -98,7 +98,7 @@ class TestIndexingBenchmarks:
         duration = time.perf_counter() - start
 
         throughput = iterations / duration
-        assert throughput > 10  # At least 10 docs/sec
+        assert throughput > 10, "throughput must be greater than zero"
 
     def test_embedding_generation_throughput(self) -> None:
         """Benchmark embedding generation throughput."""
@@ -121,7 +121,7 @@ class TestIndexingBenchmarks:
         duration = time.perf_counter() - start
 
         throughput = (iterations * len(texts)) / duration
-        assert throughput > 100  # At least 100 embeddings/sec
+        assert throughput > 100, "throughput must be greater than zero"
 
     def test_index_insertion_throughput(self) -> None:
         """Benchmark index insertion throughput."""
@@ -139,7 +139,7 @@ class TestIndexingBenchmarks:
         duration = time.perf_counter() - start
 
         throughput = len(embeddings) / duration
-        assert throughput > 1000  # At least 1000 insertions/sec
+        assert throughput > 1000, "throughput must be greater than zero"
 
     def test_batch_indexing_throughput(self) -> None:
         """Benchmark batch indexing throughput."""
@@ -169,7 +169,7 @@ class TestIndexingBenchmarks:
         duration = time.perf_counter() - start
 
         throughput = total_docs / duration
-        assert throughput > 500  # At least 500 docs/sec
+        assert throughput > 500, "throughput must be greater than zero"
 
     def test_index_building_latency(self) -> None:
         """Benchmark complete index building latency."""
@@ -193,7 +193,7 @@ class TestIndexingBenchmarks:
             latencies.append((time.perf_counter() - start) * 1000)
 
         # Building 1000 docs should be under 1 second
-        assert latencies[-1] < 1000
+        assert latencies[-1] < 1000, "Condition must be true"
 
 
 # ============================================================================
@@ -236,7 +236,7 @@ class TestRetrievalBenchmarks:
         duration = time.perf_counter() - start
 
         throughput = iterations / duration
-        assert throughput > 5  # At least 5 searches/sec
+        assert throughput > 5, "throughput must be greater than zero"
 
     def test_top_k_retrieval_latency(self, sample_index: dict[str, list[float]]) -> None:
         """Benchmark top-k retrieval latency."""
@@ -260,7 +260,7 @@ class TestRetrievalBenchmarks:
                 latencies.append((time.perf_counter() - start) * 1000)
 
             avg_latency = sum(latencies) / len(latencies)
-            assert avg_latency < 100  # Less than 100ms
+            assert avg_latency < 100, "avg_latency is not valid"
 
     def test_filtered_retrieval_throughput(self, sample_index: dict[str, list[float]]) -> None:
         """Benchmark filtered retrieval throughput."""
@@ -291,7 +291,7 @@ class TestRetrievalBenchmarks:
         duration = time.perf_counter() - start
 
         throughput = iterations / duration
-        assert throughput > 5
+        assert throughput > 5, "throughput must be greater than zero"
 
     def test_reranking_latency(self) -> None:
         """Benchmark reranking latency."""
@@ -320,7 +320,7 @@ class TestRetrievalBenchmarks:
             latencies.append((time.perf_counter() - start) * 1000)
 
         avg_latency = sum(latencies) / len(latencies)
-        assert avg_latency < 50  # Less than 50ms
+        assert avg_latency < 50, "avg_latency is not valid"
 
 
 # ============================================================================
@@ -359,8 +359,8 @@ class TestEndToEndRAGBenchmarks:
             latencies.append((time.perf_counter() - start) * 1000)
 
         p50, p99 = compute_percentiles(latencies)
-        assert p50 < 10  # P50 less than 10ms
-        assert p99 < 50  # P99 less than 50ms
+        assert p50 < 10, "p50 is not valid"
+        assert p99 < 50, "p99 is not valid"
 
     def test_rag_with_caching_performance(self) -> None:
         """Benchmark RAG with caching enabled."""
@@ -397,8 +397,8 @@ class TestEndToEndRAGBenchmarks:
             cache_hits / (cache_hits + cache_misses) if (cache_hits + cache_misses) > 0 else 0
         )
 
-        assert avg_latency < 5  # Very fast with caching
-        assert hit_rate > 0.8  # High cache hit rate
+        assert avg_latency < 5, "avg_latency is not valid"
+        assert hit_rate > 0.8, "hit_rate must be greater than zero"
 
     @pytest.mark.skipif(
         os.getenv("CI") == "true", reason="Performance timing tests unreliable in CI environments"
@@ -426,7 +426,7 @@ class TestEndToEndRAGBenchmarks:
         concurrent_time = time.perf_counter() - start
 
         # Concurrent should be faster or equal (relaxed tolerance for CI)
-        assert concurrent_time <= sequential_time * 3.0
+        assert concurrent_time <= sequential_time * 3.0, "concurrent_time is not valid"
 
     def test_streaming_response_latency(self) -> None:
         """Benchmark streaming response generation."""
@@ -446,7 +446,7 @@ class TestEndToEndRAGBenchmarks:
             latencies.append(first_chunk_time * 1000)
 
         avg_first_chunk = sum(latencies) / len(latencies)
-        assert avg_first_chunk < 5  # First chunk in less than 5ms
+        assert avg_first_chunk < 5, "avg_first_chunk is not valid"
 
 
 # ============================================================================
@@ -479,7 +479,7 @@ class TestRAGMemoryBenchmarks:
         gc.collect()
 
         # Memory should be reasonable
-        assert index_memory < 200  # Less than 200MB for 1000 docs
+        assert index_memory < 200, "index_memory is not valid"
 
     def test_query_processing_memory(self) -> None:
         """Benchmark query processing memory."""
@@ -497,7 +497,7 @@ class TestRAGMemoryBenchmarks:
         del queries, embeddings, results
         gc.collect()
 
-        assert processing_memory < 50  # Less than 50MB
+        assert processing_memory < 50, "processing_memory is not valid"
 
     def test_context_window_memory(self) -> None:
         """Benchmark context window memory usage."""
@@ -523,4 +523,4 @@ class TestRAGMemoryBenchmarks:
         del context_window
         gc.collect()
 
-        assert context_memory < 20  # Less than 20MB
+        assert context_memory < 20, "context_memory is not valid"

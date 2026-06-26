@@ -23,43 +23,43 @@ class TestRegistryGroups:
         """Test _GROUPS contains tokenizers registry."""
         from codex_ml.cli.plugins_cli import _GROUPS
 
-        assert "tokenizers" in _GROUPS
+        assert "tokenizers" in _GROUPS, "Condition must be true"
 
     def test_groups_contains_models(self):
         """Test _GROUPS contains models registry."""
         from codex_ml.cli.plugins_cli import _GROUPS
 
-        assert "models" in _GROUPS
+        assert "models" in _GROUPS, "Condition must be true"
 
     def test_groups_contains_datasets(self):
         """Test _GROUPS contains datasets registry."""
         from codex_ml.cli.plugins_cli import _GROUPS
 
-        assert "datasets" in _GROUPS
+        assert "datasets" in _GROUPS, "Data must not be empty"
 
     def test_groups_contains_metrics(self):
         """Test _GROUPS contains metrics registry."""
         from codex_ml.cli.plugins_cli import _GROUPS
 
-        assert "metrics" in _GROUPS
+        assert "metrics" in _GROUPS, "Condition must be true"
 
     def test_groups_contains_trainers(self):
         """Test _GROUPS contains trainers registry."""
         from codex_ml.cli.plugins_cli import _GROUPS
 
-        assert "trainers" in _GROUPS
+        assert "trainers" in _GROUPS, "Condition must be true"
 
     def test_groups_contains_reward_models(self):
         """Test _GROUPS contains reward_models registry."""
         from codex_ml.cli.plugins_cli import _GROUPS
 
-        assert "reward_models" in _GROUPS
+        assert "reward_models" in _GROUPS, "Condition must be true"
 
     def test_groups_contains_rl_agents(self):
         """Test _GROUPS contains rl_agents registry."""
         from codex_ml.cli.plugins_cli import _GROUPS
 
-        assert "rl_agents" in _GROUPS
+        assert "rl_agents" in _GROUPS, "Condition must be true"
 
 
 class TestGetRegistry:
@@ -73,7 +73,7 @@ class TestGetRegistry:
             pass
 
         registry = _get_registry("tokenizers", bad_param_exc=MockException)
-        assert registry is not None
+        assert registry is not None, "registry must be initialized"
 
     def test_get_registry_invalid_group(self):
         """Test _get_registry raises for invalid group."""
@@ -85,7 +85,7 @@ class TestGetRegistry:
         with pytest.raises(MockException) as exc_info:
             _get_registry("invalid_group", bad_param_exc=MockException)
 
-        assert "unknown group" in str(exc_info.value)
+        assert "unknown group" in str(exc_info.value), "Value must be initialized"
 
     def test_get_registry_all_valid_groups(self):
         """Test _get_registry works for all defined groups."""
@@ -96,7 +96,7 @@ class TestGetRegistry:
 
         for group_name in _GROUPS:
             registry = _get_registry(group_name, bad_param_exc=MockException)
-            assert registry is not None
+            assert registry is not None, "registry must be initialized"
 
 
 class TestListGroup:
@@ -206,7 +206,7 @@ class TestExplainGroup:
                 bad_param_exc=MockBadParamException,
             )
 
-        assert exc_info.value.code == 1
+        assert exc_info.value.code == 1, "Value must be initialized"
 
 
 class TestPluginsCLIIntegration:
@@ -226,13 +226,13 @@ class TestPluginsCLIIntegration:
         """Test that registries can be imported."""
         from codex_ml.cli.plugins_cli import registries
 
-        assert registries is not None
+        assert registries is not None, "registries must be initialized"
 
     def test_typer_handling(self):
         """Test that typer is handled gracefully."""
         # Module should be importable regardless of typer availability
         # typer may be None if not installed
-        assert True  # Module imported successfully
+        assert True, "True is not valid"
 
     def test_structured_logging_imports(self):
         """Test structured logging imports are available."""
@@ -243,10 +243,10 @@ class TestPluginsCLIIntegration:
             log_event,
         )
 
-        assert ArgparseJSONParser is not None
-        assert capture_exceptions is not None
-        assert init_json_logging is not None
-        assert log_event is not None
+        assert ArgparseJSONParser is not None, "ArgparseJSONParser must be initialized"
+        assert capture_exceptions is not None, "capture_exceptions must be initialized"
+        assert init_json_logging is not None, "init_json_logging must be initialized"
+        assert log_event is not None, "log_event must be initialized"
 
 
 class TestPluginRegistries:

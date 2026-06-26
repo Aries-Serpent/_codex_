@@ -114,8 +114,8 @@ class PromptSanitizer:
             return True
         except ValueError as e:
             error_type = type(e).__name__
-            logger.debug(f"ValueError: <ERROR_TYPE>")
-            logger.warning(f"ValueError: <ERROR_TYPE>", exc_info=True)
+            logger.debug("ValueError: <ERROR_TYPE>")
+            logger.warning("ValueError: <ERROR_TYPE>", exc_info=True)
             return False
 
     def get_violations(self, prompt: str) -> list[str]:

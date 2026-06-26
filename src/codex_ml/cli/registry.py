@@ -38,8 +38,8 @@ def list_models_command(args: argparse.Namespace) -> int:
         return 0
     except (IOError, OSError) as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
-        print(f"Error: <ERROR_TYPE>", file=sys.stderr)
+        logger.debug("Exception: <ERROR_TYPE>")
+        print("Error: <ERROR_TYPE>", file=sys.stderr)
         return 1
 
 
@@ -65,8 +65,8 @@ def list_versions_command(args: argparse.Namespace) -> int:
         return 0
     except (IOError, OSError) as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
-        print(f"Error: <ERROR_TYPE>", file=sys.stderr)
+        logger.debug("Exception: <ERROR_TYPE>")
+        print("Error: <ERROR_TYPE>", file=sys.stderr)
         return 1
 
 
@@ -91,8 +91,8 @@ def promote_model_command(args: argparse.Namespace) -> int:
         return 0
     except (IOError, OSError) as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
-        print(f"Error: <ERROR_TYPE>", file=sys.stderr)
+        logger.debug("Exception: <ERROR_TYPE>")
+        print("Error: <ERROR_TYPE>", file=sys.stderr)
         return 1
 
 
@@ -125,8 +125,8 @@ def compare_models_command(args: argparse.Namespace) -> int:
         return 0
     except (IOError, OSError) as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
-        print(f"Error: <ERROR_TYPE>", file=sys.stderr)
+        logger.debug("Exception: <ERROR_TYPE>")
+        print("Error: <ERROR_TYPE>", file=sys.stderr)
         return 1
 
 
@@ -143,8 +143,8 @@ def export_model_command(args: argparse.Namespace) -> int:
         return 0
     except (IOError, OSError) as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
-        print(f"Error: <ERROR_TYPE>", file=sys.stderr)
+        logger.debug("Exception: <ERROR_TYPE>")
+        print("Error: <ERROR_TYPE>", file=sys.stderr)
         return 1
 
 
@@ -176,8 +176,8 @@ def get_lineage_command(args: argparse.Namespace) -> int:
         return 0
     except (IOError, OSError) as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
-        print(f"Error: <ERROR_TYPE>", file=sys.stderr)
+        logger.debug("Exception: <ERROR_TYPE>")
+        print("Error: <ERROR_TYPE>", file=sys.stderr)
         return 1
 
 

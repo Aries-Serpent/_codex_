@@ -16,4 +16,4 @@ def test_verify_pins(tmp_path: Path) -> None:
         [sys.executable, "tools/verify_pins.py", str(pyproj)],
         capture_output=True,
     )
-    assert res.returncode != 0
+    assert res.returncode != 0, "returncode is not valid"

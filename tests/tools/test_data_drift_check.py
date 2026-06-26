@@ -17,42 +17,42 @@ class TestDataDriftCheck:
         ref = {"hist": {"label": {"A": 0.5, "B": 0.5}}}
         cur = {"hist": {"label": {"A": 0.5, "B": 0.5}}}
         score = drift_score(ref, cur)
-        assert score == 0.0
+        assert score == 0.0, "score is not valid"
 
     def test_drift_score_with_drift(self):
         """Test drift detection with significant drift."""
         ref = {"hist": {"label": {"A": 0.5, "B": 0.5}}}
         cur = {"hist": {"label": {"A": 0.8, "B": 0.2}}}  # Significant shift
         score = drift_score(ref, cur)
-        assert score == 0.3  # max(|0.5-0.8|, |0.5-0.2|) = 0.3
+        assert score == 0.3, "score is not valid"
 
     def test_drift_score_new_labels(self):
         """Test drift detection when new labels appear."""
         ref = {"hist": {"label": {"A": 0.5, "B": 0.5}}}
         cur = {"hist": {"label": {"A": 0.4, "B": 0.4, "C": 0.2}}}
         score = drift_score(ref, cur)
-        assert score == 0.2  # New label C with 0.2 frequency
+        assert score == 0.2, "score is not valid"
 
     def test_drift_score_missing_labels(self):
         """Test drift detection when labels disappear."""
         ref = {"hist": {"label": {"A": 0.5, "B": 0.3, "C": 0.2}}}
         cur = {"hist": {"label": {"A": 0.7, "B": 0.3}}}
         score = drift_score(ref, cur)
-        assert score == 0.2  # max(|0.5-0.7|, |0.3-0.3|, |0.2-0|) = 0.2
+        assert score == 0.2, "score is not valid"
 
     def test_drift_score_empty_hist(self):
         """Test drift detection with empty histogram."""
         ref = {"hist": {"label": {}}}
         cur = {"hist": {"label": {}}}
         score = drift_score(ref, cur)
-        assert score == 0.0
+        assert score == 0.0, "score is not valid"
 
     def test_drift_score_missing_hist(self):
         """Test drift detection with missing histogram."""
         ref = {}
         cur = {}
         score = drift_score(ref, cur)
-        assert score == 0.0
+        assert score == 0.0, "score is not valid"
 
     def test_main_no_drift(self, tmp_path):
         """Test main function with no drift."""
@@ -66,7 +66,7 @@ class TestDataDriftCheck:
         cur_file.write_text(json.dumps(cur_data), encoding="utf-8")
 
         result = main(["--ref", str(ref_file), "--cur", str(cur_file), "--threshold", "0.2"])
-        assert result == 0  # No drift
+        assert result == 0, "Result must not be empty"
 
     def test_main_with_drift_exceeds_threshold(self, tmp_path):
         """Test main function when drift exceeds threshold."""
@@ -80,7 +80,7 @@ class TestDataDriftCheck:
         cur_file.write_text(json.dumps(cur_data), encoding="utf-8")
 
         result = main(["--ref", str(ref_file), "--cur", str(cur_file), "--threshold", "0.2"])
-        assert result == 1  # Drift exceeds threshold
+        assert result == 1, "Result must not be empty"
 
     def test_main_custom_threshold(self, tmp_path):
         """Test main function with custom threshold."""
@@ -95,25 +95,25 @@ class TestDataDriftCheck:
 
         # Drift is 0.1, threshold 0.15 -> should pass
         result = main(["--ref", str(ref_file), "--cur", str(cur_file), "--threshold", "0.15"])
-        assert result == 0
+        assert result == 0, "Result must not be empty"
 
         # Drift is 0.1, threshold 0.05 -> should fail
         result = main(["--ref", str(ref_file), "--cur", str(cur_file), "--threshold", "0.05"])
-        assert result == 1
+        assert result == 1, "Result must not be empty"
 
     def test_drift_score_extreme_values(self):
         """Test drift detection with extreme distribution changes."""
         ref = {"hist": {"label": {"A": 1.0}}}
         cur = {"hist": {"label": {"B": 1.0}}}
         score = drift_score(ref, cur)
-        assert score == 1.0  # Complete distribution shift
+        assert score == 1.0, "score is not valid"
 
     def test_drift_score_many_labels(self):
         """Test drift detection with many labels."""
         ref = {"hist": {"label": {f"L{i}": 0.1 for i in range(10)}}}
         cur = {"hist": {"label": {f"L{i}": 0.15 if i < 5 else 0.05 for i in range(10)}}}
         score = drift_score(ref, cur)
-        assert score == 0.05  # max diff is 0.05
+        assert score == 0.05, "score is not valid"
 
     def test_main_nonexistent_file(self, tmp_path):
         """Test main function with non-existent file."""

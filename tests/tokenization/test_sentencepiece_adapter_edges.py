@@ -28,7 +28,7 @@ def test_padding_truncation_roundtrip() -> None:
     """Verify encoding/decoding with vendored tiny model."""
     tok = _load_tiny_adapter()
     ids = tok.encode("hello world", padding="max_length", truncation="only_first", max_length=8)
-    assert len(ids) == 8
+    assert len(ids) == 8, "Ids must not be empty"
     text = tok.decode(ids)
     assert isinstance(text, str)
 
@@ -39,8 +39,8 @@ def test_single_sequence_truncation_preserves_prefix(truncation: str) -> None:
     text = "hello world again"
     full_ids = tok.encode(text)
     ids = tok.encode(text, truncation=truncation, max_length=2)
-    assert len(ids) == 2
-    assert ids == full_ids[:2]
+    assert len(ids) == 2, "Ids must not be empty"
+    assert ids == full_ids[:2], "ids is not valid"
 
 
 def test_only_first_truncation_matches_prefix_roundtrip() -> None:
@@ -50,4 +50,4 @@ def test_only_first_truncation_matches_prefix_roundtrip() -> None:
     ids = tok.encode(text, truncation="only_first", max_length=3)
     expected = tok.decode(full_ids[:3])
     decoded = tok.decode(ids)
-    assert decoded == expected
+    assert decoded == expected, "decoded is not valid"

@@ -13,4 +13,4 @@ def test_get_component_from_env(monkeypatch, tmp_path):
     monkeypatch.syspath_prepend(tmp_path)
     monkeypatch.setenv("CODEX_TOKENIZER_PATH", "dummy_mod:Dummy")
     inst = get_component("CODEX_TOKENIZER_PATH", "dummy_mod:Dummy")
-    assert inst.__class__.__name__ == "Dummy"
+    assert inst.__class__.__name__ == "Dummy", "__name__ is not valid"

@@ -28,26 +28,26 @@ class TestConditionalMutations:
     """Test conditionals for mutation detection."""
 
     def test_is_even_true(self):
-        assert is_even(2) is True
-        assert is_even(0) is True
-        assert is_even(100) is True
+        assert is_even(2) is True, "Condition must be true"
+        assert is_even(0) is True, "Condition must be true"
+        assert is_even(100) is True, "Condition must be true"
 
     def test_is_even_false(self):
-        assert is_even(1) is False
-        assert is_even(3) is False
-        assert is_even(-1) is False
+        assert is_even(1) is False, "Condition must be true"
+        assert is_even(3) is False, "Condition must be true"
+        assert is_even(-1) is False, "Condition must be true"
 
     def test_is_positive_true(self):
-        assert is_positive(1) is True
-        assert is_positive(100) is True
+        assert is_positive(1) is True, "Condition must be true"
+        assert is_positive(100) is True, "Condition must be true"
 
     def test_is_positive_false(self):
-        assert is_positive(0) is False
-        assert is_positive(-1) is False
+        assert is_positive(0) is False, "Condition must be true"
+        assert is_positive(-1) is False, "Condition must be true"
 
     def test_is_positive_boundary(self):
-        assert is_positive(1) is True
-        assert is_positive(0) is False
+        assert is_positive(1) is True, "Condition must be true"
+        assert is_positive(0) is False, "Condition must be true"
 
     def test_in_range_lower_bound(self):
         assert is_in_range(5, 5, 10) is True

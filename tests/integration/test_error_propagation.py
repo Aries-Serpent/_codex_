@@ -30,7 +30,7 @@ class TestExceptionHandling:
         except ValueError as e:
             error_log = {"type": "ValueError", "message": str(e)}
             (error_workspace / "errors" / "error.json").write_text(json.dumps(error_log))
-        assert (error_workspace / "errors" / "error.json").exists()
+        assert (error_workspace / "errors" / "error.json").exists(), "Error should be raised or set"
 
     def test_exception_propagation(self, error_workspace):
         """Test exception propagation through layers."""
@@ -54,7 +54,7 @@ class TestExceptionHandling:
             raise ValueError("Processing error")
         except ValueError as e:
             error_info = {"error": str(e), "context": context}
-            assert error_info["context"]["step"] == 100
+            assert error_info["context"]["step"] == 100, "Error should be raised or set"
 
     def test_cross_module_error_handling(self, error_workspace):
         """Test error handling across modules."""
@@ -74,7 +74,7 @@ class TestExceptionHandling:
                 errors.append({"module": "B", "caught": str(e)})
 
         module_b()
-        assert len(errors) == 2
+        assert len(errors) == 2, "Errors must not be empty"
 
 
 class TestGracefulDegradation:
@@ -89,7 +89,7 @@ class TestGracefulDegradation:
         except ValueError:
             config["advanced_feature"] = "default_value"
 
-        assert config["advanced_feature"] == "default_value"
+        assert config["advanced_feature"] == "default_value", "Value must be initialized"
 
     def test_partial_functionality(self, error_workspace):
         """Test maintaining partial functionality."""
@@ -102,7 +102,7 @@ class TestGracefulDegradation:
         except RuntimeError:
             features["core"] = True  # Restore
 
-        assert features["core"] is True
+        assert features["core"] is True, "Condition must be true"
 
     def test_service_degradation(self, error_workspace):
         """Test service degradation under errors."""
@@ -115,8 +115,8 @@ class TestGracefulDegradation:
         except ConnectionError:
             _ = None  # suppressed: no action needed
 
-        assert current_level in service_levels
-        assert current_level != "full"
+        assert current_level in service_levels, "Condition must be true"
+        assert current_level != "full", "current_level is not valid"
 
 
 class TestRecoveryMechanisms:
@@ -142,8 +142,8 @@ class TestRecoveryMechanisms:
             except RuntimeError:
                 continue
 
-        assert result == "success"
-        assert attempts == 3
+        assert result == "success", "Result must not be empty"
+        assert attempts == 3, "attempts is not valid"
 
     def test_checkpoint_recovery(self, error_workspace):
         """Test recovery from checkpoint."""
@@ -160,7 +160,7 @@ class TestRecoveryMechanisms:
             loaded = json.loads(ckpt_path.read_text())
             recovered_step = loaded["step"]
 
-        assert recovered_step == 100
+        assert recovered_step == 100, "recovered_step is not valid"
 
     def test_state_restoration(self, error_workspace):
         """Test state restoration after error."""

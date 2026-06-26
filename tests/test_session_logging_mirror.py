@@ -20,5 +20,5 @@ def test_user_and_assistant_logged_roundtrip(tmp_path, monkeypatch):
     msgs = fetch_messages(sid, db_path=db)
     roles = [m["role"] for m in msgs]
     assert roles == ["user", "assistant"]
-    assert msgs[0]["message"] == "hello"
-    assert msgs[1]["message"] == "world"
+    assert msgs[0]["message"] == "hello", "Condition must be true"
+    assert msgs[1]["message"] == "world", "Condition must be true"

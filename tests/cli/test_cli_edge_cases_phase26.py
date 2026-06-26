@@ -43,9 +43,9 @@ class TestCLIEdgeCases:
         with patch("subprocess.run", return_value=mock_result) as mock_run:
             result = subprocess.run(["nonexistent_command_xyz"], capture_output=True)
 
-            assert result.returncode == 127
-            assert b"command not found" in result.stderr
-            assert result.stdout == b""
+            assert result.returncode == 127, "Result must not be empty"
+            assert b"command not found" in result.stderr, "Result must not be empty"
+            assert result.stdout == b"", "Result must not be empty"
             mock_run.assert_called_once()
 
     def test_cli_command_with_special_characters(self):
@@ -63,10 +63,10 @@ class TestCLIEdgeCases:
             escaped = dangerous_input.replace(";", "").replace("&&", "").replace("|", "")
             escaped = escaped.replace("`", "").replace("$", "")
 
-            assert ";" not in escaped
-            assert "&&" not in escaped
-            assert "`" not in escaped
-            assert "$(" not in escaped
+            assert ";" not in escaped, "Condition must be true"
+            assert "&&" not in escaped, "Condition must be true"
+            assert "`" not in escaped, "Condition must be true"
+            assert "$(" not in escaped, "Condition must be true"
 
     def test_cli_command_timeout(self):
         """Test CLI command execution with timeout"""
@@ -87,21 +87,21 @@ class TestCLIEdgeCases:
             time.sleep(timeout_duration)
 
             elapsed = time.time() - start_time
-            assert elapsed >= timeout_duration
-            assert process.poll() is None  # Still running when checked
+            assert elapsed >= timeout_duration, "elapsed must be greater than zero"
+            assert process.poll() is None, "Condition must be true"
 
     def test_cli_command_with_env_variables(self):
         """Test CLI command with environment variable expansion"""
         test_env = {"TEST_VAR": "test_value", "PATH": "/custom/path:/usr/bin", "HOME": "/test/home"}
 
         with patch.dict(os.environ, test_env, clear=True):
-            assert os.environ.get("TEST_VAR") == "test_value"
+            assert os.environ.get("TEST_VAR") == "test_value", "Value must be initialized"
             assert "/custom/path" in os.environ.get("PATH", "")
-            assert os.environ.get("HOME") == "/test/home"
+            assert os.environ.get("HOME") == "/test/home", "Condition must be true"
 
             # Variable precedence: custom vars should override
             os.environ["TEST_VAR"] = "overridden"
-            assert os.environ["TEST_VAR"] == "overridden"
+            assert os.environ["TEST_VAR"] == "overridden", "Condition must be true"
 
     def test_cli_command_with_stdin_redirect(self):
         """Test CLI command reading from stdin"""
@@ -115,12 +115,12 @@ class TestCLIEdgeCases:
             line1 = sys.stdin.readline()
             line2 = sys.stdin.readline()
 
-            assert line1 == "test input data\n"
-            assert line2 == "line 2\n"
+            assert line1 == "test input data\n", "Data must not be empty"
+            assert line2 == "line 2\n", "line2 is not valid"
 
             # EOF handling
             remaining = sys.stdin.read()
-            assert remaining == "line 3\n"
+            assert remaining == "line 3\n", "remaining is not valid"
 
     def test_cli_command_with_stdout_redirect(self):
         """Test CLI command writing to stdout"""
@@ -134,9 +134,9 @@ class TestCLIEdgeCases:
             sys.stdout.flush()
 
             output = captured_output.getvalue()
-            assert "Test output line 1" in output
-            assert "Test output line 2" in output
-            assert output.count("\n") >= 2  # At least 2 newlines
+            assert "Test output line 1" in output, "Condition must be true"
+            assert "Test output line 2" in output, "Condition must be true"
+            assert output.count("\n") >= 2, "Value must be greater than zero"
 
     def test_cli_command_with_stderr_redirect(self):
         """Test CLI command writing to stderr"""
@@ -150,9 +150,9 @@ class TestCLIEdgeCases:
             sys.stderr.flush()
 
             errors = captured_errors.getvalue()
-            assert "Error message 1" in errors
-            assert "Error message 2" in errors
-            assert errors.count("\n") >= 2
+            assert "Error message 1" in errors, "Error should be raised or set"
+            assert "Error message 2" in errors, "Error should be raised or set"
+            assert errors.count("\n") >= 2, "err must be greater than zero"
 
     def test_cli_command_chain_execution(self):
         """Test CLI command pipeline/chain execution"""
@@ -168,13 +168,13 @@ class TestCLIEdgeCases:
             result2 = subprocess.run(["cmd2"], input=result1.stdout, capture_output=True)
             result3 = subprocess.run(["cmd3"], input=result2.stdout, capture_output=True)
 
-            assert mock_run.call_count == 3
-            assert result3.returncode == 0
+            assert mock_run.call_count == 3, "Count must be greater than zero"
+            assert result3.returncode == 0, "Result must not be empty"
 
             # Verify error propagation scenario
             mock_run.return_value = MagicMock(returncode=1, stderr=b"error in pipeline")
             result_error = subprocess.run(["failing_cmd"], capture_output=True)
-            assert result_error.returncode == 1
+            assert result_error.returncode == 1, "Result must not be empty"
 
     def test_cli_invalid_command(self):
         """Test CLI with invalid command"""
@@ -187,7 +187,7 @@ class TestCLIEdgeCases:
         with patch("sys.argv", ["codex", "--help"]):
             with pytest.raises(SystemExit) as exc:
                 pass
-            assert exc.value.code == 0
+            assert exc.value.code == 0, "Value must be initialized"
 
     def test_cli_version_flag(self):
         """Test CLI --version flag"""
@@ -257,7 +257,7 @@ class TestCLIEdgeCases:
             t.join()
 
         # Should handle concurrent calls safely
-        assert len(results) == 5
+        assert len(results) == 5, "Results must not be empty"
 
     def test_cli_environment_variable_injection(self):
         """Test CLI against environment variable injection"""
@@ -292,7 +292,7 @@ class TestCLIEdgeCases:
             signal.signal(signal.SIGINT, original_handler)
 
         # Verify cleanup was attempted
-        assert len(cleanup_called) >= 1
+        assert len(cleanup_called) >= 1, "Cleanup_called must not be empty"
 
     def test_cli_sigterm_handling(self):
         """Test CLI SIGTERM handling for graceful shutdown"""
@@ -307,7 +307,7 @@ class TestCLIEdgeCases:
         original_handler = signal.signal(signal.SIGTERM, sigterm_handler)
         try:
             os.kill(os.getpid(), signal.SIGTERM)
-            assert signal.SIGTERM in termination_detected
+            assert signal.SIGTERM in termination_detected, "Condition must be true"
         finally:
             signal.signal(signal.SIGTERM, original_handler)
 
@@ -327,7 +327,7 @@ class TestCLIEdgeCases:
         original_handler = signal.signal(signal.SIGHUP, sighup_handler)
         try:
             os.kill(os.getpid(), signal.SIGHUP)
-            assert len(reload_triggered) == 1
+            assert len(reload_triggered) == 1, "Reload_triggered must not be empty"
         finally:
             signal.signal(signal.SIGHUP, original_handler)
 
@@ -344,7 +344,7 @@ class TestCLIEdgeCases:
 
             process = subprocess.Popen(["long_running_cmd"])
 
-            assert process.poll() is None
+            assert process.poll() is None, "Condition must be true"
             process.terminate()
             mock_process.terminate.assert_called()
 
@@ -368,7 +368,7 @@ class TestCLIEdgeCases:
                     os.kill(os.getpid(), signal.SIGINT)
 
             # Thread safety verified by no deadlock
-            assert len(signal_count) >= 1
+            assert len(signal_count) >= 1, "Signal_count must not be empty"
         finally:
             signal.signal(signal.SIGINT, original_handler)
 
@@ -395,7 +395,7 @@ class TestCLIEdgeCases:
             os.kill(os.getpid(), signal.SIGTERM)
 
             # Verify signal ordering/queuing
-            assert len(signals_received) >= 1
+            assert len(signals_received) >= 1, "Signals_received must not be empty"
         finally:
             signal.signal(signal.SIGINT, orig_int)
             signal.signal(signal.SIGTERM, orig_term)
@@ -421,9 +421,9 @@ class TestCLIEdgeCases:
                     break
                 total_read += len(chunk)
 
-            assert total_read == len(large_input)
+            assert total_read == len(large_input), "Large_input must not be empty"
             # Memory usage should be reasonable (streaming)
-            assert chunk_size < len(large_input)
+            assert chunk_size < len(large_input), "Large_input must not be empty"
 
     def test_cli_binary_input_handling(self):
         """Test CLI handling of binary input"""
@@ -436,10 +436,10 @@ class TestCLIEdgeCases:
         with patch("sys.stdin.buffer", mock_stdin):
             read_data = sys.stdin.buffer.read()
 
-            assert read_data == binary_data
-            assert len(read_data) == 6
-            assert read_data[0] == 0
-            assert read_data[-1] == 0xFD
+            assert read_data == binary_data, "Data must not be empty"
+            assert len(read_data) == 6, "Read_data must not be empty"
+            assert read_data[0] == 0, "Data must not be empty"
+            assert read_data[-1] == 0xFD, "Data must not be empty"
 
     def test_cli_output_to_closed_pipe(self):
         """Test CLI writing to closed pipe (BrokenPipeError)"""
@@ -468,11 +468,11 @@ class TestCLIEdgeCases:
         with patch("sys.stdin", mock_stdin):
             data = sys.stdin.read()
 
-            assert data == ""  # EOF immediately
+            assert data == "", "Data must not be empty"
 
             # Multiple reads should still return EOF
             data2 = sys.stdin.read()
-            assert data2 == ""
+            assert data2 == "", "Data must not be empty"
 
     def test_cli_concurrent_io_operations(self):
         """Test CLI thread-safe I/O operations"""
@@ -494,10 +494,10 @@ class TestCLIEdgeCases:
             t.join()
 
         # All threads completed
-        assert len(results) == 5
+        assert len(results) == 5, "Results must not be empty"
         # No data corruption
         output = output_buffer.getvalue()
-        assert output.count("Thread") == 5
+        assert output.count("Thread") == 5, "Count must be greater than zero"
 
     def test_cli_io_encoding_errors(self):
         """Test CLI handling of encoding errors"""
@@ -511,8 +511,8 @@ class TestCLIEdgeCases:
         except UnicodeDecodeError:
             # Handle with errors='replace'
             decoded = invalid_utf8.decode("utf-8", errors="replace")
-            assert "�" in decoded  # Replacement character
-            assert "invalid utf8" in decoded
+            assert "�" in decoded, "Condition must be true"
+            assert "invalid utf8" in decoded, "Condition must be true"
 
     # ========== Phase 27.1 Sub-batch A4: CLI Edge Cases (5 tests) ==========
 
@@ -525,8 +525,8 @@ class TestCLIEdgeCases:
         max_allowed = 100000  # Example limit
         if len(long_arg) > max_allowed:
             truncated = long_arg[:max_allowed]
-            assert len(truncated) == max_allowed
-            assert truncated.endswith("x")
+            assert len(truncated) == max_allowed, "Truncated must not be empty"
+            assert truncated.endswith("x"), "Condition must be true"
 
     def test_cli_unicode_arguments(self):
         """Test CLI handling Unicode characters in arguments"""
@@ -542,7 +542,7 @@ class TestCLIEdgeCases:
             # Should handle Unicode properly
             encoded = unicode_str.encode("utf-8")
             decoded = encoded.decode("utf-8")
-            assert decoded == unicode_str
+            assert decoded == unicode_str, "decoded is not valid"
             # Normalization check
             import unicodedata
 
@@ -561,7 +561,7 @@ class TestCLIEdgeCases:
 
         for dangerous_path in dangerous_paths:
             # Security check: should detect traversal attempts
-            assert ".." in dangerous_path or dangerous_path.startswith("/")
+            assert ".." in dangerous_path or dangerous_path.startswith("/"), "Condition must be true"
 
             # Sanitize by resolving and checking
             import pathlib
@@ -596,7 +596,7 @@ class TestCLIEdgeCases:
 
         # Verify cleanup
         for resource in resources_created:
-            assert not os.path.exists(resource)
+            assert not os.path.exists(resource), "Condition must be true"
 
     def test_cli_concurrent_command_execution(self):
         """Test CLI isolates concurrent command executions"""
@@ -620,9 +620,9 @@ class TestCLIEdgeCases:
             t.join()
 
         # All commands completed
-        assert len(execution_results) == 10
+        assert len(execution_results) == 10, "Execution_results must not be empty"
         # No duplicates (proper isolation)
-        assert len(set(execution_results)) == 10
+        assert len(set(execution_results)) == 10, "Collection must not be empty"
 
     def test_cli_stdout_redirect(self):
         """Test CLI with stdout redirected"""

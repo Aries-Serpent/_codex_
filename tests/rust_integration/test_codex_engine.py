@@ -17,7 +17,7 @@ def test_swarm_state_creation():
         from codex_engine import SwarmState
 
         state = SwarmState()
-        assert state.get_agent_count() == 0
+        assert state.get_agent_count() == 0, "Count must be greater than zero"
     except ImportError:
         pytest.skip("codex_engine not built yet (run: maturin develop)")
 
@@ -30,14 +30,14 @@ def test_agent_registration():
         state = SwarmState()
 
         state.register_agent("agent_1")
-        assert state.get_agent_count() == 1
+        assert state.get_agent_count() == 1, "Count must be greater than zero"
 
         state.register_agent("agent_2")
-        assert state.get_agent_count() == 2
+        assert state.get_agent_count() == 2, "Count must be greater than zero"
 
         agents = state.list_agents()
-        assert "agent_1" in agents
-        assert "agent_2" in agents
+        assert "agent_1" in agents, "Condition must be true"
+        assert "agent_2" in agents, "Condition must be true"
     except ImportError:
         pytest.skip("codex_engine not built yet")
 
@@ -54,13 +54,13 @@ def test_agent_status_management():
         # Set status to working
         state.set_agent_status("agent_1", "working", "Processing file.py")
         status, message = state.get_agent_status("agent_1")
-        assert status == "working"
-        assert message == "Processing file.py"
+        assert status == "working", "status is not valid"
+        assert message == "Processing file.py", "message is not valid"
 
         # Set status to complete
         state.set_agent_status("agent_1", "complete")
         status, message = state.get_agent_status("agent_1")
-        assert status == "complete"
+        assert status == "complete", "status is not valid"
     except ImportError:
         pytest.skip("codex_engine not built yet")
 
@@ -73,10 +73,10 @@ def test_orchestrator_lifecycle():
         state = SwarmState()
         orch = Orchestrator(state)
 
-        assert not orch.is_running()
+        assert not orch.is_running(), "not is not valid"
 
         orch.start()
-        assert orch.is_running()
+        assert orch.is_running(), "Condition must be true"
 
         orch.stop()
         # Note: May still show running briefly due to async shutdown
@@ -97,12 +97,12 @@ def test_task_queue_operations():
 
         # Receive the task
         received = queue.receive()
-        assert received is not None
-        assert received.id == "task_1"
-        assert received.task_type == "analyze"
+        assert received is not None, "received must be initialized"
+        assert received.id == "task_1", "id is not valid"
+        assert received.task_type == "analyze", "task_type is not valid"
 
         # Queue should now be empty
-        assert queue.receive() is None
+        assert queue.receive() is None, "Condition must be true"
     except ImportError:
         pytest.skip("codex_engine not built yet")
 
@@ -125,7 +125,7 @@ def test_concurrent_agent_registration():
             futures = [executor.submit(register_agents, i * 10, 10) for i in range(10)]
             concurrent.futures.wait(futures)
 
-        assert state.get_agent_count() == 100
+        assert state.get_agent_count() == 100, "Count must be greater than zero"
     except ImportError:
         pytest.skip("codex_engine not built yet")
 
@@ -154,7 +154,7 @@ def test_high_throughput_task_queue():
         while queue.receive() is not None:
             count += 1
 
-        assert count == 10000
+        assert count == 10000, "Count must be greater than zero"
     except ImportError:
         pytest.skip("codex_engine not built yet")
 

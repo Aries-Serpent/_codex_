@@ -115,7 +115,7 @@ def _ensure_mlflow_available() -> Any:
         return importlib.import_module("mlflow")
     except (IOError, OSError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         err = build_optional_dependency_error("mlflow", "experiment tracking")
         raise RuntimeError(err.args[0]) from exc
 

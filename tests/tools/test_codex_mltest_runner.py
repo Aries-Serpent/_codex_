@@ -45,9 +45,9 @@ def test_mltest_runner_builds_summary(tmp_path: Path, monkeypatch):
             "summary.json",
         ]
     )
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
 
     summary = json.loads((tmp_path / "summary.json").read_text(encoding="utf-8"))
-    assert summary["overall_returncode"] == 0
-    assert len(summary["results"]) == 1
-    assert summary["results"][0]["category"] == "infrastructure"
+    assert summary["overall_returncode"] == 0, "Condition must be true"
+    assert len(summary["results"]) == 1, "Collection must not be empty"
+    assert summary["results"][0]["category"] == "infrastructure", "Result must not be empty"

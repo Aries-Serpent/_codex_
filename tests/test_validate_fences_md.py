@@ -37,6 +37,6 @@ def test_bad_file_fails(tmp_path: pathlib.Path) -> None:
     copied = tmp_path / "bad.md"
     copied.write_text(bad.read_text(encoding="utf-8"), encoding="utf-8")
     result = run_validator(copied)
-    assert result.returncode == 1
-    assert "Closing fence shorter than opener" in result.stdout
-    assert "Backticks in info string" in result.stdout
+    assert result.returncode == 1, "Result must not be empty"
+    assert "Closing fence shorter than opener" in result.stdout, "Result must not be empty"
+    assert "Backticks in info string" in result.stdout, "Result must not be empty"

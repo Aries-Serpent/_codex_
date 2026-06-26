@@ -30,7 +30,7 @@ class TestScoringWeights:
     def test_default_weights_sum(self):
         w = ScoringWeights()
         total = w.compliance_score_weight + w.risk_weight + w.cost_weight + w.impact_weight
-        assert total == pytest.approx(1.0)
+        assert total == pytest.approx(1.0), "total is not valid"
 
     def test_normalize(self):
         w = ScoringWeights(
@@ -41,7 +41,7 @@ class TestScoringWeights:
         )
         n = w.normalize()
         total = n.compliance_score_weight + n.risk_weight + n.cost_weight + n.impact_weight
-        assert total == pytest.approx(1.0)
+        assert total == pytest.approx(1.0), "total is not valid"
 
     def test_normalize_zero(self):
         w = ScoringWeights(
@@ -52,13 +52,13 @@ class TestScoringWeights:
         )
         n = w.normalize()
         # Should return self unchanged (all zeros)
-        assert n.compliance_score_weight == 0
+        assert n.compliance_score_weight == 0, "compliance_score_weight is not valid"
 
     def test_to_dict(self):
         w = ScoringWeights()
         d = w.to_dict()
-        assert "compliance_score_weight" in d
-        assert "risk_weight" in d
+        assert "compliance_score_weight" in d, "Condition must be true"
+        assert "risk_weight" in d, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -73,15 +73,15 @@ class TestAdaptiveScoringOptimizer:
 
     def test_initial_k1(self, optimizer):
         """k₁ starts at 0.40."""
-        assert optimizer.get_current_k1() == pytest.approx(0.40)
+        assert optimizer.get_current_k1() == pytest.approx(0.40), "Condition must be true"
 
     def test_k1_history_starts_populated(self, optimizer):
-        assert len(optimizer.k1_history) == 1
-        assert optimizer.k1_history[0] == 0.40
+        assert len(optimizer.k1_history) == 1, "Collection must not be empty"
+        assert optimizer.k1_history[0] == 0.40, "Condition must be true"
 
     def test_compute_score_default_features(self, optimizer):
         score = optimizer.compute_score({})
-        assert 0.0 <= score <= 1.0
+        assert 0.0 <= score <= 1.0, "0 is not valid"
 
     def test_compute_score_high_compliance(self, optimizer):
         features = {
@@ -91,7 +91,7 @@ class TestAdaptiveScoringOptimizer:
             "impact_score": 1.0,
         }
         score = optimizer.compute_score(features)
-        assert score > 0.5
+        assert score > 0.5, "score must be greater than zero"
 
     def test_compute_score_clamped(self, optimizer):
         # Extreme features should still be clamped to [0, 1]
@@ -102,7 +102,7 @@ class TestAdaptiveScoringOptimizer:
             "impact_score": 10.0,
         }
         score = optimizer.compute_score(features)
-        assert 0.0 <= score <= 1.0
+        assert 0.0 <= score <= 1.0, "0 is not valid"
 
     def test_add_feedback(self, optimizer):
         fb = FeedbackRecord(
@@ -114,7 +114,7 @@ class TestAdaptiveScoringOptimizer:
             timestamp=time.time(),
         )
         optimizer.add_feedback(fb)
-        assert len(optimizer.feedback_history) == 1
+        assert len(optimizer.feedback_history) == 1, "Collection must not be empty"
 
     def test_update_weights_needs_minimum(self, optimizer):
         """Weight update requires ≥ 5 feedback records."""
@@ -130,7 +130,7 @@ class TestAdaptiveScoringOptimizer:
                 )
             )
         changes = optimizer.update_weights()
-        assert changes == {}  # Not enough data
+        assert changes == {}, "changes is not valid"
 
     def test_k1_converges_with_correct_feedback(self, optimizer):
         """With high accuracy feedback, k₁ should decrease toward target."""
@@ -152,10 +152,10 @@ class TestAdaptiveScoringOptimizer:
             )
         optimizer.update_weights()
         # k₁ should have been updated
-        assert len(optimizer.k1_history) > 1
+        assert len(optimizer.k1_history) > 1, "Collection must not be empty"
         # With 100% accuracy: k₁ = 0.40 * (1 - (1.0 - 0.5) * 0.2) = 0.40 * 0.9 = 0.36
         latest_k1 = optimizer.get_current_k1()
-        assert latest_k1 < 0.40
+        assert latest_k1 < 0.40, "latest_k1 is not valid"
 
     def test_k1_with_mixed_feedback(self, optimizer):
         """With mixed accuracy, k₁ stays closer to 0.40."""
@@ -178,10 +178,10 @@ class TestAdaptiveScoringOptimizer:
         optimizer.update_weights()
         k1 = optimizer.get_current_k1()
         # 50% accuracy: k₁ = 0.40 * (1 - (0.5 - 0.5) * 0.2) = 0.40
-        assert k1 == pytest.approx(0.40)
+        assert k1 == pytest.approx(0.40), "k1 is not valid"
 
     def test_get_accuracy_empty(self, optimizer):
-        assert optimizer.get_accuracy() == 0.0
+        assert optimizer.get_accuracy() == 0.0, "Condition must be true"
 
     def test_get_accuracy_computed(self, optimizer):
         for i in range(4):
@@ -195,16 +195,16 @@ class TestAdaptiveScoringOptimizer:
                     timestamp=time.time(),
                 )
             )
-        assert optimizer.get_accuracy() == pytest.approx(0.75)
+        assert optimizer.get_accuracy() == pytest.approx(0.75), "Condition must be true"
 
     def test_reset_weights(self, optimizer):
         optimizer.k1_history.append(0.35)
         optimizer.reset_weights()
-        assert optimizer.get_current_k1() == 0.40
-        assert len(optimizer.k1_history) == 1
+        assert optimizer.get_current_k1() == 0.40, "Condition must be true"
+        assert len(optimizer.k1_history) == 1, "Collection must not be empty"
 
     def test_backward_compat_alias(self):
-        assert AdaptiveScoringEngine is AdaptiveScoringOptimizer
+        assert AdaptiveScoringEngine is AdaptiveScoringOptimizer, "AdaptiveScoringEngine is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -216,13 +216,13 @@ class TestCreateScoringFunction:
     def test_returns_callable(self):
         opt = AdaptiveScoringOptimizer()
         fn = create_scoring_function(opt)
-        assert callable(fn)
+        assert callable(fn), "Condition must be true"
 
     def test_scoring_fn_delegates(self):
         opt = AdaptiveScoringOptimizer()
         fn = create_scoring_function(opt)
         features = {"compliance_score": 0.7, "risk_score": 0.3}
-        assert fn(features) == opt.compute_score(features)
+        assert fn(features) == opt.compute_score(features), "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -246,7 +246,7 @@ class TestGradients:
         ]
         grads = opt._compute_gradients(feedbacks)
         # All correct → all gradients should be zero
-        assert all(v == 0.0 for v in grads.values())
+        assert all(v == 0.0 for v in grads.values()), "Value must be initialized"
 
     def test_gradients_with_errors(self):
         opt = AdaptiveScoringOptimizer()
@@ -267,4 +267,4 @@ class TestGradients:
         ]
         grads = opt._compute_gradients(feedbacks)
         # Should have non-zero gradients
-        assert any(v != 0.0 for v in grads.values())
+        assert any(v != 0.0 for v in grads.values()), "Value must be initialized"

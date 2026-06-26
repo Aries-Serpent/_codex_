@@ -50,38 +50,38 @@ def test_tokenizer_train_cli_invokes_pipeline(monkeypatch, tmp_path):
         codex_cli.codex,
         ["tokenizer", "train", "--config", str(config_path), "--stream-chunk-size", "4096"],
     )
-    assert result.exit_code == 0
+    assert result.exit_code == 0, "Result must not be empty"
     assert calls[-1] == (str(config_path), None, 4096, False)
-    assert "tokenizer artifacts written" in result.output
+    assert "tokenizer artifacts written" in result.output, "Result must not be empty"
 
     result_streaming = runner.invoke(
         codex_cli.codex,
         ["tokenizer", "train", "--config", str(config_path), "--streaming"],
     )
-    assert result_streaming.exit_code == 0
+    assert result_streaming.exit_code == 0, "Result must not be empty"
     assert calls[-1] == (str(config_path), True, None, False)
 
     result_no_streaming = runner.invoke(
         codex_cli.codex,
         ["tokenizer", "train", "--config", str(config_path), "--no-streaming"],
     )
-    assert result_no_streaming.exit_code == 0
+    assert result_no_streaming.exit_code == 0, "Result must not be empty"
     assert calls[-1] == (str(config_path), False, None, False)
 
     result_dry_run = runner.invoke(
         codex_cli.codex,
         ["tokenizer", "train", "--config", str(config_path), "--dry-run"],
     )
-    assert result_dry_run.exit_code == 0
+    assert result_dry_run.exit_code == 0, "Result must not be empty"
     assert calls[-1] == (str(config_path), None, None, True)
-    assert "dry run complete" in result_dry_run.output
+    assert "dry run complete" in result_dry_run.output, "Result must not be empty"
 
 
 def test_tokenizer_validate_cli_prints_json(monkeypatch, tmp_path):
     report = {"files": ["a.txt"], "num_files": 1, "missing_files": []}
 
     def fake_run_validate(config: str):
-        assert config == str(config_path)
+        assert config == str(config_path), "config is not valid"
         return report
 
     _patch_tokenizer_pipeline(monkeypatch, run_validate=fake_run_validate)
@@ -90,8 +90,8 @@ def test_tokenizer_validate_cli_prints_json(monkeypatch, tmp_path):
     config_path = tmp_path / "cfg.yaml"
     config_path.write_text("tokenization: {}\n", encoding="utf-8")
     result = runner.invoke(codex_cli.codex, ["tokenizer", "validate", "--config", str(config_path)])
-    assert result.exit_code == 0
-    assert json.loads(result.output) == report
+    assert result.exit_code == 0, "Result must not be empty"
+    assert json.loads(result.output) == report, "Result must not be empty"
 
 
 def test_tokenizer_encode_cli(monkeypatch):
@@ -107,13 +107,13 @@ def test_tokenizer_encode_cli(monkeypatch):
     result = runner.invoke(
         codex_cli.codex, ["tokenizer", "encode", "hello"], catch_exceptions=False
     )
-    assert result.exit_code == 0
+    assert result.exit_code == 0, "Result must not be empty"
     assert captured == [(codex_cli.DEFAULT_TOKENIZER_JSON, "hello")]
-    assert result.output.strip() == "1 2 3"
+    assert result.output.strip() == "1 2 3", "Result must not be empty"
 
     # stdin fallback
     result_stdin = runner.invoke(codex_cli.codex, ["tokenizer", "encode"], input="hi there")
-    assert result_stdin.exit_code == 0
+    assert result_stdin.exit_code == 0, "Result must not be empty"
     assert captured[-1] == (codex_cli.DEFAULT_TOKENIZER_JSON, "hi there")
 
 
@@ -131,12 +131,12 @@ def test_tokenizer_decode_cli(monkeypatch):
         codex_cli.codex,
         ["tokenizer", "decode", "1", "2", "3", "--tokenizer-path", "tok.json"],
     )
-    assert result.exit_code == 0
+    assert result.exit_code == 0, "Result must not be empty"
     assert captured == [("tok.json", (1, 2, 3))]
-    assert result.output.strip() == "decoded"
+    assert result.output.strip() == "decoded", "Result must not be empty"
 
     result_stdin = runner.invoke(codex_cli.codex, ["tokenizer", "decode"], input="4 5 6\n")
-    assert result_stdin.exit_code == 0
+    assert result_stdin.exit_code == 0, "Result must not be empty"
     assert captured[-1] == (codex_cli.DEFAULT_TOKENIZER_JSON, (4, 5, 6))
 
 
@@ -151,5 +151,5 @@ def test_tokenizer_cli_error_propagation(monkeypatch):
 
     runner = _runner()
     result = runner.invoke(codex_cli.codex, ["tokenizer", "encode", "oops"])
-    assert result.exit_code != 0
-    assert "boom" in result.output
+    assert result.exit_code != 0, "Result must not be empty"
+    assert "boom" in result.output, "Result must not be empty"

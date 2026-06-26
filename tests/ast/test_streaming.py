@@ -16,7 +16,7 @@ class TestStreamingParser:
         parser = StreamingParser()
         nodes = list(parser.parse_file(str(test_file)))
 
-        assert len(nodes) > 0
+        assert len(nodes) > 0, "Nodes must not be empty"
 
     def test_parse_large_file(self, tmp_path):
         """Test parsing large file."""
@@ -35,7 +35,7 @@ class TestStreamingParser:
         from codex.ast.node import NodeType
 
         function_nodes = [n for n in nodes if n.type == NodeType.FUNCTION]
-        assert len(function_nodes) >= 1000  # Should yield at least all functions
+        assert len(function_nodes) >= 1000, "Function_nodes must not be empty"
 
     def test_parse_directory(self, tmp_path):
         """Test parsing directory of files."""
@@ -46,7 +46,7 @@ class TestStreamingParser:
         parser = StreamingParser()
         results = list(parser.parse_directory(str(tmp_path)))
 
-        assert len(results) >= 2  # At least 2 nodes from 2 files
+        assert len(results) >= 2, "Results must not be empty"
 
     def test_parse_nonexistent_file(self):
         """Test parsing nonexistent file raises error."""

@@ -35,15 +35,15 @@ class TestCausalLMRegistry:
         decorated = hf_loader.register_causal_lm("test_model")(custom_loader)
 
         # Should be same function
-        assert decorated is custom_loader
+        assert decorated is custom_loader, "decorated is not valid"
 
         # Should be retrievable
         retrieved = hf_loader.get_registered_causal_lm("test_model")
-        assert retrieved is custom_loader
+        assert retrieved is custom_loader, "retrieved is not valid"
 
         # Clean up
         hf_loader.unregister_causal_lm("test_model")
-        assert hf_loader.get_registered_causal_lm("test_model") is None
+        assert hf_loader.get_registered_causal_lm("test_model") is None, "Condition must be true"
 
     def test_unregister_nonexistent(self) -> None:
         """Unregistering non-existent name should not raise."""
@@ -53,7 +53,7 @@ class TestCausalLMRegistry:
     def test_get_nonexistent(self) -> None:
         """Getting non-existent name should return None."""
         result = hf_loader.get_registered_causal_lm("nonexistent_model_abc")
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_registry_decorator_pattern(self) -> None:
         """Test the decorator pattern for registration."""
@@ -62,7 +62,7 @@ class TestCausalLMRegistry:
         def my_loader(**kwargs: Any) -> str:
             return "loaded"
 
-        assert hf_loader.get_registered_causal_lm("decorated_model") is my_loader
+        assert hf_loader.get_registered_causal_lm("decorated_model") is my_loader, "Condition must be true"
 
         # Clean up
         hf_loader.unregister_causal_lm("decorated_model")
@@ -77,29 +77,29 @@ class TestLocalIdentifier:
         test_file = tmp_path / "model_config.json"
         test_file.write_text("{}")
 
-        assert hf_loader._is_local_identifier(tmp_path) is True
-        assert hf_loader._is_local_identifier(str(tmp_path)) is True
+        assert hf_loader._is_local_identifier(tmp_path) is True, "Condition must be true"
+        assert hf_loader._is_local_identifier(str(tmp_path)) is True, "Condition must be true"
 
     def test_nonexistent_path(self) -> None:
         """Test detection of non-existent path."""
         result = hf_loader._is_local_identifier("/nonexistent/path/to/model")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_hub_identifier(self) -> None:
         """Test that hub identifiers are not local."""
-        assert hf_loader._is_local_identifier("gpt2") is False
-        assert hf_loader._is_local_identifier("facebook/opt-125m") is False
+        assert hf_loader._is_local_identifier("gpt2") is False, "Condition must be true"
+        assert hf_loader._is_local_identifier("facebook/opt-125m") is False, "Condition must be true"
 
     def test_file_uri(self, tmp_path: Path) -> None:
         """Test file:// URI handling."""
         # File URI for existing path
         file_uri = f"file://{tmp_path}"
-        assert hf_loader._is_local_identifier(file_uri) is True
+        assert hf_loader._is_local_identifier(file_uri) is True, "Condition must be true"
 
     def test_pathlike_object(self, tmp_path: Path) -> None:
         """Test PathLike object handling."""
         # Path object is PathLike
-        assert hf_loader._is_local_identifier(tmp_path) is True
+        assert hf_loader._is_local_identifier(tmp_path) is True, "Condition must be true"
 
 
 class TestAmpDtypeMapping:
@@ -124,9 +124,9 @@ class TestAmpDtypeMapping:
         # Ensure hf_loader module uses real torch, not stub
         hf_loader.torch = torch
 
-        assert hf_loader._map_amp_dtype("bf16") == torch.bfloat16
-        assert hf_loader._map_amp_dtype("bfloat16") == torch.bfloat16
-        assert hf_loader._map_amp_dtype("BF16") == torch.bfloat16
+        assert hf_loader._map_amp_dtype("bf16") == torch.bfloat16, "Condition must be true"
+        assert hf_loader._map_amp_dtype("bfloat16") == torch.bfloat16, "Condition must be true"
+        assert hf_loader._map_amp_dtype("BF16") == torch.bfloat16, "Condition must be true"
 
     def test_fp16_mapping(self, skip_without_torch: None) -> None:
         """Test float16 dtype mapping."""
@@ -135,17 +135,17 @@ class TestAmpDtypeMapping:
         # Ensure hf_loader module uses real torch, not stub
         hf_loader.torch = torch
 
-        assert hf_loader._map_amp_dtype("fp16") == torch.float16
-        assert hf_loader._map_amp_dtype("float16") == torch.float16
-        assert hf_loader._map_amp_dtype("half") == torch.float16
+        assert hf_loader._map_amp_dtype("fp16") == torch.float16, "Condition must be true"
+        assert hf_loader._map_amp_dtype("float16") == torch.float16, "Condition must be true"
+        assert hf_loader._map_amp_dtype("half") == torch.float16, "Condition must be true"
 
     def test_none_dtype(self) -> None:
         """Test None input returns None."""
-        assert hf_loader._map_amp_dtype(None) is None
+        assert hf_loader._map_amp_dtype(None) is None, "Condition must be true"
 
     def test_unknown_dtype(self, skip_without_torch: None) -> None:
         """Test unknown dtype returns None."""
-        assert hf_loader._map_amp_dtype("unknown") is None
+        assert hf_loader._map_amp_dtype("unknown") is None, "Condition must be true"
 
 
 class TestRequiredRevision:
@@ -155,12 +155,12 @@ class TestRequiredRevision:
         """Test explicit revision is used."""
         # For local path, explicit revision is returned
         result = hf_loader._required_revision(tmp_path, "v1.0.0")
-        assert result == "v1.0.0"
+        assert result == "v1.0.0", "Result must not be empty"
 
     def test_local_path_no_revision_needed(self, tmp_path: Path) -> None:
         """Test local paths don't require revision."""
         result = hf_loader._required_revision(tmp_path, None)
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_env_revision(self) -> None:
         """Test environment variable revision."""
@@ -168,7 +168,7 @@ class TestRequiredRevision:
             # Mock _is_local_identifier to return False
             with patch.object(hf_loader, "_is_local_identifier", return_value=False):
                 result = hf_loader._required_revision("facebook/opt-125m", None)
-                assert result == "main"
+                assert result == "main", "Result must not be empty"
 
     def test_missing_revision_raises(self) -> None:
         """Test missing revision for remote model raises."""
@@ -214,9 +214,9 @@ class TestRepoIdTypes:
     def test_string_repo_id(self) -> None:
         """Test string repo_id handling."""
         # Hub-style identifiers
-        assert hf_loader._is_local_identifier("gpt2") is False
-        assert hf_loader._is_local_identifier("facebook/opt-125m") is False
-        assert hf_loader._is_local_identifier("EleutherAI/gpt-neo-125m") is False
+        assert hf_loader._is_local_identifier("gpt2") is False, "Condition must be true"
+        assert hf_loader._is_local_identifier("facebook/opt-125m") is False, "Condition must be true"
+        assert hf_loader._is_local_identifier("EleutherAI/gpt-neo-125m") is False, "Condition must be true"
 
     def test_path_repo_id(self, tmp_path: Path) -> None:
         """Test Path repo_id handling."""
@@ -225,7 +225,7 @@ class TestRepoIdTypes:
         model_dir.mkdir()
         (model_dir / "config.json").write_text("{}")
 
-        assert hf_loader._is_local_identifier(model_dir) is True
+        assert hf_loader._is_local_identifier(model_dir) is True, "Condition must be true"
 
 
 class TestIntegration:
@@ -243,12 +243,12 @@ class TestIntegration:
 
         # Retrieve and call
         fn = hf_loader.get_registered_causal_lm("integration_test_model")
-        assert fn is not None
+        assert fn is not None, "fn must be initialized"
 
         result = fn(device="cpu", dtype="float32")
-        assert result["loaded"] is True
-        assert result["kwargs"]["device"] == "cpu"
-        assert call_count == 1
+        assert result["loaded"] is True, "Result must not be empty"
+        assert result["kwargs"]["device"] == "cpu", "Result must not be empty"
+        assert call_count == 1, "Count must be greater than zero"
 
         # Clean up
         hf_loader.unregister_causal_lm("integration_test_model")

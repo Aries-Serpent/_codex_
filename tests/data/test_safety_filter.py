@@ -18,6 +18,6 @@ def test_safety_filter():
         return t.replace("secret", "[x]")
 
     out = apply_safety_filter(texts, True, filt)
-    assert out[0] == "[x]"
-    assert out[1] == "public"
+    assert out[0] == "[x]", "Condition must be true"
+    assert out[1] == "public", "Condition must be true"
     assert apply_safety_filter(texts, False, filt) == texts

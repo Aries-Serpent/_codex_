@@ -35,4 +35,4 @@ def test_ratelimit_tile_validates(tmp_path):
     code = subprocess.call(
         [sys.executable, str(validator), "--data", str(data_p), "--schema", str(schema_p)]
     )
-    assert code == 0
+    assert code == 0, "code is not valid"

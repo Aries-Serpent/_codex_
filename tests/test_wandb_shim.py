@@ -29,7 +29,7 @@ def test_maybe_wandb_raises_when_missing(monkeypatch):
     with pytest.raises(ImportError) as excinfo, maybe_wandb(run_name="test", enable=True):
         pass
 
-    assert "pip install wandb" in str(excinfo.value)
+    assert "pip install wandb" in str(excinfo.value), "Value must be initialized"
 
 
 def test_maybe_wandb_disabled():
@@ -65,7 +65,7 @@ def test_maybe_wandb_enforces_offline_mode(monkeypatch):
 
     init_kwargs = calls.get("init")
     assert isinstance(init_kwargs, dict)
-    assert init_kwargs["mode"] == "offline"
-    assert init_kwargs["project"] == "codex-offline"
-    assert calls.get("finished") is True
-    assert os.environ.get("WANDB_MODE") == "offline"
+    assert init_kwargs["mode"] == "offline", "Condition must be true"
+    assert init_kwargs["project"] == "codex-offline", "Condition must be true"
+    assert calls.get("finished") is True, "Condition must be true"
+    assert os.environ.get("WANDB_MODE") == "offline", "Condition must be true"

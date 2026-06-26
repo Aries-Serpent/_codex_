@@ -105,10 +105,10 @@ High Capabilities: {{ capabilities|selectattr('score', 'ge', thresholds.medium)|
 
         # Check output
         content = output_file.read_text()
-        assert "Low: 0.70" in content or "Low: 0.7" in content
-        assert "Medium: 0.85" in content
+        assert "Low: 0.70" in content or "Low: 0.7" in content, "Content must not be empty"
+        assert "Medium: 0.85" in content, "Content must not be empty"
         # 1 high capability (score >= 0.85)
-        assert "High Capabilities: 1" in content
+        assert "High Capabilities: 1" in content, "Content must not be empty"
 
 
 def test_capability_level_assignment():
@@ -156,7 +156,7 @@ def test_medium_maturity_count():
     medium_count = len([c for c in capabilities if low_threshold <= c["score"] < medium_threshold])
     high_count = len([c for c in capabilities if c["score"] >= medium_threshold])
 
-    assert low_count == 2
-    assert medium_count == 2
-    assert high_count == 2
-    assert low_count + medium_count + high_count == len(capabilities)
+    assert low_count == 2, "Count must be greater than zero"
+    assert medium_count == 2, "Count must be greater than zero"
+    assert high_count == 2, "Count must be greater than zero"
+    assert low_count + medium_count + high_count == len(capabilities), "Capabilities must not be empty"

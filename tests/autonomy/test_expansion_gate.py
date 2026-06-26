@@ -43,59 +43,59 @@ def _gate(gi=0.85, lp=0.88, deny=0.12, audit=0.97) -> ExpansionGate:
 
 class TestExpansionGateBaseline:
     def test_baseline_constants_match_blueprint(self):
-        assert BASELINE_AP == pytest.approx(0.877)
-        assert BASELINE_GI == pytest.approx(0.5405)
-        assert BASELINE_LP == pytest.approx(0.57)
+        assert BASELINE_AP == pytest.approx(0.877), "BASELINE_AP is not valid"
+        assert BASELINE_GI == pytest.approx(0.5405), "BASELINE_GI is not valid"
+        assert BASELINE_LP == pytest.approx(0.57), "BASELINE_LP is not valid"
         assert BASELINE_Q == pytest.approx(BASELINE_AP * BASELINE_GI * BASELINE_LP, abs=1e-3)
 
     def test_target_quality_matches_blueprint(self):
         expected = BASELINE_AP * TARGET_GI * TARGET_LP
         assert TARGET_Q == pytest.approx(expected, abs=1e-3)
-        assert TARGET_Q > 0.6  # blueprint says ≈ 0.656
+        assert TARGET_Q > 0.6, "TARGET_Q must be greater than zero"
 
     def test_from_baseline_gate_closed(self):
         gate = ExpansionGate.from_baseline()
         result = gate.evaluate()
-        assert not result.enabled
-        assert len(result.blocking_conditions) >= 4  # all four fail at baseline
+        assert not result.enabled, "Result must not be empty"
+        assert len(result.blocking_conditions) >= 4, "Collection must not be empty"
 
     def test_from_target_gate_open(self):
         gate = ExpansionGate.from_target()
         result = gate.evaluate()
-        assert result.enabled
-        assert result.blocking_conditions == []
+        assert result.enabled, "Result must not be empty"
+        assert result.blocking_conditions == [], "Result must not be empty"
 
 
 class TestExpansionGateEvaluate:
     def test_all_thresholds_met_gate_open(self):
         result = _gate().evaluate()
-        assert result.enabled
-        assert not result.blocking_conditions
+        assert result.enabled, "Result must not be empty"
+        assert not result.blocking_conditions, "Result must not be empty"
 
     def test_low_gi_blocks(self):
         result = _gate(gi=0.79).evaluate()
-        assert not result.enabled
-        assert any("Governance Integrity" in c for c in result.blocking_conditions)
+        assert not result.enabled, "Result must not be empty"
+        assert any("Governance Integrity" in c for c in result.blocking_conditions), "Result must not be empty"
 
     def test_low_lp_blocks(self):
         result = _gate(lp=0.79).evaluate()
-        assert not result.enabled
-        assert any("Least-Privilege" in c for c in result.blocking_conditions)
+        assert not result.enabled, "Result must not be empty"
+        assert any("Least-Privilege" in c for c in result.blocking_conditions), "Result must not be empty"
 
     def test_zero_deny_rate_blocks(self):
         result = _gate(deny=0.0).evaluate()
-        assert not result.enabled
-        assert any("DenyRate_guarded" in c for c in result.blocking_conditions)
+        assert not result.enabled, "Result must not be empty"
+        assert any("DenyRate_guarded" in c for c in result.blocking_conditions), "Result must not be empty"
 
     def test_low_audit_coverage_blocks(self):
         result = _gate(audit=0.94).evaluate()
-        assert not result.enabled
-        assert any("AuditCoverage" in c for c in result.blocking_conditions)
+        assert not result.enabled, "Result must not be empty"
+        assert any("AuditCoverage" in c for c in result.blocking_conditions), "Result must not be empty"
 
     def test_multiple_failures_reported(self):
         result = _gate(gi=0.5, lp=0.5, deny=0.0, audit=0.5).evaluate()
-        assert not result.enabled
-        assert len(result.blocking_conditions) == 4
+        assert not result.enabled, "Result must not be empty"
+        assert len(result.blocking_conditions) == 4, "Collection must not be empty"
 
     def test_effective_quality_computed(self):
         gate = _gate(gi=0.85, lp=0.88)
@@ -107,12 +107,12 @@ class TestExpansionGateEvaluate:
 class TestGateResult:
     def test_summary_open(self):
         r = _gate().evaluate()
-        assert "GATE OPEN" in r.summary
+        assert "GATE OPEN" in r.summary, "Condition must be true"
 
     def test_summary_closed(self):
         r = _gate(gi=0.5).evaluate()
-        assert "GATE CLOSED" in r.summary
-        assert "Governance Integrity" in r.summary
+        assert "GATE CLOSED" in r.summary, "Condition must be true"
+        assert "Governance Integrity" in r.summary, "Condition must be true"
 
     def test_enabled_property(self):
         r = GateResult(
@@ -122,12 +122,12 @@ class TestGateResult:
             deny_rate_guarded=0.1,
             audit_coverage=0.97,
         )
-        assert r.enabled
+        assert r.enabled, "Condition must be true"
 
     def test_thresholds_are_blueprint_values(self):
-        assert _GI_THRESHOLD == 0.80
-        assert _LP_THRESHOLD == 0.80
-        assert _AUDIT_COVERAGE_THRESHOLD == 0.95
+        assert _GI_THRESHOLD == 0.80, "_GI_THRESHOLD is not valid"
+        assert _LP_THRESHOLD == 0.80, "_LP_THRESHOLD is not valid"
+        assert _AUDIT_COVERAGE_THRESHOLD == 0.95, "_AUDIT_COVERAGE_THRESHOLD is not valid"
 
 
 class TestExpansionGateMeasured:
@@ -136,25 +136,25 @@ class TestExpansionGateMeasured:
     def test_from_measured_gate_open(self):
         """from_measured() must produce an open gate (all 4 conditions met)."""
         result = ExpansionGate.from_measured().evaluate()
-        assert (
+        assert (, "Condition must be true"
             result.enabled
         ), f"Phase 1-5 measured gate is CLOSED — blocking: {result.blocking_conditions}"
 
     def test_measured_gi_at_target(self):
-        assert MEASURED_GI >= TARGET_GI
+        assert MEASURED_GI >= TARGET_GI, "MEASURED_GI must be greater than zero"
 
     def test_measured_lp_at_target(self):
-        assert MEASURED_LP >= TARGET_LP
+        assert MEASURED_LP >= TARGET_LP, "MEASURED_LP must be greater than zero"
 
     def test_measured_deny_rate_positive(self):
-        assert MEASURED_DENY_RATE > 0.0
+        assert MEASURED_DENY_RATE > 0.0, "MEASURED_DENY_RATE must be greater than zero"
 
     def test_measured_audit_coverage_above_threshold(self):
-        assert MEASURED_AUDIT_COVERAGE >= _AUDIT_COVERAGE_THRESHOLD
+        assert MEASURED_AUDIT_COVERAGE >= _AUDIT_COVERAGE_THRESHOLD, "MEASURED_AUDIT_COVERAGE must be greater than zero"
 
     def test_measured_q_above_baseline(self):
         """Effective quality must improve over baseline."""
-        assert MEASURED_Q > BASELINE_Q
+        assert MEASURED_Q > BASELINE_Q, "MEASURED_Q must be greater than zero"
 
     def test_measured_constants_consistent(self):
         assert MEASURED_Q == pytest.approx(BASELINE_AP * MEASURED_GI * MEASURED_LP, abs=1e-3)
@@ -177,7 +177,7 @@ class TestAutonomyGateCheckScript:
             capture_output=True,
             text=True,
         )
-        assert result.returncode == 0
+        assert result.returncode == 0, "Result must not be empty"
 
     def test_gate_check_no_fail_flag(self, tmp_path):
         """--no-fail makes even a denial exit 0."""
@@ -200,4 +200,4 @@ class TestAutonomyGateCheckScript:
             text=True,
             env=env,
         )
-        assert result.returncode == 0
+        assert result.returncode == 0, "Result must not be empty"

@@ -78,7 +78,7 @@ def test_evaluate_averages_batch_metrics() -> None:
         metrics_fn=batch_metrics,
     )
 
-    assert metrics["eval_loss"] == pytest.approx(0.6)
+    assert metrics["eval_loss"] == pytest.approx(0.6), "Condition must be true"
     expected_perplexity = (math.exp(0.5) + math.exp(0.7)) / 2.0
-    assert metrics["perplexity"] == pytest.approx(expected_perplexity)
-    assert metrics["token_accuracy"] == pytest.approx(1.0)
+    assert metrics["perplexity"] == pytest.approx(expected_perplexity), "Condition must be true"
+    assert metrics["token_accuracy"] == pytest.approx(1.0), "Condition must be true"

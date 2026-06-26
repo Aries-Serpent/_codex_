@@ -35,7 +35,7 @@ def test_network_timeout_handling():
         raise RuntimeError("retry loop exited without success")
 
     result = fetch_with_retry("http://example.com")
-    assert result["status"] == "success"
+    assert result["status"] == "success", "Result must not be empty"
 
 
 def test_connection_refused_fallback():
@@ -56,11 +56,11 @@ def test_connection_refused_fallback():
 
     # Primary works
     result = client.call(should_fail_primary=False)
-    assert result["source"] == "primary"
+    assert result["source"] == "primary", "Result must not be empty"
 
     # Primary fails, fallback works
     result = client.call(should_fail_primary=True)
-    assert result["source"] == "fallback"
+    assert result["source"] == "fallback", "Result must not be empty"
 
 
 def test_partial_network_failure_handling():
@@ -85,9 +85,9 @@ def test_partial_network_failure_handling():
     results, failures = fetch_multiple_sources(sources)
 
     # Should have some successes and some failures
-    assert len(results) > 0
-    assert len(failures) > 0
-    assert len(results) + len(failures) == len(sources)
+    assert len(results) > 0, "Results must not be empty"
+    assert len(failures) > 0, "Failures must not be empty"
+    assert len(results) + len(failures) == len(sources), "Results must not be empty"
 
 
 def test_circuit_breaker_pattern():
@@ -134,7 +134,7 @@ def test_circuit_breaker_pattern():
             cb.call(failing_service)
 
     # Circuit should be open
-    assert cb.state == "open"
+    assert cb.state == "open", "state is not valid"
 
     # Further calls should fail immediately
     with pytest.raises(Exception, match="Circuit breaker is OPEN"):
@@ -169,7 +169,7 @@ def test_database_connection_recovery(tmp_path):
     conn = connect_with_retry(db_path)
     cursor = conn.execute("SELECT name FROM sqlite_master WHERE type='table'")
     tables = cursor.fetchall()
-    assert len(tables) == 1
+    assert len(tables) == 1, "Tables must not be empty"
     conn.close()
 
 
@@ -195,7 +195,7 @@ def test_database_transaction_rollback(tmp_path):
     # Verify rollback
     cursor = conn.execute("SELECT balance FROM accounts WHERE id = 1")
     balance = cursor.fetchone()[0]
-    assert balance == 1000.0
+    assert balance == 1000.0, "balance is not valid"
     conn.close()
 
 
@@ -214,7 +214,7 @@ def test_database_corruption_detection(tmp_path):
     # Verify integrity
     cursor = conn.execute("PRAGMA integrity_check")
     result = cursor.fetchone()[0]
-    assert result == "ok"
+    assert result == "ok", "Result must not be empty"
 
     conn.close()
 
@@ -251,13 +251,13 @@ def test_database_deadlock_prevention(tmp_path):
         t.join()
 
     # Verify no deadlocks occurred
-    assert len(errors) == 0
+    assert len(errors) == 0, "Errors must not be empty"
 
     # Verify final count
     conn = sqlite3.connect(str(db_path))
     cursor = conn.execute("SELECT value FROM counter WHERE id = 1")
     final_value = cursor.fetchone()[0]
-    assert final_value == 30  # 3 threads * 10 increments
+    assert final_value == 30, "Value must be initialized"
     conn.close()
 
 
@@ -292,15 +292,15 @@ def test_database_connection_pooling():
     pool.get_connection()
     pool.get_connection()
 
-    assert conn1["status"] == "active"
-    assert pool.active_connections == 3
+    assert conn1["status"] == "active", "Condition must be true"
+    assert pool.active_connections == 3, "active_connections is not valid"
 
     # Return connection
     pool.return_connection(conn1)
 
     # Reuse returned connection
     conn4 = pool.get_connection()
-    assert conn4 == conn1
+    assert conn4 == conn1, "conn4 is not valid"
 
 
 # Disk Exhaustion Handling Tests
@@ -323,7 +323,7 @@ def test_disk_full_graceful_handling(tmp_path):
 
     try:
         write_with_space_check(data_file, "test data")
-        assert data_file.exists()
+        assert data_file.exists(), "Data must not be empty"
     except IOError as e:
         pytest.fail(f"Should not fail with sufficient space: {e}")
 
@@ -355,11 +355,11 @@ def test_partial_write_recovery(tmp_path):
     atomic_write(target_file, data)
 
     # Verify data
-    assert target_file.read_text() == data
+    assert target_file.read_text() == data, "Data must not be empty"
 
     # Verify no temp files left
     temp_files = list(tmp_path.glob("*.tmp"))
-    assert len(temp_files) == 0
+    assert len(temp_files) == 0, "Temp_files must not be empty"
 
 
 def test_log_rotation_on_size_limit(tmp_path):
@@ -402,7 +402,7 @@ def test_log_rotation_on_size_limit(tmp_path):
 
     # Should have created rotated files
     log_files = list(log_dir.glob("log.*"))
-    assert len(log_files) <= 3
+    assert len(log_files) <= 3, "Log_files must not be empty"
 
 
 # Concurrent Access Tests
@@ -431,14 +431,14 @@ def test_concurrent_file_writes(tmp_path):
     for t in threads:
         t.join()
 
-    assert len(errors) == 0
+    assert len(errors) == 0, "Errors must not be empty"
 
     # Verify each file
     for i in range(5):
         file_path = tmp_path / f"thread_{i}.txt"
-        assert file_path.exists()
+        assert file_path.exists(), "Condition must be true"
         lines = file_path.read_text().strip().split("\n")
-        assert len(lines) == 100
+        assert len(lines) == 100, "Lines must not be empty"
 
 
 def test_concurrent_read_access(tmp_path):
@@ -468,8 +468,8 @@ def test_concurrent_read_access(tmp_path):
     for t in threads:
         t.join()
 
-    assert len(errors) == 0
-    assert all(count == 1000 for count in read_counts)
+    assert len(errors) == 0, "Errors must not be empty"
+    assert all(count == 1000 for count in read_counts), "Count must be greater than zero"
 
 
 def test_concurrent_queue_processing():
@@ -501,8 +501,8 @@ def test_concurrent_queue_processing():
     for t in threads:
         t.join()
 
-    assert len(results) == 100
-    assert sorted(results) == [i * 2 for i in range(100)]
+    assert len(results) == 100, "Results must not be empty"
+    assert sorted(results) == [i * 2 for i in range(100)], "Result must not be empty"
 
 
 def test_thread_safe_counter():
@@ -533,7 +533,7 @@ def test_thread_safe_counter():
     for t in threads:
         t.join()
 
-    assert counter.get() == 5000
+    assert counter.get() == 5000, "Count must be greater than zero"
 
 
 def test_resource_cleanup_on_error(tmp_path):
@@ -608,7 +608,7 @@ def test_graceful_shutdown_with_pending_tasks():
     thread.join(timeout=1.0)
 
     # Some work should have completed
-    assert len(completed) > 0
+    assert len(completed) > 0, "Completed must not be empty"
 
 
 def test_rate_limited_concurrent_requests():
@@ -655,5 +655,5 @@ def test_rate_limited_concurrent_requests():
 
     # Some requests should be allowed, some denied
     total_requests = allowed_count + denied_count
-    assert total_requests == 20  # 4 threads * 5 requests
-    assert allowed_count <= 10  # Rate limit
+    assert total_requests == 20, "total_requests is not valid"
+    assert allowed_count <= 10, "Count must be greater than zero"

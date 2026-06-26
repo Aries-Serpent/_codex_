@@ -67,9 +67,9 @@ checkpoint:
             cfg = load_config("train", config_dir=str(config_dir))
 
             # Step 2: Validate training configuration
-            assert "model" in cfg
-            assert "training" in cfg
-            assert cfg["training"]["epochs"] == 1
+            assert "model" in cfg, "Condition must be true"
+            assert "training" in cfg, "Condition must be true"
+            assert cfg["training"]["epochs"] == 1, "Condition must be true"
 
             # Step 3: Mock trainer initialization
             mock_trainer = Mock()
@@ -79,8 +79,8 @@ checkpoint:
             result = mock_trainer.train()
 
             # Step 5: Verify training output
-            assert result["epochs_completed"] == 1
-            assert result["loss"] < 1.0
+            assert result["epochs_completed"] == 1, "Result must not be empty"
+            assert result["loss"] < 1.0, "Result must not be empty"
 
             # Success
             assert True, "Training pipeline workflow completed"
@@ -115,20 +115,20 @@ checkpoint:
             torch.save(checkpoint, checkpoint_path)
 
             # Step 4: Verify checkpoint saved
-            assert checkpoint_path.exists()
+            assert checkpoint_path.exists(), "Condition must be true"
 
             # Step 5: Load and validate checkpoint
             loaded = torch.load(
                 checkpoint_path, weights_only=False
             )  # nosec B614 - Test checkpoint with optimizer state requires weights_only=False
-            assert loaded["epoch"] == 5
-            assert loaded["loss"] == 0.25
+            assert loaded["epoch"] == 5, "Condition must be true"
+            assert loaded["loss"] == 0.25, "Condition must be true"
         else:
             # Mock save without torch
             import json
 
             checkpoint_path.write_text(json.dumps(checkpoint))
-            assert checkpoint_path.exists()
+            assert checkpoint_path.exists(), "Condition must be true"
 
         # Success
         assert True, "Checkpoint workflow completed"
@@ -153,8 +153,8 @@ class TestMultiGPUWorkflow:
             world_size = mock_dist.get_world_size()
             rank = mock_dist.get_rank()
 
-            assert world_size == 4
-            assert rank == 0
+            assert world_size == 4, "world_size is not valid"
+            assert rank == 0, "rank is not valid"
 
         # Success
         assert True, "Multi-GPU coordination workflow completed"
@@ -175,11 +175,11 @@ class TestMultiGPUWorkflow:
         avg_accuracy = sum(m["accuracy"] for m in gpu_metrics) / len(gpu_metrics)
 
         # Step 3: Validate aggregation
-        assert 0.4 < avg_loss < 0.6
-        assert 0.8 < avg_accuracy < 0.9
+        assert 0.4 < avg_loss < 0.6, "4 is not valid"
+        assert 0.8 < avg_accuracy < 0.9, "8 is not valid"
 
         # Step 4: Verify all GPUs reported
-        assert len(gpu_metrics) == 4
+        assert len(gpu_metrics) == 4, "Gpu_metrics must not be empty"
 
         # Success
         assert True, "Metrics collection workflow completed"

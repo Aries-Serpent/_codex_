@@ -33,8 +33,8 @@ class TestFileStructureValidation:
 
         try:
             result = validate_file_structure(temp_path)
-            assert result["has_shebang"] is True
-            assert result["valid_syntax"] is True
+            assert result["has_shebang"] is True, "Result must not be empty"
+            assert result["valid_syntax"] is True, "Result must not be empty"
         finally:
             Path(temp_path).unlink()
 
@@ -46,7 +46,7 @@ class TestFileStructureValidation:
 
         try:
             result = validate_file_structure(temp_path)
-            assert result["has_shebang"] is False
+            assert result["has_shebang"] is False, "Result must not be empty"
         finally:
             Path(temp_path).unlink()
 
@@ -58,7 +58,7 @@ class TestFileStructureValidation:
 
         try:
             result = validate_file_structure(temp_path)
-            assert result["balanced_braces"] is False
+            assert result["balanced_braces"] is False, "Result must not be empty"
         finally:
             Path(temp_path).unlink()
 
@@ -70,7 +70,7 @@ class TestFileStructureValidation:
 
         try:
             result = validate_file_structure(temp_path)
-            assert result["valid_syntax"] is False
+            assert result["valid_syntax"] is False, "Result must not be empty"
         finally:
             Path(temp_path).unlink()
 
@@ -82,7 +82,7 @@ class TestFileStructureValidation:
 
         try:
             result = validate_file_structure(temp_path)
-            assert result["no_trailing_whitespace"] is False
+            assert result["no_trailing_whitespace"] is False, "Result must not be empty"
         finally:
             Path(temp_path).unlink()
 
@@ -91,12 +91,12 @@ class TestFileStructureValidation:
         result = validate_file_structure("/nonexistent/file.py")
         # Should return a dict with all checks marked as failed for missing file
         assert isinstance(result, dict)
-        assert "has_shebang" in result
-        assert "balanced_braces" in result
-        assert "valid_syntax" in result
-        assert result["has_shebang"] is False
-        assert result["balanced_braces"] is False
-        assert result["valid_syntax"] is False
+        assert "has_shebang" in result, "Result must not be empty"
+        assert "balanced_braces" in result, "Result must not be empty"
+        assert "valid_syntax" in result, "Result must not be empty"
+        assert result["has_shebang"] is False, "Result must not be empty"
+        assert result["balanced_braces"] is False, "Result must not be empty"
+        assert result["valid_syntax"] is False, "Result must not be empty"
 
 
 class TestChecksumValidation:
@@ -110,8 +110,8 @@ class TestChecksumValidation:
 
         try:
             valid, sha = validate_with_checksum(temp_path)
-            assert valid is True
-            assert len(sha) == 64  # SHA256 is 64 hex characters
+            assert valid is True, "valid is not valid"
+            assert len(sha) == 64, "Sha must not be empty"
         finally:
             Path(temp_path).unlink()
 
@@ -124,8 +124,8 @@ class TestChecksumValidation:
         try:
             _, expected_sha = validate_with_checksum(temp_path)
             valid, sha = validate_with_checksum(temp_path, expected_sha)
-            assert valid is True
-            assert sha == expected_sha
+            assert valid is True, "valid is not valid"
+            assert sha == expected_sha, "sha is not valid"
         finally:
             Path(temp_path).unlink()
 
@@ -138,9 +138,9 @@ class TestChecksumValidation:
         try:
             wrong_sha = "0" * 64
             valid, _sha = validate_with_checksum(temp_path, wrong_sha)
-            assert valid is False
+            assert valid is False, "valid is not valid"
             expected_sha = hashlib.sha256(b"test content\n").hexdigest()
-            assert _sha == expected_sha
+            assert _sha == expected_sha, "_sha is not valid"
         finally:
             Path(temp_path).unlink()
 
@@ -159,8 +159,8 @@ class TestDiffValidation:
 
         try:
             identical, diff = validate_with_diff(path1, path2)
-            assert identical is True
-            assert diff == ""
+            assert identical is True, "identical is not valid"
+            assert diff == "", "diff is not valid"
         finally:
             Path(path1).unlink()
             Path(path2).unlink()
@@ -176,8 +176,8 @@ class TestDiffValidation:
 
         try:
             identical, diff = validate_with_diff(path1, path2)
-            assert identical is False
-            assert "content1" in diff or "content2" in diff
+            assert identical is False, "identical is not valid"
+            assert "content1" in diff or "content2" in diff, "Content must not be empty"
         finally:
             Path(path1).unlink()
             Path(path2).unlink()
@@ -194,7 +194,7 @@ class TestCodeQualityValidation:
 
         try:
             result = validate_code_quality(temp_path)
-            assert result["syntax_valid"] is True
+            assert result["syntax_valid"] is True, "Result must not be empty"
         finally:
             Path(temp_path).unlink()
 
@@ -206,7 +206,7 @@ class TestCodeQualityValidation:
 
         try:
             result = validate_code_quality(temp_path)
-            assert result["syntax_valid"] is False
+            assert result["syntax_valid"] is False, "Result must not be empty"
         finally:
             Path(temp_path).unlink()
 
@@ -230,9 +230,9 @@ class TestValidatorsBoundaryConditions:
 
         try:
             result = validate_file_structure(temp_path)
-            assert result["balanced_braces"] is True
+            assert result["balanced_braces"] is True, "Result must not be empty"
             content = Path(temp_path).read_text()
-            assert content.count("{") == content.count("}")
+            assert content.count("{") == content.count("}"), "Content must not be empty"
         finally:
             Path(temp_path).unlink()
 
@@ -244,7 +244,7 @@ class TestValidatorsBoundaryConditions:
 
         try:
             result = validate_file_structure(temp_path)
-            assert result["balanced_braces"] is False
+            assert result["balanced_braces"] is False, "Result must not be empty"
         finally:
             Path(temp_path).unlink()
 
@@ -263,12 +263,12 @@ class TestValidatorsExactValues:
 
         try:
             result = validate_file_structure(temp_path)
-            assert result["has_shebang"] is True
-            assert result["balanced_braces"] is True
-            assert result["balanced_parens"] is True
-            assert result["balanced_brackets"] is True
-            assert result["no_trailing_whitespace"] is True
-            assert result["valid_syntax"] is True
+            assert result["has_shebang"] is True, "Result must not be empty"
+            assert result["balanced_braces"] is True, "Result must not be empty"
+            assert result["balanced_parens"] is True, "Result must not be empty"
+            assert result["balanced_brackets"] is True, "Result must not be empty"
+            assert result["no_trailing_whitespace"] is True, "Result must not be empty"
+            assert result["valid_syntax"] is True, "Result must not be empty"
         finally:
             Path(temp_path).unlink()
 
@@ -401,7 +401,7 @@ class TestValidatorsReturnValueMutations:
         try:
             result = validate_file_structure(temp_path)
             assert result["has_shebang"] is True, "MUST detect shebang"
-            assert type(result["has_shebang"]) is bool
+            assert type(result["has_shebang"]) is bool, "Result must not be empty"
         finally:
             Path(temp_path).unlink()
 
@@ -413,7 +413,7 @@ class TestValidatorsReturnValueMutations:
         try:
             result = validate_file_structure(temp_path)
             assert result["has_shebang"] is False, "MUST NOT detect shebang"
-            assert type(result["has_shebang"]) is bool
+            assert type(result["has_shebang"]) is bool, "Result must not be empty"
         finally:
             Path(temp_path).unlink()
 

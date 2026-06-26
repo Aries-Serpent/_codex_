@@ -69,23 +69,23 @@ class TestSecureStorageInitialization:
     def test_init_with_explicit_key_fernet(self, encryption_key):
         """Test initialization with explicit key and Fernet."""
         storage = SecureStorage(key=encryption_key, algorithm="fernet")
-        assert storage.algorithm == "fernet"
+        assert storage.algorithm == "fernet", "algorithm is not valid"
 
     def test_init_with_explicit_key_aes_gcm(self, encryption_key):
         """Test initialization with explicit key and AES-GCM."""
         storage = SecureStorage(key=encryption_key, algorithm="aes-gcm")
-        assert storage.algorithm == "aes-gcm"
+        assert storage.algorithm == "aes-gcm", "algorithm is not valid"
 
     def test_init_with_explicit_key_chacha20(self, encryption_key):
         """Test initialization with explicit key and ChaCha20."""
         storage = SecureStorage(key=encryption_key, algorithm="chacha20")
-        assert storage.algorithm == "chacha20"
+        assert storage.algorithm == "chacha20", "algorithm is not valid"
 
     def test_init_with_env_key(self, encryption_key):
         """Test initialization reading key from environment."""
         with patch.dict(os.environ, {"ENCRYPTION_KEY": encryption_key}):
             storage = SecureStorage(algorithm="fernet")
-            assert storage.algorithm == "fernet"
+            assert storage.algorithm == "fernet", "algorithm is not valid"
 
     def test_init_without_key_raises_error(self):
         """Test that initialization without key raises error."""
@@ -107,7 +107,7 @@ class TestSecureStorageInitialization:
     def test_default_algorithm_is_fernet(self, encryption_key):
         """Test that default algorithm is Fernet."""
         storage = SecureStorage(key=encryption_key)
-        assert storage.algorithm == "fernet"
+        assert storage.algorithm == "fernet", "algorithm is not valid"
 
 
 # ============================================================================
@@ -136,7 +136,7 @@ class TestGenerateKey:
         """Test that each generated key is unique."""
         key1 = generate_key()
         key2 = generate_key()
-        assert key1 != key2
+        assert key1 != key2, "key1 is not valid"
 
     def test_generate_key_can_be_used(self):
         """Test that generated key can be used for encryption."""
@@ -144,7 +144,7 @@ class TestGenerateKey:
         storage = SecureStorage(key=key, algorithm="fernet")
         encrypted = storage.encrypt("test")
         decrypted = storage.decrypt(encrypted)
-        assert decrypted == "test"
+        assert decrypted == "test", "decrypted is not valid"
 
     def test_generate_key_without_cryptography_raises_error(self):
         """Test that missing cryptography raises error."""
@@ -165,7 +165,7 @@ class TestDeriveKeyFromPassword:
         """Test that derive_key returns (key, salt) tuple."""
         result = derive_key_from_password("password123")
         assert isinstance(result, tuple)
-        assert len(result) == 2
+        assert len(result) == 2, "Result must not be empty"
 
     def test_derived_key_is_string(self):
         """Test that derived key is a string."""
@@ -182,22 +182,22 @@ class TestDeriveKeyFromPassword:
         password = "test_password"
         key1, salt1 = derive_key_from_password(password)
         key2, salt2 = derive_key_from_password(password, salt=salt1)
-        assert key1 == key2
-        assert salt1 == salt2
+        assert key1 == key2, "key1 is not valid"
+        assert salt1 == salt2, "salt1 is not valid"
 
     def test_same_password_different_salt_different_key(self):
         """Test that different salts produce different keys."""
         password = "test_password"
         key1, salt1 = derive_key_from_password(password)
         key2, salt2 = derive_key_from_password(password)
-        assert key1 != key2
-        assert salt1 != salt2
+        assert key1 != key2, "key1 is not valid"
+        assert salt1 != salt2, "salt1 is not valid"
 
     def test_different_password_different_key(self):
         """Test that different passwords produce different keys."""
         key1, _ = derive_key_from_password("password1")
         key2, _ = derive_key_from_password("password2")
-        assert key1 != key2
+        assert key1 != key2, "key1 is not valid"
 
     def test_derived_key_can_be_used(self):
         """Test that derived key can be used for encryption."""
@@ -205,7 +205,7 @@ class TestDeriveKeyFromPassword:
         storage = SecureStorage(key=key, algorithm="fernet")
         encrypted = storage.encrypt("secret")
         decrypted = storage.decrypt(encrypted)
-        assert decrypted == "secret"
+        assert decrypted == "secret", "decrypted is not valid"
 
     def test_empty_password_allowed(self):
         """Test that empty password is allowed (though not recommended)."""
@@ -255,34 +255,34 @@ class TestFernetEncryption:
         original = "Hello, World!"
         encrypted = fernet_storage.encrypt(original)
         decrypted = fernet_storage.decrypt(encrypted)
-        assert decrypted == original
+        assert decrypted == original, "decrypted is not valid"
 
     def test_encrypt_empty_string(self, fernet_storage):
         """Test encryption of empty string."""
         encrypted = fernet_storage.encrypt("")
         decrypted = fernet_storage.decrypt(encrypted)
-        assert decrypted == ""
+        assert decrypted == "", "decrypted is not valid"
 
     def test_encrypt_unicode_string(self, fernet_storage):
         """Test encryption of unicode content."""
         original = "Hello 世界 🌍"
         encrypted = fernet_storage.encrypt(original)
         decrypted = fernet_storage.decrypt(encrypted)
-        assert decrypted == original
+        assert decrypted == original, "decrypted is not valid"
 
     def test_encrypt_long_string(self, fernet_storage):
         """Test encryption of very long string."""
         original = "x" * 100000
         encrypted = fernet_storage.encrypt(original)
         decrypted = fernet_storage.decrypt(encrypted)
-        assert decrypted == original
+        assert decrypted == original, "decrypted is not valid"
 
     def test_encrypt_special_characters(self, fernet_storage):
         """Test encryption of special characters."""
         original = "!@#$%^&*()_+-=[]{}|;:',.<>?/~`"
         encrypted = fernet_storage.encrypt(original)
         decrypted = fernet_storage.decrypt(encrypted)
-        assert decrypted == original
+        assert decrypted == original, "decrypted is not valid"
 
     def test_decrypt_with_wrong_key_raises_error(self, encryption_key):
         """Test that decryption with wrong key raises error."""
@@ -306,10 +306,10 @@ class TestFernetEncryption:
         encrypted1 = fernet_storage.encrypt(plaintext)
         encrypted2 = fernet_storage.encrypt(plaintext)
         # Fernet includes timestamp, so different encryptions differ
-        assert encrypted1 != encrypted2
+        assert encrypted1 != encrypted2, "encrypted1 is not valid"
         # But both decrypt to same value
-        assert fernet_storage.decrypt(encrypted1) == plaintext
-        assert fernet_storage.decrypt(encrypted2) == plaintext
+        assert fernet_storage.decrypt(encrypted1) == plaintext, "fernet_st is not valid"
+        assert fernet_storage.decrypt(encrypted2) == plaintext, "fernet_st is not valid"
 
 
 # ============================================================================
@@ -325,21 +325,21 @@ class TestAESGCMEncryption:
         original = "Secret message"
         encrypted = aes_gcm_storage.encrypt(original)
         decrypted = aes_gcm_storage.decrypt(encrypted)
-        assert decrypted == original
+        assert decrypted == original, "decrypted is not valid"
 
     def test_aes_gcm_unicode(self, aes_gcm_storage):
         """Test AES-GCM with unicode content."""
         original = "Hello 世界 🌍"
         encrypted = aes_gcm_storage.encrypt(original)
         decrypted = aes_gcm_storage.decrypt(encrypted)
-        assert decrypted == original
+        assert decrypted == original, "decrypted is not valid"
 
     def test_aes_gcm_produces_different_ciphertexts(self, aes_gcm_storage):
         """Test that AES-GCM with random nonce produces different ciphertexts."""
         plaintext = "test"
         encrypted1 = aes_gcm_storage.encrypt(plaintext)
         encrypted2 = aes_gcm_storage.encrypt(plaintext)
-        assert encrypted1 != encrypted2
+        assert encrypted1 != encrypted2, "encrypted1 is not valid"
 
 
 # ============================================================================
@@ -355,14 +355,14 @@ class TestChaCha20Encryption:
         original = "Secret message"
         encrypted = chacha20_storage.encrypt(original)
         decrypted = chacha20_storage.decrypt(encrypted)
-        assert decrypted == original
+        assert decrypted == original, "decrypted is not valid"
 
     def test_chacha20_unicode(self, chacha20_storage):
         """Test ChaCha20 with unicode content."""
         original = "Hello 世界 🌍"
         encrypted = chacha20_storage.encrypt(original)
         decrypted = chacha20_storage.decrypt(encrypted)
-        assert decrypted == original
+        assert decrypted == original, "decrypted is not valid"
 
 
 # ============================================================================
@@ -381,16 +381,16 @@ class TestFileStorage:
         fernet_storage.store_secret(filepath, secret)
         loaded = fernet_storage.load_secret(filepath)
 
-        assert loaded == secret
+        assert loaded == secret, "loaded is not valid"
 
     def test_store_secret_creates_file(self, fernet_storage, temp_dir):
         """Test that store_secret creates the file."""
         filepath = os.path.join(temp_dir, "secret.enc")
-        assert not Path(filepath).exists()
+        assert not Path(filepath).exists(), "Condition must be true"
 
         fernet_storage.store_secret(filepath, "test")
 
-        assert Path(filepath).exists()
+        assert Path(filepath).exists(), "Condition must be true"
 
     def test_store_secret_creates_parent_dirs(self, fernet_storage, temp_dir):
         """Test that store_secret creates parent directories."""
@@ -398,7 +398,7 @@ class TestFileStorage:
 
         fernet_storage.store_secret(filepath, "test")
 
-        assert Path(filepath).exists()
+        assert Path(filepath).exists(), "Condition must be true"
 
     def test_store_secret_sets_permissions(self, fernet_storage, temp_dir):
         """Test that store_secret sets secure file permissions."""
@@ -410,7 +410,7 @@ class TestFileStorage:
         stat.filemode(file_stat.st_mode)
         # Permission check: only owner should have read/write
         mode = stat.S_IMODE(file_stat.st_mode)
-        assert mode == (stat.S_IRUSR | stat.S_IWUSR)  # 0o600
+        assert mode == (stat.S_IRUSR | stat.S_IWUSR), "mode is not valid"
 
     def test_load_nonexistent_file_raises_error(self, fernet_storage, temp_dir):
         """Test that loading nonexistent file raises error."""
@@ -427,7 +427,7 @@ class TestFileStorage:
         fernet_storage.store_secret(filepath, secret)
         loaded = fernet_storage.load_secret(filepath)
 
-        assert loaded == secret
+        assert loaded == secret, "loaded is not valid"
 
     def test_store_large_secret(self, fernet_storage, temp_dir):
         """Test storing large secret."""
@@ -437,7 +437,7 @@ class TestFileStorage:
         fernet_storage.store_secret(filepath, secret)
         loaded = fernet_storage.load_secret(filepath)
 
-        assert loaded == secret
+        assert loaded == secret, "loaded is not valid"
 
     def test_store_secret_overwrites_existing(self, fernet_storage, temp_dir):
         """Test that store_secret overwrites existing file."""
@@ -447,20 +447,20 @@ class TestFileStorage:
         fernet_storage.store_secret(filepath, "second")
 
         loaded = fernet_storage.load_secret(filepath)
-        assert loaded == "second"
+        assert loaded == "second", "loaded is not valid"
 
     def test_secret_exists_returns_true(self, fernet_storage, temp_dir):
         """Test secret_exists returns True for existing file."""
         filepath = os.path.join(temp_dir, "secret.enc")
         fernet_storage.store_secret(filepath, "test")
 
-        assert fernet_storage.secret_exists(filepath)
+        assert fernet_storage.secret_exists(filepath), "fernet_st is not valid"
 
     def test_secret_exists_returns_false(self, fernet_storage, temp_dir):
         """Test secret_exists returns False for nonexistent file."""
         filepath = os.path.join(temp_dir, "nonexistent.enc")
 
-        assert not fernet_storage.secret_exists(filepath)
+        assert not fernet_storage.secret_exists(filepath), "Condition must be true"
 
 
 # ============================================================================
@@ -495,9 +495,9 @@ class TestCrossAlgorithmCompatibility:
         encrypted_chacha = chacha.encrypt(plaintext)
 
         # All should decrypt to same value
-        assert fernet.decrypt(encrypted_fernet) == plaintext
-        assert aes.decrypt(encrypted_aes) == plaintext
-        assert chacha.decrypt(encrypted_chacha) == plaintext
+        assert fernet.decrypt(encrypted_fernet) == plaintext, "Condition must be true"
+        assert aes.decrypt(encrypted_aes) == plaintext, "Condition must be true"
+        assert chacha.decrypt(encrypted_chacha) == plaintext, "Condition must be true"
 
 
 # ============================================================================
@@ -526,7 +526,7 @@ class TestEdgeCasesAndErrors:
         # Should still work
         encrypted = storage.encrypt("test")
         decrypted = storage.decrypt(encrypted)
-        assert decrypted == "test"
+        assert decrypted == "test", "decrypted is not valid"
 
     def test_store_secret_with_special_filename(self, fernet_storage, temp_dir):
         """Test storing secret with special characters in filename."""
@@ -535,7 +535,7 @@ class TestEdgeCasesAndErrors:
         fernet_storage.store_secret(filepath, "test")
         loaded = fernet_storage.load_secret(filepath)
 
-        assert loaded == "test"
+        assert loaded == "test", "loaded is not valid"
 
 
 # ============================================================================
@@ -562,7 +562,7 @@ class TestStorageIntegration:
         # Load secret
         loaded = storage.load_secret(filepath)
 
-        assert loaded == secret
+        assert loaded == secret, "loaded is not valid"
 
     def test_password_based_workflow(self, temp_dir):
         """Test workflow using password-based key derivation."""
@@ -584,7 +584,7 @@ class TestStorageIntegration:
         # Load secret
         loaded = storage2.load_secret(filepath)
 
-        assert loaded == secret
+        assert loaded == secret, "loaded is not valid"
 
     def test_multi_algorithm_storage(self, encryption_key, temp_dir):
         """Test storing with one algorithm, attempting load with another."""
@@ -597,7 +597,7 @@ class TestStorageIntegration:
 
         # Try to load with Fernet (should work)
         loaded = fernet.load_secret(filepath)
-        assert loaded == secret
+        assert loaded == secret, "loaded is not valid"
 
         # Try to load with AES-GCM (should fail)
         aes = SecureStorage(key=encryption_key, algorithm="aes-gcm")

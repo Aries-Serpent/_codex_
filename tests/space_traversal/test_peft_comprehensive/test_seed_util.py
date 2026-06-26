@@ -20,7 +20,7 @@ def test_ensure_global_seed_sets_random_state() -> None:
     first = random.randint(0, 1000)
     ensure_global_seed(123)
     second = random.randint(0, 1000)
-    assert first == second
+    assert first == second, "first is not valid"
 
 
 def test_ensure_global_seed_defaults(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -28,10 +28,10 @@ def test_ensure_global_seed_defaults(monkeypatch: pytest.MonkeyPatch) -> None:
 
     def fake_set_seed(value: int, *, deterministic: bool = True) -> None:
         calls.append(value)
-        assert deterministic is True
+        assert deterministic is True, "deterministic is not valid"
 
     # Patch _set_seed where it's imported in src.training.seed
     monkeypatch.setattr("src.training.seed._set_seed", fake_set_seed)
     resolved = ensure_global_seed()
-    assert resolved == 42
-    assert calls == [42]
+    assert resolved == 42, "resolved is not valid"
+    assert calls == [42], "calls is not valid"

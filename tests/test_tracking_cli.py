@@ -28,7 +28,7 @@ def test_enable_mlflow_and_wandb(monkeypatch):
     mlflow_result = tracking_cli._enable_mlflow("file:/tmp/mlruns")
     wandb_result = tracking_cli._enable_wandb("proj", mode="offline")
 
-    assert mlflow_result["enabled"] is True
-    assert mlflow_result["tracking_uri"]
-    assert wandb_result["enabled"] is True
-    assert wandb_result["offline"] is True
+    assert mlflow_result["enabled"] is True, "Result must not be empty"
+    assert mlflow_result["tracking_uri"], "Result must not be empty"
+    assert wandb_result["enabled"] is True, "Result must not be empty"
+    assert wandb_result["offline"] is True, "Result must not be empty"

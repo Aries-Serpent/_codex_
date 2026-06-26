@@ -38,4 +38,4 @@ def test_patch_apply_add_update_delete(tmp_path):
             str(patch),
         ]
     )
-    assert code == 0
+    assert code == 0, "code is not valid"

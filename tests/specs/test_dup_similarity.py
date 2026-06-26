@@ -52,6 +52,6 @@ def test_dup_heuristic_switch_fallback(tmp_path):
 
         # Basic sanity: scored file exists
         scored_path = Path("audit_artifacts") / "capabilities_scored.json"
-        assert scored_path.exists()
+        assert scored_path.exists(), "sc is not valid"
         data = json.loads(scored_path.read_text(encoding="utf-8"))
         assert isinstance(data.get("capabilities"), list)

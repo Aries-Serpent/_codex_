@@ -23,7 +23,7 @@ def test_load_dataset_from_datasetdict(tmp_path: Path):
     bundle = load_dataset(str(ds_path))  # nosec B615 - Local dataset file path (safe)
     assert isinstance(bundle, DatasetBundle)
     assert bundle.examples == [Example("x", "y")]
-    assert len(bundle.dataset_hash) == 64
+    assert len(bundle.dataset_hash) == 64, "Collection must not be empty"
 
 
 def test_load_dataset_from_hf_disk_datasetdict(tmp_path: Path):
@@ -39,10 +39,10 @@ def test_load_dataset_from_hf_disk_datasetdict(tmp_path: Path):
     train_examples = load_dataset(str(ds_path))  # nosec B615 - Local dataset file path (safe)
     assert isinstance(train_examples, DatasetBundle)
     assert train_examples.examples == [Example("a", "b")]
-    assert len(train_examples.dataset_hash) == 64
+    assert len(train_examples.dataset_hash) == 64, "Collection must not be empty"
     test_examples = load_dataset(
         str(ds_path), hf_split="test"
     )  # nosec B615 - Local dataset file path (safe)
     assert isinstance(test_examples, DatasetBundle)
     assert test_examples.examples == [Example("c", "d")]
-    assert len(test_examples.dataset_hash) == 64
+    assert len(test_examples.dataset_hash) == 64, "Collection must not be empty"

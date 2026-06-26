@@ -20,15 +20,15 @@ class TestWindowsSafeTimestamp:
         dt = datetime(2026, 1, 21, 14, 30, 45, tzinfo=timezone.utc)
         result = windows_safe_timestamp(dt, fmt="iso")
 
-        assert ":" not in result
-        assert result == "2026-01-21T14-30-45Z"
+        assert ":" not in result, "Result must not be empty"
+        assert result == "2026-01-21T14-30-45Z", "Result must not be empty"
 
     def test_compact_format(self):
         """Test compact format is numeric only."""
         dt = datetime(2026, 1, 21, 14, 30, 45, tzinfo=timezone.utc)
         result = windows_safe_timestamp(dt, fmt="compact")
 
-        assert result == "20260121_143045"
+        assert result == "20260121_143045", "Result must not be empty"
         assert re.match(r"^\d{8}_\d{6}$", result)
 
     def test_readable_format(self):
@@ -36,8 +36,8 @@ class TestWindowsSafeTimestamp:
         dt = datetime(2026, 1, 21, 14, 30, 45, tzinfo=timezone.utc)
         result = windows_safe_timestamp(dt, fmt="readable")
 
-        assert ":" not in result
-        assert result == "2026-01-21-14-30-45-UTC"
+        assert ":" not in result, "Result must not be empty"
+        assert result == "2026-01-21-14-30-45-UTC", "Result must not be empty"
 
     def test_default_uses_current_time(self):
         """Test that omitting dt uses current time."""
@@ -58,10 +58,10 @@ class TestWindowsSafeTimestamp:
         dt = datetime(2026, 1, 21, 14, 30, 45, tzinfo=timezone.utc)
 
         iso_result = windows_safe_timestamp(dt, fmt="iso", include_seconds=False)
-        assert iso_result == "2026-01-21T14-30Z"
+        assert iso_result == "2026-01-21T14-30Z", "Result must not be empty"
 
         compact_result = windows_safe_timestamp(dt, fmt="compact", include_seconds=False)
-        assert compact_result == "20260121_1430"
+        assert compact_result == "20260121_1430", "Result must not be empty"
 
 
 class TestSanitizeFilename:
@@ -76,7 +76,7 @@ class TestSanitizeFilename:
         assert not re.search(r'[<>:"/\\|?*]', clean)
 
         # Should be replaced with underscores
-        assert "_" in clean
+        assert "_" in clean, "Condition must be true"
 
     def test_collapses_multiple_underscores(self):
         """Test multiple underscores are collapsed to single."""
@@ -84,19 +84,19 @@ class TestSanitizeFilename:
         clean = sanitize_filename(dirty)
 
         # Should not have consecutive underscores
-        assert "__" not in clean
+        assert "__" not in clean, "Condition must be true"
 
     def test_clean_filename_unchanged(self):
         """Test clean filename passes through."""
         clean_name = "valid_filename-v1.2.3.txt"
         result = sanitize_filename(clean_name)
 
-        assert result == clean_name
+        assert result == clean_name, "Result must not be empty"
 
     def test_empty_string(self):
         """Test empty string handling."""
         result = sanitize_filename("")
-        assert result == ""
+        assert result == "", "Result must not be empty"
 
     def test_cross_platform_compatibility(self):
         """Test output is safe for all platforms."""
@@ -105,5 +105,5 @@ class TestSanitizeFilename:
         clean = sanitize_filename(dirty)
 
         # Verify no illegal chars
-        assert ":" not in clean
+        assert ":" not in clean, "Condition must be true"
         assert re.match(r"^[a-zA-Z0-9._-]+$", clean)

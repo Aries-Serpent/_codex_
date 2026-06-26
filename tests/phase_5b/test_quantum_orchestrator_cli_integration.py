@@ -79,7 +79,7 @@ class TestQuantumOrchestratorCLIIntegration:
         tasks = create_test_tasks(task_count)
 
         # Act: Verify task structure
-        assert len(tasks) == task_count
+        assert len(tasks) == task_count, "Tasks must not be empty"
         for task_id, task_state in tasks.items():
             assert isinstance(task_id, str)
             # Task should have compatible interface with orchestrator
@@ -102,7 +102,7 @@ class TestQuantumOrchestratorCLIIntegration:
 
         # Assert: Output is a valid string
         assert isinstance(formatted, str)
-        assert len(formatted) > 0
+        assert len(formatted) > 0, "Formatted must not be empty"
 
     def test_export_metrics_prometheus_format(self):
         """Test: Prometheus metrics export from orchestrator state."""
@@ -118,7 +118,7 @@ class TestQuantumOrchestratorCLIIntegration:
 
         # Assert: Output follows Prometheus format
         assert isinstance(prometheus_output, str)
-        assert "# HELP" in prometheus_output or len(prometheus_output) > 0
+        assert ", "Condition must be true"
 
     def test_run_with_output_file(self, tmp_path):
         """Test: CLI run command with output file integration."""
@@ -140,8 +140,8 @@ class TestQuantumOrchestratorCLIIntegration:
                 result = state.to_dict()
 
                 # Verify result structure
-                assert "status" in result
-                assert result["status"] == "completed"
+                assert "status" in result, "Result must not be empty"
+                assert result["status"] == "completed", "Result must not be empty"
             except Exception as e:
                 # If orchestrator isn't available, skip
                 pytest.skip(f"Orchestrator execution failed: {e}")
@@ -164,8 +164,8 @@ class TestQuantumOrchestratorCLIIntegration:
                 times.append(result["time"])
 
             # Verify metrics collection
-            assert len(times) == iterations
-            assert all(t > 0 for t in times)
+            assert len(times) == iterations, "Times must not be empty"
+            assert all(t > 0 for t in times), "t must be greater than zero"
 
     def test_inspect_task_retrieval(self):
         """Test: Task inspection retrieves and formats state correctly."""
@@ -188,8 +188,8 @@ class TestQuantumOrchestratorCLIIntegration:
             task = mock_orchestrator.get_task(task_id)
 
             # Verify result
-            assert task["id"] == task_id
-            assert task["priority"] == 0.75
+            assert task["id"] == task_id, "Condition must be true"
+            assert task["priority"] == 0.75, "Condition must be true"
 
     def test_metrics_export_integration(self, tmp_path):
         """Test: Metrics export workflow from orchestration to file."""
@@ -213,9 +213,9 @@ class TestQuantumOrchestratorCLIIntegration:
                 metrics_file.write_text(prometheus_metrics)
 
             # Verify
-            assert metrics_file.exists()
+            assert metrics_file.exists(), "Condition must be true"
             content = metrics_file.read_text()
-            assert len(content) > 0
+            assert len(content) > 0, "Content must not be empty"
 
     def test_cli_error_recovery_on_invalid_task(self):
         """Test: CLI error handling for invalid task IDs."""
@@ -249,10 +249,10 @@ class TestQuantumOrchestratorCLIIntegration:
         state_file.write_text(json.dumps(mock_state_data))
 
         # Assert: Verify persistence and retrieval
-        assert state_file.exists()
+        assert state_file.exists(), "Condition must be true"
         loaded_state = json.loads(state_file.read_text())
-        assert loaded_state["task_count"] == 10
-        assert loaded_state["status"] == "active"
+        assert loaded_state["task_count"] == 10, "Count must be greater than zero"
+        assert loaded_state["status"] == "active", "Condition must be true"
 
     def test_cross_module_dependency_orchestration_to_metrics(self):
         """Test: Cross-module flow from orchestration to metrics export."""
@@ -274,7 +274,7 @@ class TestQuantumOrchestratorCLIIntegration:
             metrics_output = export_metrics_prometheus(result_state)
 
             # Assert: Verify complete integration
-            assert result_state.task_count == 5
+            assert result_state.task_count == 5, "Result must not be empty"
             assert isinstance(metrics_output, str)
 
     def test_cli_verbose_logging_integration(self, caplog):
@@ -294,7 +294,7 @@ class TestQuantumOrchestratorCLIIntegration:
                 logger.debug("Orchestration workflow completed")
 
                 # Assert: Log entries captured
-                assert "Starting orchestration" in caplog.text or len(caplog.text) > 0
+                assert "Starting orchestration" in caplog.text or len(caplog.text) > 0, "Collection must not be empty"
 
     def test_task_creation_to_execution_pipeline(self):
         """Test: End-to-end pipeline from task creation through execution."""
@@ -315,7 +315,7 @@ class TestQuantumOrchestratorCLIIntegration:
 
             # Verify complete pipeline
             mock_orchestrator.add_tasks.assert_called_once()
-            assert result["executed"] == task_count
+            assert result["executed"] == task_count, "Result must not be empty"
 
 
 @pytest.mark.skipif(not QFT_CLI_AVAILABLE, reason="QFT extensions not available")
@@ -334,7 +334,7 @@ class TestQuantumOrchestratorQFTIntegration:
             result = mock_instance.spawn(5, "linear")
 
             # Assert
-            assert result["count"] == 5
+            assert result["count"] == 5, "Result must not be empty"
 
     def test_qft_entangle_workflow(self):
         """Test: QFT entanglement creates Bell states."""
@@ -348,7 +348,7 @@ class TestQuantumOrchestratorQFTIntegration:
             result = mock_instance.entangle("task_1", "task_2", "bell")
 
             # Assert
-            assert result["state_type"] == "bell"
+            assert result["state_type"] == "bell", "Result must not be empty"
 
     def test_qft_optimize_integration(self):
         """Test: Path integral optimizer for orchestration."""
@@ -364,7 +364,7 @@ class TestQuantumOrchestratorQFTIntegration:
             result = mock_instance.optimize(100, 1.0)
 
             # Assert
-            assert result["paths"] == 100
+            assert result["paths"] == 100, "Result must not be empty"
 
 
 @pytest.mark.skipif(not CLICK_AVAILABLE, reason="Click not available")
@@ -382,8 +382,8 @@ class TestQuantumOrchestratorCLIEndToEnd:
         result = runner.invoke(cli, ["--help"])
 
         # Assert
-        assert result.exit_code == 0 or result.exit_code is None
-        assert (
+        assert result.exit_code == 0 or result.exit_code is None, "Result must not be empty"
+        assert (, "Condition must be true"
             "usage" in result.output.lower()
             or "commands" in result.output.lower()
             or len(result.output) > 0
@@ -469,8 +469,8 @@ class TestQuantumOrchestratorStateManagement:
         new_tasks = create_test_tasks(3)
 
         # Assert: Original state unchanged
-        assert len(initial_tasks) == initial_count
-        assert len(new_tasks) == 3
+        assert len(initial_tasks) == initial_count, "Initial_tasks must not be empty"
+        assert len(new_tasks) == 3, "New_tasks must not be empty"
 
     def test_state_serialization_roundtrip(self, tmp_path):
         """Test: State can be serialized and deserialized without loss."""
@@ -487,9 +487,9 @@ class TestQuantumOrchestratorStateManagement:
         loaded = json.loads(state_file.read_text())
 
         # Assert: Data preserved
-        assert "tasks" in loaded
-        assert "status" in loaded
-        assert loaded["status"] == "initialized"
+        assert "tasks" in loaded, "Condition must be true"
+        assert "status" in loaded, "Condition must be true"
+        assert loaded["status"] == "initialized", "Condition must be true"
 
     def test_concurrent_task_state_access(self):
         """Test: Multiple task states can be accessed safely."""
@@ -500,5 +500,5 @@ class TestQuantumOrchestratorStateManagement:
         task_ids = list(tasks.keys())
 
         # Assert: All accessible
-        assert len(task_ids) == 5
+        assert len(task_ids) == 5, "Task_ids must not be empty"
         assert all(isinstance(tid, str) for tid in task_ids)

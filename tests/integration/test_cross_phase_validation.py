@@ -64,28 +64,28 @@ class TestPhaseIntegration:
 
         all_complete = all(phase_registry[p]["status"] == "complete" for p in phases)
 
-        assert all_complete is True
+        assert all_complete is True, "all_complete is not valid"
 
     def test_phase_20_1_monitoring_integration(self, phase_registry):
         """Test Phase 20.1 monitoring integration."""
         phase_20_1 = phase_registry["phase_20_1"]
 
-        assert phase_20_1["status"] == "complete"
-        assert phase_20_1["tests"] == 137
+        assert phase_20_1["status"] == "complete", "Condition must be true"
+        assert phase_20_1["tests"] == 137, "Condition must be true"
 
     def test_phase_20_2_automation_integration(self, phase_registry):
         """Test Phase 20.2 automation integration."""
         phase_20_2 = phase_registry["phase_20_2"]
 
-        assert phase_20_2["status"] == "complete"
-        assert phase_20_2["tests"] == 104
+        assert phase_20_2["status"] == "complete", "Condition must be true"
+        assert phase_20_2["tests"] == 104, "Condition must be true"
 
     def test_phase_20_3_self_healing_integration(self, phase_registry):
         """Test Phase 20.3 self-healing integration."""
         phase_20_3 = phase_registry["phase_20_3"]
 
-        assert phase_20_3["status"] == "complete"
-        assert phase_20_3["tests"] == 119
+        assert phase_20_3["status"] == "complete", "Condition must be true"
+        assert phase_20_3["tests"] == 119, "Condition must be true"
 
     def test_agent_test_suite_coordination(self):
         """Test custom agent test suite coordination."""
@@ -97,7 +97,7 @@ class TestPhaseIntegration:
         ]
 
         agent_count = len(agents)
-        assert agent_count >= 4
+        assert agent_count >= 4, "agent_count must be positive"
 
     def test_custom_agent_integration(self):
         """Test custom agent integration with main codebase."""
@@ -107,7 +107,7 @@ class TestPhaseIntegration:
         ]
 
         # Verify agent structure exists
-        assert len(agent_directories) == 2
+        assert len(agent_directories) == 2, "Agent_directories must not be empty"
 
 
 # ============================================================================
@@ -129,7 +129,7 @@ class TestSystemValidation:
         }
 
         all_secure = all(security_checks.values())
-        assert all_secure is True
+        assert all_secure is True, "all_secure is not valid"
 
     def test_complete_documentation_coverage(self):
         """Test complete documentation coverage."""
@@ -141,13 +141,13 @@ class TestSystemValidation:
         }
 
         all_documented = all(doc_types.values())
-        assert all_documented is True
+        assert all_documented is True, "all_documented is not valid"
 
     def test_full_test_suite_execution(self, phase_registry):
         """Test full test suite can execute."""
         total_tests = sum(p["tests"] for p in phase_registry.values())
 
-        assert total_tests >= 2177  # Sum of all phases
+        assert total_tests >= 2177, "total_tests must be greater than zero"
 
     def test_performance_baseline_validation(self, quality_thresholds):
         """Test performance baseline validation."""
@@ -155,7 +155,7 @@ class TestSystemValidation:
         threshold = quality_thresholds["performance_threshold_ms"]
 
         within_threshold = current_latency_ms < threshold
-        assert within_threshold is True
+        assert within_threshold is True, "within_threshold is not valid"
 
     def test_reliability_metrics_validation(self):
         """Test reliability metrics validation."""
@@ -171,7 +171,7 @@ class TestSystemValidation:
             and metrics["mttr_minutes"] < 30
         )
 
-        assert reliable is True
+        assert reliable is True, "reliable is not valid"
 
     def test_deployment_infrastructure_check(self):
         """Test deployment infrastructure check."""
@@ -183,7 +183,7 @@ class TestSystemValidation:
         }
 
         all_available = all(infrastructure.values())
-        assert all_available is True
+        assert all_available is True, "all_available is not valid"
 
     def test_configuration_management_validation(self):
         """Test configuration management validation."""
@@ -193,7 +193,7 @@ class TestSystemValidation:
             "secrets_manager",
         ]
 
-        assert len(config_sources) >= 3
+        assert len(config_sources) >= 3, "Config_sources must not be empty"
 
     def test_observability_stack_validation(self):
         """Test observability stack validation."""
@@ -205,7 +205,7 @@ class TestSystemValidation:
         }
 
         complete_stack = all(list(v.values())[0] for v in observability.values())
-        assert complete_stack is True
+        assert complete_stack is True, "complete_stack is not valid"
 
 
 # ============================================================================
@@ -226,7 +226,7 @@ class TestQualityAssurance:
         }
 
         all_passed = all(quality_metrics.values())
-        assert all_passed is True
+        assert all_passed is True, "all_passed is not valid"
 
     def test_test_coverage_thresholds(self, quality_thresholds):
         """Test coverage thresholds are met."""
@@ -236,7 +236,7 @@ class TestQualityAssurance:
 
         # Meets minimum threshold (currently 0% during development)
         meets_threshold = current_coverage >= threshold
-        assert meets_threshold is True
+        assert meets_threshold is True, "meets_threshold is not valid"
 
     def test_performance_benchmarks(self):
         """Test performance benchmarks are met."""
@@ -247,7 +247,7 @@ class TestQualityAssurance:
         }
 
         all_within_limits = all(v < 1000 for v in benchmarks.values())
-        assert all_within_limits is True
+        assert all_within_limits is True, "all_within_limits is not valid"
 
     def test_security_posture_validation(self, quality_thresholds):
         """Test security posture validation."""
@@ -255,7 +255,7 @@ class TestQualityAssurance:
         threshold = quality_thresholds["security_score"]
 
         meets_threshold = security_score >= threshold
-        assert meets_threshold is True
+        assert meets_threshold is True, "meets_threshold is not valid"
 
     def test_documentation_quality(self, quality_thresholds):
         """Test documentation quality standards."""
@@ -269,7 +269,7 @@ class TestQualityAssurance:
         threshold = quality_thresholds["documentation_coverage"]
 
         meets_threshold = avg_quality >= threshold
-        assert meets_threshold is True
+        assert meets_threshold is True, "meets_threshold is not valid"
 
     def test_api_contract_validation(self):
         """Test API contract validation."""
@@ -280,7 +280,7 @@ class TestQualityAssurance:
         ]
 
         all_validated = all(ep["validated"] for ep in api_endpoints)
-        assert all_validated is True
+        assert all_validated is True, "all_validated is not valid"
 
     def test_database_schema_validation(self):
         """Test database schema validation."""
@@ -292,7 +292,7 @@ class TestQualityAssurance:
         }
 
         all_valid = all(schema_checks.values())
-        assert all_valid is True
+        assert all_valid is True, "all_valid is not valid"
 
     def test_infrastructure_as_code_validation(self):
         """Test infrastructure as code validation."""
@@ -304,7 +304,7 @@ class TestQualityAssurance:
         }
 
         all_valid = all(iac_checks.values())
-        assert all_valid is True
+        assert all_valid is True, "all_valid is not valid"
 
 
 # ============================================================================
@@ -323,7 +323,7 @@ class TestRegressionPrevention:
         ]
 
         no_breaking_changes = all(not c["breaking"] for c in api_changes)
-        assert no_breaking_changes is True
+        assert no_breaking_changes is True, "no_breaking_changes is not valid"
 
     def test_backward_compatibility(self):
         """Test backward compatibility."""
@@ -334,7 +334,7 @@ class TestRegressionPrevention:
         }
 
         all_supported = all(v["supported"] for v in versions.values())
-        assert all_supported is True
+        assert all_supported is True, "all_supported is not valid"
 
     def test_migration_path_validation(self):
         """Test migration path validation."""
@@ -344,7 +344,7 @@ class TestRegressionPrevention:
         ]
 
         all_tested = all(step["tested"] for step in migration_steps)
-        assert all_tested is True
+        assert all_tested is True, "all_tested is not valid"
 
 
 # ============================================================================
@@ -367,7 +367,7 @@ class TestIntegrationHealth:
         for service_deps in services.values():
             all_dependencies.extend(service_deps["dependencies"])
 
-        assert len(all_dependencies) > 0
+        assert len(all_dependencies) > 0, "All_dependencies must not be empty"
 
     def test_configuration_consistency(self):
         """Test configuration consistency across services."""
@@ -380,7 +380,7 @@ class TestIntegrationHealth:
         log_levels = [c["log_level"] for c in configs.values()]
         consistent = len(set(log_levels)) == 1
 
-        assert consistent is True
+        assert consistent is True, "consistent is not valid"
 
     def test_network_topology_validation(self):
         """Test network topology validation."""
@@ -391,7 +391,7 @@ class TestIntegrationHealth:
         }
 
         layers = len(topology)
-        assert layers == 3
+        assert layers == 3, "layers is not valid"
 
     def test_data_flow_validation(self):
         """Test data flow validation."""
@@ -402,7 +402,7 @@ class TestIntegrationHealth:
         ]
 
         all_validated = all(flow["validated"] for flow in data_flow)
-        assert all_validated is True
+        assert all_validated is True, "all_validated is not valid"
 
     def test_error_handling_coverage(self):
         """Test error handling coverage."""
@@ -414,7 +414,7 @@ class TestIntegrationHealth:
         ]
 
         all_handled = all(scenario["handled"] for scenario in error_scenarios)
-        assert all_handled is True
+        assert all_handled is True, "all_handled is not valid"
 
 
 if __name__ == "__main__":

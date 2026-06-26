@@ -19,9 +19,9 @@ def test_documentation_system_no_docs():
 
     result = detect(file_index)
 
-    assert result["id"] == "documentation-system"
-    assert result["evidence_files"] == []
-    assert "found_patterns" in result
+    assert result["id"] == "documentation-system", "Result must not be empty"
+    assert result["evidence_files"] == [], "Result must not be empty"
+    assert "found_patterns" in result, "Result must not be empty"
 
 
 def test_documentation_system_markdown_docs():
@@ -37,11 +37,11 @@ def test_documentation_system_markdown_docs():
 
     result = detect(file_index)
 
-    assert result["id"] == "documentation-system"
-    assert len(result["evidence_files"]) == 3
-    assert "markdown" in result["found_patterns"]
-    assert "docs" in result["found_patterns"]
-    assert result["meta"]["markdown_count"] == 3
+    assert result["id"] == "documentation-system", "Result must not be empty"
+    assert len(result["evidence_files"]) == 3, "Collection must not be empty"
+    assert "markdown" in result["found_patterns"], "Result must not be empty"
+    assert "docs" in result["found_patterns"], "Result must not be empty"
+    assert result["meta"]["markdown_count"] == 3, "Result must not be empty"
 
 
 def test_documentation_system_rst_docs():
@@ -55,9 +55,9 @@ def test_documentation_system_rst_docs():
 
     result = detect(file_index)
 
-    assert result["id"] == "documentation-system"
-    assert len(result["evidence_files"]) == 2
-    assert result["meta"]["rst_count"] == 2
+    assert result["id"] == "documentation-system", "Result must not be empty"
+    assert len(result["evidence_files"]) == 2, "Collection must not be empty"
+    assert result["meta"]["rst_count"] == 2, "Result must not be empty"
 
 
 def test_documentation_system_mkdocs_config():
@@ -71,9 +71,9 @@ def test_documentation_system_mkdocs_config():
 
     result = detect(file_index)
 
-    assert result["id"] == "documentation-system"
-    assert "mkdocs" in result["found_patterns"]
-    assert result["meta"]["config_count"] == 1
+    assert result["id"] == "documentation-system", "Result must not be empty"
+    assert "mkdocs" in result["found_patterns"], "Result must not be empty"
+    assert result["meta"]["config_count"] == 1, "Result must not be empty"
 
 
 def test_documentation_system_sphinx_config():
@@ -87,8 +87,8 @@ def test_documentation_system_sphinx_config():
 
     result = detect(file_index)
 
-    assert result["id"] == "documentation-system"
-    assert "sphinx" in result["found_patterns"]
+    assert result["id"] == "documentation-system", "Result must not be empty"
+    assert "sphinx" in result["found_patterns"], "Result must not be empty"
 
 
 def test_documentation_system_readme():
@@ -102,8 +102,8 @@ def test_documentation_system_readme():
 
     result = detect(file_index)
 
-    assert result["id"] == "documentation-system"
-    assert "README.md" in result["evidence_files"]
+    assert result["id"] == "documentation-system", "Result must not be empty"
+    assert "README.md" in result["evidence_files"], "Result must not be empty"
 
 
 def test_documentation_system_comprehensive():
@@ -121,11 +121,11 @@ def test_documentation_system_comprehensive():
 
     result = detect(file_index)
 
-    assert result["id"] == "documentation-system"
-    assert len(result["evidence_files"]) >= 6
-    assert "markdown" in result["found_patterns"]
-    assert "mkdocs" in result["found_patterns"]
-    assert "sphinx" in result["found_patterns"]
+    assert result["id"] == "documentation-system", "Result must not be empty"
+    assert len(result["evidence_files"]) >= 6, "Collection must not be empty"
+    assert "markdown" in result["found_patterns"], "Result must not be empty"
+    assert "mkdocs" in result["found_patterns"], "Result must not be empty"
+    assert "sphinx" in result["found_patterns"], "Result must not be empty"
 
 
 def test_documentation_system_required_patterns():
@@ -133,9 +133,9 @@ def test_documentation_system_required_patterns():
     file_index = {"files": []}
     result = detect(file_index)
 
-    assert "required_patterns" in result
-    assert "markdown" in result["required_patterns"]
-    assert "docs" in result["required_patterns"]
+    assert "required_patterns" in result, "Result must not be empty"
+    assert "markdown" in result["required_patterns"], "Result must not be empty"
+    assert "docs" in result["required_patterns"], "Result must not be empty"
 
 
 def test_documentation_system_docs_keywords():
@@ -143,9 +143,9 @@ def test_documentation_system_docs_keywords():
     file_index = {"files": []}
     result = detect(file_index)
 
-    assert "docs_keywords" in result
-    assert "documentation" in result["docs_keywords"]
-    assert "markdown" in result["docs_keywords"]
+    assert "docs_keywords" in result, "Result must not be empty"
+    assert "documentation" in result["docs_keywords"], "Result must not be empty"
+    assert "markdown" in result["docs_keywords"], "Result must not be empty"
 
 
 def test_documentation_system_safeguards():
@@ -153,9 +153,9 @@ def test_documentation_system_safeguards():
     file_index = {"files": []}
     result = detect(file_index)
 
-    assert "safeguards" in result
-    assert "validation" in result["safeguards"]
-    assert "bounded" in result["safeguards"]
+    assert "safeguards" in result, "Result must not be empty"
+    assert "validation" in result["safeguards"], "Result must not be empty"
+    assert "bounded" in result["safeguards"], "Result must not be empty"
 
 
 def test_documentation_system_functionality():
@@ -168,9 +168,9 @@ def test_documentation_system_functionality():
     }
     result = detect(file_index)
 
-    assert "functionality_impl" in result
+    assert "functionality_impl" in result, "Result must not be empty"
     assert isinstance(result["functionality_impl"], float)
-    assert 0.0 <= result["functionality_impl"] <= 1.0
+    assert 0.0 <= result["functionality_impl"] <= 1.0, "Result must not be empty"
 
 
 def test_documentation_system_meta_fields():
@@ -183,12 +183,12 @@ def test_documentation_system_meta_fields():
     }
     result = detect(file_index)
 
-    assert "meta" in result
-    assert "markdown_count" in result["meta"]
-    assert "rst_count" in result["meta"]
-    assert "config_count" in result["meta"]
-    assert "total_docs" in result["meta"]
-    assert result["meta"]["deterministic"] is True
+    assert "meta" in result, "Result must not be empty"
+    assert "markdown_count" in result["meta"], "Result must not be empty"
+    assert "rst_count" in result["meta"], "Result must not be empty"
+    assert "config_count" in result["meta"], "Result must not be empty"
+    assert "total_docs" in result["meta"], "Result must not be empty"
+    assert result["meta"]["deterministic"] is True, "Result must not be empty"
 
 
 def test_documentation_system_sorted_evidence():
@@ -203,7 +203,7 @@ def test_documentation_system_sorted_evidence():
     result = detect(file_index)
 
     evidence = result["evidence_files"]
-    assert evidence == sorted(evidence)
+    assert evidence == sorted(evidence), "evidence is not valid"
 
 
 def test_documentation_system_docusaurus():
@@ -216,8 +216,8 @@ def test_documentation_system_docusaurus():
     }
     result = detect(file_index)
 
-    assert result["id"] == "documentation-system"
-    assert len(result["evidence_files"]) >= 1
+    assert result["id"] == "documentation-system", "Result must not be empty"
+    assert len(result["evidence_files"]) >= 1, "Collection must not be empty"
 
 
 def test_documentation_system_changelog():
@@ -229,8 +229,8 @@ def test_documentation_system_changelog():
     }
     result = detect(file_index)
 
-    assert result["id"] == "documentation-system"
-    assert "docs/CHANGELOG.md" in result["evidence_files"]
+    assert result["id"] == "documentation-system", "Result must not be empty"
+    assert "docs/CHANGELOG.md" in result["evidence_files"], "Result must not be empty"
 
 
 def test_documentation_system_contributing():
@@ -242,8 +242,8 @@ def test_documentation_system_contributing():
     }
     result = detect(file_index)
 
-    assert result["id"] == "documentation-system"
-    assert "docs/governance/CONTRIBUTING.md" in result["evidence_files"]
+    assert result["id"] == "documentation-system", "Result must not be empty"
+    assert "docs/governance/CONTRIBUTING.md" in result["evidence_files"], "Result must not be empty"
 
 
 def test_documentation_system_readthedocs():
@@ -256,8 +256,8 @@ def test_documentation_system_readthedocs():
     }
     result = detect(file_index)
 
-    assert result["id"] == "documentation-system"
-    assert result["meta"]["config_count"] >= 1
+    assert result["id"] == "documentation-system", "Result must not be empty"
+    assert result["meta"]["config_count"] >= 1, "Value must be greater than zero"
 
 
 def test_documentation_system_empty_file_index():
@@ -265,9 +265,9 @@ def test_documentation_system_empty_file_index():
     file_index = {}
     result = detect(file_index)
 
-    assert result["id"] == "documentation-system"
-    assert result["evidence_files"] == []
-    assert result["meta"]["total_docs"] == 0
+    assert result["id"] == "documentation-system", "Result must not be empty"
+    assert result["evidence_files"] == [], "Result must not be empty"
+    assert result["meta"]["total_docs"] == 0, "Result must not be empty"
 
 
 def test_documentation_system_mixed_extensions():
@@ -283,5 +283,5 @@ def test_documentation_system_mixed_extensions():
     result = detect(file_index)
 
     # Should only detect .md and .rst as documentation
-    assert result["meta"]["markdown_count"] == 1
-    assert result["meta"]["rst_count"] == 1
+    assert result["meta"]["markdown_count"] == 1, "Result must not be empty"
+    assert result["meta"]["rst_count"] == 1, "Result must not be empty"

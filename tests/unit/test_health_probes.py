@@ -54,21 +54,21 @@ def client():
 class TestLivenessProbe:
     def test_returns_200(self, client):
         resp = client.get("/liveness")
-        assert resp.status_code == 200
+        assert resp.status_code == 200, "status_code is not valid"
 
     def test_status_alive(self, client):
         data = client.get("/liveness").json()
-        assert data["status"] == "alive"
+        assert data["status"] == "alive", "Data must not be empty"
 
     def test_has_uptime(self, client):
         data = client.get("/liveness").json()
-        assert "uptime_seconds" in data
+        assert "uptime_seconds" in data, "Data must not be empty"
         assert isinstance(data["uptime_seconds"], (int, float))
-        assert data["uptime_seconds"] >= 0
+        assert data["uptime_seconds"] >= 0, "Value must be greater than zero"
 
     def test_has_timestamp(self, client):
         data = client.get("/liveness").json()
-        assert "timestamp" in data
+        assert "timestamp" in data, "Data must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -82,7 +82,7 @@ class TestReadinessProbe:
 
         with patch.object(da, "Path", return_value=tmp_path):
             resp = client.get("/readiness")
-        assert resp.status_code == 200
+        assert resp.status_code == 200, "status_code is not valid"
 
     def test_status_field_present(self, client):
         data = client.get("/readiness").json()
@@ -90,12 +90,12 @@ class TestReadinessProbe:
 
     def test_checks_dict_present(self, client):
         data = client.get("/readiness").json()
-        assert "checks" in data
+        assert "checks" in data, "Data must not be empty"
         assert isinstance(data["checks"], dict)
 
     def test_has_timestamp(self, client):
         data = client.get("/readiness").json()
-        assert "timestamp" in data
+        assert "timestamp" in data, "Data must not be empty"
 
     def test_returns_503_when_mkdir_fails(self, client):
         from monitoring import dashboard_api as _da  # type: ignore[import]
@@ -108,10 +108,10 @@ class TestReadinessProbe:
 
         with patch.object(_da, "Path", return_value=_FailPath()):
             resp = client.get("/readiness")
-        assert resp.status_code == 503
+        assert resp.status_code == 503, "status_code is not valid"
         data = resp.json()
-        assert data["status"] == "not_ready"
-        assert "metrics_dir" in data["checks"]
+        assert data["status"] == "not_ready", "Data must not be empty"
+        assert "metrics_dir" in data["checks"], "Data must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -121,13 +121,13 @@ class TestReadinessProbe:
 
 class TestLegacyHealthEndpoint:
     def test_returns_200(self, client):
-        assert client.get("/health").status_code == 200
+        assert client.get("/health").status_code == 200, "status_code is not valid"
 
     def test_status_healthy(self, client):
-        assert client.get("/health").json()["status"] == "healthy"
+        assert client.get("/health").json()["status"] == "healthy", "Condition must be true"
 
     def test_has_timestamp(self, client):
-        assert "timestamp" in client.get("/health").json()
+        assert "timestamp" in client.get("/health").json(), "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -138,10 +138,10 @@ class TestLegacyHealthEndpoint:
 class TestRootEndpoint:
     def test_lists_readiness(self, client):
         data = client.get("/").json()
-        assert "readiness" in data["endpoints"]
-        assert data["endpoints"]["readiness"] == "/readiness"
+        assert "readiness" in data["endpoints"], "Data must not be empty"
+        assert data["endpoints"]["readiness"] == "/readiness", "Data must not be empty"
 
     def test_lists_liveness(self, client):
         data = client.get("/").json()
-        assert "liveness" in data["endpoints"]
-        assert data["endpoints"]["liveness"] == "/liveness"
+        assert "liveness" in data["endpoints"], "Data must not be empty"
+        assert data["endpoints"]["liveness"] == "/liveness", "Data must not be empty"

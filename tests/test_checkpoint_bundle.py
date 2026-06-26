@@ -39,12 +39,12 @@ def test_checkpoint_roundtrip(tmp_path: pathlib.Path, epoch: int) -> None:
 
     ckpt_path = tmp_path / "model.pt"
     save_checkpoint(str(ckpt_path), model, optimizer, None, epoch, extra={"note": "ok"})
-    assert ckpt_path.exists()
+    assert ckpt_path.exists(), "Condition must be true"
 
     restored = TinyModule()
     opt2 = torch.optim.SGD(restored.parameters(), lr=0.01)
     state = load_training_checkpoint(str(ckpt_path), model=restored, optimizer=opt2)
 
-    assert state.get("epoch") == epoch
+    assert state.get("epoch") == epoch, "Condition must be true"
     for original, target in zip(model.parameters(), restored.parameters()):
         assert torch.allclose(original, target)

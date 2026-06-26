@@ -33,7 +33,7 @@ def test_render_tile_html(tmp_path):
     code = subprocess.call(
         [sys.executable, str(renderer), "--tile", str(tile_p), "--out", str(out_p)]
     )
-    assert code == 0
-    assert out_p.exists()
+    assert code == 0, "code is not valid"
+    assert out_p.exists(), "Condition must be true"
     html = out_p.read_text(encoding="utf-8")
-    assert "<svg" in html and "GitHub Rate-Limit (7d)" in html
+    assert "<svg" in html and "GitHub Rate-Limit (7d)" in html, "Condition must be true"

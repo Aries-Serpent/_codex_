@@ -24,9 +24,9 @@ def test_cache_tokenized_writes_manifest(tmp_path: Path) -> None:
     dataset = ["hello", "world"]
     tokenized = cache_tokenized(dataset, DummyTokenizer(), tmp_path)
     manifest_path = tmp_path / "manifest.json"
-    assert manifest_path.is_file()
+    assert manifest_path.is_file(), "Condition must be true"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    assert len(manifest) == len(dataset)
+    assert len(manifest) == len(dataset), "Manifest must not be empty"
     for entry, expected in zip(manifest, tokenized, strict=False):
         sample_file = tmp_path / entry["path"]
         if sample_file.suffix == ".pt":
@@ -41,5 +41,5 @@ def test_cache_tokenized_writes_manifest(tmp_path: Path) -> None:
                 stored = json.loads(sample_file.read_text(encoding="utf-8"))
         else:
             stored = json.loads(sample_file.read_text(encoding="utf-8"))
-        assert stored == expected
-        assert entry["sha256"]
+        assert stored == expected, "stored is not valid"
+        assert entry["sha256"], "Condition must be true"

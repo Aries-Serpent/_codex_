@@ -22,5 +22,5 @@ def test_conf_defaults_list_round_trip() -> None:
     with initialize_config_dir(version_base="1.3", config_dir=str(config_dir)):
         cfg = compose(config_name="hydra")
     # Verify that key sections from the defaults list are present
-    assert cfg.model.name  # from model section
-    assert cfg.training.output_dir  # from training section
+    assert cfg.model.name, "Condition must be true"
+    assert cfg.training.output_dir, "Condition must be true"

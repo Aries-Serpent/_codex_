@@ -15,7 +15,7 @@ import pytest
 from codex.auth.authenticator import Authenticator, LoginResult
 from codex.auth.exceptions import (
     InvalidCredentialsError,
-    MFARequiredError, # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+    MFARequiredError,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
     UserAlreadyExistsError,
 )
 from codex.auth.mfa_provider import MFAProvider
@@ -69,20 +69,20 @@ class TestRegisterBasic:
 
     def test_register_creates_user(self, auth_no_mfa):
         user = auth_no_mfa.register("alice", "alice@example.com", "Str0ngPass!")
-        assert user.username == "alice"
-        assert user.email == "alice@example.com"
-        assert user.user_id
+        assert user.username == "alice", "username is not valid"
+        assert user.email == "alice@example.com", "email is not valid"
+        assert user.user_id, "Condition must be true"
 
     def test_register_with_custom_roles(self, auth_no_mfa):
         user = auth_no_mfa.register(
             "bob", "bob@example.com", "Str0ngPass!", roles=["admin", "moderator"]
         )
-        assert "admin" in user.roles
-        assert "moderator" in user.roles
+        assert "admin" in user.roles, "Condition must be true"
+        assert "moderator" in user.roles, "Condition must be true"
 
     def test_register_with_empty_roles(self, auth_no_mfa):
         user = auth_no_mfa.register("charlie", "charlie@example.com", "Str0ngPass!", roles=[])
-        assert "user" in user.roles  # Default role
+        assert "user" in user.roles, "Condition must be true"
 
     def test_register_returns_user_object(self, auth_no_mfa):
         user = auth_no_mfa.register("dave", "dave@example.com", "Str0ngPass!")
@@ -90,7 +90,7 @@ class TestRegisterBasic:
 
     def test_register_sets_created_timestamp(self, auth_no_mfa):
         user = auth_no_mfa.register("eve", "eve@example.com", "Str0ngPass!")
-        assert user.created_at > 0
+        assert user.created_at > 0, "created_at must be greater than zero"
 
 
 class TestRegisterValidation:
@@ -143,21 +143,21 @@ class TestRegisterUnicode:
 
     def test_register_unicode_username(self, auth_no_mfa):
         user = auth_no_mfa.register("用户", "user@example.com", "Str0ngPass!")
-        assert user.username == "用户"
+        assert user.username == "用户", "username is not valid"
 
     def test_register_unicode_email(self, auth_no_mfa):
         # Standard emails don't support unicode in local part, but test domain
         user = auth_no_mfa.register("nancy", "nancy@例え.jp", "Str0ngPass!")
-        assert "nancy@" in user.email
+        assert "nancy@" in user.email, "Condition must be true"
 
     def test_register_emoji_username(self, auth_no_mfa):
         # Username with emoji
         user = auth_no_mfa.register("oscar😀", "oscar@example.com", "Str0ngPass!")
-        assert "oscar" in user.username
+        assert "oscar" in user.username, "Condition must be true"
 
     def test_register_special_chars_username(self, auth_no_mfa):
         user = auth_no_mfa.register("paul_test-user", "paul@example.com", "Str0ngPass!")
-        assert user.username == "paul_test-user"
+        assert user.username == "paul_test-user", "username is not valid"
 
 
 # ============================================================================
@@ -172,33 +172,33 @@ class TestLoginBasic:
         auth_no_mfa.register("quinn", "quinn@example.com", "Str0ngPass!")
         result = auth_no_mfa.login("quinn", "Str0ngPass!")
         assert isinstance(result, LoginResult)
-        assert result.username == "quinn"
-        assert result.user_id
+        assert result.username == "quinn", "Result must not be empty"
+        assert result.user_id, "Result must not be empty"
 
     def test_login_with_email(self, auth_no_mfa):
         auth_no_mfa.register("robin", "robin@example.com", "Str0ngPass!")
         result = auth_no_mfa.login("robin@example.com", "Str0ngPass!")
-        assert result.username == "robin"
+        assert result.username == "robin", "Result must not be empty"
 
     def test_login_returns_all_tokens(self, auth_no_mfa):
         auth_no_mfa.register("sam", "sam@example.com", "Str0ngPass!")
         result = auth_no_mfa.login("sam", "Str0ngPass!")
-        assert result.access_token
-        assert result.refresh_token
-        assert result.session_token
-        assert result.session_id
+        assert result.access_token, "Result must not be empty"
+        assert result.refresh_token, "Result must not be empty"
+        assert result.session_token, "Result must not be empty"
+        assert result.session_id, "Result must not be empty"
 
     def test_login_with_ip_address(self, auth_no_mfa):
         auth_no_mfa.register("tina", "tina@example.com", "Str0ngPass!")
         result = auth_no_mfa.login("tina", "Str0ngPass!", ip_address="192.168.1.1")
-        assert result.user_id
+        assert result.user_id, "Result must not be empty"
 
     def test_login_multiple_times(self, auth_no_mfa):
         auth_no_mfa.register("uma", "uma@example.com", "Str0ngPass!")
         result1 = auth_no_mfa.login("uma", "Str0ngPass!")
         result2 = auth_no_mfa.login("uma", "Str0ngPass!")
         # Different sessions
-        assert result1.session_token != result2.session_token
+        assert result1.session_token != result2.session_token, "Result must not be empty"
 
 
 class TestLoginFailure:
@@ -252,7 +252,7 @@ class TestLoginMFA:
         code = totp.now()
 
         result = auth_with_mfa.login("zane", "Str0ngPass!", mfa_code=code)
-        assert result.user_id == user.user_id
+        assert result.user_id == user.user_id, "Result must not be empty"
 
 
 # ============================================================================
@@ -299,7 +299,7 @@ class TestPasswordChange:
             auth_no_mfa.login("billy", "Str0ngPass!")
         # New password should work
         result = auth_no_mfa.login("billy", "NewStr0ng!")
-        assert result.username == "billy"
+        assert result.username == "billy", "Result must not be empty"
 
     def test_change_password_wrong_old_password(self, auth_no_mfa):
         auth_no_mfa.register("cora", "cora@example.com", "Str0ngPass!")
@@ -332,13 +332,13 @@ class TestSessionManagement:
         auth_no_mfa.register("fiona", "fiona@example.com", "Str0ngPass!")
         result1 = auth_no_mfa.login("fiona", "Str0ngPass!")
         result2 = auth_no_mfa.login("fiona", "Str0ngPass!")
-        assert result1.session_id != result2.session_id
+        assert result1.session_id != result2.session_id, "Result must not be empty"
 
     def test_session_tokens_are_different(self, auth_no_mfa):
         auth_no_mfa.register("greg", "greg@example.com", "Str0ngPass!")
         result1 = auth_no_mfa.login("greg", "Str0ngPass!")
         result2 = auth_no_mfa.login("greg", "Str0ngPass!")
-        assert result1.session_token != result2.session_token
+        assert result1.session_token != result2.session_token, "Result must not be empty"
 
     def test_access_token_valid_after_login(self, auth_no_mfa):
         auth_no_mfa.register("hannah", "hannah@example.com", "Str0ngPass!")
@@ -346,7 +346,7 @@ class TestSessionManagement:
         claims = auth_no_mfa.token_manager.validate_token(
             result.access_token, expected_type=TokenType.ACCESS
         )
-        assert claims.sub == result.user_id
+        assert claims.sub == result.user_id, "Result must not be empty"
 
     def test_refresh_token_valid_after_login(self, auth_no_mfa):
         auth_no_mfa.register("ivan", "ivan@example.com", "Str0ngPass!")
@@ -354,7 +354,7 @@ class TestSessionManagement:
         claims = auth_no_mfa.token_manager.validate_token(
             result.refresh_token, expected_type=TokenType.REFRESH
         )
-        assert claims.sub == result.user_id
+        assert claims.sub == result.user_id, "Result must not be empty"
 
 
 # ============================================================================
@@ -374,7 +374,7 @@ class TestErrorHandling:
         # Some systems support these characters
         try:
             user = auth_no_mfa.register("kate@123", "kate@example.com", "Str0ngPass!")
-            assert user.username
+            assert user.username, "Condition must be true"
         except ValueError:
             # If not supported, that's okay
             pass
@@ -382,13 +382,13 @@ class TestErrorHandling:
     def test_very_long_username(self, auth_no_mfa):
         long_username = "a" * 255
         user = auth_no_mfa.register(long_username, "long@example.com", "Str0ngPass!")
-        assert len(user.username) <= 255
+        assert len(user.username) <= 255, "Collection must not be empty"
 
     def test_very_long_email(self, auth_no_mfa):
         long_email = "a" * 240 + "@example.com"
         try:
             user = auth_no_mfa.register("longmail", long_email, "Str0ngPass!")
-            assert user.email
+            assert user.email, "Condition must be true"
         except ValueError:
             pass
 
@@ -409,18 +409,18 @@ class TestIntegration:
     def test_full_user_lifecycle(self, auth_no_mfa):
         # Register
         user = auth_no_mfa.register("lifecycle", "lifecycle@example.com", "Str0ngPass!")
-        assert user.user_id
+        assert user.user_id, "Condition must be true"
 
         # Login
         result = auth_no_mfa.login("lifecycle", "Str0ngPass!")
-        assert result.access_token
+        assert result.access_token, "Result must not be empty"
 
         # Change password
         auth_no_mfa.change_password(user.user_id, "Str0ngPass!", "NewPass123!")
 
         # Login with new password
         result = auth_no_mfa.login("lifecycle", "NewPass123!")
-        assert result.user_id == user.user_id
+        assert result.user_id == user.user_id, "Result must not be empty"
 
         # Logout
         auth_no_mfa.logout(result.session_token)
@@ -431,9 +431,9 @@ class TestIntegration:
             user = auth_no_mfa.register(f"user{i}", f"user{i}@example.com", "Str0ngPass!")
             users.append(user)
 
-        assert len(users) == 5
-        assert all(u.user_id for u in users)
-        assert len(set(u.user_id for u in users)) == 5  # All unique
+        assert len(users) == 5, "Users must not be empty"
+        assert all(u.user_id for u in users), "Condition must be true"
+        assert len(set(u.user_id for u in users)) == 5, "Collection must not be empty"
 
     def test_login_after_password_change(self, auth_no_mfa):
         auth_no_mfa.register("sarah", "sarah@example.com", "Str0ngPass!")
@@ -443,10 +443,10 @@ class TestIntegration:
         auth_no_mfa.change_password(user.user_id, "Str0ngPass2!", "Str0ngPass3!")
 
         result = auth_no_mfa.login("sarah", "Str0ngPass3!")
-        assert result.user_id == user.user_id
+        assert result.user_id == user.user_id, "Result must not be empty"
 
     def test_mixed_login_methods(self, auth_no_mfa):
         auth_no_mfa.register("thomas", "thomas@example.com", "Str0ngPass!")
         result1 = auth_no_mfa.login("thomas", "Str0ngPass!")
         result2 = auth_no_mfa.login("thomas@example.com", "Str0ngPass!")
-        assert result1.user_id == result2.user_id
+        assert result1.user_id == result2.user_id, "Result must not be empty"

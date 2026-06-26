@@ -21,8 +21,8 @@ from codex.cli import cli
 def test_cli_train_engine_option():
     runner = CliRunner()
     result = runner.invoke(cli, ["train", "--help"])
-    assert result.exit_code == 0
-    assert "--engine" in result.output
+    assert result.exit_code == 0, "Result must not be empty"
+    assert "--engine" in result.output, "Result must not be empty"
 
 
 def test_cli_train_custom_engine_forwards_args(monkeypatch):
@@ -37,7 +37,7 @@ def test_cli_train_custom_engine_forwards_args(monkeypatch):
 
     monkeypatch.setattr("codex.training.main", fake_main)
     result = runner.invoke(cli, ["train", "--engine", "custom", "--output-dir", "out"])
-    assert result.exit_code == 0
+    assert result.exit_code == 0, "Result must not be empty"
     # The CLI sets sys.argv to include --engine custom plus the engine_args
     assert captured["argv"] == ["--engine", "custom", "--output-dir", "out"]
 
@@ -78,12 +78,12 @@ def test_cli_train_hf_engine_parses_args(monkeypatch, tmp_path):
             "bf16",
         ],
     )
-    assert result.exit_code == 0
-    assert captured["texts"] == ["hi"]
-    assert captured["output_dir"] == tmp_path
-    assert captured["kw"]["lora_r"] == 4
-    assert captured["kw"]["lora_alpha"] == 32
-    assert captured["kw"]["lora_dropout"] == 0.1
-    assert captured["kw"]["seed"] == 123
-    assert captured["kw"]["device"] == "cpu"
-    assert captured["kw"]["dtype"] == "bf16"
+    assert result.exit_code == 0, "Result must not be empty"
+    assert captured["texts"] == ["hi"], "Condition must be true"
+    assert captured["output_dir"] == tmp_path, "Condition must be true"
+    assert captured["kw"]["lora_r"] == 4, "Condition must be true"
+    assert captured["kw"]["lora_alpha"] == 32, "Condition must be true"
+    assert captured["kw"]["lora_dropout"] == 0.1, "Condition must be true"
+    assert captured["kw"]["seed"] == 123, "Condition must be true"
+    assert captured["kw"]["device"] == "cpu", "Condition must be true"
+    assert captured["kw"]["dtype"] == "bf16", "Condition must be true"

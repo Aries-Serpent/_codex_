@@ -38,10 +38,10 @@ class TestVerificationStatus:
     def test_status_values(self) -> None:
         """Test all status enum values."""
         # Arrange & Act & Assert
-        assert VerificationStatus.VERIFIED.value == "verified"
-        assert VerificationStatus.UNVERIFIED.value == "unverified"
-        assert VerificationStatus.CONTRADICTED.value == "contradicted"
-        assert VerificationStatus.UNKNOWN.value == "unknown"
+        assert VerificationStatus.VERIFIED.value == "verified", "Value must be initialized"
+        assert VerificationStatus.UNVERIFIED.value == "unverified", "Value must be initialized"
+        assert VerificationStatus.CONTRADICTED.value == "contradicted", "Value must be initialized"
+        assert VerificationStatus.UNKNOWN.value == "unknown", "Value must be initialized"
 
     def test_status_count(self) -> None:
         """Test expected number of statuses."""
@@ -49,7 +49,7 @@ class TestVerificationStatus:
         statuses = list(VerificationStatus)
 
         # Assert
-        assert len(statuses) == 4
+        assert len(statuses) == 4, "Statuses must not be empty"
 
 
 class TestClaim:
@@ -61,11 +61,11 @@ class TestClaim:
         claim = Claim(id="claim1", text="Python was created in 1991", source_span=(0, 28))
 
         # Assert
-        assert claim.id == "claim1"
-        assert claim.text == "Python was created in 1991"
+        assert claim.id == "claim1", "id is not valid"
+        assert claim.text == "Python was created in 1991", "text is not valid"
         assert claim.source_span == (0, 28)
-        assert claim.claim_type == "factual"
-        assert claim.confidence == 1.0
+        assert claim.claim_type == "factual", "claim_type is not valid"
+        assert claim.confidence == 1.0, "confidence is not valid"
 
     def test_claim_with_custom_type(self) -> None:
         """Test claim with custom type."""
@@ -75,7 +75,7 @@ class TestClaim:
         )
 
         # Assert
-        assert claim.claim_type == "numerical"
+        assert claim.claim_type == "numerical", "claim_type is not valid"
 
     def test_claim_with_confidence(self) -> None:
         """Test claim with custom confidence."""
@@ -83,7 +83,7 @@ class TestClaim:
         claim = Claim(id="claim3", text="Test claim", source_span=(0, 10), confidence=0.85)
 
         # Assert
-        assert claim.confidence == 0.85
+        assert claim.confidence == 0.85, "confidence is not valid"
 
 
 class TestVerificationResult:
@@ -98,12 +98,12 @@ class TestVerificationResult:
         result = VerificationResult(claim=claim, status=VerificationStatus.VERIFIED)
 
         # Assert
-        assert result.claim == claim
-        assert result.status == VerificationStatus.VERIFIED
-        assert result.evidence == []
-        assert result.confidence == 0.0
-        assert result.reasoning == ""
-        assert result.sources == []
+        assert result.claim == claim, "Result must not be empty"
+        assert result.status == VerificationStatus.VERIFIED, "Result must not be empty"
+        assert result.evidence == [], "Result must not be empty"
+        assert result.confidence == 0.0, "Result must not be empty"
+        assert result.reasoning == "", "Result must not be empty"
+        assert result.sources == [], "Result must not be empty"
 
     def test_verification_result_with_evidence(self) -> None:
         """Test verification result with evidence."""
@@ -117,8 +117,8 @@ class TestVerificationResult:
         )
 
         # Assert
-        assert len(result.evidence) == 2
-        assert "Source 1" in result.evidence
+        assert len(result.evidence) == 2, "Collection must not be empty"
+        assert "Source 1" in result.evidence, "Result must not be empty"
 
     def test_verification_result_with_reasoning(self) -> None:
         """Test verification result with reasoning."""
@@ -131,7 +131,7 @@ class TestVerificationResult:
         )
 
         # Assert
-        assert result.reasoning == "Contradicts known facts"
+        assert result.reasoning == "Contradicts known facts", "Result must not be empty"
 
 
 class TestCoVeResult:
@@ -154,12 +154,12 @@ class TestCoVeResult:
         )
 
         # Assert
-        assert result.response_id == "r1"
-        assert result.original_response == "Test response"
-        assert len(result.claims) == 1
-        assert len(result.verifications) == 1
-        assert result.overall_score == 0.95
-        assert result.overall_status == VerificationStatus.VERIFIED
+        assert result.response_id == "r1", "Response must not be empty"
+        assert result.original_response == "Test response", "Response must not be empty"
+        assert len(result.claims) == 1, "Collection must not be empty"
+        assert len(result.verifications) == 1, "Collection must not be empty"
+        assert result.overall_score == 0.95, "Result must not be empty"
+        assert result.overall_status == VerificationStatus.VERIFIED, "Result must not be empty"
 
     def test_cove_result_verified_count(self) -> None:
         """Test verified_count property."""
@@ -185,7 +185,7 @@ class TestCoVeResult:
         count = result.verified_count
 
         # Assert
-        assert count == 1
+        assert count == 1, "Count must be greater than zero"
 
     def test_cove_result_verification_rate(self) -> None:
         """Test verification_rate property."""
@@ -211,7 +211,7 @@ class TestCoVeResult:
         rate = result.verification_rate
 
         # Assert
-        assert rate == 1.0
+        assert rate == 1.0, "rate is not valid"
 
     def test_cove_result_verification_rate_empty(self) -> None:
         """Test verification_rate with no claims."""
@@ -229,7 +229,7 @@ class TestCoVeResult:
         rate = result.verification_rate
 
         # Assert
-        assert rate == 1.0
+        assert rate == 1.0, "rate is not valid"
 
     def test_cove_result_has_timestamp(self) -> None:
         """Test CoVe result has timestamp."""
@@ -244,9 +244,9 @@ class TestCoVeResult:
         )
 
         # Assert
-        assert result.timestamp is not None
+        assert result.timestamp is not None, "timestamp must be initialized"
         assert isinstance(result.timestamp, str)
-        assert len(result.timestamp) > 0
+        assert len(result.timestamp) > 0, "Collection must not be empty"
 
 
 class TestClaimExtractor:
@@ -258,7 +258,7 @@ class TestClaimExtractor:
         extractor = ClaimExtractor()
 
         # Assert
-        assert extractor is not None
+        assert extractor is not None, "extractor must be initialized"
 
     def test_extract_claims_from_simple_text(self) -> None:
         """Test extracting claims from simple text."""
@@ -283,7 +283,7 @@ class TestClaimExtractor:
         claims = extractor.extract_claims("")
 
         # Assert
-        assert claims == []
+        assert claims == [], "claims is not valid"
 
     def test_extract_claims_none_text(self) -> None:
         """Test extracting claims from None."""
@@ -294,7 +294,7 @@ class TestClaimExtractor:
         claims = extractor.extract_claims(None)  # type: ignore
 
         # Assert
-        assert claims == []
+        assert claims == [], "claims is not valid"
 
     def test_extract_claims_respects_max_length(self) -> None:
         """Test text truncation for very long responses."""
@@ -320,7 +320,7 @@ class TestClaimExtractor:
         claims = extractor.extract_claims(text)
 
         # Assert
-        assert len(claims) <= MAX_CLAIMS_PER_RESPONSE
+        assert len(claims) <= MAX_CLAIMS_PER_RESPONSE, "Claims must not be empty"
 
     def test_extract_claims_numerical(self) -> None:
         """Test extracting numerical claims."""
@@ -355,7 +355,7 @@ class TestClaimExtractor:
         claim_type = extractor._classify_claim("The value is 42%")
 
         # Assert
-        assert claim_type == "numerical"
+        assert claim_type == "numerical", "claim_type is not valid"
 
     def test_classify_claim_temporal(self) -> None:
         """Test claim classification for temporal."""
@@ -366,7 +366,7 @@ class TestClaimExtractor:
         claim_type = extractor._classify_claim("This happened in 2024")
 
         # Assert
-        assert claim_type == "temporal"
+        assert claim_type == "temporal", "claim_type is not valid"
 
     def test_classify_claim_universal(self) -> None:
         """Test claim classification for universal."""
@@ -377,7 +377,7 @@ class TestClaimExtractor:
         claim_type = extractor._classify_claim("All birds can fly")
 
         # Assert
-        assert claim_type == "universal"
+        assert claim_type == "universal", "claim_type is not valid"
 
     def test_classify_claim_factual(self) -> None:
         """Test claim classification for factual."""
@@ -388,7 +388,7 @@ class TestClaimExtractor:
         claim_type = extractor._classify_claim("Python is a language")
 
         # Assert
-        assert claim_type == "factual"
+        assert claim_type == "factual", "claim_type is not valid"
 
 
 class TestCoVeEngine:
@@ -400,9 +400,9 @@ class TestCoVeEngine:
         engine = CoVeEngine()
 
         # Assert
-        assert engine is not None
-        assert engine.extractor is not None
-        assert engine.sources == []
+        assert engine is not None, "engine must be initialized"
+        assert engine.extractor is not None, "extractor must be initialized"
+        assert engine.sources == [], "sources is not valid"
 
     def test_engine_with_custom_extractor(self) -> None:
         """Test engine with custom extractor."""
@@ -413,7 +413,7 @@ class TestCoVeEngine:
         engine = CoVeEngine(extractor=mock_extractor)
 
         # Assert
-        assert engine.extractor is mock_extractor
+        assert engine.extractor is mock_extractor, "extractor is not valid"
 
     def test_engine_with_sources(self) -> None:
         """Test engine with provided sources."""
@@ -424,8 +424,8 @@ class TestCoVeEngine:
         engine = CoVeEngine(sources=sources)
 
         # Assert
-        assert len(engine.sources) == 2
-        assert "Source 1" in engine.sources
+        assert len(engine.sources) == 2, "Collection must not be empty"
+        assert "Source 1" in engine.sources, "Condition must be true"
 
 
 class TestConstants:
@@ -434,17 +434,17 @@ class TestConstants:
     def test_max_claims_per_response(self) -> None:
         """Test MAX_CLAIMS_PER_RESPONSE constant."""
         # Arrange & Act & Assert
-        assert MAX_CLAIMS_PER_RESPONSE == 50
+        assert MAX_CLAIMS_PER_RESPONSE == 50, "Response must not be empty"
 
     def test_max_verification_depth(self) -> None:
         """Test MAX_VERIFICATION_DEPTH constant."""
         # Arrange & Act & Assert
-        assert MAX_VERIFICATION_DEPTH == 5
+        assert MAX_VERIFICATION_DEPTH == 5, "MAX_VERIFICATION_DEPTH is not valid"
 
     def test_max_response_length(self) -> None:
         """Test MAX_RESPONSE_LENGTH constant."""
         # Arrange & Act & Assert
-        assert MAX_RESPONSE_LENGTH == 100000
+        assert MAX_RESPONSE_LENGTH == 100000, "Response must not be empty"
 
 
 # #AFTERMATH_METRIC - 31 tests created for verification/cove.py

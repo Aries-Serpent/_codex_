@@ -28,7 +28,7 @@ class TestEmbeddingEntry:
             embedding=embedding,
         )
 
-        assert entry.key == "test_key"
+        assert entry.key == "test_key", "key is not valid"
         assert entry.embedding.shape == (384,)
 
     def test_dimension(self):
@@ -36,7 +36,7 @@ class TestEmbeddingEntry:
         embedding = np.random.rand(768).astype(np.float32)
         entry = EmbeddingEntry(key="test", embedding=embedding)
 
-        assert entry.dimension == 768
+        assert entry.dimension == 768, "dimension is not valid"
 
     def test_is_expired(self):
         """Test expiration check."""
@@ -44,7 +44,7 @@ class TestEmbeddingEntry:
 
         # Not expired (no expiry set)
         entry1 = EmbeddingEntry(key="test", embedding=embedding)
-        assert not entry1.is_expired
+        assert not entry1.is_expired, "Condition must be true"
 
         # Expired
         entry2 = EmbeddingEntry(
@@ -52,7 +52,7 @@ class TestEmbeddingEntry:
             embedding=embedding,
             expires_at=time.time() - 1,
         )
-        assert entry2.is_expired
+        assert entry2.is_expired, "Condition must be true"
 
 
 class TestEmbeddingCacheConfig:
@@ -62,9 +62,9 @@ class TestEmbeddingCacheConfig:
         """Test default configuration."""
         config = EmbeddingCacheConfig()
 
-        assert config.max_entries == 10000
-        assert config.enable_disk_cache is False
-        assert config.use_float16 is False
+        assert config.max_entries == 10000, "max_entries is not valid"
+        assert config.enable_disk_cache is False, "enable_disk_cache is not valid"
+        assert config.use_float16 is False, "use_float16 is not valid"
 
     def test_custom_config(self):
         """Test custom configuration."""
@@ -73,8 +73,8 @@ class TestEmbeddingCacheConfig:
             use_float16=True,
         )
 
-        assert config.max_entries == 5000
-        assert config.use_float16 is True
+        assert config.max_entries == 5000, "max_entries is not valid"
+        assert config.use_float16 is True, "use_float16 is not valid"
 
 
 class TestEmbeddingCache:
@@ -97,23 +97,23 @@ class TestEmbeddingCache:
 
         result = cache.get("text1")
 
-        assert result is not None
+        assert result is not None, "result must be initialized"
         np.testing.assert_array_almost_equal(result, sample_embedding)
 
     def test_get_missing(self, cache):
         """Test getting non-existent key."""
         result = cache.get("nonexistent")
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_delete(self, cache, sample_embedding):
         """Test delete operation."""
         cache.put("text1", sample_embedding)
-        assert cache.get("text1") is not None
+        assert cache.get("text1") is not None, "Value must be initialized"
 
         deleted = cache.delete("text1")
 
-        assert deleted is True
-        assert cache.get("text1") is None
+        assert deleted is True, "deleted is not valid"
+        assert cache.get("text1") is None, "Condition must be true"
 
     def test_clear(self, cache, sample_embedding):
         """Test clear operation."""
@@ -122,14 +122,14 @@ class TestEmbeddingCache:
 
         cache.clear()
 
-        assert len(cache) == 0
+        assert len(cache) == 0, "Cache must not be empty"
 
     def test_contains(self, cache, sample_embedding):
         """Test contains check."""
         cache.put("text1", sample_embedding)
 
-        assert cache.contains("text1") is True
-        assert cache.contains("text2") is False
+        assert cache.contains("text1") is True, "Condition must be true"
+        assert cache.contains("text2") is False, "Condition must be true"
 
     def test_batch_operations(self, cache):
         """Test batch put and get."""
@@ -140,7 +140,7 @@ class TestEmbeddingCache:
 
         found_embeddings, found_indices = cache.get_batch(texts)
 
-        assert len(found_embeddings) == 3
+        assert len(found_embeddings) == 3, "Found_embeddings must not be empty"
         assert found_indices == [0, 1, 2]
 
     def test_batch_get_partial(self, cache, sample_embedding):
@@ -150,7 +150,7 @@ class TestEmbeddingCache:
 
         found_embeddings, found_indices = cache.get_batch(["text1", "text2", "text3"])
 
-        assert len(found_embeddings) == 2
+        assert len(found_embeddings) == 2, "Found_embeddings must not be empty"
         assert found_indices == [0, 2]
 
     def test_get_stats(self, cache, sample_embedding):
@@ -161,9 +161,9 @@ class TestEmbeddingCache:
 
         stats = cache.get_stats()
 
-        assert stats["hits"] == 1
-        assert stats["misses"] == 1
-        assert stats["hit_rate"] == 0.5
+        assert stats["hits"] == 1, "Condition must be true"
+        assert stats["misses"] == 1, "Condition must be true"
+        assert stats["hit_rate"] == 0.5, "Condition must be true"
 
     def test_float16_conversion(self, sample_embedding):
         """Test float16 conversion for memory efficiency."""
@@ -173,10 +173,10 @@ class TestEmbeddingCache:
         cache.put("text1", sample_embedding)
 
         stats = cache.get_stats()
-        assert stats["dtype"] == "float16"
+        assert stats["dtype"] == "float16", "Condition must be true"
 
         # Memory should be roughly half
-        assert stats["memory_bytes"] < sample_embedding.nbytes
+        assert stats["memory_bytes"] < sample_embedding.nbytes, "Condition must be true"
 
     def test_memory_tracking(self, cache, sample_embedding):
         """Test memory usage tracking."""
@@ -187,7 +187,7 @@ class TestEmbeddingCache:
 
         expected_bytes = sample_embedding.nbytes * 2
         # Allow for some overhead
-        assert stats["memory_bytes"] >= expected_bytes * 0.9
+        assert stats["memory_bytes"] >= expected_bytes * 0.9, "Value must be greater than zero"
 
     def test_eviction(self):
         """Test eviction when at capacity."""
@@ -199,7 +199,7 @@ class TestEmbeddingCache:
             cache.put(f"text{i}", np.random.rand(10).astype(np.float32))
 
         # Should have evicted some entries
-        assert len(cache) <= 5
+        assert len(cache) <= 5, "Cache must not be empty"
 
     def test_ttl_expiration(self):
         """Test TTL expiration."""
@@ -209,21 +209,21 @@ class TestEmbeddingCache:
         embedding = np.random.rand(10).astype(np.float32)
         cache.put("text1", embedding)
 
-        assert cache.get("text1") is not None
+        assert cache.get("text1") is not None, "Value must be initialized"
 
         time.sleep(0.15)
 
-        assert cache.get("text1") is None
+        assert cache.get("text1") is None, "Condition must be true"
 
     def test_len_and_contains(self, cache, sample_embedding):
         """Test len() and 'in' operators."""
-        assert len(cache) == 0
-        assert "text1" not in cache
+        assert len(cache) == 0, "Cache must not be empty"
+        assert "text1" not in cache, "Condition must be true"
 
         cache.put("text1", sample_embedding)
 
-        assert len(cache) == 1
-        assert "text1" in cache
+        assert len(cache) == 1, "Cache must not be empty"
+        assert "text1" in cache, "Condition must be true"
 
     def test_returns_copy(self, cache, sample_embedding):
         """Test that get returns a copy."""
@@ -235,7 +235,7 @@ class TestEmbeddingCache:
         result2 = cache.get("text1")
 
         # Original should be unchanged
-        assert result2[0] != 999.0
+        assert result2[0] != 999.0, "Result must not be empty"
 
 
 class TestEmbeddingCacheDisk:
@@ -260,7 +260,7 @@ class TestEmbeddingCacheDisk:
 
         # Check that file was created
         disk_files = list(Path(temp_dir).glob("*.npy"))
-        assert len(disk_files) == 1
+        assert len(disk_files) == 1, "Disk_files must not be empty"
 
 
 # ============================================================================
@@ -280,13 +280,13 @@ class TestCacheBoundaryConditions:
 
         # Entry that expired exactly 1 second ago
         entry = EmbeddingEntry(key="expired", embedding=embedding, expires_at=time.time() - 1.0)
-        assert entry.is_expired is True
+        assert entry.is_expired is True, "is_expired is not valid"
 
         # Entry that expires in 1 second
         entry2 = EmbeddingEntry(
             key="not_expired", embedding=embedding, expires_at=time.time() + 1.0
         )
-        assert entry2.is_expired is False
+        assert entry2.is_expired is False, "is_expired is not valid"
 
     def test_cache_size_boundary(self):
         """Kill: '>=' vs '>' mutations in size checks"""
@@ -298,14 +298,14 @@ class TestCacheBoundaryConditions:
             embedding = np.random.rand(10)
             cache.put(f"key{i}", embedding)
 
-        assert len(cache) == 5
+        assert len(cache) == 5, "Cache must not be empty"
 
         # Adding one more should trigger eviction
         embedding = np.random.rand(10)
         cache.put("key_overflow", embedding)
 
         # Cache size should not exceed max_entries
-        assert len(cache) <= 5
+        assert len(cache) <= 5, "Cache must not be empty"
 
     def test_ttl_boundary_exact_comparison(self):
         """Kill: TTL comparison operators
@@ -318,11 +318,11 @@ class TestCacheBoundaryConditions:
 
         # Put with TTL that expires in 0.1 seconds
         cache.put("ttl_test", embedding, ttl_seconds=0.1)
-        assert cache.get("ttl_test") is not None
+        assert cache.get("ttl_test") is not None, "Value must be initialized"
 
         # Wait for expiry
         time.sleep(0.15)
-        assert cache.get("ttl_test") is None
+        assert cache.get("ttl_test") is None, "Condition must be true"
 
 
 class TestCacheBooleanConditions:
@@ -344,12 +344,12 @@ class TestCacheBooleanConditions:
         cache.put("key3", embeddings[2])
 
         # Cache should have exactly 3 entries
-        assert len(cache) == 3
+        assert len(cache) == 3, "Cache must not be empty"
 
         # Add one more - should evict oldest
         cache.put("key4", np.random.rand(10))
-        assert len(cache) == 3
-        assert cache.get("key1") is None  # Oldest was evicted
+        assert len(cache) == 3, "Cache must not be empty"
+        assert cache.get("key1") is None, "Condition must be true"
 
     def test_contains_check_exact_logic(self):
         """Kill: boolean mutation in contains logic"""
@@ -360,8 +360,8 @@ class TestCacheBooleanConditions:
         cache.put("exists", embedding)
 
         # Exact boolean checks
-        assert ("exists" in cache) is True
-        assert ("does_not_exist" in cache) is False
+        assert ("exists" in cache) is True, "Condition must be true"
+        assert ("does_not_exist" in cache) is False, "Condition must be true"
 
 
 class TestCacheReturnValues:
@@ -378,8 +378,8 @@ class TestCacheReturnValues:
 
         # Exact type check
         assert isinstance(result, np.ndarray)
-        assert result.dtype == np.float32
-        assert len(result) == 3
+        assert result.dtype == np.float32, "Result must not be empty"
+        assert len(result) == 3, "Result must not be empty"
 
     def test_get_missing_returns_none(self):
         """Kill: return value mutations on missing keys"""
@@ -387,7 +387,7 @@ class TestCacheReturnValues:
         cache = EmbeddingCache(config)
 
         result = cache.get("nonexistent")
-        assert result is None  # NOT False, NOT empty array
+        assert result is None, "Result must not be empty"
 
     def test_contains_returns_bool(self):
         """Kill: return value type mutations"""
@@ -398,8 +398,8 @@ class TestCacheReturnValues:
         cache.put("test", embedding)
 
         # Exact boolean returns
-        assert cache.__contains__("test") is True
-        assert cache.__contains__("missing") is False
+        assert cache.__contains__("test") is True, "Condition must be true"
+        assert cache.__contains__("missing") is False, "Condition must be true"
         assert isinstance(cache.__contains__("test"), bool)
         assert isinstance(cache.__contains__("missing"), bool)
 
@@ -441,7 +441,7 @@ class TestEmbeddingCacheBoundaryMutations:
         # Add exactly max_entries
         cache.put("text1", embedding)
         cache.put("text2", embedding)
-        assert len(cache) == 2
+        assert len(cache) == 2, "Cache must not be empty"
 
         # Add one more - should trigger eviction
         cache.put("text3", embedding)

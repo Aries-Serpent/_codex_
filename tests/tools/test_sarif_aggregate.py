@@ -40,9 +40,9 @@ def test_sarif_aggregate(tmp_path):
             str(out),
         ]
     )
-    assert code == 0
+    assert code == 0, "code is not valid"
     data = json.loads(out.read_text(encoding="utf-8"))
-    assert data["version"] == "2.1.0"
-    assert len(data["runs"]) == 2
-    assert data["runs"][0]["results"][0]["ruleId"] == "rule-a"
-    assert data["runs"][1]["results"][0]["ruleId"] == "rule-b"
+    assert data["version"] == "2.1.0", "Data must not be empty"
+    assert len(data["runs"]) == 2, "Collection must not be empty"
+    assert data["runs"][0]["results"][0]["ruleId"] == "rule-a", "Result must not be empty"
+    assert data["runs"][1]["results"][0]["ruleId"] == "rule-b", "Result must not be empty"

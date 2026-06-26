@@ -83,7 +83,7 @@ class PluginValidator:
                     )
             except (ValueError, TypeError) as e:
                 error_type = type(e).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.debug("Exception: <ERROR_TYPE>")
                 logger.warning(f"Failed to parse version for {plugin_info.name}: <ERROR_TYPE>")
 
         # Check dependencies
@@ -177,7 +177,7 @@ class EntryPointPluginRegistry:
 
             except (ConnectionError, TimeoutError) as e:
                 error_type = type(e).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.debug("Exception: <ERROR_TYPE>")
                 logger.error(f"Failed to discover plugins in group {group}: <ERROR_TYPE>")
 
         return discovered
@@ -213,7 +213,7 @@ class EntryPointPluginRegistry:
             )
         except (ImportError, AttributeError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             logger.error(f"Failed to load entry point {entry_point.name}: <ERROR_TYPE>")
             return PluginInfo(
                 name=entry_point.name,
@@ -278,7 +278,7 @@ class EntryPointPluginRegistry:
 
         except (ValueError, TypeError, RuntimeError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             error_msg = f"Failed to load plugin {name}: {e}"
             plugin_info.error = error_msg
             logger.error(error_msg)

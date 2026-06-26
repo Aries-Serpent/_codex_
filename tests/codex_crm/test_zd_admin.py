@@ -26,8 +26,8 @@ class TestEmitZendeskConfig:
         out_dir = tmp_path / "zendesk" / "config"
         emit_zendesk_config(str(out_dir))
 
-        assert out_dir.exists()
-        assert out_dir.is_dir()
+        assert out_dir.exists(), "Condition must be true"
+        assert out_dir.is_dir(), "Condition must be true"
 
     @patch("codex_crm.zd_admin.generate.load_cdm")
     @patch("codex_crm.zd_admin.generate.load_mapping")
@@ -53,13 +53,13 @@ class TestEmitZendeskConfig:
         emit_zendesk_config(str(out_dir))
 
         forms_file = out_dir / "forms.json"
-        assert forms_file.exists()
+        assert forms_file.exists(), "f is not valid"
 
         forms = json.loads(forms_file.read_text())
         assert isinstance(forms, list)
-        assert len(forms) == 1
-        assert forms[0]["title"] == "Assignment"
-        assert "fields" in forms[0]
+        assert len(forms) == 1, "Forms must not be empty"
+        assert forms[0]["title"] == "Assignment", "f is not valid"
+        assert "fields" in forms[0], "Condition must be true"
 
     @patch("codex_crm.zd_admin.generate.load_cdm")
     @patch("codex_crm.zd_admin.generate.load_mapping")
@@ -74,12 +74,12 @@ class TestEmitZendeskConfig:
         emit_zendesk_config(str(out_dir))
 
         triggers_file = out_dir / "triggers.json"
-        assert triggers_file.exists()
+        assert triggers_file.exists(), "Condition must be true"
 
         triggers = json.loads(triggers_file.read_text())
         assert isinstance(triggers, list)
-        assert len(triggers) == 1
-        assert triggers[0]["title"] == "codex_assignment_auto_route"
+        assert len(triggers) == 1, "Triggers must not be empty"
+        assert triggers[0]["title"] == "codex_assignment_auto_route", "Condition must be true"
 
     @patch("codex_crm.zd_admin.generate.load_cdm")
     @patch("codex_crm.zd_admin.generate.load_mapping")
@@ -94,12 +94,12 @@ class TestEmitZendeskConfig:
         emit_zendesk_config(str(out_dir))
 
         sla_file = out_dir / "sla.json"
-        assert sla_file.exists()
+        assert sla_file.exists(), "Condition must be true"
 
         sla = json.loads(sla_file.read_text())
         assert isinstance(sla, list)
-        assert sla[0]["title"] == "codex_assignment_standard"
-        assert "policy" in sla[0]
+        assert sla[0]["title"] == "codex_assignment_standard", "Condition must be true"
+        assert "policy" in sla[0], "Condition must be true"
 
     @patch("codex_crm.zd_admin.generate.load_cdm")
     @patch("codex_crm.zd_admin.generate.load_mapping")
@@ -114,10 +114,10 @@ class TestEmitZendeskConfig:
         emit_zendesk_config(str(out_dir))
 
         mappings_file = out_dir / "mappings.json"
-        assert mappings_file.exists()
+        assert mappings_file.exists(), "Condition must be true"
 
         mappings = json.loads(mappings_file.read_text())
-        assert mappings == {"scope1": {"key1": "value1"}}
+        assert mappings == {"scope1": {"key1": "value1"}}, "Value must be initialized"
 
 
 class TestAssignmentForm:
@@ -134,12 +134,12 @@ class TestAssignmentForm:
         ]
         form = _assignment_form(fields)
 
-        assert form["title"] == "Assignment"
-        assert len(form["fields"]) == 2
-        assert form["fields"][0]["id"] == "f1"
-        assert form["fields"][0]["type"] == "text"
-        assert form["fields"][0]["required"] is True
-        assert form["fields"][1]["required"] is False
+        assert form["title"] == "Assignment", "f is not valid"
+        assert len(form["fields"]) == 2, "Collection must not be empty"
+        assert form["fields"][0]["id"] == "f1", "f is not valid"
+        assert form["fields"][0]["type"] == "text", "f is not valid"
+        assert form["fields"][0]["required"] is True, "f is not valid"
+        assert form["fields"][1]["required"] is False, "f is not valid"
 
 
 class TestDumpJson:
@@ -150,11 +150,11 @@ class TestDumpJson:
         from codex_crm.zd_admin.generate import _dump_json
 
         result = _dump_json({"z": 1, "a": 2, "m": 3})
-        assert result.index('"a"') < result.index('"m"') < result.index('"z"')
+        assert result.index('"a"') < result.index('"m"') < result.index('"z"'), "Result must not be empty"
 
     def test_dump_json_indented(self):
         """Test that JSON output is indented."""
         from codex_crm.zd_admin.generate import _dump_json
 
         result = _dump_json({"key": "value"})
-        assert "\n" in result  # Indented output has newlines
+        assert "\n" in result, "Result must not be empty"

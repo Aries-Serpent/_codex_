@@ -18,11 +18,11 @@ def test_honesty_recorder_flush_and_reload(tmp_path):
     flushed_path = recorder.flush()
     data = json.loads(flushed_path.read_text())
 
-    assert data["workflow"] == "unit-test"
-    assert data["summary"]["total"] == 2
-    assert data["summary"]["verified"] == 1
-    assert data["statements"][0]["category"] == "VERIFIED"
+    assert data["workflow"] == "unit-test", "Data must not be empty"
+    assert data["summary"]["total"] == 2, "Data must not be empty"
+    assert data["summary"]["verified"] == 1, "Data must not be empty"
+    assert data["statements"][0]["category"] == "VERIFIED", "Data must not be empty"
 
     reloaded = HonestyRecorder(workflow="unit-test", output_path=output)
     reloaded.load_existing()
-    assert len(reloaded.statements) == 2
+    assert len(reloaded.statements) == 2, "Collection must not be empty"

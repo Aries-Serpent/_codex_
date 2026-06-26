@@ -42,13 +42,13 @@ class TestStratifiedRouterBasic:
         _register_skill(reg, "code.search", ["code", "search"])
         router = StratifiedRouter(reg)
         decision = router.route("retrieve documentation", tags=["docs", "retrieval"])
-        assert decision.selected_skill_id == "doc.retriever"
+        assert decision.selected_skill_id == "doc.retriever", "selected_skill_id is not valid"
 
     def test_route_returns_none_when_no_skills(self):
         reg = SkillRegistry()
         router = StratifiedRouter(reg)
         decision = router.route("do something")
-        assert decision.selected_skill_id is None
+        assert decision.selected_skill_id is None, "selected_skill_id is not valid"
 
     def test_route_returns_scores_list(self):
         reg = SkillRegistry()
@@ -56,9 +56,9 @@ class TestStratifiedRouterBasic:
         _register_skill(reg, "code.search", ["code"])
         router = StratifiedRouter(reg)
         decision = router.route("anything", tags=["docs"])
-        assert len(decision.scores) == 2
+        assert len(decision.scores) == 2, "Collection must not be empty"
         # Scores sorted descending
-        assert decision.scores[0].total_score >= decision.scores[1].total_score
+        assert decision.scores[0].total_score >= decision.scores[1].total_score, "total_score must be greater than zero"
 
     def test_route_scores_between_0_and_1(self):
         reg = SkillRegistry()
@@ -66,7 +66,7 @@ class TestStratifiedRouterBasic:
         router = StratifiedRouter(reg)
         decision = router.route("search docs", tags=["docs"])
         for s in decision.scores:
-            assert 0.0 <= s.total_score <= 1.0
+            assert 0.0 <= s.total_score <= 1.0, "0 is not valid"
 
 
 class TestStratifiedRouterConstraints:
@@ -76,7 +76,7 @@ class TestStratifiedRouterConstraints:
         _register_skill(reg, "risky.skill", ["task"], risk_tier="high")
         router = StratifiedRouter(reg)
         decision = router.route("do task", tags=["task"], constraints={"risk_tier_max": "low"})
-        assert decision.selected_skill_id == "safe.skill"
+        assert decision.selected_skill_id == "safe.skill", "selected_skill_id is not valid"
 
     def test_budget_min_filters_exhausted_skills(self):
         reg = SkillRegistry()
@@ -85,7 +85,7 @@ class TestStratifiedRouterConstraints:
         reg.consume_budget("used.skill", calls=100)  # exhaust budget
         router = StratifiedRouter(reg)
         decision = router.route("do task", tags=["task"])
-        assert decision.selected_skill_id == "fresh.skill"
+        assert decision.selected_skill_id == "fresh.skill", "selected_skill_id is not valid"
 
     def test_allowlist_blocks_caller(self):
         reg = SkillRegistry()
@@ -101,7 +101,7 @@ class TestStratifiedRouterConstraints:
         )
         router = StratifiedRouter(reg)
         decision = router.route("do task", tags=["task"], caller_id="normal-user")
-        assert decision.selected_skill_id is None
+        assert decision.selected_skill_id is None, "selected_skill_id is not valid"
 
 
 class TestStratifiedRouterScoring:
@@ -111,16 +111,16 @@ class TestStratifiedRouterScoring:
         _register_skill(reg, "low.quality", ["docs"], aais=0.40)
         router = StratifiedRouter(reg)
         decision = router.route("search docs", tags=["docs"])
-        assert decision.selected_skill_id == "high.quality"
+        assert decision.selected_skill_id == "high.quality", "selected_skill_id is not valid"
 
     def test_score_skill_returns_routing_score(self):
         reg = SkillRegistry()
         _register_skill(reg, "doc.retriever", ["docs", "retrieval"])
         router = StratifiedRouter(reg)
         score = router.score_skill("doc.retriever", "retrieve docs", ["docs"])
-        assert score is not None
-        assert 0.0 <= score.total_score <= 1.0
-        assert score.skill_id == "doc.retriever"
+        assert score is not None, "score must be initialized"
+        assert 0.0 <= score.total_score <= 1.0, "0 is not valid"
+        assert score.skill_id == "doc.retriever", "skill_id is not valid"
 
     def test_score_skill_returns_none_for_unknown(self):
         reg = SkillRegistry()
@@ -135,6 +135,6 @@ class TestStratifiedRouterScoring:
             reg, weights={"match": 0.1, "fresh": 0.1, "aais": 0.6, "cost": 0.1, "risk": 0.1}
         )
         score = router.score_skill("doc.skill", "docs", ["docs"])
-        assert score is not None
+        assert score is not None, "score must be initialized"
         # AAIS contribution should dominate
         assert score.aais_score == pytest.approx(0.9, abs=0.01)

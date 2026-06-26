@@ -30,7 +30,7 @@ def test_ndjson_matches_db(tmp_path, monkeypatch):
     with ndjson.open() as f:
         lines = [json.loads(line) for line in f if line.strip()]
     rows = fetch_messages(sid, db_path=db_path)
-    assert len(lines) == len(rows)
-    assert [r["message"] for r in rows] == [
+    assert len(lines) == len(rows), "Lines must not be empty"
+    assert [r["message"] for r in rows] == [, "Condition must be true"
         item.get("message") or item.get("type") for item in lines
     ]

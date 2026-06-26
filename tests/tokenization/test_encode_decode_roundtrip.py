@@ -33,7 +33,7 @@ def test_encode_decode_roundtrip(tmp_path):
     )
     ids1 = tk.encode("hello world")
     ids2 = tk.encode("hello world")
-    assert ids1 == ids2
-    assert len(ids1) == 5
+    assert ids1 == ids2, "ids1 is not valid"
+    assert len(ids1) == 5, "Ids1 must not be empty"
     text = tk.decode(ids1, skip_special_tokens=False)
-    assert "hello" in text
+    assert "hello" in text, "Condition must be true"

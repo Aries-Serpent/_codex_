@@ -36,7 +36,7 @@ def test_pagination_aggregates_arrays(monkeypatch, capsys):
             "10",
         ]
     )
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
     out = capsys.readouterr().out.strip()
     payload = json.loads(out)
     assert isinstance(payload, list)
@@ -61,7 +61,7 @@ def test_cache_write_and_read(monkeypatch, tmp_path: Path, capsys):
             str(cache_dir),
         ]
     )
-    assert rc1 == 0
+    assert rc1 == 0, "rc1 is not valid"
     capsys.readouterr()
     cached_files = list(cache_dir.glob("*.json"))
     assert cached_files, "expected a cached JSON file"
@@ -81,7 +81,7 @@ def test_cache_write_and_read(monkeypatch, tmp_path: Path, capsys):
             "--use-cache-only",
         ]
     )
-    assert rc2 == 0
+    assert rc2 == 0, "rc2 is not valid"
     out = capsys.readouterr().out.strip()
     payload = json.loads(out)
-    assert payload.get("ok") is True
+    assert payload.get("ok") is True, "Condition must be true"

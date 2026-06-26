@@ -81,7 +81,7 @@ class TestMetricDeterminism:
         mse = MeanSquaredError()
         result1 = mse.compute(preds, targets)
         result2 = mse.compute(preds, targets)
-        assert result1 == result2
+        assert result1 == result2, "Result must not be empty"
 
     def test_mae_deterministic(self):
         """MAE should be deterministic."""
@@ -90,7 +90,7 @@ class TestMetricDeterminism:
         mae = MeanAbsoluteError()
         result1 = mae.compute(preds, targets)
         result2 = mae.compute(preds, targets)
-        assert result1 == result2
+        assert result1 == result2, "Result must not be empty"
 
     def test_accuracy_deterministic(self):
         """Accuracy should be deterministic."""
@@ -99,7 +99,7 @@ class TestMetricDeterminism:
         acc = Accuracy()
         result1 = acc.compute(preds, targets)
         result2 = acc.compute(preds, targets)
-        assert result1 == result2
+        assert result1 == result2, "Result must not be empty"
 
     @given(
         st.lists(
@@ -121,7 +121,7 @@ class TestMetricDeterminism:
         mse = MeanSquaredError()
         result1 = mse.compute(preds, targets)
         result2 = mse.compute(preds, targets)
-        assert result1 == result2
+        assert result1 == result2, "Result must not be empty"
 
     def test_mse_edge_cases(self):
         """MSE should handle edge cases."""
@@ -177,7 +177,7 @@ class TestNdjsonSchemaValidation:
         """Valid record should pass validation."""
         record = {"metric": "loss", "value": 0.5, "timestamp": "2024-01-01T00:00:00Z"}
         errors = validate_ndjson_record(record)
-        assert len(errors) == 0
+        assert len(errors) == 0, "Errors must not be empty"
 
     def test_valid_record_with_optional(self):
         """Record with optional fields should pass."""
@@ -189,27 +189,27 @@ class TestNdjsonSchemaValidation:
             "epoch": 1,
         }
         errors = validate_ndjson_record(record)
-        assert len(errors) == 0
+        assert len(errors) == 0, "Errors must not be empty"
 
     def test_missing_required_field(self):
         """Missing required field should fail."""
         record = {"metric": "loss", "value": 0.5}
         errors = validate_ndjson_record(record)
-        assert len(errors) == 1
-        assert "timestamp" in errors[0]
+        assert len(errors) == 1, "Errors must not be empty"
+        assert "timestamp" in errors[0], "Error should be raised or set"
 
     def test_wrong_type(self):
         """Wrong field type should fail."""
         record = {"metric": 123, "value": 0.5, "timestamp": "2024-01-01T00:00:00Z"}
         errors = validate_ndjson_record(record)
-        assert len(errors) == 1
-        assert "metric" in errors[0]
+        assert len(errors) == 1, "Errors must not be empty"
+        assert "metric" in errors[0], "Error should be raised or set"
 
     def test_all_missing_required(self):
         """All missing required fields should be reported."""
         record = {}
         errors = validate_ndjson_record(record)
-        assert len(errors) == 3
+        assert len(errors) == 3, "Errors must not be empty"
 
 
 # --- CSV Schema Validation Tests ---
@@ -237,19 +237,19 @@ class TestCsvSchemaValidation:
         """Valid header should pass validation."""
         header = ["metric_name", "metric_value", "timestamp"]
         errors = validate_csv_header(header)
-        assert len(errors) == 0
+        assert len(errors) == 0, "Errors must not be empty"
 
     def test_valid_header_with_optional(self):
         """Header with optional columns should pass."""
         header = ["metric_name", "metric_value", "timestamp", "step", "epoch"]
         errors = validate_csv_header(header)
-        assert len(errors) == 0
+        assert len(errors) == 0, "Errors must not be empty"
 
     def test_missing_required_column(self):
         """Missing required column should fail."""
         header = ["metric_name", "metric_value"]
         errors = validate_csv_header(header)
-        assert len(errors) == 1
+        assert len(errors) == 1, "Errors must not be empty"
 
 
 # --- Regression Suite Tests ---
@@ -313,30 +313,30 @@ class TestRegressionSuite:
         suite = RegressionSuite()
         suite.register_baseline("test1", {"accuracy": 0.95, "f1": 0.92})
         result = suite.check_regression("test1", {"accuracy": 0.95, "f1": 0.92})
-        assert result["status"] == "ok"
-        assert len(result["regressions"]) == 0
+        assert result["status"] == "ok", "Result must not be empty"
+        assert len(result["regressions"]) == 0, "Collection must not be empty"
 
     def test_detect_regression(self):
         """Detect regression when metric decreases."""
         suite = RegressionSuite()
         suite.register_baseline("test1", {"accuracy": 0.95})
         result = suite.check_regression("test1", {"accuracy": 0.90})
-        assert result["status"] == "regression"
-        assert len(result["regressions"]) == 1
+        assert result["status"] == "regression", "Result must not be empty"
+        assert len(result["regressions"]) == 1, "Collection must not be empty"
 
     def test_detect_improvement(self):
         """Detect improvement when metric increases."""
         suite = RegressionSuite()
         suite.register_baseline("test1", {"accuracy": 0.90})
         result = suite.check_regression("test1", {"accuracy": 0.95})
-        assert result["status"] == "ok"
-        assert len(result["improvements"]) == 1
+        assert result["status"] == "ok", "Result must not be empty"
+        assert len(result["improvements"]) == 1, "Collection must not be empty"
 
     def test_no_baseline(self):
         """Handle missing baseline gracefully."""
         suite = RegressionSuite()
         result = suite.check_regression("unknown", {"accuracy": 0.95})
-        assert result["status"] == "no_baseline"
+        assert result["status"] == "no_baseline", "Result must not be empty"
 
 
 # --- Eval Data Versioning Tests ---
@@ -372,19 +372,19 @@ class TestEvalDataVersioning:
         """Matching versions should be equal."""
         v1 = EvalDataVersion("test_set", "1.0.0", "abc123", 1000)
         v2 = EvalDataVersion("test_set", "1.0.0", "abc123", 1000)
-        assert v1.matches(v2)
+        assert v1.matches(v2), "Condition must be true"
 
     def test_version_mismatch(self):
         """Different versions should not match."""
         v1 = EvalDataVersion("test_set", "1.0.0", "abc123", 1000)
         v2 = EvalDataVersion("test_set", "1.0.1", "abc123", 1000)
-        assert not v1.matches(v2)
+        assert not v1.matches(v2), "Condition must be true"
 
     def test_checksum_mismatch(self):
         """Different checksums should not match."""
         v1 = EvalDataVersion("test_set", "1.0.0", "abc123", 1000)
         v2 = EvalDataVersion("test_set", "1.0.0", "def456", 1000)
-        assert not v1.matches(v2)
+        assert not v1.matches(v2), "Condition must be true"
 
     def test_data_checksum_deterministic(self):
         """Data checksum should be deterministic."""
@@ -394,7 +394,7 @@ class TestEvalDataVersioning:
         ]
         h1 = compute_data_checksum(data)
         h2 = compute_data_checksum(data)
-        assert h1 == h2
+        assert h1 == h2, "h1 is not valid"
 
     @given(
         st.lists(
@@ -408,7 +408,7 @@ class TestEvalDataVersioning:
         """Property: data checksum is deterministic."""
         h1 = compute_data_checksum(data)
         h2 = compute_data_checksum(data)
-        assert h1 == h2
+        assert h1 == h2, "h1 is not valid"
 
 
 # --- Metric Registry Tests ---
@@ -440,12 +440,12 @@ class TestMetricRegistry:
         """Register and retrieve metric."""
         registry = MetricRegistry()
         registry.register("mse", MeanSquaredError)
-        assert registry.get("mse") == MeanSquaredError
+        assert registry.get("mse") == MeanSquaredError, "Error should be raised or set"
 
     def test_get_unknown(self):
         """Get unknown metric returns None."""
         registry = MetricRegistry()
-        assert registry.get("unknown") is None
+        assert registry.get("unknown") is None, "Condition must be true"
 
     def test_list_metrics(self):
         """List all registered metrics."""
@@ -465,19 +465,19 @@ class TestMetricBounds:
         """Accuracy should be in [0, 1]."""
         acc = Accuracy()
         result = acc.compute([0, 1, 0], [1, 1, 0])
-        assert 0.0 <= result <= 1.0
+        assert 0.0 <= result <= 1.0, "Result must not be empty"
 
     def test_mse_non_negative(self):
         """MSE should be non-negative."""
         mse = MeanSquaredError()
         result = mse.compute([1.0, 2.0], [3.0, 4.0])
-        assert result >= 0.0
+        assert result >= 0.0, "result must be greater than zero"
 
     def test_mae_non_negative(self):
         """MAE should be non-negative."""
         mae = MeanAbsoluteError()
         result = mae.compute([1.0, 2.0], [3.0, 4.0])
-        assert result >= 0.0
+        assert result >= 0.0, "result must be greater than zero"
 
     @given(
         st.lists(st.integers(min_value=0, max_value=1), min_size=1, max_size=50),
@@ -490,7 +490,7 @@ class TestMetricBounds:
             return
         acc = Accuracy()
         result = acc.compute(preds, targets)
-        assert 0.0 <= result <= 1.0
+        assert 0.0 <= result <= 1.0, "Result must not be empty"
 
 
 # --- Aggregation Tests ---
@@ -503,13 +503,13 @@ class TestMetricAggregation:
         """Mean aggregation should work correctly."""
         values = [0.8, 0.9, 0.85, 0.95]
         mean = sum(values) / len(values)
-        assert abs(mean - 0.875) < 1e-9
+        assert abs(mean - 0.875) < 1e-9, "Condition must be true"
 
     def test_min_max_aggregation(self):
         """Min/max aggregation should work correctly."""
         values = [0.8, 0.9, 0.85, 0.95]
-        assert min(values) == 0.8
-        assert max(values) == 0.95
+        assert min(values) == 0.8, "Value must be initialized"
+        assert max(values) == 0.95, "Value must be initialized"
 
     def test_weighted_aggregation(self):
         """Weighted aggregation should work correctly."""
@@ -517,4 +517,4 @@ class TestMetricAggregation:
         weights = [1.0, 3.0]
         weighted_mean = sum(v * w for v, w in zip(values, weights)) / sum(weights)
         expected = (0.8 * 1.0 + 0.9 * 3.0) / 4.0
-        assert abs(weighted_mean - expected) < 1e-9
+        assert abs(weighted_mean - expected) < 1e-9, "Condition must be true"

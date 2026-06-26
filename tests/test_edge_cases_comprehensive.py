@@ -28,7 +28,7 @@ class TestNumericBoundaryConditions:
     )
     def test_zero_boundary(self, value, expected_zero):
         """Test zero vs non-zero boundary conditions."""
-        assert (value == 0) == expected_zero
+        assert (value == 0) == expected_zero, "Value must be initialized"
 
     @pytest.mark.parametrize(
         "value",
@@ -44,7 +44,7 @@ class TestNumericBoundaryConditions:
     def test_integer_extremes(self, value):
         """Test maximum and minimum integer values."""
         assert isinstance(value, int)
-        assert value == value + 0
+        assert value == value + 0, "Value must be initialized"
 
     @pytest.mark.parametrize(
         "op,a,b,expected",
@@ -60,7 +60,7 @@ class TestNumericBoundaryConditions:
     def test_integer_arithmetic_boundaries(self, op, a, b, expected):
         """Test arithmetic operations near integer boundaries."""
         result = op(a, b)
-        assert result == expected
+        assert result == expected, "Result must not be empty"
 
     @pytest.mark.parametrize(
         "value,is_positive",
@@ -76,7 +76,7 @@ class TestNumericBoundaryConditions:
     )
     def test_positive_negative_classification(self, value, is_positive):
         """Test classification of positive vs negative numbers."""
-        assert (value >= 0) == is_positive
+        assert (value >= 0) == is_positive, "value must be greater than zero"
 
     @pytest.mark.parametrize(
         "value",
@@ -88,7 +88,7 @@ class TestNumericBoundaryConditions:
     )
     def test_infinity_values(self, value):
         """Test infinity boundary conditions."""
-        assert math.isinf(value)
+        assert math.isinf(value), "Value must be initialized"
 
     @pytest.mark.parametrize(
         "value",
@@ -98,9 +98,9 @@ class TestNumericBoundaryConditions:
     )
     def test_nan_value(self, value):
         """Test NaN special value."""
-        assert math.isnan(value)
+        assert math.isnan(value), "Value must be initialized"
         # NaN is not equal to itself
-        assert not (value == value)
+        assert not (value == value), "Value must be initialized"
 
     @pytest.mark.parametrize(
         "value,expected_finite",
@@ -115,7 +115,7 @@ class TestNumericBoundaryConditions:
     )
     def test_float_finiteness(self, value, expected_finite):
         """Test finite vs infinite float values."""
-        assert math.isfinite(value) == expected_finite
+        assert math.isfinite(value) == expected_finite, "Value must be initialized"
 
     @pytest.mark.parametrize(
         "a,b",
@@ -145,7 +145,7 @@ class TestNumericBoundaryConditions:
     )
     def test_float_to_int_conversion(self, value, as_int):
         """Test float to int conversion at boundaries."""
-        assert int(value) == as_int
+        assert int(value) == as_int, "Value must be initialized"
 
     @pytest.mark.parametrize(
         "value",
@@ -173,8 +173,8 @@ class TestNumericBoundaryConditions:
     )
     def test_int_float_equality(self, a, b):
         """Test int and float equality comparisons."""
-        assert a == b
-        assert b == a
+        assert a == b, "a is not valid"
+        assert b == a, "b is not valid"
 
     @pytest.mark.parametrize(
         "value",
@@ -198,7 +198,7 @@ class TestNumericBoundaryConditions:
     )
     def test_type_coercion_numeric(self, a, b):
         """Test numeric type coercion."""
-        assert a == b or abs(a - b) < 1e-10
+        assert a == b or abs(a - b) < 1e-10, "a is not valid"
 
     @pytest.mark.parametrize(
         "operation,expected_zero",
@@ -213,9 +213,9 @@ class TestNumericBoundaryConditions:
         """Test operations that result in zero."""
         result = operation()
         if expected_zero:
-            assert result == 0 or result == 0.0
+            assert result == 0 or result == 0.0, "Result must not be empty"
         else:
-            assert math.isnan(result)
+            assert math.isnan(result), "Result must not be empty"
 
     @pytest.mark.parametrize(
         "numerator,denominator",
@@ -257,7 +257,7 @@ class TestNumericBoundaryConditions:
     )
     def test_absolute_value(self, value):
         """Test absolute value of boundary integers."""
-        assert value >= 0
+        assert value >= 0, "value must be greater than zero"
 
 
 # ============================================================================
@@ -283,7 +283,7 @@ class TestCollectionEdgeCases:
     )
     def test_empty_collections(self, collection, is_empty):
         """Test empty collection identification."""
-        assert len(collection) == 0 if is_empty else len(collection) > 0
+        assert len(collection) == 0 if is_empty else len(collection) > 0, "Collection must not be empty"
 
     @pytest.mark.parametrize(
         "collection",
@@ -296,7 +296,7 @@ class TestCollectionEdgeCases:
     )
     def test_single_element_collections(self, collection):
         """Test single-element collections."""
-        assert len(collection) == 1
+        assert len(collection) == 1, "Collection must not be empty"
 
     @pytest.mark.parametrize(
         "size",
@@ -310,9 +310,9 @@ class TestCollectionEdgeCases:
     def test_large_list_creation(self, size):
         """Test creation and properties of large lists."""
         large_list = list(range(size))
-        assert len(large_list) == size
-        assert large_list[0] == 0
-        assert large_list[-1] == size - 1
+        assert len(large_list) == size, "Large_list must not be empty"
+        assert large_list[0] == 0, "Condition must be true"
+        assert large_list[-1] == size - 1, "Condition must be true"
 
     @pytest.mark.parametrize(
         "size",
@@ -325,19 +325,19 @@ class TestCollectionEdgeCases:
     def test_large_dict_creation(self, size):
         """Test creation and properties of large dicts."""
         large_dict = {i: i * 2 for i in range(size)}
-        assert len(large_dict) == size
-        assert large_dict[0] == 0
-        assert large_dict[size - 1] == (size - 1) * 2
+        assert len(large_dict) == size, "Large_dict must not be empty"
+        assert large_dict[0] == 0, "Condition must be true"
+        assert large_dict[size - 1] == (size - 1) * 2, "Condition must be true"
 
     def test_nested_list_structure(self):
         """Test deeply nested list structures."""
         nested = [[[[1]]]]
-        assert nested[0][0][0][0] == 1
+        assert nested[0][0][0][0] == 1, "Condition must be true"
 
     def test_nested_dict_structure(self):
         """Test deeply nested dict structures."""
         nested = {"a": {"b": {"c": {"d": 1}}}}
-        assert nested["a"]["b"]["c"]["d"] == 1
+        assert nested["a"]["b"]["c"]["d"] == 1, "Condition must be true"
 
     @pytest.mark.parametrize(
         "items",
@@ -349,8 +349,8 @@ class TestCollectionEdgeCases:
     )
     def test_duplicate_items(self, items):
         """Test lists with duplicate items."""
-        assert len(items) == 3
-        assert len(set(items)) == 1
+        assert len(items) == 3, "Items must not be empty"
+        assert len(set(items)) == 1, "Collection must not be empty"
 
     @pytest.mark.parametrize(
         "items",
@@ -361,7 +361,7 @@ class TestCollectionEdgeCases:
     )
     def test_unique_items(self, items):
         """Test lists with unique items."""
-        assert len(items) == len(set(items))
+        assert len(items) == len(set(items)), "Items must not be empty"
 
     @pytest.mark.parametrize(
         "mixed_list",
@@ -373,7 +373,7 @@ class TestCollectionEdgeCases:
     )
     def test_mixed_type_collections(self, mixed_list):
         """Test collections with mixed types."""
-        assert len(mixed_list) == 4
+        assert len(mixed_list) == 4, "Mixed_list must not be empty"
 
     @pytest.mark.parametrize(
         "collection",
@@ -388,7 +388,7 @@ class TestCollectionEdgeCases:
         count = 0
         for _ in collection:
             count += 1
-        assert count == 0
+        assert count == 0, "Count must be greater than zero"
 
     @pytest.mark.parametrize(
         "collection",
@@ -403,17 +403,17 @@ class TestCollectionEdgeCases:
         count = 0
         for _ in collection:
             count += 1
-        assert count == len(collection)
+        assert count == len(collection), "Collection must not be empty"
 
     def test_dict_with_none_key(self):
         """Test dict with None as a key."""
         d = {None: "value"}
-        assert d[None] == "value"
+        assert d[None] == "value", "Value must be initialized"
 
     def test_dict_with_none_value(self):
         """Test dict with None as a value."""
         d = {"key": None}
-        assert d["key"] is None
+        assert d["key"] is None, "Condition must be true"
 
     @pytest.mark.parametrize(
         "collection",
@@ -424,18 +424,18 @@ class TestCollectionEdgeCases:
     )
     def test_none_in_collections(self, collection):
         """Test None values in collections."""
-        assert None in collection
+        assert None in collection, "Condition must be true"
 
     def test_list_with_empty_nested(self):
         """Test list containing empty collections."""
         lst = [[], {}, set(), ""]
-        assert len(lst) == 4
-        assert all(len(item) == 0 for item in lst)
+        assert len(lst) == 4, "Lst must not be empty"
+        assert all(len(item) == 0 for item in lst), "Item must not be empty"
 
     def test_dict_with_empty_nested(self):
         """Test dict with empty collection values."""
         d = {"empty_list": [], "empty_dict": {}, "empty_set": set()}
-        assert all(len(v) == 0 for v in d.values())
+        assert all(len(v) == 0 for v in d.values()), "V must not be empty"
 
     @pytest.mark.parametrize(
         "lst,expected_index",
@@ -447,39 +447,39 @@ class TestCollectionEdgeCases:
     )
     def test_negative_indexing(self, lst, expected_index):
         """Test negative indexing in lists."""
-        assert lst[expected_index] == lst[len(lst) + expected_index]
+        assert lst[expected_index] == lst[len(lst) + expected_index], "Lst must not be empty"
 
     def test_slice_empty_list(self):
         """Test slicing empty list."""
-        assert [][0:0] == []
-        assert [][0:] == []
-        assert [][:0] == []
+        assert [][0:0] == [], "Condition must be true"
+        assert [][0:] == [], "Condition must be true"
+        assert [][:0] == [], "Condition must be true"
 
     def test_slice_single_element(self):
         """Test slicing single-element list."""
         lst = [1]
-        assert lst[0:1] == [1]
-        assert lst[1:] == []
-        assert lst[:0] == []
+        assert lst[0:1] == [1], "Condition must be true"
+        assert lst[1:] == [], "Condition must be true"
+        assert lst[:0] == [], "Condition must be true"
 
     def test_set_operations_empty(self):
         """Test set operations with empty sets."""
-        assert set() | set() == set()
-        assert set() & set() == set()
-        assert set() - set() == set()
+        assert set() | set() == set(), "Condition must be true"
+        assert set() & set() == set(), "Condition must be true"
+        assert set() - set() == set(), "Condition must be true"
 
     def test_set_operations_with_duplicates(self):
         """Test set conversion removes duplicates."""
         lst = [1, 2, 2, 3, 3, 3]
         s = set(lst)
-        assert len(s) == 3
+        assert len(s) == 3, "S must not be empty"
         assert s == {1, 2, 3}
 
     def test_list_set_list_roundtrip(self):
         """Test converting list to set and back."""
         original = [1, 2, 3]
         converted = list(set(original))
-        assert set(converted) == set(original)
+        assert set(converted) == set(original), "Condition must be true"
 
     @pytest.mark.parametrize(
         "collection,item,expected",
@@ -494,56 +494,56 @@ class TestCollectionEdgeCases:
     )
     def test_membership_testing(self, collection, item, expected):
         """Test membership checking in collections."""
-        assert (item in collection) == expected
+        assert (item in collection) == expected, "Item must not be empty"
 
     def test_list_multiplication(self):
         """Test list multiplication edge cases."""
-        assert [1] * 0 == []
-        assert [1] * 1 == [1]
+        assert [1] * 0 == [], "0 is not valid"
+        assert [1] * 1 == [1], "1 is not valid"
         assert [1] * 5 == [1, 1, 1, 1, 1]
 
     def test_list_addition(self):
         """Test list addition edge cases."""
-        assert [] + [] == []
-        assert [1] + [] == [1]
-        assert [] + [1] == [1]
+        assert [] + [] == [], "Condition must be true"
+        assert [1] + [] == [1], "Condition must be true"
+        assert [] + [1] == [1], "Condition must be true"
         assert [1] + [2] == [1, 2]
 
     def test_string_multiplication(self):
         """Test string multiplication edge cases."""
-        assert "" * 5 == ""
-        assert "a" * 0 == ""
-        assert "a" * 1 == "a"
-        assert "a" * 5 == "aaaaa"
+        assert "" * 5 == "", "5 is not valid"
+        assert "a" * 0 == "", "0 is not valid"
+        assert "a" * 1 == "a", "1 is not valid"
+        assert "a" * 5 == "aaaaa", "5 is not valid"
 
     def test_dict_update_empty(self):
         """Test dict update with empty dict."""
         d = {"a": 1}
         d.update({})
-        assert d == {"a": 1}
+        assert d == {"a": 1}, "d is not valid"
 
     def test_dict_update_overwrite(self):
         """Test dict update overwrites values."""
         d = {"a": 1}
         d.update({"a": 2})
-        assert d == {"a": 2}
+        assert d == {"a": 2}, "d is not valid"
 
     def test_list_pop_all_elements(self):
         """Test popping all elements from list."""
         lst = [1, 2, 3]
         lst.pop()
-        assert len(lst) == 2
+        assert len(lst) == 2, "Lst must not be empty"
         lst.pop()
-        assert len(lst) == 1
+        assert len(lst) == 1, "Lst must not be empty"
         lst.pop()
-        assert len(lst) == 0
+        assert len(lst) == 0, "Lst must not be empty"
 
     def test_list_clear(self):
         """Test clearing a list."""
         lst = [1, 2, 3]
         lst.clear()
-        assert lst == []
-        assert len(lst) == 0
+        assert lst == [], "lst is not valid"
+        assert len(lst) == 0, "Lst must not be empty"
 
 
 # ============================================================================
@@ -556,8 +556,8 @@ class TestStringEdgeCases:
 
     def test_empty_string(self):
         """Test empty string."""
-        assert "" == ""
-        assert len("") == 0
+        assert "" == "", "Condition must be true"
+        assert len("") == 0, "Collection must not be empty"
 
     @pytest.mark.parametrize(
         "s",
@@ -571,20 +571,20 @@ class TestStringEdgeCases:
     )
     def test_single_character_strings(self, s):
         """Test single-character strings."""
-        assert len(s) == 1
+        assert len(s) == 1, "S must not be empty"
 
     def test_very_long_string(self):
         """Test very long string creation."""
         long_str = "a" * 10000
-        assert len(long_str) == 10000
-        assert long_str[0] == "a"
-        assert long_str[-1] == "a"
+        assert len(long_str) == 10000, "Long_str must not be empty"
+        assert long_str[0] == "a", "Condition must be true"
+        assert long_str[-1] == "a", "Condition must be true"
 
     def test_very_long_string_operations(self):
         """Test operations on very long strings."""
         long_str = "x" * 5000
-        assert "x" in long_str
-        assert long_str.count("x") == 5000
+        assert "x" in long_str, "Condition must be true"
+        assert long_str.count("x") == 5000, "Count must be greater than zero"
 
     @pytest.mark.parametrize(
         "s",
@@ -597,70 +597,70 @@ class TestStringEdgeCases:
     )
     def test_whitespace_only_strings(self, s):
         """Test whitespace-only strings."""
-        assert len(s) > 0
-        assert s.strip() == ""
+        assert len(s) > 0, "S must not be empty"
+        assert s.strip() == "", "Condition must be true"
 
     def test_unicode_characters(self):
         """Test Unicode character strings."""
         s = "こんにちは"  # Japanese
-        assert len(s) == 5
+        assert len(s) == 5, "S must not be empty"
 
     def test_emoji_strings(self):
         """Test strings with emoji."""
         s = "Hello 👋 World 🌍"
-        assert "👋" in s
-        assert len(s) > 0
+        assert "👋" in s, "Condition must be true"
+        assert len(s) > 0, "S must not be empty"
 
     def test_rtl_text(self):
         """Test right-to-left text."""
         s = "مرحبا"  # Arabic
-        assert len(s) > 0
+        assert len(s) > 0, "S must not be empty"
 
     def test_control_characters(self):
         """Test strings with control characters."""
         s = "hello\x00world"
-        assert len(s) == 11
-        assert "\x00" in s
+        assert len(s) == 11, "S must not be empty"
+        assert "\x00" in s, "Condition must be true"
 
     def test_null_byte_in_string(self):
         """Test null byte in string."""
         s = "test\x00string"
-        assert s.count("\x00") == 1
+        assert s.count("\x00") == 1, "Count must be greater than zero"
 
     def test_string_with_newlines(self):
         """Test string with multiple newlines."""
         s = "line1\nline2\nline3"
-        assert s.count("\n") == 2
-        assert len(s.split("\n")) == 3
+        assert s.count("\n") == 2, "Count must be greater than zero"
+        assert len(s.split("\n")) == 3, "Collection must not be empty"
 
     def test_string_escapes(self):
         """Test string with escape sequences."""
         s = 'quote: " backslash: \\ newline: \n'
-        assert '"' in s
-        assert "\\" in s
-        assert "\n" in s
+        assert '"' in s, "Condition must be true"
+        assert "\\" in s, "Condition must be true"
+        assert "\n" in s, "Condition must be true"
 
     def test_string_case_operations(self):
         """Test string case operations at boundaries."""
-        assert "".upper() == ""
-        assert "a".upper() == "A"
-        assert "A".lower() == "a"
+        assert "".upper() == "", "Condition must be true"
+        assert "a".upper() == "A", "Condition must be true"
+        assert "A".lower() == "a", "Condition must be true"
 
     def test_string_strip_operations(self):
         """Test string strip at boundaries."""
-        assert "".strip() == ""
-        assert "a".strip() == "a"
-        assert "   a   ".strip() == "a"
+        assert "".strip() == "", "Condition must be true"
+        assert "a".strip() == "a", "Condition must be true"
+        assert "   a   ".strip() == "a", "Condition must be true"
 
     def test_string_split_empty(self):
         """Test split on empty string."""
         parts = "".split()
-        assert parts == []
+        assert parts == [], "parts is not valid"
 
     def test_string_split_no_separator(self):
         """Test split when separator not found."""
         parts = "abc".split(",")
-        assert parts == ["abc"]
+        assert parts == ["abc"], "parts is not valid"
 
     def test_string_split_multiple(self):
         """Test split with multiple separators."""
@@ -670,53 +670,53 @@ class TestStringEdgeCases:
     def test_string_replace_empty_result(self):
         """Test string replace resulting in empty."""
         result = "a".replace("a", "")
-        assert result == ""
+        assert result == "", "Result must not be empty"
 
     def test_string_replace_no_match(self):
         """Test string replace with no match."""
         result = "abc".replace("x", "y")
-        assert result == "abc"
+        assert result == "abc", "Result must not be empty"
 
     def test_string_startswith_empty(self):
         """Test startswith with empty string."""
-        assert "".startswith("")
-        assert "a".startswith("")
+        assert "".startswith(""), "Condition must be true"
+        assert "a".startswith(""), "Condition must be true"
 
     def test_string_endswith_empty(self):
         """Test endswith with empty string."""
-        assert "".endswith("")
-        assert "a".endswith("")
+        assert "".endswith(""), "Condition must be true"
+        assert "a".endswith(""), "Condition must be true"
 
     def test_string_find_not_found(self):
         """Test find when substring not found."""
-        assert "abc".find("x") == -1
+        assert "abc".find("x") == -1, "Condition must be true"
 
     def test_string_find_empty(self):
         """Test find with empty substring."""
-        assert "abc".find("") == 0
+        assert "abc".find("") == 0, "Condition must be true"
 
     def test_string_count_zero(self):
         """Test count when substring not found."""
-        assert "abc".count("x") == 0
+        assert "abc".count("x") == 0, "Count must be greater than zero"
 
     def test_string_count_empty(self):
         """Test count with empty substring."""
-        assert "".count("") == 1
-        assert "a".count("") == 2
+        assert "".count("") == 1, "Count must be greater than zero"
+        assert "a".count("") == 2, "Count must be greater than zero"
 
     def test_string_index_boundaries(self):
         """Test indexing at string boundaries."""
         s = "abc"
-        assert s[0] == "a"
-        assert s[-1] == "c"
-        assert s[-3] == "a"
+        assert s[0] == "a", "Condition must be true"
+        assert s[-1] == "c", "Condition must be true"
+        assert s[-3] == "a", "Condition must be true"
 
     def test_string_slice_boundaries(self):
         """Test slicing at string boundaries."""
         s = "abc"
-        assert s[:1] == "a"
-        assert s[1:] == "bc"
-        assert s[::1] == "abc"
+        assert s[:1] == "a", "Condition must be true"
+        assert s[1:] == "bc", "Condition must be true"
+        assert s[::1] == "abc", "Condition must be true"
 
 
 # ============================================================================
@@ -738,7 +738,7 @@ class TestTypeCoercion:
     )
     def test_string_to_int_valid(self, value, expected_int):
         """Test valid string to int conversion."""
-        assert int(value) == expected_int
+        assert int(value) == expected_int, "Value must be initialized"
 
     @pytest.mark.parametrize(
         "invalid_str",
@@ -769,9 +769,9 @@ class TestTypeCoercion:
         """Test valid string to float conversion."""
         result = float(value)
         if math.isfinite(expected_float):
-            assert result == expected_float
+            assert result == expected_float, "Result must not be empty"
         else:
-            assert math.isinf(result) and (result > 0) == (expected_float > 0)
+            assert math.isinf(result) and (result > 0) == (expected_float > 0), "result must be greater than zero"
 
     @pytest.mark.parametrize(
         "invalid_str",
@@ -801,22 +801,22 @@ class TestTypeCoercion:
     def test_type_bool_conversion(self, value, is_truthy):
         """Test conversion to boolean."""
         # Test truthiness: empty/zero/None are falsy
-        assert bool(value) == is_truthy
+        assert bool(value) == is_truthy, "Value must be initialized"
 
     def test_list_to_set_to_list_roundtrip(self):
         """Test list to set to list conversion."""
         original = [1, 2, 3]
         converted = list(set(original))
-        assert set(converted) == set(original)
+        assert set(converted) == set(original), "Condition must be true"
 
     def test_dict_key_type_validation(self):
         """Test dict key types."""
         d = {}
         d[1] = "int"
         d["1"] = "str"
-        assert len(d) == 2
-        assert d[1] == "int"
-        assert d["1"] == "str"
+        assert len(d) == 2, "D must not be empty"
+        assert d[1] == "int", "Condition must be true"
+        assert d["1"] == "str", "Condition must be true"
 
     def test_dict_key_immutable_types(self):
         """Test dict with various immutable key types."""
@@ -825,15 +825,15 @@ class TestTypeCoercion:
         d[1.5] = "float"
         d["str"] = "string"
         d[(1, 2)] = "tuple"
-        assert len(d) == 4
+        assert len(d) == 4, "D must not be empty"
 
     def test_none_in_operations(self):
         """Test None in various operations."""
         # None comparisons
-        assert None is None
-        assert None is None
-        assert None is not True
-        assert None is not False
+        assert None is None, "None is not valid"
+        assert None is None, "None is not valid"
+        assert None is not True, "None is not valid"
+        assert None is not False, "None is not valid"
 
     def test_none_propagation_through_chain(self):
         """Test None behavior through function chains."""
@@ -843,57 +843,57 @@ class TestTypeCoercion:
                 return None
             return value * 2
 
-        assert process(None) is None
-        assert process(5) == 10
+        assert process(None) is None, "Condition must be true"
+        assert process(5) == 10, "Condition must be true"
 
     def test_implicit_boolean_coercion(self):
         """Test implicit boolean coercion."""
-        assert bool(1) is True
-        assert bool(0) is False
-        assert bool("") is False
-        assert bool("a") is True
-        assert bool([]) is False
-        assert bool([1]) is True
+        assert bool(1) is True, "Condition must be true"
+        assert bool(0) is False, "Condition must be true"
+        assert bool("") is False, "Condition must be true"
+        assert bool("a") is True, "Condition must be true"
+        assert bool([]) is False, "Condition must be true"
+        assert bool([1]) is True, "Condition must be true"
 
     def test_string_boolean_coercion_edge_case(self):
         """Test string 'False' is truthy."""
-        assert bool("False") is True
-        assert bool("") is False
+        assert bool("False") is True, "Condition must be true"
+        assert bool("") is False, "Condition must be true"
 
     def test_numeric_string_coercion(self):
         """Test numeric strings in boolean context."""
-        assert bool("0") is True
-        assert bool("-0") is True
-        assert bool("") is False
+        assert bool("0") is True, "Condition must be true"
+        assert bool("-0") is True, "Condition must be true"
+        assert bool("") is False, "Condition must be true"
 
     def test_none_vs_false_distinction(self):
         """Test distinction between None and False."""
-        assert None
-        assert None is not False
-        assert False == 0
-        assert None != 0
+        assert None, "None is not valid"
+        assert None is not False, "None is not valid"
+        assert False == 0, "False is not valid"
+        assert None != 0, "None is not valid"
 
     def test_list_in_boolean_context(self):
         """Test list truthiness."""
-        assert bool([]) is False
-        assert bool([None]) is True
-        assert bool([False]) is True
-        assert bool([0]) is True
+        assert bool([]) is False, "Condition must be true"
+        assert bool([None]) is True, "Condition must be true"
+        assert bool([False]) is True, "Condition must be true"
+        assert bool([0]) is True, "Condition must be true"
 
     def test_empty_dict_boolean(self):
         """Test empty dict in boolean context."""
-        assert bool({}) is False
-        assert bool({"a": None}) is True
+        assert bool({}) is False, "Condition must be true"
+        assert bool({"a": None}) is True, "Condition must be true"
 
     def test_zero_variants_equality(self):
         """Test equality of zero variants."""
-        assert 0 == 0.0
-        assert 0 == -0
-        assert 0.0 == -0.0
+        assert 0 == 0.0, "0 is not valid"
+        assert 0 == -0, "0 is not valid"
+        assert 0.0 == -0.0, "0 is not valid"
 
     def test_type_preservation_through_operations(self):
         """Test type preservation through operations."""
-        assert type(1 + 1) is int
-        assert type(1.0 + 1.0) is float
-        assert type(1 + 1.0) is float
-        assert type([1] + [2]) is list
+        assert type(1 + 1) is int, "Condition must be true"
+        assert type(1.0 + 1.0) is float, "Condition must be true"
+        assert type(1 + 1.0) is float, "Condition must be true"
+        assert type([1] + [2]) is list, "Condition must be true"

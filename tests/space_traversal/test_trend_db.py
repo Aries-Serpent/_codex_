@@ -14,9 +14,9 @@ def test_trend_database_init(tmp_path: Path):
     db_path = tmp_path / "test_trends.db"
     db = TrendDatabase(db_path)
 
-    assert db_path.exists()
-    assert db.get_schema_version() == "1.5.0"
-    assert db.get_run_count() == 0
+    assert db_path.exists(), "Condition must be true"
+    assert db.get_schema_version() == "1.5.0", "Condition must be true"
+    assert db.get_run_count() == 0, "Count must be greater than zero"
 
 
 def test_store_and_retrieve_snapshot(tmp_path: Path):
@@ -56,8 +56,8 @@ def test_store_and_retrieve_snapshot(tmp_path: Path):
     )
 
     run_id = db.store_snapshot(snapshot)
-    assert run_id == "test-run-001"
-    assert db.get_run_count() == 1
+    assert run_id == "test-run-001", "run_id is not valid"
+    assert db.get_run_count() == 1, "Count must be greater than zero"
 
 
 def test_get_trend(tmp_path: Path):
@@ -86,10 +86,10 @@ def test_get_trend(tmp_path: Path):
 
     # Get trend
     trend = db.get_trend("cap1", limit=10)
-    assert len(trend) == 5
+    assert len(trend) == 5, "Trend must not be empty"
     # Should be in descending timestamp order
-    assert trend[0]["score"] == 0.85  # Most recent
-    assert trend[-1]["score"] == 0.75  # Oldest
+    assert trend[0]["score"] == 0.85, "Condition must be true"
+    assert trend[-1]["score"] == 0.75, "Condition must be true"
 
 
 def test_get_trend_with_branch_filter(tmp_path: Path):
@@ -118,8 +118,8 @@ def test_get_trend_with_branch_filter(tmp_path: Path):
 
     # Filter by main branch
     trend = db.get_trend("cap1", branch="main")
-    assert len(trend) == 2
-    assert all(t["git_branch"] == "main" for t in trend)
+    assert len(trend) == 2, "Trend must not be empty"
+    assert all(t["git_branch"] == "main" for t in trend), "Condition must be true"
 
 
 def test_get_latest_scores(tmp_path: Path):
@@ -161,9 +161,9 @@ def test_get_latest_scores(tmp_path: Path):
     db.store_snapshot(snapshot2)
 
     latest = db.get_latest_scores()
-    assert latest["cap1"] == 0.8  # Latest
-    assert latest["cap2"] == 0.6  # From run-001
-    assert latest["cap3"] == 0.9
+    assert latest["cap1"] == 0.8, "Condition must be true"
+    assert latest["cap2"] == 0.6, "Condition must be true"
+    assert latest["cap3"] == 0.9, "Condition must be true"
 
 
 def test_get_regressions(tmp_path: Path):
@@ -192,9 +192,9 @@ def test_get_regressions(tmp_path: Path):
         db.store_snapshot(snapshot)
 
     regressions = db.get_regressions(threshold=0.02, lookback_runs=4)
-    assert len(regressions) == 1
-    assert regressions[0]["capability_id"] == "regressing_cap"
-    assert regressions[0]["delta"] < 0
+    assert len(regressions) == 1, "Regressions must not be empty"
+    assert regressions[0]["capability_id"] == "regressing_cap", "Condition must be true"
+    assert regressions[0]["delta"] < 0, "Condition must be true"
     assert regressions[0]["severity"] in ("high", "medium")
 
 
@@ -249,10 +249,10 @@ def test_export_csv(tmp_path: Path):
     csv_path = tmp_path / "export.csv"
     db.export_csv(csv_path)
 
-    assert csv_path.exists()
+    assert csv_path.exists(), "Condition must be true"
     content = csv_path.read_text()
-    assert "cap1" in content
-    assert "0.85" in content
+    assert "cap1" in content, "Content must not be empty"
+    assert "0.85" in content, "Content must not be empty"
 
 
 def test_cleanup_old_runs(tmp_path: Path):
@@ -279,12 +279,12 @@ def test_cleanup_old_runs(tmp_path: Path):
         )
         db.store_snapshot(snapshot)
 
-    assert db.get_run_count() == 10
+    assert db.get_run_count() == 10, "Count must be greater than zero"
 
     # Keep only 5 runs
     deleted = db.cleanup_old_runs(max_runs=5, max_age_days=365)
-    assert deleted == 5
-    assert db.get_run_count() == 5
+    assert deleted == 5, "deleted is not valid"
+    assert db.get_run_count() == 5, "Count must be greater than zero"
 
 
 def test_create_snapshot_from_artifacts(tmp_path: Path):
@@ -325,11 +325,11 @@ def test_create_snapshot_from_artifacts(tmp_path: Path):
 
     snapshot = create_snapshot_from_artifacts(artifacts_dir, git_commit="def456", git_branch="main")
 
-    assert snapshot.git_commit == "def456"
-    assert snapshot.git_branch == "main"
-    assert "cap1" in snapshot.capabilities
-    assert snapshot.capabilities["cap1"] == 0.85
-    assert snapshot.components["cap1"]["functionality"] == 1.0
+    assert snapshot.git_commit == "def456", "git_commit is not valid"
+    assert snapshot.git_branch == "main", "git_branch is not valid"
+    assert "cap1" in snapshot.capabilities, "Condition must be true"
+    assert snapshot.capabilities["cap1"] == 0.85, "Condition must be true"
+    assert snapshot.components["cap1"]["functionality"] == 1.0, "Condition must be true"
 
 
 def test_audit_snapshot_dataclass():
@@ -353,5 +353,5 @@ def test_audit_snapshot_dataclass():
     )
 
     data = asdict(snapshot)
-    assert data["run_id"] == "test-run"
-    assert data["capabilities"]["cap1"] == 0.8
+    assert data["run_id"] == "test-run", "Data must not be empty"
+    assert data["capabilities"]["cap1"] == 0.8, "Data must not be empty"

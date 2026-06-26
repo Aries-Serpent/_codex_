@@ -15,6 +15,7 @@ from uuid import uuid4
 import pytest  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
 from src.codex.auth.user_model import User
+
  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
 class TestUserModel:
@@ -30,9 +31,9 @@ class TestUserModel:
             created_at=datetime.now(),
         )
 
-        assert user.username == "testuser"
-        assert user.email == "test@example.com"
-        assert user.password_hash == "hashed_password"
+        assert user.username == "testuser", "username is not valid"
+        assert user.email == "test@example.com", "email is not valid"
+        assert user.password_hash == "hashed_password", "password_hash is not valid"
 
     def test_user_id_generation(self):
         """Test user ID generation."""
@@ -45,7 +46,7 @@ class TestUserModel:
             created_at=datetime.now(),
         )
 
-        assert user.id == user_id
+        assert user.id == user_id, "id is not valid"
 
     def test_user_creation_timestamp(self):
         """Test user creation timestamp."""
@@ -58,7 +59,7 @@ class TestUserModel:
             created_at=now,
         )
 
-        assert user.created_at == now
+        assert user.created_at == now, "created_at is not valid"
 
     def test_user_updated_at_timestamp(self):
         """Test user updated_at timestamp."""
@@ -71,7 +72,7 @@ class TestUserModel:
             updated_at=datetime.now(),
         )
 
-        assert user.updated_at is not None
+        assert user.updated_at is not None, "updated_at must be initialized"
 
     def test_user_email_validation(self):
         """Test user email validation."""
@@ -83,8 +84,8 @@ class TestUserModel:
             created_at=datetime.now(),
         )
 
-        assert "@" in user.email
-        assert "." in user.email
+        assert "@" in user.email, "Condition must be true"
+        assert "." in user.email, "Condition must be true"
 
     def test_user_username_length(self):
         """Test username length validation."""
@@ -97,7 +98,7 @@ class TestUserModel:
             created_at=datetime.now(),
         )
 
-        assert len(user.username) > 0
+        assert len(user.username) > 0, "Collection must not be empty"
 
     def test_user_password_hash_storage(self):
         """Test password hash is stored (not plaintext)."""
@@ -110,8 +111,8 @@ class TestUserModel:
         )
 
         # Should not store plaintext passwords
-        assert user.password_hash != "plaintext_password"
-        assert user.password_hash == "hashed_password"
+        assert user.password_hash != "plaintext_password", "password_hash is not valid"
+        assert user.password_hash == "hashed_password", "password_hash is not valid"
 
     def test_user_multiple_instances(self):
         """Test creating multiple user instances."""
@@ -126,7 +127,7 @@ class TestUserModel:
             )
             users.append(user)
 
-        assert len(users) == 10
+        assert len(users) == 10, "Users must not be empty"
         assert all(isinstance(u, User) for u in users)
 
     def test_user_equality(self):
@@ -148,7 +149,7 @@ class TestUserModel:
         )
 
         # Should be equal if IDs match
-        assert user1.id == user2.id
+        assert user1.id == user2.id, "id is not valid"
 
     def test_user_inequality(self):
         """Test user inequality comparison."""
@@ -167,7 +168,7 @@ class TestUserModel:
             created_at=datetime.now(),
         )
 
-        assert user1.id != user2.id
+        assert user1.id != user2.id, "id is not valid"
 
     def test_user_attributes_are_accessible(self):
         """Test that all user attributes are accessible."""
@@ -198,7 +199,7 @@ class TestUserModel:
 
         # Should have a string representation
         user_str = str(user)
-        assert len(user_str) > 0
+        assert len(user_str) > 0, "User_str must not be empty"
 
     def test_user_with_special_characters_in_username(self):
         """Test user with special characters in username."""
@@ -210,7 +211,7 @@ class TestUserModel:
             created_at=datetime.now(),
         )
 
-        assert "user_with-special.chars@123" == user.username
+        assert "user_with-special.chars@123" == user.username, "Condition must be true"
 
     def test_user_with_unicode_email(self):
         """Test user with Unicode email."""
@@ -222,7 +223,7 @@ class TestUserModel:
             created_at=datetime.now(),
         )
 
-        assert "用户" in user.email
+        assert "用户" in user.email, "Condition must be true"
 
     def test_user_with_unicode_username(self):
         """Test user with Unicode username."""
@@ -234,7 +235,7 @@ class TestUserModel:
             created_at=datetime.now(),
         )
 
-        assert "用户名" == user.username
+        assert "用户名" == user.username, "Condition must be true"
 
     def test_user_with_long_password_hash(self):
         """Test user with very long password hash."""
@@ -247,7 +248,7 @@ class TestUserModel:
             created_at=datetime.now(),
         )
 
-        assert len(user.password_hash) == 10000
+        assert len(user.password_hash) == 10000, "Collection must not be empty"
 
     def test_user_with_none_optional_fields(self):
         """Test user with optional fields as None."""
@@ -261,8 +262,8 @@ class TestUserModel:
             last_login=None,
         )
 
-        assert user.updated_at is None
-        assert user.last_login is None
+        assert user.updated_at is None, "updated_at is not valid"
+        assert user.last_login is None, "last_login is not valid"
 
     def test_user_last_login_update(self):
         """Test updating last login timestamp."""
@@ -277,7 +278,7 @@ class TestUserModel:
 
         now = datetime.now()
         user.last_login = now
-        assert user.last_login == now
+        assert user.last_login == now, "last_login is not valid"
 
     def test_user_is_active_flag(self):
         """Test user active status flag."""
@@ -292,7 +293,7 @@ class TestUserModel:
 
         # Check if is_active attribute exists and can be modified
         if hasattr(user, "is_active"):
-            assert user.is_active
+            assert user.is_active, "Condition must be true"
 
     def test_user_with_mfa_enabled(self):
         """Test user with MFA enabled flag."""
@@ -307,7 +308,7 @@ class TestUserModel:
 
         # Check if mfa_enabled attribute exists
         if hasattr(user, "mfa_enabled"):
-            assert user.mfa_enabled
+            assert user.mfa_enabled, "Condition must be true"
 
 
 class TestUserModelEdgeCases:
@@ -368,7 +369,7 @@ class TestUserModelEdgeCases:
             created_at=future_time,
         )
 
-        assert user.created_at == future_time
+        assert user.created_at == future_time, "created_at is not valid"
 
     def test_very_old_created_at_timestamp(self):
         """Test user with very old creation timestamp."""
@@ -381,7 +382,7 @@ class TestUserModelEdgeCases:
             created_at=old_time,
         )
 
-        assert user.created_at == old_time
+        assert user.created_at == old_time, "created_at is not valid"
 
     def test_invalid_email_format(self):
         """Test user with invalid email format."""
@@ -395,7 +396,7 @@ class TestUserModelEdgeCases:
         )
 
         # Should store the invalid email (validation is optional)
-        assert user.email == "invalid-email-format"
+        assert user.email == "invalid-email-format", "email is not valid"
 
     def test_very_long_username(self):
         """Test user with very long username."""
@@ -408,7 +409,7 @@ class TestUserModelEdgeCases:
             created_at=datetime.now(),
         )
 
-        assert len(user.username) == 1000
+        assert len(user.username) == 1000, "Collection must not be empty"
 
     def test_whitespace_in_username(self):
         """Test username with whitespace."""
@@ -420,4 +421,4 @@ class TestUserModelEdgeCases:
             created_at=datetime.now(),
         )
 
-        assert " " in user.username
+        assert " " in user.username, "Condition must be true"

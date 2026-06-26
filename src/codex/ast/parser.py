@@ -28,7 +28,7 @@ try:
     LIBCST_AVAILABLE = True
 except ImportError as e:
     error_type = type(e).__name__
-    logger.debug(f"ImportError: <ERROR_TYPE>")
+    logger.debug("ImportError: <ERROR_TYPE>")
     LIBCST_AVAILABLE = False
     cst = None
     MetadataWrapper = None
@@ -88,7 +88,7 @@ class UniversalParser:
             return self.parse_string(code, file_path)
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             if self.strict:
                 raise ParseError(str(e), file_path) from e
             return None
@@ -140,7 +140,7 @@ class UniversalParser:
 
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             if self.strict:
                 raise ParseError(str(e), file_path) from e
             # Fallback to stdlib ast
@@ -173,7 +173,7 @@ class UniversalParser:
 
         except SyntaxError as e:
             error_type = type(e).__name__
-            logger.debug(f"SyntaxError: <ERROR_TYPE>")
+            logger.debug("SyntaxError: <ERROR_TYPE>")
             if self.strict:
                 raise ParseError(str(e), file_path, e.lineno or 0) from e
             return None

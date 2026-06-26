@@ -42,7 +42,7 @@ class TestConfigSerialization:
 
         # Should not raise TypeError
         json_str = json.dumps(config_dict, default=str)
-        assert len(json_str) > 0
+        assert len(json_str) > 0, "Json_str must not be empty"
 
         # Should be valid JSON
         parsed = json.loads(json_str)
@@ -57,4 +57,4 @@ class TestConfigSerialization:
         # Should be JSON serializable even with None experiment
         config_dict = asdict(config)
         json_str = json.dumps(config_dict, default=str)
-        assert len(json_str) > 0
+        assert len(json_str) > 0, "Json_str must not be empty"

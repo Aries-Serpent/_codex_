@@ -15,6 +15,7 @@ import time
 from unittest.mock import patch
 
 import pytest
+
  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 pytest.importorskip("fastapi")
 from fastapi import FastAPI
@@ -64,7 +65,7 @@ def registered_mfa_user(mfa_client, mfa_auth_components):
             "password": "Str0ngPass!",  # pragma: allowlist secret
         },
     )
-    assert resp.status_code == 201
+    assert resp.status_code == 201, "status_code is not valid"
     user = store.find_by_username("alice")
     return mfa_client, mfa, user
 
@@ -82,7 +83,7 @@ class TestMFARoundTrip:
 
         # Step 1: Enroll MFA (generate TOTP secret)
         secret = mfa.generate_totp_secret(user.user_id, issuer="Codex-Test")
-        assert mfa.is_mfa_enabled(user.user_id) is True
+        assert mfa.is_mfa_enabled(user.user_id) is True, "Condition must be true"
 
         # Step 2: Generate a valid TOTP code
         totp_code = mfa.generate_totp(secret.secret)
@@ -96,12 +97,12 @@ class TestMFARoundTrip:
                 "totp_code": totp_code,
             },
         )
-        assert resp.status_code == 200
+        assert resp.status_code == 200, "status_code is not valid"
         data = resp.json()
-        assert data["mfa_verified"] is True
-        assert data["username"] == "alice"
-        assert data["access_token"]
-        assert data["session_id"]
+        assert data["mfa_verified"] is True, "Data must not be empty"
+        assert data["username"] == "alice", "Data must not be empty"
+        assert data["access_token"], "Data must not be empty"
+        assert data["session_id"], "Data must not be empty"
 
     def test_mfa_enrolled_login_without_totp_returns_403(self, registered_mfa_user):
         """When MFA is enrolled, login without TOTP code returns 403."""
@@ -118,8 +119,8 @@ class TestMFARoundTrip:
                 "password": "Str0ngPass!",  # pragma: allowlist secret
             },
         )
-        assert resp.status_code == 403
-        assert "MFA" in resp.json()["detail"]
+        assert resp.status_code == 403, "status_code is not valid"
+        assert "MFA" in resp.json()["detail"], "Condition must be true"
 
     def test_mfa_wrong_code_returns_403(self, registered_mfa_user):
         """Login with wrong TOTP code returns 403."""
@@ -137,8 +138,8 @@ class TestMFARoundTrip:
                 "totp_code": "000000",
             },
         )
-        assert resp.status_code == 403
-        assert "MFA" in resp.json()["detail"]
+        assert resp.status_code == 403, "status_code is not valid"
+        assert "MFA" in resp.json()["detail"], "Condition must be true"
 
     def test_login_without_mfa_enrolled_succeeds(self, registered_mfa_user):
         """When MFA is NOT enrolled, login succeeds with mfa_verified=False."""
@@ -152,8 +153,8 @@ class TestMFARoundTrip:
                 "password": "Str0ngPass!",  # pragma: allowlist secret
             },
         )
-        assert resp.status_code == 200
-        assert resp.json()["mfa_verified"] is False
+        assert resp.status_code == 200, "status_code is not valid"
+        assert resp.json()["mfa_verified"] is False, "Condition must be true"
 
     def test_mfa_full_lifecycle(self, registered_mfa_user):
         """Enroll → login with TOTP → refresh → logout → verify revoked."""
@@ -172,25 +173,25 @@ class TestMFARoundTrip:
                 "totp_code": totp_code,
             },
         )
-        assert login_resp.status_code == 200
+        assert login_resp.status_code == 200, "status_code is not valid"
         data = login_resp.json()
-        assert data["mfa_verified"] is True
+        assert data["mfa_verified"] is True, "Data must not be empty"
 
         # Refresh
         refresh_resp = client.post(
             "/auth/refresh",
             json={"refresh_token": data["refresh_token"]},
         )
-        assert refresh_resp.status_code == 200
-        assert refresh_resp.json()["access_token"]
+        assert refresh_resp.status_code == 200, "status_code is not valid"
+        assert refresh_resp.json()["access_token"], "Condition must be true"
 
         # Logout
         logout_resp = client.post(
             "/auth/logout",
             json={"session_token": data["session_token"]},
         )
-        assert logout_resp.status_code == 200
-        assert logout_resp.json()["revoked"] is True
+        assert logout_resp.status_code == 200, "status_code is not valid"
+        assert logout_resp.json()["revoked"] is True, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -210,7 +211,7 @@ class TestTokenExpiry:
 
         # Validate should work now
         claims = tokens.validate_token(access)
-        assert claims.sub == user_id
+        assert claims.sub == user_id, "sub is not valid"
 
         # Fast-forward time past expiry (ACCESS_TOKEN_EXPIRY = 900s)
         with patch("time.time", return_value=time.time() + 1000):
@@ -228,7 +229,7 @@ class TestTokenExpiry:
 
         # Refresh should work now
         new_access = auth.refresh(result.refresh_token)
-        assert new_access
+        assert new_access, "new_access is not valid"
 
         # Fast-forward past refresh token expiry (REFRESH_TOKEN_EXPIRY = 604800s)
         with patch("time.time", return_value=time.time() + 700_000):
@@ -261,7 +262,7 @@ class TestTokenExpiry:
                 "password": "Str0ngPass!",
             },  # pragma: allowlist secret
         )
-        assert login.status_code == 200
+        assert login.status_code == 200, "status_code is not valid"
         refresh_token = login.json()["refresh_token"]
 
         # Fast-forward past expiry
@@ -270,7 +271,7 @@ class TestTokenExpiry:
                 "/auth/refresh",
                 json={"refresh_token": refresh_token},
             )
-            assert resp.status_code == 401
+            assert resp.status_code == 401, "status_code is not valid"
 
     def test_session_token_expiry(self):
         """An expired session token should fail validation."""
@@ -281,7 +282,7 @@ class TestTokenExpiry:
 
         # Valid now
         claims = tokens.validate_token(session_token)
-        assert claims.sub == "test-user"
+        assert claims.sub == "test-user", "sub is not valid"
 
         # Expired (SESSION_TOKEN_EXPIRY = 2592000s)
         with patch("time.time", return_value=time.time() + 3_000_000):

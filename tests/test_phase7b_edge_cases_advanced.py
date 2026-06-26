@@ -37,7 +37,7 @@ class TestConnectionPooling:
                 except (ValueError, AttributeError):
                     pass
             # Should be able to create multiple
-            assert len(connections) >= 0
+            assert len(connections) >= 0, "Connections must not be empty"
         except (NotImplementedError, AttributeError):
             pass
 
@@ -160,7 +160,7 @@ class TestErrorRecoveryPatterns:
 
             # Should start in closed state
             if hasattr(breaker, "state"):
-                assert breaker.state == "closed" or breaker.state is None
+                assert breaker.state == "closed" or breaker.state is None, "state is not valid"
 
             # Simulate failures to trip circuit
             for i in range(4):
@@ -194,11 +194,11 @@ class TestDestructorCleanup:
                     super().__exit__(*args)
 
             with TrackingRAGAPI() as api:
-                assert api is not None
+                assert api is not None, "api must be initialized"
 
             # Cleanup should have been called
             if cleanup_called["value"]:
-                assert cleanup_called["value"]
+                assert cleanup_called["value"], "Value must be initialized"
         except (NotImplementedError, AttributeError, TypeError):
             pass
 
@@ -241,9 +241,9 @@ class TestDeepModuleIntegration:
             api = RAGAPI()
 
             # All components should coexist
-            assert cli is not None
-            assert config is not None
-            assert api is not None
+            assert cli is not None, "cli must be initialized"
+            assert config is not None, "config must be initialized"
+            assert api is not None, "api must be initialized"
         except (NotImplementedError, ImportError, AttributeError):
             pass
 
@@ -260,9 +260,9 @@ class TestDeepModuleIntegration:
             dal = ArchiveDAL(connection_string="dummy")
 
             # Pipeline should initialize
-            assert ingestor is not None
-            assert standardizer is not None
-            assert dal is not None
+            assert ingestor is not None, "ingestor must be initialized"
+            assert standardizer is not None, "standardizer must be initialized"
+            assert dal is not None, "dal must be initialized"
         except (NotImplementedError, ImportError, AttributeError):
             pass
 
@@ -278,9 +278,9 @@ class TestDeepModuleIntegration:
             retriever = RetrieverAPI()
 
             # Pipeline should initialize
-            assert tokenizer is not None
-            assert embedder is not None
-            assert retriever is not None
+            assert tokenizer is not None, "tokenizer must be initialized"
+            assert embedder is not None, "embedder must be initialized"
+            assert retriever is not None, "retriever must be initialized"
         except (NotImplementedError, ImportError, AttributeError):
             pass
 
@@ -304,7 +304,7 @@ class TestCrossLayerErrorPropagation:
             with pytest.raises(ValueError) as exc_info:
                 layer1()
 
-            assert "Layer 3 error" in str(exc_info.value)
+            assert "Layer 3 error" in str(exc_info.value), "Value must be initialized"
         except (NotImplementedError, AttributeError):
             pass
 
@@ -333,7 +333,7 @@ class TestCrossLayerErrorPropagation:
                     results.append(None)
 
             # Should have mixed results
-            assert len(results) == len(texts)
+            assert len(results) == len(texts), "Results must not be empty"
         except (NotImplementedError, ImportError, AttributeError):
             pass
 
@@ -364,7 +364,7 @@ class TestSynchronization:
             t.join()
 
         # All increments should be atomic
-        assert counter["value"] == 10000
+        assert counter["value"] == 10000, "Value must be initialized"
 
     def test_deadlock_prevention(self):
         """Should prevent deadlock in lock acquisition"""
@@ -410,7 +410,7 @@ class TestSynchronization:
         t2.join(timeout=2)
 
         # Both should either succeed or timeout, not deadlock
-        assert results["thread1"] is not None or results["thread2"] is not None
+        assert results["thread1"] is not None or results["thread2"] is not None, "Value must be initialized"
 
 
 class TestRaceConditionDetection:
@@ -440,8 +440,8 @@ class TestRaceConditionDetection:
             t.join()
 
         # Should have exactly one 'set' and nine 'already set'
-        assert results.count("set") == 1
-        assert results.count("already set") == 9
+        assert results.count("set") == 1, "Result must not be empty"
+        assert results.count("already set") == 9, "Result must not be empty"
 
 
 # ============================================================================
@@ -577,7 +577,7 @@ class TestAdvancedMocking:
 
         # Should work with chaining
         result = mock_api.query("test").parse()
-        assert result == {"result": "data"}
+        assert result == {"result": "data"}, "Result must not be empty"
 
     def test_mock_side_effects_sequence(self):
         """Should handle sequence of side effects"""
@@ -593,7 +593,7 @@ class TestAdvancedMocking:
             mock()
 
         # Third call succeeds
-        assert mock() == "success"
+        assert mock() == "success", "Condition must be true"
 
 
 # ============================================================================

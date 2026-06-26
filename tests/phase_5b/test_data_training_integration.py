@@ -76,8 +76,8 @@ class TestDataLoadersIntegration:
             dataset = mock_load(str(sample_dataset_file))
 
             # Assert: Dataset loaded
-            assert len(dataset) == 3
-            assert dataset[0]["text"] == "sample 1"
+            assert len(dataset) == 3, "Dataset must not be empty"
+            assert dataset[0]["text"] == "sample 1", "Data must not be empty"
 
     def test_create_data_loader_from_dataset(self):
         """Test: Create data loader from dataset."""
@@ -98,7 +98,7 @@ class TestDataLoadersIntegration:
             loader = mock_create(mock_dataset, batch_size=4)
 
             # Assert: Loader created
-            assert len(loader) == 20
+            assert len(loader) == 20, "Loader must not be empty"
 
     def test_batch_iteration_workflow(self):
         """Test: Iterate through batches correctly."""
@@ -125,7 +125,7 @@ class TestDataLoadersIntegration:
                 batch_count += 1
 
             # Assert: All batches iterated
-            assert batch_count == expected_batches
+            assert batch_count == expected_batches, "Count must be greater than zero"
 
     def test_data_splitting_train_eval_test(self):
         """Test: Data splitting into train/eval/test sets."""
@@ -152,9 +152,9 @@ class TestDataLoadersIntegration:
             )
 
             # Assert: Splits correct
-            assert len(train) == 70
-            assert len(eval_set) == 15
-            assert len(test) == 15
+            assert len(train) == 70, "Train must not be empty"
+            assert len(eval_set) == 15, "Eval_set must not be empty"
+            assert len(test) == 15, "Test must not be empty"
 
     def test_tokenizer_integration_with_data_loader(self):
         """Test: Data loader integrates with tokenizer."""
@@ -177,7 +177,7 @@ class TestDataLoadersIntegration:
             result = loader.tokenizer.batch_encode_plus(texts)
 
             # Assert: Tokenization integrated
-            assert len(result["input_ids"]) == 2
+            assert len(result["input_ids"]) == 2, "Collection must not be empty"
 
     def test_data_loader_with_sampling_strategy(self):
         """Test: Data loader supports different sampling strategies."""
@@ -190,7 +190,7 @@ class TestDataLoadersIntegration:
             # Test each strategy
             for strategy in strategies:
                 mock_create([], batch_size=32, sampler=strategy)
-                assert mock_create.called
+                assert mock_create.called, "Condition must be true"
 
     def test_error_handling_corrupt_data(self, tmp_path):
         """Test: Corrupt data in dataset is handled."""
@@ -223,8 +223,8 @@ class TestDataLoadersIntegration:
             metrics = loader.get_metrics()
 
             # Assert: Metrics available
-            assert metrics["total_batches"] == 100
-            assert metrics["avg_batch_time_ms"] > 0
+            assert metrics["total_batches"] == 100, "Condition must be true"
+            assert metrics["avg_batch_time_ms"] > 0, "Value must be greater than zero"
 
 
 @pytest.mark.skipif(not UNIFIED_TRAINING_AVAILABLE, reason="Unified training not available")
@@ -273,8 +273,8 @@ class TestUnifiedTrainingIntegration:
             # Assert: All stages executed
             mock_trainer.prepare_data.assert_called_once()
             mock_trainer.setup_model.assert_called_once()
-            assert train_result["loss"] == 0.5
-            assert eval_result["accuracy"] == 0.85
+            assert train_result["loss"] == 0.5, "Result must not be empty"
+            assert eval_result["accuracy"] == 0.85, "Result must not be empty"
 
     def test_cross_stage_data_propagation(self):
         """Test: Data flows correctly between training stages."""
@@ -291,8 +291,8 @@ class TestUnifiedTrainingIntegration:
             trainer = mock_trainer_cls({})
 
             # Data flows through stages
-            assert trainer.data_loader is not None
-            assert trainer.model is not None
+            assert trainer.data_loader is not None, "data_loader must be initialized"
+            assert trainer.model is not None, "model must be initialized"
 
     def test_resource_coordination_across_stages(self):
         """Test: Resources allocated and coordinated across training stages."""
@@ -311,8 +311,8 @@ class TestUnifiedTrainingIntegration:
             trainer = mock_trainer_cls({})
 
             # Assert: Resources available
-            assert trainer.resources["gpu_memory"] > 0
-            assert trainer.resources["model_parameters"] > 0
+            assert trainer.resources["gpu_memory"] > 0, "Value must be greater than zero"
+            assert trainer.resources["model_parameters"] > 0, "Value must be greater than zero"
 
     def test_checkpoint_coordination_between_stages(self):
         """Test: Checkpoints saved and loaded across stages."""
@@ -336,7 +336,7 @@ class TestUnifiedTrainingIntegration:
 
             # Assert: Checkpoint operations work
             mock_trainer.save_checkpoint.assert_called_once()
-            assert loaded["stage"] == "evaluation"
+            assert loaded["stage"] == "evaluation", "Condition must be true"
 
 
 @pytest.mark.skipif(
@@ -368,7 +368,7 @@ class TestDataLoaderTrainerIntegration:
                 result = trainer.train()
 
                 # Assert: Pipeline complete
-                assert result["loss"] == 0.5
+                assert result["loss"] == 0.5, "Result must not be empty"
 
     def test_batch_size_consistency_across_pipeline(self):
         """Test: Batch size consistent from loader through training."""
@@ -389,7 +389,7 @@ class TestDataLoaderTrainerIntegration:
                 mock_trainer_cls({"batch_size": batch_size})
 
                 # Assert: Batch size consistent
-                assert loader.batch_size == batch_size
+                assert loader.batch_size == batch_size, "batch_size is not valid"
 
 
 @pytest.mark.skipif(not DATA_LOADERS_AVAILABLE, reason="Data loaders not available")
@@ -425,7 +425,7 @@ class TestDataLoadersErrorHandling:
             loader = mock_create([], batch_size=32)
 
             # Should not crash, but can be empty
-            assert len(loader) == 0
+            assert len(loader) == 0, "Loader must not be empty"
 
 
 @pytest.mark.skipif(not UNIFIED_TRAINING_AVAILABLE, reason="Unified training not available")
@@ -493,8 +493,8 @@ class TestDataTrainingEndToEnd:
                     result = trainer.train()
 
                     # Assert: Workflow complete
-                    assert len(data) == 2
-                    assert result["loss"] == 0.4
+                    assert len(data) == 2, "Data must not be empty"
+                    assert result["loss"] == 0.4, "Result must not be empty"
 
     def test_multi_epoch_data_iteration(self):
         """Test: Data iterated correctly across multiple epochs."""
@@ -518,7 +518,7 @@ class TestDataTrainingEndToEnd:
                     epoch_data.append(batch)
 
             # Assert: All epochs iterated
-            assert len(epoch_data) == samples_per_epoch
+            assert len(epoch_data) == samples_per_epoch, "Epoch_data must not be empty"
 
     def test_training_with_validation_data_split(self):
         """Test: Training uses separate validation data."""
@@ -539,5 +539,5 @@ class TestDataTrainingEndToEnd:
             val_loader = mock_create([], batch_size=32)
 
             # Assert: Separate loaders created
-            assert len(train_loader) == 80
-            assert len(val_loader) == 20
+            assert len(train_loader) == 80, "Train_loader must not be empty"
+            assert len(val_loader) == 20, "Val_loader must not be empty"

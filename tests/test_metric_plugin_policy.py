@@ -38,19 +38,19 @@ def test_plugin_conflict_resolution(monkeypatch, policy):
 
     if policy in {"prefer_local", "shadow_warn"}:
         # Original metric should be present
-        assert test_metric_name in names or test_metric_name.lower() in names
+        assert test_metric_name in names or test_metric_name.lower() in names, "Condition must be true"
         # No alias should be created
-        assert not any(n.startswith(f"plugin:{test_metric_name}") for n in names)
+        assert not any(n.startswith(f"plugin:{test_metric_name}") for n in names), "Condition must be true"
     elif policy == "prefer_plugin":
         # Metric should still be present (overridden)
-        assert test_metric_name in names or test_metric_name.lower() in names
+        assert test_metric_name in names or test_metric_name.lower() in names, "Condition must be true"
     elif policy == "alias_plugin":
         # Both original and alias should be present
         normalized_name = test_metric_name.lower()
-        assert normalized_name in names
+        assert normalized_name in names, "n is not valid"
         # Check for alias (registry normalizes to lowercase)
         plugin_alias = f"plugin:{test_metric_name}".lower()
-        assert plugin_alias in names
+        assert plugin_alias in names, "Condition must be true"
 
 
 def test_policy_error(monkeypatch):
@@ -78,7 +78,7 @@ def test_invalid_policy_defaults_prefer_local(monkeypatch):
     registry._register_metric_from_plugin(test_metric_name, _dummy_metric)
 
     names = registry.list_metrics()
-    assert test_metric_name in names or test_metric_name.lower() in names
+    assert test_metric_name in names or test_metric_name.lower() in names, "Condition must be true"
 
 
 def test_idempotent_plugin_loading(monkeypatch):
@@ -90,16 +90,16 @@ def test_idempotent_plugin_loading(monkeypatch):
 
     # First load
     count1 = registry.init_metric_plugins()
-    assert count1 >= 0  # First load should return non-negative count
+    assert count1 >= 0, "count1 must be positive"
 
     # Second load should return 0 (already loaded)
     count2 = registry.init_metric_plugins()
-    assert count2 == 0
+    assert count2 == 0, "Count must be greater than zero"
 
     # Force reload
     count3 = registry.init_metric_plugins(force=True)
     # May return a count or 0 depending on whether plugins exist
-    assert count3 >= 0  # Force reload should return non-negative count
+    assert count3 >= 0, "count3 must be positive"
 
 
 def test_alias_plugin_creates_separate_entry(monkeypatch):
@@ -128,8 +128,8 @@ def test_alias_plugin_creates_separate_entry(monkeypatch):
     result_local = local([], [])
     result_plugin = plugin([], [])
 
-    assert result_local == 0.3
-    assert result_plugin == 0.7
+    assert result_local == 0.3, "Result must not be empty"
+    assert result_plugin == 0.7, "Result must not be empty"
 
 
 def test_conflict_logging_dedup(monkeypatch, tmp_path):
@@ -161,7 +161,7 @@ def test_conflict_logging_dedup(monkeypatch, tmp_path):
         metric_mentions = content.count(f"name={test_metric_name}")
 
         # Should only be logged once despite 3 registration attempts
-        assert (
+        assert (, "Condition must be true"
             conflict_entries == 1
         ), f"Expected 1 conflict-resolution entry, got {conflict_entries}"
         assert metric_mentions == 1, f"Expected 1 metric mention, got {metric_mentions}"

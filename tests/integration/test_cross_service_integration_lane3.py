@@ -42,16 +42,16 @@ class TestCrossServiceIntegration:
         result_final = persistence.store(result_c)
 
         # Assert: Verify data consistency throughout chain
-        assert service_a.process.called
-        assert service_b.transform.called
-        assert service_c.validate.called
-        assert persistence.store.called
+        assert service_a.process.called, "Condition must be true"
+        assert service_b.transform.called, "Condition must be true"
+        assert service_c.validate.called, "Condition must be true"
+        assert persistence.store.called, "Condition must be true"
 
         # Verify data transformation
-        assert result_a["data"] == "processed_by_a"
-        assert result_b["data"] == "processed_by_b"
-        assert result_c["valid"] is True
-        assert result_final["stored"] is True
+        assert result_a["data"] == "processed_by_a", "Result must not be empty"
+        assert result_b["data"] == "processed_by_b", "Result must not be empty"
+        assert result_c["valid"] is True, "Result must not be empty"
+        assert result_final["stored"] is True, "Result must not be empty"
 
     @pytest.mark.integration
     def test_data_consistency_validation(self):
@@ -78,15 +78,15 @@ class TestCrossServiceIntegration:
         cache_layer.store.return_value = True
 
         # Action: Process through services
-        assert service_gateway.validate_input()
+        assert service_gateway.validate_input(), "Condition must be true"
         result = service_backend.process(test_payload)
         cached = cache_layer.store(result)
 
         # Assert: Data integrity verified
         assert result == test_payload, "Data modified unexpectedly"
-        assert result["user_id"] == test_payload["user_id"]
-        assert result["amount"] == test_payload["amount"]
-        assert cached is True
+        assert result["user_id"] == test_payload["user_id"], "Result must not be empty"
+        assert result["amount"] == test_payload["amount"], "Result must not be empty"
+        assert cached is True, "cached is not valid"
 
     @pytest.mark.integration
     def test_failure_cascade_recovery(self):
@@ -115,10 +115,10 @@ class TestCrossServiceIntegration:
             result = service_b_fallback.call()
 
         # Assert: Recovery successful
-        assert service_b_primary.call.called
-        assert service_b_fallback.call.called
-        assert result["source"] == "fallback"
-        assert result["status"] == "ok"
+        assert service_b_primary.call.called, "Condition must be true"
+        assert service_b_fallback.call.called, "Condition must be true"
+        assert result["source"] == "fallback", "Result must not be empty"
+        assert result["status"] == "ok", "Result must not be empty"
 
     @pytest.mark.integration
     def test_transaction_handling_edge_case(self):
@@ -141,9 +141,9 @@ class TestCrossServiceIntegration:
         tx_committed = transaction.commit()
 
         # Assert: All steps successful
-        assert tx_started is True
-        assert tx_result["rows_affected"] == 5
-        assert tx_committed is True
+        assert tx_started is True, "tx_started is not valid"
+        assert tx_result["rows_affected"] == 5, "Result must not be empty"
+        assert tx_committed is True, "tx_committed is not valid"
 
     @pytest.mark.integration
     def test_partial_transaction_rollback(self):
@@ -173,11 +173,11 @@ class TestCrossServiceIntegration:
             transaction.rollback()
 
         # Assert: Rollback occurred
-        assert transaction.begin.called
-        assert operation_1.called
-        assert operation_2.called
-        assert not operation_3.called
-        assert transaction.rollback.called
+        assert transaction.begin.called, "Condition must be true"
+        assert operation_1.called, "Condition must be true"
+        assert operation_2.called, "Condition must be true"
+        assert not operation_3.called, "Condition must be true"
+        assert transaction.rollback.called, "Condition must be true"
 
 
 class TestDataPipelineIntegration:
@@ -209,10 +209,10 @@ class TestDataPipelineIntegration:
         stored = storage.store(valid)
 
         # Assert: Pipeline successful
-        assert len(raw) == 2
-        assert parsed["records"] == 2
-        assert valid["valid"] is True
-        assert stored["stored"] == 2
+        assert len(raw) == 2, "Raw must not be empty"
+        assert parsed["records"] == 2, "Condition must be true"
+        assert valid["valid"] is True, "Condition must be true"
+        assert stored["stored"] == 2, "st is not valid"
 
     @pytest.mark.integration
     def test_data_transformation_pipeline(self):
@@ -240,10 +240,10 @@ class TestDataPipelineIntegration:
         final_output = transform_step_2(step1_output)
 
         # Assert: Transformation correct
-        assert final_output["age"] == 25
-        assert final_output["score"] == 98.5
-        assert final_output["adult"] is True
-        assert final_output["grade"] == "A"
+        assert final_output["age"] == 25, "Condition must be true"
+        assert final_output["score"] == 98.5, "Condition must be true"
+        assert final_output["adult"] is True, "Condition must be true"
+        assert final_output["grade"] == "A", "Condition must be true"
 
     @pytest.mark.integration
     def test_data_recovery_from_cache_miss(self):
@@ -270,10 +270,10 @@ class TestDataPipelineIntegration:
             result = cached
 
         # Assert: Recovery successful
-        assert cached is None
-        assert database.query.called
-        assert cache.set.called
-        assert result["id"] == 1
+        assert cached is None, "cached is not valid"
+        assert database.query.called, "Data must not be empty"
+        assert cache.set.called, "Condition must be true"
+        assert result["id"] == 1, "Result must not be empty"
 
 
 class TestEndToEndWorkflows:
@@ -307,11 +307,11 @@ class TestEndToEndWorkflows:
         exported = exporter.export(model)
 
         # Assert: Workflow successful
-        assert data["samples"] == 1000
-        assert preprocessed["processed_samples"] == 1000
-        assert model["model_id"] == "model_v1"
-        assert validation["accuracy"] == 0.95
-        assert exported["file"] == "model_v1.pkl"
+        assert data["samples"] == 1000, "Data must not be empty"
+        assert preprocessed["processed_samples"] == 1000, "Condition must be true"
+        assert model["model_id"] == "model_v1", "Condition must be true"
+        assert validation["accuracy"] == 0.95, "Condition must be true"
+        assert exported["file"] == "model_v1.pkl", "exp is not valid"
 
     @pytest.mark.integration
     def test_model_inference_workflow(self):
@@ -338,11 +338,11 @@ class TestEndToEndWorkflows:
         final_output = postprocessor.format(raw_prediction)
 
         # Assert: Inference successful
-        assert model_loader.load.called
-        assert preprocessor.prepare.called
-        assert model.predict.called
-        assert postprocessor.format.called
-        assert final_output["confidence"] == 0.9
+        assert model_loader.load.called, "Condition must be true"
+        assert preprocessor.prepare.called, "preprocess is not valid"
+        assert model.predict.called, "Condition must be true"
+        assert postprocessor.format.called, "postprocess is not valid"
+        assert final_output["confidence"] == 0.9, "Condition must be true"
 
     @pytest.mark.integration
     def test_result_persistence_workflow(self):
@@ -369,10 +369,10 @@ class TestEndToEndWorkflows:
         stored = storage.persist(serialized)
 
         # Assert: Persistence successful
-        assert computed["status"] == "success"
-        assert serializer.serialize.called
-        assert valid is True
-        assert stored["id"] == "result_123"
+        assert computed["status"] == "success", "Condition must be true"
+        assert serializer.serialize.called, "Condition must be true"
+        assert valid is True, "valid is not valid"
+        assert stored["id"] == "result_123", "Result must not be empty"
 
 
 class TestCircuitBreaker:
@@ -418,4 +418,4 @@ class TestCircuitBreaker:
                 break
 
         # Assert: Circuit breaker opened
-        assert circuit_breaker["state"] == "OPEN" or circuit_breaker["failure_count"] >= 2
+        assert circuit_breaker["state"] == "OPEN" or circuit_breaker["failure_count"] >= 2, "Value must be greater than zero"

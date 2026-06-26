@@ -11,7 +11,7 @@ def test_stub_info():
         message="Fix this",
         priority="P1",
     )
-    assert "P1 test.py:10 [TODO] Fix this" == str(info)
+    assert "P1 test.py:10 [TODO] Fix this" == str(info), "Condition must be true"
 
 
 def test_stub_analyzer_basic(tmp_path):
@@ -29,19 +29,19 @@ def another_func():
     analyzer = StubAnalyzer(source_dirs=[tmp_path])
     stubs = analyzer.analyze()
 
-    assert len(stubs) == 3
+    assert len(stubs) == 3, "Stubs must not be empty"
 
     todo_stubs = [s for s in stubs if s.stub_type == "TODO"]
-    assert len(todo_stubs) == 1
-    assert todo_stubs[0].line_number == 3
+    assert len(todo_stubs) == 1, "Todo_stubs must not be empty"
+    assert todo_stubs[0].line_number == 3, "line_number is not valid"
 
     nie_stubs = [s for s in stubs if s.stub_type == "NotImplementedError"]
-    assert len(nie_stubs) == 1
-    assert "Not done yet" in nie_stubs[0].message
+    assert len(nie_stubs) == 1, "Nie_stubs must not be empty"
+    assert "Not done yet" in nie_stubs[0].message, "Condition must be true"
 
     fixme_stubs = [s for s in stubs if s.stub_type == "FIXME"]
-    assert len(fixme_stubs) == 1
-    assert fixme_stubs[0].line_number == 7
+    assert len(fixme_stubs) == 1, "Fixme_stubs must not be empty"
+    assert fixme_stubs[0].line_number == 7, "line_number is not valid"
 
 
 def test_stub_analyzer_abstract_method(tmp_path):
@@ -69,8 +69,8 @@ def test_find_stubs_and_prioritize(tmp_path):
 """)
 
     stubs = find_stubs([tmp_path])
-    assert len(stubs) == 2
+    assert len(stubs) == 2, "Stubs must not be empty"
 
     prioritized = prioritize_stubs(stubs)
-    assert len(prioritized) == 2
-    assert prioritized[0].stub_type == "FIXME"
+    assert len(prioritized) == 2, "Prioritized must not be empty"
+    assert prioritized[0].stub_type == "FIXME", "stub_type is not valid"

@@ -13,9 +13,9 @@ def test_trigger_to_d365_minimal() -> None:
         "then": [{"field": "group_id", "value": "Relocation_Counselors"}],
     }
     converted = zd_trigger_to_d365(zd_payload)
-    assert converted["type"] == "realtime_workflow"
-    assert converted["if"]
-    assert converted["then"]
+    assert converted["type"] == "realtime_workflow", "Condition must be true"
+    assert converted["if"], "Condition must be true"
+    assert converted["then"], "Condition must be true"
 
 
 def test_automation_to_d365_minimal() -> None:
@@ -25,8 +25,8 @@ def test_automation_to_d365_minimal() -> None:
         "then": [],
     }
     converted = zd_automation_to_d365(zd_payload)
-    assert converted["type"] == "background_workflow"
-    assert "schedule" in converted
+    assert converted["type"] == "background_workflow", "Condition must be true"
+    assert "schedule" in converted, "Condition must be true"
 
 
 def test_fidelity_score_bounds() -> None:

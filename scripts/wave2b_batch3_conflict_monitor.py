@@ -158,7 +158,7 @@ class ConflictMonitor:
 
         except Exception as e:
             error_type = type(e).__name__
-            logger.error(f"  ❌ Error checking resolver: <ERROR_TYPE>")
+            logger.error("  ❌ Error checking resolver: <ERROR_TYPE>")
             return False, f"Error: {str(e)}"
 
     def check_circular_dependencies(self) -> Tuple[bool, str]:
@@ -206,7 +206,7 @@ class ConflictMonitor:
             return False, "pipdeptree analysis timeout"
         except Exception as e:
             error_type = type(e).__name__
-            logger.warning(f"  ⚠️  Could not verify circular deps: <ERROR_TYPE>")
+            logger.warning("  ⚠️  Could not verify circular deps: <ERROR_TYPE>")
             # Don't fail on this - it's a nice-to-have check
             return True, "Circular dep check skipped (pipdeptree unavailable)"
 
@@ -254,7 +254,7 @@ class ConflictMonitor:
 
         except Exception as e:
             error_type = type(e).__name__
-            logger.error(f"  ❌ Error checking constraints: <ERROR_TYPE>")
+            logger.error("  ❌ Error checking constraints: <ERROR_TYPE>")
             return False, f"Error: {str(e)}"
 
     def check_security_cves(self) -> Tuple[bool, str]:
@@ -313,7 +313,7 @@ class ConflictMonitor:
 
         except Exception as e:
             error_type = type(e).__name__
-            logger.warning(f"  ⚠️  Could not run pip-audit: <ERROR_TYPE>")
+            logger.warning("  ⚠️  Could not run pip-audit: <ERROR_TYPE>")
             return True, "CVE check skipped (pip-audit unavailable)"
 
     def check_test_suite(self) -> Tuple[bool, str]:
@@ -371,7 +371,7 @@ class ConflictMonitor:
             return False, "Test suite timeout"
         except Exception as e:
             error_type = type(e).__name__
-            logger.warning(f"  ⚠️  Could not run tests: <ERROR_TYPE>")
+            logger.warning("  ⚠️  Could not run tests: <ERROR_TYPE>")
             return True, "Test check skipped"
 
     def check_coverage_regression(self) -> Tuple[bool, str]:
@@ -417,7 +417,7 @@ class ConflictMonitor:
 
         except Exception as e:
             error_type = type(e).__name__
-            logger.warning(f"  ⚠️  Could not check coverage: <ERROR_TYPE>")
+            logger.warning("  ⚠️  Could not check coverage: <ERROR_TYPE>")
             return True, "Coverage check skipped"
 
     def _generate_report(self, results: List[Tuple[str, bool, str]]) -> str:

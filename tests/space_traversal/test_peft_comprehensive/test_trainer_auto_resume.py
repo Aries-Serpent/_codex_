@@ -56,7 +56,7 @@ def _make_loader(torch):
 
 @pytest.mark.skipif(not HAS_TORCH_RUNTIME, reason="torch runtime modules unavailable")
 def test_trainer_auto_resumes_latest_checkpoint(tmp_path):
-    assert torch is not None  # for type checkers
+    assert torch is not None, "torch must be initialized"
     model = torch.nn.Linear(2, 2)
     optimizer = torch.optim.SGD(model.parameters(), lr=0.1)
     save_checkpoint(
@@ -79,7 +79,7 @@ def test_trainer_auto_resumes_latest_checkpoint(tmp_path):
         checkpoint_config=CheckpointConfig(directory=str(tmp_path)),
     )
 
-    assert trainer.state.epoch == 3
-    assert trainer.state.best_metric == pytest.approx(0.123)
+    assert trainer.state.epoch == 3, "epoch is not valid"
+    assert trainer.state.best_metric == pytest.approx(0.123), "best_metric is not valid"
     for key, value in model.state_dict().items():
         assert torch.allclose(trainer.simple.model.state_dict()[key], value)

@@ -130,14 +130,14 @@ class TestAttentionScorer:
     def test_initialization(self, mock_model):
         """Test AttentionScorer initialization."""
         scorer = AttentionScorer(mock_model)
-        assert scorer.model == mock_model
-        assert scorer.normalize is True
+        assert scorer.model == mock_model, "model is not valid"
+        assert scorer.normalize is True, "normalize is not valid"
         assert isinstance(scorer.device, torch.device)
 
     def test_initialization_custom_device(self, mock_model):
         """Test initialization with custom device."""
         scorer = AttentionScorer(mock_model, device="cpu")
-        assert scorer.device == torch.device("cpu")
+        assert scorer.device == torch.device("cpu"), "device is not valid"
 
     def test_extract_attention_weights(self, scorer, sample_input):
         """Test extraction of attention weights."""
@@ -149,17 +149,17 @@ class TestAttentionScorer:
         assert isinstance(layer_names, list)
         # Enhanced assertion: should extract non-empty attention weights
         assert len(attn_weights) > 0, "Should extract non-empty attention weights"
-        assert len(layer_names) == len(attn_weights)
+        assert len(layer_names) == len(attn_weights), "Layer_names must not be empty"
         # Verify we got the expected number of layers
-        assert (
+        assert (, "Condition must be true"
             len(attn_weights) == scorer.model.num_layers
         ), f"Expected {scorer.model.num_layers} layers"
 
         # Check shape of attention weights
         for attn in attn_weights:
-            assert attn.dim() == 4  # (batch, heads, seq, seq)
-            assert attn.size(0) == 1  # batch_size
-            assert attn.size(2) == attn.size(3)  # square attention matrix
+            assert attn.dim() == 4, "Condition must be true"
+            assert attn.size(0) == 1, "Condition must be true"
+            assert attn.size(2) == attn.size(3), "Condition must be true"
             # Verify sequence length matches
             assert attn.size(2) == scorer.model.seq_len, "Sequence length mismatch"
 
@@ -176,9 +176,9 @@ class TestAttentionScorer:
 
         assert isinstance(importance, np.ndarray)
         assert importance.shape == (seq_len,)
-        assert np.all(importance >= 0)
+        assert np.all(importance >= 0), "importance must be greater than zero"
         # Check normalization
-        assert np.abs(importance.sum() - 1.0) < 1e-5
+        assert np.abs(importance.sum() - 1.0) < 1e-5, "Condition must be true"
 
     def test_compute_token_importance_invalid_method(self, scorer):
         """Test that invalid method raises error."""
@@ -199,7 +199,7 @@ class TestAttentionScorer:
 
         assert isinstance(flow, np.ndarray)
         assert flow.shape == (seq_len, seq_len)
-        assert np.all(flow >= 0)
+        assert np.all(flow >= 0), "flow must be greater than zero"
 
     def test_analyze_attention(self, scorer, sample_input):
         """Test complete attention analysis."""
@@ -215,8 +215,8 @@ class TestAttentionScorer:
         assert isinstance(analysis.token_importance, np.ndarray)
         assert isinstance(analysis.attention_flow, np.ndarray)
         assert isinstance(analysis.layer_names, list)
-        assert analysis.tokens == tokens
-        assert analysis.token_ids is not None
+        assert analysis.tokens == tokens, "tokens is not valid"
+        assert analysis.token_ids is not None, "token_ids must be initialized"
 
     def test_get_top_attended_tokens(self, scorer):
         """Test getting top attended tokens."""
@@ -233,9 +233,9 @@ class TestAttentionScorer:
 
         top_tokens = scorer.get_top_attended_tokens(analysis, top_k=5)
 
-        assert len(top_tokens) == 5
+        assert len(top_tokens) == 5, "Top_tokens must not be empty"
         for idx, score, token_str in top_tokens:
             assert isinstance(idx, int)
             assert isinstance(score, float)
             assert isinstance(token_str, str)
-            assert 0 <= idx < seq_len
+            assert 0 <= idx < seq_len, "0 is not valid"

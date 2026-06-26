@@ -21,6 +21,6 @@ def test_names_only_emits_marker_when_empty() -> None:
         "text",
     ]
     proc = subprocess.run(cmd, capture_output=True, text=True)
-    assert proc.returncode == 0
+    assert proc.returncode == 0, "returncode is not valid"
     output = proc.stdout.strip()
     assert output == "(none)" or "\n" in output or output == ""

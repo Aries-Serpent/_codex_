@@ -51,7 +51,7 @@ class TestModuleImports:
 
     def test_module_imports(self):
         """Test evaluate module can be imported."""
-        assert evaluate is not None
+        assert evaluate is not None, "evaluate must be initialized"
 
     def test_logger_exists(self):
         """Test logger is configured."""
@@ -61,7 +61,7 @@ class TestModuleImports:
         """Test METRIC_FUNCS dictionary exists."""
         if hasattr(evaluate, "METRIC_FUNCS"):
             assert isinstance(evaluate.METRIC_FUNCS, dict)
-            assert len(evaluate.METRIC_FUNCS) > 0
+            assert len(evaluate.METRIC_FUNCS) > 0, "Collection must not be empty"
 
 
 class TestMetricFunctions:
@@ -70,22 +70,22 @@ class TestMetricFunctions:
     def test_accuracy_metric_registered(self):
         """Test accuracy metric is registered."""
         if hasattr(evaluate, "METRIC_FUNCS"):
-            assert "accuracy" in evaluate.METRIC_FUNCS
+            assert "accuracy" in evaluate.METRIC_FUNCS, "Condition must be true"
 
     def test_token_accuracy_metric_registered(self):
         """Test token_accuracy metric is registered."""
         if hasattr(evaluate, "METRIC_FUNCS"):
-            assert "token_accuracy" in evaluate.METRIC_FUNCS
+            assert "token_accuracy" in evaluate.METRIC_FUNCS, "Condition must be true"
 
     def test_f1_metric_registered(self):
         """Test f1 metric is registered."""
         if hasattr(evaluate, "METRIC_FUNCS"):
-            assert "f1" in evaluate.METRIC_FUNCS
+            assert "f1" in evaluate.METRIC_FUNCS, "Condition must be true"
 
     def test_perplexity_metric_registered(self):
         """Test perplexity metric is registered."""
         if hasattr(evaluate, "METRIC_FUNCS"):
-            assert "perplexity" in evaluate.METRIC_FUNCS
+            assert "perplexity" in evaluate.METRIC_FUNCS, "Condition must be true"
 
 
 class TestCoerceSequence:
@@ -95,14 +95,14 @@ class TestCoerceSequence:
         """Test _coerce_sequence with None."""
         if hasattr(evaluate, "_coerce_sequence"):
             result = evaluate._coerce_sequence(None)
-            assert result is None
+            assert result is None, "Result must not be empty"
 
     def test_coerce_sequence_with_list(self):
         """Test _coerce_sequence with list."""
         if hasattr(evaluate, "_coerce_sequence"):
             data = [1, 2, 3]
             result = evaluate._coerce_sequence(data)
-            assert result == data
+            assert result == data, "Result must not be empty"
 
     def test_coerce_sequence_with_tuple(self):
         """Test _coerce_sequence with tuple."""
@@ -123,7 +123,7 @@ class TestCoerceSequence:
         """Test _coerce_sequence with string."""
         if hasattr(evaluate, "_coerce_sequence"):
             result = evaluate._coerce_sequence("test")
-            assert result == ["test"]
+            assert result == ["test"], "Result must not be empty"
 
 
 class TestSanitizePromptList:
@@ -156,8 +156,8 @@ class TestSanitizePromptList:
             items = ["prompt1", "prompt2"]
             with patch.dict(sys.modules, {"codex_ml.safety": None}):
                 result, changed = evaluate._sanitize_prompt_list(items)
-                assert result == items
-                assert changed is False
+                assert result == items, "Result must not be empty"
+                assert changed is False, "changed is not valid"
 
 
 class TestEvaluationFunctions:
@@ -171,14 +171,14 @@ class TestEvaluationFunctions:
         mock_get_model.return_value = mock_model
         mock_load_checkpoint.return_value = {"state_dict": {}}
         # Test would involve calling eval function if exposed
-        assert mock_get_model is not None
+        assert mock_get_model is not None, "mock_get_model must be initialized"
 
     @patch("codex_ml.cli.evaluate.accuracy")
     def test_metric_computation(self, mock_accuracy):
         """Test metric computation."""
         mock_accuracy.return_value = 0.85
         result = mock_accuracy([1, 0, 1], [1, 0, 1])
-        assert result == 0.85
+        assert result == 0.85, "Result must not be empty"
 
 
 class TestLoggerConfiguration:
@@ -187,7 +187,7 @@ class TestLoggerConfiguration:
     def test_logger_has_name(self):
         """Test logger has correct name."""
         if hasattr(evaluate, "LOGGER"):
-            assert evaluate.LOGGER.name == "codex_ml.cli.evaluate"
+            assert evaluate.LOGGER.name == "codex_ml.cli.evaluate", "name is not valid"
 
     def test_logger_can_log(self):
         """Test logger can emit messages."""

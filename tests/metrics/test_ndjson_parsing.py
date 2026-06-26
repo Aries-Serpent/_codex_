@@ -24,7 +24,7 @@ def test_summarize_ndjson(tmp_path: Path) -> None:
     log_file.write_text("\n".join(json.dumps(line) for line in lines), encoding="utf-8")
     summary = summarize_ndjson_logs(log_file)
     assert pytest.approx(summary["loss"], rel=1e-6) == (0.5 + 0.3) / 2
-    assert summary["metrics.accuracy"] == 0.8
+    assert summary["metrics.accuracy"] == 0.8, "Condition must be true"
 
 
 def test_invalid_json_raises(tmp_path: Path) -> None:

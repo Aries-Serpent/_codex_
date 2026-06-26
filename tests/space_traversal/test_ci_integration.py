@@ -22,11 +22,11 @@ def test_detect_ci_environment_github():
     with patch.dict(os.environ, env, clear=True):
         result = detect_ci_environment()
 
-    assert result.ci == "github_actions"
-    assert result.repo == "owner/repo"
-    assert result.branch == "main"
-    assert result.commit == "abc123"
-    assert result.is_ci is True
+    assert result.ci == "github_actions", "Result must not be empty"
+    assert result.repo == "owner/repo", "Result must not be empty"
+    assert result.branch == "main", "Result must not be empty"
+    assert result.commit == "abc123", "Result must not be empty"
+    assert result.is_ci is True, "Result must not be empty"
 
 
 def test_detect_ci_environment_gitlab():
@@ -44,9 +44,9 @@ def test_detect_ci_environment_gitlab():
     with patch.dict(os.environ, env, clear=True):
         result = detect_ci_environment()
 
-    assert result.ci == "gitlab_ci"
-    assert result.repo == "group/project"
-    assert result.branch == "feature"
+    assert result.ci == "gitlab_ci", "Result must not be empty"
+    assert result.repo == "group/project", "Result must not be empty"
+    assert result.branch == "feature", "Result must not be empty"
 
 
 def test_detect_ci_environment_jenkins():
@@ -64,9 +64,9 @@ def test_detect_ci_environment_jenkins():
     with patch.dict(os.environ, env, clear=True):
         result = detect_ci_environment()
 
-    assert result.ci == "jenkins"
-    assert result.branch == "develop"
-    assert result.run_id == "42"
+    assert result.ci == "jenkins", "Result must not be empty"
+    assert result.branch == "develop", "Result must not be empty"
+    assert result.run_id == "42", "Result must not be empty"
 
 
 def test_detect_ci_environment_none():
@@ -76,8 +76,8 @@ def test_detect_ci_environment_none():
     with patch.dict(os.environ, {}, clear=True):
         result = detect_ci_environment()
 
-    assert result.ci is None
-    assert result.is_ci is False
+    assert result.ci is None, "Result must not be empty"
+    assert result.is_ci is False, "Result must not be empty"
 
 
 def test_ci_environment_is_pr():
@@ -93,8 +93,8 @@ def test_ci_environment_is_pr():
     with patch.dict(os.environ, env, clear=True):
         result = detect_ci_environment()
 
-    assert result.is_pr is True
-    assert result.pr_number == "123"
+    assert result.is_pr is True, "Result must not be empty"
+    assert result.pr_number == "123", "Result must not be empty"
 
 
 def test_write_github_step_summary(tmp_path: Path):
@@ -122,14 +122,14 @@ def test_write_github_step_summary(tmp_path: Path):
     with patch.dict(os.environ, env, clear=True):
         result = write_github_step_summary(0.75, capabilities, regressions)
 
-    assert result is True
-    assert summary_file.exists()
+    assert result is True, "Result must not be empty"
+    assert summary_file.exists(), "Condition must be true"
 
     content = summary_file.read_text()
-    assert "Audit Results" in content
-    assert "Average Score" in content
-    assert "0.75" in content
-    assert "Regressions Detected" in content
+    assert "Audit Results" in content, "Result must not be empty"
+    assert "Average Score" in content, "Content must not be empty"
+    assert "0.75" in content, "Content must not be empty"
+    assert "Regressions Detected" in content, "Content must not be empty"
 
 
 def test_write_github_step_summary_no_env(tmp_path: Path):
@@ -139,7 +139,7 @@ def test_write_github_step_summary_no_env(tmp_path: Path):
     with patch.dict(os.environ, {}, clear=True):
         result = write_github_step_summary(0.85, [], [])
 
-    assert result is False
+    assert result is False, "Result must not be empty"
 
 
 def test_set_github_output(tmp_path: Path):
@@ -155,8 +155,8 @@ def test_set_github_output(tmp_path: Path):
         set_github_output("status", "pass")
 
     content = output_file.read_text()
-    assert "avg_score=0.85" in content
-    assert "status=pass" in content
+    assert "avg_score=0.85" in content, "Content must not be empty"
+    assert "status=pass" in content, "Content must not be empty"
 
 
 def test_set_github_output_multiline(tmp_path: Path):
@@ -171,9 +171,9 @@ def test_set_github_output_multiline(tmp_path: Path):
         set_github_output("report", "line1\nline2\nline3")
 
     content = output_file.read_text()
-    assert "report<<" in content
-    assert "line1" in content
-    assert "line2" in content
+    assert "report<<" in content, "Content must not be empty"
+    assert "line1" in content, "Content must not be empty"
+    assert "line2" in content, "Content must not be empty"
 
 
 def test_generate_pr_comment():
@@ -199,12 +199,12 @@ def test_generate_pr_comment():
         improvements=improvements,
     )
 
-    assert "Audit Pipeline Results" in comment
-    assert "0.75" in comment
-    assert "Regressions" in comment
-    assert "cap3" in comment
-    assert "Improvements" in comment
-    assert "cap1" in comment
+    assert "Audit Pipeline Results" in comment, "Result must not be empty"
+    assert "0.75" in comment, "Condition must be true"
+    assert "Regressions" in comment, "Condition must be true"
+    assert "cap3" in comment, "Condition must be true"
+    assert "Improvements" in comment, "Condition must be true"
+    assert "cap1" in comment, "Condition must be true"
 
 
 def test_generate_pr_comment_no_regressions():
@@ -219,8 +219,8 @@ def test_generate_pr_comment_no_regressions():
         regressions=[],
     )
 
-    assert "✅" in comment
-    assert "Regressions" not in comment.split("Summary")[0]  # Not in main section
+    assert "✅" in comment, "Condition must be true"
+    assert "Regressions" not in comment.split("Summary")[0], "Condition must be true"
 
 
 def test_export_for_ci():
@@ -238,15 +238,15 @@ def test_export_for_ci():
 
     result = export_for_ci(0.75, capabilities, regressions)
 
-    assert result["avg_score"] == 0.75
-    assert result["capability_count"] == 3
-    assert result["regression_count"] == 1
-    assert result["high_count"] == 1
-    assert result["medium_count"] == 1
-    assert result["low_count"] == 1
-    assert result["has_regressions"] is True
-    assert result["has_high_severity"] is True
-    assert result["status"] == "warn"
+    assert result["avg_score"] == 0.75, "Result must not be empty"
+    assert result["capability_count"] == 3, "Result must not be empty"
+    assert result["regression_count"] == 1, "Result must not be empty"
+    assert result["high_count"] == 1, "Result must not be empty"
+    assert result["medium_count"] == 1, "Result must not be empty"
+    assert result["low_count"] == 1, "Result must not be empty"
+    assert result["has_regressions"] is True, "Result must not be empty"
+    assert result["has_high_severity"] is True, "Result must not be empty"
+    assert result["status"] == "warn", "Result must not be empty"
 
 
 def test_detect_ci_environment_azure():
@@ -263,8 +263,8 @@ def test_detect_ci_environment_azure():
     with patch.dict(os.environ, env, clear=True):
         result = detect_ci_environment()
 
-    assert result.ci == "azure_pipelines"
-    assert result.repo == "my-repo"
+    assert result.ci == "azure_pipelines", "Result must not be empty"
+    assert result.repo == "my-repo", "Result must not be empty"
 
 
 def test_detect_ci_environment_circleci():
@@ -281,5 +281,5 @@ def test_detect_ci_environment_circleci():
     with patch.dict(os.environ, env, clear=True):
         result = detect_ci_environment()
 
-    assert result.ci == "circleci"
-    assert result.repo == "my-project"
+    assert result.ci == "circleci", "Result must not be empty"
+    assert result.repo == "my-project", "Result must not be empty"

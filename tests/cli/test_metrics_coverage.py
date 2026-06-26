@@ -55,7 +55,7 @@ class TestModuleImport:
         try:
             from codex_ml.cli import metrics_cli
 
-            assert metrics_cli is not None
+            assert metrics_cli is not None, "metrics_cli must be initialized"
         except ImportError as e:
             pytest.skip(f"metrics_cli module not available: {e}")
 
@@ -106,7 +106,7 @@ class TestMetricsCommands:
             has_subcommands = any(
                 cmd in output.lower() for cmd in ["list", "show", "plot", "export"]
             )
-            assert has_subcommands or "metrics" in output.lower()
+            assert has_subcommands or "metrics" in output.lower(), "has_subcommands is not valid"
 
     def test_export_metrics_option(self) -> None:
         """Verify export metrics option exists."""

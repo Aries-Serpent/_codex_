@@ -32,29 +32,29 @@ def test_explain_score_integration():
     explanation = explain_score(capability, weights)
 
     # Check structure
-    assert "id" in explanation
-    assert "score" in explanation
-    assert "partials" in explanation
-    assert explanation["id"] == "test-capability"
+    assert "id" in explanation, "Condition must be true"
+    assert "score" in explanation, "Condition must be true"
+    assert "partials" in explanation, "Condition must be true"
+    assert explanation["id"] == "test-capability", "Condition must be true"
 
     # Check partials
     partials = explanation["partials"]
-    assert len(partials) == 5
+    assert len(partials) == 5, "Partials must not be empty"
 
     # Check functionality partial
     func = partials["functionality"]
-    assert "component_value" in func
-    assert "weight" in func
-    assert "contribution" in func
-    assert func["component_value"] == 0.8
-    assert func["weight"] == 0.25
-    assert abs(func["contribution"] - 0.2) < 0.001
+    assert "component_value" in func, "Value must be initialized"
+    assert "weight" in func, "Condition must be true"
+    assert "contribution" in func, "Condition must be true"
+    assert func["component_value"] == 0.8, "Value must be initialized"
+    assert func["weight"] == 0.25, "Condition must be true"
+    assert abs(func["contribution"] - 0.2) < 0.001, "Condition must be true"
 
     # Check tests partial
     tests = partials["tests"]
-    assert tests["component_value"] == 0.6
-    assert tests["weight"] == 0.25
-    assert abs(tests["contribution"] - 0.15) < 0.001
+    assert tests["component_value"] == 0.6, "Value must be initialized"
+    assert tests["weight"] == 0.25, "Condition must be true"
+    assert abs(tests["contribution"] - 0.15) < 0.001, "Condition must be true"
 
     # Check total score calculation
     expected_score = (
@@ -64,7 +64,7 @@ def test_explain_score_integration():
         + 0.7 * 0.15  # safeguards
         + 0.5 * 0.15  # documentation
     )
-    assert abs(explanation["score"] - expected_score) < 0.001
+    assert abs(explanation["score"] - expected_score) < 0.001, "Condition must be true"
 
 
 def test_explain_score_with_zero_components():
@@ -93,13 +93,13 @@ def test_explain_score_with_zero_components():
     explanation = explain_score(capability, weights)
 
     # Zero components should contribute 0.0
-    assert explanation["partials"]["functionality"]["contribution"] == 0.0
-    assert explanation["partials"]["tests"]["contribution"] == 0.0
-    assert explanation["partials"]["safeguards"]["contribution"] == 0.0
+    assert explanation["partials"]["functionality"]["contribution"] == 0.0, "Condition must be true"
+    assert explanation["partials"]["tests"]["contribution"] == 0.0, "Condition must be true"
+    assert explanation["partials"]["safeguards"]["contribution"] == 0.0, "Condition must be true"
 
     # Non-zero components should contribute
-    assert explanation["partials"]["consistency"]["contribution"] > 0.0
-    assert explanation["partials"]["documentation"]["contribution"] > 0.0
+    assert explanation["partials"]["consistency"]["contribution"] > 0.0, "Value must be greater than zero"
+    assert explanation["partials"]["documentation"]["contribution"] > 0.0, "Value must be greater than zero"
 
 
 def test_normalize_weights():
@@ -117,13 +117,13 @@ def test_normalize_weights():
     normalized = normalize_weights(weights)
 
     # Should sum to 1.0
-    assert abs(sum(normalized.values()) - 1.0) < 1e-9
+    assert abs(sum(normalized.values()) - 1.0) < 1e-9, "Value must be initialized"
 
     # Should preserve ratios
     total = sum(weights.values())
     for key in weights:
         expected = weights[key] / total
-        assert abs(normalized[key] - expected) < 1e-9
+        assert abs(normalized[key] - expected) < 1e-9, "Condition must be true"
 
 
 def test_command_explain_output_format(tmp_path, capsys):
@@ -178,19 +178,19 @@ def test_command_explain_output_format(tmp_path, capsys):
     output = captured.out
 
     # Should contain capability ID
-    assert "Capability: checkpointing" in output
+    assert "Capability: checkpointing" in output, "Condition must be true"
 
     # Should contain all components with proper formatting
-    assert "functionality" in output
-    assert "consistency" in output
-    assert "tests" in output
-    assert "safeguards" in output
-    assert "documentation" in output
+    assert "functionality" in output, "Condition must be true"
+    assert "consistency" in output, "Condition must be true"
+    assert "tests" in output, "Condition must be true"
+    assert "safeguards" in output, "Condition must be true"
+    assert "documentation" in output, "Condition must be true"
 
     # Should show value, weight, and contribution for each
-    assert "Value:" in output
-    assert "Weight:" in output
-    assert "Contrib:" in output
+    assert "Value:" in output, "Value must be initialized"
+    assert "Weight:" in output, "Condition must be true"
+    assert "Contrib:" in output, "Condition must be true"
 
     # Should show overall score
-    assert "Overall Score:" in output
+    assert "Overall Score:" in output, "Condition must be true"

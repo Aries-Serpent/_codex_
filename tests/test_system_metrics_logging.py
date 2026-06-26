@@ -20,7 +20,7 @@ def test_init_telemetry_min_profile_defaults() -> None:
     assert isinstance(loggers, CodexLoggers)
     assert hasattr(loggers, "tb")
     assert loggers.mlflow_active in {True, False}
-    assert loggers.gpu is False
+    assert loggers.gpu is False, "gpu is not valid"
 
 
 def test_init_telemetry_full_enables_gpu_flag() -> None:
@@ -105,8 +105,8 @@ def test_log_system_metrics_degrades_when_dependencies_missing(
     raw = path.read_text(encoding="utf-8").strip().splitlines()
     assert raw, "expected fallback sampler to write records"
     payload = json.loads(raw[0])
-    assert payload.get("memory") is None
-    assert payload.get("gpu_count") is None
+    assert payload.get("memory") is None, "Condition must be true"
+    assert payload.get("gpu_count") is None, "Count must be greater than zero"
 
 
 def test_system_metrics_logger_uses_full_samplers_when_available(
@@ -243,6 +243,6 @@ def test_system_metrics_logger_uses_full_samplers_when_available(
     raw = path.read_text(encoding="utf-8").strip().splitlines()
     assert raw, "expected sampler to write records"
     payload = json.loads(raw[0])
-    assert payload.get("memory") is not None
-    assert payload.get("cpu_percent") is not None
-    assert payload.get("gpu_count") == 1
+    assert payload.get("memory") is not None, "Value must be initialized"
+    assert payload.get("cpu_percent") is not None, "Value must be initialized"
+    assert payload.get("gpu_count") == 1, "Count must be greater than zero"

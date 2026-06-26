@@ -62,14 +62,14 @@ def _set_torch_seed(seed: int, deterministic: bool) -> dict[str, Any]:
                 torch.use_deterministic_algorithms(True, warn_only=False)
             except TypeError as e:
                 error_type = type(e).__name__
-                logger.debug(f"TypeError: <ERROR_TYPE>")
-                logger.warning(f"TypeError: <ERROR_TYPE>", exc_info=True)
+                logger.debug("TypeError: <ERROR_TYPE>")
+                logger.warning("TypeError: <ERROR_TYPE>", exc_info=True)
                 # Older torch versions accept a single positional argument
                 torch.use_deterministic_algorithms(True)
             except AttributeError as e:
                 error_type = type(e).__name__
-                logger.debug(f"AttributeError: <ERROR_TYPE>")
-                logger.warning(f"AttributeError: <ERROR_TYPE>", exc_info=True)
+                logger.debug("AttributeError: <ERROR_TYPE>")
+                logger.warning("AttributeError: <ERROR_TYPE>", exc_info=True)
                 deterministic_state = "unsupported"
 
             if deterministic_state is not True:
@@ -85,8 +85,8 @@ def _set_torch_seed(seed: int, deterministic: bool) -> dict[str, Any]:
                 torch_info["cudnn"] = "unavailable"
     except ImportError as e:
         error_type = type(e).__name__
-        logger.debug(f"ImportError: <ERROR_TYPE>")
-        logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
+        logger.debug("ImportError: <ERROR_TYPE>")
+        logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
         torch_info = {"available": False}
 
     return torch_info

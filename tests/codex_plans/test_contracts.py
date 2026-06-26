@@ -21,12 +21,12 @@ class TestTypeAnnotations:
             hints = get_type_hints(list_plan_documents)
 
             # Check parameter types
-            assert "base_dir" in hints
-            assert "return" in hints
+            assert "base_dir" in hints, "Condition must be true"
+            assert "return" in hints, "Condition must be true"
 
             # Return type should be list[Path]
             return_hint = str(hints["return"])
-            assert "list" in return_hint.lower()
+            assert "list" in return_hint.lower(), "Condition must be true"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -35,7 +35,7 @@ class TestTypeAnnotations:
         try:
             from src.codex_plans import list_plan_documents
 
-            assert callable(list_plan_documents)
+            assert callable(list_plan_documents), "Condition must be true"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -66,7 +66,7 @@ class TestContractCompliance:
             from src.codex_plans import list_plan_documents
 
             result = list_plan_documents()
-            assert result is not None
+            assert result is not None, "result must be initialized"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -95,7 +95,7 @@ class TestAPIStability:
         try:
             from src.codex_plans import __all__
 
-            assert "list_plan_documents" in __all__
+            assert "list_plan_documents" in __all__, "Condition must be true"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -104,7 +104,7 @@ class TestAPIStability:
         try:
             from src.codex_plans import list_plan_documents
 
-            assert list_plan_documents is not None
+            assert list_plan_documents is not None, "list_plan_documents must be initialized"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -113,8 +113,8 @@ class TestAPIStability:
         try:
             from src import codex_plans as _codex_plans_mod
 
-            assert _codex_plans_mod.__doc__ is not None
-            assert len(_codex_plans_mod.__doc__.strip()) > 0
+            assert _codex_plans_mod.__doc__ is not None, "__doc__ must be initialized"
+            assert len(_codex_plans_mod.__doc__.strip()) > 0, "Collection must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -123,8 +123,8 @@ class TestAPIStability:
         try:
             from src.codex_plans import list_plan_documents
 
-            assert list_plan_documents.__doc__ is not None
-            assert len(list_plan_documents.__doc__.strip()) > 0
+            assert list_plan_documents.__doc__ is not None, "__doc__ must be initialized"
+            assert len(list_plan_documents.__doc__.strip()) > 0, "Collection must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -166,12 +166,12 @@ class TestDocumentation:
             from src.codex_plans import list_plan_documents
 
             doc = list_plan_documents.__doc__
-            assert doc is not None
+            assert doc is not None, "doc must be initialized"
 
             # Check for key sections (numpy-style docstring)
             doc_lower = doc.lower()
-            assert "parameters" in doc_lower or "args" in doc_lower
-            assert "returns" in doc_lower
+            assert "parameters" in doc_lower or "args" in doc_lower, "Condition must be true"
+            assert "returns" in doc_lower, "Condition must be true"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -182,9 +182,9 @@ class TestDocumentation:
 
             # Name should be clear and descriptive
             name = list_plan_documents.__name__
-            assert "list" in name
-            assert "plan" in name
-            assert "documents" in name
+            assert "list" in name, "Condition must be true"
+            assert "plan" in name, "Condition must be true"
+            assert "documents" in name, "Condition must be true"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -203,7 +203,7 @@ class TestReturnValueProperties:
             # Should be able to modify returned list
             if result:
                 result.append(Path("/fake/path.md"))
-                assert len(result) == original_len + 1
+                assert len(result) == original_len + 1, "Result must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -216,9 +216,9 @@ class TestReturnValueProperties:
             result2 = list_plan_documents()
 
             # Should be different list objects
-            assert result1 is not result2
+            assert result1 is not result2, "Result must not be empty"
             # But with equal contents
-            assert result1 == result2
+            assert result1 == result2, "Result must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -245,8 +245,8 @@ class TestGlobPatternBehavior:
                 result = list_plan_documents(base_dir=Path(tmpdir))
 
                 # Should only find root.md, not nested.md
-                assert len(result) == 1
-                assert result[0].name == "root.md"
+                assert len(result) == 1, "Result must not be empty"
+                assert result[0].name == "root.md", "Result must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -269,7 +269,7 @@ class TestGlobPatternBehavior:
                 # Should only match .md (lowercase)
                 # Behavior depends on glob implementation
                 md_files = [p for p in result if p.suffix.lower() == ".md"]
-                assert len(md_files) > 0
+                assert len(md_files) > 0, "Md_files must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 

@@ -31,5 +31,5 @@ def test_code_tools_versions_available():
     # Light sanity: call --version for each tool
     for tool in ("black", "ruff", "mypy"):
         out = subprocess.run([tool, "--version"], capture_output=True, text=True)
-        assert out.returncode == 0
-        assert out.stdout or out.stderr
+        assert out.returncode == 0, "returncode is not valid"
+        assert out.stdout or out.stderr, "Condition must be true"

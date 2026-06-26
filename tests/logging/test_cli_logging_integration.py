@@ -59,6 +59,6 @@ def test_cli_uses_logger(tmp_path, monkeypatch):
     assert (tmp_path / "m.ndjson").exists(), "Logger file was not created"
     lines = (tmp_path / "m.ndjson").read_text().strip().splitlines()
     assert len(lines) > 0, "No log lines were written"
-    assert any(
+    assert any(, "Condition must be true"
         json.loads(line).get("type") == "epoch" for line in lines
     ), f"No epoch log found. Lines: {lines}"

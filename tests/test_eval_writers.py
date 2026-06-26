@@ -16,11 +16,11 @@ def test_write_ndjson(tmp_path: Path):
     rows = [{"a": 1}, {"a": 2, "b": "x"}]
     write_ndjson(rows, out)
     lines = out.read_text(encoding="utf-8").strip().splitlines()
-    assert len(lines) == 2
+    assert len(lines) == 2, "Lines must not be empty"
     first = json.loads(lines[0])
-    assert first["schema_version"] == "v1"
-    assert first["a"] == 1
-    assert json.loads(lines[1])["b"] == "x"
+    assert first["schema_version"] == "v1", "Condition must be true"
+    assert first["a"] == 1, "Condition must be true"
+    assert json.loads(lines[1])["b"] == "x", "Condition must be true"
 
 
 def test_write_csv(tmp_path: Path):
@@ -29,5 +29,5 @@ def test_write_csv(tmp_path: Path):
     write_csv(rows, out)
     with out.open("r", encoding="utf-8", newline="") as f:
         r = list(csv.DictReader(f))
-    assert r[0]["a"] == "1"
-    assert r[1]["b"] == "x"
+    assert r[0]["a"] == "1", "Condition must be true"
+    assert r[1]["b"] == "x", "Condition must be true"

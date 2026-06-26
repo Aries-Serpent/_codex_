@@ -48,9 +48,9 @@ class TestSnapshot:
             created_at=datetime.now(timezone.utc),
         )
 
-        assert snapshot.snapshot_id == "20251217-abc123"
-        assert snapshot.source_path == "/tmp/source"
-        assert snapshot.content_hash == "deadbeef"
+        assert snapshot.snapshot_id == "20251217-abc123", "snapshot_id is not valid"
+        assert snapshot.source_path == "/tmp/source", "source_path is not valid"
+        assert snapshot.content_hash == "deadbeef", "Content must not be empty"
 
     def test_get_source_dir(self, tmp_path: Path) -> None:
         """Test get_source_dir returns correct path."""
@@ -64,7 +64,7 @@ class TestSnapshot:
             created_at=datetime.now(timezone.utc),
         )
 
-        assert snapshot.get_source_dir() == tmp_path / "source"
+        assert snapshot.get_source_dir() == tmp_path / "source", "Condition must be true"
 
     def test_get_artifact_path(self, tmp_path: Path) -> None:
         """Test get_artifact_path returns correct path."""
@@ -79,7 +79,7 @@ class TestSnapshot:
         )
 
         artifact = snapshot.get_artifact_path("test.txt")
-        assert artifact == tmp_path / "test.txt"
+        assert artifact == tmp_path / "test.txt", "artifact is not valid"
 
     def test_to_dict(self, tmp_path: Path) -> None:
         """Test serialization to dictionary."""
@@ -96,11 +96,11 @@ class TestSnapshot:
         )
 
         data = snapshot.to_dict()
-        assert data["snapshot_id"] == "test"
-        assert data["source_path"] == "/tmp/test"
-        assert data["content_hash"] == "hash123"
-        assert data["metadata"] == {"key": "value"}
-        assert data["created_at"] == now.isoformat()
+        assert data["snapshot_id"] == "test", "Data must not be empty"
+        assert data["source_path"] == "/tmp/test", "Data must not be empty"
+        assert data["content_hash"] == "hash123", "Data must not be empty"
+        assert data["metadata"] == {"key": "value"}, "Data must not be empty"
+        assert data["created_at"] == now.isoformat(), "Data must not be empty"
 
 
 class TestContentHashing:
@@ -114,8 +114,8 @@ class TestContentHashing:
         hash1 = _compute_content_hash(test_file)
         hash2 = _compute_content_hash(test_file)
 
-        assert hash1 == hash2
-        assert len(hash1) == 64  # SHA256 hex length
+        assert hash1 == hash2, "hash1 is not valid"
+        assert len(hash1) == 64, "Hash1 must not be empty"
 
     def test_hash_directory_deterministic(self, tmp_path: Path) -> None:
         """Test directory hashing is deterministic."""
@@ -127,7 +127,7 @@ class TestContentHashing:
         hash1 = _compute_content_hash(tmp_path)
         hash2 = _compute_content_hash(tmp_path)
 
-        assert hash1 == hash2
+        assert hash1 == hash2, "hash1 is not valid"
 
     def test_hash_empty_directory(self, tmp_path: Path) -> None:
         """Test hashing an empty directory."""
@@ -135,7 +135,7 @@ class TestContentHashing:
         empty_dir.mkdir()
 
         hash_val = _compute_content_hash(empty_dir)
-        assert len(hash_val) == 64
+        assert len(hash_val) == 64, "Hash_val must not be empty"
 
 
 class TestPathValidation:
@@ -243,9 +243,9 @@ class TestZipExtraction:
 
         _extract_zip(zip_path, dest_dir)
 
-        assert (dest_dir / "file1.txt").exists()
-        assert (dest_dir / "subdir" / "file2.txt").exists()
-        assert (dest_dir / "file1.txt").read_text() == "content1"
+        assert (dest_dir / "file1.txt").exists(), "Condition must be true"
+        assert (dest_dir / "subdir" / "file2.txt").exists(), "Condition must be true"
+        assert (dest_dir / "file1.txt").read_text() == "content1", "Content must not be empty"
 
     def test_extract_zip_creates_directories(self, tmp_path: Path) -> None:
         """Test ZIP extraction creates necessary directories."""
@@ -258,7 +258,7 @@ class TestZipExtraction:
 
         _extract_zip(zip_path, dest_dir)
 
-        assert (dest_dir / "a" / "b" / "c" / "file.txt").exists()
+        assert (dest_dir / "a" / "b" / "c" / "file.txt").exists(), "Condition must be true"
 
     def test_extract_zip_path_traversal_protection(self, tmp_path: Path) -> None:
         """Test ZIP extraction prevents path traversal."""
@@ -285,11 +285,11 @@ class TestIngestSingleFile:
         artifacts_dir = tmp_path / "artifacts"
         snapshot = ingest(source_file, artifacts_dir=artifacts_dir)
 
-        assert snapshot.snapshot_id.startswith(snapshot.created_at.strftime("%Y%m%d"))
-        assert snapshot.source_path == str(source_file)
-        assert snapshot.content_hash
-        assert snapshot.snapshot_dir.exists()
-        assert (snapshot.snapshot_dir / "source" / "test.py").exists()
+        assert snapshot.snapshot_id.startswith(snapshot.created_at.strftime("%Y%m%d")), "Condition must be true"
+        assert snapshot.source_path == str(source_file), "source_path is not valid"
+        assert snapshot.content_hash, "Content must not be empty"
+        assert snapshot.snapshot_dir.exists(), "Condition must be true"
+        assert (snapshot.snapshot_dir / "source" / "test.py").exists(), "Condition must be true"
 
     def test_ingest_with_custom_snapshot_id(self, tmp_path: Path) -> None:
         """Test ingestion with custom snapshot ID."""
@@ -303,8 +303,8 @@ class TestIngestSingleFile:
             artifacts_dir=artifacts_dir,
         )
 
-        assert snapshot.snapshot_id == "custom-id-123"
-        assert (artifacts_dir / "custom-id-123").exists()
+        assert snapshot.snapshot_id == "custom-id-123", "snapshot_id is not valid"
+        assert (artifacts_dir / "custom-id-123").exists(), "Condition must be true"
 
     def test_ingest_creates_metadata(self, tmp_path: Path) -> None:
         """Test that ingestion creates snapshot metadata."""
@@ -315,15 +315,15 @@ class TestIngestSingleFile:
         snapshot = ingest(source_file, artifacts_dir=artifacts_dir)
 
         meta_file = snapshot.snapshot_dir / "snapshot-meta.json"
-        assert meta_file.exists()
+        assert meta_file.exists(), "Condition must be true"
 
         with meta_file.open() as f:
             meta = json.load(f)
 
-        assert meta["snapshot_id"] == snapshot.snapshot_id
-        assert meta["content_hash"] == snapshot.content_hash
-        assert "created_at" in meta
-        assert meta["file_count"] == 1
+        assert meta["snapshot_id"] == snapshot.snapshot_id, "Condition must be true"
+        assert meta["content_hash"] == snapshot.content_hash, "Content must not be empty"
+        assert "created_at" in meta, "Condition must be true"
+        assert meta["file_count"] == 1, "Count must be greater than zero"
 
 
 class TestIngestDirectory:
@@ -342,9 +342,9 @@ class TestIngestDirectory:
         snapshot = ingest(source_dir, artifacts_dir=artifacts_dir)
 
         snap_source = snapshot.snapshot_dir / "source"
-        assert (snap_source / "file1.py").exists()
-        assert (snap_source / "file2.py").exists()
-        assert (snap_source / "subdir" / "file3.py").exists()
+        assert (snap_source / "file1.py").exists(), "Condition must be true"
+        assert (snap_source / "file2.py").exists(), "Condition must be true"
+        assert (snap_source / "subdir" / "file3.py").exists(), "Condition must be true"
 
     def test_ingest_directory_creates_artifact_dirs(self, tmp_path: Path) -> None:
         """Test ingestion creates artifact directories."""
@@ -355,9 +355,9 @@ class TestIngestDirectory:
         artifacts_dir = tmp_path / "artifacts"
         snapshot = ingest(source_dir, artifacts_dir=artifacts_dir)
 
-        assert (snapshot.snapshot_dir / "patches").exists()
-        assert (snapshot.snapshot_dir / "tests" / "codex_generated").exists()
-        assert (snapshot.snapshot_dir / "llm_provenance").exists()
+        assert (snapshot.snapshot_dir / "patches").exists(), "Condition must be true"
+        assert (snapshot.snapshot_dir / "tests" / "codex_generated").exists(), "Condition must be true"
+        assert (snapshot.snapshot_dir / "llm_provenance").exists(), "Condition must be true"
 
 
 class TestIngestZipArchive:
@@ -375,8 +375,8 @@ class TestIngestZipArchive:
         snapshot = ingest(zip_path, artifacts_dir=artifacts_dir)
 
         snap_source = snapshot.snapshot_dir / "source"
-        assert (snap_source / "file1.py").exists()
-        assert (snap_source / "dir" / "file2.py").exists()
+        assert (snap_source / "file1.py").exists(), "Condition must be true"
+        assert (snap_source / "dir" / "file2.py").exists(), "Condition must be true"
 
 
 class TestIngestErrors:

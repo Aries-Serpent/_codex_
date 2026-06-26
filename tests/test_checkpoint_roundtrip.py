@@ -83,13 +83,13 @@ def test_checkpoint_roundtrip_restores_states(tmp_path, use_scheduler):
         ckpt_dir=ckpt_dir,
     )
 
-    assert metadata["epoch"] == 1
+    assert metadata["epoch"] == 1, "Data must not be empty"
 
     restored_py = [random.random() for _ in range(4)]
     restored_np = np.random.random(4)
     restored_torch = torch.rand(4)
 
-    assert restored_py == expected_py
+    assert restored_py == expected_py, "restored_py is not valid"
     np.testing.assert_allclose(restored_np, expected_np)
     # Torch RNG was advanced by model creation before the save; compare against
     # what the saved state should produce rather than the pre-model-creation state.
@@ -101,4 +101,4 @@ def test_checkpoint_roundtrip_restores_states(tmp_path, use_scheduler):
         assert torch.allclose(orig, copy)
 
     if scheduler and re_sched:
-        assert scheduler.get_last_lr() == pytest.approx(re_sched.get_last_lr())
+        assert scheduler.get_last_lr() == pytest.approx(re_sched.get_last_lr()), "Condition must be true"

@@ -67,8 +67,8 @@ class TestLoggingUtilities:
         from codex_ml.codex_structured_logging import get_session_id, get_session_logger
 
         # Should be callable
-        assert callable(get_session_id)
-        assert callable(get_session_logger)
+        assert callable(get_session_id), "Condition must be true"
+        assert callable(get_session_logger), "Condition must be true"
 
 
 class TestDataProcessing:
@@ -117,7 +117,7 @@ class TestCodexScript:
 
         # Should have callable functions
         funcs = [n for n in dir(codex_script) if not n.startswith("_")]
-        assert len(funcs) > 0
+        assert len(funcs) > 0, "Funcs must not be empty"
 
 
 class TestCodexModel:
@@ -133,7 +133,7 @@ class TestCodexModel:
 
         # Should have model-related classes or functions
         items = [n for n in dir(codex_model) if not n.startswith("_")]
-        assert len(items) > 0
+        assert len(items) > 0, "Items must not be empty"
 
 
 class TestSecurityUtilities:
@@ -165,7 +165,7 @@ class TestEnvironmentUtilities:
 
         # Should be able to set and get env vars
         os.environ["TEST_VAR"] = "test_value"
-        assert os.environ.get("TEST_VAR") == "test_value"
+        assert os.environ.get("TEST_VAR") == "test_value", "Value must be initialized"
         del os.environ["TEST_VAR"]
 
     def test_codex_env_handling(self):
@@ -251,13 +251,13 @@ class TestMetricsUtilities:
             # Try the expected name first
             from codex_ml.metrics import CodexMetricsRegistry
 
-            assert CodexMetricsRegistry is not None
+            assert CodexMetricsRegistry is not None, "CodexMetricsRegistry must be initialized"
         except ImportError:
             # Fall back to actual name if different
             try:
                 from codex_ml.metrics import MetricRegistry
 
-                assert MetricRegistry is not None
+                assert MetricRegistry is not None, "MetricRegistry must be initialized"
             except ImportError:
                 pytest.skip("metrics registry not available")
 
@@ -290,7 +290,7 @@ class TestCodexDataUtilities:
 
         # Should have data-related classes
         items = [n for n in dir(codex_data) if not n.startswith("_")]
-        assert len(items) > 0
+        assert len(items) > 0, "Items must not be empty"
 
 
 class TestReflectionUtilities:
@@ -305,7 +305,7 @@ class TestReflectionUtilities:
         from codex import reflection
 
         items = [n for n in dir(reflection) if not n.startswith("_")]
-        assert len(items) > 0
+        assert len(items) > 0, "Items must not be empty"
 
 
 class TestEvidenceUtilities:
@@ -320,7 +320,7 @@ class TestEvidenceUtilities:
         from codex import evidence
 
         items = [n for n in dir(evidence) if not n.startswith("_")]
-        assert len(items) > 0
+        assert len(items) > 0, "Items must not be empty"
 
 
 class TestAnalysisUtilities:
@@ -335,7 +335,7 @@ class TestAnalysisUtilities:
         from codex_ml import analysis
 
         items = [n for n in dir(analysis) if not n.startswith("_")]
-        assert len(items) > 0
+        assert len(items) > 0, "Items must not be empty"
 
 
 class TestASTUtilities:
@@ -362,7 +362,7 @@ class TestSearchUtilities:
         from codex import search
 
         items = [n for n in dir(search) if not n.startswith("_")]
-        assert len(items) > 0
+        assert len(items) > 0, "Items must not be empty"
 
 
 class TestRAGUtilities:
@@ -389,7 +389,7 @@ class TestRefactoringUtilities:
         from codex import refactoring
 
         items = [n for n in dir(refactoring) if not n.startswith("_")]
-        assert len(items) > 0
+        assert len(items) > 0, "Items must not be empty"
 
 
 class TestIngestUtilities:
@@ -404,7 +404,7 @@ class TestIngestUtilities:
         from codex import ingest
 
         items = [n for n in dir(ingest) if not n.startswith("_")]
-        assert len(items) > 0
+        assert len(items) > 0, "Items must not be empty"
 
 
 class TestTransformUtilities:
@@ -419,7 +419,7 @@ class TestTransformUtilities:
         from codex import transform
 
         items = [n for n in dir(transform) if not n.startswith("_")]
-        assert len(items) > 0
+        assert len(items) > 0, "Items must not be empty"
 
 
 class TestValidationUtilities:
@@ -434,7 +434,7 @@ class TestValidationUtilities:
         from codex import verify
 
         items = [n for n in dir(verify) if not n.startswith("_")]
-        assert len(items) > 0
+        assert len(items) > 0, "Items must not be empty"
 
 
 class TestDiagramUtilities:
@@ -457,7 +457,7 @@ class TestChatUtilities:
         from codex import chat
 
         items = [n for n in dir(chat) if not n.startswith("_")]
-        assert len(items) > 0
+        assert len(items) > 0, "Items must not be empty"
 
 
 class TestTrainingCoreUtilities:
@@ -472,7 +472,7 @@ class TestTrainingCoreUtilities:
         from codex import training
 
         items = [n for n in dir(training) if not n.startswith("_")]
-        assert len(items) > 0
+        assert len(items) > 0, "Items must not be empty"
 
 
 class TestGithubUtilities:
@@ -488,7 +488,7 @@ class TestGithubUtilities:
 
         [n for n in dir(github) if not n.startswith("_")]
         # Module might be minimal, just check it's importable
-        assert github is not None
+        assert github is not None, "github must be initialized"
 
 
 class TestZendeskUtilities:
@@ -503,7 +503,7 @@ class TestZendeskUtilities:
         from codex import zendesk
 
         items = [n for n in dir(zendesk) if not n.startswith("_")]
-        assert len(items) > 0
+        assert len(items) > 0, "Items must not be empty"
 
 
 class TestValidIdentifiers:
@@ -514,15 +514,15 @@ class TestValidIdentifiers:
         test_ids = ["simple", "with-dash", "with_underscore", "WITH_CAPS"]
         for test_id in test_ids:
             assert isinstance(test_id, str)
-            assert len(test_id) > 0
+            assert len(test_id) > 0, "Test_id must not be empty"
 
     def test_identifier_from_path(self):
         """Test generating identifiers from paths."""
         from pathlib import Path
 
         path = Path("src/codex/module.py")
-        assert path.name == "module.py"
-        assert path.stem == "module"
+        assert path.name == "module.py", "name is not valid"
+        assert path.stem == "module", "stem is not valid"
 
 
 class TestTemporaryDirectoryHandling:
@@ -534,8 +534,8 @@ class TestTemporaryDirectoryHandling:
 
         with tempfile.TemporaryDirectory() as tmpdir:
             tmppath = Path(tmpdir)
-            assert tmppath.exists()
-            assert tmppath.is_dir()
+            assert tmppath.exists(), "Condition must be true"
+            assert tmppath.is_dir(), "Condition must be true"
 
     def test_tempdir_cleanup(self):
         """Test temporary directory cleanup."""
@@ -543,10 +543,10 @@ class TestTemporaryDirectoryHandling:
 
         tmpdir = tempfile.mkdtemp()
         tmppath = Path(tmpdir)
-        assert tmppath.exists()
+        assert tmppath.exists(), "Condition must be true"
 
         # Cleanup
         import shutil
 
         shutil.rmtree(tmpdir)
-        assert not tmppath.exists()
+        assert not tmppath.exists(), "Condition must be true"

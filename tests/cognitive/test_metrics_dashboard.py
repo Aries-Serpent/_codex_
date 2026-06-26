@@ -37,24 +37,24 @@ class TestParseTimestamp:
     def test_parses_iso_format(self):
         """Test parsing ISO format timestamp."""
         result = parse_timestamp("2026-02-05T10:00:00Z")
-        assert result is not None
-        assert result.year == 2026
-        assert result.month == 2
+        assert result is not None, "result must be initialized"
+        assert result.year == 2026, "Result must not be empty"
+        assert result.month == 2, "Result must not be empty"
 
     def test_handles_none(self):
         """Test handling of None."""
         result = parse_timestamp(None)
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_handles_empty_string(self):
         """Test handling of empty string."""
         result = parse_timestamp("")
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_handles_invalid_format(self):
         """Test handling of invalid format."""
         result = parse_timestamp("not a timestamp")
-        assert result is None
+        assert result is None, "Result must not be empty"
 
 
 class TestLoadActionLog:
@@ -71,13 +71,13 @@ class TestLoadActionLog:
 
         result = load_action_log(log_file)
 
-        assert len(result) == 2
+        assert len(result) == 2, "Result must not be empty"
 
     def test_handles_missing_file(self, tmp_path):
         """Test handling of missing file."""
         log_file = tmp_path / "nonexistent.ndjson"
         result = load_action_log(log_file)
-        assert result == []
+        assert result == [], "Result must not be empty"
 
 
 class TestLoadPatternStore:
@@ -91,15 +91,15 @@ class TestLoadPatternStore:
 
         result = load_pattern_store(store_file)
 
-        assert "patterns" in result
+        assert "patterns" in result, "Result must not be empty"
 
     def test_handles_missing_file(self, tmp_path):
         """Test handling of missing file."""
         store_file = tmp_path / "nonexistent.json"
         result = load_pattern_store(store_file)
 
-        assert "patterns" in result
-        assert result["patterns"] == {}
+        assert "patterns" in result, "Result must not be empty"
+        assert result["patterns"] == {}, "Result must not be empty"
 
 
 class TestExtractSessionMetrics:
@@ -116,9 +116,9 @@ class TestExtractSessionMetrics:
 
         result = extract_session_metrics(entries, pattern_store, commits)
 
-        assert result["files"]["created"] == 1
-        assert result["files"]["modified"] == 1
-        assert result["files"]["total_operations"] == 2
+        assert result["files"]["created"] == 1, "Result must not be empty"
+        assert result["files"]["modified"] == 1, "Result must not be empty"
+        assert result["files"]["total_operations"] == 2, "Result must not be empty"
 
     def test_calculates_pattern_metrics(self):
         """Test extraction of pattern metrics."""
@@ -131,9 +131,9 @@ class TestExtractSessionMetrics:
 
         result = extract_session_metrics(entries, pattern_store, commits)
 
-        assert result["patterns"]["applied"] == 1
-        assert result["patterns"]["learned"] == 1
-        assert result["patterns"]["avg_success_rate"] == 0.85
+        assert result["patterns"]["applied"] == 1, "Result must not be empty"
+        assert result["patterns"]["learned"] == 1, "Result must not be empty"
+        assert result["patterns"]["avg_success_rate"] == 0.85, "Result must not be empty"
 
 
 class TestCalculateTrends:
@@ -144,7 +144,7 @@ class TestCalculateTrends:
         current = {"files": {"total_operations": 10}}
         result = calculate_trends(current)
 
-        assert result["files_trend"] == "stable"
+        assert result["files_trend"] == "stable", "Result must not be empty"
 
     def test_detects_increasing_trend(self):
         """Test detection of increasing trend."""
@@ -153,7 +153,7 @@ class TestCalculateTrends:
 
         result = calculate_trends(current, previous)
 
-        assert result["files_trend"] == "increasing"
+        assert result["files_trend"] == "increasing", "Result must not be empty"
 
     def test_detects_decreasing_trend(self):
         """Test detection of decreasing trend."""
@@ -162,7 +162,7 @@ class TestCalculateTrends:
 
         result = calculate_trends(current, previous)
 
-        assert result["files_trend"] == "decreasing"
+        assert result["files_trend"] == "decreasing", "Result must not be empty"
 
 
 class TestGenerateAsciiChart:
@@ -173,9 +173,9 @@ class TestGenerateAsciiChart:
         data = [("A", 10), ("B", 20)]
         result = generate_ascii_chart(data, width=20, title="Test")
 
-        assert "Test" in result
-        assert "A" in result
-        assert "B" in result
+        assert "Test" in result, "Result must not be empty"
+        assert "A" in result, "Result must not be empty"
+        assert "B" in result, "Result must not be empty"
 
 
 class TestGenerateProgressBar:
@@ -184,17 +184,17 @@ class TestGenerateProgressBar:
     def test_generates_full_bar(self):
         """Test full progress bar."""
         result = generate_progress_bar(100, 100, width=10)
-        assert result == "██████████"
+        assert result == "██████████", "Result must not be empty"
 
     def test_generates_empty_bar(self):
         """Test empty progress bar."""
         result = generate_progress_bar(0, 100, width=10)
-        assert result == "░░░░░░░░░░"
+        assert result == "░░░░░░░░░░", "Result must not be empty"
 
     def test_generates_half_bar(self):
         """Test half-filled progress bar."""
         result = generate_progress_bar(50, 100, width=10)
-        assert result == "█████░░░░░"
+        assert result == "█████░░░░░", "Result must not be empty"
 
 
 class TestGenerateTrendIndicator:
@@ -203,17 +203,17 @@ class TestGenerateTrendIndicator:
     def test_increasing_trend(self):
         """Test increasing trend indicator."""
         result = generate_trend_indicator("increasing")
-        assert result == "📈"
+        assert result == "📈", "Result must not be empty"
 
     def test_decreasing_trend(self):
         """Test decreasing trend indicator."""
         result = generate_trend_indicator("decreasing")
-        assert result == "📉"
+        assert result == "📉", "Result must not be empty"
 
     def test_unknown_trend(self):
         """Test unknown trend indicator."""
         result = generate_trend_indicator("unknown")
-        assert result == "❓"
+        assert result == "❓", "Result must not be empty"
 
 
 class TestGenerateSparkline:
@@ -224,14 +224,14 @@ class TestGenerateSparkline:
         values = [1, 2, 3, 4, 5]
         result = generate_sparkline(values, width=5)
 
-        assert len(result) == 5
-        assert result[0] == "▁"
-        assert result[-1] == "█"
+        assert len(result) == 5, "Result must not be empty"
+        assert result[0] == "▁", "Result must not be empty"
+        assert result[-1] == "█", "Result must not be empty"
 
     def test_handles_empty_values(self):
         """Test handling of empty values."""
         result = generate_sparkline([], width=5)
-        assert result == "▁▁▁▁▁"
+        assert result == "▁▁▁▁▁", "Result must not be empty"
 
 
 class TestFormatDuration:
@@ -240,12 +240,12 @@ class TestFormatDuration:
     def test_formats_minutes(self):
         """Test formatting minutes."""
         result = format_duration(45)
-        assert result == "45m"
+        assert result == "45m", "Result must not be empty"
 
     def test_formats_hours_and_minutes(self):
         """Test formatting hours and minutes."""
         result = format_duration(90)
-        assert result == "1h 30m"
+        assert result == "1h 30m", "Result must not be empty"
 
 
 class TestCalculateHealthScore:
@@ -262,14 +262,14 @@ class TestCalculateHealthScore:
 
         result = calculate_health_score(metrics)
 
-        assert 0 <= result <= 100
-        assert result > 0  # Should have some score
+        assert 0 <= result <= 100, "Result must not be empty"
+        assert result > 0, "result must be greater than zero"
 
     def test_handles_empty_metrics(self):
         """Test handling of empty metrics."""
         metrics = {}
         result = calculate_health_score(metrics)
-        assert result == 0
+        assert result == 0, "Result must not be empty"
 
 
 class TestGetHealthStatus:
@@ -278,18 +278,18 @@ class TestGetHealthStatus:
     def test_excellent_health(self):
         """Test excellent health status."""
         result = get_health_status(95)
-        assert result["label"] == "Excellent"
-        assert result["emoji"] == "🌟"
+        assert result["label"] == "Excellent", "Result must not be empty"
+        assert result["emoji"] == "🌟", "Result must not be empty"
 
     def test_good_health(self):
         """Test good health status."""
         result = get_health_status(75)
-        assert result["label"] == "Good"
+        assert result["label"] == "Good", "Result must not be empty"
 
     def test_critical_health(self):
         """Test critical health status."""
         result = get_health_status(20)
-        assert result["label"] == "Critical"
+        assert result["label"] == "Critical", "Result must not be empty"
 
 
 class TestGenerateDashboard:
@@ -322,10 +322,10 @@ class TestGenerateDashboard:
 
         result = generate_dashboard(metrics)
 
-        assert "Cognitive Brain Dashboard" in result
-        assert "Quick Stats" in result
-        assert "Health Score" in result
-        assert "File Activity" in result
+        assert "Cognitive Brain Dashboard" in result, "Result must not be empty"
+        assert "Quick Stats" in result, "Result must not be empty"
+        assert "Health Score" in result, "Result must not be empty"
+        assert "File Activity" in result, "Result must not be empty"
 
     def test_includes_patterns(self):
         """Test that patterns are included."""
@@ -346,4 +346,4 @@ class TestGenerateDashboard:
 
         result = generate_dashboard(metrics)
 
-        assert "test_pattern" in result
+        assert "test_pattern" in result, "Result must not be empty"

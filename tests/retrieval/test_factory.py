@@ -15,7 +15,7 @@ from src.codex.retrieval.stores.factory import (
     VectorStoreType,
     auto_detect_store,
     create_auto_store,
-    get_default_store, # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+    get_default_store,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 )
 
 # Check if FAISS is available
@@ -40,19 +40,19 @@ class TestVectorStoreRegistry:
         VectorStoreRegistry.register("test_store", mock_store)
 
         retrieved = VectorStoreRegistry.get("test_store")
-        assert retrieved == mock_store
+        assert retrieved == mock_store, "retrieved is not valid"
 
     def test_list_types(self):
         """Test listing registered types"""
         types = VectorStoreRegistry.list_types()
         assert isinstance(types, list)
         # FAISS should be registered by default
-        assert "faiss" in types
+        assert "faiss" in types, "Condition must be true"
 
     def test_get_nonexistent(self):
         """Test getting nonexistent store returns None"""
         result = VectorStoreRegistry.get("nonexistent_store")
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_register_overwrites(self):
         """Test registering same type overwrites"""
@@ -63,7 +63,7 @@ class TestVectorStoreRegistry:
         VectorStoreRegistry.register("overwrite_test", mock_store2)
 
         retrieved = VectorStoreRegistry.get("overwrite_test")
-        assert retrieved == mock_store2
+        assert retrieved == mock_store2, "retrieved is not valid"
 
 
 class TestVectorStoreType:
@@ -71,10 +71,10 @@ class TestVectorStoreType:
 
     def test_enum_values(self):
         """Test enum values"""
-        assert VectorStoreType.FAISS.value == "faiss"
-        assert VectorStoreType.PINECONE.value == "pinecone"
-        assert VectorStoreType.WEAVIATE.value == "weaviate"
-        assert VectorStoreType.CHROMADB.value == "chromadb"
+        assert VectorStoreType.FAISS.value == "faiss", "Value must be initialized"
+        assert VectorStoreType.PINECONE.value == "pinecone", "Value must be initialized"
+        assert VectorStoreType.WEAVIATE.value == "weaviate", "Value must be initialized"
+        assert VectorStoreType.CHROMADB.value == "chromadb", "Value must be initialized"
 
 
 class TestVectorStoreFactory:
@@ -87,7 +87,7 @@ class TestVectorStoreFactory:
             store_type="faiss", index_name="test_index", index_dir="/tmp/test_faiss"
         )
 
-        assert store is not None
+        assert store is not None, "store must be initialized"
         assert hasattr(store, "create_index")
         assert hasattr(store, "search")
 
@@ -107,7 +107,7 @@ class TestVectorStoreFactory:
         }
 
         store = VectorStoreFactory.create_from_config(config)
-        assert store is not None
+        assert store is not None, "store must be initialized"
 
     def test_create_from_config_missing_type(self):
         """Test creating from config without type fails"""
@@ -134,7 +134,7 @@ class TestVectorStoreFactory:
                 api_key="test_key",
                 environment="test-env",
             )
-            assert store is not None
+            assert store is not None, "store must be initialized"
             # Stub should raise RuntimeError on operations
             with pytest.raises(RuntimeError, match="not available in offline mode"):
                 store.search(np.random.rand(1, 768), top_k=5)
@@ -149,7 +149,7 @@ class TestVectorStoreFactory:
                 dimension=768,
                 url="http://localhost:8080",
             )
-            assert store is not None
+            assert store is not None, "store must be initialized"
 
 
 class TestDefaultStore:
@@ -159,7 +159,7 @@ class TestDefaultStore:
     def test_get_default_store(self):
         """Test getting default store"""
         store = get_default_store(dimension=384, index_name="default_test")
-        assert store is not None
+        assert store is not None, "store must be initialized"
         assert hasattr(store, "create_index")
 
 
@@ -170,7 +170,7 @@ class TestAutoDetection:
         """Test auto-detect returns FAISS (default)"""
         store_type = auto_detect_store()
         # Should default to FAISS
-        assert store_type == "faiss"
+        assert store_type == "faiss", "store_type is not valid"
 
     def test_auto_detect_with_pinecone_env(self, monkeypatch):
         """Test auto-detect with Pinecone env var"""
@@ -178,20 +178,20 @@ class TestAutoDetection:
         monkeypatch.setenv("PINECONE_API_KEY", "test_key")
         store_type = auto_detect_store()
         # FAISS has higher priority
-        assert store_type == "faiss"
+        assert store_type == "faiss", "store_type is not valid"
 
     def test_auto_detect_with_weaviate_env(self, monkeypatch):
         """Test auto-detect with Weaviate env var"""
         monkeypatch.setenv("WEAVIATE_URL", "http://localhost:8080")
         store_type = auto_detect_store()
         # FAISS has higher priority
-        assert store_type == "faiss"
+        assert store_type == "faiss", "store_type is not valid"
 
     @pytest.mark.skipif(not FAISS_AVAILABLE, reason="FAISS not available")
     def test_create_auto_store(self):
         """Test creating auto-detected store"""
         store = create_auto_store(index_name="auto_test", dimension=512)
-        assert store is not None
+        assert store is not None, "store must be initialized"
         # Should be FAISS by default
         assert hasattr(store, "create_index")
 
@@ -200,7 +200,7 @@ class TestAutoDetection:
         """Test creating auto store without dimension"""
         # Should work for FAISS (dimension set during create_index)
         store = create_auto_store(index_name="auto_no_dim")
-        assert store is not None
+        assert store is not None, "store must be initialized"
 
 
 class TestFactoryIntegration:
@@ -224,9 +224,9 @@ class TestFactoryIntegration:
         query = np.random.rand(1, 128).astype(np.float32)
         results = store.search(query, top_k=3)
 
-        assert len(results) == 3
-        assert all("id" in r for r in results)
-        assert all("score" in r for r in results)
+        assert len(results) == 3, "Results must not be empty"
+        assert all("id" in r for r in results), "Result must not be empty"
+        assert all("score" in r for r in results), "Result must not be empty"
 
     @pytest.mark.skipif(not FAISS_AVAILABLE, reason="FAISS not available")
     def test_multiple_stores(self):
@@ -239,10 +239,10 @@ class TestFactoryIntegration:
             store_type="faiss", index_name="store2", index_dir="/tmp/store2"
         )
 
-        assert store1 is not None
-        assert store2 is not None
+        assert store1 is not None, "store1 must be initialized"
+        assert store2 is not None, "store2 must be initialized"
         # Should be different instances
-        assert store1 != store2
+        assert store1 != store2, "store1 is not valid"
 
     @pytest.mark.skipif(not FAISS_AVAILABLE, reason="FAISS not available")
     def test_config_workflow(self):
@@ -263,8 +263,8 @@ class TestFactoryIntegration:
         store.create_index(embeddings, documents)
         health = store.health_check()
 
-        assert health["healthy"] is True
-        assert health["num_vectors"] == 5
+        assert health["healthy"] is True, "Condition must be true"
+        assert health["num_vectors"] == 5, "Condition must be true"
 
 
 class TestBackendAvailability:
@@ -275,7 +275,7 @@ class TestBackendAvailability:
         types = VectorStoreRegistry.list_types()
 
         # At minimum, FAISS should be available
-        assert "faiss" in types
+        assert "faiss" in types, "Condition must be true"
 
         # Stubs should also be registered
         assert "pinecone" in types or "weaviate" in types or "pgvector" in types
@@ -283,4 +283,4 @@ class TestBackendAvailability:
     def test_faiss_always_available(self):
         """Test FAISS is always available"""
         store_class = VectorStoreRegistry.get("faiss")
-        assert store_class is not None
+        assert store_class is not None, "store_class must be initialized"

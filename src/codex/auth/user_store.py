@@ -421,9 +421,7 @@ class UserStore:
             errors.append("special character")
 
         if errors:
-            raise ValueError(
-                f"Password must contain at least one {', '.join(errors)}"
-            )
+            raise ValueError(f"Password must contain at least one {', '.join(errors)}")
 
     @staticmethod
     def _validate_email_format(email: str) -> None:
@@ -439,4 +437,4 @@ class UserStore:
         # Basic email format validation pattern
         email_pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
         if not re.match(email_pattern, email):
-           raise ValueError("Invalid email format")
+            raise ValueError("Invalid email format")

@@ -34,7 +34,7 @@ def test_ndjson_sink_serializes_rows_and_factory(tmp_path):
     sink = NdjsonSink(fp=buffer)
     sink.write({"metric": "acc", "value": 0.9})
     sink.close()
-    assert json.loads(buffer.getvalue().strip())["metric"] == "acc"
+    assert json.loads(buffer.getvalue().strip())["metric"] == "acc", "Value must be initialized"
 
     # Factory helpers
     csv_sink = create_sink("csv", fp=io.StringIO(), fieldnames=["metric", "value", "step"])
@@ -42,5 +42,5 @@ def test_ndjson_sink_serializes_rows_and_factory(tmp_path):
 
     ndjson_path = tmp_path / "metrics.ndjson"
     sink_from_path = get_sink("ndjson", path=ndjson_path)
-    assert sink_from_path is not None
+    assert sink_from_path is not None, "sink_from_path must be initialized"
     sink_from_path.write({"metric": "loss", "value": 0.1})

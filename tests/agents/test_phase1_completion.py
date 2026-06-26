@@ -24,7 +24,7 @@ class TestPhysicsOrchestratorUncoveredMethods:
         assessment = orchestrator.assess_situation(state)
 
         assert isinstance(assessment, dict)
-        assert len(assessment) > 0
+        assert len(assessment) > 0, "Assessment must not be empty"
 
     def test_act_with_none_path(self):
         """Test act method when no optimal path provided."""
@@ -39,7 +39,7 @@ class TestPhysicsOrchestratorUncoveredMethods:
         result = orchestrator.act(None, state)
 
         assert isinstance(result, dict)
-        assert "action_taken" in result
+        assert "action_taken" in result, "Result must not be empty"
 
     def test_act_with_valid_path(self):
         """Test act method with a valid action path."""
@@ -59,7 +59,7 @@ class TestPhysicsOrchestratorUncoveredMethods:
         result = orchestrator.act(path, state)
 
         assert isinstance(result, dict)
-        assert "action_taken" in result or "timestamp" in result
+        assert "action_taken" in result or "timestamp" in result, "Result must not be empty"
 
     def test_load_config_default(self):
         """Test load_config with default values."""
@@ -69,7 +69,7 @@ class TestPhysicsOrchestratorUncoveredMethods:
         config = orchestrator.load_config()
 
         assert isinstance(config, dict)
-        assert len(config) > 0
+        assert len(config) > 0, "Config must not be empty"
 
     def test_optimize_paths(self):
         """Test optimize method with multiple paths."""
@@ -104,7 +104,7 @@ class TestPhysicsOrchestratorUncoveredMethods:
 
         result = orchestrator.optimize(paths)
 
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
 
 class TestQuantumGameTheoryEngines:
@@ -122,7 +122,7 @@ class TestQuantumGameTheoryEngines:
                 payoff_red=[[1.0]],
             )
 
-            assert engine is not None
+            assert engine is not None, "engine must be initialized"
         except (ImportError, TypeError) as e:
             pytest.skip(f"ClassicalGameEngine requires dependencies: {e}")
 
@@ -136,7 +136,7 @@ class TestQuantumGameTheoryEngines:
                 red_strategies=["probe", "exploit"],
             )
 
-            assert engine is not None
+            assert engine is not None, "engine must be initialized"
         except (ImportError, TypeError) as e:
             pytest.skip(f"QuantumInspiredGameEngine requires dependencies: {e}")
 
@@ -198,7 +198,7 @@ class TestAdvancedPhysicsAdvancedPatterns:
         attractor.iterate(steps=5)
 
         # State should have changed
-        assert attractor.state is not None
+        assert attractor.state is not None, "state must be initialized"
 
     def test_fractal_analyzer_measure_complexity(self):
         """Test FractalAnalyzer complexity measurement."""
@@ -215,7 +215,7 @@ def hello():
 
         try:
             complexity = analyzer.measure_complexity(code_sample)
-            assert complexity is not None
+            assert complexity is not None, "complexity must be initialized"
         except (AttributeError, NotImplementedError):
             # Method might not be fully implemented
             pytest.skip("measure_complexity not fully implemented")
@@ -242,8 +242,8 @@ class TestMentalMappingGraphOperations:
             # Retrieve it
             retrieved = model.get_node("test1")
 
-            assert retrieved is not None
-            assert retrieved.node_id == "test1"
+            assert retrieved is not None, "retrieved must be initialized"
+            assert retrieved.node_id == "test1", "node_id is not valid"
         except (AttributeError, TypeError) as e:
             # NodeType might have different values
             pytest.skip(f"Mental mapping API differs: {e}")
@@ -265,7 +265,7 @@ class TestMentalMappingGraphOperations:
 
             model.add_edge(edge)
 
-            assert len(model.edges) > 0
+            assert len(model.edges) > 0, "Collection must not be empty"
         except (AttributeError, TypeError) as e:
             # Edge API might differ
             pytest.skip(f"Mental mapping edge API differs: {e}")
@@ -282,9 +282,9 @@ class TestWorkflowNavigatorDynamicWorkflows:
 
         workflow = nav._create_dynamic_workflow("audit_coverage")
 
-        assert workflow is not None
-        assert workflow.workflow_id is not None
-        assert len(workflow.steps) > 0
+        assert workflow is not None, "workflow must be initialized"
+        assert workflow.workflow_id is not None, "workflow_id must be initialized"
+        assert len(workflow.steps) > 0, "Collection must not be empty"
 
     def test_create_dynamic_workflow_test(self):
         """Test creating dynamic test workflow."""
@@ -294,8 +294,8 @@ class TestWorkflowNavigatorDynamicWorkflows:
 
         workflow = nav._create_dynamic_workflow("test_run")
 
-        assert workflow is not None
-        assert len(workflow.steps) > 0
+        assert workflow is not None, "workflow must be initialized"
+        assert len(workflow.steps) > 0, "Collection must not be empty"
 
     def test_unregister_workflow(self):
         """Test unregistering a workflow."""
@@ -324,6 +324,6 @@ class TestWorkflowNavigatorDynamicWorkflows:
 
             # Should no longer be retrievable
             result = nav.get_workflow("TEST_UNREGISTER")
-            assert result is None
+            assert result is None, "Result must not be empty"
         except (AttributeError, NotImplementedError):
             pytest.skip("unregister_workflow not implemented")

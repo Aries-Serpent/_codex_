@@ -71,14 +71,14 @@ class TestTfidfIntegration:
         )
 
         # Should succeed or gracefully handle
-        assert result.exit_code in [
+        assert result.exit_code in [, "Result must not be empty"
             0,
             1,
         ], f"Unexpected exit code: {result.exit_code}\n{result.stdout}"
 
         # Check output
         if result.exit_code == 0:
-            assert "Index built successfully" in result.stdout or "index" in result.stdout.lower()
+            assert "Index built successfully" in result.stdout or "index" in result.stdout.lower(), "Result must not be empty"
 
     def test_list_command(self, runner):
         """Test list command (should always work)."""
@@ -93,7 +93,7 @@ class TestTfidfIntegration:
 
         # Should fail gracefully
         assert result.exit_code == 1, "Result must not be empty"
-        assert "not found" in result.stdout.lower() or "error" in result.stdout.lower()
+        assert "not found" in result.stdout.lower() or "error" in result.stdout.lower(), "Result must not be empty"
 
     def test_help_commands(self, runner):
         """Test all help commands work."""
@@ -102,7 +102,7 @@ class TestTfidfIntegration:
         for cmd in commands:
             result = runner.invoke(app, [cmd, "--help"])
             assert result.exit_code == 0, f"Help for {cmd} failed"
-            assert "Usage:" in result.stdout or "help" in result.stdout.lower()
+            assert "Usage:" in result.stdout or "help" in result.stdout.lower(), "Result must not be empty"
 
 
 class TestProviderSelection:
@@ -115,7 +115,7 @@ class TestProviderSelection:
 
             # Create provider
             provider = TfidfEmbeddingProvider(max_features=384)
-            assert provider is not None
+            assert provider is not None, "provider must be initialized"
             assert provider.get_dimension() == 384, "Provider must be initialized"
         except ImportError as e:
             pytest.skip(f"Required dependencies not available: {e}")
@@ -126,7 +126,7 @@ class TestProviderSelection:
             from codex.rag.embeddings import create_embedding_provider
 
             provider = create_embedding_provider(provider_type="tfidf")
-            assert provider is not None
+            assert provider is not None, "provider must be initialized"
 
             # Test encoding with longer, more varied text
             texts = [
@@ -151,10 +151,10 @@ class TestProviderSelection:
 
             # Auto mode should fall back to TF-IDF if transformers unavailable
             provider = create_embedding_provider(provider_type="auto")
-            assert provider is not None
+            assert provider is not None, "provider must be initialized"
 
             # Verify it's using TF-IDF (wrapped in cache)
-            assert (
+            assert (, "Condition must be true"
                 "CachedEmbeddingProvider" in provider.__class__.__name__
                 or "TfidfEmbeddingProvider" in provider.__class__.__name__
             )
@@ -191,8 +191,8 @@ class TestOfflineCapability:
 
             # Verify embeddings
             assert embeddings.shape[0] == len(chunks), "Embeddings must have valid shape"
-            assert embeddings.shape[1] <= 384  # May be less for small corpus
-            assert embeddings.shape[1] > 0  # But must have some dimensions
+            assert embeddings.shape[1] <= 384, "Condition must be true"
+            assert embeddings.shape[1] > 0, "Value must be greater than zero"
 
         except ImportError as e:
             pytest.skip(f"Required dependencies not available: {e}")
@@ -235,8 +235,8 @@ class TestOfflineCapability:
 
             # Verify index was created
             assert index_path.exists(), "Assertion must pass"
-            assert (index_path / "index.faiss").exists()
-            assert (index_path / "chunks.json").exists()
+            assert (index_path / "index.faiss").exists(), "Condition must be true"
+            assert (index_path / "chunks.json").exists(), "Condition must be true"
 
             # Try to load and query (this tests retrieval too)
             # Note: Retriever might need sentence-transformers, skip if unavailable
@@ -245,7 +245,7 @@ class TestOfflineCapability:
                     index_name="test_offline", tenant_id="test", index_dir=str(index_dir)
                 )
                 # If we got here, retrieval setup worked
-                assert retriever.faiss_index is not None
+                assert retriever.faiss_index is not None, "faiss_index must be initialized"
             except Exception as _err:
                 # Expected if sentence-transformers not available
                 _ = None  # suppressed: no action needed

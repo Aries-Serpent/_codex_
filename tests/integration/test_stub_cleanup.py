@@ -76,33 +76,33 @@ class Invalid:
 
     # find_stubs convenience function
     stubs2 = find_stubs([source_dir])
-    assert len(stubs) == len(stubs2)
+    assert len(stubs) == len(stubs2), "Stubs must not be empty"
 
-    assert len(stubs) > 0
+    assert len(stubs) > 0, "Stubs must not be empty"
 
     # Test prioritize_stubs
     prioritized = prioritize_stubs(stubs)
-    assert prioritized[0].priority == "P0"
+    assert prioritized[0].priority == "P0", "priority is not valid"
 
     # Test summary
     summary = analyzer.get_summary()
-    assert summary["total"] == len(stubs)
-    assert summary["by_priority"]["P0"] > 0
-    assert summary["by_priority"]["P1"] > 0
-    assert summary["by_priority"]["P2"] > 0
-    assert summary["by_type"]["NotImplementedError"] > 0
-    assert summary["by_type"]["TODO"] > 0
-    assert summary["by_type"]["FIXME"] > 0
+    assert summary["total"] == len(stubs), "Stubs must not be empty"
+    assert summary["by_priority"]["P0"] > 0, "Value must be greater than zero"
+    assert summary["by_priority"]["P1"] > 0, "Value must be greater than zero"
+    assert summary["by_priority"]["P2"] > 0, "Value must be greater than zero"
+    assert summary["by_type"]["NotImplementedError"] > 0, "Value must be greater than zero"
+    assert summary["by_type"]["TODO"] > 0, "Value must be greater than zero"
+    assert summary["by_type"]["FIXME"] > 0, "Value must be greater than zero"
 
     # Test generate_stub_report
     report_file = tmp_path / "report.md"
     generate_stub_report(report_file, source_dirs=[source_dir])
 
-    assert report_file.exists()
+    assert report_file.exists(), "rep is not valid"
     report_content = report_file.read_text()
-    assert "Total Stubs" in report_content
-    assert "P0" in report_content
-    assert "NotImplementedError" in report_content
+    assert "Total Stubs" in report_content, "Content must not be empty"
+    assert "P0" in report_content, "Content must not be empty"
+    assert "NotImplementedError" in report_content, "Content must not be empty"
 
 
 def test_stub_cleanup_default_dirs(monkeypatch, tmp_path):
@@ -120,11 +120,11 @@ def test_stub_cleanup_default_dirs(monkeypatch, tmp_path):
 
     analyzer = StubAnalyzer()
     stubs = analyzer.analyze()
-    assert len(stubs) == 2
+    assert len(stubs) == 2, "Stubs must not be empty"
 
     report_file = tmp_path / "report.md"
     generate_stub_report(report_file)
-    assert report_file.exists()
+    assert report_file.exists(), "rep is not valid"
 
 
 def test_stub_cleanup_edge_cases(tmp_path):
@@ -141,11 +141,11 @@ def calculate():
 
     analyzer = StubAnalyzer([source_dir])
     stubs = analyzer.analyze()
-    assert len(stubs) == 1
-    assert str(stubs[0]).startswith("P0")
+    assert len(stubs) == 1, "Stubs must not be empty"
+    assert str(stubs[0]).startswith("P0"), "Condition must be true"
 
     # Test __str__ explicit
-    assert "bad.py" in str(stubs[0])
+    assert "bad.py" in str(stubs[0]), "Condition must be true"
 
 
 def test_stub_cleanup_ast_attributes(tmp_path):
@@ -174,4 +174,4 @@ def standalone():
     analyzer = StubAnalyzer([source_dir])
     stubs = analyzer.analyze()
     # these are abstract, so stubs should be 0
-    assert len(stubs) == 0
+    assert len(stubs) == 0, "Stubs must not be empty"

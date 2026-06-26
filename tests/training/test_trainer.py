@@ -20,7 +20,7 @@ def test_trainer_module_imports():
         import training.trainer as trainer_mod
     except ImportError:
         pytest.skip("training.trainer not importable")
-    assert trainer_mod is not None
+    assert trainer_mod is not None, "trainer_mod must be initialized"
     assert hasattr(trainer_mod, "Trainer")
 
 

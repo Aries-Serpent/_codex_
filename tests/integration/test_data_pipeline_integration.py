@@ -87,9 +87,9 @@ class TestDataLoading:
     def test_load_json_file(self, sample_json_data):
         """Verify loading data from JSON file."""
         data = json.loads(sample_json_data.read_text())
-        assert len(data) == 3
-        assert data[0]["id"] == 1
-        assert "text" in data[0]
+        assert len(data) == 3, "Data must not be empty"
+        assert data[0]["id"] == 1, "Data must not be empty"
+        assert "text" in data[0], "Data must not be empty"
 
     def test_load_jsonl_file(self, sample_jsonl_data):
         """Verify loading data from JSONL file."""
@@ -98,8 +98,8 @@ class TestDataLoading:
             for line in f:
                 data.append(json.loads(line))
 
-        assert len(data) == 3
-        assert data[0]["id"] == 1
+        assert len(data) == 3, "Data must not be empty"
+        assert data[0]["id"] == 1, "Data must not be empty"
 
     def test_load_csv_file(self, sample_csv_data):
         """Verify loading data from CSV file."""
@@ -108,9 +108,9 @@ class TestDataLoading:
             reader = csv.DictReader(f)
             data = list(reader)
 
-        assert len(data) == 3
-        assert data[0]["id"] == "1"
-        assert data[0]["category"] == "A"
+        assert len(data) == 3, "Data must not be empty"
+        assert data[0]["id"] == "1", "Data must not be empty"
+        assert data[0]["category"] == "A", "Data must not be empty"
 
     def test_load_empty_file(self, temp_data_dir):
         """Verify handling of empty data files."""
@@ -118,7 +118,7 @@ class TestDataLoading:
         empty_file.write_text("[]")
 
         data = json.loads(empty_file.read_text())
-        assert len(data) == 0
+        assert len(data) == 0, "Data must not be empty"
 
     def test_load_malformed_json(self, temp_data_dir):
         """Verify error handling for malformed JSON."""
@@ -131,7 +131,7 @@ class TestDataLoading:
     def test_load_missing_file(self, temp_data_dir):
         """Verify handling of missing files."""
         missing = temp_data_dir / "raw" / "nonexistent.json"
-        assert not missing.exists()
+        assert not missing.exists(), "Condition must be true"
 
     def test_load_large_file_streaming(self, temp_data_dir):
         """Verify streaming loading of large files."""
@@ -147,7 +147,7 @@ class TestDataLoading:
                 json.loads(line)
                 count += 1
 
-        assert count == 100
+        assert count == 100, "Count must be greater than zero"
 
 
 class TestDataPreprocessing:
@@ -161,7 +161,7 @@ class TestDataPreprocessing:
         for item in data:
             item["text"] = item["text"].lower().strip()
 
-        assert data[0]["text"] == "sample text one"
+        assert data[0]["text"] == "sample text one", "Data must not be empty"
 
     def test_tokenization(self, sample_json_data):
         """Verify text tokenization preprocessing."""
@@ -170,7 +170,7 @@ class TestDataPreprocessing:
         for item in data:
             item["tokens"] = item["text"].split()
 
-        assert len(data[0]["tokens"]) == 3
+        assert len(data[0]["tokens"]) == 3, "Collection must not be empty"
 
     def test_label_encoding(self, sample_json_data):
         """Verify label encoding transformation."""
@@ -180,8 +180,8 @@ class TestDataPreprocessing:
         for item in data:
             item["label_encoded"] = label_map.get(item["label"], -1)
 
-        assert data[0]["label_encoded"] == 1
-        assert data[1]["label_encoded"] == 0
+        assert data[0]["label_encoded"] == 1, "Data must not be empty"
+        assert data[1]["label_encoded"] == 0, "Data must not be empty"
 
     def test_feature_extraction(self, sample_json_data):
         """Verify feature extraction from raw data."""
@@ -193,7 +193,7 @@ class TestDataPreprocessing:
                 "word_count": len(item["text"].split()),
             }
 
-        assert data[0]["features"]["word_count"] == 3
+        assert data[0]["features"]["word_count"] == 3, "Data must not be empty"
 
     def test_data_filtering(self, sample_json_data):
         """Verify data filtering preprocessing."""
@@ -202,7 +202,7 @@ class TestDataPreprocessing:
         # Filter by label
         filtered = [item for item in data if item["label"] == "positive"]
 
-        assert len(filtered) == 2
+        assert len(filtered) == 2, "Filtered must not be empty"
 
     def test_data_deduplication(self, temp_data_dir):
         """Verify deduplication of duplicate records."""
@@ -222,7 +222,7 @@ class TestDataPreprocessing:
                 seen.add(item["text"])
                 unique.append(item)
 
-        assert len(unique) == 2
+        assert len(unique) == 2, "Unique must not be empty"
 
 
 class TestBatchProcessing:
@@ -246,9 +246,9 @@ class TestBatchProcessing:
         if current_batch:
             batches.append(current_batch)
 
-        assert len(batches) == 2
-        assert len(batches[0]) == 2
-        assert len(batches[1]) == 1
+        assert len(batches) == 2, "Batches must not be empty"
+        assert len(batches[0]) == 2, "Collection must not be empty"
+        assert len(batches[1]) == 1, "Collection must not be empty"
 
     def test_parallel_batch_processing(self, sample_jsonl_data):
         """Verify parallel processing of batches."""
@@ -268,7 +268,7 @@ class TestBatchProcessing:
         with ThreadPoolExecutor(max_workers=2) as executor:
             results = list(executor.map(process_batch, batches))
 
-        assert len(results) == 2
+        assert len(results) == 2, "Results must not be empty"
 
     def test_batch_size_optimization(self, temp_data_dir):
         """Verify batch size affects processing."""
@@ -292,7 +292,7 @@ class TestBatchProcessing:
                 batch_count += 1
 
             expected = (10 + batch_size - 1) // batch_size
-            assert batch_count == expected
+            assert batch_count == expected, "Count must be greater than zero"
 
 
 class TestDataValidation:
@@ -305,7 +305,7 @@ class TestDataValidation:
 
         for item in data:
             for field in required_fields:
-                assert field in item
+                assert field in item, "Item must not be empty"
 
     def test_validate_data_types(self, sample_json_data):
         """Verify validation of data types."""
@@ -324,7 +324,7 @@ class TestDataValidation:
                 data.append(json.loads(line))
 
         for item in data:
-            assert 0.0 <= item["score"] <= 1.0
+            assert 0.0 <= item["score"] <= 1.0, "Item must not be empty"
 
     def test_validate_string_patterns(self, sample_json_data):
         """Verify validation of string patterns."""
@@ -332,7 +332,7 @@ class TestDataValidation:
 
         for item in data:
             # Text should not be empty
-            assert len(item["text"]) > 0
+            assert len(item["text"]) > 0, "Collection must not be empty"
 
     def test_validation_error_reporting(self, temp_data_dir):
         """Verify validation error collection."""
@@ -355,7 +355,7 @@ class TestDataValidation:
             if item.get("text", "") == "":
                 errors.append(f"Row {idx}: Empty 'text' field")
 
-        assert len(errors) > 0
+        assert len(errors) > 0, "Errors must not be empty"
 
 
 class TestFormatConversion:
@@ -376,7 +376,7 @@ class TestFormatConversion:
             for line in f:
                 converted.append(json.loads(line))
 
-        assert len(converted) == len(data)
+        assert len(converted) == len(data), "Converted must not be empty"
 
     def test_csv_to_json_conversion(self, sample_csv_data, temp_data_dir):
         """Verify CSV to JSON conversion."""
@@ -391,7 +391,7 @@ class TestFormatConversion:
 
         # Verify conversion
         converted = json.loads(output_file.read_text())
-        assert len(converted) == 3
+        assert len(converted) == 3, "Converted must not be empty"
 
     def test_jsonl_to_csv_conversion(self, sample_jsonl_data, temp_data_dir):
         """Verify JSONL to CSV conversion."""
@@ -414,7 +414,7 @@ class TestFormatConversion:
             reader = csv.DictReader(f)
             converted = list(reader)
 
-        assert len(converted) == 3
+        assert len(converted) == 3, "Converted must not be empty"
 
 
 class TestPipelineChaining:
@@ -436,7 +436,7 @@ class TestPipelineChaining:
             if item["text_length"] > 0:
                 validated.append(item)
 
-        assert len(validated) == 3
+        assert len(validated) == 3, "Validated must not be empty"
 
     def test_extract_transform_load_pipeline(self, sample_csv_data, temp_data_dir):
         """Verify ETL pipeline workflow."""
@@ -455,7 +455,7 @@ class TestPipelineChaining:
         output_file = temp_data_dir / "output" / "etl_result.json"
         output_file.write_text(json.dumps(data))
 
-        assert output_file.exists()
+        assert output_file.exists(), "Condition must be true"
 
     def test_filter_deduplicate_sort_chain(self, temp_data_dir):
         """Verify filter → deduplicate → sort chain."""
@@ -486,8 +486,8 @@ class TestPipelineChaining:
         # Sort
         sorted_data = sorted(unique, key=lambda x: x["id"])
 
-        assert len(sorted_data) == 3
-        assert sorted_data[0]["id"] == 1
+        assert len(sorted_data) == 3, "Sorted_data must not be empty"
+        assert sorted_data[0]["id"] == 1, "Data must not be empty"
 
 
 class TestErrorHandling:
@@ -512,8 +512,8 @@ class TestErrorHandling:
                 except json.JSONDecodeError as e:
                     errors.append((line_num, str(e)))
 
-        assert len(valid_records) == 2
-        assert len(errors) == 1
+        assert len(valid_records) == 2, "Valid_records must not be empty"
+        assert len(errors) == 1, "Errors must not be empty"
 
     def test_retry_on_failure(self):
         """Verify retry mechanism for transient failures."""
@@ -536,7 +536,7 @@ class TestErrorHandling:
                 if retry == max_retries - 1:
                     raise
 
-        assert result == "success"
+        assert result == "success", "Result must not be empty"
 
     def test_rollback_on_error(self, temp_data_dir):
         """Verify rollback mechanism on pipeline errors."""
@@ -551,7 +551,7 @@ class TestErrorHandling:
 
             # Validate
             loaded = json.loads(temp_file.read_text())
-            assert len(loaded) == 2
+            assert len(loaded) == 2, "Loaded must not be empty"
 
             # Commit
             temp_file.rename(output_file)
@@ -561,7 +561,7 @@ class TestErrorHandling:
                 temp_file.unlink()
             raise
 
-        assert output_file.exists()
+        assert output_file.exists(), "Condition must be true"
 
 
 class TestPerformanceOptimization:
@@ -583,7 +583,7 @@ class TestPerformanceOptimization:
         reader = lazy_reader(large_file)
         first_item = next(reader)
 
-        assert first_item["id"] == 0
+        assert first_item["id"] == 0, "Item must not be empty"
 
     def test_memory_efficient_processing(self, temp_data_dir):
         """Verify memory-efficient streaming processing."""
@@ -602,7 +602,7 @@ class TestPerformanceOptimization:
                 item["processed"] = True
                 fout.write(json.dumps(item) + "\n")
 
-        assert output_file.exists()
+        assert output_file.exists(), "Condition must be true"
 
     def test_caching_intermediate_results(self, temp_data_dir):
         """Verify caching of intermediate pipeline results."""
@@ -617,5 +617,5 @@ class TestPerformanceOptimization:
         # Retrieve from cache
         cached = json.loads(cache_file.read_text())
 
-        assert len(cached) == 10
-        assert cached[5]["computed"] == 25
+        assert len(cached) == 10, "Cached must not be empty"
+        assert cached[5]["computed"] == 25, "Condition must be true"

@@ -101,8 +101,8 @@ class TestCoverageTrendTracking:
             files_covered=150,
             total_files=200,
         )
-        assert snapshot.line_coverage == 85.5
-        assert snapshot.branch_coverage == 72.3
+        assert snapshot.line_coverage == 85.5, "line_coverage is not valid"
+        assert snapshot.branch_coverage == 72.3, "branch_coverage is not valid"
 
     def test_coverage_snapshot_serialization(self) -> None:
         """Test coverage snapshot serialization to JSON."""
@@ -117,7 +117,7 @@ class TestCoverageTrendTracking:
         data = snapshot.to_dict()
         json_str = json.dumps(data)
         restored = json.loads(json_str)
-        assert restored["line_coverage"] == 90.0
+        assert restored["line_coverage"] == 90.0, "rest is not valid"
 
     def test_coverage_trend_detection_improvement(self) -> None:
         """Test detecting coverage improvement trend."""
@@ -132,8 +132,8 @@ class TestCoverageTrendTracking:
         last_coverage = snapshots[-1]["coverage"]
         trend = last_coverage - first_coverage
 
-        assert trend > 0  # Positive trend (improvement)
-        assert trend == 15.0
+        assert trend > 0, "trend must be greater than zero"
+        assert trend == 15.0, "trend is not valid"
 
     def test_coverage_trend_detection_regression(self) -> None:
         """Test detecting coverage regression."""
@@ -145,8 +145,8 @@ class TestCoverageTrendTracking:
 
         trend = snapshots[-1]["coverage"] - snapshots[0]["coverage"]
 
-        assert trend < 0  # Negative trend (regression)
-        assert trend == -7.0
+        assert trend < 0, "trend is not valid"
+        assert trend == -7.0, "trend is not valid"
 
     def test_coverage_alert_threshold(self) -> None:
         """Test coverage alert when below threshold."""
@@ -154,11 +154,11 @@ class TestCoverageTrendTracking:
         current_coverage = 75.0
 
         alert_triggered = current_coverage < threshold
-        assert alert_triggered is True
+        assert alert_triggered is True, "alert_triggered is not valid"
 
         current_coverage = 85.0
         alert_triggered = current_coverage < threshold
-        assert alert_triggered is False
+        assert alert_triggered is False, "alert_triggered is not valid"
 
     def test_coverage_history_storage(self) -> None:
         """Test storing coverage history."""
@@ -172,8 +172,8 @@ class TestCoverageTrendTracking:
                 }
             )
 
-        assert len(history) == 5
-        assert history[-1]["coverage"] == 82.0
+        assert len(history) == 5, "History must not be empty"
+        assert history[-1]["coverage"] == 82.0, "hist is not valid"
 
 
 # ============================================================================
@@ -209,7 +209,7 @@ class TestFlakyTestDetection:
 
         # Mostly passes - some flakiness
         flakiness = calculate_flakiness(8, 2)
-        assert 0.0 < flakiness < 1.0
+        assert 0.0 < flakiness < 1.0, "0 is not valid"
 
     def test_flaky_test_report_generation(self) -> None:
         """Test generating flaky test report."""
@@ -221,8 +221,8 @@ class TestFlakyTestDetection:
             flakiness_score=0.2,
         )
 
-        assert report.is_flaky is True
-        assert report.total_runs == 20
+        assert report.is_flaky is True, "is_flaky is not valid"
+        assert report.total_runs == 20, "total_runs is not valid"
 
     def test_stable_test_not_flagged(self) -> None:
         """Test that stable tests are not flagged as flaky."""
@@ -234,7 +234,7 @@ class TestFlakyTestDetection:
             flakiness_score=0.0,
         )
 
-        assert report.is_flaky is False
+        assert report.is_flaky is False, "is_flaky is not valid"
 
     def test_flaky_test_aggregation(self) -> None:
         """Test aggregating flaky test results."""
@@ -251,9 +251,9 @@ class TestFlakyTestDetection:
             if 0.05 < pass_rate <= 0.95:  # Not all pass or all fail
                 flaky_tests.append(result["name"])
 
-        assert len(flaky_tests) == 2
-        assert "test_a" in flaky_tests
-        assert "test_c" in flaky_tests
+        assert len(flaky_tests) == 2, "Flaky_tests must not be empty"
+        assert "test_a" in flaky_tests, "Condition must be true"
+        assert "test_c" in flaky_tests, "Condition must be true"
 
     def test_flaky_test_quarantine(self) -> None:
         """Test quarantining flaky tests."""
@@ -270,8 +270,8 @@ class TestFlakyTestDetection:
             if test["flakiness"] > threshold:
                 quarantine_list.append(test["name"])
 
-        assert len(quarantine_list) == 1
-        assert "test_flaky" in quarantine_list
+        assert len(quarantine_list) == 1, "Quarantine_list must not be empty"
+        assert "test_flaky" in quarantine_list, "Condition must be true"
 
 
 # ============================================================================
@@ -286,13 +286,13 @@ class TestReliabilityMetrics:
         """Test calculating test pass rate."""
         results = [True, True, True, False, True, True, True, True, True, True]
         pass_rate = sum(results) / len(results)
-        assert pass_rate == 0.9
+        assert pass_rate == 0.9, "pass_rate is not valid"
 
     def test_average_duration_calculation(self) -> None:
         """Test calculating average test duration."""
         durations_ms = [100, 150, 120, 200, 130, 110, 140, 180, 160, 150]
         avg_duration = sum(durations_ms) / len(durations_ms)
-        assert avg_duration == 144.0
+        assert avg_duration == 144.0, "avg_duration is not valid"
 
     def test_reliability_score_computation(self) -> None:
         """Test computing overall reliability score."""
@@ -313,9 +313,9 @@ class TestReliabilityMetrics:
             flaky_test_count=5,
         )
 
-        assert metrics.coverage == 85.0
-        assert metrics.test_count == 500
-        assert metrics.flaky_test_count == 5
+        assert metrics.coverage == 85.0, "coverage is not valid"
+        assert metrics.test_count == 500, "Count must be greater than zero"
+        assert metrics.flaky_test_count == 5, "Count must be greater than zero"
 
     def test_metrics_history_retention(self) -> None:
         """Test retaining metrics history."""
@@ -337,7 +337,7 @@ class TestReliabilityMetrics:
             if len(history) > max_history:
                 history = history[-max_history:]
 
-        assert len(history) == max_history
+        assert len(history) == max_history, "History must not be empty"
 
 
 # ============================================================================
@@ -363,8 +363,8 @@ class TestQualityDashboard:
             "alerts": [],
         }
 
-        assert dashboard_data["summary"]["coverage"] == 85.0
-        assert len(dashboard_data["trends"]["coverage_7d"]) == 7
+        assert dashboard_data["summary"]["coverage"] == 85.0, "Data must not be empty"
+        assert len(dashboard_data["trends"]["coverage_7d"]) == 7, "Collection must not be empty"
 
     def test_alert_generation(self) -> None:
         """Test generating quality alerts."""
@@ -395,7 +395,7 @@ class TestQualityDashboard:
                 }
             )
 
-        assert len(alerts) == 2
+        assert len(alerts) == 2, "Alerts must not be empty"
 
     def test_dashboard_json_export(self) -> None:
         """Test exporting dashboard to JSON."""
@@ -410,4 +410,4 @@ class TestQualityDashboard:
         json_str = json.dumps(dashboard, indent=2)
         restored = json.loads(json_str)
 
-        assert restored["metrics"]["coverage"] == 85.0
+        assert restored["metrics"]["coverage"] == 85.0, "rest is not valid"

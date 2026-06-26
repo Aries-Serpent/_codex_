@@ -59,23 +59,23 @@ def test_token_lru_eviction() -> None:
     cache = TokenLRU(maxsize=2)
     cache.put("a", 1)
     cache.put("b", 2)
-    assert cache.get("a") == 1
+    assert cache.get("a") == 1, "Condition must be true"
     cache.put("c", 3)
-    assert cache.get("b") is None
-    assert cache.get("a") == 1
-    assert cache.get("c") == 3
+    assert cache.get("b") is None, "Condition must be true"
+    assert cache.get("a") == 1, "Condition must be true"
+    assert cache.get("c") == 3, "Condition must be true"
 
 
 def test_encode_cached_hits_and_isolation(monkeypatch: pytest.MonkeyPatch) -> None:
     tokenizer = _SpyTokenizer()
     first = encode_cached(tokenizer, "hello", padding=True, max_length=6)
-    assert tokenizer.calls["hello"] == 1
+    assert tokenizer.calls["hello"] == 1, "Condition must be true"
 
     first["input_ids"][0] = 999
 
     second = encode_cached(tokenizer, "hello", padding=True, max_length=6)
-    assert tokenizer.calls["hello"] == 1  # cached
-    assert second["input_ids"][0] != 999  # defensive copy
+    assert tokenizer.calls["hello"] == 1, "Condition must be true"
+    assert second["input_ids"][0] != 999, "Condition must be true"
 
 
 def test_encode_cached_respects_disable_env(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -83,5 +83,5 @@ def test_encode_cached_respects_disable_env(monkeypatch: pytest.MonkeyPatch) -> 
     monkeypatch.setenv("CODEX_ML_TOKEN_CACHE_DISABLE", "1")
     encode_cached(tokenizer, "repeat")
     encode_cached(tokenizer, "repeat")
-    assert tokenizer.calls["repeat"] == 2
+    assert tokenizer.calls["repeat"] == 2, "Condition must be true"
     monkeypatch.delenv("CODEX_ML_TOKEN_CACHE_DISABLE", raising=False)

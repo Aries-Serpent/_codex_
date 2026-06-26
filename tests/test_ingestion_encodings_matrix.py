@@ -26,4 +26,4 @@ def test_ingestion_encoding_matrix(tmp_path: Path, enc: str) -> None:
     f.write_bytes(text_in.encode(file_enc))
     out = Ingestor.ingest(f, encoding=enc)
     assert isinstance(out, str)
-    assert "café" in out and "£" in out
+    assert "café" in out and "£" in out, "Condition must be true"

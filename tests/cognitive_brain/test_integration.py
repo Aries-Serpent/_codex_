@@ -84,13 +84,13 @@ def test_all_features_enabled(integrated_system):
     config = integrated_system["config"]
 
     # Verify all features available
-    assert config.is_enabled("superposition")
-    assert config.is_enabled("entanglement")
-    assert config.is_enabled("uncertainty")
-    assert config.is_enabled("wave_collapse")
+    assert config.is_enabled("superposition"), "Condition must be true"
+    assert config.is_enabled("entanglement"), "Condition must be true"
+    assert config.is_enabled("uncertainty"), "Condition must be true"
+    assert config.is_enabled("wave_collapse"), "Condition must be true"
 
     # Verify master toggle works
-    assert config.quantum_mode_enabled
+    assert config.quantum_mode_enabled, "Condition must be true"
 
 
 def test_superposition_with_monitoring(integrated_system):
@@ -114,9 +114,9 @@ def test_superposition_with_monitoring(integrated_system):
     result = engine.evaluate_superposition(decisions, context={"input": 10})
 
     # Verify result structure
-    assert "decision" in result
-    assert "coherence" in result
-    assert result["coherence"] > 0.3  # Above critical threshold
+    assert "decision" in result, "Result must not be empty"
+    assert "coherence" in result, "Result must not be empty"
+    assert result["coherence"] > 0.3, "Value must be greater than zero"
 
     # Verify monitoring captured metrics
     health = monitor.get_health_status()
@@ -134,8 +134,8 @@ def test_entanglement_correlation(integrated_system):
     correlation = manager.measure_correlation(pair_id)
 
     # Should have high correlation (same pattern)
-    assert correlation.coefficient > 0.80
-    assert correlation.p_value < 0.05
+    assert correlation.coefficient > 0.80, "coefficient must be greater than zero"
+    assert correlation.p_value < 0.05, "Value must be initialized"
 
 
 def test_uncertainty_prioritization(integrated_system):
@@ -178,8 +178,8 @@ def test_uncertainty_prioritization(integrated_system):
         priorities[test_id] = priority.priority_score
 
     # Critical test should have highest priority
-    assert priorities["test_critical"] > priorities["test_medium"]
-    assert priorities["test_medium"] > priorities["test_low"]
+    assert priorities["test_critical"] > priorities["test_medium"], "pri must be greater than zero"
+    assert priorities["test_medium"] > priorities["test_low"], "pri must be greater than zero"
 
 
 def test_end_to_end_compliance_workflow(temp_db):
@@ -208,14 +208,14 @@ def test_end_to_end_compliance_workflow(temp_db):
     assessment = assessor.assess_compliance(audit)
 
     # Verify result
-    assert assessment.decision in [
+    assert assessment.decision in [, "Condition must be true"
         ComplianceDecision.APPROVE,
         ComplianceDecision.APPROVE_WITH_MONITORING,
         ComplianceDecision.CONDITIONAL_APPROVAL,
         ComplianceDecision.REJECT,
     ]
-    assert 0.0 <= assessment.confidence <= 1.0
-    assert (
+    assert 0.0 <= assessment.confidence <= 1.0, "0 is not valid"
+    assert (, "Condition must be true"
         assessment.coherence >= 0.0
     )  # Coherence should be non-negative (relaxed threshold for initial test)
 
@@ -245,7 +245,7 @@ def test_entangled_assessor_integration(temp_db):
 
     # Setup entanglement
     pair_id = assessor.setup_entanglement(correlation_strength=0.85)
-    assert pair_id is not None
+    assert pair_id is not None, "pair_id must be initialized"
 
     # Test assessment
     audit = AuditResult(
@@ -261,9 +261,9 @@ def test_entangled_assessor_integration(temp_db):
     result = assessor.assess_entangled(audit)
 
     # Verify coordinated assessment
-    assert result.compliance_decision is not None
-    assert result.security_assessment is not None
-    assert result.correlation >= 0.0
+    assert result.compliance_decision is not None, "compliance_decision must be initialized"
+    assert result.security_assessment is not None, "security_assessment must be initialized"
+    assert result.correlation >= 0.0, "correlation must be greater than zero"
 
 
 def test_performance_within_limits(integrated_system):
@@ -310,12 +310,12 @@ def test_error_handling_and_rollback(integrated_system):
     health = monitor.get_health_status()
 
     # Should detect critical state
-    assert health == "critical"
+    assert health == "critical", "health is not valid"
 
     # Verify alerts generated
     alerts = monitor.get_recent_alerts(feature=QuantumFeature.SUPERPOSITION)
     critical_alerts = [a for a in alerts if a.level.value == "critical"]
-    assert len(critical_alerts) > 0
+    assert len(critical_alerts) > 0, "Critical_alerts must not be empty"
 
 
 def test_feature_flag_isolation(temp_db):
@@ -344,12 +344,12 @@ def test_feature_flag_isolation(temp_db):
 
     # Should work without superposition
     assessment = assessor_no_super.assess(audit)
-    assert assessment.decision is not None
+    assert assessment.decision is not None, "decision must be initialized"
 
     # Verify classical path taken (no superposition metrics)
     metrics = repository.get_recent_metrics(feature="superposition", limit=10)
     # Should have no superposition metrics from this assessment
-    assert len([m for m in metrics if m["decision_id"] == assessment.decision_id]) == 0
+    assert len([m for m in metrics if m["decision_id"] == assessment.decision_id]) == 0, "Collection must not be empty"
 
 
 def test_database_persistence(temp_db):
@@ -378,13 +378,13 @@ def test_database_persistence(temp_db):
     # Retrieve and verify
     retrieved = repository.get_recent_metrics(feature=QuantumFeature.SUPERPOSITION.value, limit=10)
 
-    assert len(retrieved) >= 5
+    assert len(retrieved) >= 5, "Retrieved must not be empty"
 
     # Verify data integrity
     for metric in retrieved[-5:]:
-        assert metric["feature"] == QuantumFeature.SUPERPOSITION.value
-        assert 0.0 <= metric["coherence"] <= 1.0
-        assert 0.0 <= metric["accuracy"] <= 1.0
+        assert metric["feature"] == QuantumFeature.SUPERPOSITION.value, "Value must be initialized"
+        assert 0.0 <= metric["coherence"] <= 1.0, "0 is not valid"
+        assert 0.0 <= metric["accuracy"] <= 1.0, "0 is not valid"
 
 
 def test_deterministic_behavior(integrated_system):
@@ -405,8 +405,8 @@ def test_deterministic_behavior(integrated_system):
     result2 = engine.evaluate_superposition(decisions, context=context)
 
     # Should produce same decision
-    assert result1["decision"] == result2["decision"]
-    assert abs(result1["coherence"] - result2["coherence"]) < 0.01
+    assert result1["decision"] == result2["decision"], "Result must not be empty"
+    assert abs(result1["coherence"] - result2["coherence"]) < 0.01, "Result must not be empty"
 
 
 # Additional test for comprehensive coverage
@@ -436,8 +436,8 @@ def test_full_system_stress(integrated_system, temp_db):
         results.append(assessment)
 
     # Verify all completed successfully
-    assert len(results) == 20
-    assert all(r.decision is not None for r in results)
+    assert len(results) == 20, "Results must not be empty"
+    assert all(r.decision is not None for r in results), "decision must be initialized"
 
     # Verify system remained healthy
     health = monitor.get_health_status()
@@ -445,7 +445,7 @@ def test_full_system_stress(integrated_system, temp_db):
 
     # Verify metrics recorded
     metrics = repository.get_recent_metrics(feature="superposition", limit=50)
-    assert len(metrics) >= 20
+    assert len(metrics) >= 20, "Metrics must not be empty"
 
 
 if __name__ == "__main__":

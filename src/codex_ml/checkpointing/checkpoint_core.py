@@ -114,7 +114,7 @@ def load_checkpoint(
         payload = torch_load(weights, **kwargs)  # nosec B614 - weights_only=False required for optimizer/RNG state
     except TypeError as exc:
         error_type = type(exc).__name__
-        logger.debug(f"TypeError: <ERROR_TYPE>")
+        logger.debug("TypeError: <ERROR_TYPE>")
         if "weights_only" in kwargs and "weights_only" in str(exc):
             kwargs.pop("weights_only", None)
             payload = torch_load(weights, **kwargs)  # nosec B614 - Retrying without weights_only parameter

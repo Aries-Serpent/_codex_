@@ -63,11 +63,11 @@ class TestBridgeSecurity:
             message_type="test",
             context={"data": "test"},
         )
-        assert valid_msg.validate() is True
+        assert valid_msg.validate() is True, "Condition must be true"
 
         # Invalid message (missing required field)
         # Can't create directly due to Pydantic, but test the validate method
-        assert valid_msg.validate() is True
+        assert valid_msg.validate() is True, "Condition must be true"
 
 
 class TestBridgeModes:
@@ -82,11 +82,11 @@ class TestBridgeModes:
                 owner_only=True,
             )
 
-            assert bridge.mode == BridgeMode.NAMED_PIPE
-            assert bridge.pipe_path.exists()
+            assert bridge.mode == BridgeMode.NAMED_PIPE, "mode is not valid"
+            assert bridge.pipe_path.exists(), "Condition must be true"
 
             bridge.cleanup()
-            assert not bridge.pipe_path.exists()
+            assert not bridge.pipe_path.exists(), "Condition must be true"
 
     def test_unix_socket_mode(self):
         """Test unix socket mode initialization."""
@@ -97,7 +97,7 @@ class TestBridgeModes:
                 owner_only=True,
             )
 
-            assert bridge.mode == BridgeMode.UNIX_SOCKET
+            assert bridge.mode == BridgeMode.UNIX_SOCKET, "mode is not valid"
             # Socket not created until bind
 
             bridge.cleanup()

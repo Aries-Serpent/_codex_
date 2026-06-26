@@ -187,7 +187,7 @@ Examples:
         merged = merge_sarif_files(args.input_dir, args.output)
     except Exception as e:
         error_type = type(e).__name__
-        logger.error(f"Error merging SARIF files: <ERROR_TYPE>")
+        logger.error("Error merging SARIF files: <ERROR_TYPE>")
         return 1
 
     # Optionally validate output

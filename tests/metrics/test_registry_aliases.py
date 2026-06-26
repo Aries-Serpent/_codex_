@@ -31,11 +31,11 @@ def test_rouge_aliases_resolve_and_match():
     out_snake = fn_snake(preds, refs)
 
     # Both should return the same result
-    assert out_camel == out_snake
+    assert out_camel == out_snake, "out_camel is not valid"
     assert isinstance(out_camel, float)
     assert isinstance(out_snake, float)
-    assert 0.0 <= out_camel <= 1.0
-    assert 0.0 <= out_snake <= 1.0
+    assert 0.0 <= out_camel <= 1.0, "0 is not valid"
+    assert 0.0 <= out_snake <= 1.0, "0 is not valid"
 
 
 def test_registry_lists_normalized_name():
@@ -44,7 +44,7 @@ def test_registry_lists_normalized_name():
 
     # Registry normalizes names to lowercase for listing
     names = list_metrics()
-    assert "rougel" in names
+    assert "rougel" in names, "Condition must be true"
 
 
 def test_both_aliases_resolve_to_offline_implementation():
@@ -60,9 +60,9 @@ def test_both_aliases_resolve_to_offline_implementation():
 
     # Both should work without rouge_score dependency
     result = fn_camel(["test"], ["test"])
-    assert result is not None
+    assert result is not None, "result must be initialized"
     assert isinstance(result, float)
-    assert result > 0.0  # Perfect match should score well
+    assert result > 0.0, "result must be greater than zero"
 
 
 @pytest.mark.parametrize(
@@ -82,7 +82,7 @@ def test_rouge_l_core_cases(pred: str, ref: str, min_score: float):
     fn = get_metric("rougeL")
     score = fn([pred], [ref])
     assert isinstance(score, float)
-    assert score >= min_score - 0.01  # Allow small tolerance
+    assert score >= min_score - 0.01, "score must be greater than zero"
 
 
 def test_alias_produces_identical_results():

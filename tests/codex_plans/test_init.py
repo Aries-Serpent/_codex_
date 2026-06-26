@@ -21,7 +21,7 @@ class TestModuleImports:
         try:
             from src import codex_plans
 
-            assert codex_plans is not None
+            assert codex_plans is not None, "codex_plans must be initialized"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -30,7 +30,7 @@ class TestModuleImports:
         try:
             from src.codex_plans import list_plan_documents
 
-            assert list_plan_documents is not None
+            assert list_plan_documents is not None, "list_plan_documents must be initialized"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -39,7 +39,7 @@ class TestModuleImports:
         try:
             from src.codex_plans import __all__
 
-            assert "list_plan_documents" in __all__
+            assert "list_plan_documents" in __all__, "Condition must be true"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -79,7 +79,7 @@ class TestListPlanDocuments:
             result = list_plan_documents()
             # All returned files should be markdown
             for item in result:
-                assert item.suffix == ".md"
+                assert item.suffix == ".md", "Item must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -89,7 +89,7 @@ class TestListPlanDocuments:
             from src.codex_plans import list_plan_documents
 
             result = list_plan_documents()
-            assert result == sorted(result)
+            assert result == sorted(result), "Result must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -106,8 +106,8 @@ class TestListPlanDocuments:
                 test_file.write_text("# Test Plan")
 
                 result = list_plan_documents(base_dir=Path(tmpdir))
-                assert len(result) == 1
-                assert result[0].name == "test_plan.md"
+                assert len(result) == 1, "Result must not be empty"
+                assert result[0].name == "test_plan.md", "Result must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -120,7 +120,7 @@ class TestListPlanDocuments:
 
             with tempfile.TemporaryDirectory() as tmpdir:
                 result = list_plan_documents(base_dir=Path(tmpdir))
-                assert result == []
+                assert result == [], "Result must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -150,7 +150,7 @@ class TestEdgeCases:
             # This should raise an error or return empty
             result = list_plan_documents(base_dir=Path("/nonexistent/path"))
             # If it doesn't raise, should return empty list
-            assert result == []
+            assert result == [], "Result must not be empty"
         except (ImportError, OSError):
             pytest.skip("Module not available or OS error")
 
@@ -169,7 +169,7 @@ class TestEdgeCases:
 
                 result = list_plan_documents(base_dir=Path(tmpdir))
                 # Should only include .md files
-                assert len(result) == 1
-                assert all(p.suffix == ".md" for p in result)
+                assert len(result) == 1, "Result must not be empty"
+                assert all(p.suffix == ".md" for p in result), "Result must not be empty"
         except ImportError:
             pytest.skip("Module not available")

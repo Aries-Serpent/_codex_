@@ -15,7 +15,9 @@ import os
 import random
 from collections.abc import Generator
 from pathlib import Path
-from typing import Any # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+from typing import (
+    Any,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+)
 from unittest.mock import MagicMock
 
 import pytest
@@ -271,7 +273,7 @@ def offline_mode(monkeypatch: pytest.MonkeyPatch) -> None:
         def test_handles_network_failure(offline_mode):
             # This will raise OSError when trying to make HTTP requests
             result = my_function_that_calls_api()
-            assert result.fallback_used is True
+            assert result.fallback_used is True, "Result must not be empty"
 
     In this example, ``my_function_that_calls_api`` and ``result.fallback_used``
     are illustrative placeholders; replace them with your own code and result
@@ -351,7 +353,7 @@ def malicious_inputs() -> dict[str, list[str]]:
         def test_sanitizer_blocks_sql_injection(malicious_inputs):
             for payload in malicious_inputs["sql_injection"]:
                 result = sanitize_input(payload)
-                assert "DROP" not in result
+                assert "DROP" not in result, "Result must not be empty"
     """
     return {
         "sql_injection": [

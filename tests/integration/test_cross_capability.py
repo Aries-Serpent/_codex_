@@ -60,14 +60,14 @@ class TestConfigLoggingIntegration:
         integration = ConfigLoggingIntegration(config)
         integration.log("INFO", "Should not appear")
         integration.log("WARNING", "Should appear")
-        assert len(integration.logs) == 1
+        assert len(integration.logs) == 1, "Collection must not be empty"
 
     def test_log_format_from_config(self):
         """Log format should come from config."""
         config = {"log_format": "json"}
         integration = ConfigLoggingIntegration(config)
         record = integration.log("INFO", "Test")
-        assert record["format"] == "json"
+        assert record["format"] == "json", "rec is not valid"
 
     @given(st.sampled_from(["DEBUG", "INFO", "WARNING", "ERROR"]))
     @settings(max_examples=10)
@@ -76,7 +76,7 @@ class TestConfigLoggingIntegration:
         config = {"log_level": level}
         integration = ConfigLoggingIntegration(config)
         integration.log(level, "Test message")
-        assert len(integration.logs) >= 1
+        assert len(integration.logs) >= 1, "Collection must not be empty"
 
 
 # =============================================================================
@@ -113,7 +113,7 @@ class TestDataTrainingIntegration:
         data = [{"x": i} for i in range(100)]
         integration = DataTrainingIntegration(data, batch_size=32)
         batch = integration.get_batch(0)
-        assert len(batch) == 32
+        assert len(batch) == 32, "Batch must not be empty"
 
     def test_last_batch(self):
         """Last batch may be smaller."""
@@ -121,7 +121,7 @@ class TestDataTrainingIntegration:
         integration = DataTrainingIntegration(data, batch_size=32)
         # Step 3 is the last batch (100 - 96 = 4)
         batch = integration.get_batch(3)
-        assert len(batch) == 4
+        assert len(batch) == 4, "Batch must not be empty"
 
     def test_train_step_returns_metrics(self):
         """Training step should return metrics."""
@@ -129,8 +129,8 @@ class TestDataTrainingIntegration:
         integration = DataTrainingIntegration(data, batch_size=5)
         batch = integration.get_batch(0)
         metrics = integration.train_step(batch)
-        assert "loss" in metrics
-        assert "batch_size" in metrics
+        assert "loss" in metrics, "Condition must be true"
+        assert "batch_size" in metrics, "Condition must be true"
 
 
 # =============================================================================
@@ -172,22 +172,22 @@ class TestSecurityLoggingIntegration:
         """Emails should be scrubbed from logs."""
         logger = SecureLogger()
         result = logger.log("User email: test@example.com")
-        assert "test@example.com" not in result
-        assert "[EMAIL]" in result
+        assert "test@example.com" not in result, "Result must not be empty"
+        assert "[EMAIL]" in result, "Result must not be empty"
 
     def test_phone_scrubbed(self):
         """Phone numbers should be scrubbed."""
         logger = SecureLogger()
         result = logger.log("Call 123-456-7890")
-        assert "123-456-7890" not in result
-        assert "[PHONE]" in result
+        assert "123-456-7890" not in result, "Result must not be empty"
+        assert "[PHONE]" in result, "Result must not be empty"
 
     def test_safe_message_unchanged(self):
         """Safe messages should be unchanged."""
         logger = SecureLogger()
         message = "Normal log message"
         result = logger.log(message)
-        assert result == message
+        assert result == message, "Result must not be empty"
 
 
 # =============================================================================
@@ -236,8 +236,8 @@ class TestCheckpointingTrainingIntegration:
         """Save training checkpoint."""
         checkpointer = TrainingCheckpointer()
         ckpt = checkpointer.save(1, 100, {"loss": 0.5})
-        assert ckpt["epoch"] == 1
-        assert ckpt["step"] == 100
+        assert ckpt["epoch"] == 1, "Condition must be true"
+        assert ckpt["step"] == 100, "Condition must be true"
 
     def test_load_latest(self):
         """Load latest checkpoint."""
@@ -245,7 +245,7 @@ class TestCheckpointingTrainingIntegration:
         checkpointer.save(1, 100, {"loss": 0.5})
         checkpointer.save(2, 200, {"loss": 0.3})
         latest = checkpointer.load_latest()
-        assert latest["epoch"] == 2
+        assert latest["epoch"] == 2, "Condition must be true"
 
     def test_load_best(self):
         """Load best checkpoint by metric."""
@@ -254,7 +254,7 @@ class TestCheckpointingTrainingIntegration:
         checkpointer.save(2, 200, {"loss": 0.3})
         checkpointer.save(3, 300, {"loss": 0.4})
         best = checkpointer.load_best("loss", "min")
-        assert best["metrics"]["loss"] == 0.3
+        assert best["metrics"]["loss"] == 0.3, "Condition must be true"
 
 
 # =============================================================================
@@ -298,7 +298,7 @@ class TestEvaluationTrackingIntegration:
         """Log evaluation run."""
         tracker = EvaluationTracker("test_exp")
         tracker.log_run("run1", {"accuracy": 0.9})
-        assert len(tracker.runs) == 1
+        assert len(tracker.runs) == 1, "Collection must not be empty"
 
     def test_compare_runs(self):
         """Compare runs by metric."""
@@ -306,7 +306,7 @@ class TestEvaluationTrackingIntegration:
         tracker.log_run("run1", {"accuracy": 0.8})
         tracker.log_run("run2", {"accuracy": 0.9})
         compared = tracker.compare_runs("accuracy")
-        assert compared[0]["run_id"] == "run1"
+        assert compared[0]["run_id"] == "run1", "Condition must be true"
 
     def test_get_best_run(self):
         """Get best run."""
@@ -315,7 +315,7 @@ class TestEvaluationTrackingIntegration:
         tracker.log_run("run2", {"accuracy": 0.95})
         tracker.log_run("run3", {"accuracy": 0.85})
         best = tracker.get_best_run("accuracy", "max")
-        assert best["run_id"] == "run2"
+        assert best["run_id"] == "run2", "Condition must be true"
 
 
 # =============================================================================
@@ -367,15 +367,15 @@ class TestDeploymentVersioningIntegration:
         """Deploy new version."""
         manager = VersionedDeployment()
         result = manager.deploy("1.0.0", "app:v1.0.0")
-        assert result["version"] == "1.0.0"
-        assert manager.current_version == "1.0.0"
+        assert result["version"] == "1.0.0", "Result must not be empty"
+        assert manager.current_version == "1.0.0", "current_version is not valid"
 
     def test_deploy_tracks_previous(self):
         """Deployment should track previous version."""
         manager = VersionedDeployment()
         manager.deploy("1.0.0", "app:v1.0.0")
         result = manager.deploy("2.0.0", "app:v2.0.0")
-        assert result["previous"] == "1.0.0"
+        assert result["previous"] == "1.0.0", "Result must not be empty"
 
     def test_rollback(self):
         """Rollback to previous version."""
@@ -383,9 +383,9 @@ class TestDeploymentVersioningIntegration:
         manager.deploy("1.0.0", "app:v1.0.0")
         manager.deploy("2.0.0", "app:v2.0.0")
         result = manager.rollback()
-        assert result["from_version"] == "2.0.0"
-        assert result["to_version"] == "1.0.0"
-        assert manager.current_version == "1.0.0"
+        assert result["from_version"] == "2.0.0", "Result must not be empty"
+        assert result["to_version"] == "1.0.0", "Result must not be empty"
+        assert manager.current_version == "1.0.0", "current_version is not valid"
 
 
 # =============================================================================
@@ -429,7 +429,7 @@ class TestErrorObservabilityIntegration:
         """Errors should be tracked."""
         handler = ObservableErrorHandler()
         handler.handle("ValidationError", "Invalid input")
-        assert handler.metrics["total_errors"] == 1
+        assert handler.metrics["total_errors"] == 1, "Error should be raised or set"
 
     def test_error_by_type(self):
         """Errors should be tracked by type."""
@@ -437,8 +437,8 @@ class TestErrorObservabilityIntegration:
         handler.handle("ValidationError", "Invalid input")
         handler.handle("NetworkError", "Connection failed")
         handler.handle("ValidationError", "Missing field")
-        assert handler.metrics["by_type"]["ValidationError"] == 2
-        assert handler.metrics["by_type"]["NetworkError"] == 1
+        assert handler.metrics["by_type"]["ValidationError"] == 2, "Error should be raised or set"
+        assert handler.metrics["by_type"]["NetworkError"] == 1, "Error should be raised or set"
 
     def test_error_rate(self):
         """Error rate should be calculated correctly."""
@@ -446,7 +446,7 @@ class TestErrorObservabilityIntegration:
         handler.handle("A", "Error A")
         handler.handle("A", "Error A")
         handler.handle("B", "Error B")
-        assert handler.get_error_rate("A") == pytest.approx(2 / 3)
+        assert handler.get_error_rate("A") == pytest.approx(2 / 3), "Error should be raised or set"
 
 
 # =============================================================================
@@ -474,7 +474,7 @@ class TestPropertyBasedIntegration:
             batch = integration.get_batch(step)
             all_items.extend(batch)
 
-        assert len(all_items) == len(data)
+        assert len(all_items) == len(data), "All_items must not be empty"
 
     @given(st.integers(min_value=1, max_value=10), st.floats(min_value=0.0, max_value=1.0))
     @settings(max_examples=20)
@@ -486,7 +486,7 @@ class TestPropertyBasedIntegration:
             checkpointer.save(epoch, epoch * 100, {"loss": loss})
 
         latest = checkpointer.load_latest()
-        assert latest["epoch"] == num_epochs - 1
+        assert latest["epoch"] == num_epochs - 1, "Condition must be true"
 
     @given(st.text(min_size=1, max_size=100))
     @settings(max_examples=20)
@@ -495,4 +495,4 @@ class TestPropertyBasedIntegration:
         logger = SecureLogger()
         first_scrub = logger.scrub(message)
         second_scrub = logger.scrub(first_scrub)
-        assert first_scrub == second_scrub
+        assert first_scrub == second_scrub, "first_scrub is not valid"

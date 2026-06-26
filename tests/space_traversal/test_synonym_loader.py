@@ -46,18 +46,18 @@ def test_synonym_expansion():
     )
 
     out = ART / "capabilities_raw_expanded.json"
-    assert out.exists()
+    assert out.exists(), "Condition must be true"
     data = json.loads(out.read_text())
 
     # Verify expansion
     alpha = next(c for c in data["capabilities"] if c["id"] == "alpha")
-    assert "training" in alpha["found_patterns"]
-    assert "epoch" in alpha["found_patterns"]
-    assert alpha["synonym_expansion_count"] > 0
+    assert "training" in alpha["found_patterns"], "Condition must be true"
+    assert "epoch" in alpha["found_patterns"], "Condition must be true"
+    assert alpha["synonym_expansion_count"] > 0, "Value must be greater than zero"
 
     # Verify map hash
-    assert "synonym_map_hash" in data
-    assert len(data["synonym_map_hash"]) == 16
+    assert "synonym_map_hash" in data, "Data must not be empty"
+    assert len(data["synonym_map_hash"]) == 16, "Collection must not be empty"
 
 
 def test_synonym_passthrough():
@@ -69,4 +69,4 @@ def test_synonym_passthrough():
     subprocess.run([sys.executable, "scripts/space_traversal/synonym_loader.py"], check=True)
 
     out = ART / "capabilities_raw_expanded.json"
-    assert out.exists()
+    assert out.exists(), "Condition must be true"

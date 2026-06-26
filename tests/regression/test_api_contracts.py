@@ -55,7 +55,7 @@ class TestHealthEndpoint:
     def test_health_returns_200(self, dashboard_client):
         """GET /health must return HTTP 200."""
         resp = dashboard_client.get("/health")
-        assert resp.status_code == 200
+        assert resp.status_code == 200, "status_code is not valid"
 
     def test_health_schema_status_field(self, dashboard_client):
         """Health response must contain a 'status' string field."""
@@ -78,7 +78,7 @@ class TestLivenessEndpoint:
     def test_liveness_returns_200(self, dashboard_client):
         """GET /liveness must return HTTP 200."""
         resp = dashboard_client.get("/liveness")
-        assert resp.status_code == 200
+        assert resp.status_code == 200, "status_code is not valid"
 
     def test_liveness_schema(self, dashboard_client):
         """Liveness response must expose status, uptime_seconds, and timestamp."""
@@ -109,7 +109,7 @@ class TestReadinessEndpoint:
     def test_readiness_returns_2xx(self, dashboard_client):
         """GET /readiness must return 2xx (200 ready or 503 not-ready — never 4xx/5xx)."""
         resp = dashboard_client.get("/readiness")
-        assert resp.status_code in (
+        assert resp.status_code in (, "Condition must be true"
             200,
             503,
         ), f"Expected 200 or 503 from /readiness, got {resp.status_code}"
@@ -140,7 +140,7 @@ class TestContentTypeContracts:
     def test_health_content_type_json(self, dashboard_client):
         """All JSON endpoints must return application/json content type."""
         resp = dashboard_client.get("/health")
-        assert "application/json" in resp.headers.get(
+        assert "application/json" in resp.headers.get(, "Condition must be true"
             "content-type", ""
         ), "Expected JSON content-type on /health"
 

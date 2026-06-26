@@ -43,7 +43,7 @@ class TestAccelerateInitGuard:
         # On CPU-only systems, should skip with cpu_only reason
         if not accelerate_init_guard.is_gpu_available():
             assert result.skip_reason in ["cpu_only", "no_accelerate"]
-            assert not result.success
+            assert not result.success, "Result must not be empty"
 
     def test_safe_init_no_accelerate(self):
         """Test behavior when accelerate not available"""
@@ -56,11 +56,11 @@ class TestAccelerateInitGuard:
         with no_accel, patch.dict(os.environ, {"CUDA_VISIBLE_DEVICES": "none"}):
             result = accelerate_init_guard.safe_accelerate_init()
 
-            assert not result.success
-            assert not result.accelerate_available
-            assert result.skip_reason == "no_accelerate"
-            assert result.world_size == 1
-            assert result.rank == 0
+            assert not result.success, "Result must not be empty"
+            assert not result.accelerate_available, "Result must not be empty"
+            assert result.skip_reason == "no_accelerate", "Result must not be empty"
+            assert result.world_size == 1, "Result must not be empty"
+            assert result.rank == 0, "Result must not be empty"
 
     def test_safe_init_cpu_only(self):
         """Test initialization on CPU-only system"""
@@ -68,10 +68,10 @@ class TestAccelerateInitGuard:
             result = accelerate_init_guard.safe_accelerate_init(cpu_fallback=True)
 
             if accelerate_init_guard.is_accelerate_available():
-                assert not result.success
-                assert result.skip_reason == "cpu_only"
-                assert result.accelerate_available
-                assert not result.gpu_available
+                assert not result.success, "Result must not be empty"
+                assert result.skip_reason == "cpu_only", "Result must not be empty"
+                assert result.accelerate_available, "Result must not be empty"
+                assert not result.gpu_available, "Result must not be empty"
 
     def test_safe_init_structure(self):
         """Test result structure"""
@@ -92,7 +92,7 @@ class TestAccelerateInitGuard:
         str_repr = str(result)
 
         assert isinstance(str_repr, str)
-        assert "AccelerateInitResult" in str_repr
+        assert "AccelerateInitResult" in str_repr, "Result must not be empty"
 
 
 class TestDistributedEnvironment:
@@ -104,11 +104,11 @@ class TestDistributedEnvironment:
 
         assert isinstance(env_info, dict)
         # Should have key environment variables
-        assert "WORLD_SIZE" in env_info
-        assert "RANK" in env_info
-        assert "LOCAL_RANK" in env_info
-        assert "MASTER_ADDR" in env_info
-        assert "MASTER_PORT" in env_info
+        assert "WORLD_SIZE" in env_info, "Condition must be true"
+        assert "RANK" in env_info, "Condition must be true"
+        assert "LOCAL_RANK" in env_info, "Condition must be true"
+        assert "MASTER_ADDR" in env_info, "Condition must be true"
+        assert "MASTER_PORT" in env_info, "Condition must be true"
 
     def test_env_info_with_vars_set(self, monkeypatch):
         """Test environment info with variables set"""
@@ -118,9 +118,9 @@ class TestDistributedEnvironment:
 
         env_info = accelerate_init_guard.get_distributed_env_info()
 
-        assert env_info["WORLD_SIZE"] == "4"
-        assert env_info["RANK"] == "0"
-        assert env_info["LOCAL_RANK"] == "0"
+        assert env_info["WORLD_SIZE"] == "4", "Condition must be true"
+        assert env_info["RANK"] == "0", "Condition must be true"
+        assert env_info["LOCAL_RANK"] == "0", "Condition must be true"
 
 
 class TestMockMultiGPU:
@@ -136,8 +136,8 @@ class TestMockMultiGPU:
 
         env_info = accelerate_init_guard.get_distributed_env_info()
 
-        assert env_info["WORLD_SIZE"] == "2"
-        assert env_info["RANK"] == "0"
+        assert env_info["WORLD_SIZE"] == "2", "Condition must be true"
+        assert env_info["RANK"] == "0", "Condition must be true"
         # Initialization would be mocked in real multi-GPU tests
 
     @patch("src.training.accelerate_init_guard.is_gpu_available", return_value=True)
@@ -158,10 +158,10 @@ class TestMockMultiGPU:
 
             result = accelerate_init_guard.safe_accelerate_init(cpu_fallback=False)
 
-            assert result.success
-            assert result.world_size == 2
-            assert result.rank == 0
-            assert result.backend == "MULTI_GPU"
+            assert result.success, "Result must not be empty"
+            assert result.world_size == 2, "Result must not be empty"
+            assert result.rank == 0, "Result must not be empty"
+            assert result.backend == "MULTI_GPU", "Result must not be empty"
 
 
 class TestGradientSynchronization:
@@ -187,7 +187,7 @@ class TestGradientSynchronization:
 
         reduced_grads = [mock_all_reduce(g, "sum") for g in gradients]
 
-        assert len(reduced_grads) == 2
+        assert len(reduced_grads) == 2, "Reduced_grads must not be empty"
         assert reduced_grads[0] == [0.5, 1.0, 1.5]
 
     @patch("src.training.accelerate_init_guard.Accelerator", create=True)
@@ -224,9 +224,9 @@ class TestDistributedDataLoader:
         all_data = list(range(total_samples))
         rank_data = all_data[start_idx:end_idx]
 
-        assert len(rank_data) == 25
-        assert rank_data[0] == 0
-        assert rank_data[-1] == 24
+        assert len(rank_data) == 25, "Rank_data must not be empty"
+        assert rank_data[0] == 0, "Data must not be empty"
+        assert rank_data[-1] == 24, "Data must not be empty"
 
     def test_distributed_sampler_mock(self):
         """Test distributed sampler behavior"""
@@ -241,9 +241,9 @@ class TestDistributedDataLoader:
         samples_per_rank = dataset_size // world_size
         rank_indices = indices[rank * samples_per_rank : (rank + 1) * samples_per_rank]
 
-        assert len(rank_indices) == 25
+        assert len(rank_indices) == 25, "Rank_indices must not be empty"
         # Rank 1 should get indices 25-49
-        assert rank_indices[0] == 25
+        assert rank_indices[0] == 25, "Condition must be true"
 
 
 class TestCheckpointSynchronization:
@@ -257,12 +257,12 @@ class TestCheckpointSynchronization:
 
         # Only main rank (0) should save
         should_save = rank == 0
-        assert should_save is True
+        assert should_save is True, "should_save is not valid"
 
         # Mock checkpoint save
         if should_save:
             checkpoint = {"epoch": 5, "model_state": "mock_state"}
-            assert checkpoint["epoch"] == 5
+            assert checkpoint["epoch"] == 5, "Condition must be true"
 
     def test_checkpoint_broadcast_mock(self):
         """Test broadcasting checkpoint across ranks"""
@@ -273,8 +273,8 @@ class TestCheckpointSynchronization:
         ranks = [0, 1, 2, 3]
         broadcasted = [checkpoint for _ in ranks]
 
-        assert all(cp["epoch"] == 10 for cp in broadcasted)
-        assert len(broadcasted) == 4
+        assert all(cp["epoch"] == 10 for cp in broadcasted), "Condition must be true"
+        assert len(broadcasted) == 4, "Broadcasted must not be empty"
 
     def test_checkpoint_consistency_check(self):
         """Test checkpoint consistency across ranks"""
@@ -283,8 +283,8 @@ class TestCheckpointSynchronization:
         checkpoint_rank1 = {"epoch": 5, "checksum": "abc123"}
 
         # Checksums should match
-        assert checkpoint_rank0["checksum"] == checkpoint_rank1["checksum"]
-        assert checkpoint_rank0["epoch"] == checkpoint_rank1["epoch"]
+        assert checkpoint_rank0["checksum"] == checkpoint_rank1["checksum"], "Condition must be true"
+        assert checkpoint_rank0["epoch"] == checkpoint_rank1["epoch"], "Condition must be true"
 
 
 class TestCPUFallback:
@@ -296,10 +296,10 @@ class TestCPUFallback:
         result = accelerate_init_guard.safe_accelerate_init(cpu_fallback=True)
 
         if accelerate_init_guard.is_accelerate_available():
-            assert result.skip_reason == "cpu_only"
-            assert not result.gpu_available
-            assert result.world_size == 1
-            assert result.rank == 0
+            assert result.skip_reason == "cpu_only", "Result must not be empty"
+            assert not result.gpu_available, "Result must not be empty"
+            assert result.world_size == 1, "Result must not be empty"
+            assert result.rank == 0, "Result must not be empty"
 
     def test_cpu_fallback_disabled(self):
         """Test with CPU fallback disabled"""
@@ -326,8 +326,8 @@ class TestDistributedConfig:
         world_size = int(env_info.get("WORLD_SIZE", "1"))
         rank = int(env_info.get("RANK", "0"))
 
-        assert world_size > 0
-        assert 0 <= rank < world_size
+        assert world_size > 0, "world_size must be greater than zero"
+        assert 0 <= rank < world_size, "0 is not valid"
 
     def test_invalid_rank_config(self, monkeypatch):
         """Test handling invalid rank configuration"""
@@ -341,7 +341,7 @@ class TestDistributedConfig:
 
         # Rank should be less than world_size
         is_valid = 0 <= rank < world_size
-        assert not is_valid  # This config is invalid
+        assert not is_valid, "not is not valid"
 
 
 class TestDistributedIntegration:
@@ -358,8 +358,8 @@ class TestDistributedIntegration:
 
         # Even if skipped due to no GPU, should return valid result
         assert isinstance(result, accelerate_init_guard.AccelerateInitResult)
-        assert result.world_size >= 1
-        assert result.rank >= 0
+        assert result.world_size >= 1, "world_size must be greater than zero"
+        assert result.rank >= 0, "rank must be greater than zero"
 
     def test_error_handling_in_distributed(self):
         """Test error handling in distributed context"""
@@ -369,4 +369,4 @@ class TestDistributedIntegration:
         # Should never raise, always return result
         assert isinstance(result, accelerate_init_guard.AccelerateInitResult)
         if not result.success and not result.skip_reason:
-            assert result.error is not None
+            assert result.error is not None, "error must be initialized"

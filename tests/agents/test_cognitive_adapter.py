@@ -87,7 +87,7 @@ class TestSimpleDictMemory:
         memory["key1"] = "value1"
 
         # Retrieve
-        assert memory.get("key1") == "value1"
+        assert memory.get("key1") == "value1", "Value must be initialized"
 
     def test_store_with_metadata(self) -> None:
         """Test storing with metadata."""
@@ -101,8 +101,8 @@ class TestSimpleDictMemory:
         storage[key] = value
         metadata[key] = meta
 
-        assert storage[key] == value
-        assert metadata[key] == meta
+        assert storage[key] == value, "Value must be initialized"
+        assert metadata[key] == meta, "Data must not be empty"
 
     def test_search_by_metadata(self) -> None:
         """Test searching by metadata."""
@@ -116,7 +116,7 @@ class TestSimpleDictMemory:
             if meta.get("type") == "a":
                 results.append((key, value))
 
-        assert len(results) == 1
+        assert len(results) == 1, "Results must not be empty"
         assert results[0] == ("k1", "v1")
 
     def test_delete(self) -> None:
@@ -125,7 +125,7 @@ class TestSimpleDictMemory:
 
         del storage["key"]
 
-        assert "key" not in storage
+        assert "key" not in storage, "Condition must be true"
 
     def test_clear(self) -> None:
         """Test clearing all memory."""
@@ -133,7 +133,7 @@ class TestSimpleDictMemory:
 
         storage.clear()
 
-        assert len(storage) == 0
+        assert len(storage) == 0, "Storage must not be empty"
 
     def test_history_tracking(self) -> None:
         """Test history tracking."""
@@ -147,7 +147,7 @@ class TestSimpleDictMemory:
         history[key].append((datetime.now(UTC), "value1"))
         history[key].append((datetime.now(UTC), "value2"))
 
-        assert len(history[key]) == 2
+        assert len(history[key]) == 2, "Collection must not be empty"
 
 
 class TestLegacyAgentAdapter:
@@ -164,9 +164,9 @@ class TestLegacyAgentAdapter:
             metadata={"agent_type": "TestAgent"},
         )
 
-        assert observation.source == "legacy_agent"
-        assert observation.data == input_data
-        assert "agent_type" in observation.metadata
+        assert observation.source == "legacy_agent", "source is not valid"
+        assert observation.data == input_data, "Data must not be empty"
+        assert "agent_type" in observation.metadata, "Data must not be empty"
 
     def test_orientation_result(self) -> None:
         """Test orientation result creation."""
@@ -179,8 +179,8 @@ class TestLegacyAgentAdapter:
             alternatives=[],
         )
 
-        assert orientation.confidence == 1.0
-        assert "observation" in orientation.context
+        assert orientation.confidence == 1.0, "confidence is not valid"
+        assert "observation" in orientation.context, "Condition must be true"
 
     def test_decision_creation(self) -> None:
         """Test decision creation."""
@@ -194,8 +194,8 @@ class TestLegacyAgentAdapter:
             timestamp=datetime.now(UTC),
         )
 
-        assert decision.action == "process_legacy"
-        assert decision.confidence == 1.0
+        assert decision.action == "process_legacy", "action is not valid"
+        assert decision.confidence == 1.0, "confidence is not valid"
 
     def test_action_result_success(self) -> None:
         """Test successful action result."""
@@ -206,9 +206,9 @@ class TestLegacyAgentAdapter:
             metadata={"duration_ms": 100},
         )
 
-        assert result.success is True
-        assert result.result == {"output": "processed"}
-        assert result.error is None
+        assert result.success is True, "Result must not be empty"
+        assert result.result == {"output": "processed"}, "Result must not be empty"
+        assert result.error is None, "Result must not be empty"
 
     def test_action_result_failure(self) -> None:
         """Test failed action result."""
@@ -219,8 +219,8 @@ class TestLegacyAgentAdapter:
             metadata={"attempts": 3},
         )
 
-        assert result.success is False
-        assert result.error == "Processing failed"
+        assert result.success is False, "Result must not be empty"
+        assert result.error == "Processing failed", "Result must not be empty"
 
 
 class TestOODALoop:
@@ -259,10 +259,10 @@ class TestOODALoop:
         )
 
         # Verify complete cycle
-        assert observation.data == input_data
-        assert orientation.confidence == 0.9
-        assert decision.action == "analyze"
-        assert action_result.success is True
+        assert observation.data == input_data, "Data must not be empty"
+        assert orientation.confidence == 0.9, "confidence is not valid"
+        assert decision.action == "analyze", "action is not valid"
+        assert action_result.success is True, "Result must not be empty"
 
     def test_ooda_with_failure(self) -> None:
         """Test OODA loop with failure handling."""
@@ -291,8 +291,8 @@ class TestOODALoop:
             timestamp=datetime.now(UTC),
         )
 
-        assert decision.confidence < 0.5
-        assert len(orientation.alternatives) > 0
+        assert decision.confidence < 0.5, "confidence is not valid"
+        assert len(orientation.alternatives) > 0, "Collection must not be empty"
 
 
 class TestMemoryInterface:
@@ -314,7 +314,7 @@ class TestMemoryInterface:
 
         # Retrieve and verify
         for key, expected in items:
-            assert memory[key] == expected
+            assert memory[key] == expected, "mem is not valid"
 
     def test_memory_search_pattern(self) -> None:
         """Test memory search pattern."""
@@ -327,7 +327,7 @@ class TestMemoryInterface:
         # Search for observations
         observations = [(k, v) for k, v in memory.items() if v.get("type") == "observation"]
 
-        assert len(observations) == 2
+        assert len(observations) == 2, "Observations must not be empty"
 
     def test_memory_limit_pattern(self) -> None:
         """Test memory with limit pattern."""
@@ -340,6 +340,6 @@ class TestMemoryInterface:
             if len(memory) > max_items:
                 memory.pop(0)
 
-        assert len(memory) == max_items
-        assert memory[0] == "item_5"
-        assert memory[-1] == "item_9"
+        assert len(memory) == max_items, "Memory must not be empty"
+        assert memory[0] == "item_5", "Item must not be empty"
+        assert memory[-1] == "item_9", "Item must not be empty"

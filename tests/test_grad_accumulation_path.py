@@ -77,12 +77,12 @@ def test_minimal_loop_honours_gradient_accumulation(
     except StopIteration:
         pytest.skip("DataLoader exhausted - iterator issue in training loop")
 
-    assert step_calls == 2
+    assert step_calls == 2, "step_calls is not valid"
     assert result["metrics"], "expected metrics to be returned"
 
-    assert metrics_path.exists()
+    assert metrics_path.exists(), "Condition must be true"
     payloads = [
         json.loads(line) for line in metrics_path.read_text(encoding="utf-8").splitlines() if line
     ]
-    assert any(entry.get("phase") == "train" for entry in payloads)
-    assert any(entry.get("phase") == "eval" for entry in payloads)
+    assert any(entry.get("phase") == "train" for entry in payloads), "Condition must be true"
+    assert any(entry.get("phase") == "eval" for entry in payloads), "Condition must be true"

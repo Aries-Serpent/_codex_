@@ -30,12 +30,12 @@ class TestExceptionsModule:
             ValidationError,
         )
 
-        assert AgentError is not None
-        assert AgentImportError is not None
-        assert AgentConfigError is not None
-        assert AgentValidationError is not None
-        assert AgentExecutionError is not None
-        assert ValidationError is not None
+        assert AgentError is not None, "AgentError must be initialized"
+        assert AgentImportError is not None, "AgentImportError must be initialized"
+        assert AgentConfigError is not None, "AgentConfigError must be initialized"
+        assert AgentValidationError is not None, "AgentValidationError must be initialized"
+        assert AgentExecutionError is not None, "AgentExecutionError must be initialized"
+        assert ValidationError is not None, "ValidationError must be initialized"
 
     def test_raise_agent_error(self):
         """Test AgentError can be raised and caught."""
@@ -92,10 +92,10 @@ class TestExceptionsModule:
             PhysicsError,
         )
 
-        assert PhysicsError is not None
-        assert ConvergenceError is not None
-        assert InvariantViolationError is not None
-        assert CausalityViolationError is not None
+        assert PhysicsError is not None, "PhysicsError must be initialized"
+        assert ConvergenceError is not None, "ConvergenceError must be initialized"
+        assert InvariantViolationError is not None, "InvariantViolationError must be initialized"
+        assert CausalityViolationError is not None, "CausalityViolationError must be initialized"
 
     def test_import_error_message(self):
         """Test AgentImportError provides helpful message."""
@@ -106,8 +106,8 @@ class TestExceptionsModule:
 
         exc_info = pytest.raises(AgentImportError, _raise_import_error)
         error_msg = str(exc_info.value)
-        assert "torch" in error_msg
-        assert "pip install" in error_msg
+        assert "torch" in error_msg, "Error should be raised or set"
+        assert "pip install" in error_msg, "Error should be raised or set"
 
 
 # ============================================================================
@@ -123,7 +123,7 @@ class TestAgentMemoryModule:
         try:
             from agents.agent_memory import MemoryType
 
-            assert MemoryType is not None
+            assert MemoryType is not None, "MemoryType must be initialized"
         except (ImportError, AttributeError) as e:
             pytest.skip(f"MemoryType not available: {e}")
 
@@ -132,7 +132,7 @@ class TestAgentMemoryModule:
         try:
             from agents.agent_memory import MemoryStore
 
-            assert MemoryStore is not None
+            assert MemoryStore is not None, "MemoryStore must be initialized"
         except (ImportError, AttributeError) as e:
             pytest.skip(f"MemoryStore not available: {e}")
 
@@ -142,7 +142,7 @@ class TestAgentMemoryModule:
             from agents.agent_memory import MemoryStore
 
             store = MemoryStore()
-            assert store is not None
+            assert store is not None, "store must be initialized"
         except (ImportError, AttributeError, TypeError) as e:
             pytest.skip(f"MemoryStore initialization failed: {e}")
 
@@ -157,7 +157,7 @@ class TestAgentMemoryModule:
                 content="Test memory",
                 context={},
             )
-            assert entry.content == "Test memory"
+            assert entry.content == "Test memory", "Content must not be empty"
         except (ImportError, AttributeError, TypeError) as e:
             pytest.skip(f"MemoryEntry not available: {e}")
 
@@ -175,7 +175,7 @@ class TestMSPClientModule:
         try:
             from agents.msp_client import MSPClient
 
-            assert MSPClient is not None
+            assert MSPClient is not None, "MSPClient must be initialized"
         except (ImportError, AttributeError) as e:
             pytest.skip(f"MSPClient not available: {e}")
 
@@ -186,7 +186,7 @@ class TestMSPClientModule:
 
             # Try to create with minimal args
             client = MSPClient(endpoint="http://localhost:8000")
-            assert client is not None
+            assert client is not None, "client must be initialized"
             assert hasattr(client, "endpoint")
         except (ImportError, AttributeError, TypeError) as e:
             pytest.skip(f"MSPClient initialization failed: {e}")
@@ -205,7 +205,7 @@ class TestDeveloperOrchestratorModule:
         try:
             from agents.developer_orchestrator import DeveloperOrchestrator
 
-            assert DeveloperOrchestrator is not None
+            assert DeveloperOrchestrator is not None, "DeveloperOrchestrator must be initialized"
         except (ImportError, AttributeError) as e:
             pytest.skip(f"DeveloperOrchestrator not available: {e}")
 
@@ -215,7 +215,7 @@ class TestDeveloperOrchestratorModule:
             from agents.developer_orchestrator import DeveloperOrchestrator
 
             orchestrator = DeveloperOrchestrator()
-            assert orchestrator is not None
+            assert orchestrator is not None, "orchestrator must be initialized"
         except (ImportError, AttributeError, TypeError) as e:
             pytest.skip(f"DeveloperOrchestrator initialization failed: {e}")
 
@@ -224,7 +224,7 @@ class TestDeveloperOrchestratorModule:
         try:
             from agents.developer_orchestrator import TaskType
 
-            assert TaskType is not None
+            assert TaskType is not None, "TaskType must be initialized"
         except (ImportError, AttributeError) as e:
             pytest.skip(f"TaskType not available: {e}")
 
@@ -233,7 +233,7 @@ class TestDeveloperOrchestratorModule:
         try:
             from agents.developer_orchestrator import CodeGenerator
 
-            assert CodeGenerator is not None
+            assert CodeGenerator is not None, "CodeGenerator must be initialized"
         except (ImportError, AttributeError) as e:
             pytest.skip(f"CodeGenerator not available: {e}")
 
@@ -251,7 +251,7 @@ class TestCodexClientModules:
         try:
             from agents.codex_client.codex_client import bridge
 
-            assert bridge is not None
+            assert bridge is not None, "bridge must be initialized"
         except (ImportError, AttributeError) as e:
             pytest.skip(f"bridge module import failed: {e}")
 
@@ -260,7 +260,7 @@ class TestCodexClientModules:
         try:
             from agents.codex_client.codex_client import config
 
-            assert config is not None
+            assert config is not None, "config must be initialized"
         except (ImportError, AttributeError) as e:
             pytest.skip(f"config module import failed: {e}")
 
@@ -269,6 +269,6 @@ class TestCodexClientModules:
         try:
             from agents.codex_client.codex_client import models
 
-            assert models is not None
+            assert models is not None, "models must be initialized"
         except (ImportError, AttributeError) as e:
             pytest.skip(f"models module import failed: {e}")

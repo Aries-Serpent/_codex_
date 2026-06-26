@@ -20,12 +20,12 @@ def test_append_error_creates_file(tmp_path, monkeypatch):
 
     append_error("1.1", "test operation", "test error message", "test context")
 
-    assert error_log.exists()
+    assert error_log.exists(), "Error should be raised or set"
     content = error_log.read_text()
-    assert "1.1" in content
-    assert "test operation" in content
-    assert "test error message" in content
-    assert "test context" in content
+    assert "1.1" in content, "Content must not be empty"
+    assert "test operation" in content, "Content must not be empty"
+    assert "test error message" in content, "Content must not be empty"
+    assert "test context" in content, "Content must not be empty"
 
 
 def test_append_error_appends_multiple_entries(tmp_path, monkeypatch):
@@ -37,9 +37,9 @@ def test_append_error_appends_multiple_entries(tmp_path, monkeypatch):
     append_error("2.2", "second op", "second error", "second context")
 
     content = error_log.read_text()
-    assert "1.1" in content
-    assert "2.2" in content
-    assert content.count("Question from ChatGPT") == 2
+    assert "1.1" in content, "Content must not be empty"
+    assert "2.2" in content, "Content must not be empty"
+    assert content.count("Question from ChatGPT") == 2, "Content must not be empty"
 
 
 def test_append_error_creates_parent_directories(tmp_path, monkeypatch):
@@ -49,8 +49,8 @@ def test_append_error_creates_parent_directories(tmp_path, monkeypatch):
 
     append_error("3.1", "nested test", "error msg", "context")
 
-    assert error_log.exists()
-    assert error_log.parent.exists()
+    assert error_log.exists(), "Error should be raised or set"
+    assert error_log.parent.exists(), "Error should be raised or set"
 
 
 def test_append_error_handles_exception_gracefully(tmp_path, monkeypatch):
@@ -74,8 +74,8 @@ def test_append_error_formats_message_correctly(tmp_path, monkeypatch):
     append_error("5.1", "format test", "test message", "test context")
 
     content = error_log.read_text()
-    assert "Question from ChatGPT @codex" in content
-    assert "While performing [5.1:format test]" in content
-    assert "encountered the following error: test message" in content
-    assert "Context: test context" in content
-    assert "What are the possible causes" in content
+    assert "Question from ChatGPT @codex" in content, "Content must not be empty"
+    assert "While performing [5.1:format test]" in content, "Content must not be empty"
+    assert "encountered the following error: test message" in content, "Content must not be empty"
+    assert "Context: test context" in content, "Content must not be empty"
+    assert "What are the possible causes" in content, "Content must not be empty"

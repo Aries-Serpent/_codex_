@@ -63,4 +63,4 @@ def test_fast_tokenizer_wrapper(tmp_path: Path):
     assert hasattr(wrapper, "encode")
     encoded = wrapper.encode("hello", padding="max_length", truncation=True, max_length=4)
     assert isinstance(encoded, list)
-    assert len(encoded) == 4
+    assert len(encoded) == 4, "Encoded must not be empty"

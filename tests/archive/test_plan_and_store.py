@@ -26,8 +26,8 @@ def test_build_plan_and_store(tmp_path: Path, monkeypatch) -> None:
     plan = build_plan(tmp_path, analyze_sha="HEAD", excludes=[], age_days_threshold=180)
     assert plan["entries"], "expected at least one entry in auto-plan"
     entry = plan["entries"][0]
-    assert entry["path"].endswith("old.py")
-    assert entry["score"] >= 0.7
+    assert entry["path"].endswith("old.py"), "Condition must be true"
+    assert entry["score"] >= 0.7, "Value must be greater than zero"
 
     monkeypatch.setenv("CODEX_ARCHIVE_BACKEND", "sqlite")
     monkeypatch.setenv("CODEX_ARCHIVE_URL", "sqlite:///./.codex/archive_test.sqlite")
@@ -45,7 +45,7 @@ def test_build_plan_and_store(tmp_path: Path, monkeypatch) -> None:
         mime=entry["mime"],
         lang=entry["lang"],
     )
-    assert "tombstone" in out and "sha256" in out
+    assert "tombstone" in out and "sha256" in out, "Condition must be true"
 
     restored = restore(out["tombstone"])
-    assert restored["bytes"] == payload
+    assert restored["bytes"] == payload, "rest is not valid"

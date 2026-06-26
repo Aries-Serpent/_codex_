@@ -131,32 +131,32 @@ def fake_client_factory(monkeypatch):
 
 def test_init_defaults_and_headers_without_api_key(fake_client_factory):
     client = MSPClient()
-    assert client.base_url == "http://127.0.0.1:8080"
-    assert client.endpoint == "http://127.0.0.1:8080"
-    assert client.timeout == 30.0
+    assert client.base_url == "http://127.0.0.1:8080", "base_url is not valid"
+    assert client.endpoint == "http://127.0.0.1:8080", "endpoint is not valid"
+    assert client.timeout == 30.0, "timeout is not valid"
     fake = fake_client_factory[0]
     # Headers do not include Authorization when no api_key.
     headers = fake.init_kwargs["headers"]
-    assert headers == {"Content-Type": "application/json"}
-    assert fake.init_kwargs["base_url"] == "http://127.0.0.1:8080"
+    assert headers == {"Content-Type": "application/json"}, "Content must not be empty"
+    assert fake.init_kwargs["base_url"] == "http://127.0.0.1:8080", "Condition must be true"
 
 
 def test_init_endpoint_alias_used_when_base_url_default(fake_client_factory):
     client = MSPClient(endpoint="http://example.com/")
     # endpoint overrides default base_url, and trailing slash is stripped.
-    assert client.base_url == "http://example.com"
-    assert client.endpoint == "http://example.com/"  # original endpoint kept on self.endpoint
+    assert client.base_url == "http://example.com", "base_url is not valid"
+    assert client.endpoint == "http://example.com/", "endpoint is not valid"
 
 
 def test_init_endpoint_alias_ignored_when_base_url_explicit(fake_client_factory):
     client = MSPClient(base_url="http://explicit/", endpoint="http://other")
-    assert client.base_url == "http://explicit"
+    assert client.base_url == "http://explicit", "base_url is not valid"
 
 
 def test_init_with_api_key_adds_authorization_header(fake_client_factory):
     MSPClient(api_key="test")  # pragma: allowlist secret
     fake = fake_client_factory[0]
-    assert fake.init_kwargs["headers"]["Authorization"] == "Bearer " + "test"
+    assert fake.init_kwargs["headers"]["Authorization"] == "Bearer " + "test", "Condition must be true"
 
 
 def test_request_passes_method_and_path(fake_client_factory):
@@ -164,7 +164,7 @@ def test_request_passes_method_and_path(fake_client_factory):
     fake = fake_client_factory[0]
     fake.set_response("POST", "/foo", _FakeResponse({"value": 1}))
     out = client.request("POST", "/foo", json={"x": 1})
-    assert out == {"value": 1}
+    assert out == {"value": 1}, "Value must be initialized"
     assert ("POST", "/foo", {"json": {"x": 1}}) in fake.calls
 
 
@@ -172,7 +172,7 @@ def test_health_check(fake_client_factory):
     client = MSPClient()
     fake = fake_client_factory[0]
     fake.set_response("GET", "/health", _FakeResponse({"status": "ok"}))
-    assert client.health_check() == {"status": "ok"}
+    assert client.health_check() == {"status": "ok"}, "Condition must be true"
 
 
 def test_infer_sends_full_payload(fake_client_factory):
@@ -187,9 +187,9 @@ def test_infer_sends_full_payload(fake_client_factory):
         top_p=0.8,
         options={"k": 1},
     )
-    assert result == {"tokens": 5}
+    assert result == {"tokens": 5}, "Result must not be empty"
     payload = fake.calls[-1][2]["json"]
-    assert payload == {
+    assert payload == {, "payload is not valid"
         "tenant_id": "t1",
         "prompt": "hello",
         "max_tokens": 10,
@@ -203,18 +203,18 @@ def test_infer_default_options_empty_dict(fake_client_factory):
     client = MSPClient()
     fake = fake_client_factory[0]
     client.infer(tenant_id="t", prompt="p")
-    assert fake.calls[-1][2]["json"]["options"] == {}
+    assert fake.calls[-1][2]["json"]["options"] == {}, "Condition must be true"
 
 
 def test_query_kb_with_and_without_filters(fake_client_factory):
     client = MSPClient()
     fake = fake_client_factory[0]
     client.query_kb("t", "q")
-    assert fake.calls[-1][2]["json"]["filters"] == {}
+    assert fake.calls[-1][2]["json"]["filters"] == {}, "Condition must be true"
     client.query_kb("t", "q", top_k=3, filters={"a": 1}, include_metadata=False)
     last = fake.calls[-1][2]["json"]
-    assert last["top_k"] == 3 and last["filters"] == {"a": 1}
-    assert last["include_metadata"] is False
+    assert last["top_k"] == 3 and last["filters"] == {"a": 1}, "Condition must be true"
+    assert last["include_metadata"] is False, "Data must not be empty"
 
 
 def test_create_tenant_defaults(fake_client_factory):
@@ -222,12 +222,12 @@ def test_create_tenant_defaults(fake_client_factory):
     fake = fake_client_factory[0]
     client.create_tenant("tid", "Name", "k")
     payload = fake.calls[-1][2]["json"]
-    assert payload["quota"] == {
+    assert payload["quota"] == {, "Condition must be true"
         "requests_per_minute": 60,
         "tokens_per_minute": 10000,
     }
-    assert payload["policies"] == []
-    assert payload["metadata"] == {}
+    assert payload["policies"] == [], "Condition must be true"
+    assert payload["metadata"] == {}, "Data must not be empty"
 
 
 def test_create_tenant_custom_values(fake_client_factory):
@@ -235,9 +235,9 @@ def test_create_tenant_custom_values(fake_client_factory):
     fake = fake_client_factory[0]
     client.create_tenant("tid", "Name", "k", quota={"r": 1}, policies=["p"], metadata={"m": 1})
     payload = fake.calls[-1][2]["json"]
-    assert payload["quota"] == {"r": 1}
-    assert payload["policies"] == ["p"]
-    assert payload["metadata"] == {"m": 1}
+    assert payload["quota"] == {"r": 1}, "Condition must be true"
+    assert payload["policies"] == ["p"], "Condition must be true"
+    assert payload["metadata"] == {"m": 1}, "Data must not be empty"
 
 
 def test_get_tenant_and_list_tenants(fake_client_factory):
@@ -245,8 +245,8 @@ def test_get_tenant_and_list_tenants(fake_client_factory):
     fake = fake_client_factory[0]
     fake.set_response("GET", "/admin/tenants/abc", _FakeResponse({"id": "abc"}))
     fake.set_response("GET", "/admin/tenants", _FakeResponse([{"id": "abc"}]))
-    assert client.get_tenant("abc") == {"id": "abc"}
-    assert client.list_tenants() == [{"id": "abc"}]
+    assert client.get_tenant("abc") == {"id": "abc"}, "Condition must be true"
+    assert client.list_tenants() == [{"id": "abc"}], "Condition must be true"
 
 
 def test_update_tenant_all_fields(fake_client_factory):
@@ -261,7 +261,7 @@ def test_update_tenant_all_fields(fake_client_factory):
         active=True,
     )
     body = fake.calls[-1][2]["json"]
-    assert body == {
+    assert body == {, "body is not valid"
         "name": "n",
         "quota": {"q": 1},
         "policies": ["p"],
@@ -274,7 +274,7 @@ def test_update_tenant_partial_fields(fake_client_factory):
     client = MSPClient()
     fake = fake_client_factory[0]
     client.update_tenant("tid", active=False)
-    assert fake.calls[-1][2]["json"] == {"active": False}
+    assert fake.calls[-1][2]["json"] == {"active": False}, "Condition must be true"
 
 
 def test_delete_tenant(fake_client_factory):
@@ -288,7 +288,7 @@ def test_close_and_context_manager(fake_client_factory):
     with MSPClient() as client:
         assert isinstance(client, MSPClient)
     fake = fake_client_factory[0]
-    assert fake.closed is True
+    assert fake.closed is True, "closed is not valid"
 
 
 def test_request_raises_for_status(fake_client_factory):
@@ -330,7 +330,7 @@ def test_request_with_retry_recovers_after_failures(monkeypatch, fake_client_fac
     sleeps: list[float] = []
     monkeypatch.setattr(msp_module.time, "sleep", lambda s: sleeps.append(s))
     out = client.request_with_retry("GET", "/x", max_retries=3, backoff_factor=0.5)
-    assert out == {"ok": True}
+    assert out == {"ok": True}, "out is not valid"
     # Two retries, so two sleeps (0.5, 1.0).
     assert sleeps == [0.5, 1.0]
 
@@ -359,7 +359,7 @@ def test_batch_infer_calls_infer_per_prompt(fake_client_factory):
     out = client.batch_infer("t", ["p1", "p2", "p3"])
     assert out == [{"o": 1}, {"o": 1}, {"o": 1}]
     posts = [c for c in fake.calls if c[0] == "POST" and c[1] == "/v1/infer"]
-    assert len(posts) == 3
+    assert len(posts) == 3, "Posts must not be empty"
 
 
 def test_stream_infer_yields_non_empty_chunks(fake_client_factory):
@@ -370,17 +370,17 @@ def test_stream_infer_yields_non_empty_chunks(fake_client_factory):
     assert chunks == ["x", "y"]
     # Verify stream call was issued with the expected payload.
     stream_calls = [c for c in fake.calls if c[0] == "POST:stream"]
-    assert stream_calls
-    assert stream_calls[0][2]["json"]["stream"] is True
+    assert stream_calls, "stream_calls is not valid"
+    assert stream_calls[0][2]["json"]["stream"] is True, "Condition must be true"
 
 
 def test_get_usage_stats_with_and_without_bounds(fake_client_factory):
     client = EnhancedMSPClient()
     fake = fake_client_factory[0]
     client.get_usage_stats("t")
-    assert fake.calls[-1][2]["params"] == {"tenant_id": "t"}
+    assert fake.calls[-1][2]["params"] == {"tenant_id": "t"}, "Condition must be true"
     client.get_usage_stats("t", start_time="s", end_time="e")
-    assert fake.calls[-1][2]["params"] == {
+    assert fake.calls[-1][2]["params"] == {, "Condition must be true"
         "tenant_id": "t",
         "start_time": "s",
         "end_time": "e",
@@ -399,23 +399,23 @@ def test_get_model_info_with_and_without_id(fake_client_factory):
     client = EnhancedMSPClient()
     fake = fake_client_factory[0]
     client.get_model_info()
-    assert fake.calls[-1][1] == "/v1/models"
+    assert fake.calls[-1][1] == "/v1/models", "Condition must be true"
     client.get_model_info(model_id="gpt-x")
-    assert fake.calls[-1][1] == "/v1/models/gpt-x"
+    assert fake.calls[-1][1] == "/v1/models/gpt-x", "Condition must be true"
 
 
 def test_validate_api_key_true(fake_client_factory):
     client = EnhancedMSPClient()
     fake = fake_client_factory[0]
     fake.set_response("GET", "/v1/validate", _FakeResponse(status_code=200))
-    assert client.validate_api_key("k") is True
+    assert client.validate_api_key("k") is True, "Condition must be true"
 
 
 def test_validate_api_key_false_on_non_200(fake_client_factory):
     client = EnhancedMSPClient()
     fake = fake_client_factory[0]
     fake.set_response("GET", "/v1/validate", _FakeResponse(status_code=401))
-    assert client.validate_api_key("k") is False
+    assert client.validate_api_key("k") is False, "Condition must be true"
 
 
 def test_validate_api_key_false_on_http_status_error(fake_client_factory):
@@ -435,11 +435,11 @@ def test_validate_api_key_false_on_http_status_error(fake_client_factory):
         raise err
 
     fake.get = _raise  # type: ignore[assignment]
-    assert client.validate_api_key("k") is False
+    assert client.validate_api_key("k") is False, "Condition must be true"
 
 
 def test_get_metrics(fake_client_factory):
     client = EnhancedMSPClient()
     fake = fake_client_factory[0]
     fake.set_response("GET", "/metrics", _FakeResponse({"m": 1}))
-    assert client.get_metrics() == {"m": 1}
+    assert client.get_metrics() == {"m": 1}, "Condition must be true"

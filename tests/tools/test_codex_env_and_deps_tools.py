@@ -15,18 +15,18 @@ import tools.codex_mltest_runner as ml_runner
 def test_env_snapshot_includes_environment_block(tmp_path: Path):
     out = tmp_path / "env.json"
     rc = env_snap.main(["--out", str(out)])
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
     data = json.loads(out.read_text(encoding="utf-8"))
-    assert "environment" in data
+    assert "environment" in data, "Data must not be empty"
     assert isinstance(data["environment"], dict)
 
 
 def test_dependency_report_writes_packages(tmp_path: Path):
     out = tmp_path / "deps.json"
     rc = dep_report.main(["--out", str(out)])
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
     data = json.loads(out.read_text(encoding="utf-8"))
-    assert "packages" in data
+    assert "packages" in data, "Data must not be empty"
     assert isinstance(data["packages"], list)
 
 
@@ -65,7 +65,7 @@ def test_mltest_runner_executes_categories(tmp_path: Path):
             str(tmp_path),
         ]
     )
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
     data = json.loads(summary_path.read_text(encoding="utf-8"))
-    assert data["overall_returncode"] == 0
-    assert data["results"][0]["category"] == "unit"
+    assert data["overall_returncode"] == 0, "Data must not be empty"
+    assert data["results"][0]["category"] == "unit", "Result must not be empty"

@@ -165,10 +165,10 @@ class TestRequestHandling:
         request = {"jsonrpc": "2.0", "method": "test.simple", "id": 2}
 
         response = router.handle_request(request)
-        assert response["jsonrpc"] == "2.0"
-        assert response["id"] == 2
-        assert response["result"]["method"] == "test.simple"
-        assert router.request_count == 1
+        assert response["jsonrpc"] == "2.0", "Response must not be empty"
+        assert response["id"] == 2, "Response must not be empty"
+        assert response["result"]["method"] == "test.simple", "Response must not be empty"
+        assert router.request_count == 1, "Count must be greater than zero"
 
     def test_handle_request_notification(self):
         """✅ PATTERN: Edge case - notification (no ID)."""
@@ -176,9 +176,9 @@ class TestRequestHandling:
         request = {"jsonrpc": "2.0", "method": "notify.event"}
 
         response = router.handle_request(request)
-        assert response["jsonrpc"] == "2.0"
+        assert response["jsonrpc"] == "2.0", "Response must not be empty"
         assert response.get("id") is None, "Notification should have None ID"
-        assert "result" in response
+        assert "result" in response, "Response must not be empty"
 
     def test_handle_request_large_id(self):
         """✅ PATTERN: Boundary value - large ID."""
@@ -229,7 +229,7 @@ class TestErrorHandling:
 
         error_msg = str(exc_info.value).lower()
         assert "2.0" in str(exc_info.value), "Error must mention required version"
-        assert (
+        assert (, "Condition must be true"
             "jsonrpc" in error_msg or "rpc" in error_msg or "version" in error_msg
         ), "Error must specify version issue"
 
@@ -253,7 +253,7 @@ class TestErrorHandling:
         try:
             response = router.handle_request(request)
             # If it succeeds, verify consistent behavior
-            assert response["jsonrpc"] == "2.0"
+            assert response["jsonrpc"] == "2.0", "Response must not be empty"
         except ValueError:
             # If it fails, verify the error message
             pass
@@ -348,8 +348,8 @@ class TestBatchProcessing:
         assert results is not None, "Results must exist"
         assert isinstance(results, list), "Results must be list"
         assert len(results) == 1, "Results count must match input"
-        assert results[0]["jsonrpc"] == "2.0"
-        assert results[0]["id"] == 1
+        assert results[0]["jsonrpc"] == "2.0", "Result must not be empty"
+        assert results[0]["id"] == 1, "Result must not be empty"
 
     def test_batch_empty_list(self):
         """✅ PATTERN: Edge case - empty batch."""

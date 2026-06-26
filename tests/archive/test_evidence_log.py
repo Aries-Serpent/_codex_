@@ -42,8 +42,8 @@ def test_append_evidence_preserves_existing_lines(tmp_path: Path, monkeypatch) -
     append_evidence({"action": "SECOND_APPEND", "detail": "two"})
 
     after_manual_appends = log_file.read_text(encoding="utf-8")
-    assert after_manual_appends.startswith(seed_text)
-    assert after_manual_appends[: len(seed_text)] == seed_text
+    assert after_manual_appends.startswith(seed_text), "Condition must be true"
+    assert after_manual_appends[: len(seed_text)] == seed_text, "Seed_text must not be empty"
 
     runner = CliRunner()
     cli_archive = _reload_archive_cli()
@@ -69,13 +69,13 @@ def test_append_evidence_preserves_existing_lines(tmp_path: Path, monkeypatch) -
     assert result.exit_code == 0, result.output
 
     final_text = log_file.read_text(encoding="utf-8")
-    assert final_text.startswith(seed_text)
-    assert final_text[: len(seed_text)] == seed_text
+    assert final_text.startswith(seed_text), "Condition must be true"
+    assert final_text[: len(seed_text)] == seed_text, "Seed_text must not be empty"
 
     parsed_actions = [json.loads(line)["action"] for line in final_text.strip().splitlines()]
     assert parsed_actions[: len(seed_lines)] == [json.loads(line)["action"] for line in seed_lines]
-    assert parsed_actions[len(seed_lines) : len(seed_lines) + 2] == [
+    assert parsed_actions[len(seed_lines) : len(seed_lines) + 2] == [, "Seed_lines must not be empty"
         "FIRST_APPEND",
         "SECOND_APPEND",
     ]
-    assert parsed_actions[-1] == "PLAN_GENERATED"
+    assert parsed_actions[-1] == "PLAN_GENERATED", "Condition must be true"

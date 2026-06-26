@@ -36,7 +36,7 @@ class TestFlatListHelper:
             from codex_ml.metrics.metric_implementations import _to_flat_list
 
             result = _to_flat_list(42)
-            assert result == [42]
+            assert result == [42], "Result must not be empty"
         except ImportError as exc:
             pytest.skip(f"Optional dependency missing: {exc}")
 
@@ -57,7 +57,7 @@ class TestMetricBase:
                     return {}
 
             metric = DummyMetric("test_metric")
-            assert metric.name == "test_metric"
+            assert metric.name == "test_metric", "name is not valid"
         except ImportError as exc:
             pytest.skip(f"Optional dependency missing: {exc}")
 
@@ -81,7 +81,7 @@ class TestClassificationStats:
             from codex_ml.metrics.metric_implementations import _ClassificationStats
 
             stats = _ClassificationStats()
-            assert stats is not None
+            assert stats is not None, "stats must be initialized"
         except ImportError as exc:
             pytest.skip(f"Optional dependency missing: {exc}")
 
@@ -92,7 +92,7 @@ class TestClassificationStats:
 
             stats = _ClassificationStats()
             stats.update([0, 1, 1], [0, 1, 0])
-            assert stats.tp[0] == 1
-            assert stats.tp[1] == 1
+            assert stats.tp[0] == 1, "Condition must be true"
+            assert stats.tp[1] == 1, "Condition must be true"
         except ImportError as exc:
             pytest.skip(f"Optional dependency missing: {exc}")

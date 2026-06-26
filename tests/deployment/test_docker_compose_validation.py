@@ -25,8 +25,8 @@ def test_docker_compose_valid_yaml(docker_compose_file):
     """Verify docker-compose.yml is valid YAML."""
     with open(docker_compose_file) as f:
         config = yaml.safe_load(f)
-    assert config is not None
-    assert "services" in config or "version" in config
+    assert config is not None, "config must be initialized"
+    assert "services" in config or "version" in config, "Condition must be true"
 
 
 def test_docker_compose_service_definitions(docker_compose_file):

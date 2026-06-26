@@ -54,9 +54,9 @@ class TestCRUDOperations:
             # Verify record created
             cursor.execute("SELECT * FROM users WHERE name = ?", ("Alice",))
             row = cursor.fetchone()
-            assert row is not None
-            assert row[1] == "Alice"
-            assert row[2] == "alice@example.com"
+            assert row is not None, "row must be initialized"
+            assert row[1] == "Alice", "Condition must be true"
+            assert row[2] == "alice@example.com", "Condition must be true"
 
     def test_read_record(self, tmp_path):
         """Test reading an existing record."""
@@ -73,7 +73,7 @@ class TestCRUDOperations:
             # Read record
             cursor.execute("SELECT id, name FROM users WHERE name = ?", ("Bob",))
             row = cursor.fetchone()
-            assert row[1] == "Bob"
+            assert row[1] == "Bob", "Condition must be true"
 
     def test_update_record(self, tmp_path):
         """Test updating an existing record."""
@@ -100,7 +100,7 @@ class TestCRUDOperations:
             # Verify update
             cursor.execute("SELECT email FROM users WHERE name = ?", ("Charlie",))
             row = cursor.fetchone()
-            assert row[0] == "charlie@new.com"
+            assert row[0] == "charlie@new.com", "Condition must be true"
 
     def test_delete_record(self, tmp_path):
         """Test deleting a record."""
@@ -121,7 +121,7 @@ class TestCRUDOperations:
             # Verify deletion
             cursor.execute("SELECT * FROM users WHERE name = ?", ("David",))
             row = cursor.fetchone()
-            assert row is None
+            assert row is None, "row is not valid"
 
     def test_bulk_insert(self, tmp_path):
         """Test bulk insertion of records."""
@@ -141,7 +141,7 @@ class TestCRUDOperations:
             # Verify count
             cursor.execute("SELECT COUNT(*) FROM users")
             count = cursor.fetchone()[0]
-            assert count == 5
+            assert count == 5, "Count must be greater than zero"
 
     def test_bulk_update(self, tmp_path):
         """Test bulk update of records."""
@@ -169,7 +169,7 @@ class TestCRUDOperations:
             # Verify
             cursor.execute("SELECT COUNT(*) FROM users WHERE active = 1")
             count = cursor.fetchone()[0]
-            assert count == 3
+            assert count == 3, "Count must be greater than zero"
 
 
 class TestTransactionHandling:
@@ -194,7 +194,7 @@ class TestTransactionHandling:
             # Verify committed
             cursor.execute("SELECT balance FROM accounts")
             row = cursor.fetchone()
-            assert row[0] == 100.0
+            assert row[0] == 100.0, "Condition must be true"
 
     def test_transaction_isolation(self, tmp_path):
         """Test transaction isolation."""
@@ -221,7 +221,7 @@ class TestTransactionHandling:
             # Connection 2 still sees old value (isolation)
             cursor2.execute("SELECT quantity FROM inventory WHERE id = 1")
             row = cursor2.fetchone()
-            assert row[0] == 10  # Unchanged
+            assert row[0] == 10, "Condition must be true"
 
             # Connection 1 commits
             conn1.commit()
@@ -229,7 +229,7 @@ class TestTransactionHandling:
             # Connection 2 now sees new value
             cursor2.execute("SELECT quantity FROM inventory WHERE id = 1")
             row = cursor2.fetchone()
-            assert row[0] == 5  # Updated
+            assert row[0] == 5, "Condition must be true"
 
     def test_nested_transactions(self, tmp_path):
         """Test nested transaction-like behavior using savepoints."""
@@ -254,7 +254,7 @@ class TestTransactionHandling:
             # Both records exist
             cursor.execute("SELECT COUNT(*) FROM logs")
             count = cursor.fetchone()[0]
-            assert count == 2
+            assert count == 2, "Count must be greater than zero"
 
     def test_concurrent_write_conflict(self, tmp_path):
         """Test handling concurrent write conflicts."""
@@ -286,7 +286,7 @@ class TestTransactionHandling:
             cursor = conn.cursor()
             cursor.execute("SELECT value FROM counter WHERE id = 1")
             value = cursor.fetchone()[0]
-            assert value == 2
+            assert value == 2, "Value must be initialized"
 
     def test_transaction_performance(self, tmp_path):
         """Test transaction performance with many operations."""
@@ -308,12 +308,12 @@ class TestTransactionHandling:
             duration = time.time() - start
 
             # Should complete quickly (< 1 second for 100 inserts)
-            assert duration < 1.0
+            assert duration < 1.0, "duration is not valid"
 
             # Verify all inserted
             cursor.execute("SELECT COUNT(*) FROM events")
             count = cursor.fetchone()[0]
-            assert count == 100
+            assert count == 100, "Count must be greater than zero"
 
 
 class TestRollbackScenarios:
@@ -336,7 +336,7 @@ class TestRollbackScenarios:
             # Verify not persisted
             cursor.execute("SELECT * FROM users WHERE name = ?", ("Rollback User",))
             row = cursor.fetchone()
-            assert row is None
+            assert row is None, "row is not valid"
 
     def test_rollback_on_error(self, tmp_path):
         """Test automatic rollback on error."""
@@ -373,7 +373,7 @@ class TestRollbackScenarios:
             # Just verify duplicate wasn't inserted
             cursor.execute("SELECT COUNT(*) FROM users WHERE email = ?", ("test@example.com",))
             count = cursor.fetchone()[0]
-            assert count == 1  # Only original
+            assert count == 1, "Count must be greater than zero"
 
     def test_savepoint_rollback(self, tmp_path):
         """Test rolling back to savepoint."""
@@ -398,11 +398,11 @@ class TestRollbackScenarios:
             # Only first record exists
             cursor.execute("SELECT COUNT(*) FROM audit")
             count = cursor.fetchone()[0]
-            assert count == 1
+            assert count == 1, "Count must be greater than zero"
 
             cursor.execute("SELECT action FROM audit")
             action = cursor.fetchone()[0]
-            assert action == "Before savepoint"
+            assert action == "Before savepoint", "action is not valid"
 
     def test_partial_rollback_on_constraint_violation(self, tmp_path):
         """Test partial rollback on constraint violation."""
@@ -437,7 +437,7 @@ class TestRollbackScenarios:
             # Verify rollback
             cursor.execute("SELECT COUNT(*) FROM products")
             count = cursor.fetchone()[0]
-            assert count == 1  # Only original
+            assert count == 1, "Count must be greater than zero"
 
     def test_rollback_complex_operation(self, tmp_path):
         """Test rollback of complex multi-table operation."""
@@ -467,9 +467,9 @@ class TestRollbackScenarios:
 
             # Nothing persisted
             cursor.execute("SELECT COUNT(*) FROM orders")
-            assert cursor.fetchone()[0] == 0
+            assert cursor.fetchone()[0] == 0, "curs is not valid"
             cursor.execute("SELECT COUNT(*) FROM order_items")
-            assert cursor.fetchone()[0] == 0
+            assert cursor.fetchone()[0] == 0, "curs is not valid"
 
 
 class TestDataIntegrityConstraints:
@@ -607,13 +607,13 @@ class TestBackupRestoreWorkflows:
             _raw_conn(source).backup(_raw_conn(target))
 
         # Verify backup
-        assert backup_path.exists()
+        assert backup_path.exists(), "Condition must be true"
 
         with sqlite3.connect(backup_path) as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT value FROM data")
             row = cursor.fetchone()
-            assert row[0] == "Test Data"
+            assert row[0] == "Test Data", "Data must not be empty"
 
     def test_restore_from_backup(self, tmp_path):
         """Test restoring database from backup."""
@@ -644,7 +644,7 @@ class TestBackupRestoreWorkflows:
             cursor = conn.cursor()
             cursor.execute("SELECT value FROM data")
             row = cursor.fetchone()
-            assert row[0] == "Original"
+            assert row[0] == "Original", "Condition must be true"
 
     def test_incremental_backup(self, tmp_path):
         """Test incremental backup concept."""
@@ -695,8 +695,8 @@ class TestBackupRestoreWorkflows:
             cursor.execute("SELECT COUNT(*) FROM changes")
             count2 = cursor.fetchone()[0]
 
-        assert count1 == 1
-        assert count2 == 2
+        assert count1 == 1, "Count must be greater than zero"
+        assert count2 == 2, "Count must be greater than zero"
 
     def test_backup_with_wal_mode(self, tmp_path):
         """Test backup with WAL mode enabled."""
@@ -723,7 +723,7 @@ class TestBackupRestoreWorkflows:
             cursor = conn.cursor()
             cursor.execute("SELECT value FROM data")
             row = cursor.fetchone()
-            assert row[0] == "WAL Data"
+            assert row[0] == "WAL Data", "Data must not be empty"
 
     def test_point_in_time_recovery(self, tmp_path):
         """Test point-in-time recovery concept."""
@@ -762,4 +762,4 @@ class TestBackupRestoreWorkflows:
                 cursor = conn.cursor()
                 cursor.execute("SELECT COUNT(*) FROM timeline")
                 count = cursor.fetchone()[0]
-                assert count == i + 1
+                assert count == i + 1, "Count must be greater than zero"

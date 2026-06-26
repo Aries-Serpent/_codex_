@@ -11,4 +11,4 @@ def test_import_safety_filters_no_crash():
     # should expose SafetyFilters regardless.
     from codex_ml.safety import SafetyFilters
 
-    assert SafetyFilters is not None
+    assert SafetyFilters is not None, "SafetyFilters must be initialized"

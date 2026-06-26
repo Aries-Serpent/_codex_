@@ -100,7 +100,7 @@ class TestCliCommandsWithTyper:
 
     def test_main_callable(self):
         """Test that main() is callable."""
-        assert callable(main)
+        assert callable(main), "Condition must be true"
 
     @patch("src.codex.cli.main.typer")
     def test_ingest_command_registered(self, mock_typer):
@@ -116,8 +116,8 @@ class TestCliCommandsWithTyper:
         """Test ingest command creates snapshot."""
         # This is a mock test to verify structure
         snapshot_id, snapshot_dir = sample_snapshot
-        assert snapshot_dir.exists()
-        assert (snapshot_dir / "source").exists()
+        assert snapshot_dir.exists(), "Condition must be true"
+        assert (snapshot_dir / "source").exists(), "Condition must be true"
 
     def test_analyze_command_requires_snapshot_id(self):
         """Test analyze command requires snapshot ID."""
@@ -161,12 +161,12 @@ class TestArgparseFallback:
 
     def test_main_defined_in_fallback(self):
         """Test that main() is defined in fallback mode."""
-        assert callable(main)
+        assert callable(main), "Condition must be true"
 
     def test_argparse_subparsers_created(self):
         """Test that argparse creates appropriate subparsers."""
         # When Typer unavailable, main() uses argparse
-        assert callable(main)
+        assert callable(main), "Condition must be true"
 
 
 # =====================================================================
@@ -180,7 +180,7 @@ class TestErrorHandling:
     def test_missing_snapshot_error(self, artifacts_dir):
         """Test error when snapshot not found."""
         # Snapshot doesn't exist
-        assert not (artifacts_dir / "nonexistent-snap").exists()
+        assert not (artifacts_dir / "nonexistent-snap").exists(), "Condition must be true"
 
     def test_invalid_tier_option(self):
         """Test error with invalid tier option."""
@@ -195,7 +195,7 @@ class TestErrorHandling:
     def test_missing_manifest_file(self):
         """Test error when manifest file doesn't exist."""
         nonexistent_manifest = Path("/nonexistent/manifest.yaml")
-        assert not nonexistent_manifest.exists()
+        assert not nonexistent_manifest.exists(), "Condition must be true"
 
 
 # =====================================================================
@@ -210,11 +210,11 @@ class TestSnapshotMetadata:
         """Test that list reads snapshot metadata."""
         snapshot_id, snapshot_dir = sample_snapshot
         meta_file = snapshot_dir / "snapshot-meta.json"
-        assert meta_file.exists()
+        assert meta_file.exists(), "Condition must be true"
 
         with meta_file.open() as f:
             meta = json.load(f)
-        assert meta["snapshot_id"] == snapshot_id
+        assert meta["snapshot_id"] == snapshot_id, "Condition must be true"
 
     def test_show_snapshot_displays_metadata(self, sample_snapshot, artifacts_dir):
         """Test that show displays snapshot metadata."""
@@ -224,9 +224,9 @@ class TestSnapshotMetadata:
         with meta_file.open() as f:
             meta = json.load(f)
 
-        assert "snapshot_id" in meta
-        assert "source" in meta
-        assert "content_hash" in meta
+        assert "snapshot_id" in meta, "Condition must be true"
+        assert "source" in meta, "Condition must be true"
+        assert "content_hash" in meta, "Content must not be empty"
 
     def test_show_snapshot_json_output(self, sample_snapshot, artifacts_dir):
         """Test show snapshot with JSON output."""
@@ -339,13 +339,13 @@ class TestPathHandling:
 
     def test_artifact_directory_creation(self, artifacts_dir):
         """Test that artifact directory is created."""
-        assert artifacts_dir.exists()
+        assert artifacts_dir.exists(), "Condition must be true"
 
     def test_snapshot_directory_resolution(self, sample_snapshot, artifacts_dir):
         """Test snapshot directory resolution."""
         snapshot_id, snapshot_dir = sample_snapshot
         resolved = artifacts_dir / snapshot_id
-        assert resolved.exists()
+        assert resolved.exists(), "Condition must be true"
 
     def test_relative_path_handling(self):
         """Test handling of relative paths."""
@@ -368,7 +368,7 @@ class TestMainEntryPoint:
 
     def test_main_is_callable(self):
         """Test that main() is callable."""
-        assert callable(main)
+        assert callable(main), "Condition must be true"
 
     def test_main_no_args(self):
         """Test main() with no arguments."""
@@ -436,27 +436,27 @@ class TestIntegration:
         """Test ingest followed by list."""
         snapshot_id, snapshot_dir = sample_snapshot
         # Should be able to list the ingested snapshot
-        assert snapshot_dir.exists()
+        assert snapshot_dir.exists(), "Condition must be true"
 
     def test_ingest_then_show(self, sample_snapshot, artifacts_dir):
         """Test ingest followed by show."""
         snapshot_id, snapshot_dir = sample_snapshot
         # Should be able to show snapshot details
         meta_file = snapshot_dir / "snapshot-meta.json"
-        assert meta_file.exists()
+        assert meta_file.exists(), "Condition must be true"
 
     def test_full_pipeline(self, sample_snapshot, artifacts_dir):
         """Test full CLI pipeline."""
         snapshot_id, snapshot_dir = sample_snapshot
         # Should complete full pipeline without errors
-        assert snapshot_dir.exists()
-        assert (snapshot_dir / "source").exists()
+        assert snapshot_dir.exists(), "Condition must be true"
+        assert (snapshot_dir / "source").exists(), "Condition must be true"
 
     def test_snapshot_persistence(self, sample_snapshot, artifacts_dir):
         """Test snapshot persists across commands."""
         snapshot_id, snapshot_dir = sample_snapshot
         # Snapshot should be retrievable
-        assert (artifacts_dir / snapshot_id).exists()
+        assert (artifacts_dir / snapshot_id).exists(), "Condition must be true"
 
 
 # =====================================================================
@@ -522,7 +522,7 @@ class TestConsistency:
         """Test snapshot remains visible after operations."""
         snapshot_id, snapshot_dir = sample_snapshot
         # Snapshot should remain accessible
-        assert (artifacts_dir / snapshot_id).exists()
+        assert (artifacts_dir / snapshot_id).exists(), "Condition must be true"
 
     def test_metadata_unchanged_by_show(self, sample_snapshot, artifacts_dir):
         """Test metadata unchanged by show command."""
@@ -536,7 +536,7 @@ class TestConsistency:
         with meta_file.open() as f:
             after_meta = json.load(f)
 
-        assert original_meta == after_meta
+        assert original_meta == after_meta, "original_meta is not valid"
 
 
 # =====================================================================
@@ -550,7 +550,7 @@ class TestDocumentation:
     def test_main_has_docstring(self):
         """Test main function has docstring."""
         if main.__doc__:
-            assert len(main.__doc__) > 0
+            assert len(main.__doc__) > 0, "Collection must not be empty"
 
     def test_commands_have_help_text(self):
         """Test that commands have help text."""

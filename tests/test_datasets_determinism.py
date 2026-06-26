@@ -16,9 +16,9 @@ def test_deterministic_split_same_seed_repeats():
     dataset = datasets.tiny_tensor_dataset(n=20, d_in=4, n_classes=3)
     split1 = datasets.deterministic_split(dataset, [0.5, 0.5], seed=123)
     split2 = datasets.deterministic_split(dataset, [0.5, 0.5], seed=123)
-    assert len(split1) == len(split2) == 2
-    assert set(split1[0].indices) == set(split2[0].indices)
-    assert set(split1[1].indices) == set(split2[1].indices)
+    assert len(split1) == len(split2) == 2, "Split1 must not be empty"
+    assert set(split1[0].indices) == set(split2[0].indices), "Condition must be true"
+    assert set(split1[1].indices) == set(split2[1].indices), "Condition must be true"
 
 
 def test_deterministic_split_diff_seed_changes():

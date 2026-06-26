@@ -38,4 +38,4 @@ def test_crossref_ok(tmp_path):
     p.write_text(json.dumps(report), encoding="utf-8")
     tool = Path("tools/link_id_crossref.py")
     code = subprocess.call([sys.executable, str(tool), "--report", str(p)])
-    assert code == 0
+    assert code == 0, "code is not valid"

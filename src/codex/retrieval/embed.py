@@ -45,16 +45,16 @@ class EmbeddingModel:
             logger.info("Embedding model loaded successfully")
         except ImportError as e:
             error_type = type(e).__name__
-            logger.debug(f"ImportError: <ERROR_TYPE>")
-            logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
+            logger.debug("ImportError: <ERROR_TYPE>")
+            logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
             logger.error(
                 "sentence-transformers not installed. Install with: pip install sentence-transformers"  # noqa: E501
             )
             raise
         except (ValueError, TypeError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.error(f"Error loading embedding model: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.error("Error loading embedding model: <ERROR_TYPE>")
             raise
 
     def encode(

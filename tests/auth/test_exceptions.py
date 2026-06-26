@@ -39,14 +39,14 @@ class TestAuthError:
     def test_basic_error(self):
         """Test basic error creation."""
         error = AuthError("Something went wrong")
-        assert str(error) == "Something went wrong"
-        assert error.message == "Something went wrong"
-        assert error.code == "auth_error"
+        assert str(error) == "Something went wrong", "Error should be raised or set"
+        assert error.message == "Something went wrong", "Error should be raised or set"
+        assert error.code == "auth_error", "Error should be raised or set"
 
     def test_custom_code(self):
         """Test error with custom code."""
         error = AuthError("Custom error", code="custom_code")
-        assert error.code == "custom_code"
+        assert error.code == "custom_code", "Error should be raised or set"
 
 
 class TestAuthenticationError:
@@ -55,13 +55,13 @@ class TestAuthenticationError:
     def test_default_message(self):
         """Test default error message."""
         error = AuthenticationError()
-        assert "Authentication required" in error.message
-        assert error.code == "authentication_required"
+        assert "Authentication required" in error.message, "Error should be raised or set"
+        assert error.code == "authentication_required", "Error should be raised or set"
 
     def test_custom_message(self):
         """Test custom error message."""
         error = AuthenticationError("Custom auth error")
-        assert error.message == "Custom auth error"
+        assert error.message == "Custom auth error", "Error should be raised or set"
 
     def test_is_auth_error(self):
         """Test inheritance from AuthError."""
@@ -75,13 +75,13 @@ class TestInvalidTokenError:
     def test_default_message(self):
         """Test default error message."""
         error = InvalidTokenError()
-        assert error.message == "Invalid token"
-        assert error.code == "invalid_token"
+        assert error.message == "Invalid token", "Error should be raised or set"
+        assert error.code == "invalid_token", "Error should be raised or set"
 
     def test_with_reason(self):
         """Test error with reason."""
         error = InvalidTokenError("Bad token", reason="expired signature")
-        assert error.reason == "expired signature"
+        assert error.reason == "expired signature", "Error should be raised or set"
 
     def test_inheritance(self):
         """Test inheritance chain."""
@@ -96,8 +96,8 @@ class TestTokenExpiredError:
     def test_default_message(self):
         """Test default error message."""
         error = TokenExpiredError()
-        assert error.message == "Token expired"
-        assert error.code == "token_expired"
+        assert error.message == "Token expired", "Error should be raised or set"
+        assert error.code == "token_expired", "Error should be raised or set"
 
 
 class TestTokenRevokedError:
@@ -106,8 +106,8 @@ class TestTokenRevokedError:
     def test_default_message(self):
         """Test default error message."""
         error = TokenRevokedError()
-        assert error.message == "Token revoked"
-        assert error.code == "token_revoked"
+        assert error.message == "Token revoked", "Error should be raised or set"
+        assert error.code == "token_revoked", "Error should be raised or set"
 
 
 class TestInvalidCredentialsError:
@@ -116,8 +116,8 @@ class TestInvalidCredentialsError:
     def test_default_message(self):
         """Test default error message."""
         error = InvalidCredentialsError()
-        assert error.message == "Invalid credentials"
-        assert error.code == "invalid_credentials"
+        assert error.message == "Invalid credentials", "Error should be raised or set"
+        assert error.code == "invalid_credentials", "Error should be raised or set"
 
 
 class TestMFARequiredError:
@@ -126,8 +126,8 @@ class TestMFARequiredError:
     def test_default_message(self):
         """Test default error message."""
         error = MFARequiredError()
-        assert "MFA" in error.message
-        assert error.code == "mfa_required"
+        assert "MFA" in error.message, "Error should be raised or set"
+        assert error.code == "mfa_required", "Error should be raised or set"
 
 
 class TestMFAVerificationError:
@@ -136,8 +136,8 @@ class TestMFAVerificationError:
     def test_default_message(self):
         """Test default error message."""
         error = MFAVerificationError()
-        assert "MFA" in error.message
-        assert error.code == "mfa_failed"
+        assert "MFA" in error.message, "Error should be raised or set"
+        assert error.code == "mfa_failed", "Error should be raised or set"
 
 
 class TestAuthorizationError:
@@ -146,8 +146,8 @@ class TestAuthorizationError:
     def test_default_message(self):
         """Test default error message."""
         error = AuthorizationError()
-        assert error.message == "Access denied"
-        assert error.code == "access_denied"
+        assert error.message == "Access denied", "Error should be raised or set"
+        assert error.code == "access_denied", "Error should be raised or set"
 
     def test_is_auth_error(self):
         """Test inheritance from AuthError."""
@@ -161,9 +161,9 @@ class TestInsufficientScopesError:
     def test_default_message(self):
         """Test default error message."""
         error = InsufficientScopesError()
-        assert "permissions" in error.message.lower()
-        assert error.code == "insufficient_scopes"
-        assert error.required_scopes == []
+        assert "permissions" in error.message.lower(), "Error should be raised or set"
+        assert error.code == "insufficient_scopes", "Error should be raised or set"
+        assert error.required_scopes == [], "Error should be raised or set"
 
     def test_with_scopes(self):
         """Test error with required scopes."""
@@ -182,14 +182,14 @@ class TestRateLimitError:
     def test_default_message(self):
         """Test default error message."""
         error = RateLimitError()
-        assert "Rate limit" in error.message
-        assert error.code == "rate_limit_exceeded"
-        assert error.retry_after is None
+        assert "Rate limit" in error.message, "Error should be raised or set"
+        assert error.code == "rate_limit_exceeded", "Error should be raised or set"
+        assert error.retry_after is None, "Error should be raised or set"
 
     def test_with_retry_after(self):
         """Test error with retry_after."""
         error = RateLimitError(retry_after=60)
-        assert error.retry_after == 60
+        assert error.retry_after == 60, "Error should be raised or set"
 
 
 class TestOAuthError:
@@ -198,16 +198,16 @@ class TestOAuthError:
     def test_basic_error(self):
         """Test basic OAuth error."""
         error = OAuthError("OAuth failed")
-        assert error.message == "OAuth failed"
-        assert error.code == "oauth_error"
+        assert error.message == "OAuth failed", "Error should be raised or set"
+        assert error.code == "oauth_error", "Error should be raised or set"
 
     def test_with_oauth_details(self):
         """Test error with OAuth error details."""
         error = OAuthError(
             "Auth failed", oauth_error="access_denied", error_description="User denied access"
         )
-        assert error.oauth_error == "access_denied"
-        assert error.error_description == "User denied access"
+        assert error.oauth_error == "access_denied", "Error should be raised or set"
+        assert error.error_description == "User denied access", "Error should be raised or set"
 
 
 class TestStateValidationError:
@@ -216,8 +216,8 @@ class TestStateValidationError:
     def test_default_message(self):
         """Test default error message."""
         error = StateValidationError()
-        assert "state" in error.message.lower()
-        assert error.code == "invalid_state"
+        assert "state" in error.message.lower(), "Error should be raised or set"
+        assert error.code == "invalid_state", "Error should be raised or set"
 
     def test_inheritance(self):
         """Test inheritance from OAuthError."""
@@ -231,8 +231,8 @@ class TestCodeExchangeError:
     def test_default_message(self):
         """Test default error message."""
         error = CodeExchangeError()
-        assert "exchange" in error.message.lower()
-        assert error.code == "code_exchange_failed"
+        assert "exchange" in error.message.lower(), "Error should be raised or set"
+        assert error.code == "code_exchange_failed", "Error should be raised or set"
 
 
 class TestAPIKeyError:
@@ -241,8 +241,8 @@ class TestAPIKeyError:
     def test_default_message(self):
         """Test default error message."""
         error = APIKeyError()
-        assert "API key" in error.message
-        assert error.code == "invalid_api_key"
+        assert "API key" in error.message, "Error should be raised or set"
+        assert error.code == "invalid_api_key", "Error should be raised or set"
 
 
 class TestAPIKeyRevokedError:
@@ -251,8 +251,8 @@ class TestAPIKeyRevokedError:
     def test_default_message(self):
         """Test default error message."""
         error = APIKeyRevokedError()
-        assert "revoked" in error.message.lower()
-        assert error.code == "api_key_revoked"
+        assert "revoked" in error.message.lower(), "Error should be raised or set"
+        assert error.code == "api_key_revoked", "Error should be raised or set"
 
     def test_inheritance(self):
         """Test inheritance from APIKeyError."""
@@ -266,8 +266,8 @@ class TestSessionError:
     def test_default_message(self):
         """Test default error message."""
         error = SessionError()
-        assert "Session" in error.message
-        assert error.code == "session_error"
+        assert "Session" in error.message, "Error should be raised or set"
+        assert error.code == "session_error", "Error should be raised or set"
 
 
 class TestSessionExpiredError:
@@ -276,8 +276,8 @@ class TestSessionExpiredError:
     def test_default_message(self):
         """Test default error message."""
         error = SessionExpiredError()
-        assert "expired" in error.message.lower()
-        assert error.code == "session_expired"
+        assert "expired" in error.message.lower(), "Error should be raised or set"
+        assert error.code == "session_expired", "Error should be raised or set"
 
     def test_inheritance(self):
         """Test inheritance from SessionError."""
@@ -291,8 +291,8 @@ class TestSessionNotFoundError:
     def test_default_message(self):
         """Test default error message."""
         error = SessionNotFoundError()
-        assert "not found" in error.message.lower()
-        assert error.code == "session_not_found"
+        assert "not found" in error.message.lower(), "Error should be raised or set"
+        assert error.code == "session_not_found", "Error should be raised or set"
 
     def test_inheritance(self):
         """Test inheritance from SessionError."""

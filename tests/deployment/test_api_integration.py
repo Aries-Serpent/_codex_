@@ -17,9 +17,9 @@ client = TestClient(app)
 
 def test_health_endpoint_responds() -> None:
     response = client.get("/health")
-    assert response.status_code == 200
+    assert response.status_code == 200, "Response must not be empty"
     data = response.json()
-    assert data["status"] == "healthy"
+    assert data["status"] == "healthy", "Data must not be empty"
 
 
 def test_ready_endpoint_validates() -> None:
@@ -27,7 +27,7 @@ def test_ready_endpoint_validates() -> None:
     assert response.status_code in (200, 503)
     payload = response.json()
     if response.status_code == 200:
-        assert payload["status"] == "ready"
-        assert "checks" in payload
+        assert payload["status"] == "ready", "Condition must be true"
+        assert "checks" in payload, "Condition must be true"
     else:
-        assert "detail" in payload
+        assert "detail" in payload, "Condition must be true"

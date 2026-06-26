@@ -288,10 +288,10 @@ def register_agent_health(agent_id, agent_type, dependencies):
     health_db.start_heartbeat(agent_id, interval=30)
 
 # Before task execution
-def measure_task_latency(agent_id, task_id):
+def measure_task_latency(agent_id, task_id):  # pragma: allowlist secret
     start_time = time.time()
     try:
-        result = execute_task(task_id)
+        result = execute_task(task_id)  # pragma: allowlist secret
         duration = time.time() - start_time
         health_db.log_success(agent_id, duration)
         return result

@@ -59,7 +59,7 @@ class TestEndToEndRAGPipeline:
         text = doc_path.read_text()
         chunks = chunk_text(text, chunk_size=100, overlap=20)
 
-        assert len(chunks) > 0
+        assert len(chunks) > 0, "Chunks must not be empty"
 
         # Step 2: Mock embedding
         mock_embeddings = np.random.randn(len(chunks), 384).astype(np.float32)
@@ -79,9 +79,9 @@ class TestEndToEndRAGPipeline:
                 index_dir=str(temp_rag_workspace["index_dir"]),
             )
 
-            assert index_path.exists()
-            assert (index_path / "chunks.json").exists()
-            assert (index_path / "metadata.json").exists()
+            assert index_path.exists(), "Condition must be true"
+            assert (index_path / "chunks.json").exists(), "Condition must be true"
+            assert (index_path / "metadata.json").exists(), "Data must not be empty"
 
     def test_index_and_retrieve(self, temp_rag_workspace):
         """Test indexing and retrieving documents."""
@@ -118,7 +118,7 @@ class TestEndToEndRAGPipeline:
                 )
 
                 results = retriever.query("What is Python?", top_k=2)
-                assert len(results) <= 2
+                assert len(results) <= 2, "Results must not be empty"
 
     def test_rag_with_prompt_assembly(self, temp_rag_workspace):
         """Test RAG pipeline with prompt assembly."""
@@ -143,9 +143,9 @@ class TestEndToEndRAGPipeline:
             retrieved_docs=retrieved_docs,
         )
 
-        assert "What is Python?" in prompt
-        assert "Python is a programming language" in prompt
-        assert "helpful assistant" in prompt
+        assert "What is Python?" in prompt, "What is not valid"
+        assert "Python is a programming language" in prompt, "Python is not valid"
+        assert "helpful assistant" in prompt, "Condition must be true"
 
     def test_rag_with_postprocessing(self, temp_rag_workspace):
         """Test RAG pipeline with output post-processing."""
@@ -166,9 +166,9 @@ class TestEndToEndRAGPipeline:
             output=llm_output, retrieved_docs=retrieved_docs, include_citations=True
         )
 
-        assert "Python" in processed
+        assert "Python" in processed, "Condition must be true"
         # Internal markers should be removed
-        assert True  # May or may not be removed
+        assert True, "True is not valid"
 
 
 class TestRAGCaching:
@@ -189,11 +189,11 @@ class TestRAGCaching:
 
         # First call - cache miss
         embeddings1 = cache.encode(texts, cache_key="test_key")
-        assert cache.cache_misses == 1
+        assert cache.cache_misses == 1, "cache_misses is not valid"
 
         # Second call - cache hit
         embeddings2 = cache.encode(texts, cache_key="test_key")
-        assert cache.cache_hits == 1
+        assert cache.cache_hits == 1, "cache_hits is not valid"
 
         np.testing.assert_array_equal(embeddings1, embeddings2)
 
@@ -232,7 +232,7 @@ class TestRAGErrorHandling:
                 retriever = Retriever(index_dir=str(temp_rag_workspace["index_dir"]))
                 results = retriever.query("", top_k=5)
 
-                assert results == []
+                assert results == [], "Result must not be empty"
 
     def test_retriever_no_index(self, temp_rag_workspace):
         """Test retriever when index doesn't exist."""
@@ -246,7 +246,7 @@ class TestRAGErrorHandling:
 
                 # Should not crash
                 results = retriever.query("test", top_k=5)
-                assert results == []
+                assert results == [], "Result must not be empty"
 
 
 class TestRAGMultiTenancy:
@@ -282,9 +282,9 @@ class TestRAGMultiTenancy:
             )
 
             # Verify they're in different directories
-            assert "tenant1" in str(path1)
-            assert "tenant2" in str(path2)
-            assert path1 != path2
+            assert "tenant1" in str(path1), "Condition must be true"
+            assert "tenant2" in str(path2), "Condition must be true"
+            assert path1 != path2, "path1 is not valid"
 
 
 class TestRAGPerformance:
@@ -297,7 +297,7 @@ class TestRAGPerformance:
 
         chunks = chunk_text(large_text, chunk_size=1000, overlap=100)
 
-        assert len(chunks) > 0
+        assert len(chunks) > 0, "Chunks must not be empty"
         # Should complete reasonably quickly
 
     def test_batch_embedding_efficiency(self):
@@ -314,7 +314,7 @@ class TestRAGPerformance:
             embed_chunks(chunks)
 
             # Should call encode once with batch
-            assert mock_model.encode.call_count == 1
+            assert mock_model.encode.call_count == 1, "Count must be greater than zero"
 
     def test_retrieval_top_k_limits(self, temp_rag_workspace):
         """Test that retrieval respects top-k limit."""
@@ -338,7 +338,7 @@ class TestRAGPerformance:
                 results = retriever.query("test", top_k=10)
 
                 # Should return at most 10
-                assert len(results) <= 10
+                assert len(results) <= 10, "Results must not be empty"
 
 
 class TestRAGDataConsistency:
@@ -351,7 +351,7 @@ class TestRAGDataConsistency:
 
         for start, end, chunk_content in chunks:
             # Verify chunk matches original text
-            assert text[start:end].strip() == chunk_content
+            assert text[start:end].strip() == chunk_content, "Content must not be empty"
 
     def test_embedding_dimension_consistency(self):
         """Test embedding dimensions are consistent."""
@@ -397,6 +397,6 @@ class TestRAGDataConsistency:
             with open(metadata_file) as f:
                 saved_metadata = json.load(f)
 
-            assert saved_metadata["source_file"] == "test.py"
-            assert saved_metadata["created_by"] == "test_user"
-            assert saved_metadata["num_vectors"] == 1
+            assert saved_metadata["source_file"] == "test.py", "Data must not be empty"
+            assert saved_metadata["created_by"] == "test_user", "Data must not be empty"
+            assert saved_metadata["num_vectors"] == 1, "Data must not be empty"

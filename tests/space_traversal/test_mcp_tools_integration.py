@@ -27,12 +27,12 @@ def test_mcp_tools_integration_detector_basic():
 
     result = detect(file_index)
 
-    assert result["id"] == "mcp-tools-integration"
-    assert "mcp/server.py" in result["evidence_files"]
-    assert "tools/cli.py" in result["evidence_files"]
-    assert "src/utils.py" not in result["evidence_files"]
+    assert result["id"] == "mcp-tools-integration", "Result must not be empty"
+    assert "mcp/server.py" in result["evidence_files"], "Result must not be empty"
+    assert "tools/cli.py" in result["evidence_files"], "Result must not be empty"
+    assert "src/utils.py" not in result["evidence_files"], "Result must not be empty"
     assert result["required_patterns"] == ["mcp", "tool"]
-    assert result["meta"]["layer"] == "integration"
+    assert result["meta"]["layer"] == "integration", "Result must not be empty"
 
 
 def test_mcp_tools_integration_detector_patterns():
@@ -48,9 +48,9 @@ def test_mcp_tools_integration_detector_patterns():
 
     result = detect(file_index)
 
-    assert "mcp" in result["found_patterns"]
-    assert "tool" in result["found_patterns"]
-    assert len(result["evidence_files"]) == 2
+    assert "mcp" in result["found_patterns"], "Result must not be empty"
+    assert "tool" in result["found_patterns"], "Result must not be empty"
+    assert len(result["evidence_files"]) == 2, "Collection must not be empty"
 
 
 def test_mcp_tools_integration_detector_no_evidence():
@@ -66,9 +66,9 @@ def test_mcp_tools_integration_detector_no_evidence():
 
     result = detect(file_index)
 
-    assert result["id"] == "mcp-tools-integration"
-    assert len(result["evidence_files"]) == 0
-    assert len(result["found_patterns"]) == 0
+    assert result["id"] == "mcp-tools-integration", "Result must not be empty"
+    assert len(result["evidence_files"]) == 0, "Collection must not be empty"
+    assert len(result["found_patterns"]) == 0, "Collection must not be empty"
 
 
 def test_mcp_tools_integration_detector_sorted():
@@ -85,8 +85,8 @@ def test_mcp_tools_integration_detector_sorted():
 
     result = detect(file_index)
 
-    assert result["evidence_files"] == sorted(result["evidence_files"])
-    assert result["found_patterns"] == sorted(result["found_patterns"])
+    assert result["evidence_files"] == sorted(result["evidence_files"]), "Result must not be empty"
+    assert result["found_patterns"] == sorted(result["found_patterns"]), "Result must not be empty"
 
 
 def test_mcp_tools_integration_in_s3_output(tmp_path):
@@ -127,19 +127,19 @@ def test_mcp_tools_integration_in_s3_output(tmp_path):
     result = detect(file_index)
 
     # Verify structure matches what S3 expects
-    assert "id" in result
-    assert "evidence_files" in result
-    assert "found_patterns" in result
-    assert "required_patterns" in result
-    assert "meta" in result
+    assert "id" in result, "Result must not be empty"
+    assert "evidence_files" in result, "Result must not be empty"
+    assert "found_patterns" in result, "Result must not be empty"
+    assert "required_patterns" in result, "Result must not be empty"
+    assert "meta" in result, "Result must not be empty"
 
     # Verify the ID is correct
-    assert result["id"] == "mcp-tools-integration"
+    assert result["id"] == "mcp-tools-integration", "Result must not be empty"
 
     # Verify evidence was found
-    assert len(result["evidence_files"]) >= 2
-    assert "mcp/core.py" in result["evidence_files"]
-    assert "tools/wrapper.py" in result["evidence_files"]
+    assert len(result["evidence_files"]) >= 2, "Collection must not be empty"
+    assert "mcp/core.py" in result["evidence_files"], "Result must not be empty"
+    assert "tools/wrapper.py" in result["evidence_files"], "Result must not be empty"
 
 
 def test_mcp_tools_integration_case_insensitive():
@@ -156,7 +156,7 @@ def test_mcp_tools_integration_case_insensitive():
     result = detect(file_index)
 
     # Should find files even with mixed case
-    assert len(result["evidence_files"]) == 2
+    assert len(result["evidence_files"]) == 2, "Collection must not be empty"
     # Patterns should be found
-    assert "mcp" in result["found_patterns"]
-    assert "tool" in result["found_patterns"]
+    assert "mcp" in result["found_patterns"], "Result must not be empty"
+    assert "tool" in result["found_patterns"], "Result must not be empty"

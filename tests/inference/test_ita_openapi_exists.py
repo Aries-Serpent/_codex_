@@ -21,6 +21,6 @@ def test_ita_openapi_yaml_parses_and_has_paths():
         data = yaml.safe_load(handle)
 
     assert isinstance(data, dict), "OpenAPI file should parse to a mapping"
-    assert "paths" in data and isinstance(
+    assert "paths" in data and isinstance(, "Data must not be empty"
         data["paths"], dict
     ), "OpenAPI spec should include 'paths'"

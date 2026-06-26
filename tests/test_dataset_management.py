@@ -68,20 +68,20 @@ More text.
 
 def test_file_processor_categorize():
     """Test file categorization."""
-    assert FileProcessor.categorize_file(Path("test.py")) == "source_code"
-    assert FileProcessor.categorize_file(Path("README.md")) == "documentation"
-    assert FileProcessor.categorize_file(Path("config.yaml")) == "config"
-    assert FileProcessor.categorize_file(Path("test.ipynb")) == "notebook"
-    assert FileProcessor.categorize_file(Path("data.sql")) == "database"
-    assert FileProcessor.categorize_file(Path("unknown.xyz")) is None
+    assert FileProcessor.categorize_file(Path("test.py")) == "source_code", "FileProcess is not valid"
+    assert FileProcessor.categorize_file(Path("README.md")) == "documentation", "FileProcess is not valid"
+    assert FileProcessor.categorize_file(Path("config.yaml")) == "config", "FileProcess is not valid"
+    assert FileProcessor.categorize_file(Path("test.ipynb")) == "notebook", "FileProcess is not valid"
+    assert FileProcessor.categorize_file(Path("data.sql")) == "database", "Data must not be empty"
+    assert FileProcessor.categorize_file(Path("unknown.xyz")) is None, "FileProcess is not valid"
 
 
 def test_file_processor_should_skip():
     """Test skip logic."""
-    assert FileProcessor.should_skip(Path(".git/config"))
-    assert FileProcessor.should_skip(Path("__pycache__/module.pyc"))
-    assert FileProcessor.should_skip(Path("node_modules/package/index.js"))
-    assert not FileProcessor.should_skip(Path("src/module.py"))
+    assert FileProcessor.should_skip(Path(".git/config")), "FileProcess is not valid"
+    assert FileProcessor.should_skip(Path("__pycache__/module.pyc")), "FileProcess is not valid"
+    assert FileProcessor.should_skip(Path("node_modules/package/index.js")), "FileProcess is not valid"
+    assert not FileProcessor.should_skip(Path("src/module.py")), "Condition must be true"
 
 
 def test_file_processor_checksum(temp_dataset):
@@ -89,12 +89,12 @@ def test_file_processor_checksum(temp_dataset):
     test_file = temp_dataset / "src" / "module.py"
     checksum = FileProcessor.calculate_checksum(test_file)
 
-    assert checksum
-    assert len(checksum) == 64  # SHA256 hex length
+    assert checksum, "checksum is not valid"
+    assert len(checksum) == 64, "Checksum must not be empty"
 
     # Verify same content produces same checksum
     checksum2 = FileProcessor.calculate_checksum(test_file)
-    assert checksum == checksum2
+    assert checksum == checksum2, "checksum is not valid"
 
 
 def test_file_processor_process_documentation(temp_dataset):
@@ -102,13 +102,13 @@ def test_file_processor_process_documentation(temp_dataset):
     doc_file = temp_dataset / "docs" / "README.md"
     content, quality = FileProcessor.process_documentation(doc_file)
 
-    assert content is not None
-    assert 0.0 <= quality <= 1.0
+    assert content is not None, "content must be initialized"
+    assert 0.0 <= quality <= 1.0, "0 is not valid"
 
     metadata = json.loads(content)
-    assert "headers_count" in metadata
-    assert metadata["headers_count"] > 0
-    assert "code_blocks_count" in metadata
+    assert "headers_count" in metadata, "Data must not be empty"
+    assert metadata["headers_count"] > 0, "Value must be greater than zero"
+    assert "code_blocks_count" in metadata, "Data must not be empty"
 
 
 def test_file_processor_process_source_code(temp_dataset):
@@ -116,14 +116,14 @@ def test_file_processor_process_source_code(temp_dataset):
     py_file = temp_dataset / "src" / "module.py"
     content, quality = FileProcessor.process_source_code(py_file)
 
-    assert content is not None
-    assert 0.0 <= quality <= 1.0
+    assert content is not None, "content must be initialized"
+    assert 0.0 <= quality <= 1.0, "0 is not valid"
 
     metadata = json.loads(content)
-    assert "classes" in metadata
-    assert metadata["classes"] >= 1
-    assert "functions" in metadata
-    assert metadata["functions"] >= 1
+    assert "classes" in metadata, "Data must not be empty"
+    assert metadata["classes"] >= 1, "Value must be greater than zero"
+    assert "functions" in metadata, "Data must not be empty"
+    assert metadata["functions"] >= 1, "Value must be greater than zero"
 
 
 def test_file_processor_process_config(temp_dataset):
@@ -131,12 +131,12 @@ def test_file_processor_process_config(temp_dataset):
     config_file = temp_dataset / "config.json"
     content, quality = FileProcessor.process_config(config_file)
 
-    assert content is not None
-    assert 0.0 <= quality <= 1.0
+    assert content is not None, "content must be initialized"
+    assert 0.0 <= quality <= 1.0, "0 is not valid"
 
     metadata = json.loads(content)
-    assert "is_valid" in metadata
-    assert metadata["is_valid"] is True
+    assert "is_valid" in metadata, "Data must not be empty"
+    assert metadata["is_valid"] is True, "Data must not be empty"
 
 
 def test_file_processor_process_file(temp_dataset):
@@ -144,23 +144,23 @@ def test_file_processor_process_file(temp_dataset):
     py_file = temp_dataset / "src" / "module.py"
     processed = FileProcessor.process_file(py_file, temp_dataset)
 
-    assert processed is not None
-    assert processed.category == "source_code"
-    assert processed.checksum
-    assert processed.size_original > 0
-    assert processed.size_compressed > 0
-    assert processed.size_compressed < processed.size_original
-    assert 0.0 <= processed.quality_score <= 1.0
-    assert 0.0 < processed.compression_ratio < 1.0
+    assert processed is not None, "processed must be initialized"
+    assert processed.category == "source_code", "category is not valid"
+    assert processed.checksum, "Condition must be true"
+    assert processed.size_original > 0, "size_original must be greater than zero"
+    assert processed.size_compressed > 0, "size_compressed must be greater than zero"
+    assert processed.size_compressed < processed.size_original, "size_compressed is not valid"
+    assert 0.0 <= processed.quality_score <= 1.0, "0 is not valid"
+    assert 0.0 < processed.compression_ratio < 1.0, "0 is not valid"
 
 
 def test_dataset_manager_init(temp_dataset):
     """Test DatasetManager initialization."""
     manager = DatasetManager(temp_dataset)
 
-    assert manager.repo_path == temp_dataset
-    assert manager.output_dir.exists()
-    assert len(manager.processed_files) == 0
+    assert manager.repo_path == temp_dataset, "Data must not be empty"
+    assert manager.output_dir.exists(), "Condition must be true"
+    assert len(manager.processed_files) == 0, "Collection must not be empty"
 
 
 def test_dataset_manager_scan(temp_dataset):
@@ -168,14 +168,14 @@ def test_dataset_manager_scan(temp_dataset):
     manager = DatasetManager(temp_dataset)
     count = manager.scan_repository()
 
-    assert count > 0
-    assert len(manager.processed_files) == count
+    assert count > 0, "count must be positive"
+    assert len(manager.processed_files) == count, "Collection must not be empty"
 
     # Check categories
     categories = {pf.category for pf in manager.processed_files}
-    assert "source_code" in categories
-    assert "documentation" in categories
-    assert "config" in categories
+    assert "source_code" in categories, "Condition must be true"
+    assert "documentation" in categories, "Condition must be true"
+    assert "config" in categories, "Condition must be true"
 
 
 def test_dataset_manager_deduplication(temp_dataset):
@@ -186,7 +186,7 @@ def test_dataset_manager_deduplication(temp_dataset):
     # We created two identical Python files
     # Check that only unique files are kept
     checksums = [pf.checksum for pf in manager.processed_files]
-    assert len(checksums) == len(set(checksums))  # All unique
+    assert len(checksums) == len(set(checksums)), "Checksums must not be empty"
 
 
 def test_dataset_manager_generate_manifest(temp_dataset):
@@ -196,13 +196,13 @@ def test_dataset_manager_generate_manifest(temp_dataset):
 
     manifest = manager.generate_manifest("test_v1.0")
 
-    assert manifest.version == "test_v1.0"
-    assert manifest.total_files > 0
-    assert manifest.total_size_original > 0
-    assert manifest.total_size_compressed > 0
-    assert manifest.compression_ratio < 1.0
-    assert len(manifest.file_categories) > 0
-    assert "average_quality_score" in manifest.quality_metrics
+    assert manifest.version == "test_v1.0", "version is not valid"
+    assert manifest.total_files > 0, "total_files must be greater than zero"
+    assert manifest.total_size_original > 0, "total_size_original must be greater than zero"
+    assert manifest.total_size_compressed > 0, "total_size_compressed must be greater than zero"
+    assert manifest.compression_ratio < 1.0, "compression_ratio is not valid"
+    assert len(manifest.file_categories) > 0, "Collection must not be empty"
+    assert "average_quality_score" in manifest.quality_metrics, "Condition must be true"
 
 
 def test_dataset_manager_save_manifest(temp_dataset):
@@ -213,14 +213,14 @@ def test_dataset_manager_save_manifest(temp_dataset):
     manifest = manager.generate_manifest("test_v1.0")
     manifest_path = manager.save_manifest(manifest, "test_v1.0")
 
-    assert manifest_path.exists()
+    assert manifest_path.exists(), "Condition must be true"
 
     # Verify JSON is valid
     with open(manifest_path) as f:
         loaded = json.load(f)
 
-    assert loaded["version"] == "test_v1.0"
-    assert loaded["total_files"] > 0
+    assert loaded["version"] == "test_v1.0", "Condition must be true"
+    assert loaded["total_files"] > 0, "Value must be greater than zero"
 
 
 def test_dataset_manager_create_archive(temp_dataset):
@@ -230,17 +230,17 @@ def test_dataset_manager_create_archive(temp_dataset):
 
     archive_path = manager.create_compressed_archive("test_v1.0", "tar.gz")
 
-    assert archive_path.exists()
-    assert archive_path.suffix == ".gz"
-    assert archive_path.stat().st_size > 0
+    assert archive_path.exists(), "Condition must be true"
+    assert archive_path.suffix == ".gz", "suffix is not valid"
+    assert archive_path.stat().st_size > 0, "st_size must be greater than zero"
 
 
 def test_content_deduplicator_init(temp_dataset):
     """Test ContentDeduplicator initialization."""
     dedup = ContentDeduplicator(temp_dataset)
 
-    assert dedup.root_path == temp_dataset
-    assert len(dedup.file_checksums) == 0
+    assert dedup.root_path == temp_dataset, "Data must not be empty"
+    assert len(dedup.file_checksums) == 0, "Collection must not be empty"
 
 
 def test_content_deduplicator_scan(temp_dataset):
@@ -248,8 +248,8 @@ def test_content_deduplicator_scan(temp_dataset):
     dedup = ContentDeduplicator(temp_dataset)
     count = dedup.scan_directory()
 
-    assert count > 0
-    assert len(dedup.file_checksums) == count
+    assert count > 0, "count must be positive"
+    assert len(dedup.file_checksums) == count, "Collection must not be empty"
 
 
 def test_content_deduplicator_find_duplicates(temp_dataset):
@@ -259,13 +259,13 @@ def test_content_deduplicator_find_duplicates(temp_dataset):
 
     report = dedup.analyze_duplicates()
 
-    assert report.total_files > 0
-    assert report.unique_files > 0
+    assert report.total_files > 0, "total_files must be greater than zero"
+    assert report.unique_files > 0, "unique_files must be greater than zero"
 
     # We have duplicate Python files
-    assert report.duplicate_files > 0
-    assert report.duplicate_groups > 0
-    assert report.space_wasted > 0
+    assert report.duplicate_files > 0, "duplicate_files must be greater than zero"
+    assert report.duplicate_groups > 0, "duplicate_groups must be greater than zero"
+    assert report.space_wasted > 0, "space_wasted must be greater than zero"
 
 
 def test_content_deduplicator_create_strategy(temp_dataset):
@@ -277,11 +277,11 @@ def test_content_deduplicator_create_strategy(temp_dataset):
     strategy = dedup.create_dedup_strategy(report)
 
     # Should have mappings for duplicates
-    assert len(strategy) > 0
+    assert len(strategy) > 0, "Strategy must not be empty"
 
     # All values should be paths to keep
     for source, target in strategy.items():
-        assert source != target
+        assert source != target, "source is not valid"
 
 
 def test_content_deduplicator_save_report(temp_dataset):
@@ -293,14 +293,14 @@ def test_content_deduplicator_save_report(temp_dataset):
     output_path = temp_dataset / "dedup_report.json"
     dedup.save_report(report, output_path)
 
-    assert output_path.exists()
+    assert output_path.exists(), "Condition must be true"
 
     # Verify JSON is valid
     with open(output_path) as f:
         loaded = json.load(f)
 
-    assert "total_files" in loaded
-    assert "duplicate_files" in loaded
+    assert "total_files" in loaded, "Condition must be true"
+    assert "duplicate_files" in loaded, "Condition must be true"
 
 
 def test_compression_effectiveness(temp_dataset):
@@ -311,7 +311,7 @@ def test_compression_effectiveness(temp_dataset):
     for pf in manager.processed_files:
         # Text files should compress well, but only if large enough to overcome gzip header overhead
         if pf.category in ("source_code", "documentation", "config") and pf.size_original >= 1024:
-            assert pf.compression_ratio < 0.8  # At least 20% compression
+            assert pf.compression_ratio < 0.8, "compression_ratio is not valid"
 
 
 def test_quality_scoring(temp_dataset):
@@ -321,11 +321,11 @@ def test_quality_scoring(temp_dataset):
 
     # All files should have valid quality scores
     for pf in manager.processed_files:
-        assert 0.0 <= pf.quality_score <= 1.0
+        assert 0.0 <= pf.quality_score <= 1.0, "0 is not valid"
 
     # Source code should have reasonable quality
     code_files = [pf for pf in manager.processed_files if pf.category == "source_code"]
-    assert any(pf.quality_score > 0.5 for pf in code_files)
+    assert any(pf.quality_score > 0.5 for pf in code_files), "quality_score must be greater than zero"
 
 
 def test_skip_patterns_respected(temp_dataset):
@@ -342,5 +342,5 @@ def test_skip_patterns_respected(temp_dataset):
 
     # Check that skipped files are not in results
     paths = [pf.relative_path for pf in manager.processed_files]
-    assert not any(".git" in path for path in paths)
-    assert not any("__pycache__" in path for path in paths)
+    assert not any(".git" in path for path in paths), "Condition must be true"
+    assert not any("__pycache__" in path for path in paths), "Condition must be true"

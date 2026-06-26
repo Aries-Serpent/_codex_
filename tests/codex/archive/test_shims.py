@@ -16,7 +16,7 @@ class TestWritePythonShim:
 
         write_python_shim(shim_path, "canonical.module")
 
-        assert shim_path.exists()
+        assert shim_path.exists(), "Condition must be true"
 
     def test_file_content(self, tmp_path):
         """Test write_python_shim file content."""
@@ -28,9 +28,9 @@ class TestWritePythonShim:
 
         content = shim_path.read_text()
 
-        assert "AUTO-GENERATED SHIM" in content
-        assert "from canonical.module import *" in content
-        assert "DeprecationWarning" in content
+        assert "AUTO-GENERATED SHIM" in content, "Content must not be empty"
+        assert "from canonical.module import *" in content, "Content must not be empty"
+        assert "DeprecationWarning" in content, "Content must not be empty"
 
     def test_creates_parent_dirs(self, tmp_path):
         """Test write_python_shim creates parent directories."""
@@ -40,8 +40,8 @@ class TestWritePythonShim:
 
         write_python_shim(shim_path, "canonical.module")
 
-        assert shim_path.exists()
-        assert shim_path.parent.exists()
+        assert shim_path.exists(), "Condition must be true"
+        assert shim_path.parent.exists(), "Condition must be true"
 
 
 class TestWriteMarkdownPointer:
@@ -55,7 +55,7 @@ class TestWriteMarkdownPointer:
 
         write_markdown_pointer(pointer_path, "docs/canonical/README.md")
 
-        assert pointer_path.exists()
+        assert pointer_path.exists(), "Condition must be true"
 
     def test_file_content(self, tmp_path):
         """Test write_markdown_pointer file content."""
@@ -67,8 +67,8 @@ class TestWriteMarkdownPointer:
 
         content = pointer_path.read_text()
 
-        assert "consolidated" in content.lower()
-        assert "canonical/doc.md" in content
+        assert "consolidated" in content.lower(), "Content must not be empty"
+        assert "canonical/doc.md" in content, "Content must not be empty"
 
 
 class TestWriteJsonPointer:
@@ -82,7 +82,7 @@ class TestWriteJsonPointer:
 
         write_json_pointer(pointer_path, "canonical/config.json")
 
-        assert pointer_path.exists()
+        assert pointer_path.exists(), "Condition must be true"
 
     def test_file_content(self, tmp_path):
         """Test write_json_pointer file content."""
@@ -94,8 +94,8 @@ class TestWriteJsonPointer:
 
         content = pointer_path.read_text()
 
-        assert "$ref" in content
-        assert "canonical/data.json" in content
+        assert "$ref" in content, "Content must not be empty"
+        assert "canonical/data.json" in content, "Data must not be empty"
 
 
 class TestWriteCsvPointer:
@@ -109,7 +109,7 @@ class TestWriteCsvPointer:
 
         write_csv_pointer(pointer_path, "canonical/data.csv")
 
-        assert pointer_path.exists()
+        assert pointer_path.exists(), "Condition must be true"
 
     def test_file_content(self, tmp_path):
         """Test write_csv_pointer file content."""
@@ -121,8 +121,8 @@ class TestWriteCsvPointer:
 
         content = pointer_path.read_text()
 
-        assert "Consolidated" in content
-        assert "canonical/table.csv" in content
+        assert "Consolidated" in content, "Content must not be empty"
+        assert "canonical/table.csv" in content, "Content must not be empty"
 
 
 class TestModuleConstants:
@@ -132,5 +132,5 @@ class TestModuleConstants:
         """Test _PY_WARN constant."""
         from codex.archive.shims import _PY_WARN
 
-        assert "DeprecationWarning" in _PY_WARN
-        assert "warnings" in _PY_WARN
+        assert "DeprecationWarning" in _PY_WARN, "Condition must be true"
+        assert "warnings" in _PY_WARN, "Condition must be true"

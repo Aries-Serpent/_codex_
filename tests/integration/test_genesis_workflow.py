@@ -54,11 +54,11 @@ class TestGenesisWorkflowIntegration:
 
     def test_genesis_config_loads(self, genesis_config):
         """Test that Genesis configuration loads correctly"""
-        assert genesis_config is not None
-        assert "agent" in genesis_config
-        assert "autonomous_actions_enabled" in genesis_config["agent"]
+        assert genesis_config is not None, "genesis_config must be initialized"
+        assert "agent" in genesis_config, "Condition must be true"
+        assert "autonomous_actions_enabled" in genesis_config["agent"], "Condition must be true"
         # False pre-genesis (safe default), True post-genesis Phase 2 (maintainer-approved)
-        assert isinstance(
+        assert isinstance(, "Condition must be true"
             genesis_config["agent"]["autonomous_actions_enabled"], bool
         ), "autonomous_actions_enabled must be a boolean value"
 
@@ -84,9 +84,9 @@ class TestGenesisWorkflowIntegration:
         assert isinstance(genesis_config["agent"]["autonomous_actions_enabled"], bool)
 
         # Check for escalation configuration
-        assert "escalation_policy" in genesis_config["agent"]
+        assert "escalation_policy" in genesis_config["agent"], "Condition must be true"
         escalation = genesis_config["agent"]["escalation_policy"]
-        assert "escalate" in str(escalation).lower() or "approval" in str(escalation).lower()
+        assert "escalate" in str(escalation).lower() or "approval" in str(escalation).lower(), "Condition must be true"
 
     def test_guardrails_file_exists(self, repo_root):
         """Test that guardrails documentation exists"""
@@ -97,7 +97,7 @@ class TestGenesisWorkflowIntegration:
         assert len(content) > 100, "Guardrails documentation seems empty"
         # Check for prohibition/restriction language
         content_upper = content.upper()
-        assert any(
+        assert any(, "Condition must be true"
             word in content_upper for word in ["PROHIBITED", "FORBIDDEN", "NOT ALLOWED", "MUST NOT"]
         ), "Expected prohibition language in guardrails"
 
@@ -109,10 +109,10 @@ class TestGenesisWorkflowIntegration:
         with open(workflow_path) as f:
             workflow = yaml.safe_load(f)
 
-        assert "jobs" in workflow
+        assert "jobs" in workflow, "Condition must be true"
         # Check for any genesis-related job (name may vary)
         job_names = list(workflow["jobs"].keys())
-        assert any(
+        assert any(, "Condition must be true"
             "genesis" in job.lower() or "validate" in job.lower() for job in job_names
         ), f"No Genesis/validation job found in workflow. Jobs: {job_names}"
 
@@ -130,12 +130,12 @@ class TestGenesisWorkflowIntegration:
     def test_genesis_workflow_dry_run(self, repo_root, genesis_config):
         """Test Genesis workflow configuration is valid"""
         # autonomous_actions_enabled is False pre-genesis, True post-genesis Phase 2
-        assert isinstance(
+        assert isinstance(, "Condition must be true"
             genesis_config["agent"]["autonomous_actions_enabled"], bool
         ), "autonomous_actions_enabled must be a boolean"
 
         # Verify escalation policy is configured
-        assert "escalation_policy" in genesis_config["agent"]
+        assert "escalation_policy" in genesis_config["agent"], "Condition must be true"
         policy = genesis_config["agent"]["escalation_policy"]
         assert len(policy) > 0, "Escalation policy should have entries"
 
@@ -221,8 +221,8 @@ class TestGenesisWorkflowIntegration:
         assert dependency_status_path.exists(), "Phase 2 dependency status not documented"
 
         content = dependency_status_path.read_text()
-        assert "Task 1.1" in content or "dependency" in content.lower()
-        assert "Blocker" in content or "Issue" in content
+        assert "Task 1.1" in content or "dependency" in content.lower(), "Content must not be empty"
+        assert "Blocker" in content or "Issue" in content, "Content must not be empty"
 
 
 class TestGenesisWorkflowArtifacts:
@@ -272,7 +272,7 @@ class TestGenesisWorkflowArtifacts:
         from packaging import version as pkg_version
 
         pyproject_path = repo_root / "pyproject.toml"
-        assert pyproject_path.exists()
+        assert pyproject_path.exists(), "Condition must be true"
 
         # Helper function to check package version
         def check_package_version(dependencies, package_name, min_version):
@@ -282,7 +282,7 @@ class TestGenesisWorkflowArtifacts:
                     version_match = re.search(r">=([0-9.]+)", dep)
                     if version_match:
                         pkg_ver = version_match.group(1)
-                        assert pkg_version.parse(pkg_ver) >= pkg_version.parse(
+                        assert pkg_version.parse(pkg_ver) >= pkg_version.parse(, "Value must be greater than zero"
                             min_version
                         ), f"{package_name} version {pkg_ver} is below minimum {min_version}"
                         return True
@@ -311,7 +311,7 @@ class TestGenesisWorkflowArtifacts:
                 match = re.search(pattern, content, re.MULTILINE)
                 if match:
                     pkg_ver = match.group(1)
-                    assert pkg_version.parse(pkg_ver) >= pkg_version.parse(
+                    assert pkg_version.parse(pkg_ver) >= pkg_version.parse(, "Value must be greater than zero"
                         min_version
                     ), f"{package_name} version {pkg_ver} is below minimum {min_version}"
 
@@ -347,7 +347,7 @@ class TestGenesisWorkflowSafety:
 
         # autonomous_actions_enabled is False pre-genesis (safe default),
         # True post-genesis Phase 2 activation (intentional, approved by maintainer)
-        assert isinstance(
+        assert isinstance(, "Condition must be true"
             config["agent"]["autonomous_actions_enabled"], bool
         ), "autonomous_actions_enabled must be a boolean value"
 

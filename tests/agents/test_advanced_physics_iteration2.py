@@ -26,7 +26,7 @@ class TestChaoticAttractor:
 
         attractor = ChaoticAttractor(initial_state=(1.0, 1.0, 1.0))
 
-        assert attractor is not None
+        assert attractor is not None, "attractor must be initialized"
         assert hasattr(attractor, "state")
 
     def test_lorenz_attractor(self):
@@ -39,8 +39,8 @@ class TestChaoticAttractor:
 
         new_state = attractor.evolve(dt=0.01, steps=10)
 
-        assert new_state is not None
-        assert len(new_state) == 3
+        assert new_state is not None, "new_state must be initialized"
+        assert len(new_state) == 3, "New_state must not be empty"
 
     def test_attractor_trajectory(self):
         """Test generating attractor trajectory."""
@@ -50,8 +50,8 @@ class TestChaoticAttractor:
 
         trajectory = attractor.get_trajectory(steps=50, dt=0.01)
 
-        assert len(trajectory) > 0
-        assert all(len(point) == 3 for point in trajectory)
+        assert len(trajectory) > 0, "Trajectory must not be empty"
+        assert all(len(point) == 3 for point in trajectory), "Point must not be empty"
 
     def test_lyapunov_exponent(self):
         """Test computing Lyapunov exponent."""
@@ -80,9 +80,9 @@ class TestChaoticNeuralNetwork:
 
         nn = ChaoticNeuralNetwork(input_size=3, hidden_size=5, output_size=2)
 
-        assert nn is not None
+        assert nn is not None, "nn must be initialized"
         assert hasattr(nn, "input_size")
-        assert nn.input_size == 3
+        assert nn.input_size == 3, "input_size is not valid"
 
     def test_forward_pass(self):
         """Test forward pass through chaotic network."""
@@ -93,8 +93,8 @@ class TestChaoticNeuralNetwork:
         input_data = [1.0, 2.0]
         output = nn.forward(input_data)
 
-        assert output is not None
-        assert len(output) == 1
+        assert output is not None, "output must be initialized"
+        assert len(output) == 1, "Output must not be empty"
 
     def test_activation_function(self):
         """Test chaotic activation function."""
@@ -121,7 +121,7 @@ class TestFractalAnalyzer:
 
         analyzer = FractalAnalyzer()
 
-        assert analyzer is not None
+        assert analyzer is not None, "analyzer must be initialized"
 
     def test_compute_fractal_dimension(self):
         """Test computing fractal dimension."""
@@ -135,7 +135,7 @@ class TestFractalAnalyzer:
         try:
             dimension = analyzer.compute_dimension(data)
             assert isinstance(dimension, (int, float))
-            assert dimension >= 0
+            assert dimension >= 0, "dimension must be greater than zero"
         except (AttributeError, NotImplementedError, ValueError):
             pytest.skip("compute_dimension not fully implemented")
 
@@ -148,7 +148,7 @@ class TestFractalAnalyzer:
         try:
             result = analyzer.mandelbrot(0.0, 0.0, max_iter=50)
             assert isinstance(result, int)
-            assert result >= 0
+            assert result >= 0, "result must be greater than zero"
         except (AttributeError, NotImplementedError):
             pytest.skip("mandelbrot not implemented")
 
@@ -179,9 +179,9 @@ class TestFluidChannel:
 
         channel = FluidChannel(length=10.0, width=2.0, height=1.0)
 
-        assert channel is not None
-        assert channel.length == 10.0
-        assert channel.width == 2.0
+        assert channel is not None, "channel must be initialized"
+        assert channel.length == 10.0, "Length must be greater than zero"
+        assert channel.width == 2.0, "width is not valid"
 
     def test_reynolds_number(self):
         """Test Reynolds number calculation."""
@@ -192,7 +192,7 @@ class TestFluidChannel:
         re = channel.reynolds_number(velocity=1.0, viscosity=0.001)
 
         assert isinstance(re, (int, float))
-        assert re > 0
+        assert re > 0, "re must be greater than zero"
 
     def test_pressure_drop(self):
         """Test pressure drop calculation."""
@@ -233,8 +233,8 @@ class TestFluidFlowScheduler:
 
         scheduler = FluidFlowScheduler(num_channels=3)
 
-        assert scheduler is not None
-        assert len(scheduler.channels) == 3
+        assert scheduler is not None, "scheduler must be initialized"
+        assert len(scheduler.channels) == 3, "Collection must not be empty"
 
     def test_schedule_flow(self):
         """Test scheduling flow across channels."""
@@ -245,7 +245,7 @@ class TestFluidFlowScheduler:
         # Test inject_flow instead of schedule
         channel_id = list(scheduler.channels.keys())[0]
         success = scheduler.inject_flow(channel_id, 10.0)
-        assert success
+        assert success, "success is not valid"
 
     def test_optimize_distribution(self):
         """Test optimizing flow distribution."""
@@ -255,9 +255,9 @@ class TestFluidFlowScheduler:
 
         # Test optimize_flow instead of optimize_distribution
         result = scheduler.optimize_flow(iterations=5)
-        assert result is not None
-        assert "initial" in result
-        assert "final" in result
+        assert result is not None, "result must be initialized"
+        assert "initial" in result, "Result must not be empty"
+        assert "final" in result, "Result must not be empty"
 
 
 # ============================================================================
@@ -274,7 +274,7 @@ class TestEMFieldRouter:
 
         router = EMFieldRouter(grid_size=10)
 
-        assert router is not None
+        assert router is not None, "router must be initialized"
         assert hasattr(router, "grid_size")
 
     def test_calculate_field_strength(self):
@@ -297,7 +297,7 @@ class TestEMFieldRouter:
 
         try:
             path = router.route_signal(start=(0, 0), end=(5, 5))
-            assert path is not None
+            assert path is not None, "path must be initialized"
         except (AttributeError, NotImplementedError):
             pytest.skip("route_signal not implemented")
 
@@ -317,8 +317,8 @@ class TestWavePropagator:
         # Use actual constructor parameters
         propagator = WavePropagator(grid_size=30, wave_speed=1.0)
 
-        assert propagator is not None
-        assert propagator.grid_size == 30
+        assert propagator is not None, "propagator must be initialized"
+        assert propagator.grid_size == 30, "grid_size is not valid"
 
     def test_add_source(self):
         """Test adding wave sources."""
@@ -328,7 +328,7 @@ class TestWavePropagator:
 
         propagator.add_source(position=(15, 15), amplitude=1.0, frequency=1.0)
 
-        assert len(propagator.sources) == 1
+        assert len(propagator.sources) == 1, "Collection must not be empty"
 
     def test_propagate_wave(self):
         """Test wave propagation."""
@@ -339,7 +339,7 @@ class TestWavePropagator:
 
         history = propagator.propagate(dt=0.1, steps=10)
 
-        assert len(history) == 10
+        assert len(history) == 10, "History must not be empty"
 
     def test_interference_pattern(self):
         """Test wave interference calculation."""
@@ -352,8 +352,8 @@ class TestWavePropagator:
         propagator.propagate(steps=50)
 
         result = propagator.measure_interference(position=(15, 15))
-        assert "constructive" in result
-        assert "destructive" in result
+        assert "constructive" in result, "Result must not be empty"
+        assert "destructive" in result, "Result must not be empty"
 
 
 # ============================================================================
@@ -370,7 +370,7 @@ class TestRelativityScheduler:
 
         scheduler = RelativityScheduler()
 
-        assert scheduler is not None
+        assert scheduler is not None, "scheduler must be initialized"
         assert hasattr(scheduler, "c")
 
     def test_add_agent(self):
@@ -387,7 +387,7 @@ class TestRelativityScheduler:
             velocity=np.array([10.0, 0.0]),
         )
 
-        assert "agent1" in scheduler.agents
+        assert "agent1" in scheduler.agents, "Condition must be true"
 
     def test_time_dilation(self):
         """Test time dilation calculation."""
@@ -420,7 +420,7 @@ class TestRelativityScheduler:
         gamma = scheduler.lorentz_factor(velocity=np.array([80.0, 0.0]))
 
         assert isinstance(gamma, (int, float))
-        assert gamma >= 1.0
+        assert gamma >= 1.0, "gamma must be greater than zero"
 
     def test_communication_delay(self):
         """Test communication delay between agents."""
@@ -435,7 +435,7 @@ class TestRelativityScheduler:
 
         delay = scheduler.communication_delay("agent1", "agent2")
 
-        assert delay == 1.0  # 100 / 100 = 1.0
+        assert delay == 1.0, "delay is not valid"
 
 
 # ============================================================================
@@ -452,7 +452,7 @@ class TestAdvancedPhysicsOrchestrator:
 
         orchestrator = AdvancedPhysicsOrchestrator()
 
-        assert orchestrator is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
 
     def test_coordinate_calculators(self):
         """Test coordinating multiple physics calculators."""
@@ -462,7 +462,7 @@ class TestAdvancedPhysicsOrchestrator:
 
         try:
             result = orchestrator.coordinate(task="analyze", parameters={})
-            assert result is not None
+            assert result is not None, "result must be initialized"
         except (AttributeError, NotImplementedError):
             pytest.skip("coordinate not implemented")
 
@@ -474,7 +474,7 @@ class TestAdvancedPhysicsOrchestrator:
 
         try:
             calculator = orchestrator.get_calculator("chaotic")
-            assert calculator is not None
+            assert calculator is not None, "calculator must be initialized"
         except (AttributeError, NotImplementedError, KeyError):
             pytest.skip("get_calculator not implemented")
 
@@ -486,7 +486,7 @@ class TestAdvancedPhysicsOrchestrator:
 
         try:
             optimized = orchestrator.optimize(objective="efficiency", constraints={})
-            assert optimized is not None
+            assert optimized is not None, "optimized must be initialized"
         except (AttributeError, NotImplementedError):
             pytest.skip("optimize not implemented")
 
@@ -515,7 +515,7 @@ class TestPhysicsIntegration:
 
         if len(trajectory) > 0:
             output = nn.forward(trajectory[0])
-            assert output is not None
+            assert output is not None, "output must be initialized"
 
     def test_fluid_and_em_coordination(self):
         """Test coordinating fluid flow and EM routing."""
@@ -528,5 +528,5 @@ class TestPhysicsIntegration:
         em_router = EMFieldRouter(grid_size=5)
 
         # Both should be independently functional
-        assert fluid_scheduler is not None
-        assert em_router is not None
+        assert fluid_scheduler is not None, "fluid_scheduler must be initialized"
+        assert em_router is not None, "em_router must be initialized"

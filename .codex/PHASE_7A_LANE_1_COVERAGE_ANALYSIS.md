@@ -197,9 +197,9 @@
 ```python
 # tests/codex/cognitive/test_autonomous_executor.py
 - test_executor_initialization()
-- test_task_execution()
+- test_task_execution()  # pragma: allowlist secret
 - test_error_recovery()
-- test_concurrent_task_execution()
+- test_concurrent_task_execution()  # pragma: allowlist secret
 - test_resource_limits()
 ```
 

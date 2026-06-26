@@ -18,11 +18,11 @@ class TestComponent:
 
         component = Component(tombstone="tombstone_1", dest_path="path/to/dest")
 
-        assert component.tombstone == "tombstone_1"
-        assert component.dest_path == "path/to/dest"
-        assert component.mode == "0644"
-        assert component.type == "file"
-        assert component.template_vars is None
+        assert component.tombstone == "tombstone_1", "tombstone is not valid"
+        assert component.dest_path == "path/to/dest", "dest_path is not valid"
+        assert component.mode == "0644", "mode is not valid"
+        assert component.type == "file", "type is not valid"
+        assert component.template_vars is None, "template_vars is not valid"
 
     def test_custom_values(self):
         """Test Component with custom values."""
@@ -36,8 +36,8 @@ class TestComponent:
             template_vars={"key": "value"},
         )
 
-        assert component.mode == "0755"
-        assert component.template_vars == {"key": "value"}
+        assert component.mode == "0755", "mode is not valid"
+        assert component.template_vars == {"key": "value"}, "Value must be initialized"
 
 
 class TestSymlink:
@@ -49,8 +49,8 @@ class TestSymlink:
 
         symlink = Symlink(link_path="path/to/link", target="path/to/target")
 
-        assert symlink.link_path == "path/to/link"
-        assert symlink.target == "path/to/target"
+        assert symlink.link_path == "path/to/link", "link_path is not valid"
+        assert symlink.target == "path/to/target", "target is not valid"
 
 
 class TestManifest:
@@ -72,9 +72,9 @@ class TestManifest:
             checks={},
         )
 
-        assert manifest.release_id == "release_1"
-        assert manifest.version == "1.0.0"
-        assert len(manifest.components) == 1
+        assert manifest.release_id == "release_1", "release_id is not valid"
+        assert manifest.version == "1.0.0", "version is not valid"
+        assert len(manifest.components) == 1, "Collection must not be empty"
 
 
 class TestRequire:
@@ -102,21 +102,21 @@ class TestIsRelSafe:
         """Test relative path is safe."""
         from codex.release.manifest import _is_rel_safe
 
-        assert _is_rel_safe("path/to/file") is True
-        assert _is_rel_safe("file.txt") is True
+        assert _is_rel_safe("path/to/file") is True, "Condition must be true"
+        assert _is_rel_safe("file.txt") is True, "Condition must be true"
 
     def test_absolute_path(self):
         """Test absolute path is not safe."""
         from codex.release.manifest import _is_rel_safe
 
-        assert _is_rel_safe("/path/to/file") is False
+        assert _is_rel_safe("/path/to/file") is False, "Condition must be true"
 
     def test_path_traversal(self):
         """Test path traversal is not safe."""
         from codex.release.manifest import _is_rel_safe
 
-        assert _is_rel_safe("../parent") is False
-        assert _is_rel_safe("path/../other") is False
+        assert _is_rel_safe("../parent") is False, "Condition must be true"
+        assert _is_rel_safe("path/../other") is False, "Condition must be true"
 
 
 class TestLoadManifest:
@@ -143,8 +143,8 @@ class TestLoadManifest:
 
         result = load_manifest(manifest_file)
 
-        assert result.release_id == "test_release_1"
-        assert result.version == "1.0.0"
+        assert result.release_id == "test_release_1", "Result must not be empty"
+        assert result.version == "1.0.0", "Result must not be empty"
 
     def test_missing_release_id(self, tmp_path):
         """Test manifest without release_id."""

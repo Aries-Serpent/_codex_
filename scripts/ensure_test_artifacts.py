@@ -81,7 +81,7 @@ def ensure_coverage_xml(path: Path = Path("coverage.xml")) -> bool:
         return True
     except Exception as e:
         error_type = type(e).__name__
-        print(f"✗ Failed to create coverage.xml: <ERROR_TYPE>")
+        print("✗ Failed to create coverage.xml: <ERROR_TYPE>")
         return False
 
 
@@ -137,7 +137,7 @@ def ensure_htmlcov_dir(path: Path = Path("htmlcov")) -> bool:
         return True
     except Exception as e:
         error_type = type(e).__name__
-        print(f"✗ Failed to create htmlcov/: <ERROR_TYPE>")
+        print("✗ Failed to create htmlcov/: <ERROR_TYPE>")
         return False
 
 
@@ -173,7 +173,7 @@ def ensure_junit_xml(path: Path = Path("junit.xml")) -> bool:
         return True
     except Exception as e:
         error_type = type(e).__name__
-        print(f"✗ Failed to create junit.xml: <ERROR_TYPE>")
+        print("✗ Failed to create junit.xml: <ERROR_TYPE>")
         return False
 
 
@@ -219,7 +219,7 @@ If you see this report, verify:
         return True
     except Exception as e:
         error_type = type(e).__name__
-        print(f"✗ Failed to create test_pattern_report.txt: <ERROR_TYPE>")
+        print("✗ Failed to create test_pattern_report.txt: <ERROR_TYPE>")
         return False
 
 
@@ -270,7 +270,7 @@ def ensure_bandit_reports(
             print("✓ Created placeholder bandit-report.json")
         except Exception as e:
             error_type = type(e).__name__
-            print(f"✗ Failed to create bandit-report.json: <ERROR_TYPE>")
+            print("✗ Failed to create bandit-report.json: <ERROR_TYPE>")
             all_ok = False
 
     # Check text report
@@ -308,7 +308,7 @@ This is a placeholder report - no actual security scan was performed.
             print("✓ Created placeholder bandit-report.txt")
         except Exception as e:
             error_type = type(e).__name__
-            print(f"✗ Failed to create bandit-report.txt: <ERROR_TYPE>")
+            print("✗ Failed to create bandit-report.txt: <ERROR_TYPE>")
             all_ok = False
 
     return all_ok

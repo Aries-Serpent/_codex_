@@ -68,7 +68,7 @@ class TestRequireAuth:
 
         with patch("security.decorators.verify_token", return_value=True):
             result = func(token="valid_token")
-            assert result == "success"
+            assert result == "success", "Result must not be empty"
 
     def test_require_auth_with_invalid_token(self):
         """Test decorator rejects invalid token."""
@@ -110,7 +110,7 @@ class TestRequireAuth:
 
         with patch("security.decorators.verify_token", return_value=True):
             result = func(token="valid", arg1=1, arg2=2)
-            assert result == 3
+            assert result == 3, "Result must not be empty"
 
     def test_require_auth_with_kwargs(self):
         """Test decorator works with keyword arguments."""
@@ -121,7 +121,7 @@ class TestRequireAuth:
 
         with patch("security.decorators.verify_token", return_value=True):
             result = func(token="valid", value="test")
-            assert result == "test"
+            assert result == "test", "Result must not be empty"
 
 
 # ============================================================================
@@ -141,7 +141,7 @@ class TestRequirePermission:
 
         with patch("security.decorators.check_user_permission", return_value=True):
             result = func()
-            assert result == "success"
+            assert result == "success", "Result must not be empty"
 
     def test_require_permission_without_permission(self):
         """Test decorator denies user without permission."""
@@ -163,7 +163,7 @@ class TestRequirePermission:
 
         with patch("security.decorators.check_user_permission", return_value=True):
             result = func()
-            assert result == "success"
+            assert result == "success", "Result must not be empty"
 
     def test_require_permission_custom_error(self):
         """Test decorator with custom error message."""
@@ -185,7 +185,7 @@ class TestRequirePermission:
 
         with patch("security.decorators.check_user_permission", return_value=True):
             result = func(5)
-            assert result == 10
+            assert result == 10, "Result must not be empty"
 
 
 # ============================================================================
@@ -199,7 +199,7 @@ class TestRateLimit:
     def test_rate_limit_decorator_creation(self):
         """Test creating rate limit decorator."""
         decorator = rate_limit(calls=10, period=60)
-        assert callable(decorator)
+        assert callable(decorator), "Condition must be true"
 
     def test_rate_limit_allows_within_limit(self):
         """Test allowing calls within limit."""
@@ -210,7 +210,7 @@ class TestRateLimit:
 
         for _ in range(3):
             result = func()
-            assert result == "success"
+            assert result == "success", "Result must not be empty"
 
     def test_rate_limit_blocks_exceed_limit(self):
         """Test blocking calls over limit."""
@@ -241,7 +241,7 @@ class TestRateLimit:
 
         # Different user should still be able to call
         result = func("user2")
-        assert result == "success"
+        assert result == "success", "Result must not be empty"
 
     def test_rate_limit_with_timeout(self):
         """Test rate limit with custom timeout."""
@@ -259,7 +259,7 @@ class TestRateLimit:
 
         time.sleep(1.1)
         result = func()
-        assert result == "success"
+        assert result == "success", "Result must not be empty"
 
     def test_rate_limit_custom_error(self):
         """Test custom error message."""
@@ -290,7 +290,7 @@ class TestCheckScope:
 
         with patch("security.decorators.verify_scope", return_value=True):
             result = func()
-            assert result == "success"
+            assert result == "success", "Result must not be empty"
 
     def test_check_scope_without_required_scope(self):
         """Test decorator denies without scope."""
@@ -312,7 +312,7 @@ class TestCheckScope:
 
         with patch("security.decorators.verify_scope", return_value=True):
             result = func()
-            assert result == "success"
+            assert result == "success", "Result must not be empty"
 
     def test_check_scope_hierarchical(self):
         """Test scope hierarchy checking."""
@@ -324,7 +324,7 @@ class TestCheckScope:
         # Admin scope should imply read scope
         with patch("security.decorators.verify_scope", return_value=True):
             result = func()
-            assert result == "success"
+            assert result == "success", "Result must not be empty"
 
 
 # ============================================================================
@@ -344,7 +344,7 @@ class TestAuditLog:
 
         with patch("security.decorators.log_audit_event") as mock_log:
             result = func("user123")
-            assert result == "success"
+            assert result == "success", "Result must not be empty"
             mock_log.assert_called()
 
     def test_audit_log_with_event_type(self):
@@ -356,7 +356,7 @@ class TestAuditLog:
 
         with patch("security.decorators.log_audit_event"):
             result = func("user123")
-            assert result == "success"
+            assert result == "success", "Result must not be empty"
 
     def test_audit_log_with_success_logging(self):
         """Test logging successful operations."""
@@ -367,7 +367,7 @@ class TestAuditLog:
 
         with patch("security.decorators.log_audit_event"):
             result = func()
-            assert result == "success_result"
+            assert result == "success_result", "Result must not be empty"
 
     def test_audit_log_with_exception_logging(self):
         """Test logging exceptions."""
@@ -390,7 +390,7 @@ class TestAuditLog:
 
         with patch("security.decorators.log_audit_event"):
             result = func(2, 3)
-            assert result == 5
+            assert result == 5, "Result must not be empty"
 
     def test_audit_log_with_fields(self):
         """Test audit log with additional fields."""
@@ -401,7 +401,7 @@ class TestAuditLog:
 
         with patch("security.decorators.log_audit_event"):
             result = func("user123", "create")
-            assert result == "success"
+            assert result == "success", "Result must not be empty"
 
 
 # ============================================================================
@@ -423,7 +423,7 @@ class TestDecoratorComposition:
         with patch("security.decorators.verify_token", return_value=True):
             with patch("security.decorators.check_user_permission", return_value=True):
                 result = func(token="valid")
-                assert result == "success"
+                assert result == "success", "Result must not be empty"
 
     def test_rate_limit_and_auth(self):
         """Test combining rate limit and auth."""
@@ -436,7 +436,7 @@ class TestDecoratorComposition:
         with patch("security.decorators.verify_token", return_value=True):
             for _ in range(3):
                 result = func(token="valid")
-                assert result == "success"
+                assert result == "success", "Result must not be empty"
 
             with pytest.raises(Exception):
                 func(token="valid")
@@ -457,7 +457,7 @@ class TestDecoratorComposition:
                 with patch("security.decorators.verify_scope", return_value=True):
                     with patch("security.decorators.log_audit_event"):
                         result = func(token="valid")
-                        assert result == "success"
+                        assert result == "success", "Result must not be empty"
 
 
 # ============================================================================
@@ -483,7 +483,7 @@ def test_require_permission_parametrized(permission):
 
     with patch("security.decorators.check_user_permission", return_value=True):
         result = func()
-        assert result == "success"
+        assert result == "success", "Result must not be empty"
 
 
 @pytest.mark.parametrize(
@@ -504,7 +504,7 @@ def test_rate_limit_parametrized(calls, period):
 
     # First call should always succeed
     result = func()
-    assert result == "success"
+    assert result == "success", "Result must not be empty"
 
 
 @pytest.mark.parametrize(
@@ -526,7 +526,7 @@ def test_check_scope_parametrized(scope):
 
     with patch("security.decorators.verify_scope", return_value=True):
         result = func()
-        assert result == "success"
+        assert result == "success", "Result must not be empty"
 
 
 # ============================================================================
@@ -557,7 +557,7 @@ class TestEdgeCases:
 
         with patch("security.decorators.verify_token", return_value=True):
             result = func("valid", 1, 2, 3, 4, 5)
-            assert result == 15
+            assert result == 15, "Result must not be empty"
 
     def test_decorator_with_varargs(self):
         """Test decorator with *args."""
@@ -568,7 +568,7 @@ class TestEdgeCases:
 
         with patch("security.decorators.verify_token", return_value=True):
             result = func("valid", 1, 2, 3, 4, 5)
-            assert result == 15
+            assert result == 15, "Result must not be empty"
 
     def test_decorator_with_varkwargs(self):
         """Test decorator with **kwargs."""
@@ -579,7 +579,7 @@ class TestEdgeCases:
 
         with patch("security.decorators.verify_token", return_value=True):
             result = func("valid", result=42)
-            assert result == 42
+            assert result == 42, "Result must not be empty"
 
     def test_decorator_stacking_order(self):
         """Test that decorator order matters."""
@@ -599,10 +599,10 @@ class TestEdgeCases:
         # Both should behave correctly
         with patch("security.decorators.verify_token", return_value=True):
             result1 = func1("valid")
-            assert result1 == "success"
+            assert result1 == "success", "Result must not be empty"
 
             result2 = func2("valid")
-            assert result2 == "success"
+            assert result2 == "success", "Result must not be empty"
 
     def test_decorator_with_async_function(self):
         """Test decorator on async function."""
@@ -612,4 +612,4 @@ class TestEdgeCases:
             return "success"
 
         # Should handle async functions
-        assert callable(async_func)
+        assert callable(async_func), "Condition must be true"

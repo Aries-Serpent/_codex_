@@ -147,7 +147,7 @@ class CodexTaskRunner:
             )
         except Exception as exc:
             error_type = type(exc).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             log_error("Task1-Preparation", exc, "Reading README.md")
 
         # Phase 2: Search & Mapping
@@ -165,7 +165,7 @@ class CodexTaskRunner:
             log_change("Mapped model/training artefacts: " + ", ".join(candidates))
         except Exception as exc:
             error_type = type(exc).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             log_error("Task1-Search", exc, "Collecting candidate files")
 
         # Phase 3: Best-Effort Construction
@@ -224,7 +224,7 @@ class CodexTaskRunner:
             )
         except Exception as exc:
             error_type = type(exc).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             log_error("Task2-Preparation", exc, "Reading README for data sections")
         save_gap_snapshot(
             "data_eval_safety_preparation",
@@ -250,7 +250,7 @@ class CodexTaskRunner:
             log_change("Mapped data/eval/safety artefacts: " + ", ".join(candidates))
         except Exception as exc:
             error_type = type(exc).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             log_error("Task2-Search", exc, "Collecting data/eval files")
 
         # Phase 3
@@ -312,7 +312,7 @@ class CodexTaskRunner:
             )
         except Exception as exc:
             error_type = type(exc).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             log_error("Task3-Preparation", exc, "Reading README for configuration guidance")
         save_gap_snapshot(
             "config_cli_docs_preparation",
@@ -340,7 +340,7 @@ class CodexTaskRunner:
             log_change("Mapped configuration/CLI/doc artefacts: " + ", ".join(candidates))
         except Exception as exc:
             error_type = type(exc).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             log_error("Task3-Search", exc, "Collecting configs/CLI/doc files")
 
         # Phase 3

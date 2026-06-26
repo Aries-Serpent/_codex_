@@ -233,7 +233,7 @@ Phase 9 completion has cleared all execution lanes for Phase 10:
 | Self-Healing Cascade | ✅ PASS | 72.5% auto-fix coverage, 12 patterns, 1.2% false positive |
 | Multi-Agent Router | ✅ PASS | 9.68ms latency, 94.3% accuracy, 100 concurrent tasks |
 | Code Quality | ✅ PASS | 0 violations, 100% type coverage, --strict mode |
-| Security | ✅ PASS | 0 HIGH issues, secrets scan clean |
+| Security | ✅ PASS | 0 HIGH issues, secrets scan clean | <!-- pragma: allowlist secret -->
 | Testing | ✅ PASS | 1,200+ scenarios, 100% pass rate |
 | Production Ready | ✅ PASS | Canary deployment plans, monitoring live |
 

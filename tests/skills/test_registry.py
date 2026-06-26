@@ -51,28 +51,28 @@ class TestSkillRegistryRegister:
     def test_register_returns_registered_skill(self, simple_manifest):
         reg = SkillRegistry()
         skill = reg.register(simple_manifest)
-        assert skill.skill_id == "test.skill.one"
-        assert skill.version == "1.0.0"
+        assert skill.skill_id == "test.skill.one", "skill_id is not valid"
+        assert skill.version == "1.0.0", "version is not valid"
 
     def test_register_idempotent_same_version(self, simple_manifest):
         reg = SkillRegistry()
         s1 = reg.register(simple_manifest)
         s2 = reg.register(simple_manifest)
-        assert s1 is s2
-        assert len(reg) == 1
+        assert s1 is s2, "s1 is not valid"
+        assert len(reg) == 1, "Reg must not be empty"
 
     def test_register_two_versions(self, simple_manifest):
         reg = SkillRegistry()
         reg.register(simple_manifest)
         v2 = simple_manifest.model_copy(update={"version": "2.0.0"})
         reg.register(v2)
-        assert len(reg) == 1  # latest still 1 unique id
-        assert reg.resolve("test.skill.one").version == "2.0.0"  # type: ignore[union-attr]
+        assert len(reg) == 1, "Reg must not be empty"
+        assert reg.resolve("test.skill.one").version == "2.0.0", "version is not valid"
 
     def test_register_records_source_path(self, simple_manifest):
         reg = SkillRegistry()
         skill = reg.register(simple_manifest, source_path="/tmp/test/manifest.yaml")
-        assert skill.source_path == "/tmp/test/manifest.yaml"
+        assert skill.source_path == "/tmp/test/manifest.yaml", "source_path is not valid"
 
 
 class TestSkillRegistryResolve:
@@ -80,18 +80,18 @@ class TestSkillRegistryResolve:
         reg = SkillRegistry()
         reg.register(simple_manifest)
         skill = reg.resolve("test.skill.one")
-        assert skill is not None
-        assert skill.skill_id == "test.skill.one"
+        assert skill is not None, "skill must be initialized"
+        assert skill.skill_id == "test.skill.one", "skill_id is not valid"
 
     def test_resolve_by_version(self, simple_manifest):
         reg = SkillRegistry()
         reg.register(simple_manifest)
         skill = reg.resolve("test.skill.one", version="1.0.0")
-        assert skill is not None
+        assert skill is not None, "skill must be initialized"
 
     def test_resolve_missing_returns_none(self):
         reg = SkillRegistry()
-        assert reg.resolve("does.not.exist") is None
+        assert reg.resolve("does.not.exist") is None, "Condition must be true"
 
     def test_resolve_wrong_version_returns_none(self, simple_manifest):
         reg = SkillRegistry()
@@ -105,27 +105,27 @@ class TestSkillRegistryList:
         reg.register(simple_manifest)
         reg.register(another_manifest)
         skills = reg.list()
-        assert len(skills) == 2
+        assert len(skills) == 2, "Skills must not be empty"
 
     def test_list_filter_by_capability_tag(self, simple_manifest, another_manifest):
         reg = SkillRegistry()
         reg.register(simple_manifest)
         reg.register(another_manifest)
         skills = reg.list(capability_tag="integration")
-        assert len(skills) == 1
-        assert skills[0].skill_id == "test.skill.two"
+        assert len(skills) == 1, "Skills must not be empty"
+        assert skills[0].skill_id == "test.skill.two", "skill_id is not valid"
 
     def test_list_filter_by_risk_tier(self, simple_manifest, another_manifest):
         reg = SkillRegistry()
         reg.register(simple_manifest)
         reg.register(another_manifest)
         skills = reg.list(risk_tier="medium")
-        assert len(skills) == 1
-        assert skills[0].skill_id == "test.skill.two"
+        assert len(skills) == 1, "Skills must not be empty"
+        assert skills[0].skill_id == "test.skill.two", "skill_id is not valid"
 
     def test_list_empty_registry(self):
         reg = SkillRegistry()
-        assert reg.list() == []
+        assert reg.list() == [], "Condition must be true"
 
 
 class TestSkillRegistryDiscover:
@@ -139,8 +139,8 @@ class TestSkillRegistryDiscover:
             manifest_file.write_text(yaml.safe_dump(simple_manifest.model_dump()), encoding="utf-8")
             reg = SkillRegistry()
             count = reg.discover(Path(tmpdir))
-            assert count == 1
-            assert reg.resolve("test.skill.one") is not None
+            assert count == 1, "Count must be greater than zero"
+            assert reg.resolve("test.skill.one") is not None, "Value must be initialized"
 
     def test_discover_skips_invalid_manifest(self):
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -149,13 +149,13 @@ class TestSkillRegistryDiscover:
             bad.write_text("not: valid: yaml: :\n  - bad", encoding="utf-8")
             reg = SkillRegistry()
             count = reg.discover(Path(tmpdir))
-            assert count == 0
+            assert count == 0, "Count must be greater than zero"
 
     def test_discover_uses_default_skills_root(self):
         """Discovery on the real skills package should find built-in skills."""
         reg = SkillRegistry()
         count = reg.discover()
-        assert count >= 3  # doc_retriever, doc_refresh, code_search
+        assert count >= 3, "count must be positive"
 
 
 class TestBudgetTracking:
@@ -164,7 +164,7 @@ class TestBudgetTracking:
         reg.register(simple_manifest)
         reg.consume_budget("test.skill.one", calls=5, tokens=1_000, wallclock_ms=2_000)
         skill = reg.resolve("test.skill.one")
-        assert skill.budget_used["calls"] == 5  # type: ignore[index]
+        assert skill.budget_used["calls"] == 5, "Condition must be true"
 
     def test_reset_budget(self, simple_manifest):
         reg = SkillRegistry()
@@ -172,17 +172,17 @@ class TestBudgetTracking:
         reg.consume_budget("test.skill.one", calls=5)
         reg.reset_budget("test.skill.one")
         skill = reg.resolve("test.skill.one")
-        assert skill.budget_used["calls"] == 0  # type: ignore[index]
+        assert skill.budget_used["calls"] == 0, "Condition must be true"
 
 
 class TestGetRegistry:
     def test_get_registry_singleton(self):
         r1 = get_registry()
         r2 = get_registry()
-        assert r1 is r2
+        assert r1 is r2, "r1 is not valid"
 
     def test_reset_registry_creates_fresh(self):
         r1 = get_registry()
         reset_registry()
         r2 = get_registry()
-        assert r1 is not r2
+        assert r1 is not r2, "r1 is not valid"

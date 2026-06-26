@@ -22,7 +22,7 @@ class TestDeployFunctions:
         try:
             from codex_ml.cli import deploy
 
-            assert deploy is not None
+            assert deploy is not None, "deploy must be initialized"
         except ImportError as e:
             pytest.skip(f"Module import failed: {e}")
 
@@ -38,8 +38,8 @@ class TestDeployFunctions:
 
             try:
                 result = _load_yaml_file(temp_path)
-                assert result["test"] == "value"
-                assert result["nested"]["key"] == 123
+                assert result["test"] == "value", "Result must not be empty"
+                assert result["nested"]["key"] == 123, "Result must not be empty"
             finally:
                 temp_path.unlink(missing_ok=True)
         except ImportError as e:
@@ -57,8 +57,8 @@ class TestDeployFunctions:
 
             try:
                 result = _load_json_file(temp_path)
-                assert result["test"] == "value"
-                assert result["number"] == 42
+                assert result["test"] == "value", "Result must not be empty"
+                assert result["number"] == 42, "Result must not be empty"
             finally:
                 temp_path.unlink(missing_ok=True)
         except ImportError as e:
@@ -80,7 +80,7 @@ class TestDeployDryRun:
                     run_metadata_dir=Path("/fake/metadata"),
                 )
             # Test that error message contains expected text (not URL validation)
-            assert "Only --dry-run deployments are permitted" in str(excinfo.value)
+            assert "Only --dry-run deployments are permitted" in str(excinfo.value), "Value must be initialized"
         except ImportError as e:
             pytest.skip(f"Function import failed: {e}")
 
@@ -102,7 +102,7 @@ class TestDeployDryRun:
                         run_metadata_dir=Path("/fake/metadata"),
                     )
                 # Test that error message contains expected text (not URL validation)
-                assert "missing rollout_ring" in str(excinfo.value)
+                assert "missing rollout_ring" in str(excinfo.value), "Value must be initialized"
             finally:
                 config_path.unlink(missing_ok=True)
         except ImportError as e:
@@ -125,7 +125,7 @@ class TestDeployDryRun:
                         run_deploy_dry_run(
                             config_path=config_path, dry_run=True, run_metadata_dir=Path(temp_dir)
                         )
-                    assert "run_metadata.json not found" in str(excinfo.value)
+                    assert "run_metadata.json not found" in str(excinfo.value), "Data must not be empty"
                 finally:
                     config_path.unlink(missing_ok=True)
         except ImportError as e:
@@ -161,7 +161,7 @@ class TestDeployValidation:
 
             try:
                 config = _load_yaml_file(config_path)
-                assert config["pod"]["ring"] == "0A_base_"
+                assert config["pod"]["ring"] == "0A_base_", "Condition must be true"
             finally:
                 config_path.unlink(missing_ok=True)
         except ImportError as e:
@@ -178,7 +178,7 @@ class TestDeployValidation:
 
             try:
                 config = _load_yaml_file(config_path)
-                assert config["rollout_ring"] == "0B_base_"
+                assert config["rollout_ring"] == "0B_base_", "Condition must be true"
             finally:
                 config_path.unlink(missing_ok=True)
         except ImportError as e:

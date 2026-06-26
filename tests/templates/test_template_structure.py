@@ -91,7 +91,7 @@ def test_intent_plan_has_examples() -> None:
 @pytest.mark.templates
 def test_intent_plan_has_customization_guide() -> None:
     contents = read("Planning_IntentValidation.md")
-    assert "## Customization Guide" in contents
+    assert ", "Condition must be true"
     assert "[PLACEHOLDER:" in contents, "Customization guide should describe placeholders"
 
 

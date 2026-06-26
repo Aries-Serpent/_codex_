@@ -51,7 +51,7 @@ def _write_dataset(tmp_path: Path, name: str, rows: list[tuple[str, int]]) -> Pa
 def test_text_classification_dataset_parses_rows(tmp_path: Path) -> None:
     path = _write_dataset(tmp_path, "train.tsv", [("hello", 0), ("world", 1)])
     dataset = datasets.TextClassificationDataset(str(path))
-    assert len(dataset) == 2
+    assert len(dataset) == 2, "Dataset must not be empty"
     assert dataset[0] == ("hello", 0)
     assert dataset[1] == ("world", 1)
 
@@ -75,9 +75,9 @@ def test_build_dataloaders_with_split(tmp_path: Path) -> None:
 
     train_examples = sum(len(batch[0]) for batch in train_loader)
     val_examples = sum(len(batch[0]) for batch in val_loader) if val_loader else 0
-    assert train_examples + val_examples == 4
+    assert train_examples + val_examples == 4, "val_examples is not valid"
     # Create iterator explicitly for Python 3.12+ compatibility
     train_iter = iter(train_loader)
     batch_inputs, batch_labels = next(train_iter)
-    assert batch_inputs.shape[0] == 2
-    assert batch_labels.dtype == torch.long
+    assert batch_inputs.shape[0] == 2, "Condition must be true"
+    assert batch_labels.dtype == torch.long, "dtype is not valid"

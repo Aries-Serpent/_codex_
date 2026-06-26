@@ -28,7 +28,7 @@ def load_schema(path: Path):
         return json.loads(path.read_text())
     except Exception as e:
         error_type = type(e).__name__
-        print(f"Failed to read schema: <ERROR_TYPE>", file=sys.stderr)
+        print("Failed to read schema: <ERROR_TYPE>", file=sys.stderr)
         sys.exit(2)
 
 

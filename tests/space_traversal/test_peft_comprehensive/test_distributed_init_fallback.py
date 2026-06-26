@@ -24,7 +24,7 @@ def test_distributed_init_skip_when_unavailable():
         if not available:
             # Should return False and not raise
             result = init_distributed_if_needed()
-            assert result is False
+            assert result is False, "Result must not be empty"
 
     except ImportError:
         # If module doesn't exist at all, that's also acceptable
@@ -38,7 +38,7 @@ def test_accelerate_init_cpu_fallback():
 
         # Should successfully create accelerator even without GPU
         accelerator = Accelerator(cpu=True)
-        assert accelerator is not None
+        assert accelerator is not None, "accelerator must be initialized"
         assert accelerator.device.type in ["cpu", "cuda"]
 
     except ImportError:
@@ -87,7 +87,7 @@ def test_accelerate_init_with_config():
         for config in configs:
             try:
                 acc = Accelerator(**config)
-                assert acc is not None
+                assert acc is not None, "acc must be initialized"
             except TypeError:
                 # Some configs might not be compatible with installed version
                 _ = None  # suppressed: no action needed
@@ -122,4 +122,4 @@ def test_distributed_backend_selection(backend, monkeypatch):
         pytest.skip("torch.distributed not available")
     except RuntimeError as e:
         # Expected in single-process environment
-        assert "backend" in str(e).lower() or "init" in str(e).lower()
+        assert "backend" in str(e).lower() or "init" in str(e).lower(), "Condition must be true"

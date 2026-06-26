@@ -19,7 +19,7 @@ class TestMLflowTracker:
             tracker.log_metric("accuracy", 0.95)
 
         # Should complete without error
-        assert True
+        assert True, "True is not valid"
 
     def test_tracker_enabled_offline(self, tmp_path):
         """Tracker should work in offline mode."""
@@ -37,7 +37,7 @@ class TestMLflowTracker:
             tracker.log_metric("val_loss", 0.4, step=1)
 
         # Verify run was created
-        assert (tmp_path / "mlruns").exists()
+        assert (tmp_path / "mlruns").exists(), "Condition must be true"
 
     def test_log_artifact(self, tmp_path):
         """Should log artifact files."""
@@ -65,10 +65,10 @@ class TestMLflowTracker:
 
         with tracker.start_run("run1"):
             tracker.log_metric("loss", 1.0)
-            assert tracker._active
+            assert tracker._active, "Condition must be true"
 
         # Should be inactive after context
-        assert not tracker._active
+        assert not tracker._active, "Condition must be true"
 
     def test_nested_runs(self, tmp_path):
         """Test nested run support."""
@@ -108,8 +108,8 @@ class TestMLflowTracker:
             experiment_name="global_test",
         )
 
-        assert tracker.enabled
-        assert tracker.experiment_name == "global_test"
+        assert tracker.enabled, "Condition must be true"
+        assert tracker.experiment_name == "global_test", "experiment_name is not valid"
 
 
 class TestMLflowIntegration:

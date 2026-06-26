@@ -380,7 +380,7 @@ def build_pr_description_with_wec(
             live_body = read_pr_body(pr_number, repo_owner, repo_name)
             if live_body:
                 existing_state = extract_and_preserve_wec_state(live_body)
-                logger.info(f"Extracted existing WEC state from live PR body")
+                logger.info("Extracted existing WEC state from live PR body")
             else:
                 logger.warning(f"Could not fetch live PR body for #{pr_number}")
         except Exception as e:

@@ -59,9 +59,9 @@ def test_codex_model_generate_with_stubs(monkeypatch: pytest.MonkeyPatch) -> Non
     instance = CodexModel("dummy", tokenizer=dummy_tokenizer, model=dummy_model)
 
     text = instance.generate("hi", max_tokens=2)
-    assert text == "decoded"
-    assert dummy_model.eval_called
-    assert dummy_model.device == instance._default_device()
+    assert text == "decoded", "text is not valid"
+    assert dummy_model.eval_called, "Condition must be true"
+    assert dummy_model.device == instance._default_device(), "device is not valid"
 
 
 @pytest.mark.interfaces
@@ -88,8 +88,8 @@ def test_codex_model_prepare_inference_handles_preloaded_model(
     dummy_model = DummyModel()
     instance = CodexModel("dummy", tokenizer=object(), model=dummy_model)
     instance.prepare_for_inference()
-    assert dummy_model.eval_called
-    assert dummy_model.device == instance._default_device()
+    assert dummy_model.eval_called, "Condition must be true"
+    assert dummy_model.device == instance._default_device(), "device is not valid"
 
 
 @pytest.mark.interfaces

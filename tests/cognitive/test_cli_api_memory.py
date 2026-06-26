@@ -89,14 +89,14 @@ class TestSQLiteMemoryRetrieve:
 
         # Retrieve once
         result = mem.retrieve("k1")
-        assert result == {"val": 42}
+        assert result == {"val": 42}, "Result must not be empty"
 
         # Check DB: access_count should be 1
         row = srv._db.execute(
             "SELECT access_count FROM stm_entries WHERE key = ?", ("k1",)
         ).fetchone()
-        assert row is not None
-        assert row["access_count"] == 1
+        assert row is not None, "row must be initialized"
+        assert row["access_count"] == 1, "Count must be greater than zero"
 
     def test_retrieve_increments_on_each_call(self, server_app):
         """access_count must accumulate across multiple retrieve() calls."""
@@ -110,13 +110,13 @@ class TestSQLiteMemoryRetrieve:
         row = srv._db.execute(
             "SELECT access_count FROM stm_entries WHERE key = ?", ("k2",)
         ).fetchone()
-        assert row["access_count"] == 5
+        assert row["access_count"] == 5, "Count must be greater than zero"
 
     def test_retrieve_missing_key_returns_none(self, server_app):
         """retrieve() on a non-existent key must return None without error."""
         srv, _key, _db_path = server_app
         mem = srv.SQLiteMemory()
-        assert mem.retrieve("no_such_key") is None
+        assert mem.retrieve("no_such_key") is None, "Condition must be true"
 
     def test_retrieve_does_not_increment_for_missing_key(self, server_app):
         """No DB write should occur when the key does not exist."""
@@ -124,7 +124,7 @@ class TestSQLiteMemoryRetrieve:
         mem = srv.SQLiteMemory()
         mem.retrieve("ghost")
         count = srv._db.execute("SELECT COUNT(*) FROM stm_entries").fetchone()[0]
-        assert count == 0
+        assert count == 0, "Count must be greater than zero"
 
     def test_search_executes_under_db_lock(self, server_app, monkeypatch):
         """search() must acquire the shared DB lock before querying."""
@@ -162,8 +162,8 @@ class TestSQLiteMemoryRetrieve:
 
         result = srv.SQLiteMemory().search({"text": "value"}, limit=3)
 
-        assert lock.entered is True
-        assert lock.exited is True
+        assert lock.entered is True, "entered is not valid"
+        assert lock.exited is True, "exited is not valid"
         assert fake_db.params == ("%value%", 3)
         assert result == [("k1", {"value": 1})]
 
@@ -182,7 +182,7 @@ class TestMemoryConsolidateEndpoint:
     def test_consolidate_requires_auth(self, client):
         tc, _master_key, _srv = client
         resp = tc.post("/api/memory/consolidate")
-        assert resp.status_code == 401
+        assert resp.status_code == 401, "status_code is not valid"
 
     def test_consolidate_empty_db_returns_zeros(self, client):
         """Consolidate on an empty DB must return 0s without error."""
@@ -191,11 +191,11 @@ class TestMemoryConsolidateEndpoint:
             "/api/memory/consolidate",
             headers=self._auth_headers(master_key),
         )
-        assert resp.status_code == 200
+        assert resp.status_code == 200, "status_code is not valid"
         body = resp.json()
-        assert body["consolidated"] == 0
-        assert body["pruned"] == 0
-        assert "error" not in body
+        assert body["consolidated"] == 0, "Condition must be true"
+        assert body["pruned"] == 0, "Condition must be true"
+        assert "error" not in body, "Error should be raised or set"
 
     def test_consolidate_promotes_hot_entries(self, client):
         """Hot STM entries (access_count >= threshold) must be promoted to LTM."""
@@ -217,22 +217,22 @@ class TestMemoryConsolidateEndpoint:
             "/api/memory/consolidate",
             headers=self._auth_headers(master_key),
         )
-        assert resp.status_code == 200
+        assert resp.status_code == 200, "status_code is not valid"
         body = resp.json()
-        assert body["consolidated"] == 2
-        assert "error" not in body
+        assert body["consolidated"] == 2, "Condition must be true"
+        assert "error" not in body, "Error should be raised or set"
 
         # hot1 and hot2 must have been removed from STM
         remaining_stm = srv._db.execute("SELECT key FROM stm_entries").fetchall()
         remaining_keys = {r["key"] for r in remaining_stm}
-        assert "hot1" not in remaining_keys
-        assert "hot2" not in remaining_keys
-        assert "cold" in remaining_keys
+        assert "hot1" not in remaining_keys, "Condition must be true"
+        assert "hot2" not in remaining_keys, "Condition must be true"
+        assert "cold" in remaining_keys, "Condition must be true"
 
         # hot1 and hot2 must be in LTM
         ltm_keys = {r["key"] for r in srv._db.execute("SELECT key FROM ltm_entries").fetchall()}
-        assert "hot1" in ltm_keys
-        assert "hot2" in ltm_keys
+        assert "hot1" in ltm_keys, "Condition must be true"
+        assert "hot2" in ltm_keys, "Condition must be true"
 
     def test_consolidate_confidence_calculation(self, client):
         """confidence = min(1.0, access_count / 10) must be written to LTM."""
@@ -252,8 +252,8 @@ class TestMemoryConsolidateEndpoint:
         ltm_row = srv._db.execute(
             "SELECT confidence FROM ltm_entries WHERE key = ?", ("conf_test",)
         ).fetchone()
-        assert ltm_row is not None
-        assert abs(ltm_row["confidence"] - 0.5) < 0.01
+        assert ltm_row is not None, "ltm_row must be initialized"
+        assert abs(ltm_row["confidence"] - 0.5) < 0.01, "Condition must be true"
 
     def test_consolidate_returns_counts(self, client):
         """Response must include stm_count and ltm_count."""
@@ -268,10 +268,10 @@ class TestMemoryConsolidateEndpoint:
             headers=self._auth_headers(master_key),
         )
         body = resp.json()
-        assert "stm_count" in body
-        assert "ltm_count" in body
-        assert "timestamp" in body
-        assert body["ltm_count"] >= 1
+        assert "stm_count" in body, "Count must be greater than zero"
+        assert "ltm_count" in body, "Count must be greater than zero"
+        assert "timestamp" in body, "Condition must be true"
+        assert body["ltm_count"] >= 1, "Value must be greater than zero"
 
     def test_consolidate_wrong_token_rejected(self, client):
         """A wrong bearer token must receive 401."""
@@ -280,7 +280,7 @@ class TestMemoryConsolidateEndpoint:
             "/api/memory/consolidate",
             headers=self._auth_headers("wrong-token"),
         )
-        assert resp.status_code == 401
+        assert resp.status_code == 401, "status_code is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -295,7 +295,7 @@ class TestMemoryStateEndpoint:
     def test_state_requires_auth(self, client):
         tc, _key, _srv = client
         resp = tc.get("/api/memory/state")
-        assert resp.status_code == 401
+        assert resp.status_code == 401, "status_code is not valid"
 
     def test_state_returns_counts(self, client):
         tc, master_key, srv = client
@@ -307,12 +307,12 @@ class TestMemoryStateEndpoint:
             "/api/memory/state",
             headers=self._auth_headers(master_key),
         )
-        assert resp.status_code == 200
+        assert resp.status_code == 200, "status_code is not valid"
         body = resp.json()
-        assert body["stm_count"] >= 2
-        assert "ltm_count" in body
-        assert "capacity" in body
-        assert "compression_rate" in body
+        assert body["stm_count"] >= 2, "Value must be greater than zero"
+        assert "ltm_count" in body, "Count must be greater than zero"
+        assert "capacity" in body, "Condition must be true"
+        assert "compression_rate" in body, "Condition must be true"
 
     def test_cache_hit_rate_zero_when_no_retrievals(self, client):
         """cache_hit_rate must be 0.0 when no entries have been retrieved (access_count=0)."""
@@ -325,10 +325,10 @@ class TestMemoryStateEndpoint:
             "/api/memory/state",
             headers=self._auth_headers(master_key),
         )
-        assert resp.status_code == 200
+        assert resp.status_code == 200, "status_code is not valid"
         body = resp.json()
-        assert body["stm_count"] == 2
-        assert body["cache_hit_rate"] == 0.0
+        assert body["stm_count"] == 2, "Count must be greater than zero"
+        assert body["cache_hit_rate"] == 0.0, "Condition must be true"
 
     def test_cache_hit_rate_increases_after_retrieve(self, client):
         """cache_hit_rate must reflect warm entries (access_count >= 1)."""
@@ -344,11 +344,11 @@ class TestMemoryStateEndpoint:
             "/api/memory/state",
             headers=self._auth_headers(master_key),
         )
-        assert resp.status_code == 200
+        assert resp.status_code == 200, "status_code is not valid"
         body = resp.json()
         # 1 of 2 entries is warm → rate must be exactly 0.5
-        assert body["stm_count"] == 2
-        assert body["cache_hit_rate"] == 0.5
+        assert body["stm_count"] == 2, "Count must be greater than zero"
+        assert body["cache_hit_rate"] == 0.5, "Condition must be true"
 
     def test_cache_hit_rate_is_one_when_all_warm(self, client):
         """cache_hit_rate == 1.0 when every STM entry has been retrieved at least once."""
@@ -363,9 +363,9 @@ class TestMemoryStateEndpoint:
             "/api/memory/state",
             headers=self._auth_headers(master_key),
         )
-        assert resp.status_code == 200
+        assert resp.status_code == 200, "status_code is not valid"
         body = resp.json()
-        assert body["cache_hit_rate"] == 1.0
+        assert body["cache_hit_rate"] == 1.0, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -403,25 +403,25 @@ class TestAgentRegistryReadiness:
 
     def test_memory_sync_agent_is_production(self):
         agent = self._get_agent("memory-sync-agent")
-        assert (
+        assert (, "Condition must be true"
             agent.get("maturity") == "production"
         ), f"memory-sync-agent maturity should be 'production', got {agent.get('maturity')!r}"
 
     def test_memory_sync_agent_has_tests(self):
         agent = self._get_agent("memory-sync-agent")
-        assert (
+        assert (, "Condition must be true"
             agent.get("has_tests") is True
         ), f"memory-sync-agent has_tests should be True, got {agent.get('has_tests')!r}"
 
     def test_telemetry_classifier_agent_is_production(self):
         agent = self._get_agent("telemetry-classifier-agent")
-        assert (
+        assert (, "Condition must be true"
             agent.get("maturity") == "production"
         ), f"telemetry-classifier-agent maturity should be 'production', got {agent.get('maturity')!r}"
 
     def test_telemetry_classifier_agent_has_tests(self):
         agent = self._get_agent("telemetry-classifier-agent")
-        assert (
+        assert (, "Condition must be true"
             agent.get("has_tests") is True
         ), f"telemetry-classifier-agent has_tests should be True, got {agent.get('has_tests')!r}"
 
@@ -435,6 +435,6 @@ class TestEnvExample:
     def test_codex_cli_api_url_in_env_example(self):
         env_example = Path(__file__).resolve().parents[2] / "cognitive_app" / ".env.example"
         content = env_example.read_text()
-        assert (
+        assert (, "Condition must be true"
             "CODEX_CLI_API_URL" in content
         ), "CODEX_CLI_API_URL must be documented in cognitive_app/.env.example"

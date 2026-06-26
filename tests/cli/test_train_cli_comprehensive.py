@@ -20,7 +20,7 @@ class TestPathConversion:
         """Test _to_path returns None for None input."""
         from codex_ml.cli.train import _to_path
 
-        assert _to_path(None) is None
+        assert _to_path(None) is None, "Condition must be true"
 
     def test_to_path_with_string(self):
         """Test _to_path converts string to Path."""
@@ -29,7 +29,7 @@ class TestPathConversion:
 
             result = _to_path("relative/path")
             assert isinstance(result, Path)
-            assert str(result) == "/abs/path"
+            assert str(result) == "/abs/path", "Result must not be empty"
 
     def test_to_path_with_path_object(self):
         """Test _to_path handles Path objects."""
@@ -49,7 +49,7 @@ class TestConfigConversion:
 
         input_dict = {"key": "value", "nested": {"inner": 1}}
         result = _cfg_to_dict(input_dict)
-        assert result == input_dict
+        assert result == input_dict, "Result must not be empty"
         assert isinstance(result, dict)
 
     def test_cfg_to_dict_with_none(self):
@@ -57,7 +57,7 @@ class TestConfigConversion:
         from codex_ml.cli.train import _cfg_to_dict
 
         result = _cfg_to_dict(None)
-        assert result == {}
+        assert result == {}, "Result must not be empty"
 
     def test_cfg_to_dict_with_omegaconf(self):
         """Test _cfg_to_dict with OmegaConf DictConfig."""
@@ -69,7 +69,7 @@ class TestConfigConversion:
 
             result = _cfg_to_dict(cfg)
             assert isinstance(result, dict)
-            assert result.get("model") == "gpt2"
+            assert result.get("model") == "gpt2", "Result must not be empty"
         except ImportError:
             pytest.skip("OmegaConf not available")
 
@@ -79,7 +79,7 @@ class TestConfigConversion:
 
         input_list = [1, 2, 3]
         result = _cfg_to_list(input_list)
-        assert result == input_list
+        assert result == input_list, "Result must not be empty"
         assert isinstance(result, list)
 
     def test_cfg_to_list_with_none(self):
@@ -87,14 +87,14 @@ class TestConfigConversion:
         from codex_ml.cli.train import _cfg_to_list
 
         result = _cfg_to_list(None)
-        assert result == []
+        assert result == [], "Result must not be empty"
 
     def test_cfg_to_list_with_single_value(self):
         """Test _cfg_to_list with single value wraps in list."""
         from codex_ml.cli.train import _cfg_to_list
 
         result = _cfg_to_list("single_value")
-        assert result == ["single_value"]
+        assert result == ["single_value"], "Result must not be empty"
 
 
 class TestSequenceCoercion:
@@ -104,7 +104,7 @@ class TestSequenceCoercion:
         """Test _coerce_sequence returns None for None."""
         from codex_ml.cli.train import _coerce_sequence
 
-        assert _coerce_sequence(None) is None
+        assert _coerce_sequence(None) is None, "Condition must be true"
 
     def test_coerce_sequence_with_list(self):
         """Test _coerce_sequence preserves list."""
@@ -134,14 +134,14 @@ class TestSequenceCoercion:
         from codex_ml.cli.train import _coerce_sequence
 
         result = _coerce_sequence("hello")
-        assert result == ["hello"]
+        assert result == ["hello"], "Result must not be empty"
 
     def test_coerce_sequence_with_invalid_type(self):
         """Test _coerce_sequence returns None for invalid types."""
         from codex_ml.cli.train import _coerce_sequence
 
         result = _coerce_sequence(123)
-        assert result is None
+        assert result is None, "Result must not be empty"
 
 
 class TestSanitizePromptSequence:
@@ -153,15 +153,15 @@ class TestSanitizePromptSequence:
 
         result, _changed = _sanitize_prompt_sequence(["hello", "world"])
         assert isinstance(result, list)
-        assert len(result) == 2
+        assert len(result) == 2, "Result must not be empty"
 
     def test_sanitize_prompt_sequence_empty(self):
         """Test _sanitize_prompt_sequence with empty list."""
         from codex_ml.cli.train import _sanitize_prompt_sequence
 
         result, changed = _sanitize_prompt_sequence([])
-        assert result == []
-        assert changed is False
+        assert result == [], "Result must not be empty"
+        assert changed is False, "changed is not valid"
 
     def test_sanitize_prompt_sequence_mixed_types(self):
         """Test _sanitize_prompt_sequence with mixed types."""
@@ -169,7 +169,7 @@ class TestSanitizePromptSequence:
 
         result, _changed = _sanitize_prompt_sequence(["text", 123, {"key": "value"}])
         assert isinstance(result, list)
-        assert len(result) == 3
+        assert len(result) == 3, "Result must not be empty"
 
 
 class TestTrainCLIIntegration:

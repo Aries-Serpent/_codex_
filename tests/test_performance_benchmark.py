@@ -41,20 +41,20 @@ def test_benchmark_result_creation():
         memory_mb=256.0,
     )
 
-    assert result.name == "test_benchmark"
-    assert result.duration_ms == 100.5
-    assert result.throughput == 50.0
-    assert result.memory_mb == 256.0
+    assert result.name == "test_benchmark", "Result must not be empty"
+    assert result.duration_ms == 100.5, "Result must not be empty"
+    assert result.throughput == 50.0, "Result must not be empty"
+    assert result.memory_mb == 256.0, "Result must not be empty"
 
     # Test to_dict
     result_dict = result.to_dict()
-    assert result_dict["name"] == "test_benchmark"
-    assert result_dict["duration_ms"] == 100.5
+    assert result_dict["name"] == "test_benchmark", "Result must not be empty"
+    assert result_dict["duration_ms"] == 100.5, "Result must not be empty"
 
     # Test string representation
     result_str = str(result)
-    assert "test_benchmark" in result_str
-    assert "100.50ms" in result_str
+    assert "test_benchmark" in result_str, "Result must not be empty"
+    assert "100.50ms" in result_str, "Result must not be empty"
 
 
 def test_performance_benchmark_context():
@@ -66,10 +66,10 @@ def test_performance_benchmark_context():
     with benchmark:
         time.sleep(0.1)  # Sleep for 100ms
 
-    assert benchmark.result is not None
-    assert benchmark.result.name == "test_operation"
-    assert benchmark.result.duration_ms >= 100  # At least 100ms
-    assert benchmark.result.duration_ms < 150  # But not too much more
+    assert benchmark.result is not None, "result must be initialized"
+    assert benchmark.result.name == "test_operation", "Result must not be empty"
+    assert benchmark.result.duration_ms >= 100, "duration_ms must be greater than zero"
+    assert benchmark.result.duration_ms < 150, "Result must not be empty"
 
 
 @pytest.mark.slow
@@ -98,12 +98,12 @@ def test_benchmark_training_step():
         warmup_iters=1,
     )
 
-    assert result.name == "training_step"
-    assert result.duration_ms > 0
-    assert result.throughput > 0
-    assert result.metadata["num_iterations"] == 5
-    assert result.metadata["batch_size"] == 4
-    assert "avg_ms_per_step" in result.metadata
+    assert result.name == "training_step", "Result must not be empty"
+    assert result.duration_ms > 0, "duration_ms must be greater than zero"
+    assert result.throughput > 0, "throughput must be greater than zero"
+    assert result.metadata["num_iterations"] == 5, "Result must not be empty"
+    assert result.metadata["batch_size"] == 4, "Result must not be empty"
+    assert "avg_ms_per_step" in result.metadata, "Result must not be empty"
 
 
 def test_benchmark_inference():
@@ -120,12 +120,12 @@ def test_benchmark_inference():
         warmup_iters=2,
     )
 
-    assert result.name == "inference"
-    assert result.duration_ms > 0
-    assert result.throughput > 0
-    assert result.metadata["num_iterations"] == 10
-    assert result.metadata["batch_size"] == 8
-    assert "avg_ms_per_sample" in result.metadata
+    assert result.name == "inference", "Result must not be empty"
+    assert result.duration_ms > 0, "duration_ms must be greater than zero"
+    assert result.throughput > 0, "throughput must be greater than zero"
+    assert result.metadata["num_iterations"] == 10, "Result must not be empty"
+    assert result.metadata["batch_size"] == 8, "Result must not be empty"
+    assert "avg_ms_per_sample" in result.metadata, "Result must not be empty"
 
 
 def test_benchmark_data_loading(disable_torch_profiler):
@@ -141,11 +141,11 @@ def test_benchmark_data_loading(disable_torch_profiler):
         num_batches=10,
     )
 
-    assert result.name == "data_loading"
-    assert result.duration_ms > 0
-    assert result.throughput > 0
-    assert result.metadata["num_batches"] == 10
-    assert "avg_ms_per_batch" in result.metadata
+    assert result.name == "data_loading", "Result must not be empty"
+    assert result.duration_ms > 0, "duration_ms must be greater than zero"
+    assert result.throughput > 0, "throughput must be greater than zero"
+    assert result.metadata["num_batches"] == 10, "Result must not be empty"
+    assert "avg_ms_per_batch" in result.metadata, "Result must not be empty"
 
 
 def test_benchmark_suite():
@@ -168,8 +168,8 @@ def test_benchmark_suite():
         )
     )
 
-    assert len(suite.results) == 2
-    assert suite.name == "test_suite"
+    assert len(suite.results) == 2, "Collection must not be empty"
+    assert suite.name == "test_suite", "name is not valid"
 
     # Test print summary (should not raise)
     suite.print_summary()
@@ -193,16 +193,16 @@ def test_benchmark_suite_save_load(tmp_path):
     output_file = tmp_path / "benchmarks.json"
     suite.save_results(str(output_file))
 
-    assert output_file.exists()
+    assert output_file.exists(), "Condition must be true"
 
     # Load and verify
     with open(output_file) as f:
         data = json.load(f)
 
-    assert data["suite_name"] == "test_suite"
-    assert len(data["results"]) == 1
-    assert data["results"][0]["name"] == "test_op"
-    assert data["results"][0]["duration_ms"] == 150.0
+    assert data["suite_name"] == "test_suite", "Data must not be empty"
+    assert len(data["results"]) == 1, "Collection must not be empty"
+    assert data["results"][0]["name"] == "test_op", "Result must not be empty"
+    assert data["results"][0]["duration_ms"] == 150.0, "Result must not be empty"
 
 
 @pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA not available")
@@ -222,5 +222,5 @@ def test_benchmark_with_gpu():
         warmup_iters=1,
     )
 
-    assert result.gpu_memory_mb is not None
-    assert result.gpu_memory_mb > 0
+    assert result.gpu_memory_mb is not None, "gpu_memory_mb must be initialized"
+    assert result.gpu_memory_mb > 0, "gpu_memory_mb must be greater than zero"

@@ -21,8 +21,8 @@ def test_policy_mapping_includes_tracks_and_capabilities(tmp_path: Path) -> None
 
     target = tmp_path / "policy_map.json"
     written = write_policy_mapping(target, mapping)
-    assert target.exists()
-    assert written["ra_rules"] == RA_RULES
+    assert target.exists(), "Condition must be true"
+    assert written["ra_rules"] == RA_RULES, "Condition must be true"
 
 
 def test_policy_capabilities_have_ra_links() -> None:

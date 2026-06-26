@@ -35,7 +35,7 @@ class TestAuthRouterMount:
         """The OpenAPI spec includes at least one /api/auth path."""
         client = _make_client()
         resp = client.get("/openapi.json")
-        assert resp.status_code == 200
+        assert resp.status_code == 200, "status_code is not valid"
         paths = resp.json().get("paths", {})
         auth_paths = [p for p in paths if p.startswith("/api/auth")]
         assert auth_paths, (
@@ -48,10 +48,10 @@ class TestAuthRouterMount:
         client = _make_client()
         resp = client.post("/api/auth/register", json={})
         # A 422 (validation error) proves the route exists; 404 would mean unmounted.
-        assert (
+        assert (, "Condition must be true"
             resp.status_code != 404
         ), "POST /api/auth/register returned 404 — auth router may not be mounted."
-        assert (
+        assert (, "Condition must be true"
             resp.status_code != 405
         ), "POST /api/auth/register returned 405 — unexpected method restriction."
 
@@ -59,17 +59,17 @@ class TestAuthRouterMount:
         """POST /api/auth/login is reachable (returns 4xx, not 404/405)."""
         client = _make_client()
         resp = client.post("/api/auth/login", json={})
-        assert (
+        assert (, "Condition must be true"
             resp.status_code != 404
         ), "POST /api/auth/login returned 404 — auth router may not be mounted."
-        assert resp.status_code != 405
+        assert resp.status_code != 405, "status_code is not valid"
 
     def test_health_endpoint_unaffected(self):
         """The existing /health endpoint still works after auth router is mounted."""
         client = _make_client()
         resp = client.get("/health")
         # Accept 200 or 404 (endpoint may not be defined); reject 500.
-        assert (
+        assert (, "Condition must be true"
             resp.status_code < 500
         ), f"Health endpoint returned unexpected server error: {resp.status_code}"
 
@@ -77,7 +77,7 @@ class TestAuthRouterMount:
         """The auth router is tagged 'auth' in the OpenAPI spec."""
         client = _make_client()
         resp = client.get("/openapi.json")
-        assert resp.status_code == 200
+        assert resp.status_code == 200, "status_code is not valid"
         tags = {t["name"] for t in resp.json().get("tags", [])}
         # Also check path-level tags as a fallback
         paths = resp.json().get("paths", {})

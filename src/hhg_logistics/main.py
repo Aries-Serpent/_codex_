@@ -26,8 +26,8 @@ try:
     import hydra
 except ImportError as e:
     error_type = type(e).__name__
-    logger.debug(f"ImportError: <ERROR_TYPE>")
-    logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
+    logger.debug("ImportError: <ERROR_TYPE>")
+    logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
     import config_legacy as hydra
 from common.randomness import set_seed  # noqa: E402
 from omegaconf import DictConfig, OmegaConf  # noqa: E402

@@ -15,41 +15,41 @@ from codex.utils.json_safe import (
 class TestSanitizeControlChars:
     def test_no_change_for_clean_string(self):
         text = '{"key": "value"}'
-        assert _sanitize_control_chars(text) == text
+        assert _sanitize_control_chars(text) == text, "Condition must be true"
 
     def test_tab_newline_cr_preserved(self):
         # \t \n \r are legal JSON whitespace — must NOT be escaped
         text = '{"a": "line1\nline2\ttab\rcr"}'
-        assert _sanitize_control_chars(text) == text
+        assert _sanitize_control_chars(text) == text, "Condition must be true"
 
     def test_null_byte_escaped(self):
         text = '{"a": "val\x00ue"}'
         result = _sanitize_control_chars(text)
-        assert "\\u0000" in result
-        assert "\x00" not in result
+        assert "\\u0000" in result, "Result must not be empty"
+        assert "\x00" not in result, "Result must not be empty"
 
     def test_range_0x01_to_0x08_escaped(self):
         for byte in range(0x01, 0x09):
             char = chr(byte)
             text = f'{{"k": "v{char}v"}}'
             result = _sanitize_control_chars(text)
-            assert char not in result
-            assert f"\\u{byte:04x}" in result
+            assert char not in result, "Result must not be empty"
+            assert f"\\u{byte:04x}" in result, "Result must not be empty"
 
     def test_range_0x0b_0x0c_escaped(self):
         for byte in (0x0B, 0x0C):
             char = chr(byte)
             text = f'{{"k": "{char}"}}'
             result = _sanitize_control_chars(text)
-            assert char not in result
-            assert f"\\u{byte:04x}" in result
+            assert char not in result, "Result must not be empty"
+            assert f"\\u{byte:04x}" in result, "Result must not be empty"
 
     def test_range_0x0e_to_0x1f_escaped(self):
         for byte in range(0x0E, 0x20):
             char = chr(byte)
             text = f'{{"k": "{char}"}}'
             result = _sanitize_control_chars(text)
-            assert char not in result
+            assert char not in result, "Result must not be empty"
 
 
 class TestSafeJsonLoads:
@@ -65,7 +65,7 @@ class TestSafeJsonLoads:
 
     def test_bytes_input(self):
         data = safe_json_loads(b'{"a": 1}', source="test")
-        assert data == {"a": 1}
+        assert data == {"a": 1}, "Data must not be empty"
 
     def test_empty_dict(self):
         assert safe_json_loads("{}", source="test") == {}
@@ -79,22 +79,22 @@ class TestSafeJsonLoads:
         raw = '{"data": "hello\x00world"}'
         result = safe_json_loads(raw, source="test-nul")
         # After sanitisation the NUL becomes \u0000 which is a valid JSON escape
-        assert "hello" in result["data"]
-        assert "world" in result["data"]
+        assert "hello" in result["data"], "Result must not be empty"
+        assert "world" in result["data"], "Result must not be empty"
 
     def test_bell_char_in_key_fixed_by_sanitiser(self):
         """Bell character (0x07) inside a key should be sanitised."""
         raw = '{"key\x07name": "value"}'
         result = safe_json_loads(raw, source="test-bell")
         # Key should exist (sanitised form)
-        assert len(result) == 1
+        assert len(result) == 1, "Result must not be empty"
 
     def test_multiple_control_chars_fixed(self):
         """Multiple different control characters in one payload."""
         # \x01, \x1f embedded in a JSON string
         raw = '{"msg": "a\x01b\x1fc"}'
         result = safe_json_loads(raw, source="test-multi")
-        assert "msg" in result
+        assert "msg" in result, "Result must not be empty"
 
     def test_sanitisation_writes_debug_artifact(self, tmp_path, monkeypatch):
         """A sanitised debug artefact should be written to the debug dir."""
@@ -109,9 +109,9 @@ class TestSafeJsonLoads:
         raw = '{"v": "\x00"}'
         jm.safe_json_loads(raw, source="artifact-test")
         artifacts = list(tmp_path.glob("sanitized_artifact_test_*.json"))
-        assert len(artifacts) == 1
+        assert len(artifacts) == 1, "Artifacts must not be empty"
         content = artifacts[0].read_text()
-        assert "\\u0000" in content
+        assert "\\u0000" in content, "Content must not be empty"
 
     # ── Persistent failure (remains invalid after sanitisation) ───────────
 

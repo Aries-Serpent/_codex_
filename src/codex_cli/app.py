@@ -138,8 +138,8 @@ if _USE_TYPER:
                             break
             except OSError as e:
                 error_type = type(e).__name__
-                logger.debug(f"OSError: <ERROR_TYPE>")
-                logger.warning(f"OSError: <ERROR_TYPE>", exc_info=True)
+                logger.debug("OSError: <ERROR_TYPE>")
+                logger.warning("OSError: <ERROR_TYPE>", exc_info=True)
                 description = "Reasoning template"
             entries.append((path.stem, description, path))
         return entries
@@ -155,7 +155,7 @@ if _USE_TYPER:
                 data = yaml.safe_load(handle) or {}
         except (IOError, OSError) as exc:
             error_type = type(exc).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             echo(f"Failed to load {path}: {exc}")
             raise Exit(code=1) from exc
         if not isinstance(data, dict):
@@ -179,8 +179,8 @@ if _USE_TYPER:
                 relative = path.relative_to(Path.cwd())
             except ValueError as e:
                 error_type = type(e).__name__
-                logger.debug(f"ValueError: <ERROR_TYPE>")
-                logger.warning(f"ValueError: <ERROR_TYPE>", exc_info=True)
+                logger.debug("ValueError: <ERROR_TYPE>")
+                logger.warning("ValueError: <ERROR_TYPE>", exc_info=True)
                 relative = path
             echo(f"{name}\t{description} ({relative})")
 
@@ -304,8 +304,8 @@ else:  # pragma: no cover - click fallback
                             break
             except OSError as e:
                 error_type = type(e).__name__
-                logger.debug(f"OSError: <ERROR_TYPE>")
-                logger.warning(f"OSError: <ERROR_TYPE>", exc_info=True)
+                logger.debug("OSError: <ERROR_TYPE>")
+                logger.warning("OSError: <ERROR_TYPE>", exc_info=True)
                 description = "Reasoning template"
             entries.append((path.stem, description, path))
         return entries
@@ -321,7 +321,7 @@ else:  # pragma: no cover - click fallback
                 data = yaml.safe_load(handle) or {}
         except (IOError, OSError) as exc:
             error_type = type(exc).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             echo(f"Failed to load {path}: {exc}")
             raise Exit(code=1) from exc
         if not isinstance(data, dict):
@@ -390,8 +390,8 @@ else:  # pragma: no cover - click fallback
                 relative = path.relative_to(Path.cwd())
             except ValueError as e:
                 error_type = type(e).__name__
-                logger.debug(f"ValueError: <ERROR_TYPE>")
-                logger.warning(f"ValueError: <ERROR_TYPE>", exc_info=True)
+                logger.debug("ValueError: <ERROR_TYPE>")
+                logger.warning("ValueError: <ERROR_TYPE>", exc_info=True)
                 relative = path
             echo(f"{name}\t{description} ({relative})")
 

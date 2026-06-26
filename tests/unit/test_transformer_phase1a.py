@@ -103,23 +103,23 @@ class TestTierEnum:
 
     def test_tier_a_value(self):
         """Test Tier A classification."""
-        assert Tier.A.value == "safe_auto_apply"
+        assert Tier.A.value == "safe_auto_apply", "Value must be initialized"
 
     def test_tier_b_value(self):
         """Test Tier B classification."""
-        assert Tier.B.value == "apply_with_tests"
+        assert Tier.B.value == "apply_with_tests", "Value must be initialized"
 
     def test_tier_c_value(self):
         """Test Tier C classification."""
-        assert Tier.C.value == "suggest_only"
+        assert Tier.C.value == "suggest_only", "Value must be initialized"
 
     def test_tier_members(self):
         """Test all tier members exist."""
         tiers = list(Tier)
-        assert len(tiers) == 3
-        assert Tier.A in tiers
-        assert Tier.B in tiers
-        assert Tier.C in tiers
+        assert len(tiers) == 3, "Tiers must not be empty"
+        assert Tier.A in tiers, "Condition must be true"
+        assert Tier.B in tiers, "Condition must be true"
+        assert Tier.C in tiers, "Condition must be true"
 
 
 # =====================================================================
@@ -141,9 +141,9 @@ class TestPatchDataclass:
             tier=Tier.A,
             description="Test patch",
         )
-        assert patch.file_path == "module.py"
-        assert patch.rule_id == "rule-001"
-        assert patch.tier == Tier.A
+        assert patch.file_path == "module.py", "file_path is not valid"
+        assert patch.rule_id == "rule-001", "rule_id is not valid"
+        assert patch.tier == Tier.A, "tier is not valid"
 
     def test_patch_to_dict(self):
         """Test Patch serialization to dict."""
@@ -157,10 +157,10 @@ class TestPatchDataclass:
             description="Description",
         )
         result = patch.to_dict()
-        assert result["file_path"] == "module.py"
-        assert result["rule_id"] == "rule-001"
-        assert result["tier"] == "B"
-        assert "diff" in result
+        assert result["file_path"] == "module.py", "Result must not be empty"
+        assert result["rule_id"] == "rule-001", "Result must not be empty"
+        assert result["tier"] == "B", "Result must not be empty"
+        assert "diff" in result, "Result must not be empty"
 
     def test_patch_different_tiers(self):
         """Test patches with different tier classifications."""
@@ -174,7 +174,7 @@ class TestPatchDataclass:
                 tier=tier,
                 description="Test",
             )
-            assert patch.tier == tier
+            assert patch.tier == tier, "tier is not valid"
 
 
 # =====================================================================
@@ -192,11 +192,11 @@ class TestTransformResultDataclass:
             snapshot_id="snap-001",
             timestamp=now,
         )
-        assert result.snapshot_id == "snap-001"
-        assert result.timestamp == now
-        assert result.tier_a_patches == []
-        assert result.tier_b_patches == []
-        assert result.applied is False
+        assert result.snapshot_id == "snap-001", "Result must not be empty"
+        assert result.timestamp == now, "Result must not be empty"
+        assert result.tier_a_patches == [], "Result must not be empty"
+        assert result.tier_b_patches == [], "Result must not be empty"
+        assert result.applied is False, "Result must not be empty"
 
     def test_result_with_patches(self):
         """Test TransformResult with patches."""
@@ -210,8 +210,8 @@ class TestTransformResultDataclass:
             tier_b_patches=[patch2],
         )
 
-        assert len(result.tier_a_patches) == 1
-        assert len(result.tier_b_patches) == 1
+        assert len(result.tier_a_patches) == 1, "Collection must not be empty"
+        assert len(result.tier_b_patches) == 1, "Collection must not be empty"
 
     def test_result_to_dict(self):
         """Test TransformResult serialization."""
@@ -224,9 +224,9 @@ class TestTransformResultDataclass:
         )
 
         result_dict = result.to_dict()
-        assert result_dict["snapshot_id"] == "snap-001"
-        assert result_dict["applied"] is True
-        assert len(result_dict["tier_a_patches"]) == 1
+        assert result_dict["snapshot_id"] == "snap-001", "Result must not be empty"
+        assert result_dict["applied"] is True, "Result must not be empty"
+        assert len(result_dict["tier_a_patches"]) == 1, "Collection must not be empty"
 
     def test_result_save_directory_creation(self, tmp_path):
         """Test that save() creates directory."""
@@ -236,7 +236,7 @@ class TestTransformResultDataclass:
             timestamp=datetime.now(timezone.utc),
         )
         result.save(output_dir)
-        assert output_dir.exists()
+        assert output_dir.exists(), "Condition must be true"
 
     def test_result_save_creates_summary(self, tmp_path):
         """Test that save() creates summary file."""
@@ -247,7 +247,7 @@ class TestTransformResultDataclass:
         )
         result.save(output_dir)
         summary_file = output_dir / "transform-summary.json"
-        assert summary_file.exists()
+        assert summary_file.exists(), "Condition must be true"
 
 
 # =====================================================================
@@ -271,7 +271,7 @@ class TestCreateDiff:
         original = "line 1\nline 2\n"
         modified = "line 1\nline 2 modified\n"
         diff = _create_diff(original, modified, "file.py")
-        assert "line 2 modified" in diff or "-" in diff
+        assert "line 2 modified" in diff or "-" in diff, "Condition must be true"
 
     def test_create_diff_includes_filename(self):
         """Test that diff includes filename."""
@@ -279,21 +279,21 @@ class TestCreateDiff:
         modified = "modified"
         diff = _create_diff(original, modified, "test_file.py")
         # Should include file path in diff header
-        assert "test_file.py" in diff or "---" in diff
+        assert "test_file.py" in diff or "---" in diff, "Condition must be true"
 
     def test_create_diff_addition(self):
         """Test diff showing added lines."""
         original = "line 1\n"
         modified = "line 1\nnew line\n"
         diff = _create_diff(original, modified, "file.py")
-        assert "new line" in diff or "+" in diff
+        assert "new line" in diff or "+" in diff, "Condition must be true"
 
     def test_create_diff_deletion(self):
         """Test diff showing removed lines."""
         original = "line 1\nline 2\n"
         modified = "line 1\n"
         diff = _create_diff(original, modified, "file.py")
-        assert "line 2" in diff or "-" in diff
+        assert "line 2" in diff or "-" in diff, "Condition must be true"
 
     def test_create_diff_multiline(self):
         """Test diff of multiline content."""
@@ -321,14 +321,14 @@ class TestResolveTool:
     def test_resolve_tool_nonexistent(self):
         """Test resolving nonexistent tool."""
         result = _resolve_tool("nonexistent_tool_xyz")
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     @patch("src.codex.transform.transformer.shutil.which")
     def test_resolve_tool_with_mock(self, mock_which):
         """Test resolve_tool with mocked which."""
         mock_which.return_value = "/usr/bin/tool"
         result = _resolve_tool("tool")
-        assert result == "/usr/bin/tool"
+        assert result == "/usr/bin/tool", "Result must not be empty"
 
 
 # =====================================================================
@@ -343,60 +343,60 @@ class TestApplyPathlibMigration:
         """Test migrating os.path.join."""
         original = 'path = os.path.join("dir", "file.txt")'
         result = _apply_pathlib_migration(original)
-        assert "Path(" in result
-        assert "/" in result
+        assert "Path(" in result, "Result must not be empty"
+        assert "/" in result, "Result must not be empty"
 
     def test_migrate_os_path_exists(self):
         """Test migrating os.path.exists."""
         original = "if os.path.exists(path): pass"
         result = _apply_pathlib_migration(original)
-        assert ".exists()" in result
+        assert ".exists()" in result, "Result must not be empty"
 
     def test_migrate_os_path_dirname(self):
         """Test migrating os.path.dirname."""
         original = "parent = os.path.dirname(path)"
         result = _apply_pathlib_migration(original)
         # Should have pathlib migration
-        assert ".parent" in result or "Path(" in result
+        assert ".parent" in result or "Path(" in result, "Result must not be empty"
 
     def test_migrate_os_path_basename(self):
         """Test migrating os.path.basename."""
         original = "name = os.path.basename(path)"
         result = _apply_pathlib_migration(original)
-        assert ".name" in result
+        assert ".name" in result, "Result must not be empty"
 
     def test_migrate_os_path_isfile(self):
         """Test migrating os.path.isfile."""
         original = "if os.path.isfile(path): pass"
         result = _apply_pathlib_migration(original)
-        assert ".is_file()" in result
+        assert ".is_file()" in result, "Result must not be empty"
 
     def test_migrate_os_path_isdir(self):
         """Test migrating os.path.isdir."""
         original = "if os.path.isdir(path): pass"
         result = _apply_pathlib_migration(original)
-        assert ".is_dir()" in result
+        assert ".is_dir()" in result, "Result must not be empty"
 
     def test_migrate_adds_pathlib_import(self):
         """Test that migration adds pathlib import if needed."""
         original = 'import os\npath = os.path.join("a", "b")'
         result = _apply_pathlib_migration(original)
         if "Path(" in result:
-            assert "from pathlib import" in result
+            assert "from pathlib import" in result, "Result must not be empty"
 
     def test_migrate_no_changes_needed(self):
         """Test migration on already migrated code."""
         original = 'from pathlib import Path\npath = Path("a") / "b"'
         result = _apply_pathlib_migration(original)
         # Should be mostly unchanged
-        assert "Path" in result
+        assert "Path" in result, "Result must not be empty"
 
     def test_migrate_multiple_patterns(self):
         """Test migrating multiple os.path patterns."""
         original = 'path = os.path.join("dir", "file")\n' "if os.path.exists(path): pass"
         result = _apply_pathlib_migration(original)
         # Should have migrated both patterns
-        assert "/" in result or "Path(" in result
+        assert "/" in result or "Path(" in result, "Result must not be empty"
 
 
 # =====================================================================
@@ -411,12 +411,12 @@ class TestTransformFunction:
         """Test basic transform operation."""
         result = transform(temp_source_files, "snap-001")
         assert isinstance(result, TransformResult)
-        assert result.snapshot_id == "snap-001"
+        assert result.snapshot_id == "snap-001", "Result must not be empty"
 
     def test_transform_dry_run_default(self, temp_source_files):
         """Test that dry_run defaults to True."""
         result = transform(temp_source_files, "snap-001")
-        assert result.applied is False
+        assert result.applied is False, "Result must not be empty"
 
     def test_transform_finds_python_files(self, temp_source_files):
         """Test that transform finds Python files."""
@@ -425,7 +425,7 @@ class TestTransformFunction:
         total_patches = (
             len(result.tier_a_patches) + len(result.tier_b_patches) + len(result.tier_c_suggestions)
         )
-        assert total_patches >= 0
+        assert total_patches >= 0, "total_patches must be greater than zero"
 
     def test_transform_tier_a_patches(self, temp_source_files):
         """Test that Tier A patches are generated."""
@@ -453,7 +453,7 @@ class TestTransformFunction:
     def test_transform_timestamps_set(self, temp_source_files):
         """Test that transform sets timestamp."""
         result = transform(temp_source_files, "snap-001")
-        assert result.timestamp is not None
+        assert result.timestamp is not None, "timestamp must be initialized"
         assert isinstance(result.timestamp, datetime)
 
     def test_transform_empty_directory(self, tmp_path):
@@ -462,7 +462,7 @@ class TestTransformFunction:
         empty_dir.mkdir()
         result = transform(empty_dir, "snap-001")
         # Should not raise, just have no patches
-        assert len(result.tier_a_patches) == 0
+        assert len(result.tier_a_patches) == 0, "Collection must not be empty"
 
     def test_transform_nested_files(self, temp_nested_source):
         """Test transform finds nested Python files."""
@@ -500,7 +500,7 @@ class TestEdgeCases:
         """Test that tier enum is converted to string in dict."""
         patch = Patch("f.py", "o", "m", "d", "r1", Tier.C, "Desc")
         result = patch.to_dict()
-        assert result["tier"] == "C"  # Enum name, not value
+        assert result["tier"] == "C", "Result must not be empty"
 
     def test_transform_result_json_serializable(self, temp_source_files):
         """Test that result is JSON serializable."""
@@ -530,7 +530,7 @@ class TestEdgeCases:
             timestamp=datetime.now(timezone.utc),
             errors=["Error 1", "Error 2"],
         )
-        assert len(result.errors) == 2
+        assert len(result.errors) == 2, "Collection must not be empty"
 
 
 # =====================================================================
@@ -546,13 +546,13 @@ class TestIntegration:
         result1 = transform(temp_source_files, "snap-001")
         result2 = transform(temp_source_files, "snap-001")
         # Same directory should produce same number of patches
-        assert len(result1.tier_a_patches) == len(result2.tier_a_patches)
+        assert len(result1.tier_a_patches) == len(result2.tier_a_patches), "Collection must not be empty"
 
     def test_transform_preserves_original_files(self, temp_source_files):
         """Test that transform doesn't modify files in dry-run."""
         original_content = (temp_source_files / "main.py").read_text()
         transform(temp_source_files, "snap-001", dry_run=True)
-        assert (temp_source_files / "main.py").read_text() == original_content
+        assert (temp_source_files / "main.py").read_text() == original_content, "Content must not be empty"
 
     def test_patch_workflow(self):
         """Test typical patch creation and serialization workflow."""
@@ -566,23 +566,23 @@ class TestIntegration:
             description="Apply Black code formatting",
         )
         patch_dict = patch.to_dict()
-        assert patch_dict["rule_id"] == "format-black"
-        assert patch_dict["tier"] == "A"
+        assert patch_dict["rule_id"] == "format-black", "Condition must be true"
+        assert patch_dict["tier"] == "A", "Condition must be true"
 
     def test_transform_with_multiple_files(self, temp_source_files):
         """Test transform handles multiple files."""
         result = transform(temp_source_files, "snap-002", dry_run=True)
         # Should process all files
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     def test_tier_enum_all_values(self):
         """Test all Tier enum values exist."""
         tiers = [Tier.A, Tier.B, Tier.C]
-        assert len(tiers) == 3
+        assert len(tiers) == 3, "Tiers must not be empty"
         tier_names = [t.name for t in tiers]
-        assert "A" in tier_names
-        assert "B" in tier_names
-        assert "C" in tier_names
+        assert "A" in tier_names, "Condition must be true"
+        assert "B" in tier_names, "Condition must be true"
+        assert "C" in tier_names, "Condition must be true"
 
     def test_patch_to_dict_contains_fields(self):
         """Test Patch to_dict contains all important fields."""
@@ -596,8 +596,8 @@ class TestIntegration:
             description="Test patch",
         )
         patch_dict = patch.to_dict()
-        assert "file_path" in patch_dict or "path" in patch_dict
-        assert "tier" in patch_dict
+        assert "file_path" in patch_dict or "path" in patch_dict, "Condition must be true"
+        assert "tier" in patch_dict, "Condition must be true"
 
     def test_transform_result_fields(self):
         """Test TransformResult has expected fields."""
@@ -606,7 +606,7 @@ class TestIntegration:
             patches=[],
             stats={"A": 0, "B": 0, "C": 0},
         )
-        assert result.snapshot_id == "test-snap"
+        assert result.snapshot_id == "test-snap", "Result must not be empty"
         assert isinstance(result.patches, list)
         assert isinstance(result.stats, dict)
 
@@ -619,4 +619,4 @@ class TestIntegration:
         )
         result_dict = result.to_dict()
         assert isinstance(result_dict, dict)
-        assert "snapshot_id" in result_dict or "id" in result_dict
+        assert "snapshot_id" in result_dict or "id" in result_dict, "Result must not be empty"

@@ -15,7 +15,7 @@ def test_toml_fail_under_from_str_parses_valid_value() -> None:
     fail_under = 73
     """
     got = noxfile._toml_fail_under_from_str(text)  # type: ignore[attr-defined]
-    assert got == "73"
+    assert got == "73", "got is not valid"
 
 
 def test_toml_fail_under_from_str_absent_returns_none() -> None:
@@ -26,7 +26,7 @@ def test_toml_fail_under_from_str_absent_returns_none() -> None:
     show_missing = true
     """
     got = noxfile._toml_fail_under_from_str(text)  # type: ignore[attr-defined]
-    assert got is None
+    assert got is None, "got is not valid"
 
 
 def test_toml_fail_under_from_str_non_int_returns_none() -> None:
@@ -37,4 +37,4 @@ def test_toml_fail_under_from_str_non_int_returns_none() -> None:
     fail_under = "eighty"
     """
     got = noxfile._toml_fail_under_from_str(text)  # type: ignore[attr-defined]
-    assert got is None
+    assert got is None, "got is not valid"

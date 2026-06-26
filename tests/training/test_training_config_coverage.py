@@ -33,10 +33,10 @@ class TestTrainingConfiguration:
             "optimizer": "adam",
         }
 
-        assert config["learning_rate"] == 0.001
-        assert config["batch_size"] == 32
-        assert config["epochs"] == 10
-        assert config["optimizer"] == "adam"
+        assert config["learning_rate"] == 0.001, "Condition must be true"
+        assert config["batch_size"] == 32, "Condition must be true"
+        assert config["epochs"] == 10, "Condition must be true"
+        assert config["optimizer"] == "adam", "Condition must be true"
 
     def test_training_config_validation(self):
         """Test validation of training configuration."""
@@ -47,16 +47,16 @@ class TestTrainingConfiguration:
             "epochs": 10,
         }
 
-        assert valid_config["learning_rate"] > 0
-        assert valid_config["batch_size"] > 0
-        assert valid_config["epochs"] > 0
+        assert valid_config["learning_rate"] > 0, "Value must be greater than zero"
+        assert valid_config["batch_size"] > 0, "Value must be greater than zero"
+        assert valid_config["epochs"] > 0, "Value must be greater than zero"
 
         # Invalid config values
         invalid_lr = {"learning_rate": -0.001}
-        assert invalid_lr["learning_rate"] < 0  # Would fail validation
+        assert invalid_lr["learning_rate"] < 0, "Condition must be true"
 
         invalid_batch = {"batch_size": 0}
-        assert invalid_batch["batch_size"] <= 0  # Would fail validation
+        assert invalid_batch["batch_size"] <= 0, "Condition must be true"
 
     def test_training_config_defaults(self):
         """Test default training configuration values."""
@@ -71,9 +71,9 @@ class TestTrainingConfiguration:
         }
 
         # Verify defaults are sensible
-        assert 0 < defaults["learning_rate"] < 1
+        assert 0 < defaults["learning_rate"] < 1, "0 is not valid"
         assert defaults["batch_size"] in [8, 16, 32, 64]
-        assert defaults["epochs"] > 0
+        assert defaults["epochs"] > 0, "Value must be greater than zero"
         assert defaults["optimizer"] in ["adam", "adamw", "sgd"]
 
     def test_training_config_merging(self):
@@ -92,9 +92,9 @@ class TestTrainingConfiguration:
         # Merge configs
         merged = {**base_config, **override_config}
 
-        assert merged["learning_rate"] == 1e-3  # Overridden
-        assert merged["batch_size"] == 16  # From base
-        assert merged["optimizer"] == "sgd"  # New key
+        assert merged["learning_rate"] == 1e-3, "Condition must be true"
+        assert merged["batch_size"] == 16, "Condition must be true"
+        assert merged["optimizer"] == "sgd", "Condition must be true"
 
     def test_training_config_from_dict(self):
         """Test creating training config from dictionary."""
@@ -107,8 +107,8 @@ class TestTrainingConfiguration:
 
         # Config should preserve all values
         for key, value in config_dict.items():
-            assert key in config_dict
-            assert config_dict[key] == value
+            assert key in config_dict, "Condition must be true"
+            assert config_dict[key] == value, "Value must be initialized"
 
 
 class TestOptimizerSetup:
@@ -134,9 +134,9 @@ class TestOptimizerSetup:
             eps=1e-8,
         )
 
-        assert optimizer.defaults["lr"] == 0.001
+        assert optimizer.defaults["lr"] == 0.001, "Condition must be true"
         assert optimizer.defaults["betas"] == (0.9, 0.999)
-        assert optimizer.defaults["eps"] == 1e-8
+        assert optimizer.defaults["eps"] == 1e-8, "Condition must be true"
 
     def test_adamw_optimizer_setup(self, simple_model):
         """Test setting up AdamW optimizer with weight decay."""
@@ -148,8 +148,8 @@ class TestOptimizerSetup:
             weight_decay=0.01,
         )
 
-        assert optimizer.defaults["lr"] == 5e-5
-        assert optimizer.defaults["weight_decay"] == 0.01
+        assert optimizer.defaults["lr"] == 5e-5, "Condition must be true"
+        assert optimizer.defaults["weight_decay"] == 0.01, "Condition must be true"
 
     def test_sgd_optimizer_setup(self, simple_model):
         """Test setting up SGD optimizer with momentum."""
@@ -162,9 +162,9 @@ class TestOptimizerSetup:
             nesterov=True,
         )
 
-        assert optimizer.defaults["lr"] == 0.1
-        assert optimizer.defaults["momentum"] == 0.9
-        assert optimizer.defaults["nesterov"] is True
+        assert optimizer.defaults["lr"] == 0.1, "Condition must be true"
+        assert optimizer.defaults["momentum"] == 0.9, "Condition must be true"
+        assert optimizer.defaults["nesterov"] is True, "Condition must be true"
 
     def test_optimizer_parameter_groups(self, simple_model):
         """Test optimizer with different parameter groups."""
@@ -178,9 +178,9 @@ class TestOptimizerSetup:
 
         optimizer = optim.Adam(params)
 
-        assert len(optimizer.param_groups) == 2
-        assert optimizer.param_groups[0]["lr"] == 0.01
-        assert optimizer.param_groups[1]["lr"] == 0.001
+        assert len(optimizer.param_groups) == 2, "Collection must not be empty"
+        assert optimizer.param_groups[0]["lr"] == 0.01, "Condition must be true"
+        assert optimizer.param_groups[1]["lr"] == 0.001, "Condition must be true"
 
     def test_optimizer_zero_grad(self, simple_model):
         """Test optimizer zero_grad functionality."""
@@ -195,13 +195,13 @@ class TestOptimizerSetup:
         loss.backward()
 
         # Check gradients exist
-        assert simple_model.weight.grad is not None
+        assert simple_model.weight.grad is not None, "grad must be initialized"
 
         # Zero gradients
         optimizer.zero_grad()
 
         # Check gradients are zeroed (set to None by zero_grad)
-        assert simple_model.weight.grad is None
+        assert simple_model.weight.grad is None, "grad is not valid"
 
     def test_optimizer_step(self, simple_model):
         """Test optimizer step updates parameters."""
@@ -247,13 +247,13 @@ class TestLearningRateScheduling:
         scheduler = StepLR(optimizer_with_model, step_size=5, gamma=0.1)
 
         # Initial LR
-        assert abs(optimizer_with_model.param_groups[0]["lr"] - 0.1) < 1e-6
+        assert abs(optimizer_with_model.param_groups[0]["lr"] - 0.1) < 1e-6, "Condition must be true"
 
         # After 5 steps
         for _ in range(5):
             scheduler.step()
 
-        assert abs(optimizer_with_model.param_groups[0]["lr"] - 0.01) < 1e-6
+        assert abs(optimizer_with_model.param_groups[0]["lr"] - 0.01) < 1e-6, "Condition must be true"
 
     def test_exponential_lr_scheduler(self, optimizer_with_model):
         """Test ExponentialLR scheduler."""
@@ -269,7 +269,7 @@ class TestLearningRateScheduling:
         expected_lr = initial_lr * 0.9
         actual_lr = optimizer_with_model.param_groups[0]["lr"]
 
-        assert abs(actual_lr - expected_lr) < 1e-6
+        assert abs(actual_lr - expected_lr) < 1e-6, "Condition must be true"
 
     def test_cosine_annealing_scheduler(self, optimizer_with_model):
         """Test CosineAnnealingLR scheduler."""
@@ -287,8 +287,8 @@ class TestLearningRateScheduling:
             scheduler.step()
 
         # First LR should be max, should decrease, then increase back
-        assert lrs[0] > lrs[T_max // 2]  # Decreases initially
-        assert lrs[-1] >= eta_min  # Doesn't go below min
+        assert lrs[0] > lrs[T_max // 2], "Value must be greater than zero"
+        assert lrs[-1] >= eta_min, "Value must be greater than zero"
 
     def test_reduce_on_plateau_scheduler(self, optimizer_with_model):
         """Test ReduceLROnPlateau scheduler."""
@@ -308,7 +308,7 @@ class TestLearningRateScheduling:
             scheduler.step(1.0)  # Constant metric - no improvement
 
         # LR should have been reduced after patience exceeded
-        assert optimizer_with_model.param_groups[0]["lr"] < initial_lr
+        assert optimizer_with_model.param_groups[0]["lr"] < initial_lr, "Condition must be true"
 
     def test_linear_warmup_scheduling(self):
         """Test linear warmup scheduling logic."""
@@ -326,9 +326,9 @@ class TestLearningRateScheduling:
         lr_at_99 = get_lr_with_warmup(99, warmup_steps, max_lr)
         lr_at_100 = get_lr_with_warmup(100, warmup_steps, max_lr)
 
-        assert lr_at_0 < lr_at_50 < lr_at_99
-        assert lr_at_99 == max_lr
-        assert lr_at_100 == max_lr
+        assert lr_at_0 < lr_at_50 < lr_at_99, "lr_at_0 is not valid"
+        assert lr_at_99 == max_lr, "lr_at_99 is not valid"
+        assert lr_at_100 == max_lr, "lr_at_100 is not valid"
 
     def test_scheduler_state_dict(self, optimizer_with_model):
         """Test saving and loading scheduler state."""
@@ -350,7 +350,7 @@ class TestLearningRateScheduling:
         new_scheduler.load_state_dict(state)
 
         # State should match
-        assert new_scheduler.last_epoch == scheduler.last_epoch
+        assert new_scheduler.last_epoch == scheduler.last_epoch, "last_epoch is not valid"
 
 
 class TestTrainingLoopIntegration:

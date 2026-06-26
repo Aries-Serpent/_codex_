@@ -14,11 +14,11 @@ def test_perplexity_from_logits():
     targets = [0, 1]
     ppl = perplexity(logits, targets, from_logits=True)
     expected = math.exp(-(math.log(math.e / (math.e + 1)) + math.log(math.e / (math.e + 1))) / 2)
-    assert abs(ppl - expected) < 1e-3
+    assert abs(ppl - expected) < 1e-3, "Condition must be true"
 
 
 def test_token_accuracy():
     preds = [1, 2, 3, 4]
     targets = [1, 0, 3, 5]
     acc = token_accuracy(preds, targets)
-    assert acc == 0.5
+    assert acc == 0.5, "acc is not valid"

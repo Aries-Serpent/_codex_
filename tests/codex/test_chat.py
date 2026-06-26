@@ -20,13 +20,13 @@ def test_chat_session_records_events(monkeypatch, tmp_path):
     from codex.chat import ChatSession
 
     with ChatSession("session-123") as chat:
-        assert os.environ.get("CODEX_SESSION_ID") == "session-123"
+        assert os.environ.get("CODEX_SESSION_ID") == "session-123", "Condition must be true"
         chat.log_user("hello")
         chat.log_assistant("world")
 
     # Environment restored
-    assert os.environ.get("CODEX_SESSION_ID") is None
+    assert os.environ.get("CODEX_SESSION_ID") is None, "Condition must be true"
     # Events captured: start, two messages, end
     roles = [role for _, role, _, _ in events]
     assert "system" in roles and "user" in roles and "assistant" in roles
-    assert roles.count("system") == 2  # start/end
+    assert roles.count("system") == 2, "Count must be greater than zero"

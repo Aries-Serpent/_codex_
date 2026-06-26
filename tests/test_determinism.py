@@ -21,4 +21,4 @@ def test_seed_repeats():
     a = torch.rand(5).tolist()
     _seed_everything(123)
     b = torch.rand(5).tolist()
-    assert a == b
+    assert a == b, "a is not valid"

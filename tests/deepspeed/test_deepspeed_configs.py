@@ -22,7 +22,7 @@ class TestDeepSpeedZeROStages:
             }
         }
 
-        assert config["zero_optimization"]["stage"] == 0
+        assert config["zero_optimization"]["stage"] == 0, "Condition must be true"
         # Stage 0 = no optimization, baseline
 
     def test_zero_stage_1_config(self):
@@ -35,9 +35,9 @@ class TestDeepSpeedZeROStages:
             }
         }
 
-        assert config["zero_optimization"]["stage"] == 1
-        assert "reduce_bucket_size" in config["zero_optimization"]
-        assert "allgather_bucket_size" in config["zero_optimization"]
+        assert config["zero_optimization"]["stage"] == 1, "Condition must be true"
+        assert "reduce_bucket_size" in config["zero_optimization"], "Condition must be true"
+        assert "allgather_bucket_size" in config["zero_optimization"], "Condition must be true"
 
     def test_zero_stage_2_config(self):
         """Test ZeRO Stage 2 (optimizer + gradient state partitioning) configuration"""
@@ -52,9 +52,9 @@ class TestDeepSpeedZeROStages:
             }
         }
 
-        assert config["zero_optimization"]["stage"] == 2
-        assert config["zero_optimization"]["contiguous_gradients"] is True
-        assert config["zero_optimization"]["overlap_comm"] is True
+        assert config["zero_optimization"]["stage"] == 2, "Condition must be true"
+        assert config["zero_optimization"]["contiguous_gradients"] is True, "Condition must be true"
+        assert config["zero_optimization"]["overlap_comm"] is True, "Condition must be true"
 
     def test_zero_stage_3_config(self):
         """Test ZeRO Stage 3 (full parameter partitioning) configuration"""
@@ -70,9 +70,9 @@ class TestDeepSpeedZeROStages:
             }
         }
 
-        assert config["zero_optimization"]["stage"] == 3
-        assert "stage3_prefetch_bucket_size" in config["zero_optimization"]
-        assert "stage3_param_persistence_threshold" in config["zero_optimization"]
+        assert config["zero_optimization"]["stage"] == 3, "Condition must be true"
+        assert "stage3_prefetch_bucket_size" in config["zero_optimization"], "Condition must be true"
+        assert "stage3_param_persistence_threshold" in config["zero_optimization"], "Condition must be true"
 
     def test_invalid_zero_stage(self):
         """Test invalid ZeRO stage raises appropriate error"""
@@ -102,8 +102,8 @@ class TestOptimizerStatePartitioning:
             }
         }
 
-        assert config["zero_optimization"]["offload_optimizer"]["device"] == "cpu"
-        assert config["zero_optimization"]["offload_optimizer"]["pin_memory"] is True
+        assert config["zero_optimization"]["offload_optimizer"]["device"] == "cpu", "Condition must be true"
+        assert config["zero_optimization"]["offload_optimizer"]["pin_memory"] is True, "Condition must be true"
 
     def test_optimizer_state_nvme_offload(self):
         """Test NVMe offloading of optimizer states"""
@@ -118,8 +118,8 @@ class TestOptimizerStatePartitioning:
             }
         }
 
-        assert config["zero_optimization"]["offload_optimizer"]["device"] == "nvme"
-        assert "nvme_path" in config["zero_optimization"]["offload_optimizer"]
+        assert config["zero_optimization"]["offload_optimizer"]["device"] == "nvme", "Condition must be true"
+        assert "nvme_path" in config["zero_optimization"]["offload_optimizer"], "Condition must be true"
 
     def test_parameter_offload(self):
         """Test parameter offloading (ZeRO Stage 3)"""
@@ -133,7 +133,7 @@ class TestOptimizerStatePartitioning:
             }
         }
 
-        assert config["zero_optimization"]["offload_param"]["device"] == "cpu"
+        assert config["zero_optimization"]["offload_param"]["device"] == "cpu", "Condition must be true"
 
     def test_optimizer_states_config(self):
         """Test optimizer state management"""
@@ -146,8 +146,8 @@ class TestOptimizerStatePartitioning:
         }
 
         # Validate bucket sizes for communication optimization
-        assert config["zero_optimization"]["reduce_bucket_size"] > 0
-        assert config["zero_optimization"]["allgather_bucket_size"] > 0
+        assert config["zero_optimization"]["reduce_bucket_size"] > 0, "Value must be greater than zero"
+        assert config["zero_optimization"]["allgather_bucket_size"] > 0, "Value must be greater than zero"
 
 
 class TestGradientCheckpointing:
@@ -164,9 +164,9 @@ class TestGradientCheckpointing:
             }
         }
 
-        assert config["activation_checkpointing"]["partition_activations"] is True
-        assert config["activation_checkpointing"]["contiguous_memory_optimization"] is True
-        assert config["activation_checkpointing"]["number_checkpoints"] == 4
+        assert config["activation_checkpointing"]["partition_activations"] is True, "Condition must be true"
+        assert config["activation_checkpointing"]["contiguous_memory_optimization"] is True, "Condition must be true"
+        assert config["activation_checkpointing"]["number_checkpoints"] == 4, "Condition must be true"
 
     def test_cpu_checkpointing(self):
         """Test CPU-based activation checkpointing"""
@@ -178,7 +178,7 @@ class TestGradientCheckpointing:
             }
         }
 
-        assert config["activation_checkpointing"]["cpu_checkpointing"] is True
+        assert config["activation_checkpointing"]["cpu_checkpointing"] is True, "Condition must be true"
 
     def test_gradient_checkpointing_config(self):
         """Test gradient checkpointing parameters"""
@@ -187,8 +187,8 @@ class TestGradientCheckpointing:
             "gradient_clipping": 1.0,
         }
 
-        assert config["gradient_accumulation_steps"] > 0
-        assert config["gradient_clipping"] > 0
+        assert config["gradient_accumulation_steps"] > 0, "Value must be greater than zero"
+        assert config["gradient_clipping"] > 0, "Value must be greater than zero"
 
     def test_activation_memory_optimization(self):
         """Test activation memory optimization settings"""
@@ -201,7 +201,7 @@ class TestGradientCheckpointing:
         }
 
         # Validate memory optimization settings
-        assert config["activation_checkpointing"]["partition_activations"] is True
+        assert config["activation_checkpointing"]["partition_activations"] is True, "Condition must be true"
 
 
 class TestMixedPrecisionConfigs:
@@ -220,9 +220,9 @@ class TestMixedPrecisionConfigs:
             }
         }
 
-        assert config["fp16"]["enabled"] is True
-        assert config["fp16"]["loss_scale"] == 0  # Dynamic loss scaling
-        assert config["fp16"]["initial_scale_power"] == 16
+        assert config["fp16"]["enabled"] is True, "Condition must be true"
+        assert config["fp16"]["loss_scale"] == 0, "Condition must be true"
+        assert config["fp16"]["initial_scale_power"] == 16, "Condition must be true"
 
     def test_bf16_config(self):
         """Test BF16 mixed precision configuration"""
@@ -232,7 +232,7 @@ class TestMixedPrecisionConfigs:
             }
         }
 
-        assert config["bf16"]["enabled"] is True
+        assert config["bf16"]["enabled"] is True, "Condition must be true"
 
     def test_amp_config(self):
         """Test automatic mixed precision configuration"""
@@ -243,7 +243,7 @@ class TestMixedPrecisionConfigs:
             }
         }
 
-        assert config["amp"]["enabled"] is True
+        assert config["amp"]["enabled"] is True, "Condition must be true"
         assert config["amp"]["opt_level"] in ["O0", "O1", "O2", "O3"]
 
     def test_mixed_precision_exclusions(self):
@@ -259,7 +259,7 @@ class TestMixedPrecisionConfigs:
         }
 
         # Validate mutual exclusivity
-        assert not (config["fp16"]["enabled"] and config["amp"]["enabled"])
+        assert not (config["fp16"]["enabled"] and config["amp"]["enabled"]), "Condition must be true"
 
 
 class TestDeepSpeedIntegration:
@@ -303,10 +303,10 @@ class TestDeepSpeedIntegration:
         }
 
         # Validate complete config structure
-        assert "train_batch_size" in config
-        assert "optimizer" in config
-        assert "scheduler" in config
-        assert "zero_optimization" in config
+        assert "train_batch_size" in config, "Condition must be true"
+        assert "optimizer" in config, "Condition must be true"
+        assert "scheduler" in config, "Condition must be true"
+        assert "zero_optimization" in config, "Condition must be true"
 
         # Validate batch size calculations
         batch_size = config["train_batch_size"]
@@ -315,7 +315,7 @@ class TestDeepSpeedIntegration:
 
         # Should satisfy: train_batch_size = micro_batch * grad_accum * world_size
         # For single GPU: batch_size = micro_batch * grad_accum
-        assert batch_size == micro_batch * grad_accum
+        assert batch_size == micro_batch * grad_accum, "batch_size is not valid"
 
     def test_config_validation_batch_sizes(self):
         """Test batch size configuration validation"""
@@ -326,7 +326,7 @@ class TestDeepSpeedIntegration:
         }
 
         # Validate relationship
-        assert config["train_batch_size"] == (
+        assert config["train_batch_size"] == (, "Condition must be true"
             config["train_micro_batch_size_per_gpu"] * config["gradient_accumulation_steps"]
         )
 
@@ -341,7 +341,7 @@ class TestDeepSpeedIntegration:
                 }
             }
 
-            assert config["zero_optimization"]["stage"] in stages
+            assert config["zero_optimization"]["stage"] in stages, "Condition must be true"
 
     def test_optimizer_config_validation(self):
         """Test optimizer configuration validation"""
@@ -357,8 +357,8 @@ class TestDeepSpeedIntegration:
                 }
             }
 
-            assert config["optimizer"]["type"] in valid_optimizers
-            assert "lr" in config["optimizer"]["params"]
+            assert config["optimizer"]["type"] in valid_optimizers, "Condition must be true"
+            assert "lr" in config["optimizer"]["params"], "Condition must be true"
 
     def test_scheduler_config_validation(self):
         """Test learning rate scheduler configuration"""
@@ -372,10 +372,10 @@ class TestDeepSpeedIntegration:
             }
         }
 
-        assert config["scheduler"]["type"] == "WarmupDecayLR"
-        assert config["scheduler"]["params"]["warmup_num_steps"] > 0
-        assert config["scheduler"]["params"]["total_num_steps"] > 0
-        assert (
+        assert config["scheduler"]["type"] == "WarmupDecayLR", "Condition must be true"
+        assert config["scheduler"]["params"]["warmup_num_steps"] > 0, "Value must be greater than zero"
+        assert config["scheduler"]["params"]["total_num_steps"] > 0, "Value must be greater than zero"
+        assert (, "Condition must be true"
             config["scheduler"]["params"]["warmup_num_steps"]
             < config["scheduler"]["params"]["total_num_steps"]
         )
@@ -400,7 +400,7 @@ class TestDeepSpeedConfigFiles:
         with open(config_file, "r") as f:
             loaded_config = json.load(f)
 
-        assert loaded_config == config
+        assert loaded_config == config, "loaded_config is not valid"
 
     def test_config_minimal_valid(self):
         """Test minimal valid DeepSpeed configuration"""
@@ -409,8 +409,8 @@ class TestDeepSpeedConfigFiles:
         }
 
         # Minimal config should have at least train_batch_size
-        assert "train_batch_size" in config
-        assert config["train_batch_size"] > 0
+        assert "train_batch_size" in config, "Condition must be true"
+        assert config["train_batch_size"] > 0, "Value must be greater than zero"
 
     def test_config_with_all_features(self):
         """Test configuration with all major features"""
@@ -437,11 +437,11 @@ class TestDeepSpeedConfigFiles:
         }
 
         # Validate all major sections present
-        assert "optimizer" in config
-        assert "scheduler" in config
-        assert "fp16" in config or "bf16" in config
-        assert "zero_optimization" in config
-        assert "activation_checkpointing" in config
+        assert "optimizer" in config, "Condition must be true"
+        assert "scheduler" in config, "Condition must be true"
+        assert "fp16" in config or "bf16" in config, "Condition must be true"
+        assert "zero_optimization" in config, "Condition must be true"
+        assert "activation_checkpointing" in config, "Condition must be true"
 
 
 class TestConfigValidation:
@@ -459,7 +459,7 @@ class TestConfigValidation:
         }
 
         if config["zero_optimization"]["stage"] == 3:
-            assert "stage3_prefetch_bucket_size" in config["zero_optimization"]
+            assert "stage3_prefetch_bucket_size" in config["zero_optimization"], "Condition must be true"
 
     def test_validate_offload_requirements(self):
         """Test offload configuration requirements"""
@@ -475,7 +475,7 @@ class TestConfigValidation:
 
         # Validate offload config structure
         if "offload_optimizer" in config["zero_optimization"]:
-            assert "device" in config["zero_optimization"]["offload_optimizer"]
+            assert "device" in config["zero_optimization"]["offload_optimizer"], "Condition must be true"
 
     def test_validate_precision_config(self):
         """Test precision configuration validation"""
@@ -506,4 +506,4 @@ class TestConfigValidation:
 
         # Memory parameters should be positive
         if "stage3_max_live_parameters" in config["zero_optimization"]:
-            assert config["zero_optimization"]["stage3_max_live_parameters"] > 0
+            assert config["zero_optimization"]["stage3_max_live_parameters"] > 0, "Value must be greater than zero"

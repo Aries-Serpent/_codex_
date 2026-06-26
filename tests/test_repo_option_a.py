@@ -15,7 +15,7 @@ def test_build_snapshot_and_search_and_immutable():
     if ARTIFACT_DB.exists():
         ARTIFACT_DB.unlink()
     build_snapshot()
-    assert ARTIFACT_DB.exists()
+    assert ARTIFACT_DB.exists(), "Condition must be true"
     con = sqlite3.connect(ARTIFACT_DB)
     try:
         rows = con.execute(

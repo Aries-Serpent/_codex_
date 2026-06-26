@@ -15,8 +15,8 @@ class TestMLflowTracking:
             "experiment_name": "test-experiment",
             "run_name": "test-run",
         }
-        assert "tracking_uri" in config
-        assert "experiment_name" in config
+        assert "tracking_uri" in config, "Condition must be true"
+        assert "experiment_name" in config, "Condition must be true"
 
     def test_mlflow_params_logging(self, monkeypatch):
         """Test parameter logging pattern."""
@@ -41,7 +41,7 @@ class TestWandbIntegration:
             "entity": "test-entity",
             "name": "test-run",
         }
-        assert "project" in config
+        assert "project" in config, "Condition must be true"
 
 
 class TestMetadataIntegrity:
@@ -55,8 +55,8 @@ class TestMetadataIntegrity:
             "parameters": {},
             "metrics": {},
         }
-        assert "experiment_id" in metadata
-        assert "timestamp" in metadata
+        assert "experiment_id" in metadata, "Data must not be empty"
+        assert "timestamp" in metadata, "Data must not be empty"
 
 
 class TestReproducibility:
@@ -65,5 +65,5 @@ class TestReproducibility:
     def test_seed_tracking(self):
         """Test seed is tracked in metadata."""
         metadata = {"seed": 42, "model": "test"}
-        assert "seed" in metadata
+        assert "seed" in metadata, "Data must not be empty"
         assert isinstance(metadata["seed"], int)

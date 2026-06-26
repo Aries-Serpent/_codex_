@@ -31,7 +31,7 @@ def test_prune_removes_old(tmp_path):
             "90",
         ]
     )
-    assert code == 0
+    assert code == 0, "code is not valid"
 
     files = list(root.glob("ratelimit_*.json"))
-    assert len(files) == 1
+    assert len(files) == 1, "Files must not be empty"

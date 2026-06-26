@@ -366,7 +366,7 @@ class TokenRotationManager:
                 f.write(event.to_jsonl() + "\n")
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.error(f"Failed to write audit log: <ERROR_TYPE>")
+            logger.error("Failed to write audit log: <ERROR_TYPE>")
 
 
 def check_token_rotation_needed(

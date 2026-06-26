@@ -36,14 +36,14 @@ def test_manager_basic(tmp_path):
         cb.on_step_end(None, state, control)
 
     ckpts = list(tmp_path.glob("step-*.pt"))
-    assert len(ckpts) == 1
-    assert ckpts[0].name == "step-4.pt"
+    assert len(ckpts) == 1, "Ckpts must not be empty"
+    assert ckpts[0].name == "step-4.pt", "name is not valid"
 
 
 def test_maybe_save_ignores_zero_save_steps(tmp_path):
     mgr = CheckpointManager(tmp_path, keep_last=2)
     assert mgr.maybe_save(step=0, payload=b"x", metrics=None, save_steps=0) is None
-    assert list(tmp_path.glob("ckpt-*.pt")) == []
+    assert list(tmp_path.glob("ckpt-*.pt")) == [], "Condition must be true"
 
 
 def test_prune_preserves_best_checkpoint_when_best_path_is_absolute(tmp_path):
@@ -55,5 +55,5 @@ def test_prune_preserves_best_checkpoint_when_best_path_is_absolute(tmp_path):
     mgr = CheckpointManager(tmp_path, keep_last=1, metric="loss", keep_best=1)
     mgr.save_now(1, b"a", {"loss": 0.1})
     mgr.save_now(2, b"b", {"loss": 0.2})
-    assert (tmp_path / "ckpt-1.pt").exists()
-    assert (tmp_path / "ckpt-2.pt").exists()
+    assert (tmp_path / "ckpt-1.pt").exists(), "Condition must be true"
+    assert (tmp_path / "ckpt-2.pt").exists(), "Condition must be true"

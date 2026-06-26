@@ -122,7 +122,7 @@ Duration Percentiles:
 ```
 ✅ Semgrep SAST:           0 issues (0 critical, 0 high)
 ✅ Dependency Audit:       0 vulnerabilities
-✅ Secret Scanning:        0 secrets detected
+✅ Secret Scanning:        0 secrets detected  # pragma: allowlist secret
 ✅ SBOM Verification:      All packages verified
 ✅ License Compliance:     All licenses compliant
 ✅ Code Review:            30/30 approved

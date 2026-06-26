@@ -22,9 +22,9 @@ This is the body."""
 
         frontmatter, body = _split_frontmatter(content)
 
-        assert frontmatter["name"] == "test_skill"
-        assert frontmatter["description"] == "A test skill"
-        assert "Body content" in body
+        assert frontmatter["name"] == "test_skill", "Condition must be true"
+        assert frontmatter["description"] == "A test skill", "Condition must be true"
+        assert "Body content" in body, "Content must not be empty"
 
     def test_no_frontmatter(self):
         """Should return empty dict and original content when no frontmatter."""
@@ -32,8 +32,8 @@ This is the body."""
 
         frontmatter, body = _split_frontmatter(content)
 
-        assert frontmatter == {}
-        assert body == content
+        assert frontmatter == {}, "frontmatter is not valid"
+        assert body == content, "Content must not be empty"
 
     def test_empty_frontmatter(self):
         """Should handle empty frontmatter gracefully."""
@@ -43,8 +43,8 @@ Body content"""
 
         frontmatter, body = _split_frontmatter(content)
 
-        assert frontmatter == {}
-        assert "Body content" in body
+        assert frontmatter == {}, "frontmatter is not valid"
+        assert "Body content" in body, "Content must not be empty"
 
     def test_invalid_yaml_frontmatter(self):
         """Should handle invalid YAML gracefully."""
@@ -56,8 +56,8 @@ Body content"""
         frontmatter, body = _split_frontmatter(content)
 
         # Should return empty dict on parse error
-        assert frontmatter == {}
-        assert "Body content" in body
+        assert frontmatter == {}, "frontmatter is not valid"
+        assert "Body content" in body, "Content must not be empty"
 
     def test_frontmatter_not_dict(self):
         """Should handle frontmatter that's not a mapping."""
@@ -70,7 +70,7 @@ Body content"""
         frontmatter, body = _split_frontmatter(content)
 
         # Should return empty dict when not a mapping
-        assert frontmatter == {}
+        assert frontmatter == {}, "frontmatter is not valid"
 
     def test_complex_yaml_frontmatter(self):
         """Should handle complex YAML structures."""
@@ -86,9 +86,9 @@ Body"""
 
         frontmatter, body = _split_frontmatter(content)
 
-        assert frontmatter["name"] == "skill"
-        assert "tag1" in frontmatter["tags"]
-        assert frontmatter["config"]["timeout"] == 100
+        assert frontmatter["name"] == "skill", "Condition must be true"
+        assert "tag1" in frontmatter["tags"], "Condition must be true"
+        assert frontmatter["config"]["timeout"] == 100, "Condition must be true"
 
 
 class TestSkillDocLoader:
@@ -114,11 +114,11 @@ This is a test skill.""")
             loader = SkillDocLoader()
             manifest = loader.load_manifest(md_file)
 
-            assert manifest.name == "test_skill"
-            assert manifest.description == "A test skill for validation"
-            assert "skill.test" in manifest.capability_tags
-            assert manifest.enforcement_tier == "ADVISORY"
-            assert manifest.doc_path == str(md_file)
+            assert manifest.name == "test_skill", "name is not valid"
+            assert manifest.description == "A test skill for validation", "description is not valid"
+            assert "skill.test" in manifest.capability_tags, "Condition must be true"
+            assert manifest.enforcement_tier == "ADVISORY", "enforcement_tier is not valid"
+            assert manifest.doc_path == str(md_file), "doc_path is not valid"
 
     def test_load_manifest_with_title_fallback(self):
         """Should use title as fallback when name is missing."""
@@ -133,7 +133,7 @@ Content""")
             loader = SkillDocLoader()
             manifest = loader.load_manifest(md_file)
 
-            assert manifest.name == "My Title"
+            assert manifest.name == "My Title", "name is not valid"
 
     def test_load_manifest_with_filename_fallback(self):
         """Should use filename as fallback when name/title missing."""
@@ -148,7 +148,7 @@ Content""")
             loader = SkillDocLoader()
             manifest = loader.load_manifest(md_file)
 
-            assert manifest.name == "default_name"
+            assert manifest.name == "default_name", "name is not valid"
 
     def test_load_manifest_with_metadata(self):
         """Should preserve custom metadata fields."""
@@ -165,8 +165,8 @@ Content""")
             loader = SkillDocLoader()
             manifest = loader.load_manifest(md_file)
 
-            assert manifest.metadata["custom_field"] == "custom_value"
-            assert manifest.metadata["another_field"] == 123
+            assert manifest.metadata["custom_field"] == "custom_value", "Data must not be empty"
+            assert manifest.metadata["another_field"] == 123, "Data must not be empty"
 
     def test_load_manifest_with_budget_and_timeout(self):
         """Should load budget_tokens and timeout_ms."""
@@ -183,8 +183,8 @@ Content""")
             loader = SkillDocLoader()
             manifest = loader.load_manifest(md_file)
 
-            assert manifest.budget_tokens == 5000
-            assert manifest.timeout_ms == 10000
+            assert manifest.budget_tokens == 5000, "budget_tokens is not valid"
+            assert manifest.timeout_ms == 10000, "timeout_ms is not valid"
 
     def test_load_manifest_nonexistent_file(self):
         """Should raise FileNotFoundError for nonexistent file."""
@@ -211,10 +211,10 @@ Content {i}""")
             paths = [tmpdir_path / f"skill{i}.md" for i in range(3)]
             manifests = loader.load_many(paths)
 
-            assert len(manifests) == 3
-            assert manifests[0].name == "skill_0"
-            assert manifests[1].name == "skill_1"
-            assert manifests[2].name == "skill_2"
+            assert len(manifests) == 3, "Manifests must not be empty"
+            assert manifests[0].name == "skill_0", "name is not valid"
+            assert manifests[1].name == "skill_1", "name is not valid"
+            assert manifests[2].name == "skill_2", "name is not valid"
 
     def test_load_many_with_missing_file(self):
         """Should skip missing files and continue loading."""
@@ -236,8 +236,8 @@ Content""")
             manifests = loader.load_many(paths)
 
             # Should still load the valid file
-            assert len(manifests) == 1
-            assert manifests[0].name == "skill"
+            assert len(manifests) == 1, "Manifests must not be empty"
+            assert manifests[0].name == "skill", "name is not valid"
 
     def test_load_many_with_invalid_yaml(self):
         """Should load files with invalid YAML with defaults."""
@@ -263,10 +263,10 @@ Content""")
             manifests = loader.load_many(paths)
 
             # Both files should be loaded (invalid one gets defaults from filename)
-            assert len(manifests) == 2
-            assert manifests[0].name == "valid_skill"
+            assert len(manifests) == 2, "Manifests must not be empty"
+            assert manifests[0].name == "valid_skill", "name is not valid"
             # Invalid file gets name from filename (stem)
-            assert "invalid" in manifests[1].name.lower()
+            assert "invalid" in manifests[1].name.lower(), "Condition must be true"
 
     def test_load_manifest_with_integration_points(self):
         """Should load integration_points from manifest."""
@@ -284,8 +284,8 @@ Content""")
             loader = SkillDocLoader()
             manifest = loader.load_manifest(md_file)
 
-            assert len(manifest.integration_points) == 2
-            assert "point1" in manifest.integration_points
+            assert len(manifest.integration_points) == 2, "Collection must not be empty"
+            assert "point1" in manifest.integration_points, "Condition must be true"
 
     def test_load_manifest_capability_tags_variants(self):
         """Should support both 'capabilities' and 'capability_tags' keys."""
@@ -314,5 +314,5 @@ Content""")
             m1 = loader.load_manifest(md_file1)
             m2 = loader.load_manifest(md_file2)
 
-            assert "tag1" in m1.capability_tags
-            assert "tag2" in m2.capability_tags
+            assert "tag1" in m1.capability_tags, "Condition must be true"
+            assert "tag2" in m2.capability_tags, "Condition must be true"

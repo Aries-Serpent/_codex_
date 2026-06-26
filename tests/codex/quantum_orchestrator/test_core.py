@@ -13,7 +13,7 @@ class TestQuantumOrchestratorImports:
         try:
             from src.codex.quantum_orchestrator import core
 
-            assert core is not None
+            assert core is not None, "core must be initialized"
         except ImportError:
             pytest.skip("Module not available or has unmet dependencies")
 
@@ -28,7 +28,7 @@ class TestQuantumOrchestratorOperations:
 
             if hasattr(core, "QuantumOrchestrator"):
                 orch = core.QuantumOrchestrator()
-                assert orch is not None
+                assert orch is not None, "orch must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("QuantumOrchestrator not available")
 
@@ -41,7 +41,7 @@ class TestQuantumOrchestratorOperations:
                 with patch.object(core, "execute_workflow") as mock_exec:
                     mock_exec.return_value = {"status": "success"}
                     result = core.execute_workflow("test_workflow")
-                    assert result["status"] == "success"
+                    assert result["status"] == "success", "Result must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("execute_workflow not available")
 
@@ -58,7 +58,7 @@ class TestQuantumOrchestratorState:
                 orch = core.QuantumOrchestrator()
                 if hasattr(orch, "get_state"):
                     state = orch.get_state()
-                    assert state is not None
+                    assert state is not None, "state must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("QuantumOrchestrator.get_state not available")
 
@@ -72,6 +72,6 @@ class TestQuantumOrchestratorState:
                 if hasattr(orch, "set_state"):
                     orch.set_state({"key": "value"})
                     state = orch.get_state()
-                    assert state.get("key") == "value"
+                    assert state.get("key") == "value", "Value must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("QuantumOrchestrator.set_state not available")

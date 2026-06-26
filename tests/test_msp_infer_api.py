@@ -55,22 +55,22 @@ def test_tenant():
 def test_health_endpoint(client):
     """Test health check endpoint"""
     response = client.get("/health")
-    assert response.status_code == 200
+    assert response.status_code == 200, "Response must not be empty"
 
     data = response.json()
-    assert data["status"] == "healthy"
-    assert "version" in data
-    assert "offline_mode" in data
+    assert data["status"] == "healthy", "Data must not be empty"
+    assert "version" in data, "Data must not be empty"
+    assert "offline_mode" in data, "Data must not be empty"
 
 
 def test_root_endpoint(client):
     """Test root endpoint"""
     response = client.get("/")
-    assert response.status_code == 200
+    assert response.status_code == 200, "Response must not be empty"
 
     data = response.json()
-    assert data["name"] == "MSP Gateway"
-    assert "endpoints" in data
+    assert data["name"] == "MSP Gateway", "Data must not be empty"
+    assert "endpoints" in data, "Data must not be empty"
 
 
 def test_infer_endpoint_no_auth(client, test_tenant):
@@ -82,7 +82,7 @@ def test_infer_endpoint_no_auth(client, test_tenant):
             "prompt": "What is AI?",
         },
     )
-    assert response.status_code == 401  # Unauthorized
+    assert response.status_code == 401, "Response must not be empty"
 
 
 def test_infer_endpoint_with_auth(client, test_tenant):
@@ -98,15 +98,15 @@ def test_infer_endpoint_with_auth(client, test_tenant):
         headers={"Authorization": f"Bearer {test_tenant['api_key']}"},
     )
 
-    assert response.status_code == 200
+    assert response.status_code == 200, "Response must not be empty"
 
     data = response.json()
-    assert "request_id" in data
-    assert data["tenant_id"] == test_tenant["tenant_id"]
-    assert "generated_text" in data
-    assert "tokens_used" in data
-    assert "model" in data
-    assert "audit" in data
+    assert "request_id" in data, "Data must not be empty"
+    assert data["tenant_id"] == test_tenant["tenant_id"], "Data must not be empty"
+    assert "generated_text" in data, "Data must not be empty"
+    assert "tokens_used" in data, "Data must not be empty"
+    assert "model" in data, "Data must not be empty"
+    assert "audit" in data, "Data must not be empty"
 
 
 def test_infer_endpoint_blocked_prompt(client, test_tenant):
@@ -120,7 +120,7 @@ def test_infer_endpoint_blocked_prompt(client, test_tenant):
         headers={"Authorization": f"Bearer {test_tenant['api_key']}"},
     )
 
-    assert response.status_code == 400  # Bad request
+    assert response.status_code == 400, "Response must not be empty"
 
 
 def test_kb_query_endpoint_no_auth(client, test_tenant):
@@ -132,7 +132,7 @@ def test_kb_query_endpoint_no_auth(client, test_tenant):
             "query": "machine learning",
         },
     )
-    assert response.status_code == 401
+    assert response.status_code == 401, "Response must not be empty"
 
 
 def test_kb_query_endpoint_with_auth(client, test_tenant):
@@ -153,9 +153,9 @@ def test_kb_query_endpoint_with_auth(client, test_tenant):
 
     if response.status_code == 200:
         data = response.json()
-        assert "request_id" in data
-        assert data["tenant_id"] == test_tenant["tenant_id"]
-        assert "results" in data
+        assert "request_id" in data, "Data must not be empty"
+        assert data["tenant_id"] == test_tenant["tenant_id"], "Data must not be empty"
+        assert "results" in data, "Result must not be empty"
 
 
 def test_admin_create_tenant(client, test_tenant):
@@ -176,12 +176,12 @@ def test_admin_create_tenant(client, test_tenant):
         headers={"Authorization": f"Bearer {test_tenant['api_key']}"},
     )
 
-    assert response.status_code == 201
+    assert response.status_code == 201, "Response must not be empty"
 
     data = response.json()
-    assert data["tenant_id"] == new_tenant_id
-    assert data["name"] == "New Tenant"
-    assert data["active"] is True
+    assert data["tenant_id"] == new_tenant_id, "Data must not be empty"
+    assert data["name"] == "New Tenant", "Data must not be empty"
+    assert data["active"] is True, "Data must not be empty"
 
     # Cleanup
     try:
@@ -198,11 +198,11 @@ def test_admin_get_tenant(client, test_tenant):
         headers={"Authorization": f"Bearer {test_tenant['api_key']}"},
     )
 
-    assert response.status_code == 200
+    assert response.status_code == 200, "Response must not be empty"
 
     data = response.json()
-    assert data["tenant_id"] == test_tenant["tenant_id"]
-    assert data["name"] == "Test Tenant"
+    assert data["tenant_id"] == test_tenant["tenant_id"], "Data must not be empty"
+    assert data["name"] == "Test Tenant", "Data must not be empty"
 
 
 def test_admin_list_tenants(client, test_tenant):
@@ -212,11 +212,11 @@ def test_admin_list_tenants(client, test_tenant):
         headers={"Authorization": f"Bearer {test_tenant['api_key']}"},
     )
 
-    assert response.status_code == 200
+    assert response.status_code == 200, "Response must not be empty"
 
     data = response.json()
     assert isinstance(data, list)
-    assert any(item["tenant_id"] == test_tenant["tenant_id"] for item in data)
+    assert any(item["tenant_id"] == test_tenant["tenant_id"] for item in data), "Data must not be empty"
 
 
 def test_rate_limiting(client, test_tenant):
@@ -266,8 +266,8 @@ def test_token_quota_enforced(client):
         headers={"Authorization": f"Bearer {api_key}"},
     )
 
-    assert response.status_code == 429
-    assert "Token quota" in response.json()["detail"]
+    assert response.status_code == 429, "Response must not be empty"
+    assert "Token quota" in response.json()["detail"], "Response must not be empty"
 
 
 def test_tenant_id_mismatch(client, test_tenant):
@@ -281,4 +281,4 @@ def test_tenant_id_mismatch(client, test_tenant):
         headers={"Authorization": f"Bearer {test_tenant['api_key']}"},
     )
 
-    assert response.status_code == 403  # Forbidden
+    assert response.status_code == 403, "Response must not be empty"

@@ -34,7 +34,7 @@ class TestAdvancedAuthenticationScenarios:
                 raise HTTPException(status_code=401, detail="Missing auth")
             return {"auth_type": token_type, "valid": True}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_token_expiration_handling(self):
         """Test token expiration and refresh flow"""
@@ -47,7 +47,7 @@ class TestAdvancedAuthenticationScenarios:
                 raise HTTPException(status_code=401, detail="Invalid token")
             return {"new_token": f"refreshed_{old_token}"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_concurrent_token_refresh(self):
         """Test concurrent token refresh requests"""
@@ -64,7 +64,7 @@ class TestAdvancedAuthenticationScenarios:
             for i in range(10):
                 futures.append(executor.submit(lambda: {"token": f"token_{i}"}))
 
-        assert len(futures) == 10
+        assert len(futures) == 10, "Futures must not be empty"
 
     @pytest.mark.parametrize("privilege_level", ["admin", "user", "guest"])
     def test_role_based_access_control(self, privilege_level):
@@ -78,7 +78,7 @@ class TestAdvancedAuthenticationScenarios:
                 raise HTTPException(status_code=403, detail="Forbidden")
             return {"message": "Admin access granted"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_multi_factor_authentication_flow(self):
         """Test multi-factor authentication flow"""
@@ -90,7 +90,7 @@ class TestAdvancedAuthenticationScenarios:
                 raise HTTPException(status_code=400, detail="Invalid MFA code")
             return {"verified": True, "session": "new_session_id"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_session_timeout_and_cleanup(self):
         """Test session timeout and cleanup"""
@@ -117,7 +117,7 @@ class TestAdvancedAuthenticationScenarios:
 
         manager = SessionManager()
         session_id = manager.create_session("user123")
-        assert not manager.is_expired(session_id)
+        assert not manager.is_expired(session_id), "Condition must be true"
 
     def test_permission_inheritance_chains(self):
         """Test permission inheritance in role hierarchies"""
@@ -164,13 +164,13 @@ class TestAdvancedAuthenticationScenarios:
                 return True
 
         limiter = LoginRateLimiter()
-        assert limiter.check_allowed("user1")
+        assert limiter.check_allowed("user1"), "Condition must be true"
 
         # Simulate multiple failed attempts
         for _ in range(5):
             limiter.check_allowed("user1")
 
-        assert not limiter.check_allowed("user1")
+        assert not limiter.check_allowed("user1"), "Condition must be true"
 
 
 class TestComplexRequestResponseScenarios:
@@ -199,7 +199,7 @@ class TestComplexRequestResponseScenarios:
                 "total_pages": total_pages,
             }
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_nested_object_validation(self):
         """Test nested object request/response validation"""
@@ -221,7 +221,7 @@ class TestComplexRequestResponseScenarios:
             address=Address(street="123 Main St", city="Boston", zip_code="02101"),
             phones=["+1234567890"],
         )
-        assert profile.name == "John Doe"
+        assert profile.name == "John Doe", "name is not valid"
 
     def test_polymorphic_response_handling(self):
         """Test polymorphic response types"""
@@ -251,7 +251,7 @@ class TestComplexRequestResponseScenarios:
 
             return generate()
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_batch_operation_responses(self):
         """Test batch operation response handling"""
@@ -273,7 +273,7 @@ class TestComplexRequestResponseScenarios:
 
             return {"results": results, "successful": len(results), "failed": 0}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_conditional_response_fields(self):
         """Test conditional response fields"""
@@ -288,8 +288,8 @@ class TestComplexRequestResponseScenarios:
         success = ConditionalResponse(
             status="success", data={"key": "value"}, timestamp=datetime.now()
         )
-        assert success.data is not None
-        assert success.error is None
+        assert success.data is not None, "data must be initialized"
+        assert success.error is None, "Error should be raised or set"
 
     def test_response_content_negotiation(self):
         """Test response content negotiation"""
@@ -304,7 +304,7 @@ class TestComplexRequestResponseScenarios:
             else:
                 raise HTTPException(status_code=406, detail="Not Acceptable")
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_response_compression(self):
         """Test response compression"""
@@ -317,7 +317,7 @@ class TestComplexRequestResponseScenarios:
                 return {"compressed": True}
             return {"compressed": False}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     @pytest.mark.parametrize("data_size", [100, 1000, 10000, 100000])
     def test_large_response_handling(self, data_size):
@@ -328,7 +328,7 @@ class TestComplexRequestResponseScenarios:
         def get_large_data():
             return {"items": [{"id": i} for i in range(data_size)]}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
 
 class TestNetworkFailureRecoveryPatterns:
@@ -350,8 +350,8 @@ class TestNetworkFailureRecoveryPatterns:
 
         retry = ExponentialBackoffRetry()
         delays = [retry.get_delay(i) for i in range(5)]
-        assert all(d > 0 for d in delays)
-        assert delays[4] > delays[3]  # Verify exponential growth
+        assert all(d > 0 for d in delays), "d must be greater than zero"
+        assert delays[4] > delays[3], "Value must be greater than zero"
 
     def test_circuit_breaker_state_transitions(self):
         """Test circuit breaker state transitions"""
@@ -391,13 +391,13 @@ class TestNetworkFailureRecoveryPatterns:
                     return True
 
         cb = CircuitBreaker()
-        assert cb.state == CircuitBreaker.STATE_CLOSED
+        assert cb.state == CircuitBreaker.STATE_CLOSED, "state is not valid"
 
         # Simulate failures
         for _ in range(5):
             cb.record_failure()
 
-        assert cb.state == CircuitBreaker.STATE_OPEN
+        assert cb.state == CircuitBreaker.STATE_OPEN, "state is not valid"
 
     def test_bulkhead_pattern_isolation(self):
         """Test bulkhead pattern for resource isolation"""
@@ -420,7 +420,7 @@ class TestNetworkFailureRecoveryPatterns:
             futures.append(executor.execute(dummy_task))
 
         results = [f.result() for f in futures]
-        assert all(results)
+        assert all(results), "Result must not be empty"
 
     def test_timeout_handling_at_different_levels(self):
         """Test timeout handling at connection, read, and write levels"""
@@ -432,8 +432,8 @@ class TestNetworkFailureRecoveryPatterns:
             TOTAL_TIMEOUT = 60.0
 
         config = TimeoutConfig()
-        assert config.CONNECTION_TIMEOUT < config.READ_TIMEOUT
-        assert config.READ_TIMEOUT < config.TOTAL_TIMEOUT
+        assert config.CONNECTION_TIMEOUT < config.READ_TIMEOUT, "CONNECTION_TIMEOUT is not valid"
+        assert config.READ_TIMEOUT < config.TOTAL_TIMEOUT, "READ_TIMEOUT is not valid"
 
     def test_partial_failure_graceful_degradation(self):
         """Test graceful degradation on partial failures"""
@@ -453,12 +453,12 @@ class TestNetworkFailureRecoveryPatterns:
 
         service = Service()
         result1 = service.get_data("key1")
-        assert result1["source"] == "primary"
+        assert result1["source"] == "primary", "Result must not be empty"
 
         service.primary_available = False
         service.cache["key1"] = "cached_value"
         result2 = service.get_data("key1")
-        assert result2["source"] == "cache"
+        assert result2["source"] == "cache", "Result must not be empty"
 
     def test_fallback_chain_execution(self):
         """Test fallback chain execution"""
@@ -484,7 +484,7 @@ class TestNetworkFailureRecoveryPatterns:
         chain.add_fallback(lambda: "fallback2")
 
         result = chain.execute(lambda: 1 / 0)  # Primary fails
-        assert result == "fallback1"
+        assert result == "fallback1", "Result must not be empty"
 
 
 class TestEdgeCasesAndCornerCases:
@@ -501,7 +501,7 @@ class TestEdgeCasesAndCornerCases:
                 return {"message": "No data provided"}
             return {"data": data}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_special_characters_in_strings(self):
         """Test special characters in request strings"""
@@ -516,7 +516,7 @@ class TestEdgeCasesAndCornerCases:
 
         for char_test in special_chars:
             # Verify each special character is preserved
-            assert char_test is not None
+            assert char_test is not None, "char_test must be initialized"
 
     def test_boundary_value_conditions(self):
         """Test boundary value conditions"""
@@ -538,7 +538,7 @@ class TestEdgeCasesAndCornerCases:
 
         for val in test_values:
             model = BoundedModel(value=val)
-            assert model.value == val
+            assert model.value == val, "Value must be initialized"
 
     def test_precision_loss_in_numeric_operations(self):
         """Test precision loss in numeric operations"""
@@ -557,7 +557,7 @@ class TestEdgeCasesAndCornerCases:
         for val in test_values:
             if val != float("inf"):  # Skip infinity
                 model = FloatModel(value=val)
-                assert model.value is not None
+                assert model.value is not None, "value must be initialized"
 
     def test_unicode_normalization(self):
         """Test unicode normalization in requests"""
@@ -573,7 +573,7 @@ class TestEdgeCasesAndCornerCases:
 
         for s in test_strings:
             normalized = unicodedata.normalize("NFC", s)
-            assert len(normalized) > 0
+            assert len(normalized) > 0, "Normalized must not be empty"
 
     def test_array_bounds_and_empty_collections(self):
         """Test array bounds and empty collections"""
@@ -585,14 +585,14 @@ class TestEdgeCasesAndCornerCases:
 
         # Empty collections
         model1 = CollectionModel()
-        assert len(model1.items) == 0
+        assert len(model1.items) == 0, "Collection must not be empty"
 
         # Large collections
         model2 = CollectionModel(
             items=[f"item_{i}" for i in range(10000)],
             mapping={f"key_{i}": f"val_{i}" for i in range(1000)},
         )
-        assert len(model2.items) == 10000
+        assert len(model2.items) == 10000, "Collection must not be empty"
 
 
 import concurrent.futures

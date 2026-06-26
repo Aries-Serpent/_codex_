@@ -20,45 +20,45 @@ from mcp.errors import (
 def test_mcp_error_base():
     """Test base MCPError class."""
     error = MCPError("test error")
-    assert error.code == "MCP_ERROR"
-    assert error.http_status == 500
-    assert error.message == "test error"
+    assert error.code == "MCP_ERROR", "Error should be raised or set"
+    assert error.http_status == 500, "Error should be raised or set"
+    assert error.message == "test error", "Error should be raised or set"
 
 
 def test_tool_not_found_error():
     """Test ToolNotFound error."""
     error = ToolNotFound("tool 'xyz' not found")
-    assert error.code == "TOOL_NOT_FOUND"
-    assert error.http_status == 404
+    assert error.code == "TOOL_NOT_FOUND", "Error should be raised or set"
+    assert error.http_status == 404, "Error should be raised or set"
 
 
 def test_validation_error():
     """Test ValidationError."""
     error = ValidationError("invalid input")
-    assert error.code == "VALIDATION_ERROR"
-    assert error.http_status == 400
+    assert error.code == "VALIDATION_ERROR", "Error should be raised or set"
+    assert error.http_status == 400, "Error should be raised or set"
 
 
 def test_rate_limit_exceeded_error():
     """Test RateLimitExceeded error."""
     error = RateLimitExceeded("too many requests")
-    assert error.code == "RATE_LIMIT_EXCEEDED"
-    assert error.http_status == 429
+    assert error.code == "RATE_LIMIT_EXCEEDED", "Error should be raised or set"
+    assert error.http_status == 429, "Error should be raised or set"
 
 
 def test_unauthorized_error():
     """Test Unauthorized error."""
     error = Unauthorized("invalid credentials")
-    assert error.code == "UNAUTHORIZED"
-    assert error.http_status == 401
+    assert error.code == "UNAUTHORIZED", "Error should be raised or set"
+    assert error.http_status == 401, "Error should be raised or set"
 
 
 def test_error_to_dict():
     """Test error serialization to dict."""
     error = ToolNotFound("tool not found")
     data = error.to_dict()
-    assert data["code"] == "TOOL_NOT_FOUND"
-    assert data["message"] == "tool not found"
+    assert data["code"] == "TOOL_NOT_FOUND", "Data must not be empty"
+    assert data["message"] == "tool not found", "Data must not be empty"
 
 
 def test_error_inheritance():
@@ -86,8 +86,8 @@ def test_error_context_handling():
     try:
         raise ToolNotFound("tool 'search' not found")
     except MCPError as e:
-        assert "search" in e.message
-        assert e.http_status == 404
+        assert "search" in e.message, "Condition must be true"
+        assert e.http_status == 404, "http_status is not valid"
 
 
 def test_multiple_error_types():
@@ -101,7 +101,7 @@ def test_multiple_error_types():
 
     for err in errors:
         assert isinstance(err, MCPError)
-        assert err.code in [
+        assert err.code in [, "Condition must be true"
             "TOOL_NOT_FOUND",
             "VALIDATION_ERROR",
             "RATE_LIMIT_EXCEEDED",
@@ -129,7 +129,7 @@ def test_error_with_details():
     """Test errors can carry additional details."""
     error = ValidationError("Invalid field: age")
     # In production, might add details dict
-    assert "age" in error.message
+    assert "age" in error.message, "Error should be raised or set"
 
 
 def test_error_http_status_mapping():
@@ -143,4 +143,4 @@ def test_error_http_status_mapping():
     }
 
     for error_class, expected_status in mapping.items():
-        assert error_class.http_status == expected_status
+        assert error_class.http_status == expected_status, "Error should be raised or set"

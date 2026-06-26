@@ -78,8 +78,8 @@ class TestLoadTopics:
     def test_load_topics_valid_file(self, topics_file, sample_topics):
         """Test loading topics from valid JSON file"""
         topics = load_topics(topics_file)
-        assert topics == sample_topics
-        assert "python" in topics
+        assert topics == sample_topics, "topics is not valid"
+        assert "python" in topics, "Condition must be true"
         assert isinstance(topics["python"], list)
 
     def test_load_topics_missing_file(self, temp_repo):
@@ -100,7 +100,7 @@ class TestLoadTopics:
         empty_file = temp_repo / "empty.json"
         empty_file.write_text("{}")
         topics = load_topics(empty_file)
-        assert topics == {}
+        assert topics == {}, "topics is not valid"
 
 
 class TestExpandGlobs:
@@ -111,49 +111,49 @@ class TestExpandGlobs:
         patterns = ["src/*.py"]
         files = expand_globs(patterns, temp_repo)
 
-        assert len(files) == 2
-        assert Path("src/main.py") in files
-        assert Path("src/utils.py") in files
+        assert len(files) == 2, "Files must not be empty"
+        assert Path("src/main.py") in files, "Condition must be true"
+        assert Path("src/utils.py") in files, "Condition must be true"
 
     def test_expand_recursive_glob(self, temp_repo):
         """Test expanding recursive ** pattern"""
         patterns = ["**/*.py"]
         files = expand_globs(patterns, temp_repo)
 
-        assert len(files) == 3
-        assert Path("src/main.py") in files
-        assert Path("src/utils.py") in files
-        assert Path("tests/test_main.py") in files
+        assert len(files) == 3, "Files must not be empty"
+        assert Path("src/main.py") in files, "Condition must be true"
+        assert Path("src/utils.py") in files, "Condition must be true"
+        assert Path("tests/test_main.py") in files, "Condition must be true"
 
     def test_expand_specific_recursive_glob(self, temp_repo):
         """Test expanding specific directory with **"""
         patterns = ["docs/**/*.md"]
         files = expand_globs(patterns, temp_repo)
 
-        assert len(files) == 2
-        assert Path("docs/guide.md") in files
-        assert Path("docs/api/reference.md") in files
+        assert len(files) == 2, "Files must not be empty"
+        assert Path("docs/guide.md") in files, "Condition must be true"
+        assert Path("docs/api/reference.md") in files, "Condition must be true"
 
     def test_expand_multiple_patterns(self, temp_repo):
         """Test expanding multiple glob patterns"""
         patterns = ["src/*.py", "tests/*.py"]
         files = expand_globs(patterns, temp_repo)
 
-        assert len(files) == 3
+        assert len(files) == 3, "Files must not be empty"
 
     def test_expand_no_matches(self, temp_repo):
         """Test glob pattern with no matches"""
         patterns = ["nonexistent/**/*.txt"]
         files = expand_globs(patterns, temp_repo)
 
-        assert len(files) == 0
+        assert len(files) == 0, "Files must not be empty"
 
     def test_expand_glob_with_dot_prefix(self, temp_repo):
         """Test glob pattern starting with ./"""
         patterns = ["./src/**/*.py"]
         files = expand_globs(patterns, temp_repo)
 
-        assert len(files) == 2
+        assert len(files) == 2, "Files must not be empty"
 
     def test_expand_glob_edge_case_star_star_only(self, temp_repo):
         """Test edge case with ** not as separate segment - should raise ValueError"""
@@ -170,7 +170,7 @@ class TestExpandGlobs:
 
         # Should only include files, not directories
         for f in files:
-            assert (temp_repo / f).is_file()
+            assert (temp_repo / f).is_file(), "Condition must be true"
 
 
 class TestFilterByTopic:
@@ -180,8 +180,8 @@ class TestFilterByTopic:
         """Test filtering by valid topic"""
         files = filter_by_topic("python", sample_topics, temp_repo)
 
-        assert len(files) == 3
-        assert all(str(f).endswith(".py") for f in files)
+        assert len(files) == 3, "Files must not be empty"
+        assert all(str(f).endswith(".py") for f in files), "Condition must be true"
 
     def test_filter_unknown_topic(self, temp_repo, sample_topics):
         """Test error handling for unknown topic"""
@@ -192,15 +192,15 @@ class TestFilterByTopic:
         """Test filtering docs topic"""
         files = filter_by_topic("docs", sample_topics, temp_repo)
 
-        assert len(files) == 2
-        assert all(str(f).endswith(".md") for f in files)
+        assert len(files) == 2, "Files must not be empty"
+        assert all(str(f).endswith(".md") for f in files), "Condition must be true"
 
     def test_filter_all_topic(self, temp_repo, sample_topics):
         """Test filtering 'all' topic"""
         files = filter_by_topic("all", sample_topics, temp_repo)
 
         # Should include .py, .md, and .sh files
-        assert len(files) >= 6
+        assert len(files) >= 6, "Files must not be empty"
 
 
 class TestFilterByGlobs:
@@ -210,32 +210,32 @@ class TestFilterByGlobs:
         """Test filtering by single glob pattern"""
         files = filter_by_globs("src/**/*.py", temp_repo)
 
-        assert len(files) == 2
+        assert len(files) == 2, "Files must not be empty"
 
     def test_filter_multiple_globs_comma_separated(self, temp_repo):
         """Test filtering by comma-separated glob patterns"""
         files = filter_by_globs("src/**/*.py, tests/**/*.py", temp_repo)
 
-        assert len(files) == 3
+        assert len(files) == 3, "Files must not be empty"
 
     def test_filter_globs_with_whitespace(self, temp_repo):
         """Test glob patterns with extra whitespace"""
         files = filter_by_globs("  src/**/*.py  ,  tests/**/*.py  ", temp_repo)
 
-        assert len(files) == 3
+        assert len(files) == 3, "Files must not be empty"
 
     def test_filter_empty_glob_string(self, temp_repo):
         """Test empty glob string"""
         files = filter_by_globs("", temp_repo)
 
-        assert len(files) == 0
+        assert len(files) == 0, "Files must not be empty"
 
     def test_filter_globs_with_empty_elements(self, temp_repo):
         """Test glob string with empty comma-separated elements"""
         files = filter_by_globs("src/**/*.py,,, tests/**/*.py", temp_repo)
 
         # Should ignore empty elements
-        assert len(files) == 3
+        assert len(files) == 3, "Files must not be empty"
 
 
 class TestEdgeCases:
@@ -254,7 +254,7 @@ class TestEdgeCases:
             files = expand_globs(["*.py"], temp_repo)
 
             # Both real file and symlink should be included (symlink is also a file)
-            assert len(files) >= 1
+            assert len(files) >= 1, "Files must not be empty"
         except OSError:
             # Skip if symlinks not supported
             pytest.skip("Symlinks not supported on this platform")
@@ -267,8 +267,8 @@ class TestEdgeCases:
 
         files = expand_globs(["large.py"], temp_repo)
 
-        assert len(files) == 1
-        assert Path("large.py") in files
+        assert len(files) == 1, "Files must not be empty"
+        assert Path("large.py") in files, "Condition must be true"
 
     def test_special_characters_in_filenames(self, temp_repo):
         """Test handling of special characters in filenames"""
@@ -277,7 +277,7 @@ class TestEdgeCases:
 
         files = expand_globs(["file*.py"], temp_repo)
 
-        assert len(files) == 1
+        assert len(files) == 1, "Files must not be empty"
 
     def test_deeply_nested_directories(self, temp_repo):
         """Test handling of deeply nested directory structures"""
@@ -287,7 +287,7 @@ class TestEdgeCases:
 
         files = expand_globs(["**/*.py"], temp_repo)
 
-        assert Path("a/b/c/d/e/deep.py") in files
+        assert Path("a/b/c/d/e/deep.py") in files, "Condition must be true"
 
     def test_empty_directory_handling(self, temp_repo):
         """Test handling of empty directories"""
@@ -296,7 +296,7 @@ class TestEdgeCases:
 
         files = expand_globs(["empty/**/*.py"], temp_repo)
 
-        assert len(files) == 0
+        assert len(files) == 0, "Files must not be empty"
 
     def test_path_traversal_safety(self, temp_repo):
         """Test that path traversal attempts are handled safely"""
@@ -306,7 +306,7 @@ class TestEdgeCases:
         # Should not traverse outside base_dir
         # All returned paths should be relative to base_dir
         for f in files:
-            assert not str(f).startswith("..")
+            assert not str(f).startswith(".."), "Condition must be true"
 
 
 # Run tests with: python -m pytest tests/scripts/test_mcp_select_components.py -v

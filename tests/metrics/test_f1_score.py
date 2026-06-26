@@ -24,11 +24,11 @@ def test_f1_macro_multiclass() -> None:
     metric = F1Score(num_classes=3, average="macro")
     metric.update([0, 1, 2, 1, 2], [0, 2, 2, 1, 0])
     value = metric.compute()["f1_score"]
-    assert 0.0 <= value <= 1.0
+    assert 0.0 <= value <= 1.0, "Value must be initialized"
 
 
 def test_f1_micro_handles_zero_division() -> None:
     metric = F1Score(num_classes=2, average="micro")
     metric.update([0, 0], [0, 0])
     # When all predictions and labels are the same class, F1 = 1.0 (perfect agreement)
-    assert metric.compute()["f1_score"] == 1.0
+    assert metric.compute()["f1_score"] == 1.0, "Condition must be true"

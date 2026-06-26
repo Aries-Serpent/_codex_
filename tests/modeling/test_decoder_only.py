@@ -48,7 +48,7 @@ def test_param_count() -> None:
     per_layer += 4 * cfg.d_model
     expected += cfg.n_layers * per_layer
     expected += 2 * cfg.d_model
-    assert total == expected
+    assert total == expected, "total is not valid"
 
 
 def test_kv_cache_equivalence() -> None:
@@ -78,7 +78,7 @@ def test_generate_smoke() -> None:
     m = _tiny_model()
     prompt = torch.randint(0, m.cfg.vocab_size, (1, 3))
     out = generate(m, None, prompt, max_new_tokens=5)
-    assert out.size(1) >= 3
+    assert out.size(1) >= 3, "Value must be greater than zero"
 
 
 def test_lora_attach() -> None:
@@ -89,4 +89,4 @@ def test_lora_attach() -> None:
     cfg = LoraConfig(r=2, lora_alpha=4, lora_dropout=0.0, target_modules=["qkv"])
     m = get_peft_model(m, cfg)
     names = [n for n, p in m.named_parameters() if "lora_" in n]
-    assert names
+    assert names, "names is not valid"

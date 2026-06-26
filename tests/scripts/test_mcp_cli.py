@@ -96,8 +96,8 @@ class TestMCPPackageCLI:
 
     def test_cli_exists_and_executable(self, mcp_package_cli):
         """Test that CLI script exists and is executable"""
-        assert mcp_package_cli.exists()
-        assert mcp_package_cli.stat().st_mode & 0o111  # Check execute bit
+        assert mcp_package_cli.exists(), "Condition must be true"
+        assert mcp_package_cli.stat().st_mode & 0o111, "Condition must be true"
 
     def test_cli_help_flag(self, mcp_package_cli):
         """Test --help flag displays help message"""
@@ -107,10 +107,10 @@ class TestMCPPackageCLI:
             text=True,
         )
 
-        assert result.returncode == 0
-        assert "--list" in result.stdout
-        assert "--topic" in result.stdout
-        assert "--custom" in result.stdout
+        assert result.returncode == 0, "Result must not be empty"
+        assert "--list" in result.stdout, "Result must not be empty"
+        assert "--topic" in result.stdout, "Result must not be empty"
+        assert "--custom" in result.stdout, "Result must not be empty"
 
     def test_cli_list_topics_flag(self, mcp_package_cli, mock_repo, monkeypatch):
         """Test --list flag shows available topics"""
@@ -126,7 +126,7 @@ class TestMCPPackageCLI:
         # Should show topics or handle gracefully
         assert result.returncode in (0, 1)
         if result.returncode == 0:
-            assert "topic" in result.stdout.lower() or "available" in result.stdout.lower()
+            assert "topic" in result.stdout.lower() or "available" in result.stdout.lower(), "Result must not be empty"
 
     def test_cli_requires_topic_or_custom(self, mcp_package_cli):
         """Test that CLI requires either --topic or --custom"""
@@ -135,7 +135,7 @@ class TestMCPPackageCLI:
         )
 
         # Should show error or help
-        assert result.returncode != 0 or "--topic" in result.stdout
+        assert result.returncode != 0 or "--topic" in result.stdout, "Result must not be empty"
 
     def test_cli_topic_flag_validation(self, mcp_package_cli, mock_repo):
         """Test --topic flag with valid topic"""
@@ -193,7 +193,7 @@ class TestMCPPackageCLI:
 
         # Should mention .zip extension
         if result.returncode == 0:
-            assert ".zip" in result.stdout
+            assert ".zip" in result.stdout, "Result must not be empty"
 
     def test_cli_dry_run_flag(self, mcp_package_cli, mock_repo):
         """Test --dry-run flag prevents actual packaging"""
@@ -214,7 +214,7 @@ class TestMCPPackageCLI:
 
         # Dry run should indicate mode
         if result.returncode == 0:
-            assert "DRY RUN" in result.stdout or "dry" in result.stdout.lower()
+            assert "DRY RUN" in result.stdout or "dry" in result.stdout.lower(), "Result must not be empty"
 
     def test_cli_verbose_flag(self, mcp_package_cli, mock_repo):
         """Test --verbose flag increases output detail"""
@@ -236,7 +236,7 @@ class TestMCPPackageCLI:
 
         # Verbose mode should produce output
         if result.returncode == 0:
-            assert len(result.stdout) > 0
+            assert len(result.stdout) > 0, "Collection must not be empty"
 
     def test_cli_generates_timestamped_output_name(self, mcp_package_cli, mock_repo):
         """Test automatic timestamp-based output naming"""
@@ -258,7 +258,7 @@ class TestMCPPackageCLI:
         # Should mention output filename with date/timestamp
         if result.returncode == 0:
             # Look for patterns like: package_test_topic_20251231.zip
-            assert "package_" in result.stdout or "Output:" in result.stdout
+            assert "package_" in result.stdout or "Output:" in result.stdout, "Result must not be empty"
 
 
 class TestCLIEdgeCases:
@@ -277,8 +277,8 @@ class TestCLIEdgeCases:
         )
 
         # Should show error
-        assert result.returncode != 0
-        assert (
+        assert result.returncode != 0, "Result must not be empty"
+        assert (, "Condition must be true"
             "not found" in result.stderr.lower()
             or "not found" in result.stdout.lower()
             or "git repository" in result.stderr.lower()
@@ -304,7 +304,7 @@ class TestCLIEdgeCases:
 
         # Should show error about unknown topic
         if result.returncode != 0:
-            assert (
+            assert (, "Condition must be true"
                 "unknown" in result.stderr.lower()
                 or "not found" in result.stderr.lower()
                 or "no such file" in result.stderr.lower()
@@ -395,7 +395,7 @@ class TestCLIIntegration:
         # Should not fail due to temp directory issues
         if result.returncode != 0:
             # Failure should not be about bare /tmp usage outside .github/tmp
-            assert "/tmp" not in result.stderr or "/.github/tmp/" in result.stderr
+            assert "/tmp" not in result.stderr or "/.github/tmp/" in result.stderr, "Result must not be empty"
 
 
 # Run tests with: python -m pytest tests/scripts/test_mcp_cli.py -v

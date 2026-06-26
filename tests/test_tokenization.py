@@ -31,13 +31,13 @@ def tok():
 def test_round_trip(tok):
     text = "hello world"
     ids = tok.encode(text)
-    assert tok.decode(ids).strip() == text
+    assert tok.decode(ids).strip() == text, "Condition must be true"
 
 
 def test_special_token_ids(tok):
     ids = [tok.encode(t)[0] for t in [BOS_TOKEN, EOS_TOKEN, PAD_TOKEN, UNK_TOKEN]]
-    assert len(ids) == 4
-    assert len(set(ids)) == 4
+    assert len(ids) == 4, "Ids must not be empty"
+    assert len(set(ids)) == 4, "Collection must not be empty"
 
 
 def test_deterministic(tok, tmp_path):
@@ -46,7 +46,7 @@ def test_deterministic(tok, tmp_path):
     tok.save(tmp_path / "tok.json")
     tok2 = load_tokenizer(path=str(tmp_path / "tok.json"))
     ids2 = tok2.encode(text)
-    assert ids1 == ids2
+    assert ids1 == ids2, "ids1 is not valid"
 
 
 def test_pad_sequences_padding_and_truncation():
@@ -86,8 +86,8 @@ def test_tokenizer_train_dry_run_streaming(monkeypatch, tmp_path):
         tokenizer_train,
         ["--config", str(cfg), "--streaming", "--stream-chunk-size", "2", "--dry-run"],
     )
-    assert result.exit_code == 0
-    assert calls == {
+    assert result.exit_code == 0, "Result must not be empty"
+    assert calls == {, "calls is not valid"
         "config": str(cfg),
         "streaming": True,
         "stream_chunk_size": 2,

@@ -67,7 +67,7 @@ class TestSchemaValidation:
         schema.add_field("id", "int", required=True)
         schema.add_field("name", "str", required=True)
         schema.add_field("email", "str", required=False)
-        assert len(schema.fields) == 3
+        assert len(schema.fields) == 3, "Collection must not be empty"
 
     def test_validate_valid_record(self):
         """Valid record passes validation."""
@@ -75,21 +75,21 @@ class TestSchemaValidation:
         schema.add_field("id", "int", required=True)
         schema.add_field("name", "str", required=True)
         errors = schema.validate({"id": 1, "name": "Test"})
-        assert len(errors) == 0
+        assert len(errors) == 0, "Errors must not be empty"
 
     def test_validate_missing_required(self):
         """Missing required field fails."""
         schema = DataSchema("user")
         schema.add_field("id", "int", required=True)
         errors = schema.validate({})
-        assert "Missing required field: id" in errors
+        assert "Missing required field: id" in errors, "Error should be raised or set"
 
     def test_validate_null_not_allowed(self):
         """Null in non-nullable field fails."""
         schema = DataSchema("user")
         schema.add_field("id", "int", required=True, nullable=False)
         errors = schema.validate({"id": None})
-        assert any("cannot be null" in e for e in errors)
+        assert any("cannot be null" in e for e in errors), "Error should be raised or set"
 
 
 # --- Streaming Determinism Tests ---
@@ -123,14 +123,14 @@ class TestDeterministicShuffle:
         data = list(range(100))
         s1 = DeterministicShuffle(seed=42)
         s2 = DeterministicShuffle(seed=42)
-        assert s1.shuffle(data) == s2.shuffle(data)
+        assert s1.shuffle(data) == s2.shuffle(data), "Data must not be empty"
 
     def test_different_seeds(self):
         """Different seeds produce different shuffles."""
         data = list(range(100))
         s1 = DeterministicShuffle(seed=42)
         s2 = DeterministicShuffle(seed=123)
-        assert s1.shuffle(data) != s2.shuffle(data)
+        assert s1.shuffle(data) != s2.shuffle(data), "Data must not be empty"
 
     @given(st.integers(min_value=0, max_value=1000000))
     @settings(max_examples=20)
@@ -139,7 +139,7 @@ class TestDeterministicShuffle:
         data = list(range(50))
         s1 = DeterministicShuffle(seed=seed)
         s2 = DeterministicShuffle(seed=seed)
-        assert s1.shuffle(data) == s2.shuffle(data)
+        assert s1.shuffle(data) == s2.shuffle(data), "Data must not be empty"
 
 
 # --- Data Leakage Detection Tests ---
@@ -189,7 +189,7 @@ class TestLeakageDetection:
         val = [{"id": 3}]
         test = [{"id": 4}]
         result = detector.detect_overlap(train, val, test)
-        assert not result["has_leakage"]
+        assert not result["has_leakage"], "Result must not be empty"
 
     def test_detect_train_val_leakage(self):
         """Detect train-val overlap."""
@@ -198,15 +198,15 @@ class TestLeakageDetection:
         val = [{"id": 2}, {"id": 3}]  # ID 2 is in both
         test = [{"id": 4}]
         result = detector.detect_overlap(train, val, test)
-        assert result["has_leakage"]
-        assert 2 in result["train_val_overlap"]
+        assert result["has_leakage"], "Result must not be empty"
+        assert 2 in result["train_val_overlap"], "Result must not be empty"
 
     def test_detect_feature_leakage(self):
         """Detect suspicious features."""
         detector = LeakageDetector()
         features = ["age", "income", "target_encoded", "label_mean"]
         suspicious = detector.detect_feature_leakage(features, "target")
-        assert "target_encoded" in suspicious
+        assert "target_encoded" in suspicious, "Condition must be true"
 
 
 # --- Imbalance Detection Tests ---
@@ -247,20 +247,20 @@ class TestImbalanceDetection:
         """Balanced data is not imbalanced."""
         checker = ImbalanceChecker(threshold=0.1)
         labels = [0] * 50 + [1] * 50
-        assert not checker.is_imbalanced(labels)
+        assert not checker.is_imbalanced(labels), "Condition must be true"
 
     def test_imbalanced_data(self):
         """Imbalanced data is detected."""
         checker = ImbalanceChecker(threshold=0.1)
         labels = [0] * 95 + [1] * 5
-        assert checker.is_imbalanced(labels)
+        assert checker.is_imbalanced(labels), "Condition must be true"
 
     def test_imbalance_ratio(self):
         """Compute imbalance ratio."""
         checker = ImbalanceChecker()
         labels = [0] * 80 + [1] * 20
         ratio = checker.get_imbalance_ratio(labels)
-        assert 0.24 < ratio < 0.26
+        assert 0.24 < ratio < 0.26, "24 is not valid"
 
 
 # --- Dataset Versioning Tests ---
@@ -318,21 +318,21 @@ class TestDatasetVersioning:
     def test_create_version(self):
         """Create dataset version."""
         version = DatasetVersion("train", "1.0.0")
-        assert version.name == "train"
+        assert version.name == "train", "name is not valid"
 
     def test_compute_checksum(self):
         """Compute dataset checksum."""
         version = DatasetVersion("test", "1.0.0")
         data = [{"a": 1}, {"a": 2}]
         checksum = version.compute_checksum(data)
-        assert len(checksum) == 16
+        assert len(checksum) == 16, "Checksum must not be empty"
 
     def test_checksum_deterministic(self):
         """Checksum is deterministic."""
         data = [{"x": 1}, {"x": 2}]
         v1 = DatasetVersion("test", "1.0.0")
         v2 = DatasetVersion("test", "1.0.0")
-        assert v1.compute_checksum(data) == v2.compute_checksum(data)
+        assert v1.compute_checksum(data) == v2.compute_checksum(data), "Data must not be empty"
 
     def test_registry(self):
         """Register and retrieve datasets."""
@@ -342,7 +342,7 @@ class TestDatasetVersioning:
         registry.register(v1)
         registry.register(v2)
         versions = registry.list_versions("train")
-        assert len(versions) == 2
+        assert len(versions) == 2, "Versions must not be empty"
 
 
 # --- Data Loader Tests ---
@@ -379,7 +379,7 @@ class TestDataLoader:
         """Correct number of batches."""
         data = list(range(100))
         loader = DataLoader(data, batch_size=32)
-        assert len(loader) == 4  # 100/32 = 3.125, rounded up
+        assert len(loader) == 4, "Loader must not be empty"
 
     def test_batches_content(self):
         """Batches contain all data."""
@@ -387,14 +387,14 @@ class TestDataLoader:
         loader = DataLoader(data, batch_size=32)
         batches = loader.get_batches()
         all_items = [item for batch in batches for item in batch]
-        assert sorted(all_items) == sorted(data)
+        assert sorted(all_items) == sorted(data), "Data must not be empty"
 
     def test_shuffle_deterministic(self):
         """Shuffled batches are deterministic."""
         data = list(range(100))
         loader1 = DataLoader(data, batch_size=32, shuffle=True, seed=42)
         loader2 = DataLoader(data, batch_size=32, shuffle=True, seed=42)
-        assert loader1.get_batches() == loader2.get_batches()
+        assert loader1.get_batches() == loader2.get_batches(), "Condition must be true"
 
 
 # --- Data Split Tests ---
@@ -427,9 +427,9 @@ class TestDataSplitter:
         data = list(range(1000))
         splitter = DataSplitter(train_ratio=0.8, val_ratio=0.1)
         train, val, test = splitter.split(data)
-        assert 750 < len(train) < 850
-        assert 50 < len(val) < 150
-        assert 50 < len(test) < 150
+        assert 750 < len(train) < 850, "Train must not be empty"
+        assert 50 < len(val) < 150, "Val must not be empty"
+        assert 50 < len(test) < 150, "Test must not be empty"
 
     def test_split_no_overlap(self):
         """Splits have no overlap."""
@@ -437,11 +437,11 @@ class TestDataSplitter:
         splitter = DataSplitter()
         train, val, test = splitter.split(data)
         all_items = train + val + test
-        assert len(all_items) == len(set(all_items))
+        assert len(all_items) == len(set(all_items)), "All_items must not be empty"
 
     def test_split_deterministic(self):
         """Split is deterministic."""
         data = list(range(100))
         s1 = DataSplitter(seed=42)
         s2 = DataSplitter(seed=42)
-        assert s1.split(data) == s2.split(data)
+        assert s1.split(data) == s2.split(data), "Data must not be empty"

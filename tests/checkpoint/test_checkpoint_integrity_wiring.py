@@ -39,10 +39,10 @@ def test_save_checkpoint_attaches_integrity(monkeypatch, tmp_path: Path) -> None
         metric_value=0.0,
     )
 
-    assert ckpt_path.exists()
+    assert ckpt_path.exists(), "Condition must be true"
     assert isinstance(meta.config_snapshot, dict)
-    assert calls["path"] == ckpt_path
-    assert calls["relative_to"] == checkpoint_dir
+    assert calls["path"] == ckpt_path, "Condition must be true"
+    assert calls["relative_to"] == checkpoint_dir, "Condition must be true"
     metadata = calls.get("metadata") or {}
     snapshot = metadata.get("config_snapshot", {})
-    assert snapshot.get("model_name") == "tiny"
+    assert snapshot.get("model_name") == "tiny", "Condition must be true"

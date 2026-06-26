@@ -86,7 +86,7 @@ def test_train_uses_autocast_and_clip(monkeypatch, disable_torch_profiler):
         yield
 
     def fake_clip(params, max_norm: float) -> None:
-        assert pytest.approx(max_norm) == 0.5
+        assert pytest.approx(max_norm) == 0.5, "Condition must be true"
         list(params)
         counters["clip"] += 1
 
@@ -160,9 +160,9 @@ def test_train_uses_autocast_and_clip(monkeypatch, disable_torch_profiler):
         ),
     )
 
-    assert counters["autocast"] >= 1
-    assert counters["clip"] >= 1
-    assert counters["mlflow"] == 1
+    assert counters["autocast"] >= 1, "Value must be greater than zero"
+    assert counters["clip"] >= 1, "Value must be greater than zero"
+    assert counters["mlflow"] == 1, "Count must be greater than zero"
     assert isinstance(metrics, dict)
 
 
@@ -186,8 +186,8 @@ def test_evaluate_model_uses_autocast(monkeypatch):
 
     result = tr._evaluate_model(eval_model, dataset, batch_size=1, cfg=cfg)  # type: ignore[attr-defined]
 
-    assert counters["autocast"] >= 1
-    assert "val_loss" in result
+    assert counters["autocast"] >= 1, "Value must be greater than zero"
+    assert "val_loss" in result, "Result must not be empty"
 
 
 def test_run_functional_training_uses_mlflow(monkeypatch, tmp_path):
@@ -379,4 +379,4 @@ def test_run_functional_training_uses_mlflow(monkeypatch, tmp_path):
 
     assert entered, "mlflow_run context was not entered"
     assert run_calls, "custom trainer was not invoked"
-    assert result == {"ok": 1.0}
+    assert result == {"ok": 1.0}, "Result must not be empty"

@@ -11,7 +11,7 @@ def _load_module():
     repo_root = Path(__file__).resolve().parents[2]
     module_path = repo_root / "tools" / "status" / "generate_status_update.py"
     spec = importlib.util.spec_from_file_location("status_gen", module_path)
-    assert spec and spec.loader
+    assert spec and spec.loader, "spec is not valid"
     module = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = module
     try:
@@ -27,8 +27,8 @@ def test_sanitize_for_logging_redacts_secret_patterns() -> None:
     try:
         sample = "token=abc123 SECRET: ghp_abcdefghijklmnopqrstuvwxyz"
         sanitized = module.sanitize_for_logging(sample)
-        assert "abc123" not in sanitized
-        assert "ghp_" not in sanitized
-        assert "[redacted]" in sanitized
+        assert "abc123" not in sanitized, "Condition must be true"
+        assert "ghp_" not in sanitized, "Condition must be true"
+        assert "[redacted]" in sanitized, "Condition must be true"
     finally:
         sys.modules.pop("status_gen", None)

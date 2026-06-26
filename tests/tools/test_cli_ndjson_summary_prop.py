@@ -38,9 +38,9 @@ def test_summarizer_tracks_loss_bounds(values: list[float]) -> None:
         rows = summarizer.collect()
         summary = summarizer.summarise()
 
-        assert len(rows) == len(values)
+        assert len(rows) == len(values), "Rows must not be empty"
         loss_row = next((row for row in summary if row["metric"] == "loss"), None)
-        assert loss_row is not None
-        assert loss_row["count"] == len(values)
+        assert loss_row is not None, "loss_row must be initialized"
+        assert loss_row["count"] == len(values), "Values must not be empty"
         assert math.isclose(loss_row["min_value"], min(values))
         assert math.isclose(loss_row["max_value"], max(values))

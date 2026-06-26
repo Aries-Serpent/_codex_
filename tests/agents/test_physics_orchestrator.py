@@ -41,15 +41,15 @@ class TestActionType:
 
     def test_action_type_values(self) -> None:
         """Test action type values."""
-        assert ActionType.AUDIT.value == "audit"
-        assert ActionType.REFACTOR.value == "refactor"
-        assert ActionType.TEST.value == "test"
-        assert ActionType.DOCUMENT.value == "document"
+        assert ActionType.AUDIT.value == "audit", "Value must be initialized"
+        assert ActionType.REFACTOR.value == "refactor", "Value must be initialized"
+        assert ActionType.TEST.value == "test", "Value must be initialized"
+        assert ActionType.DOCUMENT.value == "document", "Value must be initialized"
 
     def test_action_type_from_value(self) -> None:
         """Test creating action type from value."""
-        assert ActionType("audit") == ActionType.AUDIT
-        assert ActionType("test") == ActionType.TEST
+        assert ActionType("audit") == ActionType.AUDIT, "Condition must be true"
+        assert ActionType("test") == ActionType.TEST, "Condition must be true"
 
 
 class TestForceVector:
@@ -59,10 +59,10 @@ class TestForceVector:
         """Test default ForceVector values."""
         vector = ForceVector()
 
-        assert vector.name == ""
-        assert vector.magnitude == 0.0
-        assert vector.direction == 0.0
-        assert vector.priority == 1.0
+        assert vector.name == "", "name is not valid"
+        assert vector.magnitude == 0.0, "magnitude is not valid"
+        assert vector.direction == 0.0, "direction is not valid"
+        assert vector.priority == 1.0, "priority is not valid"
 
     def test_custom_values(self) -> None:
         """Test ForceVector with custom values."""
@@ -73,9 +73,9 @@ class TestForceVector:
             priority=2.0,
         )
 
-        assert vector.name == "urgency"
-        assert vector.magnitude == 0.8
-        assert vector.priority == 2.0
+        assert vector.name == "urgency", "name is not valid"
+        assert vector.magnitude == 0.8, "magnitude is not valid"
+        assert vector.priority == 2.0, "priority is not valid"
 
     def test_get_components_2d(self) -> None:
         """Test getting 2D components."""
@@ -89,8 +89,8 @@ class TestForceVector:
 
         x, y = vector.get_components()
 
-        assert abs(x - 1.0) < 0.01
-        assert abs(y - 0.0) < 0.01
+        assert abs(x - 1.0) < 0.01, "Condition must be true"
+        assert abs(y - 0.0) < 0.01, "Condition must be true"
 
     def test_get_components_45_degrees(self) -> None:
         """Test components at 45 degrees."""
@@ -104,8 +104,8 @@ class TestForceVector:
         x, y = vector.get_components()
 
         expected = math.sqrt(2) / 2
-        assert abs(x - expected) < 0.01
-        assert abs(y - expected) < 0.01
+        assert abs(x - expected) < 0.01, "Condition must be true"
+        assert abs(y - expected) < 0.01, "Condition must be true"
 
     def test_get_components_with_priority(self) -> None:
         """Test components with priority scaling."""
@@ -118,7 +118,7 @@ class TestForceVector:
 
         x, _y = vector.get_components()
 
-        assert abs(x - 2.0) < 0.01
+        assert abs(x - 2.0) < 0.01, "Condition must be true"
 
     def test_3d_vector_initialization(self) -> None:
         """Test 3D vector initialization from x, y, z."""
@@ -130,7 +130,7 @@ class TestForceVector:
         )
 
         # Magnitude should be calculated: sqrt(3^2 + 4^2) = 5
-        assert abs(vector.magnitude - 5.0) < 0.01
+        assert abs(vector.magnitude - 5.0) < 0.01, "Condition must be true"
 
     def test_3d_vector_with_z(self) -> None:
         """Test 3D vector with z component."""
@@ -141,7 +141,7 @@ class TestForceVector:
             z=0.0,
         )
 
-        assert vector.magnitude == 1.0
+        assert vector.magnitude == 1.0, "magnitude is not valid"
 
     def test_3d_direction_normalization(self) -> None:
         """Test that 3D direction is normalized."""
@@ -155,7 +155,7 @@ class TestForceVector:
         # Direction should be a unit vector
         if isinstance(vector.direction, list):
             mag = math.sqrt(sum(d**2 for d in vector.direction))
-            assert abs(mag - 1.0) < 0.01
+            assert abs(mag - 1.0) < 0.01, "Condition must be true"
 
 
 class TestActionPath:
@@ -165,12 +165,12 @@ class TestActionPath:
         """Test default ActionPath values."""
         path = ActionPath()
 
-        assert path.action_type == ActionType.ANALYZE
-        assert path.description == ""
-        assert path.potential_energy == 0.0
-        assert path.kinetic_energy == 0.0
-        assert path.friction == 0.0
-        assert path.momentum == 0.0
+        assert path.action_type == ActionType.ANALYZE, "action_type is not valid"
+        assert path.description == "", "description is not valid"
+        assert path.potential_energy == 0.0, "potential_energy is not valid"
+        assert path.kinetic_energy == 0.0, "kinetic_energy is not valid"
+        assert path.friction == 0.0, "friction is not valid"
+        assert path.momentum == 0.0, "momentum is not valid"
 
     def test_decision_factors(self) -> None:
         """Test decision factor fields."""
@@ -181,10 +181,10 @@ class TestActionPath:
             urgency=0.5,
         )
 
-        assert path.confidence == 0.9
-        assert path.risk == 0.2
-        assert path.impact == 0.8
-        assert path.urgency == 0.5
+        assert path.confidence == 0.9, "confidence is not valid"
+        assert path.risk == 0.2, "risk is not valid"
+        assert path.impact == 0.8, "impact is not valid"
+        assert path.urgency == 0.5, "urgency is not valid"
 
     def test_physics_properties(self) -> None:
         """Test physics property fields."""
@@ -195,10 +195,10 @@ class TestActionPath:
             momentum=5.0,
         )
 
-        assert path.potential_energy == 50.0
-        assert path.kinetic_energy == 30.0
-        assert path.friction == 2.0
-        assert path.momentum == 5.0
+        assert path.potential_energy == 50.0, "potential_energy is not valid"
+        assert path.kinetic_energy == 30.0, "kinetic_energy is not valid"
+        assert path.friction == 2.0, "friction is not valid"
+        assert path.momentum == 5.0, "momentum is not valid"
 
     def test_action_path_with_type(self) -> None:
         """Test ActionPath with specific action type."""
@@ -207,15 +207,15 @@ class TestActionPath:
             description="Refactor legacy module",
         )
 
-        assert path.action_type == ActionType.REFACTOR
-        assert "legacy" in path.description.lower()
+        assert path.action_type == ActionType.REFACTOR, "action_type is not valid"
+        assert "legacy" in path.description.lower(), "Condition must be true"
 
     def test_trajectory_field(self) -> None:
         """Test trajectory field."""
         path = ActionPath(trajectory=["step1", "step2", "step3"])
 
-        assert len(path.trajectory) == 3
-        assert path.trajectory[0] == "step1"
+        assert len(path.trajectory) == 3, "Collection must not be empty"
+        assert path.trajectory[0] == "step1", "Condition must be true"
 
 
 class TestPhysicsCalculations:
@@ -238,7 +238,7 @@ class TestPhysicsCalculations:
 
         # Result should be sqrt(2) at 45 degrees
         result_mag = math.hypot(total_x, total_y)
-        assert abs(result_mag - math.sqrt(2)) < 0.01
+        assert abs(result_mag - math.sqrt(2)) < 0.01, "Result must not be empty"
 
     def test_opposing_forces_cancel(self) -> None:
         """Test that opposing forces cancel out."""
@@ -257,7 +257,7 @@ class TestPhysicsCalculations:
 
         # Should nearly cancel
         result_mag = math.hypot(total_x, total_y)
-        assert result_mag < 0.01
+        assert result_mag < 0.01, "Result must not be empty"
 
     def test_energy_conservation(self) -> None:
         """Test total energy calculation."""
@@ -267,7 +267,7 @@ class TestPhysicsCalculations:
         )
 
         total_energy = path.potential_energy + path.kinetic_energy
-        assert total_energy == 100.0
+        assert total_energy == 100.0, "total_energy is not valid"
 
     def test_friction_reduces_effective_momentum(self) -> None:
         """Test friction effect on momentum."""
@@ -277,7 +277,7 @@ class TestPhysicsCalculations:
         )
 
         effective_momentum = path.momentum - path.friction
-        assert effective_momentum == 7.0
+        assert effective_momentum == 7.0, "effective_momentum is not valid"
 
 
 class TestDecisionFactors:
@@ -292,7 +292,7 @@ class TestDecisionFactors:
 
         if path.risk > 0:
             risk_reward = path.impact / path.risk
-            assert risk_reward == 3.0
+            assert risk_reward == 3.0, "risk_reward is not valid"
 
     def test_confidence_weighted_impact(self) -> None:
         """Test confidence-weighted impact."""
@@ -302,7 +302,7 @@ class TestDecisionFactors:
         )
 
         weighted_impact = path.confidence * path.impact
-        assert weighted_impact == 0.8
+        assert weighted_impact == 0.8, "weighted_impact is not valid"
 
     def test_urgency_priority_boost(self) -> None:
         """Test urgency boosting priority."""
@@ -310,7 +310,7 @@ class TestDecisionFactors:
         urgency = 0.9
 
         boosted_priority = base_priority * (1 + urgency)
-        assert boosted_priority == 1.9
+        assert boosted_priority == 1.9, "boosted_priority is not valid"
 
 
 class TestEdgeCases:
@@ -322,8 +322,8 @@ class TestEdgeCases:
 
         x, y = vector.get_components()
 
-        assert x == 0.0
-        assert y == 0.0
+        assert x == 0.0, "x is not valid"
+        assert y == 0.0, "y is not valid"
 
     def test_action_path_all_zeros(self) -> None:
         """Test action path with all zero values."""
@@ -340,7 +340,7 @@ class TestEdgeCases:
             + path.urgency
         )
 
-        assert total == 0.0
+        assert total == 0.0, "total is not valid"
 
     def test_negative_direction(self) -> None:
         """Test vector with negative direction."""
@@ -353,8 +353,8 @@ class TestEdgeCases:
 
         x, y = vector.get_components()
 
-        assert abs(x - 0.0) < 0.01
-        assert abs(y - (-1.0)) < 0.01
+        assert abs(x - 0.0) < 0.01, "Condition must be true"
+        assert abs(y - (-1.0)) < 0.01, "Condition must be true"
 
     def test_large_values(self) -> None:
         """Test with large values."""
@@ -363,5 +363,5 @@ class TestEdgeCases:
             kinetic_energy=500000.0,
         )
 
-        assert path.potential_energy == 1000000.0
-        assert path.kinetic_energy == 500000.0
+        assert path.potential_energy == 1000000.0, "potential_energy is not valid"
+        assert path.kinetic_energy == 500000.0, "kinetic_energy is not valid"

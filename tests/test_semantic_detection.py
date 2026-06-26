@@ -18,11 +18,11 @@ def hello(name):
 
     tokens = detector.tokenize(code)
 
-    assert "def" in tokens
-    assert "hello" in tokens
-    assert "name" in tokens
+    assert "def" in tokens, "Condition must be true"
+    assert "hello" in tokens, "Condition must be true"
+    assert "name" in tokens, "Condition must be true"
     # Comment should be removed
-    assert "comment" not in tokens
+    assert "comment" not in tokens, "Condition must be true"
 
 
 def test_shingles():
@@ -32,9 +32,9 @@ def test_shingles():
     tokens = ["def", "hello", "name", "return", "hello"]
     shingles = detector.create_shingles(tokens)
 
-    assert "def hello name" in shingles
-    assert "hello name return" in shingles
-    assert "name return hello" in shingles
+    assert "def hello name" in shingles, "Condition must be true"
+    assert "hello name return" in shingles, "Condition must be true"
+    assert "name return hello" in shingles, "Condition must be true"
 
 
 def test_minhash_computation():
@@ -44,7 +44,7 @@ def test_minhash_computation():
     shingles = {"hello world", "world foo", "foo bar"}
     signature = detector.compute_minhash(shingles)
 
-    assert len(signature) == 64
+    assert len(signature) == 64, "Signature must not be empty"
     assert all(isinstance(h, int) for h in signature)
 
 
@@ -57,17 +57,17 @@ def test_similarity_calculation():
     sig2 = [1, 2, 3, 4, 5]
 
     similarity = detector.jaccard_similarity(sig1, sig2)
-    assert similarity == 1.0
+    assert similarity == 1.0, "similarity is not valid"
 
     # Completely different
     sig3 = [6, 7, 8, 9, 10]
     similarity2 = detector.jaccard_similarity(sig1, sig3)
-    assert similarity2 == 0.0
+    assert similarity2 == 0.0, "similarity2 is not valid"
 
     # Partially similar
     sig4 = [1, 2, 3, 9, 10]
     similarity3 = detector.jaccard_similarity(sig1, sig4)
-    assert 0.0 < similarity3 < 1.0
+    assert 0.0 < similarity3 < 1.0, "0 is not valid"
 
 
 def test_similar_code_detection():
@@ -96,7 +96,7 @@ def transform_data(data):
         groups = detector.scan()
 
         # Should find at least one similar group
-        assert isinstance(
+        assert isinstance(, "Condition must be true"
             groups, (list, tuple, set, dict)
         )  # May or may not find similarities depending on threshold
 

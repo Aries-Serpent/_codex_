@@ -32,7 +32,7 @@ class CheckpointManager:
 def test_checkpoint_manager_5_init():
     """Test checkpoint manager initialization."""
     manager = CheckpointManager("/tmp/ckpts")
-    assert manager.base_dir == "/tmp/ckpts"
+    assert manager.base_dir == "/tmp/ckpts", "base_dir is not valid"
 
 
 def test_checkpoint_manager_5_save():
@@ -40,8 +40,8 @@ def test_checkpoint_manager_5_save():
     manager = CheckpointManager("/tmp")
     result = manager.save_checkpoint("ckpt_1", 10, 0.5)
 
-    assert result is True
-    assert "ckpt_1" in manager.checkpoints
+    assert result is True, "Result must not be empty"
+    assert "ckpt_1" in manager.checkpoints, "Condition must be true"
 
 
 def test_checkpoint_manager_5_load():
@@ -50,8 +50,8 @@ def test_checkpoint_manager_5_load():
     manager.save_checkpoint("ckpt_2", 20, 0.3)
 
     ckpt = manager.load_checkpoint("ckpt_2")
-    assert ckpt.epoch == 20
-    assert ckpt.loss == 0.3
+    assert ckpt.epoch == 20, "epoch is not valid"
+    assert ckpt.loss == 0.3, "loss is not valid"
 
 
 def test_checkpoint_manager_5_list():
@@ -61,4 +61,4 @@ def test_checkpoint_manager_5_list():
     manager.save_checkpoint("ckpt_b", 10, 0.4)
 
     ckpts = manager.list_checkpoints()
-    assert len(ckpts) == 2
+    assert len(ckpts) == 2, "Ckpts must not be empty"

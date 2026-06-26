@@ -21,9 +21,9 @@ class TestMonitoringIntegration:
         with open(inventory_file, "r") as f:
             inventory = json.load(f)
 
-        assert "workflows" in inventory
-        assert "total_workflows" in inventory
-        assert inventory["total_workflows"] > 0
+        assert "workflows" in inventory, "Condition must be true"
+        assert "total_workflows" in inventory, "Condition must be true"
+        assert inventory["total_workflows"] > 0, "invent must be greater than zero"
 
     def test_monitoring_config_exists(self):
         """Test that monitoring configuration exists."""
@@ -82,11 +82,11 @@ class TestMonitoringConfiguration:
         with open(config_file, "r") as f:
             config = yaml.safe_load(f)
 
-        assert "monitoring" in config
-        assert "issues" in config
-        assert "patterns" in config
-        assert "agents" in config
-        assert "state" in config
+        assert "monitoring" in config, "Condition must be true"
+        assert "issues" in config, "Condition must be true"
+        assert "patterns" in config, "Condition must be true"
+        assert "agents" in config, "Condition must be true"
+        assert "state" in config, "Condition must be true"
 
     def test_pattern_database_has_patterns(self):
         """Test that pattern database has patterns defined."""
@@ -96,17 +96,17 @@ class TestMonitoringConfiguration:
         with open(pattern_file, "r") as f:
             patterns = yaml.safe_load(f)
 
-        assert "categories" in patterns
-        assert len(patterns["categories"]) > 0
+        assert "categories" in patterns, "Condition must be true"
+        assert len(patterns["categories"]) > 0, "Collection must not be empty"
 
         # Check that patterns have required fields
         for category, pattern_list in patterns["categories"].items():
-            assert len(pattern_list) > 0
+            assert len(pattern_list) > 0, "Pattern_list must not be empty"
             for pattern in pattern_list:
-                assert "id" in pattern
-                assert "name" in pattern
-                assert "pattern" in pattern
-                assert "confidence_base" in pattern
+                assert "id" in pattern, "Condition must be true"
+                assert "name" in pattern, "Condition must be true"
+                assert "pattern" in pattern, "Condition must be true"
+                assert "confidence_base" in pattern, "Condition must be true"
 
 
 class TestCognitiveBrainIntegration:
@@ -118,7 +118,7 @@ class TestCognitiveBrainIntegration:
             from scripts.cognitive.sensors.monitoring_sensor import MonitoringSensor
 
             sensor = MonitoringSensor()
-            assert sensor is not None
+            assert sensor is not None, "sensor must be initialized"
         except ImportError as e:
             pytest.skip(f"Import failed: {e}")
 
@@ -128,7 +128,7 @@ class TestCognitiveBrainIntegration:
             from scripts.cognitive.actions.monitoring_actions import ActionProposer
 
             proposer = ActionProposer()
-            assert proposer is not None
+            assert proposer is not None, "proposer must be initialized"
         except ImportError as e:
             pytest.skip(f"Import failed: {e}")
 
@@ -138,7 +138,7 @@ class TestCognitiveBrainIntegration:
             from scripts.cognitive.self_healing_validation import SelfHealingValidator
 
             validator = SelfHealingValidator()
-            assert validator is not None
+            assert validator is not None, "validator must be initialized"
         except ImportError as e:
             pytest.skip(f"Import failed: {e}")
 

@@ -33,9 +33,9 @@ class TestComparisonMode:
 
     def test_comparison_modes(self) -> None:
         """Test comparison mode values."""
-        assert ComparisonMode.STRICT.value == "strict"
-        assert ComparisonMode.FUZZY.value == "fuzzy"
-        assert ComparisonMode.SEMANTIC.value == "semantic"
+        assert ComparisonMode.STRICT.value == "strict", "Value must be initialized"
+        assert ComparisonMode.FUZZY.value == "fuzzy", "Value must be initialized"
+        assert ComparisonMode.SEMANTIC.value == "semantic", "Value must be initialized"
 
 
 class TestComparisonDetail:
@@ -51,9 +51,9 @@ class TestComparisonDetail:
             patched_output="output2",
         )
 
-        assert detail.input_ref == "test_input.txt"
-        assert detail.mode == ComparisonMode.STRICT
-        assert detail.result == "match"
+        assert detail.input_ref == "test_input.txt", "input_ref is not valid"
+        assert detail.mode == ComparisonMode.STRICT, "mode is not valid"
+        assert detail.result == "match", "Result must not be empty"
 
     def test_comparison_detail_with_error(self) -> None:
         """Test ComparisonDetail with error."""
@@ -64,8 +64,8 @@ class TestComparisonDetail:
             error="Execution failed",
         )
 
-        assert detail.result == "error"
-        assert detail.error == "Execution failed"
+        assert detail.result == "error", "Result must not be empty"
+        assert detail.error == "Execution failed", "Error should be raised or set"
 
 
 class TestComparisonResult:
@@ -79,10 +79,10 @@ class TestComparisonResult:
             patched_hash="hash2",
         )
 
-        assert result.result == "pass"
-        assert result.baseline_hash == "hash1"
-        assert result.patched_hash == "hash2"
-        assert result.comparisons == []
+        assert result.result == "pass", "Result must not be empty"
+        assert result.baseline_hash == "hash1", "Result must not be empty"
+        assert result.patched_hash == "hash2", "Result must not be empty"
+        assert result.comparisons == [], "Result must not be empty"
 
     def test_comparison_result_to_dict(self) -> None:
         """Test converting ComparisonResult to dictionary."""
@@ -101,10 +101,10 @@ class TestComparisonResult:
 
         data = result.to_dict()
 
-        assert data["result"] == "pass"
-        assert data["baseline_hash"] == "hash1"
-        assert len(data["comparisons"]) == 1
-        assert data["comparisons"][0]["input_ref"] == "test"
+        assert data["result"] == "pass", "Result must not be empty"
+        assert data["baseline_hash"] == "hash1", "Data must not be empty"
+        assert len(data["comparisons"]) == 1, "Collection must not be empty"
+        assert data["comparisons"][0]["input_ref"] == "test", "Data must not be empty"
 
     def test_comparison_result_save(self, tmp_path: Path) -> None:
         """Test saving ComparisonResult to file."""
@@ -117,12 +117,12 @@ class TestComparisonResult:
         output_path = tmp_path / "comparison.json"
         result.save(output_path)
 
-        assert output_path.exists()
+        assert output_path.exists(), "Condition must be true"
 
         with output_path.open() as f:
             data = json.load(f)
 
-        assert data["result"] == "pass"
+        assert data["result"] == "pass", "Result must not be empty"
 
 
 class TestOutputHashing:
@@ -135,8 +135,8 @@ class TestOutputHashing:
         hash1 = _hash_output(output)
         hash2 = _hash_output(output)
 
-        assert hash1 == hash2
-        assert len(hash1) == 64  # SHA256 hex length
+        assert hash1 == hash2, "hash1 is not valid"
+        assert len(hash1) == 64, "Hash1 must not be empty"
 
     def test_hash_different_outputs(self) -> None:
         """Test different outputs produce different hashes."""
@@ -146,7 +146,7 @@ class TestOutputHashing:
         hash1 = _hash_output(output1)
         hash2 = _hash_output(output2)
 
-        assert hash1 != hash2
+        assert hash1 != hash2, "hash1 is not valid"
 
     def test_hash_empty_output(self) -> None:
         """Test hashing empty output."""
@@ -154,7 +154,7 @@ class TestOutputHashing:
 
         hash_val = _hash_output(output)
 
-        assert len(hash_val) == 64
+        assert len(hash_val) == 64, "Hash_val must not be empty"
 
 
 class TestOutputNormalization:
@@ -166,7 +166,7 @@ class TestOutputNormalization:
 
         normalized = _normalize_output(output, ComparisonMode.STRICT)
 
-        assert normalized == output
+        assert normalized == output, "normalized is not valid"
 
     def test_normalize_fuzzy_mode_whitespace(self) -> None:
         """Test FUZZY mode normalizes whitespace."""
@@ -174,7 +174,7 @@ class TestOutputNormalization:
 
         normalized = _normalize_output(output, ComparisonMode.FUZZY)
 
-        assert normalized == "line1\nline2"
+        assert normalized == "line1\nline2", "normalized is not valid"
 
     def test_normalize_fuzzy_mode_sorting(self) -> None:
         """Test FUZZY mode sorts lines."""
@@ -182,7 +182,7 @@ class TestOutputNormalization:
 
         normalized = _normalize_output(output, ComparisonMode.FUZZY)
 
-        assert normalized == "line1\nline2\nline3"
+        assert normalized == "line1\nline2\nline3", "normalized is not valid"
 
     def test_normalize_fuzzy_mode_empty_lines(self) -> None:
         """Test FUZZY mode removes empty lines."""
@@ -190,7 +190,7 @@ class TestOutputNormalization:
 
         normalized = _normalize_output(output, ComparisonMode.FUZZY)
 
-        assert "\n\n" not in normalized
+        assert "\n\n" not in normalized, "Condition must be true"
 
     def test_normalize_semantic_mode_timestamps(self) -> None:
         """Test SEMANTIC mode replaces timestamps."""
@@ -198,8 +198,8 @@ class TestOutputNormalization:
 
         normalized = _normalize_output(output, ComparisonMode.SEMANTIC)
 
-        assert "<TIMESTAMP>" in normalized
-        assert "2025-12-17" not in normalized
+        assert "<TIMESTAMP>" in normalized, "Condition must be true"
+        assert "2025-12-17" not in normalized, "Condition must be true"
 
     def test_normalize_semantic_mode_uuids(self) -> None:
         """Test SEMANTIC mode replaces UUIDs."""
@@ -207,8 +207,8 @@ class TestOutputNormalization:
 
         normalized = _normalize_output(output, ComparisonMode.SEMANTIC)
 
-        assert "<UUID>" in normalized
-        assert "12345678" not in normalized
+        assert "<UUID>" in normalized, "Condition must be true"
+        assert "12345678" not in normalized, "Condition must be true"
 
     def test_normalize_semantic_mode_addresses(self) -> None:
         """Test SEMANTIC mode replaces memory addresses."""
@@ -216,8 +216,8 @@ class TestOutputNormalization:
 
         normalized = _normalize_output(output, ComparisonMode.SEMANTIC)
 
-        assert "<ADDR>" in normalized
-        assert "0x" not in normalized
+        assert "<ADDR>" in normalized, "Condition must be true"
+        assert "0x" not in normalized, "Condition must be true"
 
 
 class TestScriptExecution:
@@ -230,8 +230,8 @@ class TestScriptExecution:
 
         stdout, _stderr, code = _run_script(script)
 
-        assert stdout.strip() == "hello world"
-        assert code == 0
+        assert stdout.strip() == "hello world", "Condition must be true"
+        assert code == 0, "code is not valid"
 
     def test_run_script_with_error(self, tmp_path: Path) -> None:
         """Test running a script that produces an error."""
@@ -240,8 +240,8 @@ class TestScriptExecution:
 
         _stdout, stderr, code = _run_script(script)
 
-        assert "error" in stderr
-        assert code == 1
+        assert "error" in stderr, "Error should be raised or set"
+        assert code == 1, "code is not valid"
 
     def test_run_script_nonexistent(self, tmp_path: Path) -> None:
         """Test running nonexistent script."""
@@ -249,8 +249,8 @@ class TestScriptExecution:
 
         _stdout, stderr, code = _run_script(script)
 
-        assert "not found" in stderr.lower()
-        assert code == -1
+        assert "not found" in stderr.lower(), "Condition must be true"
+        assert code == -1, "code is not valid"
 
     def test_run_script_with_input(self, tmp_path: Path) -> None:
         """Test running script with input file."""
@@ -262,7 +262,7 @@ class TestScriptExecution:
 
         stdout, _stderr, _code = _run_script(script, input_file=input_file)
 
-        assert "test input" in stdout
+        assert "test input" in stdout, "Condition must be true"
 
     def test_run_script_timeout(self, tmp_path: Path) -> None:
         """Test script timeout handling."""
@@ -271,8 +271,8 @@ class TestScriptExecution:
 
         _stdout, stderr, code = _run_script(script, timeout=2)
 
-        assert "Timeout" in stderr
-        assert code == -1
+        assert "Timeout" in stderr, "Condition must be true"
+        assert code == -1, "code is not valid"
 
     def test_run_script_env_overrides(self, tmp_path: Path) -> None:
         """Test script execution with environment overrides."""
@@ -281,7 +281,7 @@ class TestScriptExecution:
 
         stdout, _stderr, _code = _run_script(script, env_overrides={"TEST_VAR": "test_value"})
 
-        assert "test_value" in stdout
+        assert "test_value" in stdout, "Value must be initialized"
 
 
 class TestOutputComparison:
@@ -293,8 +293,8 @@ class TestOutputComparison:
 
         match, diff = _compare_outputs(output, output, ComparisonMode.STRICT)
 
-        assert match is True
-        assert diff is None
+        assert match is True, "match is not valid"
+        assert diff is None, "diff is not valid"
 
     def test_compare_different_outputs_strict(self) -> None:
         """Test comparing different outputs in STRICT mode."""
@@ -303,10 +303,10 @@ class TestOutputComparison:
 
         match, diff = _compare_outputs(baseline, patched, ComparisonMode.STRICT)
 
-        assert match is False
-        assert diff is not None
-        assert "-line2" in diff
-        assert "+modified" in diff
+        assert match is False, "match is not valid"
+        assert diff is not None, "diff must be initialized"
+        assert "-line2" in diff, "Condition must be true"
+        assert "+modified" in diff, "Condition must be true"
 
     def test_compare_whitespace_fuzzy(self) -> None:
         """Test FUZZY mode ignores whitespace differences."""
@@ -315,7 +315,7 @@ class TestOutputComparison:
 
         match, _diff = _compare_outputs(baseline, patched, ComparisonMode.FUZZY)
 
-        assert match is True
+        assert match is True, "match is not valid"
 
     def test_compare_order_fuzzy(self) -> None:
         """Test FUZZY mode ignores line order."""
@@ -324,7 +324,7 @@ class TestOutputComparison:
 
         match, _diff = _compare_outputs(baseline, patched, ComparisonMode.FUZZY)
 
-        assert match is True
+        assert match is True, "match is not valid"
 
     def test_compare_timestamps_semantic(self) -> None:
         """Test SEMANTIC mode ignores timestamp differences."""
@@ -333,7 +333,7 @@ class TestOutputComparison:
 
         match, _diff = _compare_outputs(baseline, patched, ComparisonMode.SEMANTIC)
 
-        assert match is True
+        assert match is True, "match is not valid"
 
 
 class TestFullComparison:
@@ -351,8 +351,8 @@ class TestFullComparison:
 
         result = compare(baseline_dir, patched_dir)
 
-        assert result.result == "pass"
-        assert result.baseline_hash == result.patched_hash
+        assert result.result == "pass", "Result must not be empty"
+        assert result.baseline_hash == result.patched_hash, "Result must not be empty"
 
     def test_compare_different_scripts(self, tmp_path: Path) -> None:
         """Test comparing different baseline and patched scripts."""
@@ -366,8 +366,8 @@ class TestFullComparison:
 
         result = compare(baseline_dir, patched_dir, mode=ComparisonMode.STRICT)
 
-        assert result.result == "fail"
-        assert result.baseline_hash != result.patched_hash
+        assert result.result == "fail", "Result must not be empty"
+        assert result.baseline_hash != result.patched_hash, "Result must not be empty"
 
     def test_compare_no_entry_point(self, tmp_path: Path) -> None:
         """Test comparison with no entry point script."""
@@ -380,9 +380,9 @@ class TestFullComparison:
 
         result = compare(baseline_dir, patched_dir)
 
-        assert result.result == "warn"
-        assert len(result.comparisons) > 0
-        assert result.comparisons[0].result == "error"
+        assert result.result == "warn", "Result must not be empty"
+        assert len(result.comparisons) > 0, "Collection must not be empty"
+        assert result.comparisons[0].result == "error", "Result must not be empty"
 
     def test_compare_finds_main_py(self, tmp_path: Path) -> None:
         """Test comparison finds main.py as entry point."""
@@ -396,7 +396,7 @@ class TestFullComparison:
 
         result = compare(baseline_dir, patched_dir)
 
-        assert result.result == "pass"
+        assert result.result == "pass", "Result must not be empty"
 
     def test_compare_finds_dunder_main(self, tmp_path: Path) -> None:
         """Test comparison finds __main__.py as entry point."""
@@ -410,7 +410,7 @@ class TestFullComparison:
 
         result = compare(baseline_dir, patched_dir)
 
-        assert result.result == "pass"
+        assert result.result == "pass", "Result must not be empty"
 
     def test_compare_with_sample_inputs(self, tmp_path: Path) -> None:
         """Test comparison with sample input files."""
@@ -431,7 +431,7 @@ class TestFullComparison:
 
         result = compare(baseline_dir, patched_dir, sample_inputs=[input1])
 
-        assert len(result.comparisons) > 0
+        assert len(result.comparisons) > 0, "Collection must not be empty"
 
     def test_compare_with_timeout(self, tmp_path: Path) -> None:
         """Test comparison respects timeout."""
@@ -446,7 +446,7 @@ class TestFullComparison:
         result = compare(baseline_dir, patched_dir, timeout=2)
 
         # Both should timeout
-        assert any("Timeout" in str(c.error) for c in result.comparisons if c.error)
+        assert any("Timeout" in str(c.error) for c in result.comparisons if c.error), "Result must not be empty"
 
     def test_compare_fuzzy_mode_passes(self, tmp_path: Path) -> None:
         """Test FUZZY mode passes with minor differences."""
@@ -460,7 +460,7 @@ class TestFullComparison:
 
         result = compare(baseline_dir, patched_dir, mode=ComparisonMode.FUZZY)
 
-        assert result.result == "pass"
+        assert result.result == "pass", "Result must not be empty"
 
 
 class TestFlakinessDetection:

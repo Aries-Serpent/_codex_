@@ -50,7 +50,7 @@ except ImportError:  # pragma: no cover - platform-specific fallback
 
 if TYPE_CHECKING:  # pragma: no cover - typing only
     if torch is not None:
-        Tensor = torch.Tensor  # type: ignore
+        Tensor = torch.Tensor
     else:
         Tensor = Any
 else:  # pragma: no cover - runtime alias
@@ -371,7 +371,7 @@ def cache_dataset(
                         fcntl.flock(fd, fcntl.LOCK_UN)
                     except (IOError, OSError) as e:
                         error_type = type(e).__name__
-                        logger.debug(f"Exception: <ERROR_TYPE>")
+                        logger.debug("Exception: <ERROR_TYPE>")
                         logger.warning(
                             f"Exception: {e}", exc_info=True
                         )  # File lock release failed; continue cleanup

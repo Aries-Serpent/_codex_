@@ -27,18 +27,18 @@ def test_secret_scan_stub_detects_pattern(tmp_path: Path):
             "secrets.md",
         ]
     )
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
 
     json_out = tmp_path / "secrets.json"
     md_out = tmp_path / "secrets.md"
-    assert json_out.exists()
-    assert md_out.exists()
+    assert json_out.exists(), "Condition must be true"
+    assert md_out.exists(), "Condition must be true"
 
     data = json.loads(json_out.read_text(encoding="utf-8"))
-    assert data["total_findings"] >= 1
+    assert data["total_findings"] >= 1, "Value must be greater than zero"
     first = data["findings"][0]
     # Snippet is sanitized before storage — accept any redaction sentinel.
-    assert (
+    assert (, "Condition must be true"
         "AWS_SECRET" in first["snippet"]
         or "[REDACTED]" in first["snippet"]
         or first["snippet"] == "<redacted>"

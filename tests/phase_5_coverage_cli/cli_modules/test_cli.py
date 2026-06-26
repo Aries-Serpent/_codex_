@@ -2,10 +2,7 @@
 
 from __future__ import annotations
 
-import argparse
-import tempfile
 from pathlib import Path
-from typing import Any
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -43,24 +40,24 @@ class TestCliHelperFunctions:
         """Test _section_to_dict with dict input."""
         section = {"key": "value", "nested": {"inner": "data"}}
         result = cli._section_to_dict(section)
-        assert result == section
+        assert result == section, "Result must not be empty"
         assert isinstance(result, dict)
 
     def test_section_to_dict_with_none(self) -> None:
         """Test _section_to_dict with None input."""
         result = cli._section_to_dict(None)
-        assert result == {}
+        assert result == {}, "Result must not be empty"
         assert isinstance(result, dict)
 
     def test_section_to_dict_with_string(self) -> None:
         """Test _section_to_dict with non-dict input."""
         result = cli._section_to_dict("not a dict")
-        assert result == {}
+        assert result == {}, "Result must not be empty"
 
     def test_section_to_dict_with_list(self) -> None:
         """Test _section_to_dict with list input."""
         result = cli._section_to_dict([1, 2, 3])
-        assert result == {}
+        assert result == {}, "Result must not be empty"
 
 
 @pytest.mark.skipif(cli is None, reason="cli module not importable")
@@ -69,7 +66,7 @@ class TestCliSimpleSyntheticData:
 
     def test_simple_synthetic_data_callable(self) -> None:
         """Test that simple_synthetic_data is callable."""
-        assert callable(cli.simple_synthetic_data)
+        assert callable(cli.simple_synthetic_data), "Data must not be empty"
 
     def test_simple_synthetic_data_returns_tuple(self) -> None:
         """Test that function returns tuple."""
@@ -77,7 +74,7 @@ class TestCliSimpleSyntheticData:
             mock_build.return_value = ([], None)
             result = cli.simple_synthetic_data(num_samples=100)
             assert isinstance(result, tuple)
-            assert len(result) == 2
+            assert len(result) == 2, "Result must not be empty"
 
 
 @pytest.mark.skipif(cli is None, reason="cli module not importable")
@@ -86,7 +83,7 @@ class TestCliMetricFunctions:
 
     def test_classification_accuracy_callable(self) -> None:
         """Test classification_accuracy function exists."""
-        assert callable(cli.classification_accuracy)
+        assert callable(cli.classification_accuracy), "Condition must be true"
 
     def test_classification_accuracy_with_numpy_arrays(self) -> None:
         """Test classification_accuracy with numpy arrays."""
@@ -97,7 +94,7 @@ class TestCliMetricFunctions:
             labels = np.array([1, 0, 1])
             result = cli.classification_accuracy(logits, labels)
             assert isinstance(result, float)
-            assert 0.0 <= result <= 1.0
+            assert 0.0 <= result <= 1.0, "Result must not be empty"
         except ImportError:
             pytest.skip("numpy not available")
 
@@ -109,7 +106,7 @@ class TestCliResolutionFunctions:
     def test_resolve_callable_valid_target(self) -> None:
         """Test _resolve_callable with valid target."""
         result = cli._resolve_callable("pathlib.Path")
-        assert result is Path
+        assert result is Path, "Result must not be empty"
 
     def test_resolve_callable_invalid_module(self) -> None:
         """Test _resolve_callable with invalid module."""
@@ -148,7 +145,7 @@ class TestCliInstantiators:
             mock_linear = MagicMock()
             mock_resolve.return_value = mock_linear
             result = cli._instantiate_model(model_cfg)
-            assert result is not None
+            assert result is not None, "result must be initialized"
             mock_resolve.assert_called_once_with("torch.nn.Linear")
 
     def test_instantiate_optimizer_requires_target(self) -> None:
@@ -160,7 +157,7 @@ class TestCliInstantiators:
     def test_resolve_loss_with_default(self) -> None:
         """Test _resolve_loss with default."""
         result = cli._resolve_loss(None)
-        assert callable(result)
+        assert callable(result), "Result must not be empty"
 
     def test_resolve_loss_with_custom_target(self) -> None:
         """Test _resolve_loss with custom target."""
@@ -169,18 +166,18 @@ class TestCliInstantiators:
             mock_loss = MagicMock()
             mock_resolve.return_value = mock_loss
             result = cli._resolve_loss(loss_cfg)
-            assert callable(result)
+            assert callable(result), "Result must not be empty"
 
     def test_resolve_metric_with_none(self) -> None:
         """Test _resolve_metric with None."""
         result = cli._resolve_metric(None)
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_resolve_metric_with_accuracy_name(self) -> None:
         """Test _resolve_metric with accuracy name."""
         metric_cfg = {"name": "accuracy"}
         result = cli._resolve_metric(metric_cfg)
-        assert callable(result)
+        assert callable(result), "Result must not be empty"
 
 
 @pytest.mark.skipif(cli is None, reason="cli module not importable")
@@ -199,7 +196,7 @@ class TestCliDataloaderResolution:
             mock_loader_builder = MagicMock(return_value=([1, 2, 3], [4, 5, 6]))
             mock_resolve.return_value = mock_loader_builder
             result = cli._resolve_dataloaders(data_cfg)
-            assert len(result) == 2
+            assert len(result) == 2, "Result must not be empty"
 
     def test_resolve_dataloaders_with_name(self) -> None:
         """Test _resolve_dataloaders with name."""

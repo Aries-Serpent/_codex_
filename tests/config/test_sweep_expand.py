@@ -28,7 +28,7 @@ def test_sweep_expand(tmp_path: Path) -> None:
     sweep.write_text("a: [1,2]\nb: [3]\n")
     out = _run(["python", "scripts/run_sweep.py", "--sweep-file", str(sweep), "--dry-run"])
     assert any("{'a': 1, 'b': 3}" in line for line in out)
-    assert len(out) == 2
+    assert len(out) == 2, "Out must not be empty"
     out2 = _run(
         [
             "python",
@@ -40,4 +40,4 @@ def test_sweep_expand(tmp_path: Path) -> None:
             "1",
         ]
     )
-    assert len(out2) == 1
+    assert len(out2) == 1, "Out2 must not be empty"

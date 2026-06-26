@@ -50,17 +50,17 @@ class TestCLIGroup:
     def test_cli_no_args_shows_help(self, runner):
         """Invoking without subcommand prints help and exits 0."""
         result = runner.invoke(cli, [])
-        assert result.exit_code == 0
-        assert "subcommand" in result.output.lower() or "codex" in result.output.lower()
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "subcommand" in result.output.lower() or "codex" in result.output.lower(), "Result must not be empty"
 
     def test_cli_help_flag(self, runner):
         result = runner.invoke(cli, ["--help"])
-        assert result.exit_code == 0
-        assert "Usage" in result.output or "usage" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "Usage" in result.output or "usage" in result.output, "Result must not be empty"
 
     def test_cli_unknown_subcommand_fails(self, runner):
         result = runner.invoke(cli, ["nonexistent-cmd-xyz"])
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -73,19 +73,19 @@ class TestTaskCommands:
 
     def test_tasks_lists_allowed(self, runner):
         result = runner.invoke(cli, ["tasks"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
         for task_name in ALLOWED_TASKS:
-            assert task_name in result.output
+            assert task_name in result.output, "Result must not be empty"
 
     def test_run_without_task_shows_whitelist(self, runner):
         result = runner.invoke(cli, ["run"])
-        assert result.exit_code == 0
-        assert "Whitelisted" in result.output or "task" in result.output.lower()
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "Whitelisted" in result.output or "task" in result.output.lower(), "Result must not be empty"
 
     def test_run_unknown_task_fails(self, runner):
         result = runner.invoke(cli, ["run", "does-not-exist"])
-        assert result.exit_code != 0
-        assert (
+        assert result.exit_code != 0, "Result must not be empty"
+        assert (, "Condition must be true"
             "not allowed" in result.output.lower() or "not allowed" in (result.stderr or "").lower()
         )
 
@@ -95,7 +95,7 @@ class TestTaskCommands:
         mock_fn = MagicMock()
         with patch.dict(ALLOWED_TASKS, {task_name: (mock_fn, "test task")}):
             result = runner.invoke(cli, ["run", task_name])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
         mock_fn.assert_called_once()
 
 
@@ -109,19 +109,19 @@ class TestLogsGroup:
 
     def test_logs_no_subcommand_shows_help(self, runner):
         result = runner.invoke(cli, ["logs"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_logs_init_invokes_script(self, runner):
         with patch("codex._cli_click.subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(returncode=0)
             result = runner.invoke(cli, ["logs", "init", "--db", "/tmp/test.sqlite"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
         mock_run.assert_called_once()
 
     def test_logs_init_failure_reports_error(self, runner):
         with patch("codex._cli_click.subprocess.run", side_effect=RuntimeError("boom")):
             result = runner.invoke(cli, ["logs", "init", "--db", "/tmp/test.sqlite"])
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     def test_logs_query_invokes_script(self, runner):
         with patch("codex._cli_click.subprocess.run") as mock_run:
@@ -129,7 +129,7 @@ class TestLogsGroup:
             result = runner.invoke(
                 cli, ["logs", "query", "--sql", "SELECT 1", "--db", "/tmp/test.sqlite"]
             )
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
         mock_run.assert_called_once()
 
     def test_logs_query_failure_reports_error(self, runner):
@@ -137,7 +137,7 @@ class TestLogsGroup:
             result = runner.invoke(
                 cli, ["logs", "query", "--sql", "SELECT 1", "--db", "/tmp/test.sqlite"]
             )
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -150,7 +150,7 @@ class TestTokenizerGroup:
 
     def test_tokenizer_no_subcommand_shows_help(self, runner):
         result = runner.invoke(cli, ["tokenizer"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_tokenizer_encode_basic(self, runner):
         """encode should call the tokenizer and print token IDs."""
@@ -174,7 +174,7 @@ class TestReproGroup:
 
     def test_repro_no_subcommand_shows_help(self, runner):
         result = runner.invoke(cli, ["repro"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_repro_seed_creates_output(self, runner, tmp_path):
         with patch("codex.cli.importlib.import_module") as mock_import:
@@ -198,12 +198,12 @@ class TestHelpers:
     def test_missing_command_returns_click_command(self):
         cmd = _missing_command("test", "Test is unavailable")
         assert isinstance(cmd, click.Command)
-        assert cmd.name == "test"
+        assert cmd.name == "test", "name is not valid"
 
     def test_missing_command_invocation_fails(self, runner):
         cmd = _missing_command("broken", "Broken dep missing")
         result = runner.invoke(cmd)
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     def test_emit_group_help(self, runner):
         """_emit_group_help should list subcommands."""
@@ -219,13 +219,13 @@ class TestHelpers:
             pass
 
         result = runner.invoke(test_group, [])
-        assert result.exit_code == 0
-        assert "sub1" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "sub1" in result.output, "Result must not be empty"
 
     def test_allowed_tasks_has_entries(self):
-        assert len(ALLOWED_TASKS) >= 1
+        assert len(ALLOWED_TASKS) >= 1, "Allowed_tasks must not be empty"
         for name, (func, desc) in ALLOWED_TASKS.items():
-            assert callable(func)
+            assert callable(func), "Condition must be true"
             assert isinstance(desc, str)
 
 
@@ -239,7 +239,7 @@ class TestAuthGroup:
 
     def test_auth_no_subcommand_shows_help(self, runner):
         result = runner.invoke(cli, ["auth"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_auth_status_runs(self, runner):
         """auth status should not crash even without credentials."""

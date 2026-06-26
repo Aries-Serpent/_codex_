@@ -22,7 +22,7 @@ class TestFindRepoRoot:
         with patch.dict(os.environ, {"CODEX_REPO_ROOT": str(test_path)}):
             result = find_repo_root()
 
-        assert result == test_path.resolve()
+        assert result == test_path.resolve(), "Result must not be empty"
 
     def test_find_repo_root_with_git_dir(self, tmp_path):
         """Should find .git directory by walking up the tree."""
@@ -36,7 +36,7 @@ class TestFindRepoRoot:
 
         result = find_repo_root(nested_dir)
 
-        assert result == repo_root
+        assert result == repo_root, "Result must not be empty"
 
     def test_find_repo_root_raises_if_not_found(self, tmp_path):
         """Should raise RuntimeError if no .git directory found."""
@@ -68,10 +68,10 @@ class TestCheckLegacyConfigUsage:
             warnings.simplefilter("always")
             check_legacy_config_usage()
 
-            assert len(w) == 1
+            assert len(w) == 1, "W must not be empty"
             assert issubclass(w[0].category, DeprecationWarning)
-            assert "conf/" in str(w[0].message)
-            assert "migrate to 'configs/'" in str(w[0].message)
+            assert "conf/" in str(w[0].message), "Condition must be true"
+            assert "migrate to 'configs/'" in str(w[0].message), "Condition must be true"
 
     def test_warns_for_legacy_config_directory(self, tmp_path, monkeypatch):
         """Should warn if legacy config/ directory has non-deprecated files."""
@@ -91,9 +91,9 @@ class TestCheckLegacyConfigUsage:
             warnings.simplefilter("always")
             check_legacy_config_usage()
 
-            assert len(w) == 1
+            assert len(w) == 1, "W must not be empty"
             assert issubclass(w[0].category, DeprecationWarning)
-            assert "config/" in str(w[0].message)
+            assert "config/" in str(w[0].message), "Condition must be true"
 
     def test_no_warning_for_deprecated_md_only(self, tmp_path, monkeypatch):
         """Should not warn if legacy directory only contains DEPRECATED.md."""
@@ -114,7 +114,7 @@ class TestCheckLegacyConfigUsage:
             check_legacy_config_usage()
 
             # Should not warn
-            assert len(w) == 0
+            assert len(w) == 0, "W must not be empty"
 
     def test_no_warning_if_legacy_dirs_dont_exist(self, tmp_path, monkeypatch):
         """Should not warn if legacy directories don't exist."""
@@ -130,7 +130,7 @@ class TestCheckLegacyConfigUsage:
             warnings.simplefilter("always")
             check_legacy_config_usage()
 
-            assert len(w) == 0
+            assert len(w) == 0, "W must not be empty"
 
     def test_handles_permission_error_gracefully(self, tmp_path, monkeypatch):
         """Should handle permission errors without crashing."""
@@ -161,7 +161,7 @@ class TestCheckLegacyConfigUsage:
             check_legacy_config_usage()
 
             # Should not warn due to permission error
-            assert len(w) == 0
+            assert len(w) == 0, "W must not be empty"
 
     def test_handles_repo_root_not_found(self, monkeypatch):
         """Should handle when repo root cannot be determined."""
@@ -178,7 +178,7 @@ class TestCheckLegacyConfigUsage:
             check_legacy_config_usage()
 
             # Should not warn
-            assert len(w) == 0
+            assert len(w) == 0, "W must not be empty"
 
     def test_respects_env_var_to_disable_check(self, tmp_path, monkeypatch):
         """Should skip check if CODEX_CHECK_LEGACY_CONFIGS=0."""
@@ -204,4 +204,4 @@ class TestCheckLegacyConfigUsage:
             check_legacy_config_usage()
 
             # Function still warns when called explicitly
-            assert len(w) == 1
+            assert len(w) == 1, "W must not be empty"

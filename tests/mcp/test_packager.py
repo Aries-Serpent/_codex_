@@ -34,7 +34,7 @@ dependencies:
     out_dir = tmp_path / "generated"
     generate_package(config, output_dir=str(out_dir))
 
-    assert (out_dir / "README.md").exists()
-    assert (out_dir / "pyproject.toml").exists()
-    assert (out_dir / "sample_pkg" / "app.py").exists()
-    assert (out_dir / "serverless" / "aws_lambda.py").exists()
+    assert (out_dir / "README.md").exists(), "Condition must be true"
+    assert (out_dir / "pyproject.toml").exists(), "Condition must be true"
+    assert (out_dir / "sample_pkg" / "app.py").exists(), "Condition must be true"
+    assert (out_dir / "serverless" / "aws_lambda.py").exists(), "Condition must be true"

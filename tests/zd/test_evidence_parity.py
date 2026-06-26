@@ -36,10 +36,10 @@ def test_zendesk_evidence_parity(tmp_path: Path, monkeypatch):
         },
     )
     lines = (evdir / "archive_ops.jsonl").read_text(encoding="utf-8").strip().splitlines()
-    assert len(lines) == 2
+    assert len(lines) == 2, "Lines must not be empty"
     recs = [json.loads(line) for line in lines]
     for rec in recs:
         for key in ("action", "actor", "tool", "repo", "context"):
-            assert key in rec
-        assert rec["repo"] == "_codex_"
-        assert "python" in rec["context"] and "os" in rec["context"]
+            assert key in rec, "Condition must be true"
+        assert rec["repo"] == "_codex_", "Condition must be true"
+        assert "python" in rec["context"] and "os" in rec["context"], "Condition must be true"

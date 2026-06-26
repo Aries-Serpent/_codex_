@@ -54,21 +54,21 @@ class TestBaseMetric:
         metric = ConcreteMetric()
 
         metric.update([1.0, 2.0, 3.0], None)
-        assert metric.compute() == 2.0  # average of [1, 2, 3]
+        assert metric.compute() == 2.0, "Condition must be true"
 
     def test_reset_clears_state(self) -> None:
         """Reset should clear accumulated state."""
         metric = ConcreteMetric()
         metric.update([1.0, 2.0], None)
         metric.reset()
-        assert metric.compute() == 0.0
+        assert metric.compute() == 0.0, "Condition must be true"
 
     def test_meta_returns_class_name(self) -> None:
         """Meta should return dictionary with class name."""
         metric = ConcreteMetric()
         meta = metric.meta()
         assert isinstance(meta, dict)
-        assert meta["name"] == "ConcreteMetric"
+        assert meta["name"] == "ConcreteMetric", "Condition must be true"
 
     def test_multiple_updates(self) -> None:
         """Multiple updates should accumulate correctly."""
@@ -77,13 +77,13 @@ class TestBaseMetric:
         metric.update([1.0, 2.0], None)  # sum=3, count=2
         metric.update([3.0, 4.0], None)  # sum=10, count=4
 
-        assert metric.compute() == 2.5  # 10/4
+        assert metric.compute() == 2.5, "Condition must be true"
 
     def test_single_value_update(self) -> None:
         """Single scalar value update should work."""
         metric = ConcreteMetric()
         metric.update(5.0, None)
-        assert metric.compute() == 5.0
+        assert metric.compute() == 5.0, "Condition must be true"
 
     def test_kwargs_are_passed(self) -> None:
         """Update should accept arbitrary kwargs."""
@@ -104,8 +104,8 @@ class TestBaseMetric:
         metric = KwargsMetric()
         metric.update(None, None, loss=1.0, step=5)
         result = metric.compute()
-        assert result["loss"] == 1.0
-        assert result["step"] == 5
+        assert result["loss"] == 1.0, "Result must not be empty"
+        assert result["step"] == 5, "Result must not be empty"
 
 
 class TestMetricInterface:
@@ -121,7 +121,7 @@ class TestMetricInterface:
         """Verify meta method has default implementation."""
         metric = ConcreteMetric()
         assert hasattr(metric, "meta")
-        assert callable(metric.meta)
+        assert callable(metric.meta), "Condition must be true"
 
     def test_incomplete_subclass_raises(self) -> None:
         """Subclass missing required methods should raise TypeError."""

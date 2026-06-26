@@ -68,13 +68,13 @@ def test_emit_checkpoint_respects_retention(monkeypatch, tmp_path: Path) -> None
         rng_state=RNGState(),
     )
 
-    assert Path(emitted).name == "epoch-0"
-    assert captured["metric_key"] == "acc"
-    assert captured["metric_value"] == 0.42
-    assert captured["config"]["keep_last"] == 2
-    assert captured["config"]["best_k"] == 1
+    assert Path(emitted).name == "epoch-0", "name is not valid"
+    assert captured["metric_key"] == "acc", "Condition must be true"
+    assert captured["metric_value"] == 0.42, "Value must be initialized"
+    assert captured["config"]["keep_last"] == 2, "Condition must be true"
+    assert captured["config"]["best_k"] == 1, "Condition must be true"
     metadata = json.loads((Path(emitted) / "metadata.json").read_text(encoding="utf-8"))
-    assert metadata["metrics"]["acc"] == 0.42
+    assert metadata["metrics"]["acc"] == 0.42, "Data must not be empty"
 
 
 class _DummyResult:
@@ -136,6 +136,6 @@ def test_run_unified_training_resume_flow(monkeypatch, tmp_path: Path) -> None:
     )
     result = run_unified_training(cfg, callbacks=[])
 
-    assert seen["resume_path"] == "/tmp/ckpt"
-    assert result["status"] == "ok"
-    assert result["resume_from"] == "/tmp/ckpt"
+    assert seen["resume_path"] == "/tmp/ckpt", "Condition must be true"
+    assert result["status"] == "ok", "Result must not be empty"
+    assert result["resume_from"] == "/tmp/ckpt", "Result must not be empty"

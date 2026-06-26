@@ -142,8 +142,8 @@ class MemoryOptimizer:
                 logger.info("Converted model to channels_last memory format")
             except (ValueError, TypeError, RuntimeError) as e:
                 error_type = type(e).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
-                logger.debug(f"Could not convert to channels_last: <ERROR_TYPE>")
+                logger.debug("Exception: <ERROR_TYPE>")
+                logger.debug("Could not convert to channels_last: <ERROR_TYPE>")
 
         # Enable TF32 for faster matmul on Ampere GPUs
         if torch.cuda.is_available():
@@ -234,8 +234,8 @@ def optimize_model(
             logger.info("Converted to channels_last memory format")
         except (ValueError, TypeError, RuntimeError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.debug(f"Could not convert to channels_last: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.debug("Could not convert to channels_last: <ERROR_TYPE>")
 
     # Compile with torch.compile (PyTorch 2.0+)
     if compile and hasattr(torch, "compile"):
@@ -244,8 +244,8 @@ def optimize_model(
             logger.info("Model compiled with torch.compile")
         except (ValueError, TypeError, RuntimeError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.warning(f"Could not compile model: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.warning("Could not compile model: <ERROR_TYPE>")
 
     # Enable performance optimizations
     if torch.cuda.is_available():

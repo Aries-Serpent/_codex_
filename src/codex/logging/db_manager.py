@@ -28,8 +28,8 @@ try:
     from .config import DEFAULT_LOG_DB
 except ImportError as e:
     error_type = type(e).__name__
-    logger.debug(f"ImportError: <ERROR_TYPE>")
-    logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
+    logger.debug("ImportError: <ERROR_TYPE>")
+    logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
     DEFAULT_LOG_DB = Path(".codex/session_logs.db")
 
 
@@ -221,7 +221,7 @@ class DBManager:
             conn.close()
         except sqlite3.Error as exc:
             error_type = type(exc).__name__
-            self._logger.debug(f"Error closing connection: <ERROR_TYPE>")
+            self._logger.debug("Error closing connection: <ERROR_TYPE>")
 
     @contextmanager
     def connection(self, auto_init: bool = True):
@@ -277,7 +277,7 @@ class DBManager:
                         conn.close()
                     except sqlite3.Error as exc:
                         error_type = type(exc).__name__
-                        cls._logger.debug(f"Error closing pooled connection: <ERROR_TYPE>")
+                        cls._logger.debug("Error closing pooled connection: <ERROR_TYPE>")
             cls._CONNECTION_POOL.clear()
 
 

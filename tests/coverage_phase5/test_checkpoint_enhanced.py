@@ -15,7 +15,8 @@ from typing import (  # pragma: allowlist secret # pragma: allowlist secret # pr
     Dict,
     Optional,
 )
- # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+
+# pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 import pytest
 
 
@@ -131,28 +132,28 @@ class TestCheckpointManagerInitialization:
         """✅ PATTERN: Complete initialization assertions."""
         manager = CheckpointManager("/tmp/checkpoints")
 
-        assert manager is not None
+        assert manager is not None, "manager must be initialized"
         assert isinstance(manager, CheckpointManager)
-        assert manager.storage_path == "/tmp/checkpoints"
-        assert manager.checkpoints == {}
+        assert manager.storage_path == "/tmp/checkpoints", "storage_path is not valid"
+        assert manager.checkpoints == {}, "checkpoints is not valid"
         assert isinstance(manager.checkpoints, dict)
-        assert manager.current_checkpoint_id is None
-        assert manager.total_checkpoints_saved == 0
-        assert manager.max_checkpoints == 10
+        assert manager.current_checkpoint_id is None, "current_checkpoint_id is not valid"
+        assert manager.total_checkpoints_saved == 0, "total_checkpoints_saved is not valid"
+        assert manager.max_checkpoints == 10, "max_checkpoints is not valid"
 
     def test_custom_storage_path(self):
         """✅ PATTERN: Custom parameters."""
         manager = CheckpointManager("/data/ckpts")
 
-        assert manager.storage_path == "/data/ckpts"
-        assert manager.storage_path != "/tmp/checkpoints"
+        assert manager.storage_path == "/data/ckpts", "Data must not be empty"
+        assert manager.storage_path != "/tmp/checkpoints", "storage_path is not valid"
 
     def test_empty_storage_path_rejected(self):
         """✅ PATTERN: Edge case - empty path."""
         with pytest.raises(ValueError) as exc_info:
             CheckpointManager("")
 
-        assert "storage_path" in str(exc_info.value).lower()
+        assert "storage_path" in str(exc_info.value).lower(), "Value must be initialized"
 
 
 # ============================================================================
@@ -169,12 +170,12 @@ class TestCheckpointSaving:
 
         result = manager.save_checkpoint("ckpt_1", epoch=10, loss=0.5)
 
-        assert result is True
-        assert manager.total_checkpoints_saved == 1
-        assert "ckpt_1" in manager.checkpoints
-        assert manager.current_checkpoint_id == "ckpt_1"
-        assert manager.checkpoints["ckpt_1"].epoch == 10
-        assert manager.checkpoints["ckpt_1"].loss == 0.5
+        assert result is True, "Result must not be empty"
+        assert manager.total_checkpoints_saved == 1, "total_checkpoints_saved is not valid"
+        assert "ckpt_1" in manager.checkpoints, "Condition must be true"
+        assert manager.current_checkpoint_id == "ckpt_1", "current_checkpoint_id is not valid"
+        assert manager.checkpoints["ckpt_1"].epoch == 10, "epoch is not valid"
+        assert manager.checkpoints["ckpt_1"].loss == 0.5, "loss is not valid"
 
     def test_save_multiple_checkpoints(self):
         """✅ PATTERN: Multiple saves with counter."""
@@ -182,11 +183,11 @@ class TestCheckpointSaving:
 
         for i in range(5):
             result = manager.save_checkpoint(f"ckpt_{i}", epoch=i, loss=1.0 - (i * 0.1))
-            assert result is True
-            assert manager.total_checkpoints_saved == i + 1
+            assert result is True, "Result must not be empty"
+            assert manager.total_checkpoints_saved == i + 1, "total_checkpoints_saved is not valid"
 
-        assert len(manager.checkpoints) == 5
-        assert manager.current_checkpoint_id == "ckpt_4"
+        assert len(manager.checkpoints) == 5, "Collection must not be empty"
+        assert manager.current_checkpoint_id == "ckpt_4", "current_checkpoint_id is not valid"
 
     def test_save_empty_id_rejected(self):
         """✅ PATTERN: Edge case - empty checkpoint ID."""
@@ -195,8 +196,8 @@ class TestCheckpointSaving:
         with pytest.raises(ValueError) as exc_info:
             manager.save_checkpoint("", epoch=1, loss=0.5)
 
-        assert "checkpoint_id" in str(exc_info.value).lower()
-        assert manager.total_checkpoints_saved == 0
+        assert "checkpoint_id" in str(exc_info.value).lower(), "Value must be initialized"
+        assert manager.total_checkpoints_saved == 0, "total_checkpoints_saved is not valid"
 
     def test_save_negative_epoch_rejected(self):
         """✅ PATTERN: Edge case - negative epoch."""
@@ -205,7 +206,7 @@ class TestCheckpointSaving:
         with pytest.raises(ValueError) as exc_info:
             manager.save_checkpoint("ckpt_1", epoch=-1, loss=0.5)
 
-        assert "epoch" in str(exc_info.value).lower()
+        assert "epoch" in str(exc_info.value).lower(), "Value must be initialized"
 
     def test_save_negative_loss_rejected(self):
         """✅ PATTERN: Edge case - negative loss."""
@@ -220,8 +221,8 @@ class TestCheckpointSaving:
 
         result = manager.save_checkpoint("ckpt_0", epoch=0, loss=1.0)
 
-        assert result is True
-        assert manager.checkpoints["ckpt_0"].epoch == 0
+        assert result is True, "Result must not be empty"
+        assert manager.checkpoints["ckpt_0"].epoch == 0, "epoch is not valid"
 
     def test_save_loss_zero_allowed(self):
         """✅ PATTERN: Boundary - zero loss."""
@@ -229,8 +230,8 @@ class TestCheckpointSaving:
 
         result = manager.save_checkpoint("ckpt_0", epoch=0, loss=0.0)
 
-        assert result is True
-        assert manager.checkpoints["ckpt_0"].loss == 0.0
+        assert result is True, "Result must not be empty"
+        assert manager.checkpoints["ckpt_0"].loss == 0.0, "loss is not valid"
 
     def test_save_exceeds_limit(self):
         """✅ PATTERN: Boundary - exceeds max checkpoints."""
@@ -244,8 +245,8 @@ class TestCheckpointSaving:
         with pytest.raises(RuntimeError) as exc_info:
             manager.save_checkpoint("ckpt_3", epoch=3, loss=0.2)
 
-        assert "limit" in str(exc_info.value).lower()
-        assert len(manager.checkpoints) == 3
+        assert "limit" in str(exc_info.value).lower(), "Value must be initialized"
+        assert len(manager.checkpoints) == 3, "Collection must not be empty"
 
 
 # ============================================================================
@@ -263,12 +264,12 @@ class TestCheckpointLoading:
 
         ckpt = manager.load_checkpoint("ckpt_1")
 
-        assert ckpt is not None
-        assert ckpt.id == "ckpt_1"
-        assert ckpt.epoch == 10
-        assert ckpt.loss == 0.5
+        assert ckpt is not None, "ckpt must be initialized"
+        assert ckpt.id == "ckpt_1", "id is not valid"
+        assert ckpt.epoch == 10, "epoch is not valid"
+        assert ckpt.loss == 0.5, "loss is not valid"
         assert isinstance(ckpt.created_at, datetime)
-        assert ckpt.metadata["saved"] is True
+        assert ckpt.metadata["saved"] is True, "Data must not be empty"
 
     def test_load_nonexistent_checkpoint(self):
         """✅ PATTERN: Edge case - missing checkpoint."""
@@ -276,7 +277,7 @@ class TestCheckpointLoading:
 
         ckpt = manager.load_checkpoint("nonexistent")
 
-        assert ckpt is None
+        assert ckpt is None, "ckpt is not valid"
 
     def test_load_invalid_id_type(self):
         """✅ PATTERN: Edge case - wrong type."""
@@ -291,9 +292,9 @@ class TestCheckpointLoading:
 
         result = manager.list_checkpoints()
 
-        assert result == {}
+        assert result == {}, "Result must not be empty"
         assert isinstance(result, dict)
-        assert len(result) == 0
+        assert len(result) == 0, "Result must not be empty"
 
     def test_list_multiple_checkpoints(self):
         """✅ PATTERN: Multiple checkpoints listing."""
@@ -304,10 +305,10 @@ class TestCheckpointLoading:
 
         result = manager.list_checkpoints()
 
-        assert len(result) == 3
-        assert "ckpt_0" in result
-        assert "ckpt_1" in result
-        assert "ckpt_2" in result
+        assert len(result) == 3, "Result must not be empty"
+        assert "ckpt_0" in result, "Result must not be empty"
+        assert "ckpt_1" in result, "Result must not be empty"
+        assert "ckpt_2" in result, "Result must not be empty"
         assert isinstance(result, dict)
 
 
@@ -326,9 +327,9 @@ class TestCheckpointDeletion:
 
         result = manager.delete_checkpoint("ckpt_1")
 
-        assert result is True
-        assert "ckpt_1" not in manager.checkpoints
-        assert len(manager.checkpoints) == 0
+        assert result is True, "Result must not be empty"
+        assert "ckpt_1" not in manager.checkpoints, "Condition must be true"
+        assert len(manager.checkpoints) == 0, "Collection must not be empty"
 
     def test_delete_nonexistent_rejected(self):
         """✅ PATTERN: Edge case - missing checkpoint."""
@@ -350,29 +351,29 @@ class TestSaaSIntegration:
         """✅ PATTERN: SaaS client initialization."""
         saas = SaaSIntegration("test_api_key")
 
-        assert saas is not None
-        assert saas.api_key == "test_api_key"
-        assert saas.is_authenticated is False
-        assert saas.upload_count == 0
-        assert saas.max_file_size_mb == 1024
+        assert saas is not None, "saas must be initialized"
+        assert saas.api_key == "test_api_key", "api_key is not valid"
+        assert saas.is_authenticated is False, "is_authenticated is not valid"
+        assert saas.upload_count == 0, "Count must be greater than zero"
+        assert saas.max_file_size_mb == 1024, "max_file_size_mb is not valid"
 
     def test_saas_empty_api_key_rejected(self):
         """✅ PATTERN: Edge case - empty API key."""
         with pytest.raises(ValueError) as exc_info:
             SaaSIntegration("")
 
-        assert "api_key" in str(exc_info.value).lower()
+        assert "api_key" in str(exc_info.value).lower(), "Value must be initialized"
 
     def test_saas_authentication(self):
         """✅ PATTERN: Authentication flow."""
         saas = SaaSIntegration("test_api_key")
 
-        assert saas.is_authenticated is False
+        assert saas.is_authenticated is False, "is_authenticated is not valid"
 
         result = saas.authenticate()
 
-        assert result is True
-        assert saas.is_authenticated is True
+        assert result is True, "Result must not be empty"
+        assert saas.is_authenticated is True, "is_authenticated is not valid"
 
     def test_saas_upload_without_auth_rejected(self):
         """✅ PATTERN: Edge case - upload without auth."""
@@ -381,7 +382,7 @@ class TestSaaSIntegration:
         with pytest.raises(RuntimeError) as exc_info:
             saas.upload_checkpoint("ckpt_1", file_size_mb=100)
 
-        assert "authenticated" in str(exc_info.value).lower()
+        assert "authenticated" in str(exc_info.value).lower(), "Value must be initialized"
 
     def test_saas_upload_valid_checkpoint(self):
         """✅ PATTERN: Valid upload."""
@@ -390,10 +391,10 @@ class TestSaaSIntegration:
 
         result = saas.upload_checkpoint("ckpt_1", file_size_mb=100)
 
-        assert result["success"] is True
-        assert result["checkpoint_id"] == "ckpt_1"
-        assert result["upload_count"] == 1
-        assert saas.upload_count == 1
+        assert result["success"] is True, "Result must not be empty"
+        assert result["checkpoint_id"] == "ckpt_1", "Result must not be empty"
+        assert result["upload_count"] == 1, "Result must not be empty"
+        assert saas.upload_count == 1, "Count must be greater than zero"
 
     def test_saas_upload_multiple(self):
         """✅ PATTERN: Multiple uploads with counter."""
@@ -402,9 +403,9 @@ class TestSaaSIntegration:
 
         for i in range(3):
             result = saas.upload_checkpoint(f"ckpt_{i}", file_size_mb=100)
-            assert result["upload_count"] == i + 1
+            assert result["upload_count"] == i + 1, "Result must not be empty"
 
-        assert saas.upload_count == 3
+        assert saas.upload_count == 3, "Count must be greater than zero"
 
     def test_saas_upload_zero_size_rejected(self):
         """✅ PATTERN: Edge case - zero file size."""
@@ -414,7 +415,7 @@ class TestSaaSIntegration:
         with pytest.raises(ValueError) as exc_info:
             saas.upload_checkpoint("ckpt_1", file_size_mb=0)
 
-        assert "positive" in str(exc_info.value).lower()
+        assert "positive" in str(exc_info.value).lower(), "Value must be initialized"
 
     def test_saas_upload_exceeds_max_size(self):
         """✅ PATTERN: Boundary - exceeds maximum size."""
@@ -425,7 +426,7 @@ class TestSaaSIntegration:
         with pytest.raises(ValueError) as exc_info:
             saas.upload_checkpoint("ckpt_1", file_size_mb=1025)
 
-        assert "1024" in str(exc_info.value)
+        assert "1024" in str(exc_info.value), "Value must be initialized"
 
     def test_saas_upload_at_max_size(self):
         """✅ PATTERN: Boundary - at maximum."""
@@ -434,7 +435,7 @@ class TestSaaSIntegration:
 
         result = saas.upload_checkpoint("ckpt_1", file_size_mb=1024)
 
-        assert result["success"] is True
+        assert result["success"] is True, "Result must not be empty"
 
 
 # ============================================================================
@@ -450,24 +451,24 @@ class TestOperatorMutationDefense:
         manager = CheckpointManager("/tmp/ckpts")
         manager.save_checkpoint("ckpt_0", epoch=0, loss=0.5)
 
-        assert manager.checkpoints["ckpt_0"].epoch >= 0
-        assert not (manager.checkpoints["ckpt_0"].epoch < 0)
+        assert manager.checkpoints["ckpt_0"].epoch >= 0, "epoch must be greater than zero"
+        assert not (manager.checkpoints["ckpt_0"].epoch < 0), "epoch is not valid"
 
     def test_loss_non_negative(self):
         """✅ PATTERN: >= operator verification."""
         manager = CheckpointManager("/tmp/ckpts")
         manager.save_checkpoint("ckpt_0", epoch=1, loss=0.0)
 
-        assert manager.checkpoints["ckpt_0"].loss >= 0
-        assert not (manager.checkpoints["ckpt_0"].loss < 0)
+        assert manager.checkpoints["ckpt_0"].loss >= 0, "loss must be greater than zero"
+        assert not (manager.checkpoints["ckpt_0"].loss < 0), "loss is not valid"
 
     def test_max_file_size_boundary(self):
         """✅ PATTERN: Boundary operator verification."""
         saas = SaaSIntegration("test_api_key")
 
-        assert saas.max_file_size_mb == 1024
-        assert saas.max_file_size_mb > 0
-        assert saas.max_file_size_mb <= 2048
+        assert saas.max_file_size_mb == 1024, "max_file_size_mb is not valid"
+        assert saas.max_file_size_mb > 0, "max_file_size_mb must be greater than zero"
+        assert saas.max_file_size_mb <= 2048, "max_file_size_mb is not valid"
 
 
 if __name__ == "__main__":

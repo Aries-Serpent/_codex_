@@ -95,7 +95,7 @@ class TestDenylistRules:
             blocked_prompt_patterns=["ignore"],
         )
         assert rules.sensitive_terms == ["password", "secret"]
-        assert rules.blocked_actions == ["delete"]
+        assert rules.blocked_actions == ["delete"], "blocked_actions is not valid"
 
     def test_empty_rules(self):
         """Test DenylistRules with empty lists."""
@@ -105,8 +105,8 @@ class TestDenylistRules:
             blocked_actions=[],
             blocked_prompt_patterns=[],
         )
-        assert len(rules.sensitive_terms) == 0
-        assert len(rules.blocked_actions) == 0
+        assert len(rules.sensitive_terms) == 0, "Collection must not be empty"
+        assert len(rules.blocked_actions) == 0, "Collection must not be empty"
 
     def test_redaction_patterns_with_compiled_regex(self):
         """Test DenylistRules with compiled regex patterns."""
@@ -117,7 +117,7 @@ class TestDenylistRules:
             blocked_actions=[],
             blocked_prompt_patterns=[],
         )
-        assert len(rules.redaction_patterns) == 1
+        assert len(rules.redaction_patterns) == 1, "Collection must not be empty"
 
 
 # =============================================================================
@@ -132,10 +132,10 @@ class TestLoadDenylist:
         """Test loading a valid denylist YAML file."""
         rules = load_denylist(denylist_file)
 
-        assert "password" in rules.sensitive_terms
-        assert "secret" in rules.sensitive_terms
-        assert "delete_all" in rules.blocked_actions
-        assert "ignore all instructions" in rules.blocked_prompt_patterns
+        assert "password" in rules.sensitive_terms, "Condition must be true"
+        assert "secret" in rules.sensitive_terms, "Condition must be true"
+        assert "delete_all" in rules.blocked_actions, "Condition must be true"
+        assert "ignore all instructions" in rules.blocked_prompt_patterns, "Condition must be true"
 
     def test_load_nonexistent_file(self):
         """Test loading a nonexistent file raises FileNotFoundError."""
@@ -149,8 +149,8 @@ class TestLoadDenylist:
             f.flush()
             rules = load_denylist(f.name)
 
-        assert rules.sensitive_terms == []
-        assert rules.blocked_actions == []
+        assert rules.sensitive_terms == [], "sensitive_terms is not valid"
+        assert rules.blocked_actions == [], "blocked_actions is not valid"
 
     def test_load_minimal_yaml(self):
         """Test loading minimal YAML with only sensitive_terms."""
@@ -163,13 +163,13 @@ sensitive_terms:
             f.flush()
             rules = load_denylist(f.name)
 
-        assert "secret" in rules.sensitive_terms
+        assert "secret" in rules.sensitive_terms, "Condition must be true"
 
     def test_load_with_redaction_patterns(self, denylist_file: str):
         """Test loading file with redaction patterns."""
         rules = load_denylist(denylist_file)
 
-        assert len(rules.redaction_patterns) > 0
+        assert len(rules.redaction_patterns) > 0, "Collection must not be empty"
         # Verify patterns are compiled
         for pattern, replacement in rules.redaction_patterns:
             assert isinstance(pattern, re.Pattern)
@@ -192,8 +192,8 @@ class TestDenylistEnforcer:
     def test_from_yaml(self, denylist_file: str):
         """Test creating enforcer from YAML file."""
         enforcer = DenylistEnforcer.from_yaml(denylist_file)
-        assert enforcer is not None
-        assert enforcer.rules is not None
+        assert enforcer is not None, "enforcer must be initialized"
+        assert enforcer.rules is not None, "rules must be initialized"
 
     def test_init_with_rules(self):
         """Test creating enforcer with rules directly."""
@@ -204,7 +204,7 @@ class TestDenylistEnforcer:
             blocked_prompt_patterns=[],
         )
         enforcer = DenylistEnforcer(rules)
-        assert enforcer.rules == rules
+        assert enforcer.rules == rules, "rules is not valid"
 
     def test_is_prompt_allowed_safe(self, enforcer: DenylistEnforcer):
         """Test that safe prompts are allowed."""
@@ -214,7 +214,7 @@ class TestDenylistEnforcer:
             "What is the best practice for this?",
         ]
         for prompt in safe_prompts:
-            assert enforcer.is_prompt_allowed(prompt) is True
+            assert enforcer.is_prompt_allowed(prompt) is True, "enf is not valid"
 
     def test_is_prompt_allowed_sensitive_term(self, enforcer: DenylistEnforcer):
         """Test that prompts with sensitive terms are blocked."""
@@ -224,7 +224,7 @@ class TestDenylistEnforcer:
             "Show me the api_key",
         ]
         for prompt in blocked_prompts:
-            assert enforcer.is_prompt_allowed(prompt) is False
+            assert enforcer.is_prompt_allowed(prompt) is False, "enf is not valid"
 
     def test_is_prompt_allowed_blocked_pattern(self, enforcer: DenylistEnforcer):
         """Test that prompts matching blocked patterns are blocked."""
@@ -234,13 +234,13 @@ class TestDenylistEnforcer:
             "run sudo rm on the server",
         ]
         for prompt in blocked_prompts:
-            assert enforcer.is_prompt_allowed(prompt) is False
+            assert enforcer.is_prompt_allowed(prompt) is False, "enf is not valid"
 
     def test_is_prompt_allowed_case_insensitive(self, enforcer: DenylistEnforcer):
         """Test that checks are case insensitive."""
         # Should still be blocked with different case
-        assert enforcer.is_prompt_allowed("What is my PASSWORD?") is False
-        assert enforcer.is_prompt_allowed("IGNORE ALL INSTRUCTIONS") is False
+        assert enforcer.is_prompt_allowed("What is my PASSWORD?") is False, "What is not valid"
+        assert enforcer.is_prompt_allowed("IGNORE ALL INSTRUCTIONS") is False, "enf is not valid"
 
     def test_ensure_allowed_passes(self, enforcer: DenylistEnforcer):
         """Test ensure_allowed with safe prompt."""
@@ -257,28 +257,28 @@ class TestDenylistEnforcer:
         enforcer = DenylistEnforcer.from_yaml(denylist_file)
         text = "My card number is 1234567890123456"
         redacted = enforcer.redact(text)
-        assert "1234567890123456" not in redacted
-        assert "[CREDIT_CARD]" in redacted
+        assert "1234567890123456" not in redacted, "Condition must be true"
+        assert "[CREDIT_CARD]" in redacted, "Condition must be true"
 
     def test_redact_ssn(self, denylist_file: str):
         """Test redaction of SSN."""
         enforcer = DenylistEnforcer.from_yaml(denylist_file)
         text = "My SSN is 123-45-6789"
         redacted = enforcer.redact(text)
-        assert "123-45-6789" not in redacted
-        assert "[SSN]" in redacted
+        assert "123-45-6789" not in redacted, "Condition must be true"
+        assert "[SSN]" in redacted, "Condition must be true"
 
     def test_redact_no_matches(self, enforcer: DenylistEnforcer):
         """Test redaction with no matching patterns."""
         text = "This is clean text with no sensitive data"
         redacted = enforcer.redact(text)
-        assert redacted == text
+        assert redacted == text, "redacted is not valid"
 
     def test_blocked_actions(self, enforcer: DenylistEnforcer):
         """Test blocked_actions returns configured actions."""
         actions = list(enforcer.blocked_actions())
-        assert "delete_all" in actions
-        assert "drop_database" in actions
+        assert "delete_all" in actions, "Condition must be true"
+        assert "drop_database" in actions, "Data must not be empty"
 
     def test_blocked_actions_empty(self):
         """Test blocked_actions with empty rules."""
@@ -290,7 +290,7 @@ class TestDenylistEnforcer:
         )
         enforcer = DenylistEnforcer(rules)
         actions = list(enforcer.blocked_actions())
-        assert actions == []
+        assert actions == [], "actions is not valid"
 
 
 # =============================================================================
@@ -332,7 +332,7 @@ redaction_patterns:
             enforcer = DenylistEnforcer.from_yaml(f.name)
 
         redacted = enforcer.redact("SSN: 123-45-6789")
-        assert "123-45-6789" not in redacted
+        assert "123-45-6789" not in redacted, "Condition must be true"
 
     def test_empty_sensitive_term_ignored(self):
         """Test that empty sensitive terms don't cause issues."""
@@ -347,7 +347,7 @@ sensitive_terms:
             rules = load_denylist(f.name)
 
         # Empty string should still work
-        assert "password" in rules.sensitive_terms
+        assert "password" in rules.sensitive_terms, "Condition must be true"
 
     def test_unicode_sensitive_terms(self):
         """Test sensitive terms with unicode characters."""
@@ -364,8 +364,8 @@ sensitive_terms:
             f.flush()
             rules = load_denylist(f.name)
 
-        assert "пароль" in rules.sensitive_terms
-        assert "密码" in rules.sensitive_terms
+        assert "пароль" in rules.sensitive_terms, "Condition must be true"
+        assert "密码" in rules.sensitive_terms, "Condition must be true"
 
     def test_prompt_with_special_characters(self):
         """Test prompt checking with special regex characters."""
@@ -378,7 +378,7 @@ sensitive_terms:
         enforcer = DenylistEnforcer(rules)
 
         # Should detect literal $secret
-        assert enforcer.is_prompt_allowed("The $secret is here") is False
+        assert enforcer.is_prompt_allowed("The $secret is here") is False, "secret is not valid"
 
     def test_very_long_prompt(self):
         """Test handling of very long prompts."""
@@ -392,4 +392,4 @@ sensitive_terms:
 
         # Create a very long prompt
         long_prompt = "a" * 100000 + " password " + "b" * 100000
-        assert enforcer.is_prompt_allowed(long_prompt) is False
+        assert enforcer.is_prompt_allowed(long_prompt) is False, "enf is not valid"

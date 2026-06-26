@@ -33,5 +33,5 @@ def test_catalog_ingest(tmp_path: Path) -> None:
     catalog_db.ingest_compare_report("r1", str(report))
     catalog_db.upsert_artifact("r1", "manifest", str(report))
     rows = catalog_db.query("SELECT unexpected_added FROM diffs")
-    assert rows[0][0] == 1
-    assert db_file.exists()
+    assert rows[0][0] == 1, "Condition must be true"
+    assert db_file.exists(), "Condition must be true"

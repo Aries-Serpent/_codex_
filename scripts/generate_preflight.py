@@ -63,7 +63,7 @@ def get_git_context() -> dict[str, str]:
         return {"branch": branch, "commit": commit}
     except Exception as exc:  # pragma: no cover - defensive
         error_type = type(exc).__name__
-        print(f"Warning: Could not get git context: <ERROR_TYPE>")
+        print("Warning: Could not get git context: <ERROR_TYPE>")
         return {"branch": "unknown", "commit": "unknown"}
 
 

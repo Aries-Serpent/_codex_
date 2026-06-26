@@ -44,7 +44,7 @@ def test_infer_masks_secrets(_set_env):
     app = _set_env
     with TestClient(app) as client:
         response = client.post("/infer", json={"prompt": "my key sk-abcdefghi12345"})
-        assert response.status_code == 200
+        assert response.status_code == 200, "Response must not be empty"
         payload = response.json()
-        assert "[SECRET]" in payload["completion"]
-        assert payload["tokens"] > 0
+        assert "[SECRET]" in payload["completion"], "Condition must be true"
+        assert payload["tokens"] > 0, "Value must be greater than zero"

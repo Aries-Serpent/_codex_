@@ -31,7 +31,7 @@ def test_module_state_provider_roundtrip():
     state = provider.state_dict()
     module.weight = 0
     provider.load_state_dict(state)
-    assert module.weight == 5
+    assert module.weight == 5, "weight is not valid"
 
 
 class DummyOptimizer:
@@ -53,7 +53,7 @@ def test_optimizer_state_provider_roundtrip():
     state = provider.state_dict()
     opt.state["lr"] = 0.01
     provider.load_state_dict(state)
-    assert opt.state["lr"] == 0.1
+    assert opt.state["lr"] == 0.1, "Condition must be true"
 
 
 class DummyScheduler:
@@ -73,7 +73,7 @@ def test_scheduler_state_provider_roundtrip():
     state = provider.state_dict()
     sched.state["step"] = 10
     provider.load_state_dict(state)
-    assert sched.state["step"] == 3
+    assert sched.state["step"] == 3, "Condition must be true"
 
 
 class DummyScaler:
@@ -93,4 +93,4 @@ def test_grad_scaler_state_provider_roundtrip():
     state = provider.state_dict()
     scaler.state["scale"] = 2.0
     provider.load_state_dict(state)
-    assert scaler.state["scale"] == 1.0
+    assert scaler.state["scale"] == 1.0, "Condition must be true"

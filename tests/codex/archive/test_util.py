@@ -23,11 +23,11 @@ class TestUtcnow:
         result = utcnow()
 
         # Should match YYYY-MM-DDTHH:MM:SSZ format
-        assert len(result) == 20
-        assert result[4] == "-"
-        assert result[7] == "-"
-        assert result[10] == "T"
-        assert result[-1] == "Z"
+        assert len(result) == 20, "Result must not be empty"
+        assert result[4] == "-", "Result must not be empty"
+        assert result[7] == "-", "Result must not be empty"
+        assert result[10] == "T", "Result must not be empty"
+        assert result[-1] == "Z", "Result must not be empty"
 
     def test_utcnow_iso_alias(self):
         """Test utcnow_iso is an alias."""
@@ -52,7 +52,7 @@ class TestSha256:
         result = sha256_hex(data)
 
         assert isinstance(result, str)
-        assert len(result) == 64  # SHA-256 hex digest length
+        assert len(result) == 64, "Result must not be empty"
 
     def test_sha256_hex_deterministic(self):
         """Test sha256_hex is deterministic."""
@@ -63,7 +63,7 @@ class TestSha256:
         result1 = sha256_hex(data)
         result2 = sha256_hex(data)
 
-        assert result1 == result2
+        assert result1 == result2, "Result must not be empty"
 
     def test_sha256_bytes(self):
         """Test sha256_bytes function."""
@@ -73,7 +73,7 @@ class TestSha256:
         result = sha256_bytes(data)
 
         assert isinstance(result, str)
-        assert len(result) == 64
+        assert len(result) == 64, "Result must not be empty"
 
     def test_sha256_hex_and_bytes_same(self):
         """Test sha256_hex and sha256_bytes return same result."""
@@ -81,7 +81,7 @@ class TestSha256:
 
         data = b"test"
 
-        assert sha256_hex(data) == sha256_bytes(data)
+        assert sha256_hex(data) == sha256_bytes(data), "Data must not be empty"
 
     def test_sha256_file(self, tmp_path):
         """Test sha256_file function."""
@@ -94,7 +94,7 @@ class TestSha256:
         result = sha256_file(test_file)
         expected = sha256_bytes(b"file content")
 
-        assert result == expected
+        assert result == expected, "Result must not be empty"
 
     def test_sha256_file_nonexistent(self, tmp_path):
         """Test sha256_file with nonexistent file."""
@@ -104,7 +104,7 @@ class TestSha256:
 
         result = sha256_file(nonexistent)
 
-        assert result == ""
+        assert result == "", "Result must not be empty"
 
 
 class TestCompression:
@@ -120,7 +120,7 @@ class TestCompression:
 
         assert isinstance(compressed, bytes)
         # Compressed should be smaller for repetitive data
-        assert len(compressed) < len(data)
+        assert len(compressed) < len(data), "Compressed must not be empty"
 
     def test_zlib_compress(self):
         """Test zlib_compress function."""
@@ -131,7 +131,7 @@ class TestCompression:
         compressed = zlib_compress(data)
 
         assert isinstance(compressed, bytes)
-        assert len(compressed) < len(data)
+        assert len(compressed) < len(data), "Compressed must not be empty"
 
     def test_zlib_compress_level(self):
         """Test zlib_compress with different levels."""
@@ -143,7 +143,7 @@ class TestCompression:
         compressed_low = zlib_compress(data, level=1)
         compressed_high = zlib_compress(data, level=9)
 
-        assert len(compressed_high) <= len(compressed_low)
+        assert len(compressed_high) <= len(compressed_low), "Compressed_high must not be empty"
 
 
 class TestModuleConstants:
@@ -153,11 +153,11 @@ class TestModuleConstants:
         """Test ISO_FORMAT constant."""
         from codex.archive.util import ISO_FORMAT
 
-        assert ISO_FORMAT == "%Y-%m-%dT%H:%M:%SZ"
+        assert ISO_FORMAT == "%Y-%m-%dT%H:%M:%SZ", "ISO_FORMAT is not valid"
 
     def test_logger_exists(self):
         """Test logger is configured."""
         from codex.archive.util import logger
 
-        assert logger is not None
-        assert logger.name == "codex.archive.util"
+        assert logger is not None, "logger must be initialized"
+        assert logger.name == "codex.archive.util", "name is not valid"

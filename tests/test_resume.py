@@ -56,9 +56,9 @@ def test_resume_prefers_manifest_snapshot(monkeypatch, tmp_path):
 
     runner = CliRunner()
     result = runner.invoke(cli, ["resume", str(run_dir)])
-    assert result.exit_code == 0
-    assert "config snapshot" in result.output
-    assert '"lr": 0.001' in result.output
+    assert result.exit_code == 0, "Result must not be empty"
+    assert "config snapshot" in result.output, "Result must not be empty"
+    assert '"lr": 0.001' in result.output, "Result must not be empty"
 
 
 def test_resume_uses_copied_config_file_when_snapshot_missing(tmp_path):
@@ -70,9 +70,9 @@ def test_resume_uses_copied_config_file_when_snapshot_missing(tmp_path):
     copied.write_text("learning_rate: 0.002\nbatch_size: 4", encoding="utf-8")
 
     result = runner.invoke(cli, ["resume", str(run_dir)])
-    assert result.exit_code == 0
-    assert "Using copied config file" in result.output
-    assert "learning_rate: 0.002" in result.output
+    assert result.exit_code == 0, "Result must not be empty"
+    assert "Using copied config file" in result.output, "Result must not be empty"
+    assert "learning_rate: 0.002" in result.output, "Result must not be empty"
 
 
 def test_resume_fails_when_no_snapshot_or_path(tmp_path):
@@ -82,5 +82,5 @@ def test_resume_fails_when_no_snapshot_or_path(tmp_path):
     write_manifest(run_dir, config=None, config_path=None)
 
     result = runner.invoke(cli, ["resume", str(run_dir)])
-    assert result.exit_code != 0
-    assert "ERROR: No configuration snapshot or config_path available" in result.output
+    assert result.exit_code != 0, "Result must not be empty"
+    assert "ERROR: No configuration snapshot or config_path available" in result.output, "Result must not be empty"

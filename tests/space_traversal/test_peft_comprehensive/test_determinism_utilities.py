@@ -25,9 +25,9 @@ class TestDeterministicMode:
         # Enable deterministic mode
         result = set_deterministic_mode(enabled=True, warn=False)
 
-        assert result is True
-        assert torch.backends.cudnn.deterministic is True
-        assert torch.backends.cudnn.benchmark is False
+        assert result is True, "Result must not be empty"
+        assert torch.backends.cudnn.deterministic is True, "deterministic is not valid"
+        assert torch.backends.cudnn.benchmark is False, "benchmark is not valid"
 
         if hasattr(torch, "use_deterministic_algorithms"):
             # Check that deterministic algorithms are enabled
@@ -42,9 +42,9 @@ class TestDeterministicMode:
         set_deterministic_mode(enabled=True, warn=False)
         result = set_deterministic_mode(enabled=False, warn=False)
 
-        assert result is True
-        assert torch.backends.cudnn.deterministic is False
-        assert torch.backends.cudnn.benchmark is True
+        assert result is True, "Result must not be empty"
+        assert torch.backends.cudnn.deterministic is False, "deterministic is not valid"
+        assert torch.backends.cudnn.benchmark is True, "benchmark is not valid"
 
     @pytest.mark.skipif(not TORCH_AVAILABLE, reason="PyTorch not available")
     def test_enable_with_warning(self, caplog):
@@ -55,10 +55,10 @@ class TestDeterministicMode:
 
         result = set_deterministic_mode(enabled=True, warn=True)
 
-        assert result is True
+        assert result is True, "Result must not be empty"
         # Check that warning contains "significantly"
         warning_messages = [record.message for record in caplog.records]
-        assert any(
+        assert any(, "Condition must be true"
             "significantly" in msg for msg in warning_messages
         ), "Warning should mention 'significantly' to match docstring"
 
@@ -71,10 +71,10 @@ class TestDeterministicMode:
 
         result = set_deterministic_mode(enabled=False, warn=True)
 
-        assert result is True
+        assert result is True, "Result must not be empty"
         # Should not have warnings about performance when disabling
         warning_messages = [record.message for record in caplog.records]
-        assert not any("significantly" in msg for msg in warning_messages)
+        assert not any("significantly" in msg for msg in warning_messages), "Condition must be true"
 
     @pytest.mark.skipif(TORCH_AVAILABLE, reason="Test for PyTorch unavailable case")
     def test_without_pytorch(self, caplog):
@@ -85,10 +85,10 @@ class TestDeterministicMode:
 
         result = set_deterministic_mode(enabled=True, warn=True)
 
-        assert result is False
+        assert result is False, "Result must not be empty"
         # Should warn that PyTorch is not available
         warning_messages = [record.message for record in caplog.records]
-        assert any("PyTorch not available" in msg for msg in warning_messages)
+        assert any("PyTorch not available" in msg for msg in warning_messages), "Condition must be true"
 
     @pytest.mark.skipif(TORCH_AVAILABLE, reason="Test for PyTorch unavailable case")
     def test_without_pytorch_no_warning(self, caplog):
@@ -99,10 +99,10 @@ class TestDeterministicMode:
 
         result = set_deterministic_mode(enabled=True, warn=False)
 
-        assert result is False
+        assert result is False, "Result must not be empty"
         # Should not warn when warn=False
         warning_messages = [record.message for record in caplog.records]
-        assert not any("PyTorch not available" in msg for msg in warning_messages)
+        assert not any("PyTorch not available" in msg for msg in warning_messages), "Condition must be true"
 
 
 class TestGetDeterministicStatus:
@@ -115,12 +115,12 @@ class TestGetDeterministicStatus:
 
         status = get_deterministic_status()
 
-        assert status["torch_available"] is True
-        assert status["cudnn_deterministic"] is True
-        assert status["cudnn_benchmark"] is False
+        assert status["torch_available"] is True, "Condition must be true"
+        assert status["cudnn_deterministic"] is True, "Condition must be true"
+        assert status["cudnn_benchmark"] is False, "Condition must be true"
 
         if hasattr(torch, "are_deterministic_algorithms_enabled"):
-            assert "use_deterministic_algorithms" in status
+            assert "use_deterministic_algorithms" in status, "Condition must be true"
             # The actual value depends on whether it was successfully set
             assert isinstance(status["use_deterministic_algorithms"], (bool, type(None)))
 
@@ -131,19 +131,19 @@ class TestGetDeterministicStatus:
 
         status = get_deterministic_status()
 
-        assert status["torch_available"] is True
-        assert status["cudnn_deterministic"] is False
-        assert status["cudnn_benchmark"] is True
+        assert status["torch_available"] is True, "Condition must be true"
+        assert status["cudnn_deterministic"] is False, "Condition must be true"
+        assert status["cudnn_benchmark"] is True, "Condition must be true"
 
     @pytest.mark.skipif(TORCH_AVAILABLE, reason="Test for PyTorch unavailable case")
     def test_get_status_without_pytorch(self):
         """Test getting status when PyTorch is not available."""
         status = get_deterministic_status()
 
-        assert status["torch_available"] is False
+        assert status["torch_available"] is False, "Condition must be true"
         # When torch is unavailable, function still returns keys but all False
-        assert status["cudnn_deterministic"] is False
-        assert status["cudnn_benchmark"] is False
+        assert status["cudnn_deterministic"] is False, "Condition must be true"
+        assert status["cudnn_benchmark"] is False, "Condition must be true"
 
     @pytest.mark.skipif(not TORCH_AVAILABLE, reason="PyTorch not available")
     def test_status_reflects_manual_changes(self):
@@ -154,8 +154,8 @@ class TestGetDeterministicStatus:
 
         status = get_deterministic_status()
 
-        assert status["cudnn_deterministic"] is True
-        assert status["cudnn_benchmark"] is False
+        assert status["cudnn_deterministic"] is True, "Condition must be true"
+        assert status["cudnn_benchmark"] is False, "Condition must be true"
 
         # Reset
         torch.backends.cudnn.deterministic = False
@@ -205,13 +205,13 @@ class TestDeterministicModeIntegration:
         result3 = set_deterministic_mode(enabled=True, warn=False)
         status3 = get_deterministic_status()
 
-        assert result1 is True
-        assert result2 is True
-        assert result3 is True
+        assert result1 is True, "Result must not be empty"
+        assert result2 is True, "Result must not be empty"
+        assert result3 is True, "Result must not be empty"
 
-        assert status1["cudnn_deterministic"] is True
-        assert status2["cudnn_deterministic"] is False
-        assert status3["cudnn_deterministic"] is True
+        assert status1["cudnn_deterministic"] is True, "Condition must be true"
+        assert status2["cudnn_deterministic"] is False, "Condition must be true"
+        assert status3["cudnn_deterministic"] is True, "Condition must be true"
 
         # Clean up
         set_deterministic_mode(enabled=False, warn=False)

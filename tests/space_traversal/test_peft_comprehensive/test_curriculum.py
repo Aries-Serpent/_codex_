@@ -23,9 +23,9 @@ def test_training_phase_creation():
         steps=100,
         metrics=["accuracy"],
     )
-    assert phase.id == "warmup"
-    assert phase.steps == 100
-    assert "accuracy" in phase.metrics
+    assert phase.id == "warmup", "id is not valid"
+    assert phase.steps == 100, "steps is not valid"
+    assert "accuracy" in phase.metrics, "Condition must be true"
 
 
 def test_curriculum_scheduler_init():
@@ -42,9 +42,9 @@ def test_curriculum_scheduler_init():
             checkpoint_dir=tmpdir,
         )
 
-        assert len(scheduler.phases) == 2
-        assert scheduler.curriculum_name == "test_curriculum"
-        assert scheduler.get_current_phase().id == "phase1"
+        assert len(scheduler.phases) == 2, "Collection must not be empty"
+        assert scheduler.curriculum_name == "test_curriculum", "curriculum_name is not valid"
+        assert scheduler.get_current_phase().id == "phase1", "id is not valid"
 
 
 def test_phase_progression():
@@ -63,12 +63,12 @@ def test_phase_progression():
 
         # Start phase 1
         scheduler.start_phase("phase1")
-        assert scheduler.state.current_phase_index == 0
+        assert scheduler.state.current_phase_index == 0, "current_phase_index is not valid"
 
         # Complete phase 1
         scheduler.complete_phase("phase1", metrics={"accuracy": 0.9})
-        assert scheduler.state.current_phase_index == 1
-        assert scheduler.get_current_phase().id == "phase2"
+        assert scheduler.state.current_phase_index == 1, "current_phase_index is not valid"
+        assert scheduler.get_current_phase().id == "phase2", "id is not valid"
 
 
 def test_metrics_based_progression():
@@ -94,13 +94,13 @@ def test_metrics_based_progression():
 
         # Should not progress - accuracy too low
         can_progress, reason = scheduler.can_progress_to_next_phase({"accuracy": 0.5})
-        assert not can_progress
+        assert not can_progress, "Condition must be true"
         # Check for any metric-related message
         assert any(word in reason.lower() for word in ["below", "threshold", "accuracy", "metric"])
 
         # Should progress - accuracy meets threshold
         can_progress, reason = scheduler.can_progress_to_next_phase({"accuracy": 0.8})
-        assert can_progress
+        assert can_progress, "can_progress is not valid"
 
 
 def test_state_persistence():
@@ -128,8 +128,8 @@ def test_state_persistence():
             state_file=str(state_file),
         )
 
-        assert scheduler2.state.phase_results[0].steps_completed == 50
-        assert scheduler2.state.phase_results[0].metrics["acc"] == 0.8
+        assert scheduler2.state.phase_results[0].steps_completed == 50, "Result must not be empty"
+        assert scheduler2.state.phase_results[0].metrics["acc"] == 0.8, "Result must not be empty"
 
 
 def test_curriculum_summary():
@@ -148,10 +148,10 @@ def test_curriculum_summary():
 
         summary = scheduler.get_summary()
 
-        assert summary["curriculum_name"] == "test"
-        assert summary["total_phases"] == 2
-        assert summary["completed_phases"] == 0
-        assert summary["current_phase"] == "phase1"
+        assert summary["curriculum_name"] == "test", "Condition must be true"
+        assert summary["total_phases"] == 2, "Condition must be true"
+        assert summary["completed_phases"] == 0, "Condition must be true"
+        assert summary["current_phase"] == "phase1", "Condition must be true"
 
 
 def test_phase_failure_handling():
@@ -170,8 +170,8 @@ def test_phase_failure_handling():
         scheduler.start_phase("phase1")
         result = scheduler.fail_phase("phase1", "Training diverged")
 
-        assert result.status == PhaseStatus.FAILED
-        assert result.error_message == "Training diverged"
+        assert result.status == PhaseStatus.FAILED, "Result must not be empty"
+        assert result.error_message == "Training diverged", "Result must not be empty"
 
 
 def test_empty_curriculum():
@@ -183,8 +183,8 @@ def test_empty_curriculum():
             checkpoint_dir=tmpdir,
         )
 
-        assert scheduler.get_current_phase() is None
-        assert scheduler.state.is_complete
+        assert scheduler.get_current_phase() is None, "Condition must be true"
+        assert scheduler.state.is_complete, "Condition must be true"
 
 
 if __name__ == "__main__":

@@ -13,7 +13,7 @@ class TestSearchEngineImports:
         try:
             from src.codex.search import engine
 
-            assert engine is not None
+            assert engine is not None, "engine must be initialized"
         except ImportError:
             pytest.skip("Module not available or has unmet dependencies")
 
@@ -28,7 +28,7 @@ class TestSearchEngineOperations:
 
             if hasattr(engine, "SearchEngine"):
                 search = engine.SearchEngine()
-                assert search is not None
+                assert search is not None, "search must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("SearchEngine not available")
 
@@ -41,7 +41,7 @@ class TestSearchEngineOperations:
                 with patch.object(engine, "search") as mock_search:
                     mock_search.return_value = [{"id": 1, "score": 0.9}]
                     results = engine.search("test query")
-                    assert len(results) == 1
+                    assert len(results) == 1, "Results must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("search not available")
 
@@ -54,7 +54,7 @@ class TestSearchEngineOperations:
                 with patch.object(engine, "fuzzy_search") as mock_fuzzy:
                     mock_fuzzy.return_value = [{"id": 1}]
                     results = engine.fuzzy_search("tset")
-                    assert isinstance(
+                    assert isinstance(, "Condition must be true"
                         results, (list, tuple, set, dict)
                     )  # was: len() >= 0 (always true)
         except (ImportError, AttributeError):
@@ -73,7 +73,7 @@ class TestSearchEngineIndexing:
                 with patch.object(engine, "index_document") as mock_index:
                     mock_index.return_value = True
                     result = engine.index_document({"id": 1, "content": "test"})
-                    assert result is True
+                    assert result is True, "Result must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("index_document not available")
 
@@ -86,6 +86,6 @@ class TestSearchEngineIndexing:
                 with patch.object(engine, "bulk_index") as mock_bulk:
                     mock_bulk.return_value = {"indexed": 10}
                     result = engine.bulk_index([{"id": i} for i in range(10)])
-                    assert result["indexed"] == 10
+                    assert result["indexed"] == 10, "Result must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("bulk_index not available")

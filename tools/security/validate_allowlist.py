@@ -39,7 +39,7 @@ def main() -> int:
         return 0
     except Exception as e:
         error_type = type(e).__name__
-        print(f"Allowlist validation failed: <ERROR_TYPE>", file=sys.stderr)
+        print("Allowlist validation failed: <ERROR_TYPE>", file=sys.stderr)
         return 2
 
 

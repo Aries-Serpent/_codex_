@@ -16,33 +16,33 @@ class TestWindowsSafeTimestamp:
         dt = datetime(2026, 1, 21, 14, 30, 45, tzinfo=timezone.utc)
         result = windows_safe_timestamp(dt, fmt="iso")
 
-        assert ":" not in result
-        assert result == "2026-01-21T14-30-45Z"
+        assert ":" not in result, "Result must not be empty"
+        assert result == "2026-01-21T14-30-45Z", "Result must not be empty"
 
     def test_compact_format(self):
         """Compact format should be filesystem-safe."""
         dt = datetime(2026, 1, 21, 14, 30, 45, tzinfo=timezone.utc)
         result = windows_safe_timestamp(dt, fmt="compact")
 
-        assert result == "20260121_143045"
-        assert ":" not in result
-        assert " " not in result
+        assert result == "20260121_143045", "Result must not be empty"
+        assert ":" not in result, "Result must not be empty"
+        assert " " not in result, "Result must not be empty"
 
     def test_readable_format(self):
         """Readable format should be human-friendly and safe."""
         dt = datetime(2026, 1, 21, 14, 30, 45, tzinfo=timezone.utc)
         result = windows_safe_timestamp(dt, fmt="readable")
 
-        assert result == "2026-01-21-14-30-45-UTC"
-        assert ":" not in result
+        assert result == "2026-01-21-14-30-45-UTC", "Result must not be empty"
+        assert ":" not in result, "Result must not be empty"
 
     def test_no_seconds(self):
         """Should support omitting seconds."""
         dt = datetime(2026, 1, 21, 14, 30, 45, tzinfo=timezone.utc)
         result = windows_safe_timestamp(dt, fmt="iso", include_seconds=False)
 
-        assert result == "2026-01-21T14-30Z"
-        assert "45" not in result
+        assert result == "2026-01-21T14-30Z", "Result must not be empty"
+        assert "45" not in result, "Result must not be empty"
 
     def test_defaults_to_utc_now(self):
         """Should default to current UTC time."""
@@ -64,8 +64,8 @@ class TestSanitizeFilename:
     def test_removes_colons(self):
         """Colons should be replaced."""
         result = sanitize_filename("report_22:25Z.json")
-        assert ":" not in result
-        assert result == "report_22_25Z.json"
+        assert ":" not in result, "Result must not be empty"
+        assert result == "report_22_25Z.json", "Result must not be empty"
 
     def test_removes_windows_illegal_chars(self):
         """All Windows-illegal characters should be replaced."""
@@ -73,23 +73,23 @@ class TestSanitizeFilename:
         result = sanitize_filename(filename)
 
         for char in '<>:"/\\|?*':
-            assert char not in result
+            assert char not in result, "Result must not be empty"
 
     def test_existing_file_from_repo(self):
         """Should sanitize the known problematic filename."""
         original = "_codex_status_update-2025-11-04-22:25Z-UTC_auto-debug.json"
         result = sanitize_filename(original)
 
-        assert ":" not in result
-        assert result == "_codex_status_update-2025-11-04-22_25Z-UTC_auto-debug.json"
+        assert ":" not in result, "Result must not be empty"
+        assert result == "_codex_status_update-2025-11-04-22_25Z-UTC_auto-debug.json", "Result must not be empty"
 
     def test_multiple_underscores_collapsed(self):
         """Multiple underscores should be collapsed to single."""
         result = sanitize_filename("test::|::.txt")
-        assert result == "test_.txt"
+        assert result == "test_.txt", "Result must not be empty"
 
     def test_no_illegal_chars_unchanged(self):
         """Filenames without illegal characters should remain unchanged."""
         filename = "report_20260121_143045.json"
         result = sanitize_filename(filename)
-        assert result == filename
+        assert result == filename, "Result must not be empty"

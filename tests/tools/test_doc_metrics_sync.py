@@ -114,49 +114,49 @@ class TestGatherMetrics:
 
     def test_agent_count_from_registry(self, fake_repo: Path) -> None:
         m = gather_metrics(fake_repo)
-        assert m["agent_count"] == "42"
+        assert m["agent_count"] == "42", "Count must be greater than zero"
 
     def test_coverage_threshold_from_pyproject(self, fake_repo: Path) -> None:
         m = gather_metrics(fake_repo)
-        assert m["coverage_threshold"] == "85"
+        assert m["coverage_threshold"] == "85", "Condition must be true"
 
     def test_test_count_floors_to_500(self, fake_repo: Path) -> None:
         """3 test functions → floor(3 / 500) * 500 = 0, but min is 500."""
         m = gather_metrics(fake_repo)
-        assert m["test_count_display"] == "500+"
+        assert m["test_count_display"] == "500+", "Count must be greater than zero"
 
     def test_test_count_url_encoded(self, fake_repo: Path) -> None:
         m = gather_metrics(fake_repo)
-        assert m["test_count_url"] == "500%2B"
+        assert m["test_count_url"] == "500%2B", "Count must be greater than zero"
 
     def test_workflow_count(self, fake_repo: Path) -> None:
         m = gather_metrics(fake_repo)
-        assert m["workflow_count"] == "2"
+        assert m["workflow_count"] == "2", "Count must be greater than zero"
 
     def test_sar_g02_score_full_backends(self, fake_repo: Path) -> None:
         m = gather_metrics(fake_repo)
-        assert m["sar_g02_score"] == "97"
+        assert m["sar_g02_score"] == "97", "Condition must be true"
 
     def test_sar_g05_score_full_observability(self, fake_repo: Path) -> None:
         m = gather_metrics(fake_repo)
-        assert m["sar_g05_score"] == "100"
+        assert m["sar_g05_score"] == "100", "Condition must be true"
 
     def test_mlops_level(self, fake_repo: Path) -> None:
         m = gather_metrics(fake_repo)
         level = float(m["mlops_level"])
-        assert 3.9 <= level <= 3.99
+        assert 3.9 <= level <= 3.99, "9 is not valid"
 
     def test_today_is_iso_format(self, fake_repo: Path) -> None:
         m = gather_metrics(fake_repo)
-        assert len(m["today"]) == 10  # YYYY-MM-DD
-        assert m["today"].count("-") == 2
+        assert len(m["today"]) == 10, "Collection must not be empty"
+        assert m["today"].count("-") == 2, "Count must be greater than zero"
 
     def test_defaults_when_files_missing(self, tmp_path: Path) -> None:
         """When no source-of-truth files exist, defaults kick in."""
         m = gather_metrics(tmp_path)
-        assert m["agent_count"] == "153"  # default
-        assert m["coverage_threshold"] == "75"  # default
-        assert m["test_count_display"] == "500+"  # min floor
+        assert m["agent_count"] == "153", "Count must be greater than zero"
+        assert m["coverage_threshold"] == "75", "Condition must be true"
+        assert m["test_count_display"] == "500+", "Count must be greater than zero"
 
 
 # ── _apply_rule ───────────────────────────────────────────────────────────
@@ -181,7 +181,7 @@ class TestApplyRule:
         with patch.object(doc_metrics_sync, "REPO_ROOT", tmp_path):
             rule.files = ["doc.md"]
             findings = _apply_rule(rule, metrics, fix=False)
-        assert len(findings) == 1
+        assert len(findings) == 1, "Findings must not be empty"
         assert findings[0].old_text == "100+ tests,"
         assert findings[0].new_text == "500+ tests,"
 
@@ -198,7 +198,7 @@ class TestApplyRule:
         metrics = {"test_count_display": "500+"}
         with patch.object(doc_metrics_sync, "REPO_ROOT", tmp_path):
             findings = _apply_rule(rule, metrics, fix=True)
-        assert len(findings) == 1
+        assert len(findings) == 1, "Findings must not be empty"
         assert "500+ tests," in doc.read_text()
 
     def test_no_finding_when_already_current(self, tmp_path: Path) -> None:
@@ -214,7 +214,7 @@ class TestApplyRule:
         metrics = {"test_count_display": "500+"}
         with patch.object(doc_metrics_sync, "REPO_ROOT", tmp_path):
             findings = _apply_rule(rule, metrics, fix=False)
-        assert len(findings) == 0
+        assert len(findings) == 0, "Findings must not be empty"
 
     def test_missing_metric_key_produces_no_findings(self, tmp_path: Path) -> None:
         doc = tmp_path / "doc.md"
@@ -228,7 +228,7 @@ class TestApplyRule:
         )
         with patch.object(doc_metrics_sync, "REPO_ROOT", tmp_path):
             findings = _apply_rule(rule, {}, fix=False)
-        assert len(findings) == 0
+        assert len(findings) == 0, "Findings must not be empty"
 
     def test_missing_file_is_skipped(self, tmp_path: Path) -> None:
         rule = Rule(
@@ -239,7 +239,7 @@ class TestApplyRule:
         )
         with patch.object(doc_metrics_sync, "REPO_ROOT", tmp_path):
             findings = _apply_rule(rule, {"count": "5"}, fix=False)
-        assert len(findings) == 0
+        assert len(findings) == 0, "Findings must not be empty"
 
 
 # ── run() integration ─────────────────────────────────────────────────────
@@ -263,8 +263,8 @@ class TestRun:
         metrics = {"test_count_url": "500%2B"}
         with patch.object(doc_metrics_sync, "REPO_ROOT", tmp_path):
             findings = run(fix=False, rules=rules, metrics=metrics)
-        assert len(findings) == 1
-        assert findings[0].rule_id == "badge"
+        assert len(findings) == 1, "Findings must not be empty"
+        assert findings[0].rule_id == "badge", "rule_id is not valid"
 
     def test_run_fix_mode_updates_all_stale(self, tmp_path: Path) -> None:
         doc1 = tmp_path / "README.md"
@@ -289,9 +289,9 @@ class TestRun:
         metrics = {"test_count_url": "500%2B", "test_count_display": "500+"}
         with patch.object(doc_metrics_sync, "REPO_ROOT", tmp_path):
             findings = run(fix=True, rules=rules, metrics=metrics)
-        assert len(findings) == 2
-        assert "500%2B" in doc1.read_text()
-        assert "500+" in doc2.read_text()
+        assert len(findings) == 2, "Findings must not be empty"
+        assert "500%2B" in doc1.read_text(), "Condition must be true"
+        assert "500+" in doc2.read_text(), "Condition must be true"
 
 
 # ── CLI main() ────────────────────────────────────────────────────────────
@@ -319,7 +319,7 @@ class TestMain:
             patch.object(doc_metrics_sync, "gather_metrics", return_value=metrics),
         ):
             rc = main(["--check"])
-        assert rc == 1
+        assert rc == 1, "rc is not valid"
 
     def test_check_exits_0_when_current(self, tmp_path: Path) -> None:
         doc = tmp_path / "doc.md"
@@ -340,7 +340,7 @@ class TestMain:
             patch.object(doc_metrics_sync, "gather_metrics", return_value=metrics),
         ):
             rc = main(["--check"])
-        assert rc == 0
+        assert rc == 0, "rc is not valid"
 
     def test_fix_exits_0_and_updates_file(self, tmp_path: Path) -> None:
         doc = tmp_path / "doc.md"
@@ -361,7 +361,7 @@ class TestMain:
             patch.object(doc_metrics_sync, "gather_metrics", return_value=metrics),
         ):
             rc = main(["--fix"])
-        assert rc == 0
+        assert rc == 0, "rc is not valid"
         assert "500+ tests," in doc.read_text()
 
     def test_report_always_exits_0(self, tmp_path: Path) -> None:
@@ -383,7 +383,7 @@ class TestMain:
             patch.object(doc_metrics_sync, "gather_metrics", return_value=metrics),
         ):
             rc = main(["--report"])
-        assert rc == 0
+        assert rc == 0, "rc is not valid"
 
 
 # ── Production RULES smoke-test ───────────────────────────────────────────

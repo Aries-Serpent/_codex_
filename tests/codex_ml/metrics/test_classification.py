@@ -77,14 +77,14 @@ class TestAccuracy:
         labels = np.array([1, 0, -100, 0, -100])
         result = accuracy(preds, labels, ignore_index=-100)
         # Only 3 valid labels, all correct
-        assert result == 1.0
+        assert result == 1.0, "Result must not be empty"
 
     def test_ignore_index_partial(self) -> None:
         preds = np.array([1, 0, 1, 1])
         labels = np.array([1, 1, -100, 1])
         result = accuracy(preds, labels, ignore_index=-100)
         # 3 valid: [1==1, 0!=1, 1==1] = 2/3
-        assert abs(result - 2 / 3) < 1e-6
+        assert abs(result - 2 / 3) < 1e-6, "Result must not be empty"
 
     def test_shape_mismatch_raises(self) -> None:
         preds = np.array([1, 0, 1])
@@ -102,7 +102,7 @@ class TestAccuracy:
         preds = np.array([])
         labels = np.array([])
         result = accuracy(preds, labels)
-        assert result == 0.0
+        assert result == 0.0, "Result must not be empty"
 
 
 class TestPrecision:
@@ -134,7 +134,7 @@ class TestPrecision:
         preds = np.array([2, 2, 0, 0])
         labels = np.array([2, 0, 0, 0])
         result = precision(preds, labels, positive=2)
-        assert result == 0.5
+        assert result == 0.5, "Result must not be empty"
 
 
 class TestRecall:
@@ -165,7 +165,7 @@ class TestRecall:
         preds = np.array([2, 0, 0, 0])
         labels = np.array([2, 2, 0, 0])
         result = recall(preds, labels, positive=2)
-        assert result == 0.5
+        assert result == 0.5, "Result must not be empty"
 
 
 class TestF1:
@@ -186,13 +186,13 @@ class TestF1:
         preds = np.array([1, 1, 0, 0])
         labels = np.array([1, 0, 1, 0])
         result = f1(preds, labels)
-        assert abs(result - 0.5) < 1e-6
+        assert abs(result - 0.5) < 1e-6, "Result must not be empty"
 
     def test_custom_positive_label(self) -> None:
         preds = np.array([2, 2, 0, 0])
         labels = np.array([2, 2, 0, 0])
         result = f1(preds, labels, positive=2)
-        assert result == 1.0
+        assert result == 1.0, "Result must not be empty"
 
 
 class TestStreamingAccuracy:
@@ -203,20 +203,20 @@ class TestStreamingAccuracy:
 
         # First batch
         metric.update(np.array([1, 0, 1]), np.array([1, 0, 1]))
-        assert metric.compute() == 1.0
+        assert metric.compute() == 1.0, "Condition must be true"
 
         # Second batch (different accuracy)
         metric.update(np.array([1, 1]), np.array([0, 0]))
         # Total: 3 correct out of 5
-        assert metric.compute() == 0.6
+        assert metric.compute() == 0.6, "Condition must be true"
 
     def test_reset(self) -> None:
         metric = StreamingAccuracy()
         metric.update(np.array([1, 0]), np.array([1, 0]))
-        assert metric.compute() == 1.0
+        assert metric.compute() == 1.0, "Condition must be true"
 
         metric.reset()
-        assert metric.compute() == 0.0
+        assert metric.compute() == 0.0, "Condition must be true"
 
     def test_with_ignore_index(self) -> None:
         metric = StreamingAccuracy(ignore_index=-100)
@@ -224,18 +224,18 @@ class TestStreamingAccuracy:
         labels = np.array([1, 0, -100, -100])
         metric.update(preds, labels)
         # Only 2 valid labels, both correct
-        assert metric.compute() == 1.0
+        assert metric.compute() == 1.0, "Condition must be true"
 
     def test_empty_update(self) -> None:
         metric = StreamingAccuracy()
-        assert metric.compute() == 0.0
+        assert metric.compute() == 0.0, "Condition must be true"
 
     def test_with_torch_tensors(self) -> None:
         metric = StreamingAccuracy()
         preds = torch.tensor([1, 0, 1, 0])
         labels = torch.tensor([1, 0, 0, 0])
         metric.update(preds, labels)
-        assert metric.compute() == 0.75
+        assert metric.compute() == 0.75, "Condition must be true"
 
     def test_multiple_batches_streaming(self) -> None:
         metric = StreamingAccuracy()
@@ -251,4 +251,4 @@ class TestStreamingAccuracy:
             metric.update(preds, labels)
 
         # Total: 6 correct out of 8
-        assert metric.compute() == 0.75
+        assert metric.compute() == 0.75, "Condition must be true"

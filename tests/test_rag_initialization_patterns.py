@@ -84,9 +84,9 @@ def test_local_provider_uses_default_device_allocation(
     cache_dir = tmp_path / "rag_cache"
     cache_dir.mkdir(parents=True, exist_ok=True)
     LocalSentenceTransformerProvider(cache_dir=str(cache_dir))
-    assert sentence_transformer_spy.calls
+    assert sentence_transformer_spy.calls, "sentence_transf is not valid"
     _, kwargs = sentence_transformer_spy.calls[0]
-    assert kwargs.get("device") == "cpu"
+    assert kwargs.get("device") == "cpu", "Condition must be true"
 
 
 @pytest.mark.timeout(30)
@@ -95,17 +95,17 @@ def test_local_provider_uses_device_none_pattern(
 ) -> None:
     """Local provider should use device='cpu' for direct CPU initialization."""
     LocalSentenceTransformerProvider()
-    assert sentence_transformer_spy.calls
+    assert sentence_transformer_spy.calls, "sentence_transf is not valid"
     _, kwargs = sentence_transformer_spy.calls[0]
-    assert kwargs.get("device") == "cpu"
+    assert kwargs.get("device") == "cpu", "Condition must be true"
 
 
 @pytest.mark.timeout(30)
 def test_local_provider_calls_eval(sentence_transformer_spy: SentenceTransformerSpy) -> None:
     """Local provider should call eval on the loaded model."""
     LocalSentenceTransformerProvider()
-    assert sentence_transformer_spy.instances
-    assert sentence_transformer_spy.instances[0].eval_called is True
+    assert sentence_transformer_spy.instances, "sentence_transf is not valid"
+    assert sentence_transformer_spy.instances[0].eval_called is True, "eval_called is not valid"
 
 
 @pytest.mark.timeout(30)
@@ -116,7 +116,7 @@ def test_embed_chunks_uses_default_device_allocation(
     chunks = [(0, 10, "hello"), (11, 20, "world")]
     embed_chunks(chunks, model_profile={"model_name": "fake-model", "cache_dir": "cache"})
     _, kwargs = sentence_transformer_spy.calls[0]
-    assert kwargs.get("device") == "cpu"
+    assert kwargs.get("device") == "cpu", "Condition must be true"
 
 
 @pytest.mark.timeout(30)
@@ -127,7 +127,7 @@ def test_embed_chunks_passes_cache_folder(
     chunks = [(0, 10, "hello")]
     embed_chunks(chunks, model_profile={"cache_dir": "custom-cache"})
     _, kwargs = sentence_transformer_spy.calls[0]
-    assert kwargs.get("cache_folder") == "custom-cache"
+    assert kwargs.get("cache_folder") == "custom-cache", "Condition must be true"
 
 
 @pytest.mark.timeout(30)
@@ -140,7 +140,7 @@ def test_retriever_load_model_uses_default_device_allocation(
     monkeypatch.setattr(Retriever, "_load_index", lambda self: None)
     Retriever(index_dir=str(tmp_path))
     _, kwargs = sentence_transformer_spy.calls[0]
-    assert kwargs.get("device") == "cpu"
+    assert kwargs.get("device") == "cpu", "Condition must be true"
 
 
 @pytest.mark.timeout(30)
@@ -152,5 +152,5 @@ def test_retriever_load_model_calls_eval(
     """Retriever should call eval on the loaded SentenceTransformer."""
     monkeypatch.setattr(Retriever, "_load_index", lambda self: None)
     Retriever(index_dir=str(tmp_path))
-    assert sentence_transformer_spy.instances
-    assert sentence_transformer_spy.instances[0].eval_called is True
+    assert sentence_transformer_spy.instances, "sentence_transf is not valid"
+    assert sentence_transformer_spy.instances[0].eval_called is True, "eval_called is not valid"

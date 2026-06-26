@@ -18,7 +18,7 @@ def test_train_guard_noop(tmp_path):
     except ImportError:
         pytest.skip("imports failed due to optional deps")
 
-    assert train_module is not None
+    assert train_module is not None, "train_module must be initialized"
     cfg = OmegaConf.create(
         {
             "train": {
@@ -47,4 +47,4 @@ def test_train_guard_noop(tmp_path):
     # Handle both decorated and non-decorated main functions across mypy versions
     entrypoint = getattr(train_module.main, "__wrapped__", train_module.main)
     result = entrypoint(cfg)
-    assert result == {}
+    assert result == {}, "Result must not be empty"

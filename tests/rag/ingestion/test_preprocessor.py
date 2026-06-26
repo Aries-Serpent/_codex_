@@ -21,10 +21,10 @@ class TestPreprocessingConfig:
         """Test default configuration values."""
         config = PreprocessingConfig()
 
-        assert config.normalization_level == NormalizationLevel.STANDARD
-        assert config.normalize_whitespace is True
-        assert config.remove_html_tags is True
-        assert config.compute_fingerprint is True
+        assert config.normalization_level == NormalizationLevel.STANDARD, "normalization_level is not valid"
+        assert config.normalize_whitespace is True, "normalize_whitespace is not valid"
+        assert config.remove_html_tags is True, "remove_html_tags is not valid"
+        assert config.compute_fingerprint is True, "compute_fingerprint is not valid"
 
     def test_custom_config(self):
         """Test custom configuration."""
@@ -34,9 +34,9 @@ class TestPreprocessingConfig:
             remove_urls=True,
         )
 
-        assert config.normalization_level == NormalizationLevel.AGGRESSIVE
-        assert config.lowercase is True
-        assert config.remove_urls is True
+        assert config.normalization_level == NormalizationLevel.AGGRESSIVE, "normalization_level is not valid"
+        assert config.lowercase is True, "lowercase is not valid"
+        assert config.remove_urls is True, "remove_urls is not valid"
 
 
 class TestPreprocessingResult:
@@ -50,7 +50,7 @@ class TestPreprocessingResult:
             processed_length=50,
         )
 
-        assert result.compression_ratio == 0.5
+        assert result.compression_ratio == 0.5, "Result must not be empty"
 
     def test_compression_ratio_zero_original(self):
         """Test compression ratio with zero original length."""
@@ -60,7 +60,7 @@ class TestPreprocessingResult:
             processed_length=0,
         )
 
-        assert result.compression_ratio == 0.0
+        assert result.compression_ratio == 0.0, "Result must not be empty"
 
 
 class TestDocumentPreprocessor:
@@ -75,69 +75,69 @@ class TestDocumentPreprocessor:
         """Test preprocessing empty text."""
         result = preprocessor.preprocess("")
 
-        assert result.text == ""
-        assert result.original_length == 0
-        assert result.processed_length == 0
+        assert result.text == "", "Result must not be empty"
+        assert result.original_length == 0, "Result must not be empty"
+        assert result.processed_length == 0, "Result must not be empty"
 
     def test_preprocess_simple_text(self, preprocessor):
         """Test preprocessing simple text."""
         text = "Hello, world!"
         result = preprocessor.preprocess(text)
 
-        assert result.text == text
-        assert result.original_length == len(text)
-        assert result.processed_length == len(text)
+        assert result.text == text, "Result must not be empty"
+        assert result.original_length == len(text), "Text must not be empty"
+        assert result.processed_length == len(text), "Text must not be empty"
 
     def test_normalize_whitespace(self, preprocessor):
         """Test whitespace normalization."""
         text = "Hello    world   with   spaces"
         result = preprocessor.preprocess(text)
 
-        assert "    " not in result.text
-        assert "whitespace_normalized" in result.changes
+        assert "    " not in result.text, "Result must not be empty"
+        assert "whitespace_normalized" in result.changes, "Result must not be empty"
 
     def test_remove_html_tags(self, preprocessor):
         """Test HTML tag removal."""
         text = "<p>Hello <b>world</b></p>"
         result = preprocessor.preprocess(text)
 
-        assert "<p>" not in result.text
-        assert "<b>" not in result.text
-        assert "Hello" in result.text
-        assert "world" in result.text
+        assert "<p>" not in result.text, "Result must not be empty"
+        assert "<b>" not in result.text, "Result must not be empty"
+        assert "Hello" in result.text, "Result must not be empty"
+        assert "world" in result.text, "Result must not be empty"
 
     def test_normalize_newlines(self, preprocessor):
         """Test multiple newline normalization."""
         text = "Line 1\n\n\n\n\nLine 2"
         result = preprocessor.preprocess(text)
 
-        assert "\n\n\n" not in result.text
-        assert "Line 1" in result.text
-        assert "Line 2" in result.text
+        assert "\n\n\n" not in result.text, "Result must not be empty"
+        assert "Line 1" in result.text, "Result must not be empty"
+        assert "Line 2" in result.text, "Result must not be empty"
 
     def test_remove_control_chars(self, preprocessor):
         """Test control character removal."""
         text = "Hello\x00world\x1ftest"
         result = preprocessor.preprocess(text)
 
-        assert "\x00" not in result.text
-        assert "\x1f" not in result.text
-        assert "Hello" in result.text
+        assert "\x00" not in result.text, "Result must not be empty"
+        assert "\x1f" not in result.text, "Result must not be empty"
+        assert "Hello" in result.text, "Result must not be empty"
 
     def test_preserve_newlines(self, preprocessor):
         """Test that newlines are preserved."""
         text = "Line 1\nLine 2"
         result = preprocessor.preprocess(text)
 
-        assert "\n" in result.text
+        assert "\n" in result.text, "Result must not be empty"
 
     def test_compute_fingerprint(self, preprocessor):
         """Test fingerprint computation."""
         text = "Test document"
         result = preprocessor.preprocess(text)
 
-        assert result.fingerprint != ""
-        assert len(result.fingerprint) == 16
+        assert result.fingerprint != "", "Result must not be empty"
+        assert len(result.fingerprint) == 16, "Collection must not be empty"
 
     def test_fingerprint_deterministic(self, preprocessor):
         """Test that fingerprint is deterministic."""
@@ -145,15 +145,15 @@ class TestDocumentPreprocessor:
         result1 = preprocessor.preprocess(text)
         result2 = preprocessor.preprocess(text)
 
-        assert result1.fingerprint == result2.fingerprint
+        assert result1.fingerprint == result2.fingerprint, "Result must not be empty"
 
     def test_extract_title_markdown(self, preprocessor):
         """Test title extraction from markdown."""
         text = "# Document Title\n\nContent here"
         result = preprocessor.preprocess(text)
 
-        assert "title" in result.metadata
-        assert "Document Title" in result.metadata["title"]
+        assert "title" in result.metadata, "Result must not be empty"
+        assert "Document Title" in result.metadata["title"], "Result must not be empty"
 
     def test_extract_title_html(self, preprocessor):
         """Test title extraction from HTML."""
@@ -161,19 +161,19 @@ class TestDocumentPreprocessor:
         result = preprocessor.preprocess(text)
 
         # Title extracted before HTML removal
-        assert "title" in result.metadata
+        assert "title" in result.metadata, "Result must not be empty"
 
     def test_extract_headers(self, preprocessor):
         """Test header extraction."""
         text = "# H1 Title\n## H2 Section\n### H3 Subsection"
         result = preprocessor.preprocess(text)
 
-        assert "headers" in result.metadata
+        assert "headers" in result.metadata, "Result must not be empty"
         headers = result.metadata["headers"]
-        assert len(headers) == 3
-        assert headers[0]["level"] == 1
-        assert headers[1]["level"] == 2
-        assert headers[2]["level"] == 3
+        assert len(headers) == 3, "Headers must not be empty"
+        assert headers[0]["level"] == 1, "Condition must be true"
+        assert headers[1]["level"] == 2, "Condition must be true"
+        assert headers[2]["level"] == 3, "Condition must be true"
 
     def test_no_normalization(self):
         """Test with normalization disabled."""
@@ -183,8 +183,8 @@ class TestDocumentPreprocessor:
         text = "<p>Hello    world</p>"
         result = preprocessor.preprocess(text)
 
-        assert result.text == text  # Unchanged
-        assert len(result.changes) == 0
+        assert result.text == text, "Result must not be empty"
+        assert len(result.changes) == 0, "Collection must not be empty"
 
     def test_url_removal(self):
         """Test URL removal when enabled."""
@@ -194,8 +194,8 @@ class TestDocumentPreprocessor:
         text = "Visit https://example.com for more info"
         result = preprocessor.preprocess(text)
 
-        assert "https://" not in result.text
-        assert "urls_removed" in result.changes
+        assert "https://" not in result.text, "Result must not be empty"
+        assert "urls_removed" in result.changes, "Result must not be empty"
 
     def test_email_removal(self):
         """Test email removal when enabled."""
@@ -205,8 +205,8 @@ class TestDocumentPreprocessor:
         text = "Contact us at test@example.com"
         result = preprocessor.preprocess(text)
 
-        assert "@" not in result.text
-        assert "emails_removed" in result.changes
+        assert "@" not in result.text, "Result must not be empty"
+        assert "emails_removed" in result.changes, "Result must not be empty"
 
     def test_lowercase(self):
         """Test lowercase conversion."""
@@ -216,8 +216,8 @@ class TestDocumentPreprocessor:
         text = "Hello WORLD"
         result = preprocessor.preprocess(text)
 
-        assert result.text == "hello world"
-        assert "lowercased" in result.changes
+        assert result.text == "hello world", "Result must not be empty"
+        assert "lowercased" in result.changes, "Result must not be empty"
 
 
 class TestPreprocessTextFunction:
@@ -228,14 +228,14 @@ class TestPreprocessTextFunction:
         result = preprocess_text("Hello   world")
 
         assert isinstance(result, PreprocessingResult)
-        assert "    " not in result.text
+        assert "    " not in result.text, "Result must not be empty"
 
     def test_with_config(self):
         """Test preprocessing with config."""
         config = PreprocessingConfig(lowercase=True)
         result = preprocess_text("HELLO", config)
 
-        assert result.text == "hello"
+        assert result.text == "hello", "Result must not be empty"
 
 
 class TestNormalizeTextFunction:
@@ -246,15 +246,15 @@ class TestNormalizeTextFunction:
         text = "Hello   <b>world</b>"
         result = normalize_text(text, NormalizationLevel.STANDARD)
 
-        assert "   " not in result
-        assert "<b>" not in result
+        assert "   " not in result, "Result must not be empty"
+        assert "<b>" not in result, "Result must not be empty"
 
     def test_no_normalization(self):
         """Test no normalization."""
         text = "Hello   world"
         result = normalize_text(text, NormalizationLevel.NONE)
 
-        assert result == text
+        assert result == text, "Result must not be empty"
 
 
 class TestUnicodeNormalization:
@@ -270,7 +270,7 @@ class TestUnicodeNormalization:
         text = "ﬁ ﬂ"  # Ligatures
         result = preprocessor.preprocess(text)
 
-        assert "unicode_normalized" in str(result.changes)
+        assert "unicode_normalized" in str(result.changes), "Result must not be empty"
 
     def test_non_ascii_text(self, preprocessor):
         """Test handling of non-ASCII text."""
@@ -278,7 +278,7 @@ class TestUnicodeNormalization:
         result = preprocessor.preprocess(text)
 
         assert result.is_valid if hasattr(result, "is_valid") else True
-        assert "日本語" in result.text
+        assert "日本語" in result.text, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -310,11 +310,11 @@ class TestPreprocessorAllFlagsFalse:
         text = "<p>Hello   world\n\n\nLine2</p>"
         result = preprocessor.preprocess(text)
         # Nothing changed because all transforms disabled
-        assert result.text == text
-        assert result.changes == []
-        assert result.fingerprint == ""
-        assert "title" not in result.metadata
-        assert "headers" not in result.metadata
+        assert result.text == text, "Result must not be empty"
+        assert result.changes == [], "Result must not be empty"
+        assert result.fingerprint == "", "Result must not be empty"
+        assert "title" not in result.metadata, "Result must not be empty"
+        assert "headers" not in result.metadata, "Result must not be empty"
 
 
 class TestPreprocessorPreserveNewlinesFalse:
@@ -330,8 +330,8 @@ class TestPreprocessorPreserveNewlinesFalse:
         # \x0b (vertical tab) is a control char not caught by the newline-preserving regex
         text = "Hello\x0bworld"
         result = preprocessor.preprocess(text)
-        assert "\x0b" not in result.text
-        assert "control_chars_removed" in result.changes
+        assert "\x0b" not in result.text, "Result must not be empty"
+        assert "control_chars_removed" in result.changes, "Result must not be empty"
 
 
 class TestPreprocessorRemoveWithNoMatch:
@@ -342,14 +342,14 @@ class TestPreprocessorRemoveWithNoMatch:
         config = PreprocessingConfig(remove_urls=True)
         preprocessor = DocumentPreprocessor(config)
         result = preprocessor.preprocess("No URLs in this text at all.")
-        assert "urls_removed" not in result.changes
+        assert "urls_removed" not in result.changes, "Result must not be empty"
 
     def test_remove_emails_no_emails_present(self):
         """remove_emails=True but no emails → no change logged (line 238->240)."""
         config = PreprocessingConfig(remove_emails=True)
         preprocessor = DocumentPreprocessor(config)
         result = preprocessor.preprocess("No email addresses here.")
-        assert "emails_removed" not in result.changes
+        assert "emails_removed" not in result.changes, "Result must not be empty"
 
 
 class TestExtractTitleEdgeCases:
@@ -361,7 +361,7 @@ class TestExtractTitleEdgeCases:
         # No HTML title, no markdown header, first non-empty line after blank lines
         text = "\n\nActual content line here"
         result = preprocessor.preprocess(text)
-        assert result.metadata.get("title") == "Actual content line here"
+        assert result.metadata.get("title") == "Actual content line here", "Result must not be empty"
 
     def test_extract_title_all_empty_lines(self):
         """All lines empty → for loop exits without setting title (line 275->exit)."""
@@ -370,4 +370,4 @@ class TestExtractTitleEdgeCases:
         text = "\n\n\n"
         result = preprocessor.preprocess(text)
         # title should NOT be set (loop completes without finding content)
-        assert "title" not in result.metadata
+        assert "title" not in result.metadata, "Result must not be empty"

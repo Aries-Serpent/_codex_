@@ -65,24 +65,24 @@ class WorkflowParser:
             return metadata
         except FileNotFoundError as e:
             error_type = type(e).__name__
-            logger.debug(f"FileNotFoundError: <ERROR_TYPE>")
-            logger.warning(f"FileNotFoundError: <ERROR_TYPE>", exc_info=True)
+            logger.debug("FileNotFoundError: <ERROR_TYPE>")
+            logger.warning("FileNotFoundError: <ERROR_TYPE>", exc_info=True)
             logger.error(f"Workflow file not found: {file_path}")
             return None
         except PermissionError as e:
             error_type = type(e).__name__
-            logger.debug(f"PermissionError: <ERROR_TYPE>")
-            logger.warning(f"PermissionError: <ERROR_TYPE>", exc_info=True)
+            logger.debug("PermissionError: <ERROR_TYPE>")
+            logger.warning("PermissionError: <ERROR_TYPE>", exc_info=True)
             logger.error(f"Permission denied reading workflow: {file_path}")
             return None
         except UnicodeDecodeError as e:
             error_type = type(e).__name__
-            logger.debug(f"UnicodeDecodeError: <ERROR_TYPE>")
+            logger.debug("UnicodeDecodeError: <ERROR_TYPE>")
             logger.error(f"Invalid UTF-8 encoding in {file_path}: <ERROR_TYPE>")
             return None
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             logger.error(f"Failed to parse workflow {file_path}: <ERROR_TYPE>", exc_info=True)
             return None
 
@@ -181,17 +181,17 @@ class WorkflowParser:
             return None
         except KeyError as e:
             error_type = type(e).__name__
-            logger.debug(f"KeyError: <ERROR_TYPE>")
+            logger.debug("KeyError: <ERROR_TYPE>")
             logger.error(f"Missing required field in {file_path}: <ERROR_TYPE>")
             return None
         except ValueError as e:
             error_type = type(e).__name__
-            logger.debug(f"ValueError: <ERROR_TYPE>")
+            logger.debug("ValueError: <ERROR_TYPE>")
             logger.error(f"Invalid value in {file_path}: <ERROR_TYPE>")
             return None
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             logger.error(f"Unexpected error parsing {file_path}: <ERROR_TYPE>", exc_info=True)
             return None
 
@@ -329,8 +329,8 @@ class WorkflowParser:
                 input_type = InputType(input_type_str)
             except ValueError as e:
                 error_type = type(e).__name__
-                logger.debug(f"ValueError: <ERROR_TYPE>")
-                logger.warning(f"ValueError: <ERROR_TYPE>", exc_info=True)
+                logger.debug("ValueError: <ERROR_TYPE>")
+                logger.warning("ValueError: <ERROR_TYPE>", exc_info=True)
                 input_type = InputType.STRING
 
             # Parse options (for choice type)

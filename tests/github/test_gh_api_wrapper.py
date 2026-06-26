@@ -31,8 +31,8 @@ def test_print_curl_redacts_token() -> None:
         text=True,
         cwd=repo_root,
     )
-    assert proc.returncode == 0
+    assert proc.returncode == 0, "returncode is not valid"
     output = proc.stdout.strip()
-    assert "Authorization: token ***REDACTED***" in output
-    assert "curl -sS -X GET" in output
-    assert "/repos/Aries-Serpent/_codex_/branches" in output
+    assert "Authorization: token ***REDACTED***" in output, "Condition must be true"
+    assert "curl -sS -X GET" in output, "Condition must be true"
+    assert "/repos/Aries-Serpent/_codex_/branches" in output, "Condition must be true"

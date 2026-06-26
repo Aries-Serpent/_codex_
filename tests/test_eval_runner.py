@@ -20,7 +20,7 @@ def test_eval_and_error_logging(monkeypatch):
     """Test evaluator and error logging functionality."""
     try:
         metrics = run_evaluator("sshleifer/tiny-gpt2", ["hello world"])
-        assert "perplexity" in metrics
+        assert "perplexity" in metrics, "Condition must be true"
     except (OSError, ValueError) as e:
         # Skip test if model isn't available offline (git revision errors, connection issues)
         if "git identifier" in str(e) or "is not a valid" in str(e) or "offline" in str(e).lower():
@@ -39,4 +39,4 @@ def test_eval_and_error_logging(monkeypatch):
         pytest.skip("Error logging path not created - environment issue")
 
     data = json.loads(err_path.read_text().strip().splitlines()[-1])
-    assert data["step"] == "safety_classifier"
+    assert data["step"] == "safety_classifier", "Data must not be empty"

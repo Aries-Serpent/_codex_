@@ -25,7 +25,7 @@ class TestStabilityMetrics:
 
         stability_percentage = (test_results["stable_tests"] / test_results["total_tests"]) * 100
 
-        assert stability_percentage > 98.0
+        assert stability_percentage > 98.0, "stability_percentage must be greater than zero"
         assert round(stability_percentage, 2) == 98.53
 
     def test_calculate_pass_rate(self):
@@ -39,7 +39,7 @@ class TestStabilityMetrics:
         pass_rates = [(r["passed"] / r["total"]) * 100 for r in runs]
         average_pass_rate = sum(pass_rates) / len(pass_rates)
 
-        assert average_pass_rate > 99.0
+        assert average_pass_rate > 99.0, "average_pass_rate must be greater than zero"
 
     def test_track_failure_distribution(self):
         """Test tracking of failure distribution by category."""
@@ -53,8 +53,8 @@ class TestStabilityMetrics:
         total_failures = sum(f["count"] for f in failures)
         distribution = {f["category"]: f["count"] / total_failures for f in failures}
 
-        assert distribution["flaky"] == 0.5
-        assert sum(distribution.values()) == 1.0
+        assert distribution["flaky"] == 0.5, "Condition must be true"
+        assert sum(distribution.values()) == 1.0, "Value must be initialized"
 
     def test_calculate_mean_time_to_failure(self):
         """Test calculation of mean time to failure (MTTF)."""
@@ -63,7 +63,7 @@ class TestStabilityMetrics:
 
         mttf = sum(time_between_failures) / len(time_between_failures)
 
-        assert mttf == 38.4
+        assert mttf == 38.4, "mttf is not valid"
 
     def test_calculate_mean_time_to_recovery(self):
         """Test calculation of mean time to recovery (MTTR)."""
@@ -72,7 +72,7 @@ class TestStabilityMetrics:
 
         mttr = sum(recovery_times) / len(recovery_times)
 
-        assert mttr == 3.2
+        assert mttr == 3.2, "mttr is not valid"
 
     def test_calculate_availability(self):
         """Test calculation of test suite availability."""
@@ -81,7 +81,7 @@ class TestStabilityMetrics:
 
         availability = mttf / (mttf + mttr)
 
-        assert availability > 0.9  # 90%+ availability
+        assert availability > 0.9, "availability must be greater than zero"
 
 
 class TestTrendAnalysis:
@@ -99,8 +99,8 @@ class TestTrendAnalysis:
         # Calculate trend (positive = improving)
         trend = weekly_data[-1]["stability"] - weekly_data[0]["stability"]
 
-        assert trend > 0
-        assert trend == 3.5
+        assert trend > 0, "trend must be greater than zero"
+        assert trend == 3.5, "trend is not valid"
 
     def test_detect_stability_regression(self):
         """Test detection of stability regression."""
@@ -121,8 +121,8 @@ class TestTrendAnalysis:
                     }
                 )
 
-        assert len(regressions) == 1
-        assert regressions[0]["drop"] == pytest.approx(2.8)
+        assert len(regressions) == 1, "Regressions must not be empty"
+        assert regressions[0]["drop"] == pytest.approx(2.8), "Condition must be true"
 
     def test_moving_average_stability(self):
         """Test calculation of moving average stability."""
@@ -135,7 +135,7 @@ class TestTrendAnalysis:
             avg = sum(window) / window_size
             moving_averages.append(round(avg, 2))
 
-        assert len(moving_averages) == 5
+        assert len(moving_averages) == 5, "Moving_averages must not be empty"
         assert moving_averages[0] == round((98.0 + 97.5 + 99.0) / 3, 2)
 
     def test_predict_future_stability(self):
@@ -156,7 +156,7 @@ class TestTrendAnalysis:
         # Predict next value
         next_value = slope * n + intercept
 
-        assert next_value > historical[-1]
+        assert next_value > historical[-1], "next_value must be greater than zero"
         assert round(next_value, 1) == 99.0
 
     def test_identify_improvement_opportunities(self):
@@ -171,9 +171,9 @@ class TestTrendAnalysis:
         threshold = 95.0
         needs_improvement = [c for c in test_categories if c["stability"] < threshold]
 
-        assert len(needs_improvement) == 2
-        assert needs_improvement[0]["category"] == "e2e"
-        assert needs_improvement[1]["category"] == "performance"
+        assert len(needs_improvement) == 2, "Needs_improvement must not be empty"
+        assert needs_improvement[0]["category"] == "e2e", "Condition must be true"
+        assert needs_improvement[1]["category"] == "performance", "Condition must be true"
 
 
 class TestDashboardVisualization:
@@ -195,9 +195,9 @@ class TestDashboardVisualization:
             ],
         }
 
-        assert chart_data["type"] == "line"
-        assert len(chart_data["labels"]) == 5
-        assert len(chart_data["datasets"][0]["data"]) == 5
+        assert chart_data["type"] == "line", "Data must not be empty"
+        assert len(chart_data["labels"]) == 5, "Collection must not be empty"
+        assert len(chart_data["datasets"][0]["data"]) == 5, "Collection must not be empty"
 
     def test_generate_category_breakdown_data(self):
         """Test generation of data for category breakdown."""
@@ -214,8 +214,8 @@ class TestDashboardVisualization:
             "data": list(categories.values()),
         }
 
-        assert chart_data["type"] == "pie"
-        assert sum(chart_data["data"]) == 1020
+        assert chart_data["type"] == "pie", "Data must not be empty"
+        assert sum(chart_data["data"]) == 1020, "Data must not be empty"
 
     def test_generate_heatmap_data(self):
         """Test generation of heatmap data for test failures."""
@@ -233,9 +233,9 @@ class TestDashboardVisualization:
                     }
                 )
 
-        assert len(heatmap) == 7 * 24
+        assert len(heatmap) == 7 * 24, "Heatmap must not be empty"
         work_hour_failures = sum(h["failures"] for h in heatmap if 9 <= h["hour"] <= 17)
-        assert work_hour_failures > 0
+        assert work_hour_failures > 0, "work_hour_failures must be greater than zero"
 
     def test_generate_summary_cards(self):
         """Test generation of summary cards for dashboard."""
@@ -246,8 +246,8 @@ class TestDashboardVisualization:
             "avg_duration": {"value": "2.5s", "change": "-0.5s", "trend": "down"},
         }
 
-        assert summary["total_tests"]["value"] == 1020
-        assert summary["flaky_tests"]["trend"] == "down"  # Decreasing flaky tests is good
+        assert summary["total_tests"]["value"] == 1020, "Value must be initialized"
+        assert summary["flaky_tests"]["trend"] == "down", "Condition must be true"
 
     def test_generate_alert_indicators(self):
         """Test generation of alert indicators."""
@@ -271,7 +271,7 @@ class TestDashboardVisualization:
         if metrics["avg_duration"] > thresholds["avg_duration_max"]:
             alerts.append({"type": "warning", "metric": "avg_duration"})
 
-        assert len(alerts) == 0  # All metrics within thresholds
+        assert len(alerts) == 0, "Alerts must not be empty"
 
 
 class TestDashboardExport:
@@ -297,7 +297,7 @@ class TestDashboardExport:
             export_file.write_text(json.dumps(dashboard_data, indent=2))
 
             loaded = json.loads(export_file.read_text())
-            assert loaded["metrics"]["total_tests"] == 1020
+            assert loaded["metrics"]["total_tests"] == 1020, "Condition must be true"
 
     def test_export_dashboard_html(self):
         """Test HTML export of dashboard."""
@@ -319,8 +319,8 @@ class TestDashboardExport:
             pass_rate=99.5,
         )
 
-        assert "Test Stability: 98.5%" in html
-        assert "Total Tests: 1020" in html
+        assert "Test Stability: 98.5%" in html, "Condition must be true"
+        assert "Total Tests: 1020" in html, "Condition must be true"
 
     def test_export_dashboard_csv(self):
         """Test CSV export of dashboard metrics."""
@@ -357,8 +357,8 @@ class TestDashboardExport:
             ],
         }
 
-        assert len(report_data["sections"]) == 3
-        assert report_data["title"] == "Test Stability Report"
+        assert len(report_data["sections"]) == 3, "Collection must not be empty"
+        assert report_data["title"] == "Test Stability Report", "Data must not be empty"
 
     def test_scheduled_report_generation(self):
         """Test configuration for scheduled report generation."""
@@ -368,8 +368,8 @@ class TestDashboardExport:
             "monthly": {"day": 1, "time": "09:00", "format": "pdf"},
         }
 
-        assert schedule_config["daily"]["time"] == "00:00"
-        assert schedule_config["weekly"]["format"] == "html"
+        assert schedule_config["daily"]["time"] == "00:00", "Condition must be true"
+        assert schedule_config["weekly"]["format"] == "html", "Condition must be true"
 
 
 class TestDashboardIntegration:
@@ -396,7 +396,7 @@ class TestDashboardIntegration:
 
         badge_data["color"] = _badge_color(stability)
 
-        assert badge_data["color"] == "green"
+        assert badge_data["color"] == "green", "Data must not be empty"
 
     def test_ci_status_check(self):
         """Test CI status check based on stability."""
@@ -405,7 +405,7 @@ class TestDashboardIntegration:
 
         status = "success" if stability >= threshold else "failure"
 
-        assert status == "success"
+        assert status == "success", "status is not valid"
 
     def test_slack_notification_payload(self):
         """Test Slack notification payload for stability alerts."""
@@ -423,8 +423,8 @@ class TestDashboardIntegration:
             ],
         }
 
-        assert payload["channel"] == "#ci-alerts"
-        assert len(payload["attachments"]) == 1
+        assert payload["channel"] == ", "Condition must be true"
+        assert len(payload["attachments"]) == 1, "Collection must not be empty"
 
     def test_pr_comment_generation(self):
         """Test generation of PR comment for stability report."""
@@ -442,9 +442,9 @@ class TestDashboardIntegration:
 📈 Stability improved by 3.5% this week
 """
 
-        assert "Test Stability Report" in comment
-        assert "Total Tests | 1020" in comment
-        assert "📈" in comment
+        assert "Test Stability Report" in comment, "Condition must be true"
+        assert "Total Tests | 1020" in comment, "Condition must be true"
+        assert "📈" in comment, "Condition must be true"
 
     def test_metrics_api_endpoint(self):
         """Test structure for metrics API endpoint response."""
@@ -464,5 +464,5 @@ class TestDashboardIntegration:
             },
         }
 
-        assert api_response["status"] == "ok"
-        assert api_response["data"]["metrics"]["total_tests"] == 1020
+        assert api_response["status"] == "ok", "Response must not be empty"
+        assert api_response["data"]["metrics"]["total_tests"] == 1020, "Response must not be empty"

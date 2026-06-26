@@ -21,8 +21,8 @@ class TestDecisionState:
 
         state = DecisionState(current_position="start", goal_position="end")
 
-        assert state.current_position == "start"
-        assert state.goal_position == "end"
+        assert state.current_position == "start", "current_position is not valid"
+        assert state.goal_position == "end", "goal_position is not valid"
         assert hasattr(state, "available_resources")
         assert hasattr(state, "time_available")
 
@@ -41,9 +41,9 @@ class TestDecisionState:
             constraints=[],
         )
 
-        assert state.available_resources == 100.0
-        assert state.time_available == 50.0
-        assert state.current_velocity == 1.5
+        assert state.available_resources == 100.0, "available_resources is not valid"
+        assert state.time_available == 50.0, "time_available is not valid"
+        assert state.current_velocity == 1.5, "current_velocity is not valid"
         assert isinstance(state.context, dict)
 
 
@@ -61,8 +61,8 @@ class TestActionPath:
 
         path = ActionPath(action_type=ActionType.TEST, description="Run tests")
 
-        assert path.action_type == ActionType.TEST
-        assert path.description == "Run tests"
+        assert path.action_type == ActionType.TEST, "action_type is not valid"
+        assert path.description == "Run tests", "description is not valid"
 
     def test_action_path_calculate_total_energy(self):
         """Test calculate_total_energy method."""
@@ -78,8 +78,8 @@ class TestActionPath:
 
         total = path.calculate_total_energy()
 
-        assert total > 0
-        assert path.total_energy > 0
+        assert total > 0, "total must be greater than zero"
+        assert path.total_energy > 0, "total_energy must be greater than zero"
 
     def test_action_path_calculate_optimization_score(self):
         """Test calculate_optimization_score method."""
@@ -97,19 +97,19 @@ class TestActionPath:
         path.calculate_total_energy()
         score = path.calculate_optimization_score()
 
-        assert score > 0
-        assert path.optimization_score > 0
+        assert score > 0, "score must be greater than zero"
+        assert path.optimization_score > 0, "optimization_score must be greater than zero"
 
     def test_action_type_enum_values(self):
         """Test ActionType enum has expected values."""
         from agents.physics_orchestrator import ActionType
 
-        assert ActionType.AUDIT is not None
-        assert ActionType.REFACTOR is not None
-        assert ActionType.TEST is not None
-        assert ActionType.DOCUMENT is not None
-        assert ActionType.DEPLOY is not None
-        assert ActionType.OPTIMIZE is not None
+        assert ActionType.AUDIT is not None, "AUDIT must be initialized"
+        assert ActionType.REFACTOR is not None, "REFACTOR must be initialized"
+        assert ActionType.TEST is not None, "TEST must be initialized"
+        assert ActionType.DOCUMENT is not None, "DOCUMENT must be initialized"
+        assert ActionType.DEPLOY is not None, "DEPLOY must be initialized"
+        assert ActionType.OPTIMIZE is not None, "OPTIMIZE must be initialized"
 
 
 # ============================================================================
@@ -126,9 +126,9 @@ class TestForceVector:
 
         force = ForceVector(name="momentum", magnitude=0.8, direction=45.0)
 
-        assert force.name == "momentum"
-        assert force.magnitude == 0.8
-        assert force.direction == 45.0
+        assert force.name == "momentum", "name is not valid"
+        assert force.magnitude == 0.8, "magnitude is not valid"
+        assert force.direction == 45.0, "direction is not valid"
 
     def test_force_vector_get_components(self):
         """Test get_components method."""
@@ -167,7 +167,7 @@ class TestPhysicsInspiredOrchestratorCore:
 
         orch = PhysicsInspiredOrchestrator()
 
-        assert orch is not None
+        assert orch is not None, "orch must be initialized"
         assert hasattr(orch, "config")
         assert hasattr(orch, "decision_history")
         assert hasattr(orch, "force_vectors")
@@ -179,7 +179,7 @@ class TestPhysicsInspiredOrchestratorCore:
         # Non-existent path should use defaults
         orch = PhysicsInspiredOrchestrator(config_path=Path("/nonexistent/config.json"))
 
-        assert orch is not None
+        assert orch is not None, "orch must be initialized"
         assert isinstance(orch.config, dict)
 
     def test_assess_situation(self):
@@ -195,8 +195,8 @@ class TestPhysicsInspiredOrchestratorCore:
         assessment = orch.assess_situation(state)
 
         assert isinstance(assessment, dict)
-        assert "distance_to_goal" in assessment
-        assert "system_entropy" in assessment
+        assert "distance_to_goal" in assessment, "Condition must be true"
+        assert "system_entropy" in assessment, "Condition must be true"
 
     def test_deliberate_paths(self):
         """Test deliberate_paths method."""
@@ -226,7 +226,7 @@ class TestPhysicsInspiredOrchestratorCore:
 
         ranked = orch.deliberate_paths(state, paths)
 
-        assert len(ranked) == len(paths)
+        assert len(ranked) == len(paths), "Ranked must not be empty"
         assert isinstance(ranked, list)
 
     def test_optimize_path_method(self):
@@ -257,7 +257,7 @@ class TestPhysicsInspiredOrchestratorCore:
 
         optimal = orch.optimize_path(paths, state)
 
-        assert optimal is not None or optimal is None  # May be None if constraints not met
+        assert optimal is not None or optimal is None, "optimal must be initialized"
 
     def test_act_with_none_path(self):
         """Test act method when no path provided."""
@@ -272,8 +272,8 @@ class TestPhysicsInspiredOrchestratorCore:
         result = orch.act(None, state)
 
         assert isinstance(result, dict)
-        assert "action_taken" in result
-        assert result["action_taken"] == "wait"
+        assert "action_taken" in result, "Result must not be empty"
+        assert result["action_taken"] == "wait", "Result must not be empty"
 
     def test_act_with_valid_path(self):
         """Test act method with valid path."""
@@ -294,7 +294,7 @@ class TestPhysicsInspiredOrchestratorCore:
         result = orch.act(path, state)
 
         assert isinstance(result, dict)
-        assert "action_taken" in result
+        assert "action_taken" in result, "Result must not be empty"
 
     def test_orchestrate_full_cycle(self):
         """Test full orchestrate cycle."""
@@ -322,7 +322,7 @@ class TestPhysicsInspiredOrchestratorCore:
         result = orch.orchestrate(state, paths)
 
         assert isinstance(result, dict)
-        assert "action_taken" in result
+        assert "action_taken" in result, "Result must not be empty"
 
 
 # ============================================================================
@@ -346,7 +346,7 @@ class TestOrchestratorHelpers:
         distance = orch._calculate_distance(state)
 
         assert isinstance(distance, float)
-        assert distance >= 0
+        assert distance >= 0, "distance must be greater than zero"
 
     def test_calculate_entropy(self):
         """Test _calculate_entropy helper."""
@@ -361,7 +361,7 @@ class TestOrchestratorHelpers:
         entropy = orch._calculate_entropy(state)
 
         assert isinstance(entropy, float)
-        assert entropy >= 0
+        assert entropy >= 0, "entropy must be greater than zero"
 
     def test_calculate_potentials(self):
         """Test potential calculation helpers."""

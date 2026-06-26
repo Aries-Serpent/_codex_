@@ -39,7 +39,7 @@ def test_registry_dispatches_to_backends(monkeypatch):
     registry.log_metrics({"acc": 0.9}, step=1)
     registry.end_run()
 
-    assert backend.started == "run-1"
-    assert backend.ended is True
-    assert backend.params == [{"lr": 1e-3}]
+    assert backend.started == "run-1", "started is not valid"
+    assert backend.ended is True, "ended is not valid"
+    assert backend.params == [{"lr": 1e-3}], "params is not valid"
     assert backend.metrics == [({"acc": 0.9}, 1)]

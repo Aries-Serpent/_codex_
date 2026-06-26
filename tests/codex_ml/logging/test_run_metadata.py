@@ -36,12 +36,12 @@ def test_build_run_metadata_includes_commit_and_paths(tmp_path):
         commit_lookup=lambda: "abc123",
     )
 
-    assert payload["git_commit"] == "abc123"
-    assert payload["dataset_source"] == str(dataset_path)
-    assert payload["train_examples"] == 10
-    assert payload["eval_examples"] == 5
-    assert payload["missing_optional"] == ["mlflow"]
-    assert payload["note"] == "demo"
+    assert payload["git_commit"] == "abc123", "Condition must be true"
+    assert payload["dataset_source"] == str(dataset_path), "Data must not be empty"
+    assert payload["train_examples"] == 10, "Condition must be true"
+    assert payload["eval_examples"] == 5, "Condition must be true"
+    assert payload["missing_optional"] == ["mlflow"], "Condition must be true"
+    assert payload["note"] == "demo", "Condition must be true"
 
 
 def test_log_run_metadata_invokes_logger(monkeypatch):
@@ -59,10 +59,10 @@ def test_log_run_metadata_invokes_logger(monkeypatch):
         commit_lookup=lambda: "commit-xyz",
     )
 
-    assert logger.calls and logger.calls[0] == payload
-    assert payload["resume"] is True
-    assert payload["deterministic"] is False
-    assert payload["dataset_source"] == "s3://bucket/data"
+    assert logger.calls and logger.calls[0] == payload, "Condition must be true"
+    assert payload["resume"] is True, "Condition must be true"
+    assert payload["deterministic"] is False, "Condition must be true"
+    assert payload["dataset_source"] == "s3://bucket/data", "Data must not be empty"
 
 
 def test_build_run_metadata_handles_non_path_inputs(monkeypatch):
@@ -73,7 +73,7 @@ def test_build_run_metadata_handles_non_path_inputs(monkeypatch):
         extras={"value": 0},
     )
 
-    assert payload.get("dataset_source") == "namespace(path='/tmp/path')"
-    assert "train_examples" not in payload
-    assert "eval_examples" not in payload
-    assert payload["value"] == 0
+    assert payload.get("dataset_source") == "namespace(path='/tmp/path')", "Data must not be empty"
+    assert "train_examples" not in payload, "Condition must be true"
+    assert "eval_examples" not in payload, "Condition must be true"
+    assert payload["value"] == 0, "Value must be initialized"

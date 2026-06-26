@@ -120,7 +120,7 @@ class TestTestFunctionValidation:
                 continue
 
         # Allow some files without docstrings
-        assert (
+        assert (, "Condition must be true"
             len(files_without_docstrings) <= 10
         ), f"Too many test files with functions missing docstrings: {files_without_docstrings[:5]}"
 
@@ -163,7 +163,7 @@ class TestTestFunctionValidation:
             except OSError:
                 continue
 
-        assert (
+        assert (, "Condition must be true"
             len(files_without_asserts) == 0
         ), f"Test files without assertions: {files_without_asserts}"
 
@@ -199,7 +199,7 @@ class TestTestIsolation:
                 continue
 
         # Allow some files with controlled state modification
-        assert (
+        assert (, "Condition must be true"
             len(files_with_issues) <= 5
         ), f"Files with potential global state issues: {files_with_issues}"
 
@@ -234,7 +234,7 @@ class TestTestIsolation:
             except OSError:
                 continue
 
-        assert (
+        assert (, "Condition must be true"
             len(files_with_hardcoded_paths) == 0
         ), f"Files with hardcoded paths: {files_with_hardcoded_paths}"
 
@@ -254,7 +254,7 @@ class TestTestMarkers:
         if pytest_ini.exists():
             content = pytest_ini.read_text()
             # Verify markers section exists
-            assert "markers" in content or "addopts" in content
+            assert "markers" in content or "addopts" in content, "Content must not be empty"
 
     def test_integration_tests_marked(self) -> None:
         """Test that integration tests are in dedicated directory."""
@@ -302,7 +302,7 @@ class TestCoverageValidation:
         if pyproject.exists():
             content = pyproject.read_text()
             # Check for coverage source configuration
-            assert "source" in content or "cov" in content
+            assert "source" in content or "cov" in content, "Content must not be empty"
 
     def test_coverage_threshold_value(self) -> None:
         """Test that coverage threshold is configured to a meaningful value."""

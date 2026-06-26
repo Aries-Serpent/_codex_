@@ -15,7 +15,7 @@ Tests follow patterns from existing codebase, use fixtures for temp directories,
 and include edge case coverage, error paths, and integration scenarios.
 """  # pragma: allowlist secret # pragma: allowlist secret
 
-import hashlib # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+import hashlib  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 import json
 import zipfile
 from datetime import datetime, timezone
@@ -101,10 +101,10 @@ class TestSnapshotDataclass:
             content_hash="abc123def456",
             created_at=datetime.now(timezone.utc),
         )
-        assert snapshot.snapshot_id == "test-snap-001"
-        assert snapshot.source_path == "/path/to/source"
-        assert snapshot.snapshot_dir == snapshot_dir
-        assert snapshot.content_hash == "abc123def456"
+        assert snapshot.snapshot_id == "test-snap-001", "snapshot_id is not valid"
+        assert snapshot.source_path == "/path/to/source", "source_path is not valid"
+        assert snapshot.snapshot_dir == snapshot_dir, "snapshot_dir is not valid"
+        assert snapshot.content_hash == "abc123def456", "Content must not be empty"
 
     def test_snapshot_creation_with_manifest(self):
         """Test snapshot with optional manifest."""
@@ -118,7 +118,7 @@ class TestSnapshotDataclass:
             created_at=datetime.now(timezone.utc),
             manifest=manifest_mock,
         )
-        assert snapshot.manifest is manifest_mock
+        assert snapshot.manifest is manifest_mock, "manifest is not valid"
 
     def test_snapshot_get_source_dir(self):
         """Test get_source_dir() method."""
@@ -131,7 +131,7 @@ class TestSnapshotDataclass:
             created_at=datetime.now(timezone.utc),
         )
         expected = snapshot_dir / "source"
-        assert snapshot.get_source_dir() == expected
+        assert snapshot.get_source_dir() == expected, "Condition must be true"
 
     def test_snapshot_get_artifact_path(self):
         """Test get_artifact_path() method."""
@@ -144,7 +144,7 @@ class TestSnapshotDataclass:
             created_at=datetime.now(timezone.utc),
         )
         expected = snapshot_dir / "patches"
-        assert snapshot.get_artifact_path("patches") == expected
+        assert snapshot.get_artifact_path("patches") == expected, "Condition must be true"
 
     def test_snapshot_to_dict(self):
         """Test to_dict() serialization."""
@@ -159,11 +159,11 @@ class TestSnapshotDataclass:
             metadata={"key": "value"},
         )
         result = snapshot.to_dict()
-        assert result["snapshot_id"] == "test-snap-001"
-        assert result["source_path"] == "/path/to/source.py"
-        assert result["content_hash"] == "abc123def456"
-        assert result["metadata"] == {"key": "value"}
-        assert result["created_at"] == now.isoformat()
+        assert result["snapshot_id"] == "test-snap-001", "Result must not be empty"
+        assert result["source_path"] == "/path/to/source.py", "Result must not be empty"
+        assert result["content_hash"] == "abc123def456", "Result must not be empty"
+        assert result["metadata"] == {"key": "value"}, "Result must not be empty"
+        assert result["created_at"] == now.isoformat(), "Result must not be empty"
 
     def test_snapshot_metadata_default(self):
         """Test that metadata defaults to empty dict."""
@@ -175,7 +175,7 @@ class TestSnapshotDataclass:
             content_hash="abc123",
             created_at=datetime.now(timezone.utc),
         )
-        assert snapshot.metadata == {}
+        assert snapshot.metadata == {}, "Data must not be empty"
 
 
 # =====================================================================
@@ -191,25 +191,25 @@ class TestComputeContentHash:
         content = temp_source_file.read_bytes()
         expected = hashlib.sha256(content).hexdigest()
         result = _compute_content_hash(temp_source_file)
-        assert result == expected
+        assert result == expected, "Result must not be empty"
 
     def test_hash_file_deterministic(self, temp_source_file):
         """Test that hash is deterministic."""
         result1 = _compute_content_hash(temp_source_file)
         result2 = _compute_content_hash(temp_source_file)
-        assert result1 == result2
+        assert result1 == result2, "Result must not be empty"
 
     def test_hash_directory(self, temp_source_dir):
         """Test hashing a directory with multiple files."""
         result = _compute_content_hash(temp_source_dir)
         assert isinstance(result, str)
-        assert len(result) == 64  # SHA256 hex digest length
+        assert len(result) == 64, "Result must not be empty"
 
     def test_hash_directory_deterministic(self, temp_source_dir):
         """Test that directory hash is deterministic."""
         result1 = _compute_content_hash(temp_source_dir)
         result2 = _compute_content_hash(temp_source_dir)
-        assert result1 == result2
+        assert result1 == result2, "Result must not be empty"
 
     def test_hash_empty_file(self, tmp_path):
         """Test hashing an empty file."""
@@ -217,7 +217,7 @@ class TestComputeContentHash:
         empty_file.write_bytes(b"")
         expected = hashlib.sha256(b"").hexdigest()
         result = _compute_content_hash(empty_file)
-        assert result == expected
+        assert result == expected, "Result must not be empty"
 
     def test_hash_includes_structure(self, temp_source_dir):
         """Test that hash includes directory structure."""
@@ -229,7 +229,7 @@ class TestComputeContentHash:
         (temp_source_dir / "new_file.py").unlink()
         hash_without_new = _compute_content_hash(temp_source_dir)
 
-        assert hash_with_new != hash_without_new
+        assert hash_with_new != hash_without_new, "hash_with_new is not valid"
 
     def test_hash_sorted_order(self, tmp_path):
         """Test that hash is deterministic regardless of file order."""
@@ -245,7 +245,7 @@ class TestComputeContentHash:
 
         hash1 = _compute_content_hash(dir1)
         hash2 = _compute_content_hash(dir2)
-        assert hash1 == hash2
+        assert hash1 == hash2, "hash1 is not valid"
 
 
 # =====================================================================
@@ -375,9 +375,9 @@ class TestExtractZip:
         _extract_zip(temp_zip_file, dest_dir)
 
         # Verify extraction
-        assert (dest_dir / "file1.py").exists()
-        assert (dest_dir / "file2.py").exists()
-        assert (dest_dir / "subdir" / "nested.py").exists()
+        assert (dest_dir / "file1.py").exists(), "Condition must be true"
+        assert (dest_dir / "file2.py").exists(), "Condition must be true"
+        assert (dest_dir / "subdir" / "nested.py").exists(), "Condition must be true"
 
     def test_extract_zip_creates_directories(self, temp_zip_file, tmp_path):
         """Test that extract creates subdirectories."""
@@ -385,7 +385,7 @@ class TestExtractZip:
         dest_dir.mkdir()
         _extract_zip(temp_zip_file, dest_dir)
 
-        assert (dest_dir / "subdir").is_dir()
+        assert (dest_dir / "subdir").is_dir(), "Condition must be true"
 
     def test_extract_zip_path_traversal_blocked(self, tmp_path):
         """Test that path traversal in ZIP is blocked."""
@@ -453,42 +453,42 @@ class TestIngestFunction:
     def test_ingest_single_file(self, temp_source_file, artifacts_dir):
         """Test ingesting a single file."""
         snapshot = ingest(temp_source_file)
-        assert snapshot.snapshot_id is not None
-        assert snapshot.source_path == str(temp_source_file)
-        assert snapshot.snapshot_dir.exists()
-        assert snapshot.content_hash is not None
+        assert snapshot.snapshot_id is not None, "snapshot_id must be initialized"
+        assert snapshot.source_path == str(temp_source_file), "source_path is not valid"
+        assert snapshot.snapshot_dir.exists(), "Condition must be true"
+        assert snapshot.content_hash is not None, "content_hash must be initialized"
 
     def test_ingest_creates_snapshot_directory(self, temp_source_file, artifacts_dir):
         """Test that ingest creates proper snapshot directory."""
         snapshot = ingest(temp_source_file)
-        assert (snapshot.snapshot_dir / "source").exists()
-        assert (snapshot.snapshot_dir / "snapshot-meta.json").exists()
-        assert (snapshot.snapshot_dir / "patches").exists()
+        assert (snapshot.snapshot_dir / "source").exists(), "Condition must be true"
+        assert (snapshot.snapshot_dir / "snapshot-meta.json").exists(), "Condition must be true"
+        assert (snapshot.snapshot_dir / "patches").exists(), "Condition must be true"
 
     def test_ingest_custom_snapshot_id(self, temp_source_file, artifacts_dir):
         """Test ingest with custom snapshot ID."""
         custom_id = "my-custom-snapshot-001"
         snapshot = ingest(temp_source_file, snapshot_id=custom_id)
-        assert snapshot.snapshot_id == custom_id
+        assert snapshot.snapshot_id == custom_id, "snapshot_id is not valid"
 
     def test_ingest_creates_metadata(self, temp_source_file, artifacts_dir):
         """Test that ingest creates metadata file."""
         snapshot = ingest(temp_source_file)
         meta_path = snapshot.snapshot_dir / "snapshot-meta.json"
-        assert meta_path.exists()
+        assert meta_path.exists(), "Condition must be true"
 
         with meta_path.open() as f:
             meta = json.load(f)
-        assert meta["snapshot_id"] == snapshot.snapshot_id
-        assert meta["source"] == str(temp_source_file)
-        assert meta["content_hash"] == snapshot.content_hash
+        assert meta["snapshot_id"] == snapshot.snapshot_id, "Condition must be true"
+        assert meta["source"] == str(temp_source_file), "Condition must be true"
+        assert meta["content_hash"] == snapshot.content_hash, "Content must not be empty"
 
     def test_ingest_directory(self, temp_source_dir, artifacts_dir):
         """Test ingesting a directory."""
         snapshot = ingest(temp_source_dir)
         source_dir = snapshot.snapshot_dir / "source"
-        assert (source_dir / "file1.py").exists()
-        assert (source_dir / "file2.py").exists()
+        assert (source_dir / "file1.py").exists(), "Condition must be true"
+        assert (source_dir / "file2.py").exists(), "Condition must be true"
 
     def test_ingest_nonexistent_source(self, artifacts_dir):
         """Test that nonexistent source raises FileNotFoundError."""
@@ -501,15 +501,15 @@ class TestIngestFunction:
         meta_path = snapshot.snapshot_dir / "snapshot-meta.json"
         with meta_path.open() as f:
             meta = json.load(f)
-        assert "file_count" in meta
-        assert meta["file_count"] >= 1
+        assert "file_count" in meta, "Count must be greater than zero"
+        assert meta["file_count"] >= 1, "Value must be greater than zero"
 
     def test_ingest_with_zip(self, temp_zip_file, artifacts_dir):
         """Test ingesting a ZIP archive."""
         snapshot = ingest(temp_zip_file)
-        assert snapshot.snapshot_id is not None
+        assert snapshot.snapshot_id is not None, "snapshot_id must be initialized"
         source_dir = snapshot.snapshot_dir / "source"
-        assert (source_dir / "file1.py").exists()
+        assert (source_dir / "file1.py").exists(), "Condition must be true"
 
     @patch("src.codex.ingest.adapter._clone_git_repo")
     def test_ingest_git_url(self, mock_clone, artifacts_dir):
@@ -519,12 +519,12 @@ class TestIngestFunction:
         )
 
         snapshot = ingest("https://github.com/user/repo.git")
-        assert snapshot.snapshot_id is not None
+        assert snapshot.snapshot_id is not None, "snapshot_id must be initialized"
 
     def test_ingest_timestamp_format(self, temp_source_file, artifacts_dir):
         """Test that snapshot is created with current timestamp."""
         snapshot = ingest(temp_source_file)
-        assert snapshot.created_at.tzinfo is not None  # Should have timezone
+        assert snapshot.created_at.tzinfo is not None, "tzinfo must be initialized"
 
 
 # =====================================================================
@@ -542,20 +542,20 @@ class TestIngestIntegration:
 
         # Find the original file in snapshot
         source_file = snapshot.snapshot_dir / "source" / temp_source_file.name
-        assert source_file.exists()
-        assert source_file.read_text() == original_content
+        assert source_file.exists(), "Condition must be true"
+        assert source_file.read_text() == original_content, "Content must not be empty"
 
     def test_ingest_multiple_creates_different_ids(self, temp_source_file, artifacts_dir):
         """Test that multiple ingests create different snapshot IDs."""
         snapshot1 = ingest(temp_source_file)
         snapshot2 = ingest(temp_source_file)
-        assert snapshot1.snapshot_id != snapshot2.snapshot_id
+        assert snapshot1.snapshot_id != snapshot2.snapshot_id, "snapshot_id is not valid"
 
     def test_ingest_content_hash_consistent(self, temp_source_file, artifacts_dir):
         """Test that content hash is consistent across multiple ingests."""
         snapshot1 = ingest(temp_source_file)
         snapshot2 = ingest(temp_source_file)
-        assert snapshot1.content_hash == snapshot2.content_hash
+        assert snapshot1.content_hash == snapshot2.content_hash, "Content must not be empty"
 
 
 # =====================================================================
@@ -571,14 +571,14 @@ class TestEdgeCases:
         empty_dir = tmp_path / "empty"
         empty_dir.mkdir()
         snapshot = ingest(empty_dir)
-        assert snapshot.snapshot_id is not None
+        assert snapshot.snapshot_id is not None, "snapshot_id must be initialized"
 
     def test_ingest_special_characters_in_filename(self, tmp_path, artifacts_dir):
         """Test ingesting files with special characters."""
         special_file = tmp_path / "file with spaces & symbols!.py"
         special_file.write_text("# Special\nprint('test')")
         snapshot = ingest(special_file)
-        assert snapshot.snapshot_id is not None
+        assert snapshot.snapshot_id is not None, "snapshot_id must be initialized"
 
     def test_snapshot_to_dict_serializable(self):
         """Test that snapshot to_dict() result is JSON serializable."""
@@ -598,14 +598,14 @@ class TestEdgeCases:
         unicode_file.write_text("Hello 世界 🌍", encoding="utf-8")
         result = _compute_content_hash(unicode_file)
         assert isinstance(result, str)
-        assert len(result) == 64
+        assert len(result) == 64, "Result must not be empty"
 
     def test_snapshot_timestamp_format(self, temp_source_file, artifacts_dir):
         """Test snapshot created_at timestamp format."""
         snapshot = ingest(temp_source_file)
-        assert snapshot.created_at is not None
+        assert snapshot.created_at is not None, "created_at must be initialized"
         assert isinstance(snapshot.created_at, datetime)
-        assert snapshot.created_at.tzinfo is not None
+        assert snapshot.created_at.tzinfo is not None, "tzinfo must be initialized"
 
     def test_validate_path_with_dots_pattern(self, tmp_path):
         """Test path validation with .. directory traversal patterns."""
@@ -624,12 +624,12 @@ class TestEdgeCases:
         """Test snapshot handles both relative and absolute source paths."""
         # Use absolute path
         snapshot_abs = ingest(temp_source_file)
-        assert snapshot_abs.source_path is not None
+        assert snapshot_abs.source_path is not None, "source_path must be initialized"
 
     def test_ingest_with_manifest_parameter(self, temp_source_file, artifacts_dir):
         """Test ingest with manifest parameter."""
         snapshot = ingest(temp_source_file)
-        assert snapshot is not None
+        assert snapshot is not None, "snapshot must be initialized"
 
     def test_size_bounds_directory_recursive(self, tmp_path, artifacts_dir):
         """Test size bounds checking with recursive directories."""
@@ -652,16 +652,16 @@ class TestEdgeCases:
         hidden = tmp_path / ".hidden"
         hidden.write_text("secret")
         snapshot = ingest(tmp_path)
-        assert snapshot.snapshot_id is not None
+        assert snapshot.snapshot_id is not None, "snapshot_id must be initialized"
 
     def test_snapshot_metadata_persistence(self, temp_source_file, artifacts_dir):
         """Test snapshot metadata is persisted to disk."""
         snapshot = ingest(temp_source_file)
         meta_file = snapshot.snapshot_dir / "snapshot-meta.json"
-        assert meta_file.exists()
+        assert meta_file.exists(), "Condition must be true"
         with meta_file.open() as f:
             meta = json.load(f)
-        assert meta["snapshot_id"] == snapshot.snapshot_id
+        assert meta["snapshot_id"] == snapshot.snapshot_id, "Condition must be true"
 
     def test_path_validation_symlinks(self, tmp_path):
         """Test path validation with symbolic links."""
@@ -671,25 +671,25 @@ class TestEdgeCases:
         try:
             _validate_path(target, tmp_path)
         except (ValueError, OSError):
-            assert True
+            assert True, "True is not valid"
         else:
-            assert True
+            assert True, "True is not valid"
 
     def test_ingest_with_gitignore_files(self, tmp_path, artifacts_dir):
         """Test ingesting directory with .gitignore."""
         gitignore = tmp_path / ".gitignore"
         gitignore.write_text("*.pyc\n__pycache__")
         snapshot = ingest(tmp_path)
-        assert snapshot.snapshot_id is not None
+        assert snapshot.snapshot_id is not None, "snapshot_id must be initialized"
 
     def test_snapshot_directory_isolation(self, temp_source_file, artifacts_dir):
         """Test that snapshot directories are properly isolated."""
         snapshot1 = ingest(temp_source_file)
         snapshot2 = ingest(temp_source_file)
         # Each snapshot should have unique directory
-        assert snapshot1.snapshot_dir != snapshot2.snapshot_dir
-        assert snapshot1.snapshot_dir.exists()
-        assert snapshot2.snapshot_dir.exists()
+        assert snapshot1.snapshot_dir != snapshot2.snapshot_dir, "snapshot_dir is not valid"
+        assert snapshot1.snapshot_dir.exists(), "Condition must be true"
+        assert snapshot2.snapshot_dir.exists(), "Condition must be true"
 
     def test_snapshot_file_count_accuracy(self, tmp_path, artifacts_dir):
         """Test that snapshot file count is accurate."""
@@ -698,9 +698,9 @@ class TestEdgeCases:
         (tmp_path / "file2.py").write_text("# File 2")
         (tmp_path / "file3.txt").write_text("Text file")
         snapshot = ingest(tmp_path)
-        assert snapshot is not None
+        assert snapshot is not None, "snapshot must be initialized"
         # Check snapshot was created successfully
-        assert snapshot.snapshot_id is not None
+        assert snapshot.snapshot_id is not None, "snapshot_id must be initialized"
 
     def test_ingest_preserves_file_timestamps(self, tmp_path, artifacts_dir):
         """Test that ingest preserves file structure."""
@@ -708,5 +708,5 @@ class TestEdgeCases:
         source_file.write_text("# Original content")
         snapshot = ingest(source_file)
         # Verify snapshot contains the content
-        assert snapshot.snapshot_id is not None
-        assert snapshot.content_hash is not None
+        assert snapshot.snapshot_id is not None, "snapshot_id must be initialized"
+        assert snapshot.content_hash is not None, "content_hash must be initialized"

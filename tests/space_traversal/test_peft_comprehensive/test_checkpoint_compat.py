@@ -44,6 +44,6 @@ def test_load_legacy_checkpoint_without_version(tmp_path):
 
     state, meta = cc.load_checkpoint(path)
 
-    assert state["model_state"] == {"w": 1}
-    assert meta.config_version is None
-    assert meta.dataset_version is None
+    assert state["model_state"] == {"w": 1}, "Condition must be true"
+    assert meta.config_version is None, "config_version is not valid"
+    assert meta.dataset_version is None, "Data must not be empty"

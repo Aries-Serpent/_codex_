@@ -54,7 +54,7 @@ class TestEndToEndWorkflows:
             manager.store_pattern(pattern)
             patterns.append(pattern)
 
-        assert len(manager.stm) == 5
+        assert len(manager.stm) == 5, "Collection must not be empty"
 
         # Consolidate to LTM - patterns need access history for promotion,
         # so newly stored patterns may not be consolidated immediately
@@ -66,7 +66,7 @@ class TestEndToEndWorkflows:
         query = {"compliance": 0.25, "risk": 0.5}
         retrieved = manager.retrieve_similar(query, k=3)
 
-        assert len(retrieved) > 0
+        assert len(retrieved) > 0, "Retrieved must not be empty"
         assert all(hasattr(p, "pattern_id") for p in retrieved)
 
     def test_memory_guided_decision_cache_hit(self):
@@ -90,12 +90,12 @@ class TestEndToEndWorkflows:
         decision = manager.memory_guided_decision(query, confidence_threshold=0.85)
 
         # Should get cached decision
-        assert decision is not None
-        assert decision == "approve"
+        assert decision is not None, "decision must be initialized"
+        assert decision == "approve", "decision is not valid"
 
         # Cache hit rate should increase
         hit_rate = manager.get_cache_hit_rate()
-        assert hit_rate > 0
+        assert hit_rate > 0, "hit_rate must be greater than zero"
 
     def test_memory_guided_decision_cache_miss(self):
         """Test memory-guided decision with cache miss."""
@@ -117,7 +117,7 @@ class TestEndToEndWorkflows:
         decision = manager.memory_guided_decision(query, confidence_threshold=0.9)
 
         # Should miss cache (no confident match)
-        assert decision is None
+        assert decision is None, "decision is not valid"
 
     def test_compression_full_lifecycle(self):
         """Test compression: fit → compress → decompress accuracy."""
@@ -154,7 +154,7 @@ class TestEndToEndWorkflows:
         # Note: compressed size may include metadata so not necessarily smaller in bytes
         assert hasattr(compressed, "compressed_features")
         assert hasattr(compressed, "pattern_id")
-        assert compressed.pattern_id == "test_pattern"
+        assert compressed.pattern_id == "test_pattern", "pattern_id is not valid"
 
         # Decompress
         decompressed = compressor.decompress(compressed)
@@ -162,10 +162,10 @@ class TestEndToEndWorkflows:
         # Verify reconstruction produces a dict with the same keys
         assert isinstance(decompressed, dict)
         for key in test_pattern:
-            assert key in decompressed
+            assert key in decompressed, "Condition must be true"
             # Relaxed tolerance from 0.3 to 0.5 - PCA compression with small training
             # data may have higher reconstruction error
-            assert abs(decompressed[key] - test_pattern[key]) < 0.5
+            assert abs(decompressed[key] - test_pattern[key]) < 0.5, "Condition must be true"
 
     def test_auto_pruning_trigger(self):
         """Test automatic pruning when LTM reaches threshold."""
@@ -192,7 +192,7 @@ class TestEndToEndWorkflows:
         assert hasattr(prune_result, "total_pruned")
         assert isinstance(prune_result.total_pruned, int)
         # LTM should be within capacity
-        assert len(manager.ltm) <= 20
+        assert len(manager.ltm) <= 20, "Collection must not be empty"
 
     def test_cache_health_monitoring_calculation(self):
         """Test cache health metrics calculation."""
@@ -218,19 +218,19 @@ class TestEndToEndWorkflows:
         health = manager.get_cache_health()
 
         # Verify expected metrics present (per actual API)
-        assert "stm_utilization" in health
-        assert "ltm_utilization" in health
-        assert "cache_hit_rate" in health
-        assert "stm_size" in health
-        assert "ltm_size" in health
-        assert "avg_age_hours" in health
-        assert "avg_access_count" in health
-        assert "staleness_score" in health
+        assert "stm_utilization" in health, "Condition must be true"
+        assert "ltm_utilization" in health, "Condition must be true"
+        assert "cache_hit_rate" in health, "Condition must be true"
+        assert "stm_size" in health, "Condition must be true"
+        assert "ltm_size" in health, "Condition must be true"
+        assert "avg_age_hours" in health, "Condition must be true"
+        assert "avg_access_count" in health, "Count must be greater than zero"
+        assert "staleness_score" in health, "Condition must be true"
 
         # Verify reasonable values (utilization is returned as percentage 0-100)
-        assert 0 <= health["stm_utilization"] <= 100.0
-        assert 0 <= health["ltm_utilization"] <= 100.0
-        assert health["stm_size"] == 5
+        assert 0 <= health["stm_utilization"] <= 100.0, "0 is not valid"
+        assert 0 <= health["ltm_utilization"] <= 100.0, "0 is not valid"
+        assert health["stm_size"] == 5, "Condition must be true"
 
     @pytest.mark.skip(
         reason="Integration test requires properly mocked AuditResult objects. "
@@ -253,21 +253,21 @@ class TestEndToEndWorkflows:
         # First assessments (cache misses)
         for i in range(5):
             result = assessor.assess_with_memory(scenarios[i])
-            assert result is not None
+            assert result is not None, "result must be initialized"
 
         # Should have patterns in memory now
-        assert len(assessor.memory_manager.stm) > 0
+        assert len(assessor.memory_manager.stm) > 0, "Collection must not be empty"
 
         # Similar scenarios (potential cache hits)
         similar_scenarios = generate_complex_scenarios(5, seed=43)
         for scenario in similar_scenarios:
             result = assessor.assess_with_memory(scenario)
-            assert result is not None
+            assert result is not None, "result must be initialized"
 
         # Check cache statistics
         stats = assessor.get_statistics()
-        assert "cache_hits" in stats
-        assert "total_assessments" in stats
+        assert "cache_hits" in stats, "Condition must be true"
+        assert "total_assessments" in stats, "Condition must be true"
 
     def test_consolidation_with_compression(self):
         """Test pattern consolidation with compression enabled."""
@@ -336,7 +336,7 @@ class TestEndToEndWorkflows:
         results = manager.retrieve_similar({"f1": 0.5}, k=2)
 
         # Newer pattern might score higher due to temporal decay
-        assert len(results) == 2
+        assert len(results) == 2, "Results must not be empty"
 
     @pytest.mark.skip(
         reason="Integration test requires properly mocked AuditResult objects. "
@@ -365,13 +365,13 @@ class TestEndToEndWorkflows:
                 assessor.memory_manager.consolidate()
 
         # Verify all assessments completed
-        assert len(results) == 50
-        assert all(r is not None for r in results)
+        assert len(results) == 50, "Results must not be empty"
+        assert all(r is not None for r in results), "r must be initialized"
 
         # Check system health
         health = assessor.memory_manager.get_cache_health()
-        assert health["total_patterns"] > 0
+        assert health["total_patterns"] > 0, "Value must be greater than zero"
 
         # Verify some cache hits occurred
         stats = assessor.get_statistics()
-        assert stats["total_assessments"] == 50
+        assert stats["total_assessments"] == 50, "Condition must be true"

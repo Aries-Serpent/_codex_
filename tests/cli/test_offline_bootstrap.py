@@ -28,9 +28,9 @@ def test_track_bootstrap(tmp_path: Path) -> None:
         ]
     )
 
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
     env_path = tmp_path / "env"
-    assert env_path.exists()
+    assert env_path.exists(), "Condition must be true"
     content = env_path.read_text(encoding="utf-8")
-    assert "MLFLOW_TRACKING_URI=file:" in content
-    assert "WANDB_MODE=offline" in content
+    assert "MLFLOW_TRACKING_URI=file:" in content, "Content must not be empty"
+    assert "WANDB_MODE=offline" in content, "Content must not be empty"

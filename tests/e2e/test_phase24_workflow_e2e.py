@@ -28,8 +28,8 @@ def test_end_to_end_dataloaders_split(tmp_path):
         seed=123,
     )
 
-    assert train_loader is not None
-    assert val_loader is not None
+    assert train_loader is not None, "train_loader must be initialized"
+    assert val_loader is not None, "val_loader must be initialized"
 
 
 @pytest.mark.e2e
@@ -47,8 +47,8 @@ def test_end_to_end_validation_path(tmp_path):
         validation_path=str(val_path),
     )
 
-    assert len(train_loader.dataset) == 2
-    assert len(val_loader.dataset) == 1
+    assert len(train_loader.dataset) == 2, "Collection must not be empty"
+    assert len(val_loader.dataset) == 1, "Collection must not be empty"
 
 
 @pytest.mark.e2e
@@ -63,8 +63,8 @@ def test_end_to_end_single_row_no_val(tmp_path):
         _make_tokenizer(torch),
     )
 
-    assert len(train_loader.dataset) == 1
-    assert val_loader is None
+    assert len(train_loader.dataset) == 1, "Collection must not be empty"
+    assert val_loader is None, "val_loader is not valid"
 
 
 @pytest.mark.e2e

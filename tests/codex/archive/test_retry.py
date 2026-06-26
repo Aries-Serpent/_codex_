@@ -18,16 +18,16 @@ class TestRetryConfig:
 
         config = RetryConfig()
 
-        assert config.enabled is True
-        assert config.max_attempts == 5
-        assert config.initial_delay == 1.0
-        assert config.max_delay == 32.0
-        assert config.multiplier == 2.0
-        assert config.jitter == 0.1
-        assert config.seed is None
-        assert ConnectionError in config.transient_exceptions
-        assert TimeoutError in config.transient_exceptions
-        assert OSError in config.transient_exceptions
+        assert config.enabled is True, "enabled is not valid"
+        assert config.max_attempts == 5, "max_attempts is not valid"
+        assert config.initial_delay == 1.0, "initial_delay is not valid"
+        assert config.max_delay == 32.0, "max_delay is not valid"
+        assert config.multiplier == 2.0, "multiplier is not valid"
+        assert config.jitter == 0.1, "jitter is not valid"
+        assert config.seed is None, "seed is not valid"
+        assert ConnectionError in config.transient_exceptions, "Error should be raised or set"
+        assert TimeoutError in config.transient_exceptions, "Error should be raised or set"
+        assert OSError in config.transient_exceptions, "Error should be raised or set"
 
     def test_custom_values(self):
         """Test RetryConfig with custom values."""
@@ -43,9 +43,9 @@ class TestRetryConfig:
             seed=42,
         )
 
-        assert config.enabled is False
-        assert config.max_attempts == 3
-        assert config.seed == 42
+        assert config.enabled is False, "enabled is not valid"
+        assert config.max_attempts == 3, "max_attempts is not valid"
+        assert config.seed == 42, "seed is not valid"
 
     def test_create_rng(self):
         """Test create_rng method."""
@@ -60,7 +60,7 @@ class TestRetryConfig:
         # Both start from same seed, so first value should be same
         val1 = rng.random()
         val2 = rng2.random()
-        assert val1 == val2  # Same seed produces same sequence
+        assert val1 == val2, "val1 is not valid"
 
     def test_frozen(self):
         """Test RetryConfig is frozen (immutable)."""
@@ -83,7 +83,7 @@ class TestCalculateBackoff:
 
         delay = calculate_backoff(1, config=config)
 
-        assert delay == 1.0  # First attempt uses initial delay
+        assert delay == 1.0, "delay is not valid"
 
     def test_exponential_growth(self):
         """Test exponential growth of backoff."""
@@ -104,7 +104,7 @@ class TestCalculateBackoff:
 
         # Attempt 4 would be 8.0, but capped at 5.0
         delay = calculate_backoff(4, config=config)
-        assert delay == 5.0
+        assert delay == 5.0, "delay is not valid"
 
     def test_jitter_applied(self):
         """Test jitter is applied to delay."""
@@ -116,7 +116,7 @@ class TestCalculateBackoff:
         delay = calculate_backoff(1, config=config, rng=rng)
 
         # With 10% jitter on 10.0, delay should be between 9.0 and 11.0
-        assert 9.0 <= delay <= 11.0
+        assert 9.0 <= delay <= 11.0, "0 is not valid"
 
     def test_zero_jitter(self):
         """Test with zero jitter."""
@@ -126,7 +126,7 @@ class TestCalculateBackoff:
 
         delay = calculate_backoff(1, config=config)
 
-        assert delay == 5.0  # Exact value with no jitter
+        assert delay == 5.0, "delay is not valid"
 
 
 class TestRetryWithBackoff:
@@ -143,7 +143,7 @@ class TestRetryWithBackoff:
             return "success"
 
         result = successful_func()
-        assert result == "success"
+        assert result == "success", "Result must not be empty"
 
     def test_decorator_disabled(self):
         """Test decorator when disabled."""
@@ -162,7 +162,7 @@ class TestRetryWithBackoff:
             failing_func()
 
         # Should not retry when disabled
-        assert call_count == 1
+        assert call_count == 1, "Count must be greater than zero"
 
     def test_decorator_default_config(self):
         """Test decorator with default config."""
@@ -173,7 +173,7 @@ class TestRetryWithBackoff:
             return "ok"
 
         result = successful_func()
-        assert result == "ok"
+        assert result == "ok", "Result must not be empty"
 
 
 class TestModuleLevel:
@@ -183,5 +183,5 @@ class TestModuleLevel:
         """Test logger is configured."""
         from codex.archive.retry import logger
 
-        assert logger is not None
-        assert logger.name == "codex.archive.retry"
+        assert logger is not None, "logger must be initialized"
+        assert logger.name == "codex.archive.retry", "name is not valid"

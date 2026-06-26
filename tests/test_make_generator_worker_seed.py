@@ -18,7 +18,7 @@ def test_seed_worker_sets_random_seed(monkeypatch):
     try:
         monkeypatch.setattr(random, "getrandbits", lambda _: 123456)
         seed_worker(0)
-        assert random.random() == pytest.approx(0.8056271362589)
+        assert random.random() == pytest.approx(0.8056271362589), "r is not valid"
     finally:
         random.setstate(original_state)
 
@@ -29,8 +29,8 @@ def test_make_generator_reproducible():
     generator_a = make_generator(9876)
     generator_b = make_generator(9876)
 
-    assert generator_a is not None
-    assert generator_b is not None
+    assert generator_a is not None, "generator_a must be initialized"
+    assert generator_b is not None, "generator_b must be initialized"
 
     seq_a = torch.randint(0, 1000, (3,), generator=generator_a)
     seq_b = torch.randint(0, 1000, (3,), generator=generator_b)

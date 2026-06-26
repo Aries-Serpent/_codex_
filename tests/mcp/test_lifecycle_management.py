@@ -19,9 +19,9 @@ class TestLifecycleManagerBasics:
     def test_initialization(self):
         """Test LifecycleManager initializes correctly."""
         manager = LifecycleManager()
-        assert not manager.is_healthy()
-        assert not manager.is_ready()
-        assert manager.healthz()["status"] == "unhealthy"
+        assert not manager.is_healthy(), "Condition must be true"
+        assert not manager.is_ready(), "Condition must be true"
+        assert manager.healthz()["status"] == "unhealthy", "Condition must be true"
 
     def test_register_startup_hook_validates_callable(self):
         """Test startup hook registration validates callable."""
@@ -48,6 +48,7 @@ class TestStartupSequence:
     """Test startup sequence and initialization."""
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_startup_success(self):
         """Test successful startup sequence."""
         manager = LifecycleManager()
@@ -60,11 +61,12 @@ class TestStartupSequence:
         manager.register_startup_hook(startup_hook)
         await manager.startup()
 
-        assert hook_called
-        assert manager.is_healthy()
-        assert manager.is_ready()
+        assert hook_called, "hook_called is not valid"
+        assert manager.is_healthy(), "Condition must be true"
+        assert manager.is_ready(), "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_startup_async_hook(self):
         """Test async startup hook execution."""
         manager = LifecycleManager()
@@ -78,10 +80,11 @@ class TestStartupSequence:
         manager.register_startup_hook(async_startup_hook)
         await manager.startup()
 
-        assert hook_called
-        assert manager.is_healthy()
+        assert hook_called, "hook_called is not valid"
+        assert manager.is_healthy(), "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_startup_multiple_hooks(self):
         """Test multiple startup hooks execute in order."""
         manager = LifecycleManager()
@@ -105,6 +108,7 @@ class TestStartupSequence:
         assert execution_order == [1, 2, 3]
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_startup_failure_raises(self):
         """Test startup failure raises exception."""
         manager = LifecycleManager()
@@ -117,10 +121,11 @@ class TestStartupSequence:
         with pytest.raises(RuntimeError, match="Startup failed"):
             await manager.startup()
 
-        assert not manager.is_healthy()
-        assert not manager.is_ready()
+        assert not manager.is_healthy(), "Condition must be true"
+        assert not manager.is_ready(), "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_startup_timeout_handling(self):
         """Test startup hook timeout safeguard."""
         manager = LifecycleManager()
@@ -138,6 +143,7 @@ class TestShutdownSequence:
     """Test shutdown sequence and cleanup."""
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_shutdown_success(self):
         """Test successful shutdown sequence."""
         manager = LifecycleManager()
@@ -156,11 +162,12 @@ class TestShutdownSequence:
         await manager.startup()
         await manager.shutdown()
 
-        assert hook_called
-        assert not manager.is_healthy()
-        assert not manager.is_ready()
+        assert hook_called, "hook_called is not valid"
+        assert not manager.is_healthy(), "Condition must be true"
+        assert not manager.is_ready(), "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_shutdown_async_hook(self):
         """Test async shutdown hook execution."""
         manager = LifecycleManager()
@@ -175,9 +182,10 @@ class TestShutdownSequence:
         await manager.startup()
         await manager.shutdown()
 
-        assert hook_called
+        assert hook_called, "hook_called is not valid"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_shutdown_reverse_order(self):
         """Test shutdown hooks execute in reverse order."""
         manager = LifecycleManager()
@@ -203,6 +211,7 @@ class TestShutdownSequence:
         assert execution_order == [3, 2, 1]
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_shutdown_continues_on_error(self):
         """Test shutdown continues even if a hook fails."""
         manager = LifecycleManager()
@@ -221,7 +230,7 @@ class TestShutdownSequence:
         await manager.startup()
         await manager.shutdown()  # Should not raise
 
-        assert hook2_called
+        assert hook2_called, "hook2_called is not valid"
 
 
 class TestResourceManagement:
@@ -235,9 +244,10 @@ class TestResourceManagement:
         manager.register_resource("test_resource", resource)
 
         healthz = manager.healthz()
-        assert healthz["resources"] == 1
+        assert healthz["resources"] == 1, "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_cleanup_sync_close(self):
         """Test cleanup of resources with sync close method."""
         manager = LifecycleManager()
@@ -251,6 +261,7 @@ class TestResourceManagement:
         resource.close.assert_called_once()
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_cleanup_async_close(self):
         """Test cleanup of resources with async close method."""
         manager = LifecycleManager()
@@ -264,6 +275,7 @@ class TestResourceManagement:
         resource.close.assert_called_once()
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_cleanup_multiple_resources(self):
         """Test cleanup of multiple resources."""
         manager = LifecycleManager()
@@ -283,6 +295,7 @@ class TestResourceManagement:
         resource2.close.assert_called_once()
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_cleanup_handles_errors(self):
         """Test cleanup handles individual resource errors gracefully."""
         manager = LifecycleManager()
@@ -312,11 +325,12 @@ class TestHealthChecks:
 
         health = manager.healthz()
 
-        assert health["status"] == "unhealthy"
-        assert health["ready"] is False
-        assert health["resources"] == 0
+        assert health["status"] == "unhealthy", "Condition must be true"
+        assert health["ready"] is False, "Condition must be true"
+        assert health["resources"] == 0, "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_healthz_after_startup(self):
         """Test health check after successful startup."""
         manager = LifecycleManager()
@@ -324,10 +338,11 @@ class TestHealthChecks:
         await manager.startup()
         health = manager.healthz()
 
-        assert health["status"] == "healthy"
-        assert health["ready"] is True
+        assert health["status"] == "healthy", "Condition must be true"
+        assert health["ready"] is True, "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_healthz_after_shutdown(self):
         """Test health check after shutdown."""
         manager = LifecycleManager()
@@ -336,37 +351,39 @@ class TestHealthChecks:
         await manager.shutdown()
         health = manager.healthz()
 
-        assert health["status"] == "unhealthy"
-        assert health["ready"] is False
+        assert health["status"] == "unhealthy", "Condition must be true"
+        assert health["ready"] is False, "Condition must be true"
 
     def test_is_healthy_states(self):
         """Test is_healthy() in different states."""
         manager = LifecycleManager()
 
-        assert not manager.is_healthy()  # Before startup
+        assert not manager.is_healthy(), "Condition must be true"
 
     def test_is_ready_states(self):
         """Test is_ready() in different states."""
         manager = LifecycleManager()
 
-        assert not manager.is_ready()  # Before startup
+        assert not manager.is_ready(), "Condition must be true"
 
 
 class TestEdgeCases:
     """Test edge cases and error scenarios."""
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_empty_hooks(self):
         """Test lifecycle with no hooks registered."""
         manager = LifecycleManager()
 
         await manager.startup()
-        assert manager.is_healthy()
+        assert manager.is_healthy(), "Condition must be true"
 
         await manager.shutdown()
-        assert not manager.is_healthy()
+        assert not manager.is_healthy(), "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_double_startup_raises(self):
         """Test calling startup twice fails appropriately."""
         manager = LifecycleManager()
@@ -388,19 +405,21 @@ class TestEdgeCases:
             await manager.startup()
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_shutdown_before_startup(self):
         """Test shutdown can be called before startup."""
         manager = LifecycleManager()
 
         # Should handle gracefully
         await manager.shutdown()
-        assert not manager.is_healthy()
+        assert not manager.is_healthy(), "Condition must be true"
 
 
 class TestAdditionalLifecycleScenarios:
     """Additional edge case and integration tests for lifecycle management."""
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_concurrent_startup_calls(self):
         """Test behavior when startup is called concurrently."""
         manager = LifecycleManager()
@@ -419,9 +438,10 @@ class TestAdditionalLifecycleScenarios:
         # At least one should succeed, others should fail or be idempotent
         assert any(not isinstance(r, Exception) for r in results)
         # Hook should only be called once due to safeguards
-        assert hook_call_count >= 1
+        assert hook_call_count >= 1, "hook_call_count must be positive"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_resource_cleanup_order(self):
         """Test that resources are cleaned up in reverse registration order."""
         manager = LifecycleManager()
@@ -450,6 +470,7 @@ class TestAdditionalLifecycleScenarios:
         assert cleanup_order == ["resource3", "resource2", "resource1"]
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_health_check_timeout_protection(self):
         """Test that health check has timeout protection."""
         manager = LifecycleManager()
@@ -466,10 +487,11 @@ class TestAdditionalLifecycleScenarios:
         health = manager.healthz()
         elapsed = asyncio.get_event_loop().time() - start
 
-        assert elapsed < 5.0  # Should complete within timeout
-        assert "status" in health
+        assert elapsed < 5.0, "elapsed is not valid"
+        assert "status" in health, "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_partial_shutdown_recovery(self):
         """Test recovery when shutdown partially fails."""
         manager = LifecycleManager()
@@ -489,9 +511,10 @@ class TestAdditionalLifecycleScenarios:
         await manager.shutdown()
 
         # Should still mark as unhealthy
-        assert not manager.is_healthy()
+        assert not manager.is_healthy(), "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_graceful_degradation(self):
         """Test graceful degradation when non-critical components fail."""
         manager = LifecycleManager()
@@ -511,7 +534,7 @@ class TestAdditionalLifecycleScenarios:
         try:
             await manager.startup()
             # If startup succeeds, system is resilient
-            assert manager.is_ready()
+            assert manager.is_ready(), "Condition must be true"
         except RuntimeError:
             # If it fails, verify it's due to expected error
             # and system handles it appropriately
@@ -519,4 +542,4 @@ class TestAdditionalLifecycleScenarios:
 
         health = manager.healthz()
         # Health check should indicate system state
-        assert "status" in health
+        assert "status" in health, "Condition must be true"

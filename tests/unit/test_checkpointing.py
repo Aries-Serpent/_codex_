@@ -25,27 +25,27 @@ class TestCheckpointCore:
         """Test checkpoint_core can be imported."""
         from codex_ml.checkpointing import checkpoint_core
 
-        assert checkpoint_core is not None
+        assert checkpoint_core is not None, "checkpoint_core must be initialized"
 
     def test_save_checkpoint_import(self):
         """Test save_checkpoint function can be imported."""
         from codex_ml.checkpointing.checkpoint_core import save_checkpoint
 
-        assert save_checkpoint is not None
-        assert callable(save_checkpoint)
+        assert save_checkpoint is not None, "save_checkpoint must be initialized"
+        assert callable(save_checkpoint), "Condition must be true"
 
     def test_load_checkpoint_import(self):
         """Test load_checkpoint function can be imported."""
         from codex_ml.checkpointing.checkpoint_core import load_checkpoint
 
-        assert load_checkpoint is not None
-        assert callable(load_checkpoint)
+        assert load_checkpoint is not None, "load_checkpoint must be initialized"
+        assert callable(load_checkpoint), "Condition must be true"
 
     def test_schema_version_exists(self):
         """Test SCHEMA_VERSION constant exists."""
         from codex_ml.checkpointing.checkpoint_core import SCHEMA_VERSION
 
-        assert SCHEMA_VERSION is not None
+        assert SCHEMA_VERSION is not None, "SCHEMA_VERSION must be initialized"
         assert isinstance(SCHEMA_VERSION, str)
 
     def test_schema_version_format(self):
@@ -54,8 +54,8 @@ class TestCheckpointCore:
 
         # Should be something like "2.0"
         parts = SCHEMA_VERSION.split(".")
-        assert len(parts) >= 1
-        assert parts[0].isdigit()
+        assert len(parts) >= 1, "Parts must not be empty"
+        assert parts[0].isdigit(), "Condition must be true"
 
 
 class TestSaveCheckpoint:
@@ -71,7 +71,7 @@ class TestSaveCheckpoint:
             try:
                 save_checkpoint(tmpdir, state={"param": 1}, meta={"epoch": 1})
             except RuntimeError as e:
-                assert "PyTorch" in str(e)
+                assert "PyTorch" in str(e), "Condition must be true"
 
     def test_save_checkpoint_creates_directory(self):
         """Test save_checkpoint creates output directory."""
@@ -85,7 +85,7 @@ class TestSaveCheckpoint:
 
             try:
                 save_checkpoint(str(out_dir), state={"param": 1}, meta={"epoch": 1})
-                assert out_dir.exists()
+                assert out_dir.exists(), "Condition must be true"
             except RuntimeError:
                 pytest.skip("PyTorch not available")
 
@@ -100,7 +100,7 @@ class TestSaveCheckpoint:
             try:
                 save_checkpoint(tmpdir, state={"param": 1}, meta={"epoch": 1})
                 weights_file = Path(tmpdir) / "weights.pt"
-                assert weights_file.exists()
+                assert weights_file.exists(), "Condition must be true"
             except RuntimeError:
                 pytest.skip("PyTorch not available")
 
@@ -115,13 +115,13 @@ class TestSaveCheckpoint:
             try:
                 save_checkpoint(tmpdir, state={"param": 1}, meta={"epoch": 1, "step": 100})
                 metadata_file = Path(tmpdir) / "metadata.json"
-                assert metadata_file.exists()
+                assert metadata_file.exists(), "Data must not be empty"
 
                 # Check metadata content
                 with open(metadata_file) as f:
                     meta = json.load(f)
-                    assert "epoch" in meta
-                    assert "_schema_version" in meta
+                    assert "epoch" in meta, "Condition must be true"
+                    assert "_schema_version" in meta, "Condition must be true"
             except RuntimeError:
                 pytest.skip("PyTorch not available")
 
@@ -155,7 +155,7 @@ class TestLoadCheckpoint:
                 # Load
                 state, _meta = load_checkpoint(tmpdir)
 
-                assert "state" in state or "param" in state
+                assert "state" in state or "param" in state, "Condition must be true"
             except (RuntimeError, FileNotFoundError):
                 pytest.skip("PyTorch not available or checkpoint not created")
 
@@ -172,8 +172,8 @@ class TestCheckpointUtils:
 
             _ensure_dir(str(new_dir))
 
-            assert new_dir.exists()
-            assert new_dir.is_dir()
+            assert new_dir.exists(), "Condition must be true"
+            assert new_dir.is_dir(), "Condition must be true"
 
     def test_ensure_dir_idempotent(self):
         """Test _ensure_dir is idempotent."""
@@ -184,7 +184,7 @@ class TestCheckpointUtils:
             _ensure_dir(tmpdir)
             _ensure_dir(tmpdir)
 
-            assert Path(tmpdir).exists()
+            assert Path(tmpdir).exists(), "Condition must be true"
 
 
 class TestCheckpointSchema:
@@ -207,7 +207,7 @@ class TestCheckpointSchema:
                 metadata_file = Path(tmpdir) / "metadata.json"
                 with open(metadata_file) as f:
                     meta = json.load(f)
-                    assert meta.get("_schema_version") == SCHEMA_VERSION
+                    assert meta.get("_schema_version") == SCHEMA_VERSION, "Condition must be true"
             except RuntimeError:
                 pytest.skip("PyTorch not available")
 
@@ -225,9 +225,9 @@ class TestCheckpointSchema:
                 metadata_file = Path(tmpdir) / "metadata.json"
                 with open(metadata_file) as f:
                     meta = json.load(f)
-                    assert "_created_at" in meta
+                    assert "_created_at" in meta, "Condition must be true"
                     # Should be ISO format timestamp
-                    assert "T" in meta["_created_at"]
+                    assert "T" in meta["_created_at"], "Condition must be true"
             except RuntimeError:
                 pytest.skip("PyTorch not available")
 
@@ -239,7 +239,7 @@ class TestCheckpointCompat:
         """Test compat module can be imported."""
         from codex_ml.checkpointing import compat
 
-        assert compat is not None
+        assert compat is not None, "compat must be initialized"
 
     def test_compat_has_migration_functions(self):
         """Test compat module has expected migration functions."""

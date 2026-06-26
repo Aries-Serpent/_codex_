@@ -19,7 +19,7 @@ def test_timed_decorator():
         return 42
 
     result = slow_function()
-    assert result == 42
+    assert result == 42, "Result must not be empty"
 
 
 def test_file_cache_basic(tmp_path: Path):
@@ -31,11 +31,11 @@ def test_file_cache_basic(tmp_path: Path):
     # Set and get
     cache.set("key1", {"data": "value"})
     result = cache.get("key1")
-    assert result == {"data": "value"}
+    assert result == {"data": "value"}, "Result must not be empty"
 
     # Miss
     result = cache.get("nonexistent")
-    assert result is None
+    assert result is None, "Result must not be empty"
 
 
 @pytest.mark.flaky(reruns=2, reason="P2-timing: TTL precision on loaded CI runners")
@@ -51,14 +51,14 @@ def test_file_cache_expiry(tmp_path: Path):
 
     # Should still be valid
     result = cache.get("key1")
-    assert result == "value"
+    assert result == "value", "Result must not be empty"
 
     # STABILIZATION V2: Increase sleep from 1.1s to 2.0s to guarantee expiry
     # even on slow CI runners where clock granularity or system load may cause delays.
     # Added buffer (1s) to account for worst-case scheduling delays.
     time.sleep(2.0)
     result = cache.get("key1")
-    assert result is None
+    assert result is None, "Result must not be empty"
 
 
 def test_file_cache_invalidate(tmp_path: Path):
@@ -68,11 +68,11 @@ def test_file_cache_invalidate(tmp_path: Path):
     cache = FileCache(tmp_path / "cache")
 
     cache.set("key1", "value")
-    assert cache.get("key1") == "value"
+    assert cache.get("key1") == "value", "Value must be initialized"
 
-    assert cache.invalidate("key1") is True
-    assert cache.get("key1") is None
-    assert cache.invalidate("key1") is False  # Already gone
+    assert cache.invalidate("key1") is True, "Condition must be true"
+    assert cache.get("key1") is None, "Condition must be true"
+    assert cache.invalidate("key1") is False, "Condition must be true"
 
 
 def test_file_cache_clear(tmp_path: Path):
@@ -86,9 +86,9 @@ def test_file_cache_clear(tmp_path: Path):
     cache.set("key3", "value3")
 
     count = cache.clear()
-    assert count == 3
-    assert cache.get("key1") is None
-    assert cache.get("key2") is None
+    assert count == 3, "Count must be greater than zero"
+    assert cache.get("key1") is None, "Condition must be true"
+    assert cache.get("key2") is None, "Condition must be true"
 
 
 @pytest.mark.flaky(reruns=2, reason="P2-timing: TTL precision on loaded CI runners")
@@ -109,8 +109,8 @@ def test_file_cache_cleanup_expired(tmp_path: Path):
     time.sleep(2.0)
 
     count = cache.cleanup_expired()
-    assert count == 1
-    assert cache.get("valid") == "new"
+    assert count == 1, "Count must be greater than zero"
+    assert cache.get("valid") == "new", "Condition must be true"
 
 
 def test_batch_file_read(tmp_path: Path):
@@ -131,9 +131,9 @@ def test_batch_file_read(tmp_path: Path):
 
     results = batch_file_read(paths)
 
-    assert len(results) == 3
-    assert results[str(tmp_path / "file1.txt")] == "content1"
-    assert results[str(tmp_path / "file2.txt")] == "content2"
+    assert len(results) == 3, "Results must not be empty"
+    assert results[str(tmp_path / "file1.txt")] == "content1", "Result must not be empty"
+    assert results[str(tmp_path / "file2.txt")] == "content2", "Result must not be empty"
 
 
 def test_batch_file_read_size_limit(tmp_path: Path):
@@ -149,8 +149,8 @@ def test_batch_file_read_size_limit(tmp_path: Path):
     # With small max_size, large file should be skipped
     results = batch_file_read(paths, max_size=100)
 
-    assert len(results) == 1
-    assert str(tmp_path / "small.txt") in results
+    assert len(results) == 1, "Results must not be empty"
+    assert str(tmp_path / "small.txt") in results, "Result must not be empty"
 
 
 def test_performance_metrics():
@@ -169,10 +169,10 @@ def test_performance_metrics():
 
     summary = metrics.summary()
 
-    assert summary["count"] == 2
-    assert "stage1" in summary["stages"]
-    assert "stage2" in summary["stages"]
-    assert summary["total_seconds"] > 0.1
+    assert summary["count"] == 2, "Count must be greater than zero"
+    assert "stage1" in summary["stages"], "Condition must be true"
+    assert "stage2" in summary["stages"], "Condition must be true"
+    assert summary["total_seconds"] > 0.1, "Value must be greater than zero"
 
 
 def test_performance_metrics_record():
@@ -186,9 +186,9 @@ def test_performance_metrics_record():
 
     summary = metrics.summary()
 
-    assert summary["stages"]["stage1"] == 1.5
-    assert summary["stages"]["stage2"] == 2.0
-    assert summary["total_seconds"] == 3.5
+    assert summary["stages"]["stage1"] == 1.5, "Condition must be true"
+    assert summary["stages"]["stage2"] == 2.0, "Condition must be true"
+    assert summary["total_seconds"] == 3.5, "Condition must be true"
 
 
 def test_performance_metrics_to_json(tmp_path: Path):
@@ -202,12 +202,12 @@ def test_performance_metrics_to_json(tmp_path: Path):
     output_path = tmp_path / "metrics.json"
     metrics.to_json(output_path)
 
-    assert output_path.exists()
+    assert output_path.exists(), "Condition must be true"
 
     data = json.loads(output_path.read_text())
-    assert "metrics" in data
-    assert "summary" in data
-    assert len(data["metrics"]) == 2
+    assert "metrics" in data, "Data must not be empty"
+    assert "summary" in data, "Data must not be empty"
+    assert len(data["metrics"]) == 2, "Collection must not be empty"
 
 
 @pytest.mark.flaky(reruns=2, reason="P2-timing: context manager measurement precision")
@@ -222,12 +222,12 @@ def test_profile_stage_context_manager():
         time.sleep(0.05)
 
     summary = metrics.summary()
-    assert "my_stage" in summary["stages"]
+    assert "my_stage" in summary["stages"], "Condition must be true"
     # STABILIZATION V2: Relax assertion from >= 0.04 to >= 0.03
     # to account for scheduler variability and measurement overhead on loaded CI runners
     # where timing measurement may be slightly under the wall-clock sleep due to
     # scheduler delays or context switching overhead.
-    assert summary["stages"]["my_stage"] >= 0.03
+    assert summary["stages"]["my_stage"] >= 0.03, "Value must be greater than zero"
 
 
 def test_memoize():
@@ -243,18 +243,18 @@ def test_memoize():
 
     # First call
     result1 = expensive_function(1, 2)
-    assert result1 == 3
-    assert call_count[0] == 1
+    assert result1 == 3, "Result must not be empty"
+    assert call_count[0] == 1, "Count must be greater than zero"
 
     # Second call with same args - should use cache
     result2 = expensive_function(1, 2)
-    assert result2 == 3
-    assert call_count[0] == 1  # No new call
+    assert result2 == 3, "Result must not be empty"
+    assert call_count[0] == 1, "Count must be greater than zero"
 
     # Call with different args
     result3 = expensive_function(2, 3)
-    assert result3 == 5
-    assert call_count[0] == 2
+    assert result3 == 5, "Result must not be empty"
+    assert call_count[0] == 2, "Count must be greater than zero"
 
 
 def test_chunked():
@@ -264,16 +264,16 @@ def test_chunked():
     items = list(range(10))
 
     chunks = chunked(items, 3)
-    assert len(chunks) == 4
+    assert len(chunks) == 4, "Chunks must not be empty"
     assert chunks[0] == [0, 1, 2]
     assert chunks[1] == [3, 4, 5]
     assert chunks[2] == [6, 7, 8]
-    assert chunks[3] == [9]
+    assert chunks[3] == [9], "Condition must be true"
 
     # Single chunk
     chunks = chunked(items, 20)
-    assert len(chunks) == 1
-    assert chunks[0] == items
+    assert len(chunks) == 1, "Chunks must not be empty"
+    assert chunks[0] == items, "Item must not be empty"
 
 
 def test_performance_metrics_empty():
@@ -283,6 +283,6 @@ def test_performance_metrics_empty():
     metrics = PerformanceMetrics()
     summary = metrics.summary()
 
-    assert summary["total_seconds"] == 0
-    assert summary["count"] == 0
-    assert summary["stages"] == {}
+    assert summary["total_seconds"] == 0, "Condition must be true"
+    assert summary["count"] == 0, "Count must be greater than zero"
+    assert summary["stages"] == {}, "Condition must be true"

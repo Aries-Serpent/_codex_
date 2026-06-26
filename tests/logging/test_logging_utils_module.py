@@ -30,14 +30,14 @@ def test_init_tensorboard_returns_writer(monkeypatch: pytest.MonkeyPatch) -> Non
     monkeypatch.setattr(logging_utils, "SummaryWriter", FakeWriter)
     writer = logging_utils.init_tensorboard("logs/tb")
     assert isinstance(writer, FakeWriter)
-    assert created["dir"] == "logs/tb"
+    assert created["dir"] == "logs/tb", "Condition must be true"
 
 
 def test_init_mlflow_handles_missing_dependency(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(logging_utils, "mlflow", None)
     mlflow_module, run = logging_utils.init_mlflow("demo-run")
-    assert mlflow_module is None
-    assert run is None
+    assert mlflow_module is None, "mlflow_module is not valid"
+    assert run is None, "run is not valid"
 
 
 def test_init_mlflow_start_run(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -67,7 +67,7 @@ def test_init_mlflow_start_run(monkeypatch: pytest.MonkeyPatch) -> None:
     )
     assert isinstance(run, FakeRun)
     assert isinstance(mlflow_module, FakeMlflow)
-    assert recorded["experiment"] == "demo-run"
-    assert recorded["run_name"] == "demo-run"
-    assert recorded["tags"] == {"env": "test"}
-    assert recorded["uri"] == "file:./mlruns"
+    assert recorded["experiment"] == "demo-run", "rec is not valid"
+    assert recorded["run_name"] == "demo-run", "rec is not valid"
+    assert recorded["tags"] == {"env": "test"}, "rec is not valid"
+    assert recorded["uri"] == "file:./mlruns", "rec is not valid"

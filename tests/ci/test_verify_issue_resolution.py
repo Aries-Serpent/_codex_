@@ -88,24 +88,24 @@ def _fake_run(*, status: str = "completed", conclusion: str = "success") -> dict
 
 def test_parse_issue_url():
     owner, repo, kind, num = vir.parse_url("https://github.com/Aries-Serpent/_codex_/issues/3951")
-    assert owner == "Aries-Serpent"
-    assert repo == "_codex_"
-    assert kind == "issue"
-    assert num == "3951"
+    assert owner == "Aries-Serpent", "owner is not valid"
+    assert repo == "_codex_", "repo is not valid"
+    assert kind == "issue", "kind is not valid"
+    assert num == "3951", "num is not valid"
 
 
 def test_parse_pr_url():
     _owner, _repo, kind, num = vir.parse_url("https://github.com/Aries-Serpent/_codex_/pull/3954")
-    assert kind == "pr"
-    assert num == "3954"
+    assert kind == "pr", "kind is not valid"
+    assert num == "3954", "num is not valid"
 
 
 def test_parse_run_url():
     _owner, _repo, kind, num = vir.parse_url(
         "https://github.com/Aries-Serpent/_codex_/actions/runs/99999"
     )
-    assert kind == "run"
-    assert num == "99999"
+    assert kind == "run", "kind is not valid"
+    assert num == "99999", "num is not valid"
 
 
 def test_parse_invalid_url_raises():
@@ -115,7 +115,7 @@ def test_parse_invalid_url_raises():
 
 def test_build_url_issue():
     url = vir.build_url("Aries-Serpent", "_codex_", "issue", 3951)
-    assert url == "https://github.com/Aries-Serpent/_codex_/issues/3951"
+    assert url == "https://github.com/Aries-Serpent/_codex_/issues/3951", "url is not valid"
 
 
 # ── Issue verifier ────────────────────────────────────────────────────────────
@@ -129,9 +129,9 @@ def test_verify_issue_closed():
         ]
         result = vir.verify_issue("Aries-Serpent", "_codex_", 3951, token=None)
 
-    assert result.status == Status.RESOLVED
-    assert "closed" in result.reason.lower()
-    assert result.resolved is True
+    assert result.status == Status.RESOLVED, "Result must not be empty"
+    assert "closed" in result.reason.lower(), "Result must not be empty"
+    assert result.resolved is True, "Result must not be empty"
 
 
 def test_verify_issue_open_no_fix():
@@ -142,8 +142,8 @@ def test_verify_issue_open_no_fix():
         mock_api.return_value = _fake_issue(state="open")
         result = vir.verify_issue("Aries-Serpent", "_codex_", 3951, token=None)
 
-    assert result.status == Status.UNRESOLVED
-    assert result.resolved is False
+    assert result.status == Status.UNRESOLVED, "Result must not be empty"
+    assert result.resolved is False, "Result must not be empty"
 
 
 def test_verify_issue_open_with_merged_linked_pr():
@@ -165,15 +165,15 @@ def test_verify_issue_open_with_merged_linked_pr():
     ):
         result = vir.verify_issue("Aries-Serpent", "_codex_", 3951, token=None)
 
-    assert result.status == Status.RESOLVED
-    assert "merged pr" in result.reason.lower()
+    assert result.status == Status.RESOLVED, "Result must not be empty"
+    assert "merged pr" in result.reason.lower(), "Result must not be empty"
 
 
 def test_verify_issue_api_error_returns_unknown():
     with patch.object(vir, "_api_safe", return_value=None):
         result = vir.verify_issue("Aries-Serpent", "_codex_", 9999, token=None)
 
-    assert result.status == Status.UNKNOWN
+    assert result.status == Status.UNKNOWN, "Result must not be empty"
 
 
 # ── PR verifier ───────────────────────────────────────────────────────────────
@@ -186,16 +186,16 @@ def test_verify_pr_merged():
     ):
         result = vir.verify_pr("Aries-Serpent", "_codex_", 3954, token=None)
 
-    assert result.status == Status.RESOLVED
-    assert result.resolved is True
+    assert result.status == Status.RESOLVED, "Result must not be empty"
+    assert result.resolved is True, "Result must not be empty"
 
 
 def test_verify_pr_conflict():
     with patch.object(vir, "_api_safe", return_value=_fake_pr(mergeable_state="dirty")):
         result = vir.verify_pr("Aries-Serpent", "_codex_", 3954, token=None)
 
-    assert result.status == Status.CONFLICTED
-    assert result.resolved is False
+    assert result.status == Status.CONFLICTED, "Result must not be empty"
+    assert result.resolved is False, "Result must not be empty"
 
 
 def test_verify_pr_blocked_by_ci():
@@ -214,8 +214,8 @@ def test_verify_pr_blocked_by_ci():
         with patch.object(vir, "_check_required_ci", return_value=ci_summary):
             result = vir.verify_pr("Aries-Serpent", "_codex_", 3954, token=None)
 
-    assert result.status == Status.BLOCKED
-    assert result.resolved is False
+    assert result.status == Status.BLOCKED, "Result must not be empty"
+    assert result.resolved is False, "Result must not be empty"
 
 
 def test_verify_pr_clean_all_pass():
@@ -234,8 +234,8 @@ def test_verify_pr_clean_all_pass():
         with patch.object(vir, "_check_required_ci", return_value=ci_summary):
             result = vir.verify_pr("Aries-Serpent", "_codex_", 3954, token=None)
 
-    assert result.status == Status.READY
-    assert result.resolved is True
+    assert result.status == Status.READY, "Result must not be empty"
+    assert result.resolved is True, "Result must not be empty"
 
 
 def test_verify_pr_pending_ci():
@@ -254,8 +254,8 @@ def test_verify_pr_pending_ci():
         with patch.object(vir, "_check_required_ci", return_value=ci_summary):
             result = vir.verify_pr("Aries-Serpent", "_codex_", 3954, token=None)
 
-    assert result.status == Status.IN_PROGRESS
-    assert result.resolved is False
+    assert result.status == Status.IN_PROGRESS, "Result must not be empty"
+    assert result.resolved is False, "Result must not be empty"
 
 
 # ── Workflow run verifier ─────────────────────────────────────────────────────
@@ -265,16 +265,16 @@ def test_verify_run_success():
     with patch.object(vir, "_api_safe", return_value=_fake_run(conclusion="success")):
         result = vir.verify_run("Aries-Serpent", "_codex_", 12345, token=None)
 
-    assert result.status == Status.RESOLVED
-    assert result.resolved is True
+    assert result.status == Status.RESOLVED, "Result must not be empty"
+    assert result.resolved is True, "Result must not be empty"
 
 
 def test_verify_run_failure():
     with patch.object(vir, "_api_safe", return_value=_fake_run(conclusion="failure")):
         result = vir.verify_run("Aries-Serpent", "_codex_", 12345, token=None)
 
-    assert result.status == Status.UNRESOLVED
-    assert result.resolved is False
+    assert result.status == Status.UNRESOLVED, "Result must not be empty"
+    assert result.resolved is False, "Result must not be empty"
 
 
 def test_verify_run_in_progress():
@@ -283,15 +283,15 @@ def test_verify_run_in_progress():
     ):
         result = vir.verify_run("Aries-Serpent", "_codex_", 12345, token=None)
 
-    assert result.status == Status.IN_PROGRESS
-    assert result.resolved is False
+    assert result.status == Status.IN_PROGRESS, "Result must not be empty"
+    assert result.resolved is False, "Result must not be empty"
 
 
 def test_verify_run_action_required():
     with patch.object(vir, "_api_safe", return_value=_fake_run(conclusion="action_required")):
         result = vir.verify_run("Aries-Serpent", "_codex_", 12345, token=None)
 
-    assert result.status == Status.BLOCKED
+    assert result.status == Status.BLOCKED, "Result must not be empty"
 
 
 # ── verify_all integration ────────────────────────────────────────────────────
@@ -316,14 +316,14 @@ def test_verify_all_mixed_urls():
             ]
         )
 
-    assert len(results) == 2
-    assert all(r.resolved for r in results)
+    assert len(results) == 2, "Results must not be empty"
+    assert all(r.resolved for r in results), "Result must not be empty"
 
 
 def test_verify_all_invalid_url_returns_unknown():
     results = vir.verify_all(["https://example.com/not-github"])
-    assert len(results) == 1
-    assert results[0].status == Status.UNKNOWN
+    assert len(results) == 1, "Results must not be empty"
+    assert results[0].status == Status.UNKNOWN, "Result must not be empty"
 
 
 # ── Output formatters ─────────────────────────────────────────────────────────
@@ -341,8 +341,8 @@ def test_format_text_all_resolved():
         )
     ]
     text = vir.format_text(results)
-    assert "RESOLVED" in text
-    assert "ALL RESOLVED" in text
+    assert "RESOLVED" in text, "Condition must be true"
+    assert "ALL RESOLVED" in text, "Condition must be true"
 
 
 def test_format_text_unresolved():
@@ -357,7 +357,7 @@ def test_format_text_unresolved():
         )
     ]
     text = vir.format_text(results)
-    assert "UNRESOLVED" in text
+    assert "UNRESOLVED" in text, "Condition must be true"
 
 
 def test_format_markdown_contains_table():
@@ -372,9 +372,9 @@ def test_format_markdown_contains_table():
         )
     ]
     md = vir.format_markdown(results)
-    assert "|" in md  # has a table
-    assert "RESOLVED" in md
-    assert "All issues verified resolved" in md
+    assert "|" in md, "Condition must be true"
+    assert "RESOLVED" in md, "Condition must be true"
+    assert "All issues verified resolved" in md, "All is not valid"
 
 
 # ── VerificationResult serialisation ─────────────────────────────────────────
@@ -391,11 +391,11 @@ def test_result_to_dict_roundtrip():
         details=["detail1"],
     )
     d = r.to_dict()
-    assert d["resolved"] is True
-    assert d["status"] == "RESOLVED"
-    assert d["kind"] == "issue"
+    assert d["resolved"] is True, "Condition must be true"
+    assert d["status"] == "RESOLVED", "Condition must be true"
+    assert d["kind"] == "issue", "Condition must be true"
     # Roundtrip through JSON
-    assert json.loads(json.dumps(d))["number"] == 3951
+    assert json.loads(json.dumps(d))["number"] == 3951, "Condition must be true"
 
 
 # ── CLI tests ─────────────────────────────────────────────────────────────────
@@ -404,7 +404,7 @@ def test_result_to_dict_roundtrip():
 def test_cli_no_args_exits_nonzero():
     with pytest.raises(SystemExit) as exc_info:
         vir.main([])
-    assert exc_info.value.code != 0
+    assert exc_info.value.code != 0, "Value must be initialized"
 
 
 def test_cli_resolved_issue_exits_0():
@@ -420,7 +420,7 @@ def test_cli_resolved_issue_exits_0():
                 "Aries-Serpent/_codex_",
             ]
         )
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
 
 
 def test_cli_unresolved_issue_exits_1():
@@ -436,7 +436,7 @@ def test_cli_unresolved_issue_exits_1():
                 "Aries-Serpent/_codex_",
             ]
         )
-    assert rc == 1
+    assert rc == 1, "rc is not valid"
 
 
 def test_cli_json_output(capsys):
@@ -456,8 +456,8 @@ def test_cli_json_output(capsys):
     captured = capsys.readouterr()
     data = json.loads(captured.out)
     assert isinstance(data, list)
-    assert data[0]["resolved"] is True
-    assert rc == 0
+    assert data[0]["resolved"] is True, "Data must not be empty"
+    assert rc == 0, "rc is not valid"
 
 
 def test_cli_allow_in_progress():
@@ -473,4 +473,4 @@ def test_cli_allow_in_progress():
                 "--allow-in-progress",
             ]
         )
-    assert rc == 0
+    assert rc == 0, "rc is not valid"

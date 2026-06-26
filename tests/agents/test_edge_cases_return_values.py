@@ -61,7 +61,7 @@ class TestMemoryEntryReturnValues:
             "related_memories",
         ]
         for field in required_fields:
-            assert field in result
+            assert field in result, "Result must not be empty"
 
     def test_memory_entry_to_dict_preserves_values(self) -> None:
         """Test to_dict preserves all values correctly."""
@@ -78,14 +78,14 @@ class TestMemoryEntryReturnValues:
 
         result = entry.to_dict()
 
-        assert result["memory_id"] == "id123"
-        assert result["category"] == "decision"
-        assert result["content"] == "Made decision X"
-        assert result["context"] == {"scenario": "complex"}
-        assert result["confidence"] == 0.92
-        assert result["access_count"] == 17
+        assert result["memory_id"] == "id123", "Result must not be empty"
+        assert result["category"] == "decision", "Result must not be empty"
+        assert result["content"] == "Made decision X", "Result must not be empty"
+        assert result["context"] == {"scenario": "complex"}, "Result must not be empty"
+        assert result["confidence"] == 0.92, "Result must not be empty"
+        assert result["access_count"] == 17, "Result must not be empty"
         assert result["tags"] == ["important", "decision"]
-        assert result["related_memories"] == ["prev_decision"]
+        assert result["related_memories"] == ["prev_decision"], "Result must not be empty"
 
     def test_memory_entry_to_dict_json_serializable(self) -> None:
         """Test to_dict output is JSON serializable."""
@@ -104,7 +104,7 @@ class TestMemoryEntryReturnValues:
 
         # Should be deserializable back
         deserialized = json.loads(json_str)
-        assert deserialized["memory_id"] == "test"
+        assert deserialized["memory_id"] == "test", "Condition must be true"
 
     def test_memory_entry_from_dict_returns_entry_type(self) -> None:
         """Test from_dict returns MemoryEntry instance."""
@@ -124,7 +124,7 @@ class TestMemoryEntryReturnValues:
         result = MemoryEntry.from_dict(data)
 
         assert isinstance(result, MemoryEntry)
-        assert result.memory_id == "test"
+        assert result.memory_id == "test", "Result must not be empty"
 
     def test_memory_entry_from_dict_all_fields_populated(self) -> None:
         """Test from_dict populates all fields."""
@@ -143,14 +143,14 @@ class TestMemoryEntryReturnValues:
 
         result = MemoryEntry.from_dict(data)
 
-        assert result.memory_id == "test_id"
-        assert result.category == "test_cat"
-        assert result.content == "test_content"
-        assert result.context == {"test_key": "test_value"}
-        assert result.confidence == 0.75
-        assert result.access_count == 10
-        assert result.last_accessed == "2025-01-01T12:00:00"
-        assert result.created_at == "2025-01-01T10:00:00"
+        assert result.memory_id == "test_id", "Result must not be empty"
+        assert result.category == "test_cat", "Result must not be empty"
+        assert result.content == "test_content", "Result must not be empty"
+        assert result.context == {"test_key": "test_value"}, "Result must not be empty"
+        assert result.confidence == 0.75, "Result must not be empty"
+        assert result.access_count == 10, "Result must not be empty"
+        assert result.last_accessed == "2025-01-01T12:00:00", "Result must not be empty"
+        assert result.created_at == "2025-01-01T10:00:00", "Result must not be empty"
         assert result.tags == ["tag1", "tag2", "tag3"]
         assert result.related_memories == ["mem1", "mem2"]
 
@@ -192,7 +192,7 @@ class TestContextFrameReturnValues:
             "errors_encountered",
         ]
         for field in required_fields:
-            assert field in result
+            assert field in result, "Result must not be empty"
 
     def test_context_frame_to_dict_preserves_values(self) -> None:
         """Test to_dict preserves all values."""
@@ -215,17 +215,17 @@ class TestContextFrameReturnValues:
 
         result = frame.to_dict()
 
-        assert result["frame_id"] == "frame_test"
-        assert result["task_description"] == "Complex task"
-        assert result["start_time"] == start
-        assert result["end_time"] == end
-        assert result["status"] == "completed"
-        assert result["repository"] == "repo/name"
-        assert result["branch"] == "main"
+        assert result["frame_id"] == "frame_test", "Result must not be empty"
+        assert result["task_description"] == "Complex task", "Result must not be empty"
+        assert result["start_time"] == start, "Result must not be empty"
+        assert result["end_time"] == end, "Result must not be empty"
+        assert result["status"] == "completed", "Result must not be empty"
+        assert result["repository"] == "repo/name", "Result must not be empty"
+        assert result["branch"] == "main", "Result must not be empty"
         assert result["files_modified"] == ["file1.py", "file2.py"]
-        assert result["tokens_used"] == 250
-        assert result["actions_taken"] == 10
-        assert result["errors_encountered"] == 2
+        assert result["tokens_used"] == 250, "Result must not be empty"
+        assert result["actions_taken"] == 10, "Result must not be empty"
+        assert result["errors_encountered"] == 2, "Result must not be empty"
 
     def test_context_frame_to_dict_json_serializable(self) -> None:
         """Test to_dict output is JSON serializable."""
@@ -241,7 +241,7 @@ class TestContextFrameReturnValues:
         assert isinstance(json_str, str)
 
         deserialized = json.loads(json_str)
-        assert deserialized["frame_id"] == "test"
+        assert deserialized["frame_id"] == "test", "Condition must be true"
 
     def test_context_frame_empty_lists_return_empty(self) -> None:
         """Test empty lists return as empty lists, not None."""
@@ -253,10 +253,10 @@ class TestContextFrameReturnValues:
 
         result = frame.to_dict()
 
-        assert result["active_memories"] == []
-        assert result["decisions_made"] == []
-        assert result["lessons_learned"] == []
-        assert result["files_modified"] == []
+        assert result["active_memories"] == [], "Result must not be empty"
+        assert result["decisions_made"] == [], "Result must not be empty"
+        assert result["lessons_learned"] == [], "Result must not be empty"
+        assert result["files_modified"] == [], "Result must not be empty"
         assert isinstance(result["active_memories"], list)
         assert isinstance(result["decisions_made"], list)
 
@@ -273,9 +273,9 @@ class TestContextFrameReturnValues:
 
         result = frame.to_dict()
 
-        assert result["end_time"] is None
-        assert result["repository"] is None
-        assert result["branch"] is None
+        assert result["end_time"] is None, "Result must not be empty"
+        assert result["repository"] is None, "Result must not be empty"
+        assert result["branch"] is None, "Result must not be empty"
 
 
 class TestPatternLibraryReturnValues:
@@ -315,13 +315,13 @@ class TestPatternLibraryReturnValues:
 
         result = lib.match_patterns("authentication required")
 
-        assert len(result) > 0
+        assert len(result) > 0, "Result must not be empty"
         match = result[0]
 
         # Check match structure
-        assert "pattern" in match
-        assert "match_score" in match
-        assert "trigger_matches" in match
+        assert "pattern" in match, "Condition must be true"
+        assert "match_score" in match, "Condition must be true"
+        assert "trigger_matches" in match, "Condition must be true"
 
     def test_match_patterns_empty_returns_empty_list(self) -> None:
         """Test match_patterns with no matches returns empty list."""
@@ -340,7 +340,7 @@ class TestPatternLibraryReturnValues:
         result = lib.match_patterns("completely unrelated text")
 
         assert isinstance(result, list)
-        assert len(result) == 0
+        assert len(result) == 0, "Result must not be empty"
 
     def test_match_patterns_sorted_by_score(self) -> None:
         """Test match_patterns results are sorted by score."""
@@ -393,8 +393,8 @@ class TestPatternLibraryReturnValues:
         result = lib.to_dict()
 
         assert isinstance(result, dict)
-        assert "patterns" in result
-        assert "pattern_index" in result
+        assert "patterns" in result, "Result must not be empty"
+        assert "pattern_index" in result, "Result must not be empty"
 
     def test_pattern_library_from_dict_returns_library(self) -> None:
         """Test from_dict returns PatternLibrary instance."""
@@ -419,7 +419,7 @@ class TestPatternLibraryReturnValues:
         result = PatternLibrary.from_dict(data)
 
         assert isinstance(result, PatternLibrary)
-        assert "p1" in result.patterns
+        assert "p1" in result.patterns, "Result must not be empty"
 
 
 class TestAgentMemoryReturnValues:
@@ -442,11 +442,11 @@ class TestAgentMemoryReturnValues:
         result = memory.retrieve_memory("test")
         assert isinstance(result, MemoryEntry) or result is None
         if result:
-            assert result.memory_id == "test"
+            assert result.memory_id == "test", "Result must not be empty"
 
         # Non-existent entry
         result = memory.retrieve_memory("nonexistent")
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_retrieve_memory_preserves_all_fields(self, tmp_path: Path) -> None:
         """Test retrieve_memory returns entry with all fields."""
@@ -467,15 +467,15 @@ class TestAgentMemoryReturnValues:
 
         result = memory.retrieve_memory("complete")
 
-        assert result is not None
-        assert result.memory_id == "complete"
-        assert result.category == "test"
-        assert result.content == "test content"
+        assert result is not None, "result must be initialized"
+        assert result.memory_id == "complete", "Result must not be empty"
+        assert result.category == "test", "Result must not be empty"
+        assert result.content == "test content", "Result must not be empty"
         assert result.context == {"key": "value", "nested": {"deep": "value"}}
-        assert result.confidence == 0.87
-        assert result.access_count == 5
+        assert result.confidence == 0.87, "Result must not be empty"
+        assert result.access_count == 5, "Result must not be empty"
         assert result.tags == ["tag1", "tag2"]
-        assert result.related_memories == ["mem1"]
+        assert result.related_memories == ["mem1"], "Result must not be empty"
 
     def test_retrieve_memories_by_category_returns_list(self, tmp_path: Path) -> None:
         """Test search returns list."""
@@ -516,7 +516,7 @@ class TestAgentMemoryReturnValues:
 
         # Verify it was stored
         retrieved = memory.retrieve_memory("test")
-        assert retrieved is not None
+        assert retrieved is not None, "retrieved must be initialized"
 
 
 class TestSerializationOutputValidation:
@@ -553,7 +553,7 @@ class TestSerializationOutputValidation:
 
         # Timestamps should be ISO format strings
         assert isinstance(data["start_time"], str)
-        assert "T" in data["start_time"]  # ISO format contains T
+        assert "T" in data["start_time"], "Data must not be empty"
 
     def test_pattern_library_pattern_format(self) -> None:
         """Test PatternLibrary pattern format consistency."""
@@ -594,9 +594,9 @@ class TestOutputValidationEdgeCases:
 
         data = entry.to_dict()
 
-        assert data["memory_id"] == ""
-        assert data["category"] == ""
-        assert data["content"] == ""
+        assert data["memory_id"] == "", "Data must not be empty"
+        assert data["category"] == "", "Data must not be empty"
+        assert data["content"] == "", "Data must not be empty"
 
     def test_to_dict_with_special_characters(self) -> None:
         """Test to_dict with special characters."""
@@ -609,9 +609,9 @@ class TestOutputValidationEdgeCases:
 
         data = entry.to_dict()
 
-        assert data["memory_id"] == "id_with_special!@#$%"
-        assert '"quotes"' in data["content"]
-        assert "apostrophes" in data["content"]
+        assert data["memory_id"] == "id_with_special!@, "Data must not be empty"
+        assert '"quotes"' in data["content"], "Data must not be empty"
+        assert "apostrophes" in data["content"], "Data must not be empty"
 
     def test_to_dict_with_unicode(self) -> None:
         """Test to_dict with unicode characters."""
@@ -624,9 +624,9 @@ class TestOutputValidationEdgeCases:
 
         data = entry.to_dict()
 
-        assert "你好世界" in data["content"]
-        assert "🌍" in data["content"]
-        assert "🎉" in data["context"]["emoji"]
+        assert "你好世界" in data["content"], "Data must not be empty"
+        assert "🌍" in data["content"], "Data must not be empty"
+        assert "🎉" in data["context"]["emoji"], "Data must not be empty"
 
     def test_list_return_values_preserve_order(self) -> None:
         """Test list return values preserve insertion order."""
@@ -649,4 +649,4 @@ class TestOutputValidationEdgeCases:
         # Patterns should be in dictionary
         pattern_ids = list(data["patterns"].keys())
         # Verify we got all patterns
-        assert len(pattern_ids) == 10
+        assert len(pattern_ids) == 10, "Pattern_ids must not be empty"

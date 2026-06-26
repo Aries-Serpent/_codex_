@@ -32,9 +32,9 @@ from codex_ml.cli import config
 )
 def test_audit_defaults_passes_when_self_position_matches(mode: str, text: str) -> None:
     code, payload = config._audit_defaults(text, mode=mode)
-    assert code == 0
-    assert payload["ok"] is True
-    assert payload["_self_"] is True
+    assert code == 0, "code is not valid"
+    assert payload["ok"] is True, "Condition must be true"
+    assert payload["_self_"] is True, "Condition must be true"
 
 
 def test_audit_defaults_flags_missing_self_entry() -> None:
@@ -43,8 +43,8 @@ def test_audit_defaults_flags_missing_self_entry() -> None:
           - trainer: base
         """)
     code, payload = config._audit_defaults(text, mode="first")
-    assert code == 3
-    assert payload == {
+    assert code == 3, "code is not valid"
+    assert payload == {, "payload is not valid"
         "_self_": False,
         "position": None,
         "ok": False,
@@ -59,10 +59,10 @@ def test_audit_defaults_detects_out_of_order_self_marker() -> None:
           - _self_
         """)
     code, payload = config._audit_defaults(text, mode="first")
-    assert code == 4
-    assert payload["_self_"] is True
-    assert payload["position"] == 1
-    assert payload["ok"] is False
+    assert code == 4, "code is not valid"
+    assert payload["_self_"] is True, "Condition must be true"
+    assert payload["position"] == 1, "Condition must be true"
+    assert payload["ok"] is False, "Condition must be true"
 
 
 def test_extract_defaults_from_text_handles_plain_yaml_block() -> None:
@@ -85,5 +85,5 @@ def test_extract_defaults_from_text_handles_plain_yaml_block() -> None:
 )
 def test_audit_defaults_exposes_unresolved_references(text: str) -> None:
     code, payload = config._audit_defaults(text, mode="last")
-    assert code != 0
-    assert payload["unresolved_refs"] is True
+    assert code != 0, "code is not valid"
+    assert payload["unresolved_refs"] is True, "Condition must be true"

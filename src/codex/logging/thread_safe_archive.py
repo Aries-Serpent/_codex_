@@ -213,7 +213,7 @@ class ArchiveSessionGuard:
                     results[sid] = success
                 except (ValueError, TypeError, RuntimeError) as e:
                     error_type = type(e).__name__
-                    logger.error(f"Parallel archive exception: <ERROR_TYPE>")
+                    logger.error("Parallel archive exception: <ERROR_TYPE>")
                     results[futures[future]] = False
 
         return results

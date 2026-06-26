@@ -85,7 +85,7 @@ python3 scripts/security/token_encryption_tool.py
 **Example output**:
 
 ```
-🔐 _CODEX_ TOKEN ENCRYPTION TOOL v2.0
+🔐 _CODEX_ TOKEN ENCRYPTION TOOL v2.0  # pragma: allowlist secret
 ⚡ Energy: 5/5 | 🧠 Security Mode Active
 ================================================================================
 
@@ -93,15 +93,15 @@ Enter GitHub token: ghp_PLACEHOLDER_EXAMPLE_TOKEN  # pragma: allowlist secret
 
 ✅ Encryption complete!
 
-📋 COPY THESE VALUES TO GITHUB SECRETS:
+📋 COPY THESE VALUES TO GITHUB SECRETS:  # pragma: allowlist secret
 
 🥇 RECOMMENDED - Base64 Encoding:
-   Secret Name:  CODEX_GHP_TOKEN_BASE64
-   Secret Value: Z2hwX3h4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4
+   Secret Name:  CODEX_GHP_TOKEN_BASE64  # pragma: allowlist secret
+   Secret Value: Z2hwX3h4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4  # pragma: allowlist secret
 
 🔐 MOST SECURE - AES-256-GCM Encryption:
-   Secret Name: CODEX_GHP_TOKEN_AES_KEY
-   Secret Value: dGVzdGtleXZhbHVlZm9yZGVtb25zdHJhdGlvbnB1cnBvc2VzMTIz
+   Secret Name: CODEX_GHP_TOKEN_AES_KEY  # pragma: allowlist secret
+   Secret Value: dGVzdGtleXZhbHVlZm9yZGVtb25zdHJhdGlvbnB1cnBvc2VzMTIz  # pragma: allowlist secret
    ...
 ```
 
@@ -324,10 +324,10 @@ python3 scripts/security/token_encryption_tool.py
 
 | Metric | Current | Target | Status |
 |--------|---------|--------|--------|
-| Token Encryption Method | AES-256-GCM | AES-256-GCM | 🟢 |
-| Token Rotation Frequency | 90 iterations | 90 iterations | 🟢 |
+| Token Encryption Method | AES-256-GCM | AES-256-GCM | 🟢 | <!-- pragma: allowlist secret -->
+| Token Rotation Frequency | 90 iterations | 90 iterations | 🟢 | <!-- pragma: allowlist secret -->
 | Plaintext Exposure | 0 instances | 0 instances | 🟢 |
-| Secret Validation | SHA-256 | SHA-256 | 🟢 |
+| Secret Validation | SHA-256 | SHA-256 | 🟢 | <!-- pragma: allowlist secret -->
 | Setup Completion Time | 30-45 min | <60 min | 🟢 |
 
 ---
@@ -336,8 +336,8 @@ python3 scripts/security/token_encryption_tool.py
 
 | Principle | Application | Implementation |
 |-----------|-------------|----------------|
-| Path 🛤️ | Clear progression from token generation to secure storage | 5-phase setup: Generate → Encrypt → Configure → Verify → Cleanup |
-| Fields 🔄 | Token transformation from plaintext to encrypted state | Multiple encoding layers: Plaintext → AES-256-GCM → Base64 → GitHub Secret |
+| Path 🛤️ | Clear progression from token generation to secure storage | 5-phase setup: Generate → Encrypt → Configure → Verify → Cleanup | <!-- pragma: allowlist secret -->
+| Fields 🔄 | Token transformation from plaintext to encrypted state | Multiple encoding layers: Plaintext → AES-256-GCM → Base64 → GitHub Secret | <!-- pragma: allowlist secret -->
 | Patterns 👁️ | Recognition of security best practices | SHA-256 verification, expiration dates, automated rotation reminders |
 | Redundancy 🔀 | Fallback encryption methods if primary fails | Fallback chain: AES-256-GCM → Base64 → Hex → Manual entry |
 | Balance ⚖️ | Security strength vs operational usability | Military-grade encryption with automated setup scripts |
@@ -348,9 +348,9 @@ python3 scripts/security/token_encryption_tool.py
 
 | Phase | Energy | Rationale |
 |-------|--------|-----------|
-| Token Generation | ⚡⚡⚡⚡⚡ | Foundation - incorrect scopes render system non-functional |
-| Encryption Process | ⚡⚡⚡⚡⚡ | Critical - protects token from compromise |
-| Secret Configuration | ⚡⚡⚡⚡ | High priority - enables retrieval by automation |
+| Token Generation | ⚡⚡⚡⚡⚡ | Foundation - incorrect scopes render system non-functional | <!-- pragma: allowlist secret -->
+| Encryption Process | ⚡⚡⚡⚡⚡ | Critical - protects token from compromise | <!-- pragma: allowlist secret -->
+| Secret Configuration | ⚡⚡⚡⚡ | High priority - enables retrieval by automation | <!-- pragma: allowlist secret -->
 | Verification Testing | ⚡⚡⚡⚡ | Essential - confirms end-to-end functionality |
 | Security Cleanup | ⚡⚡⚡⚡⚡ | Critical - eliminates plaintext exposure vectors |
 

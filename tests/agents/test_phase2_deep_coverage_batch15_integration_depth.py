@@ -45,7 +45,7 @@ class TestIntegration_CompleteWorkflows:
 
         # Retrieve and validate
         stored = memory.retrieve_memory("last_decision")
-        assert stored is not None
+        assert stored is not None, "stored must be initialized"
 
     def test_mental_map_workflow_integration(self):
         """Test mental mapping workflow with memory integration"""
@@ -78,8 +78,8 @@ class TestIntegration_CompleteWorkflows:
         memory.store_memory(key="graph_metrics", value=str(metrics))
 
         # Verify
-        assert metrics["num_nodes"] == 3
-        assert metrics["num_edges"] == 2
+        assert metrics["num_nodes"] == 3, "Condition must be true"
+        assert metrics["num_edges"] == 2, "Condition must be true"
 
     def test_quantum_game_with_orchestrator(self):
         """Test quantum game theory integrated with physics orchestrator"""
@@ -99,8 +99,8 @@ class TestIntegration_CompleteWorkflows:
         payoff = engine.expected_payoff(TeamType.BLUE)
 
         # Both components should work together
-        assert payoff is not None
-        assert orchestrator is not None
+        assert payoff is not None, "payoff must be initialized"
+        assert orchestrator is not None, "orchestrator must be initialized"
 
     def test_developer_orchestrator_complete_pipeline(self):
         """Test complete code generation and validation pipeline"""
@@ -131,7 +131,7 @@ class TestIntegration_CompleteWorkflows:
         memory.store_memory(key="validation_result", value=str(is_valid))
 
         # Verify workflow completed
-        assert code is not None
+        assert code is not None, "code must be initialized"
         assert isinstance(code, str)
 
     def test_workflow_navigator_with_memory(self):
@@ -162,7 +162,7 @@ class TestIntegration_CompleteWorkflows:
 
         # Verify - retrieve_memory with key returns the value directly
         retrieved = memory.retrieve_memory(key="current_step")
-        assert retrieved == "Initialize"
+        assert retrieved == "Initialize", "retrieved is not valid"
 
 
 class TestIntegration_DataFlow:
@@ -187,7 +187,7 @@ class TestIntegration_DataFlow:
 
         # Retrieve
         stored = memory.retrieve_memory("hamiltonian_shape")
-        assert stored is not None
+        assert stored is not None, "stored must be initialized"
 
     def test_data_flow_graph_to_quantum(self):
         """Test data flowing from graph analysis to quantum game"""
@@ -208,7 +208,7 @@ class TestIntegration_DataFlow:
         probabilities = np.array([1.0 / num_nodes] * num_nodes)
         state = StrategyState("derived", probabilities)
 
-        assert state is not None
+        assert state is not None, "state must be initialized"
 
     def test_data_flow_memory_to_workflow(self):
         """Test data flowing from memory to workflow navigation"""
@@ -231,7 +231,7 @@ class TestIntegration_DataFlow:
         workflow_id = navigator.create_workflow("stored_workflow", steps)
 
         # Workflow has a steps attribute
-        assert len(navigator.workflows[workflow_id].steps) == 3
+        assert len(navigator.workflows[workflow_id].steps) == 3, "Collection must not be empty"
 
 
 class TestIntegration_StateManagement:
@@ -251,7 +251,7 @@ class TestIntegration_StateManagement:
         quantum_state = QuantumGameState(blue, red, entanglement_strength=energy_state.entropy)
 
         # States should be related
-        assert quantum_state.entanglement_strength == energy_state.entropy
+        assert quantum_state.entanglement_strength == energy_state.entropy, "entanglement_strength is not valid"
 
     def test_state_persistence_memory_workflow(self):
         """Test state persistence through memory"""
@@ -278,7 +278,7 @@ class TestIntegration_StateManagement:
         stored_index = int(memory.retrieve_memory(key="step_index"))
 
         # State should be restorable
-        assert stored_index == 1
+        assert stored_index == 1, "stored_index is not valid"
 
 
 class TestIntegration_MultiModuleChains:
@@ -340,7 +340,7 @@ class TestIntegration_MultiModuleChains:
 
         # Data cycled through both modules
         final_metrics = model.calculate_metrics()
-        assert final_metrics["num_nodes"] > metrics["num_nodes"]
+        assert final_metrics["num_nodes"] > metrics["num_nodes"], "Value must be greater than zero"
 
 
 class TestIntegration_ParameterPropagation:
@@ -360,8 +360,8 @@ class TestIntegration_ParameterPropagation:
         channel = FluidChannel("pipe", cross_section=1.0, length=10.0)
 
         # Temperature could influence calculations
-        assert temp == 300.0
-        assert channel is not None
+        assert temp == 300.0, "temp is not valid"
+        assert channel is not None, "channel must be initialized"
 
     def test_energy_conservation_across_modules(self):
         """Test energy conservation principle across modules"""
@@ -375,7 +375,7 @@ class TestIntegration_ParameterPropagation:
         evolver.harmonic_hamiltonian(q=1.0, p=0.5, omega=1.0)
 
         # Energy should be conserved (in principle)
-        assert initial.energy == 100.0
+        assert initial.energy == 100.0, "energy is not valid"
 
 
 class TestIntegration_ErrorRecovery:
@@ -394,7 +394,7 @@ class TestIntegration_ErrorRecovery:
 
         # System should continue working
         node = model.create_node(NodeType.PROBLEM, {"recovered": True})
-        assert node is not None
+        assert node is not None, "node must be initialized"
 
     def test_recovery_from_graph_error(self):
         """Test recovery from graph operation errors"""
@@ -406,11 +406,11 @@ class TestIntegration_ErrorRecovery:
 
         # Try invalid path search
         path = model.shortest_path("invalid1", "invalid2")
-        assert path is None
+        assert path is None, "path is not valid"
 
         # System should continue
         memory.store_memory(key="recovery", value="successful")
-        assert memory.retrieve_memory(key="recovery") == "successful"
+        assert memory.retrieve_memory(key="recovery") == "successful", "mem is not valid"
 
 
 class TestIntegration_PerformanceScaling:
@@ -438,8 +438,8 @@ class TestIntegration_PerformanceScaling:
 
         # Operations should still work
         metrics = model.calculate_metrics()
-        assert metrics["num_nodes"] == 50
-        assert metrics["num_edges"] == 49
+        assert metrics["num_nodes"] == 50, "Condition must be true"
+        assert metrics["num_edges"] == 49, "Condition must be true"
 
     def test_many_memory_operations(self):
         """Test many memory store/retrieve operations"""
@@ -454,7 +454,7 @@ class TestIntegration_PerformanceScaling:
         # Retrieve some — use key= kwarg so retrieve_memory returns content str
         for i in range(0, 100, 10):
             result = memory.retrieve_memory(key=f"key{i}")
-            assert result == f"value{i}"
+            assert result == f"value{i}", "Result must not be empty"
 
     def test_complex_workflow_scaling(self):
         """Test workflow with many steps"""
@@ -472,8 +472,8 @@ class TestIntegration_PerformanceScaling:
             navigator.next_step()
 
         current = navigator.current_step()
-        assert current is not None
-        assert current.id == "step50"
+        assert current is not None, "current must be initialized"
+        assert current.id == "step50", "id is not valid"
 
 
 if __name__ == "__main__":

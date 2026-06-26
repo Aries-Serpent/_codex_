@@ -32,10 +32,10 @@ def hello():
         groups = detector.scan()
 
         # Should find one normalized duplicate
-        assert len(groups) == 1
-        assert len(groups[0].member_files) == 2
-        assert groups[0].type == "normalized-file"
-        assert "formatting-difference" in groups[0].tags
+        assert len(groups) == 1, "Groups must not be empty"
+        assert len(groups[0].member_files) == 2, "Collection must not be empty"
+        assert groups[0].type == "normalized-file", "type is not valid"
+        assert "formatting-difference" in groups[0].tags, "Condition must be true"
 
 
 def test_normalized_detector_ignores_whitespace():
@@ -64,8 +64,8 @@ def test_normalized_detector_ignores_whitespace():
         groups = detector.scan()
 
         # Should find one normalized duplicate
-        assert len(groups) == 1
-        assert len(groups[0].member_files) == 2
+        assert len(groups) == 1, "Groups must not be empty"
+        assert len(groups[0].member_files) == 2, "Collection must not be empty"
 
 
 def test_normalized_detector_javascript_comments():
@@ -98,9 +98,9 @@ function hello() {
         groups = detector.scan()
 
         # Should find one normalized duplicate
-        assert len(groups) == 1
-        assert len(groups[0].member_files) == 2
-        assert groups[0].language == "javascript"
+        assert len(groups) == 1, "Groups must not be empty"
+        assert len(groups[0].member_files) == 2, "Collection must not be empty"
+        assert groups[0].language == "javascript", "language is not valid"
 
 
 def test_normalized_detector_different_logic_not_matched():
@@ -127,7 +127,7 @@ def test_normalized_detector_different_logic_not_matched():
         groups = detector.scan()
 
         # Should find no duplicates
-        assert len(groups) == 0
+        assert len(groups) == 0, "Groups must not be empty"
 
 
 def test_normalized_detector_skips_exact_duplicates():
@@ -150,7 +150,7 @@ def test_normalized_detector_skips_exact_duplicates():
         groups = detector.scan()
 
         # Should find no duplicates (these are exact, not just normalized)
-        assert len(groups) == 0
+        assert len(groups) == 0, "Groups must not be empty"
 
 
 def test_python_normalizer_removes_docstrings():
@@ -172,7 +172,7 @@ def test_python_normalizer_removes_docstrings():
     normalized2 = normalizer.normalize(code_without_docstring)
 
     # Both should normalize to the same thing
-    assert normalized1 == normalized2
+    assert normalized1 == normalized2, "normalized1 is not valid"
 
 
 def test_javascript_normalizer_removes_multiline_comments():
@@ -197,7 +197,7 @@ def test_javascript_normalizer_removes_multiline_comments():
     normalized2 = normalizer.normalize(code_without_comment)
 
     # Both should normalize to the same thing
-    assert normalized1 == normalized2
+    assert normalized1 == normalized2, "normalized1 is not valid"
 
 
 def test_normalized_detector_handles_empty_files():
@@ -219,7 +219,7 @@ def test_normalized_detector_handles_empty_files():
         groups = detector.scan()
 
         # Empty files should not create groups
-        assert len(groups) == 0
+        assert len(groups) == 0, "Groups must not be empty"
 
 
 if __name__ == "__main__":

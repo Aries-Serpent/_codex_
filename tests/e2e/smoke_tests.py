@@ -23,7 +23,7 @@ class TestServiceStartup:
         # This test verifies the service is accessible
         # In production, this would be replaced with actual HTTP calls
         # For now, we verify the test infrastructure itself works
-        assert True
+        assert True, "True is not valid"
 
 
 class TestHealthEndpoints:
@@ -42,10 +42,10 @@ class TestHealthEndpoints:
     def test_health_endpoint_format(self, mock_health_response):
         """Verify health endpoint returns correct format."""
         response = mock_health_response
-        assert "service" in response
-        assert "status" in response
+        assert "service" in response, "Response must not be empty"
+        assert "status" in response, "Response must not be empty"
         assert response["status"] in ["ok", "degraded"]
-        assert "adapter" in response
+        assert "adapter" in response, "Response must not be empty"
 
     def test_mcp_health_endpoint_format(self):
         """Verify MCP health endpoint returns correct format."""
@@ -54,7 +54,7 @@ class TestHealthEndpoints:
             "adapter": "mock",
             "adapter_status": {"status": "ok"},
         }
-        assert "status" in response
+        assert "status" in response, "Response must not be empty"
         assert response["status"] in ["ok", "degraded"]
 
     def test_health_response_time(self):
@@ -63,7 +63,7 @@ class TestHealthEndpoints:
         # Simulate health check response
         elapsed_ms = (time.time() - start_time) * 1000
         # In real scenario, this would be < 500ms
-        assert elapsed_ms < 5000  # Relaxed for test environment
+        assert elapsed_ms < 5000, "elapsed_ms is not valid"
 
 
 class TestAuthenticationFlow:
@@ -78,9 +78,9 @@ class TestAuthenticationFlow:
             "created_at": time.time(),
             "expires_at": time.time() + 86400,
         }
-        assert "user_id" in session
-        assert "session_id" in session
-        assert session["expires_at"] > session["created_at"]
+        assert "user_id" in session, "Condition must be true"
+        assert "session_id" in session, "Condition must be true"
+        assert session["expires_at"] > session["created_at"], "Value must be greater than zero"
 
     def test_session_cookie_format(self):
         """Verify session cookies are properly formatted."""
@@ -92,8 +92,8 @@ class TestAuthenticationFlow:
             "secure": True,
             "samesite": "Strict",
         }
-        assert cookie["httponly"] is True
-        assert cookie["secure"] is True
+        assert cookie["httponly"] is True, "Condition must be true"
+        assert cookie["secure"] is True, "Condition must be true"
         assert cookie["samesite"] in ["Strict", "Lax", "None"]
 
     def test_authenticated_request_format(self):
@@ -104,8 +104,8 @@ class TestAuthenticationFlow:
             "headers": {"Authorization": "******"},
             "cookies": {"session_id": "sess_abc123"},
         }
-        assert "headers" in request
-        assert "cookies" in request
+        assert "headers" in request, "Condition must be true"
+        assert "cookies" in request, "Condition must be true"
 
 
 class TestAPIRequestProcessing:
@@ -119,10 +119,10 @@ class TestAPIRequestProcessing:
             "params": {"query": "test query"},
             "id": 1,
         }
-        assert request["jsonrpc"] == "2.0"
-        assert "method" in request
-        assert "params" in request
-        assert "id" in request
+        assert request["jsonrpc"] == "2.0", "Condition must be true"
+        assert "method" in request, "Condition must be true"
+        assert "params" in request, "Condition must be true"
+        assert "id" in request, "Condition must be true"
 
     def test_jsonrpc_response_format(self):
         """Verify JSON-RPC responses have correct format."""
@@ -131,9 +131,9 @@ class TestAPIRequestProcessing:
             "result": {"success": True, "data": []},
             "id": 1,
         }
-        assert response["jsonrpc"] == "2.0"
-        assert "result" in response or "error" in response
-        assert response["id"] == 1
+        assert response["jsonrpc"] == "2.0", "Response must not be empty"
+        assert "result" in response or "error" in response, "Response must not be empty"
+        assert response["id"] == 1, "Response must not be empty"
 
     def test_jsonrpc_error_response_format(self):
         """Verify JSON-RPC error responses have correct format."""
@@ -146,10 +146,10 @@ class TestAPIRequestProcessing:
             },
             "id": 1,
         }
-        assert response["jsonrpc"] == "2.0"
-        assert "error" in response
-        assert "code" in response["error"]
-        assert "message" in response["error"]
+        assert response["jsonrpc"] == "2.0", "Response must not be empty"
+        assert "error" in response, "Response must not be empty"
+        assert "code" in response["error"], "Response must not be empty"
+        assert "message" in response["error"], "Response must not be empty"
 
     def test_api_response_latency(self):
         """Verify API responses complete within acceptable time."""
@@ -157,7 +157,7 @@ class TestAPIRequestProcessing:
         # Simulate API response
         elapsed_ms = (time.time() - start_time) * 1000
         # In real scenario, this would be < 3000ms
-        assert elapsed_ms < 10000  # Relaxed for test environment
+        assert elapsed_ms < 10000, "elapsed_ms is not valid"
 
 
 class TestErrorHandling:
@@ -173,8 +173,8 @@ class TestErrorHandling:
             },
             "id": None,
         }
-        assert "error" in error_response
-        assert error_response["error"]["code"] == -32600
+        assert "error" in error_response, "Response must not be empty"
+        assert error_response["error"]["code"] == -32600, "Response must not be empty"
 
     def test_error_response_includes_details(self):
         """Verify error responses include helpful details."""
@@ -187,8 +187,8 @@ class TestErrorHandling:
             },
             "id": 1,
         }
-        assert "data" in error_response["error"]
-        assert "reason" in error_response["error"]["data"]
+        assert "data" in error_response["error"], "Response must not be empty"
+        assert "reason" in error_response["error"]["data"], "Response must not be empty"
 
     def test_service_continues_after_error(self):
         """Verify service remains operational after handling errors."""
@@ -199,14 +199,14 @@ class TestErrorHandling:
             if i % 2 == 0:
                 error_count += 1
             # Service should still be operational
-            assert True
+            assert True, "True is not valid"
 
     def test_timeout_handling(self):
         """Verify timeout handling works correctly."""
         request = {"timeout_seconds": 30}
         response = {"status": "ok", "duration_ms": 25000}
         # Request completed within timeout
-        assert response["duration_ms"] < request["timeout_seconds"] * 1000
+        assert response["duration_ms"] < request["timeout_seconds"] * 1000, "Response must not be empty"
 
 
 class TestMetricsAndObservability:
@@ -219,7 +219,7 @@ class TestMetricsAndObservability:
             "requests_success": 95,
             "requests_error": 5,
         }
-        assert metrics["requests_total"] > 0
+        assert metrics["requests_total"] > 0, "Value must be greater than zero"
         assert metrics["requests_success"] + metrics["requests_error"] == metrics["requests_total"]
 
     def test_latency_metrics_format(self):
@@ -229,8 +229,8 @@ class TestMetricsAndObservability:
             "p95": 250,
             "p99": 500,
         }
-        assert latency_metrics["p50"] <= latency_metrics["p95"]
-        assert latency_metrics["p95"] <= latency_metrics["p99"]
+        assert latency_metrics["p50"] <= latency_metrics["p95"], "Condition must be true"
+        assert latency_metrics["p95"] <= latency_metrics["p99"], "Condition must be true"
 
     def test_request_id_propagation(self):
         """Verify request IDs are properly propagated."""
@@ -239,7 +239,7 @@ class TestMetricsAndObservability:
             "headers": {"X-Request-Id": request_id},
             "body": {},
         }
-        assert response["headers"]["X-Request-Id"] == request_id
+        assert response["headers"]["X-Request-Id"] == request_id, "Response must not be empty"
 
     def test_trace_context_propagation(self):
         """Verify trace context is propagated correctly."""
@@ -250,9 +250,9 @@ class TestMetricsAndObservability:
             "span_id": span_id,
             "trace_flags": "01",
         }
-        assert "trace_id" in context
-        assert "span_id" in context
-        assert "trace_flags" in context
+        assert "trace_id" in context, "Condition must be true"
+        assert "span_id" in context, "Condition must be true"
+        assert "trace_flags" in context, "Condition must be true"
 
 
 class TestDataPersistence:
@@ -266,8 +266,8 @@ class TestDataPersistence:
             "content": "test data",
             "version": "1.0",
         }
-        assert "id" in stored_data
-        assert "timestamp" in stored_data
+        assert "id" in stored_data, "Data must not be empty"
+        assert "timestamp" in stored_data, "Data must not be empty"
         assert isinstance(stored_data["timestamp"], float)
 
     def test_data_retrieval_format(self):
@@ -278,16 +278,16 @@ class TestDataPersistence:
             "content": "test data",
             "version": "1.0",
         }
-        assert "id" in retrieved_data
-        assert "content" in retrieved_data
-        assert "version" in retrieved_data
+        assert "id" in retrieved_data, "Data must not be empty"
+        assert "content" in retrieved_data, "Data must not be empty"
+        assert "version" in retrieved_data, "Data must not be empty"
 
     def test_data_consistency(self):
         """Verify stored and retrieved data match."""
         original = {"id": "test_123", "value": "test value"}
         retrieved = {"id": "test_123", "value": "test value"}
-        assert original["id"] == retrieved["id"]
-        assert original["value"] == retrieved["value"]
+        assert original["id"] == retrieved["id"], "Condition must be true"
+        assert original["value"] == retrieved["value"], "Value must be initialized"
 
 
 class TestIntegration:
@@ -307,8 +307,8 @@ class TestIntegration:
             "result": {"success": True, "data": []},
             "id": 1,
         }
-        assert request["id"] == response["id"]
-        assert response["jsonrpc"] == "2.0"
+        assert request["id"] == response["id"], "Response must not be empty"
+        assert response["jsonrpc"] == "2.0", "Response must not be empty"
 
     def test_error_recovery_cycle(self):
         """Test error recovery cycle."""
@@ -323,8 +323,8 @@ class TestIntegration:
             "result": {"success": True},
             "id": 1,
         }
-        assert "error" in error_response
-        assert "result" in retry_response
+        assert "error" in error_response, "Response must not be empty"
+        assert "result" in retry_response, "Response must not be empty"
 
 
 # Pytest markers for categorizing smoke tests
@@ -333,7 +333,7 @@ pytestmark = pytest.mark.smoke
 
 def test_smoke_suite_runs():
     """Verify smoke test suite can run."""
-    assert True
+    assert True, "True is not valid"
 
 
 if __name__ == "__main__":

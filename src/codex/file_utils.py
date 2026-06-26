@@ -72,7 +72,7 @@ def read_text_safe(
 
     except UnicodeDecodeError as e:
         error_type = type(e).__name__
-        logger.debug(f"UnicodeDecodeError: <ERROR_TYPE>")
+        logger.debug("UnicodeDecodeError: <ERROR_TYPE>")
         logger.error(
             f"Failed to decode {path} with encoding {encoding}: {e}. "
             f"Try different encoding or use errors='replace'"
@@ -81,21 +81,21 @@ def read_text_safe(
 
     except FileNotFoundError as e:
         error_type = type(e).__name__
-        logger.debug(f"FileNotFoundError: <ERROR_TYPE>")
-        logger.warning(f"FileNotFoundError: <ERROR_TYPE>", exc_info=True)
+        logger.debug("FileNotFoundError: <ERROR_TYPE>")
+        logger.warning("FileNotFoundError: <ERROR_TYPE>", exc_info=True)
         logger.error(f"File not found: {path}")
         raise
 
     except PermissionError as e:
         error_type = type(e).__name__
-        logger.debug(f"PermissionError: <ERROR_TYPE>")
-        logger.warning(f"PermissionError: <ERROR_TYPE>", exc_info=True)
+        logger.debug("PermissionError: <ERROR_TYPE>")
+        logger.warning("PermissionError: <ERROR_TYPE>", exc_info=True)
         logger.error(f"Permission denied reading {path}")
         raise
 
     except (IOError, OSError) as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         logger.error(f"Unexpected error reading {path}: {type(e).__name__}: <ERROR_TYPE>")
         raise
 
@@ -138,8 +138,8 @@ def read_text_safe_fallback(
 
         except UnicodeDecodeError as e:
             error_type = type(e).__name__
-            logger.debug(f"UnicodeDecodeError: <ERROR_TYPE>")
-            logger.warning(f"UnicodeDecodeError: <ERROR_TYPE>", exc_info=True)
+            logger.debug("UnicodeDecodeError: <ERROR_TYPE>")
+            logger.warning("UnicodeDecodeError: <ERROR_TYPE>", exc_info=True)
             continue
 
     # All strict encodings failed, try utf-8 with replace

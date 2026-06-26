@@ -56,8 +56,8 @@ def test_golden_status_green(tmp_path):
         output_path=output,
     )
 
-    assert status["overall_status"] == "green"
-    assert output.exists()
+    assert status["overall_status"] == "green", "Condition must be true"
+    assert output.exists(), "Condition must be true"
 
 
 def test_golden_status_detects_missing_expected_tool(tmp_path):
@@ -98,8 +98,8 @@ def test_golden_status_detects_missing_expected_tool(tmp_path):
         output_path=tmp_path / "status.json",
     )
 
-    assert status["overall_status"] == "yellow"
-    assert any(
+    assert status["overall_status"] == "yellow", "Condition must be true"
+    assert any(, "Condition must be true"
         sig["name"] == "tool_trace" and sig["status"] == "yellow" for sig in status["signals"]
     )
 
@@ -141,8 +141,8 @@ def test_golden_status_red_on_policy_failure(tmp_path):
         output_path=tmp_path / "status.json",
     )
 
-    assert status["overall_status"] == "red"
-    assert any(sig["status"] == "red" for sig in status["signals"])
+    assert status["overall_status"] == "red", "Condition must be true"
+    assert any(sig["status"] == "red" for sig in status["signals"]), "Condition must be true"
 
 
 def test_golden_status_handles_boolean_policy_payload(tmp_path):
@@ -183,5 +183,5 @@ def test_golden_status_handles_boolean_policy_payload(tmp_path):
         output_path=tmp_path / "status.json",
     )
 
-    assert status["overall_status"] == "red"
+    assert status["overall_status"] == "red", "Condition must be true"
     assert any(sig["name"] == "ra_policy" and sig["status"] == "red" for sig in status["signals"])

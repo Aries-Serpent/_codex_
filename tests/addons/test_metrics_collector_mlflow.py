@@ -83,9 +83,9 @@ def test_metrics_collector_enforces_local_mlflow(
     artifacts_dir = tmp_path / "artifacts"
     collector.main(["--root", str(tmp_path), "--artifacts", str(artifacts_dir)])
 
-    assert recorded["uri"].startswith("file:")
-    assert os.environ["MLFLOW_TRACKING_URI"].startswith("file:")
+    assert recorded["uri"].startswith("file:"), "rec is not valid"
+    assert os.environ["MLFLOW_TRACKING_URI"].startswith("file:"), "Condition must be true"
     local_dir = Path(os.environ["CODEX_MLFLOW_LOCAL_DIR"])
-    assert local_dir.is_absolute()
-    assert local_dir.is_dir()
-    assert local_dir.parent == artifacts_dir
+    assert local_dir.is_absolute(), "Condition must be true"
+    assert local_dir.is_dir(), "Condition must be true"
+    assert local_dir.parent == artifacts_dir, "parent is not valid"

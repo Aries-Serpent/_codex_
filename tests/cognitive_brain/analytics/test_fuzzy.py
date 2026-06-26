@@ -68,20 +68,20 @@ class TestFuzzyEngine:
     def test_high_score_high_impact_approve(self):
         """High score + high impact → approve should dominate."""
         result = self.engine.evaluate(score=0.95, business_impact=0.90, remediation_cost=2000.0)
-        assert result.dominant == "approve"
-        assert result.confidence > 0.0
+        assert result.dominant == "approve", "Result must not be empty"
+        assert result.confidence > 0.0, "confidence must be greater than zero"
 
     def test_medium_score_high_impact_monitor(self):
         """Medium score + high impact → monitor should dominate."""
         result = self.engine.evaluate(score=0.65, business_impact=0.80, remediation_cost=5000.0)
         # Monitor should be a viable decision with some membership
-        assert result.monitor > 0.0
+        assert result.monitor > 0.0, "monitor must be greater than zero"
 
     def test_low_score_reject(self):
         """Very low score → reject should dominate."""
         result = self.engine.evaluate(score=0.20, business_impact=0.30, remediation_cost=1000.0)
-        assert result.dominant == "reject"
-        assert result.reject > 0.0
+        assert result.dominant == "reject", "Result must not be empty"
+        assert result.reject > 0.0, "reject must be greater than zero"
 
     def test_result_is_fuzzy_result(self):
         result = self.engine.evaluate(score=0.5, business_impact=0.5, remediation_cost=5000.0)
@@ -91,7 +91,7 @@ class TestFuzzyEngine:
         """All membership values must be in [0.0, 1.0]."""
         result = self.engine.evaluate(score=0.68, business_impact=0.65, remediation_cost=5000.0)
         for val in [result.approve, result.monitor, result.conditional, result.reject]:
-            assert 0.0 <= val <= 1.0
+            assert 0.0 <= val <= 1.0, "0 is not valid"
 
     def test_dominant_is_max_membership(self):
         """Dominant class must be the one with highest membership."""
@@ -103,7 +103,7 @@ class TestFuzzyEngine:
             "reject": result.reject,
         }
         best = max(memberships, key=lambda k: memberships[k])
-        assert result.dominant == best
+        assert result.dominant == best, "Result must not be empty"
 
     def test_boundary_case_score_0_68(self):
         """Score=0.68 is a known boundary — fuzzy should produce non-zero memberships."""
@@ -112,7 +112,7 @@ class TestFuzzyEngine:
         non_zero = sum(
             1 for v in [result.approve, result.monitor, result.conditional, result.reject] if v > 0
         )
-        assert non_zero >= 1
+        assert non_zero >= 1, "non_zero must be greater than zero"
 
 
 # ---------------------------------------------------------------------------
@@ -133,7 +133,7 @@ class TestFuzzyBlend:
             business_impact=0.30,
             remediation_cost=1000.0,
         )
-        assert result == "monitor"
+        assert result == "monitor", "Result must not be empty"
 
     def test_enabled_low_score_overrides_to_reject(self, monkeypatch):
         """With CODEX_FUZZY_MODE=true, low score should trigger reject override."""
@@ -145,7 +145,7 @@ class TestFuzzyBlend:
             remediation_cost=500.0,
             threshold=0.1,
         )
-        assert result == "reject"
+        assert result == "reject", "Result must not be empty"
 
     def test_enabled_confident_same_decision_unchanged(self, monkeypatch):
         """When fuzzy agrees with crisp decision, output unchanged."""
@@ -156,14 +156,14 @@ class TestFuzzyBlend:
             business_impact=0.90,
             remediation_cost=2000.0,
         )
-        assert result == "approve"
+        assert result == "approve", "Result must not be empty"
 
     def test_feature_flag_default_off(self, monkeypatch):
         """CODEX_FUZZY_MODE defaults to false."""
         monkeypatch.delenv("CODEX_FUZZY_MODE", raising=False)
-        assert not _fuzzy_mode_enabled()
+        assert not _fuzzy_mode_enabled(), "Condition must be true"
 
     def test_feature_flag_enabled(self, monkeypatch):
         """CODEX_FUZZY_MODE=true enables fuzzy overrides."""
         monkeypatch.setenv("CODEX_FUZZY_MODE", "true")
-        assert _fuzzy_mode_enabled()
+        assert _fuzzy_mode_enabled(), "Condition must be true"

@@ -77,8 +77,8 @@ class TestDecisionStorage:
             },
         )
 
-        assert memory_id is not None
-        assert len(memory_id) > 0
+        assert memory_id is not None, "memory_id must be initialized"
+        assert len(memory_id) > 0, "Memory_id must not be empty"
 
     def test_store_decision_preserves_rationale(self, memory_system):
         """Test that rationale is preserved in stored decision."""
@@ -99,12 +99,12 @@ class TestDecisionStorage:
         context_found = False
         for ctx in contexts:
             if ctx.get("context", {}).get("task_id") == task_id:
-                assert ctx["context"]["rationale"] == rationale
+                assert ctx["context"]["rationale"] == rationale, "Condition must be true"
                 context_found = True
                 break
 
         # Note: May not find immediately due to keyword matching
-        assert memory_id is not None
+        assert memory_id is not None, "memory_id must be initialized"
         # Context may or may not be found depending on keyword matching
         _ = context_found  # Acknowledge the variable is intentionally checked
 
@@ -125,7 +125,7 @@ class TestDecisionStorage:
         )
 
         # Both should be stored (different decision content = different IDs)
-        assert id1 != id2
+        assert id1 != id2, "id1 is not valid"
 
     def test_deterministic_id_generation(self, memory_system):
         """Test that same input produces same ID (deterministic)."""
@@ -139,7 +139,7 @@ class TestDecisionStorage:
         id2 = memory_system.store_decision(**params)
 
         # Same content should produce same ID
-        assert id1 == id2
+        assert id1 == id2, "id1 is not valid"
 
 
 class TestContextRetrieval:
@@ -155,7 +155,7 @@ class TestContextRetrieval:
         # Should find security-related decisions
         if results:
             # Check relevance scores are present
-            assert all("relevance_score" in r for r in results)
+            assert all("relevance_score" in r for r in results), "Result must not be empty"
 
     def test_retrieve_performance_context(self, memory_system):
         """Test retrieving performance-related contexts."""
@@ -171,7 +171,7 @@ class TestContextRetrieval:
             task_description="security testing performance refactoring", limit=2
         )
 
-        assert len(results) <= 2
+        assert len(results) <= 2, "Results must not be empty"
 
     def test_retrieve_sorted_by_relevance(self, memory_system):
         """Test that results are sorted by relevance score."""
@@ -194,7 +194,7 @@ class TestContextRetrieval:
         assert isinstance(results, list)
         if results:
             # All scores should be very low
-            assert all(r["relevance_score"] < 0.5 for r in results)
+            assert all(r["relevance_score"] < 0.5 for r in results), "Result must not be empty"
 
     def test_retrieve_includes_context_metadata(self, memory_system):
         """Test that retrieved results include context metadata."""
@@ -203,10 +203,10 @@ class TestContextRetrieval:
         )
 
         for result in results:
-            assert "memory_id" in result
-            assert "content" in result
-            assert "context" in result
-            assert "category" in result
+            assert "memory_id" in result, "Result must not be empty"
+            assert "content" in result, "Result must not be empty"
+            assert "context" in result, "Result must not be empty"
+            assert "category" in result, "Result must not be empty"
 
     def test_cross_domain_retrieval(self, memory_system):
         """Test retrieving contexts across different domains."""
@@ -238,32 +238,32 @@ class TestPatternLibrary:
         patterns = memory_system.get_pattern_library()
 
         assert isinstance(patterns, list)
-        assert len(patterns) >= 3  # Default patterns
+        assert len(patterns) >= 3, "Patterns must not be empty"
 
     def test_pattern_structure(self, memory_system):
         """Test pattern data structure."""
         patterns = memory_system.get_pattern_library()
 
         for pattern in patterns:
-            assert "pattern_id" in pattern
-            assert "name" in pattern
-            assert "triggers" in pattern
-            assert "recommended_actions" in pattern
-            assert "success_rate" in pattern
+            assert "pattern_id" in pattern, "Condition must be true"
+            assert "name" in pattern, "Condition must be true"
+            assert "triggers" in pattern, "Condition must be true"
+            assert "recommended_actions" in pattern, "Condition must be true"
+            assert "success_rate" in pattern, "Condition must be true"
 
     def test_security_pattern_exists(self, memory_system):
         """Test that security pattern is available."""
         patterns = memory_system.get_pattern_library()
         pattern_names = [p["name"] for p in patterns]
 
-        assert "Security Vulnerability Fix" in pattern_names
+        assert "Security Vulnerability Fix" in pattern_names, "Condition must be true"
 
     def test_code_review_pattern_exists(self, memory_system):
         """Test that code review pattern is available."""
         patterns = memory_system.get_pattern_library()
         pattern_names = [p["name"] for p in patterns]
 
-        assert "Code Review Comment Resolution" in pattern_names
+        assert "Code Review Comment Resolution" in pattern_names, "Condition must be true"
 
 
 class TestStaleContextInvalidation:
@@ -274,7 +274,7 @@ class TestStaleContextInvalidation:
         count = memory_system.invalidate_stale_contexts(age_days=30)
 
         assert isinstance(count, int)
-        assert count >= 0
+        assert count >= 0, "count must be positive"
 
     def test_recent_contexts_preserved(self, memory_system):
         """Test that recent contexts are not invalidated."""
@@ -292,7 +292,7 @@ class TestStaleContextInvalidation:
         stats_after = memory_system.get_stats()
 
         # Recent decision should still exist
-        assert stats_after["memory_stats"]["total_memories"] >= 1
+        assert stats_after["memory_stats"]["total_memories"] >= 1, "Value must be greater than zero"
 
 
 if __name__ == "__main__":

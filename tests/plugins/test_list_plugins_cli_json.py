@@ -37,8 +37,8 @@ def test_json_shape_no_discover() -> None:
     assert isinstance(prog.get("names"), list)
     legacy = payload["legacy"]
     assert isinstance(legacy, dict)
-    assert "tokenizers" in legacy
-    assert "datasets" in legacy
+    assert "tokenizers" in legacy, "Condition must be true"
+    assert "datasets" in legacy, "Data must not be empty"
     opts = payload["options"]
-    assert opts["format"] == "json"
-    assert opts["discover"] is False
+    assert opts["format"] == "json", "Condition must be true"
+    assert opts["discover"] is False, "Condition must be true"

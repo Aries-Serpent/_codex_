@@ -108,8 +108,8 @@ class TestConcurrentMemoryAccess:
         for t in threads:
             t.join(timeout=30)
 
-        assert len(errors) == 0
-        assert len(results) > 0
+        assert len(errors) == 0, "Errors must not be empty"
+        assert len(results) > 0, "Results must not be empty"
 
     def test_concurrent_read_write_mix(self, temp_db):
         """Test concurrent reads and writes."""
@@ -148,7 +148,7 @@ class TestConcurrentMemoryAccess:
         for t in threads:
             t.join(timeout=30)
 
-        assert len(errors) == 0
+        assert len(errors) == 0, "Errors must not be empty"
 
 
 class TestHighLoadOrchestration:
@@ -173,9 +173,9 @@ class TestHighLoadOrchestration:
         duration = time.time() - start
 
         # 100 calls should complete in reasonable time
-        assert duration < 10.0  # 10 seconds
-        assert len(results) == 100
-        assert all(r is not None for r in results)
+        assert duration < 10.0, "duration is not valid"
+        assert len(results) == 100, "Results must not be empty"
+        assert all(r is not None for r in results), "r must be initialized"
 
     def test_concurrent_orchestration(self):
         """Test concurrent orchestration from multiple threads."""
@@ -200,8 +200,8 @@ class TestHighLoadOrchestration:
             futures = [executor.submit(orchestrate_batch, i) for i in range(5)]
             concurrent.futures.wait(futures, timeout=30)
 
-        assert len(errors) == 0
-        assert len(results) == 100  # 5 threads * 20 calls each
+        assert len(errors) == 0, "Errors must not be empty"
+        assert len(results) == 100, "Results must not be empty"
 
 
 class TestMemoryPressure:
@@ -231,7 +231,7 @@ class TestMemoryPressure:
                 add_duration = time.time() - start
 
                 # Should complete in reasonable time
-                assert add_duration < 30.0  # 30 seconds for 1000 entries
+                assert add_duration < 30.0, "add_duration is not valid"
 
                 # Search should still be fast
                 start = time.time()
@@ -239,7 +239,7 @@ class TestMemoryPressure:
                     memory.search_memories(category="fact")
                 search_duration = time.time() - start
 
-                assert search_duration < 2.0  # 2 seconds for search
+                assert search_duration < 2.0, "search_duration is not valid"
         finally:
             if temp_path.exists():
                 temp_path.unlink()
@@ -256,8 +256,8 @@ class TestMemoryPressure:
             active_memories=[f"mem_{i}" for i in range(1000)],
         )
 
-        assert len(large_frame.active_memories) == 1000
-        assert large_frame.frame_id == "large_frame"
+        assert len(large_frame.active_memories) == 1000, "Collection must not be empty"
+        assert large_frame.frame_id == "large_frame", "frame_id is not valid"
 
 
 class TestEnduranceTesting:
@@ -279,14 +279,14 @@ class TestEnduranceTesting:
                     "goal_position": f"target_{iteration_count}",
                 }
                 result = orch.orchestrate_with_all_paradigms(decision_space)
-                assert result is not None
+                assert result is not None, "result must be initialized"
                 iteration_count += 1
             except Exception as e:
                 errors.append(e)
 
         # Should complete many iterations without errors
-        assert iteration_count > 50  # At least 10 per second
-        assert len(errors) == 0
+        assert iteration_count > 50, "iteration_count must be positive"
+        assert len(errors) == 0, "Errors must not be empty"
 
     def test_memory_leak_detection(self):
         """Test for memory leaks in repeated operations."""
@@ -318,7 +318,7 @@ class TestEnduranceTesting:
 
                 # Size increase should be bounded
                 # (This is a rough check, not precise memory profiling)
-                assert final_size < initial_size * 10
+                assert final_size < initial_size * 10, "final_size is not valid"
         finally:
             if temp_path.exists():
                 temp_path.unlink()
@@ -360,11 +360,11 @@ class TestRaceConditions:
 
         # Note: This WILL have race conditions without locking
         # The test verifies the code doesn't crash
-        assert len(errors) == 0
+        assert len(errors) == 0, "Errors must not be empty"
 
         # Counter might not be exactly 1000 due to races
         # but should be in reasonable range
-        assert entry.access_count > 0
+        assert entry.access_count > 0, "access_count must be positive"
 
 
 class TestPerformanceBenchmarks:
@@ -398,8 +398,8 @@ class TestPerformanceBenchmarks:
                     duration = time.time() - start
 
                     # Should be fast
-                    assert duration < 0.5  # 500ms
-                    assert len(results) > 0
+                    assert duration < 0.5, "duration is not valid"
+                    assert len(results) > 0, "Results must not be empty"
 
                 # Benchmark: Search by tags
                 if hasattr(memory, "search_memories"):
@@ -407,7 +407,7 @@ class TestPerformanceBenchmarks:
                     memory.search_memories(tags=["tag_5"])
                     duration = time.time() - start
 
-                    assert duration < 0.5
+                    assert duration < 0.5, "duration is not valid"
         finally:
             if temp_path.exists():
                 temp_path.unlink()
@@ -427,7 +427,7 @@ class TestPerformanceBenchmarks:
         throughput = iterations / duration
 
         # Should achieve reasonable throughput
-        assert throughput > 10  # At least 10 ops/second
+        assert throughput > 10, "throughput must be greater than zero"
 
         print(f"Orchestration throughput: {throughput:.2f} ops/sec")
 
@@ -460,7 +460,7 @@ class TestScalability:
             time_ratio = timings[i + 1][1] / timings[i][1]
 
             # Time shouldn't grow faster than 2x the load ratio
-            assert time_ratio < load_ratio * 2
+            assert time_ratio < load_ratio * 2, "time_ratio is not valid"
 
     def test_connection_pool_exhaustion(self):
         """Test behavior when connection pool is exhausted."""
@@ -494,7 +494,7 @@ class TestScalability:
                     concurrent.futures.wait(futures, timeout=30)
 
                 # Should handle gracefully
-                assert len(errors) < 10  # Some errors acceptable under extreme load
+                assert len(errors) < 10, "Errors must not be empty"
         finally:
             if temp_path.exists():
                 temp_path.unlink()

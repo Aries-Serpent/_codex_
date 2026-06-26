@@ -70,11 +70,11 @@ class TestCognitiveBrainCreate:
 
     def test_enable_memory_true(self):
         brain = CognitiveBrain.create(enable_memory=True)
-        assert brain._enable_memory is True
+        assert brain._enable_memory is True, "_enable_memory is not valid"
 
     def test_enable_memory_false(self):
         brain = CognitiveBrain.create(enable_memory=False)
-        assert brain._enable_memory is False
+        assert brain._enable_memory is False, "_enable_memory is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -91,7 +91,7 @@ class TestCognitiveBrainDecide:
     def test_decide_decision_is_valid_string(self):
         brain = _make_brain()
         result = brain.decide("compliance_audit", _approve_inputs())
-        assert result.decision in {
+        assert result.decision in {, "Result must not be empty"
             "approve",
             "approve_with_monitoring",
             "reject",
@@ -101,12 +101,12 @@ class TestCognitiveBrainDecide:
     def test_decide_confidence_in_range(self):
         brain = _make_brain()
         result = brain.decide("compliance_audit", _conditional_inputs())
-        assert 0.0 <= result.confidence <= 1.0
+        assert 0.0 <= result.confidence <= 1.0, "Result must not be empty"
 
     def test_decide_coherence_in_range(self):
         brain = _make_brain()
         result = brain.decide("compliance_audit", _monitor_inputs())
-        assert 0.0 <= result.coherence <= 1.0
+        assert 0.0 <= result.coherence <= 1.0, "Result must not be empty"
 
     def test_decide_reasoning_nonempty(self):
         brain = _make_brain()
@@ -117,34 +117,34 @@ class TestCognitiveBrainDecide:
         brain = _make_brain()
         result = brain.decide("compliance_audit", _approve_inputs())
         assert isinstance(result.agent_hints, dict)
-        assert "next_action" in result.agent_hints
+        assert "next_action" in result.agent_hints, "Result must not be empty"
 
     def test_decide_alternatives_is_list(self):
         brain = _make_brain()
         result = brain.decide("compliance_audit", _approve_inputs())
         assert isinstance(result.alternatives, list)
-        assert len(result.alternatives) >= 1
+        assert len(result.alternatives) >= 1, "Collection must not be empty"
 
     def test_decide_cognitive_state_has_context(self):
         brain = _make_brain()
         result = brain.decide("risk_review", _approve_inputs())
-        assert result.cognitive_state["context"] == "risk_review"
+        assert result.cognitive_state["context"] == "risk_review", "Result must not be empty"
 
     def test_decide_stores_session_memory(self):
         brain = _make_brain()
         brain.decide("compliance_audit", _approve_inputs(), session_id="sess-001")
-        assert "sess-001" in brain._memory
+        assert "sess-001" in brain._memory, "Condition must be true"
 
     def test_decide_no_memory_when_disabled(self):
         brain = CognitiveBrain.create(enable_memory=False)
         brain.decide("compliance_audit", _approve_inputs(), session_id="sess-999")
-        assert "sess-999" not in brain._memory
+        assert "sess-999" not in brain._memory, "Condition must be true"
 
     def test_decide_increments_history(self):
         brain = _make_brain()
         brain.decide("compliance_audit", _approve_inputs(), session_id="s1")
         brain.decide("compliance_audit", _monitor_inputs(), session_id="s2")
-        assert len(brain._history) == 2
+        assert len(brain._history) == 2, "Collection must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -158,16 +158,16 @@ class TestCognitiveBrainGetState:
         brain.decide("compliance_audit", _approve_inputs(), session_id="abc")
         state = brain.get_cognitive_state("abc")
         assert isinstance(state, dict)
-        assert state["session_id"] == "abc"
+        assert state["session_id"] == "abc", "Condition must be true"
 
     def test_get_state_returns_none_unknown_session(self):
         brain = _make_brain()
-        assert brain.get_cognitive_state("does-not-exist") is None
+        assert brain.get_cognitive_state("does-not-exist") is None, "Condition must be true"
 
     def test_get_state_returns_none_when_memory_disabled(self):
         brain = CognitiveBrain.create(enable_memory=False)
         brain.decide("compliance_audit", _approve_inputs(), session_id="xyz")
-        assert brain.get_cognitive_state("xyz") is None
+        assert brain.get_cognitive_state("xyz") is None, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -183,17 +183,17 @@ class TestCognitiveBrainHealth:
 
     def test_health_status_healthy_on_new_brain(self):
         brain = _make_brain()
-        assert brain.get_health().health_status == "healthy"
+        assert brain.get_health().health_status == "healthy", "health_status is not valid"
 
     def test_health_decision_count_updates(self):
         brain = _make_brain()
         brain.decide("test", _approve_inputs(), session_id="h1")
         brain.decide("test", _approve_inputs(), session_id="h2")
-        assert brain.get_health().decision_count == 2
+        assert brain.get_health().decision_count == 2, "Count must be greater than zero"
 
     def test_health_error_count_zero_initially(self):
         brain = _make_brain()
-        assert brain.get_health().error_count == 0
+        assert brain.get_health().error_count == 0, "Error should be raised or set"
 
 
 # ---------------------------------------------------------------------------
@@ -209,8 +209,8 @@ class TestCognitiveBrainExplain:
         decision = brain.decide("compliance_audit", _approve_inputs())
         explanation = brain.explain(decision, audience="agent")
         data = json.loads(explanation)
-        assert "decision" in data
-        assert "confidence" in data
+        assert "decision" in data, "Data must not be empty"
+        assert "confidence" in data, "Data must not be empty"
 
     def test_explain_human_returns_string(self):
         brain = _make_brain()
@@ -238,7 +238,7 @@ class TestAgentHints:
             evaluation_time_ms = 5.0
 
         hints = CognitiveBrain._generate_agent_hints(_FakeAssessment(), "test")
-        assert hints["next_action"] == "escalate_to_human_reviewer"
+        assert hints["next_action"] == "escalate_to_human_reviewer", "Condition must be true"
 
     def test_hints_monitor_setup(self):
         class _FakeAssessment:
@@ -250,8 +250,8 @@ class TestAgentHints:
             evaluation_time_ms = 5.0
 
         hints = CognitiveBrain._generate_agent_hints(_FakeAssessment(), "test")
-        assert hints["next_action"] == "setup_monitoring_alerts"
-        assert hints["auto_approve_allowed"] == "no"
+        assert hints["next_action"] == "setup_monitoring_alerts", "Condition must be true"
+        assert hints["auto_approve_allowed"] == "no", "Condition must be true"
 
     def test_hints_conditional_evidence_request(self):
         class _FakeAssessment:
@@ -263,7 +263,7 @@ class TestAgentHints:
             evaluation_time_ms = 5.0
 
         hints = CognitiveBrain._generate_agent_hints(_FakeAssessment(), "test")
-        assert hints["next_action"] == "request_additional_evidence"
+        assert hints["next_action"] == "request_additional_evidence", "Condition must be true"
 
     def test_hints_approve_finalize(self):
         class _FakeAssessment:
@@ -275,8 +275,8 @@ class TestAgentHints:
             evaluation_time_ms = 4.0
 
         hints = CognitiveBrain._generate_agent_hints(_FakeAssessment(), "test")
-        assert hints["next_action"] == "finalize_approval"
-        assert hints["auto_approve_allowed"] == "yes"
+        assert hints["next_action"] == "finalize_approval", "Condition must be true"
+        assert hints["auto_approve_allowed"] == "yes", "Condition must be true"
 
     def test_hints_coherence_warning(self):
         class _FakeAssessment:
@@ -288,7 +288,7 @@ class TestAgentHints:
             evaluation_time_ms = 5.0
 
         hints = CognitiveBrain._generate_agent_hints(_FakeAssessment(), "test")
-        assert hints.get("health_warning") == "coherence_below_threshold"
+        assert hints.get("health_warning") == "coherence_below_threshold", "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -299,20 +299,20 @@ class TestAgentHints:
 class TestPatternDetection:
     def test_pattern_h_high_score(self):
         inputs = {"score": 0.96, "risk_level": "medium", "violation_count": 0, "pii_indicators": 0}
-        assert CognitiveBrain._detect_pattern_from_inputs(inputs) == "H"
+        assert CognitiveBrain._detect_pattern_from_inputs(inputs) == "H", "Condition must be true"
 
     def test_pattern_f_violation_count(self):
         inputs = {"score": 0.70, "risk_level": "medium", "violation_count": 6, "pii_indicators": 0}
-        assert CognitiveBrain._detect_pattern_from_inputs(inputs) == "F"
+        assert CognitiveBrain._detect_pattern_from_inputs(inputs) == "F", "Condition must be true"
 
     def test_pattern_e_pii(self):
         inputs = {"score": 0.60, "risk_level": "medium", "violation_count": 1, "pii_indicators": 2}
-        assert CognitiveBrain._detect_pattern_from_inputs(inputs) == "E"
+        assert CognitiveBrain._detect_pattern_from_inputs(inputs) == "E", "Condition must be true"
 
     def test_pattern_c_medium_zone(self):
         inputs = {"score": 0.65, "risk_level": "medium", "violation_count": 0, "pii_indicators": 0}
-        assert CognitiveBrain._detect_pattern_from_inputs(inputs) == "C"
+        assert CognitiveBrain._detect_pattern_from_inputs(inputs) == "C", "Condition must be true"
 
     def test_pattern_none_no_match(self):
         inputs = {"score": 0.80, "risk_level": "high", "violation_count": 0, "pii_indicators": 0}
-        assert CognitiveBrain._detect_pattern_from_inputs(inputs) is None
+        assert CognitiveBrain._detect_pattern_from_inputs(inputs) is None, "Condition must be true"

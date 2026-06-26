@@ -18,8 +18,8 @@ def test_static_code_analysis_logs(tmp_path: Path) -> None:
     metrics = tmp_path / "m.jsonl"
     step_static_code_analysis(tmp_path, metrics)
     data = metrics.read_text().strip().splitlines()
-    assert data
+    assert data, "Data must not be empty"
     record = json.loads(data[-1])
-    assert record["name"] == "static.analysis.errors"
+    assert record["name"] == "static.analysis.errors", "Error should be raised or set"
     assert isinstance(record["value"], int)
-    assert record["value"] >= 0
+    assert record["value"] >= 0, "rec must be greater than zero"

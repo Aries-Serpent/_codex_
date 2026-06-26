@@ -32,12 +32,12 @@ class TestPathAndFileUtilities:
 
         with tempfile.TemporaryDirectory() as tmpdir:
             test_path = Path(tmpdir)
-            assert test_path.exists()
+            assert test_path.exists(), "Condition must be true"
 
     def test_path_exists_for_invalid_path(self):
         """Test path exists check for invalid paths."""
         fake_path = Path("/nonexistent/path/12345")
-        assert not fake_path.exists()
+        assert not fake_path.exists(), "Condition must be true"
 
     def test_path_is_directory(self):
         """Test path is directory check."""
@@ -45,13 +45,13 @@ class TestPathAndFileUtilities:
 
         with tempfile.TemporaryDirectory() as tmpdir:
             path = Path(tmpdir)
-            assert path.is_dir()
+            assert path.is_dir(), "Condition must be true"
 
             # Create a file
             test_file = path / "test.txt"
             test_file.touch()
-            assert test_file.is_file()
-            assert not test_file.is_dir()
+            assert test_file.is_file(), "Condition must be true"
+            assert not test_file.is_dir(), "Condition must be true"
 
     def test_file_extension_checking(self):
         """Test file extension checking."""
@@ -64,8 +64,8 @@ class TestPathAndFileUtilities:
             txt_file = Path(tmpdir) / "test.txt"
             txt_file.touch()
 
-            assert py_file.suffix == ".py"
-            assert txt_file.suffix == ".txt"
+            assert py_file.suffix == ".py", "suffix is not valid"
+            assert txt_file.suffix == ".txt", "suffix is not valid"
 
     def test_glob_pattern_matching(self):
         """Test glob pattern matching."""
@@ -80,10 +80,10 @@ class TestPathAndFileUtilities:
             (tmppath / "data.json").touch()
 
             py_files = list(tmppath.glob("*.py"))
-            assert len(py_files) == 2
+            assert len(py_files) == 2, "Py_files must not be empty"
 
             json_files = list(tmppath.glob("*.json"))
-            assert len(json_files) == 1
+            assert len(json_files) == 1, "Json_files must not be empty"
 
     def test_recursive_glob_pattern(self):
         """Test recursive glob pattern matching."""
@@ -100,7 +100,7 @@ class TestPathAndFileUtilities:
             (subdir / "nested.py").touch()
 
             all_py = list(tmppath.rglob("*.py"))
-            assert len(all_py) == 2
+            assert len(all_py) == 2, "All_py must not be empty"
 
 
 # ============================================================================
@@ -120,8 +120,8 @@ class TestFileContentAnalysis:
             test_file.write_text("import torch\nimport numpy as np\n")
 
             content = test_file.read_text()
-            assert "torch" in content
-            assert "numpy" in content
+            assert "torch" in content, "Content must not be empty"
+            assert "numpy" in content, "Content must not be empty"
 
     def test_file_line_counting(self):
         """Test counting lines in file."""
@@ -132,7 +132,7 @@ class TestFileContentAnalysis:
             test_file.write_text("line1\nline2\nline3\n")
 
             lines = test_file.read_text().splitlines()
-            assert len(lines) == 3
+            assert len(lines) == 3, "Lines must not be empty"
 
     def test_pattern_search_in_content(self):
         """Test pattern searching in file content."""
@@ -147,8 +147,8 @@ class Config:
 """)
 
             content = test_file.read_text()
-            assert "class Config" in content
-            assert "hidden_size" in content
+            assert "class Config" in content, "Content must not be empty"
+            assert "hidden_size" in content, "Content must not be empty"
 
     def test_multiple_pattern_matching(self):
         """Test matching multiple patterns in content."""
@@ -169,7 +169,7 @@ def test_model_load():
             patterns = ["torch", "transformers", "pytest", "test_"]
 
             matches = {p: p in content for p in patterns}
-            assert all(matches.values())
+            assert all(matches.values()), "Value must be initialized"
 
     def test_import_statement_detection(self):
         """Test detecting import statements."""
@@ -188,8 +188,8 @@ from typing import Dict, List
             has_torch = "import torch" in content
             has_pathlib = "from pathlib import Path" in content
 
-            assert has_torch
-            assert has_pathlib
+            assert has_torch, "has_torch is not valid"
+            assert has_pathlib, "has_pathlib is not valid"
 
     def test_json_content_parsing(self):
         """Test parsing JSON content from file."""
@@ -205,8 +205,8 @@ from typing import Dict, List
             json_file.write_text(json.dumps(config))
 
             loaded = json.loads(json_file.read_text())
-            assert loaded["hidden_size"] == 768
-            assert loaded["num_layers"] == 12
+            assert loaded["hidden_size"] == 768, "Condition must be true"
+            assert loaded["num_layers"] == 12, "Condition must be true"
 
 
 # ============================================================================
@@ -229,7 +229,7 @@ class TestDirectoryAnalysis:
             (tmppath / "readme.txt").touch()
 
             py_count = len(list(tmppath.glob("*.py")))
-            assert py_count == 2
+            assert py_count == 2, "Count must be greater than zero"
 
     def test_count_test_files(self):
         """Test counting test files."""
@@ -243,7 +243,7 @@ class TestDirectoryAnalysis:
             (tmppath / "module.py").touch()
 
             test_count = len(list(tmppath.glob("test_*.py")))
-            assert test_count == 2
+            assert test_count == 2, "Count must be greater than zero"
 
     def test_count_files_recursively(self):
         """Test counting files recursively."""
@@ -258,7 +258,7 @@ class TestDirectoryAnalysis:
             (subdir / "file2.py").touch()
 
             all_py = list(tmppath.rglob("*.py"))
-            assert len(all_py) == 2
+            assert len(all_py) == 2, "All_py must not be empty"
 
     def test_directory_size_calculation(self):
         """Test directory size calculation."""
@@ -271,7 +271,7 @@ class TestDirectoryAnalysis:
             (tmppath / "file2.txt").write_text("b" * 2000)
 
             total_size = sum(f.stat().st_size for f in tmppath.glob("*.txt"))
-            assert total_size == 3000
+            assert total_size == 3000, "total_size is not valid"
 
 
 # ============================================================================
@@ -286,11 +286,11 @@ class TestCapabilityDetectorUtilities:
         """Test clamping values to [0, 1]."""
         from codex_ml.detectors.core import clamp01
 
-        assert clamp01(-0.5) == 0.0
-        assert clamp01(0.0) == 0.0
-        assert clamp01(0.5) == 0.5
-        assert clamp01(1.0) == 1.0
-        assert clamp01(1.5) == 1.0
+        assert clamp01(-0.5) == 0.0, "Condition must be true"
+        assert clamp01(0.0) == 0.0, "Condition must be true"
+        assert clamp01(0.5) == 0.5, "Condition must be true"
+        assert clamp01(1.0) == 1.0, "Condition must be true"
+        assert clamp01(1.5) == 1.0, "Condition must be true"
 
     def test_detector_result_creation(self):
         """Test DetectorResult creation."""
@@ -302,9 +302,9 @@ class TestCapabilityDetectorUtilities:
             evidence=["config_schema_exists", "pydantic_validation"],
         )
 
-        assert result.score == 0.85
-        assert result.category == "configuration"
-        assert len(result.evidence) == 2
+        assert result.score == 0.85, "Result must not be empty"
+        assert result.category == "configuration", "Result must not be empty"
+        assert len(result.evidence) == 2, "Collection must not be empty"
 
     def test_detector_result_score_validation(self):
         """Test DetectorResult score validation."""
@@ -316,7 +316,7 @@ class TestCapabilityDetectorUtilities:
             category="test",
             evidence=[],
         )
-        assert 0 <= result.score <= 1
+        assert 0 <= result.score <= 1, "Result must not be empty"
 
     def test_detector_evidence_collection(self):
         """Test evidence collection in detector results."""
@@ -335,8 +335,8 @@ class TestCapabilityDetectorUtilities:
             evidence=evidence,
         )
 
-        assert len(result.evidence) == 4
-        assert "schema_validation" in result.evidence
+        assert len(result.evidence) == 4, "Collection must not be empty"
+        assert "schema_validation" in result.evidence, "Result must not be empty"
 
 
 # ============================================================================
@@ -363,8 +363,8 @@ class ConfigSchema(BaseModel):
     pass
 """)
 
-            assert schema_file.exists()
-            assert "BaseModel" in schema_file.read_text()
+            assert schema_file.exists(), "Condition must be true"
+            assert "BaseModel" in schema_file.read_text(), "Condition must be true"
 
     def test_pydantic_patterns_detection(self):
         """Test detecting pydantic patterns."""
@@ -385,7 +385,7 @@ class Config(BaseModel):
             patterns = ["BaseModel", "field_validator", "ValidationError", "model_validate"]
 
             has_pydantic = all(p in content for p in patterns[:2])
-            assert has_pydantic
+            assert has_pydantic, "has_pydantic is not valid"
 
     def test_yaml_support_detection(self):
         """Test detecting YAML support."""
@@ -402,8 +402,8 @@ def load_config(path):
 """)
 
             content = loader_file.read_text()
-            assert "yaml" in content
-            assert "yaml.safe_load" in content
+            assert "yaml" in content, "Content must not be empty"
+            assert "yaml.safe_load" in content, "Content must not be empty"
 
     def test_config_hashing_detection(self):
         """Test detecting config hashing."""
@@ -420,8 +420,8 @@ def hash_config(config):
 """)
 
             content = util_file.read_text()
-            assert "hashlib" in content
-            assert "sha256" in content
+            assert "hashlib" in content, "Content must not be empty"
+            assert "sha256" in content, "Content must not be empty"
 
     def test_defaults_coverage_detection(self):
         """Test detecting default values in config."""
@@ -440,8 +440,8 @@ class Config:
 """)
 
             content = config_file.read_text()
-            assert "learning_rate: float = 1e-4" in content
-            assert "batch_size: int = 32" in content
+            assert "learning_rate: float = 1e-4" in content, "Content must not be empty"
+            assert "batch_size: int = 32" in content, "Content must not be empty"
 
 
 # ============================================================================
@@ -457,7 +457,7 @@ class TestDetectorScoringAndAggregation:
         scores = [0.8, 0.9, 0.7, 0.85]
 
         avg_score = sum(scores) / len(scores)
-        assert 0.8 < avg_score < 0.9
+        assert 0.8 < avg_score < 0.9, "8 is not valid"
 
     def test_weighted_score_aggregation(self):
         """Test weighted score aggregation."""
@@ -465,7 +465,7 @@ class TestDetectorScoringAndAggregation:
         weights = [0.3, 0.5, 0.2]
 
         weighted_score = sum(s * w for s, w in zip(scores, weights))
-        assert 0.8 < weighted_score < 0.9
+        assert 0.8 < weighted_score < 0.9, "8 is not valid"
 
     def test_detector_result_comparison(self):
         """Test comparing detector results."""
@@ -474,8 +474,8 @@ class TestDetectorScoringAndAggregation:
         result1 = DetectorResult(score=0.8, category="test", evidence=[])
         result2 = DetectorResult(score=0.9, category="test", evidence=[])
 
-        assert result1.score < result2.score
-        assert result1.category == result2.category
+        assert result1.score < result2.score, "Result must not be empty"
+        assert result1.category == result2.category, "Result must not be empty"
 
     def test_evidence_aggregation(self):
         """Test aggregating evidence from multiple detectors."""
@@ -489,7 +489,7 @@ class TestDetectorScoringAndAggregation:
         for evs in evidence_sets:
             all_evidence.update(evs)
 
-        assert len(all_evidence) == 5  # Deduplicated
+        assert len(all_evidence) == 5, "All_evidence must not be empty"
 
 
 # ============================================================================
@@ -515,8 +515,8 @@ class TestDetectorIntegration:
             yaml_file.write_text("key: value\n")
 
             # Verification
-            assert schema_file.exists()
-            assert yaml_file.exists()
+            assert schema_file.exists(), "Condition must be true"
+            assert yaml_file.exists(), "Condition must be true"
 
     def test_detector_result_serialization(self):
         """Test detector result serialization."""
@@ -537,7 +537,7 @@ class TestDetectorIntegration:
         json_str = json.dumps(result_dict)
         loaded = json.loads(json_str)
 
-        assert loaded["score"] == 0.85
+        assert loaded["score"] == 0.85, "Condition must be true"
 
     def test_multiple_detectors_execution(self):
         """Test executing multiple detectors."""
@@ -549,9 +549,9 @@ class TestDetectorIntegration:
             DetectorResult(score=0.7, category="logging", evidence=[]),
         ]
 
-        assert len(results) == 3
+        assert len(results) == 3, "Results must not be empty"
         avg_score = sum(r.score for r in results) / len(results)
-        assert 0.75 < avg_score < 0.85
+        assert 0.75 < avg_score < 0.85, "75 is not valid"
 
 
 # ============================================================================
@@ -570,7 +570,7 @@ class TestEdgeCasesAndErrorHandling:
             tmppath = Path(tmpdir)
 
             files = list(tmppath.glob("*.py"))
-            assert len(files) == 0
+            assert len(files) == 0, "Files must not be empty"
 
     def test_nonexistent_file_handling(self):
         """Test handling nonexistent file."""
@@ -619,7 +619,7 @@ class TestEdgeCasesAndErrorHandling:
             # Write 1MB file
             large_file.write_text("x" * (1024 * 1024))
 
-            assert large_file.stat().st_size == 1024 * 1024
+            assert large_file.stat().st_size == 1024 * 1024, "st_size is not valid"
 
 
 if __name__ == "__main__":

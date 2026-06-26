@@ -58,13 +58,13 @@ def main() -> int:
         pkgs = _run_pip_licenses()
     except FileNotFoundError as e:
         error_type = type(e).__name__
-        logger.debug(f"FileNotFoundError: <ERROR_TYPE>")
-        logger.warning(f"FileNotFoundError: <ERROR_TYPE>", exc_info=True)
+        logger.debug("FileNotFoundError: <ERROR_TYPE>")
+        logger.warning("FileNotFoundError: <ERROR_TYPE>", exc_info=True)
         print("pip-licenses not installed; skipping", file=sys.stderr)
         return 0
     except subprocess.CalledProcessError as exc:
         error_type = type(exc).__name__
-        print(f"pip-licenses failed: <ERROR_TYPE>", file=sys.stderr)
+        print("pip-licenses failed: <ERROR_TYPE>", file=sys.stderr)
         return 1
     bad = [p for p in pkgs if p.get("License") not in ALLOWED]
     if bad:

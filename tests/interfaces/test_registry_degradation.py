@@ -26,9 +26,9 @@ def test_programmatic_registry_failure_degrades_to_legacy(monkeypatch, capsys):
         monkeypatch.setattr(plugins_pkg, "programmatic", fake_module, raising=False)
 
     rc = list_plugins.main(["--format", "json"])
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
     out = capsys.readouterr().out.strip()
     payload = json.loads(out)
-    assert "legacy" in payload
+    assert "legacy" in payload, "Condition must be true"
     assert isinstance(payload["legacy"], dict)
-    assert payload["programmatic"]["names"] == []
+    assert payload["programmatic"]["names"] == [], "Condition must be true"

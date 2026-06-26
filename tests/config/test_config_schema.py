@@ -47,7 +47,7 @@ def test_structured_config_merge_ok() -> None:
     result = OmegaConf.to_object(merged)
     # Handle both dict and dataclass results
     epochs = result["epochs"] if isinstance(result, dict) else result.epochs
-    assert epochs == 2
+    assert epochs == 2, "epochs is not valid"
 
 
 def test_structured_config_rejects_wrong_type() -> None:

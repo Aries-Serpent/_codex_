@@ -35,6 +35,6 @@ def test_hf_dataset_factory():
         texts = ["a", "b"]
         ds = to_hf_dataset(texts, tok, max_length=8)
         assert set(ds.column_names) == {"input_ids", "attention_mask", "labels"}
-        assert len(ds) == 2
+        assert len(ds) == 2, "Ds must not be empty"
         first = ds[0]
         assert isinstance(first["input_ids"][0], int)

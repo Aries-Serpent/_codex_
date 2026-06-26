@@ -52,9 +52,9 @@ def test_cli_text_output(tmp_path: Path):
     proc = subprocess.run(cmd, capture_output=True, text=True, env=env)
     assert proc.returncode == 0, proc.stderr
     out = proc.stdout.strip().splitlines()
-    assert out[0].endswith("start session")
-    assert out[-1].endswith("boom")
-    assert len(out) == 3
+    assert out[0].endswith("start session"), "Condition must be true"
+    assert out[-1].endswith("boom"), "Condition must be true"
+    assert len(out) == 3, "Out must not be empty"
 
 
 def test_cli_json_output(tmp_path: Path):
@@ -76,12 +76,12 @@ def test_cli_json_output(tmp_path: Path):
     proc = subprocess.run(cmd, capture_output=True, text=True, env=env)
     assert proc.returncode == 0, proc.stderr
     data = json.loads(proc.stdout)
-    assert len(data) == 1
-    assert data[0]["message"] == "boom"
+    assert len(data) == 1, "Data must not be empty"
+    assert data[0]["message"] == "boom", "Data must not be empty"
 
 
 def test_table_name_validation():
     ns = viewer.parse_args(["--session-id", "S-1", "--table", "valid_table"])
-    assert ns.table == "valid_table"
+    assert ns.table == "valid_table", "table is not valid"
     with pytest.raises(SystemExit):
         viewer.parse_args(["--session-id", "S-1", "--table", "invalid-table"])

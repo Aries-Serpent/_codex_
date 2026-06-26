@@ -20,9 +20,9 @@ def test_health_check_returns_healthy_status():
     """Test that health check returns healthy status."""
     result = health_check()
 
-    assert result["status"] == "healthy"
-    assert "timestamp" in result
-    assert result["service"] == "codex-ml"
+    assert result["status"] == "healthy", "Result must not be empty"
+    assert "timestamp" in result, "Result must not be empty"
+    assert result["service"] == "codex-ml", "Result must not be empty"
 
 
 def test_health_check_returns_timestamp():
@@ -30,16 +30,16 @@ def test_health_check_returns_timestamp():
     result = health_check()
 
     assert isinstance(result["timestamp"], (int, float))
-    assert result["timestamp"] > 0
+    assert result["timestamp"] > 0, "Value must be greater than zero"
 
 
 def test_readiness_check_returns_structure():
     """Test that readiness check returns expected structure."""
     result = readiness_check()
 
-    assert "ready" in result
-    assert "timestamp" in result
-    assert "checks" in result
+    assert "ready" in result, "Result must not be empty"
+    assert "timestamp" in result, "Result must not be empty"
+    assert "checks" in result, "Result must not be empty"
     assert isinstance(result["checks"], dict)
 
 
@@ -48,16 +48,16 @@ def test_readiness_check_has_timestamp():
     result = readiness_check()
 
     assert isinstance(result["timestamp"], (int, float))
-    assert result["timestamp"] > 0
+    assert result["timestamp"] > 0, "Value must be greater than zero"
 
 
 def test_readiness_check_includes_disk_space():
     """Test that readiness check includes disk space check."""
     result = readiness_check()
 
-    assert "disk_space" in result["checks"]
+    assert "disk_space" in result["checks"], "Result must not be empty"
     disk_check = result["checks"]["disk_space"]
-    assert "status" in disk_check
+    assert "status" in disk_check, "Condition must be true"
 
 
 def test_readiness_check_includes_directory_checks():
@@ -66,7 +66,7 @@ def test_readiness_check_includes_directory_checks():
 
     # Should check for .codex, src, configs directories
     checks = result["checks"]
-    assert any("dir_" in key for key in checks)
+    assert any("dir_" in key for key in checks), "Condition must be true"
 
 
 def test_readiness_check_graceful_on_missing_psutil():
@@ -74,8 +74,8 @@ def test_readiness_check_graceful_on_missing_psutil():
     # This should not raise an exception
     result = readiness_check()
 
-    assert result is not None
-    assert "checks" in result
+    assert result is not None, "result must be initialized"
+    assert "checks" in result, "Result must not be empty"
 
 
 def test_health_check_consistent_format():
@@ -83,9 +83,9 @@ def test_health_check_consistent_format():
     result1 = health_check()
     result2 = health_check()
 
-    assert set(result1.keys()) == set(result2.keys())
-    assert result1["status"] == result2["status"]
-    assert result1["service"] == result2["service"]
+    assert set(result1.keys()) == set(result2.keys()), "Result must not be empty"
+    assert result1["status"] == result2["status"], "Result must not be empty"
+    assert result1["service"] == result2["service"], "Result must not be empty"
 
 
 def test_readiness_ready_is_boolean():

@@ -52,5 +52,5 @@ class TestModuleExports:
         """Test __all__ exports."""
         from agents.semantic_ticket_search import __all__
 
-        assert "semantic_search" in __all__
-        assert "ZendeskRAGBridge" in __all__
+        assert "semantic_search" in __all__, "Condition must be true"
+        assert "ZendeskRAGBridge" in __all__, "Condition must be true"

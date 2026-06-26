@@ -62,7 +62,7 @@ class TestEndToEndTraining:
             optimizer.step()
 
         # Should complete without errors
-        assert loss.item() is not None
+        assert loss.item() is not None, "Value must be initialized"
 
 
 class TestCheckpointResumeWorkflow:
@@ -105,7 +105,7 @@ class TestCheckpointResumeWorkflow:
         new_model.load_state_dict(checkpoint["model_state_dict"])
         new_optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
 
-        assert checkpoint["step"] == 5
+        assert checkpoint["step"] == 5, "Condition must be true"
 
 
 class TestOfflineModeIntegration:
@@ -119,7 +119,7 @@ class TestOfflineModeIntegration:
         os.environ["CODEX_OFFLINE_MODE"] = "1"
 
         # Verify setting
-        assert os.getenv("CODEX_OFFLINE_MODE") == "1"
+        assert os.getenv("CODEX_OFFLINE_MODE") == "1", "Condition must be true"
 
         # Cleanup
         del os.environ["CODEX_OFFLINE_MODE"]

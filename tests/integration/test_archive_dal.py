@@ -26,9 +26,9 @@ class TestSqliteDAL:
 
         dal = SqliteDAL.from_url(url)
 
-        assert dal is not None
-        assert db_path.exists()
-        assert dal.conn is not None
+        assert dal is not None, "dal must be initialized"
+        assert db_path.exists(), "Condition must be true"
+        assert dal.conn is not None, "conn must be initialized"
 
     def test_ensure_schema_creates_tables(self, dal):
         """Test that schema creation works."""
@@ -41,7 +41,7 @@ class TestSqliteDAL:
 
         # Should have core tables
         expected_tables = {"artifact", "item", "event"}
-        assert expected_tables.issubset(tables)
+        assert expected_tables.issubset(tables), "Condition must be true"
 
     def test_transaction_context_manager(self, dal):
         """Test that transaction context manager works."""
@@ -52,7 +52,7 @@ class TestSqliteDAL:
         # Verify connection is still usable
         cursor = dal.conn.cursor()
         cursor.execute("SELECT 1")
-        assert cursor.fetchone()[0] == 1
+        assert cursor.fetchone()[0] == 1, "curs is not valid"
 
     def test_summary_returns_stats(self, dal):
         """Test that summary returns database statistics."""
@@ -60,10 +60,10 @@ class TestSqliteDAL:
 
         assert isinstance(summary, dict)
         # Should have counts for artifacts
-        assert (
+        assert (, "Condition must be true"
             "count" in summary
         ), f"Summary should contain 'count' key, got: {list(summary.keys())}"
-        assert (
+        assert (, "Condition must be true"
             "total_bytes" in summary
         ), f"Summary should contain 'total_bytes' key, got: {list(summary.keys())}"
 
@@ -73,7 +73,7 @@ class TestSqliteDAL:
 
         assert isinstance(items, list)
         # Empty database should return empty list
-        assert len(items) == 0
+        assert len(items) == 0, "Items must not be empty"
 
     def test_ensure_artifact_creates_record(self, dal):
         """Test that artifact creation works."""
@@ -89,8 +89,8 @@ class TestSqliteDAL:
         result = dal.ensure_artifact(**artifact_data)
 
         assert isinstance(result, dict)
-        assert "id" in result
-        assert result["content_sha256"] == artifact_data["sha"]
+        assert "id" in result, "Result must not be empty"
+        assert result["content_sha256"] == artifact_data["sha"], "Result must not be empty"
 
     def test_insert_item_creates_record(self, dal):
         """Test that item insertion works."""
@@ -118,7 +118,7 @@ class TestSqliteDAL:
         result = dal.insert_item(**item_data)
 
         assert isinstance(result, dict)
-        assert "id" in result
-        assert "tombstone_id" in result
+        assert "id" in result, "Result must not be empty"
+        assert "tombstone_id" in result, "Result must not be empty"
         # Verify the item was created successfully
-        assert result["id"] is not None
+        assert result["id"] is not None, "Value must be initialized"

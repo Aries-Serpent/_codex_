@@ -13,6 +13,7 @@ except ImportError:
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_json_rpc_request_with_id():
     """Test JSON-RPC request with ID produces a response."""
     registry = ToolRegistry()
@@ -28,13 +29,14 @@ async def test_json_rpc_request_with_id():
 
     response = await server.handle_request(request)
 
-    assert response is not None
-    assert response["jsonrpc"] == "2.0"
-    assert response["id"] == 1
-    assert "result" in response
+    assert response is not None, "response must be initialized"
+    assert response["jsonrpc"] == "2.0", "Response must not be empty"
+    assert response["id"] == 1, "Response must not be empty"
+    assert "result" in response, "Response must not be empty"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_json_rpc_notification_no_response():
     """Test JSON-RPC notification (no ID) produces no response."""
     registry = ToolRegistry()
@@ -48,10 +50,11 @@ async def test_json_rpc_notification_no_response():
 
     response = await server.handle_request(request)
 
-    assert response is None
+    assert response is None, "Response must not be empty"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_json_rpc_error_response():
     """Test JSON-RPC error response for invalid method."""
     registry = ToolRegistry()
@@ -66,12 +69,13 @@ async def test_json_rpc_error_response():
 
     response = await server.handle_request(request)
 
-    assert response is not None
-    assert "error" in response
-    assert response["error"]["code"] == -32601
+    assert response is not None, "response must be initialized"
+    assert "error" in response, "Response must not be empty"
+    assert response["error"]["code"] == -32601, "Response must not be empty"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_json_rpc_batch_requests():
     """Test JSON-RPC batch request handling."""
     registry = ToolRegistry()
@@ -89,7 +93,7 @@ async def test_json_rpc_batch_requests():
         if resp:
             responses.append(resp)
 
-    assert len(responses) == 2
+    assert len(responses) == 2, "Responses must not be empty"
 
 
 def test_json_rpc_version_negotiation():
@@ -107,8 +111,8 @@ def test_json_rpc_version_negotiation():
     loop = asyncio.get_event_loop()
     response = loop.run_until_complete(server.handle_request(request))
 
-    assert response is not None
-    assert "result" in response
+    assert response is not None, "response must be initialized"
+    assert "result" in response, "Response must not be empty"
 
 
 def test_json_rpc_large_payload():
@@ -129,6 +133,6 @@ def test_json_rpc_large_payload():
     loop = asyncio.get_event_loop()
     response = loop.run_until_complete(server.handle_request(request))
 
-    assert response is not None
+    assert response is not None, "response must be initialized"
     assert isinstance(response["result"], list)
-    assert len(response["result"]) == 100
+    assert len(response["result"]) == 100, "Collection must not be empty"

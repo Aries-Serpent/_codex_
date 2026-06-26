@@ -45,17 +45,17 @@ class TestDecisionLogging:
     def test_init_schema(self, logger):
         """Test database schema initialization."""
         db_path = logger.db_path
-        assert db_path.exists()
+        assert db_path.exists(), "Condition must be true"
 
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
 
         # Check tables exist
         cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='decision_log'")
-        assert cursor.fetchone() is not None
+        assert cursor.fetchone() is not None, "curs must be initialized"
 
         cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='audit_log'")
-        assert cursor.fetchone() is not None
+        assert cursor.fetchone() is not None, "curs must be initialized"
 
         conn.close()
 
@@ -78,8 +78,8 @@ class TestDecisionLogging:
         )
 
         decision_id = logger.log_decision(record)
-        assert decision_id == record.decision_id
-        assert decision_id.startswith("phase-9-1-dec-")
+        assert decision_id == record.decision_id, "decision_id is not valid"
+        assert decision_id.startswith("phase-9-1-dec-"), "Condition must be true"
 
     def test_log_decision_immutability(self, logger):
         """Test that logged decisions are immutable."""
@@ -98,9 +98,9 @@ class TestDecisionLogging:
 
         # Query back and verify
         results = logger.query_decisions(limit=1)
-        assert len(results) == 1
-        assert results[0]["decision_id"] == decision_id
-        assert results[0]["agent_id"] == "unified-coverage-agent"
+        assert len(results) == 1, "Results must not be empty"
+        assert results[0]["decision_id"] == decision_id, "Result must not be empty"
+        assert results[0]["agent_id"] == "unified-coverage-agent", "Result must not be empty"
 
     def test_query_decisions_filtering(self, logger):
         """Test decision query with multiple filters."""
@@ -127,16 +127,16 @@ class TestDecisionLogging:
 
         # Test filtering by agent
         results = logger.query_decisions(agent_id="code-analysis-agent")
-        assert len(results) == 1
-        assert results[0]["agent_id"] == "code-analysis-agent"
+        assert len(results) == 1, "Results must not be empty"
+        assert results[0]["agent_id"] == "code-analysis-agent", "Result must not be empty"
 
         # Test filtering by confidence range
         results = logger.query_decisions(confidence_min=85.0)
-        assert len(results) == 2  # 87.0 and 92.0
+        assert len(results) == 2, "Results must not be empty"
 
         # Test filtering by outcome
         results = logger.query_decisions(outcome="SUCCESS")
-        assert len(results) == 3
+        assert len(results) == 3, "Results must not be empty"
 
     def test_escalation_tracking(self, logger):
         """Test escalation flag in logged decisions."""
@@ -169,8 +169,8 @@ class TestDecisionLogging:
         logger.log_decision(record_low)
 
         results_escalated = logger.query_decisions(escalated=True)
-        assert len(results_escalated) == 1
-        assert results_escalated[0]["agent_id"] == "autonomous-test-healer-agent"
+        assert len(results_escalated) == 1, "Results_escalated must not be empty"
+        assert results_escalated[0]["agent_id"] == "autonomous-test-healer-agent", "Result must not be empty"
 
     def test_rollback_logging(self, logger):
         """Test decision rollback and tracking."""
@@ -195,12 +195,12 @@ class TestDecisionLogging:
             initiated_by="human-reviewer",
         )
 
-        assert rollback_id.startswith("rollback-")
+        assert rollback_id.startswith("rollback-"), "Condition must be true"
 
         # Verify rollback was recorded
         results = logger.query_decisions(limit=1)
-        assert results[0]["rollback_id"] == rollback_id
-        assert results[0]["outcome"] == "ROLLED_BACK"
+        assert results[0]["rollback_id"] == rollback_id, "Result must not be empty"
+        assert results[0]["outcome"] == "ROLLED_BACK", "Result must not be empty"
 
     def test_agent_accuracy_metrics(self, logger):
         """Test agent accuracy calculation."""
@@ -220,10 +220,10 @@ class TestDecisionLogging:
             logger.log_decision(record)
 
         metrics = logger.get_agent_accuracy("dependency-conflict-agent")
-        assert metrics["total_decisions"] == 10
-        assert metrics["successful"] == 9
-        assert metrics["failed"] == 1
-        assert metrics["accuracy_percent"] == 90.0
+        assert metrics["total_decisions"] == 10, "Condition must be true"
+        assert metrics["successful"] == 9, "Condition must be true"
+        assert metrics["failed"] == 1, "Condition must be true"
+        assert metrics["accuracy_percent"] == 90.0, "Condition must be true"
 
     def test_query_performance(self, logger):
         """Test query performance (<30 seconds for large datasets)."""
@@ -246,7 +246,7 @@ class TestDecisionLogging:
         results = logger.query_decisions(limit=1000)
         elapsed = time.time() - start
 
-        assert len(results) == 100
+        assert len(results) == 100, "Results must not be empty"
         assert elapsed < 1.0, f"Query took {elapsed}s, expected <1s"
 
 
@@ -272,7 +272,7 @@ class TestConfidenceScoring:
         )
 
         # Expected: (92 * 0.4) + (100 * 0.3) + (100 * 0.2) + (0 * 0.1) = 86.8
-        assert 85 <= score <= 90
+        assert 85 <= score <= 90, "85 is not valid"
 
     def test_complexity_scoring(self, scorer):
         """Test complexity level conversion."""
@@ -288,7 +288,7 @@ class TestConfidenceScoring:
 
         for level, expected in complexity_scores:
             score = scorer._complexity_to_score(level)
-            assert score == expected
+            assert score == expected, "score is not valid"
 
     def test_context_complexity_analysis(self, scorer):
         """Test context complexity analysis."""
@@ -299,7 +299,7 @@ class TestConfidenceScoring:
                 "dependencies": [],
             }
         )
-        assert level == 0
+        assert level == 0, "level is not valid"
 
         # Complex context
         level, detail = scorer._analyze_context_complexity(
@@ -309,7 +309,7 @@ class TestConfidenceScoring:
                 "cross_system_impact": True,
             }
         )
-        assert level >= 3  # Critical complexity (level 4 is also acceptable)
+        assert level >= 3, "level must be greater than zero"
 
         # Novel scenario
         level, detail = scorer._analyze_context_complexity(
@@ -318,21 +318,21 @@ class TestConfidenceScoring:
                 "files_affected": [],
             }
         )
-        assert level == 5
+        assert level == 5, "level is not valid"
 
     def test_manual_signals_evaluation(self, scorer):
         """Test manual override signal handling."""
         # High confidence signal
         score = scorer._evaluate_manual_signals({"high_confidence": True})
-        assert score == 15.0
+        assert score == 15.0, "score is not valid"
 
         # Caution signal
         score = scorer._evaluate_manual_signals({"caution": True})
-        assert score == -20.0
+        assert score == -20.0, "score is not valid"
 
         # Block signal
         score = scorer._evaluate_manual_signals({"block": True})
-        assert score == -100.0
+        assert score == -100.0, "score is not valid"
 
         # Multiple signals
         score = scorer._evaluate_manual_signals(
@@ -341,7 +341,7 @@ class TestConfidenceScoring:
                 "caution": True,
             }
         )
-        assert score == -5.0  # 15 - 20 = -5
+        assert score == -5.0, "score is not valid"
 
     def test_score_with_context(self, scorer):
         """Test scoring with full context."""
@@ -358,10 +358,10 @@ class TestConfidenceScoring:
             decision_context=context,
         )
 
-        assert "confidence_score" in result
-        assert "factors" in result
-        assert "decision_action" in result
-        assert 0 <= result["confidence_score"] <= 100
+        assert "confidence_score" in result, "Result must not be empty"
+        assert "factors" in result, "Result must not be empty"
+        assert "decision_action" in result, "Result must not be empty"
+        assert 0 <= result["confidence_score"] <= 100, "Result must not be empty"
 
     def test_escalation_detection(self, scorer):
         """Test escalation requirement detection."""
@@ -376,8 +376,8 @@ class TestConfidenceScoring:
                 "relevant_tests": 20,
             },
         )
-        assert not result["escalation_required"]
-        assert result["decision_action"] == "EXECUTE"
+        assert not result["escalation_required"], "Result must not be empty"
+        assert result["decision_action"] == "EXECUTE", "Result must not be empty"
 
         # Low confidence (escalation)
         result = scorer.score_with_context(
@@ -391,7 +391,7 @@ class TestConfidenceScoring:
                 "novel_scenario": True,
             },
         )
-        assert result["escalation_required"]
+        assert result["escalation_required"], "Result must not be empty"
         assert result["decision_action"] in ["ESCALATE", "BLOCK"]
 
     def test_performance_scoring(self, scorer):
@@ -419,10 +419,10 @@ class TestConfidenceScoring:
         """Test agent-specific baseline calibration."""
         for agent_id, baseline in scorer.AGENT_BASELINES.items():
             accuracy = scorer._get_historical_accuracy(agent_id)
-            assert 0 <= accuracy <= 100
+            assert 0 <= accuracy <= 100, "0 is not valid"
             # For new agents with no history, should get baseline
             if agent_id not in ["code-analysis-agent"]:  # Assume no history initially
-                assert accuracy >= 75.0
+                assert accuracy >= 75.0, "accuracy must be greater than zero"
 
 
 class TestAgentDecisionPaths:
@@ -464,8 +464,8 @@ class TestAgentDecisionPaths:
         )
 
         # Low-risk decisions should have high confidence
-        assert result["confidence_score"] >= 75
-        assert result["decision_action"] == "EXECUTE"
+        assert result["confidence_score"] >= 75, "Value must be greater than zero"
+        assert result["decision_action"] == "EXECUTE", "Result must not be empty"
 
     @pytest.mark.parametrize(
         "agent_id",
@@ -492,7 +492,7 @@ class TestAgentDecisionPaths:
         # High-risk decisions should require escalation
         escalation_threshold = scorer.ESCALATION_THRESHOLDS[agent_id]
         if result["confidence_score"] < escalation_threshold:
-            assert result["escalation_required"]
+            assert result["escalation_required"], "Result must not be empty"
 
     def test_agent_false_positive_rate(self, scorer):
         """Test false positive rate across agents."""
@@ -603,10 +603,10 @@ class TestPhase91Integration:
 
         # Step 3: Verify logged decision
         results = logger.query_decisions(agent_id="dependency-conflict-agent")
-        assert len(results) > 0
+        assert len(results) > 0, "Results must not be empty"
         logged = results[0]
-        assert logged["decision_id"] == decision_id
-        assert logged["outcome"] == "SUCCESS"
+        assert logged["decision_id"] == decision_id, "Condition must be true"
+        assert logged["outcome"] == "SUCCESS", "Condition must be true"
 
     def test_accuracy_90_percent_target(self, setup):
         """Test that framework can achieve 90%+ accuracy."""

@@ -18,7 +18,7 @@ class TestConfigUtils:
             f.write("test: value\nkey: 123")
             f.flush()
             # Would test actual load_yaml here
-            assert Path(f.name).exists()
+            assert Path(f.name).exists(), "Condition must be true"
 
     def test_load_config_missing_file(self):
         """Test handling of missing config file."""

@@ -51,7 +51,7 @@ class TestRBACBoundary:
         user_has_all_admin_permissions = user_role.issubset(admin_role)
 
         # Assert
-        assert user_has_all_admin_permissions
+        assert user_has_all_admin_permissions, "user_has_all_admin_permissions is not valid"
 
     def test_role_inheritance_loop_prevention(self):
         """Test prevention of role inheritance loops."""
@@ -84,7 +84,7 @@ class TestRBACBoundary:
         is_powerless = len(user_permissions) == 0
 
         # Assert
-        assert is_powerless
+        assert is_powerless, "is_powerless is not valid"
 
     def test_super_admin_bypass_restrictions(self):
         """Test super-admin bypasses all restrictions."""
@@ -112,7 +112,7 @@ class TestABACAttributes:
         missing = [attr for attr in required_attributes if attr not in attributes]
 
         # Assert
-        assert len(missing) == 2
+        assert len(missing) == 2, "Missing must not be empty"
 
     def test_null_attribute_value_handling(self):
         """Test handling of null attribute values."""
@@ -123,7 +123,7 @@ class TestABACAttributes:
         null_attributes = [k for k, v in attributes.items() if v is None]
 
         # Assert
-        assert "department" in null_attributes
+        assert "department" in null_attributes, "Condition must be true"
 
     def test_attribute_type_mismatch(self):
         """Test attribute type mismatch handling."""
@@ -135,7 +135,7 @@ class TestABACAttributes:
         type_matches = isinstance(actual_value, expected_type)
 
         # Assert
-        assert not type_matches
+        assert not type_matches, "Condition must be true"
 
     def test_large_attribute_set_evaluation(self):
         """Test evaluation with large attribute sets."""
@@ -146,7 +146,7 @@ class TestABACAttributes:
         attribute_count = len(attributes)
 
         # Assert
-        assert attribute_count == 1000
+        assert attribute_count == 1000, "Count must be greater than zero"
 
     def test_circular_attribute_dependency(self):
         """Test detection of circular attribute dependencies."""
@@ -179,7 +179,7 @@ class TestPermissionChecking:
         conflict_exists = any(rule in deny_rules for rule in allow_rules)
 
         # Assert
-        assert conflict_exists
+        assert conflict_exists, "conflict_exists is not valid"
 
     def test_allow_deny_conflict_resolution(self):
         """Test resolution of allow/deny conflicts."""
@@ -192,7 +192,7 @@ class TestPermissionChecking:
         permission_granted = "read" in allow_rules and "read" not in deny_rules
 
         # Assert
-        assert not permission_granted
+        assert not permission_granted, "Condition must be true"
 
     def test_negative_permission_handling(self):
         """Test handling of negative permissions."""
@@ -203,7 +203,7 @@ class TestPermissionChecking:
         negative_perms = [p for p in permissions if p.startswith("NOT_")]
 
         # Assert
-        assert len(negative_perms) == 1
+        assert len(negative_perms) == 1, "Negative_perms must not be empty"
 
     def test_permission_cache_expiration(self):
         """Test permission cache expiration."""
@@ -220,7 +220,7 @@ class TestPermissionChecking:
         is_expired = age_seconds > cache_entry["ttl"]
 
         # Assert
-        assert is_expired
+        assert is_expired, "is_expired is not valid"
 
     def test_concurrent_permission_changes(self):
         """Test concurrent permission modification."""
@@ -231,7 +231,7 @@ class TestPermissionChecking:
         permissions.add("delete")
 
         # Assert
-        assert "delete" in permissions
+        assert "delete" in permissions, "Condition must be true"
 
 
 class TestScopeValidation:
@@ -247,7 +247,7 @@ class TestScopeValidation:
         scopes_match = user_scope == requested_scope
 
         # Assert
-        assert not scopes_match
+        assert not scopes_match, "Condition must be true"
 
     def test_scope_nesting_limits(self):
         """Test scope nesting depth limits."""
@@ -260,7 +260,7 @@ class TestScopeValidation:
         exceeds_limit = depth > max_nesting_depth
 
         # Assert
-        assert exceeds_limit
+        assert exceeds_limit, "exceeds_limit is not valid"
 
     def test_empty_scope_handling(self):
         """Test empty scope handling."""
@@ -271,7 +271,7 @@ class TestScopeValidation:
         is_empty = len(scope) == 0
 
         # Assert
-        assert is_empty
+        assert is_empty, "is_empty is not valid"
 
     def test_wildcard_scope_expansion(self):
         """Test wildcard scope expansion."""
@@ -282,7 +282,7 @@ class TestScopeValidation:
         includes_all = wildcard_scope == "*"
 
         # Assert
-        assert includes_all
+        assert includes_all, "includes_all is not valid"
 
     def test_scope_overlap_resolution(self):
         """Test resolution of overlapping scopes."""
@@ -294,7 +294,7 @@ class TestScopeValidation:
         overlap = scope1.startswith(scope2.replace("*", ""))
 
         # Assert
-        assert overlap
+        assert overlap, "overlap is not valid"
 
 
 class TestResourceAuthorization:
@@ -309,7 +309,7 @@ class TestResourceAuthorization:
         can_access = resource_exists
 
         # Assert
-        assert not can_access
+        assert not can_access, "Condition must be true"
 
     def test_resource_ownership_changes(self):
         """Test handling of resource ownership changes."""
@@ -321,7 +321,7 @@ class TestResourceAuthorization:
         ownership_changed = original_owner != new_owner
 
         # Assert
-        assert ownership_changed
+        assert ownership_changed, "ownership_changed is not valid"
 
     def test_shared_resource_access(self):
         """Test access to shared resources."""
@@ -333,7 +333,7 @@ class TestResourceAuthorization:
         can_access = requesting_user in shared_with
 
         # Assert
-        assert can_access
+        assert can_access, "can_access is not valid"
 
     def test_resource_deletion_during_access(self):
         """Test access to resource being deleted."""
@@ -345,7 +345,7 @@ class TestResourceAuthorization:
         should_fail = resource_deleted and access_attempt
 
         # Assert
-        assert should_fail
+        assert should_fail, "should_fail is not valid"
 
     def test_resource_permission_cascades(self):
         """Test permission cascading through resource hierarchy."""
@@ -357,7 +357,7 @@ class TestResourceAuthorization:
         child_permissions = parent_permissions if child_inherits else set()
 
         # Assert
-        assert "read" in child_permissions
+        assert "read" in child_permissions, "Condition must be true"
 
 
 class TestDelegation:
@@ -393,7 +393,7 @@ class TestDelegation:
         exceeds_limit = len(chain) > max_chain_depth
 
         # Assert
-        assert exceeds_limit
+        assert exceeds_limit, "exceeds_limit is not valid"
 
     def test_delegation_revocation_timing(self):
         """Test timing of delegation revocation."""
@@ -405,7 +405,7 @@ class TestDelegation:
         delegation_active = False
 
         # Assert
-        assert not delegation_active
+        assert not delegation_active, "Condition must be true"
 
     def test_delegated_permission_expiration(self):
         """Test expiration of delegated permissions."""
@@ -419,7 +419,7 @@ class TestDelegation:
         is_expired = age_days > expiration_days
 
         # Assert
-        assert is_expired
+        assert is_expired, "is_expired is not valid"
 
     def test_delegation_revocation_consistency(self):
         """Test consistency when delegating permissions that are revoked."""
@@ -433,4 +433,4 @@ class TestDelegation:
         should_revoke = "write" in user_b_delegated_from_a and "write" not in user_a_perms
 
         # Assert
-        assert should_revoke
+        assert should_revoke, "should_revoke is not valid"

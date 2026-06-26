@@ -30,8 +30,8 @@ def test_offline_scans_creates_artifacts(tmp_path, monkeypatch):
     offline_scans.main()
     for name in offline_scans.SCANS:
         path = tmp_path / f"{name}.json"
-        assert path.exists()
+        assert path.exists(), "Condition must be true"
         payload = json.loads(path.read_text())
-        assert payload["status"] == "ok"
+        assert payload["status"] == "ok", "Condition must be true"
     summary = json.loads((tmp_path / "summary.json").read_text())
-    assert set(summary) == set(offline_scans.SCANS)
+    assert set(summary) == set(offline_scans.SCANS), "Condition must be true"

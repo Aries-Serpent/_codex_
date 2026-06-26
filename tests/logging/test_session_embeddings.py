@@ -34,8 +34,8 @@ class TestSessionEmbeddingsInit:
                 embeddings_path=f"{tmpdir}/embeddings.faiss",
                 metadata_path=f"{tmpdir}/metadata.json",
             )
-            assert embeddings._metadata == {}
-            assert embeddings._embeddings is not None
+            assert embeddings._metadata == {}, "Data must not be empty"
+            assert embeddings._embeddings is not None, "_embeddings must be initialized"
 
     def test_init_loads_existing_index(self):
         """Test that init loads existing index from disk."""
@@ -53,8 +53,8 @@ class TestSessionEmbeddingsInit:
                 embeddings_path=f"{tmpdir}/embeddings.faiss",
                 metadata_path=f"{tmpdir}/metadata.json",
             )
-            assert "S001" in embeddings2._metadata
-            assert embeddings2._metadata["S001"]["summary"] == "Test session"
+            assert "S001" in embeddings2._metadata, "Data must not be empty"
+            assert embeddings2._metadata["S001"]["summary"] == "Test session", "Data must not be empty"
 
     def test_init_graceful_on_missing_model(self):
         """Test that init works even if sentence-transformers unavailable."""
@@ -64,7 +64,7 @@ class TestSessionEmbeddingsInit:
                 metadata_path=f"{tmpdir}/metadata.json",
             )
             # Should not raise, uses mock embeddings
-            assert embeddings is not None
+            assert embeddings is not None, "embeddings must be initialized"
 
 
 class TestEmbeddingGeneration:
@@ -79,7 +79,7 @@ class TestEmbeddingGeneration:
             )
             embedding = embeddings._generate_embedding("Test text")
             assert embedding.shape == (384,)
-            assert embedding.dtype == np.float32
+            assert embedding.dtype == np.float32, "dtype is not valid"
 
     def test_generate_embedding_text_normalization(self):
         """Test that text is normalized (lowercase, stripped)."""
@@ -137,8 +137,8 @@ class TestSessionManagement:
                 metadata_path=f"{tmpdir}/metadata.json",
             )
             success = embeddings.add_session("S001", "Test session")
-            assert success is True
-            assert "S001" in embeddings._metadata
+            assert success is True, "success is not valid"
+            assert "S001" in embeddings._metadata, "Data must not be empty"
 
     def test_add_session_with_patterns_and_tags(self):
         """Test adding session with patterns and tags."""
@@ -153,7 +153,7 @@ class TestSessionManagement:
                 patterns=["P-001", "P-002"],
                 tags=["database", "performance"],
             )
-            assert success is True
+            assert success is True, "success is not valid"
             meta = embeddings.get_metadata("S001")
             assert meta["patterns"] == ["P-001", "P-002"]
             assert meta["tags"] == ["database", "performance"]
@@ -167,7 +167,7 @@ class TestSessionManagement:
             )
             for i in range(10):
                 embeddings.add_session(f"S{i:03d}", f"Session {i}")
-            assert len(embeddings._metadata) == 10
+            assert len(embeddings._metadata) == 10, "Collection must not be empty"
 
     def test_add_session_invalid_input(self):
         """Test that invalid input is rejected."""
@@ -178,11 +178,11 @@ class TestSessionManagement:
             )
             # Empty session_id
             success = embeddings.add_session("", "Test")
-            assert success is False
+            assert success is False, "success is not valid"
 
             # Empty summary
             success = embeddings.add_session("S001", "")
-            assert success is False
+            assert success is False, "success is not valid"
 
     def test_add_session_duplicate_id(self):
         """Test adding session with duplicate ID (should update index)."""
@@ -198,7 +198,7 @@ class TestSessionManagement:
             embeddings.add_session("S001", "Session B")
             # Should add a new index entry (not update existing)
             # This is current behavior; could be changed to "update"
-            assert len(embeddings._metadata) >= initial_count
+            assert len(embeddings._metadata) >= initial_count, "Collection must not be empty"
 
     def test_list_sessions(self):
         """Test listing all sessions."""
@@ -211,8 +211,8 @@ class TestSessionManagement:
                 embeddings.add_session(f"S{i:03d}", f"Session {i}")
 
             sessions = embeddings.list_sessions()
-            assert len(sessions) == 5
-            assert "S000" in sessions
+            assert len(sessions) == 5, "Sessions must not be empty"
+            assert "S000" in sessions, "Condition must be true"
 
 
 class TestSimilaritySearch:
@@ -233,12 +233,12 @@ class TestSimilaritySearch:
 
             # Find similar to S001
             similar = embeddings.find_similar("S001", k=2)
-            assert len(similar) <= 2
+            assert len(similar) <= 2, "Similar must not be empty"
             assert isinstance(similar, list)
             if len(similar) > 0:
                 session_id, score = similar[0]
                 assert isinstance(session_id, str)
-                assert 0 <= score <= 1
+                assert 0 <= score <= 1, "0 is not valid"
 
     def test_find_similar_by_text(self):
         """Test finding similar sessions by query text."""
@@ -254,11 +254,11 @@ class TestSimilaritySearch:
 
             # Find similar to query
             similar = embeddings.find_similar_text("database queries", k=2)
-            assert len(similar) <= 2
+            assert len(similar) <= 2, "Similar must not be empty"
             if len(similar) > 0:
                 session_id, score = similar[0]
                 assert session_id in ["S001", "S002", "S003"]
-                assert 0 <= score <= 1
+                assert 0 <= score <= 1, "0 is not valid"
 
     def test_find_similar_returns_k_results(self):
         """Test that find_similar returns exactly k results (or fewer if k > total)."""
@@ -274,11 +274,11 @@ class TestSimilaritySearch:
 
             # Request 5 results (more than available)
             similar = embeddings.find_similar_text("test", k=5)
-            assert len(similar) <= 3
+            assert len(similar) <= 3, "Similar must not be empty"
 
             # Request 2 results
             similar = embeddings.find_similar_text("test", k=2)
-            assert len(similar) <= 2
+            assert len(similar) <= 2, "Similar must not be empty"
 
     def test_find_similar_excludes_self(self):
         """Test that find_similar excludes the reference session itself."""
@@ -308,7 +308,7 @@ class TestSimilaritySearch:
             embeddings.add_session("S001", "Test")
 
             similar = embeddings.find_similar("NONEXISTENT", k=5)
-            assert similar == []
+            assert similar == [], "similar is not valid"
 
 
 class TestPersistence:
@@ -331,9 +331,9 @@ class TestPersistence:
                 embeddings_path=f"{tmpdir}/embeddings.faiss",
                 metadata_path=f"{tmpdir}/metadata.json",
             )
-            assert len(embeddings2._metadata) == 2
-            assert "S001" in embeddings2._metadata
-            assert "S002" in embeddings2._metadata
+            assert len(embeddings2._metadata) == 2, "Collection must not be empty"
+            assert "S001" in embeddings2._metadata, "Data must not be empty"
+            assert "S002" in embeddings2._metadata, "Data must not be empty"
 
     def test_save_creates_directory(self):
         """Test that save_index creates directories if missing."""
@@ -346,7 +346,7 @@ class TestPersistence:
             embeddings.save_index()
 
             # Verify files exist
-            assert Path(f"{tmpdir}/nested/dir/metadata.json").exists()
+            assert Path(f"{tmpdir}/nested/dir/metadata.json").exists(), "Data must not be empty"
 
     def test_metadata_json_format(self):
         """Test that metadata JSON has correct format."""
@@ -361,10 +361,10 @@ class TestPersistence:
             # Load and check JSON
             with open(f"{tmpdir}/metadata.json", "r") as f:
                 data = json.load(f)
-            assert data["version"] == "1.0"
-            assert data["model"] == "sentence-transformers/all-MiniLM-L6-v2"
-            assert data["dimension"] == 384
-            assert "S001" in data["sessions"]
+            assert data["version"] == "1.0", "Data must not be empty"
+            assert data["model"] == "sentence-transformers/all-MiniLM-L6-v2", "Data must not be empty"
+            assert data["dimension"] == 384, "Data must not be empty"
+            assert "S001" in data["sessions"], "Data must not be empty"
 
 
 class TestRebuildIndex:
@@ -384,8 +384,8 @@ class TestRebuildIndex:
             original_count = len(embeddings._metadata)
             success = embeddings.rebuild_index()
 
-            assert success is True
-            assert len(embeddings._metadata) == original_count
+            assert success is True, "success is not valid"
+            assert len(embeddings._metadata) == original_count, "Collection must not be empty"
 
 
 class TestThreading:
@@ -410,7 +410,7 @@ class TestThreading:
                 t.join()
 
             # Should have 50 sessions (5 threads × 10 each)
-            assert len(embeddings._metadata) == 50
+            assert len(embeddings._metadata) == 50, "Collection must not be empty"
 
     def test_concurrent_search(self):
         """Test concurrent search operations."""
@@ -438,7 +438,7 @@ class TestThreading:
                 t.join()
 
             # All searches should complete
-            assert len(results) == 5
+            assert len(results) == 5, "Results must not be empty"
 
 
 class TestGetMetadata:
@@ -454,9 +454,9 @@ class TestGetMetadata:
             embeddings.add_session("S001", "Test summary", patterns=["P-001"], tags=["tag1"])
 
             meta = embeddings.get_metadata("S001")
-            assert meta["summary"] == "Test summary"
-            assert meta["patterns"] == ["P-001"]
-            assert meta["tags"] == ["tag1"]
+            assert meta["summary"] == "Test summary", "Condition must be true"
+            assert meta["patterns"] == ["P-001"], "Condition must be true"
+            assert meta["tags"] == ["tag1"], "Condition must be true"
 
     def test_get_metadata_nonexistent_session(self):
         """Test getting metadata for nonexistent session."""
@@ -467,7 +467,7 @@ class TestGetMetadata:
             )
 
             meta = embeddings.get_metadata("NONEXISTENT")
-            assert meta == {}
+            assert meta == {}, "meta is not valid"
 
 
 class TestGetStats:
@@ -484,9 +484,9 @@ class TestGetStats:
                 embeddings.add_session(f"S{i:03d}", f"Session {i}")
 
             stats = embeddings.get_stats()
-            assert stats["total_sessions"] == 5
-            assert stats["dimension"] == 384
-            assert stats["model"] == "sentence-transformers/all-MiniLM-L6-v2"
+            assert stats["total_sessions"] == 5, "Condition must be true"
+            assert stats["dimension"] == 384, "Condition must be true"
+            assert stats["model"] == "sentence-transformers/all-MiniLM-L6-v2", "Condition must be true"
 
 
 class TestErrorHandling:
@@ -504,7 +504,7 @@ class TestErrorHandling:
                 embeddings_path=f"{tmpdir}/embeddings.faiss",
                 metadata_path=str(metadata_path),
             )
-            assert embeddings is not None
+            assert embeddings is not None, "embeddings must be initialized"
 
     def test_search_on_empty_index(self):
         """Test searching on empty index."""
@@ -515,7 +515,7 @@ class TestErrorHandling:
             )
 
             similar = embeddings.find_similar_text("test", k=5)
-            assert similar == []
+            assert similar == [], "similar is not valid"
 
 
 # Integration tests
@@ -543,7 +543,7 @@ class TestIntegration:
 
             # Search
             similar = embeddings1.find_similar_text("database", k=2)
-            assert len(similar) > 0
+            assert len(similar) > 0, "Similar must not be empty"
 
             # Save
             embeddings1.save_index()
@@ -555,6 +555,6 @@ class TestIntegration:
             )
 
             # Verify
-            assert len(embeddings2.list_sessions()) == 3
+            assert len(embeddings2.list_sessions()) == 3, "Collection must not be empty"
             similar2 = embeddings2.find_similar_text("database", k=2)
-            assert len(similar2) > 0
+            assert len(similar2) > 0, "Similar2 must not be empty"

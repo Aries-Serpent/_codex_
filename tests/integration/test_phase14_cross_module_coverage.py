@@ -34,7 +34,7 @@ class TestCLIToCoreIntegration:
         }
 
         # Verify config structure matches what core expects
-        assert "model" in mock_config
+        assert "model" in mock_config, "Condition must be true"
         assert isinstance(mock_config["learning_rate"], float)
         assert isinstance(mock_config["batch_size"], int)
 
@@ -47,9 +47,9 @@ class TestCLIToCoreIntegration:
         }
 
         # Verify training module would receive correct config
-        assert cli_args["seed"] == 42
-        assert cli_args["epochs"] > 0
-        assert Path(cli_args["output_dir"]).is_absolute()
+        assert cli_args["seed"] == 42, "Condition must be true"
+        assert cli_args["epochs"] > 0, "Value must be greater than zero"
+        assert Path(cli_args["output_dir"]).is_absolute(), "Condition must be true"
 
     def test_cli_error_propagation(self):
         """Test errors from core modules propagate to CLI correctly."""
@@ -82,8 +82,8 @@ class TestDataPipelineIntegration:
 
         # Validate structure
         for item in mock_data:
-            assert "text" in item
-            assert "label" in item
+            assert "text" in item, "Item must not be empty"
+            assert "label" in item, "Item must not be empty"
             assert isinstance(item["text"], str)
             assert isinstance(item["label"], int)
 
@@ -95,19 +95,19 @@ class TestDataPipelineIntegration:
         train_size = int(len(data) * train_ratio)
         val_size = len(data) - train_size
 
-        assert train_size == 80
-        assert val_size == 20
-        assert train_size + val_size == len(data)
+        assert train_size == 80, "train_size is not valid"
+        assert val_size == 20, "val_size is not valid"
+        assert train_size + val_size == len(data), "Data must not be empty"
 
     def test_empty_dataset_handling(self):
         """Test pipeline handles empty datasets gracefully."""
         empty_data = []
 
         # Should not crash on empty data
-        assert len(empty_data) == 0
+        assert len(empty_data) == 0, "Empty_data must not be empty"
         # Downstream code should handle this
         result = [item for item in empty_data if item]
-        assert result == []
+        assert result == [], "Result must not be empty"
 
 
 # =============================================================================
@@ -128,8 +128,8 @@ class TestTrainingEvaluationIntegration:
         }
 
         # Verify evaluable structure
-        assert "model_path" in training_result
-        assert "metrics" in training_result
+        assert "model_path" in training_result, "Result must not be empty"
+        assert "metrics" in training_result, "Result must not be empty"
         assert isinstance(training_result["metrics"], dict)
 
     def test_checkpoint_restore_continuity(self):
@@ -143,9 +143,9 @@ class TestTrainingEvaluationIntegration:
         }
 
         # Verify all necessary state is preserved
-        assert checkpoint["epoch"] == 5
-        assert "model_state" in checkpoint
-        assert "optimizer_state" in checkpoint
+        assert checkpoint["epoch"] == 5, "Condition must be true"
+        assert "model_state" in checkpoint, "Condition must be true"
+        assert "optimizer_state" in checkpoint, "Condition must be true"
 
     def test_metrics_aggregation(self):
         """Test metrics from training aggregate correctly."""
@@ -158,8 +158,8 @@ class TestTrainingEvaluationIntegration:
         avg_loss = sum(m["loss"] for m in epoch_metrics) / len(epoch_metrics)
         avg_acc = sum(m["accuracy"] for m in epoch_metrics) / len(epoch_metrics)
 
-        assert abs(avg_loss - 0.4) < 0.01
-        assert abs(avg_acc - 0.75) < 0.01
+        assert abs(avg_loss - 0.4) < 0.01, "Condition must be true"
+        assert abs(avg_acc - 0.75) < 0.01, "Condition must be true"
 
 
 # =============================================================================
@@ -178,8 +178,8 @@ class TestSecurityIntegration:
         # Mock sanitization result
         sanitized = input_text.replace("sk-test123456", "[REDACTED]")
 
-        assert "sk-test123456" not in sanitized
-        assert "[REDACTED]" in sanitized
+        assert "sk-test123456" not in sanitized, "Condition must be true"
+        assert "[REDACTED]" in sanitized, "Condition must be true"
 
     def test_moderation_before_processing(self):
         """Test moderation occurs before main processing."""
@@ -229,8 +229,8 @@ class TestConfigurationIntegration:
         # Apply override chain
         final = {**defaults, **file_config, **cli_override}
 
-        assert final["lr"] == 0.01
-        assert final["batch_size"] == 16
+        assert final["lr"] == 0.01, "Condition must be true"
+        assert final["batch_size"] == 16, "Condition must be true"
 
     def test_hydra_config_resolution(self):
         """Test Hydra-style configuration resolution."""
@@ -246,8 +246,8 @@ class TestConfigurationIntegration:
         }
 
         # Verify nested structure
-        assert config["model"]["name"] == "bert"
-        assert config["training"]["epochs"] == 10
+        assert config["model"]["name"] == "bert", "Condition must be true"
+        assert config["training"]["epochs"] == 10, "Condition must be true"
 
     def test_environment_variable_injection(self):
         """Test environment variables are injected into config."""
@@ -257,7 +257,7 @@ class TestConfigurationIntegration:
         os.environ["TEST_CONFIG_VAR"] = "test_value"
 
         # Config should be able to use env vars
-        assert os.environ.get("TEST_CONFIG_VAR") == "test_value"
+        assert os.environ.get("TEST_CONFIG_VAR") == "test_value", "Value must be initialized"
 
         # Cleanup
         del os.environ["TEST_CONFIG_VAR"]
@@ -292,7 +292,7 @@ class TestLoggingIntegration:
         logger.info("Integration test log message")
 
         # Verify logger works
-        assert logger.name == "test.integration"
+        assert logger.name == "test.integration", "name is not valid"
 
     def test_structured_logging_format(self):
         """Test structured logging produces valid format."""
@@ -310,8 +310,8 @@ class TestLoggingIntegration:
         json_str = json.dumps(log_entry)
         parsed = json.loads(json_str)
 
-        assert parsed["level"] == "INFO"
-        assert parsed["extra"]["epoch"] == 1
+        assert parsed["level"] == "INFO", "Condition must be true"
+        assert parsed["extra"]["epoch"] == 1, "Condition must be true"
 
 
 # =============================================================================
@@ -333,8 +333,8 @@ class TestErrorHandlingIntegration:
         try:
             raise ContextualError("Test error", {"module": "training", "epoch": 5})
         except ContextualError as e:
-            assert e.context["module"] == "training"
-            assert e.context["epoch"] == 5
+            assert e.context["module"] == "training", "Condition must be true"
+            assert e.context["epoch"] == 5, "Condition must be true"
 
     def test_error_recovery_flow(self):
         """Test error recovery mechanisms work."""
@@ -356,8 +356,8 @@ class TestErrorHandlingIntegration:
             except RuntimeError:
                 continue
 
-        assert result == "success"
-        assert attempts == 3
+        assert result == "success", "Result must not be empty"
+        assert attempts == 3, "attempts is not valid"
 
     def test_graceful_degradation(self):
         """Test graceful degradation when optional components fail."""
@@ -376,8 +376,8 @@ class TestErrorHandlingIntegration:
             return {"success": True, "optional_available": optional_result}
 
         result = main_function()
-        assert result["success"] is True
-        assert result["optional_available"] is False
+        assert result["success"] is True, "Result must not be empty"
+        assert result["optional_available"] is False, "Result must not be empty"
 
 
 # =============================================================================
@@ -394,8 +394,8 @@ class TestFileSystemIntegration:
             output_path = Path(tmpdir) / "subdir" / "output"
             output_path.mkdir(parents=True, exist_ok=True)
 
-            assert output_path.exists()
-            assert output_path.is_dir()
+            assert output_path.exists(), "Condition must be true"
+            assert output_path.is_dir(), "Condition must be true"
 
     def test_checkpoint_save_load_cycle(self):
         """Test checkpoint save and load cycle."""
@@ -410,8 +410,8 @@ class TestFileSystemIntegration:
         with open(checkpoint_path) as f:
             loaded = json.load(f)
 
-        assert loaded["epoch"] == 5
-        assert loaded["loss"] == 0.3
+        assert loaded["epoch"] == 5, "Condition must be true"
+        assert loaded["loss"] == 0.3, "Condition must be true"
 
         # Cleanup
         Path(checkpoint_path).unlink()
@@ -429,11 +429,11 @@ class TestFileSystemIntegration:
 
             # Verify files exist
             for path in temp_files:
-                assert path.exists()
+                assert path.exists(), "Condition must be true"
 
         # After context manager, directory and files should be gone
         for path in temp_files:
-            assert not path.exists()
+            assert not path.exists(), "Condition must be true"
 
 
 # =============================================================================
@@ -470,8 +470,8 @@ class TestEndToEndWorkflows:
         }
 
         # Verify end-to-end flow
-        assert eval_result["training"]["status"] == "completed"
-        assert eval_result["accuracy"] > 0.9
+        assert eval_result["training"]["status"] == "completed", "Result must not be empty"
+        assert eval_result["accuracy"] > 0.9, "Value must be greater than zero"
 
     def test_data_to_metrics_workflow(self):
         """Test workflow from raw data to final metrics."""
@@ -484,8 +484,8 @@ class TestEndToEndWorkflows:
         # Metrics computation
         avg_length = sum(d["length"] for d in processed) / len(processed)
 
-        assert len(processed) == 3
-        assert avg_length == 5.0  # All texts are length 5
+        assert len(processed) == 3, "Processed must not be empty"
+        assert avg_length == 5.0, "Length must be greater than zero"
 
     def test_error_to_recovery_workflow(self):
         """Test workflow handles errors and recovers."""
@@ -510,5 +510,5 @@ class TestEndToEndWorkflows:
 
         step2()
 
-        assert workflow_state["recovered"] is True
-        assert workflow_state["step"] == 2
+        assert workflow_state["recovered"] is True, "w is not valid"
+        assert workflow_state["step"] == 2, "w is not valid"

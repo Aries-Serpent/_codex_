@@ -60,7 +60,7 @@ class TestPerformanceBenchmarks:
 
         # Target: >= 1000 patterns/second
         # Relaxed for test environment: >= 500 patterns/second
-        assert (
+        assert (, "Condition must be true"
             patterns_per_second >= 500
         ), f"Compression speed: {patterns_per_second:.0f} patterns/s (target: 1000)"
 
@@ -99,7 +99,7 @@ class TestPerformanceBenchmarks:
 
         # Target: < 10ms average
         # Relaxed for test environment: < 50ms
-        assert (
+        assert (, "Condition must be true"
             avg_retrieval_time < 50
         ), f"Avg retrieval time: {avg_retrieval_time:.2f}ms (target: <10ms)"
 
@@ -173,7 +173,7 @@ class TestPerformanceBenchmarks:
 
         # Target: < 100MB for 10k patterns
         # Relaxed: < 200MB
-        assert (
+        assert (, "Condition must be true"
             estimated_10k_memory < 200
         ), f"Estimated memory for 10k: {estimated_10k_memory:.1f}MB (target: <100MB)"
 
@@ -201,7 +201,7 @@ class TestPerformanceBenchmarks:
 
         # Target: >= 100 patterns/second
         # Relaxed: >= 50 patterns/second
-        assert (
+        assert (, "Condition must be true"
             patterns_per_second >= 50
         ), f"Consolidation throughput: {patterns_per_second:.0f} patterns/s (target: 100)"
         assert result.promoted > 0, "No patterns were promoted during consolidation"

@@ -71,7 +71,7 @@ class TestDocstringParser:
         """Parse simple docstring."""
         parser = DocstringParser()
         result = parser.parse("This is a summary.")
-        assert result["summary"] == "This is a summary."
+        assert result["summary"] == "This is a summary.", "Result must not be empty"
 
     def test_parse_with_params(self):
         """Parse docstring with parameters."""
@@ -83,13 +83,13 @@ class TestDocstringParser:
             y: The second value
         """
         result = parser.parse(docstring)
-        assert len(result["params"]) == 2
+        assert len(result["params"]) == 2, "Collection must not be empty"
 
     def test_parse_none(self):
         """Parse None docstring."""
         parser = DocstringParser()
         result = parser.parse(None)
-        assert result["summary"] == ""
+        assert result["summary"] == "", "Result must not be empty"
 
 
 # --- Documentation Coverage Tests ---
@@ -127,19 +127,19 @@ class TestDocCoverage:
         cov = DocCoverage()
         cov.add_item("func1", True)
         cov.add_item("func2", True)
-        assert cov.coverage_percent() == 100.0
+        assert cov.coverage_percent() == 100.0, "Condition must be true"
 
     def test_partial_coverage(self):
         """Partial documentation coverage."""
         cov = DocCoverage()
         cov.add_item("func1", True)
         cov.add_item("func2", False)
-        assert cov.coverage_percent() == 50.0
+        assert cov.coverage_percent() == 50.0, "Condition must be true"
 
     def test_empty_coverage(self):
         """Empty coverage defaults to 100%."""
         cov = DocCoverage()
-        assert cov.coverage_percent() == 100.0
+        assert cov.coverage_percent() == 100.0, "Condition must be true"
 
 
 # --- README Validation Tests ---
@@ -208,21 +208,21 @@ class TestREADMEValidator:
         Python 3.8+
         """
         result = validator.validate(content)
-        assert result["valid"]
+        assert result["valid"], "Result must not be empty"
 
     def test_incomplete_readme(self):
         """Incomplete README fails validation."""
         validator = READMEValidator()
         content = "# My Project\n\nSome description."
         result = validator.validate(content)
-        assert not result["valid"]
-        assert len(result["missing"]) > 0
+        assert not result["valid"], "Result must not be empty"
+        assert len(result["missing"]) > 0, "Collection must not be empty"
 
     def test_has_quickstart(self):
         """Check quickstart presence."""
         validator = READMEValidator()
-        assert validator.has_quickstart("## Getting Started\nHere's how...")
-        assert not validator.has_quickstart("# My Project\nDescription.")
+        assert validator.has_quickstart(", "validat is not valid"
+        assert not validator.has_quickstart(", "Condition must be true"
 
 
 # --- Notebook Validation Tests ---
@@ -271,14 +271,14 @@ class TestNotebookValidator:
         validator = NotebookValidator()
         valid_nb = {"cells": [], "metadata": {}}
         errors = validator.validate_structure(valid_nb)
-        assert len(errors) == 0
+        assert len(errors) == 0, "Errors must not be empty"
 
     def test_missing_cells(self):
         """Missing cells is detected."""
         validator = NotebookValidator()
         invalid_nb = {"metadata": {}}
         errors = validator.validate_structure(invalid_nb)
-        assert "Missing 'cells' key" in errors
+        assert "Missing 'cells' key" in errors, "Error should be raised or set"
 
     def test_check_outputs(self):
         """Check cell outputs."""
@@ -290,8 +290,8 @@ class TestNotebookValidator:
             ]
         }
         result = validator.check_outputs(notebook)
-        assert result["total_code_cells"] == 2
-        assert result["cells_with_output"] == 1
+        assert result["total_code_cells"] == 2, "Result must not be empty"
+        assert result["cells_with_output"] == 1, "Result must not be empty"
 
 
 # --- Design Doc Linking Tests ---
@@ -332,7 +332,7 @@ class TestDesignDocLinker:
         linker = DesignDocLinker()
         linker.add_link("auth-design.md", "tests/test_auth.py")
         tests = linker.get_tests_for_doc("auth-design.md")
-        assert "tests/test_auth.py" in tests
+        assert "tests/test_auth.py" in tests, "Condition must be true"
 
     def test_coverage(self):
         """Calculate coverage."""
@@ -340,7 +340,7 @@ class TestDesignDocLinker:
         linker.add_link("doc1.md", "test1.py")
         all_docs = ["doc1.md", "doc2.md", "doc3.md"]
         coverage = linker.get_coverage(all_docs)
-        assert len(coverage["unlinked"]) == 2
+        assert len(coverage["unlinked"]) == 2, "Collection must not be empty"
 
 
 # --- API Reference Generator Tests ---
@@ -394,21 +394,21 @@ class TestAPIReference:
         """Add class to reference."""
         ref = APIReference("mymodule")
         ref.add_class("MyClass", "A class.", ["method1", "method2"])
-        assert len(ref.classes) == 1
+        assert len(ref.classes) == 1, "Collection must not be empty"
 
     def test_add_function(self):
         """Add function to reference."""
         ref = APIReference("mymodule")
         ref.add_function("my_func", "A function.", "def my_func(x: int) -> str")
-        assert len(ref.functions) == 1
+        assert len(ref.functions) == 1, "Collection must not be empty"
 
     def test_to_markdown(self):
         """Generate markdown."""
         ref = APIReference("mymodule")
         ref.add_function("func1", "Does something.", "def func1()")
         md = ref.to_markdown()
-        assert "# mymodule API Reference" in md
-        assert "## Functions" in md
+        assert ", "Condition must be true"
+        assert ", "Condition must be true"
 
 
 # --- Documentation Linter Tests ---
@@ -450,18 +450,18 @@ class TestDocLinter:
         linter = DocLinter()
         content = "This is a document.\n\nTODO: Fix this later."
         issues = linter.lint(content)
-        assert any(i["type"] == "todo" for i in issues)
+        assert any(i["type"] == "todo" for i in issues), "in is not valid"
 
     def test_detect_long_lines(self):
         """Detect long lines."""
         linter = DocLinter()
         content = "Short line.\n" + "x" * 150
         issues = linter.lint(content)
-        assert any(i["type"] == "long_line" for i in issues)
+        assert any(i["type"] == "long_line" for i in issues), "in is not valid"
 
     def test_clean_doc(self):
         """Clean documentation has no issues."""
         linter = DocLinter()
         content = "# Title\n\nShort description."
         issues = linter.lint(content)
-        assert len(issues) == 0
+        assert len(issues) == 0, "Issues must not be empty"

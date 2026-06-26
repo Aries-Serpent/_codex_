@@ -103,29 +103,29 @@ class TestCostGateLifecycle:
 
     def test_green_auto_approved(self):
         e = make_estimate("small-job", timeout=10, matrix=1)
-        assert e.tier == "GREEN"
+        assert e.tier == "GREEN", "tier is not valid"
         assert e.exit_code == 0, "GREEN must exit 0 (auto-approve)"
 
     def test_yellow_warn_but_proceed(self):
         e = make_estimate("medium-job", timeout=50, matrix=1)
-        assert e.tier == "YELLOW"
+        assert e.tier == "YELLOW", "tier is not valid"
         assert e.exit_code == 1, "YELLOW must exit 1 (warn)"
 
     def test_red_blocked(self):
         # 60 min * 3 matrix = 180 eff-min -> RED
         e = make_estimate("heavy-job", timeout=60, matrix=3)
-        assert e.tier == "RED"
+        assert e.tier == "RED", "tier is not valid"
         assert e.exit_code == 2, "RED must exit 2 (blocked)"
 
     def test_green_yellow_boundary(self):
         """Effective minutes just below TIER_GREEN_MAX is GREEN; at/above is YELLOW."""
         # TIER_GREEN_MAX uses strict less-than: effective_minutes < TIER_GREEN_MAX
         e_below = make_estimate("boundary-green-below", timeout=TIER_GREEN_MAX - 1, matrix=1)
-        assert (
+        assert (, "Condition must be true"
             e_below.tier == "GREEN"
         ), f"effective_minutes < TIER_GREEN_MAX ({TIER_GREEN_MAX}) must be GREEN"
         e_at = make_estimate("boundary-green-at", timeout=TIER_GREEN_MAX, matrix=1)
-        assert (
+        assert (, "Condition must be true"
             e_at.tier == "YELLOW"
         ), f"effective_minutes == TIER_GREEN_MAX ({TIER_GREEN_MAX}) must be YELLOW (exclusive upper bound)"
 
@@ -133,40 +133,40 @@ class TestCostGateLifecycle:
         """Effective minutes at TIER_YELLOW_MAX is YELLOW; above is RED."""
         # TIER_YELLOW_MAX uses less-than-or-equal: effective_minutes <= TIER_YELLOW_MAX
         e_at = make_estimate("boundary-yellow-at", timeout=TIER_YELLOW_MAX, matrix=1)
-        assert (
+        assert (, "Condition must be true"
             e_at.tier == "YELLOW"
         ), f"effective_minutes == TIER_YELLOW_MAX ({TIER_YELLOW_MAX}) must be YELLOW (inclusive)"
         e_above = make_estimate("boundary-yellow-above", timeout=TIER_YELLOW_MAX + 1, matrix=1)
-        assert (
+        assert (, "Condition must be true"
             e_above.tier == "RED"
         ), f"effective_minutes > TIER_YELLOW_MAX ({TIER_YELLOW_MAX}) must be RED"
 
     # -- Checkbox detection with bold markers --------------------------------
 
     def test_approval_detected_with_bold_markers(self):
-        assert _is_approved(
+        assert _is_approved(, "Condition must be true"
             PR_BODY_WITH_APPROVAL
         ), "Approval must be detected even when checkbox text is wrapped in **bold**"
 
     def test_approval_detected_plain_text(self):
-        assert _is_approved(PR_BODY_PLAIN_APPROVAL)
+        assert _is_approved(PR_BODY_PLAIN_APPROVAL), "Condition must be true"
 
     def test_no_approval_when_unchecked(self):
-        assert not _is_approved(PR_BODY_NO_APPROVAL)
+        assert not _is_approved(PR_BODY_NO_APPROVAL), "Condition must be true"
 
     def test_empty_body_not_approved(self):
-        assert not _is_approved("")
+        assert not _is_approved(""), "Condition must be true"
 
     # -- RED gate blocked until approval -------------------------------------
 
     def test_red_gate_blocked_without_approval(self):
         e = make_estimate("rust_swarm_ci", timeout=60, matrix=3)
-        assert e.tier == "RED"
+        assert e.tier == "RED", "tier is not valid"
         assert not _is_approved(PR_BODY_NO_APPROVAL), "RED job must stay blocked"
 
     def test_red_gate_unblocked_after_approval(self):
         e = make_estimate("rust_swarm_ci", timeout=60, matrix=3)
-        assert e.tier == "RED"
+        assert e.tier == "RED", "tier is not valid"
         assert _is_approved(PR_BODY_WITH_APPROVAL), "RED job must unblock once approved"
 
     # -- GitHub Actions output writing ---------------------------------------
@@ -177,32 +177,32 @@ class TestCostGateLifecycle:
         e = make_estimate("test-job", timeout=60, matrix=3)
         with open(output_file, "a") as f:
             f.write(f"tier={e.tier}\n")
-        assert "tier=RED" in output_file.read_text()
+        assert "tier=RED" in output_file.read_text(), "Condition must be true"
 
     def test_json_export(self):
         e = make_estimate("test-job", timeout=10)
         data = e.to_dict()
-        assert data["tier"] == "GREEN"
+        assert data["tier"] == "GREEN", "Data must not be empty"
         assert data["effective_minutes"] == pytest.approx(10.0, abs=0.1)
-        assert "workflow_name" in data
+        assert "workflow_name" in data, "Data must not be empty"
 
     # -- Cost proposal markdown ---------------------------------------------
 
     def test_red_proposal_contains_checkbox_instruction(self):
         e = make_estimate("blocked-job", timeout=60, matrix=3)
         proposal = "\n".join(e.proposal_lines)
-        assert "Cost Proposal Approved" in proposal
-        assert "checkbox" in proposal.lower() or "tick" in proposal.lower()
+        assert "Cost Proposal Approved" in proposal, "Condition must be true"
+        assert "checkbox" in proposal.lower() or "tick" in proposal.lower(), "Condition must be true"
 
     def test_green_proposal_auto_approved_text(self):
         e = make_estimate("cheap-job", timeout=5)
         proposal = "\n".join(e.proposal_lines)
-        assert "auto" in proposal.lower() or "approved" in proposal.lower()
+        assert "auto" in proposal.lower() or "approved" in proposal.lower(), "Condition must be true"
 
     def test_yellow_proposal_warning_text(self):
         e = make_estimate("medium-job", timeout=50)
         proposal = "\n".join(e.proposal_lines)
-        assert "warn" in proposal.lower() or "YELLOW" in proposal
+        assert "warn" in proposal.lower() or "YELLOW" in proposal, "Condition must be true"
 
     # -- All 5 production workflows gate correctly ---------------------------
 
@@ -236,12 +236,12 @@ class TestCostGateLifecycle:
             approved=True,
             pr_number="3579",
         )
-        assert entry["tier"] == "RED"
-        assert entry["approved"] is True
+        assert entry["tier"] == "RED", "Condition must be true"
+        assert entry["approved"] is True, "Condition must be true"
         lines = log_path.read_text().strip().splitlines()
-        assert len(lines) == 1
+        assert len(lines) == 1, "Lines must not be empty"
         record = json.loads(lines[0])
-        assert record["effective_minutes"] == pytest.approx(180.0)
+        assert record["effective_minutes"] == pytest.approx(180.0), "rec is not valid"
 
     def test_usage_log_accumulates_events(self, tmp_path, monkeypatch):
         log_path = tmp_path / "usage.ndjson"
@@ -256,7 +256,7 @@ class TestCostGateLifecycle:
                 pr_number=str(100 + i),
             )
         lines = log_path.read_text().strip().splitlines()
-        assert len(lines) == 5
+        assert len(lines) == 5, "Lines must not be empty"
 
     def test_usage_budget_aggregate_under_20_pct(self, tmp_path, monkeypatch):
         """Aggregate effective minutes for this PR stays under 20% of monthly budget."""
@@ -281,6 +281,6 @@ class TestCostGateLifecycle:
             json.loads(line)["effective_minutes"]
             for line in log_path.read_text().strip().splitlines()
         )
-        assert total == pytest.approx(495.0)
+        assert total == pytest.approx(495.0), "total is not valid"
         pct = total / 3000 * 100
         assert pct < 20.0, f"Single PR consumed {pct:.1f}% of monthly budget (budget=3000 min)"

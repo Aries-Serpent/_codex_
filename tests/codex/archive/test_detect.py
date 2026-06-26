@@ -21,12 +21,12 @@ class TestFileMeta:
             sloc=50,
         )
 
-        assert meta.path == "/path/to/file.py"
-        assert meta.size_bytes == 1024
-        assert meta.mtime_epoch == 1640000000.0
-        assert meta.mime == "text/x-python"
-        assert meta.lang == "python"
-        assert meta.sloc == 50
+        assert meta.path == "/path/to/file.py", "path is not valid"
+        assert meta.size_bytes == 1024, "size_bytes is not valid"
+        assert meta.mtime_epoch == 1640000000.0, "mtime_epoch is not valid"
+        assert meta.mime == "text/x-python", "mime is not valid"
+        assert meta.lang == "python", "lang is not valid"
+        assert meta.sloc == 50, "sloc is not valid"
 
 
 class TestSlocOfBytes:
@@ -40,7 +40,7 @@ class TestSlocOfBytes:
 
         result = _sloc_of_bytes(code)
 
-        assert result == 3  # 3 non-empty, non-comment lines
+        assert result == 3, "Result must not be empty"
 
     def test_empty_bytes(self):
         """Test SLOC counting for empty input."""
@@ -48,7 +48,7 @@ class TestSlocOfBytes:
 
         result = _sloc_of_bytes(b"")
 
-        assert result == 0
+        assert result == 0, "Result must not be empty"
 
     def test_only_comments(self):
         """Test SLOC counting for comment-only input."""
@@ -58,7 +58,7 @@ class TestSlocOfBytes:
 
         result = _sloc_of_bytes(code)
 
-        assert result == 0
+        assert result == 0, "Result must not be empty"
 
     def test_only_blank_lines(self):
         """Test SLOC counting for blank lines only."""
@@ -68,7 +68,7 @@ class TestSlocOfBytes:
 
         result = _sloc_of_bytes(code)
 
-        assert result == 0
+        assert result == 0, "Result must not be empty"
 
     def test_mixed_content(self):
         """Test SLOC counting for mixed content."""
@@ -79,7 +79,7 @@ class TestSlocOfBytes:
         result = _sloc_of_bytes(code)
 
         # def foo(): and pass are the only SLOC
-        assert result == 2
+        assert result == 2, "Result must not be empty"
 
     def test_js_style_comments(self):
         """Test SLOC counting ignores // comments."""
@@ -89,7 +89,7 @@ class TestSlocOfBytes:
 
         result = _sloc_of_bytes(code)
 
-        assert result == 1
+        assert result == 1, "Result must not be empty"
 
 
 class TestExtMappings:
@@ -99,26 +99,26 @@ class TestExtMappings:
         """Test Python extension mapping."""
         from codex.archive.detect import _EXT_TO_MIME
 
-        assert _EXT_TO_MIME[".py"] == "text/x-python"
+        assert _EXT_TO_MIME[".py"] == "text/x-python", "Condition must be true"
 
     def test_ext_to_mime_json(self):
         """Test JSON extension mapping."""
         from codex.archive.detect import _EXT_TO_MIME
 
-        assert _EXT_TO_MIME[".json"] == "application/json"
+        assert _EXT_TO_MIME[".json"] == "application/json", "Condition must be true"
 
     def test_ext_to_lang_python(self):
         """Test Python language mapping."""
         from codex.archive.detect import _EXT_TO_LANG
 
-        assert _EXT_TO_LANG[".py"] == "python"
+        assert _EXT_TO_LANG[".py"] == "python", "Condition must be true"
 
     def test_ext_to_lang_yaml(self):
         """Test YAML extension mapping."""
         from codex.archive.detect import _EXT_TO_LANG
 
-        assert _EXT_TO_LANG[".yml"] == "yaml"
-        assert _EXT_TO_LANG[".yaml"] == "yaml"
+        assert _EXT_TO_LANG[".yml"] == "yaml", "Condition must be true"
+        assert _EXT_TO_LANG[".yaml"] == "yaml", "Condition must be true"
 
 
 class TestModuleLevel:
@@ -128,5 +128,5 @@ class TestModuleLevel:
         """Test logger is configured."""
         from codex.archive.detect import logger
 
-        assert logger is not None
-        assert logger.name == "codex.archive.detect"
+        assert logger is not None, "logger must be initialized"
+        assert logger.name == "codex.archive.detect", "name is not valid"

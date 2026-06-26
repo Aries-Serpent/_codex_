@@ -41,9 +41,9 @@ class TestSessionLifecycle:
         """Session is created with initial state."""
         session = SessionInfo(session_id="sess-1", state=SessionState.DISCONNECTED)
 
-        assert session.session_id == "sess-1"
-        assert session.state == SessionState.DISCONNECTED
-        assert session.server_info is None
+        assert session.session_id == "sess-1", "session_id is not valid"
+        assert session.state == SessionState.DISCONNECTED, "state is not valid"
+        assert session.server_info is None, "server_info is not valid"
 
     def test_session_state_transitions(self):
         """Session follows valid state transitions."""
@@ -74,10 +74,10 @@ class TestSessionLifecycle:
                 return self.state == SessionState.READY
 
         session = Session()
-        assert not session.is_ready()
+        assert not session.is_ready(), "Condition must be true"
 
         session.state = SessionState.READY
-        assert session.is_ready()
+        assert session.is_ready(), "Condition must be true"
 
 
 class TestSessionCapabilities:
@@ -108,9 +108,9 @@ class TestSessionCapabilities:
 
         result = negotiate_capabilities(client_caps, server_caps)
 
-        assert "tools" in result
-        assert "resources" in result
-        assert "prompts" not in result  # Not supported by server
+        assert "tools" in result, "Result must not be empty"
+        assert "resources" in result, "Result must not be empty"
+        assert "prompts" not in result, "Result must not be empty"
 
     def test_required_capabilities(self):
         """Required capabilities are validated."""
@@ -166,7 +166,7 @@ class TestSessionPool:
         pool.release(s1)
         s3 = pool.acquire()  # Reuses s1
 
-        assert s3 == s1
+        assert s3 == s1, "s3 is not valid"
 
     def test_session_pool_health_check(self):
         """Pool performs health checks on sessions."""
@@ -190,7 +190,7 @@ class TestSessionPool:
         ]
 
         healthy = pool.health_check()
-        assert len(healthy) == 2
+        assert len(healthy) == 2, "Healthy must not be empty"
 
 
 class TestSessionTimeout:
@@ -212,13 +212,13 @@ class TestSessionTimeout:
                 return time.time() - self.last_activity > self.timeout
 
         timeout = SessionTimeout(timeout_seconds=0.1)
-        assert not timeout.is_expired()
+        assert not timeout.is_expired(), "Condition must be true"
 
         time.sleep(0.15)
-        assert timeout.is_expired()
+        assert timeout.is_expired(), "Condition must be true"
 
         timeout.touch()
-        assert not timeout.is_expired()
+        assert not timeout.is_expired(), "Condition must be true"
 
     def test_session_keepalive(self):
         """Keepalive messages prevent timeout."""
@@ -237,10 +237,10 @@ class TestSessionTimeout:
         session = Session()
 
         ping = session.send_keepalive()
-        assert ping["type"] == "ping"
+        assert ping["type"] == "ping", "Condition must be true"
 
-        assert session.handle_keepalive_response({"type": "pong"})
-        assert not session.handle_keepalive_response({"type": "error"})
+        assert session.handle_keepalive_response({"type": "pong"}), "Response must not be empty"
+        assert not session.handle_keepalive_response({"type": "error"}), "Response must not be empty"
 
 
 class TestSessionReconnection:
@@ -268,12 +268,12 @@ class TestSessionReconnection:
 
         policy = ReconnectionPolicy(base_delay=1.0, max_delay=30.0, max_attempts=5)
 
-        assert policy.next_delay() == 1.0  # Attempt 0
-        assert policy.next_delay() == 2.0  # Attempt 1
-        assert policy.next_delay() == 4.0  # Attempt 2
-        assert policy.next_delay() == 8.0  # Attempt 3
-        assert policy.next_delay() == 16.0  # Attempt 4
-        assert policy.next_delay() is None  # Max attempts reached
+        assert policy.next_delay() == 1.0, "Condition must be true"
+        assert policy.next_delay() == 2.0, "Condition must be true"
+        assert policy.next_delay() == 4.0, "Condition must be true"
+        assert policy.next_delay() == 8.0, "Condition must be true"
+        assert policy.next_delay() == 16.0, "Condition must be true"
+        assert policy.next_delay() is None, "Condition must be true"
 
     def test_session_state_recovery(self):
         """Session state is recovered after reconnection."""
@@ -302,4 +302,4 @@ class TestSessionReconnection:
         new_state = SessionState()
         new_state.restore_state(saved)
 
-        assert "resource://docs" in new_state.subscriptions
+        assert "resource://docs" in new_state.subscriptions, "Condition must be true"

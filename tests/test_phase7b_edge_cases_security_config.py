@@ -26,9 +26,9 @@ class TestSecurityEncryptionEdgeCases:
         try:
             encryptor = Encryptor()
             encrypted = encryptor.encrypt("")
-            assert encrypted is not None
+            assert encrypted is not None, "encrypted must be initialized"
             decrypted = encryptor.decrypt(encrypted)
-            assert decrypted == ""
+            assert decrypted == "", "decrypted is not valid"
         except (ValueError, AttributeError):
             pass
 
@@ -51,9 +51,9 @@ class TestSecurityEncryptionEdgeCases:
             encryptor = Encryptor()
             large_text = "x" * 1000000  # 1MB
             encrypted = encryptor.encrypt(large_text)
-            assert encrypted is not None
+            assert encrypted is not None, "encrypted must be initialized"
             decrypted = encryptor.decrypt(encrypted)
-            assert decrypted == large_text
+            assert decrypted == large_text, "decrypted is not valid"
         except (ValueError, AttributeError, MemoryError):
             pass
 
@@ -95,7 +95,7 @@ class TestSecurityTokenRotation:
         try:
             rotator = TokenRotator()
             new_token = rotator.rotate(current_token="")
-            assert new_token is not None and new_token != ""
+            assert new_token is not None and new_token != "", "new_token must be initialized"
         except (ValueError, AttributeError):
             pass
 
@@ -118,7 +118,7 @@ class TestSecurityTokenRotation:
             rotator = TokenRotator()
             # Create expired token
             expired_token = rotator.create_token(ttl=-1)  # Already expired
-            assert rotator.is_expired(expired_token)
+            assert rotator.is_expired(expired_token), "rotat is not valid"
         except (ValueError, AttributeError, TypeError):
             pass
 
@@ -133,7 +133,7 @@ class TestSecurityContentFilters:
         try:
             filter = ContentFilter()
             result = filter.filter("")
-            assert result == ""
+            assert result == "", "Result must not be empty"
         except (ValueError, AttributeError):
             pass
 
@@ -156,7 +156,7 @@ class TestSecurityContentFilters:
             filter = ContentFilter()
             binary_data = b"binary_content"
             result = filter.filter(binary_data)
-            assert result is not None
+            assert result is not None, "result must be initialized"
         except (ValueError, AttributeError, TypeError):
             pass
 
@@ -176,7 +176,7 @@ class TestConfigurationValidation:
         try:
             config = ArchiveConfig({})
             # Should apply defaults
-            assert config is not None
+            assert config is not None, "config must be initialized"
         except (ValueError, KeyError, TypeError):
             pass
 
@@ -225,7 +225,7 @@ class TestConfigurationOverrides:
             base_config = ArchiveConfig({"setting1": "value1"})
             merged = base_config.merge({})
             # Should remain unchanged
-            assert merged is not None
+            assert merged is not None, "merged must be initialized"
         except (ValueError, AttributeError):
             pass
 
@@ -237,7 +237,7 @@ class TestConfigurationOverrides:
             base_config = ArchiveConfig({"setting1": "value1"})
             merged = base_config.merge({"setting1": None})
             # May clear or preserve
-            assert merged is not None
+            assert merged is not None, "merged must be initialized"
         except (ValueError, AttributeError, TypeError):
             pass
 
@@ -249,7 +249,7 @@ class TestConfigurationOverrides:
             base_config = ArchiveConfig({"nested": {"key1": "val1", "key2": "val2"}})
             merged = base_config.merge({"nested": {"key1": "new_val1"}})
             # Should merge deeply
-            assert merged is not None
+            assert merged is not None, "merged must be initialized"
         except (ValueError, AttributeError):
             pass
 
@@ -384,7 +384,7 @@ class TestArchiveStandardization:
         try:
             std = Standardizer()
             result = std.standardize({})
-            assert result is not None
+            assert result is not None, "result must be initialized"
         except (ValueError, AttributeError):
             pass
 
@@ -422,7 +422,7 @@ class TestArchiveSimilarity:
             calc = SimilarityCalculator()
             similarity = calc.calculate("", "")
             # Empty strings have high similarity
-            assert similarity == 1.0 or similarity == 0
+            assert similarity == 1.0 or similarity == 0, "similarity is not valid"
         except (ValueError, AttributeError):
             pass
 
@@ -433,7 +433,7 @@ class TestArchiveSimilarity:
         try:
             calc = SimilarityCalculator()
             similarity = calc.calculate("test", "test")
-            assert similarity == 1.0
+            assert similarity == 1.0, "similarity is not valid"
         except (ValueError, AttributeError):
             pass
 
@@ -445,7 +445,7 @@ class TestArchiveSimilarity:
             calc = SimilarityCalculator()
             similarity = calc.calculate("abc", "xyz")
             # Should be close to 0
-            assert 0 <= similarity <= 0.3
+            assert 0 <= similarity <= 0.3, "0 is not valid"
         except (ValueError, AttributeError):
             pass
 
@@ -465,7 +465,7 @@ class TestRAGChunkingEdgeCases:
         try:
             chunker = TextChunker()
             chunks = chunker.chunk("")
-            assert chunks == [] or chunks == [""]
+            assert chunks == [] or chunks == [""], "chunks is not valid"
         except (ValueError, AttributeError):
             pass
 
@@ -476,7 +476,7 @@ class TestRAGChunkingEdgeCases:
         try:
             chunker = TextChunker()
             chunks = chunker.chunk("x")
-            assert len(chunks) >= 1
+            assert len(chunks) >= 1, "Chunks must not be empty"
         except (ValueError, AttributeError):
             pass
 
@@ -488,7 +488,7 @@ class TestRAGChunkingEdgeCases:
             chunker = TextChunker()
             long_text = "word " * 10000  # ~50KB
             chunks = chunker.chunk(long_text)
-            assert len(chunks) > 0
+            assert len(chunks) > 0, "Chunks must not be empty"
         except (ValueError, AttributeError, MemoryError):
             pass
 
@@ -503,7 +503,7 @@ class TestRAGEmbeddingGeneration:
         try:
             gen = EmbeddingGenerator()
             embedding = gen.generate("")
-            assert embedding is not None
+            assert embedding is not None, "embedding must be initialized"
         except (ValueError, AttributeError):
             pass
 
@@ -526,7 +526,7 @@ class TestRAGEmbeddingGeneration:
             gen = EmbeddingGenerator()
             special_text = "!@#$%^&*()_+-=[]{}|;:,.<>?"
             embedding = gen.generate(special_text)
-            assert embedding is not None
+            assert embedding is not None, "embedding must be initialized"
         except (ValueError, AttributeError):
             pass
 

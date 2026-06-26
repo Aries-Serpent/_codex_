@@ -21,7 +21,7 @@ def test_iter_text_uses_chunk_size(monkeypatch):
     calls: list[int | None] = []
 
     def fake_ingest(path, *, encoding, chunk_size):  # pragma: no cover - stub
-        assert encoding == "auto"
+        assert encoding == "auto", "encoding is not valid"
         calls.append(chunk_size)
         yield f"chunk:{path}\n"
 
@@ -87,13 +87,13 @@ def test_sentencepiece_streaming_iterator(monkeypatch, tmp_path):
 
     out_dir = train_tokenizer.train(cfg)
     iterator = captured.get("sentence_iterator")
-    assert iterator is not None
+    assert iterator is not None, "iterator must be initialized"
     sentences = list(iterator)
     assert sentences == ["alpha\n", "beta\n"]
 
     manifest = json.loads((out_dir / "manifest.json").read_text(encoding="utf-8"))
-    assert manifest["config"]["stream_chunk_size"] == 3
-    assert manifest["config"]["streaming"] is True
+    assert manifest["config"]["stream_chunk_size"] == 3, "Condition must be true"
+    assert manifest["config"]["streaming"] is True, "Condition must be true"
 
 
 def test_sentencepiece_streaming_seed_fallback_recreates_iterator(monkeypatch, tmp_path):

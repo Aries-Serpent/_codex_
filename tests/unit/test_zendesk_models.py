@@ -28,8 +28,8 @@ def test_trigger_diff_changes_position_and_category() -> None:
 
     patches = trigger_desired.diff(trigger_current)
 
-    assert any(patch["path"] == "/position" for patch in patches)
-    assert any(patch["path"] == "/category" for patch in patches)
+    assert any(patch["path"] == "/position" for patch in patches), "Condition must be true"
+    assert any(patch["path"] == "/category" for patch in patches), "Condition must be true"
 
 
 def test_ticketfield_diff_detects_options_change() -> None:
@@ -48,7 +48,7 @@ def test_ticketfield_diff_detects_options_change() -> None:
 
     patches = field_desired.diff(field_current)
 
-    assert patches and patches[0]["path"] == "/options"
+    assert patches and patches[0]["path"] == "/options", "patches is not valid"
 
 
 def test_group_diff_membership_change() -> None:
@@ -65,4 +65,4 @@ def test_group_diff_membership_change() -> None:
 
     patches = group_desired.diff(group_current)
 
-    assert patches and patches[0]["path"] == "/memberships"
+    assert patches and patches[0]["path"] == "/memberships", "patches is not valid"

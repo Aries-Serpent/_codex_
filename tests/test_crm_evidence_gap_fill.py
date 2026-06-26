@@ -29,8 +29,8 @@ class TestSHA256FileHashing:
         try:
             result = sha256_file(temp_path)
             assert isinstance(result, str)
-            assert len(result) == 64  # SHA256 hex is 64 chars
-            assert result.isalnum()
+            assert len(result) == 64, "Result must not be empty"
+            assert result.isalnum(), "Result must not be empty"
         finally:
             temp_path.unlink()
 
@@ -43,7 +43,7 @@ class TestSHA256FileHashing:
         try:
             result1 = sha256_file(temp_path)
             result2 = sha256_file(temp_path)
-            assert result1 == result2
+            assert result1 == result2, "Result must not be empty"
         finally:
             temp_path.unlink()
 
@@ -60,7 +60,7 @@ class TestSHA256FileHashing:
         try:
             result1 = sha256_file(temp_path1)
             result2 = sha256_file(temp_path2)
-            assert result1 != result2
+            assert result1 != result2, "Result must not be empty"
         finally:
             temp_path1.unlink()
             temp_path2.unlink()
@@ -75,7 +75,7 @@ class TestSHA256FileHashing:
         try:
             result = sha256_file(temp_path)
             assert isinstance(result, str)
-            assert len(result) == 64
+            assert len(result) == 64, "Result must not be empty"
         finally:
             temp_path.unlink()
 
@@ -88,7 +88,7 @@ class TestSHA256FileHashing:
             result = sha256_file(temp_path)
             # Empty file hash
             expected = hashlib.sha256(b"").hexdigest()
-            assert result == expected
+            assert result == expected, "Result must not be empty"
         finally:
             temp_path.unlink()
 
@@ -101,7 +101,7 @@ class TestSHA256FileHashing:
         try:
             result = sha256_file(temp_path)
             assert isinstance(result, str)
-            assert len(result) == 64
+            assert len(result) == 64, "Result must not be empty"
         finally:
             temp_path.unlink()
 
@@ -114,7 +114,7 @@ class TestWriteEvidenceBasic:
         with tempfile.TemporaryDirectory() as tmpdir:
             output_path = Path(tmpdir) / "evidence"
             write_evidence(output_path)
-            assert output_path.exists()
+            assert output_path.exists(), "Condition must be true"
 
     def test_write_evidence_creates_seeds_file(self):
         """Test that write_evidence creates seeds.json."""
@@ -123,11 +123,11 @@ class TestWriteEvidenceBasic:
             write_evidence(output_path)
 
             seeds_file = output_path / "seeds.json"
-            assert seeds_file.exists()
+            assert seeds_file.exists(), "Condition must be true"
 
             content = json.loads(seeds_file.read_text())
-            assert "rng" in content
-            assert content["rng"] == 1337
+            assert "rng" in content, "Content must not be empty"
+            assert content["rng"] == 1337, "Content must not be empty"
 
     def test_write_evidence_creates_env_file(self):
         """Test that write_evidence creates env.json."""
@@ -136,12 +136,12 @@ class TestWriteEvidenceBasic:
             write_evidence(output_path)
 
             env_file = output_path / "env.json"
-            assert env_file.exists()
+            assert env_file.exists(), "Condition must be true"
 
             content = json.loads(env_file.read_text())
-            assert "platform" in content
-            assert "python" in content
-            assert "timestamp" in content
+            assert "platform" in content, "Content must not be empty"
+            assert "python" in content, "Content must not be empty"
+            assert "timestamp" in content, "Content must not be empty"
 
     def test_write_evidence_creates_checksums_file(self):
         """Test that write_evidence creates checksums.json."""
@@ -150,7 +150,7 @@ class TestWriteEvidenceBasic:
             write_evidence(output_path)
 
             checksums_file = output_path / "checksums.json"
-            assert checksums_file.exists()
+            assert checksums_file.exists(), "Condition must be true"
 
             content = json.loads(checksums_file.read_text())
             assert isinstance(content, dict)
@@ -162,11 +162,11 @@ class TestWriteEvidenceBasic:
             write_evidence(output_path)
 
             manifest_file = output_path / "run_manifest.json"
-            assert manifest_file.exists()
+            assert manifest_file.exists(), "Condition must be true"
 
             content = json.loads(manifest_file.read_text())
-            assert "timestamp" in content
-            assert "artifacts" in content
+            assert "timestamp" in content, "Content must not be empty"
+            assert "artifacts" in content, "Content must not be empty"
             assert isinstance(content["artifacts"], list)
 
     def test_write_evidence_creates_manifest_file(self):
@@ -176,10 +176,10 @@ class TestWriteEvidenceBasic:
             write_evidence(output_path)
 
             manifest_file = output_path / "manifest.json"
-            assert manifest_file.exists()
+            assert manifest_file.exists(), "Condition must be true"
 
             content = json.loads(manifest_file.read_text())
-            assert "message" in content
+            assert "message" in content, "Content must not be empty"
 
 
 class TestWriteEvidenceWithSeeds:
@@ -194,8 +194,8 @@ class TestWriteEvidenceWithSeeds:
 
             seeds_file = output_path / "seeds.json"
             content = json.loads(seeds_file.read_text())
-            assert content["rng"] == 9999
-            assert content["other"] == 42
+            assert content["rng"] == 9999, "Content must not be empty"
+            assert content["other"] == 42, "Content must not be empty"
 
     def test_write_evidence_with_none_seeds(self):
         """Test write_evidence with None seeds defaults to {rng: 1337}."""
@@ -205,7 +205,7 @@ class TestWriteEvidenceWithSeeds:
 
             seeds_file = output_path / "seeds.json"
             content = json.loads(seeds_file.read_text())
-            assert content["rng"] == 1337
+            assert content["rng"] == 1337, "Content must not be empty"
 
 
 class TestWriteEvidenceEnvironment:
@@ -219,7 +219,7 @@ class TestWriteEvidenceEnvironment:
 
             env_file = output_path / "env.json"
             content = json.loads(env_file.read_text())
-            assert content["platform"] == platform.platform()
+            assert content["platform"] == platform.platform(), "Content must not be empty"
 
     def test_env_contains_python_version(self):
         """Test that environment includes Python version."""
@@ -229,7 +229,7 @@ class TestWriteEvidenceEnvironment:
 
             env_file = output_path / "env.json"
             content = json.loads(env_file.read_text())
-            assert content["python"] == platform.python_version()
+            assert content["python"] == platform.python_version(), "Content must not be empty"
 
     def test_env_contains_timestamp(self):
         """Test that environment includes timestamp."""
@@ -241,7 +241,7 @@ class TestWriteEvidenceEnvironment:
 
             env_file = output_path / "env.json"
             content = json.loads(env_file.read_text())
-            assert before <= content["timestamp"] <= after
+            assert before <= content["timestamp"] <= after, "Content must not be empty"
 
 
 class TestWriteEvidenceChecksums:
@@ -258,7 +258,7 @@ class TestWriteEvidenceChecksums:
 
             checksums_file = output_path / "checksums.json"
             content = json.loads(checksums_file.read_text())
-            assert content == {}
+            assert content == {}, "Content must not be empty"
 
     def test_run_manifest_artifacts_list(self):
         """Test that run manifest contains artifacts as sorted list."""
@@ -273,7 +273,7 @@ class TestWriteEvidenceChecksums:
             # Verify it's sorted
             if len(content["artifacts"]) > 0:
                 sorted_list = sorted(content["artifacts"])
-                assert content["artifacts"] == sorted_list
+                assert content["artifacts"] == sorted_list, "Content must not be empty"
 
 
 class TestWriteEvidencePathHandling:
@@ -285,7 +285,7 @@ class TestWriteEvidencePathHandling:
             output_str = str(Path(tmpdir) / "evidence")
             write_evidence(output_str)
 
-            assert Path(output_str).exists()
+            assert Path(output_str).exists(), "Condition must be true"
 
     def test_write_evidence_with_path_object(self):
         """Test write_evidence with Path object."""
@@ -293,7 +293,7 @@ class TestWriteEvidencePathHandling:
             output_path = Path(tmpdir) / "evidence"
             write_evidence(output_path)
 
-            assert output_path.exists()
+            assert output_path.exists(), "Condition must be true"
 
     def test_write_evidence_nested_directory(self):
         """Test write_evidence creates nested directories."""
@@ -301,7 +301,7 @@ class TestWriteEvidencePathHandling:
             output_path = Path(tmpdir) / "nested" / "evidence" / "path"
             write_evidence(output_path)
 
-            assert output_path.exists()
+            assert output_path.exists(), "Condition must be true"
 
     def test_write_evidence_existing_directory(self):
         """Test write_evidence with existing directory."""
@@ -310,7 +310,7 @@ class TestWriteEvidencePathHandling:
             output_path.mkdir()
 
             write_evidence(output_path)
-            assert output_path.exists()
+            assert output_path.exists(), "Condition must be true"
 
 
 class TestWriteEvidenceFileContents:
@@ -331,7 +331,7 @@ class TestWriteEvidenceFileContents:
             ]
 
             for json_file in json_files:
-                assert json_file.exists()
+                assert json_file.exists(), "Condition must be true"
                 content = json.loads(json_file.read_text())
                 assert isinstance(content, dict)
 
@@ -347,7 +347,7 @@ class TestWriteEvidenceFileContents:
             # Verify it matches JSON with sorted keys
             original = json.loads(text)
             reserialized = json.dumps(original, indent=2, sort_keys=True)
-            assert text == reserialized
+            assert text == reserialized, "text is not valid"
 
 
 class TestEvidenceIntegration:
@@ -361,19 +361,19 @@ class TestEvidenceIntegration:
             write_evidence(output_path, seeds=custom_seeds)
 
             # Verify all files exist
-            assert (output_path / "seeds.json").exists()
-            assert (output_path / "env.json").exists()
-            assert (output_path / "checksums.json").exists()
-            assert (output_path / "run_manifest.json").exists()
-            assert (output_path / "manifest.json").exists()
+            assert (output_path / "seeds.json").exists(), "Condition must be true"
+            assert (output_path / "env.json").exists(), "Condition must be true"
+            assert (output_path / "checksums.json").exists(), "Condition must be true"
+            assert (output_path / "run_manifest.json").exists(), "Condition must be true"
+            assert (output_path / "manifest.json").exists(), "Condition must be true"
 
             # Verify seeds content
             seeds = json.loads((output_path / "seeds.json").read_text())
-            assert seeds["rng"] == 555
+            assert seeds["rng"] == 555, "Condition must be true"
 
             # Verify env structure
             env = json.loads((output_path / "env.json").read_text())
-            assert len(env) >= 3
+            assert len(env) >= 3, "Env must not be empty"
 
     def test_evidence_reproducibility(self):
         """Test that running evidence writing twice produces consistent results."""
@@ -388,9 +388,9 @@ class TestEvidenceIntegration:
             # Compare seeds files
             seeds1 = json.loads((output_path1 / "seeds.json").read_text())
             seeds2 = json.loads((output_path2 / "seeds.json").read_text())
-            assert seeds1 == seeds2
+            assert seeds1 == seeds2, "seeds1 is not valid"
 
             # Compare manifests structure (timestamps will differ)
             manifest1 = json.loads((output_path1 / "run_manifest.json").read_text())
             manifest2 = json.loads((output_path2 / "run_manifest.json").read_text())
-            assert manifest1["artifacts"] == manifest2["artifacts"]
+            assert manifest1["artifacts"] == manifest2["artifacts"], "Condition must be true"

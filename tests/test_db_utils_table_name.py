@@ -14,7 +14,7 @@ def test_db_utils_table_name() -> None:
     con.execute("CREATE TABLE other (id INTEGER)")
     con.execute("CREATE TABLE session_events (session_id TEXT, message TEXT)")
     table = infer_probable_table(con)
-    assert table == "session_events"
+    assert table == "session_events", "table is not valid"
 
 
 def test_get_columns_rejects_invalid_name() -> None:

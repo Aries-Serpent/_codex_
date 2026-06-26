@@ -39,8 +39,8 @@ def _move_batch_to_device(batch: Mapping[str, object], device: object) -> Mappin
                 continue
             except (ValueError, TypeError, RuntimeError) as e:
                 error_type = type(e).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
-                logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
+                logger.debug("Exception: <ERROR_TYPE>")
+                logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
         moved[key] = value
     return moved
 

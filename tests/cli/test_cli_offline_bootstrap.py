@@ -28,7 +28,7 @@ def test_track_bootstrap_sets_env(tmp_path, monkeypatch):
     proc = subprocess.run(cmd, check=True, capture_output=True, text=True)
     payload = json.loads(proc.stdout)
 
-    assert payload["ok"] is True
+    assert payload["ok"] is True, "Condition must be true"
 
     # Handle nested JSON structure: mlflow.env.MLFLOW_TRACKING_URI
     mlflow_section = payload.get("mlflow", {})
@@ -70,4 +70,4 @@ def test_track_bootstrap_prints_exports(tmp_path, monkeypatch):
     ]
     proc = subprocess.run(cmd, check=True, capture_output=True, text=True)
     stdout = proc.stdout.strip()
-    assert "export MLFLOW_TRACKING_URI=" in stdout
+    assert "export MLFLOW_TRACKING_URI=" in stdout, "Condition must be true"

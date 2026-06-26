@@ -26,5 +26,5 @@ if __name__ == "__main__":
 
 def test_capture_exceptions_handles_system_exit_zero() -> None:
     proc = subprocess.run([sys.executable, "-c", SCRIPT], capture_output=True, text=True)
-    assert proc.returncode == 0
-    assert "Unhandled exception" not in proc.stderr
+    assert proc.returncode == 0, "returncode is not valid"
+    assert "Unhandled exception" not in proc.stderr, "Condition must be true"

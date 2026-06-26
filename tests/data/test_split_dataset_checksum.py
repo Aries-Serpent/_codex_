@@ -16,4 +16,4 @@ def test_split_dataset_writes_checksum(tmp_path):
     h = hashlib.sha256()
     for t in texts:
         h.update(t.encode("utf-8"))
-    assert chk.read_text() == h.hexdigest()
+    assert chk.read_text() == h.hexdigest(), "Condition must be true"

@@ -18,7 +18,7 @@ class TestTokenizerModuleImport:
         try:
             from codex_ml.cli import tokenizer
 
-            assert tokenizer is not None
+            assert tokenizer is not None, "tokenizer must be initialized"
         except ImportError as e:
             pytest.skip(f"Module import failed: {e}")
 

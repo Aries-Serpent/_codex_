@@ -39,19 +39,19 @@ class TestVocabChecksumValidation:
         """Identical vocabularies should have same checksum."""
         vocab1 = {"hello": 0, "world": 1, "<unk>": 2, "<pad>": 3}
         vocab2 = {"hello": 0, "world": 1, "<unk>": 2, "<pad>": 3}
-        assert compute_vocab_checksum(vocab1) == compute_vocab_checksum(vocab2)
+        assert compute_vocab_checksum(vocab1) == compute_vocab_checksum(vocab2), "Condition must be true"
 
     def test_different_vocab_different_checksum(self):
         """Different vocabularies should have different checksums."""
         vocab1 = {"hello": 0, "world": 1}
         vocab2 = {"hello": 0, "universe": 1}
-        assert compute_vocab_checksum(vocab1) != compute_vocab_checksum(vocab2)
+        assert compute_vocab_checksum(vocab1) != compute_vocab_checksum(vocab2), "Condition must be true"
 
     def test_checksum_order_independent(self):
         """Checksum should be order-independent due to sorting."""
         vocab1 = {"a": 0, "b": 1, "c": 2}
         vocab2 = {"c": 2, "a": 0, "b": 1}
-        assert compute_vocab_checksum(vocab1) == compute_vocab_checksum(vocab2)
+        assert compute_vocab_checksum(vocab1) == compute_vocab_checksum(vocab2), "Condition must be true"
 
     @given(
         st.dictionaries(
@@ -66,7 +66,7 @@ class TestVocabChecksumValidation:
         """Property: checksum is deterministic for any vocab."""
         h1 = compute_vocab_checksum(vocab)
         h2 = compute_vocab_checksum(vocab)
-        assert h1 == h2
+        assert h1 == h2, "h1 is not valid"
 
 
 # --- Version Pinning Tests ---
@@ -95,19 +95,19 @@ class TestVersionPinning:
         """Matching version info should be equal."""
         v1 = TokenizerVersionInfo("gpt2", "1.0.0", "abc123")
         v2 = TokenizerVersionInfo("gpt2", "1.0.0", "abc123")
-        assert v1.matches(v2)
+        assert v1.matches(v2), "Condition must be true"
 
     def test_version_mismatch(self):
         """Different versions should not match."""
         v1 = TokenizerVersionInfo("gpt2", "1.0.0", "abc123")
         v2 = TokenizerVersionInfo("gpt2", "1.0.1", "abc123")
-        assert not v1.matches(v2)
+        assert not v1.matches(v2), "Condition must be true"
 
     def test_checksum_mismatch(self):
         """Different checksums should not match."""
         v1 = TokenizerVersionInfo("gpt2", "1.0.0", "abc123")
         v2 = TokenizerVersionInfo("gpt2", "1.0.0", "def456")
-        assert not v1.matches(v2)
+        assert not v1.matches(v2), "Condition must be true"
 
 
 # --- Fast Tokenizer Parity Tests ---
@@ -136,7 +136,7 @@ class TestFastTokenizerParity:
         text = "hello"
         slow = self.encode_slow(text, vocab)
         fast = self.encode_fast(text, vocab)
-        assert slow == fast
+        assert slow == fast, "slow is not valid"
 
     def test_unknown_token_parity(self):
         """Unknown tokens should be handled identically."""
@@ -144,8 +144,8 @@ class TestFastTokenizerParity:
         text = "abc"
         slow = self.encode_slow(text, vocab)
         fast = self.encode_fast(text, vocab)
-        assert slow == fast
-        assert 2 in slow  # <unk> for 'c'
+        assert slow == fast, "slow is not valid"
+        assert 2 in slow, "Condition must be true"
 
     @given(st.text(min_size=1, max_size=50))
     @settings(max_examples=30)
@@ -155,7 +155,7 @@ class TestFastTokenizerParity:
         vocab["<unk>"] = 256
         slow = self.encode_slow(text, vocab)
         fast = self.encode_fast(text, vocab)
-        assert slow == fast
+        assert slow == fast, "slow is not valid"
 
 
 # --- Multilingual Tokenization Tests ---
@@ -167,33 +167,33 @@ class TestMultilingualTokenization:
     def test_ascii_text(self):
         """ASCII text should tokenize correctly."""
         text = "Hello world"
-        assert len(text.encode("utf-8")) == len(text)
+        assert len(text.encode("utf-8")) == len(text), "Text must not be empty"
 
     def test_unicode_text(self):
         """Unicode text should tokenize correctly."""
         text = "Héllo wörld"
         encoded = text.encode("utf-8")
-        assert len(encoded) > len(text)  # UTF-8 uses more bytes
+        assert len(encoded) > len(text), "Encoded must not be empty"
 
     def test_cjk_text(self):
         """CJK characters should tokenize correctly."""
         text = "你好世界"
         encoded = text.encode("utf-8")
-        assert len(encoded) == 12  # 4 chars * 3 bytes each
+        assert len(encoded) == 12, "Encoded must not be empty"
 
     def test_emoji_text(self):
         """Emoji should tokenize correctly."""
         text = "Hello 👋 World 🌍"
         encoded = text.encode("utf-8")
         decoded = encoded.decode("utf-8")
-        assert decoded == text
+        assert decoded == text, "decoded is not valid"
 
     def test_mixed_script_text(self):
         """Mixed script text should tokenize correctly."""
         text = "Hello世界مرحبا"
         encoded = text.encode("utf-8")
         decoded = encoded.decode("utf-8")
-        assert decoded == text
+        assert decoded == text, "decoded is not valid"
 
     @given(st.text(min_size=1, max_size=100))
     @settings(max_examples=50)
@@ -201,7 +201,7 @@ class TestMultilingualTokenization:
         """Property: any unicode text should roundtrip through UTF-8."""
         encoded = text.encode("utf-8")
         decoded = encoded.decode("utf-8")
-        assert decoded == text
+        assert decoded == text, "decoded is not valid"
 
 
 # --- Streaming Tokenization Tests ---
@@ -247,7 +247,7 @@ class TestStreamingTokenization:
             tokenizer.feed(char)
         stream_tokens = tokenizer.get_all_tokens()
 
-        assert batch_tokens == stream_tokens
+        assert batch_tokens == stream_tokens, "batch_tokens is not valid"
 
     def test_streaming_chunked(self):
         """Streaming with chunks should produce same result."""
@@ -263,7 +263,7 @@ class TestStreamingTokenization:
         tokenizer.feed(" ")
         tokenizer.feed("world")
 
-        assert batch_tokens == tokenizer.get_all_tokens()
+        assert batch_tokens == tokenizer.get_all_tokens(), "batch_tokens is not valid"
 
 
 # --- Drift Detection Tests ---
@@ -297,28 +297,28 @@ class TestTokenizerDrift:
         """No drift when vocab matches baseline."""
         current = {"a": 0, "b": 1, "c": 2, "<unk>": 3}
         drift = self.detect_drift(current)
-        assert drift["drift"] is False
+        assert drift["drift"] is False, "Condition must be true"
 
     def test_detect_added_tokens(self):
         """Detect added tokens."""
         current = {"a": 0, "b": 1, "c": 2, "d": 4, "<unk>": 3}
         drift = self.detect_drift(current)
-        assert drift["drift"] is True
-        assert "d" in drift["added"]
+        assert drift["drift"] is True, "Condition must be true"
+        assert "d" in drift["added"], "Condition must be true"
 
     def test_detect_removed_tokens(self):
         """Detect removed tokens."""
         current = {"a": 0, "b": 1, "<unk>": 3}  # 'c' removed
         drift = self.detect_drift(current)
-        assert drift["drift"] is True
-        assert "c" in drift["removed"]
+        assert drift["drift"] is True, "Condition must be true"
+        assert "c" in drift["removed"], "Condition must be true"
 
     def test_detect_changed_mappings(self):
         """Detect changed token-id mappings."""
         current = {"a": 10, "b": 1, "c": 2, "<unk>": 3}  # 'a' changed
         drift = self.detect_drift(current)
-        assert drift["drift"] is True
-        assert "a" in drift["changed"]
+        assert drift["drift"] is True, "Condition must be true"
+        assert "a" in drift["changed"], "Condition must be true"
 
 
 # --- Special Token Tests ---
@@ -330,25 +330,25 @@ class TestSpecialTokens:
     def test_pad_token_present(self):
         """PAD token should be present in vocab."""
         vocab = {"<pad>": 0, "<unk>": 1, "<bos>": 2, "<eos>": 3}
-        assert "<pad>" in vocab
-        assert vocab["<pad>"] == 0
+        assert "<pad>" in vocab, "Condition must be true"
+        assert vocab["<pad>"] == 0, "Condition must be true"
 
     def test_unk_token_present(self):
         """UNK token should be present in vocab."""
         vocab = {"<pad>": 0, "<unk>": 1, "<bos>": 2, "<eos>": 3}
-        assert "<unk>" in vocab
+        assert "<unk>" in vocab, "Condition must be true"
 
     def test_bos_eos_tokens(self):
         """BOS and EOS tokens should be present."""
         vocab = {"<pad>": 0, "<unk>": 1, "<bos>": 2, "<eos>": 3}
-        assert "<bos>" in vocab
-        assert "<eos>" in vocab
+        assert "<bos>" in vocab, "Condition must be true"
+        assert "<eos>" in vocab, "Condition must be true"
 
     def test_special_token_ids_unique(self):
         """Special token IDs should be unique."""
         vocab = {"<pad>": 0, "<unk>": 1, "<bos>": 2, "<eos>": 3}
         ids = list(vocab.values())
-        assert len(ids) == len(set(ids))
+        assert len(ids) == len(set(ids)), "Ids must not be empty"
 
 
 # --- Encode/Decode Roundtrip Tests ---
@@ -376,14 +376,14 @@ class TestEncodeDecodeRoundtrip:
         text = "Hello World"
         encoded = self.encode(text)
         decoded = self.decode(encoded)
-        assert decoded == text
+        assert decoded == text, "decoded is not valid"
 
     def test_punctuation_roundtrip(self):
         """Punctuation should roundtrip."""
         text = "Hello, World! How are you?"
         encoded = self.encode(text)
         decoded = self.decode(encoded)
-        assert decoded == text
+        assert decoded == text, "decoded is not valid"
 
     @given(
         st.text(
@@ -395,4 +395,4 @@ class TestEncodeDecodeRoundtrip:
         """Property: printable ASCII should roundtrip."""
         encoded = self.encode(text)
         decoded = self.decode(encoded)
-        assert decoded == text
+        assert decoded == text, "decoded is not valid"

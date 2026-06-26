@@ -59,21 +59,21 @@ def test_train_command_uses_config_defaults(
 
     assert result.exit_code == 0, result.stdout
     payload = json.loads(result.stdout)
-    assert payload["ok"] is True
+    assert payload["ok"] is True, "Condition must be true"
     cfg = captured["config"]
-    assert cfg.model_name == "offline-config-model"
-    assert cfg.epochs == 3
-    assert cfg.batch_size == 16
-    assert cfg.grad_accum == 4
-    assert cfg.learning_rate == pytest.approx(1.0e-4)
-    assert cfg.seed == 123
-    assert cfg.output_dir.endswith("outputs")
-    assert cfg.backend == "functional"
-    assert cfg.grad_clip_norm == pytest.approx(0.5)
-    assert cfg.dtype == "bf16"
-    assert cfg.resume_from == "checkpoint.pt"
-    assert cfg.mlflow_enable is True
-    assert cfg.wandb_enable is True
+    assert cfg.model_name == "offline-config-model", "model_name is not valid"
+    assert cfg.epochs == 3, "epochs is not valid"
+    assert cfg.batch_size == 16, "batch_size is not valid"
+    assert cfg.grad_accum == 4, "grad_accum is not valid"
+    assert cfg.learning_rate == pytest.approx(1.0e-4), "learning_rate is not valid"
+    assert cfg.seed == 123, "seed is not valid"
+    assert cfg.output_dir.endswith("outputs"), "Condition must be true"
+    assert cfg.backend == "functional", "backend is not valid"
+    assert cfg.grad_clip_norm == pytest.approx(0.5), "grad_clip_norm is not valid"
+    assert cfg.dtype == "bf16", "dtype is not valid"
+    assert cfg.resume_from == "checkpoint.pt", "resume_from is not valid"
+    assert cfg.mlflow_enable is True, "mlflow_enable is not valid"
+    assert cfg.wandb_enable is True, "wandb_enable is not valid"
 
 
 def test_train_command_prefers_cli_overrides(
@@ -144,18 +144,18 @@ def test_train_command_prefers_cli_overrides(
 
     assert result.exit_code == 0, result.stdout
     payload = json.loads(result.stdout)
-    assert payload["ok"] is True
+    assert payload["ok"] is True, "Condition must be true"
     cfg = captured["config"]
-    assert cfg.model_name == "cli-model"
-    assert cfg.epochs == 9
-    assert cfg.batch_size == 64
-    assert cfg.grad_accum == 3
-    assert cfg.learning_rate == pytest.approx(0.001)
-    assert cfg.seed == 7
-    assert Path(cfg.output_dir) == cli_output_dir
-    assert cfg.backend == "functional"
-    assert cfg.grad_clip_norm == pytest.approx(0.25)
-    assert cfg.dtype == "fp16"
-    assert cfg.resume_from == "cli.ckpt"
-    assert cfg.mlflow_enable is True
-    assert cfg.wandb_enable is True
+    assert cfg.model_name == "cli-model", "model_name is not valid"
+    assert cfg.epochs == 9, "epochs is not valid"
+    assert cfg.batch_size == 64, "batch_size is not valid"
+    assert cfg.grad_accum == 3, "grad_accum is not valid"
+    assert cfg.learning_rate == pytest.approx(0.001), "learning_rate is not valid"
+    assert cfg.seed == 7, "seed is not valid"
+    assert Path(cfg.output_dir) == cli_output_dir, "Condition must be true"
+    assert cfg.backend == "functional", "backend is not valid"
+    assert cfg.grad_clip_norm == pytest.approx(0.25), "grad_clip_norm is not valid"
+    assert cfg.dtype == "fp16", "dtype is not valid"
+    assert cfg.resume_from == "cli.ckpt", "resume_from is not valid"
+    assert cfg.mlflow_enable is True, "mlflow_enable is not valid"
+    assert cfg.wandb_enable is True, "wandb_enable is not valid"

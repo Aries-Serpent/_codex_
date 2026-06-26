@@ -19,9 +19,9 @@ def test_metadata_structure(tmp_path) -> None:
         metadata={"metrics": {"accuracy": 0.9}},
     )
     meta = json.loads((ckpt_dir / "metadata.json").read_text(encoding="utf-8"))
-    assert meta["schema_version"] == checkpoint_core.SCHEMA_VERSION
-    assert "environment" in meta and "python_version" in meta["environment"]
-    assert meta["metrics"]["accuracy"] == 0.9
+    assert meta["schema_version"] == checkpoint_core.SCHEMA_VERSION, "Condition must be true"
+    assert "environment" in meta and "python_version" in meta["environment"], "Condition must be true"
+    assert meta["metrics"]["accuracy"] == 0.9, "Condition must be true"
 
     sha = (ckpt_dir / "state.sha256").read_text(encoding="utf-8").strip()
-    assert sha == meta["digest_sha256"]
+    assert sha == meta["digest_sha256"], "sha is not valid"

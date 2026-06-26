@@ -25,9 +25,9 @@ def test_rng_state_capture():
     rng_state = RNGState()
     rng_state.capture()
 
-    assert rng_state.state is not None
+    assert rng_state.state is not None, "state must be initialized"
     assert isinstance(rng_state.state, dict)
-    assert len(rng_state.state) > 0
+    assert len(rng_state.state) > 0, "Collection must not be empty"
 
 
 def test_rng_state_restore_determinism():
@@ -72,8 +72,8 @@ def test_rng_state_save_and_load(tmp_path):
     save_path = tmp_path / "test_rng.json"
     rng_state.save_to_file(save_path)
 
-    assert save_path.exists()
-    assert save_path.stat().st_size > 0
+    assert save_path.exists(), "Condition must be true"
+    assert save_path.stat().st_size > 0, "st_size must be greater than zero"
 
     # Verify JSON is valid
     with open(save_path) as f:
@@ -100,7 +100,7 @@ def test_rng_state_load_from_file(tmp_path):
 
     # Generate again - should match
     val2 = random.random()
-    assert val1 == val2
+    assert val1 == val2, "val1 is not valid"
 
 
 def test_rng_state_path_for_checkpoint():
@@ -108,9 +108,9 @@ def test_rng_state_path_for_checkpoint():
     checkpoint_path = Path("/path/to/checkpoint.pt")
     rng_path = RNGState.path_for_checkpoint(checkpoint_path)
 
-    assert rng_path == Path("/path/to/checkpoint.pt.rng.json")
-    assert rng_path.suffix == ".json"
-    assert ".rng.json" in str(rng_path)
+    assert rng_path == Path("/path/to/checkpoint.pt.rng.json"), "rng_path is not valid"
+    assert rng_path.suffix == ".json", "suffix is not valid"
+    assert ".rng.json" in str(rng_path), "Condition must be true"
 
 
 def test_set_seed_sets_python_random():
@@ -121,7 +121,7 @@ def test_set_seed_sets_python_random():
     set_seed(789)
     val2 = random.random()
 
-    assert val1 == val2
+    assert val1 == val2, "val1 is not valid"
 
 
 def test_set_seed_sets_numpy_random():
@@ -135,7 +135,7 @@ def test_set_seed_sets_numpy_random():
         set_seed(101112)
         val2 = np.random.rand()
 
-        assert val1 == val2
+        assert val1 == val2, "val1 is not valid"
     except ImportError:
         # Skip if NumPy not available
         pytest.skip("NumPy not available")
@@ -155,8 +155,8 @@ def test_rng_state_save_creates_parent_dirs(tmp_path):
     rng_state.capture()
     rng_state.save_to_file(nested_path)
 
-    assert nested_path.exists()
-    assert nested_path.parent.exists()
+    assert nested_path.exists(), "Condition must be true"
+    assert nested_path.parent.exists(), "Condition must be true"
 
 
 def test_rng_state_round_trip_preserves_state(tmp_path):
@@ -173,7 +173,7 @@ def test_rng_state_round_trip_preserves_state(tmp_path):
     rng_state2 = RNGState.load_from_file(save_path)
 
     # States should be equal
-    assert rng_state1.state == rng_state2.state
+    assert rng_state1.state == rng_state2.state, "state is not valid"
 
 
 def test_rng_state_different_seeds_produce_different_values():
@@ -184,7 +184,7 @@ def test_rng_state_different_seeds_produce_different_values():
     set_seed(222)
     val2 = random.random()
 
-    assert val1 != val2
+    assert val1 != val2, "val1 is not valid"
 
 
 def test_rng_state_empty_state_restore_is_noop():

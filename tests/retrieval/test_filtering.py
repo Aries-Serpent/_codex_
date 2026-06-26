@@ -82,7 +82,7 @@ class TestMatchesFilter:
         metadata = {"category": "tech", "score": 0.9}
 
         # Both conditions match
-        assert matches_filter(
+        assert matches_filter(, "Condition must be true"
             metadata,
             {
                 "$and": [
@@ -93,7 +93,7 @@ class TestMatchesFilter:
         )
 
         # One condition fails
-        assert not matches_filter(
+        assert not matches_filter(, "Condition must be true"
             metadata,
             {
                 "$and": [
@@ -108,7 +108,7 @@ class TestMatchesFilter:
         metadata = {"category": "tech", "score": 0.9}
 
         # One condition matches
-        assert matches_filter(
+        assert matches_filter(, "Condition must be true"
             metadata,
             {
                 "$or": [
@@ -119,7 +119,7 @@ class TestMatchesFilter:
         )
 
         # Both conditions match
-        assert matches_filter(
+        assert matches_filter(, "Condition must be true"
             metadata,
             {
                 "$or": [
@@ -130,7 +130,7 @@ class TestMatchesFilter:
         )
 
         # No conditions match
-        assert not matches_filter(
+        assert not matches_filter(, "Condition must be true"
             metadata,
             {
                 "$or": [
@@ -145,7 +145,7 @@ class TestMatchesFilter:
         metadata = {"category": "tech", "score": 0.9, "author": "alice"}
 
         # Complex AND/OR combination
-        assert matches_filter(
+        assert matches_filter(, "Condition must be true"
             metadata,
             {
                 "$and": [
@@ -180,8 +180,8 @@ class TestApplyFilters:
         ]
 
         filtered = apply_filters(results, filters=None)
-        assert len(filtered) == 2
-        assert filtered == results
+        assert len(filtered) == 2, "Filtered must not be empty"
+        assert filtered == results, "Result must not be empty"
 
     def test_simple_filter(self):
         """Test simple equality filter"""
@@ -192,8 +192,8 @@ class TestApplyFilters:
         ]
 
         filtered = apply_filters(results, filters={"category": "tech"})
-        assert len(filtered) == 2
-        assert all(r["metadata"]["category"] == "tech" for r in filtered)
+        assert len(filtered) == 2, "Filtered must not be empty"
+        assert all(r["metadata"]["category"] == "tech" for r in filtered), "Data must not be empty"
 
     def test_range_filter(self):
         """Test range filter"""
@@ -205,8 +205,8 @@ class TestApplyFilters:
         ]
 
         filtered = apply_filters(results, filters={"score": {"$gte": 0.7}})
-        assert len(filtered) == 2
-        assert all(r["metadata"]["score"] >= 0.7 for r in filtered)
+        assert len(filtered) == 2, "Filtered must not be empty"
+        assert all(r["metadata"]["score"] >= 0.7 for r in filtered), "Value must be greater than zero"
 
     def test_max_results(self):
         """Test max_results parameter"""
@@ -217,7 +217,7 @@ class TestApplyFilters:
         ]
 
         filtered = apply_filters(results, filters={"category": "tech"}, max_results=2)
-        assert len(filtered) == 2
+        assert len(filtered) == 2, "Filtered must not be empty"
 
     def test_complex_filter(self):
         """Test complex filter with multiple conditions"""
@@ -238,15 +238,15 @@ class TestApplyFilters:
             },
         )
 
-        assert len(filtered) == 2
-        assert all(
+        assert len(filtered) == 2, "Filtered must not be empty"
+        assert all(, "Condition must be true"
             r["metadata"]["category"] == "tech" and r["metadata"]["score"] >= 0.85 for r in filtered
         )
 
     def test_empty_results(self):
         """Test with empty results"""
         filtered = apply_filters([], filters={"category": "tech"})
-        assert len(filtered) == 0
+        assert len(filtered) == 0, "Filtered must not be empty"
 
     def test_no_matches(self):
         """Test when no results match filter"""
@@ -256,7 +256,7 @@ class TestApplyFilters:
         ]
 
         filtered = apply_filters(results, filters={"category": "tech"})
-        assert len(filtered) == 0
+        assert len(filtered) == 0, "Filtered must not be empty"
 
 
 class TestCalculateFetchMultiplier:
@@ -264,12 +264,12 @@ class TestCalculateFetchMultiplier:
 
     def test_no_filters(self):
         """Test with no filters"""
-        assert calculate_fetch_multiplier(None) == 1
-        assert calculate_fetch_multiplier({}) == 1
+        assert calculate_fetch_multiplier(None) == 1, "Condition must be true"
+        assert calculate_fetch_multiplier({}) == 1, "Condition must be true"
 
     def test_single_condition(self):
         """Test with single filter condition"""
-        assert calculate_fetch_multiplier({"category": "tech"}) == 3
+        assert calculate_fetch_multiplier({"category": "tech"}) == 3, "Condition must be true"
 
     def test_two_conditions(self):
         """Test with two filter conditions"""
@@ -277,7 +277,7 @@ class TestCalculateFetchMultiplier:
 
     def test_complex_filters(self):
         """Test with complex filters"""
-        assert (
+        assert (, "Condition must be true"
             calculate_fetch_multiplier(
                 {"category": "tech", "score": {"$gte": 0.8}, "author": "alice"}
             )

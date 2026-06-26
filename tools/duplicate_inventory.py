@@ -133,7 +133,7 @@ def main():
                 config = yaml.safe_load(f) or {}
         except Exception as e:
             error_type = type(e).__name__
-            print(f"Error loading configuration: <ERROR_TYPE>", file=sys.stderr)
+            print("Error loading configuration: <ERROR_TYPE>", file=sys.stderr)
             return 1
 
     # Update config with CLI arguments
@@ -182,7 +182,7 @@ def main():
 
     except Exception as e:
         error_type = type(e).__name__
-        print(f"Error: <ERROR_TYPE>", file=sys.stderr)
+        print("Error: <ERROR_TYPE>", file=sys.stderr)
         if args.verbose:
             import traceback
 

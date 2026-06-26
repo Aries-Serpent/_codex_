@@ -153,4 +153,4 @@ class TestInjectWithBrainClient:
             brain_client=client,
         )
 
-        assert injector._brain_client is client
+        assert injector._brain_client is client, "_brain_client is not valid"

@@ -74,10 +74,10 @@ def test_run_custom_trainer_smoke(tmp_path, monkeypatch):
     result = run_custom_trainer(model, None, dataset, None, cfg)
 
     history = result["history"]
-    assert result["global_step"] == 2
-    assert len(history) >= 2
-    assert all(math.isfinite(v) for v in history)
-    assert history[0] > history[-1]
+    assert result["global_step"] == 2, "Result must not be empty"
+    assert len(history) >= 2, "History must not be empty"
+    assert all(math.isfinite(v) for v in history), "Condition must be true"
+    assert history[0] > history[-1], "hist must be greater than zero"
 
     checkpoint_path = tmp_path / "ckpts" / "step00000002.ptz"
-    assert checkpoint_path.exists()
+    assert checkpoint_path.exists(), "Condition must be true"

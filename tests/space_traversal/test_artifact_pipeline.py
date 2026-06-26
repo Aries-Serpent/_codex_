@@ -42,13 +42,13 @@ def test_decode_and_extract(tmp_path: Path):
         "--stable-output",
     ]
     res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-    assert res.returncode == 0
+    assert res.returncode == 0, "returncode is not valid"
     decoded = out_dir / "validate_decoded.json"
     gaps = out_dir / "gaps_extracted.json"
     summary = out_dir / "gaps_summary.md"
-    assert decoded.exists()
-    assert gaps.exists()
-    assert summary.exists()
+    assert decoded.exists(), "Condition must be true"
+    assert gaps.exists(), "Condition must be true"
+    assert summary.exists(), "Condition must be true"
     with open(gaps, "r", encoding="utf-8") as fh:
         data = json.load(fh)
     assert isinstance(data, (list, dict))
@@ -66,11 +66,11 @@ def test_decode_and_validate_roundtrip(tmp_path: Path) -> None:
         stable_output=True,
         generate_baseline=False,
     )
-    assert result["decoded"]["report"]["id"] == "artifact-001"
+    assert result["decoded"]["report"]["id"] == "artifact-001", "Result must not be empty"
     written = json.loads(output.read_text())
-    assert written["metadata"]["source"] == "unit-test"
+    assert written["metadata"]["source"] == "unit-test", "Data must not be empty"
     extracted = json.loads(extract.read_text())
-    assert extracted["count"] == 2
+    assert extracted["count"] == 2, "Count must be greater than zero"
 
 
 def test_decode_and_validate_requires_jsonschema_when_schema_given() -> None:
@@ -94,7 +94,7 @@ def test_stable_manifest_deterministic(tmp_path: Path) -> None:
     payload = {"b": 2, "a": [2, 1, {"z": 1, "y": 0}]}
     first = stable_manifest.write_stable_json(payload, tmp_path / "first.json")
     second = stable_manifest.write_stable_json(payload, tmp_path / "second.json")
-    assert first.read_text() == second.read_text()
+    assert first.read_text() == second.read_text(), "Condition must be true"
 
 
 def test_generate_baseline_summary(tmp_path: Path) -> None:
@@ -109,7 +109,7 @@ def test_generate_baseline_summary(tmp_path: Path) -> None:
     }
     stable_manifest.write_stable_json(summary, destination)
     loaded = json.loads(destination.read_text())
-    assert loaded["gap_count"] == 2
+    assert loaded["gap_count"] == 2, "Count must be greater than zero"
 
 
 def test_coverage_ingest_stub_reads_fixture(tmp_path: Path) -> None:
@@ -117,5 +117,5 @@ def test_coverage_ingest_stub_reads_fixture(tmp_path: Path) -> None:
     report_path = coverage_ingest_stub.write_stub_report(COVERAGE_XML, output)
     content = json.loads(report_path.read_text())
     # Defensive: check the parsed coverage object as dict (structure may differ)
-    assert "src/example.py" in content["coverage"]
+    assert "src/example.py" in content["coverage"], "Content must not be empty"
     assert isinstance(content["coverage"]["src/example.py"], dict)

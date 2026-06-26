@@ -78,8 +78,8 @@ class TestHydraConfigComposition:
     def test_load_base_config(self, base_config):
         """Verify loading base configuration."""
         config_data = base_config.read_text()
-        assert "app:" in config_data
-        assert "name: codex" in config_data
+        assert "app:" in config_data, "Data must not be empty"
+        assert "name: codex" in config_data, "Data must not be empty"
 
     def test_compose_multiple_configs(self, base_config, model_config):
         """Verify composing multiple configuration files."""
@@ -91,8 +91,8 @@ class TestHydraConfigComposition:
 
             composed = OmegaConf.merge(base, {"model": model})
 
-            assert "app" in composed
-            assert "model" in composed
+            assert "app" in composed, "Condition must be true"
+            assert "model" in composed, "Condition must be true"
         except ImportError:
             pytest.skip("OmegaConf not available")
 
@@ -105,8 +105,8 @@ class TestHydraConfigComposition:
         override_file = temp_config_dir / "training" / "fast.yaml"
         override_file.write_text("batch_size: 64\nepochs: 1\n")
 
-        assert default_file.exists()
-        assert override_file.exists()
+        assert default_file.exists(), "Condition must be true"
+        assert override_file.exists(), "Condition must be true"
 
     def test_config_group_selection(self, temp_config_dir):
         """Verify configuration group selection."""
@@ -117,8 +117,8 @@ class TestHydraConfigComposition:
         large_model = temp_config_dir / "model" / "large.yaml"
         large_model.write_text("hidden_size: 1024\nnum_layers: 12\n")
 
-        assert small_model.exists()
-        assert large_model.exists()
+        assert small_model.exists(), "Condition must be true"
+        assert large_model.exists(), "Condition must be true"
 
 
 class TestConfigurationOverrides:
@@ -136,7 +136,7 @@ class TestConfigurationOverrides:
             for key, value in overrides.items():
                 OmegaConf.update(base, key, value)
 
-            assert base.app.name == "codex_override"
+            assert base.app.name == "codex_override", "name is not valid"
         except ImportError:
             pytest.skip("OmegaConf not available")
 
@@ -151,7 +151,7 @@ class TestConfigurationOverrides:
 
             result = OmegaConf.merge(base, override1, override2)
 
-            assert result.value == 3  # Last override wins
+            assert result.value == 3, "Result must not be empty"
         except ImportError:
             pytest.skip("OmegaConf not available")
 
@@ -165,7 +165,7 @@ class TestConfigurationOverrides:
             # Override nested value
             OmegaConf.update(config, "hidden_size", 256)
 
-            assert config.hidden_size == 256
+            assert config.hidden_size == 256, "hidden_size is not valid"
         except ImportError:
             pytest.skip("OmegaConf not available")
 
@@ -200,7 +200,7 @@ class TestEnvironmentVariableHandling:
             config = OmegaConf.load(config_file)
             resolved = OmegaConf.to_container(config, resolve=True)
 
-            assert resolved["model_size"] == "512"
+            assert resolved["model_size"] == "512", "Condition must be true"
         except ImportError:
             pytest.skip("OmegaConf not available")
 
@@ -216,7 +216,7 @@ class TestEnvironmentVariableHandling:
             resolved = OmegaConf.to_container(config, resolve=True)
 
             # Should use default when env var not set
-            assert resolved["port"] == "8080"
+            assert resolved["port"] == "8080", "Condition must be true"
         except ImportError:
             pytest.skip("OmegaConf not available")
 
@@ -231,7 +231,7 @@ host: ${CODEX_HOST}
 port: ${CODEX_PORT}
 """)
 
-        assert config_file.exists()
+        assert config_file.exists(), "Condition must be true"
 
 
 class TestPluginConfiguration:
@@ -249,8 +249,8 @@ config:
 """)
 
         config_data = plugin_config.read_text()
-        assert "name: example_plugin" in config_data
-        assert "enabled: true" in config_data
+        assert "name: example_plugin" in config_data, "Data must not be empty"
+        assert "enabled: true" in config_data, "Data must not be empty"
 
     def test_plugin_discovery(self, temp_config_dir):
         """Verify plugin discovery from configuration."""
@@ -264,7 +264,7 @@ config:
         # Discover plugins
         discovered = list(plugins_dir.glob("plugin_*.yaml"))
 
-        assert len(discovered) == 3
+        assert len(discovered) == 3, "Discovered must not be empty"
 
     def test_plugin_enable_disable(self, temp_config_dir):
         """Verify plugin enable/disable configuration."""
@@ -272,7 +272,7 @@ config:
         plugin_config.write_text("name: toggleable\nenabled: false\n")
 
         config_data = plugin_config.read_text()
-        assert "enabled: false" in config_data
+        assert "enabled: false" in config_data, "Data must not be empty"
 
     def test_plugin_config_validation(self, temp_config_dir):
         """Verify plugin configuration validation."""
@@ -286,8 +286,8 @@ required_fields:
 """)
 
         config_data = plugin_config.read_text()
-        assert "name:" in config_data
-        assert "version:" in config_data
+        assert "name:" in config_data, "Data must not be empty"
+        assert "version:" in config_data, "Data must not be empty"
 
 
 class TestConfigurationValidation:
@@ -317,7 +317,7 @@ class TestConfigurationValidation:
         }
 
         for field in required_fields:
-            assert field in config
+            assert field in config, "Condition must be true"
 
     def test_value_range_validation(self, temp_config_dir):
         """Verify value range validation."""
@@ -328,9 +328,9 @@ class TestConfigurationValidation:
         }
 
         # Validate ranges
-        assert 0 < config["learning_rate"] <= 1
-        assert 0 <= config["dropout"] < 1
-        assert config["batch_size"] > 0
+        assert 0 < config["learning_rate"] <= 1, "0 is not valid"
+        assert 0 <= config["dropout"] < 1, "0 is not valid"
+        assert config["batch_size"] > 0, "Value must be greater than zero"
 
     def test_type_validation(self, temp_config_dir):
         """Verify configuration type validation."""
@@ -362,8 +362,8 @@ logging:
 """)
 
         config_data = dev_config.read_text()
-        assert "environment: development" in config_data
-        assert "debug: true" in config_data
+        assert "environment: development" in config_data, "Data must not be empty"
+        assert "debug: true" in config_data, "Data must not be empty"
 
     def test_production_config(self, temp_config_dir):
         """Verify production environment configuration."""
@@ -377,8 +377,8 @@ logging:
 """)
 
         config_data = prod_config.read_text()
-        assert "environment: production" in config_data
-        assert "debug: false" in config_data
+        assert "environment: production" in config_data, "Data must not be empty"
+        assert "debug: false" in config_data, "Data must not be empty"
 
     def test_environment_switching(self, temp_config_dir, monkeypatch):
         """Verify environment switching mechanism."""
@@ -386,7 +386,7 @@ logging:
 
         env = os.getenv("CODEX_ENV", "development")
 
-        assert env == "production"
+        assert env == "production", "env is not valid"
 
     def test_environment_specific_overrides(self, temp_config_dir):
         """Verify environment-specific overrides."""
@@ -398,8 +398,8 @@ logging:
         dev_config = {**base, **dev_overrides}
         prod_config = {**base, **prod_overrides}
 
-        assert dev_config["workers"] == 1
-        assert prod_config["workers"] == 8
+        assert dev_config["workers"] == 1, "Condition must be true"
+        assert prod_config["workers"] == 8, "Condition must be true"
 
 
 class TestConfigInterpolation:
@@ -420,8 +420,8 @@ class TestConfigInterpolation:
 
             resolved = OmegaConf.to_container(config, resolve=True)
 
-            assert resolved["train_dir"] == "/data/train"
-            assert resolved["val_dir"] == "/data/val"
+            assert resolved["train_dir"] == "/data/train", "Data must not be empty"
+            assert resolved["val_dir"] == "/data/val", "Data must not be empty"
         except ImportError:
             pytest.skip("OmegaConf not available")
 
@@ -442,8 +442,8 @@ class TestConfigInterpolation:
 
             resolved = OmegaConf.to_container(config, resolve=True)
 
-            assert resolved["paths"]["root"] == "/projects/codex"
-            assert resolved["paths"]["data"] == "/projects/codex/data"
+            assert resolved["paths"]["root"] == "/projects/codex", "Condition must be true"
+            assert resolved["paths"]["data"] == "/projects/codex/data", "Data must not be empty"
         except ImportError:
             pytest.skip("OmegaConf not available")
 
@@ -466,7 +466,7 @@ class TestConfigInterpolation:
             )
 
             # Basic structure validation
-            assert "device" in config
+            assert "device" in config, "Condition must be true"
         except ImportError:
             pytest.skip("OmegaConf not available")
 
@@ -492,8 +492,8 @@ model:
   num_layers: 12  # Override
 """)
 
-        assert base_config.exists()
-        assert derived_config.exists()
+        assert base_config.exists(), "Condition must be true"
+        assert derived_config.exists(), "Condition must be true"
 
     def test_multi_level_inheritance(self, temp_config_dir):
         """Verify multi-level configuration inheritance."""
@@ -520,9 +520,9 @@ class TestConfigurationCaching:
         config_data = {"model": {"hidden_size": 512}}
         cache_file.write_text(json.dumps(config_data))
 
-        assert cache_file.exists()
+        assert cache_file.exists(), "Condition must be true"
         cached = json.loads(cache_file.read_text())
-        assert cached["model"]["hidden_size"] == 512
+        assert cached["model"]["hidden_size"] == 512, "Condition must be true"
 
     def test_config_cache_invalidation(self, temp_config_dir):
         """Verify cache invalidation on config change."""
@@ -566,8 +566,8 @@ class TestConfigurationMerging:
 
             merged = OmegaConf.merge(base, override)
 
-            assert merged.model.hidden_size == 512
-            assert merged.model.num_layers == 12
+            assert merged.model.hidden_size == 512, "hidden_size is not valid"
+            assert merged.model.num_layers == 12, "num_layers is not valid"
         except ImportError:
             pytest.skip("OmegaConf not available")
 

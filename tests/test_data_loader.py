@@ -27,7 +27,7 @@ def test_stream_texts_newline_and_sharding(tmp_path: Path) -> None:
     first = list(stream_texts(path, newline="unix", shard_index=0, shard_total=2))
     second = list(stream_texts(path, newline="unix", shard_index=1, shard_total=2))
     assert first == ["a", "c"]
-    assert second == ["b"]
+    assert second == ["b"], "second is not valid"
 
 
 def test_load_dataset_creates_manifest(tmp_path: Path) -> None:
@@ -39,8 +39,8 @@ def test_load_dataset_creates_manifest(tmp_path: Path) -> None:
     manifests = list(cache_dir.glob("*.manifest.json"))
     assert manifests, "expected manifest file"
     manifest = CacheManifest.load(manifests[0])
-    assert manifest is not None
-    assert manifest.num_records == 2
+    assert manifest is not None, "manifest must be initialized"
+    assert manifest.num_records == 2, "num_records is not valid"
 
 
 def test_prepare_data_from_config(tmp_path: Path) -> None:
@@ -63,12 +63,12 @@ def test_prepare_data_from_config(tmp_path: Path) -> None:
     # FIXED: prepare_data_from_config expects DataConfig, not dict
     result = prepare_data_from_config(cfg)
 
-    assert Path(result["manifest"]).exists()
+    assert Path(result["manifest"]).exists(), "Result must not be empty"
     splits = result["splits"]
     assert {"train", "validation", "test"} <= splits.keys()
     counts = {name: meta["count"] for name, meta in splits.items()}
-    assert counts["train"] == 3
-    assert counts["validation"] + counts["test"] == 2
+    assert counts["train"] == 3, "Count must be greater than zero"
+    assert counts["validation"] + counts["test"] == 2, "Count must be greater than zero"
 
 
 def test_take_n_strict(tmp_path: Path) -> None:
@@ -81,4 +81,4 @@ def test_seeded_shuffle_deterministic(seed: int) -> None:
     items = [1, 2, 3, 4]
     result_a = seeded_shuffle(items, seed)
     result_b = seeded_shuffle(items, seed)
-    assert result_a == result_b
+    assert result_a == result_b, "Result must not be empty"

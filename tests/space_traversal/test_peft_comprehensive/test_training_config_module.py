@@ -18,20 +18,20 @@ from training.config import TrainingConfig
 def test_training_config_defaults_validate() -> None:
     cfg = TrainingConfig()
     cfg.validate()
-    assert cfg.precision == "fp32"
+    assert cfg.precision == "fp32", "precision is not valid"
 
 
 def test_training_config_as_dict_contains_fields() -> None:
     cfg = TrainingConfig(batch_size=16)
     data = cfg.as_dict()
-    assert data["batch_size"] == 16
+    assert data["batch_size"] == 16, "Data must not be empty"
     assert isinstance(data["dataset_path"], Path)
 
 
 def test_training_config_from_mapping_coerces_types() -> None:
     cfg = TrainingConfig.from_mapping({"batch_size": "4", "precision": "bf16"})
-    assert cfg.batch_size == 4
-    assert cfg.precision == "bf16"
+    assert cfg.batch_size == 4, "batch_size is not valid"
+    assert cfg.precision == "bf16", "precision is not valid"
 
 
 @pytest.mark.parametrize(
@@ -65,7 +65,7 @@ def test_training_config_invalid_lora_rank() -> None:
 
 def test_training_config_replace_validation() -> None:
     cfg = TrainingConfig().replace(batch_size=32)
-    assert cfg.batch_size == 32
+    assert cfg.batch_size == 32, "batch_size is not valid"
 
 
 def test_training_config_from_env_unknown_bool(monkeypatch) -> None:

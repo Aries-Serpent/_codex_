@@ -17,9 +17,9 @@ class TestZendeskAgentCoreInitialization:
         mock_get_registry.return_value = mock_registry
 
         agent = ZendeskAgentCore()
-        assert agent is not None
-        assert agent.core is not None
-        assert agent.tool_registry is not None
+        assert agent is not None, "agent must be initialized"
+        assert agent.core is not None, "core must be initialized"
+        assert agent.tool_registry is not None, "tool_registry must be initialized"
 
     @patch("src.codex.zendesk.agent.AgentCore")
     @patch("src.codex.zendesk.agent.get_registry")
@@ -31,7 +31,7 @@ class TestZendeskAgentCoreInitialization:
         mock_config = Mock()
 
         agent = ZendeskAgentCore(config=mock_config)
-        assert agent is not None
+        assert agent is not None, "agent must be initialized"
 
     @patch("src.codex.zendesk.agent.AgentCore")
     @patch("src.codex.zendesk.agent.get_registry")
@@ -41,7 +41,7 @@ class TestZendeskAgentCoreInitialization:
         mock_registry.list_tools.return_value = []
 
         agent = ZendeskAgentCore(tool_registry=mock_registry)
-        assert agent.tool_registry is mock_registry
+        assert agent.tool_registry is mock_registry, "tool_registry is not valid"
 
     @patch("src.codex.zendesk.agent.AgentCore")
     @patch("src.codex.zendesk.agent.get_registry")
@@ -52,8 +52,8 @@ class TestZendeskAgentCoreInitialization:
         mock_config = Mock()
 
         agent = ZendeskAgentCore(config=mock_config, tool_registry=mock_registry)
-        assert agent.core is not None
-        assert agent.tool_registry is mock_registry
+        assert agent.core is not None, "core must be initialized"
+        assert agent.tool_registry is mock_registry, "tool_registry is not valid"
 
     @patch("src.codex.zendesk.agent.AgentCore")
     @patch("src.codex.zendesk.agent.get_registry")
@@ -69,7 +69,7 @@ class TestZendeskAgentCoreInitialization:
 
         agent = ZendeskAgentCore()
         # Verify _sync_tools was called indirectly
-        assert agent.core.register_tool.called
+        assert agent.core.register_tool.called, "Condition must be true"
 
 
 class TestZendeskAgentCoreSyncTools:
@@ -99,7 +99,7 @@ class TestZendeskAgentCoreSyncTools:
         mock_get_registry.return_value = mock_registry
 
         agent = ZendeskAgentCore()
-        assert agent.core.register_tool.called
+        assert agent.core.register_tool.called, "Condition must be true"
 
     @patch("src.codex.zendesk.agent.AgentCore")
     @patch("src.codex.zendesk.agent.get_registry")
@@ -117,7 +117,7 @@ class TestZendeskAgentCoreSyncTools:
         mock_get_registry.return_value = mock_registry
 
         agent = ZendeskAgentCore()
-        assert agent.core.register_tool.call_count >= 5
+        assert agent.core.register_tool.call_count >= 5, "call_count must be positive"
 
 
 class TestZendeskAgentCoreRegisterTool:
@@ -137,7 +137,7 @@ class TestZendeskAgentCoreRegisterTool:
         agent.register_tool("test_tool", handler)
 
         # Verify tool was registered in registry
-        assert mock_registry.register.called
+        assert mock_registry.register.called, "Condition must be true"
 
     @patch("src.codex.zendesk.agent.AgentCore")
     @patch("src.codex.zendesk.agent.get_registry")
@@ -153,7 +153,7 @@ class TestZendeskAgentCoreRegisterTool:
         agent.register_tool("test_tool", handler)
 
         # Verify tool was registered in core
-        assert agent.core.register_tool.called
+        assert agent.core.register_tool.called, "Condition must be true"
 
     @patch("src.codex.zendesk.agent.AgentCore")
     @patch("src.codex.zendesk.agent.get_registry")
@@ -169,7 +169,7 @@ class TestZendeskAgentCoreRegisterTool:
         agent.register_tool("test_tool", handler)
 
         # Verify tool was registered in registry
-        assert mock_registry.register.called
+        assert mock_registry.register.called, "Condition must be true"
 
     @patch("src.codex.zendesk.agent.AgentCore")
     @patch("src.codex.zendesk.agent.get_registry")
@@ -186,7 +186,7 @@ class TestZendeskAgentCoreRegisterTool:
             agent.register_tool(f"tool_{i}", handler)
 
         # All tools should be registered
-        assert agent.core.register_tool.call_count >= 5
+        assert agent.core.register_tool.call_count >= 5, "call_count must be positive"
 
 
 class TestZendeskAgentCoreGetToolNames:
@@ -203,7 +203,7 @@ class TestZendeskAgentCoreGetToolNames:
 
         agent = ZendeskAgentCore()
         names = agent.get_tool_names()
-        assert names == []
+        assert names == [], "names is not valid"
 
     @patch("src.codex.zendesk.agent.AgentCore")
     @patch("src.codex.zendesk.agent.get_registry")
@@ -216,7 +216,7 @@ class TestZendeskAgentCoreGetToolNames:
 
         agent = ZendeskAgentCore()
         names = agent.get_tool_names()
-        assert "tool1" in names
+        assert "tool1" in names, "Condition must be true"
 
     @patch("src.codex.zendesk.agent.AgentCore")
     @patch("src.codex.zendesk.agent.get_registry")
@@ -230,9 +230,9 @@ class TestZendeskAgentCoreGetToolNames:
 
         agent = ZendeskAgentCore()
         names = agent.get_tool_names()
-        assert len(names) == 3
+        assert len(names) == 3, "Names must not be empty"
         for name in tool_names:
-            assert name in names
+            assert name in names, "Condition must be true"
 
     @patch("src.codex.zendesk.agent.AgentCore")
     @patch("src.codex.zendesk.agent.get_registry")
@@ -261,7 +261,7 @@ class TestZendeskAgentCoreToolRegistry:
 
         agent = ZendeskAgentCore()
         assert hasattr(agent, "tool_registry")
-        assert agent.tool_registry is mock_registry
+        assert agent.tool_registry is mock_registry, "tool_registry is not valid"
 
     @patch("src.codex.zendesk.agent.AgentCore")
     @patch("src.codex.zendesk.agent.get_registry")
@@ -272,7 +272,7 @@ class TestZendeskAgentCoreToolRegistry:
         mock_get_registry.return_value = mock_registry
 
         ZendeskAgentCore()
-        assert mock_get_registry.called
+        assert mock_get_registry.called, "Condition must be true"
 
     @patch("src.codex.zendesk.agent.AgentCore")
     @patch("src.codex.zendesk.agent.get_registry")
@@ -282,9 +282,9 @@ class TestZendeskAgentCoreToolRegistry:
         custom_registry.list_tools.return_value = []
 
         agent = ZendeskAgentCore(tool_registry=custom_registry)
-        assert agent.tool_registry is custom_registry
+        assert agent.tool_registry is custom_registry, "tool_registry is not valid"
         # get_registry should not be called if custom registry provided
-        assert not mock_get_registry.called
+        assert not mock_get_registry.called, "Condition must be true"
 
 
 class TestZendeskAgentCoreAgentCore:
@@ -300,7 +300,7 @@ class TestZendeskAgentCoreAgentCore:
 
         agent = ZendeskAgentCore()
         assert hasattr(agent, "core")
-        assert agent.core is not None
+        assert agent.core is not None, "core must be initialized"
 
     @patch("src.codex.zendesk.agent.AgentCore")
     @patch("src.codex.zendesk.agent.get_registry")
@@ -328,7 +328,7 @@ class TestZendeskAgentCoreAgentCore:
 
         agent = ZendeskAgentCore()
         # register_tool should have been called
-        assert agent.core.register_tool.called
+        assert agent.core.register_tool.called, "Condition must be true"
 
 
 class TestZendeskAgentCoreIntegration:
@@ -346,8 +346,8 @@ class TestZendeskAgentCoreIntegration:
         agent.register_tool("custom_tool", lambda: "custom_result")
 
         # Verify tool was registered
-        assert agent.core.register_tool.called
-        assert mock_registry.register.called
+        assert agent.core.register_tool.called, "Condition must be true"
+        assert mock_registry.register.called, "Condition must be true"
 
     @patch("src.codex.zendesk.agent.AgentCore")
     @patch("src.codex.zendesk.agent.get_registry")
@@ -362,7 +362,7 @@ class TestZendeskAgentCoreIntegration:
         agent.register_tool("tool1", lambda: "result1")
 
         names = agent.get_tool_names()
-        assert len(names) >= 1
+        assert len(names) >= 1, "Names must not be empty"
 
     @patch("src.codex.zendesk.agent.AgentCore")
     @patch("src.codex.zendesk.agent.get_registry")
@@ -375,8 +375,8 @@ class TestZendeskAgentCoreIntegration:
         agent1 = ZendeskAgentCore()
         agent2 = ZendeskAgentCore()
 
-        assert agent1 is not agent2
-        assert agent1.core is not agent2.core
+        assert agent1 is not agent2, "agent1 is not valid"
+        assert agent1.core is not agent2.core, "core is not valid"
 
 
 class TestZendeskAgentCoreExports:
@@ -386,19 +386,19 @@ class TestZendeskAgentCoreExports:
         """Test that AgentConfig is exported."""
         from src.codex.zendesk.agent import AgentConfig
 
-        assert AgentConfig is not None
+        assert AgentConfig is not None, "AgentConfig must be initialized"
 
     def test_agent_core_exported(self):
         """Test that AgentCore is exported."""
         from src.codex.zendesk.agent import AgentCore
 
-        assert AgentCore is not None
+        assert AgentCore is not None, "AgentCore must be initialized"
 
     def test_zendesk_agent_core_exported(self):
         """Test that ZendeskAgentCore is exported."""
         from src.codex.zendesk.agent import ZendeskAgentCore
 
-        assert ZendeskAgentCore is not None
+        assert ZendeskAgentCore is not None, "ZendeskAgentCore must be initialized"
 
     def test_all_exports(self):
         """Test that __all__ includes expected exports."""
@@ -406,4 +406,4 @@ class TestZendeskAgentCoreExports:
 
         if hasattr(agent, "__all__"):
             all_exports = agent.__all__
-            assert "ZendeskAgentCore" in all_exports
+            assert "ZendeskAgentCore" in all_exports, "Condition must be true"

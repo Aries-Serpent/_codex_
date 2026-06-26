@@ -28,9 +28,9 @@ def test_local_gate_runner_uses_default_gate_when_config_missing(
             str(tmp_path / "report.md"),
         ]
     )
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
     summary = json.loads(json_out.read_text(encoding="utf-8"))
-    assert summary["results"]
+    assert summary["results"], "Result must not be empty"
 
 
 def test_local_gate_runner_with_custom_config(tmp_path: Path) -> None:
@@ -58,7 +58,7 @@ gates:
             str(tmp_path / "custom_report.md"),
         ]
     )
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
     data = json.loads(json_out.read_text(encoding="utf-8"))
     names = [entry["name"] for entry in data["results"]]
     assert names == ["echo-one", "echo-two"]
@@ -78,9 +78,9 @@ def test_experiment_index_handles_empty_runs_dir(tmp_path: Path) -> None:
             str(tmp_path / "index.md"),
         ]
     )
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
     data = json.loads(json_out.read_text(encoding="utf-8"))
-    assert data["runs"] == []
+    assert data["runs"] == [], "Data must not be empty"
 
 
 def test_experiment_index_collects_meta(tmp_path: Path) -> None:
@@ -100,10 +100,10 @@ def test_experiment_index_collects_meta(tmp_path: Path) -> None:
             str(tmp_path / "index.md"),
         ]
     )
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
     data = json.loads(json_out.read_text(encoding="utf-8"))
-    assert data["runs"][0]["run_id"] == "run-123"
-    assert data["runs"][0]["meta"]["metric"] == 0.5
+    assert data["runs"][0]["run_id"] == "run-123", "Data must not be empty"
+    assert data["runs"][0]["meta"]["metric"] == 0.5, "Data must not be empty"
 
 
 def test_dataset_index_builds_outputs(tmp_path: Path) -> None:
@@ -122,7 +122,7 @@ def test_dataset_index_builds_outputs(tmp_path: Path) -> None:
             str(md_out),
         ]
     )
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
     index = json.loads(json_out.read_text(encoding="utf-8"))
-    assert index["files"]
-    assert md_out.exists()
+    assert index["files"], "Condition must be true"
+    assert md_out.exists(), "Condition must be true"

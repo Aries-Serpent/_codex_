@@ -15,7 +15,9 @@ from fastapi.testclient import TestClient
 from codex.api.auth_routes import create_auth_router
 from codex.auth.authenticator import Authenticator
 from codex.auth.token_manager import TokenManager
-from codex.auth.user_store import UserStore # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+from codex.auth.user_store import (
+    UserStore,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+)
 
 # ---------------------------------------------------------------------------
 # Fixtures
@@ -65,12 +67,12 @@ class TestRegisterEndpoint:
                 "password": "Str0ngPass!",
             },
         )
-        assert resp.status_code == 201
+        assert resp.status_code == 201, "status_code is not valid"
         data = resp.json()
-        assert data["username"] == "bob"
-        assert data["email"] == "bob@example.com"
-        assert "user_id" in data
-        assert "user" in data["roles"]
+        assert data["username"] == "bob", "Data must not be empty"
+        assert data["email"] == "bob@example.com", "Data must not be empty"
+        assert "user_id" in data, "Data must not be empty"
+        assert "user" in data["roles"], "Data must not be empty"
 
     def test_register_with_custom_roles(self, client):
         resp = client.post(
@@ -82,8 +84,8 @@ class TestRegisterEndpoint:
                 "roles": ["admin"],
             },
         )
-        assert resp.status_code == 201
-        assert "admin" in resp.json()["roles"]
+        assert resp.status_code == 201, "status_code is not valid"
+        assert "admin" in resp.json()["roles"], "Condition must be true"
 
     def test_register_duplicate_username_returns_400(self, registered_client):
         resp = registered_client.post(
@@ -94,7 +96,7 @@ class TestRegisterEndpoint:
                 "password": "Str0ngPass!",
             },
         )
-        assert resp.status_code == 400
+        assert resp.status_code == 400, "status_code is not valid"
 
     def test_register_weak_password_returns_400(self, client):
         resp = client.post(
@@ -109,7 +111,7 @@ class TestRegisterEndpoint:
 
     def test_register_missing_fields_returns_422(self, client):
         resp = client.post("/auth/register", json={"username": "eve"})
-        assert resp.status_code == 422
+        assert resp.status_code == 422, "status_code is not valid"
 
     def test_register_invalid_email_rejected(self, client):
         resp = client.post(
@@ -120,7 +122,7 @@ class TestRegisterEndpoint:
                 "password": "Str0ngPass!",
             },
         )
-        assert resp.status_code == 422
+        assert resp.status_code == 422, "status_code is not valid"
 
     def test_register_email_normalised_to_lowercase(self, client):
         resp = client.post(
@@ -131,8 +133,8 @@ class TestRegisterEndpoint:
                 "password": "Str0ngPass!",
             },
         )
-        assert resp.status_code == 201
-        assert resp.json()["email"] == "upper@example.com"
+        assert resp.status_code == 201, "status_code is not valid"
+        assert resp.json()["email"] == "upper@example.com", "Condition must be true"
 
     def test_register_password_at_min_boundary(self, client):
         """Exactly 8-character password should be accepted."""
@@ -170,7 +172,7 @@ class TestRegisterEndpoint:
                 "password": long_pw,
             },
         )
-        assert resp.status_code == 422
+        assert resp.status_code == 422, "status_code is not valid"
 
     def test_register_special_chars_in_username(self, client):
         """Special characters in username are handled without crash."""
@@ -198,35 +200,35 @@ class TestLoginEndpoint:
             "/auth/login",
             json={"username_or_email": "alice", "password": "Str0ngPass!"},
         )
-        assert resp.status_code == 200
+        assert resp.status_code == 200, "status_code is not valid"
         data = resp.json()
-        assert data["username"] == "alice"
-        assert data["access_token"]
-        assert data["refresh_token"]
-        assert data["session_token"]
-        assert data["session_id"]
+        assert data["username"] == "alice", "Data must not be empty"
+        assert data["access_token"], "Data must not be empty"
+        assert data["refresh_token"], "Data must not be empty"
+        assert data["session_token"], "Data must not be empty"
+        assert data["session_id"], "Data must not be empty"
 
     def test_login_by_email(self, registered_client):
         resp = registered_client.post(
             "/auth/login",
             json={"username_or_email": "alice@example.com", "password": "Str0ngPass!"},
         )
-        assert resp.status_code == 200
-        assert resp.json()["username"] == "alice"
+        assert resp.status_code == 200, "status_code is not valid"
+        assert resp.json()["username"] == "alice", "Condition must be true"
 
     def test_login_wrong_password_returns_401(self, registered_client):
         resp = registered_client.post(
             "/auth/login",
             json={"username_or_email": "alice", "password": "WrongPass!!"},
         )
-        assert resp.status_code == 401
+        assert resp.status_code == 401, "status_code is not valid"
 
     def test_login_unknown_user_returns_401(self, client):
         resp = client.post(
             "/auth/login",
             json={"username_or_email": "nobody", "password": "Str0ngPass!"},
         )
-        assert resp.status_code == 401
+        assert resp.status_code == 401, "status_code is not valid"
 
     def test_login_error_uses_generic_message(self, registered_client):
         """Error detail should not leak whether user exists."""
@@ -238,7 +240,7 @@ class TestLoginEndpoint:
             "/auth/login",
             json={"username_or_email": "nonexistent", "password": "Str0ngPass!"},
         )
-        assert resp_bad_pw.json()["detail"] == resp_no_user.json()["detail"]
+        assert resp_bad_pw.json()["detail"] == resp_no_user.json()["detail"], "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -259,16 +261,16 @@ class TestLogoutEndpoint:
             "/auth/logout",
             json={"session_token": session_token},
         )
-        assert resp.status_code == 200
-        assert resp.json()["revoked"] is True
+        assert resp.status_code == 200, "status_code is not valid"
+        assert resp.json()["revoked"] is True, "Condition must be true"
 
     def test_logout_invalid_token(self, client):
         resp = client.post(
             "/auth/logout",
             json={"session_token": "bogus-token"},
         )
-        assert resp.status_code == 200
-        assert resp.json()["revoked"] is False
+        assert resp.status_code == 200, "status_code is not valid"
+        assert resp.json()["revoked"] is False, "Condition must be true"
 
     def test_logout_same_token_twice(self, registered_client):
         """Logging out with the same token twice is handled gracefully."""
@@ -279,11 +281,11 @@ class TestLogoutEndpoint:
         session_token = login_resp.json()["session_token"]
 
         first = registered_client.post("/auth/logout", json={"session_token": session_token})
-        assert first.json()["revoked"] is True
+        assert first.json()["revoked"] is True, "Condition must be true"
 
         second = registered_client.post("/auth/logout", json={"session_token": session_token})
         # Second call should succeed without error (idempotent)
-        assert second.status_code == 200
+        assert second.status_code == 200, "status_code is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -304,15 +306,15 @@ class TestRefreshEndpoint:
             "/auth/refresh",
             json={"refresh_token": refresh_token},
         )
-        assert resp.status_code == 200
-        assert resp.json()["access_token"]
+        assert resp.status_code == 200, "status_code is not valid"
+        assert resp.json()["access_token"], "Condition must be true"
 
     def test_refresh_invalid_token_returns_401(self, client):
         resp = client.post(
             "/auth/refresh",
             json={"refresh_token": "invalid-token"},
         )
-        assert resp.status_code == 401
+        assert resp.status_code == 401, "status_code is not valid"
 
     def test_refresh_returns_different_access_token(self, registered_client):
         """Two refresh calls should yield distinct access tokens."""
@@ -327,7 +329,7 @@ class TestRefreshEndpoint:
         second = registered_client.post(
             "/auth/refresh", json={"refresh_token": data["refresh_token"]}
         )
-        assert first.json()["access_token"] != second.json()["access_token"]
+        assert first.json()["access_token"] != second.json()["access_token"], "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -352,14 +354,14 @@ class TestRouterFactory:
                 "password": "Str0ngPass!",
             },
         )
-        assert reg.status_code == 201
+        assert reg.status_code == 201, "status_code is not valid"
 
         login = tc.post(
             "/auth/login",
             json={"username_or_email": "factory_user", "password": "Str0ngPass!"},
         )
-        assert login.status_code == 200
-        assert login.json()["username"] == "factory_user"
+        assert login.status_code == 200, "status_code is not valid"
+        assert login.json()["username"] == "factory_user", "Condition must be true"
 
     def test_custom_prefix(self):
         """Router respects a custom URL prefix."""
@@ -376,7 +378,7 @@ class TestRouterFactory:
                 "password": "Str0ngPass!",
             },
         )
-        assert resp.status_code == 201
+        assert resp.status_code == 201, "status_code is not valid"
 
     def test_explicit_secret_key(self):
         """Explicit secret_key is accepted."""
@@ -393,7 +395,7 @@ class TestRouterFactory:
                 "password": "Str0ngPass!",
             },
         )
-        assert reg.status_code == 201
+        assert reg.status_code == 201, "status_code is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -414,14 +416,14 @@ class TestFullRoundTrip:
                 "password": "Str0ngPass!",
             },
         )
-        assert reg.status_code == 201
+        assert reg.status_code == 201, "status_code is not valid"
 
         # Login
         login = client.post(
             "/auth/login",
             json={"username_or_email": "lifecycle", "password": "Str0ngPass!"},
         )
-        assert login.status_code == 200
+        assert login.status_code == 200, "status_code is not valid"
         data = login.json()
 
         # Refresh
@@ -429,12 +431,12 @@ class TestFullRoundTrip:
             "/auth/refresh",
             json={"refresh_token": data["refresh_token"]},
         )
-        assert refresh.status_code == 200
+        assert refresh.status_code == 200, "status_code is not valid"
 
         # Logout
         logout = client.post(
             "/auth/logout",
             json={"session_token": data["session_token"]},
         )
-        assert logout.status_code == 200
-        assert logout.json()["revoked"] is True
+        assert logout.status_code == 200, "status_code is not valid"
+        assert logout.json()["revoked"] is True, "Condition must be true"

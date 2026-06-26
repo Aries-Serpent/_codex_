@@ -45,7 +45,7 @@ class TestDefaultPreprocess:
 
             text = "Hello, world!"
             result = default_preprocess(text)
-            assert result == text
+            assert result == text, "Result must not be empty"
         except ImportError:
             pytest.skip("workers.embedding_worker not importable")
 
@@ -55,7 +55,7 @@ class TestDefaultPreprocess:
             from workers.embedding_worker import default_preprocess
 
             result = default_preprocess("")
-            assert result == ""
+            assert result == "", "Result must not be empty"
         except ImportError:
             pytest.skip("workers.embedding_worker not importable")
 
@@ -70,7 +70,7 @@ class TestLoadEmbedderClass:
 
             # Empty path should return MockEmbedder
             cls = _load_embedder_class("")
-            assert cls is not None
+            assert cls is not None, "cls must be initialized"
         except ImportError:
             pytest.skip("workers.embedding_worker not importable")
 
@@ -83,7 +83,7 @@ class TestLoadEmbedderClass:
             path = "src.mcp.embeddings.mock_embedder.MockEmbedder"
             try:
                 cls = _load_embedder_class(path)
-                assert cls is not None
+                assert cls is not None, "cls must be initialized"
             except (ImportError, ModuleNotFoundError):
                 # Mock embedder module may not exist
                 _ = None  # suppressed: no action needed
@@ -128,7 +128,7 @@ class TestRunWorker:
         try:
             from workers.embedding_worker import run_worker
 
-            assert callable(run_worker)
+            assert callable(run_worker), "Condition must be true"
         except ImportError:
             pytest.skip("workers.embedding_worker not importable")
 
@@ -141,7 +141,7 @@ class TestMain:
         try:
             from workers.embedding_worker import main
 
-            assert callable(main)
+            assert callable(main), "Condition must be true"
         except ImportError:
             pytest.skip("workers.embedding_worker not importable")
 
@@ -154,7 +154,7 @@ class TestModuleImports:
         try:
             import workers
 
-            assert workers is not None
+            assert workers is not None, "workers must be initialized"
         except ImportError:
             pytest.skip("workers package not importable")
 
@@ -163,7 +163,7 @@ class TestModuleImports:
         try:
             from workers import embedding_worker
 
-            assert embedding_worker is not None
+            assert embedding_worker is not None, "embedding_worker must be initialized"
         except ImportError:
             pytest.skip("workers.embedding_worker not importable")
 
@@ -174,24 +174,24 @@ class TestEnvironmentVariables:
     def test_embedder_class_env_default(self):
         """Test EMBEDDER_CLASS defaults to mock embedder."""
         default = os.environ.get("EMBEDDER_CLASS", "src.mcp.embeddings.mock_embedder.MockEmbedder")
-        assert "MockEmbedder" in default
+        assert "MockEmbedder" in default, "Condition must be true"
 
     def test_batch_size_env_default(self):
         """Test EMBEDDING_BATCH_SIZE default."""
         default = int(os.environ.get("EMBEDDING_BATCH_SIZE", "32"))
-        assert default > 0
+        assert default > 0, "default must be greater than zero"
 
     def test_chunk_max_chars_env_default(self):
         """Test EMBEDDING_CHUNK_MAX_CHARS default."""
         default = int(os.environ.get("EMBEDDING_CHUNK_MAX_CHARS", "1000"))
-        assert default > 0
+        assert default > 0, "default must be greater than zero"
 
     def test_chunk_overlap_env_default(self):
         """Test EMBEDDING_CHUNK_OVERLAP default."""
         default = int(os.environ.get("EMBEDDING_CHUNK_OVERLAP", "200"))
-        assert default >= 0
+        assert default >= 0, "default must be greater than zero"
 
     def test_namespace_default_env(self):
         """Test EMBEDDING_WORKER_NAMESPACE_DEFAULT default."""
         default = os.environ.get("EMBEDDING_WORKER_NAMESPACE_DEFAULT", "default")
-        assert len(default) > 0
+        assert len(default) > 0, "Default must not be empty"

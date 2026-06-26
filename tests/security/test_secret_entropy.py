@@ -14,8 +14,8 @@ class TestSecretEntropy:
 
     def test_weak_password_rejected(self) -> None:
         """Reject simple numeric passwords."""
-        assert check_secret_entropy("12345") is False
-        assert check_secret_entropy("password") is False
+        assert check_secret_entropy("12345") is False, "Condition must be true"
+        assert check_secret_entropy("password") is False, "Condition must be true"
 
     def test_short_password_rejected(self) -> None:
         """Reject passwords below minimum length."""
@@ -23,16 +23,16 @@ class TestSecretEntropy:
 
     def test_strong_password_accepted(self) -> None:
         """Accept strong passwords meeting all criteria."""
-        assert check_secret_entropy("aB3$xY9@qW!Z") is True
-        assert check_secret_entropy("MyP@ssw0rd123") is True
+        assert check_secret_entropy("aB3$xY9@qW!Z") is True, "Condition must be true"
+        assert check_secret_entropy("MyP@ssw0rd123") is True, "Condition must be true"
 
     def test_entropy_categories_validated(self) -> None:
         """Require diversity in character categories."""
         # Only lowercase + digits (2 categories)
-        assert check_secret_entropy("abcdefgh1234") is False
+        assert check_secret_entropy("abcdefgh1234") is False, "Condition must be true"
 
         # Lowercase + uppercase + digits (3 categories)
-        assert check_secret_entropy("AbcdEfgh1234") is True
+        assert check_secret_entropy("AbcdEfgh1234") is True, "Condition must be true"
 
         # All 4 categories
         prefix = "Abcd"
@@ -47,7 +47,7 @@ class TestSecretEntropy:
 
     def test_optional_entropy_bits(self) -> None:
         """Support optional entropy bits threshold."""
-        assert (
+        assert (, "Condition must be true"
             check_secret_entropy("abcdEFGH1234!", min_bits=48.0) is True
         )  # pragma: allowlist secret
         assert check_secret_entropy("abcDEF123", min_bits=80.0) is False  # pragma: allowlist secret

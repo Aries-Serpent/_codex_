@@ -24,8 +24,8 @@ class TestTransformer:
 
         result = transform(source_dir, "test-snapshot", dry_run=True)
 
-        assert result.snapshot_id == "test-snapshot"
-        assert result.timestamp is not None
+        assert result.snapshot_id == "test-snapshot", "Result must not be empty"
+        assert result.timestamp is not None, "timestamp must be initialized"
 
     def test_transform_detects_pathlib_migration(self, tmp_path: Path):
         """Test detection of pathlib migration opportunities."""
@@ -47,7 +47,7 @@ exists = os.path.exists(path)
 
         # Should detect pathlib migration opportunity
         pathlib_patches = [p for p in result.tier_a_patches if p.rule_id == "pathlib-migration"]
-        assert len(pathlib_patches) > 0
+        assert len(pathlib_patches) > 0, "Pathlib_patches must not be empty"
 
     def test_transform_dry_run_no_modification(self, tmp_path: Path):
         """Test that dry run doesn't modify files."""
@@ -61,7 +61,7 @@ exists = os.path.exists(path)
 
         transform(source_dir, "test-snapshot", dry_run=True)
 
-        assert test_file.read_text() == original_content
+        assert test_file.read_text() == original_content, "Content must not be empty"
 
     def test_transform_tier_a_only(self, tmp_path: Path):
         """Test applying only Tier A transformations."""
@@ -73,8 +73,8 @@ exists = os.path.exists(path)
 
         result = transform(source_dir, "test-snapshot", tier=Tier.A, dry_run=True)
 
-        assert result.tier_b_patches == []
-        assert result.tier_c_suggestions == []
+        assert result.tier_b_patches == [], "Result must not be empty"
+        assert result.tier_c_suggestions == [], "Result must not be empty"
 
     def test_transform_tier_c_suggestions(self, tmp_path: Path):
         """Test Tier C suggestions for async conversion."""
@@ -98,7 +98,7 @@ def fetch():
         async_suggestions = [
             s for s in result.tier_c_suggestions if s.get("rule_id") == "async-conversion"
         ]
-        assert len(async_suggestions) > 0
+        assert len(async_suggestions) > 0, "Async_suggestions must not be empty"
 
     def test_transform_result_to_dict(self, tmp_path: Path):
         """Test TransformResult serialization."""
@@ -111,11 +111,11 @@ def fetch():
         result = transform(source_dir, "test-snapshot", dry_run=True)
         data = result.to_dict()
 
-        assert "snapshot_id" in data
-        assert "timestamp" in data
-        assert "tier_a_patches" in data
-        assert "tier_b_patches" in data
-        assert "tier_c_suggestions" in data
+        assert "snapshot_id" in data, "Data must not be empty"
+        assert "timestamp" in data, "Data must not be empty"
+        assert "tier_a_patches" in data, "Data must not be empty"
+        assert "tier_b_patches" in data, "Data must not be empty"
+        assert "tier_c_suggestions" in data, "Data must not be empty"
 
     def test_transform_result_save(self, tmp_path: Path):
         """Test saving TransformResult to files."""
@@ -136,8 +136,8 @@ path = os.path.join("a", "b")
         output_dir = tmp_path / "patches"
         result.save(output_dir)
 
-        assert output_dir.exists()
-        assert (output_dir / "transform-summary.json").exists()
+        assert output_dir.exists(), "Condition must be true"
+        assert (output_dir / "transform-summary.json").exists(), "Condition must be true"
 
 
 class TestPatchGeneration:
@@ -152,10 +152,10 @@ class TestPatchGeneration:
 
         diff = _create_diff(original, modified, "test.py")
 
-        assert "---" in diff
-        assert "+++" in diff
-        assert "-line2" in diff
-        assert "+modified" in diff
+        assert "---" in diff, "Condition must be true"
+        assert "+++" in diff, "Condition must be true"
+        assert "-line2" in diff, "Condition must be true"
+        assert "+modified" in diff, "Condition must be true"
 
     def test_pathlib_migration_patterns(self):
         """Test pathlib migration pattern application."""
@@ -170,8 +170,8 @@ dirname = os.path.dirname(path)
 
         result = _apply_pathlib_migration(content)
 
-        assert "Path(" in result
-        assert ".exists()" in result
+        assert "Path(" in result, "Result must not be empty"
+        assert ".exists()" in result, "Result must not be empty"
 
 
 class TestTierClassification:
@@ -181,9 +181,9 @@ class TestTierClassification:
         """Test Tier enum values."""
         from codex.transform.transformer import Tier
 
-        assert Tier.A.value == "safe_auto_apply"
-        assert Tier.B.value == "apply_with_tests"
-        assert Tier.C.value == "suggest_only"
+        assert Tier.A.value == "safe_auto_apply", "Value must be initialized"
+        assert Tier.B.value == "apply_with_tests", "Value must be initialized"
+        assert Tier.C.value == "suggest_only", "Value must be initialized"
 
     def test_patch_tier_assignment(self, tmp_path: Path):
         """Test that patches are assigned correct tiers."""
@@ -202,7 +202,7 @@ path = os.path.join("a", "b")
         result = transform(source_dir, "test-snapshot", dry_run=True)
 
         for patch in result.tier_a_patches:
-            assert patch.tier == Tier.A
+            assert patch.tier == Tier.A, "tier is not valid"
 
     def test_patch_has_description(self, tmp_path: Path):
         """Test that patches have descriptions."""
@@ -221,8 +221,8 @@ os.path.exists("file")
         result = transform(source_dir, "test-snapshot", dry_run=True)
 
         for patch in result.tier_a_patches:
-            assert patch.description
-            assert len(patch.description) > 0
+            assert patch.description, "Condition must be true"
+            assert len(patch.description) > 0, "Collection must not be empty"
 
 
 class TestPatch:
@@ -244,10 +244,10 @@ class TestPatch:
 
         data = patch.to_dict()
 
-        assert data["file_path"] == "test.py"
-        assert data["rule_id"] == "test-rule"
-        assert data["tier"] == "A"
-        assert data["description"] == "Test patch"
+        assert data["file_path"] == "test.py", "Data must not be empty"
+        assert data["rule_id"] == "test-rule", "Data must not be empty"
+        assert data["tier"] == "A", "Data must not be empty"
+        assert data["description"] == "Test patch", "Data must not be empty"
 
 
 class TestErrorHandling:
@@ -269,7 +269,7 @@ class TestErrorHandling:
         result = transform(source_dir, "test-snapshot", dry_run=True)
 
         # Should complete without crashing
-        assert result.snapshot_id == "test-snapshot"
+        assert result.snapshot_id == "test-snapshot", "Result must not be empty"
 
     def test_transform_empty_directory(self, tmp_path: Path):
         """Test transform on empty directory."""
@@ -280,6 +280,6 @@ class TestErrorHandling:
 
         result = transform(source_dir, "test-snapshot", dry_run=True)
 
-        assert result.tier_a_patches == []
-        assert result.tier_b_patches == []
-        assert result.tier_c_suggestions == []
+        assert result.tier_a_patches == [], "Result must not be empty"
+        assert result.tier_b_patches == [], "Result must not be empty"
+        assert result.tier_c_suggestions == [], "Result must not be empty"

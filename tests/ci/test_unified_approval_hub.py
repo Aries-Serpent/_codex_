@@ -70,14 +70,14 @@ class TestApprovalRuleEngine:
         """Test: Approval intent parameter routes to correct decision."""
         context = {"approval_intent": intent}
         decision = self._evaluate_approval_intent(context)
-        assert decision == expected_decision
+        assert decision == expected_decision, "decision is not valid"
 
     def test_persistent_label_rule_high_priority(self):
         """Test: Persistent label (wec:auto-approve) → APPROVE (highest priority)."""
         pr_labels = ["wec:auto-approve", "bug", "urgent"]
         decision, confidence = self._evaluate_label_rule(pr_labels)
-        assert decision == "APPROVE"
-        assert confidence == 1.0
+        assert decision == "APPROVE", "decision is not valid"
+        assert confidence == 1.0, "confidence is not valid"
 
     def test_single_session_label_rule_with_ttl(self):
         """Test: Single-session label (wec:auto-approve-once) → APPROVE within TTL window."""
@@ -87,8 +87,8 @@ class TestApprovalRuleEngine:
         decision, confidence = self._evaluate_single_session_rule(
             pr_labels, pr_created_at, ttl_hours
         )
-        assert decision == "APPROVE"
-        assert confidence == 1.0
+        assert decision == "APPROVE", "decision is not valid"
+        assert confidence == 1.0, "confidence is not valid"
 
     def test_single_session_label_expired_ttl(self):
         """Test: Single-session label expired → DENY."""
@@ -98,22 +98,22 @@ class TestApprovalRuleEngine:
         decision, confidence = self._evaluate_single_session_rule(
             pr_labels, pr_created_at, ttl_hours
         )
-        assert decision == "DENY"
-        assert confidence == 0.95
+        assert decision == "DENY", "decision is not valid"
+        assert confidence == 0.95, "confidence is not valid"
 
     def test_maintainer_approval_rule(self):
         """Test: PR approved by @mbaetiong (maintainer) → APPROVE."""
         approver = "mbaetiong"
         decision, confidence = self._evaluate_maintainer_rule(approver)
-        assert decision == "APPROVE"
-        assert confidence == 0.99
+        assert decision == "APPROVE", "decision is not valid"
+        assert confidence == 0.99, "confidence is not valid"
 
     def test_low_risk_commit_rule(self):
         """Test: Low-risk commit (docs:, chore:) → APPROVE."""
         commit_message = "docs: fix typo in README"
         decision, confidence = self._evaluate_reason_rule(commit_message)
-        assert decision == "APPROVE"
-        assert confidence == 0.85
+        assert decision == "APPROVE", "decision is not valid"
+        assert confidence == 0.85, "confidence is not valid"
 
     def test_no_matching_rule_fallback(self):
         """Test: No rule match → DENY (safe fallback)."""
@@ -123,7 +123,7 @@ class TestApprovalRuleEngine:
             "reason": "Feature implementation",
         }
         decision = self._evaluate_all_rules(context)
-        assert decision == "DENY"
+        assert decision == "DENY", "decision is not valid"
 
     # Helper methods for rule evaluation
     def _evaluate_approval_intent(self, context):
@@ -200,8 +200,8 @@ class TestTokenChainResolution:
     def test_tier1_cognitive_brain_app_preferred(self):
         """Test: Tier 1 (Cognitive Brain App) preferred if available."""
         token, source = self._resolve_token_chain()
-        assert token == "app-token-123"
-        assert source == "COGNITIVE_BRAIN_APP"
+        assert token == "app-token-123", "token is not valid"
+        assert source == "COGNITIVE_BRAIN_APP", "source is not valid"
 
     @patch.dict(
         os.environ,
@@ -214,8 +214,8 @@ class TestTokenChainResolution:
     def test_tier2_codex_master_key_fallback(self):
         """Test: Tier 2 (CODEX_MASTER_KEY) if Tier 1 unavailable."""
         token, source = self._resolve_token_chain()
-        assert token == "master-key-456"
-        assert source == "CODEX_MASTER_KEY"
+        assert token == "master-key-456", "token is not valid"
+        assert source == "CODEX_MASTER_KEY", "source is not valid"
 
     @patch.dict(
         os.environ,
@@ -229,8 +229,8 @@ class TestTokenChainResolution:
     def test_tier3_backup_key_fallback(self):
         """Test: Tier 3 (CODEX_BACKUP_KEY) if Tier 1-2 unavailable."""
         token, source = self._resolve_token_chain()
-        assert token == "backup-key-789"
-        assert source == "CODEX_BACKUP_KEY"
+        assert token == "backup-key-789", "token is not valid"
+        assert source == "CODEX_BACKUP_KEY", "source is not valid"
 
     @patch.dict(
         os.environ,
@@ -244,8 +244,8 @@ class TestTokenChainResolution:
     def test_tier4_github_token_fallback(self):
         """Test: Tier 4 (github.token) fallback."""
         token, source = self._resolve_token_chain()
-        assert source == "github_token"
-        assert token is not None
+        assert source == "github_token", "source is not valid"
+        assert token is not None, "token must be initialized"
 
     def _resolve_token_chain(self):
         """Resolve token from 4-tier chain."""
@@ -290,10 +290,10 @@ class TestAuditTrailLogging:
         audit_log.write(entry)
 
         lines = audit_log.read_all()
-        assert len(lines) > 0
+        assert len(lines) > 0, "Lines must not be empty"
         logged_entry = json.loads(lines[-1])
-        assert logged_entry["approval_id"] == "uuid-123"
-        assert logged_entry["action_taken"] == "approved"
+        assert logged_entry["approval_id"] == "uuid-123", "Condition must be true"
+        assert logged_entry["action_taken"] == "approved", "Condition must be true"
 
     def test_audit_log_append_only(self, tmp_path):
         """Test: Audit log is append-only."""
@@ -308,9 +308,9 @@ class TestAuditTrailLogging:
         audit_log.write(entry2)
         final_lines = len(audit_log.read_all())
 
-        assert final_lines == initial_lines + 1
-        assert json.loads(audit_log.read_all()[0])["approval_id"] == "id-1"
-        assert json.loads(audit_log.read_all()[1])["approval_id"] == "id-2"
+        assert final_lines == initial_lines + 1, "final_lines is not valid"
+        assert json.loads(audit_log.read_all()[0])["approval_id"] == "id-1", "Condition must be true"
+        assert json.loads(audit_log.read_all()[1])["approval_id"] == "id-2", "Condition must be true"
 
     def test_audit_entry_no_token_leakage(self, tmp_path):
         """Test: Token not included in audit log."""
@@ -327,8 +327,8 @@ class TestAuditTrailLogging:
         logged = json.loads(audit_log.read_all()[-1])
 
         # Verify token not in output
-        assert "token" not in logged
-        assert logged["token_chain_resolution"]["token_source"] == "CODEX_MASTER_KEY"
+        assert "token" not in logged, "Condition must be true"
+        assert logged["token_chain_resolution"]["token_source"] == "CODEX_MASTER_KEY", "Condition must be true"
 
     def _create_audit_log(self, path):
         """Helper: Create audit log instance."""
@@ -450,8 +450,8 @@ class TestSecurityValidation:
         dangerous_input = 'Approval"; echo hacked #'
         sanitized = self._sanitize_approval_reason(dangerous_input)
 
-        assert "echo" not in sanitized
-        assert '";' not in sanitized
+        assert "echo" not in sanitized, "Condition must be true"
+        assert '";' not in sanitized, "Condition must be true"
 
     def test_input_injection_prevention_target_label(self):
         """Test: Invalid label names are rejected."""
@@ -469,13 +469,13 @@ class TestSecurityValidation:
         """Test: Bot-sourced approvals are skipped."""
         sender_type = "Bot"
         should_skip = self._should_skip_self_trigger(sender_type)
-        assert should_skip is True
+        assert should_skip is True, "should_skip is not valid"
 
     def test_rate_limit_protection(self):
         """Test: Rate limits prevent approval floods."""
         approvals_per_hour = 50  # Over limit
         rate_limited = self._check_rate_limit(approvals_per_hour, limit=10)
-        assert rate_limited is True
+        assert rate_limited is True, "rate_limited is not valid"
 
     def _sanitize_approval_reason(self, reason):
         """Sanitize approval reason."""
@@ -544,63 +544,63 @@ class TestIntegrationScenarios:
     def test_scenario_1_persistent_label_approval(self):
         """Scenario 1: Persistent label (wec:auto-approve) → approval succeeds."""
         labels = ["wec:auto-approve"]
-        assert "wec:auto-approve" in labels
+        assert "wec:auto-approve" in labels, "Condition must be true"
 
     def test_scenario_2_single_session_label_approval(self):
         """Scenario 2: Single-session label → approval succeeds."""
         labels = ["wec:auto-approve-once"]
-        assert "wec:auto-approve-once" in labels
+        assert "wec:auto-approve-once" in labels, "Condition must be true"
 
     def test_scenario_3_maintainer_approval(self):
         """Scenario 3: Maintainer review approval → approval succeeds."""
         approver = "mbaetiong"
-        assert approver == "mbaetiong"
+        assert approver == "mbaetiong", "approver is not valid"
 
     def test_scenario_4_low_risk_approval(self):
         """Scenario 4: Low-risk commit (docs:) → approval succeeds."""
         reason = "docs: fix README"
-        assert reason.startswith("docs:")
+        assert reason.startswith("docs:"), "Condition must be true"
 
     def test_scenario_5_pending_run_approval(self):
         """Scenario 5: Pending action_required run → approval succeeds."""
         run_status = "action_required"
-        assert run_status == "action_required"
+        assert run_status == "action_required", "run_status is not valid"
 
     def test_scenario_6_batch_sweep_approval(self):
         """Scenario 6: Batch sweep (schedule) → multiple approvals."""
         pending_runs = [1, 2, 3, 4, 5]
-        assert len(pending_runs) == 5
+        assert len(pending_runs) == 5, "Pending_runs must not be empty"
 
     def test_scenario_7_fork_pr_denial(self):
         """Scenario 7: Fork PR → approval denied for safety."""
         is_fork = True
-        assert is_fork is True
+        assert is_fork is True, "is_fork is not valid"
 
     def test_scenario_8_draft_pr_skip(self):
         """Scenario 8: Draft PR → skip approval."""
         is_draft = True
-        assert is_draft is True
+        assert is_draft is True, "is_draft is not valid"
 
     def test_scenario_9_merged_pr_skip(self):
         """Scenario 9: Merged PR → skip approval."""
         pr_merged = True
-        assert pr_merged is True
+        assert pr_merged is True, "pr_merged is not valid"
 
     def test_scenario_10_token_unavailable_skip(self):
         """Scenario 10: No token available → skip approval."""
         token = None
-        assert token is None
+        assert token is None, "token is not valid"
 
     def test_scenario_11_ttl_expired_denial(self):
         """Scenario 11: Single-session label expired → denial."""
         ttl_hours = 1
         age_hours = 2
-        assert age_hours > ttl_hours
+        assert age_hours > ttl_hours, "age_hours must be greater than zero"
 
     def test_scenario_12_audit_trail_completeness(self):
         """Scenario 12: All approvals logged to audit trail."""
         approvals = [{"approval_id": f"id-{i}", "action": "approved"} for i in range(12)]
-        assert len(approvals) == 12
+        assert len(approvals) == 12, "Approvals must not be empty"
 
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -633,7 +633,7 @@ class TestParametrizedApprovalDecisions:
     def test_approval_decision_matrix(self, rule_name, input_data, expected):
         """Parametrized test for approval decisions."""
         result = self._evaluate_rule(rule_name, input_data)
-        assert result == expected
+        assert result == expected, "Result must not be empty"
 
     def _evaluate_rule(self, rule_name, data):
         """Evaluate a single rule."""

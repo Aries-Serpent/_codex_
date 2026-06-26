@@ -17,7 +17,7 @@ def test_session_logger_enables_wal(tmp_path):
     conn = sqlite3.connect(db)
     mode = conn.execute("PRAGMA journal_mode").fetchone()[0]
     conn.close()
-    assert mode.lower() == "wal"
+    assert mode.lower() == "wal", "Condition must be true"
 
 
 def test_init_db_marks_path_only_after_success(monkeypatch, tmp_path):
@@ -41,10 +41,10 @@ def test_init_db_marks_path_only_after_success(monkeypatch, tmp_path):
     try:
         with pytest.raises(sqlite3.OperationalError):
             sl.init_db(db)
-        assert key not in sl.INITIALIZED_PATHS
+        assert key not in sl.INITIALIZED_PATHS, "Condition must be true"
 
         result = sl.init_db(db)
-        assert result == db
-        assert key in sl.INITIALIZED_PATHS
+        assert result == db, "Result must not be empty"
+        assert key in sl.INITIALIZED_PATHS, "Condition must be true"
     finally:
         sl.INITIALIZED_PATHS.discard(key)

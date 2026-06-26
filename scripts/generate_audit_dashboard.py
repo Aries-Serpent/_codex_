@@ -52,7 +52,7 @@ try:
     PLANNING_AVAILABLE = True
 except ImportError as e:
     error_type = type(e).__name__
-    logger.debug(f"ImportError: <ERROR_TYPE>")
+    logger.debug("ImportError: <ERROR_TYPE>")
     PLANNING_AVAILABLE = False
 
 # Supported file extensions for badge styling
@@ -102,8 +102,8 @@ def scan_directory(base_path: Path) -> list[dict[str, Any]]:
                 )
             except OSError as e:
                 error_type = type(e).__name__
-                logger.debug(f"OSError: <ERROR_TYPE>")
-                logger.warning(f"OSError: <ERROR_TYPE>", exc_info=True)
+                logger.debug("OSError: <ERROR_TYPE>")
+                logger.warning("OSError: <ERROR_TYPE>", exc_info=True)
                 # Skip files that can't be accessed
 
     return files
@@ -135,12 +135,12 @@ def load_gaps_and_plans(base_path: Path) -> dict[str, Any]:
                 gaps_data = json.load(f)
         except json.JSONDecodeError as e:
             # gaps.json is optional; if corrupt, log warning and continue with empty gaps data.
-            logger.warning(f"Could not parse gaps.json (corrupt JSON): <ERROR_TYPE>")
+            logger.warning("Could not parse gaps.json (corrupt JSON): <ERROR_TYPE>")
         except OSError as e:
             error_type = type(e).__name__
-            logger.debug(f"OSError: <ERROR_TYPE>")
+            logger.debug("OSError: <ERROR_TYPE>")
             # gaps.json is optional; if unreadable, log warning and continue with empty gaps data.
-            logger.warning(f"Could not read gaps.json (I/O error): <ERROR_TYPE>")
+            logger.warning("Could not read gaps.json (I/O error): <ERROR_TYPE>")
 
     # Load improvement plan MD file
     plan_file = base_path / "audit_artifacts" / "HIGH_MATURITY_ACHIEVEMENT_PLAN.md"
@@ -156,8 +156,8 @@ def load_gaps_and_plans(base_path: Path) -> dict[str, Any]:
             plans_data["phases"] = phases
         except OSError as e:
             error_type = type(e).__name__
-            logger.debug(f"OSError: <ERROR_TYPE>")
-            logger.warning(f"OSError: <ERROR_TYPE>", exc_info=True)
+            logger.debug("OSError: <ERROR_TYPE>")
+            logger.warning("OSError: <ERROR_TYPE>", exc_info=True)
             # The plan file is optional; skip if it cannot be read.
 
     return {"gaps": gaps_data, "plans": plans_data}
@@ -401,7 +401,7 @@ def generate_html_dashboard(
             html_content += generate_planning_css()
         except ImportError as e:
             error_type = type(e).__name__
-            logger.debug(f"ImportError: <ERROR_TYPE>")
+            logger.debug("ImportError: <ERROR_TYPE>")
 
     html_content += """
     </style>

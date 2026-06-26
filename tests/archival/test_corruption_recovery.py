@@ -58,7 +58,7 @@ class TestCorruptionDetection:
         new_checksum = hashlib.sha256(original_file.read_bytes()).hexdigest()
 
         # Checksums should differ
-        assert original_checksum != new_checksum
+        assert original_checksum != new_checksum, "original_checksum is not valid"
 
     def test_manifest_checksum_verification(self, tmp_path):
         """Test verifying manifest checksums"""
@@ -80,7 +80,7 @@ class TestCorruptionDetection:
         for file_entry in manifest["files"]:
             file_path = files_dir / file_entry["path"]
             actual_checksum = hashlib.sha256(file_path.read_bytes()).hexdigest()
-            assert actual_checksum == file_entry["sha256"]
+            assert actual_checksum == file_entry["sha256"], "actual_checksum is not valid"
 
     def test_partial_archive_corruption(self, tmp_path):
         """Test handling of partially corrupted archive"""
@@ -96,7 +96,7 @@ class TestCorruptionDetection:
             tar.add(source_dir, arcname=".")
 
         # Archive created successfully
-        assert archive_path.exists()
+        assert archive_path.exists(), "Condition must be true"
 
     def test_header_corruption_detection(self, tmp_path):
         """Test detecting header corruption in archives"""
@@ -115,7 +115,7 @@ class TestCorruptionDetection:
                 f.write(b"\xff\xff")
 
         # Archive exists (may or may not be readable depending on corruption)
-        assert archive_path.exists()
+        assert archive_path.exists(), "Condition must be true"
 
     def test_truncated_archive_detection(self, tmp_path):
         """Test detecting truncated archives"""
@@ -135,7 +135,7 @@ class TestCorruptionDetection:
             dst.write(src.read(original_size // 2))
 
         # Truncated file is smaller
-        assert truncated_path.stat().st_size < original_size
+        assert truncated_path.stat().st_size < original_size, "st_size is not valid"
 
 
 class TestCorruptionRecovery:
@@ -186,7 +186,7 @@ class TestCorruptionRecovery:
             file_path = extract_dir / file_entry["path"]
             if file_path.exists():
                 actual_checksum = hashlib.sha256(file_path.read_bytes()).hexdigest()
-                assert actual_checksum == file_entry["sha256"]
+                assert actual_checksum == file_entry["sha256"], "actual_checksum is not valid"
 
     def test_fallback_to_backup_archive(self, tmp_path):
         """Test falling back to backup when primary is corrupted"""
@@ -205,8 +205,8 @@ class TestCorruptionRecovery:
             tar.addfile(info, fileobj=None)
 
         # Both archives exist
-        assert primary_path.exists()
-        assert backup_path.exists()
+        assert primary_path.exists(), "Condition must be true"
+        assert backup_path.exists(), "Condition must be true"
 
     def test_reconstruct_from_checksums(self, tmp_path):
         """Test reconstructing file list from checksum manifest"""
@@ -226,8 +226,8 @@ class TestCorruptionRecovery:
         with open(manifest_path) as f:
             loaded = json.load(f)
 
-        assert len(loaded["files"]) == 2
-        assert all("sha256" in f for f in loaded["files"])
+        assert len(loaded["files"]) == 2, "Collection must not be empty"
+        assert all("sha256" in f for f in loaded["files"]), "Condition must be true"
 
     def test_partial_extraction_on_error(self, tmp_path):
         """Test extracting valid members even if some fail"""
@@ -269,8 +269,8 @@ class TestChecksumValidation:
         # Calculate archive checksum
         archive_checksum = hashlib.sha256(archive_path.read_bytes()).hexdigest()
 
-        assert len(archive_checksum) == 64
-        assert archive_checksum.isalnum()
+        assert len(archive_checksum) == 64, "Archive_checksum must not be empty"
+        assert archive_checksum.isalnum(), "Condition must be true"
 
     def test_verify_individual_file_checksums(self, tmp_path):
         """Test verifying checksums of individual files in archive"""
@@ -300,7 +300,7 @@ class TestChecksumValidation:
             file_path = extract_dir / filename
             if file_path.exists():
                 actual_checksum = hashlib.sha256(file_path.read_bytes()).hexdigest()
-                assert actual_checksum == expected_checksum
+                assert actual_checksum == expected_checksum, "actual_checksum is not valid"
 
     def test_checksum_algorithm_consistency(self, tmp_path):
         """Test that checksum algorithm is consistent"""
@@ -312,7 +312,7 @@ class TestChecksumValidation:
         checksum3 = hashlib.sha256(test_data).hexdigest()
 
         # All should be identical
-        assert checksum1 == checksum2 == checksum3
+        assert checksum1 == checksum2 == checksum3, "checksum1 is not valid"
 
 
 if __name__ == "__main__":

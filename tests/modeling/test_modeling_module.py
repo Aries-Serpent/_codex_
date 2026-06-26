@@ -71,11 +71,11 @@ def test_load_model_respects_dtype(monkeypatch: pytest.MonkeyPatch, dtype: str) 
     model = modeling.load_model(cfg)
 
     assert isinstance(model, _DummyModel)
-    assert recorded["name"] == "demo-model"
-    assert recorded["low_cpu"] is True
-    assert model.received_device == "cpu"
+    assert recorded["name"] == "demo-model", "rec is not valid"
+    assert recorded["low_cpu"] is True, "rec is not valid"
+    assert model.received_device == "cpu", "received_device is not valid"
     expected_dtype = modeling._DTYPE_MAP.get(dtype.lower(), torch.float32)
-    assert recorded["dtype"] == expected_dtype
+    assert recorded["dtype"] == expected_dtype, "rec is not valid"
 
 
 @pytest.mark.skipif(TORCH_STUB, reason="modeling tests require the real torch package")
@@ -116,11 +116,11 @@ def test_load_model_applies_lora(monkeypatch: pytest.MonkeyPatch) -> None:
     model = modeling.load_model(cfg)
 
     assert isinstance(model, _DummyModel)
-    assert applied["model"] is model
+    assert applied["model"] is model, "Condition must be true"
     params = applied["config"]
-    assert params["r"] == 4
-    assert params["lora_alpha"] == 32
-    assert params["target_modules"] == ["linear"]
+    assert params["r"] == 4, "Condition must be true"
+    assert params["lora_alpha"] == 32, "Condition must be true"
+    assert params["target_modules"] == ["linear"], "Condition must be true"
 
 
 @pytest.mark.skipif(TORCH_STUB, reason="modeling tests require the real torch package")
@@ -143,5 +143,5 @@ def test_load_tokenizer_prefers_configured_name(monkeypatch: pytest.MonkeyPatch)
     tok = modeling.load_tokenizer(cfg)
 
     assert isinstance(tok, DummyTokenizer)
-    assert captured["name"] == "tokenizer"
-    assert tok.pad_token == "</s>"
+    assert captured["name"] == "tokenizer", "Condition must be true"
+    assert tok.pad_token == "</s>", "pad_token is not valid"

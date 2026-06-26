@@ -109,8 +109,8 @@ def test_pipeline_runs_deterministically(monkeypatch: pytest.MonkeyPatch, tmp_pa
     out1 = pipeline.run_pipeline(config_path, input_path, out1_path)
     out2 = pipeline.run_pipeline(config_path, input_path, out2_path)
 
-    assert out1["output_hash"] == out2["output_hash"]
-    assert out1["payload"]["input_hash"] == out2["payload"]["input_hash"]
+    assert out1["output_hash"] == out2["output_hash"], "Condition must be true"
+    assert out1["payload"]["input_hash"] == out2["payload"]["input_hash"], "Condition must be true"
 
 
 def test_missing_model_path_raises(tmp_path: Path):
@@ -140,8 +140,8 @@ def test_token_cache_keys_include_tokenizer_and_model(
     res_a = pipeline.stage_i2_preprocess(inputs, context_a, cfg)
     res_b = pipeline.stage_i2_preprocess(inputs, context_b, cfg)
 
-    assert res_a["tokens"]["input_ids"].shape == res_b["tokens"]["input_ids"].shape
-    assert len(pipeline.TOKEN_CACHE) == 2
+    assert res_a["tokens"]["input_ids"].shape == res_b["tokens"]["input_ids"].shape, "shape is not valid"
+    assert len(pipeline.TOKEN_CACHE) == 2, "Collection must not be empty"
 
 
 def test_allow_online_flag_bypasses_enforcement(monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
@@ -159,4 +159,4 @@ def test_allow_online_flag_bypasses_enforcement(monkeypatch: pytest.MonkeyPatch,
     out_path = tmp_path / "out.json"
 
     result = pipeline.run_pipeline(config_path, input_path, out_path, allow_online=True)
-    assert "output_hash" in result
+    assert "output_hash" in result, "Result must not be empty"

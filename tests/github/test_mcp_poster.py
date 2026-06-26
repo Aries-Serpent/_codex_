@@ -73,14 +73,14 @@ def no_token_poster(monkeypatch):
 def test_uses_master_key(monkeypatch):
     monkeypatch.setenv("CODEX_MASTER_KEY", "master-tok")
     p = GitHubMCPPoster()
-    assert p._token == "master-tok"
+    assert p._token == "master-tok", "_token is not valid"
 
 
 def test_falls_back_to_backup_key(monkeypatch):
     monkeypatch.delenv("CODEX_MASTER_KEY", raising=False)
     monkeypatch.setenv("CODEX_BACKUP_KEY", "backup-tok")
     p = GitHubMCPPoster()
-    assert p._token == "backup-tok"
+    assert p._token == "backup-tok", "_token is not valid"
 
 
 def test_falls_back_to_github_token(monkeypatch):
@@ -88,7 +88,7 @@ def test_falls_back_to_github_token(monkeypatch):
     monkeypatch.delenv("CODEX_BACKUP_KEY", raising=False)
     monkeypatch.setenv("GITHUB_TOKEN", "gh-tok")
     p = GitHubMCPPoster()
-    assert p._token == "gh-tok"
+    assert p._token == "gh-tok", "_token is not valid"
 
 
 def test_no_token_warns(monkeypatch, caplog):
@@ -106,7 +106,7 @@ def test_no_token_warns(monkeypatch, caplog):
     try:
         with caplog.at_level(logging.WARNING, logger="codex.github.mcp_poster"):
             GitHubMCPPoster()
-        assert "No GitHub token" in caplog.text
+        assert "No GitHub token" in caplog.text, "Condition must be true"
     finally:
         codex_logger.propagate = original_propagate
 
@@ -120,7 +120,7 @@ def test_post_pr_comment_success(poster, monkeypatch):
     resp = _mock_response({"html_url": "https://github.com/test/repo/issues/1#issuecomment-1"})
     monkeypatch.setattr("urllib.request.urlopen", lambda req, timeout: resp)
     result = poster.post_pr_comment("Aries-Serpent/_codex_", 3401, "@copilot test")
-    assert urlparse(result["html_url"]).hostname == "github.com"
+    assert urlparse(result["html_url"]).hostname == "github.com", "Result must not be empty"
 
 
 def test_post_pr_comment_requires_token(no_token_poster):
@@ -134,7 +134,7 @@ def test_post_pr_comment_from_file(poster, monkeypatch, tmp_path):
     resp = _mock_response({"html_url": "https://github.com/x"})
     monkeypatch.setattr("urllib.request.urlopen", lambda req, timeout: resp)
     result = poster.post_pr_comment_from_file("owner/repo", 42, body_file)
-    assert "html_url" in result
+    assert "html_url" in result, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -146,7 +146,7 @@ def test_set_repo_variable_patch_success(poster, monkeypatch):
     resp = _mock_response({})
     monkeypatch.setattr("urllib.request.urlopen", lambda req, timeout: resp)
     result = poster.set_repo_variable("owner/repo", "MY_VAR", "true")
-    assert result == {}
+    assert result == {}, "Result must not be empty"
 
 
 def test_set_repo_variable_falls_back_to_post_on_404(poster, monkeypatch):
@@ -163,7 +163,7 @@ def test_set_repo_variable_falls_back_to_post_on_404(poster, monkeypatch):
 
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
     poster.set_repo_variable("owner/repo", "MY_VAR", "true")
-    assert call_count["n"] == 2  # PATCH failed → POST
+    assert call_count["n"] == 2, "Count must be greater than zero"
 
 
 def test_set_repo_variable_requires_token(no_token_poster):
@@ -183,7 +183,7 @@ def test_cli_post_comment(monkeypatch, tmp_path):
     resp = _mock_response({"html_url": "https://github.com/x"})
     monkeypatch.setattr("urllib.request.urlopen", lambda req, timeout: resp)
     rc = main(["post-comment", "--repo", "o/r", "--pr", "1", "--body-file", str(body_file)])
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
 
 
 def test_cli_set_variable(monkeypatch):
@@ -191,7 +191,7 @@ def test_cli_set_variable(monkeypatch):
     resp = _mock_response({})
     monkeypatch.setattr("urllib.request.urlopen", lambda req, timeout: resp)
     rc = main(["set-variable", "--repo", "o/r", "--name", "X", "--value", "1"])
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
 
 
 def test_cli_no_token_returns_1(monkeypatch):
@@ -199,7 +199,7 @@ def test_cli_no_token_returns_1(monkeypatch):
     monkeypatch.delenv("CODEX_BACKUP_KEY", raising=False)
     monkeypatch.delenv("GITHUB_TOKEN", raising=False)
     rc = main(["post-comment", "--repo", "o/r", "--pr", "1", "--body", "hi"])
-    assert rc == 1
+    assert rc == 1, "rc is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -217,8 +217,8 @@ def test_create_ref_bare_branch_name(poster, monkeypatch):
 
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
     result = poster.create_ref("owner/repo", "my-branch", "abc123")
-    assert result["ref"] == "refs/heads/my-branch"
-    assert b'"ref": "refs/heads/my-branch"' in captured["req"].data
+    assert result["ref"] == "refs/heads/my-branch", "Result must not be empty"
+    assert b'"ref": "refs/heads/my-branch"' in captured["req"].data, "Data must not be empty"
 
 
 def test_create_ref_heads_prefix(poster, monkeypatch):
@@ -231,7 +231,7 @@ def test_create_ref_heads_prefix(poster, monkeypatch):
 
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
     poster.create_ref("owner/repo", "heads/feature", "abc123")
-    assert b'"ref": "refs/heads/feature"' in captured["req"].data
+    assert b'"ref": "refs/heads/feature"' in captured["req"].data, "Data must not be empty"
 
 
 def test_create_ref_tags_prefix(poster, monkeypatch):
@@ -244,7 +244,7 @@ def test_create_ref_tags_prefix(poster, monkeypatch):
 
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
     poster.create_ref("owner/repo", "tags/v1.0", "abc123")
-    assert b'"ref": "refs/tags/v1.0"' in captured["req"].data
+    assert b'"ref": "refs/tags/v1.0"' in captured["req"].data, "Data must not be empty"
 
 
 def test_create_ref_full_refs_prefix_unchanged(poster, monkeypatch):
@@ -258,8 +258,8 @@ def test_create_ref_full_refs_prefix_unchanged(poster, monkeypatch):
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
     poster.create_ref("owner/repo", "refs/heads/existing", "abc123")
     data = json.loads(captured["req"].data)
-    assert data["ref"] == "refs/heads/existing"
-    assert "refs/heads/refs/heads" not in data["ref"]
+    assert data["ref"] == "refs/heads/existing", "Data must not be empty"
+    assert "refs/heads/refs/heads" not in data["ref"], "Data must not be empty"
 
 
 def test_create_ref_requires_token(no_token_poster):
@@ -278,8 +278,8 @@ def test_create_pull_request_success(poster, monkeypatch):
         lambda req, timeout: _mock_response({"number": 42, "html_url": "https://github.com/pr/42"}),
     )
     result = poster.create_pull_request("owner/repo", "My PR", "body", "feature", "main")
-    assert result["number"] == 42
-    assert "html_url" in result
+    assert result["number"] == 42, "Result must not be empty"
+    assert "html_url" in result, "Result must not be empty"
 
 
 def test_create_pull_request_draft(poster, monkeypatch):
@@ -292,7 +292,7 @@ def test_create_pull_request_draft(poster, monkeypatch):
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
     poster.create_pull_request("owner/repo", "Draft PR", "body", "feature", "main", draft=True)
     data = json.loads(captured["req"].data)
-    assert data["draft"] is True
+    assert data["draft"] is True, "Data must not be empty"
 
 
 def test_create_pull_request_requires_token(no_token_poster):
@@ -312,8 +312,8 @@ def test_list_pull_requests_success(poster, monkeypatch):
         lambda req, timeout: _mock_response(pr_list),
     )
     result = poster.list_pull_requests("owner/repo")
-    assert len(result) == 2
-    assert result[0]["number"] == 1
+    assert len(result) == 2, "Result must not be empty"
+    assert result[0]["number"] == 1, "Result must not be empty"
 
 
 def test_list_pull_requests_head_filter_adds_owner_prefix(poster, monkeypatch):
@@ -329,7 +329,7 @@ def test_list_pull_requests_head_filter_adds_owner_prefix(poster, monkeypatch):
     from urllib.parse import parse_qs, urlparse
 
     qs = parse_qs(urlparse(captured["url"]).query)
-    assert qs.get("head") == ["myorg:my-branch"]
+    assert qs.get("head") == ["myorg:my-branch"], "Condition must be true"
 
 
 def test_list_pull_requests_head_with_colon_not_modified(poster, monkeypatch):
@@ -346,7 +346,7 @@ def test_list_pull_requests_head_with_colon_not_modified(poster, monkeypatch):
 
     qs = parse_qs(urlparse(captured["url"]).query)
     # Should NOT re-prefix: the value already contains an owner
-    assert qs.get("head") == ["otherorg:their-branch"]
+    assert qs.get("head") == ["otherorg:their-branch"], "Condition must be true"
 
 
 def test_list_pull_requests_http_error(poster, monkeypatch):
@@ -367,7 +367,7 @@ def test_list_pull_requests_per_page_capped_at_100(poster, monkeypatch):
 
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
     poster.list_pull_requests("owner/repo", per_page=200)
-    assert "per_page=100" in captured["url"]
+    assert "per_page=100" in captured["url"], "Condition must be true"
 
 
 def test_list_pull_requests_requires_token(no_token_poster):
@@ -386,7 +386,7 @@ def test_merge_branch_success(poster, monkeypatch):
         lambda req, timeout: _mock_response({"sha": "abc123", "commit": {}, "parents": []}),
     )
     result = poster.merge_branch("owner/repo", "main", "feature")
-    assert result["sha"] == "abc123"
+    assert result["sha"] == "abc123", "Result must not be empty"
 
 
 def test_merge_branch_with_message(poster, monkeypatch):
@@ -399,7 +399,7 @@ def test_merge_branch_with_message(poster, monkeypatch):
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
     poster.merge_branch("owner/repo", "main", "feature", commit_message="Merge feature into main")
     data = json.loads(captured["req"].data)
-    assert data["commit_message"] == "Merge feature into main"
+    assert data["commit_message"] == "Merge feature into main", "Data must not be empty"
 
 
 def test_merge_branch_no_message_omits_key(poster, monkeypatch):
@@ -412,7 +412,7 @@ def test_merge_branch_no_message_omits_key(poster, monkeypatch):
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
     poster.merge_branch("owner/repo", "main", "feature")
     data = json.loads(captured["req"].data)
-    assert "commit_message" not in data
+    assert "commit_message" not in data, "Data must not be empty"
 
 
 def test_merge_branch_returns_empty_on_no_content(poster, monkeypatch):
@@ -423,7 +423,7 @@ def test_merge_branch_returns_empty_on_no_content(poster, monkeypatch):
     cm.read = mock.Mock(return_value=b"")
     monkeypatch.setattr("urllib.request.urlopen", lambda req, timeout: cm)
     result = poster.merge_branch("owner/repo", "main", "feature")
-    assert result == {}
+    assert result == {}, "Result must not be empty"
 
 
 def test_merge_branch_requires_token(no_token_poster):
@@ -484,8 +484,8 @@ def test_create_discussion_success(poster, monkeypatch):
 
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
     result = poster.create_discussion("owner/repo", "Test", "Body text", "session-summaries")
-    assert result.get("number") == 5
-    assert result.get("url") == "https://github.com/discuss/5"
+    assert result.get("number") == 5, "Result must not be empty"
+    assert result.get("url") == "https://github.com/discuss/5", "Result must not be empty"
 
 
 def test_post_session_summary_discussion(poster, monkeypatch):
@@ -499,8 +499,8 @@ def test_post_session_summary_discussion(poster, monkeypatch):
 
     monkeypatch.setattr(poster, "create_discussion", fake_create_discussion)
     poster.post_session_summary_discussion("owner/repo", 175, "## Summary")
-    assert called_with["title"] == "Session S175 — Completion Summary"
-    assert called_with["category_slug"] == "session-summaries"
+    assert called_with["title"] == "Session S175 — Completion Summary", "Condition must be true"
+    assert called_with["category_slug"] == "session-summaries", "Condition must be true"
 
 
 def test_create_discussion_category_fallback(poster, monkeypatch):
@@ -535,7 +535,7 @@ def test_create_discussion_category_fallback(poster, monkeypatch):
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
     # "nonexistent-slug" won't match "general", should fall back to first category
     poster.create_discussion("owner/repo", "t", "b", "nonexistent-slug")
-    assert call_count["n"] == 2
+    assert call_count["n"] == 2, "Count must be greater than zero"
 
 
 def test_create_discussion_requires_token(no_token_poster):
@@ -565,8 +565,8 @@ def test_request_retries_on_429(poster, monkeypatch):
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
     monkeypatch.setattr("time.sleep", lambda _: None)  # Skip actual sleep
     result = poster.post_pr_comment("owner/repo", 1, "body")
-    assert result.get("ok") is True
-    assert call_count["n"] == 3
+    assert result.get("ok") is True, "Result must not be empty"
+    assert call_count["n"] == 3, "Count must be greater than zero"
 
 
 def test_request_does_not_retry_on_403_without_rate_limit_signals(poster, monkeypatch):
@@ -584,8 +584,8 @@ def test_request_does_not_retry_on_403_without_rate_limit_signals(poster, monkey
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
     with pytest.raises(urllib.error.HTTPError) as exc_info:
         poster.post_pr_comment("owner/repo", 1, "body")
-    assert exc_info.value.code == 403
-    assert call_count["n"] == 1  # No retries
+    assert exc_info.value.code == 403, "Value must be initialized"
+    assert call_count["n"] == 1, "Count must be greater than zero"
 
 
 def test_request_retries_on_403_with_retry_after_header(poster, monkeypatch):
@@ -607,8 +607,8 @@ def test_request_retries_on_403_with_retry_after_header(poster, monkeypatch):
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
     monkeypatch.setattr("time.sleep", lambda _: None)
     result = poster.post_pr_comment("owner/repo", 1, "body")
-    assert result["id"] == 99
-    assert call_count["n"] == 2
+    assert result["id"] == 99, "Result must not be empty"
+    assert call_count["n"] == 2, "Count must be greater than zero"
 
 
 def test_request_retries_on_403_with_ratelimit_remaining_zero(poster, monkeypatch):
@@ -630,7 +630,7 @@ def test_request_retries_on_403_with_ratelimit_remaining_zero(poster, monkeypatc
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
     monkeypatch.setattr("time.sleep", lambda _: None)
     result = poster.post_pr_comment("owner/repo", 1, "body")
-    assert result["id"] == 77
+    assert result["id"] == 77, "Result must not be empty"
 
 
 def test_request_rejects_non_https_url(poster):
@@ -652,7 +652,7 @@ def test_cli_create_branch(monkeypatch):
         ),
     )
     rc = main(["create-branch", "--repo", "o/r", "--ref", "test-branch", "--sha", "abc1234" * 5])
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
 
 
 def test_cli_create_pr(monkeypatch):
@@ -664,7 +664,7 @@ def test_cli_create_pr(monkeypatch):
     rc = main(
         ["create-pr", "--repo", "o/r", "--title", "My PR", "--head", "feature", "--base", "main"]
     )
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
 
 
 def test_cli_create_pr_with_body_file(monkeypatch, tmp_path):
@@ -688,7 +688,7 @@ def test_cli_create_pr_with_body_file(monkeypatch, tmp_path):
             str(body_file),
         ]
     )
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
 
 
 def test_cli_merge_branch(monkeypatch):
@@ -698,7 +698,7 @@ def test_cli_merge_branch(monkeypatch):
         lambda req, timeout: _mock_response({"sha": "abcdef12"}),
     )
     rc = main(["merge-branch", "--repo", "o/r", "--base", "main", "--head", "feature"])
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
 
 
 def test_cli_merge_branch_up_to_date(monkeypatch):
@@ -710,7 +710,7 @@ def test_cli_merge_branch_up_to_date(monkeypatch):
     cm.read = mock.Mock(return_value=b"")
     monkeypatch.setattr("urllib.request.urlopen", lambda req, timeout: cm)
     rc = main(["merge-branch", "--repo", "o/r", "--base", "main", "--head", "feature"])
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
 
 
 def test_cli_create_discussion(monkeypatch, tmp_path):
@@ -754,7 +754,7 @@ def test_cli_create_discussion(monkeypatch, tmp_path):
     rc = main(
         ["create-discussion", "--repo", "o/r", "--title", "S99", "--body-file", str(body_file)]
     )
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
 
 
 def test_cli_http_error_returns_1(monkeypatch):
@@ -766,7 +766,7 @@ def test_cli_http_error_returns_1(monkeypatch):
 
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
     rc = main(["create-branch", "--repo", "o/r", "--ref", "my-branch", "--sha", "a" * 40])
-    assert rc == 1
+    assert rc == 1, "rc is not valid"
 
 
 def test_list_pull_requests_with_base_filter(poster, monkeypatch):
@@ -779,7 +779,7 @@ def test_list_pull_requests_with_base_filter(poster, monkeypatch):
 
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
     poster.list_pull_requests("owner/repo", base="main")
-    assert "base=main" in captured["url"]
+    assert "base=main" in captured["url"], "Condition must be true"
 
 
 def test_cli_create_pr_draft_flag(monkeypatch):
@@ -792,8 +792,8 @@ def test_cli_create_pr_draft_flag(monkeypatch):
 
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
     rc = main(["create-pr", "--repo", "o/r", "--title", "Draft", "--head", "feature", "--draft"])
-    assert rc == 0
-    assert captured["data"]["draft"] is True
+    assert rc == 0, "rc is not valid"
+    assert captured["data"]["draft"] is True, "Data must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -821,7 +821,7 @@ def test_record_cb_pattern_logs_always(poster, caplog, codex_logger_propagating)
             "create_ref: refs/heads/test",
             {"repo": "owner/repo", "sha": "abc123"},
         )
-    assert "CB-branch-create" in caplog.text
+    assert "CB-branch-create" in caplog.text, "Condition must be true"
 
 
 def test_create_ref_records_cb_pattern(poster, monkeypatch):
@@ -834,7 +834,7 @@ def test_create_ref_records_cb_pattern(poster, monkeypatch):
     )
     monkeypatch.setattr(poster, "_record_cb_pattern", lambda *a, **kw: recorded.append((a, kw)))
     poster.create_ref("owner/repo", "test", "abc123")
-    assert any("CB-branch-create" in str(r) for r in recorded)
+    assert any("CB-branch-create" in str(r) for r in recorded), "Condition must be true"
 
 
 def test_create_pull_request_records_cb_pattern(poster, monkeypatch):
@@ -847,7 +847,7 @@ def test_create_pull_request_records_cb_pattern(poster, monkeypatch):
     )
     monkeypatch.setattr(poster, "_record_cb_pattern", lambda *a, **kw: recorded.append((a, kw)))
     poster.create_pull_request("owner/repo", "title", "body", "feature", "main")
-    assert any("CB-pr-open" in str(r) for r in recorded)
+    assert any("CB-pr-open" in str(r) for r in recorded), "Condition must be true"
 
 
 def test_merge_branch_records_cb_pattern_success(poster, monkeypatch):
@@ -862,8 +862,8 @@ def test_merge_branch_records_cb_pattern_success(poster, monkeypatch):
     poster.merge_branch("owner/repo", "main", "feature")
     assert recorded, "Expected _record_cb_pattern to be called"
     args, kwargs = recorded[0]
-    assert args[0] == "CB-merge"
-    assert kwargs.get("outcome") == "success"
+    assert args[0] == "CB-merge", "Condition must be true"
+    assert kwargs.get("outcome") == "success", "Condition must be true"
 
 
 def test_merge_branch_records_cb_pattern_already_exists(poster, monkeypatch):
@@ -879,8 +879,8 @@ def test_merge_branch_records_cb_pattern_already_exists(poster, monkeypatch):
     poster.merge_branch("owner/repo", "main", "feature")
     assert recorded, "Expected _record_cb_pattern to be called"
     args, kwargs = recorded[0]
-    assert args[0] == "CB-merge"
-    assert kwargs.get("outcome") == "already_exists"
+    assert args[0] == "CB-merge", "Condition must be true"
+    assert kwargs.get("outcome") == "already_exists", "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -903,7 +903,7 @@ def test_set_repo_variable_reraises_non_404_http_error(poster, monkeypatch):
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
     with pytest.raises(urllib.error.HTTPError) as exc_info:
         poster.set_repo_variable("owner/repo", "MY_VAR", "value")
-    assert exc_info.value.code == 403
+    assert exc_info.value.code == 403, "Value must be initialized"
 
 
 def test_record_cb_pattern_cognitive_brain_available(poster, monkeypatch):
@@ -941,7 +941,7 @@ def test_record_cb_pattern_cognitive_brain_available(poster, monkeypatch):
         sys.modules.pop("cognitive_brain.quantum", None)
         sys.modules.pop("cognitive_brain.quantum.memory", None)
 
-    assert len(stored) == 1
+    assert len(stored) == 1, "Stored must not be empty"
 
 
 def test_request_raises_after_retry_exhaustion(poster, monkeypatch):
@@ -962,7 +962,7 @@ def test_request_raises_after_retry_exhaustion(poster, monkeypatch):
     max_retries = 2
     with pytest.raises(urllib.error.HTTPError) as exc_info:
         poster._request("POST", "https://api.github.com/test", {}, max_retries=max_retries)
-    assert exc_info.value.code == 429
+    assert exc_info.value.code == 429, "Value must be initialized"
     # All retries are exhausted: loop ran max_retries times then raise last_exc
 
 
@@ -982,7 +982,7 @@ def test_cli_no_subcommand_returns_zero(monkeypatch):
 
     monkeypatch.setattr(argparse.ArgumentParser, "parse_args", patched_parse)
     rc = main([])
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -1001,7 +1001,7 @@ def test_get_method_returns_json(poster, monkeypatch):
 
     monkeypatch.setattr("urllib.request.urlopen", lambda req, timeout: fake_resp)
     result = poster._get("https://api.github.com/repos/owner/repo/git/refs/heads/main")
-    assert result == {"object": {"sha": "abc123"}}
+    assert result == {"object": {"sha": "abc123"}}, "Result must not be empty"
 
 
 def test_get_method_rejects_non_https(poster):
@@ -1055,7 +1055,7 @@ def test_commit_files_pipeline(poster, monkeypatch, tmp_path):
         "docs: update README",
     )
 
-    assert result == "commit_sha_123"
+    assert result == "commit_sha_123", "Result must not be empty"
 
     # Verify the pipeline order: GET ref → GET commit → POST blob → POST tree → POST commit → PATCH ref
     assert any(m == "GET" and "refs" in u for m, u in call_log), "GET ref not called"
@@ -1077,11 +1077,11 @@ def test_cli_commit_files(monkeypatch, tmp_path):
     monkeypatch.setenv("CODEX_MASTER_KEY", "tok")
 
     def fake_commit_files(self, repo, branch, files, message, force=False):
-        assert repo == "owner/repo"
-        assert branch == "main"
-        assert "README.md" in files
-        assert files["README.md"] == "hello"
-        assert message == "docs: update"
+        assert repo == "owner/repo", "repo is not valid"
+        assert branch == "main", "branch is not valid"
+        assert "README.md" in files, "Condition must be true"
+        assert files["README.md"] == "hello", "Condition must be true"
+        assert message == "docs: update", "message is not valid"
         return "deadbeef12345678"  # pragma: allowlist secret
 
     monkeypatch.setattr(pm.GitHubMCPPoster, "commit_files", fake_commit_files)
@@ -1099,7 +1099,7 @@ def test_cli_commit_files(monkeypatch, tmp_path):
             f"README.md:{src}",
         ]
     )
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
 
 
 def test_cli_commit_files_bad_mapping(monkeypatch, tmp_path):
@@ -1120,7 +1120,7 @@ def test_cli_commit_files_bad_mapping(monkeypatch, tmp_path):
             "no_colon_here",
         ]
     )
-    assert rc == 1
+    assert rc == 1, "rc is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -1166,8 +1166,8 @@ class TestAddDiscussionComment:
 
         monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
         result = poster.add_discussion_comment("owner/repo", 42, "Hello!")
-        assert result.get("url") == "https://github.com/d/42#c5"
-        assert call_count["n"] == 2
+        assert result.get("url") == "https://github.com/d/42, "Result must not be empty"
+        assert call_count["n"] == 2, "Count must be greater than zero"
 
     def test_raises_when_discussion_not_found(self, poster, monkeypatch):
         monkeypatch.setattr(
@@ -1204,7 +1204,7 @@ class TestUpsertDiscussionComment:
 
         monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
         result = poster.upsert_discussion_comment("owner/repo", 1, "body", "<!-- marker -->")
-        assert result.get("id") == "DC_abc"
+        assert result.get("id") == "DC_abc", "Result must not be empty"
 
     def test_updates_existing_when_marker_found(self, poster, monkeypatch):
         """Comment with marker found → updateDiscussionComment called."""
@@ -1236,7 +1236,7 @@ class TestUpsertDiscussionComment:
         result = poster.upsert_discussion_comment(
             "owner/repo", 1, "<!-- marker --> new body", "<!-- marker -->"
         )
-        assert result.get("id") == "DC_exist"
+        assert result.get("id") == "DC_exist", "Result must not be empty"
 
     def test_no_marker_always_creates(self, poster, monkeypatch):
         """Empty marker string skips search and always creates new comment."""
@@ -1251,7 +1251,7 @@ class TestUpsertDiscussionComment:
         monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
         poster.upsert_discussion_comment("owner/repo", 3, "body", marker="")
         # Only 2 calls: resolve node ID + addDiscussionComment (no search)
-        assert call_count["n"] == 2
+        assert call_count["n"] == 2, "Count must be greater than zero"
 
 
 class TestPostCiPatternSummary:
@@ -1266,8 +1266,8 @@ class TestPostCiPatternSummary:
 
         monkeypatch.setattr(poster, "upsert_discussion_comment", fake_upsert)
         poster.post_ci_pattern_summary("owner/repo", 3673, "## Summary", "run-42")
-        assert "<!-- ci-pattern-summary:run-42 -->" in captured["marker"]
-        assert "## Summary" in captured["body"]
+        assert "<!-- ci-pattern-summary:run-42 -->" in captured["marker"], "Condition must be true"
+        assert ", "Condition must be true"
 
     def test_default_marker_when_no_session(self, poster, monkeypatch):
         captured = {}
@@ -1278,7 +1278,7 @@ class TestPostCiPatternSummary:
 
         monkeypatch.setattr(poster, "upsert_discussion_comment", fake_upsert)
         poster.post_ci_pattern_summary("owner/repo", 3673, "body", session_id="")
-        assert captured["marker"] == "<!-- ci-pattern-summary -->"
+        assert captured["marker"] == "<!-- ci-pattern-summary -->", "Condition must be true"
 
 
 class TestPostContinuationChain:
@@ -1296,9 +1296,9 @@ class TestPostContinuationChain:
         result = poster.post_continuation_chain(
             "owner/repo", 3673, "## Chain\n@copilot continue ..."
         )
-        assert called["number"] == 3673
-        assert "@copilot continue" in called["body"]
-        assert result["id"] == "DC_chain"
+        assert called["number"] == 3673, "Condition must be true"
+        assert "@copilot continue" in called["body"], "Condition must be true"
+        assert result["id"] == "DC_chain", "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -1321,7 +1321,7 @@ def test_cli_add_discussion_comment_body(monkeypatch):
     rc = main(
         ["add-discussion-comment", "--repo", "owner/repo", "--number", "3673", "--body", "Hello"]
     )
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
 
 
 def test_cli_add_discussion_comment_body_file(monkeypatch, tmp_path):
@@ -1338,7 +1338,7 @@ def test_cli_add_discussion_comment_body_file(monkeypatch, tmp_path):
 
     monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
     rc = main(["add-discussion-comment", "--repo", "o/r", "--number", "1", "--body-file", str(f)])
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
 
 
 def test_cli_upsert_discussion_comment(monkeypatch, tmp_path):
@@ -1367,8 +1367,8 @@ def test_cli_upsert_discussion_comment(monkeypatch, tmp_path):
             "<!-- status -->",
         ]
     )
-    assert rc == 0
-    assert "## Status" in captured_body["body"]
+    assert rc == 0, "rc is not valid"
+    assert ", "Condition must be true"
 
 
 def test_cli_post_ci_pattern_summary(monkeypatch, tmp_path):
@@ -1397,8 +1397,8 @@ def test_cli_post_ci_pattern_summary(monkeypatch, tmp_path):
             "run-99",
         ]
     )
-    assert rc == 0
-    assert captured["session_id"] == "run-99"
+    assert rc == 0, "rc is not valid"
+    assert captured["session_id"] == "run-99", "Condition must be true"
 
 
 def test_cli_post_continuation(monkeypatch, tmp_path):
@@ -1415,8 +1415,8 @@ def test_cli_post_continuation(monkeypatch, tmp_path):
     f = tmp_path / "chain.md"
     f.write_text("@copilot continue ...")
     rc = main(["post-continuation", "--repo", "o/r", "--number", "3673", "--body-file", str(f)])
-    assert rc == 0
-    assert "@copilot continue" in captured["body"]
+    assert rc == 0, "rc is not valid"
+    assert "@copilot continue" in captured["body"], "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -1435,9 +1435,9 @@ class TestCheckTokenHealth:
 
         poster = GitHubMCPPoster(token=None)
         result = poster.check_token_health()
-        assert result["healthy"] is False
-        assert result["source"] == "none"
-        assert "No token" in str(result["expiry_warning"])
+        assert result["healthy"] is False, "Result must not be empty"
+        assert result["source"] == "none", "Result must not be empty"
+        assert "No token" in str(result["expiry_warning"]), "Result must not be empty"
 
     def test_expired_token_returns_unhealthy(self, monkeypatch):
         """HTTP 401 → healthy=False, expiry_warning mentions rotation."""
@@ -1457,8 +1457,8 @@ class TestCheckTokenHealth:
 
         monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
         result = poster.check_token_health()
-        assert result["healthy"] is False
-        assert (
+        assert result["healthy"] is False, "Result must not be empty"
+        assert (, "Condition must be true"
             "expired" in str(result["expiry_warning"]).lower()
             or "invalid" in str(result["expiry_warning"]).lower()
         )
@@ -1490,10 +1490,10 @@ class TestCheckTokenHealth:
 
         monkeypatch.setattr("urllib.request.urlopen", lambda req, timeout=None: _FakeResponse())
         result = poster.check_token_health()
-        assert result["healthy"] is True
-        assert result["login"] == "mbaetiong"
-        assert result["source"] == "CODEX_MASTER_KEY"
-        assert result["expiry_warning"] is None
+        assert result["healthy"] is True, "Result must not be empty"
+        assert result["login"] == "mbaetiong", "Result must not be empty"
+        assert result["source"] == "CODEX_MASTER_KEY", "Result must not be empty"
+        assert result["expiry_warning"] is None, "Result must not be empty"
 
     def test_missing_scopes_on_master_key_warns(self, monkeypatch):
         """200 but missing scopes → healthy=False, warning mentions missing scopes."""
@@ -1522,9 +1522,9 @@ class TestCheckTokenHealth:
 
         monkeypatch.setattr("urllib.request.urlopen", lambda req, timeout=None: _FakeResponse())
         result = poster.check_token_health()
-        assert result["healthy"] is False
-        assert result["expiry_warning"] is not None
-        assert "missing" in str(result["expiry_warning"]).lower()
+        assert result["healthy"] is False, "Result must not be empty"
+        assert result["expiry_warning"] is not None, "Value must be initialized"
+        assert "missing" in str(result["expiry_warning"]).lower(), "Result must not be empty"
 
     def test_token_source_tracking(self, monkeypatch):
         """Token source is tracked correctly for each env var."""
@@ -1534,8 +1534,8 @@ class TestCheckTokenHealth:
 
         monkeypatch.setenv("CODEX_BACKUP_KEY", "backup_token")
         poster = GitHubMCPPoster()
-        assert poster._token_source == "CODEX_BACKUP_KEY"
+        assert poster._token_source == "CODEX_BACKUP_KEY", "_token_source is not valid"
 
         monkeypatch.setenv("CODEX_MASTER_KEY", "master_token")
         poster2 = GitHubMCPPoster()
-        assert poster2._token_source == "CODEX_MASTER_KEY"
+        assert poster2._token_source == "CODEX_MASTER_KEY", "_token_source is not valid"

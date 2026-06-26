@@ -189,7 +189,7 @@ ISSUE INTAKE FLOW
 2. CONTENT ANALYSIS
    ├─ Extract title, body, labels
    ├─ Normalize text (lowercase, remove special chars)
-   └─ Tokenize keywords
+   └─ Tokenize keywords  # pragma: allowlist secret
 
 3. SEVERITY CLASSIFICATION
    ├─ Check explicit labels (P0-P4)

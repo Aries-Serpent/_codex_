@@ -51,11 +51,11 @@ class TestEvaluationConfig:
     def test_default_config(self):
         """Test default configuration values."""
         config = EvaluationConfig()
-        assert config.batch_size == 32
-        assert config.max_samples is None
-        assert config.device == "cpu"
-        assert config.output_dir == "artifacts/evaluation"
-        assert config.save_predictions is False
+        assert config.batch_size == 32, "batch_size is not valid"
+        assert config.max_samples is None, "max_samples is not valid"
+        assert config.device == "cpu", "device is not valid"
+        assert config.output_dir == "artifacts/evaluation", "output_dir is not valid"
+        assert config.save_predictions is False, "save_predictions is not valid"
 
     def test_custom_config(self):
         """Test custom configuration values."""
@@ -66,11 +66,11 @@ class TestEvaluationConfig:
             output_dir="/tmp/eval",
             save_predictions=True,
         )
-        assert config.batch_size == 64
-        assert config.max_samples == 1000
-        assert config.device == "cuda"
-        assert config.output_dir == "/tmp/eval"
-        assert config.save_predictions is True
+        assert config.batch_size == 64, "batch_size is not valid"
+        assert config.max_samples == 1000, "max_samples is not valid"
+        assert config.device == "cuda", "device is not valid"
+        assert config.output_dir == "/tmp/eval", "output_dir is not valid"
+        assert config.save_predictions is True, "save_predictions is not valid"
 
 
 class TestMetricAdapter:
@@ -79,24 +79,24 @@ class TestMetricAdapter:
     def test_adapter_initialization(self):
         """Test metric adapter initialization."""
         adapter = MetricAdapter("test_metric")
-        assert adapter.name == "test_metric"
-        assert adapter._predictions == []
-        assert adapter._references == []
+        assert adapter.name == "test_metric", "name is not valid"
+        assert adapter._predictions == [], "_predictions is not valid"
+        assert adapter._references == [], "_references is not valid"
 
     def test_add_batch(self):
         """Test batch accumulation."""
         adapter = MetricAdapter("test")
         adapter.add_batch([1, 2, 3], [1, 2, 2])
-        assert len(adapter._predictions) == 3
-        assert len(adapter._references) == 3
+        assert len(adapter._predictions) == 3, "Collection must not be empty"
+        assert len(adapter._references) == 3, "Collection must not be empty"
 
     def test_reset(self):
         """Test resetting accumulated results."""
         adapter = MetricAdapter("test")
         adapter.add_batch([1, 2], [1, 2])
         adapter.reset()
-        assert adapter._predictions == []
-        assert adapter._references == []
+        assert adapter._predictions == [], "_predictions is not valid"
+        assert adapter._references == [], "_references is not valid"
 
 
 class TestAccuracyMetric:
@@ -107,34 +107,34 @@ class TestAccuracyMetric:
         metric = AccuracyMetric()
         metric.add_batch([1, 2, 3], [1, 2, 3])
         results = metric.compute()
-        assert results["accuracy"] == 1.0
+        assert results["accuracy"] == 1.0, "Result must not be empty"
 
     def test_partial_accuracy(self):
         """Test partial accuracy."""
         metric = AccuracyMetric()
         metric.add_batch([1, 2, 3], [1, 2, 2])
         results = metric.compute()
-        assert abs(results["accuracy"] - 0.6667) < 0.01
+        assert abs(results["accuracy"] - 0.6667) < 0.01, "Result must not be empty"
 
     def test_zero_accuracy(self):
         """Test 0% accuracy."""
         metric = AccuracyMetric()
         metric.add_batch([1, 2, 3], [4, 5, 6])
         results = metric.compute()
-        assert results["accuracy"] == 0.0
+        assert results["accuracy"] == 0.0, "Result must not be empty"
 
     def test_ignore_index(self):
         """Test ignoring specific indices."""
         metric = AccuracyMetric(ignore_index=-100)
         metric.add_batch([1, 2, 3], [1, -100, 3])
         results = metric.compute()
-        assert results["accuracy"] == 1.0  # Only 2 valid positions
+        assert results["accuracy"] == 1.0, "Result must not be empty"
 
     def test_empty_batch(self):
         """Test with empty batch."""
         metric = AccuracyMetric()
         results = metric.compute()
-        assert results["accuracy"] == 0.0
+        assert results["accuracy"] == 0.0, "Result must not be empty"
 
 
 class TestBleuMetric:
@@ -145,7 +145,7 @@ class TestBleuMetric:
         metric = BleuMetric()
         metric.add_batch("the cat sat on the mat", "the cat sat on the mat")
         results = metric.compute()
-        assert "bleu" in results
+        assert "bleu" in results, "Result must not be empty"
         # Identical strings should have high BLEU (close to 1.0)
 
     def test_bleu_similar(self):
@@ -153,22 +153,22 @@ class TestBleuMetric:
         metric = BleuMetric()
         metric.add_batch("the cat sat on the mat", "the cat is on the mat")
         results = metric.compute()
-        assert "bleu" in results
-        assert 0.0 <= results["bleu"] <= 1.0
+        assert "bleu" in results, "Result must not be empty"
+        assert 0.0 <= results["bleu"] <= 1.0, "Result must not be empty"
 
     def test_bleu_different(self):
         """Test BLEU with completely different strings."""
         metric = BleuMetric()
         metric.add_batch("hello world", "goodbye universe")
         results = metric.compute()
-        assert "bleu" in results
+        assert "bleu" in results, "Result must not be empty"
         # Different strings should have low BLEU
 
     def test_bleu_empty(self):
         """Test BLEU with empty batch."""
         metric = BleuMetric()
         results = metric.compute()
-        assert results["bleu"] == 0.0
+        assert results["bleu"] == 0.0, "Result must not be empty"
 
 
 class TestRougeMetric:
@@ -179,8 +179,8 @@ class TestRougeMetric:
         metric = RougeMetric(["rouge1", "rougeL"])
         metric.add_batch("the cat sat on the mat", "the cat sat on the mat")
         results = metric.compute()
-        assert "rouge1" in results
-        assert "rougeL" in results
+        assert "rouge1" in results, "Result must not be empty"
+        assert "rougeL" in results, "Result must not be empty"
         # Identical strings should have ROUGE = 1.0
 
     def test_rouge_similar(self):
@@ -188,15 +188,15 @@ class TestRougeMetric:
         metric = RougeMetric(["rouge1"])
         metric.add_batch("the cat sat", "the cat is sitting")
         results = metric.compute()
-        assert "rouge1" in results
-        assert 0.0 <= results["rouge1"] <= 1.0
+        assert "rouge1" in results, "Result must not be empty"
+        assert 0.0 <= results["rouge1"] <= 1.0, "Result must not be empty"
 
     def test_rouge_different(self):
         """Test ROUGE with different strings."""
         metric = RougeMetric(["rouge1"])
         metric.add_batch("hello world", "goodbye universe")
         results = metric.compute()
-        assert "rouge1" in results
+        assert "rouge1" in results, "Result must not be empty"
         # No overlap should have ROUGE close to 0
 
     def test_rouge_multiple_types(self):
@@ -204,9 +204,9 @@ class TestRougeMetric:
         metric = RougeMetric(["rouge1", "rouge2", "rougeL"])
         metric.add_batch("test", "test")
         results = metric.compute()
-        assert "rouge1" in results
-        assert "rouge2" in results
-        assert "rougeL" in results
+        assert "rouge1" in results, "Result must not be empty"
+        assert "rouge2" in results, "Result must not be empty"
+        assert "rougeL" in results, "Result must not be empty"
 
 
 class TestPerplexityMetric:
@@ -215,15 +215,15 @@ class TestPerplexityMetric:
     def test_perplexity_initialization(self):
         """Test perplexity metric initialization."""
         metric = PerplexityMetric()
-        assert metric.name == "perplexity"
-        assert metric.ignore_index == -100
+        assert metric.name == "perplexity", "name is not valid"
+        assert metric.ignore_index == -100, "ignore_index is not valid"
 
     def test_perplexity_empty(self):
         """Test perplexity with empty batch."""
         metric = PerplexityMetric()
         results = metric.compute()
-        assert results["perplexity"] == float("inf")
-        assert results["loss"] == float("inf")
+        assert results["perplexity"] == float("inf"), "Result must not be empty"
+        assert results["loss"] == float("inf"), "Result must not be empty"
 
     def test_perplexity_reset(self):
         """Test resetting perplexity metric."""
@@ -231,8 +231,8 @@ class TestPerplexityMetric:
         metric._total_loss = 10.0
         metric._total_tokens = 100
         metric.reset()
-        assert metric._total_loss == 0.0
-        assert metric._total_tokens == 0
+        assert metric._total_loss == 0.0, "_total_loss is not valid"
+        assert metric._total_tokens == 0, "_total_tokens is not valid"
 
 
 class TestLatencyMetric:
@@ -241,8 +241,8 @@ class TestLatencyMetric:
     def test_latency_initialization(self):
         """Test latency metric initialization."""
         metric = LatencyMetric()
-        assert metric.name == "latency_ms"
-        assert metric.per_sample is False
+        assert metric.name == "latency_ms", "name is not valid"
+        assert metric.per_sample is False, "per_sample is not valid"
 
     def test_latency_computation(self):
         """Test latency computation."""
@@ -251,9 +251,9 @@ class TestLatencyMetric:
         metric.add_batch_with_time(None, None, elapsed_time=1.0, batch_size=10)
 
         results = metric.compute()
-        assert "latency_ms" in results
-        assert "throughput_samples_per_sec" in results
-        assert results["total_samples"] == 20
+        assert "latency_ms" in results, "Result must not be empty"
+        assert "throughput_samples_per_sec" in results, "Result must not be empty"
+        assert results["total_samples"] == 20, "Result must not be empty"
 
     def test_latency_per_sample(self):
         """Test per-sample latency."""
@@ -262,7 +262,7 @@ class TestLatencyMetric:
 
         results = metric.compute()
         # Per-sample latency should be 100ms (1s / 10 samples)
-        assert abs(results["latency_ms"] - 100.0) < 0.01
+        assert abs(results["latency_ms"] - 100.0) < 0.01, "Result must not be empty"
 
     def test_latency_per_batch(self):
         """Test per-batch latency."""
@@ -272,14 +272,14 @@ class TestLatencyMetric:
 
         results = metric.compute()
         # Per-batch latency should be 1000ms (1s per batch)
-        assert abs(results["latency_ms"] - 1000.0) < 0.01
+        assert abs(results["latency_ms"] - 1000.0) < 0.01, "Result must not be empty"
 
     def test_latency_empty(self):
         """Test latency with no batches."""
         metric = LatencyMetric()
         results = metric.compute()
-        assert results["latency_ms"] == 0.0
-        assert results["throughput_samples_per_sec"] == 0.0
+        assert results["latency_ms"] == 0.0, "Result must not be empty"
+        assert results["throughput_samples_per_sec"] == 0.0, "Result must not be empty"
 
 
 class TestEvaluationRunner:
@@ -292,9 +292,9 @@ class TestEvaluationRunner:
         metrics = [AccuracyMetric()]
 
         runner = EvaluationRunner(model, dataset, metrics)
-        assert runner.model == model
-        assert len(runner.metrics) == 1
-        assert runner.config.batch_size == 32
+        assert runner.model == model, "model is not valid"
+        assert len(runner.metrics) == 1, "Collection must not be empty"
+        assert runner.config.batch_size == 32, "batch_size is not valid"
 
     def test_runner_custom_config(self):
         """Test runner with custom config."""
@@ -304,7 +304,7 @@ class TestEvaluationRunner:
         config = EvaluationConfig(batch_size=64)
 
         runner = EvaluationRunner(model, dataset, metrics, config=config)
-        assert runner.config.batch_size == 64
+        assert runner.config.batch_size == 64, "batch_size is not valid"
 
     def test_runner_output_dir_creation(self):
         """Test output directory creation."""
@@ -316,7 +316,7 @@ class TestEvaluationRunner:
             runner = EvaluationRunner(
                 model, dataset, metrics, output_dir=os.path.join(tmpdir, "eval_test")
             )
-            assert runner.output_path.exists()
+            assert runner.output_path.exists(), "Condition must be true"
 
     def test_runner_callable_metric_wrapping(self):
         """Test wrapping callable metrics."""
@@ -327,7 +327,7 @@ class TestEvaluationRunner:
             return 0.5
 
         runner = EvaluationRunner(model, dataset, [custom_metric])
-        assert len(runner.metrics) == 1
+        assert len(runner.metrics) == 1, "Collection must not be empty"
         assert isinstance(runner.metrics[0], MetricAdapter)
 
     def test_runner_mock_evaluation(self, disable_torch_profiler):
@@ -349,19 +349,19 @@ class TestEvaluationRunner:
             runner = EvaluationRunner(model, dataset, metrics, config=config)
             results = runner.run()
 
-            assert "metrics" in results
-            assert "accuracy" in results["metrics"]
-            assert "latency_ms" in results
-            assert "num_samples" in results
-            assert results["num_samples"] == 2
+            assert "metrics" in results, "Result must not be empty"
+            assert "accuracy" in results["metrics"], "Result must not be empty"
+            assert "latency_ms" in results, "Result must not be empty"
+            assert "num_samples" in results, "Result must not be empty"
+            assert results["num_samples"] == 2, "Result must not be empty"
 
             # Check summary file created
             summary_path = Path(tmpdir) / "evaluation_summary.json"
-            assert summary_path.exists()
+            assert summary_path.exists(), "Condition must be true"
 
             with open(summary_path) as f:
                 summary = json.load(f)
-                assert "metrics" in summary
+                assert "metrics" in summary, "Condition must be true"
 
     def test_runner_uses_callable_fallback(self):
         """Test evaluation with a model that is only callable."""
@@ -387,9 +387,9 @@ class TestEvaluationRunner:
             runner._get_dataloader = lambda: dataset
             results = runner.run()
 
-            assert "metrics" in results
-            assert results["num_samples"] == 6
-            assert model.calls == 2
+            assert "metrics" in results, "Result must not be empty"
+            assert results["num_samples"] == 6, "Result must not be empty"
+            assert model.calls == 2, "calls is not valid"
 
     @pytest.mark.xfail(
         reason="PyTorch 2.6.x profiler bug with ScriptObject type mismatch (known issue)",
@@ -417,7 +417,7 @@ class TestEvaluationRunner:
             runner.run()
 
             # Verify tracking writer was called
-            assert tracking_writer.log_metric.called
+            assert tracking_writer.log_metric.called, "Condition must be true"
             assert tracking_writer.log_artifact.called or hasattr(tracking_writer, "log_artifact")
 
 
@@ -452,16 +452,16 @@ class TestEvaluationIntegration:
             results = runner.run()
 
             # Verify results structure
-            assert "metrics" in results
-            assert "accuracy" in results["metrics"]
-            assert "latency_ms" in results
-            assert "throughput_samples_per_sec" in results
-            assert "num_samples" in results
-            assert "timestamp" in results
+            assert "metrics" in results, "Result must not be empty"
+            assert "accuracy" in results["metrics"], "Result must not be empty"
+            assert "latency_ms" in results, "Result must not be empty"
+            assert "throughput_samples_per_sec" in results, "Result must not be empty"
+            assert "num_samples" in results, "Result must not be empty"
+            assert "timestamp" in results, "Result must not be empty"
 
             # Verify artifacts
             summary_path = Path(tmpdir) / "evaluation_summary.json"
-            assert summary_path.exists()
+            assert summary_path.exists(), "Condition must be true"
 
     def test_multiple_metrics(self):
         """Test evaluation with multiple metrics."""
@@ -482,7 +482,7 @@ class TestEvaluationIntegration:
             results = runner.run()
 
             # All metrics should be present
-            assert "accuracy" in results["metrics"] or "bleu" in results["metrics"]
+            assert "accuracy" in results["metrics"] or "bleu" in results["metrics"], "Result must not be empty"
 
 
 if __name__ == "__main__":

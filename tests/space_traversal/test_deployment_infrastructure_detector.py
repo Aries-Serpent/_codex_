@@ -19,9 +19,9 @@ def test_deployment_infrastructure_no_files():
 
     result = detect(file_index)
 
-    assert result["id"] == "deployment-infrastructure"
-    assert result["evidence_files"] == []
-    assert "found_patterns" in result
+    assert result["id"] == "deployment-infrastructure", "Result must not be empty"
+    assert result["evidence_files"] == [], "Result must not be empty"
+    assert "found_patterns" in result, "Result must not be empty"
 
 
 def test_deployment_infrastructure_dockerfile():
@@ -35,10 +35,10 @@ def test_deployment_infrastructure_dockerfile():
 
     result = detect(file_index)
 
-    assert result["id"] == "deployment-infrastructure"
-    assert "Dockerfile" in result["evidence_files"]
-    assert "docker" in result["found_patterns"]
-    assert result["meta"]["docker_configs"] == 1
+    assert result["id"] == "deployment-infrastructure", "Result must not be empty"
+    assert "Dockerfile" in result["evidence_files"], "Result must not be empty"
+    assert "docker" in result["found_patterns"], "Result must not be empty"
+    assert result["meta"]["docker_configs"] == 1, "Result must not be empty"
 
 
 def test_deployment_infrastructure_docker_compose():
@@ -52,9 +52,9 @@ def test_deployment_infrastructure_docker_compose():
 
     result = detect(file_index)
 
-    assert result["id"] == "deployment-infrastructure"
-    assert "docker" in result["found_patterns"]
-    assert result["meta"]["docker_configs"] >= 1
+    assert result["id"] == "deployment-infrastructure", "Result must not be empty"
+    assert "docker" in result["found_patterns"], "Result must not be empty"
+    assert result["meta"]["docker_configs"] >= 1, "Value must be greater than zero"
 
 
 def test_deployment_infrastructure_kubernetes():
@@ -69,9 +69,9 @@ def test_deployment_infrastructure_kubernetes():
 
     result = detect(file_index)
 
-    assert result["id"] == "deployment-infrastructure"
-    assert "kubernetes" in result["found_patterns"]
-    assert result["meta"]["k8s_manifests"] == 3
+    assert result["id"] == "deployment-infrastructure", "Result must not be empty"
+    assert "kubernetes" in result["found_patterns"], "Result must not be empty"
+    assert result["meta"]["k8s_manifests"] == 3, "Result must not be empty"
 
 
 def test_deployment_infrastructure_helm():
@@ -86,9 +86,9 @@ def test_deployment_infrastructure_helm():
 
     result = detect(file_index)
 
-    assert result["id"] == "deployment-infrastructure"
-    assert "helm" in result["found_patterns"]
-    assert result["meta"]["helm_charts"] >= 2
+    assert result["id"] == "deployment-infrastructure", "Result must not be empty"
+    assert "helm" in result["found_patterns"], "Result must not be empty"
+    assert result["meta"]["helm_charts"] >= 2, "Value must be greater than zero"
 
 
 def test_deployment_infrastructure_terraform():
@@ -103,9 +103,9 @@ def test_deployment_infrastructure_terraform():
 
     result = detect(file_index)
 
-    assert result["id"] == "deployment-infrastructure"
-    assert "terraform" in result["found_patterns"]
-    assert result["meta"]["terraform_configs"] == 3
+    assert result["id"] == "deployment-infrastructure", "Result must not be empty"
+    assert "terraform" in result["found_patterns"], "Result must not be empty"
+    assert result["meta"]["terraform_configs"] == 3, "Result must not be empty"
 
 
 def test_deployment_infrastructure_deploy_scripts():
@@ -119,9 +119,9 @@ def test_deployment_infrastructure_deploy_scripts():
 
     result = detect(file_index)
 
-    assert result["id"] == "deployment-infrastructure"
-    assert "deploy" in result["found_patterns"]
-    assert result["meta"]["deploy_scripts"] >= 1
+    assert result["id"] == "deployment-infrastructure", "Result must not be empty"
+    assert "deploy" in result["found_patterns"], "Result must not be empty"
+    assert result["meta"]["deploy_scripts"] >= 1, "Value must be greater than zero"
 
 
 def test_deployment_infrastructure_service_files():
@@ -136,9 +136,9 @@ def test_deployment_infrastructure_service_files():
 
     result = detect(file_index)
 
-    assert result["id"] == "deployment-infrastructure"
-    assert "service" in result["found_patterns"]
-    assert result["meta"]["service_definitions"] == 3
+    assert result["id"] == "deployment-infrastructure", "Result must not be empty"
+    assert "service" in result["found_patterns"], "Result must not be empty"
+    assert result["meta"]["service_definitions"] == 3, "Result must not be empty"
 
 
 def test_deployment_infrastructure_comprehensive():
@@ -157,14 +157,14 @@ def test_deployment_infrastructure_comprehensive():
 
     result = detect(file_index)
 
-    assert result["id"] == "deployment-infrastructure"
-    assert len(result["evidence_files"]) >= 7
-    assert "docker" in result["found_patterns"]
-    assert "kubernetes" in result["found_patterns"]
-    assert "helm" in result["found_patterns"]
-    assert "terraform" in result["found_patterns"]
-    assert "deploy" in result["found_patterns"]
-    assert "service" in result["found_patterns"]
+    assert result["id"] == "deployment-infrastructure", "Result must not be empty"
+    assert len(result["evidence_files"]) >= 7, "Collection must not be empty"
+    assert "docker" in result["found_patterns"], "Result must not be empty"
+    assert "kubernetes" in result["found_patterns"], "Result must not be empty"
+    assert "helm" in result["found_patterns"], "Result must not be empty"
+    assert "terraform" in result["found_patterns"], "Result must not be empty"
+    assert "deploy" in result["found_patterns"], "Result must not be empty"
+    assert "service" in result["found_patterns"], "Result must not be empty"
 
 
 def test_deployment_infrastructure_required_patterns():
@@ -172,10 +172,10 @@ def test_deployment_infrastructure_required_patterns():
     file_index = {"files": []}
     result = detect(file_index)
 
-    assert "required_patterns" in result
-    assert "docker" in result["required_patterns"]
-    assert "kubernetes" in result["required_patterns"]
-    assert "helm" in result["required_patterns"]
+    assert "required_patterns" in result, "Result must not be empty"
+    assert "docker" in result["required_patterns"], "Result must not be empty"
+    assert "kubernetes" in result["required_patterns"], "Result must not be empty"
+    assert "helm" in result["required_patterns"], "Result must not be empty"
 
 
 def test_deployment_infrastructure_docs_keywords():
@@ -183,10 +183,10 @@ def test_deployment_infrastructure_docs_keywords():
     file_index = {"files": []}
     result = detect(file_index)
 
-    assert "docs_keywords" in result
-    assert "deployment" in result["docs_keywords"]
-    assert "docker" in result["docs_keywords"]
-    assert "kubernetes" in result["docs_keywords"]
+    assert "docs_keywords" in result, "Result must not be empty"
+    assert "deployment" in result["docs_keywords"], "Result must not be empty"
+    assert "docker" in result["docs_keywords"], "Result must not be empty"
+    assert "kubernetes" in result["docs_keywords"], "Result must not be empty"
 
 
 def test_deployment_infrastructure_safeguards():
@@ -194,10 +194,10 @@ def test_deployment_infrastructure_safeguards():
     file_index = {"files": []}
     result = detect(file_index)
 
-    assert "safeguards" in result
-    assert "validation" in result["safeguards"]
-    assert "bounded" in result["safeguards"]
-    assert "deterministic" in result["safeguards"]
+    assert "safeguards" in result, "Result must not be empty"
+    assert "validation" in result["safeguards"], "Result must not be empty"
+    assert "bounded" in result["safeguards"], "Result must not be empty"
+    assert "deterministic" in result["safeguards"], "Result must not be empty"
 
 
 def test_deployment_infrastructure_functionality():
@@ -210,9 +210,9 @@ def test_deployment_infrastructure_functionality():
     }
     result = detect(file_index)
 
-    assert "functionality_impl" in result
+    assert "functionality_impl" in result, "Result must not be empty"
     assert isinstance(result["functionality_impl"], float)
-    assert 0.0 <= result["functionality_impl"] <= 1.0
+    assert 0.0 <= result["functionality_impl"] <= 1.0, "Result must not be empty"
 
 
 def test_deployment_infrastructure_meta_fields():
@@ -225,14 +225,14 @@ def test_deployment_infrastructure_meta_fields():
     }
     result = detect(file_index)
 
-    assert "meta" in result
-    assert "docker_configs" in result["meta"]
-    assert "k8s_manifests" in result["meta"]
-    assert "helm_charts" in result["meta"]
-    assert "terraform_configs" in result["meta"]
-    assert "service_definitions" in result["meta"]
-    assert "deploy_scripts" in result["meta"]
-    assert result["meta"]["deterministic"] is True
+    assert "meta" in result, "Result must not be empty"
+    assert "docker_configs" in result["meta"], "Result must not be empty"
+    assert "k8s_manifests" in result["meta"], "Result must not be empty"
+    assert "helm_charts" in result["meta"], "Result must not be empty"
+    assert "terraform_configs" in result["meta"], "Result must not be empty"
+    assert "service_definitions" in result["meta"], "Result must not be empty"
+    assert "deploy_scripts" in result["meta"], "Result must not be empty"
+    assert result["meta"]["deterministic"] is True, "Result must not be empty"
 
 
 def test_deployment_infrastructure_sorted_evidence():
@@ -247,7 +247,7 @@ def test_deployment_infrastructure_sorted_evidence():
     result = detect(file_index)
 
     evidence = result["evidence_files"]
-    assert evidence == sorted(evidence)
+    assert evidence == sorted(evidence), "evidence is not valid"
 
 
 def test_deployment_infrastructure_docker_directory():
@@ -260,8 +260,8 @@ def test_deployment_infrastructure_docker_directory():
     }
     result = detect(file_index)
 
-    assert result["id"] == "deployment-infrastructure"
-    assert "docker" in result["found_patterns"]
+    assert result["id"] == "deployment-infrastructure", "Result must not be empty"
+    assert "docker" in result["found_patterns"], "Result must not be empty"
 
 
 def test_deployment_infrastructure_dockerignore():
@@ -274,8 +274,8 @@ def test_deployment_infrastructure_dockerignore():
     }
     result = detect(file_index)
 
-    assert result["id"] == "deployment-infrastructure"
-    assert ".dockerignore" in result["evidence_files"]
+    assert result["id"] == "deployment-infrastructure", "Result must not be empty"
+    assert ".dockerignore" in result["evidence_files"], "Result must not be empty"
 
 
 def test_deployment_infrastructure_k8s_patterns():
@@ -289,8 +289,8 @@ def test_deployment_infrastructure_k8s_patterns():
     }
     result = detect(file_index)
 
-    assert result["id"] == "deployment-infrastructure"
-    assert "kubernetes" in result["found_patterns"]
+    assert result["id"] == "deployment-infrastructure", "Result must not be empty"
+    assert "kubernetes" in result["found_patterns"], "Result must not be empty"
 
 
 def test_deployment_infrastructure_empty_file_index():
@@ -298,9 +298,9 @@ def test_deployment_infrastructure_empty_file_index():
     file_index = {}
     result = detect(file_index)
 
-    assert result["id"] == "deployment-infrastructure"
-    assert result["evidence_files"] == []
-    assert result["meta"]["docker_configs"] == 0
+    assert result["id"] == "deployment-infrastructure", "Result must not be empty"
+    assert result["evidence_files"] == [], "Result must not be empty"
+    assert result["meta"]["docker_configs"] == 0, "Result must not be empty"
 
 
 def test_deployment_infrastructure_case_sensitivity():
@@ -313,9 +313,9 @@ def test_deployment_infrastructure_case_sensitivity():
     }
     result = detect(file_index)
 
-    assert result["id"] == "deployment-infrastructure"
+    assert result["id"] == "deployment-infrastructure", "Result must not be empty"
     # Should detect kubernetes (case-insensitive)
-    assert "kubernetes" in result["found_patterns"]
+    assert "kubernetes" in result["found_patterns"], "Result must not be empty"
 
 
 def test_deployment_infrastructure_terraform_directory():
@@ -328,8 +328,8 @@ def test_deployment_infrastructure_terraform_directory():
     }
     result = detect(file_index)
 
-    assert result["id"] == "deployment-infrastructure"
-    assert "terraform" in result["found_patterns"]
+    assert result["id"] == "deployment-infrastructure", "Result must not be empty"
+    assert "terraform" in result["found_patterns"], "Result must not be empty"
 
 
 def test_deployment_infrastructure_mixed_deployment():
@@ -343,7 +343,7 @@ def test_deployment_infrastructure_mixed_deployment():
     }
     result = detect(file_index)
 
-    assert len(result["found_patterns"]) >= 3
-    assert "docker" in result["found_patterns"]
-    assert "kubernetes" in result["found_patterns"]
-    assert "terraform" in result["found_patterns"]
+    assert len(result["found_patterns"]) >= 3, "Collection must not be empty"
+    assert "docker" in result["found_patterns"], "Result must not be empty"
+    assert "kubernetes" in result["found_patterns"], "Result must not be empty"
+    assert "terraform" in result["found_patterns"], "Result must not be empty"

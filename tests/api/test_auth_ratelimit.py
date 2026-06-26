@@ -67,8 +67,8 @@ class TestLoginRateLimit:
             "/auth/login",
             json={"username_or_email": "rateuser", "password": "Str0ngPass!"},
         )
-        assert resp.status_code == 429
-        assert "Rate limit" in resp.json()["detail"]
+        assert resp.status_code == 429, "status_code is not valid"
+        assert "Rate limit" in resp.json()["detail"], "Condition must be true"
 
 
 class TestRegisterRateLimit:
@@ -97,7 +97,7 @@ class TestRegisterRateLimit:
                 "password": "Str0ngPass!",
             },
         )
-        assert resp.status_code == 429
+        assert resp.status_code == 429, "status_code is not valid"
 
 
 class TestCSRFTokenEndpoint:
@@ -110,10 +110,10 @@ class TestCSRFTokenEndpoint:
         client = TestClient(app)
 
         resp = client.get("/auth/csrf-token")
-        assert resp.status_code == 200
+        assert resp.status_code == 200, "status_code is not valid"
         data = resp.json()
-        assert "csrf_token" in data
-        assert len(data["csrf_token"]) > 10
+        assert "csrf_token" in data, "Data must not be empty"
+        assert len(data["csrf_token"]) > 10, "Collection must not be empty"
 
     def test_csrf_tokens_are_unique(self):
         """Each call to csrf-token should return a different token."""
@@ -124,4 +124,4 @@ class TestCSRFTokenEndpoint:
 
         t1 = client.get("/auth/csrf-token").json()["csrf_token"]
         t2 = client.get("/auth/csrf-token").json()["csrf_token"]
-        assert t1 != t2
+        assert t1 != t2, "t1 is not valid"

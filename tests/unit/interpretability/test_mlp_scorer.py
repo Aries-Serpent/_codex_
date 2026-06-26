@@ -112,14 +112,14 @@ class TestMLPScorer:
     def test_initialization(self, mock_model):
         """Test MLPScorer initialization."""
         scorer = MLPScorer(mock_model)
-        assert scorer.model == mock_model
-        assert scorer.normalize is True
+        assert scorer.model == mock_model, "model is not valid"
+        assert scorer.normalize is True, "normalize is not valid"
         assert isinstance(scorer.device, torch.device)
 
     def test_initialization_custom_device(self, mock_model):
         """Test initialization with custom device."""
         scorer = MLPScorer(mock_model, device="cpu")
-        assert scorer.device == torch.device("cpu")
+        assert scorer.device == torch.device("cpu"), "device is not valid"
 
     def test_extract_mlp_activations(self, scorer, sample_input):
         """Test extraction of MLP activations."""
@@ -129,8 +129,8 @@ class TestMLPScorer:
 
         assert isinstance(mlp_acts, list)
         assert isinstance(layer_names, list)
-        assert len(mlp_acts) > 0
-        assert len(layer_names) == len(mlp_acts)
+        assert len(mlp_acts) > 0, "Mlp_acts must not be empty"
+        assert len(layer_names) == len(mlp_acts), "Layer_names must not be empty"
 
         # Check shape of MLP activations
         for act in mlp_acts:
@@ -149,10 +149,10 @@ class TestMLPScorer:
 
         assert isinstance(importance, np.ndarray)
         assert importance.shape == (2, hidden_dim)  # (num_layers, hidden_dim)
-        assert np.all(importance >= 0)
+        assert np.all(importance >= 0), "importance must be greater than zero"
         # Check normalization per layer
         for layer_importance in importance:
-            assert np.abs(layer_importance.sum() - 1.0) < 1e-5
+            assert np.abs(layer_importance.sum() - 1.0) < 1e-5, "Condition must be true"
 
     def test_compute_neuron_importance_max(self, scorer):
         """Test neuron importance with max method."""
@@ -163,7 +163,7 @@ class TestMLPScorer:
 
         assert isinstance(importance, np.ndarray)
         assert importance.shape == (2, hidden_dim)
-        assert np.all(importance >= 0)
+        assert np.all(importance >= 0), "importance must be greater than zero"
 
     @pytest.mark.skipif(
         _TORCH_312_BUG, reason="PyTorch 2.x isinstance bug on Python 3.12 (fixed in 2.2.0 — DR-003)"
@@ -177,7 +177,7 @@ class TestMLPScorer:
 
         assert isinstance(importance, np.ndarray)
         assert importance.shape == (2, hidden_dim)
-        assert np.all(importance >= 0)
+        assert np.all(importance >= 0), "importance must be greater than zero"
 
     def test_compute_neuron_importance_invalid_method(self, scorer):
         """Test that invalid method raises error."""
@@ -199,11 +199,11 @@ class TestMLPScorer:
         stats = scorer.compute_activation_statistics(mlp_acts)
 
         assert isinstance(stats, dict)
-        assert "mean" in stats
-        assert "std" in stats
-        assert "min" in stats
-        assert "max" in stats
-        assert "sparsity" in stats
+        assert "mean" in stats, "Condition must be true"
+        assert "std" in stats, "Condition must be true"
+        assert "min" in stats, "Condition must be true"
+        assert "max" in stats, "Condition must be true"
+        assert "sparsity" in stats, "Condition must be true"
 
         # Check shapes
         for key, value in stats.items():
@@ -221,7 +221,7 @@ class TestMLPScorer:
         assert isinstance(analysis.neuron_importance, np.ndarray)
         assert isinstance(analysis.layer_stats, dict)
         assert isinstance(analysis.layer_names, list)
-        assert analysis.input_shape == input_ids.shape
+        assert analysis.input_shape == input_ids.shape, "input_shape is not valid"
 
     @pytest.mark.skipif(
         _TORCH_312_BUG, reason="PyTorch 2.x isinstance bug on Python 3.12 (fixed in 2.2.0 — DR-003)"
@@ -247,14 +247,14 @@ class TestMLPScorer:
         top_neurons = scorer.get_top_neurons(analysis, top_k=10)
 
         assert isinstance(top_neurons, dict)
-        assert len(top_neurons) == num_layers
+        assert len(top_neurons) == num_layers, "Top_neurons must not be empty"
 
         for layer_idx, neurons in top_neurons.items():
-            assert len(neurons) == 10
+            assert len(neurons) == 10, "Neurons must not be empty"
             for neuron_idx, importance in neurons:
                 assert isinstance(neuron_idx, int)
                 assert isinstance(importance, float)
-                assert 0 <= neuron_idx < hidden_dim
+                assert 0 <= neuron_idx < hidden_dim, "0 is not valid"
 
     def test_get_dead_neurons(self, scorer):
         """Test identification of dead neurons."""
@@ -280,8 +280,8 @@ class TestMLPScorer:
         dead_neurons = scorer.get_dead_neurons(analysis, threshold=0.99)
 
         assert isinstance(dead_neurons, dict)
-        assert 0 in dead_neurons
-        assert len(dead_neurons[0]) >= 5  # At least 5 dead neurons in layer 0
+        assert 0 in dead_neurons, "Condition must be true"
+        assert len(dead_neurons[0]) >= 5, "Collection must not be empty"
 
     @pytest.mark.skipif(
         _TORCH_312_BUG, reason="PyTorch 2.x isinstance bug on Python 3.12 (fixed in 2.2.0 — DR-003)"
@@ -297,9 +297,9 @@ class TestMLPScorer:
         )
 
         assert isinstance(comparison, dict)
-        assert "diff" in comparison
-        assert "correlation" in comparison
-        assert "l2_distance" in comparison
+        assert "diff" in comparison, "Condition must be true"
+        assert "correlation" in comparison, "Condition must be true"
+        assert "l2_distance" in comparison, "Condition must be true"
 
         assert isinstance(comparison["diff"], np.ndarray)
         assert isinstance(comparison["correlation"], np.ndarray)

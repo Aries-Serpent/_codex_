@@ -9,17 +9,17 @@ Authority: @mbaetiong (D-mode, fully autonomous)
 Status: Production Ready
 """
 
-import re
-import sys
-import json
-import time
-import logging
 import argparse
+import json
+import logging
+import re
 import subprocess
-from typing import Optional, Dict, List, Tuple, Any
-from dataclasses import dataclass, field, asdict
+import sys
+import time
+from dataclasses import dataclass, field
+from datetime import datetime
 from enum import Enum
-from datetime import datetime, timedelta
+from typing import List, Optional, Tuple
 
 __version__ = "1.0.0"
 __author__ = "Phase 9.2 Orchestration Layer"
@@ -232,7 +232,7 @@ def setup_logger(name: str, level: int = logging.INFO) -> logging.Logger:
     """Setup logger with standard format"""
     logger = logging.getLogger(name)
     logger.setLevel(level)
-    
+
     handler = logging.StreamHandler(sys.stderr)
     formatter = logging.Formatter(
         fmt='[%(asctime)s] %(levelname)s [%(name)s] %(message)s',
@@ -240,7 +240,7 @@ def setup_logger(name: str, level: int = logging.INFO) -> logging.Logger:
     )
     handler.setFormatter(formatter)
     logger.addHandler(handler)
-    
+
     return logger
 
 
@@ -283,17 +283,17 @@ def run_command(
 
 class PatternDetector:
     """Detects CI failure patterns from logs"""
-    
+
     def __init__(self, patterns: List[Pattern] = None):
         self.patterns = patterns or PATTERN_CATALOG
-    
+
     def detect(self, failure_log: FailureLog) -> List[PatternMatch]:
         """Detect all matching patterns with confidence scores"""
         matches = []
-        
+
         for pattern in self.patterns:
             confidence = self._calculate_confidence(failure_log, pattern)
-            
+
             if confidence >= pattern.confidence_threshold:
                 # Find matched text
                 for i, line in enumerate(failure_log.raw_log.split('\n')):
@@ -305,11 +305,11 @@ class PatternDetector:
                             line_number=i + 1
                         ))
                         break
-        
+
         # Sort by confidence descending
         matches.sort(key=lambda m: m.confidence, reverse=True)
         return matches
-    
+
     def _calculate_confidence(
         self,
         failure_log: FailureLog,
@@ -317,18 +317,18 @@ class PatternDetector:
     ) -> float:
         """Calculate confidence score for pattern match"""
         score = 0.0
-        
+
         # Primary signature match (40% weight)
         if re.search(pattern.primary_regex, failure_log.raw_log, re.IGNORECASE):
             score += 0.40
-        
+
         # Secondary indicators (30% weight)
         secondary_matches = sum(
             1 for indicator in pattern.secondary_indicators
             if indicator.lower() in failure_log.raw_log.lower()
         )
         score += min(0.30, 0.10 * secondary_matches)
-        
+
         # Absence of conflicting patterns (30% weight)
         conflicting = False
         for other in self.patterns:
@@ -336,10 +336,10 @@ class PatternDetector:
                 if re.search(other.primary_regex, failure_log.raw_log, re.IGNORECASE):
                     conflicting = True
                     break
-        
+
         if not conflicting:
             score += 0.30
-        
+
         return min(1.0, score)
 
 
@@ -349,14 +349,14 @@ class PatternDetector:
 
 class FixRouter:
     """Routes pattern to appropriate agent"""
-    
+
     def __init__(self):
         self.agent_map = {p.id: p.agent for p in PATTERN_CATALOG}
-    
+
     def get_agent(self, pattern: Pattern) -> str:
         """Get agent for pattern"""
         return pattern.agent
-    
+
     def should_escalate_immediately(self, confidence: float) -> bool:
         """Determine if confidence is too low for routing"""
         return confidence < 0.50
@@ -364,50 +364,50 @@ class FixRouter:
 
 class FixExecutor:
     """Executes fix attempts through agent dispatch"""
-    
+
     def __init__(self, max_attempts: int = 5):
         self.max_attempts = max_attempts
-    
+
     def execute_fix(
         self,
         failure_log: FailureLog,
         pattern_match: PatternMatch
     ) -> OrchestrationResult:
         """Execute fix attempts with retry logic"""
-        
+
         result = OrchestrationResult(
             failure_log=failure_log,
             pattern_match=pattern_match
         )
-        
+
         logger.info(
             f"Starting fix orchestration for {pattern_match.pattern.id} "
             f"({pattern_match.pattern.name}) "
             f"with agent: {pattern_match.pattern.agent}"
         )
-        
+
         for attempt_num in range(1, self.max_attempts + 1):
             logger.info(f"Attempting fix (iteration {attempt_num}/{self.max_attempts})")
-            
+
             attempt = self._attempt_fix(
                 failure_log,
                 pattern_match,
                 attempt_num
             )
             result.fix_attempts.append(attempt)
-            
+
             if attempt.result == FixStatus.SUCCESS:
                 result.final_status = FixStatus.SUCCESS
                 logger.info(f"✅ Fix successful on attempt {attempt_num}")
                 return result
-            
+
             elif attempt.result == FixStatus.TIMEOUT:
                 logger.warning(f"⏱️  Attempt {attempt_num} timed out")
                 if attempt_num == self.max_attempts:
                     result.final_status = FixStatus.TIMEOUT
                     result.escalation_reason = "Max attempts reached with timeouts"
                     return result
-            
+
             elif attempt_num < self.max_attempts:
                 logger.warning(
                     f"❌ Attempt {attempt_num} failed, retrying... "
@@ -421,9 +421,9 @@ class FixExecutor:
                     f"Last error: {attempt.error_message}"
                 )
                 return result
-        
+
         return result
-    
+
     def _attempt_fix(
         self,
         failure_log: FailureLog,
@@ -431,10 +431,10 @@ class FixExecutor:
         attempt_num: int
     ) -> FixAttempt:
         """Execute single fix attempt"""
-        
+
         pattern = pattern_match.pattern
         start_time = time.time()
-        
+
         # Log the fix attempt
         attempt = FixAttempt(
             attempt_number=attempt_num,
@@ -443,7 +443,7 @@ class FixExecutor:
             fix_description=f"Attempt {attempt_num}: {pattern.name}",
             result=FixStatus.IN_PROGRESS
         )
-        
+
         try:
             # Simulate agent fix execution
             # In production, this would dispatch to actual agent
@@ -451,7 +451,7 @@ class FixExecutor:
                 pattern,
                 failure_log
             )
-            
+
             if success and validation_passed:
                 attempt.result = FixStatus.SUCCESS
                 attempt.validation_passed = True
@@ -463,27 +463,27 @@ class FixExecutor:
                 attempt.result = FixStatus.FAILED
                 attempt.error_message = error_msg
                 attempt.validation_passed = False
-        
+
         except TimeoutError:
             attempt.result = FixStatus.TIMEOUT
             attempt.error_message = "Agent fix exceeded timeout"
-        
+
         except Exception as e:
             attempt.result = FixStatus.FAILED
             attempt.error_message = str(e)
-        
+
         finally:
             attempt.duration_sec = time.time() - start_time
-        
+
         return attempt
-    
+
     def _simulate_agent_fix(
         self,
         pattern: Pattern,
         failure_log: FailureLog
     ) -> Tuple[bool, str, bool]:
         """Simulate agent fix execution (in production: dispatch to real agent)"""
-        
+
         # Simulate different success rates per pattern
         success_rates = {
             "RP-001": 0.92,
@@ -499,10 +499,10 @@ class FixExecutor:
             "RP-011": 0.91,
             "RP-012": 0.65,
         }
-        
+
         import random
         success_rate = success_rates.get(pattern.id, 0.75)
-        
+
         # Simulate fix success based on historical rates
         if random.random() < success_rate:
             return True, "", True
@@ -516,26 +516,26 @@ class FixExecutor:
 
 class CascadeOrchestrator:
     """Main orchestration engine"""
-    
+
     def __init__(self):
         self.detector = PatternDetector()
         self.router = FixRouter()
         self.executor = FixExecutor()
-    
+
     def orchestrate(self, failure_log: FailureLog) -> OrchestrationResult:
         """Execute full cascade orchestration"""
-        
+
         logger.info("=" * 70)
         logger.info("CASCADE ORCHESTRATOR STARTED")
         logger.info(f"Workflow: {failure_log.workflow_name}")
         logger.info(f"Job: {failure_log.job_name}")
         logger.info(f"Exit code: {failure_log.exit_code}")
         logger.info("=" * 70)
-        
+
         # Step 1: Detect patterns
         logger.info("\n[STEP 1] Detecting failure patterns...")
         matches = self.detector.detect(failure_log)
-        
+
         if not matches:
             logger.error("❌ No patterns detected with sufficient confidence")
             result = OrchestrationResult(
@@ -545,14 +545,14 @@ class CascadeOrchestrator:
                 escalation_reason="No matching pattern detected"
             )
             return result
-        
+
         best_match = matches[0]
         confidence_level = get_confidence_level(best_match.confidence)
-        
+
         logger.info(f"✅ Detected: {best_match.pattern.name} ({best_match.pattern.id})")
         logger.info(f"   Confidence: {best_match.confidence:.2%} ({confidence_level.name})")
         logger.info(f"   Matched: {best_match.matched_text}")
-        
+
         # Step 2: Check if confidence is sufficient for routing
         logger.info("\n[STEP 2] Evaluating routing decision...")
         if self.router.should_escalate_immediately(best_match.confidence):
@@ -567,26 +567,26 @@ class CascadeOrchestrator:
                 )
             )
             return result
-        
+
         logger.info(f"✅ Routing to agent: {best_match.pattern.agent}")
-        
+
         # Step 3: Execute fix
         logger.info("\n[STEP 3] Executing fix orchestration...")
         result = self.executor.execute_fix(failure_log, best_match)
-        
+
         # Step 4: Log result
         logger.info("\n[STEP 4] Orchestration result:")
         logger.info(f"   Final status: {result.final_status.value}")
         logger.info(f"   Attempts: {len(result.fix_attempts)}")
         if result.final_status == FixStatus.SUCCESS:
-            logger.info(f"   ✅ Fix applied successfully!")
+            logger.info("   ✅ Fix applied successfully!")
         elif result.final_status == FixStatus.ESCALATED:
             logger.info(f"   ⚠️  Escalation reason: {result.escalation_reason}")
-        
+
         logger.info("=" * 70)
         logger.info("CASCADE ORCHESTRATOR COMPLETED")
         logger.info("=" * 70)
-        
+
         return result
 
 
@@ -632,17 +632,17 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Enable debug logging"
     )
-    
+
     return parser.parse_args()
 
 
 def main() -> int:
     """Main entry point"""
     args = parse_args()
-    
+
     if args.debug:
         logger.setLevel(logging.DEBUG)
-    
+
     # Load failure log
     if args.log_file:
         try:
@@ -653,7 +653,7 @@ def main() -> int:
             return 1
     else:
         log_content = sys.stdin.read()
-    
+
     failure_log = FailureLog(
         raw_log=log_content,
         job_name=args.job,
@@ -661,11 +661,11 @@ def main() -> int:
         timestamp=datetime.utcnow().isoformat(),
         exit_code=args.exit_code
     )
-    
+
     # Run orchestration
     orchestrator = CascadeOrchestrator()
     result = orchestrator.orchestrate(failure_log)
-    
+
     # Output result
     if args.json_output:
         output = {
@@ -680,7 +680,7 @@ def main() -> int:
             "escalation_reason": result.escalation_reason,
         }
         print(json.dumps(output, indent=2))
-    
+
     # Return appropriate exit code
     if result.final_status == FixStatus.SUCCESS:
         return 0

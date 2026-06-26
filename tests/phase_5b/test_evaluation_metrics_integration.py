@@ -75,7 +75,7 @@ class TestEvaluationIntegration:
             metrics = evaluator.evaluate()
 
             # Assert: Evaluation complete
-            assert metrics["accuracy"] == 0.85
+            assert metrics["accuracy"] == 0.85, "Condition must be true"
 
     def test_batch_evaluation_workflow(self):
         """Test: Evaluation across multiple batches."""
@@ -97,7 +97,7 @@ class TestEvaluationIntegration:
                 results.append(result)
 
             # Assert: All batches evaluated
-            assert len(results) == num_batches
+            assert len(results) == num_batches, "Results must not be empty"
 
     def test_checkpoint_based_evaluation(self):
         """Test: Evaluation of specific model checkpoint."""
@@ -115,7 +115,7 @@ class TestEvaluationIntegration:
             metrics = evaluator.evaluate_checkpoint(checkpoint_path)
 
             # Assert: Checkpoint evaluated
-            assert metrics["accuracy"] == 0.85
+            assert metrics["accuracy"] == 0.85, "Condition must be true"
 
     def test_cross_dataset_evaluation(self):
         """Test: Evaluation across train/val/test splits."""
@@ -135,7 +135,7 @@ class TestEvaluationIntegration:
                 results[split_name] = mock_evaluator.evaluate_on_dataset(dataset)
 
             # Assert: All splits evaluated
-            assert len(results) == 3
+            assert len(results) == 3, "Results must not be empty"
 
     def test_evaluation_with_custom_metrics(self):
         """Test: Evaluation with custom metric functions."""
@@ -162,7 +162,7 @@ class TestEvaluationIntegration:
             result = evaluator.evaluate()
 
             # Assert: Custom metrics available
-            assert "custom_metric_1" in result
+            assert "custom_metric_1" in result, "Result must not be empty"
 
 
 @pytest.mark.skipif(not METRICS_AVAILABLE, reason="Metrics not available")
@@ -203,7 +203,7 @@ class TestMetricsCollectionIntegration:
                 collector.record(metrics)
 
             # Assert: All metrics recorded
-            assert mock_collector.record.call_count == 3
+            assert mock_collector.record.call_count == 3, "Count must be greater than zero"
 
     def test_aggregated_metrics_computation(self):
         """Test: Aggregated metrics computed from individual values."""
@@ -227,7 +227,7 @@ class TestMetricsCollectionIntegration:
             result = collector.get_aggregated()
 
             # Assert: Aggregation correct
-            assert result["mean"] == 0.6
+            assert result["mean"] == 0.6, "Result must not be empty"
 
     def test_metrics_export_to_logger(self):
         """Test: Metrics exported to logger."""
@@ -245,7 +245,7 @@ class TestMetricsCollectionIntegration:
             result = collector.export(metrics)
 
             # Assert: Export successful
-            assert result is True
+            assert result is True, "Result must not be empty"
 
     def test_metrics_persistence_to_file(self, tmp_path):
         """Test: Metrics persisted to file."""
@@ -264,7 +264,7 @@ class TestMetricsCollectionIntegration:
             result = collector.save(str(output_file), metrics)
 
             # Assert: Save successful
-            assert result is True
+            assert result is True, "Result must not be empty"
 
 
 @pytest.mark.skipif(
@@ -296,7 +296,7 @@ class TestEvaluationMetricsIntegration:
                 collector.record(metrics)
 
                 # Assert: Metrics collected
-                assert mock_collector.record.called
+                assert mock_collector.record.called, "mock_collect is not valid"
 
     def test_per_batch_metrics_during_evaluation(self):
         """Test: Metrics collected per batch during evaluation."""
@@ -325,7 +325,7 @@ class TestEvaluationMetricsIntegration:
                     collector.record(batch_metrics)
 
                 # Assert: All batches recorded
-                assert mock_collector.record.call_count == num_batches
+                assert mock_collector.record.call_count == num_batches, "Count must be greater than zero"
 
 
 @pytest.mark.skipif(not EVALUATOR_AVAILABLE, reason="Evaluator not available")
@@ -410,8 +410,8 @@ class TestEvaluationMetricsEndToEnd:
                 aggregated = collector.get_aggregated()
 
                 # Assert: Pipeline complete
-                assert metrics["accuracy"] == 0.85
-                assert aggregated["accuracy"] == 0.85
+                assert metrics["accuracy"] == 0.85, "Condition must be true"
+                assert aggregated["accuracy"] == 0.85, "Condition must be true"
 
     def test_multi_epoch_evaluation_tracking(self):
         """Test: Evaluation metrics tracked across epochs."""
@@ -445,8 +445,8 @@ class TestEvaluationMetricsEndToEnd:
                     history.append(metrics)
 
                 # Assert: All epochs tracked
-                assert len(history) == epochs
-                assert history[-1]["accuracy"] == 0.85
+                assert len(history) == epochs, "History must not be empty"
+                assert history[-1]["accuracy"] == 0.85, "hist is not valid"
 
     def test_best_metric_tracking_during_evaluation(self):
         """Test: Best metrics tracked during evaluation."""
@@ -469,5 +469,5 @@ class TestEvaluationMetricsEndToEnd:
                 best_step = step
 
         # Assert: Best metric tracked
-        assert best_accuracy == 0.85
-        assert best_step == 4
+        assert best_accuracy == 0.85, "best_accuracy is not valid"
+        assert best_step == 4, "best_step is not valid"

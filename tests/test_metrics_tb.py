@@ -32,4 +32,4 @@ def test_tb_writer_guard(monkeypatch, tmp_path):
         checkpoint_dir=str(tmp_path),
         tensorboard=True,
     )
-    assert (tmp_path / "metrics.json").exists()
+    assert (tmp_path / "metrics.json").exists(), "Condition must be true"

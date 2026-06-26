@@ -35,8 +35,8 @@ def test_init_tensorboard(monkeypatch: pytest.MonkeyPatch) -> None:
         ),
     )
     writer = logging_utils.init_tensorboard(True, "runs/test")
-    assert created["log_dir"] == "runs/test"
-    assert writer is not None
+    assert created["log_dir"] == "runs/test", "Condition must be true"
+    assert writer is not None, "writer must be initialized"
 
 
 def test_init_mlflow(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -76,20 +76,20 @@ def test_init_mlflow(monkeypatch: pytest.MonkeyPatch) -> None:
     handle = logging_utils.init_mlflow(
         True, "demo", tracking_uri="file:./mlruns", experiment="codex"
     )
-    assert handle is not None
+    assert handle is not None, "handle must be initialized"
     handle.log_metrics({"loss": 1.0}, step=3)
     handle.log_params({"lr": 1e-3})
     handle.end()
-    assert fake_mlflow.tracking_uri == "file:./mlruns"
-    assert fake_mlflow.experiment == "codex"
+    assert fake_mlflow.tracking_uri == "file:./mlruns", "tracking_uri is not valid"
+    assert fake_mlflow.experiment == "codex", "experiment is not valid"
     assert calls["start_run"] == ("demo",)
     assert calls["metrics"] == ({"loss": 1.0}, 3)
-    assert calls["params"] == {"lr": 1e-3}
-    assert calls["ended"] is True
+    assert calls["params"] == {"lr": 1e-3}, "Condition must be true"
+    assert calls["ended"] is True, "Condition must be true"
 
 
 def test_tensorboard_missing_dependency(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(
         logging_utils, "import_module", lambda name: (_ for _ in ()).throw(ModuleNotFoundError)
     )
-    assert logging_utils.init_tensorboard(True) is None
+    assert logging_utils.init_tensorboard(True) is None, "Condition must be true"

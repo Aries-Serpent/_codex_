@@ -47,7 +47,7 @@ def test_checkpoint_roundtrip_simple_state(tmp_path):
     )
 
     # Verify checkpoint was created
-    assert os.path.exists(result_dir)
+    assert os.path.exists(result_dir), "Result must not be empty"
     assert os.path.exists(os.path.join(result_dir, "weights.pt"))
     assert os.path.exists(os.path.join(result_dir, "metadata.json"))
 
@@ -55,15 +55,15 @@ def test_checkpoint_roundtrip_simple_state(tmp_path):
     loaded_state, loaded_meta = load_checkpoint(str(ckpt_dir))
 
     # Verify state matches
-    assert loaded_state["epoch"] == state["epoch"]
-    assert loaded_state["step"] == state["step"]
-    assert loaded_state["metrics"]["loss"] == state["metrics"]["loss"]
-    assert loaded_state["config"]["lr"] == state["config"]["lr"]
+    assert loaded_state["epoch"] == state["epoch"], "Condition must be true"
+    assert loaded_state["step"] == state["step"], "Condition must be true"
+    assert loaded_state["metrics"]["loss"] == state["metrics"]["loss"], "Condition must be true"
+    assert loaded_state["config"]["lr"] == state["config"]["lr"], "Condition must be true"
 
     # Verify metadata matches
-    assert loaded_meta["experiment"] == meta["experiment"]
-    assert loaded_meta["notes"] == meta["notes"]
-    assert "_schema_version" in loaded_meta
+    assert loaded_meta["experiment"] == meta["experiment"], "Condition must be true"
+    assert loaded_meta["notes"] == meta["notes"], "Condition must be true"
+    assert "_schema_version" in loaded_meta, "Condition must be true"
 
 
 def test_checkpoint_with_torch_tensors(tmp_path):
@@ -84,10 +84,10 @@ def test_checkpoint_with_torch_tensors(tmp_path):
     # Load and verify
     loaded_state, loaded_meta = load_checkpoint(str(ckpt_dir))
 
-    assert loaded_state["epoch"] == 3
+    assert loaded_state["epoch"] == 3, "Condition must be true"
     assert torch.allclose(loaded_state["weights"], state["weights"])
     assert torch.allclose(loaded_state["bias"], state["bias"])
-    assert loaded_meta["model"] == "test_model"
+    assert loaded_meta["model"] == "test_model", "Condition must be true"
 
 
 def test_checkpoint_keep_last_k_behavior(tmp_path):
@@ -112,13 +112,13 @@ def test_checkpoint_keep_last_k_behavior(tmp_path):
     # Verify all checkpoints were created (retention is best-effort, may not delete)
     # The current implementation has a pass statement, so all dirs remain
     all_ckpts = list(parent_dir.glob("epoch_*"))
-    assert len(all_ckpts) >= 3  # At least the last 3 should exist
+    assert len(all_ckpts) >= 3, "All_ckpts must not be empty"
 
     # Verify we can load the most recent checkpoint
     latest_ckpt = parent_dir / "epoch_7"
     loaded_state, loaded_meta = load_checkpoint(str(latest_ckpt))
-    assert loaded_state["epoch"] == 7
-    assert loaded_meta["epoch_num"] == 7
+    assert loaded_state["epoch"] == 7, "Condition must be true"
+    assert loaded_meta["epoch_num"] == 7, "Condition must be true"
 
 
 def test_checkpoint_load_weights_file_directly(tmp_path):
@@ -134,9 +134,9 @@ def test_checkpoint_load_weights_file_directly(tmp_path):
     weights_file = ckpt_dir / "weights.pt"
     loaded_state, loaded_meta = load_checkpoint(str(weights_file))
 
-    assert loaded_state["value"] == 42
-    assert loaded_state["name"] == "test"
-    assert loaded_meta["info"] == "direct_load_test"
+    assert loaded_state["value"] == 42, "Value must be initialized"
+    assert loaded_state["name"] == "test", "Condition must be true"
+    assert loaded_meta["info"] == "direct_load_test", "Condition must be true"
 
 
 def test_checkpoint_metadata_schema_version(tmp_path):
@@ -153,9 +153,9 @@ def test_checkpoint_metadata_schema_version(tmp_path):
     with open(metadata_file, encoding="utf-8") as f:
         saved_meta = json.load(f)
 
-    assert "_schema_version" in saved_meta
-    assert "_created_at" in saved_meta
-    assert saved_meta["purpose"] == "schema_test"
+    assert "_schema_version" in saved_meta, "Condition must be true"
+    assert "_created_at" in saved_meta, "Condition must be true"
+    assert saved_meta["purpose"] == "schema_test", "Condition must be true"
 
 
 def test_checkpoint_map_location(tmp_path):
@@ -170,5 +170,5 @@ def test_checkpoint_map_location(tmp_path):
     # Load with explicit map_location
     loaded_state, _loaded_meta = load_checkpoint(str(ckpt_dir), map_location="cpu")
 
-    assert loaded_state["epoch"] == 1
-    assert loaded_state["tensor"].device.type == "cpu"
+    assert loaded_state["epoch"] == 1, "Condition must be true"
+    assert loaded_state["tensor"].device.type == "cpu", "type is not valid"

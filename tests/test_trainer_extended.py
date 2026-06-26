@@ -82,8 +82,8 @@ def test_trainer_gradient_accumulation(tmp_path):
     history = trainer.train()
     trainer.close()
 
-    assert len(history) == 2
-    assert trainer.state.global_step >= 2
+    assert len(history) == 2, "History must not be empty"
+    assert trainer.state.global_step >= 2, "global_step must be greater than zero"
 
 
 def test_trainer_checkpoint_retention(tmp_path, monkeypatch):
@@ -121,10 +121,10 @@ def test_trainer_checkpoint_retention(tmp_path, monkeypatch):
     history = trainer.train()
     trainer.close()
 
-    assert len(history) == 3
+    assert len(history) == 3, "History must not be empty"
 
     checkpoint_files = sorted(tmp_path.glob("epoch_*.pt"))
-    assert len(checkpoint_files) == 1
+    assert len(checkpoint_files) == 1, "Checkpoint_files must not be empty"
     metadata = json.loads(checkpoint_files[0].with_suffix(".json").read_text(encoding="utf-8"))
     assert pytest.approx(metadata["monitor"], rel=1e-5) == 0.2
 
@@ -155,7 +155,7 @@ def test_trainer_auto_resume(tmp_path):
     history_first = trainer_first.train()
     trainer_first.close()
 
-    assert history_first and (tmp_path / "latest.json").exists()
+    assert history_first and (tmp_path / "latest.json").exists(), "history_first is not valid"
 
     resumed_model = torch.nn.Linear(4, 2)
     resumed_optimizer = torch.optim.Adam(resumed_model.parameters(), lr=0.01)
@@ -178,13 +178,13 @@ def test_trainer_auto_resume(tmp_path):
     )
 
     # Auto-resume should set the starting epoch to 1 (completed epoch from first run)
-    assert trainer_resumed.state.epoch == 1
+    assert trainer_resumed.state.epoch == 1, "epoch is not valid"
     resume_history = trainer_resumed.train()
     trainer_resumed.close()
 
-    assert resume_history and len(resume_history) == 2
-    assert trainer_resumed.state.epoch == 3
+    assert resume_history and len(resume_history) == 2, "Resume_history must not be empty"
+    assert trainer_resumed.state.epoch == 3, "epoch is not valid"
 
     pointer = json.loads((tmp_path / "latest.json").read_text(encoding="utf-8"))
-    assert pointer["epoch"] == 3
-    assert "schema_version" in pointer
+    assert pointer["epoch"] == 3, "Condition must be true"
+    assert "schema_version" in pointer, "Condition must be true"

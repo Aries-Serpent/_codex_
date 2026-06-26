@@ -24,21 +24,21 @@ class TestTokenScope:
     def test_from_string_basic(self):
         """Test parsing basic scope strings."""
         scope = TokenScope.from_string("repo:read")
-        assert scope & TokenScope.READ_REPO
-        assert not (scope & TokenScope.WRITE_REPO)
+        assert scope & TokenScope.READ_REPO, "Condition must be true"
+        assert not (scope & TokenScope.WRITE_REPO), "Condition must be true"
 
     def test_from_string_write_implies_read(self):
         """Test write scope implies read scope."""
         scope = TokenScope.from_string("repo:write")
-        assert scope & TokenScope.READ_REPO
-        assert scope & TokenScope.WRITE_REPO
+        assert scope & TokenScope.READ_REPO, "Condition must be true"
+        assert scope & TokenScope.WRITE_REPO, "Condition must be true"
 
     def test_from_string_admin_implies_write_read(self):
         """Test admin scope implies write and read."""
         scope = TokenScope.from_string("repo:admin")
-        assert scope & TokenScope.READ_REPO
-        assert scope & TokenScope.WRITE_REPO
-        assert scope & TokenScope.ADMIN_REPO
+        assert scope & TokenScope.READ_REPO, "Condition must be true"
+        assert scope & TokenScope.WRITE_REPO, "Condition must be true"
+        assert scope & TokenScope.ADMIN_REPO, "Condition must be true"
 
     def test_from_string_invalid_scope(self):
         """Test invalid scope string raises error."""
@@ -48,27 +48,27 @@ class TestTokenScope:
     def test_from_list_multiple_scopes(self):
         """Test parsing list of scopes."""
         scopes = TokenScope.from_list(["repo:read", "workflow:write"])
-        assert scopes & TokenScope.READ_REPO
-        assert scopes & TokenScope.READ_WORKFLOW
-        assert scopes & TokenScope.WRITE_WORKFLOW
+        assert scopes & TokenScope.READ_REPO, "Condition must be true"
+        assert scopes & TokenScope.READ_WORKFLOW, "Condition must be true"
+        assert scopes & TokenScope.WRITE_WORKFLOW, "Condition must be true"
 
     def test_has_scope(self):
         """Test scope checking with has()."""
         scope = TokenScope.from_list(["repo:write", "issues:read"])
 
-        assert scope.has(TokenScope.READ_REPO)
-        assert scope.has(TokenScope.WRITE_REPO)
-        assert scope.has(TokenScope.READ_ISSUES)
-        assert not scope.has(TokenScope.WRITE_ISSUES)
+        assert scope.has(TokenScope.READ_REPO), "Condition must be true"
+        assert scope.has(TokenScope.WRITE_REPO), "Condition must be true"
+        assert scope.has(TokenScope.READ_ISSUES), "Condition must be true"
+        assert not scope.has(TokenScope.WRITE_ISSUES), "Condition must be true"
 
     def test_to_strings(self):
         """Test converting scopes back to strings."""
         scope = TokenScope.from_list(["repo:write", "workflow:read"])
         strings = scope.to_strings()
 
-        assert "repo:read" in strings
-        assert "repo:write" in strings
-        assert "workflow:read" in strings
+        assert "repo:read" in strings, "Condition must be true"
+        assert "repo:write" in strings, "Condition must be true"
+        assert "workflow:read" in strings, "Condition must be true"
 
 
 class TestScopeValidator:
@@ -77,31 +77,31 @@ class TestScopeValidator:
     def test_init_with_strings(self):
         """Test initializing validator with scope strings."""
         validator = ScopeValidator(["repo:read", "workflow:write"])
-        assert validator.has_scope(TokenScope.READ_REPO)
-        assert validator.has_scope(TokenScope.WRITE_WORKFLOW)
+        assert validator.has_scope(TokenScope.READ_REPO), "validat is not valid"
+        assert validator.has_scope(TokenScope.WRITE_WORKFLOW), "validat is not valid"
 
     def test_init_with_flags(self):
         """Test initializing validator with TokenScope flags."""
         scope_flags = TokenScope.READ_REPO | TokenScope.WRITE_WORKFLOW
         validator = ScopeValidator(scope_flags)
-        assert validator.has_scope(TokenScope.READ_REPO)
-        assert validator.has_scope(TokenScope.WRITE_WORKFLOW)
+        assert validator.has_scope(TokenScope.READ_REPO), "validat is not valid"
+        assert validator.has_scope(TokenScope.WRITE_WORKFLOW), "validat is not valid"
 
     def test_has_scope_success(self):
         """Test has_scope returns True when scope present."""
         validator = ScopeValidator(["repo:write"])
-        assert validator.has_scope(TokenScope.READ_REPO) is True
-        assert validator.has_scope(TokenScope.WRITE_REPO) is True
+        assert validator.has_scope(TokenScope.READ_REPO) is True, "validat is not valid"
+        assert validator.has_scope(TokenScope.WRITE_REPO) is True, "validat is not valid"
 
     def test_has_scope_failure(self):
         """Test has_scope returns False when scope missing."""
         validator = ScopeValidator(["repo:read"])
-        assert validator.has_scope(TokenScope.WRITE_REPO) is False
+        assert validator.has_scope(TokenScope.WRITE_REPO) is False, "validat is not valid"
 
     def test_has_any_scope_success(self):
         """Test has_any_scope with at least one match."""
         validator = ScopeValidator(["repo:read"])
-        assert (
+        assert (, "Condition must be true"
             validator.has_any_scope(
                 [
                     TokenScope.WRITE_REPO,
@@ -114,7 +114,7 @@ class TestScopeValidator:
     def test_has_any_scope_failure(self):
         """Test has_any_scope with no matches."""
         validator = ScopeValidator(["repo:read"])
-        assert (
+        assert (, "Condition must be true"
             validator.has_any_scope(
                 [
                     TokenScope.WRITE_WORKFLOW,
@@ -164,28 +164,28 @@ class TestScopeValidator:
         validator = ScopeValidator(["repo:write"])
         result = validator.validate(TokenScope.READ_REPO)
 
-        assert result.valid is True
-        assert result.granted_scopes == validator.scopes
-        assert result.required_scopes == TokenScope.READ_REPO
-        assert result.missing_scopes is None
+        assert result.valid is True, "Result must not be empty"
+        assert result.granted_scopes == validator.scopes, "Result must not be empty"
+        assert result.required_scopes == TokenScope.READ_REPO, "Result must not be empty"
+        assert result.missing_scopes is None, "Result must not be empty"
 
     def test_validate_failure(self):
         """Test validate returns failure result with details."""
         validator = ScopeValidator(["repo:read"])
         result = validator.validate(TokenScope.WRITE_REPO)
 
-        assert result.valid is False
-        assert result.missing_scopes is not None
-        assert "Missing scopes" in result.message
+        assert result.valid is False, "Result must not be empty"
+        assert result.missing_scopes is not None, "missing_scopes must be initialized"
+        assert "Missing scopes" in result.message, "Result must not be empty"
 
     def test_get_granted_scopes(self):
         """Test getting granted scopes as strings."""
         validator = ScopeValidator(["repo:write", "workflow:read"])
         scopes = validator.get_granted_scopes()
 
-        assert "repo:read" in scopes
-        assert "repo:write" in scopes
-        assert "workflow:read" in scopes
+        assert "repo:read" in scopes, "Condition must be true"
+        assert "repo:write" in scopes, "Condition must be true"
+        assert "workflow:read" in scopes, "Condition must be true"
 
 
 class TestScopeDecorators:
@@ -209,7 +209,7 @@ class TestScopeDecorators:
             return "success"
 
         result = protected_function()
-        assert result == "success"
+        assert result == "success", "Result must not be empty"
 
     def test_require_scope_failure(self):
         """Test require_scope decorator blocks execution."""
@@ -243,7 +243,7 @@ class TestScopeDecorators:
             return "success"
 
         result = protected_function()
-        assert result == "success"
+        assert result == "success", "Result must not be empty"
 
     def test_require_any_scope_failure(self):
         """Test require_any_scope decorator blocks execution."""
@@ -267,7 +267,7 @@ class TestScopeDecorators:
             return "success"
 
         result = optional_function()
-        assert result == "success"
+        assert result == "success", "Result must not be empty"
 
     def test_optional_scope_without_validator(self):
         """Test optional_scope decorator without validator."""
@@ -278,7 +278,7 @@ class TestScopeDecorators:
 
         # Should not raise
         result = optional_function()
-        assert result == "success"
+        assert result == "success", "Result must not be empty"
 
     def test_decorator_metadata(self):
         """Test scope metadata extraction from decorated functions."""
@@ -288,10 +288,10 @@ class TestScopeDecorators:
             pass
 
         metadata = scope_metadata(protected_function)
-        assert metadata["protected"] is True
-        assert "repo:write" in metadata["required"]
-        assert "workflow:read" in metadata["required"]
-        assert metadata["any"] is False
+        assert metadata["protected"] is True, "Data must not be empty"
+        assert "repo:write" in metadata["required"], "Data must not be empty"
+        assert "workflow:read" in metadata["required"], "Data must not be empty"
+        assert metadata["any"] is False, "Data must not be empty"
 
     def test_decorator_preserves_function_name(self):
         """Test decorators preserve function metadata."""
@@ -300,8 +300,8 @@ class TestScopeDecorators:
         def my_function():
             """My docstring."""
 
-        assert my_function.__name__ == "my_function"
-        assert my_function.__doc__ == "My docstring."
+        assert my_function.__name__ == "my_function", "__name__ is not valid"
+        assert my_function.__doc__ == "My docstring.", "__doc__ is not valid"
 
 
 class TestHierarchicalScopes:

@@ -30,22 +30,22 @@ class TestGetBranchHeadSha:
         sha = "abc123def456abc123def456abc123def456abcd"  # pragma: allowlist secret
         with patch.object(prc, "_gh", return_value=(200, {"commit": {"sha": sha}})):
             result = prc._get_branch_head_sha("token", "owner/repo", "my-branch")
-        assert result == sha
+        assert result == sha, "Result must not be empty"
 
     def test_returns_none_on_non_200(self):
         with patch.object(prc, "_gh", return_value=(404, {})):
             result = prc._get_branch_head_sha("token", "owner/repo", "missing-branch")
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_returns_none_when_commit_key_absent(self):
         with patch.object(prc, "_gh", return_value=(200, {})):
             result = prc._get_branch_head_sha("token", "owner/repo", "my-branch")
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_returns_none_when_sha_key_absent(self):
         with patch.object(prc, "_gh", return_value=(200, {"commit": {}})):
             result = prc._get_branch_head_sha("token", "owner/repo", "my-branch")
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_url_encodes_branch_name(self):
         """Branches with spaces and '/' must be URL-encoded."""
@@ -58,14 +58,14 @@ class TestGetBranchHeadSha:
         with patch.object(prc, "_gh", side_effect=_mock_gh):
             prc._get_branch_head_sha("t", "o/r", "feature/my branch")
 
-        assert len(calls) == 1
+        assert len(calls) == 1, "Calls must not be empty"
         path_lower = calls[0].lower()
         # Spaces in the branch name must be percent-encoded as %20.
-        assert (
+        assert (, "Condition must be true"
             "%20" in path_lower
         ), f"Expected space to be percent-encoded in branch path, got: {calls[0]!r}"
         # Slashes in branch names must also be percent-encoded as %2f (%2F).
-        assert (
+        assert (, "Condition must be true"
             "%2f" in path_lower
         ), f"Expected slash to be percent-encoded in branch path, got: {calls[0]!r}"
 
@@ -77,8 +77,8 @@ class TestRescueCommentUpsert:
         signature = "**Branch:** `feature` | **Commit:** `abc123`"
 
         def _mock_gh(method, path, token, body=None):
-            assert method == "GET"
-            assert "page=1" in path
+            assert method == "GET", "method is not valid"
+            assert "page=1" in path, "Condition must be true"
             return 200, [{"id": 10, "body": f"## Rescue\n\n{signature}"}]
 
         with patch.object(prc, "_gh", side_effect=_mock_gh):
@@ -90,8 +90,8 @@ class TestRescueCommentUpsert:
                 signature,
             )
 
-        assert comment_id == 10
-        assert signature in body
+        assert comment_id == 10, "comment_id is not valid"
+        assert signature in body, "Condition must be true"
 
     def test_consolidates_duplicate_rescue_comments(self):
         marker = "<!-- ci-rescue-sha:4193:abc123def456 -->"
@@ -107,11 +107,11 @@ class TestRescueCommentUpsert:
             if method == "GET":
                 return 200, comments
             if method == "PATCH":
-                assert path.endswith("/issues/comments/100")
-                assert "duplicate detail" in body["body"]
+                assert path.endswith("/issues/comments/100"), "Condition must be true"
+                assert "duplicate detail" in body["body"], "Condition must be true"
                 return 200, {"id": 100}
             if method == "DELETE":
-                assert path.endswith("/issues/comments/101")
+                assert path.endswith("/issues/comments/101"), "Condition must be true"
                 return 204, {}
             raise AssertionError(f"unexpected call: {method} {path}")
 
@@ -177,7 +177,7 @@ class TestSelfSuppressMainLogic:
         self._patch_env(monkeypatch, PR_NUMBER="4200")
         current_head = "1122334455661122334455661122334455661122"
         failure_sha = self._ENV_BASE["COMMIT_SHA"]
-        assert (
+        assert (, "Condition must be true"
             current_head != failure_sha
         ), "Test setup error: current_head must differ from COMMIT_SHA for this test"
 
@@ -185,9 +185,9 @@ class TestSelfSuppressMainLogic:
             with patch.object(prc, "_gh") as mock_gh:
                 result = prc.main()
 
-        assert result is None
+        assert result is None, "Result must not be empty"
         out = capsys.readouterr().out
-        assert (
+        assert (, "Condition must be true"
             "suppressed" in out.lower() or "superseded" in out.lower()
         ), f"Expected suppression message in stdout, got: {out!r}"
         # _gh must NOT have been called to post a comment
@@ -201,7 +201,7 @@ class TestSelfSuppressMainLogic:
         self._patch_env(monkeypatch)
         current_head = "1122334455661122334455661122334455661122"
         failure_sha = self._ENV_BASE["COMMIT_SHA"]
-        assert (
+        assert (, "Condition must be true"
             current_head != failure_sha
         ), "Test setup error: current_head must differ from COMMIT_SHA for this test"
 
@@ -214,9 +214,9 @@ class TestSelfSuppressMainLogic:
             with patch.object(prc, "_gh", side_effect=_gh_side_effect) as mock_gh:
                 result = prc.main()
 
-        assert result is None
+        assert result is None, "Result must not be empty"
         out = capsys.readouterr().out
-        assert (
+        assert (, "Condition must be true"
             "suppressed" in out.lower() or "superseded" in out.lower()
         ), f"Expected suppression message in stdout, got: {out!r}"
         get_calls = [c for c in mock_gh.call_args_list if c.args[0] == "GET"]
@@ -242,7 +242,7 @@ class TestSelfSuppressMainLogic:
                     prc.main()
 
         out = capsys.readouterr().out
-        assert (
+        assert (, "Condition must be true"
             "✅" in out or "Posted" in out
         ), f"Expected success message for matching SHA, got: {out!r}"
 
@@ -272,15 +272,15 @@ class TestSelfSuppressMainLogic:
         ):
             prc.main()
 
-        assert (
+        assert (, "Condition must be true"
             mock_ctx.called
         ), "Expected build_comment_context to be called when discussion_context_store is available"
         post_calls = [c for c in mock_gh.call_args_list if c.args and c.args[0] == "POST"]
-        assert (
+        assert (, "Condition must be true"
             post_calls
         ), "Expected POST to be attempted on matching SHA with enrichment path enabled"
         out = capsys.readouterr().out
-        assert (
+        assert (, "Condition must be true"
             "✅" in out or "Posted" in out
         ), f"Expected success message for matching SHA with enrichment, got: {out!r}"
 
@@ -299,7 +299,7 @@ class TestSelfSuppressMainLogic:
 
         out = capsys.readouterr().out
         # Should proceed to post (not suppressed)
-        assert "suppressed" not in out.lower()
+        assert "suppressed" not in out.lower(), "Condition must be true"
 
 
 class TestDefensiveShaResolution:
@@ -377,7 +377,7 @@ class TestDefensiveShaResolution:
                 return 200, []
             if method == "POST":
                 posted_body = body.get("body", "") if body else ""
-                assert (
+                assert (, "Condition must be true"
                     "0D_base_" in posted_body
                 ), f"Expected resolved branch '0D_base_' in posted body: {posted_body[:200]!r}"
                 return 201, {"id": 2, "html_url": "https://example.com/c/2"}
@@ -408,7 +408,7 @@ class TestDefensiveShaResolution:
                 prc.main()
 
         out = capsys.readouterr().out
-        assert (
+        assert (, "Condition must be true"
             "⚠️" in out or "warning" in out.lower() or "404" in out
         ), f"Expected warning about failed PR lookup, got: {out!r}"
 

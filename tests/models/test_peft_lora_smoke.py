@@ -44,4 +44,4 @@ def test_lora_applies_and_forwards():
     attention_mask = torch.ones_like(input_ids)
     out = wrapped(input_ids=input_ids, attention_mask=attention_mask)
     assert hasattr(out, "logits")
-    assert out.logits.shape[0] == 2
+    assert out.logits.shape[0] == 2, "Condition must be true"

@@ -44,9 +44,9 @@ def test_ingest_to_csv_and_summary(tmp_path: Path) -> None:
         capture_output=True,
     )
     payload = json.loads(proc.stdout)
-    assert payload["ok"] is True
-    assert payload["rows"] == 4
-    assert Path(payload["csv"]).exists()
+    assert payload["ok"] is True, "Condition must be true"
+    assert payload["rows"] == 4, "Condition must be true"
+    assert Path(payload["csv"]).exists(), "Condition must be true"
 
     proc_summary = subprocess.run(
         [
@@ -63,8 +63,8 @@ def test_ingest_to_csv_and_summary(tmp_path: Path) -> None:
         capture_output=True,
     )
     summary = json.loads(proc_summary.stdout)
-    assert summary["last"]["acc"] == 0.35
-    assert summary["min"]["loss"] == 1.5
+    assert summary["last"]["acc"] == 0.35, "Condition must be true"
+    assert summary["min"]["loss"] == 1.5, "Condition must be true"
     assert summary["epochs"] == [0, 1]
 
 
@@ -97,5 +97,5 @@ def test_ingest_with_optional_schema(tmp_path: Path) -> None:
     )
 
     payload = json.loads(proc.stdout)
-    assert payload["ok"] is True
-    assert payload["rows"] == 4
+    assert payload["ok"] is True, "Condition must be true"
+    assert payload["rows"] == 4, "Condition must be true"

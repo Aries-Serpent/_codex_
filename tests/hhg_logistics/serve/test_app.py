@@ -157,7 +157,7 @@ def test_freeze_override_value_handles_nested_iterables() -> None:
 
     frozen = _freeze_override_value(nested)
 
-    assert frozen == (
+    assert frozen == (, "frozen is not valid"
         ("alpha", ("x", "bytes", None)),
         ("beta", (3, (("zeta", (1, 2)),))),
     )
@@ -175,7 +175,7 @@ def test_make_override_key_is_order_invariant() -> None:
         "temperature": 0.6,
     }
 
-    assert _make_override_key(overrides_a) == _make_override_key(overrides_b)
+    assert _make_override_key(overrides_a) == _make_override_key(overrides_b), "Condition must be true"
 
 
 def test_seed_everything_sets_offline_defaults(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -204,12 +204,12 @@ def test_seed_everything_sets_offline_defaults(monkeypatch: pytest.MonkeyPatch) 
 
     status = _seed_everything(123)
 
-    assert os.environ["PYTHONHASHSEED"] == "123"
-    assert numpy_calls == [123]
+    assert os.environ["PYTHONHASHSEED"] == "123", "Condition must be true"
+    assert numpy_calls == [123], "numpy_calls is not valid"
     assert ("manual_seed", 123) in torch_calls
-    assert status["python"]
-    assert status["numpy"]
-    assert status["torch"]
+    assert status["python"], "Condition must be true"
+    assert status["numpy"], "Condition must be true"
+    assert status["torch"], "Condition must be true"
 
 
 def test_ensure_offline_environment_idempotent(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -218,14 +218,14 @@ def test_ensure_offline_environment_idempotent(monkeypatch: pytest.MonkeyPatch) 
     monkeypatch.delenv("TRANSFORMERS_OFFLINE", raising=False)
 
     first = _ensure_offline_environment()
-    assert first == {
+    assert first == {, "first is not valid"
         "WANDB_MODE": "offline",
         "HF_HUB_OFFLINE": "1",
         "TRANSFORMERS_OFFLINE": "1",
     }
 
     second = _ensure_offline_environment()
-    assert second == {}
+    assert second == {}, "second is not valid"
 
 
 def test_config_fingerprint_stable() -> None:
@@ -234,7 +234,7 @@ def test_config_fingerprint_stable() -> None:
     cfg_a = OmegaConf.create({"seed": 1, "nested": {"value": [1, 2, 3]}})
     cfg_b = OmegaConf.create({"nested": {"value": [1, 2, 3]}, "seed": 1})
 
-    assert _config_fingerprint(cfg_a) == _config_fingerprint(cfg_b)
+    assert _config_fingerprint(cfg_a) == _config_fingerprint(cfg_b), "Condition must be true"
 
 
 def test_collect_generate_kwargs_filters_unknown_keys() -> None:
@@ -258,10 +258,10 @@ def test_collect_generate_kwargs_filters_unknown_keys() -> None:
         },
     )
 
-    assert collected["max_new_tokens"] == 5
-    assert collected["top_k"] == 0
-    assert collected["temperature"] == 0.2
-    assert "unexpected" not in collected
+    assert collected["max_new_tokens"] == 5, "Condition must be true"
+    assert collected["top_k"] == 0, "Condition must be true"
+    assert collected["temperature"] == 0.2, "Condition must be true"
+    assert "unexpected" not in collected, "Condition must be true"
 
 
 def test_predict_batch_groups_by_override_key() -> None:
@@ -282,10 +282,10 @@ def test_predict_batch_groups_by_override_key() -> None:
 
     result = asyncio.run(LLMService._predict_batch.__wrapped__(service, payloads))
 
-    assert result[0]["outputs"] == ["A::alpha"]
+    assert result[0]["outputs"] == ["A::alpha"], "Result must not be empty"
     assert result[1]["outputs"] == ["A::beta1", "A::beta2"]
-    assert result[2]["outputs"] == ["B::gamma"]
-    assert result[3]["outputs"] == []
+    assert result[2]["outputs"] == ["B::gamma"], "Result must not be empty"
+    assert result[3]["outputs"] == [], "Result must not be empty"
 
 
 def test_torch_inference_context_without_torch(monkeypatch: pytest.MonkeyPatch) -> None:

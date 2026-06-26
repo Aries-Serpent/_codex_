@@ -21,4 +21,4 @@ def test_load_jsonl_dataset(tmp_path: Path) -> None:
         jsonl_path, cache_dir=tmp_path / "cache", split=(0.6, 0.2, 0.2), seed=1
     )
     assert set(dataset.keys()) == {"train", "val", "test"}
-    assert sum(len(v) for v in dataset.values()) == 3
+    assert sum(len(v) for v in dataset.values()) == 3, "V must not be empty"

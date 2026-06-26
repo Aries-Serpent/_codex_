@@ -17,22 +17,22 @@ class TestSQLASTAdapter:
 
     def test_init(self, adapter):
         """Test adapter initialization."""
-        assert adapter is not None
-        assert adapter.root_node is None
+        assert adapter is not None, "adapter must be initialized"
+        assert adapter.root_node is None, "root_node is not valid"
 
     def test_parse_select_simple(self, adapter):
         """Test parsing simple SELECT statement."""
         sql = "SELECT id, name FROM users"
         root = adapter.parse(sql)
 
-        assert root is not None
-        assert root.node_type == "sql_document"
-        assert len(root.children) == 1
+        assert root is not None, "root must be initialized"
+        assert root.node_type == "sql_document", "node_type is not valid"
+        assert len(root.children) == 1, "Collection must not be empty"
 
         stmt = root.children[0]
-        assert stmt.node_type == "sql_statement"
-        assert stmt.name == "SELECT"
-        assert "users" in stmt.metadata["tables"]
+        assert stmt.node_type == "sql_statement", "node_type is not valid"
+        assert stmt.name == "SELECT", "name is not valid"
+        assert "users" in stmt.metadata["tables"], "Data must not be empty"
 
     def test_parse_select_with_where(self, adapter):
         """Test parsing SELECT with WHERE clause."""
@@ -40,8 +40,8 @@ class TestSQLASTAdapter:
         root = adapter.parse(sql)
 
         stmt = root.children[0]
-        assert stmt.metadata["has_where"] is True
-        assert "users" in stmt.metadata["tables"]
+        assert stmt.metadata["has_where"] is True, "Data must not be empty"
+        assert "users" in stmt.metadata["tables"], "Data must not be empty"
 
     def test_parse_select_multiple_tables(self, adapter):
         """Test parsing SELECT with multiple tables."""
@@ -50,7 +50,7 @@ class TestSQLASTAdapter:
 
         stmt = root.children[0]
         tables = stmt.metadata["tables"]
-        assert len(tables) >= 1  # At least one table found
+        assert len(tables) >= 1, "Tables must not be empty"
 
     def test_parse_select_with_join(self, adapter):
         """Test parsing SELECT with JOIN."""
@@ -62,8 +62,8 @@ class TestSQLASTAdapter:
         root = adapter.parse(sql)
 
         stmt = root.children[0]
-        assert stmt.name == "SELECT"
-        assert len(stmt.metadata["tables"]) >= 1
+        assert stmt.name == "SELECT", "name is not valid"
+        assert len(stmt.metadata["tables"]) >= 1, "Collection must not be empty"
 
     def test_parse_insert(self, adapter):
         """Test parsing INSERT statement."""
@@ -71,9 +71,9 @@ class TestSQLASTAdapter:
         root = adapter.parse(sql)
 
         stmt = root.children[0]
-        assert stmt.node_type == "sql_statement"
-        assert stmt.name == "INSERT"
-        assert stmt.metadata["table"] == "users"
+        assert stmt.node_type == "sql_statement", "node_type is not valid"
+        assert stmt.name == "INSERT", "name is not valid"
+        assert stmt.metadata["table"] == "users", "Data must not be empty"
 
     def test_parse_update(self, adapter):
         """Test parsing UPDATE statement."""
@@ -81,8 +81,8 @@ class TestSQLASTAdapter:
         root = adapter.parse(sql)
 
         stmt = root.children[0]
-        assert stmt.name == "UPDATE"
-        assert stmt.metadata["table"] == "users"
+        assert stmt.name == "UPDATE", "name is not valid"
+        assert stmt.metadata["table"] == "users", "Data must not be empty"
 
     def test_parse_delete(self, adapter):
         """Test parsing DELETE statement."""
@@ -90,8 +90,8 @@ class TestSQLASTAdapter:
         root = adapter.parse(sql)
 
         stmt = root.children[0]
-        assert stmt.name == "DELETE"
-        assert stmt.metadata["table"] == "users"
+        assert stmt.name == "DELETE", "name is not valid"
+        assert stmt.metadata["table"] == "users", "Data must not be empty"
 
     def test_parse_create_table(self, adapter):
         """Test parsing CREATE TABLE statement."""
@@ -105,8 +105,8 @@ class TestSQLASTAdapter:
         root = adapter.parse(sql)
 
         stmt = root.children[0]
-        assert stmt.name == "CREATE TABLE"
-        assert stmt.metadata["object_name"] == "users"
+        assert stmt.name == "CREATE TABLE", "name is not valid"
+        assert stmt.metadata["object_name"] == "users", "Data must not be empty"
 
     def test_parse_create_index(self, adapter):
         """Test parsing CREATE INDEX statement."""
@@ -114,7 +114,7 @@ class TestSQLASTAdapter:
         root = adapter.parse(sql)
 
         stmt = root.children[0]
-        assert stmt.name.startswith("CREATE")
+        assert stmt.name.startswith("CREATE"), "Condition must be true"
 
     def test_parse_alter_table(self, adapter):
         """Test parsing ALTER TABLE statement."""
@@ -122,8 +122,8 @@ class TestSQLASTAdapter:
         root = adapter.parse(sql)
 
         stmt = root.children[0]
-        assert stmt.name == "ALTER"
-        assert stmt.metadata["object_name"] == "users"
+        assert stmt.name == "ALTER", "name is not valid"
+        assert stmt.metadata["object_name"] == "users", "Data must not be empty"
 
     def test_parse_drop_table(self, adapter):
         """Test parsing DROP TABLE statement."""
@@ -131,8 +131,8 @@ class TestSQLASTAdapter:
         root = adapter.parse(sql)
 
         stmt = root.children[0]
-        assert stmt.name == "DROP"
-        assert stmt.metadata["object_name"] == "users"
+        assert stmt.name == "DROP", "name is not valid"
+        assert stmt.metadata["object_name"] == "users", "Data must not be empty"
 
     def test_parse_multiple_statements(self, adapter):
         """Test parsing multiple SQL statements."""
@@ -142,8 +142,8 @@ class TestSQLASTAdapter:
         """
         root = adapter.parse(sql)
 
-        assert len(root.children) == 2
-        assert all(stmt.name == "SELECT" for stmt in root.children)
+        assert len(root.children) == 2, "Collection must not be empty"
+        assert all(stmt.name == "SELECT" for stmt in root.children), "name is not valid"
 
     def test_get_tables(self, adapter):
         """Test extracting table names."""
@@ -155,8 +155,8 @@ class TestSQLASTAdapter:
         adapter.parse(sql)
 
         tables = adapter.get_tables()
-        assert len(tables) >= 1
-        assert any("users" in t or "u" in t for t in tables)
+        assert len(tables) >= 1, "Tables must not be empty"
+        assert any("users" in t or "u" in t for t in tables), "Condition must be true"
 
     def test_get_columns(self, adapter):
         """Test extracting column names."""
@@ -173,8 +173,8 @@ class TestSQLASTAdapter:
         root = adapter.parse(sql)
 
         metadata = adapter.extract_metadata(root)
-        assert metadata["statement_count"] == 2
-        assert "all_tables" in metadata
+        assert metadata["statement_count"] == 2, "Data must not be empty"
+        assert "all_tables" in metadata, "Data must not be empty"
 
     def test_extract_metadata_statement(self, adapter):
         """Test extracting statement-level metadata."""
@@ -183,8 +183,8 @@ class TestSQLASTAdapter:
 
         stmt = root.children[0]
         metadata = adapter.extract_metadata(stmt)
-        assert metadata["statement_type"] == "SELECT"
-        assert "tables" in metadata
+        assert metadata["statement_type"] == "SELECT", "Data must not be empty"
+        assert "tables" in metadata, "Data must not be empty"
 
     def test_parse_empty_sql(self, adapter):
         """Test parsing empty SQL raises error."""
@@ -202,8 +202,8 @@ class TestSQLASTAdapter:
         root = adapter.parse(sql)
 
         nodes = list(adapter.traverse(root))
-        assert len(nodes) >= 2  # At least root and statement
-        assert nodes[0] == root
+        assert len(nodes) >= 2, "Nodes must not be empty"
+        assert nodes[0] == root, "Condition must be true"
 
     def test_find_nodes_by_type(self, adapter):
         """Test finding nodes by type."""
@@ -211,7 +211,7 @@ class TestSQLASTAdapter:
         adapter.parse(sql)
 
         statements = adapter.find_nodes_by_type("sql_statement")
-        assert len(statements) == 2
+        assert len(statements) == 2, "Statements must not be empty"
 
     def test_get_stats(self, adapter):
         """Test getting AST statistics."""
@@ -219,15 +219,15 @@ class TestSQLASTAdapter:
         adapter.parse(sql)
 
         stats = adapter.get_stats()
-        assert stats["sql_document"] == 1
-        assert stats["sql_statement"] == 2
+        assert stats["sql_document"] == 1, "Condition must be true"
+        assert stats["sql_statement"] == 2, "Condition must be true"
 
     def test_parse_with_file_path(self, adapter):
         """Test parsing with file path."""
         sql = "SELECT * FROM users"
         root = adapter.parse(sql, file_path="query.sql")
 
-        assert root.file_path == "query.sql"
+        assert root.file_path == "query.sql", "file_path is not valid"
 
     def test_parse_complex_select(self, adapter):
         """Test parsing complex SELECT with subquery."""
@@ -240,9 +240,9 @@ class TestSQLASTAdapter:
         """
         root = adapter.parse(sql)
 
-        assert root is not None
+        assert root is not None, "root must be initialized"
         stmt = root.children[0]
-        assert stmt.name == "SELECT"
+        assert stmt.name == "SELECT", "name is not valid"
 
     def test_parse_case_insensitive(self, adapter):
         """Test parsing with mixed case keywords."""
@@ -250,7 +250,7 @@ class TestSQLASTAdapter:
         root = adapter.parse(sql)
 
         stmt = root.children[0]
-        assert stmt.name == "SELECT"
+        assert stmt.name == "SELECT", "name is not valid"
 
     def test_large_query_performance(self, adapter):
         """Test parsing large query (stress test)."""
@@ -259,5 +259,5 @@ class TestSQLASTAdapter:
         sql = f"SELECT {columns} FROM large_table"
 
         root = adapter.parse(sql)
-        assert root is not None
-        assert len(root.children) == 1
+        assert root is not None, "root must be initialized"
+        assert len(root.children) == 1, "Collection must not be empty"

@@ -23,8 +23,8 @@ class TestSafeguardsDetector:
         from scripts.space_traversal.detectors.detector_safeguards import detect
 
         result = detect({"files": []})
-        assert "id" in result
-        assert result["id"] == "safeguards_keywords"
+        assert "id" in result, "Result must not be empty"
+        assert result["id"] == "safeguards_keywords", "Result must not be empty"
 
     def test_keyword_list_complete(self):
         """Test safeguard keyword list is comprehensive."""
@@ -33,12 +33,12 @@ class TestSafeguardsDetector:
         )
 
         # Should have expanded keyword list (25 keywords)
-        assert len(SAFEGUARD_KEYWORDS) >= 20
+        assert len(SAFEGUARD_KEYWORDS) >= 20, "Safeguard_keywords must not be empty"
 
         # Check critical keywords present
         critical = ["validation", "sanitize", "authenticate", "timeout", "safeguard"]
         for keyword in critical:
-            assert keyword in SAFEGUARD_KEYWORDS
+            assert keyword in SAFEGUARD_KEYWORDS, "keyw is not valid"
 
 
 class TestKeywordDetection:
@@ -50,7 +50,7 @@ class TestKeywordDetection:
             SAFEGUARD_KEYWORDS,
         )
 
-        assert "sha256" in SAFEGUARD_KEYWORDS
+        assert "sha256" in SAFEGUARD_KEYWORDS, "Condition must be true"
 
     def test_checksum_detection(self):
         """Test checksum keyword detection."""
@@ -58,7 +58,7 @@ class TestKeywordDetection:
             SAFEGUARD_KEYWORDS,
         )
 
-        assert "checksum" in SAFEGUARD_KEYWORDS
+        assert "checksum" in SAFEGUARD_KEYWORDS, "Condition must be true"
 
     def test_validation_detection(self):
         """Test validation keyword detection."""
@@ -66,8 +66,8 @@ class TestKeywordDetection:
             SAFEGUARD_KEYWORDS,
         )
 
-        assert "validation" in SAFEGUARD_KEYWORDS
-        assert "validate" in SAFEGUARD_KEYWORDS
+        assert "validation" in SAFEGUARD_KEYWORDS, "Condition must be true"
+        assert "validate" in SAFEGUARD_KEYWORDS, "Condition must be true"
 
     def test_sanitize_detection(self):
         """Test sanitize keyword detection."""
@@ -75,7 +75,7 @@ class TestKeywordDetection:
             SAFEGUARD_KEYWORDS,
         )
 
-        assert "sanitize" in SAFEGUARD_KEYWORDS
+        assert "sanitize" in SAFEGUARD_KEYWORDS, "Condition must be true"
 
     def test_authentication_detection(self):
         """Test authentication keywords."""
@@ -83,8 +83,8 @@ class TestKeywordDetection:
             SAFEGUARD_KEYWORDS,
         )
 
-        assert "authenticate" in SAFEGUARD_KEYWORDS
-        assert "authorization" in SAFEGUARD_KEYWORDS
+        assert "authenticate" in SAFEGUARD_KEYWORDS, "Condition must be true"
+        assert "authorization" in SAFEGUARD_KEYWORDS, "Condition must be true"
 
     def test_rate_limit_detection(self):
         """Test rate limiting keywords."""
@@ -92,7 +92,7 @@ class TestKeywordDetection:
             SAFEGUARD_KEYWORDS,
         )
 
-        assert "rate_limit" in SAFEGUARD_KEYWORDS or "ratelimit" in SAFEGUARD_KEYWORDS
+        assert "rate_limit" in SAFEGUARD_KEYWORDS or "ratelimit" in SAFEGUARD_KEYWORDS, "Condition must be true"
 
     def test_timeout_detection(self):
         """Test timeout keyword detection."""
@@ -100,7 +100,7 @@ class TestKeywordDetection:
             SAFEGUARD_KEYWORDS,
         )
 
-        assert "timeout" in SAFEGUARD_KEYWORDS
+        assert "timeout" in SAFEGUARD_KEYWORDS, "Condition must be true"
 
     def test_bounds_check_detection(self):
         """Test bounds checking keywords."""
@@ -108,7 +108,7 @@ class TestKeywordDetection:
             SAFEGUARD_KEYWORDS,
         )
 
-        assert "bounds_check" in SAFEGUARD_KEYWORDS or "bounded" in SAFEGUARD_KEYWORDS
+        assert "bounds_check" in SAFEGUARD_KEYWORDS or "bounded" in SAFEGUARD_KEYWORDS, "Condition must be true"
 
 
 class TestContextAwareDetection:
@@ -122,7 +122,7 @@ class TestContextAwareDetection:
 
         # Check if try-except pattern is defined
         pattern_names = [name for _, name in DEFENSIVE_PATTERNS]
-        assert "try_except" in pattern_names or any("try" in name for name in pattern_names)
+        assert "try_except" in pattern_names or any("try" in name for name in pattern_names), "Condition must be true"
 
     def test_null_check_pattern(self):
         """Test null/None check pattern."""
@@ -131,7 +131,7 @@ class TestContextAwareDetection:
         )
 
         pattern_names = [name for _, name in DEFENSIVE_PATTERNS]
-        assert any("null" in name or "none" in name.lower() for name in pattern_names)
+        assert any("null" in name or "none" in name.lower() for name in pattern_names), "Condition must be true"
 
     def test_assertion_pattern(self):
         """Test assertion pattern detection."""
@@ -140,7 +140,7 @@ class TestContextAwareDetection:
         )
 
         pattern_names = [name for _, name in DEFENSIVE_PATTERNS]
-        assert any("assert" in name for name in pattern_names)
+        assert any("assert" in name for name in pattern_names), "Condition must be true"
 
     def test_error_raise_pattern(self):
         """Test explicit error raising pattern."""
@@ -149,7 +149,7 @@ class TestContextAwareDetection:
         )
 
         pattern_names = [name for _, name in DEFENSIVE_PATTERNS]
-        assert any("error" in name for name in pattern_names)
+        assert any("error" in name for name in pattern_names), "Error should be raised or set"
 
 
 class TestSafeguardDensity:
@@ -162,7 +162,7 @@ class TestSafeguardDensity:
         )
 
         density = _calculate_safeguard_density({}, 10)
-        assert density == 0.0
+        assert density == 0.0, "density is not valid"
 
     def test_density_calculation_full(self):
         """Test density with all files having safeguards."""
@@ -172,7 +172,7 @@ class TestSafeguardDensity:
 
         evidence = {f"file{i}.py": 5 for i in range(10)}
         density = _calculate_safeguard_density(evidence, 10)
-        assert density == 1.0
+        assert density == 1.0, "density is not valid"
 
     def test_density_calculation_partial(self):
         """Test density with partial safeguard coverage."""
@@ -182,7 +182,7 @@ class TestSafeguardDensity:
 
         evidence = {f"file{i}.py": 3 for i in range(5)}  # 5 out of 10 files
         density = _calculate_safeguard_density(evidence, 10)
-        assert 0.4 <= density <= 0.6
+        assert 0.4 <= density <= 0.6, "4 is not valid"
 
     def test_density_zero_files(self):
         """Test density calculation with zero files (edge case)."""
@@ -191,7 +191,7 @@ class TestSafeguardDensity:
         )
 
         density = _calculate_safeguard_density({}, 0)
-        assert density == 0.0  # Safeguard: handles division by zero
+        assert density == 0.0, "density is not valid"
 
 
 class TestDetectorIntegration:
@@ -219,11 +219,11 @@ def process(data):
 
         try:
             result = detect({"files": [{"path": file_path}]})
-            assert result["id"] == "safeguards_keywords"
-            assert "evidence" in result
-            assert "total_hits" in result
+            assert result["id"] == "safeguards_keywords", "Result must not be empty"
+            assert "evidence" in result, "Result must not be empty"
+            assert "total_hits" in result, "Result must not be empty"
             # Should find multiple safeguard keywords
-            assert result["total_hits"] > 0
+            assert result["total_hits"] > 0, "Value must be greater than zero"
         finally:
             Path(file_path).unlink()
 
@@ -241,9 +241,9 @@ def simple_function(x):
 
         try:
             result = detect({"files": [{"path": file_path}]})
-            assert result["id"] == "safeguards_keywords"
+            assert result["id"] == "safeguards_keywords", "Result must not be empty"
             # Should find no or minimal safeguards
-            assert result["total_hits"] >= 0
+            assert result["total_hits"] >= 0, "Value must be greater than zero"
         finally:
             Path(file_path).unlink()
 
@@ -258,8 +258,8 @@ def simple_function(x):
 
         # All results should be identical
         for i in range(1, len(results)):
-            assert results[i]["id"] == results[0]["id"]
-            assert results[i]["total_hits"] == results[0]["total_hits"]
+            assert results[i]["id"] == results[0]["id"], "Result must not be empty"
+            assert results[i]["total_hits"] == results[0]["total_hits"], "Result must not be empty"
 
 
 class TestSafeguardsValidation:
@@ -270,8 +270,8 @@ class TestSafeguardsValidation:
         from scripts.space_traversal.detectors.detector_safeguards import MAX_READ_BYTES
 
         # Safeguard: bounded read to prevent memory issues
-        assert MAX_READ_BYTES > 0
-        assert MAX_READ_BYTES <= 1_000_000  # Reasonable upper limit
+        assert MAX_READ_BYTES > 0, "MAX_READ_BYTES must be greater than zero"
+        assert MAX_READ_BYTES <= 1_000_000, "MAX_READ_BYTES is not valid"
 
     def test_validation_in_read_function(self):
         """Test validation in file reading."""
@@ -279,7 +279,7 @@ class TestSafeguardsValidation:
 
         # Test with non-existent file (validation should handle)
         result = _read_text(Path("/nonexistent/file.txt"))
-        assert result == ""  # Defensive: returns empty on error
+        assert result == "", "Result must not be empty"
 
     def test_deterministic_keyword_set(self):
         """Test that keyword set is deterministic (frozenset sorted at creation)."""
@@ -290,5 +290,5 @@ class TestSafeguardsValidation:
         # Keywords are a frozenset; verify they are consistently iterable
         # and contain expected keywords (frozenset itself is unordered but deterministic)
         keywords_list = sorted(SAFEGUARD_KEYWORDS)
-        assert len(keywords_list) > 0
-        assert keywords_list == sorted(keywords_list)  # sorted is deterministic
+        assert len(keywords_list) > 0, "Keywords_list must not be empty"
+        assert keywords_list == sorted(keywords_list), "keywords_list is not valid"

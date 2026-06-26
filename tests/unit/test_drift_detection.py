@@ -59,11 +59,11 @@ class TestDriftAlert:
             message="Mean shifted",
             details={"key": "val"},
         )
-        assert alert.drift_type == "data_drift"
-        assert alert.severity == "high"
-        assert alert.message == "Mean shifted"
-        assert alert.details == {"key": "val"}
-        assert alert.timestamp is None
+        assert alert.drift_type == "data_drift", "Data must not be empty"
+        assert alert.severity == "high", "severity is not valid"
+        assert alert.message == "Mean shifted", "message is not valid"
+        assert alert.details == {"key": "val"}, "details is not valid"
+        assert alert.timestamp is None, "timestamp is not valid"
 
     def test_to_dict_contains_all_keys(self):
         alert = DriftAlert(
@@ -74,11 +74,11 @@ class TestDriftAlert:
             timestamp="2026-01-01T00:00:00Z",
         )
         d = alert.to_dict()
-        assert d["drift_type"] == "model_drift"
-        assert d["severity"] == "low"
-        assert d["message"] == "Minor"
-        assert d["details"] == {"metric": "loss"}
-        assert d["timestamp"] == "2026-01-01T00:00:00Z"
+        assert d["drift_type"] == "model_drift", "Condition must be true"
+        assert d["severity"] == "low", "Condition must be true"
+        assert d["message"] == "Minor", "Condition must be true"
+        assert d["details"] == {"metric": "loss"}, "Condition must be true"
+        assert d["timestamp"] == "2026-01-01T00:00:00Z", "Condition must be true"
 
     def test_to_dict_is_json_serialisable(self):
         alert = DriftAlert("data_drift", "medium", "msg", {"x": 1})
@@ -107,7 +107,7 @@ class TestDriftType:
             DriftType.CHECKPOINT,
             DriftType.ENVIRONMENT,
         }
-        assert len(values) == 5
+        assert len(values) == 5, "Values must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -118,15 +118,15 @@ class TestDriftType:
 class TestDriftDetectorBase:
     def test_init_defaults(self):
         dd = DriftDetector(threshold=0.2)
-        assert dd.threshold == 0.2
-        assert dd.alerts == []
+        assert dd.threshold == 0.2, "threshold is not valid"
+        assert dd.alerts == [], "alerts is not valid"
 
     def test_add_alert_appends(self):
         dd = DriftDetector()
         alert = DriftAlert("data_drift", "low", "test", {})
         dd.add_alert(alert)
-        assert len(dd.alerts) == 1
-        assert dd.alerts[0] is alert
+        assert len(dd.alerts) == 1, "Collection must not be empty"
+        assert dd.alerts[0] is alert, "Condition must be true"
 
     def test_get_alerts_returns_list(self):
         dd = DriftDetector()
@@ -134,14 +134,14 @@ class TestDriftDetectorBase:
         dd.add_alert(alert)
         alerts = dd.get_alerts()
         assert isinstance(alerts, list)
-        assert len(alerts) == 1
+        assert len(alerts) == 1, "Alerts must not be empty"
 
     def test_clear_alerts(self):
         dd = DriftDetector()
         dd.add_alert(DriftAlert("data_drift", "low", "test", {}))
         dd.add_alert(DriftAlert("data_drift", "high", "test2", {}))
         dd.clear_alerts()
-        assert dd.alerts == []
+        assert dd.alerts == [], "alerts is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -168,13 +168,13 @@ class TestDataDriftDetectorNoDrift:
             current_stats={"mean": 1.0, "std": 0.1},
             baseline_stats={"mean": 1.1, "std": 0.15},
         )
-        assert result is False
-        assert len(dd.alerts) == 0
+        assert result is False, "Result must not be empty"
+        assert len(dd.alerts) == 0, "Collection must not be empty"
 
     def test_no_alerts_on_identical_stats(self):
         dd = DataDriftDetector(threshold=0.1)
         dd.detect({"mean": 5.0, "std": 1.0}, {"mean": 5.0, "std": 1.0})
-        assert len(dd.alerts) == 0
+        assert len(dd.alerts) == 0, "Collection must not be empty"
 
 
 class TestDataDriftDetectorMeanDrift:
@@ -184,17 +184,17 @@ class TestDataDriftDetectorMeanDrift:
             current_stats={"mean": 2.0},
             baseline_stats={"mean": 1.0},
         )
-        assert result is True
-        assert len(dd.alerts) == 1
-        assert dd.alerts[0].drift_type == DriftType.DATA
-        assert dd.alerts[0].severity == "high"
+        assert result is True, "Result must not be empty"
+        assert len(dd.alerts) == 1, "Collection must not be empty"
+        assert dd.alerts[0].drift_type == DriftType.DATA, "Data must not be empty"
+        assert dd.alerts[0].severity == "high", "severity is not valid"
 
     def test_mean_drift_alert_details(self):
         dd = DataDriftDetector(threshold=0.1)
         dd.detect({"mean": 2.0}, {"mean": 1.0})
         alert = dd.alerts[0]
-        assert "current_mean" in alert.details
-        assert "baseline_mean" in alert.details
+        assert "current_mean" in alert.details, "Condition must be true"
+        assert "baseline_mean" in alert.details, "Condition must be true"
 
 
 class TestDataDriftDetectorStdDrift:
@@ -204,8 +204,8 @@ class TestDataDriftDetectorStdDrift:
             current_stats={"std": 2.0},
             baseline_stats={"std": 1.0},
         )
-        assert result is True
-        assert any(a.severity == "medium" for a in dd.alerts)
+        assert result is True, "Result must not be empty"
+        assert any(a.severity == "medium" for a in dd.alerts), "severity is not valid"
 
     def test_both_mean_and_std_drift(self):
         dd = DataDriftDetector(threshold=0.1)
@@ -213,8 +213,8 @@ class TestDataDriftDetectorStdDrift:
             current_stats={"mean": 5.0, "std": 5.0},
             baseline_stats={"mean": 1.0, "std": 1.0},
         )
-        assert result is True
-        assert len(dd.alerts) == 2
+        assert result is True, "Result must not be empty"
+        assert len(dd.alerts) == 2, "Collection must not be empty"
 
 
 class TestDataDriftDetectorMissingKeys:
@@ -225,8 +225,8 @@ class TestDataDriftDetectorMissingKeys:
             current_stats={"other": 1.0},
             baseline_stats={"other": 2.0},
         )
-        assert result is False
-        assert len(dd.alerts) == 0
+        assert result is False, "Result must not be empty"
+        assert len(dd.alerts) == 0, "Collection must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -241,8 +241,8 @@ class TestModelDriftDetectorNoDrift:
             current_metrics={"accuracy": 0.95, "loss": 0.5},
             baseline_metrics={"accuracy": 0.95, "loss": 0.5},
         )
-        assert result is False
-        assert len(dd.alerts) == 0
+        assert result is False, "Result must not be empty"
+        assert len(dd.alerts) == 0, "Collection must not be empty"
 
     def test_small_change_below_threshold(self):
         dd = ModelDriftDetector(threshold=0.2)
@@ -250,7 +250,7 @@ class TestModelDriftDetectorNoDrift:
             current_metrics={"accuracy": 0.90},
             baseline_metrics={"accuracy": 0.91},  # ~1.1% change
         )
-        assert result is False
+        assert result is False, "Result must not be empty"
 
 
 class TestModelDriftDetectorCritical:
@@ -260,7 +260,7 @@ class TestModelDriftDetectorCritical:
             current_metrics={"accuracy": 0.4},
             baseline_metrics={"accuracy": 0.9},  # 55% drop
         )
-        assert any(a.severity == "critical" for a in dd.alerts)
+        assert any(a.severity == "critical" for a in dd.alerts), "severity is not valid"
 
 
 class TestModelDriftDetectorHigh:
@@ -270,7 +270,7 @@ class TestModelDriftDetectorHigh:
             current_metrics={"accuracy": 0.6},
             baseline_metrics={"accuracy": 0.9},  # 33% drop
         )
-        assert any(a.severity == "high" for a in dd.alerts)
+        assert any(a.severity == "high" for a in dd.alerts), "severity is not valid"
 
 
 class TestModelDriftDetectorMedium:
@@ -280,7 +280,7 @@ class TestModelDriftDetectorMedium:
             current_metrics={"accuracy": 0.75},
             baseline_metrics={"accuracy": 0.9},  # ~16.7% drop
         )
-        assert any(a.severity == "medium" for a in dd.alerts)
+        assert any(a.severity == "medium" for a in dd.alerts), "severity is not valid"
 
 
 class TestModelDriftDetectorLow:
@@ -292,7 +292,7 @@ class TestModelDriftDetectorLow:
         )
         # Should produce low severity (0.1 < rel_change < 0.15)
         severities = {a.severity for a in dd.alerts}
-        assert severities  # at least one alert produced
+        assert severities, "severities is not valid"
 
 
 class TestModelDriftDetectorBaselineZero:
@@ -303,7 +303,7 @@ class TestModelDriftDetectorBaselineZero:
             baseline_metrics={"score": 0.0},
         )
         # abs(0.5 - 0.0) = 0.5 > 0.05 → should detect drift
-        assert result is True
+        assert result is True, "Result must not be empty"
 
 
 class TestModelDriftDetectorMissingKey:
@@ -313,8 +313,8 @@ class TestModelDriftDetectorMissingKey:
             current_metrics={"different_metric": 0.9},
             baseline_metrics={"accuracy": 0.9},
         )
-        assert result is False
-        assert len(dd.alerts) == 0
+        assert result is False, "Result must not be empty"
+        assert len(dd.alerts) == 0, "Collection must not be empty"
 
 
 class TestModelDriftAlertDetails:
@@ -324,9 +324,9 @@ class TestModelDriftAlertDetails:
             current_metrics={"f1": 0.4},
             baseline_metrics={"f1": 0.9},
         )
-        assert dd.alerts
-        assert dd.alerts[0].details["metric"] == "f1"
-        assert "relative_change" in dd.alerts[0].details
+        assert dd.alerts, "Condition must be true"
+        assert dd.alerts[0].details["metric"] == "f1", "Condition must be true"
+        assert "relative_change" in dd.alerts[0].details, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -339,12 +339,12 @@ class TestComprehensiveDriftMonitorInit:
         monitor = ComprehensiveDriftMonitor()
         assert isinstance(monitor.data_detector, DataDriftDetector)
         assert isinstance(monitor.model_detector, ModelDriftDetector)
-        assert monitor.monitoring_enabled is True
+        assert monitor.monitoring_enabled is True, "monitoring_enabled is not valid"
 
     def test_custom_thresholds_propagated(self):
         monitor = ComprehensiveDriftMonitor(data_threshold=0.5, model_threshold=0.3)
-        assert monitor.data_detector.threshold == 0.5
-        assert monitor.model_detector.threshold == 0.3
+        assert monitor.data_detector.threshold == 0.5, "Data must not be empty"
+        assert monitor.model_detector.threshold == 0.3, "threshold is not valid"
 
 
 class TestComprehensiveDriftMonitorDataOnly:
@@ -354,13 +354,13 @@ class TestComprehensiveDriftMonitorDataOnly:
             current_data_stats={"mean": 5.0},
             baseline_data_stats={"mean": 1.0},
         )
-        assert "data" in results
-        assert results["data"] is True
+        assert "data" in results, "Result must not be empty"
+        assert results["data"] is True, "Result must not be empty"
 
     def test_monitor_all_no_data_args_returns_empty(self):
         monitor = ComprehensiveDriftMonitor()
         results = monitor.monitor_all()
-        assert results == {}
+        assert results == {}, "Result must not be empty"
 
 
 class TestComprehensiveDriftMonitorModelOnly:
@@ -370,8 +370,8 @@ class TestComprehensiveDriftMonitorModelOnly:
             current_metrics={"accuracy": 0.4},
             baseline_metrics={"accuracy": 0.9},
         )
-        assert "model" in results
-        assert results["model"] is True
+        assert "model" in results, "Result must not be empty"
+        assert results["model"] is True, "Result must not be empty"
 
 
 class TestComprehensiveDriftMonitorDisabled:
@@ -382,7 +382,7 @@ class TestComprehensiveDriftMonitorDisabled:
             current_data_stats={"mean": 5.0},
             baseline_data_stats={"mean": 1.0},
         )
-        assert results == {}
+        assert results == {}, "Result must not be empty"
 
 
 class TestComprehensiveDriftMonitorAggregation:
@@ -395,7 +395,7 @@ class TestComprehensiveDriftMonitorAggregation:
             baseline_metrics={"loss": 1.0},
         )
         alerts = monitor.get_all_alerts()
-        assert len(alerts) >= 2  # data + model alerts
+        assert len(alerts) >= 2, "Alerts must not be empty"
 
     def test_clear_all_alerts(self):
         monitor = ComprehensiveDriftMonitor(data_threshold=0.05)
@@ -403,9 +403,9 @@ class TestComprehensiveDriftMonitorAggregation:
             current_data_stats={"mean": 5.0},
             baseline_data_stats={"mean": 1.0},
         )
-        assert len(monitor.get_all_alerts()) > 0
+        assert len(monitor.get_all_alerts()) > 0, "Collection must not be empty"
         monitor.clear_all_alerts()
-        assert monitor.get_all_alerts() == []
+        assert monitor.get_all_alerts() == [], "monit is not valid"
 
 
 class TestComprehensiveDriftMonitorCritical:
@@ -415,11 +415,11 @@ class TestComprehensiveDriftMonitorCritical:
             current_metrics={"accuracy": 0.3},
             baseline_metrics={"accuracy": 0.9},  # 67% drop → critical
         )
-        assert monitor.has_critical_drift() is True
+        assert monitor.has_critical_drift() is True, "monit is not valid"
 
     def test_has_critical_drift_false_when_no_alerts(self):
         monitor = ComprehensiveDriftMonitor()
-        assert monitor.has_critical_drift() is False
+        assert monitor.has_critical_drift() is False, "monit is not valid"
 
 
 class TestComprehensiveDriftMonitorSummary:
@@ -430,17 +430,17 @@ class TestComprehensiveDriftMonitorSummary:
             baseline_metrics={"accuracy": 0.9},
         )
         summary = monitor.get_drift_summary()
-        assert "total_alerts" in summary
-        assert "by_type" in summary
-        assert "by_severity" in summary
-        assert "critical_count" in summary
-        assert summary["total_alerts"] >= 1
+        assert "total_alerts" in summary, "Condition must be true"
+        assert "by_type" in summary, "Condition must be true"
+        assert "by_severity" in summary, "Condition must be true"
+        assert "critical_count" in summary, "Count must be greater than zero"
+        assert summary["total_alerts"] >= 1, "Value must be greater than zero"
 
     def test_get_drift_summary_empty(self):
         monitor = ComprehensiveDriftMonitor()
         summary = monitor.get_drift_summary()
-        assert summary["total_alerts"] == 0
-        assert summary["critical_count"] == 0
+        assert summary["total_alerts"] == 0, "Condition must be true"
+        assert summary["critical_count"] == 0, "Count must be greater than zero"
 
 
 class TestComprehensiveDriftMonitorSaveAlerts:
@@ -452,15 +452,15 @@ class TestComprehensiveDriftMonitorSaveAlerts:
         )
         out_file = tmp_path / "alerts.json"
         monitor.save_alerts(out_file)
-        assert out_file.exists()
+        assert out_file.exists(), "Condition must be true"
         data = json.loads(out_file.read_text())
         assert isinstance(data, list)
-        assert len(data) >= 1
+        assert len(data) >= 1, "Data must not be empty"
 
     def test_save_alerts_empty_list_when_no_drift(self, tmp_path: pathlib.Path):
         monitor = ComprehensiveDriftMonitor()
         out_file = tmp_path / "empty_alerts.json"
         monitor.save_alerts(out_file)
-        assert out_file.exists()
+        assert out_file.exists(), "Condition must be true"
         data = json.loads(out_file.read_text())
-        assert data == []
+        assert data == [], "Data must not be empty"

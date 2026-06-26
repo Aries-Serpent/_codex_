@@ -64,9 +64,9 @@ def test_precision_recall_f1_perfect_predictions() -> None:
 
     precision, recall, f1 = metrics_module.precision_recall_f1(logits, targets)
 
-    assert precision == pytest.approx(1.0)
-    assert recall == pytest.approx(1.0)
-    assert f1 == pytest.approx(1.0)
+    assert precision == pytest.approx(1.0), "precision is not valid"
+    assert recall == pytest.approx(1.0), "recall is not valid"
+    assert f1 == pytest.approx(1.0), "f1 is not valid"
 
 
 def test_precision_recall_f1_handles_missing_predictions() -> None:
@@ -77,9 +77,9 @@ def test_precision_recall_f1_handles_missing_predictions() -> None:
 
     precision, recall, f1 = metrics_module.precision_recall_f1(logits, targets)
 
-    assert precision == pytest.approx(0.0)
-    assert recall == pytest.approx(0.0)
-    assert f1 == pytest.approx(0.0)
+    assert precision == pytest.approx(0.0), "precision is not valid"
+    assert recall == pytest.approx(0.0), "recall is not valid"
+    assert f1 == pytest.approx(0.0), "f1 is not valid"
 
 
 def test_precision_recall_f1_accepts_single_logit_binary_logits() -> None:
@@ -90,9 +90,9 @@ def test_precision_recall_f1_accepts_single_logit_binary_logits() -> None:
 
     precision, recall, f1 = metrics_module.precision_recall_f1(logits, targets)
 
-    assert precision == pytest.approx(1.0)
-    assert recall == pytest.approx(1.0)
-    assert f1 == pytest.approx(1.0)
+    assert precision == pytest.approx(1.0), "precision is not valid"
+    assert recall == pytest.approx(1.0), "recall is not valid"
+    assert f1 == pytest.approx(1.0), "f1 is not valid"
 
 
 def test_precision_recall_f1_accepts_single_logit_probabilities() -> None:
@@ -103,9 +103,9 @@ def test_precision_recall_f1_accepts_single_logit_probabilities() -> None:
 
     precision, recall, f1 = metrics_module.precision_recall_f1(logits, targets)
 
-    assert precision == pytest.approx(1.0)
-    assert recall == pytest.approx(1.0)
-    assert f1 == pytest.approx(1.0)
+    assert precision == pytest.approx(1.0), "precision is not valid"
+    assert recall == pytest.approx(1.0), "recall is not valid"
+    assert f1 == pytest.approx(1.0), "f1 is not valid"
 
 
 def test_metrics_aggregator_combines_metrics() -> None:
@@ -129,11 +129,11 @@ def test_metrics_aggregator_combines_metrics() -> None:
         "precision_recall_f1_2",
     }
 
-    assert set(metrics) == expected_keys
-    assert metrics["accuracy"] == pytest.approx(2 / 3)
-    assert metrics["precision_recall_f1_0"] == pytest.approx(1.0)
-    assert metrics["precision_recall_f1_1"] == pytest.approx(0.5)
-    assert metrics["precision_recall_f1_2"] == pytest.approx(2 / 3)
+    assert set(metrics) == expected_keys, "Condition must be true"
+    assert metrics["accuracy"] == pytest.approx(2 / 3), "Condition must be true"
+    assert metrics["precision_recall_f1_0"] == pytest.approx(1.0), "Condition must be true"
+    assert metrics["precision_recall_f1_1"] == pytest.approx(0.5), "Condition must be true"
+    assert metrics["precision_recall_f1_2"] == pytest.approx(2 / 3), "Condition must be true"
 
 
 def test_metrics_aggregator_flattens_sequence_outputs() -> None:
@@ -148,7 +148,7 @@ def test_metrics_aggregator_flattens_sequence_outputs() -> None:
     aggregator = metrics_module.MetricsAggregator(dummy_metric)
     metrics = aggregator(logits, targets)
 
-    assert metrics == {
+    assert metrics == {, "metrics is not valid"
         "dummy_metric_0": pytest.approx(0.25),
         "dummy_metric_1": pytest.approx(0.75),
     }

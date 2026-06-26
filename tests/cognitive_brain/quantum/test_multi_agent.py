@@ -50,12 +50,12 @@ class TestGHZStateCreation:
 
         state = manager.create_ghz_state(agent_ids)
 
-        assert state is not None
-        assert len(state.agent_ids) == 3
-        assert state.fidelity >= 0.9  # Target: >= 0.9 (perfect fidelity at creation)
+        assert state is not None, "state must be initialized"
+        assert len(state.agent_ids) == 3, "Collection must not be empty"
+        assert state.fidelity >= 0.9, "fidelity must be greater than zero"
         # correlation_matrix is a Dict of pairwise correlations
         expected_pairs = 3  # C(3,2) = 3 pairs
-        assert len(state.correlation_matrix) == expected_pairs
+        assert len(state.correlation_matrix) == expected_pairs, "Collection must not be empty"
 
     def test_create_ghz_state_4_agents(self):
         """Test GHZ state creation with 4 agents."""
@@ -64,11 +64,11 @@ class TestGHZStateCreation:
 
         state = manager.create_ghz_state(agent_ids)
 
-        assert state is not None
-        assert len(state.agent_ids) == 4
-        assert state.fidelity >= 0.9
+        assert state is not None, "state must be initialized"
+        assert len(state.agent_ids) == 4, "Collection must not be empty"
+        assert state.fidelity >= 0.9, "fidelity must be greater than zero"
         # C(4,2) = 6 pairs
-        assert len(state.correlation_matrix) == 6
+        assert len(state.correlation_matrix) == 6, "Collection must not be empty"
 
     def test_create_ghz_state_5_agents(self):
         """Test GHZ state creation with 5 agents."""
@@ -77,9 +77,9 @@ class TestGHZStateCreation:
 
         state = manager.create_ghz_state(agent_ids)
 
-        assert state is not None
-        assert len(state.agent_ids) == 5
-        assert state.fidelity >= 0.9
+        assert state is not None, "state must be initialized"
+        assert len(state.agent_ids) == 5, "Collection must not be empty"
+        assert state.fidelity >= 0.9, "fidelity must be greater than zero"
 
     def test_create_ghz_state_6_agents(self):
         """Test GHZ state creation with 6 agents (max supported)."""
@@ -88,9 +88,9 @@ class TestGHZStateCreation:
 
         state = manager.create_ghz_state(agent_ids)
 
-        assert state is not None
-        assert len(state.agent_ids) == 6
-        assert state.fidelity >= 0.9
+        assert state is not None, "state must be initialized"
+        assert len(state.agent_ids) == 6, "Collection must not be empty"
+        assert state.fidelity >= 0.9, "fidelity must be greater than zero"
 
     def test_ghz_state_fidelity_validation(self):
         """Test that GHZ state fidelity meets target."""
@@ -139,9 +139,9 @@ class TestAgentCoordination:
         coordinator.register_agent("agent_2", role="validator", weight=1.5)
         coordinator.register_agent("agent_3", role="executor", weight=1.0)
 
-        assert len(coordinator.agents) == 3
-        assert "agent_1" in coordinator.agents
-        assert coordinator.agents["agent_2"].weight == 1.5
+        assert len(coordinator.agents) == 3, "Collection must not be empty"
+        assert "agent_1" in coordinator.agents, "Condition must be true"
+        assert coordinator.agents["agent_2"].weight == 1.5, "weight is not valid"
 
     def test_broadcast_update(self):
         """Test broadcasting updates to agents."""
@@ -153,7 +153,7 @@ class TestAgentCoordination:
         coordinator.broadcast_update("agent_1", state)
 
         # Verify agent's last_active was updated (broadcast_update doesn't add to decision_history)
-        assert coordinator.agents["agent_1"].last_active is not None
+        assert coordinator.agents["agent_1"].last_active is not None, "last_active must be initialized"
 
     def test_consensus_majority_voting(self):
         """Test majority voting consensus strategy."""
@@ -170,7 +170,7 @@ class TestAgentCoordination:
 
         consensus = coordinator.reach_consensus(decisions)
 
-        assert consensus == "approve"  # 2 out of 3
+        assert consensus == "approve", "consensus is not valid"
 
     def test_consensus_weighted_voting(self):
         """Test weighted voting consensus strategy."""
@@ -208,7 +208,7 @@ class TestAgentCoordination:
 
         # Confidence-based: approve=0.95, reject=0.75+0.70=1.45
         # Reject has higher total confidence
-        assert consensus == "reject"
+        assert consensus == "reject", "consensus is not valid"
 
     def test_coordinate_decision(self):
         """Test coordinated decision making."""
@@ -223,7 +223,7 @@ class TestAgentCoordination:
 
         decision = coordinator.coordinate_decision(context)
 
-        assert decision is not None
+        assert decision is not None, "decision must be initialized"
         # Decision can be approve, reject, or defer (from simulated agent decisions)
         assert decision in ["approve", "reject", "defer"]
 
@@ -282,7 +282,7 @@ class TestTopologyManagement:
 
         assert adj_matrix.shape == (num_agents, num_agents)
         # Hybrid should have at least some connections
-        assert adj_matrix.sum() > 0
+        assert adj_matrix.sum() > 0, "Value must be greater than zero"
 
     def test_get_neighbors(self):
         """Test neighbor lookup functionality."""
@@ -292,8 +292,8 @@ class TestTopologyManagement:
         neighbors = manager.get_neighbors("agent_1")
 
         # In mesh with 4 agents, agent_1 should have 3 neighbors
-        assert len(neighbors) == 3
-        assert "agent_1" not in neighbors
+        assert len(neighbors) == 3, "Neighbors must not be empty"
+        assert "agent_1" not in neighbors, "Condition must be true"
 
     def test_optimize_topology(self):
         """Test topology optimization based on correlation."""
@@ -305,7 +305,7 @@ class TestTopologyManagement:
 
         optimized = manager.optimize_topology(correlation_threshold=0.75)
 
-        assert optimized is not None
+        assert optimized is not None, "optimized must be initialized"
         # After optimization, low correlation edges should be removed
 
 
@@ -330,9 +330,9 @@ class TestCorrelationMeasurement:
         corr_12 = state.correlation_matrix.get((agent_ids[1], agent_ids[2]), 0)
 
         # All pairwise correlations should be high for GHZ state
-        assert corr_01 > 0.7
-        assert corr_02 > 0.7
-        assert corr_12 > 0.7
+        assert corr_01 > 0.7, "corr_01 must be greater than zero"
+        assert corr_02 > 0.7, "corr_02 must be greater than zero"
+        assert corr_12 > 0.7, "corr_12 must be greater than zero"
 
     def test_multi_agent_correlation_target(self):
         """Test that ρ_multi exceeds target threshold."""
@@ -358,10 +358,10 @@ class TestCorrelationMeasurement:
         corr_matrix = state.correlation_matrix
         for pair, value in corr_matrix.items():
             assert isinstance(pair, tuple)
-            assert len(pair) == 2
+            assert len(pair) == 2, "Pair must not be empty"
             # Since we only store (i, j) where i < j alphabetically,
             # symmetry is implicit in the Dict structure
-            assert 0.0 <= value <= 1.0
+            assert 0.0 <= value <= 1.0, "Value must be initialized"
 
     def test_correlation_update_after_measurement(self):
         """Test correlation update after agent measurement."""
@@ -379,7 +379,7 @@ class TestCorrelationMeasurement:
         # Fidelity might change after measurement
         # Access via manager.states attribute
         updated_state = manager.states[state.state_id]
-        assert updated_state.fidelity >= 0.0  # Still valid
+        assert updated_state.fidelity >= 0.0, "fidelity must be greater than zero"
 
     def test_correlation_temporal_stability(self):
         """Test correlation stability over time."""
@@ -394,8 +394,8 @@ class TestCorrelationMeasurement:
 
         # Compare Dict values
         for key, value in state.correlation_matrix.items():
-            assert key in initial_corr
-            assert value == initial_corr[key]
+            assert key in initial_corr, "Condition must be true"
+            assert value == initial_corr[key], "Value must be initialized"
 
     def test_correlation_metadata_tracking(self):
         """Test correlation metadata and statistics."""
@@ -407,7 +407,7 @@ class TestCorrelationMeasurement:
         assert hasattr(state, "created_at")
         assert hasattr(state, "correlation_matrix")
         assert hasattr(state, "fidelity")
-        assert state.created_at is not None
+        assert state.created_at is not None, "created_at must be initialized"
 
 
 # =============================================================================
@@ -484,7 +484,7 @@ class TestPerformance:
         latency_ms = (datetime.now(UTC) - start_time).total_seconds() * 1000
 
         assert latency_ms < 100, f"Registration time {latency_ms}ms too slow"
-        assert len(coordinator.agents) == 100
+        assert len(coordinator.agents) == 100, "Collection must not be empty"
 
     def test_correlation_measurement_speed(self):
         """Test correlation measurement performance."""

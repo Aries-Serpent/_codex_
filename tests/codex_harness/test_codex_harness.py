@@ -37,11 +37,11 @@ class TestHonestyStatement:
             category="VERIFIED",
             verified=True,
         )
-        assert statement.content == "Test content"
-        assert statement.category == "VERIFIED"
-        assert statement.verified is True
-        assert statement.workflow is None
-        assert statement.metadata is None
+        assert statement.content == "Test content", "Content must not be empty"
+        assert statement.category == "VERIFIED", "category is not valid"
+        assert statement.verified is True, "verified is not valid"
+        assert statement.workflow is None, "workflow is not valid"
+        assert statement.metadata is None, "Data must not be empty"
 
     def test_create_statement_with_all_fields(self):
         """Test creating statement with all fields."""
@@ -54,8 +54,8 @@ class TestHonestyStatement:
             timestamp="2026-01-22T00:00:00Z",
             metadata=metadata,
         )
-        assert statement.workflow == "test_workflow"
-        assert statement.metadata == metadata
+        assert statement.workflow == "test_workflow", "workflow is not valid"
+        assert statement.metadata == metadata, "Data must not be empty"
 
     def test_to_dict_with_metadata(self):
         """Test to_dict includes metadata when present."""
@@ -66,8 +66,8 @@ class TestHonestyStatement:
             metadata={"key": "value"},
         )
         result = statement.to_dict()
-        assert "metadata" in result
-        assert result["metadata"] == {"key": "value"}
+        assert "metadata" in result, "Result must not be empty"
+        assert result["metadata"] == {"key": "value"}, "Result must not be empty"
 
     def test_to_dict_without_metadata(self):
         """Test to_dict excludes metadata when None."""
@@ -77,7 +77,7 @@ class TestHonestyStatement:
             verified=False,
         )
         result = statement.to_dict()
-        assert "metadata" not in result
+        assert "metadata" not in result, "Result must not be empty"
 
     def test_timestamp_default_factory(self):
         """Test timestamp is auto-generated."""
@@ -86,7 +86,7 @@ class TestHonestyStatement:
             category="PLANNED",
             verified=False,
         )
-        assert statement.timestamp is not None
+        assert statement.timestamp is not None, "timestamp must be initialized"
         # Should be a valid ISO format timestamp
         datetime.fromisoformat(statement.timestamp.replace("Z", "+00:00"))
 
@@ -97,16 +97,16 @@ class TestHonestyMetadata:
     def test_create_empty_metadata(self):
         """Test creating metadata with no statements."""
         metadata = HonestyMetadata(workflow="test")
-        assert metadata.workflow == "test"
-        assert metadata.statements == []
+        assert metadata.workflow == "test", "Data must not be empty"
+        assert metadata.statements == [], "Data must not be empty"
 
     def test_summary_empty(self):
         """Test summary of empty metadata."""
         metadata = HonestyMetadata(workflow="test")
         summary = metadata.summary()
-        assert summary["total"] == 0
-        assert summary["verified"] == 0
-        assert summary["categories"] == {}
+        assert summary["total"] == 0, "Condition must be true"
+        assert summary["verified"] == 0, "Condition must be true"
+        assert summary["categories"] == {}, "Condition must be true"
 
     def test_summary_with_statements(self):
         """Test summary with multiple statements."""
@@ -120,11 +120,11 @@ class TestHonestyMetadata:
             ],
         )
         summary = metadata.summary()
-        assert summary["total"] == 4
-        assert summary["verified"] == 3
-        assert summary["categories"]["VERIFIED"] == 2
-        assert summary["categories"]["INFERRED"] == 1
-        assert summary["categories"]["PLANNED"] == 1
+        assert summary["total"] == 4, "Condition must be true"
+        assert summary["verified"] == 3, "Condition must be true"
+        assert summary["categories"]["VERIFIED"] == 2, "Condition must be true"
+        assert summary["categories"]["INFERRED"] == 1, "Condition must be true"
+        assert summary["categories"]["PLANNED"] == 1, "Condition must be true"
 
 
 class TestHonestyRecorder:
@@ -133,15 +133,15 @@ class TestHonestyRecorder:
     def test_init_default(self):
         """Test default initialization."""
         recorder = HonestyRecorder()
-        assert recorder.workflow == "default"
-        assert recorder.statements == []
+        assert recorder.workflow == "default", "workflow is not valid"
+        assert recorder.statements == [], "statements is not valid"
 
     def test_init_custom(self, tmp_path):
         """Test custom initialization."""
         output = tmp_path / "custom.json"
         recorder = HonestyRecorder(workflow="custom_flow", output_path=output)
-        assert recorder.workflow == "custom_flow"
-        assert recorder.output_path == output
+        assert recorder.workflow == "custom_flow", "workflow is not valid"
+        assert recorder.output_path == output, "output_path is not valid"
 
     def test_record_statement_basic(self):
         """Test recording a basic statement."""
@@ -151,10 +151,10 @@ class TestHonestyRecorder:
             category="verified",
             verified=True,
         )
-        assert len(recorder.statements) == 1
-        assert statement.content == "Test content"
-        assert statement.category == "VERIFIED"  # Should be normalized to uppercase
-        assert statement.verified is True
+        assert len(recorder.statements) == 1, "Collection must not be empty"
+        assert statement.content == "Test content", "Content must not be empty"
+        assert statement.category == "VERIFIED", "category is not valid"
+        assert statement.verified is True, "verified is not valid"
 
     def test_record_statement_with_metadata(self):
         """Test recording statement with metadata."""
@@ -166,7 +166,7 @@ class TestHonestyRecorder:
             verified=True,
             metadata=meta,
         )
-        assert statement.metadata == meta
+        assert statement.metadata == meta, "Data must not be empty"
 
     def test_record_statement_empty_content_raises(self):
         """Test empty content raises ValueError."""
@@ -182,7 +182,7 @@ class TestHonestyRecorder:
             category="CUSTOM_CATEGORY",
             verified=True,
         )
-        assert statement.category == "CUSTOM_CATEGORY"
+        assert statement.category == "CUSTOM_CATEGORY", "category is not valid"
 
     def test_flush_creates_file(self, tmp_path):
         """Test flush creates output file."""
@@ -192,11 +192,11 @@ class TestHonestyRecorder:
 
         result_path = recorder.flush()
 
-        assert result_path == output
-        assert output.exists()
+        assert result_path == output, "Result must not be empty"
+        assert output.exists(), "Condition must be true"
         data = json.loads(output.read_text())
-        assert data["workflow"] == "default"
-        assert len(data["statements"]) == 1
+        assert data["workflow"] == "default", "Data must not be empty"
+        assert len(data["statements"]) == 1, "Collection must not be empty"
 
     def test_flush_custom_path(self, tmp_path):
         """Test flush to custom path."""
@@ -207,9 +207,9 @@ class TestHonestyRecorder:
 
         result_path = recorder.flush(custom_output)
 
-        assert result_path == custom_output
-        assert custom_output.exists()
-        assert not default_output.exists()
+        assert result_path == custom_output, "Result must not be empty"
+        assert custom_output.exists(), "Condition must be true"
+        assert not default_output.exists(), "Condition must be true"
 
     def test_load_existing(self, tmp_path):
         """Test loading existing statements."""
@@ -231,15 +231,15 @@ class TestHonestyRecorder:
         recorder = HonestyRecorder(output_path=output)
         recorder.load_existing()
 
-        assert len(recorder.statements) == 1
-        assert recorder.statements[0].content == "Existing"
+        assert len(recorder.statements) == 1, "Collection must not be empty"
+        assert recorder.statements[0].content == "Existing", "Content must not be empty"
 
     def test_load_existing_no_file(self, tmp_path):
         """Test loading when file doesn't exist."""
         output = tmp_path / "nonexistent.json"
         recorder = HonestyRecorder(output_path=output)
         recorder.load_existing()  # Should not raise
-        assert len(recorder.statements) == 0
+        assert len(recorder.statements) == 0, "Collection must not be empty"
 
 
 class TestToolInvocation:
@@ -256,8 +256,8 @@ class TestToolInvocation:
             stdout="hello\n",
             stderr="",
         )
-        assert invocation.tool == "echo"
-        assert invocation.exit_code == 0
+        assert invocation.tool == "echo", "tool is not valid"
+        assert invocation.exit_code == 0, "exit_code is not valid"
 
     def test_to_dict_with_metadata(self):
         """Test to_dict includes metadata."""
@@ -272,7 +272,7 @@ class TestToolInvocation:
             metadata={"key": "value"},
         )
         result = invocation.to_dict()
-        assert "metadata" in result
+        assert "metadata" in result, "Result must not be empty"
 
     def test_to_dict_without_metadata(self):
         """Test to_dict excludes None metadata."""
@@ -286,7 +286,7 @@ class TestToolInvocation:
             stderr="",
         )
         result = invocation.to_dict()
-        assert "metadata" not in result
+        assert "metadata" not in result, "Result must not be empty"
 
 
 class TestNormalizeStatus:
@@ -294,22 +294,22 @@ class TestNormalizeStatus:
 
     def test_none_returns_none(self):
         """Test None input returns None."""
-        assert _normalize_status(None) is None
+        assert _normalize_status(None) is None, "_n is not valid"
 
     def test_pass_statuses(self):
         """Test various pass status values."""
         for status in ["pass", "PASSED", "ok", "success", "green", "true", "1"]:
-            assert _normalize_status(status) is True
+            assert _normalize_status(status) is True, "_n is not valid"
 
     def test_fail_statuses(self):
         """Test various fail status values."""
         for status in ["fail", "FAILED", "block", "blocked", "reject", "false", "0"]:
-            assert _normalize_status(status) is False
+            assert _normalize_status(status) is False, "_n is not valid"
 
     def test_unknown_returns_none(self):
         """Test unknown status returns None."""
-        assert _normalize_status("unknown") is None
-        assert _normalize_status("maybe") is None
+        assert _normalize_status("unknown") is None, "_n is not valid"
+        assert _normalize_status("maybe") is None, "_n is not valid"
 
 
 class TestToolTraceLogger:
@@ -319,7 +319,7 @@ class TestToolTraceLogger:
         """Test initialization creates parent directory."""
         output = tmp_path / "subdir" / "trace.ndjson"
         ToolTraceLogger(output_path=output)
-        assert output.parent.exists()
+        assert output.parent.exists(), "Condition must be true"
 
     def test_record_invocation(self, tmp_path):
         """Test recording an invocation."""
@@ -337,11 +337,11 @@ class TestToolTraceLogger:
         )
         logger.record_invocation(invocation)
 
-        assert output.exists()
+        assert output.exists(), "Condition must be true"
         lines = output.read_text().strip().split("\n")
-        assert len(lines) == 1
+        assert len(lines) == 1, "Lines must not be empty"
         data = json.loads(lines[0])
-        assert data["tool"] == "test"
+        assert data["tool"] == "test", "Data must not be empty"
 
     def test_log_manual(self, tmp_path):
         """Test manual logging."""
@@ -356,9 +356,9 @@ class TestToolTraceLogger:
             metadata={"manual": True},
         )
 
-        assert invocation.tool == "manual_tool"
-        assert invocation.exit_code == 0
-        assert invocation.metadata == {"manual": True}
+        assert invocation.tool == "manual_tool", "tool is not valid"
+        assert invocation.exit_code == 0, "exit_code is not valid"
+        assert invocation.metadata == {"manual": True}, "Data must not be empty"
 
     def test_read_invocations(self, tmp_path):
         """Test reading invocations from file."""
@@ -374,9 +374,9 @@ class TestToolTraceLogger:
             )
 
         invocations = logger.read_invocations()
-        assert len(invocations) == 3
-        assert invocations[0].tool == "tool_0"
-        assert invocations[2].exit_code == 2
+        assert len(invocations) == 3, "Invocations must not be empty"
+        assert invocations[0].tool == "tool_0", "tool is not valid"
+        assert invocations[2].exit_code == 2, "exit_code is not valid"
 
     def test_read_invocations_empty_file(self, tmp_path):
         """Test reading from nonexistent file."""
@@ -384,7 +384,7 @@ class TestToolTraceLogger:
         logger = ToolTraceLogger(output_path=output)
 
         invocations = logger.read_invocations()
-        assert invocations == []
+        assert invocations == [], "invocations is not valid"
 
     def test_load_ra_gate_results_with_gates_list(self, tmp_path):
         """Test loading RA gate results from gates list format."""
@@ -403,8 +403,8 @@ class TestToolTraceLogger:
         logger = ToolTraceLogger()
         results = logger.load_ra_gate_results(gates_file)
 
-        assert results["ruff"] is True
-        assert results["pytest"] is False
+        assert results["ruff"] is True, "Result must not be empty"
+        assert results["pytest"] is False, "Result must not be empty"
 
     def test_load_ra_gate_results_dict_format(self, tmp_path):
         """Test loading RA gate results from dict format."""
@@ -421,14 +421,14 @@ class TestToolTraceLogger:
         logger = ToolTraceLogger()
         results = logger.load_ra_gate_results(gates_file)
 
-        assert results["ruff"] is True
-        assert results["mypy"] is False
+        assert results["ruff"] is True, "Result must not be empty"
+        assert results["mypy"] is False, "Result must not be empty"
 
     def test_load_ra_gate_results_nonexistent(self, tmp_path):
         """Test loading from nonexistent file."""
         logger = ToolTraceLogger()
         results = logger.load_ra_gate_results(tmp_path / "nonexistent.json")
-        assert results == {}
+        assert results == {}, "Result must not be empty"
 
     def test_run_tool_success(self, tmp_path):
         """Test running a tool successfully."""
@@ -438,8 +438,8 @@ class TestToolTraceLogger:
         # Run echo command
         invocation = logger.run_tool("echo", ["hello", "world"])
 
-        assert invocation.exit_code == 0
-        assert "hello world" in invocation.stdout
+        assert invocation.exit_code == 0, "exit_code is not valid"
+        assert "hello world" in invocation.stdout, "Condition must be true"
 
     def test_run_tool_failure_with_check(self, tmp_path):
         """Test running a failing tool with check=True."""
@@ -458,7 +458,7 @@ class TestToolTraceLogger:
 
         invocation = logger.run_tool("false", check=False)
 
-        assert invocation.exit_code != 0
+        assert invocation.exit_code != 0, "exit_code is not valid"
 
     def test_ra_gate_match_expected_pass(self, tmp_path):
         """Test RA gate matching when pass expected."""
@@ -471,8 +471,8 @@ class TestToolTraceLogger:
 
         invocation = logger.run_tool("echo", ["test"])
 
-        assert invocation.ra_gate_expected is True
-        assert invocation.ra_gate_match is True  # Command succeeded as expected
+        assert invocation.ra_gate_expected is True, "ra_gate_expected is not valid"
+        assert invocation.ra_gate_match is True, "ra_gate_match is not valid"
 
 
 class TestUtcNow:
@@ -483,4 +483,4 @@ class TestUtcNow:
         result = _utc_now()
         # Should be parseable
         parsed = datetime.fromisoformat(result.replace("Z", "+00:00"))
-        assert parsed.tzinfo is not None
+        assert parsed.tzinfo is not None, "tzinfo must be initialized"

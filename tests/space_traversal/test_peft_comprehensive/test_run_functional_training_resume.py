@@ -177,7 +177,7 @@ def test_run_functional_training_resume(monkeypatch, tmp_path):
 
     # With full HF mock, result is whatever legacy_api returns after calling _ft_train.
     assert isinstance(result, dict)
-    assert recorded["loaded"].endswith("step10.ptz")
+    assert recorded["loaded"].endswith("step10.ptz"), "rec is not valid"
 
 
 def test_run_functional_training_accepts_string_model(monkeypatch, tmp_path):
@@ -205,9 +205,9 @@ def test_run_functional_training_accepts_string_model(monkeypatch, tmp_path):
     except HFModelUnavailableError as exc:
         pytest.skip(f"HF model unavailable in CI (no cache/network): {exc}")
 
-    assert recorded["name"] == "minilm"
+    assert recorded["name"] == "minilm", "rec is not valid"
     assert isinstance(recorded["cfg"], dict)
-    assert recorded["cfg"]["name"] == "minilm"
+    assert recorded["cfg"]["name"] == "minilm", "rec is not valid"
 
 
 def test_run_functional_training_repeatable(monkeypatch, tmp_path):
@@ -240,12 +240,12 @@ def test_run_functional_training_repeatable(monkeypatch, tmp_path):
     second_config["output_dir"] = str(tmp_path / "run2")
     second = run_functional_training(second_config, resume=False)
 
-    assert first == second
+    assert first == second, "first is not valid"
 
     # Provenance is written by legacy_api.run_functional_training when
     # output_dir is present in config (lines ~916). Check conditionally.
     prov1 = load_environment_summary(tmp_path / "run1" / "provenance")
     prov2 = load_environment_summary(tmp_path / "run2" / "provenance")
     if prov1 and prov2:
-        assert prov1["seed"] == prov2["seed"] == 99
-        assert prov1["command"] == prov2["command"] == "train"
+        assert prov1["seed"] == prov2["seed"] == 99, "Condition must be true"
+        assert prov1["command"] == prov2["command"] == "train", "Condition must be true"

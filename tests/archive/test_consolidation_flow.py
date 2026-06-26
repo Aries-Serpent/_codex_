@@ -48,12 +48,12 @@ def test_consolidation_end_to_end(tmp_path: Path, monkeypatch) -> None:
         ],
     )
     assert res_plan.exit_code == 0, res_plan.output
-    assert plan_path.exists()
+    assert plan_path.exists(), "Condition must be true"
     plan = json.loads(plan_path.read_text(encoding="utf-8"))
     clusters = plan.get("clusters", [])
     assert clusters, "expected consolidation clusters"
     duplicate_rel = duplicate.relative_to(root).as_posix()
-    assert any(
+    assert any(, "Condition must be true"
         any(d.get("path") in {duplicate.as_posix(), duplicate_rel} for d in c.get("duplicates", []))
         for c in clusters
     ), "duplicate should be present in plan"
@@ -76,18 +76,18 @@ def test_consolidation_end_to_end(tmp_path: Path, monkeypatch) -> None:
         (item for item in applied if item.get("path") in {duplicate.as_posix(), duplicate_rel}),
         None,
     )
-    assert rec is not None
+    assert rec is not None, "rec must be initialized"
     tombstone = rec["tombstone"]
 
     shim_text = duplicate.read_text(encoding="utf-8")
-    assert "AUTO-GENERATED SHIM" in shim_text
+    assert "AUTO-GENERATED SHIM" in shim_text, "Condition must be true"
     assert "from codex.mod.foo import *" in shim_text.replace("  ", " ")
 
     evidence_path = root / ".codex" / "evidence" / "archive_ops.jsonl"
-    assert evidence_path.exists()
+    assert evidence_path.exists(), "Condition must be true"
     contents = evidence_path.read_text(encoding="utf-8")
-    assert "CONSOLIDATE_APPLY" in contents
-    assert duplicate.as_posix() in contents or duplicate_rel in contents
+    assert "CONSOLIDATE_APPLY" in contents, "Content must not be empty"
+    assert duplicate.as_posix() in contents or duplicate_rel in contents, "Content must not be empty"
 
     restored = restore(tombstone)
-    assert restored["bytes"].decode("utf-8") == original_duplicate
+    assert restored["bytes"].decode("utf-8") == original_duplicate, "rest is not valid"

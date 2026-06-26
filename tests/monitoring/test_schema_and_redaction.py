@@ -21,6 +21,6 @@ def test_schema_and_redaction() -> None:
     )
     red = rec.redacted()
     data = red.dict()
-    assert data["version"] == LOG_VERSION
-    assert data["meta"]["api_key"] == "<redacted>"
-    assert len(data["meta"]["note"]) == 4096
+    assert data["version"] == LOG_VERSION, "Data must not be empty"
+    assert data["meta"]["api_key"] == "<redacted>", "Data must not be empty"
+    assert len(data["meta"]["note"]) == 4096, "Collection must not be empty"

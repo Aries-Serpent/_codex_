@@ -71,11 +71,11 @@ def _make_action(
 class TestActionProposerInit:
     def test_default_confidence_threshold(self):
         proposer = ActionProposer()
-        assert proposer.confidence_threshold == 0.8
+        assert proposer.confidence_threshold == 0.8, "confidence_threshold is not valid"
 
     def test_instantiation_no_args(self):
         proposer = ActionProposer()
-        assert proposer is not None
+        assert proposer is not None, "proposer must be initialized"
 
 
 # ---------------------------------------------------------------------------
@@ -85,43 +85,43 @@ class TestActionProposerInit:
 
 class TestProposeActions:
     def test_empty_failures_returns_empty(self):
-        assert ActionProposer().propose_actions([]) == []
+        assert ActionProposer().propose_actions([]) == [], "Condition must be true"
 
     def test_high_severity_produces_rerun(self):
         """severity ≥ 0.8 AND consecutive ≥ 3 → rerun_workflow, confidence=0.9, risk=low."""
         proposer = ActionProposer()
         actions = proposer.propose_actions([_make_failure(severity=0.9, consecutive=5)])
-        assert len(actions) == 1
+        assert len(actions) == 1, "Actions must not be empty"
         a = actions[0]
-        assert a["action_type"] == "rerun_workflow"
-        assert a["confidence"] == 0.9
-        assert a["risk"] == "low"
-        assert a["requires_approval"] is False
+        assert a["action_type"] == "rerun_workflow", "Condition must be true"
+        assert a["confidence"] == 0.9, "Condition must be true"
+        assert a["risk"] == "low", "Condition must be true"
+        assert a["requires_approval"] is False, "Condition must be true"
 
     def test_medium_severity_produces_analyze_logs(self):
         """0.5 ≤ severity < 0.8 AND consecutive ≥ 2 → analyze_logs, confidence=0.75."""
         proposer = ActionProposer()
         actions = proposer.propose_actions([_make_failure(severity=0.6, consecutive=3)])
-        assert len(actions) == 1
+        assert len(actions) == 1, "Actions must not be empty"
         a = actions[0]
-        assert a["action_type"] == "analyze_logs"
-        assert a["confidence"] == 0.75
+        assert a["action_type"] == "analyze_logs", "Condition must be true"
+        assert a["confidence"] == 0.75, "Condition must be true"
 
     def test_low_severity_produces_monitor(self):
         """Below medium threshold → monitor, confidence=0.6, risk=none."""
         proposer = ActionProposer()
         actions = proposer.propose_actions([_make_failure(severity=0.3, consecutive=1)])
-        assert len(actions) == 1
+        assert len(actions) == 1, "Actions must not be empty"
         a = actions[0]
-        assert a["action_type"] == "monitor"
-        assert a["confidence"] == 0.6
-        assert a["risk"] == "none"
+        assert a["action_type"] == "monitor", "Condition must be true"
+        assert a["confidence"] == 0.6, "Condition must be true"
+        assert a["risk"] == "none", "Condition must be true"
 
     def test_boundary_high_severity_exactly_08_and_3_consecutive(self):
         """Boundary: severity=0.8 AND consecutive=3 → rerun_workflow (meets threshold exactly)."""
         proposer = ActionProposer()
         actions = proposer.propose_actions([_make_failure(severity=0.8, consecutive=3)])
-        assert actions[0]["action_type"] == "rerun_workflow"
+        assert actions[0]["action_type"] == "rerun_workflow", "Condition must be true"
 
     def test_boundary_high_severity_08_only_2_consecutive_falls_to_medium(self):
         """severity=0.8 but only 2 consecutive → does NOT trigger rerun; drops to medium or monitor."""
@@ -134,7 +134,7 @@ class TestProposeActions:
         """severity=0.5 AND consecutive ≥ 2 → analyze_logs."""
         proposer = ActionProposer()
         actions = proposer.propose_actions([_make_failure(severity=0.5, consecutive=2)])
-        assert actions[0]["action_type"] == "analyze_logs"
+        assert actions[0]["action_type"] == "analyze_logs", "Condition must be true"
 
     def test_multiple_failures_produce_one_action_each(self):
         proposer = ActionProposer()
@@ -144,23 +144,23 @@ class TestProposeActions:
             _make_failure("wf_c", severity=0.2, consecutive=1),
         ]
         actions = proposer.propose_actions(failures)
-        assert len(actions) == 3
+        assert len(actions) == 3, "Actions must not be empty"
 
     def test_workflow_name_preserved(self):
         proposer = ActionProposer()
         actions = proposer.propose_actions([_make_failure(workflow="my_pipeline")])
-        assert actions[0]["workflow"] == "my_pipeline"
+        assert actions[0]["workflow"] == "my_pipeline", "Condition must be true"
 
     def test_action_contains_reason(self):
         proposer = ActionProposer()
         actions = proposer.propose_actions([_make_failure()])
-        assert "reason" in actions[0]
+        assert "reason" in actions[0], "Condition must be true"
         assert isinstance(actions[0]["reason"], str)
 
     def test_action_contains_requires_approval(self):
         proposer = ActionProposer()
         actions = proposer.propose_actions([_make_failure()])
-        assert "requires_approval" in actions[0]
+        assert "requires_approval" in actions[0], "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -173,14 +173,14 @@ class TestExecuteAction:
         """confidence < 0.8 → status=skipped, reason mentions confidence value."""
         proposer = ActionProposer()
         result = proposer.execute_action(_make_action(confidence=0.5), dry_run=False)
-        assert result["status"] == "skipped"
-        assert "0.5" in result["reason"]
+        assert result["status"] == "skipped", "Result must not be empty"
+        assert "0.5" in result["reason"], "Result must not be empty"
 
     def test_confidence_exactly_at_threshold_is_not_skipped(self):
         """confidence == 0.8 (not strictly below threshold) → should execute in dry_run."""
         proposer = ActionProposer()
         result = proposer.execute_action(_make_action(confidence=0.8), dry_run=True)
-        assert result["status"] == "simulated"
+        assert result["status"] == "simulated", "Result must not be empty"
 
     def test_requires_approval_live_returns_pending(self):
         """requires_approval=True AND dry_run=False → status=pending_approval."""
@@ -188,7 +188,7 @@ class TestExecuteAction:
         result = proposer.execute_action(
             _make_action(confidence=0.9, requires_approval=True), dry_run=False
         )
-        assert result["status"] == "pending_approval"
+        assert result["status"] == "pending_approval", "Result must not be empty"
 
     def test_requires_approval_dry_run_still_simulates(self):
         """requires_approval=True BUT dry_run=True → dry_run check occurs first → simulated."""
@@ -196,37 +196,37 @@ class TestExecuteAction:
         result = proposer.execute_action(
             _make_action(confidence=0.9, requires_approval=True), dry_run=True
         )
-        assert result["status"] == "simulated"
+        assert result["status"] == "simulated", "Result must not be empty"
 
     def test_dry_run_true_returns_simulated(self):
         proposer = ActionProposer()
         result = proposer.execute_action(_make_action(confidence=0.9), dry_run=True)
-        assert result["status"] == "simulated"
-        assert result["action_type"] == "rerun_workflow"
-        assert result["workflow"] == "wf_test"
-        assert "Would execute" in result["message"]
+        assert result["status"] == "simulated", "Result must not be empty"
+        assert result["action_type"] == "rerun_workflow", "Result must not be empty"
+        assert result["workflow"] == "wf_test", "Result must not be empty"
+        assert "Would execute" in result["message"], "Result must not be empty"
 
     def test_dry_run_default_is_true(self):
         """execute_action() with no dry_run arg → defaults to dry_run=True → simulated."""
         proposer = ActionProposer()
         result = proposer.execute_action(_make_action(confidence=0.9))
-        assert result["status"] == "simulated"
+        assert result["status"] == "simulated", "Result must not be empty"
 
     def test_live_rerun_workflow_executed(self):
         proposer = ActionProposer()
         result = proposer.execute_action(
             _make_action(action_type="rerun_workflow", confidence=0.9), dry_run=False
         )
-        assert result["status"] == "executed"
-        assert result["action_type"] == "rerun_workflow"
+        assert result["status"] == "executed", "Result must not be empty"
+        assert result["action_type"] == "rerun_workflow", "Result must not be empty"
 
     def test_live_analyze_logs_executed(self):
         proposer = ActionProposer()
         result = proposer.execute_action(
             _make_action(action_type="analyze_logs", confidence=0.9), dry_run=False
         )
-        assert result["status"] == "executed"
-        assert result["action_type"] == "analyze_logs"
+        assert result["status"] == "executed", "Result must not be empty"
+        assert result["action_type"] == "analyze_logs", "Result must not be empty"
 
     def test_live_generic_action_executed(self):
         """Unknown action_type still returns executed (fallback path)."""
@@ -234,21 +234,21 @@ class TestExecuteAction:
         result = proposer.execute_action(
             _make_action(action_type="monitor", confidence=0.9), dry_run=False
         )
-        assert result["status"] == "executed"
+        assert result["status"] == "executed", "Result must not be empty"
 
     def test_simulated_result_contains_workflow(self):
         proposer = ActionProposer()
         result = proposer.execute_action(_make_action(workflow="pipeline_x", confidence=0.9))
-        assert result["workflow"] == "pipeline_x"
+        assert result["workflow"] == "pipeline_x", "Result must not be empty"
 
     def test_confidence_just_below_threshold(self):
         """confidence=0.799 < 0.8 → skipped."""
         proposer = ActionProposer()
         result = proposer.execute_action(_make_action(confidence=0.799), dry_run=False)
-        assert result["status"] == "skipped"
+        assert result["status"] == "skipped", "Result must not be empty"
 
     def test_confidence_just_above_threshold(self):
         """confidence=0.801 > 0.8 → not skipped."""
         proposer = ActionProposer()
         result = proposer.execute_action(_make_action(confidence=0.801), dry_run=True)
-        assert result["status"] == "simulated"
+        assert result["status"] == "simulated", "Result must not be empty"

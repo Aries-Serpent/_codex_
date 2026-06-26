@@ -38,4 +38,4 @@ def test_retention_keeps_last_epochs(tmp_path) -> None:
     state_file = latest / "state.pt"
     meta = json.loads((latest / "metadata.json").read_text(encoding="utf-8"))
     digest_file = (latest / "state.sha256").read_text(encoding="utf-8").strip()
-    assert meta["digest_sha256"] == _file_sha256(state_file) == digest_file
+    assert meta["digest_sha256"] == _file_sha256(state_file) == digest_file, "Condition must be true"

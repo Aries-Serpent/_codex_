@@ -68,12 +68,12 @@ class TestKeyringBackend:
 
         mock_keyring.set_password.assert_called_once()
         call_args = mock_keyring.set_password.call_args
-        assert call_args[0][0] == "codex-cli"
-        assert call_args[0][1] == "credentials"
+        assert call_args[0][0] == "codex-cli", "Condition must be true"
+        assert call_args[0][1] == "credentials", "Condition must be true"
         payload = json.loads(call_args[0][2])
-        assert payload["username"] == "alice"
-        assert payload["access_token"] == "acc-token"
-        assert payload["refresh_token"] == "ref-token"
+        assert payload["username"] == "alice", "Condition must be true"
+        assert payload["access_token"] == "acc-token", "Condition must be true"
+        assert payload["refresh_token"] == "ref-token", "Condition must be true"
 
     def test_load_from_keyring(self, cli_mod):
         """_load_cached_credentials reads from keyring when present."""
@@ -90,8 +90,8 @@ class TestKeyringBackend:
         with patch.dict("sys.modules", {"keyring": mock_keyring}):
             result = cli_mod._load_cached_credentials()
 
-        assert result is not None
-        assert result["username"] == "bob"
+        assert result is not None, "result must be initialized"
+        assert result["username"] == "bob", "Result must not be empty"
 
     def test_load_returns_none_when_keyring_empty(self, cli_mod):
         """Returns None when keyring has no entry and no JSON file exists."""
@@ -104,7 +104,7 @@ class TestKeyringBackend:
         ):
             result = cli_mod._load_cached_credentials()
 
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_clear_keyring_and_file(self, cli_mod, tmp_cache_dir):
         """_clear_cached_credentials removes both keyring entry and file."""
@@ -119,7 +119,7 @@ class TestKeyringBackend:
             cli_mod._clear_cached_credentials()
 
         mock_keyring.delete_password.assert_called_once_with("codex-cli", "credentials")
-        assert not cache_file.exists()
+        assert not cache_file.exists(), "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -151,10 +151,10 @@ class TestJSONFileFallback:
         ):
             cli_mod._cache_credentials("carol", "at", "rt")
 
-        assert cache_file.exists()
+        assert cache_file.exists(), "Condition must be true"
         data = json.loads(cache_file.read_text(encoding="utf-8"))
-        assert data["username"] == "carol"
-        assert data["access_token"] == "at"
+        assert data["username"] == "carol", "Data must not be empty"
+        assert data["access_token"] == "at", "Data must not be empty"
 
     def test_load_from_json_file(self, cli_mod, tmp_cache_dir):
         """_load_cached_credentials falls back to JSON file."""
@@ -172,8 +172,8 @@ class TestJSONFileFallback:
         ):
             result = cli_mod._load_cached_credentials()
 
-        assert result is not None
-        assert result["username"] == "dave"
+        assert result is not None, "result must be initialized"
+        assert result["username"] == "dave", "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -189,8 +189,8 @@ class TestAuthStatusCLI:
         with patch.object(cli_mod, "_load_cached_credentials", return_value=None):
             result = runner.invoke(cli, ["auth", "status"])
 
-        assert result.exit_code == 0
-        assert "No cached credentials" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "No cached credentials" in result.output, "Result must not be empty"
 
     def test_status_with_credentials(self, runner, cli_mod):
         """auth status shows cached username when credentials exist."""
@@ -198,5 +198,5 @@ class TestAuthStatusCLI:
         with patch.object(cli_mod, "_load_cached_credentials", return_value=creds):
             result = runner.invoke(cli, ["auth", "status"])
 
-        assert result.exit_code == 0
-        assert "eve" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "eve" in result.output, "Result must not be empty"

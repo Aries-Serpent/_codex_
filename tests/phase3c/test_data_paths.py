@@ -30,7 +30,7 @@ class TestDataIngestion:
             # Verify ingestion
             query = MemoryQuery(limit=10)
             results = backend.retrieve(query)
-            assert len(results) >= 1
+            assert len(results) >= 1, "Results must not be empty"
 
     def test_ingest_json_data(self):
         """Test ingesting JSON structured data."""
@@ -41,8 +41,8 @@ class TestDataIngestion:
             backend.store(entry)
 
             results = backend.retrieve(MemoryQuery(limit=10))
-            assert len(results) >= 1
-            assert results[0].content == data
+            assert len(results) >= 1, "Results must not be empty"
+            assert results[0].content == data, "Result must not be empty"
 
     def test_ingest_batch_data(self):
         """Test batch ingestion of multiple data items."""
@@ -57,7 +57,7 @@ class TestDataIngestion:
                 backend.store(entry)
 
             results = backend.retrieve(MemoryQuery(limit=10))
-            assert len(results) >= 10
+            assert len(results) >= 10, "Results must not be empty"
 
     def test_ingest_with_metadata_enrichment(self):
         """Test ingesting data with metadata enrichment."""
@@ -76,8 +76,8 @@ class TestDataIngestion:
             backend.store(entry)
 
             results = backend.retrieve(MemoryQuery(limit=10))
-            assert len(results) >= 1
-            assert results[0].metadata == metadata
+            assert len(results) >= 1, "Results must not be empty"
+            assert results[0].metadata == metadata, "Result must not be empty"
 
     def test_ingest_csv_like_data(self):
         """Test ingesting CSV-like data."""
@@ -96,7 +96,7 @@ class TestDataIngestion:
                 backend.store(entry)
 
             results = backend.retrieve(MemoryQuery(limit=10))
-            assert len(results) >= 3
+            assert len(results) >= 3, "Results must not be empty"
 
 
 class TestDataTransformation:
@@ -131,7 +131,7 @@ class TestDataTransformation:
             backend.store(entry_transformed)
 
             results = backend.retrieve(MemoryQuery(limit=10))
-            assert len(results) >= 2
+            assert len(results) >= 2, "Results must not be empty"
 
     def test_transform_nested_data_flattening(self):
         """Test flattening nested data structures."""
@@ -164,7 +164,7 @@ class TestDataTransformation:
             backend.store(entry_flat)
 
             results = backend.retrieve(MemoryQuery(limit=10))
-            assert len(results) >= 2
+            assert len(results) >= 2, "Results must not be empty"
 
     def test_transform_with_aggregation(self):
         """Test data aggregation transformation."""
@@ -192,7 +192,7 @@ class TestDataTransformation:
             backend.store(entry_agg)
 
             results = backend.retrieve(MemoryQuery(limit=10))
-            assert len(results) >= 6
+            assert len(results) >= 6, "Results must not be empty"
 
     def test_transform_type_conversion(self):
         """Test type conversion transformations."""
@@ -218,7 +218,7 @@ class TestDataTransformation:
             backend.store(entry_num)
 
             results = backend.retrieve(MemoryQuery(limit=10))
-            assert len(results) >= 2
+            assert len(results) >= 2, "Results must not be empty"
 
 
 class TestDataPersistence:
@@ -234,10 +234,10 @@ class TestDataPersistence:
             backend.store(entry)
 
             # Verify file was created and contains data
-            assert file_path.exists()
+            assert file_path.exists(), "Condition must be true"
             with open(file_path) as f:
                 lines = f.readlines()
-                assert len(lines) >= 1
+                assert len(lines) >= 1, "Lines must not be empty"
 
     def test_persist_multiple_entries(self):
         """Test persisting multiple entries."""
@@ -253,7 +253,7 @@ class TestDataPersistence:
             # Verify all entries persisted
             with open(file_path) as f:
                 lines = f.readlines()
-                assert len(lines) >= 5
+                assert len(lines) >= 5, "Lines must not be empty"
 
     def test_persist_large_data(self):
         """Test persisting large data objects."""
@@ -268,7 +268,7 @@ class TestDataPersistence:
 
             # Retrieve and verify
             results = backend.retrieve(MemoryQuery(limit=10))
-            assert len(results) >= 1
+            assert len(results) >= 1, "Results must not be empty"
 
     def test_persist_and_restore_metadata(self):
         """Test persisting and restoring with metadata."""
@@ -288,7 +288,7 @@ class TestDataPersistence:
 
             # Retrieve and verify metadata
             results = backend.retrieve(MemoryQuery(limit=10))
-            assert results[0].metadata == metadata
+            assert results[0].metadata == metadata, "Result must not be empty"
 
 
 class TestDataPipeline:
@@ -321,7 +321,7 @@ class TestDataPipeline:
 
             # Step 3: Verify persistence
             results = backend.retrieve(MemoryQuery(limit=10))
-            assert len(results) >= 2
+            assert len(results) >= 2, "Results must not be empty"
 
     def test_pipeline_branching(self):
         """Test data pipeline with branching."""
@@ -351,7 +351,7 @@ class TestDataPipeline:
             backend.store(entry_archive)
 
             results = backend.retrieve(MemoryQuery(limit=10))
-            assert len(results) >= 3
+            assert len(results) >= 3, "Results must not be empty"
 
     def test_pipeline_filtering_and_filtering(self):
         """Test filtering during pipeline."""
@@ -371,7 +371,7 @@ class TestDataPipeline:
 
             # Retrieve all
             results = backend.retrieve(MemoryQuery(limit=10))
-            assert len(results) >= 10
+            assert len(results) >= 10, "Results must not be empty"
 
     def test_pipeline_error_handling_and_retry(self):
         """Test error handling in pipeline with retry capability."""
@@ -397,7 +397,7 @@ class TestDataPipeline:
             backend.store(entry_retry)
 
             results = backend.retrieve(MemoryQuery(limit=10))
-            assert len(results) >= 2
+            assert len(results) >= 2, "Results must not be empty"
 
 
 class TestDataConsistency:
@@ -414,7 +414,7 @@ class TestDataConsistency:
             backend.store(entry_original)
 
             results = backend.retrieve(MemoryQuery(limit=10))
-            assert results[0].content == original_data
+            assert results[0].content == original_data, "Result must not be empty"
 
     def test_multiple_retrieval_consistency(self):
         """Test consistency across multiple retrievals."""
@@ -428,7 +428,7 @@ class TestDataConsistency:
             results1 = backend.retrieve(MemoryQuery(limit=10))
             results2 = backend.retrieve(MemoryQuery(limit=10))
 
-            assert results1[0].content == results2[0].content
+            assert results1[0].content == results2[0].content, "Result must not be empty"
 
     def test_serialization_deserialization(self):
         """Test serialization/deserialization consistency."""
@@ -443,10 +443,10 @@ class TestDataConsistency:
         entry_restored = MemoryEntry.from_dict(data_dict)
 
         # Compare
-        assert entry_restored.content == entry_original.content
-        assert entry_restored.agent_id == entry_original.agent_id
-        assert entry_restored.session_id == entry_original.session_id
-        assert entry_restored.metadata == entry_original.metadata
+        assert entry_restored.content == entry_original.content, "Content must not be empty"
+        assert entry_restored.agent_id == entry_original.agent_id, "agent_id is not valid"
+        assert entry_restored.session_id == entry_original.session_id, "session_id is not valid"
+        assert entry_restored.metadata == entry_original.metadata, "Data must not be empty"
 
 
 class TestDataRetention:
@@ -464,7 +464,7 @@ class TestDataRetention:
 
             # Query should return all retained data
             results = backend.retrieve(MemoryQuery(limit=100))
-            assert len(results) >= 5
+            assert len(results) >= 5, "Results must not be empty"
 
     def test_session_clear_removes_data(self):
         """Test that clearing session removes all data."""
@@ -477,7 +477,7 @@ class TestDataRetention:
 
             # Clear session
             count = backend.clear_session("session-1")
-            assert count >= 1
+            assert count >= 1, "count must be positive"
 
     def test_selective_retention_by_metadata(self):
         """Test selective data retention by metadata."""
@@ -504,4 +504,4 @@ class TestDataRetention:
                 backend.store(entry)
 
             results = backend.retrieve(MemoryQuery(limit=100))
-            assert len(results) >= 6
+            assert len(results) >= 6, "Results must not be empty"

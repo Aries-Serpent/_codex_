@@ -76,20 +76,20 @@ class TestCacheManifest:
             checksum="abc123",
             num_records=100,
         )
-        assert manifest.source == "test.jsonl"
-        assert manifest.checksum == "abc123"
-        assert manifest.num_records == 100
+        assert manifest.source == "test.jsonl", "source is not valid"
+        assert manifest.checksum == "abc123", "checksum is not valid"
+        assert manifest.num_records == 100, "num_records is not valid"
 
     def test_cache_manifest_defaults(self):
         """Test CacheManifest default values."""
         manifest = loader.CacheManifest()
-        assert manifest.version == "1"
-        assert manifest.source == ""
-        assert manifest.encoding == "utf-8"
-        assert manifest.newline == "unix"
-        assert manifest.num_records == 0
-        assert manifest.shard_index == 0
-        assert manifest.shard_total == 1
+        assert manifest.version == "1", "version is not valid"
+        assert manifest.source == "", "source is not valid"
+        assert manifest.encoding == "utf-8", "encoding is not valid"
+        assert manifest.newline == "unix", "newline is not valid"
+        assert manifest.num_records == 0, "num_records is not valid"
+        assert manifest.shard_index == 0, "shard_index is not valid"
+        assert manifest.shard_total == 1, "shard_total is not valid"
 
     def test_cache_manifest_to_dict(self):
         """Test CacheManifest to_dict conversion."""
@@ -100,25 +100,25 @@ class TestCacheManifest:
         )
         result = manifest.to_dict()
         assert isinstance(result, dict)
-        assert result["source"] == "test.jsonl"
-        assert result["checksum"] == "abc123"
-        assert result["num_records"] == 50
+        assert result["source"] == "test.jsonl", "Result must not be empty"
+        assert result["checksum"] == "abc123", "Result must not be empty"
+        assert result["num_records"] == 50, "Result must not be empty"
 
     def test_cache_manifest_write(self, tmp_path):
         """Test writing manifest to file."""
         manifest = loader.CacheManifest(source="test.jsonl", num_records=10)
         manifest_path = tmp_path / "manifest.json"
         manifest.write(manifest_path)
-        assert manifest_path.exists()
+        assert manifest_path.exists(), "Condition must be true"
         data = json.loads(manifest_path.read_text(encoding="utf-8"))
-        assert data["source"] == "test.jsonl"
+        assert data["source"] == "test.jsonl", "Data must not be empty"
 
     def test_cache_manifest_write_creates_parent(self, tmp_path):
         """Test manifest write creates parent directories."""
         manifest = loader.CacheManifest()
         manifest_path = tmp_path / "subdir" / "manifest.json"
         manifest.write(manifest_path)
-        assert manifest_path.exists()
+        assert manifest_path.exists(), "Condition must be true"
 
     def test_cache_manifest_load(self, tmp_path):
         """Test loading manifest from file."""
@@ -127,22 +127,22 @@ class TestCacheManifest:
         manifest.write(manifest_path)
 
         loaded = loader.CacheManifest.load(manifest_path)
-        assert loaded is not None
-        assert loaded.source == "data.jsonl"
-        assert loaded.num_records == 20
+        assert loaded is not None, "loaded must be initialized"
+        assert loaded.source == "data.jsonl", "Data must not be empty"
+        assert loaded.num_records == 20, "num_records is not valid"
 
     def test_cache_manifest_load_missing_file(self, tmp_path):
         """Test loading manifest from non-existent file."""
         manifest_path = tmp_path / "missing.json"
         loaded = loader.CacheManifest.load(manifest_path)
-        assert loaded is None
+        assert loaded is None, "loaded is not valid"
 
     def test_cache_manifest_load_invalid_json(self, tmp_path):
         """Test loading manifest with invalid JSON."""
         manifest_path = tmp_path / "invalid.json"
         manifest_path.write_text("not valid json", encoding="utf-8")
         loaded = loader.CacheManifest.load(manifest_path)
-        assert loaded is None
+        assert loaded is None, "loaded is not valid"
 
 
 class TestLoadTexts:
@@ -215,7 +215,7 @@ class TestSeededShuffle:
             items = list(range(20))
             result1 = loader.seeded_shuffle(items.copy(), seed=42)
             result2 = loader.seeded_shuffle(items.copy(), seed=42)
-            assert result1 == result2
+            assert result1 == result2, "Result must not be empty"
 
     def test_seeded_shuffle_different_seeds(self):
         """Test different seeds produce different results."""
@@ -223,14 +223,14 @@ class TestSeededShuffle:
             items = list(range(20))
             result1 = loader.seeded_shuffle(items.copy(), seed=42)
             result2 = loader.seeded_shuffle(items.copy(), seed=99)
-            assert result1 != result2
+            assert result1 != result2, "Result must not be empty"
 
     def test_seeded_shuffle_preserves_elements(self):
         """Test shuffle preserves all elements."""
         if hasattr(loader, "seeded_shuffle"):
             items = list(range(10))
             result = loader.seeded_shuffle(items.copy(), seed=42)
-            assert sorted(result) == items
+            assert sorted(result) == items, "Result must not be empty"
 
 
 class TestApplySafetyFilter:
@@ -241,7 +241,7 @@ class TestApplySafetyFilter:
         if hasattr(loader, "apply_safety_filter"):
             items = ["text1", "text2"]
             result = loader.apply_safety_filter(items, filter_enabled=False)
-            assert len(result) == 2
+            assert len(result) == 2, "Result must not be empty"
             assert result == ["text1", "text2"]
 
     def test_apply_safety_filter_without_module(self):
@@ -250,7 +250,7 @@ class TestApplySafetyFilter:
             items = ["text1", "text2"]
             # Should not raise even without safety module
             result = loader.apply_safety_filter(items, filter_enabled=False)
-            assert len(result) == 2
+            assert len(result) == 2, "Result must not be empty"
 
 
 class TestLoadDataset:
@@ -260,14 +260,14 @@ class TestLoadDataset:
         """Test loading dataset from JSONL."""
         if hasattr(loader, "load_dataset"):
             dataset = loader.load_dataset(Path(mock_jsonl_data))
-            assert dataset is not None
+            assert dataset is not None, "dataset must be initialized"
 
     def test_load_dataset_with_caching(self, mock_jsonl_data, tmp_path):
         """Test dataset loading with caching."""
         if hasattr(loader, "load_dataset"):
             cache_dir = tmp_path / "cache"
             dataset = loader.load_dataset(Path(mock_jsonl_data), cache_dir=cache_dir)
-            assert dataset is not None
+            assert dataset is not None, "dataset must be initialized"
 
 
 class TestPrepareDataFromConfig:

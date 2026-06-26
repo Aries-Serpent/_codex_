@@ -21,7 +21,7 @@ class TestSemanticClusterer:
         from context_management.clustering import SemanticClusterer
 
         clusterer = SemanticClusterer(similarity_threshold=0.85)
-        assert clusterer.similarity_threshold == 0.85
+        assert clusterer.similarity_threshold == 0.85, "similarity_threshold is not valid"
 
     def test_add_statement(self):
         """Test adding statements to clusters."""
@@ -30,8 +30,8 @@ class TestSemanticClusterer:
         clusterer = SemanticClusterer()
 
         cluster_id, is_new = clusterer.add_statement("Test statement about coding")
-        assert is_new is True
-        assert cluster_id is not None
+        assert is_new is True, "is_new is not valid"
+        assert cluster_id is not None, "cluster_id must be initialized"
 
     def test_cluster_similar_statements(self):
         """Test clustering similar statements."""
@@ -45,7 +45,7 @@ class TestSemanticClusterer:
 
         # They should be in same cluster due to high similarity
         cluster = clusterer.get_cluster(id1)
-        assert cluster is not None
+        assert cluster is not None, "cluster must be initialized"
 
     def test_cluster_statements_batch(self):
         """Test batch clustering."""
@@ -60,7 +60,7 @@ class TestSemanticClusterer:
         ]
 
         result = clusterer.cluster_statements(statements)
-        assert len(result) > 0
+        assert len(result) > 0, "Result must not be empty"
 
     def test_get_representatives(self):
         """Test getting representative statements."""
@@ -72,7 +72,7 @@ class TestSemanticClusterer:
         clusterer.add_statement("Test statement two")
 
         reps = clusterer.get_representative_statements(max_per_cluster=1)
-        assert len(reps) > 0
+        assert len(reps) > 0, "Reps must not be empty"
 
     def test_cluster_summary(self):
         """Test cluster summary statistics."""
@@ -83,8 +83,8 @@ class TestSemanticClusterer:
         clusterer.add_statement("Test statement")
 
         summary = clusterer.get_cluster_summary()
-        assert "total_clusters" in summary
-        assert summary["total_clusters"] >= 1
+        assert "total_clusters" in summary, "Condition must be true"
+        assert summary["total_clusters"] >= 1, "Value must be greater than zero"
 
 
 class TestContextPriorityQueue:
@@ -95,8 +95,8 @@ class TestContextPriorityQueue:
         from context_management.priority_queue import ContextPriorityQueue
 
         queue = ContextPriorityQueue(max_items=100, max_tokens=10000)
-        assert queue.max_items == 100
-        assert queue.max_tokens == 10000
+        assert queue.max_items == 100, "Item must not be empty"
+        assert queue.max_tokens == 10000, "max_tokens is not valid"
 
     def test_push_pop(self):
         """Test push and pop operations."""
@@ -108,11 +108,11 @@ class TestContextPriorityQueue:
         queue.push("High priority content", priority=Priority.HIGH)
         queue.push("Low priority content", priority=Priority.LOW)
 
-        assert queue.size == 2
+        assert queue.size == 2, "size is not valid"
 
         # Pop lowest priority
         item = queue.pop()
-        assert item is not None
+        assert item is not None, "item must be initialized"
 
     def test_priority_ordering(self):
         """Test priority-based ordering."""
@@ -126,8 +126,8 @@ class TestContextPriorityQueue:
 
         # Highest priority should be Critical
         highest = queue.peek_highest()
-        assert highest is not None
-        assert highest.priority == Priority.CRITICAL
+        assert highest is not None, "highest must be initialized"
+        assert highest.priority == Priority.CRITICAL, "priority is not valid"
 
     def test_prune_to_tokens(self):
         """Test token-based pruning."""
@@ -144,7 +144,7 @@ class TestContextPriorityQueue:
 
         queue.prune_to_tokens(1000)
 
-        assert queue.token_count <= 1000
+        assert queue.token_count <= 1000, "Count must be greater than zero"
 
     def test_get_stats(self):
         """Test statistics."""
@@ -155,8 +155,8 @@ class TestContextPriorityQueue:
         queue.push("Test content", priority=Priority.HIGH)
 
         stats = queue.get_stats()
-        assert stats["size"] == 1
-        assert "priority_distribution" in stats
+        assert stats["size"] == 1, "Condition must be true"
+        assert "priority_distribution" in stats, "Condition must be true"
 
 
 class TestSlidingWindowManager:
@@ -167,7 +167,7 @@ class TestSlidingWindowManager:
         from context_management.sliding_window import SlidingWindowManager
 
         window = SlidingWindowManager(max_tokens=10000)
-        assert window.max_tokens == 10000
+        assert window.max_tokens == 10000, "max_tokens is not valid"
 
     def test_add_content(self):
         """Test adding content to window."""
@@ -176,8 +176,8 @@ class TestSlidingWindowManager:
         window = SlidingWindowManager()
 
         success, _warning = window.add("Test content", priority=1)
-        assert success is True
-        assert window.entry_count == 1
+        assert success is True, "success is not valid"
+        assert window.entry_count == 1, "Count must be greater than zero"
 
     def test_get_window(self):
         """Test getting window contents."""
@@ -189,7 +189,7 @@ class TestSlidingWindowManager:
         window.add("Content 2")
 
         contents = window.get_window()
-        assert len(contents) == 2
+        assert len(contents) == 2, "Contents must not be empty"
 
     def test_window_overflow(self):
         """Test window overflow handling."""
@@ -204,7 +204,7 @@ class TestSlidingWindowManager:
         for i in range(10):
             window.add(f"Content item {i} " * 20)
 
-        assert window.total_tokens <= window.max_tokens
+        assert window.total_tokens <= window.max_tokens, "total_tokens is not valid"
 
     def test_get_state(self):
         """Test window state."""
@@ -215,8 +215,8 @@ class TestSlidingWindowManager:
         window.add("Test content")
 
         state = window.get_state()
-        assert state.entry_count == 1
-        assert state.total_tokens > 0
+        assert state.entry_count == 1, "Count must be greater than zero"
+        assert state.total_tokens > 0, "total_tokens must be greater than zero"
 
     def test_prune_to_tokens(self):
         """Test pruning to target tokens."""
@@ -228,7 +228,7 @@ class TestSlidingWindowManager:
             window.add(f"Content {i} " * 50)
 
         window.prune_to_tokens(1000)
-        assert window.total_tokens <= 1000
+        assert window.total_tokens <= 1000, "total_tokens is not valid"
 
 
 class TestHierarchicalMemory:
@@ -239,7 +239,7 @@ class TestHierarchicalMemory:
         from context_management.hierarchical_memory import HierarchicalMemory
 
         memory = HierarchicalMemory()
-        assert memory is not None
+        assert memory is not None, "memory must be initialized"
 
     def test_store_working(self):
         """Test storing in working memory."""
@@ -251,7 +251,7 @@ class TestHierarchicalMemory:
         memory = HierarchicalMemory()
 
         success, _msg = memory.store("Test content", layer=MemoryLayer.WORKING)
-        assert success is True
+        assert success is True, "success is not valid"
 
     def test_store_all_layers(self):
         """Test storing in all memory layers."""
@@ -267,9 +267,9 @@ class TestHierarchicalMemory:
         memory.store("Semantic content", layer=MemoryLayer.SEMANTIC)
 
         stats = memory.get_stats()
-        assert stats["working"].item_count == 1
-        assert stats["episodic"].item_count == 1
-        assert stats["semantic"].item_count == 1
+        assert stats["working"].item_count == 1, "Item must not be empty"
+        assert stats["episodic"].item_count == 1, "Item must not be empty"
+        assert stats["semantic"].item_count == 1, "Item must not be empty"
 
     def test_retrieve(self):
         """Test retrieval from memory."""
@@ -280,7 +280,7 @@ class TestHierarchicalMemory:
         memory.store("Important information about Python")
 
         results = memory.retrieve(query="Python")
-        assert len(results) == 1
+        assert len(results) == 1, "Results must not be empty"
 
     def test_retrieve_by_layer(self):
         """Test retrieval from specific layer."""
@@ -295,7 +295,7 @@ class TestHierarchicalMemory:
         memory.store("Semantic item", layer=MemoryLayer.SEMANTIC)
 
         results = memory.retrieve(layer=MemoryLayer.WORKING)
-        assert all(r.layer == MemoryLayer.WORKING for r in results)
+        assert all(r.layer == MemoryLayer.WORKING for r in results), "Result must not be empty"
 
     def test_deduplication(self):
         """Test cross-layer deduplication."""
@@ -306,8 +306,8 @@ class TestHierarchicalMemory:
         memory.store("Duplicate content")
         success, msg = memory.store("Duplicate content")
 
-        assert success is True
-        assert "Duplicate" in msg
+        assert success is True, "success is not valid"
+        assert "Duplicate" in msg, "Condition must be true"
 
     def test_get_working_context(self):
         """Test getting working context."""
@@ -322,7 +322,7 @@ class TestHierarchicalMemory:
         memory.store("Context item 2", layer=MemoryLayer.WORKING)
 
         context = memory.get_working_context()
-        assert len(context) == 2
+        assert len(context) == 2, "Context must not be empty"
 
     def test_clear_layer(self):
         """Test clearing a layer."""
@@ -339,7 +339,7 @@ class TestHierarchicalMemory:
         memory.clear_layer(MemoryLayer.WORKING)
 
         stats = memory.get_stats()
-        assert stats["working"].item_count == 0
+        assert stats["working"].item_count == 0, "Item must not be empty"
 
 
 class TestContextCache:
@@ -350,7 +350,7 @@ class TestContextCache:
         from context_management.context_cache import ContextCache
 
         cache = ContextCache()
-        assert cache is not None
+        assert cache is not None, "cache must be initialized"
 
     def test_set_get(self):
         """Test set and get operations."""
@@ -361,7 +361,7 @@ class TestContextCache:
         cache.set("key1", "value1")
         result = cache.get("key1")
 
-        assert result == "value1"
+        assert result == "value1", "Result must not be empty"
 
     def test_get_nonexistent(self):
         """Test getting nonexistent key."""
@@ -370,7 +370,7 @@ class TestContextCache:
         cache = ContextCache()
 
         result = cache.get("nonexistent")
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_invalidate(self):
         """Test invalidation."""
@@ -382,7 +382,7 @@ class TestContextCache:
         cache.invalidate("key1")
 
         result = cache.get("key1")
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_get_or_set(self):
         """Test get_or_set pattern."""
@@ -392,7 +392,7 @@ class TestContextCache:
 
         # First call should compute
         result1 = cache.get_or_set("key1", lambda: "computed_value")
-        assert result1 == "computed_value"
+        assert result1 == "computed_value", "Result must not be empty"
 
         # Second call should use cache
         call_count = [0]
@@ -402,8 +402,8 @@ class TestContextCache:
             return "new_value"
 
         result2 = cache.get_or_set("key1", compute)
-        assert result2 == "computed_value"  # Cached value
-        assert call_count[0] == 0  # Function not called
+        assert result2 == "computed_value", "Result must not be empty"
+        assert call_count[0] == 0, "Count must be greater than zero"
 
     def test_cache_stats(self):
         """Test cache statistics."""
@@ -416,8 +416,8 @@ class TestContextCache:
         cache.get("key2")  # Miss
 
         stats = cache.get_stats()
-        assert stats.hit_count == 1
-        assert stats.miss_count == 1
+        assert stats.hit_count == 1, "Count must be greater than zero"
+        assert stats.miss_count == 1, "Count must be greater than zero"
 
     def test_invalidate_by_tag(self):
         """Test tag-based invalidation."""
@@ -431,10 +431,10 @@ class TestContextCache:
 
         removed = cache.invalidate_by_tag("group1")
 
-        assert removed == 2
-        assert cache.get("key1") is None
-        assert cache.get("key2") is None
-        assert cache.get("key3") == "value3"
+        assert removed == 2, "removed is not valid"
+        assert cache.get("key1") is None, "Condition must be true"
+        assert cache.get("key2") is None, "Condition must be true"
+        assert cache.get("key3") == "value3", "Value must be initialized"
 
     def test_lru_eviction(self):
         """Test LRU eviction."""
@@ -453,7 +453,7 @@ class TestContextCache:
         cache.set("key4", "value4")
 
         # key1 should still be there (recently accessed)
-        assert cache.get("key1") is not None
+        assert cache.get("key1") is not None, "Value must be initialized"
 
     def test_persistence(self):
         """Test disk persistence."""
@@ -471,7 +471,7 @@ class TestContextCache:
             cache2 = ContextCache(persist_path=persist_path)
 
             result = cache2.get("key1")
-            assert result == "value1"
+            assert result == "value1", "Result must not be empty"
         finally:
             os.unlink(persist_path)
 
@@ -501,8 +501,8 @@ class TestEnhancedModulesIntegration:
         cached_prompt = cache.get("system_prompt")
         working_context = memory.get_working_context()
 
-        assert cached_prompt == system_prompt
-        assert len(working_context) > 0
+        assert cached_prompt == system_prompt, "cached_prompt is not valid"
+        assert len(working_context) > 0, "Working_context must not be empty"
 
     def test_priority_queue_with_sliding_window(self):
         """Test priority queue with sliding window."""
@@ -523,7 +523,7 @@ class TestEnhancedModulesIntegration:
             if item:
                 window.add(item.content, priority=item.priority.value)
 
-        assert window.entry_count == 3
+        assert window.entry_count == 3, "Count must be greater than zero"
 
     def test_clusterer_with_deduplicator(self):
         """Test semantic clusterer with deduplicator."""
@@ -546,5 +546,5 @@ class TestEnhancedModulesIntegration:
         # Then cluster unique statements
         clusters = clusterer.cluster_statements(result.unique_statements)
 
-        assert len(result.unique_statements) < len(statements)
-        assert len(clusters) > 0
+        assert len(result.unique_statements) < len(statements), "Statements must not be empty"
+        assert len(clusters) > 0, "Clusters must not be empty"

@@ -20,6 +20,6 @@ def test_streaming_memory(tmp_path):
     for chunk in stream_texts(str(path), chunk_size=1024):
         total += len(chunk)
     after = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
-    assert total >= 5_000_000
+    assert total >= 5_000_000, "total must be greater than zero"
     # Ensure memory increase stays below 50 MB
-    assert (after - before) < 50_000
+    assert (after - before) < 50_000, "Condition must be true"

@@ -12,7 +12,7 @@ def test_encode_decode_roundtrip():
     text = "hello world hello"
     ids = tok.encode(text)
     assert ids == [1, 2, 1]
-    assert tok.decode(ids) == text
+    assert tok.decode(ids) == text, "Condition must be true"
 
 
 def test_batch_encode_uses_unknown_token():

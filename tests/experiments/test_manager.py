@@ -96,7 +96,7 @@ class TestModuleImports:
         try:
             import experiments
 
-            assert experiments is not None
+            assert experiments is not None, "experiments must be initialized"
         except ImportError:
             pytest.skip("experiments package not importable")
 
@@ -105,7 +105,7 @@ class TestModuleImports:
         try:
             from experiments import manager
 
-            assert manager is not None
+            assert manager is not None, "manager must be initialized"
         except ImportError:
             pytest.skip("experiments.manager not importable")
 
@@ -119,7 +119,7 @@ class TestOptionalDependencyError:
             from codex_ml.utils.optional import optional_dependency_error
 
             error = optional_dependency_error("test_pkg", purpose="testing")
-            assert "test_pkg" in str(error) or error is not None
+            assert "test_pkg" in str(error) or error is not None, "error must be initialized"
         except ImportError:
             pytest.skip("codex_ml.utils.optional not available")
 
@@ -134,7 +134,7 @@ class TestFileBackendTracking:
         expected_name = ".mlruns"
 
         # Verify the expected directory naming convention
-        assert expected_name == ".mlruns"
+        assert expected_name == ".mlruns", "expected_name is not valid"
 
     def test_backend_env_var_default(self):
         """Test default backend when env var not set."""

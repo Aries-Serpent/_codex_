@@ -11,22 +11,22 @@ from mcp.auth import MCPAuthenticator, MCPAuthorizer, Principal, hash_credential
 def test_hash_credential():
     """Test credential hashing with SHA-256."""
     hashed = hash_credential("password123")
-    assert len(hashed) == 64  # SHA-256 hex length
-    assert hashed != "password123"
+    assert len(hashed) == 64, "Hashed must not be empty"
+    assert hashed != "password123", "hashed is not valid"
 
 
 def test_hash_credential_deterministic():
     """Test credential hashing is deterministic."""
     hash1 = hash_credential("test")
     hash2 = hash_credential("test")
-    assert hash1 == hash2
+    assert hash1 == hash2, "hash1 is not valid"
 
 
 def test_principal_from_credential():
     """Test creating principal from credential."""
     principal = Principal.from_credential("api-key-123")
-    assert len(principal.principal_id) == 64  # Full SHA-256 hash for security
-    assert principal.principal_id.isalnum()
+    assert len(principal.principal_id) == 64, "Collection must not be empty"
+    assert principal.principal_id.isalnum(), "Condition must be true"
 
 
 def test_authenticator_session_token():
@@ -35,8 +35,8 @@ def test_authenticator_session_token():
     principal = Principal(principal_id="user123")
 
     token = auth.generate_session_token(principal)
-    assert len(token) == 64  # SHA-256
-    assert token.isalnum()
+    assert len(token) == 64, "Token must not be empty"
+    assert token.isalnum(), "Condition must be true"
 
 
 def test_session_token_unique():
@@ -48,7 +48,7 @@ def test_session_token_unique():
     token1 = auth.generate_session_token(p1)
     token2 = auth.generate_session_token(p2)
 
-    assert token1 != token2
+    assert token1 != token2, "token1 is not valid"
 
 
 def test_authorizer_basic_authorization():
@@ -57,7 +57,7 @@ def test_authorizer_basic_authorization():
     principal = Principal(principal_id="user")
 
     allowed = authz.authorize(principal, "kb.search")
-    assert allowed is True  # Default allows all
+    assert allowed is True, "allowed is not valid"
 
 
 def test_permission_hash_computation():
@@ -65,8 +65,8 @@ def test_permission_hash_computation():
     authz = MCPAuthorizer()
     perm_hash = authz.compute_permission_hash("user1", "tool1")
 
-    assert len(perm_hash) == 64  # SHA-256
-    assert perm_hash.isalnum()
+    assert len(perm_hash) == 64, "Perm_hash must not be empty"
+    assert perm_hash.isalnum(), "Condition must be true"
 
 
 def test_permission_hash_deterministic():
@@ -75,7 +75,7 @@ def test_permission_hash_deterministic():
     hash1 = authz.compute_permission_hash("user", "tool")
     hash2 = authz.compute_permission_hash("user", "tool")
 
-    assert hash1 == hash2
+    assert hash1 == hash2, "hash1 is not valid"
 
 
 def test_permission_hash_unique():
@@ -84,7 +84,7 @@ def test_permission_hash_unique():
     hash1 = authz.compute_permission_hash("user1", "tool1")
     hash2 = authz.compute_permission_hash("user2", "tool2")
 
-    assert hash1 != hash2
+    assert hash1 != hash2, "hash1 is not valid"
 
 
 def test_confirm_authorization():
@@ -94,7 +94,7 @@ def test_confirm_authorization():
 
     # Without confirmation requirement
     allowed = authz.confirm_authorization(principal, "tool", require_confirm=False)
-    assert allowed is True
+    assert allowed is True, "allowed is not valid"
 
 
 def test_authenticator_with_rng_seed():
@@ -102,7 +102,7 @@ def test_authenticator_with_rng_seed():
     auth = MCPAuthenticator()
     # Session seed is initialized with secrets.token_bytes
     assert hasattr(auth, "_session_seed")
-    assert len(auth._session_seed) == 32
+    assert len(auth._session_seed) == 32, "Collection must not be empty"
 
 
 def test_principal_equality():
@@ -111,8 +111,8 @@ def test_principal_equality():
     p2 = Principal(principal_id="user1")
     p3 = Principal(principal_id="user2")
 
-    assert p1.principal_id == p2.principal_id
-    assert p1.principal_id != p3.principal_id
+    assert p1.principal_id == p2.principal_id, "principal_id is not valid"
+    assert p1.principal_id != p3.principal_id, "principal_id is not valid"
 
 
 def test_authorization_with_payload():
@@ -122,7 +122,7 @@ def test_authorization_with_payload():
     payload = {"action": "read", "resource": "data"}
 
     allowed = authz.authorize(principal, "tool", payload)
-    assert allowed is True
+    assert allowed is True, "allowed is not valid"
 
 
 def test_multiple_authorization_checks():
@@ -141,8 +141,8 @@ def test_credential_hashing_security():
     hashed = hash_credential(credential)
 
     # Hash should not contain original
-    assert credential not in hashed
-    assert hashed.lower() == hashed  # Lowercase hex
+    assert credential not in hashed, "Condition must be true"
+    assert hashed.lower() == hashed, "Condition must be true"
 
 
 def test_principal_creation_variants():
@@ -150,8 +150,8 @@ def test_principal_creation_variants():
     p1 = Principal(principal_id="explicit-id")
     p2 = Principal.from_credential("credential")
 
-    assert p1.principal_id == "explicit-id"
-    assert len(p2.principal_id) == 64  # Full SHA-256 hash for security
+    assert p1.principal_id == "explicit-id", "principal_id is not valid"
+    assert len(p2.principal_id) == 64, "Collection must not be empty"
 
 
 def test_authenticator_multiple_sessions():
@@ -162,7 +162,7 @@ def test_authenticator_multiple_sessions():
     tokens = [auth.generate_session_token(principal) for _ in range(5)]
 
     # All tokens should be valid length
-    assert all(len(t) == 64 for t in tokens)
+    assert all(len(t) == 64 for t in tokens), "T must not be empty"
 
 
 def test_authorization_edge_cases():
@@ -185,4 +185,4 @@ def test_checksum_in_auth_flow():
 
     # Verify checksum matches
     verify_checksum = hash_credential(credential)
-    assert checksum == verify_checksum
+    assert checksum == verify_checksum, "checksum is not valid"

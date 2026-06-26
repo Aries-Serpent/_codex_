@@ -34,14 +34,14 @@ from codex_cli.app import app as codex_cli_app
 def test_cli_groups_list_subcommands(command, expected_subcommands) -> None:
     runner = CliRunner()
     result = runner.invoke(command, [])
-    assert result.exit_code == 0
-    assert "Available subcommands:" in result.output
-    assert "Use '<command> --help'" in result.output
+    assert result.exit_code == 0, "Result must not be empty"
+    assert "Available subcommands:" in result.output, "Result must not be empty"
+    assert "Use '<command> --help'" in result.output, "Result must not be empty"
     if command.help:
         first_line = command.help.strip().splitlines()[0]
-        assert first_line in result.output
+        assert first_line in result.output, "Result must not be empty"
     for name in expected_subcommands:
-        assert name in result.output
+        assert name in result.output, "Result must not be empty"
 
 
 @pytest.mark.parametrize(
@@ -56,46 +56,46 @@ def test_cli_groups_list_subcommands(command, expected_subcommands) -> None:
 def test_cli_groups_invalid_subcommand(command) -> None:
     runner = CliRunner()
     result = runner.invoke(command, ["__missing__"])
-    assert result.exit_code != 0
-    assert "No such command" in result.output
+    assert result.exit_code != 0, "Result must not be empty"
+    assert "No such command" in result.output, "Result must not be empty"
 
 
 def test_cli_help() -> None:
     runner = CliRunner()
     result = runner.invoke(cli_module.cli, ["--help"])
-    assert result.exit_code == 0
-    assert "Codex CLI entry point" in result.output
-    assert "Typer" in result.output
+    assert result.exit_code == 0, "Result must not be empty"
+    assert "Codex CLI entry point" in result.output, "Result must not be empty"
+    assert "Typer" in result.output, "Result must not be empty"
 
 
 def test_cli_default_mentions_typer_bridge() -> None:
     runner = CliRunner()
     result = runner.invoke(cli_module.cli, [])
-    assert result.exit_code == 0
-    assert "Typer" in result.output
+    assert result.exit_code == 0, "Result must not be empty"
+    assert "Typer" in result.output, "Result must not be empty"
 
 
 def test_logs_group_mentions_logging_scripts() -> None:
     runner = CliRunner()
     result = runner.invoke(cli_module.cli, ["logs"])
-    assert result.exit_code == 0
-    assert "Typer-based logging" in result.output
+    assert result.exit_code == 0, "Result must not be empty"
+    assert "Typer-based logging" in result.output, "Result must not be empty"
 
 
 def test_cli_list_tasks() -> None:
     runner = CliRunner()
     result = runner.invoke(cli_module.cli, ["tasks"])
-    assert result.exit_code == 0
+    assert result.exit_code == 0, "Result must not be empty"
     out = {line.split(":")[0].strip().lstrip("- ") for line in result.output.strip().splitlines()}
-    assert "ingest" in out
-    assert "pool-fix" in out
+    assert "ingest" in out, "Condition must be true"
+    assert "pool-fix" in out, "Condition must be true"
 
 
 def test_cli_run_invalid() -> None:
     runner = CliRunner()
     result = runner.invoke(cli_module.cli, ["run", "invalid_task"])
-    assert result.exit_code != 0
-    assert "not allowed" in result.output
+    assert result.exit_code != 0, "Result must not be empty"
+    assert "not allowed" in result.output, "Result must not be empty"
 
 
 def test_cli_run_valid() -> None:
@@ -105,8 +105,8 @@ def test_cli_run_valid() -> None:
         data_dir.mkdir()
         (data_dir / "example.jsonl").write_text("{}", encoding="utf-8")
         result = runner.invoke(cli_module.cli, ["run", "ingest"])
-        assert result.exit_code == 0
-        assert "Ingested" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "Ingested" in result.output, "Result must not be empty"
 
 
 def test_cli_module_run_ingest(tmp_path: Path) -> None:
@@ -144,8 +144,8 @@ def test_cli_module_run_ingest(tmp_path: Path) -> None:
         check=True,
     )
     out_file = data_dir / "ingested.jsonl"
-    assert out_file.exists()
-    assert "Ingested" in result.stdout
+    assert out_file.exists(), "Condition must be true"
+    assert "Ingested" in result.stdout, "Result must not be empty"
 
 
 def test_fix_pool_executor_created() -> None:
@@ -157,9 +157,9 @@ def test_fix_pool_executor_created() -> None:
         _fix_pool(max_workers=2)
         executor = getattr(cf, "_executor", None)
         assert isinstance(executor, cf.ThreadPoolExecutor)
-        assert executor._max_workers == 2
+        assert executor._max_workers == 2, "_max_workers is not valid"
         fut = executor.submit(lambda: 42)
-        assert fut.result() == 42
+        assert fut.result() == 42, "Result must not be empty"
     finally:
         executor = getattr(cf, "_executor", None)
         if executor is not None:
@@ -187,8 +187,8 @@ def test_fix_pool_missing_cf(monkeypatch) -> None:
 def test_typer_cli_help() -> None:
     runner = TyperCliRunner()
     result = runner.invoke(codex_cli_app, ["--help"])
-    assert result.exit_code == 0
-    assert "Codex CLI" in result.stdout
+    assert result.exit_code == 0, "Result must not be empty"
+    assert "Codex CLI" in result.stdout, "Result must not be empty"
 
 
 def test_typer_cli_track_smoke(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -204,16 +204,16 @@ def test_typer_cli_track_smoke(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) 
 
     runner = TyperCliRunner()
     result = runner.invoke(codex_cli_app, ["track-smoke", "--dir", str(target)])
-    assert result.exit_code == 0
-    assert "OK: tracking to" in result.stdout
+    assert result.exit_code == 0, "Result must not be empty"
+    assert "OK: tracking to" in result.stdout, "Result must not be empty"
 
 
 def test_typer_cli_split_and_checkpoint_smoke(tmp_path: Path) -> None:
     pytest.importorskip("torch", reason="torch not installed")
     runner = TyperCliRunner()
     split = runner.invoke(codex_cli_app, ["split-smoke", "--seed", "42"])
-    assert split.exit_code == 0
+    assert split.exit_code == 0, "exit_code is not valid"
     out_dir = tmp_path / ".checkpoints"
     ckpt = runner.invoke(codex_cli_app, ["checkpoint-smoke", "--out", str(out_dir)])
-    assert ckpt.exit_code == 0
-    assert any(out_dir.glob("epoch*-metric*.pt"))
+    assert ckpt.exit_code == 0, "exit_code is not valid"
+    assert any(out_dir.glob("epoch*-metric*.pt")), "Condition must be true"

@@ -31,10 +31,10 @@ def test_inspect_reports_line_counts(tmp_path: Path, runner: CliRunner) -> None:
 
     result = runner.invoke(monitoring_cli.app, ["inspect", str(log_path)])
 
-    assert result.exit_code == 0
+    assert result.exit_code == 0, "Result must not be empty"
     summary = ast.literal_eval(result.stdout.strip())
-    assert summary["path"] == str(log_path)
-    assert summary["lines"] == len(records)
+    assert summary["path"] == str(log_path), "Condition must be true"
+    assert summary["lines"] == len(records), "Records must not be empty"
 
 
 def test_export_generates_csv_from_ndjson(tmp_path: Path, runner: CliRunner) -> None:
@@ -58,12 +58,12 @@ def test_export_generates_csv_from_ndjson(tmp_path: Path, runner: CliRunner) -> 
 
     result = runner.invoke(monitoring_cli.app, ["export", str(src), str(dst)])
 
-    assert result.exit_code == 0
+    assert result.exit_code == 0, "Result must not be empty"
     with dst.open(encoding="utf-8") as fh:
         reader = csv.DictReader(fh)
         exported = list(reader)
 
-    assert reader.fieldnames == [
+    assert reader.fieldnames == [, "fieldnames is not valid"
         "version",
         "ts",
         "run_id",
@@ -75,8 +75,8 @@ def test_export_generates_csv_from_ndjson(tmp_path: Path, runner: CliRunner) -> 
         "value",
         "meta",
     ]
-    assert exported[0]["version"] == "1"
-    assert exported[0]["metric"] == "loss"
-    assert exported[0]["meta"] == "{'info': 1}"
-    assert exported[1]["ts"] == "11.0"
-    assert exported[1]["run_id"] == ""
+    assert exported[0]["version"] == "1", "exp is not valid"
+    assert exported[0]["metric"] == "loss", "exp is not valid"
+    assert exported[0]["meta"] == "{'info': 1}", "exp is not valid"
+    assert exported[1]["ts"] == "11.0", "exp is not valid"
+    assert exported[1]["run_id"] == "", "exp is not valid"

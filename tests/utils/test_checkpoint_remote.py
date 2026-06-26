@@ -20,7 +20,7 @@ class _DummyModule:
     def load_state_dict(
         self, state_dict, strict: bool = True
     ) -> None:  # pragma: no cover - smoke path
-        assert state_dict["value"] == 1
+        assert state_dict["value"] == 1, "Value must be initialized"
 
 
 def test_checkpoint_manager_remote_roundtrip(tmp_path: Path) -> None:
@@ -44,5 +44,5 @@ def test_checkpoint_manager_remote_roundtrip(tmp_path: Path) -> None:
     )
 
     info = fresh_manager.load_latest()
-    assert info["path"].exists()
-    assert (info["path"] / "meta.json").exists()
+    assert info["path"].exists(), "Condition must be true"
+    assert (info["path"] / "meta.json").exists(), "Condition must be true"

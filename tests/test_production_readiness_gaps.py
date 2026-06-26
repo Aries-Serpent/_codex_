@@ -19,7 +19,7 @@ class TestAccelerateInitGuardSmoke:
         try:
             from src.training import accelerate_init_guard
 
-            assert accelerate_init_guard is not None
+            assert accelerate_init_guard is not None, "accelerate_init_guard must be initialized"
         except ImportError as e:
             pytest.skip(f"accelerate_init_guard requires optional dependencies: {e}")
 
@@ -28,7 +28,7 @@ class TestAccelerateInitGuardSmoke:
         try:
             from training import accelerate_init_guard
 
-            assert accelerate_init_guard is not None
+            assert accelerate_init_guard is not None, "accelerate_init_guard must be initialized"
         except ImportError as e:
             pytest.skip(f"accelerate_init_guard requires optional dependencies: {e}")
 
@@ -41,7 +41,7 @@ class TestStreamingSmoke:
         try:
             from src.training import streaming
 
-            assert streaming is not None
+            assert streaming is not None, "streaming must be initialized"
         except (ImportError, ModuleNotFoundError) as e:
             pytest.skip(f"streaming module requires optional dependencies: {e}")
 
@@ -50,7 +50,7 @@ class TestStreamingSmoke:
         try:
             from training import streaming
 
-            assert streaming is not None
+            assert streaming is not None, "streaming must be initialized"
         except (ImportError, ModuleNotFoundError) as e:
             pytest.skip(f"streaming module requires optional dependencies: {e}")
 
@@ -63,6 +63,6 @@ class TestTokenizationLoaderSmoke:
         try:
             from src.tokenization import loader
 
-            assert loader is not None
+            assert loader is not None, "loader must be initialized"
         except (ImportError, ModuleNotFoundError) as e:
             pytest.skip(f"tokenization.loader requires optional dependencies: {e}")

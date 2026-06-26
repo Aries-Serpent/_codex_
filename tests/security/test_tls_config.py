@@ -161,8 +161,8 @@ class TestTLSServerContext:
         )
 
         assert isinstance(context, ssl.SSLContext)
-        assert context.verify_mode == ssl.CERT_REQUIRED
-        assert context.minimum_version == ssl.TLSVersion.TLSv1_3
+        assert context.verify_mode == ssl.CERT_REQUIRED, "verify_mode is not valid"
+        assert context.minimum_version == ssl.TLSVersion.TLSv1_3, "minimum_version is not valid"
 
     def test_create_server_context_no_client_cert(self, test_certificates):
         """Test server context without client certificate requirement."""
@@ -173,7 +173,7 @@ class TestTLSServerContext:
         )
 
         assert isinstance(context, ssl.SSLContext)
-        assert context.verify_mode == ssl.CERT_NONE
+        assert context.verify_mode == ssl.CERT_NONE, "verify_mode is not valid"
 
     def test_create_server_context_missing_cert(self, temp_cert_dir):
         """Test server context creation with missing certificate."""
@@ -214,9 +214,9 @@ class TestTLSClientContext:
         )
 
         assert isinstance(context, ssl.SSLContext)
-        assert context.verify_mode == ssl.CERT_REQUIRED
-        assert context.minimum_version == ssl.TLSVersion.TLSv1_3
-        assert context.check_hostname is False
+        assert context.verify_mode == ssl.CERT_REQUIRED, "verify_mode is not valid"
+        assert context.minimum_version == ssl.TLSVersion.TLSv1_3, "minimum_version is not valid"
+        assert context.check_hostname is False, "check_hostname is not valid"
 
     def test_create_client_context_with_hostname_check(self, test_certificates):
         """Test client context with hostname verification enabled."""
@@ -227,7 +227,7 @@ class TestTLSClientContext:
             check_hostname=True,
         )
 
-        assert context.check_hostname is True
+        assert context.check_hostname is True, "check_hostname is not valid"
 
     def test_create_client_context_missing_cert(self, temp_cert_dir, test_certificates):
         """Test client context creation with missing certificate."""
@@ -261,7 +261,7 @@ class TestTLSValidation:
             client_key=test_certificates["client_key"],
         )
 
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_validate_tls_config_missing_file(self, test_certificates, temp_cert_dir):
         """Test validation fails with missing file."""
@@ -273,7 +273,7 @@ class TestTLSValidation:
             client_key=test_certificates["client_key"],
         )
 
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_validate_tls_config_invalid_cert(self, test_certificates, temp_cert_dir):
         """Test validation fails with invalid certificate."""
@@ -289,7 +289,7 @@ class TestTLSValidation:
             client_key=test_certificates["client_key"],
         )
 
-        assert result is False
+        assert result is False, "Result must not be empty"
 
 
 class TestTLSSecurityProperties:
@@ -303,11 +303,11 @@ class TestTLSSecurityProperties:
             ca_path=test_certificates["ca_cert"],
         )
 
-        assert context.minimum_version == ssl.TLSVersion.TLSv1_3
+        assert context.minimum_version == ssl.TLSVersion.TLSv1_3, "minimum_version is not valid"
         # Verify old TLS versions are disabled
-        assert context.options & ssl.OP_NO_TLSv1
-        assert context.options & ssl.OP_NO_TLSv1_1
-        assert context.options & ssl.OP_NO_TLSv1_2
+        assert context.options & ssl.OP_NO_TLSv1, "Condition must be true"
+        assert context.options & ssl.OP_NO_TLSv1_1, "Condition must be true"
+        assert context.options & ssl.OP_NO_TLSv1_2, "Condition must be true"
 
     def test_client_context_tls_version(self, test_certificates):
         """Test client context enforces TLS 1.3 minimum."""
@@ -317,10 +317,10 @@ class TestTLSSecurityProperties:
             ca_path=test_certificates["ca_cert"],
         )
 
-        assert context.minimum_version == ssl.TLSVersion.TLSv1_3
-        assert context.options & ssl.OP_NO_TLSv1
-        assert context.options & ssl.OP_NO_TLSv1_1
-        assert context.options & ssl.OP_NO_TLSv1_2
+        assert context.minimum_version == ssl.TLSVersion.TLSv1_3, "minimum_version is not valid"
+        assert context.options & ssl.OP_NO_TLSv1, "Condition must be true"
+        assert context.options & ssl.OP_NO_TLSv1_1, "Condition must be true"
+        assert context.options & ssl.OP_NO_TLSv1_2, "Condition must be true"
 
     def test_server_context_strong_ciphers(self, test_certificates):
         """Test server context uses strong cipher suites."""
@@ -341,6 +341,6 @@ class TestTLSSecurityProperties:
 
         # Verify TLS 1.3 ciphers use strong encryption (AES-GCM or ChaCha20)
         for cipher in tls13_ciphers:
-            assert any(
+            assert any(, "Condition must be true"
                 alg in cipher["name"] for alg in ["AES_128_GCM", "AES_256_GCM", "CHACHA20"]
             ), f"Cipher {cipher['name']} doesn't use strong AEAD encryption"

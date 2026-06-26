@@ -42,8 +42,8 @@ class TestEnvironmentSnapshot:
         )
 
         snapshot = json.loads(out_file.read_text())
-        assert "python" in snapshot
-        assert snapshot["python"]  # Not empty
+        assert "python" in snapshot, "Condition must be true"
+        assert snapshot["python"], "Condition must be true"
 
     def test_snapshot_with_seed(self, tmp_path):
         """Test that snapshot captures seed value."""
@@ -64,8 +64,8 @@ class TestEnvironmentSnapshot:
         )
 
         snapshot = json.loads(out_file.read_text())
-        assert "seed" in snapshot
-        assert snapshot["seed"] == test_seed
+        assert "seed" in snapshot, "Condition must be true"
+        assert snapshot["seed"] == test_seed, "Condition must be true"
 
     def test_snapshot_git_info(self, tmp_path):
         """Test that snapshot includes git information if in a git repo."""
@@ -85,7 +85,7 @@ class TestEnvironmentSnapshot:
             git_info = snapshot["git"]
             assert isinstance(git_info, dict)
             # Should have at least commit info
-            assert "commit" in git_info or "commit_short" in git_info
+            assert "commit" in git_info or "commit_short" in git_info, "Condition must be true"
 
     def test_snapshot_reproducible_fields(self, tmp_path):
         """Test that snapshot contains expected reproducibility fields."""
@@ -141,13 +141,13 @@ class TestDeterministicSeeding:
         snapshot2 = json.loads(out2.read_text())
 
         # Seed should be consistent
-        assert snapshot1.get("seed") == snapshot2.get("seed") == seed
+        assert snapshot1.get("seed") == snapshot2.get("seed") == seed, "Condition must be true"
 
         # Python version should be same
-        assert snapshot1.get("python") == snapshot2.get("python")
+        assert snapshot1.get("python") == snapshot2.get("python"), "Condition must be true"
 
         # Platform should be same
-        assert snapshot1.get("platform") == snapshot2.get("platform")
+        assert snapshot1.get("platform") == snapshot2.get("platform"), "Condition must be true"
 
     def test_different_seeds_captured_correctly(self, tmp_path):
         """Test that different seeds are captured correctly."""
@@ -170,7 +170,7 @@ class TestDeterministicSeeding:
             )
 
             snapshot = json.loads(out_file.read_text())
-            assert snapshot.get("seed") == seed
+            assert snapshot.get("seed") == seed, "Condition must be true"
 
 
 class TestReproducibilityRegression:
@@ -220,7 +220,7 @@ class TestReproducibilityRegression:
 
         # All should have same seed
         for snapshot in snapshots:
-            assert snapshot.get("seed") == seed
+            assert snapshot.get("seed") == seed, "Condition must be true"
 
         # Python versions should match (deterministic environment)
         python_versions = [s.get("python") for s in snapshots]

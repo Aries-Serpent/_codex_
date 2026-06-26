@@ -32,7 +32,7 @@ class StaleMarkerChecker:
                 return True
         except Exception as e:
             error_type = type(e).__name__
-            print(f"❌ Failed to load registry: <ERROR_TYPE>")
+            print("❌ Failed to load registry: <ERROR_TYPE>")
             return False
 
     def check_staleness(self, max_age_days: int = 90) -> list[dict]:

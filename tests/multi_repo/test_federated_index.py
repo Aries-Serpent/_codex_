@@ -48,8 +48,8 @@ def test_federation_basic():
         assert data["total_scanned"] == 1, "Data must not be empty"
         assert len(data["repositories"]) == 1, "Length must be valid"
         repo = data["repositories"][0]
-        assert "training" in repo["capabilities"]
-        assert "checkpoint" in repo["capabilities"]
+        assert "training" in repo["capabilities"], "Condition must be true"
+        assert "checkpoint" in repo["capabilities"], "Condition must be true"
 
 
 def test_federation_disabled():

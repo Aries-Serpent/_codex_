@@ -13,7 +13,7 @@ def test_baseline_init():
     with tempfile.TemporaryDirectory() as tmpdir:
         db_path = Path(tmpdir) / "test.db"
         BaselineManager(str(db_path))
-        assert db_path.exists()
+        assert db_path.exists(), "Condition must be true"
 
 
 def test_save_and_retrieve():
@@ -26,11 +26,11 @@ def test_save_and_retrieve():
 
         # Retrieve baseline
         baseline = manager.get_baseline("test.py")
-        assert baseline is not None
-        assert baseline["ast_hash"] == "abc123"
-        assert baseline["node_count"] == 50
-        assert baseline["complexity"] == 10
-        assert baseline["metadata"]["author"] == "test"
+        assert baseline is not None, "baseline must be initialized"
+        assert baseline["ast_hash"] == "abc123", "Condition must be true"
+        assert baseline["node_count"] == 50, "Count must be greater than zero"
+        assert baseline["complexity"] == 10, "Condition must be true"
+        assert baseline["metadata"]["author"] == "test", "Data must not be empty"
 
 
 def test_update_baseline():
@@ -46,8 +46,8 @@ def test_update_baseline():
 
         # Check version incremented
         baseline = manager.get_baseline("test.py")
-        assert baseline["ast_hash"] == "def456"
-        assert baseline["version"] == 2
+        assert baseline["ast_hash"] == "def456", "Condition must be true"
+        assert baseline["version"] == 2, "Condition must be true"
 
 
 def test_list_baselines():
@@ -59,7 +59,7 @@ def test_list_baselines():
         manager.save_baseline("file2.py", "hash2", 20, 2)
 
         baselines = manager.list_baselines()
-        assert len(baselines) == 2
+        assert len(baselines) == 2, "Baselines must not be empty"
 
 
 def test_delete_baseline():
@@ -71,7 +71,7 @@ def test_delete_baseline():
         manager.delete_baseline("test.py")
 
         baseline = manager.get_baseline("test.py")
-        assert baseline is None
+        assert baseline is None, "baseline is not valid"
 
 
 def test_clear_all():
@@ -84,7 +84,7 @@ def test_clear_all():
         manager.clear_all()
 
         baselines = manager.list_baselines()
-        assert len(baselines) == 0
+        assert len(baselines) == 0, "Baselines must not be empty"
 
 
 if __name__ == "__main__":

@@ -65,24 +65,24 @@ class TestSanitizeLogBasic:
 
     def test_plain_text_passthrough(self):
         """Test that plain text passes through unchanged."""
-        assert sanitize_log("Hello World") == "Hello World"
+        assert sanitize_log("Hello World") == "Hello World", "Condition must be true"
 
     def test_none_converts_to_string(self):
         """Test that None converts to string 'None'."""
-        assert sanitize_log(None) == "None"
+        assert sanitize_log(None) == "None", "Condition must be true"
 
     def test_integer_conversion(self):
         """Test conversion of integers to string."""
-        assert sanitize_log(42) == "42"
+        assert sanitize_log(42) == "42", "Condition must be true"
 
     def test_float_conversion(self):
         """Test conversion of floats to string."""
-        assert sanitize_log(3.14) == "3.14"
+        assert sanitize_log(3.14) == "3.14", "Condition must be true"
 
     def test_boolean_conversion(self):
         """Test conversion of booleans."""
-        assert sanitize_log(True) == "True"
-        assert sanitize_log(False) == "False"
+        assert sanitize_log(True) == "True", "Condition must be true"
+        assert sanitize_log(False) == "False", "Condition must be true"
 
 
 class TestSanitizeLogInjectionPrevention:
@@ -91,44 +91,44 @@ class TestSanitizeLogInjectionPrevention:
     def test_newline_removal(self):
         """Test removal of newline characters."""
         result = sanitize_log("line1\nline2")
-        assert "\n" not in result
-        assert "line1line2" == result
+        assert "\n" not in result, "Result must not be empty"
+        assert "line1line2" == result, "Result must not be empty"
 
     def test_carriage_return_removal(self):
         """Test removal of carriage returns."""
         result = sanitize_log("line1\rline2")
-        assert "\r" not in result
+        assert "\r" not in result, "Result must not be empty"
 
     def test_tab_removal(self):
         """Test removal of tab characters."""
         result = sanitize_log("col1\tcol2")
-        assert "\t" not in result
+        assert "\t" not in result, "Result must not be empty"
 
     def test_null_byte_removal(self):
         """Test removal of null bytes."""
         result = sanitize_log("hello\x00world")
-        assert "\x00" not in result
+        assert "\x00" not in result, "Result must not be empty"
 
     def test_multiple_control_chars_removal(self):
         """Test removal of multiple control characters."""
         result = sanitize_log("start\n\r\tmiddle\x1aend")
-        assert "\n" not in result
-        assert "\r" not in result
-        assert "\t" not in result
+        assert "\n" not in result, "Result must not be empty"
+        assert "\r" not in result, "Result must not be empty"
+        assert "\t" not in result, "Result must not be empty"
 
     def test_log_injection_attack(self):
         """Test prevention of log injection attack."""
         attack = "User: alice\n[ERROR] Unauthorized access\nPassword: secret"
         result = sanitize_log(attack)
-        assert "[ERROR]" in result or "ERROR" in result
+        assert "[ERROR]" in result or "ERROR" in result, "Result must not be empty"
         # Newlines should be removed
-        assert result.count("\n") == 0
+        assert result.count("\n") == 0, "Result must not be empty"
 
     def test_forged_log_entry_removal(self):
         """Test removal of forged log entries."""
         forged = "INFO: Login successful\n[CRITICAL] System failure"
         result = sanitize_log(forged)
-        assert result.count("\n") == 0
+        assert result.count("\n") == 0, "Result must not be empty"
 
 
 class TestSanitizeLogAnsiCodes:
@@ -137,18 +137,18 @@ class TestSanitizeLogAnsiCodes:
     def test_ansi_color_removal(self):
         """Test removal of ANSI color codes."""
         result = sanitize_log("\x1b[31mRed Text\x1b[0m")
-        assert "\x1b[" not in result
-        assert "Red Text" in result
+        assert "\x1b[" not in result, "Result must not be empty"
+        assert "Red Text" in result, "Result must not be empty"
 
     def test_ansi_bold_removal(self):
         """Test removal of ANSI bold codes."""
         result = sanitize_log("\x1b[1mBold\x1b[0m")
-        assert "\x1b[" not in result
+        assert "\x1b[" not in result, "Result must not be empty"
 
     def test_multiple_ansi_codes(self):
         """Test removal of multiple ANSI codes."""
         result = sanitize_log("\x1b[31m\x1b[1mRed Bold\x1b[0m")
-        assert "\x1b[" not in result
+        assert "\x1b[" not in result, "Result must not be empty"
 
 
 class TestSanitizeLogTruncation:
@@ -158,25 +158,25 @@ class TestSanitizeLogTruncation:
         """Test string under max length."""
         short = "x" * 100
         result = sanitize_log(short, max_length=500)
-        assert len(result) == 100
+        assert len(result) == 100, "Result must not be empty"
 
     def test_over_max_length_truncated(self):
         """Test string over max length is truncated."""
         long_str = "x" * 1000
         result = sanitize_log(long_str, max_length=100)
-        assert "[truncated]" in result
-        assert len(result) <= 116  # 100 + len("[truncated]")
+        assert "[truncated]" in result, "Result must not be empty"
+        assert len(result) <= 116, "Result must not be empty"
 
     def test_truncation_marker(self):
         """Test that truncation marker is added."""
         long_str = "A" * 600
         result = sanitize_log(long_str, max_length=100)
-        assert "...[truncated]" in result
+        assert "...[truncated]" in result, "Result must not be empty"
 
     def test_custom_max_length(self):
         """Test custom max length values."""
         result = sanitize_log("x" * 1000, max_length=50)
-        assert "[truncated]" in result
+        assert "[truncated]" in result, "Result must not be empty"
 
 
 class TestSanitizeLogEdgeCases:
@@ -184,28 +184,28 @@ class TestSanitizeLogEdgeCases:
 
     def test_empty_string(self):
         """Test empty string handling."""
-        assert sanitize_log("") == ""
+        assert sanitize_log("") == "", "Condition must be true"
 
     def test_only_control_characters(self):
         """Test string with only control characters."""
         result = sanitize_log("\n\r\t")
-        assert result == ""
+        assert result == "", "Result must not be empty"
 
     def test_whitespace_preservation(self):
         """Test that regular spaces are preserved."""
-        assert sanitize_log("hello   world") == "hello   world"
+        assert sanitize_log("hello   world") == "hello   world", "Condition must be true"
 
     def test_unicode_preservation(self):
         """Test that unicode is preserved."""
         text = "Hello 世界 🌍"
         result = sanitize_log(text)
-        assert "世界" in result
-        assert "🌍" in result
+        assert "世界" in result, "Result must not be empty"
+        assert "🌍" in result, "Result must not be empty"
 
     def test_special_characters_preservation(self):
         """Test that special characters are preserved."""
-        assert sanitize_log("user@example.com") == "user@example.com"
-        assert sanitize_log("value: 123.45") == "value: 123.45"
+        assert sanitize_log("user@example.com") == "user@example.com", "Condition must be true"
+        assert sanitize_log("value: 123.45") == "value: 123.45", "Value must be initialized"
 
 
 # ============================================================================
@@ -218,11 +218,11 @@ class TestMaskSensitiveBasic:
 
     def test_plain_text_unchanged(self):
         """Test that plain text is unchanged."""
-        assert mask_sensitive("Hello World") == "Hello World"
+        assert mask_sensitive("Hello World") == "Hello World", "Condition must be true"
 
     def test_empty_string(self):
         """Test empty string handling."""
-        assert mask_sensitive("") == ""
+        assert mask_sensitive("") == "", "Condition must be true"
 
 
 class TestMaskSensitiveApiKeys:
@@ -231,23 +231,23 @@ class TestMaskSensitiveApiKeys:
     def test_api_key_masking(self):
         """Test masking of 'api_key=' patterns."""
         result = mask_sensitive("api_key=sk_test_abc123xyz789")
-        assert "***REDACTED***" in result
-        assert "sk_test_abc123xyz789" not in result
+        assert "***REDACTED***" in result, "Result must not be empty"
+        assert "sk_test_abc123xyz789" not in result, "Result must not be empty"
 
     def test_api_key_with_hyphen(self):
         """Test masking of 'api-key=' patterns."""
         result = mask_sensitive("api-key=secret123")
-        assert "***REDACTED***" in result
+        assert "***REDACTED***" in result, "Result must not be empty"
 
     def test_api_key_case_insensitive(self):
         """Test case-insensitive API key masking."""
         result = mask_sensitive("API_KEY=mykey123")
-        assert "***REDACTED***" in result
+        assert "***REDACTED***" in result, "Result must not be empty"
 
     def test_multiple_api_keys(self):
         """Test masking of multiple API keys."""
         result = mask_sensitive("key1=secret1 api_key=secret2 token=secret3")
-        assert result.count("***REDACTED***") >= 2
+        assert result.count("***REDACTED***") >= 2, "Value must be greater than zero"
 
 
 class TestMaskSensitiveTokens:
@@ -256,18 +256,18 @@ class TestMaskSensitiveTokens:
     def test_bearer_token_masking(self):
         """Test masking of ******"""
         result = mask_sensitive("******")
-        assert "***REDACTED***" in result
-        assert "eyJ" not in result or "******" in result
+        assert "***REDACTED***" in result, "Result must not be empty"
+        assert "eyJ" not in result or "******" in result, "Result must not be empty"
 
     def test_bearer_token_case_insensitive(self):
         """Test case-insensitive ******"""
         result = mask_sensitive("bearer abc123token")
-        assert "***REDACTED***" in result or "bearer" in result
+        assert "***REDACTED***" in result or "bearer" in result, "Result must not be empty"
 
     def test_token_equals_pattern(self):
         """Test masking of 'token=' patterns."""
         result = mask_sensitive("token=mytoken123abc")
-        assert "***REDACTED***" in result
+        assert "***REDACTED***" in result, "Result must not be empty"
 
 
 class TestMaskSensitivePasswords:
@@ -276,17 +276,17 @@ class TestMaskSensitivePasswords:
     def test_password_equals_pattern(self):
         """Test masking of 'password=' patterns."""
         result = mask_sensitive("******")
-        assert "***REDACTED***" in result
+        assert "***REDACTED***" in result, "Result must not be empty"
 
     def test_password_colon_pattern(self):
         """Test masking of 'password:' patterns."""
         result = mask_sensitive("password: mysecretpass")
-        assert "***REDACTED***" in result
+        assert "***REDACTED***" in result, "Result must not be empty"
 
     def test_secret_equals_pattern(self):
         """Test masking of 'secret=' patterns."""
         result = mask_sensitive("secret=hidden123")
-        assert "***REDACTED***" in result
+        assert "***REDACTED***" in result, "Result must not be empty"
 
 
 class TestMaskSensitiveJwt:
@@ -296,12 +296,12 @@ class TestMaskSensitiveJwt:
         """Test masking of JWT tokens."""
         jwt = "******"
         result = mask_sensitive(f"Token: {jwt}")
-        assert "***JWT_REDACTED***" in result
+        assert "***JWT_REDACTED***" in result, "Result must not be empty"
 
     def test_jwt_in_bearer_pattern(self):
         """Test JWT in ******"""
         result = mask_sensitive("******")
-        assert "***" in result
+        assert "***" in result, "Result must not be empty"
 
 
 class TestMaskSensitiveAwsKeys:
@@ -310,17 +310,17 @@ class TestMaskSensitiveAwsKeys:
     def test_aws_access_key_masking(self):
         """Test masking of AWS access keys."""
         result = mask_sensitive("AKIAIOSFODNN7EXAMPLE")
-        assert "***AWS_KEY_REDACTED***" in result
+        assert "***AWS_KEY_REDACTED***" in result, "Result must not be empty"
 
     def test_aws_key_in_context(self):
         """Test AWS key masking in context."""
         result = mask_sensitive("AWS Key: AKIAIOSFODNN7EXAMPLE for bucket")
-        assert "***AWS_KEY_REDACTED***" in result
+        assert "***AWS_KEY_REDACTED***" in result, "Result must not be empty"
 
     def test_multiple_aws_keys(self):
         """Test masking of multiple AWS keys."""
         result = mask_sensitive("key1=AKIAIOSFODNN7EXAMPLE key2=AKIAIOSFODNN8EXAMPLE")
-        assert result.count("***") >= 1
+        assert result.count("***") >= 1, "Value must be greater than zero"
 
 
 class TestMaskSensitivePrivateKeys:
@@ -333,7 +333,7 @@ MIIEpAIBAAKCAQEA2z2r1234567890abcdefg
 MIIEpAIBAAKCAQEA2z2r1234567890abcdefg
 -----END RSA PRIVATE KEY-----"""
         result = mask_sensitive(key)
-        assert "***PRIVATE_KEY_REDACTED***" in result
+        assert "***PRIVATE_KEY_REDACTED***" in result, "Result must not be empty"
 
     def test_private_key_no_rsa_prefix(self):
         """Test masking of private keys without RSA prefix."""
@@ -341,7 +341,7 @@ MIIEpAIBAAKCAQEA2z2r1234567890abcdefg
 MIIEvAIBADANBgkqhkiG9w0BAQE
 -----END PRIVATE KEY-----"""
         result = mask_sensitive(key)
-        assert "***PRIVATE_KEY_REDACTED***" in result
+        assert "***PRIVATE_KEY_REDACTED***" in result, "Result must not be empty"
 
 
 # ============================================================================
@@ -356,35 +356,35 @@ class TestSafeLogMessage:
         """Test combined control character removal and masking."""
         msg = "User logged in\ntoken=sk_test_123\nFAKE_LOG_ENTRY"
         result = safe_log_message(msg)
-        assert "\n" not in result  # No injection
-        assert "sk_test_123" not in result  # Token masked
+        assert "\n" not in result, "Result must not be empty"
+        assert "sk_test_123" not in result, "Result must not be empty"
 
     def test_mask_secrets_flag_true(self):
         """Test with mask_secrets=True."""
         msg = "api_key=secret123"
         result = safe_log_message(msg, mask_secrets=True)
-        assert "***REDACTED***" in result
+        assert "***REDACTED***" in result, "Result must not be empty"
 
     def test_mask_secrets_flag_false(self):
         """Test with mask_secrets=False."""
         msg = "message with key=value"
         result = safe_log_message(msg, mask_secrets=False)
         # Should still remove control characters but not mask
-        assert result
+        assert result, "Result must not be empty"
 
     def test_long_message_truncation(self):
         """Test that long messages are truncated."""
         msg = "x" * 1000 + "\ninjection"
         result = safe_log_message(msg)
-        assert "[truncated]" in result or len(result) < 1000
+        assert "[truncated]" in result or len(result) < 1000, "Result must not be empty"
 
     def test_real_world_log_entry(self):
         """Test realistic log entry."""
         msg = "User: alice\nPassword: secret123\nAPI_KEY=sk_live_abc123\nStatus: OK"
         result = safe_log_message(msg)
-        assert "\n" not in result
-        assert "secret" not in result
-        assert "sk_live" not in result
+        assert "\n" not in result, "Result must not be empty"
+        assert "secret" not in result, "Result must not be empty"
+        assert "sk_live" not in result, "Result must not be empty"
 
 
 # ============================================================================
@@ -400,26 +400,26 @@ class TestSanitizeDictForLog:
         data = {"user": "alice", "status": "ok"}
         result = sanitize_dict_for_log(data)
         assert isinstance(result, dict)
-        assert result["user"] == "alice"
+        assert result["user"] == "alice", "Result must not be empty"
 
     def test_dict_with_injection(self):
         """Test sanitization of dict with injection."""
         data = {"message": "line1\nline2", "status": "ok"}
         result = sanitize_dict_for_log(data)
-        assert "\n" not in result["message"]
+        assert "\n" not in result["message"], "Result must not be empty"
 
     def test_dict_with_sensitive_data(self):
         """Test sanitization of dict with sensitive data."""
         data = {"api_key": "sk_test_123", "user": "alice"}
         result = sanitize_dict_for_log(data)
-        assert "sk_test" not in result["api_key"]
+        assert "sk_test" not in result["api_key"], "Result must not be empty"
 
     def test_nested_dict_sanitization(self):
         """Test sanitization of nested dictionaries."""
         data = {"user": {"name": "alice\ninjection", "token": "******"}}
         result = sanitize_dict_for_log(data)
-        assert "\n" not in result["user"]["name"]
-        assert "***" in str(result["user"]["token"])
+        assert "\n" not in result["user"]["name"], "Result must not be empty"
+        assert "***" in str(result["user"]["token"]), "Result must not be empty"
 
     def test_dict_with_list_values(self):
         """Test sanitization of dict with list values."""
@@ -427,7 +427,7 @@ class TestSanitizeDictForLog:
         result = sanitize_dict_for_log(data)
         assert isinstance(result["messages"], list)
         for msg in result["messages"]:
-            assert "\n" not in str(msg)
+            assert "\n" not in str(msg), "Condition must be true"
 
     def test_dict_with_tuple_values(self):
         """Test sanitization of dict with tuple values."""
@@ -439,33 +439,33 @@ class TestSanitizeDictForLog:
         """Test truncation of long values in dict."""
         data = {"long_message": "x" * 1000}
         result = sanitize_dict_for_log(data, max_length=100)
-        assert "[truncated]" in result["long_message"]
+        assert "[truncated]" in result["long_message"], "Result must not be empty"
 
     def test_dict_mask_secrets_flag(self):
         """Test mask_secrets flag in dict sanitization."""
         data = {"api_key": "sk_test_abc123"}
         result = sanitize_dict_for_log(data, mask_secrets=True)
-        assert "***REDACTED***" in result["api_key"]
+        assert "***REDACTED***" in result["api_key"], "Result must not be empty"
 
         result_no_mask = sanitize_dict_for_log(data, mask_secrets=False)
         # Should still sanitize but not mask
-        assert result_no_mask
+        assert result_no_mask, "Result must not be empty"
 
     def test_empty_dict(self):
         """Test empty dictionary."""
-        assert sanitize_dict_for_log({}) == {}
+        assert sanitize_dict_for_log({}) == {}, "sanitize_dict_f is not valid"
 
     def test_dict_with_none_values(self):
         """Test dictionary with None values."""
         data = {"key": None}
         result = sanitize_dict_for_log(data)
-        assert result["key"] == "None"
+        assert result["key"] == "None", "Result must not be empty"
 
     def test_deeply_nested_dict(self):
         """Test deeply nested dictionary."""
         data = {"level1": {"level2": {"level3": {"message": "test\ninjection", "token": "******"}}}}
         result = sanitize_dict_for_log(data)
-        assert "\n" not in result["level1"]["level2"]["level3"]["message"]
+        assert "\n" not in result["level1"]["level2"]["level3"]["message"], "Result must not be empty"
 
 
 # ============================================================================
@@ -478,14 +478,14 @@ class TestAliases:
 
     def test_safe_log_alias(self):
         """Test safe_log is alias for sanitize_log."""
-        assert safe_log == sanitize_log
-        assert safe_log("hello\nworld") == sanitize_log("hello\nworld")
+        assert safe_log == sanitize_log, "safe_log is not valid"
+        assert safe_log("hello\nworld") == sanitize_log("hello\nworld"), "Condition must be true"
 
     def test_mask_secrets_alias(self):
         """Test mask_secrets is alias for mask_sensitive."""
-        assert mask_secrets == mask_sensitive
+        assert mask_secrets == mask_sensitive, "mask_secrets is not valid"
         msg = "token=abc123"
-        assert mask_secrets(msg) == mask_sensitive(msg)
+        assert mask_secrets(msg) == mask_sensitive(msg), "Condition must be true"
 
 
 # ============================================================================
@@ -499,28 +499,28 @@ class TestLogSanitizerIntegration:
     def test_complete_log_entry_sanitization(self, log_with_injection):
         """Test complete sanitization of log with injection."""
         result = safe_log_message(log_with_injection)
-        assert "\n" not in result
-        assert "secret" not in result
+        assert "\n" not in result, "Result must not be empty"
+        assert "secret" not in result, "Result must not be empty"
 
     def test_token_log_sanitization(self, log_with_tokens):
         """Test sanitization of log with JWT tokens."""
         result = safe_log_message(log_with_tokens)
-        assert "***" in result
+        assert "***" in result, "Result must not be empty"
 
     def test_api_key_log_sanitization(self, log_with_api_keys):
         """Test sanitization of log with API keys."""
         result = safe_log_message(log_with_api_keys)
-        assert "***REDACTED***" in result
+        assert "***REDACTED***" in result, "Result must not be empty"
 
     def test_aws_key_log_sanitization(self, log_with_aws_keys):
         """Test sanitization of log with AWS keys."""
         result = safe_log_message(log_with_aws_keys)
-        assert "***AWS_KEY_REDACTED***" in result
+        assert "***AWS_KEY_REDACTED***" in result, "Result must not be empty"
 
     def test_hex_secret_log_sanitization(self, log_with_hex_secrets):
         """Test sanitization of log with hex secrets."""
         result = safe_log_message(log_with_hex_secrets)
-        assert "***HEX_REDACTED***" in result
+        assert "***HEX_REDACTED***" in result, "Result must not be empty"
 
     def test_multiple_threats_combined(self):
         """Test handling of multiple security threats together."""
@@ -532,14 +532,14 @@ AKIAIOSFODNN7EXAMPLE
 Password: secret123"""
         result = safe_log_message(msg)
         # No newlines
-        assert "\n" not in result
+        assert "\n" not in result, "Result must not be empty"
         # Secrets masked
-        assert "sk_live" not in result
-        assert result  # Should have some content
+        assert "sk_live" not in result, "Result must not be empty"
+        assert result, "Result must not be empty"
 
     def test_benign_log_entry_unchanged(self):
         """Test that benign log entries remain readable."""
         msg = "User alice logged in successfully at 2025-01-15T10:30:00Z"
         result = safe_log_message(msg)
-        assert "alice" in result
-        assert "logged in" in result
+        assert "alice" in result, "Result must not be empty"
+        assert "logged in" in result, "Result must not be empty"

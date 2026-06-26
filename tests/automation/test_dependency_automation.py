@@ -18,9 +18,9 @@ class TestVersionDetection:
         parts = version_str.split(".")
         major, minor, patch = int(parts[0]), int(parts[1]), int(parts[2])
 
-        assert major == 1
-        assert minor == 2
-        assert patch == 3
+        assert major == 1, "major is not valid"
+        assert minor == 2, "minor is not valid"
+        assert patch == 3, "patch is not valid"
 
     def test_parse_version_with_prerelease(self):
         """Test parsing version with pre-release tag."""
@@ -33,8 +33,8 @@ class TestVersionDetection:
         int(match.group(3))
         prerelease = match.group(5)
 
-        assert major == 2
-        assert prerelease == "beta.1"
+        assert major == 2, "major is not valid"
+        assert prerelease == "beta.1", "prerelease is not valid"
 
     def test_compare_versions(self):
         """Test comparing version numbers."""
@@ -80,8 +80,8 @@ class TestVersionDetection:
                     }
                 )
 
-        assert len(outdated) == 2
-        assert outdated[0]["package"] == "package_a"
+        assert len(outdated) == 2, "Outdated must not be empty"
+        assert outdated[0]["package"] == "package_a", "Condition must be true"
 
     def test_categorize_updates(self):
         """Test categorizing updates by severity."""
@@ -104,9 +104,9 @@ class TestVersionDetection:
             else:
                 categorized["patch"].append(update)
 
-        assert len(categorized["major"]) == 1
-        assert len(categorized["minor"]) == 1
-        assert len(categorized["patch"]) == 1
+        assert len(categorized["major"]) == 1, "Collection must not be empty"
+        assert len(categorized["minor"]) == 1, "Collection must not be empty"
+        assert len(categorized["patch"]) == 1, "Collection must not be empty"
 
 
 class TestCompatibilityChecks:
@@ -126,7 +126,7 @@ class TestCompatibilityChecks:
 
         is_compatible = curr_parts >= min_parts
 
-        assert is_compatible
+        assert is_compatible, "is_compatible is not valid"
 
     def test_detect_conflicting_dependencies(self):
         """Test detecting conflicting dependency requirements."""
@@ -156,8 +156,8 @@ class TestCompatibilityChecks:
                         }
                     )
 
-        assert len(conflicts) == 1
-        assert conflicts[0]["dependency"] == "common_lib"
+        assert len(conflicts) == 1, "Conflicts must not be empty"
+        assert conflicts[0]["dependency"] == "common_lib", "Condition must be true"
 
     def test_validate_dependency_tree(self):
         """Test validating dependency tree structure."""
@@ -185,7 +185,7 @@ class TestCompatibilityChecks:
 
         has_cycles = has_cycle("root", set(), set())
 
-        assert not has_cycles
+        assert not has_cycles, "Condition must be true"
 
     def test_check_security_advisories(self):
         """Test checking for security advisories."""
@@ -214,8 +214,8 @@ class TestCompatibilityChecks:
                                 }
                             )
 
-        assert len(vulnerable) == 1
-        assert vulnerable[0]["package"] == "package_a"
+        assert len(vulnerable) == 1, "Vulnerable must not be empty"
+        assert vulnerable[0]["package"] == "package_a", "Condition must be true"
 
     def test_simulate_upgrade(self):
         """Test simulating dependency upgrade."""
@@ -240,8 +240,8 @@ class TestCompatibilityChecks:
                     }
                 )
 
-        assert len(result["changes"]) == 1
-        assert result["after"]["pkg_a"] == "1.1.0"
+        assert len(result["changes"]) == 1, "Collection must not be empty"
+        assert result["after"]["pkg_a"] == "1.1.0", "Result must not be empty"
 
 
 class TestAutomatedUpdates:
@@ -263,8 +263,8 @@ class TestAutomatedUpdates:
         for update in updates:
             pr_data["body"] += f"- {update['package']}: {update['from']} → {update['to']}\n"
 
-        assert "deps/update-" in pr_data["branch"]
-        assert "pkg_a" in pr_data["body"]
+        assert "deps/update-" in pr_data["branch"], "Data must not be empty"
+        assert "pkg_a" in pr_data["body"], "Data must not be empty"
 
     def test_batch_minor_updates(self):
         """Test batching minor version updates."""
@@ -283,8 +283,8 @@ class TestAutomatedUpdates:
                 batched[update_type] = []
             batched[update_type].append(update)
 
-        assert len(batched["minor"]) == 2
-        assert len(batched["major"]) == 1
+        assert len(batched["minor"]) == 2, "Collection must not be empty"
+        assert len(batched["major"]) == 1, "Collection must not be empty"
 
     def test_schedule_updates(self):
         """Test scheduling dependency updates."""
@@ -294,8 +294,8 @@ class TestAutomatedUpdates:
             "major": {"frequency": "monthly", "auto_merge": False},
         }
 
-        assert schedule["patch"]["auto_merge"]
-        assert not schedule["major"]["auto_merge"]
+        assert schedule["patch"]["auto_merge"], "Condition must be true"
+        assert not schedule["major"]["auto_merge"], "Condition must be true"
 
     def test_rollback_update(self):
         """Test rollback of failed update."""
@@ -312,7 +312,7 @@ class TestAutomatedUpdates:
             "reason": "Tests failed after upgrade",
         }
 
-        assert rollback_action["to"] == "1.0.0"
+        assert rollback_action["to"] == "1.0.0", "Condition must be true"
 
     def test_notify_update_status(self):
         """Test notification for update status."""
@@ -336,7 +336,7 @@ class TestAutomatedUpdates:
                 "message": f"Failed to update {update_result['package']}",
             }
 
-        assert notification["type"] == "success"
+        assert notification["type"] == "success", "Condition must be true"
 
 
 class TestMaintenanceRunbooks:
@@ -355,8 +355,8 @@ class TestMaintenanceRunbooks:
             ],
         }
 
-        assert len(runbook["steps"]) == 4
-        assert runbook["steps"][0]["action"] == "backup"
+        assert len(runbook["steps"]) == 4, "Collection must not be empty"
+        assert runbook["steps"][0]["action"] == "backup", "Condition must be true"
 
     def test_execute_runbook_step(self):
         """Test executing a runbook step."""
@@ -370,7 +370,7 @@ class TestMaintenanceRunbooks:
             "duration": 0.1,
         }
 
-        assert result["status"] == "success"
+        assert result["status"] == "success", "Result must not be empty"
 
     def test_track_runbook_progress(self):
         """Test tracking runbook execution progress."""
@@ -384,8 +384,8 @@ class TestMaintenanceRunbooks:
             "status": "in_progress" if completed_steps < total_steps else "complete",
         }
 
-        assert progress["percentage"] == 60.0
-        assert progress["status"] == "in_progress"
+        assert progress["percentage"] == 60.0, "Condition must be true"
+        assert progress["status"] == "in_progress", "Condition must be true"
 
     def test_handle_runbook_failure(self):
         """Test handling runbook step failure."""
@@ -401,8 +401,8 @@ class TestMaintenanceRunbooks:
             "steps_to_revert": ["update", "backup"],
         }
 
-        assert recovery["action"] == "rollback"
-        assert len(recovery["steps_to_revert"]) == 2
+        assert recovery["action"] == "rollback", "Condition must be true"
+        assert len(recovery["steps_to_revert"]) == 2, "Collection must not be empty"
 
     def test_generate_runbook_report(self):
         """Test generating runbook execution report."""
@@ -425,5 +425,5 @@ class TestMaintenanceRunbooks:
             "steps_executed": len(execution["steps"]),
         }
 
-        assert "successfully" in report["summary"]
-        assert report["duration"] == 185.1
+        assert "successfully" in report["summary"], "Condition must be true"
+        assert report["duration"] == 185.1, "rep is not valid"

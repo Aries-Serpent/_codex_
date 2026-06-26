@@ -130,8 +130,8 @@ eval:
 
             result = mock_train(str(data_file), vocab_size=100)
 
-            assert result["vocab_size"] == 100
-            assert result["token_count"] == 50
+            assert result["vocab_size"] == 100, "Result must not be empty"
+            assert result["token_count"] == 50, "Result must not be empty"
 
     def test_tokenizer_encode_decode_roundtrip(self):
         """Test: Text encode and decode roundtrip preserves content."""
@@ -153,7 +153,7 @@ eval:
             tokens = mock_tokenizer.encode(original_text)
             decoded = mock_tokenizer.decode(tokens)
 
-            assert decoded == original_text
+            assert decoded == original_text, "decoded is not valid"
 
     def test_config_sweep_integration(self, tmp_path, tmp_config_dir):
         """Test: Config sweep generates multiple training configurations."""
@@ -175,7 +175,7 @@ eval:
             configs = mock_gen(sweep_params)
 
             # Verify
-            assert len(configs) == 4
+            assert len(configs) == 4, "Configs must not be empty"
             assert all(isinstance(c, dict) for c in configs)
 
     def test_train_command_workflow(self, tmp_path, tmp_config_dir):
@@ -211,8 +211,8 @@ eval:
                 result = trainer.train()
 
                 # Verify workflow
-                assert result["final_epoch"] == 1
-                assert "checkpoint" in result
+                assert result["final_epoch"] == 1, "Result must not be empty"
+                assert "checkpoint" in result, "Result must not be empty"
 
     def test_resume_training_integration(self, tmp_path):
         """Test: Resume command loads checkpoint and continues training."""
@@ -244,7 +244,7 @@ eval:
                 result = trainer.train()
 
                 # Verify resume workflow
-                assert result["final_epoch"] == 6
+                assert result["final_epoch"] == 6, "Result must not be empty"
 
     def test_evaluate_command_integration(self, tmp_path):
         """Test: Evaluate command produces metrics."""
@@ -275,8 +275,8 @@ eval:
                 metrics = evaluator.evaluate()
 
                 # Verify metrics
-                assert metrics["accuracy"] == 0.85
-                assert metrics["f1"] == 0.82
+                assert metrics["accuracy"] == 0.85, "Condition must be true"
+                assert metrics["f1"] == 0.82, "Condition must be true"
 
     def test_metrics_server_integration(self, tmp_path):
         """Test: Metrics server startup and communication."""
@@ -290,7 +290,7 @@ eval:
             server = mock_start(port=8000)
 
             # Verify
-            assert server.is_running()
+            assert server.is_running(), "Condition must be true"
 
     def test_deploy_workflow_integration(self, tmp_path):
         """Test: Deploy command validates and deploys model."""
@@ -317,7 +317,7 @@ replicas: 3
                 result = mock_deploy(cfg)
 
                 # Verify
-                assert result["status"] == "deployed"
+                assert result["status"] == "deployed", "Result must not be empty"
 
     def test_status_report_integration(self, tmp_path):
         """Test: Status report aggregates training metrics."""
@@ -337,8 +337,8 @@ replicas: 3
             report = mock_build(str(metadata_dir))
 
             # Verify
-            assert report["status"] == "in_progress"
-            assert report["training_loss"] == 0.5
+            assert report["status"] == "in_progress", "rep is not valid"
+            assert report["training_loss"] == 0.5, "rep is not valid"
 
     def test_tokenize_text_command(self):
         """Test: Tokenize command converts text to token IDs."""
@@ -355,7 +355,7 @@ replicas: 3
             tokens = mock_tokenizer.encode(text)
 
             # Verify
-            assert len(tokens) == 2
+            assert len(tokens) == 2, "Tokens must not be empty"
             assert tokens == [10, 20]
 
     def test_cli_configuration_propagation(self, tmp_config_dir):
@@ -379,8 +379,8 @@ replicas: 3
                 mock_trainer(config)
 
                 # Verify propagation
-                assert config["model"]["name"] == "test"
-                assert config["training"]["batch_size"] == 32
+                assert config["model"]["name"] == "test", "Condition must be true"
+                assert config["training"]["batch_size"] == 32, "Condition must be true"
 
     def test_cross_module_dependency_chain(self):
         """Test: Cross-module dependencies resolved correctly."""
@@ -407,7 +407,7 @@ replicas: 3
                     mock_trainer(cfg)
 
                     # Verify chain
-                    assert cfg["model"] == "bert"
+                    assert cfg["model"] == "bert", "Condition must be true"
                     mock_registry.assert_called_once()
 
     def test_error_handling_invalid_config(self):
@@ -450,7 +450,7 @@ class TestCodexMLCLIEndToEnd:
         result = runner.invoke(codex, ["--help"])
 
         # Assert
-        assert result.exit_code == 0 or result.exit_code is None
+        assert result.exit_code == 0 or result.exit_code is None, "Result must not be empty"
 
     def test_tokenizer_help_output(self, runner):
         """Test: Tokenizer subcommand help."""
@@ -458,7 +458,7 @@ class TestCodexMLCLIEndToEnd:
         result = runner.invoke(codex, ["tokenizer", "--help"])
 
         # Assert
-        assert result.exit_code == 0 or result.exit_code is None
+        assert result.exit_code == 0 or result.exit_code is None, "Result must not be empty"
 
     def test_cli_version_compatibility(self):
         """Test: CLI maintains compatibility with ML pipeline API."""
@@ -491,8 +491,8 @@ class TestCodexMLCLIStateManagement:
         loaded_state = json.loads(state_file.read_text())
 
         # Assert: State properly preserved
-        assert loaded_state["epoch"] == 5
-        assert loaded_state["global_step"] == 1000
+        assert loaded_state["epoch"] == 5, "Condition must be true"
+        assert loaded_state["global_step"] == 1000, "Condition must be true"
 
     def test_config_override_propagation(self):
         """Test: Command-line config overrides propagate through pipeline."""
@@ -506,8 +506,8 @@ class TestCodexMLCLIStateManagement:
             result = mock_merge(base_config, overrides)
 
             # Assert: Overrides applied
-            assert result["lr"] == 0.01
-            assert result["batch_size"] == 32
+            assert result["lr"] == 0.01, "Result must not be empty"
+            assert result["batch_size"] == 32, "Result must not be empty"
 
     def test_resource_cleanup_after_training(self):
         """Test: Resources cleaned up after training completes."""
@@ -519,8 +519,8 @@ class TestCodexMLCLIStateManagement:
         resources["temp_files"] = []
 
         # Assert: Resources released
-        assert resources["gpu_memory"] == 0
-        assert len(resources["temp_files"]) == 0
+        assert resources["gpu_memory"] == 0, "Condition must be true"
+        assert len(resources["temp_files"]) == 0, "Collection must not be empty"
 
 
 @pytest.mark.skipif(not CODEX_CLI_AVAILABLE, reason="Codex CLI not available")

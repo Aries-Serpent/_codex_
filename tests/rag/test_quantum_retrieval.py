@@ -36,20 +36,20 @@ class TestQuantumRelevanceScorer:
         """Test that valid weights are accepted."""
         # Should not raise exception
         scorer = QuantumRelevanceScorer(alpha=0.6, beta=0.25, gamma=0.15)
-        assert scorer.alpha == 0.6
-        assert scorer.beta == 0.25
-        assert scorer.gamma == 0.15
+        assert scorer.alpha == 0.6, "alpha is not valid"
+        assert scorer.beta == 0.25, "beta is not valid"
+        assert scorer.gamma == 0.15, "gamma is not valid"
 
         # Exactly 1.0
         scorer2 = QuantumRelevanceScorer(alpha=0.5, beta=0.3, gamma=0.2)
-        assert scorer2.alpha == 0.5
+        assert scorer2.alpha == 0.5, "alpha is not valid"
 
     def test_default_initialization(self):
         """Test scorer initializes with valid defaults."""
         scorer = QuantumRelevanceScorer()
-        assert scorer.alpha == 0.6
-        assert scorer.beta == 0.25
-        assert scorer.gamma == 0.15
+        assert scorer.alpha == 0.6, "alpha is not valid"
+        assert scorer.beta == 0.25, "beta is not valid"
+        assert scorer.gamma == 0.15, "gamma is not valid"
         assert math.isclose(scorer.alpha + scorer.beta + scorer.gamma, 1.0)
 
     def test_quantum_state_calculation(self):
@@ -83,13 +83,13 @@ class TestQuantumRelevanceScorer:
         assert isinstance(state.collapse_probability, float)
 
         # Collapse probability should be in [0, 1]
-        assert 0.0 <= state.collapse_probability <= 1.0
+        assert 0.0 <= state.collapse_probability <= 1.0, "0 is not valid"
 
         # Energy should be positive
-        assert state.energy >= 0.0
+        assert state.energy >= 0.0, "energy must be greater than zero"
 
         # Entropy should be non-negative
-        assert state.entropy >= 0.0
+        assert state.entropy >= 0.0, "entropy must be greater than zero"
 
     def test_quantum_state_no_embeddings(self):
         """Test quantum state calculation when embeddings are unavailable."""
@@ -110,7 +110,7 @@ class TestQuantumRelevanceScorer:
 
         # Should still return valid state (with fallback similarity)
         assert isinstance(state, QuantumState)
-        assert 0.0 <= state.collapse_probability <= 1.0
+        assert 0.0 <= state.collapse_probability <= 1.0, "0 is not valid"
 
     def test_temporal_decay(self):
         """Test that older documents have lower temporal scores."""
@@ -146,7 +146,7 @@ class TestQuantumRelevanceScorer:
         old_state = scorer.calculate_quantum_state(old_chunk, query_embedding, current_time)
 
         # Recent document should have higher collapse probability
-        assert recent_state.collapse_probability >= old_state.collapse_probability
+        assert recent_state.collapse_probability >= old_state.collapse_probability, "collapse_probability must be greater than zero"
 
     def test_authority_weighting(self):
         """Test that authority affects scoring."""
@@ -183,7 +183,7 @@ class TestQuantumRelevanceScorer:
         low_state = scorer.calculate_quantum_state(low_auth, query_embedding, current_time)
 
         # High authority should have higher collapse probability
-        assert high_state.collapse_probability >= low_state.collapse_probability
+        assert high_state.collapse_probability >= low_state.collapse_probability, "collapse_probability must be greater than zero"
 
     def test_entropy_optimization(self):
         """Test entropy minimization in document selection."""
@@ -202,21 +202,21 @@ class TestQuantumRelevanceScorer:
         selected = scorer.optimize_entropy(states, max_results=3)
 
         # Should return 3 indices
-        assert len(selected) == 3
+        assert len(selected) == 3, "Selected must not be empty"
 
         # Should be valid indices
         for idx in selected:
-            assert 0 <= idx < len(states)
+            assert 0 <= idx < len(states), "States must not be empty"
 
         # First selected should be highest probability
-        assert selected[0] == 0
+        assert selected[0] == 0, "Condition must be true"
 
     def test_entropy_optimization_empty(self):
         """Test entropy optimization with empty states."""
         scorer = QuantumRelevanceScorer()
 
         selected = scorer.optimize_entropy([], max_results=10)
-        assert selected == []
+        assert selected == [], "selected is not valid"
 
     def test_entropy_optimization_fewer_than_max(self):
         """Test entropy optimization when we have fewer states than max_results."""
@@ -229,7 +229,7 @@ class TestQuantumRelevanceScorer:
 
         # Ask for 10 but only have 2
         selected = scorer.optimize_entropy(states, max_results=10)
-        assert len(selected) == 2
+        assert len(selected) == 2, "Selected must not be empty"
 
     def test_cosine_similarity(self):
         """Test cosine similarity calculation."""
@@ -249,7 +249,7 @@ class TestQuantumRelevanceScorer:
         vec5 = [1.0, 0.0, 0.0]
         vec6 = [-1.0, 0.0, 0.0]
         similarity = scorer._cosine_similarity(vec5, vec6)
-        assert similarity == 0.0  # Clamped to [0, 1]
+        assert similarity == 0.0, "similarity is not valid"
 
     def test_cosine_similarity_edge_cases(self):
         """Test cosine similarity edge cases."""
@@ -290,7 +290,7 @@ class TestQuantumRelevanceScorer:
         state = scorer.calculate_quantum_state(chunk, query_embedding, current_time=1100.0)
 
         # Collapse probability must be in [0, 1]
-        assert 0.0 <= state.collapse_probability <= 1.0
+        assert 0.0 <= state.collapse_probability <= 1.0, "0 is not valid"
 
 
 class TestQuantumEnhancedRetrieval:
@@ -305,7 +305,7 @@ class TestQuantumEnhancedRetrieval:
         """Test retrieval with no chunks."""
         retriever = QuantumEnhancedRetrieval()
         results = retriever.retrieve_from_chunks("test query", chunks=[], top_k=10)
-        assert results == []
+        assert results == [], "Result must not be empty"
 
     def test_retrieve_from_chunks_basic(self):
         """Test basic retrieval from chunks."""
@@ -353,7 +353,7 @@ class TestQuantumEnhancedRetrieval:
         )
 
         # Should return 2 results
-        assert len(results) == 2
+        assert len(results) == 2, "Results must not be empty"
 
         # Results should have required fields
         for result in results:
@@ -363,11 +363,11 @@ class TestQuantumEnhancedRetrieval:
             assert hasattr(result, "metadata")
 
             # Check quantum-specific metadata
-            assert "quantum_amplitude" in result.metadata
-            assert "energy_state" in result.metadata
-            assert "entropy_contribution" in result.metadata
-            assert "scoring_method" in result.metadata
-            assert result.metadata["scoring_method"] == "quantum-thermodynamic"
+            assert "quantum_amplitude" in result.metadata, "Result must not be empty"
+            assert "energy_state" in result.metadata, "Result must not be empty"
+            assert "entropy_contribution" in result.metadata, "Result must not be empty"
+            assert "scoring_method" in result.metadata, "Result must not be empty"
+            assert result.metadata["scoring_method"] == "quantum-thermodynamic", "Result must not be empty"
 
     def test_retrieve_top_k_bounds(self):
         """Test that top_k is respected."""
@@ -393,7 +393,7 @@ class TestQuantumEnhancedRetrieval:
             query="test", chunks=chunks, top_k=3, current_time=2000.0
         )
 
-        assert len(results) == 3
+        assert len(results) == 3, "Results must not be empty"
 
     def test_retrieve_sorting(self):
         """Test that results are sorted by score."""
@@ -420,7 +420,7 @@ class TestQuantumEnhancedRetrieval:
 
         # Check that scores are in descending order
         for i in range(len(results) - 1):
-            assert results[i].score >= results[i + 1].score
+            assert results[i].score >= results[i + 1].score, "score must be greater than zero"
 
 
 class TestRecordScoringPattern:
@@ -495,7 +495,7 @@ class TestPhysicsPrinciples:
 
         # The collapse probability should reflect all three factors
         # (semantic, temporal, authority) through the weighted combination
-        assert state.collapse_probability > 0.0
+        assert state.collapse_probability > 0.0, "collapse_probability must be greater than zero"
 
     def test_born_rule_probability(self):
         """Test that collapse follows Born rule (|Ψ|² probabilities)."""
@@ -542,7 +542,7 @@ class TestPhysicsPrinciples:
         selected_entropy = -sum(p * math.log(p) if p > 0 else 0 for p in normalized)
 
         # Entropy should be relatively low (less than threshold)
-        assert selected_entropy < scorer.entropy_threshold
+        assert selected_entropy < scorer.entropy_threshold, "selected_entropy is not valid"
 
     def test_energy_states(self):
         """Test that documents with lower energy are preferred."""
@@ -583,7 +583,7 @@ class TestPhysicsPrinciples:
         )
 
         # Low energy document should be preferred (higher collapse probability)
-        assert low_state.collapse_probability > high_state.collapse_probability
+        assert low_state.collapse_probability > high_state.collapse_probability, "collapse_probability must be greater than zero"
 
 
 # Integration test placeholder
@@ -591,4 +591,4 @@ def test_integration_placeholder():
     """Basic integration smoke test — verifies test file is collectable."""
     # Integration tests for QuantumRetrievalScorer live in separate e2e files.
     # This ensures the module is importable and the test suite collects cleanly.
-    assert True
+    assert True, "True is not valid"

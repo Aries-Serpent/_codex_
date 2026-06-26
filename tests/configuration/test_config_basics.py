@@ -36,8 +36,8 @@ class TestConfigFileOperations:
         config_file.write_text(yaml.dump(config_data))
         loaded = yaml.safe_load(config_file.read_text())
 
-        assert loaded["app_name"] == "test-app"
-        assert loaded["settings"]["debug"] is True
+        assert loaded["app_name"] == "test-app", "Condition must be true"
+        assert loaded["settings"]["debug"] is True, "Condition must be true"
 
         # Cleanup
         import shutil
@@ -61,8 +61,8 @@ class TestConfigFileOperations:
         config_file.write_text(json.dumps(config_data, indent=2))
         loaded = json.loads(config_file.read_text())
 
-        assert loaded["app_name"] == "test-app"
-        assert loaded["settings"]["debug"] is True
+        assert loaded["app_name"] == "test-app", "Condition must be true"
+        assert loaded["settings"]["debug"] is True, "Condition must be true"
 
         # Cleanup
         import shutil
@@ -74,7 +74,7 @@ class TestConfigFileOperations:
         test_dir = Path(tempfile.mkdtemp())
         missing_file = test_dir / "nonexistent.json"
 
-        assert not missing_file.exists()
+        assert not missing_file.exists(), "Condition must be true"
 
         # Cleanup
         import shutil
@@ -90,12 +90,12 @@ class TestEnvironmentVariableConfig:
         monkeypatch.setenv("TEST_CONFIG_VALUE", "test-value")
 
         value = os.getenv("TEST_CONFIG_VALUE")
-        assert value == "test-value"
+        assert value == "test-value", "Value must be initialized"
 
     def test_env_variable_default(self):
         """Test environment variable with default value."""
         value = os.getenv("NONEXISTENT_VAR", "default-value")
-        assert value == "default-value"
+        assert value == "default-value", "Value must be initialized"
 
     def test_env_variable_type_conversion(self, monkeypatch):
         """Test converting environment variable to appropriate type."""
@@ -105,8 +105,8 @@ class TestEnvironmentVariableConfig:
         port = int(os.getenv("TEST_PORT", "0"))
         debug = os.getenv("TEST_DEBUG", "false").lower() == "true"
 
-        assert port == 8080
-        assert debug is True
+        assert port == 8080, "port is not valid"
+        assert debug is True, "debug is not valid"
 
 
 class TestConfigValidation:
@@ -121,7 +121,7 @@ class TestConfigValidation:
 
         required_fields = ["name", "version"]
         for field in required_fields:
-            assert field in config
+            assert field in config, "Condition must be true"
 
     def test_validate_field_types(self):
         """Test validation of configuration field types."""
@@ -143,10 +143,10 @@ class TestConfigValidation:
         }
 
         # Port should be in valid range
-        assert 1 <= config["port"] <= 65535
+        assert 1 <= config["port"] <= 65535, "1 is not valid"
 
         # Workers should be positive
-        assert config["workers"] > 0
+        assert config["workers"] > 0, "Value must be greater than zero"
 
 
 class TestConfigMerging:
@@ -174,9 +174,9 @@ class TestConfigMerging:
         merged = base_config.copy()
         merged["settings"] = {**base_config["settings"], **override_config["settings"]}
 
-        assert merged["settings"]["debug"] is True  # Overridden
-        assert merged["settings"]["port"] == 8080  # Preserved
-        assert merged["settings"]["timeout"] == 30  # Added
+        assert merged["settings"]["debug"] is True, "Condition must be true"
+        assert merged["settings"]["port"] == 8080, "Condition must be true"
+        assert merged["settings"]["timeout"] == 30, "Condition must be true"
 
     def test_override_precedence(self):
         """Test that overrides take precedence over defaults."""
@@ -185,8 +185,8 @@ class TestConfigMerging:
 
         config = {**defaults, **overrides}
 
-        assert config["timeout"] == 60  # Override wins
-        assert config["retries"] == 3  # Default preserved
+        assert config["timeout"] == 60, "Condition must be true"
+        assert config["retries"] == 3, "Condition must be true"
 
     def test_nested_config_merge(self):
         """Test merging nested configuration structures."""
@@ -216,9 +216,9 @@ class TestConfigMerging:
 
         merged = deep_merge(base, override)
 
-        assert merged["database"]["host"] == "localhost"
-        assert merged["database"]["port"] == 5433
-        assert merged["database"]["user"] == "admin"
+        assert merged["database"]["host"] == "localhost", "Data must not be empty"
+        assert merged["database"]["port"] == 5433, "Data must not be empty"
+        assert merged["database"]["user"] == "admin", "Data must not be empty"
 
 
 class TestOfflineConfig:
@@ -229,7 +229,7 @@ class TestOfflineConfig:
         monkeypatch.setenv("OFFLINE_MODE", "true")
 
         offline = os.getenv("OFFLINE_MODE", "false").lower() == "true"
-        assert offline is True
+        assert offline is True, "offline is not valid"
 
     def test_offline_data_path(self, monkeypatch):
         """Test offline data path configuration."""
@@ -237,7 +237,7 @@ class TestOfflineConfig:
         monkeypatch.setenv("OFFLINE_DATA_PATH", test_path)
 
         data_path = os.getenv("OFFLINE_DATA_PATH", "/default/path")
-        assert data_path == test_path
+        assert data_path == test_path, "Data must not be empty"
 
     def test_offline_catalog_config(self):
         """Test offline catalog configuration structure."""
@@ -247,9 +247,9 @@ class TestOfflineConfig:
             "cache_dir": "/data/cache",
         }
 
-        assert catalog_config["offline_mode"] is True
-        assert "catalog_path" in catalog_config
-        assert "cache_dir" in catalog_config
+        assert catalog_config["offline_mode"] is True, "Condition must be true"
+        assert "catalog_path" in catalog_config, "Condition must be true"
+        assert "cache_dir" in catalog_config, "Condition must be true"
 
 
 class TestConfigSchema:
@@ -260,7 +260,7 @@ class TestConfigSchema:
         valid_config = {"name": "test", "age": 25}
 
         # Manual validation
-        assert "name" in valid_config
+        assert "name" in valid_config, "Condition must be true"
         assert isinstance(valid_config["name"], str)
 
     def test_schema_default_values(self):
@@ -276,9 +276,9 @@ class TestConfigSchema:
         # Apply defaults
         final_config = {**defaults, **config}
 
-        assert final_config["timeout"] == 60
-        assert final_config["retries"] == 3
-        assert final_config["debug"] is False
+        assert final_config["timeout"] == 60, "Condition must be true"
+        assert final_config["retries"] == 3, "Condition must be true"
+        assert final_config["debug"] is False, "Condition must be true"
 
     def test_schema_type_validation(self):
         """Test schema type validation."""
@@ -318,8 +318,8 @@ class TestConfigPaths:
 
         config_dir.mkdir(parents=True, exist_ok=True)
 
-        assert config_dir.exists()
-        assert config_dir.is_dir()
+        assert config_dir.exists(), "Condition must be true"
+        assert config_dir.is_dir(), "Condition must be true"
 
         # Cleanup
         import shutil
@@ -335,8 +335,8 @@ class TestConfigPaths:
 
         missing_file = test_dir / "missing.yaml"
 
-        assert existing_file.exists()
-        assert not missing_file.exists()
+        assert existing_file.exists(), "Condition must be true"
+        assert not missing_file.exists(), "Condition must be true"
 
         # Cleanup
         import shutil

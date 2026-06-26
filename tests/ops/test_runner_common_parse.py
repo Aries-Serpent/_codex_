@@ -34,35 +34,35 @@ def _parse_owner_repo(url: str) -> tuple[str, str]:
 
 
 def test_parse_https_repo_url() -> None:
-    assert _parse_owner_repo("https://github.com/Aries-Serpent/_codex_") == (
+    assert _parse_owner_repo("https://github.com/Aries-Serpent/_codex_") == (, "Condition must be true"
         "Aries-Serpent",
         "_codex_",
     )
 
 
 def test_parse_https_repo_with_git_suffix() -> None:
-    assert _parse_owner_repo("https://github.com/Aries-Serpent/_codex_.git") == (
+    assert _parse_owner_repo("https://github.com/Aries-Serpent/_codex_.git") == (, "Condition must be true"
         "Aries-Serpent",
         "_codex_",
     )
 
 
 def test_parse_ssh_repo_url() -> None:
-    assert _parse_owner_repo("git@github.com:Aries-Serpent/_codex_.git") == (
+    assert _parse_owner_repo("git@github.com:Aries-Serpent/_codex_.git") == (, "Condition must be true"
         "Aries-Serpent",
         "_codex_",
     )
 
 
 def test_parse_ssh_scheme_repo_url() -> None:
-    assert _parse_owner_repo("ssh://git@github.com/Aries-Serpent/_codex_.git") == (
+    assert _parse_owner_repo("ssh://git@github.com/Aries-Serpent/_codex_.git") == (, "Condition must be true"
         "Aries-Serpent",
         "_codex_",
     )
 
 
 def test_parse_owner_only_url() -> None:
-    assert _parse_owner_repo("https://github.com/Aries-Serpent") == (
+    assert _parse_owner_repo("https://github.com/Aries-Serpent") == (, "Condition must be true"
         "Aries-Serpent",
         "",
     )

@@ -39,8 +39,8 @@ class TestLoadActionLog:
 
         result = load_action_log(log_file)
 
-        assert len(result) == 2
-        assert result[0]["path"] == "src/new.py"
+        assert len(result) == 2, "Result must not be empty"
+        assert result[0]["path"] == "src/new.py", "Result must not be empty"
 
     def test_filters_by_hours(self, tmp_path):
         """Test filtering entries by hours."""
@@ -58,14 +58,14 @@ class TestLoadActionLog:
 
         result = load_action_log(log_file, hours=1)
 
-        assert len(result) == 1
-        assert result[0]["path"] == "new.py"
+        assert len(result) == 1, "Result must not be empty"
+        assert result[0]["path"] == "new.py", "Result must not be empty"
 
     def test_handles_missing_file(self, tmp_path):
         """Test handling of missing log file."""
         log_file = tmp_path / "nonexistent.ndjson"
         result = load_action_log(log_file)
-        assert result == []
+        assert result == [], "Result must not be empty"
 
     def test_skips_malformed_json(self, tmp_path):
         """Test skipping malformed JSON lines."""
@@ -75,7 +75,7 @@ class TestLoadActionLog:
 
         result = load_action_log(log_file)
 
-        assert len(result) == 2
+        assert len(result) == 2, "Result must not be empty"
 
 
 class TestLoadPatternStore:
@@ -89,8 +89,8 @@ class TestLoadPatternStore:
 
         result = load_pattern_store(store_file)
 
-        assert "patterns" in result
-        assert "test_pattern" in result["patterns"]
+        assert "patterns" in result, "Result must not be empty"
+        assert "test_pattern" in result["patterns"], "Result must not be empty"
 
     def test_handles_missing_file(self, tmp_path):
         """Test handling of missing store file."""
@@ -113,8 +113,8 @@ class TestExtractSessionContext:
 
         result = extract_session_context(entries, pattern_store)
 
-        assert "src/new.py" in result["files_created"]
-        assert "src/old.py" in result["files_modified"]
+        assert "src/new.py" in result["files_created"], "Result must not be empty"
+        assert "src/old.py" in result["files_modified"], "Result must not be empty"
 
     def test_extracts_session_info_from_pattern_store(self):
         """Test extraction of session info from pattern store."""
@@ -133,9 +133,9 @@ class TestExtractSessionContext:
 
         result = extract_session_context(entries, pattern_store)
 
-        assert result["session_id"] == "test-session"
-        assert result["pr_number"] == 1234
-        assert "pattern1" in result["patterns_applied"]
+        assert result["session_id"] == "test-session", "Result must not be empty"
+        assert result["pr_number"] == 1234, "Result must not be empty"
+        assert "pattern1" in result["patterns_applied"], "Result must not be empty"
 
 
 class TestGenerateRecommendedActions:
@@ -148,7 +148,7 @@ class TestGenerateRecommendedActions:
 
         result = generate_recommended_actions(context, pattern_store)
 
-        assert any("Complete documentation" in action for action in result)
+        assert any("Complete documentation" in action for action in result), "Result must not be empty"
 
     def test_includes_standard_recommendations(self):
         """Test that standard recommendations are included."""
@@ -157,7 +157,7 @@ class TestGenerateRecommendedActions:
 
         result = generate_recommended_actions(context, pattern_store)
 
-        assert any("cognitive brain" in action.lower() for action in result)
+        assert any("cognitive brain" in action.lower() for action in result), "Result must not be empty"
 
 
 class TestGenerateReferences:
@@ -172,14 +172,14 @@ class TestGenerateReferences:
         context = {"files_created": []}
         result = generate_references(context, tmp_path)
 
-        assert any("pattern" in ref["name"].lower() for ref in result)
+        assert any("pattern" in ref["name"].lower() for ref in result), "Result must not be empty"
 
     def test_includes_created_files(self, tmp_path):
         """Test that recently created files are included."""
         context = {"files_created": ["src/new_module.py"]}
         result = generate_references(context, tmp_path)
 
-        assert any("new_module" in ref["name"] for ref in result)
+        assert any("new_module" in ref["name"] for ref in result), "Result must not be empty"
 
 
 class TestGenerateMarkdownPrompt:
@@ -205,10 +205,10 @@ class TestGenerateMarkdownPrompt:
 
         result = generate_markdown_prompt(context)
 
-        assert "test-session" in result
-        assert "#1234" in result
-        assert "Task 1" in result
-        assert "Task 2" in result
+        assert "test-session" in result, "Result must not be empty"
+        assert ", "Condition must be true"
+        assert "Task 1" in result, "Result must not be empty"
+        assert "Task 2" in result, "Result must not be empty"
 
     def test_includes_metrics_table(self):
         """Test that metrics table is included."""
@@ -230,8 +230,8 @@ class TestGenerateMarkdownPrompt:
 
         result = generate_markdown_prompt(context)
 
-        assert "Tasks Completed" in result
-        assert "| 3 |" in result or "3" in result
+        assert "Tasks Completed" in result, "Result must not be empty"
+        assert "| 3 |" in result or "3" in result, "Result must not be empty"
 
 
 class TestGeneratePrCommentPrompt:
@@ -254,9 +254,9 @@ class TestGeneratePrCommentPrompt:
 
         result = generate_pr_comment_prompt(context)
 
-        assert "Session Continuation" in result
-        assert "Done 1" in result
-        assert "Pending 1" in result
+        assert "Session Continuation" in result, "Result must not be empty"
+        assert "Done 1" in result, "Result must not be empty"
+        assert "Pending 1" in result, "Result must not be empty"
 
     def test_includes_blockers_when_present(self):
         """Test that blockers are included when present."""
@@ -275,8 +275,8 @@ class TestGeneratePrCommentPrompt:
 
         result = generate_pr_comment_prompt(context)
 
-        assert "Blockers" in result
-        assert "CI failing" in result
+        assert "Blockers" in result, "Result must not be empty"
+        assert "CI failing" in result, "Result must not be empty"
 
 
 class TestGenerateJsonPrompt:
@@ -307,8 +307,8 @@ class TestGenerateJsonPrompt:
         result = generate_json_prompt(context)
         parsed = json.loads(result)
 
-        assert parsed["session"]["id"] == "test"
-        assert parsed["session"]["pr_number"] == 123
+        assert parsed["session"]["id"] == "test", "Condition must be true"
+        assert parsed["session"]["pr_number"] == 123, "Condition must be true"
 
     def test_includes_metrics(self):
         """Test that metrics are included in JSON."""
@@ -335,6 +335,6 @@ class TestGenerateJsonPrompt:
         result = generate_json_prompt(context)
         parsed = json.loads(result)
 
-        assert parsed["metrics"]["tasks_completed"] == 2
-        assert parsed["metrics"]["tasks_pending"] == 1
-        assert parsed["metrics"]["files_created"] == 2
+        assert parsed["metrics"]["tasks_completed"] == 2, "Condition must be true"
+        assert parsed["metrics"]["tasks_pending"] == 1, "Condition must be true"
+        assert parsed["metrics"]["files_created"] == 2, "Condition must be true"

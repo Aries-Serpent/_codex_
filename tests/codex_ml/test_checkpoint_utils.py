@@ -14,4 +14,4 @@ def test_save_and_load_roundtrip(tmp_path: Path):
     payload = {"value": 123}
     utils.save_checkpoint(cp, payload)
     loaded = utils.load_checkpoint(cp)
-    assert loaded == payload
+    assert loaded == payload, "loaded is not valid"

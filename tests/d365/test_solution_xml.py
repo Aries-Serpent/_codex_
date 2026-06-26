@@ -30,9 +30,9 @@ def test_emit_solution_xml_uses_config(tmp_path: Path) -> None:
     tree = ElementTree.fromstring(xml)
     unique_name = tree.findtext("SolutionManifest/UniqueName")
     version = tree.findtext("SolutionManifest/Version")
-    assert unique_name == "CodexOfflineTest"
-    assert version == "2.0.0.0"
+    assert unique_name == "CodexOfflineTest", "unique_name is not valid"
+    assert version == "2.0.0.0", "version is not valid"
 
     root_components = tree.findall("SolutionManifest/RootComponents/RootComponent")
-    assert any(component.get("schemaName") == "incident" for component in root_components)
-    assert any(component.get("schemaName") == "account" for component in root_components)
+    assert any(component.get("schemaName") == "incident" for component in root_components), "Condition must be true"
+    assert any(component.get("schemaName") == "account" for component in root_components), "Count must be greater than zero"

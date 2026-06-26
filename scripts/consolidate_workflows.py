@@ -74,7 +74,7 @@ class WorkflowConsolidator:
             print(f"  ✅ Backed up to: {backup_dir / workflow_file}")
         except Exception as e:
             error_type = type(e).__name__
-            print(f"  ❌ Backup failed: <ERROR_TYPE>")
+            print("  ❌ Backup failed: <ERROR_TYPE>")
             return False
 
         # Move to disabled
@@ -83,7 +83,7 @@ class WorkflowConsolidator:
             print(f"  ✅ Moved to: {destination}")
         except Exception as e:
             error_type = type(e).__name__
-            print(f"  ❌ Move failed: <ERROR_TYPE>")
+            print("  ❌ Move failed: <ERROR_TYPE>")
             return False
 
         # Add metadata

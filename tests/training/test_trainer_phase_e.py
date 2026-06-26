@@ -47,19 +47,19 @@ class TestCheckpointConfig:
 
     def test_basic_construction(self, tmp_path):
         cfg = self.CC(directory=str(tmp_path))
-        assert cfg.directory == str(tmp_path)
-        assert cfg.best_k == 1
-        assert cfg.monitor == "val_loss"
-        assert cfg.mode == "min"
-        assert cfg.save_optimizer is True
+        assert cfg.directory == str(tmp_path), "directory is not valid"
+        assert cfg.best_k == 1, "best_k is not valid"
+        assert cfg.monitor == "val_loss", "monitor is not valid"
+        assert cfg.mode == "min", "mode is not valid"
+        assert cfg.save_optimizer is True, "save_optimizer is not valid"
 
     def test_mode_max(self, tmp_path):
         cfg = self.CC(directory=str(tmp_path), mode="max")
-        assert cfg.mode == "max"
+        assert cfg.mode == "max", "mode is not valid"
 
     def test_mode_case_insensitive(self, tmp_path):
         cfg = self.CC(directory=str(tmp_path), mode="MIN")
-        assert cfg.mode == "min"
+        assert cfg.mode == "min", "mode is not valid"
 
     def test_invalid_mode_raises(self, tmp_path):
         with pytest.raises(ValueError, match="mode must be"):
@@ -71,7 +71,7 @@ class TestCheckpointConfig:
 
     def test_keep_best_k_overrides_best_k(self, tmp_path):
         cfg = self.CC(directory=str(tmp_path), keep_best_k=3)
-        assert cfg.best_k == 3
+        assert cfg.best_k == 3, "best_k is not valid"
 
     def test_conflicting_best_k_and_keep_best_k_raises(self, tmp_path):
         with pytest.raises(ValueError, match="Conflicting best_k"):
@@ -79,11 +79,11 @@ class TestCheckpointConfig:
 
     def test_maximize_metric_sets_mode_max(self, tmp_path):
         cfg = self.CC(directory=str(tmp_path), maximize_metric=True)
-        assert cfg.mode == "max"
+        assert cfg.mode == "max", "mode is not valid"
 
     def test_maximize_metric_false_sets_mode_min(self, tmp_path):
         cfg = self.CC(directory=str(tmp_path), maximize_metric=False)
-        assert cfg.mode == "min"
+        assert cfg.mode == "min", "mode is not valid"
 
     def test_conflicting_mode_and_maximize_metric_raises(self, tmp_path):
         with pytest.raises(ValueError, match="Conflicting mode"):
@@ -92,11 +92,11 @@ class TestCheckpointConfig:
     def test_path_for_epoch(self, tmp_path):
         cfg = self.CC(directory=str(tmp_path))
         p = cfg.path_for_epoch(3)
-        assert p == Path(str(tmp_path)) / "epoch_3.pt"
+        assert p == Path(str(tmp_path)) / "epoch_3.pt", "p is not valid"
 
     def test_save_optimizer_false(self, tmp_path):
         cfg = self.CC(directory=str(tmp_path), save_optimizer=False)
-        assert cfg.save_optimizer is False
+        assert cfg.save_optimizer is False, "save_optimizer is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -111,14 +111,14 @@ class TestTrainerConfig:
 
     def test_default_construction(self):
         cfg = self.TC()
-        assert cfg.epochs == 1
-        assert cfg.gradient_accumulation_steps == 1
-        assert cfg.mixed_precision is False
-        assert cfg.max_grad_norm is None
-        assert cfg.log_every_n_steps == 0
-        assert cfg.checkpoint is None
-        assert cfg.seed is None
-        assert cfg.metrics_ndjson_path is None
+        assert cfg.epochs == 1, "epochs is not valid"
+        assert cfg.gradient_accumulation_steps == 1, "gradient_accumulation_steps is not valid"
+        assert cfg.mixed_precision is False, "mixed_precision is not valid"
+        assert cfg.max_grad_norm is None, "max_grad_norm is not valid"
+        assert cfg.log_every_n_steps == 0, "log_every_n_steps is not valid"
+        assert cfg.checkpoint is None, "checkpoint is not valid"
+        assert cfg.seed is None, "seed is not valid"
+        assert cfg.metrics_ndjson_path is None, "metrics_ndjson_path is not valid"
 
     def test_custom_values(self):
         cfg = self.TC(
@@ -127,10 +127,10 @@ class TestTrainerConfig:
             mixed_precision=True,
             max_grad_norm=1.0,
         )
-        assert cfg.epochs == 5
-        assert cfg.gradient_accumulation_steps == 4
-        assert cfg.mixed_precision is True
-        assert cfg.max_grad_norm == 1.0
+        assert cfg.epochs == 5, "epochs is not valid"
+        assert cfg.gradient_accumulation_steps == 4, "gradient_accumulation_steps is not valid"
+        assert cfg.mixed_precision is True, "mixed_precision is not valid"
+        assert cfg.max_grad_norm == 1.0, "max_grad_norm is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -145,15 +145,15 @@ class TestTrainingState:
 
     def test_default_construction(self):
         state = self.TS()
-        assert state.epoch == 0
-        assert state.global_step == 0
-        assert state.best_metric is None
+        assert state.epoch == 0, "epoch is not valid"
+        assert state.global_step == 0, "global_step is not valid"
+        assert state.best_metric is None, "best_metric is not valid"
 
     def test_custom_state(self):
         state = self.TS(epoch=3, global_step=100, best_metric=0.5)
-        assert state.epoch == 3
-        assert state.global_step == 100
-        assert state.best_metric == 0.5
+        assert state.epoch == 3, "epoch is not valid"
+        assert state.global_step == 100, "global_step is not valid"
+        assert state.best_metric == 0.5, "best_metric is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -182,7 +182,7 @@ class TestLoadCheckpointPayload:
             patch.object(self.mod, "_TORCH_SUPPORTS_WEIGHTS_ONLY", False),
         ):
             result = fn(tmp_path / "ckpt.pt", map_location="cpu")
-        assert result == fake_payload
+        assert result == fake_payload, "Result must not be empty"
 
     def test_returns_empty_dict_for_non_mapping(self, tmp_path):
         """Non-Mapping payloads from torch.load return {}."""
@@ -192,7 +192,7 @@ class TestLoadCheckpointPayload:
             patch.object(self.mod, "_TORCH_SUPPORTS_WEIGHTS_ONLY", False),
         ):
             result = fn(tmp_path / "ckpt.pt", map_location=None)
-        assert result == {}
+        assert result == {}, "Result must not be empty"
 
     def test_weights_only_kwarg_forwarded(self, tmp_path):
         """weights_only=False forwarded when _TORCH_SUPPORTS_WEIGHTS_ONLY is True."""
@@ -208,7 +208,7 @@ class TestLoadCheckpointPayload:
             patch.object(self.mod, "_TORCH_SUPPORTS_WEIGHTS_ONLY", True),
         ):
             fn(tmp_path / "ckpt.pt", map_location="cpu")
-        assert called_kwargs.get("weights_only") is False
+        assert called_kwargs.get("weights_only") is False, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -242,7 +242,7 @@ class TestTrainerInstantiationGuard:
             fresh.Trainer(dummy, dummy, dummy)
         except RuntimeError as exc:
             # Only allow errors unrelated to the torch guard
-            assert "requires a real torch" not in str(
+            assert "requires a real torch" not in str(, "Condition must be true"
                 exc
             ), "Trainer should not raise torch-guard error with CODEX_ALLOW_TORCH_STUB=1"
         except Exception as _err:
@@ -276,29 +276,29 @@ class TestShouldReplace:
     def test_should_replace_min_lower_value(self, tmp_path):
         if not self.mod._HAS_REAL_TORCH:
             trainer = self._make_trainer_with_checkpoint(tmp_path, "min")
-            assert trainer._should_replace(0.3) is True
+            assert trainer._should_replace(0.3) is True, "Condition must be true"
 
     def test_should_replace_min_higher_value(self, tmp_path):
         if not self.mod._HAS_REAL_TORCH:
             trainer = self._make_trainer_with_checkpoint(tmp_path, "min")
-            assert trainer._should_replace(0.8) is False
+            assert trainer._should_replace(0.8) is False, "Condition must be true"
 
     def test_should_replace_max_higher_value(self, tmp_path):
         if not self.mod._HAS_REAL_TORCH:
             trainer = self._make_trainer_with_checkpoint(tmp_path, "max")
-            assert trainer._should_replace(0.9) is True
+            assert trainer._should_replace(0.9) is True, "Condition must be true"
 
     def test_should_replace_none_best_metric(self, tmp_path):
         if not self.mod._HAS_REAL_TORCH:
             trainer = self._make_trainer_with_checkpoint(tmp_path, "min")
             trainer.state.best_metric = None
-            assert trainer._should_replace(0.5) is True
+            assert trainer._should_replace(0.5) is True, "Condition must be true"
 
     def test_should_replace_no_checkpoint_config(self, tmp_path):
         if not self.mod._HAS_REAL_TORCH:
             trainer = self._make_trainer_with_checkpoint(tmp_path, "min")
             trainer.config.checkpoint = None
-            assert trainer._should_replace(0.1) is False
+            assert trainer._should_replace(0.1) is False, "Condition must be true"
 
 
 class _TensorStub:
@@ -349,10 +349,10 @@ class TestTrainerTorchFreeBranches:
         input_ids = _TensorStub(1)
         labels = _TensorStub(2)
         inputs, labels_out = trainer._prepare_batch({"input_ids": input_ids, "labels": labels})
-        assert inputs["input_ids"] is input_ids
-        assert labels_out is labels
-        assert input_ids.last_device == "cpu"
-        assert labels.last_device == "cpu"
+        assert inputs["input_ids"] is input_ids, "Condition must be true"
+        assert labels_out is labels, "labels_out is not valid"
+        assert input_ids.last_device == "cpu", "last_device is not valid"
+        assert labels.last_device == "cpu", "last_device is not valid"
 
         inputs2, labels2 = trainer._prepare_batch((_TensorStub(3), _TensorStub(4)))
         assert isinstance(inputs2, _TensorStub)
@@ -369,7 +369,7 @@ class TestTrainerTorchFreeBranches:
         trainer = self._build_partial_trainer(tmp_path, checkpoint=False)
         trainer.simple.optimizer.zero_grad.side_effect = [TypeError("unsupported"), None]
         trainer._zero_grad()
-        assert trainer.simple.optimizer.zero_grad.call_count == 2
+        assert trainer.simple.optimizer.zero_grad.call_count == 2, "Count must be greater than zero"
 
     def test_monitor_value_and_latest_checkpoint_path(self, tmp_path):
         trainer = self._build_partial_trainer(tmp_path, checkpoint=True)
@@ -380,7 +380,7 @@ class TestTrainerTorchFreeBranches:
         ckpt_new = tmp_path / "epoch2-metric0.80.pt"
         ckpt_old.write_text("old", encoding="utf-8")
         ckpt_new.write_text("new", encoding="utf-8")
-        assert trainer._latest_checkpoint_path(tmp_path) == ckpt_new
+        assert trainer._latest_checkpoint_path(tmp_path) == ckpt_new, "Condition must be true"
 
     def test_checkpoint_discovery_hydration_and_prune(self, tmp_path):
         trainer = self._build_partial_trainer(tmp_path, checkpoint=True)
@@ -398,13 +398,13 @@ class TestTrainerTorchFreeBranches:
         )
 
         trainer._hydrate_existing_checkpoints(tmp_path)
-        assert trainer.state.best_metric == 0.4
-        assert len(trainer._checkpoints) == 2
+        assert trainer.state.best_metric == 0.4, "best_metric is not valid"
+        assert len(trainer._checkpoints) == 2, "Collection must not be empty"
 
         trainer._prune_checkpoints()
-        assert len(trainer._checkpoints) == 1
-        assert (tmp_path / "epoch_2.pt").exists()
-        assert not (tmp_path / "epoch_1.pt").exists()
+        assert len(trainer._checkpoints) == 1, "Collection must not be empty"
+        assert (tmp_path / "epoch_2.pt").exists(), "Condition must be true"
+        assert not (tmp_path / "epoch_1.pt").exists(), "Condition must be true"
 
     def test_find_latest_checkpoint_prefers_latest_pointer(self, tmp_path):
         trainer = self._build_partial_trainer(tmp_path, checkpoint=True)
@@ -414,9 +414,9 @@ class TestTrainerTorchFreeBranches:
             encoding="utf-8",
         )
         latest = trainer._find_latest_checkpoint(tmp_path)
-        assert latest is not None
-        assert latest[0].name == "epoch_2.pt"
-        assert latest[1]["epoch"] == 2
+        assert latest is not None, "latest must be initialized"
+        assert latest[0].name == "epoch_2.pt", "name is not valid"
+        assert latest[1]["epoch"] == 2, "Condition must be true"
 
     def test_load_checkpoint_applies_model_and_state(self, tmp_path):
         trainer = self._build_partial_trainer(tmp_path, checkpoint=True)
@@ -431,21 +431,21 @@ class TestTrainerTorchFreeBranches:
             trainer._load_checkpoint(tmp_path / "epoch_4.pt", pointer={})
         trainer.simple.model.load_state_dict.assert_called_once_with({"weight": 1})
         trainer.simple.optimizer.load_state_dict.assert_called_once_with({"lr": 0.001})
-        assert trainer.state.epoch == 4
-        assert trainer.state.global_step == 17
-        assert trainer.state.best_metric == pytest.approx(0.12)
+        assert trainer.state.epoch == 4, "epoch is not valid"
+        assert trainer.state.global_step == 17, "global_step is not valid"
+        assert trainer.state.best_metric == pytest.approx(0.12), "best_metric is not valid"
 
     def test_resume_from_latest_checkpoint_handles_failure(self, tmp_path):
         trainer = self._build_partial_trainer(tmp_path, checkpoint=True)
         with patch.object(trainer, "_latest_checkpoint_path", return_value=tmp_path / "missing.pt"):
             with patch.object(self.mod, "load_checkpoint", side_effect=RuntimeError("bad")):
                 trainer._resume_from_latest_checkpoint(trainer.config.checkpoint)
-        assert trainer.state.epoch == 0
+        assert trainer.state.epoch == 0, "epoch is not valid"
 
     def test_save_checkpoint_guard_and_init_stub_checkpoint_guard(self, tmp_path, monkeypatch):
         trainer = self._build_partial_trainer(tmp_path, checkpoint=True)
         trainer._save_checkpoint(epoch=1, metrics={"val_metric": 0.9})
-        assert not (tmp_path / "epoch_1.pt").exists()
+        assert not (tmp_path / "epoch_1.pt").exists(), "Condition must be true"
 
         if self.mod._HAS_REAL_TORCH:
             pytest.skip("Guard branch only relevant without real torch")
@@ -472,5 +472,5 @@ class TestTrainerTorchFreeBranches:
             patch.object(self.mod, "_TORCH_SUPPORTS_WEIGHTS_ONLY", True),
         ):
             result = fn(tmp_path / "ckpt.pt", map_location="cpu")
-        assert result == {"ok": True}
-        assert calls["count"] == 2
+        assert result == {"ok": True}, "Result must not be empty"
+        assert calls["count"] == 2, "Count must be greater than zero"

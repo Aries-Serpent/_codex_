@@ -39,15 +39,15 @@ class TestNodeType:
 
         # Should have node types
         members = list(NodeType.__members__.keys())
-        assert len(members) > 0
+        assert len(members) > 0, "Members must not be empty"
 
     def test_node_type_comparison(self):
         """Test NodeType enum comparison."""
         # Get first two members
         members = list(NodeType.__members__.values())
         if len(members) >= 2:
-            assert members[0] != members[1]
-            assert members[0] == members[0]
+            assert members[0] != members[1], "Condition must be true"
+            assert members[0] == members[0], "Condition must be true"
 
     def test_node_type_string_representation(self):
         """Test NodeType string representation."""
@@ -55,7 +55,7 @@ class TestNodeType:
         if members:
             node_type = members[0]
             # Should have string representation
-            assert str(node_type) is not None
+            assert str(node_type) is not None, "Value must be initialized"
 
 
 class TestEdgeType:
@@ -68,22 +68,22 @@ class TestEdgeType:
 
         # Should have edge types
         members = list(EdgeType.__members__.keys())
-        assert len(members) > 0
+        assert len(members) > 0, "Members must not be empty"
 
     def test_edge_type_comparison(self):
         """Test EdgeType enum comparison."""
         # Get members
         members = list(EdgeType.__members__.values())
         if len(members) >= 2:
-            assert members[0] != members[1]
-            assert members[0] == members[0]
+            assert members[0] != members[1], "Condition must be true"
+            assert members[0] == members[0], "Condition must be true"
 
     def test_edge_type_iteration(self):
         """Test iterating over EdgeType."""
         count = 0
         for _ in EdgeType:
             count += 1
-        assert count > 0
+        assert count > 0, "count must be positive"
 
 
 class TestReasoningStep:
@@ -92,23 +92,23 @@ class TestReasoningStep:
     def test_reasoning_step_creation(self):
         """Test creating a ReasoningStep."""
         step = ReasoningStep(step_id="step_1", thought="Test step")
-        assert step is not None
+        assert step is not None, "step must be initialized"
         assert hasattr(step, "thought")
 
     def test_reasoning_step_attributes(self):
         """Test ReasoningStep attributes."""
         step = ReasoningStep(step_id="step_2", thought="Test", inputs=[1, 2], outputs=[3])
-        assert step.thought == "Test"
+        assert step.thought == "Test", "thought is not valid"
         if hasattr(step, "inputs"):
             assert step.inputs == [1, 2]
         if hasattr(step, "outputs"):
-            assert step.outputs == [3]
+            assert step.outputs == [3], "outputs is not valid"
 
     def test_reasoning_step_with_timestamp(self):
         """Test ReasoningStep with timestamp."""
         step = ReasoningStep(step_id="step_3", thought="Step with time")
         # Should be creatable
-        assert step is not None
+        assert step is not None, "step must be initialized"
 
     def test_reasoning_step_immutability(self):
         """Test ReasoningStep is dataclass (frozen or mutable)."""
@@ -129,8 +129,8 @@ class TestMentalNode:
             node_type=members[0],
             timestamp="2024-01-01T00:00:00",
         )
-        assert node is not None
-        assert node.node_id == "node_1"
+        assert node is not None, "node must be initialized"
+        assert node.node_id == "node_1", "node_id is not valid"
 
     def test_mental_node_with_node_type(self):
         """Test MentalNode with specific node type."""
@@ -143,7 +143,7 @@ class TestMentalNode:
                     node_type=members[0],
                     timestamp="2024-01-01T00:00:00",
                 )
-                assert node is not None
+                assert node is not None, "node must be initialized"
         except Exception as _err:
             # May not support these parameters
             pass
@@ -159,8 +159,8 @@ class TestMentalNode:
         )
 
         # Should have basic properties
-        assert node.node_id == "test"
-        assert node.content == "test content"
+        assert node.node_id == "test", "node_id is not valid"
+        assert node.content == "test content", "Content must not be empty"
 
     def test_mental_node_relationships(self):
         """Test MentalNode relationship tracking."""
@@ -177,7 +177,7 @@ class TestMentalNode:
             node.add_reasoning_step("reasoning", "deductive", 0.8)
             # Should have reasoning chain
             if hasattr(node, "reasoning_chain"):
-                assert len(node.reasoning_chain) > 0
+                assert len(node.reasoning_chain) > 0, "Collection must not be empty"
 
     def test_mental_node_activation(self):
         """Test node activation and salience."""
@@ -191,7 +191,7 @@ class TestMentalNode:
 
         if hasattr(node, "confidence"):
             node.confidence = 0.8
-            assert 0 <= node.confidence <= 1
+            assert 0 <= node.confidence <= 1, "0 is not valid"
 
     def test_mental_node_spread_activation(self):
         """Test activation spreading through network."""
@@ -209,7 +209,7 @@ class TestMentalNode:
             if hasattr(node1, "importance"):
                 node1.importance = 1.0
                 # node2 should receive some importance
-                assert True
+                assert True, "True is not valid"
 
 
 class TestMentalEdge:
@@ -221,7 +221,7 @@ class TestMentalEdge:
         edge = MentalEdge(
             edge_id="edge_1", source_id="node_1", target_id="node_2", edge_type=members[0]
         )
-        assert edge is not None
+        assert edge is not None, "edge must be initialized"
 
     def test_mental_edge_with_edge_type(self):
         """Test MentalEdge with edge type."""
@@ -231,7 +231,7 @@ class TestMentalEdge:
                 edge = MentalEdge(
                     edge_id="edge_2", source_id="n1", target_id="n2", edge_type=members[0]
                 )
-                assert edge is not None
+                assert edge is not None, "edge must be initialized"
         except Exception as _err:
             # May not support edge_type parameter
             pass
@@ -246,7 +246,7 @@ class TestMentalEdge:
             edge_type=members[0],
             weight=0.75,
         )
-        assert edge.weight == 0.75
+        assert edge.weight == 0.75, "weight is not valid"
 
     def test_mental_edge_strength(self):
         """Test MentalEdge connection strength."""
@@ -266,9 +266,9 @@ class TestMentalEdge:
 
         # Should have identifiable endpoints
         if hasattr(edge, "source"):
-            assert edge.source == "source_id"
+            assert edge.source == "source_id", "source is not valid"
         if hasattr(edge, "target"):
-            assert edge.target == "target_id"
+            assert edge.target == "target_id", "target is not valid"
 
 
 class TestMentalMappingModel:
@@ -277,7 +277,7 @@ class TestMentalMappingModel:
     def test_model_initialization(self):
         """Test MentalMappingModel initialization."""
         model = MentalMappingModel()
-        assert model is not None
+        assert model is not None, "model must be initialized"
 
     def test_add_node_to_model(self):
         """Test adding nodes to model."""
@@ -295,7 +295,7 @@ class TestMentalMappingModel:
 
             if hasattr(model, "get_node"):
                 retrieved = model.get_node("node_a")
-                assert retrieved is not None
+                assert retrieved is not None, "retrieved must be initialized"
 
     def test_add_edge_to_model(self):
         """Test adding edges to model."""
@@ -308,7 +308,7 @@ class TestMentalMappingModel:
 
             if hasattr(model, "get_edge"):
                 retrieved = model.get_edge("e1")
-                assert retrieved is not None
+                assert retrieved is not None, "retrieved must be initialized"
 
     def test_model_node_retrieval(self):
         """Test retrieving nodes from model."""
@@ -333,7 +333,7 @@ class TestMentalMappingModel:
             model.add_node(node2)
 
             nodes = model.get_nodes()
-            assert len(nodes) >= 2
+            assert len(nodes) >= 2, "Nodes must not be empty"
 
     def test_model_path_finding(self):
         """Test finding paths between nodes."""
@@ -377,7 +377,7 @@ class TestMentalMappingModel:
             # If path finding available
             if hasattr(model, "find_path"):
                 path = model.find_path("start", "end")
-                assert path is not None
+                assert path is not None, "path must be initialized"
 
     def test_model_spreading_activation(self):
         """Test spreading activation through model."""
@@ -392,7 +392,7 @@ class TestMentalMappingModel:
             if hasattr(model, "spread_activation"):
                 model.spread_activation(decay=0.7)
                 # Should complete without error
-                assert True
+                assert True, "True is not valid"
 
     def test_model_concept_linking(self):
         """Test linking concepts in model."""
@@ -407,7 +407,7 @@ class TestMentalMappingModel:
             # Should have linked them
             if hasattr(model, "are_linked"):
                 linked = model.are_linked(concept1, concept2)
-                assert linked or linked is False  # Boolean
+                assert linked or linked is False, "linked is not valid"
 
     def test_model_visualization_support(self):
         """Test model visualization capabilities."""
@@ -419,7 +419,7 @@ class TestMentalMappingModel:
 
         if hasattr(model, "to_json"):
             json_str = model.to_json()
-            assert json_str is not None
+            assert json_str is not None, "json_str must be initialized"
 
 
 # Integration tests for mental mapping
@@ -468,7 +468,7 @@ class TestMentalMappingIntegration:
                 # Verify network
                 if hasattr(model, "get_nodes"):
                     all_nodes = model.get_nodes()
-                    assert len(all_nodes) == 5
+                    assert len(all_nodes) == 5, "All_nodes must not be empty"
         except Exception as e:
             pytest.skip(f"Concept network building failed: {e}")
 
@@ -519,7 +519,7 @@ class TestMentalMappingIntegration:
                     if hasattr(model, "spread_activation"):
                         model.spread_activation(decay=0.5, steps=2)
                         # Activation should propagate
-                        assert True
+                        assert True, "True is not valid"
         except (IOError, OSError) as e:
             pytest.skip(f"Activation spreading failed: {e}")
 
@@ -536,7 +536,7 @@ class TestMentalMappingIntegration:
             ]
 
             # Should be creatable and usable
-            assert len(steps) == 3
+            assert len(steps) == 3, "Steps must not be empty"
 
             # Add supporting nodes
             members = list(NodeType.__members__.values())
@@ -553,7 +553,7 @@ class TestMentalMappingIntegration:
             # Verify trace recorded
             if hasattr(model, "get_nodes"):
                 nodes = model.get_nodes()
-                assert len(nodes) >= 3
+                assert len(nodes) >= 3, "Nodes must not be empty"
         except Exception as e:
             pytest.skip(f"Reasoning trace failed: {e}")
 

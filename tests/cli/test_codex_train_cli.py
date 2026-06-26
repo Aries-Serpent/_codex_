@@ -40,7 +40,7 @@ def test_train_cli_invokes_training(monkeypatch, tmp_path):
     )
 
     assert result.exit_code == 0, result.output
-    assert captured["resume"] is True
+    assert captured["resume"] is True, "Condition must be true"
 
     cfg = captured["config"]
     if hasattr(cfg, "get"):
@@ -50,6 +50,6 @@ def test_train_cli_invokes_training(monkeypatch, tmp_path):
         seed = getattr(cfg, "seed", None)
         dataset = getattr(cfg, "dataset", None)
 
-    assert seed == 123
+    assert seed == 123, "seed is not valid"
     if isinstance(dataset, Mapping):
         assert list(dataset.get("train_texts", [])) == ["hello"]

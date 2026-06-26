@@ -18,10 +18,10 @@ from mcp.server.facade_fastapi import APP
 def test_health_endpoint():
     client = TestClient(APP)
     resp = client.get("/health")
-    assert resp.status_code == 200
+    assert resp.status_code == 200, "status_code is not valid"
     payload = resp.json()
     for key in ("service", "status", "adapter", "adapter_status"):
-        assert key in payload
+        assert key in payload, "Condition must be true"
 
 
 @pytest.mark.integration
@@ -31,9 +31,9 @@ def test_jsonrpc_endpoints():
         "/jsonrpc",
         json={"jsonrpc": "2.0", "method": "mcp.listTools", "params": {}, "id": "1"},
     )
-    assert resp.status_code == 200
+    assert resp.status_code == 200, "status_code is not valid"
     body = resp.json()
-    assert body.get("jsonrpc") == "2.0"
+    assert body.get("jsonrpc") == "2.0", "Condition must be true"
     assert isinstance(body.get("result"), list)
 
     resp = client.post(
@@ -45,6 +45,6 @@ def test_jsonrpc_endpoints():
             "id": "2",
         },
     )
-    assert resp.status_code == 200
+    assert resp.status_code == 200, "status_code is not valid"
     body = resp.json()
     assert body.get("result", {}).get("output", {}).get("text") == "hello"

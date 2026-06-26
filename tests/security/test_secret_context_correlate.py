@@ -45,19 +45,19 @@ def test_context_correlation():
     )
 
     out = ART / "secret_context_report.json"
-    assert out.exists()
+    assert out.exists(), "Condition must be true"
     data = json.loads(out.read_text())
 
-    assert data["total_findings"] == 2
+    assert data["total_findings"] == 2, "Data must not be empty"
     # At least one finding should be elevated due to path context
-    assert data["elevated_findings"] >= 1
+    assert data["elevated_findings"] >= 1, "Value must be greater than zero"
 
     # Check elevation
     elevated = data["findings"]
-    assert len(elevated) > 0
+    assert len(elevated) > 0, "Elevated must not be empty"
     for finding in elevated:
-        assert "context_indicators" in finding
-        assert "elevation" in finding
+        assert "context_indicators" in finding, "Condition must be true"
+        assert "elevation" in finding, "Condition must be true"
 
 
 def test_context_disabled():
@@ -70,7 +70,7 @@ def test_context_disabled():
         [sys.executable, "scripts/security/secret_context_correlate.py"], check=True, env=env
     )
 
-    assert not (ART / "secret_context_report.json").exists()
+    assert not (ART / "secret_context_report.json").exists(), "Condition must be true"
 
 
 def test_keyword_proximity_uses_span_position():
@@ -110,9 +110,9 @@ def test_keyword_proximity_uses_span_position():
     )
 
     out = ART / "secret_context_report.json"
-    assert out.exists()
+    assert out.exists(), "Condition must be true"
     data = json.loads(out.read_text())
 
     match = next((f for f in data["findings"] if f.get("file") == secret_file.as_posix()), None)
-    assert match is not None
+    assert match is not None, "match must be initialized"
     assert "keyword:api_key" in match.get("context_indicators", [])

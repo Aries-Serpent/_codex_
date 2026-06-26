@@ -31,19 +31,19 @@ def hello():
 """
         sig = extract_ast_signature(code)
 
-        assert sig is not None
-        assert "nodes" in sig
-        assert "hash" in sig
-        assert sig["nodes"]["FunctionDef"] == 1
-        assert sig["nodes"]["Return"] == 1
-        assert len(sig["hash"]) == 32  # MD5 hash length
+        assert sig is not None, "sig must be initialized"
+        assert "nodes" in sig, "Condition must be true"
+        assert "hash" in sig, "Condition must be true"
+        assert sig["nodes"]["FunctionDef"] == 1, "Condition must be true"
+        assert sig["nodes"]["Return"] == 1, "Condition must be true"
+        assert len(sig["hash"]) == 32, "Collection must not be empty"
 
     def test_extract_ast_signature_invalid_code(self):
         """Test that invalid code returns None."""
         code = "def invalid syntax here"
         sig = extract_ast_signature(code)
 
-        assert sig is None
+        assert sig is None, "sig is not valid"
 
     def test_signature_similarity_identical(self):
         """Test similarity of identical signatures."""
@@ -52,7 +52,7 @@ def hello():
         sig2 = extract_ast_signature(code)
 
         similarity = signature_similarity(sig1, sig2)
-        assert similarity == 1.0
+        assert similarity == 1.0, "similarity is not valid"
 
     def test_signature_similarity_different(self):
         """Test similarity of different signatures."""
@@ -63,7 +63,7 @@ def hello():
         sig2 = extract_ast_signature(code2)
 
         similarity = signature_similarity(sig1, sig2)
-        assert 0.0 <= similarity < 1.0
+        assert 0.0 <= similarity < 1.0, "0 is not valid"
 
     def test_compute_uniqueness_single_file(self):
         """Test uniqueness computation with single file."""
@@ -72,7 +72,7 @@ def hello():
             path.write_text("def foo(): pass")
 
             uniqueness = compute_uniqueness([path])
-            assert uniqueness == 1.0  # Single file is trivially unique
+            assert uniqueness == 1.0, "uniqueness is not valid"
 
     def test_compute_uniqueness_identical_files(self):
         """Test uniqueness computation with identical files."""
@@ -86,7 +86,7 @@ def hello():
 
             uniqueness = compute_uniqueness([path1, path2])
             # Identical files should have low uniqueness (close to 0)
-            assert uniqueness < 0.5
+            assert uniqueness < 0.5, "uniqueness is not valid"
 
     def test_compute_uniqueness_different_files(self):
         """Test uniqueness computation with different files."""
@@ -99,15 +99,15 @@ def hello():
 
             uniqueness = compute_uniqueness([path1, path2])
             # Different files should have higher uniqueness
-            assert uniqueness > 0.3
+            assert uniqueness > 0.3, "uniqueness must be greater than zero"
 
     def test_extract_ast_signature_empty_code(self):
         """Test extracting signature from empty code."""
         sig = extract_ast_signature("")
 
-        assert sig is not None
-        assert "nodes" in sig
-        assert "Module" in sig["nodes"]
+        assert sig is not None, "sig must be initialized"
+        assert "nodes" in sig, "Condition must be true"
+        assert "Module" in sig["nodes"], "Condition must be true"
 
     def test_compute_uniqueness_min_nodes_filter(self):
         """Test that files with too few nodes are filtered."""
@@ -128,4 +128,4 @@ def complex_function(a, b, c):
 
             # With high min_nodes, small file should be filtered
             uniqueness = compute_uniqueness([path1, path2], min_nodes=20)
-            assert uniqueness == 1.0  # Only one file passes filter
+            assert uniqueness == 1.0, "uniqueness is not valid"

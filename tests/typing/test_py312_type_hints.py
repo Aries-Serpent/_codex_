@@ -26,8 +26,8 @@ class TestPython312TypeHints:
             return config
 
         hints = get_type_hints(sample_func)
-        assert "config" in hints
-        assert "return" in hints
+        assert "config" in hints, "Condition must be true"
+        assert "return" in hints, "Condition must be true"
 
     def test_list_syntax_type_hints(self):
         """Test list[T] syntax works in 3.12."""
@@ -36,8 +36,8 @@ class TestPython312TypeHints:
             return [len(item) for item in items]
 
         hints = get_type_hints(sample_func)
-        assert "items" in hints
-        assert "return" in hints
+        assert "items" in hints, "Item must not be empty"
+        assert "return" in hints, "Condition must be true"
 
     def test_union_pipe_syntax(self):
         """Test X | None syntax works in 3.12."""
@@ -46,8 +46,8 @@ class TestPython312TypeHints:
             return len(value) if value else None
 
         hints = get_type_hints(sample_func)
-        assert "value" in hints
-        assert "return" in hints
+        assert "value" in hints, "Value must be initialized"
+        assert "return" in hints, "Condition must be true"
 
     def test_complex_nested_types(self):
         """Test complex nested type hints."""
@@ -56,8 +56,8 @@ class TestPython312TypeHints:
             return [{"key": value} for value in data.values()]
 
         hints = get_type_hints(sample_func)
-        assert "data" in hints
-        assert "return" in hints
+        assert "data" in hints, "Data must not be empty"
+        assert "return" in hints, "Condition must be true"
 
     @pytest.mark.skipif(sys.version_info < (3, 12), reason="3.12+ only")
     def test_no_future_annotations_needed(self):
@@ -88,7 +88,7 @@ class TestCodexMLTypeHints:
             # Check if module has type-hinted functions
             if hasattr(cli, "_load_training_config"):
                 hints = get_type_hints(cli._load_training_config)
-                assert hints  # Should have type hints
+                assert hints, "hints is not valid"
         except ImportError:
             pytest.skip("codex_ml.evaluation.cli not available")
 
@@ -98,7 +98,7 @@ class TestCodexMLTypeHints:
             from codex_ml.data import loaders
 
             # Module should be importable and have type hints
-            assert loaders is not None
+            assert loaders is not None, "loaders must be initialized"
         except ImportError:
             pytest.skip("codex_ml.data.loaders not available")
 
@@ -108,7 +108,7 @@ class TestCodexMLTypeHints:
             from codex_ml.utils import toml_compat
 
             # Module should be importable
-            assert toml_compat is not None
+            assert toml_compat is not None, "toml_compat must be initialized"
         except ImportError:
             pytest.skip("codex_ml.utils.toml_compat not available")
 
@@ -123,8 +123,8 @@ class TestGenericTypeHints:
             return x
 
         hints = get_type_hints(identity)
-        assert "x" in hints
-        assert "return" in hints
+        assert "x" in hints, "Condition must be true"
+        assert "return" in hints, "Condition must be true"
 
     def test_generic_class(self):
         """Test generic class type hints."""
@@ -138,10 +138,10 @@ class TestGenericTypeHints:
                 return self.value
 
         hints = get_type_hints(Container.__init__)
-        assert "value" in hints
+        assert "value" in hints, "Value must be initialized"
 
         hints = get_type_hints(Container.get)
-        assert "return" in hints
+        assert "return" in hints, "Condition must be true"
 
     @pytest.mark.skipif(sys.version_info < (3, 12), reason="Python 3.12+ feature")
     def test_pep_695_type_parameter_syntax(self):
@@ -187,8 +187,8 @@ class TestTypeHintCompatibility:
         hints2 = get_type_hints(func2)
 
         # Both should work
-        assert "x" in hints1
-        assert "x" in hints2
+        assert "x" in hints1, "Condition must be true"
+        assert "x" in hints2, "Condition must be true"
 
     def test_union_style_variations(self):
         """Test different ways to express Union."""
@@ -206,8 +206,8 @@ class TestTypeHintCompatibility:
         hints2 = get_type_hints(func2)
 
         # Both should work
-        assert "x" in hints1
-        assert "x" in hints2
+        assert "x" in hints1, "Condition must be true"
+        assert "x" in hints2, "Condition must be true"
 
 
 @pytest.mark.skipif(sys.version_info < (3, 12), reason="Python 3.12+ tests")
@@ -226,7 +226,7 @@ class TestPython312SpecificFeatures:
 
         # Should work fine
         result = typed_func(42)
-        assert result == "42"
+        assert result == "42", "Result must not be empty"
 
     def test_typing_extensions_compatibility(self):
         """Test that typing_extensions works with Python 3.12."""
@@ -242,9 +242,9 @@ class TestPython312SpecificFeatures:
                 "debug": True,
             }
 
-            assert config["name"] == "test"
-            assert config["version"] == "1.0"
-            assert config["debug"] is True
+            assert config["name"] == "test", "Condition must be true"
+            assert config["version"] == "1.0", "Condition must be true"
+            assert config["debug"] is True, "Condition must be true"
         except ImportError:
             pytest.skip("typing_extensions not available")
 
@@ -256,10 +256,10 @@ class TestPython312SpecificFeatures:
             return f"Mode: {mode}"
 
         result = set_mode("train")
-        assert result == "Mode: train"
+        assert result == "Mode: train", "Result must not be empty"
 
         hints = get_type_hints(set_mode)
-        assert "mode" in hints
+        assert "mode" in hints, "Condition must be true"
 
 
 class TestRealWorldTypeHints:
@@ -275,8 +275,8 @@ class TestRealWorldTypeHints:
             return wrapper
 
         hints = get_type_hints(higher_order)
-        assert "func" in hints
-        assert "return" in hints
+        assert "func" in hints, "Condition must be true"
+        assert "return" in hints, "Condition must be true"
 
     def test_async_type_hints(self):
         """Test type hints on async functions."""
@@ -287,8 +287,8 @@ class TestRealWorldTypeHints:
             return str(x)
 
         hints = get_type_hints(async_func)
-        assert "x" in hints
-        assert "return" in hints
+        assert "x" in hints, "Condition must be true"
+        assert "return" in hints, "Condition must be true"
 
     def test_decorator_with_type_hints(self):
         """Test that decorators preserve type hints."""

@@ -79,15 +79,15 @@ class TestDecision:
         """Test creating a decision."""
         decision = Decision(id="D1", name="Approve", evaluation_fn=lambda: 0.9)
 
-        assert decision.id == "D1"
-        assert decision.name == "Approve"
+        assert decision.id == "D1", "id is not valid"
+        assert decision.name == "Approve", "name is not valid"
 
     def test_evaluate_decision(self):
         """Test evaluating a decision."""
         decision = Decision(id="D1", name="Test", evaluation_fn=lambda: 0.75)
 
         score = decision.evaluate()
-        assert score == 0.75
+        assert score == 0.75, "score is not valid"
 
 
 class TestSuperpositionState:
@@ -103,10 +103,10 @@ class TestSuperpositionState:
 
         state = SuperpositionState(decisions=decisions)
 
-        assert len(state.decisions) == 3
-        assert len(state.amplitudes) == 3
-        assert state.coherence == 1.0
-        assert not state.evaluated
+        assert len(state.decisions) == 3, "Collection must not be empty"
+        assert len(state.amplitudes) == 3, "Collection must not be empty"
+        assert state.coherence == 1.0, "coherence is not valid"
+        assert not state.evaluated, "Condition must be true"
 
     def test_equal_amplitudes(self):
         """Test that initial amplitudes are equal."""
@@ -120,7 +120,7 @@ class TestSuperpositionState:
         # All amplitudes should be 1/√2 ≈ 0.707
         expected = 1.0 / (2**0.5)
         for amp in state.amplitudes:
-            assert abs(amp - expected) < 0.001
+            assert abs(amp - expected) < 0.001, "Condition must be true"
 
     def test_empty_decisions_raises_error(self):
         """Test that empty decisions list raises error."""
@@ -137,8 +137,8 @@ class TestSuperpositionState:
         state = SuperpositionState(decisions=decisions)
 
         decision = state.get_decision_by_id("D2")
-        assert decision is not None
-        assert decision.name == "B"
+        assert decision is not None, "decision must be initialized"
+        assert decision.name == "B", "name is not valid"
 
     def test_to_dict(self):
         """Test converting state to dictionary."""
@@ -150,9 +150,9 @@ class TestSuperpositionState:
         state = SuperpositionState(decisions=decisions)
         data = state.to_dict()
 
-        assert data["num_decisions"] == 2
-        assert "amplitudes" in data
-        assert "coherence" in data
+        assert data["num_decisions"] == 2, "Data must not be empty"
+        assert "amplitudes" in data, "Data must not be empty"
+        assert "coherence" in data, "Data must not be empty"
 
 
 class TestSuperpositionEngine:
@@ -167,8 +167,8 @@ class TestSuperpositionEngine:
 
         state = engine.create_superposition(decisions)
 
-        assert len(state.decisions) == 2
-        assert state.coherence == 1.0
+        assert len(state.decisions) == 2, "Collection must not be empty"
+        assert state.coherence == 1.0, "coherence is not valid"
 
     def test_create_empty_superposition_raises_error(self, engine):
         """Test that empty decisions raises error."""
@@ -186,9 +186,9 @@ class TestSuperpositionEngine:
         state = engine.create_superposition(decisions)
         probabilities = engine.evaluate_parallel(state)
 
-        assert len(probabilities) == 3
-        assert abs(sum(probabilities) - 1.0) < 0.001  # Should sum to 1
-        assert state.evaluated
+        assert len(probabilities) == 3, "Probabilities must not be empty"
+        assert abs(sum(probabilities) - 1.0) < 0.001, "Condition must be true"
+        assert state.evaluated, "Condition must be true"
 
     def test_evaluate_orders_by_score(self, engine):
         """Test that higher scores get higher probabilities."""
@@ -201,7 +201,7 @@ class TestSuperpositionEngine:
         probabilities = engine.evaluate_parallel(state)
 
         # D1 should have much higher probability than D2
-        assert probabilities[0] > probabilities[1]
+        assert probabilities[0] > probabilities[1], "Value must be greater than zero"
 
     def test_collapse(self, engine):
         """Test wave function collapse."""
@@ -215,8 +215,8 @@ class TestSuperpositionEngine:
         best_decision = engine.collapse(state)
 
         # Should select the highest-scoring decision
-        assert best_decision.id == "D1"
-        assert best_decision.name == "Best"
+        assert best_decision.id == "D1", "id is not valid"
+        assert best_decision.name == "Best", "name is not valid"
 
     def test_collapse_auto_evaluates(self, engine):
         """Test that collapse auto-evaluates if needed."""
@@ -226,10 +226,10 @@ class TestSuperpositionEngine:
         ]
 
         state = engine.create_superposition(decisions)
-        assert not state.evaluated
+        assert not state.evaluated, "Condition must be true"
 
         engine.collapse(state)
-        assert state.evaluated
+        assert state.evaluated, "Condition must be true"
 
     def test_get_coherence(self, engine):
         """Test getting coherence value."""
@@ -241,7 +241,7 @@ class TestSuperpositionEngine:
         state = engine.create_superposition(decisions)
         coherence = engine.get_coherence(state)
 
-        assert 0.0 <= coherence <= 1.0
+        assert 0.0 <= coherence <= 1.0, "0 is not valid"
 
 
 class TestParallelPerformance:
@@ -265,7 +265,7 @@ class TestParallelPerformance:
 
         # With 4 parallel tasks of 50ms, should take ~50ms, not 200ms
         # Allow some overhead, but should be < 150ms
-        assert parallel_time < 0.15
+        assert parallel_time < 0.15, "parallel_time is not valid"
 
     def test_performance_metrics(self, engine):
         """Test getting performance metrics."""
@@ -279,9 +279,9 @@ class TestParallelPerformance:
 
         metrics = engine.get_performance_metrics()
 
-        assert "avg_time" in metrics
-        assert "total_evaluations" in metrics
-        assert metrics["total_evaluations"] == 1
+        assert "avg_time" in metrics, "Condition must be true"
+        assert "total_evaluations" in metrics, "Condition must be true"
+        assert metrics["total_evaluations"] == 1, "Condition must be true"
 
 
 class TestCoherenceCalculation:
@@ -298,7 +298,7 @@ class TestCoherenceCalculation:
         engine.evaluate_parallel(state)
 
         # Peaked distribution should have high coherence
-        assert state.coherence > 0.5
+        assert state.coherence > 0.5, "coherence must be greater than zero"
 
     def test_uniform_distribution_low_coherence(self, engine):
         """Test that uniform distribution has low coherence."""
@@ -311,7 +311,7 @@ class TestCoherenceCalculation:
         engine.evaluate_parallel(state)
 
         # Uniform distribution should have lower coherence
-        assert state.coherence < 0.5
+        assert state.coherence < 0.5, "coherence is not valid"
 
 
 class TestErrorHandling:
@@ -334,7 +334,7 @@ class TestErrorHandling:
         probabilities = engine.evaluate_parallel(state)
 
         # D1 should get all probability
-        assert probabilities[0] > 0.9
+        assert probabilities[0] > 0.9, "Value must be greater than zero"
 
     def test_all_zero_scores(self, engine):
         """Test handling of all zero scores."""
@@ -347,8 +347,8 @@ class TestErrorHandling:
         probabilities = engine.evaluate_parallel(state)
 
         # Should give equal probabilities
-        assert abs(probabilities[0] - 0.5) < 0.001
-        assert abs(probabilities[1] - 0.5) < 0.001
+        assert abs(probabilities[0] - 0.5) < 0.001, "Condition must be true"
+        assert abs(probabilities[1] - 0.5) < 0.001, "Condition must be true"
 
 
 class TestDecorator:
@@ -362,7 +362,7 @@ class TestDecorator:
             return max(options, key=lambda x: x)
 
         result = make_decision([1, 5, 3])
-        assert result == 5
+        assert result == 5, "Result must not be empty"
 
 
 class TestIntegration:
@@ -379,16 +379,16 @@ class TestIntegration:
 
         # 2. Create superposition
         state = engine.create_superposition(decisions)
-        assert len(state.decisions) == 3
+        assert len(state.decisions) == 3, "Collection must not be empty"
 
         # 3. Evaluate in parallel
         probabilities = engine.evaluate_parallel(state)
-        assert sum(probabilities) == pytest.approx(1.0)
+        assert sum(probabilities) == pytest.approx(1.0), "Condition must be true"
 
         # 4. Collapse to best decision
         best = engine.collapse(state)
-        assert best.id == "D1"
+        assert best.id == "D1", "id is not valid"
 
         # 5. Check coherence
         coherence = engine.get_coherence(state)
-        assert 0.0 <= coherence <= 1.0
+        assert 0.0 <= coherence <= 1.0, "0 is not valid"

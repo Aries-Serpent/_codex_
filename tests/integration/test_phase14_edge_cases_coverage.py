@@ -36,7 +36,7 @@ class TestNumericEdgeCases:
         batch_size = 0
 
         # Should be caught as invalid
-        assert batch_size <= 0
+        assert batch_size <= 0, "batch_size is not valid"
         with pytest.raises(ValueError):
             if batch_size <= 0:
                 raise ValueError("Batch size must be positive")
@@ -52,15 +52,15 @@ class TestNumericEdgeCases:
         """Test very small learning rate near machine epsilon."""
         lr = 1e-15
 
-        assert lr > 0
-        assert lr < sys.float_info.epsilon * 100
+        assert lr > 0, "lr must be greater than zero"
+        assert lr < sys.float_info.epsilon * 100, "lr is not valid"
 
     def test_very_large_batch_size(self):
         """Test very large batch size."""
         batch_size = 2**20  # 1 million
 
-        assert batch_size > 0
-        assert batch_size == 1048576
+        assert batch_size > 0, "batch_size must be greater than zero"
+        assert batch_size == 1048576, "batch_size is not valid"
 
     def test_float_precision_loss(self):
         """Test float precision edge cases."""
@@ -71,23 +71,23 @@ class TestNumericEdgeCases:
         result = large + small
 
         # Due to float precision, small addition may be lost
-        assert result == large  # This is expected behavior
+        assert result == large, "Result must not be empty"
 
     def test_inf_handling(self):
         """Test infinity handling."""
         inf_value = float("inf")
         neg_inf = float("-inf")
 
-        assert math.isinf(inf_value)
-        assert math.isinf(neg_inf)
-        assert inf_value > 0
-        assert neg_inf < 0
+        assert math.isinf(inf_value), "Value must be initialized"
+        assert math.isinf(neg_inf), "Condition must be true"
+        assert inf_value > 0, "inf_value must be greater than zero"
+        assert neg_inf < 0, "neg_inf is not valid"
 
     def test_nan_handling(self):
         """Test NaN handling."""
         nan_value = float("nan")
 
-        assert math.isnan(nan_value)
+        assert math.isnan(nan_value), "Value must be initialized"
 
     def test_division_edge_cases(self):
         """Test division edge cases."""
@@ -96,7 +96,7 @@ class TestNumericEdgeCases:
         denominator = 1e-300
 
         result = numerator / denominator
-        assert result > 1e299
+        assert result > 1e299, "result must be greater than zero"
 
     def test_epoch_count_boundaries(self):
         """Test epoch count edge cases."""
@@ -104,10 +104,10 @@ class TestNumericEdgeCases:
         invalid_epochs = [0, -1, -100]
 
         for e in valid_epochs:
-            assert e > 0
+            assert e > 0, "e must be greater than zero"
 
         for e in invalid_epochs:
-            assert e <= 0
+            assert e <= 0, "e is not valid"
 
 
 # =============================================================================
@@ -122,39 +122,39 @@ class TestStringEdgeCases:
         """Test empty string handling."""
         empty = ""
 
-        assert len(empty) == 0
-        assert not empty
-        assert empty.strip() == ""
+        assert len(empty) == 0, "Empty must not be empty"
+        assert not empty, "Condition must be true"
+        assert empty.strip() == "", "Condition must be true"
 
     def test_whitespace_only_string(self):
         """Test whitespace-only string handling."""
         whitespace = "   \t\n\r  "
 
-        assert len(whitespace) > 0
-        assert whitespace.strip() == ""
+        assert len(whitespace) > 0, "Whitespace must not be empty"
+        assert whitespace.strip() == "", "Condition must be true"
 
     def test_very_long_string(self):
         """Test very long string handling."""
         long_string = "a" * 1_000_000  # 1 million characters
 
-        assert len(long_string) == 1_000_000
-        assert long_string[0] == "a"
-        assert long_string[-1] == "a"
+        assert len(long_string) == 1_000_000, "Long_string must not be empty"
+        assert long_string[0] == "a", "Condition must be true"
+        assert long_string[-1] == "a", "Condition must be true"
 
     def test_unicode_string(self):
         """Test unicode string handling."""
         unicode_str = "Hello 世界 🌍 Привет مرحبا"
 
-        assert len(unicode_str) > 0
-        assert "世界" in unicode_str
-        assert "🌍" in unicode_str
+        assert len(unicode_str) > 0, "Unicode_str must not be empty"
+        assert "世界" in unicode_str, "Condition must be true"
+        assert "🌍" in unicode_str, "Condition must be true"
 
     def test_null_character_in_string(self):
         """Test null character handling."""
         null_str = "hello\x00world"
 
-        assert len(null_str) == 11
-        assert "\x00" in null_str
+        assert len(null_str) == 11, "Null_str must not be empty"
+        assert "\x00" in null_str, "Condition must be true"
 
     def test_newline_variations(self):
         """Test different newline characters."""
@@ -162,9 +162,9 @@ class TestStringEdgeCases:
         windows_newline = "line1\r\nline2"
         old_mac_newline = "line1\rline2"
 
-        assert unix_newline.count("\n") == 1
-        assert windows_newline.count("\r\n") == 1
-        assert old_mac_newline.count("\r") == 1
+        assert unix_newline.count("\n") == 1, "Count must be greater than zero"
+        assert windows_newline.count("\r\n") == 1, "Count must be greater than zero"
+        assert old_mac_newline.count("\r") == 1, "Count must be greater than zero"
 
     def test_mixed_encoding_content(self):
         """Test mixed encoding handling."""
@@ -175,7 +175,7 @@ class TestStringEdgeCases:
         encoded = utf8_str.encode("utf-8")
         decoded = encoded.decode("utf-8")
 
-        assert decoded == utf8_str
+        assert decoded == utf8_str, "decoded is not valid"
 
 
 # =============================================================================
@@ -190,36 +190,36 @@ class TestCollectionEdgeCases:
         """Test empty list handling."""
         empty_list = []
 
-        assert len(empty_list) == 0
-        assert not empty_list
+        assert len(empty_list) == 0, "Empty_list must not be empty"
+        assert not empty_list, "Condition must be true"
 
         # Iteration should work but produce nothing
         result = [x for x in empty_list]
-        assert result == []
+        assert result == [], "Result must not be empty"
 
     def test_empty_dict(self):
         """Test empty dict handling."""
         empty_dict = {}
 
-        assert len(empty_dict) == 0
-        assert not empty_dict
-        assert empty_dict.get("key") is None
+        assert len(empty_dict) == 0, "Empty_dict must not be empty"
+        assert not empty_dict, "Condition must be true"
+        assert empty_dict.get("key") is None, "Condition must be true"
 
     def test_single_element_collection(self):
         """Test single element collection handling."""
         single_list = [42]
         single_dict = {"key": "value"}
 
-        assert len(single_list) == 1
-        assert len(single_dict) == 1
-        assert single_list[0] == 42
+        assert len(single_list) == 1, "Single_list must not be empty"
+        assert len(single_dict) == 1, "Single_dict must not be empty"
+        assert single_list[0] == 42, "Condition must be true"
 
     def test_nested_empty_collections(self):
         """Test nested empty collections."""
         nested = {"items": [], "data": {}}
 
-        assert nested["items"] == []
-        assert nested["data"] == {}
+        assert nested["items"] == [], "Item must not be empty"
+        assert nested["data"] == {}, "Data must not be empty"
 
     def test_very_deep_nesting(self):
         """Test deeply nested structures."""
@@ -233,14 +233,14 @@ class TestCollectionEdgeCases:
         for _ in range(depth):
             current = current["level"]
 
-        assert current == "value"
+        assert current == "value", "Value must be initialized"
 
     def test_list_with_none_elements(self):
         """Test list containing None elements."""
         list_with_nones = [1, None, 3, None, 5]
 
-        assert len(list_with_nones) == 5
-        assert list_with_nones.count(None) == 2
+        assert len(list_with_nones) == 5, "List_with_nones must not be empty"
+        assert list_with_nones.count(None) == 2, "Count must be greater than zero"
 
         # Filter out Nones
         filtered = [x for x in list_with_nones if x is not None]
@@ -250,8 +250,8 @@ class TestCollectionEdgeCases:
         """Test dict with None values."""
         dict_with_nones = {"a": 1, "b": None, "c": 3}
 
-        assert dict_with_nones["b"] is None
-        assert "b" in dict_with_nones  # Key exists even if value is None
+        assert dict_with_nones["b"] is None, "Condition must be true"
+        assert "b" in dict_with_nones, "Condition must be true"
 
 
 # =============================================================================
@@ -266,7 +266,7 @@ class TestFileSystemEdgeCases:
         """Test nonexistent path handling."""
         path = Path("/nonexistent/path/that/does/not/exist")
 
-        assert not path.exists()
+        assert not path.exists(), "Condition must be true"
 
     def test_empty_file(self):
         """Test empty file handling."""
@@ -274,10 +274,10 @@ class TestFileSystemEdgeCases:
             f.write("")
             path = Path(f.name)
 
-        assert path.exists()
-        assert path.stat().st_size == 0
+        assert path.exists(), "Condition must be true"
+        assert path.stat().st_size == 0, "st_size is not valid"
         content = path.read_text()
-        assert content == ""
+        assert content == "", "Content must not be empty"
 
         path.unlink()
 
@@ -288,7 +288,7 @@ class TestFileSystemEdgeCases:
             path = Path(f.name)
 
         content = path.read_text()
-        assert content.strip() == ""
+        assert content.strip() == "", "Content must not be empty"
 
         path.unlink()
 
@@ -301,8 +301,8 @@ class TestFileSystemEdgeCases:
             path = Path(tmpdir) / f"{long_name}.txt"
             path.write_text("content")
 
-            assert path.exists()
-            assert len(path.name) > 200
+            assert path.exists(), "Condition must be true"
+            assert len(path.name) > 200, "Collection must not be empty"
 
     def test_special_characters_in_path(self):
         """Test special characters in file paths."""
@@ -311,7 +311,7 @@ class TestFileSystemEdgeCases:
             path = Path(tmpdir) / "file with spaces_and_underscores.txt"
             path.write_text("content")
 
-            assert path.exists()
+            assert path.exists(), "Condition must be true"
 
     def test_symlink_handling(self):
         """Test symlink handling."""
@@ -322,8 +322,8 @@ class TestFileSystemEdgeCases:
             link = Path(tmpdir) / "link.txt"
             try:
                 link.symlink_to(real_file)
-                assert link.exists()
-                assert link.is_symlink()
+                assert link.exists(), "Condition must be true"
+                assert link.is_symlink(), "Condition must be true"
             except OSError:
                 # Symlinks may not be supported on all platforms
                 pytest.skip("Symlinks not supported on this platform")
@@ -345,7 +345,7 @@ class TestErrorHandlingEdgeCases:
             except ValueError as e:
                 raise RuntimeError("Wrapper error") from e
         except RuntimeError as outer:
-            assert outer.__cause__ is not None
+            assert outer.__cause__ is not None, "__cause__ must be initialized"
             assert isinstance(outer.__cause__, ValueError)
 
     def test_exception_without_message(self):
@@ -353,7 +353,7 @@ class TestErrorHandlingEdgeCases:
         try:
             raise ValueError()
         except ValueError as e:
-            assert str(e) == ""
+            assert str(e) == "", "Condition must be true"
 
     def test_exception_with_args(self):
         """Test exception with multiple args."""
@@ -377,7 +377,7 @@ class TestErrorHandlingEdgeCases:
         with pytest.raises(SystemExit) as exc_info:
             _do_exit()
 
-        assert exc_info.value.code == 1
+        assert exc_info.value.code == 1, "Value must be initialized"
 
     def test_memory_error_handling(self):
         """Test MemoryError handling logic."""
@@ -391,7 +391,7 @@ class TestErrorHandlingEdgeCases:
                 return "handled"
 
         result = handle_memory_error()
-        assert result == "handled"
+        assert result == "handled", "Result must not be empty"
 
 
 # =============================================================================
@@ -406,30 +406,30 @@ class TestTypeEdgeCases:
         """Test None type checking."""
         value = None
 
-        assert value is None
-        assert type(value) is type(None)
+        assert value is None, "Value must be initialized"
+        assert type(value) is type(None), "Value must be initialized"
         assert isinstance(value, type(None))
 
     def test_bool_as_int(self):
         """Test boolean as integer edge case."""
         # In Python, bool is a subclass of int
         assert isinstance(True, int)
-        assert True == 1
-        assert False == 0
+        assert True == 1, "True is not valid"
+        assert False == 0, "False is not valid"
 
         # But they're not the same type identity
-        assert type(True) is not type(1)
-        assert type(False) is not type(0)
+        assert type(True) is not type(1), "Condition must be true"
+        assert type(False) is not type(0), "Condition must be true"
 
     def test_mixed_type_comparison(self):
         """Test mixed type comparisons."""
         # String and int comparison
-        assert "10" != 10
+        assert "10" != 10, "Condition must be true"
 
         # Float and int comparison
         ten_float = 10.0
         ten_int = 10
-        assert ten_float == ten_int
+        assert ten_float == ten_int, "ten_float is not valid"
 
     def test_callable_detection(self):
         """Test callable detection edge cases."""
@@ -444,9 +444,9 @@ class TestTypeEdgeCases:
         class NonCallableClass:
             pass
 
-        assert callable(func)
-        assert callable(CallableClass())
-        assert not callable(NonCallableClass())
+        assert callable(func), "Condition must be true"
+        assert callable(CallableClass()), "Condition must be true"
+        assert not callable(NonCallableClass()), "Condition must be true"
 
     def test_duck_typing_edge_case(self):
         """Test duck typing edge case."""
@@ -456,7 +456,7 @@ class TestTypeEdgeCases:
                 return 42
 
         fake = FakList()
-        assert len(fake) == 42
+        assert len(fake) == 42, "Fake must not be empty"
 
 
 # =============================================================================
@@ -477,7 +477,7 @@ class TestConcurrencyEdgeCases:
         with lock:
             counter[0] += 1
 
-        assert counter[0] == 1
+        assert counter[0] == 1, "Count must be greater than zero"
 
     def test_race_condition_prevention(self):
         """Test race condition prevention pattern."""
@@ -501,7 +501,7 @@ class TestConcurrencyEdgeCases:
         counter.increment()
         counter.increment()
 
-        assert counter.value == 2
+        assert counter.value == 2, "Value must be initialized"
 
 
 # =============================================================================
@@ -517,7 +517,7 @@ class TestMemoryEdgeCases:
         # Python caches small integers
         a = 256
         b = 256
-        assert a is b  # Same object
+        assert a is b, "a is not valid"
 
         # Large integers are not cached
         # Note: this may or may not be the same object depending on implementation
@@ -527,11 +527,11 @@ class TestMemoryEdgeCases:
         # Simple strings are interned
         s1 = "hello"
         s2 = "hello"
-        assert s1 is s2
+        assert s1 is s2, "s1 is not valid"
 
         # Complex strings may not be
         s3 = "".join(["h", "e", "l", "l", "o"])
-        assert s3 == s1  # Equal but potentially not same object
+        assert s3 == s1, "s3 is not valid"
 
     def test_circular_reference(self):
         """Test circular reference handling."""
@@ -546,7 +546,7 @@ class TestMemoryEdgeCases:
         b.ref = a
 
         # Python's GC handles this
-        assert a.ref.ref is a
+        assert a.ref.ref is a, "ref is not valid"
 
 
 # =============================================================================
@@ -569,11 +569,11 @@ class TestConfigurationEdgeCases:
         config = {"optional": None}
 
         value = config.get("optional", "default")
-        assert value is None  # .get() returns None, not default
+        assert value is None, "Value must be initialized"
 
         # Use or pattern for None check
         value = config.get("optional") or "default"
-        assert value == "default"
+        assert value == "default", "Value must be initialized"
 
     def test_config_type_coercion(self):
         """Test configuration type coercion."""
@@ -581,7 +581,7 @@ class TestConfigurationEdgeCases:
         config = {"port": "8080"}
 
         port = int(config["port"])
-        assert port == 8080
+        assert port == 8080, "port is not valid"
         assert isinstance(port, int)
 
     def test_environment_variable_fallback(self):
@@ -594,4 +594,4 @@ class TestConfigurationEdgeCases:
 
         # Test fallback
         value = os.environ.get(key, "fallback")
-        assert value == "fallback"
+        assert value == "fallback", "Value must be initialized"

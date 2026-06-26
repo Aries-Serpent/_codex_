@@ -53,36 +53,36 @@ class TestClassifyFiles:
             "CHANGELOG.md",
         ]
         allowed, excluded, denied = classify_files(files, self._config)
-        assert allowed == files
-        assert excluded == []
-        assert denied == []
+        assert allowed == files, "allowed is not valid"
+        assert excluded == [], "excluded is not valid"
+        assert denied == [], "denied is not valid"
 
     def test_deny_overrides_allow(self):
         files = [".github/workflows/deploy-prod.yml"]
         allowed, _excluded, denied = classify_files(files, self._config)
-        assert allowed == []
-        assert denied == [".github/workflows/deploy-prod.yml"]
+        assert allowed == [], "allowed is not valid"
+        assert denied == [".github/workflows/deploy-prod.yml"], "denied is not valid"
 
     def test_excluded_not_in_allowlist(self):
         files = ["src/codex/models.py", "tests/test_foo.py"]
         allowed, excluded, denied = classify_files(files, self._config)
-        assert allowed == []
+        assert allowed == [], "allowed is not valid"
         assert set(excluded) == {"src/codex/models.py", "tests/test_foo.py"}
-        assert denied == []
+        assert denied == [], "denied is not valid"
 
     def test_force_files_bypasses_allowlist(self):
         # Explicitly requested files skip the allowlist check
         files = ["src/codex/models.py"]  # not in allowlist
         allowed, excluded, _denied = classify_files(files, self._config, force_files=files)
-        assert allowed == ["src/codex/models.py"]
-        assert excluded == []
+        assert allowed == ["src/codex/models.py"], "allowed is not valid"
+        assert excluded == [], "excluded is not valid"
 
     def test_force_files_still_denied(self):
         # Even force_files cannot bypass the denylist
         files = [".github/workflows/release-v2.yml"]
         allowed, _excluded, denied = classify_files(files, self._config, force_files=files)
-        assert allowed == []
-        assert denied == [".github/workflows/release-v2.yml"]
+        assert allowed == [], "allowed is not valid"
+        assert denied == [".github/workflows/release-v2.yml"], "denied is not valid"
 
     def test_mixed_batch(self):
         files = [
@@ -91,20 +91,20 @@ class TestClassifyFiles:
             "src/codex/app.py",  # excluded
         ]
         allowed, excluded, denied = classify_files(files, self._config)
-        assert allowed == [".github/workflows/ci.yml"]
-        assert excluded == ["src/codex/app.py"]
-        assert denied == [".github/workflows/deploy.yml"]
+        assert allowed == [".github/workflows/ci.yml"], "allowed is not valid"
+        assert excluded == ["src/codex/app.py"], "excluded is not valid"
+        assert denied == [".github/workflows/deploy.yml"], "denied is not valid"
 
     def test_empty_input(self):
         allowed, excluded, denied = classify_files([], self._config)
-        assert allowed == excluded == denied == []
+        assert allowed == excluded == denied == [], "allowed is not valid"
 
     def test_empty_config(self):
         # With an empty allowlist, everything is excluded
         files = [".github/workflows/ci.yml"]
         allowed, excluded, _denied = classify_files(files, {})
-        assert allowed == []
-        assert excluded == files
+        assert allowed == [], "allowed is not valid"
+        assert excluded == files, "excluded is not valid"
 
 
 class TestBuildPlanDryRun:
@@ -129,14 +129,14 @@ class TestBuildPlanDryRun:
         ):
             plan = build_plan("owner/repo", "fake-token", 42, "main", "create-pr", None)
 
-        assert plan.pr_number == 42
-        assert plan.pr_branch == "my-feature-branch"
+        assert plan.pr_number == 42, "pr_number is not valid"
+        assert plan.pr_branch == "my-feature-branch", "pr_branch is not valid"
         assert plan.source_sha == "abc123def456"  # pragma: allowlist secret
-        assert plan.target_branch == "main"
+        assert plan.target_branch == "main", "target_branch is not valid"
         # Workflow is allowed, model is excluded, deploy is denied
-        assert ".github/workflows/proactive-ci-monitor.yml" in plan.allowed
-        assert "src/codex/models.py" in plan.excluded
-        assert ".github/workflows/deploy-prod.yml" in plan.denied
+        assert ".github/workflows/proactive-ci-monitor.yml" in plan.allowed, "Condition must be true"
+        assert "src/codex/models.py" in plan.excluded, "Condition must be true"
+        assert ".github/workflows/deploy-prod.yml" in plan.denied, "Condition must be true"
 
     def test_force_files_limits_scope(self):
         """When force_files given, only those files are considered."""
@@ -159,6 +159,6 @@ class TestBuildPlanDryRun:
             )
 
         # Only the explicitly requested file should appear
-        assert plan.allowed == [".github/workflows/ci.yml"]
-        assert plan.excluded == []
-        assert plan.denied == []
+        assert plan.allowed == [".github/workflows/ci.yml"], "allowed is not valid"
+        assert plan.excluded == [], "excluded is not valid"
+        assert plan.denied == [], "denied is not valid"

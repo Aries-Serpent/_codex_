@@ -33,4 +33,4 @@ def test_experiment_mlflow_offline(tmp_path: Path, monkeypatch: pytest.MonkeyPat
         mlflow.log_metric("loss", 1.23, step=1)
 
     # verify local files created
-    assert any(p.is_dir() for p in tmp_path.iterdir())
+    assert any(p.is_dir() for p in tmp_path.iterdir()), "Condition must be true"

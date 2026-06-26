@@ -112,35 +112,35 @@ class TestJSONSerializationProperties:
         """JSON encode then decode is identity for JSON-compatible values."""
         encoded = json.dumps(value)
         decoded = json.loads(encoded)
-        assert decoded == value
+        assert decoded == value, "Value must be initialized"
 
     @given(st.dictionaries(st.text(min_size=1, max_size=20), json_primitives, max_size=20))
     def test_json_dict_roundtrip(self, d: dict[str, Any]) -> None:
         """JSON roundtrip preserves dictionary structure."""
         encoded = json.dumps(d)
         decoded = json.loads(encoded)
-        assert decoded == d
+        assert decoded == d, "decoded is not valid"
 
     @given(st.lists(json_primitives, max_size=50))
     def test_json_list_roundtrip(self, lst: list[Any]) -> None:
         """JSON roundtrip preserves list structure."""
         encoded = json.dumps(lst)
         decoded = json.loads(encoded)
-        assert decoded == lst
+        assert decoded == lst, "decoded is not valid"
 
     @given(st.text(max_size=500))
     def test_json_string_roundtrip(self, s: str) -> None:
         """JSON roundtrip preserves strings."""
         encoded = json.dumps(s)
         decoded = json.loads(encoded)
-        assert decoded == s
+        assert decoded == s, "decoded is not valid"
 
     @given(st.integers())
     def test_json_integer_roundtrip(self, n: int) -> None:
         """JSON roundtrip preserves integers."""
         encoded = json.dumps(n)
         decoded = json.loads(encoded)
-        assert decoded == n
+        assert decoded == n, "decoded is not valid"
 
     @given(st.floats(allow_nan=False, allow_infinity=False))
     def test_json_float_roundtrip(self, f: float) -> None:
@@ -149,9 +149,9 @@ class TestJSONSerializationProperties:
         decoded = json.loads(encoded)
         # Float comparison with tolerance
         if f == 0:
-            assert decoded == 0
+            assert decoded == 0, "decoded is not valid"
         else:
-            assert abs(decoded - f) < abs(f) * 1e-10 or decoded == f
+            assert abs(decoded - f) < abs(f) * 1e-10 or decoded == f, "decoded is not valid"
 
 
 # ============================================================================
@@ -167,14 +167,14 @@ class TestBase64Properties:
         """Base64 encode then decode is identity."""
         encoded = base64.b64encode(data)
         decoded = base64.b64decode(encoded)
-        assert decoded == data
+        assert decoded == data, "Data must not be empty"
 
     @given(st.binary(max_size=1000))
     def test_base64_urlsafe_roundtrip(self, data: bytes) -> None:
         """URL-safe Base64 roundtrip is identity."""
         encoded = base64.urlsafe_b64encode(data)
         decoded = base64.urlsafe_b64decode(encoded)
-        assert decoded == data
+        assert decoded == data, "Data must not be empty"
 
     @given(st.binary(max_size=500))
     def test_base64_output_length(self, data: bytes) -> None:
@@ -182,7 +182,7 @@ class TestBase64Properties:
         encoded = base64.b64encode(data)
         # Base64 output length is ceil(len(data) / 3) * 4
         expected_len = ((len(data) + 2) // 3) * 4
-        assert len(encoded) == expected_len
+        assert len(encoded) == expected_len, "Encoded must not be empty"
 
     @given(st.binary(max_size=500))
     def test_base64_is_ascii(self, data: bytes) -> None:
@@ -194,7 +194,7 @@ class TestBase64Properties:
             is_ascii = True
         except UnicodeDecodeError:
             is_ascii = False
-        assert is_ascii
+        assert is_ascii, "is_ascii is not valid"
 
 
 # ============================================================================
@@ -210,7 +210,7 @@ class TestStringEncodingProperties:
         """UTF-8 encode then decode is identity."""
         encoded = s.encode("utf-8")
         decoded = encoded.decode("utf-8")
-        assert decoded == s
+        assert decoded == s, "decoded is not valid"
 
     @given(
         st.text(
@@ -221,21 +221,21 @@ class TestStringEncodingProperties:
         """ASCII encode then decode is identity for ASCII strings."""
         encoded = s.encode("ascii")
         decoded = encoded.decode("ascii")
-        assert decoded == s
+        assert decoded == s, "decoded is not valid"
 
     @given(st.text(max_size=500))
     def test_utf16_roundtrip(self, s: str) -> None:
         """UTF-16 encode then decode is identity."""
         encoded = s.encode("utf-16")
         decoded = encoded.decode("utf-16")
-        assert decoded == s
+        assert decoded == s, "decoded is not valid"
 
     @given(st.binary(max_size=500))
     def test_hex_roundtrip(self, data: bytes) -> None:
         """Hex encode then decode is identity."""
         encoded = data.hex()
         decoded = bytes.fromhex(encoded)
-        assert decoded == data
+        assert decoded == data, "Data must not be empty"
 
 
 # ============================================================================
@@ -259,7 +259,7 @@ class TestURLEncodingProperties:
         encoded = quote(s, safe="")
         # For URL-safe chars, encoding should only use the chars themselves
         decoded = unquote(encoded)
-        assert decoded == s
+        assert decoded == s, "decoded is not valid"
 
     @given(st.text(max_size=200))
     def test_url_encode_roundtrip(self, s: str) -> None:
@@ -268,7 +268,7 @@ class TestURLEncodingProperties:
 
         encoded = quote(s, safe="")
         decoded = unquote(encoded)
-        assert decoded == s
+        assert decoded == s, "decoded is not valid"
 
 
 # ============================================================================
@@ -297,7 +297,7 @@ class TestConfigSerializationProperties:
         """Configuration dictionary roundtrip."""
         serialized = json.dumps(config)
         deserialized = json.loads(serialized)
-        assert deserialized == config
+        assert deserialized == config, "deserialized is not valid"
 
     @given(
         st.dictionaries(
@@ -313,7 +313,7 @@ class TestConfigSerializationProperties:
         config = {"outer": {"inner": inner, "name": "test"}}
         serialized = json.dumps(config)
         deserialized = json.loads(serialized)
-        assert deserialized == config
+        assert deserialized == config, "deserialized is not valid"
 
 
 # ============================================================================
@@ -332,14 +332,14 @@ class TestPickleProperties:
         repr_str = repr(lst)
         # Use ast.literal_eval for safe evaluation of literals
         restored = ast.literal_eval(repr_str)
-        assert restored == lst
+        assert restored == lst, "restored is not valid"
 
     @given(st.dictionaries(st.text(min_size=1, max_size=10), st.integers(), max_size=20))
     def test_str_representation_consistent(self, d: dict[str, int]) -> None:
         """String representation is consistent."""
         repr1 = repr(d)
         repr2 = repr(d)
-        assert repr1 == repr2
+        assert repr1 == repr2, "repr1 is not valid"
 
 
 # ============================================================================
@@ -361,7 +361,7 @@ class TestChecksumProperties:
         hash2 = hashlib.md5(
             data, usedforsecurity=False
         ).hexdigest()  # nosec B324 - Not for security, test property verification only
-        assert hash1 == hash2
+        assert hash1 == hash2, "hash1 is not valid"
 
     @given(st.binary(max_size=1000))
     def test_sha256_deterministic(self, data: bytes) -> None:
@@ -370,7 +370,7 @@ class TestChecksumProperties:
 
         hash1 = hashlib.sha256(data).hexdigest()
         hash2 = hashlib.sha256(data).hexdigest()
-        assert hash1 == hash2
+        assert hash1 == hash2, "hash1 is not valid"
 
     @given(st.binary(max_size=1000))
     def test_sha256_length(self, data: bytes) -> None:
@@ -378,7 +378,7 @@ class TestChecksumProperties:
         import hashlib
 
         hash_hex = hashlib.sha256(data).hexdigest()
-        assert len(hash_hex) == 64
+        assert len(hash_hex) == 64, "Hash_hex must not be empty"
 
     @given(st.binary(min_size=1, max_size=500), st.binary(min_size=1, max_size=500))
     def test_different_data_different_hash(self, data1: bytes, data2: bytes) -> None:
@@ -389,4 +389,4 @@ class TestChecksumProperties:
         hash1 = hashlib.sha256(data1).hexdigest()
         hash2 = hashlib.sha256(data2).hexdigest()
         # With overwhelming probability, different inputs give different hashes
-        assert hash1 != hash2
+        assert hash1 != hash2, "hash1 is not valid"

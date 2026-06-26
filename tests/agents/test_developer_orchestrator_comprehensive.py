@@ -43,11 +43,11 @@ class TestRequirementVariable:
             required=True,
         )
 
-        assert var.name == "port"
-        assert var.description == "Server port number"
-        assert var.variable_type == "int"
-        assert var.required
-        assert var.current_value is None
+        assert var.name == "port", "name is not valid"
+        assert var.description == "Server port number", "description is not valid"
+        assert var.variable_type == "int", "variable_type is not valid"
+        assert var.required, "Condition must be true"
+        assert var.current_value is None, "Value must be initialized"
 
     def test_requirement_variable_with_defaults(self):
         """Test with default values."""
@@ -60,8 +60,8 @@ class TestRequirementVariable:
             suggested_values=[10, 30, 60],
         )
 
-        assert var.default_value == 30
-        assert 30 in var.suggested_values
+        assert var.default_value == 30, "Value must be initialized"
+        assert 30 in var.suggested_values, "Value must be initialized"
 
     def test_is_satisfied_when_value_set(self):
         """Test satisfaction check with value."""
@@ -69,10 +69,10 @@ class TestRequirementVariable:
             name="name", description="App name", variable_type="str", required=True
         )
 
-        assert not var.is_satisfied()
+        assert not var.is_satisfied(), "Condition must be true"
 
         var.current_value = "MyApp"
-        assert var.is_satisfied()
+        assert var.is_satisfied(), "Condition must be true"
 
     def test_is_satisfied_when_optional(self):
         """Test optional variable is always satisfied."""
@@ -83,7 +83,7 @@ class TestRequirementVariable:
             required=False,
         )
 
-        assert var.is_satisfied()
+        assert var.is_satisfied(), "Condition must be true"
 
     def test_suggest_from_chaos_without_cnn(self):
         """Test chaos suggestions fallback."""
@@ -111,9 +111,9 @@ class TestCodeComponent:
             code="print('Hello')",
         )
 
-        assert component.name == "main.py"
-        assert component.component_type == "module"
-        assert "Hello" in component.code
+        assert component.name == "main.py", "name is not valid"
+        assert component.component_type == "module", "component_type is not valid"
+        assert "Hello" in component.code, "Condition must be true"
 
     def test_code_component_with_dependencies(self):
         """Test component with dependencies."""
@@ -126,8 +126,8 @@ class TestCodeComponent:
             dependencies=["logging", "typing"],
         )
 
-        assert "logging" in component.dependencies
-        assert "typing" in component.dependencies
+        assert "logging" in component.dependencies, "Condition must be true"
+        assert "typing" in component.dependencies, "Condition must be true"
 
     def test_code_component_with_complexity(self):
         """Test component with complexity score."""
@@ -140,7 +140,7 @@ class TestCodeComponent:
             complexity=0.85,
         )
 
-        assert component.complexity == 0.85
+        assert component.complexity == 0.85, "complexity is not valid"
 
 
 class TestPhysicsGuidedDeveloperOrchestrator:
@@ -164,23 +164,23 @@ class TestPhysicsGuidedDeveloperOrchestrator:
 
     def test_orchestrator_initialization(self, orchestrator):
         """Test orchestrator initializes correctly."""
-        assert orchestrator.app_type == AppType.PYTHON_CONSOLE
-        assert orchestrator.current_phase == DevelopmentPhase.REQUIREMENTS
-        assert len(orchestrator.requirements) == 0
-        assert len(orchestrator.components) == 0
+        assert orchestrator.app_type == AppType.PYTHON_CONSOLE, "app_type is not valid"
+        assert orchestrator.current_phase == DevelopmentPhase.REQUIREMENTS, "current_phase is not valid"
+        assert len(orchestrator.requirements) == 0, "Collection must not be empty"
+        assert len(orchestrator.components) == 0, "Collection must not be empty"
 
     def test_different_app_types(self):
         """Test initialization with different app types."""
         for app_type in AppType:
             orch = PhysicsGuidedDeveloperOrchestrator()
             orch.app_type = app_type
-            assert orch.app_type == app_type
+            assert orch.app_type == app_type, "app_type is not valid"
 
     def test_orchestrator_with_session_id(self):
         """Test with custom session ID."""
         orch = PhysicsGuidedDeveloperOrchestrator(session_id="test-session-123")
         orch.app_type = AppType.PYTHON_CLI
-        assert orch.session_id == "test-session-123"
+        assert orch.session_id == "test-session-123", "session_id is not valid"
 
     # ========== REQUIREMENTS PHASE TESTS ==========
 
@@ -193,7 +193,7 @@ class TestPhysicsGuidedDeveloperOrchestrator:
         # analyze_requirements returns a dict with "missing_variables",
         # "provided_variables", "completeness", etc. – NOT a "requirements" key.
         assert "missing_variables" in result or isinstance(result, list)
-        assert orchestrator.current_phase == DevelopmentPhase.REQUIREMENTS
+        assert orchestrator.current_phase == DevelopmentPhase.REQUIREMENTS, "current_phase is not valid"
 
     def test_analyze_requirements_identifies_variables(self, orchestrator):
         """Test requirement analysis identifies needed variables."""
@@ -208,7 +208,7 @@ class TestPhysicsGuidedDeveloperOrchestrator:
         else:
             reqs = orchestrator.requirements
 
-        assert len(reqs) > 0
+        assert len(reqs) > 0, "Reqs must not be empty"
 
     def test_add_requirement_variable(self, orchestrator):
         """Test adding requirement variables."""
@@ -221,8 +221,8 @@ class TestPhysicsGuidedDeveloperOrchestrator:
 
         orchestrator.requirements.append(var)
 
-        assert len(orchestrator.requirements) == 1
-        assert orchestrator.requirements[0].name == "database_url"
+        assert len(orchestrator.requirements) == 1, "Collection must not be empty"
+        assert orchestrator.requirements[0].name == "database_url", "Data must not be empty"
 
     def test_check_requirements_satisfaction(self, orchestrator):
         """Test checking if all requirements are satisfied."""
@@ -233,19 +233,19 @@ class TestPhysicsGuidedDeveloperOrchestrator:
 
         # Not satisfied (req1 required but no value)
         all_satisfied = all(r.is_satisfied() for r in orchestrator.requirements)
-        assert not all_satisfied
+        assert not all_satisfied, "Condition must be true"
 
         # Set value
         var1.current_value = "value"
         all_satisfied = all(r.is_satisfied() for r in orchestrator.requirements)
-        assert all_satisfied
+        assert all_satisfied, "all_satisfied is not valid"
 
     # ========== DESIGN PHASE TESTS ==========
 
     def test_transition_to_design_phase(self, orchestrator):
         """Test transitioning to design phase."""
         orchestrator.current_phase = DevelopmentPhase.DESIGN
-        assert orchestrator.current_phase == DevelopmentPhase.DESIGN
+        assert orchestrator.current_phase == DevelopmentPhase.DESIGN, "current_phase is not valid"
 
     def test_generate_design_basic(self, orchestrator):
         """Test basic design generation."""
@@ -259,14 +259,14 @@ class TestPhysicsGuidedDeveloperOrchestrator:
         # Design should be generated
         if hasattr(orchestrator, "generate_design"):
             design = orchestrator.generate_design()
-            assert design is not None
+            assert design is not None, "design must be initialized"
 
     # ========== ARCHITECTURE PHASE TESTS ==========
 
     def test_transition_to_architecture_phase(self, orchestrator):
         """Test transitioning to architecture phase."""
         orchestrator.current_phase = DevelopmentPhase.ARCHITECTURE
-        assert orchestrator.current_phase == DevelopmentPhase.ARCHITECTURE
+        assert orchestrator.current_phase == DevelopmentPhase.ARCHITECTURE, "current_phase is not valid"
 
     def test_plan_architecture_identifies_components(self, orchestrator):
         """Test architecture planning identifies components."""
@@ -275,14 +275,14 @@ class TestPhysicsGuidedDeveloperOrchestrator:
         # Should identify needed components
         if hasattr(orchestrator, "plan_architecture"):
             arch = orchestrator.plan_architecture()
-            assert arch is not None
+            assert arch is not None, "arch must be initialized"
 
     # ========== IMPLEMENTATION PHASE TESTS ==========
 
     def test_transition_to_implementation_phase(self, orchestrator):
         """Test transitioning to implementation phase."""
         orchestrator.current_phase = DevelopmentPhase.IMPLEMENTATION
-        assert orchestrator.current_phase == DevelopmentPhase.IMPLEMENTATION
+        assert orchestrator.current_phase == DevelopmentPhase.IMPLEMENTATION, "current_phase is not valid"
 
     def test_generate_code_component(self, orchestrator):
         """Test code generation for component."""
@@ -291,7 +291,7 @@ class TestPhysicsGuidedDeveloperOrchestrator:
         )
 
         orchestrator.components.append(component)
-        assert len(orchestrator.components) == 1
+        assert len(orchestrator.components) == 1, "Collection must not be empty"
 
     def test_generate_code_for_console_app(self, orchestrator):
         """Test generating code for console app."""
@@ -299,7 +299,7 @@ class TestPhysicsGuidedDeveloperOrchestrator:
 
         if hasattr(orchestrator, "generate_code"):
             code = orchestrator.generate_code()
-            assert code is not None
+            assert code is not None, "code must be initialized"
 
     def test_generate_code_for_web_app(self, web_orchestrator):
         """Test generating code for web app."""
@@ -307,7 +307,7 @@ class TestPhysicsGuidedDeveloperOrchestrator:
 
         if hasattr(web_orchestrator, "generate_code"):
             code = web_orchestrator.generate_code(component_id="web_component_001")
-            assert code is not None
+            assert code is not None, "code must be initialized"
 
     # ========== STATE MACHINE TESTS ==========
 
@@ -325,16 +325,16 @@ class TestPhysicsGuidedDeveloperOrchestrator:
 
         for phase in phases:
             orchestrator.current_phase = phase
-            assert orchestrator.current_phase == phase
+            assert orchestrator.current_phase == phase, "current_phase is not valid"
 
     def test_cannot_skip_phases_validation(self, orchestrator):
         """Test phase validation (if implemented)."""
         # Start at requirements
-        assert orchestrator.current_phase == DevelopmentPhase.REQUIREMENTS
+        assert orchestrator.current_phase == DevelopmentPhase.REQUIREMENTS, "current_phase is not valid"
 
         # Can manually set phase (no validation in current impl)
         orchestrator.current_phase = DevelopmentPhase.DEPLOYMENT
-        assert orchestrator.current_phase == DevelopmentPhase.DEPLOYMENT
+        assert orchestrator.current_phase == DevelopmentPhase.DEPLOYMENT, "current_phase is not valid"
 
     # ========== ERROR HANDLING TESTS ==========
 
@@ -342,7 +342,7 @@ class TestPhysicsGuidedDeveloperOrchestrator:
         """Test handling empty user request."""
         result = orchestrator.analyze_requirements("")
         # Should handle gracefully
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     def test_analyze_requirements_with_none(self, orchestrator):
         """Test handling None user request."""
@@ -360,7 +360,7 @@ class TestPhysicsGuidedDeveloperOrchestrator:
         # Phase 1: Requirements
         user_request = "Create a simple calculator CLI"
         result = orchestrator.analyze_requirements(user_request)
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
         # Phase 2: Design (if method exists)
         orchestrator.current_phase = DevelopmentPhase.DESIGN
@@ -369,7 +369,7 @@ class TestPhysicsGuidedDeveloperOrchestrator:
         orchestrator.current_phase = DevelopmentPhase.IMPLEMENTATION
 
         # Should reach implementation
-        assert orchestrator.current_phase == DevelopmentPhase.IMPLEMENTATION
+        assert orchestrator.current_phase == DevelopmentPhase.IMPLEMENTATION, "current_phase is not valid"
 
     def test_multiple_components_coordination(self, orchestrator):
         """Test coordinating multiple code components."""
@@ -379,7 +379,7 @@ class TestPhysicsGuidedDeveloperOrchestrator:
 
         orchestrator.components = [comp1, comp2, comp3]
 
-        assert len(orchestrator.components) == 3
+        assert len(orchestrator.components) == 3, "Collection must not be empty"
         assert all(isinstance(c, CodeComponent) for c in orchestrator.components)
 
     # ========== RESOURCE MANAGEMENT TESTS ==========
@@ -396,7 +396,7 @@ class TestPhysicsGuidedDeveloperOrchestrator:
         avg_complexity = sum(c.complexity_score or 0 for c in orchestrator.components) / len(
             orchestrator.components
         )
-        assert 0 < avg_complexity < 1
+        assert 0 < avg_complexity < 1, "0 is not valid"
 
     def test_dependency_tracking(self, orchestrator):
         """Test tracking component dependencies."""
@@ -415,8 +415,8 @@ class TestPhysicsGuidedDeveloperOrchestrator:
             if c.dependencies:
                 all_deps.update(c.dependencies)
 
-        assert "logging" in all_deps
-        assert "json" in all_deps
+        assert "logging" in all_deps, "Condition must be true"
+        assert "json" in all_deps, "Condition must be true"
 
 
 class TestPhysicsIntegration:
@@ -427,8 +427,8 @@ class TestPhysicsIntegration:
         orch = PhysicsGuidedDeveloperOrchestrator(app_type=AppType.PYTHON_SCRIPT)
 
         # Should work even without advanced physics
-        assert orch is not None
-        assert orch.app_type == AppType.PYTHON_SCRIPT
+        assert orch is not None, "orch must be initialized"
+        assert orch.app_type == AppType.PYTHON_SCRIPT, "app_type is not valid"
 
     def test_chaos_suggestions_fallback(self):
         """Test chaos suggestions work with fallback."""

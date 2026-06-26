@@ -44,19 +44,19 @@ class TestAgentInitialization:
                 db_path=Path(tmpdir) / "memory.db",
             )
 
-            assert system.agent_id == "init_test"
-            assert system.memory is not None
-            assert system.pattern_library is not None
-            assert system.current_frame is None
+            assert system.agent_id == "init_test", "agent_id is not valid"
+            assert system.memory is not None, "memory must be initialized"
+            assert system.pattern_library is not None, "pattern_library must be initialized"
+            assert system.current_frame is None, "current_frame is not valid"
 
     def test_orchestrator_initialization_defaults(self):
         """Test orchestrator initialization with defaults."""
         orch = PhysicsGuidedDeveloperOrchestrator()
 
-        assert orch.app_type is None
-        assert orch.current_phase == DevelopmentPhase.REQUIREMENTS
-        assert len(orch.required_variables) == 0
-        assert len(orch.components) == 0
+        assert orch.app_type is None, "app_type is not valid"
+        assert orch.current_phase == DevelopmentPhase.REQUIREMENTS, "current_phase is not valid"
+        assert len(orch.required_variables) == 0, "Collection must not be empty"
+        assert len(orch.components) == 0, "Collection must not be empty"
 
     def test_agent_initialization_with_config(self):
         """Test agent initialization with custom configuration."""
@@ -68,7 +68,7 @@ class TestAgentInitialization:
 
             system = AgentMemorySystem(**config)
 
-            assert system.agent_id == "custom_agent"
+            assert system.agent_id == "custom_agent", "agent_id is not valid"
 
     def test_multiple_agent_initialization(self):
         """Test initializing multiple agents."""
@@ -81,8 +81,8 @@ class TestAgentInitialization:
                 )
                 agents.append(system)
 
-            assert len(agents) == 3
-            assert len(set(a.agent_id for a in agents)) == 3
+            assert len(agents) == 3, "Agents must not be empty"
+            assert len(set(a.agent_id for a in agents)) == 3, "Collection must not be empty"
 
 
 # ============================================================================
@@ -97,10 +97,10 @@ class TestStateManagement:
         """Test orchestrator maintains phase state."""
         orch = PhysicsGuidedDeveloperOrchestrator()
 
-        assert orch.current_phase == DevelopmentPhase.REQUIREMENTS
+        assert orch.current_phase == DevelopmentPhase.REQUIREMENTS, "current_phase is not valid"
 
         orch.current_phase = DevelopmentPhase.DESIGN
-        assert orch.current_phase == DevelopmentPhase.DESIGN
+        assert orch.current_phase == DevelopmentPhase.DESIGN, "current_phase is not valid"
 
     def test_memory_system_task_state(self):
         """Test memory system maintains task state."""
@@ -109,8 +109,8 @@ class TestStateManagement:
 
             system.start_task("Test task")
 
-            assert system.current_frame is not None
-            assert system.current_frame.status == "active"
+            assert system.current_frame is not None, "current_frame must be initialized"
+            assert system.current_frame.status == "active", "status is not valid"
 
     def test_state_persistence_across_operations(self):
         """Test state persists across operations."""
@@ -125,8 +125,8 @@ class TestStateManagement:
         orch.analyze_user_requirements(requirements)
 
         # State should be maintained
-        assert orch.app_type == AppType.PYTHON_CLI
-        assert len(orch.required_variables) > 0
+        assert orch.app_type == AppType.PYTHON_CLI, "app_type is not valid"
+        assert len(orch.required_variables) > 0, "Collection must not be empty"
 
     def test_state_reset_on_new_requirements(self):
         """Test state updates with new requirements."""
@@ -139,7 +139,7 @@ class TestStateManagement:
         orch.analyze_user_requirements(req2)
 
         # App type should be updated
-        assert orch.app_type == AppType.PYTHON_API
+        assert orch.app_type == AppType.PYTHON_API, "app_type is not valid"
 
 
 # ============================================================================
@@ -168,8 +168,8 @@ class TestStatePersistence:
             memory2 = AgentMemory(db_path=db_path)
             retrieved = memory2.retrieve_memory(memory_id="persist_test")
 
-            assert retrieved is not None
-            assert retrieved.content == "Persisted fact"
+            assert retrieved is not None, "retrieved must be initialized"
+            assert retrieved.content == "Persisted fact", "Content must not be empty"
 
     def test_context_frame_persistence(self):
         """Test context frames are persisted."""
@@ -188,8 +188,8 @@ class TestStatePersistence:
             memory2 = AgentMemory(db_path=db_path)
             frames = memory2.get_recent_context_frames(limit=1)
 
-            assert len(frames) > 0
-            assert frames[0].frame_id == "frame_persist"
+            assert len(frames) > 0, "Frames must not be empty"
+            assert frames[0].frame_id == "frame_persist", "frame_id is not valid"
 
     def test_pattern_libraryrary_persistence(self):
         """Test pattern library state persistence."""
@@ -197,8 +197,8 @@ class TestStatePersistence:
             system = AgentMemorySystem(db_path=Path(tmpdir) / "patterns.db")
 
             # Pattern library should be initialized
-            assert system.pattern_library is not None
-            assert len(system.pattern_library.patterns) > 0
+            assert system.pattern_library is not None, "pattern_library must be initialized"
+            assert len(system.pattern_library.patterns) > 0, "Collection must not be empty"
 
 
 # ============================================================================
@@ -218,9 +218,9 @@ class TestMessageHandling:
 
             mock_log.assert_called_once()
             args = mock_log.call_args[0]
-            assert args[0] == "msg_test"
-            assert args[1] == "system"
-            assert args[2] == "Test message"
+            assert args[0] == "msg_test", "Condition must be true"
+            assert args[1] == "system", "Condition must be true"
+            assert args[2] == "Test message", "Condition must be true"
 
     def test_memory_system_records_decisions(self):
         """Test memory system records decision messages."""
@@ -236,8 +236,8 @@ class TestMessageHandling:
                 reasoning="Best for async",
             )
 
-            assert memory is not None
-            assert memory.category == "decision"
+            assert memory is not None, "memory must be initialized"
+            assert memory.category == "decision", "category is not valid"
 
     def test_message_routing_to_memory(self):
         """Test messages are routed to memory storage."""
@@ -250,8 +250,8 @@ class TestMessageHandling:
             decision = system.record_decision("decision", ["alt1"], 0.8, "reason")
             lesson = system.record_lesson("lesson", True)
 
-            assert decision.category == "decision"
-            assert lesson.category == "lesson"
+            assert decision.category == "decision", "category is not valid"
+            assert lesson.category == "lesson", "category is not valid"
 
 
 # ============================================================================
@@ -272,8 +272,8 @@ class TestErrorRecovery:
         # Should not crash
         result = orch.analyze_user_requirements(req)
 
-        assert result is not None
-        assert orch.app_type == AppType.PYTHON_CONSOLE  # Default
+        assert result is not None, "result must be initialized"
+        assert orch.app_type == AppType.PYTHON_CONSOLE, "app_type is not valid"
 
     def test_memory_handles_database_errors_gracefully(self):
         """Test memory system handles database errors."""
@@ -284,7 +284,7 @@ class TestErrorRecovery:
             result = memory.retrieve_memory(memory_id="nonexistent")
 
             # Should return None, not crash
-            assert result is None
+            assert result is None, "Result must not be empty"
 
     def test_recovery_from_incomplete_operations(self):
         """Test recovery from incomplete operations."""
@@ -297,7 +297,7 @@ class TestErrorRecovery:
             # Start another task (implicitly abandoning first)
             frame2 = system.start_task("New task")
 
-            assert system.current_frame == frame2
+            assert system.current_frame == frame2, "current_frame is not valid"
 
     def test_error_handling_in_architecture_generation(self):
         """Test error handling in architecture generation."""
@@ -308,8 +308,8 @@ class TestErrorRecovery:
         architecture = orch.suggest_architecture({})
 
         # Should still generate basic architecture
-        assert "components" in architecture
-        assert len(architecture["components"]) > 0
+        assert "components" in architecture, "Condition must be true"
+        assert len(architecture["components"]) > 0, "Collection must not be empty"
 
 
 # ============================================================================
@@ -330,7 +330,7 @@ class TestResilience:
 
             # Should return a dict with guidance
             assert isinstance(guidance, dict)
-            assert "patterns" in guidance or "relevant_memories" in guidance
+            assert "patterns" in guidance or "relevant_memories" in guidance, "Condition must be true"
 
     def test_orchestrator_continues_without_physics(self):
         """Test orchestrator continues working without physics."""
@@ -340,7 +340,7 @@ class TestResilience:
             req = {"app_type": "python_console", "app_name": "test"}
             result = orch.analyze_user_requirements(req)
 
-            assert result is not None
+            assert result is not None, "result must be initialized"
 
     def test_memory_system_handles_corrupt_data(self):
         """Test memory system handles corrupt data gracefully."""
@@ -357,7 +357,7 @@ class TestResilience:
 
             # Should retrieve without crashing
             result = memory.retrieve_memory(memory_id="unusual")
-            assert result is not None
+            assert result is not None, "result must be initialized"
 
 
 # ============================================================================
@@ -378,8 +378,8 @@ class TestGracefulShutdown:
 
             # After completion, frame is saved and current_frame is cleared
             # Check that frame was updated before being cleared
-            assert frame.status == "completed"
-            assert frame.end_time is not None
+            assert frame.status == "completed", "status is not valid"
+            assert frame.end_time is not None, "end_time must be initialized"
 
     def test_orchestrator_cleanup(self):
         """Test orchestrator can be safely cleaned up."""
@@ -417,7 +417,7 @@ class TestGracefulShutdown:
             memory2 = AgentMemory(db_path=db_path)
             result = memory2.retrieve_memory(memory_id="test")
 
-            assert result is not None
+            assert result is not None, "result must be initialized"
 
 
 # ============================================================================
@@ -438,22 +438,22 @@ class TestHealthMonitoring:
 
             stats = system.get_stats()
 
-            assert "agent_id" in stats  # Note: it's agent_id not session_id
-            assert "current_task" in stats
-            assert "memory_stats" in stats
+            assert "agent_id" in stats, "Condition must be true"
+            assert "current_task" in stats, "Condition must be true"
+            assert "memory_stats" in stats, "Condition must be true"
 
     def test_orchestrator_phase_tracking(self):
         """Test orchestrator tracks current phase."""
         orch = PhysicsGuidedDeveloperOrchestrator()
 
         # Check initial phase
-        assert orch.current_phase == DevelopmentPhase.REQUIREMENTS
+        assert orch.current_phase == DevelopmentPhase.REQUIREMENTS, "current_phase is not valid"
 
         # Progress to architecture
         orch.app_type = AppType.PYTHON_CONSOLE
         orch.suggest_architecture({})
 
-        assert orch.current_phase == DevelopmentPhase.ARCHITECTURE
+        assert orch.current_phase == DevelopmentPhase.ARCHITECTURE, "current_phase is not valid"
 
     def test_memory_access_tracking(self):
         """Test memory tracks access patterns."""
@@ -475,7 +475,7 @@ class TestHealthMonitoring:
 
             # Total accesses = 3 + 1 = 4, but the access_count is incremented before returning
             # so each retrieve increments it. Final retrieve shows count from previous retrieves
-            assert result.access_count >= 3
+            assert result.access_count >= 3, "access_count must be positive"
 
 
 # ============================================================================
@@ -493,13 +493,13 @@ class TestStateTransitions:
 
             # Start: active
             frame = system.start_task("Lifecycle test")
-            assert frame.status == "active"
+            assert frame.status == "active", "status is not valid"
 
             # Complete: completed
             system.complete_task(success=True, summary="Done")
             # After completion, frame is stored and current_frame is None
-            assert frame.status == "completed"
-            assert system.current_frame is None
+            assert frame.status == "completed", "status is not valid"
+            assert system.current_frame is None, "current_frame is not valid"
 
     def test_development_phase_transitions(self):
         """Test development phase transitions."""
@@ -514,7 +514,7 @@ class TestStateTransitions:
 
         for phase in phases:
             orch.current_phase = phase
-            assert orch.current_phase == phase
+            assert orch.current_phase == phase, "current_phase is not valid"
 
     def test_invalid_state_transition_handling(self):
         """Test handling of unexpected state transitions."""
@@ -524,7 +524,7 @@ class TestStateTransitions:
         orch.current_phase = DevelopmentPhase.IMPLEMENTATION
 
         # Should accept transition
-        assert orch.current_phase == DevelopmentPhase.IMPLEMENTATION
+        assert orch.current_phase == DevelopmentPhase.IMPLEMENTATION, "current_phase is not valid"
 
 
 # ============================================================================
@@ -553,9 +553,9 @@ class TestConcurrentLifecycle:
             agents[0].complete_task(success=True, summary="Done 0")
 
             # First frame should be completed, others still active
-            assert frames[0].status == "completed"
-            assert frames[1].status == "active"
-            assert frames[2].status == "active"
+            assert frames[0].status == "completed", "status is not valid"
+            assert frames[1].status == "active", "status is not valid"
+            assert frames[2].status == "active", "status is not valid"
 
     def test_parallel_orchestrator_phases(self):
         """Test parallel orchestrators in different phases."""
@@ -565,7 +565,7 @@ class TestConcurrentLifecycle:
         orch1.current_phase = DevelopmentPhase.REQUIREMENTS
         orch2.current_phase = DevelopmentPhase.IMPLEMENTATION
 
-        assert orch1.current_phase != orch2.current_phase
+        assert orch1.current_phase != orch2.current_phase, "current_phase is not valid"
 
 
 # ============================================================================
@@ -594,7 +594,7 @@ class TestResourceCleanup:
 
             # Recent memory should still exist
             result = memory.retrieve_memory(memory_id="recent")
-            assert result is not None
+            assert result is not None, "result must be initialized"
 
     def test_clear_all_memories(self):
         """Test clearing all memories."""
@@ -615,7 +615,7 @@ class TestResourceCleanup:
 
             # Check empty
             stats = memory.get_memory_stats()
-            assert stats["total_memories"] == 0
+            assert stats["total_memories"] == 0, "Condition must be true"
 
 
 # ============================================================================
@@ -659,7 +659,7 @@ class TestAgentCoordination:
 
             # Task should be completed (frame is stored and cleared after completion)
             # We can verify that the operation completed without error
-            assert True  # If we get here, task completed successfully
+            assert True, "True is not valid"
 
     def test_shared_session_id(self):
         """Test agents sharing session ID."""
@@ -672,5 +672,5 @@ class TestAgentCoordination:
             )
             orchestrator = PhysicsGuidedDeveloperOrchestrator(session_id=session_id)
 
-            assert memory.agent_id == session_id
-            assert orchestrator.session_id == session_id
+            assert memory.agent_id == session_id, "agent_id is not valid"
+            assert orchestrator.session_id == session_id, "session_id is not valid"

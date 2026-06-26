@@ -31,8 +31,8 @@ def test_data_pipeline_split_behavior(tmp_path):
         seed=123,
     )
 
-    assert train_loader is not None
-    assert val_loader is not None
+    assert train_loader is not None, "train_loader must be initialized"
+    assert val_loader is not None, "val_loader must be initialized"
 
 
 @pytest.mark.integration
@@ -51,8 +51,8 @@ def test_data_pipeline_validation_path(tmp_path):
         validation_path=str(val_file),
     )
 
-    assert len(train_loader.dataset) == 2
-    assert len(val_loader.dataset) == 1
+    assert len(train_loader.dataset) == 2, "Collection must not be empty"
+    assert len(val_loader.dataset) == 1, "Collection must not be empty"
 
 
 @pytest.mark.integration
@@ -68,8 +68,8 @@ def test_data_pipeline_single_row_edge_case(tmp_path):
         _make_tokenizer(torch),
     )
 
-    assert len(train_loader.dataset) == 1
-    assert val_loader is None
+    assert len(train_loader.dataset) == 1, "Collection must not be empty"
+    assert val_loader is None, "val_loader is not valid"
 
 
 @pytest.mark.integration
@@ -116,8 +116,8 @@ def test_data_pipeline_deterministic_seed(tmp_path):
         seed=42,
     )
 
-    assert len(train1.dataset) == len(train2.dataset)
-    assert len(val1.dataset) == len(val2.dataset)
+    assert len(train1.dataset) == len(train2.dataset), "Collection must not be empty"
+    assert len(val1.dataset) == len(val2.dataset), "Collection must not be empty"
 
 
 @pytest.mark.integration
@@ -133,4 +133,4 @@ def test_data_pipeline_fixture_parsing(tmp_path):
         _make_tokenizer(torch),
     )
 
-    assert len(train_loader.dataset) == 2  # default 80/20 split of 3 samples → 2 train
+    assert len(train_loader.dataset) == 2, "Collection must not be empty"

@@ -25,18 +25,18 @@ def test_extract_writes_into_src_tree(tmp_path: Path, legacy_bundle_zip: Path) -
     written = extract_legacy_app(legacy_bundle_zip, output_dir)
 
     expected_root = output_dir / "src"
-    assert expected_root.exists()
+    assert expected_root.exists(), "Condition must be true"
 
     written_relative = {path.relative_to(expected_root) for path in written}
-    assert written_relative == {Path(rel) for rel in SAMPLE_ZAF_BUNDLE}
+    assert written_relative == {Path(rel) for rel in SAMPLE_ZAF_BUNDLE}, "written_relative is not valid"
 
     for relative_path, payload in SAMPLE_ZAF_BUNDLE.items():
         destination = expected_root / relative_path
-        assert destination.exists()
+        assert destination.exists(), "Condition must be true"
         if isinstance(payload, bytes):
-            assert destination.read_bytes() == payload
+            assert destination.read_bytes() == payload, "Condition must be true"
         else:
-            assert destination.read_text(encoding="utf-8") == payload
+            assert destination.read_text(encoding="utf-8") == payload, "Condition must be true"
 
 
 def test_nested_directories_remain_distinct(tmp_path: Path, legacy_bundle_zip: Path) -> None:
@@ -47,8 +47,8 @@ def test_nested_directories_remain_distinct(tmp_path: Path, legacy_bundle_zip: P
     nested = src_root / "translations" / "subdir" / "duplicate.txt"
     root_level = src_root / "subdir" / "duplicate.txt"
 
-    assert nested.read_text(encoding="utf-8") == "nested\n"
-    assert root_level.read_text(encoding="utf-8") == "root\n"
+    assert nested.read_text(encoding="utf-8") == "nested\n", "Condition must be true"
+    assert root_level.read_text(encoding="utf-8") == "root\n", "Condition must be true"
 
 
 def test_binary_assets_are_written_in_binary_mode(tmp_path: Path, legacy_bundle_zip: Path) -> None:
@@ -59,5 +59,5 @@ def test_binary_assets_are_written_in_binary_mode(tmp_path: Path, legacy_bundle_
     primary_logo = src_root / "assets" / "images" / "logo.png"
     nested_logo = src_root / "assets" / "images" / "icons" / "logo.png"
 
-    assert primary_logo.read_bytes() == SAMPLE_ZAF_BUNDLE["assets/images/logo.png"]
-    assert nested_logo.read_bytes() == SAMPLE_ZAF_BUNDLE["assets/images/icons/logo.png"]
+    assert primary_logo.read_bytes() == SAMPLE_ZAF_BUNDLE["assets/images/logo.png"], "Condition must be true"
+    assert nested_logo.read_bytes() == SAMPLE_ZAF_BUNDLE["assets/images/icons/logo.png"], "Condition must be true"

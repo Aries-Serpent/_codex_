@@ -24,15 +24,15 @@ class TestSystemConfiguration:
             "cache": {"backend": "redis", "ttl": 3600},
             "logging": {"level": "INFO"},
         }
-        assert "database" in config
+        assert "database" in config, "Data must not be empty"
 
     def test_configuration_merging(self):
         """Test merging multiple config sources."""
         base_config = {"debug": False, "workers": 4}
         env_config = {"debug": True}
         merged = {**base_config, **env_config}
-        assert merged["debug"]
-        assert merged["workers"] == 4
+        assert merged["debug"], "Condition must be true"
+        assert merged["workers"] == 4, "Condition must be true"
 
     def test_configuration_validation(self):
         """Test configuration validation."""
@@ -41,7 +41,7 @@ class TestSystemConfiguration:
             "optional_fields": ["debug_mode"],
             "type_checks": True,
         }
-        assert len(validation["required_fields"]) > 0
+        assert len(validation["required_fields"]) > 0, "Collection must not be empty"
 
     def test_environment_variable_expansion(self):
         """Test environment variable expansion."""
@@ -50,7 +50,7 @@ class TestSystemConfiguration:
             "db_port": "${DB_PORT:5432}",
             "api_key": "${API_KEY}",
         }
-        assert config_template["db_port"] is not None
+        assert config_template["db_port"] is not None, "Value must be initialized"
 
     def test_secret_management(self):
         """Test secret management."""
@@ -60,7 +60,7 @@ class TestSystemConfiguration:
             "private_key": "***",
             "encryption_key": "***",
         }
-        assert all(v == "***" for v in secrets.values())
+        assert all(v == "***" for v in secrets.values()), "Value must be initialized"
 
 
 class TestAdvancedErrorScenarios:
@@ -74,7 +74,7 @@ class TestAdvancedErrorScenarios:
             "fallback_service_2": True,
             "result": "fallback_service_2",
         }
-        assert failures["result"] is not None
+        assert failures["result"] is not None, "Value must be initialized"
 
     def test_partial_failure_recovery(self):
         """Test recovery from partial failures."""
@@ -85,7 +85,7 @@ class TestAdvancedErrorScenarios:
             "max_retries": 3,
             "recovery_strategy": "partial_rollback",
         }
-        assert recovery["retry_enabled"]
+        assert recovery["retry_enabled"], "Condition must be true"
 
     def test_deadlock_detection(self):
         """Test deadlock detection."""
@@ -95,7 +95,7 @@ class TestAdvancedErrorScenarios:
             "monitor_lock_waits": True,
             "auto_kill_on_deadlock": True,
         }
-        assert detection["enabled"]
+        assert detection["enabled"], "Condition must be true"
 
     def test_resource_exhaustion_handling(self):
         """Test resource exhaustion handling."""
@@ -106,7 +106,7 @@ class TestAdvancedErrorScenarios:
             "connection_limit": 1000,
             "action_on_exhaustion": "graceful_shutdown",
         }
-        assert handling["cpu_limit"] > 90
+        assert handling["cpu_limit"] > 90, "h must be greater than zero"
 
     def test_data_corruption_recovery(self):
         """Test data corruption recovery."""
@@ -117,7 +117,7 @@ class TestAdvancedErrorScenarios:
             "quarantine_corrupted": True,
             "alert_on_corruption": True,
         }
-        assert recovery["detect_corruption"]
+        assert recovery["detect_corruption"], "Condition must be true"
 
     def test_timeout_cascade_prevention(self):
         """Test prevention of timeout cascades."""
@@ -128,7 +128,7 @@ class TestAdvancedErrorScenarios:
             "circuit_breaker": True,
             "bulkhead_pattern": True,
         }
-        assert prevention["adaptive_timeout"]
+        assert prevention["adaptive_timeout"], "Condition must be true"
 
 
 class TestPerformanceAndLoad:
@@ -143,7 +143,7 @@ class TestPerformanceAndLoad:
             "expected_throughput": 5000,
             "p99_latency_ms": 1000,
         }
-        assert load_test["concurrent_users"] > 0
+        assert load_test["concurrent_users"] > 0, "Value must be greater than zero"
 
     def test_memory_pressure_scenarios(self):
         """Test behavior under memory pressure."""
@@ -154,7 +154,7 @@ class TestPerformanceAndLoad:
             "error_on_oom": False,
             "graceful_degradation": True,
         }
-        assert pressure["memory_threshold"] > 0
+        assert pressure["memory_threshold"] > 0, "Value must be greater than zero"
 
     def test_cpu_saturation_handling(self):
         """Test CPU saturation handling."""
@@ -165,7 +165,7 @@ class TestPerformanceAndLoad:
             "reduce_parallelism": True,
             "queue_backlog_monitoring": True,
         }
-        assert handling["cpu_threshold"] > 0
+        assert handling["cpu_threshold"] > 0, "h must be greater than zero"
 
     def test_network_congestion_impact(self):
         """Test impact of network congestion."""
@@ -176,7 +176,7 @@ class TestPerformanceAndLoad:
             "prefer_local_data": True,
             "increase_timeout": True,
         }
-        assert impact["detect_congestion"]
+        assert impact["detect_congestion"], "Condition must be true"
 
     def test_database_connection_pool_saturation(self):
         """Test database connection pool saturation."""
@@ -187,7 +187,7 @@ class TestPerformanceAndLoad:
             "timeout_on_full": True,
             "leak_detection": True,
         }
-        assert saturation["pool_size"] > 0
+        assert saturation["pool_size"] > 0, "Value must be greater than zero"
 
     def test_cache_hit_rate_degradation(self):
         """Test cache hit rate degradation."""
@@ -198,7 +198,7 @@ class TestPerformanceAndLoad:
             "adaptive_strategy": True,
             "fallback_to_direct": True,
         }
-        assert degradation["normal_hit_rate"] > degradation["degraded_hit_rate"]
+        assert degradation["normal_hit_rate"] > degradation["degraded_hit_rate"], "Value must be greater than zero"
 
 
 class TestMultiModuleOrchestration:
@@ -212,7 +212,7 @@ class TestMultiModuleOrchestration:
             "service_c": ["service_d"],
             "service_d": [],
         }
-        assert "service_d" in dependencies["service_b"]
+        assert "service_d" in dependencies["service_b"], "Condition must be true"
 
     def test_initialization_ordering(self):
         """Test initialization ordering."""
@@ -221,7 +221,7 @@ class TestMultiModuleOrchestration:
             "parallel_capable": ["cache", "queue"],
             "sequential_required": ["database", "api_server"],
         }
-        assert len(ordering["order"]) == 4
+        assert len(ordering["order"]) == 4, "Collection must not be empty"
 
     def test_service_mesh_communication(self):
         """Test service mesh communication."""
@@ -232,7 +232,7 @@ class TestMultiModuleOrchestration:
             "retry_policy": {"max_retries": 3},
             "timeout_policy": {"timeout_ms": 5000},
         }
-        assert mesh["enabled"]
+        assert mesh["enabled"], "Condition must be true"
 
     def test_cross_module_transaction(self):
         """Test cross-module transaction."""
@@ -243,7 +243,7 @@ class TestMultiModuleOrchestration:
             "timeout_seconds": 30,
             "rollback_on_error": True,
         }
-        assert transaction["isolation_level"] == "serializable"
+        assert transaction["isolation_level"] == "serializable", "Condition must be true"
 
     def test_eventual_consistency_handling(self):
         """Test eventual consistency handling."""
@@ -253,7 +253,7 @@ class TestMultiModuleOrchestration:
             "conflict_resolution": "last_write_wins",
             "max_inconsistency_window_ms": 1000,
         }
-        assert consistency["model"] == "eventual"
+        assert consistency["model"] == "eventual", "Condition must be true"
 
     def test_data_synchronization(self):
         """Test data synchronization between modules."""
@@ -264,7 +264,7 @@ class TestMultiModuleOrchestration:
             "merge_strategy": "three_way_merge",
             "audit_changes": True,
         }
-        assert sync["enabled"]
+        assert sync["enabled"], "Condition must be true"
 
 
 class TestEdgeCasesAndBoundaries:
@@ -273,7 +273,7 @@ class TestEdgeCasesAndBoundaries:
     def test_empty_collection_handling(self):
         """Test handling of empty collections."""
         handling = {"empty_list": [], "empty_dict": {}, "empty_string": "", "null_value": None}
-        assert len(handling["empty_list"]) == 0
+        assert len(handling["empty_list"]) == 0, "Collection must not be empty"
 
     def test_maximum_value_boundaries(self):
         """Test maximum value boundaries."""
@@ -283,7 +283,7 @@ class TestEdgeCasesAndBoundaries:
             "max_string_length": 2**31 - 1,
             "max_array_length": 2**32 - 1,
         }
-        assert boundaries["max_int"] > 0
+        assert boundaries["max_int"] > 0, "Value must be greater than zero"
 
     def test_minimum_value_boundaries(self):
         """Test minimum value boundaries."""
@@ -292,12 +292,12 @@ class TestEdgeCasesAndBoundaries:
             "min_float": 2.2250738585072014e-308,
             "min_positive": 1e-100,
         }
-        assert boundaries["min_int"] < 0
+        assert boundaries["min_int"] < 0, "Condition must be true"
 
     def test_zero_and_null_handling(self):
         """Test zero and null handling."""
         handling = {"zero_integer": 0, "zero_float": 0.0, "null_value": None, "empty_string": ""}
-        assert handling["zero_integer"] == 0
+        assert handling["zero_integer"] == 0, "h is not valid"
 
     def test_unicode_and_special_characters(self):
         """Test unicode and special character handling."""
@@ -308,7 +308,7 @@ class TestEdgeCasesAndBoundaries:
             "special": "!@#$%^&*()",
             "escaped": '\\n\\r\\t\\"',
         }
-        assert len(handling["emoji"]) > 0
+        assert len(handling["emoji"]) > 0, "Collection must not be empty"
 
     def test_precision_and_rounding(self):
         """Test floating point precision."""
@@ -318,7 +318,7 @@ class TestEdgeCasesAndBoundaries:
             "tolerance": 1e-10,
             "equals": abs(0.1 + 0.2 - 0.3) < 1e-10,
         }
-        assert precision["equals"]
+        assert precision["equals"], "Condition must be true"
 
 
 class TestDataIntegrity:
@@ -327,7 +327,7 @@ class TestDataIntegrity:
     def test_acid_properties(self):
         """Test ACID properties."""
         acid = {"atomicity": True, "consistency": True, "isolation": True, "durability": True}
-        assert all(v for v in acid.values())
+        assert all(v for v in acid.values()), "Value must be initialized"
 
     def test_data_validation_pipeline(self):
         """Test data validation pipeline."""
@@ -338,7 +338,7 @@ class TestDataIntegrity:
             "referential_integrity": True,
             "uniqueness_check": True,
         }
-        assert pipeline["schema_validation"]
+        assert pipeline["schema_validation"], "Condition must be true"
 
     def test_concurrent_modification_detection(self):
         """Test concurrent modification detection."""
@@ -348,7 +348,7 @@ class TestDataIntegrity:
             "conflict_detection": True,
             "merge_strategy": "manual_review",
         }
-        assert detection["version_tracking"]
+        assert detection["version_tracking"], "Condition must be true"
 
     def test_backup_and_recovery(self):
         """Test backup and recovery."""
@@ -360,7 +360,7 @@ class TestDataIntegrity:
             "rto_minutes": 15,
             "rpo_minutes": 5,
         }
-        assert backup["rto_minutes"] > 0
+        assert backup["rto_minutes"] > 0, "Value must be greater than zero"
 
 
 class TestSecurityBoundaries:
@@ -375,7 +375,7 @@ class TestSecurityBoundaries:
             "ldap_injection": True,
             "path_traversal": True,
         }
-        assert prevention["sql_injection"]
+        assert prevention["sql_injection"], "Condition must be true"
 
     def test_authentication_flow(self):
         """Test authentication flow."""
@@ -386,7 +386,7 @@ class TestSecurityBoundaries:
             "session_token": "token_xyz",
             "token_expiry": datetime.now() + timedelta(hours=24),
         }
-        assert flow["mfa_enabled"]
+        assert flow["mfa_enabled"], "Condition must be true"
 
     def test_authorization_checks(self):
         """Test authorization checks."""
@@ -397,7 +397,7 @@ class TestSecurityBoundaries:
             "user_role": "admin",
             "user_permissions": ["read", "write", "delete"],
         }
-        assert "admin" in [checks["user_role"]]
+        assert "admin" in [checks["user_role"]], "Condition must be true"
 
     def test_privilege_escalation_prevention(self):
         """Test privilege escalation prevention."""
@@ -407,7 +407,7 @@ class TestSecurityBoundaries:
             "least_privilege": True,
             "regular_audit": True,
         }
-        assert prevention["strict_role_separation"]
+        assert prevention["strict_role_separation"], "Condition must be true"
 
     def test_rate_limiting_bypass_prevention(self):
         """Test rate limit bypass prevention."""
@@ -418,7 +418,7 @@ class TestSecurityBoundaries:
             "distributed_coordination": True,
             "bypass_detection": True,
         }
-        assert prevention["ip_based_limiting"]
+        assert prevention["ip_based_limiting"], "Condition must be true"
 
 
 class TestMonitoringAndObservability:
@@ -433,12 +433,12 @@ class TestMonitoringAndObservability:
             "network_io": 890.3,
             "request_latency": 125.4,
         }
-        assert metrics["cpu_usage"] > 0
+        assert metrics["cpu_usage"] > 0, "Value must be greater than zero"
 
     def test_logging_levels(self):
         """Test logging levels."""
         levels = {"debug": 10, "info": 20, "warning": 30, "error": 40, "critical": 50}
-        assert levels["debug"] < levels["critical"]
+        assert levels["debug"] < levels["critical"], "Condition must be true"
 
     def test_distributed_tracing(self):
         """Test distributed tracing."""
@@ -449,7 +449,7 @@ class TestMonitoringAndObservability:
             "service_name": "api_server",
             "duration_ms": 125,
         }
-        assert tracing["trace_id"] is not None
+        assert tracing["trace_id"] is not None, "Value must be initialized"
 
     def test_alerting_rules(self):
         """Test alerting rules."""
@@ -458,7 +458,7 @@ class TestMonitoringAndObservability:
             "service_down": {"threshold": 0, "duration": 60, "severity": "critical"},
             "error_rate": {"threshold": 0.05, "duration": 120, "severity": "warning"},
         }
-        assert rules["service_down"]["severity"] == "critical"
+        assert rules["service_down"]["severity"] == "critical", "Condition must be true"
 
     def test_health_checks(self):
         """Test health check mechanisms."""
@@ -467,7 +467,7 @@ class TestMonitoringAndObservability:
             "database_health": {"status": "up", "connection_pool": 18},
             "cache_health": {"status": "up", "hit_rate": 0.85},
         }
-        assert checks["api_health"]["status"] == "up"
+        assert checks["api_health"]["status"] == "up", "Condition must be true"
 
 
 class TestDocumentationAndCompliance:
@@ -481,12 +481,12 @@ class TestDocumentationAndCompliance:
             "examples_per_endpoint": 3,
             "error_codes_documented": True,
         }
-        assert docs["endpoints_documented"] == docs["endpoints_total"]
+        assert docs["endpoints_documented"] == docs["endpoints_total"], "Condition must be true"
 
     def test_compliance_standards(self):
         """Test compliance standards."""
         standards = {"iso27001": True, "soc2": True, "gdpr": True, "hipaa": False, "pci_dss": False}
-        assert standards["gdpr"]
+        assert standards["gdpr"], "st is not valid"
 
     def test_change_log_tracking(self):
         """Test change log tracking."""
@@ -496,12 +496,12 @@ class TestDocumentationAndCompliance:
             "release_notes_generated": True,
             "deprecation_notices": 25,
         }
-        assert len(changelog["categories"]) == 4
+        assert len(changelog["categories"]) == 4, "Collection must not be empty"
 
     def test_version_control(self):
         """Test version control."""
         version = {"major": 3, "minor": 14, "patch": 2, "prerelease": None, "build": "build.12345"}
-        assert version["major"] > 0
+        assert version["major"] > 0, "Value must be greater than zero"
 
 
 class TestEndToEndScenarios:
@@ -516,7 +516,7 @@ class TestEndToEndScenarios:
             "account_created": True,
             "profile_completed": False,
         }
-        assert flow["account_created"]
+        assert flow["account_created"], "Count must be greater than zero"
 
     def test_payment_processing_flow(self):
         """Test payment processing flow."""
@@ -528,7 +528,7 @@ class TestEndToEndScenarios:
             "transaction_id": "txn_abc123",
             "status": "completed",
         }
-        assert flow["status"] == "completed"
+        assert flow["status"] == "completed", "Condition must be true"
 
     def test_data_import_export_flow(self):
         """Test data import/export flow."""
@@ -540,7 +540,7 @@ class TestEndToEndScenarios:
             "records_failed": 50,
             "validation_passed": True,
         }
-        assert flow["records_successful"] > flow["records_failed"]
+        assert flow["records_successful"] > flow["records_failed"], "Value must be greater than zero"
 
     def test_disaster_recovery_flow(self):
         """Test disaster recovery flow."""
@@ -552,7 +552,7 @@ class TestEndToEndScenarios:
             "rpo_minutes": 30,
             "recovery_successful": True,
         }
-        assert flow["recovery_successful"]
+        assert flow["recovery_successful"], "Condition must be true"
 
     def test_upgrade_path_flow(self):
         """Test upgrade flow."""
@@ -565,4 +565,4 @@ class TestEndToEndScenarios:
             "rollback_available": True,
             "upgrade_successful": True,
         }
-        assert flow["upgrade_successful"]
+        assert flow["upgrade_successful"], "Condition must be true"

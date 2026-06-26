@@ -24,10 +24,10 @@ from mcp.server.http import (
 def test_health_returns_status_and_count() -> None:
     client = TestClient(app)
     response = client.get("/mcp/v1/health")
-    assert response.status_code == 200
+    assert response.status_code == 200, "Response must not be empty"
     payload = response.json()
-    assert payload["status"] == "healthy"
-    assert "documents" in payload
+    assert payload["status"] == "healthy", "Condition must be true"
+    assert "documents" in payload, "Condition must be true"
     assert isinstance(payload["documents"], int)
 
 
@@ -35,7 +35,7 @@ def test_query_requires_auth_by_default(monkeypatch) -> None:
     monkeypatch.setenv("MCP_OFFLINE", "false")
     client = TestClient(app)
     response = client.post("/mcp/v1/query", json=QueryRequest(query="codex").dict())
-    assert response.status_code == 401
+    assert response.status_code == 401, "Response must not be empty"
 
 
 def test_query_success_with_default_key(monkeypatch) -> None:
@@ -46,10 +46,10 @@ def test_query_success_with_default_key(monkeypatch) -> None:
         headers={"X-MCP-API-Key": "dev-key"},
         json=QueryRequest(query="codex", top_k=3).dict(),
     )
-    assert response.status_code == 200
+    assert response.status_code == 200, "Response must not be empty"
     payload = response.json()
-    assert "results" in payload
-    assert len(payload["results"]) <= 3
+    assert "results" in payload, "Result must not be empty"
+    assert len(payload["results"]) <= 3, "Collection must not be empty"
 
 
 def test_context_upsert_and_query_round_trip() -> None:
@@ -65,8 +65,8 @@ def test_context_upsert_and_query_round_trip() -> None:
         headers={"X-MCP-API-Key": os.environ.get("MCP_API_KEY", "dev-key")},
         json=upsert_payload,
     )
-    assert response.status_code == 200
-    assert response.json()["upserted"] == 1
+    assert response.status_code == 200, "Response must not be empty"
+    assert response.json()["upserted"] == 1, "Response must not be empty"
 
     query_payload = QueryRequest(query="edge", top_k=1, filters={"scope": "test"}).dict()
     query_response = client.post(
@@ -74,10 +74,10 @@ def test_context_upsert_and_query_round_trip() -> None:
         headers={"X-MCP-API-Key": os.environ.get("MCP_API_KEY", "dev-key")},
         json=query_payload,
     )
-    assert query_response.status_code == 200
+    assert query_response.status_code == 200, "Response must not be empty"
     results = query_response.json()["results"]
-    assert len(results) == 1
-    assert results[0]["id"] == "doc-99"
+    assert len(results) == 1, "Results must not be empty"
+    assert results[0]["id"] == "doc-99", "Result must not be empty"
 
 
 def test_rate_limit_hook_placeholder(monkeypatch) -> None:
@@ -96,4 +96,4 @@ def test_rate_limit_hook_placeholder(monkeypatch) -> None:
             headers={"X-MCP-API-Key": os.environ.get("MCP_API_KEY", "dev-key")},
             json=QueryRequest(query="codex").dict(),
         )
-        assert response.status_code == 429
+        assert response.status_code == 429, "Response must not be empty"

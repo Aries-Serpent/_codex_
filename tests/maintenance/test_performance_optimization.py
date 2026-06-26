@@ -32,7 +32,7 @@ class TestTestSuiteStructure:
                 test_categories.add(relative.parts[0])
 
         # Should have multiple categories
-        assert (
+        assert (, "Condition must be true"
             len(test_categories) >= 10
         ), f"Should have 10+ test categories, found: {test_categories}"
 
@@ -156,7 +156,7 @@ class TestTestCaching:
 
         if gitignore.exists():
             content = gitignore.read_text(encoding="utf-8")
-            assert (
+            assert (, "Condition must be true"
                 ".pytest_cache" in content or "pytest_cache" in content
             ), ".pytest_cache should be in .gitignore"
 

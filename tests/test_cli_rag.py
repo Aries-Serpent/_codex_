@@ -91,9 +91,9 @@ class TestBuildCommand:
             ],
         )
 
-        assert result.exit_code == 0
-        assert "Building index" in result.stdout or "index" in result.stdout.lower()
-        assert "test_index" in result.stdout
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "Building index" in result.stdout or "index" in result.stdout.lower(), "Result must not be empty"
+        assert "test_index" in result.stdout, "Result must not be empty"
         mock_build.assert_called_once()
 
     @patch("codex.rag.build_index_from_files")
@@ -120,12 +120,12 @@ class TestBuildCommand:
             ],
         )
 
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
         call_kwargs = mock_build.call_args[1]
-        assert call_kwargs["index_name"] == "custom_index"
-        assert call_kwargs["tenant_id"] == "customer_a"
-        assert call_kwargs["chunk_size"] == 1500
-        assert call_kwargs["overlap"] == 200
+        assert call_kwargs["index_name"] == "custom_index", "Condition must be true"
+        assert call_kwargs["tenant_id"] == "customer_a", "Condition must be true"
+        assert call_kwargs["chunk_size"] == 1500, "Condition must be true"
+        assert call_kwargs["overlap"] == 200, "Condition must be true"
 
     def test_build_no_files(self, runner):
         """Test building without files fails."""
@@ -134,8 +134,8 @@ class TestBuildCommand:
             ["build", "--files", "nonexistent/*.md"],
         )
 
-        assert result.exit_code != 0
-        assert "No valid files" in result.stdout
+        assert result.exit_code != 0, "Result must not be empty"
+        assert "No valid files" in result.stdout, "Result must not be empty"
 
     def test_build_invalid_overlap(self, runner, sample_docs):
         """Test that overlap >= chunk_size fails."""
@@ -152,8 +152,8 @@ class TestBuildCommand:
             ],
         )
 
-        assert result.exit_code != 0
-        assert "Overlap must be less than chunk size" in result.stdout
+        assert result.exit_code != 0, "Result must not be empty"
+        assert "Overlap must be less than chunk size" in result.stdout, "Result must not be empty"
 
     @patch("codex.rag.build_index_from_files")
     def test_build_import_error(self, mock_build, runner, sample_docs):
@@ -165,8 +165,8 @@ class TestBuildCommand:
             ["build", "--files", str(sample_docs / "*.md")],
         )
 
-        assert result.exit_code != 0
-        assert "Missing dependencies" in result.stdout
+        assert result.exit_code != 0, "Result must not be empty"
+        assert "Missing dependencies" in result.stdout, "Result must not be empty"
 
 
 class TestQueryCommand:
@@ -190,9 +190,9 @@ class TestQueryCommand:
             ["query", "test query"],
         )
 
-        assert result.exit_code == 0
-        assert "Found 1 results" in result.stdout
-        assert "Sample text" in result.stdout
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "Found 1 results" in result.stdout, "Result must not be empty"
+        assert "Sample text" in result.stdout, "Result must not be empty"
         mock_retriever.query.assert_called_once()
 
     @patch("codex.cli_rag.RAGRetriever")
@@ -218,10 +218,10 @@ class TestQueryCommand:
             ],
         )
 
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
         call_kwargs = mock_retriever.query.call_args[1]
-        assert call_kwargs["top_k"] == 10
-        assert call_kwargs["min_score"] == 0.7
+        assert call_kwargs["top_k"] == 10, "Condition must be true"
+        assert call_kwargs["min_score"] == 0.7, "Condition must be true"
 
     @patch("codex.cli_rag.RAGRetriever")
     def test_query_json_output(self, mock_retriever_class, runner):
@@ -235,7 +235,7 @@ class TestQueryCommand:
             ["query", "test", "--format", "json"],
         )
 
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
         # Check that output contains valid JSON
         # Try to find JSON in the output
         lines = result.stdout.strip().split("\n")
@@ -250,7 +250,7 @@ class TestQueryCommand:
                 continue
 
         # If no JSON found, at least verify it ran successfully
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     @patch("codex.cli_rag.RAGRetriever")
     def test_query_no_results(self, mock_retriever_class, runner):
@@ -264,8 +264,8 @@ class TestQueryCommand:
             ["query", "nonexistent query"],
         )
 
-        assert result.exit_code == 0
-        assert "No results found" in result.stdout
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "No results found" in result.stdout, "Result must not be empty"
 
     @patch("codex.cli_rag.RAGRetriever")
     def test_query_index_not_found(self, mock_retriever_class, runner):
@@ -277,10 +277,10 @@ class TestQueryCommand:
             ["query", "test"],
         )
 
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
         # Error message may reference "not found" or "Missing dependencies" depending
         # on whether optional extras are installed; just verify failure is surfaced.
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
 
 class TestListCommand:
@@ -297,9 +297,9 @@ class TestListCommand:
             ],
         )
 
-        assert result.exit_code == 0
-        assert "test_index" in result.stdout
-        assert "100" in result.stdout  # chunk count
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "test_index" in result.stdout, "Result must not be empty"
+        assert "100" in result.stdout, "Result must not be empty"
 
     def test_list_no_indices(self, runner, temp_index_dir):
         """Test listing when no indices exist."""
@@ -312,8 +312,8 @@ class TestListCommand:
             ],
         )
 
-        assert result.exit_code == 0
-        assert "No indices found" in result.stdout
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "No indices found" in result.stdout, "Result must not be empty"
 
     def test_list_custom_tenant(self, runner, mock_index_metadata):
         """Test listing for specific tenant."""
@@ -340,8 +340,8 @@ class TestListCommand:
             ],
         )
 
-        assert result.exit_code == 0
-        assert "custom_index" in result.stdout
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "custom_index" in result.stdout, "Result must not be empty"
 
 
 class TestDeleteCommand:
@@ -361,12 +361,12 @@ class TestDeleteCommand:
             ],
         )
 
-        assert result.exit_code == 0
-        assert "Deleted index" in result.stdout
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "Deleted index" in result.stdout, "Result must not be empty"
 
         # Verify index is gone
         index_path = mock_index_metadata / "default" / "test_index"
-        assert not index_path.exists()
+        assert not index_path.exists(), "Condition must be true"
 
     def test_delete_nonexistent(self, runner, temp_index_dir):
         """Test deleting nonexistent index."""
@@ -382,8 +382,8 @@ class TestDeleteCommand:
             ],
         )
 
-        assert result.exit_code != 0
-        assert "not found" in result.stdout
+        assert result.exit_code != 0, "Result must not be empty"
+        assert "not found" in result.stdout, "Result must not be empty"
 
     def test_delete_without_confirmation(self, runner, mock_index_metadata):
         """Test deletion prompts for confirmation."""
@@ -399,12 +399,12 @@ class TestDeleteCommand:
             input="n\n",  # Decline confirmation
         )
 
-        assert result.exit_code == 0
-        assert "Cancelled" in result.stdout
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "Cancelled" in result.stdout, "Result must not be empty"
 
         # Verify index still exists
         index_path = mock_index_metadata / "default" / "test_index"
-        assert index_path.exists()
+        assert index_path.exists(), "Condition must be true"
 
 
 class TestMergeCommand:
@@ -437,7 +437,7 @@ class TestMergeCommand:
             ],
         )
 
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
         assert "merged successfully" in result.stdout.lower() or "merge" in result.stdout.lower()
         mock_manage.assert_called_once()
 
@@ -467,8 +467,8 @@ class TestMergeCommand:
             ],
         )
 
-        assert result.exit_code != 0
-        assert "failed" in result.stdout
+        assert result.exit_code != 0, "Result must not be empty"
+        assert "failed" in result.stdout, "Result must not be empty"
 
     def test_merge_insufficient_sources(self, runner):
         """Test merge with < 2 sources fails."""
@@ -483,8 +483,8 @@ class TestMergeCommand:
             ],
         )
 
-        assert result.exit_code != 0
-        assert "At least 2 source indices" in result.stdout
+        assert result.exit_code != 0, "Result must not be empty"
+        assert "At least 2 source indices" in result.stdout, "Result must not be empty"
 
 
 class TestStatsCommand:
@@ -503,11 +503,11 @@ class TestStatsCommand:
             ],
         )
 
-        assert result.exit_code == 0
-        assert "Statistics" in result.stdout
-        assert "test_index" in result.stdout
-        assert "100" in result.stdout  # chunk count
-        assert "384" in result.stdout  # embedding dim
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "Statistics" in result.stdout, "Result must not be empty"
+        assert "test_index" in result.stdout, "Result must not be empty"
+        assert "100" in result.stdout, "Result must not be empty"
+        assert "384" in result.stdout, "Result must not be empty"
 
     def test_stats_nonexistent_index(self, runner, temp_index_dir):
         """Test stats for nonexistent index."""
@@ -522,8 +522,8 @@ class TestStatsCommand:
             ],
         )
 
-        assert result.exit_code != 0
-        assert "not found" in result.stdout
+        assert result.exit_code != 0, "Result must not be empty"
+        assert "not found" in result.stdout, "Result must not be empty"
 
     def test_stats_missing_metadata(self, runner, temp_index_dir):
         """Test stats when metadata is missing."""
@@ -542,7 +542,7 @@ class TestStatsCommand:
             ],
         )
 
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
 
 class TestMetricsCommand:
@@ -560,8 +560,8 @@ class TestMetricsCommand:
             ["metrics", "--format", "prometheus"],
         )
 
-        assert result.exit_code == 0
-        assert "test_metric" in result.stdout
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "test_metric" in result.stdout, "Result must not be empty"
 
     @patch("codex.rag.get_metrics")
     def test_metrics_json(self, mock_get_metrics, runner):
@@ -575,7 +575,7 @@ class TestMetricsCommand:
             ["metrics", "--format", "json"],
         )
 
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
         # Verify valid JSON output
         json.loads(result.stdout.strip())
 
@@ -593,9 +593,9 @@ class TestMetricsCommand:
             ["metrics", "--output", str(output_file)],
         )
 
-        assert result.exit_code == 0
-        assert output_file.exists()
-        assert "test_metric" in output_file.read_text()
+        assert result.exit_code == 0, "Result must not be empty"
+        assert output_file.exists(), "Condition must be true"
+        assert "test_metric" in output_file.read_text(), "Condition must be true"
 
     def test_metrics_invalid_format(self, runner):
         """Test invalid format parameter."""
@@ -604,8 +604,8 @@ class TestMetricsCommand:
             ["metrics", "--format", "invalid"],
         )
 
-        assert result.exit_code != 0
-        assert "Unknown format" in result.stdout
+        assert result.exit_code != 0, "Result must not be empty"
+        assert "Unknown format" in result.stdout, "Result must not be empty"
 
 
 class TestEdgeCases:
@@ -614,20 +614,20 @@ class TestEdgeCases:
     def test_help_output(self, runner):
         """Test help command works."""
         result = runner.invoke(app, ["--help"])
-        assert result.exit_code == 0
-        assert "RAG" in result.stdout
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "RAG" in result.stdout, "Result must not be empty"
 
     def test_build_help(self, runner):
         """Test build command help."""
         result = runner.invoke(app, ["build", "--help"])
-        assert result.exit_code == 0
-        assert "Build a FAISS index" in result.stdout
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "Build a FAISS index" in result.stdout, "Result must not be empty"
 
     def test_query_help(self, runner):
         """Test query command help."""
         result = runner.invoke(app, ["query", "--help"])
-        assert result.exit_code == 0
-        assert "Query an existing FAISS index" in result.stdout
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "Query an existing FAISS index" in result.stdout, "Result must not be empty"
 
     @patch("codex.rag.build_index_from_files")
     def test_build_exception_handling(self, mock_build, runner, sample_docs):
@@ -639,8 +639,8 @@ class TestEdgeCases:
             ["build", "--files", str(sample_docs / "*.md")],
         )
 
-        assert result.exit_code != 0
-        assert "Failed to build index" in result.stdout
+        assert result.exit_code != 0, "Result must not be empty"
+        assert "Failed to build index" in result.stdout, "Result must not be empty"
 
 
 class TestIntegration:
@@ -679,7 +679,7 @@ class TestIntegration:
             app,
             ["list", "--index-dir", str(mock_index_metadata)],
         )
-        assert list_result.exit_code == 0
+        assert list_result.exit_code == 0, "Result must not be empty"
 
         # Get stats for listed index
         stats_result = runner.invoke(
@@ -692,7 +692,7 @@ class TestIntegration:
                 str(mock_index_metadata),
             ],
         )
-        assert stats_result.exit_code == 0
+        assert stats_result.exit_code == 0, "Result must not be empty"
 
 
 if __name__ == "__main__":

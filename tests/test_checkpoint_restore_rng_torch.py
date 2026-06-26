@@ -64,6 +64,6 @@ def test_rng_restoration_roundtrip(tmp_path: Path, disable_torch_profiler) -> No
     restored_np = np.random.random(4)
     restored_torch = torch.rand(4)
 
-    assert restored_py == expected_py
+    assert restored_py == expected_py, "restored_py is not valid"
     np.testing.assert_allclose(restored_np, expected_np)
     assert torch.allclose(restored_torch, expected_torch)

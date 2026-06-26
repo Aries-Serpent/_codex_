@@ -33,9 +33,9 @@ def test_infer_on_session_events_minimal():
         );
     """)
     try:
-        assert "session_events" in list_tables(con)
+        assert "session_events" in list_tables(con), "Condition must be true"
         t = infer_probable_table(con, candidates=("session_events", "logs"))
-        assert t == "session_events"
+        assert t == "session_events", "t is not valid"
         cols = infer_columns(con, t)
         assert cols["session_id"] in ("session_id",)
         assert cols["timestamp"] in ("created_at",)
@@ -53,7 +53,7 @@ def test_infer_on_logs_variants():
     """)
     try:
         t = infer_probable_table(con, candidates=("session_events", "logs"))
-        assert t == "logs"
+        assert t == "logs", "t is not valid"
         cols = infer_columns(con, t)
         assert cols["timestamp"] in ("ts",)
         assert cols["session_id"] in ("sid",)

@@ -77,16 +77,16 @@ def test_model_registry_registers_and_lists_models(monkeypatch):
         model_uri="runs:/run-123/model", name="demo", description="test", tags={"stage": "dev"}
     )
 
-    assert model_version.name == "demo"
-    assert model_version.version == "1"
+    assert model_version.name == "demo", "name is not valid"
+    assert model_version.version == "1", "version is not valid"
     assert model_version.stage.value in {"None", "Staging", "Production", "Archived"}
-    assert ("register:runs:/run-123/model:demo") in events
+    assert ("register:runs:/run-123/model:demo") in events, "Condition must be true"
 
     retrieved = registry.get_model_version("demo", "1")
-    assert retrieved.name == "demo"
+    assert retrieved.name == "demo", "name is not valid"
 
     versions = registry.list_model_versions("demo")
-    assert versions and versions[0].name == "demo"
+    assert versions and versions[0].name == "demo", "name is not valid"
 
 
 def test_model_registry_requires_mlflow(monkeypatch):

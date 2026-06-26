@@ -60,10 +60,10 @@ class TestGitHubClientCheckRuns:
             html_url="https://github.com/test",
         )
 
-        assert check_run.id == 123
-        assert check_run.is_completed
-        assert check_run.is_successful
-        assert not check_run.is_failed
+        assert check_run.id == 123, "id is not valid"
+        assert check_run.is_completed, "Condition must be true"
+        assert check_run.is_successful, "Condition must be true"
+        assert not check_run.is_failed, "Condition must be true"
 
     def test_check_run_failed_status(self):
         """Test CheckRun failed status detection."""
@@ -82,9 +82,9 @@ class TestGitHubClientCheckRuns:
             html_url="https://github.com/test",
         )
 
-        assert check_run.is_completed
-        assert not check_run.is_successful
-        assert check_run.is_failed
+        assert check_run.is_completed, "Condition must be true"
+        assert not check_run.is_successful, "Condition must be true"
+        assert check_run.is_failed, "Condition must be true"
 
     @patch("src.services.github.client.httpx.AsyncClient")
     async def test_get_check_run(self, mock_client_class, mock_check_run_data):
@@ -107,9 +107,9 @@ class TestGitHubClientCheckRuns:
         client = GitHubClient(token="test_token")
         check_run = await client.get_check_run("owner", "repo", 59990656344)
 
-        assert check_run.id == 59990656344
-        assert check_run.name == "Test Coverage"
-        assert check_run.status == "completed"
+        assert check_run.id == 59990656344, "id is not valid"
+        assert check_run.name == "Test Coverage", "name is not valid"
+        assert check_run.status == "completed", "status is not valid"
 
     @patch("src.services.github.client.httpx.AsyncClient")
     async def test_list_check_runs_for_ref(self, mock_client_class, mock_check_runs_response):
@@ -134,8 +134,8 @@ class TestGitHubClientCheckRuns:
             "owner", "repo", "b6b52590b9551c4d29b90ea122d885ef83cd0d8d"
         )
 
-        assert len(check_runs) == 1
-        assert check_runs[0].id == 59990656344
+        assert len(check_runs) == 1, "Check_runs must not be empty"
+        assert check_runs[0].id == 59990656344, "id is not valid"
 
 
 # =============================================================================
@@ -176,9 +176,9 @@ class TestGitHubLogsCLI:
         runner = CliRunner()
         result = runner.invoke(cli, ["check-run", "Aries-Serpent", "_codex_", "59990656344"])
 
-        assert result.exit_code == 0
-        assert "Test logs content" in result.output
-        assert "Successfully fetched logs" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "Test logs content" in result.output, "Result must not be empty"
+        assert "Successfully fetched logs" in result.output, "Result must not be empty"
 
     @patch("src.codex.cli_github_logs._get_github_client")
     def test_list_check_runs_command(self, mock_get_client):
@@ -209,9 +209,9 @@ class TestGitHubLogsCLI:
         runner = CliRunner()
         result = runner.invoke(cli, ["list-check-runs", "owner", "repo", "ref123"])
 
-        assert result.exit_code == 0
-        assert "Test Run" in result.output
-        assert "123" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "Test Run" in result.output, "Result must not be empty"
+        assert "123" in result.output, "Result must not be empty"
 
 
 # =============================================================================
@@ -267,11 +267,11 @@ class TestGitHubLogsAPI:
             params={"owner": "Aries-Serpent", "repo": "_codex_"},
         )
 
-        assert response.status_code == 200
+        assert response.status_code == 200, "Response must not be empty"
         data = response.json()
-        assert data["check_run_id"] == 59990656344
-        assert data["logs"] == "Test logs"
-        assert data["check_run_name"] == "Test"
+        assert data["check_run_id"] == 59990656344, "Data must not be empty"
+        assert data["logs"] == "Test logs", "Data must not be empty"
+        assert data["check_run_name"] == "Test", "Data must not be empty"
 
     def test_list_check_runs_endpoint(self, mock_github_client):
         """Test GET /github/check-runs endpoint."""
@@ -308,11 +308,11 @@ class TestGitHubLogsAPI:
             params={"owner": "Aries-Serpent", "repo": "_codex_", "ref": "abc123"},
         )
 
-        assert response.status_code == 200
+        assert response.status_code == 200, "Response must not be empty"
         data = response.json()
-        assert data["total_count"] == 1
-        assert len(data["check_runs"]) == 1
-        assert data["check_runs"][0]["id"] == 123
+        assert data["total_count"] == 1, "Data must not be empty"
+        assert len(data["check_runs"]) == 1, "Collection must not be empty"
+        assert data["check_runs"][0]["id"] == 123, "Data must not be empty"
 
 
 # =============================================================================
@@ -352,9 +352,9 @@ class TestGitHubLogsMCPTools:
             {"owner": "Aries-Serpent", "repo": "_codex_", "check_run_id": 59990656344}
         )
 
-        assert result["success"] is True
-        assert result["logs"] == "Test logs"
-        assert result["check_run"]["id"] == 59990656344
+        assert result["success"] is True, "Result must not be empty"
+        assert result["logs"] == "Test logs", "Result must not be empty"
+        assert result["check_run"]["id"] == 59990656344, "Result must not be empty"
 
     @patch("src.mcp.tools.github_logs._get_github_client")
     def test_list_check_runs_tool(self, mock_get_client):
@@ -382,10 +382,10 @@ class TestGitHubLogsMCPTools:
         # Test
         result = list_check_runs({"owner": "Aries-Serpent", "repo": "_codex_", "ref": "abc123"})
 
-        assert result["success"] is True
-        assert result["total_count"] == 1
-        assert len(result["check_runs"]) == 1
-        assert result["check_runs"][0]["id"] == 123
+        assert result["success"] is True, "Result must not be empty"
+        assert result["total_count"] == 1, "Result must not be empty"
+        assert len(result["check_runs"]) == 1, "Collection must not be empty"
+        assert result["check_runs"][0]["id"] == 123, "Result must not be empty"
 
     @patch("src.mcp.tools.github_logs._get_github_client")
     def test_mcp_tool_error_handling(self, mock_get_client):
@@ -400,9 +400,9 @@ class TestGitHubLogsMCPTools:
         # Test
         result = fetch_check_run_logs({"owner": "test", "repo": "test", "check_run_id": 123})
 
-        assert result["success"] is False
-        assert "error" in result
-        assert "Test error" in result["error"]
+        assert result["success"] is False, "Result must not be empty"
+        assert "error" in result, "Result must not be empty"
+        assert "Test error" in result["error"], "Result must not be empty"
 
 
 # =============================================================================
@@ -432,6 +432,6 @@ class TestGitHubLogsIntegration:
         # Test with actual check run
         check_run = client.get_check_run("Aries-Serpent", "_codex_", 59990656344)
 
-        assert check_run.id == 59990656344
-        assert check_run.name is not None
-        assert check_run.status is not None
+        assert check_run.id == 59990656344, "id is not valid"
+        assert check_run.name is not None, "name must be initialized"
+        assert check_run.status is not None, "status must be initialized"

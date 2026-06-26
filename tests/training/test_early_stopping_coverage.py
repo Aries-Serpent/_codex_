@@ -51,19 +51,19 @@ def mock_hf_callback():
 def test_early_stopping_config_default():
     """Test EarlyStoppingConfig default values."""
     config = EarlyStoppingConfig()
-    assert config.patience == 3
-    assert config.threshold == 0.0
-    assert config.metric == "eval_loss"
-    assert config.mode == "min"
+    assert config.patience == 3, "patience is not valid"
+    assert config.threshold == 0.0, "threshold is not valid"
+    assert config.metric == "eval_loss", "metric is not valid"
+    assert config.mode == "min", "mode is not valid"
 
 
 def test_early_stopping_config_custom():
     """Test EarlyStoppingConfig with custom values."""
     config = EarlyStoppingConfig(patience=5, threshold=0.001, metric="eval_accuracy", mode="max")
-    assert config.patience == 5
-    assert config.threshold == 0.001
-    assert config.metric == "eval_accuracy"
-    assert config.mode == "max"
+    assert config.patience == 5, "patience is not valid"
+    assert config.threshold == 0.001, "threshold is not valid"
+    assert config.metric == "eval_accuracy", "metric is not valid"
+    assert config.mode == "max", "mode is not valid"
 
 
 def test_early_stopping_config_to_dict():
@@ -71,10 +71,10 @@ def test_early_stopping_config_to_dict():
     config = EarlyStoppingConfig(patience=10, metric="eval_f1")
     config_dict = config.to_dict()
 
-    assert config_dict["patience"] == 10
-    assert config_dict["metric"] == "eval_f1"
-    assert config_dict["threshold"] == 0.0
-    assert config_dict["mode"] == "min"
+    assert config_dict["patience"] == 10, "Condition must be true"
+    assert config_dict["metric"] == "eval_f1", "Condition must be true"
+    assert config_dict["threshold"] == 0.0, "Condition must be true"
+    assert config_dict["mode"] == "min", "Condition must be true"
 
 
 def test_early_stopping_config_all_metrics():
@@ -82,7 +82,7 @@ def test_early_stopping_config_all_metrics():
     metrics = ["eval_loss", "eval_accuracy", "eval_f1", "eval_precision"]
     for metric in metrics:
         config = EarlyStoppingConfig(metric=metric)
-        assert config.metric == metric
+        assert config.metric == metric, "metric is not valid"
 
 
 def test_early_stopping_config_modes():
@@ -90,8 +90,8 @@ def test_early_stopping_config_modes():
     config_min = EarlyStoppingConfig(mode="min")
     config_max = EarlyStoppingConfig(mode="max")
 
-    assert config_min.mode == "min"
-    assert config_max.mode == "max"
+    assert config_min.mode == "min", "mode is not valid"
+    assert config_max.mode == "max", "mode is not valid"
 
 
 # =============================================================================
@@ -102,8 +102,8 @@ def test_early_stopping_config_modes():
 def test_codex_early_stopping_callback_default():
     """Test CodexEarlyStoppingCallback with default config."""
     callback = CodexEarlyStoppingCallback()
-    assert callback.config is not None
-    assert callback.config.patience == 3
+    assert callback.config is not None, "config must be initialized"
+    assert callback.config.patience == 3, "patience is not valid"
 
 
 def test_codex_early_stopping_callback_with_config():
@@ -111,8 +111,8 @@ def test_codex_early_stopping_callback_with_config():
     config = EarlyStoppingConfig(patience=7, threshold=0.01)
     callback = CodexEarlyStoppingCallback(config=config)
 
-    assert callback.config.patience == 7
-    assert callback.config.threshold == 0.01
+    assert callback.config.patience == 7, "patience is not valid"
+    assert callback.config.threshold == 0.01, "threshold is not valid"
 
 
 def test_codex_early_stopping_callback_override_patience():
@@ -120,7 +120,7 @@ def test_codex_early_stopping_callback_override_patience():
     config = EarlyStoppingConfig(patience=3)
     callback = CodexEarlyStoppingCallback(config=config, early_stopping_patience=10)
 
-    assert callback.config.patience == 10
+    assert callback.config.patience == 10, "patience is not valid"
 
 
 def test_codex_early_stopping_callback_override_threshold():
@@ -128,7 +128,7 @@ def test_codex_early_stopping_callback_override_threshold():
     config = EarlyStoppingConfig(threshold=0.0)
     callback = CodexEarlyStoppingCallback(config=config, early_stopping_threshold=0.005)
 
-    assert callback.config.threshold == 0.005
+    assert callback.config.threshold == 0.005, "threshold is not valid"
 
 
 @patch("codex_ml.training.early_stopping.EarlyStoppingCallback")
@@ -138,17 +138,17 @@ def test_codex_callback_uses_hf_callback(mock_hf_callback):
     mock_hf_callback.return_value = mock_instance
 
     callback = CodexEarlyStoppingCallback()
-    assert callback.is_hf_callback is True
-    assert callback.callback is mock_instance
+    assert callback.is_hf_callback is True, "is_hf_callback is not valid"
+    assert callback.callback is mock_instance, "callback is not valid"
 
 
 def test_codex_callback_fallback_without_hf():
     """Test CodexEarlyStoppingCallback fallback without transformers."""
     with patch("codex_ml.training.early_stopping.EarlyStoppingCallback", side_effect=ImportError):
         callback = CodexEarlyStoppingCallback()
-        assert callback.is_hf_callback is False
-        assert callback.best_metric is None
-        assert callback.patience_counter == 0
+        assert callback.is_hf_callback is False, "is_hf_callback is not valid"
+        assert callback.best_metric is None, "best_metric is not valid"
+        assert callback.patience_counter == 0, "Count must be greater than zero"
 
 
 def test_codex_callback_getattr_delegation():
@@ -161,7 +161,7 @@ def test_codex_callback_getattr_delegation():
         callback = CodexEarlyStoppingCallback()
         result = callback.some_method()
 
-        assert result == 42
+        assert result == 42, "Result must not be empty"
 
 
 # =============================================================================
@@ -174,7 +174,7 @@ def test_inject_early_stopping_empty_list():
     callbacks = []
     result = inject_early_stopping(callbacks)
 
-    assert len(result) == 1
+    assert len(result) == 1, "Result must not be empty"
     assert isinstance(result[0], CodexEarlyStoppingCallback)
 
 
@@ -184,7 +184,7 @@ def test_inject_early_stopping_with_config():
     callbacks = []
     result = inject_early_stopping(callbacks, config=config)
 
-    assert result[0].config.patience == 15
+    assert result[0].config.patience == 15, "Result must not be empty"
 
 
 def test_inject_early_stopping_already_present():
@@ -195,7 +195,7 @@ def test_inject_early_stopping_already_present():
     result = inject_early_stopping(callbacks)
 
     # Should not add another one
-    assert len(result) == 1
+    assert len(result) == 1, "Result must not be empty"
 
 
 @patch("codex_ml.training.early_stopping.EarlyStoppingCallback")
@@ -207,7 +207,7 @@ def test_inject_early_stopping_detects_hf_callback(mock_hf_callback):
     result = inject_early_stopping(callbacks)
 
     # Should detect existing callback
-    assert len(result) == 1
+    assert len(result) == 1, "Result must not be empty"
 
 
 def test_inject_early_stopping_force_flag():
@@ -218,7 +218,7 @@ def test_inject_early_stopping_force_flag():
     result = inject_early_stopping(callbacks, force=True)
 
     # Should add another one due to force=True
-    assert len(result) == 2
+    assert len(result) == 2, "Result must not be empty"
 
 
 def test_inject_early_stopping_preserves_other_callbacks():
@@ -229,9 +229,9 @@ def test_inject_early_stopping_preserves_other_callbacks():
 
     result = inject_early_stopping(callbacks)
 
-    assert len(result) == 3
-    assert other_callback1 in result
-    assert other_callback2 in result
+    assert len(result) == 3, "Result must not be empty"
+    assert other_callback1 in result, "Result must not be empty"
+    assert other_callback2 in result, "Result must not be empty"
 
 
 # =============================================================================
@@ -246,7 +246,7 @@ def test_auto_inject_with_eval_dataset(mock_eval_dataset):
         trainer_class="Trainer", eval_dataset=mock_eval_dataset, callbacks=callbacks
     )
 
-    assert len(result) == 1
+    assert len(result) == 1, "Result must not be empty"
     assert isinstance(result[0], CodexEarlyStoppingCallback)
 
 
@@ -258,7 +258,7 @@ def test_auto_inject_without_eval_dataset():
     )
 
     # Should not inject if no eval dataset
-    assert len(result) == 0
+    assert len(result) == 0, "Result must not be empty"
 
 
 def test_auto_inject_with_none_callbacks(mock_eval_dataset):
@@ -267,7 +267,7 @@ def test_auto_inject_with_none_callbacks(mock_eval_dataset):
         trainer_class="Trainer", eval_dataset=mock_eval_dataset, callbacks=None
     )
 
-    assert len(result) == 1
+    assert len(result) == 1, "Result must not be empty"
 
 
 def test_auto_inject_with_custom_config(mock_eval_dataset):
@@ -277,8 +277,8 @@ def test_auto_inject_with_custom_config(mock_eval_dataset):
         trainer_class="Trainer", eval_dataset=mock_eval_dataset, callbacks=[], config=config
     )
 
-    assert result[0].config.patience == 20
-    assert result[0].config.metric == "eval_accuracy"
+    assert result[0].config.patience == 20, "Result must not be empty"
+    assert result[0].config.metric == "eval_accuracy", "Result must not be empty"
 
 
 def test_auto_inject_preserves_existing_callbacks(mock_eval_dataset):
@@ -290,8 +290,8 @@ def test_auto_inject_preserves_existing_callbacks(mock_eval_dataset):
         trainer_class="Trainer", eval_dataset=mock_eval_dataset, callbacks=callbacks
     )
 
-    assert existing in result
-    assert len(result) == 2
+    assert existing in result, "Result must not be empty"
+    assert len(result) == 2, "Result must not be empty"
 
 
 # =============================================================================
@@ -309,7 +309,7 @@ def test_early_stopping_config_validation():
     ]
 
     for config in configs:
-        assert config.patience >= 1 or config.patience == configs[0].patience
+        assert config.patience >= 1 or config.patience == configs[0].patience, "patience must be greater than zero"
 
 
 def test_callback_chain_integration(mock_eval_dataset):
@@ -325,8 +325,8 @@ def test_callback_chain_integration(mock_eval_dataset):
         config=EarlyStoppingConfig(patience=5),
     )
 
-    assert len(callbacks) == 1
-    assert callbacks[0].config.patience == 5
+    assert len(callbacks) == 1, "Callbacks must not be empty"
+    assert callbacks[0].config.patience == 5, "patience is not valid"
 
 
 def test_multiple_injection_attempts():
@@ -335,15 +335,15 @@ def test_multiple_injection_attempts():
 
     # First injection
     callbacks = inject_early_stopping(callbacks)
-    assert len(callbacks) == 1
+    assert len(callbacks) == 1, "Callbacks must not be empty"
 
     # Second injection (should skip)
     callbacks = inject_early_stopping(callbacks)
-    assert len(callbacks) == 1
+    assert len(callbacks) == 1, "Callbacks must not be empty"
 
     # Third injection with force
     callbacks = inject_early_stopping(callbacks, force=True)
-    assert len(callbacks) == 2
+    assert len(callbacks) == 2, "Callbacks must not be empty"
 
 
 def test_early_stopping_config_serialization_round_trip():
@@ -353,7 +353,7 @@ def test_early_stopping_config_serialization_round_trip():
     config_dict = original.to_dict()
     restored = EarlyStoppingConfig(**config_dict)
 
-    assert restored.patience == original.patience
-    assert restored.threshold == original.threshold
-    assert restored.metric == original.metric
-    assert restored.mode == original.mode
+    assert restored.patience == original.patience, "patience is not valid"
+    assert restored.threshold == original.threshold, "threshold is not valid"
+    assert restored.metric == original.metric, "metric is not valid"
+    assert restored.mode == original.mode, "mode is not valid"

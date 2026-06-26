@@ -144,8 +144,8 @@ def redact_url_credentials(url: str | None) -> str:
         parsed = urlsplit(url)
     except ValueError as e:
         error_type = type(e).__name__
-        logger.debug(f"ValueError: <ERROR_TYPE>")
-        logger.warning(f"ValueError: <ERROR_TYPE>", exc_info=True)
+        logger.debug("ValueError: <ERROR_TYPE>")
+        logger.warning("ValueError: <ERROR_TYPE>", exc_info=True)
         return url
 
     if not parsed.username and not parsed.password:

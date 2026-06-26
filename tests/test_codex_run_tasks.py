@@ -106,7 +106,7 @@ def test_run_task_writes_files(tmp_path: Path, monkeypatch=None):
         pytest.fail(str(e))
         return
 
-    assert rc != 0
+    assert rc != 0, "rc is not valid"
 
     q_resolved = None
     c_resolved = None
@@ -127,8 +127,8 @@ def test_run_task_writes_files(tmp_path: Path, monkeypatch=None):
     q_text = q_resolved.read_text(encoding="utf-8", errors="replace")
     c_text = c_resolved.read_text(encoding="utf-8", errors="replace")
 
-    assert q_text.strip() != ""
-    assert c_text.strip() != ""
+    assert q_text.strip() != "", "Condition must be true"
+    assert c_text.strip() != "", "Condition must be true"
 
 
 def test_fetch_https_allows_https(monkeypatch):
@@ -169,13 +169,13 @@ def test_fetch_https_allows_https(monkeypatch):
 
     status, body = mod.fetch_https("https://example.com/resource")
 
-    assert status == 200
-    assert body == b"ok"
-    assert called["url"] == "https://example.com/resource"
-    assert called["timeout"] == 20.0
-    assert called["headers"] is None
-    assert called["method"] == "GET"
-    assert called["data"] is None
+    assert status == 200, "status is not valid"
+    assert body == b"ok", "body is not valid"
+    assert called["url"] == "https://example.com/resource", "Condition must be true"
+    assert called["timeout"] == 20.0, "Condition must be true"
+    assert called["headers"] is None, "Condition must be true"
+    assert called["method"] == "GET", "Condition must be true"
+    assert called["data"] is None, "Data must not be empty"
 
 
 @pytest.mark.parametrize(

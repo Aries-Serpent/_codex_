@@ -21,10 +21,10 @@ def test_detect_no_safeguards():
 
     result = mcp_security_safeguards.detect(file_index)
 
-    assert result["id"] == "mcp-security-safeguards"
-    assert result["found_patterns"] == []
-    assert "confirm" in result["required_patterns"]
-    assert "dry_run" in result["required_patterns"]
+    assert result["id"] == "mcp-security-safeguards", "Result must not be empty"
+    assert result["found_patterns"] == [], "Result must not be empty"
+    assert "confirm" in result["required_patterns"], "Result must not be empty"
+    assert "dry_run" in result["required_patterns"], "Result must not be empty"
 
 
 def test_detect_confirm_keyword():
@@ -43,8 +43,8 @@ def delete_resource(resource_id, confirm=False):
 
         result = mcp_security_safeguards.detect(file_index)
 
-        assert "confirm" in result["found_patterns"]
-        assert str(py_file) in result["evidence_files"]
+        assert "confirm" in result["found_patterns"], "Result must not be empty"
+        assert str(py_file) in result["evidence_files"], "Result must not be empty"
 
 
 def test_detect_dry_run_keyword():
@@ -63,8 +63,8 @@ def deploy(config, dry_run=False):
 
         result = mcp_security_safeguards.detect(file_index)
 
-        assert "dry_run" in result["found_patterns"]
-        assert str(py_file) in result["evidence_files"]
+        assert "dry_run" in result["found_patterns"], "Result must not be empty"
+        assert str(py_file) in result["evidence_files"], "Result must not be empty"
 
 
 def test_detect_sanitize_keyword():
@@ -82,8 +82,8 @@ def process_input(data):
 
         result = mcp_security_safeguards.detect(file_index)
 
-        assert "sanitize" in result["found_patterns"]
-        assert str(py_file) in result["evidence_files"]
+        assert "sanitize" in result["found_patterns"], "Result must not be empty"
+        assert str(py_file) in result["evidence_files"], "Result must not be empty"
 
 
 def test_detect_validation_keyword():
@@ -101,8 +101,8 @@ def validate_config(config):
 
         result = mcp_security_safeguards.detect(file_index)
 
-        assert "validation" in result["found_patterns"]
-        assert str(py_file) in result["evidence_files"]
+        assert "validation" in result["found_patterns"], "Result must not be empty"
+        assert str(py_file) in result["evidence_files"], "Result must not be empty"
 
 
 def test_detect_bounds_keyword():
@@ -121,8 +121,8 @@ def get_item(array, index):
 
         result = mcp_security_safeguards.detect(file_index)
 
-        assert "bounds" in result["found_patterns"]
-        assert str(py_file) in result["evidence_files"]
+        assert "bounds" in result["found_patterns"], "Result must not be empty"
+        assert str(py_file) in result["evidence_files"], "Result must not be empty"
 
 
 def test_detect_rollback_keyword():
@@ -143,8 +143,8 @@ def update_database(conn, data):
 
         result = mcp_security_safeguards.detect(file_index)
 
-        assert "rollback" in result["found_patterns"]
-        assert str(py_file) in result["evidence_files"]
+        assert "rollback" in result["found_patterns"], "Result must not be empty"
+        assert str(py_file) in result["evidence_files"], "Result must not be empty"
 
 
 def test_detect_in_markdown():
@@ -164,9 +164,9 @@ All inputs are sanitized before processing.
         result = mcp_security_safeguards.detect(file_index)
 
         # Should find all three keywords in markdown
-        assert "confirm" in result["found_patterns"]
-        assert "dry" in result["found_patterns"] or "dry_run" in result["found_patterns"]
-        assert "sanitize" in result["found_patterns"]
+        assert "confirm" in result["found_patterns"], "Result must not be empty"
+        assert "dry" in result["found_patterns"] or "dry_run" in result["found_patterns"], "Result must not be empty"
+        assert "sanitize" in result["found_patterns"], "Result must not be empty"
 
 
 def test_detect_multiple_safeguards():
@@ -205,12 +205,12 @@ def secure_operation(data, confirm=False, dry_run=False):
         result = mcp_security_safeguards.detect(file_index)
 
         # Should find all keywords
-        assert "confirm" in result["found_patterns"]
-        assert "dry_run" in result["found_patterns"]
-        assert "sanitize" in result["found_patterns"]
+        assert "confirm" in result["found_patterns"], "Result must not be empty"
+        assert "dry_run" in result["found_patterns"], "Result must not be empty"
+        assert "sanitize" in result["found_patterns"], "Result must not be empty"
         assert "validation" in result["found_patterns"] or "validate" in result["found_patterns"]
-        assert "bounds" in result["found_patterns"]
-        assert "rollback" in result["found_patterns"]
+        assert "bounds" in result["found_patterns"], "Result must not be empty"
+        assert "rollback" in result["found_patterns"], "Result must not be empty"
 
 
 def test_evidence_deduplication():
@@ -228,7 +228,7 @@ sanitize(data)
         result = mcp_security_safeguards.detect(file_index)
 
         # File should appear only once even with multiple keywords
-        assert len(result["evidence_files"]) == len(set(result["evidence_files"]))
+        assert len(result["evidence_files"]) == len(set(result["evidence_files"])), "Collection must not be empty"
 
 
 def test_sorted_output():
@@ -250,9 +250,9 @@ def test_sorted_output():
         result = mcp_security_safeguards.detect(file_index)
 
         # found_patterns should be sorted
-        assert result["found_patterns"] == sorted(result["found_patterns"])
+        assert result["found_patterns"] == sorted(result["found_patterns"]), "Result must not be empty"
         # evidence_files should be sorted
-        assert result["evidence_files"] == sorted(result["evidence_files"])
+        assert result["evidence_files"] == sorted(result["evidence_files"]), "Result must not be empty"
 
 
 def test_docs_keywords_present():
@@ -261,7 +261,7 @@ def test_docs_keywords_present():
 
     result = mcp_security_safeguards.detect(file_index)
 
-    assert "docs_keywords" in result
+    assert "docs_keywords" in result, "Result must not be empty"
     expected_keywords = [
         "mcp",
         "security",
@@ -273,7 +273,7 @@ def test_docs_keywords_present():
         "defensive",
     ]
     for keyword in expected_keywords:
-        assert keyword in result["docs_keywords"]
+        assert keyword in result["docs_keywords"], "Result must not be empty"
 
 
 def test_safeguards_metadata():
@@ -282,8 +282,8 @@ def test_safeguards_metadata():
 
     result = mcp_security_safeguards.detect(file_index)
 
-    assert "meta" in result
-    assert "safeguards" in result["meta"]
+    assert "meta" in result, "Result must not be empty"
+    assert "safeguards" in result["meta"], "Result must not be empty"
     expected_safeguards = [
         "confirmation",
         "dry-run",
@@ -293,7 +293,7 @@ def test_safeguards_metadata():
         "rollback",
     ]
     for safeguard in expected_safeguards:
-        assert safeguard in result["meta"]["safeguards"]
+        assert safeguard in result["meta"]["safeguards"], "Result must not be empty"
 
 
 def test_detector_version():
@@ -302,8 +302,8 @@ def test_detector_version():
 
     result = mcp_security_safeguards.detect(file_index)
 
-    assert "detector_version" in result["meta"]
-    assert result["meta"]["detector_version"] == "1.2"
+    assert "detector_version" in result["meta"], "Result must not be empty"
+    assert result["meta"]["detector_version"] == "1.2", "Result must not be empty"
 
 
 def test_category_mcp():
@@ -312,7 +312,7 @@ def test_category_mcp():
 
     result = mcp_security_safeguards.detect(file_index)
 
-    assert result["meta"]["category"] == "mcp"
+    assert result["meta"]["category"] == "mcp", "Result must not be empty"
 
 
 def test_non_python_non_md_ignored():
@@ -328,8 +328,8 @@ def test_non_python_non_md_ignored():
     result = mcp_security_safeguards.detect(file_index)
 
     # Should not process these files
-    assert result["found_patterns"] == []
-    assert result["evidence_files"] == []
+    assert result["found_patterns"] == [], "Result must not be empty"
+    assert result["evidence_files"] == [], "Result must not be empty"
 
 
 def test_file_read_error_handling():
@@ -343,7 +343,7 @@ def test_file_read_error_handling():
     # Should not crash on file read error
     result = mcp_security_safeguards.detect(file_index)
 
-    assert result["id"] == "mcp-security-safeguards"
+    assert result["id"] == "mcp-security-safeguards", "Result must not be empty"
 
 
 def test_empty_file_index():
@@ -352,9 +352,9 @@ def test_empty_file_index():
 
     result = mcp_security_safeguards.detect(file_index)
 
-    assert result["id"] == "mcp-security-safeguards"
-    assert result["found_patterns"] == []
-    assert result["evidence_files"] == []
+    assert result["id"] == "mcp-security-safeguards", "Result must not be empty"
+    assert result["found_patterns"] == [], "Result must not be empty"
+    assert result["evidence_files"] == [], "Result must not be empty"
 
 
 def test_deterministic_output():
@@ -370,5 +370,5 @@ def test_deterministic_output():
 
         # All results should be identical
         for i in range(1, len(results)):
-            assert results[i]["found_patterns"] == results[0]["found_patterns"]
-            assert results[i]["evidence_files"] == results[0]["evidence_files"]
+            assert results[i]["found_patterns"] == results[0]["found_patterns"], "Result must not be empty"
+            assert results[i]["evidence_files"] == results[0]["evidence_files"], "Result must not be empty"

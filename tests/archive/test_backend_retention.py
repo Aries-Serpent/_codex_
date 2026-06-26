@@ -113,11 +113,11 @@ def test_delete_apply_scrubs_only_single_reference(
         reason="retention cleanup",
         apply=True,
     )
-    assert scrubbed is True
+    assert scrubbed is True, "scrubbed is not valid"
 
     payload = archive_backend.get_restore_payload(first["tombstone_id"])
-    assert payload["artifact"]["blob_bytes"] is None
-    assert payload["artifact"]["storage_driver"] == "object"
+    assert payload["artifact"]["blob_bytes"] is None, "Condition must be true"
+    assert payload["artifact"]["storage_driver"] == "object", "Object must be initialized"
 
     shared_one = _archive_sample(
         archive_backend,
@@ -139,11 +139,11 @@ def test_delete_apply_scrubs_only_single_reference(
         reason="shared cleanup",
         apply=True,
     )
-    assert scrubbed_shared is False
+    assert scrubbed_shared is False, "scrubbed_shared is not valid"
 
     shared_payload = archive_backend.get_restore_payload(shared_one["tombstone_id"])
-    assert shared_payload["artifact"]["blob_bytes"] is not None
-    assert shared_payload["artifact"]["id"] == shared_two["artifact_id"]
+    assert shared_payload["artifact"]["blob_bytes"] is not None, "Value must be initialized"
+    assert shared_payload["artifact"]["id"] == shared_two["artifact_id"], "Condition must be true"
 
 
 def test_delete_after_metadata_persisted_and_list_respects_retention(
@@ -172,14 +172,14 @@ def test_delete_after_metadata_persisted_and_list_respects_retention(
 
     older_item = archive_backend.show_item(older["tombstone_id"])
     newer_item = archive_backend.show_item(newer["tombstone_id"])
-    assert older_item["delete_after"] == older_delete_after
-    assert newer_item["delete_after"] == newer_delete_after
-    assert older_item["metadata"]["delete_after"] == older_delete_after
-    assert newer_item["metadata"]["delete_after"] == newer_delete_after
+    assert older_item["delete_after"] == older_delete_after, "Item must not be empty"
+    assert newer_item["delete_after"] == newer_delete_after, "Item must not be empty"
+    assert older_item["metadata"]["delete_after"] == older_delete_after, "Data must not be empty"
+    assert newer_item["metadata"]["delete_after"] == newer_delete_after, "Data must not be empty"
 
     listed = archive_backend.list_items(repo=repo, limit=2)
     listed_tombstones = [row["tombstone_id"] for row in listed]
     assert listed_tombstones == [newer["tombstone_id"], older["tombstone_id"]]
 
     truncated = archive_backend.list_items(repo=repo, limit=1)
-    assert truncated[0]["tombstone_id"] == newer["tombstone_id"]
+    assert truncated[0]["tombstone_id"] == newer["tombstone_id"], "Condition must be true"

@@ -15,19 +15,19 @@ class _Step:
 def test_build_flow_edges_with_steps():
     edges, prev = build_flow_edges(["Qualification", _Step(label="Demo")])
 
-    assert edges == [
+    assert edges == [, "edges is not valid"
         ("Start", "Qualification"),
         ("Qualification", "Demo"),
         ("Demo", "Close"),
     ]
-    assert prev == "Close"
+    assert prev == "Close", "prev is not valid"
 
 
 def test_build_flow_edges_without_steps():
     edges, prev = build_flow_edges([])
 
     assert edges == [("Start", "Close")]
-    assert prev == "Close"
+    assert prev == "Close", "prev is not valid"
 
 
 def test_build_flow_edges_from_mapping():
@@ -38,9 +38,9 @@ def test_build_flow_edges_from_mapping():
         ]
     )
 
-    assert edges == [
+    assert edges == [, "edges is not valid"
         ("Start", "Qualification"),
         ("Qualification", "Proposal"),
         ("Proposal", "Close"),
     ]
-    assert prev == "Close"
+    assert prev == "Close", "prev is not valid"

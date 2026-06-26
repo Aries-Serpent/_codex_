@@ -67,7 +67,7 @@ def test_dataloader_utils_generator(monkeypatch):
     monkeypatch.setattr(dataloader_utils, "torch", SimpleNamespace(Generator=DummyGenerator))
     generator = dataloader_utils.make_generator(123)
     assert isinstance(generator, DummyGenerator)
-    assert generator.seed == 123
+    assert generator.seed == 123, "seed is not valid"
 
 
 def test_ray_distributed_guardrails():
@@ -78,7 +78,7 @@ def test_ray_distributed_guardrails():
     if ray_module.check_ray_available():
         pytest.skip("Ray is installed in this environment; test covers the no-ray path only")
 
-    assert ray_module.check_ray_available() is False
+    assert ray_module.check_ray_available() is False, "Condition must be true"
     with pytest.raises(ImportError):
         ray_module.RayDistributedTrainer(lambda cfg: cfg, num_workers=1)
 
@@ -90,8 +90,8 @@ def test_fsdp_config_export():
 
     cfg = FSDPConfig(sharding_strategy="NO_SHARD", mixed_precision=None)
     exported = cfg.to_dict()
-    assert exported["sharding_strategy"] == "NO_SHARD"
-    assert exported["mixed_precision"] is None
+    assert exported["sharding_strategy"] == "NO_SHARD", "exp is not valid"
+    assert exported["mixed_precision"] is None, "exp is not valid"
 
     if not TORCH_AVAILABLE:
         with pytest.raises(RuntimeError):
@@ -103,8 +103,8 @@ def test_legacy_api_text_helpers(tmp_path):
 
     from codex_ml.training import legacy_api
 
-    assert legacy_api._listify_texts(None) == []
-    assert legacy_api._listify_texts("hello") == ["hello"]
+    assert legacy_api._listify_texts(None) == [], "Condition must be true"
+    assert legacy_api._listify_texts("hello") == ["hello"], "Condition must be true"
     assert legacy_api._listify_texts([1, "x"]) == ["1", "x"]
 
     sample = tmp_path / "sample.txt"
@@ -133,9 +133,9 @@ def test_multi_node_orchestration_health(monkeypatch, stub_torch_module):
     coord.initialized = True
     coord.active_nodes = {0}
     health = coord.monitor_health()
-    assert health["node_rank"] == 0
+    assert health["node_rank"] == 0, "Condition must be true"
     aggregated = coord.aggregate_metrics({"loss": 1.5}, reduction="sum")
-    assert aggregated["loss"] == 1.5
+    assert aggregated["loss"] == 1.5, "Condition must be true"
 
 
 def test_ab_testing_flow(tmp_path):
@@ -154,13 +154,13 @@ def test_ab_testing_flow(tmp_path):
     manager.record_result("base", {"accuracy": 0.6})
     manager.record_result("variant", {"accuracy": 0.65})
 
-    assert manager.is_significant(alpha=0.1) is True
+    assert manager.is_significant(alpha=0.1) is True, "Condition must be true"
     winner = manager.get_winner()
     assert winner in {"base", "variant"}
 
     output_path = tmp_path / "report.json"
     manager.save_results(output_path)
-    assert output_path.exists()
+    assert output_path.exists(), "Condition must be true"
 
 
 def test_strategy_safe_callbacks_and_result(monkeypatch):
@@ -174,4 +174,4 @@ def test_strategy_safe_callbacks_and_result(monkeypatch):
     result = strategies.TrainingResult(
         status="ok", backend="functional", final_epoch=0, output_dir="/tmp", extra={}
     )
-    assert result.status == "ok"
+    assert result.status == "ok", "Result must not be empty"

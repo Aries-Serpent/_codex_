@@ -12,4 +12,4 @@ def test_multilingual_tokenizer_roundtrip():
     texts = ["Hello world", "Hola mundo", "你好，世界"]
     ids = [tok.encode(t) for t in texts]
     decoded = [tok.decode(i) for i in ids]
-    assert len(ids) == len(decoded)
+    assert len(ids) == len(decoded), "Ids must not be empty"

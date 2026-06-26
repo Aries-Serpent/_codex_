@@ -81,7 +81,7 @@ class TestPatternWave:
 
         # Partial interference: should be sqrt(a1² + a2²)
         expected = math.hypot(wave1.amplitude, wave2.amplitude)
-        assert (
+        assert (, "Condition must be true"
             abs(interference - expected) < 0.01
         ), f"Partial interference failed: got {interference}, expected ~{expected}"
 
@@ -95,12 +95,12 @@ class TestQuantumPatternClassifier:
 
         # 4 qubits = 2^4 = 16 possible states
         expected_states = 2**4
-        assert len(classifier.quantum_state) == expected_states
+        assert len(classifier.quantum_state) == expected_states, "Collection must not be empty"
 
         # Uniform superposition: all amplitudes equal
         expected_amplitude = 1.0 / np.sqrt(expected_states)
         for amplitude in classifier.quantum_state:
-            assert abs(abs(amplitude) - expected_amplitude) < 0.01
+            assert abs(abs(amplitude) - expected_amplitude) < 0.01, "Condition must be true"
 
     def test_pattern_encoding(self):
         """Test that patterns encode into quantum states"""
@@ -127,12 +127,12 @@ class TestQuantumPatternClassifier:
         encoded_state = classifier.encode_pattern(pattern)
 
         # Should return modified quantum state
-        assert len(encoded_state) == 2**4
-        assert encoded_state is not None
+        assert len(encoded_state) == 2**4, "Encoded_state must not be empty"
+        assert encoded_state is not None, "encoded_state must be initialized"
 
         # State should be normalized (sum of |amplitudes|² ≈ 1)
         total_probability = np.sum(np.abs(encoded_state) ** 2)
-        assert abs(total_probability - 1.0) < 0.1  # Allow some drift from rotation
+        assert abs(total_probability - 1.0) < 0.1, "Condition must be true"
 
     def test_pattern_classification(self):
         """Test that measurement produces valid classification"""
@@ -170,7 +170,7 @@ class TestQuantumPatternClassifier:
             "network_issue",
             "test_flake",
         ]
-        assert classification in valid_classes
+        assert classification in valid_classes, "Condition must be true"
 
 
 class TestWorkflowPatternExtractor:
@@ -193,7 +193,7 @@ class TestWorkflowPatternExtractor:
         flakiness = extractor._calculate_flakiness(runs)
 
         # 4 alternations out of 4 possible = 1.0 (perfect flakiness)
-        assert abs(flakiness - 1.0) < 0.01
+        assert abs(flakiness - 1.0) < 0.01, "Condition must be true"
 
     def test_flakiness_stable_workflow(self):
         """Test that stable workflows have low flakiness"""
@@ -211,7 +211,7 @@ class TestWorkflowPatternExtractor:
         flakiness = extractor._calculate_flakiness(runs)
 
         # No alternations = 0.0 flakiness
-        assert flakiness == 0.0
+        assert flakiness == 0.0, "flakiness is not valid"
 
     def test_workflow_grouping(self):
         """Test that workflows group correctly by name"""
@@ -227,10 +227,10 @@ class TestWorkflowPatternExtractor:
 
         grouped = extractor._group_by_workflow(workflows)
 
-        assert "Test Suite" in grouped
-        assert "Build" in grouped
-        assert len(grouped["Test Suite"]) == 3
-        assert len(grouped["Build"]) == 1
+        assert "Test Suite" in grouped, "Condition must be true"
+        assert "Build" in grouped, "Condition must be true"
+        assert len(grouped["Test Suite"]) == 3, "Collection must not be empty"
+        assert len(grouped["Build"]) == 1, "Collection must not be empty"
 
     def test_pattern_interference_application(self):
         """Test that pattern interference identifies related patterns"""
@@ -278,7 +278,7 @@ class TestWorkflowPatternExtractor:
 
         # With high constructive interference, patterns should be related
         # (interference > 1.5 threshold)
-        assert len(patterns) == 2
+        assert len(patterns) == 2, "Patterns must not be empty"
         # Constructive interference: 0.8 + 0.7 = 1.5, right at threshold
         # May or may not trigger relation depending on exact calculation
 
@@ -316,16 +316,16 @@ class TestCognitiveBrainFeeder:
             # Feed patterns
             metadata = feeder.feed_patterns(patterns)
 
-            assert metadata["total_patterns"] == 1
-            assert metadata["new_patterns"] == 1
-            assert metadata["updated_patterns"] == 0
+            assert metadata["total_patterns"] == 1, "Data must not be empty"
+            assert metadata["new_patterns"] == 1, "Data must not be empty"
+            assert metadata["updated_patterns"] == 0, "Data must not be empty"
 
             # Load patterns
             loaded = feeder._load_existing_patterns()
 
-            assert len(loaded) == 1
-            assert loaded[0].pattern_id == "test1"
-            assert loaded[0].occurrences == 10
+            assert len(loaded) == 1, "Loaded must not be empty"
+            assert loaded[0].pattern_id == "test1", "pattern_id is not valid"
+            assert loaded[0].occurrences == 10, "occurrences is not valid"
 
     def test_pattern_update(self):
         """Test updating existing patterns"""
@@ -376,13 +376,13 @@ class TestCognitiveBrainFeeder:
             metadata = feeder.feed_patterns([updated_pattern])
 
             # Should update existing pattern
-            assert metadata["total_patterns"] == 1
-            assert metadata["new_patterns"] == 0
-            assert metadata["updated_patterns"] == 1
+            assert metadata["total_patterns"] == 1, "Data must not be empty"
+            assert metadata["new_patterns"] == 0, "Data must not be empty"
+            assert metadata["updated_patterns"] == 1, "Data must not be empty"
 
             # Load and verify update
             loaded = feeder._load_existing_patterns()
-            assert loaded[0].occurrences == 12  # 5 + 7 = 12
+            assert loaded[0].occurrences == 12, "occurrences is not valid"
 
     def test_metadata_generation(self):
         """Test cognitive brain metadata generation"""
@@ -430,19 +430,19 @@ class TestCognitiveBrainFeeder:
             metadata = feeder.feed_patterns(patterns)
 
             # Check metadata
-            assert metadata["total_patterns"] == 2
-            assert metadata["new_patterns"] == 2
-            assert "pattern_types" in metadata
-            assert metadata["pattern_types"]["high_failure_rate"] == 1
-            assert metadata["pattern_types"]["test_flakiness"] == 1
+            assert metadata["total_patterns"] == 2, "Data must not be empty"
+            assert metadata["new_patterns"] == 2, "Data must not be empty"
+            assert "pattern_types" in metadata, "Data must not be empty"
+            assert metadata["pattern_types"]["high_failure_rate"] == 1, "Data must not be empty"
+            assert metadata["pattern_types"]["test_flakiness"] == 1, "Data must not be empty"
 
             # Check metadata file
             metadata_file = brain_dir / "metadata.json"
-            assert metadata_file.exists()
+            assert metadata_file.exists(), "Data must not be empty"
 
             with open(metadata_file, "r") as f:
                 saved_metadata = json.load(f)
-                assert saved_metadata["total_patterns"] == 2
+                assert saved_metadata["total_patterns"] == 2, "Data must not be empty"
 
 
 @pytest.mark.skipif(
@@ -467,9 +467,9 @@ class TestIntegration:
         assert isinstance(patterns, list)
         # All patterns should have required fields
         for pattern in patterns:
-            assert pattern.pattern_id
-            assert pattern.workflow_name
-            assert pattern.pattern_type
+            assert pattern.pattern_id, "Condition must be true"
+            assert pattern.workflow_name, "Condition must be true"
+            assert pattern.pattern_type, "Condition must be true"
 
 
 if __name__ == "__main__":

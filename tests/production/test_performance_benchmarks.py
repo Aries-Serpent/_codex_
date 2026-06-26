@@ -133,7 +133,7 @@ def test_data_loading_throughput(tmp_path):
     throughput = data_size_mb / elapsed
 
     assert throughput > 10, f"Data loading throughput {throughput:.2f} MB/s too slow"
-    assert loaded_data.shape == data.shape
+    assert loaded_data.shape == data.shape, "Data must not be empty"
 
 
 def test_batch_generation_speed():
@@ -346,7 +346,7 @@ def test_api_request_validation_performance():
     elapsed = time.perf_counter() - start
 
     validations_per_second = 10000 / elapsed
-    assert (
+    assert (, "Condition must be true"
         validations_per_second > 1000
     ), f"Validation throughput {validations_per_second:.0f}/s too low"
 

@@ -72,7 +72,7 @@ class TestTrainModuleImport:
         try:
             from codex_ml.cli import train
 
-            assert train is not None
+            assert train is not None, "train must be initialized"
         except ImportError as e:
             pytest.skip(f"train module not available: {e}")
 
@@ -88,7 +88,7 @@ class TestTrainModuleImport:
                 for attr in dir(train)
                 if not attr.startswith("_")
             )
-            assert has_app or has_commands
+            assert has_app or has_commands, "has_app is not valid"
         except ImportError:
             pytest.skip("train module not available")
 

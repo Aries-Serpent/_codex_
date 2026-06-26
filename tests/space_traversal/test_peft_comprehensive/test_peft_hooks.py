@@ -19,7 +19,7 @@ def _load_module(path: Path, name: str) -> types.ModuleType:
         path = repo_root / path
     spec = importlib.util.spec_from_file_location(name, str(path))
     module = importlib.util.module_from_spec(spec)
-    assert spec and spec.loader
+    assert spec and spec.loader, "spec is not valid"
     spec.loader.exec_module(module)
     return module
 
@@ -52,11 +52,11 @@ model = get_peft_model(base_model, config)
         context_index = _context_index_for([test_file])
         result = module.detect(context_index)
 
-        assert result["id"] == "peft_hooks"
-        assert "peft" in result["found_patterns"]
-        assert "lora" in result["found_patterns"]
-        assert "LoraConfig" in result["found_patterns"]
-        assert result["files_with_peft"] == 1
+        assert result["id"] == "peft_hooks", "Result must not be empty"
+        assert "peft" in result["found_patterns"], "Result must not be empty"
+        assert "lora" in result["found_patterns"], "Result must not be empty"
+        assert "LoraConfig" in result["found_patterns"], "Result must not be empty"
+        assert result["files_with_peft"] == 1, "Result must not be empty"
 
     def test_adapter_detection(self, tmp_path: Path):
         """Test detection of adapter patterns."""
@@ -76,8 +76,8 @@ inject_adapter(model, adapter_config)
         context_index = _context_index_for([test_file])
         result = module.detect(context_index)
 
-        assert "adapter" in result["found_patterns"]
-        assert "PeftModel" in result["found_patterns"]
+        assert "adapter" in result["found_patterns"], "Result must not be empty"
+        assert "PeftModel" in result["found_patterns"], "Result must not be empty"
 
     def test_kbit_training_detection(self, tmp_path: Path):
         """Test detection of quantization-aware training."""
@@ -96,7 +96,7 @@ model = prepare_model_for_kbit_training(model)
         context_index = _context_index_for([test_file])
         result = module.detect(context_index)
 
-        assert "prepare_model_for_kbit_training" in result["found_patterns"]
+        assert "prepare_model_for_kbit_training" in result["found_patterns"], "Result must not be empty"
 
     def test_multiple_peft_tokens(self, tmp_path: Path):
         """Test file with multiple PEFT tokens."""
@@ -116,8 +116,8 @@ peft_model = get_peft_model(base_model, config)
         context_index = _context_index_for([test_file])
         result = module.detect(context_index)
 
-        assert len(result["found_patterns"]) >= 4
-        assert result["total_peft_tokens"] >= 4
+        assert len(result["found_patterns"]) >= 4, "Collection must not be empty"
+        assert result["total_peft_tokens"] >= 4, "Value must be greater than zero"
 
 
 class TestEdgeCases:
@@ -133,8 +133,8 @@ class TestEdgeCases:
         context_index = _context_index_for([test_file])
         result = module.detect(context_index)
 
-        assert result["files_with_peft"] == 0
-        assert len(result["evidence_files"]) == 0
+        assert result["files_with_peft"] == 0, "Result must not be empty"
+        assert len(result["evidence_files"]) == 0, "Collection must not be empty"
 
     def test_empty_file_list(self):
         """Test with no files."""
@@ -143,7 +143,7 @@ class TestEdgeCases:
         context_index = {"files": []}
         result = module.detect(context_index)
 
-        assert result["files_with_peft"] == 0
+        assert result["files_with_peft"] == 0, "Result must not be empty"
 
     def test_non_python_files_ignored(self, tmp_path: Path):
         """Test that non-Python files are ignored."""
@@ -155,7 +155,7 @@ class TestEdgeCases:
         context_index = _context_index_for([test_file])
         result = module.detect(context_index)
 
-        assert result["files_with_peft"] == 0
+        assert result["files_with_peft"] == 0, "Result must not be empty"
 
 
 class TestMetricsCalculation:
@@ -171,10 +171,10 @@ class TestMetricsCalculation:
         context_index = _context_index_for([test_file])
         result = module.detect(context_index)
 
-        assert "metrics" in result
-        assert "files_with_peft" in result["metrics"]
-        assert "unique_tokens_found" in result["metrics"]
-        assert "total_token_occurrences" in result["metrics"]
+        assert "metrics" in result, "Result must not be empty"
+        assert "files_with_peft" in result["metrics"], "Result must not be empty"
+        assert "unique_tokens_found" in result["metrics"], "Result must not be empty"
+        assert "total_token_occurrences" in result["metrics"], "Result must not be empty"
 
     def test_multiple_files_aggregation(self, tmp_path: Path):
         """Test aggregation across multiple files."""
@@ -189,8 +189,8 @@ class TestMetricsCalculation:
         context_index = _context_index_for(files)
         result = module.detect(context_index)
 
-        assert result["files_with_peft"] == 3
-        assert result["metrics"]["files_with_peft"] == 3
+        assert result["files_with_peft"] == 3, "Result must not be empty"
+        assert result["metrics"]["files_with_peft"] == 3, "Result must not be empty"
 
 
 class TestDetectorContract:
@@ -206,13 +206,13 @@ class TestDetectorContract:
         context_index = _context_index_for([test_file])
         result = module.detect(context_index)
 
-        assert "id" in result
-        assert result["id"] == "peft_hooks"
-        assert "evidence_files" in result
-        assert "found_patterns" in result
-        assert "required_patterns" in result
-        assert "docs_keywords" in result
-        assert "meta" in result
+        assert "id" in result, "Result must not be empty"
+        assert result["id"] == "peft_hooks", "Result must not be empty"
+        assert "evidence_files" in result, "Result must not be empty"
+        assert "found_patterns" in result, "Result must not be empty"
+        assert "required_patterns" in result, "Result must not be empty"
+        assert "docs_keywords" in result, "Result must not be empty"
+        assert "meta" in result, "Result must not be empty"
 
     def test_metadata_correctness(self, tmp_path: Path):
         """Test metadata fields."""
@@ -224,9 +224,9 @@ class TestDetectorContract:
         context_index = _context_index_for([test_file])
         result = module.detect(context_index)
 
-        assert result["meta"]["deterministic"] is True
-        assert result["meta"]["offline"] is True
-        assert result["meta"]["bounded"] is True
+        assert result["meta"]["deterministic"] is True, "Result must not be empty"
+        assert result["meta"]["offline"] is True, "Result must not be empty"
+        assert result["meta"]["bounded"] is True, "Result must not be empty"
 
     def test_docs_keywords_present(self, tmp_path: Path):
         """Test documentation keywords."""
@@ -240,7 +240,7 @@ class TestDetectorContract:
 
         expected = ["peft", "lora", "adapter", "fine-tuning", "efficient"]
         for keyword in expected:
-            assert keyword in result["docs_keywords"]
+            assert keyword in result["docs_keywords"], "Result must not be empty"
 
 
 class TestIntegration:
@@ -286,8 +286,8 @@ for batch in dataloader:
         context_index = _context_index_for([test_file])
         result = module.detect(context_index)
 
-        assert result["files_with_peft"] == 1
-        assert "peft" in result["found_patterns"]
-        assert "lora" in result["found_patterns"]
-        assert "LoraConfig" in result["found_patterns"]
-        assert result["total_peft_tokens"] >= 4
+        assert result["files_with_peft"] == 1, "Result must not be empty"
+        assert "peft" in result["found_patterns"], "Result must not be empty"
+        assert "lora" in result["found_patterns"], "Result must not be empty"
+        assert "LoraConfig" in result["found_patterns"], "Result must not be empty"
+        assert result["total_peft_tokens"] >= 4, "Value must be greater than zero"

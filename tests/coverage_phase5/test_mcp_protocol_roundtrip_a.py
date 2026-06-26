@@ -32,7 +32,7 @@ def test_message_roundtrip(data: Dict[str, str | int | bool]):
     encoded = encode_message(data)
     decoded = decode_message(encoded)
 
-    assert decoded == data
+    assert decoded == data, "Data must not be empty"
 
 
 @given(
@@ -46,9 +46,9 @@ def test_jsonrpc_message_roundtrip(message_id: int, method: str):
     encoded = encode_message(message)
     decoded = decode_message(encoded)
 
-    assert decoded["id"] == message_id
-    assert decoded["method"] == method
-    assert decoded["jsonrpc"] == "2.0"
+    assert decoded["id"] == message_id, "Condition must be true"
+    assert decoded["method"] == method, "Condition must be true"
+    assert decoded["jsonrpc"] == "2.0", "Condition must be true"
 
 
 @given(st.lists(st.integers(), min_size=1, max_size=100))
@@ -59,4 +59,4 @@ def test_list_payload_roundtrip(values: list[int]):
     encoded = encode_message(message)
     decoded = decode_message(encoded)
 
-    assert decoded["data"] == values
+    assert decoded["data"] == values, "Data must not be empty"

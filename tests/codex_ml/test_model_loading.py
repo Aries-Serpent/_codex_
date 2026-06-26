@@ -12,7 +12,7 @@ class TestModelLoading:
         model_path = "/path/to/model"
 
         # Assert
-        assert model_path is not None
+        assert model_path is not None, "model_path must be initialized"
 
     def test_load_model_from_path_invalid(self):
         """Test loading a model from an invalid path."""
@@ -20,7 +20,7 @@ class TestModelLoading:
         model_path = ""
 
         # Assert
-        assert model_path == ""
+        assert model_path == "", "model_path is not valid"
 
     def test_load_model_with_config(self):
         """Test loading a model with configuration."""
@@ -28,8 +28,8 @@ class TestModelLoading:
         config = {"model_type": "transformer", "hidden_size": 768}
 
         # Assert
-        assert config["model_type"] == "transformer"
-        assert config["hidden_size"] == 768
+        assert config["model_type"] == "transformer", "Condition must be true"
+        assert config["hidden_size"] == 768, "Condition must be true"
 
     def test_load_model_checkpoint(self):
         """Test loading a model from checkpoint."""
@@ -37,7 +37,7 @@ class TestModelLoading:
         checkpoint = {"epoch": 10, "model_state": {}}
 
         # Assert
-        assert checkpoint["epoch"] == 10
+        assert checkpoint["epoch"] == 10, "Condition must be true"
 
     def test_load_pretrained_model(self):
         """Test loading a pretrained model."""
@@ -45,7 +45,7 @@ class TestModelLoading:
         pretrained_name = "bert-base-uncased"
 
         # Assert
-        assert "bert" in pretrained_name
+        assert "bert" in pretrained_name, "Condition must be true"
 
     def test_load_model_lazy(self):
         """Test lazy model loading."""
@@ -53,7 +53,7 @@ class TestModelLoading:
         lazy_load = True
 
         # Assert
-        assert lazy_load is True
+        assert lazy_load is True, "lazy_load is not valid"
 
     def test_load_model_device_cpu(self):
         """Test loading model on CPU device."""
@@ -61,7 +61,7 @@ class TestModelLoading:
         device = "cpu"
 
         # Assert
-        assert device == "cpu"
+        assert device == "cpu", "device is not valid"
 
     def test_load_model_device_cuda(self):
         """Test loading model on CUDA device."""
@@ -69,7 +69,7 @@ class TestModelLoading:
         device = "cuda:0"
 
         # Assert
-        assert "cuda" in device
+        assert "cuda" in device, "Condition must be true"
 
     def test_load_model_with_quantization(self):
         """Test loading model with quantization."""
@@ -78,7 +78,7 @@ class TestModelLoading:
         bits = 8
 
         # Assert
-        assert quantize is True
+        assert quantize is True, "quantize is not valid"
         assert bits in [4, 8, 16]
 
     def test_load_model_sharded(self):
@@ -87,7 +87,7 @@ class TestModelLoading:
         shards = 4
 
         # Assert
-        assert shards > 0
+        assert shards > 0, "shards must be greater than zero"
 
     def test_model_registry_lookup(self):
         """Test model registry lookup."""
@@ -95,8 +95,8 @@ class TestModelLoading:
         registry = {"gpt2": "models/gpt2", "bert": "models/bert"}
 
         # Assert
-        assert "gpt2" in registry
-        assert "bert" in registry
+        assert "gpt2" in registry, "Condition must be true"
+        assert "bert" in registry, "Condition must be true"
 
     def test_model_version_validation(self):
         """Test model version validation."""
@@ -104,7 +104,7 @@ class TestModelLoading:
         version = "1.0.0"
 
         # Assert
-        assert version.count(".") == 2
+        assert version.count(".") == 2, "Count must be greater than zero"
 
     def test_load_model_with_adapter(self):
         """Test loading model with adapter."""
@@ -112,7 +112,7 @@ class TestModelLoading:
         adapter_config = {"adapter_type": "lora", "rank": 8}
 
         # Assert
-        assert adapter_config["adapter_type"] == "lora"
+        assert adapter_config["adapter_type"] == "lora", "Condition must be true"
 
     def test_load_model_memory_efficient(self):
         """Test memory efficient model loading."""
@@ -120,7 +120,7 @@ class TestModelLoading:
         memory_efficient = True
 
         # Assert
-        assert memory_efficient is True
+        assert memory_efficient is True, "memory_efficient is not valid"
 
     def test_load_model_parallel(self):
         """Test parallel model loading."""
@@ -129,8 +129,8 @@ class TestModelLoading:
         num_gpus = 2
 
         # Assert
-        assert parallel is True
-        assert num_gpus > 0
+        assert parallel is True, "parallel is not valid"
+        assert num_gpus > 0, "num_gpus must be greater than zero"
 
     def test_model_warmup(self):
         """Test model warmup after loading."""
@@ -138,7 +138,7 @@ class TestModelLoading:
         warmup_steps = 100
 
         # Assert
-        assert warmup_steps > 0
+        assert warmup_steps > 0, "warmup_steps must be greater than zero"
 
     def test_load_model_with_tokenizer(self):
         """Test loading model with tokenizer."""
@@ -146,7 +146,7 @@ class TestModelLoading:
         load_tokenizer = True
 
         # Assert
-        assert load_tokenizer is True
+        assert load_tokenizer is True, "load_tokenizer is not valid"
 
     def test_model_dtype_float16(self):
         """Test model with float16 dtype."""
@@ -162,7 +162,7 @@ class TestModelLoading:
         dtype = "bfloat16"
 
         # Assert
-        assert dtype == "bfloat16"
+        assert dtype == "bfloat16", "dtype is not valid"
 
     def test_load_model_with_cache(self):
         """Test loading model with caching."""
@@ -170,7 +170,7 @@ class TestModelLoading:
         use_cache = True
 
         # Assert
-        assert use_cache is True
+        assert use_cache is True, "use_cache is not valid"
 
     def test_model_load_timeout(self):
         """Test model loading timeout."""
@@ -178,7 +178,7 @@ class TestModelLoading:
         timeout_seconds = 300
 
         # Assert
-        assert timeout_seconds > 0
+        assert timeout_seconds > 0, "timeout_seconds must be greater than zero"
 
     def test_model_verification_after_load(self):
         """Test model verification after loading."""
@@ -186,7 +186,7 @@ class TestModelLoading:
         verify = True
 
         # Assert
-        assert verify is True
+        assert verify is True, "verify is not valid"
 
     def test_load_model_from_hub(self):
         """Test loading model from hub."""
@@ -194,7 +194,7 @@ class TestModelLoading:
         hub_id = "huggingface/model"
 
         # Assert
-        assert "/" in hub_id
+        assert "/" in hub_id, "Condition must be true"
 
     def test_load_model_revision(self):
         """Test loading specific model revision."""
@@ -210,7 +210,7 @@ class TestModelLoading:
         max_retries = 3
 
         # Assert
-        assert max_retries > 0
+        assert max_retries > 0, "max_retries must be greater than zero"
 
     def test_model_load_progress_callback(self):
         """Test model loading progress callback."""
@@ -227,7 +227,7 @@ class TestModelLoading:
         error_msg = "Model not found"
 
         # Assert
-        assert "not found" in error_msg.lower()
+        assert "not found" in error_msg.lower(), "Error should be raised or set"
 
     def test_load_model_with_trust_remote_code(self):
         """Test loading model with trust_remote_code."""
@@ -235,7 +235,7 @@ class TestModelLoading:
         trust_remote_code = False
 
         # Assert - safer to not trust remote code by default
-        assert trust_remote_code is False
+        assert trust_remote_code is False, "trust_remote_code is not valid"
 
     def test_model_architecture_detection(self):
         """Test model architecture detection."""
@@ -243,7 +243,7 @@ class TestModelLoading:
         architectures = ["BertForSequenceClassification"]
 
         # Assert
-        assert len(architectures) > 0
+        assert len(architectures) > 0, "Architectures must not be empty"
 
     def test_model_config_override(self):
         """Test model config override."""
@@ -251,4 +251,4 @@ class TestModelLoading:
         overrides = {"hidden_dropout_prob": 0.1}
 
         # Assert
-        assert "hidden_dropout_prob" in overrides
+        assert "hidden_dropout_prob" in overrides, "Condition must be true"

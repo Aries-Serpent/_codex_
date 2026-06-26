@@ -363,11 +363,11 @@ def _coerce_pairwise_list(value: Any) -> list[tuple[str, str, str, int]]:
                 preference = int(item.get("preference", 1))
             except KeyError as exc:
                 error_type = type(exc).__name__
-                logger.debug(f"KeyError: <ERROR_TYPE>")
+                logger.debug("KeyError: <ERROR_TYPE>")
                 raise ValueError(f"pairwise[{idx}] missing key {exc.args[0]}") from exc
             except (ValueError, TypeError, RuntimeError) as exc:
                 error_type = type(exc).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.debug("Exception: <ERROR_TYPE>")
                 raise ValueError(f"pairwise[{idx}] has invalid values") from exc
         elif isinstance(item, Sequence) and len(item) == 4:
             label, chosen, rejected, preference = item
@@ -377,7 +377,7 @@ def _coerce_pairwise_list(value: Any) -> list[tuple[str, str, str, int]]:
                 preference = int(preference)
             except (ValueError, TypeError, RuntimeError) as exc:
                 error_type = type(exc).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.debug("Exception: <ERROR_TYPE>")
                 raise ValueError(f"pairwise[{idx}] preference must be an integer") from exc
         else:
             raise ValueError("pairwise comparisons must be mappings or four-tuples")

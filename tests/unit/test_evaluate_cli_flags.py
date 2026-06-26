@@ -106,9 +106,9 @@ def test_metrics_only_and_run_id(tmp_path, monkeypatch) -> None:
     assert res.exit_code == 0, res.output
     line = out.read_text().strip().splitlines()[-1]
     rec = json.loads(line)
-    assert rec["run_id"] == "explicit-123"
-    assert rec["metrics"]["acc"] == 0.88
-    assert "timestamp" in rec
+    assert rec["run_id"] == "explicit-123", "Condition must be true"
+    assert rec["metrics"]["acc"] == 0.88, "Condition must be true"
+    assert "timestamp" in rec, "Condition must be true"
 
 
 def test_metrics_sink_flags(tmp_path, monkeypatch) -> None:
@@ -154,5 +154,5 @@ def test_metrics_sink_flags(tmp_path, monkeypatch) -> None:
         ],
     )
     assert res.exit_code == 0, res.output
-    assert eval_cfg.metrics_sink == "csv"
-    assert eval_cfg.metrics_sink_path == str(metrics_path)
+    assert eval_cfg.metrics_sink == "csv", "metrics_sink is not valid"
+    assert eval_cfg.metrics_sink_path == str(metrics_path), "metrics_sink_path is not valid"

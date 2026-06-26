@@ -54,9 +54,9 @@ class TestSafetySettings:
     def test_default_values(self):
         """Test SafetySettings default initialization."""
         settings = SafetySettings()
-        assert settings.enabled is True
-        assert settings.policy_path is None
-        assert settings.bypass is False
+        assert settings.enabled is True, "enabled is not valid"
+        assert settings.policy_path is None, "policy_path is not valid"
+        assert settings.bypass is False, "bypass is not valid"
 
     def test_custom_values(self):
         """Test SafetySettings with custom values."""
@@ -65,14 +65,14 @@ class TestSafetySettings:
             policy_path="/path/to/policy.yaml",
             bypass=True,
         )
-        assert settings.enabled is False
-        assert settings.policy_path == "/path/to/policy.yaml"
-        assert settings.bypass is True
+        assert settings.enabled is False, "enabled is not valid"
+        assert settings.policy_path == "/path/to/policy.yaml", "policy_path is not valid"
+        assert settings.bypass is True, "bypass is not valid"
 
     def test_moderation_settings_default(self):
         """Test that moderation settings are initialized by default."""
         settings = SafetySettings()
-        assert settings.moderation is not None
+        assert settings.moderation is not None, "moderation must be initialized"
 
 
 class TestOptimizerSettings:
@@ -81,10 +81,10 @@ class TestOptimizerSettings:
     def test_default_values(self):
         """Test OptimizerSettings default initialization."""
         settings = OptimizerSettings()
-        assert settings.name == "adamw_torch"
-        assert settings.weight_decay == 0.01
+        assert settings.name == "adamw_torch", "name is not valid"
+        assert settings.weight_decay == 0.01, "weight_decay is not valid"
         assert settings.betas == (0.9, 0.999)
-        assert settings.eps == 1e-8
+        assert settings.eps == 1e-8, "eps is not valid"
 
     def test_custom_optimizer(self):
         """Test OptimizerSettings with custom values."""
@@ -94,10 +94,10 @@ class TestOptimizerSettings:
             betas=(0.95, 0.99),
             eps=1e-6,
         )
-        assert settings.name == "adam"
-        assert settings.weight_decay == 0.001
+        assert settings.name == "adam", "name is not valid"
+        assert settings.weight_decay == 0.001, "weight_decay is not valid"
         assert settings.betas == (0.95, 0.99)
-        assert settings.eps == 1e-6
+        assert settings.eps == 1e-6, "eps is not valid"
 
 
 class TestSchedulerSettings:
@@ -106,9 +106,9 @@ class TestSchedulerSettings:
     def test_default_values(self):
         """Test SchedulerSettings default initialization."""
         settings = SchedulerSettings()
-        assert settings.name == "linear"
-        assert settings.warmup_steps == 0
-        assert settings.num_cycles == 1.0
+        assert settings.name == "linear", "name is not valid"
+        assert settings.warmup_steps == 0, "warmup_steps is not valid"
+        assert settings.num_cycles == 1.0, "num_cycles is not valid"
 
     def test_custom_scheduler(self):
         """Test SchedulerSettings with custom values."""
@@ -117,9 +117,9 @@ class TestSchedulerSettings:
             warmup_steps=100,
             num_cycles=2.0,
         )
-        assert settings.name == "cosine"
-        assert settings.warmup_steps == 100
-        assert settings.num_cycles == 2.0
+        assert settings.name == "cosine", "name is not valid"
+        assert settings.warmup_steps == 100, "warmup_steps is not valid"
+        assert settings.num_cycles == 2.0, "num_cycles is not valid"
 
 
 class TestTrainingRunConfig:
@@ -128,12 +128,12 @@ class TestTrainingRunConfig:
     def test_default_values(self):
         """Test TrainingRunConfig default initialization."""
         config = TrainingRunConfig()
-        assert config.seed == 42
-        assert config.deterministic is True
-        assert config.model == "minilm"
-        assert config.learning_rate == 0.0003
-        assert config.batch_size == 32
-        assert config.max_epochs == 5
+        assert config.seed == 42, "seed is not valid"
+        assert config.deterministic is True, "deterministic is not valid"
+        assert config.model == "minilm", "model is not valid"
+        assert config.learning_rate == 0.0003, "learning_rate is not valid"
+        assert config.batch_size == 32, "batch_size is not valid"
+        assert config.max_epochs == 5, "max_epochs is not valid"
 
     def test_custom_config(self):
         """Test TrainingRunConfig with custom values."""
@@ -143,10 +143,10 @@ class TestTrainingRunConfig:
             batch_size=16,
             max_epochs=10,
         )
-        assert config.seed == 123
-        assert config.learning_rate == 1e-4
-        assert config.batch_size == 16
-        assert config.max_epochs == 10
+        assert config.seed == 123, "seed is not valid"
+        assert config.learning_rate == 1e-4, "learning_rate is not valid"
+        assert config.batch_size == 16, "batch_size is not valid"
+        assert config.max_epochs == 10, "max_epochs is not valid"
 
     def test_nested_settings_defaults(self):
         """Test that nested settings are properly initialized."""
@@ -158,10 +158,10 @@ class TestTrainingRunConfig:
     def test_dataset_default_structure(self):
         """Test dataset field has correct default structure."""
         config = TrainingRunConfig()
-        assert "train_path" in config.dataset
-        assert "eval_path" in config.dataset
-        assert "format" in config.dataset
-        assert config.dataset["format"] == "jsonl"
+        assert "train_path" in config.dataset, "Data must not be empty"
+        assert "eval_path" in config.dataset, "Data must not be empty"
+        assert "format" in config.dataset, "Data must not be empty"
+        assert config.dataset["format"] == "jsonl", "Data must not be empty"
 
 
 # =============================================================================
@@ -175,12 +175,12 @@ class TestListifyTexts:
     def test_none_input(self):
         """Test that None returns empty list."""
         result = _listify_texts(None)
-        assert result == []
+        assert result == [], "Result must not be empty"
 
     def test_string_input(self):
         """Test that string is wrapped in list."""
         result = _listify_texts("hello world")
-        assert result == ["hello world"]
+        assert result == ["hello world"], "Result must not be empty"
 
     def test_list_input(self):
         """Test that list items are converted to strings."""
@@ -195,7 +195,7 @@ class TestListifyTexts:
     def test_non_iterable(self):
         """Test that non-iterable is converted to string."""
         result = _listify_texts(42)
-        assert result == ["42"]
+        assert result == ["42"], "Result must not be empty"
 
 
 class TestLoadTexts:
@@ -204,17 +204,17 @@ class TestLoadTexts:
     def test_none_path(self):
         """Test that None path returns empty list."""
         result = _load_texts(None)
-        assert result == []
+        assert result == [], "Result must not be empty"
 
     def test_empty_path(self):
         """Test that empty path returns empty list."""
         result = _load_texts("")
-        assert result == []
+        assert result == [], "Result must not be empty"
 
     def test_nonexistent_path(self):
         """Test that nonexistent path returns empty list."""
         result = _load_texts("/nonexistent/path/file.txt")
-        assert result == []
+        assert result == [], "Result must not be empty"
 
     def test_text_format(self):
         """Test loading text format file."""
@@ -239,7 +239,7 @@ class TestLoadTexts:
             f.write('"plain string"\n')
             f.flush()
             result = _load_texts(f.name, fmt="jsonl")
-            assert result == ["plain string"]
+            assert result == ["plain string"], "Result must not be empty"
 
 
 class TestLogOptionalDependencies:
@@ -256,7 +256,7 @@ class TestLogOptionalDependencies:
         mock_find_spec.return_value = None
         result = _log_optional_dependencies()
         # Should include psutil, pynvml, wandb, mlflow
-        assert len(result) >= 4
+        assert len(result) >= 4, "Result must not be empty"
 
 
 # =============================================================================
@@ -271,20 +271,20 @@ class TestCoerceOptimizer:
         """Test that OptimizerSettings passes through unchanged."""
         settings = OptimizerSettings(name="sgd", weight_decay=0.1)
         result = _coerce_optimizer(settings, OptimizerSettings())
-        assert result.name == "sgd"
-        assert result.weight_decay == 0.1
+        assert result.name == "sgd", "Result must not be empty"
+        assert result.weight_decay == 0.1, "Result must not be empty"
 
     def test_mapping_input(self):
         """Test coercion from mapping."""
         mapping = {"name": "adam", "weight_decay": 0.05}
         result = _coerce_optimizer(mapping, OptimizerSettings())
-        assert result.name == "adam"
-        assert result.weight_decay == 0.05
+        assert result.name == "adam", "Result must not be empty"
+        assert result.weight_decay == 0.05, "Result must not be empty"
 
     def test_string_input(self):
         """Test coercion from string (optimizer name only)."""
         result = _coerce_optimizer("sgd", OptimizerSettings())
-        assert result.name == "sgd"
+        assert result.name == "sgd", "Result must not be empty"
 
     def test_betas_from_list(self):
         """Test betas extraction from list."""
@@ -297,7 +297,7 @@ class TestCoerceOptimizer:
         mapping = {"betas": ["invalid"]}
         default = OptimizerSettings()
         result = _coerce_optimizer(mapping, default)
-        assert result.betas == default.betas
+        assert result.betas == default.betas, "Result must not be empty"
 
 
 class TestCoerceScheduler:
@@ -307,15 +307,15 @@ class TestCoerceScheduler:
         """Test that SchedulerSettings passes through unchanged."""
         settings = SchedulerSettings(name="cosine", warmup_steps=50)
         result = _coerce_scheduler(settings, SchedulerSettings())
-        assert result.name == "cosine"
-        assert result.warmup_steps == 50
+        assert result.name == "cosine", "Result must not be empty"
+        assert result.warmup_steps == 50, "Result must not be empty"
 
     def test_mapping_input(self):
         """Test coercion from mapping."""
         mapping = {"name": "cosine_annealing", "warmup_steps": 100}
         result = _coerce_scheduler(mapping, SchedulerSettings())
-        assert result.name == "cosine_annealing"
-        assert result.warmup_steps == 100
+        assert result.name == "cosine_annealing", "Result must not be empty"
+        assert result.warmup_steps == 100, "Result must not be empty"
 
 
 class TestCoerceSafety:
@@ -325,21 +325,21 @@ class TestCoerceSafety:
         """Test that SafetySettings passes through with cloning."""
         settings = SafetySettings(enabled=False, bypass=True)
         result = _coerce_safety(settings, None)
-        assert result.enabled is False
-        assert result.bypass is True
+        assert result.enabled is False, "Result must not be empty"
+        assert result.bypass is True, "Result must not be empty"
 
     def test_mapping_input(self):
         """Test coercion from mapping."""
         mapping = {"enabled": False, "policy_path": "/path/policy.yaml"}
         result = _coerce_safety(mapping, None)
-        assert result.enabled is False
-        assert result.policy_path == "/path/policy.yaml"
+        assert result.enabled is False, "Result must not be empty"
+        assert result.policy_path == "/path/policy.yaml", "Result must not be empty"
 
     def test_non_mapping_uses_default(self):
         """Test that non-mapping input uses defaults."""
         result = _coerce_safety("invalid", None)
-        assert result.enabled is True  # Default
-        assert result.bypass is False  # Default
+        assert result.enabled is True, "Result must not be empty"
+        assert result.bypass is False, "Result must not be empty"
 
 
 class TestNormalizeConfig:
@@ -361,7 +361,7 @@ class TestNormalizeConfig:
         """Test behavior when OmegaConf is not available."""
         config = {"test": "value"}
         result = _normalize_config(config)
-        assert result == {"test": "value"}
+        assert result == {"test": "value"}, "Result must not be empty"
 
 
 # =============================================================================
@@ -384,10 +384,10 @@ class TestConfigIntegration:
             scheduler=SchedulerSettings(name="cosine", warmup_steps=500),
             safety=SafetySettings(enabled=True, bypass=False),
         )
-        assert config.seed == 123
-        assert config.optimizer.name == "adamw"
-        assert config.scheduler.name == "cosine"
-        assert config.safety.enabled is True
+        assert config.seed == 123, "seed is not valid"
+        assert config.optimizer.name == "adamw", "name is not valid"
+        assert config.scheduler.name == "cosine", "name is not valid"
+        assert config.safety.enabled is True, "enabled is not valid"
 
     def test_config_defaults_are_independent(self):
         """Test that default instances don't share mutable state."""
@@ -398,7 +398,7 @@ class TestConfigIntegration:
         config1.dataset["custom_key"] = "value"
 
         # Ensure config2 is not affected
-        assert "custom_key" not in config2.dataset
+        assert "custom_key" not in config2.dataset, "Data must not be empty"
 
 
 # =============================================================================
@@ -415,7 +415,7 @@ class TestEdgeCases:
             f.write("")
             f.flush()
             result = _load_texts(f.name, fmt="text")
-            assert result == []
+            assert result == [], "Result must not be empty"
 
     def test_whitespace_only_lines(self):
         """Test that whitespace-only lines are ignored."""
@@ -430,12 +430,12 @@ class TestEdgeCases:
         mapping = {"name": ""}
         default = OptimizerSettings()
         result = _coerce_optimizer(mapping, default)
-        assert result.name == default.name
+        assert result.name == default.name, "Result must not be empty"
 
     def test_scheduler_zero_warmup(self):
         """Test scheduler with zero warmup steps."""
         settings = SchedulerSettings(warmup_steps=0)
-        assert settings.warmup_steps == 0
+        assert settings.warmup_steps == 0, "warmup_steps is not valid"
 
     def test_training_config_all_flags(self):
         """Test TrainingRunConfig with all boolean flags."""
@@ -447,9 +447,9 @@ class TestEdgeCases:
             lora_enable=True,
             log_system_metrics=True,
         )
-        assert config.deterministic is False
-        assert config.tensorboard is False
-        assert config.mlflow_enable is True
-        assert config.amp_enable is True
-        assert config.lora_enable is True
-        assert config.log_system_metrics is True
+        assert config.deterministic is False, "deterministic is not valid"
+        assert config.tensorboard is False, "tensorboard is not valid"
+        assert config.mlflow_enable is True, "mlflow_enable is not valid"
+        assert config.amp_enable is True, "amp_enable is not valid"
+        assert config.lora_enable is True, "lora_enable is not valid"
+        assert config.log_system_metrics is True, "log_system_metrics is not valid"

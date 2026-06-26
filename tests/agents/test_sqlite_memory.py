@@ -10,24 +10,24 @@ def test_sqlite_memory_crud(tmp_path):
 
     # Retrieve
     val = memory.retrieve("key1")
-    assert val == {"data": "value"}
+    assert val == {"data": "value"}, "Data must not be empty"
 
     # Update
     assert memory.store("key1", {"data": "new_value"}) is True
-    assert memory.retrieve("key1") == {"data": "new_value"}
+    assert memory.retrieve("key1") == {"data": "new_value"}, "Data must not be empty"
 
     # History
     history = memory.get_history("key1")
-    assert len(history) == 2
-    assert history[0][1] == {"data": "new_value"}
-    assert history[1][1] == {"data": "value"}
+    assert len(history) == 2, "History must not be empty"
+    assert history[0][1] == {"data": "new_value"}, "Data must not be empty"
+    assert history[1][1] == {"data": "value"}, "Data must not be empty"
 
     # Delete
     delete_result = memory.delete("key1")
-    assert delete_result is True
-    assert memory.retrieve("key1") is None
+    assert delete_result is True, "Result must not be empty"
+    assert memory.retrieve("key1") is None, "mem is not valid"
 
     # Clear
     memory.store("key2", "val")
     memory.clear()
-    assert memory.retrieve("key2") is None
+    assert memory.retrieve("key2") is None, "mem is not valid"

@@ -96,9 +96,9 @@ class TestRetriever:
             tenant_id=sample_index["tenant_id"],
         )
 
-        assert retriever is not None
-        assert retriever.faiss_index is not None
-        assert len(retriever.chunks_metadata) > 0
+        assert retriever is not None, "retriever must be initialized"
+        assert retriever.faiss_index is not None, "faiss_index must be initialized"
+        assert len(retriever.chunks_metadata) > 0, "Collection must not be empty"
 
     def test_retriever_query_basic(self, sample_index):
         """Test basic query functionality"""
@@ -110,18 +110,18 @@ class TestRetriever:
 
         results = retriever.query("Python programming", top_k=3)
 
-        assert len(results) > 0
-        assert len(results) <= 3
+        assert len(results) > 0, "Results must not be empty"
+        assert len(results) <= 3, "Results must not be empty"
 
         # Check result structure
         for result in results:
-            assert "text" in result
-            assert "file" in result
-            assert "start_line" in result
-            assert "end_line" in result
-            assert "score" in result
-            assert "generated_at" in result
-            assert "chunk_id" in result
+            assert "text" in result, "Result must not be empty"
+            assert "file" in result, "Result must not be empty"
+            assert "start_line" in result, "Result must not be empty"
+            assert "end_line" in result, "Result must not be empty"
+            assert "score" in result, "Result must not be empty"
+            assert "generated_at" in result, "Result must not be empty"
+            assert "chunk_id" in result, "Result must not be empty"
             assert isinstance(result["score"], float)
 
     def test_retriever_query_empty(self, sample_index):
@@ -133,10 +133,10 @@ class TestRetriever:
         )
 
         results = retriever.query("", top_k=5)
-        assert len(results) == 0
+        assert len(results) == 0, "Results must not be empty"
 
         results = retriever.query("   ", top_k=5)
-        assert len(results) == 0
+        assert len(results) == 0, "Results must not be empty"
 
     def test_retriever_query_with_min_score(self, sample_index):
         """Test query with minimum score threshold"""
@@ -150,7 +150,7 @@ class TestRetriever:
         results_strict = retriever.query("Python", top_k=10, min_score=0.5)
         results_all = retriever.query("Python", top_k=10)
 
-        assert len(results_strict) <= len(results_all)
+        assert len(results_strict) <= len(results_all), "Results_strict must not be empty"
 
     def test_retriever_query_top_k_validation(self, sample_index):
         """Test top_k parameter validation"""
@@ -177,12 +177,12 @@ class TestRetriever:
 
         stats = retriever.get_stats()
 
-        assert "index_name" in stats
-        assert "tenant_id" in stats
-        assert "num_vectors" in stats
-        assert "num_chunks" in stats
-        assert stats["num_vectors"] > 0
-        assert stats["num_chunks"] > 0
+        assert "index_name" in stats, "Condition must be true"
+        assert "tenant_id" in stats, "Condition must be true"
+        assert "num_vectors" in stats, "Condition must be true"
+        assert "num_chunks" in stats, "Condition must be true"
+        assert stats["num_vectors"] > 0, "Value must be greater than zero"
+        assert stats["num_chunks"] > 0, "Value must be greater than zero"
 
     def test_retriever_reload(self, sample_index):
         """Test index reloading"""
@@ -196,7 +196,7 @@ class TestRetriever:
         retriever.reload()
         reloaded_stats = retriever.get_stats()
 
-        assert initial_stats["num_vectors"] == reloaded_stats["num_vectors"]
+        assert initial_stats["num_vectors"] == reloaded_stats["num_vectors"], "Condition must be true"
 
     def test_retriever_nonexistent_index(self):
         """Test initialization with non-existent index"""
@@ -209,7 +209,7 @@ class TestRetriever:
             )
 
             # Should have no index loaded
-            assert retriever.faiss_index is None
+            assert retriever.faiss_index is None, "faiss_index is not valid"
 
     def test_retriever_query_without_index(self):
         """Test querying without a loaded index"""
@@ -221,7 +221,7 @@ class TestRetriever:
             )
 
             results = retriever.query("test query", top_k=5)
-            assert len(results) == 0
+            assert len(results) == 0, "Results must not be empty"
 
 
 @_skip_real_st_models
@@ -278,7 +278,7 @@ class TestMultiIndexRetriever:
             index_dir=multiple_indices["index_dir"],
         )
 
-        assert len(retriever.retrievers) == 2
+        assert len(retriever.retrievers) == 2, "Collection must not be empty"
 
     def test_multi_index_query(self, multiple_indices):
         """Test querying across multiple indices"""
@@ -289,11 +289,11 @@ class TestMultiIndexRetriever:
 
         results = retriever.query("content", top_k=5)
 
-        assert len(results) > 0
+        assert len(results) > 0, "Results must not be empty"
         # Results should have index_name and tenant_id
         for result in results:
-            assert "index_name" in result
-            assert "tenant_id" in result
+            assert "index_name" in result, "Result must not be empty"
+            assert "tenant_id" in result, "Result must not be empty"
 
     def test_multi_index_query_with_min_score(self, multiple_indices):
         """Test multi-index query with score threshold"""
@@ -306,7 +306,7 @@ class TestMultiIndexRetriever:
 
         # All results should have score <= min_score
         for result in results:
-            assert result["score"] <= 1.0
+            assert result["score"] <= 1.0, "Result must not be empty"
 
     def test_multi_index_get_stats(self, multiple_indices):
         """Test getting stats from multiple indices"""
@@ -317,10 +317,10 @@ class TestMultiIndexRetriever:
 
         stats = retriever.get_stats()
 
-        assert len(stats) == 2
+        assert len(stats) == 2, "Stats must not be empty"
         for stat in stats:
-            assert "index_name" in stat
-            assert "num_vectors" in stat
+            assert "index_name" in stat, "Condition must be true"
+            assert "num_vectors" in stat, "Condition must be true"
 
     def test_multi_index_with_invalid_index(self, multiple_indices):
         """Test multi-index with some invalid indices"""
@@ -332,7 +332,7 @@ class TestMultiIndexRetriever:
         )
 
         # Should only load valid indices
-        assert len(retriever.retrievers) == 2
+        assert len(retriever.retrievers) == 2, "Collection must not be empty"
 
     def test_multi_index_empty_list(self):
         """Test multi-index with empty indices list"""
@@ -342,10 +342,10 @@ class TestMultiIndexRetriever:
                 index_dir=tmpdir,
             )
 
-            assert len(retriever.retrievers) == 0
+            assert len(retriever.retrievers) == 0, "Collection must not be empty"
 
             results = retriever.query("test", top_k=5)
-            assert len(results) == 0
+            assert len(results) == 0, "Results must not be empty"
 
 
 class TestRetrieverEdgeCases:
@@ -361,10 +361,10 @@ class TestRetrieverEdgeCases:
             )
 
             # Test various positions
-            assert retriever._estimate_line_number(0) == 1
-            assert retriever._estimate_line_number(-10) == 1
-            assert retriever._estimate_line_number(80) == 2
-            assert retriever._estimate_line_number(160) == 3
+            assert retriever._estimate_line_number(0) == 1, "Condition must be true"
+            assert retriever._estimate_line_number(-10) == 1, "Condition must be true"
+            assert retriever._estimate_line_number(80) == 2, "Condition must be true"
+            assert retriever._estimate_line_number(160) == 3, "Condition must be true"
 
     def test_extract_file_from_metadata(self):
         """Test file extraction from metadata"""
@@ -377,16 +377,16 @@ class TestRetrieverEdgeCases:
 
             # Chunk with direct file reference
             chunk1 = {"file": "test.txt"}
-            assert retriever._extract_file_from_metadata(chunk1) == "test.txt"
+            assert retriever._extract_file_from_metadata(chunk1) == "test.txt", "Data must not be empty"
 
             # Chunk without file reference
             chunk2 = {}
             retriever.index_metadata = {}
-            assert retriever._extract_file_from_metadata(chunk2) == "unknown"
+            assert retriever._extract_file_from_metadata(chunk2) == "unknown", "Data must not be empty"
 
             # With files in index metadata
             retriever.index_metadata = {"files": [{"file": "metadata_file.txt"}]}
-            assert retriever._extract_file_from_metadata(chunk2) == "metadata_file.txt"
+            assert retriever._extract_file_from_metadata(chunk2) == "metadata_file.txt", "Data must not be empty"
 
 
 @_skip_real_st_models
@@ -442,14 +442,14 @@ class TestRetrieverIntegration:
             docker_results = retriever.query("containerization deployment", top_k=3)
 
             # Should get relevant results
-            assert len(python_results) > 0
-            assert len(ml_results) > 0
-            assert len(docker_results) > 0
+            assert len(python_results) > 0, "Python_results must not be empty"
+            assert len(ml_results) > 0, "Ml_results must not be empty"
+            assert len(docker_results) > 0, "Docker_results must not be empty"
 
             # Results should contain the query terms (roughly)
-            assert any("Python" in r["text"] or "programming" in r["text"] for r in python_results)
-            assert any("learning" in r["text"] or "algorithm" in r["text"] for r in ml_results)
-            assert any("Docker" in r["text"] or "container" in r["text"] for r in docker_results)
+            assert any("Python" in r["text"] or "programming" in r["text"] for r in python_results), "Result must not be empty"
+            assert any("learning" in r["text"] or "algorithm" in r["text"] for r in ml_results), "Result must not be empty"
+            assert any("Docker" in r["text"] or "container" in r["text"] for r in docker_results), "Result must not be empty"
 
 
 @_skip_real_st_models
@@ -472,7 +472,7 @@ class TestRetrieverErrorPaths:
 
             # This will call _load_model during initialization or first query
             # The model loading includes try/except for ImportError and general Exception
-            assert retriever.model_name == "sentence-transformers/all-MiniLM-L6-v2"
+            assert retriever.model_name == "sentence-transformers/all-MiniLM-L6-v2", "model_name is not valid"
 
     def test_retriever_handles_missing_model_gracefully(self):
         """Test that retriever initialization doesn't fail immediately without model"""
@@ -485,7 +485,7 @@ class TestRetrieverErrorPaths:
             )
 
             # Should have no index loaded
-            assert retriever.faiss_index is None
+            assert retriever.faiss_index is None, "faiss_index is not valid"
 
 
 @_skip_real_st_models
@@ -509,7 +509,7 @@ class TestMultiIndexRetrieverErrorPaths:
             )
 
             # No indices should be loaded
-            assert len(retriever.retrievers) == 0
+            assert len(retriever.retrievers) == 0, "Collection must not be empty"
 
     def test_init_exception_during_index_load(self):
         """Test exception handling during index loading in __init__ (line 297-298)"""
@@ -546,7 +546,7 @@ class TestMultiIndexRetrieverErrorPaths:
                 )
 
                 # Should handle exception gracefully
-                assert len(retriever.retrievers) == 0
+                assert len(retriever.retrievers) == 0, "Collection must not be empty"
 
     def test_query_error_in_individual_index(self, multiple_indices):
         """Test query error handling for individual indices (line 329-330)"""
@@ -615,7 +615,7 @@ class TestMultiIndexRetrieverErrorPaths:
 
             # Should return empty list
             results = retriever.query("test", top_k=5)
-            assert len(results) == 0
+            assert len(results) == 0, "Results must not be empty"
 
     @pytest.fixture
     def multiple_indices(self):

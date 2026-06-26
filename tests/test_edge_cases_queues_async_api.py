@@ -74,7 +74,7 @@ class TestQueueOperationsEdgeCases:
 
         queue = Queue()
         result = queue.dequeue()
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_queue_empty_peek(self):
         """Test peeking at empty queue"""
@@ -90,7 +90,7 @@ class TestQueueOperationsEdgeCases:
 
         queue = Queue()
         result = queue.peek()
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_queue_single_item(self):
         """Test queue with single item"""
@@ -111,8 +111,8 @@ class TestQueueOperationsEdgeCases:
         queue.enqueue("item")
 
         result = queue.dequeue()
-        assert result == "item"
-        assert queue.dequeue() is None
+        assert result == "item", "Result must not be empty"
+        assert queue.dequeue() is None, "Condition must be true"
 
     def test_queue_fifo_order(self):
         """Test FIFO ordering in queue"""
@@ -135,7 +135,7 @@ class TestQueueOperationsEdgeCases:
 
         for i in range(5):
             result = queue.dequeue()
-            assert result == i
+            assert result == i, "Result must not be empty"
 
     def test_queue_with_none_items(self, queue_item):
         """Test queue storing various item types"""
@@ -157,9 +157,9 @@ class TestQueueOperationsEdgeCases:
 
         result = queue.dequeue()
         if queue_item is None:
-            assert result is None
+            assert result is None, "Result must not be empty"
         else:
-            assert result == queue_item
+            assert result == queue_item, "Result must not be empty"
 
     @pytest.mark.parametrize("size", [1, 10, 100, 1000])
     def test_queue_bulk_operations(self, size):
@@ -183,7 +183,7 @@ class TestQueueOperationsEdgeCases:
         queue.enqueue_many(items)
         result = queue.dequeue_all()
 
-        assert result == items
+        assert result == items, "Result must not be empty"
 
 
 # ============================================================================
@@ -211,7 +211,7 @@ class TestPriorityQueueEdgeCases:
 
         pq = PriorityQueue()
         result = pq.dequeue()
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_priority_queue_single_item(self, priority_level):
         """Test single item with priority"""
@@ -234,7 +234,7 @@ class TestPriorityQueueEdgeCases:
         pq.enqueue(priority_level, "item")
 
         result = pq.dequeue()
-        assert result == "item"
+        assert result == "item", "Result must not be empty"
 
     def test_priority_queue_ordering(self):
         """Test priority queue ordering"""
@@ -261,9 +261,9 @@ class TestPriorityQueueEdgeCases:
         pq.enqueue(2, "medium")
 
         # Should dequeue in priority order
-        assert pq.dequeue() == "high"
-        assert pq.dequeue() == "medium"
-        assert pq.dequeue() == "low"
+        assert pq.dequeue() == "high", "Condition must be true"
+        assert pq.dequeue() == "medium", "Condition must be true"
+        assert pq.dequeue() == "low", "Condition must be true"
 
     def test_priority_queue_same_priority(self):
         """Test items with same priority"""
@@ -297,7 +297,7 @@ class TestPriorityQueueEdgeCases:
                 break
             results.append(item)
 
-        assert len(results) == 3
+        assert len(results) == 3, "Results must not be empty"
         assert results[0] in ["first", "second", "third"]
 
 
@@ -310,6 +310,7 @@ class TestAsyncIteratorEdgeCases:
     """Edge cases for async iterators and streams"""
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_empty_async_iterator(self):
         """Test empty async iterator"""
 
@@ -321,9 +322,10 @@ class TestAsyncIteratorEdgeCases:
         async for item in empty_generator():
             items.append(item)
 
-        assert items == []
+        assert items == [], "Item must not be empty"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_single_item_async_iterator(self):
         """Test async iterator with single item"""
 
@@ -334,9 +336,10 @@ class TestAsyncIteratorEdgeCases:
         async for item in single_generator():
             items.append(item)
 
-        assert items == ["item"]
+        assert items == ["item"], "Item must not be empty"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_async_iterator_with_delay(self):
         """Test async iterator with delays"""
 
@@ -352,6 +355,7 @@ class TestAsyncIteratorEdgeCases:
         assert items == [0, 1, 2]
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_async_iterator_exception(self):
         """Test async iterator exception handling"""
 
@@ -369,6 +373,7 @@ class TestAsyncIteratorEdgeCases:
         assert items == [1, 2]
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_async_stream_backpressure(self):
         """Test async stream with backpressure simulation"""
 
@@ -396,7 +401,7 @@ class TestAsyncIteratorEdgeCases:
         results = await asyncio.gather(aq.consumer(), aq.producer())
 
         items = results[0]
-        assert len(items) == 5
+        assert len(items) == 5, "Items must not be empty"
 
 
 # ============================================================================
@@ -424,7 +429,7 @@ class TestResourcePoolEdgeCases:
 
         pool = ResourcePool(size=0)
         result = pool.acquire()
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_resource_pool_exhaustion(self):
         """Test resource pool exhaustion"""
@@ -452,13 +457,13 @@ class TestResourcePoolEdgeCases:
         r2 = pool.acquire()
         r3 = pool.acquire()
 
-        assert r1 is not None
-        assert r2 is not None
-        assert r3 is None
+        assert r1 is not None, "r1 must be initialized"
+        assert r2 is not None, "r2 must be initialized"
+        assert r3 is None, "r3 is not valid"
 
         pool.release(r1)
         r4 = pool.acquire()
-        assert r4 is not None
+        assert r4 is not None, "r4 must be initialized"
 
     @pytest.mark.parametrize("pool_size", [0, 1, 10, 100])
     def test_resource_pool_scaling(self, pool_size):
@@ -482,7 +487,7 @@ class TestResourcePoolEdgeCases:
         pool = ResourcePool(size=pool_size)
         resources = pool.acquire_all()
 
-        assert len(resources) == pool_size
+        assert len(resources) == pool_size, "Resources must not be empty"
 
 
 # ============================================================================
@@ -504,7 +509,7 @@ class TestAPIContractBoundaries:
 
         client = APIClient()
         result = client.parse_response(None)
-        assert result == {}
+        assert result == {}, "Result must not be empty"
 
     def test_api_empty_response(self):
         """Test API returning empty response"""
@@ -517,7 +522,7 @@ class TestAPIContractBoundaries:
 
         client = APIClient()
         result = client.parse_response({})
-        assert result == {}
+        assert result == {}, "Result must not be empty"
 
     def test_api_large_response(self):
         """Test API returning large response"""
@@ -534,7 +539,7 @@ class TestAPIContractBoundaries:
         large_response = {f"key_{i}": f"value_{i}" for i in range(10000)}
         result = client.parse_response(large_response)
 
-        assert len(result) == 10000
+        assert len(result) == 10000, "Result must not be empty"
 
     def test_api_response_timeout(self):
         """Test API response timeout"""
@@ -551,7 +556,7 @@ class TestAPIContractBoundaries:
         client = APIClient(timeout=1.0)
 
         result = client.call_with_timeout(0.5)
-        assert result == "success"
+        assert result == "success", "Result must not be empty"
 
         with pytest.raises(TimeoutError):
             client.call_with_timeout(2.0)
@@ -585,11 +590,11 @@ class TestAPIContractBoundaries:
 
         # Out of range
         result = client.paginate(100, 10, 20)
-        assert result == []
+        assert result == [], "Result must not be empty"
 
         # Invalid page size
         result = client.paginate(100, 0, 1)
-        assert result == []
+        assert result == [], "Result must not be empty"
 
 
 # ============================================================================
@@ -640,7 +645,7 @@ class TestTimeoutDeadlineEdgeCases:
 
         op = TimedOperation()
         result = op.run(timeout=float("inf"))
-        assert result == "success"
+        assert result == "success", "Result must not be empty"
 
     @pytest.mark.parametrize("timeout_val", [0.001, 0.01, 0.1, 1.0, 10.0])
     def test_various_timeout_values(self, timeout_val):
@@ -654,7 +659,7 @@ class TestTimeoutDeadlineEdgeCases:
 
         op = TimedOperation()
         result = op.run(timeout=timeout_val)
-        assert result == timeout_val
+        assert result == timeout_val, "Result must not be empty"
 
 
 if __name__ == "__main__":

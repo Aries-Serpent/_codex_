@@ -20,7 +20,7 @@ class TestSerialisePath:
 
         result = _serialise_path(file_path, tmp_path)
 
-        assert result == "src/module.py"
+        assert result == "src/module.py", "Result must not be empty"
 
     def test_path_outside_root(self, tmp_path):
         """Test serializing a path outside root."""
@@ -31,7 +31,7 @@ class TestSerialisePath:
         result = _serialise_path(file_path, tmp_path)
 
         # Should return full posix path
-        assert "some/other/path.py" in result
+        assert "some/other/path.py" in result, "Result must not be empty"
 
 
 class TestInExcludes:
@@ -46,7 +46,7 @@ class TestInExcludes:
 
         result = _in_excludes(path, patterns)
 
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_not_matching(self):
         """Test file not matching pattern."""
@@ -57,7 +57,7 @@ class TestInExcludes:
 
         result = _in_excludes(path, patterns)
 
-        assert result is False
+        assert result is False, "Result must not be empty"
 
 
 class TestFreshness:
@@ -74,7 +74,7 @@ class TestFreshness:
 
         result = _freshness(now, mtime)
 
-        assert result == 1.0
+        assert result == 1.0, "Result must not be empty"
 
     def test_week_old_file(self):
         """Test freshness for week-old file."""
@@ -87,7 +87,7 @@ class TestFreshness:
 
         result = _freshness(now, mtime)
 
-        assert result == 0.8
+        assert result == 0.8, "Result must not be empty"
 
     def test_month_old_file(self):
         """Test freshness for month-old file."""
@@ -100,7 +100,7 @@ class TestFreshness:
 
         result = _freshness(now, mtime)
 
-        assert result == 0.5
+        assert result == 0.5, "Result must not be empty"
 
     def test_old_file(self):
         """Test freshness for old file."""
@@ -113,7 +113,7 @@ class TestFreshness:
 
         result = _freshness(now, mtime)
 
-        assert result == 0.1
+        assert result == 0.1, "Result must not be empty"
 
 
 class TestPathFitness:
@@ -125,7 +125,7 @@ class TestPathFitness:
 
         result = _path_fitness("src/codex/module.py")
 
-        assert result >= 0.5
+        assert result >= 0.5, "result must be greater than zero"
 
     def test_legacy_path(self):
         """Test fitness penalty for legacy path."""
@@ -133,7 +133,7 @@ class TestPathFitness:
 
         result = _path_fitness("legacy/old_module.py")
 
-        assert result == 0.0  # Penalty makes it 0
+        assert result == 0.0, "Result must not be empty"
 
     def test_v2_path(self):
         """Test fitness bonus for v2 suffix."""
@@ -141,7 +141,7 @@ class TestPathFitness:
 
         result = _path_fitness("src/codex/module_v2.py")
 
-        assert result >= 0.5
+        assert result >= 0.5, "result must be greater than zero"
 
     def test_regular_path(self):
         """Test fitness for regular path."""
@@ -149,7 +149,7 @@ class TestPathFitness:
 
         result = _path_fitness("random/path.py")
 
-        assert 0.0 <= result <= 1.0
+        assert 0.0 <= result <= 1.0, "Result must not be empty"
 
 
 class TestComplexityPenalty:
@@ -161,7 +161,7 @@ class TestComplexityPenalty:
 
         result = _complexity_penalty(1024, 50)
 
-        assert result < 0.1
+        assert result < 0.1, "Result must not be empty"
 
     def test_large_file(self):
         """Test penalty for large file."""
@@ -169,7 +169,7 @@ class TestComplexityPenalty:
 
         result = _complexity_penalty(256 * 1024, 1000)
 
-        assert result >= 0.3
+        assert result >= 0.3, "result must be greater than zero"
 
     def test_max_penalty(self):
         """Test penalty is capped at 0.4."""
@@ -177,7 +177,7 @@ class TestComplexityPenalty:
 
         result = _complexity_penalty(1024 * 1024, 5000)
 
-        assert result == 0.4
+        assert result == 0.4, "Result must not be empty"
 
 
 class TestUsageHeuristic:
@@ -189,7 +189,7 @@ class TestUsageHeuristic:
 
         result = _usage_heuristic(Path("legacy/old.py"))
 
-        assert result == 0.1
+        assert result == 0.1, "Result must not be empty"
 
     def test_regular_path(self):
         """Test heuristic for regular path."""
@@ -198,7 +198,7 @@ class TestUsageHeuristic:
         result = _usage_heuristic(Path("src/module.py"))
 
         # Regular paths should have higher usage heuristic
-        assert result >= 0.1
+        assert result >= 0.1, "result must be greater than zero"
 
 
 class TestModuleLevel:
@@ -208,5 +208,5 @@ class TestModuleLevel:
         """Test logger is configured."""
         from codex.archive.consolidate import logger
 
-        assert logger is not None
-        assert logger.name == "codex.archive.consolidate"
+        assert logger is not None, "logger must be initialized"
+        assert logger.name == "codex.archive.consolidate", "name is not valid"

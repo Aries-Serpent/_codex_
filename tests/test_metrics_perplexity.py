@@ -27,5 +27,5 @@ def test_batch_metrics_includes_perplexity_from_loss() -> None:
 
     metrics = batch_metrics(outputs, {})
 
-    assert metrics["loss"] == pytest.approx(0.5)
-    assert metrics["perplexity"] == pytest.approx(math.exp(0.5))
+    assert metrics["loss"] == pytest.approx(0.5), "Condition must be true"
+    assert metrics["perplexity"] == pytest.approx(math.exp(0.5)), "Condition must be true"

@@ -31,8 +31,8 @@ class TestBehaviorComparator:
 
         result = compare(baseline_dir, patched_dir, mode=ComparisonMode.STRICT)
 
-        assert result.result == "pass"
-        assert len(result.comparisons) > 0
+        assert result.result == "pass", "Result must not be empty"
+        assert len(result.comparisons) > 0, "Collection must not be empty"
 
     def test_compare_different_outputs(self, tmp_path: Path):
         """Test comparison of different outputs."""
@@ -48,7 +48,7 @@ class TestBehaviorComparator:
 
         result = compare(baseline_dir, patched_dir, mode=ComparisonMode.STRICT)
 
-        assert result.result == "fail"
+        assert result.result == "fail", "Result must not be empty"
 
     def test_compare_fuzzy_mode(self, tmp_path: Path):
         """Test fuzzy comparison mode."""
@@ -66,7 +66,7 @@ class TestBehaviorComparator:
         result = compare(baseline_dir, patched_dir, mode=ComparisonMode.FUZZY)
 
         # Fuzzy mode should pass (same lines, different order)
-        assert result.result == "pass"
+        assert result.result == "pass", "Result must not be empty"
 
     def test_compare_no_entry_point(self, tmp_path: Path):
         """Test comparison when no entry point is found."""
@@ -81,8 +81,8 @@ class TestBehaviorComparator:
 
         result = compare(baseline_dir, patched_dir, mode=ComparisonMode.STRICT)
 
-        assert result.result == "warn"
-        assert any(c.result == "error" for c in result.comparisons)
+        assert result.result == "warn", "Result must not be empty"
+        assert any(c.result == "error" for c in result.comparisons), "Result must not be empty"
 
     def test_comparison_result_to_dict(self, tmp_path: Path):
         """Test ComparisonResult serialization."""
@@ -99,11 +99,11 @@ class TestBehaviorComparator:
         result = compare(baseline_dir, patched_dir, mode=ComparisonMode.STRICT)
         data = result.to_dict()
 
-        assert "result" in data
-        assert "baseline_hash" in data
-        assert "patched_hash" in data
-        assert "comparisons" in data
-        assert "flakiness_check" in data
+        assert "result" in data, "Result must not be empty"
+        assert "baseline_hash" in data, "Data must not be empty"
+        assert "patched_hash" in data, "Data must not be empty"
+        assert "comparisons" in data, "Data must not be empty"
+        assert "flakiness_check" in data, "Data must not be empty"
 
     def test_comparison_result_save(self, tmp_path: Path):
         """Test saving ComparisonResult to file."""
@@ -122,7 +122,7 @@ class TestBehaviorComparator:
         output_path = tmp_path / "diff.json"
         result.save(output_path)
 
-        assert output_path.exists()
+        assert output_path.exists(), "Condition must be true"
         with output_path.open() as f:
             data = json.load(f)
         assert data["result"] in ["pass", "fail", "warn"]
@@ -138,7 +138,7 @@ class TestOutputNormalization:
         output = "  line1  \n  line2  \n"
         result = _normalize_output(output, ComparisonMode.STRICT)
 
-        assert result == output
+        assert result == output, "Result must not be empty"
 
     def test_normalize_fuzzy(self):
         """Test fuzzy mode normalization."""
@@ -148,8 +148,8 @@ class TestOutputNormalization:
         result = _normalize_output(output, ComparisonMode.FUZZY)
 
         # Should be stripped, sorted
-        assert "line1" in result
-        assert "line2" in result
+        assert "line1" in result, "Result must not be empty"
+        assert "line2" in result, "Result must not be empty"
 
     def test_normalize_semantic(self):
         """Test semantic mode normalization."""
@@ -158,8 +158,8 @@ class TestOutputNormalization:
         output = "Timestamp: 2025-12-17T12:00:00 ID: abc12345-1234-1234-1234-123456789012"
         result = _normalize_output(output, ComparisonMode.SEMANTIC)
 
-        assert "<TIMESTAMP>" in result
-        assert "<UUID>" in result
+        assert "<TIMESTAMP>" in result, "Result must not be empty"
+        assert "<UUID>" in result, "Result must not be empty"
 
 
 class TestOutputComparison:
@@ -171,8 +171,8 @@ class TestOutputComparison:
 
         match, diff = _compare_outputs("hello", "hello", ComparisonMode.STRICT)
 
-        assert match is True
-        assert diff is None
+        assert match is True, "match is not valid"
+        assert diff is None, "diff is not valid"
 
     def test_compare_outputs_mismatch(self):
         """Test comparing mismatched outputs."""
@@ -180,9 +180,9 @@ class TestOutputComparison:
 
         match, diff = _compare_outputs("hello", "world", ComparisonMode.STRICT)
 
-        assert match is False
-        assert diff is not None
-        assert "-hello" in diff or "+world" in diff
+        assert match is False, "match is not valid"
+        assert diff is not None, "diff must be initialized"
+        assert "-hello" in diff or "+world" in diff, "Condition must be true"
 
     def test_compare_outputs_fuzzy_whitespace(self):
         """Test fuzzy comparison ignores whitespace."""
@@ -190,7 +190,7 @@ class TestOutputComparison:
 
         match, _diff = _compare_outputs("  hello  ", "hello", ComparisonMode.FUZZY)
 
-        assert match is True
+        assert match is True, "match is not valid"
 
 
 class TestHashOutput:
@@ -204,8 +204,8 @@ class TestHashOutput:
         hash1 = _hash_output(output)
         hash2 = _hash_output(output)
 
-        assert hash1 == hash2
-        assert len(hash1) == 64
+        assert hash1 == hash2, "hash1 is not valid"
+        assert len(hash1) == 64, "Hash1 must not be empty"
 
     def test_hash_output_different(self):
         """Test that different outputs have different hashes."""
@@ -214,7 +214,7 @@ class TestHashOutput:
         hash1 = _hash_output("output1")
         hash2 = _hash_output("output2")
 
-        assert hash1 != hash2
+        assert hash1 != hash2, "hash1 is not valid"
 
 
 class TestTestGeneration:
@@ -239,8 +239,8 @@ class TestTestGeneration:
 
         generated = generate_tests(source_dir, [input_file], [output_file], output_dir)
 
-        assert len(generated) > 0
-        assert generated[0].exists()
+        assert len(generated) > 0, "Generated must not be empty"
+        assert generated[0].exists(), "Condition must be true"
 
     def test_generated_test_content(self, tmp_path: Path):
         """Test content of generated test file."""
@@ -262,9 +262,9 @@ class TestTestGeneration:
         generated = generate_tests(source_dir, [input_file], [output_file], output_dir)
 
         content = generated[0].read_text()
-        assert "pytest" in content
-        assert "TestBehaviorSnapshots" in content
-        assert "def test_snapshot" in content
+        assert "pytest" in content, "Content must not be empty"
+        assert "TestBehaviorSnapshots" in content, "Content must not be empty"
+        assert "def test_snapshot" in content, "Content must not be empty"
 
 
 class TestComparisonDetail:
@@ -280,9 +280,9 @@ class TestComparisonDetail:
             result="match",
         )
 
-        assert detail.input_ref == "input.txt"
-        assert detail.result == "match"
-        assert detail.diff is None
+        assert detail.input_ref == "input.txt", "input_ref is not valid"
+        assert detail.result == "match", "Result must not be empty"
+        assert detail.diff is None, "diff is not valid"
 
 
 class TestFlakiness:
@@ -302,5 +302,5 @@ class TestFlakiness:
 
         result = compare(baseline_dir, patched_dir, mode=ComparisonMode.STRICT, flakiness_runs=3)
 
-        assert "runs" in result.flakiness_check
-        assert "consistent" in result.flakiness_check
+        assert "runs" in result.flakiness_check, "Result must not be empty"
+        assert "consistent" in result.flakiness_check, "Result must not be empty"

@@ -15,6 +15,7 @@ from codex.auth.oauth_manager import (
     OAuthToken,
 )
 
+
  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 class TestOAuthToken:
     """Tests for OAuthToken data structure."""
@@ -29,12 +30,12 @@ class TestOAuthToken:
             scope="repo user",
         )
 
-        assert token.access_token == "gho_test123"
-        assert token.token_type == "bearer"
-        assert token.expires_in == 3600
-        assert token.refresh_token == "ghr_refresh123"
-        assert token.scope == "repo user"
-        assert token.created_at > 0
+        assert token.access_token == "gho_test123", "access_token is not valid"
+        assert token.token_type == "bearer", "token_type is not valid"
+        assert token.expires_in == 3600, "expires_in is not valid"
+        assert token.refresh_token == "ghr_refresh123", "refresh_token is not valid"
+        assert token.scope == "repo user", "scope is not valid"
+        assert token.created_at > 0, "created_at must be greater than zero"
 
     def test_token_expiry_check(self):
         """Test token expiry validation."""
@@ -46,7 +47,7 @@ class TestOAuthToken:
             created_at=time.time() - 120,  # 2 minutes ago
         )
 
-        assert token.is_expired() is True
+        assert token.is_expired() is True, "Condition must be true"
 
     def test_token_not_expired(self):
         """Test token not expired validation."""
@@ -56,7 +57,7 @@ class TestOAuthToken:
             expires_in=3600,  # 1 hour
         )
 
-        assert token.is_expired() is False
+        assert token.is_expired() is False, "Condition must be true"
 
     def test_token_expiry_with_buffer(self):
         """Test token expiry with buffer time."""
@@ -69,7 +70,7 @@ class TestOAuthToken:
         )
 
         # Should be considered expired with default 5-minute buffer
-        assert token.is_expired(buffer_seconds=300) is True
+        assert token.is_expired(buffer_seconds=300) is True, "Condition must be true"
 
 
 class TestOAuthConfig:
@@ -88,9 +89,9 @@ class TestOAuthConfig:
             use_pkce=True,
         )
 
-        assert config.provider_name == "github"
-        assert config.client_id == "test_client_id"
-        assert config.use_pkce is True
+        assert config.provider_name == "github", "provider_name is not valid"
+        assert config.client_id == "test_client_id", "client_id is not valid"
+        assert config.use_pkce is True, "use_pkce is not valid"
 
 
 class TestOAuthManager:
@@ -99,9 +100,9 @@ class TestOAuthManager:
     def test_initialization(self):
         """Test OAuth manager initialization."""
         manager = OAuthManager()
-        assert manager is not None
-        assert manager._state_store == {}
-        assert manager._token_store == {}
+        assert manager is not None, "manager must be initialized"
+        assert manager._state_store == {}, "_state_store is not valid"
+        assert manager._token_store == {}, "_token_store is not valid"
 
     def test_create_github_config(self):
         """Test GitHub config creation."""
@@ -113,10 +114,10 @@ class TestOAuthManager:
             scope="repo",
         )
 
-        assert config.provider_name == "github"
-        assert config.authorization_url == manager.GITHUB_AUTH_URL
-        assert config.token_url == manager.GITHUB_TOKEN_URL
-        assert config.use_pkce is True
+        assert config.provider_name == "github", "provider_name is not valid"
+        assert config.authorization_url == manager.GITHUB_AUTH_URL, "authorization_url is not valid"
+        assert config.token_url == manager.GITHUB_TOKEN_URL, "token_url is not valid"
+        assert config.use_pkce is True, "use_pkce is not valid"
 
     def test_generate_state(self):
         """Test state generation for CSRF protection."""
@@ -125,9 +126,9 @@ class TestOAuthManager:
         state2 = manager._generate_state()
 
         # States should be unique
-        assert state1 != state2
+        assert state1 != state2, "state1 is not valid"
         # States should be reasonable length
-        assert len(state1) > 30
+        assert len(state1) > 30, "State1 must not be empty"
 
     def test_generate_code_verifier(self):
         """Test PKCE code verifier generation."""
@@ -136,9 +137,9 @@ class TestOAuthManager:
         verifier2 = manager._generate_code_verifier()
 
         # Verifiers should be unique
-        assert verifier1 != verifier2
+        assert verifier1 != verifier2, "verifier1 is not valid"
         # Verifiers should be reasonable length
-        assert len(verifier1) > 40
+        assert len(verifier1) > 40, "Verifier1 must not be empty"
 
     def test_generate_code_challenge(self):
         """Test PKCE code challenge generation."""
@@ -147,10 +148,10 @@ class TestOAuthManager:
         challenge = manager._generate_code_challenge(verifier)
 
         # Challenge should be generated
-        assert challenge is not None
-        assert len(challenge) > 0
+        assert challenge is not None, "challenge must be initialized"
+        assert len(challenge) > 0, "Challenge must not be empty"
         # Same verifier should produce same challenge
-        assert challenge == manager._generate_code_challenge(verifier)
+        assert challenge == manager._generate_code_challenge(verifier), "challenge is not valid"
 
     def test_initiate_flow(self):
         """Test OAuth flow initiation."""
@@ -163,12 +164,12 @@ class TestOAuthManager:
 
         result = manager.initiate_flow(config)
 
-        assert "auth_url" in result
-        assert "state" in result
-        assert manager.GITHUB_AUTH_URL in result["auth_url"]
-        assert "client_id=test_id" in result["auth_url"]
-        assert "code_challenge" in result["auth_url"]
-        assert result["state"] in manager._state_store
+        assert "auth_url" in result, "Result must not be empty"
+        assert "state" in result, "Result must not be empty"
+        assert manager.GITHUB_AUTH_URL in result["auth_url"], "Result must not be empty"
+        assert "client_id=test_id" in result["auth_url"], "Result must not be empty"
+        assert "code_challenge" in result["auth_url"], "Result must not be empty"
+        assert result["state"] in manager._state_store, "Result must not be empty"
 
     def test_initiate_flow_without_config(self):
         """Test flow initiation without config raises error."""
@@ -189,13 +190,13 @@ class TestOAuthManager:
         result = manager.initiate_flow(config)
         state = result["state"]
 
-        assert manager.validate_state(state) is True
+        assert manager.validate_state(state) is True, "Condition must be true"
 
     def test_validate_state_invalid(self):
         """Test state validation with invalid state."""
         manager = OAuthManager()
 
-        assert manager.validate_state("invalid_state") is False
+        assert manager.validate_state("invalid_state") is False, "Condition must be true"
 
     def test_validate_state_expired(self):
         """Test state validation with expired state."""
@@ -207,8 +208,8 @@ class TestOAuthManager:
             "code_verifier": "test",
         }
 
-        assert manager.validate_state(state) is False
-        assert state not in manager._state_store
+        assert manager.validate_state(state) is False, "Condition must be true"
+        assert state not in manager._state_store, "Condition must be true"
 
     @patch("src.codex.auth.oauth_manager.httpx.Client")
     def test_exchange_code_success(self, mock_client_class):
@@ -245,11 +246,11 @@ class TestOAuthManager:
         token = manager.exchange_code(code, state)
 
         # Verify
-        assert token.access_token == "gho_test123"
-        assert token.token_type == "bearer"
-        assert token.expires_in == 3600
-        assert token.refresh_token == "ghr_refresh123"
-        assert state not in manager._state_store  # State should be consumed
+        assert token.access_token == "gho_test123", "access_token is not valid"
+        assert token.token_type == "bearer", "token_type is not valid"
+        assert token.expires_in == 3600, "expires_in is not valid"
+        assert token.refresh_token == "ghr_refresh123", "refresh_token is not valid"
+        assert state not in manager._state_store, "Condition must be true"
 
     def test_exchange_code_invalid_state(self):
         """Test code exchange with invalid state."""
@@ -289,8 +290,8 @@ class TestOAuthManager:
         token = manager.refresh_token("ghr_old_refresh")
 
         # Verify
-        assert token.access_token == "gho_new_token"
-        assert token.refresh_token == "ghr_new_refresh"
+        assert token.access_token == "gho_new_token", "access_token is not valid"
+        assert token.refresh_token == "ghr_new_refresh", "refresh_token is not valid"
 
     @patch("src.codex.auth.oauth_manager.httpx.Client")
     def test_get_github_user(self, mock_client_class):
@@ -316,9 +317,9 @@ class TestOAuthManager:
         user = manager.get_github_user("gho_test_token")
 
         # Verify
-        assert user["login"] == "testuser"
-        assert user["id"] == 123456
-        assert user["email"] == "test@example.com"
+        assert user["login"] == "testuser", "Condition must be true"
+        assert user["id"] == 123456, "Condition must be true"
+        assert user["email"] == "test@example.com", "Condition must be true"
 
     def test_revoke_token(self):
         """Test token revocation."""
@@ -336,8 +337,8 @@ class TestOAuthManager:
         result = manager.revoke_token("gho_test123")
 
         # Verify
-        assert result is True
-        assert "token_id" not in manager._token_store
+        assert result is True, "Result must not be empty"
+        assert "token_id" not in manager._token_store, "Condition must be true"
 
     def test_revoke_token_not_found(self):
         """Test revoking non-existent token."""
@@ -345,7 +346,7 @@ class TestOAuthManager:
 
         result = manager.revoke_token("gho_nonexistent")
 
-        assert result is False
+        assert result is False, "Result must not be empty"
 
 
 class TestOAuthManagerIntegration:
@@ -364,8 +365,8 @@ class TestOAuthManagerIntegration:
 
         # Step 1: Initiate flow
         flow_result = manager.initiate_flow(config)
-        assert "auth_url" in flow_result
-        assert "state" in flow_result
+        assert "auth_url" in flow_result, "Result must not be empty"
+        assert "state" in flow_result, "Result must not be empty"
         state = flow_result["state"]
 
         # Step 2: Mock code exchange
@@ -393,11 +394,11 @@ class TestOAuthManagerIntegration:
 
         # Execute exchange
         token = manager.exchange_code("test_code", state)
-        assert token.access_token == "gho_test123"
+        assert token.access_token == "gho_test123", "access_token is not valid"
 
         # Get user info
         user = manager.get_github_user(token.access_token)
-        assert user["login"] == "testuser"
+        assert user["login"] == "testuser", "Condition must be true"
 
 
 if __name__ == "__main__":

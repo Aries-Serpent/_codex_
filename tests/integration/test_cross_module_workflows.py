@@ -80,8 +80,8 @@ class TestRAGBuildQueryWorkflow:
         index_file = index_dir / "index.json"
         index_file.write_text(json.dumps(index))
 
-        assert index_file.exists()
-        assert index["metadata"]["count"] == 3
+        assert index_file.exists(), "Condition must be true"
+        assert index["metadata"]["count"] == 3, "Data must not be empty"
 
     def test_rag_query_execution(self, temp_workspace):
         """Verify RAG query execution against index."""
@@ -110,8 +110,8 @@ class TestRAGBuildQueryWorkflow:
 
         results.sort(key=lambda x: x["score"], reverse=True)
 
-        assert len(results) > 0
-        assert results[0]["doc_id"] == "doc1"
+        assert len(results) > 0, "Results must not be empty"
+        assert results[0]["doc_id"] == "doc1", "Result must not be empty"
 
     def test_rag_incremental_update(self, temp_workspace):
         """Verify incremental RAG index updates."""
@@ -129,7 +129,7 @@ class TestRAGBuildQueryWorkflow:
 
         # Verify update
         updated_index = json.loads(index_file.read_text())
-        assert len(updated_index["documents"]) == 2
+        assert len(updated_index["documents"]) == 2, "Collection must not be empty"
 
     def test_rag_multi_query_batch(self, temp_workspace):
         """Verify batch query processing."""
@@ -145,7 +145,7 @@ class TestRAGBuildQueryWorkflow:
             ]
             results.extend(query_results)
 
-        assert len(results) == 6
+        assert len(results) == 6, "Results must not be empty"
 
 
 class TestTokenizationTrainingPipeline:
@@ -169,8 +169,8 @@ class TestTokenizationTrainingPipeline:
         # Simple word tokenization
         tokens = text.lower().split()
 
-        assert len(tokens) == 7
-        assert tokens[0] == "this"
+        assert len(tokens) == 7, "Tokens must not be empty"
+        assert tokens[0] == "this", "Condition must be true"
 
     def test_tokens_to_ids(self, temp_workspace):
         """Verify token to ID conversion."""
@@ -192,8 +192,8 @@ class TestTokenizationTrainingPipeline:
         # Simple batch tokenization
         batched_tokens = [text.split() for text in texts]
 
-        assert len(batched_tokens) == 3
-        assert len(batched_tokens[0]) == 2
+        assert len(batched_tokens) == 3, "Batched_tokens must not be empty"
+        assert len(batched_tokens[0]) == 2, "Collection must not be empty"
 
     def test_tokenized_data_to_training(self, temp_workspace):
         """Verify tokenized data flows to training."""
@@ -208,8 +208,8 @@ class TestTokenizationTrainingPipeline:
 
         # Verify data ready for training
         loaded = json.loads(data_file.read_text())
-        assert len(loaded) == 2
-        assert "input_ids" in loaded[0]
+        assert len(loaded) == 2, "Loaded must not be empty"
+        assert "input_ids" in loaded[0], "Condition must be true"
 
 
 class TestMonitoringLoggingIntegration:
@@ -229,7 +229,7 @@ class TestMonitoringLoggingIntegration:
             for metric in metrics:
                 f.write(json.dumps(metric) + "\n")
 
-        assert log_file.exists()
+        assert log_file.exists(), "Condition must be true"
 
     def test_event_logging(self, temp_workspace):
         """Verify event logging integration."""
@@ -245,7 +245,7 @@ class TestMonitoringLoggingIntegration:
             for event in events:
                 f.write(f"{event}\n")
 
-        assert event_log.exists()
+        assert event_log.exists(), "Condition must be true"
 
     def test_error_logging(self, temp_workspace):
         """Verify error logging integration."""
@@ -256,8 +256,8 @@ class TestMonitoringLoggingIntegration:
         except ValueError as e:
             error_log.write_text(f"Error: {e!s}\n")
 
-        assert error_log.exists()
-        assert "Test error" in error_log.read_text()
+        assert error_log.exists(), "Error should be raised or set"
+        assert "Test error" in error_log.read_text(), "Error should be raised or set"
 
     def test_structured_logging(self, temp_workspace):
         """Verify structured logging format."""
@@ -273,7 +273,7 @@ class TestMonitoringLoggingIntegration:
             for entry in log_entries:
                 f.write(json.dumps(entry) + "\n")
 
-        assert log_file.exists()
+        assert log_file.exists(), "Condition must be true"
 
     def test_log_aggregation(self, temp_workspace):
         """Verify log aggregation across modules."""
@@ -289,7 +289,7 @@ class TestMonitoringLoggingIntegration:
         for log_file in logs_dir.glob("*.log"):
             all_logs.append(log_file.read_text())
 
-        assert len(all_logs) == 3
+        assert len(all_logs) == 3, "All_logs must not be empty"
 
 
 class TestPluginDiscoveryLifecycle:
@@ -308,7 +308,7 @@ class TestPluginDiscoveryLifecycle:
         # Discover plugins
         discovered = list(plugins_dir.glob("plugin_*.py"))
 
-        assert len(discovered) == 3
+        assert len(discovered) == 3, "Discovered must not be empty"
 
     def test_plugin_loading(self, temp_workspace):
         """Verify plugin loading mechanism."""
@@ -323,7 +323,7 @@ class TestPlugin:
 """
         plugin_file.write_text(plugin_content)
 
-        assert plugin_file.exists()
+        assert plugin_file.exists(), "Condition must be true"
 
     def test_plugin_initialization(self, temp_workspace):
         """Verify plugin initialization."""
@@ -332,7 +332,7 @@ class TestPlugin:
         # Simulate initialization
         initialized = plugin_config["enabled"]
 
-        assert initialized is True
+        assert initialized is True, "initialized is not valid"
 
     def test_plugin_execution(self, temp_workspace):
         """Verify plugin execution."""
@@ -342,8 +342,8 @@ class TestPlugin:
         plugin_state["executed"] = True
         plugin_state["result"] = "success"
 
-        assert plugin_state["executed"] is True
-        assert plugin_state["result"] == "success"
+        assert plugin_state["executed"] is True, "Condition must be true"
+        assert plugin_state["result"] == "success", "Result must not be empty"
 
     def test_plugin_unloading(self, temp_workspace):
         """Verify plugin unloading mechanism."""
@@ -352,8 +352,8 @@ class TestPlugin:
         # Unload plugin
         loaded_plugins.remove("plugin_a")
 
-        assert "plugin_a" not in loaded_plugins
-        assert len(loaded_plugins) == 1
+        assert "plugin_a" not in loaded_plugins, "Condition must be true"
+        assert len(loaded_plugins) == 1, "Loaded_plugins must not be empty"
 
 
 class TestMultiServiceOrchestration:
@@ -368,7 +368,7 @@ class TestMultiServiceOrchestration:
             # Simulate service start
             started_services.append(service)
 
-        assert started_services == services
+        assert started_services == services, "started_services is not valid"
 
     def test_service_health_check(self, temp_workspace):
         """Verify service health checking."""
@@ -380,7 +380,7 @@ class TestMultiServiceOrchestration:
 
         unhealthy = [s for s, status in services.items() if not status["healthy"]]
 
-        assert len(unhealthy) == 0
+        assert len(unhealthy) == 0, "Unhealthy must not be empty"
 
     def test_service_dependency_resolution(self, temp_workspace):
         """Verify service dependency resolution."""
@@ -405,7 +405,7 @@ class TestMultiServiceOrchestration:
         # Service B receives message
         received = message_queue.pop(0)
 
-        assert received["to"] == "service_b"
+        assert received["to"] == "service_b", "Condition must be true"
 
 
 class TestErrorPropagation:
@@ -433,7 +433,7 @@ class TestErrorPropagation:
         except ValueError as e:
             context = {"original": str(e), "module": "test"}
 
-            assert context["original"] == "Original error"
+            assert context["original"] == "Original error", "Error should be raised or set"
 
     def test_error_recovery_workflow(self, temp_workspace):
         """Verify error recovery workflow."""
@@ -448,7 +448,7 @@ class TestErrorPropagation:
             except ConnectionError:
                 attempts += 1
 
-        assert attempts == 2
+        assert attempts == 2, "attempts is not valid"
 
     def test_error_logging_propagation(self, temp_workspace):
         """Verify errors are logged during propagation."""
@@ -459,7 +459,7 @@ class TestErrorPropagation:
         except ValueError as e:
             error_log.write_text(f"ERROR: {e!s}\n")
 
-        assert error_log.exists()
+        assert error_log.exists(), "Error should be raised or set"
 
 
 class TestDataFlowIntegration:
@@ -476,7 +476,7 @@ class TestDataFlowIntegration:
         # Stage 3: Validate
         validated = [d for d in transformed if d["doubled"] >= 0]
 
-        assert len(validated) == 5
+        assert len(validated) == 5, "Validated must not be empty"
 
     def test_data_format_conversion_flow(self, temp_workspace):
         """Verify data format conversions across modules."""
@@ -492,7 +492,7 @@ class TestDataFlowIntegration:
         # Convert to JSON format
         json_str = json.dumps(dict_data)
 
-        assert len(json_str) > 0
+        assert len(json_str) > 0, "Json_str must not be empty"
 
     def test_streaming_data_flow(self, temp_workspace):
         """Verify streaming data flow."""
@@ -506,7 +506,7 @@ class TestDataFlowIntegration:
         for item in data_generator():
             processed.append(item)
 
-        assert len(processed) == 10
+        assert len(processed) == 10, "Processed must not be empty"
 
 
 class TestConfigurationPropagation:
@@ -520,7 +520,7 @@ class TestConfigurationPropagation:
         for module in ["training", "data", "model"]:
             module_configs[module] = {**global_config, "module": module}
 
-        assert all(cfg["debug"] for cfg in module_configs.values())
+        assert all(cfg["debug"] for cfg in module_configs.values()), "Value must be initialized"
 
     def test_config_override_propagation(self, temp_workspace):
         """Verify configuration overrides propagate."""
@@ -530,8 +530,8 @@ class TestConfigurationPropagation:
 
         final_config = {**base_config, **override_config}
 
-        assert final_config["learning_rate"] == 0.01
-        assert final_config["batch_size"] == 32
+        assert final_config["learning_rate"] == 0.01, "Condition must be true"
+        assert final_config["batch_size"] == 32, "Condition must be true"
 
     def test_environment_config_propagation(self, temp_workspace, monkeypatch):
         """Verify environment variables propagate."""
@@ -541,4 +541,4 @@ class TestConfigurationPropagation:
 
         debug_enabled = os.getenv("CODEX_DEBUG") == "true"
 
-        assert debug_enabled is True
+        assert debug_enabled is True, "debug_enabled is not valid"

@@ -81,7 +81,7 @@ def test_seed_snapshot(tmp_path: Path) -> None:
     """seed_snapshot writes seeds.json and returns its path with expected content."""
     seeds = {"python": 0}
     path = seed_snapshot(seeds, tmp_path)
-    assert json.loads(path.read_text(encoding="utf-8")) == seeds
+    assert json.loads(path.read_text(encoding="utf-8")) == seeds, "Condition must be true"
 
 
 def test_seed_snapshot_logs_artifact(tmp_path: Path, monkeypatch) -> None:
@@ -100,7 +100,7 @@ def test_seed_snapshot_logs_artifact(tmp_path: Path, monkeypatch) -> None:
 
     monkeypatch.setattr(mfu, "log_artifacts", fake_log)
     out = mfu.seed_snapshot({"seed": 1}, tmp_path, enabled=True)
-    assert out.exists() and logged.get("path") == str(out)
+    assert out.exists() and logged.get("path") == str(out), "Condition must be true"
 
 
 def test_ensure_local_artifacts(tmp_path: Path) -> None:
@@ -108,5 +108,5 @@ def test_ensure_local_artifacts(tmp_path: Path) -> None:
     summary = {"status": "ok"}
     seeds = {"numpy": 1}
     ensure_local_artifacts(tmp_path, summary, seeds)
-    assert json.loads((tmp_path / "summary.json").read_text(encoding="utf-8")) == summary
-    assert json.loads((tmp_path / "seeds.json").read_text(encoding="utf-8")) == seeds
+    assert json.loads((tmp_path / "summary.json").read_text(encoding="utf-8")) == summary, "Condition must be true"
+    assert json.loads((tmp_path / "seeds.json").read_text(encoding="utf-8")) == seeds, "Condition must be true"

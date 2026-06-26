@@ -43,5 +43,5 @@ def test_sample_rate_zero_disables_telemetry(tmp_path: Path, monkeypatch):
         dataset_cast_policy="to_fp32",
     )
     # No telemetry files should be created when sample_rate=0
-    assert not (outdir / "telemetry.json").exists()
-    assert not (outdir / "telemetry.ndjson").exists()
+    assert not (outdir / "telemetry.json").exists(), "Condition must be true"
+    assert not (outdir / "telemetry.ndjson").exists(), "Condition must be true"

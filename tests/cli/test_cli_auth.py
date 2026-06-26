@@ -29,14 +29,14 @@ class TestAuthGroup:
 
     def test_auth_help_displayed(self, runner):
         result = runner.invoke(cli, ["auth", "--help"])
-        assert result.exit_code == 0
-        assert "register" in result.output
-        assert "login" in result.output
-        assert "logout" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "register" in result.output, "Result must not be empty"
+        assert "login" in result.output, "Result must not be empty"
+        assert "logout" in result.output, "Result must not be empty"
 
     def test_auth_no_subcommand_shows_help(self, runner):
         result = runner.invoke(cli, ["auth"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -51,23 +51,23 @@ class TestAuthRegisterCLI:
             cli,
             ["auth", "register", "-u", "testuser", "-e", "test@example.com", "-p", "Str0ngPass!"],
         )
-        assert result.exit_code == 0
-        assert "Registered user" in result.output
-        assert "testuser" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "Registered user" in result.output, "Result must not be empty"
+        assert "testuser" in result.output, "Result must not be empty"
 
     def test_register_weak_password_fails(self, runner):
         result = runner.invoke(
             cli,
             ["auth", "register", "-u", "badpw", "-e", "bad@example.com", "-p", "short"],
         )
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     def test_register_missing_username_fails(self, runner):
         result = runner.invoke(
             cli,
             ["auth", "register", "-e", "no@user.com", "-p", "Str0ngPass!"],
         )
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -83,8 +83,8 @@ class TestAuthLoginCLI:
             cli,
             ["auth", "login", "-u", "ghost", "-p", "Str0ngPass!"],
         )
-        assert result.exit_code != 0
-        assert "Login failed" in result.output
+        assert result.exit_code != 0, "Result must not be empty"
+        assert "Login failed" in result.output, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -99,5 +99,5 @@ class TestAuthLogoutCLI:
             cli,
             ["auth", "logout", "-s", "not-a-real-token"],
         )
-        assert result.exit_code == 0
-        assert "invalid or expired" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "invalid or expired" in result.output, "Result must not be empty"

@@ -36,13 +36,13 @@ class TestRegister:
     def test_register_returns_user(self):
         auth = _make_auth()
         user = auth.register("alice", "alice@example.com", "Str0ngPass!")
-        assert user.username == "alice"
-        assert user.email == "alice@example.com"
+        assert user.username == "alice", "username is not valid"
+        assert user.email == "alice@example.com", "email is not valid"
 
     def test_register_custom_roles(self):
         auth = _make_auth()
         user = auth.register("bob", "bob@example.com", "Str0ngPass!", roles=["admin"])
-        assert "admin" in user.roles
+        assert "admin" in user.roles, "Condition must be true"
 
     def test_register_duplicate_username_raises(self):
         auth = _make_auth()
@@ -70,9 +70,9 @@ class TestTokenManager:
             refresh_token_timeout=0,
             session_token_timeout=0,
         )
-        assert manager._access_token_expiry == 0
-        assert manager._refresh_token_expiry == 0
-        assert manager._session_token_expiry == 0
+        assert manager._access_token_expiry == 0, "_access_token_expiry is not valid"
+        assert manager._refresh_token_expiry == 0, "_refresh_token_expiry is not valid"
+        assert manager._session_token_expiry == 0, "_session_token_expiry is not valid"
 
 
 class TestLogin:
@@ -82,17 +82,17 @@ class TestLogin:
         auth.register("eve", "eve@example.com", "Str0ngPass!")
         result = auth.login("eve", "Str0ngPass!")
         assert isinstance(result, LoginResult)
-        assert result.username == "eve"
-        assert result.access_token
-        assert result.refresh_token
-        assert result.session_token
-        assert result.session_id
+        assert result.username == "eve", "Result must not be empty"
+        assert result.access_token, "Result must not be empty"
+        assert result.refresh_token, "Result must not be empty"
+        assert result.session_token, "Result must not be empty"
+        assert result.session_id, "Result must not be empty"
 
     def test_login_by_email(self):
         auth = _make_auth()
         auth.register("frank", "frank@example.com", "Str0ngPass!")
         result = auth.login("frank@example.com", "Str0ngPass!")
-        assert result.username == "frank"
+        assert result.username == "frank", "Result must not be empty"
 
     def test_login_wrong_password_raises(self):
         auth = _make_auth()
@@ -109,7 +109,7 @@ class TestLogin:
         auth = _make_auth()
         auth.register("hank", "hank@example.com", "Str0ngPass!", roles=["admin", "user"])
         result = auth.login("hank", "Str0ngPass!")
-        assert "admin" in result.roles
+        assert "admin" in result.roles, "Result must not be empty"
 
     def test_login_tokens_are_valid(self):
         auth = _make_auth()
@@ -118,10 +118,10 @@ class TestLogin:
         result = auth.login("iris", "Str0ngPass!")
         # Access token
         claims = tokens.validate_token(result.access_token, TokenType.ACCESS)
-        assert claims.sub == result.user_id
+        assert claims.sub == result.user_id, "Result must not be empty"
         # Session token
         claims_s = tokens.validate_token(result.session_token, TokenType.SESSION)
-        assert claims_s.sub == result.user_id
+        assert claims_s.sub == result.user_id, "Result must not be empty"
 
     def test_login_records_ip_and_user_agent(self):
         auth = _make_auth()
@@ -129,8 +129,8 @@ class TestLogin:
         auth.register("jan", "jan@example.com", "Str0ngPass!")
         result = auth.login("jan", "Str0ngPass!", ip_address="10.0.0.1", user_agent="TestUA/1.0")
         session = tokens.get_session(result.session_id)
-        assert session.ip_address == "10.0.0.1"
-        assert session.user_agent == "TestUA/1.0"
+        assert session.ip_address == "10.0.0.1", "ip_address is not valid"
+        assert session.user_agent == "TestUA/1.0", "user_agent is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -163,7 +163,7 @@ class TestLoginWithMFA:
         auth.register("mia", "mia@example.com", "Str0ngPass!")
         # MFA provider present but user not enrolled → no MFA prompt
         result = auth.login("mia", "Str0ngPass!")
-        assert result.mfa_verified is False
+        assert result.mfa_verified is False, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -177,12 +177,12 @@ class TestLogout:
         auth = _make_auth()
         auth.register("nat", "nat@example.com", "Str0ngPass!")
         result = auth.login("nat", "Str0ngPass!")
-        assert auth.logout(result.session_token) is True
-        assert auth._tokens.get_session(result.session_id) is None
+        assert auth.logout(result.session_token) is True, "Result must not be empty"
+        assert auth._tokens.get_session(result.session_id) is None, "Result must not be empty"
 
     def test_logout_invalid_token_returns_false(self):
         auth = _make_auth()
-        assert auth.logout("not-a-valid-token") is False
+        assert auth.logout("not-a-valid-token") is False, "Condition must be true"
 
     def test_logout_all_revokes_all_sessions(self):
         auth = _make_auth()
@@ -190,9 +190,9 @@ class TestLogout:
         r1 = auth.login("oliver", "Str0ngPass!", ip_address="1.1.1.1")
         r2 = auth.login("oliver", "Str0ngPass!", ip_address="2.2.2.2")
         count = auth.logout_all(r1.user_id)
-        assert count == 2
-        assert auth._tokens.get_session(r1.session_id) is None
-        assert auth._tokens.get_session(r2.session_id) is None
+        assert count == 2, "Count must be greater than zero"
+        assert auth._tokens.get_session(r1.session_id) is None, "Condition must be true"
+        assert auth._tokens.get_session(r2.session_id) is None, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -207,8 +207,8 @@ class TestRefresh:
         auth.register("pat", "pat@example.com", "Str0ngPass!")
         result = auth.login("pat", "Str0ngPass!")
         new_token = auth.refresh(result.refresh_token)
-        assert new_token
-        assert new_token != result.access_token
+        assert new_token, "new_token is not valid"
+        assert new_token != result.access_token, "Result must not be empty"
 
     def test_refresh_invalid_token_raises(self):
         auth = _make_auth()
@@ -228,7 +228,7 @@ class TestPasswordManagement:
         user = auth.register("quinn", "quinn@example.com", "OldPass123!")
         auth.change_password(user.user_id, "OldPass123!", "NewPass456!")
         result = auth.login("quinn", "NewPass456!")
-        assert result.username == "quinn"
+        assert result.username == "quinn", "Result must not be empty"
 
     def test_change_password_wrong_current_raises(self):
         auth = _make_auth()
@@ -241,21 +241,21 @@ class TestPasswordManagement:
         user = auth.register("sam", "sam@example.com", "OldPass123!")
         result = auth.login("sam", "OldPass123!")
         auth.change_password(user.user_id, "OldPass123!", "NewPass456!")
-        assert auth._tokens.get_session(result.session_id) is None
+        assert auth._tokens.get_session(result.session_id) is None, "Result must not be empty"
 
     def test_change_password_keep_sessions(self):
         auth = _make_auth()
         user = auth.register("tina", "tina@example.com", "OldPass123!")
         result = auth.login("tina", "OldPass123!")
         auth.change_password(user.user_id, "OldPass123!", "NewPass456!", revoke_sessions=False)
-        assert auth._tokens.get_session(result.session_id) is not None
+        assert auth._tokens.get_session(result.session_id) is not None, "Value must be initialized"
 
     def test_admin_reset_password(self):
         auth = _make_auth()
         user = auth.register("uma", "uma@example.com", "OldPass123!")
         auth.admin_reset_password(user.user_id, "AdminNew456!")
         result = auth.login("uma", "AdminNew456!")
-        assert result.username == "uma"
+        assert result.username == "uma", "Result must not be empty"
 
     def test_admin_reset_unknown_user_raises(self):
         auth = _make_auth()

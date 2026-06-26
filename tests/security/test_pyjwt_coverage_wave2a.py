@@ -38,8 +38,8 @@ class TestPyJWTTokenValidation:
         # Validate it
         claims = token_manager.validate_token(token)
 
-        assert claims.sub == "test-user"
-        assert claims.aud == "codex-api"
+        assert claims.sub == "test-user", "sub is not valid"
+        assert claims.aud == "codex-api", "aud is not valid"
 
     def test_jwt_header_validation_rs256(self, token_manager):
         """Test JWT header validation with RS256 algorithm."""
@@ -141,7 +141,7 @@ class TestPyJWTTokenValidation:
         )
 
         claims = token_manager.validate_token(token)
-        assert claims.scope == "read write delete"
+        assert claims.scope == "read write delete", "scope is not valid"
 
     def test_jwt_custom_claims_preservation(self, token_manager):
         """Test that custom claims are preserved in token."""
@@ -158,7 +158,7 @@ class TestPyJWTTokenValidation:
         token = jwt.encode(custom_claims, "test-secret-key-for-testing-only", algorithm="HS256")
 
         claims = token_manager.validate_token(token)
-        assert claims.sub == "test-user"
+        assert claims.sub == "test-user", "sub is not valid"
 
     def test_jwt_aud_claim_validation(self, token_manager):
         """Test audience claim validation."""
@@ -192,7 +192,7 @@ class TestPyJWTTokenValidation:
 
         claims = token_manager.validate_token(token)
         # Should not raise
-        assert claims.sub == "test-user"
+        assert claims.sub == "test-user", "sub is not valid"
 
     def test_jwt_nbf_not_before_validation(self, token_manager):
         """Test 'not before' claim validation."""
@@ -227,7 +227,7 @@ class TestPyJWTTokenValidation:
         token = jwt.encode(payload, "test-secret-key-for-testing-only", algorithm="HS256")
 
         claims = token_manager.validate_token(token)
-        assert claims.sub == "test-user"
+        assert claims.sub == "test-user", "sub is not valid"
 
     def test_jwt_jti_unique_id_handling(self, token_manager):
         """Test JWT ID (jti) claim handling."""
@@ -244,7 +244,7 @@ class TestPyJWTTokenValidation:
 
         claims = token_manager.validate_token(token)
         # Token validation should succeed
-        assert claims.sub == "test-user"
+        assert claims.sub == "test-user", "sub is not valid"
 
     def test_jwt_large_payload_handling(self, token_manager):
         """Test handling of tokens with large payloads."""
@@ -260,7 +260,7 @@ class TestPyJWTTokenValidation:
         token = jwt.encode(payload, "test-secret-key-for-testing-only", algorithm="HS256")
 
         claims = token_manager.validate_token(token)
-        assert claims.sub == "test-user"
+        assert claims.sub == "test-user", "sub is not valid"
 
     def test_jwt_special_characters_in_claims(self, token_manager):
         """Test tokens with special characters in claims."""
@@ -276,4 +276,4 @@ class TestPyJWTTokenValidation:
         token = jwt.encode(payload, "test-secret-key-for-testing-only", algorithm="HS256")
 
         claims = token_manager.validate_token(token)
-        assert claims.sub == "test-user@example.com"
+        assert claims.sub == "test-user@example.com", "sub is not valid"

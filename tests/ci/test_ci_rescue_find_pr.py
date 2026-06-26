@@ -74,7 +74,7 @@ class TestFindPrForRun:
         """When only one PR is linked to the run, return it."""
         sha = "abc123"
         data = _make_run_data([_make_pr(42, sha)], sha)
-        assert self._run(data) == 42
+        assert self._run(data) == 42, "Data must not be empty"
 
     # -- Multiple PRs sharing same HEAD SHA (S230 cross-PR contamination) ---
 
@@ -83,7 +83,7 @@ class TestFindPrForRun:
         sha = "deadbeef"
         prs = [_make_pr(3790, sha), _make_pr(3798, sha)]
         data = _make_run_data(prs, sha)
-        assert self._run(data) == 3798
+        assert self._run(data) == 3798, "Data must not be empty"
 
     def test_multiple_prs_same_sha_order_irrelevant(self):
         """Highest-PR preference must be independent of list order."""
@@ -91,7 +91,7 @@ class TestFindPrForRun:
         # Older PR listed first in GitHub API response
         prs = [_make_pr(100, sha), _make_pr(200, sha), _make_pr(150, sha)]
         data = _make_run_data(prs, sha)
-        assert self._run(data) == 200
+        assert self._run(data) == 200, "Data must not be empty"
 
     def test_multiple_prs_only_one_matches_sha(self):
         """When only one PR's SHA matches, return that one regardless of order."""
@@ -99,13 +99,13 @@ class TestFindPrForRun:
         sha_other = "bbbb2222"
         prs = [_make_pr(3790, sha_other), _make_pr(3798, sha_match)]
         data = _make_run_data(prs, sha_match)
-        assert self._run(data) == 3798
+        assert self._run(data) == 3798, "Data must not be empty"
 
     def test_multiple_prs_no_sha_match_returns_highest(self):
         """When no PR SHA matches head_sha, fall back to highest PR number."""
         prs = [_make_pr(10, "xxxx"), _make_pr(20, "yyyy")]
         data = _make_run_data(prs, "zzzz")  # head_sha doesn't match any
-        assert self._run(data) == 20
+        assert self._run(data) == 20, "Data must not be empty"
 
     # -- Fallback path (empty pull_requests list) ----------------------------
 
@@ -135,7 +135,7 @@ class TestFindPrForRun:
         """Non-dict API response should return None gracefully."""
         with patch.object(ci_rescue, "_gh_api", return_value=(404, None)):
             result = ci_rescue.find_pr_for_run(999, "owner/repo", "fake-token")
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_empty_pull_requests_and_no_sha_returns_none(self):
         """Empty pull_requests + no head_sha → None."""

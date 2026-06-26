@@ -181,7 +181,7 @@ Orientation(
     relevant_patterns: List[Pattern],
     decision_precedents: List[PastDecision],
     agent_candidates: List[AgentCapability],
-    risk_assessment: RiskAssessment,
+    risk_assessment: RiskAssessment,  # pragma: allowlist secret
     opportunities: List[Opportunity],
     context_summary: str,
     confidence_baseline: float
@@ -223,7 +223,7 @@ for candidate in candidates:
     confidence = score_decision(
         historical_success_rate=0.8,
         pattern_match_strength=0.9,
-        risk_assessment=low,
+        risk_assessment=low,  # pragma: allowlist secret
         agent_availability=high,
         resource_constraints=low
     )

@@ -159,7 +159,7 @@ def init_distributed_if_needed(backend: str = "nccl", env_flag: str = "CODEX_DDP
         return True
     except (ValueError, TypeError, RuntimeError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         _warn_failed_init(chosen_backend, flag_used or env_flag, exc)
         return False
 

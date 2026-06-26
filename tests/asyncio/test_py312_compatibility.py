@@ -27,7 +27,7 @@ class TestAsyncioCompatibility:
         """
         # This test should be run within an async context
         loop = asyncio.get_running_loop()
-        assert loop is not None
+        assert loop is not None, "loop must be initialized"
         assert isinstance(loop, asyncio.AbstractEventLoop)
 
     async def test_asyncio_run_compatibility(self):
@@ -40,7 +40,7 @@ class TestAsyncioCompatibility:
         # asyncio.run() should work from within another async context
         # We're already in an async context (pytest-asyncio), so test differently
         result = await simple_coro()
-        assert result == "success"
+        assert result == "success", "Result must not be empty"
 
     async def test_gather_with_exceptions(self):
         """Test asyncio.gather with exceptions in Python 3.12."""
@@ -56,7 +56,7 @@ class TestAsyncioCompatibility:
         # Test gather with return_exceptions=True
         results = await asyncio.gather(success_coro(), failing_coro(), return_exceptions=True)
 
-        assert results[0] == "ok"
+        assert results[0] == "ok", "Result must not be empty"
         assert isinstance(results[1], ValueError)
 
     async def test_task_creation(self):
@@ -68,7 +68,7 @@ class TestAsyncioCompatibility:
 
         task = asyncio.create_task(sample_task())
         result = await task
-        assert result == 42
+        assert result == 42, "Result must not be empty"
 
     async def test_timeout_context_manager(self):
         """Test asyncio.timeout() context manager (Python 3.11+)."""
@@ -82,7 +82,7 @@ class TestAsyncioCompatibility:
             async with asyncio.timeout(1.0):
                 result = await quick_operation()
 
-            assert result == "done"
+            assert result == "done", "Result must not be empty"
 
     async def test_multiple_coroutines_concurrently(self):
         """Test running multiple coroutines concurrently."""
@@ -94,7 +94,7 @@ class TestAsyncioCompatibility:
 
         await asyncio.gather(append_number(1), append_number(2), append_number(3))
 
-        assert len(results) == 3
+        assert len(results) == 3, "Results must not be empty"
         assert set(results) == {1, 2, 3}
 
 
@@ -103,16 +103,18 @@ class TestRequestBatcherAsyncContext:
     """Test RequestBatcher works in Python 3.12 async context."""
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_request_batcher_import(self):
         """Test that RequestBatcher can be imported."""
         try:
             from codex_ml.serving.optimizations import RequestBatcher
 
-            assert RequestBatcher is not None
+            assert RequestBatcher is not None, "RequestBatcher must be initialized"
         except ImportError:
             pytest.skip("RequestBatcher not available in this environment")
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_request_batcher_async_context(self):
         """Test RequestBatcher works in Python 3.12 async context."""
         try:
@@ -125,8 +127,8 @@ class TestRequestBatcherAsyncContext:
             batcher = RequestBatcher(config=config)
 
             # This should work without deprecated asyncio.get_event_loop() calls
-            assert batcher is not None
-            assert batcher.config.max_batch_size == 10
+            assert batcher is not None, "batcher must be initialized"
+            assert batcher.config.max_batch_size == 10, "max_batch_size is not valid"
 
 
 @pytest.mark.skipif(sys.version_info < (3, 12), reason="Python 3.12+ only")
@@ -134,16 +136,18 @@ class TestAsyncDataLoaders:
     """Test async data loaders work in Python 3.12."""
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_async_data_loader_import(self):
         """Test that async data loaders can be imported."""
         try:
             from codex_ml.data import loaders
 
-            assert loaders is not None
+            assert loaders is not None, "loaders must be initialized"
         except ImportError:
             pytest.skip("Data loaders not available")
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_async_pattern_no_event_loop_warning(self):
         """
         Test that async patterns don't trigger event loop warnings.
@@ -162,7 +166,7 @@ class TestAsyncDataLoaders:
             warnings.simplefilter("always")
             result = await test_op()
 
-        assert result is True
+        assert result is True, "Result must not be empty"
 
         # Check no deprecation warnings about event loop
         event_loop_warnings = [
@@ -172,7 +176,7 @@ class TestAsyncDataLoaders:
             and "event loop" in str(w.message).lower()
         ]
 
-        assert (
+        assert (, "Condition must be true"
             len(event_loop_warnings) == 0
         ), f"Unexpected event loop warnings: {event_loop_warnings}"
 
@@ -194,7 +198,7 @@ class TestAsyncioModernPatterns:
                 return False
 
         async with AsyncContextManager() as ctx:
-            assert ctx is not None
+            assert ctx is not None, "ctx must be initialized"
 
     async def test_async_iterator(self):
         """Test async iterators work correctly."""
@@ -226,19 +230,19 @@ class TestAsyncioModernPatterns:
         await queue.put("item1")
         await queue.put("item2")
 
-        assert await queue.get() == "item1"
-        assert await queue.get() == "item2"
+        assert await queue.get() == "item1", "Item must not be empty"
+        assert await queue.get() == "item2", "Item must not be empty"
 
     async def test_asyncio_event(self):
         """Test asyncio.Event works in Python 3.12."""
         event = asyncio.Event()
 
-        assert not event.is_set()
+        assert not event.is_set(), "Condition must be true"
         event.set()
-        assert event.is_set()
+        assert event.is_set(), "Condition must be true"
 
         event.clear()
-        assert not event.is_set()
+        assert not event.is_set(), "Condition must be true"
 
 
 @pytest.mark.integration
@@ -268,6 +272,6 @@ class TestAsyncioIntegration:
 
         await asyncio.gather(producer(queue, 5), consumer(queue, results))
 
-        assert len(results) == 5
-        assert results[0] == "item_0"
-        assert results[-1] == "item_4"
+        assert len(results) == 5, "Results must not be empty"
+        assert results[0] == "item_0", "Result must not be empty"
+        assert results[-1] == "item_4", "Result must not be empty"

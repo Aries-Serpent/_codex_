@@ -177,7 +177,7 @@ def build_docs(output_dir: Path, modules: list[str]) -> None:
 
     except subprocess.CalledProcessError as e:
         error_type = type(e).__name__
-        logger.error(f"Failed to build API docs: <ERROR_TYPE>")
+        logger.error("Failed to build API docs: <ERROR_TYPE>")
         if e.stdout:
             logger.error(f"stdout: {e.stdout}")
         if e.stderr:

@@ -102,15 +102,15 @@ class TestConfigVersioning:
 
     def test_config_has_version(self, config_definition: dict[str, Any]):
         """Test configuration has version."""
-        assert "version" in config_definition
-        assert config_definition["version"]
+        assert "version" in config_definition, "Condition must be true"
+        assert config_definition["version"], "Condition must be true"
 
     def test_version_follows_semver(self, config_definition: dict[str, Any]):
         """Test version follows semantic versioning."""
         version = config_definition["version"]
         parts = version.split(".")
-        assert len(parts) == 3
-        assert all(p.isdigit() for p in parts)
+        assert len(parts) == 3, "Parts must not be empty"
+        assert all(p.isdigit() for p in parts), "Condition must be true"
 
     def test_version_comparison(self):
         """Test version comparison logic."""
@@ -120,7 +120,7 @@ class TestConfigVersioning:
         def parse_version(v):
             return tuple(int(x) for x in v.split("."))
 
-        assert parse_version(v2) > parse_version(v1)
+        assert parse_version(v2) > parse_version(v1), "Value must be greater than zero"
 
     def test_config_history_tracking(self):
         """Test configuration history is tracked."""
@@ -130,8 +130,8 @@ class TestConfigVersioning:
             {"version": "2.0.0", "changed_at": "2026-01-15T00:00:00Z", "changed_by": "admin"},
         ]
 
-        assert len(history) > 0
-        assert history[-1]["version"] == "2.0.0"
+        assert len(history) > 0, "History must not be empty"
+        assert history[-1]["version"] == "2.0.0", "hist is not valid"
 
     def test_rollback_capability(self):
         """Test configuration rollback capability."""
@@ -139,7 +139,7 @@ class TestConfigVersioning:
         rollback_to = "1.1.0"
 
         can_rollback = rollback_to in available_versions
-        assert can_rollback is True
+        assert can_rollback is True, "can_rollback is not valid"
 
 
 # ============================================================================
@@ -154,18 +154,18 @@ class TestEnvironmentConfigs:
         """Test all environments are defined."""
         required_envs = ["development", "staging", "production"]
         for env in required_envs:
-            assert env in environment_configs
+            assert env in environment_configs, "Condition must be true"
 
     def test_production_has_higher_pool_size(self, environment_configs: dict[str, dict[str, Any]]):
         """Test production has higher pool size than development."""
         dev_pool = environment_configs["development"]["database"]["pool_size"]
         prod_pool = environment_configs["production"]["database"]["pool_size"]
-        assert prod_pool > dev_pool
+        assert prod_pool > dev_pool, "prod_pool must be greater than zero"
 
     def test_development_cache_disabled(self, environment_configs: dict[str, dict[str, Any]]):
         """Test development cache is disabled by default."""
         dev_cache = environment_configs["development"]["cache"]["enabled"]
-        assert dev_cache is False
+        assert dev_cache is False, "dev_cache is not valid"
 
     def test_production_logging_level(self, environment_configs: dict[str, dict[str, Any]]):
         """Test production has appropriate logging level."""
@@ -179,7 +179,7 @@ class TestEnvironmentConfigs:
             hosts.add(env_config["database"]["host"])
 
         # Each environment should have unique host
-        assert len(hosts) == len(environment_configs)
+        assert len(hosts) == len(environment_configs), "Hosts must not be empty"
 
 
 # ============================================================================
@@ -192,20 +192,20 @@ class TestSecretManagement:
 
     def test_secrets_defined(self, secret_config: dict[str, Any]):
         """Test secrets are defined."""
-        assert "secrets" in secret_config
-        assert len(secret_config["secrets"]) > 0
+        assert "secrets" in secret_config, "Condition must be true"
+        assert len(secret_config["secrets"]) > 0, "Collection must not be empty"
 
     def test_secret_types_valid(self, secret_config: dict[str, Any]):
         """Test secret types are valid."""
         valid_types = ["vault", "env", "file", "kms"]
         for secret in secret_config["secrets"].values():
-            assert secret["type"] in valid_types
+            assert secret["type"] in valid_types, "Condition must be true"
 
     def test_rotation_policy_configured(self, secret_config: dict[str, Any]):
         """Test rotation policy is configured."""
         policy = secret_config["rotation_policy"]
-        assert policy["enabled"] is True
-        assert policy["interval_days"] > 0
+        assert policy["enabled"] is True, "Condition must be true"
+        assert policy["interval_days"] > 0, "Value must be greater than zero"
 
     def test_rotation_notification(self, secret_config: dict[str, Any]):
         """Test rotation notification is configured."""
@@ -213,14 +213,14 @@ class TestSecretManagement:
         notify_days = policy["notify_before_days"]
         interval_days = policy["interval_days"]
 
-        assert notify_days < interval_days
-        assert notify_days > 0
+        assert notify_days < interval_days, "notify_days is not valid"
+        assert notify_days > 0, "notify_days must be greater than zero"
 
     def test_vault_secret_path(self, secret_config: dict[str, Any]):
         """Test Vault secret has valid path."""
         db_secret = secret_config["secrets"]["database_password"]
-        assert db_secret["type"] == "vault"
-        assert db_secret["path"].startswith("secret/")
+        assert db_secret["type"] == "vault", "Condition must be true"
+        assert db_secret["path"].startswith("secret/"), "Condition must be true"
 
 
 # ============================================================================
@@ -235,18 +235,18 @@ class TestConfigValidation:
         """Test required fields are present."""
         required_fields = ["id", "name", "version", "settings"]
         for field in required_fields:
-            assert field in config_definition
+            assert field in config_definition, "Condition must be true"
 
     def test_settings_structure_valid(self, config_definition: dict[str, Any]):
         """Test settings structure is valid."""
         settings = config_definition["settings"]
         assert isinstance(settings, dict)
-        assert "database" in settings
+        assert "database" in settings, "Data must not be empty"
 
     def test_port_number_valid(self, config_definition: dict[str, Any]):
         """Test port number is valid."""
         port = config_definition["settings"]["database"]["port"]
-        assert 1 <= port <= 65535
+        assert 1 <= port <= 65535, "1 is not valid"
 
     def test_boolean_values_correct_type(self, config_definition: dict[str, Any]):
         """Test boolean values are correct type."""
@@ -257,7 +257,7 @@ class TestConfigValidation:
         """Test log level is valid."""
         valid_levels = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
         level = config_definition["settings"]["logging"]["level"]
-        assert level in valid_levels
+        assert level in valid_levels, "Condition must be true"
 
 
 # ============================================================================
@@ -270,8 +270,8 @@ class TestChangeTracking:
 
     def test_timestamps_present(self, config_definition: dict[str, Any]):
         """Test timestamps are present."""
-        assert "created_at" in config_definition
-        assert "updated_at" in config_definition
+        assert "created_at" in config_definition, "Condition must be true"
+        assert "updated_at" in config_definition, "Condition must be true"
 
     def test_change_diff_generation(self):
         """Test change diff is generated."""
@@ -283,8 +283,8 @@ class TestChangeTracking:
             if old_config[key] != new_config.get(key):
                 changes.append({"key": key, "old": old_config[key], "new": new_config[key]})
 
-        assert len(changes) == 1
-        assert changes[0]["key"] == "database"
+        assert len(changes) == 1, "Changes must not be empty"
+        assert changes[0]["key"] == "database", "Data must not be empty"
 
     def test_change_approval_required(self):
         """Test changes require approval for production."""
@@ -295,7 +295,7 @@ class TestChangeTracking:
         }
 
         is_approved = change["approved_by"] is not None
-        assert is_approved is False
+        assert is_approved is False, "is_approved is not valid"
 
 
 # ============================================================================
@@ -312,8 +312,8 @@ class TestConfigDriftDetection:
         current = {"pool_size": 25, "timeout": 30}
 
         drift = {k: v for k, v in current.items() if baseline.get(k) != v}
-        assert len(drift) == 1
-        assert "pool_size" in drift
+        assert len(drift) == 1, "Drift must not be empty"
+        assert "pool_size" in drift, "Condition must be true"
 
     def test_drift_severity_classification(self):
         """Test drift severity classification."""
@@ -323,7 +323,7 @@ class TestConfigDriftDetection:
         ]
 
         high_severity = [d for d in drift_items if d["severity"] == "high"]
-        assert len(high_severity) == 1
+        assert len(high_severity) == 1, "High_severity must not be empty"
 
     def test_auto_remediation_enabled(self):
         """Test auto-remediation can be enabled."""
@@ -333,4 +333,4 @@ class TestConfigDriftDetection:
             "notify_on_remediation": True,
         }
 
-        assert drift_policy["auto_remediate"] is True
+        assert drift_policy["auto_remediate"] is True, "Condition must be true"

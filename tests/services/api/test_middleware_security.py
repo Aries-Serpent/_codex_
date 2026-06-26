@@ -20,12 +20,12 @@ def test_api_key_required(monkeypatch: pytest.MonkeyPatch) -> None:
     client = TestClient(module.app)
 
     unauthorized = client.get("/status")
-    assert unauthorized.status_code == 401
-    assert unauthorized.json()["detail"] == "unauthorized"
+    assert unauthorized.status_code == 401, "status_code is not valid"
+    assert unauthorized.json()["detail"] == "unauthorized", "unauth is not valid"
 
     authorized = client.get("/status", headers={"x-api-key": "secret-token"})
-    assert authorized.status_code == 200
-    assert authorized.json()["ok"] is True
+    assert authorized.status_code == 200, "status_code is not valid"
+    assert authorized.json()["ok"] is True, "auth is not valid"
 
 
 def test_rate_limit_enforced(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -39,7 +39,7 @@ def test_rate_limit_enforced(monkeypatch: pytest.MonkeyPatch) -> None:
     second = client.get("/status")
     third = client.get("/status")
 
-    assert first.status_code == 200
-    assert second.status_code == 200
-    assert third.status_code == 429
-    assert third.json()["detail"] == "rate limit exceeded"
+    assert first.status_code == 200, "status_code is not valid"
+    assert second.status_code == 200, "status_code is not valid"
+    assert third.status_code == 429, "status_code is not valid"
+    assert third.json()["detail"] == "rate limit exceeded", "Condition must be true"

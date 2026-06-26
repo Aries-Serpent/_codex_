@@ -10,21 +10,20 @@ This module:
 Output: Continuous OODA loop execution with metrics
 """
 
-import asyncio
 import json
 import logging
 import time
-from dataclasses import dataclass, field, asdict
-from datetime import datetime, timedelta
+import uuid
+from concurrent.futures import ThreadPoolExecutor
+from dataclasses import asdict, dataclass
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
-from concurrent.futures import ThreadPoolExecutor
-import uuid
 
-from .ooda_observer import OODAObserver, Observable
+from .ooda_actor import ExecutionReport, OODAactor
+from .ooda_decider import DecisionDirective, OODADecider
+from .ooda_observer import Observable, OODAObserver
 from .ooda_orienter import OODAOrienter, Orientation
-from .ooda_decider import OODADecider, DecisionDirective
-from .ooda_actor import OODAactor, ExecutionReport
 
 logger = logging.getLogger(__name__)
 
@@ -108,10 +107,7 @@ class CycleRecorder:
             successful = [c for c in recent if c.success]
             latencies = [c.duration_ms for c in recent]
             confidences = [c.decision.confidence for c in recent]
-            success_rates = [
-                c.execution_report.success_rate for c in recent
-                if c.execution_report
-            ]
+            success_rates = [c.execution_report.success_rate for c in recent if c.execution_report]
 
             # Calculate percentiles
             sorted_latencies = sorted(latencies)
@@ -123,10 +119,16 @@ class CycleRecorder:
                 successful_cycles=len(successful),
                 failed_cycles=len(recent) - len(successful),
                 avg_cycle_latency_ms=sum(latencies) / len(latencies) if latencies else 0,
-                p95_cycle_latency_ms=sorted_latencies[p95_idx] if p95_idx < len(sorted_latencies) else 0,
-                p99_cycle_latency_ms=sorted_latencies[p99_idx] if p99_idx < len(sorted_latencies) else 0,
+                p95_cycle_latency_ms=sorted_latencies[p95_idx]
+                if p95_idx < len(sorted_latencies)
+                else 0,
+                p99_cycle_latency_ms=sorted_latencies[p99_idx]
+                if p99_idx < len(sorted_latencies)
+                else 0,
                 avg_decision_confidence=sum(confidences) / len(confidences) if confidences else 0,
-                avg_execution_success_rate=sum(success_rates) / len(success_rates) if success_rates else 0,
+                avg_execution_success_rate=sum(success_rates) / len(success_rates)
+                if success_rates
+                else 0,
                 total_agents_invoked=sum(len(c.execution_report.agents_executed) for c in recent),
                 total_side_effects=sum(len(c.execution_report.side_effects) for c in recent),
                 uptime_percent=len(successful) / len(recent) * 100 if recent else 0,
@@ -323,11 +325,7 @@ class OODAOrchestrator:
         while max_cycles is None or cycle_count < max_cycles:
             try:
                 # Loop closure: use previous execution report as context
-                context = (
-                    self.previous_execution_report
-                    if cycle_count > 0
-                    else None
-                )
+                context = self.previous_execution_report if cycle_count > 0 else None
 
                 record = self.run_cycle(context)
                 cycle_count += 1
@@ -359,17 +357,19 @@ class OODAOrchestrator:
         print("\n" + "=" * 60)
         print("OODA LOOP ORCHESTRATION METRICS")
         print("=" * 60)
-        print(f"Cycles: {metrics.total_cycles} "
-              f"(✓{metrics.successful_cycles} ✗{metrics.failed_cycles})")
+        print(
+            f"Cycles: {metrics.total_cycles} "
+            f"(✓{metrics.successful_cycles} ✗{metrics.failed_cycles})"
+        )
         print(f"Uptime: {metrics.uptime_percent:.1f}%")
-        print(f"\nLatency (ms):")
+        print("\nLatency (ms):")
         print(f"  Average: {metrics.avg_cycle_latency_ms:.0f}")
         print(f"  p95: {metrics.p95_cycle_latency_ms:.0f}")
         print(f"  p99: {metrics.p99_cycle_latency_ms:.0f}")
-        print(f"\nQuality:")
+        print("\nQuality:")
         print(f"  Avg Confidence: {metrics.avg_decision_confidence:.2%}")
         print(f"  Avg Success Rate: {metrics.avg_execution_success_rate:.2%}")
-        print(f"\nResources:")
+        print("\nResources:")
         print(f"  Agents Involved: {metrics.total_agents_invoked}")
         print(f"  Side Effects: {metrics.total_side_effects}")
         print("=" * 60 + "\n")

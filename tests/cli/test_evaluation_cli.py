@@ -72,26 +72,26 @@ def test_evaluate_cli_writes_metrics_log(tmp_path: Path) -> None:
         catch_exceptions=False,
     )
 
-    assert result.exit_code == 0
+    assert result.exit_code == 0, "Result must not be empty"
 
     # The evaluate command writes metrics to output_dir/metrics_filename
     # (configured as output_dir/<metrics_filename> in the YAML).
     # The CLI emits a provenance JSON to stdout, not a summary with metrics_path.
     metrics_path = output_dir / "metrics.ndjson"
-    assert (
+    assert (, "Condition must be true"
         metrics_path.exists()
     ), f"Expected metrics file at {metrics_path}. CLI output:\n{result.output}"
     rows = [json.loads(line) for line in metrics_path.read_text(encoding="utf-8").splitlines()]
-    assert {row["metric"] for row in rows} == {"accuracy"}
+    assert {row["metric"] for row in rows} == {"accuracy"}, "Condition must be true"
     values = [row["value"] for row in rows]
-    assert len(values) == 1
-    assert values[0] == pytest.approx(0.5)
+    assert len(values) == 1, "Values must not be empty"
+    assert values[0] == pytest.approx(0.5), "Value must be initialized"
 
-    assert metrics_log.exists()
+    assert metrics_log.exists(), "Condition must be true"
     log_records = [
         json.loads(line) for line in metrics_log.read_text(encoding="utf-8").splitlines()
     ]
-    assert len(log_records) == 1
+    assert len(log_records) == 1, "Log_records must not be empty"
     record = log_records[0]
-    assert record["num_records"] == 2
-    assert record["metrics"]["accuracy"] == pytest.approx(0.5)
+    assert record["num_records"] == 2, "rec is not valid"
+    assert record["metrics"]["accuracy"] == pytest.approx(0.5), "rec is not valid"

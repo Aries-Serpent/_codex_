@@ -23,19 +23,19 @@ class TestFieldDef:
             choices=["a", "b", "c"],
             default="a",
         )
-        assert field.name == "Test Field"
-        assert field.key == "test_field"
-        assert field.ftype == "text"
-        assert field.required is True
+        assert field.name == "Test Field", "name is not valid"
+        assert field.key == "test_field", "key is not valid"
+        assert field.ftype == "text", "ftype is not valid"
+        assert field.required is True, "required is not valid"
         assert field.choices == ["a", "b", "c"]
-        assert field.default == "a"
+        assert field.default == "a", "default is not valid"
 
     def test_field_def_optional_default(self):
         """Test FieldDef with no default."""
         from codex_crm.cdm.loader import FieldDef
 
         field = FieldDef(name="Field", key="field", ftype="integer", required=False, choices=[])
-        assert field.default is None
+        assert field.default is None, "default is not valid"
 
     def test_field_def_slots(self):
         """Test that FieldDef uses slots."""
@@ -59,9 +59,9 @@ class TestIterCsv:
         mock_resource.open.return_value.__exit__ = MagicMock(return_value=False)
 
         rows = list(_iter_csv(mock_resource))
-        assert len(rows) == 2
-        assert rows[0]["name"] == "Field1"
-        assert rows[1]["type"] == "integer"
+        assert len(rows) == 2, "Rows must not be empty"
+        assert rows[0]["name"] == "Field1", "Condition must be true"
+        assert rows[1]["type"] == "integer", "Condition must be true"
 
 
 class TestIterCsvDirectory:
@@ -107,11 +107,11 @@ class TestLoadCdm:
         ]
 
         cdm = load_cdm()
-        assert "assignment" in cdm
-        assert len(cdm["assignment"]) == 1
+        assert "assignment" in cdm, "Condition must be true"
+        assert len(cdm["assignment"]) == 1, "Collection must not be empty"
         field = cdm["assignment"][0]
-        assert field.name == "Field1"
-        assert field.required is True
+        assert field.name == "Field1", "name is not valid"
+        assert field.required is True, "required is not valid"
         assert field.choices == ["a", "b", "c"]
 
     @patch("codex_crm.cdm.loader._iter_csv_directory")
@@ -136,9 +136,9 @@ class TestLoadCdm:
         ]
 
         cdm = load_cdm()
-        assert cdm["entity"][0].required is False
-        assert cdm["entity"][0].choices == []
-        assert cdm["entity"][0].default is None
+        assert cdm["entity"][0].required is False, "required is not valid"
+        assert cdm["entity"][0].choices == [], "choices is not valid"
+        assert cdm["entity"][0].default is None, "default is not valid"
 
 
 class TestLoadMapping:
@@ -160,9 +160,9 @@ class TestLoadMapping:
         ]
 
         mappings = load_mapping()
-        assert "zendesk" in mappings
-        assert mappings["zendesk"]["field1"] == "zd_field1"
-        assert mappings["zendesk"]["field2"] == "zd_field2"
+        assert "zendesk" in mappings, "Condition must be true"
+        assert mappings["zendesk"]["field1"] == "zd_field1", "Condition must be true"
+        assert mappings["zendesk"]["field2"] == "zd_field2", "Condition must be true"
 
 
 class TestLoadJson:
@@ -176,7 +176,7 @@ class TestLoadJson:
         json_file.write_text('{"key": "value"}', encoding="utf-8")
 
         data = load_json(json_file)
-        assert data == {"key": "value"}
+        assert data == {"key": "value"}, "Data must not be empty"
 
     def test_load_json_complex(self, tmp_path):
         """Test loading complex JSON file."""
@@ -187,4 +187,4 @@ class TestLoadJson:
 
         data = load_json(json_file)
         assert data["items"] == [1, 2, 3]
-        assert data["nested"]["a"] == "b"
+        assert data["nested"]["a"] == "b", "Data must not be empty"

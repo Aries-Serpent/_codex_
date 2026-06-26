@@ -13,7 +13,7 @@ def test_session_logger_context_records(tmp_path: Path) -> None:
         logger.log("user", "hello")
         logger.log("assistant", "hi")
     messages = session_logger.fetch_messages("test-session", db_path=db_path)
-    assert len(messages) >= 2
+    assert len(messages) >= 2, "Messages must not be empty"
 
 
 def test_log_message_rejects_invalid_role(tmp_path: Path) -> None:

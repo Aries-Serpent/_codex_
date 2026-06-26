@@ -62,13 +62,13 @@ def test_telemetry_events_json_and_ndjson(tmp_path: Path):
 
     # JSON array
     telem_json = outdir / "telemetry.json"
-    assert telem_json.exists()
+    assert telem_json.exists(), "Condition must be true"
     data = json.loads(telem_json.read_text(encoding="utf-8"))
     assert isinstance(data, list) and data
     Draft7Validator(SCHEMA).validate(data[-1])
 
     # NDJSON lines
     telem_nd = outdir / "telemetry.ndjson"
-    assert telem_nd.exists()
+    assert telem_nd.exists(), "Condition must be true"
     lines = [line for line in telem_nd.read_text(encoding="utf-8").splitlines() if line]
     Draft7Validator(SCHEMA).validate(json.loads(lines[-1]))

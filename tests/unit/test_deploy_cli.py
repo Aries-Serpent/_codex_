@@ -54,9 +54,9 @@ pod:
         catch_exceptions=False,
     )
 
-    assert result.exit_code == 0
-    assert "validated" in result.output
-    assert "0D_base_" in result.output
+    assert result.exit_code == 0, "Result must not be empty"
+    assert "validated" in result.output, "Result must not be empty"
+    assert "0D_base_" in result.output, "Result must not be empty"
 
 
 def test_deploy_dry_run_blocks_ring_mismatch(tmp_path: Path, runner: CliRunner) -> None:
@@ -79,8 +79,8 @@ def test_deploy_dry_run_blocks_ring_mismatch(tmp_path: Path, runner: CliRunner) 
         catch_exceptions=False,
     )
 
-    assert result.exit_code == 1
-    assert "DEPLOYMENT BLOCKED" in result.output
+    assert result.exit_code == 1, "Result must not be empty"
+    assert "DEPLOYMENT BLOCKED" in result.output, "Result must not be empty"
 
 
 def test_deploy_requires_dry_run_flag(tmp_path: Path, runner: CliRunner) -> None:
@@ -102,5 +102,5 @@ def test_deploy_requires_dry_run_flag(tmp_path: Path, runner: CliRunner) -> None
         catch_exceptions=False,
     )
 
-    assert result.exit_code == 1
-    assert "DEPLOYMENT BLOCKED" in result.output
+    assert result.exit_code == 1, "Result must not be empty"
+    assert "DEPLOYMENT BLOCKED" in result.output, "Result must not be empty"

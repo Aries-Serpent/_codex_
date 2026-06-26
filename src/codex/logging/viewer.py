@@ -40,14 +40,14 @@ try:
     from codex.db.sqlite_patch import auto_enable_from_env
 except ImportError as e:
     error_type = type(e).__name__
-    logger.debug(f"ImportError: <ERROR_TYPE>")
-    logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
+    logger.debug("ImportError: <ERROR_TYPE>")
+    logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
 else:
     try:  # pragma: no cover - best effort
         auto_enable_from_env()
     except (IOError, OSError) as exc:  # pragma: no cover
         error_type = type(exc).__name__
-        print(f"SQLite patch disabled: <ERROR_TYPE>", file=sys.stderr)
+        print("SQLite patch disabled: <ERROR_TYPE>", file=sys.stderr)
 from datetime import datetime  # noqa: E402
 from pathlib import Path  # noqa: E402
 from typing import Any, Optional  # noqa: E402
@@ -207,8 +207,8 @@ def parse_iso(value: Optional[str]) -> Optional[str]:
         return datetime.fromisoformat(value).isoformat(sep=" ", timespec="seconds")
     except ValueError as e:
         error_type = type(e).__name__
-        logger.debug(f"ValueError: <ERROR_TYPE>")
-        logger.warning(f"ValueError: <ERROR_TYPE>", exc_info=True)
+        logger.debug("ValueError: <ERROR_TYPE>")
+        logger.warning("ValueError: <ERROR_TYPE>", exc_info=True)
         return value
 
 
@@ -288,8 +288,8 @@ def main(argv: Optional[list[str]] = None) -> int:
         return 0
     except (IOError, OSError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
-        print(f"ERROR: <ERROR_TYPE>", file=sys.stderr)
+        logger.debug("Exception: <ERROR_TYPE>")
+        print("ERROR: <ERROR_TYPE>", file=sys.stderr)
         return 1
 
 

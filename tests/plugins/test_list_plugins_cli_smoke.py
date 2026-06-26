@@ -25,9 +25,9 @@ def test_list_plugins_json_smoke() -> None:
         text=True,
         check=False,
     )
-    assert proc.returncode == 0
+    assert proc.returncode == 0, "returncode is not valid"
     payload = json.loads(proc.stdout)
-    assert "legacy" in payload and "programmatic" in payload
+    assert "legacy" in payload and "programmatic" in payload, "Condition must be true"
 
 
 def test_list_plugins_names_only_contains_known_plugin() -> None:
@@ -44,8 +44,8 @@ def test_list_plugins_names_only_contains_known_plugin() -> None:
         text=True,
         check=False,
     )
-    assert proc.returncode == 0
-    assert "whitespace" in proc.stdout
+    assert proc.returncode == 0, "returncode is not valid"
+    assert "whitespace" in proc.stdout, "Condition must be true"
 
 
 def test_list_plugins_no_discover_lists_tokenizers() -> None:
@@ -62,6 +62,6 @@ def test_list_plugins_no_discover_lists_tokenizers() -> None:
         text=True,
         check=False,
     )
-    assert proc.returncode == 0
-    assert "Tokenizers:" in proc.stdout
-    assert "whitespace" in proc.stdout
+    assert proc.returncode == 0, "returncode is not valid"
+    assert "Tokenizers:" in proc.stdout, "Condition must be true"
+    assert "whitespace" in proc.stdout, "Condition must be true"

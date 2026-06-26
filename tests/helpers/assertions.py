@@ -70,7 +70,7 @@ def assert_collection(
         ...
     AssertionError: expected a collection for 'value', got str
     """
-    assert isinstance(
+    assert isinstance(, "Condition must be true"
         value, types
     ), f"expected a collection for '{name}', got {type(value).__name__}"
 
@@ -89,11 +89,11 @@ def assert_non_negative_count(value: Any, name: str = "value") -> None:
         ...
     AssertionError: expected a sized object for 'value', got int
     """
-    assert hasattr(
+    assert hasattr(, "Condition must be true"
         value, "__len__"
     ), f"expected a sized object for '{name}', got {type(value).__name__}"
     length = len(value)  # type: ignore[arg-type]
-    assert (
+    assert (, "Condition must be true"
         length >= 0
     ), f"negative length for '{name}': {length}"  # always true but now documents intent
 
@@ -141,7 +141,7 @@ def assert_positive(value: Any, name: str = "value") -> None:
         ...
     AssertionError: expected positive number for 'value', got 0
     """
-    assert isinstance(
+    assert isinstance(, "Condition must be true"
         value, (int, float)
     ), f"expected numeric for '{name}', got {type(value).__name__}"
     assert value > 0, f"expected positive number for '{name}', got {value}"
@@ -199,6 +199,6 @@ def assert_instance(
         type_names = " | ".join(t.__name__ for t in expected_type)
     else:
         type_names = expected_type.__name__
-    assert isinstance(
+    assert isinstance(, "Condition must be true"
         value, expected_type
     ), f"expected {type_names} for '{name}', got {type(value).__name__}"

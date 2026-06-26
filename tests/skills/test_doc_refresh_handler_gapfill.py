@@ -12,22 +12,22 @@ class TestDocRefreshPlanAndApply:
     def test_empty_paths_returns_error(self):
         """Empty paths should return error."""
         result = plan_and_apply({"paths": []})
-        assert result["error"] == "paths is required"
-        assert result["plan"] == []
-        assert result["patches"] == []
+        assert result["error"] == "paths is required", "Result must not be empty"
+        assert result["plan"] == [], "Result must not be empty"
+        assert result["patches"] == [], "Result must not be empty"
 
     def test_missing_paths_returns_error(self):
         """Missing paths key should return error."""
         result = plan_and_apply({})
-        assert result["error"] == "paths is required"
-        assert result["plan"] == []
+        assert result["error"] == "paths is required", "Result must not be empty"
+        assert result["plan"] == [], "Result must not be empty"
 
     def test_nonexistent_path_skipped(self):
         """Nonexistent path should be skipped without error."""
         result = plan_and_apply({"paths": ["/nonexistent/path"]})
         # Should not error, but have empty plan
-        assert "plan" in result
-        assert "aais_score" in result
+        assert "plan" in result, "Result must not be empty"
+        assert "aais_score" in result, "Result must not be empty"
 
     def test_score_action_only(self):
         """Score-only action should return AAIS score without patches."""
@@ -43,9 +43,9 @@ class TestDocRefreshPlanAndApply:
                 }
             )
 
-            assert "aais_score" in result
-            assert result["files_scanned"] == 1
-            assert result["patches"] == []
+            assert "aais_score" in result, "Result must not be empty"
+            assert result["files_scanned"] == 1, "Result must not be empty"
+            assert result["patches"] == [], "Result must not be empty"
 
     def test_plan_action_with_low_score(self):
         """Plan action should include low-scoring docs."""
@@ -62,8 +62,8 @@ class TestDocRefreshPlanAndApply:
                 }
             )
 
-            assert result["files_scanned"] >= 0
-            assert "plan" in result
+            assert result["files_scanned"] >= 0, "Value must be greater than zero"
+            assert "plan" in result, "Result must not be empty"
 
     def test_prune_stale_with_threshold(self):
         """prune_stale flag should plan prune operations for very low scores."""
@@ -81,9 +81,9 @@ class TestDocRefreshPlanAndApply:
                 }
             )
 
-            assert result["files_scanned"] >= 0
+            assert result["files_scanned"] >= 0, "Value must be greater than zero"
             # Plan may contain prune operations
-            assert "plan" in result
+            assert "plan" in result, "Result must not be empty"
 
     def test_apply_action_creates_patches(self):
         """Apply action should create patches."""
@@ -99,7 +99,7 @@ class TestDocRefreshPlanAndApply:
                 }
             )
 
-            assert "patches" in result
+            assert "patches" in result, "Result must not be empty"
 
     def test_file_path_instead_of_directory(self):
         """Should handle single file path as well as directories."""
@@ -115,7 +115,7 @@ class TestDocRefreshPlanAndApply:
                 }
             )
 
-            assert result["files_scanned"] >= 0
+            assert result["files_scanned"] >= 0, "Value must be greater than zero"
 
     def test_multiple_markdown_files(self):
         """Should scan multiple markdown files in directory."""
@@ -133,7 +133,7 @@ class TestDocRefreshPlanAndApply:
                 }
             )
 
-            assert result["files_scanned"] == 3
+            assert result["files_scanned"] == 3, "Result must not be empty"
 
     def test_aais_score_calculated(self):
         """AAIS score should be calculated for scanned files."""
@@ -150,7 +150,7 @@ class TestDocRefreshPlanAndApply:
             )
 
             assert isinstance(result["aais_score"], float)
-            assert 0.0 <= result["aais_score"] <= 1.0
+            assert 0.0 <= result["aais_score"] <= 1.0, "Result must not be empty"
 
     def test_style_parameter_accepted(self):
         """style parameter should be accepted (even if not used currently)."""
@@ -167,7 +167,7 @@ class TestDocRefreshPlanAndApply:
                 }
             )
 
-            assert "aais_score" in result
+            assert "aais_score" in result, "Result must not be empty"
 
 
 class TestDocRefreshSafeRelative:
@@ -179,7 +179,7 @@ class TestDocRefreshSafeRelative:
         path = Path("/home/user/docs/api.md")
 
         result = _safe_relative(path, base)
-        assert result == "api.md"
+        assert result == "api.md", "Result must not be empty"
 
     def test_safe_relative_nested_path(self):
         """_safe_relative should handle nested paths."""
@@ -187,7 +187,7 @@ class TestDocRefreshSafeRelative:
         path = Path("/home/user/docs/guides/tutorial.md")
 
         result = _safe_relative(path, base)
-        assert "tutorial.md" in result
+        assert "tutorial.md" in result, "Result must not be empty"
 
     def test_safe_relative_fallback(self):
         """_safe_relative should fallback when relative path fails."""

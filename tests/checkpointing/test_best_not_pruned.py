@@ -15,6 +15,6 @@ def test_best_not_pruned(tmp_path):
     # Save a worse checkpoint that would trigger pruning
     mgr.save_now(2, b"y", {"loss": 2.0})
     best_link = tmp_path / "best"
-    assert os.readlink(best_link) == "ckpt-1.pt"
-    assert (tmp_path / "ckpt-1.pt").exists()
-    assert (tmp_path / "ckpt-2.pt").exists()
+    assert os.readlink(best_link) == "ckpt-1.pt", "Condition must be true"
+    assert (tmp_path / "ckpt-1.pt").exists(), "Condition must be true"
+    assert (tmp_path / "ckpt-2.pt").exists(), "Condition must be true"

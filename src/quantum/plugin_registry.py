@@ -130,7 +130,7 @@ class QuantumPlugin:
 
             return self._module
 
-        except (ImportError, AttributeError) as exc:
+        except (ImportError, AttributeError):
             self.state = PluginState.DECOHERENT
             logger.error(f"Plugin '{self.name}' decoherence: <ERROR_TYPE>")
             raise

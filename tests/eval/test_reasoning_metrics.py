@@ -25,7 +25,7 @@ def test_win_rate_basic():
     refs = ["This is good", "Also short"]
 
     rate = calculate_win_rate(preds, refs)
-    assert 0.0 <= rate <= 1.0
+    assert 0.0 <= rate <= 1.0, "0 is not valid"
 
 
 def test_win_rate_empty():
@@ -42,8 +42,8 @@ def test_critique_density():
     ]
 
     density = calculate_critique_density(responses)
-    assert 0.0 <= density <= 1.0
-    assert density > 0.0  # Should detect reasoning markers
+    assert 0.0 <= density <= 1.0, "0 is not valid"
+    assert density > 0.0, "density must be greater than zero"
 
 
 def test_critique_density_structured():
@@ -59,7 +59,7 @@ def test_critique_density_structured():
         """]
 
     density = calculate_critique_density(responses)
-    assert density > 0.5  # Should be high due to structure
+    assert density > 0.5, "density must be greater than zero"
 
 
 def test_latency_delta():
@@ -73,7 +73,7 @@ def test_latency_delta():
 
 def test_latency_empty():
     """Test latency with empty input"""
-    assert calculate_latency_delta([]) == 0.0
+    assert calculate_latency_delta([]) == 0.0, "Condition must be true"
 
 
 def test_judge_disagreement():
@@ -86,7 +86,7 @@ def test_judge_disagreement():
     ratings_disagree = [[0.2, 0.8, 0.5], [0.1, 0.9, 0.5]]
     disagreement_high = calculate_judge_disagreement(ratings_disagree)
 
-    assert disagreement_low < disagreement_high
+    assert disagreement_low < disagreement_high, "disagreement_low is not valid"
 
 
 def test_trace_coverage():
@@ -97,7 +97,7 @@ def test_trace_coverage():
     ]
 
     coverage = calculate_trace_coverage(responses)
-    assert 0.0 <= coverage <= 1.0
+    assert 0.0 <= coverage <= 1.0, "0 is not valid"
 
 
 def test_trace_coverage_with_required_steps():
@@ -106,7 +106,7 @@ def test_trace_coverage_with_required_steps():
     required = [["analyze", "compute"]]
 
     coverage = calculate_trace_coverage(responses, required)
-    assert coverage == 1.0  # Both steps present
+    assert coverage == 1.0, "coverage is not valid"
 
 
 def test_trace_coverage_empty_required_steps():
@@ -115,7 +115,7 @@ def test_trace_coverage_empty_required_steps():
     required = [[]]  # Empty required steps
 
     coverage = calculate_trace_coverage(responses, required)
-    assert coverage == 0.0  # Should handle gracefully
+    assert coverage == 0.0, "coverage is not valid"
 
 
 def test_explanation_depth():
@@ -136,8 +136,8 @@ def test_explanation_depth():
     ]
 
     depth = calculate_explanation_depth(responses)
-    assert 0.0 <= depth <= 1.0
-    assert depth > 0.0
+    assert 0.0 <= depth <= 1.0, "0 is not valid"
+    assert depth > 0.0, "depth must be greater than zero"
 
 
 def test_consistency():
@@ -150,7 +150,7 @@ def test_consistency():
     inconsistent = ["X is true but X is false."]
     score_bad = calculate_consistency(inconsistent)
 
-    assert score_good > score_bad
+    assert score_good > score_bad, "score_good must be greater than zero"
 
 
 def test_evaluate_reasoning_comprehensive():
@@ -163,8 +163,8 @@ def test_evaluate_reasoning_comprehensive():
     assert hasattr(metrics, "win_rate")
     assert hasattr(metrics, "critique_density")
     assert hasattr(metrics, "trace_coverage")
-    assert 0.0 <= metrics.win_rate <= 1.0
-    assert 0.0 <= metrics.critique_density <= 1.0
+    assert 0.0 <= metrics.win_rate <= 1.0, "0 is not valid"
+    assert 0.0 <= metrics.critique_density <= 1.0, "0 is not valid"
 
 
 def test_evaluate_reasoning_with_optional_args():
@@ -179,17 +179,17 @@ def test_evaluate_reasoning_with_optional_args():
         preds, refs, baseline_predictions=baseline, latencies=latencies, judge_ratings=judges
     )
 
-    assert metrics.latency_p95 > 0
-    assert metrics.judge_disagreement >= 0
+    assert metrics.latency_p95 > 0, "latency_p95 must be greater than zero"
+    assert metrics.judge_disagreement >= 0, "judge_disagreement must be greater than zero"
 
 
 def test_division_by_zero_safety():
     """Test that division by zero is handled safely"""
     # Empty responses
-    assert calculate_critique_density([]) == 0.0
-    assert calculate_trace_coverage([]) == 0.0
-    assert calculate_explanation_depth([]) == 0.0
-    assert calculate_consistency([]) == 0.0
+    assert calculate_critique_density([]) == 0.0, "Condition must be true"
+    assert calculate_trace_coverage([]) == 0.0, "Condition must be true"
+    assert calculate_explanation_depth([]) == 0.0, "Condition must be true"
+    assert calculate_consistency([]) == 0.0, "Condition must be true"
 
     # Empty required steps
     assert calculate_trace_coverage(["test"], [[]]) == 0.0

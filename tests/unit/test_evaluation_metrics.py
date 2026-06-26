@@ -14,7 +14,7 @@ class TestAccuracyMetric:
         """Test AccuracyMetric can be imported."""
         from codex_ml.evaluation.metrics.accuracy import AccuracyMetric
 
-        assert AccuracyMetric is not None
+        assert AccuracyMetric is not None, "AccuracyMetric must be initialized"
 
     def test_accuracy_metric_initialization(self):
         """Test AccuracyMetric basic initialization."""
@@ -22,8 +22,8 @@ class TestAccuracyMetric:
 
         metric = AccuracyMetric()
 
-        assert metric.name == "accuracy"
-        assert metric.ignore_index == -100
+        assert metric.name == "accuracy", "name is not valid"
+        assert metric.ignore_index == -100, "ignore_index is not valid"
 
     def test_accuracy_metric_custom_name(self):
         """Test AccuracyMetric with custom name."""
@@ -31,7 +31,7 @@ class TestAccuracyMetric:
 
         metric = AccuracyMetric(name="custom_accuracy")
 
-        assert metric.name == "custom_accuracy"
+        assert metric.name == "custom_accuracy", "name is not valid"
 
     def test_accuracy_metric_has_add_batch_method(self):
         """Test AccuracyMetric has add_batch method."""
@@ -40,7 +40,7 @@ class TestAccuracyMetric:
         metric = AccuracyMetric()
 
         assert hasattr(metric, "add_batch")
-        assert callable(metric.add_batch)
+        assert callable(metric.add_batch), "Condition must be true"
 
     def test_accuracy_metric_has_compute_method(self):
         """Test AccuracyMetric has compute method."""
@@ -49,7 +49,7 @@ class TestAccuracyMetric:
         metric = AccuracyMetric()
 
         assert hasattr(metric, "compute")
-        assert callable(metric.compute)
+        assert callable(metric.compute), "Condition must be true"
 
 
 class TestPerplexityMetric:
@@ -59,7 +59,7 @@ class TestPerplexityMetric:
         """Test PerplexityMetric can be imported."""
         from codex_ml.evaluation.metrics.perplexity import PerplexityMetric
 
-        assert PerplexityMetric is not None
+        assert PerplexityMetric is not None, "PerplexityMetric must be initialized"
 
     def test_perplexity_metric_initialization(self):
         """Test PerplexityMetric basic initialization."""
@@ -67,8 +67,8 @@ class TestPerplexityMetric:
 
         metric = PerplexityMetric()
 
-        assert metric.name == "perplexity"
-        assert metric.ignore_index == -100
+        assert metric.name == "perplexity", "name is not valid"
+        assert metric.ignore_index == -100, "ignore_index is not valid"
 
     def test_perplexity_metric_custom_name(self):
         """Test PerplexityMetric with custom name."""
@@ -76,7 +76,7 @@ class TestPerplexityMetric:
 
         metric = PerplexityMetric(name="model_perplexity")
 
-        assert metric.name == "model_perplexity"
+        assert metric.name == "model_perplexity", "name is not valid"
 
     def test_perplexity_metric_has_add_batch_method(self):
         """Test PerplexityMetric has add_batch method."""
@@ -85,7 +85,7 @@ class TestPerplexityMetric:
         metric = PerplexityMetric()
 
         assert hasattr(metric, "add_batch")
-        assert callable(metric.add_batch)
+        assert callable(metric.add_batch), "Condition must be true"
 
     def test_perplexity_metric_has_compute_method(self):
         """Test PerplexityMetric has compute method."""
@@ -94,7 +94,7 @@ class TestPerplexityMetric:
         metric = PerplexityMetric()
 
         assert hasattr(metric, "compute")
-        assert callable(metric.compute)
+        assert callable(metric.compute), "Condition must be true"
 
 
 class TestMetricAdapter:
@@ -104,7 +104,7 @@ class TestMetricAdapter:
         """Test MetricAdapter can be imported."""
         from codex_ml.evaluation.runner import MetricAdapter
 
-        assert MetricAdapter is not None
+        assert MetricAdapter is not None, "MetricAdapter must be initialized"
 
     def test_metric_adapter_is_base_class(self):
         """Test MetricAdapter is a base class."""
@@ -121,7 +121,7 @@ class TestMetricAdapter:
         metric = AccuracyMetric(name="test_metric")
 
         assert hasattr(metric, "name")
-        assert metric.name == "test_metric"
+        assert metric.name == "test_metric", "name is not valid"
 
 
 class TestBLEUMetric:
@@ -132,7 +132,7 @@ class TestBLEUMetric:
         try:
             from codex_ml.evaluation.metrics.bleu import BLEUMetric
 
-            assert BLEUMetric is not None
+            assert BLEUMetric is not None, "BLEUMetric must be initialized"
         except ImportError:
             pytest.skip("BLEU metric not available")
 
@@ -156,7 +156,7 @@ class TestROUGEMetric:
         try:
             from codex_ml.evaluation.metrics.rouge import ROUGEMetric
 
-            assert ROUGEMetric is not None
+            assert ROUGEMetric is not None, "ROUGEMetric must be initialized"
         except ImportError:
             pytest.skip("ROUGE metric not available")
 
@@ -180,7 +180,7 @@ class TestLatencyMetric:
         try:
             from codex_ml.evaluation.metrics.latency import LatencyMetric
 
-            assert LatencyMetric is not None
+            assert LatencyMetric is not None, "LatencyMetric must be initialized"
         except ImportError:
             pytest.skip("LatencyMetric not available")
 
@@ -202,14 +202,14 @@ class TestEvaluationRunner:
         """Test evaluation runner can be imported."""
         from codex_ml.evaluation.runner import MetricAdapter
 
-        assert MetricAdapter is not None
+        assert MetricAdapter is not None, "MetricAdapter must be initialized"
 
     def test_evaluation_loop_import(self):
         """Test evaluation loop can be imported."""
         try:
             from codex_ml.evaluation.loop import evaluate_model
 
-            assert evaluate_model is not None
+            assert evaluate_model is not None, "evaluate_model must be initialized"
         except ImportError:
             # evaluate_model may not exist
             _ = None  # suppressed: no action needed
@@ -234,7 +234,7 @@ class TestMetricsModuleStructure:
         """Test metrics module can be imported."""
         from codex_ml.evaluation import metrics
 
-        assert metrics is not None
+        assert metrics is not None, "metrics must be initialized"
 
     def test_metrics_has_accuracy(self):
         """Test metrics module has accuracy."""
@@ -253,7 +253,7 @@ class TestMetricsModuleStructure:
         try:
             from codex_ml.evaluation.cli import evaluate_cli
 
-            assert evaluate_cli is not None
+            assert evaluate_cli is not None, "evaluate_cli must be initialized"
         except (ImportError, AttributeError):
             # CLI may not exist yet or dependencies missing
             pytest.skip("CLI not available or dependencies missing")

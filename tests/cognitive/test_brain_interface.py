@@ -156,46 +156,46 @@ class TestInitialization:
         """Test basic interface initialization."""
         brain = AgentBrainInterface(agent_id="test-agent", repo_root=temp_repo)
 
-        assert brain.agent_id == "test-agent"
-        assert brain.agent_category == AgentCategory.UNKNOWN
-        assert brain._registered is True
+        assert brain.agent_id == "test-agent", "agent_id is not valid"
+        assert brain.agent_category == AgentCategory.UNKNOWN, "agent_category is not valid"
+        assert brain._registered is True, "_registered is not valid"
 
     def test_known_agent_category(self, temp_repo):
         """Test that known agents get correct category."""
         brain = AgentBrainInterface(agent_id="ci-testing-agent", repo_root=temp_repo)
 
-        assert brain.agent_category == AgentCategory.CI_CD
+        assert brain.agent_category == AgentCategory.CI_CD, "agent_category is not valid"
 
     def test_patterns_loaded(self, brain_interface):
         """Test that patterns are loaded on initialization."""
-        assert len(brain_interface._patterns) == 2
-        assert "test_failure_resolution" in brain_interface._patterns
-        assert "workflow_failure" in brain_interface._patterns
+        assert len(brain_interface._patterns) == 2, "Collection must not be empty"
+        assert "test_failure_resolution" in brain_interface._patterns, "Condition must be true"
+        assert "workflow_failure" in brain_interface._patterns, "Condition must be true"
 
     def test_objectives_loaded(self, brain_interface):
         """Test that objectives are loaded on initialization."""
         objectives = brain_interface.get_objectives()
-        assert len(objectives) >= 2
-        assert any("coverage" in obj.lower() for obj in objectives)
+        assert len(objectives) >= 2, "Objectives must not be empty"
+        assert any("coverage" in obj.lower() for obj in objectives), "Object must be initialized"
 
     def test_session_state_loaded(self, brain_interface):
         """Test that session state is loaded on initialization."""
         state = brain_interface.get_session_state()
-        assert state.get("loaded") is True
+        assert state.get("loaded") is True, "Condition must be true"
 
     def test_empty_repo_graceful(self):
         """Test graceful handling of empty repository."""
         with tempfile.TemporaryDirectory() as tmpdir:
             brain = AgentBrainInterface(agent_id="test-agent", repo_root=tmpdir)
 
-            assert len(brain._patterns) == 0
-            assert len(brain._objectives) == 0
+            assert len(brain._patterns) == 0, "Collection must not be empty"
+            assert len(brain._objectives) == 0, "Collection must not be empty"
 
     def test_repr(self, brain_interface):
         """Test string representation."""
         repr_str = repr(brain_interface)
-        assert "test-agent" in repr_str
-        assert "patterns_loaded" in repr_str
+        assert "test-agent" in repr_str, "Condition must be true"
+        assert "patterns_loaded" in repr_str, "Condition must be true"
 
 
 # =========================================================================
@@ -210,8 +210,8 @@ class TestPatternQuery:
         """Test querying patterns by symptom."""
         patterns = brain_interface.query_patterns("pytest collection error")
 
-        assert len(patterns) > 0
-        assert patterns[0].pattern_id == "TFR-001"
+        assert len(patterns) > 0, "Patterns must not be empty"
+        assert patterns[0].pattern_id == "TFR-001", "pattern_id is not valid"
 
     def test_query_multiple_symptoms(self, brain_interface):
         """Test querying with multiple symptoms."""
@@ -219,28 +219,28 @@ class TestPatternQuery:
             ["pytest collection error", "ImportError in tests"]
         )
 
-        assert len(patterns) > 0
-        assert patterns[0].category == "testing"
+        assert len(patterns) > 0, "Patterns must not be empty"
+        assert patterns[0].category == "testing", "category is not valid"
 
     def test_query_with_category_filter(self, brain_interface):
         """Test querying with category filter."""
         patterns = brain_interface.query_patterns("error", category="testing")
 
         for pattern in patterns:
-            assert pattern.category == "testing"
+            assert pattern.category == "testing", "category is not valid"
 
     def test_query_min_confidence(self, brain_interface):
         """Test querying with minimum confidence."""
         patterns = brain_interface.query_patterns("pytest", min_confidence=PatternConfidence.HIGH)
 
         for pattern in patterns:
-            assert pattern.confidence == PatternConfidence.HIGH
+            assert pattern.confidence == PatternConfidence.HIGH, "confidence is not valid"
 
     def test_query_limit(self, brain_interface):
         """Test query result limiting."""
         patterns = brain_interface.query_patterns("error", limit=1)
 
-        assert len(patterns) <= 1
+        assert len(patterns) <= 1, "Patterns must not be empty"
 
     def test_query_returns_pattern_match(self, brain_interface):
         """Test that query returns PatternMatch objects."""
@@ -263,15 +263,15 @@ class TestPatternQuery:
         """Test getting a specific pattern by ID."""
         pattern = brain_interface.get_pattern("TFR-001")
 
-        assert pattern is not None
-        assert pattern.pattern_id == "TFR-001"
-        assert pattern.category == "testing"
+        assert pattern is not None, "pattern must be initialized"
+        assert pattern.pattern_id == "TFR-001", "pattern_id is not valid"
+        assert pattern.category == "testing", "category is not valid"
 
     def test_get_pattern_not_found(self, brain_interface):
         """Test getting a non-existent pattern."""
         pattern = brain_interface.get_pattern("NONEXISTENT-999")
 
-        assert pattern is None
+        assert pattern is None, "pattern is not valid"
 
 
 # =========================================================================
@@ -292,12 +292,12 @@ class TestPatternSubmission:
             diagnosis_steps=["step 1", "step 2"],
         )
 
-        assert result is True
+        assert result is True, "Result must not be empty"
 
         # Verify pattern was added
         pattern = brain_interface.get_pattern("NEW-001")
-        assert pattern is not None
-        assert pattern.category == "testing"
+        assert pattern is not None, "pattern must be initialized"
+        assert pattern.category == "testing", "category is not valid"
 
     def test_submitted_pattern_persists(self, brain_interface, temp_repo):
         """Test that submitted patterns are saved to file."""
@@ -313,7 +313,7 @@ class TestPatternSubmission:
         with open(pattern_path) as f:
             data = json.load(f)
 
-        assert "persist_001" in data["patterns"]
+        assert "persist_001" in data["patterns"], "Data must not be empty"
 
 
 # =========================================================================
@@ -334,7 +334,7 @@ class TestObjectiveAlignment:
         """Test detection of misaligned actions."""
         alignment = brain_interface.check_alignment("skip all tests")
 
-        assert alignment == ObjectiveAlignment.MISALIGNED
+        assert alignment == ObjectiveAlignment.MISALIGNED, "Object must be initialized"
 
     def test_unknown_alignment(self):
         """Test unknown alignment when no objectives loaded."""
@@ -342,14 +342,14 @@ class TestObjectiveAlignment:
             brain = AgentBrainInterface(agent_id="test-agent", repo_root=tmpdir)
 
             alignment = brain.check_alignment("some action")
-            assert alignment == ObjectiveAlignment.UNKNOWN
+            assert alignment == ObjectiveAlignment.UNKNOWN, "Object must be initialized"
 
     def test_get_objectives(self, brain_interface):
         """Test getting current objectives."""
         objectives = brain_interface.get_objectives()
 
         assert isinstance(objectives, list)
-        assert len(objectives) >= 2
+        assert len(objectives) >= 2, "Objectives must not be empty"
 
     def test_update_objective_progress(self, brain_interface):
         """Test updating objective progress."""
@@ -359,7 +359,7 @@ class TestObjectiveAlignment:
                 objectives[0], completed=False, progress_note="Making progress"
             )
 
-            assert result is True
+            assert result is True, "Result must not be empty"
 
 
 # =========================================================================
@@ -381,24 +381,24 @@ class TestSessionState:
         brain_interface.update_session_state({"new_key": "new_value"}, merge=True)
 
         state = brain_interface.get_session_state()
-        assert state.get("new_key") == "new_value"
-        assert state.get("loaded") is True  # Original value preserved
+        assert state.get("new_key") == "new_value", "Value must be initialized"
+        assert state.get("loaded") is True, "Condition must be true"
 
     def test_update_session_state_replace(self, brain_interface):
         """Test updating session state with replace."""
         brain_interface.update_session_state({"new_key": "new_value"}, merge=False)
 
         state = brain_interface.get_session_state()
-        assert state.get("new_key") == "new_value"
-        assert state.get("loaded") is None  # Original value not preserved
+        assert state.get("new_key") == "new_value", "Value must be initialized"
+        assert state.get("loaded") is None, "Condition must be true"
 
     def test_session_state_tracks_updates(self, brain_interface):
         """Test that session state tracks who updated it."""
         brain_interface.update_session_state({"test": "value"})
 
         state = brain_interface.get_session_state()
-        assert state.get("updated_by") == "test-agent"
-        assert "last_updated" in state
+        assert state.get("updated_by") == "test-agent", "Condition must be true"
+        assert "last_updated" in state, "Condition must be true"
 
 
 # =========================================================================
@@ -417,7 +417,7 @@ class TestLearningFeedback:
             context={"error": "import error", "fix": "added mock"},
         )
 
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_submit_failure_learning(self, brain_interface):
         """Test submitting failure learning feedback."""
@@ -425,7 +425,7 @@ class TestLearningFeedback:
             pattern_id="TFR-001", outcome="failure", context={"error": "still failing"}
         )
 
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_submit_partial_learning(self, brain_interface):
         """Test submitting partial success learning feedback."""
@@ -433,7 +433,7 @@ class TestLearningFeedback:
             pattern_id="TFR-001", outcome="partial", context={"note": "some tests fixed"}
         )
 
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_learning_updates_success_rate(self, brain_interface):
         """Test that learning updates pattern success rate."""
@@ -449,7 +449,7 @@ class TestLearningFeedback:
         pattern = brain_interface.get_pattern("TFR-001")
 
         # Rate should still be in valid range
-        assert 0.0 <= pattern.success_rate <= 1.0
+        assert 0.0 <= pattern.success_rate <= 1.0, "0 is not valid"
 
     def test_learning_with_details(self, brain_interface):
         """Test submitting learning with full details."""
@@ -462,7 +462,7 @@ class TestLearningFeedback:
             suggested_improvements=["add more solutions"],
         )
 
-        assert result is True
+        assert result is True, "Result must not be empty"
 
 
 # =========================================================================
@@ -478,13 +478,13 @@ class TestDiagnosis:
         response = brain_interface.diagnose("pytest error")
 
         assert isinstance(response, BrainResponse)
-        assert response.success is True
+        assert response.success is True, "Response must not be empty"
 
     def test_diagnose_includes_patterns(self, brain_interface):
         """Test that diagnosis includes matching patterns."""
         response = brain_interface.diagnose("pytest collection error")
 
-        assert len(response.patterns) > 0
+        assert len(response.patterns) > 0, "Collection must not be empty"
 
     def test_diagnose_includes_objectives(self, brain_interface):
         """Test that diagnosis includes objectives."""
@@ -498,14 +498,14 @@ class TestDiagnosis:
 
         assert isinstance(response.recommendations, list)
         if response.patterns:
-            assert len(response.recommendations) > 0
+            assert len(response.recommendations) > 0, "Collection must not be empty"
 
     def test_diagnose_includes_metadata(self, brain_interface):
         """Test that diagnosis includes metadata."""
         response = brain_interface.diagnose("error")
 
-        assert "agent_id" in response.metadata
-        assert "timestamp" in response.metadata
+        assert "agent_id" in response.metadata, "Response must not be empty"
+        assert "timestamp" in response.metadata, "Response must not be empty"
 
 
 # =========================================================================
@@ -523,7 +523,7 @@ class TestMatchScore:
         )
 
         if patterns:
-            assert patterns[0].match_score > 0.5
+            assert patterns[0].match_score > 0.5, "match_score must be greater than zero"
 
     def test_partial_match_lower_score(self, brain_interface):
         """Test that partial matches get lower scores."""
@@ -531,7 +531,7 @@ class TestMatchScore:
 
         # Should have lower scores than exact matches
         for pattern in patterns:
-            assert 0.0 <= pattern.match_score <= 1.0
+            assert 0.0 <= pattern.match_score <= 1.0, "0 is not valid"
 
     def test_confidence_levels(self, brain_interface):
         """Test confidence level assignment."""
@@ -560,8 +560,8 @@ class TestDataTypes:
             current_phase="testing",
         )
 
-        assert context.agent_id == "test-agent"
-        assert context.agent_category == AgentCategory.TESTING
+        assert context.agent_id == "test-agent", "agent_id is not valid"
+        assert context.agent_category == AgentCategory.TESTING, "agent_category is not valid"
 
     def test_pattern_match(self):
         """Test PatternMatch dataclass."""
@@ -576,8 +576,8 @@ class TestDataTypes:
             times_applied=5,
         )
 
-        assert match.pattern_id == "TEST-001"
-        assert match.confidence == PatternConfidence.HIGH
+        assert match.pattern_id == "TEST-001", "pattern_id is not valid"
+        assert match.confidence == PatternConfidence.HIGH, "confidence is not valid"
 
     def test_learning_feedback(self):
         """Test LearningFeedback dataclass."""
@@ -588,8 +588,8 @@ class TestDataTypes:
             context={"key": "value"},
         )
 
-        assert feedback.pattern_id == "TEST-001"
-        assert feedback.outcome == "success"
+        assert feedback.pattern_id == "TEST-001", "pattern_id is not valid"
+        assert feedback.outcome == "success", "outcome is not valid"
 
     def test_brain_response(self):
         """Test BrainResponse dataclass."""
@@ -597,8 +597,8 @@ class TestDataTypes:
             success=True, message="Test message", patterns=[], objectives=["obj1"]
         )
 
-        assert response.success is True
-        assert len(response.objectives) == 1
+        assert response.success is True, "Response must not be empty"
+        assert len(response.objectives) == 1, "Collection must not be empty"
 
 
 # =========================================================================
@@ -653,11 +653,11 @@ class TestIntegration:
         """Test complete diagnosis workflow."""
         # 1. Query patterns
         patterns = brain_interface.query_patterns("pytest collection error")
-        assert len(patterns) > 0
+        assert len(patterns) > 0, "Patterns must not be empty"
 
         # 2. Check alignment
         alignment = brain_interface.check_alignment("fix test imports")
-        assert alignment != ObjectiveAlignment.MISALIGNED
+        assert alignment != ObjectiveAlignment.MISALIGNED, "Object must be initialized"
 
         # 3. Get session state
         state = brain_interface.get_session_state()
@@ -667,7 +667,7 @@ class TestIntegration:
         result = brain_interface.submit_learning(
             pattern_id=patterns[0].pattern_id, outcome="success"
         )
-        assert result is True
+        assert result is True, "Result must not be empty"
 
         # 5. Update session state
         brain_interface.update_session_state(
@@ -675,7 +675,7 @@ class TestIntegration:
         )
 
         state = brain_interface.get_session_state()
-        assert state.get("diagnosis_complete") is True
+        assert state.get("diagnosis_complete") is True, "Condition must be true"
 
     def test_pattern_learning_cycle(self, brain_interface):
         """Test pattern submission and retrieval cycle."""
@@ -692,7 +692,7 @@ class TestIntegration:
 
         # Should find the new pattern
         found = any(p.pattern_id == "CYCLE-001" for p in patterns)
-        assert found
+        assert found, "found is not valid"
 
 
 if __name__ == "__main__":

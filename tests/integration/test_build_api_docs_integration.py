@@ -52,7 +52,7 @@ class TestBuildAPIDocsIntegration:
 
         # Should log that codex_ml is importable
         assert "codex_ml" in output, f"Expected 'codex_ml' in output; got: {output}"
-        assert "Final module list to document" in output
+        assert "Final module list to document" in output, "Condition must be true"
 
         # Script should complete (may fail at pdoc step, but that's ok for this test)
         # We're primarily testing the module discovery logic
@@ -91,7 +91,7 @@ class TestBuildAPIDocsIntegration:
                 line for line in output.split("\n") if "Final module list to document" in line
             ][0]
             # codex_ml should not be in the final list
-            assert "codex_ml" not in final_list_line
+            assert "codex_ml" not in final_list_line, "Condition must be true"
 
     def test_script_handles_missing_modules_gracefully(self, tmp_path):
         """Test that script doesn't crash when optional modules are missing."""
@@ -120,7 +120,7 @@ class TestBuildAPIDocsIntegration:
         # We mainly want to ensure it doesn't crash unexpectedly
         if result.returncode != 0:
             # If it fails, should be with a clear error message
-            assert (
+            assert (, "Condition must be true"
                 "No modules available" in output
                 or "Failed to build" in output
                 or "importable" in output
@@ -159,8 +159,8 @@ class TestBuildAPIDocsIntegration:
                 line for line in output.split("\n") if "Final module list to document" in line
             ][0]
             # Should only have core modules, not codex_ml
-            assert "codex.cli" in final_list_line
-            assert "codex.logging" in final_list_line
+            assert "codex.cli" in final_list_line, "Condition must be true"
+            assert "codex.logging" in final_list_line, "Condition must be true"
 
     def test_fail_on_missing_with_skip_optional_succeeds(self, tmp_path):
         """Test --fail-on-missing combined with --skip-optional succeeds."""
@@ -183,6 +183,6 @@ class TestBuildAPIDocsIntegration:
         )
 
         # Should succeed because we're not requesting optional modules
-        assert (
+        assert (, "Condition must be true"
             result.returncode == 0
         ), f"Expected success, got {result.returncode}. Output: {result.stdout + result.stderr}"

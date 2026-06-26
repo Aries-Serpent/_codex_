@@ -18,10 +18,10 @@ class TestAlertSeverity:
 
     def test_alert_severity_values(self):
         """Test AlertSeverity enum has correct values."""
-        assert AlertSeverity.INFO.value == "info"
-        assert AlertSeverity.WARNING.value == "warning"
-        assert AlertSeverity.ERROR.value == "error"
-        assert AlertSeverity.CRITICAL.value == "critical"
+        assert AlertSeverity.INFO.value == "info", "Value must be initialized"
+        assert AlertSeverity.WARNING.value == "warning", "Value must be initialized"
+        assert AlertSeverity.ERROR.value == "error", "Value must be initialized"
+        assert AlertSeverity.CRITICAL.value == "critical", "Value must be initialized"
 
     def test_alert_severity_is_str_enum(self):
         """Test that AlertSeverity values are strings."""
@@ -31,64 +31,64 @@ class TestAlertSeverity:
     def test_alert_severity_ordering(self):
         """Test AlertSeverity order from least to most severe."""
         severity_list = list(AlertSeverity)
-        assert severity_list[0] == AlertSeverity.INFO
-        assert severity_list[1] == AlertSeverity.WARNING
-        assert severity_list[2] == AlertSeverity.ERROR
-        assert severity_list[3] == AlertSeverity.CRITICAL
+        assert severity_list[0] == AlertSeverity.INFO, "Condition must be true"
+        assert severity_list[1] == AlertSeverity.WARNING, "Condition must be true"
+        assert severity_list[2] == AlertSeverity.ERROR, "Error should be raised or set"
+        assert severity_list[3] == AlertSeverity.CRITICAL, "Condition must be true"
 
     def test_alert_severity_less_than(self):
         """Test less than comparison operator."""
-        assert AlertSeverity.INFO < AlertSeverity.WARNING
-        assert AlertSeverity.WARNING < AlertSeverity.ERROR
-        assert AlertSeverity.ERROR < AlertSeverity.CRITICAL
+        assert AlertSeverity.INFO < AlertSeverity.WARNING, "INFO is not valid"
+        assert AlertSeverity.WARNING < AlertSeverity.ERROR, "Error should be raised or set"
+        assert AlertSeverity.ERROR < AlertSeverity.CRITICAL, "Error should be raised or set"
 
     def test_alert_severity_less_than_same(self):
         """Test less than returns False for same severity."""
-        assert not (AlertSeverity.INFO < AlertSeverity.INFO)
-        assert not (AlertSeverity.CRITICAL < AlertSeverity.CRITICAL)
+        assert not (AlertSeverity.INFO < AlertSeverity.INFO), "INFO is not valid"
+        assert not (AlertSeverity.CRITICAL < AlertSeverity.CRITICAL), "CRITICAL is not valid"
 
     def test_alert_severity_less_than_greater(self):
         """Test less than returns False when first is greater."""
-        assert not (AlertSeverity.CRITICAL < AlertSeverity.INFO)
-        assert not (AlertSeverity.ERROR < AlertSeverity.WARNING)
+        assert not (AlertSeverity.CRITICAL < AlertSeverity.INFO), "CRITICAL is not valid"
+        assert not (AlertSeverity.ERROR < AlertSeverity.WARNING), "Error should be raised or set"
 
     def test_alert_severity_less_equal(self):
         """Test less than or equal comparison operator."""
-        assert AlertSeverity.INFO <= AlertSeverity.WARNING
-        assert AlertSeverity.INFO <= AlertSeverity.INFO
-        assert AlertSeverity.WARNING <= AlertSeverity.WARNING
+        assert AlertSeverity.INFO <= AlertSeverity.WARNING, "INFO is not valid"
+        assert AlertSeverity.INFO <= AlertSeverity.INFO, "INFO is not valid"
+        assert AlertSeverity.WARNING <= AlertSeverity.WARNING, "WARNING is not valid"
 
     def test_alert_severity_less_equal_false(self):
         """Test less than or equal returns False when first is greater."""
-        assert not (AlertSeverity.CRITICAL <= AlertSeverity.INFO)
-        assert not (AlertSeverity.ERROR <= AlertSeverity.WARNING)
+        assert not (AlertSeverity.CRITICAL <= AlertSeverity.INFO), "CRITICAL is not valid"
+        assert not (AlertSeverity.ERROR <= AlertSeverity.WARNING), "Error should be raised or set"
 
     def test_alert_severity_greater_than(self):
         """Test greater than comparison operator."""
-        assert AlertSeverity.CRITICAL > AlertSeverity.ERROR
-        assert AlertSeverity.ERROR > AlertSeverity.WARNING
-        assert AlertSeverity.WARNING > AlertSeverity.INFO
+        assert AlertSeverity.CRITICAL > AlertSeverity.ERROR, "CRITICAL must be greater than zero"
+        assert AlertSeverity.ERROR > AlertSeverity.WARNING, "ERROR must be greater than zero"
+        assert AlertSeverity.WARNING > AlertSeverity.INFO, "WARNING must be greater than zero"
 
     def test_alert_severity_greater_than_same(self):
         """Test greater than returns False for same severity."""
-        assert not (AlertSeverity.INFO > AlertSeverity.INFO)
-        assert not (AlertSeverity.CRITICAL > AlertSeverity.CRITICAL)
+        assert not (AlertSeverity.INFO > AlertSeverity.INFO), "INFO must be greater than zero"
+        assert not (AlertSeverity.CRITICAL > AlertSeverity.CRITICAL), "CRITICAL must be greater than zero"
 
     def test_alert_severity_greater_than_less(self):
         """Test greater than returns False when first is less."""
-        assert not (AlertSeverity.INFO > AlertSeverity.CRITICAL)
-        assert not (AlertSeverity.WARNING > AlertSeverity.ERROR)
+        assert not (AlertSeverity.INFO > AlertSeverity.CRITICAL), "INFO must be greater than zero"
+        assert not (AlertSeverity.WARNING > AlertSeverity.ERROR), "WARNING must be greater than zero"
 
     def test_alert_severity_greater_equal(self):
         """Test greater than or equal comparison operator."""
-        assert AlertSeverity.CRITICAL >= AlertSeverity.ERROR
-        assert AlertSeverity.CRITICAL >= AlertSeverity.CRITICAL
-        assert AlertSeverity.ERROR >= AlertSeverity.ERROR
+        assert AlertSeverity.CRITICAL >= AlertSeverity.ERROR, "CRITICAL must be greater than zero"
+        assert AlertSeverity.CRITICAL >= AlertSeverity.CRITICAL, "CRITICAL must be greater than zero"
+        assert AlertSeverity.ERROR >= AlertSeverity.ERROR, "ERROR must be greater than zero"
 
     def test_alert_severity_greater_equal_false(self):
         """Test greater than or equal returns False when first is less."""
-        assert not (AlertSeverity.INFO >= AlertSeverity.CRITICAL)
-        assert not (AlertSeverity.WARNING >= AlertSeverity.ERROR)
+        assert not (AlertSeverity.INFO >= AlertSeverity.CRITICAL), "INFO must be greater than zero"
+        assert not (AlertSeverity.WARNING >= AlertSeverity.ERROR), "WARNING must be greater than zero"
 
     def test_alert_severity_all_comparisons_consistent(self):
         """Test that all comparison operators are consistent."""
@@ -96,20 +96,20 @@ class TestAlertSeverity:
         for i, s1 in enumerate(severities):
             for j, s2 in enumerate(severities):
                 if i < j:
-                    assert s1 < s2
-                    assert s1 <= s2
-                    assert not (s1 > s2)
-                    assert not (s1 >= s2)
+                    assert s1 < s2, "s1 is not valid"
+                    assert s1 <= s2, "s1 is not valid"
+                    assert not (s1 > s2), "s1 must be greater than zero"
+                    assert not (s1 >= s2), "s1 must be greater than zero"
                 elif i == j:
-                    assert s1 <= s2
-                    assert s1 >= s2
-                    assert not (s1 < s2)
-                    assert not (s1 > s2)
+                    assert s1 <= s2, "s1 is not valid"
+                    assert s1 >= s2, "s1 must be greater than zero"
+                    assert not (s1 < s2), "s1 is not valid"
+                    assert not (s1 > s2), "s1 must be greater than zero"
                 else:
-                    assert s1 > s2
-                    assert s1 >= s2
-                    assert not (s1 < s2)
-                    assert not (s1 <= s2)
+                    assert s1 > s2, "s1 must be greater than zero"
+                    assert s1 >= s2, "s1 must be greater than zero"
+                    assert not (s1 < s2), "s1 is not valid"
+                    assert not (s1 <= s2), "s1 is not valid"
 
 
 class TestAlertEvent:
@@ -122,13 +122,13 @@ class TestAlertEvent:
             message="This is a test alert",
             severity=AlertSeverity.INFO,
         )
-        assert event.title == "Test Alert"
-        assert event.message == "This is a test alert"
-        assert event.severity == AlertSeverity.INFO
-        assert event.run_id == ""
-        assert event.epoch == 0
-        assert event.metadata == {}
-        assert event.timestamp == ""
+        assert event.title == "Test Alert", "title is not valid"
+        assert event.message == "This is a test alert", "message is not valid"
+        assert event.severity == AlertSeverity.INFO, "severity is not valid"
+        assert event.run_id == "", "run_id is not valid"
+        assert event.epoch == 0, "epoch is not valid"
+        assert event.metadata == {}, "Data must not be empty"
+        assert event.timestamp == "", "timestamp is not valid"
 
     def test_alert_event_creation_full(self):
         """Test creating AlertEvent with all fields."""
@@ -142,13 +142,13 @@ class TestAlertEvent:
             metadata=metadata,
             timestamp="2024-01-01T12:00:00Z",
         )
-        assert event.title == "Critical Issue"
-        assert event.message == "System error occurred"
-        assert event.severity == AlertSeverity.CRITICAL
-        assert event.run_id == "run-12345"
-        assert event.epoch == 10
-        assert event.metadata == metadata
-        assert event.timestamp == "2024-01-01T12:00:00Z"
+        assert event.title == "Critical Issue", "title is not valid"
+        assert event.message == "System error occurred", "Error should be raised or set"
+        assert event.severity == AlertSeverity.CRITICAL, "severity is not valid"
+        assert event.run_id == "run-12345", "run_id is not valid"
+        assert event.epoch == 10, "epoch is not valid"
+        assert event.metadata == metadata, "Data must not be empty"
+        assert event.timestamp == "2024-01-01T12:00:00Z", "timestamp is not valid"
 
     def test_alert_event_different_severities(self):
         """Test AlertEvent with different severity levels."""
@@ -158,7 +158,7 @@ class TestAlertEvent:
                 message="Test",
                 severity=severity,
             )
-            assert event.severity == severity
+            assert event.severity == severity, "severity is not valid"
 
     def test_alert_event_metadata_isolated(self):
         """Test that metadata dict is isolated between instances."""
@@ -180,7 +180,7 @@ class TestAlertEvent:
         event1.metadata["key"] = "modified"
 
         # event2's metadata should be empty
-        assert event2.metadata == {}
+        assert event2.metadata == {}, "Data must not be empty"
 
     def test_alert_event_fill_timestamp_empty(self):
         """Test fill_timestamp sets timestamp when empty."""
@@ -192,15 +192,15 @@ class TestAlertEvent:
             message="Test",
             severity=AlertSeverity.INFO,
         )
-        assert event.timestamp == ""
+        assert event.timestamp == "", "timestamp is not valid"
 
         event.fill_timestamp()
         after = datetime.now(UTC).replace(microsecond=0) + timedelta(seconds=1)
 
-        assert event.timestamp != ""
+        assert event.timestamp != "", "timestamp is not valid"
         # Parse the timestamp and verify it's within expected range
         parsed_ts = datetime.fromisoformat(event.timestamp.replace("Z", "+00:00"))
-        assert before <= parsed_ts <= after
+        assert before <= parsed_ts <= after, "before is not valid"
 
     def test_alert_event_fill_timestamp_format(self):
         """Test fill_timestamp creates ISO-8601 UTC format."""
@@ -212,12 +212,12 @@ class TestAlertEvent:
         event.fill_timestamp()
 
         # Should match ISO-8601 format: YYYY-MM-DDTHH:MM:SSZ
-        assert event.timestamp.endswith("Z")
-        assert "T" in event.timestamp
+        assert event.timestamp.endswith("Z"), "Condition must be true"
+        assert "T" in event.timestamp, "Condition must be true"
         parts = event.timestamp[:-1].split("T")
-        assert len(parts) == 2
-        assert len(parts[0].split("-")) == 3  # YYYY-MM-DD
-        assert len(parts[1].split(":")) == 3  # HH:MM:SS
+        assert len(parts) == 2, "Parts must not be empty"
+        assert len(parts[0].split("-")) == 3, "Collection must not be empty"
+        assert len(parts[1].split(":")) == 3, "Collection must not be empty"
 
     def test_alert_event_fill_timestamp_preserves_existing(self):
         """Test fill_timestamp doesn't overwrite existing timestamp."""
@@ -231,7 +231,7 @@ class TestAlertEvent:
 
         event.fill_timestamp()
 
-        assert event.timestamp == existing_ts
+        assert event.timestamp == existing_ts, "timestamp is not valid"
 
     def test_alert_event_fill_timestamp_multiple_calls(self):
         """Test fill_timestamp is idempotent."""
@@ -247,7 +247,7 @@ class TestAlertEvent:
         event.fill_timestamp()
         second_ts = event.timestamp
 
-        assert first_ts == second_ts
+        assert first_ts == second_ts, "first_ts is not valid"
 
     def test_alert_event_empty_title_allowed(self):
         """Test AlertEvent allows empty title."""
@@ -256,7 +256,7 @@ class TestAlertEvent:
             message="Test message",
             severity=AlertSeverity.INFO,
         )
-        assert event.title == ""
+        assert event.title == "", "title is not valid"
 
     def test_alert_event_empty_message_allowed(self):
         """Test AlertEvent allows empty message."""
@@ -265,7 +265,7 @@ class TestAlertEvent:
             message="",
             severity=AlertSeverity.INFO,
         )
-        assert event.message == ""
+        assert event.message == "", "message is not valid"
 
     def test_alert_event_zero_epoch_allowed(self):
         """Test AlertEvent allows zero epoch."""
@@ -275,7 +275,7 @@ class TestAlertEvent:
             severity=AlertSeverity.INFO,
             epoch=0,
         )
-        assert event.epoch == 0
+        assert event.epoch == 0, "epoch is not valid"
 
     def test_alert_event_large_epoch(self):
         """Test AlertEvent with large epoch number."""
@@ -285,7 +285,7 @@ class TestAlertEvent:
             severity=AlertSeverity.INFO,
             epoch=999999,
         )
-        assert event.epoch == 999999
+        assert event.epoch == 999999, "epoch is not valid"
 
     def test_alert_event_negative_epoch_allowed(self):
         """Test AlertEvent allows negative epoch."""
@@ -295,7 +295,7 @@ class TestAlertEvent:
             severity=AlertSeverity.INFO,
             epoch=-1,
         )
-        assert event.epoch == -1
+        assert event.epoch == -1, "epoch is not valid"
 
     def test_alert_event_empty_run_id(self):
         """Test AlertEvent allows empty run_id."""
@@ -305,7 +305,7 @@ class TestAlertEvent:
             severity=AlertSeverity.INFO,
             run_id="",
         )
-        assert event.run_id == ""
+        assert event.run_id == "", "run_id is not valid"
 
     def test_alert_event_complex_metadata(self):
         """Test AlertEvent with complex nested metadata."""
@@ -321,7 +321,7 @@ class TestAlertEvent:
             severity=AlertSeverity.INFO,
             metadata=metadata,
         )
-        assert event.metadata == metadata
+        assert event.metadata == metadata, "Data must not be empty"
 
 
 class TestAlertChannel:
@@ -387,8 +387,8 @@ class TestAlertChannel:
         )
         result = channel.send(event)
 
-        assert result is True
-        assert channel.received_event == event
+        assert result is True, "Result must not be empty"
+        assert channel.received_event == event, "received_event is not valid"
 
     def test_alert_channel_send_return_types(self):
         """Test that send method returns boolean."""
@@ -416,8 +416,8 @@ class TestAlertChannel:
             severity=AlertSeverity.INFO,
         )
 
-        assert true_channel.send(event) is True
-        assert false_channel.send(event) is False
+        assert true_channel.send(event) is True, "Condition must be true"
+        assert false_channel.send(event) is False, "Condition must be true"
 
     def test_alert_channel_name_method(self):
         """Test that name method returns string."""
@@ -430,7 +430,7 @@ class TestAlertChannel:
                 return "my-channel"
 
         channel = NamedChannel()
-        assert channel.name() == "my-channel"
+        assert channel.name() == "my-channel", "Condition must be true"
         assert isinstance(channel.name(), str)
 
     def test_alert_channel_multiple_implementations(self):
@@ -453,8 +453,8 @@ class TestAlertChannel:
         slack = SlackLike()
         email = EmailLike()
 
-        assert slack.name() == "slack"
-        assert email.name() == "email"
+        assert slack.name() == "slack", "Condition must be true"
+        assert email.name() == "email", "Condition must be true"
         assert slack.send(AlertEvent("t", "m", AlertSeverity.INFO)) is True
         assert email.send(AlertEvent("t", "m", AlertSeverity.INFO)) is False
 
@@ -473,7 +473,7 @@ class TestAlertEventAndSeverityIntegration:
 
         # Verify severity ordering
         for i in range(len(events) - 1):
-            assert events[i].severity < events[i + 1].severity
+            assert events[i].severity < events[i + 1].severity, "severity is not valid"
 
     def test_alert_event_timestamp_with_different_severities(self):
         """Test fill_timestamp works with all severity levels."""
@@ -484,8 +484,8 @@ class TestAlertEventAndSeverityIntegration:
                 severity=severity,
             )
             event.fill_timestamp()
-            assert event.timestamp != ""
-            assert event.timestamp.endswith("Z")
+            assert event.timestamp != "", "timestamp is not valid"
+            assert event.timestamp.endswith("Z"), "Condition must be true"
 
     def test_alert_event_filter_by_severity(self):
         """Test filtering events by minimum severity."""
@@ -499,6 +499,6 @@ class TestAlertEventAndSeverityIntegration:
         min_severity = AlertSeverity.ERROR
         critical_events = [e for e in events if e.severity >= min_severity]
 
-        assert len(critical_events) == 2
-        assert critical_events[0].severity == AlertSeverity.ERROR
-        assert critical_events[1].severity == AlertSeverity.CRITICAL
+        assert len(critical_events) == 2, "Critical_events must not be empty"
+        assert critical_events[0].severity == AlertSeverity.ERROR, "Error should be raised or set"
+        assert critical_events[1].severity == AlertSeverity.CRITICAL, "severity is not valid"

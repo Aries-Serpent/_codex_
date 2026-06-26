@@ -31,5 +31,5 @@ def test_eval_guard(tmp_path, monkeypatch):
         }
     )
     result = harness.main.__wrapped__(cfg)  # type: ignore[attr-defined]
-    assert result == {}
-    assert not Path(cfg.eval.output_json).exists()
+    assert result == {}, "Result must not be empty"
+    assert not Path(cfg.eval.output_json).exists(), "Condition must be true"

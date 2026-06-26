@@ -16,8 +16,8 @@ from codex_ml.tokenization import api, compat
 def test_whitespace_tokenizer_roundtrip() -> None:
     tok = api.WhitespaceTokenizer()
     ids = tok.encode("hello world")
-    assert len(ids) == 2
-    assert tok.decode(ids)
+    assert len(ids) == 2, "Ids must not be empty"
+    assert tok.decode(ids), "Condition must be true"
 
 
 def test_load_tokenizer_uses_hf_adapter(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -39,8 +39,8 @@ def test_deprecated_access_emits_warning() -> None:
     with warnings.catch_warnings(record=True) as captured:
         warnings.simplefilter("always")
         value = api.deprecated_legacy_access("PAD_TOKEN")
-    assert value == api.PAD_TOKEN
-    assert any("deprecated" in str(w.message) for w in captured)
+    assert value == api.PAD_TOKEN, "Value must be initialized"
+    assert any("deprecated" in str(w.message) for w in captured), "Condition must be true"
 
 
 def test_compat_module_proxies_and_warns(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -56,6 +56,6 @@ def test_compat_module_proxies_and_warns(monkeypatch: pytest.MonkeyPatch) -> Non
     with warnings.catch_warnings(record=True) as captured:
         warnings.simplefilter("always")
         result = compat.load_tokenizer("demo")
-    assert result == "ok"
-    assert calls["args"][0][0] == "demo"
-    assert any("deprecated" in str(w.message) for w in captured)
+    assert result == "ok", "Result must not be empty"
+    assert calls["args"][0][0] == "demo", "Condition must be true"
+    assert any("deprecated" in str(w.message) for w in captured), "Condition must be true"

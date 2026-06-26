@@ -27,26 +27,26 @@ class TestIssueTypeEnum:
         """Test all IssueType enum values exist."""
         from agents.self_healing import IssueType
 
-        assert IssueType.TEST_FAILURE is not None
-        assert IssueType.BUILD_FAILURE is not None
-        assert IssueType.DEPENDENCY_CONFLICT is not None
-        assert IssueType.SECURITY_VULNERABILITY is not None
-        assert IssueType.PERFORMANCE_REGRESSION is not None
-        assert IssueType.LINT_ERROR is not None
-        assert IssueType.TYPE_ERROR is not None
-        assert IssueType.SYNTAX_ERROR is not None
-        assert IssueType.IMPORT_ERROR is not None
-        assert IssueType.CONFIGURATION_ERROR is not None
+        assert IssueType.TEST_FAILURE is not None, "TEST_FAILURE must be initialized"
+        assert IssueType.BUILD_FAILURE is not None, "BUILD_FAILURE must be initialized"
+        assert IssueType.DEPENDENCY_CONFLICT is not None, "DEPENDENCY_CONFLICT must be initialized"
+        assert IssueType.SECURITY_VULNERABILITY is not None, "SECURITY_VULNERABILITY must be initialized"
+        assert IssueType.PERFORMANCE_REGRESSION is not None, "PERFORMANCE_REGRESSION must be initialized"
+        assert IssueType.LINT_ERROR is not None, "LINT_ERROR must be initialized"
+        assert IssueType.TYPE_ERROR is not None, "TYPE_ERROR must be initialized"
+        assert IssueType.SYNTAX_ERROR is not None, "SYNTAX_ERROR must be initialized"
+        assert IssueType.IMPORT_ERROR is not None, "IMPORT_ERROR must be initialized"
+        assert IssueType.CONFIGURATION_ERROR is not None, "CONFIGURATION_ERROR must be initialized"
 
     def test_issue_severity_values(self):
         """Test IssueSeverity enum values exist."""
         from agents.self_healing import IssueSeverity
 
-        assert IssueSeverity.CRITICAL is not None
-        assert IssueSeverity.HIGH is not None
-        assert IssueSeverity.MEDIUM is not None
-        assert IssueSeverity.LOW is not None
-        assert IssueSeverity.INFO is not None
+        assert IssueSeverity.CRITICAL is not None, "CRITICAL must be initialized"
+        assert IssueSeverity.HIGH is not None, "HIGH must be initialized"
+        assert IssueSeverity.MEDIUM is not None, "MEDIUM must be initialized"
+        assert IssueSeverity.LOW is not None, "LOW must be initialized"
+        assert IssueSeverity.INFO is not None, "INFO must be initialized"
 
 
 # ============================================================================
@@ -67,10 +67,10 @@ class TestDetectedIssue:
             description="Test failed",
         )
 
-        assert issue.issue_type == IssueType.TEST_FAILURE
-        assert issue.severity == IssueSeverity.HIGH
-        assert issue.description == "Test failed"
-        assert issue.issue_id != ""  # Auto-generated
+        assert issue.issue_type == IssueType.TEST_FAILURE, "issue_type is not valid"
+        assert issue.severity == IssueSeverity.HIGH, "severity is not valid"
+        assert issue.description == "Test failed", "description is not valid"
+        assert issue.issue_id != "", "issue_id is not valid"
 
     def test_detected_issue_with_all_fields(self):
         """Test DetectedIssue with all optional fields."""
@@ -90,14 +90,14 @@ class TestDetectedIssue:
             details={"extra": "info"},
         )
 
-        assert issue.issue_id == "ISSUE-001"
-        assert issue.title == "Import Error"
-        assert issue.location == "src/module.py:10"
-        assert issue.file_path == Path("src/module.py")
-        assert issue.line_number == 10
-        assert issue.stack_trace == "Traceback..."
-        assert "module" in issue.context
-        assert "extra" in issue.context  # details merged into context
+        assert issue.issue_id == "ISSUE-001", "issue_id is not valid"
+        assert issue.title == "Import Error", "Error should be raised or set"
+        assert issue.location == "src/module.py:10", "location is not valid"
+        assert issue.file_path == Path("src/module.py"), "file_path is not valid"
+        assert issue.line_number == 10, "line_number is not valid"
+        assert issue.stack_trace == "Traceback...", "stack_trace is not valid"
+        assert "module" in issue.context, "in is not valid"
+        assert "extra" in issue.context, "in is not valid"
 
     def test_detected_issue_to_dict(self):
         """Test DetectedIssue.to_dict() method."""
@@ -113,10 +113,10 @@ class TestDetectedIssue:
         issue_dict = issue.to_dict()
 
         assert isinstance(issue_dict, dict)
-        assert issue_dict["issue_id"] == "BUILD-001"
-        assert issue_dict["issue_type"] == "build_failure"
-        assert issue_dict["severity"] == "high"
-        assert issue_dict["description"] == "Build failed"
+        assert issue_dict["issue_id"] == "BUILD-001", "Condition must be true"
+        assert issue_dict["issue_type"] == "build_failure", "Condition must be true"
+        assert issue_dict["severity"] == "high", "Condition must be true"
+        assert issue_dict["description"] == "Build failed", "Condition must be true"
 
     def test_detected_issue_auto_title(self):
         """Test that title is auto-generated from description."""
@@ -129,8 +129,8 @@ class TestDetectedIssue:
             description=long_desc,
         )
 
-        assert issue.title == long_desc[:50]
-        assert len(issue.title) <= 50
+        assert issue.title == long_desc[:50], "title is not valid"
+        assert len(issue.title) <= 50, "Collection must not be empty"
 
 
 # ============================================================================
@@ -151,9 +151,9 @@ class TestRemediationAction:
                 description="Install missing package",
                 command="pip install numpy",
             )
-            assert action.action_type == "fix_import"
-            assert action.description == "Install missing package"
-            assert action.command == "pip install numpy"
+            assert action.action_type == "fix_import", "action_type is not valid"
+            assert action.description == "Install missing package", "description is not valid"
+            assert action.command == "pip install numpy", "command is not valid"
         except (ImportError, AttributeError, TypeError) as e:
             pytest.skip(f"RemediationAction not available or different API: {e}")
 
@@ -168,8 +168,8 @@ class TestRemediationAction:
                 command="pip install -r requirements.txt",
                 auto_apply=False,
             )
-            assert action.auto_apply is False
-            assert action.estimated_time == 120
+            assert action.auto_apply is False, "auto_apply is not valid"
+            assert action.estimated_time == 120, "estimated_time is not valid"
         except (ImportError, AttributeError, TypeError) as e:
             pytest.skip(f"RemediationAction API different: {e}")
 
@@ -197,9 +197,9 @@ class TestDiagnosticResult:
                 ],
                 health_score=0.9,
             )
-            assert result.diagnosis == "Missing dependency"
-            assert result.confidence == 0.9
-            assert len(result.recommended_actions) == 1
+            assert result.diagnosis == "Missing dependency", "Result must not be empty"
+            assert result.confidence == 0.9, "Result must not be empty"
+            assert len(result.recommended_actions) == 1, "Collection must not be empty"
         except (ImportError, AttributeError, TypeError) as e:
             pytest.skip(f"DiagnosticResult not available: {e}")
 
@@ -218,7 +218,7 @@ class TestSelfHealingEngineCore:
 
         engine = SelfHealingEngine()
 
-        assert engine is not None
+        assert engine is not None, "engine must be initialized"
         assert hasattr(engine, "repo_root")
         assert hasattr(engine, "issue_patterns")
         assert hasattr(engine, "remediation_handlers")
@@ -230,7 +230,7 @@ class TestSelfHealingEngineCore:
         custom_path = Path("/tmp/test_repo")
         engine = SelfHealingEngine(repo_root=custom_path)
 
-        assert engine.repo_root == custom_path
+        assert engine.repo_root == custom_path, "repo_root is not valid"
 
     def test_detect_issues_from_logs(self):
         """Test detecting issues from log output."""
@@ -249,7 +249,7 @@ class TestSelfHealingEngineCore:
         assert isinstance(issues, list)
         # Should detect at least the test failure
         if len(issues) > 0:
-            assert any("test" in str(issue).lower() for issue in issues)
+            assert any("test" in str(issue).lower() for issue in issues), "for is not valid"
 
     def test_detect_import_error(self):
         """Test detecting import errors."""
@@ -264,7 +264,7 @@ class TestSelfHealingEngineCore:
         assert isinstance(issues, list)
         if len(issues) > 0:
             # Check if import error was detected
-            assert any(
+            assert any(, "Condition must be true"
                 "import" in str(issue).lower() or "numpy" in str(issue).lower() for issue in issues
             )
 
@@ -291,7 +291,7 @@ class TestSelfHealingEngineCore:
 
         try:
             diagnosis = engine.diagnose(log_output)
-            assert diagnosis is not None
+            assert diagnosis is not None, "diagnosis must be initialized"
         except (AttributeError, NotImplementedError) as e:
             pytest.skip(f"diagnose method not implemented: {e}")
 
@@ -314,7 +314,7 @@ class TestSelfHealingEngineCore:
 
         try:
             remediation = engine.suggest_remediation(issue)
-            assert remediation is not None
+            assert remediation is not None, "remediation must be initialized"
         except (AttributeError, NotImplementedError) as e:
             pytest.skip(f"suggest_remediation method not implemented: {e}")
 
@@ -334,7 +334,7 @@ class TestSelfHealingEngineCore:
 
             # Should not actually execute since auto_apply=False
             result = engine.apply_remediation(action, dry_run=True)
-            assert result is not None
+            assert result is not None, "result must be initialized"
         except (ImportError, AttributeError, TypeError, NotImplementedError) as e:
             pytest.skip(f"apply_remediation not available: {e}")
 
@@ -363,7 +363,7 @@ class TestSelfHealingEngineCore:
 
         try:
             status = engine.check_dependencies()
-            assert status is not None
+            assert status is not None, "status must be initialized"
         except (AttributeError, NotImplementedError) as e:
             pytest.skip(f"check_dependencies not implemented: {e}")
 
@@ -394,7 +394,7 @@ class TestIssuePatternMatching:
                     (r"CUSTOM:\s+(.+)", "Custom: {0}")
                 )
 
-            assert True  # Pattern added successfully
+            assert True, "True is not valid"
         except (AttributeError, KeyError) as e:
             pytest.skip(f"Pattern registration not supported: {e}")
 

@@ -11,8 +11,8 @@ import pytest
 def test_perplexity_handles_float():
     from codex_ml.metrics.text import perplexity
 
-    assert perplexity(0.0) == 1.0
-    assert perplexity(1.0) > 1.0
+    assert perplexity(0.0) == 1.0, "Condition must be true"
+    assert perplexity(1.0) > 1.0, "Value must be greater than zero"
 
 
 def test_token_accuracy_requires_torch(monkeypatch):

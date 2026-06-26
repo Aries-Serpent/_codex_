@@ -38,8 +38,8 @@ class TestAdvancedArguments:
             click.echo(f"Processing {len(files)} files")
 
         result = runner.invoke(process, ["a.txt", "b.txt", "c.txt"])
-        assert result.exit_code == 0
-        assert "Processing 3 files" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "Processing 3 files" in result.output, "Result must not be empty"
 
     def test_no_arguments_for_variadic(self, runner):
         import click
@@ -50,8 +50,8 @@ class TestAdvancedArguments:
             click.echo(f"Processing {len(files)} files")
 
         result = runner.invoke(process, [])
-        assert result.exit_code == 0
-        assert "Processing 0 files" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "Processing 0 files" in result.output, "Result must not be empty"
 
     def test_argument_with_callback(self, runner):
         import click
@@ -67,10 +67,10 @@ class TestAdvancedArguments:
             click.echo(f"Count: {count}")
 
         result = runner.invoke(process, ["42"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
         result = runner.invoke(process, ["-5"])
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     def test_argument_nargs_range(self, runner):
         import click
@@ -81,8 +81,8 @@ class TestAdvancedArguments:
             click.echo(sum(numbers))
 
         result = runner.invoke(add, ["1", "2", "3"])
-        assert result.exit_code == 0
-        assert "6" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "6" in result.output, "Result must not be empty"
 
 
 # ============================================================================
@@ -122,7 +122,7 @@ class TestComplexWorkflows:
             click.echo("Data saved")
 
         result = runner.invoke(cli, ["data", "load"])
-        assert "Data loaded" in result.output
+        assert "Data loaded" in result.output, "Result must not be empty"
 
     def test_nested_groups(self, runner):
         import click
@@ -144,8 +144,8 @@ class TestComplexWorkflows:
             click.echo("Users: admin, user1, user2")
 
         result = runner.invoke(cli, ["admin", "users", "list"])
-        assert result.exit_code == 0
-        assert "Users:" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "Users:" in result.output, "Result must not be empty"
 
     def test_command_with_context(self, runner):
         import click
@@ -157,8 +157,8 @@ class TestComplexWorkflows:
             click.echo(ctx.obj["key"])
 
         result = runner.invoke(cmd, [])
-        assert result.exit_code == 0
-        assert "value" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "value" in result.output, "Result must not be empty"
 
 
 # ============================================================================
@@ -205,7 +205,7 @@ class TestConfigurationVariations:
                 click.echo("No config")
 
         result = runner.invoke(cmd, env={"CONFIG_FILE": "/path/to/config"})
-        assert "Using /path/to/config" in result.output
+        assert "Using /path/to/config" in result.output, "Result must not be empty"
 
     def test_config_from_file(self, runner, temp_config):
         import click
@@ -217,8 +217,8 @@ class TestConfigurationVariations:
             click.echo(f'Debug: {data["debug"]}')
 
         result = runner.invoke(cmd, [temp_config])
-        assert result.exit_code == 0
-        assert "Debug: True" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "Debug: True" in result.output, "Result must not be empty"
 
     def test_config_with_defaults(self, runner):
         import click
@@ -241,7 +241,7 @@ class TestConfigurationVariations:
             click.echo(f"Timeout: {timeout}")
 
         result = runner.invoke(cmd, ["--timeout", "60"])
-        assert "Timeout: 60" in result.output
+        assert "Timeout: 60" in result.output, "Result must not be empty"
 
 
 # ============================================================================
@@ -275,7 +275,7 @@ class TestStateManagement:
                 click.echo("Not initialized")
 
         result = runner.invoke(cli, ["status"])
-        assert "Initialized" in result.output
+        assert "Initialized" in result.output, "Result must not be empty"
 
     def test_stateful_option(self, runner):
         import click
@@ -292,8 +292,8 @@ class TestStateManagement:
             click.echo(f'Flags: {",".join(flags) if flags else "none"}')
 
         result = runner.invoke(cmd, ["-v", "-d"])
-        assert "verbose" in result.output
-        assert "debug" in result.output
+        assert "verbose" in result.output, "Result must not be empty"
+        assert "debug" in result.output, "Result must not be empty"
 
 
 # ============================================================================
@@ -340,8 +340,8 @@ class TestErrorRecovery:
             click.echo(f"Executing: {command}")
 
         result = runner.invoke(cmd, ["invalid"])
-        assert result.exit_code != 0
-        assert "Valid commands" in result.output
+        assert result.exit_code != 0, "Result must not be empty"
+        assert "Valid commands" in result.output, "Result must not be empty"
 
     def test_graceful_degradation(self, runner):
         import click
@@ -359,7 +359,7 @@ class TestErrorRecovery:
                 click.echo("Falling back to basic mode")
 
         result = runner.invoke(cmd, ["--feature"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
 
 # ============================================================================
@@ -384,8 +384,8 @@ class TestIOVariations:
                 click.echo(line.strip().upper())
 
         result = runner.invoke(cmd, input="hello\nworld\n")
-        assert "HELLO" in result.output
-        assert "WORLD" in result.output
+        assert "HELLO" in result.output, "Result must not be empty"
+        assert "WORLD" in result.output, "Result must not be empty"
 
     def test_multiple_input_files(self, runner):
         with tempfile.NamedTemporaryFile(mode="w", delete=False) as f1:
@@ -406,8 +406,8 @@ class TestIOVariations:
                     click.echo(f.read())
 
             result = runner.invoke(process, [f1_path, f2_path])
-            assert "file1 content" in result.output
-            assert "file2 content" in result.output
+            assert "file1 content" in result.output, "Result must not be empty"
+            assert "file2 content" in result.output, "Result must not be empty"
         finally:
             os.remove(f1_path)
             os.remove(f2_path)
@@ -424,11 +424,11 @@ class TestIOVariations:
                 output.write("test output\n")
 
             result = runner.invoke(cmd, [output_file])
-            assert result.exit_code == 0
-            assert os.path.exists(output_file)
+            assert result.exit_code == 0, "Result must not be empty"
+            assert os.path.exists(output_file), "Condition must be true"
 
             with open(output_file) as f:
-                assert "test output" in f.read()
+                assert "test output" in f.read(), "Condition must be true"
 
 
 # ============================================================================
@@ -455,9 +455,9 @@ class TestCommandDiscovery:
             click.echo(f"{name} is {age}")
 
         result = runner.invoke(cmd, ["--help"])
-        assert "Your name" in result.output
-        assert "Your age" in result.output
-        assert "A simple command" in result.output
+        assert "Your name" in result.output, "Result must not be empty"
+        assert "Your age" in result.output, "Result must not be empty"
+        assert "A simple command" in result.output, "Result must not be empty"
 
     def test_group_commands_listing(self, runner):
         import click
@@ -478,8 +478,8 @@ class TestCommandDiscovery:
             pass
 
         result = runner.invoke(cli, ["--help"])
-        assert "cmd1" in result.output
-        assert "cmd2" in result.output
+        assert "cmd1" in result.output, "Result must not be empty"
+        assert "cmd2" in result.output, "Result must not be empty"
 
     def test_command_aliases(self, runner):
         import click
@@ -494,7 +494,7 @@ class TestCommandDiscovery:
 
         # Test primary name
         result = runner.invoke(cli, ["start"])
-        assert "Starting" in result.output
+        assert "Starting" in result.output, "Result must not be empty"
 
 
 # ============================================================================
@@ -529,7 +529,7 @@ class TestPerformanceAndLimits:
 
         # Command should handle many options
         result = runner.invoke(cmd, ["--opt0", "v0", "--opt1", "v1"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_command_with_large_input(self, runner):
         import click
@@ -540,7 +540,7 @@ class TestPerformanceAndLimits:
             click.echo(len(large_input))
 
         result = runner.invoke(cmd)
-        assert "10000" in result.output
+        assert "10000" in result.output, "Result must not be empty"
 
     def test_command_execution_time(self, runner):
         import time
@@ -555,4 +555,4 @@ class TestPerformanceAndLimits:
             click.echo(f"Elapsed: {elapsed:.2f}s")
 
         result = runner.invoke(cmd)
-        assert "Elapsed:" in result.output
+        assert "Elapsed:" in result.output, "Result must not be empty"

@@ -50,4 +50,4 @@ def test_tail_option(tmp_path):
     cp = subprocess.run(cmd, capture_output=True, text=True, env=env)
     assert cp.returncode == 0, cp.stderr
     data = json.loads(cp.stdout)
-    assert [r["message"] for r in data] == ["third"]
+    assert [r["message"] for r in data] == ["third"], "Data must not be empty"

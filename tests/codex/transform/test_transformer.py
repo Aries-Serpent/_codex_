@@ -12,19 +12,19 @@ class TestTier:
         """Test Tier A value."""
         from codex.transform.transformer import Tier
 
-        assert Tier.A.value == "safe_auto_apply"
+        assert Tier.A.value == "safe_auto_apply", "Value must be initialized"
 
     def test_tier_b_value(self):
         """Test Tier B value."""
         from codex.transform.transformer import Tier
 
-        assert Tier.B.value == "apply_with_tests"
+        assert Tier.B.value == "apply_with_tests", "Value must be initialized"
 
     def test_tier_c_value(self):
         """Test Tier C value."""
         from codex.transform.transformer import Tier
 
-        assert Tier.C.value == "suggest_only"
+        assert Tier.C.value == "suggest_only", "Value must be initialized"
 
 
 class TestPatch:
@@ -44,12 +44,12 @@ class TestPatch:
             description="Format function",
         )
 
-        assert patch.file_path == "src/module.py"
-        assert patch.original == "def foo(): pass"
-        assert patch.modified == "def foo():\n    pass"
-        assert patch.rule_id == "FORMAT001"
-        assert patch.tier == Tier.A
-        assert patch.description == "Format function"
+        assert patch.file_path == "src/module.py", "file_path is not valid"
+        assert patch.original == "def foo(): pass", "original is not valid"
+        assert patch.modified == "def foo():\n    pass", "modified is not valid"
+        assert patch.rule_id == "FORMAT001", "rule_id is not valid"
+        assert patch.tier == Tier.A, "tier is not valid"
+        assert patch.description == "Format function", "description is not valid"
 
     def test_to_dict(self):
         """Test Patch to_dict method."""
@@ -67,11 +67,11 @@ class TestPatch:
 
         result = patch.to_dict()
 
-        assert result["file_path"] == "test.py"
-        assert result["rule_id"] == "WHITESPACE001"
-        assert result["tier"] == "A"
-        assert result["description"] == "Add spaces around assignment"
-        assert "diff" in result
+        assert result["file_path"] == "test.py", "Result must not be empty"
+        assert result["rule_id"] == "WHITESPACE001", "Result must not be empty"
+        assert result["tier"] == "A", "Result must not be empty"
+        assert result["description"] == "Add spaces around assignment", "Result must not be empty"
+        assert "diff" in result, "Result must not be empty"
 
 
 class TestTransformResult:
@@ -85,12 +85,12 @@ class TestTransformResult:
 
         result = TransformResult(snapshot_id="snap_123", timestamp=datetime.now(timezone.utc))
 
-        assert result.snapshot_id == "snap_123"
-        assert result.tier_a_patches == []
-        assert result.tier_b_patches == []
-        assert result.tier_c_suggestions == []
-        assert result.applied is False
-        assert result.errors == []
+        assert result.snapshot_id == "snap_123", "Result must not be empty"
+        assert result.tier_a_patches == [], "Result must not be empty"
+        assert result.tier_b_patches == [], "Result must not be empty"
+        assert result.tier_c_suggestions == [], "Result must not be empty"
+        assert result.applied is False, "Result must not be empty"
+        assert result.errors == [], "Result must not be empty"
 
     def test_to_dict(self):
         """Test TransformResult to_dict method."""
@@ -104,9 +104,9 @@ class TestTransformResult:
 
         d = result.to_dict()
 
-        assert d["snapshot_id"] == "snap_456"
-        assert d["applied"] is True
-        assert "timestamp" in d
+        assert d["snapshot_id"] == "snap_456", "Condition must be true"
+        assert d["applied"] is True, "Condition must be true"
+        assert "timestamp" in d, "Condition must be true"
 
 
 class TestModuleLevel:
@@ -116,5 +116,5 @@ class TestModuleLevel:
         """Test logger is configured."""
         from codex.transform.transformer import logger
 
-        assert logger is not None
-        assert logger.name == "codex.transform.transformer"
+        assert logger is not None, "logger must be initialized"
+        assert logger.name == "codex.transform.transformer", "name is not valid"

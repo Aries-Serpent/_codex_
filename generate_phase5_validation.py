@@ -526,6 +526,6 @@ with open(report_path, "w") as f:
     f.write(validation_md)
 
 print(f"✅ Validation report created: {report_path}")
-print(f"✅ JSON report: .codex/PHASE_5_COVERAGE_RESULTS.json")
-print(f"✅ Fixtures guide: .codex/PHASE_5_COVERAGE_FIXTURES.md")
-print(f"✅ Week 1 checkpoint: .codex/PHASE_5_WEEK1_CHECKPOINT.md")
+print("✅ JSON report: .codex/PHASE_5_COVERAGE_RESULTS.json")
+print("✅ Fixtures guide: .codex/PHASE_5_COVERAGE_FIXTURES.md")
+print("✅ Week 1 checkpoint: .codex/PHASE_5_WEEK1_CHECKPOINT.md")

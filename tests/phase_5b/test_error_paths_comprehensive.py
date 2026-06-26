@@ -61,8 +61,8 @@ class TestAuthenticatorErrorPaths:
         auth.register("alice", "alice@example.com", "password123")
         result = auth.login("alice", "password123")
 
-        assert result.user_id is not None
-        assert result.access_token is not None
+        assert result.user_id is not None, "user_id must be initialized"
+        assert result.access_token is not None, "access_token must be initialized"
 
     def test_login_wrong_password(self):
         """Test login with wrong password."""
@@ -98,11 +98,11 @@ class TestTokenManagerErrorPaths:
 
         # Generate access token
         token = manager.generate_access_token(user_id="user1")
-        assert token is not None
+        assert token is not None, "token must be initialized"
 
         # Validate token
         payload = manager.validate_token(token)
-        assert payload is not None
+        assert payload is not None, "payload must be initialized"
 
     def test_token_refresh_mechanism(self):
         """Test token refresh mechanism."""
@@ -113,12 +113,12 @@ class TestTokenManagerErrorPaths:
 
         # Create refresh token
         refresh_token = manager.generate_refresh_token(user_id="user1")
-        assert refresh_token is not None
+        assert refresh_token is not None, "refresh_token must be initialized"
 
         # Refresh access token
         try:
             new_access = manager.refresh_access_token(refresh_token)
-            assert new_access is not None
+            assert new_access is not None, "new_access must be initialized"
         except Exception as _err:
             # Some implementations may not support this
             pass
@@ -147,7 +147,7 @@ class TestTokenManagerErrorPaths:
         manager = TokenManager(secret_key="test-secret")
 
         session_token = manager.generate_session_token(user_id="user1")
-        assert session_token is not None
+        assert session_token is not None, "session_token must be initialized"
 
 
 # ============================================================================
@@ -164,7 +164,7 @@ class TestMonitoringErrorPaths:
         from codex.monitoring import PerformanceMonitor
 
         monitor = PerformanceMonitor()
-        assert monitor is not None
+        assert monitor is not None, "monitor must be initialized"
 
     def test_otel_metrics_initialization(self):
         """Test OTEL metrics initialization."""
@@ -173,7 +173,7 @@ class TestMonitoringErrorPaths:
             from codex.monitoring import otel_metrics
 
             # Should initialize without error
-            assert otel_metrics is not None
+            assert otel_metrics is not None, "otel_metrics must be initialized"
         except Exception as _err:
             # Optional dependency
             pass
@@ -214,7 +214,7 @@ class TestMLUtilsErrorPaths:
         from codex_ml.utils import retention
 
         # Should handle default retention
-        assert retention is not None
+        assert retention is not None, "retention must be initialized"
 
 
 # ============================================================================
@@ -231,7 +231,7 @@ class TestMLDataErrorPaths:
         from codex_ml import data
 
         # Should initialize without error
-        assert data is not None
+        assert data is not None, "data must be initialized"
 
 
 # ============================================================================
@@ -248,7 +248,7 @@ class TestRAGIngestionErrorPaths:
         from codex.rag import ingestion
 
         # Should import without error
-        assert ingestion is not None
+        assert ingestion is not None, "ingestion must be initialized"
 
     def test_chunker_basic_functionality(self):
         """Test chunker basic functionality."""
@@ -275,7 +275,7 @@ class TestValidationErrorPaths:
         from codex.rag.ingestion import validator
 
         # Should import without error
-        assert validator is not None
+        assert validator is not None, "validator must be initialized"
 
 
 # ============================================================================
@@ -390,7 +390,7 @@ class TestBoundaryConditions:
             return 1 + max(get_depth(v) for v in d.values())
 
         depth = get_depth(nested)
-        assert depth > 50
+        assert depth > 50, "depth must be greater than zero"
 
 
 # ============================================================================
@@ -407,7 +407,7 @@ class TestIntegrationErrors:
         from codex import auth
 
         # Should integrate without error
-        assert auth is not None
+        assert auth is not None, "auth must be initialized"
 
     def test_rag_module_integration(self):
         """Test RAG module integration."""
@@ -415,7 +415,7 @@ class TestIntegrationErrors:
         from codex import rag
 
         # Should integrate without error
-        assert rag is not None
+        assert rag is not None, "rag must be initialized"
 
     def test_monitoring_module_integration(self):
         """Test monitoring module integration."""
@@ -423,7 +423,7 @@ class TestIntegrationErrors:
         from codex import monitoring
 
         # Should integrate without error
-        assert monitoring is not None
+        assert monitoring is not None, "monitoring must be initialized"
 
 
 # ============================================================================
@@ -445,7 +445,7 @@ class TestStateConsistencyErrors:
 
         # Should detect inconsistency
         try:
-            assert state["version"] is not None
+            assert state["version"] is not None, "Value must be initialized"
         except AssertionError:
             pass  # Detected corruption
 
@@ -469,7 +469,7 @@ class TestStateConsistencyErrors:
             t.join()
 
         # Final value may be less than 300 due to race condition
-        assert state["counter"] <= 300
+        assert state["counter"] <= 300, "Count must be greater than zero"
 
 
 # ============================================================================
@@ -502,8 +502,8 @@ class TestErrorRecovery:
                 if attempt == retries - 1:
                     raise
 
-        assert result == "success"
-        assert call_count[0] == 3
+        assert result == "success", "Result must not be empty"
+        assert call_count[0] == 3, "Count must be greater than zero"
 
     def test_graceful_degradation(self):
         """Test graceful degradation when features unavailable."""
@@ -517,7 +517,7 @@ class TestErrorRecovery:
         else:
             result = "degraded"
 
-        assert result == "degraded"
+        assert result == "degraded", "Result must not be empty"
 
     def test_error_message_clarity(self):
         """Test error messages are clear and actionable."""
@@ -527,4 +527,4 @@ class TestErrorRecovery:
             raise ValueError("Expected config key 'timeout' not found in settings")
         except ValueError as e:
             error_msg = str(e)
-            assert "timeout" in error_msg.lower() or "config" in error_msg.lower()
+            assert "timeout" in error_msg.lower() or "config" in error_msg.lower(), "Error should be raised or set"

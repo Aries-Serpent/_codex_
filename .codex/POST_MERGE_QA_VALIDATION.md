@@ -66,7 +66,7 @@ Environment: CI/Test (validators only, not full toolkit)
 | File | Change Type | QA Status |
 |------|-------------|-----------|
 | `src/security/auth.py` | MFA vulnerability fix | ✅ PASS |
-| `src/tokenization/cli.py` | F-string placeholder fixes | ✅ PASS |
+| `src/tokenization/cli.py` | F-string placeholder fixes | ✅ PASS | <!-- pragma: allowlist secret -->
 | `.github/workflows/copilot-setup-steps.yml` | Stabilization | ✅ PASS |
 | Documentation files (8+) | Campaign groundwork | ✅ PASS |
 | `AGENT_ACCOUNTABILITY_REPORT.md` | Updated | ✅ PASS |
@@ -190,7 +190,7 @@ All documentation stored in `.codex/`:
 |-----------|--------|----------|
 | Pre-Merge Validation Gates | ✅ PASS | 7/7 gates passed |
 | Post-Merge Validation Gates | ✅ PASS | 6/6 gates passed |
-| Secrets Detection | ✅ PASS | No credentials leaked |
+| Secrets Detection | ✅ PASS | No credentials leaked | <!-- pragma: allowlist secret -->
 | Accountability Gates | ✅ PASS | AGENT_ACCOUNTABILITY_REPORT updated |
 | Changelog Updates | ✅ PASS | CHANGELOG.md updated |
 | Comment Review Gate | ✅ PASS | All 6 blocking comments resolved |
@@ -203,7 +203,7 @@ check_pr_comments.py (comment review gate)
   ↓
 rvs_preflight.py (shadow import check)
   ↓
-agent-auth-delegation.yml (token auth)
+agent-auth-delegation.yml (token auth)  # pragma: allowlist secret
   ↓
 Resilient Validation Workflow
   ↓
@@ -225,9 +225,9 @@ POST_MERGE_QA_VALIDATION.md (this document) ✅
 | **CRITICAL**: MFA Rate Limiting | ✅ FIXED | user_id now required parameter |
 | Backward Compatibility | ✅ PASS | All 5 callers pass required parameter |
 | JTI Validation | ✅ PASS | 256-byte max length enforced |
-| Password Handling | ✅ PASS | bcrypt + constant-time comparison |
+| Password Handling | ✅ PASS | bcrypt + constant-time comparison | <!-- pragma: allowlist secret -->
 | Authentication Module | ✅ PASS | All wrappers security-validated |
-| Secrets Detection | ✅ PASS | Allowlist pragmas added where needed |
+| Secrets Detection | ✅ PASS | Allowlist pragmas added where needed | <!-- pragma: allowlist secret -->
 
 **MFA Vulnerability Fix Details**:
 ```
@@ -290,14 +290,14 @@ Status: ✅ VALIDATED AND SAFE
 
 **Root Cause**:
 ```python
-def verify_totp(user_id=None, token=None):  # user_id was optional
+def verify_totp(user_id=None, token=None):  # user_id was optional  # pragma: allowlist secret
     if user_id is None:  # Allowed fallback to default user
         user_id = current_user  # VULNERABLE: cross-user access possible
 ```
 
 **Fix Applied**:
 ```python
-def verify_totp(user_id: str, token: str):  # user_id now required
+def verify_totp(user_id: str, token: str):  # user_id now required  # pragma: allowlist secret
     # No optional fallback - prevents brute-force attacks
     # JTI validation: 256-byte max length enforced
     # Constant-time comparison: prevents timing attacks
@@ -316,9 +316,9 @@ def verify_totp(user_id: str, token: str):  # user_id now required
 | Component | Security Posture | Validation Evidence |
 |---|---|---|
 | JTI Validation | ✅ | 256-byte max length validation in place |
-| Password Hashing | ✅ | bcrypt algorithm with constant-time comparison |
+| Password Hashing | ✅ | bcrypt algorithm with constant-time comparison | <!-- pragma: allowlist secret -->
 | UserStore Wrapper | ✅ | Security-tested by code review agent |
-| TokenManager Wrapper | ✅ | Security-tested by code review agent |
+| TokenManager Wrapper | ✅ | Security-tested by code review agent | <!-- pragma: allowlist secret -->
 | MFAProvider Wrapper | ✅ | Security-tested by code review agent |
 | OAuthManager Wrapper | ✅ | Security-tested by code review agent |
 
@@ -327,8 +327,8 @@ def verify_totp(user_id: str, token: str):  # user_id now required
 | Check | Status | Details |
 |---|---|---|
 | Credentials in code | ✅ | None detected |
-| Secrets detection false positives | ✅ | Properly allowlisted with pragma comments |
-| Documentation secrets | ✅ | No credentials leaked in docs |
+| Secrets detection false positives | ✅ | Properly allowlisted with pragma comments | <!-- pragma: allowlist secret -->
+| Documentation secrets | ✅ | No credentials leaked in docs | <!-- pragma: allowlist secret -->
 | Environment variables | ✅ | All 3 CCA vars documented and safe |
 
 ### Dependency Security

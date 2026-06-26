@@ -79,14 +79,14 @@ class TestQuantumGameTheoryEngineExpanded:
 
         state = StrategyState(team=TeamType.RED, strategies=["attack", "probe"])
 
-        assert state.team == TeamType.RED
-        assert "attack" in state.strategies
+        assert state.team == TeamType.RED, "team is not valid"
+        assert "attack" in state.strategies, "Condition must be true"
 
     def test_team_type_neutral(self):
         """Test neutral team type."""
         from agents.quantum_game_theory import TeamType
 
-        assert TeamType.NEUTRAL.value == "neutral"
+        assert TeamType.NEUTRAL.value == "neutral", "Value must be initialized"
 
 
 class TestWorkflowNavigatorExpanded:
@@ -97,9 +97,9 @@ class TestWorkflowNavigatorExpanded:
         from agents.workflow_navigator import WorkflowFrequency
 
         # Test all frequency values
-        assert WorkflowFrequency.LOW.value == "low"
-        assert WorkflowFrequency.MEDIUM.value == "medium"
-        assert WorkflowFrequency.HIGH.value == "high"
+        assert WorkflowFrequency.LOW.value == "low", "Value must be initialized"
+        assert WorkflowFrequency.MEDIUM.value == "medium", "Value must be initialized"
+        assert WorkflowFrequency.HIGH.value == "high", "Value must be initialized"
 
     def test_workflow_step_creation(self):
         """Test WorkflowStep creation."""
@@ -107,9 +107,9 @@ class TestWorkflowNavigatorExpanded:
 
         step = WorkflowStep(id="step1", action="Run tests", optional=True)
 
-        assert step.id == "step1"
-        assert step.action == "Run tests"
-        assert step.optional
+        assert step.id == "step1", "id is not valid"
+        assert step.action == "Run tests", "action is not valid"
+        assert step.optional, "Condition must be true"
 
 
 class TestAdvancedPhysicsExpanded:
@@ -127,9 +127,9 @@ class TestAdvancedPhysicsExpanded:
         scheduler.add_channel(ch1)
         scheduler.add_channel(ch2)
 
-        assert "ch1" in scheduler.channels
-        assert "ch2" in scheduler.channels
-        assert len(scheduler.channels) >= 2
+        assert "ch1" in scheduler.channels, "Condition must be true"
+        assert "ch2" in scheduler.channels, "Condition must be true"
+        assert len(scheduler.channels) >= 2, "Collection must not be empty"
 
     def test_chaotic_attractor_state_evolution(self):
         """Test chaotic attractor state changes."""
@@ -142,8 +142,8 @@ class TestAdvancedPhysicsExpanded:
         final = attractor.state
 
         # State should exist
-        assert initial is not None
-        assert final is not None
+        assert initial is not None, "initial must be initialized"
+        assert final is not None, "final must be initialized"
 
 
 class TestMentalMappingExpanded:
@@ -155,8 +155,8 @@ class TestMentalMappingExpanded:
 
         model = MentalMappingModel()
 
-        assert len(model.nodes) == 0
-        assert len(model.edges) == 0
+        assert len(model.nodes) == 0, "Collection must not be empty"
+        assert len(model.edges) == 0, "Collection must not be empty"
 
     def test_node_type_hypothesis(self):
         """Test hypothesis node type."""
@@ -164,7 +164,7 @@ class TestMentalMappingExpanded:
 
         # Check if HYPOTHESIS exists
         if hasattr(NodeType, "HYPOTHESIS"):
-            assert NodeType.HYPOTHESIS is not None
+            assert NodeType.HYPOTHESIS is not None, "HYPOTHESIS must be initialized"
         else:
             pytest.skip("HYPOTHESIS not in NodeType")
 
@@ -177,19 +177,19 @@ class TestSelfHealingExpanded:
         from agents.self_healing import IssueSeverity
 
         # All severity levels should exist
-        assert IssueSeverity.LOW is not None
-        assert IssueSeverity.MEDIUM is not None
-        assert IssueSeverity.HIGH is not None
-        assert IssueSeverity.CRITICAL is not None
+        assert IssueSeverity.LOW is not None, "LOW must be initialized"
+        assert IssueSeverity.MEDIUM is not None, "MEDIUM must be initialized"
+        assert IssueSeverity.HIGH is not None, "HIGH must be initialized"
+        assert IssueSeverity.CRITICAL is not None, "CRITICAL must be initialized"
 
     def test_issue_type_comprehensive(self):
         """Test all issue types."""
         from agents.self_healing import IssueType
 
         # Common issue types
-        assert IssueType.BUILD_FAILURE is not None
-        assert IssueType.TEST_FAILURE is not None
-        assert IssueType.LINT_ERROR is not None
+        assert IssueType.BUILD_FAILURE is not None, "BUILD_FAILURE must be initialized"
+        assert IssueType.TEST_FAILURE is not None, "TEST_FAILURE must be initialized"
+        assert IssueType.LINT_ERROR is not None, "LINT_ERROR must be initialized"
 
 
 class TestDeveloperOrchestratorExpanded:
@@ -207,7 +207,7 @@ class TestDeveloperOrchestratorExpanded:
                 description="Test",
             )
 
-            assert comp.component_id == "test"
+            assert comp.component_id == "test", "component_id is not valid"
         except TypeError:
             pytest.skip("CodeComponent signature differs")
 
@@ -218,7 +218,7 @@ class TestDeveloperOrchestratorExpanded:
         orch = PhysicsGuidedDeveloperOrchestrator()
 
         # Should start with no app type set
-        assert orch.app_type is None
+        assert orch.app_type is None, "app_type is not valid"
 
 
 class TestPhysicsIntegrationExpanded:
@@ -233,7 +233,7 @@ class TestPhysicsIntegrationExpanded:
 
         assert isinstance(caps, dict)
         # Should have some capability keys
-        assert any(
+        assert any(, "Condition must be true"
             "physics" in k.lower() or "chaos" in k.lower() or "fluid" in k.lower() for k in caps
         )
 
@@ -247,7 +247,7 @@ class TestExceptionsExpanded:
 
         error = AgentConfigError("Invalid config")
 
-        assert "Invalid config" in str(error)
+        assert "Invalid config" in str(error), "Error should be raised or set"
         assert isinstance(error, ValueError)
 
     def test_agent_validation_error(self):
@@ -256,7 +256,7 @@ class TestExceptionsExpanded:
 
         error = AgentValidationError("Validation failed")
 
-        assert "Validation failed" in str(error)
+        assert "Validation failed" in str(error), "Error should be raised or set"
         assert isinstance(error, ValueError)
 
     def test_bound_check_error(self):
@@ -265,7 +265,7 @@ class TestExceptionsExpanded:
 
         error = BoundCheckError("Bound violated")
 
-        assert "Bound violated" in str(error)
+        assert "Bound violated" in str(error), "Error should be raised or set"
 
 
 class TestCodexClientExpanded:
@@ -278,7 +278,7 @@ class TestCodexClientExpanded:
 
             # Should be a valid module with __name__
             assert hasattr(bridge, "__name__")
-            assert "bridge" in bridge.__name__
+            assert "bridge" in bridge.__name__, "Condition must be true"
         except ImportError:
             pytest.skip("bridge requires dependencies")
 
@@ -288,7 +288,7 @@ class TestCodexClientExpanded:
             from agents.codex_client.codex_client import models
 
             assert hasattr(models, "__name__")
-            assert "models" in models.__name__
+            assert "models" in models.__name__, "Condition must be true"
         except ImportError:
             pytest.skip("models requires dependencies")
 
@@ -305,8 +305,8 @@ class TestMultiOrchestratorPatterns:
         orch1 = PhysicsInspiredOrchestrator()
         orch2 = HybridPhysicsOrchestrator()
 
-        assert orch1 is not None
-        assert orch2 is not None
+        assert orch1 is not None, "orch1 must be initialized"
+        assert orch2 is not None, "orch2 must be initialized"
 
     def test_coherence_consistency_pattern(self):
         """Test coherence patterns (Table 3, Eq #15)."""
@@ -317,5 +317,5 @@ class TestMultiOrchestratorPatterns:
         state2 = StrategyState(team=TeamType.RED, strategies=["s1"])
 
         # Both should have valid probability structures
-        assert state1.probabilities is not None
-        assert state2.probabilities is not None
+        assert state1.probabilities is not None, "probabilities must be initialized"
+        assert state2.probabilities is not None, "probabilities must be initialized"

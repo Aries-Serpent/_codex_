@@ -251,7 +251,7 @@ class ArchiveManager:
 
         except (ValueError, TypeError, RuntimeError) as e:
             error_type = type(e).__name__
-            logger.error(f"Error identifying archive candidates: <ERROR_TYPE>")
+            logger.error("Error identifying archive candidates: <ERROR_TYPE>")
             return []
 
     def purge_old_archives(self, iterations: int = 30) -> Dict[str, Any]:
@@ -321,7 +321,7 @@ class ArchiveManager:
 
         except (ValueError, TypeError, RuntimeError) as e:
             error_type = type(e).__name__
-            logger.error(f"Error purging old archives: <ERROR_TYPE>")
+            logger.error("Error purging old archives: <ERROR_TYPE>")
             return report
 
     def update_archive_index(self) -> Dict[str, Any]:
@@ -387,7 +387,7 @@ class ArchiveManager:
 
         except (ValueError, TypeError, RuntimeError) as e:
             error_type = type(e).__name__
-            logger.error(f"Error updating archive index: <ERROR_TYPE>")
+            logger.error("Error updating archive index: <ERROR_TYPE>")
             return {"sessions": [], "statistics": {}}
 
     # Private methods
@@ -523,4 +523,4 @@ class ArchiveManager:
 
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.error(f"Error logging retention action: <ERROR_TYPE>")
+            logger.error("Error logging retention action: <ERROR_TYPE>")

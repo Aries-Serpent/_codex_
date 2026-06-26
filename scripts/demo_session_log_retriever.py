@@ -201,7 +201,7 @@ def main():
 
     except Exception as e:
         error_type = type(e).__name__
-        print(f"\n❌ Error: <ERROR_TYPE>")
+        print("\n❌ Error: <ERROR_TYPE>")
         import traceback
         traceback.print_exc()
         return 1

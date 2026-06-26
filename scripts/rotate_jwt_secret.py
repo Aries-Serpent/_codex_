@@ -186,7 +186,7 @@ class JWTSecretRotator:
                 return False
         except Exception as e:
             error_type = type(e).__name__
-            print(f"✗ Secret validation error: <ERROR_TYPE>")
+            print("✗ Secret validation error: <ERROR_TYPE>")
             return False
 
         print("✓ Secret validation passed")
@@ -204,7 +204,7 @@ class JWTSecretRotator:
             print(f"✓ Updated GitHub Secret: {name}")
         except Exception as e:
             error_type = type(e).__name__
-            print(f"Warning: Could not update GitHub Secret: <ERROR_TYPE>")
+            print("Warning: Could not update GitHub Secret: <ERROR_TYPE>")
 
     def record_rotation(self, new_secret: str, backup_file: str) -> None:
         """Record rotation metadata."""
@@ -247,7 +247,7 @@ class JWTSecretRotator:
                 return datetime.fromisoformat(last['timestamp'])
         except Exception as e:
             error_type = type(e).__name__
-            print(f"Warning: Could not read rotation log: <ERROR_TYPE>")
+            print("Warning: Could not read rotation log: <ERROR_TYPE>")
 
         return None
 
@@ -336,7 +336,7 @@ def main():
 
     except Exception as e:
         error_type = type(e).__name__
-        print(f"Error: <ERROR_TYPE>", file=sys.stderr)
+        print("Error: <ERROR_TYPE>", file=sys.stderr)
         sys.exit(1)
 
 

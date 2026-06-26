@@ -26,5 +26,5 @@ def test_cli_help_runs():
         text=True,
         cwd=str(repo_root),
     )
-    assert result.returncode == 0
-    assert "powered by hydra" in result.stdout.lower()
+    assert result.returncode == 0, "Result must not be empty"
+    assert "powered by hydra" in result.stdout.lower(), "Result must not be empty"

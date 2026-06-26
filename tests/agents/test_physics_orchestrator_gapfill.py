@@ -44,9 +44,9 @@ class TestQuantumState:
         """Test QuantumState initialization with amplitudes."""
         amplitudes = {"up": complex(0.707, 0), "down": complex(0.707, 0)}
         state = QuantumState(amplitudes=amplitudes)
-        assert state is not None
-        assert "up" in state.amplitudes
-        assert "down" in state.amplitudes
+        assert state is not None, "state must be initialized"
+        assert "up" in state.amplitudes, "Condition must be true"
+        assert "down" in state.amplitudes, "Condition must be true"
 
     def test_amplitude_normalization(self):
         """Test that amplitudes are normalized after initialization."""
@@ -55,7 +55,7 @@ class TestQuantumState:
 
         # Check normalization: sum of |α|² should be 1
         norm_sum = sum(abs(a) ** 2 for a in state.amplitudes.values())
-        assert abs(norm_sum - 1.0) < 0.001
+        assert abs(norm_sum - 1.0) < 0.001, "Condition must be true"
 
     def test_probability_calculation(self):
         """Test Born rule probability calculation: P = |α|²."""
@@ -66,9 +66,9 @@ class TestQuantumState:
         prob_head = state.probability("head")
         prob_tail = state.probability("tail")
 
-        assert 0 <= prob_head <= 1
-        assert 0 <= prob_tail <= 1
-        assert abs(prob_head + prob_tail - 1.0) < 0.001
+        assert 0 <= prob_head <= 1, "0 is not valid"
+        assert 0 <= prob_tail <= 1, "0 is not valid"
+        assert abs(prob_head + prob_tail - 1.0) < 0.001, "Condition must be true"
 
     def test_probability_nonexistent_state(self):
         """Test probability for state not in superposition."""
@@ -76,7 +76,7 @@ class TestQuantumState:
         state = QuantumState(amplitudes=amplitudes)
 
         prob = state.probability("nonexistent")
-        assert prob == 0.0
+        assert prob == 0.0, "prob is not valid"
 
     def test_get_probabilities(self):
         """Test getting full probability distribution."""
@@ -85,9 +85,9 @@ class TestQuantumState:
 
         probs = state.get_probabilities()
         assert isinstance(probs, dict)
-        assert "x" in probs
-        assert "y" in probs
-        assert abs(sum(probs.values()) - 1.0) < 0.001
+        assert "x" in probs, "Condition must be true"
+        assert "y" in probs, "Condition must be true"
+        assert abs(sum(probs.values()) - 1.0) < 0.001, "Value must be initialized"
 
     def test_state_collapse(self):
         """Test measurement collapses superposition to single state."""
@@ -95,9 +95,9 @@ class TestQuantumState:
         state = QuantumState(amplitudes=amplitudes)
 
         collapsed = state.collapse()
-        assert collapsed in state.amplitudes
+        assert collapsed in state.amplitudes, "Condition must be true"
         # Should collapse to highest probability state
-        assert collapsed == "option_a"  # 0.9² > 0.436²
+        assert collapsed == "option_a", "collapsed is not valid"
 
     def test_phase_application(self):
         """Test applying quantum phase rotation."""
@@ -110,15 +110,15 @@ class TestQuantumState:
 
         rotated_amp = state.amplitudes["state"]
         # Magnitude should be preserved, phase should rotate
-        assert abs(abs(initial_amp) - abs(rotated_amp)) < 0.001
+        assert abs(abs(initial_amp) - abs(rotated_amp)) < 0.001, "Condition must be true"
 
     def test_basis_state_initialization(self):
         """Test basis states are properly set."""
         amplitudes = {"a": complex(0.707, 0), "b": complex(0.707, 0)}
         state = QuantumState(amplitudes=amplitudes, basis_states=["a", "b"])
 
-        assert "a" in state.basis_states
-        assert "b" in state.basis_states
+        assert "a" in state.basis_states, "Condition must be true"
+        assert "b" in state.basis_states, "Condition must be true"
 
 
 class TestEntangledDependency:
@@ -129,9 +129,9 @@ class TestEntangledDependency:
         dep = EntangledDependency(
             decision_a="task_1", decision_b="task_2", correlation=0.8, strength=1.0
         )
-        assert dep is not None
-        assert dep.correlation == 0.8
-        assert dep.strength == 1.0
+        assert dep is not None, "dep must be initialized"
+        assert dep.correlation == 0.8, "correlation is not valid"
+        assert dep.strength == 1.0, "strength is not valid"
 
     def test_joint_probability_perfect_correlation(self):
         """Test joint probability with perfect positive correlation."""
@@ -141,9 +141,9 @@ class TestEntangledDependency:
         prob_same = dep.joint_probability(True, True)
         prob_diff = dep.joint_probability(True, False)
 
-        assert prob_same > prob_diff
-        assert 0 <= prob_same <= 1
-        assert 0 <= prob_diff <= 1
+        assert prob_same > prob_diff, "prob_same must be greater than zero"
+        assert 0 <= prob_same <= 1, "0 is not valid"
+        assert 0 <= prob_diff <= 1, "0 is not valid"
 
     def test_joint_probability_anti_correlation(self):
         """Test joint probability with perfect anti-correlation."""
@@ -153,7 +153,7 @@ class TestEntangledDependency:
         prob_diff = dep.joint_probability(True, False)
         prob_same = dep.joint_probability(True, True)
 
-        assert prob_diff > prob_same
+        assert prob_diff > prob_same, "prob_diff must be greater than zero"
 
     def test_joint_probability_no_correlation(self):
         """Test joint probability with no entanglement."""
@@ -161,7 +161,7 @@ class TestEntangledDependency:
 
         # All outcomes should have equal probability (0.25)
         prob = dep.joint_probability(True, True)
-        assert abs(prob - 0.25) < 0.001
+        assert abs(prob - 0.25) < 0.001, "Condition must be true"
 
     def test_joint_probability_weak_entanglement(self):
         """Test joint probability with weak entanglement."""
@@ -169,7 +169,7 @@ class TestEntangledDependency:
 
         prob = dep.joint_probability(True, True)
         # Should be between 0.25 and something higher
-        assert 0.25 <= prob <= 0.5
+        assert 0.25 <= prob <= 0.5, "25 is not valid"
 
 
 class TestQuantumWalkExplorer:
@@ -179,11 +179,11 @@ class TestQuantumWalkExplorer:
         """Test QuantumWalkExplorer initialization."""
         try:
             explorer = QuantumWalkExplorer()
-            assert explorer is not None
+            assert explorer is not None, "explorer must be initialized"
         except TypeError:
             # May require parameters
             explorer = QuantumWalkExplorer(num_steps=10)
-            assert explorer is not None
+            assert explorer is not None, "explorer must be initialized"
 
     def test_walk_step(self):
         """Test performing a quantum walk step."""
@@ -192,7 +192,7 @@ class TestQuantumWalkExplorer:
             if hasattr(explorer, "step"):
                 state = explorer.step()
                 # State may be None or have actual value
-                assert state is None or state is not None
+                assert state is None or state is not None, "state must be initialized"
         except (TypeError, AttributeError):
             # May not have these exact methods
             pass
@@ -203,7 +203,7 @@ class TestQuantumWalkExplorer:
             explorer = QuantumWalkExplorer()
             if hasattr(explorer, "get_amplitudes"):
                 amps = explorer.get_amplitudes()
-                assert amps is not None
+                assert amps is not None, "amps must be initialized"
         except (TypeError, AttributeError):
             pass
 
@@ -215,10 +215,10 @@ class TestSuperpositionExplorer:
         """Test SuperpositionExplorer initialization."""
         try:
             explorer = SuperpositionExplorer()
-            assert explorer is not None
+            assert explorer is not None, "explorer must be initialized"
         except TypeError:
             explorer = SuperpositionExplorer(num_states=4)
-            assert explorer is not None
+            assert explorer is not None, "explorer must be initialized"
 
     def test_superposition_generation(self):
         """Test generating superposition of states."""
@@ -226,7 +226,7 @@ class TestSuperpositionExplorer:
             explorer = SuperpositionExplorer()
             if hasattr(explorer, "create_superposition"):
                 super_pos = explorer.create_superposition(["state_1", "state_2"])
-                assert super_pos is not None
+                assert super_pos is not None, "super_pos must be initialized"
         except (TypeError, AttributeError):
             pass
 
@@ -236,10 +236,10 @@ class TestSuperpositionExplorer:
             explorer = SuperpositionExplorer()
             if hasattr(explorer, "get_measurement_dist"):
                 dist = explorer.get_measurement_dist()
-                assert dist is not None
+                assert dist is not None, "dist must be initialized"
                 # Should be probability distribution
                 if isinstance(dist, dict):
-                    assert all(0 <= v <= 1 for v in dist.values())
+                    assert all(0 <= v <= 1 for v in dist.values()), "Value must be initialized"
         except (TypeError, AttributeError):
             pass
 
@@ -251,10 +251,10 @@ class TestPINNValidator:
         """Test PINNValidator initialization."""
         try:
             validator = PINNValidator()
-            assert validator is not None
+            assert validator is not None, "validator must be initialized"
         except TypeError:
             validator = PINNValidator(pde_order=2)
-            assert validator is not None
+            assert validator is not None, "validator must be initialized"
 
     def test_residual_calculation(self):
         """Test PDE residual calculation."""
@@ -262,7 +262,7 @@ class TestPINNValidator:
             validator = PINNValidator()
             if hasattr(validator, "compute_residual"):
                 residual = validator.compute_residual([0.1, 0.2])
-                assert residual is not None
+                assert residual is not None, "residual must be initialized"
                 assert isinstance(residual, (int, float, list))
         except (TypeError, AttributeError):
             pass
@@ -273,7 +273,7 @@ class TestPINNValidator:
             validator = PINNValidator()
             if hasattr(validator, "apply_bc"):
                 result = validator.apply_bc(0.0, 0.0)
-                assert result is not None
+                assert result is not None, "result must be initialized"
         except (TypeError, AttributeError):
             pass
 
@@ -285,10 +285,10 @@ class TestQuantumPhysicsOrchestrator:
         """Test QuantumPhysicsOrchestrator initialization."""
         try:
             orchestrator = QuantumPhysicsOrchestrator()
-            assert orchestrator is not None
+            assert orchestrator is not None, "orchestrator must be initialized"
         except TypeError:
             orchestrator = QuantumPhysicsOrchestrator(num_decisions=4)
-            assert orchestrator is not None
+            assert orchestrator is not None, "orchestrator must be initialized"
 
     def test_orchestrate_method(self):
         """Test orchestration of quantum decisions."""
@@ -296,7 +296,7 @@ class TestQuantumPhysicsOrchestrator:
             orchestrator = QuantumPhysicsOrchestrator()
             if hasattr(orchestrator, "orchestrate"):
                 decisions = orchestrator.orchestrate({"options": [1, 2, 3]})
-                assert decisions is not None
+                assert decisions is not None, "decisions must be initialized"
         except (TypeError, AttributeError):
             pass
 
@@ -306,7 +306,7 @@ class TestQuantumPhysicsOrchestrator:
             orchestrator = QuantumPhysicsOrchestrator()
             if hasattr(orchestrator, "create_superposition"):
                 super_pos = orchestrator.create_superposition([1, 2, 3])
-                assert super_pos is not None
+                assert super_pos is not None, "super_pos must be initialized"
         except (TypeError, AttributeError):
             pass
 
@@ -318,10 +318,10 @@ class TestPathIntegralCalculator:
         """Test PathIntegralCalculator initialization."""
         try:
             calculator = PathIntegralCalculator()
-            assert calculator is not None
+            assert calculator is not None, "calculator must be initialized"
         except TypeError:
             calculator = PathIntegralCalculator(num_paths=100)
-            assert calculator is not None
+            assert calculator is not None, "calculator must be initialized"
 
     def test_path_enumeration(self):
         """Test enumerating all paths."""
@@ -329,7 +329,7 @@ class TestPathIntegralCalculator:
             calculator = PathIntegralCalculator()
             if hasattr(calculator, "enumerate_paths"):
                 paths = calculator.enumerate_paths((0, 0), (1, 1))
-                assert paths is not None
+                assert paths is not None, "paths must be initialized"
                 assert isinstance(paths, (list, tuple))
         except (TypeError, AttributeError):
             pass
@@ -341,7 +341,7 @@ class TestPathIntegralCalculator:
             if hasattr(calculator, "compute_action"):
                 path = [(0, 0), (0.5, 0.5), (1, 1)]
                 action = calculator.compute_action(path)
-                assert action is not None
+                assert action is not None, "action must be initialized"
                 assert isinstance(action, (int, float))
         except (TypeError, AttributeError):
             pass
@@ -354,10 +354,10 @@ class TestHamiltonianEvolver:
         """Test HamiltonianEvolver initialization."""
         try:
             evolver = HamiltonianEvolver()
-            assert evolver is not None
+            assert evolver is not None, "evolver must be initialized"
         except TypeError:
             evolver = HamiltonianEvolver("kinetic")
-            assert evolver is not None
+            assert evolver is not None, "evolver must be initialized"
 
     def test_hamiltonian_evolution(self):
         """Test Hamiltonian time evolution."""
@@ -366,7 +366,7 @@ class TestHamiltonianEvolver:
             if hasattr(evolver, "evolve"):
                 initial_state = [0.1, 0.2, 0.3]
                 final_state = evolver.evolve(initial_state, time=0.1)
-                assert final_state is not None
+                assert final_state is not None, "final_state must be initialized"
         except (TypeError, AttributeError):
             pass
 
@@ -376,7 +376,7 @@ class TestHamiltonianEvolver:
             evolver = HamiltonianEvolver()
             if hasattr(evolver, "get_energy"):
                 energy = evolver.get_energy([1, 0, 0])
-                assert energy is not None
+                assert energy is not None, "energy must be initialized"
                 assert isinstance(energy, (int, float))
         except (TypeError, AttributeError):
             pass
@@ -389,7 +389,7 @@ class TestPhysicsCalculatorSuite:
         """Test PhysicsCalculatorSuite initialization."""
         try:
             suite = PhysicsCalculatorSuite()
-            assert suite is not None
+            assert suite is not None, "suite must be initialized"
         except TypeError:
             # May require parameters
             pass
@@ -400,7 +400,7 @@ class TestPhysicsCalculatorSuite:
             suite = PhysicsCalculatorSuite()
             if hasattr(suite, "list_calculators"):
                 calcs = suite.list_calculators()
-                assert calcs is not None
+                assert calcs is not None, "calcs must be initialized"
         except (TypeError, AttributeError):
             pass
 
@@ -410,7 +410,7 @@ class TestPhysicsCalculatorSuite:
             suite = PhysicsCalculatorSuite()
             if hasattr(suite, "get_calculator"):
                 calc = suite.get_calculator("quantum")
-                assert calc is not None
+                assert calc is not None, "calc must be initialized"
         except (TypeError, AttributeError):
             pass
 
@@ -430,7 +430,7 @@ class TestQuantumPhysicsIntegration:
             state.apply_phase("ground", math.pi / 4)
             result = state.collapse()
 
-            assert result in state.amplitudes
+            assert result in state.amplitudes, "Result must not be empty"
         except Exception as e:
             pytest.skip(f"Quantum evolution failed: {e}")
 
@@ -444,13 +444,13 @@ class TestQuantumPhysicsIntegration:
 
             # Get joint probability
             prob = entanglement.joint_probability(True, True)
-            assert 0 <= prob <= 1
+            assert 0 <= prob <= 1, "0 is not valid"
 
             # Check consistency
             prob_sum = sum(
                 entanglement.joint_probability(a, b) for a in [True, False] for b in [True, False]
             )
-            assert abs(prob_sum - 1.0) < 0.001
+            assert abs(prob_sum - 1.0) < 0.001, "Condition must be true"
         except Exception as e:
             pytest.skip(f"Entanglement test failed: {e}")
 
@@ -466,7 +466,7 @@ class TestQuantumPhysicsIntegration:
                 collapses.append(collapsed)
 
             # Should always collapse to same state (deterministic)
-            assert len(set(collapses)) == 1
+            assert len(set(collapses)) == 1, "Collection must not be empty"
         except Exception as e:
             pytest.skip(f"Superposition collapse test failed: {e}")
 

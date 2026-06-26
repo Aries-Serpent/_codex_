@@ -29,10 +29,10 @@ def test_bestk_basic():
             _fake_save(ckpt)
             res = update_and_prune(ckpt, metric=float(step), k=3, index_path=index)
             kept = res["kept"]
-        assert len(kept) <= 3
+        assert len(kept) <= 3, "Kept must not be empty"
         # Ensure index reflects ≤ k entries
         data = json.loads(index.read_text())
-        assert len(data["entries"]) <= 3
+        assert len(data["entries"]) <= 3, "Collection must not be empty"
 
 
 def test_bestk_dry_run():
@@ -43,8 +43,8 @@ def test_bestk_dry_run():
         _fake_save(ckpt)
         res = update_and_prune(ckpt, metric=0.1, k=1, index_path=index, dry_run=True)
         # Index not written
-        assert not index.exists()
-        assert res["dry_run"] is True
+        assert not index.exists(), "Condition must be true"
+        assert res["dry_run"] is True, "Condition must be true"
 
 
 def test_bestk_keep_last_trim():
@@ -74,7 +74,7 @@ def test_bestk_keep_last_trim():
 
         # Verify index on disk also has exactly k entries
         data = json.loads(index.read_text())
-        assert len(data["entries"]) == 3
+        assert len(data["entries"]) == 3, "Collection must not be empty"
         _fake_save(ckpt_worst)
         res = update_and_prune(ckpt_worst, metric=10.0, k=3, index_path=index, keep_last=True)
 
@@ -107,7 +107,7 @@ def test_bestk_maximize_mode():
 
         # Load index and verify best 2 are kept (0.5 and 0.9)
         data = json.loads(index.read_text())
-        assert len(data["entries"]) == 2
+        assert len(data["entries"]) == 2, "Collection must not be empty"
         metrics = sorted([e["metric"] for e in data["entries"]], reverse=True)
         assert metrics == [0.9, 0.5]
 
@@ -119,17 +119,17 @@ def test_bestk_empty_index_initialization():
         index = td / "index.json"
 
         # Index doesn't exist initially
-        assert not index.exists()
+        assert not index.exists(), "Condition must be true"
 
         ckpt = td / "checkpoint_0.pt"
         _fake_save(ckpt)
         update_and_prune(ckpt, metric=1.0, k=3, index_path=index)
 
         # Index created with one entry
-        assert index.exists()
+        assert index.exists(), "Condition must be true"
         data = json.loads(index.read_text())
-        assert len(data["entries"]) == 1
-        assert data["k"] == 3
+        assert len(data["entries"]) == 1, "Collection must not be empty"
+        assert data["k"] == 3, "Data must not be empty"
 
 
 def test_bestk_invalid_checkpoint_path():
@@ -143,12 +143,12 @@ def test_bestk_invalid_checkpoint_path():
         try:
             res = update_and_prune(nonexistent, metric=1.0, k=3, index_path=index)
             # If it succeeds, verify it's recorded
-            assert isinstance(
+            assert isinstance(, "Condition must be true"
                 res["kept"], (list, tuple, set, dict)
             )  # was: len() >= 0 (always true)
         except (FileNotFoundError, ValueError) as e:
             # Expected behavior for missing file
-            assert "exist" in str(e).lower() or "not found" in str(e).lower()
+            assert "exist" in str(e).lower() or "not found" in str(e).lower(), "Condition must be true"
 
 
 def test_bestk_corrupt_index_recovery():
@@ -167,9 +167,9 @@ def test_bestk_corrupt_index_recovery():
         try:
             update_and_prune(ckpt, metric=1.0, k=3, index_path=index)
             # If it recovers, verify it created valid index
-            assert index.exists()
+            assert index.exists(), "Condition must be true"
             data = json.loads(index.read_text())
-            assert "entries" in data
+            assert "entries" in data, "Data must not be empty"
         except (json.JSONDecodeError, ValueError) as e:
             # Expected if corruption is not handled
-            assert "json" in str(e).lower() or "parse" in str(e).lower()
+            assert "json" in str(e).lower() or "parse" in str(e).lower(), "Condition must be true"

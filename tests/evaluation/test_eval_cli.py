@@ -99,9 +99,9 @@ def test_run_command_json_output(tmp_path: Path, monkeypatch):
 
     # Ensure NDJSON log file was written
     ndjson_file = tmp_path / "metrics.ndjson"
-    assert ndjson_file.exists()
+    assert ndjson_file.exists(), "Condition must be true"
     lines = [json.loads(line) for line in ndjson_file.read_text().splitlines() if line.strip()]
-    assert any(rec.get("type") == "epoch" for rec in lines)
+    assert any(rec.get("type") == "epoch" for rec in lines), "Condition must be true"
 
 
 def test_report_command_and_compare(tmp_path: Path):
@@ -126,7 +126,7 @@ def test_report_command_and_compare(tmp_path: Path):
     r1 = runner.invoke(eval_cli.app, ["report", "--input", str(nd1), "--json"])
     assert r1.exit_code == 0, r1.stdout
     out = json.loads(r1.stdout)
-    assert out["loss"] == 1.0 and out["count"] == 6
+    assert out["loss"] == 1.0 and out["count"] == 6, "Count must be greater than zero"
 
     # Report with compare that matches
     r2 = runner.invoke(
@@ -134,14 +134,14 @@ def test_report_command_and_compare(tmp_path: Path):
     )
     assert r2.exit_code == 0, r2.stdout
     out2 = json.loads(r2.stdout)
-    assert out2.get("determinism_match") is True
+    assert out2.get("determinism_match") is True, "Condition must be true"
 
     # Now change m2 to force mismatch
     epoch2["loss"] = 0.9
     nd2.write_text(json.dumps(epoch2) + "\n")
     r3 = runner.invoke(eval_cli.app, ["report", "--input", str(nd1), "--compare", str(nd2)])
-    assert r3.exit_code == 4
-    assert "Determinism mismatch" in r3.stderr or "Determinism mismatch" in r3.stdout
+    assert r3.exit_code == 4, "exit_code is not valid"
+    assert "Determinism mismatch" in r3.stderr or "Determinism mismatch" in r3.stdout, "Condition must be true"
 
 
 def test_run_command_invalid_config(tmp_path: Path, monkeypatch):
@@ -152,9 +152,9 @@ def test_run_command_invalid_config(tmp_path: Path, monkeypatch):
 
     monkeypatch.setattr(eval_cli, "_load_config", fake_load_config)
     res = runner.invoke(eval_cli.app, ["run", "--config", str(tmp_path / "fake.json")])
-    assert res.exit_code == 2
+    assert res.exit_code == 2, "exit_code is not valid"
     # typer writes to stderr by default with err=True
-    assert "Config must inject" in res.stderr or "Config must inject" in res.stdout
+    assert "Config must inject" in res.stderr or "Config must inject" in res.stdout, "Condition must be true"
 
 
 def test_load_config_toml(tmp_path: Path):
@@ -170,8 +170,8 @@ dataset = "test_data"
 
     # Should not raise ModuleNotFoundError on Python <3.11
     cfg = eval_cli._load_config(toml_config)
-    assert cfg["model"]["name"] == "test_model"
-    assert cfg["data"]["dataset"] == "test_data"
+    assert cfg["model"]["name"] == "test_model", "Condition must be true"
+    assert cfg["data"]["dataset"] == "test_data", "Data must not be empty"
 
 
 def test_load_config_json(tmp_path: Path):
@@ -180,8 +180,8 @@ def test_load_config_json(tmp_path: Path):
     json_config.write_text('{"model": {"name": "test"}, "data": {"dataset": "test"}}')
 
     cfg = eval_cli._load_config(json_config)
-    assert cfg["model"]["name"] == "test"
-    assert cfg["data"]["dataset"] == "test"
+    assert cfg["model"]["name"] == "test", "Condition must be true"
+    assert cfg["data"]["dataset"] == "test", "Data must not be empty"
 
 
 def test_run_command_with_invalid_device(tmp_path: Path, monkeypatch):
@@ -288,4 +288,4 @@ def test_run_command_with_deterministic_flag(tmp_path: Path, monkeypatch):
     )
     assert result.exit_code == 0, result.stdout
     data = json.loads(result.stdout)
-    assert "loss" in data
+    assert "loss" in data, "Data must not be empty"

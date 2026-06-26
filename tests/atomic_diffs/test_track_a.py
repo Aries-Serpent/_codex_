@@ -43,8 +43,8 @@ def tokenizer_path(tmp_path: Path) -> Path:
 def test_load_tokenizer_from_file(tokenizer_path: Path) -> None:
     tokenizer = load_tokenizer({"tokenizer_file": tokenizer_path})
     ids = tokenizer("hello world", return_attention_mask=False)["input_ids"]
-    assert ids[0] == 0 and ids[1] == 1
-    assert tokenizer.pad_token_id is not None
+    assert ids[0] == 0 and ids[1] == 1, "Condition must be true"
+    assert tokenizer.pad_token_id is not None, "pad_token_id must be initialized"
 
 
 def test_predict_endpoint_generates_text(tokenizer_path: Path) -> None:
@@ -58,9 +58,9 @@ def test_predict_endpoint_generates_text(tokenizer_path: Path) -> None:
 
     client = TestClient(api_app.app)
     response = client.post("/predict", json={"prompt": "hello"})
-    assert response.status_code == 200
+    assert response.status_code == 200, "Response must not be empty"
     payload = response.json()
-    assert payload["output"].strip() != ""
+    assert payload["output"].strip() != "", "Condition must be true"
 
 
 def test_denylist_blocks_prompt() -> None:
@@ -83,9 +83,9 @@ def test_training_cli_checkpoint_cycle(tmp_path: Path, tokenizer_path: Path) -> 
             "max_steps": 2,
         }
     )
-    assert result.checkpoint_path.exists()
+    assert result.checkpoint_path.exists(), "Result must not be empty"
     payload = checkpointing.load_training_checkpoint(result.checkpoint_path)
-    assert "model_state_dict" in payload
+    assert "model_state_dict" in payload, "Condition must be true"
 
     resumed = train_codex.run_training(
         {
@@ -96,4 +96,4 @@ def test_training_cli_checkpoint_cycle(tmp_path: Path, tokenizer_path: Path) -> 
             "codex_resume_checkpoint": str(result.checkpoint_path),
         }
     )
-    assert resumed.checkpoint_path.exists()
+    assert resumed.checkpoint_path.exists(), "Condition must be true"

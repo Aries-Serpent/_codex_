@@ -29,7 +29,7 @@ class TestMigrateDataCLI:
         assert result.returncode in (0, 1, 2)
         # Should contain some help text
         if result.returncode == 0:
-            assert "migrate" in result.stdout.lower() or "help" in result.stdout.lower()
+            assert "migrate" in result.stdout.lower() or "help" in result.stdout.lower(), "Result must not be empty"
 
     def test_migrate_command_help(self):
         """Test migrate subcommand help."""
@@ -56,7 +56,7 @@ class TestMigrateDataCLI:
             timeout=30,
         )
         # Should fail with error about missing file
-        assert result.returncode != 0
+        assert result.returncode != 0, "Result must not be empty"
 
     def test_migrate_with_valid_input(self):
         """Test migrate with a valid input file."""
@@ -107,7 +107,7 @@ class TestMigrateDataFunctions:
         """Test that migrate function uses AssignmentMappingMigration."""
         try:
             # Migration class should be importable
-            assert mock_migration_class is not None
+            assert mock_migration_class is not None, "mock_migration_class must be initialized"
         except ImportError as e:
             pytest.skip(f"Migration import failed: {e}")
 
@@ -119,14 +119,14 @@ class TestVersionDetection:
         """Test auto-detection of v1.0 format."""
         v1_data = {"version": "1.0", "mappings": []}
         # Should be detected as v1.0
-        assert v1_data.get("version") == "1.0"
+        assert v1_data.get("version") == "1.0", "Data must not be empty"
 
     def test_version_auto_detection_v2(self):
         """Test auto-detection of v2.0 format."""
         v2_data = {"version": "2.0", "schema_version": "2.0", "assignments": []}
-        assert v2_data.get("version") == "2.0"
+        assert v2_data.get("version") == "2.0", "Data must not be empty"
 
     def test_version_auto_detection_v3(self):
         """Test auto-detection of v3.0 format."""
         v3_data = {"version": "3.0", "metadata": {"created": "2026-01-01"}, "assignments": []}
-        assert v3_data.get("version") == "3.0"
+        assert v3_data.get("version") == "3.0", "Data must not be empty"

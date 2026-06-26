@@ -128,7 +128,7 @@ def embed_chunks(
 
     except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
         error_type = type(e).__name__
-        logger.error(f"Failed to load embedding model: <ERROR_TYPE>")
+        logger.error("Failed to load embedding model: <ERROR_TYPE>")
         raise
 
     # Extract text from chunks
@@ -164,7 +164,7 @@ def embed_chunks(
         return embeddings
     except IndexError as e:
         error_type = type(e).__name__
-        logger.error(f"IndexError during encoding: <ERROR_TYPE>")
+        logger.error("IndexError during encoding: <ERROR_TYPE>")
         logger.error(f"Texts count: {len(texts_filtered)}")
         logger.error(f"Sample texts: {texts_filtered[:3] if texts_filtered else 'EMPTY'}")
         logger.error(f"Model info: {model}")
@@ -368,7 +368,9 @@ def build_index_from_files(
 
         except UnicodeDecodeError as e:
             error_type = type(e).__name__
-            logger.error(f"Error processing {file_path}: {error_type} - unable to read file with UTF-8 encoding")
+            logger.error(
+                f"Error processing {file_path}: {error_type} - unable to read file with UTF-8 encoding"  # noqa: E501
+            )
             processing_errors.append(str(file_path))
         except (IOError, OSError) as e:
             error_type = type(e).__name__
@@ -727,7 +729,7 @@ def manage_tenant_indices(
 
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.error(f"Merge operation failed: <ERROR_TYPE>")
+            logger.error("Merge operation failed: <ERROR_TYPE>")
             return TenantOperationResult(
                 success=False,
                 operation=op_enum,
@@ -786,7 +788,7 @@ def manage_tenant_indices(
 
         except (ValueError, TypeError, RuntimeError) as e:
             error_type = type(e).__name__
-            logger.error(f"List operation failed: <ERROR_TYPE>")
+            logger.error("List operation failed: <ERROR_TYPE>")
             return TenantOperationResult(
                 success=False,
                 operation=op_enum,

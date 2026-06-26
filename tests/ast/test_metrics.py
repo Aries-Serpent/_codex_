@@ -11,9 +11,9 @@ def test_metrics_aggregation():
     agg = MetricsAggregator()
     result = agg.aggregate([m1, m2])
 
-    assert result.cyclomatic_complexity == 8
-    assert result.lines_of_code == 150
-    assert result.maintainability_index == 85.0
+    assert result.cyclomatic_complexity == 8, "Result must not be empty"
+    assert result.lines_of_code == 150, "Result must not be empty"
+    assert result.maintainability_index == 85.0, "Result must not be empty"
 
 
 def test_quality_tier():
@@ -23,10 +23,10 @@ def test_quality_tier():
     m_c = CodeMetrics(15, 10.0, 300, 30, 60.0)
     m_f = CodeMetrics(20, 15.0, 500, 50, 30.0)
 
-    assert m_a.quality_tier == "A"
-    assert m_b.quality_tier == "B"
-    assert m_c.quality_tier == "C"
-    assert m_f.quality_tier == "F"
+    assert m_a.quality_tier == "A", "quality_tier is not valid"
+    assert m_b.quality_tier == "B", "quality_tier is not valid"
+    assert m_c.quality_tier == "C", "quality_tier is not valid"
+    assert m_f.quality_tier == "F", "quality_tier is not valid"
 
 
 def test_store_and_summary():
@@ -39,10 +39,10 @@ def test_store_and_summary():
     agg.store_metrics("entity2", m2)
 
     summary = agg.summary()
-    assert summary["total_entities"] == 2
-    assert summary["total_lines_of_code"] == 300
-    assert summary["average_cyclomatic_complexity"] == 7.5
-    assert summary["max_cyclomatic_complexity"] == 10
+    assert summary["total_entities"] == 2, "Condition must be true"
+    assert summary["total_lines_of_code"] == 300, "Condition must be true"
+    assert summary["average_cyclomatic_complexity"] == 7.5, "Condition must be true"
+    assert summary["max_cyclomatic_complexity"] == 10, "Condition must be true"
 
 
 def test_empty_aggregation():
@@ -50,8 +50,8 @@ def test_empty_aggregation():
     agg = MetricsAggregator()
     result = agg.aggregate([])
 
-    assert result.cyclomatic_complexity == 0
-    assert result.maintainability_index == 100.0
+    assert result.cyclomatic_complexity == 0, "Result must not be empty"
+    assert result.maintainability_index == 100.0, "Result must not be empty"
 
 
 def test_correlation():
@@ -62,8 +62,8 @@ def test_correlation():
 
     corr = agg.correlate_complexity_coverage(complexity, coverage)
     # Should be negative correlation (higher complexity, lower coverage)
-    assert corr < 0
-    assert corr > -1.1  # Should be within valid range
+    assert corr < 0, "corr is not valid"
+    assert corr > -1.1, "corr must be greater than zero"
 
 
 def test_to_dict():
@@ -71,9 +71,9 @@ def test_to_dict():
     m = CodeMetrics(5, 3.0, 100, 10, 85.0)
     data = m.to_dict()
 
-    assert data["cyclomatic_complexity"] == 5
-    assert data["lines_of_code"] == 100
-    assert data["quality_tier"] == "A"
+    assert data["cyclomatic_complexity"] == 5, "Data must not be empty"
+    assert data["lines_of_code"] == 100, "Data must not be empty"
+    assert data["quality_tier"] == "A", "Data must not be empty"
 
 
 def test_correlation_mismatched_lengths():
@@ -120,10 +120,10 @@ def test_correlation_valid_inputs():
 
     # Test with exactly 2 data points
     corr = agg.correlate_complexity_coverage([1.0, 2.0], [10.0, 20.0])
-    assert corr > 0  # Positive correlation
+    assert corr > 0, "corr must be greater than zero"
 
     # Test with multiple data points (negative correlation)
     complexity = [5.0, 10.0, 15.0, 20.0]
     coverage = [90.0, 80.0, 70.0, 60.0]
     corr = agg.correlate_complexity_coverage(complexity, coverage)
-    assert -1.0 <= corr < 0  # Negative correlation within valid range
+    assert -1.0 <= corr < 0, "0 is not valid"

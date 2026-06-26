@@ -41,12 +41,12 @@ def test_save_and_load_with_rng(tmp_path: Path) -> None:
         out_dir=tmp_path,
         keep_best_k=2,
     )
-    assert ckpt_path.exists()
+    assert ckpt_path.exists(), "Condition must be true"
 
     _ = torch.nn.init.xavier_uniform_(next(model.parameters()))
     epoch, metric = load_checkpoint(ckpt_path, model, optimizer, restore_rng=True)
-    assert epoch == 1
-    assert metric == 0.5
+    assert epoch == 1, "epoch is not valid"
+    assert metric == 0.5, "metric is not valid"
 
     after = snapshot_rng_state()
     assert torch.equal(before.cpu, after.cpu)
@@ -87,5 +87,5 @@ def test_best_k_ties_and_nan(tmp_path: Path) -> None:
     )
 
     kept = sorted(tmp_path.glob("epoch*-metric*.pt"))
-    assert len(kept) == 1
-    assert kept[0].stem.startswith("epoch2-metric0.300000")
+    assert len(kept) == 1, "Kept must not be empty"
+    assert kept[0].stem.startswith("epoch2-metric0.300000"), "Condition must be true"

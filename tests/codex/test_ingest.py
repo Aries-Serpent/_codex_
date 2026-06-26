@@ -31,11 +31,11 @@ class TestIngestAdapter:
         # Ingest
         snapshot = ingest(test_file, artifacts_dir=artifacts_dir)
 
-        assert snapshot.snapshot_id is not None
-        assert snapshot.content_hash is not None
-        assert snapshot.snapshot_dir.exists()
-        assert (snapshot.snapshot_dir / "source").exists()
-        assert (snapshot.snapshot_dir / "snapshot-meta.json").exists()
+        assert snapshot.snapshot_id is not None, "snapshot_id must be initialized"
+        assert snapshot.content_hash is not None, "content_hash must be initialized"
+        assert snapshot.snapshot_dir.exists(), "Condition must be true"
+        assert (snapshot.snapshot_dir / "source").exists(), "Condition must be true"
+        assert (snapshot.snapshot_dir / "snapshot-meta.json").exists(), "Condition must be true"
 
     def test_ingest_directory(self, tmp_path: Path):
         """Test ingesting a directory of Python files."""
@@ -54,9 +54,9 @@ class TestIngestAdapter:
         # Ingest
         snapshot = ingest(source_dir, artifacts_dir=artifacts_dir)
 
-        assert snapshot.snapshot_id is not None
-        assert (snapshot.snapshot_dir / "source" / "main.py").exists()
-        assert (snapshot.snapshot_dir / "source" / "utils.py").exists()
+        assert snapshot.snapshot_id is not None, "snapshot_id must be initialized"
+        assert (snapshot.snapshot_dir / "source" / "main.py").exists(), "Condition must be true"
+        assert (snapshot.snapshot_dir / "source" / "utils.py").exists(), "Condition must be true"
 
     def test_ingest_with_manifest(self, tmp_path: Path):
         """Test ingesting with a manifest file."""
@@ -87,9 +87,9 @@ metadata:
         # Ingest
         snapshot = ingest(test_file, manifest_path=manifest_file, artifacts_dir=artifacts_dir)
 
-        assert snapshot.manifest is not None
-        assert snapshot.manifest.version == "1.0"
-        assert (snapshot.snapshot_dir / "manifest.yaml").exists()
+        assert snapshot.manifest is not None, "manifest must be initialized"
+        assert snapshot.manifest.version == "1.0", "version is not valid"
+        assert (snapshot.snapshot_dir / "manifest.yaml").exists(), "Condition must be true"
 
     def test_ingest_custom_snapshot_id(self, tmp_path: Path):
         """Test ingesting with a custom snapshot ID."""
@@ -103,8 +103,8 @@ metadata:
 
         snapshot = ingest(test_file, snapshot_id="custom-id-123", artifacts_dir=artifacts_dir)
 
-        assert snapshot.snapshot_id == "custom-id-123"
-        assert (artifacts_dir / "custom-id-123").exists()
+        assert snapshot.snapshot_id == "custom-id-123", "snapshot_id is not valid"
+        assert (artifacts_dir / "custom-id-123").exists(), "Condition must be true"
 
     def test_ingest_deterministic_hash(self, tmp_path: Path):
         """Test that content hash is deterministic."""
@@ -119,7 +119,7 @@ metadata:
         snapshot1 = ingest(test_file, snapshot_id="snap1", artifacts_dir=artifacts_dir)
         snapshot2 = ingest(test_file, snapshot_id="snap2", artifacts_dir=artifacts_dir)
 
-        assert snapshot1.content_hash == snapshot2.content_hash
+        assert snapshot1.content_hash == snapshot2.content_hash, "Content must not be empty"
 
     def test_ingest_file_not_found(self, tmp_path: Path):
         """Test error handling for non-existent file."""
@@ -143,9 +143,9 @@ metadata:
 
         snapshot = ingest(test_file, artifacts_dir=artifacts_dir)
 
-        assert (snapshot.snapshot_dir / "patches").exists()
-        assert (snapshot.snapshot_dir / "tests" / "codex_generated").exists()
-        assert (snapshot.snapshot_dir / "llm_provenance").exists()
+        assert (snapshot.snapshot_dir / "patches").exists(), "Condition must be true"
+        assert (snapshot.snapshot_dir / "tests" / "codex_generated").exists(), "Condition must be true"
+        assert (snapshot.snapshot_dir / "llm_provenance").exists(), "Condition must be true"
 
     def test_snapshot_to_dict(self, tmp_path: Path):
         """Test snapshot serialization."""
@@ -160,9 +160,9 @@ metadata:
         snapshot = ingest(test_file, artifacts_dir=artifacts_dir)
         data = snapshot.to_dict()
 
-        assert "snapshot_id" in data
-        assert "content_hash" in data
-        assert "created_at" in data
+        assert "snapshot_id" in data, "Data must not be empty"
+        assert "content_hash" in data, "Data must not be empty"
+        assert "created_at" in data, "Data must not be empty"
 
 
 class TestManifestParser:
@@ -185,9 +185,9 @@ source:
 
         manifest = parse_manifest(manifest_file)
 
-        assert manifest.version == "1.0"
-        assert manifest.source.type == "file"
-        assert manifest.source.path == "./script.py"
+        assert manifest.version == "1.0", "version is not valid"
+        assert manifest.source.type == "file", "type is not valid"
+        assert manifest.source.path == "./script.py", "path is not valid"
 
     def test_parse_full_manifest(self, tmp_path: Path):
         """Test parsing a complete manifest with all fields."""
@@ -227,13 +227,13 @@ metadata:
 
         manifest = parse_manifest(manifest_file)
 
-        assert manifest.source.type == "git-url"
-        assert manifest.source.ref == "main"
-        assert manifest.entry_point == "main:run"
-        assert len(manifest.sample_inputs) == 1
-        assert len(manifest.golden_outputs) == 1
-        assert manifest.constraints.max_runtime_seconds == 120
-        assert manifest.metadata.privacy == "public"
+        assert manifest.source.type == "git-url", "type is not valid"
+        assert manifest.source.ref == "main", "ref is not valid"
+        assert manifest.entry_point == "main:run", "entry_point is not valid"
+        assert len(manifest.sample_inputs) == 1, "Collection must not be empty"
+        assert len(manifest.golden_outputs) == 1, "Collection must not be empty"
+        assert manifest.constraints.max_runtime_seconds == 120, "max_runtime_seconds is not valid"
+        assert manifest.metadata.privacy == "public", "Data must not be empty"
 
     def test_parse_manifest_missing_version(self, tmp_path: Path):
         """Test error on missing version."""
@@ -308,8 +308,8 @@ source:
         manifest = parse_manifest(manifest_file)
         data = manifest.to_dict()
 
-        assert data["version"] == "1.0"
-        assert data["source"]["type"] == "file"
+        assert data["version"] == "1.0", "Data must not be empty"
+        assert data["source"]["type"] == "file", "Data must not be empty"
 
 
 class TestContentHash:
@@ -325,8 +325,8 @@ class TestContentHash:
         hash1 = _compute_content_hash(test_file)
         hash2 = _compute_content_hash(test_file)
 
-        assert hash1 == hash2
-        assert len(hash1) == 64  # SHA256 hex length
+        assert hash1 == hash2, "hash1 is not valid"
+        assert len(hash1) == 64, "Hash1 must not be empty"
 
     def test_hash_directory_deterministic(self, tmp_path: Path):
         """Test that directory hashing is deterministic."""
@@ -340,7 +340,7 @@ class TestContentHash:
         hash1 = _compute_content_hash(test_dir)
         hash2 = _compute_content_hash(test_dir)
 
-        assert hash1 == hash2
+        assert hash1 == hash2, "hash1 is not valid"
 
     def test_hash_different_content(self, tmp_path: Path):
         """Test that different content produces different hashes."""
@@ -354,4 +354,4 @@ class TestContentHash:
         hash1 = _compute_content_hash(file1)
         hash2 = _compute_content_hash(file2)
 
-        assert hash1 != hash2
+        assert hash1 != hash2, "hash1 is not valid"

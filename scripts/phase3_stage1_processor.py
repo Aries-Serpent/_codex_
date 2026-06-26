@@ -239,7 +239,7 @@ def main():
         return 0 if stats['files_modified'] >= 0 else 1
     except Exception as e:
         error_type = type(e).__name__
-        print(f"❌ Error: <ERROR_TYPE>")
+        print("❌ Error: <ERROR_TYPE>")
         import traceback
         traceback.print_exc()
         return 1

@@ -21,29 +21,29 @@ class TestModelRegistry:
     def test_model_registry_initialization(self):
         """Test model registry initialization."""
         registry = {"models": {}, "metadata": {}}
-        assert "models" in registry
-        assert len(registry["models"]) == 0
+        assert "models" in registry, "Condition must be true"
+        assert len(registry["models"]) == 0, "Collection must not be empty"
 
     def test_model_registration(self):
         """Test registering a model."""
         registry = {"models": {}}
         model_id = "bert-base-uncased"
         registry["models"][model_id] = {"version": "1.0", "status": "active"}
-        assert model_id in registry["models"]
-        assert registry["models"][model_id]["status"] == "active"
+        assert model_id in registry["models"], "Condition must be true"
+        assert registry["models"][model_id]["status"] == "active", "Condition must be true"
 
     def test_model_deregistration(self):
         """Test deregistering a model."""
         registry = {"models": {"bert": {"version": "1.0"}}}
         del registry["models"]["bert"]
-        assert "bert" not in registry["models"]
+        assert "bert" not in registry["models"], "Condition must be true"
 
     def test_model_versioning(self):
         """Test model version tracking."""
         versions = ["1.0", "1.1", "1.2", "2.0"]
         for v in versions:
-            assert v in versions
-        assert versions[-1] == "2.0"
+            assert v in versions, "Condition must be true"
+        assert versions[-1] == "2.0", "Condition must be true"
 
     def test_model_metadata_storage(self):
         """Test metadata storage for models."""
@@ -54,8 +54,8 @@ class TestModelRegistry:
             "vocab_size": 30522,
             "max_sequence_length": 512,
         }
-        assert metadata["parameters"] > 100000000
-        assert metadata["vocab_size"] > 10000
+        assert metadata["parameters"] > 100000000, "Value must be greater than zero"
+        assert metadata["vocab_size"] > 10000, "Value must be greater than zero"
 
     def test_model_status_transitions(self):
         """Test model status transitions."""
@@ -68,7 +68,7 @@ class TestModelRegistry:
             "deprecated": [],
         }
         for status in statuses:
-            assert status in transitions
+            assert status in transitions, "Condition must be true"
 
     def test_model_registry_listing(self):
         """Test listing registered models."""
@@ -78,8 +78,8 @@ class TestModelRegistry:
             "roberta": {"status": "deprecated"},
         }
         active_models = [k for k, v in registry.items() if v["status"] == "active"]
-        assert len(active_models) == 2
-        assert "bert-base" in active_models
+        assert len(active_models) == 2, "Active_models must not be empty"
+        assert "bert-base" in active_models, "Condition must be true"
 
     def test_model_caching(self):
         """Test model caching mechanism."""
@@ -90,14 +90,14 @@ class TestModelRegistry:
         else:
             cache["misses"] += 1
             cache["models"][model_id] = {"loaded": True}
-        assert cache["misses"] == 1
-        assert model_id in cache["models"]
+        assert cache["misses"] == 1, "Condition must be true"
+        assert model_id in cache["models"], "Condition must be true"
 
     def test_model_memory_efficiency(self):
         """Test model memory tracking."""
         models = {"small": 100_000_000, "medium": 500_000_000, "large": 1_000_000_000}
         total = sum(models.values())
-        assert total > 1_500_000_000
+        assert total > 1_500_000_000, "total must be greater than zero"
 
     def test_model_dependency_resolution(self):
         """Test model dependency resolution."""
@@ -106,8 +106,8 @@ class TestModelRegistry:
             "tokenizer": ["vocabulary"],
             "config": ["schema"],
         }
-        assert len(dependencies["inference_model"]) == 3
-        assert "tokenizer" in dependencies["inference_model"]
+        assert len(dependencies["inference_model"]) == 3, "Collection must not be empty"
+        assert "tokenizer" in dependencies["inference_model"], "Condition must be true"
 
 
 class TestModelServing:
@@ -119,8 +119,8 @@ class TestModelServing:
         model_id = "bert-base"
         loader["loaded_models"][model_id] = {"weights_loaded": True}
         loader["status"] = "ready"
-        assert loader["status"] == "ready"
-        assert model_id in loader["loaded_models"]
+        assert loader["status"] == "ready", "Condition must be true"
+        assert model_id in loader["loaded_models"], "Condition must be true"
 
     def test_batch_inference(self):
         """Test batch inference processing."""
@@ -129,8 +129,8 @@ class TestModelServing:
             "batch_size": 3,
             "max_sequence_length": 512,
         }
-        assert len(batch["inputs"]) == batch["batch_size"]
-        assert batch["max_sequence_length"] > 0
+        assert len(batch["inputs"]) == batch["batch_size"], "Collection must not be empty"
+        assert batch["max_sequence_length"] > 0, "Count must be positive"
 
     def test_inference_timeout(self):
         """Test inference timeout handling."""
@@ -139,7 +139,7 @@ class TestModelServing:
             "warn_at_seconds": 20,
             "timeout_policy": "graceful_failure",
         }
-        assert timeout_config["max_wait_seconds"] > timeout_config["warn_at_seconds"]
+        assert timeout_config["max_wait_seconds"] > timeout_config["warn_at_seconds"], "Value must be greater than zero"
         assert timeout_config["timeout_policy"] in ["graceful_failure", "hard_timeout"]
 
     def test_inference_batching_strategy(self):
@@ -151,8 +151,8 @@ class TestModelServing:
             "max_batch_size": 64,
             "timeout_ms": 100,
         }
-        assert config["strategy"] in strategies
-        assert config["max_batch_size"] >= config["min_batch_size"]
+        assert config["strategy"] in strategies, "Condition must be true"
+        assert config["max_batch_size"] >= config["min_batch_size"], "Value must be greater than zero"
 
     def test_model_quantization(self):
         """Test model quantization modes."""
@@ -162,7 +162,7 @@ class TestModelServing:
             "float16": {"bits": 16, "size_reduction": 0.5},
             "float32": {"bits": 32, "size_reduction": 1.0},
         }
-        assert (
+        assert (, "Condition must be true"
             quantization_modes["int8"]["size_reduction"]
             < quantization_modes["float32"]["size_reduction"]
         )
@@ -176,15 +176,15 @@ class TestModelServing:
             "throughput_qps": 100,
             "error_rate": 0.001,
         }
-        assert metrics["p99_latency_ms"] > metrics["avg_latency_ms"]
-        assert metrics["error_rate"] < 0.01
+        assert metrics["p99_latency_ms"] > metrics["avg_latency_ms"], "Value must be greater than zero"
+        assert metrics["error_rate"] < 0.01, "Error should be raised or set"
 
     def test_model_serving_load_balancing(self):
         """Test load balancing across model replicas."""
         replicas = {"replica_1": {"load": 45}, "replica_2": {"load": 52}, "replica_3": {"load": 48}}
         total_load = sum(r["load"] for r in replicas.values())
         avg_load = total_load / len(replicas)
-        assert avg_load > 40
+        assert avg_load > 40, "avg_load must be greater than zero"
 
     def test_model_serving_autoscaling(self):
         """Test autoscaling configuration."""
@@ -195,7 +195,7 @@ class TestModelServing:
             "scale_up_threshold": 80,
             "scale_down_threshold": 30,
         }
-        assert autoscale["max_replicas"] > autoscale["min_replicas"]
+        assert autoscale["max_replicas"] > autoscale["min_replicas"], "Value must be greater than zero"
 
     def test_model_serving_health_check(self):
         """Test health check mechanism."""
@@ -220,8 +220,8 @@ class TestTrainingStateManagement:
             "best_loss": float("inf"),
             "status": "initialized",
         }
-        assert state["epoch"] == 0
-        assert state["status"] == "initialized"
+        assert state["epoch"] == 0, "Condition must be true"
+        assert state["status"] == "initialized", "Condition must be true"
 
     def test_training_checkpoint_saving(self):
         """Test checkpoint saving process."""
@@ -232,14 +232,14 @@ class TestTrainingStateManagement:
             "optimizer_state": {"lr": 0.001},
             "timestamp": datetime.now(),
         }
-        assert checkpoint["epoch"] > 0
-        assert "model_state" in checkpoint
+        assert checkpoint["epoch"] > 0, "Value must be greater than zero"
+        assert "model_state" in checkpoint, "Condition must be true"
 
     def test_training_checkpoint_loading(self):
         """Test checkpoint loading and restoration."""
         saved_checkpoint = {"epoch": 5, "step": 1000, "model_state": {"weights": [0.1, 0.2, 0.3]}}
         loaded_state = {"epoch": saved_checkpoint["epoch"], "step": saved_checkpoint["step"]}
-        assert loaded_state["epoch"] == saved_checkpoint["epoch"]
+        assert loaded_state["epoch"] == saved_checkpoint["epoch"], "Condition must be true"
 
     def test_learning_rate_scheduling(self):
         """Test learning rate scheduling."""
@@ -249,13 +249,13 @@ class TestTrainingStateManagement:
             "decay_rate": 0.96,
             "decay_steps": 1000,
         }
-        assert schedule["initial_lr"] > 0
-        assert schedule["decay_rate"] < 1.0
+        assert schedule["initial_lr"] > 0, "Value must be greater than zero"
+        assert schedule["decay_rate"] < 1.0, "Condition must be true"
 
     def test_gradient_accumulation(self):
         """Test gradient accumulation configuration."""
         accumulation = {"enabled": True, "steps": 4, "max_accumulated_gradients": 100}
-        assert accumulation["steps"] > 0
+        assert accumulation["steps"] > 0, "Value must be greater than zero"
 
     def test_mixed_precision_training(self):
         """Test mixed precision training config."""
@@ -265,8 +265,8 @@ class TestTrainingStateManagement:
             "loss_scale": 1024,
             "loss_scale_window": 1000,
         }
-        assert mixed_precision["enabled"]
-        assert mixed_precision["loss_scale"] > 0
+        assert mixed_precision["enabled"], "Condition must be true"
+        assert mixed_precision["loss_scale"] > 0, "Value must be greater than zero"
 
     def test_training_early_stopping(self):
         """Test early stopping configuration."""
@@ -276,8 +276,8 @@ class TestTrainingStateManagement:
             "min_delta": 0.001,
             "metric": "validation_loss",
         }
-        assert early_stop["patience"] > 0
-        assert early_stop["min_delta"] >= 0
+        assert early_stop["patience"] > 0, "Value must be greater than zero"
+        assert early_stop["min_delta"] >= 0, "Value must be greater than zero"
 
     def test_training_regularization(self):
         """Test regularization techniques."""
@@ -287,8 +287,8 @@ class TestTrainingStateManagement:
             "label_smoothing": 0.1,
             "mixup_alpha": 0.2,
         }
-        assert regularization["dropout_rate"] >= 0
-        assert regularization["weight_decay"] >= 0
+        assert regularization["dropout_rate"] >= 0, "Value must be greater than zero"
+        assert regularization["weight_decay"] >= 0, "Value must be greater than zero"
 
     def test_training_metrics_tracking(self):
         """Test training metrics tracking."""
@@ -298,8 +298,8 @@ class TestTrainingStateManagement:
             "train_accuracy": [0.5, 0.6, 0.7, 0.75, 0.78],
             "val_accuracy": [0.48, 0.58, 0.68, 0.72, 0.75],
         }
-        assert len(metrics["train_loss"]) == 5
-        assert metrics["train_loss"][-1] < metrics["train_loss"][0]
+        assert len(metrics["train_loss"]) == 5, "Collection must not be empty"
+        assert metrics["train_loss"][-1] < metrics["train_loss"][0], "Condition must be true"
 
     def test_training_resume_from_checkpoint(self):
         """Test resuming training from checkpoint."""
@@ -309,7 +309,7 @@ class TestTrainingStateManagement:
             "checkpoint_epoch": checkpoint["epoch"],
             "checkpoint_step": checkpoint["step"],
         }
-        assert resume_config["checkpoint_epoch"] == checkpoint["epoch"]
+        assert resume_config["checkpoint_epoch"] == checkpoint["epoch"], "Condition must be true"
 
 
 class TestModelValidation:
@@ -318,8 +318,8 @@ class TestModelValidation:
     def test_model_input_validation(self):
         """Test input validation."""
         validator = {"expected_shape": (None, 512), "dtype": "int64", "valid_range": (0, 30522)}
-        assert validator["expected_shape"] is not None
-        assert validator["valid_range"][1] > validator["valid_range"][0]
+        assert validator["expected_shape"] is not None, "validat must be initialized"
+        assert validator["valid_range"][1] > validator["valid_range"][0], "validat must be greater than zero"
 
     def test_model_output_validation(self):
         """Test output validation."""
@@ -328,8 +328,8 @@ class TestModelValidation:
             "embeddings": {"shape": (32, 768), "dtype": "float32"},
             "attention": {"shape": (32, 12, 512, 512), "dtype": "float32"},
         }
-        assert len(outputs) == 3
-        assert "logits" in outputs
+        assert len(outputs) == 3, "Outputs must not be empty"
+        assert "logits" in outputs, "Condition must be true"
 
     def test_model_numerical_stability(self):
         """Test numerical stability checks."""
@@ -339,13 +339,13 @@ class TestModelValidation:
             "check_grad_overflow": True,
             "max_grad_norm": 1.0,
         }
-        assert stability_checks["max_grad_norm"] > 0
+        assert stability_checks["max_grad_norm"] > 0, "Value must be greater than zero"
 
     def test_model_inference_consistency(self):
         """Test inference consistency."""
         consistency = {"num_runs": 3, "max_variance": 0.001, "deterministic": True, "seed": 42}
-        assert consistency["num_runs"] > 1
-        assert consistency["max_variance"] >= 0
+        assert consistency["num_runs"] > 1, "Value must be greater than zero"
+        assert consistency["max_variance"] >= 0, "Value must be greater than zero"
 
     def test_model_performance_benchmarking(self):
         """Test performance benchmarking."""
@@ -354,8 +354,8 @@ class TestModelValidation:
             "sequence_lengths": [128, 256, 512],
             "metrics": ["latency", "throughput", "memory"],
         }
-        assert len(benchmark["batch_sizes"]) == 4
-        assert len(benchmark["sequence_lengths"]) == 3
+        assert len(benchmark["batch_sizes"]) == 4, "Collection must not be empty"
+        assert len(benchmark["sequence_lengths"]) == 3, "Collection must not be empty"
 
     def test_model_adversarial_robustness(self):
         """Test adversarial robustness."""
@@ -365,8 +365,8 @@ class TestModelValidation:
             "attack_methods": ["fgsm", "pgd", "carlini"],
             "success_rate_threshold": 0.95,
         }
-        assert robustness["perturbation_epsilon"] > 0
-        assert len(robustness["attack_methods"]) == 3
+        assert robustness["perturbation_epsilon"] > 0, "Value must be greater than zero"
+        assert len(robustness["attack_methods"]) == 3, "Collection must not be empty"
 
     def test_model_fairness_metrics(self):
         """Test fairness metrics evaluation."""
@@ -375,8 +375,8 @@ class TestModelValidation:
             "metrics": ["disparate_impact", "equal_opportunity", "demographic_parity"],
             "threshold": 0.8,
         }
-        assert len(fairness["protected_attributes"]) == 3
-        assert fairness["threshold"] > 0
+        assert len(fairness["protected_attributes"]) == 3, "Collection must not be empty"
+        assert fairness["threshold"] > 0, "Value must be greater than zero"
 
     def test_model_calibration(self):
         """Test probability calibration."""
@@ -386,8 +386,8 @@ class TestModelValidation:
             "ece": 0.05,
             "mce": 0.12,
         }
-        assert calibration["temperature"] > 0
-        assert calibration["ece"] < 0.2
+        assert calibration["temperature"] > 0, "Value must be greater than zero"
+        assert calibration["ece"] < 0.2, "Condition must be true"
 
     def test_model_degradation_detection(self):
         """Test model degradation detection."""
@@ -397,7 +397,7 @@ class TestModelValidation:
             "lookback_window": 1000,
             "alert_on_degradation": True,
         }
-        assert degradation["degradation_threshold"] > 0
+        assert degradation["degradation_threshold"] > 0, "Value must be greater than zero"
 
 
 class TestCheckpointHandling:
@@ -411,14 +411,14 @@ class TestCheckpointHandling:
             "metadata": {"epoch": 5, "step": 1000},
         }
         serialized = json.dumps(checkpoint, default=str)
-        assert len(serialized) > 0
-        assert "model" in serialized
+        assert len(serialized) > 0, "Serialized must not be empty"
+        assert "model" in serialized, "Condition must be true"
 
     def test_checkpoint_deserialization(self):
         """Test checkpoint deserialization."""
         json_data = '{"model": {"weights": [0.1]}, "metadata": {"epoch": 1}}'
         checkpoint = json.loads(json_data)
-        assert checkpoint["metadata"]["epoch"] == 1
+        assert checkpoint["metadata"]["epoch"] == 1, "Data must not be empty"
 
     def test_checkpoint_versioning(self):
         """Test checkpoint versioning."""
@@ -427,8 +427,8 @@ class TestCheckpointHandling:
             "ckpt_002": {"epoch": 2, "step": 200},
             "ckpt_latest": {"epoch": 5, "step": 500},
         }
-        assert len(checkpoints) == 3
-        assert "ckpt_latest" in checkpoints
+        assert len(checkpoints) == 3, "Checkpoints must not be empty"
+        assert "ckpt_latest" in checkpoints, "Condition must be true"
 
     def test_checkpoint_cleanup_policy(self):
         """Test checkpoint cleanup policy."""
@@ -438,7 +438,7 @@ class TestCheckpointHandling:
             "keep_every_n_epochs": 10,
             "max_age_days": 30,
         }
-        assert cleanup["keep_last_n"] > 0
+        assert cleanup["keep_last_n"] > 0, "Value must be greater than zero"
 
     def test_checkpoint_validation(self):
         """Test checkpoint validation."""
@@ -448,7 +448,7 @@ class TestCheckpointHandling:
             "verify_step": True,
             "validate_shapes": True,
         }
-        assert validation["check_file_integrity"]
+        assert validation["check_file_integrity"], "Condition must be true"
 
     def test_checkpoint_compression(self):
         """Test checkpoint compression."""
@@ -458,8 +458,8 @@ class TestCheckpointHandling:
             "compression_level": 6,
             "size_reduction_percent": 70,
         }
-        assert compression["compression_level"] > 0
-        assert compression["size_reduction_percent"] > 0
+        assert compression["compression_level"] > 0, "Value must be greater than zero"
+        assert compression["size_reduction_percent"] > 0, "Value must be greater than zero"
 
     def test_checkpoint_recovery(self):
         """Test checkpoint recovery from corruption."""
@@ -469,7 +469,7 @@ class TestCheckpointHandling:
             "num_backups": 2,
             "backup_interval_epochs": 5,
         }
-        assert recovery["num_backups"] > 0
+        assert recovery["num_backups"] > 0, "Value must be greater than zero"
 
     def test_distributed_checkpoint_saving(self):
         """Test distributed checkpoint saving."""
@@ -479,8 +479,8 @@ class TestCheckpointHandling:
             "sharded": True,
             "all_gather_before_save": False,
         }
-        assert dist_save["workers"] > 0
-        assert dist_save["sync_workers"]
+        assert dist_save["workers"] > 0, "Value must be greater than zero"
+        assert dist_save["sync_workers"], "Condition must be true"
 
 
 class TestModelEvaluation:
@@ -489,23 +489,23 @@ class TestModelEvaluation:
     def test_evaluation_metrics_calculation(self):
         """Test evaluation metrics calculation."""
         metrics = {"accuracy": 0.92, "precision": 0.89, "recall": 0.91, "f1": 0.90, "auc_roc": 0.95}
-        assert metrics["accuracy"] > 0.8
-        assert metrics["f1"] > 0
+        assert metrics["accuracy"] > 0.8, "Value must be greater than zero"
+        assert metrics["f1"] > 0, "Value must be greater than zero"
 
     def test_cross_validation_setup(self):
         """Test cross-validation configuration."""
         cv = {"method": "k_fold", "k_folds": 5, "shuffle": True, "random_state": 42}
-        assert cv["k_folds"] > 1
+        assert cv["k_folds"] > 1, "Value must be greater than zero"
 
     def test_eval_dataset_splitting(self):
         """Test evaluation dataset splitting."""
         split = {"train_ratio": 0.7, "val_ratio": 0.15, "test_ratio": 0.15, "stratified": True}
-        assert split["train_ratio"] + split["val_ratio"] + split["test_ratio"] == 1.0
+        assert split["train_ratio"] + split["val_ratio"] + split["test_ratio"] == 1.0, "Condition must be true"
 
     def test_eval_dataloader_configuration(self):
         """Test evaluation dataloader config."""
         dataloader = {"batch_size": 32, "shuffle": False, "num_workers": 4, "pin_memory": True}
-        assert dataloader["batch_size"] > 0
+        assert dataloader["batch_size"] > 0, "Value must be greater than zero"
 
     def test_model_uncertainty_estimation(self):
         """Test uncertainty estimation."""
@@ -514,7 +514,7 @@ class TestModelEvaluation:
             "num_samples": 50,
             "calibration_samples": 1000,
         }
-        assert uncertainty["num_samples"] > 0
+        assert uncertainty["num_samples"] > 0, "Value must be greater than zero"
 
 
 class TestModelOptimization:
@@ -528,8 +528,8 @@ class TestModelOptimization:
             "target_sparsity": 0.9,
             "pruning_schedule": "gradual",
         }
-        assert pruning["target_sparsity"] > 0
-        assert pruning["target_sparsity"] < 1.0
+        assert pruning["target_sparsity"] > 0, "Value must be greater than zero"
+        assert pruning["target_sparsity"] < 1.0, "Condition must be true"
 
     def test_distillation_setup(self):
         """Test knowledge distillation setup."""
@@ -540,7 +540,7 @@ class TestModelOptimization:
             "temperature": 4.0,
             "alpha": 0.5,
         }
-        assert distillation["temperature"] > 1.0
+        assert distillation["temperature"] > 1.0, "Value must be greater than zero"
 
     def test_quantization_aware_training(self):
         """Test quantization-aware training."""
@@ -550,13 +550,13 @@ class TestModelOptimization:
             "observer": "moving_average",
             "calibration_method": "entropy",
         }
-        assert qat["bit_width"] > 0
+        assert qat["bit_width"] > 0, "Value must be greater than zero"
 
     def test_low_rank_adaptation(self):
         """Test low-rank adaptation (LoRA)."""
         lora = {"enabled": True, "rank": 8, "alpha": 16, "target_modules": ["q_proj", "v_proj"]}
-        assert lora["rank"] > 0
-        assert len(lora["target_modules"]) > 0
+        assert lora["rank"] > 0, "l must be greater than zero"
+        assert len(lora["target_modules"]) > 0, "Collection must not be empty"
 
 
 class TestModelDeploy:
@@ -570,12 +570,12 @@ class TestModelDeploy:
             "use_mixed_precision": True,
             "enable_graph_optimization": True,
         }
-        assert env["batch_size"] > 0
+        assert env["batch_size"] > 0, "Value must be greater than zero"
 
     def test_containerization_config(self):
         """Test containerization configuration."""
         docker = {"image": "ml-serving:latest", "memory_limit": "8g", "cpu_limit": "4", "gpus": 1}
-        assert docker["memory_limit"] is not None
+        assert docker["memory_limit"] is not None, "Value must be initialized"
 
     def test_model_export_formats(self):
         """Test model export formats."""
@@ -584,4 +584,4 @@ class TestModelDeploy:
             "torchscript": {"supported": True, "optimize": True},
             "savedmodel": {"supported": True, "version": 2},
         }
-        assert formats["onnx"]["supported"]
+        assert formats["onnx"]["supported"], "f is not valid"

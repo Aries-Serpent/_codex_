@@ -15,7 +15,10 @@ from unittest.mock import Mock, patch
 
 import pytest
 
-from codex.auth.github_app import GitHubApp, GitHubInstallation # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+from codex.auth.github_app import (  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+    GitHubApp,
+    GitHubInstallation,
+)
 
 # ============================================================================
 # Fixtures
@@ -60,9 +63,9 @@ class TestGitHubInstallation:
             repository="test-repo",
             permissions=["contents", "pull_requests"],
         )
-        assert installation.installation_id == "987654"
-        assert installation.owner == "test-owner"
-        assert installation.repository == "test-repo"
+        assert installation.installation_id == "987654", "installation_id is not valid"
+        assert installation.owner == "test-owner", "owner is not valid"
+        assert installation.repository == "test-repo", "repository is not valid"
 
     def test_installation_with_all_permissions(self):
         permissions = [
@@ -80,7 +83,7 @@ class TestGitHubInstallation:
             repository="repo",
             permissions=permissions,
         )
-        assert len(installation.permissions) == len(permissions)
+        assert len(installation.permissions) == len(permissions), "Permissions must not be empty"
 
     def test_installation_created_at(self):
         import time
@@ -92,7 +95,7 @@ class TestGitHubInstallation:
             repository="repo",
         )
         after = time.time()
-        assert before <= installation.created_at <= after
+        assert before <= installation.created_at <= after, "before is not valid"
 
     def test_installation_repository_optional(self):
         # Organization-wide installation
@@ -101,7 +104,7 @@ class TestGitHubInstallation:
             owner="org-name",
             repository=None,
         )
-        assert installation.repository is None
+        assert installation.repository is None, "repository is not valid"
 
 
 class TestAppInstallation:
@@ -109,13 +112,13 @@ class TestAppInstallation:
 
     def test_generate_installation_url(self, github_app):
         url = github_app.get_installation_url()
-        assert url
-        assert "client_id=" in url
-        assert "redirect_uri=" in url or "state=" in url
+        assert url, "url is not valid"
+        assert "client_id=" in url, "Condition must be true"
+        assert "redirect_uri=" in url or "state=" in url, "Condition must be true"
 
     def test_installation_url_with_scopes(self, github_app):
         url = github_app.get_installation_url(scopes=["repo", "admin:repo_hook"])
-        assert url
+        assert url, "url is not valid"
 
     def test_handle_installation_callback(self, github_app):
         # Simulating installation callback from GitHub
@@ -129,7 +132,7 @@ class TestAppInstallation:
             }
 
             token = github_app.handle_installation_callback(code)
-            assert token.get("installation_id") == installation_id
+            assert token.get("installation_id") == installation_id, "Condition must be true"
 
     def test_invalid_installation_code(self, github_app):
         code = "invalid_code"
@@ -184,7 +187,7 @@ class TestPermissionValidation:
 
         required = ["contents", "pull_requests"]
         has_all = all(github_app.has_permission(installation, perm) for perm in required)
-        assert has_all
+        assert has_all, "has_all is not valid"
 
     def test_permission_case_sensitivity(self, github_app):
         installation = GitHubInstallation(
@@ -209,6 +212,7 @@ class TestTokenExchange:
     """GitHub App token exchange."""
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_exchange_code_for_token(self, github_app):
         with patch("httpx.AsyncClient.post") as mock_post:
             mock_response = Mock()
@@ -221,10 +225,11 @@ class TestTokenExchange:
             mock_post.return_value = mock_response
 
             token = await github_app.exchange_code_for_token("code123")
-            assert token["access_token"] == "ghu_123456789"
-            assert token["installation_id"] == "987654"
+            assert token["access_token"] == "ghu_123456789", "Condition must be true"
+            assert token["installation_id"] == "987654", "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_exchange_code_error(self, github_app):
         with patch("httpx.AsyncClient.post") as mock_post:
             mock_response = Mock()
@@ -236,6 +241,7 @@ class TestTokenExchange:
                 await github_app.exchange_code_for_token("invalid_code")
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_get_installation_token(self, github_app):
         with patch("httpx.AsyncClient.post") as mock_post:
             mock_response = Mock()
@@ -251,9 +257,10 @@ class TestTokenExchange:
             mock_post.return_value = mock_response
 
             token = await github_app.get_installation_token("987654")
-            assert token["token"] == "ghs_123456789"
+            assert token["token"] == "ghs_123456789", "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_refresh_installation_token(self, github_app):
         old_token = {
             "token": "ghs_old_123456789",
@@ -269,7 +276,7 @@ class TestTokenExchange:
             mock_post.return_value = mock_response
 
             new_token = await github_app.refresh_installation_token("987654", old_token)
-            assert new_token["token"] != old_token["token"]
+            assert new_token["token"] != old_token["token"], "Condition must be true"
 
 
 # ============================================================================
@@ -289,14 +296,14 @@ class TestWebhookHandling:
         signature = "sha256=" + hmac.new(secret, payload, hashlib.sha256).hexdigest()
 
         is_valid = github_app.verify_webhook_signature(payload, signature)
-        assert is_valid
+        assert is_valid, "is_valid is not valid"
 
     def test_invalid_webhook_signature(self, github_app):
         payload = b'{"action": "opened"}'
         signature = "sha256=invalid_signature"
 
         is_valid = github_app.verify_webhook_signature(payload, signature)
-        assert not is_valid
+        assert not is_valid, "not is not valid"
 
     def test_webhook_empty_signature(self, github_app):
         payload = b'{"action": "opened"}'
@@ -313,8 +320,8 @@ class TestWebhookHandling:
         }
 
         parsed = github_app.parse_webhook_payload(json.dumps(payload).encode())
-        assert parsed["action"] == "opened"
-        assert parsed["installation"]["id"] == 987654
+        assert parsed["action"] == "opened", "Condition must be true"
+        assert parsed["installation"]["id"] == 987654, "Condition must be true"
 
     def test_parse_malformed_webhook_payload(self, github_app):
         payload = b"{invalid json"
@@ -333,13 +340,13 @@ class TestAppState:
 
     def test_app_metadata(self, github_app):
         metadata = github_app.get_metadata()
-        assert metadata.get("app_id")
-        assert metadata.get("client_id")
+        assert metadata.get("app_id"), "Data must not be empty"
+        assert metadata.get("client_id"), "Data must not be empty"
 
     def test_app_installation_count(self, github_app):
         count = github_app.get_installation_count()
         assert isinstance(count, int)
-        assert count >= 0
+        assert count >= 0, "count must be positive"
 
     def test_app_active_installations(self, github_app):
         installations = github_app.get_active_installations()
@@ -357,7 +364,7 @@ class TestIntegration:
     def test_complete_installation_flow(self, github_app):
         # User initiates installation
         install_url = github_app.get_installation_url()
-        assert install_url
+        assert install_url, "install_url is not valid"
 
         # GitHub redirects back with code
         code = "installation_code_123"
@@ -370,9 +377,10 @@ class TestIntegration:
             }
 
             token = github_app.handle_installation_callback(code)
-            assert token["installation_id"] == "987654"
+            assert token["installation_id"] == "987654", "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_webhook_and_permission_check(self, github_app):
         # Receive webhook
         payload = {
@@ -390,7 +398,7 @@ class TestIntegration:
         signature = "sha256=" + hmac.new(secret, payload_bytes, hashlib.sha256).hexdigest()
 
         is_valid = github_app.verify_webhook_signature(payload_bytes, signature)
-        assert is_valid
+        assert is_valid, "is_valid is not valid"
 
         # Get installation details
         installation = GitHubInstallation(
@@ -471,14 +479,14 @@ class TestSecurity:
 
     def test_client_secret_not_in_authorization_url(self, github_app):
         url = github_app.get_installation_url()
-        assert "client_secret" not in url
+        assert "client_secret" not in url, "Condition must be true"
 
     def test_webhook_signature_required(self, github_app):
         payload = b'{"action": "opened"}'
 
         # Should reject unsigned payload
         is_valid = github_app.verify_webhook_signature(payload, "invalid_signature")
-        assert not is_valid
+        assert not is_valid, "not is not valid"
 
     def test_token_format_validation(self, github_app):
         # GitHub app tokens have specific formats

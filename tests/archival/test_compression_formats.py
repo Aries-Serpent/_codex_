@@ -31,9 +31,9 @@ class TestTarGzCompression:
         with tarfile.open(archive_path, "w:gz") as tar:
             tar.add(source_dir, arcname=".")
 
-        assert archive_path.exists()
-        assert archive_path.suffix == ".gz"
-        assert archive_path.stat().st_size > 0
+        assert archive_path.exists(), "Condition must be true"
+        assert archive_path.suffix == ".gz", "suffix is not valid"
+        assert archive_path.stat().st_size > 0, "st_size must be greater than zero"
 
     def test_extract_targz_bundle(self, tmp_path):
         """Test extracting a tar.gz archive"""
@@ -53,8 +53,8 @@ class TestTarGzCompression:
         safe_extract_tarfile(archive_path, extract_dir)
 
         extracted_file = extract_dir / "test.txt"
-        assert extracted_file.exists()
-        assert extracted_file.read_text() == "test content"
+        assert extracted_file.exists(), "Condition must be true"
+        assert extracted_file.read_text() == "test content", "Content must not be empty"
 
     def test_targz_compression_ratio(self, tmp_path):
         """Test that tar.gz achieves reasonable compression"""
@@ -70,7 +70,7 @@ class TestTarGzCompression:
         compressed_size = archive_path.stat().st_size
 
         # Should achieve at least 50% compression on repetitive text
-        assert compressed_size < original_size * 0.5
+        assert compressed_size < original_size * 0.5, "compressed_size is not valid"
 
     def test_targz_preserves_file_metadata(self, tmp_path):
         """Test that tar.gz preserves file permissions and timestamps"""
@@ -88,9 +88,9 @@ class TestTarGzCompression:
         safe_extract_tarfile(archive_path, extract_dir)
 
         extracted_file = extract_dir / "metadata_test.txt"
-        assert extracted_file.exists()
+        assert extracted_file.exists(), "Condition must be true"
         # Permissions should be preserved (on Unix-like systems)
-        assert extracted_file.read_text() == "content"
+        assert extracted_file.read_text() == "content", "Content must not be empty"
 
     def test_targz_handles_empty_directories(self, tmp_path):
         """Test that tar.gz can handle empty directories"""
@@ -108,8 +108,8 @@ class TestTarGzCompression:
         # Security: Use safe extraction to prevent path traversal
         safe_extract_tarfile(archive_path, extract_dir)
 
-        assert (extract_dir / "empty_dir").exists()
-        assert (extract_dir / "empty_dir").is_dir()
+        assert (extract_dir / "empty_dir").exists(), "Condition must be true"
+        assert (extract_dir / "empty_dir").is_dir(), "Condition must be true"
 
 
 class TestZipCompression:
@@ -127,8 +127,8 @@ class TestZipCompression:
             for file in source_dir.iterdir():
                 zf.write(file, arcname=file.name)
 
-        assert archive_path.exists()
-        assert archive_path.suffix == ".zip"
+        assert archive_path.exists(), "Condition must be true"
+        assert archive_path.suffix == ".zip", "suffix is not valid"
 
     def test_extract_zip_bundle(self, tmp_path):
         """Test extracting a ZIP archive"""
@@ -146,8 +146,8 @@ class TestZipCompression:
             zf.extractall(extract_dir)  # nosec B202 - Path validation performed above
 
         extracted_file = extract_dir / "test.txt"
-        assert extracted_file.exists()
-        assert extracted_file.read_text() == "zip test content"
+        assert extracted_file.exists(), "Condition must be true"
+        assert extracted_file.read_text() == "zip test content", "Content must not be empty"
 
     def test_zip_compression_levels(self, tmp_path):
         """Test ZIP compression with different levels"""
@@ -165,7 +165,7 @@ class TestZipCompression:
             zf.write(source_file, arcname="file.txt")
 
         # Compressed should be smaller
-        assert archive_deflated.stat().st_size < archive_stored.stat().st_size
+        assert archive_deflated.stat().st_size < archive_stored.stat().st_size, "st_size is not valid"
 
     def test_zip_handles_special_characters_in_names(self, tmp_path):
         """Test ZIP handling of special characters in filenames"""
@@ -182,7 +182,7 @@ class TestZipCompression:
 
         # Verify it's in the archive
         with zipfile.ZipFile(archive_path, "r") as zf:
-            assert "special-file_name.txt" in zf.namelist()
+            assert "special-file_name.txt" in zf.namelist(), "Condition must be true"
 
     def test_zip_archive_integrity(self, tmp_path):
         """Test ZIP archive integrity checking"""
@@ -194,7 +194,7 @@ class TestZipCompression:
         # Test archive integrity
         with zipfile.ZipFile(archive_path, "r") as zf:
             # testzip() returns None if archive is valid
-            assert zf.testzip() is None
+            assert zf.testzip() is None, "Condition must be true"
 
 
 class TestTarXzCompression:
@@ -211,8 +211,8 @@ class TestTarXzCompression:
         with tarfile.open(archive_path, "w:xz") as tar:
             tar.add(source_dir, arcname=".")
 
-        assert archive_path.exists()
-        assert archive_path.suffix == ".xz"
+        assert archive_path.exists(), "Condition must be true"
+        assert archive_path.suffix == ".xz", "suffix is not valid"
 
     def test_extract_tarxz_bundle(self, tmp_path):
         """Test extracting a tar.xz archive"""
@@ -228,8 +228,8 @@ class TestTarXzCompression:
         safe_extract_tarfile(archive_path, extract_dir)
 
         extracted_file = extract_dir / "test.txt"
-        assert extracted_file.exists()
-        assert extracted_file.read_text() == "xz test content"
+        assert extracted_file.exists(), "Condition must be true"
+        assert extracted_file.read_text() == "xz test content", "Content must not be empty"
 
     def test_tarxz_compression_efficiency(self, tmp_path):
         """Test that tar.xz achieves better compression than tar.gz"""
@@ -248,8 +248,8 @@ class TestTarXzCompression:
 
         # XZ should typically achieve better compression
         # (though it may not always be true for small files)
-        assert tarxz_path.exists()
-        assert targz_path.exists()
+        assert tarxz_path.exists(), "Condition must be true"
+        assert targz_path.exists(), "Condition must be true"
 
     def test_tarxz_handles_nested_directories(self, tmp_path):
         """Test tar.xz handling of nested directory structures"""
@@ -269,8 +269,8 @@ class TestTarXzCompression:
         safe_extract_tarfile(archive_path, extract_dir)
 
         extracted_file = extract_dir / "level1" / "level2" / "level3" / "deep_file.txt"
-        assert extracted_file.exists()
-        assert extracted_file.read_text() == "deep content"
+        assert extracted_file.exists(), "Condition must be true"
+        assert extracted_file.read_text() == "deep content", "Content must not be empty"
 
     def test_tarxz_file_count_preservation(self, tmp_path):
         """Test that tar.xz preserves exact file count"""
@@ -291,7 +291,7 @@ class TestTarXzCompression:
             members = tar.getmembers()
             # Filter out directory entries
             file_members = [m for m in members if m.isfile()]
-            assert len(file_members) == file_count
+            assert len(file_members) == file_count, "File_members must not be empty"
 
 
 if __name__ == "__main__":

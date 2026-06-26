@@ -15,8 +15,9 @@ from datetime import datetime, timedelta, timezone
 from unittest.mock import Mock, patch
 from urllib.parse import parse_qs, urlparse
 
-import pytest # pragma: allowlist secret
- # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+import pytest  # pragma: allowlist secret
+
+# pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 from codex.auth.oauth_manager import (
     OAuthConfig,
     OAuthManager,
@@ -72,9 +73,9 @@ class TestOAuthToken:
             token_type="Bearer",
             expires_in=3600,
         )
-        assert token.access_token == "token123"
-        assert token.token_type == "Bearer"
-        assert token.expires_in == 3600
+        assert token.access_token == "token123", "access_token is not valid"
+        assert token.token_type == "Bearer", "token_type is not valid"
+        assert token.expires_in == 3600, "expires_in is not valid"
 
     def test_token_with_refresh(self):
         token = OAuthToken(
@@ -83,7 +84,7 @@ class TestOAuthToken:
             expires_in=3600,
             refresh_token="refresh123",
         )
-        assert token.refresh_token == "refresh123"
+        assert token.refresh_token == "refresh123", "refresh_token is not valid"
 
     def test_token_with_scope(self):
         token = OAuthToken(
@@ -92,7 +93,7 @@ class TestOAuthToken:
             expires_in=3600,
             scope="user:email repository",
         )
-        assert token.scope == "user:email repository"
+        assert token.scope == "user:email repository", "scope is not valid"
 
     def test_token_created_at_set(self):
         before = time.time()
@@ -102,7 +103,7 @@ class TestOAuthToken:
             expires_in=3600,
         )
         after = time.time()
-        assert before <= token.created_at <= after
+        assert before <= token.created_at <= after, "before is not valid"
 
     def test_token_custom_created_at(self):
         custom_time = 1000.0
@@ -112,7 +113,7 @@ class TestOAuthToken:
             expires_in=3600,
             created_at=custom_time,
         )
-        assert token.created_at == custom_time
+        assert token.created_at == custom_time, "created_at is not valid"
 
 
 class TestTokenExpiration:
@@ -124,7 +125,7 @@ class TestTokenExpiration:
             token_type="Bearer",
             expires_in=3600,
         )
-        assert not token.is_expired()
+        assert not token.is_expired(), "Condition must be true"
 
     def test_token_is_expired(self):
         # Create token with expiration in past
@@ -134,7 +135,7 @@ class TestTokenExpiration:
             expires_in=3600,
             created_at=time.time() - 7200,  # 2 hours ago
         )
-        assert token.is_expired()
+        assert token.is_expired(), "Condition must be true"
 
     def test_token_expiration_with_buffer(self):
         # Token expires in 100 seconds, but buffer is 300
@@ -143,7 +144,7 @@ class TestTokenExpiration:
             token_type="Bearer",
             expires_in=100,
         )
-        assert token.is_expired(buffer_seconds=300)
+        assert token.is_expired(buffer_seconds=300), "Condition must be true"
 
     def test_token_expiration_no_expiry(self):
         token = OAuthToken(
@@ -151,7 +152,7 @@ class TestTokenExpiration:
             token_type="Bearer",
             expires_in=0,  # No expiry
         )
-        assert not token.is_expired()
+        assert not token.is_expired(), "Condition must be true"
 
     def test_token_expiration_negative_expiry(self):
         token = OAuthToken(
@@ -159,7 +160,7 @@ class TestTokenExpiration:
             token_type="Bearer",
             expires_in=-1,
         )
-        assert not token.is_expired()
+        assert not token.is_expired(), "Condition must be true"
 
     def test_token_soon_to_expire(self):
         token = OAuthToken(
@@ -168,9 +169,9 @@ class TestTokenExpiration:
             expires_in=200,
         )
         # Should be expired with 300 second buffer
-        assert token.is_expired(buffer_seconds=300)
+        assert token.is_expired(buffer_seconds=300), "Condition must be true"
         # Should not be expired with 100 second buffer
-        assert not token.is_expired(buffer_seconds=100)
+        assert not token.is_expired(buffer_seconds=100), "Condition must be true"
 
     def test_token_expiration_with_buffer_and_explicit_expires_at(self):
         expires_at = datetime.now(timezone.utc) + timedelta(seconds=120)
@@ -180,8 +181,8 @@ class TestTokenExpiration:
             expires_in=3600,
             expires_at=expires_at,
         )
-        assert token.is_expired(buffer_seconds=300)
-        assert not token.is_expired(buffer_seconds=60)
+        assert token.is_expired(buffer_seconds=300), "Condition must be true"
+        assert not token.is_expired(buffer_seconds=60), "Condition must be true"
 
 
 # ============================================================================
@@ -194,31 +195,31 @@ class TestAuthorizationCodeFlow:
 
     def test_get_authorization_url(self, oauth_manager):
         url = oauth_manager.get_authorization_url()
-        assert url.startswith("https://auth.example.com/authorize")
-        assert "client_id=test-client-id" in url
-        assert "redirect_uri=" in url
-        assert "state=" in url
+        assert url.startswith("https://auth.example.com/authorize"), "Condition must be true"
+        assert "client_id=test-client-id" in url, "Condition must be true"
+        assert "redirect_uri=" in url, "Condition must be true"
+        assert "state=" in url, "Condition must be true"
 
     def test_authorization_url_with_scope(self, oauth_manager):
         url = oauth_manager.get_authorization_url(scope="user:email repository")
-        assert "scope=user" in url or "scope=" in url
+        assert "scope=user" in url or "scope=" in url, "Condition must be true"
 
     def test_authorization_url_with_pkce(self, oauth_manager):
         url = oauth_manager.get_authorization_url(use_pkce=True)
-        assert "code_challenge=" in url
-        assert "code_challenge_method=" in url
+        assert "code_challenge=" in url, "Condition must be true"
+        assert "code_challenge_method=" in url, "Condition must be true"
 
     def test_authorization_url_unique_state(self, oauth_manager):
         url1 = oauth_manager.get_authorization_url()
         url2 = oauth_manager.get_authorization_url()
         state1 = parse_qs(urlparse(url1).query)["state"][0]
         state2 = parse_qs(urlparse(url2).query)["state"][0]
-        assert state1 != state2
+        assert state1 != state2, "state1 is not valid"
 
     def test_authorization_url_pkce_challenge_format(self, oauth_manager):
         url = oauth_manager.get_authorization_url(use_pkce=True)
         challenge = parse_qs(urlparse(url).query)["code_challenge"][0]
-        assert len(challenge) >= 43  # PKCE minimum
+        assert len(challenge) >= 43, "Challenge must not be empty"
 
 
 class TestPKCEFlow:
@@ -227,26 +228,26 @@ class TestPKCEFlow:
     def test_pkce_code_verifier_generation(self, oauth_manager):
         verifier = oauth_manager._generate_pkce_verifier()
         assert isinstance(verifier, str)
-        assert 43 <= len(verifier) <= 128
+        assert 43 <= len(verifier) <= 128, "Verifier must not be empty"
 
     def test_pkce_code_challenge_generation(self, oauth_manager):
         verifier = "a" * 128  # Max length
         challenge = oauth_manager._generate_pkce_challenge(verifier)
         assert isinstance(challenge, str)
-        assert len(challenge) > 0
+        assert len(challenge) > 0, "Challenge must not be empty"
 
     def test_pkce_flow_consistency(self, oauth_manager):
         verifier = "a" * 128
         challenge1 = oauth_manager._generate_pkce_challenge(verifier)
         challenge2 = oauth_manager._generate_pkce_challenge(verifier)
-        assert challenge1 == challenge2
+        assert challenge1 == challenge2, "challenge1 is not valid"
 
     def test_pkce_challenge_different_for_different_verifiers(self, oauth_manager):
         verifier1 = "a" * 128
         verifier2 = "b" * 128
         challenge1 = oauth_manager._generate_pkce_challenge(verifier1)
         challenge2 = oauth_manager._generate_pkce_challenge(verifier2)
-        assert challenge1 != challenge2
+        assert challenge1 != challenge2, "challenge1 is not valid"
 
 
 # ============================================================================
@@ -258,6 +259,7 @@ class TestTokenExchange:
     """Authorization code token exchange."""
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_exchange_code_for_token(self, oauth_manager):
         with patch("httpx.AsyncClient.post") as mock_post:
             mock_response = Mock()
@@ -270,10 +272,11 @@ class TestTokenExchange:
             mock_post.return_value = mock_response
 
             token = await oauth_manager.exchange_code_for_token("auth_code_123")
-            assert token.access_token == "token123"
-            assert token.refresh_token == "refresh123"
+            assert token.access_token == "token123", "access_token is not valid"
+            assert token.refresh_token == "refresh123", "refresh_token is not valid"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_exchange_code_with_pkce(self, oauth_manager):
         with patch("httpx.AsyncClient.post") as mock_post:
             mock_response = Mock()
@@ -287,19 +290,22 @@ class TestTokenExchange:
             token = await oauth_manager.exchange_code_for_token(
                 "auth_code_123", code_verifier="a" * 128
             )
-            assert token.access_token == "token123"
+            assert token.access_token == "token123", "access_token is not valid"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_exchange_code_missing_code(self, oauth_manager):
         with pytest.raises(ValueError):
             await oauth_manager.exchange_code_for_token("")
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_exchange_code_none_code(self, oauth_manager):
         with pytest.raises((ValueError, TypeError)):
             await oauth_manager.exchange_code_for_token(None)
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_exchange_code_http_error(self, oauth_manager):
         with patch("httpx.AsyncClient.post") as mock_post:
             mock_response = Mock()
@@ -320,6 +326,7 @@ class TestTokenRefresh:
     """Token refresh and rotation."""
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_refresh_token(self, oauth_manager, valid_oauth_token):
         with patch("httpx.AsyncClient.post") as mock_post:
             mock_response = Mock()
@@ -332,10 +339,11 @@ class TestTokenRefresh:
             mock_post.return_value = mock_response
 
             new_token = await oauth_manager.refresh_token(valid_oauth_token)
-            assert new_token.access_token == "new_token_123"
-            assert new_token.refresh_token == "new_refresh_123"
+            assert new_token.access_token == "new_token_123", "access_token is not valid"
+            assert new_token.refresh_token == "new_refresh_123", "refresh_token is not valid"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_refresh_token_without_refresh_token(self, oauth_manager):
         token = OAuthToken(
             access_token="token123",
@@ -346,11 +354,13 @@ class TestTokenRefresh:
             await oauth_manager.refresh_token(token)
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_refresh_token_none_token(self, oauth_manager):
         with pytest.raises((ValueError, TypeError)):
             await oauth_manager.refresh_token(None)
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_refresh_token_updates_created_at(self, oauth_manager, valid_oauth_token):
         with patch("httpx.AsyncClient.post") as mock_post:
             mock_response = Mock()
@@ -363,9 +373,10 @@ class TestTokenRefresh:
             mock_post.return_value = mock_response
 
             new_token = await oauth_manager.refresh_token(valid_oauth_token)
-            assert new_token.created_at >= valid_oauth_token.created_at
+            assert new_token.created_at >= valid_oauth_token.created_at, "created_at must be greater than zero"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_refresh_multiple_times(self, oauth_manager, valid_oauth_token):
         with patch("httpx.AsyncClient.post") as mock_post:
             token = valid_oauth_token
@@ -380,7 +391,7 @@ class TestTokenRefresh:
                 mock_post.return_value = mock_response
                 token = await oauth_manager.refresh_token(token)
 
-            assert token.access_token == "token_2"
+            assert token.access_token == "token_2", "access_token is not valid"
 
 
 # ============================================================================
@@ -394,11 +405,11 @@ class TestScopeManagement:
     def test_scope_parsing(self, oauth_manager):
         scope_str = "user:email repository public_repo"
         scopes = scope_str.split()
-        assert len(scopes) == 3
+        assert len(scopes) == 3, "Scopes must not be empty"
 
     def test_authorization_url_with_multiple_scopes(self, oauth_manager):
         url = oauth_manager.get_authorization_url(scope="user:email repository public_repo")
-        assert "scope=" in url
+        assert "scope=" in url, "Condition must be true"
 
     def test_scope_space_separated(self):
         scope = "read:user write:repo delete:gist"
@@ -410,7 +421,7 @@ class TestScopeManagement:
 
     def test_empty_scope(self, oauth_manager):
         url = oauth_manager.get_authorization_url(scope="")
-        assert url  # Should still work
+        assert url, "url is not valid"
 
 
 # ============================================================================
@@ -427,18 +438,18 @@ class TestStateManagement:
             url = oauth_manager.get_authorization_url()
             state = parse_qs(urlparse(url).query)["state"][0]
             states.add(state)
-        assert len(states) == 100  # All unique
+        assert len(states) == 100, "States must not be empty"
 
     def test_state_minimum_length(self, oauth_manager):
         url = oauth_manager.get_authorization_url()
         state = parse_qs(urlparse(url).query)["state"][0]
-        assert len(state) >= 20  # Reasonable minimum
+        assert len(state) >= 20, "State must not be empty"
 
     def test_state_validation_required(self, oauth_manager):
         # State should be validated during callback
         url = oauth_manager.get_authorization_url()
         state = parse_qs(urlparse(url).query)["state"][0]
-        assert state  # State exists
+        assert state, "state is not valid"
 
 
 # ============================================================================
@@ -458,7 +469,7 @@ class TestErrorHandling:
             token_url="",
         )
         manager = OAuthManager(config)
-        assert manager  # Should handle empty config
+        assert manager, "manager is not valid"
 
     def test_malformed_token_response(self, oauth_manager):
         with patch("httpx.AsyncClient.post") as mock_post:
@@ -496,8 +507,8 @@ class TestErrorHandling:
             expires_in=3600,
         )
         # Both should work
-        assert token1.token_type
-        assert token2.token_type
+        assert token1.token_type, "Condition must be true"
+        assert token2.token_type, "Condition must be true"
 
 
 # ============================================================================
@@ -511,7 +522,7 @@ class TestOAuthFlow:
     def test_authorization_flow_components(self, oauth_manager):
         # Get authorization URL
         url = oauth_manager.get_authorization_url(scope="user:email", use_pkce=True)
-        assert url
+        assert url, "url is not valid"
 
         # Extract state
         parsed = urlparse(url)
@@ -519,10 +530,11 @@ class TestOAuthFlow:
         state = params["state"][0]
         code_challenge = params.get("code_challenge", [None])[0]
 
-        assert state
-        assert code_challenge
+        assert state, "state is not valid"
+        assert code_challenge, "code_challenge is not valid"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_full_oauth_flow_with_pkce(self, oauth_manager):
         with patch("httpx.AsyncClient.post") as mock_post:
             mock_response = Mock()
@@ -536,17 +548,17 @@ class TestOAuthFlow:
 
             # Get authorization URL
             url = oauth_manager.get_authorization_url(scope="user:email", use_pkce=True)
-            assert url
+            assert url, "url is not valid"
 
             # Exchange code (with PKCE)
             token = await oauth_manager.exchange_code_for_token(
                 "auth_code_123", code_verifier="a" * 128
             )
-            assert token.access_token == "token123"
+            assert token.access_token == "token123", "access_token is not valid"
 
             # Refresh token
             new_token = await oauth_manager.refresh_token(token)
-            assert new_token.access_token == "token123"
+            assert new_token.access_token == "token123", "access_token is not valid"
 
 
 # ============================================================================
@@ -559,7 +571,7 @@ class TestSecurityConsiderations:
 
     def test_secret_not_in_authorization_url(self, oauth_manager):
         url = oauth_manager.get_authorization_url()
-        assert "test-client-secret" not in url
+        assert "test-client-secret" not in url, "Condition must be true"
 
     def test_refresh_token_required_for_refresh(self, oauth_manager):
         token = OAuthToken(
@@ -577,4 +589,4 @@ class TestSecurityConsiderations:
         for _ in range(50):
             verifier = oauth_manager._generate_pkce_verifier()
             verifiers.add(verifier)
-        assert len(verifiers) == 50  # All unique
+        assert len(verifiers) == 50, "Verifiers must not be empty"

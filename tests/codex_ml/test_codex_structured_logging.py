@@ -28,24 +28,24 @@ class TestJsonSafe:
 
     def test_string_passthrough(self) -> None:
         """Test string values pass through."""
-        assert _json_safe("hello") == "hello"
+        assert _json_safe("hello") == "hello", "Condition must be true"
 
     def test_int_passthrough(self) -> None:
         """Test int values pass through."""
-        assert _json_safe(42) == 42
+        assert _json_safe(42) == 42, "Condition must be true"
 
     def test_float_passthrough(self) -> None:
         """Test float values pass through."""
-        assert _json_safe(3.14) == 3.14
+        assert _json_safe(3.14) == 3.14, "Condition must be true"
 
     def test_bool_passthrough(self) -> None:
         """Test bool values pass through."""
-        assert _json_safe(True) is True
-        assert _json_safe(False) is False
+        assert _json_safe(True) is True, "Condition must be true"
+        assert _json_safe(False) is False, "Condition must be true"
 
     def test_none_passthrough(self) -> None:
         """Test None values pass through."""
-        assert _json_safe(None) is None
+        assert _json_safe(None) is None, "Condition must be true"
 
     def test_dict_conversion(self) -> None:
         """Test dict values are recursively converted."""
@@ -71,13 +71,13 @@ class TestJsonSafe:
         obj = CustomClass()
         result = _json_safe(obj)
 
-        assert result == "custom_value"
+        assert result == "custom_value", "Result must not be empty"
 
     def test_bytes_to_string(self) -> None:
         """Test bytes are converted to string."""
         result = _json_safe(b"hello")
 
-        assert result == "b'hello'"
+        assert result == "b'hello'", "Result must not be empty"
 
 
 class TestPrepareSessionPayload:
@@ -95,15 +95,15 @@ class TestPrepareSessionPayload:
         data = {"outer": {"inner": "value"}}
         result = _prepare_session_payload(data)
 
-        assert result == {"outer": {"inner": "value"}}
+        assert result == {"outer": {"inner": "value"}}, "Result must not be empty"
 
     def test_non_string_keys(self) -> None:
         """Test non-string keys are converted."""
         data = {123: "value"}  # type: ignore
         result = _prepare_session_payload(data)
 
-        assert "123" in result
-        assert result["123"] == "value"
+        assert "123" in result, "Result must not be empty"
+        assert result["123"] == "value", "Result must not be empty"
 
 
 class TestUtcIso:
@@ -117,7 +117,7 @@ class TestUtcIso:
     def test_ends_with_z(self) -> None:
         """Test that result ends with Z (UTC indicator)."""
         result = _utc_iso()
-        assert result.endswith("Z")
+        assert result.endswith("Z"), "Result must not be empty"
 
     def test_with_timestamp(self) -> None:
         """Test with explicit timestamp."""
@@ -125,16 +125,16 @@ class TestUtcIso:
         ts = 1705320000.0
         result = _utc_iso(ts)
 
-        assert "2024-01-15" in result
-        assert result.endswith("Z")
+        assert "2024-01-15" in result, "Result must not be empty"
+        assert result.endswith("Z"), "Result must not be empty"
 
     def test_milliseconds_format(self) -> None:
         """Test that milliseconds are included."""
         result = _utc_iso()
         # Format: YYYY-MM-DDTHH:MM:SS.mmmZ
         parts = result.split(".")
-        assert len(parts) == 2
-        assert parts[1].endswith("Z")
+        assert len(parts) == 2, "Parts must not be empty"
+        assert parts[1].endswith("Z"), "Condition must be true"
 
 
 class TestJsonFormatter:
@@ -156,9 +156,9 @@ class TestJsonFormatter:
         result = formatter.format(record)
         parsed = json.loads(result)
 
-        assert parsed["message"] == "Test message"
-        assert parsed["log.level"] == "INFO"
-        assert parsed["log.logger"] == "test_logger"
+        assert parsed["message"] == "Test message", "Condition must be true"
+        assert parsed["log.level"] == "INFO", "Condition must be true"
+        assert parsed["log.logger"] == "test_logger", "Condition must be true"
 
     def test_includes_timestamp(self) -> None:
         """Test that timestamp is included."""
@@ -176,8 +176,8 @@ class TestJsonFormatter:
         result = formatter.format(record)
         parsed = json.loads(result)
 
-        assert "timestamp" in parsed
-        assert parsed["timestamp"].endswith("Z")
+        assert "timestamp" in parsed, "Condition must be true"
+        assert parsed["timestamp"].endswith("Z"), "Condition must be true"
 
     def test_includes_process_info(self) -> None:
         """Test that process info is included."""
@@ -195,8 +195,8 @@ class TestJsonFormatter:
         result = formatter.format(record)
         parsed = json.loads(result)
 
-        assert "process.pid" in parsed
-        assert "thread.name" in parsed
+        assert "process.pid" in parsed, "Condition must be true"
+        assert "thread.name" in parsed, "Condition must be true"
 
     def test_dict_message(self) -> None:
         """Test formatting with dict message."""
@@ -214,8 +214,8 @@ class TestJsonFormatter:
         result = formatter.format(record)
         parsed = json.loads(result)
 
-        assert "custom_field" in parsed
-        assert parsed["custom_field"] == "custom_value"
+        assert "custom_field" in parsed, "Condition must be true"
+        assert parsed["custom_field"] == "custom_value", "Value must be initialized"
 
     def test_exception_info(self) -> None:
         """Test formatting with exception info."""
@@ -241,10 +241,10 @@ class TestJsonFormatter:
         result = formatter.format(record)
         parsed = json.loads(result)
 
-        assert "error.kind" in parsed
-        assert "error.message" in parsed
-        assert "error.stack" in parsed
-        assert parsed["error.kind"] == "ValueError"
+        assert "error.kind" in parsed, "Error should be raised or set"
+        assert "error.message" in parsed, "Error should be raised or set"
+        assert "error.stack" in parsed, "Error should be raised or set"
+        assert parsed["error.kind"] == "ValueError", "Value must be initialized"
 
 
 class TestSessionId:
@@ -260,8 +260,8 @@ class TestSessionId:
 
                 result = get_session_id()
 
-                assert result is not None
-                assert len(result) > 0
+                assert result is not None, "result must be initialized"
+                assert len(result) > 0, "Result must not be empty"
 
     def test_set_session_id_returns_resolved(self) -> None:
         """Test that set_session_id returns resolved ID."""
@@ -270,7 +270,7 @@ class TestSessionId:
                 with patch("codex_ml.codex_structured_logging.SessionLogger"):
                     result = set_session_id("test-session-id")
 
-                    assert result == "test-session-id"
+                    assert result == "test-session-id", "Result must not be empty"
 
 
 class TestInitJsonLogging:
@@ -282,7 +282,7 @@ class TestInitJsonLogging:
             result = init_json_logging()
 
             assert isinstance(result, logging.Logger)
-            assert result.name == "codex"
+            assert result.name == "codex", "Result must not be empty"
 
     def test_uses_env_level(self) -> None:
         """Test that log level is read from environment."""
@@ -290,7 +290,7 @@ class TestInitJsonLogging:
             with patch("codex_ml.codex_structured_logging.set_session_id"):
                 result = init_json_logging(level_env="TEST_LOG_LEVEL")
 
-                assert result is not None
+                assert result is not None, "result must be initialized"
 
 
 class TestEdgeCases:
@@ -306,7 +306,7 @@ class TestEdgeCases:
         input_data = {"level1": {"level2": {"level3": ["a", "b", {"c": 1}]}}}
         result = _json_safe(input_data)
 
-        assert result["level1"]["level2"]["level3"][2]["c"] == 1
+        assert result["level1"]["level2"]["level3"][2]["c"] == 1, "Result must not be empty"
 
     def test_formatter_unicode_handling(self) -> None:
         """Test formatter handles unicode correctly."""
@@ -324,5 +324,5 @@ class TestEdgeCases:
         result = formatter.format(record)
         parsed = json.loads(result)
 
-        assert "日本語" in parsed["message"]
-        assert "🎉" in parsed["message"]
+        assert "日本語" in parsed["message"], "Condition must be true"
+        assert "🎉" in parsed["message"], "Condition must be true"

@@ -15,9 +15,9 @@ from data import datasets
 
 class DummyTokenizer:
     def batch_encode_plus(self, texts, padding, truncation, max_length, return_tensors):
-        assert padding == "max_length"
-        assert truncation is True
-        assert max_length == 64 or max_length == 128
+        assert padding == "max_length", "Length must be greater than zero"
+        assert truncation is True, "truncation is not valid"
+        assert max_length == 64 or max_length == 128, "Length must be greater than zero"
         encoded = [[len(text)] for text in texts]
         return {"input_ids": encoded, "labels": [idx for idx, _ in enumerate(texts)]}
 
@@ -30,9 +30,9 @@ def test_build_dataloaders(tmp_path: Path) -> None:
         data_path, tokenizer, batch_size=2, max_length=64
     )
     batches = list(iter(train_loader))
-    assert batches
+    assert batches, "batches is not valid"
     if val_loader is not None:
-        assert list(iter(val_loader))
+        assert list(iter(val_loader)), "Condition must be true"
 
 
 def test_split_ratio_validation(tmp_path: Path) -> None:

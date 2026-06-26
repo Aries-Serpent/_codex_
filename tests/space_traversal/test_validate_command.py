@@ -99,7 +99,7 @@ def test_validate_command_fails_on_low_maturity():
         with pytest.raises(SystemExit) as exc_info:
             audit_runner.command_validate(cfg)
 
-        assert exc_info.value.code == EXIT_LOW_MATURITY
+        assert exc_info.value.code == EXIT_LOW_MATURITY, "Value must be initialized"
 
 
 def test_validate_command_respects_fail_on_low_maturity_false():
@@ -162,7 +162,7 @@ def test_validate_command_fails_when_missing_artifacts():
         with pytest.raises(SystemExit) as exc_info:
             audit_runner.command_validate(cfg)
 
-        assert exc_info.value.code == EXIT_MISSING_ARTIFACTS
+        assert exc_info.value.code == EXIT_MISSING_ARTIFACTS, "Value must be initialized"
 
 
 def test_stage_s5_creates_component_gaps():
@@ -200,20 +200,20 @@ def test_stage_s5_creates_component_gaps():
         audit_runner.stage_s5_gaps(cfg, scored_caps)
 
         # Check gaps.json
-        assert (artifacts_dir / "gaps.json").exists()
+        assert (artifacts_dir / "gaps.json").exists(), "Condition must be true"
         gaps_data = json.loads((artifacts_dir / "gaps.json").read_text())
-        assert "low_maturity" in gaps_data
-        assert len(gaps_data["low_maturity"]) == 1
-        assert gaps_data["low_maturity"][0]["id"] == "cap1"
+        assert "low_maturity" in gaps_data, "Data must not be empty"
+        assert len(gaps_data["low_maturity"]) == 1, "Collection must not be empty"
+        assert gaps_data["low_maturity"][0]["id"] == "cap1", "Data must not be empty"
 
         # Check component_gaps.json
-        assert (artifacts_dir / "component_gaps.json").exists()
+        assert (artifacts_dir / "component_gaps.json").exists(), "Condition must be true"
         comp_gaps = json.loads((artifacts_dir / "component_gaps.json").read_text())
-        assert "component_gaps" in comp_gaps
-        assert comp_gaps["total_capabilities"] == 2
+        assert "component_gaps" in comp_gaps, "Condition must be true"
+        assert comp_gaps["total_capabilities"] == 2, "Condition must be true"
 
         # cap1 should have gaps
         cap1_gap = next(g for g in comp_gaps["component_gaps"] if g["id"] == "cap1")
-        assert "tests" in cap1_gap["zero_components"]
-        assert "b" in cap1_gap["missing_patterns"]
-        assert "c" in cap1_gap["missing_patterns"]
+        assert "tests" in cap1_gap["zero_components"], "Condition must be true"
+        assert "b" in cap1_gap["missing_patterns"], "Condition must be true"
+        assert "c" in cap1_gap["missing_patterns"], "Condition must be true"

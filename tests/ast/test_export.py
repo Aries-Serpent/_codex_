@@ -76,13 +76,13 @@ class TestKnowledgeGraphExporter:
 
         result = exporter.export(ExportFormat.JSON)
 
-        assert result.success
-        assert result.content is not None
+        assert result.success, "Result must not be empty"
+        assert result.content is not None, "content must be initialized"
 
         data = json.loads(result.content)
-        assert data["version"] == "1.0"
-        assert data["metadata"]["project"] == "test"
-        assert len(data["nodes"]) == 1
+        assert data["version"] == "1.0", "Data must not be empty"
+        assert data["metadata"]["project"] == "test", "Data must not be empty"
+        assert len(data["nodes"]) == 1, "Collection must not be empty"
 
     def test_export_json_with_graph(self, sample_nodes, sample_graph):
         """Test JSON export with dependency graph."""
@@ -92,10 +92,10 @@ class TestKnowledgeGraphExporter:
 
         result = exporter.export(ExportFormat.JSON)
 
-        assert result.success
+        assert result.success, "Result must not be empty"
         data = json.loads(result.content)
-        assert data["graph"] is not None
-        assert len(data["graph"]["edges"]) == 2
+        assert data["graph"] is not None, "Value must be initialized"
+        assert len(data["graph"]["edges"]) == 2, "Collection must not be empty"
 
     def test_export_json_with_metrics(self, sample_nodes, sample_metrics):
         """Test JSON export with metrics."""
@@ -105,10 +105,10 @@ class TestKnowledgeGraphExporter:
 
         result = exporter.export(ExportFormat.JSON)
 
-        assert result.success
+        assert result.success, "Result must not be empty"
         data = json.loads(result.content)
-        assert data["metrics"] is not None
-        assert "summary" in data["metrics"]
+        assert data["metrics"] is not None, "Value must be initialized"
+        assert "summary" in data["metrics"], "Data must not be empty"
 
     def test_export_json_to_file(self, sample_nodes, tmp_path):
         """Test JSON export to file."""
@@ -119,12 +119,12 @@ class TestKnowledgeGraphExporter:
 
         result = exporter.export(ExportFormat.JSON, output_file)
 
-        assert result.success
-        assert output_file.exists()
-        assert result.content is None  # Content not returned when writing to file
+        assert result.success, "Result must not be empty"
+        assert output_file.exists(), "Condition must be true"
+        assert result.content is None, "Result must not be empty"
 
         data = json.loads(output_file.read_text())
-        assert len(data["nodes"]) == 1
+        assert len(data["nodes"]) == 1, "Collection must not be empty"
 
     def test_export_graphml(self, sample_nodes, sample_graph):
         """Test GraphML export."""
@@ -134,11 +134,11 @@ class TestKnowledgeGraphExporter:
 
         result = exporter.export(ExportFormat.GRAPHML)
 
-        assert result.success
-        assert result.content is not None
-        assert '<?xml version="1.0"' in result.content
-        assert "<graphml" in result.content
-        assert 'id="mod1"' in result.content
+        assert result.success, "Result must not be empty"
+        assert result.content is not None, "content must be initialized"
+        assert '<?xml version="1.0"' in result.content, "Result must not be empty"
+        assert "<graphml" in result.content, "Result must not be empty"
+        assert 'id="mod1"' in result.content, "Result must not be empty"
 
     def test_export_graphml_escapes_special_chars(self, tmp_path):
         """Test GraphML properly escapes XML characters."""
@@ -150,9 +150,9 @@ class TestKnowledgeGraphExporter:
 
         result = exporter.export(ExportFormat.GRAPHML)
 
-        assert result.success
-        assert "&lt;" in result.content  # Escaped <
-        assert "&amp;" in result.content  # Escaped &
+        assert result.success, "Result must not be empty"
+        assert "&lt;" in result.content, "Result must not be empty"
+        assert "&amp;" in result.content, "Result must not be empty"
 
     def test_export_dot(self, sample_nodes, sample_graph):
         """Test DOT (Graphviz) export."""
@@ -162,11 +162,11 @@ class TestKnowledgeGraphExporter:
 
         result = exporter.export(ExportFormat.DOT)
 
-        assert result.success
-        assert result.content is not None
-        assert "digraph" in result.content
-        assert "mod1" in result.content
-        assert "->" in result.content
+        assert result.success, "Result must not be empty"
+        assert result.content is not None, "content must be initialized"
+        assert "digraph" in result.content, "Result must not be empty"
+        assert "mod1" in result.content, "Result must not be empty"
+        assert "->" in result.content, "Result must not be empty"
 
     def test_export_dot_highlights_cycles(self):
         """Test DOT export highlights cycles in red."""
@@ -183,8 +183,8 @@ class TestKnowledgeGraphExporter:
 
         result = exporter.export(ExportFormat.DOT)
 
-        assert result.success
-        assert "color=red" in result.content
+        assert result.success, "Result must not be empty"
+        assert "color=red" in result.content, "Result must not be empty"
 
     def test_export_sqlite(self, sample_nodes, sample_graph, sample_metrics, tmp_path):
         """Test SQLite export."""
@@ -198,8 +198,8 @@ class TestKnowledgeGraphExporter:
 
         result = exporter.export(ExportFormat.SQLITE, db_path)
 
-        assert result.success
-        assert db_path.exists()
+        assert result.success, "Result must not be empty"
+        assert db_path.exists(), "Condition must be true"
 
         # Verify database contents
         conn = sqlite3.connect(db_path)
@@ -208,22 +208,22 @@ class TestKnowledgeGraphExporter:
         # Check nodes table
         cursor.execute("SELECT COUNT(*) FROM nodes")
         node_count = cursor.fetchone()[0]
-        assert node_count >= 1
+        assert node_count >= 1, "node_count must be positive"
 
         # Check edges table
         cursor.execute("SELECT COUNT(*) FROM edges")
         edge_count = cursor.fetchone()[0]
-        assert edge_count == 2
+        assert edge_count == 2, "Count must be greater than zero"
 
         # Check metrics table
         cursor.execute("SELECT COUNT(*) FROM metrics")
         metrics_count = cursor.fetchone()[0]
-        assert metrics_count == 2
+        assert metrics_count == 2, "Count must be greater than zero"
 
         # Check metadata table
         cursor.execute("SELECT value FROM metadata WHERE key = 'version'")
         version = cursor.fetchone()[0]
-        assert json.loads(version) == "1.0"
+        assert json.loads(version) == "1.0", "Condition must be true"
 
         conn.close()
 
@@ -234,8 +234,8 @@ class TestKnowledgeGraphExporter:
 
         result = exporter.export(ExportFormat.SQLITE)
 
-        assert not result.success
-        assert "requires output_path" in result.error
+        assert not result.success, "Result must not be empty"
+        assert "requires output_path" in result.error, "Result must not be empty"
 
     def test_export_sqlite_indexes(self, sample_nodes, tmp_path):
         """Test SQLite export creates indexes."""
@@ -246,7 +246,7 @@ class TestKnowledgeGraphExporter:
 
         result = exporter.export(ExportFormat.SQLITE, db_path)
 
-        assert result.success
+        assert result.success, "Result must not be empty"
 
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
@@ -255,8 +255,8 @@ class TestKnowledgeGraphExporter:
         cursor.execute("SELECT name FROM sqlite_master WHERE type='index'")
         indexes = [row[0] for row in cursor.fetchall()]
 
-        assert "idx_nodes_type" in indexes
-        assert "idx_nodes_file" in indexes
+        assert "idx_nodes_type" in indexes, "Condition must be true"
+        assert "idx_nodes_file" in indexes, "Condition must be true"
 
         conn.close()
 
@@ -270,12 +270,12 @@ class TestKnowledgeGraphExporter:
 
         result = exporter.export(ExportFormat.MARKDOWN)
 
-        assert result.success
-        assert result.content is not None
-        assert "# Code Knowledge Graph" in result.content
-        assert "test_project" in result.content
-        assert "Dependency Analysis" in result.content
-        assert "Metrics Summary" in result.content
+        assert result.success, "Result must not be empty"
+        assert result.content is not None, "content must be initialized"
+        assert ", "Condition must be true"
+        assert "test_project" in result.content, "Result must not be empty"
+        assert "Dependency Analysis" in result.content, "Result must not be empty"
+        assert "Metrics Summary" in result.content, "Result must not be empty"
 
     def test_export_markdown_shows_cycles(self):
         """Test Markdown export shows detected cycles."""
@@ -293,9 +293,9 @@ class TestKnowledgeGraphExporter:
 
         result = exporter.export(ExportFormat.MARKDOWN)
 
-        assert result.success
-        assert "Circular Dependencies" in result.content
-        assert "→" in result.content
+        assert result.success, "Result must not be empty"
+        assert "Circular Dependencies" in result.content, "Result must not be empty"
+        assert "→" in result.content, "Result must not be empty"
 
     def test_add_nodes_batch(self, sample_nodes):
         """Test adding multiple nodes at once."""
@@ -304,9 +304,9 @@ class TestKnowledgeGraphExporter:
 
         result = exporter.export(ExportFormat.JSON)
 
-        assert result.success
+        assert result.success, "Result must not be empty"
         data = json.loads(result.content)
-        assert len(data["nodes"]) == len(sample_nodes)
+        assert len(data["nodes"]) == len(sample_nodes), "Sample_nodes must not be empty"
 
     def test_export_result_to_dict(self):
         """Test ExportResult serialization."""
@@ -319,9 +319,9 @@ class TestKnowledgeGraphExporter:
 
         data = result.to_dict()
 
-        assert data["format"] == "json"
-        assert data["output_path"] == "test.json"
-        assert data["success"] is True
+        assert data["format"] == "json", "Data must not be empty"
+        assert data["output_path"] == "test.json", "Data must not be empty"
+        assert data["success"] is True, "Data must not be empty"
 
 
 class TestExportKnowledgeGraphFunction:
@@ -331,8 +331,8 @@ class TestExportKnowledgeGraphFunction:
         """Test basic export."""
         result = export_knowledge_graph(sample_nodes)
 
-        assert result.success
-        assert result.format == ExportFormat.JSON
+        assert result.success, "Result must not be empty"
+        assert result.format == ExportFormat.JSON, "Result must not be empty"
 
     def test_export_with_graph_and_metrics(self, sample_nodes, sample_graph, sample_metrics):
         """Test export with all components."""
@@ -343,10 +343,10 @@ class TestExportKnowledgeGraphFunction:
             metrics=sample_metrics,
         )
 
-        assert result.success
+        assert result.success, "Result must not be empty"
         data = json.loads(result.content)
-        assert data["graph"] is not None
-        assert data["metrics"] is not None
+        assert data["graph"] is not None, "Value must be initialized"
+        assert data["metrics"] is not None, "Value must be initialized"
 
     def test_export_to_file(self, sample_nodes, tmp_path):
         """Test export to file."""
@@ -358,8 +358,8 @@ class TestExportKnowledgeGraphFunction:
             output_path=output_file,
         )
 
-        assert result.success
-        assert output_file.exists()
+        assert result.success, "Result must not be empty"
+        assert output_file.exists(), "Condition must be true"
 
     def test_export_different_formats(self, sample_nodes):
         """Test exporting to different formats."""

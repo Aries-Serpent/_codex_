@@ -84,8 +84,8 @@ class ModelRegistry:
                 self.versions = [ModelVersion.from_dict(v) for v in data.get("versions", [])]
             except (IOError, OSError) as e:
                 error_type = type(e).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
-                logger.warning(f"Failed to load registry: <ERROR_TYPE>")
+                logger.debug("Exception: <ERROR_TYPE>")
+                logger.warning("Failed to load registry: <ERROR_TYPE>")
 
     def save(self):
         """Save registry to disk."""

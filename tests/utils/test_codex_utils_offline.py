@@ -40,14 +40,14 @@ def test_mlflow_offline_session_without_mlflow(monkeypatch, tmp_path):
 
     artifacts_dir = tmp_path / "mlruns"
     with mlflow_offline_session(str(artifacts_dir)) as run:
-        assert run is None
+        assert run is None, "run is not valid"
         parsed = urlparse(os.environ["MLFLOW_TRACKING_URI"])
-        assert parsed.scheme == "file"
-        assert Path(parsed.path) == artifacts_dir
-        assert os.environ["CODEX_MLFLOW_LOCAL_DIR"] == str(artifacts_dir)
-        assert artifacts_dir.exists()
+        assert parsed.scheme == "file", "scheme is not valid"
+        assert Path(parsed.path) == artifacts_dir, "Condition must be true"
+        assert os.environ["CODEX_MLFLOW_LOCAL_DIR"] == str(artifacts_dir), "Condition must be true"
+        assert artifacts_dir.exists(), "Condition must be true"
 
-    assert os.environ["MLFLOW_TRACKING_URI"] == "file://pre-existing"
+    assert os.environ["MLFLOW_TRACKING_URI"] == "file://pre-existing", "Condition must be true"
 
 
 def test_mlflow_offline_session_with_mlflow(monkeypatch, tmp_path):
@@ -79,14 +79,14 @@ def test_mlflow_offline_session_with_mlflow(monkeypatch, tmp_path):
         run_name="run",
         run_tags={"a": "b"},
     ) as active:
-        assert active == "active-run"
-        assert fake_run.entered is True
+        assert active == "active-run", "active is not valid"
+        assert fake_run.entered is True, "entered is not valid"
 
-    assert fake_run.entered is False
-    assert fake.captured["experiment"] == "exp"
-    assert fake.captured["run_name"] == "run"
-    assert fake.captured["tags"] == {"a": "b"}
-    assert fake.captured["uri"].startswith("file://")
+    assert fake_run.entered is False, "entered is not valid"
+    assert fake.captured["experiment"] == "exp", "Condition must be true"
+    assert fake.captured["run_name"] == "run", "Condition must be true"
+    assert fake.captured["tags"] == {"a": "b"}, "Condition must be true"
+    assert fake.captured["uri"].startswith("file://"), "Condition must be true"
 
 
 def test_bootstrap_mlflow_env_sets_local_dir(tmp_path):
@@ -102,9 +102,9 @@ def test_bootstrap_mlflow_env_sets_local_dir(tmp_path):
         target = tmp_path / "mlruns"
         uri = bootstrap_mlflow_env(str(target), force=True)
         parsed = urlparse(uri)
-        assert parsed.scheme == "file"
-        assert Path(parsed.path) == target
-        assert os.environ["CODEX_MLFLOW_LOCAL_DIR"] == str(target)
+        assert parsed.scheme == "file", "scheme is not valid"
+        assert Path(parsed.path) == target, "Condition must be true"
+        assert os.environ["CODEX_MLFLOW_LOCAL_DIR"] == str(target), "Condition must be true"
         assert os.environ.get("MLFLOW_TRACKING_URI", "").startswith("file:")
     finally:
         if prev_tracking is None:
@@ -133,7 +133,7 @@ def test_mlflow_offline_session_start_run_false(monkeypatch, tmp_path):
         str(tmp_path / "mlruns"),
         start_run=False,
     ) as module:
-        assert module is fake
+        assert module is fake, "module is not valid"
 
 
 def test_rng_roundtrip(tmp_path):
@@ -145,7 +145,7 @@ def test_rng_roundtrip(tmp_path):
     restored = repro_mod.load_rng(str(save_path))
     repro_mod.set_seed(123)
     repro_mod.restore_rng(restored)
-    assert [__import__("random").random() for _ in range(3)] == baseline
+    assert [__import__("random").random() for _ in range(3)] == baseline, "Condition must be true"
 
     if repro_mod.np is not None:
         repro_mod.restore_rng(restored)
@@ -177,7 +177,7 @@ def test_ndjson_logger(tmp_path):
 def test_ndjson_logger_path_property(tmp_path):
     target = tmp_path / "out.ndjson"
     with NDJSONLogger(str(target)) as logger:
-        assert Path(logger.path) == target
+        assert Path(logger.path) == target, "Condition must be true"
 
 
 class _DummyWriter:
@@ -205,10 +205,10 @@ def dummy_writer(monkeypatch, tmp_path):
 
 def test_offline_tb_logs_scalars(dummy_writer):
     with OfflineTB(dummy_writer.logdir) as tb:
-        assert tb.enabled
+        assert tb.enabled, "Condition must be true"
         tb.log_scalar("loss", 1.0, 1)
         tb.log_scalars({"acc": 0.5}, step=2)
-    assert dummy_writer.closed is True
+    assert dummy_writer.closed is True, "closed is not valid"
     assert ("loss", 1.0, 1) in dummy_writer.records
     assert ("acc", 0.5, 2) in dummy_writer.records
 
@@ -216,7 +216,7 @@ def test_offline_tb_logs_scalars(dummy_writer):
 def test_offline_tb_disabled(monkeypatch, tmp_path):
     monkeypatch.setattr("codex_utils.logging_setup.SummaryWriter", None, raising=False)
     with OfflineTB(str(tmp_path)) as tb:
-        assert not tb.enabled
+        assert not tb.enabled, "Condition must be true"
         tb.log_scalar("loss", 1.0, 1)
         tb.log_scalars({"acc": 0.5}, step=2)
 
@@ -246,14 +246,14 @@ def test_sample_system_metrics_with_psutil(monkeypatch):
     monkeypatch.setattr(_real_psutil, "Process", lambda: process, raising=False)
 
     payload = sample_system_metrics()
-    assert payload["cpu_percent"] == pytest.approx(42.0)
-    assert payload["mem_percent"] == pytest.approx(33.0)
+    assert payload["cpu_percent"] == pytest.approx(42.0), "Condition must be true"
+    assert payload["mem_percent"] == pytest.approx(33.0), "Condition must be true"
     assert payload["process"]["rss_gb"] == pytest.approx(0.5, rel=1e-6)
 
 
 def test_sample_system_metrics_without_psutil(monkeypatch):
     monkeypatch.setattr("codex_utils.logging_setup.psutil", None, raising=False)
     payload = sample_system_metrics()
-    assert "cpu_percent" in payload
-    assert payload["mem_percent"] is None
-    assert "time_unix" in payload
+    assert "cpu_percent" in payload, "Condition must be true"
+    assert payload["mem_percent"] is None, "Condition must be true"
+    assert "time_unix" in payload, "Condition must be true"

@@ -18,7 +18,7 @@ FAC = ROOT / "audit_artifacts/facets.json"
 def test_context_index_has_files():
     data = json.loads(CTX.read_text(encoding="utf-8"))
     assert "files" in data and isinstance(data["files"], list)
-    assert all("path" in f and ("sha" in f or "sha256" in f) for f in data["files"])
+    assert all("path" in f and ("sha" in f or "sha256" in f) for f in data["files"]), "Data must not be empty"
 
 
 @pytest.mark.skipif(not FAC.exists(), reason="facets file missing")
@@ -30,4 +30,4 @@ def test_facets_has_groups():
     if isinstance(facets, dict):
         assert facets == {} or any(isinstance(v, list) and len(v) > 0 for v in facets.values())
     else:
-        assert facets == [] or any(facets)
+        assert facets == [] or any(facets), "facets is not valid"

@@ -15,7 +15,9 @@ import sys
 from pathlib import Path
 from unittest.mock import patch
 
-from tests.branch_coverage import branch_input # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+from tests.branch_coverage import (
+    branch_input,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+)
 
 # ============================================================================
 # Cross-Module Conditional Branches
@@ -35,8 +37,8 @@ class TestCrossModuleIntegrationBranches:
         # Model loading decision
         quantization = "8bit" if config.get("load_in_8bit", False) else "none"
 
-        assert model_type == "bert"
-        assert quantization == "8bit"
+        assert model_type == "bert", "model_type is not valid"
+        assert quantization == "8bit", "quantization is not valid"
 
     def test_auth_to_api_integration_branch(self) -> None:
         """Test authentication cascade to API access."""
@@ -48,7 +50,7 @@ class TestCrossModuleIntegrationBranches:
         # API access decision
         api_access = "granted" if authenticated else "denied"
 
-        assert api_access == "granted"
+        assert api_access == "granted", "api_access is not valid"
 
     def test_config_override_cascade_branch(self) -> None:
         """Test configuration override cascade."""
@@ -61,8 +63,8 @@ class TestCrossModuleIntegrationBranches:
         final_config.update(env_config)
         final_config.update(cli_config)
 
-        assert final_config["timeout"] == 60
-        assert final_config["retries"] == 5
+        assert final_config["timeout"] == 60, "Condition must be true"
+        assert final_config["retries"] == 5, "Condition must be true"
 
     def test_data_pipeline_cascade_branch(self) -> None:
         """Test data pipeline processing cascade."""
@@ -78,8 +80,8 @@ class TestCrossModuleIntegrationBranches:
         else:
             status = "skipped"
 
-        assert status == "processed"
-        assert data["processed"] is True
+        assert status == "processed", "status is not valid"
+        assert data["processed"] is True, "Data must not be empty"
 
     def test_model_device_strategy_cascade_branch(self) -> None:
         """Test model to device strategy cascade."""
@@ -102,8 +104,8 @@ class TestCrossModuleIntegrationBranches:
             device = "cuda"
             use_cpu_offload = False
 
-        assert device == "cpu"
-        assert use_cpu_offload is True
+        assert device == "cpu", "device is not valid"
+        assert use_cpu_offload is True, "use_cpu_offload is not valid"
 
     def test_logging_level_cascade_branch(self) -> None:
         """Test logging level cascade across modules."""
@@ -121,8 +123,8 @@ class TestCrossModuleIntegrationBranches:
         # Module B inherits and adjusts
         module_b_level = "DEBUG" if module_a_level == "DEBUG" else "INFO"
 
-        assert module_a_level == "DEBUG"
-        assert module_b_level == "DEBUG"
+        assert module_a_level == "DEBUG", "module_a_level is not valid"
+        assert module_b_level == "DEBUG", "module_b_level is not valid"
 
 
 # ============================================================================
@@ -142,7 +144,7 @@ class TestConfigurationCascadeBranches:
 
             final_value = env_value or config_file_value
 
-            assert final_value == "env_value"
+            assert final_value == "env_value", "Value must be initialized"
 
     def test_cli_override_env_var_branch(self) -> None:
         """Test CLI argument overrides environment variable."""
@@ -158,7 +160,7 @@ class TestConfigurationCascadeBranches:
             else:
                 final_value = "default"
 
-            assert final_value == "cli_value"
+            assert final_value == "cli_value", "Value must be initialized"
 
     def test_default_config_used_branch(self) -> None:
         """Test default configuration used when no overrides."""
@@ -176,7 +178,7 @@ class TestConfigurationCascadeBranches:
                 else:
                     final_value = "default"
 
-                assert final_value == "default"
+                assert final_value == "default", "Value must be initialized"
 
     def test_config_validation_cascade_branch(self) -> None:
         """Test configuration validation cascade."""
@@ -188,8 +190,8 @@ class TestConfigurationCascadeBranches:
         # Validation stage 2: Value ranges (depends on stage 1)
         stage2_valid = (config.get("timeout", 0) > 0) if stage1_valid else False
 
-        assert stage1_valid is True
-        assert stage2_valid is True
+        assert stage1_valid is True, "stage1_valid is not valid"
+        assert stage2_valid is True, "stage2_valid is not valid"
 
     def test_config_merge_deep_nested_branch(self) -> None:
         """Test deep nested configuration merge."""
@@ -204,8 +206,8 @@ class TestConfigurationCascadeBranches:
             else:
                 result["db"] = override["db"]
 
-        assert result["db"]["host"] == "localhost"
-        assert result["db"]["port"] == 3306
+        assert result["db"]["host"] == "localhost", "Result must not be empty"
+        assert result["db"]["port"] == 3306, "Result must not be empty"
 
 
 # ============================================================================
@@ -222,7 +224,7 @@ class TestErrorPropagationBranches:
 
         error_propagated = bool(error_occurred)
 
-        assert error_propagated is True
+        assert error_propagated is True, "Error should be raised or set"
 
     def test_error_propagation_multi_level_branch(self) -> None:
         """Test error propagation multiple levels."""
@@ -234,7 +236,7 @@ class TestErrorPropagationBranches:
         # Level 3 receives error
         level3_error = bool(level2_error)
 
-        assert level3_error is True
+        assert level3_error is True, "Error should be raised or set"
 
     def test_error_suppression_branch(self) -> None:
         """Test error suppression at intermediate level."""
@@ -244,7 +246,7 @@ class TestErrorPropagationBranches:
         # Level 2 may suppress
         level2_error = bool(level1_error and not suppress_errors)
 
-        assert level2_error is False
+        assert level2_error is False, "Error should be raised or set"
 
     def test_error_transformation_branch(self) -> None:
         """Test error transformation across levels."""
@@ -258,7 +260,7 @@ class TestErrorPropagationBranches:
         else:
             transformed_error = original_error
 
-        assert transformed_error == "ValidationError"
+        assert transformed_error == "ValidationError", "Error should be raised or set"
 
     def test_error_logging_cascade_branch(self) -> None:
         """Test error logging cascade."""
@@ -272,8 +274,8 @@ class TestErrorPropagationBranches:
             logged = False
             propagate = False
 
-        assert logged is True
-        assert propagate is True
+        assert logged is True, "logged is not valid"
+        assert propagate is True, "propagate is not valid"
 
 
 # ============================================================================
@@ -290,7 +292,7 @@ class TestRealModuleImportBranches:
 
         path_type = "absolute" if path.is_absolute() else "relative"
 
-        assert path_type == "absolute"
+        assert path_type == "absolute", "path_type is not valid"
 
     def test_os_environ_real_import_branch(self) -> None:
         """Test os.environ real import."""
@@ -299,7 +301,7 @@ class TestRealModuleImportBranches:
         with patch.dict(os.environ, {test_key: "test_value"}):
             value = os.environ.get(test_key, None)
 
-            assert value == "test_value"
+            assert value == "test_value", "Value must be initialized"
 
     def test_sys_platform_check_branch(self) -> None:
         """Test sys.platform detection."""
@@ -321,17 +323,17 @@ class TestRealModuleImportBranches:
         else:
             version_ok = False
 
-        assert version_ok is True
+        assert version_ok is True, "version_ok is not valid"
 
     def test_import_success_branch(self) -> None:
         """Test successful import branch."""
         import_success = importlib.util.find_spec("json") is not None
-        assert import_success is True
+        assert import_success is True, "import_success is not valid"
 
     def test_import_optional_module_branch(self) -> None:
         """Test optional module import."""
         available = importlib.util.find_spec("nonexistent_module_xyz") is not None
-        assert available is False
+        assert available is False, "available is not valid"
 
 
 # ============================================================================
@@ -359,7 +361,7 @@ class TestServiceIntegrationBranches:
             else:
                 access = "denied_unauthorized"
 
-        assert access == "full_access"
+        assert access == "full_access", "access is not valid"
 
     def test_rate_limiting_to_caching_branch(self) -> None:
         """Test rate limiting to caching integration."""
@@ -373,8 +375,8 @@ class TestServiceIntegrationBranches:
         # Caching decision (based on rate limiting)
         use_cache = bool(rate_limited and cache_enabled)
 
-        assert rate_limited is True
-        assert use_cache is True
+        assert rate_limited is True, "rate_limited is not valid"
+        assert use_cache is True, "use_cache is not valid"
 
     def test_validation_to_processing_branch(self) -> None:
         """Test validation to processing pipeline."""
@@ -389,7 +391,7 @@ class TestServiceIntegrationBranches:
         else:
             processing_mode = "skipped"
 
-        assert processing_mode == "high_priority"
+        assert processing_mode == "high_priority", "processing_mode is not valid"
 
     def test_circuit_breaker_integration_branch(self) -> None:
         """Test circuit breaker integration."""
@@ -404,8 +406,8 @@ class TestServiceIntegrationBranches:
         # Service call decision
         allow_call = circuit_state != "open"
 
-        assert circuit_state == "open"
-        assert allow_call is False
+        assert circuit_state == "open", "circuit_state is not valid"
+        assert allow_call is False, "allow_call is not valid"
 
 
 # ============================================================================
@@ -428,7 +430,7 @@ class TestStateMachineIntegrationBranches:
         else:
             next_state = current_state
 
-        assert next_state == "running"
+        assert next_state == "running", "next_state is not valid"
 
     def test_state_transition_invalid_branch(self) -> None:
         """Test invalid state transition."""
@@ -443,7 +445,7 @@ class TestStateMachineIntegrationBranches:
 
         next_state = valid_transitions.get((current_state, event), current_state)
 
-        assert next_state == "stopped"
+        assert next_state == "stopped", "next_state is not valid"
 
     def test_state_machine_guard_condition_branch(self) -> None:
         """Test state machine with guard conditions."""
@@ -460,7 +462,7 @@ class TestStateMachineIntegrationBranches:
         else:
             next_state = current_state
 
-        assert next_state == "processing"
+        assert next_state == "processing", "next_state is not valid"
 
     def test_concurrent_state_access_branch(self) -> None:
         """Test concurrent state access handling."""
@@ -468,4 +470,4 @@ class TestStateMachineIntegrationBranches:
 
         access = "blocked" if state_locked else "allowed"
 
-        assert access == "blocked"
+        assert access == "blocked", "access is not valid"

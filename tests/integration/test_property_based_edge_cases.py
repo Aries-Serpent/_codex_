@@ -36,7 +36,7 @@ class TestConfigurationProperties:
         """Config should survive JSON roundtrip."""
         serialized = json.dumps(config, sort_keys=True)
         deserialized = json.loads(serialized)
-        assert deserialized == config
+        assert deserialized == config, "deserialized is not valid"
 
     @given(
         st.dictionaries(st.text(min_size=1, max_size=10), st.integers(), min_size=1, max_size=10)
@@ -46,7 +46,7 @@ class TestConfigurationProperties:
         """Config hash should be deterministic."""
         h1 = hashlib.sha256(json.dumps(config, sort_keys=True).encode()).hexdigest()
         h2 = hashlib.sha256(json.dumps(config, sort_keys=True).encode()).hexdigest()
-        assert h1 == h2
+        assert h1 == h2, "h1 is not valid"
 
     @given(
         st.dictionaries(st.text(min_size=1, max_size=10), st.integers(), min_size=1, max_size=10)
@@ -56,8 +56,8 @@ class TestConfigurationProperties:
         """Merging configs should preserve all keys."""
         override = {"new_key": 999}
         merged = {**base, **override}
-        assert all(k in merged for k in base)
-        assert "new_key" in merged
+        assert all(k in merged for k in base), "Condition must be true"
+        assert "new_key" in merged, "Condition must be true"
 
 
 # =============================================================================
@@ -76,7 +76,7 @@ class TestDataHandlingProperties:
 
         shuffled = data.copy()
         random.Random(42).shuffle(shuffled)
-        assert sorted(shuffled) == sorted(data)
+        assert sorted(shuffled) == sorted(data), "Data must not be empty"
 
     @given(
         st.lists(st.integers(), min_size=10, max_size=100), st.integers(min_value=1, max_value=20)
@@ -86,7 +86,7 @@ class TestDataHandlingProperties:
         """Batching should cover all data."""
         batches = [data[i : i + batch_size] for i in range(0, len(data), batch_size)]
         flattened = [item for batch in batches for item in batch]
-        assert flattened == data
+        assert flattened == data, "Data must not be empty"
 
     @given(st.lists(st.integers(min_value=0, max_value=1), min_size=10, max_size=100))
     @settings(max_examples=30)
@@ -98,9 +98,9 @@ class TestDataHandlingProperties:
         train = set(range(0, train_end))
         val = set(range(train_end, val_end))
         test = set(range(val_end, n))
-        assert len(train & val) == 0
-        assert len(train & test) == 0
-        assert len(val & test) == 0
+        assert len(train & val) == 0, "Collection must not be empty"
+        assert len(train & test) == 0, "Collection must not be empty"
+        assert len(val & test) == 0, "Collection must not be empty"
 
 
 # =============================================================================
@@ -120,8 +120,8 @@ class TestSecurityProperties:
         sanitized1 = html.escape(text)
         sanitized2 = html.escape(sanitized1)
         # Escaping twice should not introduce unsafe raw characters
-        assert "<" not in sanitized2 and ">" not in sanitized2
-        assert len(sanitized2) >= len(sanitized1)
+        assert "<" not in sanitized2 and ">" not in sanitized2, "Condition must be true"
+        assert len(sanitized2) >= len(sanitized1), "Sanitized2 must not be empty"
 
     @given(st.text(min_size=1, max_size=100))
     @settings(max_examples=50)
@@ -129,7 +129,7 @@ class TestSecurityProperties:
         """Different inputs should produce different hashes."""
         h1 = hashlib.sha256(text.encode()).hexdigest()
         h2 = hashlib.sha256((text + "x").encode()).hexdigest()
-        assert h1 != h2
+        assert h1 != h2, "h1 is not valid"
 
 
 # =============================================================================
@@ -152,7 +152,7 @@ class TestVersioningProperties:
         v2 = (major, minor, patch + 1)
         v3 = (major, minor + 1, 0)
         v4 = (major + 1, 0, 0)
-        assert v1 < v2 < v3 < v4
+        assert v1 < v2 < v3 < v4, "v1 is not valid"
 
     @given(
         st.integers(min_value=0, max_value=99),
@@ -164,8 +164,8 @@ class TestVersioningProperties:
         """Version string should be parseable."""
         version_str = f"{major}.{minor}.{patch}"
         parts = version_str.split(".")
-        assert len(parts) == 3
-        assert all(p.isdigit() for p in parts)
+        assert len(parts) == 3, "Parts must not be empty"
+        assert all(p.isdigit() for p in parts), "Condition must be true"
 
 
 # =============================================================================
@@ -183,9 +183,9 @@ class TestErrorHandlingProperties:
         delays = [base**i for i in range(retries)]
         for i in range(1, len(delays)):
             if base <= 1.0:
-                assert delays[i] >= delays[i - 1]
+                assert delays[i] >= delays[i - 1], "Value must be greater than zero"
             else:
-                assert delays[i] > delays[i - 1]
+                assert delays[i] > delays[i - 1], "Value must be greater than zero"
 
     @given(st.lists(st.booleans(), min_size=1, max_size=20))
     @settings(max_examples=30)
@@ -223,8 +223,8 @@ class TestCheckpointingProperties:
         k = min(3, len(losses))
         sorted_losses = sorted(losses)
         best_k = sorted_losses[:k]
-        assert len(best_k) == k
-        assert all(loss in losses for loss in best_k)
+        assert len(best_k) == k, "Best_k must not be empty"
+        assert all(loss in losses for loss in best_k), "Condition must be true"
 
     @given(st.binary(min_size=1, max_size=100))
     @settings(max_examples=30)
@@ -232,11 +232,11 @@ class TestCheckpointingProperties:
         """Checksum should detect changes."""
         checksum1 = hashlib.sha256(data).hexdigest()
         checksum2 = hashlib.sha256(data).hexdigest()
-        assert checksum1 == checksum2
+        assert checksum1 == checksum2, "checksum1 is not valid"
         if len(data) > 1:
             modified = data[:-1] + bytes([data[-1] ^ 1])
             checksum3 = hashlib.sha256(modified).hexdigest()
-            assert checksum1 != checksum3
+            assert checksum1 != checksum3, "checksum1 is not valid"
 
 
 # =============================================================================
@@ -254,7 +254,7 @@ class TestEvaluationProperties:
     def test_metric_aggregation(self, values: list[float]):
         """Metric aggregation should be consistent."""
         mean = sum(values) / len(values)
-        assert 0.0 <= mean <= 1.0
+        assert 0.0 <= mean <= 1.0, "0 is not valid"
 
     @given(st.lists(st.tuples(st.booleans(), st.booleans()), min_size=1, max_size=100))
     @settings(max_examples=30)
@@ -264,4 +264,4 @@ class TestEvaluationProperties:
         tn = sum(1 for p, a in predictions if not p and not a)
         fp = sum(1 for p, a in predictions if p and not a)
         fn = sum(1 for p, a in predictions if not p and a)
-        assert tp + tn + fp + fn == len(predictions)
+        assert tp + tn + fp + fn == len(predictions), "Predictions must not be empty"

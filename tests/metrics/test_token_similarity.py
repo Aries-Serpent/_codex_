@@ -40,10 +40,10 @@ def test_similarity_enabled():
     env["TOKEN_SIMILARITY_ENABLE"] = "1"
     subprocess.run([sys.executable, "scripts/metrics/token_similarity.py"], check=True, env=env)
     out = ART / "token_similarity.json"
-    assert out.exists()
+    assert out.exists(), "Condition must be true"
     data = json.loads(out.read_text())
     for cap in data["capabilities"]:
-        assert 0.0 <= cap["similarity_index"] <= 1.0
+        assert 0.0 <= cap["similarity_index"] <= 1.0, "0 is not valid"
 
 
 def test_similarity_disabled():
@@ -51,4 +51,4 @@ def test_similarity_disabled():
     env = os.environ.copy()
     env["TOKEN_SIMILARITY_ENABLE"] = "0"
     subprocess.run([sys.executable, "scripts/metrics/token_similarity.py"], check=True, env=env)
-    assert not (ART / "token_similarity.json").exists()
+    assert not (ART / "token_similarity.json").exists(), "Condition must be true"

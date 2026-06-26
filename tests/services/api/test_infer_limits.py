@@ -64,10 +64,10 @@ def test_infer_rejects_prompt_exceeding_context_limit(fresh_app: TestClient) -> 
     module.app.state.model = _StubModel(limit=4, vocab_size=4)
 
     response = fresh_app.post("/infer", json={"prompt": "token overflow"})
-    assert response.status_code == 400
+    assert response.status_code == 400, "Response must not be empty"
     detail = response.json()["detail"]
-    assert detail["tokens"] == 6
-    assert detail["limit"] == 4
+    assert detail["tokens"] == 6, "Condition must be true"
+    assert detail["limit"] == 4, "Condition must be true"
 
 
 def test_infer_masks_secrets_and_projects_tokens(
@@ -81,7 +81,7 @@ def test_infer_masks_secrets_and_projects_tokens(
     monkeypatch.delenv("DISABLE_SECRET_FILTER", raising=False)
     secret = "sk-abc123SECRET"  # pragma: allowlist secret
     response = fresh_app.post("/infer", json={"prompt": f"leak {secret}"})
-    assert response.status_code == 200
+    assert response.status_code == 200, "Response must not be empty"
     payload = response.json()
-    assert payload["tokens"] >= 3
-    assert "[SECRET]" in payload["completion"]
+    assert payload["tokens"] >= 3, "Value must be greater than zero"
+    assert "[SECRET]" in payload["completion"], "Condition must be true"

@@ -65,35 +65,35 @@ class TestSecretsScanning:
         """Detect API key in content."""
         content = 'api_key = "test_key_abcdefghijklmnopqrstuvwxyz"'
         findings = scan_for_secrets(content)
-        assert len(findings) >= 1
-        assert any(f["type"] == "API Key" for f in findings)
+        assert len(findings) >= 1, "Findings must not be empty"
+        assert any(f["type"] == "API Key" for f in findings), "Condition must be true"
 
     def test_detect_password(self):
         """Detect password in content."""
         content = 'password = "supersecretpassword123"'
         findings = scan_for_secrets(content)
-        assert len(findings) >= 1
-        assert any(f["type"] == "Password" for f in findings)
+        assert len(findings) >= 1, "Findings must not be empty"
+        assert any(f["type"] == "Password" for f in findings), "Condition must be true"
 
     def test_detect_private_key_block(self):
         """Detect private key block."""
         content = "-----BEGIN RSA PRIVATE KEY-----\nMIIE..."
         findings = scan_for_secrets(content)
-        assert len(findings) >= 1
-        assert any(f["type"] == "Private Key Block" for f in findings)
+        assert len(findings) >= 1, "Findings must not be empty"
+        assert any(f["type"] == "Private Key Block" for f in findings), "Condition must be true"
 
     def test_detect_aws_key(self):
         """Detect AWS access key."""
         content = 'AWS_ACCESS_KEY_ID = "AKIAIOSFODNN7EXAMPLE"'
         findings = scan_for_secrets(content)
-        assert len(findings) >= 1
-        assert any(f["type"] == "AWS Access Key" for f in findings)
+        assert len(findings) >= 1, "Findings must not be empty"
+        assert any(f["type"] == "AWS Access Key" for f in findings), "Condition must be true"
 
     def test_clean_content_no_findings(self):
         """Clean content should have no findings."""
         content = "def hello():\n    print('Hello, World!')"
         findings = scan_for_secrets(content)
-        assert len(findings) == 0
+        assert len(findings) == 0, "Findings must not be empty"
 
 
 # --- Secrets Baseline Tests ---
@@ -133,13 +133,13 @@ class TestSecretsBaseline:
         finding = {"type": "API Key", "match": "test_api_key_value"}
         checksum = baseline._compute_checksum(finding)
         baseline.add_allowlist(checksum)
-        assert baseline.is_allowed(finding)
+        assert baseline.is_allowed(finding), "Condition must be true"
 
     def test_non_allowlisted_finding(self):
         """Non-allowlisted finding should not be filtered."""
         baseline = SecretsBaseline()
         finding = {"type": "Password", "match": "secret123"}
-        assert not baseline.is_allowed(finding)
+        assert not baseline.is_allowed(finding), "Condition must be true"
 
     def test_filter_findings(self):
         """Filter should remove allowlisted findings."""
@@ -150,8 +150,8 @@ class TestSecretsBaseline:
         ]
         baseline.add_allowlist(baseline._compute_checksum(findings[0]))
         filtered = baseline.filter_findings(findings)
-        assert len(filtered) == 1
-        assert filtered[0]["type"] == "Password"
+        assert len(filtered) == 1, "Filtered must not be empty"
+        assert filtered[0]["type"] == "Password", "Condition must be true"
 
 
 # --- Dependency Scanning Tests ---
@@ -203,8 +203,8 @@ class TestDependencyScanning:
             "requests", {"id": "CVE-2023-1234", "severity": "high", "affected_versions": ["2.28.0"]}
         )
         vulns = scanner.scan({"requests": "2.28.0"})
-        assert len(vulns) == 1
-        assert vulns[0]["cve"] == "CVE-2023-1234"
+        assert len(vulns) == 1, "Vulns must not be empty"
+        assert vulns[0]["cve"] == "CVE-2023-1234", "Condition must be true"
 
     def test_clean_dependencies(self):
         """Clean dependencies should have no vulnerabilities."""
@@ -213,7 +213,7 @@ class TestDependencyScanning:
             "requests", {"id": "CVE-2023-1234", "severity": "high", "affected_versions": ["2.28.0"]}
         )
         vulns = scanner.scan({"requests": "2.31.0"})  # Different version
-        assert len(vulns) == 0
+        assert len(vulns) == 0, "Vulns must not be empty"
 
     def test_multiple_vulnerabilities(self):
         """Detect multiple vulnerabilities."""
@@ -225,7 +225,7 @@ class TestDependencyScanning:
             "pkg2", {"id": "CVE-2023-0002", "severity": "medium", "affected_versions": ["*"]}
         )
         vulns = scanner.scan({"pkg1": "1.0.0", "pkg2": "2.0.0"})
-        assert len(vulns) == 2
+        assert len(vulns) == 2, "Vulns must not be empty"
 
 
 # --- Prompt Sanitization Tests ---
@@ -266,36 +266,36 @@ class TestPromptSanitization:
         """Clean prompt should be unchanged."""
         prompt = "What is the capital of France?"
         sanitized, warnings = sanitize_prompt(prompt)
-        assert sanitized == prompt
-        assert len(warnings) == 0
+        assert sanitized == prompt, "sanitized is not valid"
+        assert len(warnings) == 0, "Warnings must not be empty"
 
     def test_sanitize_script_tag(self):
         """Script tags should be redacted."""
         prompt = "Hello <script>alert('xss')</script> World"
         sanitized, warnings = sanitize_prompt(prompt)
-        assert "<script>" not in sanitized
-        assert len(warnings) > 0
+        assert "<script>" not in sanitized, "Condition must be true"
+        assert len(warnings) > 0, "Warnings must not be empty"
 
     def test_sanitize_javascript_url(self):
         """JavaScript URLs should be redacted."""
         prompt = "Click javascript:alert('xss')"
         sanitized, warnings = sanitize_prompt(prompt)
-        assert "javascript:" not in sanitized
-        assert len(warnings) > 0
+        assert "javascript:" not in sanitized, "Condition must be true"
+        assert len(warnings) > 0, "Warnings must not be empty"
 
     def test_sanitize_eval(self):
         """Eval calls should be redacted."""
         prompt = "Execute eval('malicious code')"
         sanitized, warnings = sanitize_prompt(prompt)
-        assert "eval(" not in sanitized
-        assert len(warnings) > 0
+        assert "eval(" not in sanitized, "Condition must be true"
+        assert len(warnings) > 0, "Warnings must not be empty"
 
     def test_sanitize_template_injection(self):
         """Template injection should be redacted."""
         prompt = "Hello {{user.password}}"
         sanitized, warnings = sanitize_prompt(prompt)
-        assert "{{" not in sanitized
-        assert len(warnings) > 0
+        assert "{{" not in sanitized, "Condition must be true"
+        assert len(warnings) > 0, "Warnings must not be empty"
 
     @given(
         st.text(
@@ -309,7 +309,7 @@ class TestPromptSanitization:
         """Property: sanitization is idempotent."""
         sanitized1, _ = sanitize_prompt(prompt)
         sanitized2, _ = sanitize_prompt(sanitized1)
-        assert sanitized1 == sanitized2
+        assert sanitized1 == sanitized2, "sanitized1 is not valid"
 
 
 # --- SBOM Generation Tests ---
@@ -374,37 +374,37 @@ class TestSBOMGeneration:
         """Add component to SBOM."""
         sbom = SBOMGenerator()
         sbom.add_component("requests", "2.31.0", "Apache-2.0")
-        assert len(sbom.components) == 1
+        assert len(sbom.components) == 1, "Collection must not be empty"
 
     def test_generate_cyclonedx(self):
         """Generate CycloneDX format."""
         sbom = SBOMGenerator()
         sbom.add_component("requests", "2.31.0", "Apache-2.0")
         result = sbom.generate("cyclonedx")
-        assert result["bomFormat"] == "CycloneDX"
-        assert len(result["components"]) == 1
+        assert result["bomFormat"] == "CycloneDX", "Result must not be empty"
+        assert len(result["components"]) == 1, "Collection must not be empty"
 
     def test_generate_spdx(self):
         """Generate SPDX format."""
         sbom = SBOMGenerator()
         sbom.add_component("requests", "2.31.0", "Apache-2.0")
         result = sbom.generate("spdx")
-        assert result["spdxVersion"] == "SPDX-2.3"
-        assert len(result["packages"]) == 1
+        assert result["spdxVersion"] == "SPDX-2.3", "Result must not be empty"
+        assert len(result["packages"]) == 1, "Collection must not be empty"
 
     def test_validate_complete(self):
         """Complete SBOM should pass validation."""
         sbom = SBOMGenerator()
         sbom.add_component("requests", "2.31.0", "Apache-2.0")
         errors = sbom.validate()
-        assert len(errors) == 0
+        assert len(errors) == 0, "Errors must not be empty"
 
     def test_validate_missing_fields(self):
         """Missing fields should be detected."""
         sbom = SBOMGenerator()
         sbom.components.append({"name": "test"})  # Missing version and license
         errors = sbom.validate()
-        assert len(errors) == 2
+        assert len(errors) == 2, "Errors must not be empty"
 
 
 # --- Provenance Tests ---
@@ -453,19 +453,19 @@ class TestProvenance:
         prov = ProvenanceRecord("myapp-1.0.0.tar.gz")
         prov.set_build_info("github-actions", "2024-01-01T00:00:00Z", "build-123")
         prov.set_source_info("github.com/org/repo", "abc123", "main")
-        assert prov.is_complete()
+        assert prov.is_complete(), "Condition must be true"
 
     def test_incomplete_provenance(self):
         """Incomplete provenance should be detected."""
         prov = ProvenanceRecord("myapp-1.0.0.tar.gz")
         prov.set_build_info("github-actions", "2024-01-01T00:00:00Z", "build-123")
-        assert not prov.is_complete()  # Missing source info
+        assert not prov.is_complete(), "Condition must be true"
 
     def test_provenance_signature(self):
         """Add signature to provenance."""
         prov = ProvenanceRecord("myapp-1.0.0.tar.gz")
         prov.add_signature("sig_abc123")
-        assert len(prov.signatures) == 1
+        assert len(prov.signatures) == 1, "Collection must not be empty"
 
     def test_provenance_to_dict(self):
         """Convert provenance to dictionary."""
@@ -473,9 +473,9 @@ class TestProvenance:
         prov.set_build_info("github-actions", "2024-01-01T00:00:00Z", "build-123")
         prov.set_source_info("github.com/org/repo", "abc123", "main")
         result = prov.to_dict()
-        assert result["artifact"] == "myapp-1.0.0.tar.gz"
-        assert "build" in result
-        assert "source" in result
+        assert result["artifact"] == "myapp-1.0.0.tar.gz", "Result must not be empty"
+        assert "build" in result, "Result must not be empty"
+        assert "source" in result, "Result must not be empty"
 
 
 # --- Input Validation Tests ---
@@ -487,16 +487,16 @@ class TestInputValidation:
     def test_reject_null_bytes(self):
         """Null bytes should be rejected."""
         input_text = "hello\x00world"
-        assert "\x00" in input_text
+        assert "\x00" in input_text, "Condition must be true"
         sanitized = input_text.replace("\x00", "")
-        assert "\x00" not in sanitized
+        assert "\x00" not in sanitized, "Condition must be true"
 
     def test_reject_control_characters(self):
         """Control characters should be sanitized."""
         input_text = "hello\x1b[31mred\x1b[0m"
         # Remove ANSI escape sequences
         sanitized = re.sub(r"\x1b\[[0-9;]*m", "", input_text)
-        assert "\x1b" not in sanitized
+        assert "\x1b" not in sanitized, "Condition must be true"
 
     @given(st.text(min_size=1, max_size=100))
     @settings(max_examples=30)

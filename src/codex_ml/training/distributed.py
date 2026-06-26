@@ -161,8 +161,8 @@ class DistributedManager:
 
         except (ValueError, TypeError, RuntimeError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.error(f"Failed to initialize distributed training: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.error("Failed to initialize distributed training: <ERROR_TYPE>")
             self._initialized = False
             return False
 

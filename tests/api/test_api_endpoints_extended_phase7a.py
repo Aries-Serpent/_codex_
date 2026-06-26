@@ -14,7 +14,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 0, "method": "GET"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_1(self):
         """Test RESTful endpoint 1 (POST)"""
@@ -24,7 +24,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 1, "method": "POST"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_2(self):
         """Test RESTful endpoint 2 (PUT)"""
@@ -34,7 +34,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 2, "method": "PUT"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_3(self):
         """Test RESTful endpoint 3 (DELETE)"""
@@ -44,7 +44,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 3, "method": "DELETE"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_4(self):
         """Test RESTful endpoint 4 (PATCH)"""
@@ -54,7 +54,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 4, "method": "PATCH"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_5(self):
         """Test RESTful endpoint 5 (GET)"""
@@ -64,7 +64,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 5, "method": "GET"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_6(self):
         """Test RESTful endpoint 6 (POST)"""
@@ -74,7 +74,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 6, "method": "POST"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_7(self):
         """Test RESTful endpoint 7 (PUT)"""
@@ -84,7 +84,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 7, "method": "PUT"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_8(self):
         """Test RESTful endpoint 8 (DELETE)"""
@@ -94,7 +94,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 8, "method": "DELETE"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_9(self):
         """Test RESTful endpoint 9 (PATCH)"""
@@ -104,7 +104,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 9, "method": "PATCH"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_10(self):
         """Test RESTful endpoint 10 (GET)"""
@@ -114,7 +114,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 10, "method": "GET"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_11(self):
         """Test RESTful endpoint 11 (POST)"""
@@ -124,7 +124,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 11, "method": "POST"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_12(self):
         """Test RESTful endpoint 12 (PUT)"""
@@ -134,7 +134,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 12, "method": "PUT"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_13(self):
         """Test RESTful endpoint 13 (DELETE)"""
@@ -144,7 +144,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 13, "method": "DELETE"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_14(self):
         """Test RESTful endpoint 14 (PATCH)"""
@@ -154,7 +154,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 14, "method": "PATCH"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_15(self):
         """Test RESTful endpoint 15 (GET)"""
@@ -164,7 +164,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 15, "method": "GET"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_16(self):
         """Test RESTful endpoint 16 (POST)"""
@@ -174,7 +174,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 16, "method": "POST"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_17(self):
         """Test RESTful endpoint 17 (PUT)"""
@@ -184,7 +184,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 17, "method": "PUT"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_18(self):
         """Test RESTful endpoint 18 (DELETE)"""
@@ -194,7 +194,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 18, "method": "DELETE"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_19(self):
         """Test RESTful endpoint 19 (PATCH)"""
@@ -204,7 +204,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 19, "method": "PATCH"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_20(self):
         """Test RESTful endpoint 20 (GET)"""
@@ -214,7 +214,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 20, "method": "GET"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_21(self):
         """Test RESTful endpoint 21 (POST)"""
@@ -224,7 +224,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 21, "method": "POST"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_22(self):
         """Test RESTful endpoint 22 (PUT)"""
@@ -234,7 +234,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 22, "method": "PUT"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_23(self):
         """Test RESTful endpoint 23 (DELETE)"""
@@ -244,7 +244,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 23, "method": "DELETE"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_24(self):
         """Test RESTful endpoint 24 (PATCH)"""
@@ -254,7 +254,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 24, "method": "PATCH"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_25(self):
         """Test RESTful endpoint 25 (GET)"""
@@ -264,7 +264,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 25, "method": "GET"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_26(self):
         """Test RESTful endpoint 26 (POST)"""
@@ -274,7 +274,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 26, "method": "POST"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_27(self):
         """Test RESTful endpoint 27 (PUT)"""
@@ -284,7 +284,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 27, "method": "PUT"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_28(self):
         """Test RESTful endpoint 28 (DELETE)"""
@@ -294,7 +294,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 28, "method": "DELETE"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_29(self):
         """Test RESTful endpoint 29 (PATCH)"""
@@ -304,7 +304,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 29, "method": "PATCH"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_30(self):
         """Test RESTful endpoint 30 (GET)"""
@@ -314,7 +314,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 30, "method": "GET"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_31(self):
         """Test RESTful endpoint 31 (POST)"""
@@ -324,7 +324,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 31, "method": "POST"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_32(self):
         """Test RESTful endpoint 32 (PUT)"""
@@ -334,7 +334,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 32, "method": "PUT"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_33(self):
         """Test RESTful endpoint 33 (DELETE)"""
@@ -344,7 +344,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 33, "method": "DELETE"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_34(self):
         """Test RESTful endpoint 34 (PATCH)"""
@@ -354,7 +354,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 34, "method": "PATCH"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_35(self):
         """Test RESTful endpoint 35 (GET)"""
@@ -364,7 +364,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 35, "method": "GET"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_36(self):
         """Test RESTful endpoint 36 (POST)"""
@@ -374,7 +374,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 36, "method": "POST"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_37(self):
         """Test RESTful endpoint 37 (PUT)"""
@@ -384,7 +384,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 37, "method": "PUT"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_38(self):
         """Test RESTful endpoint 38 (DELETE)"""
@@ -394,7 +394,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 38, "method": "DELETE"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_39(self):
         """Test RESTful endpoint 39 (PATCH)"""
@@ -404,7 +404,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 39, "method": "PATCH"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_40(self):
         """Test RESTful endpoint 40 (GET)"""
@@ -414,7 +414,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 40, "method": "GET"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_41(self):
         """Test RESTful endpoint 41 (POST)"""
@@ -424,7 +424,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 41, "method": "POST"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_42(self):
         """Test RESTful endpoint 42 (PUT)"""
@@ -434,7 +434,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 42, "method": "PUT"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_43(self):
         """Test RESTful endpoint 43 (DELETE)"""
@@ -444,7 +444,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 43, "method": "DELETE"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_44(self):
         """Test RESTful endpoint 44 (PATCH)"""
@@ -454,7 +454,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 44, "method": "PATCH"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_45(self):
         """Test RESTful endpoint 45 (GET)"""
@@ -464,7 +464,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 45, "method": "GET"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_46(self):
         """Test RESTful endpoint 46 (POST)"""
@@ -474,7 +474,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 46, "method": "POST"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_47(self):
         """Test RESTful endpoint 47 (PUT)"""
@@ -484,7 +484,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 47, "method": "PUT"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_48(self):
         """Test RESTful endpoint 48 (DELETE)"""
@@ -494,7 +494,7 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 48, "method": "DELETE"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_restful_endpoint_49(self):
         """Test RESTful endpoint 49 (PATCH)"""
@@ -504,4 +504,4 @@ class TestAPIRestfulEndpoints:
         def handler():
             return {"id": 49, "method": "PATCH"}
 
-        assert app is not None
+        assert app is not None, "app must be initialized"

@@ -138,8 +138,8 @@ class ConfigDrift:
             return bool(diff["added"] or diff["removed"] or diff["modified"])
         except FileNotFoundError as e:
             error_type = type(e).__name__
-            logger.debug(f"FileNotFoundError: <ERROR_TYPE>")
-            logger.warning(f"FileNotFoundError: <ERROR_TYPE>", exc_info=True)
+            logger.debug("FileNotFoundError: <ERROR_TYPE>")
+            logger.warning("FileNotFoundError: <ERROR_TYPE>", exc_info=True)
             logger.warning(f"Baseline not found: {baseline_path}")
             return False
 

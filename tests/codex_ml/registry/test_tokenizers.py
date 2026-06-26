@@ -25,7 +25,7 @@ def test_register_tokenizer_allows_override():
 
     with registry.temporarily_registered({"demo": lambda **_: "a"}):
         with registry.temporarily_registered({"demo": lambda **_: "b"}):
-            assert registry.get("demo")(**{}) == "b"
+            assert registry.get("demo")(**{}) == "b", "Condition must be true"
 
 
 def test_get_tokenizer_returns_factory_result():
@@ -38,13 +38,13 @@ def test_get_tokenizer_returns_factory_result():
 
     with registry.temporarily_registered({"custom": factory}):
         result = tokenizers.get_tokenizer("custom", cache_size=10)
-        assert result == "tokenizer-instance"
-        assert factory_calls[-1] == {"cache_size": 10}
+        assert result == "tokenizer-instance", "Result must not be empty"
+        assert factory_calls[-1] == {"cache_size": 10}, "fact is not valid"
 
 
 def test_init_tokenizer_plugins_handles_missing_plugins(monkeypatch):
     loaded = tokenizers.init_tokenizer_plugins(force=True)
-    assert loaded == 0
+    assert loaded == 0, "loaded is not valid"
 
     class DummyLoader:
         def __call__(self, group, register):  # pragma: no cover - defensive
@@ -54,4 +54,4 @@ def test_init_tokenizer_plugins_handles_missing_plugins(monkeypatch):
     module = type("Plugins", (), {"load_plugins": DummyLoader()})
     monkeypatch.setitem(sys.modules, "codex_ml.plugins", module)
     loaded_second = tokenizers.init_tokenizer_plugins(force=True)
-    assert loaded_second == 1
+    assert loaded_second == 1, "loaded_second is not valid"

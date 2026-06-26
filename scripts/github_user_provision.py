@@ -45,7 +45,7 @@ try:
     from codex.auth import MFAProvider
 except ImportError as e:
     error_type = type(e).__name__
-    print(f"Error: <ERROR_TYPE>. Install: pip install PyGithub && pip install -e .")
+    print("Error: <ERROR_TYPE>. Install: pip install PyGithub && pip install -e .")
     sys.exit(1)
 
 class GitHubUserProvisioner:

@@ -64,7 +64,7 @@ def test_lint_ok(tmp_path: pathlib.Path) -> None:
     )
     if "Install pyyaml" in (result.stderr or ""):
         pytest.skip("label policy lint requires pyyaml", allow_module_level=False)
-    assert result.returncode == 0
+    assert result.returncode == 0, "Result must not be empty"
 
 
 def test_lint_bad(tmp_path: pathlib.Path) -> None:
@@ -95,5 +95,5 @@ def test_lint_bad(tmp_path: pathlib.Path) -> None:
     )
     if "Install pyyaml" in (result.stderr or ""):
         pytest.skip("label policy lint requires pyyaml", allow_module_level=False)
-    assert result.returncode != 0
-    assert "disallowed labels" in result.stderr
+    assert result.returncode != 0, "Result must not be empty"
+    assert "disallowed labels" in result.stderr, "Result must not be empty"

@@ -40,7 +40,7 @@ class TestCodexLoggers:
         try:
             from codex_ml.monitoring._logger_types import CodexLoggers
 
-            assert CodexLoggers is not None
+            assert CodexLoggers is not None, "CodexLoggers must be initialized"
         except ImportError as exc:
             pytest.skip(f"Optional dependency missing: {exc}")
 
@@ -53,6 +53,6 @@ class TestTelemetryComponentStatus:
         try:
             from codex_ml.monitoring._logger_types import TelemetryComponentStatus
 
-            assert TelemetryComponentStatus is not None
+            assert TelemetryComponentStatus is not None, "TelemetryComponentStatus must be initialized"
         except ImportError as exc:
             pytest.skip(f"Optional dependency missing: {exc}")

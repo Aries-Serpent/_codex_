@@ -24,9 +24,9 @@ def test_dataset_cli_validate_and_metadata(tmp_path: Path):
         text=True,
         check=False,
     )
-    assert proc.returncode == 0
+    assert proc.returncode == 0, "returncode is not valid"
     payload = json.loads(proc.stdout)
-    assert payload["ok"] is True
+    assert payload["ok"] is True, "Condition must be true"
 
     # Metadata
     proc2 = subprocess.run(
@@ -35,7 +35,7 @@ def test_dataset_cli_validate_and_metadata(tmp_path: Path):
         text=True,
         check=False,
     )
-    assert proc2.returncode == 0
+    assert proc2.returncode == 0, "returncode is not valid"
     meta = json.loads(proc2.stdout)
-    assert meta["path"].endswith("samples.jsonl")
+    assert meta["path"].endswith("samples.jsonl"), "Condition must be true"
     assert meta["kind"] in {"generic", "parquet", "arrow", "hdf5"}

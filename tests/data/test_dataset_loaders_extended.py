@@ -35,8 +35,8 @@ class TestParquetLoader:
 
         dataset = load_parquet(path)
 
-        assert len(dataset) == 3
-        assert dataset[0]["text"] == "Sample 1"
+        assert len(dataset) == 3, "Dataset must not be empty"
+        assert dataset[0]["text"] == "Sample 1", "Data must not be empty"
 
     @pytest.mark.skipif(not pytest.importorskip("pyarrow"), reason="Requires pyarrow")
     def test_load_parquet_batched(self):
@@ -54,8 +54,8 @@ class TestParquetLoader:
 
         batches = list(load_parquet(path, batch_size=20))
 
-        assert len(batches) == 5  # 100 rows / 20 per batch
-        assert len(batches[0]) == 20
+        assert len(batches) == 5, "Batches must not be empty"
+        assert len(batches[0]) == 20, "Collection must not be empty"
 
 
 class TestArrowLoader:
@@ -83,8 +83,8 @@ class TestArrowLoader:
 
         dataset = load_arrow(path)
 
-        assert len(dataset) == 2
-        assert dataset[0]["text"] == "Sample 1"
+        assert len(dataset) == 2, "Dataset must not be empty"
+        assert dataset[0]["text"] == "Sample 1", "Data must not be empty"
 
 
 class TestHDF5Loader:

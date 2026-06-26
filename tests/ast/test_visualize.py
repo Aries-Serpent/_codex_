@@ -25,11 +25,11 @@ class TestHTMLVisualizer:
 
         visualizer.render_html([node], graph, {"complexity": 1}, str(output))
 
-        assert output.exists()
+        assert output.exists(), "Condition must be true"
         content = output.read_text()
-        assert "<html>" in content
-        assert "AST Analysis Report" in content
-        assert "d3.js" in content
+        assert "<html>" in content, "Content must not be empty"
+        assert "AST Analysis Report" in content, "Content must not be empty"
+        assert "d3.js" in content, "Content must not be empty"
 
     def test_node_to_dict(self, tmp_path):
         """Test node conversion to dictionary."""
@@ -39,9 +39,9 @@ class TestHTMLVisualizer:
         visualizer = HTMLVisualizer()
         node_dict = visualizer._node_to_dict(node)
 
-        assert "id" in node_dict
-        assert "type" in node_dict
-        assert "children" in node_dict
+        assert "id" in node_dict, "Condition must be true"
+        assert "type" in node_dict, "Condition must be true"
+        assert "children" in node_dict, "Condition must be true"
 
     # ------------------------------------------------------------------
     # CB-005: additional unit tests — node rendering, tree depth, CSS
@@ -63,10 +63,10 @@ class TestHTMLVisualizer:
 
         content = output.read_text()
         # Metric cards for Functions and Classes are present in the template
-        assert "Functions" in content
-        assert "Classes" in content
+        assert "Functions" in content, "Content must not be empty"
+        assert "Classes" in content, "Content must not be empty"
         # Complexity value is embedded
-        assert "5" in content
+        assert "5" in content, "Content must not be empty"
 
     def test_tree_depth_reflected_in_node_children_count(self):
         """CB-005: _node_to_dict reports child count matching actual children."""
@@ -94,8 +94,8 @@ class TestHTMLVisualizer:
         d = visualizer._node_to_dict(parent)
 
         assert d["children"] == 3, f"Expected 3 children in dict, got {d['children']}"
-        assert d["type"] == "class"
-        assert d["name"] == "MyClass"
+        assert d["type"] == "class", "Condition must be true"
+        assert d["name"] == "MyClass", "Condition must be true"
 
     def test_css_output_contains_required_selectors(self, tmp_path):
         """CB-005: rendered HTML includes required CSS selectors for styling."""
@@ -108,10 +108,10 @@ class TestHTMLVisualizer:
 
         content = output.read_text()
         # Core CSS classes that drive the visual layout must be present
-        assert ".container" in content
-        assert ".metric-card" in content
-        assert ".node" in content
-        assert "font-family" in content
+        assert ".container" in content, "Content must not be empty"
+        assert ".metric-card" in content, "Content must not be empty"
+        assert ".node" in content, "Content must not be empty"
+        assert "font-family" in content, "Content must not be empty"
 
     def test_render_html_with_empty_nodes(self, tmp_path):
         """CB-005: render_html handles an empty node list without error."""
@@ -119,6 +119,6 @@ class TestHTMLVisualizer:
         output = tmp_path / "empty.html"
         visualizer.render_html([], ASTGraph(), {}, str(output))
 
-        assert output.exists()
+        assert output.exists(), "Condition must be true"
         content = output.read_text()
-        assert "<html>" in content
+        assert "<html>" in content, "Content must not be empty"

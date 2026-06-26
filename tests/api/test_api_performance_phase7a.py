@@ -20,8 +20,8 @@ class TestAPIPerformance:
         result = endpoint()
         elapsed = time.time() - start
 
-        assert elapsed < 1.0
-        assert result["status"] == "ok"
+        assert elapsed < 1.0, "elapsed is not valid"
+        assert result["status"] == "ok", "Result must not be empty"
 
     def test_bulk_request_handling(self):
         """Test bulk request handling"""
@@ -30,12 +30,12 @@ class TestAPIPerformance:
             return [{"id": i} for i in range(count)]
 
         results = process_requests(100)
-        assert len(results) == 100
+        assert len(results) == 100, "Results must not be empty"
 
     def test_large_response_serialization(self):
         """Test large response serialization"""
         large_data = {"items": [{"id": i, "data": f"item_{i}"} for i in range(1000)]}
-        assert len(large_data["items"]) == 1000
+        assert len(large_data["items"]) == 1000, "Collection must not be empty"
 
     def test_concurrent_request_handling(self):
         """Test concurrent request handling"""
@@ -52,7 +52,7 @@ class TestAPIPerformance:
         for t in threads:
             t.join()
 
-        assert len(results) == 10
+        assert len(results) == 10, "Results must not be empty"
 
     def test_memory_efficient_streaming(self):
         """Test memory efficient streaming"""
@@ -65,7 +65,7 @@ class TestAPIPerformance:
         for item in stream_data():
             count += 1
 
-        assert count == 100
+        assert count == 100, "Count must be greater than zero"
 
     def test_caching_performance_benefit(self):
         """Test caching performance benefit"""
@@ -84,7 +84,7 @@ class TestAPIPerformance:
         cached_call()
         cached_call()
 
-        assert call_count[0] == 1
+        assert call_count[0] == 1, "Count must be greater than zero"
 
     def test_query_optimization(self):
         """Test query optimization"""
@@ -94,7 +94,7 @@ class TestAPIPerformance:
             return [{"id": i, "user_id": user_id} for i in range(min(limit, 10))]
 
         posts = get_user_posts(1, limit=5)
-        assert len(posts) == 5
+        assert len(posts) == 5, "Posts must not be empty"
 
     def test_connection_reuse(self):
         """Test connection reuse"""
@@ -118,7 +118,7 @@ class TestAPIPerformance:
         pool.return_connection(conn)
         pool.get_connection()
 
-        assert pool.reuse_count > 0
+        assert pool.reuse_count > 0, "reuse_count must be positive"
 
     def test_batch_processing(self):
         """Test batch processing"""
@@ -131,7 +131,7 @@ class TestAPIPerformance:
 
         items = list(range(100))
         batches = batch_process(items, batch_size=25)
-        assert len(batches) == 4
+        assert len(batches) == 4, "Batches must not be empty"
 
     def test_lazy_loading(self):
         """Test lazy loading"""
@@ -147,7 +147,7 @@ class TestAPIPerformance:
                 return self._data
 
         resource = LazyResource()
-        assert resource.data == "expensive_computation"
+        assert resource.data == "expensive_computation", "Data must not be empty"
 
     def test_performance_variant_0(self):
         """Test performance variant 0"""
@@ -156,7 +156,7 @@ class TestAPIPerformance:
             return 0
 
         result = compute()
-        assert result == 0
+        assert result == 0, "Result must not be empty"
 
     def test_performance_variant_1(self):
         """Test performance variant 1"""
@@ -165,7 +165,7 @@ class TestAPIPerformance:
             return 100
 
         result = compute()
-        assert result == 100
+        assert result == 100, "Result must not be empty"
 
     def test_performance_variant_2(self):
         """Test performance variant 2"""
@@ -174,7 +174,7 @@ class TestAPIPerformance:
             return 200
 
         result = compute()
-        assert result == 200
+        assert result == 200, "Result must not be empty"
 
     def test_performance_variant_3(self):
         """Test performance variant 3"""
@@ -183,7 +183,7 @@ class TestAPIPerformance:
             return 300
 
         result = compute()
-        assert result == 300
+        assert result == 300, "Result must not be empty"
 
     def test_performance_variant_4(self):
         """Test performance variant 4"""
@@ -192,7 +192,7 @@ class TestAPIPerformance:
             return 400
 
         result = compute()
-        assert result == 400
+        assert result == 400, "Result must not be empty"
 
     def test_performance_variant_5(self):
         """Test performance variant 5"""
@@ -201,7 +201,7 @@ class TestAPIPerformance:
             return 500
 
         result = compute()
-        assert result == 500
+        assert result == 500, "Result must not be empty"
 
     def test_performance_variant_6(self):
         """Test performance variant 6"""
@@ -210,7 +210,7 @@ class TestAPIPerformance:
             return 600
 
         result = compute()
-        assert result == 600
+        assert result == 600, "Result must not be empty"
 
     def test_performance_variant_7(self):
         """Test performance variant 7"""
@@ -219,7 +219,7 @@ class TestAPIPerformance:
             return 700
 
         result = compute()
-        assert result == 700
+        assert result == 700, "Result must not be empty"
 
     def test_performance_variant_8(self):
         """Test performance variant 8"""
@@ -228,7 +228,7 @@ class TestAPIPerformance:
             return 800
 
         result = compute()
-        assert result == 800
+        assert result == 800, "Result must not be empty"
 
     def test_performance_variant_9(self):
         """Test performance variant 9"""
@@ -237,7 +237,7 @@ class TestAPIPerformance:
             return 900
 
         result = compute()
-        assert result == 900
+        assert result == 900, "Result must not be empty"
 
     def test_performance_variant_10(self):
         """Test performance variant 10"""
@@ -246,7 +246,7 @@ class TestAPIPerformance:
             return 1000
 
         result = compute()
-        assert result == 1000
+        assert result == 1000, "Result must not be empty"
 
     def test_performance_variant_11(self):
         """Test performance variant 11"""
@@ -255,7 +255,7 @@ class TestAPIPerformance:
             return 1100
 
         result = compute()
-        assert result == 1100
+        assert result == 1100, "Result must not be empty"
 
     def test_performance_variant_12(self):
         """Test performance variant 12"""
@@ -264,7 +264,7 @@ class TestAPIPerformance:
             return 1200
 
         result = compute()
-        assert result == 1200
+        assert result == 1200, "Result must not be empty"
 
     def test_performance_variant_13(self):
         """Test performance variant 13"""
@@ -273,7 +273,7 @@ class TestAPIPerformance:
             return 1300
 
         result = compute()
-        assert result == 1300
+        assert result == 1300, "Result must not be empty"
 
     def test_performance_variant_14(self):
         """Test performance variant 14"""
@@ -282,7 +282,7 @@ class TestAPIPerformance:
             return 1400
 
         result = compute()
-        assert result == 1400
+        assert result == 1400, "Result must not be empty"
 
     def test_performance_variant_15(self):
         """Test performance variant 15"""
@@ -291,7 +291,7 @@ class TestAPIPerformance:
             return 1500
 
         result = compute()
-        assert result == 1500
+        assert result == 1500, "Result must not be empty"
 
     def test_performance_variant_16(self):
         """Test performance variant 16"""
@@ -300,7 +300,7 @@ class TestAPIPerformance:
             return 1600
 
         result = compute()
-        assert result == 1600
+        assert result == 1600, "Result must not be empty"
 
     def test_performance_variant_17(self):
         """Test performance variant 17"""
@@ -309,4 +309,4 @@ class TestAPIPerformance:
             return 1700
 
         result = compute()
-        assert result == 1700
+        assert result == 1700, "Result must not be empty"

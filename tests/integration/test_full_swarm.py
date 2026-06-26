@@ -33,11 +33,11 @@ class TestSwarmIntegration(unittest.TestCase):
         # For now, document the expected behavior
         expected_behavior = """
         swarm = SwarmEngine(100)
-        assert swarm.agent_count() == 100
+        assert swarm.agent_count() == 100, "Count must be greater than zero"
 
         # Process batch
         processed = swarm.process_batch(1000)
-        assert processed == 1000
+        assert processed == 1000, "processed is not valid"
         """
         self.assertIsNotNone(expected_behavior)
 
@@ -61,7 +61,7 @@ class TestSwarmIntegration(unittest.TestCase):
         duration = time.time() - start_time
 
         # Validate
-        assert len(results) == task_count
+        assert len(results) == task_count, "Results must not be empty"
         throughput = task_count / duration
         assert throughput > 5000, f"Throughput: {throughput:.0f} tasks/s"
         """
@@ -83,7 +83,7 @@ class TestSwarmIntegration(unittest.TestCase):
         # Decompress
         decompressed = Compression.decompress(compressed)
 
-        assert decompressed == tasks_json
+        assert decompressed == tasks_json, "decompressed is not valid"
         assert ratio >= 10, f"Compression ratio: {ratio:.1f}x"
         """
         self.assertIsNotNone(expected_test)
@@ -127,14 +127,14 @@ class TestSwarmIntegration(unittest.TestCase):
         results = swarm.process_tasks(tasks)
 
         # System should handle errors gracefully
-        assert len(results) == 1000
+        assert len(results) == 1000, "Results must not be empty"
         successful = sum(1 for r in results if r["success"])
         assert successful >= 900, "Most tasks should succeed"
 
         # Verify system still responsive
         recovery_tasks = [{"id": i} for i in range(100)]
         recovery_results = swarm.process_tasks(recovery_tasks)
-        assert all(r["success"] for r in recovery_results)
+        assert all(r["success"] for r in recovery_results), "Result must not be empty"
         """
         self.assertIsNotNone(expected_test)
 
@@ -155,9 +155,9 @@ class TestTaskManagerIntegration(unittest.TestCase):
 
         # Retrieve result
         result = manager.get_result(timeout=1.0)
-        assert result is not None
-        assert result[0] == task_id  # task_id
-        assert result[1] is True  # success
+        assert result is not None, "result must be initialized"
+        assert result[0] == task_id, "Result must not be empty"
+        assert result[1] is True, "Result must not be empty"
         """
         self.assertIsNotNone(expected_test)
 

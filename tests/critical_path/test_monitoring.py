@@ -51,9 +51,9 @@ class TestHealthCheckEndpoints:
         # Simulate health check
         health_status = {"status": "ok", "timestamp": time.time(), "version": "1.0.0"}
 
-        assert health_status["status"] == "ok"
-        assert "timestamp" in health_status
-        assert "version" in health_status
+        assert health_status["status"] == "ok", "Condition must be true"
+        assert "timestamp" in health_status, "Condition must be true"
+        assert "version" in health_status, "Condition must be true"
 
     def test_health_check_with_dependencies(self):
         """Test health check includes dependency status."""
@@ -71,9 +71,9 @@ class TestHealthCheckEndpoints:
             },
         }
 
-        assert health_status["status"] == "ok"
-        assert health_status["dependencies"]["database"] == "ok"
-        assert health_status["dependencies"]["cache"] == "ok"
+        assert health_status["status"] == "ok", "Condition must be true"
+        assert health_status["dependencies"]["database"] == "ok", "Data must not be empty"
+        assert health_status["dependencies"]["cache"] == "ok", "Condition must be true"
 
     def test_health_check_degraded_state(self):
         """Test health check reports degraded state."""
@@ -86,8 +86,8 @@ class TestHealthCheckEndpoints:
             },
         }
 
-        assert health_status["status"] == "degraded"
-        assert health_status["dependencies"]["cache"] == "degraded"
+        assert health_status["status"] == "degraded", "Condition must be true"
+        assert health_status["dependencies"]["cache"] == "degraded", "Condition must be true"
 
     def test_health_check_failure_state(self):
         """Test health check reports failure state."""
@@ -97,8 +97,8 @@ class TestHealthCheckEndpoints:
             "dependencies": {"database": "error"},
         }
 
-        assert health_status["status"] == "error"
-        assert "error" in health_status
+        assert health_status["status"] == "error", "Error should be raised or set"
+        assert "error" in health_status, "Error should be raised or set"
 
     def test_readiness_probe_endpoint(self):
         """Test readiness probe endpoint."""
@@ -112,8 +112,8 @@ class TestHealthCheckEndpoints:
             "accepting_traffic": is_ready,
         }
 
-        assert readiness_status["ready"] is True
-        assert readiness_status["initialized"] is True
+        assert readiness_status["ready"] is True, "Condition must be true"
+        assert readiness_status["initialized"] is True, "Condition must be true"
 
     def test_liveness_probe_endpoint(self):
         """Test liveness probe endpoint."""
@@ -127,8 +127,8 @@ class TestHealthCheckEndpoints:
             "uptime_seconds": 100.0,
         }
 
-        assert liveness_status["alive"] is True
-        assert liveness_status["uptime_seconds"] > 0
+        assert liveness_status["alive"] is True, "Condition must be true"
+        assert liveness_status["uptime_seconds"] > 0, "Value must be greater than zero"
 
     def test_health_check_timeout_handling(self):
         """Test health check handles timeouts gracefully."""
@@ -140,8 +140,8 @@ class TestHealthCheckEndpoints:
             "error": "Health check timeout" if timeout_occurred else None,
         }
 
-        assert health_status["status"] == "degraded"
-        assert "timeout" in health_status["error"].lower()
+        assert health_status["status"] == "degraded", "Condition must be true"
+        assert "timeout" in health_status["error"].lower(), "Error should be raised or set"
 
 
 class TestMetricsCollection:
@@ -156,7 +156,7 @@ class TestMetricsCollection:
         counter["requests_total"] += 1
         counter["requests_total"] += 1
 
-        assert counter["requests_total"] == 3
+        assert counter["requests_total"] == 3, "Count must be greater than zero"
 
     def test_gauge_metric(self):
         """Test gauge metric tracks current value."""
@@ -164,11 +164,11 @@ class TestMetricsCollection:
 
         # Set gauge
         gauge["active_connections"] = 10
-        assert gauge["active_connections"] == 10
+        assert gauge["active_connections"] == 10, "Condition must be true"
 
         # Update gauge
         gauge["active_connections"] = 15
-        assert gauge["active_connections"] == 15
+        assert gauge["active_connections"] == 15, "Condition must be true"
 
     def test_histogram_metric(self):
         """Test histogram metric records distribution."""
@@ -192,10 +192,10 @@ class TestMetricsCollection:
             else:
                 histogram["buckets"][">100ms"] += 1
 
-        assert histogram["buckets"]["<10ms"] == 1
-        assert histogram["buckets"]["10-50ms"] == 2
-        assert histogram["buckets"]["50-100ms"] == 1
-        assert histogram["buckets"][">100ms"] == 1
+        assert histogram["buckets"]["<10ms"] == 1, "Condition must be true"
+        assert histogram["buckets"]["10-50ms"] == 2, "Condition must be true"
+        assert histogram["buckets"]["50-100ms"] == 1, "Condition must be true"
+        assert histogram["buckets"][">100ms"] == 1, "Condition must be true"
 
     def test_summary_metric(self):
         """Test summary metric calculates percentiles."""
@@ -211,11 +211,11 @@ class TestMetricsCollection:
             "p99": interpolated_percentile(sorted_values, 0.99),
         }
 
-        assert summary["count"] == 10
-        assert summary["sum"] == 55
-        assert abs(summary["p50"] - 5.5) < 1e-9
-        assert abs(summary["p95"] - 9.55) < 1e-9
-        assert abs(summary["p99"] - 9.91) < 1e-9
+        assert summary["count"] == 10, "Count must be greater than zero"
+        assert summary["sum"] == 55, "Condition must be true"
+        assert abs(summary["p50"] - 5.5) < 1e-9, "Condition must be true"
+        assert abs(summary["p95"] - 9.55) < 1e-9, "Condition must be true"
+        assert abs(summary["p99"] - 9.91) < 1e-9, "Condition must be true"
 
     def test_metrics_labels(self):
         """Test metrics with labels."""
@@ -232,8 +232,8 @@ class TestMetricsCollection:
         get_200_count = metrics["http_requests_total"][("GET", "200")]
         post_400_count = metrics["http_requests_total"][("POST", "400")]
 
-        assert get_200_count == 100
-        assert post_400_count == 3
+        assert get_200_count == 100, "Count must be greater than zero"
+        assert post_400_count == 3, "Count must be greater than zero"
 
     def test_metrics_export_format(self):
         """Test metrics export in standard format."""
@@ -244,8 +244,8 @@ class TestMetricsCollection:
         for name, value in metrics.items():
             prometheus_format.append(f"{name} {value}")
 
-        assert "requests_total 150" in prometheus_format
-        assert "errors_total 5" in prometheus_format
+        assert "requests_total 150" in prometheus_format, "Condition must be true"
+        assert "errors_total 5" in prometheus_format, "Error should be raised or set"
 
     def test_metrics_aggregation(self):
         """Test metrics aggregation over time window."""
@@ -270,10 +270,10 @@ class TestMetricsCollection:
             "max": max(values_in_window) if values_in_window else 0,
         }
 
-        assert aggregated["count"] == 3
-        assert aggregated["sum"] == 450
-        assert aggregated["min"] == 100
-        assert aggregated["max"] == 200
+        assert aggregated["count"] == 3, "Count must be greater than zero"
+        assert aggregated["sum"] == 450, "Condition must be true"
+        assert aggregated["min"] == 100, "Condition must be true"
+        assert aggregated["max"] == 200, "Condition must be true"
 
 
 class TestAlertTriggering:
@@ -286,7 +286,7 @@ class TestAlertTriggering:
 
         should_alert = error_rate > threshold
 
-        assert should_alert is True
+        assert should_alert is True, "should_alert is not valid"
 
     def test_alert_not_triggered_below_threshold(self):
         """Test alert doesn't trigger below threshold."""
@@ -295,7 +295,7 @@ class TestAlertTriggering:
 
         should_alert = error_rate > threshold
 
-        assert should_alert is False
+        assert should_alert is False, "should_alert is not valid"
 
     def test_sustained_threshold_alert(self):
         """Test alert requires sustained threshold breach."""
@@ -314,7 +314,7 @@ class TestAlertTriggering:
                 consecutive_breaches = 0
 
         should_alert = max_consecutive >= required_duration
-        assert should_alert is True
+        assert should_alert is True, "should_alert is not valid"
 
     def test_rate_of_change_alert(self):
         """Test alert based on rate of change."""
@@ -325,7 +325,7 @@ class TestAlertTriggering:
         change_percent = (current_value - previous_value) / previous_value
         should_alert = abs(change_percent) > max_change_percent
 
-        assert should_alert is True  # 50% change
+        assert should_alert is True, "should_alert is not valid"
 
     def test_anomaly_detection_alert(self):
         """Test alert based on anomaly detection."""
@@ -337,7 +337,7 @@ class TestAlertTriggering:
         z_score = abs(current_value - historical_avg) / std_dev
         is_anomaly = z_score > sigma_threshold
 
-        assert is_anomaly is True  # 7.5 sigma
+        assert is_anomaly is True, "is_anomaly is not valid"
 
     def test_alert_suppression(self):
         """Test alert suppression to prevent spam."""
@@ -347,7 +347,7 @@ class TestAlertTriggering:
 
         should_suppress = (current_time - last_alert_time) < suppression_window
 
-        assert should_suppress is True
+        assert should_suppress is True, "should_suppress is not valid"
 
     def test_alert_escalation(self):
         """Test alert escalation based on severity."""
@@ -361,7 +361,7 @@ class TestAlertTriggering:
         elif error_rate > 0.05:
             severity = "info"
 
-        assert severity == "critical"
+        assert severity == "critical", "severity is not valid"
 
     def test_composite_alert_condition(self):
         """Test alert with multiple conditions."""
@@ -379,7 +379,7 @@ class TestAlertTriggering:
         critical_conditions = sum(conditions)
         should_alert = critical_conditions >= 2
 
-        assert should_alert is True
+        assert should_alert is True, "should_alert is not valid"
 
 
 class TestLoggingIntegration:
@@ -394,10 +394,10 @@ class TestLoggingIntegration:
             "context": {"user_id": "user123", "request_id": "req-456"},
         }
 
-        assert "timestamp" in log_entry
-        assert "level" in log_entry
-        assert "message" in log_entry
-        assert "context" in log_entry
+        assert "timestamp" in log_entry, "Condition must be true"
+        assert "level" in log_entry, "Condition must be true"
+        assert "message" in log_entry, "Condition must be true"
+        assert "context" in log_entry, "Condition must be true"
 
     def test_structured_logging(self, tmp_path):
         """Test structured logging format."""
@@ -417,8 +417,8 @@ class TestLoggingIntegration:
         # Read and parse
         logged = json.loads(log_file.read_text())
 
-        assert logged["level"] == "ERROR"
-        assert logged["retry_count"] == 3
+        assert logged["level"] == "ERROR", "Error should be raised or set"
+        assert logged["retry_count"] == 3, "Count must be greater than zero"
 
     def test_log_level_filtering(self):
         """Test log level filtering."""
@@ -437,9 +437,9 @@ class TestLoggingIntegration:
             log for log in logs if level_priority.get(log["level"], 0) >= level_priority[min_level]
         ]
 
-        assert len(filtered) == 2
-        assert filtered[0]["level"] == "WARNING"
-        assert filtered[1]["level"] == "ERROR"
+        assert len(filtered) == 2, "Filtered must not be empty"
+        assert filtered[0]["level"] == "WARNING", "Condition must be true"
+        assert filtered[1]["level"] == "ERROR", "Error should be raised or set"
 
     def test_log_correlation_id(self):
         """Test log entries share correlation ID."""
@@ -452,7 +452,7 @@ class TestLoggingIntegration:
         ]
 
         # All logs have same correlation ID
-        assert all(log["correlation_id"] == correlation_id for log in logs)
+        assert all(log["correlation_id"] == correlation_id for log in logs), "Condition must be true"
 
     def test_log_sampling(self):
         """Test log sampling for high-volume logs."""
@@ -464,7 +464,7 @@ class TestLoggingIntegration:
             if i % 10 == 0:  # Sample every 10th
                 sampled_count += 1
 
-        assert sampled_count == 10  # 10% of 100
+        assert sampled_count == 10, "Count must be greater than zero"
 
     def test_log_rotation(self, tmp_path):
         """Test log rotation based on size."""
@@ -478,14 +478,14 @@ class TestLoggingIntegration:
         current_size = log_file.stat().st_size
         needs_rotation = current_size >= max_size
 
-        assert needs_rotation is False
+        assert needs_rotation is False, "needs_rotation is not valid"
 
         # Write more
         log_file.write_text(log_data + log_data)  # 1000 bytes
         current_size = log_file.stat().st_size
         needs_rotation = current_size >= max_size
 
-        assert needs_rotation is True
+        assert needs_rotation is True, "needs_rotation is not valid"
 
 
 class TestErrorTracking:
@@ -502,8 +502,8 @@ class TestErrorTracking:
                 "timestamp": time.time(),
             }
 
-        assert error_context["error_type"] == "ValueError"
-        assert error_context["error_message"] == "Test error"
+        assert error_context["error_type"] == "ValueError", "Value must be initialized"
+        assert error_context["error_message"] == "Test error", "Error should be raised or set"
 
     def test_error_fingerprinting(self):
         """Test error fingerprinting for grouping."""
@@ -521,8 +521,8 @@ class TestErrorTracking:
                 error_groups[key] = []
             error_groups[key].append(error)
 
-        assert len(error_groups["ValueError"]) == 2
-        assert len(error_groups["TypeError"]) == 1
+        assert len(error_groups["ValueError"]) == 2, "Collection must not be empty"
+        assert len(error_groups["TypeError"]) == 1, "Collection must not be empty"
 
     def test_error_rate_calculation(self):
         """Test error rate calculation."""
@@ -531,7 +531,7 @@ class TestErrorTracking:
 
         error_rate = error_count / total_requests
 
-        assert error_rate == 0.025  # 2.5%
+        assert error_rate == 0.025, "Error should be raised or set"
 
     def test_error_severity_classification(self):
         """Test error severity classification."""
@@ -551,9 +551,9 @@ class TestErrorTracking:
             {**error, "severity": severity_map.get(error["type"], "medium")} for error in errors
         ]
 
-        assert classified[0]["severity"] == "low"
-        assert classified[1]["severity"] == "critical"
-        assert classified[2]["severity"] == "high"
+        assert classified[0]["severity"] == "low", "Condition must be true"
+        assert classified[1]["severity"] == "critical", "Condition must be true"
+        assert classified[2]["severity"] == "high", "Condition must be true"
 
     def test_error_deduplication(self):
         """Test error deduplication."""
@@ -572,7 +572,7 @@ class TestErrorTracking:
             else:
                 deduplicated[key] = error.copy()
 
-        assert len(deduplicated) == 2
+        assert len(deduplicated) == 2, "Deduplicated must not be empty"
         assert deduplicated[("ValueError", "Error A")]["count"] == 2
 
     def test_error_stack_trace_capture(self):
@@ -592,9 +592,9 @@ class TestErrorTracking:
         except RuntimeError:
             stack_trace = traceback.format_exc()
 
-        assert "RuntimeError: Inner error" in stack_trace
-        assert "inner_function" in stack_trace
-        assert "outer_function" in stack_trace
+        assert "RuntimeError: Inner error" in stack_trace, "Error should be raised or set"
+        assert "inner_function" in stack_trace, "Condition must be true"
+        assert "outer_function" in stack_trace, "Condition must be true"
 
     def test_error_notification(self):
         """Test error notification triggering."""
@@ -607,7 +607,7 @@ class TestErrorTracking:
         # Determine if notification needed
         should_notify = error["severity"] in ["critical", "high"]
 
-        assert should_notify is True
+        assert should_notify is True, "should_notify is not valid"
 
     def test_error_recovery_attempt(self):
         """Test error recovery mechanism."""
@@ -625,5 +625,5 @@ class TestErrorTracking:
                 retry_count += 1
                 time.sleep(0.01)  # Brief delay
 
-        assert success is True
-        assert retry_count == 2
+        assert success is True, "success is not valid"
+        assert retry_count == 2, "Count must be greater than zero"

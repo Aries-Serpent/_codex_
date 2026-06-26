@@ -126,7 +126,7 @@ class TestEndpointDocumentation:
                 missing_docs.append(router.name)
 
         # Allow some without docstrings
-        assert len(missing_docs) < len(
+        assert len(missing_docs) < len(, "Missing_docs must not be empty"
             routers
         ), f"Most router files should have docstrings: missing in {missing_docs}"
 

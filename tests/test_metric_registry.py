@@ -76,8 +76,8 @@ def test_register_and_get_metric_roundtrip(monkeypatch, tmp_path: Path) -> None:
 
     registry.register(metric_name, metric)
     retrieved = registry.get(metric_name)
-    assert retrieved is metric
-    assert metric_name in registry.list_metrics()
+    assert retrieved is metric, "retrieved is not valid"
+    assert metric_name in registry.list_metrics(), "Condition must be true"
 
 
 def test_register_duplicate_logs_error(monkeypatch, tmp_path: Path) -> None:
@@ -89,8 +89,8 @@ def test_register_duplicate_logs_error(monkeypatch, tmp_path: Path) -> None:
         registry.register(metric_name, lambda preds, targs: 0.0)
 
     log_contents = _read_error_log(tmp_path)
-    assert metric_name in log_contents
-    assert "metric.register" in log_contents
+    assert metric_name in log_contents, "Content must not be empty"
+    assert "metric.register" in log_contents, "Content must not be empty"
 
 
 def test_compute_metrics_uses_registry_metric(monkeypatch, tmp_path: Path) -> None:
@@ -111,6 +111,6 @@ def test_compute_metrics_uses_registry_metric(monkeypatch, tmp_path: Path) -> No
         ]
         results = _compute_metrics(records, [metric_name])
 
-    assert metric_name in results
-    assert results[metric_name]["total"] == 3.0
-    assert results[metric_name]["matches"] == 2.0
+    assert metric_name in results, "Result must not be empty"
+    assert results[metric_name]["total"] == 3.0, "Result must not be empty"
+    assert results[metric_name]["matches"] == 2.0, "Result must not be empty"

@@ -19,7 +19,7 @@ def _load_module(path: Path, name: str) -> types.ModuleType:
         path = repo_root / path
     spec = importlib.util.spec_from_file_location(name, str(path))
     module = importlib.util.module_from_spec(spec)  # type: ignore[arg-type]
-    assert spec and spec.loader
+    assert spec and spec.loader, "spec is not valid"
     spec.loader.exec_module(module)  # type: ignore[union-attr]
     return module
 
@@ -35,21 +35,21 @@ def test_ndjson_csv_round_trip(tmp_path: Path) -> None:
     ndjson_path = Path(paths["ndjson"])
     csv_path = Path(paths["csv"])
 
-    assert ndjson_path.exists() and csv_path.exists()
+    assert ndjson_path.exists() and csv_path.exists(), "Condition must be true"
 
     with ndjson_path.open("r", encoding="utf-8") as fh:
         rows = [json.loads(line) for line in fh.read().strip().splitlines()]
 
-    assert len(rows) == 2
-    assert rows[0]["_run_id"] == "runA"
-    assert rows[0]["_step"] == 1
+    assert len(rows) == 2, "Rows must not be empty"
+    assert rows[0]["_run_id"] == "runA", "Condition must be true"
+    assert rows[0]["_step"] == 1, "Condition must be true"
     assert isinstance(rows[0]["_ts"], float)
 
     with csv_path.open("r", encoding="utf-8", newline="") as fh:
         reader = csv.DictReader(fh)
         csv_rows = list(reader)
 
-    assert len(csv_rows) == 2
-    assert csv_rows[0]["_run_id"] == "runA"
-    assert csv_rows[0]["_step"] == "1"
-    assert csv_rows[1]["_step"] == "2"
+    assert len(csv_rows) == 2, "Csv_rows must not be empty"
+    assert csv_rows[0]["_run_id"] == "runA", "Condition must be true"
+    assert csv_rows[0]["_step"] == "1", "Condition must be true"
+    assert csv_rows[1]["_step"] == "2", "Condition must be true"

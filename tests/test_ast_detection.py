@@ -23,10 +23,10 @@ def goodbye(name):
         parser = PythonASTParser()
         signatures = parser.parse_file(test_file)
 
-        assert len(signatures) == 2
-        assert signatures[0].name == "hello"
-        assert signatures[1].name == "goodbye"
-        assert signatures[0].parameters == ["name"]
+        assert len(signatures) == 2, "Signatures must not be empty"
+        assert signatures[0].name == "hello", "name is not valid"
+        assert signatures[1].name == "goodbye", "name is not valid"
+        assert signatures[0].parameters == ["name"], "parameters is not valid"
 
 
 def test_class_extraction():
@@ -47,10 +47,10 @@ class MyClass:
 
         # Parser may return class + methods, filter for methods only
         methods = [s for s in signatures if s.is_method]
-        assert len(methods) == 2
-        assert methods[0].name == "method1"
-        assert methods[0].is_method
-        assert methods[0].class_name == "MyClass"
+        assert len(methods) == 2, "Methods must not be empty"
+        assert methods[0].name == "method1", "name is not valid"
+        assert methods[0].is_method, "Condition must be true"
+        assert methods[0].class_name == "MyClass", "class_name is not valid"
 
 
 def test_syntax_error_handling():
@@ -63,7 +63,7 @@ def test_syntax_error_handling():
         signatures = parser.parse_file(test_file)
 
         # Should return empty list, not crash
-        assert signatures == []
+        assert signatures == [], "signatures is not valid"
 
 
 def test_ast_hash_consistency():
@@ -87,9 +87,9 @@ def process_data(items):
         sigs1 = parser.parse_file(file1)
         sigs2 = parser.parse_file(file2)
 
-        assert len(sigs1) == 1
-        assert len(sigs2) == 1
-        assert sigs1[0].ast_hash == sigs2[0].ast_hash
+        assert len(sigs1) == 1, "Sigs1 must not be empty"
+        assert len(sigs2) == 1, "Sigs2 must not be empty"
+        assert sigs1[0].ast_hash == sigs2[0].ast_hash, "ast_hash is not valid"
 
 
 def test_ast_hash_difference():
@@ -112,7 +112,7 @@ def func1(x):
         sigs1 = parser.parse_file(file1)
         sigs2 = parser.parse_file(file2)
 
-        assert sigs1[0].ast_hash != sigs2[0].ast_hash
+        assert sigs1[0].ast_hash != sigs2[0].ast_hash, "ast_hash is not valid"
 
 
 def test_identical_function_detection():
@@ -135,13 +135,13 @@ def calculate(x, y):
         groups = detector.scan()
 
         # Should find one duplicate group
-        assert len(groups) >= 1
+        assert len(groups) >= 1, "Groups must not be empty"
         found_duplicate = False
         for group in groups:
             if group.type == "function-ast" and len(group.member_files) == 2:
                 found_duplicate = True
                 break
-        assert found_duplicate
+        assert found_duplicate, "found_duplicate is not valid"
 
 
 def test_cross_file_detection():
@@ -174,7 +174,7 @@ def helper(data):
                 if any("file1.py" in p for p in paths) and any("file2.py" in p for p in paths):
                     found = True
                     break
-        assert found
+        assert found, "found is not valid"
 
 
 def test_threshold_filtering():

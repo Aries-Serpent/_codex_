@@ -324,7 +324,7 @@ def init_experiment(cfg: Any) -> ExperimentContext:
     summary_path = run_dir / "tracking_summary.ndjson"
 
     if getattr(tracking_cfg, "tensorboard", False):
-        writers.append(TensorBoardWriter(run_dir / "tb", summary_path=summary_path))  # type: ignore
+        writers.append(TensorBoardWriter(run_dir / "tb", summary_path=summary_path))
 
     mlflow_enabled = _bool_env("CODEX_MLFLOW_ENABLE", getattr(tracking_cfg, "mlflow", False))
     if mlflow_enabled:

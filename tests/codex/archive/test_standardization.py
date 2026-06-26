@@ -16,14 +16,14 @@ class TestStandardizationMetadata:
 
         metadata = StandardizationMetadata()
 
-        assert metadata.schema_version == "2.0"
-        assert metadata.slsa_level == "L3"
-        assert metadata.signature is None
-        assert metadata.certificate_chain is None
-        assert metadata.issuer is None
-        assert metadata.signed_at is None
-        assert metadata.in_toto_attestation_id is None
-        assert metadata.merkle_proof is None
+        assert metadata.schema_version == "2.0", "Data must not be empty"
+        assert metadata.slsa_level == "L3", "Data must not be empty"
+        assert metadata.signature is None, "Data must not be empty"
+        assert metadata.certificate_chain is None, "Data must not be empty"
+        assert metadata.issuer is None, "Data must not be empty"
+        assert metadata.signed_at is None, "Data must not be empty"
+        assert metadata.in_toto_attestation_id is None, "Data must not be empty"
+        assert metadata.merkle_proof is None, "Data must not be empty"
 
     def test_custom_values(self):
         """Test StandardizationMetadata with custom values."""
@@ -33,10 +33,10 @@ class TestStandardizationMetadata:
             schema_version="3.0", slsa_level="L4", signature="sig_abc123", issuer="sigstore.dev"
         )
 
-        assert metadata.schema_version == "3.0"
-        assert metadata.slsa_level == "L4"
-        assert metadata.signature == "sig_abc123"
-        assert metadata.issuer == "sigstore.dev"
+        assert metadata.schema_version == "3.0", "Data must not be empty"
+        assert metadata.slsa_level == "L4", "Data must not be empty"
+        assert metadata.signature == "sig_abc123", "Data must not be empty"
+        assert metadata.issuer == "sigstore.dev", "Data must not be empty"
 
     def test_to_dict(self):
         """Test to_dict method omits None values."""
@@ -46,13 +46,13 @@ class TestStandardizationMetadata:
 
         result = metadata.to_dict()
 
-        assert result["schema_version"] == "2.0"
-        assert result["slsa_level"] == "L3"
-        assert result["signature"] == "sig_123"
-        assert result["issuer"] == "test_issuer"
+        assert result["schema_version"] == "2.0", "Result must not be empty"
+        assert result["slsa_level"] == "L3", "Result must not be empty"
+        assert result["signature"] == "sig_123", "Result must not be empty"
+        assert result["issuer"] == "test_issuer", "Result must not be empty"
         # None values should be omitted
-        assert "certificate_chain" not in result
-        assert "signed_at" not in result
+        assert "certificate_chain" not in result, "Result must not be empty"
+        assert "signed_at" not in result, "Result must not be empty"
 
 
 class TestStandardizationManager:
@@ -67,8 +67,8 @@ class TestStandardizationManager:
 
         manager = StandardizationManager(enable_signing=False)
 
-        assert manager.enable_signing is False
-        assert manager.sigstore_client is None
+        assert manager.enable_signing is False, "enable_signing is not valid"
+        assert manager.sigstore_client is None, "sigstore_client is not valid"
 
     @patch("codex.archive.standardization.SignstoreClient")
     @patch("codex.archive.standardization.EvidenceSchemaValidator")
@@ -80,7 +80,7 @@ class TestStandardizationManager:
 
         manager = StandardizationManager(verify_only=True)
 
-        assert manager.enable_signing is True
+        assert manager.enable_signing is True, "enable_signing is not valid"
 
     @patch("codex.archive.standardization.SignstoreClient")
     @patch("codex.archive.standardization.EvidenceSchemaValidator")
@@ -92,7 +92,7 @@ class TestStandardizationManager:
 
         manager = StandardizationManager(enable_signing=False)
 
-        assert manager.schema_validator is not None
+        assert manager.schema_validator is not None, "schema_validator must be initialized"
 
 
 class TestModuleConstants:
@@ -102,17 +102,17 @@ class TestModuleConstants:
         """Test STANDARDIZATION_VERSION constant."""
         from codex.archive.standardization import STANDARDIZATION_VERSION
 
-        assert STANDARDIZATION_VERSION == "2.0"
+        assert STANDARDIZATION_VERSION == "2.0", "STANDARDIZATION_VERSION is not valid"
 
     def test_slsa_level(self):
         """Test SLSA_LEVEL constant."""
         from codex.archive.standardization import SLSA_LEVEL
 
-        assert SLSA_LEVEL == "L3"
+        assert SLSA_LEVEL == "L3", "SLSA_LEVEL is not valid"
 
     def test_logger_exists(self):
         """Test logger is configured."""
         from codex.archive.standardization import logger
 
-        assert logger is not None
-        assert logger.name == "codex.archive.standardization"
+        assert logger is not None, "logger must be initialized"
+        assert logger.name == "codex.archive.standardization", "name is not valid"

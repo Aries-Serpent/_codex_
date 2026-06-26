@@ -29,7 +29,7 @@ def test_cli_runs_with_simple_config(tmp_path: Path) -> None:
     ]
 
     exit_code = cli.main(["--config-path", str(config_dir), "--config-name", "train", *overrides])
-    assert exit_code == 0
-    assert metrics_path.exists()
+    assert exit_code == 0, "exit_code is not valid"
+    assert metrics_path.exists(), "Condition must be true"
     payload = metrics_path.read_text(encoding="utf-8")
-    assert '"epoch": 1' in payload
+    assert '"epoch": 1' in payload, "Condition must be true"

@@ -28,22 +28,22 @@ def test_codex_metrics_registry_records_metrics(metrics_module):
     assert hasattr(registry.training_loss, "set")
 
     if metrics_module._HAS_PROMETHEUS:  # pragma: no cover - exercised when available
-        assert registry.registry is not None
+        assert registry.registry is not None, "registry must be initialized"
     else:
         # When prometheus_client is missing we rely on the noop metric helpers.
-        assert registry.registry is None
-        assert registry.training_steps.__class__.__name__ == "_NoopMetric"
+        assert registry.registry is None, "registry is not valid"
+        assert registry.training_steps.__class__.__name__ == "_NoopMetric", "__name__ is not valid"
 
 
 def test_metrics_enabled_reads_environment(metrics_module, monkeypatch):
     monkeypatch.delenv("CODEX_METRICS_ENABLED", raising=False)
-    assert metrics_module.metrics_enabled() is False
+    assert metrics_module.metrics_enabled() is False, "Condition must be true"
 
     monkeypatch.setenv("CODEX_METRICS_ENABLED", "1")
-    assert metrics_module.metrics_enabled() is True
+    assert metrics_module.metrics_enabled() is True, "Condition must be true"
 
     monkeypatch.setenv("CODEX_METRICS_ENABLED", "off")
-    assert metrics_module.metrics_enabled() is False
+    assert metrics_module.metrics_enabled() is False, "Condition must be true"
 
     monkeypatch.setenv("CODEX_METRICS_ENABLED", "TrUe")
-    assert metrics_module.metrics_enabled() is True
+    assert metrics_module.metrics_enabled() is True, "Condition must be true"

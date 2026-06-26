@@ -11,8 +11,8 @@ def test_dataloader_config_validation_bounds():
 
     # Valid config
     config = DataLoaderConfig(batch_size=32, num_workers=4)
-    assert config.batch_size == 32
-    assert config.num_workers == 4
+    assert config.batch_size == 32, "batch_size is not valid"
+    assert config.num_workers == 4, "num_workers is not valid"
 
     # Invalid batch size
     with pytest.raises(ValueError, match="batch_size must be positive"):
@@ -63,7 +63,7 @@ def test_empty_dataset_parsing(tmp_path):
     data_file.write_text("")
 
     result = datasets.parse_tsv_dataset(str(data_file))
-    assert len(result) == 0
+    assert len(result) == 0, "Result must not be empty"
 
 
 def test_partial_dataset_parsing(tmp_path):
@@ -73,7 +73,7 @@ def test_partial_dataset_parsing(tmp_path):
 
     result = datasets.parse_tsv_dataset(str(data_file))
     # Should skip malformed line
-    assert len(result) == 2
+    assert len(result) == 2, "Result must not be empty"
 
 
 def test_split_length_normalization():
@@ -83,7 +83,7 @@ def test_split_length_normalization():
     dataset = torch.utils.data.TensorDataset(torch.randn(100, 10), torch.randint(0, 2, (100,)))
 
     train_ds, val_ds = datasets.split_dataset(dataset, split_ratio=(0.8, 0.2))
-    assert len(train_ds) + len(val_ds) == 100
+    assert len(train_ds) + len(val_ds) == 100, "Train_ds must not be empty"
 
 
 def test_split_error_conditions():
@@ -117,8 +117,8 @@ def test_deterministic_split_reproducibility():
     train2, val2 = datasets.split_dataset(dataset, split_ratio=(0.8, 0.2), seed=123)
 
     # Same indices
-    assert len(train1) == len(train2)
-    assert len(val1) == len(val2)
+    assert len(train1) == len(train2), "Train1 must not be empty"
+    assert len(val1) == len(val2), "Val1 must not be empty"
 
 
 def test_tsv_dataset_text_extraction(tmp_path):
@@ -127,11 +127,11 @@ def test_tsv_dataset_text_extraction(tmp_path):
     data_file.write_text("hello world\t1\nfoo bar\t0\n")
 
     result = datasets.parse_tsv_dataset(str(data_file))
-    assert len(result) == 2
-    assert result[0][0] == "hello world"
-    assert result[0][1] == 1
-    assert result[1][0] == "foo bar"
-    assert result[1][1] == 0
+    assert len(result) == 2, "Result must not be empty"
+    assert result[0][0] == "hello world", "Result must not be empty"
+    assert result[0][1] == 1, "Result must not be empty"
+    assert result[1][0] == "foo bar", "Result must not be empty"
+    assert result[1][1] == 0, "Result must not be empty"
 
 
 def test_collate_fn_missing_keys():
@@ -164,4 +164,4 @@ def test_dataloader_batch_size_override(tmp_path):
         batch_size=2,
     )
 
-    assert loader.batch_size == 2
+    assert loader.batch_size == 2, "batch_size is not valid"

@@ -48,8 +48,8 @@ class TestSafeModelToDevice:
         model = SimpleModel()
         result = safe_model_to_device(model, "cpu")
 
-        assert result is not None
-        assert all(p.device.type == "cpu" for p in result.parameters())
+        assert result is not None, "result must be initialized"
+        assert all(p.device.type == "cpu" for p in result.parameters()), "Result must not be empty"
 
     @pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA not available")
     def test_cpu_to_cuda(self):
@@ -57,8 +57,8 @@ class TestSafeModelToDevice:
         model = SimpleModel()
         result = safe_model_to_device(model, "cuda:0")
 
-        assert all(p.device.type == "cuda" for p in result.parameters())
-        assert all(p.device.index == 0 for p in result.parameters())
+        assert all(p.device.type == "cuda" for p in result.parameters()), "Result must not be empty"
+        assert all(p.device.index == 0 for p in result.parameters()), "Result must not be empty"
 
     @pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA not available")
     def test_cuda_to_cpu(self):
@@ -66,7 +66,7 @@ class TestSafeModelToDevice:
         model = SimpleModel().to("cuda:0")
         result = safe_model_to_device(model, "cpu")
 
-        assert all(p.device.type == "cpu" for p in result.parameters())
+        assert all(p.device.type == "cpu" for p in result.parameters()), "Result must not be empty"
 
     @pytest.mark.skipif(
         _TORCH_312_BUG, reason="PyTorch 2.x isinstance bug with Python 3.12 union types"
@@ -76,8 +76,8 @@ class TestSafeModelToDevice:
         model = SimpleModel()
         result = safe_model_to_device(model, "cpu", dtype=torch.float16)
 
-        assert all(p.device.type == "cpu" for p in result.parameters())
-        assert all(p.dtype == torch.float16 for p in result.parameters())
+        assert all(p.device.type == "cpu" for p in result.parameters()), "Result must not be empty"
+        assert all(p.dtype == torch.float16 for p in result.parameters()), "Result must not be empty"
 
     @pytest.mark.skipif(
         _TORCH_312_BUG, reason="PyTorch 2.x isinstance bug with Python 3.12 union types"
@@ -89,14 +89,14 @@ class TestSafeModelToDevice:
             model = SimpleModel()
 
         # Verify model has meta tensors
-        assert any(p.is_meta for p in model.parameters())
+        assert any(p.is_meta for p in model.parameters()), "Condition must be true"
 
         # Should not raise NotImplementedError
         result = safe_model_to_device(model, "cpu")
 
         # Verify materialized on CPU
-        assert all(not p.is_meta for p in result.parameters())
-        assert all(p.device.type == "cpu" for p in result.parameters())
+        assert all(not p.is_meta for p in result.parameters()), "Result must not be empty"
+        assert all(p.device.type == "cpu" for p in result.parameters()), "Result must not be empty"
 
     @pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA not available")
     def test_meta_tensor_to_cuda(self):
@@ -106,8 +106,8 @@ class TestSafeModelToDevice:
 
         result = safe_model_to_device(model, "cuda:0")
 
-        assert all(not p.is_meta for p in result.parameters())
-        assert all(p.device.type == "cuda" for p in result.parameters())
+        assert all(not p.is_meta for p in result.parameters()), "Result must not be empty"
+        assert all(p.device.type == "cuda" for p in result.parameters()), "Result must not be empty"
 
     @pytest.mark.skipif(
         _TORCH_312_BUG, reason="PyTorch 2.x isinstance bug with Python 3.12 union types"
@@ -119,8 +119,8 @@ class TestSafeModelToDevice:
 
         result = safe_model_to_device(model, "cpu", dtype=torch.float16)
 
-        assert all(not p.is_meta for p in result.parameters())
-        assert all(p.dtype == torch.float16 for p in result.parameters())
+        assert all(not p.is_meta for p in result.parameters()), "Result must not be empty"
+        assert all(p.dtype == torch.float16 for p in result.parameters()), "Result must not be empty"
 
     @pytest.mark.skipif(
         _TORCH_312_BUG, reason="PyTorch 2.x isinstance bug with Python 3.12 union types"
@@ -131,7 +131,7 @@ class TestSafeModelToDevice:
         result = safe_model_to_device(model, "cpu", non_blocking=True)
 
         # Should complete without error
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     @pytest.mark.skipif(
         _TORCH_312_BUG, reason="PyTorch 2.x isinstance bug with Python 3.12 union types"
@@ -153,7 +153,7 @@ class TestSafeModelToDevice:
         # Tensors have .to() and lack .parameters(), so safe_model_to_device
         # returns them as-is (has_meta_tensors returns None).
         result = safe_model_to_device(not_a_model, "cpu")
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     @pytest.mark.skipif(
         _TORCH_312_BUG, reason="PyTorch 2.x isinstance bug with Python 3.12 union types"
@@ -165,7 +165,7 @@ class TestSafeModelToDevice:
         # Test different string formats
         for device in ["cpu", torch.device("cpu")]:
             result = safe_model_to_device(model, device)
-            assert all(p.device.type == "cpu" for p in result.parameters())
+            assert all(p.device.type == "cpu" for p in result.parameters()), "Result must not be empty"
 
     @pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA not available")
     def test_specific_gpu_selection(self):
@@ -176,7 +176,7 @@ class TestSafeModelToDevice:
         model = SimpleModel()
         result = safe_model_to_device(model, "cuda:1")
 
-        assert all(p.device.index == 1 for p in result.parameters())
+        assert all(p.device.index == 1 for p in result.parameters()), "Result must not be empty"
 
     @pytest.mark.skipif(
         _TORCH_312_BUG, reason="PyTorch 2.x isinstance bug with Python 3.12 union types"
@@ -195,7 +195,7 @@ class TestSafeModelToDevice:
         result = safe_model_to_device(model, "cpu")
 
         # Check buffers moved
-        assert all(b.device.type == "cpu" for b in result.buffers())
+        assert all(b.device.type == "cpu" for b in result.buffers()), "Result must not be empty"
 
     @pytest.mark.skipif(
         _TORCH_312_BUG, reason="PyTorch 2.x isinstance bug with Python 3.12 union types"
@@ -206,11 +206,11 @@ class TestSafeModelToDevice:
 
         # FP32 → FP16 on CPU
         model = safe_model_to_device(model, "cpu", dtype=torch.float16)
-        assert all(p.dtype == torch.float16 for p in model.parameters())
+        assert all(p.dtype == torch.float16 for p in model.parameters()), "dtype is not valid"
 
         # FP16 → FP32 on CPU
         model = safe_model_to_device(model, "cpu", dtype=torch.float32)
-        assert all(p.dtype == torch.float32 for p in model.parameters())
+        assert all(p.dtype == torch.float32 for p in model.parameters()), "dtype is not valid"
 
     @pytest.mark.skipif(
         _TORCH_312_BUG, reason="PyTorch 2.x isinstance bug with Python 3.12 union types"
@@ -226,7 +226,7 @@ class TestSafeModelToDevice:
         result = safe_model_to_device(model, "cpu")
 
         # Verify requires_grad preserved
-        assert all(p.requires_grad for p in result.parameters())
+        assert all(p.requires_grad for p in result.parameters()), "Result must not be empty"
 
     @pytest.mark.skipif(
         _TORCH_312_BUG, reason="PyTorch 2.x isinstance bug with Python 3.12 union types"
@@ -238,12 +238,12 @@ class TestSafeModelToDevice:
         # Set to eval mode
         model.eval()
         result = safe_model_to_device(model, "cpu")
-        assert not result.training
+        assert not result.training, "Result must not be empty"
 
         # Set to train mode
         model.train()
         result = safe_model_to_device(model, "cpu")
-        assert result.training
+        assert result.training, "Result must not be empty"
 
 
 class TestRAGModuleDevicePlacement:
@@ -255,11 +255,11 @@ class TestRAGModuleDevicePlacement:
         from codex.rag.indexer import RAGIndexer
 
         indexer = RAGIndexer(device="cpu")
-        assert indexer.device == "cpu"
+        assert indexer.device == "cpu", "device is not valid"
         if indexer.model is None:
             pytest.skip("SentenceTransformer model not available in this environment (offline CI)")
         # Model should be on CPU
-        assert all(p.device.type == "cpu" for p in indexer.model.parameters())
+        assert all(p.device.type == "cpu" for p in indexer.model.parameters()), "type is not valid"
 
     def test_embeddings_device_placement(self):
         """Test EmbeddingModel device placement."""
@@ -267,7 +267,7 @@ class TestRAGModuleDevicePlacement:
         from codex.rag.embeddings import EmbeddingModel
 
         model = EmbeddingModel(device="cpu")
-        assert model.device == "cpu"
+        assert model.device == "cpu", "device is not valid"
 
     def test_retriever_device_placement(self):
         """Test RAGRetriever device placement."""
@@ -275,7 +275,7 @@ class TestRAGModuleDevicePlacement:
         from codex.rag.retriever import RAGRetriever
 
         retriever = RAGRetriever(device="cpu")
-        assert retriever.device == "cpu"
+        assert retriever.device == "cpu", "device is not valid"
 
     @pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA not available")
     def test_indexer_cuda_placement(self):
@@ -284,8 +284,8 @@ class TestRAGModuleDevicePlacement:
         from codex.rag.indexer import RAGIndexer
 
         indexer = RAGIndexer(device="cuda:0")
-        assert indexer.device == "cuda:0"
-        assert all(p.device.type == "cuda" for p in indexer.model.parameters())
+        assert indexer.device == "cuda:0", "device is not valid"
+        assert all(p.device.type == "cuda" for p in indexer.model.parameters()), "type is not valid"
 
     def test_dynamic_device_change(self):
         """Test dynamic device change in RAG modules."""
@@ -298,8 +298,8 @@ class TestRAGModuleDevicePlacement:
 
         # Change device
         indexer.move_to_device("cpu")  # Stay on CPU
-        assert indexer.device == "cpu"
-        assert all(p.device.type == "cpu" for p in indexer.model.parameters())
+        assert indexer.device == "cpu", "device is not valid"
+        assert all(p.device.type == "cpu" for p in indexer.model.parameters()), "type is not valid"
 
 
 if __name__ == "__main__":

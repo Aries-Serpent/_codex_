@@ -117,13 +117,13 @@ def test_gradient_accumulation_optimizer_steps(monkeypatch) -> None:
         max_steps=4,
     )
     run_custom_trainer(TinyModel(), None, dataset, None, cfg)
-    assert step_counter["steps"] == 2
+    assert step_counter["steps"] == 2, "Count must be greater than zero"
 
 
 def test_base_config_module_loads() -> None:
     base = pytest.importorskip("configs.base_config")
     assert isinstance(getattr(base, "BASE_TRAINING_CONFIG", {}), dict)
-    assert "gradient_accumulation_steps" in base.BASE_TRAINING_CONFIG
+    assert "gradient_accumulation_steps" in base.BASE_TRAINING_CONFIG, "Condition must be true"
 
 
 def test_mlflow_optional(monkeypatch) -> None:
@@ -150,6 +150,6 @@ def test_setup_mlflow_tracking_enforces_file_uri(
     monkeypatch.delenv("CODEX_MLFLOW_LOCAL_DIR", raising=False)
 
     assert setup_mlflow_tracking(tmp_path / "mlruns", dry_run=False) is True
-    assert recorded["uri"].startswith("file:")
-    assert os.environ["MLFLOW_TRACKING_URI"].startswith("file:")
+    assert recorded["uri"].startswith("file:"), "rec is not valid"
+    assert os.environ["MLFLOW_TRACKING_URI"].startswith("file:"), "Condition must be true"
     assert Path(os.environ["CODEX_MLFLOW_LOCAL_DIR"]).resolve() == (tmp_path / "mlruns").resolve()

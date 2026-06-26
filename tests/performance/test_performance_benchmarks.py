@@ -80,10 +80,10 @@ class TestBridgeIPCLatency:
         results = PerformanceBenchmark.measure_latency(create_message, iterations=1000)
 
         # Validate against target
-        assert (
+        assert (, "Condition must be true"
             results["mean_ms"] < 10.0
         ), f"Mean latency {results['mean_ms']:.2f}ms exceeds 10ms target"
-        assert (
+        assert (, "Condition must be true"
             results["p95_ms"] < 15.0
         ), f"P95 latency {results['p95_ms']:.2f}ms exceeds 15ms threshold"
 
@@ -125,7 +125,7 @@ class TestPIIScrubbing:
         results = PerformanceBenchmark.measure_latency(scrub_doc, iterations=1000)
 
         # Validate against target
-        assert (
+        assert (, "Condition must be true"
             results["mean_ms"] < 10.0
         ), f"Mean PII scrubbing {results['mean_ms']:.2f}ms exceeds 10ms target"
 
@@ -201,7 +201,7 @@ class TestRAGQueryLatency:
         results = PerformanceBenchmark.measure_latency(mock_rag_query, iterations=100)
 
         # Target: <50ms end-to-end
-        assert (
+        assert (, "Condition must be true"
             results["mean_ms"] < 50.0
         ), f"RAG query {results['mean_ms']:.2f}ms exceeds 50ms target"
 

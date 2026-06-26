@@ -16,7 +16,7 @@ def test_append_and_verify(tmp_path: Path) -> None:
     path = tmp_path / "ledger.jsonl"
     ledger.append_event({"event": "start", "status": "ok", "run_id": "r1"}, path)
     ledger.append_event({"event": "end", "status": "ok", "run_id": "r1"}, path)
-    assert ledger.verify_chain(path)
+    assert ledger.verify_chain(path), "Condition must be true"
 
 
 def test_tamper_detect(tmp_path: Path) -> None:

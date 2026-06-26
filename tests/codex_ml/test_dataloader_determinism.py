@@ -11,4 +11,4 @@ def test_deterministic_order_same_for_same_seed():
     items = [1, 2, 3, 4]
     a = dataloader.deterministic_order(items, seed=7)
     b = dataloader.deterministic_order(items, seed=7)
-    assert a == b
+    assert a == b, "a is not valid"

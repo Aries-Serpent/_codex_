@@ -29,8 +29,8 @@ class TestBrainMLBridge:
     def test_init_default(self) -> None:
         """Test default initialization."""
         bridge = BrainMLBridge()
-        assert not bridge.is_trained
-        assert bridge.pattern_store_path is None
+        assert not bridge.is_trained, "Condition must be true"
+        assert bridge.pattern_store_path is None, "pattern_store_path is not valid"
 
     def test_init_with_paths(self) -> None:
         """Test initialization with paths."""
@@ -38,15 +38,15 @@ class TestBrainMLBridge:
             pattern_store_path="/path/to/store.json",
             model_cache_path="/path/to/cache",
         )
-        assert bridge.pattern_store_path == Path("/path/to/store.json")
-        assert bridge.model_cache_path == Path("/path/to/cache")
+        assert bridge.pattern_store_path == Path("/path/to/store.json"), "pattern_store_path is not valid"
+        assert bridge.model_cache_path == Path("/path/to/cache"), "model_cache_path is not valid"
 
     def test_train_creates_synthetic_data(self) -> None:
         """Test training with synthetic data when no pattern store."""
         bridge = BrainMLBridge()
         count = bridge.train_from_pattern_store()
-        assert count > 0
-        assert bridge.is_trained
+        assert count > 0, "count must be positive"
+        assert bridge.is_trained, "Condition must be true"
 
     def test_train_from_pattern_store(self) -> None:
         """Test training from actual pattern store."""
@@ -77,33 +77,33 @@ class TestBrainMLBridge:
             bridge = BrainMLBridge(pattern_store_path=pattern_store)
             count = bridge.train_from_pattern_store()
             # Should train from synthetic data if loading fails
-            assert count >= 0
+            assert count >= 0, "count must be positive"
             # If training happened, should be marked as trained
             if count > 0:
-                assert bridge.is_trained
+                assert bridge.is_trained, "Condition must be true"
 
     def test_get_recommendations_not_trained(self) -> None:
         """Test recommendations when not trained."""
         bridge = BrainMLBridge()
         recs = bridge.get_recommendations("test error")
-        assert recs == []
+        assert recs == [], "recs is not valid"
 
     def test_get_recommendations_trained(self) -> None:
         """Test recommendations when trained."""
         bridge = BrainMLBridge()
         bridge.train_from_pattern_store()
         recs = bridge.get_recommendations("testing error", top_k=2)
-        assert len(recs) <= 2
+        assert len(recs) <= 2, "Recs must not be empty"
 
     def test_get_agents_for_category(self) -> None:
         """Test agent retrieval by category."""
         bridge = BrainMLBridge()
 
         testing_agents = bridge._get_agents_for_category("testing")
-        assert "ci-testing-agent" in testing_agents
+        assert "ci-testing-agent" in testing_agents, "Condition must be true"
 
         security_agents = bridge._get_agents_for_category("security")
-        assert "security-alert-verification-agent" in security_agents
+        assert "security-alert-verification-agent" in security_agents, "Condition must be true"
 
     def test_enhance_query_not_trained(self) -> None:
         """Test query enhancement when not trained."""
@@ -113,8 +113,8 @@ class TestBrainMLBridge:
 
         result = bridge.enhance_query(mock_brain, "test error")
         assert isinstance(result, MLEnhancedQueryResult)
-        assert result.ml_category is None
-        assert result.confidence == 0.0
+        assert result.ml_category is None, "Result must not be empty"
+        assert result.confidence == 0.0, "Result must not be empty"
 
     def test_enhance_query_trained(self) -> None:
         """Test query enhancement when trained."""
@@ -128,7 +128,7 @@ class TestBrainMLBridge:
 
         result = bridge.enhance_query(mock_brain, "pytest collection error")
         assert isinstance(result, MLEnhancedQueryResult)
-        assert result.query == "pytest collection error"
+        assert result.query == "pytest collection error", "Result must not be empty"
 
     def test_save_and_load_models(self) -> None:
         """Test model persistence."""
@@ -138,23 +138,23 @@ class TestBrainMLBridge:
             bridge.train_from_pattern_store()
 
             # Save
-            assert bridge.save_models()
-            assert (cache_path / "model_state.json").exists()
+            assert bridge.save_models(), "Condition must be true"
+            assert (cache_path / "model_state.json").exists(), "Condition must be true"
 
             # Load
             bridge2 = BrainMLBridge(model_cache_path=cache_path)
-            assert bridge2.load_models()
-            assert bridge2.is_trained
+            assert bridge2.load_models(), "Condition must be true"
+            assert bridge2.is_trained, "Condition must be true"
 
     def test_save_models_no_path(self) -> None:
         """Test save fails without path."""
         bridge = BrainMLBridge()
-        assert not bridge.save_models()
+        assert not bridge.save_models(), "Condition must be true"
 
     def test_load_models_no_path(self) -> None:
         """Test load fails without path."""
         bridge = BrainMLBridge()
-        assert not bridge.load_models()
+        assert not bridge.load_models(), "Condition must be true"
 
 
 class TestEnhancedAgentRouter:
@@ -163,13 +163,13 @@ class TestEnhancedAgentRouter:
     def test_init_default(self) -> None:
         """Test default initialization."""
         router = EnhancedAgentRouter()
-        assert router._bridge is not None
+        assert router._bridge is not None, "_bridge must be initialized"
 
     def test_init_with_bridge(self) -> None:
         """Test initialization with bridge."""
         bridge = BrainMLBridge()
         router = EnhancedAgentRouter(bridge=bridge)
-        assert router._bridge is bridge
+        assert router._bridge is bridge, "_bridge is not valid"
 
     def test_route_not_trained(self) -> None:
         """Test routing when not trained."""
@@ -177,9 +177,9 @@ class TestEnhancedAgentRouter:
         decision = router.route("test error")
 
         assert isinstance(decision, RoutingDecision)
-        assert decision.symptom == "test error"
-        assert decision.primary_agent is not None
-        assert "Default routing" in decision.reasoning
+        assert decision.symptom == "test error", "Error should be raised or set"
+        assert decision.primary_agent is not None, "primary_agent must be initialized"
+        assert "Default routing" in decision.reasoning, "Condition must be true"
 
     def test_route_trained(self) -> None:
         """Test routing when trained."""
@@ -189,7 +189,7 @@ class TestEnhancedAgentRouter:
 
         decision = router.route("pytest collection error")
         assert isinstance(decision, RoutingDecision)
-        assert decision.confidence > 0
+        assert decision.confidence > 0, "confidence must be greater than zero"
 
     def test_route_batch(self) -> None:
         """Test batch routing."""
@@ -197,7 +197,7 @@ class TestEnhancedAgentRouter:
         symptoms = ["pytest error", "security alert", "doc issue"]
         decisions = router.route_batch(symptoms)
 
-        assert len(decisions) == 3
+        assert len(decisions) == 3, "Decisions must not be empty"
         assert all(isinstance(d, RoutingDecision) for d in decisions)
 
     def test_routing_decision_structure(self) -> None:
@@ -219,13 +219,13 @@ class TestMLEnhancedPatternMatcher:
     def test_init_default(self) -> None:
         """Test default initialization."""
         matcher = MLEnhancedPatternMatcher()
-        assert matcher._bridge is not None
+        assert matcher._bridge is not None, "_bridge must be initialized"
 
     def test_match_empty_patterns(self) -> None:
         """Test matching with empty patterns."""
         matcher = MLEnhancedPatternMatcher()
         results = matcher.match("test query", [])
-        assert results == []
+        assert results == [], "Result must not be empty"
 
     def test_match_with_patterns(self) -> None:
         """Test matching with patterns."""
@@ -236,9 +236,9 @@ class TestMLEnhancedPatternMatcher:
         ]
 
         results = matcher.match("pytest collection error", patterns, threshold=0.0)
-        assert len(results) == 2
-        assert all("ml_score" in r for r in results)
-        assert all("ml_rank" in r for r in results)
+        assert len(results) == 2, "Results must not be empty"
+        assert all("ml_score" in r for r in results), "Result must not be empty"
+        assert all("ml_rank" in r for r in results), "Result must not be empty"
 
     def test_match_respects_threshold(self) -> None:
         """Test matching respects threshold."""
@@ -249,7 +249,7 @@ class TestMLEnhancedPatternMatcher:
 
         # High threshold should filter out
         results = matcher.match("test query", patterns, threshold=0.99)
-        assert len(results) == 0
+        assert len(results) == 0, "Results must not be empty"
 
     def test_match_ranking(self) -> None:
         """Test that matches are ranked by score."""
@@ -261,8 +261,8 @@ class TestMLEnhancedPatternMatcher:
 
         results = matcher.match("pytest error", patterns, threshold=0.0)
         if len(results) >= 2:
-            assert results[0]["ml_rank"] == 1
-            assert results[1]["ml_rank"] == 2
+            assert results[0]["ml_rank"] == 1, "Result must not be empty"
+            assert results[1]["ml_rank"] == 2, "Result must not be empty"
 
     def test_compute_similarity(self) -> None:
         """Test similarity computation."""
@@ -272,7 +272,7 @@ class TestMLEnhancedPatternMatcher:
         features2 = {"category": "testing", "has_error_keywords": True}
 
         similarity = matcher._compute_similarity(features1, features2)
-        assert 0 <= similarity <= 1
+        assert 0 <= similarity <= 1, "0 is not valid"
 
 
 class TestIntegratedPipeline:
@@ -281,22 +281,22 @@ class TestIntegratedPipeline:
     def test_init_default(self) -> None:
         """Test default initialization with auto-train."""
         pipeline = IntegratedPipeline(auto_train=True)
-        assert pipeline.is_ready
+        assert pipeline.is_ready, "Condition must be true"
 
     def test_init_no_auto_train(self) -> None:
         """Test initialization without auto-train."""
         pipeline = IntegratedPipeline(auto_train=False)
-        assert not pipeline.is_ready
+        assert not pipeline.is_ready, "Condition must be true"
 
     def test_process_symptom(self) -> None:
         """Test processing a symptom."""
         pipeline = IntegratedPipeline()
         result = pipeline.process_symptom("pytest collection error")
 
-        assert "symptom" in result
-        assert "routing" in result
-        assert "recommendations" in result
-        assert "pipeline_ready" in result
+        assert "symptom" in result, "Result must not be empty"
+        assert "routing" in result, "Result must not be empty"
+        assert "recommendations" in result, "Result must not be empty"
+        assert "pipeline_ready" in result, "Result must not be empty"
 
     def test_process_symptom_with_brain(self) -> None:
         """Test processing with brain interface."""
@@ -305,7 +305,7 @@ class TestIntegratedPipeline:
         mock_brain.query_patterns.return_value = []
 
         result = pipeline.process_symptom("test error", brain_interface=mock_brain)
-        assert "enhanced_query" in result
+        assert "enhanced_query" in result, "Result must not be empty"
 
     def test_process_batch(self) -> None:
         """Test batch processing."""
@@ -313,16 +313,16 @@ class TestIntegratedPipeline:
         symptoms = ["error 1", "error 2", "error 3"]
         results = pipeline.process_batch(symptoms)
 
-        assert len(results) == 3
+        assert len(results) == 3, "Results must not be empty"
 
     def test_get_statistics(self) -> None:
         """Test statistics retrieval."""
         pipeline = IntegratedPipeline()
         stats = pipeline.get_statistics()
 
-        assert "is_ready" in stats
-        assert "training_samples" in stats
-        assert "components" in stats
+        assert "is_ready" in stats, "Condition must be true"
+        assert "training_samples" in stats, "Condition must be true"
+        assert "components" in stats, "Condition must be true"
 
 
 class TestConvenienceFunctions:
@@ -332,13 +332,13 @@ class TestConvenienceFunctions:
         """Test pipeline creation function."""
         pipeline = create_integrated_pipeline(auto_train=True)
         assert isinstance(pipeline, IntegratedPipeline)
-        assert pipeline.is_ready
+        assert pipeline.is_ready, "Condition must be true"
 
     def test_create_integrated_pipeline_no_train(self) -> None:
         """Test pipeline creation without training."""
         pipeline = create_integrated_pipeline(auto_train=False)
         assert isinstance(pipeline, IntegratedPipeline)
-        assert not pipeline.is_ready
+        assert not pipeline.is_ready, "Condition must be true"
 
     def test_enhance_brain_with_ml(self) -> None:
         """Test brain enhancement function."""
@@ -374,11 +374,11 @@ class TestMLEnhancedQueryResult:
             success_predictions={"P1": 0.8},
         )
 
-        assert result.query == "test query"
-        assert result.ml_category == "testing"
-        assert result.confidence == 0.9
-        assert len(result.recommended_agents) == 1
-        assert result.timestamp is not None
+        assert result.query == "test query", "Result must not be empty"
+        assert result.ml_category == "testing", "Result must not be empty"
+        assert result.confidence == 0.9, "Result must not be empty"
+        assert len(result.recommended_agents) == 1, "Collection must not be empty"
+        assert result.timestamp is not None, "timestamp must be initialized"
 
 
 class TestRoutingDecision:
@@ -395,7 +395,7 @@ class TestRoutingDecision:
             reasoning="ML classification",
         )
 
-        assert decision.symptom == "test error"
-        assert decision.primary_agent == "ci-testing-agent"
-        assert decision.category == "testing"
-        assert decision.confidence == 0.85
+        assert decision.symptom == "test error", "Error should be raised or set"
+        assert decision.primary_agent == "ci-testing-agent", "primary_agent is not valid"
+        assert decision.category == "testing", "category is not valid"
+        assert decision.confidence == 0.85, "confidence is not valid"

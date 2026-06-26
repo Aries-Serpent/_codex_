@@ -44,17 +44,17 @@ class TestComplexityMetrics:
         """Test creating ComplexityMetrics."""
         metrics = ComplexityMetrics(cyclomatic=5.0, cognitive=4.0, halstead_difficulty=3.5)
 
-        assert metrics.cyclomatic == 5.0
-        assert metrics.cognitive == 4.0
-        assert metrics.halstead_difficulty == 3.5
+        assert metrics.cyclomatic == 5.0, "cyclomatic is not valid"
+        assert metrics.cognitive == 4.0, "cognitive is not valid"
+        assert metrics.halstead_difficulty == 3.5, "halstead_difficulty is not valid"
 
     def test_complexity_metrics_optional_halstead(self) -> None:
         """Test ComplexityMetrics with optional halstead_difficulty."""
         metrics = ComplexityMetrics(cyclomatic=3.0, cognitive=2.5)
 
-        assert metrics.cyclomatic == 3.0
-        assert metrics.cognitive == 2.5
-        assert metrics.halstead_difficulty is None
+        assert metrics.cyclomatic == 3.0, "cyclomatic is not valid"
+        assert metrics.cognitive == 2.5, "cognitive is not valid"
+        assert metrics.halstead_difficulty is None, "halstead_difficulty is not valid"
 
 
 class TestLintIssue:
@@ -71,11 +71,11 @@ class TestLintIssue:
             file_path="test.py",
         )
 
-        assert issue.rule == "E501"
-        assert issue.severity == "error"
-        assert issue.line == 42
-        assert issue.column == 80
-        assert issue.message == "Line too long"
+        assert issue.rule == "E501", "rule is not valid"
+        assert issue.severity == "error", "Error should be raised or set"
+        assert issue.line == 42, "line is not valid"
+        assert issue.column == 80, "column is not valid"
+        assert issue.message == "Line too long", "message is not valid"
 
 
 class TestSecurityIssue:
@@ -92,9 +92,9 @@ class TestSecurityIssue:
             file_path="dangerous.py",
         )
 
-        assert issue.tool == "bandit"
-        assert issue.rule_id == "B404"
-        assert issue.severity == "high"
+        assert issue.tool == "bandit", "tool is not valid"
+        assert issue.rule_id == "B404", "rule_id is not valid"
+        assert issue.severity == "high", "severity is not valid"
 
 
 class TestLineCount:
@@ -108,8 +108,8 @@ def hello():
 """
         loc, sloc = _count_lines(code)
 
-        assert loc == 4
-        assert sloc == 2  # def and return lines
+        assert loc == 4, "loc is not valid"
+        assert sloc == 2, "sloc is not valid"
 
     def test_count_with_comments(self) -> None:
         """Test line counting excludes comments."""
@@ -121,8 +121,8 @@ def func():
 """
         loc, sloc = _count_lines(code)
 
-        assert loc == 6
-        assert sloc == 2  # Only def and return
+        assert loc == 6, "loc is not valid"
+        assert sloc == 2, "sloc is not valid"
 
     def test_count_with_docstrings(self) -> None:
         """Test line counting excludes docstrings."""
@@ -136,14 +136,14 @@ def func():
 '''
         _loc, sloc = _count_lines(code)
 
-        assert sloc == 2  # def and return only
+        assert sloc == 2, "sloc is not valid"
 
     def test_count_empty_file(self) -> None:
         """Test counting lines in empty file."""
         loc, sloc = _count_lines("")
 
-        assert loc == 1
-        assert sloc == 0
+        assert loc == 1, "loc is not valid"
+        assert sloc == 0, "sloc is not valid"
 
     def test_count_single_quote_docstring(self) -> None:
         """Test docstring with single quotes."""
@@ -154,7 +154,7 @@ def func():
 """
         _loc, sloc = _count_lines(code)
 
-        assert sloc == 2  # def and pass
+        assert sloc == 2, "sloc is not valid"
 
 
 class TestImportExtraction:
@@ -172,9 +172,9 @@ from pathlib import Path
         tree = ast.parse(code)
         imports = _extract_imports(tree)
 
-        assert "os" in imports
-        assert "sys" in imports
-        assert "pathlib" in imports
+        assert "os" in imports, "Condition must be true"
+        assert "sys" in imports, "Condition must be true"
+        assert "pathlib" in imports, "Condition must be true"
 
     def test_extract_from_imports(self) -> None:
         """Test extracting 'from' imports."""
@@ -187,8 +187,8 @@ from collections import defaultdict
         tree = ast.parse(code)
         imports = _extract_imports(tree)
 
-        assert "typing" in imports
-        assert "collections" in imports
+        assert "typing" in imports, "Condition must be true"
+        assert "collections" in imports, "Condition must be true"
 
     def test_extract_imports_no_duplicates(self) -> None:
         """Test import extraction removes duplicates."""
@@ -202,7 +202,7 @@ from os import path
         tree = ast.parse(code)
         imports = _extract_imports(tree)
 
-        assert imports.count("os") == 1
+        assert imports.count("os") == 1, "Count must be greater than zero"
 
     def test_extract_imports_sorted(self) -> None:
         """Test imports are returned sorted."""
@@ -216,7 +216,7 @@ import ast
         tree = ast.parse(code)
         imports = _extract_imports(tree)
 
-        assert imports == sorted(imports)
+        assert imports == sorted(imports), "imports is not valid"
 
 
 class TestExportExtraction:
@@ -236,8 +236,8 @@ def _private_func():
         tree = ast.parse(code)
         exports = _extract_exports(tree)
 
-        assert "public_func" in exports
-        assert "_private_func" not in exports
+        assert "public_func" in exports, "Condition must be true"
+        assert "_private_func" not in exports, "Condition must be true"
 
     def test_extract_class_exports(self) -> None:
         """Test extracting public classes."""
@@ -253,8 +253,8 @@ class _PrivateClass:
         tree = ast.parse(code)
         exports = _extract_exports(tree)
 
-        assert "PublicClass" in exports
-        assert "_PrivateClass" not in exports
+        assert "PublicClass" in exports, "Condition must be true"
+        assert "_PrivateClass" not in exports, "Condition must be true"
 
     def test_extract_all_variable(self) -> None:
         """Test extracting from __all__ variable."""
@@ -275,9 +275,9 @@ class Class1:
         tree = ast.parse(code)
         exports = _extract_exports(tree)
 
-        assert "func1" in exports
-        assert "func2" in exports
-        assert "Class1" in exports
+        assert "func1" in exports, "Condition must be true"
+        assert "func2" in exports, "Condition must be true"
+        assert "Class1" in exports, "Condition must be true"
 
     def test_extract_exports_sorted(self) -> None:
         """Test exports are returned sorted."""
@@ -296,7 +296,7 @@ def beta():
         tree = ast.parse(code)
         exports = _extract_exports(tree)
 
-        assert exports == sorted(exports)
+        assert exports == sorted(exports), "exports is not valid"
 
 
 class TestComplexityCalculation:
@@ -313,7 +313,7 @@ def simple():
         tree = ast.parse(code)
         metrics = _calculate_complexity(tree)
 
-        assert metrics.cyclomatic == 1.0
+        assert metrics.cyclomatic == 1.0, "cyclomatic is not valid"
 
     def test_if_statement_increases_complexity(self) -> None:
         """Test if statement increases complexity."""
@@ -328,7 +328,7 @@ def func(x):
         tree = ast.parse(code)
         metrics = _calculate_complexity(tree)
 
-        assert metrics.cyclomatic == 2.0
+        assert metrics.cyclomatic == 2.0, "cyclomatic is not valid"
 
     def test_multiple_branches_complexity(self) -> None:
         """Test multiple branches increase complexity."""
@@ -344,7 +344,7 @@ def func(x, y):
         tree = ast.parse(code)
         metrics = _calculate_complexity(tree)
 
-        assert metrics.cyclomatic == 3.0
+        assert metrics.cyclomatic == 3.0, "cyclomatic is not valid"
 
     def test_loop_increases_complexity(self) -> None:
         """Test loops increase complexity."""
@@ -360,7 +360,7 @@ def func(items):
         tree = ast.parse(code)
         metrics = _calculate_complexity(tree)
 
-        assert metrics.cyclomatic >= 3.0
+        assert metrics.cyclomatic >= 3.0, "cyclomatic must be greater than zero"
 
     def test_cognitive_complexity_estimate(self) -> None:
         """Test cognitive complexity is estimated."""
@@ -375,8 +375,8 @@ def func(x):
         tree = ast.parse(code)
         metrics = _calculate_complexity(tree)
 
-        assert metrics.cognitive > 0
-        assert metrics.cognitive == metrics.cyclomatic * 0.8
+        assert metrics.cognitive > 0, "cognitive must be greater than zero"
+        assert metrics.cognitive == metrics.cyclomatic * 0.8, "cognitive is not valid"
 
 
 class TestToolResolution:
@@ -387,29 +387,29 @@ class TestToolResolution:
         with patch("shutil.which", return_value="/usr/bin/python"):
             result = _resolve_tool("python")
 
-            assert result is not None
-            assert "python" in result
+            assert result is not None, "result must be initialized"
+            assert "python" in result, "Result must not be empty"
 
     def test_resolve_nonexistent_tool(self) -> None:
         """Test resolving nonexistent tool returns None."""
         with patch("shutil.which", return_value=None):
             result = _resolve_tool("nonexistent_tool")
 
-            assert result is None
+            assert result is None, "Result must not be empty"
 
     def test_resolve_tool_with_trusted_dirs(self) -> None:
         """Test tool resolution with trusted directory validation."""
         with patch("shutil.which", return_value="/usr/bin/python"):
             result = _resolve_tool("python", trusted_dirs=["/usr/bin", "/usr/local/bin"])
 
-            assert result is not None
+            assert result is not None, "result must be initialized"
 
     def test_resolve_tool_untrusted_location(self) -> None:
         """Test tool in untrusted location returns None."""
         with patch("shutil.which", return_value="/tmp/untrusted/tool"):
             result = _resolve_tool("tool", trusted_dirs=["/usr/bin"])
 
-            assert result is None
+            assert result is None, "Result must not be empty"
 
 
 class TestFileAnalysis:
@@ -427,12 +427,12 @@ def hello():
 
         analysis = analyze_file(test_file, tmp_path)
 
-        assert analysis is not None
-        assert analysis.path == "test.py"
-        assert analysis.loc > 0
-        assert analysis.sloc > 0
-        assert "os" in analysis.imports
-        assert "hello" in analysis.exports
+        assert analysis is not None, "analysis must be initialized"
+        assert analysis.path == "test.py", "path is not valid"
+        assert analysis.loc > 0, "loc must be greater than zero"
+        assert analysis.sloc > 0, "sloc must be greater than zero"
+        assert "os" in analysis.imports, "Condition must be true"
+        assert "hello" in analysis.exports, "Condition must be true"
 
     def test_analyze_file_with_syntax_error(self, tmp_path: Path) -> None:
         """Test analyzing file with syntax errors."""
@@ -441,8 +441,8 @@ def hello():
 
         analysis = analyze_file(test_file, tmp_path)
 
-        assert analysis is not None
-        assert analysis.complexity.cyclomatic == 0
+        assert analysis is not None, "analysis must be initialized"
+        assert analysis.complexity.cyclomatic == 0, "cyclomatic is not valid"
 
     def test_analyze_large_file_skipped(self, tmp_path: Path) -> None:
         """Test large files are skipped."""
@@ -453,7 +453,7 @@ def hello():
 
         analysis = analyze_file(large_file, tmp_path)
 
-        assert analysis is None
+        assert analysis is None, "analysis is not valid"
 
     def test_analyze_file_with_encoding_errors(self, tmp_path: Path) -> None:
         """Test analyzing file with encoding issues."""
@@ -463,7 +463,7 @@ def hello():
         analysis = analyze_file(test_file, tmp_path)
 
         # Should handle encoding errors gracefully
-        assert analysis is not None or analysis is None  # Either is acceptable
+        assert analysis is not None or analysis is None, "analysis must be initialized"
 
 
 class TestStaticAnalysis:
@@ -476,9 +476,9 @@ class TestStaticAnalysis:
 
         report = analyze(tmp_path, "test-snapshot", run_lint=False, run_security=False)
 
-        assert report.snapshot_id == "test-snapshot"
-        assert len(report.files) == 2
-        assert report.summary["total_files"] == 2
+        assert report.snapshot_id == "test-snapshot", "snapshot_id is not valid"
+        assert len(report.files) == 2, "Collection must not be empty"
+        assert report.summary["total_files"] == 2, "rep is not valid"
 
     def test_analyze_with_summary(self, tmp_path: Path) -> None:
         """Test analysis generates correct summary."""
@@ -491,9 +491,9 @@ def func():
 
         report = analyze(tmp_path, "test", run_lint=False, run_security=False)
 
-        assert report.summary["total_loc"] > 0
-        assert report.summary["total_sloc"] > 0
-        assert report.summary["avg_complexity"] > 0
+        assert report.summary["total_loc"] > 0, "rep must be greater than zero"
+        assert report.summary["total_sloc"] > 0, "rep must be greater than zero"
+        assert report.summary["avg_complexity"] > 0, "rep must be greater than zero"
 
     def test_analyze_no_python_files(self, tmp_path: Path) -> None:
         """Test analyzing directory with no Python files."""
@@ -501,8 +501,8 @@ def func():
 
         report = analyze(tmp_path, "test", run_lint=False, run_security=False)
 
-        assert len(report.files) == 0
-        assert report.summary["total_files"] == 0
+        assert len(report.files) == 0, "Collection must not be empty"
+        assert report.summary["total_files"] == 0, "rep is not valid"
 
     def test_analyze_respects_file_limit(self, tmp_path: Path) -> None:
         """Test analysis respects MAX_FILES_TO_ANALYZE limit."""
@@ -513,7 +513,7 @@ def func():
         report = analyze(tmp_path, "test", run_lint=False, run_security=False)
 
         # Should not exceed limit
-        assert len(report.files) <= MAX_FILES_TO_ANALYZE
+        assert len(report.files) <= MAX_FILES_TO_ANALYZE, "Collection must not be empty"
 
 
 class TestStaticReport:
@@ -543,10 +543,10 @@ class TestStaticReport:
 
         data = report.to_dict()
 
-        assert data["snapshot_id"] == "test"
-        assert len(data["files"]) == 1
-        assert data["files"][0]["path"] == "test.py"
-        assert data["summary"]["total_files"] == 1
+        assert data["snapshot_id"] == "test", "Data must not be empty"
+        assert len(data["files"]) == 1, "Collection must not be empty"
+        assert data["files"][0]["path"] == "test.py", "Data must not be empty"
+        assert data["summary"]["total_files"] == 1, "Data must not be empty"
 
     def test_report_save(self, tmp_path: Path) -> None:
         """Test saving report to file."""
@@ -562,12 +562,12 @@ class TestStaticReport:
         output_path = tmp_path / "report.json"
         report.save(output_path)
 
-        assert output_path.exists()
+        assert output_path.exists(), "Condition must be true"
 
         with output_path.open() as f:
             data = json.load(f)
 
-        assert data["snapshot_id"] == "test"
+        assert data["snapshot_id"] == "test", "Data must not be empty"
 
 
 class TestLintIntegration:
@@ -592,8 +592,8 @@ class TestLintIntegration:
         with patch("codex.analyze.static.analyzer._resolve_tool", return_value="/usr/bin/ruff"):
             issues = _run_ruff(tmp_path)
 
-        assert len(issues) == 1
-        assert issues[0].rule == "E501"
+        assert len(issues) == 1, "Issues must not be empty"
+        assert issues[0].rule == "E501", "rule is not valid"
 
     @patch("subprocess.run")
     def test_run_ruff_not_found(self, mock_run: Mock, tmp_path: Path) -> None:
@@ -601,7 +601,7 @@ class TestLintIntegration:
         with patch("codex.analyze.static.analyzer._resolve_tool", return_value=None):
             issues = _run_ruff(tmp_path)
 
-        assert issues == []
+        assert issues == [], "issues is not valid"
 
     @patch("subprocess.run")
     def test_run_bandit_success(self, mock_run: Mock, tmp_path: Path) -> None:
@@ -625,6 +625,6 @@ class TestLintIntegration:
         with patch("codex.analyze.static.analyzer._resolve_tool", return_value="/usr/bin/bandit"):
             issues = _run_bandit(tmp_path)
 
-        assert len(issues) == 1
-        assert issues[0].rule_id == "B404"
-        assert issues[0].severity == "high"
+        assert len(issues) == 1, "Issues must not be empty"
+        assert issues[0].rule_id == "B404", "rule_id is not valid"
+        assert issues[0].severity == "high", "severity is not valid"

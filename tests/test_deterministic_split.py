@@ -20,12 +20,12 @@ def test_deterministic_split_reproducible():
         items, seed=123, val_fraction=0.2, test_fraction=0.1
     )
 
-    assert train_a == train_b
-    assert val_a == val_b
-    assert test_a == test_b
-    assert len(train_a) == 14
-    assert len(val_a) == 4
-    assert len(test_a) == 2
+    assert train_a == train_b, "train_a is not valid"
+    assert val_a == val_b, "val_a is not valid"
+    assert test_a == test_b, "test_a is not valid"
+    assert len(train_a) == 14, "Train_a must not be empty"
+    assert len(val_a) == 4, "Val_a must not be empty"
+    assert len(test_a) == 2, "Test_a must not be empty"
 
 
 def test_deterministic_split_seed_variation():
@@ -43,4 +43,4 @@ def test_deterministic_split_validates(monkeypatch):
     empty_train, empty_val, empty_test = deterministic_split(
         [], val_fraction=0.5, test_fraction=0.4
     )
-    assert empty_train == empty_val == empty_test == []
+    assert empty_train == empty_val == empty_test == [], "empty_train is not valid"

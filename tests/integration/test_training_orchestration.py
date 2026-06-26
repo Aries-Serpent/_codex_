@@ -15,7 +15,7 @@ class TestCurriculumLearning:
         """Test curriculum module can be imported."""
         from codex_ml.training import curriculum
 
-        assert curriculum is not None
+        assert curriculum is not None, "curriculum must be initialized"
 
     def test_curriculum_has_expected_functions(self):
         """Test curriculum module has expected functions."""
@@ -33,9 +33,9 @@ class TestCurriculumLearning:
             {"name": "hard", "difficulty": 3},
         ]
 
-        assert len(stages) == 3
-        assert stages[0]["difficulty"] < stages[1]["difficulty"]
-        assert stages[1]["difficulty"] < stages[2]["difficulty"]
+        assert len(stages) == 3, "Stages must not be empty"
+        assert stages[0]["difficulty"] < stages[1]["difficulty"], "Condition must be true"
+        assert stages[1]["difficulty"] < stages[2]["difficulty"], "Condition must be true"
 
     def test_curriculum_stage_transition(self):
         """Test transitioning between curriculum stages."""
@@ -45,7 +45,7 @@ class TestCurriculumLearning:
         # Simulate stage advancement
         next_stage = current_stage + 1 if current_stage < max_stages - 1 else current_stage
 
-        assert next_stage == 1
+        assert next_stage == 1, "next_stage is not valid"
 
     def test_competency_threshold(self):
         """Test competency threshold for stage advancement."""
@@ -54,7 +54,7 @@ class TestCurriculumLearning:
 
         can_advance = performance >= threshold
 
-        assert can_advance is True
+        assert can_advance is True, "can_advance is not valid"
 
     def test_curriculum_scheduler(self):
         """Test curriculum scheduling."""
@@ -64,8 +64,8 @@ class TestCurriculumLearning:
             "stage_2": {"epochs": 15, "lr": 0.0001},
         }
 
-        assert len(schedule) == 3
-        assert schedule["stage_0"]["lr"] > schedule["stage_1"]["lr"]
+        assert len(schedule) == 3, "Schedule must not be empty"
+        assert schedule["stage_0"]["lr"] > schedule["stage_1"]["lr"], "Value must be greater than zero"
 
     def test_data_filtering_by_difficulty(self):
         """Test filtering training data by difficulty."""
@@ -78,8 +78,8 @@ class TestCurriculumLearning:
 
         filtered = [item for item in data if item["difficulty"] <= max_difficulty]
 
-        assert len(filtered) == 2
-        assert all(item["difficulty"] <= max_difficulty for item in filtered)
+        assert len(filtered) == 2, "Filtered must not be empty"
+        assert all(item["difficulty"] <= max_difficulty for item in filtered), "Item must not be empty"
 
     def test_curriculum_warmup(self):
         """Test curriculum warmup phase."""
@@ -88,7 +88,7 @@ class TestCurriculumLearning:
 
         warmup_complete = current_step >= warmup_steps
 
-        assert warmup_complete is False
+        assert warmup_complete is False, "warmup_complete is not valid"
 
     def test_adaptive_curriculum(self):
         """Test adaptive curriculum adjustment."""
@@ -97,7 +97,7 @@ class TestCurriculumLearning:
         # Check if loss is decreasing (adaptive curriculum working)
         improving = loss_history[-1] < loss_history[0]
 
-        assert improving is True
+        assert improving is True, "improving is not valid"
 
     def test_curriculum_reset(self):
         """Test curriculum reset on failure."""
@@ -106,7 +106,7 @@ class TestCurriculumLearning:
 
         needs_reset = performance < threshold
 
-        assert needs_reset is True
+        assert needs_reset is True, "needs_reset is not valid"
 
 
 class TestMultiPhaseTraining:
@@ -116,7 +116,7 @@ class TestMultiPhaseTraining:
         """Test multi-phase training modules can be imported."""
         from codex_ml.training import engine
 
-        assert engine is not None
+        assert engine is not None, "engine must be initialized"
 
     def test_phase_configuration(self):
         """Test phase configuration."""
@@ -126,8 +126,8 @@ class TestMultiPhaseTraining:
             {"name": "polish", "epochs": 2},
         ]
 
-        assert len(phases) == 3
-        assert sum(phase["epochs"] for phase in phases) == 17
+        assert len(phases) == 3, "Phases must not be empty"
+        assert sum(phase["epochs"] for phase in phases) == 17, "Condition must be true"
 
     def test_phase_transition_state(self):
         """Test state preservation across phases."""
@@ -141,8 +141,8 @@ class TestMultiPhaseTraining:
         state["phase"] = "finetune"
         state["epoch"] = 0  # Reset epoch counter for new phase
 
-        assert state["phase"] == "finetune"
-        assert state["best_loss"] == 0.5  # Preserved
+        assert state["phase"] == "finetune", "Condition must be true"
+        assert state["best_loss"] == 0.5, "Condition must be true"
 
     def test_phase_specific_parameters(self):
         """Test phase-specific parameter configurations."""
@@ -151,8 +151,8 @@ class TestMultiPhaseTraining:
             "phase2": {"lr": 0.001, "batch_size": 64},
         }
 
-        assert phase_configs["phase1"]["lr"] > phase_configs["phase2"]["lr"]
-        assert phase_configs["phase2"]["batch_size"] > phase_configs["phase1"]["batch_size"]
+        assert phase_configs["phase1"]["lr"] > phase_configs["phase2"]["lr"], "Value must be greater than zero"
+        assert phase_configs["phase2"]["batch_size"] > phase_configs["phase1"]["batch_size"], "Value must be greater than zero"
 
     def test_phase_checkpoint_saving(self):
         """Test checkpoint saving between phases."""
@@ -164,8 +164,8 @@ class TestMultiPhaseTraining:
                 checkpoint_file = checkpoint_dir / f"{phase}.pt"
                 checkpoint_file.write_text(f"checkpoint_{phase}")
 
-            assert (checkpoint_dir / "phase1.pt").exists()
-            assert (checkpoint_dir / "phase2.pt").exists()
+            assert (checkpoint_dir / "phase1.pt").exists(), "Condition must be true"
+            assert (checkpoint_dir / "phase2.pt").exists(), "Condition must be true"
 
     def test_phase_early_stopping(self):
         """Test early stopping within a phase."""
@@ -174,7 +174,7 @@ class TestMultiPhaseTraining:
 
         should_stop = no_improvement_count >= patience
 
-        assert should_stop is True
+        assert should_stop is True, "should_stop is not valid"
 
     def test_phase_metrics_aggregation(self):
         """Test metrics aggregation across phases."""
@@ -186,7 +186,7 @@ class TestMultiPhaseTraining:
         # Overall improvement
         improvement = metrics["phase2"]["accuracy"] - metrics["phase1"]["accuracy"]
 
-        assert improvement > 0
+        assert improvement > 0, "improvement must be greater than zero"
 
     def test_conditional_phase_execution(self):
         """Test conditional phase execution based on performance."""
@@ -195,7 +195,7 @@ class TestMultiPhaseTraining:
 
         should_execute_phase2 = phase1_loss < threshold
 
-        assert should_execute_phase2 is True
+        assert should_execute_phase2 is True, "should_execute_phase2 is not valid"
 
     def test_phase_resource_allocation(self):
         """Test resource allocation per phase."""
@@ -204,7 +204,7 @@ class TestMultiPhaseTraining:
             "phase2": {"gpus": 2, "memory_gb": 16},
         }
 
-        assert resources["phase2"]["gpus"] > resources["phase1"]["gpus"]
+        assert resources["phase2"]["gpus"] > resources["phase1"]["gpus"], "Value must be greater than zero"
 
     def test_phase_data_augmentation(self):
         """Test phase-specific data augmentation."""
@@ -213,7 +213,7 @@ class TestMultiPhaseTraining:
             "phase2": {"flip": True, "rotate": True},
         }
 
-        assert augmentation["phase2"]["rotate"] is True
+        assert augmentation["phase2"]["rotate"] is True, "Condition must be true"
 
 
 class TestTrainingState:
@@ -228,9 +228,9 @@ class TestTrainingState:
             "patience_counter": 0,
         }
 
-        assert state["epoch"] == 0
-        assert state["step"] == 0
-        assert state["best_loss"] == float("inf")
+        assert state["epoch"] == 0, "Condition must be true"
+        assert state["step"] == 0, "Condition must be true"
+        assert state["best_loss"] == float("inf"), "Condition must be true"
 
     def test_state_update(self):
         """Test training state update."""
@@ -239,8 +239,8 @@ class TestTrainingState:
         state["epoch"] += 1
         state["step"] += 100
 
-        assert state["epoch"] == 1
-        assert state["step"] == 100
+        assert state["epoch"] == 1, "Condition must be true"
+        assert state["step"] == 100, "Condition must be true"
 
     def test_state_persistence(self):
         """Test state persistence to disk."""
@@ -254,8 +254,8 @@ class TestTrainingState:
             state_file.write_text(json.dumps(state))
             loaded_state = json.loads(state_file.read_text())
 
-            assert loaded_state["epoch"] == 5
-            assert loaded_state["loss"] == 0.3
+            assert loaded_state["epoch"] == 5, "Condition must be true"
+            assert loaded_state["loss"] == 0.3, "Condition must be true"
 
     def test_state_validation(self):
         """Test training state validation."""
@@ -268,7 +268,7 @@ class TestTrainingState:
             and state["step"] >= 0
         )
 
-        assert is_valid is True
+        assert is_valid is True, "is_valid is not valid"
 
     def test_state_recovery(self):
         """Test training state recovery from checkpoint."""
@@ -282,8 +282,8 @@ class TestTrainingState:
         recovered_epoch = checkpoint["epoch"]
         recovered_step = checkpoint["step"]
 
-        assert recovered_epoch == 7
-        assert recovered_step == 700
+        assert recovered_epoch == 7, "recovered_epoch is not valid"
+        assert recovered_step == 700, "recovered_step is not valid"
 
     def test_state_comparison(self):
         """Test comparing training states."""
@@ -292,7 +292,7 @@ class TestTrainingState:
 
         improved = state2["loss"] < state1["loss"]
 
-        assert improved is True
+        assert improved is True, "improved is not valid"
 
     def test_state_snapshot(self):
         """Test creating state snapshot."""
@@ -301,8 +301,8 @@ class TestTrainingState:
         snapshot = state.copy()
         state["epoch"] = 4
 
-        assert snapshot["epoch"] == 3
-        assert state["epoch"] == 4
+        assert snapshot["epoch"] == 3, "Condition must be true"
+        assert state["epoch"] == 4, "Condition must be true"
 
     def test_state_rollback(self):
         """Test state rollback on failure."""
@@ -313,7 +313,7 @@ class TestTrainingState:
         if current_state["loss"] > backup_state["loss"]:
             current_state = backup_state.copy()
 
-        assert current_state["epoch"] == 4
+        assert current_state["epoch"] == 4, "Condition must be true"
 
     def test_distributed_state_sync(self):
         """Test state synchronization in distributed training."""
@@ -325,7 +325,7 @@ class TestTrainingState:
         # Average loss across ranks
         avg_loss = sum(s["loss"] for s in rank_states) / len(rank_states)
 
-        assert avg_loss == 0.51
+        assert avg_loss == 0.51, "avg_loss is not valid"
 
     def test_state_metrics_history(self):
         """Test maintaining metrics history in state."""
@@ -334,5 +334,5 @@ class TestTrainingState:
         for loss in [1.0, 0.8, 0.6, 0.5]:
             state["loss_history"].append(loss)
 
-        assert len(state["loss_history"]) == 4
-        assert state["loss_history"][0] > state["loss_history"][-1]
+        assert len(state["loss_history"]) == 4, "Collection must not be empty"
+        assert state["loss_history"][0] > state["loss_history"][-1], "Value must be greater than zero"

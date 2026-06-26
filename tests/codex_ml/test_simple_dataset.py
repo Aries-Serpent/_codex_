@@ -20,6 +20,6 @@ def test_simple_dataset_deterministic_encoding():
     enc1 = ds1.encoded()
     enc2 = ds2.encoded()
 
-    assert len(enc1) == len(enc2) == 3
-    assert [e.label for e in enc1] == [e.label for e in enc2]
-    assert [e.tokens for e in enc1] == [e.tokens for e in enc2]
+    assert len(enc1) == len(enc2) == 3, "Enc1 must not be empty"
+    assert [e.label for e in enc1] == [e.label for e in enc2], "Condition must be true"
+    assert [e.tokens for e in enc1] == [e.tokens for e in enc2], "Condition must be true"

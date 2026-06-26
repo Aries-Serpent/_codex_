@@ -69,14 +69,14 @@ class TestOpenDb:
     def test_creates_patterns_table(self, tmp_db):
         c = pr._open_db(tmp_db)
         tables = {r[0] for r in c.execute("SELECT name FROM sqlite_master WHERE type='table'")}
-        assert "patterns" in tables
+        assert "patterns" in tables, "Condition must be true"
         c.close()
 
     def test_creates_indexes(self, tmp_db):
         c = pr._open_db(tmp_db)
         idxs = {r[0] for r in c.execute("SELECT name FROM sqlite_master WHERE type='index'")}
-        assert "idx_patterns_name" in idxs
-        assert "idx_patterns_session" in idxs
+        assert "idx_patterns_name" in idxs, "Condition must be true"
+        assert "idx_patterns_session" in idxs, "Condition must be true"
         c.close()
 
     def test_idempotent(self, tmp_db):
@@ -98,7 +98,7 @@ class TestInsertPattern:
             session="PR#3740",
             git_sha="abc123",
         )
-        assert row_id >= 1
+        assert row_id >= 1, "row_id must be greater than zero"
 
     def test_row_values_stored_correctly(self, conn):
         pr._insert_pattern(
@@ -114,11 +114,11 @@ class TestInsertPattern:
             git_sha=None,
         )
         row = conn.execute("SELECT * FROM patterns WHERE pattern_id=1").fetchone()
-        assert row["pattern_name"] == "Unused Imports"
-        assert row["auto_fixable"] == 1
-        assert row["fixed"] == 0
-        assert row["session"] == "S186"
-        assert row["git_sha"] is None
+        assert row["pattern_name"] == "Unused Imports", "Condition must be true"
+        assert row["auto_fixable"] == 1, "Condition must be true"
+        assert row["fixed"] == 0, "Condition must be true"
+        assert row["session"] == "S186", "Condition must be true"
+        assert row["git_sha"] is None, "Condition must be true"
 
     def test_null_file_and_line_allowed(self, conn):
         row_id = pr._insert_pattern(
@@ -134,8 +134,8 @@ class TestInsertPattern:
             git_sha=None,
         )
         row = conn.execute("SELECT * FROM patterns WHERE id=?", (row_id,)).fetchone()
-        assert row["file_path"] is None
-        assert row["line_number"] is None
+        assert row["file_path"] is None, "Condition must be true"
+        assert row["line_number"] is None, "Condition must be true"
 
     def test_multiple_inserts_same_pattern(self, conn):
         for i in range(5):
@@ -152,7 +152,7 @@ class TestInsertPattern:
                 git_sha=None,
             )
         count = conn.execute("SELECT COUNT(*) FROM patterns WHERE pattern_id=18").fetchone()[0]
-        assert count == 5
+        assert count == 5, "Count must be greater than zero"
 
 
 class TestRecordFromReport:
@@ -181,8 +181,8 @@ class TestRecordFromReport:
             session="S186",
             git_sha="abc",
         )
-        assert n == 2
-        assert conn.execute("SELECT COUNT(*) FROM patterns").fetchone()[0] == 2
+        assert n == 2, "n is not valid"
+        assert conn.execute("SELECT COUNT(*) FROM patterns").fetchone()[0] == 2, "Count must be greater than zero"
 
     def test_fixed_flag_from_fixes_applied(self, conn, tmp_path):
         issues = [
@@ -202,7 +202,7 @@ class TestRecordFromReport:
             git_sha=None,
         )
         row = conn.execute("SELECT fixed FROM patterns").fetchone()
-        assert row["fixed"] == 1
+        assert row["fixed"] == 1, "Condition must be true"
 
     def test_unfixed_when_no_fixes_applied(self, conn, tmp_path):
         issues = [
@@ -216,7 +216,7 @@ class TestRecordFromReport:
             }
         ]
         pr.record_from_report(_make_report(tmp_path, issues), conn, None, None)
-        assert conn.execute("SELECT fixed FROM patterns").fetchone()["fixed"] == 0
+        assert conn.execute("SELECT fixed FROM patterns").fetchone()["fixed"] == 0, "Condition must be true"
 
     def test_bad_path_returns_zero(self, conn):
         assert pr.record_from_report(Path("/nonexistent.json"), conn, None, None) == 0
@@ -245,17 +245,17 @@ class TestHighRecurrence:
         self._seed(conn, "Duplicate Kwargs", 18, 5, 4)  # 80% fix-rate
         result = pr.high_recurrence(conn, min_occurrences=3, min_fix_rate=0.5)
         names = [r["pattern_name"] for r in result]
-        assert "Duplicate Kwargs" in names
+        assert "Duplicate Kwargs" in names, "Condition must be true"
 
     def test_excludes_below_threshold(self, conn):
         self._seed(conn, "Duplicate Kwargs", 18, 2, 2)  # only 2 occurrences
         result = pr.high_recurrence(conn, min_occurrences=3, min_fix_rate=0.5)
-        assert not result
+        assert not result, "Result must not be empty"
 
     def test_excludes_low_fix_rate(self, conn):
         self._seed(conn, "Duplicate Kwargs", 18, 5, 0)  # 0% fix-rate
         result = pr.high_recurrence(conn, min_occurrences=3, min_fix_rate=0.5)
-        assert not result
+        assert not result, "Result must not be empty"
 
 
 class TestExportJson:
@@ -273,8 +273,8 @@ class TestExportJson:
             git_sha=None,
         )
         data = pr.export_json(conn)
-        assert data["total"] == 1
-        assert data["occurrences"][0]["pattern_name"] == "Duplicate Kwargs"
+        assert data["total"] == 1, "Data must not be empty"
+        assert data["occurrences"][0]["pattern_name"] == "Duplicate Kwargs", "Data must not be empty"
 
     def test_writes_file_when_path_given(self, conn, tmp_path):
         pr._insert_pattern(
@@ -291,9 +291,9 @@ class TestExportJson:
         )
         out = tmp_path / "export.json"
         pr.export_json(conn, output_path=out)
-        assert out.exists()
+        assert out.exists(), "Condition must be true"
         loaded = json.loads(out.read_text())
-        assert loaded["total"] == 1
+        assert loaded["total"] == 1, "Condition must be true"
 
     def test_summary_included(self, conn):
         for i in range(3):
@@ -310,18 +310,18 @@ class TestExportJson:
                 git_sha=None,
             )
         data = pr.export_json(conn)
-        assert "summary" in data
-        assert data["summary"][0]["total"] == 3
+        assert "summary" in data, "Data must not be empty"
+        assert data["summary"][0]["total"] == 3, "Data must not be empty"
 
 
 class TestPatternRecorderCli:
     def test_summary_empty(self, tmp_db, capsys):
         pr.main(["--db", tmp_db, "summary"])
-        assert "No pattern occurrences" in capsys.readouterr().out
+        assert "No pattern occurrences" in capsys.readouterr().out, "Condition must be true"
 
     def test_query_empty(self, tmp_db, capsys):
         pr.main(["--db", tmp_db, "query"])
-        assert "No pattern occurrences" in capsys.readouterr().out
+        assert "No pattern occurrences" in capsys.readouterr().out, "Condition must be true"
 
     def test_insert_and_query(self, tmp_db, capsys):
         pr.main(
@@ -341,7 +341,7 @@ class TestPatternRecorderCli:
         )
         pr.main(["--db", tmp_db, "query", "--limit", "5"])
         out = capsys.readouterr().out
-        assert "Duplicate Kwargs" in out
+        assert "Duplicate Kwargs" in out, "Condition must be true"
 
     def test_high_recurrence_json(self, tmp_db, capsys):
         conn = pr._open_db(tmp_db)
@@ -362,7 +362,7 @@ class TestPatternRecorderCli:
         pr.main(["--db", tmp_db, "high-recurrence", "--json"])
         out = capsys.readouterr().out
         data = json.loads(out)
-        assert any(r["pattern_name"] == "Duplicate Kwargs" for r in data)
+        assert any(r["pattern_name"] == "Duplicate Kwargs" for r in data), "Data must not be empty"
 
     def test_export_stdout(self, tmp_db, capsys):
         conn = pr._open_db(tmp_db)
@@ -382,7 +382,7 @@ class TestPatternRecorderCli:
         pr.main(["--db", tmp_db, "export"])
         out = capsys.readouterr().out
         data = json.loads(out)
-        assert data["total"] == 1
+        assert data["total"] == 1, "Data must not be empty"
 
     def test_record_from_report_cli(self, tmp_db, tmp_path, capsys):
         issues = [
@@ -397,21 +397,21 @@ class TestPatternRecorderCli:
         ]
         report = _make_report(tmp_path, issues, {"Duplicate Kwargs": 1})
         pr.main(["--db", tmp_db, "record", "--report", str(report)])
-        assert "Recorded 1" in capsys.readouterr().out
+        assert "Recorded 1" in capsys.readouterr().out, "Condition must be true"
 
     def test_trend_empty(self, tmp_db, capsys):
         """trend subcommand prints a table with zero counts when DB is empty."""
         pr.main(["--db", tmp_db, "trend", "--days", "3"])
         out = capsys.readouterr().out
-        assert "Count" in out
-        assert "0" in out
+        assert "Count" in out, "Count must be greater than zero"
+        assert "0" in out, "Condition must be true"
 
     def test_trend_json_empty(self, tmp_db, capsys):
         """trend --json emits a valid JSON array of length <days> with count=0."""
         pr.main(["--db", tmp_db, "trend", "--days", "3", "--json"])
         rows = json.loads(capsys.readouterr().out)
-        assert len(rows) == 3
-        assert all(r["count"] == 0 for r in rows)
+        assert len(rows) == 3, "Rows must not be empty"
+        assert all(r["count"] == 0 for r in rows), "Count must be greater than zero"
 
     def test_trend_counts_today(self, tmp_db, capsys):
         """trend counts today's insertion in the last day slot."""
@@ -431,7 +431,7 @@ class TestPatternRecorderCli:
         conn.close()
         pr.main(["--db", tmp_db, "trend", "--days", "3", "--json"])
         rows = json.loads(capsys.readouterr().out)
-        assert rows[-1]["count"] == 1  # today's slot
+        assert rows[-1]["count"] == 1, "Count must be greater than zero"
 
 
 # ===========================================================================
@@ -452,12 +452,12 @@ class TestPattern18Classification:
     def test_duplicate_kwargs_in_auto_fixable(self):
         mod = _load_auto_fix()
         fixer = mod.CommonIssueFixer(Path("."))
-        assert "Duplicate Kwargs" in fixer.auto_fixable_patterns
+        assert "Duplicate Kwargs" in fixer.auto_fixable_patterns, "Condition must be true"
 
     def test_duplicate_kwargs_not_in_manual_review(self):
         mod = _load_auto_fix()
         fixer = mod.CommonIssueFixer(Path("."))
-        assert "Duplicate Kwargs" not in fixer.manual_review_patterns
+        assert "Duplicate Kwargs" not in fixer.manual_review_patterns, "Condition must be true"
 
     def test_no_pattern_in_both_sets(self):
         mod = _load_auto_fix()
@@ -470,8 +470,8 @@ class TestAutoFixCheckOnlyBehavior:
     def test_check_only_implies_dry_run(self):
         mod = _load_auto_fix()
         fixer = mod.CommonIssueFixer(Path("."), check_only=True)
-        assert fixer.check_only is True
-        assert fixer.dry_run is True
+        assert fixer.check_only is True, "check_only is not valid"
+        assert fixer.dry_run is True, "dry_run is not valid"
 
     def test_pattern_32_check_only_does_not_modify_file(self, tmp_path):
         mod = _load_auto_fix()
@@ -485,8 +485,8 @@ class TestAutoFixCheckOnlyBehavior:
         fixer = mod.CommonIssueFixer(repo_root, check_only=True)
         issues = fixer.fix_bare_type_ignore_assign()
 
-        assert issues == [f"{target}:1: fallback assignment ignore should use [assignment]"]
-        assert target.read_text(encoding="utf-8") == original
+        assert issues == [f"{target}:1: fallback assignment ignore should use [assignment]"], "issues is not valid"
+        assert target.read_text(encoding="utf-8") == original, "Condition must be true"
 
     def test_pattern_32_leaves_assignment_only_ignore_untouched(self, tmp_path):
         mod = _load_auto_fix()
@@ -499,8 +499,8 @@ class TestAutoFixCheckOnlyBehavior:
         fixer = mod.CommonIssueFixer(repo_root)
         issues = fixer.fix_bare_type_ignore_assign()
 
-        assert issues == []
-        assert target.read_text(encoding="utf-8") == "value = None  # type: ignore[assignment]\n"
+        assert issues == [], "issues is not valid"
+        assert target.read_text(encoding="utf-8") == "value = None, "Value must be initialized"
 
     def test_pattern_32_leaves_normalized_ignore_untouched(self, tmp_path):
         mod = _load_auto_fix()
@@ -514,8 +514,8 @@ class TestAutoFixCheckOnlyBehavior:
         fixer = mod.CommonIssueFixer(repo_root)
         issues = fixer.fix_bare_type_ignore_assign()
 
-        assert issues == []
-        assert target.read_text(encoding="utf-8") == original
+        assert issues == [], "issues is not valid"
+        assert target.read_text(encoding="utf-8") == original, "Condition must be true"
 
 
 class TestPattern34MissingNewlineAtEof:
@@ -533,7 +533,7 @@ class TestPattern34MissingNewlineAtEof:
 
         fixer = mod.CommonIssueFixer(repo_root, check_only=True)
 
-        assert fixer.fix_missing_newline_at_eof() == [
+        assert fixer.fix_missing_newline_at_eof() == [, "Condition must be true"
             "Would fix missing newline in src/a.py",
             "Would fix missing newline in src/b.py",
         ]
@@ -550,9 +550,9 @@ class TestPattern34MissingNewlineAtEof:
 
         fixer = mod.CommonIssueFixer(repo_root)
 
-        assert fixer.fix_missing_newline_at_eof() == ["Fixed missing newline in src/sample.py"]
-        assert target.read_bytes() == b"print('sample')\n"
-        assert empty.read_bytes() == b""
+        assert fixer.fix_missing_newline_at_eof() == ["Fixed missing newline in src/sample.py"], "Condition must be true"
+        assert target.read_bytes() == b"print('sample')\n", "Condition must be true"
+        assert empty.read_bytes() == b"", "Condition must be true"
 
 
 class TestPattern30MergeReadiness:
@@ -576,7 +576,7 @@ def _compute_merge_readiness_score():
         )
 
         fixer = mod.CommonIssueFixer(repo_root)
-        assert fixer.fix_merge_readiness_dims() == []
+        assert fixer.fix_merge_readiness_dims() == [], "Condition must be true"
 
     def test_run_all_patterns_respects_skip_env(self, monkeypatch):
         mod = _load_auto_fix()
@@ -606,10 +606,10 @@ def _compute_merge_readiness_score():
 
         fixer.run_all_patterns()
 
-        assert (
+        assert (, "Condition must be true"
             "fix_unused_imports" in called
         ), "Pattern 1 (fix_unused_imports) should have been called"
-        assert (
+        assert (, "Condition must be true"
             "fix_merge_readiness_dims" not in called
         ), "Pattern 30 (fix_merge_readiness_dims) should have been skipped"
 
@@ -644,7 +644,7 @@ def _compute_merge_readiness_score():
         fixer = mod.CommonIssueFixer(repo_root, check_only=True)
         # Even though one dimension is failing, Pattern 30 must not return
         # an issue for it because it is the auto_fix self-reference.
-        assert fixer.fix_merge_readiness_dims() == []
+        assert fixer.fix_merge_readiness_dims() == [], "Condition must be true"
 
     def test_pattern_30_avoids_duplicate_module_import(self, tmp_path):
         mod = _load_auto_fix()
@@ -678,9 +678,9 @@ def fix_pda_entry_today(pr_number, sha, run_url, dry_run):
         import_count_file = scripts_ci / "import_count.txt"
         pda_called_file = scripts_ci / "pda_called.txt"
         fixer = mod.CommonIssueFixer(repo_root)
-        assert fixer.fix_merge_readiness_dims() == []
-        assert import_count_file.read_text(encoding="utf-8").strip() == "1"
-        assert pda_called_file.read_text(encoding="utf-8").strip() == "called"
+        assert fixer.fix_merge_readiness_dims() == [], "Condition must be true"
+        assert import_count_file.read_text(encoding="utf-8").strip() == "1", "Count must be greater than zero"
+        assert pda_called_file.read_text(encoding="utf-8").strip() == "called", "Condition must be true"
 
 
 class TestResolveAcctDiffBase:
@@ -738,7 +738,7 @@ class TestResolveAcctDiffBase:
         # Single commit — has no parent, so the helper returns None and
         # the caller falls back to HEAD~1 (which produces a git error,
         # also OK — Pattern 25 returns no issues in that case).
-        assert mod._resolve_acct_diff_base(repo) is None
+        assert mod._resolve_acct_diff_base(repo) is None, "Condition must be true"
 
     def test_skips_infra_bot_commits(self, tmp_path):
         mod = _load_auto_fix()
@@ -762,10 +762,10 @@ class TestResolveAcctDiffBase:
         # HEAD~2   = agent work        ← this is the agent commit
         # HEAD~3   = init              ← parent of agent commit
         base = mod._resolve_acct_diff_base(repo)
-        assert base is not None
+        assert base is not None, "base must be initialized"
         # Confirm the SHA returned is the parent of the agent commit.
         expected_parent = self._git(repo, "rev-parse", "HEAD~3").strip()
-        assert base == expected_parent
+        assert base == expected_parent, "base is not valid"
 
     def test_skips_skip_ci_subjects_regardless_of_author(self, tmp_path):
         mod = _load_auto_fix()
@@ -775,9 +775,9 @@ class TestResolveAcctDiffBase:
         # Even when authored by a non-bot, [skip ci] subject marks it as infra.
         self._commit(repo, "chore: bump [skip ci]", "alice", "v2\n")
         base = mod._resolve_acct_diff_base(repo)
-        assert base is not None
+        assert base is not None, "base must be initialized"
         expected_parent = self._git(repo, "rev-parse", "HEAD~2").strip()
-        assert base == expected_parent
+        assert base == expected_parent, "base is not valid"
 
     def test_returns_none_when_all_commits_are_infra(self, tmp_path):
         mod = _load_auto_fix()
@@ -795,7 +795,7 @@ class TestResolveAcctDiffBase:
             "v1\n",
         )
         # No agent commit found within the lookback window.
-        assert mod._resolve_acct_diff_base(repo) is None
+        assert mod._resolve_acct_diff_base(repo) is None, "Condition must be true"
 
     def test_skips_dependabot_rebase_commits(self, tmp_path):
         """Dependabot rebase commit subjects are treated as infra regardless
@@ -818,9 +818,9 @@ class TestResolveAcctDiffBase:
         # HEAD~1   = agent work        ← first non-infra commit
         # HEAD~2   = init              ← parent of agent commit
         base = mod._resolve_acct_diff_base(repo)
-        assert base is not None
+        assert base is not None, "base must be initialized"
         expected_parent = self._git(repo, "rev-parse", "HEAD~2").strip()
-        assert base == expected_parent
+        assert base == expected_parent, "base is not valid"
 
     def test_skips_dependabot_deps_bump_commits(self, tmp_path):
         """``chore(deps): bump`` commit subjects (dependabot PR creation commits)
@@ -840,9 +840,9 @@ class TestResolveAcctDiffBase:
         # HEAD~1   = agent work        ← first non-infra commit
         # HEAD~2   = init              ← parent
         base = mod._resolve_acct_diff_base(repo)
-        assert base is not None
+        assert base is not None, "base must be initialized"
         expected_parent = self._git(repo, "rev-parse", "HEAD~2").strip()
-        assert base == expected_parent
+        assert base == expected_parent, "base is not valid"
 
 
 class TestFindKwargRemovalSpan:
@@ -872,11 +872,11 @@ class TestFindKwargRemovalSpan:
         # Second kwarg named 'x'
         kw = call.keywords[1]
         span = fixer._find_kwarg_removal_span("f(x=1, x=2)", kw)
-        assert span is not None
+        assert span is not None, "span must be initialized"
         start, end = span
         result = "f(x=1, x=2)"[:start] + "f(x=1, x=2)"[end:]
-        assert "x=2" not in result
-        assert "x=1" in result
+        assert "x=2" not in result, "Result must not be empty"
+        assert "x=1" in result, "Result must not be empty"
 
     def test_returns_none_for_missing_eq(self):
         fixer = self._make_fixer()
@@ -893,7 +893,7 @@ class TestFindKwargRemovalSpan:
 
         # Line without '=' before col 10
         span = fixer._find_kwarg_removal_span("f(bar bar)", FakeKw())  # type: ignore[arg-type]
-        assert span is None
+        assert span is None, "span is not valid"
 
     def test_returns_none_when_name_not_at_expected_position(self):
         fixer = self._make_fixer()
@@ -909,7 +909,7 @@ class TestFindKwargRemovalSpan:
             value = FakeValue()
 
         span = fixer._find_kwarg_removal_span("f(x=1)", FakeKw())  # type: ignore[arg-type]
-        assert span is None
+        assert span is None, "span is not valid"
 
 
 class TestPattern18InReport:
@@ -923,7 +923,7 @@ class TestPattern18InReport:
         report = fixer.generate_json_report()
         dk_issues = [i for i in report["issues"] if i["pattern_name"] == "Duplicate Kwargs"]
         assert dk_issues, "Duplicate Kwargs missing from report issues"
-        assert dk_issues[0]["pattern"] == 18
+        assert dk_issues[0]["pattern"] == 18, "Condition must be true"
 
 
 # ===========================================================================
@@ -938,8 +938,8 @@ class TestCiPatternPipeline:
             capture_output=True,
             text=True,
         )
-        assert result.returncode == 0
-        assert "detect" in result.stdout.lower() or "pipeline" in result.stdout.lower()
+        assert result.returncode == 0, "Result must not be empty"
+        assert "detect" in result.stdout.lower() or "pipeline" in result.stdout.lower(), "Result must not be empty"
 
     @pytest.mark.slow
     @pytest.mark.timeout(300)
@@ -985,8 +985,8 @@ class TestCiPatternPipeline:
         assert result.returncode in (0, 1)
         assert Path(artefact).exists(), "Artefact file not created"
         data = json.loads(Path(artefact).read_text())
-        assert "pipeline_status" in data
-        assert "diagnostic_report" in data
+        assert "pipeline_status" in data, "Data must not be empty"
+        assert "diagnostic_report" in data, "Data must not be empty"
 
     @pytest.mark.slow
     @pytest.mark.timeout(300)
@@ -1010,7 +1010,7 @@ class TestPreCommitHook:
         )
         mod = importlib.util.module_from_spec(spec)  # type: ignore[arg-type]
         spec.loader.exec_module(mod)  # type: ignore[union-attr]
-        assert mod.run_check() == 0
+        assert mod.run_check() == 0, "Condition must be true"
 
     def test_no_db_returns_zero(self, tmp_db, tmp_path, monkeypatch):
         """When DB doesn't exist yet, hook should silently pass."""
@@ -1021,18 +1021,18 @@ class TestPreCommitHook:
         )
         mod = importlib.util.module_from_spec(spec)  # type: ignore[arg-type]
         spec.loader.exec_module(mod)  # type: ignore[union-attr]
-        assert mod.run_check() == 0
+        assert mod.run_check() == 0, "Condition must be true"
 
     def test_detect_patterns_duplicate_kwargs(self):
         """_detect_patterns_in_source identifies Duplicate Kwargs."""
         source = "def f():\n    return g(x=1, x=2)\n"
         detected = hook._detect_patterns_in_source(source, "test.py")
-        assert "Duplicate Kwargs" in detected
+        assert "Duplicate Kwargs" in detected, "Condition must be true"
 
     def test_detect_patterns_clean_source(self):
         source = "def f():\n    return g(x=1, y=2)\n"
         detected = hook._detect_patterns_in_source(source, "test.py")
-        assert "Duplicate Kwargs" not in detected
+        assert "Duplicate Kwargs" not in detected, "Condition must be true"
 
     def test_detect_patterns_syntax_error_does_not_raise(self):
         source = "def f(\n    return g(x=1\n"
@@ -1051,7 +1051,7 @@ class TestPreCommitHook:
         spec.loader.exec_module(mod)  # type: ignore[union-attr]
         # DB exists but empty — no high-recurrence patterns
         pr._open_db(tmp_db).close()
-        assert mod.run_check() == 0
+        assert mod.run_check() == 0, "Condition must be true"
 
 
 # ===========================================================================
@@ -1090,10 +1090,10 @@ class TestCrossPrCorrelation:
         for sha in ("sha1", "sha2", "sha3"):
             self._insert(conn, "Line Length", sha)
         result = pr.cross_pr_correlation(conn, min_prs=3)
-        assert len(result) == 1
-        assert result[0]["pattern_name"] == "Line Length"
-        assert result[0]["pr_count"] == 3
-        assert result[0]["total"] == 3
+        assert len(result) == 1, "Result must not be empty"
+        assert result[0]["pattern_name"] == "Line Length", "Result must not be empty"
+        assert result[0]["pr_count"] == 3, "Result must not be empty"
+        assert result[0]["total"] == 3, "Result must not be empty"
 
     def test_multiple_occurrences_same_sha_counted_once(self, conn):
         """10 insertions with the same SHA still count as 1 PR."""
@@ -1110,10 +1110,10 @@ class TestCrossPrCorrelation:
         for sha in ("s5", "s6"):
             self._insert(conn, "Line Length", sha, pid=12)
         result = pr.cross_pr_correlation(conn, min_prs=2)
-        assert result[0]["pattern_name"] == "Unused Imports"
-        assert result[0]["pr_count"] == 4
-        assert result[1]["pattern_name"] == "Line Length"
-        assert result[1]["pr_count"] == 2
+        assert result[0]["pattern_name"] == "Unused Imports", "Result must not be empty"
+        assert result[0]["pr_count"] == 4, "Result must not be empty"
+        assert result[1]["pattern_name"] == "Line Length", "Result must not be empty"
+        assert result[1]["pr_count"] == 2, "Result must not be empty"
 
     def test_null_sha_rows_excluded_from_count(self, conn):
         """Rows with NULL git_sha do not count toward pr_count."""
@@ -1132,8 +1132,8 @@ class TestCrossPrCorrelation:
         """CLI cross-pr subcommand prints 'No patterns' when DB empty."""
         rc = pr.main(["--db", tmp_db, "cross-pr", "--min-prs", "2"])
         out = capsys.readouterr().out
-        assert rc == 0
-        assert "No patterns" in out
+        assert rc == 0, "rc is not valid"
+        assert "No patterns" in out, "Condition must be true"
 
     def test_cli_cross_pr_json(self, tmp_db, capsys):
         """CLI cross-pr --json returns valid JSON."""
@@ -1154,6 +1154,6 @@ class TestCrossPrCorrelation:
         conn.close()
         pr.main(["--db", tmp_db, "cross-pr", "--min-prs", "3", "--json"])
         data = json.loads(capsys.readouterr().out)
-        assert len(data) == 1
-        assert data[0]["pattern_name"] == "Unused Imports"
-        assert data[0]["pr_count"] == 3
+        assert len(data) == 1, "Data must not be empty"
+        assert data[0]["pattern_name"] == "Unused Imports", "Data must not be empty"
+        assert data[0]["pr_count"] == 3, "Data must not be empty"

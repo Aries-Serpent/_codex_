@@ -23,8 +23,8 @@ class TestHelperFunctions:
             from codex.quantum_orchestrator.cli import create_test_tasks
 
             tasks = create_test_tasks(5)
-            assert len(tasks) == 5
-            assert all(f"task_{i}" in tasks for i in range(5))
+            assert len(tasks) == 5, "Tasks must not be empty"
+            assert all(f"task_{i}" in tasks for i in range(5)), "Condition must be true"
         except ImportError:
             pytest.skip("quantum_orchestrator not available")
 
@@ -36,7 +36,7 @@ class TestHelperFunctions:
 
             constants = PhysicsConstants()
             tasks = create_test_tasks(3, constants)
-            assert len(tasks) == 3
+            assert len(tasks) == 3, "Tasks must not be empty"
         except ImportError:
             pytest.skip("quantum_orchestrator not available")
 
@@ -46,7 +46,7 @@ class TestHelperFunctions:
             from codex.quantum_orchestrator.cli import create_test_tasks
 
             tasks = create_test_tasks(0)
-            assert len(tasks) == 0
+            assert len(tasks) == 0, "Tasks must not be empty"
         except ImportError:
             pytest.skip("quantum_orchestrator not available")
 
@@ -61,10 +61,10 @@ class TestHelperFunctions:
             tasks = create_test_tasks(1)
             task = tasks["task_0"]
             output = format_task_state(task)
-            assert "Task: task_0" in output
-            assert "Name:" in output
-            assert "Position:" in output
-            assert "Probability:" in output
+            assert "Task: task_0" in output, "Condition must be true"
+            assert "Name:" in output, "Condition must be true"
+            assert "Position:" in output, "Condition must be true"
+            assert "Probability:" in output, "Condition must be true"
         except ImportError:
             pytest.skip("quantum_orchestrator not available")
 
@@ -86,9 +86,9 @@ class TestExportMetrics:
             state = OrchestratorState(tasks=tasks, constants=constants)
 
             output = export_metrics_prometheus(state)
-            assert "quantum_orchestrator_tasks" in output
-            assert "quantum_orchestrator_total_probability" in output
-            assert "quantum_orchestrator_coherence" in output
+            assert "quantum_orchestrator_tasks" in output, "Condition must be true"
+            assert "quantum_orchestrator_total_probability" in output, "Condition must be true"
+            assert "quantum_orchestrator_coherence" in output, "Condition must be true"
         except ImportError:
             pytest.skip("quantum_orchestrator not available")
 
@@ -106,9 +106,9 @@ class TestExportMetrics:
             state = OrchestratorState(tasks=tasks, constants=constants)
 
             output = export_metrics_prometheus(state)
-            assert 'task_id="task_0"' in output
-            assert 'task_id="task_1"' in output
-            assert 'task_id="task_2"' in output
+            assert 'task_id="task_0"' in output, "Condition must be true"
+            assert 'task_id="task_1"' in output, "Condition must be true"
+            assert 'task_id="task_2"' in output, "Condition must be true"
         except ImportError:
             pytest.skip("quantum_orchestrator not available")
 
@@ -123,8 +123,8 @@ class TestCLIGroup:
 
             runner = CliRunner()
             result = runner.invoke(cli, ["--help"])
-            assert result.exit_code == 0
-            assert "Quantum Orchestrator CLI" in result.output
+            assert result.exit_code == 0, "Result must not be empty"
+            assert "Quantum Orchestrator CLI" in result.output, "Result must not be empty"
         except ImportError:
             pytest.skip("quantum_orchestrator CLI not available")
 
@@ -135,8 +135,8 @@ class TestCLIGroup:
 
             runner = CliRunner()
             result = runner.invoke(cli, ["--version"])
-            assert result.exit_code == 0
-            assert "0.3.0" in result.output
+            assert result.exit_code == 0, "Result must not be empty"
+            assert "0.3.0" in result.output, "Result must not be empty"
         except ImportError:
             pytest.skip("quantum_orchestrator CLI not available")
 
@@ -419,11 +419,11 @@ class TestModuleImports:
             )
 
             # Verify all components are importable
-            assert DiracSpinor is not None
-            assert OrchestratorState is not None
-            assert PhysicsConstants is not None
-            assert TaskState is not None
-            assert TaskVector is not None
-            assert create_observable_orchestrator is not None
+            assert DiracSpinor is not None, "DiracSpinor must be initialized"
+            assert OrchestratorState is not None, "OrchestratorState must be initialized"
+            assert PhysicsConstants is not None, "PhysicsConstants must be initialized"
+            assert TaskState is not None, "TaskState must be initialized"
+            assert TaskVector is not None, "TaskVector must be initialized"
+            assert create_observable_orchestrator is not None, "create_observable_orchestrator must be initialized"
         except ImportError:
             pytest.skip("quantum_orchestrator components not available")

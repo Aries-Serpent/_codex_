@@ -83,8 +83,8 @@ class TestStateRestoration:
         # Simulate state restoration
         restored_state = saved_state
 
-        assert restored_state == mock_system_state
-        assert restored_state["version"] == "1.0.0"
+        assert restored_state == mock_system_state, "restored_state is not valid"
+        assert restored_state["version"] == "1.0.0", "rest is not valid"
 
     def test_state_restoration_with_validation(self, mock_system_state):
         """Test state restoration with validation."""
@@ -94,7 +94,7 @@ class TestStateRestoration:
         required_fields = ["version", "timestamp", "services"]
         validation_passed = all(field in saved_state for field in required_fields)
 
-        assert validation_passed is True
+        assert validation_passed is True, "validation_passed is not valid"
 
     def test_partial_state_restoration(self):
         """Test partial state restoration."""
@@ -103,8 +103,8 @@ class TestStateRestoration:
         # Only restore service_a
         restored = partial_restore
 
-        assert "service_a" in restored
-        assert "service_b" not in restored
+        assert "service_a" in restored, "Condition must be true"
+        assert "service_b" not in restored, "Condition must be true"
 
     def test_state_restoration_with_corruption_detection(self):
         """Test detection of corrupted state."""
@@ -114,7 +114,7 @@ class TestStateRestoration:
         calculated_checksum = "abc123"
         is_valid = state["checksum"] == calculated_checksum
 
-        assert is_valid is True
+        assert is_valid is True, "is_valid is not valid"
 
     def test_state_restoration_fallback_to_backup(self):
         """Test fallback to backup when primary state is corrupted."""
@@ -123,7 +123,7 @@ class TestStateRestoration:
 
         restored = backup_state if primary_state is None else primary_state
 
-        assert restored == backup_state
+        assert restored == backup_state, "restored is not valid"
 
     def test_incremental_state_restoration(self):
         """Test incremental state restoration."""
@@ -157,7 +157,7 @@ class TestRollbackProcedures:
         # Rollback to before state
         rolled_back = before_state
 
-        assert rolled_back["counter"] == 100
+        assert rolled_back["counter"] == 100, "Count must be greater than zero"
 
     def test_rollback_with_max_attempts(self, recovery_config):
         """Test rollback respects max attempts."""
@@ -171,8 +171,8 @@ class TestRollbackProcedures:
             if attempts == 2:  # Succeed on second attempt
                 success = True
 
-        assert success is True
-        assert attempts < max_attempts
+        assert success is True, "success is not valid"
+        assert attempts < max_attempts, "attempts is not valid"
 
     def test_rollback_transaction_integrity(self):
         """Test transaction integrity during rollback."""
@@ -185,15 +185,15 @@ class TestRollbackProcedures:
         # Rollback should only affect uncommitted transactions
         to_rollback = [t for t in transactions if t["status"] == "pending"]
 
-        assert len(to_rollback) == 1
-        assert to_rollback[0]["id"] == 3
+        assert len(to_rollback) == 1, "To_rollback must not be empty"
+        assert to_rollback[0]["id"] == 3, "Condition must be true"
 
     def test_cascading_rollback(self):
         """Test cascading rollback of dependent operations."""
         # Operation 3 failed, should rollback 2 and 3
         to_rollback = [2, 3]  # Reverse order
 
-        assert len(to_rollback) == 2
+        assert len(to_rollback) == 2, "To_rollback must not be empty"
 
     def test_rollback_point_in_time(self):
         """Test point-in-time rollback."""
@@ -204,7 +204,7 @@ class TestRollbackProcedures:
         time_diff = current_time - target_time
         expected_seconds = 2 * SECONDS_PER_HOUR  # 2 hours
 
-        assert time_diff.total_seconds() == expected_seconds
+        assert time_diff.total_seconds() == expected_seconds, "Condition must be true"
         # Should restore state from 2 hours ago
 
     def test_rollback_validation_before_commit(self):
@@ -213,7 +213,7 @@ class TestRollbackProcedures:
 
         validation_passed = rollback_state.get("valid", False)
 
-        assert validation_passed is True
+        assert validation_passed is True, "validation_passed is not valid"
         # Only commit rollback if validation passes
 
 
@@ -229,9 +229,9 @@ class TestCheckpointRecovery:
         """Test checkpoint creation."""
         checkpoint = mock_checkpoint_data
 
-        assert "checkpoint_id" in checkpoint
-        assert "timestamp" in checkpoint
-        assert "state" in checkpoint
+        assert "checkpoint_id" in checkpoint, "Condition must be true"
+        assert "timestamp" in checkpoint, "Condition must be true"
+        assert "state" in checkpoint, "Condition must be true"
 
     def test_checkpoint_interval_management(self, recovery_config):
         """Test checkpoint interval management."""
@@ -240,7 +240,7 @@ class TestCheckpointRecovery:
         time_since_last = 350
         should_checkpoint = time_since_last >= interval
 
-        assert should_checkpoint is True
+        assert should_checkpoint is True, "should_checkpoint is not valid"
 
     def test_checkpoint_rotation(self, recovery_config):
         """Test checkpoint rotation to limit storage."""
@@ -249,7 +249,7 @@ class TestCheckpointRecovery:
 
         should_delete_oldest = current_checkpoints > max_checkpoints
 
-        assert should_delete_oldest is True
+        assert should_delete_oldest is True, "should_delete_oldest is not valid"
 
     def test_recovery_from_latest_checkpoint(self):
         """Test recovery from latest valid checkpoint."""
@@ -263,7 +263,7 @@ class TestCheckpointRecovery:
         valid_checkpoints = [c for c in checkpoints if c["valid"]]
         latest = max(valid_checkpoints, key=lambda c: c["timestamp"])
 
-        assert latest["id"] == "ckpt_002"
+        assert latest["id"] == "ckpt_002", "Condition must be true"
 
     def test_checkpoint_consistency_verification(self):
         """Test checkpoint consistency verification."""
@@ -276,7 +276,7 @@ class TestCheckpointRecovery:
         calculated = "hash123"
         is_consistent = checkpoint["checksum"] == calculated
 
-        assert is_consistent is True
+        assert is_consistent is True, "is_consistent is not valid"
 
 
 # ============================================================================
@@ -298,7 +298,7 @@ class TestTransactionRecovery:
         # Replay should process all operations
         operations_count = len(transaction_log)
 
-        assert operations_count == 3
+        assert operations_count == 3, "Count must be greater than zero"
 
     def test_transaction_idempotency(self):
         """Test transaction idempotency during recovery."""
@@ -307,7 +307,7 @@ class TestTransactionRecovery:
         applied_once = {"id": 1, "count": 1}
         applied_twice = {"id": 1, "count": 1}  # Same result
 
-        assert applied_once == applied_twice
+        assert applied_once == applied_twice, "applied_once is not valid"
 
     def test_incomplete_transaction_handling(self):
         """Test handling of incomplete transactions."""
@@ -316,7 +316,7 @@ class TestTransactionRecovery:
         # Incomplete transactions should be rolled back
         should_rollback = transaction["status"] == "in_progress"
 
-        assert should_rollback is True
+        assert should_rollback is True, "should_rollback is not valid"
 
     def test_transaction_dependency_resolution(self):
         """Test resolution of transaction dependencies."""
@@ -331,7 +331,7 @@ class TestTransactionRecovery:
 
         can_commit = dependency["status"] == "committed"
 
-        assert can_commit is True
+        assert can_commit is True, "can_commit is not valid"
 
 
 # ============================================================================
@@ -350,7 +350,7 @@ class TestDataConsistency:
         required_fields = ["id", "name", "version"]
         is_consistent = all(field in data for field in required_fields)
 
-        assert is_consistent is True
+        assert is_consistent is True, "is_consistent is not valid"
 
     def test_referential_integrity_check(self):
         """Test referential integrity check."""
@@ -360,7 +360,7 @@ class TestDataConsistency:
 
         is_valid = data["user_id"] in valid_users and data["order_id"] in valid_orders
 
-        assert is_valid is True
+        assert is_valid is True, "is_valid is not valid"
 
     def test_version_consistency(self):
         """Test version consistency across components."""
@@ -373,7 +373,7 @@ class TestDataConsistency:
         versions = [c["version"] for c in components]
         all_same_version = len(set(versions)) == 1
 
-        assert all_same_version is True
+        assert all_same_version is True, "all_same_version is not valid"
 
     def test_data_integrity_after_recovery(self):
         """Test data integrity after recovery."""
@@ -382,7 +382,7 @@ class TestDataConsistency:
 
         integrity_maintained = pre_failure_checksum == post_recovery_checksum
 
-        assert integrity_maintained is True
+        assert integrity_maintained is True, "integrity_maintained is not valid"
 
 
 # ============================================================================
@@ -404,7 +404,7 @@ class TestPartialRecovery:
         # Recover only failed components
         to_recover = [k for k, v in components.items() if v["status"] == "failed"]
 
-        assert to_recover == ["cache"]
+        assert to_recover == ["cache"], "to_recover is not valid"
 
     def test_priority_based_recovery(self):
         """Test priority-based recovery order."""
@@ -417,7 +417,7 @@ class TestPartialRecovery:
         # Sort by priority
         recovery_order = sorted([c for c in components if c["failed"]], key=lambda c: c["priority"])
 
-        assert recovery_order[0]["name"] == "database"
+        assert recovery_order[0]["name"] == "database", "Data must not be empty"
 
     def test_partial_data_recovery(self):
         """Test recovery of partial data."""
@@ -426,7 +426,7 @@ class TestPartialRecovery:
 
         recovery_percentage = (recovered_records / total_records) * 100
 
-        assert recovery_percentage == 95.0
+        assert recovery_percentage == 95.0, "recovery_percentage is not valid"
         # 95% recovery is acceptable
 
 
@@ -447,7 +447,7 @@ class TestRecoveryOrchestration:
             {"step": 4, "action": "restart_services", "status": "pending"},
         ]
 
-        assert len(workflow) == 4
+        assert len(workflow) == 4, "Workflow must not be empty"
         # Should execute all steps in order
 
     def test_recovery_timeout_enforcement(self, recovery_config):
@@ -457,7 +457,7 @@ class TestRecoveryOrchestration:
 
         exceeded_timeout = elapsed > timeout
 
-        assert exceeded_timeout is True
+        assert exceeded_timeout is True, "exceeded_timeout is not valid"
         # Should abort recovery if timeout exceeded
 
     def test_parallel_recovery_coordination(self):
@@ -471,7 +471,7 @@ class TestRecoveryOrchestration:
         # service_a and service_b can recover in parallel
         independent = [c for c in components if not c["depends_on"]]
 
-        assert len(independent) == 2
+        assert len(independent) == 2, "Independent must not be empty"
 
 
 # ============================================================================
@@ -492,7 +492,7 @@ class TestRecoveryValidation:
 
         all_healthy = all(v == "healthy" for v in health_checks.values())
 
-        assert all_healthy is True
+        assert all_healthy is True, "all_healthy is not valid"
 
     def test_recovery_smoke_tests(self):
         """Test smoke tests after recovery."""
@@ -504,7 +504,7 @@ class TestRecoveryValidation:
 
         all_passed = all(t["passed"] for t in smoke_tests)
 
-        assert all_passed is True
+        assert all_passed is True, "all_passed is not valid"
 
     def test_recovery_metrics_validation(self):
         """Test validation of recovery metrics."""
@@ -521,7 +521,7 @@ class TestRecoveryValidation:
             and metrics["services_failed"] == 0
         )
 
-        assert success is True
+        assert success is True, "success is not valid"
 
 
 # ============================================================================
@@ -540,7 +540,7 @@ class TestIdempotency:
         restored_once = state.copy()
         restored_twice = state.copy()
 
-        assert restored_once == restored_twice
+        assert restored_once == restored_twice, "restored_once is not valid"
 
     def test_idempotent_service_restart(self):
         """Test service restart is idempotent."""
@@ -549,7 +549,7 @@ class TestIdempotency:
         status_after_restart_1 = "running"
         status_after_restart_2 = "running"
 
-        assert status_after_restart_1 == status_after_restart_2
+        assert status_after_restart_1 == status_after_restart_2, "status_after_restart_1 is not valid"
 
     def test_idempotent_configuration_apply(self):
         """Test configuration application is idempotent."""
@@ -559,7 +559,7 @@ class TestIdempotency:
         applied_once = config
         applied_multiple = config
 
-        assert applied_once == applied_multiple
+        assert applied_once == applied_multiple, "applied_once is not valid"
 
 
 # ============================================================================
@@ -577,7 +577,7 @@ class TestRecoveryTimeObjective:
 
         rto_minutes = (recovery_time - failure_time).total_seconds() / 60
 
-        assert rto_minutes == 5.0
+        assert rto_minutes == 5.0, "rto_minutes is not valid"
 
     def test_rto_compliance(self):
         """Test RTO compliance check."""
@@ -586,7 +586,7 @@ class TestRecoveryTimeObjective:
 
         within_rto = actual_rto_minutes <= target_rto_minutes
 
-        assert within_rto is True
+        assert within_rto is True, "within_rto is not valid"
 
     def test_rto_violation_alert(self):
         """Test alert on RTO violation."""
@@ -596,7 +596,7 @@ class TestRecoveryTimeObjective:
         violation = actual_rto_minutes > target_rto_minutes
         alert_triggered = violation
 
-        assert alert_triggered is True
+        assert alert_triggered is True, "alert_triggered is not valid"
 
 
 if __name__ == "__main__":

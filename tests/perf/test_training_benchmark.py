@@ -107,8 +107,8 @@ class TestTrainingThroughputBenchmarks:
             return {"processed": len(processed)}
 
         result = benchmark(process_batch, iterations=1000)
-        assert result.throughput > 0
-        assert result.duration_ms < 10000  # Should complete in under 10 seconds
+        assert result.throughput > 0, "throughput must be greater than zero"
+        assert result.duration_ms < 10000, "Result must not be empty"
 
     def test_gradient_computation_throughput(self) -> None:
         """Benchmark gradient computation simulation."""
@@ -120,7 +120,7 @@ class TestTrainingThroughputBenchmarks:
             return {"grad_norm": sum(g * g for g in grads) ** 0.5}
 
         result = benchmark(compute_gradients, iterations=500)
-        assert result.throughput > 0
+        assert result.throughput > 0, "throughput must be greater than zero"
 
     def test_optimizer_step_throughput(self) -> None:
         """Benchmark optimizer step simulation."""
@@ -133,7 +133,7 @@ class TestTrainingThroughputBenchmarks:
                 params[i] -= lr * grads[i]
 
         result = benchmark(optimizer_step, iterations=1000)
-        assert result.throughput > 100  # Should be fast
+        assert result.throughput > 100, "throughput must be greater than zero"
 
     def test_loss_computation_throughput(self) -> None:
         """Benchmark loss computation."""
@@ -148,7 +148,7 @@ class TestTrainingThroughputBenchmarks:
             ) / len(predictions)
 
         result = benchmark(compute_loss, iterations=1000)
-        assert result.throughput > 0
+        assert result.throughput > 0, "throughput must be greater than zero"
 
     def test_forward_pass_throughput(self) -> None:
         """Benchmark forward pass simulation."""
@@ -164,7 +164,7 @@ class TestTrainingThroughputBenchmarks:
             return output
 
         result = benchmark(forward_pass, iterations=100)
-        assert result.throughput > 0
+        assert result.throughput > 0, "throughput must be greater than zero"
 
 
 # ============================================================================
@@ -183,7 +183,7 @@ class TestTrainingMemoryBenchmarks:
 
         result = benchmark(allocate_batch, iterations=100)
         # Memory increase should be reasonable
-        assert result.memory_mb < 100  # Less than 100MB increase
+        assert result.memory_mb < 100, "Result must not be empty"
 
     def test_gradient_accumulation_memory(self) -> None:
         """Benchmark gradient accumulation memory."""
@@ -196,7 +196,7 @@ class TestTrainingMemoryBenchmarks:
                 accumulated_grads.clear()
 
         result = benchmark(accumulate_gradients, iterations=100)
-        assert result.duration_ms < 1000
+        assert result.duration_ms < 1000, "Result must not be empty"
 
     def test_checkpoint_memory_overhead(self) -> None:
         """Benchmark checkpoint creation memory."""
@@ -209,7 +209,7 @@ class TestTrainingMemoryBenchmarks:
             }
 
         result = benchmark(create_checkpoint, iterations=100)
-        assert result.memory_mb < 50
+        assert result.memory_mb < 50, "Result must not be empty"
 
     def test_activation_caching_memory(self) -> None:
         """Benchmark activation caching memory."""
@@ -220,7 +220,7 @@ class TestTrainingMemoryBenchmarks:
             cache[layer_name] = [0.1 * i for i in range(1024)]
 
         result = benchmark(cache_activations, iterations=100)
-        assert result.duration_ms < 1000
+        assert result.duration_ms < 1000, "Result must not be empty"
 
 
 # ============================================================================
@@ -252,7 +252,7 @@ class TestTrainingLatencyBenchmarks:
         result = benchmark(training_step, iterations=100)
         # Each step should be fast
         avg_latency_ms = result.duration_ms / result.iterations
-        assert avg_latency_ms < 10  # Less than 10ms per step
+        assert avg_latency_ms < 10, "avg_latency_ms is not valid"
 
     def test_data_loading_latency(self) -> None:
         """Benchmark data loading latency."""
@@ -269,7 +269,7 @@ class TestTrainingLatencyBenchmarks:
 
         result = benchmark(load_batch, iterations=500)
         avg_latency_ms = result.duration_ms / result.iterations
-        assert avg_latency_ms < 5  # Less than 5ms
+        assert avg_latency_ms < 5, "avg_latency_ms is not valid"
 
     def test_logging_latency(self) -> None:
         """Benchmark logging overhead latency."""
@@ -290,7 +290,7 @@ class TestTrainingLatencyBenchmarks:
 
         result = benchmark(log_metrics, iterations=1000)
         avg_latency_ms = result.duration_ms / result.iterations
-        assert avg_latency_ms < 1  # Logging should be < 1ms
+        assert avg_latency_ms < 1, "avg_latency_ms is not valid"
 
     def test_checkpoint_save_latency(self) -> None:
         """Benchmark checkpoint save latency (simulated)."""
@@ -306,7 +306,7 @@ class TestTrainingLatencyBenchmarks:
 
         result = benchmark(save_checkpoint, iterations=100)
         avg_latency_ms = result.duration_ms / result.iterations
-        assert avg_latency_ms < 50  # Less than 50ms for serialization
+        assert avg_latency_ms < 50, "avg_latency_ms is not valid"
 
     def test_lr_scheduler_step_latency(self) -> None:
         """Benchmark learning rate scheduler step latency."""
@@ -327,7 +327,7 @@ class TestTrainingLatencyBenchmarks:
 
         result = benchmark(scheduler_step, iterations=1000)
         avg_latency_ms = result.duration_ms / result.iterations
-        assert avg_latency_ms < 0.1  # Should be sub-millisecond
+        assert avg_latency_ms < 0.1, "avg_latency_ms is not valid"
 
 
 # ============================================================================
@@ -347,7 +347,7 @@ class TestTrainingScalabilityBenchmarks:
             return len([item["x"] * 2 for item in batch])
 
         result = benchmark(process_batch, iterations=100)
-        assert result.throughput > 0
+        assert result.throughput > 0, "throughput must be greater than zero"
 
     @pytest.mark.parametrize("sequence_length", [64, 128, 256, 512])
     def test_sequence_length_scaling(self, sequence_length: int) -> None:
@@ -358,7 +358,7 @@ class TestTrainingScalabilityBenchmarks:
             return sum(sequence)
 
         result = benchmark(process_sequence, iterations=500)
-        assert result.throughput > 0
+        assert result.throughput > 0, "throughput must be greater than zero"
 
     @pytest.mark.parametrize("num_layers", [1, 4, 8, 12])
     def test_layer_scaling(self, num_layers: int) -> None:
@@ -371,7 +371,7 @@ class TestTrainingScalabilityBenchmarks:
             return x
 
         result = benchmark(forward_layers, iterations=100)
-        assert result.throughput > 0
+        assert result.throughput > 0, "throughput must be greater than zero"
 
 
 # ============================================================================
@@ -396,7 +396,7 @@ class TestTrainingEfficiencyBenchmarks:
 
         result = benchmark(process_samples, iterations=1000)
         samples_per_second = batch_size * result.throughput
-        assert samples_per_second > 1000  # At least 1000 samples/sec
+        assert samples_per_second > 1000, "samples_per_second must be greater than zero"
 
     def test_tokens_per_second(self) -> None:
         """Benchmark tokens processed per second."""
@@ -411,7 +411,7 @@ class TestTrainingEfficiencyBenchmarks:
 
         result = benchmark(process_tokens, iterations=100)
         tokens_per_second = tokens_per_batch * result.throughput
-        assert tokens_per_second > 10000  # At least 10K tokens/sec
+        assert tokens_per_second > 10000, "tokens_per_second must be greater than zero"
 
     def test_gpu_utilization_simulation(self) -> None:
         """Benchmark simulated GPU utilization patterns."""
@@ -424,7 +424,7 @@ class TestTrainingEfficiencyBenchmarks:
             return result
 
         result = benchmark(gpu_kernel_simulation, iterations=100)
-        assert result.throughput > 0
+        assert result.throughput > 0, "throughput must be greater than zero"
 
     def test_memory_bandwidth_simulation(self) -> None:
         """Benchmark memory bandwidth patterns."""
@@ -435,4 +435,4 @@ class TestTrainingEfficiencyBenchmarks:
             return sum(data)
 
         result = benchmark(memory_access_pattern, iterations=500)
-        assert result.throughput > 0
+        assert result.throughput > 0, "throughput must be greater than zero"

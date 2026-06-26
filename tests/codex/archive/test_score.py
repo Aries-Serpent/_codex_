@@ -16,10 +16,10 @@ class TestScoreInput:
             age_days=100, ref_count=5, coverage=0.75, has_deprecation_tag=False
         )
 
-        assert score_input.age_days == 100
-        assert score_input.ref_count == 5
-        assert score_input.coverage == 0.75
-        assert score_input.has_deprecation_tag is False
+        assert score_input.age_days == 100, "age_days is not valid"
+        assert score_input.ref_count == 5, "Count must be greater than zero"
+        assert score_input.coverage == 0.75, "coverage is not valid"
+        assert score_input.has_deprecation_tag is False, "has_deprecation_tag is not valid"
 
     def test_with_deprecation_tag(self):
         """Test ScoreInput with deprecation tag."""
@@ -27,7 +27,7 @@ class TestScoreInput:
 
         score_input = ScoreInput(age_days=200, ref_count=0, coverage=0.0, has_deprecation_tag=True)
 
-        assert score_input.has_deprecation_tag is True
+        assert score_input.has_deprecation_tag is True, "has_deprecation_tag is not valid"
 
 
 class TestArchiveScore:
@@ -47,7 +47,7 @@ class TestArchiveScore:
         score = archive_score(inp)
 
         # All weights should contribute: 0.4 + 0.3 + 0.2 + 0.1 = 1.0
-        assert score == 1.0
+        assert score == 1.0, "score is not valid"
 
     def test_low_score_no_criteria(self):
         """Test score when no criteria are met."""
@@ -62,7 +62,7 @@ class TestArchiveScore:
 
         score = archive_score(inp)
 
-        assert score == 0.0
+        assert score == 0.0, "score is not valid"
 
     def test_partial_score_age_only(self):
         """Test score when only age criteria is met."""
@@ -78,7 +78,7 @@ class TestArchiveScore:
         score = archive_score(inp)
 
         # Only w1 (0.4) contributes
-        assert score == 0.4
+        assert score == 0.4, "score is not valid"
 
     def test_partial_score_ref_only(self):
         """Test score when only ref count criteria is met."""
@@ -94,7 +94,7 @@ class TestArchiveScore:
         score = archive_score(inp)
 
         # Only w2 (0.3) contributes
-        assert score == 0.3
+        assert score == 0.3, "score is not valid"
 
     def test_custom_weights(self):
         """Test score with custom weights."""
@@ -105,7 +105,7 @@ class TestArchiveScore:
         # Custom weights that sum to 1
         score = archive_score(inp, w1=0.25, w2=0.25, w3=0.25, w4=0.25)
 
-        assert score == 1.0
+        assert score == 1.0, "score is not valid"
 
     def test_custom_tau(self):
         """Test score with custom tau (age threshold)."""
@@ -123,8 +123,8 @@ class TestArchiveScore:
         # With default tau=180, age criteria not met
         score_default = archive_score(inp)
 
-        assert score_custom == 0.4  # Only age criteria met
-        assert score_default == 0.0  # No criteria met
+        assert score_custom == 0.4, "score_custom is not valid"
+        assert score_default == 0.0, "score_default is not valid"
 
     def test_score_rounding(self):
         """Test that scores are properly rounded."""
@@ -135,7 +135,7 @@ class TestArchiveScore:
         # 0.4 + 0.3 + 0.2 = 0.9
         score = archive_score(inp)
 
-        assert score == 0.9
+        assert score == 0.9, "score is not valid"
         # Should be rounded to 3 decimal places
         assert isinstance(score, float)
 
@@ -148,4 +148,4 @@ class TestArchiveScore:
         # Even with high weights, should be clamped to 1.0
         score = archive_score(inp, w1=2.0, w2=2.0, w3=2.0, w4=2.0)
 
-        assert score == 1.0
+        assert score == 1.0, "score is not valid"

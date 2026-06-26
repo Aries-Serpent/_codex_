@@ -80,7 +80,7 @@ class TestTextProcessing:
 
         text = "UPPERCASE TEXT"
         normalized = normalize_text(text)
-        assert normalized.islower()
+        assert normalized.islower(), "n is not valid"
 
     def test_normalize_text_whitespace_handling(self):
         """Test whitespace normalization."""
@@ -88,14 +88,14 @@ class TestTextProcessing:
 
         text = "Text    with     extra     spaces"
         normalized = normalize_text(text)
-        assert "    " not in normalized
+        assert "    " not in normalized, "Condition must be true"
 
     def test_normalize_text_empty_string(self):
         """Test normalizing empty string."""
         from codex.rag.utils import normalize_text
 
         result = normalize_text("")
-        assert result == ""
+        assert result == "", "Result must not be empty"
 
     def test_normalize_text_unicode(self):
         """Test unicode text normalization."""
@@ -123,7 +123,7 @@ class TestSimilarityComputation:
             sample_query_embedding, sample_embeddings, metric="cosine"
         )
         assert similarities.shape == (5,)
-        assert all(-1 <= s <= 1 for s in similarities)
+        assert all(-1 <= s <= 1 for s in similarities), "1 is not valid"
 
     def test_compute_similarity_identical_vectors(self):
         """Test similarity of identical vectors."""
@@ -161,7 +161,7 @@ class TestSimilarityComputation:
 
         query = np.random.randn(768).astype(np.float32)
         similarities = compute_similarity(query, sample_embeddings)
-        assert similarities.shape[0] == sample_embeddings.shape[0]
+        assert similarities.shape[0] == sample_embeddings.shape[0], "Condition must be true"
 
 
 # ============================================================================
@@ -179,7 +179,7 @@ class TestEmbeddings:
             from codex.rag.embeddings import EmbeddingModel
 
             model = EmbeddingModel()
-            assert model is not None
+            assert model is not None, "model must be initialized"
         except (ImportError, RuntimeError):
             pytest.skip("Embedding model not available")
 
@@ -189,8 +189,8 @@ class TestEmbeddings:
             from codex.rag.embeddings import embed_text
 
             embeddings = embed_text(sample_texts)
-            assert embeddings.shape[0] == len(sample_texts)
-            assert embeddings.shape[1] > 0  # Has features
+            assert embeddings.shape[0] == len(sample_texts), "Sample_texts must not be empty"
+            assert embeddings.shape[1] > 0, "Value must be greater than zero"
         except (ImportError, RuntimeError):
             pytest.skip("Embedding function not available")
 
@@ -212,7 +212,7 @@ class TestEmbeddings:
 
             text = "Single text sample"
             embedding = embed_text(text)
-            assert len(embedding.shape) == 1
+            assert len(embedding.shape) == 1, "Collection must not be empty"
         except (ImportError, RuntimeError):
             pytest.skip("Embedding function not available")
 
@@ -232,7 +232,7 @@ class TestIndexing:
             from codex.rag.indexer import RagIndex
 
             indexer = RagIndex()
-            assert indexer is not None
+            assert indexer is not None, "indexer must be initialized"
         except (ImportError, RuntimeError, TypeError):
             pytest.skip("Indexer not available")
 
@@ -257,7 +257,7 @@ class TestIndexing:
                 indexer.add_document(f"doc_{i}", text)
 
             results = indexer.search(sample_query, k=3)
-            assert len(results) <= 3
+            assert len(results) <= 3, "Results must not be empty"
         except (ImportError, RuntimeError, TypeError, AttributeError):
             pytest.skip("Indexer search not available")
 
@@ -272,7 +272,7 @@ class TestIndexing:
 
             index_path = tmp_path / "index"
             indexer.save(str(index_path))
-            assert index_path.exists() or index_path.with_suffix(".pt").exists()
+            assert index_path.exists() or index_path.with_suffix(".pt").exists(), "Condition must be true"
         except (ImportError, RuntimeError, TypeError, AttributeError):
             pytest.skip("Indexer save not available")
 
@@ -292,7 +292,7 @@ class TestRetrieval:
             from codex.rag.retriever import Retriever
 
             retriever = Retriever()
-            assert retriever is not None
+            assert retriever is not None, "retriever must be initialized"
         except (ImportError, RuntimeError, TypeError):
             pytest.skip("Retriever not available")
 
@@ -303,7 +303,7 @@ class TestRetrieval:
 
             retriever = Retriever()
             results = retriever.retrieve(sample_query, k=3)
-            assert len(results) <= 3
+            assert len(results) <= 3, "Results must not be empty"
         except (ImportError, RuntimeError, TypeError, AttributeError):
             pytest.skip("Retriever retrieve not available")
 
@@ -315,7 +315,7 @@ class TestRetrieval:
             retriever = Retriever()
             results = retriever.retrieve(sample_query, k=3)
             for result in results:
-                assert "score" in result or "similarity" in result
+                assert "score" in result or "similarity" in result, "Result must not be empty"
         except (ImportError, RuntimeError, TypeError, AttributeError):
             pytest.skip("Retriever with scores not available")
 
@@ -339,7 +339,7 @@ class TestPostprocessing:
                 {"text": "Result 2", "score": 0.7},
             ]
             processed = postprocess_results(results)
-            assert len(processed) > 0
+            assert len(processed) > 0, "Processed must not be empty"
         except (ImportError, RuntimeError, AttributeError):
             pytest.skip("Postprocessing not available")
 
@@ -360,7 +360,7 @@ class TestPromptGeneration:
 
             prompt = generate_prompt(query="What is AI?", context=["AI is artificial intelligence"])
             assert isinstance(prompt, str)
-            assert len(prompt) > 0
+            assert len(prompt) > 0, "Prompt must not be empty"
         except (ImportError, RuntimeError, AttributeError):
             pytest.skip("Prompt generation not available")
 
@@ -371,7 +371,7 @@ class TestPromptGeneration:
 
             context_text = "Important context here"
             prompt = generate_prompt(query="Test query", context=[context_text])
-            assert context_text in prompt or len(prompt) > 0
+            assert context_text in prompt or len(prompt) > 0, "Prompt must not be empty"
         except (ImportError, RuntimeError, AttributeError):
             pytest.skip("Prompt generation not available")
 
@@ -425,8 +425,8 @@ class TestMLUtils:
         batch_size = 32
 
         batches = [data[i : i + batch_size] for i in range(0, len(data), batch_size)]
-        assert len(batches) == 4  # 100 items / 32 batch size
-        assert len(batches[-1]) == 4  # Last batch has remainder
+        assert len(batches) == 4, "Batches must not be empty"
+        assert len(batches[-1]) == 4, "Collection must not be empty"
 
     def test_metric_computation(self):
         """Test metric computation."""
@@ -434,7 +434,7 @@ class TestMLUtils:
         labels = np.array([1, 0, 1, 0])
 
         accuracy = np.mean(predictions.round() == labels)
-        assert 0 <= accuracy <= 1
+        assert 0 <= accuracy <= 1, "0 is not valid"
 
     def test_data_augmentation_flip(self):
         """Test data augmentation flip."""
@@ -446,14 +446,14 @@ class TestMLUtils:
         """Test data augmentation rotation."""
         arr = np.array([[1, 2], [3, 4]])
         rotated = np.rot90(arr)
-        assert rotated.shape == arr.shape
+        assert rotated.shape == arr.shape, "shape is not valid"
 
     def test_padding_sequences(self):
         """Test sequence padding."""
         sequences = [[1, 2], [3, 4, 5], [6]]
         max_len = max(len(s) for s in sequences)
         padded = [s + [0] * (max_len - len(s)) for s in sequences]
-        assert all(len(s) == max_len for s in padded)
+        assert all(len(s) == max_len for s in padded), "S must not be empty"
 
     def test_normalize_features(self):
         """Test feature normalization."""
@@ -473,7 +473,7 @@ class TestMLUtils:
         """Test logarithmic scaling."""
         values = np.array([1, 10, 100, 1000])
         log_values = np.log10(values)
-        assert log_values[-1] == 3
+        assert log_values[-1] == 3, "Value must be initialized"
 
     def test_sigmoid_activation(self):
         """Test sigmoid activation function."""
@@ -526,14 +526,14 @@ class TestMLUtils:
         vec1 = np.array([0, 0])
         vec2 = np.array([3, 4])
         distance = np.sum(np.abs(vec2 - vec1))
-        assert distance == 7
+        assert distance == 7, "distance is not valid"
 
     def test_hamming_distance(self):
         """Test Hamming distance."""
         vec1 = np.array([1, 1, 0, 0])
         vec2 = np.array([1, 0, 1, 0])
         distance = np.sum(vec1 != vec2)
-        assert distance == 2
+        assert distance == 2, "distance is not valid"
 
 
 # ============================================================================
@@ -560,7 +560,7 @@ class TestRAGIntegration:
             context = [r.get("text", str(r)) for r in results]
             prompt = generate_prompt(sample_query, context)
 
-            assert len(prompt) > 0
+            assert len(prompt) > 0, "Prompt must not be empty"
         except (ImportError, RuntimeError, TypeError, AttributeError):
             pytest.skip("Full RAG pipeline not available")
 
@@ -577,11 +577,11 @@ class TestRAGIntegration:
         norm3 = normalize_text(text3)
 
         # Verify case-insensitive normalization
-        assert norm1 == norm2
+        assert norm1 == norm2, "norm1 is not valid"
         # Verify whitespace normalization
-        assert norm2 == norm3
+        assert norm2 == norm3, "norm2 is not valid"
         # Explicitly verify no excessive whitespace remains
-        assert "  " not in norm3
+        assert "  " not in norm3, "Condition must be true"
 
 
 if __name__ == "__main__":

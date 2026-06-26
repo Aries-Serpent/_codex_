@@ -17,7 +17,7 @@ class DummyModel:
 def test_apply_lora_attaches_config() -> None:
     dummy = DummyModel()
     out = peft_adapter.apply_lora(dummy, {"r": 12})
-    assert out is dummy
+    assert out is dummy, "out is not valid"
     assert hasattr(out, "peft_config"), "peft_config not attached"
     cfg = out.peft_config
     assert isinstance(cfg, dict), "peft_config is not a dict"

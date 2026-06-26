@@ -27,8 +27,8 @@ def test_ge_validation_success(tmp_path: Path) -> None:
     clean_csv = tmp_path / "clean.csv"
     _write_clean_csv(clean_csv, good_rows)
     ok, docs_dir = run_clean_checkpoint(clean_csv)
-    assert ok is True
-    assert docs_dir.exists()
+    assert ok is True, "ok is not valid"
+    assert docs_dir.exists(), "Condition must be true"
 
 
 def test_ge_validation_failure(tmp_path: Path) -> None:

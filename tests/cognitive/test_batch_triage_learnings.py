@@ -30,8 +30,8 @@ def learning_engine(temp_kb_dir):
 
 def test_initialization(learning_engine):
     """Test engine initializes correctly"""
-    assert learning_engine.kb_path.exists()
-    assert learning_engine.patterns_dir.exists()
+    assert learning_engine.kb_path.exists(), "Condition must be true"
+    assert learning_engine.patterns_dir.exists(), "Condition must be true"
 
 
 def test_generate_signature_normalization(learning_engine):
@@ -43,14 +43,14 @@ def test_generate_signature_normalization(learning_engine):
     sig2 = learning_engine._generate_signature(desc2)
 
     # Should generate same signature after normalization
-    assert sig1 == sig2
+    assert sig1 == sig2, "sig1 is not valid"
 
 
 def test_classify_pattern_type(learning_engine):
     """Test pattern type classification"""
-    assert learning_engine._classify_pattern_type("Test failed") == "test_failure"
-    assert learning_engine._classify_pattern_type("timeout") == "timeout"
-    assert learning_engine._classify_pattern_type("ImportError") == "import_error"
+    assert learning_engine._classify_pattern_type("Test failed") == "test_failure", "Condition must be true"
+    assert learning_engine._classify_pattern_type("timeout") == "timeout", "Condition must be true"
+    assert learning_engine._classify_pattern_type("ImportError") == "import_error", "Error should be raised or set"
 
 
 if __name__ == "__main__":

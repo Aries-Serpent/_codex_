@@ -66,7 +66,7 @@ class TestParseMetadata:
             from src.codex.archive.cli import _parse_metadata
 
             result = _parse_metadata(["key=value=with=equals"])
-            assert result == {"key": "value=with=equals"}
+            assert result == {"key": "value=with=equals"}, "Result must not be empty"
         except ImportError:
             pytest.skip("archive.cli module not available")
 
@@ -76,7 +76,7 @@ class TestParseMetadata:
             from src.codex.archive.cli import _parse_metadata
 
             result = _parse_metadata(["  key  =  value  "])
-            assert result == {"key": "value"}
+            assert result == {"key": "value"}, "Result must not be empty"
         except ImportError:
             pytest.skip("archive.cli module not available")
 
@@ -105,7 +105,7 @@ class TestResolveCommit:
             from src.codex.archive.cli import _resolve_commit
 
             result = _resolve_commit("abc123def")
-            assert result == "abc123def"
+            assert result == "abc123def", "Result must not be empty"
         except ImportError:
             pytest.skip("archive.cli module not available")
 
@@ -117,7 +117,7 @@ class TestResolveCommit:
             with patch("subprocess.run") as mock_run:
                 mock_run.return_value = Mock(stdout="abc123def456\n")
                 result = _resolve_commit("HEAD")
-                assert result == "abc123def456"
+                assert result == "abc123def456", "Result must not be empty"
         except ImportError:
             pytest.skip("archive.cli module not available")
 
@@ -129,7 +129,7 @@ class TestResolveCommit:
             with patch("subprocess.run") as mock_run:
                 mock_run.return_value = Mock(stdout="abc123def456\n")
                 result = _resolve_commit("head")
-                assert result == "abc123def456"
+                assert result == "abc123def456", "Result must not be empty"
         except ImportError:
             pytest.skip("archive.cli module not available")
 
@@ -145,7 +145,7 @@ class TestCLIGroup:
         try:
             from src.codex.archive.cli import cli
 
-            assert cli is not None
+            assert cli is not None, "cli must be initialized"
         except ImportError:
             pytest.skip("archive.cli module not available")
 
@@ -154,7 +154,7 @@ class TestCLIGroup:
         try:
             from src.codex.archive.cli import cli
 
-            assert cli.help is not None
+            assert cli.help is not None, "help must be initialized"
         except ImportError:
             pytest.skip("archive.cli module not available")
 
@@ -164,8 +164,8 @@ class TestCLIGroup:
             from src.codex.archive.cli import cli
 
             result = cli_runner.invoke(cli, ["--help"])
-            assert result.exit_code == 0
-            assert "archive" in result.output.lower() or "tombstone" in result.output.lower()
+            assert result.exit_code == 0, "Result must not be empty"
+            assert "archive" in result.output.lower() or "tombstone" in result.output.lower(), "Result must not be empty"
         except ImportError:
             pytest.skip("archive.cli module not available")
 
@@ -203,7 +203,7 @@ class TestBatchProgressLogger:
 
             logger = logging.getLogger("test")
             callback = _batch_progress_logger(logger, mock_config)
-            assert callable(callback)
+            assert callable(callback), "Condition must be true"
         except ImportError:
             pytest.skip("archive.cli module not available")
 
@@ -328,7 +328,7 @@ class TestModuleImports:
         try:
             from src.codex.archive.cli import logger
 
-            assert logger is not None
+            assert logger is not None, "logger must be initialized"
         except ImportError:
             pytest.skip("archive.cli module not available")
 
@@ -354,7 +354,7 @@ class TestRedactionFunctions:
         try:
             from src.codex.archive.cli import redact_text_credentials
 
-            assert callable(redact_text_credentials)
+            assert callable(redact_text_credentials), "Condition must be true"
         except ImportError:
             pytest.skip("archive.cli module not available")
 
@@ -363,7 +363,7 @@ class TestRedactionFunctions:
         try:
             from src.codex.archive.cli import redact_url_credentials
 
-            assert callable(redact_url_credentials)
+            assert callable(redact_url_credentials), "Condition must be true"
         except ImportError:
             pytest.skip("archive.cli module not available")
 

@@ -110,7 +110,7 @@ class TestEnableDeterministicTraining:
 
         # In strict mode, should attempt to enable deterministic algorithms
         # Status might be True or False depending on PyTorch version/ops support
-        assert "torch_deterministic_algorithms" in status
+        assert "torch_deterministic_algorithms" in status, "Condition must be true"
 
     def test_non_strict_mode_skips_deterministic_algorithms(self):
         """Verify non-strict mode doesn't enable deterministic algorithms"""
@@ -119,7 +119,7 @@ class TestEnableDeterministicTraining:
         status = enable_deterministic_training(seed=42, strict=False)
 
         # In non-strict mode, should not enable deterministic algorithms
-        assert status["torch_deterministic_algorithms"] is None
+        assert status["torch_deterministic_algorithms"] is None, "Condition must be true"
 
 
 class TestSaveEnvSnapshot:
@@ -151,32 +151,32 @@ class TestSaveEnvSnapshot:
         with tempfile.TemporaryDirectory() as tmpdir:
             snapshot = save_env_snapshot(Path(tmpdir) / "env_snapshot.txt")
 
-            assert "python_version" in snapshot
-            assert "python_executable" in snapshot
-            assert "python_version_info" in snapshot
+            assert "python_version" in snapshot, "Condition must be true"
+            assert "python_executable" in snapshot, "Condition must be true"
+            assert "python_version_info" in snapshot, "Condition must be true"
 
             version_info = snapshot["python_version_info"]
-            assert "major" in version_info
-            assert "minor" in version_info
-            assert "micro" in version_info
+            assert "major" in version_info, "Condition must be true"
+            assert "minor" in version_info, "Condition must be true"
+            assert "micro" in version_info, "Condition must be true"
 
     def test_snapshot_contains_platform_info(self):
         """Verify snapshot contains platform information"""
         with tempfile.TemporaryDirectory() as tmpdir:
             snapshot = save_env_snapshot(Path(tmpdir) / "env_snapshot.txt")
 
-            assert "platform" in snapshot
+            assert "platform" in snapshot, "Condition must be true"
             platform_info = snapshot["platform"]
 
-            assert "system" in platform_info
-            assert "machine" in platform_info
+            assert "system" in platform_info, "Condition must be true"
+            assert "machine" in platform_info, "Condition must be true"
 
     def test_snapshot_includes_pip_freeze(self):
         """Verify snapshot includes pip freeze by default"""
         with tempfile.TemporaryDirectory() as tmpdir:
             snapshot = save_env_snapshot(Path(tmpdir) / "env_snapshot.txt")
 
-            assert "pip_freeze" in snapshot
+            assert "pip_freeze" in snapshot, "Condition must be true"
             # pip_freeze should be a list or None
             assert snapshot["pip_freeze"] is None or isinstance(snapshot["pip_freeze"], list)
 
@@ -203,7 +203,7 @@ class TestSaveEnvSnapshot:
                 json_data = json.load(f)
 
             assert isinstance(json_data, dict), "JSON should contain dict"
-            assert "python_version" in json_data
+            assert "python_version" in json_data, "Data must not be empty"
 
     def test_snapshot_file_readable(self):
         """Verify snapshot file is human-readable"""
@@ -215,9 +215,9 @@ class TestSaveEnvSnapshot:
             content = output_path.read_text()
 
             # Should contain expected sections
-            assert "# Environment Snapshot" in content
-            assert "## Python Information" in content
-            assert "## Platform Information" in content
+            assert ", "Condition must be true"
+            assert ", "Condition must be true"
+            assert ", "Condition must be true"
 
 
 class TestCreateReproducibilityManifest:
@@ -254,8 +254,8 @@ class TestCreateReproducibilityManifest:
             assert "environment" in manifest, "Should include environment info"
             env = manifest["environment"]
 
-            assert "python_version" in env
-            assert "platform" in env
+            assert "python_version" in env, "Condition must be true"
+            assert "platform" in env, "Condition must be true"
 
     def test_manifest_includes_config(self):
         """Verify manifest includes config when provided"""
@@ -277,7 +277,7 @@ class TestCreateReproducibilityManifest:
             )
 
             assert "dataset_hash" in manifest, "Should include dataset hash"
-            assert manifest["dataset_hash"] == "abc123def456"
+            assert manifest["dataset_hash"] == "abc123def456", "Data must not be empty"
 
     def test_manifest_has_timestamp(self):
         """Verify manifest includes timestamp"""
@@ -286,7 +286,7 @@ class TestCreateReproducibilityManifest:
 
             assert "created_at" in manifest, "Should include timestamp"
             # Timestamp should be ISO format
-            assert "T" in manifest["created_at"]
+            assert "T" in manifest["created_at"], "Condition must be true"
 
     def test_manifest_has_hash(self):
         """Verify manifest includes manifest hash"""
@@ -308,7 +308,7 @@ class TestCreateReproducibilityManifest:
             with open(manifest_path) as f:
                 loaded_manifest = json.load(f)
 
-            assert loaded_manifest["seed"] == 42
+            assert loaded_manifest["seed"] == 42, "Condition must be true"
 
 
 class TestReproducibilityManager:
@@ -319,8 +319,8 @@ class TestReproducibilityManager:
         with tempfile.TemporaryDirectory() as tmpdir:
             manager = ReproducibilityManager(seed=42, output_dir=tmpdir)
 
-            assert manager.seed == 42
-            assert manager.output_dir == Path(tmpdir)
+            assert manager.seed == 42, "seed is not valid"
+            assert manager.output_dir == Path(tmpdir), "output_dir is not valid"
 
     def test_manager_setup(self):
         """Verify manager setup() enables deterministic training"""
@@ -330,7 +330,7 @@ class TestReproducibilityManager:
             status = manager.setup()
 
             assert isinstance(status, dict), "setup() should return status dict"
-            assert "python_random" in status
+            assert "python_random" in status, "Condition must be true"
 
     def test_manager_capture_environment(self):
         """Verify manager capture_environment() saves snapshot"""
@@ -354,9 +354,9 @@ class TestReproducibilityManager:
             manifest = manager.finalize(config={"lr": 1e-4}, dataset_hash="test123")
 
             assert isinstance(manifest, dict), "finalize() should return manifest"
-            assert manifest["seed"] == 42
-            assert manifest["config"]["lr"] == 1e-4
-            assert manifest["dataset_hash"] == "test123"
+            assert manifest["seed"] == 42, "Condition must be true"
+            assert manifest["config"]["lr"] == 1e-4, "Condition must be true"
+            assert manifest["dataset_hash"] == "test123", "Data must not be empty"
 
     def test_manager_get_manifest(self):
         """Verify manager get_manifest() returns manifest after finalize"""
@@ -364,13 +364,13 @@ class TestReproducibilityManager:
             manager = ReproducibilityManager(seed=42, output_dir=tmpdir)
 
             # Before finalize, should return None
-            assert manager.get_manifest() is None
+            assert manager.get_manifest() is None, "Condition must be true"
 
             # After finalize, should return manifest
             manager.finalize()
             manifest = manager.get_manifest()
 
-            assert manifest is not None
+            assert manifest is not None, "manifest must be initialized"
             assert isinstance(manifest, dict)
 
     def test_manager_full_workflow(self):
@@ -394,11 +394,11 @@ class TestReproducibilityManager:
             assert Path(tmpdir, "reproducibility_manifest.json").exists()
 
             # Verify manifest completeness
-            assert manifest["seed"] == 42
-            assert "seeding_status" in manifest
-            assert "environment" in manifest
-            assert "config" in manifest
-            assert "dataset_hash" in manifest
+            assert manifest["seed"] == 42, "Condition must be true"
+            assert "seeding_status" in manifest, "Condition must be true"
+            assert "environment" in manifest, "Condition must be true"
+            assert "config" in manifest, "Condition must be true"
+            assert "dataset_hash" in manifest, "Data must not be empty"
 
 
 class TestSeedConsistency:

@@ -13,13 +13,13 @@ def test_derive_key():
     key1 = derive_key("dataset", "split", "seed")
     key2 = derive_key("dataset", "split", "seed")
 
-    assert key1 == key2
-    assert len(key1) == 16
+    assert key1 == key2, "key1 is not valid"
+    assert len(key1) == 16, "Key1 must not be empty"
     assert isinstance(key1, str)
 
     # Different inputs produce different keys
     key3 = derive_key("dataset", "split", "different")
-    assert key3 != key1
+    assert key3 != key1, "key3 is not valid"
 
 
 def test_cache_roundtrip():
@@ -35,17 +35,17 @@ def test_cache_roundtrip():
         # Cache records
         path = cache_records(records, cache_dir=tmpdir, key=key)
 
-        assert path.exists()
-        assert path.name.endswith(".jsonl")
-        assert path.parent == Path(tmpdir)
+        assert path.exists(), "Condition must be true"
+        assert path.name.endswith(".jsonl"), "Condition must be true"
+        assert path.parent == Path(tmpdir), "parent is not valid"
 
         # Load cached records
         loaded = load_cached_records(tmpdir, key)
 
-        assert loaded is not None
-        assert len(loaded) == 2
-        assert loaded[0]["text"] == "hello"
-        assert loaded[1]["label"] == 1
+        assert loaded is not None, "loaded must be initialized"
+        assert len(loaded) == 2, "Loaded must not be empty"
+        assert loaded[0]["text"] == "hello", "Condition must be true"
+        assert loaded[1]["label"] == 1, "Condition must be true"
 
 
 def test_load_cached_records_missing():
@@ -54,22 +54,22 @@ def test_load_cached_records_missing():
         key = derive_key("nonexistent", "test")
         loaded = load_cached_records(tmpdir, key)
 
-        assert loaded is None
+        assert loaded is None, "loaded is not valid"
 
 
 def test_cache_records_creates_directory():
     """Test cache_records creates cache directory if missing."""
     with tempfile.TemporaryDirectory() as tmpdir:
         cache_dir = Path(tmpdir) / "nested" / "cache"
-        assert not cache_dir.exists()
+        assert not cache_dir.exists(), "Condition must be true"
 
         records = [{"text": "test"}]
         key = derive_key("test")
 
         path = cache_records(records, cache_dir=cache_dir, key=key)
 
-        assert cache_dir.exists()
-        assert path.exists()
+        assert cache_dir.exists(), "Condition must be true"
+        assert path.exists(), "Condition must be true"
 
 
 def test_cache_empty_records():
@@ -78,8 +78,8 @@ def test_cache_empty_records():
         key = derive_key("empty")
         path = cache_records([], cache_dir=tmpdir, key=key)
 
-        assert path.exists()
+        assert path.exists(), "Condition must be true"
 
         loaded = load_cached_records(tmpdir, key)
-        assert loaded is not None
-        assert len(loaded) == 0
+        assert loaded is not None, "loaded must be initialized"
+        assert len(loaded) == 0, "Loaded must not be empty"

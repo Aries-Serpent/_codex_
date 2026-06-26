@@ -89,7 +89,7 @@ class TestModelFactory:
                 self.config = config
 
         ModelFactory.register("dummy", DummyModel)
-        assert "dummy" in ModelFactory.list_models()
+        assert "dummy" in ModelFactory.list_models(), "Condition must be true"
 
     def test_create_model(self):
         """Create model from factory."""
@@ -101,7 +101,7 @@ class TestModelFactory:
         ModelFactory.register("test_model", TestModel)
         config = ModelConfig("test_model")
         model = ModelFactory.create(config)
-        assert model.config.name == "test_model"
+        assert model.config.name == "test_model", "name is not valid"
 
     def test_unknown_model_raises(self):
         """Unknown model raises error."""
@@ -164,8 +164,8 @@ class TestDeviceDtypeMatrix:
     def test_get_supported_dtypes(self):
         """Get supported dtypes for device."""
         dtypes = DeviceDtypeMatrix.get_supported_dtypes(DeviceType.CUDA)
-        assert DtypeType.FLOAT32 in dtypes
-        assert DtypeType.INT8 in dtypes
+        assert DtypeType.FLOAT32 in dtypes, "Condition must be true"
+        assert DtypeType.INT8 in dtypes, "Condition must be true"
 
 
 # --- PEFT/LoRA Integration Tests ---
@@ -218,29 +218,29 @@ class TestLoRAIntegration:
     def test_lora_config(self):
         """Create LoRA config."""
         config = LoRAConfig(r=16, alpha=32)
-        assert config.r == 16
-        assert config.scaling_factor() == 2.0
+        assert config.r == 16, "r is not valid"
+        assert config.scaling_factor() == 2.0, "Condition must be true"
 
     def test_lora_adapter(self):
         """Create LoRA adapter."""
         config = LoRAConfig()
         adapter = LoRAAdapter(config)
-        assert adapter.is_enabled()
+        assert adapter.is_enabled(), "Condition must be true"
 
     def test_lora_toggle(self):
         """Toggle LoRA adapter."""
         adapter = LoRAAdapter(LoRAConfig())
         adapter.disable()
-        assert not adapter.is_enabled()
+        assert not adapter.is_enabled(), "Condition must be true"
         adapter.enable()
-        assert adapter.is_enabled()
+        assert adapter.is_enabled(), "Condition must be true"
 
     @given(st.integers(min_value=1, max_value=64), st.integers(min_value=1, max_value=128))
     @settings(max_examples=20)
     def test_scaling_factor_property(self, r: int, alpha: int):
         """Property: scaling factor is alpha/r."""
         config = LoRAConfig(r=r, alpha=alpha)
-        assert config.scaling_factor() == alpha / r
+        assert config.scaling_factor() == alpha / r, "Condition must be true"
 
 
 # --- Model Card Provenance Tests ---
@@ -293,7 +293,7 @@ class TestModelCard:
     def test_create_model_card(self):
         """Create model card."""
         card = ModelCard("gpt2")
-        assert card.model_name == "gpt2"
+        assert card.model_name == "gpt2", "model_name is not valid"
 
     def test_add_metadata(self):
         """Add metadata to card."""
@@ -301,9 +301,9 @@ class TestModelCard:
         card.add_author("John Doe")
         card.add_tag("nlp")
         card.set_metric("accuracy", 0.95)
-        assert "John Doe" in card.authors
-        assert "nlp" in card.tags
-        assert card.metrics["accuracy"] == 0.95
+        assert "John Doe" in card.authors, "Condition must be true"
+        assert "nlp" in card.tags, "Condition must be true"
+        assert card.metrics["accuracy"] == 0.95, "Condition must be true"
 
     def test_checksum_deterministic(self):
         """Checksum should be deterministic."""
@@ -311,7 +311,7 @@ class TestModelCard:
         card.version = "1.0.0"
         h1 = card.compute_checksum()
         h2 = card.compute_checksum()
-        assert h1 == h2
+        assert h1 == h2, "h1 is not valid"
 
 
 # --- Quantization Tests ---
@@ -358,8 +358,8 @@ class TestQuantization:
     def test_quantization_config(self):
         """Create quantization config."""
         config = QuantizationConfig(bits=4)
-        assert config.bits == 4
-        assert config.compression_ratio() == 8.0
+        assert config.bits == 4, "bits is not valid"
+        assert config.compression_ratio() == 8.0, "Condition must be true"
 
     def test_quantize_weights(self):
         """Quantize weights."""
@@ -374,7 +374,7 @@ class TestQuantization:
     def test_compression_ratio_property(self, bits: int):
         """Property: compression ratio is 32/bits."""
         config = QuantizationConfig(bits=bits)
-        assert config.compression_ratio() == 32 / bits
+        assert config.compression_ratio() == 32 / bits, "Condition must be true"
 
 
 # --- Model Registry Tests ---
@@ -412,8 +412,8 @@ class TestModelRegistry:
         registry = ModelRegistry()
         registry.register("gpt2", "1.0.0", {"size": "small"})
         model = registry.get("gpt2", "1.0.0")
-        assert model is not None
-        assert model["size"] == "small"
+        assert model is not None, "model must be initialized"
+        assert model["size"] == "small", "Condition must be true"
 
     def test_list_versions(self):
         """List model versions."""
@@ -421,4 +421,4 @@ class TestModelRegistry:
         registry.register("bert", "1.0.0", {})
         registry.register("bert", "1.1.0", {})
         versions = registry.list_versions("bert")
-        assert len(versions) == 2
+        assert len(versions) == 2, "Versions must not be empty"

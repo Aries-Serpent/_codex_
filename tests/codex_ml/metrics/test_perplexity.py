@@ -60,6 +60,6 @@ class TestPerplexityCalculation:
             from codex_ml.metrics.perplexity import perplexity_from_loss
 
             result = perplexity_from_loss(float("inf"))
-            assert math.isinf(result)
+            assert math.isinf(result), "Result must not be empty"
         except ImportError as exc:
             pytest.skip(f"Optional dependency missing: {exc}")

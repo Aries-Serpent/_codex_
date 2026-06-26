@@ -66,25 +66,25 @@ class TestErrorHandling:
         assessor = _make_assessor()
         audit = _make_audit(score=0.95, risk_level="low")
         result = assessor._score_approve(audit)
-        assert 0.0 <= result <= 1.0
+        assert 0.0 <= result <= 1.0, "Result must not be empty"
 
     def test_score_approve_with_monitoring_no_exception(self):
         assessor = _make_assessor()
         audit = _make_audit(score=0.85, risk_level="medium")
         result = assessor._score_approve_with_monitoring(audit)
-        assert 0.0 <= result <= 1.0
+        assert 0.0 <= result <= 1.0, "Result must not be empty"
 
     def test_score_reject_no_exception(self):
         assessor = _make_assessor()
         audit = _make_audit(score=0.3, risk_level="high")
         result = assessor._score_reject(audit)
-        assert 0.0 <= result <= 1.0
+        assert 0.0 <= result <= 1.0, "Result must not be empty"
 
     def test_score_conditional_no_exception(self):
         assessor = _make_assessor()
         audit = _make_audit(score=0.80, risk_level="high", remediation_cost=8000)
         result = assessor._score_conditional(audit)
-        assert 0.0 <= result <= 1.0
+        assert 0.0 <= result <= 1.0, "Result must not be empty"
 
     def test_graceful_degradation_returns_assessment(self, monkeypatch):
         """When superposition raises, assess_compliance falls back to classical."""
@@ -99,8 +99,8 @@ class TestErrorHandling:
         audit = _make_audit()
         result = assessor.assess_compliance(audit)
         assert isinstance(result, ComplianceAssessment)
-        assert result.decision in list(ComplianceDecision)
-        assert not result.used_superposition  # fell back to classical
+        assert result.decision in list(ComplianceDecision), "Result must not be empty"
+        assert not result.used_superposition, "Result must not be empty"
 
 
 # ===========================================================================
@@ -121,7 +121,7 @@ class TestInputValidation:
         audit = _make_audit(score=0.75)
         audit.score = 1.5  # Simulate post-construction adversarial mutation
         result = assessor.assess_compliance(audit)
-        assert audit.score == 1.0  # Clamped in place
+        assert audit.score == 1.0, "score is not valid"
         assert isinstance(result, ComplianceAssessment)
 
     def test_clamped_score_below_zero(self):
@@ -129,28 +129,28 @@ class TestInputValidation:
         audit = _make_audit(score=0.5)
         audit.score = -0.5
         assessor.assess_compliance(audit)
-        assert audit.score == 0.0
+        assert audit.score == 0.0, "score is not valid"
 
     def test_clamped_business_impact_above_one(self):
         assessor = _make_assessor(lightweight=False)
         audit = _make_audit()
         audit.business_impact = 2.0
         assessor.assess_compliance(audit)
-        assert audit.business_impact == 1.0
+        assert audit.business_impact == 1.0, "business_impact is not valid"
 
     def test_clamped_remediation_cost_negative(self):
         assessor = _make_assessor(lightweight=False)
         audit = _make_audit()
         audit.remediation_cost = -1000.0
         assessor.assess_compliance(audit)
-        assert audit.remediation_cost == 0.0
+        assert audit.remediation_cost == 0.0, "remediation_cost is not valid"
 
     def test_invalid_risk_level_defaults_to_medium(self):
         assessor = _make_assessor(lightweight=False)
         audit = _make_audit(risk_level="medium")
         audit.risk_level = "extreme"  # Simulate unknown risk level
         assessor.assess_compliance(audit)
-        assert audit.risk_level == "medium"
+        assert audit.risk_level == "medium", "risk_level is not valid"
 
     def test_valid_inputs_unchanged(self):
         assessor = _make_assessor(lightweight=False)
@@ -161,9 +161,9 @@ class TestInputValidation:
             risk_level="high",
         )
         assessor.assess_compliance(audit)
-        assert audit.score == 0.75
-        assert audit.business_impact == 0.65
-        assert audit.risk_level == "high"
+        assert audit.score == 0.75, "score is not valid"
+        assert audit.business_impact == 0.65, "business_impact is not valid"
+        assert audit.risk_level == "high", "risk_level is not valid"
 
 
 # ===========================================================================
@@ -176,9 +176,9 @@ class TestQuantumNoiseConfig:
 
     def test_default_noise_disabled(self):
         config = QuantumConfig.from_env()
-        assert config.noise_enabled is False
-        assert config.gate_error_rate == 0.0
-        assert config.measurement_error_rate == 0.0
+        assert config.noise_enabled is False, "noise_enabled is not valid"
+        assert config.gate_error_rate == 0.0, "Error should be raised or set"
+        assert config.measurement_error_rate == 0.0, "Error should be raised or set"
 
     def test_noise_config_roundtrip(self):
         config = QuantumConfig(
@@ -189,11 +189,11 @@ class TestQuantumNoiseConfig:
             t2_decoherence_us=40.0,
         )
         d = config.to_dict()
-        assert d["noise_enabled"] is True
-        assert d["gate_error_rate"] == 0.05
-        assert d["measurement_error_rate"] == 0.03
-        assert d["t1_decoherence_us"] == 80.0
-        assert d["t2_decoherence_us"] == 40.0
+        assert d["noise_enabled"] is True, "Condition must be true"
+        assert d["gate_error_rate"] == 0.05, "Error should be raised or set"
+        assert d["measurement_error_rate"] == 0.03, "Error should be raised or set"
+        assert d["t1_decoherence_us"] == 80.0, "Condition must be true"
+        assert d["t2_decoherence_us"] == 40.0, "Condition must be true"
 
     def test_invalid_gate_error_rate_raises(self):
         with pytest.raises(ValueError, match="gate_error_rate"):
@@ -210,8 +210,8 @@ class TestQuantumNoiseConfig:
     def test_noise_repr_includes_rates(self):
         config = QuantumConfig(noise_enabled=True, gate_error_rate=0.05)
         r = repr(config)
-        assert "noise=True" in r
-        assert "gate_err=0.050" in r
+        assert "noise=True" in r, "Condition must be true"
+        assert "gate_err=0.050" in r, "Condition must be true"
 
 
 class TestQuantumNoiseApplication:
@@ -232,14 +232,14 @@ class TestQuantumNoiseApplication:
         engine = self._engine_with_noise()
         original = [0.9, 0.3, 0.2, 0.1]
         noisy = engine._apply_noise(original, 0.05, 0.05)
-        assert noisy != original  # Should be perturbed
-        assert all(0.0 <= s <= 1.0 for s in noisy)
+        assert noisy != original, "noisy is not valid"
+        assert all(0.0 <= s <= 1.0 for s in noisy), "0 is not valid"
 
     def test_apply_noise_no_noise_identity(self):
         engine = self._engine_with_noise(gate_err=0.0, meas_err=0.0)
         original = [0.9, 0.3, 0.2, 0.1]
         noisy = engine._apply_noise(original, 0.0, 0.0)
-        assert noisy == original  # Zero noise → unchanged
+        assert noisy == original, "noisy is not valid"
 
     def test_apply_noise_clamps_to_unit_interval(self):
         import random
@@ -248,7 +248,7 @@ class TestQuantumNoiseApplication:
         engine = self._engine_with_noise(gate_err=0.5, meas_err=0.5)
         original = [0.0, 0.5, 1.0, 0.99]
         noisy = engine._apply_noise(original, 0.5, 0.5)
-        assert all(0.0 <= s <= 1.0 for s in noisy)
+        assert all(0.0 <= s <= 1.0 for s in noisy), "0 is not valid"
 
     def test_5pct_noise_preserves_winner_mostly(self):
         """At 5% noise, winner should remain correct in ≥90% of random trials."""
@@ -299,7 +299,7 @@ class TestApplyQuantumNoisePublic:
         state = engine.create_superposition([self._decision()])
         state.coherence = 0.8
         engine.apply_quantum_noise(state)
-        assert state.coherence == 0.8
+        assert state.coherence == 0.8, "coherence is not valid"
 
     def test_noop_when_all_params_zero(self):
         """noise_enabled=True but all rates=0 → no change."""
@@ -314,7 +314,7 @@ class TestApplyQuantumNoisePublic:
         state = engine.create_superposition([self._decision()])
         state.coherence = 0.75
         engine.apply_quantum_noise(state)
-        assert state.coherence == 0.75
+        assert state.coherence == 0.75, "coherence is not valid"
 
     def test_t2_decay_reduces_coherence(self):
         """T2 dephasing decays coherence by exp(-dt/T2) with dt=100µs."""
@@ -326,7 +326,7 @@ class TestApplyQuantumNoisePublic:
         state.coherence = 0.9
         engine.apply_quantum_noise(state)
         expected = 0.9 * math.exp(-100.0 / 50.0)
-        assert abs(state.coherence - expected) < 1e-9
+        assert abs(state.coherence - expected) < 1e-9, "Condition must be true"
 
     def test_coherence_never_goes_below_zero(self):
         """Even with severe T2 decay, coherence is clamped to ≥ 0."""
@@ -335,7 +335,7 @@ class TestApplyQuantumNoisePublic:
         state = engine.create_superposition([self._decision()])
         state.coherence = 0.01
         engine.apply_quantum_noise(state)
-        assert state.coherence >= 0.0
+        assert state.coherence >= 0.0, "coherence must be greater than zero"
 
     def test_amplitude_damping_renormalises(self):
         """Gate error reduces amplitude magnitudes; they must be renormalised."""
@@ -345,7 +345,7 @@ class TestApplyQuantumNoisePublic:
         state = engine.create_superposition(decisions)
         engine.apply_quantum_noise(state)
         total = sum(abs(a) for a in state.amplitudes)
-        assert abs(total - 1.0) < 1e-9
+        assert abs(total - 1.0) < 1e-9, "Condition must be true"
 
     def test_full_noise_leaves_state_valid(self):
         """With all noise channels active, state remains internally consistent."""
@@ -361,7 +361,7 @@ class TestApplyQuantumNoisePublic:
         state = engine.create_superposition(decisions)
         state.coherence = 0.9
         engine.apply_quantum_noise(state)
-        assert state.coherence >= 0.0
+        assert state.coherence >= 0.0, "coherence must be greater than zero"
         assert sum(abs(a) for a in state.amplitudes) == pytest.approx(1.0, abs=1e-9)
 
 
@@ -379,25 +379,25 @@ class TestBiasDetector:
     def test_no_protected_attrs_no_flags(self):
         audit = _make_audit()
         flags = self.detector.detect(audit, ComplianceDecision.REJECT)
-        assert flags == []
+        assert flags == [], "flags is not valid"
 
     def test_reject_with_protected_attr_flagged(self):
         audit = _make_audit(protected_attributes={"region": "EU"})
         flags = self.detector.detect(audit, ComplianceDecision.REJECT)
-        assert len(flags) == 1
-        assert "BIAS_REVIEW" in flags[0]
-        assert "region=EU" in flags[0]
-        assert "reject" in flags[0]
+        assert len(flags) == 1, "Flags must not be empty"
+        assert "BIAS_REVIEW" in flags[0], "Condition must be true"
+        assert "region=EU" in flags[0], "Condition must be true"
+        assert "reject" in flags[0], "Condition must be true"
 
     def test_conditional_with_protected_attr_flagged(self):
         audit = _make_audit(protected_attributes={"sector": "finance"})
         flags = self.detector.detect(audit, ComplianceDecision.CONDITIONAL_APPROVAL)
-        assert any("BIAS_REVIEW" in f for f in flags)
+        assert any("BIAS_REVIEW" in f for f in flags), "Condition must be true"
 
     def test_approve_with_protected_attr_no_adverse_flag(self):
         audit = _make_audit(protected_attributes={"region": "APAC"})
         flags = self.detector.detect(audit, ComplianceDecision.APPROVE)
-        assert not any("adverse_decision" in f for f in flags)
+        assert not any("adverse_decision" in f for f in flags), "Condition must be true"
 
     def test_high_cost_triggers_cost_flag(self):
         audit = _make_audit(
@@ -405,13 +405,13 @@ class TestBiasDetector:
             protected_attributes={"gender": "F"},
         )
         flags = self.detector.detect(audit, ComplianceDecision.APPROVE)
-        assert any("high_cost" in f for f in flags)
+        assert any("high_cost" in f for f in flags), "Condition must be true"
 
     def test_multiple_protected_attrs_multiple_flags(self):
         audit = _make_audit(protected_attributes={"region": "EU", "sector": "health"})
         flags = self.detector.detect(audit, ComplianceDecision.REJECT)
         # 2 attrs × 1 adverse_decision flag each = 2 flags (cost not > 10k)
-        assert len(flags) == 2
+        assert len(flags) == 2, "Flags must not be empty"
 
     def test_bias_flags_on_assessment(self):
         """assess_compliance() attaches bias flags to the ComplianceAssessment."""
@@ -427,7 +427,7 @@ class TestBiasDetector:
             ComplianceDecision.REJECT,
             ComplianceDecision.CONDITIONAL_APPROVAL,
         ):
-            assert len(result.bias_flags) > 0
+            assert len(result.bias_flags) > 0, "Collection must not be empty"
         assert isinstance(result.bias_flags, list)
 
 
@@ -453,69 +453,69 @@ class TestQuantumAuditTrail:
         )
 
     def test_initial_count_zero(self):
-        assert self.trail.count == 0
+        assert self.trail.count == 0, "Count must be greater than zero"
 
     def test_log_increments_count(self):
         self.trail.log(_make_audit(), self._make_assessment())
-        assert self.trail.count == 1
+        assert self.trail.count == 1, "Count must be greater than zero"
 
     def test_log_returns_entry(self):
         entry = self.trail.log(_make_audit(), self._make_assessment())
         assert isinstance(entry, AuditTrailEntry)
-        assert entry.decision == ComplianceDecision.APPROVE.value
+        assert entry.decision == ComplianceDecision.APPROVE.value, "Value must be initialized"
 
     def test_entry_has_timestamp(self):
         entry = self.trail.log(_make_audit(), self._make_assessment())
-        assert "T" in entry.timestamp  # ISO-8601 format
+        assert "T" in entry.timestamp, "Condition must be true"
 
     def test_entry_has_input_hash(self):
         entry = self.trail.log(_make_audit(), self._make_assessment())
-        assert len(entry.input_hash) == 16  # SHA-256 prefix
+        assert len(entry.input_hash) == 16, "Collection must not be empty"
 
     def test_entry_has_uuid(self):
         entry = self.trail.log(_make_audit(), self._make_assessment())
-        assert len(entry.entry_id) == 36  # UUID v4 format
+        assert len(entry.entry_id) == 36, "Collection must not be empty"
 
     def test_query_by_audit_id(self):
         audit = _make_audit(audit_id="qry-001")
         self.trail.log(audit, self._make_assessment())
         self.trail.log(_make_audit(audit_id="qry-002"), self._make_assessment())
         results = self.trail.query(audit_id="qry-001")
-        assert len(results) == 1
-        assert results[0].audit_id == "qry-001"
+        assert len(results) == 1, "Results must not be empty"
+        assert results[0].audit_id == "qry-001", "Result must not be empty"
 
     def test_query_by_decision(self):
         self.trail.log(_make_audit(), self._make_assessment(ComplianceDecision.APPROVE))
         self.trail.log(_make_audit(), self._make_assessment(ComplianceDecision.REJECT))
         rejects = self.trail.query(decision="reject")
-        assert len(rejects) == 1
-        assert rejects[0].decision == "reject"
+        assert len(rejects) == 1, "Rejects must not be empty"
+        assert rejects[0].decision == "reject", "decision is not valid"
 
     def test_query_no_filter_returns_all(self):
         for _ in range(3):
             self.trail.log(_make_audit(), self._make_assessment())
-        assert len(self.trail.query()) == 3
+        assert len(self.trail.query()) == 3, "Collection must not be empty"
 
     def test_retention_days_configurable(self):
         trail = QuantumAuditTrail(retention_days=365)
-        assert trail.retention_days == 365
+        assert trail.retention_days == 365, "retention_days is not valid"
 
     def test_default_retention_7_years(self):
         trail = QuantumAuditTrail()
-        assert trail.retention_days == 2555
+        assert trail.retention_days == 2555, "retention_days is not valid"
 
     def test_audit_trail_populated_by_assessor(self):
         """assess_compliance() logs to audit_trail automatically."""
         assessor = _make_assessor(lightweight=False)
         audit = _make_audit()
         assessor.assess_compliance(audit)
-        assert assessor.audit_trail.count == 1
+        assert assessor.audit_trail.count == 1, "Count must be greater than zero"
 
     def test_multiple_assessments_logged(self):
         assessor = _make_assessor(lightweight=False)
         for i in range(5):
             assessor.assess_compliance(_make_audit(audit_id=f"audit-{i:03d}"))
-        assert assessor.audit_trail.count == 5
+        assert assessor.audit_trail.count == 5, "Count must be greater than zero"
 
     def test_two_identical_inputs_different_entry_ids(self):
         """Each entry should have a unique UUID even for identical inputs."""
@@ -523,7 +523,7 @@ class TestQuantumAuditTrail:
         assessment = self._make_assessment()
         e1 = self.trail.log(audit, assessment)
         e2 = self.trail.log(audit, assessment)
-        assert e1.entry_id != e2.entry_id
+        assert e1.entry_id != e2.entry_id, "entry_id is not valid"
 
     def test_same_input_hash_for_identical_inputs(self):
         """Same input should produce same input hash (tamper detection)."""
@@ -531,7 +531,7 @@ class TestQuantumAuditTrail:
         assessment = self._make_assessment()
         e1 = self.trail.log(audit, assessment)
         e2 = self.trail.log(audit, assessment)
-        assert e1.input_hash == e2.input_hash
+        assert e1.input_hash == e2.input_hash, "input_hash is not valid"
 
     # ------------------------------------------------------------------
     # HMAC chain tests (Gap 2 — tamper-evidence)
@@ -540,14 +540,14 @@ class TestQuantumAuditTrail:
     def test_entry_has_chain_hash(self):
         """Every logged entry should carry a non-empty chain_hash."""
         entry = self.trail.log(_make_audit(), self._make_assessment())
-        assert entry.chain_hash != ""
-        assert len(entry.chain_hash) == 16  # Short hex prefix
+        assert entry.chain_hash != "", "chain_hash is not valid"
+        assert len(entry.chain_hash) == 16, "Collection must not be empty"
 
     def test_chain_hash_differs_between_entries(self):
         """Each entry's chain_hash must differ (proves chaining)."""
         e1 = self.trail.log(_make_audit(audit_id="ch-001"), self._make_assessment())
         e2 = self.trail.log(_make_audit(audit_id="ch-002"), self._make_assessment())
-        assert e1.chain_hash != e2.chain_hash
+        assert e1.chain_hash != e2.chain_hash, "chain_hash is not valid"
 
     def test_chain_is_deterministic_same_key(self):
         """Same inputs + same HMAC key → same chain hash (deterministic)."""
@@ -558,7 +558,7 @@ class TestQuantumAuditTrail:
         assessment = self._make_assessment()
         e_a = trail_a.log(audit, assessment)
         e_b = trail_b.log(audit, assessment)
-        assert e_a.chain_hash == e_b.chain_hash
+        assert e_a.chain_hash == e_b.chain_hash, "chain_hash is not valid"
 
     def test_hmac_key_changes_chain_hash(self):
         """Different HMAC keys produce different chain hashes."""
@@ -568,16 +568,16 @@ class TestQuantumAuditTrail:
         assessment = self._make_assessment()
         e_x = trail_x.log(audit, assessment)
         e_y = trail_y.log(audit, assessment)
-        assert e_x.chain_hash != e_y.chain_hash
+        assert e_x.chain_hash != e_y.chain_hash, "chain_hash is not valid"
 
     def test_no_key_still_chains_via_sha256(self):
         """Without an HMAC key, SHA-256 fallback still produces a chain_hash."""
         trail = QuantumAuditTrail()  # no hmac_key
         e1 = trail.log(_make_audit(audit_id="nk-001"), self._make_assessment())
         e2 = trail.log(_make_audit(audit_id="nk-002"), self._make_assessment())
-        assert e1.chain_hash != ""
-        assert e2.chain_hash != ""
-        assert e1.chain_hash != e2.chain_hash
+        assert e1.chain_hash != "", "chain_hash is not valid"
+        assert e2.chain_hash != "", "chain_hash is not valid"
+        assert e1.chain_hash != e2.chain_hash, "chain_hash is not valid"
 
     def test_chain_links_sequentially(self):
         """Second entry's chain must depend on first (changing first breaks second)."""
@@ -594,7 +594,7 @@ class TestQuantumAuditTrail:
         trail_tampered.log(_make_audit(audit_id="TAMPERED"), a)
         e2_tampered = trail_tampered.log(audit2, a)
 
-        assert (
+        assert (, "Condition must be true"
             e2_orig.chain_hash != e2_tampered.chain_hash
         ), "Chain hash must differ when first entry is tampered"
 
@@ -618,7 +618,7 @@ class TestPhase3Integration:
         result = assessor.assess_compliance(audit)
         assert isinstance(result, ComplianceAssessment)
         assert isinstance(result.bias_flags, list)
-        assert assessor.audit_trail.count == 1
+        assert assessor.audit_trail.count == 1, "Count must be greater than zero"
 
     def test_noise_simulation_does_not_crash(self):
         """assess_compliance() with noise_enabled runs without errors."""
@@ -639,7 +639,7 @@ class TestPhase3Integration:
         audit = _make_audit()
         result = assessor.assess_compliance(audit)
         assert isinstance(result, ComplianceAssessment)
-        assert result.decision in list(ComplianceDecision)
+        assert result.decision in list(ComplianceDecision), "Result must not be empty"
 
     def test_phase2_metrics_maintained(self):
         """Phase 1+2 accuracy, coherence, k₁ targets still met with Phase 3 active."""

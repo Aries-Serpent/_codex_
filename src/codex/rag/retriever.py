@@ -73,12 +73,12 @@ class Retriever:
             logger.info(f"Loaded index '{self.index_name}' with {len(self.chunks_metadata)} chunks")
         except FileNotFoundError as e:
             error_type = type(e).__name__
-            logger.warning(f"Index not found: <ERROR_TYPE>")
+            logger.warning("Index not found: <ERROR_TYPE>")
             logger.warning("Use indexer.py to build an index first")
             # Allow initialization without an index for testing
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.error(f"Error loading index: <ERROR_TYPE>")
+            logger.error("Error loading index: <ERROR_TYPE>")
             raise
 
     def _load_model(self):
@@ -99,11 +99,11 @@ class Retriever:
 
         except (RuntimeError, OSError, ValueError, NotImplementedError) as e:
             error_type = type(e).__name__
-            logger.error(f"Failed to load query embedding model: <ERROR_TYPE>")
+            logger.error("Failed to load query embedding model: <ERROR_TYPE>")
             raise
         except TypeError as e:
             error_type = type(e).__name__
-            logger.error(f"Error loading embedding model: <ERROR_TYPE>")
+            logger.error("Error loading embedding model: <ERROR_TYPE>")
             raise
 
     def query(

@@ -16,7 +16,7 @@ def test_zendesk_sync_initialization():
         api_token="test_token",
         subdomain="test",
     )
-    assert service.subdomain == "test"
+    assert service.subdomain == "test", "subdomain is not valid"
 
 
 @pytest.mark.integration
@@ -28,7 +28,7 @@ def test_zendesk_sync_error_handling():
     )
 
     result = service.sync_articles()
-    assert result.failed > 0
+    assert result.failed > 0, "failed must be greater than zero"
 
 
 @pytest.mark.integration
@@ -42,7 +42,7 @@ def test_multi_locale_sync_manager():
         LocaleConfig("fr-FR", priority=7),
     ]
     manager = MultiLocaleSyncManager(locales=locales)
-    assert len(manager.locales) == 3
+    assert len(manager.locales) == 3, "Collection must not be empty"
 
 
 @pytest.mark.integration
@@ -54,8 +54,8 @@ def test_content_differ_detects_changes():
     new_content = "Modified content"
 
     diff = differ.diff(old_content, new_content)
-    assert diff.has_changes
-    assert len(diff.segments) > 0
+    assert diff.has_changes, "Condition must be true"
+    assert len(diff.segments) > 0, "Collection must not be empty"
 
 
 @pytest.mark.integration
@@ -65,7 +65,7 @@ def test_content_differ_no_changes():
 
     content = "Same content"
     diff = differ.diff(content, content)
-    assert not diff.has_changes
+    assert not diff.has_changes, "Condition must be true"
 
 
 @pytest.mark.integration
@@ -76,4 +76,4 @@ def test_zendesk_sync_rate_limiting():
         subdomain="test",
         rate_limit=10,  # 10 requests per minute
     )
-    assert service.rate_limit == 10
+    assert service.rate_limit == 10, "rate_limit is not valid"

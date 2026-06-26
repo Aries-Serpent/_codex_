@@ -20,7 +20,7 @@ class TestPhysicsOrchestratorSimpleMethods:
         # Check if method exists
         if hasattr(orchestrator, "deliberate"):
             result = orchestrator.deliberate()
-            assert result is not None
+            assert result is not None, "result must be initialized"
         else:
             pytest.skip("deliberate method not implemented")
 
@@ -33,7 +33,7 @@ class TestPhysicsOrchestratorSimpleMethods:
         # Check if method exists
         if hasattr(orchestrator, "reflect"):
             result = orchestrator.reflect()
-            assert result is not None
+            assert result is not None, "result must be initialized"
         else:
             pytest.skip("reflect method not implemented")
 
@@ -50,9 +50,9 @@ class TestQuantumGameTheoryHelpers:
         # Get probabilities
         probs = state.get_measurement_probabilities()
 
-        assert probs is not None
+        assert probs is not None, "probs must be initialized"
         if hasattr(probs, "__len__"):
-            assert len(probs) == 2
+            assert len(probs) == 2, "Probs must not be empty"
 
 
 class TestWorkflowNavigatorHelpers:
@@ -76,7 +76,7 @@ class TestWorkflowNavigatorHelpers:
 
         # Should have AUDIT_EXEC
         wf = nav.get_workflow("AUDIT_EXEC")
-        assert wf is not None
+        assert wf is not None, "wf must be initialized"
 
 
 class TestAdvancedPhysicsSimpleMethods:
@@ -94,7 +94,7 @@ class TestAdvancedPhysicsSimpleMethods:
         # Reset
         if hasattr(channel, "reset"):
             channel.reset()
-            assert channel.current_flow == 0.0
+            assert channel.current_flow == 0.0, "current_flow is not valid"
         else:
             pytest.skip("reset method not implemented")
 
@@ -110,7 +110,7 @@ class TestAdvancedPhysicsSimpleMethods:
         # Reset
         if hasattr(attractor, "reset"):
             attractor.reset()
-            assert attractor.state is not None
+            assert attractor.state is not None, "state must be initialized"
         else:
             pytest.skip("reset method not implemented")
 
@@ -127,8 +127,8 @@ class TestMentalMappingSimpleMethods:
         # Clear it
         if hasattr(model, "clear"):
             model.clear()
-            assert len(model.nodes) == 0
-            assert len(model.edges) == 0
+            assert len(model.nodes) == 0, "Collection must not be empty"
+            assert len(model.edges) == 0, "Collection must not be empty"
         else:
             pytest.skip("clear method not implemented")
 
@@ -139,7 +139,7 @@ class TestMentalMappingSimpleMethods:
         model = MentalMappingModel()
 
         count = len(model.nodes)
-        assert count >= 0
+        assert count >= 0, "count must be positive"
 
 
 class TestSelfHealingSimpleMethods:
@@ -179,8 +179,8 @@ class TestSelfHealingSimpleMethods:
         )
 
         # Both should have severity
-        assert issue1.severity == IssueSeverity.HIGH
-        assert issue2.severity == IssueSeverity.LOW
+        assert issue1.severity == IssueSeverity.HIGH, "severity is not valid"
+        assert issue2.severity == IssueSeverity.LOW, "severity is not valid"
 
 
 class TestDeveloperOrchestratorSimpleMethods:
@@ -192,7 +192,7 @@ class TestDeveloperOrchestratorSimpleMethods:
 
         orch = PhysicsGuidedDeveloperOrchestrator()
 
-        assert orch.current_phase is not None
+        assert orch.current_phase is not None, "current_phase must be initialized"
 
     def test_orchestrator_component_count(self):
         """Test getting component count."""
@@ -201,7 +201,7 @@ class TestDeveloperOrchestratorSimpleMethods:
         orch = PhysicsGuidedDeveloperOrchestrator()
 
         count = len(orch.components)
-        assert count >= 0
+        assert count >= 0, "count must be positive"
 
 
 class TestPhysicsIntegrationSimpleMethods:
@@ -213,7 +213,7 @@ class TestPhysicsIntegrationSimpleMethods:
 
         orch = HybridPhysicsOrchestrator()
 
-        assert orch.session_id == "hybrid_physics"
+        assert orch.session_id == "hybrid_physics", "session_id is not valid"
         assert isinstance(orch.decision_history, list)
 
     def test_orchestrator_make_decision_basic(self):
@@ -225,7 +225,7 @@ class TestPhysicsIntegrationSimpleMethods:
         try:
             decision = orch.make_decision(context="test context", options=["option1", "option2"])
 
-            assert decision is not None
+            assert decision is not None, "decision must be initialized"
         except (TypeError, AttributeError):
             pytest.skip("make_decision signature differs")
 
@@ -239,6 +239,6 @@ class TestAgentMemorySimpleMethods:
             from agents.agent_memory import AgentMemory
 
             memory = AgentMemory()
-            assert memory is not None
+            assert memory is not None, "memory must be initialized"
         except (ImportError, TypeError):
             pytest.skip("AgentMemory API differs")

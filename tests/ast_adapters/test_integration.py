@@ -15,7 +15,7 @@ from codex.ast_adapters import (
     PythonASTAdapter,
     StandardizedASTNode,
     YAMLASTAdapter,
-) # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+)  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
 
 class TestCrossAdapterIntegration:
@@ -54,17 +54,17 @@ class TestCrossAdapterIntegration:
         # Python
         py_root = python_adapter.parse("class Foo:\n    def bar(self): pass")
         py_nodes = list(python_adapter.traverse(py_root))
-        assert len(py_nodes) > 0
+        assert len(py_nodes) > 0, "Py_nodes must not be empty"
 
         # YAML
         yaml_root = yaml_adapter.parse("a:\n  b:\n    c: value")
         yaml_nodes = list(yaml_adapter.traverse(yaml_root))
-        assert len(yaml_nodes) > 0
+        assert len(yaml_nodes) > 0, "Yaml_nodes must not be empty"
 
         # JSON
         json_root = json_adapter.parse('{"a": {"b": {"c": "value"}}}')
         json_nodes = list(json_adapter.traverse(json_root))
-        assert len(json_nodes) > 0
+        assert len(json_nodes) > 0, "Json_nodes must not be empty"
 
     def test_all_adapters_support_find_nodes_by_type(
         self, python_adapter, yaml_adapter, json_adapter
@@ -73,17 +73,17 @@ class TestCrossAdapterIntegration:
         # Python
         python_adapter.parse("def foo(): pass\ndef bar(): pass")
         py_functions = python_adapter.find_nodes_by_type("function")
-        assert len(py_functions) == 2
+        assert len(py_functions) == 2, "Py_functions must not be empty"
 
         # YAML
         yaml_adapter.parse("key1: value1\nkey2: value2")
         yaml_scalars = yaml_adapter.find_nodes_by_type("scalar")
-        assert len(yaml_scalars) >= 2
+        assert len(yaml_scalars) >= 2, "Yaml_scalars must not be empty"
 
         # JSON
         json_adapter.parse('{"key1": "value1", "key2": "value2"}')
         json_primitives = json_adapter.find_nodes_by_type("primitive")
-        assert len(json_primitives) >= 2
+        assert len(json_primitives) >= 2, "Json_primitives must not be empty"
 
     def test_all_adapters_support_get_stats(self, python_adapter, yaml_adapter, json_adapter):
         """Test that all adapters generate statistics"""
@@ -91,19 +91,19 @@ class TestCrossAdapterIntegration:
         python_adapter.parse("def foo(): pass")
         py_stats = python_adapter.get_stats()
         assert isinstance(py_stats, dict)
-        assert len(py_stats) > 0
+        assert len(py_stats) > 0, "Py_stats must not be empty"
 
         # YAML
         yaml_adapter.parse("key: value")
         yaml_stats = yaml_adapter.get_stats()
         assert isinstance(yaml_stats, dict)
-        assert len(yaml_stats) > 0
+        assert len(yaml_stats) > 0, "Yaml_stats must not be empty"
 
         # JSON
         json_adapter.parse('{"key": "value"}')
         json_stats = json_adapter.get_stats()
         assert isinstance(json_stats, dict)
-        assert len(json_stats) > 0
+        assert len(json_stats) > 0, "Json_stats must not be empty"
 
     def test_yaml_and_json_similar_structure(self, yaml_adapter, json_adapter):
         """Test that YAML and JSON adapters handle similar data structures"""
@@ -127,8 +127,8 @@ config:
         json_objects = json_adapter.find_nodes_by_type("object")
 
         # Both should have 2 containers (root + config)
-        assert len(yaml_mappings) == 2
-        assert len(json_objects) == 2
+        assert len(yaml_mappings) == 2, "Yaml_mappings must not be empty"
+        assert len(json_objects) == 2, "Json_objects must not be empty"
 
     def test_path_based_navigation_consistency(self, yaml_adapter, json_adapter):
         """Test that YAML and JSON adapters have consistent path navigation"""
@@ -141,7 +141,7 @@ config:
         json_value = json_adapter.get_value_at_path("config.database.host")
 
         # Both should return the same value
-        assert yaml_value == json_value == "localhost"
+        assert yaml_value == json_value == "localhost", "Value must be initialized"
 
 
 class TestPerformanceBenchmarks:
@@ -179,8 +179,8 @@ class MyClass:
         root = python_adapter.parse(source)
         elapsed = time.time() - start
 
-        assert elapsed < 1.0  # Should parse in less than 1 second
-        assert root is not None
+        assert elapsed < 1.0, "elapsed is not valid"
+        assert root is not None, "root must be initialized"
 
     def test_yaml_adapter_performance(self, yaml_adapter):
         """Benchmark YAML adapter parsing speed"""
@@ -200,8 +200,8 @@ config:
         root = yaml_adapter.parse(source)
         elapsed = time.time() - start
 
-        assert elapsed < 0.1  # Should parse in less than 100ms
-        assert root is not None
+        assert elapsed < 0.1, "elapsed is not valid"
+        assert root is not None, "root must be initialized"
 
     def test_json_adapter_performance(self, json_adapter):
         """Benchmark JSON adapter parsing speed"""
@@ -227,8 +227,8 @@ config:
         root = json_adapter.parse(source)
         elapsed = time.time() - start
 
-        assert elapsed < 0.1  # Should parse in less than 100ms
-        assert root is not None
+        assert elapsed < 0.1, "elapsed is not valid"
+        assert root is not None, "root must be initialized"
 
     def test_large_json_parsing(self, json_adapter):
         """Test parsing large JSON documents"""
@@ -242,12 +242,12 @@ config:
         json_adapter.parse(source)
         elapsed = time.time() - start
 
-        assert elapsed < 1.0  # Should handle 1000 items in less than 1 second
+        assert elapsed < 1.0, "elapsed is not valid"
 
         # Verify structure
         arrays = json_adapter.find_nodes_by_type("array")
-        assert len(arrays) == 1
-        assert len(arrays[0].children) == 1000
+        assert len(arrays) == 1, "Arrays must not be empty"
+        assert len(arrays[0].children) == 1000, "Collection must not be empty"
 
 
 class TestRealWorldUsage:
@@ -285,11 +285,11 @@ def greet(name: str) -> str:
         python_adapter.parse(source)
 
         functions = python_adapter.find_nodes_by_type("function")
-        assert len(functions) == 1
+        assert len(functions) == 1, "Functions must not be empty"
 
         func = functions[0]
-        assert func.metadata["docstring"] is not None
-        assert "Greet someone" in func.metadata["docstring"]
+        assert func.metadata["docstring"] is not None, "Value must be initialized"
+        assert "Greet someone" in func.metadata["docstring"], "Data must not be empty"
 
     def test_parse_yaml_config_file(self, yaml_adapter):
         """Test parsing typical YAML configuration file"""
@@ -318,13 +318,13 @@ database:
 
         # Test path navigation
         app_name = yaml_adapter.get_value_at_path("app.name")
-        assert app_name == "MyApplication"
+        assert app_name == "MyApplication", "app_name is not valid"
 
         ssl_enabled = yaml_adapter.get_value_at_path("server.ssl.enabled")
-        assert ssl_enabled is True
+        assert ssl_enabled is True, "ssl_enabled is not valid"
 
         pool_size = yaml_adapter.get_value_at_path("database.connection.pool_size")
-        assert pool_size == 10
+        assert pool_size == 10, "pool_size is not valid"
 
     def test_parse_json_api_response(self, json_adapter):
         """Test parsing typical JSON API response"""
@@ -360,17 +360,17 @@ database:
 
         # Test path navigation
         status = json_adapter.get_value_at_path("status")
-        assert status == "success"
+        assert status == "success", "status is not valid"
 
         total = json_adapter.get_value_at_path("data.total")
-        assert total == 2
+        assert total == 2, "total is not valid"
 
         # Test structure
         arrays = json_adapter.find_nodes_by_type("array")
-        assert len(arrays) == 1  # users array
+        assert len(arrays) == 1, "Arrays must not be empty"
 
         objects = json_adapter.find_nodes_by_type("object")
-        assert len(objects) >= 4  # root, data, meta, 2 users
+        assert len(objects) >= 4, "Objects must not be empty"
 
     def test_error_handling_across_adapters(self, python_adapter, yaml_adapter, json_adapter):
         """Test that all adapters handle errors gracefully"""

@@ -105,7 +105,7 @@ class TestSafeIsinstance:
         # Note: This tests the current behavior
         nested = [[1, 2], [3, 4]]
         result = safe_isinstance(nested, List[List[int]])
-        assert result is True or result is False  # Depends on implementation
+        assert result is True or result is False, "Result must not be empty"
 
     def test_safe_isinstance_empty_list(self):
         """Test safe_isinstance with empty list."""
@@ -133,7 +133,7 @@ class TestSafeIsinstance:
         assert safe_isinstance(False, bool) is True
         # Note: bool is subclass of int, so this might be True
         result = safe_isinstance(1, bool)
-        assert result is False or result is True
+        assert result is False or result is True, "Result must not be empty"
 
     def test_safe_isinstance_complex(self):
         """Test safe_isinstance with complex type."""
@@ -173,13 +173,13 @@ class TestSafeIsinstance:
             pass
 
         result = safe_isinstance(5, BadType)
-        assert result is False or result is True
+        assert result is False or result is True, "Result must not be empty"
 
     def test_safe_isinstance_with_any_type(self):
         """Test safe_isinstance with Any type."""
         # Any should match anything
         result = safe_isinstance(5, Any)
-        assert result is True or result is False  # Depends on implementation
+        assert result is True or result is False, "Result must not be empty"
 
     def test_safe_isinstance_list_mixed_types_fails(self):
         """Test safe_isinstance fails on mixed type list."""
@@ -231,7 +231,7 @@ class TestSafeIsinstanceEdgeCases:
         # List containing lists
         nested = [[1, 2], [3, 4]]
         result = safe_isinstance(nested, List[list])
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_safe_isinstance_list_with_single_element(self):
         """Test safe_isinstance with single-element list."""
@@ -269,7 +269,7 @@ class TestSafeIsinstanceEdgeCases:
         assert safe_isinstance(float("-inf"), float) is True
         # NaN is special - NaN != NaN
         result = safe_isinstance(float("nan"), float)
-        assert result is True
+        assert result is True, "Result must not be empty"
 
 
 class TestSafeIsinstancePerformance:

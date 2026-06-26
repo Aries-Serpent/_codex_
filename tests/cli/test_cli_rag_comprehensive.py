@@ -55,20 +55,20 @@ class TestValidateFiles:
         test_file.write_text("test content")
 
         result = _validate_files([str(test_file)])
-        assert len(result) == 1
-        assert result[0] == test_file
+        assert len(result) == 1, "Result must not be empty"
+        assert result[0] == test_file, "Result must not be empty"
 
     def test_validate_files_glob_pattern(self, temp_test_files: Path):
         """Verify glob pattern expansion."""
         pattern = str(temp_test_files / "*.md")
         result = _validate_files([pattern])
-        assert len(result) == 2
+        assert len(result) == 2, "Result must not be empty"
 
     def test_validate_files_recursive_glob(self, temp_test_files: Path):
         """Verify recursive glob pattern."""
         pattern = str(temp_test_files / "**" / "*.md")
         result = _validate_files([pattern])
-        assert len(result) == 3
+        assert len(result) == 3, "Result must not be empty"
 
     def test_validate_files_no_matches(self):
         """Verify error raised when no files match."""
@@ -90,7 +90,7 @@ class TestValidateFiles:
         pattern2 = str(temp_test_files / "subdir/*.md")
 
         result = _validate_files([pattern1, pattern2])
-        assert len(result) == 2
+        assert len(result) == 2, "Result must not be empty"
 
 
 class TestFormatBytes:
@@ -98,23 +98,23 @@ class TestFormatBytes:
 
     def test_format_bytes_small(self):
         """Verify formatting of small byte sizes."""
-        assert "512.00 B" in _format_bytes(512)
+        assert "512.00 B" in _format_bytes(512), "Condition must be true"
 
     def test_format_bytes_kilobytes(self):
         """Verify KB formatting."""
-        assert "5.00 KB" in _format_bytes(5 * 1024)
+        assert "5.00 KB" in _format_bytes(5 * 1024), "Condition must be true"
 
     def test_format_bytes_megabytes(self):
         """Verify MB formatting."""
-        assert "10.00 MB" in _format_bytes(10 * 1024 * 1024)
+        assert "10.00 MB" in _format_bytes(10 * 1024 * 1024), "Condition must be true"
 
     def test_format_bytes_gigabytes(self):
         """Verify GB formatting."""
-        assert "2.50 GB" in _format_bytes(int(2.5 * 1024 * 1024 * 1024))
+        assert "2.50 GB" in _format_bytes(int(2.5 * 1024 * 1024 * 1024)), "Condition must be true"
 
     def test_format_bytes_zero(self):
         """Verify zero byte handling."""
-        assert "0.00 B" in _format_bytes(0)
+        assert "0.00 B" in _format_bytes(0), "Condition must be true"
 
 
 class TestBuildCommand:
@@ -129,7 +129,7 @@ class TestBuildCommand:
             app, ["build", "--files", str(temp_test_files / "*.md"), "--index-name", "test_index"]
         )
 
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
         mock_build_index.assert_called_once()
 
     @patch("codex.rag.build_index_from_files")
@@ -141,7 +141,7 @@ class TestBuildCommand:
             app, ["build", "--files", str(temp_test_files / "*.md"), "--tenant-id", "tenant_123"]
         )
 
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     @patch("codex.rag.build_index_from_files")
     def test_build_with_chunk_size(
@@ -154,12 +154,12 @@ class TestBuildCommand:
             app, ["build", "--files", str(temp_test_files / "*.md"), "--chunk-size", "500"]
         )
 
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_build_no_files(self, runner: CliRunner):
         """Verify error when no files provided."""
         result = runner.invoke(app, ["build"])
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     @patch("codex.rag.build_index_from_files")
     def test_build_invalid_chunk_size(
@@ -177,7 +177,7 @@ class TestBuildCommand:
             ],
         )
 
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
 
 class TestQueryCommand:
@@ -195,8 +195,8 @@ class TestQueryCommand:
 
         result = runner.invoke(app, ["query", "test query", "--index-name", "test_index"])
 
-        assert result.exit_code == 0
-        assert "Result 1" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "Result 1" in result.output, "Result must not be empty"
         mock_instance.query.assert_called_once()
 
     @patch("codex.cli_rag.RAGRetriever")
@@ -208,7 +208,7 @@ class TestQueryCommand:
 
         result = runner.invoke(app, ["query", "test", "--top-k", "10"])
 
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     @patch("codex.cli_rag.RAGRetriever")
     def test_query_with_tenant(self, mock_retriever, runner: CliRunner):
@@ -219,12 +219,12 @@ class TestQueryCommand:
 
         result = runner.invoke(app, ["query", "test", "--tenant-id", "tenant_456"])
 
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_query_no_query_text(self, runner: CliRunner):
         """Verify error when query text missing."""
         result = runner.invoke(app, ["query"])
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     @patch("codex.cli_rag.RAGRetriever")
     def test_query_json_output(self, mock_retriever, runner: CliRunner):
@@ -235,9 +235,9 @@ class TestQueryCommand:
 
         result = runner.invoke(app, ["query", "test", "--format", "json"])
 
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
         # Should contain JSON-formatted output
-        assert "{" in result.output or "[" in result.output
+        assert "{" in result.output or "[" in result.output, "Result must not be empty"
 
 
 class TestStatsCommand:
@@ -261,8 +261,8 @@ class TestStatsCommand:
 
         result = runner.invoke(app, ["stats", "--index-dir", str(tmp_path)])
 
-        assert result.exit_code == 0
-        assert "500" in result.output  # chunks
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "500" in result.output, "Result must not be empty"
 
     def test_stats_with_index_name(self, runner: CliRunner, tmp_path: Path):
         """Verify stats for specific index."""
@@ -284,7 +284,7 @@ class TestStatsCommand:
             app, ["stats", "--index-name", "specific_index", "--index-dir", str(tmp_path)]
         )
 
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
 
 class TestListCommand:
@@ -309,9 +309,9 @@ class TestListCommand:
 
         result = runner.invoke(app, ["list", "--index-dir", str(tmp_path)])
 
-        assert result.exit_code == 0
-        assert "index1" in result.output
-        assert "index2" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "index1" in result.output, "Result must not be empty"
+        assert "index2" in result.output, "Result must not be empty"
 
 
 class TestTenantCommands:
@@ -355,7 +355,7 @@ class TestEdgeCases:
         result = runner.invoke(app, ["build", "--files", str(empty_file)])
 
         # Should handle gracefully
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     @patch("codex.cli_rag.RAGRetriever")
     def test_query_no_results(self, mock_retriever, runner: CliRunner):
@@ -366,7 +366,7 @@ class TestEdgeCases:
 
         result = runner.invoke(app, ["query", "nonexistent term"])
 
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
         # Should indicate no results found
 
     @patch("codex.cli_rag.RAGIndexer")
@@ -378,7 +378,7 @@ class TestEdgeCases:
 
         result = runner.invoke(app, ["build", "--files", str(temp_test_files / "*.md")])
 
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     @patch("codex.cli_rag.RAGRetriever")
     def test_query_retriever_failure(self, mock_retriever, runner: CliRunner):
@@ -389,7 +389,7 @@ class TestEdgeCases:
 
         result = runner.invoke(app, ["query", "test"])
 
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
 
 class TestParameterValidation:
@@ -399,7 +399,7 @@ class TestParameterValidation:
         """Verify top_k parameter validation."""
         result = runner.invoke(app, ["query", "test", "--top-k", "-5"])  # Negative value
 
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     def test_invalid_chunk_size_too_large(self, runner: CliRunner, temp_test_files: Path):
         """Verify chunk size upper bound."""
@@ -414,7 +414,7 @@ class TestParameterValidation:
             ],
         )
 
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     @patch("codex.cli_rag.RAGIndexer")
     def test_empty_index_name(self, mock_indexer, runner: CliRunner, temp_test_files: Path):

@@ -43,9 +43,9 @@ class TestRestoreValidation:
             ],
         )
 
-        assert result.exit_code != 0
-        assert not output_file.exists()
-        assert "error" in result.output.lower()
+        assert result.exit_code != 0, "Result must not be empty"
+        assert not output_file.exists(), "Condition must be true"
+        assert "error" in result.output.lower(), "Result must not be empty"
 
     def test_restore_missing_tombstone_logs_failure(
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
@@ -75,17 +75,17 @@ class TestRestoreValidation:
             ],
         )
 
-        assert result.exit_code != 0
-        assert "not found" in result.output.lower()
+        assert result.exit_code != 0, "Result must not be empty"
+        assert "not found" in result.output.lower(), "Result must not be empty"
 
         evidence_file = evidence_dir / "archive_ops.jsonl"
-        assert evidence_file.exists()
+        assert evidence_file.exists(), "Condition must be true"
         events = [
             json.loads(line)
             for line in evidence_file.read_text(encoding="utf-8").splitlines()
             if line.strip()
         ]
-        assert any(event.get("action") == "RESTORE_FAIL" for event in events)
+        assert any(event.get("action") == "RESTORE_FAIL" for event in events), "Condition must be true"
 
     def test_restore_failure_records_evidence(
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
@@ -112,15 +112,15 @@ class TestRestoreValidation:
             ],
         )
 
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
         evidence_file = evidence_dir / "archive_ops.jsonl"
-        assert evidence_file.exists()
+        assert evidence_file.exists(), "Condition must be true"
         events = [
             json.loads(line)
             for line in evidence_file.read_text(encoding="utf-8").splitlines()
             if line.strip()
         ]
-        assert any(event.get("action") == "RESTORE_FAIL" for event in events)
+        assert any(event.get("action") == "RESTORE_FAIL" for event in events), "Condition must be true"
 
     def test_restore_backend_validation_outputs_diagnostics(
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
@@ -147,7 +147,7 @@ class TestRestoreValidation:
             ],
         )
 
-        assert "[DEBUG]" in result.output or "backend" in result.output.lower()
+        assert "[DEBUG]" in result.output or "backend" in result.output.lower(), "Result must not be empty"
 
     def test_restore_success_logs_evidence(
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
@@ -189,7 +189,7 @@ class TestRestoreValidation:
         )
 
         assert restore_result.exit_code == 0, restore_result.output
-        assert output_file.read_text(encoding="utf-8") == "test content"
+        assert output_file.read_text(encoding="utf-8") == "test content", "Content must not be empty"
 
         evidence_file = evidence_dir / "archive_ops.jsonl"
         events = [
@@ -198,9 +198,9 @@ class TestRestoreValidation:
             if line.strip()
         ]
         restore_events = [event for event in events if event.get("action") == "RESTORE"]
-        assert restore_events
-        assert restore_events[0]["tombstone"] == result.tombstone_id
-        assert restore_events[0]["actor"] == "restore-user"
+        assert restore_events, "restore_events is not valid"
+        assert restore_events[0]["tombstone"] == result.tombstone_id, "Result must not be empty"
+        assert restore_events[0]["actor"] == "restore-user", "rest is not valid"
 
 
 class TestHealthCheck:
@@ -219,7 +219,7 @@ class TestHealthCheck:
         runner = CliRunner()
         result = runner.invoke(cli, ["health-check"])
 
-        assert result.exit_code != 0 or "FAILED" in result.output
+        assert result.exit_code != 0 or "FAILED" in result.output, "Result must not be empty"
 
     def test_health_check_reports_success(
         self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
@@ -237,5 +237,5 @@ class TestHealthCheck:
         runner = CliRunner()
         result = runner.invoke(cli, ["health-check"])
 
-        assert result.exit_code == 0
-        assert "OK" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "OK" in result.output, "Result must not be empty"

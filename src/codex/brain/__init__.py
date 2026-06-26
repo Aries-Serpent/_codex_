@@ -12,32 +12,47 @@ Components:
 from __future__ import annotations
 
 from codex.brain.checkpoint_manager import CheckpointManager
-from codex.brain.session_resume import SessionResume, ResumeResult
+from codex.brain.session_resume import ResumeResult, SessionResume
 from codex.brain.session_serializer import (
-    SessionSerializer,
     AgentStateSnapshot,
-    DecisionSnapshot,
-    MemorySnapshot,
-    ExecutionProgressSnapshot,
-    RepositoryStateSnapshot,
     ContextSnapshot,
+    DecisionSnapshot,
+    ExecutionProgressSnapshot,
+    MemorySnapshot,
+    RepositoryStateSnapshot,
+    SessionSerializer,
     create_agent_state_snapshot,
-    create_decision_snapshot,
-    create_memory_snapshot,
-    create_execution_progress_snapshot,
-    create_repository_state_snapshot,
     create_context_snapshot,
+    create_decision_snapshot,
+    create_execution_progress_snapshot,
+    create_memory_snapshot,
+    create_repository_state_snapshot,
 )
 
 # Phase 10.3: OODA Orchestration
 try:
+    from codex.brain.ooda_actor import (
+        ExecutionReport,
+        OODAactor,
+    )
+    from codex.brain.ooda_decider import (
+        DecisionDirective,
+        DecisionType,
+        OODADecider,
+    )
     from codex.brain.ooda_observer import (
-        OODAObserver,
-        Observable,
-        RepositoryState,
         AgentEcosystemState,
-        TaskQueueState,
         EnvironmentMetrics,
+        Observable,
+        OODAObserver,
+        RepositoryState,
+        TaskQueueState,
+    )
+    from codex.brain.ooda_orchestrator import (
+        CycleRecord,
+        OODAMetrics,
+        OODAOrchestrator,
+        ParallelOODAOrchestrator,
     )
     from codex.brain.ooda_orienter import (
         OODAOrienter,
@@ -45,21 +60,7 @@ try:
         Pattern,
         RiskAssessment,
     )
-    from codex.brain.ooda_decider import (
-        OODADecider,
-        DecisionDirective,
-        DecisionType,
-    )
-    from codex.brain.ooda_actor import (
-        OODAactor,
-        ExecutionReport,
-    )
-    from codex.brain.ooda_orchestrator import (
-        OODAOrchestrator,
-        ParallelOODAOrchestrator,
-        CycleRecord,
-        OODAMetrics,
-    )
+
     OODA_AVAILABLE = True
 except ImportError:
     OODA_AVAILABLE = False
@@ -85,24 +86,26 @@ __all__ = [
 
 # Add OODA components if available
 if OODA_AVAILABLE:
-    __all__.extend([
-        "OODAObserver",
-        "Observable",
-        "RepositoryState",
-        "AgentEcosystemState",
-        "TaskQueueState",
-        "EnvironmentMetrics",
-        "OODAOrienter",
-        "Orientation",
-        "Pattern",
-        "RiskAssessment",
-        "OODADecider",
-        "DecisionDirective",
-        "DecisionType",
-        "OODAactor",
-        "ExecutionReport",
-        "OODAOrchestrator",
-        "ParallelOODAOrchestrator",
-        "CycleRecord",
-        "OODAMetrics",
-    ])
+    __all__.extend(
+        [
+            "OODAObserver",
+            "Observable",
+            "RepositoryState",
+            "AgentEcosystemState",
+            "TaskQueueState",
+            "EnvironmentMetrics",
+            "OODAOrienter",
+            "Orientation",
+            "Pattern",
+            "RiskAssessment",
+            "OODADecider",
+            "DecisionDirective",
+            "DecisionType",
+            "OODAactor",
+            "ExecutionReport",
+            "OODAOrchestrator",
+            "ParallelOODAOrchestrator",
+            "CycleRecord",
+            "OODAMetrics",
+        ]
+    )

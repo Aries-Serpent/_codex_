@@ -129,8 +129,8 @@ class DuplicationDetector:
 
         except FileNotFoundError as e:
             error_type = type(e).__name__
-            logger.debug(f"FileNotFoundError: <ERROR_TYPE>")
-            logger.warning(f"FileNotFoundError: <ERROR_TYPE>", exc_info=True)
+            logger.debug("FileNotFoundError: <ERROR_TYPE>")
+            logger.warning("FileNotFoundError: <ERROR_TYPE>", exc_info=True)
             logger.warning("pylint not found. Install with: pip install pylint")
             return []
         except subprocess.TimeoutExpired:
@@ -138,8 +138,8 @@ class DuplicationDetector:
             return []
         except (ValueError, TypeError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.error(f"Error running pylint: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.error("Error running pylint: <ERROR_TYPE>")
             return []
 
     def _parse_pylint_output(self, stdout: str, stderr: str) -> list[DuplicateBlock]:

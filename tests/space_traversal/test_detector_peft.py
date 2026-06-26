@@ -19,7 +19,7 @@ def _load_module(path: Path, name: str) -> types.ModuleType:
         path = repo_root / path
     spec = importlib.util.spec_from_file_location(name, str(path))
     module = importlib.util.module_from_spec(spec)  # type: ignore[arg-type]
-    assert spec and spec.loader
+    assert spec and spec.loader, "spec is not valid"
     spec.loader.exec_module(module)  # type: ignore[union-attr]
     return module
 
@@ -49,6 +49,6 @@ def test_detector_peft_finds_tokens(tmp_path: Path) -> None:
     context_index = _context_index_for([file_path])
     result = module.detect(context_index)  # type: ignore[attr-defined]
 
-    assert result["id"] == "peft_hooks"
-    assert result["files_with_peft"] == 1
-    assert "LoraConfig" in list(result["evidence"].values())[0]
+    assert result["id"] == "peft_hooks", "Result must not be empty"
+    assert result["files_with_peft"] == 1, "Result must not be empty"
+    assert "LoraConfig" in list(result["evidence"].values())[0], "Result must not be empty"

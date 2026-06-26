@@ -30,8 +30,8 @@ class TestCheckpointCreation:
             "timestamp": datetime.now(UTC).isoformat(),
         }
 
-        assert checkpoint["epoch"] == 1
-        assert checkpoint["step"] == 100
+        assert checkpoint["epoch"] == 1, "Condition must be true"
+        assert checkpoint["step"] == 100, "Condition must be true"
         assert checkpoint["model_state"]["layer1"] == [1, 2, 3]
 
     def test_checkpoint_epoch_tracking(self):
@@ -41,23 +41,23 @@ class TestCheckpointCreation:
             cp = {"epoch": epoch, "step": epoch * 100, "loss": 0.5 - (epoch * 0.05)}
             checkpoints.append(cp)
 
-        assert len(checkpoints) == 5
-        assert checkpoints[0]["epoch"] == 1
-        assert checkpoints[4]["epoch"] == 5
+        assert len(checkpoints) == 5, "Checkpoints must not be empty"
+        assert checkpoints[0]["epoch"] == 1, "Condition must be true"
+        assert checkpoints[4]["epoch"] == 5, "Condition must be true"
 
     def test_checkpoint_step_tracking(self):
         """Test checkpoint tracks training steps."""
         checkpoint = {"step": 5000, "epoch": 10, "batch_size": 32}
 
         total_samples = checkpoint["step"] * checkpoint["batch_size"]
-        assert total_samples == 160000
+        assert total_samples == 160000, "total_samples is not valid"
 
     def test_checkpoint_timestamp_recording(self):
         """Test checkpoint records timestamp."""
         now = datetime.now(UTC)
         checkpoint = {"epoch": 1, "timestamp": now.isoformat()}
 
-        assert checkpoint["timestamp"] == now.isoformat()
+        assert checkpoint["timestamp"] == now.isoformat(), "Condition must be true"
 
     def test_checkpoint_with_comprehensive_state(self):
         """Test checkpoint with all state types."""
@@ -72,9 +72,9 @@ class TestCheckpointCreation:
             "timestamp": datetime.now(UTC).isoformat(),
         }
 
-        assert checkpoint["epoch"] == 5
-        assert checkpoint["metrics"]["accuracy"] == 0.85
-        assert "torch" in checkpoint["rng_state"]
+        assert checkpoint["epoch"] == 5, "Condition must be true"
+        assert checkpoint["metrics"]["accuracy"] == 0.85, "Condition must be true"
+        assert "torch" in checkpoint["rng_state"], "Condition must be true"
 
 
 class TestCheckpointRetention:
@@ -90,8 +90,8 @@ class TestCheckpointRetention:
         ]
 
         best_ckpt = max(metrics_list, key=lambda x: x["accuracy"])
-        assert best_ckpt["epoch"] == 3
-        assert best_ckpt["accuracy"] == 0.88
+        assert best_ckpt["epoch"] == 3, "Condition must be true"
+        assert best_ckpt["accuracy"] == 0.88, "Condition must be true"
 
     def test_keep_last_k_checkpoints(self):
         """Test keeping last K checkpoints."""
@@ -100,9 +100,9 @@ class TestCheckpointRetention:
         k = 3
         kept_checkpoints = all_checkpoints[-k:]
 
-        assert len(kept_checkpoints) == 3
-        assert kept_checkpoints[0]["epoch"] == 8
-        assert kept_checkpoints[-1]["epoch"] == 10
+        assert len(kept_checkpoints) == 3, "Kept_checkpoints must not be empty"
+        assert kept_checkpoints[0]["epoch"] == 8, "Condition must be true"
+        assert kept_checkpoints[-1]["epoch"] == 10, "Condition must be true"
 
     def test_remove_old_checkpoints(self):
         """Test removing checkpoints older than threshold."""
@@ -134,8 +134,8 @@ class TestCheckpointRetention:
         best_by_accuracy = max(checkpoints, key=lambda x: x["accuracy"])
         best_by_val = max(checkpoints, key=lambda x: x["val_accuracy"])
 
-        assert best_by_accuracy["epoch"] == 3
-        assert best_by_val["epoch"] == 3
+        assert best_by_accuracy["epoch"] == 3, "Condition must be true"
+        assert best_by_val["epoch"] == 3, "Condition must be true"
 
     def test_empty_checkpoint_list_handling(self):
         """Test handling empty checkpoint list."""
@@ -146,7 +146,7 @@ class TestCheckpointRetention:
         else:
             best = None
 
-        assert best is None
+        assert best is None, "best is not valid"
 
     def test_checkpoint_priority_selection(self):
         """Test selecting checkpoints by priority."""
@@ -158,8 +158,8 @@ class TestCheckpointRetention:
 
         # Sort by priority
         sorted_ckpts = sorted(checkpoints, key=lambda x: x["priority"])
-        assert sorted_ckpts[0]["epoch"] == 1
-        assert sorted_ckpts[-1]["epoch"] == 3
+        assert sorted_ckpts[0]["epoch"] == 1, "s is not valid"
+        assert sorted_ckpts[-1]["epoch"] == 3, "s is not valid"
 
 
 class TestCheckpointPersistence:
@@ -176,16 +176,16 @@ class TestCheckpointPersistence:
 
         # Simulate saving
         saved = json.dumps(checkpoint)
-        assert "epoch" in saved
-        assert "model" in saved
+        assert "epoch" in saved, "Condition must be true"
+        assert "model" in saved, "Condition must be true"
 
     def test_load_checkpoint_structure(self):
         """Test checkpoint load structure."""
         data = '{"epoch": 5, "loss": 0.35}'
         loaded = json.loads(data)
 
-        assert loaded["epoch"] == 5
-        assert loaded["loss"] == 0.35
+        assert loaded["epoch"] == 5, "Condition must be true"
+        assert loaded["loss"] == 0.35, "Condition must be true"
 
     def test_checkpoint_round_trip(self):
         """Test save and load round trip."""
@@ -201,7 +201,7 @@ class TestCheckpointPersistence:
         # Load
         loaded = json.loads(saved)
 
-        assert loaded == original
+        assert loaded == original, "loaded is not valid"
 
     def test_checkpoint_metadata_preservation(self):
         """Test metadata is preserved during save/load."""
@@ -211,7 +211,7 @@ class TestCheckpointPersistence:
         saved = json.dumps(checkpoint)
         loaded = json.loads(saved)
 
-        assert loaded["metadata"] == metadata
+        assert loaded["metadata"] == metadata, "Data must not be empty"
 
     def test_checkpoint_compression_handling(self):
         """Test handling checkpoint compression metadata."""
@@ -225,8 +225,8 @@ class TestCheckpointPersistence:
             },
         }
 
-        assert checkpoint["compression"]["ratio"] == 0.45
-        assert checkpoint["compression"]["original_size"] == 1000
+        assert checkpoint["compression"]["ratio"] == 0.45, "Condition must be true"
+        assert checkpoint["compression"]["original_size"] == 1000, "Condition must be true"
 
 
 class TestStateRecovery:
@@ -257,8 +257,8 @@ class TestStateRecovery:
 
         recovered = optimizer_state.copy()
 
-        assert recovered["learning_rate"] == 0.001
-        assert recovered["step"] == 1000
+        assert recovered["learning_rate"] == 0.001, "Condition must be true"
+        assert recovered["step"] == 1000, "Condition must be true"
 
     def test_recover_scheduler_state(self):
         """Test recovering scheduler state."""
@@ -266,8 +266,8 @@ class TestStateRecovery:
 
         recovered = scheduler_state.copy()
 
-        assert recovered["last_epoch"] == 10
-        assert recovered["T_max"] == 50
+        assert recovered["last_epoch"] == 10, "Condition must be true"
+        assert recovered["T_max"] == 50, "Condition must be true"
 
     def test_recover_rng_state(self):
         """Test recovering RNG state for reproducibility."""
@@ -279,8 +279,8 @@ class TestStateRecovery:
 
         recovered = rng_state.copy()
 
-        assert "torch_cpu" in recovered
-        assert "numpy" in recovered
+        assert "torch_cpu" in recovered, "Condition must be true"
+        assert "numpy" in recovered, "Condition must be true"
 
     def test_partial_recovery(self):
         """Test recovering subset of checkpoint."""
@@ -298,7 +298,7 @@ class TestStateRecovery:
 
         # Recover only metrics
         metrics = full_checkpoint["metrics"]
-        assert metrics["accuracy"] == 0.85
+        assert metrics["accuracy"] == 0.85, "Condition must be true"
 
 
 class TestAtomicOperations:
@@ -315,7 +315,7 @@ class TestAtomicOperations:
             # Then move to final
             final_written = True
 
-        assert final_written
+        assert final_written, "final_written is not valid"
 
     @pytest.mark.parametrize(
         "primary_exists,backup_exists,expected",
@@ -334,7 +334,7 @@ class TestAtomicOperations:
         else:
             data = None
 
-        assert data == expected
+        assert data == expected, "Data must not be empty"
 
     def test_no_partial_writes(self):
         """Test checkpoint operations prevent partial writes."""
@@ -351,7 +351,7 @@ class TestAtomicOperations:
             success = False
 
         if success:
-            assert len(states) == 3
+            assert len(states) == 3, "States must not be empty"
 
     def test_write_then_verify(self):
         """Test write followed by verification."""
@@ -363,7 +363,7 @@ class TestAtomicOperations:
         if written:
             verified = True
 
-        assert verified is True
+        assert verified is True, "verified is not valid"
 
     def test_rollback_on_corruption(self):
         """Test rollback if corruption detected."""
@@ -376,7 +376,7 @@ class TestAtomicOperations:
         else:
             current = new_checkpoint
 
-        assert current["epoch"] == 4
+        assert current["epoch"] == 4, "Condition must be true"
 
 
 class TestMetadataManagement:
@@ -387,7 +387,7 @@ class TestMetadataManagement:
         now = datetime.now(UTC)
         metadata = {"created": now.isoformat(), "epoch": 5, "step": 500}
 
-        assert metadata["created"] == now.isoformat()
+        assert metadata["created"] == now.isoformat(), "Data must not be empty"
 
     def test_metadata_hash(self):
         """Test metadata includes content hash."""
@@ -398,13 +398,13 @@ class TestMetadataManagement:
 
         metadata = {"hash": content_hash, "algorithm": "sha256"}
 
-        assert len(metadata["hash"]) == 64  # SHA256 hex digest length
+        assert len(metadata["hash"]) == 64, "Collection must not be empty"
 
     def test_metadata_version(self):
         """Test metadata includes checkpoint version."""
         metadata = {"checkpoint_version": "2.0", "schema_version": "1.0", "format": "pytorch"}
 
-        assert metadata["checkpoint_version"] == "2.0"
+        assert metadata["checkpoint_version"] == "2.0", "Data must not be empty"
 
     def test_metadata_source_tracking(self):
         """Test metadata tracks source information."""
@@ -415,8 +415,8 @@ class TestMetadataManagement:
             "timestamp": datetime.now(UTC).isoformat(),
         }
 
-        assert metadata["source_script"] == "train.py"
-        assert "abc123def" in metadata["git_commit"]
+        assert metadata["source_script"] == "train.py", "Data must not be empty"
+        assert "abc123def" in metadata["git_commit"], "Data must not be empty"
 
     def test_metadata_system_info(self):
         """Test metadata includes system information."""
@@ -427,8 +427,8 @@ class TestMetadataManagement:
             "python_version": "3.10",
         }
 
-        assert metadata["num_gpus"] == 2
-        assert metadata["pytorch_version"] == "2.0.0"
+        assert metadata["num_gpus"] == 2, "Data must not be empty"
+        assert metadata["pytorch_version"] == "2.0.0", "Data must not be empty"
 
 
 class TestCorruptionDetection:
@@ -445,7 +445,7 @@ class TestCorruptionDetection:
         actual_hash = hashlib.md5(content).hexdigest()
         is_valid = actual_hash == expected_hash
 
-        assert is_valid is True
+        assert is_valid is True, "is_valid is not valid"
 
     def test_detect_truncated_file(self):
         """Test detecting truncated checkpoint file."""
@@ -453,7 +453,7 @@ class TestCorruptionDetection:
         actual_size = 750  # Truncated
 
         is_corrupted = actual_size < expected_size
-        assert is_corrupted is True
+        assert is_corrupted is True, "is_corrupted is not valid"
 
     def test_detect_invalid_format(self):
         """Test detecting invalid checkpoint format."""
@@ -464,7 +464,7 @@ class TestCorruptionDetection:
         except json.JSONDecodeError:
             valid = False
 
-        assert valid is False
+        assert valid is False, "valid is not valid"
 
     def test_detect_schema_mismatch(self):
         """Test detecting schema mismatch."""
@@ -472,7 +472,7 @@ class TestCorruptionDetection:
         checkpoint = {"epoch": 5, "model": {}}
 
         has_all_fields = required_fields.issubset(checkpoint.keys())
-        assert has_all_fields is False
+        assert has_all_fields is False, "has_all_fields is not valid"
 
     def test_recover_from_corruption(self):
         """Test recovery strategy for corrupted checkpoint."""
@@ -480,7 +480,7 @@ class TestCorruptionDetection:
 
         recovered = backup_checkpoint
 
-        assert recovered["epoch"] == 4
+        assert recovered["epoch"] == 4, "Condition must be true"
 
 
 class TestCheckpointMetrics:
@@ -494,7 +494,7 @@ class TestCheckpointMetrics:
             "metadata": {"size_bytes": 50000},
         }
 
-        assert checkpoint["metadata"]["size_bytes"] == 50000
+        assert checkpoint["metadata"]["size_bytes"] == 50000, "Data must not be empty"
 
     def test_track_save_duration(self):
         """Test tracking checkpoint save time."""
@@ -506,7 +506,7 @@ class TestCheckpointMetrics:
         end = time.time()
 
         duration = end - start
-        assert duration > 0
+        assert duration > 0, "duration must be greater than zero"
 
     def test_track_load_duration(self):
         """Test tracking checkpoint load time."""
@@ -517,7 +517,7 @@ class TestCheckpointMetrics:
         end = time.time()
 
         duration = end - start
-        assert duration >= 0
+        assert duration >= 0, "duration must be greater than zero"
 
     def test_track_compression_ratio(self):
         """Test tracking compression effectiveness."""
@@ -525,5 +525,5 @@ class TestCheckpointMetrics:
         compressed_size = 450
         ratio = compressed_size / original_size
 
-        assert ratio < 1.0
-        assert ratio == 0.45
+        assert ratio < 1.0, "ratio is not valid"
+        assert ratio == 0.45, "ratio is not valid"

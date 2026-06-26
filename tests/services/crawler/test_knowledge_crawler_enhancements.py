@@ -31,14 +31,14 @@ class TestLocaleConfig:
             enabled=True,
             sync_interval_hours=24,
         )
-        assert config.locale_code == "en-us"
-        assert config.priority == 10
-        assert config.enabled is True
+        assert config.locale_code == "en-us", "locale_code is not valid"
+        assert config.priority == 10, "priority is not valid"
+        assert config.enabled is True, "enabled is not valid"
 
     def test_needs_sync_never_synced(self):
         """Test needs_sync when never synced."""
         config = LocaleConfig("en-us")
-        assert config.needs_sync() is True
+        assert config.needs_sync() is True, "Condition must be true"
 
     def test_needs_sync_recently_synced(self):
         """Test needs_sync when recently synced."""
@@ -47,7 +47,7 @@ class TestLocaleConfig:
             sync_interval_hours=24,
             last_sync=datetime.now(timezone.utc),
         )
-        assert config.needs_sync() is False
+        assert config.needs_sync() is False, "Condition must be true"
 
     def test_needs_sync_due(self):
         """Test needs_sync when sync is due."""
@@ -56,7 +56,7 @@ class TestLocaleConfig:
             sync_interval_hours=24,
             last_sync=datetime.now(timezone.utc) - timedelta(hours=25),
         )
-        assert config.needs_sync() is True
+        assert config.needs_sync() is True, "Condition must be true"
 
     def test_disabled_locale(self):
         """Test disabled locale never needs sync."""
@@ -64,7 +64,7 @@ class TestLocaleConfig:
             locale_code="en-us",
             enabled=False,
         )
-        assert config.needs_sync() is False
+        assert config.needs_sync() is False, "Condition must be true"
 
 
 class TestMultiLocaleSyncManager:
@@ -73,8 +73,8 @@ class TestMultiLocaleSyncManager:
     def test_create_manager(self):
         """Test creating sync manager."""
         manager = MultiLocaleSyncManager(max_workers=4)
-        assert manager.max_workers == 4
-        assert len(manager.locales) > 0
+        assert manager.max_workers == 4, "max_workers is not valid"
+        assert len(manager.locales) > 0, "Collection must not be empty"
 
     def test_add_locale(self):
         """Test adding a locale."""
@@ -83,8 +83,8 @@ class TestMultiLocaleSyncManager:
 
         manager.add_locale(LocaleConfig("zh-tw", priority=6))
 
-        assert len(manager.locales) == initial_count + 1
-        assert "zh-tw" in manager.locales
+        assert len(manager.locales) == initial_count + 1, "Collection must not be empty"
+        assert "zh-tw" in manager.locales, "Condition must be true"
 
     def test_remove_locale(self):
         """Test removing a locale."""
@@ -93,15 +93,15 @@ class TestMultiLocaleSyncManager:
 
         result = manager.remove_locale("test-locale")
 
-        assert result is True
-        assert "test-locale" not in manager.locales
+        assert result is True, "Result must not be empty"
+        assert "test-locale" not in manager.locales, "Condition must be true"
 
     def test_get_sync_schedule(self):
         """Test getting sync schedule."""
         manager = MultiLocaleSyncManager()
         schedule = manager.get_sync_schedule()
 
-        assert len(schedule) > 0
+        assert len(schedule) > 0, "Schedule must not be empty"
         # Should be sorted by priority (descending)
         priorities = [s["priority"] for s in schedule]
         assert priorities == sorted(priorities, reverse=True)
@@ -115,9 +115,9 @@ class TestMultiLocaleSyncManager:
 
         result = manager.sync_locale("en-us", mock_sync_func)
 
-        assert result.success is True
-        assert result.articles_synced == 10
-        assert result.locale_code == "en-us"
+        assert result.success is True, "Result must not be empty"
+        assert result.articles_synced == 10, "Result must not be empty"
+        assert result.locale_code == "en-us", "Result must not be empty"
 
     def test_sync_locale_failure(self):
         """Test handling sync failure."""
@@ -128,8 +128,8 @@ class TestMultiLocaleSyncManager:
 
         result = manager.sync_locale("en-us", failing_sync_func)
 
-        assert result.success is False
-        assert "Network error" in result.error_message
+        assert result.success is False, "Result must not be empty"
+        assert "Network error" in result.error_message, "Result must not be empty"
 
     def test_sync_all_locales(self):
         """Test syncing all locales."""
@@ -145,9 +145,9 @@ class TestMultiLocaleSyncManager:
 
         result = manager.sync_all_locales(mock_sync_func, only_due=False)
 
-        assert result.total_locales == 2
-        assert result.successful_locales == 2
-        assert result.total_articles_synced == 10
+        assert result.total_locales == 2, "Result must not be empty"
+        assert result.successful_locales == 2, "Result must not be empty"
+        assert result.total_articles_synced == 10, "Result must not be empty"
 
 
 class TestContentDiffer:
@@ -159,9 +159,9 @@ class TestContentDiffer:
 
         result = differ.diff("Hello World", "Hello World")
 
-        assert result.change_type == ChangeType.NO_CHANGE
-        assert result.change_ratio == 0.0
-        assert result.similarity_ratio == 1.0
+        assert result.change_type == ChangeType.NO_CHANGE, "Result must not be empty"
+        assert result.change_ratio == 0.0, "Result must not be empty"
+        assert result.similarity_ratio == 1.0, "Result must not be empty"
 
     def test_minor_change(self):
         """Test detecting minor change."""
@@ -172,8 +172,8 @@ class TestContentDiffer:
 
         result = differ.diff(old, new)
 
-        assert result.change_type == ChangeType.MINOR
-        assert result.change_ratio < 0.05
+        assert result.change_type == ChangeType.MINOR, "Result must not be empty"
+        assert result.change_ratio < 0.05, "Result must not be empty"
 
     def test_major_change(self):
         """Test detecting major change."""
@@ -185,7 +185,7 @@ class TestContentDiffer:
         result = differ.diff(old, new)
 
         assert result.change_type in (ChangeType.MAJOR, ChangeType.COMPLETE)
-        assert result.change_ratio > 0.5
+        assert result.change_ratio > 0.5, "change_ratio must be greater than zero"
 
     def test_html_stripping(self):
         """Test HTML tag stripping."""
@@ -197,7 +197,7 @@ class TestContentDiffer:
         result = differ.diff(old, new)
 
         # After stripping HTML, content should be similar
-        assert result.similarity_ratio > 0.8
+        assert result.similarity_ratio > 0.8, "similarity_ratio must be greater than zero"
 
     def test_whitespace_normalization(self):
         """Test whitespace normalization."""
@@ -208,7 +208,7 @@ class TestContentDiffer:
 
         result = differ.diff(old, new)
 
-        assert result.change_type == ChangeType.NO_CHANGE
+        assert result.change_type == ChangeType.NO_CHANGE, "Result must not be empty"
 
     def test_should_resync(self):
         """Test should_resync convenience method."""
@@ -216,13 +216,13 @@ class TestContentDiffer:
 
         # No change
         should_sync, _change_type, _ratio = differ.should_resync("Same content", "Same content")
-        assert should_sync is False
+        assert should_sync is False, "should_sync is not valid"
 
         # Significant change
         should_sync, _change_type, _ratio = differ.should_resync(
             "Old content", "Completely different"
         )
-        assert should_sync is True
+        assert should_sync is True, "should_sync is not valid"
 
 
 class TestIncrementalSyncDecider:
@@ -237,7 +237,7 @@ class TestIncrementalSyncDecider:
             "Same content",
         )
 
-        assert decision["action"] == "skip"
+        assert decision["action"] == "skip", "Condition must be true"
 
     def test_micro_update(self):
         """Test micro-update decision.
@@ -277,7 +277,7 @@ class TestIncrementalSyncDecider:
             "Completely rewritten new content",
         )
 
-        assert decision["action"] == "full_update"
+        assert decision["action"] == "full_update", "Condition must be true"
 
 
 class TestDiffSegment:
@@ -293,8 +293,8 @@ class TestDiffSegment:
             line_end=5,
         )
 
-        assert segment.change_type == "insert"
-        assert segment.line_start == 5
+        assert segment.change_type == "insert", "change_type is not valid"
+        assert segment.line_start == 5, "line_start is not valid"
 
     def test_to_dict(self):
         """Test segment serialization."""
@@ -308,8 +308,8 @@ class TestDiffSegment:
 
         d = segment.to_dict()
 
-        assert "change_type" in d
-        assert "old_content_preview" in d
+        assert "change_type" in d, "Condition must be true"
+        assert "old_content_preview" in d, "Content must not be empty"
 
 
 class TestContentDiffResult:
@@ -325,7 +325,7 @@ class TestContentDiffResult:
             new_hash="abc",
         )
 
-        assert result.should_sync() is False
+        assert result.should_sync() is False, "Result must not be empty"
 
     def test_should_sync_with_change(self):
         """Test should_sync with change."""
@@ -337,7 +337,7 @@ class TestContentDiffResult:
             new_hash="def",
         )
 
-        assert result.should_sync() is True
+        assert result.should_sync() is True, "Result must not be empty"
 
     def test_to_dict(self):
         """Test result serialization."""
@@ -351,5 +351,5 @@ class TestContentDiffResult:
 
         d = result.to_dict()
 
-        assert d["change_type"] == "minor"
-        assert "similarity_ratio" in d
+        assert d["change_type"] == "minor", "Condition must be true"
+        assert "similarity_ratio" in d, "Condition must be true"

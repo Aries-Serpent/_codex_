@@ -40,7 +40,7 @@ def test_update_tenant_calls_registry_once(monkeypatch) -> None:
         metadata=None,
         active=None,
     )
-    assert response.tenant_id == "tenant-1"
+    assert response.tenant_id == "tenant-1", "Response must not be empty"
 
 
 def test_delete_tenant_skips_preemptive_deactivate(monkeypatch) -> None:
@@ -52,4 +52,4 @@ def test_delete_tenant_skips_preemptive_deactivate(monkeypatch) -> None:
 
     registry.deactivate_tenant.assert_not_called()
     registry.delete_tenant.assert_called_once_with("tenant-1")
-    assert response.status_code == 204
+    assert response.status_code == 204, "Response must not be empty"

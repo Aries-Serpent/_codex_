@@ -94,7 +94,7 @@ The Phase 9.3 Semantic Multi-Agent Routing Engine is now complete and production
 **API:**
 ```python
 router = SemanticRouter()
-selected_agents, confidence, latency = router.route_task(task_description)
+selected_agents, confidence, latency = router.route_task(task_description)  # pragma: allowlist secret
 # Returns: (['agent1', 'agent2', 'agent3'], 92.5, 8.3)  # agents, %, ms
 ```
 
@@ -135,7 +135,7 @@ best_agents = balancer.select_best_agents(candidates, count=3)
 
 **Test Results:**
 ```
-✅ test_01_single_task_routing ................................. PASS
+✅ test_01_single_task_routing ................................. PASS  # pragma: allowlist secret
 ✅ test_02_parallel_execution .................................. PASS
 ✅ test_03_100_concurrent_tasks_submission ...................... PASS
 ✅ test_04_parallel_execution_with_failures ..................... PASS

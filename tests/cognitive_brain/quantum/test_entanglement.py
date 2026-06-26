@@ -82,12 +82,12 @@ def test_create_entanglement_basic(manager):
     """Test basic entanglement pair creation."""
     pair_id = manager.create_entanglement("agent1", "agent2", 0.9)
 
-    assert pair_id in manager.entangled_pairs
+    assert pair_id in manager.entangled_pairs, "Condition must be true"
     pair = manager.entangled_pairs[pair_id]
-    assert pair.agent1_id == "agent1"
-    assert pair.agent2_id == "agent2"
-    assert pair.correlation_strength == 0.9
-    assert len(pair.observed_states) == 0
+    assert pair.agent1_id == "agent1", "agent1_id is not valid"
+    assert pair.agent2_id == "agent2", "agent2_id is not valid"
+    assert pair.correlation_strength == 0.9, "correlation_strength is not valid"
+    assert len(pair.observed_states) == 0, "Collection must not be empty"
 
 
 def test_create_entanglement_deterministic(manager):
@@ -95,8 +95,8 @@ def test_create_entanglement_deterministic(manager):
     pair_id1 = manager.create_entanglement("agentA", "agentB")
     pair_id2 = manager.create_entanglement("agentA", "agentB")
 
-    assert pair_id1 == pair_id2
-    assert len(manager.entangled_pairs) == 1
+    assert pair_id1 == pair_id2, "pair_id1 is not valid"
+    assert len(manager.entangled_pairs) == 1, "Collection must not be empty"
 
 
 def test_create_entanglement_default_strength(manager):
@@ -104,7 +104,7 @@ def test_create_entanglement_default_strength(manager):
     pair_id = manager.create_entanglement("agent1", "agent2")
 
     strength = manager.get_entanglement_strength(pair_id)
-    assert strength == 1.0
+    assert strength == 1.0, "strength is not valid"
 
 
 def test_create_entanglement_invalid_strength(manager):
@@ -121,9 +121,9 @@ def test_create_multiple_pairs(manager):
     pair1 = manager.create_entanglement("compliance", "security", 0.8)
     pair2 = manager.create_entanglement("dep-upgrade", "ci-testing", 0.9)
 
-    assert len(manager.entangled_pairs) == 2
-    assert manager.get_entanglement_strength(pair1) == 0.8
-    assert manager.get_entanglement_strength(pair2) == 0.9
+    assert len(manager.entangled_pairs) == 2, "Collection must not be empty"
+    assert manager.get_entanglement_strength(pair1) == 0.8, "Condition must be true"
+    assert manager.get_entanglement_strength(pair2) == 0.9, "Condition must be true"
 
 
 # ==================== Correlation Measurement Tests (5) ====================
@@ -175,7 +175,7 @@ def test_measure_correlation_no_correlation(manager):
         manager.update_correlation(pair_id, s1, s2)
 
     correlation = manager.measure_correlation(pair_id)
-    assert abs(correlation.correlation) < 0.3  # Near zero
+    assert abs(correlation.correlation) < 0.3, "Condition must be true"
 
 
 def test_measure_correlation_insufficient_data(manager):
@@ -224,7 +224,7 @@ def test_collapse_entangled_state_with_history(manager):
         manager.update_correlation(pair_id, "approve", "reject")
 
     suggested = manager.collapse_entangled_state(pair_id, "approve")
-    assert suggested == "approve"  # Most common
+    assert suggested == "approve", "suggested is not valid"
 
 
 def test_collapse_entangled_state_no_history(manager):
@@ -232,7 +232,7 @@ def test_collapse_entangled_state_no_history(manager):
     pair_id = manager.create_entanglement("agent1", "agent2")
 
     suggested = manager.collapse_entangled_state(pair_id, "approve")
-    assert suggested == "approve"  # Returns same state
+    assert suggested == "approve", "suggested is not valid"
 
 
 def test_collapse_entangled_state_no_matching_history(manager):
@@ -244,7 +244,7 @@ def test_collapse_entangled_state_no_matching_history(manager):
 
     # Request collapse for unseen state
     suggested = manager.collapse_entangled_state(pair_id, "approve")
-    assert suggested == "approve"  # Returns same state
+    assert suggested == "approve", "suggested is not valid"
 
 
 def test_collapse_entangled_state_correlation_patterns(manager):
@@ -271,7 +271,7 @@ def test_collapse_entangled_state_mixed_outcomes(manager):
         manager.update_correlation(pair_id, "decision", "reject")
 
     suggested = manager.collapse_entangled_state(pair_id, "decision")
-    assert suggested == "approve"  # Majority
+    assert suggested == "approve", "suggested is not valid"
 
 
 # ==================== Bell State Fidelity Tests (3) ====================
@@ -303,7 +303,7 @@ def test_bell_state_fidelity_imperfect(manager):
         manager.update_correlation(pair_id, 1, 0)
 
     fidelity = manager.compute_bell_state_fidelity(pair_id)
-    assert 0.5 < fidelity < 1.0  # Imperfect but positive
+    assert 0.5 < fidelity < 1.0, "5 is not valid"
 
 
 def test_bell_state_fidelity_string_states(manager):
@@ -359,7 +359,7 @@ def test_mutual_information_partial_correlation(manager):
         manager.update_correlation(pair_id, "B", "Y")
 
     mi = manager.compute_mutual_information(pair_id)
-    assert 0.2 < mi < 0.9  # Some information
+    assert 0.2 < mi < 0.9, "2 is not valid"
 
 
 # ==================== Error Handling Tests (4) ====================
@@ -399,7 +399,7 @@ def test_break_entanglement(manager):
 
     manager.break_entanglement(pair_id)
 
-    assert pair_id not in manager.entangled_pairs
+    assert pair_id not in manager.entangled_pairs, "Condition must be true"
 
     with pytest.raises(KeyError):
         manager.measure_correlation(pair_id)
@@ -429,7 +429,7 @@ def test_entanglement_workflow_end_to_end(manager):
 
     # Measure correlation
     correlation = manager.measure_correlation(pair_id)
-    assert correlation.correlation > 0.5  # Positive correlation
+    assert correlation.correlation > 0.5, "correlation must be greater than zero"
 
     # Collapse state
     suggested = manager.collapse_entangled_state(pair_id, "approve")
@@ -438,9 +438,9 @@ def test_entanglement_workflow_end_to_end(manager):
     # Compute fidelity and MI
     fidelity = manager.compute_bell_state_fidelity(pair_id)
     mi = manager.compute_mutual_information(pair_id)
-    assert 0.0 <= fidelity <= 1.0
-    assert mi >= 0.0
+    assert 0.0 <= fidelity <= 1.0, "0 is not valid"
+    assert mi >= 0.0, "mi must be greater than zero"
 
     # Break entanglement
     manager.break_entanglement(pair_id)
-    assert pair_id not in manager.entangled_pairs
+    assert pair_id not in manager.entangled_pairs, "Condition must be true"

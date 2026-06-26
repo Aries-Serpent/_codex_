@@ -40,9 +40,9 @@ class TestBLEUMetric:
         targets = ["the cat sat on the mat"]
 
         score = bleu(preds, targets)
-        assert score is not None
+        assert score is not None, "score must be initialized"
         assert isinstance(score, float)
-        assert score > 0.9  # Should be close to 1.0 for perfect match
+        assert score > 0.9, "score must be greater than zero"
 
     @pytest.mark.skipif(not NLTK_AVAILABLE, reason="nltk not installed")
     def test_bleu_no_match(self):
@@ -56,9 +56,9 @@ class TestBLEUMetric:
         targets = ["qux quux corge"]
 
         score = bleu(preds, targets)
-        assert score is not None
+        assert score is not None, "score must be initialized"
         assert isinstance(score, float)
-        assert score == 0.0  # No matching n-grams
+        assert score == 0.0, "score is not valid"
 
     @pytest.mark.skipif(not NLTK_AVAILABLE, reason="nltk not installed")
     def test_bleu_partial_match(self):
@@ -72,9 +72,9 @@ class TestBLEUMetric:
         targets = ["the dog sat"]
 
         score = bleu(preds, targets)
-        assert score is not None
+        assert score is not None, "score must be initialized"
         assert isinstance(score, float)
-        assert 0.0 < score < 1.0  # Partial match
+        assert 0.0 < score < 1.0, "0 is not valid"
 
     @pytest.mark.skipif(not NLTK_AVAILABLE, reason="nltk not installed")
     def test_bleu_multiple_samples(self):
@@ -93,9 +93,9 @@ class TestBLEUMetric:
         ]
 
         score = bleu(preds, targets)
-        assert score is not None
+        assert score is not None, "score must be initialized"
         assert isinstance(score, float)
-        assert score > 0.9  # Perfect matches
+        assert score > 0.9, "score must be greater than zero"
 
     def test_bleu_works_offline(self):
         """Test that BLEU works without nltk (using offline implementation)."""
@@ -105,9 +105,9 @@ class TestBLEUMetric:
 
         # Offline implementation always returns a score
         result = bleu(["test"], ["test"])
-        assert result is not None
+        assert result is not None, "result must be initialized"
         assert isinstance(result, float)
-        assert result > 0.0  # Perfect match should score well
+        assert result > 0.0, "result must be greater than zero"
 
 
 class TestROUGEMetric:
@@ -125,9 +125,9 @@ class TestROUGEMetric:
         targets = ["the quick brown fox"]
 
         score = rouge(preds, targets)
-        assert score is not None
+        assert score is not None, "score must be initialized"
         assert isinstance(score, float)
-        assert score > 0.9  # Should be close to 1.0 for perfect match
+        assert score > 0.9, "score must be greater than zero"
 
     @pytest.mark.skipif(not ROUGE_AVAILABLE, reason="rouge-score not installed")
     def test_rouge_no_match(self):
@@ -141,9 +141,9 @@ class TestROUGEMetric:
         targets = ["qux quux corge"]
 
         score = rouge(preds, targets)
-        assert score is not None
+        assert score is not None, "score must be initialized"
         assert isinstance(score, float)
-        assert score == 0.0  # No matching subsequences
+        assert score == 0.0, "score is not valid"
 
     @pytest.mark.skipif(not ROUGE_AVAILABLE, reason="rouge-score not installed")
     def test_rouge_partial_match(self):
@@ -157,9 +157,9 @@ class TestROUGEMetric:
         targets = ["the dog sat"]
 
         score = rouge(preds, targets)
-        assert score is not None
+        assert score is not None, "score must be initialized"
         assert isinstance(score, float)
-        assert 0.0 < score < 1.0  # Partial match
+        assert 0.0 < score < 1.0, "0 is not valid"
 
     @pytest.mark.skipif(not ROUGE_AVAILABLE, reason="rouge-score not installed")
     def test_rouge_multiple_samples(self):
@@ -178,9 +178,9 @@ class TestROUGEMetric:
         ]
 
         score = rouge(preds, targets)
-        assert score is not None
+        assert score is not None, "score must be initialized"
         assert isinstance(score, float)
-        assert score > 0.9  # Perfect matches
+        assert score > 0.9, "score must be greater than zero"
 
     def test_rouge_works_offline(self):
         """Test that ROUGE works without rouge-score (using offline implementation)."""
@@ -190,9 +190,9 @@ class TestROUGEMetric:
 
         # Offline implementation always returns a score
         result = rouge(["test"], ["test"])
-        assert result is not None
+        assert result is not None, "result must be initialized"
         assert isinstance(result, float)
-        assert result > 0.0  # Perfect match should score well
+        assert result > 0.0, "result must be greater than zero"
 
 
 class TestMetricRegistryIntegration:
@@ -205,8 +205,8 @@ class TestMetricRegistryIntegration:
         # Both should be registered regardless of dependency availability
         # Note: registry normalizes names to lowercase
         registered = list_metrics()
-        assert "bleu" in registered
-        assert "rougel" in registered  # Normalized to lowercase
+        assert "bleu" in registered, "Condition must be true"
+        assert "rougel" in registered, "Condition must be true"
 
     def test_get_metric_returns_callable(self):
         """Test that get_metric returns callable for BLEU and ROUGE."""
@@ -215,8 +215,8 @@ class TestMetricRegistryIntegration:
         bleu = get_metric("bleu")
         rouge = get_metric("rougeL")
 
-        assert callable(bleu)
-        assert callable(rouge)
+        assert callable(bleu), "Condition must be true"
+        assert callable(rouge), "Condition must be true"
 
     def test_metrics_handle_empty_inputs(self):
         """Test that metrics handle empty inputs gracefully."""

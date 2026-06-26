@@ -75,7 +75,7 @@ class TestModuleImport:
         try:
             from codex_ml.data import validation
 
-            assert validation is not None
+            assert validation is not None, "validation must be initialized"
         except ImportError as e:
             pytest.skip(f"validation module not available: {e}")
 
@@ -84,7 +84,7 @@ class TestModuleImport:
         try:
             from codex_ml.data.validation import Validator
 
-            assert Validator is not None
+            assert Validator is not None, "Validator must be initialized"
         except ImportError:
             pytest.skip("Validator not available")
 
@@ -106,12 +106,12 @@ class TestSchemaValidation:
             # Look for validation function
             if hasattr(validation, "validate_record"):
                 result = validation.validate_record(record)
-                assert result is not None
+                assert result is not None, "result must be initialized"
             elif hasattr(validation, "Validator"):
                 v = validation.Validator()
                 if hasattr(v, "validate"):
                     result = v.validate(record)
-                    assert result is not None
+                    assert result is not None, "result must be initialized"
         except ImportError:
             pytest.skip("validation not available")
 
@@ -147,10 +147,10 @@ class TestFileValidation:
 
             if hasattr(validation, "validate_file"):
                 result = validation.validate_file(str(valid_jsonl_file))
-                assert result is not None
+                assert result is not None, "result must be initialized"
             elif hasattr(validation, "validate_jsonl"):
                 result = validation.validate_jsonl(str(valid_jsonl_file))
-                assert result is not None
+                assert result is not None, "result must be initialized"
         except ImportError:
             pytest.skip("file validation not available")
 
@@ -162,7 +162,7 @@ class TestFileValidation:
             if hasattr(validation, "validate_file"):
                 result = validation.validate_file(str(invalid_jsonl_file))
                 # Should indicate validation errors
-                assert result is not None
+                assert result is not None, "result must be initialized"
         except ImportError:
             pytest.skip("file validation not available")
 
@@ -173,7 +173,7 @@ class TestFileValidation:
 
             if hasattr(validation, "validate_file"):
                 result = validation.validate_file(str(empty_file))
-                assert result is not None
+                assert result is not None, "result must be initialized"
         except ImportError:
             pytest.skip("file validation not available")
 
@@ -207,8 +207,8 @@ class TestDataTypeValidation:
             from codex_ml.data import validation
 
             if hasattr(validation, "validate_text"):
-                assert validation.validate_text("valid text")
-                assert not validation.validate_text(None)
+                assert validation.validate_text("valid text"), "Condition must be true"
+                assert not validation.validate_text(None), "Condition must be true"
         except ImportError:
             pytest.skip("text validation not available")
 
@@ -229,7 +229,7 @@ class TestChecksumValidation:
             if hasattr(validation, "compute_checksum"):
                 checksum = validation.compute_checksum(str(valid_jsonl_file))
                 assert isinstance(checksum, str)
-                assert len(checksum) > 0
+                assert len(checksum) > 0, "Checksum must not be empty"
         except ImportError:
             pytest.skip("checksum computation not available")
 
@@ -241,7 +241,7 @@ class TestChecksumValidation:
             if hasattr(validation, "compute_checksum") and hasattr(validation, "verify_checksum"):
                 expected = validation.compute_checksum(str(valid_jsonl_file))
                 result = validation.verify_checksum(str(valid_jsonl_file), expected)
-                assert result is True
+                assert result is True, "Result must not be empty"
         except ImportError:
             pytest.skip("checksum verification not available")
 
@@ -261,7 +261,7 @@ class TestEncodingValidation:
 
             if hasattr(validation, "validate_encoding"):
                 result = validation.validate_encoding(str(valid_jsonl_file), "utf-8")
-                assert result is True or result is None
+                assert result is True or result is None, "Result must not be empty"
         except ImportError:
             pytest.skip("encoding validation not available")
 
@@ -292,7 +292,7 @@ class TestRecordCountValidation:
 
             if hasattr(validation, "count_records"):
                 count = validation.count_records(str(valid_jsonl_file))
-                assert count == 3
+                assert count == 3, "Count must be greater than zero"
         except ImportError:
             pytest.skip("record counting not available")
 
@@ -303,7 +303,7 @@ class TestRecordCountValidation:
 
             if hasattr(validation, "validate_record_count"):
                 result = validation.validate_record_count(str(valid_jsonl_file), 3)
-                assert result is True
+                assert result is True, "Result must not be empty"
         except ImportError:
             pytest.skip("record count validation not available")
 
@@ -329,8 +329,8 @@ class TestValidationResults:
                     errors=[],
                     warnings=[],
                 )
-                assert result.is_valid is True
-                assert len(result.errors) == 0
+                assert result.is_valid is True, "Result must not be empty"
+                assert len(result.errors) == 0, "Collection must not be empty"
         except ImportError:
             pytest.skip("ValidationResult not available")
 

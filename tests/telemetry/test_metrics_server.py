@@ -26,4 +26,4 @@ def test_metrics_server_exports_metrics():
     resp = conn.getresponse()
     data = resp.read().decode()
     conn.close()
-    assert "data_load_seconds" in data
+    assert "data_load_seconds" in data, "Data must not be empty"

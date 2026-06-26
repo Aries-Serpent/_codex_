@@ -83,11 +83,11 @@ def test_purge_skips_shared_artifact(tmp_path: Path) -> None:
         apply=True,
     )
 
-    assert not scrubbed
+    assert not scrubbed, "Condition must be true"
 
     restore_payload = dal.get_restore_payload(second["tombstone"])
     artifact = restore_payload["artifact"]
-    assert artifact["blob_bytes"] is not None
+    assert artifact["blob_bytes"] is not None, "Value must be initialized"
 
     with dal._transaction() as execute:  # type: ignore[attr-defined]
         events = execute(
@@ -101,8 +101,8 @@ def test_purge_skips_shared_artifact(tmp_path: Path) -> None:
             fetchall=True,
         )
     contexts = [json.loads(row["context"]) for row in events]
-    assert all(ctx.get("blob_scrubbed") is False for ctx in contexts)
-    assert any(ctx.get("shared_references") == 1 for ctx in contexts)
+    assert all(ctx.get("blob_scrubbed") is False for ctx in contexts), "Condition must be true"
+    assert any(ctx.get("shared_references") == 1 for ctx in contexts), "Condition must be true"
 
 
 def test_purge_scrubs_single_reference(tmp_path: Path) -> None:
@@ -123,9 +123,9 @@ def test_purge_scrubs_single_reference(tmp_path: Path) -> None:
         apply=True,
     )
 
-    assert scrubbed
+    assert scrubbed, "scrubbed is not valid"
 
     restore_payload = dal.get_restore_payload(record["tombstone"])
     artifact = restore_payload["artifact"]
-    assert artifact["blob_bytes"] is None
-    assert artifact["storage_driver"] == "object"
+    assert artifact["blob_bytes"] is None, "Condition must be true"
+    assert artifact["storage_driver"] == "object", "Object must be initialized"

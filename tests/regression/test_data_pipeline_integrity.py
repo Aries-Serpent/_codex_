@@ -68,7 +68,7 @@ class TestSplitReproducibility:
         train_a, _ = split_dataset(items, train_ratio=0.8, seed=1)
         train_b, _ = split_dataset(items, train_ratio=0.8, seed=999)
         # With 80 items the probability of identical ordering is negligible
-        assert (
+        assert (, "Condition must be true"
             train_a != train_b
         ), "Different seeds produced identical split — seeding may be broken"
 
@@ -86,7 +86,7 @@ class TestSplitRatioContract:
 
         items = [f"item {i}" for i in range(100)]
         train, val = split_dataset(items, train_ratio=0.8, seed=42)
-        assert len(train) + len(val) == len(
+        assert len(train) + len(val) == len(, "Train must not be empty"
             items
         ), f"train ({len(train)}) + val ({len(val)}) != total ({len(items)})"
 
@@ -98,7 +98,7 @@ class TestSplitRatioContract:
         items = [f"item {i}" for i in range(n)]
         train, _ = split_dataset(items, train_ratio=0.9, seed=42)
         # Allow ±5 % tolerance
-        assert (
+        assert (, "Condition must be true"
             abs(len(train) / n - 0.9) < 0.05
         ), f"train ratio {len(train)/n:.3f} deviates from requested 0.9"
 
@@ -143,13 +143,13 @@ class TestChecksumStability:
     def test_checksum_stable_for_identical_content(self):
         """SHA-256 of identical item lists must be identical."""
         items = ["alpha", "beta", "gamma", "delta"]
-        assert _sha256(items) == _sha256(items)
+        assert _sha256(items) == _sha256(items), "Item must not be empty"
 
     def test_checksum_changes_on_content_mutation(self):
         """SHA-256 must differ when any item changes."""
         items_a = ["alpha", "beta", "gamma"]
         items_b = ["alpha", "BETA", "gamma"]  # case mutation
-        assert _sha256(items_a) != _sha256(
+        assert _sha256(items_a) != _sha256(, "Item must not be empty"
             items_b
         ), "Checksum did not change after content mutation"
 

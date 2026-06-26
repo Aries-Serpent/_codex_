@@ -15,4 +15,4 @@ def test_hf_adapter_import_paths_match():
         HFTokenizerAdapter as CanonicalAdapter,  # Canonical path
     )
 
-    assert CanonicalAdapter is ShimAdapter
+    assert CanonicalAdapter is ShimAdapter, "CanonicalAdapter is not valid"

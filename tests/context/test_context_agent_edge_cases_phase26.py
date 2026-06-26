@@ -16,20 +16,20 @@ class TestContextEdgeCases:
         """Test context with no conversation history"""
         empty_context = []
         # Should handle empty context
-        assert len(empty_context) == 0
+        assert len(empty_context) == 0, "Empty_context must not be empty"
 
     def test_context_extremely_long_history(self):
         """Test context with very long conversation history (10000+ turns)"""
         long_history = [{"role": "user", "content": f"message {i}"} for i in range(10000)]
         # Should handle or truncate long history
-        assert len(long_history) == 10000
+        assert len(long_history) == 10000, "Long_history must not be empty"
 
     def test_context_token_limit_exceeded(self):
         """Test context when token limit is exceeded"""
         # Simulate exceeding token limit
         long_message = "word " * 100000
         # Should truncate or reject
-        assert len(long_message) >= 500000  # Changed from > to >= to fix off-by-one
+        assert len(long_message) >= 500000, "Long_message must not be empty"
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_context_concurrent_modifications(self):
@@ -46,7 +46,7 @@ class TestContextEdgeCases:
             t.join()
 
         # Should handle concurrent access safely
-        assert len(context["messages"]) == 10
+        assert len(context["messages"]) == 10, "Collection must not be empty"
 
     def test_context_serialization_circular_ref(self):
         """Test context serialization with circular references"""
@@ -80,9 +80,9 @@ class TestContextEdgeCases:
     def test_context_null_bytes(self):
         """Test context with null bytes in content"""
         null_content = "test\x00data"
-        assert "\x00" in null_content
+        assert "\x00" in null_content, "Content must not be empty"
         # Should sanitize or reject
-        assert "\x00" in null_content
+        assert "\x00" in null_content, "Content must not be empty"
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_context_state_rollback(self):
@@ -127,4 +127,4 @@ class TestAgentEdgeCases:
         for t in threads:
             t.join()
 
-        assert len(results) == 20
+        assert len(results) == 20, "Results must not be empty"

@@ -17,9 +17,9 @@ class TestListMutations:
         items.append(1)
         items.append(2)
 
-        assert len(items) == 2
-        assert items[0] == 1
-        assert items[1] == 2
+        assert len(items) == 2, "Items must not be empty"
+        assert items[0] == 1, "Item must not be empty"
+        assert items[1] == 2, "Item must not be empty"
         assert items == [1, 2]
 
     def test_list_insert_mutation(self):
@@ -28,17 +28,17 @@ class TestListMutations:
         items.insert(1, 2)
 
         assert items == [1, 2, 3]
-        assert items[1] == 2
-        assert len(items) == 3
+        assert items[1] == 2, "Item must not be empty"
+        assert len(items) == 3, "Items must not be empty"
 
     def test_list_pop_mutation(self):
         """Test list pop operations"""
         items = [1, 2, 3]
         last = items.pop()
 
-        assert last == 3
+        assert last == 3, "last is not valid"
         assert items == [1, 2]
-        assert len(items) == 2
+        assert len(items) == 2, "Items must not be empty"
 
     def test_list_remove_mutation(self):
         """Test list remove operations"""
@@ -46,7 +46,7 @@ class TestListMutations:
         items.remove(2)  # Removes first occurrence
 
         assert items == [1, 3, 2]
-        assert len(items) == 3
+        assert len(items) == 3, "Items must not be empty"
 
     def test_list_extend_mutation(self):
         """Test list extend operations"""
@@ -54,15 +54,15 @@ class TestListMutations:
         items.extend([3, 4])
 
         assert items == [1, 2, 3, 4]
-        assert len(items) == 4
+        assert len(items) == 4, "Items must not be empty"
 
     def test_list_clear_mutation(self):
         """Test list clear operations"""
         items = [1, 2, 3]
         items.clear()
 
-        assert items == []
-        assert len(items) == 0
+        assert items == [], "Item must not be empty"
+        assert len(items) == 0, "Items must not be empty"
 
     def test_list_slice_mutation(self):
         """Test list slicing is not mutated"""
@@ -80,8 +80,8 @@ class TestListMutations:
         items.reverse()
 
         assert items == [3, 2, 1]
-        assert items[0] == 3
-        assert items[-1] == 1
+        assert items[0] == 3, "Item must not be empty"
+        assert items[-1] == 1, "Item must not be empty"
 
     def test_list_sort_mutation(self):
         """Test list sort operations"""
@@ -89,8 +89,8 @@ class TestListMutations:
         items.sort()
 
         assert items == [1, 2, 3]
-        assert items[0] == 1
-        assert items[-1] == 3
+        assert items[0] == 1, "Item must not be empty"
+        assert items[-1] == 3, "Item must not be empty"
 
     def test_list_copy_mutation(self):
         """Test list copy operations"""
@@ -101,7 +101,7 @@ class TestListMutations:
 
         assert original == [1, 2, 3]
         assert copy == [1, 2, 3, 4]
-        assert original is not copy
+        assert original is not copy, "original is not valid"
 
 
 class TestDictMutations:
@@ -112,16 +112,16 @@ class TestDictMutations:
         d = {}
         d["key"] = "value"
 
-        assert d == {"key": "value"}
-        assert d["key"] == "value"
-        assert len(d) == 1
+        assert d == {"key": "value"}, "Value must be initialized"
+        assert d["key"] == "value", "Value must be initialized"
+        assert len(d) == 1, "D must not be empty"
 
     def test_dict_get_mutation(self):
         """Test dict get operations"""
         d = {"a": 1, "b": 2}
 
-        assert d.get("a") == 1
-        assert d.get("c") is None
+        assert d.get("a") == 1, "Condition must be true"
+        assert d.get("c") is None, "Condition must be true"
         assert d.get("c", "default") == "default"
 
     def test_dict_pop_mutation(self):
@@ -129,9 +129,9 @@ class TestDictMutations:
         d = {"a": 1, "b": 2}
         value = d.pop("a")
 
-        assert value == 1
-        assert d == {"b": 2}
-        assert len(d) == 1
+        assert value == 1, "Value must be initialized"
+        assert d == {"b": 2}, "d is not valid"
+        assert len(d) == 1, "D must not be empty"
 
     def test_dict_update_mutation(self):
         """Test dict update operations"""
@@ -139,23 +139,23 @@ class TestDictMutations:
         d.update({"b": 2, "c": 3})
 
         assert d == {"a": 1, "b": 2, "c": 3}
-        assert len(d) == 3
+        assert len(d) == 3, "D must not be empty"
 
     def test_dict_clear_mutation(self):
         """Test dict clear operations"""
         d = {"a": 1, "b": 2}
         d.clear()
 
-        assert d == {}
-        assert len(d) == 0
+        assert d == {}, "d is not valid"
+        assert len(d) == 0, "D must not be empty"
 
     def test_dict_keys_values_items(self):
         """Test dict keys, values, items operations"""
         d = {"a": 1, "b": 2}
 
-        assert "a" in d.keys()
-        assert "c" not in d.keys()
-        assert 1 in d.values()
+        assert "a" in d.keys(), "Condition must be true"
+        assert "c" not in d.keys(), "Condition must be true"
+        assert 1 in d.values(), "Value must be initialized"
         assert ("a", 1) in d.items()
 
     def test_dict_copy_mutation(self):
@@ -167,7 +167,7 @@ class TestDictMutations:
 
         assert original == {"a": 1, "b": 2}
         assert copy == {"a": 1, "b": 2, "c": 3}
-        assert original is not copy
+        assert original is not copy, "original is not valid"
 
 
 class TestSetMutations:
@@ -178,16 +178,16 @@ class TestSetMutations:
         s = {1, 2}
         s.add(3)
 
-        assert 3 in s
-        assert len(s) == 3
+        assert 3 in s, "Condition must be true"
+        assert len(s) == 3, "S must not be empty"
 
     def test_set_remove_mutation(self):
         """Test set remove operations"""
         s = {1, 2, 3}
         s.remove(2)
 
-        assert 2 not in s
-        assert len(s) == 2
+        assert 2 not in s, "Condition must be true"
+        assert len(s) == 2, "S must not be empty"
 
     def test_set_discard_mutation(self):
         """Test set discard operations"""
@@ -195,16 +195,16 @@ class TestSetMutations:
         s.discard(2)
         s.discard(99)  # No error if not present
 
-        assert 2 not in s
-        assert len(s) == 2
+        assert 2 not in s, "Condition must be true"
+        assert len(s) == 2, "S must not be empty"
 
     def test_set_clear_mutation(self):
         """Test set clear operations"""
         s = {1, 2, 3}
         s.clear()
 
-        assert len(s) == 0
-        assert s == set()
+        assert len(s) == 0, "S must not be empty"
+        assert s == set(), "s is not valid"
 
     def test_set_union_mutation(self):
         """Test set union operations"""
@@ -214,7 +214,7 @@ class TestSetMutations:
         result = s1 | s2
 
         assert result == {1, 2, 3, 4}
-        assert len(result) == 4
+        assert len(result) == 4, "Result must not be empty"
 
     def test_set_intersection_mutation(self):
         """Test set intersection operations"""
@@ -224,7 +224,7 @@ class TestSetMutations:
         result = s1 & s2
 
         assert result == {2, 3}
-        assert len(result) == 2
+        assert len(result) == 2, "Result must not be empty"
 
     def test_set_difference_mutation(self):
         """Test set difference operations"""
@@ -233,8 +233,8 @@ class TestSetMutations:
 
         result = s1 - s2
 
-        assert result == {1}
-        assert len(result) == 1
+        assert result == {1}, "Result must not be empty"
+        assert len(result) == 1, "Result must not be empty"
 
     def test_set_copy_mutation(self):
         """Test set copy operations"""
@@ -243,9 +243,9 @@ class TestSetMutations:
 
         copy.add(4)
 
-        assert 4 not in original
-        assert 4 in copy
-        assert original is not copy
+        assert 4 not in original, "Condition must be true"
+        assert 4 in copy, "Condition must be true"
+        assert original is not copy, "original is not valid"
 
 
 class TestIterationMutations:
@@ -257,7 +257,7 @@ class TestIterationMutations:
         for i in range(5):
             count += 1
 
-        assert count == 5
+        assert count == 5, "Count must be greater than zero"
 
     def test_for_loop_list(self):
         """Test for loop with list"""
@@ -274,7 +274,7 @@ class TestIterationMutations:
         while count < 3:
             count += 1
 
-        assert count == 3
+        assert count == 3, "Count must be greater than zero"
 
     def test_list_comprehension(self):
         """Test list comprehension"""
@@ -319,10 +319,10 @@ class TestTupleMutations:
         """Test tuple indexing"""
         t = (10, 20, 30)
 
-        assert t[0] == 10
-        assert t[1] == 20
-        assert t[2] == 30
-        assert t[-1] == 30
+        assert t[0] == 10, "Condition must be true"
+        assert t[1] == 20, "Condition must be true"
+        assert t[2] == 30, "Condition must be true"
+        assert t[-1] == 30, "Condition must be true"
 
     def test_tuple_slicing(self):
         """Test tuple slicing"""
@@ -336,26 +336,26 @@ class TestTupleMutations:
         """Test tuple count method"""
         t = (1, 2, 2, 3, 2)
 
-        assert t.count(2) == 3
-        assert t.count(1) == 1
-        assert t.count(5) == 0
+        assert t.count(2) == 3, "Count must be greater than zero"
+        assert t.count(1) == 1, "Count must be greater than zero"
+        assert t.count(5) == 0, "Count must be greater than zero"
 
     def test_tuple_index(self):
         """Test tuple index method"""
         t = (10, 20, 30)
 
-        assert t.index(10) == 0
-        assert t.index(20) == 1
-        assert t.index(30) == 2
+        assert t.index(10) == 0, "Condition must be true"
+        assert t.index(20) == 1, "Condition must be true"
+        assert t.index(30) == 2, "Condition must be true"
 
     def test_tuple_unpacking(self):
         """Test tuple unpacking"""
         t = (1, 2, 3)
         a, b, c = t
 
-        assert a == 1
-        assert b == 2
-        assert c == 3
+        assert a == 1, "a is not valid"
+        assert b == 2, "b is not valid"
+        assert c == 3, "c is not valid"
 
 
 class TestStringMutations:
@@ -365,30 +365,30 @@ class TestStringMutations:
         """Test string concatenation"""
         s = "hello" + " " + "world"
 
-        assert s == "hello world"
-        assert len(s) == 11
+        assert s == "hello world", "s is not valid"
+        assert len(s) == 11, "S must not be empty"
 
     def test_string_multiplication(self):
         """Test string multiplication"""
         s = "x" * 3
 
-        assert s == "xxx"
-        assert len(s) == 3
+        assert s == "xxx", "s is not valid"
+        assert len(s) == 3, "S must not be empty"
 
     def test_string_upper_lower(self):
         """Test string case operations"""
         s = "Hello"
 
-        assert s.upper() == "HELLO"
-        assert s.lower() == "hello"
+        assert s.upper() == "HELLO", "Condition must be true"
+        assert s.lower() == "hello", "Condition must be true"
 
     def test_string_strip(self):
         """Test string strip operations"""
         s = "  hello  "
 
-        assert s.strip() == "hello"
-        assert s.lstrip() == "hello  "
-        assert s.rstrip() == "  hello"
+        assert s.strip() == "hello", "Condition must be true"
+        assert s.lstrip() == "hello  ", "Condition must be true"
+        assert s.rstrip() == "  hello", "Condition must be true"
 
     def test_string_split(self):
         """Test string split operations"""
@@ -396,7 +396,7 @@ class TestStringMutations:
         result = s.split(",")
 
         assert result == ["a", "b", "c"]
-        assert len(result) == 3
+        assert len(result) == 3, "Result must not be empty"
 
     def test_string_join(self):
         """Test string join operations"""
@@ -410,16 +410,16 @@ class TestStringMutations:
         s = "hello world"
         result = s.replace("world", "python")
 
-        assert result == "hello python"
+        assert result == "hello python", "Result must not be empty"
 
     def test_string_startswith_endswith(self):
         """Test string startswith/endswith"""
         s = "hello world"
 
-        assert s.startswith("hello") is True
-        assert s.startswith("world") is False
-        assert s.endswith("world") is True
-        assert s.endswith("hello") is False
+        assert s.startswith("hello") is True, "Condition must be true"
+        assert s.startswith("world") is False, "Condition must be true"
+        assert s.endswith("world") is True, "Condition must be true"
+        assert s.endswith("hello") is False, "Condition must be true"
 
 
 class TestTypeConversions:
@@ -427,32 +427,32 @@ class TestTypeConversions:
 
     def test_int_conversion(self):
         """Test integer conversion"""
-        assert int("5") == 5
-        assert int(5.9) == 5
-        assert int(True) == 1
-        assert int(False) == 0
+        assert int("5") == 5, "Condition must be true"
+        assert int(5.9) == 5, "Condition must be true"
+        assert int(True) == 1, "Condition must be true"
+        assert int(False) == 0, "Condition must be true"
 
     def test_float_conversion(self):
         """Test float conversion"""
-        assert float("5.5") == 5.5
-        assert float(5) == 5.0
-        assert float("inf") == float("inf")
+        assert float("5.5") == 5.5, "Condition must be true"
+        assert float(5) == 5.0, "Condition must be true"
+        assert float("inf") == float("inf"), "Condition must be true"
 
     def test_str_conversion(self):
         """Test string conversion"""
-        assert str(5) == "5"
-        assert str(5.5) == "5.5"
-        assert str(True) == "True"
+        assert str(5) == "5", "Condition must be true"
+        assert str(5.5) == "5.5", "Condition must be true"
+        assert str(True) == "True", "Condition must be true"
         assert str([1, 2]) == "[1, 2]"
 
     def test_bool_conversion(self):
         """Test boolean conversion"""
-        assert bool(1) is True
-        assert bool(0) is False
-        assert bool("") is False
-        assert bool("text") is True
-        assert bool([]) is False
-        assert bool([1]) is True
+        assert bool(1) is True, "Condition must be true"
+        assert bool(0) is False, "Condition must be true"
+        assert bool("") is False, "Condition must be true"
+        assert bool("text") is True, "Condition must be true"
+        assert bool([]) is False, "Condition must be true"
+        assert bool([1]) is True, "Condition must be true"
 
     def test_list_conversion(self):
         """Test list conversion"""
@@ -473,18 +473,18 @@ class TestComparisonChaining:
         """Test chained comparison operators"""
         x = 5
 
-        assert 0 < x < 10
-        assert not (0 < x < 4)
-        assert 5 <= x <= 5
-        assert not (6 <= x <= 10)
+        assert 0 < x < 10, "0 is not valid"
+        assert not (0 < x < 4), "0 is not valid"
+        assert 5 <= x <= 5, "5 is not valid"
+        assert not (6 <= x <= 10), "6 is not valid"
 
     def test_membership_operators(self):
         """Test membership operators"""
         items = [1, 2, 3]
 
-        assert 1 in items
-        assert 4 not in items
-        assert 2 in items
+        assert 1 in items, "Item must not be empty"
+        assert 4 not in items, "Item must not be empty"
+        assert 2 in items, "Item must not be empty"
 
     def test_identity_operators(self):
         """Test identity operators"""
@@ -492,9 +492,9 @@ class TestComparisonChaining:
         b = [1, 2]
         c = a
 
-        assert a == b  # Equal values
-        assert a is not b  # Different objects
-        assert a is c  # Same object
+        assert a == b, "a is not valid"
+        assert a is not b, "a is not valid"
+        assert a is c, "a is not valid"
 
 
 class TestNullableHandling:
@@ -509,8 +509,8 @@ class TestNullableHandling:
             else:
                 return value * 2
 
-        assert process_optional(5) == 10
-        assert process_optional(None) == 0
+        assert process_optional(5) == 10, "Condition must be true"
+        assert process_optional(None) == 0, "Condition must be true"
 
     def test_optional_chaining(self):
         """Test optional chaining pattern"""

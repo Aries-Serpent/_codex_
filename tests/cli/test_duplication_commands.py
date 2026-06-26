@@ -22,8 +22,8 @@ class TestDuplicationCheckCommand:
         runner = CliRunner()
         result = runner.invoke(cli, ["duplication", "check", "--help"])
 
-        assert result.exit_code == 0
-        assert "Check code for duplicates" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "Check code for duplicates" in result.output, "Result must not be empty"
 
     def test_check_empty_directory(self):
         """Test checking empty directory"""
@@ -33,8 +33,8 @@ class TestDuplicationCheckCommand:
             result = runner.invoke(cli, ["duplication", "check", tmpdir])
 
             # Should complete without error
-            assert "Scanning" in result.output
-            assert "Duplication Report" in result.output
+            assert "Scanning" in result.output, "Result must not be empty"
+            assert "Duplication Report" in result.output, "Result must not be empty"
 
     def test_check_with_output_file(self):
         """Test check command with output file"""
@@ -47,7 +47,7 @@ class TestDuplicationCheckCommand:
 
             # Should create output file
             if result.exit_code == 0 or "Saved results" in result.output:
-                assert output_file.exists() or "Failed" in result.output
+                assert output_file.exists() or "Failed" in result.output, "Result must not be empty"
 
     def test_check_with_custom_threshold(self):
         """Test check with custom threshold"""
@@ -64,7 +64,7 @@ class TestDuplicationCheckCommand:
             ],
         )
 
-        assert "threshold" in result.output.lower()
+        assert "threshold" in result.output.lower(), "Result must not be empty"
 
 
 class TestDuplicationReportCommand:
@@ -75,8 +75,8 @@ class TestDuplicationReportCommand:
         runner = CliRunner()
         result = runner.invoke(cli, ["duplication", "report", "--help"])
 
-        assert result.exit_code == 0
-        assert "Generate detailed duplication report" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "Generate detailed duplication report" in result.output, "Result must not be empty"
 
     def test_report_json_format(self):
         """Test report with JSON format"""
@@ -92,13 +92,13 @@ class TestDuplicationReportCommand:
 
             # Check output file exists
             if result.exit_code == 0:
-                assert output_file.exists()
+                assert output_file.exists(), "Condition must be true"
 
                 # Verify it's valid JSON
                 with open(output_file) as f:
                     data = json.load(f)
 
-                assert "ratio" in data or "total_lines" in data
+                assert "ratio" in data or "total_lines" in data, "Data must not be empty"
 
     def test_report_text_format(self):
         """Test report with text format"""
@@ -114,11 +114,11 @@ class TestDuplicationReportCommand:
 
             # Check output file exists
             if result.exit_code == 0:
-                assert output_file.exists()
+                assert output_file.exists(), "Condition must be true"
 
                 # Verify it contains report elements
                 content = output_file.read_text()
-                assert "DUPLICATION REPORT" in content or "SUMMARY" in content
+                assert "DUPLICATION REPORT" in content or "SUMMARY" in content, "Content must not be empty"
 
 
 class TestDuplicationCompareCommand:
@@ -129,8 +129,8 @@ class TestDuplicationCompareCommand:
         runner = CliRunner()
         result = runner.invoke(cli, ["duplication", "compare", "--help"])
 
-        assert result.exit_code == 0
-        assert "Compare duplication metrics" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "Compare duplication metrics" in result.output, "Result must not be empty"
 
     def test_compare_without_baseline(self):
         """Test compare without baseline (shows current only)"""
@@ -153,7 +153,7 @@ class TestDuplicationCompareCommand:
 
             # Should show current metrics
             if result.exit_code == 0:
-                assert "15" in result.output  # Should show 15% somewhere
+                assert "15" in result.output, "Result must not be empty"
 
     def test_compare_with_baseline(self):
         """Test compare with baseline"""
@@ -189,7 +189,7 @@ class TestDuplicationCompareCommand:
 
             # Should show comparison
             if result.exit_code == 0:
-                assert "Baseline" in result.output or "Current" in result.output
+                assert "Baseline" in result.output or "Current" in result.output, "Result must not be empty"
 
 
 if __name__ == "__main__":

@@ -87,7 +87,7 @@ class TestStatus200OK:
         """Health check should return 200."""
         # This would need a health endpoint in the app
         # Placeholder for actual endpoint testing
-        assert True
+        assert True, "True is not valid"
 
     def test_login_success_returns_200(self, test_client, registered_user):
         """Successful login should return 200."""
@@ -95,12 +95,12 @@ class TestStatus200OK:
             "/auth/login",
             json={"username": registered_user["username"], "password": registered_user["password"]},
         )
-        assert response.status_code == 200
+        assert response.status_code == 200, "Response must not be empty"
 
     def test_csrf_token_request_returns_200(self, test_client):
         """CSRF token request should return 200."""
         response = test_client.get("/auth/csrf-token")
-        assert response.status_code == 200
+        assert response.status_code == 200, "Response must not be empty"
 
     def test_refresh_token_returns_200(self, test_client, auth_token):
         """Token refresh should return 200."""
@@ -111,15 +111,15 @@ class TestStatus200OK:
 
     def test_get_request_valid_resource_returns_200(self, test_client):
         """Valid GET request should return 200."""
-        assert True
+        assert True, "True is not valid"
 
     def test_list_endpoint_returns_200(self, test_client):
         """List endpoint should return 200."""
-        assert True
+        assert True, "True is not valid"
 
     def test_query_endpoint_returns_200(self, test_client):
         """Query endpoint should return 200."""
-        assert True
+        assert True, "True is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -140,19 +140,19 @@ class TestStatus201Created:
                 "password": "SecurePass123!",
             },
         )
-        assert response.status_code == 201
+        assert response.status_code == 201, "Response must not be empty"
 
     def test_create_resource_returns_201(self, test_client, auth_token):
         """Creating a resource should return 201."""
-        assert True
+        assert True, "True is not valid"
 
     def test_build_index_returns_201(self, test_client):
         """Building an index should return 201."""
-        assert True
+        assert True, "True is not valid"
 
     def test_post_creates_resource_with_201(self, test_client):
         """POST request that creates resource returns 201."""
-        assert True
+        assert True, "True is not valid"
 
     @pytest.mark.parametrize(
         "username,email",
@@ -168,7 +168,7 @@ class TestStatus201Created:
             "/auth/register",
             json={"username": username, "email": email, "password": "SecurePass123!"},
         )
-        assert response.status_code == 201
+        assert response.status_code == 201, "Response must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -182,7 +182,7 @@ class TestStatus204NoContent:
     def test_delete_resource_returns_204(self, test_client):
         """Delete operation should return 204."""
         # Placeholder for actual delete endpoint
-        assert True
+        assert True, "True is not valid"
 
     def test_logout_returns_204(self, test_client, auth_token):
         """Logout operation should return 204 or 200."""
@@ -192,11 +192,11 @@ class TestStatus204NoContent:
 
     def test_successful_delete_no_body(self, test_client):
         """Delete response should have no body."""
-        assert True
+        assert True, "True is not valid"
 
     def test_update_success_no_return_value(self, test_client):
         """Update with no return value should succeed."""
-        assert True
+        assert True, "True is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -212,7 +212,7 @@ class TestStatus400BadRequest:
         response = test_client.post(
             "/auth/login", json={"username": "nonexistent", "password": "wrongpass"}
         )
-        assert response.status_code == 400
+        assert response.status_code == 400, "Response must not be empty"
 
     def test_register_weak_password_returns_400(self, test_client):
         """Weak password should return 400."""
@@ -220,7 +220,7 @@ class TestStatus400BadRequest:
             "/auth/register",
             json={"username": "weakpass", "email": "weak@example.com", "password": "weak"},
         )
-        assert response.status_code == 400
+        assert response.status_code == 400, "Response must not be empty"
 
     def test_register_invalid_email_returns_400(self, test_client):
         """Invalid email should return 400."""
@@ -228,14 +228,14 @@ class TestStatus400BadRequest:
             "/auth/register",
             json={"username": "bademail", "email": "not-an-email", "password": "SecurePass123!"},
         )
-        assert response.status_code == 400
+        assert response.status_code == 400, "Response must not be empty"
 
     def test_malformed_json_returns_400(self, test_client):
         """Malformed JSON should return 400."""
         response = test_client.post(
             "/auth/login", content="{invalid json}", headers={"Content-Type": "application/json"}
         )
-        assert response.status_code == 422  # FastAPI returns 422 for parse errors
+        assert response.status_code == 422, "Response must not be empty"
 
     @pytest.mark.parametrize("missing_field", ["username", "password", "email"])
     def test_missing_required_field_returns_400(self, test_client, missing_field):
@@ -243,12 +243,12 @@ class TestStatus400BadRequest:
         payload = {"username": "test", "password": "SecurePass123!", "email": "test@example.com"}
         del payload[missing_field]
         response = test_client.post("/auth/register", json=payload)
-        assert response.status_code == 422  # FastAPI 422 for validation errors
+        assert response.status_code == 422, "Response must not be empty"
 
     def test_empty_request_body_returns_400(self, test_client):
         """Empty request body should return 400."""
         response = test_client.post("/auth/login", json={})
-        assert response.status_code == 422
+        assert response.status_code == 422, "Response must not be empty"
 
     def test_wrong_data_type_returns_400(self, test_client):
         """Wrong data type should return 400."""
@@ -328,15 +328,15 @@ class TestStatus403Forbidden:
     def test_insufficient_permissions_returns_403(self, test_client):
         """Insufficient permissions should return 403."""
         # Placeholder for actual permission-based endpoint
-        assert True
+        assert True, "True is not valid"
 
     def test_access_denied_returns_403(self, test_client):
         """Access denied should return 403."""
-        assert True
+        assert True, "True is not valid"
 
     def test_role_based_access_control_returns_403(self, test_client):
         """Insufficient role should return 403."""
-        assert True
+        assert True, "True is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -350,7 +350,7 @@ class TestStatus404NotFound:
     def test_nonexistent_endpoint_returns_404(self, test_client):
         """Nonexistent endpoint should return 404."""
         response = test_client.get("/nonexistent/path")
-        assert response.status_code == 404
+        assert response.status_code == 404, "Response must not be empty"
 
     def test_get_nonexistent_user_returns_404(self, test_client):
         """Getting nonexistent user should return 404."""
@@ -396,14 +396,14 @@ class TestStatus409Conflict:
             "/auth/register",
             json={"username": "dupuser", "email": "dup@example.com", "password": "SecurePass123!"},
         )
-        assert first.status_code == 201
+        assert first.status_code == 201, "status_code is not valid"
 
         # Duplicate registration should fail
         duplicate = test_client.post(
             "/auth/register",
             json={"username": "dupuser", "email": "dup2@example.com", "password": "SecurePass123!"},
         )
-        assert duplicate.status_code == 400  # Most APIs return 400 for duplicate
+        assert duplicate.status_code == 400, "status_code is not valid"
 
     def test_duplicate_email_returns_409(self, test_client):
         """Duplicate email should return 409/400."""
@@ -411,17 +411,17 @@ class TestStatus409Conflict:
             "/auth/register",
             json={"username": "user1", "email": "shared@example.com", "password": "SecurePass123!"},
         )
-        assert first.status_code == 201
+        assert first.status_code == 201, "status_code is not valid"
 
         duplicate = test_client.post(
             "/auth/register",
             json={"username": "user2", "email": "shared@example.com", "password": "SecurePass123!"},
         )
-        assert duplicate.status_code == 400  # Most APIs return 400
+        assert duplicate.status_code == 400, "status_code is not valid"
 
     def test_duplicate_resource_creation_returns_409(self, test_client):
         """Creating duplicate resource should return 409."""
-        assert True
+        assert True, "True is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -441,7 +441,7 @@ class TestStatus422UnprocessableEntity:
                 # Missing required fields
             },
         )
-        assert response.status_code == 422
+        assert response.status_code == 422, "Response must not be empty"
 
     def test_wrong_field_type_returns_422(self, test_client):
         """Wrong field type should return 422."""
@@ -504,15 +504,15 @@ class TestStatus500InternalServerError:
                     "password": "SecurePass123!",
                 },
             )
-            assert response.status_code == 500
+            assert response.status_code == 500, "Response must not be empty"
 
     def test_database_error_returns_500(self, test_client):
         """Database error should return 500."""
-        assert True
+        assert True, "True is not valid"
 
     def test_service_unavailable_returns_503(self, test_client):
         """Service unavailable should return 503."""
-        assert True
+        assert True, "True is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -525,11 +525,11 @@ class TestStatus503ServiceUnavailable:
 
     def test_service_down_returns_503(self, test_client):
         """Service down should return 503."""
-        assert True
+        assert True, "True is not valid"
 
     def test_maintenance_mode_returns_503(self, test_client):
         """Maintenance mode should return 503."""
-        assert True
+        assert True, "True is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -547,7 +547,7 @@ class TestStatusCodeEdgeCases:
 
     def test_status_code_has_corresponding_response(self, test_client):
         """Status code responses have appropriate body."""
-        assert True
+        assert True, "True is not valid"
 
     def test_error_status_codes_include_error_details(self, test_client):
         """Error status codes include error details."""

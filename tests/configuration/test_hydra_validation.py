@@ -34,7 +34,7 @@ def _yaml_files():
 def test_configuration_configs_dir_present():
     if not CONFIGS_DIR.exists():
         pytest.skip("configs/ directory not present; skipping configuration validation")
-    assert CONFIGS_DIR.is_dir()
+    assert CONFIGS_DIR.is_dir(), "Condition must be true"
 
 
 @pytest.mark.smoke
@@ -57,8 +57,8 @@ def test_configuration_has_base_and_experiment_if_present():
         pytest.skip("configs/ directory not present")
     names = {p.name for p in _yaml_files()}
     # Non-failing hints; passes if either is present or directory empty
-    assert any(n.lower().startswith("base") for n in names) or not names
-    assert any("experiment" in n.lower() for n in names) or not names
+    assert any(n.lower().startswith("base") for n in names) or not names, "Condition must be true"
+    assert any("experiment" in n.lower() for n in names) or not names, "Condition must be true"
 
 
 @pytest.mark.smoke
@@ -82,8 +82,8 @@ def test_configuration_env_overrides_example():
         return new_cfg
 
     applied = apply_env_overrides(base_cfg, override_env)
-    assert applied["trainer"]["batch_size"] == 64
-    assert applied["trainer"]["seed"] == 123
+    assert applied["trainer"]["batch_size"] == 64, "Condition must be true"
+    assert applied["trainer"]["seed"] == 123, "Condition must be true"
 
 
 @pytest.mark.smoke
@@ -97,11 +97,11 @@ def test_configuration_cli_audit_enforces_self_last(capsys):
     captured = capsys.readouterr()
 
     payload = json.loads(captured.out)
-    assert payload["_self_"] is True
-    assert payload["ok"] is (not payload["unresolved_refs"])
+    assert payload["_self_"] is True, "Condition must be true"
+    assert payload["ok"] is (not payload["unresolved_refs"]), "Condition must be true"
     assert code in {0, 4}
     expected_code = 0 if not payload["unresolved_refs"] else 4
-    assert code == expected_code
+    assert code == expected_code, "code is not valid"
 
     defaults_raw = yaml.safe_load(cfg_path.read_text(encoding="utf-8")).get("defaults", [])
     normalized: list[str] = []
@@ -112,8 +112,8 @@ def test_configuration_cli_audit_enforces_self_last(capsys):
             normalized.append(str(entry))
 
     assert normalized, "defaults list should not be empty"
-    assert normalized[-1] == "_self_"
-    assert payload["position"] == len(normalized) - 1
+    assert normalized[-1] == "_self_", "n is not valid"
+    assert payload["position"] == len(normalized) - 1, "Normalized must not be empty"
 
 
 @pytest.mark.smoke
@@ -122,16 +122,16 @@ def test_configuration_cli_audit_handles_missing_file(tmp_path, capsys):
     code = config_cli.cmd_audit(args)
     captured = capsys.readouterr()
 
-    assert code == 2
-    assert "not found" in captured.err
+    assert code == 2, "code is not valid"
+    assert "not found" in captured.err, "Condition must be true"
 
 
 @pytest.mark.smoke
 def test_configuration_structured_defaults_are_reproducible():
     cfg = config_cli.AppConfig()
 
-    assert cfg.training.seed == 42
-    assert cfg.training.deterministic is True
+    assert cfg.training.seed == 42, "seed is not valid"
+    assert cfg.training.deterministic is True, "deterministic is not valid"
     assert cfg.training.log_formats == ("ndjson",)
-    assert cfg.logging.wandb_enable is False
-    assert cfg.training.metrics_out.startswith(".codex/")
+    assert cfg.logging.wandb_enable is False, "wandb_enable is not valid"
+    assert cfg.training.metrics_out.startswith(".codex/"), "Condition must be true"

@@ -49,6 +49,6 @@ def test_override_file(tmp_path: Path) -> None:
     env = {**os.environ, "PYTHONPATH": "src"}
     subprocess.run(cmd, check=True, env=env, cwd=ROOT)
     text = (ROOT / ".codex/hydra_last/.hydra/config.yaml").read_text()
-    assert "batch_size: 2" in text
-    assert "lr: 0.1" in text
-    assert "name: gpt2" in text
+    assert "batch_size: 2" in text, "Condition must be true"
+    assert "lr: 0.1" in text, "Condition must be true"
+    assert "name: gpt2" in text, "Condition must be true"

@@ -139,8 +139,8 @@ def batch_metrics(outputs: object, batch: Mapping[str, object] | object) -> dict
                     record["token_accuracy"] = 0.0
         except (ValueError, TypeError, RuntimeError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 
     text_preds = _as_str_list(getattr(outputs, "predictions", None))
     if text_preds is None and isinstance(outputs, Mapping):

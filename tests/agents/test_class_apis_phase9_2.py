@@ -68,7 +68,7 @@ class TestWorkflowDataclass:
             frequency=WorkflowFrequency.LOW,
             steps=steps,
         )
-        assert len(wf) == 3
+        assert len(wf) == 3, "Wf must not be empty"
 
     def test_workflow_len_empty(self) -> None:
         wf = Workflow(
@@ -77,7 +77,7 @@ class TestWorkflowDataclass:
             description="d",
             frequency=WorkflowFrequency.LOW,
         )
-        assert len(wf) == 0
+        assert len(wf) == 0, "Wf must not be empty"
 
     def test_workflow_to_dict_has_all_keys(self) -> None:
         wf = Workflow(
@@ -108,7 +108,7 @@ class TestWorkflowDataclass:
             frequency=WorkflowFrequency.MEDIUM,
         )
         d = wf.to_dict()
-        assert d["frequency"] == "medium"
+        assert d["frequency"] == "medium", "Condition must be true"
 
     def test_workflow_to_dict_steps_is_list(self) -> None:
         step = WorkflowStep(id="s1", action="act1", command="echo hi")
@@ -121,7 +121,7 @@ class TestWorkflowDataclass:
         )
         d = wf.to_dict()
         assert isinstance(d["steps"], list)
-        assert len(d["steps"]) == 1
+        assert len(d["steps"]) == 1, "Collection must not be empty"
 
     def test_workflow_defaults(self) -> None:
         wf = Workflow(
@@ -130,10 +130,10 @@ class TestWorkflowDataclass:
             description="d",
             frequency=WorkflowFrequency.LOW,
         )
-        assert wf.deterministic is True
-        assert wf.steps == []
-        assert wf.aliases == []
-        assert wf.category == "general"
+        assert wf.deterministic is True, "deterministic is not valid"
+        assert wf.steps == [], "steps is not valid"
+        assert wf.aliases == [], "aliases is not valid"
+        assert wf.category == "general", "category is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -147,23 +147,23 @@ class TestWorkflowStepExecuteEdges:
     def test_execute_uses_reference_returns_success(self) -> None:
         step = WorkflowStep(id="s1", action="call", uses="some_module.function")
         result = step.execute({})
-        assert result["success"] is True
-        assert step.status == StepStatus.COMPLETED
+        assert result["success"] is True, "Result must not be empty"
+        assert step.status == StepStatus.COMPLETED, "status is not valid"
 
     def test_execute_no_command_no_uses_skips(self) -> None:
         step = WorkflowStep(id="s1", action="noop")
         result = step.execute({})
-        assert result["success"] is True
-        assert step.status == StepStatus.SKIPPED
+        assert result["success"] is True, "Result must not be empty"
+        assert step.status == StepStatus.SKIPPED, "status is not valid"
 
     def test_execute_exception_sets_failed(self) -> None:
         step = WorkflowStep(id="s1", action="boom", command="definitely_not_real_cmd_xyz")
         # patch subprocess.run to raise an OSError
         with patch("agents.workflow_navigator.subprocess.run", side_effect=OSError("bad")):
             result = step.execute({})
-        assert result["success"] is False
-        assert step.status == StepStatus.FAILED
-        assert "bad" in result["error"]
+        assert result["success"] is False, "Result must not be empty"
+        assert step.status == StepStatus.FAILED, "status is not valid"
+        assert "bad" in result["error"], "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -176,18 +176,18 @@ class TestPhysicsGuidedDeveloperOrchestratorConstructor:
 
     def test_default_construction(self) -> None:
         orch = PhysicsGuidedDeveloperOrchestrator()
-        assert orch.current_phase == DevelopmentPhase.REQUIREMENTS
-        assert orch.components == []
-        assert orch._requirements == []
+        assert orch.current_phase == DevelopmentPhase.REQUIREMENTS, "current_phase is not valid"
+        assert orch.components == [], "components is not valid"
+        assert orch._requirements == [], "_requirements is not valid"
         assert isinstance(orch.session_id, str)
 
     def test_custom_session_id(self) -> None:
         orch = PhysicsGuidedDeveloperOrchestrator(session_id="my_session")
-        assert orch.session_id == "my_session"
+        assert orch.session_id == "my_session", "session_id is not valid"
 
     def test_custom_app_type(self) -> None:
         orch = PhysicsGuidedDeveloperOrchestrator(app_type=AppType.PYTHON_CLI)
-        assert orch.app_type == AppType.PYTHON_CLI
+        assert orch.app_type == AppType.PYTHON_CLI, "app_type is not valid"
 
     def test_requirements_property_returns_list(self) -> None:
         orch = PhysicsGuidedDeveloperOrchestrator()
@@ -197,7 +197,7 @@ class TestPhysicsGuidedDeveloperOrchestratorConstructor:
         orch = PhysicsGuidedDeveloperOrchestrator()
         var = RequirementVariable(name="x", description="d", variable_type="str")
         orch.requirements = [var]
-        assert orch.requirements[0].name == "x"
+        assert orch.requirements[0].name == "x", "name is not valid"
 
     def test_required_variables_property(self) -> None:
         orch = PhysicsGuidedDeveloperOrchestrator()
@@ -216,23 +216,23 @@ class TestPhysicsGuidedDeveloperOrchestratorAnalyze:
         orch = PhysicsGuidedDeveloperOrchestrator()
         result = orch.analyze_user_requirements({})
         for key in ("app_type", "provided_variables", "missing_variables", "completeness"):
-            assert key in result
+            assert key in result, "Result must not be empty"
 
     def test_analyze_sets_app_type(self) -> None:
         orch = PhysicsGuidedDeveloperOrchestrator()
         orch.analyze_user_requirements({"app_type": "python_cli"})
-        assert orch.app_type == AppType.PYTHON_CLI
+        assert orch.app_type == AppType.PYTHON_CLI, "app_type is not valid"
 
     def test_analyze_unknown_app_type_falls_back(self) -> None:
         orch = PhysicsGuidedDeveloperOrchestrator()
         result = orch.analyze_user_requirements({"app_type": "nonexistent_type"})
         # Should fall back to PYTHON_CONSOLE without raising
-        assert result["app_type"] == "python_console"
+        assert result["app_type"] == "python_console", "Result must not be empty"
 
     def test_analyze_completeness_range(self) -> None:
         orch = PhysicsGuidedDeveloperOrchestrator()
         result = orch.analyze_user_requirements({})
-        assert 0.0 <= result["completeness"] <= 1.0
+        assert 0.0 <= result["completeness"] <= 1.0, "Result must not be empty"
 
 
 class TestPhysicsGuidedDeveloperOrchestratorStatus:
@@ -246,14 +246,14 @@ class TestPhysicsGuidedDeveloperOrchestratorStatus:
     def test_status_has_phase(self) -> None:
         orch = PhysicsGuidedDeveloperOrchestrator()
         status = orch.get_development_status()
-        assert "phase" in status
-        assert status["phase"] == DevelopmentPhase.REQUIREMENTS.value
+        assert "phase" in status, "Condition must be true"
+        assert status["phase"] == DevelopmentPhase.REQUIREMENTS.value, "Value must be initialized"
 
     def test_status_components_empty(self) -> None:
         orch = PhysicsGuidedDeveloperOrchestrator()
         status = orch.get_development_status()
-        assert status["components"]["total"] == 0
-        assert status["components"]["progress"] == 0
+        assert status["components"]["total"] == 0, "Condition must be true"
+        assert status["components"]["progress"] == 0, "Condition must be true"
 
     def test_status_with_components(self) -> None:
         orch = PhysicsGuidedDeveloperOrchestrator()
@@ -266,8 +266,8 @@ class TestPhysicsGuidedDeveloperOrchestratorStatus:
             )
         )
         status = orch.get_development_status()
-        assert status["components"]["total"] == 1
-        assert status["components"]["completed"] == 1
+        assert status["components"]["total"] == 1, "Condition must be true"
+        assert status["components"]["completed"] == 1, "Condition must be true"
 
 
 class TestPhysicsGuidedDeveloperOrchestratorValidateCode:
@@ -276,34 +276,34 @@ class TestPhysicsGuidedDeveloperOrchestratorValidateCode:
     def test_valid_code_returns_valid_true(self) -> None:
         orch = PhysicsGuidedDeveloperOrchestrator()
         result = orch.validate_code("x = 1\ny = x + 2\n")
-        assert result["valid"] is True
-        assert result["errors"] == []
+        assert result["valid"] is True, "Result must not be empty"
+        assert result["errors"] == [], "Result must not be empty"
 
     def test_invalid_syntax_returns_error(self) -> None:
         orch = PhysicsGuidedDeveloperOrchestrator()
         result = orch.validate_code("def broken_function\n")
-        assert result["valid"] is False
-        assert len(result["errors"]) > 0
+        assert result["valid"] is False, "Result must not be empty"
+        assert len(result["errors"]) > 0, "Collection must not be empty"
 
     def test_todo_adds_warning(self) -> None:
         orch = PhysicsGuidedDeveloperOrchestrator()
         result = orch.validate_code("x = 1  # TODO: fix this\n")
-        assert any("TODO" in w for w in result["warnings"])
+        assert any("TODO" in w for w in result["warnings"]), "Result must not be empty"
 
     def test_short_code_adds_warning(self) -> None:
         orch = PhysicsGuidedDeveloperOrchestrator()
         result = orch.validate_code("x=1")
-        assert any("short" in w.lower() for w in result["warnings"])
+        assert any("short" in w.lower() for w in result["warnings"]), "Result must not be empty"
 
     def test_tab_adds_warning(self) -> None:
         orch = PhysicsGuidedDeveloperOrchestrator()
         result = orch.validate_code("def f():\n\tx = 1\n\treturn x\n")
-        assert any("tab" in w.lower() for w in result["warnings"])
+        assert any("tab" in w.lower() for w in result["warnings"]), "Result must not be empty"
 
     def test_component_id_propagated(self) -> None:
         orch = PhysicsGuidedDeveloperOrchestrator()
         result = orch.validate_code("x = 1\n", component_id="my_comp")
-        assert result["component_id"] == "my_comp"
+        assert result["component_id"] == "my_comp", "Result must not be empty"
 
 
 class TestPhysicsGuidedDeveloperOrchestratorPrioritize:
@@ -322,7 +322,7 @@ class TestPhysicsGuidedDeveloperOrchestratorPrioritize:
         ]
         result = orch.prioritize_tasks(tasks=tasks)
         assert isinstance(result, list)
-        assert len(result) == 2
+        assert len(result) == 2, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -337,7 +337,7 @@ class TestSelfHealingEngineDiagnose:
         engine = SelfHealingEngine(repo_root=tmp_path)
         log = "ModuleNotFoundError: No module named 'missing_pkg'"
         result = engine.diagnose(log_output=log, run_checks=False)
-        assert any(i.issue_type == IssueType.IMPORT_ERROR for i in result.issues)
+        assert any(i.issue_type == IssueType.IMPORT_ERROR for i in result.issues), "Result must not be empty"
 
     def test_diagnose_returns_diagnostic_result(self, tmp_path: Path) -> None:
         engine = SelfHealingEngine(repo_root=tmp_path)
@@ -347,24 +347,24 @@ class TestSelfHealingEngineDiagnose:
     def test_diagnose_health_score_range(self, tmp_path: Path) -> None:
         engine = SelfHealingEngine(repo_root=tmp_path)
         result = engine.diagnose(log_output=None, run_checks=False)
-        assert 0.0 <= result.health_score <= 1.0
+        assert 0.0 <= result.health_score <= 1.0, "Result must not be empty"
 
     def test_diagnose_test_failure_pattern(self, tmp_path: Path) -> None:
         engine = SelfHealingEngine(repo_root=tmp_path)
         log = "FAILED tests/test_example.py::test_foo"
         result = engine.diagnose(log_output=log, run_checks=False)
-        assert any(i.issue_type == IssueType.TEST_FAILURE for i in result.issues)
+        assert any(i.issue_type == IssueType.TEST_FAILURE for i in result.issues), "Result must not be empty"
 
     def test_diagnose_security_pattern(self, tmp_path: Path) -> None:
         engine = SelfHealingEngine(repo_root=tmp_path)
         log = "CVE-2023-12345 vulnerability detected"
         result = engine.diagnose(log_output=log, run_checks=False)
-        assert any(i.issue_type == IssueType.SECURITY_VULNERABILITY for i in result.issues)
+        assert any(i.issue_type == IssueType.SECURITY_VULNERABILITY for i in result.issues), "Result must not be empty"
 
     def test_diagnose_log_analysis_in_diagnostics_run(self, tmp_path: Path) -> None:
         engine = SelfHealingEngine(repo_root=tmp_path)
         result = engine.diagnose(log_output="some log", run_checks=False)
-        assert "log_analysis" in result.diagnostics_run
+        assert "log_analysis" in result.diagnostics_run, "Result must not be empty"
 
 
 class TestSelfHealingEngineAliases:
@@ -393,8 +393,8 @@ class TestSelfHealingEngineApplyRemediation:
         engine = SelfHealingEngine(repo_root=tmp_path)
         action = RemediationAction(action_type="fix", description="Fix test")
         ok, msg = engine.apply_remediation(action, dry_run=True)
-        assert ok is True
-        assert "DRY RUN" in msg
+        assert ok is True, "ok is not valid"
+        assert "DRY RUN" in msg, "Condition must be true"
 
     def test_dry_run_shows_commands(self, tmp_path: Path) -> None:
         engine = SelfHealingEngine(repo_root=tmp_path)
@@ -404,7 +404,7 @@ class TestSelfHealingEngineApplyRemediation:
             commands=["ruff check --fix ."],
         )
         ok, msg = engine.apply_remediation(action, dry_run=True)
-        assert "ruff check --fix ." in msg
+        assert "ruff check --fix ." in msg, "Condition must be true"
 
     def test_requires_approval_blocks_non_dry_run(self, tmp_path: Path) -> None:
         engine = SelfHealingEngine(repo_root=tmp_path)
@@ -414,8 +414,8 @@ class TestSelfHealingEngineApplyRemediation:
             requires_approval=True,
         )
         ok, msg = engine.apply_remediation(action, dry_run=False)
-        assert ok is False
-        assert "approval" in msg.lower()
+        assert ok is False, "ok is not valid"
+        assert "approval" in msg.lower(), "Condition must be true"
 
     def test_dry_run_file_changes_shown(self, tmp_path: Path) -> None:
         engine = SelfHealingEngine(repo_root=tmp_path)
@@ -425,8 +425,8 @@ class TestSelfHealingEngineApplyRemediation:
             file_changes={"some/file.py": "# patched"},
         )
         ok, msg = engine.apply_remediation(action, dry_run=True)
-        assert ok is True
-        assert "some/file.py" in msg
+        assert ok is True, "ok is not valid"
+        assert "some/file.py" in msg, "Condition must be true"
 
 
 class TestRemediationActionPostInit:
@@ -434,15 +434,15 @@ class TestRemediationActionPostInit:
 
     def test_command_alias_populates_commands(self) -> None:
         action = RemediationAction(action_type="fix", description="d", command="echo hello")
-        assert "echo hello" in action.commands
+        assert "echo hello" in action.commands, "Condition must be true"
 
     def test_auto_apply_false_sets_requires_approval(self) -> None:
         action = RemediationAction(action_type="fix", description="d", auto_apply=False)
-        assert action.requires_approval is True
+        assert action.requires_approval is True, "requires_approval is not valid"
 
     def test_action_id_auto_generated(self) -> None:
         action = RemediationAction(action_type="fix", description="d")
-        assert action.action_id.startswith("action_")
+        assert action.action_id.startswith("action_"), "Condition must be true"
 
 
 class TestDetectedIssueToDict:
@@ -456,7 +456,7 @@ class TestDetectedIssueToDict:
         )
         d = issue.to_dict()
         for key in ("issue_id", "issue_type", "severity", "description"):
-            assert key in d
+            assert key in d, "Condition must be true"
 
 
 class TestDiagnosticResultToDict:
@@ -466,11 +466,11 @@ class TestDiagnosticResultToDict:
         dr = DiagnosticResult()
         d = dr.to_dict()
         for key in ("issues", "health_score", "diagnostics_run", "suggested_actions"):
-            assert key in d
+            assert key in d, "Condition must be true"
 
     def test_health_score_default_one(self) -> None:
         dr = DiagnosticResult()
-        assert dr.health_score == 1.0
+        assert dr.health_score == 1.0, "health_score is not valid"
 
 
 class TestRunDiagnosticsConvenienceFn:
@@ -491,18 +491,18 @@ class TestActionPath:
 
     def test_energy_alias_sets_potential_energy(self) -> None:
         path = ActionPath(energy=50.0)
-        assert path.potential_energy == 50.0
+        assert path.potential_energy == 50.0, "potential_energy is not valid"
 
     def test_energy_alias_does_not_override_explicit_potential(self) -> None:
         path = ActionPath(potential_energy=30.0, energy=50.0)
         # When potential_energy is provided, energy alias should not override
-        assert path.potential_energy == 30.0
+        assert path.potential_energy == 30.0, "potential_energy is not valid"
 
     def test_calculate_total_energy(self) -> None:
         path = ActionPath(potential_energy=10.0, kinetic_energy=5.0, momentum=1.0, friction=0.5)
         total = path.calculate_total_energy()
         expected = 10.0 + 5.0 - 1.0 * 5.0 + 0.5 * 10.0
-        assert abs(total - expected) < 1e-9
+        assert abs(total - expected) < 1e-9, "Condition must be true"
 
     def test_calculate_optimization_score_positive(self) -> None:
         path = ActionPath(
@@ -516,15 +516,15 @@ class TestActionPath:
         )
         path.calculate_total_energy()
         score = path.calculate_optimization_score()
-        assert score > 0.0
+        assert score > 0.0, "score must be greater than zero"
 
     def test_default_action_type(self) -> None:
         path = ActionPath()
-        assert path.action_type == ActionType.ANALYZE
+        assert path.action_type == ActionType.ANALYZE, "action_type is not valid"
 
     def test_trajectory_default_empty(self) -> None:
         path = ActionPath()
-        assert path.trajectory == []
+        assert path.trajectory == [], "trajectory is not valid"
 
     def test_extract_mlp_features_length(self) -> None:
         path = ActionPath(
@@ -538,7 +538,7 @@ class TestActionPath:
             urgency=0.4,
         )
         features = path._extract_mlp_features()
-        assert len(features) == 8
+        assert len(features) == 8, "Features must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -554,29 +554,29 @@ class TestForceVector:
 
         fv = ForceVector(x=3.0, y=4.0, z=0.0)
         expected = math.hypot(3.0, 4.0)
-        assert abs(fv.magnitude - expected) < 1e-9
+        assert abs(fv.magnitude - expected) < 1e-9, "Condition must be true"
 
     def test_direction_normalized_from_xyz(self) -> None:
         fv = ForceVector(x=1.0, y=0.0, z=0.0)
         # direction should be a list [1.0, 0.0, 0.0] (unit vector)
         assert isinstance(fv.direction, list)
-        assert abs(fv.direction[0] - 1.0) < 1e-9
+        assert abs(fv.direction[0] - 1.0) < 1e-9, "Condition must be true"
 
     def test_get_components_2d_direction(self) -> None:
         fv = ForceVector(name="test", magnitude=1.0, direction=0.0)  # angle = 0 rad
         x_comp, y_comp = fv.get_components()
-        assert abs(x_comp - 1.0) < 1e-9
-        assert abs(y_comp) < 1e-9
+        assert abs(x_comp - 1.0) < 1e-9, "Condition must be true"
+        assert abs(y_comp) < 1e-9, "Condition must be true"
 
     def test_get_components_3d_direction(self) -> None:
         fv = ForceVector(x=1.0, y=0.0, z=0.0)
         x_comp, y_comp = fv.get_components()
         # 3D direction projects to (magnitude * priority, 0)
-        assert x_comp >= 0.0
+        assert x_comp >= 0.0, "x_comp must be greater than zero"
 
     def test_magnitude_zero_when_no_xyz(self) -> None:
         fv = ForceVector(name="empty")
-        assert fv.magnitude == 0.0
+        assert fv.magnitude == 0.0, "magnitude is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -589,28 +589,28 @@ class TestDecisionState:
 
     def test_default_values(self) -> None:
         ds = DecisionState()
-        assert ds.available_resources == 1.0
-        assert ds.time_available == 1.0
-        assert ds.current_velocity == 0.5
-        assert ds.coherence == 1.0
-        assert ds.energy == 0.0
+        assert ds.available_resources == 1.0, "available_resources is not valid"
+        assert ds.time_available == 1.0, "time_available is not valid"
+        assert ds.current_velocity == 0.5, "current_velocity is not valid"
+        assert ds.coherence == 1.0, "coherence is not valid"
+        assert ds.energy == 0.0, "energy is not valid"
 
     def test_context_default_empty_dict(self) -> None:
         ds = DecisionState()
-        assert ds.context == {}
+        assert ds.context == {}, "context is not valid"
 
     def test_state_vector_default_empty(self) -> None:
         ds = DecisionState()
-        assert ds.state_vector == []
+        assert ds.state_vector == [], "state_vector is not valid"
 
     def test_custom_positions(self) -> None:
         ds = DecisionState(
             current_position="start",
             goal_position="end",
         )
-        assert ds.current_position == "start"
-        assert ds.goal_position == "end"
+        assert ds.current_position == "start", "current_position is not valid"
+        assert ds.goal_position == "end", "goal_position is not valid"
 
     def test_active_forces_default_empty(self) -> None:
         ds = DecisionState()
-        assert ds.active_forces == []
+        assert ds.active_forces == [], "active_forces is not valid"

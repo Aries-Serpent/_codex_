@@ -48,39 +48,39 @@ class TestStreamingLoss:
 
         # Add loss via kwargs
         metric.update(None, None, loss=1.0)
-        assert metric.compute() == 1.0
+        assert metric.compute() == 1.0, "Condition must be true"
 
         metric.update(None, None, loss=3.0)
         # Average of 1.0 and 3.0 = 2.0
-        assert metric.compute() == 2.0
+        assert metric.compute() == 2.0, "Condition must be true"
 
     def test_reset(self) -> None:
         metric = StreamingLoss()
         metric.update(None, None, loss=5.0)
-        assert metric.compute() == 5.0
+        assert metric.compute() == 5.0, "Condition must be true"
 
         metric.reset()
-        assert metric.compute() == 0.0
+        assert metric.compute() == 0.0, "Condition must be true"
 
     def test_fallback_to_preds_mean(self) -> None:
         metric = StreamingLoss()
         # When loss kwarg not provided, uses mean of preds
         preds = np.array([2.0, 4.0, 6.0])
         metric.update(preds, None)
-        assert metric.compute() == 4.0  # mean of [2, 4, 6]
+        assert metric.compute() == 4.0, "Condition must be true"
 
     def test_fallback_with_torch_tensor(self) -> None:
         metric = StreamingLoss()
         preds = torch.tensor([1.0, 2.0, 3.0])
         metric.update(preds, None)
-        assert metric.compute() == 2.0  # mean of [1, 2, 3]
+        assert metric.compute() == 2.0, "Condition must be true"
 
     def test_empty_preds_fallback(self) -> None:
         metric = StreamingLoss()
         preds = np.array([])
         metric.update(preds, None)
         # Empty array should result in 0.0 loss
-        assert metric.compute() == 0.0
+        assert metric.compute() == 0.0, "Condition must be true"
 
     def test_multiple_batches(self) -> None:
         metric = StreamingLoss()
@@ -90,13 +90,13 @@ class TestStreamingLoss:
             metric.update(None, None, loss=loss)
 
         # Average of [1, 2, 3, 4, 5] = 15 / 5 = 3.0
-        assert metric.compute() == 3.0
+        assert metric.compute() == 3.0, "Condition must be true"
 
     def test_with_zero_loss(self) -> None:
         metric = StreamingLoss()
         metric.update(None, None, loss=0.0)
         metric.update(None, None, loss=0.0)
-        assert metric.compute() == 0.0
+        assert metric.compute() == 0.0, "Condition must be true"
 
     def test_mixed_loss_sources(self) -> None:
         metric = StreamingLoss()
@@ -109,7 +109,7 @@ class TestStreamingLoss:
         metric.update(preds, None)
 
         # Average of 2.0 and 4.0 = 3.0
-        assert metric.compute() == 3.0
+        assert metric.compute() == 3.0, "Condition must be true"
 
     def test_streaming_over_training_epoch(self) -> None:
         """Simulate a training epoch with varying batch losses."""
@@ -122,9 +122,9 @@ class TestStreamingLoss:
             metric.update(None, None, loss=loss)
 
         # Average = 55 / 10 = 5.5
-        assert metric.compute() == 5.5
+        assert metric.compute() == 5.5, "Condition must be true"
 
     def test_compute_without_updates(self) -> None:
         metric = StreamingLoss()
         # Should return 0.0 when no updates
-        assert metric.compute() == 0.0
+        assert metric.compute() == 0.0, "Condition must be true"

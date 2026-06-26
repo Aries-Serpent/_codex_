@@ -21,8 +21,8 @@ def test_atomicity_and_resume(tmp_path, monkeypatch):
     monkeypatch.setattr(os, "replace", boom)
     with pytest.raises(RuntimeError):
         mgr.save_now(1, b"x")
-    assert not (tmp_path / "ckpt-1.pt").exists()
+    assert not (tmp_path / "ckpt-1.pt").exists(), "Condition must be true"
 
     monkeypatch.setattr(os, "replace", orig_replace)
     p = mgr.save_now(2, b"x")
-    assert CheckpointManager.find_resume(tmp_path) == str(p)
+    assert CheckpointManager.find_resume(tmp_path) == str(p), "Condition must be true"

@@ -98,7 +98,7 @@ class SessionEmbeddings:
                 logger.info(f"Loaded model: {self.MODEL_NAME}")
             except (ValueError, TypeError, RuntimeError) as e:
                 error_type = type(e).__name__
-                logger.warning(f"Failed to load model: <ERROR_TYPE>; using mock embeddings")
+                logger.warning("Failed to load model: <ERROR_TYPE>; using mock embeddings")
                 self._model = None
         else:
             logger.info("Using mock embeddings (sentence-transformers not available)")
@@ -170,7 +170,7 @@ class SessionEmbeddings:
                     self._load_from_disk()
                 except (IOError, OSError) as e:
                     error_type = type(e).__name__
-                    logger.warning(f"Failed to load index: <ERROR_TYPE>; creating new index")
+                    logger.warning("Failed to load index: <ERROR_TYPE>; creating new index")
                     self._create_index()
                     self._metadata = {}
             else:
@@ -345,7 +345,7 @@ class SessionEmbeddings:
                 return self._search(embedding, k)
             except (ValueError, TypeError, RuntimeError) as e:
                 error_type = type(e).__name__
-                logger.error(f"Failed to search: <ERROR_TYPE>")
+                logger.error("Failed to search: <ERROR_TYPE>")
                 return []
 
     def _search(
@@ -450,7 +450,7 @@ class SessionEmbeddings:
 
             except (ValueError, TypeError, RuntimeError) as e:
                 error_type = type(e).__name__
-                logger.error(f"Rebuild failed: <ERROR_TYPE>")
+                logger.error("Rebuild failed: <ERROR_TYPE>")
                 self._metadata = old_metadata
                 return False
 

@@ -33,8 +33,8 @@ def test_end_to_end_tool_call() -> None:
 
     token = authenticator.generate_session_token(principal)
     # Token should be a 64-char hex hash (SHA-256)
-    assert len(token) == 64
-    assert all(c in "0123456789abcdef" for c in token)
+    assert len(token) == 64, "Token must not be empty"
+    assert all(c in "0123456789abcdef" for c in token), "Condition must be true"
 
     # For now, we just assert authorize() returns True for a valid principal
     assert authorizer.authorize(principal, tool_name="echo")
@@ -49,10 +49,10 @@ def test_end_to_end_tool_call() -> None:
     response = asyncio.run(_call_server(server, request))
 
     # Assert: validate JSON-RPC structure and tool presence
-    assert response is not None
-    assert response["jsonrpc"] == "2.0"
-    assert response["id"] == 1
+    assert response is not None, "response must be initialized"
+    assert response["jsonrpc"] == "2.0", "Response must not be empty"
+    assert response["id"] == 1, "Response must not be empty"
 
     result = response["result"]
     assert isinstance(result, list)
-    assert any(tool["name"] == "echo" for tool in result)
+    assert any(tool["name"] == "echo" for tool in result), "Result must not be empty"

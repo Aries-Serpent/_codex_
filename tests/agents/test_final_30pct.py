@@ -28,7 +28,7 @@ class TestPhysicsOrchestratorSimpleMethods:
         try:
             # Try basic construction
             vec = ForceVector(1.0, 2.0, 3.0)
-            assert vec is not None
+            assert vec is not None, "vec must be initialized"
         except TypeError:
             pytest.skip("ForceVector signature differs")
 
@@ -53,7 +53,7 @@ class TestAdvancedCalculatorsGetters:
         try:
             network = ChaoticNeuralNetwork(num_neurons=3)
             params = network.generate_test_parameters()
-            assert params is not None
+            assert params is not None, "params must be initialized"
         except (TypeError, AttributeError):
             pytest.skip("ChaoticNeuralNetwork API differs")
 
@@ -68,7 +68,7 @@ class TestWorkflowNavigatorSimple:
         nav = WorkflowNavigator()
         if hasattr(nav, "list_workflows"):
             workflows = nav.list_workflows()
-            assert workflows is not None
+            assert workflows is not None, "workflows must be initialized"
 
     def test_get_workflow_by_name(self):
         """Test get_workflow method."""
@@ -106,12 +106,12 @@ class TestQuantumGameTheorySimple:
         """Test TeamType enum."""
         from agents.quantum_game_theory import TeamType
 
-        assert TeamType.BLUE is not None
-        assert TeamType.RED is not None
+        assert TeamType.BLUE is not None, "BLUE must be initialized"
+        assert TeamType.RED is not None, "RED must be initialized"
 
         # Iterate all values
         for team in TeamType:
-            assert team.value is not None
+            assert team.value is not None, "value must be initialized"
 
 
 class TestMentalMappingSimple:
@@ -123,7 +123,7 @@ class TestMentalMappingSimple:
 
         # Iterate all values
         for node_type in NodeType:
-            assert node_type.value is not None
+            assert node_type.value is not None, "value must be initialized"
 
     def test_edge_type_enum(self):
         """Test EdgeType enum."""
@@ -131,7 +131,7 @@ class TestMentalMappingSimple:
 
         # Iterate all values
         for edge_type in EdgeType:
-            assert edge_type.value is not None
+            assert edge_type.value is not None, "value must be initialized"
 
 
 class TestAgentMemorySimple:
@@ -143,7 +143,7 @@ class TestAgentMemorySimple:
 
         try:
             memory = AgentMemory()
-            assert memory is not None
+            assert memory is not None, "memory must be initialized"
         except TypeError:
             # May require parameters
             pytest.skip("AgentMemory requires parameters")
@@ -158,7 +158,7 @@ class TestDeveloperOrchestratorSimple:
 
         # Iterate all values
         for app_type in AppType:
-            assert app_type.value is not None
+            assert app_type.value is not None, "value must be initialized"
 
 
 class TestPhysicsIntegrationSimple:
@@ -170,6 +170,6 @@ class TestPhysicsIntegrationSimple:
 
         try:
             integration = PhysicsIntegration()
-            assert integration is not None
+            assert integration is not None, "integration must be initialized"
         except (TypeError, ImportError):
             pytest.skip("PhysicsIntegration requires parameters or unavailable")

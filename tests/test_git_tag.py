@@ -37,12 +37,12 @@ def test_current_commit_happy_path(monkeypatch):
     def fake_check_output(cmd, **kw):
         # Typical invocation: ["git", "rev-parse", "HEAD"]
         assert isinstance(cmd, (list, tuple)), "git invocation should be a list/tuple"
-        assert "git" in cmd[0]
+        assert "git" in cmd[0], "Condition must be true"
         # Return bytes to emulate actual subprocess behavior
         return b"abc123def456\n"
 
     monkeypatch.setattr(subprocess, "check_output", fake_check_output)
-    assert git_tag.current_commit() == "abc123def456"
+    assert git_tag.current_commit() == "abc123def456", "Condition must be true"
 
 
 def test_current_commit_happy_path_direct(monkeypatch):
@@ -55,11 +55,11 @@ def test_current_commit_happy_path_direct(monkeypatch):
 
     def fake_check_output(cmd, **kw):
         assert isinstance(cmd, (list, tuple)), "git invocation should be a list/tuple"
-        assert "git" in cmd[0]
+        assert "git" in cmd[0], "Condition must be true"
         return b"abc123def456\n"
 
     monkeypatch.setattr(subprocess, "check_output", fake_check_output)
-    assert current_commit() == "abc123def456"
+    assert current_commit() == "abc123def456", "Condition must be true"
 
 
 def test_current_commit_error_returns_none(monkeypatch):
@@ -73,7 +73,7 @@ def test_current_commit_error_returns_none(monkeypatch):
         raise subprocess.CalledProcessError(128, cmd=["git", "rev-parse", "HEAD"])
 
     monkeypatch.setattr(subprocess, "check_output", boom)
-    assert git_tag.current_commit() is None
+    assert git_tag.current_commit() is None, "Condition must be true"
 
 
 def test_current_commit_error_returns_none_direct(monkeypatch):
@@ -90,7 +90,7 @@ def test_current_commit_error_returns_none_direct(monkeypatch):
     # Use raising=False to avoid monkeypatch complaining in environments where
     # check_output might be a different object or missing (defensive).
     monkeypatch.setattr(subprocess, "check_output", boom, raising=False)
-    assert current_commit() is None
+    assert current_commit() is None, "Condition must be true"
 
 
 @pytest.mark.parametrize("stderr_msg", ["fatal: not a git repository", "git: command not found"])
@@ -113,7 +113,7 @@ def test_handles_missing_repo_or_git(monkeypatch, stderr_msg):
         "check_output",
         lambda *a, **k: (_ for _ in ()).throw(Err()),
     )
-    assert git_tag.current_commit() is None
+    assert git_tag.current_commit() is None, "Condition must be true"
 
 
 @pytest.mark.parametrize("stderr_msg", ["fatal: not a git repository", "git: command not found"])
@@ -134,4 +134,4 @@ def test_current_commit_handles_missing_repo_or_git_direct(monkeypatch, stderr_m
 
     # Use raising=False to be tolerant of attribute presence/absence in different envs.
     monkeypatch.setattr(subprocess, "check_output", boom, raising=False)
-    assert current_commit() is None
+    assert current_commit() is None, "Condition must be true"

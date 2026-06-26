@@ -52,9 +52,9 @@ def test_composes_and_overrides() -> None:
             raise
 
     # Validate basic structure
-    assert cfg.training.max_epochs == 2
-    assert cfg.model.name
+    assert cfg.training.max_epochs == 2, "max_epochs is not valid"
+    assert cfg.model.name, "Condition must be true"
 
     # Check experiment config if present
     if hasattr(cfg, "experiment") and cfg.experiment is not None:
-        assert cfg.experiment.name == "debug"
+        assert cfg.experiment.name == "debug", "name is not valid"

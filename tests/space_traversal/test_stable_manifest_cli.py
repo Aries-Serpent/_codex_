@@ -27,9 +27,9 @@ def test_stable_manifest_cli_normalizes(tmp_path: Path):
     cmd_b = [sys.executable, SCRIPT, "--dir", str(b), "--out", str(out_b)]
     res_a = subprocess.run(cmd_a, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     res_b = subprocess.run(cmd_b, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-    assert res_a.returncode == 0 and res_b.returncode == 0
+    assert res_a.returncode == 0 and res_b.returncode == 0, "returncode is not valid"
     with open(out_a, "r", encoding="utf-8") as fh:
         ma = json.load(fh)
     with open(out_b, "r", encoding="utf-8") as fh:
         mb = json.load(fh)
-    assert ma == mb
+    assert ma == mb, "ma is not valid"

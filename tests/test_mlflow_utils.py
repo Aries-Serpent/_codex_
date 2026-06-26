@@ -118,7 +118,7 @@ def test_start_run_and_logging(monkeypatch, tmp_path):
     with MU.start_run(
         "exp", tracking_uri=str(tmp_path), run_tags={"a": "b"}, enable_system_metrics=True
     ) as ctx:
-        assert ctx == "run"
+        assert ctx == "run", "ctx is not valid"
 
     # Test parameter logging
     MU.log_params({"p": 1}, enabled=True)
@@ -137,9 +137,9 @@ def test_start_run_and_logging(monkeypatch, tmp_path):
     MU.ensure_local_artifacts(tmp_path, {"m": 1}, {"s": 1}, enabled=True)
 
     # Verify step logging behavior
-    assert dummy.params == {"p": 1}
+    assert dummy.params == {"p": 1}, "params is not valid"
     assert ("loss", 1.0, 2) in dummy.metrics  # Step parameter should be preserved
-    assert "f.txt" in dummy.artifacts and "d" in dummy.artifacts
+    assert "f.txt" in dummy.artifacts and "d" in dummy.artifacts, "Condition must be true"
 
 
 def test_seed_snapshot_writes_json(tmp_path: Path) -> None:
@@ -147,7 +147,7 @@ def test_seed_snapshot_writes_json(tmp_path: Path) -> None:
     mfu = importlib.import_module("codex_ml.tracking.mlflow_utils")
     seeds = {"python": 0}
     path = mfu.seed_snapshot(seeds, tmp_path)
-    assert json.loads(path.read_text(encoding="utf-8")) == seeds
+    assert json.loads(path.read_text(encoding="utf-8")) == seeds, "Condition must be true"
 
 
 def test_seed_snapshot_logs_artifact_when_enabled(monkeypatch, tmp_path: Path) -> None:
@@ -163,7 +163,7 @@ def test_seed_snapshot_logs_artifact_when_enabled(monkeypatch, tmp_path: Path) -
 
     monkeypatch.setattr(mfu, "log_artifacts", fake_log)
     out = mfu.seed_snapshot({"seed": 1}, tmp_path, enabled=True)
-    assert out.exists() and logged["path"] == str(out)
+    assert out.exists() and logged["path"] == str(out), "Condition must be true"
 
 
 def test_ensure_local_artifacts_writes_files(tmp_path: Path) -> None:
@@ -172,8 +172,8 @@ def test_ensure_local_artifacts_writes_files(tmp_path: Path) -> None:
     summary = {"status": "ok"}
     seeds = {"numpy": 1}
     mfu.ensure_local_artifacts(tmp_path, summary, seeds)
-    assert json.loads((tmp_path / "summary.json").read_text(encoding="utf-8")) == summary
-    assert json.loads((tmp_path / "seeds.json").read_text(encoding="utf-8")) == seeds
+    assert json.loads((tmp_path / "summary.json").read_text(encoding="utf-8")) == summary, "Condition must be true"
+    assert json.loads((tmp_path / "seeds.json").read_text(encoding="utf-8")) == seeds, "Condition must be true"
 
 
 def test_noop_helpers(tmp_path):
@@ -188,7 +188,7 @@ def test_noop_helpers(tmp_path):
 def test_start_run_disabled():
     """Test start_run when disabled returns None context."""
     with MU.start_run(None) as ctx:
-        assert ctx is None
+        assert ctx is None, "ctx is not valid"
 
 
 def test_start_run_no_tracking(monkeypatch):
@@ -197,7 +197,7 @@ def test_start_run_no_tracking(monkeypatch):
     monkeypatch.setattr(MU, "_mlf", dummy)
     MU._HAS_MLFLOW = True
     with MU.start_run(MU.MlflowConfig(enable=True, tracking_uri=None)) as ctx:
-        assert ctx == "run"
+        assert ctx == "run", "ctx is not valid"
 
 
 def test_log_params_missing_mlflow(monkeypatch):
@@ -219,7 +219,7 @@ def test_ensure_mlflow_available(monkeypatch):
     dummy = object()
     monkeypatch.setattr(importlib, "import_module", lambda name: dummy)
     MU._ensure_mlflow_available()
-    assert MU._mlf is dummy and MU._HAS_MLFLOW
+    assert MU._mlf is dummy and MU._HAS_MLFLOW, "_mlf is not valid"
 
     MU._mlf = None
     MU._HAS_MLFLOW = False

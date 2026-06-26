@@ -47,7 +47,11 @@ class User:
 
         if resolved_user_id is None and resolved_id is None:
             raise ValueError("At least one identifier (user_id or id) must be provided")
-        if resolved_user_id is not None and resolved_id is not None and resolved_user_id != resolved_id:
+        if (
+            resolved_user_id is not None
+            and resolved_id is not None
+            and resolved_user_id != resolved_id
+        ):
             raise ValueError("user_id and id must match when both are provided")
 
         if resolved_user_id is None:

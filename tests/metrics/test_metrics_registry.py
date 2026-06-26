@@ -35,7 +35,7 @@ class TestBaseMetricInterface:
         metric = StreamingAccuracy()
         meta = metric.meta()
         assert isinstance(meta, dict)
-        assert "name" in meta
+        assert "name" in meta, "Condition must be true"
 
 
 class TestClassificationMetrics:
@@ -46,14 +46,14 @@ class TestClassificationMetrics:
         preds = torch.tensor([0, 1, 2, 3])
         labels = torch.tensor([0, 1, 2, 3])
         acc = accuracy(preds, labels)
-        assert acc == 1.0
+        assert acc == 1.0, "acc is not valid"
 
     def test_accuracy_partial(self):
         """Test accuracy with partial correctness"""
         preds = torch.tensor([0, 1, 2, 0])
         labels = torch.tensor([0, 1, 0, 3])
         acc = accuracy(preds, labels)
-        assert acc == 0.5
+        assert acc == 0.5, "acc is not valid"
 
     def test_accuracy_with_ignore_index(self):
         """Test accuracy ignoring special tokens"""
@@ -61,7 +61,7 @@ class TestClassificationMetrics:
         labels = torch.tensor([0, 1, 0, -100, 3])
         acc = accuracy(preds, labels, ignore_index=-100)
         # 3 correct out of 4 (excluding -100)
-        assert acc == 0.75
+        assert acc == 0.75, "acc is not valid"
 
     def test_precision_binary(self):
         """Test precision for binary classification"""
@@ -69,7 +69,7 @@ class TestClassificationMetrics:
         labels = np.array([1, 1, 0, 0, 0])
         prec = precision(preds, labels, positive=1)
         # 2 true positives, 1 false positive
-        assert abs(prec - (2 / 3)) < 0.01
+        assert abs(prec - (2 / 3)) < 0.01, "Condition must be true"
 
     def test_recall_binary(self):
         """Test recall for binary classification"""
@@ -77,7 +77,7 @@ class TestClassificationMetrics:
         labels = np.array([1, 1, 0, 0, 1])
         rec = recall(preds, labels, positive=1)
         # 2 true positives, 1 false negative
-        assert abs(rec - (2 / 3)) < 0.01
+        assert abs(rec - (2 / 3)) < 0.01, "Condition must be true"
 
     def test_f1_computation(self):
         """Test F1 score computation"""
@@ -85,7 +85,7 @@ class TestClassificationMetrics:
         labels = np.array([1, 1, 0, 0, 0])
         f1_score = f1(preds, labels, positive=1)
         # F1 = 2 * (precision * recall) / (precision + recall)
-        assert 0.0 <= f1_score <= 1.0
+        assert 0.0 <= f1_score <= 1.0, "0 is not valid"
 
 
 class TestStreamingMetrics:
@@ -103,22 +103,22 @@ class TestStreamingMetrics:
 
         # Overall: 4/6 correct
         acc = metric.compute()
-        assert abs(acc - (4 / 6)) < 0.01
+        assert abs(acc - (4 / 6)) < 0.01, "Condition must be true"
 
     def test_streaming_accuracy_reset(self):
         """Test StreamingAccuracy reset clears state"""
         metric = StreamingAccuracy()
 
         metric.update(torch.tensor([0, 1]), torch.tensor([0, 0]))
-        assert metric.compute() == 0.5
+        assert metric.compute() == 0.5, "Condition must be true"
 
         metric.reset()
-        assert metric._correct == 0
-        assert metric._total == 0
+        assert metric._correct == 0, "_correct is not valid"
+        assert metric._total == 0, "_total is not valid"
 
         # After reset, should start fresh
         metric.update(torch.tensor([1, 1]), torch.tensor([1, 1]))
-        assert metric.compute() == 1.0
+        assert metric.compute() == 1.0, "Condition must be true"
 
     def test_streaming_loss_accumulation(self):
         """Test StreamingLoss computes average"""
@@ -129,7 +129,7 @@ class TestStreamingMetrics:
         metric.update(None, None, loss=3.0)
 
         avg_loss = metric.compute()
-        assert avg_loss == 2.0
+        assert avg_loss == 2.0, "avg_loss is not valid"
 
     def test_streaming_loss_from_tensor(self):
         """Test StreamingLoss with tensor input"""
@@ -139,7 +139,7 @@ class TestStreamingMetrics:
         metric.update(torch.tensor([1.5, 2.5]), None)
 
         avg = metric.compute()
-        assert abs(avg - 2.0) < 0.01
+        assert abs(avg - 2.0) < 0.01, "Condition must be true"
 
 
 class TestDeterminism:
@@ -153,7 +153,7 @@ class TestDeterminism:
         result1 = accuracy(preds, labels)
         result2 = accuracy(preds, labels)
 
-        assert result1 == result2
+        assert result1 == result2, "Result must not be empty"
 
     def test_streaming_deterministic(self):
         """Test streaming metrics are deterministic"""
@@ -169,7 +169,7 @@ class TestDeterminism:
             metric1.update(preds, labels)
             metric2.update(preds, labels)
 
-        assert metric1.compute() == metric2.compute()
+        assert metric1.compute() == metric2.compute(), "Condition must be true"
 
 
 if __name__ == "__main__":

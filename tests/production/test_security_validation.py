@@ -33,9 +33,9 @@ def test_sql_injection_basic_quotes(tmp_path):
     results = cursor.fetchall()
 
     # Should return no results, table should still exist
-    assert len(results) == 0
+    assert len(results) == 0, "Results must not be empty"
     cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='users'")
-    assert cursor.fetchone() is not None
+    assert cursor.fetchone() is not None, "curs must be initialized"
     conn.close()
 
 
@@ -55,7 +55,7 @@ def test_sql_injection_union_attack(tmp_path):
     results = cursor.fetchall()
 
     # Should not retrieve password data
-    assert len(results) == 0
+    assert len(results) == 0, "Results must not be empty"
     conn.close()
 
 
@@ -75,7 +75,7 @@ def test_sql_injection_boolean_based(tmp_path):
     results = cursor.fetchall()
 
     # Should not return all rows
-    assert len(results) == 0
+    assert len(results) == 0, "Results must not be empty"
     conn.close()
 
 
@@ -95,7 +95,7 @@ def test_sql_injection_comment_bypass(tmp_path):
     results = cursor.fetchall()
 
     # Should not authenticate
-    assert len(results) == 0
+    assert len(results) == 0, "Results must not be empty"
     conn.close()
 
 
@@ -107,9 +107,9 @@ def test_xss_basic_script_tag():
     malicious_input = "<script>alert('XSS')</script>"
     sanitized = html.escape(malicious_input)
 
-    assert "<script>" not in sanitized
-    assert "&lt;script&gt;" in sanitized
-    assert "alert" in sanitized
+    assert "<script>" not in sanitized, "Condition must be true"
+    assert "&lt;script&gt;" in sanitized, "Condition must be true"
+    assert "alert" in sanitized, "Condition must be true"
 
 
 def test_xss_event_handler_injection():
@@ -117,8 +117,8 @@ def test_xss_event_handler_injection():
     malicious_input = '<img src="x" onerror="alert(1)">'
     sanitized = sanitize_html(malicious_input)
 
-    assert "onerror=" not in sanitized
-    assert "<img" not in sanitized
+    assert "onerror=" not in sanitized, "Error should be raised or set"
+    assert "<img" not in sanitized, "Condition must be true"
 
 
 def test_xss_javascript_protocol():
@@ -126,8 +126,8 @@ def test_xss_javascript_protocol():
     malicious_input = '<a href="javascript:alert(1)">Click</a>'
     sanitized = sanitize_html(malicious_input)
 
-    assert "javascript:" not in sanitized
-    assert "<a" not in sanitized
+    assert "javascript:" not in sanitized, "Condition must be true"
+    assert "<a" not in sanitized, "Condition must be true"
 
 
 def test_xss_encoded_characters():
@@ -136,8 +136,8 @@ def test_xss_encoded_characters():
     # Double escape to prevent decoding attacks
     sanitized = html.escape(html.unescape(malicious_input))
 
-    assert "<script>" not in sanitized
-    assert "&lt;script&gt;" in sanitized
+    assert "<script>" not in sanitized, "Condition must be true"
+    assert "&lt;script&gt;" in sanitized, "Condition must be true"
 
 
 def test_xss_attribute_injection():
@@ -145,9 +145,9 @@ def test_xss_attribute_injection():
     malicious_input = '" onload="alert(1)'
     sanitized = sanitize_html(malicious_input)
 
-    assert "onload=" not in sanitized
+    assert "onload=" not in sanitized, "Condition must be true"
     # After sanitization, should only have the quote character
-    assert "alert" not in sanitized
+    assert "alert" not in sanitized, "Condition must be true"
 
 
 # CSRF Protection Tests
@@ -160,9 +160,9 @@ def test_csrf_token_generation():
     token1 = secrets.token_hex(32)
     token2 = secrets.token_hex(32)
 
-    assert len(token1) == 64  # 32 bytes = 64 hex chars
-    assert len(token2) == 64
-    assert token1 != token2  # Tokens should be unique
+    assert len(token1) == 64, "Token1 must not be empty"
+    assert len(token2) == 64, "Token2 must not be empty"
+    assert token1 != token2, "token1 is not valid"
 
 
 def test_csrf_token_validation():
@@ -174,10 +174,10 @@ def test_csrf_token_validation():
     invalid_token = secrets.token_hex(32)
 
     # Valid token should pass
-    assert valid_token == session_token
+    assert valid_token == session_token, "valid_token is not valid"
 
     # Invalid token should fail
-    assert invalid_token != session_token
+    assert invalid_token != session_token, "invalid_token is not valid"
 
 
 def test_csrf_token_expiration():
@@ -188,11 +188,11 @@ def test_csrf_token_expiration():
     expiry_time = creation_time + timedelta(hours=1)
 
     # Token should be valid immediately
-    assert datetime.now() < expiry_time
+    assert datetime.now() < expiry_time, "Condition must be true"
 
     # Simulate expiration
     expired_time = expiry_time - timedelta(hours=2)
-    assert expired_time < creation_time
+    assert expired_time < creation_time, "expired_time is not valid"
 
 
 def test_csrf_double_submit_cookie():
@@ -205,11 +205,11 @@ def test_csrf_double_submit_cookie():
     form_token = token
 
     # Valid: tokens match
-    assert cookie_token == form_token
+    assert cookie_token == form_token, "cookie_token is not valid"
 
     # Invalid: tokens don't match
     attacker_token = secrets.token_hex(32)
-    assert cookie_token != attacker_token
+    assert cookie_token != attacker_token, "cookie_token is not valid"
 
 
 # Input Sanitization Tests
@@ -256,9 +256,9 @@ def test_input_sanitization_filename():
 
     for filename in dangerous_filenames:
         sanitized = sanitize_filename(filename)
-        assert "../" not in sanitized
-        assert "..\\" not in sanitized
-        assert "\0" not in sanitized
+        assert "../" not in sanitized, "Condition must be true"
+        assert "..\\" not in sanitized, "Condition must be true"
+        assert "\0" not in sanitized, "Condition must be true"
 
 
 def test_input_sanitization_username():
@@ -276,7 +276,7 @@ def test_input_sanitization_username():
     ]
 
     for input_val, expected in test_cases:
-        assert sanitize_username(input_val) == expected
+        assert sanitize_username(input_val) == expected, "Condition must be true"
 
 
 def test_input_sanitization_integer():
@@ -310,7 +310,7 @@ def test_input_sanitization_path_traversal():
 
     # Dangerous paths should be blocked
     dangerous = safe_join(base_dir, "../../../etc/passwd")
-    assert dangerous == base_dir or not dangerous.startswith("/etc")
+    assert dangerous == base_dir or not dangerous.startswith("/etc"), "dangerous is not valid"
 
 
 def test_input_sanitization_command_injection():
@@ -350,10 +350,10 @@ def test_input_sanitization_json_injection():
         parsed = json.loads(dangerous_input)
         safe_value = _safe_json_value(parsed)
         assert isinstance(safe_value, dict)
-        assert safe_value == parsed
+        assert safe_value == parsed, "Value must be initialized"
         # Re-serialize should be safe
         serialized = json.dumps(safe_value)
-        assert '"inject"' in serialized
+        assert '"inject"' in serialized, "Condition must be true"
     except json.JSONDecodeError:
         pytest.fail("Valid JSON should parse correctly")
 
@@ -383,6 +383,6 @@ def test_input_sanitization_ldap_injection():
 
     for dangerous in dangerous_inputs:
         sanitized = sanitize_ldap(dangerous)
-        assert "*" not in sanitized or "\\2a" in sanitized
-        assert "(" not in sanitized or "\\28" in sanitized
-        assert ")" not in sanitized or "\\29" in sanitized
+        assert "*" not in sanitized or "\\2a" in sanitized, "Condition must be true"
+        assert "(" not in sanitized or "\\28" in sanitized, "Condition must be true"
+        assert ")" not in sanitized or "\\29" in sanitized, "Condition must be true"

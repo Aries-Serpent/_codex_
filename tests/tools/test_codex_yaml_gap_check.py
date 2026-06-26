@@ -51,4 +51,4 @@ def test_yaml_gap_check_reports_unmapped_gap(tmp_path: Path):
     )
 
     text = report_path.read_text(encoding="utf-8")
-    assert "training.grad_accumulation" in text
+    assert "training.grad_accumulation" in text, "Condition must be true"

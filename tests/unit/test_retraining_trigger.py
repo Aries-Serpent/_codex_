@@ -43,8 +43,8 @@ _FIXED_TS_ISO = "2024-06-01T12:00:00+00:00"
 class TestRetrainingTriggerConstruction:
     def test_required_fields_only(self):
         t = RetrainingTrigger(reason="data_drift_psi", drift_score=0.42)
-        assert t.reason == "data_drift_psi"
-        assert t.drift_score == 0.42
+        assert t.reason == "data_drift_psi", "Data must not be empty"
+        assert t.drift_score == 0.42, "drift_score is not valid"
 
     def test_all_fields_explicit(self):
         t = RetrainingTrigger(
@@ -53,20 +53,20 @@ class TestRetrainingTriggerConstruction:
             timestamp=_FIXED_TS,
             config_snapshot={"threshold": 0.1},
         )
-        assert t.reason == "model_drift_js"
-        assert t.drift_score == 0.15
-        assert t.timestamp == _FIXED_TS
-        assert t.config_snapshot == {"threshold": 0.1}
+        assert t.reason == "model_drift_js", "reason is not valid"
+        assert t.drift_score == 0.15, "drift_score is not valid"
+        assert t.timestamp == _FIXED_TS, "timestamp is not valid"
+        assert t.config_snapshot == {"threshold": 0.1}, "config_snapshot is not valid"
 
     def test_default_timestamp_is_utc_aware(self):
         t = RetrainingTrigger(reason="r", drift_score=0.1)
-        assert t.timestamp.tzinfo is not None
+        assert t.timestamp.tzinfo is not None, "tzinfo must be initialized"
         # Should be UTC (offset zero)
-        assert t.timestamp.utcoffset().total_seconds() == 0
+        assert t.timestamp.utcoffset().total_seconds() == 0, "Condition must be true"
 
     def test_default_config_snapshot_is_empty_dict(self):
         t = RetrainingTrigger(reason="r", drift_score=0.1)
-        assert t.config_snapshot == {}
+        assert t.config_snapshot == {}, "config_snapshot is not valid"
 
     def test_drift_score_stored_as_float(self):
         t = RetrainingTrigger(reason="r", drift_score=1)  # int input
@@ -92,9 +92,9 @@ class TestRetrainingTriggerToDict:
             config_snapshot={"k": "v"},
         )
         d = t.to_dict()
-        assert d["reason"] == "data_drift_psi"
-        assert d["drift_score"] == 0.3
-        assert d["config_snapshot"] == {"k": "v"}
+        assert d["reason"] == "data_drift_psi", "Data must not be empty"
+        assert d["drift_score"] == 0.3, "Condition must be true"
+        assert d["config_snapshot"] == {"k": "v"}, "Condition must be true"
 
     def test_timestamp_serialised_as_iso_string(self):
         t = RetrainingTrigger(reason="r", drift_score=0.5, timestamp=_FIXED_TS)
@@ -102,7 +102,7 @@ class TestRetrainingTriggerToDict:
         assert isinstance(d["timestamp"], str)
         # Should be parseable back
         parsed = datetime.fromisoformat(d["timestamp"])
-        assert parsed == _FIXED_TS
+        assert parsed == _FIXED_TS, "parsed is not valid"
 
     def test_config_snapshot_is_copy(self):
         t = RetrainingTrigger(
@@ -113,7 +113,7 @@ class TestRetrainingTriggerToDict:
         )
         d = t.to_dict()
         d["config_snapshot"]["extra"] = "injected"
-        assert "extra" not in t.config_snapshot
+        assert "extra" not in t.config_snapshot, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -130,10 +130,10 @@ class TestRetrainingTriggerFromDict:
             config_snapshot={"model_version": "v3"},
         )
         restored = RetrainingTrigger.from_dict(original.to_dict())
-        assert restored.reason == original.reason
-        assert restored.drift_score == original.drift_score
-        assert restored.timestamp == original.timestamp
-        assert restored.config_snapshot == original.config_snapshot
+        assert restored.reason == original.reason, "reason is not valid"
+        assert restored.drift_score == original.drift_score, "drift_score is not valid"
+        assert restored.timestamp == original.timestamp, "timestamp is not valid"
+        assert restored.config_snapshot == original.config_snapshot, "config_snapshot is not valid"
 
     def test_explicit_timestamp_string(self):
         data = {
@@ -143,13 +143,13 @@ class TestRetrainingTriggerFromDict:
             "config_snapshot": {},
         }
         t = RetrainingTrigger.from_dict(data)
-        assert t.timestamp == _FIXED_TS
+        assert t.timestamp == _FIXED_TS, "timestamp is not valid"
 
     def test_missing_timestamp_defaults_to_now_utc(self):
         data = {"reason": "r", "drift_score": 0.1}
         t = RetrainingTrigger.from_dict(data)
-        assert t.timestamp.tzinfo is not None
-        assert t.timestamp.utcoffset().total_seconds() == 0
+        assert t.timestamp.tzinfo is not None, "tzinfo must be initialized"
+        assert t.timestamp.utcoffset().total_seconds() == 0, "Condition must be true"
 
     def test_missing_config_snapshot_defaults_to_empty(self):
         data = {
@@ -158,7 +158,7 @@ class TestRetrainingTriggerFromDict:
             "timestamp": _FIXED_TS_ISO,
         }
         t = RetrainingTrigger.from_dict(data)
-        assert t.config_snapshot == {}
+        assert t.config_snapshot == {}, "config_snapshot is not valid"
 
     def test_non_empty_config_snapshot_restored(self):
         data = {
@@ -177,7 +177,7 @@ class TestRetrainingTriggerFromDict:
             "timestamp": _FIXED_TS_ISO,
         }
         t = RetrainingTrigger.from_dict(data)
-        assert t.drift_score == pytest.approx(0.55)
+        assert t.drift_score == pytest.approx(0.55), "drift_score is not valid"
         assert isinstance(t.drift_score, float)
 
 
@@ -190,17 +190,17 @@ class TestRetrainingTriggerEquality:
     def test_equal_triggers(self):
         t1 = RetrainingTrigger(reason="r", drift_score=0.5, timestamp=_FIXED_TS)
         t2 = RetrainingTrigger(reason="r", drift_score=0.5, timestamp=_FIXED_TS)
-        assert t1 == t2
+        assert t1 == t2, "t1 is not valid"
 
     def test_different_drift_score_not_equal(self):
         t1 = RetrainingTrigger(reason="r", drift_score=0.5, timestamp=_FIXED_TS)
         t2 = RetrainingTrigger(reason="r", drift_score=0.9, timestamp=_FIXED_TS)
-        assert t1 != t2
+        assert t1 != t2, "t1 is not valid"
 
     def test_different_reason_not_equal(self):
         t1 = RetrainingTrigger(reason="data_drift", drift_score=0.5, timestamp=_FIXED_TS)
         t2 = RetrainingTrigger(reason="model_drift", drift_score=0.5, timestamp=_FIXED_TS)
-        assert t1 != t2
+        assert t1 != t2, "t1 is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -213,4 +213,4 @@ class TestMutableDefaultSafety:
         t1 = RetrainingTrigger(reason="r1", drift_score=0.1)
         t2 = RetrainingTrigger(reason="r2", drift_score=0.2)
         t1.config_snapshot["key"] = "value"
-        assert "key" not in t2.config_snapshot
+        assert "key" not in t2.config_snapshot, "Condition must be true"

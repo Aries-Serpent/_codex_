@@ -65,10 +65,10 @@ class TestInMemoryBackend:
     def test_write_and_read_round_trip(self):
         self.backend.write("view_a", "user:1", {"age": 30, "tier": "gold"})
         result = self.backend.read("view_a", "user:1")
-        assert result is not None
-        assert result["age"] == 30
-        assert result["tier"] == "gold"
-        assert "__written_at" in result
+        assert result is not None, "result must be initialized"
+        assert result["age"] == 30, "Result must not be empty"
+        assert result["tier"] == "gold", "Result must not be empty"
+        assert "__written_at" in result, "Result must not be empty"
 
     def test_read_missing_returns_none(self):
         assert self.backend.read("view_z", "nobody") is None
@@ -90,11 +90,11 @@ class TestInMemoryBackend:
         self.backend.write("view_x", "e1", {"f": 1})
         self.backend.write("view_y", "e2", {"f": 2})
         views = self.backend.list_views()
-        assert "view_x" in views
-        assert "view_y" in views
+        assert "view_x" in views, "Condition must be true"
+        assert "view_y" in views, "Condition must be true"
 
     def test_list_views_empty_initially(self):
-        assert self.backend.list_views() == []
+        assert self.backend.list_views() == [], "Condition must be true"
 
     def test_thread_safety_concurrent_writes(self):
         """Multiple threads writing to different keys must not clobber each other."""
@@ -114,11 +114,11 @@ class TestInMemoryBackend:
         for t in threads:
             t.join()
 
-        assert not errors
+        assert not errors, "Error should be raised or set"
         for i in range(20):
             r = self.backend.read("view", f"key:{i}")
-            assert r is not None
-            assert r["val"] == i
+            assert r is not None, "r must be initialized"
+            assert r["val"] == i, "Condition must be true"
 
 
 # ── SQLiteBackend ───────────────────────────────────────────────────────────
@@ -138,9 +138,9 @@ class TestSQLiteBackend:
     def test_write_and_read_round_trip(self):
         self.backend.write("profile", "u:1", {"plan": "pro", "credits": 500})
         r = self.backend.read("profile", "u:1")
-        assert r is not None
-        assert r["plan"] == "pro"
-        assert r["credits"] == 500
+        assert r is not None, "r must be initialized"
+        assert r["plan"] == "pro", "Condition must be true"
+        assert r["credits"] == 500, "Condition must be true"
 
     def test_read_missing_returns_none(self):
         assert self.backend.read("nope", "nobody") is None
@@ -171,7 +171,7 @@ class TestSQLiteBackend:
         b = mod.SQLiteBackend(db_path=db_path)
         b.write("v", "k", {"n": 42})
         b.close()
-        assert db_path.exists()
+        assert db_path.exists(), "Condition must be true"
 
         # Re-open and verify data persisted
         b2 = mod.SQLiteBackend(db_path=db_path)
@@ -194,7 +194,7 @@ class TestSQLiteBackend:
             t.start()
         for t in threads:
             t.join()
-        assert not errors
+        assert not errors, "Error should be raised or set"
 
 
 # ── RedisBackend (mocked) ───────────────────────────────────────────────────
@@ -223,7 +223,7 @@ class TestRedisBackend:
     def test_write_calls_redis_set(self, mock_redis_backend):
         backend, mock_redis, _ = mock_redis_backend
         backend.write("view", "key:1", {"x": 10})
-        assert mock_redis.set.called or mock_redis.setex.called
+        assert mock_redis.set.called or mock_redis.setex.called, "Condition must be true"
 
     def test_write_with_ttl_calls_setex(self):
         mod = _import_feast()
@@ -236,7 +236,7 @@ class TestRedisBackend:
         backend._redis = mock_redis
         backend.write("view", "key:1", {"x": 10})
         mock_redis.setex.assert_called_once()
-        assert mock_redis.setex.call_args[0][1] == 60
+        assert mock_redis.setex.call_args[0][1] == 60, "Condition must be true"
 
     def test_read_missing_returns_none(self, mock_redis_backend):
         backend, mock_redis, _ = mock_redis_backend
@@ -248,7 +248,7 @@ class TestRedisBackend:
         payload = json.dumps({"age": 30, "__written_at": "2026-03-07T00:00:00Z"})
         mock_redis.get.return_value = payload
         result = backend.read("view", "key:1")
-        assert result["age"] == 30
+        assert result["age"] == 30, "Result must not be empty"
 
     def test_delete_calls_redis_delete(self, mock_redis_backend):
         backend, mock_redis, _ = mock_redis_backend
@@ -261,8 +261,8 @@ class TestRedisBackend:
         # SCAN returns (cursor=0, keys) — cursor=0 means scan complete.
         mock_redis.scan.return_value = (0, ["profile:1", "profile:2", "orders:1"])
         views = backend.list_views()
-        assert "profile" in views
-        assert "orders" in views
+        assert "profile" in views, "Condition must be true"
+        assert "orders" in views, "Condition must be true"
 
     def test_close_calls_redis_close(self, mock_redis_backend):
         backend, mock_redis, _ = mock_redis_backend
@@ -315,10 +315,10 @@ class TestCreateBackend:
         with pytest.raises(ValueError) as exc_info:
             mod.create_backend("bad")
         msg = str(exc_info.value)
-        assert "memory" in msg
-        assert "sqlite" in msg
-        assert "redis" in msg
-        assert "duckdb" in msg
+        assert "memory" in msg, "Condition must be true"
+        assert "sqlite" in msg, "Condition must be true"
+        assert "redis" in msg, "Condition must be true"
+        assert "duckdb" in msg, "Condition must be true"
 
     def test_duckdb_backend(self):
         if importlib.util.find_spec("duckdb") is None:
@@ -360,9 +360,9 @@ class TestDuckDBBackend:
         b = mod.DuckDBBackend()
         b.write("views", "k1", {"x": 1, "y": "hello"})
         result = b.read("views", "k1")
-        assert result is not None
-        assert result["x"] == 1
-        assert result["y"] == "hello"
+        assert result is not None, "result must be initialized"
+        assert result["x"] == 1, "Result must not be empty"
+        assert result["y"] == "hello", "Result must not be empty"
         b.close()
 
     def test_read_missing_returns_none(self):
@@ -393,14 +393,14 @@ class TestDuckDBBackend:
         b.write("view_a", "k1", {"x": 1})
         b.write("view_b", "k2", {"y": 2})
         views = b.list_views()
-        assert "view_a" in views
-        assert "view_b" in views
+        assert "view_a" in views, "Condition must be true"
+        assert "view_b" in views, "Condition must be true"
         b.close()
 
     def test_list_views_empty(self):
         mod = _import_duckdb()
         b = mod.DuckDBBackend()
-        assert b.list_views() == []
+        assert b.list_views() == [], "Condition must be true"
         b.close()
 
     def test_row_count(self):
@@ -408,13 +408,13 @@ class TestDuckDBBackend:
         b = mod.DuckDBBackend()
         b.write("v", "k1", {"x": 1})
         b.write("v", "k2", {"x": 2})
-        assert b.row_count("v") == 2
+        assert b.row_count("v") == 2, "Count must be greater than zero"
         b.close()
 
     def test_row_count_empty_view(self):
         mod = _import_duckdb()
         b = mod.DuckDBBackend()
-        assert b.row_count("empty_view") == 0
+        assert b.row_count("empty_view") == 0, "Count must be greater than zero"
         b.close()
 
     def test_satisfies_feast_backend_protocol(self):
@@ -430,12 +430,12 @@ class TestDuckDBBackend:
         b.write("feats", "u2", {"age": 40, "score": 0.6})
         out = tmp_path / "feats.parquet"
         result_path = b.materialize_to_parquet("feats", out)
-        assert result_path == out
-        assert out.exists()
+        assert result_path == out, "Result must not be empty"
+        assert out.exists(), "Condition must be true"
         import pyarrow.parquet as pq
 
         table = pq.read_table(str(out))
-        assert table.num_rows == 2
+        assert table.num_rows == 2, "num_rows is not valid"
         b.close()
 
     def test_materialize_creates_parent_dirs(self, tmp_path):
@@ -444,7 +444,7 @@ class TestDuckDBBackend:
         b.write("feats", "u1", {"val": 1})
         out = tmp_path / "nested" / "dir" / "feats.parquet"
         b.materialize_to_parquet("feats", out)
-        assert out.exists()
+        assert out.exists(), "Condition must be true"
         b.close()
 
     def test_thread_safety_concurrent_writes(self):
@@ -468,7 +468,7 @@ class TestDuckDBBackend:
             t.join()
 
         assert not errors, f"Thread errors: {errors}"
-        assert b.row_count("v") == 20
+        assert b.row_count("v") == 20, "Count must be greater than zero"
         b.close()
 
     def test_missing_duckdb_package_raises_import_error(self):
@@ -482,7 +482,7 @@ class TestDuckDBBackend:
         b = mod.DuckDBBackend(table_prefix="_custom_")
         b.write("myview", "k1", {"a": 1})
         views = b.list_views()
-        assert "myview" in views
+        assert "myview" in views, "Condition must be true"
         b.close()
 
     def test_persistence_across_close_reopen(self, tmp_path):
@@ -493,8 +493,8 @@ class TestDuckDBBackend:
         b1.close()
         b2 = mod.DuckDBBackend(db_path=db_path)
         result = b2.read("v", "k1")
-        assert result is not None
-        assert result["stored"] is True
+        assert result is not None, "result must be initialized"
+        assert result["stored"] is True, "Result must not be empty"
         b2.close()
 
     def test_materialize_to_arrow_ipc(self, tmp_path):
@@ -506,13 +506,13 @@ class TestDuckDBBackend:
         b.write("feats", "u2", {"age": 40, "score": 0.6})
         out = tmp_path / "feats.arrow"
         result_path = b.materialize_to_arrow_ipc("feats", out)
-        assert result_path == out
-        assert out.exists()
+        assert result_path == out, "Result must not be empty"
+        assert out.exists(), "Condition must be true"
         import pyarrow.ipc as pa_ipc
 
         reader = pa_ipc.open_file(str(out))
         table = reader.read_all()
-        assert table.num_rows == 2
+        assert table.num_rows == 2, "num_rows is not valid"
         b.close()
 
     def test_materialize_to_arrow_ipc_creates_parent_dirs(self, tmp_path):
@@ -523,7 +523,7 @@ class TestDuckDBBackend:
         b.write("feats", "u1", {"val": 99})
         out = tmp_path / "deep" / "nested" / "feats.ipc"
         b.materialize_to_arrow_ipc("feats", out)
-        assert out.exists()
+        assert out.exists(), "Condition must be true"
         b.close()
 
     def test_materialize_to_arrow_ipc_no_pyarrow(self, tmp_path, monkeypatch):

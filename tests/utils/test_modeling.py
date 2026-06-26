@@ -52,7 +52,7 @@ def test_lora_missing(monkeypatch):
         if _is_hf_unavailable_error(exc):
             pytest.skip(f"HF model unavailable in CI: {exc}")
         raise
-    assert model is not None
+    assert model is not None, "model must be initialized"
 
 
 def test_load_success(monkeypatch):

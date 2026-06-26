@@ -100,8 +100,8 @@ class PluginHealth:
             return elapsed >= quarantine_duration
         except (ValueError, TypeError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.warning(f"Failed to parse quarantine timestamp: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.warning("Failed to parse quarantine timestamp: <ERROR_TYPE>")
             return False
 
 
@@ -308,7 +308,7 @@ class PluginSandbox:
 
         except (ValueError, TypeError, RuntimeError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             # Record failure
             error_msg = f"{type(e).__name__}: {e!s}"
             health.record_failure(error_msg)
@@ -422,7 +422,7 @@ class PluginManager:
                 return False
         except (ValueError, TypeError, RuntimeError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             logger.error(f"Plugin {plugin_name} initialization raised exception: <ERROR_TYPE>")
             return False
 
@@ -475,7 +475,7 @@ class PluginManager:
                 logger.info(f"Plugin {plugin_name} cleanup complete")
             except (ValueError, TypeError, RuntimeError) as e:
                 error_type = type(e).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.debug("Exception: <ERROR_TYPE>")
                 logger.error(f"Plugin {plugin_name} cleanup failed: <ERROR_TYPE>")
 
     def get_plugin_health_report(self) -> dict[str, Any]:

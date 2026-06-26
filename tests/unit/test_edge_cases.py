@@ -29,8 +29,8 @@ class TestPathUtilsEdgeCases:
         result = windows_safe_timestamp(fmt="iso", include_seconds=False)
 
         # Should not include seconds
-        assert result.endswith("Z")
-        assert result.count("-") >= 3  # Date separators
+        assert result.endswith("Z"), "Result must not be empty"
+        assert result.count("-") >= 3, "Value must be greater than zero"
 
     def test_sanitize_filename_empty_string(self):
         """Test sanitize_filename with empty string."""
@@ -48,9 +48,9 @@ class TestPathUtilsEdgeCases:
         result = sanitize_filename('<>:"/\\|?*')
 
         # All should be replaced
-        assert "<" not in result
-        assert ">" not in result
-        assert ":" not in result
+        assert "<" not in result, "Result must not be empty"
+        assert ">" not in result, "Result must not be empty"
+        assert ":" not in result, "Result must not be empty"
 
     def test_sanitize_filename_unicode(self):
         """Test sanitize_filename with unicode characters."""
@@ -72,7 +72,7 @@ class TestDALEdgeCases:
         result = _decode_json_field("{invalid json}")
 
         # Should return empty dict
-        assert result == {}
+        assert result == {}, "Result must not be empty"
 
     def test_decode_json_field_non_dict_json(self):
         """Test _decode_json_field with non-dict JSON."""
@@ -81,7 +81,7 @@ class TestDALEdgeCases:
         result = _decode_json_field('["array", "not", "dict"]')
 
         # Should return empty dict
-        assert result == {}
+        assert result == {}, "Result must not be empty"
 
     def test_decode_json_field_bytes(self):
         """Test _decode_json_field with bytes."""
@@ -90,7 +90,7 @@ class TestDALEdgeCases:
         result = _decode_json_field(b'{"key": "value"}')
 
         # Should decode and parse
-        assert result == {"key": "value"}
+        assert result == {"key": "value"}, "Result must not be empty"
 
     def test_decode_json_field_none(self):
         """Test _decode_json_field with None."""
@@ -99,7 +99,7 @@ class TestDALEdgeCases:
         result = _decode_json_field(None)
 
         # Should return empty dict
-        assert result == {}
+        assert result == {}, "Result must not be empty"
 
 
 class TestTrainingEdgeCases:
@@ -112,7 +112,7 @@ class TestTrainingEdgeCases:
         result = train_one_step(0.0)
 
         # Should still apply decay
-        assert result == 0.0
+        assert result == 0.0, "Result must not be empty"
 
     def test_train_one_step_negative_loss(self):
         """Test train_one_step with negative loss."""
@@ -121,7 +121,7 @@ class TestTrainingEdgeCases:
         result = train_one_step(-10.0)
 
         # Should handle negative values
-        assert result < 0
+        assert result < 0, "Result must not be empty"
 
     def test_train_epoch_single_batch(self):
         """Test train_epoch with single batch."""
@@ -133,8 +133,8 @@ class TestTrainingEdgeCases:
 
         result = train_epoch(model, dataloader, {})
 
-        assert result["num_batches"] == 1
-        assert result["loss_mean"] == 1.5
+        assert result["num_batches"] == 1, "Result must not be empty"
+        assert result["loss_mean"] == 1.5, "Result must not be empty"
 
     def test_run_minimal_training_max_steps_zero(self):
         """Test run_minimal_training with max_steps=0."""
@@ -144,7 +144,7 @@ class TestTrainingEdgeCases:
             result = run_minimal_training({}, max_steps=0, run_dir=tmpdir)
 
             # Should execute at least 1 step (max(1, 0))
-            assert "loss_final" in result
+            assert "loss_final" in result, "Result must not be empty"
 
 
 class TestCheckpointEdgeCases:
@@ -159,7 +159,7 @@ class TestCheckpointEdgeCases:
             _ensure_dir(tmpdir)
             _ensure_dir(tmpdir)  # Call again
 
-            assert Path(tmpdir).exists()
+            assert Path(tmpdir).exists(), "Condition must be true"
 
     def test_load_checkpoint_nonexistent_path(self):
         """Test load_checkpoint with nonexistent path."""
@@ -182,7 +182,7 @@ class TestDistributedEdgeCases:
 
         with pytest.warns(RuntimeWarning):
             result = _parse_env_int("TEST_FLAG")
-            assert result is None
+            assert result is None, "Result must not be empty"
 
     @patch.dict("os.environ", {"TEST_FLAG": "abc123"}, clear=False)
     def test_parse_env_int_mixed_string(self):
@@ -191,7 +191,7 @@ class TestDistributedEdgeCases:
 
         with pytest.warns(RuntimeWarning):
             result = _parse_env_int("TEST_FLAG")
-            assert result is None
+            assert result is None, "Result must not be empty"
 
     @patch.dict("os.environ", {"TEST_FLAG": "99999999999"}, clear=False)
     def test_parse_env_int_large_number(self):
@@ -200,7 +200,7 @@ class TestDistributedEdgeCases:
 
         result = _parse_env_int("TEST_FLAG")
 
-        assert result == 99999999999
+        assert result == 99999999999, "Result must not be empty"
 
 
 class TestRAGIndexingEdgeCases:
@@ -213,8 +213,8 @@ class TestRAGIndexingEdgeCases:
 
             chunks = chunk_text("A", chunk_size=100, overlap=10)
 
-            assert len(chunks) == 1
-            assert chunks[0][2] == "A"
+            assert len(chunks) == 1, "Chunks must not be empty"
+            assert chunks[0][2] == "A", "Condition must be true"
         except ImportError:
             pytest.skip("RAG indexer not available")
 
@@ -226,7 +226,7 @@ class TestRAGIndexingEdgeCases:
             text = "A" * 100
             chunks = chunk_text(text, chunk_size=100, overlap=0)
 
-            assert len(chunks) >= 1
+            assert len(chunks) >= 1, "Chunks must not be empty"
         except ImportError:
             pytest.skip("RAG indexer not available")
 
@@ -239,7 +239,7 @@ class TestRAGIndexingEdgeCases:
             chunks = chunk_text(text, chunk_size=100, overlap=0)
 
             # Should create non-overlapping chunks
-            assert len(chunks) >= 2
+            assert len(chunks) >= 2, "Chunks must not be empty"
         except ImportError:
             pytest.skip("RAG indexer not available")
 
@@ -256,7 +256,7 @@ class TestConfigEdgeCases:
 
             # Should handle missing keys gracefully
             result = manager.get("NONEXISTENT_VAR", default="fallback")
-            assert result == "fallback"
+            assert result == "fallback", "Result must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("EnvironmentManager not available")
 

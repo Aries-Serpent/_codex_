@@ -90,23 +90,23 @@ class TestComparisonMode:
 
     def test_mode_strict(self):
         """Test STRICT mode value."""
-        assert ComparisonMode.STRICT.value == "strict"
+        assert ComparisonMode.STRICT.value == "strict", "Value must be initialized"
 
     def test_mode_fuzzy(self):
         """Test FUZZY mode value."""
-        assert ComparisonMode.FUZZY.value == "fuzzy"
+        assert ComparisonMode.FUZZY.value == "fuzzy", "Value must be initialized"
 
     def test_mode_semantic(self):
         """Test SEMANTIC mode value."""
-        assert ComparisonMode.SEMANTIC.value == "semantic"
+        assert ComparisonMode.SEMANTIC.value == "semantic", "Value must be initialized"
 
     def test_all_modes_present(self):
         """Test all comparison modes exist."""
         modes = list(ComparisonMode)
-        assert len(modes) == 3
-        assert ComparisonMode.STRICT in modes
-        assert ComparisonMode.FUZZY in modes
-        assert ComparisonMode.SEMANTIC in modes
+        assert len(modes) == 3, "Modes must not be empty"
+        assert ComparisonMode.STRICT in modes, "Condition must be true"
+        assert ComparisonMode.FUZZY in modes, "Condition must be true"
+        assert ComparisonMode.SEMANTIC in modes, "Condition must be true"
 
 
 # =====================================================================
@@ -124,9 +124,9 @@ class TestComparisonDetail:
             mode=ComparisonMode.STRICT,
             result="match",
         )
-        assert detail.input_ref == "input1"
-        assert detail.mode == ComparisonMode.STRICT
-        assert detail.result == "match"
+        assert detail.input_ref == "input1", "input_ref is not valid"
+        assert detail.mode == ComparisonMode.STRICT, "mode is not valid"
+        assert detail.result == "match", "Result must not be empty"
 
     def test_detail_with_output(self):
         """Test ComparisonDetail with output."""
@@ -138,9 +138,9 @@ class TestComparisonDetail:
             patched_output="patched",
             diff="--- baseline\n+++ patched\n",
         )
-        assert detail.baseline_output == "baseline"
-        assert detail.patched_output == "patched"
-        assert detail.diff is not None
+        assert detail.baseline_output == "baseline", "baseline_output is not valid"
+        assert detail.patched_output == "patched", "patched_output is not valid"
+        assert detail.diff is not None, "diff must be initialized"
 
     def test_detail_with_error(self):
         """Test ComparisonDetail with error."""
@@ -150,7 +150,7 @@ class TestComparisonDetail:
             result="error",
             error="Timeout error",
         )
-        assert detail.error == "Timeout error"
+        assert detail.error == "Timeout error", "Error should be raised or set"
 
     def test_detail_result_options(self):
         """Test valid result options."""
@@ -160,7 +160,7 @@ class TestComparisonDetail:
                 mode=ComparisonMode.STRICT,
                 result=result_val,  # type: ignore
             )
-            assert detail.result == result_val
+            assert detail.result == result_val, "Result must not be empty"
 
 
 # =====================================================================
@@ -178,8 +178,8 @@ class TestComparisonResult:
             baseline_hash="hash1",
             patched_hash="hash2",
         )
-        assert result.result == "pass"
-        assert result.baseline_hash == "hash1"
+        assert result.result == "pass", "Result must not be empty"
+        assert result.baseline_hash == "hash1", "Result must not be empty"
 
     def test_result_default_fields(self):
         """Test ComparisonResult default fields."""
@@ -188,9 +188,9 @@ class TestComparisonResult:
             baseline_hash="hash1",
             patched_hash="hash2",
         )
-        assert result.comparisons == []
-        assert result.flakiness_check == {}
-        assert result.timestamp is not None
+        assert result.comparisons == [], "Result must not be empty"
+        assert result.flakiness_check == {}, "Result must not be empty"
+        assert result.timestamp is not None, "timestamp must be initialized"
 
     def test_result_to_dict(self):
         """Test ComparisonResult serialization."""
@@ -202,8 +202,8 @@ class TestComparisonResult:
             comparisons=[detail],
         )
         result_dict = result.to_dict()
-        assert result_dict["result"] == "pass"
-        assert len(result_dict["comparisons"]) == 1
+        assert result_dict["result"] == "pass", "Result must not be empty"
+        assert len(result_dict["comparisons"]) == 1, "Collection must not be empty"
 
     def test_result_save_creates_file(self, tmp_path):
         """Test that save() creates JSON file."""
@@ -214,7 +214,7 @@ class TestComparisonResult:
             patched_hash="h2",
         )
         result.save(output_file)
-        assert output_file.exists()
+        assert output_file.exists(), "Condition must be true"
 
 
 # =====================================================================
@@ -230,32 +230,32 @@ class TestHashOutput:
         output = "hello world"
         result = _hash_output(output)
         expected = hashlib.sha256(b"hello world").hexdigest()
-        assert result == expected
+        assert result == expected, "Result must not be empty"
 
     def test_hash_deterministic(self):
         """Test that hashing is deterministic."""
         output = "test output"
         hash1 = _hash_output(output)
         hash2 = _hash_output(output)
-        assert hash1 == hash2
+        assert hash1 == hash2, "hash1 is not valid"
 
     def test_hash_empty_string(self):
         """Test hashing empty string."""
         result = _hash_output("")
         expected = hashlib.sha256(b"").hexdigest()
-        assert result == expected
+        assert result == expected, "Result must not be empty"
 
     def test_hash_multiline_output(self):
         """Test hashing multiline output."""
         output = "line 1\nline 2\nline 3\n"
         result = _hash_output(output)
         expected = hashlib.sha256(output.encode("utf-8")).hexdigest()
-        assert result == expected
+        assert result == expected, "Result must not be empty"
 
     def test_hash_length_is_64(self):
         """Test that hash is 64 characters (SHA256)."""
         result = _hash_output("any output")
-        assert len(result) == 64
+        assert len(result) == 64, "Result must not be empty"
 
 
 # =====================================================================
@@ -270,40 +270,40 @@ class TestNormalizeOutput:
         """Test STRICT mode returns output unchanged."""
         output = "line 1\nline 2\n"
         result = _normalize_output(output, ComparisonMode.STRICT)
-        assert result == output
+        assert result == output, "Result must not be empty"
 
     def test_normalize_fuzzy_mode_whitespace(self):
         """Test FUZZY mode normalizes whitespace."""
         output = "line 1  \nline 2\n\nline 3"
         result = _normalize_output(output, ComparisonMode.FUZZY)
         # Should strip and sort
-        assert "line 1" in result
-        assert "line 2" in result
+        assert "line 1" in result, "Result must not be empty"
+        assert "line 2" in result, "Result must not be empty"
 
     def test_normalize_fuzzy_mode_sorts(self):
         """Test FUZZY mode sorts lines."""
         output = "zzz\naaa\nbbb\n"
         result = _normalize_output(output, ComparisonMode.FUZZY)
         lines = result.split("\n")
-        assert lines[0] <= lines[1] <= lines[2]
+        assert lines[0] <= lines[1] <= lines[2], "Condition must be true"
 
     def test_normalize_semantic_mode_removes_timestamps(self):
         """Test SEMANTIC mode removes timestamps."""
         output = "Timestamp: 2024-01-15T10:30:45"
         result = _normalize_output(output, ComparisonMode.SEMANTIC)
-        assert "<TIMESTAMP>" in result or "2024" not in result
+        assert "<TIMESTAMP>" in result or "2024" not in result, "Result must not be empty"
 
     def test_normalize_semantic_mode_removes_uuids(self):
         """Test SEMANTIC mode removes UUIDs."""
         output = "UUID: 550e8400-e29b-41d4-a716-446655440000"
         result = _normalize_output(output, ComparisonMode.SEMANTIC)
-        assert "<UUID>" in result or "550e" not in result
+        assert "<UUID>" in result or "550e" not in result, "Result must not be empty"
 
     def test_normalize_semantic_mode_removes_addresses(self):
         """Test SEMANTIC mode removes addresses."""
         output = "Memory: 0x7fffffff"
         result = _normalize_output(output, ComparisonMode.SEMANTIC)
-        assert "<ADDR>" in result or "0x7fffffff" not in result
+        assert "<ADDR>" in result or "0x7fffffff" not in result, "Result must not be empty"
 
 
 # =====================================================================
@@ -319,16 +319,16 @@ class TestCompareOutputs:
         baseline = "output"
         patched = "output"
         match, diff = _compare_outputs(baseline, patched, ComparisonMode.STRICT)
-        assert match is True
-        assert diff is None
+        assert match is True, "match is not valid"
+        assert diff is None, "diff is not valid"
 
     def test_compare_different_strict(self):
         """Test comparing different outputs in STRICT mode."""
         baseline = "output1"
         patched = "output2"
         match, diff = _compare_outputs(baseline, patched, ComparisonMode.STRICT)
-        assert match is False
-        assert diff is not None
+        assert match is False, "match is not valid"
+        assert diff is not None, "diff must be initialized"
 
     def test_compare_whitespace_fuzzy(self):
         """Test FUZZY comparison ignores whitespace."""
@@ -336,25 +336,25 @@ class TestCompareOutputs:
         patched = "line2\nline1"  # Different order
         match, diff = _compare_outputs(baseline, patched, ComparisonMode.FUZZY)
         # Fuzzy mode sorts, so order shouldn't matter
-        assert match is True or match is False  # Depends on sorting
+        assert match is True or match is False, "match is not valid"
 
     def test_compare_multiline(self):
         """Test comparing multiline output."""
         baseline = "line1\nline2\nline3\n"
         patched = "line1\nline2\nline3\n"
         match, diff = _compare_outputs(baseline, patched, ComparisonMode.STRICT)
-        assert match is True
+        assert match is True, "match is not valid"
 
     def test_compare_empty_outputs(self):
         """Test comparing empty outputs."""
         match, diff = _compare_outputs("", "", ComparisonMode.STRICT)
-        assert match is True
+        assert match is True, "match is not valid"
 
     def test_compare_empty_vs_nonempty(self):
         """Test comparing empty vs non-empty."""
         match, diff = _compare_outputs("", "output", ComparisonMode.STRICT)
-        assert match is False
-        assert diff is not None
+        assert match is False, "match is not valid"
+        assert diff is not None, "diff must be initialized"
 
 
 # =====================================================================
@@ -437,7 +437,7 @@ class TestCompareFunction:
             temp_patched_code,
             flakiness_runs=2,
         )
-        assert "consistent" in result.flakiness_check
+        assert "consistent" in result.flakiness_check, "Result must not be empty"
 
 
 # =====================================================================
@@ -464,8 +464,8 @@ class TestGenerateTests:
 
         files = generate_tests(source_dir, [input_file], [output_file], output_dir)
 
-        assert len(files) > 0
-        assert files[0].exists()
+        assert len(files) > 0, "Files must not be empty"
+        assert files[0].exists(), "Condition must be true"
 
     def test_generate_tests_output_is_valid_python(self, tmp_path):
         """Test that generated test file is valid Python."""
@@ -486,8 +486,8 @@ class TestGenerateTests:
         # Check that generated file is valid Python
         test_file = files[0]
         content = test_file.read_text()
-        assert "def test_snapshot" in content
-        assert "class TestBehaviorSnapshots" in content
+        assert "def test_snapshot" in content, "Content must not be empty"
+        assert "class TestBehaviorSnapshots" in content, "Content must not be empty"
 
     def test_generate_tests_includes_input_path(self, tmp_path):
         """Test that generated tests include input file paths."""
@@ -506,7 +506,7 @@ class TestGenerateTests:
         files = generate_tests(source_dir, [input1], [output1], output_dir)
 
         test_content = files[0].read_text()
-        assert "test_snapshot_1" in test_content
+        assert "test_snapshot_1" in test_content, "Content must not be empty"
 
     def test_generate_tests_creates_directory(self, tmp_path):
         """Test that generate_tests creates output directory."""
@@ -524,7 +524,7 @@ class TestGenerateTests:
 
         generate_tests(source_dir, [input_file], [output_file], output_dir)
 
-        assert output_dir.exists()
+        assert output_dir.exists(), "Condition must be true"
 
     def test_generate_tests_multiple_inputs(self, tmp_path):
         """Test generating tests with multiple input/output pairs."""
@@ -545,8 +545,8 @@ class TestGenerateTests:
 
         test_content = files[0].read_text()
         # Should have test methods for each pair
-        assert "test_snapshot_1" in test_content
-        assert "test_snapshot_2" in test_content
+        assert "test_snapshot_1" in test_content, "Content must not be empty"
+        assert "test_snapshot_2" in test_content, "Content must not be empty"
 
 
 # =====================================================================
@@ -601,7 +601,7 @@ class TestEdgeCases:
         """Test normalize output with edge cases."""
         # Empty string
         result = _normalize_output("", ComparisonMode.STRICT)
-        assert result == ""
+        assert result == "", "Result must not be empty"
 
         # Only whitespace
         result = _normalize_output("   \n  \n  ", ComparisonMode.FUZZY)
@@ -629,7 +629,7 @@ class TestIntegration:
         with tempfile.TemporaryDirectory() as tmpdir:
             output_file = Path(tmpdir) / "result.json"
             result.save(output_file)
-            assert output_file.exists()
+            assert output_file.exists(), "Condition must be true"
 
     def test_generate_tests_workflow(self, tmp_path):
         """Test typical test generation workflow."""
@@ -647,10 +647,10 @@ class TestIntegration:
 
         files = generate_tests(source_dir, [input_file], [output_file], test_dir)
 
-        assert len(files) > 0
-        assert files[0].exists()
+        assert len(files) > 0, "Files must not be empty"
+        assert files[0].exists(), "Condition must be true"
         content = files[0].read_text()
-        assert "test_snapshot" in content
+        assert "test_snapshot" in content, "Content must not be empty"
 
 
 # =====================================================================
@@ -670,32 +670,32 @@ class TestRobustness:
             mode=ComparisonMode.STRICT,
             timeout=30,
         )
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     def test_comparison_mode_all_values(self):
         """Test all ComparisonMode enum values exist."""
         modes = [ComparisonMode.STRICT, ComparisonMode.FUZZY, ComparisonMode.SEMANTIC]
-        assert len(modes) == 3
+        assert len(modes) == 3, "Modes must not be empty"
 
     def test_hash_output_deterministic(self):
         """Test hash output is deterministic."""
         output = "test output"
         hash1 = _hash_output(output)
         hash2 = _hash_output(output)
-        assert hash1 == hash2
+        assert hash1 == hash2, "hash1 is not valid"
 
     def test_hash_output_changes_with_input(self):
         """Test hash changes when output changes."""
         hash1 = _hash_output("output1")
         hash2 = _hash_output("output2")
-        assert hash1 != hash2
+        assert hash1 != hash2, "hash1 is not valid"
 
     def test_normalize_output_idempotent(self):
         """Test normalize output is idempotent."""
         output = "test\n  output  \n"
         normalized1 = _normalize_output(output, ComparisonMode.FUZZY)
         normalized2 = _normalize_output(normalized1, ComparisonMode.FUZZY)
-        assert normalized1 == normalized2
+        assert normalized1 == normalized2, "normalized1 is not valid"
 
     def test_comparison_result_equality(self):
         """Test ComparisonResult equality comparison."""
@@ -709,7 +709,7 @@ class TestRobustness:
             baseline_hash="h1",
             patched_hash="h2",
         )
-        assert result1.baseline_hash == result2.baseline_hash
+        assert result1.baseline_hash == result2.baseline_hash, "Result must not be empty"
 
     def test_comparison_detail_fields(self):
         """Test ComparisonDetail fields are accessible."""
@@ -717,15 +717,15 @@ class TestRobustness:
             output="test",
             hash_value="abc123",
         )
-        assert detail.output == "test"
-        assert detail.hash_value == "abc123"
+        assert detail.output == "test", "output is not valid"
+        assert detail.hash_value == "abc123", "Value must be initialized"
 
     def test_normalize_output_preserves_content(self):
         """Test normalize preserves essential content."""
         output = "important\ndata\nhere"
         normalized = _normalize_output(output, ComparisonMode.STRICT)
         # Essential content should be preserved
-        assert "important" in normalized or "data" in normalized
+        assert "important" in normalized or "data" in normalized, "Data must not be empty"
 
     def test_compare_result_fields_immutable(self):
         """Test ComparisonResult fields after creation."""
@@ -735,7 +735,7 @@ class TestRobustness:
             patched_hash="h2",
         )
         # Should be able to read fields
-        assert result.baseline_hash is not None
+        assert result.baseline_hash is not None, "baseline_hash must be initialized"
 
     def test_generate_tests_empty_sources(self, tmp_path):
         """Test generate_tests with empty source list."""
@@ -752,21 +752,21 @@ class TestRobustness:
         output = "  \n  \ntest\n  \n  "
         normalized = _normalize_output(output, ComparisonMode.FUZZY)
         # Should have less whitespace than original
-        assert len(normalized) <= len(output)
+        assert len(normalized) <= len(output), "Normalized must not be empty"
 
     def test_hash_output_consistent_across_calls(self):
         """Test hash remains consistent across multiple calls."""
         output = "consistent test output"
         hashes = [_hash_output(output) for _ in range(5)]
         # All hashes should be identical
-        assert len(set(hashes)) == 1
+        assert len(set(hashes)) == 1, "Collection must not be empty"
 
     def test_comparison_modes_are_distinct(self):
         """Test ComparisonMode values are distinct."""
         modes = [ComparisonMode.STRICT, ComparisonMode.FUZZY, ComparisonMode.SEMANTIC]
         mode_values = [str(m) for m in modes]
         # All modes should be unique
-        assert len(set(mode_values)) == len(modes)
+        assert len(set(mode_values)) == len(modes), "Modes must not be empty"
 
     def test_compare_result_to_dict_contains_fields(self):
         """Test to_dict contains all important fields."""
@@ -811,9 +811,9 @@ class TestRobustness:
 
         files = generate_tests(source_dir, [input_file], [output_file], test_dir)
 
-        assert len(files) > 0
+        assert len(files) > 0, "Files must not be empty"
         for f in files:
-            assert f.suffix == ".py"
+            assert f.suffix == ".py", "suffix is not valid"
 
     def test_comparison_detail_to_dict(self):
         """Test ComparisonDetail to_dict."""
@@ -833,7 +833,7 @@ class TestRobustness:
             baseline_hash=baseline_hash,
             patched_hash="patched_hash_value_67890",
         )
-        assert result.baseline_hash == baseline_hash
+        assert result.baseline_hash == baseline_hash, "Result must not be empty"
 
     def test_normalize_output_empty_mode_handling(self):
         """Test normalize output with different modes on empty input."""

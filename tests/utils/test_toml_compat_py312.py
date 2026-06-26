@@ -21,7 +21,7 @@ class TestTomlCompatibility:
         try:
             import tomllib
 
-            assert tomllib.__name__ == "tomllib"
+            assert tomllib.__name__ == "tomllib", "__name__ is not valid"
         except ImportError:
             pytest.fail("tomllib should be available on Python 3.11+")
 
@@ -70,9 +70,9 @@ testpaths = ["tests"]
             except ImportError:
                 pytest.skip("Neither tomllib nor tomli available")
 
-        assert data["project"]["name"] == "test-project"
-        assert data["project"]["version"] == "1.0.0"
-        assert "numpy" in data["project"]["dependencies"]
+        assert data["project"]["name"] == "test-project", "Data must not be empty"
+        assert data["project"]["version"] == "1.0.0", "Data must not be empty"
+        assert "numpy" in data["project"]["dependencies"], "Data must not be empty"
 
     def test_handles_binary_mode(self, tmp_path):
         """
@@ -91,7 +91,7 @@ testpaths = ["tests"]
         else:
             with open(toml_file, "rb") as f:
                 data = tomllib.load(f)
-            assert data["section"]["key"] == "value"
+            assert data["section"]["key"] == "value", "Data must not be empty"
 
             # Text mode should raise TypeError
             with pytest.raises(TypeError), open(toml_file, "r") as f:
@@ -149,12 +149,12 @@ addopts = "-v --strict-markers"
             except ImportError:
                 pytest.skip("Neither tomllib nor tomli available")
 
-        assert data["project"]["name"] == "codex-ml"
-        assert len(data["project"]["dependencies"]) == 2
-        assert "dev" in data["project"]["optional-dependencies"]
-        assert "test" in data["project"]["optional-dependencies"]
-        assert data["project"]["authors"][0]["name"] == "Test Author"
-        assert data["tool"]["pytest"]["ini_options"]["testpaths"] == ["tests"]
+        assert data["project"]["name"] == "codex-ml", "Data must not be empty"
+        assert len(data["project"]["dependencies"]) == 2, "Collection must not be empty"
+        assert "dev" in data["project"]["optional-dependencies"], "Data must not be empty"
+        assert "test" in data["project"]["optional-dependencies"], "Data must not be empty"
+        assert data["project"]["authors"][0]["name"] == "Test Author", "Data must not be empty"
+        assert data["tool"]["pytest"]["ini_options"]["testpaths"] == ["tests"], "Data must not be empty"
 
 
 class TestPyprojectTomlParsing:
@@ -184,9 +184,9 @@ class TestPyprojectTomlParsing:
                 pytest.skip("Neither tomllib nor tomli available")
 
         # Verify expected structure
-        assert "project" in data
-        assert "name" in data["project"]
-        assert "dependencies" in data["project"]
+        assert "project" in data, "Data must not be empty"
+        assert "name" in data["project"], "Data must not be empty"
+        assert "dependencies" in data["project"], "Data must not be empty"
 
         # Check Python version requirement
         if "requires-python" in data["project"]:
@@ -198,12 +198,12 @@ class TestPyprojectTomlParsing:
 
                 spec = SpecifierSet(requires_python)
                 # Verify that 3.10, 3.11, or 3.12 are in the valid range
-                assert any(
+                assert any(, "Condition must be true"
                     f"3.{minor}" in spec for minor in range(10, 13)
                 ), f"Expected Python 3.10-3.12 support, got: {requires_python}"
             except ImportError:
                 # Fallback to string matching if packaging is not available
-                assert any(
+                assert any(, "Condition must be true"
                     v in requires_python for v in ["3.10", "3.11", "3.12", ">=3.10"]
                 ), f"Expected Python 3.10+ support, got: {requires_python}"
 
@@ -232,11 +232,11 @@ class TestPyprojectTomlParsing:
 
         deps = data.get("project", {}).get("dependencies", [])
         assert isinstance(deps, list)
-        assert len(deps) > 0
+        assert len(deps) > 0, "Deps must not be empty"
 
         # Check for known dependencies
         dep_names = [d.split("[")[0].split(">=")[0].split("==")[0].split("<")[0] for d in deps]
-        assert any("torch" in name.lower() for name in dep_names)
+        assert any("torch" in name.lower() for name in dep_names), "Condition must be true"
 
 
 @pytest.mark.skipif(sys.version_info < (3, 12), reason="Python 3.12+ specific tests")
@@ -274,8 +274,8 @@ key4 = true
                 data = tomllib.load(f)
             elapsed = time.time() - start
 
-            assert len(data) == 100
-            assert elapsed < 1.0  # Should be fast
+            assert len(data) == 100, "Data must not be empty"
+            assert elapsed < 1.0, "elapsed is not valid"
 
     def test_unicode_handling(self, tmp_path):
         """Test Unicode handling in TOML files."""
@@ -297,9 +297,9 @@ author = "José García"
         except ImportError:
             pytest.skip("tomllib not available")
 
-        assert data["project"]["name"] == "测试项目"
-        assert "🚀" in data["project"]["description"]
-        assert data["project"]["author"] == "José García"
+        assert data["project"]["name"] == "测试项目", "Data must not be empty"
+        assert "🚀" in data["project"]["description"], "Data must not be empty"
+        assert data["project"]["author"] == "José García", "Data must not be empty"
 
 
 class TestTomlErrorHandling:

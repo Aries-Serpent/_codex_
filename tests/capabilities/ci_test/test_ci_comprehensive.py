@@ -54,27 +54,27 @@ class TestCoverageGate:
     def test_coverage_passes(self):
         """Coverage above threshold should pass."""
         gate = CoverageGate(min_coverage=70.0)
-        assert gate.check(75.0)
-        assert gate.check(70.0)
+        assert gate.check(75.0), "Condition must be true"
+        assert gate.check(70.0), "Condition must be true"
 
     def test_coverage_fails(self):
         """Coverage below threshold should fail."""
         gate = CoverageGate(min_coverage=70.0)
-        assert not gate.check(69.9)
-        assert not gate.check(50.0)
+        assert not gate.check(69.9), "Condition must be true"
+        assert not gate.check(50.0), "Condition must be true"
 
     def test_get_deficit(self):
         """Get coverage deficit."""
         gate = CoverageGate(min_coverage=80.0)
-        assert gate.get_deficit(75.0) == 5.0
-        assert gate.get_deficit(85.0) == 0.0
+        assert gate.get_deficit(75.0) == 5.0, "Condition must be true"
+        assert gate.get_deficit(85.0) == 0.0, "Condition must be true"
 
     def test_format_report(self):
         """Format coverage report."""
         gate = CoverageGate(min_coverage=70.0)
         report = gate.format_report(75.0)
-        assert "PASS" in report
-        assert "75.0%" in report
+        assert "PASS" in report, "Condition must be true"
+        assert "75.0%" in report, "Condition must be true"
 
 
 # --- Nox Session Tests ---
@@ -142,29 +142,29 @@ class TestNoxSession:
     def test_create_session(self):
         """Create nox session."""
         session = NoxSession("tests", python=["3.11", "3.12"])
-        assert session.name == "tests"
-        assert "3.11" in session.python
+        assert session.name == "tests", "name is not valid"
+        assert "3.11" in session.python, "Condition must be true"
 
     def test_add_dependencies(self):
         """Add dependencies to session."""
         session = NoxSession("tests")
         session.add_dependency("pytest")
         session.add_dependency("pytest-cov")
-        assert len(session.dependencies) == 2
+        assert len(session.dependencies) == 2, "Collection must not be empty"
 
     def test_add_commands(self):
         """Add commands to session."""
         session = NoxSession("lint")
         session.add_command("ruff check .")
         session.add_command("mypy src/")
-        assert len(session.commands) == 2
+        assert len(session.commands) == 2, "Collection must not be empty"
 
     def test_session_tags(self):
         """Session tags for filtering."""
         session = NoxSession("integration")
         session.add_tag("slow")
         session.add_tag("ci")
-        assert "slow" in session.tags
+        assert "slow" in session.tags, "Condition must be true"
 
     def test_config_get_by_tag(self):
         """Get sessions by tag."""
@@ -176,8 +176,8 @@ class TestNoxSession:
         config.add_session(session1)
         config.add_session(session2)
         slow_sessions = config.get_sessions_by_tag("slow")
-        assert len(slow_sessions) == 1
-        assert slow_sessions[0].name == "integration"
+        assert len(slow_sessions) == 1, "Slow_sessions must not be empty"
+        assert slow_sessions[0].name == "integration", "name is not valid"
 
 
 # --- Deterministic Seeding Tests ---
@@ -215,7 +215,7 @@ class TestDeterministicSeeding:
         seeder2 = DeterministicSeeder(seed=42)
         seq1 = seeder1.get_random_sequence(10)
         seq2 = seeder2.get_random_sequence(10)
-        assert seq1 == seq2
+        assert seq1 == seq2, "seq1 is not valid"
 
     def test_different_seeds_different_sequence(self):
         """Different seeds produce different sequences."""
@@ -223,7 +223,7 @@ class TestDeterministicSeeding:
         seeder2 = DeterministicSeeder(seed=123)
         seq1 = seeder1.get_random_sequence(10)
         seq2 = seeder2.get_random_sequence(10)
-        assert seq1 != seq2
+        assert seq1 != seq2, "seq1 is not valid"
 
     @given(st.integers(min_value=0, max_value=1000000))
     @settings(max_examples=20)
@@ -233,7 +233,7 @@ class TestDeterministicSeeding:
         seeder2 = DeterministicSeeder(seed=seed)
         seq1 = seeder1.get_random_sequence(5)
         seq2 = seeder2.get_random_sequence(5)
-        assert seq1 == seq2
+        assert seq1 == seq2, "seq1 is not valid"
 
 
 # --- Test Isolation Tests ---
@@ -277,19 +277,19 @@ class TestTestIsolation:
         """Create isolated temp directory."""
         manager = IsolationManager()
         temp_dir = manager.create_temp_dir()
-        assert temp_dir.exists()
+        assert temp_dir.exists(), "Condition must be true"
         manager.cleanup()
-        assert not temp_dir.exists()
+        assert not temp_dir.exists(), "Condition must be true"
 
     def test_multiple_temp_dirs(self):
         """Multiple temp directories are tracked."""
         manager = IsolationManager()
         dir1 = manager.create_temp_dir()
         dir2 = manager.create_temp_dir()
-        assert len(manager.temp_dirs) == 2
+        assert len(manager.temp_dirs) == 2, "Collection must not be empty"
         manager.cleanup()
-        assert not dir1.exists()
-        assert not dir2.exists()
+        assert not dir1.exists(), "Condition must be true"
+        assert not dir2.exists(), "Condition must be true"
 
 
 # --- Pytest Marker Tests ---
@@ -346,22 +346,22 @@ class TestMarkerRegistry:
     def test_standard_markers(self):
         """Standard markers should be available."""
         registry = MarkerRegistry()
-        assert registry.get_description("slow") is not None
-        assert registry.get_description("integration") is not None
+        assert registry.get_description("slow") is not None, "Value must be initialized"
+        assert registry.get_description("integration") is not None, "Value must be initialized"
 
     def test_register_custom_marker(self):
         """Register custom marker."""
         registry = MarkerRegistry()
         registry.register("gpu", "Requires GPU")
-        assert registry.get_description("gpu") == "Requires GPU"
+        assert registry.get_description("gpu") == "Requires GPU", "Condition must be true"
 
     def test_list_markers(self):
         """List all markers."""
         registry = MarkerRegistry()
         registry.register("custom", "Custom test")
         markers = registry.list_markers()
-        assert "slow" in markers
-        assert "custom" in markers
+        assert "slow" in markers, "Condition must be true"
+        assert "custom" in markers, "Condition must be true"
 
 
 # --- Test Suite Management Tests ---
@@ -416,14 +416,14 @@ class TestSuiteManagement:
         suite = Suite("unit")
         suite.add_test("test_foo")
         suite.add_test("test_bar")
-        assert len(suite.tests) == 2
+        assert len(suite.tests) == 2, "Collection must not be empty"
 
     def test_suite_tags(self):
         """Add tags to suite."""
         suite = Suite("integration")
         suite.add_tag("slow")
         suite.add_tag("db")
-        assert "slow" in suite.tags
+        assert "slow" in suite.tags, "Condition must be true"
 
     def test_filter_by_tag(self):
         """Filter suites by tag."""
@@ -436,8 +436,8 @@ class TestSuiteManagement:
         manager.add_suite(integration)
 
         fast_suites = manager.get_fast_suites()
-        assert len(fast_suites) == 1
-        assert fast_suites[0].name == "unit"
+        assert len(fast_suites) == 1, "Fast_suites must not be empty"
+        assert fast_suites[0].name == "unit", "name is not valid"
 
 
 # --- CI Configuration Tests ---
@@ -480,7 +480,7 @@ class TestCIConfig:
         """Add CI job."""
         config = CIConfig()
         config.add_job("test", {"runs-on": "ubuntu-latest", "steps": []})
-        assert "test" in config.jobs
+        assert "test" in config.jobs, "Condition must be true"
 
     def test_validate_valid(self):
         """Valid config should pass."""
@@ -488,11 +488,11 @@ class TestCIConfig:
         config.add_job("test", {})
         config.add_trigger("push")
         errors = config.validate()
-        assert len(errors) == 0
+        assert len(errors) == 0, "Errors must not be empty"
 
     def test_validate_missing_jobs(self):
         """Missing jobs should be detected."""
         config = CIConfig()
         config.add_trigger("push")
         errors = config.validate()
-        assert "No jobs defined" in errors
+        assert "No jobs defined" in errors, "Error should be raised or set"

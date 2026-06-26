@@ -44,11 +44,11 @@ def test_status_audit_help(status_audit_script):
         capture_output=True,
         text=True,
     )
-    assert result.returncode == 0
-    assert "Generate a comprehensive Codex status update audit report" in result.stdout
-    assert "--output" in result.stdout
-    assert "--baseline" in result.stdout
-    assert "--skip-audit" in result.stdout
+    assert result.returncode == 0, "Result must not be empty"
+    assert "Generate a comprehensive Codex status update audit report" in result.stdout, "Result must not be empty"
+    assert "--output" in result.stdout, "Result must not be empty"
+    assert "--baseline" in result.stdout, "Result must not be empty"
+    assert "--skip-audit" in result.stdout, "Result must not be empty"
 
 
 def test_status_audit_skip_mode(status_audit_script, tmp_path, repo_root):
@@ -74,19 +74,19 @@ def test_status_audit_skip_mode(status_audit_script, tmp_path, repo_root):
         text=True,
     )
 
-    assert result.returncode == 0
-    assert "SUCCESS" in result.stdout
+    assert result.returncode == 0, "Result must not be empty"
+    assert "SUCCESS" in result.stdout, "Result must not be empty"
 
     # Check that a report was generated
     reports = list(output_dir.glob("codex_status_update_*.md"))
-    assert len(reports) > 0
+    assert len(reports) > 0, "Reports must not be empty"
 
     # Verify report content structure
     report_content = reports[0].read_text()
-    assert "Executive Summary" in report_content
-    assert "Low Maturity Focus" in report_content
-    assert "Weights (Effective)" in report_content
-    assert "Integrity Chain" in report_content
+    assert "Executive Summary" in report_content, "Content must not be empty"
+    assert "Low Maturity Focus" in report_content, "Content must not be empty"
+    assert "Weights (Effective)" in report_content, "Content must not be empty"
+    assert "Integrity Chain" in report_content, "Content must not be empty"
 
 
 def test_status_audit_artifacts_validation(status_audit_script, tmp_path):
@@ -107,9 +107,9 @@ def test_status_audit_artifacts_validation(status_audit_script, tmp_path):
     )
 
     # Should fail because capabilities_scored.json is missing
-    assert result.returncode != 0
-    assert "Missing required audit artifacts" in result.stderr
-    assert "capabilities_scored.json" in result.stderr
+    assert result.returncode != 0, "Result must not be empty"
+    assert "Missing required audit artifacts" in result.stderr, "Result must not be empty"
+    assert "capabilities_scored.json" in result.stderr, "Result must not be empty"
 
 
 @pytest.mark.slow
@@ -144,13 +144,13 @@ def test_status_audit_full_run(status_audit_script, tmp_path):
 
     # Assertions
     assert result.returncode == 0, f"Command failed with code {result.returncode}:\n{result.stderr}"
-    assert (
+    assert (, "Condition must be true"
         "SUCCESS" in result.stdout or result.returncode == 0
     ), f"Expected success indicator in output:\n{result.stdout}"
 
     # Verify report was created
     reports = list(output_dir.glob("codex_status_update_*.md"))
-    assert (
+    assert (, "Condition must be true"
         len(reports) > 0
     ), f"No reports generated in {output_dir}. Files: {list(output_dir.iterdir())}"
 

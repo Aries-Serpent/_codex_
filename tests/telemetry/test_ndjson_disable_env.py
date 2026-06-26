@@ -30,6 +30,6 @@ def test_telemetry_ndjson_disable_env(tmp_path: Path, monkeypatch):
         dataset_cast_policy="to_fp32",
     )
 
-    assert not (outdir / "telemetry.ndjson").exists()
+    assert not (outdir / "telemetry.ndjson").exists(), "Condition must be true"
     # JSON should still be present by default (due to dataset_cast events)
-    assert (outdir / "telemetry.json").exists()
+    assert (outdir / "telemetry.json").exists(), "Condition must be true"

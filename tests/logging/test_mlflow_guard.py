@@ -16,7 +16,7 @@ from codex_ml.logging import mlflow_guard
 
 def test_offline_mode_respects_env(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("CODEX_OFFLINE_MODE", "1")
-    assert not mlflow_guard.init_mlflow_safe()
+    assert not mlflow_guard.init_mlflow_safe(), "Condition must be true"
 
 
 def test_init_mlflow_success(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -30,7 +30,7 @@ def test_init_mlflow_success(monkeypatch: pytest.MonkeyPatch) -> None:
     )
     with mock.patch.dict("sys.modules", {"mlflow": stub_mlflow}):
         monkeypatch.setattr(mlflow_guard, "mlflow", stub_mlflow, raising=False)
-        assert mlflow_guard.init_mlflow_safe(offline_mode=False)
+        assert mlflow_guard.init_mlflow_safe(offline_mode=False), "Condition must be true"
         mlflow_guard.log_metric_safe("loss", 0.1, step=1)
         mlflow_guard.log_params_safe({"lr": 1e-3})
         mlflow_guard.log_artifact_safe("/tmp/path")
@@ -44,4 +44,4 @@ def test_init_mlflow_failure(monkeypatch: pytest.MonkeyPatch) -> None:
     )
     with mock.patch.dict("sys.modules", {"mlflow": failing_mlflow}):
         monkeypatch.setattr(mlflow_guard, "mlflow", failing_mlflow, raising=False)
-        assert not mlflow_guard.init_mlflow_safe(offline_mode=False)
+        assert not mlflow_guard.init_mlflow_safe(offline_mode=False), "Condition must be true"

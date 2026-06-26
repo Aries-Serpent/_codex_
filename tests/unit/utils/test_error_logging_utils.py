@@ -8,9 +8,9 @@ def test_log_error_basic(tmp_path):
     log_file = tmp_path / "errors.log"
     log_error("Test error message", log_file=str(log_file))
 
-    assert log_file.exists()
+    assert log_file.exists(), "Condition must be true"
     content = log_file.read_text()
-    assert "Test error message" in content
+    assert "Test error message" in content, "Content must not be empty"
 
 
 def test_log_error_with_exception(tmp_path):
@@ -23,8 +23,8 @@ def test_log_error_with_exception(tmp_path):
         log_error("Error occurred", exception=e, log_file=str(log_file))
 
     content = log_file.read_text()
-    assert "ValueError" in content
-    assert "Test exception" in content
+    assert "ValueError" in content, "Value must be initialized"
+    assert "Test exception" in content, "Content must not be empty"
 
 
 def test_log_error_timestamp(tmp_path):
@@ -34,7 +34,7 @@ def test_log_error_timestamp(tmp_path):
 
     content = log_file.read_text()
     # Should contain timestamp pattern
-    assert "20" in content  # Year prefix
+    assert "20" in content, "Content must not be empty"
 
 
 def test_log_error_severity_levels(tmp_path):
@@ -45,8 +45,8 @@ def test_log_error_severity_levels(tmp_path):
     log_error("Warning message", severity="WARNING", log_file=str(log_file))
 
     content = log_file.read_text()
-    assert "ERROR" in content
-    assert "WARNING" in content
+    assert "ERROR" in content, "Content must not be empty"
+    assert "WARNING" in content, "Content must not be empty"
 
 
 def test_append_error_to_file_creates_file(tmp_path):
@@ -54,7 +54,7 @@ def test_append_error_to_file_creates_file(tmp_path):
     log_file = tmp_path / "new_errors.log"
     append_error_to_file("Test error", str(log_file))
 
-    assert log_file.exists()
+    assert log_file.exists(), "Condition must be true"
 
 
 def test_append_error_to_file_appends(tmp_path):
@@ -65,8 +65,8 @@ def test_append_error_to_file_appends(tmp_path):
     append_error_to_file("New error", str(log_file))
 
     content = log_file.read_text()
-    assert "Existing content" in content
-    assert "New error" in content
+    assert "Existing content" in content, "Content must not be empty"
+    assert "New error" in content, "Content must not be empty"
 
 
 def test_append_error_to_file_permission_denied(tmp_path):
@@ -90,9 +90,9 @@ def test_log_error_multiline_message(tmp_path):
     log_error(message, log_file=str(log_file))
 
     content = log_file.read_text()
-    assert "Line 1" in content
-    assert "Line 2" in content
-    assert "Line 3" in content
+    assert "Line 1" in content, "Content must not be empty"
+    assert "Line 2" in content, "Content must not be empty"
+    assert "Line 3" in content, "Content must not be empty"
 
 
 def test_log_error_context_info(tmp_path):
@@ -102,5 +102,5 @@ def test_log_error_context_info(tmp_path):
     log_error("Error with context", context=context, log_file=str(log_file))
 
     content = log_file.read_text()
-    assert "test_user" in content
-    assert "test_op" in content
+    assert "test_user" in content, "Content must not be empty"
+    assert "test_op" in content, "Content must not be empty"

@@ -73,22 +73,22 @@ class TestParseRequirement:
     def test_parse_requirement_with_comment_line(self):
         """Test parsing comment-only line."""
         result = self.validator.parse_requirement("# This is a comment")
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_parse_requirement_empty_line(self):
         """Test parsing empty line."""
         result = self.validator.parse_requirement("")
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_parse_requirement_whitespace_only(self):
         """Test parsing whitespace-only line."""
         result = self.validator.parse_requirement("   \n   ")
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_parse_requirement_package_name_normalization(self):
         """Test that package names are normalized (lowercase, underscores to dashes)."""
         result = self.validator.parse_requirement("Package_Name>=1.0")
-        assert result[0] == "package-name"
+        assert result[0] == "package-name", "Result must not be empty"
 
     def test_parse_requirement_with_local_version(self):
         """Test parsing requirement with local version identifier (+cpu)."""
@@ -119,11 +119,11 @@ dependencies = [
 
         try:
             result = self.validator.read_pyproject_deps(temp_path)
-            assert "pandas" in result
+            assert "pandas" in result, "Result must not be empty"
             assert result["pandas"] == ">=3.0.3,<4"
-            assert "numpy" in result
+            assert "numpy" in result, "Result must not be empty"
             assert result["numpy"] == ">=2.4.6,<3"
-            assert "transformers" in result
+            assert "transformers" in result, "Result must not be empty"
             assert result["transformers"] == ">=5.12.1,<6"
         finally:
             temp_path.unlink()
@@ -143,8 +143,8 @@ dependencies = [
 
         try:
             result = self.validator.read_pyproject_deps(temp_path)
-            assert "pandas" in result
-            assert "numpy" in result
+            assert "pandas" in result, "Result must not be empty"
+            assert "numpy" in result, "Result must not be empty"
         finally:
             temp_path.unlink()
 
@@ -176,8 +176,8 @@ test = [
         try:
             result = self.validator.read_pyproject_deps(temp_path)
             # Should have all dependencies including optional ones
-            assert "pandas" in result
-            assert "torch" in result or "peft" in result
+            assert "pandas" in result, "Result must not be empty"
+            assert "torch" in result or "peft" in result, "Result must not be empty"
             # Note: The current implementation may not capture all optional deps
             # due to the complexity of TOML parsing without a proper parser
         finally:
@@ -192,7 +192,7 @@ test = [
         result = self.validator.read_pyproject_deps(pyproject_path)
         # Should have found at least some critical packages
         assert isinstance(result, dict)
-        assert len(result) > 0
+        assert len(result) > 0, "Result must not be empty"
 
 
 class TestVersionInRange:
@@ -208,7 +208,7 @@ class TestVersionInRange:
     def test_version_in_range_exact_pin_in_range(self):
         """Test exact version pin within range."""
         result = self.validator._version_in_range("==2.10.0", ">=2.6.1,<3.0.0")
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_version_in_range_with_local_version(self):
         """Test version with local identifier (+cpu) within range.
@@ -216,48 +216,48 @@ class TestVersionInRange:
         This is a common pattern with PyTorch: ==2.11.0+cpu
         """
         result = self.validator._version_in_range("2.11.0+cpu", ">=2.6.1,<3.0.0")
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_version_in_range_below_lower_bound(self):
         """Test version below lower bound."""
         result = self.validator._version_in_range("==1.5.0", ">=2.6.1,<3.0.0")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_version_in_range_at_upper_boundary(self):
         """Test version at upper boundary (not inclusive)."""
         result = self.validator._version_in_range("==3.0.0", ">=2.6.1,<3.0.0")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_version_in_range_exact_lower_bound(self):
         """Test version exactly at lower bound."""
         result = self.validator._version_in_range("2.6.1", ">=2.6.1,<3.0.0")
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_version_in_range_above_upper_bound(self):
         """Test version above upper bound."""
         result = self.validator._version_in_range("4.0.0", ">=2.6.1,<3.0.0")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_version_in_range_soft_constraint(self):
         """Test soft constraint (>= operator in actual)."""
         result = self.validator._version_in_range(">=2.10", ">=2.6.1,<3.0.0")
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_version_in_range_with_prerelease_markers(self):
         """Test version comparison with different precision."""
         result = self.validator._version_in_range("2.6", ">=2.6.1,<3.0.0")
         # 2.6 is treated as 2.6.0, which is < 2.6.1, so False
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_version_in_range_multiple_version_parts(self):
         """Test version with multiple parts."""
         result = self.validator._version_in_range("==5.12.1", ">=5.12.1,<6")
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_version_in_range_less_than_constraint(self):
         """Test less-than constraint parsing."""
         result = self.validator._version_in_range("==2.99.0", ">=2.0,<3.0")
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_version_in_range_less_than_or_equal_constraint(self):
         """Test less-than-or-equal constraint parsing.
@@ -269,22 +269,22 @@ class TestVersionInRange:
         result = self.validator._version_in_range("==3.0", ">=2.0,<=3.0")
         # Current implementation rejects the boundary for <= (uses >= check)
         # This is conservative but should be fixed in a future PR
-        assert result is False  # Actual behavior - boundary rejection
+        assert result is False, "Result must not be empty"
 
     def test_version_in_range_greater_than_constraint(self):
         """Test greater-than constraint parsing."""
         result = self.validator._version_in_range("==2.6.1", ">2.0,<3.0")
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_version_in_range_invalid_version_string(self):
         """Test invalid version string handling."""
         result = self.validator._version_in_range("invalid", ">=2.0,<3.0")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_version_in_range_empty_version(self):
         """Test empty version string handling."""
         result = self.validator._version_in_range("", ">=2.0,<3.0")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
 
 class TestIsDowngrade:
@@ -300,22 +300,22 @@ class TestIsDowngrade:
     def test_is_downgrade_version_below_expected(self):
         """Test when current version is below expected."""
         result = self.validator._is_downgrade("==1.5.0", ">=2.6.1,<3.0.0")
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_is_downgrade_version_within_expected(self):
         """Test when current version is within expected range."""
         result = self.validator._is_downgrade("==2.10.0", ">=2.6.1,<3.0.0")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_is_downgrade_version_above_expected(self):
         """Test when current version is above expected."""
         result = self.validator._is_downgrade("==3.0.0", ">=2.6.1,<3.0.0")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_is_downgrade_lower_constraint_is_downgrade(self):
         """Test when current constraint is lower than expected."""
         result = self.validator._is_downgrade(">=1.0", ">=2.0")
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_is_downgrade_unparsable_versions_gracefully_fail(self):
         """Test that unparsable versions gracefully return False.
@@ -325,12 +325,12 @@ class TestIsDowngrade:
         fallback to manual review.
         """
         result = self.validator._is_downgrade("unparsable", "expected")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_is_downgrade_exact_match(self):
         """Test exact version match."""
         result = self.validator._is_downgrade(">=2.6.1,<3.0.0", ">=2.6.1,<3.0.0")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
 
 class TestConsistencyValidation:
@@ -391,7 +391,7 @@ class TestStrictFlagBehavior:
 
         source = inspect.getsource(val_module.main)
         # Should have explanatory text about warnings-only mode
-        assert "warnings-only" in source or "strict" in source
+        assert "warnings-only" in source or "strict" in source, "Condition must be true"
 
 
 class TestEdgeCases:
@@ -412,14 +412,14 @@ class TestEdgeCases:
     def test_parse_requirement_with_spaces_in_version(self):
         """Test parsing requirement with spaces in version spec."""
         result = self.validator.parse_requirement("pandas >= 3.0.3 , < 4")
-        assert result is not None
-        assert result[0] == "pandas"
+        assert result is not None, "result must be initialized"
+        assert result[0] == "pandas", "Result must not be empty"
 
     def test_version_in_range_with_leading_zeros(self):
         """Test version comparison with leading zeros."""
         result = self.validator._version_in_range("==02.10.00", ">=2.6.1,<3.0.0")
         # 02 is parsed as 2, 10 as 10, 00 as 0, so 2.10.0 is in range
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_parse_requirement_hyphenated_package_names(self):
         """Test parsing package names with hyphens."""
@@ -429,7 +429,7 @@ class TestEdgeCases:
     def test_parse_requirement_underscored_to_dash_normalization(self):
         """Test that underscores are normalized to dashes."""
         result = self.validator.parse_requirement("scikit_learn>=1.0")
-        assert result[0] == "scikit-learn"
+        assert result[0] == "scikit-learn", "Result must not be empty"
 
 
 if __name__ == "__main__":

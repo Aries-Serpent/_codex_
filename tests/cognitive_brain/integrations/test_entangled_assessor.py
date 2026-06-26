@@ -79,19 +79,19 @@ def test_setup_entanglement(entangled_assessor):
     """Test entanglement setup between compliance and security."""
     pair_id = entangled_assessor.setup_entanglement(correlation_strength=0.85)
 
-    assert pair_id is not None
+    assert pair_id is not None, "pair_id must be initialized"
     assert isinstance(pair_id, str)
-    assert len(pair_id) > 0
-    assert entangled_assessor.pair_id == pair_id
+    assert len(pair_id) > 0, "Pair_id must not be empty"
+    assert entangled_assessor.pair_id == pair_id, "pair_id is not valid"
 
 
 def test_setup_with_custom_correlation(entangled_assessor):
     """Test setup with custom correlation strength."""
     pair_id = entangled_assessor.setup_entanglement(correlation_strength=0.90)
 
-    assert pair_id is not None
+    assert pair_id is not None, "pair_id must be initialized"
     pair = entangled_assessor.entanglement.entangled_pairs[pair_id]
-    assert pair.correlation_strength == 0.90
+    assert pair.correlation_strength == 0.90, "correlation_strength is not valid"
 
 
 def test_setup_entanglement_idempotent(entangled_assessor):
@@ -102,7 +102,7 @@ def test_setup_entanglement_idempotent(entangled_assessor):
     pair_id_2 = entangled_assessor.setup_entanglement(0.90)
 
     # Should update the pair_id
-    assert entangled_assessor.pair_id == pair_id_2
+    assert entangled_assessor.pair_id == pair_id_2, "pair_id is not valid"
     # IDs might be same if deterministic hashing produces same result
     assert isinstance(pair_id_2, str)
 
@@ -126,10 +126,10 @@ def test_assess_with_entanglement_high_severity(entangled_assessor):
     result = entangled_assessor.assess_with_entanglement(audit)
 
     assert isinstance(result, EntangledAssessmentResult)
-    assert result.compliance is not None
-    assert result.security is not None
-    assert result.pair_id == entangled_assessor.pair_id
-    assert 0.0 <= result.correlation <= 1.0
+    assert result.compliance is not None, "compliance must be initialized"
+    assert result.security is not None, "security must be initialized"
+    assert result.pair_id == entangled_assessor.pair_id, "Result must not be empty"
+    assert 0.0 <= result.correlation <= 1.0, "Result must not be empty"
 
 
 def test_assess_without_setup_raises_error(entangled_assessor):
@@ -165,7 +165,7 @@ def test_assess_updates_correlation(entangled_assessor):
 
     # Check correlation was updated
     pair = entangled_assessor.entanglement.entangled_pairs[result.pair_id]
-    assert len(pair.observed_states) >= 1
+    assert len(pair.observed_states) >= 1, "Collection must not be empty"
 
 
 def test_assess_multiple_audits(entangled_assessor):
@@ -186,19 +186,19 @@ def test_assess_multiple_audits(entangled_assessor):
 
     results = [entangled_assessor.assess_with_entanglement(audit) for audit in audits]
 
-    assert len(results) == 5
+    assert len(results) == 5, "Results must not be empty"
     assert all(isinstance(r, EntangledAssessmentResult) for r in results)
 
     # Correlation should be measurable after multiple observations
     final_correlation = results[-1].correlation
-    assert 0.0 <= final_correlation <= 1.0
+    assert 0.0 <= final_correlation <= 1.0, "0 is not valid"
 
 
 def test_assess_tracks_total_count(entangled_assessor):
     """Test total assessment count is tracked."""
     entangled_assessor.setup_entanglement(0.85)
 
-    assert entangled_assessor.total_assessments == 0
+    assert entangled_assessor.total_assessments == 0, "total_assessments is not valid"
 
     for i in range(3):
         audit = AuditResult(
@@ -211,7 +211,7 @@ def test_assess_tracks_total_count(entangled_assessor):
         )
         entangled_assessor.assess_with_entanglement(audit)
 
-    assert entangled_assessor.total_assessments == 3
+    assert entangled_assessor.total_assessments == 3, "total_assessments is not valid"
 
 
 # --- Correlation Validation Tests (3) ---
@@ -234,7 +234,7 @@ def test_high_correlation_avoids_redundancy(entangled_assessor):
         entangled_assessor.assess_with_entanglement(audit)
 
     # After building correlation, some redundancy should be avoided
-    assert entangled_assessor.redundant_actions_avoided > 0
+    assert entangled_assessor.redundant_actions_avoided > 0, "redundant_actions_avoided must be greater than zero"
 
 
 def test_correlation_above_threshold(entangled_assessor):
@@ -255,7 +255,7 @@ def test_correlation_above_threshold(entangled_assessor):
 
     # Final correlation should be high for related violations
     final_correlation = result.correlation
-    assert final_correlation > 0.6  # Should achieve decent correlation
+    assert final_correlation > 0.6, "final_correlation must be greater than zero"
 
 
 def test_get_redundancy_reduction(entangled_assessor):
@@ -263,7 +263,7 @@ def test_get_redundancy_reduction(entangled_assessor):
     entangled_assessor.setup_entanglement(0.85)
 
     # Initially zero
-    assert entangled_assessor.get_redundancy_reduction() == 0.0
+    assert entangled_assessor.get_redundancy_reduction() == 0.0, "entangled_assess is not valid"
 
     # After assessments, should have some reduction
     for i in range(20):
@@ -278,7 +278,7 @@ def test_get_redundancy_reduction(entangled_assessor):
         entangled_assessor.assess_with_entanglement(audit)
 
     reduction = entangled_assessor.get_redundancy_reduction()
-    assert 0.0 <= reduction <= 1.0
+    assert 0.0 <= reduction <= 1.0, "0 is not valid"
 
 
 # --- Error Handling Tests (4) ---
@@ -298,10 +298,10 @@ def test_get_statistics_before_assessment(entangled_assessor):
 
     stats = entangled_assessor.get_statistics()
 
-    assert stats["total_assessments"] == 0
-    assert stats["redundant_actions_avoided"] == 0
-    assert stats["redundancy_reduction"] == 0.0
-    assert stats["pair_id"] == entangled_assessor.pair_id
+    assert stats["total_assessments"] == 0, "Condition must be true"
+    assert stats["redundant_actions_avoided"] == 0, "Condition must be true"
+    assert stats["redundancy_reduction"] == 0.0, "Condition must be true"
+    assert stats["pair_id"] == entangled_assessor.pair_id, "Condition must be true"
 
 
 def test_get_statistics_after_assessments(entangled_assessor):
@@ -321,10 +321,10 @@ def test_get_statistics_after_assessments(entangled_assessor):
 
     stats = entangled_assessor.get_statistics()
 
-    assert stats["total_assessments"] == 10
-    assert stats["redundant_actions_avoided"] >= 0
-    assert 0.0 <= stats["redundancy_reduction"] <= 1.0
-    assert stats["correlation"] >= 0.0
+    assert stats["total_assessments"] == 10, "Condition must be true"
+    assert stats["redundant_actions_avoided"] >= 0, "Value must be greater than zero"
+    assert 0.0 <= stats["redundancy_reduction"] <= 1.0, "0 is not valid"
+    assert stats["correlation"] >= 0.0, "Value must be greater than zero"
 
 
 def test_mock_security_scanner(entangled_assessor):
@@ -341,9 +341,9 @@ def test_mock_security_scanner(entangled_assessor):
     )
     result_high = scanner.scan_for_secrets(audit_high)
 
-    assert "decision" in result_high
-    assert "secrets_found" in result_high
-    assert "confidence" in result_high
+    assert "decision" in result_high, "Result must not be empty"
+    assert "secrets_found" in result_high, "Result must not be empty"
+    assert "confidence" in result_high, "Result must not be empty"
     assert result_high["decision"] in ["BLOCK", "MONITOR", "ALLOW"]
 
     audit_low = AuditResult(
@@ -356,4 +356,4 @@ def test_mock_security_scanner(entangled_assessor):
     )
     result_low = scanner.scan_for_secrets(audit_low)
 
-    assert result_low["decision"] == "ALLOW"
+    assert result_low["decision"] == "ALLOW", "Result must not be empty"

@@ -12,7 +12,7 @@ def test_template_lint_detects_missing(tmp_path):
     bad = tmp_path / "bad.html"
     bad.write_text("<html><head></head><body>no links</body></html>", encoding="utf-8")
     code = subprocess.call([sys.executable, "tools/template_lint.py", "--dir", str(tmp_path)])
-    assert code == 1
+    assert code == 1, "code is not valid"
 
 
 def test_template_lint_passes_with_links(tmp_path):
@@ -22,4 +22,4 @@ def test_template_lint_passes_with_links(tmp_path):
         encoding="utf-8",
     )
     code = subprocess.call([sys.executable, "tools/template_lint.py", "--dir", str(tmp_path)])
-    assert code == 0
+    assert code == 0, "code is not valid"

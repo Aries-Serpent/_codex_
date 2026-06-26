@@ -17,7 +17,7 @@ class TestSha256File:
 
         digest = sha256_file(test_file)
         assert isinstance(digest, str)
-        assert len(digest) == 64  # SHA256 hex digest is 64 chars
+        assert len(digest) == 64, "Digest must not be empty"
 
     def test_sha256_file_empty(self, tmp_path):
         """Test SHA256 hash for empty file."""
@@ -28,7 +28,7 @@ class TestSha256File:
 
         digest = sha256_file(test_file)
         # SHA256 of empty string is well-known
-        assert digest == "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        assert digest == "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "digest is not valid"
 
     def test_sha256_file_binary(self, tmp_path):
         """Test SHA256 hash for binary file."""
@@ -39,7 +39,7 @@ class TestSha256File:
 
         digest = sha256_file(test_file)
         assert isinstance(digest, str)
-        assert len(digest) == 64
+        assert len(digest) == 64, "Digest must not be empty"
 
     def test_sha256_file_consistent(self, tmp_path):
         """Test that SHA256 hash is consistent."""
@@ -50,7 +50,7 @@ class TestSha256File:
 
         digest1 = sha256_file(test_file)
         digest2 = sha256_file(test_file)
-        assert digest1 == digest2
+        assert digest1 == digest2, "digest1 is not valid"
 
 
 class TestWriteEvidence:
@@ -63,8 +63,8 @@ class TestWriteEvidence:
         out_dir = tmp_path / "evidence" / "nested"
         write_evidence(out_dir)
 
-        assert out_dir.exists()
-        assert out_dir.is_dir()
+        assert out_dir.exists(), "Condition must be true"
+        assert out_dir.is_dir(), "Condition must be true"
 
     def test_write_evidence_creates_seeds_file(self, tmp_path):
         """Test that write_evidence creates seeds.json."""
@@ -74,11 +74,11 @@ class TestWriteEvidence:
         write_evidence(out_dir)
 
         seeds_file = out_dir / "seeds.json"
-        assert seeds_file.exists()
+        assert seeds_file.exists(), "Condition must be true"
 
         seeds = json.loads(seeds_file.read_text())
-        assert "rng" in seeds
-        assert seeds["rng"] == 1337
+        assert "rng" in seeds, "Condition must be true"
+        assert seeds["rng"] == 1337, "Condition must be true"
 
     def test_write_evidence_custom_seeds(self, tmp_path):
         """Test write_evidence with custom seeds."""
@@ -90,8 +90,8 @@ class TestWriteEvidence:
 
         seeds_file = out_dir / "seeds.json"
         seeds = json.loads(seeds_file.read_text())
-        assert seeds["custom_seed"] == 42
-        assert seeds["another"] == 99
+        assert seeds["custom_seed"] == 42, "Condition must be true"
+        assert seeds["another"] == 99, "Condition must be true"
 
     def test_write_evidence_creates_env_file(self, tmp_path):
         """Test that write_evidence creates env.json."""
@@ -101,12 +101,12 @@ class TestWriteEvidence:
         write_evidence(out_dir)
 
         env_file = out_dir / "env.json"
-        assert env_file.exists()
+        assert env_file.exists(), "Condition must be true"
 
         env = json.loads(env_file.read_text())
-        assert "platform" in env
-        assert "python" in env
-        assert "timestamp" in env
+        assert "platform" in env, "Condition must be true"
+        assert "python" in env, "Condition must be true"
+        assert "timestamp" in env, "Condition must be true"
         assert isinstance(env["timestamp"], float)
 
     def test_write_evidence_creates_checksums_file(self, tmp_path):
@@ -117,7 +117,7 @@ class TestWriteEvidence:
         write_evidence(out_dir)
 
         checksums_file = out_dir / "checksums.json"
-        assert checksums_file.exists()
+        assert checksums_file.exists(), "Condition must be true"
 
         checksums = json.loads(checksums_file.read_text())
         assert isinstance(checksums, dict)
@@ -130,11 +130,11 @@ class TestWriteEvidence:
         write_evidence(out_dir)
 
         manifest_file = out_dir / "run_manifest.json"
-        assert manifest_file.exists()
+        assert manifest_file.exists(), "Condition must be true"
 
         manifest = json.loads(manifest_file.read_text())
-        assert "timestamp" in manifest
-        assert "artifacts" in manifest
+        assert "timestamp" in manifest, "Condition must be true"
+        assert "artifacts" in manifest, "Condition must be true"
         assert isinstance(manifest["artifacts"], list)
 
     def test_write_evidence_json_sorted(self, tmp_path):
@@ -147,7 +147,7 @@ class TestWriteEvidence:
         seeds_file = out_dir / "seeds.json"
         content = seeds_file.read_text()
         # Keys should be sorted: a, m, z
-        assert content.index('"a"') < content.index('"m"') < content.index('"z"')
+        assert content.index('"a"') < content.index('"m"') < content.index('"z"'), "Content must not be empty"
 
 
 class TestConfigDirs:
@@ -158,13 +158,13 @@ class TestConfigDirs:
         from codex_crm.evidence.emit import CONFIG_DIRS
 
         assert isinstance(CONFIG_DIRS, tuple)
-        assert len(CONFIG_DIRS) == 3
+        assert len(CONFIG_DIRS) == 3, "Config_dirs must not be empty"
 
     def test_config_dirs_paths(self):
         """Test CONFIG_DIRS contains expected paths."""
         from codex_crm.evidence.emit import CONFIG_DIRS
 
         paths = [str(p) for p in CONFIG_DIRS]
-        assert "configs/deployment/zd" in paths
-        assert "configs/deployment/d365" in paths
-        assert "configs/deployment/powerautomate/templates" in paths
+        assert "configs/deployment/zd" in paths, "Condition must be true"
+        assert "configs/deployment/d365" in paths, "Condition must be true"
+        assert "configs/deployment/powerautomate/templates" in paths, "Condition must be true"

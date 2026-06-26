@@ -74,8 +74,8 @@ def test_render_and_screenshot(tmp_path):
             "docs/templates/status/report_template_themed.html",
         ]
     )
-    assert code == 0
-    assert html.exists()
+    assert code == 0, "code is not valid"
+    assert html.exists(), "Condition must be true"
     code = subprocess.call(
         [
             sys.executable,
@@ -86,6 +86,6 @@ def test_render_and_screenshot(tmp_path):
             str(png),
         ]
     )
-    assert code == 0
-    assert png.exists()
-    assert png.stat().st_size > 0
+    assert code == 0, "code is not valid"
+    assert png.exists(), "Condition must be true"
+    assert png.stat().st_size > 0, "st_size must be greater than zero"

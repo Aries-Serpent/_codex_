@@ -17,8 +17,8 @@ try:
     to_absolute_path = hydra.utils.to_absolute_path
 except ImportError as e:
     error_type = type(e).__name__
-    logger.debug(f"ImportError: <ERROR_TYPE>")
-    logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
+    logger.debug("ImportError: <ERROR_TYPE>")
+    logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
     try:
         import config_legacy as hydra
 
@@ -163,8 +163,8 @@ def _apply_prompt_sanitization(
                 config_obj[key] = sanitised
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
     return total
 
 
@@ -305,8 +305,8 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Optional[Path]]:
             os.environ["CODEX_TELEMETRY_SAMPLE_RATE"] = str(float(sample_rate))
     except (ValueError, TypeError, RuntimeError) as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
-        logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
+        logger.debug("Exception: <ERROR_TYPE>")
+        logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 
     scheduler_cfg = _cfg_to_dict(cfg.get("scheduler"))
 
@@ -343,8 +343,8 @@ def _run_from_cfg(cfg: DictConfig) -> tuple[int, Optional[Path]]:
             cfg.reproducibility["seed"] = seed
         except (ValueError, TypeError, RuntimeError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
     reproducibility_cfg.setdefault("seed", seed)
 
     grad_accum = cfg.get("grad_accum", 1)

@@ -16,11 +16,11 @@ def test_split_dataset_deterministic_and_cache():
     assert (train1, val1, test1) == (train2, val2, test2)
     key = (tuple(seq), 0.2, 0.2, 123)
     assert cache.get(key) == (train1, val1, test1)
-    assert len(train1) + len(val1) + len(test1) == len(seq)
+    assert len(train1) + len(val1) + len(test1) == len(seq), "Train1 must not be empty"
 
 
 def test_simplecache_zero_capacity_does_not_raise():
     cache = SimpleCache(max_items=0)
     cache.set("alpha", 1)  # should be a no-op
-    assert cache.get("alpha") is None
-    assert len(cache._d) == 0
+    assert cache.get("alpha") is None, "Condition must be true"
+    assert len(cache._d) == 0, "Collection must not be empty"

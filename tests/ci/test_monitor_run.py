@@ -54,10 +54,10 @@ class TestPollSnapshot:
             html_url="https://github.com",
         )
         d = snap.to_dict()
-        assert d["run_id"] == 1234
-        assert d["status"] == "in_progress"
-        assert d["conclusion"] is None
-        assert d["completed"] is False
+        assert d["run_id"] == 1234, "Condition must be true"
+        assert d["status"] == "in_progress", "Condition must be true"
+        assert d["conclusion"] is None, "Condition must be true"
+        assert d["completed"] is False, "Condition must be true"
 
     def test_from_dict_round_trip(self):
         snap = PollSnapshot(
@@ -74,11 +74,11 @@ class TestPollSnapshot:
             completed=True,
         )
         restored = PollSnapshot.from_dict(snap.to_dict())
-        assert restored.run_id == 99
-        assert restored.conclusion == "success"
-        assert restored.cherry_picked == ["file.py"]
-        assert restored.triage_passed is True
-        assert restored.completed is True
+        assert restored.run_id == 99, "run_id is not valid"
+        assert restored.conclusion == "success", "conclusion is not valid"
+        assert restored.cherry_picked == ["file.py"], "cherry_picked is not valid"
+        assert restored.triage_passed is True, "triage_passed is not valid"
+        assert restored.completed is True, "completed is not valid"
 
     def test_from_dict_ignores_unknown_keys(self):
         d = {
@@ -93,7 +93,7 @@ class TestPollSnapshot:
             "unknown_future_field": "ignored",
         }
         snap = PollSnapshot.from_dict(d)
-        assert snap.run_id == 1
+        assert snap.run_id == 1, "run_id is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -116,17 +116,17 @@ class TestStateFile:
         )
         _write_state(snap)
         restored = _read_state(42)
-        assert restored is not None
-        assert restored.run_id == 42
-        assert restored.status == "in_progress"
+        assert restored is not None, "restored must be initialized"
+        assert restored.run_id == 42, "run_id is not valid"
+        assert restored.status == "in_progress", "status is not valid"
 
     def test_read_nonexistent_returns_none(self, tmp_path, monkeypatch):
         monkeypatch.setattr(mr, "MONITOR_DIR", tmp_path / "monitor")
-        assert _read_state(99999) is None
+        assert _read_state(99999) is None, "Condition must be true"
 
     def test_poll_status_api(self, tmp_path, monkeypatch):
         monkeypatch.setattr(mr, "MONITOR_DIR", tmp_path / "monitor")
-        assert poll_status(12345) is None
+        assert poll_status(12345) is None, "Condition must be true"
         snap = PollSnapshot(
             run_id=12345,
             repo="x/y",
@@ -140,8 +140,8 @@ class TestStateFile:
         )
         _write_state(snap)
         result = poll_status(12345)
-        assert result is not None
-        assert result.conclusion == "success"
+        assert result is not None, "result must be initialized"
+        assert result.conclusion == "success", "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -162,7 +162,7 @@ class TestExitCode:
             html_url="",
             completed=True,
         )
-        assert _exit_code(snap) == 0
+        assert _exit_code(snap) == 0, "Condition must be true"
 
     def test_failure(self):
         snap = PollSnapshot(
@@ -176,7 +176,7 @@ class TestExitCode:
             html_url="",
             completed=True,
         )
-        assert _exit_code(snap) == 1
+        assert _exit_code(snap) == 1, "Condition must be true"
 
     def test_timeout(self):
         snap = PollSnapshot(
@@ -191,7 +191,7 @@ class TestExitCode:
             error="Timeout after 90 minutes",
             completed=True,
         )
-        assert _exit_code(snap) == 2
+        assert _exit_code(snap) == 2, "Condition must be true"
 
     def test_api_error(self):
         snap = PollSnapshot(
@@ -206,7 +206,7 @@ class TestExitCode:
             error="HTTP 404: ...",
             completed=True,
         )
-        assert _exit_code(snap) == 3
+        assert _exit_code(snap) == 3, "Condition must be true"
 
     def test_triage_failure(self):
         snap = PollSnapshot(
@@ -221,7 +221,7 @@ class TestExitCode:
             triage_passed=False,
             completed=True,
         )
-        assert _exit_code(snap) == 4
+        assert _exit_code(snap) == 4, "Condition must be true"
 
     def test_skipped_is_success(self):
         snap = PollSnapshot(
@@ -235,7 +235,7 @@ class TestExitCode:
             html_url="",
             completed=True,
         )
-        assert _exit_code(snap) == 0
+        assert _exit_code(snap) == 0, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -267,10 +267,10 @@ class TestCherryPickDelta:
 
         monkeypatch.setattr(mr, "_git", capturing_git)
         applied = cherry_pick_delta("main")
-        assert ".codex/agent_auth_session.json" not in checked_out
-        assert "CODEX_MANIFEST.json" not in checked_out
-        assert "README.md" in checked_out
-        assert applied == ["README.md"]
+        assert ".codex/agent_auth_session.json" not in checked_out, "Condition must be true"
+        assert "CODEX_MANIFEST.json" not in checked_out, "Condition must be true"
+        assert "README.md" in checked_out, "Condition must be true"
+        assert applied == ["README.md"], "applied is not valid"
 
     def test_empty_diff_returns_empty_list(self, tmp_path, monkeypatch):
         monkeypatch.setattr(mr, "REPO_ROOT", tmp_path)
@@ -281,7 +281,7 @@ class TestCherryPickDelta:
             return ""  # empty diff
 
         monkeypatch.setattr(mr, "_git", fake_git)
-        assert cherry_pick_delta("main") == []
+        assert cherry_pick_delta("main") == [], "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -293,16 +293,16 @@ class TestCmdList:
     def test_no_monitor_dir(self, tmp_path, monkeypatch, capsys):
         monkeypatch.setattr(mr, "MONITOR_DIR", tmp_path / "monitor_nonexistent")
         result = cmd_list()
-        assert result == 0
+        assert result == 0, "Result must not be empty"
         out = capsys.readouterr().out
-        assert "No monitor" in out
+        assert "No monitor" in out, "Condition must be true"
 
     def test_empty_monitor_dir(self, tmp_path, monkeypatch, capsys):
         monitor = tmp_path / "monitor"
         monitor.mkdir()
         monkeypatch.setattr(mr, "MONITOR_DIR", monitor)
         result = cmd_list()
-        assert result == 0
+        assert result == 0, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -332,12 +332,12 @@ class TestStartBackgroundMonitor:
         monkeypatch.setattr(mr, "_resolve_repo", lambda: "a/b")
 
         handle = start_background_monitor(run_id=1, repo="a/b")
-        assert isinstance(
+        assert isinstance(, "Condition must be true"
             handle, MonitorThread
         )  # start_background_monitor must return a MonitorThread
         handle.join(timeout=5)
-        assert handle.result is not None
-        assert handle.result.conclusion == "success"
+        assert handle.result is not None, "result must be initialized"
+        assert handle.result.conclusion == "success", "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -350,9 +350,9 @@ class TestSessionTiming:
         """GITHUB_RUN_STARTED_AT env var takes priority over api_run_started_at."""
         monkeypatch.setenv("GITHUB_RUN_STARTED_AT", "2026-03-17T23:15:08Z")
         iso, ns = _resolve_session_start()
-        assert iso == "2026-03-17T23:15:08Z"
+        assert iso == "2026-03-17T23:15:08Z", "iso is not valid"
         # ns must be a valid positive integer representing that timestamp
-        assert ns > 0
+        assert ns > 0, "ns must be greater than zero"
 
     def test_resolve_cli_override_beats_env_var(self, monkeypatch):
         """cli_override takes highest priority — must override GITHUB_RUN_STARTED_AT."""
@@ -360,14 +360,14 @@ class TestSessionTiming:
         override_ts = "2026-01-01T00:00:00Z"
         iso, ns = _resolve_session_start(cli_override=override_ts)
         assert iso == override_ts, f"cli_override should beat GITHUB_RUN_STARTED_AT; got {iso!r}"
-        assert ns > 0
+        assert ns > 0, "ns must be greater than zero"
 
     def test_resolve_uses_api_fallback(self, monkeypatch):
         """When env var absent, API run_started_at is used."""
         monkeypatch.delenv("GITHUB_RUN_STARTED_AT", raising=False)
         iso, ns = _resolve_session_start("2026-03-17T22:00:00+00:00")
-        assert "2026-03-17" in iso
-        assert ns > 0
+        assert "2026-03-17" in iso, "in is not valid"
+        assert ns > 0, "ns must be greater than zero"
 
     def test_resolve_fallback_to_now(self, monkeypatch):
         """When both env and api_ts absent, falls back to current time."""
@@ -375,8 +375,8 @@ class TestSessionTiming:
         before_ns = time.time_ns()
         iso, ns = _resolve_session_start()
         after_ns = time.time_ns()
-        assert before_ns <= ns <= after_ns
-        assert "2026" in iso or "202" in iso  # sanity: recent year
+        assert before_ns <= ns <= after_ns, "before_ns is not valid"
+        assert "2026" in iso or "202" in iso, "in is not valid"
 
     def test_compute_elapsed_sub_second(self):
         """Elapsed under 1 second produces '0s NNNNNNNNNns' format."""
@@ -384,32 +384,32 @@ class TestSessionTiming:
         # Simulate start 500ms ago
         start_ns = now_ns - 500_000_000
         el_s, el_ns, human = _compute_elapsed(start_ns)
-        assert el_s == 0
-        assert 0 <= el_ns < 1_000_000_000
-        assert human.endswith("ns")
-        assert len(human.split()[-1].rstrip("ns")) == 9  # 9-digit zero-padded
+        assert el_s == 0, "el_s is not valid"
+        assert 0 <= el_ns < 1_000_000_000, "0 is not valid"
+        assert human.endswith("ns"), "Condition must be true"
+        assert len(human.split()[-1].rstrip("ns")) == 9, "Collection must not be empty"
 
     def test_compute_elapsed_minutes_seconds(self):
         """Elapsed 2m 7s produces 'Xm Ys NNNNNNNNNns' format."""
         # 2 min 7 sec = 127 seconds
         start_ns = time.time_ns() - 127_123_456_789
         el_s, _el_ns, human = _compute_elapsed(start_ns)
-        assert el_s >= 127
-        assert "m" in human
-        assert "s" in human
+        assert el_s >= 127, "el_s must be greater than zero"
+        assert "m" in human, "Condition must be true"
+        assert "s" in human, "Condition must be true"
         parts = human.split()
         # Last part is nanoseconds
-        assert parts[-1].endswith("ns")
+        assert parts[-1].endswith("ns"), "Condition must be true"
         ns_digits = parts[-1].rstrip("ns")
-        assert len(ns_digits) == 9
+        assert len(ns_digits) == 9, "Ns_digits must not be empty"
 
     def test_compute_elapsed_hours(self):
         """Elapsed > 1h produces 'Xh Ym Zs NNNNNNNNNns' format."""
         # 1h 5m 3s = 3903 seconds
         start_ns = time.time_ns() - 3_903_000_000_000
         el_s, _el_ns, human = _compute_elapsed(start_ns)
-        assert el_s >= 3903
-        assert human.startswith("1h") or int(human.split("h")[0]) >= 1
+        assert el_s >= 3903, "el_s must be greater than zero"
+        assert human.startswith("1h") or int(human.split("h")[0]) >= 1, "Value must be greater than zero"
 
     def test_compute_elapsed_nanosecond_remainder_9_digits(self):
         """ns remainder is always zero-padded to exactly 9 digits."""
@@ -439,14 +439,14 @@ class TestSessionTiming:
             completed=True,
         )
         d = snap.to_dict()
-        assert d["session_started_ns"] == 1742252108_000000000
-        assert d["session_elapsed_ns"] == 123456789
-        assert d["session_elapsed_str"] == "33m 14s 123456789ns"
+        assert d["session_started_ns"] == 1742252108_000000000, "Condition must be true"
+        assert d["session_elapsed_ns"] == 123456789, "Condition must be true"
+        assert d["session_elapsed_str"] == "33m 14s 123456789ns", "Condition must be true"
 
         restored = PollSnapshot.from_dict(d)
-        assert restored.session_started_ns == 1742252108_000000000
-        assert restored.session_elapsed_ns == 123456789
-        assert restored.session_elapsed_str == "33m 14s 123456789ns"
+        assert restored.session_started_ns == 1742252108_000000000, "session_started_ns is not valid"
+        assert restored.session_elapsed_ns == 123456789, "session_elapsed_ns is not valid"
+        assert restored.session_elapsed_str == "33m 14s 123456789ns", "session_elapsed_str is not valid"
 
     def test_poll_loop_stamps_timing(self, monkeypatch, tmp_path):
         """_poll_loop must stamp session_elapsed_str on the returned snapshot."""
@@ -484,9 +484,9 @@ class TestSessionTiming:
             session_started_ns=start_ns,
         )
 
-        assert result.session_elapsed_s >= 65
-        assert result.session_elapsed_str != ""
-        assert "s" in result.session_elapsed_str
-        assert result.session_elapsed_str.endswith("ns")
-        assert result.current_dt != ""
-        assert result.session_started_ns == start_ns
+        assert result.session_elapsed_s >= 65, "session_elapsed_s must be greater than zero"
+        assert result.session_elapsed_str != "", "Result must not be empty"
+        assert "s" in result.session_elapsed_str, "Result must not be empty"
+        assert result.session_elapsed_str.endswith("ns"), "Result must not be empty"
+        assert result.current_dt != "", "Result must not be empty"
+        assert result.session_started_ns == start_ns, "Result must not be empty"

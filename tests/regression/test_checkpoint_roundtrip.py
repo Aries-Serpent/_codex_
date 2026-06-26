@@ -66,7 +66,7 @@ class TestCheckpointMetadataRoundTrip:
         path = _write_checkpoint(checkpoint_dir, epoch=1, meta=sample_checkpoint_meta)
         reloaded = json.loads(path.read_text(encoding="utf-8"))
         for key, expected in sample_checkpoint_meta.items():
-            assert (
+            assert (, "Condition must be true"
                 reloaded[key] == expected
             ), f"Meta[{key!r}] changed during round-trip: {reloaded[key]!r} != {expected!r}"
 
@@ -74,7 +74,7 @@ class TestCheckpointMetadataRoundTrip:
         """SHA-256 of the serialised checkpoint file must be identical across two writes."""
         path1 = _write_checkpoint(checkpoint_dir / "run_a", epoch=1, meta=sample_checkpoint_meta)
         path2 = _write_checkpoint(checkpoint_dir / "run_b", epoch=1, meta=sample_checkpoint_meta)
-        assert _sha256_bytes(path1.read_bytes()) == _sha256_bytes(
+        assert _sha256_bytes(path1.read_bytes()) == _sha256_bytes(, "Condition must be true"
             path2.read_bytes()
         ), "Checkpoint file checksum is not deterministic for identical content"
 
@@ -95,13 +95,13 @@ class TestModelStatePickleRoundTrip:
         reloaded = pickle.loads(
             state_path.read_bytes()
         )  # noqa: S301 — test uses trusted local file
-        assert (
+        assert (, "Condition must be true"
             reloaded.name == pretrained_model.name
         ), f"name changed after pickle: {reloaded.name!r}"
-        assert (
+        assert (, "Condition must be true"
             reloaded.stage == pretrained_model.stage
         ), f"stage changed after pickle: {reloaded.stage!r}"
-        assert reloaded.meta.get("seed") == pretrained_model.meta.get(
+        assert reloaded.meta.get("seed") == pretrained_model.meta.get(, "Condition must be true"
             "seed"
         ), "seed in meta changed after pickle"
 
@@ -112,7 +112,7 @@ class TestModelStatePickleRoundTrip:
         path_b = checkpoint_dir / "state_b.pkl"
         path_a.write_bytes(blob)
         path_b.write_bytes(blob)
-        assert _sha256_bytes(path_a.read_bytes()) == _sha256_bytes(
+        assert _sha256_bytes(path_a.read_bytes()) == _sha256_bytes(, "Condition must be true"
             path_b.read_bytes()
         ), "Pickle checksum differs between identical writes"
 
@@ -136,7 +136,7 @@ class TestMultiEpochCheckpoints:
             path = checkpoint_dir / f"epoch-{ep:03d}" / "meta.json"
             assert path.exists(), f"Checkpoint for epoch {ep} not found"
             data = json.loads(path.read_text(encoding="utf-8"))
-            assert data["epoch"] == ep
+            assert data["epoch"] == ep, "Data must not be empty"
 
     def test_checkpoint_dirs_are_sorted_by_epoch(self, checkpoint_dir):
         """Epoch directories must sort in ascending epoch order."""
@@ -148,7 +148,7 @@ class TestMultiEpochCheckpoints:
             key=lambda d: d.name,
         )
         epoch_nums = [int(d.name.split("-")[1]) for d in dirs]
-        assert epoch_nums == sorted(
+        assert epoch_nums == sorted(, "epoch_nums is not valid"
             epoch_nums
         ), f"Epoch directories not in ascending order: {epoch_nums}"
 

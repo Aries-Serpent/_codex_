@@ -78,9 +78,9 @@ def test_classification_metrics_numpy():
     assert classification.recall(preds, labels, positive=1) == pytest.approx(0.5)
     streaming = classification.StreamingAccuracy(ignore_index=None)
     streaming.update(preds, labels)
-    assert streaming.compute() == pytest.approx(1 / 3)
+    assert streaming.compute() == pytest.approx(1 / 3), "Condition must be true"
     streaming.reset()
-    assert streaming.compute() == 0.0
+    assert streaming.compute() == 0.0, "Condition must be true"
 
 
 def test_streaming_loss_from_kwargs():
@@ -91,9 +91,9 @@ def test_streaming_loss_from_kwargs():
     metric = StreamingLoss()
     metric.update(preds=None, labels=None, loss=0.5)
     metric.update(preds=np.array([0.0, 1.0]), labels=None)
-    assert metric.compute() > 0
+    assert metric.compute() > 0, "Value must be greater than zero"
     metric.reset()
-    assert metric.compute() == 0.0
+    assert metric.compute() == 0.0, "Condition must be true"
 
 
 def test_reward_metrics():
@@ -116,9 +116,9 @@ def test_generation_scores():
     bp = generation.compute_brevity_penalty(hyps, refs)
     bleu = generation.bleu(hyps, refs)
     rouge = generation.rouge_l(hyps, ["a b c", "hello there"])
-    assert 0.0 <= bp <= 1.0
-    assert 0.0 <= bleu <= 1.0
-    assert 0.0 <= rouge <= 1.0
+    assert 0.0 <= bp <= 1.0, "0 is not valid"
+    assert 0.0 <= bleu <= 1.0, "0 is not valid"
+    assert 0.0 <= rouge <= 1.0, "0 is not valid"
 
 
 def test_evaluator_batch_metrics_text_and_loss():
@@ -129,5 +129,5 @@ def test_evaluator_batch_metrics_text_and_loss():
     outputs = SimpleNamespace(loss=0.0, predictions=["a", "b"])
     batch = {"references": ["a", "c"]}
     record = evaluator.batch_metrics(outputs, batch)
-    assert "perplexity" in record and record["perplexity"] >= 0
-    assert record.get("exact_match") is not None
+    assert "perplexity" in record and record["perplexity"] >= 0, "Value must be greater than zero"
+    assert record.get("exact_match") is not None, "rec must be initialized"

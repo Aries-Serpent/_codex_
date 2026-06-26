@@ -24,7 +24,7 @@ def test_perf_smoke_marker():
     is working correctly. Real microbenchmarks can be added later.
     """
     # Verify environment variable is set
-    assert os.getenv("CODEX_PERF_SMOKE") == "1"
+    assert os.getenv("CODEX_PERF_SMOKE") == "1", "Condition must be true"
 
     # Minimal performance check - import should be fast
     import time
@@ -49,4 +49,4 @@ def test_perf_smoke_placeholder():
     - Batch processing speed
     """
     # This test always passes - it's a placeholder for future work
-    assert True
+    assert True, "True is not valid"

@@ -16,7 +16,7 @@ import pytest
 
 def test_import_error(no_sentencepiece):
     mod = importlib.import_module("codex_ml.tokenization.sentencepiece_adapter")
-    assert mod.spm is None
+    assert mod.spm is None, "spm is not valid"
 
 
 def test_train_roundtrip(tmp_path, monkeypatch):
@@ -50,10 +50,10 @@ def test_train_roundtrip(tmp_path, monkeypatch):
     mapping = adapter.add_special_tokens(["<pad>"])
     ids = adapter.encode("hello")
     text = adapter.decode(ids)
-    assert ids and text == "ok"
+    assert ids and text == "ok", "text is not valid"
     adapter.assert_vocab_size(2)
     with pytest.raises(AssertionError):
         adapter.assert_vocab_size(10)
     sidecar_path = tmp_path / "toy.special_tokens.json"
     sidecar = json.loads(sidecar_path.read_text(encoding="utf-8"))
-    assert sidecar["<pad>"] == mapping["<pad>"]
+    assert sidecar["<pad>"] == mapping["<pad>"], "Condition must be true"

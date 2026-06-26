@@ -15,7 +15,9 @@ Tests include:
 - Integration between components
 """
 
-from __future__ import annotations # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+from __future__ import (
+    annotations,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+)
 
 # botocore is needed by two AWS provider tests (ClientError); skip gracefully when absent
 import importlib
@@ -58,21 +60,21 @@ class TestProviderType:
 
     def test_all_provider_types(self):
         """Test all provider type enum values."""
-        assert ProviderType.GITHUB.value == "github"
-        assert ProviderType.AWS_SECRETS_MANAGER.value == "aws_secrets_manager"
-        assert ProviderType.AZURE_KEY_VAULT.value == "azure_key_vault"
-        assert ProviderType.HASHICORP_VAULT.value == "hashicorp_vault"
-        assert ProviderType.ENVIRONMENT.value == "environment"
+        assert ProviderType.GITHUB.value == "github", "Value must be initialized"
+        assert ProviderType.AWS_SECRETS_MANAGER.value == "aws_secrets_manager", "Value must be initialized"
+        assert ProviderType.AZURE_KEY_VAULT.value == "azure_key_vault", "Value must be initialized"
+        assert ProviderType.HASHICORP_VAULT.value == "hashicorp_vault", "Value must be initialized"
+        assert ProviderType.ENVIRONMENT.value == "environment", "Value must be initialized"
 
     def test_enum_membership(self):
         """Test enum membership checks."""
-        assert ProviderType.GITHUB in ProviderType
+        assert ProviderType.GITHUB in ProviderType, "Condition must be true"
         # Enum values can be checked with 'in' operator
-        assert "github" in ProviderType._value2member_map_
+        assert "github" in ProviderType._value2member_map_, "Value must be initialized"
 
     def test_enum_from_value(self):
         """Test creating enum from string value."""
-        assert ProviderType("github") == ProviderType.GITHUB
+        assert ProviderType("github") == ProviderType.GITHUB, "Condition must be true"
         with pytest.raises(ValueError):
             ProviderType("invalid_provider")
 
@@ -82,12 +84,12 @@ class TestSecretType:
 
     def test_all_secret_types(self):
         """Test all secret type enum values."""
-        assert SecretType.TOKEN.value == "token"
-        assert SecretType.API_KEY.value == "api_key"
-        assert SecretType.PASSWORD.value == "password"
-        assert SecretType.CERTIFICATE.value == "certificate"
-        assert SecretType.SSH_KEY.value == "ssh_key"
-        assert SecretType.GENERIC.value == "generic"
+        assert SecretType.TOKEN.value == "token", "Value must be initialized"
+        assert SecretType.API_KEY.value == "api_key", "Value must be initialized"
+        assert SecretType.PASSWORD.value == "password", "Value must be initialized"
+        assert SecretType.CERTIFICATE.value == "certificate", "Value must be initialized"
+        assert SecretType.SSH_KEY.value == "ssh_key", "Value must be initialized"
+        assert SecretType.GENERIC.value == "generic", "Value must be initialized"
 
 
 class TestSecretMetadata:
@@ -103,13 +105,13 @@ class TestSecretMetadata:
             created_at=now,
             updated_at=now,
         )
-        assert metadata.secret_id == "test-id"
-        assert metadata.secret_type == SecretType.TOKEN
-        assert metadata.provider == ProviderType.GITHUB
-        assert metadata.expires_at is None
-        assert metadata.rotation_policy is None
-        assert metadata.tags is None
-        assert metadata.scopes is None
+        assert metadata.secret_id == "test-id", "Data must not be empty"
+        assert metadata.secret_type == SecretType.TOKEN, "Data must not be empty"
+        assert metadata.provider == ProviderType.GITHUB, "Data must not be empty"
+        assert metadata.expires_at is None, "Data must not be empty"
+        assert metadata.rotation_policy is None, "Data must not be empty"
+        assert metadata.tags is None, "Data must not be empty"
+        assert metadata.scopes is None, "Data must not be empty"
 
     def test_creation_full(self):
         """Test creating metadata with all fields."""
@@ -128,8 +130,8 @@ class TestSecretMetadata:
             scopes=["read", "write"],
         )
 
-        assert metadata.expires_at == expires
-        assert metadata.rotation_policy == "auto_rotate"
+        assert metadata.expires_at == expires, "Data must not be empty"
+        assert metadata.rotation_policy == "auto_rotate", "Data must not be empty"
         assert metadata.tags == {"env": "prod", "team": "security"}
         assert metadata.scopes == ["read", "write"]
 
@@ -145,11 +147,11 @@ class TestRotationResult:
             new_secret_id="new-id",
             new_secret_value="new-value",  # pragma: allowlist secret
         )
-        assert result.success is True
-        assert result.old_secret_id == "old-id"
-        assert result.new_secret_id == "new-id"
+        assert result.success is True, "Result must not be empty"
+        assert result.old_secret_id == "old-id", "Result must not be empty"
+        assert result.new_secret_id == "new-id", "Result must not be empty"
         assert result.new_secret_value == "new-value"  # pragma: allowlist secret
-        assert result.error_message is None
+        assert result.error_message is None, "Result must not be empty"
 
     def test_failure_result(self):
         """Test failed rotation result."""
@@ -158,10 +160,10 @@ class TestRotationResult:
             old_secret_id="old-id",
             error_message="Rotation failed: API error",
         )
-        assert result.success is False
-        assert result.error_message == "Rotation failed: API error"
-        assert result.new_secret_id is None
-        assert result.new_secret_value is None
+        assert result.success is False, "Result must not be empty"
+        assert result.error_message == "Rotation failed: API error", "Result must not be empty"
+        assert result.new_secret_id is None, "Result must not be empty"
+        assert result.new_secret_value is None, "Result must not be empty"
 
 
 class TestExceptions:
@@ -206,15 +208,15 @@ class TestProviderConfig:
             token="ghp_test",  # pragma: allowlist secret
             api_url="https://api.github.com",
         )
-        assert config.provider_type == ProviderType.GITHUB
-        assert config.get("token") == "ghp_test"
-        assert config.get("api_url") == "https://api.github.com"
+        assert config.provider_type == ProviderType.GITHUB, "provider_type is not valid"
+        assert config.get("token") == "ghp_test", "Condition must be true"
+        assert config.get("api_url") == "https://api.github.com", "Condition must be true"
 
     def test_get_with_default(self):
         """Test get with default value."""
         config = ProviderConfig(provider_type=ProviderType.GITHUB)
         assert config.get("missing_key", "default") == "default"
-        assert config.get("missing_key") is None
+        assert config.get("missing_key") is None, "Condition must be true"
 
     def test_require_existing(self):
         """Test require with existing key."""
@@ -222,7 +224,7 @@ class TestProviderConfig:
             provider_type=ProviderType.AWS_SECRETS_MANAGER,
             region="us-east-1",
         )
-        assert config.require("region") == "us-east-1"
+        assert config.require("region") == "us-east-1", "Condition must be true"
 
     def test_require_missing(self):
         """Test require with missing key raises error."""
@@ -233,8 +235,8 @@ class TestProviderConfig:
     def test_repr(self):
         """Test string representation."""
         config = ProviderConfig(provider_type=ProviderType.GITHUB)
-        assert "ProviderConfig" in repr(config)
-        assert "github" in repr(config)
+        assert "ProviderConfig" in repr(config), "Condition must be true"
+        assert "github" in repr(config), "Condition must be true"
 
 
 class TestSecretProviderAbstract:
@@ -272,7 +274,7 @@ class TestSecretProviderAbstract:
                 return ProviderType.ENVIRONMENT
 
         provider = ConcreteProvider()
-        assert provider.get_scopes("test") == []
+        assert provider.get_scopes("test") == [], "Condition must be true"
 
     def test_default_revoke_raises_not_implemented(self):
         """Test default revoke_secret raises NotImplementedError."""
@@ -361,7 +363,7 @@ class TestSecretProviderAbstract:
                 return ProviderType.AWS_SECRETS_MANAGER
 
         provider = ConcreteProvider()
-        assert provider.provider_name == "AWS Secrets Manager"
+        assert provider.provider_name == "AWS Secrets Manager", "provider_name is not valid"
 
     def test_repr(self):
         """Test __repr__ method."""
@@ -390,8 +392,8 @@ class TestSecretProviderAbstract:
                 return ProviderType.GITHUB
 
         provider = ConcreteProvider()
-        assert "ConcreteProvider" in repr(provider)
-        assert "github" in repr(provider)
+        assert "ConcreteProvider" in repr(provider), "Condition must be true"
+        assert "github" in repr(provider), "Condition must be true"
 
 
 class TestTokenProviderAbstract:
@@ -456,15 +458,15 @@ class TestGitHubTokenProvider:
     def test_initialization_with_token(self, github_config):
         """Test initialization with explicit token."""
         provider = GitHubTokenProvider(github_config)
-        assert provider.provider_type == ProviderType.GITHUB
-        assert provider.token == "ghp_test_token_1234567890"
-        assert provider.api_url == "https://api.github.com"
+        assert provider.provider_type == ProviderType.GITHUB, "provider_type is not valid"
+        assert provider.token == "ghp_test_token_1234567890", "token is not valid"
+        assert provider.api_url == "https://api.github.com", "api_url is not valid"
 
     def test_initialization_without_token(self):
         """Test initialization without token (uses env var)."""
         config = ProviderConfig(provider_type=ProviderType.GITHUB)
         provider = GitHubTokenProvider(config)
-        assert provider.token is None or provider.token == os.getenv("GITHUB_TOKEN")
+        assert provider.token is None or provider.token == os.getenv("GITHUB_TOKEN"), "token is not valid"
 
     def test_rotate_secret_success(self, github_config):
         """Test successful token rotation."""
@@ -485,11 +487,11 @@ class TestGitHubTokenProvider:
                 expires_in_days=90,
             )
 
-            assert result.success is True
-            assert result.old_secret_id == "old-token-id"
-            assert result.new_secret_id is not None
-            assert result.new_secret_value is not None
-            assert "ghp_" in result.new_secret_value
+            assert result.success is True, "Result must not be empty"
+            assert result.old_secret_id == "old-token-id", "Result must not be empty"
+            assert result.new_secret_id is not None, "new_secret_id must be initialized"
+            assert result.new_secret_value is not None, "new_secret_value must be initialized"
+            assert "ghp_" in result.new_secret_value, "Result must not be empty"
             mock_create.assert_called_once()
 
     def test_rotate_secret_with_revoke(self, github_config):
@@ -513,7 +515,7 @@ class TestGitHubTokenProvider:
                     revoke_old=True,
                 )
 
-                assert result.success is True
+                assert result.success is True, "Result must not be empty"
                 mock_create.assert_called_once()
                 mock_revoke.assert_called_once_with("old-token-id")
 
@@ -527,7 +529,7 @@ class TestGitHubTokenProvider:
         mock_response.status_code = 200
         with patch("requests.get", return_value=mock_response):
             is_valid = provider.validate_secret("token-id", token)
-        assert is_valid is True
+        assert is_valid is True, "is_valid is not valid"
 
     def test_validate_secret_invalid_format(self, github_config):
         """Test validation rejects tokens with invalid format."""
@@ -535,7 +537,7 @@ class TestGitHubTokenProvider:
         # Too short — won't match the regex, so validate_secret returns False
         # before making any API call
         is_valid = provider.validate_secret("token-id", "ghp_tooshort")
-        assert is_valid is False
+        assert is_valid is False, "is_valid is not valid"
 
     def test_validate_secret_api_401(self, github_config):
         """Test validation returns False when GitHub API returns 401."""
@@ -545,7 +547,7 @@ class TestGitHubTokenProvider:
         mock_response.status_code = 401
         with patch("requests.get", return_value=mock_response):
             is_valid = provider.validate_secret("token-id", token)
-        assert is_valid is False
+        assert is_valid is False, "is_valid is not valid"
 
     def test_validate_secret_network_error_degrades_gracefully(self, github_config):
         """Test that network errors fall back to format-only validation."""
@@ -556,7 +558,7 @@ class TestGitHubTokenProvider:
         with patch("requests.get", side_effect=real_requests.exceptions.ConnectionError("offline")):
             is_valid = provider.validate_secret("token-id", token)
         # Format is valid so should return True after graceful degradation
-        assert is_valid is True
+        assert is_valid is True, "is_valid is not valid"
 
     def test_validate_secret_no_token(self, github_config):
         """Test validation fails when no token provided."""
@@ -572,10 +574,10 @@ class TestGitHubTokenProvider:
         provider = GitHubTokenProvider(github_config)
         metadata = provider.get_secret_metadata("token-id")
 
-        assert metadata.secret_id == "token-id"
-        assert metadata.secret_type == SecretType.TOKEN
-        assert metadata.provider == ProviderType.GITHUB
-        assert metadata.expires_at is not None
+        assert metadata.secret_id == "token-id", "Data must not be empty"
+        assert metadata.secret_type == SecretType.TOKEN, "Data must not be empty"
+        assert metadata.provider == ProviderType.GITHUB, "Data must not be empty"
+        assert metadata.expires_at is not None, "expires_at must be initialized"
         assert metadata.scopes == ["repo", "workflow"]
 
     def test_get_expiration(self, github_config):
@@ -583,7 +585,7 @@ class TestGitHubTokenProvider:
         provider = GitHubTokenProvider(github_config)
         expiration = provider.get_expiration("token-id")
 
-        assert expiration is not None
+        assert expiration is not None, "expiration must be initialized"
         assert isinstance(expiration, datetime)
 
     def test_get_scopes(self, github_config):
@@ -605,8 +607,8 @@ class TestGitHubTokenProvider:
         )
 
         # Without installation_id, create_token must return failure (not raise)
-        assert result.success is False
-        assert "installation_id" in (result.error_message or "")
+        assert result.success is False, "Result must not be empty"
+        assert "installation_id" in (result.error_message or ""), "Result must not be empty"
 
     def test_create_token_with_installation_id(self, github_config):
         """Test create_token calls GitHub API when installation_id is set."""
@@ -636,11 +638,11 @@ class TestGitHubTokenProvider:
                 scopes=["contents", "workflows"],
             )
 
-        assert result.success is True
-        assert (
+        assert result.success is True, "Result must not be empty"
+        assert (, "Condition must be true"
             result.new_secret_value == "ghs_test_installation_token_value"
         )  # pragma: allowlist secret  # noqa: E501
-        assert result.new_secret_id == "99"
+        assert result.new_secret_id == "99", "Result must not be empty"
 
     def test_create_token_invalid_pat_scopes(self, github_config):
         """Test create_token rejects PAT-style scopes."""
@@ -657,8 +659,8 @@ class TestGitHubTokenProvider:
             scopes=["repo", "workflow"],  # PAT-style — should be rejected
         )
 
-        assert result.success is False
-        assert "Invalid installation permission" in (result.error_message or "")
+        assert result.success is False, "Result must not be empty"
+        assert "Invalid installation permission" in (result.error_message or ""), "Result must not be empty"
 
     def test_create_token_empty_token_response(self, github_config):
         """Test create_token fails closed when API returns 201 but no token."""
@@ -681,8 +683,8 @@ class TestGitHubTokenProvider:
             mock_req.post.return_value = mock_resp
             result = provider.create_token(name="t", scopes=["contents"])
 
-        assert result.success is False
-        assert "no token" in (result.error_message or "").lower()
+        assert result.success is False, "Result must not be empty"
+        assert "no token" in (result.error_message or "").lower(), "Result must not be empty"
 
     def test_create_token_api_failure(self, github_config):
         """Test create_token handles API errors gracefully."""
@@ -705,8 +707,8 @@ class TestGitHubTokenProvider:
             mock_req.post.return_value = mock_resp
             result = provider.create_token(name="t", scopes=["contents"])
 
-        assert result.success is False
-        assert "403" in (result.error_message or "")
+        assert result.success is False, "Result must not be empty"
+        assert "403" in (result.error_message or ""), "Result must not be empty"
 
     def test_update_token_scopes(self, github_config):
         """Test updating token scopes calls GitHub API."""
@@ -725,7 +727,7 @@ class TestGitHubTokenProvider:
                 ["contents", "workflows", "issues"],
             )
 
-        assert success is True
+        assert success is True, "success is not valid"
 
     def test_update_token_scopes_no_requests(self, github_config):
         """Test update_token_scopes returns False without requests library."""
@@ -734,7 +736,7 @@ class TestGitHubTokenProvider:
         with patch("security.providers.github_provider.HAS_REQUESTS", False):
             success = provider.update_token_scopes("12345", ["contents"])
 
-        assert success is False
+        assert success is False, "success is not valid"
 
     def test_revoke_secret(self, github_config):
         """Test revoking token.
@@ -748,7 +750,7 @@ class TestGitHubTokenProvider:
 
         # Classic PAT revocation is not possible without OAuth App credentials.
         # The method must return False rather than pretending success.
-        assert success is False
+        assert success is False, "success is not valid"
 
     def test_list_secrets(self, github_config):
         """Test listing tokens."""
@@ -783,10 +785,10 @@ class TestAWSSecretsManagerProvider:
             from security.providers.aws_provider import AWSSecretsManagerProvider
 
             provider = AWSSecretsManagerProvider(aws_config)
-            assert provider.provider_type == ProviderType.AWS_SECRETS_MANAGER
-            assert provider.region == "us-east-1"
+            assert provider.provider_type == ProviderType.AWS_SECRETS_MANAGER, "provider_type is not valid"
+            assert provider.region == "us-east-1", "region is not valid"
         except ProviderConfigError as e:
-            assert "boto3 required" in str(e)
+            assert "boto3 required" in str(e), "Condition must be true"
 
     @patch("security.providers.aws_provider.HAS_BOTO3", False)
     def test_initialization_without_boto3_raises_error(self, aws_config):
@@ -810,9 +812,9 @@ class TestAWSSecretsManagerProvider:
         try:
             with patch("builtins.__import__", side_effect=fake_import):
                 reloaded = importlib.reload(aws_provider_module)
-                assert reloaded.HAS_BOTO3 is False
+                assert reloaded.HAS_BOTO3 is False, "HAS_BOTO3 is not valid"
                 assert hasattr(reloaded.boto3, "client")
-                assert reloaded.ClientError is Exception
+                assert reloaded.ClientError is Exception, "Error should be raised or set"
         finally:
             importlib.reload(aws_provider_module)
 
@@ -838,8 +840,8 @@ class TestAWSSecretsManagerProvider:
             rotation_lambda_arn="arn:aws:lambda:us-east-1:123456789012:function:rotate",
         )
 
-        assert result.success is True
-        assert result.metadata["version_id"] == "new-version-id"
+        assert result.success is True, "Result must not be empty"
+        assert result.metadata["version_id"] == "new-version-id", "Result must not be empty"
 
     @pytest.mark.skipif(not _HAS_BOTOCORE, reason="botocore not installed in this CI environment")
     @patch("security.providers.aws_provider.HAS_BOTO3", True)
@@ -861,8 +863,8 @@ class TestAWSSecretsManagerProvider:
 
         result = provider.rotate_secret("test-secret")
 
-        assert result.success is False
-        assert "ResourceNotFoundException" in result.error_message
+        assert result.success is False, "Result must not be empty"
+        assert "ResourceNotFoundException" in result.error_message, "Result must not be empty"
 
     @patch("security.providers.aws_provider.HAS_BOTO3", True)
     @patch("security.providers.aws_provider.boto3")
@@ -876,8 +878,8 @@ class TestAWSSecretsManagerProvider:
 
         provider = AWSSecretsManagerProvider(aws_config)
         result = provider.rotate_secret("test-secret")
-        assert result.success is False
-        assert "network timeout" in result.error_message
+        assert result.success is False, "Result must not be empty"
+        assert "network timeout" in result.error_message, "Result must not be empty"
 
     @patch("security.providers.aws_provider.HAS_BOTO3", True)
     @patch("security.providers.aws_provider.boto3")
@@ -892,7 +894,7 @@ class TestAWSSecretsManagerProvider:
         provider = AWSSecretsManagerProvider(aws_config)
 
         is_valid = provider.validate_secret("test-secret")
-        assert is_valid is True
+        assert is_valid is True, "is_valid is not valid"
 
     @pytest.mark.skipif(not _HAS_BOTOCORE, reason="botocore not installed in this CI environment")
     @patch("security.providers.aws_provider.HAS_BOTO3", True)
@@ -913,7 +915,7 @@ class TestAWSSecretsManagerProvider:
         provider = AWSSecretsManagerProvider(aws_config)
 
         is_valid = provider.validate_secret("test-secret")
-        assert is_valid is False
+        assert is_valid is False, "is_valid is not valid"
 
     @patch("security.providers.aws_provider.HAS_BOTO3", True)
     @patch("security.providers.aws_provider.boto3")
@@ -950,10 +952,10 @@ class TestAWSSecretsManagerProvider:
 
         metadata = provider.get_secret_metadata("test-secret")
 
-        assert metadata.secret_id == "test-secret"
-        assert metadata.secret_type == SecretType.GENERIC
-        assert metadata.provider == ProviderType.AWS_SECRETS_MANAGER
-        assert metadata.tags == {"env": "test"}
+        assert metadata.secret_id == "test-secret", "Data must not be empty"
+        assert metadata.secret_type == SecretType.GENERIC, "Data must not be empty"
+        assert metadata.provider == ProviderType.AWS_SECRETS_MANAGER, "Data must not be empty"
+        assert metadata.tags == {"env": "test"}, "Data must not be empty"
 
     @patch("security.providers.aws_provider.HAS_BOTO3", True)
     @patch("security.providers.aws_provider.boto3")
@@ -974,8 +976,8 @@ class TestAWSSecretsManagerProvider:
 
         provider = AWSSecretsManagerProvider(aws_config)
         metadata = provider.get_secret_metadata("test-secret")
-        assert metadata.created_at.tzinfo == UTC
-        assert metadata.updated_at.tzinfo == UTC
+        assert metadata.created_at.tzinfo == UTC, "Data must not be empty"
+        assert metadata.updated_at.tzinfo == UTC, "Data must not be empty"
 
     @patch("security.providers.aws_provider.HAS_BOTO3", True)
     @patch("security.providers.aws_provider.boto3")
@@ -1007,7 +1009,7 @@ class TestAWSSecretsManagerProvider:
         provider = AWSSecretsManagerProvider(aws_config)
 
         expiration = provider.get_expiration("test-secret")
-        assert expiration is None
+        assert expiration is None, "expiration is not valid"
 
     @patch("security.providers.aws_provider.HAS_BOTO3", True)
     @patch("security.providers.aws_provider.boto3")
@@ -1024,7 +1026,7 @@ class TestAWSSecretsManagerProvider:
         provider = AWSSecretsManagerProvider(aws_config)
 
         value = provider.get_secret_value("test-secret")
-        assert value == "my-secret-value"
+        assert value == "my-secret-value", "Value must be initialized"
 
     @patch("security.providers.aws_provider.HAS_BOTO3", True)
     @patch("security.providers.aws_provider.boto3")
@@ -1083,8 +1085,8 @@ class TestAWSSecretsManagerProvider:
             tags={"env": "test"},
         )
 
-        assert result.success is True
-        assert result.new_secret_id == "test-secret"
+        assert result.success is True, "Result must not be empty"
+        assert result.new_secret_id == "test-secret", "Result must not be empty"
 
     @patch("security.providers.aws_provider.HAS_BOTO3", True)
     @patch("security.providers.aws_provider.boto3")
@@ -1102,7 +1104,7 @@ class TestAWSSecretsManagerProvider:
 
         provider = AWSSecretsManagerProvider(aws_config)
         result = provider.create_secret(name="test-secret", secret_value="secret-value")
-        assert result.success is True
+        assert result.success is True, "Result must not be empty"
         mock_client.create_secret.assert_called_once_with(
             Name="test-secret",
             SecretString="secret-value",  # pragma: allowlist secret
@@ -1125,8 +1127,8 @@ class TestAWSSecretsManagerProvider:
 
             provider = AWSSecretsManagerProvider(aws_config)
             result = provider.create_secret(name="test-secret", secret_value="secret-value")
-            assert result.success is False
-            assert "create failed" in result.error_message
+            assert result.success is False, "Result must not be empty"
+            assert "create failed" in result.error_message, "Result must not be empty"
 
     @patch("security.providers.aws_provider.HAS_BOTO3", True)
     @patch("security.providers.aws_provider.boto3")
@@ -1141,7 +1143,7 @@ class TestAWSSecretsManagerProvider:
         provider = AWSSecretsManagerProvider(aws_config)
 
         success = provider.delete_secret("test-secret", recovery_window_days=7)
-        assert success is True
+        assert success is True, "success is not valid"
 
     @patch("security.providers.aws_provider.HAS_BOTO3", True)
     @patch("security.providers.aws_provider.boto3")
@@ -1159,7 +1161,7 @@ class TestAWSSecretsManagerProvider:
             from security.providers.aws_provider import AWSSecretsManagerProvider
 
             provider = AWSSecretsManagerProvider(aws_config)
-            assert provider.delete_secret("test-secret") is False
+            assert provider.delete_secret("test-secret") is False, "Condition must be true"
 
     @patch("security.providers.aws_provider.HAS_BOTO3", True)
     @patch("security.providers.aws_provider.boto3")
@@ -1195,7 +1197,7 @@ class TestAWSSecretsManagerProvider:
         provider = AWSSecretsManagerProvider(aws_config)
 
         secrets = provider.list_secrets()
-        assert len(secrets) == 2
+        assert len(secrets) == 2, "Secrets must not be empty"
 
     @patch("security.providers.aws_provider.HAS_BOTO3", True)
     @patch("security.providers.aws_provider.boto3")
@@ -1211,7 +1213,7 @@ class TestAWSSecretsManagerProvider:
 
         provider = AWSSecretsManagerProvider(aws_config)
         result = provider.list_secrets(filter_tags={"env": "prod"})
-        assert result == []
+        assert result == [], "Result must not be empty"
         mock_paginator.paginate.assert_called_once_with(
             Filters=[
                 {"Key": "tag-key", "Values": ["env"]},
@@ -1239,7 +1241,7 @@ class TestAWSSecretsManagerProvider:
 
         provider = AWSSecretsManagerProvider(aws_config)
         result = provider.list_secrets()
-        assert [item.secret_id for item in result] == ["good-secret"]
+        assert [item.secret_id for item in result] == ["good-secret"], "Result must not be empty"
 
     @patch("security.providers.aws_provider.HAS_BOTO3", True)
     @patch("security.providers.aws_provider.boto3")
@@ -1257,7 +1259,7 @@ class TestAWSSecretsManagerProvider:
             from security.providers.aws_provider import AWSSecretsManagerProvider
 
             provider = AWSSecretsManagerProvider(aws_config)
-            assert provider.list_secrets() == []
+            assert provider.list_secrets() == [], "Condition must be true"
 
 
 # ============================================================================
@@ -1288,14 +1290,14 @@ class TestEnvironmentProvider:
     def test_initialization(self, env_config):
         """Test provider initialization."""
         provider = EnvironmentProvider(env_config)
-        assert provider.provider_type == ProviderType.ENVIRONMENT
-        assert provider.prefix == "TEST_"
+        assert provider.provider_type == ProviderType.ENVIRONMENT, "provider_type is not valid"
+        assert provider.prefix == "TEST_", "prefix is not valid"
 
     def test_initialization_no_prefix(self):
         """Test initialization without prefix."""
         config = ProviderConfig(provider_type=ProviderType.ENVIRONMENT)
         provider = EnvironmentProvider(config)
-        assert provider.prefix == ""
+        assert provider.prefix == "", "prefix is not valid"
 
     def test_rotate_secret_returns_manual_instruction(self, env_config):
         """Test that rotation returns manual instruction."""
@@ -1304,9 +1306,9 @@ class TestEnvironmentProvider:
 
         result = provider.rotate_secret("SECRET")
 
-        assert result.success is False
-        assert "manual" in result.error_message.lower()
-        assert "TEST_SECRET" in result.error_message
+        assert result.success is False, "Result must not be empty"
+        assert "manual" in result.error_message.lower(), "Result must not be empty"
+        assert "TEST_SECRET" in result.error_message, "Result must not be empty"
 
     def test_rotate_secret_not_found(self, env_config):
         """Test rotation when env var doesn't exist."""
@@ -1314,8 +1316,8 @@ class TestEnvironmentProvider:
 
         result = provider.rotate_secret("MISSING")
 
-        assert result.success is False
-        assert "not found" in result.error_message
+        assert result.success is False, "Result must not be empty"
+        assert "not found" in result.error_message, "Result must not be empty"
 
     def test_validate_secret_exists(self, env_config):
         """Test validation when env var exists."""
@@ -1323,14 +1325,14 @@ class TestEnvironmentProvider:
         provider = EnvironmentProvider(env_config)
 
         is_valid = provider.validate_secret("SECRET")
-        assert is_valid is True
+        assert is_valid is True, "is_valid is not valid"
 
     def test_validate_secret_not_exists(self, env_config):
         """Test validation when env var doesn't exist."""
         provider = EnvironmentProvider(env_config)
 
         is_valid = provider.validate_secret("MISSING")
-        assert is_valid is False
+        assert is_valid is False, "is_valid is not valid"
 
     def test_validate_secret_with_value_match(self, env_config):
         """Test validation with matching value."""
@@ -1338,7 +1340,7 @@ class TestEnvironmentProvider:
         provider = EnvironmentProvider(env_config)
 
         is_valid = provider.validate_secret("SECRET", "expected_value")
-        assert is_valid is True
+        assert is_valid is True, "is_valid is not valid"
 
     def test_validate_secret_with_value_mismatch(self, env_config):
         """Test validation with non-matching value."""
@@ -1346,24 +1348,24 @@ class TestEnvironmentProvider:
         provider = EnvironmentProvider(env_config)
 
         is_valid = provider.validate_secret("SECRET", "wrong_value")
-        assert is_valid is False
+        assert is_valid is False, "is_valid is not valid"
 
     def test_get_secret_metadata(self, env_config):
         """Test getting metadata."""
         provider = EnvironmentProvider(env_config)
         metadata = provider.get_secret_metadata("SECRET")
 
-        assert metadata.secret_id == "SECRET"
-        assert metadata.secret_type == SecretType.GENERIC
-        assert metadata.provider == ProviderType.ENVIRONMENT
-        assert metadata.expires_at is None
-        assert metadata.tags["name"] == "TEST_SECRET"
+        assert metadata.secret_id == "SECRET", "Data must not be empty"
+        assert metadata.secret_type == SecretType.GENERIC, "Data must not be empty"
+        assert metadata.provider == ProviderType.ENVIRONMENT, "Data must not be empty"
+        assert metadata.expires_at is None, "Data must not be empty"
+        assert metadata.tags["name"] == "TEST_SECRET", "Data must not be empty"
 
     def test_get_expiration_always_none(self, env_config):
         """Test that expiration is always None."""
         provider = EnvironmentProvider(env_config)
         expiration = provider.get_expiration("SECRET")
-        assert expiration is None
+        assert expiration is None, "expiration is not valid"
 
     def test_get_secret_value(self, env_config):
         """Test getting secret value."""
@@ -1371,21 +1373,21 @@ class TestEnvironmentProvider:
         provider = EnvironmentProvider(env_config)
 
         value = provider.get_secret_value("SECRET")
-        assert value == "my_value"
+        assert value == "my_value", "Value must be initialized"
 
     def test_get_secret_value_not_found(self, env_config):
         """Test getting non-existent secret."""
         provider = EnvironmentProvider(env_config)
 
         value = provider.get_secret_value("MISSING")
-        assert value is None
+        assert value is None, "Value must be initialized"
 
     def test_set_secret_value(self, env_config):
         """Test setting secret value."""
         provider = EnvironmentProvider(env_config)
 
         success = provider.set_secret_value("NEW_SECRET", "new_value")
-        assert success is True
+        assert success is True, "success is not valid"
         assert os.environ["TEST_NEW_SECRET"] == "new_value"  # pragma: allowlist secret
 
     def test_list_secrets_with_prefix(self, env_config):
@@ -1397,10 +1399,10 @@ class TestEnvironmentProvider:
         provider = EnvironmentProvider(env_config)
         secrets = provider.list_secrets()
 
-        assert len(secrets) == 2
+        assert len(secrets) == 2, "Secrets must not be empty"
         secret_ids = [s.secret_id for s in secrets]
-        assert "SECRET1" in secret_ids
-        assert "SECRET2" in secret_ids
+        assert "SECRET1" in secret_ids, "Condition must be true"
+        assert "SECRET2" in secret_ids, "Condition must be true"
 
 
 # ============================================================================
@@ -1421,7 +1423,7 @@ class TestProviderFactory:
         provider = ProviderFactory.create_provider(config)
 
         assert isinstance(provider, GitHubTokenProvider)
-        assert provider.provider_type == ProviderType.GITHUB
+        assert provider.provider_type == ProviderType.GITHUB, "provider_type is not valid"
 
     def test_create_environment_provider(self):
         """Test creating environment provider."""
@@ -1430,7 +1432,7 @@ class TestProviderFactory:
         provider = ProviderFactory.create_provider(config)
 
         assert isinstance(provider, EnvironmentProvider)
-        assert provider.provider_type == ProviderType.ENVIRONMENT
+        assert provider.provider_type == ProviderType.ENVIRONMENT, "provider_type is not valid"
 
     def test_create_aws_provider(self):
         """Test creating AWS provider (if boto3 available)."""
@@ -1441,10 +1443,10 @@ class TestProviderFactory:
 
         try:
             provider = ProviderFactory.create_provider(config)
-            assert provider.provider_type == ProviderType.AWS_SECRETS_MANAGER
+            assert provider.provider_type == ProviderType.AWS_SECRETS_MANAGER, "provider_type is not valid"
         except ProviderConfigError as e:
             # Expected if boto3 not installed
-            assert "boto3" in str(e).lower()
+            assert "boto3" in str(e).lower(), "Condition must be true"
 
     def test_create_unsupported_provider(self):
         """Test creating unsupported provider raises error."""
@@ -1480,7 +1482,7 @@ class TestProviderFactory:
         provider = ProviderFactory.create_from_dict(config_dict)
 
         assert isinstance(provider, EnvironmentProvider)
-        assert provider.prefix == "MY_"
+        assert provider.prefix == "MY_", "prefix is not valid"
 
     def test_create_from_dict_missing_type(self):
         """Test creating from dict without provider_type."""
@@ -1501,8 +1503,8 @@ class TestProviderFactory:
         available = ProviderFactory.get_available_providers()
 
         assert isinstance(available, list)
-        assert ProviderType.ENVIRONMENT in available
-        assert ProviderType.GITHUB in available
+        assert ProviderType.ENVIRONMENT in available, "Condition must be true"
+        assert ProviderType.GITHUB in available, "Condition must be true"
 
     def test_get_available_providers_handles_import_errors(self):
         """Test get_available_providers still returns environment provider on import failures."""
@@ -1518,7 +1520,7 @@ class TestProviderFactory:
 
         with patch("builtins.__import__", side_effect=fake_import):
             available = ProviderFactory.get_available_providers()
-        assert available == [ProviderType.ENVIRONMENT]
+        assert available == [ProviderType.ENVIRONMENT], "available is not valid"
 
     def test_validate_config_github(self):
         """Test validating GitHub config."""
@@ -1528,7 +1530,7 @@ class TestProviderFactory:
         )
 
         is_valid = ProviderFactory.validate_config(config)
-        assert is_valid is True
+        assert is_valid is True, "is_valid is not valid"
 
     def test_validate_config_github_no_token(self):
         """Test validating GitHub config without token (uses env var)."""
@@ -1536,7 +1538,7 @@ class TestProviderFactory:
 
         # Should still be valid (will use GITHUB_TOKEN env var)
         is_valid = ProviderFactory.validate_config(config)
-        assert is_valid is True
+        assert is_valid is True, "is_valid is not valid"
 
     def test_validate_config_aws_missing_region(self):
         """Test validating AWS config without required region."""
@@ -1553,7 +1555,7 @@ class TestProviderFactory:
         )
 
         is_valid = ProviderFactory.validate_config(config)
-        assert is_valid is True
+        assert is_valid is True, "is_valid is not valid"
 
     def test_validate_config_azure_requires_vault_url(self):
         """Test validating Azure config requires vault_url."""
@@ -1586,7 +1588,7 @@ class TestProviderFactory:
             vault_url="https://vault.example.com",
             token="vault-token",  # pragma: allowlist secret
         )
-        assert ProviderFactory.validate_config(config_complete) is True
+        assert ProviderFactory.validate_config(config_complete) is True, "ProviderFact is not valid"
 
     def test_create_provider_import_error_wrapped(self):
         """Test create_provider wraps ImportError with provider context."""
@@ -1615,7 +1617,7 @@ class TestCreateProviderFromEnv:
         provider = create_provider_from_env(ProviderType.GITHUB)
 
         assert isinstance(provider, GitHubTokenProvider)
-        assert provider.token == "ghp_test_token"
+        assert provider.token == "ghp_test_token", "token is not valid"
 
     def test_create_aws_from_env(self, monkeypatch):
         """Test creating AWS provider from environment."""
@@ -1623,7 +1625,7 @@ class TestCreateProviderFromEnv:
 
         try:
             provider = create_provider_from_env(ProviderType.AWS_SECRETS_MANAGER)
-            assert provider.region == "eu-west-1"
+            assert provider.region == "eu-west-1", "region is not valid"
         except ProviderConfigError:
             # Expected if boto3 not installed
             _ = None  # suppressed: no action needed
@@ -1644,12 +1646,12 @@ class TestCreateProviderFromEnv:
             mock_create_provider.return_value = sentinel_provider
 
             provider = create_provider_from_env(ProviderType.AWS_SECRETS_MANAGER)
-            assert provider is sentinel_provider
+            assert provider is sentinel_provider, "provider is not valid"
 
             passed_config = mock_create_provider.call_args.args[0]
-            assert passed_config.get("region") == "ap-southeast-1"
-            assert passed_config.get("aws_access_key_id") == "AKIA_ENV_TEST"
-            assert passed_config.get("aws_secret_access_key") == "env-secret-key"
+            assert passed_config.get("region") == "ap-southeast-1", "Condition must be true"
+            assert passed_config.get("aws_access_key_id") == "AKIA_ENV_TEST", "Condition must be true"
+            assert passed_config.get("aws_secret_access_key") == "env-secret-key", "Condition must be true"
 
     def test_create_azure_from_env_reaches_factory(self, monkeypatch):
         """Test Azure env helper constructs config then delegates to factory."""
@@ -1678,7 +1680,7 @@ class TestPropertyBased:
             old_secret_id="old",  # pragma: allowlist secret
             new_secret_id="new",  # pragma: allowlist secret
         )
-        assert result.success is True
+        assert result.success is True, "Result must not be empty"
         assert result.new_secret_id == "new"  # pragma: allowlist secret
 
         # Failure results should have error_message
@@ -1687,8 +1689,8 @@ class TestPropertyBased:
             old_secret_id="old",  # pragma: allowlist secret
             error_message="error",
         )
-        assert result.success is False
-        assert result.error_message == "error"
+        assert result.success is False, "Result must not be empty"
+        assert result.error_message == "error", "Result must not be empty"
 
     def test_provider_type_serialization(self):
         """Test that all provider types can be serialized and deserialized."""
@@ -1697,7 +1699,7 @@ class TestPropertyBased:
             value = provider_type.value
             # Deserialize
             restored = ProviderType(value)
-            assert restored == provider_type
+            assert restored == provider_type, "restored is not valid"
 
     def test_environment_provider_isolation(self):
         """Test that environment provider operations are isolated."""
@@ -1710,8 +1712,8 @@ class TestPropertyBased:
         provider1.set_secret_value("SECRET", "value1")
         provider2.set_secret_value("SECRET", "value2")
 
-        assert provider1.get_secret_value("SECRET") == "value1"
-        assert provider2.get_secret_value("SECRET") == "value2"
+        assert provider1.get_secret_value("SECRET") == "value1", "Value must be initialized"
+        assert provider2.get_secret_value("SECRET") == "value2", "Value must be initialized"
 
 
 # ============================================================================
@@ -1752,7 +1754,7 @@ class TestGitHubTokenProviderEdgeCases:
         with patch.object(GitHubTokenProvider, "get_expiration", return_value=past):
             token = "ghp_" + "V" * 36
             result = provider_with_token.validate_secret("tok", token)
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_validate_secret_403_returns_false(self, provider_with_token):
         """Test validate_secret returns False on HTTP 403."""
@@ -1767,7 +1769,7 @@ class TestGitHubTokenProviderEdgeCases:
             mock_req.get.return_value = mock_resp
             token = "ghp_" + "F" * 36
             result = provider_with_token.validate_secret("tok", token)
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_validate_secret_unexpected_status_returns_true(self, provider_with_token):
         """Test validate_secret treats unexpected status as valid."""
@@ -1782,7 +1784,7 @@ class TestGitHubTokenProviderEdgeCases:
             mock_req.get.return_value = mock_resp
             token = "ghp_" + "U" * 36
             result = provider_with_token.validate_secret("tok", token)
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_validate_secret_without_requests(self, provider_with_token):
         """Test validate_secret falls back to format-only when requests unavailable."""
@@ -1791,7 +1793,7 @@ class TestGitHubTokenProviderEdgeCases:
         token = "ghp_" + "R" * 36
         with patch("security.providers.github_provider.HAS_REQUESTS", False):
             result = provider_with_token.validate_secret("tok", token)
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_validate_secret_exception_wraps_as_validation_error(self):
         """Test that unexpected exception is wrapped in ValidationError."""
@@ -1810,7 +1812,7 @@ class TestGitHubTokenProviderEdgeCases:
             # RuntimeError is caught and wrapped
             result = provider.validate_secret("tok", token)
         # format-only validation returns True (exception in get_expiration is caught)
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     # --- create_token ---
 
@@ -1820,8 +1822,8 @@ class TestGitHubTokenProviderEdgeCases:
 
         with patch("security.providers.github_provider.HAS_REQUESTS", False):
             result = provider_with_installation.create_token("name", ["contents"])
-        assert result.success is False
-        assert "requests" in (result.error_message or "").lower()
+        assert result.success is False, "Result must not be empty"
+        assert "requests" in (result.error_message or "").lower(), "Result must not be empty"
 
     def test_create_token_no_bearer_token(self):
         """Test create_token returns failure when bearer token is missing."""
@@ -1835,8 +1837,8 @@ class TestGitHubTokenProviderEdgeCases:
             provider = GitHubTokenProvider(config)
             with patch("security.providers.github_provider.HAS_REQUESTS", True):
                 result = provider.create_token("name", ["contents"])
-        assert result.success is False
-        assert "bearer token" in (result.error_message or "").lower()
+        assert result.success is False, "Result must not be empty"
+        assert "bearer token" in (result.error_message or "").lower(), "Result must not be empty"
 
     def test_create_token_request_exception(self, provider_with_installation):
         """Test create_token handles request exception gracefully."""
@@ -1850,8 +1852,8 @@ class TestGitHubTokenProviderEdgeCases:
         ):
             mock_req.post.side_effect = requests.exceptions.ConnectionError("network down")
             result = provider_with_installation.create_token("name", ["contents"])
-        assert result.success is False
-        assert "failed" in (result.error_message or "").lower()
+        assert result.success is False, "Result must not be empty"
+        assert "failed" in (result.error_message or "").lower(), "Result must not be empty"
 
     # --- update_token_scopes ---
 
@@ -1864,7 +1866,7 @@ class TestGitHubTokenProviderEdgeCases:
             provider = GitHubTokenProvider(config)
             with patch("security.providers.github_provider.HAS_REQUESTS", True):
                 result = provider.update_token_scopes("12345", ["contents"])
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_update_token_scopes_failure_status(self, provider_with_token):
         """Test update_token_scopes returns False on non-200/204 response."""
@@ -1880,7 +1882,7 @@ class TestGitHubTokenProviderEdgeCases:
         ):
             mock_req.patch.return_value = mock_resp
             result = provider_with_token.update_token_scopes("12345", ["contents"])
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_update_token_scopes_204_success(self, provider_with_token):
         """Test update_token_scopes returns True on 204 response."""
@@ -1895,7 +1897,7 @@ class TestGitHubTokenProviderEdgeCases:
         ):
             mock_req.patch.return_value = mock_resp
             result = provider_with_token.update_token_scopes("12345", ["contents"])
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_update_token_scopes_exception(self, provider_with_token):
         """Test update_token_scopes returns False on unexpected exception."""
@@ -1909,7 +1911,7 @@ class TestGitHubTokenProviderEdgeCases:
         ):
             mock_req.patch.side_effect = requests.exceptions.Timeout("timeout")
             result = provider_with_token.update_token_scopes("12345", ["contents"])
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     # --- revoke_secret ---
 
@@ -1922,7 +1924,7 @@ class TestGitHubTokenProviderEdgeCases:
             provider = GitHubTokenProvider(config)
             with patch("security.providers.github_provider.HAS_REQUESTS", True):
                 result = provider.revoke_secret("tok-id")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_revoke_secret_no_requests(self, provider_with_token):
         """Test revoke_secret returns False without requests library."""
@@ -1930,7 +1932,7 @@ class TestGitHubTokenProviderEdgeCases:
 
         with patch("security.providers.github_provider.HAS_REQUESTS", False):
             result = provider_with_token.revoke_secret("tok-id")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_revoke_secret_ghs_token_success(self):
         """Test revoke_secret succeeds for ghs_ installation token (204)."""
@@ -1951,7 +1953,7 @@ class TestGitHubTokenProviderEdgeCases:
         ):
             mock_req.delete.return_value = mock_resp
             result = provider.revoke_secret("tok-id")
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_revoke_secret_ghs_token_failure(self):
         """Test revoke_secret returns False on API failure for ghs_ token."""
@@ -1972,7 +1974,7 @@ class TestGitHubTokenProviderEdgeCases:
         ):
             mock_req.delete.return_value = mock_resp
             result = provider.revoke_secret("tok-id")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_revoke_secret_exception(self):
         """Test revoke_secret returns False on unexpected exception."""
@@ -1992,7 +1994,7 @@ class TestGitHubTokenProviderEdgeCases:
         ):
             mock_req.delete.side_effect = requests.exceptions.ConnectionError("network")
             result = provider.revoke_secret("tok-id")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     # --- list_secrets ---
 
@@ -2005,7 +2007,7 @@ class TestGitHubTokenProviderEdgeCases:
             provider = GitHubTokenProvider(config)
             with patch("security.providers.github_provider.HAS_REQUESTS", True):
                 result = provider.list_secrets()
-        assert result == []
+        assert result == [], "Result must not be empty"
 
     def test_list_secrets_no_requests(self, provider_with_token):
         """Test list_secrets returns empty list without requests library."""
@@ -2013,7 +2015,7 @@ class TestGitHubTokenProviderEdgeCases:
 
         with patch("security.providers.github_provider.HAS_REQUESTS", False):
             result = provider_with_token.list_secrets()
-        assert result == []
+        assert result == [], "Result must not be empty"
 
     def test_list_secrets_200_response(self, provider_with_token):
         """Test list_secrets returns SecretMetadata on successful API call."""
@@ -2030,9 +2032,9 @@ class TestGitHubTokenProviderEdgeCases:
             mock_req.get.return_value = mock_resp
             result = provider_with_token.list_secrets()
 
-        assert len(result) == 1
-        assert result[0].secret_id == "current_token"
-        assert result[0].tags["github_login"] == "testuser"
+        assert len(result) == 1, "Result must not be empty"
+        assert result[0].secret_id == "current_token", "Result must not be empty"
+        assert result[0].tags["github_login"] == "testuser", "Result must not be empty"
 
     def test_list_secrets_non_200_response(self, provider_with_token):
         """Test list_secrets returns empty list on non-200 response."""
@@ -2047,7 +2049,7 @@ class TestGitHubTokenProviderEdgeCases:
         ):
             mock_req.get.return_value = mock_resp
             result = provider_with_token.list_secrets()
-        assert result == []
+        assert result == [], "Result must not be empty"
 
     def test_list_secrets_exception(self, provider_with_token):
         """Test list_secrets returns empty list on request exception."""
@@ -2061,7 +2063,7 @@ class TestGitHubTokenProviderEdgeCases:
         ):
             mock_req.get.side_effect = requests.exceptions.ConnectionError("offline")
             result = provider_with_token.list_secrets()
-        assert result == []
+        assert result == [], "Result must not be empty"
 
     def test_rotate_secret_create_token_failure(self, provider_with_token):
         """Test rotate_secret propagates create_token failure."""
@@ -2077,8 +2079,8 @@ class TestGitHubTokenProviderEdgeCases:
             ),
         ):
             result = provider_with_token.rotate_secret("old-id")
-        assert result.success is False
-        assert "unavailable" in (result.error_message or "").lower()
+        assert result.success is False, "Result must not be empty"
+        assert "unavailable" in (result.error_message or "").lower(), "Result must not be empty"
 
     def test_rotate_secret_exception_returns_failure(self, provider_with_token):
         """Test rotate_secret handles unexpected exceptions gracefully."""
@@ -2090,7 +2092,7 @@ class TestGitHubTokenProviderEdgeCases:
             side_effect=RuntimeError("unexpected"),
         ):
             result = provider_with_token.rotate_secret("old-id")
-        assert result.success is False
+        assert result.success is False, "Result must not be empty"
 
 
 # ============================================================================
@@ -2119,9 +2121,9 @@ class TestScopeDecoratorContextVars:
         from security.scope_validator import ScopeValidator
 
         validator = ScopeValidator(["repo:read"])
-        assert get_scope_validator() is None
+        assert get_scope_validator() is None, "get_scope_validat is not valid"
         set_scope_validator(validator)
-        assert get_scope_validator() is validator
+        assert get_scope_validator() is validator, "get_scope_validat is not valid"
 
     def test_clear_scope_validator(self):
         """Test clearing scope validator from context."""
@@ -2134,7 +2136,7 @@ class TestScopeDecoratorContextVars:
 
         set_scope_validator(ScopeValidator(["repo:read"]))
         clear_scope_validator()
-        assert get_scope_validator() is None
+        assert get_scope_validator() is None, "get_scope_validat is not valid"
 
 
 class TestRequireScopeDecorator:
@@ -2161,7 +2163,7 @@ class TestRequireScopeDecorator:
 
         set_scope_validator(ScopeValidator(["repo:write"]))
         result = write_repo("payload")
-        assert result == "written: payload"
+        assert result == "written: payload", "Result must not be empty"
 
     def test_require_scope_raises_runtime_error_without_validator(self):
         """Test decorated function raises RuntimeError when no validator set."""
@@ -2195,9 +2197,9 @@ class TestRequireScopeDecorator:
         def my_func() -> None:
             pass
 
-        assert my_func.__scope_protected__ is True  # type: ignore[attr-defined]
-        assert "repo:write" in my_func.__required_scopes__  # type: ignore[attr-defined]
-        assert "workflow:read" in my_func.__required_scopes__  # type: ignore[attr-defined]
+        assert my_func.__scope_protected__ is True, "__scope_protected__ is not valid"
+        assert "repo:write" in my_func.__required_scopes__, "Condition must be true"
+        assert "workflow:read" in my_func.__required_scopes__, "Condition must be true"
 
     def test_require_scope_preserves_function_name(self):
         """Test that require_scope preserves function metadata."""
@@ -2207,8 +2209,8 @@ class TestRequireScopeDecorator:
         def my_named_function() -> None:
             """My docstring."""
 
-        assert my_named_function.__name__ == "my_named_function"
-        assert my_named_function.__doc__ == "My docstring."
+        assert my_named_function.__name__ == "my_named_function", "__name__ is not valid"
+        assert my_named_function.__doc__ == "My docstring.", "__doc__ is not valid"
 
     def test_require_multiple_scopes_all_required(self):
         """Test that all scopes in require_scope must be present."""
@@ -2248,7 +2250,7 @@ class TestRequireAnyScopeDecorator:
             return "ok"
 
         set_scope_validator(ScopeValidator(["repo:write"]))
-        assert write_or_admin() == "ok"
+        assert write_or_admin() == "ok", "write_ is not valid"
 
     def test_require_any_scope_passes_with_different_scope(self):
         """Test function executes with a different valid scope."""
@@ -2260,7 +2262,7 @@ class TestRequireAnyScopeDecorator:
             return "ok"
 
         set_scope_validator(ScopeValidator(["repo:admin"]))
-        assert func() == "ok"
+        assert func() == "ok", "Condition must be true"
 
     def test_require_any_scope_raises_without_validator(self):
         """Test RuntimeError when no validator set."""
@@ -2294,9 +2296,9 @@ class TestRequireAnyScopeDecorator:
         def func() -> None:
             pass
 
-        assert func.__scope_protected__ is True  # type: ignore[attr-defined]
-        assert func.__scope_any__ is True  # type: ignore[attr-defined]
-        assert "repo:write" in func.__required_scopes__  # type: ignore[attr-defined]
+        assert func.__scope_protected__ is True, "__scope_protected__ is not valid"
+        assert func.__scope_any__ is True, "__scope_any__ is not valid"
+        assert "repo:write" in func.__required_scopes__, "Condition must be true"
 
 
 class TestOptionalScopeDecorator:
@@ -2320,7 +2322,7 @@ class TestOptionalScopeDecorator:
         def public_func() -> str:
             return "public"
 
-        assert public_func() == "public"
+        assert public_func() == "public", "Condition must be true"
 
     def test_optional_scope_runs_with_sufficient_scope(self):
         """Test function executes when validator has required scope."""
@@ -2332,7 +2334,7 @@ class TestOptionalScopeDecorator:
             return "ok"
 
         set_scope_validator(ScopeValidator(["repo:write"]))
-        assert func() == "ok"
+        assert func() == "ok", "Condition must be true"
 
     def test_optional_scope_runs_with_insufficient_scope(self):
         """Test function still executes even with insufficient scope."""
@@ -2345,7 +2347,7 @@ class TestOptionalScopeDecorator:
 
         set_scope_validator(ScopeValidator(["repo:read"]))
         # Should NOT raise, just logs
-        assert func() == "ok"
+        assert func() == "ok", "Condition must be true"
 
     def test_optional_scope_metadata_attributes(self):
         """Test optional_scope sets metadata attributes."""
@@ -2355,8 +2357,8 @@ class TestOptionalScopeDecorator:
         def func() -> None:
             pass
 
-        assert func.__scope_optional__ is True  # type: ignore[attr-defined]
-        assert "repo:write" in func.__optional_scopes__  # type: ignore[attr-defined]
+        assert func.__scope_optional__ is True, "__scope_optional__ is not valid"
+        assert "repo:write" in func.__optional_scopes__, "Condition must be true"
 
 
 class TestScopeMetadataFunction:
@@ -2371,10 +2373,10 @@ class TestScopeMetadataFunction:
             pass
 
         meta = scope_metadata(func)
-        assert meta["protected"] is True
-        assert "repo:write" in meta["required"]
-        assert meta["any"] is False
-        assert meta["optional"] is False
+        assert meta["protected"] is True, "Condition must be true"
+        assert "repo:write" in meta["required"], "Condition must be true"
+        assert meta["any"] is False, "Condition must be true"
+        assert meta["optional"] is False, "Condition must be true"
 
     def test_scope_metadata_from_require_any_scope(self):
         """Test scope_metadata returns correct data for require_any_scope."""
@@ -2385,8 +2387,8 @@ class TestScopeMetadataFunction:
             pass
 
         meta = scope_metadata(func)
-        assert meta["protected"] is True
-        assert meta["any"] is True
+        assert meta["protected"] is True, "Condition must be true"
+        assert meta["any"] is True, "Condition must be true"
 
     def test_scope_metadata_from_optional_scope(self):
         """Test scope_metadata returns correct data for optional_scope."""
@@ -2397,8 +2399,8 @@ class TestScopeMetadataFunction:
             pass
 
         meta = scope_metadata(func)
-        assert meta["optional"] is True
-        assert meta["protected"] is False
+        assert meta["optional"] is True, "Condition must be true"
+        assert meta["protected"] is False, "Condition must be true"
 
     def test_scope_metadata_from_undecorated_function(self):
         """Test scope_metadata returns defaults for undecorated function."""
@@ -2408,7 +2410,7 @@ class TestScopeMetadataFunction:
             pass
 
         meta = scope_metadata(plain_func)
-        assert meta["protected"] is False
-        assert meta["optional"] is False
-        assert meta["required"] == []
-        assert meta["any"] is False
+        assert meta["protected"] is False, "Condition must be true"
+        assert meta["optional"] is False, "Condition must be true"
+        assert meta["required"] == [], "Condition must be true"
+        assert meta["any"] is False, "Condition must be true"

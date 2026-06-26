@@ -11,9 +11,9 @@ def test_node_creation():
     node = StandardizedASTNode(
         node_id="func_1", type=NodeType.FUNCTION, name="test_func", source_location=loc
     )
-    assert node.node_id == "func_1"
-    assert node.type == NodeType.FUNCTION
-    assert node.name == "test_func"
+    assert node.node_id == "func_1", "node_id is not valid"
+    assert node.type == NodeType.FUNCTION, "type is not valid"
+    assert node.name == "test_func", "name is not valid"
 
 
 def test_node_serialization():
@@ -29,10 +29,10 @@ def test_node_serialization():
         type_hints={"x": "int", "return": "str"},
     )
     data = node.to_dict()
-    assert data["node_id"] == "n1"
-    assert data["type"] == "function"
-    assert data["docstring"] == "Test function"
-    assert len(data["decorators"]) == 1
+    assert data["node_id"] == "n1", "Data must not be empty"
+    assert data["type"] == "function", "Data must not be empty"
+    assert data["docstring"] == "Test function", "Data must not be empty"
+    assert len(data["decorators"]) == 1, "Collection must not be empty"
 
 
 def test_parent_child_relationship():
@@ -45,10 +45,10 @@ def test_parent_child_relationship():
 
     parent.add_child(child)
 
-    assert child.parent == parent
-    assert child in parent.children
-    assert child.get_depth() == 1
-    assert parent.get_depth() == 0
+    assert child.parent == parent, "parent is not valid"
+    assert child in parent.children, "Condition must be true"
+    assert child.get_depth() == 1, "Condition must be true"
+    assert parent.get_depth() == 0, "Condition must be true"
 
 
 def test_tree_traversal():
@@ -66,11 +66,11 @@ def test_tree_traversal():
     root.add_child(child2)
 
     nodes = list(root.walk())
-    assert len(nodes) == 3
-    assert nodes[0] == root
+    assert len(nodes) == 3, "Nodes must not be empty"
+    assert nodes[0] == root, "Condition must be true"
 
 
 def test_source_location_str():
     """Test SourceLocation string representation."""
     loc = SourceLocation(Path("/tmp/test.py"), 10, 5, 15, 20)
-    assert str(loc) == "/tmp/test.py:10:5"
+    assert str(loc) == "/tmp/test.py:10:5", "Condition must be true"

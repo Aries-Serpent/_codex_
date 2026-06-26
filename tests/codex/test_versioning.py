@@ -12,9 +12,9 @@ from codex.versioning import SemanticVersion, determine_bump, update_artifact_ve
 def test_semantic_version_and_bump():
     semver = SemanticVersion("1.2.3")
     semver.bump("minor")
-    assert str(semver) == "1.3.0"
-    assert determine_bump([{"op": "add"}]) == "minor"
-    assert determine_bump([{"op": "remove"}]) == "major"
+    assert str(semver) == "1.3.0", "Condition must be true"
+    assert determine_bump([{"op": "add"}]) == "minor", "Condition must be true"
+    assert determine_bump([{"op": "remove"}]) == "major", "Condition must be true"
 
 
 def test_update_artifact_version(tmp_path: Path):
@@ -29,6 +29,6 @@ def test_update_artifact_version(tmp_path: Path):
     )
 
     versions = json.loads(version_file.read_text())
-    assert "artifact" in versions
-    assert changelog.exists()
-    assert _version.__version__  # version module exports a value
+    assert "artifact" in versions, "Condition must be true"
+    assert changelog.exists(), "Condition must be true"
+    assert _version.__version__, "Condition must be true"

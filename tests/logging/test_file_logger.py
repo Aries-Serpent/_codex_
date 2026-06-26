@@ -21,8 +21,8 @@ def test_file_logger_writes_ndjson_and_csv(tmp_path: Path) -> None:
     ndjson_path = paths["ndjson"]
     csv_path = paths["csv"]
 
-    assert ndjson_path is not None and ndjson_path.exists()
-    assert csv_path is not None and csv_path.exists()
+    assert ndjson_path is not None and ndjson_path.exists(), "ndjson_path must be initialized"
+    assert csv_path is not None and csv_path.exists(), "csv_path must be initialized"
 
     with ndjson_path.open("r", encoding="utf-8") as fh:
         lines = [json.loads(line) for line in fh.read().strip().splitlines()]

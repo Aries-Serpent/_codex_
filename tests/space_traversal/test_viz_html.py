@@ -48,15 +48,15 @@ def test_generate_dashboard_basic(tmp_path: Path):
         version="1.5.2",
     )
 
-    assert output_path.exists()
+    assert output_path.exists(), "Condition must be true"
     content = output_path.read_text()
 
     # Check essential HTML elements
-    assert "<!DOCTYPE html>" in content
-    assert "Audit Dashboard" in content
-    assert "Test Repo" in content
-    assert "cap1" in content
-    assert "cap2" in content
+    assert "<!DOCTYPE html>" in content, "Content must not be empty"
+    assert "Audit Dashboard" in content, "Content must not be empty"
+    assert "Test Repo" in content, "Content must not be empty"
+    assert "cap1" in content, "Content must not be empty"
+    assert "cap2" in content, "Content must not be empty"
 
 
 def test_generate_dashboard_with_regressions(tmp_path: Path):
@@ -79,7 +79,7 @@ def test_generate_dashboard_with_regressions(tmp_path: Path):
 
     content = output_path.read_text()
     # Regression count should be shown
-    assert ">1<" in content  # Regression count
+    assert ">1<" in content, "Content must not be empty"
 
 
 def test_generate_dashboard_chart_data(tmp_path: Path):
@@ -123,7 +123,7 @@ def test_generate_dashboard_empty_trend(tmp_path: Path):
         output_path=output_path,
     )
 
-    assert output_path.exists()
+    assert output_path.exists(), "Condition must be true"
 
 
 def test_generate_capability_detail(tmp_path: Path):
@@ -151,13 +151,13 @@ def test_generate_capability_detail(tmp_path: Path):
     output_path = tmp_path / "checkpointing.html"
     generate_capability_detail(capability, trend_history, output_path)
 
-    assert output_path.exists()
+    assert output_path.exists(), "Condition must be true"
     content = output_path.read_text()
 
-    assert "checkpointing" in content
-    assert "0.85" in content
-    assert "Components" in content
-    assert "Score History" in content
+    assert "checkpointing" in content, "Content must not be empty"
+    assert "0.85" in content, "Content must not be empty"
+    assert "Components" in content, "Content must not be empty"
+    assert "Score History" in content, "Content must not be empty"
 
 
 def test_generate_dashboard_creates_directory(tmp_path: Path):
@@ -173,20 +173,20 @@ def test_generate_dashboard_creates_directory(tmp_path: Path):
         output_path=output_path,
     )
 
-    assert output_path.exists()
-    assert output_path.parent.exists()
+    assert output_path.exists(), "Condition must be true"
+    assert output_path.parent.exists(), "Condition must be true"
 
 
 def test_html_template_content():
     """Test HTML template contains required elements."""
     from scripts.space_traversal.viz_html import HTML_TEMPLATE
 
-    assert "<html" in HTML_TEMPLATE
-    assert "Chart.js" in HTML_TEMPLATE or "chart.js" in HTML_TEMPLATE
-    assert "distributionChart" in HTML_TEMPLATE
-    assert "trendChart" in HTML_TEMPLATE
-    assert "{repo_name}" in HTML_TEMPLATE
-    assert "{avg_score" in HTML_TEMPLATE
+    assert "<html" in HTML_TEMPLATE, "Condition must be true"
+    assert "Chart.js" in HTML_TEMPLATE or "chart.js" in HTML_TEMPLATE, "Condition must be true"
+    assert "distributionChart" in HTML_TEMPLATE, "Condition must be true"
+    assert "trendChart" in HTML_TEMPLATE, "Condition must be true"
+    assert "{repo_name}" in HTML_TEMPLATE, "Condition must be true"
+    assert "{avg_score" in HTML_TEMPLATE, "Condition must be true"
 
 
 def test_dashboard_score_classes(tmp_path: Path):
@@ -197,16 +197,16 @@ def test_dashboard_score_classes(tmp_path: Path):
     capabilities_high = [{"id": "cap1", "score": 0.90, "components": {}}]
     output_high = tmp_path / "high.html"
     generate_dashboard(capabilities_high, [], output_high)
-    assert 'class="score high"' in output_high.read_text()
+    assert 'class="score high"' in output_high.read_text(), "Condition must be true"
 
     # Medium average
     capabilities_med = [{"id": "cap1", "score": 0.75, "components": {}}]
     output_med = tmp_path / "med.html"
     generate_dashboard(capabilities_med, [], output_med)
-    assert 'class="score medium"' in output_med.read_text()
+    assert 'class="score medium"' in output_med.read_text(), "Condition must be true"
 
     # Low average
     capabilities_low = [{"id": "cap1", "score": 0.60, "components": {}}]
     output_low = tmp_path / "low.html"
     generate_dashboard(capabilities_low, [], output_low)
-    assert 'class="score low"' in output_low.read_text()
+    assert 'class="score low"' in output_low.read_text(), "Condition must be true"

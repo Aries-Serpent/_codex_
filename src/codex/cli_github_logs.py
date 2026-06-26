@@ -121,7 +121,7 @@ def fetch_check_run_logs(
 
     except (ValueError, TypeError, RuntimeError) as e:
         error_type = type(e).__name__
-        logger.error(f"Failed to fetch check run logs: <ERROR_TYPE>", exc_info=True)
+        logger.error("Failed to fetch check run logs: <ERROR_TYPE>", exc_info=True)
         raise click.ClickException(str(e)) from e
 
 
@@ -190,7 +190,7 @@ def fetch_job_logs(
 
     except (ValueError, TypeError, RuntimeError) as e:
         error_type = type(e).__name__
-        logger.error(f"Failed to fetch job logs: <ERROR_TYPE>", exc_info=True)
+        logger.error("Failed to fetch job logs: <ERROR_TYPE>", exc_info=True)
         raise click.ClickException(str(e)) from e
 
 
@@ -250,7 +250,7 @@ def list_check_runs(
 
     except (ConnectionError, TimeoutError) as e:
         error_type = type(e).__name__
-        logger.error(f"Failed to list check runs: <ERROR_TYPE>", exc_info=True)
+        logger.error("Failed to list check runs: <ERROR_TYPE>", exc_info=True)
         raise click.ClickException(str(e)) from e
 
 

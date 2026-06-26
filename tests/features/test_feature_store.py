@@ -38,20 +38,20 @@ class TestFeatureStore:
         """Test feature store initializes correctly."""
         store = FeatureStore(tmp_path)
 
-        assert store.store_path == tmp_path
-        assert store.enable_versioning is True
-        assert store.feature_groups == {}
-        assert store.feature_cache == {}
-        assert store.feature_versions == {}
+        assert store.store_path == tmp_path, "store_path is not valid"
+        assert store.enable_versioning is True, "enable_versioning is not valid"
+        assert store.feature_groups == {}, "feature_groups is not valid"
+        assert store.feature_cache == {}, "feature_cache is not valid"
+        assert store.feature_versions == {}, "feature_versions is not valid"
 
     def test_feature_store_creates_directory(self, tmp_path):
         """Test feature store creates storage directory."""
         store_path = tmp_path / "features"
-        assert not store_path.exists()
+        assert not store_path.exists(), "Condition must be true"
 
         FeatureStore(store_path)
-        assert store_path.exists()
-        assert store_path.is_dir()
+        assert store_path.exists(), "st is not valid"
+        assert store_path.is_dir(), "st is not valid"
 
     def test_register_feature_group(self, tmp_path):
         """Test registering a feature group."""
@@ -75,19 +75,19 @@ class TestFeatureStore:
 
         store.register_feature_group(group)
 
-        assert "test_group" in store.feature_groups
-        assert store.feature_groups["test_group"] == group
+        assert "test_group" in store.feature_groups, "Condition must be true"
+        assert store.feature_groups["test_group"] == group, "st is not valid"
 
         # Check registry file was created
         registry_path = tmp_path / "registry.json"
-        assert registry_path.exists()
+        assert registry_path.exists(), "Condition must be true"
 
         with open(registry_path) as f:
             registry = json.load(f)
 
-        assert "test_group" in registry
-        assert registry["test_group"]["version"] == "1.0.0"
-        assert registry["test_group"]["description"] == "Test feature group"
+        assert "test_group" in registry, "Condition must be true"
+        assert registry["test_group"]["version"] == "1.0.0", "Condition must be true"
+        assert registry["test_group"]["description"] == "Test feature group", "Condition must be true"
 
     def test_get_feature_group(self, tmp_path):
         """Test retrieving a feature group."""
@@ -109,17 +109,17 @@ class TestFeatureStore:
 
         # Retrieve by name
         retrieved = store.get_feature_group("test_group")
-        assert retrieved is not None
-        assert retrieved.name == "test_group"
-        assert retrieved.version == "1.0.0"
+        assert retrieved is not None, "retrieved must be initialized"
+        assert retrieved.name == "test_group", "name is not valid"
+        assert retrieved.version == "1.0.0", "version is not valid"
 
         # Retrieve by name and version
         retrieved_versioned = store.get_feature_group("test_group", version="1.0.0")
-        assert retrieved_versioned is not None
+        assert retrieved_versioned is not None, "retrieved_versioned must be initialized"
 
         # Non-existent version
         retrieved_missing = store.get_feature_group("test_group", version="2.0.0")
-        assert retrieved_missing is None
+        assert retrieved_missing is None, "retrieved_missing is not valid"
 
     def test_list_features(self, tmp_path):
         """Test listing all features."""
@@ -137,9 +137,9 @@ class TestFeatureStore:
         store.register_feature_group(group)
 
         features = store.list_features()
-        assert len(features) == 2
-        assert "feature1" in features
-        assert "feature2" in features
+        assert len(features) == 2, "Features must not be empty"
+        assert "feature1" in features, "Condition must be true"
+        assert "feature2" in features, "Condition must be true"
 
     def test_materialize_features(self, tmp_path):
         """Test feature materialization."""
@@ -169,8 +169,8 @@ class TestFeatureStore:
             cache=True,
         )
 
-        assert results["double_value"] == 10
-        assert results["triple_value"] == 15
+        assert results["double_value"] == 10, "Result must not be empty"
+        assert results["triple_value"] == 15, "Result must not be empty"
 
     def test_feature_caching(self, tmp_path):
         """Test feature caching works correctly."""
@@ -195,18 +195,18 @@ class TestFeatureStore:
 
         # First call - should compute
         result1 = store.materialize_features(["expensive_feature"], inputs, cache=True)
-        assert result1["expensive_feature"] == 10
-        assert call_count["count"] == 1
+        assert result1["expensive_feature"] == 10, "Result must not be empty"
+        assert call_count["count"] == 1, "Count must be greater than zero"
 
         # Second call with same inputs - should use cache
         result2 = store.materialize_features(["expensive_feature"], inputs, cache=True)
-        assert result2["expensive_feature"] == 10
-        assert call_count["count"] == 1  # No additional calls
+        assert result2["expensive_feature"] == 10, "Result must not be empty"
+        assert call_count["count"] == 1, "Count must be greater than zero"
 
         # Call with cache=False - should recompute
         result3 = store.materialize_features(["expensive_feature"], inputs, cache=False)
-        assert result3["expensive_feature"] == 10
-        assert call_count["count"] == 2
+        assert result3["expensive_feature"] == 10, "Result must not be empty"
+        assert call_count["count"] == 2, "Count must be greater than zero"
 
     def test_clear_cache(self, tmp_path):
         """Test cache clearing."""
@@ -218,11 +218,11 @@ class TestFeatureStore:
 
         # Materialize to populate cache
         store.materialize_features(["test"], {"value": 1}, cache=True)
-        assert len(store.feature_cache) > 0
+        assert len(store.feature_cache) > 0, "Collection must not be empty"
 
         # Clear cache
         store.clear_cache()
-        assert len(store.feature_cache) == 0
+        assert len(store.feature_cache) == 0, "Collection must not be empty"
 
     def test_list_versions(self, tmp_path):
         """Test listing feature versions."""
@@ -243,16 +243,16 @@ class TestFeatureStore:
         store.feature_versions["test_feature"] = [version1, version2]
 
         versions = store.list_versions("test_feature")
-        assert len(versions) == 2
-        assert "1.0.0" in versions
-        assert "1.1.0" in versions
+        assert len(versions) == 2, "Versions must not be empty"
+        assert "1.0.0" in versions, "Condition must be true"
+        assert "1.1.0" in versions, "Condition must be true"
 
     def test_list_versions_empty(self, tmp_path):
         """Test listing versions for non-existent feature."""
         store = FeatureStore(tmp_path)
 
         versions = store.list_versions("non_existent")
-        assert versions == []
+        assert versions == [], "versions is not valid"
 
 
 class TestFeatureVersioning:
@@ -268,11 +268,11 @@ class TestFeatureVersioning:
             metadata={"rows": 100},
         )
 
-        assert version.version == "1.0.0"
-        assert version.timestamp == "2025-12-07T00:00:00"
-        assert version.feature_name == "test_feature"
-        assert version.storage_path == "/path/to/data.parquet"
-        assert version.metadata["rows"] == 100
+        assert version.version == "1.0.0", "version is not valid"
+        assert version.timestamp == "2025-12-07T00:00:00", "timestamp is not valid"
+        assert version.feature_name == "test_feature", "feature_name is not valid"
+        assert version.storage_path == "/path/to/data.parquet", "Data must not be empty"
+        assert version.metadata["rows"] == 100, "Data must not be empty"
 
     def test_feature_version_to_dict(self):
         """Test converting feature version to dictionary."""
@@ -284,9 +284,9 @@ class TestFeatureVersioning:
 
         version_dict = version.to_dict()
 
-        assert version_dict["version"] == "1.0.0"
-        assert version_dict["timestamp"] == "2025-12-07T00:00:00"
-        assert version_dict["feature_name"] == "test_feature"
+        assert version_dict["version"] == "1.0.0", "Condition must be true"
+        assert version_dict["timestamp"] == "2025-12-07T00:00:00", "Condition must be true"
+        assert version_dict["feature_name"] == "test_feature", "Condition must be true"
 
     def test_point_in_time_retrieval(self, tmp_path):
         """Test point-in-time feature retrieval."""
@@ -322,8 +322,8 @@ class TestFeatureVersioning:
             query_time,
         )
 
-        assert "feature1" in results
-        assert results["feature1"]["version"] == "1.0.0"
+        assert "feature1" in results, "Result must not be empty"
+        assert results["feature1"]["version"] == "1.0.0", "Result must not be empty"
 
         # Query after both versions
         query_time_later = base_time + timedelta(hours=3)
@@ -332,8 +332,8 @@ class TestFeatureVersioning:
             query_time_later,
         )
 
-        assert "feature1" in results_later
-        assert results_later["feature1"]["version"] == "1.1.0"
+        assert "feature1" in results_later, "Result must not be empty"
+        assert results_later["feature1"]["version"] == "1.1.0", "Result must not be empty"
 
 
 class TestFeatureHealthMonitor:
@@ -343,9 +343,9 @@ class TestFeatureHealthMonitor:
         """Test health monitor initializes correctly."""
         monitor = FeatureHealthMonitor(freshness_threshold_minutes=60)
 
-        assert monitor.freshness_threshold == timedelta(minutes=60)
-        assert monitor.feature_updates == {}
-        assert monitor.error_counts == {}
+        assert monitor.freshness_threshold == timedelta(minutes=60), "freshness_threshold is not valid"
+        assert monitor.feature_updates == {}, "feature_updates is not valid"
+        assert monitor.error_counts == {}, "Error should be raised or set"
 
     def test_record_feature_update(self):
         """Test recording feature updates."""
@@ -353,7 +353,7 @@ class TestFeatureHealthMonitor:
 
         monitor.record_feature_update("feature1")
 
-        assert "feature1" in monitor.feature_updates
+        assert "feature1" in monitor.feature_updates, "Condition must be true"
         assert isinstance(monitor.feature_updates["feature1"], datetime)
 
     def test_record_feature_error(self):
@@ -361,19 +361,19 @@ class TestFeatureHealthMonitor:
         monitor = FeatureHealthMonitor()
 
         monitor.record_feature_error("feature1")
-        assert monitor.error_counts["feature1"] == 1
+        assert monitor.error_counts["feature1"] == 1, "Error should be raised or set"
 
         monitor.record_feature_error("feature1")
-        assert monitor.error_counts["feature1"] == 2
+        assert monitor.error_counts["feature1"] == 2, "Error should be raised or set"
 
     def test_get_freshness_level(self):
         """Test freshness level classification."""
         monitor = FeatureHealthMonitor()
 
-        assert monitor.get_freshness_level(30) == "FRESH"
-        assert monitor.get_freshness_level(120) == "ACCEPTABLE"
-        assert monitor.get_freshness_level(720) == "STALE"
-        assert monitor.get_freshness_level(2000) == "VERY_STALE"
+        assert monitor.get_freshness_level(30) == "FRESH", "monit is not valid"
+        assert monitor.get_freshness_level(120) == "ACCEPTABLE", "monit is not valid"
+        assert monitor.get_freshness_level(720) == "STALE", "monit is not valid"
+        assert monitor.get_freshness_level(2000) == "VERY_STALE", "monit is not valid"
 
     def test_check_feature_health_never_updated(self):
         """Test health check for never-updated feature."""
@@ -381,11 +381,11 @@ class TestFeatureHealthMonitor:
 
         status = monitor.check_feature_health("feature1")
 
-        assert status.feature_name == "feature1"
-        assert status.is_healthy is False
-        assert status.last_updated == "never"
-        assert status.freshness_level == "UNKNOWN"
-        assert "never been updated" in status.warnings[0]
+        assert status.feature_name == "feature1", "feature_name is not valid"
+        assert status.is_healthy is False, "is_healthy is not valid"
+        assert status.last_updated == "never", "last_updated is not valid"
+        assert status.freshness_level == "UNKNOWN", "freshness_level is not valid"
+        assert "never been updated" in status.warnings[0], "Condition must be true"
 
     def test_check_feature_health_fresh(self):
         """Test health check for fresh feature."""
@@ -394,11 +394,11 @@ class TestFeatureHealthMonitor:
         monitor.record_feature_update("feature1")
         status = monitor.check_feature_health("feature1")
 
-        assert status.feature_name == "feature1"
-        assert status.is_healthy is True
-        assert status.last_updated != "never"
-        assert status.freshness_level == "FRESH"
-        assert len(status.warnings) == 0
+        assert status.feature_name == "feature1", "feature_name is not valid"
+        assert status.is_healthy is True, "is_healthy is not valid"
+        assert status.last_updated != "never", "last_updated is not valid"
+        assert status.freshness_level == "FRESH", "freshness_level is not valid"
+        assert len(status.warnings) == 0, "Collection must not be empty"
 
     def test_check_feature_health_stale(self):
         """Test health check for stale feature."""
@@ -413,9 +413,9 @@ class TestFeatureHealthMonitor:
 
         status = monitor.check_feature_health("feature1")
 
-        assert status.is_healthy is False
+        assert status.is_healthy is False, "is_healthy is not valid"
         assert status.freshness_level in ["STALE", "ACCEPTABLE"]
-        assert len(status.warnings) > 0
+        assert len(status.warnings) > 0, "Collection must not be empty"
 
     def test_check_feature_health_with_errors(self):
         """Test health check for feature with errors."""
@@ -429,9 +429,9 @@ class TestFeatureHealthMonitor:
 
         status = monitor.check_feature_health("feature1")
 
-        assert status.is_healthy is False
-        assert status.error_count == 10
-        assert any("error" in w.lower() for w in status.warnings)
+        assert status.is_healthy is False, "is_healthy is not valid"
+        assert status.error_count == 10, "Error should be raised or set"
+        assert any("error" in w.lower() for w in status.warnings), "Error should be raised or set"
 
     def test_check_all_features(self):
         """Test checking all features at once."""
@@ -442,9 +442,9 @@ class TestFeatureHealthMonitor:
 
         statuses = monitor.check_all_features(["feature1", "feature2"])
 
-        assert len(statuses) == 2
-        assert "feature1" in statuses
-        assert "feature2" in statuses
+        assert len(statuses) == 2, "Statuses must not be empty"
+        assert "feature1" in statuses, "Condition must be true"
+        assert "feature2" in statuses, "Condition must be true"
 
     def test_get_freshness_report(self):
         """Test freshness distribution report."""
@@ -458,8 +458,8 @@ class TestFeatureHealthMonitor:
         report = monitor.get_freshness_report()
 
         assert isinstance(report, dict)
-        assert "FRESH" in report
-        assert "STALE" in report
+        assert "FRESH" in report, "Condition must be true"
+        assert "STALE" in report, "Condition must be true"
 
     def test_alert_stale_features(self):
         """Test alerting on stale features."""
@@ -474,8 +474,8 @@ class TestFeatureHealthMonitor:
 
         stale_features = monitor.alert_stale_features(threshold_hours=24)
 
-        assert "stale1" in stale_features
-        assert "fresh1" not in stale_features
+        assert "stale1" in stale_features, "Condition must be true"
+        assert "fresh1" not in stale_features, "Condition must be true"
 
     def test_reset_error_counts(self):
         """Test resetting error counts."""
@@ -484,11 +484,11 @@ class TestFeatureHealthMonitor:
         monitor.record_feature_error("feature1")
         monitor.record_feature_error("feature2")
 
-        assert len(monitor.error_counts) == 2
+        assert len(monitor.error_counts) == 2, "Collection must not be empty"
 
         monitor.reset_error_counts()
 
-        assert len(monitor.error_counts) == 0
+        assert len(monitor.error_counts) == 0, "Collection must not be empty"
 
 
 class TestHealthAlerts:
@@ -510,8 +510,8 @@ class TestHealthAlerts:
         statuses = {"feature1": status_never}
         alerts = monitor.generate_alerts(statuses, sla_minutes=120)
 
-        assert len(alerts) > 0
-        assert any(a.severity == "CRITICAL" for a in alerts)
+        assert len(alerts) > 0, "Alerts must not be empty"
+        assert any(a.severity == "CRITICAL" for a in alerts), "severity is not valid"
 
     def test_generate_alerts_warning(self):
         """Test generating warning alerts."""
@@ -530,8 +530,8 @@ class TestHealthAlerts:
         alerts = monitor.generate_alerts(statuses, sla_minutes=120)
 
         # Should generate warning
-        assert len(alerts) > 0
-        assert any(a.severity == "WARNING" for a in alerts)
+        assert len(alerts) > 0, "Alerts must not be empty"
+        assert any(a.severity == "WARNING" for a in alerts), "severity is not valid"
 
     def test_alert_to_dict(self):
         """Test converting alert to dictionary."""
@@ -545,11 +545,11 @@ class TestHealthAlerts:
 
         alert_dict = alert.to_dict()
 
-        assert alert_dict["feature_name"] == "test_feature"
-        assert alert_dict["severity"] == "CRITICAL"
-        assert alert_dict["message"] == "Feature is very stale"
-        assert alert_dict["timestamp"] == "2025-12-07T00:00:00"
-        assert alert_dict["metric_value"] == 1000.0
+        assert alert_dict["feature_name"] == "test_feature", "Condition must be true"
+        assert alert_dict["severity"] == "CRITICAL", "Condition must be true"
+        assert alert_dict["message"] == "Feature is very stale", "Feature is not valid"
+        assert alert_dict["timestamp"] == "2025-12-07T00:00:00", "Condition must be true"
+        assert alert_dict["metric_value"] == 1000.0, "Value must be initialized"
 
 
 class TestHealthReporting:
@@ -571,12 +571,12 @@ class TestHealthReporting:
 
         report_data = json.loads(report_json)
 
-        assert "timestamp" in report_data
-        assert "summary" in report_data
-        assert report_data["summary"]["total_features"] == 2
-        assert "features" in report_data
-        assert "feature1" in report_data["features"]
-        assert "feature2" in report_data["features"]
+        assert "timestamp" in report_data, "Data must not be empty"
+        assert "summary" in report_data, "Data must not be empty"
+        assert report_data["summary"]["total_features"] == 2, "Data must not be empty"
+        assert "features" in report_data, "Data must not be empty"
+        assert "feature1" in report_data["features"], "Data must not be empty"
+        assert "feature2" in report_data["features"], "Data must not be empty"
 
     def test_generate_markdown_report(self):
         """Test generating Markdown health report."""
@@ -591,10 +591,10 @@ class TestHealthReporting:
             include_recommendations=False,
         )
 
-        assert "# Feature Health Report" in report_md
-        assert "## Summary" in report_md
-        assert "## Feature Details" in report_md
-        assert "feature1" in report_md
+        assert ", "Condition must be true"
+        assert ", "Condition must be true"
+        assert ", "Condition must be true"
+        assert "feature1" in report_md, "Condition must be true"
 
     def test_generate_recommendations(self):
         """Test recommendation generation."""
@@ -619,11 +619,11 @@ class TestHealthReporting:
         report_data = json.loads(report_json)
         recommendations = report_data.get("recommendations", [])
 
-        assert len(recommendations) > 0
+        assert len(recommendations) > 0, "Recommendations must not be empty"
         # Should recommend updating stale features
-        assert any("stale" in r.lower() or "update" in r.lower() for r in recommendations)
+        assert any("stale" in r.lower() or "update" in r.lower() for r in recommendations), "Condition must be true"
         # Should recommend investigating errors
-        assert any("error" in r.lower() or "investigate" in r.lower() for r in recommendations)
+        assert any("error" in r.lower() or "investigate" in r.lower() for r in recommendations), "Error should be raised or set"
 
 
 class TestFeatureMetadata:
@@ -641,10 +641,10 @@ class TestFeatureMetadata:
             tags={"category": "demographic", "sensitive": "false"},
         )
 
-        assert metadata.name == "test_feature"
-        assert metadata.version == "1.0.0"
-        assert metadata.dtype == "float64"
-        assert metadata.tags["category"] == "demographic"
+        assert metadata.name == "test_feature", "Data must not be empty"
+        assert metadata.version == "1.0.0", "Data must not be empty"
+        assert metadata.dtype == "float64", "Data must not be empty"
+        assert metadata.tags["category"] == "demographic", "Data must not be empty"
 
     def test_feature_metadata_to_dict(self):
         """Test converting metadata to dictionary."""
@@ -659,9 +659,9 @@ class TestFeatureMetadata:
 
         metadata_dict = metadata.to_dict()
 
-        assert metadata_dict["name"] == "test_feature"
-        assert metadata_dict["version"] == "1.0.0"
-        assert metadata_dict["dtype"] == "float64"
+        assert metadata_dict["name"] == "test_feature", "Data must not be empty"
+        assert metadata_dict["version"] == "1.0.0", "Data must not be empty"
+        assert metadata_dict["dtype"] == "float64", "Data must not be empty"
 
 
 # pytest's built-in tmp_path fixture is used (no custom fixture needed)

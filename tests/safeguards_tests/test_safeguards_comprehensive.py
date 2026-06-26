@@ -21,7 +21,7 @@ class TestDeterminismKeywords:
         monkeypatch.setenv("CODEX_SEED", "42")
 
         seed = int(os.getenv("CODEX_SEED", "0"))
-        assert seed == 42
+        assert seed == 42, "seed is not valid"
 
     def test_rng_state_consistency(self):
         """Test RNG state produces consistent results."""
@@ -31,14 +31,14 @@ class TestDeterminismKeywords:
         random.seed(42)
         second_run = [random.random() for _ in range(5)]
 
-        assert first_run == second_run
+        assert first_run == second_run, "first_run is not valid"
 
     def test_deterministic_flag(self, monkeypatch):
         """Test deterministic mode flag."""
         monkeypatch.setenv("DETERMINISTIC", "true")
 
         deterministic = os.getenv("DETERMINISTIC", "false").lower() == "true"
-        assert deterministic is True
+        assert deterministic is True, "deterministic is not valid"
 
 
 class TestChecksumValidation:
@@ -49,8 +49,8 @@ class TestChecksumValidation:
         content = b"Test content for checksum"
         expected_sha = hashlib.sha256(content).hexdigest()
 
-        assert len(expected_sha) == 64
-        assert all(c in "0123456789abcdef" for c in expected_sha)
+        assert len(expected_sha) == 64, "Expected_sha must not be empty"
+        assert all(c in "0123456789abcdef" for c in expected_sha), "Condition must be true"
 
     def test_checksum_consistency(self):
         """Test that identical content produces identical checksums."""
@@ -59,7 +59,7 @@ class TestChecksumValidation:
         sha1 = hashlib.sha256(content).hexdigest()
         sha2 = hashlib.sha256(content).hexdigest()
 
-        assert sha1 == sha2
+        assert sha1 == sha2, "sha1 is not valid"
 
     def test_checksum_file_validation(self):
         """Test file checksum validation."""
@@ -75,7 +75,7 @@ class TestChecksumValidation:
         verify_content = test_file.read_bytes()
         verify_checksum = hashlib.sha256(verify_content).hexdigest()
 
-        assert checksum == verify_checksum
+        assert checksum == verify_checksum, "checksum is not valid"
 
         # Cleanup
         import shutil
@@ -90,7 +90,7 @@ class TestChecksumValidation:
         original_checksum = hashlib.sha256(original_content).hexdigest()
         modified_checksum = hashlib.sha256(modified_content).hexdigest()
 
-        assert original_checksum != modified_checksum
+        assert original_checksum != modified_checksum, "original_checksum is not valid"
 
 
 class TestOfflineMode:
@@ -101,14 +101,14 @@ class TestOfflineMode:
         monkeypatch.setenv("OFFLINE_MODE", "true")
 
         offline = os.getenv("OFFLINE_MODE", "false").lower() == "true"
-        assert offline is True
+        assert offline is True, "offline is not valid"
 
     def test_wandb_offline_mode(self, monkeypatch):
         """Test W&B offline mode configuration."""
         monkeypatch.setenv("WANDB_MODE", "offline")
 
         wandb_mode = os.getenv("WANDB_MODE", "online")
-        assert wandb_mode == "offline"
+        assert wandb_mode == "offline", "wandb_mode is not valid"
 
     def test_offline_data_path(self, monkeypatch):
         """Test offline data path configuration."""
@@ -116,7 +116,7 @@ class TestOfflineMode:
         monkeypatch.setenv("OFFLINE_DATA_PATH", test_path)
 
         data_path = os.getenv("OFFLINE_DATA_PATH")
-        assert data_path == test_path
+        assert data_path == test_path, "Data must not be empty"
 
     def test_offline_model_cache(self, monkeypatch):
         """Test offline model cache configuration."""
@@ -127,8 +127,8 @@ class TestOfflineMode:
         hf_home = os.getenv("HF_HOME")
         offline = os.getenv("TRANSFORMERS_OFFLINE")
 
-        assert hf_home == cache_dir
-        assert offline == "1"
+        assert hf_home == cache_dir, "hf_home is not valid"
+        assert offline == "1", "offline is not valid"
 
 
 class TestReproducibilityPatterns:
@@ -143,7 +143,7 @@ class TestReproducibilityPatterns:
         }
 
         assert all(isinstance(v, int) for v in seed_config.values())
-        assert all(v >= 0 for v in seed_config.values())
+        assert all(v >= 0 for v in seed_config.values()), "v must be greater than zero"
 
     def test_rng_state_saving(self):
         """Test RNG state save/restore pattern."""
@@ -163,7 +163,7 @@ class TestReproducibilityPatterns:
         random.setstate(state)
         second = random.random()
 
-        assert first == second
+        assert first == second, "first is not valid"
 
     def test_deterministic_hash_ordering(self):
         """Test deterministic hash ordering."""
@@ -172,9 +172,9 @@ class TestReproducibilityPatterns:
         # Sort keys for determinism
         sorted_items = sorted(data.items())
 
-        assert sorted_items[0][0] == "a"
-        assert sorted_items[1][0] == "b"
-        assert sorted_items[2][0] == "c"
+        assert sorted_items[0][0] == "a", "Item must not be empty"
+        assert sorted_items[1][0] == "b", "Item must not be empty"
+        assert sorted_items[2][0] == "c", "Item must not be empty"
 
 
 class TestIntegrityVerification:
@@ -199,7 +199,7 @@ class TestIntegrityVerification:
         verify_checksum = hashlib.sha256(verify_content).hexdigest()
         stored_checksum = checksum_file.read_text().strip()
 
-        assert verify_checksum == stored_checksum
+        assert verify_checksum == stored_checksum, "verify_checksum is not valid"
 
         # Cleanup
         import shutil
@@ -225,7 +225,7 @@ class TestIntegrityVerification:
         manifest_str = json.dumps(manifest, sort_keys=True)
         manifest_checksum = hashlib.sha256(manifest_str.encode()).hexdigest()
 
-        assert len(manifest_checksum) == 64
+        assert len(manifest_checksum) == 64, "Manifest_checksum must not be empty"
 
 
 class TestSafeguardDocumentation:
@@ -239,7 +239,7 @@ class TestSafeguardDocumentation:
             "offline_mode": "Enforce offline execution",
         }
 
-        assert len(patterns) > 0
+        assert len(patterns) > 0, "Patterns must not be empty"
         assert all(isinstance(v, str) for v in patterns.values())
 
     def test_reproducibility_checklist(self):
@@ -252,5 +252,5 @@ class TestSafeguardDocumentation:
             "Pin dependencies",
         ]
 
-        assert len(checklist) >= 3
+        assert len(checklist) >= 3, "Checklist must not be empty"
         assert all(isinstance(item, str) for item in checklist)

@@ -8,9 +8,9 @@ def test_error_hierarchy_to_dict() -> None:
 
     err = errors.ValidationError("bad", details={"field": "id"})
     payload = err.to_dict()
-    assert payload["code"] == errors.ValidationError.code
-    assert payload["message"] == "bad"
-    assert payload["details"]["field"] == "id"
+    assert payload["code"] == errors.ValidationError.code, "Error should be raised or set"
+    assert payload["message"] == "bad", "Condition must be true"
+    assert payload["details"]["field"] == "id", "Condition must be true"
     assert errors.validate_error_response(err.code, err.message) is True
 
 

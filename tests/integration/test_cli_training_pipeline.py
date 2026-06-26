@@ -108,7 +108,7 @@ class TestCLIBasicExecution:
             capture_output=True,
             text=True,
         )
-        assert result.returncode != 0
+        assert result.returncode != 0, "Result must not be empty"
 
 
 class TestConfigurationLoading:
@@ -124,7 +124,7 @@ class TestConfigurationLoading:
 
             get_loader()
             # Config loading should not raise
-            assert minimal_config.exists()
+            assert minimal_config.exists(), "Condition must be true"
         except ImportError:
             pytest.skip("Config loader not available")
 
@@ -145,14 +145,14 @@ class TestConfigurationLoading:
         incomplete_config.write_text("model:\n  hidden_size: 128\n")
 
         # Should handle incomplete config gracefully
-        assert incomplete_config.exists()
+        assert incomplete_config.exists(), "Condition must be true"
 
     def test_config_invalid_yaml_syntax(self, temp_workspace):
         """Verify error handling for invalid YAML syntax."""
         invalid_config = temp_workspace / "config" / "invalid.yaml"
         invalid_config.write_text("model:\n  invalid: [unclosed")
 
-        assert invalid_config.exists()
+        assert invalid_config.exists(), "Condition must be true"
 
     def test_config_with_environment_variables(self, minimal_config, monkeypatch):
         """Verify environment variable substitution in config."""
@@ -160,7 +160,7 @@ class TestConfigurationLoading:
         monkeypatch.setenv("CODEX_LEARNING_RATE", "0.002")
 
         # Config should be loadable with env vars
-        assert minimal_config.exists()
+        assert minimal_config.exists(), "Condition must be true"
 
 
 class TestTrainingPipelineInitialization:
@@ -177,7 +177,7 @@ class TestTrainingPipelineInitialization:
                 batch_size=4,
                 max_steps=10,
             )
-            assert cfg.epochs == 1
+            assert cfg.epochs == 1, "epochs is not valid"
         except ImportError:
             pytest.skip("Training module not available")
 
@@ -189,19 +189,19 @@ class TestTrainingPipelineInitialization:
         # Create dummy checkpoint
         checkpoint_path.write_text("dummy checkpoint data")
 
-        assert checkpoint_path.exists()
+        assert checkpoint_path.exists(), "Condition must be true"
 
     def test_initialize_with_distributed_config(self, minimal_config):
         """Verify distributed training configuration initialization."""
         # Test distributed config structure
         config_data = minimal_config.read_text()
-        assert "training:" in config_data
+        assert "training:" in config_data, "Data must not be empty"
 
     def test_initialize_with_mixed_precision(self, minimal_config):
         """Verify mixed precision training initialization."""
         minimal_config.read_text()
         # Config should support mixed precision settings
-        assert minimal_config.exists()
+        assert minimal_config.exists(), "Condition must be true"
 
 
 class TestEndToEndTrainingWorkflow:
@@ -228,7 +228,7 @@ class TestEndToEndTrainingWorkflow:
                 optimizer.step()
 
             # Should complete without errors
-            assert loss.item() >= 0
+            assert loss.item() >= 0, "Value must be greater than zero"
         except ImportError:
             pytest.skip("PyTorch not available")
 
@@ -243,7 +243,7 @@ class TestEndToEndTrainingWorkflow:
             for sample in samples:
                 f.write(json.dumps(sample) + "\n")
 
-        assert val_dataset.exists()
+        assert val_dataset.exists(), "Data must not be empty"
 
     def test_training_with_checkpointing(self, temp_workspace):
         """Verify training workflow with checkpoint saving."""
@@ -257,7 +257,7 @@ class TestEndToEndTrainingWorkflow:
 
             torch.save({"model": model.state_dict()}, checkpoint_path)
 
-            assert checkpoint_path.exists()
+            assert checkpoint_path.exists(), "Condition must be true"
         except ImportError:
             pytest.skip("PyTorch not available")
 
@@ -279,7 +279,7 @@ class TestEndToEndTrainingWorkflow:
             if patience_counter >= patience:
                 break
 
-        assert patience_counter >= patience
+        assert patience_counter >= patience, "patience_counter must be positive"
 
 
 class TestErrorHandlingAndRecovery:
@@ -288,19 +288,19 @@ class TestErrorHandlingAndRecovery:
     def test_handle_missing_config_file(self, temp_workspace):
         """Verify graceful handling of missing configuration file."""
         nonexistent = temp_workspace / "config" / "nonexistent.yaml"
-        assert not nonexistent.exists()
+        assert not nonexistent.exists(), "Condition must be true"
 
     def test_handle_missing_dataset(self, temp_workspace, minimal_config):
         """Verify graceful handling of missing dataset."""
         nonexistent_data = temp_workspace / "data" / "nonexistent.jsonl"
-        assert not nonexistent_data.exists()
+        assert not nonexistent_data.exists(), "Data must not be empty"
 
     def test_handle_corrupted_checkpoint(self, temp_workspace):
         """Verify handling of corrupted checkpoint files."""
         checkpoint_path = temp_workspace / "checkpoints" / "corrupted.pt"
         checkpoint_path.write_text("corrupted data")
 
-        assert checkpoint_path.exists()
+        assert checkpoint_path.exists(), "Condition must be true"
 
     def test_handle_out_of_memory_error(self):
         """Verify handling of OOM errors during training."""
@@ -308,7 +308,7 @@ class TestErrorHandlingAndRecovery:
         try:
             raise RuntimeError("CUDA out of memory")
         except RuntimeError as e:
-            assert "out of memory" in str(e).lower()
+            assert "out of memory" in str(e).lower(), "Condition must be true"
 
     def test_handle_invalid_hyperparameters(self, temp_workspace):
         """Verify validation of invalid hyperparameters."""
@@ -318,7 +318,7 @@ training:
   batch_size: -1
   learning_rate: 100.0
 """)
-        assert invalid_config.exists()
+        assert invalid_config.exists(), "Condition must be true"
 
     def test_recover_from_crashed_training(self, temp_workspace):
         """Verify recovery mechanism from crashed training run."""
@@ -326,7 +326,7 @@ training:
         recovery_checkpoint = checkpoint_dir / "last.pt"
         recovery_checkpoint.write_text("recovery checkpoint")
 
-        assert recovery_checkpoint.exists()
+        assert recovery_checkpoint.exists(), "Condition must be true"
 
 
 class TestOutputValidation:
@@ -349,8 +349,8 @@ class TestOutputValidation:
             loaded = torch.load(
                 checkpoint_path, weights_only=False
             )  # nosec B614 - Test checkpoint with optimizer state requires weights_only=False
-            assert "model_state_dict" in loaded
-            assert "optimizer_state_dict" in loaded
+            assert "model_state_dict" in loaded, "Condition must be true"
+            assert "optimizer_state_dict" in loaded, "Condition must be true"
         except ImportError:
             pytest.skip("PyTorch not available")
 
@@ -359,9 +359,9 @@ class TestOutputValidation:
         log_file = temp_workspace / "logs" / "training.log"
         log_file.write_text("Step 1: loss=1.5\nStep 2: loss=1.3\n")
 
-        assert log_file.exists()
+        assert log_file.exists(), "Condition must be true"
         content = log_file.read_text()
-        assert "loss=" in content
+        assert "loss=" in content, "Content must not be empty"
 
     def test_validate_metrics_export(self, temp_workspace):
         """Verify training metrics are exported correctly."""
@@ -373,16 +373,16 @@ class TestOutputValidation:
         }
         metrics_file.write_text(json.dumps(metrics))
 
-        assert metrics_file.exists()
+        assert metrics_file.exists(), "Condition must be true"
         loaded_metrics = json.loads(metrics_file.read_text())
-        assert "train_loss" in loaded_metrics
+        assert "train_loss" in loaded_metrics, "Condition must be true"
 
     def test_validate_final_model_export(self, temp_workspace):
         """Verify final model is exported correctly."""
         model_path = temp_workspace / "output" / "final_model.pt"
         model_path.write_text("model weights")
 
-        assert model_path.exists()
+        assert model_path.exists(), "Condition must be true"
 
 
 class TestMultiStageTraining:
@@ -396,8 +396,8 @@ class TestMultiStageTraining:
         finetune_checkpoint = temp_workspace / "checkpoints" / "finetune.pt"
         finetune_checkpoint.write_text("finetune weights")
 
-        assert pretrain_checkpoint.exists()
-        assert finetune_checkpoint.exists()
+        assert pretrain_checkpoint.exists(), "Condition must be true"
+        assert finetune_checkpoint.exists(), "Condition must be true"
 
     def test_curriculum_learning_stages(self, temp_workspace):
         """Verify curriculum learning multi-stage training."""
@@ -406,7 +406,7 @@ class TestMultiStageTraining:
         for stage in stages:
             stage_checkpoint = temp_workspace / "checkpoints" / f"stage_{stage}.pt"
             stage_checkpoint.write_text(f"{stage} stage weights")
-            assert stage_checkpoint.exists()
+            assert stage_checkpoint.exists(), "Condition must be true"
 
     def test_progressive_layer_training(self, temp_workspace):
         """Verify progressive layer-wise training."""
@@ -415,7 +415,7 @@ class TestMultiStageTraining:
         for layer in layers:
             layer_checkpoint = temp_workspace / "checkpoints" / f"layer_{layer}.pt"
             layer_checkpoint.write_text(f"layer {layer} weights")
-            assert layer_checkpoint.exists()
+            assert layer_checkpoint.exists(), "Condition must be true"
 
 
 class TestConfigurationIntegration:
@@ -430,14 +430,14 @@ class TestConfigurationIntegration:
             override_config = {"model": {"hidden_size": 256}}
 
             merged = OmegaConf.merge(base_config, override_config)
-            assert merged["model"]["hidden_size"] == 256
+            assert merged["model"]["hidden_size"] == 256, "Condition must be true"
         except ImportError:
             pytest.skip("OmegaConf not available")
 
     def test_config_override_from_cli(self, minimal_config):
         """Verify CLI overrides apply to configuration."""
         config_data = minimal_config.read_text()
-        assert "batch_size" in config_data or "training" in config_data
+        assert "batch_size" in config_data or "training" in config_data, "Data must not be empty"
 
     def test_config_interpolation(self, temp_workspace):
         """Verify config value interpolation works."""
@@ -451,7 +451,7 @@ class TestConfigurationIntegration:
                 }
             )
 
-            assert cfg.scaled_lr == cfg.base_lr
+            assert cfg.scaled_lr == cfg.base_lr, "scaled_lr is not valid"
         except ImportError:
             pytest.skip("OmegaConf not available")
 
@@ -459,7 +459,7 @@ class TestConfigurationIntegration:
         """Verify configuration validation against schema."""
         config_data = minimal_config.read_text()
         # Basic validation that config has required structure
-        assert "model" in config_data or "training" in config_data
+        assert "model" in config_data or "training" in config_data, "Data must not be empty"
 
 
 class TestCLIOutputFormatting:
@@ -472,7 +472,7 @@ class TestCLIOutputFormatting:
         current_step = 50
         progress_pct = (current_step / total_steps) * 100
 
-        assert progress_pct == 50.0
+        assert progress_pct == 50.0, "progress_pct is not valid"
 
     def test_metric_display_formatting(self):
         """Verify metric display formatting."""
@@ -481,14 +481,14 @@ class TestCLIOutputFormatting:
         formatted_loss = f"{metrics['loss']:.4f}"
         formatted_acc = f"{metrics['accuracy']:.4f}"
 
-        assert formatted_loss == "1.2346"
-        assert formatted_acc == "0.9877"
+        assert formatted_loss == "1.2346", "formatted_loss is not valid"
+        assert formatted_acc == "0.9877", "formatted_acc is not valid"
 
     def test_error_message_formatting(self):
         """Verify error message formatting."""
         error_msg = "Error: Configuration file not found"
-        assert "Error:" in error_msg
-        assert len(error_msg) > 0
+        assert "Error:" in error_msg, "Error should be raised or set"
+        assert len(error_msg) > 0, "Error_msg must not be empty"
 
     def test_completion_summary_display(self):
         """Verify training completion summary formatting."""
@@ -499,5 +499,5 @@ class TestCLIOutputFormatting:
             "duration": "1h 23m",
         }
 
-        assert summary["status"] == "completed"
-        assert summary["total_steps"] == 1000
+        assert summary["status"] == "completed", "Condition must be true"
+        assert summary["total_steps"] == 1000, "Condition must be true"

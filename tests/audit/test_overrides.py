@@ -40,7 +40,7 @@ def test_overrides_merging(tmp_path):
     (Path(cfg["output"]["artifacts_dir"]) / "context_index.json").write_text(json.dumps(idx))
     caps = runner.stage_s3_capabilities(cfg, facets)
     ids = [c["id"] for c in caps]
-    assert "merged-cap" in ids
+    assert "merged-cap" in ids, "Condition must be true"
 
 
 def test_missing_detector_strict_fails(tmp_path):
@@ -50,4 +50,4 @@ def test_missing_detector_strict_fails(tmp_path):
     facets = {"generated": 0, "facets": {}}
     with pytest.raises(SystemExit) as exc:
         runner.stage_s3_capabilities(cfg, facets)
-    assert exc.value.code == 5
+    assert exc.value.code == 5, "Value must be initialized"

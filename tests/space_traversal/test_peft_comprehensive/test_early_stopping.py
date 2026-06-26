@@ -16,8 +16,8 @@ def test_early_stopping_import():
     """Test that early stopping module can be imported."""
     from codex_ml.training.early_stopping import EarlyStopping, EarlyStoppingConfig
 
-    assert EarlyStopping is not None
-    assert EarlyStoppingConfig is not None
+    assert EarlyStopping is not None, "EarlyStopping must be initialized"
+    assert EarlyStoppingConfig is not None, "EarlyStoppingConfig must be initialized"
 
 
 def test_early_stopping_config_defaults():
@@ -25,12 +25,12 @@ def test_early_stopping_config_defaults():
     from codex_ml.training.early_stopping import EarlyStoppingConfig
 
     config = EarlyStoppingConfig()
-    assert config.enabled is False
-    assert config.patience == 3
-    assert config.monitor == "val_loss"
-    assert config.mode == "min"
-    assert config.min_delta == 1e-4
-    assert config.verbose is True
+    assert config.enabled is False, "enabled is not valid"
+    assert config.patience == 3, "patience is not valid"
+    assert config.monitor == "val_loss", "monitor is not valid"
+    assert config.mode == "min", "mode is not valid"
+    assert config.min_delta == 1e-4, "min_delta is not valid"
+    assert config.verbose is True, "verbose is not valid"
 
 
 def test_early_stopping_config_custom():
@@ -41,12 +41,12 @@ def test_early_stopping_config_custom():
         enabled=True, patience=5, monitor="val_accuracy", mode="max", min_delta=0.001, verbose=False
     )
 
-    assert config.enabled is True
-    assert config.patience == 5
-    assert config.monitor == "val_accuracy"
-    assert config.mode == "max"
-    assert config.min_delta == 0.001
-    assert config.verbose is False
+    assert config.enabled is True, "enabled is not valid"
+    assert config.patience == 5, "patience is not valid"
+    assert config.monitor == "val_accuracy", "monitor is not valid"
+    assert config.mode == "max", "mode is not valid"
+    assert config.min_delta == 0.001, "min_delta is not valid"
+    assert config.verbose is False, "verbose is not valid"
 
 
 def test_early_stopping_initialization():
@@ -55,12 +55,12 @@ def test_early_stopping_initialization():
 
     es = EarlyStopping(patience=3, monitor="val_loss", mode="min")
 
-    assert es.patience == 3
-    assert es.monitor == "val_loss"
-    assert es.mode == "min"
-    assert es.wait == 0
-    assert es.best_value is None
-    assert es.best_epoch == 0
+    assert es.patience == 3, "patience is not valid"
+    assert es.monitor == "val_loss", "monitor is not valid"
+    assert es.mode == "min", "mode is not valid"
+    assert es.wait == 0, "wait is not valid"
+    assert es.best_value is None, "Value must be initialized"
+    assert es.best_epoch == 0, "best_epoch is not valid"
 
 
 def test_early_stopping_invalid_mode():
@@ -86,19 +86,19 @@ def test_early_stopping_improvement_detection_min():
     es = EarlyStopping(patience=3, mode="min", min_delta=0.01)
 
     # First value is always improvement
-    assert es._is_improvement(1.0)
+    assert es._is_improvement(1.0), "Condition must be true"
 
     # Set best value
     es.best_value = 1.0
 
     # Improvement (lower value)
-    assert es._is_improvement(0.9)
+    assert es._is_improvement(0.9), "Condition must be true"
 
     # No improvement (same value within delta)
-    assert not es._is_improvement(0.995)
+    assert not es._is_improvement(0.995), "Condition must be true"
 
     # No improvement (higher value)
-    assert not es._is_improvement(1.1)
+    assert not es._is_improvement(1.1), "Condition must be true"
 
 
 def test_early_stopping_improvement_detection_max():
@@ -108,19 +108,19 @@ def test_early_stopping_improvement_detection_max():
     es = EarlyStopping(patience=3, mode="max", min_delta=0.01)
 
     # First value is always improvement
-    assert es._is_improvement(0.5)
+    assert es._is_improvement(0.5), "Condition must be true"
 
     # Set best value
     es.best_value = 0.5
 
     # Improvement (higher value)
-    assert es._is_improvement(0.6)
+    assert es._is_improvement(0.6), "Condition must be true"
 
     # No improvement (same value within delta)
-    assert not es._is_improvement(0.505)
+    assert not es._is_improvement(0.505), "Condition must be true"
 
     # No improvement (lower value)
-    assert not es._is_improvement(0.4)
+    assert not es._is_improvement(0.4), "Condition must be true"
 
 
 def test_early_stopping_update():
@@ -131,20 +131,20 @@ def test_early_stopping_update():
 
     # First update is improvement
     improved_1 = es.update(1.0, epoch=0)
-    assert improved_1
-    assert es.best_value == 1.0
-    assert es.wait == 0
+    assert improved_1, "improved_1 is not valid"
+    assert es.best_value == 1.0, "Value must be initialized"
+    assert es.wait == 0, "wait is not valid"
 
     # Better value is improvement
     improved_2 = es.update(0.9, epoch=1)
-    assert improved_2
-    assert es.best_value == 0.9
-    assert es.wait == 0
+    assert improved_2, "improved_2 is not valid"
+    assert es.best_value == 0.9, "Value must be initialized"
+    assert es.wait == 0, "wait is not valid"
 
     # Worse value is not improvement
     assert not es.update(1.0, epoch=2)
-    assert es.best_value == 0.9
-    assert es.wait == 1
+    assert es.best_value == 0.9, "Value must be initialized"
+    assert es.wait == 1, "wait is not valid"
 
 
 def test_early_stopping_should_stop():
@@ -161,7 +161,7 @@ def test_early_stopping_should_stop():
 
     # Should stop now (patience=3, wait=3 >= patience=3)
     assert es.should_stop(1.0, epoch=4)
-    assert es.stopped_epoch == 4
+    assert es.stopped_epoch == 4, "stopped_epoch is not valid"
 
 
 def test_early_stopping_reset():
@@ -173,16 +173,16 @@ def test_early_stopping_reset():
     # Set some state
     es.update(1.0, epoch=0)
     es.update(1.1, epoch=1)
-    assert es.wait == 1
-    assert es.best_value == 1.0
+    assert es.wait == 1, "wait is not valid"
+    assert es.best_value == 1.0, "Value must be initialized"
 
     # Reset
     es.reset()
 
-    assert es.wait == 0
-    assert es.best_value is None
-    assert es.stopped_epoch == 0
-    assert es.best_epoch == 0
+    assert es.wait == 0, "wait is not valid"
+    assert es.best_value is None, "Value must be initialized"
+    assert es.stopped_epoch == 0, "stopped_epoch is not valid"
+    assert es.best_epoch == 0, "best_epoch is not valid"
 
 
 def test_early_stopping_state_dict():
@@ -198,12 +198,12 @@ def test_early_stopping_state_dict():
     # Get state dict
     state = es.state_dict()
 
-    assert state["wait"] == 1
-    assert state["best_value"] == 1.0
-    assert state["best_epoch"] == 0
-    assert state["patience"] == 3
-    assert state["monitor"] == "val_loss"
-    assert state["mode"] == "min"
+    assert state["wait"] == 1, "Condition must be true"
+    assert state["best_value"] == 1.0, "Value must be initialized"
+    assert state["best_epoch"] == 0, "Condition must be true"
+    assert state["patience"] == 3, "Condition must be true"
+    assert state["monitor"] == "val_loss", "Condition must be true"
+    assert state["mode"] == "min", "Condition must be true"
 
 
 def test_early_stopping_load_state_dict():
@@ -226,12 +226,12 @@ def test_early_stopping_load_state_dict():
 
     es.load_state_dict(state)
 
-    assert es.wait == 2
-    assert es.best_value == 0.5
-    assert es.best_epoch == 5
-    assert es.patience == 5
-    assert es.monitor == "val_accuracy"
-    assert es.mode == "max"
+    assert es.wait == 2, "wait is not valid"
+    assert es.best_value == 0.5, "Value must be initialized"
+    assert es.best_epoch == 5, "best_epoch is not valid"
+    assert es.patience == 5, "patience is not valid"
+    assert es.monitor == "val_accuracy", "monitor is not valid"
+    assert es.mode == "max", "mode is not valid"
 
 
 def test_create_early_stopping_from_config():
@@ -244,7 +244,7 @@ def test_create_early_stopping_from_config():
     # Disabled config returns None
     config = EarlyStoppingConfig(enabled=False)
     es = create_early_stopping_from_config(config)
-    assert es is None
+    assert es is None, "es is not valid"
 
     # Enabled config returns instance
     config = EarlyStoppingConfig(
@@ -254,10 +254,10 @@ def test_create_early_stopping_from_config():
         mode="max",
     )
     es = create_early_stopping_from_config(config)
-    assert es is not None
-    assert es.patience == 5
-    assert es.monitor == "val_accuracy"
-    assert es.mode == "max"
+    assert es is not None, "es must be initialized"
+    assert es.patience == 5, "patience is not valid"
+    assert es.monitor == "val_accuracy", "monitor is not valid"
+    assert es.mode == "max", "mode is not valid"
 
 
 # Test scheduler factory
@@ -265,7 +265,7 @@ def test_scheduler_factory_import():
     """Test that scheduler factory can be imported."""
     from codex_ml.training.scheduler_factory import create_scheduler
 
-    assert create_scheduler is not None
+    assert create_scheduler is not None, "create_scheduler must be initialized"
 
 
 def test_get_available_schedulers():
@@ -274,11 +274,11 @@ def test_get_available_schedulers():
 
     schedulers = get_available_schedulers()
 
-    assert "constant" in schedulers
-    assert "linear" in schedulers
-    assert "cosine" in schedulers
-    assert "cosine_with_restarts" in schedulers
-    assert "polynomial" in schedulers
+    assert "constant" in schedulers, "Condition must be true"
+    assert "linear" in schedulers, "Condition must be true"
+    assert "cosine" in schedulers, "Condition must be true"
+    assert "cosine_with_restarts" in schedulers, "Condition must be true"
+    assert "polynomial" in schedulers, "Condition must be true"
 
 
 def test_calculate_num_training_steps():
@@ -289,19 +289,19 @@ def test_calculate_num_training_steps():
     steps = calculate_num_training_steps(
         num_epochs=3, dataset_size=1000, batch_size=10, gradient_accumulation_steps=1
     )
-    assert steps == 300  # 3 * (1000 / 10)
+    assert steps == 300, "steps is not valid"
 
     # With gradient accumulation
     steps = calculate_num_training_steps(
         num_epochs=2, dataset_size=1000, batch_size=10, gradient_accumulation_steps=2
     )
-    assert steps == 100  # 2 * (1000 / (10 * 2))
+    assert steps == 100, "steps is not valid"
 
     # Non-even division
     steps = calculate_num_training_steps(
         num_epochs=1, dataset_size=100, batch_size=32, gradient_accumulation_steps=1
     )
-    assert steps == 4  # ceil(100 / 32)
+    assert steps == 4, "steps is not valid"
 
 
 def test_create_constant_scheduler():
@@ -315,7 +315,7 @@ def test_create_constant_scheduler():
     try:
         scheduler = create_scheduler(optimizer=optimizer, scheduler_type="constant")
 
-        assert scheduler is not None
+        assert scheduler is not None, "scheduler must be initialized"
 
         # Constant scheduler should return 1.0 for all steps
         # (though the actual behavior depends on implementation)
@@ -341,7 +341,7 @@ def test_create_linear_scheduler():
             num_warmup_steps=100,
         )
 
-        assert scheduler is not None
+        assert scheduler is not None, "scheduler must be initialized"
 
     except ImportError:
         # Skip if transformers or torch not available
@@ -364,7 +364,7 @@ def test_create_cosine_scheduler():
             num_warmup_steps=100,
         )
 
-        assert scheduler is not None
+        assert scheduler is not None, "scheduler must be initialized"
 
     except ImportError:
         # Skip if transformers or torch not available
@@ -429,18 +429,18 @@ def test_training_enhancements_config_valid():
             config = yaml.safe_load(f)
 
         # Check structure
-        assert "early_stopping" in config
-        assert "scheduler" in config
-        assert "training" in config
+        assert "early_stopping" in config, "Condition must be true"
+        assert "scheduler" in config, "Condition must be true"
+        assert "training" in config, "Condition must be true"
 
         # Check early stopping defaults
-        assert config["early_stopping"]["enabled"] is False
-        assert config["early_stopping"]["patience"] == 3
-        assert config["early_stopping"]["monitor"] == "val_loss"
+        assert config["early_stopping"]["enabled"] is False, "Condition must be true"
+        assert config["early_stopping"]["patience"] == 3, "Condition must be true"
+        assert config["early_stopping"]["monitor"] == "val_loss", "Condition must be true"
 
         # Check scheduler defaults
-        assert config["scheduler"]["type"] == "linear"
-        assert config["scheduler"]["num_warmup_steps"] == 0
+        assert config["scheduler"]["type"] == "linear", "Condition must be true"
+        assert config["scheduler"]["num_warmup_steps"] == 0, "Condition must be true"
 
     except FileNotFoundError:
         pytest.skip("Config file not found")
@@ -465,8 +465,8 @@ def test_integration_early_stopping_full_training_loop():
             break
 
     # Should stop after patience epochs of no improvement
-    assert stopped
-    assert stopped_epoch == 5  # Improves until epoch 3, then plateaus for 2 epochs
+    assert stopped, "stopped is not valid"
+    assert stopped_epoch == 5, "stopped_epoch is not valid"
 
 
 def test_integration_scheduler_with_warmup():
@@ -487,7 +487,7 @@ def test_integration_scheduler_with_warmup():
 
         # Warmup phase should increase LR
         # (exact behavior depends on scheduler implementation)
-        assert scheduler is not None
+        assert scheduler is not None, "scheduler must be initialized"
 
     except ImportError:
         pytest.skip("transformers or torch not available")

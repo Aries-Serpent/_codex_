@@ -13,28 +13,28 @@ class TestStructuralPatterns:
     def test_known_shadow_risks(self):
         """Test that known shadow risks are defined."""
         assert hasattr(structure_integrity, "KNOWN_SHADOW_RISKS")
-        assert "torch" in structure_integrity.KNOWN_SHADOW_RISKS
-        assert "numpy" in structure_integrity.KNOWN_SHADOW_RISKS
+        assert "torch" in structure_integrity.KNOWN_SHADOW_RISKS, "Condition must be true"
+        assert "numpy" in structure_integrity.KNOWN_SHADOW_RISKS, "Condition must be true"
 
     def test_related_files(self):
         """Test that related files are defined."""
         assert hasattr(structure_integrity, "RELATED_FILES")
-        assert len(structure_integrity.RELATED_FILES) > 0
+        assert len(structure_integrity.RELATED_FILES) > 0, "Collection must not be empty"
 
     def test_detect_function_exists(self):
         """Test that detect function exists."""
         assert hasattr(structure_integrity, "detect")
-        assert callable(structure_integrity.detect)
+        assert callable(structure_integrity.detect), "Condition must be true"
 
     def test_detector_output_contract(self):
         """Test detector output follows contract."""
         result = structure_integrity.detect({"files": []})
 
-        assert "id" in result
-        assert "evidence_files" in result
-        assert "found_patterns" in result
-        assert "required_patterns" in result
-        assert "meta" in result
+        assert "id" in result, "Result must not be empty"
+        assert "evidence_files" in result, "Result must not be empty"
+        assert "found_patterns" in result, "Result must not be empty"
+        assert "required_patterns" in result, "Result must not be empty"
+        assert "meta" in result, "Result must not be empty"
 
     def test_bounded_evidence_collection(self):
         """Test that evidence collection is bounded."""
@@ -46,4 +46,4 @@ class TestStructuralPatterns:
         result = structure_integrity.detect(file_index, evidence_limit=10)
 
         # Evidence should be bounded
-        assert len(result["evidence_files"]) <= 20  # limit + related files
+        assert len(result["evidence_files"]) <= 20, "Collection must not be empty"

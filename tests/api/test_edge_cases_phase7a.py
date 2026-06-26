@@ -151,14 +151,14 @@ class TestEmptyAndNullRequests:
     def test_empty_json_object(self, test_client):
         """Empty JSON object should fail validation."""
         response = test_client.post("/auth/register", json={})
-        assert response.status_code == 422
+        assert response.status_code == 422, "Response must not be empty"
 
     def test_all_null_fields(self, test_client):
         """All null fields should fail."""
         response = test_client.post(
             "/auth/register", json={"username": None, "email": None, "password": None}
         )
-        assert response.status_code == 422
+        assert response.status_code == 422, "Response must not be empty"
 
     def test_null_optional_field(self, test_client):
         """Null optional field should be handled."""
@@ -342,7 +342,7 @@ class TestConcurrentRequests:
 
         # At least one should succeed, others might fail with conflict
         status_codes = [r.status_code for r in results]
-        assert any(code == 201 for code in status_codes)
+        assert any(code == 201 for code in status_codes), "code is not valid"
         # Others should be 400 (conflict) or 201 (if emails differ)
         assert all(code in [201, 400] for code in status_codes)
 
@@ -370,7 +370,7 @@ class TestConcurrentRequests:
 
         # All should succeed
         status_codes = [r.status_code for r in results]
-        assert all(code == 200 for code in status_codes)
+        assert all(code == 200 for code in status_codes), "code is not valid"
 
     def test_concurrent_mixed_operations(self, test_client):
         """Concurrent mixed operations (register, login, etc)."""
@@ -429,7 +429,7 @@ class TestRapidSequentialRequests:
 
         # Most should succeed
         success_count = sum(1 for r in responses if r.status_code == 201)
-        assert success_count >= 15  # At least 75% should succeed
+        assert success_count >= 15, "success_count must be positive"
 
     def test_many_rapid_logins(self, test_client):
         """Many rapid login attempts."""
@@ -453,7 +453,7 @@ class TestRapidSequentialRequests:
 
         # Most should succeed
         success_count = sum(1 for r in responses if r.status_code == 200)
-        assert success_count >= 15  # At least 75%
+        assert success_count >= 15, "success_count must be positive"
 
     def test_rapid_invalid_requests(self, test_client):
         """Rapid invalid requests."""
@@ -465,7 +465,7 @@ class TestRapidSequentialRequests:
             responses.append(response)
 
         # All should fail with 400
-        assert all(r.status_code == 400 for r in responses)
+        assert all(r.status_code == 400 for r in responses), "Response must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -591,7 +591,7 @@ class TestStatePersistence:
                 "password": "SecurePass123!",
             },
         )
-        assert response1.status_code == 201
+        assert response1.status_code == 201, "Response must not be empty"
 
         # Try to register again
         response2 = test_client.post(
@@ -603,7 +603,7 @@ class TestStatePersistence:
             },
         )
         # Should fail - user exists
-        assert response2.status_code == 400
+        assert response2.status_code == 400, "Response must not be empty"
 
     def test_can_login_after_registration(self, test_client):
         """Should be able to login after registration."""
@@ -619,7 +619,7 @@ class TestStatePersistence:
         response = test_client.post(
             "/auth/login", json={"username": "loginafter", "password": "SecurePass123!"}
         )
-        assert response.status_code == 200
+        assert response.status_code == 200, "Response must not be empty"
 
     def test_wrong_password_fails_login(self, test_client):
         """Wrong password should fail login."""
@@ -635,4 +635,4 @@ class TestStatePersistence:
         response = test_client.post(
             "/auth/login", json={"username": "wrongpass", "password": "WrongPassword123!"}
         )
-        assert response.status_code == 400
+        assert response.status_code == 400, "Response must not be empty"

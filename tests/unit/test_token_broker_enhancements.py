@@ -40,11 +40,11 @@ def _reg(**kwargs) -> AutonomyRegistry:
 class TestTokenHealthStatus:
     def test_all_health_statuses_defined(self):
         """Verify TokenHealthStatus enum has all required values."""
-        assert TokenHealthStatus.HEALTHY
-        assert TokenHealthStatus.EXPIRED
-        assert TokenHealthStatus.REVOKED
-        assert TokenHealthStatus.SCOPE_MISMATCH
-        assert TokenHealthStatus.UNKNOWN
+        assert TokenHealthStatus.HEALTHY, "Condition must be true"
+        assert TokenHealthStatus.EXPIRED, "Condition must be true"
+        assert TokenHealthStatus.REVOKED, "Condition must be true"
+        assert TokenHealthStatus.SCOPE_MISMATCH, "Condition must be true"
+        assert TokenHealthStatus.UNKNOWN, "Condition must be true"
 
 
 class TestTokenHealthChecker:
@@ -56,8 +56,8 @@ class TestTokenHealthChecker:
             source=TokenSource.GITHUB_APP,
             required_class=ControlClass.READ_ONLY,
         )
-        assert result.status == TokenHealthStatus.UNKNOWN
-        assert "No token provided" in result.message
+        assert result.status == TokenHealthStatus.UNKNOWN, "Result must not be empty"
+        assert "No token provided" in result.message, "Result must not be empty"
 
     def test_check_health_invalid_jwt_structure(self):
         """Invalid JWT structure is detected."""
@@ -67,8 +67,8 @@ class TestTokenHealthChecker:
             source=TokenSource.GITHUB_APP,
             required_class=ControlClass.READ_ONLY,
         )
-        assert result.status == TokenHealthStatus.UNKNOWN
-        assert "Invalid JWT structure" in result.message
+        assert result.status == TokenHealthStatus.UNKNOWN, "Result must not be empty"
+        assert "Invalid JWT structure" in result.message, "Result must not be empty"
 
     def test_check_health_expired_jwt_token(self):
         """Expired JWT token is detected."""
@@ -88,8 +88,8 @@ class TestTokenHealthChecker:
             source=TokenSource.GITHUB_APP,
             required_class=ControlClass.READ_ONLY,
         )
-        assert result.status == TokenHealthStatus.EXPIRED
-        assert "expired" in result.message.lower()
+        assert result.status == TokenHealthStatus.EXPIRED, "Result must not be empty"
+        assert "expired" in result.message.lower(), "Result must not be empty"
 
     def test_check_health_healthy_jwt_token(self):
         """Valid non-expired JWT token is marked HEALTHY."""
@@ -109,9 +109,9 @@ class TestTokenHealthChecker:
             source=TokenSource.OIDC,
             required_class=ControlClass.READ_ONLY,
         )
-        assert result.status == TokenHealthStatus.HEALTHY
-        assert result.expires_at is not None
-        assert "repo" in result.scopes
+        assert result.status == TokenHealthStatus.HEALTHY, "Result must not be empty"
+        assert result.expires_at is not None, "expires_at must be initialized"
+        assert "repo" in result.scopes, "Result must not be empty"
 
     def test_check_health_pat_valid(self):
         """PAT health check validates format."""
@@ -121,7 +121,7 @@ class TestTokenHealthChecker:
             source=TokenSource.SCOPED_PAT,
             required_class=ControlClass.ADVISORY_WRITE,
         )
-        assert result.status == TokenHealthStatus.HEALTHY
+        assert result.status == TokenHealthStatus.HEALTHY, "Result must not be empty"
 
     def test_check_health_pat_invalid_short(self):
         """Short PAT is marked UNKNOWN."""
@@ -131,7 +131,7 @@ class TestTokenHealthChecker:
             source=TokenSource.SCOPED_PAT,
             required_class=ControlClass.ADVISORY_WRITE,
         )
-        assert result.status == TokenHealthStatus.UNKNOWN
+        assert result.status == TokenHealthStatus.UNKNOWN, "Result must not be empty"
 
     def test_check_health_master_key_valid(self):
         """Master key health check validates format."""
@@ -141,7 +141,7 @@ class TestTokenHealthChecker:
             source=TokenSource.CODEX_MASTER,
             required_class=ControlClass.INFRA_WRITE,
         )
-        assert result.status == TokenHealthStatus.HEALTHY
+        assert result.status == TokenHealthStatus.HEALTHY, "Result must not be empty"
 
     def test_check_health_expiry_warning_logged(self, caplog):
         """Expiry warning is logged when token approaching expiration."""
@@ -162,8 +162,8 @@ class TestTokenHealthChecker:
                 required_class=ControlClass.READ_ONLY,
             )
 
-        assert result.status == TokenHealthStatus.HEALTHY
-        assert any("expiring" in record.message.lower() for record in caplog.records)
+        assert result.status == TokenHealthStatus.HEALTHY, "Result must not be empty"
+        assert any("expiring" in record.message.lower() for record in caplog.records), "Condition must be true"
 
 
 # ── Task 2.1.2: Circuit Breaker Tests ─────────────────────────────────────
@@ -172,22 +172,22 @@ class TestTokenHealthChecker:
 class TestCircuitBreakerState:
     def test_all_states_defined(self):
         """Verify CircuitBreakerState enum has all required values."""
-        assert CircuitBreakerState.CLOSED
-        assert CircuitBreakerState.OPEN
-        assert CircuitBreakerState.HALF_OPEN
+        assert CircuitBreakerState.CLOSED, "Condition must be true"
+        assert CircuitBreakerState.OPEN, "Condition must be true"
+        assert CircuitBreakerState.HALF_OPEN, "Condition must be true"
 
 
 class TestTokenCircuitBreaker:
     def test_initial_state_closed(self):
         """Circuit breaker starts in CLOSED state."""
         cb = TokenCircuitBreaker()
-        assert cb.get_state(TokenSource.GITHUB_APP) == CircuitBreakerState.CLOSED
+        assert cb.get_state(TokenSource.GITHUB_APP) == CircuitBreakerState.CLOSED, "Condition must be true"
 
     def test_success_keeps_closed(self):
         """Recording success keeps circuit CLOSED."""
         cb = TokenCircuitBreaker()
         cb.record_success(TokenSource.GITHUB_APP)
-        assert cb.get_state(TokenSource.GITHUB_APP) == CircuitBreakerState.CLOSED
+        assert cb.get_state(TokenSource.GITHUB_APP) == CircuitBreakerState.CLOSED, "Condition must be true"
 
     def test_failures_open_circuit(self):
         """Recording failures opens circuit after threshold."""
@@ -197,7 +197,7 @@ class TestTokenCircuitBreaker:
         for _ in range(3):
             cb.record_failure(TokenSource.GITHUB_APP)
 
-        assert cb.get_state(TokenSource.GITHUB_APP) == CircuitBreakerState.OPEN
+        assert cb.get_state(TokenSource.GITHUB_APP) == CircuitBreakerState.OPEN, "Condition must be true"
 
     def test_exponential_backoff(self):
         """Backoff increases exponentially with failures."""
@@ -212,7 +212,7 @@ class TestTokenCircuitBreaker:
 
         # Verify exponential growth: each backoff ~2x previous
         for i in range(1, len(backoffs)):
-            assert backoffs[i] >= backoffs[i - 1]  # Monotonic increase
+            assert backoffs[i] >= backoffs[i - 1], "Value must be greater than zero"
 
     def test_recovery_probe_transition(self):
         """OPEN circuit transitions to HALF_OPEN for recovery probe."""
@@ -221,17 +221,17 @@ class TestTokenCircuitBreaker:
         # Open circuit
         for _ in range(3):
             cb.record_failure(TokenSource.GITHUB_APP)
-        assert cb.get_state(TokenSource.GITHUB_APP) == CircuitBreakerState.OPEN
+        assert cb.get_state(TokenSource.GITHUB_APP) == CircuitBreakerState.OPEN, "Condition must be true"
 
         # Immediately: still open
-        assert cb.get_state(TokenSource.GITHUB_APP) == CircuitBreakerState.OPEN
+        assert cb.get_state(TokenSource.GITHUB_APP) == CircuitBreakerState.OPEN, "Condition must be true"
 
         # Simulate recovery probe interval passing
         record = cb._records[TokenSource.GITHUB_APP]
         record.last_failure_time = time.time() - 301  # 301 seconds ago
 
         # Now should transition to HALF_OPEN
-        assert cb.get_state(TokenSource.GITHUB_APP) == CircuitBreakerState.HALF_OPEN
+        assert cb.get_state(TokenSource.GITHUB_APP) == CircuitBreakerState.HALF_OPEN, "Condition must be true"
 
     def test_success_closes_circuit(self):
         """Recording success after failures closes circuit."""
@@ -240,11 +240,11 @@ class TestTokenCircuitBreaker:
         # Open circuit
         for _ in range(3):
             cb.record_failure(TokenSource.GITHUB_APP)
-        assert cb.get_state(TokenSource.GITHUB_APP) == CircuitBreakerState.OPEN
+        assert cb.get_state(TokenSource.GITHUB_APP) == CircuitBreakerState.OPEN, "Condition must be true"
 
         # Success closes it
         cb.record_success(TokenSource.GITHUB_APP)
-        assert cb.get_state(TokenSource.GITHUB_APP) == CircuitBreakerState.CLOSED
+        assert cb.get_state(TokenSource.GITHUB_APP) == CircuitBreakerState.CLOSED, "Condition must be true"
 
     def test_backoff_resets_on_success(self):
         """Success resets backoff multiplier."""
@@ -254,7 +254,7 @@ class TestTokenCircuitBreaker:
             cb.record_failure(TokenSource.GITHUB_APP)
 
         cb.record_success(TokenSource.GITHUB_APP)
-        assert cb.get_backoff_seconds(TokenSource.GITHUB_APP) == 0
+        assert cb.get_backoff_seconds(TokenSource.GITHUB_APP) == 0, "Condition must be true"
 
     def test_circuit_breaker_to_dict(self):
         """Circuit breaker state serialized correctly."""
@@ -264,9 +264,9 @@ class TestTokenCircuitBreaker:
             cb.record_failure(TokenSource.GITHUB_APP)
 
         state_dict = cb.to_dict()
-        assert "github_app" in state_dict
-        assert state_dict["github_app"]["state"] == "open"
-        assert state_dict["github_app"]["failure_count"] == 3
+        assert "github_app" in state_dict, "Condition must be true"
+        assert state_dict["github_app"]["state"] == "open", "Condition must be true"
+        assert state_dict["github_app"]["failure_count"] == 3, "Count must be greater than zero"
 
 
 # ── Task 2.1.3: Token Rotation Schedule Tests ─────────────────────────────
@@ -281,9 +281,9 @@ class TestTokenRotationScheduler:
         scheduler.register_token(TokenSource.GITHUB_APP, created_at=now)
 
         info = scheduler.get_rotation_info(TokenSource.GITHUB_APP)
-        assert info is not None
-        assert info.created_at == now
-        assert info.last_rotated_at == now
+        assert info is not None, "info must be initialized"
+        assert info.created_at == now, "created_at is not valid"
+        assert info.last_rotated_at == now, "last_rotated_at is not valid"
 
     def test_rotation_future_date_calculated(self):
         """Next rotation date is ~90 days from now."""
@@ -295,7 +295,7 @@ class TestTokenRotationScheduler:
 
         days_until = (info.next_rotation_at - now) / 86400
         # Should be approximately 90 days
-        assert 89 <= days_until <= 91
+        assert 89 <= days_until <= 91, "89 is not valid"
 
     def test_check_rotation_needed_future(self):
         """No rotation needed when days until rotation is positive."""
@@ -306,7 +306,7 @@ class TestTokenRotationScheduler:
         rotation_needed = scheduler.check_rotation_needed(TokenSource.GITHUB_APP)
 
         # Not yet due
-        assert rotation_needed is None
+        assert rotation_needed is None, "rotation_needed is not valid"
 
     def test_check_rotation_needed_overdue(self):
         """Rotation needed when token past expiration."""
@@ -318,8 +318,8 @@ class TestTokenRotationScheduler:
         rotation_needed = scheduler.check_rotation_needed(TokenSource.GITHUB_APP)
 
         # Should be past due
-        assert rotation_needed is not None
-        assert rotation_needed.days_until_rotation < 0
+        assert rotation_needed is not None, "rotation_needed must be initialized"
+        assert rotation_needed.days_until_rotation < 0, "days_until_rotation is not valid"
 
     def test_rotation_warning_logged_near_expiration(self, caplog):
         """Warning logged when token approaching expiration."""
@@ -332,7 +332,7 @@ class TestTokenRotationScheduler:
             scheduler.check_rotation_needed(TokenSource.GITHUB_APP)
 
         # Warning should be issued
-        assert any("approaching" in r.message.lower() for r in caplog.records)
+        assert any("approaching" in r.message.lower() for r in caplog.records), "Condition must be true"
 
     def test_rotation_scheduler_to_dict(self):
         """Rotation schedule serialized correctly."""
@@ -342,8 +342,8 @@ class TestTokenRotationScheduler:
         scheduler.register_token(TokenSource.GITHUB_APP, created_at=now)
         state_dict = scheduler.to_dict()
 
-        assert "github_app" in state_dict
-        assert state_dict["github_app"]["created_at"] == now
+        assert "github_app" in state_dict, "Condition must be true"
+        assert state_dict["github_app"]["created_at"] == now, "Condition must be true"
 
 
 # ── Task 2.1.4: Observability & Metrics Tests ────────────────────────────
@@ -357,8 +357,8 @@ class TestTokenResolutionMetrics:
 
         resolution = broker.resolve(ControlClass.ADVISORY_WRITE)
 
-        assert resolution.resolution_time_ms > 0
-        assert resolution.resolution_time_ms < 1000  # Should be very fast
+        assert resolution.resolution_time_ms > 0, "resolution_time_ms must be greater than zero"
+        assert resolution.resolution_time_ms < 1000, "resolution_time_ms is not valid"
 
     def test_resolution_includes_health_check(self, monkeypatch):
         """Resolved token includes health check result."""
@@ -378,8 +378,8 @@ class TestTokenResolutionMetrics:
             enable_health_check=True,
         )
 
-        assert resolution.health_check is not None
-        assert resolution.health_check.status == TokenHealthStatus.HEALTHY
+        assert resolution.health_check is not None, "health_check must be initialized"
+        assert resolution.health_check.status == TokenHealthStatus.HEALTHY, "status is not valid"
 
     def test_resolution_can_skip_health_check(self, monkeypatch):
         """Health check can be disabled."""
@@ -391,7 +391,7 @@ class TestTokenResolutionMetrics:
             enable_health_check=False,
         )
 
-        assert resolution.health_check is None
+        assert resolution.health_check is None, "health_check is not valid"
 
     def test_broker_metrics_tracking(self, monkeypatch):
         """Broker tracks metrics for monitoring."""
@@ -401,9 +401,9 @@ class TestTokenResolutionMetrics:
         broker.resolve(ControlClass.ADVISORY_WRITE)
         metrics = broker.get_metrics()
 
-        assert metrics["resolution_count"] == 1
-        assert "circuit_breaker" in metrics
-        assert "rotation_schedule" in metrics
+        assert metrics["resolution_count"] == 1, "Count must be greater than zero"
+        assert "circuit_breaker" in metrics, "Condition must be true"
+        assert "rotation_schedule" in metrics, "Condition must be true"
 
     def test_broker_exposes_circuit_breaker_state(self, monkeypatch):
         """Broker exposes circuit breaker diagnostics."""
@@ -431,7 +431,7 @@ class TestTokenResolutionMetrics:
         rotation_info = broker.get_rotation_info(TokenSource.GITHUB_APP)
 
         # After resolution, rotation info should be available
-        assert rotation_info is not None
+        assert rotation_info is not None, "rotation_info must be initialized"
 
 
 # ── Integration Tests ─────────────────────────────────────────────────────
@@ -457,8 +457,8 @@ class TestTokenBrokerIntegration:
         resolution = broker.resolve(ControlClass.ADVISORY_WRITE)
 
         # Should fall through to no token (since github_app health check failed)
-        assert resolution.source == TokenSource.NONE
-        assert resolution.token is None
+        assert resolution.source == TokenSource.NONE, "source is not valid"
+        assert resolution.token is None, "token is not valid"
 
     def test_circuit_breaker_prevents_retry(self, monkeypatch):
         """Circuit breaker prevents retrying dead token source."""
@@ -475,7 +475,7 @@ class TestTokenBrokerIntegration:
 
         # Circuit should be open
         cb_state = broker.get_circuit_breaker_state(TokenSource.GITHUB_APP)
-        assert cb_state == CircuitBreakerState.OPEN
+        assert cb_state == CircuitBreakerState.OPEN, "cb_state is not valid"
 
     def test_fallback_to_master_on_github_app_failure(self, monkeypatch):
         """Falls back to CODEX_MASTER when GITHUB_APP fails health check."""
@@ -493,7 +493,7 @@ class TestTokenBrokerIntegration:
         resolution = broker.resolve(ControlClass.ADVISORY_WRITE)
 
         # Should resolve via CODEX_MASTER since GITHUB_APP failed health check
-        assert resolution.source == TokenSource.CODEX_MASTER
+        assert resolution.source == TokenSource.CODEX_MASTER, "source is not valid"
 
     def test_all_tasks_2_1_requirements_met(self, monkeypatch):
         """Verify all Phase 2.1 requirements are implemented."""
@@ -512,25 +512,25 @@ class TestTokenBrokerIntegration:
 
         # ✅ Task 2.1.1: Health checks performed
         assert hasattr(resolution, "health_check")
-        assert resolution.health_check is not None
-        assert resolution.health_check.status == TokenHealthStatus.HEALTHY
+        assert resolution.health_check is not None, "health_check must be initialized"
+        assert resolution.health_check.status == TokenHealthStatus.HEALTHY, "status is not valid"
 
         # ✅ Task 2.1.2: Circuit breaker state available
         cb_state = broker.get_circuit_breaker_state(TokenSource.GITHUB_APP)
-        assert cb_state == CircuitBreakerState.CLOSED
+        assert cb_state == CircuitBreakerState.CLOSED, "cb_state is not valid"
 
         # ✅ Task 2.1.3: Rotation schedule tracked
         rotation_info = broker.get_rotation_info(TokenSource.GITHUB_APP)
-        assert rotation_info is not None
+        assert rotation_info is not None, "rotation_info must be initialized"
 
         # ✅ Task 2.1.4: Metrics available
         metrics = broker.get_metrics()
-        assert metrics["resolution_count"] > 0
-        assert "circuit_breaker" in metrics
-        assert "rotation_schedule" in metrics
+        assert metrics["resolution_count"] > 0, "Value must be greater than zero"
+        assert "circuit_breaker" in metrics, "Condition must be true"
+        assert "rotation_schedule" in metrics, "Condition must be true"
 
         # ✅ Resolution includes latency
-        assert resolution.resolution_time_ms > 0
+        assert resolution.resolution_time_ms > 0, "resolution_time_ms must be greater than zero"
 
 
 # ── Helpers ────────────────────────────────────────────────────────────────

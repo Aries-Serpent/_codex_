@@ -162,4 +162,4 @@ def test_tail_flush_triggers_optimizer_step(
 
     optimizer = _CountingAdamW.last_instance
     assert optimizer is not None, "expected optimizer instance to be created"
-    assert optimizer.step_calls == 1
+    assert optimizer.step_calls == 1, "step_calls is not valid"

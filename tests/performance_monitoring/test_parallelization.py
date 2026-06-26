@@ -22,7 +22,7 @@ class TestWorkerDistribution:
         for i in range(remainder):
             distribution[i] += 1
 
-        assert sum(distribution) == 100
+        assert sum(distribution) == 100, "Condition must be true"
         assert distribution == [25, 25, 25, 25]
 
     def test_distribute_by_duration(self):
@@ -52,7 +52,7 @@ class TestWorkerDistribution:
 
         # Check load balance
         load_difference = abs(worker_loads[0] - worker_loads[1])
-        assert load_difference <= 2.0  # Reasonably balanced
+        assert load_difference <= 2.0, "load_difference is not valid"
 
     def test_handle_test_dependencies(self):
         """Test handling test dependencies in distribution."""
@@ -77,8 +77,8 @@ class TestWorkerDistribution:
             else:
                 independent_tests.append(test["name"])
 
-        assert "test_a" in dependency_groups
-        assert "test_b" in dependency_groups["test_a"]
+        assert "test_a" in dependency_groups, "Condition must be true"
+        assert "test_b" in dependency_groups["test_a"], "Condition must be true"
 
     def test_rebalance_on_failure(self):
         """Test rebalancing when a worker fails."""
@@ -99,9 +99,9 @@ class TestWorkerDistribution:
 
         del worker_assignments[failed_worker]
 
-        assert len(worker_assignments) == 2
+        assert len(worker_assignments) == 2, "Worker_assignments must not be empty"
         total_tests = sum(len(tests) for tests in worker_assignments.values())
-        assert total_tests == 9
+        assert total_tests == 9, "total_tests is not valid"
 
     def test_estimate_parallel_execution_time(self):
         """Test estimating parallel execution time."""
@@ -122,7 +122,7 @@ class TestWorkerDistribution:
         overhead_factor = 1.1
         estimated_parallel_time = ideal_parallel_time * overhead_factor
 
-        assert estimated_parallel_time < total_duration
+        assert estimated_parallel_time < total_duration, "estimated_parallel_time is not valid"
 
 
 class TestLoadBalancing:
@@ -141,7 +141,7 @@ class TestLoadBalancing:
 
         assert assignments["worker_0"] == ["test_1", "test_4"]
         assert assignments["worker_1"] == ["test_2", "test_5"]
-        assert assignments["worker_2"] == ["test_3"]
+        assert assignments["worker_2"] == ["test_3"], "Condition must be true"
 
     def test_weighted_distribution(self):
         """Test weighted distribution based on worker capacity."""
@@ -154,9 +154,9 @@ class TestLoadBalancing:
             weight = capacity / total_capacity
             assignments[worker] = int(num_tests * weight)
 
-        assert assignments["fast"] == 30
-        assert assignments["medium"] == 20
-        assert assignments["slow"] == 10
+        assert assignments["fast"] == 30, "Condition must be true"
+        assert assignments["medium"] == 20, "Condition must be true"
+        assert assignments["slow"] == 10, "Condition must be true"
 
     def test_dynamic_load_balancing(self):
         """Test dynamic load balancing during execution."""
@@ -175,8 +175,8 @@ class TestLoadBalancing:
             stolen = initial_assignments["worker_1"].pop()
             initial_assignments["worker_2"].append(stolen)
 
-        assert len(initial_assignments["worker_1"]) == 3
-        assert len(initial_assignments["worker_2"]) == 2
+        assert len(initial_assignments["worker_1"]) == 3, "Collection must not be empty"
+        assert len(initial_assignments["worker_2"]) == 2, "Collection must not be empty"
 
     def test_measure_load_imbalance(self):
         """Test measuring load imbalance across workers."""
@@ -213,7 +213,7 @@ class TestLoadBalancing:
                 min_total_time = estimated_time
                 optimal_workers = num_workers
 
-        assert 1 < optimal_workers < 16
+        assert 1 < optimal_workers < 16, "1 is not valid"
 
 
 class TestExecutionOptimization:
@@ -231,8 +231,8 @@ class TestExecutionOptimization:
         # Run longest tests first for better parallelization
         ordered = sorted(tests_with_history, key=lambda t: t["avg_duration"], reverse=True)
 
-        assert ordered[0]["name"] == "test_c"
-        assert ordered[-1]["name"] == "test_d"
+        assert ordered[0]["name"] == "test_c", "Condition must be true"
+        assert ordered[-1]["name"] == "test_d", "Condition must be true"
 
     def test_group_by_module(self):
         """Test grouping tests by module for cache efficiency."""
@@ -251,8 +251,8 @@ class TestExecutionOptimization:
                 grouped[module] = []
             grouped[module].append(test)
 
-        assert len(grouped) == 3
-        assert len(grouped["tests/cli/test_main.py"]) == 2
+        assert len(grouped) == 3, "Grouped must not be empty"
+        assert len(grouped["tests/cli/test_main.py"]) == 2, "Collection must not be empty"
 
     def test_detect_shared_fixtures(self):
         """Test detecting tests with shared fixtures."""
@@ -275,7 +275,7 @@ class TestExecutionOptimization:
         assert fixture_groups[("cache", "db")] == ["test_a"]
         assert fixture_groups[("cache",)] == ["test_c"]
         assert fixture_groups[("db",)] == ["test_b"]
-        assert fixture_groups[()] == ["test_d"]
+        assert fixture_groups[()] == ["test_d"], "Condition must be true"
 
     def test_minimize_fixture_setup(self):
         """Test minimizing fixture setup overhead."""
@@ -291,7 +291,7 @@ class TestExecutionOptimization:
         # Compare to naive approach (setup each fixture per test)
         naive_setup_time = 2.0 * 3 + 1.0 * 2  # 3 db setups, 2 cache setups
 
-        assert total_setup_time < naive_setup_time
+        assert total_setup_time < naive_setup_time, "total_setup_time is not valid"
 
     def test_calculate_speedup_factor(self):
         """Test calculating parallel speedup factor."""
@@ -327,7 +327,7 @@ class TestPerformanceReporting:
             "metrics": metrics,
         }
 
-        assert "1000 tests" in report["summary"]
+        assert "1000 tests" in report["summary"], "Condition must be true"
 
     def test_compare_runs(self):
         """Test comparing performance between runs."""
@@ -343,7 +343,7 @@ class TestPerformanceReporting:
             * 100,
         }
 
-        assert comparison["duration_change"] == -10.0
+        assert comparison["duration_change"] == -10.0, "Condition must be true"
         assert round(comparison["duration_change_percent"], 1) == -7.7
 
     def test_generate_trend_chart_data(self):
@@ -361,8 +361,8 @@ class TestPerformanceReporting:
             "data": [r["duration"] for r in historical_runs],
         }
 
-        assert len(chart_data["labels"]) == 5
-        assert chart_data["data"][-1] < chart_data["data"][0]
+        assert len(chart_data["labels"]) == 5, "Collection must not be empty"
+        assert chart_data["data"][-1] < chart_data["data"][0], "Data must not be empty"
 
     def test_identify_improvement_areas(self):
         """Test identifying areas for improvement."""
@@ -383,7 +383,7 @@ class TestPerformanceReporting:
         # Top improvement area
         top_area = sorted_cats[0]["category"]
 
-        assert top_area == "e2e"  # 750s total
+        assert top_area == "e2e", "top_area is not valid"
 
     def test_generate_ci_annotations(self):
         """Test generating CI annotations for slow tests."""
@@ -398,5 +398,5 @@ class TestPerformanceReporting:
                 f"::warning file={test['file']}::{test['name']} is slow ({test['duration']}s)"
             )
 
-        assert len(annotations) == 2
-        assert "::warning" in annotations[0]
+        assert len(annotations) == 2, "Annotations must not be empty"
+        assert "::warning" in annotations[0], "Condition must be true"

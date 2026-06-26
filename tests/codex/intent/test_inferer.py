@@ -17,9 +17,9 @@ class TestInputSpec:
 
         spec = InputSpec(name="arg1", type="cli_arg")
 
-        assert spec.name == "arg1"
-        assert spec.type == "cli_arg"
-        assert spec.required is True
+        assert spec.name == "arg1", "name is not valid"
+        assert spec.type == "cli_arg", "type is not valid"
+        assert spec.required is True, "required is not valid"
 
     def test_optional_required(self):
         """Test InputSpec with required=False."""
@@ -27,7 +27,7 @@ class TestInputSpec:
 
         spec = InputSpec(name="optional_arg", type="env_var", required=False)
 
-        assert spec.required is False
+        assert spec.required is False, "required is not valid"
 
     def test_all_input_types(self):
         """Test all valid input types."""
@@ -37,7 +37,7 @@ class TestInputSpec:
 
         for input_type in types:
             spec = InputSpec(name="test", type=input_type)
-            assert spec.type == input_type
+            assert spec.type == input_type, "type is not valid"
 
 
 class TestOutputSpec:
@@ -49,8 +49,8 @@ class TestOutputSpec:
 
         spec = OutputSpec(name="result", type="stdout")
 
-        assert spec.name == "result"
-        assert spec.type == "stdout"
+        assert spec.name == "result", "Result must not be empty"
+        assert spec.type == "stdout", "type is not valid"
 
     def test_all_output_types(self):
         """Test all valid output types."""
@@ -60,7 +60,7 @@ class TestOutputSpec:
 
         for output_type in types:
             spec = OutputSpec(name="test", type=output_type)
-            assert spec.type == output_type
+            assert spec.type == output_type, "type is not valid"
 
 
 class TestIntentSpec:
@@ -74,10 +74,10 @@ class TestIntentSpec:
             snapshot_id="snap_123", timestamp=datetime.now(timezone.utc), goal="Process input data"
         )
 
-        assert spec.snapshot_id == "snap_123"
-        assert spec.goal == "Process input data"
-        assert spec.confidence == 0.5
-        assert spec.inference_method == "heuristic"
+        assert spec.snapshot_id == "snap_123", "snapshot_id is not valid"
+        assert spec.goal == "Process input data", "Data must not be empty"
+        assert spec.confidence == 0.5, "confidence is not valid"
+        assert spec.inference_method == "heuristic", "inference_method is not valid"
 
     def test_default_lists(self):
         """Test IntentSpec default list values."""
@@ -87,12 +87,12 @@ class TestIntentSpec:
             snapshot_id="snap_123", timestamp=datetime.now(timezone.utc), goal="Test goal"
         )
 
-        assert spec.actors == []
-        assert spec.inputs == []
-        assert spec.outputs == []
-        assert spec.constraints == []
-        assert spec.side_effects == []
-        assert spec.assumptions == []
+        assert spec.actors == [], "actors is not valid"
+        assert spec.inputs == [], "inputs is not valid"
+        assert spec.outputs == [], "outputs is not valid"
+        assert spec.constraints == [], "constraints is not valid"
+        assert spec.side_effects == [], "side_effects is not valid"
+        assert spec.assumptions == [], "assumptions is not valid"
 
     def test_with_inputs_outputs(self):
         """Test IntentSpec with inputs and outputs."""
@@ -109,8 +109,8 @@ class TestIntentSpec:
             outputs=outputs,
         )
 
-        assert len(spec.inputs) == 1
-        assert len(spec.outputs) == 1
+        assert len(spec.inputs) == 1, "Collection must not be empty"
+        assert len(spec.outputs) == 1, "Collection must not be empty"
 
     def test_inference_methods(self):
         """Test all valid inference methods."""
@@ -125,7 +125,7 @@ class TestIntentSpec:
                 goal="Test",
                 inference_method=method,
             )
-            assert spec.inference_method == method
+            assert spec.inference_method == method, "inference_method is not valid"
 
     def test_confidence_bounds(self):
         """Test confidence score values."""
@@ -135,13 +135,13 @@ class TestIntentSpec:
         spec_low = IntentSpec(
             snapshot_id="snap", timestamp=datetime.now(timezone.utc), goal="Test", confidence=0.1
         )
-        assert spec_low.confidence == 0.1
+        assert spec_low.confidence == 0.1, "confidence is not valid"
 
         # High confidence
         spec_high = IntentSpec(
             snapshot_id="snap", timestamp=datetime.now(timezone.utc), goal="Test", confidence=0.95
         )
-        assert spec_high.confidence == 0.95
+        assert spec_high.confidence == 0.95, "confidence is not valid"
 
     def test_llm_provenance(self):
         """Test LLM provenance reference."""
@@ -155,7 +155,7 @@ class TestIntentSpec:
             llm_provenance_ref="prov_abc123",
         )
 
-        assert spec.llm_provenance_ref == "prov_abc123"
+        assert spec.llm_provenance_ref == "prov_abc123", "llm_provenance_ref is not valid"
 
     def test_to_dict(self):
         """Test IntentSpec serialization."""
@@ -178,11 +178,11 @@ class TestIntentSpec:
 
         result = spec.to_dict()
 
-        assert result["snapshot_id"] == "snap_789"
-        assert result["goal"] == "Parse config"
-        assert result["confidence"] == 0.8
-        assert "actors" in result
-        assert "inputs" in result
+        assert result["snapshot_id"] == "snap_789", "Result must not be empty"
+        assert result["goal"] == "Parse config", "Result must not be empty"
+        assert result["confidence"] == 0.8, "Result must not be empty"
+        assert "actors" in result, "Result must not be empty"
+        assert "inputs" in result, "Result must not be empty"
 
 
 class TestModuleLevel:
@@ -192,5 +192,5 @@ class TestModuleLevel:
         """Test logger is configured."""
         from codex.intent.inferer import logger
 
-        assert logger is not None
-        assert logger.name == "codex.intent.inferer"
+        assert logger is not None, "logger must be initialized"
+        assert logger.name == "codex.intent.inferer", "name is not valid"

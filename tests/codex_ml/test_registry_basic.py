@@ -15,4 +15,4 @@ def test_register_and_get_roundtrip():
         return x + 1
 
     g = reg.get("inc_basic")
-    assert g(1) == 2
+    assert g(1) == 2, "Condition must be true"

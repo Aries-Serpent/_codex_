@@ -48,8 +48,8 @@ def test_render_monthly_html(tmp_path):
             str(out),
         ]
     )
-    assert code == 0
+    assert code == 0, "code is not valid"
     html = out.read_text(encoding="utf-8")
-    assert "Status Monthly — 2025-11" in html
+    assert "Status Monthly — 2025-11" in html, "Condition must be true"
     assert "Reports" in html and "Avg Coverage" in html and "Total Findings" in html
-    assert "2025-11-01T00:00:00Z" in html and "2025-11-02T00:00:00Z" in html
+    assert "2025-11-01T00:00:00Z" in html and "2025-11-02T00:00:00Z" in html, "Condition must be true"

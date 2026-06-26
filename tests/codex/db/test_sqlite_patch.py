@@ -45,18 +45,18 @@ class TestPooledConnectionProxy:
 
     def test_proxy_creation(self, proxy, mock_connection):
         """Test proxy can be created."""
-        assert proxy._conn == mock_connection
+        assert proxy._conn == mock_connection, "_conn is not valid"
 
     def test_proxy_getattr_delegates(self, proxy, mock_connection):
         """Test that attribute access delegates to connection."""
         mock_connection.cursor = MagicMock(return_value="cursor")
         result = proxy.cursor
-        assert result == mock_connection.cursor
+        assert result == mock_connection.cursor, "Result must not be empty"
 
     def test_proxy_row_factory_access(self, proxy, mock_connection):
         """Test accessing row_factory through proxy."""
         mock_connection.row_factory = sqlite3.Row
-        assert proxy.row_factory == mock_connection.row_factory
+        assert proxy.row_factory == mock_connection.row_factory, "row_factory is not valid"
 
 
 class TestKeyGeneration:
@@ -81,33 +81,33 @@ class TestKeyGeneration:
         """Test _key returns a tuple."""
         result = key_func("test.db")
         assert isinstance(result, tuple)
-        assert len(result) == 4
+        assert len(result) == 4, "Result must not be empty"
 
     def test_key_includes_database_path(self, key_func, clean_env):
         """Test key includes database path."""
         result = key_func("test.db")
-        assert result[0] == "test.db"
+        assert result[0] == "test.db", "Result must not be empty"
 
     def test_key_includes_process_id(self, key_func, clean_env):
         """Test key includes process ID."""
         result = key_func("test.db")
-        assert result[1] == os.getpid()
+        assert result[1] == os.getpid(), "Result must not be empty"
 
     def test_key_includes_thread_id(self, key_func, clean_env):
         """Test key includes thread ID."""
         result = key_func("test.db")
-        assert result[2] == threading.get_ident()
+        assert result[2] == threading.get_ident(), "Result must not be empty"
 
     def test_key_includes_session_id(self, key_func, clean_env):
         """Test key includes session ID."""
         os.environ["CODEX_SESSION_ID"] = "test-session"
         result = key_func("test.db")
-        assert result[3] == "test-session"
+        assert result[3] == "test-session", "Result must not be empty"
 
     def test_key_empty_session_when_not_set(self, key_func, clean_env):
         """Test key has empty session when not set."""
         result = key_func("test.db")
-        assert result[3] == ""
+        assert result[3] == "", "Result must not be empty"
 
 
 class TestApplyPragmas:
@@ -130,7 +130,7 @@ class TestApplyPragmas:
         # Verify WAL mode was set
         cursor = conn.execute("PRAGMA journal_mode;")
         result = cursor.fetchone()[0]
-        assert result.upper() == "WAL"
+        assert result.upper() == "WAL", "Result must not be empty"
 
         conn.close()
 
@@ -203,7 +203,7 @@ class TestPooledConnect:
             conn2 = pooled_connect(db_path)
 
             # Should be same underlying connection
-            assert conn1._conn is conn2._conn
+            assert conn1._conn is conn2._conn, "_conn is not valid"
         finally:
             _close_all()  # Clean up pooled connections
 
@@ -224,7 +224,7 @@ class TestEnableDisablePooling:
 
         enable_pooling()
 
-        assert sqlite3.connect == pooled_connect
+        assert sqlite3.connect == pooled_connect, "connect is not valid"
 
     def test_disable_pooling(self, save_connect):
         """Test disable_pooling restores original connect."""
@@ -233,7 +233,7 @@ class TestEnableDisablePooling:
         enable_pooling()
         disable_pooling()
 
-        assert sqlite3.connect == _ORIG_CONNECT
+        assert sqlite3.connect == _ORIG_CONNECT, "connect is not valid"
 
 
 class TestAutoEnableFromEnv:
@@ -262,7 +262,7 @@ class TestAutoEnableFromEnv:
 
         auto_enable_from_env()
 
-        assert sqlite3.connect == pooled_connect
+        assert sqlite3.connect == pooled_connect, "connect is not valid"
 
     def test_auto_enable_when_env_set_to_true(self, clean_env, save_connect):
         """Test auto enable when CODEX_SQLITE_POOL=true."""
@@ -272,7 +272,7 @@ class TestAutoEnableFromEnv:
 
         auto_enable_from_env()
 
-        assert sqlite3.connect == pooled_connect
+        assert sqlite3.connect == pooled_connect, "connect is not valid"
 
     def test_no_enable_when_env_not_set(self, clean_env, save_connect):
         """Test no enable when env var not set."""
@@ -281,7 +281,7 @@ class TestAutoEnableFromEnv:
         auto_enable_from_env()
 
         # Should still be original
-        assert sqlite3.connect == _ORIG_CONNECT
+        assert sqlite3.connect == _ORIG_CONNECT, "connect is not valid"
 
 
 class TestCloseAll:
@@ -299,4 +299,4 @@ class TestCloseAll:
 
         _close_all()
 
-        assert len(_CONN_POOL) == 0
+        assert len(_CONN_POOL) == 0, "_conn_pool must not be empty"

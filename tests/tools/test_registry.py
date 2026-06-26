@@ -19,7 +19,7 @@ class TestModuleImports:
         try:
             from src.tools import registry
 
-            assert registry is not None
+            assert registry is not None, "registry must be initialized"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -28,7 +28,7 @@ class TestModuleImports:
         try:
             from src.tools.registry import ToolDefinition
 
-            assert ToolDefinition is not None
+            assert ToolDefinition is not None, "ToolDefinition must be initialized"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -37,7 +37,7 @@ class TestModuleImports:
         try:
             from src.tools.registry import ToolResult
 
-            assert ToolResult is not None
+            assert ToolResult is not None, "ToolResult must be initialized"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -46,7 +46,7 @@ class TestModuleImports:
         try:
             from src.tools.registry import ToolRegistry
 
-            assert ToolRegistry is not None
+            assert ToolRegistry is not None, "ToolRegistry must be initialized"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -55,8 +55,8 @@ class TestModuleImports:
         try:
             from src.tools.registry import MAX_TOOL_NAME_LENGTH, MAX_TOOLS
 
-            assert MAX_TOOLS == 1000
-            assert MAX_TOOL_NAME_LENGTH == 100
+            assert MAX_TOOLS == 1000, "MAX_TOOLS is not valid"
+            assert MAX_TOOL_NAME_LENGTH == 100, "Length must be greater than zero"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -76,9 +76,9 @@ class TestToolDefinition:
                 pass
 
             tool = ToolDefinition(name="test_tool", description="A test tool", handler=handler)
-            assert tool.name == "test_tool"
-            assert tool.description == "A test tool"
-            assert tool.handler == handler
+            assert tool.name == "test_tool", "name is not valid"
+            assert tool.description == "A test tool", "description is not valid"
+            assert tool.handler == handler, "handler is not valid"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -88,10 +88,10 @@ class TestToolDefinition:
             from src.tools.registry import ToolDefinition
 
             tool = ToolDefinition(name="test", description="desc", handler=lambda: None)
-            assert tool.parameters == {}
-            assert tool.requires_confirmation is False
-            assert tool.timeout_seconds == 30
-            assert tool.enabled is True
+            assert tool.parameters == {}, "parameters is not valid"
+            assert tool.requires_confirmation is False, "requires_confirmation is not valid"
+            assert tool.timeout_seconds == 30, "timeout_seconds is not valid"
+            assert tool.enabled is True, "enabled is not valid"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -109,10 +109,10 @@ class TestToolDefinition:
                 timeout_seconds=60,
                 enabled=False,
             )
-            assert tool.parameters == {"arg1": "string"}
-            assert tool.requires_confirmation is True
-            assert tool.timeout_seconds == 60
-            assert tool.enabled is False
+            assert tool.parameters == {"arg1": "string"}, "parameters is not valid"
+            assert tool.requires_confirmation is True, "requires_confirmation is not valid"
+            assert tool.timeout_seconds == 60, "timeout_seconds is not valid"
+            assert tool.enabled is False, "enabled is not valid"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -129,9 +129,9 @@ class TestToolResult:
             from src.tools.registry import ToolResult
 
             result = ToolResult(success=True, output="Success!")
-            assert result.success is True
-            assert result.output == "Success!"
-            assert result.error is None
+            assert result.success is True, "Result must not be empty"
+            assert result.output == "Success!", "Result must not be empty"
+            assert result.error is None, "Result must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -141,8 +141,8 @@ class TestToolResult:
             from src.tools.registry import ToolResult
 
             result = ToolResult(success=False, error="Something went wrong")
-            assert result.success is False
-            assert result.error == "Something went wrong"
+            assert result.success is False, "Result must not be empty"
+            assert result.error == "Something went wrong", "Result must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -152,9 +152,9 @@ class TestToolResult:
             from src.tools.registry import ToolResult
 
             result = ToolResult(success=True)
-            assert result.output is None
-            assert result.error is None
-            assert result.duration_ms == 0.0
+            assert result.output is None, "Result must not be empty"
+            assert result.error is None, "Result must not be empty"
+            assert result.duration_ms == 0.0, "Result must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -171,7 +171,7 @@ class TestToolRegistry:
             from src.tools.registry import ToolRegistry
 
             registry = ToolRegistry()
-            assert registry is not None
+            assert registry is not None, "registry must be initialized"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -188,7 +188,7 @@ class TestToolRegistry:
             result = registry.register(
                 name="my_tool", handler=my_handler, description="My test tool"
             )
-            assert result is True
+            assert result is True, "Result must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -199,7 +199,7 @@ class TestToolRegistry:
 
             registry = ToolRegistry()
             result = registry.register(name="", handler=lambda: None, description="Empty name tool")
-            assert result is False
+            assert result is False, "Result must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -212,7 +212,7 @@ class TestToolRegistry:
             result = registry.register(
                 name=None, handler=lambda: None, description="None name tool"
             )
-            assert result is False
+            assert result is False, "Result must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -228,7 +228,7 @@ class TestToolRegistry:
                 description="Tool with params",
                 parameters={"x": "string"},
             )
-            assert result is True
+            assert result is True, "Result must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -244,7 +244,7 @@ class TestToolRegistry:
                 description="Needs confirmation",
                 requires_confirmation=True,
             )
-            assert result is True
+            assert result is True, "Result must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -260,7 +260,7 @@ class TestToolRegistry:
                 description="Custom timeout",
                 timeout_seconds=120,
             )
-            assert result is True
+            assert result is True, "Result must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -276,8 +276,8 @@ class TestSafeguards:
         try:
             from src.tools.registry import MAX_TOOL_NAME_LENGTH
 
-            assert MAX_TOOL_NAME_LENGTH > 0
-            assert MAX_TOOL_NAME_LENGTH == 100
+            assert MAX_TOOL_NAME_LENGTH > 0, "MAX_TOOL_NAME_LENGTH must be greater than zero"
+            assert MAX_TOOL_NAME_LENGTH == 100, "Length must be greater than zero"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -286,8 +286,8 @@ class TestSafeguards:
         try:
             from src.tools.registry import MAX_TOOLS
 
-            assert MAX_TOOLS > 0
-            assert MAX_TOOLS == 1000
+            assert MAX_TOOLS > 0, "MAX_TOOLS must be greater than zero"
+            assert MAX_TOOLS == 1000, "MAX_TOOLS is not valid"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -296,6 +296,6 @@ class TestSafeguards:
         try:
             from src.tools.registry import logger
 
-            assert logger is not None
+            assert logger is not None, "logger must be initialized"
         except ImportError:
             pytest.skip("Module not available")

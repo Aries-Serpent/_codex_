@@ -30,7 +30,7 @@ def test_average_forgetting_curve() -> None:
         [0.72, 0.66],
     ]
     score = average_forgetting(history)
-    assert score == pytest.approx((0.8 - 0.72 + 0.7 - 0.66) / 2)
+    assert score == pytest.approx((0.8 - 0.72 + 0.7 - 0.66) / 2), "score is not valid"
 
 
 def test_average_forgetting_requires_history() -> None:

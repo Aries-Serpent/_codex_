@@ -48,9 +48,9 @@ class TestTokenBroker:
         reg = _reg(dry_run=True)
         broker = TokenBroker(registry=reg)
         result = broker.resolve(ControlClass.REPO_STATE_WRITE)
-        assert result.is_dry_run
-        assert result.token is None
-        assert result.available  # dry-run still counts as "available"
+        assert result.is_dry_run, "Result must not be empty"
+        assert result.token is None, "Result must not be empty"
+        assert result.available, "Result must not be empty"
 
     def test_no_env_vars_returns_none_token(self, monkeypatch):
         for var in (
@@ -62,15 +62,15 @@ class TestTokenBroker:
             monkeypatch.delenv(var, raising=False)
         broker = TokenBroker(registry=_reg())
         result = broker.resolve(ControlClass.READ_ONLY)
-        assert result.token is None
-        assert not result.available
+        assert result.token is None, "Result must not be empty"
+        assert not result.available, "Result must not be empty"
 
     def test_resolves_github_app_token(self, monkeypatch):
         monkeypatch.setenv("GITHUB_APP_TOKEN", "ghs_test_app_token")
         broker = TokenBroker(registry=_reg())
         result = broker.resolve(ControlClass.ADVISORY_WRITE)
-        assert result.source == TokenSource.GITHUB_APP
-        assert result.token == "ghs_test_app_token"
+        assert result.source == TokenSource.GITHUB_APP, "Result must not be empty"
+        assert result.token == "ghs_test_app_token", "Result must not be empty"
 
     def test_skips_too_low_source(self, monkeypatch):
         # SCOPED_PAT ceiling is ADVISORY_WRITE — cannot service INFRA_WRITE
@@ -81,8 +81,8 @@ class TestTokenBroker:
         reg = _reg(token_resolution_order=["scoped_pat", "codex_master"])
         broker = TokenBroker(registry=reg)
         result = broker.resolve(ControlClass.INFRA_WRITE)
-        assert result.source == TokenSource.CODEX_MASTER
-        assert result.token == "master_key_token"
+        assert result.source == TokenSource.CODEX_MASTER, "Result must not be empty"
+        assert result.token == "master_key_token", "Result must not be empty"
 
     def test_require_raises_when_no_token(self, monkeypatch):
         for var in (
@@ -100,7 +100,7 @@ class TestTokenBroker:
         monkeypatch.setenv("GITHUB_APP_TOKEN", "tok")
         broker = TokenBroker(registry=_reg())
         result = broker.resolve("ADVISORY_WRITE")
-        assert result.control_class == ControlClass.ADVISORY_WRITE
+        assert result.control_class == ControlClass.ADVISORY_WRITE, "Result must not be empty"
 
 
 class TestTokenResolution:
@@ -110,7 +110,7 @@ class TestTokenResolution:
             token=None,
             control_class=ControlClass.READ_ONLY,
         )
-        assert not r.available
+        assert not r.available, "Condition must be true"
 
     def test_available_true_when_token_present(self):
         r = TokenResolution(
@@ -118,4 +118,4 @@ class TestTokenResolution:
             token="abc",
             control_class=ControlClass.READ_ONLY,
         )
-        assert r.available
+        assert r.available, "Condition must be true"

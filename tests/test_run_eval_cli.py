@@ -56,5 +56,5 @@ def test_run_eval_cli(tmp_path):
             f"stdout: {result.stdout}\nstderr: {result.stderr}"
         )
     metrics = json.loads(result.stdout.strip().splitlines()[0])
-    assert "perplexity" in metrics
-    assert "token_accuracy" in metrics
+    assert "perplexity" in metrics, "Condition must be true"
+    assert "token_accuracy" in metrics, "Condition must be true"

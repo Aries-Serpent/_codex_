@@ -20,12 +20,12 @@ def test_detect_no_issues():
 
     result = structure_integrity.detect(file_index)
 
-    assert result["id"] == "structural-integrity"
-    assert result["found_patterns"] == []
+    assert result["id"] == "structural-integrity", "Result must not be empty"
+    assert result["found_patterns"] == [], "Result must not be empty"
     assert result["required_patterns"] == ["split-brain", "lib-shadowing"]
-    assert result["meta"]["risk_level"] == "low"
-    assert result["meta"]["split_dirs"] == []
-    assert result["meta"]["shadow_dirs"] == []
+    assert result["meta"]["risk_level"] == "low", "Result must not be empty"
+    assert result["meta"]["split_dirs"] == [], "Result must not be empty"
+    assert result["meta"]["shadow_dirs"] == [], "Result must not be empty"
 
 
 def test_detect_split_brain():
@@ -42,14 +42,14 @@ def test_detect_split_brain():
 
     result = structure_integrity.detect(file_index)
 
-    assert result["id"] == "structural-integrity"
-    assert "split-brain" in result["found_patterns"]
-    assert result["meta"]["risk_level"] == "high"
-    assert "mymodule" in result["meta"]["split_dirs"]
-    assert len(result["evidence_files"]) > 0
+    assert result["id"] == "structural-integrity", "Result must not be empty"
+    assert "split-brain" in result["found_patterns"], "Result must not be empty"
+    assert result["meta"]["risk_level"] == "high", "Result must not be empty"
+    assert "mymodule" in result["meta"]["split_dirs"], "Result must not be empty"
+    assert len(result["evidence_files"]) > 0, "Collection must not be empty"
     # Should have both root and src samples
-    assert any("mymodule/" in f for f in result["evidence_files"])
-    assert any("src/mymodule/" in f for f in result["evidence_files"])
+    assert any("mymodule/" in f for f in result["evidence_files"]), "Result must not be empty"
+    assert any("src/mymodule/" in f for f in result["evidence_files"]), "Result must not be empty"
 
 
 def test_detect_library_shadowing():
@@ -65,12 +65,12 @@ def test_detect_library_shadowing():
 
     result = structure_integrity.detect(file_index)
 
-    assert result["id"] == "structural-integrity"
-    assert "lib-shadowing" in result["found_patterns"]
-    assert result["meta"]["risk_level"] == "high"
-    assert "torch" in result["meta"]["shadow_dirs"]
-    assert "numpy" in result["meta"]["shadow_dirs"]
-    assert len(result["evidence_files"]) > 0
+    assert result["id"] == "structural-integrity", "Result must not be empty"
+    assert "lib-shadowing" in result["found_patterns"], "Result must not be empty"
+    assert result["meta"]["risk_level"] == "high", "Result must not be empty"
+    assert "torch" in result["meta"]["shadow_dirs"], "Result must not be empty"
+    assert "numpy" in result["meta"]["shadow_dirs"], "Result must not be empty"
+    assert len(result["evidence_files"]) > 0, "Collection must not be empty"
 
 
 def test_detect_both_issues():
@@ -86,12 +86,12 @@ def test_detect_both_issues():
 
     result = structure_integrity.detect(file_index)
 
-    assert result["id"] == "structural-integrity"
-    assert "split-brain" in result["found_patterns"]
-    assert "lib-shadowing" in result["found_patterns"]
-    assert result["meta"]["risk_level"] == "high"
-    assert "mymodule" in result["meta"]["split_dirs"]
-    assert "torch" in result["meta"]["shadow_dirs"]
+    assert result["id"] == "structural-integrity", "Result must not be empty"
+    assert "split-brain" in result["found_patterns"], "Result must not be empty"
+    assert "lib-shadowing" in result["found_patterns"], "Result must not be empty"
+    assert result["meta"]["risk_level"] == "high", "Result must not be empty"
+    assert "mymodule" in result["meta"]["split_dirs"], "Result must not be empty"
+    assert "torch" in result["meta"]["shadow_dirs"], "Result must not be empty"
 
 
 def test_evidence_limit_respected():
@@ -107,8 +107,8 @@ def test_evidence_limit_respected():
 
     result = structure_integrity.detect(file_index, evidence_limit=evidence_limit)
 
-    assert len(result["evidence_files"]) <= evidence_limit
-    assert result["meta"]["evidence_limit"] == evidence_limit
+    assert len(result["evidence_files"]) <= evidence_limit, "Collection must not be empty"
+    assert result["meta"]["evidence_limit"] == evidence_limit, "Result must not be empty"
 
 
 def test_excluded_directories_ignored():
@@ -131,10 +131,10 @@ def test_excluded_directories_ignored():
     result = structure_integrity.detect(file_index)
 
     # None of these should be flagged
-    assert result["found_patterns"] == []
-    assert result["meta"]["risk_level"] == "low"
-    assert result["meta"]["split_dirs"] == []
-    assert result["meta"]["shadow_dirs"] == []
+    assert result["found_patterns"] == [], "Result must not be empty"
+    assert result["meta"]["risk_level"] == "low", "Result must not be empty"
+    assert result["meta"]["split_dirs"] == [], "Result must not be empty"
+    assert result["meta"]["shadow_dirs"] == [], "Result must not be empty"
 
 
 def test_case_insensitive_shadowing():
@@ -149,7 +149,7 @@ def test_case_insensitive_shadowing():
 
     result = structure_integrity.detect(file_index)
 
-    assert "lib-shadowing" in result["found_patterns"]
+    assert "lib-shadowing" in result["found_patterns"], "Result must not be empty"
     # shadow_dirs should contain the actual case from filesystem
     assert "Torch" in result["meta"]["shadow_dirs"] or "torch" in result["meta"]["shadow_dirs"]
 
@@ -169,11 +169,11 @@ def test_multiple_split_brain_modules():
 
     result = structure_integrity.detect(file_index)
 
-    assert "split-brain" in result["found_patterns"]
-    assert len(result["meta"]["split_dirs"]) == 3
-    assert "module_a" in result["meta"]["split_dirs"]
-    assert "module_b" in result["meta"]["split_dirs"]
-    assert "module_c" in result["meta"]["split_dirs"]
+    assert "split-brain" in result["found_patterns"], "Result must not be empty"
+    assert len(result["meta"]["split_dirs"]) == 3, "Collection must not be empty"
+    assert "module_a" in result["meta"]["split_dirs"], "Result must not be empty"
+    assert "module_b" in result["meta"]["split_dirs"], "Result must not be empty"
+    assert "module_c" in result["meta"]["split_dirs"], "Result must not be empty"
 
 
 def test_docs_keywords_present():
@@ -182,7 +182,7 @@ def test_docs_keywords_present():
 
     result = structure_integrity.detect(file_index)
 
-    assert "docs_keywords" in result
+    assert "docs_keywords" in result, "Result must not be empty"
     expected_keywords = [
         "structural-integrity",
         "architecture",
@@ -195,7 +195,7 @@ def test_docs_keywords_present():
         "safeguards",
     ]
     for keyword in expected_keywords:
-        assert keyword in result["docs_keywords"]
+        assert keyword in result["docs_keywords"], "Result must not be empty"
 
 
 def test_safeguards_metadata():
@@ -204,10 +204,10 @@ def test_safeguards_metadata():
 
     result = structure_integrity.detect(file_index)
 
-    assert "safeguards" in result["meta"]
+    assert "safeguards" in result["meta"], "Result must not be empty"
     expected_safeguards = ["bounded", "validation", "deterministic", "error-handling"]
     for safeguard in expected_safeguards:
-        assert safeguard in result["meta"]["safeguards"]
+        assert safeguard in result["meta"]["safeguards"], "Result must not be empty"
 
 
 def test_deterministic_output():
@@ -226,10 +226,10 @@ def test_deterministic_output():
 
     # All results should be identical
     for i in range(1, len(results)):
-        assert results[i]["found_patterns"] == results[0]["found_patterns"]
-        assert results[i]["evidence_files"] == results[0]["evidence_files"]
-        assert results[i]["meta"]["split_dirs"] == results[0]["meta"]["split_dirs"]
-        assert results[i]["meta"]["shadow_dirs"] == results[0]["meta"]["shadow_dirs"]
+        assert results[i]["found_patterns"] == results[0]["found_patterns"], "Result must not be empty"
+        assert results[i]["evidence_files"] == results[0]["evidence_files"], "Result must not be empty"
+        assert results[i]["meta"]["split_dirs"] == results[0]["meta"]["split_dirs"], "Result must not be empty"
+        assert results[i]["meta"]["shadow_dirs"] == results[0]["meta"]["shadow_dirs"], "Result must not be empty"
 
 
 def test_sorted_output():
@@ -248,13 +248,13 @@ def test_sorted_output():
     result = structure_integrity.detect(file_index)
 
     # found_patterns should be sorted
-    assert result["found_patterns"] == sorted(result["found_patterns"])
+    assert result["found_patterns"] == sorted(result["found_patterns"]), "Result must not be empty"
     # split_dirs should be sorted
-    assert result["meta"]["split_dirs"] == sorted(result["meta"]["split_dirs"])
+    assert result["meta"]["split_dirs"] == sorted(result["meta"]["split_dirs"]), "Result must not be empty"
     # shadow_dirs should be sorted
-    assert result["meta"]["shadow_dirs"] == sorted(result["meta"]["shadow_dirs"])
+    assert result["meta"]["shadow_dirs"] == sorted(result["meta"]["shadow_dirs"]), "Result must not be empty"
     # evidence_files should be sorted
-    assert result["evidence_files"] == sorted(result["evidence_files"])
+    assert result["evidence_files"] == sorted(result["evidence_files"]), "Result must not be empty"
 
 
 def test_evidence_deduplication():
@@ -272,7 +272,7 @@ def test_evidence_deduplication():
     result = structure_integrity.detect(file_index, evidence_limit=20)
 
     # Check no duplicates in evidence_files
-    assert len(result["evidence_files"]) == len(set(result["evidence_files"]))
+    assert len(result["evidence_files"]) == len(set(result["evidence_files"])), "Collection must not be empty"
 
 
 def test_empty_file_index():
@@ -281,10 +281,10 @@ def test_empty_file_index():
 
     result = structure_integrity.detect(file_index)
 
-    assert result["id"] == "structural-integrity"
-    assert result["found_patterns"] == []
-    assert result["meta"]["risk_level"] == "low"
-    assert result["evidence_files"] == []
+    assert result["id"] == "structural-integrity", "Result must not be empty"
+    assert result["found_patterns"] == [], "Result must not be empty"
+    assert result["meta"]["risk_level"] == "low", "Result must not be empty"
+    assert result["evidence_files"] == [], "Result must not be empty"
 
 
 class TestStructuralIntegrityAdvanced:
@@ -302,8 +302,8 @@ class TestStructuralIntegrityAdvanced:
 
         result = structure_integrity.detect(file_index)
 
-        assert "split-brain" in result["found_patterns"]
-        assert result["meta"]["risk_level"] == "high"
+        assert "split-brain" in result["found_patterns"], "Result must not be empty"
+        assert result["meta"]["risk_level"] == "high", "Result must not be empty"
 
     def test_shadowing_multiple_libraries(self):
         """Test detection of multiple library shadowing."""
@@ -318,16 +318,16 @@ class TestStructuralIntegrityAdvanced:
 
         result = structure_integrity.detect(file_index)
 
-        assert "lib-shadowing" in result["found_patterns"]
+        assert "lib-shadowing" in result["found_patterns"], "Result must not be empty"
         # Should detect all three shadowed libraries
         shadow_dirs = result["meta"]["shadow_dirs"]
-        assert len(shadow_dirs) >= 2  # At least 2 standard libraries
+        assert len(shadow_dirs) >= 2, "Shadow_dirs must not be empty"
 
     def test_risk_level_calculation(self):
         """Test risk level is calculated correctly."""
         # Low risk - no issues
         result1 = structure_integrity.detect({"files": [{"path": "src/app.py"}]})
-        assert result1["meta"]["risk_level"] == "low"
+        assert result1["meta"]["risk_level"] == "low", "Result must not be empty"
 
         # High risk - split brain
         result2 = structure_integrity.detect(
@@ -338,7 +338,7 @@ class TestStructuralIntegrityAdvanced:
                 ]
             }
         )
-        assert result2["meta"]["risk_level"] == "high"
+        assert result2["meta"]["risk_level"] == "high", "Result must not be empty"
 
     def test_edge_case_single_file_module(self):
         """Test detection with single-file modules."""
@@ -352,8 +352,8 @@ class TestStructuralIntegrityAdvanced:
         result = structure_integrity.detect(file_index)
 
         # Single files might or might not trigger split-brain depending on implementation
-        assert "id" in result
-        assert "found_patterns" in result
+        assert "id" in result, "Result must not be empty"
+        assert "found_patterns" in result, "Result must not be empty"
 
     def test_case_sensitivity_handling(self):
         """Test case-sensitive path handling."""
@@ -367,7 +367,7 @@ class TestStructuralIntegrityAdvanced:
         result = structure_integrity.detect(file_index)
 
         # Should handle case differences appropriately
-        assert "id" in result
+        assert "id" in result, "Result must not be empty"
 
     def test_unicode_path_handling(self):
         """Test handling of unicode characters in paths."""
@@ -381,7 +381,7 @@ class TestStructuralIntegrityAdvanced:
         result = structure_integrity.detect(file_index)
 
         # Should handle unicode paths without errors
-        assert result["id"] == "structural-integrity"
+        assert result["id"] == "structural-integrity", "Result must not be empty"
 
     def test_deeply_nested_structures(self):
         """Test detection with deeply nested directory structures."""
@@ -395,7 +395,7 @@ class TestStructuralIntegrityAdvanced:
         result = structure_integrity.detect(file_index)
 
         # Should detect split even in deep structures
-        assert "split-brain" in result["found_patterns"]
+        assert "split-brain" in result["found_patterns"], "Result must not be empty"
 
     def test_mixed_separators_handling(self):
         """Test handling of mixed path separators."""
@@ -409,7 +409,7 @@ class TestStructuralIntegrityAdvanced:
         result = structure_integrity.detect(file_index)
 
         # Should normalize and detect properly
-        assert "split-brain" in result["found_patterns"]
+        assert "split-brain" in result["found_patterns"], "Result must not be empty"
 
     def test_symlink_awareness(self):
         """Test that detector can handle symlink scenarios."""
@@ -424,4 +424,4 @@ class TestStructuralIntegrityAdvanced:
         result = structure_integrity.detect(file_index)
 
         # Should produce valid result regardless
-        assert result["id"] == "structural-integrity"
+        assert result["id"] == "structural-integrity", "Result must not be empty"

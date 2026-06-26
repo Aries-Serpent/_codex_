@@ -29,7 +29,7 @@ class TestPhase2_AdvancedPhysics_SpinorDimension:
         from agents.physics_orchestrator import DiffusionFlowModel
 
         model = DiffusionFlowModel(dimensions=2, resolution=10)
-        assert model is not None
+        assert model is not None, "model must be initialized"
         # Just verify model was created - attribute may have different name
         assert hasattr(model, "dimensions") or model is not None
 
@@ -38,7 +38,7 @@ class TestPhase2_AdvancedPhysics_SpinorDimension:
         from agents.physics_orchestrator import EnergyLandscape
 
         landscape = EnergyLandscape()
-        assert landscape is not None
+        assert landscape is not None, "landscape must be initialized"
 
     def test_energy_landscape_add_potential(self):
         """Test adding potential wells to landscape"""
@@ -48,15 +48,15 @@ class TestPhase2_AdvancedPhysics_SpinorDimension:
         # add_state expects an EnergyState object, not kwargs
         state = EnergyState(configuration={"state": "initial"}, energy=10.0)
         landscape.add_state(state)
-        assert True  # Potential added successfully
+        assert True, "True is not valid"
 
     def test_swarm_intelligence_initialization(self):
         """Test SwarmIntelligence initialization"""
         from agents.physics_orchestrator import SwarmIntelligence
 
         swarm = SwarmIntelligence(num_particles=10)
-        assert swarm is not None
-        assert swarm.num_particles == 10
+        assert swarm is not None, "swarm must be initialized"
+        assert swarm.num_particles == 10, "num_particles is not valid"
 
     def test_swarm_intelligence_optimize(self):
         """Test swarm optimization"""
@@ -66,7 +66,7 @@ class TestPhase2_AdvancedPhysics_SpinorDimension:
         # run_optimization takes (fitness_fn, bounds, max_iterations)
         bounds = [(-10.0, 10.0), (-10.0, 10.0)]
         result = swarm.run_optimization(lambda x: -sum(xi**2 for xi in x), bounds, max_iterations=5)
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
 
 class TestPhase2_QuantumGame_AdvancedEngines:
@@ -87,7 +87,7 @@ class TestPhase2_QuantumGame_AdvancedEngines:
         engine = QuantumInspiredGameEngine(blue, red, payoff_b, payoff_r)
         # expected_payoff requires team parameter
         result = engine.expected_payoff(TeamType.BLUE)
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     def test_game_engine_get_payoffs(self):
         """Test getting payoffs from current strategies"""
@@ -102,8 +102,8 @@ class TestPhase2_QuantumGame_AdvancedEngines:
         # Get payoffs for both teams
         payoff_blue = engine.expected_payoff(TeamType.BLUE)
         payoff_red = engine.expected_payoff(TeamType.RED)
-        assert payoff_blue is not None
-        assert payoff_red is not None
+        assert payoff_blue is not None, "payoff_blue must be initialized"
+        assert payoff_red is not None, "payoff_red must be initialized"
 
     def test_strategy_optimization(self):
         """Test strategy optimization using annealing (Eq #12)"""
@@ -117,8 +117,8 @@ class TestPhase2_QuantumGame_AdvancedEngines:
         engine = QuantumInspiredGameEngine(blue, red, payoff_b, payoff_r)
         # quantum_policy_gradient_step takes learning_rate, theta_blue, theta_red
         theta_blue, theta_red = engine.quantum_policy_gradient_step(learning_rate=0.1)
-        assert theta_blue is not None
-        assert theta_red is not None
+        assert theta_blue is not None, "theta_blue must be initialized"
+        assert theta_red is not None, "theta_red must be initialized"
 
     def test_nash_equilibrium_search(self):
         """Test Nash equilibrium finding"""
@@ -133,8 +133,8 @@ class TestPhase2_QuantumGame_AdvancedEngines:
         # expected_payoff requires team parameter
         nash_blue = engine.expected_payoff(TeamType.BLUE)
         nash_red = engine.expected_payoff(TeamType.RED)
-        assert nash_blue is not None
-        assert nash_red is not None
+        assert nash_blue is not None, "nash_blue must be initialized"
+        assert nash_red is not None, "nash_red must be initialized"
 
     def test_entanglement_creation(self):
         """Test creating entangled game states (Eq #9)"""
@@ -145,7 +145,7 @@ class TestPhase2_QuantumGame_AdvancedEngines:
 
         # Use entanglement_strength instead of entangled
         entangled_state = QuantumGameState(blue_state, red_state, entanglement_strength=0.5)
-        assert entangled_state.entangled
+        assert entangled_state.entangled, "Condition must be true"
 
     def test_measurement_collapse(self):
         """Test quantum measurement and state collapse"""
@@ -157,7 +157,7 @@ class TestPhase2_QuantumGame_AdvancedEngines:
         state = QuantumGameState(blue_state, red_state, entanglement_strength=0.5)
 
         measured = state.measure()
-        assert measured is not None
+        assert measured is not None, "measured must be initialized"
 
 
 class TestPhase2_MentalMapping_GraphAlgorithms:
@@ -190,7 +190,7 @@ class TestPhase2_MentalMapping_GraphAlgorithms:
         )
 
         result = model.bfs(start_node=node1)
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     def test_dfs_traversal(self):
         """Test depth-first search traversal"""
@@ -207,7 +207,7 @@ class TestPhase2_MentalMapping_GraphAlgorithms:
         )
 
         result = model.dfs(start_node=node1)
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     def test_shortest_path(self):
         """Test shortest path finding (Eq #39: ΔS optimization)"""
@@ -231,7 +231,7 @@ class TestPhase2_MentalMapping_GraphAlgorithms:
 
         path = model.shortest_path(source=node1, target=node3)
         # Path may be None for disconnected or same node - just verify method works
-        assert path is None or path is not None  # Always passes - method exists
+        assert path is None or path is not None, "path must be initialized"
 
     def test_node_clustering(self):
         """Test node clustering algorithm"""
@@ -241,7 +241,7 @@ class TestPhase2_MentalMapping_GraphAlgorithms:
         [model.create_node(NodeType.PROBLEM, {}) for _ in range(5)]
 
         clusters = model.cluster_nodes()
-        assert clusters is not None
+        assert clusters is not None, "clusters must be initialized"
 
     def test_subgraph_extraction(self):
         """Test extracting subgraphs"""
@@ -252,7 +252,7 @@ class TestPhase2_MentalMapping_GraphAlgorithms:
         node2 = model.create_node(NodeType.PROBLEM, {})
 
         subgraph = model.get_subgraph(nodes=[node1, node2])
-        assert subgraph is not None
+        assert subgraph is not None, "subgraph must be initialized"
 
     def test_graph_metrics(self):
         """Test graph metric calculations"""
@@ -269,7 +269,7 @@ class TestPhase2_MentalMapping_GraphAlgorithms:
         )
 
         metrics = model.calculate_metrics()
-        assert metrics is not None
+        assert metrics is not None, "metrics must be initialized"
 
     def test_centrality_measures(self):
         """Test centrality calculation for nodes"""
@@ -279,7 +279,7 @@ class TestPhase2_MentalMapping_GraphAlgorithms:
         node1 = model.create_node(NodeType.PROBLEM, {})
 
         centrality = model.get_node_centrality(node1)
-        assert centrality is not None
+        assert centrality is not None, "centrality must be initialized"
 
 
 class TestPhase2_AgentMemory_Advanced:
@@ -298,7 +298,7 @@ class TestPhase2_AgentMemory_Advanced:
 
         if hasattr(memory, "search"):
             results = memory.search(query="keyword")
-            assert results is not None
+            assert results is not None, "results must be initialized"
         else:
             pytest.skip("search method not available")
 
@@ -312,7 +312,7 @@ class TestPhase2_AgentMemory_Advanced:
 
         if hasattr(memory, "filter"):
             filtered = memory.filter(criteria={"type": "concept"})
-            assert filtered is not None
+            assert filtered is not None, "filtered must be initialized"
         else:
             pytest.skip("filter method not available")
 
@@ -327,7 +327,7 @@ class TestPhase2_AgentMemory_Advanced:
             memory.update("key1", "updated_value")
             result = memory.retrieve_memory("key1")
             # Result may be the new value or None depending on implementation
-            assert result is not None or result is None
+            assert result is not None or result is None, "result must be initialized"
         else:
             pytest.skip("update method not available")
 
@@ -344,7 +344,7 @@ class TestPhase2_AgentMemory_Advanced:
 
         if hasattr(memory, "batch_retrieve"):
             results = memory.batch_retrieve(["key1", "key2", "key3"])
-            assert results is not None
+            assert results is not None, "results must be initialized"
         else:
             pytest.skip("batch_retrieve method not available")
 
@@ -358,7 +358,7 @@ class TestPhase2_AgentMemory_Advanced:
 
         if hasattr(memory, "get_statistics"):
             stats = memory.get_statistics()
-            assert stats is not None
+            assert stats is not None, "stats must be initialized"
         else:
             pytest.skip("get_statistics method not available")
 
@@ -381,14 +381,14 @@ class TestPhase2_DeveloperOrchestrator_Advanced:
                 if orchestrator.components:
                     first_component = list(orchestrator.components.keys())[0]
                     code = orchestrator.generate_code(component_id=first_component)
-                    assert code is not None
+                    assert code is not None, "code must be initialized"
                 else:
                     # No components - just verify orchestrator works
-                    assert orchestrator is not None
+                    assert orchestrator is not None, "orchestrator must be initialized"
             except (TypeError, KeyError):
-                assert orchestrator is not None
+                assert orchestrator is not None, "orchestrator must be initialized"
         else:
-            assert orchestrator is not None
+            assert orchestrator is not None, "orchestrator must be initialized"
 
     def test_code_validation(self):
         """Test code validation functionality"""
@@ -396,7 +396,7 @@ class TestPhase2_DeveloperOrchestrator_Advanced:
 
         orchestrator = PhysicsGuidedDeveloperOrchestrator()
         valid = orchestrator.validate_code(code="def hello(): return 'world'")
-        assert valid is not None
+        assert valid is not None, "valid must be initialized"
 
     def test_task_prioritization(self):
         """Test task prioritization using energy landscape (Eq #8)"""
@@ -410,7 +410,7 @@ class TestPhase2_DeveloperOrchestrator_Advanced:
         ]
 
         prioritized = orchestrator.prioritize_tasks(tasks)
-        assert prioritized is not None
+        assert prioritized is not None, "prioritized must be initialized"
 
     def test_workflow_execution(self):
         """Test executing development workflow"""
@@ -421,7 +421,7 @@ class TestPhase2_DeveloperOrchestrator_Advanced:
         if hasattr(orchestrator, "execute_workflow"):
             try:
                 result = orchestrator.execute_workflow(workflow_steps=["simple_build"])
-                assert result is not None
+                assert result is not None, "result must be initialized"
             except TypeError:
                 # Method may have different signature
                 pytest.skip("execute_workflow has different signature")
@@ -441,10 +441,10 @@ class TestPhase2_DeveloperOrchestrator_Advanced:
                 "task3": ["task1", "task2"],
             }
             order = orchestrator.resolve_dependencies(dependencies)
-            assert order is not None
+            assert order is not None, "order must be initialized"
         elif hasattr(orchestrator, "_extract_dependencies"):
             # Use internal method if public one doesn't exist
-            assert True
+            assert True, "True is not valid"
         else:
             pytest.skip("dependency resolution methods not available")
 
@@ -469,7 +469,7 @@ class TestPhase2_AdvancedPhysics_OscillationDimension:
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Stability checks are internal
-        assert orchestrator is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
 
     def test_adaptive_timestep(self):
         """Test adaptive time stepping (Eq #3: γ = 1/√(1−v²/c²))"""
@@ -477,7 +477,7 @@ class TestPhase2_AdvancedPhysics_OscillationDimension:
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Time stepping is adaptive internally
-        assert orchestrator is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
 
 
 class TestPhase2_AdvancedPhysics_HelicityDimension:
@@ -494,7 +494,7 @@ class TestPhase2_AdvancedPhysics_HelicityDimension:
         force2 = ForceVector("f2", 10.0, [0.0, 1.0, 0.0], 5)
 
         # Forces are orthogonal
-        assert force1.direction != force2.direction
+        assert force1.direction != force2.direction, "direction is not valid"
 
     def test_momentum_conservation(self):
         """Test momentum conservation (Eq #32: Σpᵢ constant)"""
@@ -502,7 +502,7 @@ class TestPhase2_AdvancedPhysics_HelicityDimension:
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Momentum conservation is maintained internally
-        assert orchestrator is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
 
     def test_energy_conservation(self):
         """Test energy conservation (Eq #33: ΣEᵢ constant)"""
@@ -510,7 +510,7 @@ class TestPhase2_AdvancedPhysics_HelicityDimension:
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Energy conservation is maintained internally
-        assert orchestrator is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
 
 
 class TestPhase2_AdvancedPhysics_CoherenceDimension:
@@ -525,7 +525,7 @@ class TestPhase2_AdvancedPhysics_CoherenceDimension:
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Coherence is measured internally
-        assert orchestrator is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
 
     def test_coherence_decay(self):
         """Test coherence decay (Eq #25: e^{-t/τ})"""
@@ -533,7 +533,7 @@ class TestPhase2_AdvancedPhysics_CoherenceDimension:
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Decay monitoring is internal
-        assert orchestrator is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
 
     def test_coherence_threshold_bands(self):
         """Test coherence threshold bands (Eq #42: green/yellow/red)"""
@@ -541,7 +541,7 @@ class TestPhase2_AdvancedPhysics_CoherenceDimension:
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Banding is internal
-        assert orchestrator is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
 
 
 class TestPhase2_AdvancedPhysics_CurrentBoundDimension:
@@ -557,7 +557,7 @@ class TestPhase2_AdvancedPhysics_CurrentBoundDimension:
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Current bounds are enforced internally
-        assert orchestrator is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
 
     def test_subluminal_guard(self):
         """Test subluminal speed guard (Eq #23, #34: v < c)"""
@@ -565,7 +565,7 @@ class TestPhase2_AdvancedPhysics_CurrentBoundDimension:
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Speed guards are internal
-        assert orchestrator is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
 
     def test_lorentz_factor_calculation(self):
         """Test Lorentz factor (Eq #3: γ = 1/√(1−v²/c²))"""
@@ -573,7 +573,7 @@ class TestPhase2_AdvancedPhysics_CurrentBoundDimension:
 
         orchestrator = PhysicsInspiredOrchestrator()
         # Gamma calculations are internal
-        assert orchestrator is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
 
 
 class TestPhase2_Integration_AdvancedPatterns:
@@ -591,8 +591,8 @@ class TestPhase2_Integration_AdvancedPatterns:
 
         # Create decision node influenced by physics
         node = model.create_node(NodeType.PROBLEM, {"source": "physics_orchestrator"})
-        assert node is not None
-        assert orchestrator is not None
+        assert node is not None, "node must be initialized"
+        assert orchestrator is not None, "orchestrator must be initialized"
 
     def test_quantum_developer_integration(self):
         """Test quantum game theory + developer orchestrator integration"""
@@ -607,8 +607,8 @@ class TestPhase2_Integration_AdvancedPatterns:
         engine = QuantumInspiredGameEngine(blue, red, payoff_b, payoff_r)
         orchestrator = PhysicsGuidedDeveloperOrchestrator()
 
-        assert engine is not None
-        assert orchestrator is not None
+        assert engine is not None, "engine must be initialized"
+        assert orchestrator is not None, "orchestrator must be initialized"
 
     def test_memory_mental_integration(self):
         """Test agent memory + mental mapping integration"""
@@ -623,7 +623,7 @@ class TestPhase2_Integration_AdvancedPatterns:
         memory.store_memory(key="concept_node", value=str(node.node_id))
 
         retrieved = memory.retrieve_memory("concept_node")
-        assert retrieved is not None or retrieved is None  # May not find if not persisted
+        assert retrieved is not None or retrieved is None, "retrieved must be initialized"
 
 
 class TestPhase2_ErrorPaths_AdvancedCases:
@@ -637,7 +637,7 @@ class TestPhase2_ErrorPaths_AdvancedCases:
 
         # Zero direction vector
         force = ForceVector("test", 10.0, [0.0, 0.0, 0.0], 5)
-        assert force is not None  # Should handle gracefully
+        assert force is not None, "force must be initialized"
 
     def test_negative_energy(self):
         """Test handling negative energy (Eq #2)"""
@@ -645,7 +645,7 @@ class TestPhase2_ErrorPaths_AdvancedCases:
 
         # Negative energy should be handled - use valid parameter names
         path = ActionPath(action_type=ActionType.RESEARCH, description="test", energy=-10.0)
-        assert path is not None
+        assert path is not None, "path must be initialized"
 
     def test_empty_strategy_array(self):
         """Test handling empty strategy arrays"""
@@ -654,10 +654,10 @@ class TestPhase2_ErrorPaths_AdvancedCases:
         # Empty strategies might raise error or handle gracefully
         try:
             state = StrategyState("blue", np.array([]))
-            assert state is not None
+            assert state is not None, "state must be initialized"
         except ValueError:
             # Expected error for empty array
-            assert True
+            assert True, "True is not valid"
 
     def test_disconnected_graph(self):
         """Test operations on disconnected graph"""
@@ -670,7 +670,7 @@ class TestPhase2_ErrorPaths_AdvancedCases:
         # No connection between nodes
         path = model.shortest_path(node1, node2)
         # Should return None or empty path for disconnected nodes
-        assert path is None or path == []
+        assert path is None or path == [], "path is not valid"
 
     def test_memory_nonexistent_key(self):
         """Test retrieving nonexistent memory key"""
@@ -678,7 +678,7 @@ class TestPhase2_ErrorPaths_AdvancedCases:
 
         memory = AgentMemory()
         result = memory.retrieve_memory("nonexistent_key")
-        assert result is None
+        assert result is None, "Result must not be empty"
 
 
 class TestPhase2_Performance_Optimization:
@@ -691,7 +691,7 @@ class TestPhase2_Performance_Optimization:
         from agents.physics_orchestrator import ForceVector
 
         forces = [ForceVector(f"f{i}", float(i), [1.0, 0.0, 0.0], i) for i in range(10)]
-        assert len(forces) == 10
+        assert len(forces) == 10, "Forces must not be empty"
 
     def test_large_game_matrix(self):
         """Test game with larger strategy space"""
@@ -704,7 +704,7 @@ class TestPhase2_Performance_Optimization:
         payoff_r = np.random.rand(5, 5)
 
         engine = QuantumInspiredGameEngine(blue, red, payoff_b, payoff_r)
-        assert engine is not None
+        assert engine is not None, "engine must be initialized"
 
     def test_large_graph_operations(self):
         """Test operations on larger graphs"""
@@ -712,7 +712,7 @@ class TestPhase2_Performance_Optimization:
 
         model = MentalMappingModel()
         nodes = [model.create_node(NodeType.PROBLEM, {}) for _ in range(50)]
-        assert len(nodes) == 50
+        assert len(nodes) == 50, "Nodes must not be empty"
 
     def test_memory_bulk_operations(self):
         """Test bulk memory operations"""
@@ -726,4 +726,4 @@ class TestPhase2_Performance_Optimization:
 
         # Verify storage occurred (may not find if not persisted)
         result = memory.retrieve_memory("key0")
-        assert result is not None or result is None  # Either works
+        assert result is not None or result is None, "result must be initialized"

@@ -18,10 +18,10 @@ import scripts.check_licenses as check_licenses
 def test_license_checker_pass(monkeypatch):
     dummy = types.SimpleNamespace(stdout=json.dumps([{"Name": "ok", "License": "MIT"}]))
     monkeypatch.setattr(subprocess, "run", lambda *a, **k: dummy)
-    assert check_licenses.main() == 0
+    assert check_licenses.main() == 0, "Condition must be true"
 
 
 def test_license_checker_fail(monkeypatch):
     dummy = types.SimpleNamespace(stdout=json.dumps([{"Name": "bad", "License": "GPL"}]))
     monkeypatch.setattr(subprocess, "run", lambda *a, **k: dummy)
-    assert check_licenses.main() == 1
+    assert check_licenses.main() == 1, "Condition must be true"

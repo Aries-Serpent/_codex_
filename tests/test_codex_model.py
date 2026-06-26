@@ -23,8 +23,8 @@ def test_build_codex_model_cpu(tmp_path: Path) -> None:
     cfg = ModelConfig(base_model_path=ckpt, dtype="float32", device="cpu")
     loaded = build_codex_model(cfg)
 
-    assert next(loaded.parameters()).device.type == "cpu"
-    assert str(next(loaded.parameters()).dtype).endswith("float32")
+    assert next(loaded.parameters()).device.type == "cpu", "type is not valid"
+    assert str(next(loaded.parameters()).dtype).endswith("float32"), "Condition must be true"
 
 
 def test_build_codex_model_with_lora(tmp_path: Path) -> None:

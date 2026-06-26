@@ -67,8 +67,8 @@ class LifecycleManager:
             logger.info(f"Initialized ({len(executed)} hooks)")
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.error(f"Startup failed: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.error("Startup failed: <ERROR_TYPE>")
             await self._rollback_startup(executed)
             raise RuntimeError(f"Startup failed: {e}") from e
 
@@ -79,8 +79,8 @@ class LifecycleManager:
                 logger.debug(f"Rolling back: {hook.__name__}")
             except (IOError, OSError) as e:
                 error_type = type(e).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
-                logger.warning(f"Rollback error: <ERROR_TYPE>")
+                logger.debug("Exception: <ERROR_TYPE>")
+                logger.warning("Rollback error: <ERROR_TYPE>")
 
     async def shutdown(self) -> None:
         """Execute shutdown. Safeguard: resource cleanup and timeout."""
@@ -94,8 +94,8 @@ class LifecycleManager:
                     hook()
             except (ValueError, TypeError, RuntimeError) as e:
                 error_type = type(e).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
-                logger.error(f"Shutdown hook failed: <ERROR_TYPE>")
+                logger.debug("Exception: <ERROR_TYPE>")
+                logger.error("Shutdown hook failed: <ERROR_TYPE>")
         await self._cleanup_resources()
         self._is_healthy = False
         logger.info("Shutdown complete")
@@ -122,7 +122,7 @@ class LifecycleManager:
                 logger.debug(f"Cleaned: {name}")
             except (ValueError, TypeError, RuntimeError) as e:
                 error_type = type(e).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.debug("Exception: <ERROR_TYPE>")
                 logger.warning(f"Cleanup failed for {name}: <ERROR_TYPE>")
         self._resources.clear()
 
@@ -149,8 +149,8 @@ class LifecycleManager:
                         running = loop.is_running()
                     except RuntimeError as e:
                         error_type = type(e).__name__
-                        logger.debug(f"RuntimeError: <ERROR_TYPE>")
-                        logger.warning(f"RuntimeError: <ERROR_TYPE>", exc_info=True)
+                        logger.debug("RuntimeError: <ERROR_TYPE>")
+                        logger.warning("RuntimeError: <ERROR_TYPE>", exc_info=True)
                         running = False
 
                     if running:
@@ -165,8 +165,8 @@ class LifecycleManager:
                     checks_ok = False
             except (ValueError, TypeError, RuntimeError) as e:
                 error_type = type(e).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
-                logger.warning(f"Health check failed: <ERROR_TYPE>")
+                logger.debug("Exception: <ERROR_TYPE>")
+                logger.warning("Health check failed: <ERROR_TYPE>")
                 checks_ok = False
 
         is_healthy = self._is_healthy and checks_ok

@@ -41,6 +41,6 @@ def test_sampler_multi_gpu(monkeypatch):
     dummy = _DummyNVML()
     monkeypatch.setattr(codex_logging, "pynvml", dummy)
     metrics = codex_logging._codex_sample_system()
-    assert "gpus" in metrics
-    assert len(metrics["gpus"]) == 2
-    assert metrics["gpu_util_mean"] == 50
+    assert "gpus" in metrics, "Condition must be true"
+    assert len(metrics["gpus"]) == 2, "Collection must not be empty"
+    assert metrics["gpu_util_mean"] == 50, "Condition must be true"

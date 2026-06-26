@@ -33,31 +33,31 @@ class TestAuthExceptions:
 
     def test_invalid_credentials_error(self):
         exc = InvalidCredentialsError("Wrong password")
-        assert "Wrong password" in str(exc)
+        assert "Wrong password" in str(exc), "Condition must be true"
 
     def test_invalid_credentials_no_message(self):
         exc = InvalidCredentialsError()
-        assert exc is not None
+        assert exc is not None, "exc must be initialized"
 
     def test_invalid_credentials_with_context(self):
         exc = InvalidCredentialsError("Invalid username or password")
-        assert "Invalid" in str(exc)
+        assert "Invalid" in str(exc), "Condition must be true"
 
     def test_mfa_required_error(self):
         exc = MFARequiredError("MFA required")
-        assert "MFA" in str(exc)
+        assert "MFA" in str(exc), "Condition must be true"
 
     def test_mfa_verification_error(self):
         exc = MFAVerificationError("Invalid code")
-        assert "Invalid" in str(exc)
+        assert "Invalid" in str(exc), "Condition must be true"
 
     def test_user_already_exists_error(self):
         exc = UserAlreadyExistsError("User alice exists")
-        assert "alice" in str(exc)
+        assert "alice" in str(exc), "Condition must be true"
 
     def test_user_not_found_error(self):
         exc = UserNotFoundError("User not found")
-        assert "not found" in str(exc)
+        assert "not found" in str(exc), "Condition must be true"
 
     def test_exception_inheritance(self):
         exc = InvalidCredentialsError()
@@ -66,7 +66,7 @@ class TestAuthExceptions:
     def test_exception_string_representation(self):
         exc = MFARequiredError("Two-factor auth required")
         str_repr = str(exc)
-        assert "factor" in str_repr.lower() or "auth" in str_repr.lower()
+        assert "factor" in str_repr.lower() or "auth" in str_repr.lower(), "Condition must be true"
 
 
 # ============================================================================
@@ -89,12 +89,12 @@ class TestAuthenticationIntegration:
         """Complete user lifecycle."""
         # Signup
         user = auth_system.register("alice", "alice@example.com", "Str0ngPass!")
-        assert user.user_id
+        assert user.user_id, "Condition must be true"
 
         # Login
         result = auth_system.login("alice", "Str0ngPass!")
-        assert result.access_token
-        assert result.session_token
+        assert result.access_token, "Result must not be empty"
+        assert result.session_token, "Result must not be empty"
 
         # Logout
         auth_system.logout(result.session_token)
@@ -109,7 +109,7 @@ class TestAuthenticationIntegration:
         # Each can login
         for i in range(10):
             result = auth_system.login(f"user{i}", "Str0ngPass!")
-            assert result.user_id == users[i].user_id
+            assert result.user_id == users[i].user_id, "Result must not be empty"
 
     def test_token_refresh_flow(self, auth_system):
         """Token refresh flow."""
@@ -119,7 +119,7 @@ class TestAuthenticationIntegration:
 
         # Refresh access token
         new_access = auth_system.token_manager.refresh_token(result.refresh_token)
-        assert new_access != result.access_token
+        assert new_access != result.access_token, "Result must not be empty"
 
     def test_session_management(self, auth_system):
         """Session tracking."""
@@ -129,7 +129,7 @@ class TestAuthenticationIntegration:
         session1 = auth_system.login("charlie", "Str0ngPass!")
         session2 = auth_system.login("charlie", "Str0ngPass!")
 
-        assert session1.session_token != session2.session_token
+        assert session1.session_token != session2.session_token, "session_token is not valid"
 
     def test_password_change_flow(self, auth_system):
         """Password change workflow."""
@@ -144,7 +144,7 @@ class TestAuthenticationIntegration:
 
         # New password works
         result = auth_system.login("diana", "NewPass123!")
-        assert result.user_id == user.user_id
+        assert result.user_id == user.user_id, "Result must not be empty"
 
     def test_mfa_enrollment_and_login(self, auth_system):
         """MFA enrollment and usage."""
@@ -161,7 +161,7 @@ class TestAuthenticationIntegration:
 
         # Login with MFA
         result = auth_system.login("eve", "Str0ngPass!", mfa_code=code)
-        assert result.user_id == user.user_id
+        assert result.user_id == user.user_id, "Result must not be empty"
 
     def test_backup_codes_recovery(self, auth_system):
         """Backup codes recovery."""
@@ -255,7 +255,7 @@ class TestStateTransitions:
 
         # User should be retrievable
         retrieved = auth_system.user_store.get_by_username("mike")
-        assert retrieved.user_id == user.user_id
+        assert retrieved.user_id == user.user_id, "user_id is not valid"
 
     def test_user_state_after_password_change(self, auth_system):
         user = auth_system.register("nancy", "nancy@example.com", "Str0ngPass!")
@@ -263,7 +263,7 @@ class TestStateTransitions:
 
         # User should still exist
         retrieved = auth_system.user_store.get_by_user_id(user.user_id)
-        assert retrieved.username == "nancy"
+        assert retrieved.username == "nancy", "username is not valid"
 
     def test_user_state_after_role_change(self, auth_system):
         user = auth_system.register("oscar", "oscar@example.com", "Str0ngPass!")
@@ -273,7 +273,7 @@ class TestStateTransitions:
 
         # Verify
         retrieved = auth_system.user_store.get_by_user_id(user.user_id)
-        assert "admin" in retrieved.roles
+        assert "admin" in retrieved.roles, "Condition must be true"
 
     def test_token_state_consistency(self, auth_system):
         auth_system.register("paul", "paul@example.com", "Str0ngPass!")
@@ -331,7 +331,7 @@ class TestConcurrentAccess:
             t.join()
 
         # Should handle concurrent registration
-        assert len(users) + len(errors) == 5
+        assert len(users) + len(errors) == 5, "Users must not be empty"
 
     def test_concurrent_login(self, auth_system):
         import threading
@@ -378,7 +378,7 @@ class TestConcurrentAccess:
         for t in threads:
             t.join()
 
-        assert len(operations) == 20
+        assert len(operations) == 20, "Operations must not be empty"
 
 
 # ============================================================================
@@ -399,10 +399,10 @@ class TestEdgeCaseCombinations:
 
     def test_unicode_username_with_special_password(self, auth_system):
         user = auth_system.register("用户123", "user@example.com", "Pässwörd123!中文")
-        assert user.username == "用户123"
+        assert user.username == "用户123", "username is not valid"
 
         result = auth_system.login("用户123", "Pässwörd123!中文")
-        assert result.user_id == user.user_id
+        assert result.user_id == user.user_id, "Result must not be empty"
 
     def test_very_long_username_and_password(self, auth_system):
         long_username = "u" * 200
@@ -411,7 +411,7 @@ class TestEdgeCaseCombinations:
         user = auth_system.register(long_username, "long@example.com", long_password)
 
         result = auth_system.login(long_username, long_password)
-        assert result.user_id == user.user_id
+        assert result.user_id == user.user_id, "Result must not be empty"
 
     def test_username_with_email_like_format(self, auth_system):
         user = auth_system.register(
@@ -419,16 +419,16 @@ class TestEdgeCaseCombinations:
             "actual@example.com",  # Actual email
             "Str0ngPass!",
         )
-        assert user.username == "user@example.com"
-        assert user.email == "actual@example.com"
+        assert user.username == "user@example.com", "username is not valid"
+        assert user.email == "actual@example.com", "email is not valid"
 
         result = auth_system.login("user@example.com", "Str0ngPass!")
-        assert result.user_id == user.user_id
+        assert result.user_id == user.user_id, "Result must not be empty"
 
     def test_email_and_password_both_unicode(self, auth_system):
         user = auth_system.register("sam", "用户@例え.jp", "密码123!")
-        assert user.email
-        assert user.username == "sam"
+        assert user.email, "Condition must be true"
+        assert user.username == "sam", "username is not valid"
 
     def test_rapid_password_changes(self, auth_system):
         user = auth_system.register("sam", "sam@example.com", "Pass0!")
@@ -441,7 +441,7 @@ class TestEdgeCaseCombinations:
 
         # Final password works
         result = auth_system.login("sam", "Pass5!")
-        assert result.user_id == user.user_id
+        assert result.user_id == user.user_id, "Result must not be empty"
 
 
 # ============================================================================

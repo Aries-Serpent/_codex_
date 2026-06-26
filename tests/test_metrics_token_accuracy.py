@@ -26,5 +26,5 @@ def test_token_accuracy_ignores_masked_labels() -> None:
 
     metrics = batch_metrics(outputs, {"labels": labels})
 
-    assert "token_accuracy" in metrics
-    assert metrics["token_accuracy"] == pytest.approx(0.5)
+    assert "token_accuracy" in metrics, "Condition must be true"
+    assert metrics["token_accuracy"] == pytest.approx(0.5), "Condition must be true"

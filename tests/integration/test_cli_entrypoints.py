@@ -20,8 +20,8 @@ class TestCodexCLI:
             timeout=30,
         )
 
-        assert result.returncode == 0
-        assert "usage" in result.stdout.lower() or "Usage" in result.stdout
+        assert result.returncode == 0, "Result must not be empty"
+        assert "usage" in result.stdout.lower() or "Usage" in result.stdout, "Result must not be empty"
 
     def test_cli_shows_commands(self):
         """Test CLI lists available commands."""
@@ -34,7 +34,7 @@ class TestCodexCLI:
 
         # Should show some commands
         output = result.stdout.lower()
-        assert "commands:" in output or "command" in output
+        assert "commands:" in output or "command" in output, "Condition must be true"
 
     def test_cli_archive_help(self):
         """Test CLI archive subcommand help."""
@@ -45,7 +45,7 @@ class TestCodexCLI:
             timeout=30,
         )
 
-        assert result.returncode == 0
+        assert result.returncode == 0, "Result must not be empty"
 
 
 class TestCodexMLCLI:
@@ -65,7 +65,7 @@ class TestCodexMLCLI:
 
         # If it succeeds, should show usage
         if result.returncode == 0:
-            assert "usage" in result.stdout.lower() or "help" in result.stdout.lower()
+            assert "usage" in result.stdout.lower() or "help" in result.stdout.lower(), "Result must not be empty"
 
 
 class TestLoggingCLI:

@@ -463,7 +463,7 @@ class TokenManager:
 
     def create_session_token(self, user_id: str, **kwargs) -> str:
         """Backward-compatible wrapper for :meth:`generate_session_token`.
-        
+
         Returns only the token (not the tuple).
         """
         token, _ = self.generate_session_token(user_id, **kwargs)
@@ -508,11 +508,11 @@ class TokenManager:
         # Validate JTI to prevent memory exhaustion attacks
         if not jti or not isinstance(jti, str):
             return False
-        
+
         # Enforce reasonable max length (256 bytes is more than enough for base64 JTI)
         if len(jti) > 256:
             return False
-        
+
         self._revoked_tokens.add(jti)
         # If session token, remove session
         if jti in self._sessions:

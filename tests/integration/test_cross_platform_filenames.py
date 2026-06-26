@@ -21,7 +21,7 @@ def test_timestamp_functions_produce_safe_filenames():
         timestamp = windows_safe_timestamp(fmt=fmt)
 
         for char in WINDOWS_ILLEGAL_CHARS:
-            assert (
+            assert (, "Condition must be true"
                 char not in timestamp
             ), f"Format '{fmt}' produced illegal character '{char}': {timestamp}"
 
@@ -69,7 +69,7 @@ def test_all_timestamp_generation_patterns():
             with tempfile.TemporaryDirectory() as tmpdir:
                 test_file = Path(tmpdir) / f"test_{result}.txt"
                 test_file.write_text("test")
-                assert test_file.exists()
+                assert test_file.exists(), "Condition must be true"
         except (OSError, ValueError) as e:
             pytest.fail(f"Format {fmt} produced invalid filename: {result} - {e}")
 
@@ -93,7 +93,7 @@ def test_sanitize_filename_comprehensive():
 
     for input_name, expected in test_cases:
         result = sanitize_filename(input_name)
-        assert (
+        assert (, "Condition must be true"
             result == expected
         ), f"sanitize_filename({input_name!r}) = {result!r}, expected {expected!r}"
 

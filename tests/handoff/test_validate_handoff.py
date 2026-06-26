@@ -26,41 +26,41 @@ class TestValidationResult:
     def test_init(self):
         """Test initialization."""
         result = ValidationResult("Test Check")
-        assert result.name == "Test Check"
-        assert result.passed is False
-        assert result.message == ""
-        assert result.severity == "info"
-        assert result.details == {}
+        assert result.name == "Test Check", "Result must not be empty"
+        assert result.passed is False, "Result must not be empty"
+        assert result.message == "", "Result must not be empty"
+        assert result.severity == "info", "Result must not be empty"
+        assert result.details == {}, "Result must not be empty"
 
     def test_pass_check(self):
         """Test marking check as passed."""
         result = ValidationResult("Test")
         result.pass_check("All good", {"key": "value"})
 
-        assert result.passed is True
-        assert result.message == "All good"
-        assert result.severity == "info"
-        assert result.details == {"key": "value"}
+        assert result.passed is True, "Result must not be empty"
+        assert result.message == "All good", "Result must not be empty"
+        assert result.severity == "info", "Result must not be empty"
+        assert result.details == {"key": "value"}, "Result must not be empty"
 
     def test_warn(self):
         """Test marking check as warning."""
         result = ValidationResult("Test")
         result.warn("Be careful", {"warning": "data"})
 
-        assert result.passed is True
-        assert result.message == "Be careful"
-        assert result.severity == "warning"
-        assert result.details == {"warning": "data"}
+        assert result.passed is True, "Result must not be empty"
+        assert result.message == "Be careful", "Result must not be empty"
+        assert result.severity == "warning", "Result must not be empty"
+        assert result.details == {"warning": "data"}, "Result must not be empty"
 
     def test_fail(self):
         """Test marking check as failed."""
         result = ValidationResult("Test")
         result.fail("Something wrong", {"error": "data"})
 
-        assert result.passed is False
-        assert result.message == "Something wrong"
-        assert result.severity == "error"
-        assert result.details == {"error": "data"}
+        assert result.passed is False, "Result must not be empty"
+        assert result.message == "Something wrong", "Result must not be empty"
+        assert result.severity == "error", "Result must not be empty"
+        assert result.details == {"error": "data"}, "Result must not be empty"
 
     def test_to_dict(self):
         """Test conversion to dictionary."""
@@ -69,10 +69,10 @@ class TestValidationResult:
 
         data = result.to_dict()
 
-        assert data["name"] == "Test Check"
-        assert data["passed"] is True
-        assert data["message"] == "OK"
-        assert data["severity"] == "info"
+        assert data["name"] == "Test Check", "Data must not be empty"
+        assert data["passed"] is True, "Data must not be empty"
+        assert data["message"] == "OK", "Data must not be empty"
+        assert data["severity"] == "info", "Data must not be empty"
 
 
 class TestValidationReport:
@@ -81,9 +81,9 @@ class TestValidationReport:
     def test_init(self):
         """Test initialization."""
         report = ValidationReport("Test Report")
-        assert report.title == "Test Report"
-        assert report.results == []
-        assert report.summary["total"] == 0
+        assert report.title == "Test Report", "title is not valid"
+        assert report.results == [], "Result must not be empty"
+        assert report.summary["total"] == 0, "rep is not valid"
 
     def test_add_result_passed(self):
         """Test adding passed result."""
@@ -93,10 +93,10 @@ class TestValidationReport:
 
         report.add_result(result)
 
-        assert len(report.results) == 1
-        assert report.summary["total"] == 1
-        assert report.summary["passed"] == 1
-        assert report.summary["failed"] == 0
+        assert len(report.results) == 1, "Collection must not be empty"
+        assert report.summary["total"] == 1, "rep is not valid"
+        assert report.summary["passed"] == 1, "rep is not valid"
+        assert report.summary["failed"] == 0, "rep is not valid"
 
     def test_add_result_warning(self):
         """Test adding warning result."""
@@ -106,10 +106,10 @@ class TestValidationReport:
 
         report.add_result(result)
 
-        assert report.summary["total"] == 1
-        assert report.summary["passed"] == 1
-        assert report.summary["warnings"] == 1
-        assert report.summary["failed"] == 0
+        assert report.summary["total"] == 1, "rep is not valid"
+        assert report.summary["passed"] == 1, "rep is not valid"
+        assert report.summary["warnings"] == 1, "rep is not valid"
+        assert report.summary["failed"] == 0, "rep is not valid"
 
     def test_add_result_failed(self):
         """Test adding failed result."""
@@ -119,9 +119,9 @@ class TestValidationReport:
 
         report.add_result(result)
 
-        assert report.summary["total"] == 1
-        assert report.summary["passed"] == 0
-        assert report.summary["failed"] == 1
+        assert report.summary["total"] == 1, "rep is not valid"
+        assert report.summary["passed"] == 0, "rep is not valid"
+        assert report.summary["failed"] == 1, "rep is not valid"
 
     def test_is_valid_all_passed(self):
         """Test is_valid when all checks pass."""
@@ -131,7 +131,7 @@ class TestValidationReport:
             result.pass_check("OK")
             report.add_result(result)
 
-        assert report.is_valid is True
+        assert report.is_valid is True, "is_valid is not valid"
 
     def test_is_valid_with_failures(self):
         """Test is_valid when some checks fail."""
@@ -145,7 +145,7 @@ class TestValidationReport:
         result2.fail("Error")
         report.add_result(result2)
 
-        assert report.is_valid is False
+        assert report.is_valid is False, "is_valid is not valid"
 
     def test_is_valid_with_warnings(self):
         """Test is_valid with warnings only."""
@@ -154,7 +154,7 @@ class TestValidationReport:
         result.warn("Warning")
         report.add_result(result)
 
-        assert report.is_valid is True
+        assert report.is_valid is True, "is_valid is not valid"
 
     def test_to_markdown(self):
         """Test markdown generation."""
@@ -170,12 +170,12 @@ class TestValidationReport:
 
         markdown = report.to_markdown()
 
-        assert "Test Report" in markdown
-        assert "PASSED WITH WARNINGS" in markdown
-        assert "Check 1" in markdown
-        assert "Check 2" in markdown
-        assert "All good" in markdown
-        assert "Be careful" in markdown
+        assert "Test Report" in markdown, "Condition must be true"
+        assert "PASSED WITH WARNINGS" in markdown, "Condition must be true"
+        assert "Check 1" in markdown, "Condition must be true"
+        assert "Check 2" in markdown, "Condition must be true"
+        assert "All good" in markdown, "Condition must be true"
+        assert "Be careful" in markdown, "Condition must be true"
 
     def test_to_dict(self):
         """Test dictionary conversion."""
@@ -186,10 +186,10 @@ class TestValidationReport:
 
         data = report.to_dict()
 
-        assert data["title"] == "Test"
-        assert data["is_valid"] is True
-        assert len(data["results"]) == 1
-        assert "summary" in data
+        assert data["title"] == "Test", "Data must not be empty"
+        assert data["is_valid"] is True, "Data must not be empty"
+        assert len(data["results"]) == 1, "Collection must not be empty"
+        assert "summary" in data, "Data must not be empty"
 
 
 class TestHandoffValidator:
@@ -217,7 +217,7 @@ class TestHandoffValidator:
         with patch("validate_handoff.TRACKING_FILE", tracking_file):
             validator = HandoffValidator()
 
-        assert len(validator.tracking_data["handoffs"]) == 1
+        assert len(validator.tracking_data["handoffs"]) == 1, "Collection must not be empty"
 
     def test_get_handoff_found(self, validator):
         """Test getting existing handoff."""
@@ -225,8 +225,8 @@ class TestHandoffValidator:
 
         result = validator.get_handoff("HO-001")
 
-        assert result is not None
-        assert result["id"] == "HO-001"
+        assert result is not None, "result must be initialized"
+        assert result["id"] == "HO-001", "Result must not be empty"
 
     def test_get_handoff_not_found(self, validator):
         """Test getting non-existent handoff."""
@@ -234,7 +234,7 @@ class TestHandoffValidator:
 
         result = validator.get_handoff("HO-999")
 
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_validate_context_completeness_success(self, validator):
         """Test context completeness validation - success."""
@@ -249,7 +249,7 @@ class TestHandoffValidator:
 
         result = validator.validate_context_completeness(handoff)
 
-        assert result.passed is True
+        assert result.passed is True, "Result must not be empty"
 
     def test_validate_context_completeness_missing_fields(self, validator):
         """Test context completeness validation - missing fields."""
@@ -257,8 +257,8 @@ class TestHandoffValidator:
 
         result = validator.validate_context_completeness(handoff)
 
-        assert result.passed is False
-        assert "Missing" in result.message
+        assert result.passed is False, "Result must not be empty"
+        assert "Missing" in result.message, "Result must not be empty"
 
     def test_validate_context_summary_with_data(self, validator):
         """Test context summary validation with data."""
@@ -268,8 +268,8 @@ class TestHandoffValidator:
 
         result = validator.validate_context_summary(handoff)
 
-        assert result.passed is True
-        assert "18 work items" in result.message
+        assert result.passed is True, "Result must not be empty"
+        assert "18 work items" in result.message, "Result must not be empty"
 
     def test_validate_context_summary_empty(self, validator):
         """Test context summary validation - empty."""
@@ -279,7 +279,7 @@ class TestHandoffValidator:
 
         result = validator.validate_context_summary(handoff)
 
-        assert result.severity == "warning"
+        assert result.severity == "warning", "Result must not be empty"
 
     def test_validate_context_summary_missing(self, validator):
         """Test context summary validation - missing."""
@@ -287,8 +287,8 @@ class TestHandoffValidator:
 
         result = validator.validate_context_summary(handoff)
 
-        assert result.severity == "warning"
-        assert "No context summary" in result.message
+        assert result.severity == "warning", "Result must not be empty"
+        assert "No context summary" in result.message, "Result must not be empty"
 
     def test_validate_deliverables_exist_all_present(self, validator, temp_dir):
         """Test deliverables validation - all exist."""
@@ -301,8 +301,8 @@ class TestHandoffValidator:
         with patch("validate_handoff.REPO_ROOT", temp_dir):
             result = validator.validate_deliverables_exist(["file1.py", "file2.py"])
 
-        assert result.passed is True
-        assert "All 2 deliverables exist" in result.message
+        assert result.passed is True, "Result must not be empty"
+        assert "All 2 deliverables exist" in result.message, "Result must not be empty"
 
     def test_validate_deliverables_exist_some_missing(self, validator, temp_dir):
         """Test deliverables validation - some missing."""
@@ -312,14 +312,14 @@ class TestHandoffValidator:
         with patch("validate_handoff.REPO_ROOT", temp_dir):
             result = validator.validate_deliverables_exist(["file1.py", "missing.py"])
 
-        assert result.passed is False
-        assert "missing" in result.message.lower()
+        assert result.passed is False, "Result must not be empty"
+        assert "missing" in result.message.lower(), "Result must not be empty"
 
     def test_validate_deliverables_exist_empty(self, validator):
         """Test deliverables validation - empty list."""
         result = validator.validate_deliverables_exist([])
 
-        assert result.severity == "warning"
+        assert result.severity == "warning", "Result must not be empty"
 
     def test_validate_timeout_within_limit(self, validator):
         """Test timeout validation - within limit."""
@@ -330,7 +330,7 @@ class TestHandoffValidator:
 
         result = validator.validate_timeout(handoff, timeout_minutes=60)
 
-        assert result.passed is True
+        assert result.passed is True, "Result must not be empty"
 
     def test_validate_timeout_exceeded(self, validator):
         """Test timeout validation - exceeded."""
@@ -341,8 +341,8 @@ class TestHandoffValidator:
 
         result = validator.validate_timeout(handoff, timeout_minutes=60)
 
-        assert result.passed is False
-        assert "timed out" in result.message
+        assert result.passed is False, "Result must not be empty"
+        assert "timed out" in result.message, "Result must not be empty"
 
     def test_validate_timeout_completed_status(self, validator):
         """Test timeout validation - completed status."""
@@ -350,8 +350,8 @@ class TestHandoffValidator:
 
         result = validator.validate_timeout(handoff)
 
-        assert result.passed is True
-        assert "not in active state" in result.message
+        assert result.passed is True, "Result must not be empty"
+        assert "not in active state" in result.message, "Result must not be empty"
 
     def test_validate_chain_integrity_success(self, validator):
         """Test chain integrity - valid chain."""
@@ -376,7 +376,7 @@ class TestHandoffValidator:
 
         result = validator.validate_chain_integrity()
 
-        assert result.passed is True
+        assert result.passed is True, "Result must not be empty"
 
     def test_validate_chain_integrity_agent_mismatch(self, validator):
         """Test chain integrity - agent mismatch."""
@@ -401,8 +401,8 @@ class TestHandoffValidator:
 
         result = validator.validate_chain_integrity()
 
-        assert result.passed is False
-        assert "mismatch" in result.message.lower() or "issues" in result.message.lower()
+        assert result.passed is False, "Result must not be empty"
+        assert "mismatch" in result.message.lower() or "issues" in result.message.lower(), "Result must not be empty"
 
     def test_validate_handoff_full(self, validator):
         """Test full handoff validation."""
@@ -426,8 +426,8 @@ class TestHandoffValidator:
 
         report = validator.validate_handoff("HO-001")
 
-        assert report.is_valid is True
-        assert len(report.results) >= 2  # At least context and summary checks
+        assert report.is_valid is True, "is_valid is not valid"
+        assert len(report.results) >= 2, "Collection must not be empty"
 
     def test_validate_handoff_not_found(self, validator):
         """Test validation of non-existent handoff."""
@@ -435,8 +435,8 @@ class TestHandoffValidator:
 
         report = validator.validate_handoff("HO-999")
 
-        assert report.is_valid is False
-        assert "not found" in report.results[0].message
+        assert report.is_valid is False, "is_valid is not valid"
+        assert "not found" in report.results[0].message, "Result must not be empty"
 
     def test_pre_handoff_check(self, validator, temp_dir):
         """Test pre-handoff check."""
@@ -446,8 +446,8 @@ class TestHandoffValidator:
         with patch("validate_handoff.ACTION_LOG_PATH", action_log):
             report = validator.pre_handoff_check("Test Phase")
 
-        assert len(report.results) >= 3
-        assert "Pre-Handoff Check" in report.title
+        assert len(report.results) >= 3, "Collection must not be empty"
+        assert "Pre-Handoff Check" in report.title, "Condition must be true"
 
     def test_post_handoff_check_success(self, validator):
         """Test post-handoff check - success."""
@@ -467,8 +467,8 @@ class TestHandoffValidator:
 
         report = validator.post_handoff_check("HO-001")
 
-        assert "Post-Handoff Check" in report.title
-        assert any("recorded" in r.message.lower() for r in report.results)
+        assert "Post-Handoff Check" in report.title, "Condition must be true"
+        assert any("recorded" in r.message.lower() for r in report.results), "Result must not be empty"
 
     def test_post_handoff_check_not_found(self, validator):
         """Test post-handoff check - not found."""
@@ -476,7 +476,7 @@ class TestHandoffValidator:
 
         report = validator.post_handoff_check("HO-999")
 
-        assert report.is_valid is False
+        assert report.is_valid is False, "is_valid is not valid"
 
     def test_chain_validation(self, validator):
         """Test chain validation."""
@@ -495,8 +495,8 @@ class TestHandoffValidator:
 
         report = validator.chain_validation()
 
-        assert "Chain Validation" in report.title
-        assert len(report.results) >= 2  # Chain integrity + stale + success rate
+        assert "Chain Validation" in report.title, "Condition must be true"
+        assert len(report.results) >= 2, "Collection must not be empty"
 
     def test_mark_failed_for_retry_success(self, validator, temp_dir):
         """Test marking handoff for retry - success."""
@@ -509,8 +509,8 @@ class TestHandoffValidator:
         with patch("validate_handoff.TRACKING_FILE", tracking_file):
             success, message = validator.mark_failed_for_retry("HO-001")
 
-        assert success is True
-        assert "retry" in message.lower()
+        assert success is True, "success is not valid"
+        assert "retry" in message.lower(), "Condition must be true"
 
     def test_mark_failed_for_retry_max_exceeded(self, validator):
         """Test marking handoff for retry - max exceeded."""
@@ -520,8 +520,8 @@ class TestHandoffValidator:
 
         success, message = validator.mark_failed_for_retry("HO-001", max_retries=3)
 
-        assert success is False
-        assert "exceeded" in message.lower()
+        assert success is False, "success is not valid"
+        assert "exceeded" in message.lower(), "Condition must be true"
 
     def test_mark_failed_for_retry_not_found(self, validator):
         """Test marking handoff for retry - not found."""
@@ -529,5 +529,5 @@ class TestHandoffValidator:
 
         success, message = validator.mark_failed_for_retry("HO-999")
 
-        assert success is False
-        assert "not found" in message.lower()
+        assert success is False, "success is not valid"
+        assert "not found" in message.lower(), "Condition must be true"

@@ -48,9 +48,9 @@ def test_manifest_json_and_csv(tmp_path: Path) -> None:
     json_items = batch.BatchManifest.from_path(json_manifest, default_actor="actor").items
     csv_items = batch.BatchManifest.from_path(csv_manifest, default_actor="actor").items
 
-    assert len(json_items) == 2
-    assert json_items[0].actor == "actor"
-    assert csv_items[0].output.name == "fileA.txt"
+    assert len(json_items) == 2, "Json_items must not be empty"
+    assert json_items[0].actor == "actor", "Item must not be empty"
+    assert csv_items[0].output.name == "fileA.txt", "Item must not be empty"
 
 
 def test_batch_restore_results(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -78,10 +78,10 @@ def test_batch_restore_results(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) 
     manifest = batch.BatchManifest.from_path(manifest_path, default_actor="actor")
     result = runner.restore(manifest)
 
-    assert result.total == 2
-    assert result.succeeded == 1
-    assert result.failed == 1
-    assert any(entry["status"] == "FAILED" for entry in result.results)
+    assert result.total == 2, "Result must not be empty"
+    assert result.succeeded == 1, "Result must not be empty"
+    assert result.failed == 1, "Result must not be empty"
+    assert any(entry["status"] == "FAILED" for entry in result.results), "Result must not be empty"
 
 
 def test_save_results_persists_summary(tmp_path: Path) -> None:
@@ -96,5 +96,5 @@ def test_save_results_persists_summary(tmp_path: Path) -> None:
     runner.save_results(output_path, result)
 
     content = json.loads(output_path.read_text())
-    assert content["total"] == 1
-    assert content["results"][0]["tombstone"] == "a"
+    assert content["total"] == 1, "Content must not be empty"
+    assert content["results"][0]["tombstone"] == "a", "Result must not be empty"

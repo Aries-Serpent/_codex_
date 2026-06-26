@@ -12,7 +12,7 @@ from codex_ml.registry import Registry
 
 def test_registry_docstring_contains_table():
     doc = registry_facade.__doc__ or ""
-    assert "| ``model_registry``" in doc
+    assert "| ``model_registry``" in doc, "Condition must be true"
 
 
 def test_registry_temporary_registration():
@@ -22,6 +22,6 @@ def test_registry_temporary_registration():
         pass
 
     with reg.temporarily_registered({"toy": Toy}):
-        assert reg.get("toy") is Toy
+        assert reg.get("toy") is Toy, "Condition must be true"
     with reg.temporarily_registered({"alt": Toy}):
-        assert reg.list() == ["alt"]
+        assert reg.list() == ["alt"], "Condition must be true"

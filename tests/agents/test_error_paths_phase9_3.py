@@ -56,23 +56,23 @@ class TestWorkflowStepExecuteErrors:
         """A failing command on a non-optional step returns success=False."""
         step = WorkflowStep(id="fail_step", action="fail", command="false")
         result = step.execute({"working_dir": str(tmp_path)})
-        assert result["success"] is False
-        assert step.status == StepStatus.FAILED
+        assert result["success"] is False, "Result must not be empty"
+        assert step.status == StepStatus.FAILED, "status is not valid"
 
     def test_execute_command_failure_optional_returns_success(self, tmp_path: Path) -> None:
         """A failing command on an *optional* step still returns success=True."""
         step = WorkflowStep(id="opt_step", action="opt", command="false", optional=True)
         result = step.execute({"working_dir": str(tmp_path)})
-        assert result["success"] is True
-        assert step.status == StepStatus.COMPLETED
+        assert result["success"] is True, "Result must not be empty"
+        assert step.status == StepStatus.COMPLETED, "status is not valid"
 
     def test_execute_command_success_returns_stdout(self, tmp_path: Path) -> None:
         """A successful command returns success=True and captures stdout."""
         step = WorkflowStep(id="ok_step", action="echo", command="echo hello")
         result = step.execute({"working_dir": str(tmp_path)})
-        assert result["success"] is True
+        assert result["success"] is True, "Result must not be empty"
         assert "hello" in result.get("stdout", "")
-        assert step.status == StepStatus.COMPLETED
+        assert step.status == StepStatus.COMPLETED, "status is not valid"
 
     def test_execute_exception_sets_failed_status(self) -> None:
         """An unexpected exception in execute returns success=False and FAILED status."""
@@ -80,24 +80,24 @@ class TestWorkflowStepExecuteErrors:
         # On systems without the command this raises FileNotFoundError inside subprocess,
         # which is caught by the broad except clause.
         result = step.execute({})
-        assert result["success"] is False
-        assert step.status == StepStatus.FAILED
-        assert "error" in result
+        assert result["success"] is False, "Result must not be empty"
+        assert step.status == StepStatus.FAILED, "status is not valid"
+        assert "error" in result, "Result must not be empty"
 
     def test_execute_uses_branch_returns_success(self) -> None:
         """A step with 'uses' (no command) returns success=True."""
         step = WorkflowStep(id="uses_step", action="use", uses="some.module")
         result = step.execute({})
-        assert result["success"] is True
-        assert step.status == StepStatus.COMPLETED
+        assert result["success"] is True, "Result must not be empty"
+        assert step.status == StepStatus.COMPLETED, "status is not valid"
         assert "Would execute: some.module" in result.get("message", "")
 
     def test_execute_no_action_returns_skipped(self) -> None:
         """A step with no command and no uses is SKIPPED."""
         step = WorkflowStep(id="noop_step", action="noop")
         result = step.execute({})
-        assert result["success"] is True
-        assert step.status == StepStatus.SKIPPED
+        assert result["success"] is True, "Result must not be empty"
+        assert step.status == StepStatus.SKIPPED, "status is not valid"
         assert "No action defined" in result.get("message", "")
 
 
@@ -118,7 +118,7 @@ class TestWorkflowNavigatorTemplateErrors:
         nav = WorkflowNavigator(workspace_dir=tmp_path)
         for wf_type in ("test_coverage", "self_heal", "audit_coverage", "test_run"):
             wf = nav._create_dynamic_workflow(wf_type)
-            assert wf is not None
+            assert wf is not None, "wf must be initialized"
 
 
 # ---------------------------------------------------------------------------
@@ -171,7 +171,7 @@ class TestMentalMapAddEdgeErrors:
     def test_valid_edge_succeeds(self) -> None:
         m = self._make_map_with_nodes()
         edge = m.connect_nodes(m._test_id_a, m._test_id_b)
-        assert edge is not None
+        assert edge is not None, "edge must be initialized"
 
 
 # ---------------------------------------------------------------------------
@@ -194,7 +194,7 @@ class TestAgentMemoryErrors:
 
         db_path = tmp_path / "test_memory.db"
         store = AgentMemory(db_path=db_path)
-        assert store is not None
+        assert store is not None, "store must be initialized"
 
 
 # ---------------------------------------------------------------------------
@@ -217,7 +217,7 @@ class TestEnergyLandscapeErrors:
 
         landscape = EnergyLandscape(temperature=1.0)
         result = landscape.select_state()
-        assert result is None
+        assert result is None, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -350,26 +350,26 @@ class TestAgentExceptionHierarchy:
 
     def test_agent_import_error_message_without_extra(self) -> None:
         err = AgentImportError("numpy")
-        assert "numpy" in str(err)
-        assert "pip install numpy" in str(err)
+        assert "numpy" in str(err), "Condition must be true"
+        assert "pip install numpy" in str(err), "Condition must be true"
         assert isinstance(err, AgentError)
         assert isinstance(err, ImportError)
 
     def test_agent_import_error_message_with_extra(self) -> None:
         err = AgentImportError("torch", extra="ml")
-        assert "torch" in str(err)
-        assert "codex-ml[ml]" in str(err)
+        assert "torch" in str(err), "Condition must be true"
+        assert "codex-ml[ml]" in str(err), "Condition must be true"
 
     def test_agent_import_error_with_package_name(self) -> None:
         err = AgentImportError("sklearn", package_name="scikit-learn")
-        assert "sklearn" in str(err)
-        assert "scikit-learn" in str(err)
+        assert "sklearn" in str(err), "Condition must be true"
+        assert "scikit-learn" in str(err), "Condition must be true"
 
     def test_agent_config_error_is_value_error(self) -> None:
         err = AgentConfigError("bad config")
         assert isinstance(err, ValueError)
         assert isinstance(err, AgentError)
-        assert "bad config" in str(err)
+        assert "bad config" in str(err), "Condition must be true"
 
     def test_agent_validation_error_is_value_error(self) -> None:
         err = AgentValidationError("invariant violated")
@@ -384,12 +384,12 @@ class TestAgentExceptionHierarchy:
     def test_entanglement_error_hierarchy(self) -> None:
         err = EntanglementError("entanglement failure")
         assert isinstance(err, AgentError)
-        assert "entanglement failure" in str(err)
+        assert "entanglement failure" in str(err), "Condition must be true"
 
     def test_gauge_error_hierarchy(self) -> None:
         err = GaugeError("gauge symmetry broken")
         assert isinstance(err, AgentError)
-        assert "gauge symmetry broken" in str(err)
+        assert "gauge symmetry broken" in str(err), "Condition must be true"
 
     def test_raise_and_catch_agent_import_error_as_agent_error(self) -> None:
         with pytest.raises(AgentError):
@@ -416,53 +416,53 @@ class TestSimpleMemoryAdapterOperations:
     def test_store_and_retrieve(self) -> None:
         adapter = self._make_adapter()
         ok = adapter.store("key1", "value1")
-        assert ok is True
-        assert adapter.retrieve("key1") == "value1"
+        assert ok is True, "ok is not valid"
+        assert adapter.retrieve("key1") == "value1", "Value must be initialized"
 
     def test_retrieve_missing_key_returns_none(self) -> None:
         adapter = self._make_adapter()
-        assert adapter.retrieve("no_such_key") is None
+        assert adapter.retrieve("no_such_key") is None, "Condition must be true"
 
     def test_delete_existing_key(self) -> None:
         adapter = self._make_adapter()
         adapter.store("k", "v")
         ok = adapter.delete("k")
-        assert ok is True
-        assert adapter.retrieve("k") is None
+        assert ok is True, "ok is not valid"
+        assert adapter.retrieve("k") is None, "Condition must be true"
 
     def test_delete_non_existing_key_returns_true(self) -> None:
         adapter = self._make_adapter()
         result = adapter.delete("ghost_key")
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_clear_removes_all_entries(self) -> None:
         adapter = self._make_adapter()
         adapter.store("a", 1)
         adapter.store("b", 2)
         ok = adapter.clear()
-        assert ok is True
-        assert adapter.retrieve("a") is None
-        assert adapter.retrieve("b") is None
+        assert ok is True, "ok is not valid"
+        assert adapter.retrieve("a") is None, "Condition must be true"
+        assert adapter.retrieve("b") is None, "Condition must be true"
 
     def test_get_history_returns_most_recent_first(self) -> None:
         adapter = self._make_adapter()
         adapter.store("seq", "v1")
         adapter.store("seq", "v2")
         history = adapter.get_history("seq")
-        assert len(history) >= 2
+        assert len(history) >= 2, "History must not be empty"
         # Most recent is first
         _, val = history[0]
-        assert val == "v2"
+        assert val == "v2", "val is not valid"
 
     def test_get_history_missing_key_returns_empty(self) -> None:
         adapter = self._make_adapter()
-        assert adapter.get_history("nope") == []
+        assert adapter.get_history("nope") == [], "Condition must be true"
 
     def test_search_by_metadata(self) -> None:
         adapter = self._make_adapter()
         adapter.store("x", 42, metadata={"tag": "important"})
         adapter.store("y", 99, metadata={"tag": "other"})
         results = adapter.search({"tag": "important"})
-        assert len(results) >= 1
+        assert len(results) >= 1, "Results must not be empty"
         keys = [k for k, _ in results]
-        assert "x" in keys
+        assert "x" in keys, "Condition must be true"

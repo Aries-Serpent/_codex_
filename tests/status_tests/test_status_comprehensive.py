@@ -13,8 +13,8 @@ class TestStatusReporting:
             "capabilities": [],
             "scores": {},
         }
-        assert "timestamp" in report
-        assert "capabilities" in report
+        assert "timestamp" in report, "Condition must be true"
+        assert "capabilities" in report, "Condition must be true"
 
     def test_capability_scoring(self):
         """Test capability scoring logic."""
@@ -24,7 +24,7 @@ class TestStatusReporting:
             "documentation": 0.8,
         }
         score = sum(components.values()) / len(components)
-        assert 0.0 <= score <= 1.0
+        assert 0.0 <= score <= 1.0, "0 is not valid"
 
 
 class TestStatusUpdateReport:
@@ -37,7 +37,7 @@ class TestStatusUpdateReport:
             {"id": "test2", "score": 0.8},
         ]
         low_maturity = [c for c in capabilities if c["score"] < 0.7]
-        assert len(low_maturity) == 1
+        assert len(low_maturity) == 1, "Low_maturity must not be empty"
 
 
 class TestStatusDetector:
@@ -47,4 +47,4 @@ class TestStatusDetector:
         """Test evidence file collection."""
         evidence = tmp_path / "evidence.jsonl"
         evidence.write_text('{"test": "data"}\n')
-        assert evidence.exists()
+        assert evidence.exists(), "Condition must be true"

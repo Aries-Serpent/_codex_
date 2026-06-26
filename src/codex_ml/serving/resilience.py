@@ -159,8 +159,8 @@ class CircuitBreaker:
                         raise Exception("Health probe failed")
                 except (IOError, OSError) as e:
                     error_type = type(e).__name__
-                    logger.debug(f"Exception: <ERROR_TYPE>")
-                    logger.warning(f"Health probe error: <ERROR_TYPE>")
+                    logger.debug("Exception: <ERROR_TYPE>")
+                    logger.warning("Health probe error: <ERROR_TYPE>")
                     self._on_failure()
                     raise
 
@@ -362,8 +362,8 @@ class CircuitBreaker:
             logger.debug(f"Circuit breaker state saved to {state_file}")
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.warning(f"Failed to save circuit breaker state: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.warning("Failed to save circuit breaker state: <ERROR_TYPE>")
 
     def _load_state(self) -> None:
         """Load persisted circuit breaker state from file"""
@@ -396,8 +396,8 @@ class CircuitBreaker:
             )
         except (ValueError, TypeError, RuntimeError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.warning(f"Failed to load circuit breaker state: <ERROR_TYPE>, starting fresh")
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.warning("Failed to load circuit breaker state: <ERROR_TYPE>, starting fresh")
 
 
 def retry_with_backoff(
@@ -507,8 +507,8 @@ class FallbackHandler:
             return func(*args, **kwargs)
         except (ValueError, TypeError, RuntimeError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.warning(f"Primary function failed: <ERROR_TYPE>, attempting fallback")
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.warning("Primary function failed: <ERROR_TYPE>, attempting fallback")
 
             # Try cache fallback
             if self.use_cache and self.cache and fallback_key:

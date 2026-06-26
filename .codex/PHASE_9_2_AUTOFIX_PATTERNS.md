@@ -857,7 +857,7 @@ Low (0-2 instances per major change)
 query = f"SELECT * FROM users WHERE id = {user_id}"  # ← Direct interpolation
 
 # Security issue: Hardcoded credentials
-API_KEY = "sk_live_abc123def456"  # ← In source code
+API_KEY = "sk_live_abc123def456"  # ← In source code  # pragma: allowlist secret
 
 # Security issue: Unsafe deserialization
 import pickle
@@ -879,8 +879,8 @@ query = "SELECT * FROM users WHERE id = ?"
 cursor.execute(query, (user_id,))
 
 # Fix 2: Remove hardcoded credentials
-# Move to environment variable or secrets manager
-API_KEY = os.environ.get("API_KEY")
+# Move to environment variable or secrets manager  # pragma: allowlist secret
+API_KEY = os.environ.get("API_KEY")  # pragma: allowlist secret
 
 # Fix 3: Use safe deserialization
 import json

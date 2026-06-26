@@ -65,7 +65,7 @@ class TestPromptMetadata:
             type="system",
             risk_class="READ_ONLY",
         )
-        assert m.risk == ControlClass.READ_ONLY
+        assert m.risk == ControlClass.READ_ONLY, "risk is not valid"
 
     def test_risk_property_fallback_on_invalid(self):
         m = PromptMetadata(
@@ -74,7 +74,7 @@ class TestPromptMetadata:
             type="system",
             risk_class="BOGUS",
         )
-        assert m.risk == ControlClass.ADVISORY_WRITE
+        assert m.risk == ControlClass.ADVISORY_WRITE, "risk is not valid"
 
     def test_is_approved_for(self):
         m = PromptMetadata(
@@ -84,41 +84,41 @@ class TestPromptMetadata:
             risk_class="READ_ONLY",
             approved_for_modes=["OBSERVE", "DRY_RUN"],
         )
-        assert m.is_approved_for(AutonomyMode.OBSERVE)
-        assert m.is_approved_for(AutonomyMode.DRY_RUN)
-        assert not m.is_approved_for(AutonomyMode.SAFE_AUTO)
+        assert m.is_approved_for(AutonomyMode.OBSERVE), "Condition must be true"
+        assert m.is_approved_for(AutonomyMode.DRY_RUN), "Condition must be true"
+        assert not m.is_approved_for(AutonomyMode.SAFE_AUTO), "Condition must be true"
 
 
 class TestPromptRegistryLoad:
     def test_load_valid_yaml(self, tmp_path):
         path = _write_registry(tmp_path, _VALID_YAML)
         reg = PromptRegistry.load(path=path)
-        assert len(reg.all_prompts()) == 2
-        assert reg.get("test-read-only") is not None
+        assert len(reg.all_prompts()) == 2, "Collection must not be empty"
+        assert reg.get("test-read-only") is not None, "Value must be initialized"
 
     def test_load_missing_file(self, monkeypatch):
         monkeypatch.setenv("CODEX_PROMPT_REGISTRY", "/nonexistent.yaml")
         reg = PromptRegistry.load()
-        assert reg.all_prompts() == []
+        assert reg.all_prompts() == [], "Condition must be true"
 
     def test_get_returns_none_for_unknown(self, tmp_path):
         path = _write_registry(tmp_path, _VALID_YAML)
         reg = PromptRegistry.load(path=path)
-        assert reg.get("no-such-id") is None
+        assert reg.get("no-such-id") is None, "Condition must be true"
 
     def test_by_surface(self, tmp_path):
         path = _write_registry(tmp_path, _VALID_YAML)
         reg = PromptRegistry.load(path=path)
         surface_prompts = reg.by_surface("AUT-007")
-        assert any(p.prompt_id == "test-advisory" for p in surface_prompts)
-        assert not any(p.prompt_id == "test-read-only" for p in surface_prompts)
+        assert any(p.prompt_id == "test-advisory" for p in surface_prompts), "prompt_id is not valid"
+        assert not any(p.prompt_id == "test-read-only" for p in surface_prompts), "prompt_id is not valid"
 
     def test_by_risk_class(self, tmp_path):
         path = _write_registry(tmp_path, _VALID_YAML)
         reg = PromptRegistry.load(path=path)
         read_only = reg.by_risk_class(ControlClass.READ_ONLY)
-        assert len(read_only) == 1
-        assert read_only[0].prompt_id == "test-read-only"
+        assert len(read_only) == 1, "Read_only must not be empty"
+        assert read_only[0].prompt_id == "test-read-only", "prompt_id is not valid"
 
 
 class TestValidation:
@@ -126,7 +126,7 @@ class TestValidation:
         path = _write_registry(tmp_path, _VALID_YAML)
         reg = PromptRegistry.load(path=path)
         errors = reg.validate_all()
-        assert errors == []
+        assert errors == [], "Error should be raised or set"
 
     def test_validate_all_catches_bad_risk_class(self, tmp_path):
         yaml = (
@@ -136,7 +136,7 @@ class TestValidation:
         path = _write_registry(tmp_path, yaml)
         reg = PromptRegistry.load(path=path)
         errors = reg.validate_all()
-        assert any("invalid risk_class" in e for e in errors)
+        assert any("invalid risk_class" in e for e in errors), "Error should be raised or set"
 
     def test_validate_all_catches_bad_mode(self, tmp_path):
         yaml = (
@@ -146,7 +146,7 @@ class TestValidation:
         path = _write_registry(tmp_path, yaml)
         reg = PromptRegistry.load(path=path)
         errors = reg.validate_all()
-        assert any("BANANA" in e for e in errors)
+        assert any("BANANA" in e for e in errors), "Error should be raised or set"
 
     def test_validate_for_mode_passes_approved(self, tmp_path):
         path = _write_registry(tmp_path, _VALID_YAML)

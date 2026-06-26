@@ -30,7 +30,7 @@ class TestOutputProcessor:
         text = "This is some output text."
 
         result = processor.scrub_output(text)
-        assert result == "This is some output text."
+        assert result == "This is some output text.", "Result must not be empty"
 
     def test_scrub_output_removes_safety_markers(self):
         """Test that safety delimiters are removed."""
@@ -39,9 +39,9 @@ class TestOutputProcessor:
 
         result = processor.scrub_output(text)
 
-        assert "RETRIEVED CONTEXT START" not in result
-        assert "RETRIEVED CONTEXT END" not in result
-        assert "Content here" in result
+        assert "RETRIEVED CONTEXT START" not in result, "Result must not be empty"
+        assert "RETRIEVED CONTEXT END" not in result, "Result must not be empty"
+        assert "Content here" in result, "Result must not be empty"
 
     def test_scrub_output_with_redaction_rules(self):
         """Test output scrubbing with custom redaction rules."""
@@ -55,10 +55,10 @@ class TestOutputProcessor:
 
         result = processor.scrub_output(text, redaction_rules=rules)
 
-        assert "[EMAIL]" in result
-        assert "[REDACTED]" in result
-        assert "user@example.com" not in result
-        assert "secret123" not in result
+        assert "[EMAIL]" in result, "Result must not be empty"
+        assert "[REDACTED]" in result, "Result must not be empty"
+        assert "user@example.com" not in result, "Result must not be empty"
+        assert "secret123" not in result, "Result must not be empty"
 
     def test_scrub_output_strips_whitespace(self):
         """Test that output is stripped of surrounding whitespace."""
@@ -67,7 +67,7 @@ class TestOutputProcessor:
 
         result = processor.scrub_output(text)
 
-        assert result == "Content with spaces"
+        assert result == "Content with spaces", "Result must not be empty"
 
     def test_extract_evidence_tags_basic(self):
         """Test basic evidence extraction."""
@@ -102,7 +102,7 @@ class TestOutputProcessor:
         evidence = processor.extract_evidence_tags(output, retrieved_docs)
 
         # Should have no evidence (no overlap)
-        assert len(evidence) == 0
+        assert len(evidence) == 0, "Evidence must not be empty"
 
     def test_extract_evidence_tags_with_overlap(self):
         """Test evidence extraction with content overlap."""
@@ -120,9 +120,9 @@ class TestOutputProcessor:
         evidence = processor.extract_evidence_tags(output, retrieved_docs)
 
         # Should find evidence due to overlap
-        assert len(evidence) > 0
+        assert len(evidence) > 0, "Evidence must not be empty"
         if evidence:
-            assert evidence[0]["source_id"] == "intro.py"
+            assert evidence[0]["source_id"] == "intro.py", "Condition must be true"
 
     def test_extract_evidence_tags_short_content_skipped(self):
         """Test that very short content is skipped."""
@@ -134,7 +134,7 @@ class TestOutputProcessor:
         evidence = processor.extract_evidence_tags(output, retrieved_docs)
 
         # Short content (< 20 chars) should be skipped
-        assert len(evidence) == 0
+        assert len(evidence) == 0, "Evidence must not be empty"
 
     def test_add_citations_inline(self):
         """Test adding inline citations."""
@@ -148,9 +148,9 @@ class TestOutputProcessor:
 
         result = processor.add_citations(output, evidence, citation_style="inline")
 
-        assert "file1.py" in result
-        assert "file2.py" in result
-        assert "[Sources:" in result
+        assert "file1.py" in result, "Result must not be empty"
+        assert "file2.py" in result, "Result must not be empty"
+        assert "[Sources:" in result, "Result must not be empty"
 
     def test_add_citations_footnote(self):
         """Test adding footnote-style citations."""
@@ -164,9 +164,9 @@ class TestOutputProcessor:
 
         result = processor.add_citations(output, evidence, citation_style="footnote")
 
-        assert "References:" in result
-        assert "[1]" in result
-        assert "file1.py" in result
+        assert "References:" in result, "Result must not be empty"
+        assert "[1]" in result, "Result must not be empty"
+        assert "file1.py" in result, "Result must not be empty"
 
     def test_add_citations_none(self):
         """Test that 'none' style doesn't add citations."""
@@ -177,7 +177,7 @@ class TestOutputProcessor:
 
         result = processor.add_citations(output, evidence, citation_style="none")
 
-        assert result == output
+        assert result == output, "Result must not be empty"
 
     def test_add_citations_empty_evidence(self):
         """Test adding citations with empty evidence."""
@@ -186,7 +186,7 @@ class TestOutputProcessor:
         output = "Content"
         result = processor.add_citations(output, [], citation_style="inline")
 
-        assert result == output
+        assert result == output, "Result must not be empty"
 
     def test_add_citations_deduplicates_sources(self):
         """Test that duplicate sources are deduplicated."""
@@ -198,8 +198,8 @@ class TestOutputProcessor:
         result = processor.add_citations(output, evidence, citation_style="inline")
 
         # Should only mention file1.py once
-        assert result.count("file1.py") == 1
-        assert "file2.py" in result
+        assert result.count("file1.py") == 1, "Result must not be empty"
+        assert "file2.py" in result, "Result must not be empty"
 
 
 class TestPostprocessOutputFunction:
@@ -211,8 +211,8 @@ class TestPostprocessOutputFunction:
 
         processed, evidence = postprocess_output(output)
 
-        assert processed == "Test output"
-        assert evidence == []
+        assert processed == "Test output", "processed is not valid"
+        assert evidence == [], "evidence is not valid"
 
     def test_postprocess_output_with_retrieved_docs(self):
         """Test post-processing with retrieved documents."""
@@ -227,7 +227,7 @@ class TestPostprocessOutputFunction:
 
         processed, _evidence = postprocess_output(output, retrieved_docs=retrieved_docs)
 
-        assert "Python" in processed
+        assert "Python" in processed, "Condition must be true"
         # Evidence may be extracted if overlap detected
 
     def test_postprocess_output_with_redaction(self):
@@ -237,8 +237,8 @@ class TestPostprocessOutputFunction:
 
         processed, _evidence = postprocess_output(output, redaction_rules=redaction_rules)
 
-        assert "[EMAIL]" in processed
-        assert "test@example.com" not in processed
+        assert "[EMAIL]" in processed, "Condition must be true"
+        assert "test@example.com" not in processed, "Condition must be true"
 
     def test_postprocess_output_with_citations(self):
         """Test post-processing includes citations."""
@@ -257,7 +257,7 @@ class TestPostprocessOutputFunction:
 
         # If evidence found, should include source
         if evidence:
-            assert "python_guide.md" in processed or "[Sources:" in processed
+            assert "python_guide.md" in processed or "[Sources:" in processed, "Condition must be true"
 
     def test_postprocess_output_without_citations(self):
         """Test post-processing without citations."""
@@ -271,7 +271,7 @@ class TestPostprocessOutputFunction:
         )
 
         # Should not include citations
-        assert "Sources:" not in processed
+        assert "Sources:" not in processed, "Condition must be true"
 
 
 class TestProvenanceMetadata:
@@ -288,10 +288,10 @@ class TestProvenanceMetadata:
             retrieval_score=0.85,
         )
 
-        assert prov.source_file == Path("test.py")
+        assert prov.source_file == Path("test.py"), "source_file is not valid"
         assert prov.line_range == (10, 20)
-        assert prov.chunk_id == "chunk_123"
-        assert prov.retrieval_score == 0.85
+        assert prov.chunk_id == "chunk_123", "chunk_id is not valid"
+        assert prov.retrieval_score == 0.85, "retrieval_score is not valid"
 
     def test_provenance_with_optional_fields(self):
         """Test provenance with optional fields."""
@@ -307,7 +307,7 @@ class TestProvenanceMetadata:
         )
 
         assert prov.char_range == (0, 100)
-        assert prov.metadata == {"key": "value"}
+        assert prov.metadata == {"key": "value"}, "Data must not be empty"
 
     def test_provenance_to_dict(self):
         """Test converting provenance to dictionary."""
@@ -325,13 +325,13 @@ class TestProvenanceMetadata:
 
         result = prov.to_dict()
 
-        assert result["source_file"] == "/path/to/file.py"
+        assert result["source_file"] == "/path/to/file.py", "Result must not be empty"
         assert result["line_range"] == (5, 15)
-        assert result["chunk_id"] == "xyz"
-        assert result["embedding_model"] == "test-model"
-        assert result["retrieval_score"] == 0.95
+        assert result["chunk_id"] == "xyz", "Result must not be empty"
+        assert result["embedding_model"] == "test-model", "Result must not be empty"
+        assert result["retrieval_score"] == 0.95, "Result must not be empty"
         assert result["char_range"] == (50, 150)
-        assert result["metadata"] == {"extra": "info"}
+        assert result["metadata"] == {"extra": "info"}, "Result must not be empty"
 
     def test_provenance_from_dict(self):
         """Test creating provenance from dictionary."""
@@ -348,10 +348,10 @@ class TestProvenanceMetadata:
 
         prov = ProvenanceMetadata.from_dict(data)
 
-        assert prov.source_file == Path("/path/to/file.py")
+        assert prov.source_file == Path("/path/to/file.py"), "source_file is not valid"
         assert prov.line_range == (10, 20)
-        assert prov.chunk_id == "chunk_abc"
-        assert prov.retrieval_score == 0.88
+        assert prov.chunk_id == "chunk_abc", "chunk_id is not valid"
+        assert prov.retrieval_score == 0.88, "retrieval_score is not valid"
 
 
 class TestSafeModelLoad:
@@ -402,7 +402,7 @@ class TestSafeModelLoad:
         # Should not crash, should return model as-is
         result = safe_model_load(mock_model, device="cpu")
 
-        assert result is mock_model
+        assert result is mock_model, "Result must not be empty"
 
     @pytest.mark.skipif(
         _TORCH_312_BUG, reason="PyTorch 2.x isinstance bug with Python 3.12 union types"
@@ -414,7 +414,7 @@ class TestSafeModelLoad:
         result = safe_model_load(mock_model, device="cpu")
 
         # Should return model as-is
-        assert result is mock_model
+        assert result is mock_model, "Result must not be empty"
 
     @pytest.mark.skipif(
         _TORCH_312_BUG, reason="PyTorch 2.x isinstance bug with Python 3.12 union types"
@@ -432,4 +432,4 @@ class TestSafeModelLoad:
         result = safe_model_load(mock_model, device="cuda")
 
         # Should detect meta device and use to_empty
-        assert result is mock_model
+        assert result is mock_model, "Result must not be empty"

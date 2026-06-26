@@ -90,7 +90,7 @@ class TestCLIHelp:
         # Version output should contain version number
         output = result.stdout + result.stderr
         # Adjust assertion based on actual version format
-        assert (
+        assert (, "Condition must be true"
             result.returncode == 0
             or "version" in output.lower()
             or any(c.isdigit() for c in output)
@@ -128,7 +128,7 @@ class TestCLICommands:
             cwd=REPO_ROOT,
         )
         # Should fail with non-zero exit code when file doesn't exist
-        assert result.returncode != 0 or not nonexistent.exists()
+        assert result.returncode != 0 or not nonexistent.exists(), "Result must not be empty"
 
     def test_command_with_missing_required_args_shows_error(self) -> None:
         """Test that missing required arguments show an error message."""
@@ -140,7 +140,7 @@ class TestCLICommands:
             cwd=REPO_ROOT,
         )
         output = result.stdout + result.stderr
-        assert (
+        assert (, "Condition must be true"
             result.returncode != 0
             or "required" in output.lower()
             or "missing" in output.lower()
@@ -227,7 +227,7 @@ class TestCLIEnvironment:
     ) -> None:
         """Test that CLI respects configuration environment variable."""
         monkeypatch.setenv("CODEX_CONFIG", str(temp_config_file))
-        assert __import__("os").environ.get("CODEX_CONFIG") == str(temp_config_file)
+        assert __import__("os").environ.get("CODEX_CONFIG") == str(temp_config_file), "__imp is not valid"
 
     def test_respects_verbose_env_var(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Test that CLI respects verbose environment variable."""
@@ -255,17 +255,17 @@ class TestCLIIntegration:
 
     def test_cli_works_with_data_module(self, temp_data_dir: Path) -> None:
         """Test CLI integration with data module."""
-        assert temp_data_dir.exists()
+        assert temp_data_dir.exists(), "Data must not be empty"
         data_files = list(temp_data_dir.rglob("*.jsonl")) + list(temp_data_dir.rglob("*.csv"))
-        assert len(data_files) > 0
+        assert len(data_files) > 0, "Data_files must not be empty"
 
     def test_cli_works_with_config_module(self, temp_config_file: Path) -> None:
         """Test CLI integration with config module."""
-        assert temp_config_file.exists()
+        assert temp_config_file.exists(), "Condition must be true"
         import yaml
 
         content = yaml.safe_load(temp_config_file.read_text())
-        assert content is not None
+        assert content is not None, "content must be initialized"
 
 
 # =============================================================================

@@ -43,7 +43,7 @@ def test_training_eval_fallback_metrics(monkeypatch: pytest.MonkeyPatch) -> None
     assert isinstance(result, dict)
     metrics = result.get("metrics")
     assert isinstance(metrics, list)
-    assert len(metrics) == cfg["max_epochs"]
+    assert len(metrics) == cfg["max_epochs"], "Metrics must not be empty"
     first = metrics[0]
     assert isinstance(first, dict)
     assert {"epoch", "tokens", "loss"}.issubset(first.keys())

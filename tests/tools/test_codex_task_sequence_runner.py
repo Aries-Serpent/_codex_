@@ -47,8 +47,8 @@ def test_runner_dry_run_records_without_executing(tmp_path: Path, monkeypatch):
     )
 
     text = change_log.read_text(encoding="utf-8")
-    assert "dry_run" in text
-    assert not errors.exists() or errors.read_text(encoding="utf-8").strip() == ""
+    assert "dry_run" in text, "Condition must be true"
+    assert not errors.exists() or errors.read_text(encoding="utf-8").strip() == "", "Error should be raised or set"
 
 
 def test_runner_records_error_on_failure(tmp_path: Path):
@@ -83,6 +83,6 @@ def test_runner_records_error_on_failure(tmp_path: Path):
     )
 
     log_text = change_log.read_text(encoding="utf-8")
-    assert "error" in log_text
+    assert "error" in log_text, "Error should be raised or set"
     error_text = errors.read_text(encoding="utf-8")
-    assert "Question for ChatGPT @codex" in error_text
+    assert "Question for ChatGPT @codex" in error_text, "Error should be raised or set"

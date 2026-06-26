@@ -165,7 +165,7 @@ def _append_error_block(
         log_path.parent.mkdir(parents=True, exist_ok=True)
     except (IOError, OSError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         typer.echo(f"Failed to ensure error log directory {log_path.parent}: {exc}", err=True)
         return
 
@@ -174,7 +174,7 @@ def _append_error_block(
             handle.write(block + "\n")
     except (IOError, OSError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         typer.echo(f"Failed to append error log to {log_path}: {exc}", err=True)
 
 
@@ -198,7 +198,7 @@ def _load_tokenizer(tokenizer_path: Path, *, step: str) -> object:
         return build_tokenizer(tokenizer_path)
     except FileNotFoundError as exc:
         error_type = type(exc).__name__
-        logger.debug(f"FileNotFoundError: <ERROR_TYPE>")
+        logger.debug("FileNotFoundError: <ERROR_TYPE>")
         _fail(
             step,
             f"Tokenizer not found at {tokenizer_path}",
@@ -207,7 +207,7 @@ def _load_tokenizer(tokenizer_path: Path, *, step: str) -> object:
         )
     except (IOError, OSError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         _fail(
             step,
             f"Failed to load tokenizer from {tokenizer_path}: {exc}",
@@ -398,7 +398,7 @@ def encode(
         )
     except (IOError, OSError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         _fail(
             "encode",
             f"Tokenizer encode failed: {exc}",
@@ -427,7 +427,7 @@ def encode(
         ids_source = ids_candidate if isinstance(ids_candidate, Sequence) else list(ids_candidate)
     except (IOError, OSError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         _fail(
             "encode",
             f"Unable to interpret input_ids: {exc}",
@@ -460,7 +460,7 @@ def encode(
                 tokens = [str(converter(i)) for i in ids_list]
             except (IOError, OSError) as exc:
                 error_type = type(exc).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.debug("Exception: <ERROR_TYPE>")
                 _append_error_block(
                     "encode",
                     f"Failed to convert ids to tokens: {exc}",
@@ -493,7 +493,7 @@ def decode(
         id_list = [int(item.strip()) for item in ids.split(",") if item.strip()]
     except ValueError as exc:
         error_type = type(exc).__name__
-        logger.debug(f"ValueError: <ERROR_TYPE>")
+        logger.debug("ValueError: <ERROR_TYPE>")
         _fail(
             "decode",
             f"Invalid token id list '{ids}': {exc}",
@@ -519,8 +519,8 @@ def decode(
         decoded = decode_fn(id_list, **kwargs)
     except TypeError as e:
         error_type = type(e).__name__
-        logger.debug(f"TypeError: <ERROR_TYPE>")
-        logger.warning(f"TypeError: <ERROR_TYPE>", exc_info=True)
+        logger.debug("TypeError: <ERROR_TYPE>")
+        logger.warning("TypeError: <ERROR_TYPE>", exc_info=True)
         try:
             decoded = decode_fn(id_list)
         except (IOError, OSError) as exc:  # pragma: no cover - backend guard
@@ -536,7 +536,7 @@ def decode(
             )
     except (IOError, OSError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         _fail(
             "decode",
             f"Tokenizer decode failed: {exc}",
@@ -560,7 +560,7 @@ def export(src: Path, dst: Path) -> None:
         dst.mkdir(parents=True, exist_ok=True)
     except (IOError, OSError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         _fail(
             "export",
             f"Failed to prepare export directory {dst}: {exc}",
@@ -577,7 +577,7 @@ def export(src: Path, dst: Path) -> None:
                 shutil.copy2(candidate, target)
             except (ValueError, TypeError, RuntimeError) as exc:
                 error_type = type(exc).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.debug("Exception: <ERROR_TYPE>")
                 _append_error_block(
                     "export",
                     f"Failed to copy {candidate} to {target}: {exc}",
@@ -601,7 +601,7 @@ def export(src: Path, dst: Path) -> None:
         readme_path.write_text(readme_contents, encoding="utf-8")
     except (IOError, OSError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         _append_error_block(
             "export",
             f"Failed to write README.md: {exc}",

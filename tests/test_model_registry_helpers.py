@@ -48,18 +48,18 @@ def dummy_registration() -> types.SimpleNamespace:
 def test_get_model_applies_device_and_dtype(dummy_registration: types.SimpleNamespace) -> None:
     model = get_model(dummy_registration.name, device="cpu", dtype=torch.float16)
     assert isinstance(model, _TrackableModule)
-    assert model.to_calls[-1][1]["device"] == "cpu"
+    assert model.to_calls[-1][1]["device"] == "cpu", "Condition must be true"
     dtype_calls = [kwargs["dtype"] for _, kwargs in model.to_calls if "dtype" in kwargs]
-    assert dtype_calls and dtype_calls[-1] == torch.float16
+    assert dtype_calls and dtype_calls[-1] == torch.float16, "dtype_calls is not valid"
     metadata = model.request_metadata
     assert isinstance(metadata, ModelRequest)
-    assert metadata.lora is None
+    assert metadata.lora is None, "Data must not be empty"
 
 
 def test_get_model_activates_lora_adapter(dummy_registration: types.SimpleNamespace) -> None:
     model = get_model(dummy_registration.name, lora_adapter="/tmp/adapter")
-    assert "test-adapter" in model.loaded_adapters
-    assert "/tmp/adapter" in model.loaded_adapters
+    assert "test-adapter" in model.loaded_adapters, "Condition must be true"
+    assert "/tmp/adapter" in model.loaded_adapters, "Condition must be true"
 
 
 def test_get_model_applies_lora_config(
@@ -106,17 +106,17 @@ def test_get_model_applies_lora_config(
     model = get_model(dummy_registration.name, config=cfg)
 
     assert isinstance(model, _TrackableModule)
-    assert captured["r"] == 4
-    assert captured["alpha"] == 12
-    assert captured["dropout"] == 0.1
-    assert captured["task_type"] == "CAUSAL_LM"
+    assert captured["r"] == 4, "Condition must be true"
+    assert captured["alpha"] == 12, "Condition must be true"
+    assert captured["dropout"] == 0.1, "Condition must be true"
+    assert captured["task_type"] == "CAUSAL_LM", "Condition must be true"
     assert captured["target_modules"] == ("q_proj", "v_proj")
 
     metadata = model.request_metadata
     assert isinstance(metadata.lora, LoraRequest)
-    assert metadata.lora.enabled is True
-    assert metadata.lora.rank == 4
-    assert metadata.lora.alpha == 12
-    assert metadata.lora.dropout == 0.1
-    assert metadata.lora.task_type == "CAUSAL_LM"
+    assert metadata.lora.enabled is True, "Data must not be empty"
+    assert metadata.lora.rank == 4, "Data must not be empty"
+    assert metadata.lora.alpha == 12, "Data must not be empty"
+    assert metadata.lora.dropout == 0.1, "Data must not be empty"
+    assert metadata.lora.task_type == "CAUSAL_LM", "Data must not be empty"
     assert metadata.lora.target_modules == ("q_proj", "v_proj")

@@ -24,14 +24,14 @@ def test_dependency_audit_parses_requirements(tmp_path: Path):
             "deps.md",
         ]
     )
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
     json_out = tmp_path / "deps.json"
     md_out = tmp_path / "deps.md"
-    assert json_out.exists()
-    assert md_out.exists()
+    assert json_out.exists(), "Condition must be true"
+    assert md_out.exists(), "Condition must be true"
 
     data = json.loads(json_out.read_text(encoding="utf-8"))
-    assert data["summary"]["total_dependencies"] == 2
+    assert data["summary"]["total_dependencies"] == 2, "Data must not be empty"
     names = {d["name"] for d in data["dependencies"]}
-    assert "numpy" in names
-    assert "pytest" in names
+    assert "numpy" in names, "Condition must be true"
+    assert "pytest" in names, "Condition must be true"

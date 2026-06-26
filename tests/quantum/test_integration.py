@@ -59,12 +59,12 @@ class TestEndToEndQuantumRAG:
 
         # Load quantum retrieval (should load dependencies)
         module = registry.load_with_dependencies("quantum_retrieval")
-        assert module is not None
+        assert module is not None, "module must be initialized"
 
         # Verify all dependencies loaded
-        assert registry.plugins["chunking"].state == PluginState.COLLAPSED
-        assert registry.plugins["embedding"].state == PluginState.COLLAPSED
-        assert registry.plugins["quantum_retrieval"].state == PluginState.COLLAPSED
+        assert registry.plugins["chunking"].state == PluginState.COLLAPSED, "state is not valid"
+        assert registry.plugins["embedding"].state == PluginState.COLLAPSED, "state is not valid"
+        assert registry.plugins["quantum_retrieval"].state == PluginState.COLLAPSED, "state is not valid"
 
     def test_quantum_rag_cross_reference(self):
         """Test cross-referencing quantum RAG with physics calculators."""
@@ -89,7 +89,7 @@ class TestEndToEndQuantumRAG:
 
         # This demonstrates "wearing the codebase as a brain"
         module = registry.load_with_dependencies("physics_calc")
-        assert module is not None
+        assert module is not None, "module must be initialized"
 
 
 @pytest.mark.integration
@@ -106,7 +106,7 @@ class TestAgentOrchestrationIntegration:
         )
 
         module = registry.load_with_dependencies("agent_core")
-        assert module is not None
+        assert module is not None, "module must be initialized"
         assert hasattr(module, "AgentCore") or hasattr(module, "AgentConfig")
 
     def test_mcp_metrics_integration(self):
@@ -120,7 +120,7 @@ class TestAgentOrchestrationIntegration:
         )
 
         module = registry.load_with_dependencies("mcp_metrics")
-        assert module is not None
+        assert module is not None, "module must be initialized"
         assert hasattr(module, "MCPMetrics") or hasattr(module, "MetricCollector")
 
 
@@ -133,7 +133,7 @@ class TestDependencyGraphIntegration:
         registry = QuantumPluginRegistry()
 
         # Verify dependency graph is initialized
-        assert registry.dependency_graph is not None
+        assert registry.dependency_graph is not None, "dependency_graph must be initialized"
 
         # Register plugins and verify graph structure
         registry.register(QuantumPlugin(name="base", import_path="sys"))
@@ -141,7 +141,7 @@ class TestDependencyGraphIntegration:
 
         # Check graph structure
         deps = registry.get_entangled_plugins("derived")
-        assert "base" in deps
+        assert "base" in deps, "Condition must be true"
 
 
 @pytest.mark.integration
@@ -154,7 +154,7 @@ class TestErrorHandlingIntegration:
 
         # This internally uses src.common.error_handling.safe_call
         module = plugin.observe()
-        assert module is not None
+        assert module is not None, "module must be initialized"
 
     def test_safe_call_in_test_execution(self):
         """Test that test execution uses safe_call."""
@@ -165,7 +165,7 @@ class TestErrorHandlingIntegration:
 
         # Execution uses safe_call internally
         results = suite.execute_with_thermodynamic_scheduling()
-        assert results["passed"] == 1
+        assert results["passed"] == 1, "Result must not be empty"
 
     def test_safe_call_in_orchestration(self):
         """Test that orchestrator uses safe_call for tasks."""
@@ -178,7 +178,7 @@ class TestErrorHandlingIntegration:
 
         # Internally uses safe_call
         results = orch.execute_thermodynamic_cycle()
-        assert len(results["executed"]) == 1
+        assert len(results["executed"]) == 1, "Collection must not be empty"
 
 
 @pytest.mark.integration
@@ -219,10 +219,10 @@ class TestCrossReferenceCapabilities:
 
         # AI agent pathway: Load agent with RAG capability
         agent_module = registry.load_with_dependencies("agent_system")
-        assert agent_module is not None
+        assert agent_module is not None, "agent_module must be initialized"
 
         # Verify pathway established
-        assert registry.plugins["rag_retrieval"].state == PluginState.COLLAPSED
+        assert registry.plugins["rag_retrieval"].state == PluginState.COLLAPSED, "state is not valid"
 
     def test_capability_2_physics_to_testing_pipeline(self):
         """
@@ -251,9 +251,9 @@ class TestCrossReferenceCapabilities:
         results = suite.execute_with_thermodynamic_scheduling()
 
         # AI agent pathway: Tests executed by energy (amplitude) priority
-        assert results["total"] == 2
+        assert results["total"] == 2, "Result must not be empty"
         # Higher amplitude tests execute first
-        assert results["tests"][0]["probability"] > results["tests"][1]["probability"]
+        assert results["tests"][0]["probability"] > results["tests"][1]["probability"], "Value must be greater than zero"
 
     def test_capability_3_mcp_to_quantum_metrics(self):
         """
@@ -270,9 +270,9 @@ class TestCrossReferenceCapabilities:
         results = suite.execute_with_thermodynamic_scheduling()
 
         # AI agent pathway: Quantum metrics (energy, entropy) as telemetry
-        assert "total_energy" in results
-        assert "entropy" in results
-        assert results["entropy"] > 0  # Mixed outcomes create entropy
+        assert "total_energy" in results, "Result must not be empty"
+        assert "entropy" in results, "Result must not be empty"
+        assert results["entropy"] > 0, "Value must be greater than zero"
 
     def test_capability_4_dependency_aware_orchestration(self):
         """
@@ -317,8 +317,8 @@ class TestCrossReferenceCapabilities:
         orch.execute_thermodynamic_cycle()
 
         # Verify dependency order maintained
-        assert execution_order.index("load_base") < execution_order.index("load_derived")
-        assert execution_order.index("load_derived") < execution_order.index("process")
+        assert execution_order.index("load_base") < execution_order.index("load_derived"), "execution_ is not valid"
+        assert execution_order.index("load_derived") < execution_order.index("process"), "execution_ is not valid"
 
     def test_capability_5_adaptive_loading_strategy(self):
         """
@@ -347,7 +347,7 @@ class TestCrossReferenceCapabilities:
         # Cold system: Values collapse more (all near zero except lightest)
         # Hot system: Values spread more (wider range in absolute Boltzmann weights)
         # Both demonstrate adaptive loading: temperature controls selectivity
-        assert cold_range != hot_range  # Temperature affects prioritization
+        assert cold_range != hot_range, "cold_range is not valid"
 
     def test_capability_6_error_recovery_pathway(self):
         """
@@ -373,8 +373,8 @@ class TestCrossReferenceCapabilities:
         except ImportError:
             # Agent detects failure and tries fallback
             fallback_module = registry.load_with_dependencies("fallback")
-            assert fallback_module is not None
-            assert registry.plugins["fallback"].state == PluginState.COLLAPSED
+            assert fallback_module is not None, "fallback_module must be initialized"
+            assert registry.plugins["fallback"].state == PluginState.COLLAPSED, "state is not valid"
 
     def test_capability_7_multi_paradigm_integration(self):
         """
@@ -426,9 +426,9 @@ class TestCrossReferenceCapabilities:
         orch_results = orch.execute_thermodynamic_cycle()
 
         # Verify multi-paradigm integration
-        assert "plugins" in results
-        assert "tests" in results
-        assert len(orch_results["executed"]) == 2
+        assert "plugins" in results, "Result must not be empty"
+        assert "tests" in results, "Result must not be empty"
+        assert len(orch_results["executed"]) == 2, "Collection must not be empty"
 
     def test_capability_8_self_optimizing_workflow(self):
         """
@@ -469,14 +469,14 @@ class TestCrossReferenceCapabilities:
         results = orch.execute_thermodynamic_cycle()
 
         # AI agent pathway: Analyze and optimize for next iteration
-        assert len(metrics["execution_times"]) > 0
+        assert len(metrics["execution_times"]) > 0, "Collection must not be empty"
 
         # Calculate efficiency (work done / energy spent)
         total_work = len(metrics["execution_times"])
         total_energy = results["total_energy_used"]
         efficiency = total_work / total_energy if total_energy > 0 else 0
 
-        assert efficiency > 0  # System is productive
+        assert efficiency > 0, "efficiency must be greater than zero"
 
     def test_capability_9_context_aware_plugin_selection(self):
         """
@@ -512,7 +512,7 @@ class TestCrossReferenceCapabilities:
         )
 
         # In production, core (low energy) should have highest priority
-        assert priorities[0][0] == "core"
+        assert priorities[0][0] == "core", "pri is not valid"
 
     def test_capability_10_intelligent_test_distribution(self):
         """
@@ -545,10 +545,10 @@ class TestCrossReferenceCapabilities:
         # AI agent pathway: Use interference to optimize execution order
         results = suite.execute_with_thermodynamic_scheduling()
 
-        assert len(interferences) == 9
-        assert results["total"] == 10
+        assert len(interferences) == 9, "Interferences must not be empty"
+        assert results["total"] == 10, "Result must not be empty"
         # Entropy should reflect distribution pattern
-        assert results["entropy"] >= 0.0
+        assert results["entropy"] >= 0.0, "Value must be greater than zero"
 
 
 @pytest.mark.integration
@@ -587,7 +587,7 @@ class TestAgentAutonomyCapabilities:
         )
 
         # Verify agent prioritized correctly (lower cost first)
-        assert priorities[0][1] > priorities[-1][1]
+        assert priorities[0][1] > priorities[-1][1], "pri must be greater than zero"
 
     def test_autonomous_error_diagnosis(self):
         """Test agent's ability to diagnose and adapt to errors."""
@@ -614,7 +614,7 @@ class TestAgentAutonomyCapabilities:
         if results["entropy"] > 0.5:
             # Agent recognizes mixed outcomes and can analyze failures
             failed_tests = [test for test in results["tests"] if test["state"] == "failed"]
-            assert len(failed_tests) == 2  # Agent identified both failures
+            assert len(failed_tests) == 2, "Failed_tests must not be empty"
 
     def test_autonomous_optimization_iteration(self):
         """Test agent's ability to iteratively optimize execution."""
@@ -639,4 +639,4 @@ class TestAgentAutonomyCapabilities:
         optimal_order_v2 = orch.optimize_task_order()
 
         # Orders may differ as agent adapted
-        assert len(optimal_order_v1) == len(optimal_order_v2)
+        assert len(optimal_order_v1) == len(optimal_order_v2), "Optimal_order_v1 must not be empty"

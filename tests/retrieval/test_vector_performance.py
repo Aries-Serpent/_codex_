@@ -58,7 +58,7 @@ class TestVectorStorePerformance:
 
         # Batch should be faster than individual
         vectors_per_second = num_vectors / elapsed
-        assert (
+        assert (, "Condition must be true"
             vectors_per_second > 1000
         ), f"Batch insert too slow: {vectors_per_second:.0f} vectors/sec"
 
@@ -83,7 +83,7 @@ class TestVectorStorePerformance:
         start_time = time.time()
         for query in query_vectors:
             results = store.search(query, top_k=k)
-            assert len(results) <= k
+            assert len(results) <= k, "Results must not be empty"
         elapsed = time.time() - start_time
 
         # Performance assertions
@@ -170,7 +170,7 @@ class TestVectorStorePerformance:
         search_time = time.time() - start_time
 
         assert search_time < 0.5, f"Search on large index too slow: {search_time:.4f}s"
-        assert len(results) == 10
+        assert len(results) == 10, "Results must not be empty"
 
 
 class TestVectorStoreLoadConditions:
@@ -196,7 +196,7 @@ class TestVectorStoreLoadConditions:
         for _ in range(num_concurrent):
             query = np.random.randn(dimension).astype("float32")
             results = store.search(query, top_k=5)
-            assert len(results) <= 5
+            assert len(results) <= 5, "Results must not be empty"
         elapsed = time.time() - start_time
 
         # Should handle concurrent reads efficiently
@@ -224,7 +224,7 @@ class TestVectorStoreLoadConditions:
                 assert len(results) <= min(5, i + 1)
 
         # Final verification
-        assert store.count() == 100
+        assert store.count() == 100, "Count must be greater than zero"
 
 
 if __name__ == "__main__":

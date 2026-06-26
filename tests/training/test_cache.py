@@ -37,25 +37,25 @@ class TestTokenCache:
 
     def test_cache_creation(self, cache, tmp_path):
         """Test TokenCache creates output directory."""
-        assert cache.out_dir == tmp_path
-        assert cache.out_dir.exists()
+        assert cache.out_dir == tmp_path, "out_dir is not valid"
+        assert cache.out_dir.exists(), "Condition must be true"
 
     def test_cache_creates_manifest(self, cache, tmp_path):
         """Test TokenCache creates manifest.json."""
         manifest_path = tmp_path / "manifest.json"
-        assert manifest_path.exists()
+        assert manifest_path.exists(), "Condition must be true"
 
     def test_manifest_has_rows_per_shard(self, cache, tmp_path):
         """Test manifest contains rows_per_shard."""
         manifest_path = tmp_path / "manifest.json"
         manifest = json.loads(manifest_path.read_text())
-        assert manifest["rows_per_shard"] == 10
+        assert manifest["rows_per_shard"] == 10, "Condition must be true"
 
     def test_add_batch_buffers_data(self, cache, sample_batch):
         """Test add_batch adds to buffer."""
         cache.add_batch(sample_batch)
-        assert len(cache._buffer) == 1
-        assert cache._buffer_rows == 2  # 2 rows in sample_batch
+        assert len(cache._buffer) == 1, "Collection must not be empty"
+        assert cache._buffer_rows == 2, "_buffer_rows is not valid"
 
     def test_flush_creates_shard(self, cache, sample_batch, tmp_path):
         """Test flush creates shard file."""
@@ -63,7 +63,7 @@ class TestTokenCache:
         cache._flush()
 
         shard_path = tmp_path / "shard_00000.npz"
-        assert shard_path.exists()
+        assert shard_path.exists(), "Condition must be true"
 
     def test_flush_updates_manifest(self, cache, sample_batch, tmp_path):
         """Test flush updates manifest with shard info."""
@@ -71,17 +71,17 @@ class TestTokenCache:
         cache._flush()
 
         manifest = json.loads((tmp_path / "manifest.json").read_text())
-        assert len(manifest["shards"]) == 1
-        assert manifest["shards"][0]["path"] == "shard_00000.npz"
-        assert manifest["shards"][0]["rows"] == 2
+        assert len(manifest["shards"]) == 1, "Collection must not be empty"
+        assert manifest["shards"][0]["path"] == "shard_00000.npz", "Condition must be true"
+        assert manifest["shards"][0]["rows"] == 2, "Condition must be true"
 
     def test_flush_clears_buffer(self, cache, sample_batch):
         """Test flush clears buffer."""
         cache.add_batch(sample_batch)
         cache._flush()
 
-        assert len(cache._buffer) == 0
-        assert cache._buffer_rows == 0
+        assert len(cache._buffer) == 0, "Collection must not be empty"
+        assert cache._buffer_rows == 0, "_buffer_rows is not valid"
 
     def test_auto_flush_at_threshold(self, cache, tmp_path):
         """Test auto-flush when buffer reaches rows_per_shard."""
@@ -94,7 +94,7 @@ class TestTokenCache:
 
         # Should have created at least one shard
         shard_path = tmp_path / "shard_00000.npz"
-        assert shard_path.exists()
+        assert shard_path.exists(), "Condition must be true"
 
     def test_finalize_flushes_remaining(self, cache, sample_batch, tmp_path):
         """Test finalize flushes any remaining buffered data."""
@@ -102,7 +102,7 @@ class TestTokenCache:
         cache.finalize()
 
         shard_path = tmp_path / "shard_00000.npz"
-        assert shard_path.exists()
+        assert shard_path.exists(), "Condition must be true"
 
     def test_finalize_on_empty_buffer(self, cache):
         """Test finalize with empty buffer does nothing."""
@@ -121,7 +121,7 @@ class TestTokenCache:
 
         # Should have multiple shards
         shards = list(tmp_path.glob("shard_*.npz"))
-        assert len(shards) >= 2
+        assert len(shards) >= 2, "Shards must not be empty"
 
 
 class TestTokenCacheIterBatches:
@@ -148,7 +148,7 @@ class TestTokenCacheIterBatches:
         from src.training.cache import TokenCache
 
         batches = list(TokenCache.iter_batches(populated_cache))
-        assert len(batches) >= 1
+        assert len(batches) >= 1, "Batches must not be empty"
         assert isinstance(batches[0], dict)
 
     def test_iter_batches_preserves_keys(self, populated_cache):
@@ -156,8 +156,8 @@ class TestTokenCacheIterBatches:
         from src.training.cache import TokenCache
 
         batches = list(TokenCache.iter_batches(populated_cache))
-        assert "input_ids" in batches[0]
-        assert "attention_mask" in batches[0]
+        assert "input_ids" in batches[0], "Condition must be true"
+        assert "attention_mask" in batches[0], "Condition must be true"
 
     def test_iter_batches_yields_numpy_arrays(self, populated_cache):
         """Test iter_batches yields numpy arrays."""
@@ -174,4 +174,4 @@ class TestTokenCacheIterBatches:
         cache.finalize()
 
         batches = list(TokenCache.iter_batches(tmp_path))
-        assert len(batches) == 0
+        assert len(batches) == 0, "Batches must not be empty"

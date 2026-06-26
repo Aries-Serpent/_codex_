@@ -19,7 +19,7 @@ class TestModuleImports:
         try:
             from common import error_handling
 
-            assert error_handling is not None
+            assert error_handling is not None, "error_handling must be initialized"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -28,7 +28,7 @@ class TestModuleImports:
         try:
             from common.error_handling import safe_execute
 
-            assert safe_execute is not None
+            assert safe_execute is not None, "safe_execute must be initialized"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -37,7 +37,7 @@ class TestModuleImports:
         try:
             from common.error_handling import safe_call
 
-            assert safe_call is not None
+            assert safe_call is not None, "safe_call must be initialized"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -46,7 +46,7 @@ class TestModuleImports:
         try:
             from common.error_handling import logger
 
-            assert logger is not None
+            assert logger is not None, "logger must be initialized"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -67,7 +67,7 @@ class TestSafeExecuteDecorator:
                 return "success"
 
             result = successful_func()
-            assert result == "success"
+            assert result == "success", "Result must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -81,7 +81,7 @@ class TestSafeExecuteDecorator:
                 raise ValueError("test error")
 
             result = failing_func()
-            assert result == "fallback"
+            assert result == "fallback", "Result must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -95,7 +95,7 @@ class TestSafeExecuteDecorator:
                 raise RuntimeError("error")
 
             result = error_func()
-            assert result is None
+            assert result is None, "Result must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -109,7 +109,7 @@ class TestSafeExecuteDecorator:
                 raise ValueError("value error")
 
             result = value_error_func()
-            assert result == "caught"
+            assert result == "caught", "Result must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -136,7 +136,7 @@ class TestSafeExecuteDecorator:
             def named_function():
                 pass
 
-            assert named_function.__name__ == "named_function"
+            assert named_function.__name__ == "named_function", "__name__ is not valid"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -151,7 +151,7 @@ class TestSafeExecuteDecorator:
 
             # Should not raise
             result = error_log_func()
-            assert result is None
+            assert result is None, "Result must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -171,7 +171,7 @@ class TestSafeCallFunction:
                 return a + b
 
             result = safe_call(add, 1, 2)
-            assert result == 3
+            assert result == 3, "Result must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -184,7 +184,7 @@ class TestSafeCallFunction:
                 raise RuntimeError("error")
 
             result = safe_call(failing, default_return=-1)
-            assert result == -1
+            assert result == -1, "Result must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -210,7 +210,7 @@ class TestSafeCallFunction:
                 raise ValueError("risky")
 
             result = safe_call(risky, operation_name="risky operation", default_return="safe")
-            assert result == "safe"
+            assert result == "safe", "Result must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -223,7 +223,7 @@ class TestSafeCallFunction:
                 raise ValueError("value")
 
             result = safe_call(value_error, exception_types=(ValueError,), default_return="caught")
-            assert result == "caught"
+            assert result == "caught", "Result must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -261,7 +261,7 @@ class TestEdgeCases:
                 return inner()
 
             result = outer()
-            assert result == "inner_default"
+            assert result == "inner_default", "Result must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -271,7 +271,7 @@ class TestEdgeCases:
             from common.error_handling import safe_call
 
             result = safe_call(lambda x: x * 2, 5)
-            assert result == 10
+            assert result == 10, "Result must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -284,6 +284,6 @@ class TestEdgeCases:
                 return "works"
 
             result = safe_call(no_name_func)
-            assert result == "works"
+            assert result == "works", "Result must not be empty"
         except ImportError:
             pytest.skip("Module not available")

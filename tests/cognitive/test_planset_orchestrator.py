@@ -97,15 +97,15 @@ class TestPlansetRecord:
             is_complete=False,
             status_line="🔄 IN PROGRESS",
         )
-        assert rec.stem == "TEST"
-        assert rec.area == ImprovementArea.CI_SELF_HEALING
-        assert not rec.is_complete
+        assert rec.stem == "TEST", "stem is not valid"
+        assert rec.area == ImprovementArea.CI_SELF_HEALING, "area is not valid"
+        assert not rec.is_complete, "Condition must be true"
 
     def test_unmapped_area_is_none(self, tmp_path: Path):
         p = tmp_path / "UNKNOWN.md"
         p.write_text("# Unknown", encoding="utf-8")
         rec = PlansetRecord(path=p, stem="UNKNOWN", area=None, is_complete=False)
-        assert rec.area is None
+        assert rec.area is None, "area is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -128,9 +128,9 @@ class TestPromptSet:
             description="Collect alerts",
         )
         d = ps.to_dict()
-        assert d["step_id"] == "SEC-01"
-        assert d["amplitude"] == pytest.approx(1.2345)
-        assert d["context"]["open_alerts"] == 120
+        assert d["step_id"] == "SEC-01", "Condition must be true"
+        assert d["amplitude"] == pytest.approx(1.2345), "Condition must be true"
+        assert d["context"]["open_alerts"] == 120, "Condition must be true"
 
     def test_to_json_valid(self):
         ps = PromptSet(
@@ -145,7 +145,7 @@ class TestPromptSet:
             step_id="CI-01",
         )
         data = json.loads(ps.to_json())
-        assert data["agent"] == "ci-auto-healer-agent"
+        assert data["agent"] == "ci-auto-healer-agent", "Data must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -164,14 +164,14 @@ class TestOrchestrationState:
         )
         d = state.to_dict()
         restored = OrchestrationState.from_dict(d)
-        assert restored.session_id == "session-20260226"
-        assert restored.completed_steps["SECURITY_REMEDIATION"] == ["SEC-01"]
-        assert restored.decoherence_sessions["SECURITY_REMEDIATION"] == 1
+        assert restored.session_id == "session-20260226", "session_id is not valid"
+        assert restored.completed_steps["SECURITY_REMEDIATION"] == ["SEC-01"], "rest is not valid"
+        assert restored.decoherence_sessions["SECURITY_REMEDIATION"] == 1, "rest is not valid"
 
     def test_from_dict_missing_keys(self):
         state = OrchestrationState.from_dict({"session_id": "s1"})
-        assert state.active_areas == []
-        assert state.completed_steps == {}
+        assert state.active_areas == [], "active_areas is not valid"
+        assert state.completed_steps == {}, "completed_steps is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -183,20 +183,20 @@ class TestOrchestratorSurvey:
     def test_returns_all_md_files(self, orch: PlansetOrchestrator):
         records = orch.survey()
         stems = [r.stem for r in records]
-        assert "CODEQL_ALERT_RESOLUTION_PLANSET" in stems
-        assert "IP-005_DEPENDENCY_UPDATES_PLANSET" in stems
+        assert "CODEQL_ALERT_RESOLUTION_PLANSET" in stems, "Condition must be true"
+        assert "IP-005_DEPENDENCY_UPDATES_PLANSET" in stems, "Condition must be true"
 
     def test_complete_planset_flagged(self, orch: PlansetOrchestrator):
         records = {r.stem: r for r in orch.survey()}
-        assert records["IP-005_DEPENDENCY_UPDATES_PLANSET"].is_complete is True
+        assert records["IP-005_DEPENDENCY_UPDATES_PLANSET"].is_complete is True, "is_complete is not valid"
 
     def test_incomplete_planset_flagged(self, orch: PlansetOrchestrator):
         records = {r.stem: r for r in orch.survey()}
-        assert records["CODEQL_ALERT_RESOLUTION_PLANSET"].is_complete is False
+        assert records["CODEQL_ALERT_RESOLUTION_PLANSET"].is_complete is False, "is_complete is not valid"
 
     def test_area_mapping_applied(self, orch: PlansetOrchestrator):
         records = {r.stem: r for r in orch.survey()}
-        assert (
+        assert (, "Condition must be true"
             records["CODEQL_ALERT_RESOLUTION_PLANSET"].area == ImprovementArea.SECURITY_REMEDIATION
         )
         assert records["PLANSET_PHASE_23_COVERAGE_30"].area == ImprovementArea.COVERAGE_IMPROVEMENT
@@ -205,14 +205,14 @@ class TestOrchestratorSurvey:
         empty = tmp_path / "empty"
         empty.mkdir()
         o = PlansetOrchestrator(planset_dir=empty, state_path=tmp_path / "s.json")
-        assert o.survey() == []
+        assert o.survey() == [], "Condition must be true"
 
     def test_nonexistent_dir_returns_empty(self, tmp_path: Path):
         o = PlansetOrchestrator(
             planset_dir=tmp_path / "no_such_dir",
             state_path=tmp_path / "s.json",
         )
-        assert o.survey() == []
+        assert o.survey() == [], "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -223,7 +223,7 @@ class TestOrchestratorSurvey:
 class TestOrchestratorGenerateSession:
     def test_returns_prompt_sets(self, orch: PlansetOrchestrator):
         prompts = orch.generate_session()
-        assert len(prompts) > 0
+        assert len(prompts) > 0, "Prompts must not be empty"
         assert all(isinstance(p, PromptSet) for p in prompts)
 
     def test_sorted_by_amplitude_descending(self, orch: PlansetOrchestrator):
@@ -233,23 +233,23 @@ class TestOrchestratorGenerateSession:
 
     def test_order_field_renumbered(self, orch: PlansetOrchestrator):
         prompts = orch.generate_session(max_prompts=5)
-        assert [p.order for p in prompts] == list(range(len(prompts)))
+        assert [p.order for p in prompts] == list(range(len(prompts))), "Prompts must not be empty"
 
     def test_max_prompts_respected(self, orch: PlansetOrchestrator):
         prompts = orch.generate_session(max_prompts=3)
-        assert len(prompts) <= 3
+        assert len(prompts) <= 3, "Prompts must not be empty"
 
     def test_complete_plansets_excluded_by_default(self, orch: PlansetOrchestrator):
         prompts = orch.generate_session()
         sources = {p.source_planset for p in prompts}
-        assert "IP-005_DEPENDENCY_UPDATES_PLANSET" not in sources
+        assert "IP-005_DEPENDENCY_UPDATES_PLANSET" not in sources, "Condition must be true"
 
     def test_context_open_alerts_boosts_security(self, orch: PlansetOrchestrator):
         lo = orch.generate_session(context={"open_alerts": 0}, max_prompts=20)
         hi = orch.generate_session(context={"open_alerts": 200}, max_prompts=20)
         amp_lo = next((p.amplitude for p in lo if p.area == "SECURITY_REMEDIATION"), 0)
         amp_hi = next((p.amplitude for p in hi if p.area == "SECURITY_REMEDIATION"), 0)
-        assert amp_hi >= amp_lo
+        assert amp_hi >= amp_lo, "amp_hi must be greater than zero"
 
     def test_each_area_deduped_to_one_planset(self, orch: PlansetOrchestrator):
         prompts = orch.generate_session(max_prompts=50)
@@ -263,12 +263,12 @@ class TestOrchestratorGenerateSession:
     def test_prompt_contains_agent_and_step(self, orch: PlansetOrchestrator):
         prompts = orch.generate_session(max_prompts=1)
         p = prompts[0]
-        assert p.agent in p.prompt
-        assert p.step_id in p.prompt
+        assert p.agent in p.prompt, "Condition must be true"
+        assert p.step_id in p.prompt, "Condition must be true"
 
     def test_prompt_contains_advance_instruction(self, orch: PlansetOrchestrator):
         prompts = orch.generate_session(max_prompts=1)
-        assert "advance" in prompts[0].prompt.lower()
+        assert "advance" in prompts[0].prompt.lower(), "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -279,19 +279,19 @@ class TestOrchestratorGenerateSession:
 class TestOrchestratorNextPromptset:
     def test_returns_promptset(self, orch: PlansetOrchestrator):
         p = orch.next_promptset()
-        assert p is not None
+        assert p is not None, "p must be initialized"
         assert isinstance(p, PromptSet)
 
     def test_is_highest_amplitude(self, orch: PlansetOrchestrator):
         p_next = orch.next_promptset()
         all_prompts = orch.generate_session(max_prompts=20)
-        assert p_next.amplitude == all_prompts[0].amplitude
+        assert p_next.amplitude == all_prompts[0].amplitude, "amplitude is not valid"
 
     def test_returns_none_when_all_complete(self, tmp_path: Path):
         empty = tmp_path / "empty"
         empty.mkdir()
         o = PlansetOrchestrator(planset_dir=empty, state_path=tmp_path / "s.json")
-        assert o.next_promptset() is None
+        assert o.next_promptset() is None, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -318,13 +318,13 @@ class TestOrchestratorAdvance:
         orch.advance(ImprovementArea.SECURITY_REMEDIATION, first_sec)
         prompts_after = orch.generate_session(max_prompts=20)
         sec_steps_after = [p.step_id for p in prompts_after if p.area == "SECURITY_REMEDIATION"]
-        assert first_sec not in sec_steps_after
+        assert first_sec not in sec_steps_after, "Condition must be true"
 
     def test_advance_idempotent(self, orch: PlansetOrchestrator):
         orch.advance(ImprovementArea.CI_SELF_HEALING, "CI-01")
         orch.advance(ImprovementArea.CI_SELF_HEALING, "CI-01")  # duplicate
         completed = orch._state.completed_steps.get("CI_SELF_HEALING", [])
-        assert completed.count("CI-01") == 1
+        assert completed.count("CI-01") == 1, "Count must be greater than zero"
 
 
 # ---------------------------------------------------------------------------
@@ -335,7 +335,7 @@ class TestOrchestratorAdvance:
 class TestOrchestratorSummary:
     def test_returns_markdown_string(self, orch: PlansetOrchestrator):
         s = orch.summary()
-        assert "Planset Orchestrator" in s or "✅" in s
+        assert "Planset Orchestrator" in s or "✅" in s, "Condition must be true"
 
     def test_contains_step_ids(self, orch: PlansetOrchestrator):
         s = orch.summary()
@@ -350,7 +350,7 @@ class TestOrchestratorSummary:
         (d / "DONE.md").write_text("# Done\n✅ COMPLETE\n", encoding="utf-8")
         o = PlansetOrchestrator(planset_dir=d, state_path=tmp_path / "s.json")
         s = o.summary()
-        assert "nothing left" in s.lower() or "complete" in s.lower()
+        assert "nothing left" in s.lower() or "complete" in s.lower(), "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -363,7 +363,7 @@ class TestOrchestratorStatePersistence:
         orch.advance(ImprovementArea.SECURITY_REMEDIATION, "SEC-01")
         state_path = tmp_path / "state_rt.json"
         orch.save_state(state_path)
-        assert state_path.exists()
+        assert state_path.exists(), "Condition must be true"
         loaded = orch.load_state(state_path)
         assert "SEC-01" in loaded.completed_steps.get("SECURITY_REMEDIATION", [])
 
@@ -372,8 +372,8 @@ class TestOrchestratorStatePersistence:
         p = tmp_path / "state.json"
         orch.save_state(p)
         data = json.loads(p.read_text())
-        assert "completed_steps" in data
-        assert "decoherence_sessions" in data
+        assert "completed_steps" in data, "Data must not be empty"
+        assert "decoherence_sessions" in data, "Data must not be empty"
 
     def test_corrupt_state_file_handled(self, tmp_path: Path):
         bad = tmp_path / "bad.json"
@@ -382,7 +382,7 @@ class TestOrchestratorStatePersistence:
         d.mkdir()
         o = PlansetOrchestrator(planset_dir=d, state_path=bad)
         # Should not raise; falls back to fresh state
-        assert o._state.session_id != ""
+        assert o._state.session_id != "", "session_id is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -406,11 +406,11 @@ class TestPlansetMapCoverage:
         cov_plansets = [
             k for k, v in _PLANSET_MAP.items() if v == ImprovementArea.COVERAGE_IMPROVEMENT
         ]
-        assert any("COVERAGE" in p or "PHASE_14" in p for p in cov_plansets)
+        assert any("COVERAGE" in p or "PHASE_14" in p for p in cov_plansets), "Condition must be true"
 
     def test_qi_testing_maps_to_quantum_plansets(self):
         qi_plansets = [k for k, v in _PLANSET_MAP.items() if v == ImprovementArea.QI_TESTING]
-        assert any("QUANTUM" in p for p in qi_plansets)
+        assert any("QUANTUM" in p for p in qi_plansets), "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -438,15 +438,15 @@ class TestOrchestrateCLI:
 
     def test_survey_exits_0(self, planset_dir: Path, tmp_path: Path):
         rc = self._run(["survey"], planset_dir, tmp_path)
-        assert rc == 0
+        assert rc == 0, "rc is not valid"
 
     def test_next_exits_0(self, planset_dir: Path, tmp_path: Path):
         rc = self._run(["next"], planset_dir, tmp_path)
-        assert rc == 0
+        assert rc == 0, "rc is not valid"
 
     def test_session_exits_0(self, planset_dir: Path, tmp_path: Path):
         rc = self._run(["session"], planset_dir, tmp_path)
-        assert rc == 0
+        assert rc == 0, "rc is not valid"
 
     def test_session_json_output(
         self, planset_dir: Path, tmp_path: Path, capsys: pytest.CaptureFixture
@@ -455,14 +455,14 @@ class TestOrchestrateCLI:
         out = capsys.readouterr().out
         data = json.loads(out)
         assert isinstance(data, list)
-        assert all("step_id" in item for item in data)
+        assert all("step_id" in item for item in data), "Data must not be empty"
 
     def test_session_markdown_output(
         self, planset_dir: Path, tmp_path: Path, capsys: pytest.CaptureFixture
     ):
         self._run(["session", "--output", "markdown", "--dry-run"], planset_dir, tmp_path)
         out = capsys.readouterr().out
-        assert "Planset Orchestrator" in out or "|" in out
+        assert "Planset Orchestrator" in out or "|" in out, "Condition must be true"
 
     def test_next_json_output(
         self, planset_dir: Path, tmp_path: Path, capsys: pytest.CaptureFixture
@@ -470,7 +470,7 @@ class TestOrchestrateCLI:
         self._run(["next", "--output", "json", "--dry-run"], planset_dir, tmp_path)
         out = capsys.readouterr().out
         data = json.loads(out)
-        assert "step_id" in data
+        assert "step_id" in data, "Data must not be empty"
 
     def test_summary_exits_0(self, planset_dir: Path, tmp_path: Path):
         rc = self._run(["summary", "--dry-run"], planset_dir, tmp_path)
@@ -482,13 +482,13 @@ class TestOrchestrateCLI:
             planset_dir,
             tmp_path,
         )
-        assert rc == 0
+        assert rc == 0, "rc is not valid"
 
     def test_advance_invalid_area_exits_1(
         self, planset_dir: Path, tmp_path: Path, capsys: pytest.CaptureFixture
     ):
         rc = self._run(["advance", "INVALID_AREA", "SEC-01"], planset_dir, tmp_path)
-        assert rc == 1
+        assert rc == 1, "rc is not valid"
 
     def test_survey_json_output(
         self, planset_dir: Path, tmp_path: Path, capsys: pytest.CaptureFixture
@@ -497,7 +497,7 @@ class TestOrchestrateCLI:
         out = capsys.readouterr().out
         data = json.loads(out)
         assert isinstance(data, list)
-        assert all("stem" in item for item in data)
+        assert all("stem" in item for item in data), "Data must not be empty"
 
     def test_session_with_context(self, planset_dir: Path, tmp_path: Path):
         rc = self._run(
@@ -505,7 +505,7 @@ class TestOrchestrateCLI:
             planset_dir,
             tmp_path,
         )
-        assert rc == 0
+        assert rc == 0, "rc is not valid"
 
     def test_stamp_plansets_adds_footer(self, tmp_path: Path, capsys: pytest.CaptureFixture):
         """stamp-plansets should add footer to every unfinished planset."""
@@ -525,9 +525,9 @@ class TestOrchestrateCLI:
             return_value=orch_instance,
         ):
             rc = main(["stamp-plansets"])
-        assert rc == 0
+        assert rc == 0, "rc is not valid"
         content = (d / "CODEQL_ALERT_RESOLUTION_PLANSET.md").read_text()
-        assert "QuantumPlansetEngine Integration" in content
+        assert "QuantumPlansetEngine Integration" in content, "Content must not be empty"
 
     def test_stamp_plansets_idempotent(self, tmp_path: Path, capsys: pytest.CaptureFixture):
         """Running stamp-plansets twice should not double-stamp."""
@@ -551,4 +551,4 @@ class TestOrchestrateCLI:
                 main(["stamp-plansets"])
 
         content = (d / "CODEQL_ALERT_RESOLUTION_PLANSET.md").read_text()
-        assert content.count("QuantumPlansetEngine Integration") == 1
+        assert content.count("QuantumPlansetEngine Integration") == 1, "Content must not be empty"

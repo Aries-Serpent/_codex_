@@ -29,8 +29,8 @@ def test_cli_inspect_export(tmp_path):
     (out / "tokenizer.json").write_text(json.dumps(tokenizer_json), encoding="utf-8")
     (out / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
     res = run_module("tokenization.cli", "inspect", str(out))
-    assert "vocab_size" in res.stdout
+    assert "vocab_size" in res.stdout, "Condition must be true"
     export_dir = tmp_path / "export"
     run_module("tokenization.cli", "export", str(out), str(export_dir))
-    assert (export_dir / "tokenizer.json").exists()
-    assert (export_dir / "README.md").exists()
+    assert (export_dir / "tokenizer.json").exists(), "Condition must be true"
+    assert (export_dir / "README.md").exists(), "Condition must be true"

@@ -44,7 +44,7 @@ class TestInMemoryUserRepository:
 
     def test_repository_initialization(self, repository):
         """Test repository initialization."""
-        assert repository is not None
+        assert repository is not None, "repository must be initialized"
         assert hasattr(repository, "users") or hasattr(repository, "_users")
 
     def test_create_user(self, repository, test_user):
@@ -52,8 +52,8 @@ class TestInMemoryUserRepository:
         repository.create(test_user)
 
         retrieved = repository.get_by_id(test_user.user_id)
-        assert retrieved.user_id == test_user.user_id
-        assert retrieved.username == test_user.username
+        assert retrieved.user_id == test_user.user_id, "user_id is not valid"
+        assert retrieved.username == test_user.username, "username is not valid"
 
     def test_create_duplicate_user(self, repository, test_user):
         """Test creating duplicate user raises error."""
@@ -67,9 +67,9 @@ class TestInMemoryUserRepository:
         repository.create(test_user)
 
         retrieved = repository.get_by_id(test_user.user_id)
-        assert retrieved.user_id == test_user.user_id
-        assert retrieved.username == "testuser"
-        assert retrieved.email == "test@example.com"
+        assert retrieved.user_id == test_user.user_id, "user_id is not valid"
+        assert retrieved.username == "testuser", "username is not valid"
+        assert retrieved.email == "test@example.com", "email is not valid"
 
     def test_get_user_by_nonexistent_id(self, repository):
         """Test retrieving nonexistent user by ID."""
@@ -81,8 +81,8 @@ class TestInMemoryUserRepository:
         repository.create(test_user)
 
         retrieved = repository.get_by_username("testuser")
-        assert retrieved.username == "testuser"
-        assert retrieved.user_id == test_user.user_id
+        assert retrieved.username == "testuser", "username is not valid"
+        assert retrieved.user_id == test_user.user_id, "user_id is not valid"
 
     def test_get_user_by_nonexistent_username(self, repository):
         """Test retrieving nonexistent user by username."""
@@ -97,7 +97,7 @@ class TestInMemoryUserRepository:
         repository.update(test_user)
 
         retrieved = repository.get_by_id(test_user.user_id)
-        assert retrieved.email == "newemail@example.com"
+        assert retrieved.email == "newemail@example.com", "email is not valid"
 
     def test_update_nonexistent_user(self, repository, test_user):
         """Test updating nonexistent user."""
@@ -138,15 +138,15 @@ class TestInMemoryUserRepository:
         repository.create(user2)
 
         users = repository.list_all()
-        assert len(users) == 2
+        assert len(users) == 2, "Users must not be empty"
         usernames = [u.username for u in users]
-        assert "user1" in usernames
-        assert "user2" in usernames
+        assert "user1" in usernames, "Condition must be true"
+        assert "user2" in usernames, "Condition must be true"
 
     def test_list_empty_repository(self, repository):
         """Test listing users from empty repository."""
         users = repository.list_all()
-        assert users == [] or len(users) == 0
+        assert users == [] or len(users) == 0, "Users must not be empty"
 
     def test_user_count(self, repository, test_user):
         """Test getting user count."""
@@ -154,7 +154,7 @@ class TestInMemoryUserRepository:
 
         # Should have count() method or similar
         users = repository.list_all()
-        assert len(users) >= 1
+        assert len(users) >= 1, "Users must not be empty"
 
     def test_user_existence_check(self, repository, test_user):
         """Test checking if user exists."""
@@ -162,7 +162,7 @@ class TestInMemoryUserRepository:
 
         # Should be able to retrieve the user
         retrieved = repository.get_by_id(test_user.user_id)
-        assert retrieved is not None
+        assert retrieved is not None, "retrieved must be initialized"
 
     def test_user_nonexistence_check(self, repository):
         """Test checking nonexistent user."""
@@ -176,7 +176,7 @@ class TestInMemoryUserRepository:
         # Some repositories might support this
         try:
             retrieved = repository.get_by_email("test@example.com")
-            assert retrieved.email == "test@example.com"
+            assert retrieved.email == "test@example.com", "email is not valid"
         except AttributeError:
             # If not supported, that's OK
             pass
@@ -196,7 +196,7 @@ class TestInMemoryUserRepository:
             users.append(user)
 
         all_users = repository.list_all()
-        assert len(all_users) >= 10
+        assert len(all_users) >= 10, "All_users must not be empty"
 
     def test_user_modification_after_storage(self, repository, test_user):
         """Test that modifying stored user is reflected."""
@@ -206,7 +206,7 @@ class TestInMemoryUserRepository:
         repository.update(test_user)
 
         retrieved = repository.get_by_id(test_user.user_id)
-        assert retrieved.email == "modified@example.com"
+        assert retrieved.email == "modified@example.com", "email is not valid"
 
     def test_special_characters_in_username(self, repository):
         """Test user with special characters in username."""
@@ -220,7 +220,7 @@ class TestInMemoryUserRepository:
 
         repository.create(user)
         retrieved = repository.get_by_username("user_with-special.chars@123")
-        assert retrieved.username == "user_with-special.chars@123"
+        assert retrieved.username == "user_with-special.chars@123", "username is not valid"
 
     def test_unicode_email(self, repository):
         """Test user with Unicode email."""
@@ -234,7 +234,7 @@ class TestInMemoryUserRepository:
 
         repository.create(user)
         retrieved = repository.get_by_id(user.user_id)
-        assert retrieved.email == "用户@example.com"
+        assert retrieved.email == "用户@example.com", "email is not valid"
 
     def test_empty_username_validation(self, repository):
         """Test creating user with empty username."""
@@ -297,7 +297,7 @@ class TestInMemoryUserRepositoryEdgeCases:
             repository.create(user)
 
         users = repository.list_all()
-        assert len(users) >= 1000
+        assert len(users) >= 1000, "Users must not be empty"
 
     def test_case_sensitivity_in_username(self, repository):
         """Test username case sensitivity."""
@@ -314,7 +314,7 @@ class TestInMemoryUserRepositoryEdgeCases:
         # Should be case-sensitive or case-insensitive consistently
         try:
             retrieved = repository.get_by_username("TestUser")
-            assert retrieved is not None
+            assert retrieved is not None, "retrieved must be initialized"
         except UserNotFoundError:
             # If case-insensitive, should still work
             pass

@@ -49,8 +49,8 @@ def test_allowlist_baseline():
     setup_artifacts()
     run_env({"CONTENT_FILTER_MODE": "allowlist", "ALLOWLIST_PROFILE": "A"})
     rep = load_report()
-    assert rep["mode"] == "allowlist"
-    assert rep["pii_redactions"] == 0
+    assert rep["mode"] == "allowlist", "Condition must be true"
+    assert rep["pii_redactions"] == 0, "Condition must be true"
 
 
 def test_minimal_pii_redaction():
@@ -59,12 +59,12 @@ def test_minimal_pii_redaction():
         {"CONTENT_FILTER_MODE": "pii", "PII_PATTERN_SET": "minimal", "PII_MODE": "union-minimal"}
     )
     rep = load_report()
-    assert rep["mode"] == "pii"
-    assert rep["pii_redactions"] >= 1
+    assert rep["mode"] == "pii", "Condition must be true"
+    assert rep["pii_redactions"] >= 1, "Value must be greater than zero"
     # Ensure redacted sidecar created
     sidecar = Path("audit_artifacts/sample.md.redacted")
-    assert sidecar.exists()
-    assert "<REDACT:" in sidecar.read_text()
+    assert sidecar.exists(), "Condition must be true"
+    assert "<REDACT:" in sidecar.read_text(), "Condition must be true"
 
 
 def test_extended_union():
@@ -73,9 +73,9 @@ def test_extended_union():
         {"CONTENT_FILTER_MODE": "pii", "PII_PATTERN_SET": "extended", "PII_MODE": "union-extended"}
     )
     rep = load_report()
-    assert rep["pii_redactions"] >= 3  # email + UUID + AWS key expected
+    assert rep["pii_redactions"] >= 3, "Value must be greater than zero"
     patterns_applied = rep["pii_patterns_applied"]
-    assert any("AKIA" in p for p in patterns_applied)
+    assert any("AKIA" in p for p in patterns_applied), "Condition must be true"
 
 
 def test_custom_replace():
@@ -89,8 +89,8 @@ def test_custom_replace():
         }
     )
     rep = load_report()
-    assert rep["pii_redactions"] >= 1
-    assert any(p == r"\bseed\b" for p in rep["pii_patterns_applied"])
+    assert rep["pii_redactions"] >= 1, "Value must be greater than zero"
+    assert any(p == r"\bseed\b" for p in rep["pii_patterns_applied"]), "p is not valid"
 
 
 def test_invalid_regex_skip_manifest():
@@ -104,5 +104,5 @@ def test_invalid_regex_skip_manifest():
         }
     )
     rep = load_report()
-    assert rep["invalid_patterns"]
-    assert any(w.startswith("invalid_regex") for w in rep["warnings"])
+    assert rep["invalid_patterns"], "Condition must be true"
+    assert any(w.startswith("invalid_regex") for w in rep["warnings"]), "Condition must be true"

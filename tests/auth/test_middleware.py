@@ -15,7 +15,7 @@ sys.path.insert(0, "/home/runner/work/_codex_/_codex_/src")
 
 from codex.auth.middleware import (
     APIKeyValidator,
-    AuthConfig, # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+    AuthConfig,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
     AuthMethod,
     AuthMiddleware,
     AuthResult,
@@ -32,12 +32,12 @@ class TestAuthConfig:
     def test_default_config(self):
         """Test default configuration values."""
         config = AuthConfig()
-        assert config.enabled is True
-        assert config.default_method == AuthMethod.JWT
-        assert config.api_key_header == "X-API-Key"
-        assert config.bearer_header == "Authorization"
-        assert "/health" in config.exempt_paths
-        assert "/ready" in config.exempt_paths
+        assert config.enabled is True, "enabled is not valid"
+        assert config.default_method == AuthMethod.JWT, "default_method is not valid"
+        assert config.api_key_header == "X-API-Key", "api_key_header is not valid"
+        assert config.bearer_header == "Authorization", "bearer_header is not valid"
+        assert "/health" in config.exempt_paths, "Condition must be true"
+        assert "/ready" in config.exempt_paths, "Condition must be true"
 
     def test_custom_config(self):
         """Test custom configuration."""
@@ -46,9 +46,9 @@ class TestAuthConfig:
             default_method=AuthMethod.API_KEY,
             rate_limit_requests=50,
         )
-        assert config.enabled is False
-        assert config.default_method == AuthMethod.API_KEY
-        assert config.rate_limit_requests == 50
+        assert config.enabled is False, "enabled is not valid"
+        assert config.default_method == AuthMethod.API_KEY, "default_method is not valid"
+        assert config.rate_limit_requests == 50, "rate_limit_requests is not valid"
 
 
 class TestAuthResult:
@@ -62,16 +62,16 @@ class TestAuthResult:
             user_id="user123",
             scopes={"read", "write"},
         )
-        assert result.authenticated is True
-        assert result.method == AuthMethod.JWT
-        assert result.user_id == "user123"
-        assert "read" in result.scopes
+        assert result.authenticated is True, "Result must not be empty"
+        assert result.method == AuthMethod.JWT, "Result must not be empty"
+        assert result.user_id == "user123", "Result must not be empty"
+        assert "read" in result.scopes, "Result must not be empty"
 
     def test_unauthenticated_result(self):
         """Test unauthenticated result."""
         result = AuthResult(authenticated=False, method=AuthMethod.NONE, error="No credentials")
-        assert result.authenticated is False
-        assert result.error == "No credentials"
+        assert result.authenticated is False, "Result must not be empty"
+        assert result.error == "No credentials", "Result must not be empty"
 
 
 class TestAPIKeyValidator:
@@ -91,15 +91,15 @@ class TestAPIKeyValidator:
 
         # Validate the key
         result = validator.validate_key(api_key)
-        assert result is not None
-        assert result["user_id"] == "user123"
-        assert "read" in result["scopes"]
+        assert result is not None, "result must be initialized"
+        assert result["user_id"] == "user123", "Result must not be empty"
+        assert "read" in result["scopes"], "Result must not be empty"
 
     def test_invalid_key_returns_none(self):
         """Test that invalid key returns None."""
         validator = APIKeyValidator()
         result = validator.validate_key("invalid-key")
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_revoke_key(self):
         """Test revoking an API key."""
@@ -112,18 +112,18 @@ class TestAPIKeyValidator:
         validator.register_key(key_hash, "user123")
 
         # Key should work
-        assert validator.validate_key(api_key) is not None
+        assert validator.validate_key(api_key) is not None, "validat must be initialized"
 
         # Revoke key
-        assert validator.revoke_key(key_hash) is True
+        assert validator.revoke_key(key_hash) is True, "validat is not valid"
 
         # Key should no longer work
-        assert validator.validate_key(api_key) is None
+        assert validator.validate_key(api_key) is None, "validat is not valid"
 
     def test_revoke_nonexistent_key(self):
         """Test revoking a nonexistent key."""
         validator = APIKeyValidator()
-        assert validator.revoke_key("nonexistent") is False
+        assert validator.revoke_key("nonexistent") is False, "validat is not valid"
 
 
 class TestRateLimiter:
@@ -134,7 +134,7 @@ class TestRateLimiter:
         limiter = RateLimiter(requests_per_window=5, window_seconds=60)
 
         for _ in range(5):
-            assert limiter.is_allowed("user1") is True
+            assert limiter.is_allowed("user1") is True, "Condition must be true"
 
     def test_blocks_requests_over_limit(self):
         """Test that requests over limit are blocked."""
@@ -145,7 +145,7 @@ class TestRateLimiter:
             limiter.is_allowed("user1")
 
         # Next request should be blocked
-        assert limiter.is_allowed("user1") is False
+        assert limiter.is_allowed("user1") is False, "Condition must be true"
 
     def test_separate_limits_per_key(self):
         """Test that different keys have separate limits."""
@@ -154,21 +154,21 @@ class TestRateLimiter:
         # Use up limit for user1
         limiter.is_allowed("user1")
         limiter.is_allowed("user1")
-        assert limiter.is_allowed("user1") is False
+        assert limiter.is_allowed("user1") is False, "Condition must be true"
 
         # user2 should still have full limit
-        assert limiter.is_allowed("user2") is True
+        assert limiter.is_allowed("user2") is True, "Condition must be true"
 
     def test_get_remaining(self):
         """Test getting remaining requests."""
         limiter = RateLimiter(requests_per_window=5, window_seconds=60)
 
-        assert limiter.get_remaining("user1") == 5
+        assert limiter.get_remaining("user1") == 5, "Condition must be true"
 
         limiter.is_allowed("user1")
         limiter.is_allowed("user1")
 
-        assert limiter.get_remaining("user1") == 3
+        assert limiter.get_remaining("user1") == 3, "Condition must be true"
 
     def test_cleanup(self):
         """Test cleaning up old entries."""
@@ -180,7 +180,7 @@ class TestRateLimiter:
         time.sleep(1.1)
 
         cleaned = limiter.cleanup()
-        assert cleaned >= 1
+        assert cleaned >= 1, "cleaned must be greater than zero"
 
 
 class TestAuthMiddleware:
@@ -199,8 +199,8 @@ class TestAuthMiddleware:
 
     def test_middleware_initialization(self, middleware):
         """Test middleware initialization."""
-        assert middleware.config.enabled is True
-        assert middleware.rate_limiter is not None
+        assert middleware.config.enabled is True, "enabled is not valid"
+        assert middleware.rate_limiter is not None, "rate_limiter must be initialized"
 
     def test_authenticate_jwt_success(self, middleware, token_manager):
         """Test successful JWT authentication."""
@@ -211,9 +211,9 @@ class TestAuthMiddleware:
 
         result = middleware._authenticate(headers)
 
-        assert result.authenticated is True
-        assert result.method == AuthMethod.JWT
-        assert result.user_id == "user123"
+        assert result.authenticated is True, "Result must not be empty"
+        assert result.method == AuthMethod.JWT, "Result must not be empty"
+        assert result.user_id == "user123", "Result must not be empty"
 
     def test_authenticate_jwt_invalid(self, middleware):
         """Test JWT authentication with invalid token."""
@@ -221,9 +221,9 @@ class TestAuthMiddleware:
 
         result = middleware._authenticate(headers)
 
-        assert result.authenticated is False
-        assert result.method == AuthMethod.JWT
-        assert result.error is not None
+        assert result.authenticated is False, "Result must not be empty"
+        assert result.method == AuthMethod.JWT, "Result must not be empty"
+        assert result.error is not None, "error must be initialized"
 
     def test_authenticate_api_key_success(self, middleware):
         """Test successful API key authentication."""
@@ -238,17 +238,17 @@ class TestAuthMiddleware:
 
         result = middleware._authenticate(headers)
 
-        assert result.authenticated is True
-        assert result.method == AuthMethod.API_KEY
-        assert result.user_id == "user456"
+        assert result.authenticated is True, "Result must not be empty"
+        assert result.method == AuthMethod.API_KEY, "Result must not be empty"
+        assert result.user_id == "user456", "Result must not be empty"
 
     def test_authenticate_no_credentials(self, middleware):
         """Test authentication with no credentials."""
         result = middleware._authenticate({})
 
-        assert result.authenticated is False
-        assert result.method == AuthMethod.NONE
-        assert "No authentication" in result.error
+        assert result.authenticated is False, "Result must not be empty"
+        assert result.method == AuthMethod.NONE, "Result must not be empty"
+        assert "No authentication" in result.error, "Result must not be empty"
 
 
 class TestAuthDecorators:
@@ -262,7 +262,7 @@ class TestAuthDecorators:
         }
 
         user_id = get_current_user(request)
-        assert user_id == "user123"
+        assert user_id == "user123", "user_id is not valid"
 
     def test_get_current_user_unauthenticated(self):
         """Test getting current user when not authenticated."""
@@ -270,7 +270,7 @@ class TestAuthDecorators:
         request.scope = {}
 
         user_id = get_current_user(request)
-        assert user_id is None
+        assert user_id is None, "user_id is not valid"
 
     def test_get_current_scopes(self):
         """Test getting current scopes."""
@@ -280,8 +280,8 @@ class TestAuthDecorators:
         }
 
         scopes = get_current_scopes(request)
-        assert "read" in scopes
-        assert "write" in scopes
+        assert "read" in scopes, "Condition must be true"
+        assert "write" in scopes, "Condition must be true"
 
     def test_get_current_scopes_unauthenticated(self):
         """Test getting scopes when not authenticated."""
@@ -289,7 +289,7 @@ class TestAuthDecorators:
         request.scope = {}
 
         scopes = get_current_scopes(request)
-        assert len(scopes) == 0
+        assert len(scopes) == 0, "Scopes must not be empty"
 
 
 class TestAuthMethod:
@@ -297,7 +297,7 @@ class TestAuthMethod:
 
     def test_auth_methods(self):
         """Test auth method values."""
-        assert AuthMethod.JWT.value == "jwt"
-        assert AuthMethod.API_KEY.value == "api_key"
-        assert AuthMethod.OAUTH.value == "oauth"
-        assert AuthMethod.NONE.value == "none"
+        assert AuthMethod.JWT.value == "jwt", "Value must be initialized"
+        assert AuthMethod.API_KEY.value == "api_key", "Value must be initialized"
+        assert AuthMethod.OAUTH.value == "oauth", "Value must be initialized"
+        assert AuthMethod.NONE.value == "none", "Value must be initialized"

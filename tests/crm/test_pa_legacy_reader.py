@@ -41,19 +41,19 @@ def test_read_pa_legacy_round_trip(tmp_path: Path) -> None:
     archive_path = _create_pa_zip(tmp_path)
 
     package = read_pa_legacy(archive_path)
-    assert package["manifest"]["name"] == "Sample"
-    assert "sample" in package["flows"]
+    assert package["manifest"]["name"] == "Sample", "Condition must be true"
+    assert "sample" in package["flows"], "Condition must be true"
 
     template = to_template(package)
-    assert template["manifest"]["version"] == "1.0"
-    assert "sample" in template["flows"]
+    assert template["manifest"]["version"] == "1.0", "Condition must be true"
+    assert "sample" in template["flows"], "Condition must be true"
 
     connections = template["connections"]["sample"]
-    assert connections == ["shared_outlook"]
+    assert connections == ["shared_outlook"], "connections is not valid"
     connection_ref = template["flows"]["sample"]["properties"]["connectionReferences"][
         "shared_outlook"
     ]
-    assert connection_ref["connectionName"] == "{{SHARED_OUTLOOK_CONNECTION}}"
+    assert connection_ref["connectionName"] == "{{SHARED_OUTLOOK_CONNECTION}}", "Condition must be true"
 
 
 def test_to_template_without_flows_raises() -> None:

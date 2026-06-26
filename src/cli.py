@@ -23,8 +23,8 @@ try:
     from hydra import compose, initialize_config_dir
 except ImportError as e:
     error_type = type(e).__name__
-    logger.debug(f"ImportError: <ERROR_TYPE>")
-    logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
+    logger.debug("ImportError: <ERROR_TYPE>")
+    logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
     from config_legacy import compose, initialize_config_dir
 
 CLI_PACKAGE_PATH = Path(__file__).resolve().parent.parent / "cli"

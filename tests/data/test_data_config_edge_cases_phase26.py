@@ -25,7 +25,7 @@ class TestDataLoaderEdgeCases:
         try:
             with open(empty_file, "r") as f:
                 content = f.read()
-            assert content == ""
+            assert content == "", "Content must not be empty"
         finally:
             os.unlink(empty_file)
 
@@ -72,21 +72,21 @@ class TestDataLoaderEdgeCases:
 
         # Should handle deep nesting
         json_str = json.dumps(nested)
-        assert len(json_str) > 0
+        assert len(json_str) > 0, "Json_str must not be empty"
 
     def test_loader_unicode_bom(self):
         """Test data loader with UTF-8 BOM"""
         bom_content = '\ufeff{"key": "value"}'
         # Should handle BOM correctly
         parsed = json.loads(bom_content.lstrip("\ufeff"))
-        assert parsed == {"key": "value"}
+        assert parsed == {"key": "value"}, "Value must be initialized"
 
     def test_loader_mixed_line_endings(self):
         """Test data loader with mixed line endings (CRLF/LF)"""
         mixed_content = "line1\r\nline2\nline3\rline4"
         # Should normalize line endings
         lines = mixed_content.splitlines()
-        assert len(lines) == 4
+        assert len(lines) == 4, "Lines must not be empty"
 
     def test_loader_concurrent_reads(self):
         """Test data loader with concurrent file reads"""
@@ -103,7 +103,7 @@ class TestDataLoaderEdgeCases:
         for t in threads:
             t.join()
 
-        assert len(results) == 10
+        assert len(results) == 10, "Results must not be empty"
 
     def test_loader_file_permissions_denied(self):
         """Test data loader with permission denied"""
@@ -165,8 +165,8 @@ class TestConfigEdgeCases:
         base_config = {"base_key": "base_value"}
         child_config = {**base_config, "child_key": "child_value"}
         # Should inherit correctly
-        assert "base_key" in child_config
-        assert "child_key" in child_config
+        assert "base_key" in child_config, "Condition must be true"
+        assert "child_key" in child_config, "Condition must be true"
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_config_immutability(self):

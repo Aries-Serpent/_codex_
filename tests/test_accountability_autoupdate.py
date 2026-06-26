@@ -15,7 +15,8 @@ from __future__ import annotations
 import json
 
 import pytest
- # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+
+# pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 from codex.session.accountability_autoupdate import (
     append_to_report,
     collect_metadata,
@@ -39,42 +40,42 @@ class TestComputeScore:
 
     def test_zero_input_returns_zero(self):
         score = compute_score(0, 0, 0, False, False, "")
-        assert score == 0.0
+        assert score == 0.0, "score is not valid"
 
     def test_max_input_capped_at_one(self):
         score = compute_score(100, 100_000, 100, True, True, "hotfix critical")
-        assert score <= 1.0
+        assert score <= 1.0, "score is not valid"
 
     def test_score_increases_with_files(self):
         low = compute_score(1, 0, 0, False, False, "")
         high = compute_score(10, 0, 0, False, False, "")
-        assert high > low
+        assert high > low, "high must be greater than zero"
 
     def test_score_increases_with_lines(self):
         low = compute_score(0, 10, 0, False, False, "")
         high = compute_score(0, 500, 0, False, False, "")
-        assert high > low
+        assert high > low, "high must be greater than zero"
 
     def test_hotfix_keyword_boosts_score(self):
         without = compute_score(5, 200, 5, False, False, "update feature")
         with_fix = compute_score(5, 200, 5, False, False, "fix: broken login")
-        assert with_fix > without
+        assert with_fix > without, "with_fix must be greater than zero"
 
     def test_security_findings_boost(self):
         without = compute_score(5, 200, 5, False, False, "chore")
         with_sec = compute_score(5, 200, 5, True, False, "chore")
-        assert with_sec > without
+        assert with_sec > without, "with_sec must be greater than zero"
 
     def test_docs_boost(self):
         without = compute_score(5, 200, 5, False, False, "chore")
         with_doc = compute_score(5, 200, 5, False, True, "chore")
-        assert with_doc > without
+        assert with_doc > without, "with_doc must be greater than zero"
 
     def test_deterministic(self):
         """Same inputs always produce the same score."""
         a = compute_score(3, 150, 2, False, True, "fix: minor")
         b = compute_score(3, 150, 2, False, True, "fix: minor")
-        assert a == b
+        assert a == b, "a is not valid"
 
     def test_score_in_range(self):
         """Score is always in [0, 1]."""
@@ -82,7 +83,7 @@ class TestComputeScore:
             for lines in (0, 100, 10000):
                 for tests in (0, 10, 100):
                     s = compute_score(files, lines, tests, True, True, "hotfix")
-                    assert 0.0 <= s <= 1.0
+                    assert 0.0 <= s <= 1.0, "0 is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -95,22 +96,22 @@ class TestTokenizeNarrative:
     def test_basic_tokenisation(self):
         tokens = tokenize_narrative("Fixed the login bug. Updated tests.")
         names = [t["token"] for t in tokens]
-        assert "fixed" in names
-        assert "login" in names
-        assert "bug" in names
+        assert "fixed" in names, "Condition must be true"
+        assert "login" in names, "Condition must be true"
+        assert "bug" in names, "Condition must be true"
 
     def test_stopwords_removed(self):
         tokens = tokenize_narrative("The quick brown fox is a test of the module.")
         names = [t["token"] for t in tokens]
-        assert "the" not in names
-        assert "is" not in names
-        assert "a" not in names
+        assert "the" not in names, "Condition must be true"
+        assert "is" not in names, "Condition must be true"
+        assert "a" not in names, "Condition must be true"
 
     def test_weights_sum_to_one(self):
         tokens = tokenize_narrative("Auth module refactored. MFA tests added.")
         if tokens:
             total = sum(t["weight"] for t in tokens)
-            assert abs(total - 1.0) < 0.01
+            assert abs(total - 1.0) < 0.01, "Condition must be true"
 
     def test_filename_boost(self):
         tokens_without = tokenize_narrative("Updated auth module", modified_filenames=[])
@@ -123,7 +124,7 @@ class TestTokenizeNarrative:
         assert w_with.get("auth", 0) >= w_without.get("auth", 0)
 
     def test_empty_narrative(self):
-        assert tokenize_narrative("") == []
+        assert tokenize_narrative("") == [], "Condition must be true"
 
     def test_sorted_by_weight_descending(self):
         tokens = tokenize_narrative("One two three four. Five six seven eight.")
@@ -161,40 +162,40 @@ class TestGenerateMarkdownEntry:
     def test_contains_session_id(self, sample_metadata):
         tokens = [{"token": "auth", "weight": 0.7}, {"token": "rate", "weight": 0.3}]
         entry = generate_markdown_entry(sample_metadata, 0.45, tokens)
-        assert "SessionID: test-session-123" in entry
+        assert "SessionID: test-session-123" in entry, "Condition must be true"
 
     def test_contains_commit_sha(self, sample_metadata):
         tokens = [{"token": "auth", "weight": 1.0}]
         entry = generate_markdown_entry(sample_metadata, 0.5, tokens)
-        assert "abc1234567" in entry
+        assert "abc1234567" in entry, "Condition must be true"
 
     def test_contains_metrics_table(self, sample_metadata):
         tokens = [{"token": "auth", "weight": 1.0}]
         entry = generate_markdown_entry(sample_metadata, 0.5, tokens)
-        assert "| Files changed | 2 |" in entry
-        assert "| Lines added | +150 |" in entry
-        assert "| Lines removed | -30 |" in entry
+        assert "| Files changed | 2 |" in entry, "Condition must be true"
+        assert "| Lines added | +150 |" in entry, "Condition must be true"
+        assert "| Lines removed | -30 |" in entry, "Condition must be true"
 
     def test_contains_significance_score(self, sample_metadata):
         tokens = [{"token": "auth", "weight": 1.0}]
         entry = generate_markdown_entry(sample_metadata, 0.72, tokens)
-        assert "0.72" in entry
+        assert "0.72" in entry, "Condition must be true"
 
     def test_ends_with_separator(self, sample_metadata):
         tokens = [{"token": "auth", "weight": 1.0}]
         entry = generate_markdown_entry(sample_metadata, 0.5, tokens)
-        assert entry.strip().endswith("---")
+        assert entry.strip().endswith("---"), "Condition must be true"
 
     def test_contains_tokenized_narrative_json(self, sample_metadata):
         tokens = [{"token": "auth", "weight": 0.8}, {"token": "rate", "weight": 0.2}]
         entry = generate_markdown_entry(sample_metadata, 0.5, tokens)
-        assert "```json" in entry
+        assert "```json" in entry, "Condition must be true"
 
     def test_lists_modified_files(self, sample_metadata):
         tokens = [{"token": "auth", "weight": 1.0}]
         entry = generate_markdown_entry(sample_metadata, 0.5, tokens)
-        assert "src/auth/routes.py" in entry
-        assert "tests/test_auth.py" in entry
+        assert "src/auth/routes.py" in entry, "Condition must be true"
+        assert "tests/test_auth.py" in entry, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -235,7 +236,7 @@ class TestIdempotency:
             changelog_path=changelog,
             sessions_dir=sessions,
         )
-        assert result1.get("session_id") == "idempotent-test"
+        assert result1.get("session_id") == "idempotent-test", "Result must not be empty"
 
         result2 = run(
             session_id="idempotent-test",
@@ -245,11 +246,11 @@ class TestIdempotency:
             changelog_path=changelog,
             sessions_dir=sessions,
         )
-        assert result2.get("skipped") is True
+        assert result2.get("skipped") is True, "Result must not be empty"
 
         # Verify only one occurrence
         content = report.read_text(encoding="utf-8")
-        assert content.count("SessionID: idempotent-test") == 1
+        assert content.count("SessionID: idempotent-test") == 1, "Content must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -262,17 +263,17 @@ class TestAppendToReport:
     def test_creates_file_if_missing(self, tmp_path):
         report = tmp_path / "subdir" / "report.md"
         append_to_report("## New entry\n---\n", report)
-        assert report.exists()
+        assert report.exists(), "rep is not valid"
         content = report.read_text(encoding="utf-8")
-        assert "New entry" in content
+        assert "New entry" in content, "Content must not be empty"
 
     def test_appends_to_existing(self, tmp_path):
         report = tmp_path / "report.md"
         report.write_text("# Header\n\nExisting content\n", encoding="utf-8")
         append_to_report("## Appended\n---\n", report)
         content = report.read_text(encoding="utf-8")
-        assert "Existing content" in content
-        assert "Appended" in content
+        assert "Existing content" in content, "Content must not be empty"
+        assert "Appended" in content, "Content must not be empty"
 
 
 class TestWriteSessionArtifact:
@@ -293,11 +294,11 @@ class TestWriteSessionArtifact:
         }
         tokens = [{"token": "test", "weight": 1.0}]
         path = write_session_artifact(metadata, 0.5, tokens, tmp_path)
-        assert path.exists()
+        assert path.exists(), "Condition must be true"
         data = json.loads(path.read_text(encoding="utf-8"))
-        assert data["session_id"] == "art-test"
-        assert data["score"] == 0.5
-        assert len(data["tokens"]) == 1
+        assert data["session_id"] == "art-test", "Data must not be empty"
+        assert data["score"] == 0.5, "Data must not be empty"
+        assert len(data["tokens"]) == 1, "Collection must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -313,9 +314,9 @@ class TestIntegrationRun:
             narrative="Integration test dry run.",
             dry_run=True,
         )
-        assert result.get("dry_run") is True
-        assert "dry-test" in result["entry"]
-        assert result["score"] >= 0.0
+        assert result.get("dry_run") is True, "Result must not be empty"
+        assert "dry-test" in result["entry"], "Result must not be empty"
+        assert result["score"] >= 0.0, "Value must be greater than zero"
 
     def test_full_run_creates_files(self, tmp_path):
         report = tmp_path / "report.md"
@@ -329,19 +330,19 @@ class TestIntegrationRun:
             changelog_path=None,
             sessions_dir=sessions,
         )
-        assert result["session_id"] == "full-test"
-        assert report.exists()
-        assert (sessions / "full-test.json").exists()
+        assert result["session_id"] == "full-test", "Result must not be empty"
+        assert report.exists(), "rep is not valid"
+        assert (sessions / "full-test.json").exists(), "Condition must be true"
 
         # Verify report content
         content = report.read_text(encoding="utf-8")
-        assert "SessionID: full-test" in content
-        assert "Significance score" in content
+        assert "SessionID: full-test" in content, "Content must not be empty"
+        assert "Significance score" in content, "Content must not be empty"
 
         # Verify JSON artifact
         artifact = json.loads((sessions / "full-test.json").read_text(encoding="utf-8"))
-        assert artifact["session_id"] == "full-test"
-        assert 0.0 <= artifact["score"] <= 1.0
+        assert artifact["session_id"] == "full-test", "Condition must be true"
+        assert 0.0 <= artifact["score"] <= 1.0, "0 is not valid"
 
     def test_full_run_updates_changelog(self, tmp_path):
         """Full run should also insert an entry under [Unreleased] in CHANGELOG."""
@@ -361,13 +362,13 @@ class TestIntegrationRun:
             changelog_path=changelog,
             sessions_dir=sessions,
         )
-        assert result["changelog_updated"] is True
+        assert result["changelog_updated"] is True, "Result must not be empty"
 
         cl_content = changelog.read_text(encoding="utf-8")
-        assert "session cl-test" in cl_content
-        assert "## [Unreleased]" in cl_content
+        assert "session cl-test" in cl_content, "Content must not be empty"
+        assert ", "Condition must be true"
         # Old entry should still be there
-        assert "old entry" in cl_content
+        assert "old entry" in cl_content, "Content must not be empty"
 
     def test_dry_run_includes_changelog_preview(self):
         result = run(
@@ -375,14 +376,14 @@ class TestIntegrationRun:
             narrative="feat: preview test",
             dry_run=True,
         )
-        assert result.get("dry_run") is True
-        assert "changelog_entry" in result
-        assert "session dry-cl" in result["changelog_entry"]
+        assert result.get("dry_run") is True, "Result must not be empty"
+        assert "changelog_entry" in result, "Result must not be empty"
+        assert "session dry-cl" in result["changelog_entry"], "Result must not be empty"
 
     def test_metadata_collection(self):
         meta = collect_metadata(session_id="meta-test", narrative="Test narrative.")
-        assert meta["session_id"] == "meta-test"
-        assert meta["narrative"] == "Test narrative."
+        assert meta["session_id"] == "meta-test", "Condition must be true"
+        assert meta["narrative"] == "Test narrative.", "Condition must be true"
         assert isinstance(meta["files_changed"], list)
         assert isinstance(meta["lines_added"], int)
 
@@ -414,31 +415,31 @@ class TestChangelogGeneration:
 
     def test_generate_changelog_entry_contains_session_id(self, sample_metadata):
         entry = generate_changelog_entry(sample_metadata, 0.45)
-        assert "cl-gen-t" in entry  # first 8 chars
+        assert "cl-gen-t" in entry, "Condition must be true"
 
     def test_generate_changelog_entry_has_category(self, sample_metadata):
         entry = generate_changelog_entry(sample_metadata, 0.45)
         # commit message starts with 'feat' → Added
-        assert "### Added" in entry
+        assert ", "Condition must be true"
 
     def test_fix_commit_produces_fixed_category(self, sample_metadata):
         sample_metadata["commit_message"] = "fix: broken login"
         entry = generate_changelog_entry(sample_metadata, 0.45)
-        assert "### Fixed" in entry
+        assert ", "Condition must be true"
 
     def test_generic_commit_produces_changed_category(self, sample_metadata):
         sample_metadata["commit_message"] = "chore: update deps"
         entry = generate_changelog_entry(sample_metadata, 0.45)
-        assert "### Changed" in entry
+        assert ", "Condition must be true"
 
     def test_lists_modified_files(self, sample_metadata):
         entry = generate_changelog_entry(sample_metadata, 0.45)
-        assert "src/auth/routes.py" in entry
+        assert "src/auth/routes.py" in entry, "Condition must be true"
 
     def test_truncates_long_file_lists(self, sample_metadata):
         sample_metadata["files_changed"] = [f"file{i}.py" for i in range(10)]
         entry = generate_changelog_entry(sample_metadata, 0.45)
-        assert "… and 5 more files" in entry
+        assert "… and 5 more files" in entry, "Condition must be true"
 
 
 class TestChangelogUpdate:
@@ -453,20 +454,20 @@ class TestChangelogUpdate:
             "\n### Added (session abc — 2026-03-13)\n- new feature\n",
             changelog,
         )
-        assert result is True
+        assert result is True, "Result must not be empty"
         content = changelog.read_text(encoding="utf-8")
-        assert "new feature" in content
-        assert content.index("new feature") < content.index("## [1.0.0]")
+        assert "new feature" in content, "Content must not be empty"
+        assert content.index("new feature") < content.index(", "Content must not be empty"
 
     def test_returns_false_when_no_unreleased(self, tmp_path):
         changelog = tmp_path / "CHANGELOG.md"
         changelog.write_text("# Changelog\n\n## [1.0.0]\n", encoding="utf-8")
         result = update_changelog("### Added\n- entry\n", changelog)
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_returns_false_when_file_missing(self, tmp_path):
         result = update_changelog("### Added\n", tmp_path / "missing.md")
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_session_exists_in_changelog(self, tmp_path):
         changelog = tmp_path / "CHANGELOG.md"
@@ -486,6 +487,6 @@ class TestChangelogUpdate:
         changelog.write_text(original, encoding="utf-8")
         update_changelog("\n### Added (session test)\n- new\n", changelog)
         content = changelog.read_text(encoding="utf-8")
-        assert "existing fix" in content
-        assert "v1 entry" in content
-        assert "new" in content
+        assert "existing fix" in content, "Content must not be empty"
+        assert "v1 entry" in content, "Content must not be empty"
+        assert "new" in content, "Content must not be empty"

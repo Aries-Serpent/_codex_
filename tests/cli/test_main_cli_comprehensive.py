@@ -18,7 +18,7 @@ class TestMainModuleImport:
         try:
             from codex_ml.cli import main
 
-            assert main is not None
+            assert main is not None, "main must be initialized"
         except ImportError as e:
             pytest.skip(f"Module import failed: {e}")
 

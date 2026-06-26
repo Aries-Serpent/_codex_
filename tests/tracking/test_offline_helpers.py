@@ -12,10 +12,10 @@ def test_init_mlflow_offline_import_only(monkeypatch, tmp_path):
     try:
         from codex_ml.tracking.init_offline import init_mlflow_offline
 
-        assert callable(init_mlflow_offline)
+        assert callable(init_mlflow_offline), "Condition must be true"
     except ImportError:
         # Import should still succeed even if mlflow is not installed.
-        assert True
+        assert True, "True is not valid"
 
 
 def test_init_wandb_offline_env(monkeypatch):
@@ -25,4 +25,4 @@ def test_init_wandb_offline_env(monkeypatch):
     from codex_ml.tracking.init_offline import init_wandb_offline
 
     init_wandb_offline(project="x")
-    assert os.environ.get("WANDB_MODE") == "offline"
+    assert os.environ.get("WANDB_MODE") == "offline", "Condition must be true"

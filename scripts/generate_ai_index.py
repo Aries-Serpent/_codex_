@@ -97,7 +97,7 @@ class RepositoryIndexer:
             tree = ast.parse(content, filename=str(filepath))
         except (SyntaxError, UnicodeDecodeError, ValueError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             print(f"⚠ Warning: Could not parse {filepath}: <ERROR_TYPE>", file=sys.stderr)
             return entities
 

@@ -50,12 +50,12 @@ try:
         QFT_AVAILABLE = True
     except ImportError as e:
         error_type = type(e).__name__
-        logger.debug(f"ImportError: <ERROR_TYPE>")
-        logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
+        logger.debug("ImportError: <ERROR_TYPE>")
+        logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
         QFT_AVAILABLE = False
 except ImportError as e:
     error_type = type(e).__name__
-    logger.debug(f"ImportError: <ERROR_TYPE>")
+    logger.debug("ImportError: <ERROR_TYPE>")
     click.echo(f"Error importing quantum orchestrator: {e}", err=True)
     click.echo("Make sure numpy is installed: pip install numpy", err=True)
     sys.exit(1)

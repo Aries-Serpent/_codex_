@@ -21,25 +21,25 @@ def test_tenant_registry_sqlite_crud(tmp_path: Path, monkeypatch: pytest.MonkeyP
 
     registry = TenantRegistry(backend="sqlite")
     created = registry.create_tenant("tenant-a", "Tenant A", "key-a")
-    assert created["quota"]["requests_per_minute"] == 7
+    assert created["quota"]["requests_per_minute"] == 7, "Condition must be true"
 
     fetched = registry.get_tenant("tenant-a")
-    assert fetched is not None and fetched["name"] == "Tenant A"
-    assert registry.get_tenant_by_api_key("key-a")["tenant_id"] == "tenant-a"  # type: ignore[index]
+    assert fetched is not None and fetched["name"] == "Tenant A", "fetched must be initialized"
+    assert registry.get_tenant_by_api_key("key-a")["tenant_id"] == "tenant-a", "Condition must be true"
 
     updated = registry.update_tenant("tenant-a", name="Tenant Updated", active=False)
-    assert updated is not None and updated["active"] is False
-    assert registry.deactivate_tenant("tenant-a") is True
+    assert updated is not None and updated["active"] is False, "updated must be initialized"
+    assert registry.deactivate_tenant("tenant-a") is True, "Condition must be true"
 
     registry.delete_tenant("tenant-a")
     deleted = registry.get_tenant("tenant-a")
-    assert deleted is not None
+    assert deleted is not None, "deleted must be initialized"
     assert deleted.get("active", False) is False
 
     conn = sqlite3.connect(db_path)
     row = conn.execute("SELECT name FROM tenants WHERE tenant_id = ?", ("tenant-a",)).fetchone()
     conn.close()
-    assert row is not None
+    assert row is not None, "row must be initialized"
 
 
 def test_tenant_registry_memory_listing() -> None:
@@ -68,13 +68,13 @@ def test_tenant_middleware_auth_flow(monkeypatch: pytest.MonkeyPatch) -> None:
     # Missing auth header
     with TestClient(app) as client:
         missing = client.get("/v1/resource")
-    assert missing.status_code == 401
+    assert missing.status_code == 401, "status_code is not valid"
 
     # Invalid key
     monkeypatch.setattr(tc_module.tenant_registry, "get_tenant_by_api_key", lambda _: None)
     with TestClient(app) as client:
         invalid = client.get("/v1/resource", headers={"Authorization": "Bearer bad"})
-    assert invalid.status_code == 401
+    assert invalid.status_code == 401, "status_code is not valid"
 
     # Inactive tenant
     monkeypatch.setattr(
@@ -84,7 +84,7 @@ def test_tenant_middleware_auth_flow(monkeypatch: pytest.MonkeyPatch) -> None:
     )
     with TestClient(app) as client:
         inactive = client.get("/v1/resource", headers={"Authorization": "Bearer bad"})
-    assert inactive.status_code == 403
+    assert inactive.status_code == 403, "status_code is not valid"
 
     # Active tenant
     monkeypatch.setattr(
@@ -94,8 +94,8 @@ def test_tenant_middleware_auth_flow(monkeypatch: pytest.MonkeyPatch) -> None:
     )
     with TestClient(app) as client:
         ok = client.get("/v1/resource", headers={"Authorization": "Bearer ok"})
-    assert ok.status_code == 200
-    assert ok.json()["tenant_id"] == "t-active"
+    assert ok.status_code == 200, "status_code is not valid"
+    assert ok.json()["tenant_id"] == "t-active", "Condition must be true"
 
 
 def test_tenant_middleware_public_and_auth_disabled(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -112,5 +112,5 @@ def test_tenant_middleware_public_and_auth_disabled(monkeypatch: pytest.MonkeyPa
 
     monkeypatch.setattr(tc_module.settings, "api_key_required", False)
     with TestClient(app) as client:
-        assert client.get("/health").status_code == 200
-        assert client.get("/admin/tenants").status_code == 200
+        assert client.get("/health").status_code == 200, "status_code is not valid"
+        assert client.get("/admin/tenants").status_code == 200, "status_code is not valid"

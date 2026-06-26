@@ -18,7 +18,7 @@ def test_split_files_is_deterministic_with_seed() -> None:
     first = split_files(files, cfg)
     second = split_files(files, cfg)
 
-    assert first == second
+    assert first == second, "first is not valid"
 
 
 def test_split_files_changes_with_different_seed() -> None:
@@ -29,7 +29,7 @@ def test_split_files_changes_with_different_seed() -> None:
     base_split = split_files(files, base_cfg)
     alt_split = split_files(files, alt_cfg)
 
-    assert base_split != alt_split
+    assert base_split != alt_split, "base_split is not valid"
 
 
 def test_split_files_uses_default_configuration_when_none() -> None:
@@ -37,10 +37,10 @@ def test_split_files_uses_default_configuration_when_none() -> None:
 
     train, val, test = split_files(files, None)
 
-    assert len(train) == int(len(files) * SplitConfig().train_ratio)
-    assert len(val) == int(len(files) * SplitConfig().val_ratio)
-    assert len(test) == len(files) - len(train) - len(val)
-    assert sorted(train + val + test) == sorted(files)
+    assert len(train) == int(len(files) * SplitConfig().train_ratio), "Train must not be empty"
+    assert len(val) == int(len(files) * SplitConfig().val_ratio), "Val must not be empty"
+    assert len(test) == len(files) - len(train) - len(val), "Test must not be empty"
+    assert sorted(train + val + test) == sorted(files), "s is not valid"
 
 
 def test_split_files_handles_empty_input() -> None:
@@ -63,7 +63,7 @@ def test_split_files_respects_ratios(cfg: SplitConfig) -> None:
     expected_val = int(len(files) * cfg.val_ratio)
     expected_test = len(files) - expected_train - expected_val
 
-    assert len(train) == expected_train
-    assert len(val) == expected_val
-    assert len(test) == expected_test
-    assert sorted(train + val + test) == sorted(files)
+    assert len(train) == expected_train, "Train must not be empty"
+    assert len(val) == expected_val, "Val must not be empty"
+    assert len(test) == expected_test, "Test must not be empty"
+    assert sorted(train + val + test) == sorted(files), "s is not valid"

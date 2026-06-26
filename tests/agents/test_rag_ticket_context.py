@@ -25,7 +25,7 @@ class TestZendeskRAGBridge:
         bridge = ZendeskRAGBridge()
 
         MockCoreBridge.assert_called_once()
-        assert bridge._bridge is not None
+        assert bridge._bridge is not None, "_bridge must be initialized"
 
     @patch("agents.rag_ticket_context.CoreZendeskRAGBridge")
     def test_retrieve_ticket_context(self, MockCoreBridge):
@@ -41,7 +41,7 @@ class TestZendeskRAGBridge:
         result = bridge.retrieve_ticket_context("query", tickets, top_k=3)
 
         mock_core.retrieve_ticket_context.assert_called_once_with("query", tickets, top_k=3)
-        assert result == ["context1"]
+        assert result == ["context1"], "Result must not be empty"
 
 
 class TestModuleExports:
@@ -51,5 +51,5 @@ class TestModuleExports:
         """Test __all__ exports."""
         from agents.rag_ticket_context import __all__
 
-        assert "ZendeskRAGBridge" in __all__
-        assert "ZendeskTicket" in __all__
+        assert "ZendeskRAGBridge" in __all__, "Condition must be true"
+        assert "ZendeskTicket" in __all__, "Condition must be true"

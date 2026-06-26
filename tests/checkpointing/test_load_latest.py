@@ -49,8 +49,8 @@ def test_load_latest_restores_latest_epoch(tmp_path: Path) -> None:
     fresh_sch = torch.optim.lr_scheduler.StepLR(fresh_opt, step_size=1, gamma=0.5)
     info = mgr.load_latest(model=fresh, optimizer=fresh_opt, scheduler=fresh_sch)
 
-    assert info["meta"]["epoch"] == 2
-    assert Path(info["path"]) == ckpt_dir
+    assert info["meta"]["epoch"] == 2, "Condition must be true"
+    assert Path(info["path"]) == ckpt_dir, "Condition must be true"
     for name, param in fresh.state_dict().items():
         assert torch.allclose(param, state_snapshot[name])
 
@@ -72,8 +72,8 @@ def test_load_latest_recovers_when_marker_invalid(tmp_path: Path) -> None:
     fresh = Tiny()
     fresh_opt = torch.optim.SGD(fresh.parameters(), lr=0.1)
     info = mgr.load_latest(model=fresh, optimizer=fresh_opt, scheduler=None)
-    assert info["meta"]["epoch"] == 2
-    assert Path(info["path"]).name == "epoch-2"
+    assert info["meta"]["epoch"] == 2, "Condition must be true"
+    assert Path(info["path"]).name == "epoch-2", "name is not valid"
 
 
 def test_load_latest_non_strict_returns_empty(tmp_path: Path) -> None:

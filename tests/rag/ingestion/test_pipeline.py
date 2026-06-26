@@ -24,10 +24,10 @@ class TestIngestionStatus:
 
     def test_status_values(self):
         """Test status enum values."""
-        assert IngestionStatus.PENDING.value == "pending"
-        assert IngestionStatus.COMPLETED.value == "completed"
-        assert IngestionStatus.FAILED.value == "failed"
-        assert IngestionStatus.SKIPPED.value == "skipped"
+        assert IngestionStatus.PENDING.value == "pending", "Value must be initialized"
+        assert IngestionStatus.COMPLETED.value == "completed", "Value must be initialized"
+        assert IngestionStatus.FAILED.value == "failed", "Value must be initialized"
+        assert IngestionStatus.SKIPPED.value == "skipped", "Value must be initialized"
 
 
 class TestIngestionResult:
@@ -39,13 +39,13 @@ class TestIngestionResult:
             document_id="test",
             status=IngestionStatus.COMPLETED,
         )
-        assert result.is_success
+        assert result.is_success, "Result must not be empty"
 
         result = IngestionResult(
             document_id="test",
             status=IngestionStatus.FAILED,
         )
-        assert not result.is_success
+        assert not result.is_success, "Result must not be empty"
 
     def test_chunk_count(self):
         """Test chunk_count property."""
@@ -59,7 +59,7 @@ class TestIngestionResult:
                 Chunk(text="b", index=1, start_pos=1, end_pos=2),
             ],
         )
-        assert result.chunk_count == 2
+        assert result.chunk_count == 2, "Result must not be empty"
 
     def test_to_dict(self):
         """Test to_dict method."""
@@ -71,9 +71,9 @@ class TestIngestionResult:
         )
 
         d = result.to_dict()
-        assert d["document_id"] == "test"
-        assert d["status"] == "completed"
-        assert d["processing_time"] == 1.5
+        assert d["document_id"] == "test", "Condition must be true"
+        assert d["status"] == "completed", "Condition must be true"
+        assert d["processing_time"] == 1.5, "Condition must be true"
 
 
 class TestBatchIngestionResult:
@@ -86,12 +86,12 @@ class TestBatchIngestionResult:
             successful=8,
             failed=2,
         )
-        assert result.success_rate == 0.8
+        assert result.success_rate == 0.8, "Result must not be empty"
 
     def test_success_rate_zero_documents(self):
         """Test success_rate with no documents."""
         result = BatchIngestionResult(total_documents=0)
-        assert result.success_rate == 0.0
+        assert result.success_rate == 0.0, "Result must not be empty"
 
     def test_throughput(self):
         """Test throughput calculation."""
@@ -99,7 +99,7 @@ class TestBatchIngestionResult:
             total_documents=100,
             total_time_seconds=1.0,  # 1 second = 360000 docs/hour
         )
-        assert result.throughput_docs_per_hour == 360000.0
+        assert result.throughput_docs_per_hour == 360000.0, "Result must not be empty"
 
     def test_summary(self):
         """Test summary generation."""
@@ -112,8 +112,8 @@ class TestBatchIngestionResult:
         )
 
         summary = result.summary()
-        assert "8/10" in summary
-        assert "50 chunks" in summary
+        assert "8/10" in summary, "Condition must be true"
+        assert "50 chunks" in summary, "Condition must be true"
 
 
 class TestIngestionConfig:
@@ -123,10 +123,10 @@ class TestIngestionConfig:
         """Test default configuration values."""
         config = IngestionConfig()
 
-        assert config.batch_size == 100
-        assert config.max_workers == 4
-        assert config.max_retries == 3
-        assert config.enable_deduplication is True
+        assert config.batch_size == 100, "batch_size is not valid"
+        assert config.max_workers == 4, "max_workers is not valid"
+        assert config.max_retries == 3, "max_retries is not valid"
+        assert config.enable_deduplication is True, "enable_deduplication is not valid"
 
     def test_custom_config(self):
         """Test custom configuration."""
@@ -136,9 +136,9 @@ class TestIngestionConfig:
             enable_deduplication=False,
         )
 
-        assert config.batch_size == 50
-        assert config.max_workers == 8
-        assert config.enable_deduplication is False
+        assert config.batch_size == 50, "batch_size is not valid"
+        assert config.max_workers == 8, "max_workers is not valid"
+        assert config.enable_deduplication is False, "enable_deduplication is not valid"
 
 
 class TestIngestionPipeline:
@@ -182,10 +182,10 @@ class TestIngestionPipeline:
         text = "This is a test document for ingestion."
         result = pipeline.ingest_text(text)
 
-        assert result.is_success
-        assert result.status == IngestionStatus.COMPLETED
-        assert result.chunk_count >= 1
-        assert result.processing_time_seconds > 0
+        assert result.is_success, "Result must not be empty"
+        assert result.status == IngestionStatus.COMPLETED, "Result must not be empty"
+        assert result.chunk_count >= 1, "chunk_count must be positive"
+        assert result.processing_time_seconds > 0, "processing_time_seconds must be greater than zero"
 
     def test_ingest_text_with_id(self, pipeline):
         """Test text ingestion with custom ID."""
@@ -194,7 +194,7 @@ class TestIngestionPipeline:
             document_id="custom-id",
         )
 
-        assert result.document_id == "custom-id"
+        assert result.document_id == "custom-id", "Result must not be empty"
 
     def test_ingest_text_with_metadata(self, pipeline):
         """Test text ingestion with metadata."""
@@ -203,23 +203,23 @@ class TestIngestionPipeline:
             metadata={"source": "test"},
         )
 
-        assert result.metadata.get("source") == "test"
+        assert result.metadata.get("source") == "test", "Result must not be empty"
 
     def test_ingest_file(self, pipeline, temp_text_file):
         """Test file ingestion."""
         result = pipeline.ingest_file(temp_text_file)
 
-        assert result.is_success
-        assert result.chunk_count >= 1
-        assert result.metadata.get("source_file") == str(temp_text_file)
+        assert result.is_success, "Result must not be empty"
+        assert result.chunk_count >= 1, "chunk_count must be positive"
+        assert result.metadata.get("source_file") == str(temp_text_file), "Result must not be empty"
 
     def test_ingest_file_not_found(self, pipeline):
         """Test ingestion of non-existent file."""
         result = pipeline.ingest_file("/nonexistent/file.txt")
 
-        assert not result.is_success
-        assert result.status == IngestionStatus.FAILED
-        assert (
+        assert not result.is_success, "Result must not be empty"
+        assert result.status == IngestionStatus.FAILED, "Result must not be empty"
+        assert (, "Condition must be true"
             "not found" in result.error_message.lower() or "error" in result.error_message.lower()
         )
 
@@ -228,25 +228,25 @@ class TestIngestionPipeline:
         files = list(temp_dir_with_files.glob("*.txt"))
         result = pipeline.ingest_files(files, parallel=False)
 
-        assert result.total_documents == 3
-        assert result.successful == 3
-        assert result.failed == 0
-        assert result.total_chunks >= 3
+        assert result.total_documents == 3, "Result must not be empty"
+        assert result.successful == 3, "Result must not be empty"
+        assert result.failed == 0, "Result must not be empty"
+        assert result.total_chunks >= 3, "total_chunks must be greater than zero"
 
     def test_ingest_files_parallel(self, pipeline, temp_dir_with_files):
         """Test parallel batch file ingestion."""
         files = list(temp_dir_with_files.glob("*.txt"))
         result = pipeline.ingest_files(files, parallel=True)
 
-        assert result.total_documents == 3
-        assert result.successful == 3
+        assert result.total_documents == 3, "Result must not be empty"
+        assert result.successful == 3, "Result must not be empty"
 
     def test_ingest_directory(self, pipeline, temp_dir_with_files):
         """Test directory ingestion."""
         result = pipeline.ingest_directory(temp_dir_with_files, pattern="*.txt")
 
-        assert result.total_documents == 3
-        assert result.successful >= 1
+        assert result.total_documents == 3, "Result must not be empty"
+        assert result.successful >= 1, "successful must be greater than zero"
 
     def test_deduplication(self, pipeline):
         """Test document deduplication."""
@@ -255,9 +255,9 @@ class TestIngestionPipeline:
         result1 = pipeline.ingest_text(text, document_id="doc1")
         result2 = pipeline.ingest_text(text, document_id="doc2")
 
-        assert result1.is_success
-        assert result2.status == IngestionStatus.SKIPPED
-        assert "duplicate" in result2.error_message.lower()
+        assert result1.is_success, "Result must not be empty"
+        assert result2.status == IngestionStatus.SKIPPED, "Result must not be empty"
+        assert "duplicate" in result2.error_message.lower(), "Result must not be empty"
 
     def test_deduplication_disabled(self):
         """Test with deduplication disabled."""
@@ -269,20 +269,20 @@ class TestIngestionPipeline:
         result1 = pipeline.ingest_text(text, document_id="doc1")
         result2 = pipeline.ingest_text(text, document_id="doc2")
 
-        assert result1.is_success
-        assert result2.is_success  # Not skipped
+        assert result1.is_success, "Result must not be empty"
+        assert result2.is_success, "Result must not be empty"
 
     def test_clear_deduplication_cache(self, pipeline):
         """Test clearing deduplication cache."""
         text = "Document to dedupe"
 
         result1 = pipeline.ingest_text(text, document_id="doc1")
-        assert result1.is_success
+        assert result1.is_success, "Result must not be empty"
 
         pipeline.clear_deduplication_cache()
 
         result2 = pipeline.ingest_text(text, document_id="doc2")
-        assert result2.is_success  # Not skipped after cache clear
+        assert result2.is_success, "Result must not be empty"
 
     def test_skip_validation(self):
         """Test skipping validation."""
@@ -291,8 +291,8 @@ class TestIngestionPipeline:
 
         result = pipeline.ingest_text("Test content")
 
-        assert result.is_success
-        assert result.validation_result is None
+        assert result.is_success, "Result must not be empty"
+        assert result.validation_result is None, "Result must not be empty"
 
     def test_skip_preprocessing(self):
         """Test skipping preprocessing."""
@@ -301,8 +301,8 @@ class TestIngestionPipeline:
 
         result = pipeline.ingest_text("Test   content")
 
-        assert result.is_success
-        assert result.preprocessing_result is None
+        assert result.is_success, "Result must not be empty"
+        assert result.preprocessing_result is None, "Result must not be empty"
 
     def test_skip_chunking(self):
         """Test skipping chunking."""
@@ -311,16 +311,16 @@ class TestIngestionPipeline:
 
         result = pipeline.ingest_text("Test content")
 
-        assert result.is_success
-        assert result.chunk_count == 1  # Single chunk for whole doc
+        assert result.is_success, "Result must not be empty"
+        assert result.chunk_count == 1, "Result must not be empty"
 
     def test_get_stats(self, pipeline):
         """Test getting pipeline statistics."""
         stats = pipeline.get_stats()
 
-        assert "dedup_cache_size" in stats
-        assert "config" in stats
-        assert stats["config"]["enable_deduplication"] is True
+        assert "dedup_cache_size" in stats, "Condition must be true"
+        assert "config" in stats, "Condition must be true"
+        assert stats["config"]["enable_deduplication"] is True, "Condition must be true"
 
     def test_validation_failure(self):
         """Test handling of validation failure."""
@@ -332,10 +332,10 @@ class TestIngestionPipeline:
         # This text is longer than 10 characters
         result = pipeline.ingest_text("This text is longer than ten characters")
 
-        assert not result.is_success
-        assert result.status == IngestionStatus.FAILED
-        assert result.validation_result is not None
-        assert not result.validation_result.is_valid
+        assert not result.is_success, "Result must not be empty"
+        assert result.status == IngestionStatus.FAILED, "Result must not be empty"
+        assert result.validation_result is not None, "validation_result must be initialized"
+        assert not result.validation_result.is_valid, "Result must not be empty"
 
 
 class TestIngestionPipelineRetry:
@@ -348,8 +348,8 @@ class TestIngestionPipelineRetry:
             retry_delay_seconds=0.5,
         )
 
-        assert config.max_retries == 5
-        assert config.retry_delay_seconds == 0.5
+        assert config.max_retries == 5, "max_retries is not valid"
+        assert config.retry_delay_seconds == 0.5, "retry_delay_seconds is not valid"
 
     def test_ingest_with_retry_succeeds_on_first_attempt(self, tmp_path):
         """_ingest_with_retry returns success on first attempt."""
@@ -357,7 +357,7 @@ class TestIngestionPipelineRetry:
         f.write_text("Hello world content that passes validation")
         pipeline = IngestionPipeline()
         result = pipeline._ingest_with_retry(f)
-        assert result.is_success
+        assert result.is_success, "Result must not be empty"
 
     def test_ingest_with_retry_exhausts_retries(self, tmp_path):
         """_ingest_with_retry returns FAILED after all retries are exhausted."""
@@ -373,8 +373,8 @@ class TestIngestionPipelineRetry:
             with patch("codex.rag.ingestion.pipeline.time.sleep"):
                 result = pipeline._ingest_with_retry(f)
 
-        assert result.status == IngestionStatus.FAILED
-        assert result.retries == 2
+        assert result.status == IngestionStatus.FAILED, "Result must not be empty"
+        assert result.retries == 2, "Result must not be empty"
 
     def test_ingest_with_retry_no_retry_on_validation_failure(self, tmp_path):
         """Validation failures are not retried."""
@@ -404,8 +404,8 @@ class TestIngestionPipelineRetry:
             result = pipeline._ingest_with_retry(f)
 
         # Should only be called once — validation failure exits immediately
-        assert mock_ingest.call_count == 1
-        assert result.status == IngestionStatus.FAILED
+        assert mock_ingest.call_count == 1, "Count must be greater than zero"
+        assert result.status == IngestionStatus.FAILED, "Result must not be empty"
 
     def test_retry_with_sleep_called(self, tmp_path):
         """time.sleep is called between retries with escalating delays."""
@@ -422,7 +422,7 @@ class TestIngestionPipelineRetry:
                 pipeline._ingest_with_retry(f)
 
         # max_retries=2 → attempts 0 and 1 sleep; attempt 2 (final) does NOT sleep
-        assert mock_sleep.call_count == 2
+        assert mock_sleep.call_count == 2, "Count must be greater than zero"
         # Delays are retry_delay_seconds × (attempt + 1): 0.1×1=0.1 and 0.1×2=0.2
         mock_sleep.assert_has_calls(
             [
@@ -447,9 +447,9 @@ class TestIngestionPipelineCallback:
 
         pipeline.ingest_text("Test content", document_id="test-doc")
 
-        assert len(callback_data) == 1
-        assert callback_data[0][0] == "test-doc"
-        assert callback_data[0][1] is True
+        assert len(callback_data) == 1, "Callback_data must not be empty"
+        assert callback_data[0][0] == "test-doc", "Data must not be empty"
+        assert callback_data[0][1] is True, "Data must not be empty"
 
     def test_callback_fires_for_each_document_in_batch(self, tmp_path):
         """on_document_complete fires once per document in a batch."""
@@ -466,7 +466,7 @@ class TestIngestionPipelineCallback:
         files = list(tmp_path.glob("*.txt"))
         pipeline.ingest_files(files, parallel=False)
 
-        assert len(completed) == 3
+        assert len(completed) == 3, "Completed must not be empty"
 
     def test_callback_fires_in_parallel_batch(self, tmp_path):
         """on_document_complete fires for each document even in parallel mode."""
@@ -488,7 +488,7 @@ class TestIngestionPipelineCallback:
         files = list(tmp_path.glob("*.txt"))
         pipeline.ingest_files(files, parallel=True)
 
-        assert len(completed) == 4
+        assert len(completed) == 4, "Completed must not be empty"
 
 
 class TestIngestFilesParallelExceptions:
@@ -511,8 +511,8 @@ class TestIngestFilesParallelExceptions:
         with patch.object(pipeline, "_ingest_with_retry", side_effect=side_effect):
             batch = pipeline.ingest_files(files, parallel=True)
 
-        assert batch.failed == 2
-        assert len(batch.errors) == 2
+        assert batch.failed == 2, "failed is not valid"
+        assert len(batch.errors) == 2, "Collection must not be empty"
 
     def test_sequential_ingest_files(self, tmp_path):
         """Sequential ingest_files processes all files in order."""
@@ -523,8 +523,8 @@ class TestIngestFilesParallelExceptions:
         files = sorted(tmp_path.glob("*.txt"))
         batch = pipeline.ingest_files(files, parallel=False)
 
-        assert batch.total_documents == 3
-        assert batch.successful + batch.failed + batch.skipped == 3
+        assert batch.total_documents == 3, "total_documents is not valid"
+        assert batch.successful + batch.failed + batch.skipped == 3, "skipped is not valid"
 
 
 class TestBatchResultUpdateHelper:
@@ -540,9 +540,9 @@ class TestBatchResultUpdateHelper:
             error_message="Duplicate document",
         )
         pipeline._update_batch_result(batch, result)
-        assert batch.skipped == 1
-        assert batch.successful == 0
-        assert batch.failed == 0
+        assert batch.skipped == 1, "skipped is not valid"
+        assert batch.successful == 0, "successful is not valid"
+        assert batch.failed == 0, "failed is not valid"
 
     def test_update_failed_appends_error(self):
         """Failed result appends to batch.errors."""
@@ -554,8 +554,8 @@ class TestBatchResultUpdateHelper:
             error_message="Something went wrong",
         )
         pipeline._update_batch_result(batch, result)
-        assert batch.failed == 1
-        assert any("Something went wrong" in e for e in batch.errors)
+        assert batch.failed == 1, "failed is not valid"
+        assert any("Something went wrong" in e for e in batch.errors), "Error should be raised or set"
 
     def test_update_success_increments_chunks(self):
         """Successful result adds chunk count to batch total."""
@@ -570,8 +570,8 @@ class TestBatchResultUpdateHelper:
             chunks=[chunk],
         )
         pipeline._update_batch_result(batch, result)
-        assert batch.successful == 1
-        assert batch.total_chunks == 1
+        assert batch.successful == 1, "successful is not valid"
+        assert batch.total_chunks == 1, "total_chunks is not valid"
 
 
 class TestGetStatsAndClearCache:
@@ -580,10 +580,10 @@ class TestGetStatsAndClearCache:
     def test_get_stats_returns_expected_keys(self):
         pipeline = IngestionPipeline()
         stats = pipeline.get_stats()
-        assert "dedup_cache_size" in stats
-        assert "config" in stats
-        assert "batch_size" in stats["config"]
-        assert "max_workers" in stats["config"]
+        assert "dedup_cache_size" in stats, "Condition must be true"
+        assert "config" in stats, "Condition must be true"
+        assert "batch_size" in stats["config"], "Condition must be true"
+        assert "max_workers" in stats["config"], "Condition must be true"
 
     def test_clear_dedup_cache(self):
         pipeline = IngestionPipeline()
@@ -591,9 +591,9 @@ class TestGetStatsAndClearCache:
         pipeline.ingest_text("Unique text content here for dedup", document_id="d1")
         pipeline.ingest_text("Unique text content here for dedup", document_id="d1")
         # Cache should have 1 hash
-        assert pipeline.get_stats()["dedup_cache_size"] >= 1
+        assert pipeline.get_stats()["dedup_cache_size"] >= 1, "Value must be greater than zero"
         pipeline.clear_deduplication_cache()
-        assert pipeline.get_stats()["dedup_cache_size"] == 0
+        assert pipeline.get_stats()["dedup_cache_size"] == 0, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -606,7 +606,7 @@ class TestBatchIngestionResultThroughputZeroTime:
 
     def test_throughput_zero_time(self):
         result = BatchIngestionResult(total_documents=5, total_time_seconds=0.0)
-        assert result.throughput_docs_per_hour == 0.0
+        assert result.throughput_docs_per_hour == 0.0, "Result must not be empty"
 
 
 class TestIngestTextExceptionPath:
@@ -616,15 +616,15 @@ class TestIngestTextExceptionPath:
         pipeline = IngestionPipeline()
         with patch.object(pipeline.chunker, "chunk", side_effect=RuntimeError("chunk boom")):
             result = pipeline.ingest_text("some valid text content here")
-        assert result.status == IngestionStatus.FAILED
-        assert "chunk boom" in result.error_message
+        assert result.status == IngestionStatus.FAILED, "Result must not be empty"
+        assert "chunk boom" in result.error_message, "Result must not be empty"
 
     def test_exception_during_preprocessing(self):
         pipeline = IngestionPipeline()
         with patch.object(pipeline.preprocessor, "preprocess", side_effect=ValueError("pre boom")):
             result = pipeline.ingest_text("some valid text content here")
-        assert result.status == IngestionStatus.FAILED
-        assert "pre boom" in result.error_message
+        assert result.status == IngestionStatus.FAILED, "Result must not be empty"
+        assert "pre boom" in result.error_message, "Result must not be empty"
 
 
 class TestIngestFileCoveragePaths:
@@ -637,7 +637,7 @@ class TestIngestFileCoveragePaths:
         f.write_text("Content for file ingestion with explicit ID")
         pipeline = IngestionPipeline()
         result = pipeline.ingest_file(f, document_id="explicit-id")
-        assert result.document_id == "explicit-id"
+        assert result.document_id == "explicit-id", "Result must not be empty"
 
     def test_ingest_file_skip_validation(self, tmp_path):
         """Lines 319->329: skip_validation=True in ingest_file."""
@@ -646,8 +646,8 @@ class TestIngestFileCoveragePaths:
         config = IngestionConfig(skip_validation=True)
         pipeline = IngestionPipeline(config)
         result = pipeline.ingest_file(f)
-        assert result.is_success
-        assert result.validation_result is None
+        assert result.is_success, "Result must not be empty"
+        assert result.validation_result is None, "Result must not be empty"
 
     def test_ingest_file_latin1_fallback(self, tmp_path):
         """Lines 332-334: UTF-8 decode fails → falls back to latin-1."""
@@ -658,7 +658,7 @@ class TestIngestFileCoveragePaths:
         config = IngestionConfig(skip_validation=True)
         pipeline = IngestionPipeline(config)
         result = pipeline.ingest_file(f)
-        assert result.is_success
+        assert result.is_success, "Result must not be empty"
 
     def test_ingest_file_deduplication_disabled(self, tmp_path):
         """Lines 337->346: enable_deduplication=False skips dedup in ingest_file."""
@@ -668,8 +668,8 @@ class TestIngestFileCoveragePaths:
         pipeline = IngestionPipeline(config)
         result1 = pipeline.ingest_file(f)
         result2 = pipeline.ingest_file(f)
-        assert result1.is_success
-        assert result2.is_success  # Not skipped since dedup is off
+        assert result1.is_success, "Result must not be empty"
+        assert result2.is_success, "Result must not be empty"
 
     def test_ingest_file_duplicate_detected(self, tmp_path):
         """Lines 340-342: duplicate file detected in ingest_file."""
@@ -678,9 +678,9 @@ class TestIngestFileCoveragePaths:
         pipeline = IngestionPipeline()
         result1 = pipeline.ingest_file(f)
         result2 = pipeline.ingest_file(f)
-        assert result1.is_success
-        assert result2.status == IngestionStatus.SKIPPED
-        assert "duplicate" in result2.error_message.lower()
+        assert result1.is_success, "Result must not be empty"
+        assert result2.status == IngestionStatus.SKIPPED, "Result must not be empty"
+        assert "duplicate" in result2.error_message.lower(), "Result must not be empty"
 
     def test_ingest_file_skip_preprocessing(self, tmp_path):
         """Lines 348->354: skip_preprocessing=True in ingest_file."""
@@ -689,8 +689,8 @@ class TestIngestFileCoveragePaths:
         config = IngestionConfig(skip_preprocessing=True)
         pipeline = IngestionPipeline(config)
         result = pipeline.ingest_file(f)
-        assert result.is_success
-        assert result.preprocessing_result is None
+        assert result.is_success, "Result must not be empty"
+        assert result.preprocessing_result is None, "Result must not be empty"
 
     def test_ingest_file_skip_chunking(self, tmp_path):
         """Line 359: skip_chunking=True produces single-chunk result in ingest_file."""
@@ -699,8 +699,8 @@ class TestIngestFileCoveragePaths:
         config = IngestionConfig(skip_chunking=True)
         pipeline = IngestionPipeline(config)
         result = pipeline.ingest_file(f)
-        assert result.is_success
-        assert result.chunk_count == 1
+        assert result.is_success, "Result must not be empty"
+        assert result.chunk_count == 1, "Result must not be empty"
 
     def test_ingest_file_exception_during_chunking(self, tmp_path):
         """Lines 370-373: exception during ingest_file sets FAILED status."""
@@ -709,8 +709,8 @@ class TestIngestFileCoveragePaths:
         pipeline = IngestionPipeline()
         with patch.object(pipeline.chunker, "chunk", side_effect=RuntimeError("file chunk boom")):
             result = pipeline.ingest_file(f)
-        assert result.status == IngestionStatus.FAILED
-        assert "file chunk boom" in result.error_message
+        assert result.status == IngestionStatus.FAILED, "Result must not be empty"
+        assert "file chunk boom" in result.error_message, "Result must not be empty"
 
 
 class TestIngestFilesSequentialExceptionPaths:
@@ -725,8 +725,8 @@ class TestIngestFilesSequentialExceptionPaths:
         files = list(tmp_path.glob("*.txt"))
         with patch.object(pipeline, "_ingest_with_retry", side_effect=RuntimeError("seq boom")):
             batch = pipeline.ingest_files(files, parallel=False)
-        assert batch.failed == 2
-        assert len(batch.errors) == 2
+        assert batch.failed == 2, "failed is not valid"
+        assert len(batch.errors) == 2, "Collection must not be empty"
 
     def test_continue_on_error_false_raises(self, tmp_path):
         """Lines 425-426: exception with continue_on_error=False re-raises immediately."""
@@ -757,7 +757,7 @@ class TestIngestDirectoryCoveragePaths:
         (subdir / "nested.txt").write_text("nested content here")
         pipeline = IngestionPipeline()
         result = pipeline.ingest_directory(tmp_path, pattern="*.txt", recursive=False)
-        assert result.total_documents == 1  # Only top-level file
+        assert result.total_documents == 1, "Result must not be empty"
 
 
 class TestIngestWithRetryNonValidationFailure:
@@ -779,8 +779,8 @@ class TestIngestWithRetryNonValidationFailure:
         ) as mock_ingest:
             result = pipeline._ingest_with_retry(f)
         # Called max_retries+1 times since result was FAILED with no validation_result
-        assert mock_ingest.call_count == 2
-        assert result.status == IngestionStatus.FAILED
+        assert mock_ingest.call_count == 2, "Count must be greater than zero"
+        assert result.status == IngestionStatus.FAILED, "Result must not be empty"
 
 
 class TestUpdateBatchResultEmptyErrorMessage:
@@ -795,5 +795,5 @@ class TestUpdateBatchResultEmptyErrorMessage:
             error_message="",
         )
         pipeline._update_batch_result(batch, result)
-        assert batch.failed == 1
-        assert len(batch.errors) == 0
+        assert batch.failed == 1, "failed is not valid"
+        assert len(batch.errors) == 0, "Collection must not be empty"

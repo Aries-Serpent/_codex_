@@ -18,7 +18,7 @@ def test_iter_jsonl_reads_objects(tmp_path):
     target = tmp_path / "sample.jsonl"
     target.write_text("\n".join(json.dumps(row) for row in rows) + "\n", encoding="utf-8")
 
-    assert list(iter_jsonl(target)) == rows
+    assert list(iter_jsonl(target)) == rows, "Condition must be true"
 
 
 def test_iter_jsonl_skip_malformed(tmp_path):

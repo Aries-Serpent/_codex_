@@ -31,21 +31,21 @@ class TestEnsureGlobalSeed:
         """Test that default seed (42) is returned when None is passed."""
         with patch("src.training.seed._set_seed") as mock_set_seed:
             result = ensure_global_seed(None)
-            assert result == 42
+            assert result == 42, "Result must not be empty"
             mock_set_seed.assert_called_once_with(42, deterministic=True)
 
     def test_returns_provided_seed(self, ensure_global_seed):
         """Test that provided seed is returned."""
         with patch("src.training.seed._set_seed") as mock_set_seed:
             result = ensure_global_seed(123)
-            assert result == 123
+            assert result == 123, "Result must not be empty"
             mock_set_seed.assert_called_once_with(123, deterministic=True)
 
     def test_converts_seed_to_int(self, ensure_global_seed):
         """Test that seed is converted to int."""
         with patch("src.training.seed._set_seed") as mock_set_seed:
             result = ensure_global_seed(42.5)
-            assert result == 42
+            assert result == 42, "Result must not be empty"
             assert isinstance(result, int)
             mock_set_seed.assert_called_once_with(42, deterministic=True)
 
@@ -84,13 +84,13 @@ class TestLegacySeedModule:
 
             # Check for deprecation warning
             deprecation_warnings = [x for x in w if issubclass(x.category, DeprecationWarning)]
-            assert len(deprecation_warnings) >= 1
+            assert len(deprecation_warnings) >= 1, "Deprecation_warnings must not be empty"
 
     def test_legacy_shim_exports_ensure_global_seed(self):
         """Test that legacy shim exports ensure_global_seed."""
         try:
             from training.seed import ensure_global_seed
 
-            assert callable(ensure_global_seed)
+            assert callable(ensure_global_seed), "Condition must be true"
         except ImportError:
             pytest.skip("training.seed shim not available")

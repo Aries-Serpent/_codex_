@@ -75,7 +75,7 @@ class TestDeviceStrategyFallback:
             config = DeviceConfig.auto_detect(prefer_mps=True)
 
             # Assert: Should either use MPS or fall back to CPU
-            assert config.device in (
+            assert config.device in (, "Condition must be true"
                 "mps",
                 "cpu",
             ), f"Device should be mps or cpu, got {config.device}"
@@ -171,7 +171,7 @@ class TestDeviceStrategyValidation:
         expected_cuda = torch.cuda.is_available()
 
         # Assert
-        assert (
+        assert (, "Condition must be true"
             cuda_available == expected_cuda
         ), "CUDA availability should match torch.cuda.is_available()"
 

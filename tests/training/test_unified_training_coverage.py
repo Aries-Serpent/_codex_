@@ -85,9 +85,9 @@ def minimal_config() -> UnifiedTrainingConfig:
 def test_continual_phase_initialization():
     """Test ContinualPhase initialization with valid parameters."""
     phase = ContinualPhase(name="phase1", epochs=5, replay_ratio=0.3)
-    assert phase.name == "phase1"
-    assert phase.epochs == 5
-    assert phase.replay_ratio == 0.3
+    assert phase.name == "phase1", "name is not valid"
+    assert phase.epochs == 5, "epochs is not valid"
+    assert phase.replay_ratio == 0.3, "replay_ratio is not valid"
 
 
 def test_continual_phase_epochs_validation():
@@ -105,10 +105,10 @@ def test_continual_phase_replay_ratio_validation():
 def test_continual_phase_default_values():
     """Test ContinualPhase uses sensible defaults."""
     phase = ContinualPhase(name="default")
-    assert phase.epochs == 1
-    assert phase.dataset == {}
-    assert phase.replay_ratio is None
-    assert phase.notes is None
+    assert phase.epochs == 1, "epochs is not valid"
+    assert phase.dataset == {}, "Data must not be empty"
+    assert phase.replay_ratio is None, "replay_ratio is not valid"
+    assert phase.notes is None, "notes is not valid"
 
 
 # =============================================================================
@@ -123,9 +123,9 @@ def test_continual_config_initialization():
         buffer_size=1000,
         replay_ratio=0.2,
     )
-    assert config.strategy == "replay"
-    assert config.buffer_size == 1000
-    assert config.replay_ratio == 0.2
+    assert config.strategy == "replay", "strategy is not valid"
+    assert config.buffer_size == 1000, "buffer_size is not valid"
+    assert config.replay_ratio == 0.2, "replay_ratio is not valid"
 
 
 def test_continual_config_buffer_size_validation():
@@ -142,10 +142,10 @@ def test_continual_config_phases_from_dict():
             {"name": "phase2", "epochs": 5},
         ]
     )
-    assert len(config.phases) == 2
+    assert len(config.phases) == 2, "Collection must not be empty"
     assert all(isinstance(p, ContinualPhase) for p in config.phases)
-    assert config.phases[0].name == "phase1"
-    assert config.phases[1].epochs == 5
+    assert config.phases[0].name == "phase1", "name is not valid"
+    assert config.phases[1].epochs == 5, "epochs is not valid"
 
 
 # =============================================================================
@@ -156,10 +156,10 @@ def test_continual_config_phases_from_dict():
 def test_unified_training_config_minimal():
     """Test UnifiedTrainingConfig with minimal parameters."""
     config = UnifiedTrainingConfig(model_name="gpt2", epochs=1)
-    assert config.model_name == "gpt2"
-    assert config.epochs == 1
-    assert config.batch_size == 8  # default
-    assert config.learning_rate == 3e-4  # default
+    assert config.model_name == "gpt2", "model_name is not valid"
+    assert config.epochs == 1, "epochs is not valid"
+    assert config.batch_size == 8, "batch_size is not valid"
+    assert config.learning_rate == 3e-4, "learning_rate is not valid"
 
 
 def test_unified_training_config_validation_epochs():
@@ -192,15 +192,15 @@ def test_unified_training_config_continual_from_dict():
         model_name="test", continual={"strategy": "replay", "buffer_size": 500}
     )
     assert isinstance(config.continual, ContinualConfig)
-    assert config.continual.strategy == "replay"
-    assert config.continual.buffer_size == 500
+    assert config.continual.strategy == "replay", "strategy is not valid"
+    assert config.continual.buffer_size == 500, "buffer_size is not valid"
 
 
 def test_unified_training_config_all_dtypes():
     """Test UnifiedTrainingConfig accepts all valid dtypes."""
     for dtype in ["fp32", "fp16", "bf16"]:
         config = UnifiedTrainingConfig(model_name="test", dtype=dtype)
-        assert config.dtype == dtype
+        assert config.dtype == dtype, "dtype is not valid"
 
 
 # =============================================================================
@@ -225,15 +225,15 @@ def test_to_plain_container_list():
 
 def test_to_plain_container_primitives():
     """Test _to_plain_container preserves primitives."""
-    assert _to_plain_container(42) == 42
-    assert _to_plain_container("text") == "text"
-    assert _to_plain_container(3.14) == 3.14
-    assert _to_plain_container(None) is None
+    assert _to_plain_container(42) == 42, "Condition must be true"
+    assert _to_plain_container("text") == "text", "Condition must be true"
+    assert _to_plain_container(3.14) == 3.14, "Condition must be true"
+    assert _to_plain_container(None) is None, "Condition must be true"
 
 
 def test_materialise_mapping_none():
     """Test _materialise_mapping handles None input."""
-    assert _materialise_mapping(None) == {}
+    assert _materialise_mapping(None) == {}, "Condition must be true"
 
 
 def test_materialise_mapping_valid():
@@ -250,32 +250,32 @@ def test_materialise_mapping_invalid_type():
 
 def test_coerce_metric_value_valid():
     """Test _coerce_metric_value converts numeric values."""
-    assert _coerce_metric_value(0.5) == 0.5
-    assert _coerce_metric_value(42) == 42.0
-    assert _coerce_metric_value("3.14") == 3.14
+    assert _coerce_metric_value(0.5) == 0.5, "Value must be initialized"
+    assert _coerce_metric_value(42) == 42.0, "Value must be initialized"
+    assert _coerce_metric_value("3.14") == 3.14, "Value must be initialized"
 
 
 def test_coerce_metric_value_none():
     """Test _coerce_metric_value handles None."""
-    assert _coerce_metric_value(None) is None
+    assert _coerce_metric_value(None) is None, "Value must be initialized"
 
 
 def test_coerce_metric_value_invalid():
     """Test _coerce_metric_value returns None for invalid values."""
-    assert _coerce_metric_value("invalid") is None
+    assert _coerce_metric_value("invalid") is None, "Value must be initialized"
     assert _coerce_metric_value([1, 2, 3]) is None
 
 
 def test_auto_backend_explicit():
     """Test _auto_backend uses explicit backend if specified."""
     config = UnifiedTrainingConfig(model_name="test", backend="legacy")
-    assert _auto_backend(config) == "legacy"
+    assert _auto_backend(config) == "legacy", "Condition must be true"
 
 
 def test_auto_backend_default():
     """Test _auto_backend defaults to functional."""
     config = UnifiedTrainingConfig(model_name="test")
-    assert _auto_backend(config) == "functional"
+    assert _auto_backend(config) == "functional", "Condition must be true"
 
 
 @patch("codex_ml.training.unified_training.set_seed")
@@ -304,9 +304,9 @@ def test_distributed_context_no_env(monkeypatch):
     monkeypatch.delenv("LOCAL_RANK", raising=False)
 
     context = distributed_context()
-    assert context["world_size"] == 1
-    assert context["rank"] == 0
-    assert context["local_rank"] == 0
+    assert context["world_size"] == 1, "Condition must be true"
+    assert context["rank"] == 0, "Condition must be true"
+    assert context["local_rank"] == 0, "Condition must be true"
 
 
 def test_distributed_context_from_env(monkeypatch):
@@ -316,9 +316,9 @@ def test_distributed_context_from_env(monkeypatch):
     monkeypatch.setenv("LOCAL_RANK", "1")
 
     context = distributed_context()
-    assert context["world_size"] == 4
-    assert context["rank"] == 2
-    assert context["local_rank"] == 1
+    assert context["world_size"] == 4, "Condition must be true"
+    assert context["rank"] == 2, "Condition must be true"
+    assert context["local_rank"] == 1, "Condition must be true"
 
 
 def test_distributed_context_fallback_localworld(monkeypatch):
@@ -327,7 +327,7 @@ def test_distributed_context_fallback_localworld(monkeypatch):
     monkeypatch.setenv("LOCALWORLD", "3")
 
     context = distributed_context()
-    assert context["local_rank"] == 3
+    assert context["local_rank"] == 3, "Condition must be true"
 
 
 @patch("codex_ml.training.unified_training.torch")
@@ -349,9 +349,9 @@ def test_distributed_context_with_torch_dist(mock_torch, monkeypatch):
     # Also patch the actual torch.distributed import
     with patch("torch.distributed", mock_dist):
         context = distributed_context()
-        assert context["backend"] == "nccl"
-        assert context["world_size"] == 4  # max(2, 4)
-        assert context["rank"] == 1
+        assert context["backend"] == "nccl", "Condition must be true"
+        assert context["world_size"] == 4, "Condition must be true"
+        assert context["rank"] == 1, "Condition must be true"
 
 
 # =============================================================================
@@ -364,16 +364,16 @@ def test_unified_config_serialization(minimal_config):
     from dataclasses import asdict
 
     config_dict = asdict(minimal_config)
-    assert config_dict["model_name"] == "test-model"
-    assert config_dict["epochs"] == 2
-    assert config_dict["batch_size"] == 4
+    assert config_dict["model_name"] == "test-model", "Condition must be true"
+    assert config_dict["epochs"] == 2, "Condition must be true"
+    assert config_dict["batch_size"] == 4, "Condition must be true"
 
 
 def test_unified_config_with_extra_params():
     """Test UnifiedTrainingConfig preserves extra parameters."""
     config = UnifiedTrainingConfig(model_name="test", extra={"custom_param": "value", "flag": True})
-    assert config.extra["custom_param"] == "value"
-    assert config.extra["flag"] is True
+    assert config.extra["custom_param"] == "value", "Value must be initialized"
+    assert config.extra["flag"] is True, "Condition must be true"
 
 
 def test_continual_config_complex_phases():
@@ -386,22 +386,22 @@ def test_continual_config_complex_phases():
             ContinualPhase(name="finetune", epochs=5, replay_ratio=0.5),
         ],
     )
-    assert len(config.phases) == 3
-    assert config.phases[0].name == "warmup"
-    assert config.phases[1].epochs == 10
-    assert config.phases[2].replay_ratio == 0.5
+    assert len(config.phases) == 3, "Collection must not be empty"
+    assert config.phases[0].name == "warmup", "name is not valid"
+    assert config.phases[1].epochs == 10, "epochs is not valid"
+    assert config.phases[2].replay_ratio == 0.5, "replay_ratio is not valid"
 
 
 def test_unified_config_grad_clip_optional():
     """Test UnifiedTrainingConfig with optional grad_clip_norm."""
     config = UnifiedTrainingConfig(model_name="test", grad_clip_norm=1.0)
-    assert config.grad_clip_norm == 1.0
+    assert config.grad_clip_norm == 1.0, "grad_clip_norm is not valid"
 
     config2 = UnifiedTrainingConfig(model_name="test")
-    assert config2.grad_clip_norm is None
+    assert config2.grad_clip_norm is None, "grad_clip_norm is not valid"
 
 
 def test_unified_config_resume_from():
     """Test UnifiedTrainingConfig with resume_from path."""
     config = UnifiedTrainingConfig(model_name="test", resume_from="/path/to/checkpoint.pt")
-    assert config.resume_from == "/path/to/checkpoint.pt"
+    assert config.resume_from == "/path/to/checkpoint.pt", "resume_from is not valid"

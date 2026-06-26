@@ -24,9 +24,9 @@ class TestModelConfig:
     def test_init_defaults(self):
         """Test initialization with defaults"""
         config = ModelConfig()
-        assert config.model_name is not None
-        assert config.model_type == "stub"
-        assert config.device == "cpu"
+        assert config.model_name is not None, "model_name must be initialized"
+        assert config.model_type == "stub", "model_type is not valid"
+        assert config.device == "cpu", "device is not valid"
 
     def test_init_custom(self):
         """Test initialization with custom values"""
@@ -36,10 +36,10 @@ class TestModelConfig:
             model_path="/path/to/model",
             device="cpu",
         )
-        assert config.model_name == "test-model"
-        assert config.model_type == "huggingface"
-        assert config.model_path == "/path/to/model"
-        assert config.device == "cpu"
+        assert config.model_name == "test-model", "model_name is not valid"
+        assert config.model_type == "huggingface", "model_type is not valid"
+        assert config.model_path == "/path/to/model", "model_path is not valid"
+        assert config.device == "cpu", "device is not valid"
 
     def test_from_dict(self):
         """Test creating config from dictionary"""
@@ -50,9 +50,9 @@ class TestModelConfig:
             "device": "cpu",
         }
         config = ModelConfig.from_dict(config_dict)
-        assert config.model_name == "dict-model"
-        assert config.model_type == "onnx"
-        assert config.model_path == "/path/to/onnx"
+        assert config.model_name == "dict-model", "model_name is not valid"
+        assert config.model_type == "onnx", "model_type is not valid"
+        assert config.model_path == "/path/to/onnx", "model_path is not valid"
 
     def test_from_env(self, monkeypatch):
         """Test creating config from environment variables"""
@@ -61,9 +61,9 @@ class TestModelConfig:
         monkeypatch.setenv("CODEX_MODEL_DEVICE", "cpu")
 
         config = ModelConfig.from_env()
-        assert config.model_name == "env-model"
-        assert config.model_type == "huggingface"
-        assert config.device == "cpu"
+        assert config.model_name == "env-model", "model_name is not valid"
+        assert config.model_type == "huggingface", "model_type is not valid"
+        assert config.device == "cpu", "device is not valid"
 
     def test_validate_success(self):
         """Test validation with valid config"""
@@ -97,9 +97,9 @@ class TestModelConfig:
             device="cpu",
         )
         config_dict = config.to_dict()
-        assert config_dict["model_name"] == "test"
-        assert config_dict["model_type"] == "stub"
-        assert config_dict["device"] == "cpu"
+        assert config_dict["model_name"] == "test", "Condition must be true"
+        assert config_dict["model_type"] == "stub", "Condition must be true"
+        assert config_dict["device"] == "cpu", "Condition must be true"
 
 
 class TestRateLimiter:
@@ -108,15 +108,15 @@ class TestRateLimiter:
     def test_init(self):
         """Test initialization"""
         limiter = RateLimiter(max_requests=10, window_seconds=60)
-        assert limiter.max_requests == 10
-        assert limiter.window_seconds == 60
+        assert limiter.max_requests == 10, "max_requests is not valid"
+        assert limiter.window_seconds == 60, "window_seconds is not valid"
 
     def test_allows_requests_within_limit(self):
         """Test that requests within limit are allowed"""
         limiter = RateLimiter(max_requests=5, window_seconds=60)
 
         for i in range(5):
-            assert limiter.is_allowed("client1") is True
+            assert limiter.is_allowed("client1") is True, "Condition must be true"
 
     def test_blocks_requests_over_limit(self):
         """Test that requests over limit are blocked"""
@@ -124,38 +124,38 @@ class TestRateLimiter:
 
         # Use up the limit
         for i in range(3):
-            assert limiter.is_allowed("client1") is True
+            assert limiter.is_allowed("client1") is True, "Condition must be true"
 
         # Next request should be blocked
-        assert limiter.is_allowed("client1") is False
+        assert limiter.is_allowed("client1") is False, "Condition must be true"
 
     def test_different_clients_independent(self):
         """Test that different clients have independent limits"""
         limiter = RateLimiter(max_requests=2, window_seconds=60)
 
-        assert limiter.is_allowed("client1") is True
-        assert limiter.is_allowed("client2") is True
-        assert limiter.is_allowed("client1") is True
-        assert limiter.is_allowed("client2") is True
+        assert limiter.is_allowed("client1") is True, "Condition must be true"
+        assert limiter.is_allowed("client2") is True, "Condition must be true"
+        assert limiter.is_allowed("client1") is True, "Condition must be true"
+        assert limiter.is_allowed("client2") is True, "Condition must be true"
 
         # Both clients exhausted
-        assert limiter.is_allowed("client1") is False
-        assert limiter.is_allowed("client2") is False
+        assert limiter.is_allowed("client1") is False, "Condition must be true"
+        assert limiter.is_allowed("client2") is False, "Condition must be true"
 
     def test_window_expiration(self):
         """Test that old requests expire"""
         limiter = RateLimiter(max_requests=2, window_seconds=1)  # 1 second window
 
         # Use up limit
-        assert limiter.is_allowed("client1") is True
-        assert limiter.is_allowed("client1") is True
-        assert limiter.is_allowed("client1") is False
+        assert limiter.is_allowed("client1") is True, "Condition must be true"
+        assert limiter.is_allowed("client1") is True, "Condition must be true"
+        assert limiter.is_allowed("client1") is False, "Condition must be true"
 
         # Wait for window to expire
         time.sleep(1.1)
 
         # Should be allowed again
-        assert limiter.is_allowed("client1") is True
+        assert limiter.is_allowed("client1") is True, "Condition must be true"
 
 
 class TestModelServer:
@@ -164,17 +164,17 @@ class TestModelServer:
     def test_init_default_config(self):
         """Test initialization with default config"""
         server = ModelServer()
-        assert server.model_name is not None
-        assert server.model is None
-        assert server.total_requests == 0
-        assert server.config.model_type == "stub"
+        assert server.model_name is not None, "model_name must be initialized"
+        assert server.model is None, "model is not valid"
+        assert server.total_requests == 0, "total_requests is not valid"
+        assert server.config.model_type == "stub", "model_type is not valid"
 
     def test_init_custom_config(self):
         """Test initialization with custom config"""
         config = ModelConfig(model_name="test-model", model_type="stub")
         server = ModelServer(config=config)
-        assert server.model_name == "test-model"
-        assert server.config.model_type == "stub"
+        assert server.model_name == "test-model", "model_name is not valid"
+        assert server.config.model_type == "stub", "model_type is not valid"
 
     def test_load_stub_model(self):
         """Test loading stub model"""
@@ -182,9 +182,9 @@ class TestModelServer:
         server = ModelServer(config=config)
         server.load_model()
 
-        assert server.model is not None
-        assert server.model["type"] == "stub"
-        assert server.model["name"] == "stub-test"
+        assert server.model is not None, "model must be initialized"
+        assert server.model["type"] == "stub", "Condition must be true"
+        assert server.model["name"] == "stub-test", "Condition must be true"
 
     def test_load_model_invalid_type(self):
         """Test loading model with invalid type fails"""
@@ -234,11 +234,11 @@ class TestModelServer:
         server.load_model()
 
         predictions = server.predict(["input1", "input2"])
-        assert len(predictions) == 2
-        assert all("label" in p for p in predictions)
-        assert all("score" in p for p in predictions)
-        assert all("text" in p for p in predictions)
-        assert all("model" in p for p in predictions)
+        assert len(predictions) == 2, "Predictions must not be empty"
+        assert all("label" in p for p in predictions), "Condition must be true"
+        assert all("score" in p for p in predictions), "Condition must be true"
+        assert all("text" in p for p in predictions), "Condition must be true"
+        assert all("model" in p for p in predictions), "Condition must be true"
 
     def test_predict_standardized_output(self):
         """Test that predictions have standardized structure"""
@@ -247,26 +247,26 @@ class TestModelServer:
         server.load_model()
 
         predictions = server.predict(["test"])
-        assert len(predictions) == 1
+        assert len(predictions) == 1, "Predictions must not be empty"
         pred = predictions[0]
 
         # Check standardized fields
-        assert "text" in pred
-        assert "label" in pred
-        assert "score" in pred
-        assert "model" in pred
-        assert pred["model"] == "test-model"
+        assert "text" in pred, "Condition must be true"
+        assert "label" in pred, "Condition must be true"
+        assert "score" in pred, "Condition must be true"
+        assert "model" in pred, "Condition must be true"
+        assert pred["model"] == "test-model", "Condition must be true"
 
     def test_health_check_without_model(self):
         """Test health check without model"""
         server = ModelServer()
         health = server.health_check()
 
-        assert health["status"] == "unhealthy"
-        assert health["model_loaded"] is False
-        assert health["total_requests"] == 0
-        assert "model_type" in health
-        assert "device" in health
+        assert health["status"] == "unhealthy", "Condition must be true"
+        assert health["model_loaded"] is False, "Condition must be true"
+        assert health["total_requests"] == 0, "Condition must be true"
+        assert "model_type" in health, "Condition must be true"
+        assert "device" in health, "Condition must be true"
 
     def test_health_check_with_model(self):
         """Test health check with loaded model"""
@@ -275,24 +275,24 @@ class TestModelServer:
         server.load_model()
 
         health = server.health_check()
-        assert health["status"] == "healthy"
-        assert health["model_loaded"] is True
-        assert "uptime_seconds" in health
-        assert health["uptime_seconds"] >= 0
-        assert health["model_type"] == "stub"
+        assert health["status"] == "healthy", "Condition must be true"
+        assert health["model_loaded"] is True, "Condition must be true"
+        assert "uptime_seconds" in health, "Condition must be true"
+        assert health["uptime_seconds"] >= 0, "Value must be greater than zero"
+        assert health["model_type"] == "stub", "Condition must be true"
 
     def test_health_check_includes_errors(self):
         """Test that health check includes load errors"""
         server = ModelServer()
         health = server.health_check()
 
-        assert "load_errors" in health
+        assert "load_errors" in health, "Error should be raised or set"
         assert isinstance(health["load_errors"], list)
 
     def test_rate_limiter_integration(self):
         """Test that server has rate limiter"""
         server = ModelServer()
-        assert server.rate_limiter is not None
+        assert server.rate_limiter is not None, "rate_limiter must be initialized"
         assert isinstance(server.rate_limiter, RateLimiter)
 
     def test_request_counter(self):
@@ -305,7 +305,7 @@ class TestModelServer:
         # Simulate tracking (in real app, this is done in endpoint)
         server.total_requests += 1
 
-        assert server.total_requests == initial_count + 1
+        assert server.total_requests == initial_count + 1, "Count must be greater than zero"
 
 
 class TestValidation:
@@ -314,14 +314,14 @@ class TestValidation:
     def test_max_batch_size(self):
         """Test batch size limit"""
         # This tests the constant definition
-        assert MAX_BATCH_SIZE > 0
-        assert MAX_BATCH_SIZE <= 1000  # Reasonable upper bound
+        assert MAX_BATCH_SIZE > 0, "MAX_BATCH_SIZE must be greater than zero"
+        assert MAX_BATCH_SIZE <= 1000, "MAX_BATCH_SIZE is not valid"
 
     def test_max_input_length(self):
         """Test input length limit"""
         # This tests the constant definition
-        assert MAX_INPUT_LENGTH > 0
-        assert MAX_INPUT_LENGTH <= 100000  # Reasonable upper bound
+        assert MAX_INPUT_LENGTH > 0, "MAX_INPUT_LENGTH must be greater than zero"
+        assert MAX_INPUT_LENGTH <= 100000, "Length must be greater than zero"
 
 
 class TestEmbedding:
@@ -337,8 +337,8 @@ class TestEmbedding:
         embeddings = server.embed(texts)
 
         # Check shape
-        assert embeddings.shape[0] == 3
-        assert embeddings.shape[1] > 0  # Should have some dimension
+        assert embeddings.shape[0] == 3, "Condition must be true"
+        assert embeddings.shape[1] > 0, "Value must be greater than zero"
 
         # Check normalized
         norms = np.linalg.norm(embeddings, axis=1)
@@ -360,7 +360,7 @@ class TestEmbedding:
         embeddings = server.embed(["test"])
 
         assert isinstance(embeddings, np.ndarray)
-        assert embeddings.dtype == np.float32
+        assert embeddings.dtype == np.float32, "dtype is not valid"
 
     def test_embed_batch(self):
         """Test embedding multiple texts"""
@@ -371,7 +371,7 @@ class TestEmbedding:
         texts = [f"text-{i}" for i in range(20)]
         embeddings = server.embed(texts)
 
-        assert embeddings.shape[0] == 20
+        assert embeddings.shape[0] == 20, "Condition must be true"
 
         # Each embedding should be different (for stub, they're random)
         # Check that not all embeddings are identical
@@ -385,7 +385,7 @@ class TestEmbedding:
 
         embeddings = server.embed([])
 
-        assert embeddings.shape[0] == 0
+        assert embeddings.shape[0] == 0, "Condition must be true"
 
 
 if __name__ == "__main__":

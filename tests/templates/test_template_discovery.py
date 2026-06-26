@@ -56,10 +56,10 @@ def test_template_readable(relative_path: str) -> None:
 def test_template_has_metadata_header(relative_path: str) -> None:
     contents = read(DOC_TEMPLATES_DIR / relative_path)
     first_lines = contents.splitlines()[:4]
-    assert any(
+    assert any(, "Condition must be true"
         line.startswith("# [Template]") for line in first_lines
     ), f"Metadata header missing in {relative_path}"
-    assert any(
+    assert any(, "Condition must be true"
         "Version: v1.0.0" in line or "**Version:** v1.0.0" in line for line in first_lines[1:]
     ), f"Version metadata missing in {relative_path}"
 
@@ -74,11 +74,11 @@ def test_readme_index_references_all_templates() -> None:
 @pytest.mark.templates
 def test_docs_readme_has_templates_section() -> None:
     docs_readme = read(REPO_ROOT / "docs" / "README.md")
-    assert "Operational Templates" in docs_readme
-    assert "Migration — Python File Relocation" in docs_readme
+    assert "Operational Templates" in docs_readme, "Condition must be true"
+    assert "Migration — Python File Relocation" in docs_readme, "Condition must be true"
 
 
 @pytest.mark.templates
 def test_root_readme_links_to_templates() -> None:
     root_readme = read(REPO_ROOT / "README.md")
-    assert "docs/templates/README.md" in root_readme
+    assert "docs/templates/README.md" in root_readme, "Condition must be true"

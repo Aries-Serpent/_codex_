@@ -12,20 +12,20 @@ class TestCodeSearchRun:
     def test_empty_query_returns_error(self):
         """Empty query should return error."""
         result = run({"query": ""})
-        assert result["error"] == "query is required"
-        assert result["matches"] == []
+        assert result["error"] == "query is required", "Result must not be empty"
+        assert result["matches"] == [], "Result must not be empty"
 
     def test_missing_query_returns_error(self):
         """Missing query should return error."""
         result = run({})
-        assert result["error"] == "query is required"
-        assert result["matches"] == []
+        assert result["error"] == "query is required", "Result must not be empty"
+        assert result["matches"] == [], "Result must not be empty"
 
     def test_invalid_regex_returns_error(self):
         """Invalid regex pattern should return error."""
         result = run({"query": "(?P<invalid"})  # Invalid regex
-        assert "Invalid regex pattern" in result["error"]
-        assert result["matches"] == []
+        assert "Invalid regex pattern" in result["error"], "Result must not be empty"
+        assert result["matches"] == [], "Result must not be empty"
 
     def test_search_with_valid_pattern(self):
         """Search with valid pattern in temporary directory."""
@@ -44,11 +44,11 @@ class TestCodeSearchRun:
                 }
             )
 
-            assert "matches" in result
-            assert len(result["matches"]) > 0
-            assert result["matches"][0]["path"] == "test.py"
-            assert result["matches"][0]["line"] == 1
-            assert "def" in result["matches"][0]["snippet"]
+            assert "matches" in result, "Result must not be empty"
+            assert len(result["matches"]) > 0, "Collection must not be empty"
+            assert result["matches"][0]["path"] == "test.py", "Result must not be empty"
+            assert result["matches"][0]["line"] == 1, "Result must not be empty"
+            assert "def" in result["matches"][0]["snippet"], "Result must not be empty"
 
     def test_case_sensitive_search(self):
         """Case-sensitive search should match only exact case."""
@@ -66,7 +66,7 @@ class TestCodeSearchRun:
                     "case_sensitive": False,
                 }
             )
-            assert len(result_insensitive["matches"]) > 0
+            assert len(result_insensitive["matches"]) > 0, "Collection must not be empty"
 
             # Case-sensitive
             result_sensitive = run(
@@ -77,7 +77,7 @@ class TestCodeSearchRun:
                     "case_sensitive": True,
                 }
             )
-            assert len(result_sensitive["matches"]) == 0
+            assert len(result_sensitive["matches"]) == 0, "Collection must not be empty"
 
     def test_top_k_limit(self):
         """top_k parameter should limit results."""
@@ -98,7 +98,7 @@ class TestCodeSearchRun:
                 }
             )
 
-            assert len(result["matches"]) <= 2
+            assert len(result["matches"]) <= 2, "Collection must not be empty"
 
     def test_pycache_ignored(self):
         """__pycache__ directories should be ignored."""
@@ -124,8 +124,8 @@ class TestCodeSearchRun:
             )
 
             # Should find the regular file but not cache file
-            assert len(result["matches"]) == 1
-            assert "__pycache__" not in result["matches"][0]["path"]
+            assert len(result["matches"]) == 1, "Collection must not be empty"
+            assert "__pycache__" not in result["matches"][0]["path"], "Result must not be empty"
 
     def test_context_lines_included(self):
         """Context lines should be included in snippet."""
@@ -143,10 +143,10 @@ class TestCodeSearchRun:
                 }
             )
 
-            assert len(result["matches"]) > 0
+            assert len(result["matches"]) > 0, "Collection must not be empty"
             snippet = result["matches"][0]["snippet"]
             # Should include context lines
-            assert "line1" in snippet or "line2" in snippet
+            assert "line1" in snippet or "line2" in snippet, "Condition must be true"
 
 
 class TestSafeRelative:
@@ -158,7 +158,7 @@ class TestSafeRelative:
         path = Path("/home/user/project/src/main.py")
 
         result = _safe_relative(path, base)
-        assert result == "src/main.py"
+        assert result == "src/main.py", "Result must not be empty"
 
     def test_safe_relative_fallback_to_string(self):
         """_safe_relative should fallback to string when relative path fails."""
@@ -176,4 +176,4 @@ class TestSafeRelative:
 
         result = _safe_relative(path, base)
         assert isinstance(result, str)
-        assert "test.py" in result
+        assert "test.py" in result, "Result must not be empty"

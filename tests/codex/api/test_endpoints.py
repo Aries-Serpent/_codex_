@@ -13,7 +13,7 @@ class TestApiEndpointsImports:
         try:
             from src.codex.api import endpoints
 
-            assert endpoints is not None
+            assert endpoints is not None, "endpoints must be initialized"
         except ImportError:
             pytest.skip("Module not available or has unmet dependencies")
 
@@ -36,7 +36,7 @@ class TestApiEndpointDefinitions:
             from src.codex.api import endpoints
 
             if hasattr(endpoints, "HEALTH_ENDPOINT"):
-                assert endpoints.HEALTH_ENDPOINT is not None
+                assert endpoints.HEALTH_ENDPOINT is not None, "HEALTH_ENDPOINT must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("HEALTH_ENDPOINT not available")
 
@@ -46,7 +46,7 @@ class TestApiEndpointDefinitions:
             from src.codex.api import endpoints
 
             if hasattr(endpoints, "VERSION_ENDPOINT"):
-                assert endpoints.VERSION_ENDPOINT is not None
+                assert endpoints.VERSION_ENDPOINT is not None, "VERSION_ENDPOINT must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("VERSION_ENDPOINT not available")
 
@@ -72,7 +72,7 @@ class TestApiEndpointRoutes:
 
             if hasattr(endpoints, "register_route"):
                 result = endpoints.register_route("/test", "GET")
-                assert result is not None
+                assert result is not None, "result must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("register_route not available")
 
@@ -86,7 +86,7 @@ class TestApiEndpointValidation:
             from src.codex.api import endpoints
 
             if hasattr(endpoints, "validate_path"):
-                assert endpoints.validate_path("/api/v1/test") is True
+                assert endpoints.validate_path("/api/v1/test") is True, "Condition must be true"
         except (ImportError, AttributeError):
             pytest.skip("validate_path not available")
 
@@ -97,7 +97,7 @@ class TestApiEndpointValidation:
 
             if hasattr(endpoints, "validate_path"):
                 result = endpoints.validate_path("")
-                assert result is False or result is None
+                assert result is False or result is None, "Result must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("validate_path not available")
 
@@ -114,7 +114,7 @@ class TestApiEndpointMiddleware:
                 mock_request = Mock()
                 mock_request.headers = {"Authorization": "Bearer test"}
                 result = endpoints.auth_middleware(mock_request)
-                assert result is not None
+                assert result is not None, "result must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("auth_middleware not available")
 
@@ -126,6 +126,6 @@ class TestApiEndpointMiddleware:
             if hasattr(endpoints, "logging_middleware"):
                 mock_request = Mock()
                 result = endpoints.logging_middleware(mock_request)
-                assert result is not None
+                assert result is not None, "result must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("logging_middleware not available")

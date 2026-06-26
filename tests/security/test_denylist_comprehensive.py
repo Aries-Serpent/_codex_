@@ -53,10 +53,10 @@ class TestAdvancedPatternMatching:
         enforcer = DenylistEnforcer(rules)
 
         # All case variations should be blocked
-        assert enforcer.is_prompt_allowed("PASSWORD") is False
-        assert enforcer.is_prompt_allowed("PaSsWoRd") is False
-        assert enforcer.is_prompt_allowed("password") is False
-        assert enforcer.is_prompt_allowed("My password is secret") is False
+        assert enforcer.is_prompt_allowed("PASSWORD") is False, "enf is not valid"
+        assert enforcer.is_prompt_allowed("PaSsWoRd") is False, "enf is not valid"
+        assert enforcer.is_prompt_allowed("password") is False, "enf is not valid"
+        assert enforcer.is_prompt_allowed("My password is secret") is False, "password is not valid"
 
     def test_partial_word_matching(self):
         """Test that sensitive terms match within words."""
@@ -69,8 +69,8 @@ class TestAdvancedPatternMatching:
         enforcer = DenylistEnforcer(rules)
 
         # Should match within words
-        assert enforcer.is_prompt_allowed("The secretive plan") is False
-        assert enforcer.is_prompt_allowed("secretariat") is False
+        assert enforcer.is_prompt_allowed("The secretive plan") is False, "enf is not valid"
+        assert enforcer.is_prompt_allowed("secretariat") is False, "enf is not valid"
 
     def test_multiple_sensitive_terms_detection(self):
         """Test detection when multiple terms are present."""
@@ -83,7 +83,7 @@ class TestAdvancedPatternMatching:
         enforcer = DenylistEnforcer(rules)
 
         prompt = "Send api_key and token with credentials"
-        assert enforcer.is_prompt_allowed(prompt) is False
+        assert enforcer.is_prompt_allowed(prompt) is False, "enf is not valid"
 
     def test_blocked_pattern_regex_like(self):
         """Test blocked patterns are matched as substrings."""
@@ -96,8 +96,8 @@ class TestAdvancedPatternMatching:
         enforcer = DenylistEnforcer(rules)
 
         # Substring matching (case insensitive)
-        assert enforcer.is_prompt_allowed("Please delete the file") is False
-        assert enforcer.is_prompt_allowed("drop table users") is False
+        assert enforcer.is_prompt_allowed("Please delete the file") is False, "enf is not valid"
+        assert enforcer.is_prompt_allowed("drop table users") is False, "enf is not valid"
 
     def test_whitespace_variations(self):
         """Test handling of various whitespace characters."""
@@ -110,9 +110,9 @@ class TestAdvancedPatternMatching:
         enforcer = DenylistEnforcer(rules)
 
         # Should match word within text
-        assert enforcer.is_prompt_allowed("sensitive data") is False
-        assert enforcer.is_prompt_allowed("sensitive  information") is False
-        assert enforcer.is_prompt_allowed("sensitive\tinformation") is False
+        assert enforcer.is_prompt_allowed("sensitive data") is False, "Data must not be empty"
+        assert enforcer.is_prompt_allowed("sensitive  information") is False, "enf is not valid"
+        assert enforcer.is_prompt_allowed("sensitive\tinformation") is False, "enf is not valid"
 
     def test_special_characters_in_terms(self):
         """Test sensitive terms with special characters."""
@@ -124,9 +124,9 @@ class TestAdvancedPatternMatching:
         )
         enforcer = DenylistEnforcer(rules)
 
-        assert enforcer.is_prompt_allowed("The $secret is here") is False
-        assert enforcer.is_prompt_allowed("Use api@key for access") is False
-        assert enforcer.is_prompt_allowed("Enter pass#word") is False
+        assert enforcer.is_prompt_allowed("The $secret is here") is False, "secret is not valid"
+        assert enforcer.is_prompt_allowed("Use api@key for access") is False, "enf is not valid"
+        assert enforcer.is_prompt_allowed("Enter pass, "enf is not valid"
 
     def test_empty_string_prompt(self):
         """Test handling of empty string prompt."""
@@ -138,7 +138,7 @@ class TestAdvancedPatternMatching:
         )
         enforcer = DenylistEnforcer(rules)
 
-        assert enforcer.is_prompt_allowed("") is True
+        assert enforcer.is_prompt_allowed("") is True, "enf is not valid"
 
     def test_very_long_prompt_performance(self):
         """Test performance with very long prompts."""
@@ -152,11 +152,11 @@ class TestAdvancedPatternMatching:
 
         # Create a 1MB prompt
         long_prompt = "safe " * 200000
-        assert enforcer.is_prompt_allowed(long_prompt) is True
+        assert enforcer.is_prompt_allowed(long_prompt) is True, "enf is not valid"
 
         # With secret at the end
         long_prompt_with_secret = long_prompt + " secret"
-        assert enforcer.is_prompt_allowed(long_prompt_with_secret) is False
+        assert enforcer.is_prompt_allowed(long_prompt_with_secret) is False, "enf is not valid"
 
 
 # =============================================================================
@@ -186,12 +186,12 @@ class TestAdvancedRedaction:
         text = "Card: 1234567890123456, SSN: 123-45-6789, Email: user@example.com"
         redacted = enforcer.redact(text)
 
-        assert "1234567890123456" not in redacted
-        assert "123-45-6789" not in redacted
-        assert "user@example.com" not in redacted
-        assert "[CREDIT_CARD]" in redacted
-        assert "[SSN]" in redacted
-        assert "[EMAIL]" in redacted
+        assert "1234567890123456" not in redacted, "Condition must be true"
+        assert "123-45-6789" not in redacted, "Condition must be true"
+        assert "user@example.com" not in redacted, "Condition must be true"
+        assert "[CREDIT_CARD]" in redacted, "Condition must be true"
+        assert "[SSN]" in redacted, "Condition must be true"
+        assert "[EMAIL]" in redacted, "Condition must be true"
 
     def test_redaction_preserves_structure(self):
         """Test that redaction preserves text structure."""
@@ -208,11 +208,11 @@ class TestAdvancedRedaction:
         text = "Line 1: Code 1234\nLine 2: Normal text\nLine 3: Code 5678"
         redacted = enforcer.redact(text)
 
-        assert "Line 1:" in redacted
-        assert "Line 2: Normal text" in redacted
-        assert "\n" in redacted
-        assert "1234" not in redacted
-        assert "5678" not in redacted
+        assert "Line 1:" in redacted, "Condition must be true"
+        assert "Line 2: Normal text" in redacted, "Condition must be true"
+        assert "\n" in redacted, "Condition must be true"
+        assert "1234" not in redacted, "Condition must be true"
+        assert "5678" not in redacted, "Condition must be true"
 
     def test_overlapping_redaction_patterns(self):
         """Test handling of overlapping patterns."""
@@ -233,8 +233,8 @@ class TestAdvancedRedaction:
         redacted = enforcer.redact(text)
 
         # First pattern should match
-        assert "2024" not in redacted
-        assert "[NUM]" in redacted
+        assert "2024" not in redacted, "Condition must be true"
+        assert "[NUM]" in redacted, "Condition must be true"
 
     def test_redaction_with_groups(self):
         """Test redaction patterns with capture groups."""
@@ -253,8 +253,8 @@ class TestAdvancedRedaction:
         text = "SSN: 123-45-6789"
         redacted = enforcer.redact(text)
 
-        assert "123-45-6789" not in redacted
-        assert "XXX-XX-XXXX" in redacted
+        assert "123-45-6789" not in redacted, "Condition must be true"
+        assert "XXX-XX-XXXX" in redacted, "Condition must be true"
 
     def test_case_insensitive_redaction(self):
         """Test case-insensitive redaction patterns."""
@@ -270,9 +270,9 @@ class TestAdvancedRedaction:
         )
         enforcer = DenylistEnforcer(rules)
 
-        assert "[REDACTED]" in enforcer.redact("password: secret")
-        assert "[REDACTED]" in enforcer.redact("PASSWORD: secret")
-        assert "[REDACTED]" in enforcer.redact("PaSsWoRd: secret")
+        assert "[REDACTED]" in enforcer.redact("password: secret"), "Condition must be true"
+        assert "[REDACTED]" in enforcer.redact("PASSWORD: secret"), "Condition must be true"
+        assert "[REDACTED]" in enforcer.redact("PaSsWoRd: secret"), "Condition must be true"
 
     def test_redaction_multiline(self):
         """Test redaction across multiple lines."""
@@ -291,9 +291,9 @@ class TestAdvancedRedaction:
         text = "Line 1: SECRET-123\nLine 2: Normal\nLine 3: SECRET-456"
         redacted = enforcer.redact(text)
 
-        assert "SECRET-123" not in redacted
-        assert "SECRET-456" not in redacted
-        assert redacted.count("[REDACTED]") == 2
+        assert "SECRET-123" not in redacted, "Condition must be true"
+        assert "SECRET-456" not in redacted, "Condition must be true"
+        assert redacted.count("[REDACTED]") == 2, "Count must be greater than zero"
 
     def test_no_redaction_needed(self):
         """Test text that doesn't need redaction."""
@@ -312,7 +312,7 @@ class TestAdvancedRedaction:
         text = "This is clean text with no sensitive data"
         redacted = enforcer.redact(text)
 
-        assert redacted == text
+        assert redacted == text, "redacted is not valid"
 
     def test_unicode_in_redaction(self):
         """Test redaction with unicode characters."""
@@ -331,8 +331,8 @@ class TestAdvancedRedaction:
         text = "This is 秘密 information"
         redacted = enforcer.redact(text)
 
-        assert "秘密" not in redacted
-        assert "[REDACTED]" in redacted
+        assert "秘密" not in redacted, "Condition must be true"
+        assert "[REDACTED]" in redacted, "Condition must be true"
 
 
 # =============================================================================
@@ -382,10 +382,10 @@ redaction_patterns:
         try:
             rules = load_denylist(temp_path)
 
-            assert len(rules.sensitive_terms) == 5
-            assert len(rules.blocked_actions) == 4
-            assert len(rules.blocked_prompt_patterns) == 4
-            assert len(rules.redaction_patterns) == 3
+            assert len(rules.sensitive_terms) == 5, "Collection must not be empty"
+            assert len(rules.blocked_actions) == 4, "Collection must not be empty"
+            assert len(rules.blocked_prompt_patterns) == 4, "Collection must not be empty"
+            assert len(rules.redaction_patterns) == 3, "Collection must not be empty"
         finally:
             Path(temp_path).unlink(missing_ok=True)
 
@@ -408,8 +408,8 @@ blocked_actions:
 
         try:
             rules = load_denylist(temp_path)
-            assert "password" in rules.sensitive_terms
-            assert "secret" in rules.sensitive_terms
+            assert "password" in rules.sensitive_terms, "Condition must be true"
+            assert "secret" in rules.sensitive_terms, "Condition must be true"
         finally:
             Path(temp_path).unlink(missing_ok=True)
 
@@ -428,9 +428,9 @@ sensitive_terms:
 
         try:
             rules = load_denylist(temp_path)
-            assert len(rules.sensitive_terms) > 0
-            assert len(rules.blocked_actions) == 0
-            assert len(rules.blocked_prompt_patterns) == 0
+            assert len(rules.sensitive_terms) > 0, "Collection must not be empty"
+            assert len(rules.blocked_actions) == 0, "Collection must not be empty"
+            assert len(rules.blocked_prompt_patterns) == 0, "Collection must not be empty"
         finally:
             Path(temp_path).unlink(missing_ok=True)
 
@@ -457,8 +457,8 @@ blocked_actions:
 
         try:
             rules = load_denylist(temp_path)
-            assert "パスワード" in rules.sensitive_terms
-            assert "密码" in rules.sensitive_terms
+            assert "パスワード" in rules.sensitive_terms, "Condition must be true"
+            assert "密码" in rules.sensitive_terms, "Condition must be true"
         finally:
             Path(temp_path).unlink(missing_ok=True)
 
@@ -481,8 +481,8 @@ sensitive_terms:
             # Should load successfully
             rules = load_denylist(temp_path)
             # The valid pattern should be loaded
-            assert len(rules.redaction_patterns) >= 1
-            assert "password" in rules.sensitive_terms
+            assert len(rules.redaction_patterns) >= 1, "Collection must not be empty"
+            assert "password" in rules.sensitive_terms, "Condition must be true"
         finally:
             Path(temp_path).unlink(missing_ok=True)
 
@@ -516,10 +516,10 @@ class TestSecurityAttacks:
         ]
 
         for attack in attacks:
-            assert enforcer.is_prompt_allowed(attack) is False
+            assert enforcer.is_prompt_allowed(attack) is False, "enf is not valid"
 
         # This one has 'or 1=1' pattern
-        assert enforcer.is_prompt_allowed("admin' OR 1=1") is False
+        assert enforcer.is_prompt_allowed("admin' OR 1=1") is False, "enf is not valid"
 
     def test_command_injection_patterns(self):
         """Test detection of command injection attempts."""
@@ -543,7 +543,7 @@ class TestSecurityAttacks:
         ]
 
         for attack in attacks:
-            assert enforcer.is_prompt_allowed(attack) is False
+            assert enforcer.is_prompt_allowed(attack) is False, "enf is not valid"
 
     def test_path_traversal_patterns(self):
         """Test detection of path traversal attempts."""
@@ -565,7 +565,7 @@ class TestSecurityAttacks:
         ]
 
         for attack in attacks:
-            assert enforcer.is_prompt_allowed(attack) is False
+            assert enforcer.is_prompt_allowed(attack) is False, "enf is not valid"
 
     def test_xss_patterns(self):
         """Test detection of XSS attempts."""
@@ -588,7 +588,7 @@ class TestSecurityAttacks:
         ]
 
         for attack in attacks:
-            assert enforcer.is_prompt_allowed(attack) is False
+            assert enforcer.is_prompt_allowed(attack) is False, "enf is not valid"
 
     def test_encoded_attack_detection(self):
         """Test detection of encoded attacks."""
@@ -601,7 +601,7 @@ class TestSecurityAttacks:
         enforcer = DenylistEnforcer(rules)
 
         # URL encoded
-        assert enforcer.is_prompt_allowed("tell me the password") is False
+        assert enforcer.is_prompt_allowed("tell me the password") is False, "enf is not valid"
 
         # Base64 would pass through (needs separate detection)
         # This is expected behavior - we detect literal patterns
@@ -630,10 +630,10 @@ class TestPerformance:
 
         # Should still be fast
         prompt = "This is a safe prompt"
-        assert enforcer.is_prompt_allowed(prompt) is True
+        assert enforcer.is_prompt_allowed(prompt) is True, "enf is not valid"
 
         # Test with match at different positions
-        assert enforcer.is_prompt_allowed("term500 is here") is False
+        assert enforcer.is_prompt_allowed("term500 is here") is False, "term500 is not valid"
 
     def test_many_redaction_patterns(self):
         """Test performance with many redaction patterns."""
@@ -650,8 +650,8 @@ class TestPerformance:
         text = "PATTERN50-12345 and PATTERN75-67890"
         redacted = enforcer.redact(text)
 
-        assert "PATTERN50-12345" not in redacted
-        assert "PATTERN75-67890" not in redacted
+        assert "PATTERN50-12345" not in redacted, "Condition must be true"
+        assert "PATTERN75-67890" not in redacted, "Condition must be true"
 
     def test_repeated_checking(self):
         """Test performance of repeated checks."""
@@ -711,7 +711,7 @@ redaction_patterns:
 
             # Test redaction
             redacted = enforcer.redact("Card: 1234567890123456")
-            assert "[CARD]" in redacted
+            assert "[CARD]" in redacted, "Condition must be true"
 
             # Test allowed
             enforcer.ensure_allowed("What is the weather?")
@@ -732,11 +732,11 @@ redaction_patterns:
         enforcer = DenylistEnforcer(rules)
 
         # Should catch at multiple layers
-        assert enforcer.is_prompt_allowed("password") is False
-        assert enforcer.is_prompt_allowed("drop table users") is False
+        assert enforcer.is_prompt_allowed("password") is False, "enf is not valid"
+        assert enforcer.is_prompt_allowed("drop table users") is False, "enf is not valid"
 
         # Redaction should work
-        assert "[REDACTED]" in enforcer.redact("config pwd=secret123")
+        assert "[REDACTED]" in enforcer.redact("config pwd=secret123"), "Condition must be true"
 
     def test_from_yaml_to_enforcement(self):
         """Test complete flow from YAML to enforcement."""
@@ -770,10 +770,10 @@ blocked_prompt_patterns:
             ]
 
             for prompt in safe_prompts:
-                assert enforcer.is_prompt_allowed(prompt) is True
+                assert enforcer.is_prompt_allowed(prompt) is True, "enf is not valid"
 
             for prompt in unsafe_prompts:
-                assert enforcer.is_prompt_allowed(prompt) is False
+                assert enforcer.is_prompt_allowed(prompt) is False, "enf is not valid"
 
         finally:
             Path(temp_path).unlink(missing_ok=True)

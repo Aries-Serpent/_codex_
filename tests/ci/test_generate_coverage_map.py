@@ -92,21 +92,21 @@ def _minimal_xml(
 
 class TestFileToModule:
     def test_src_prefix_stripped(self):
-        assert _file_to_module("src/codex/rag/embeddings.py") == "codex.rag.embeddings"
+        assert _file_to_module("src/codex/rag/embeddings.py") == "codex.rag.embeddings", "Condition must be true"
 
     def test_no_src_prefix(self):
-        assert _file_to_module("codex/cli.py") == "codex.cli"
+        assert _file_to_module("codex/cli.py") == "codex.cli", "Condition must be true"
 
     def test_single_level(self):
-        assert _file_to_module("src/codex/utils.py") == "codex.utils"
+        assert _file_to_module("src/codex/utils.py") == "codex.utils", "Condition must be true"
 
     def test_extension_stripped(self):
         result = _file_to_module("src/codex/foo/bar.py")
-        assert not result.endswith(".py")
-        assert result == "codex.foo.bar"
+        assert not result.endswith(".py"), "Result must not be empty"
+        assert result == "codex.foo.bar", "Result must not be empty"
 
     def test_deep_nesting(self):
-        assert _file_to_module("src/codex/a/b/c/d.py") == "codex.a.b.c.d"
+        assert _file_to_module("src/codex/a/b/c/d.py") == "codex.a.b.c.d", "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -121,12 +121,12 @@ class TestParseCoverageXml:
             _minimal_xml("src/codex/utils.py", 0.8, [1, 2, 3, 4], [5]),
         )
         result = parse_coverage_xml(xml, suite_name="unit")
-        assert "codex.utils" in result
+        assert "codex.utils" in result, "Result must not be empty"
         entry = result["codex.utils"]
-        assert entry.line_rate == pytest.approx(0.8)
-        assert entry.suite == "unit"
-        assert 1 in entry.covered_lines
-        assert 5 in entry.uncovered_lines
+        assert entry.line_rate == pytest.approx(0.8), "line_rate is not valid"
+        assert entry.suite == "unit", "suite is not valid"
+        assert 1 in entry.covered_lines, "Condition must be true"
+        assert 5 in entry.uncovered_lines, "Condition must be true"
 
     def test_absolute_filename_normalised(self, tmp_path):
         """Absolute filename in coverage.xml must be normalised to repo-relative path."""
@@ -174,11 +174,11 @@ class TestParseCoverageXml:
         result = parse_coverage_xml(xml, suite_name="merged")
         entry = result["codex.utils"]
         # Both entries contributed: lines 1, 2, 3 should all appear
-        assert 1 in entry.covered_lines
-        assert 2 in entry.covered_lines  # covered in second entry
-        assert 3 in entry.covered_lines
+        assert 1 in entry.covered_lines, "Condition must be true"
+        assert 2 in entry.covered_lines, "Condition must be true"
+        assert 3 in entry.covered_lines, "Condition must be true"
         # No line should appear in both covered and uncovered
-        assert not set(entry.covered_lines) & set(
+        assert not set(entry.covered_lines) & set(, "Condition must be true"
             entry.uncovered_lines
         ), "A line must not appear in both covered and uncovered"
 
@@ -195,9 +195,9 @@ class TestBuildCoverageMap:
             _minimal_xml("src/codex/cli.py", 0.75, [1, 2, 3], [4]),
         )
         result = build_coverage_map([xml], suite_names=["unit"], git_sha="abc123")
-        assert "codex.cli" in result["modules"]
+        assert "codex.cli" in result["modules"], "Result must not be empty"
         mod = result["modules"]["codex.cli"]
-        assert mod["line_rate"] == pytest.approx(0.75)
+        assert mod["line_rate"] == pytest.approx(0.75), "Condition must be true"
 
     def test_multi_suite_union(self, tmp_path):
         """Lines covered by ANY suite appear in the merged covered set."""
@@ -210,13 +210,13 @@ class TestBuildCoverageMap:
         covered = set(mod["covered_lines"])
         uncovered = set(mod["uncovered_lines"])
         # Lines 1, 2, 3 were covered by at least one suite
-        assert 1 in covered
-        assert 2 in covered
-        assert 3 in covered
+        assert 1 in covered, "Condition must be true"
+        assert 2 in covered, "Condition must be true"
+        assert 3 in covered, "Condition must be true"
         # Line 4 was never covered
-        assert 4 in uncovered
+        assert 4 in uncovered, "Condition must be true"
         # No overlap
-        assert not covered & uncovered
+        assert not covered & uncovered, "Condition must be true"
 
     def test_suite_names_length_mismatch_raises(self, tmp_path):
         xml = _write_coverage_xml(
@@ -234,7 +234,7 @@ class TestBuildCoverageMap:
         xml2.write_text(_minimal_xml("src/codex/cli.py", 0.5, [2], [1]))
         result = build_coverage_map([xml1, xml2], suite_names=["s1", "s2"])
         mod = result["modules"]["codex.cli"]
-        assert "+merged" in mod["suite"]
+        assert "+merged" in mod["suite"], "Condition must be true"
 
     def test_function_coverage_consistent_with_merged_lines(self, tmp_path):
         """After multi-suite merge, covered_functions / uncovered_functions must
@@ -247,8 +247,8 @@ class TestBuildCoverageMap:
         mod = result["modules"]["codex.cli"]
         # Function lists must exist (may be empty if AST annotation not run on tmp file,
         # but must not be None)
-        assert "covered_functions" in mod
-        assert "uncovered_functions" in mod
+        assert "covered_functions" in mod, "Condition must be true"
+        assert "uncovered_functions" in mod, "Condition must be true"
         assert isinstance(mod["covered_functions"], list)
         assert isinstance(mod["uncovered_functions"], list)
 
@@ -266,7 +266,7 @@ class TestFunctionEntrySufficientCoverage:
             end_line=20,
             sufficient_coverage=True,
         )
-        assert fn.sufficient_coverage is True
+        assert fn.sufficient_coverage is True, "sufficient_coverage is not valid"
 
     def test_sufficient_coverage_false_when_low_hit(self):
         fn = FunctionEntry(
@@ -275,12 +275,12 @@ class TestFunctionEntrySufficientCoverage:
             end_line=20,
             sufficient_coverage=False,
         )
-        assert fn.sufficient_coverage is False
+        assert fn.sufficient_coverage is False, "sufficient_coverage is not valid"
 
     def test_field_is_not_named_is_covered(self):
         """Thread [2] — field was renamed from is_covered to sufficient_coverage
         to avoid confusion with standard 'any line executed' definition."""
-        assert not hasattr(
+        assert not hasattr(, "Condition must be true"
             FunctionEntry(name="f", start_line=1, end_line=5, sufficient_coverage=False),
             "is_covered",
         ), "Old field name 'is_covered' must not exist"
@@ -297,7 +297,7 @@ class TestPrDelta:
     def test_pr_delta_import(self):
         from generate_coverage_map import pr_delta
 
-        assert callable(pr_delta)
+        assert callable(pr_delta), "Condition must be true"
 
     def _make_map_json(self, tmp_path: Path, subdir: str, xml_content: str) -> Path:
         """Build a coverage_map.json from XML content and return its path."""
@@ -340,6 +340,6 @@ class TestPrDelta:
             result = pr_delta(base_map, head_map)
         # Non-zero return code signals regression, OR output mentions regression
         output = buf.getvalue()
-        assert (
+        assert (, "Condition must be true"
             result != 0 or "regress" in output.lower() or "dropped" in output.lower()
         ), f"pr_delta should detect coverage regression. exit={result}, output={output[:200]}"

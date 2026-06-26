@@ -34,22 +34,25 @@ async def dummy_task(duration: float = 0.01):
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_worker_pool_creation():
     """Test creating a worker pool."""
     pool = WorkerPool(4)
-    assert pool.size == 4
+    assert pool.size == 4, "size is not valid"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_worker_pool_submit():
     """Test submitting tasks to pool."""
     pool = WorkerPool(4)
 
     task = await pool.submit(dummy_task())
-    assert task in pool.workers
+    assert task in pool.workers, "Condition must be true"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_worker_pool_wait_all():
     """Test waiting for all workers to complete."""
     pool = WorkerPool(4)
@@ -59,4 +62,4 @@ async def test_worker_pool_wait_all():
 
     await pool.wait_all()
 
-    assert pool.completed == 3
+    assert pool.completed == 3, "completed is not valid"

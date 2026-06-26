@@ -53,7 +53,7 @@ def _load_registry_module():
         spec = importlib.util.spec_from_file_location(
             "codex_ml_cli_registry_under_test", module_path
         )
-        assert spec is not None and spec.loader is not None
+        assert spec is not None and spec.loader is not None, "spec must be initialized"
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
         return module
@@ -109,9 +109,9 @@ def test_list_models_command_text(
     monkeypatch.setattr(registry, "ModelRegistry", _FakeRegistry)
     code = registry.list_models_command(Namespace(tracking_uri="sqlite:///mlruns.db", json=False))
     out = capsys.readouterr().out
-    assert code == 0
-    assert "Registered Models (2):" in out
-    assert "alpha" in out and "beta" in out
+    assert code == 0, "code is not valid"
+    assert "Registered Models (2):" in out, "Condition must be true"
+    assert "alpha" in out and "beta" in out, "Condition must be true"
 
 
 def test_list_versions_command_json_uses_stage_filter(
@@ -125,7 +125,7 @@ def test_list_versions_command_json_uses_stage_filter(
             self.tracking_uri = tracking_uri
 
         def list_model_versions(self, name: str, stage: object | None = None) -> list[_FakeVersion]:
-            assert name == "demo"
+            assert name == "demo", "name is not valid"
             calls.append(stage)
             return [_FakeVersion(version="3", stage=registry.DeploymentStage.PRODUCTION)]
 
@@ -134,9 +134,9 @@ def test_list_versions_command_json_uses_stage_filter(
         Namespace(tracking_uri=None, stage="production", name="demo", json=True)
     )
     out = capsys.readouterr().out
-    assert code == 0
-    assert '"versions"' in out and '"3"' in out
-    assert calls == [registry.DeploymentStage.PRODUCTION]
+    assert code == 0, "code is not valid"
+    assert '"versions"' in out and '"3"' in out, "Condition must be true"
+    assert calls == [registry.DeploymentStage.PRODUCTION], "calls is not valid"
 
 
 def test_promote_model_command_keep_existing_sets_archive_false(
@@ -178,9 +178,9 @@ def test_promote_model_command_keep_existing_sets_archive_false(
         )
     )
     out = capsys.readouterr().out
-    assert code == 0
-    assert "Promoted demo version 9 to Staging" in out
-    assert captured["archive_existing"] is False
+    assert code == 0, "code is not valid"
+    assert "Promoted demo version 9 to Staging" in out, "Condition must be true"
+    assert captured["archive_existing"] is False, "Condition must be true"
 
 
 def test_compare_models_command_text(
@@ -206,9 +206,9 @@ def test_compare_models_command_text(
         Namespace(tracking_uri=None, name="demo", version1="1", version2="2", json=False)
     )
     out = capsys.readouterr().out
-    assert code == 0
-    assert "Version 1" in out and "Version 2" in out
-    assert "Time difference: 2 days" in out
+    assert code == 0, "code is not valid"
+    assert "Version 1" in out and "Version 2" in out, "Condition must be true"
+    assert "Time difference: 2 days" in out, "Condition must be true"
 
 
 def test_get_lineage_command_no_lineage(
@@ -229,8 +229,8 @@ def test_get_lineage_command_no_lineage(
         Namespace(tracking_uri=None, name="demo", version="4", json=False)
     )
     out = capsys.readouterr().out
-    assert code == 0
-    assert "No lineage information available" in out
+    assert code == 0, "code is not valid"
+    assert "No lineage information available" in out, "Condition must be true"
 
 
 def test_export_model_command_success(
@@ -251,8 +251,8 @@ def test_export_model_command_success(
         Namespace(tracking_uri=None, name="demo", version="4", output_dir="build/out")
     )
     out = capsys.readouterr().out
-    assert code == 0
-    assert "Exported demo version 4 to build/out/demo-v4" in out
+    assert code == 0, "code is not valid"
+    assert "Exported demo version 4 to build/out/demo-v4" in out, "Condition must be true"
 
 
 def test_list_models_command_error_path(
@@ -267,8 +267,8 @@ def test_list_models_command_error_path(
     monkeypatch.setattr(registry, "ModelRegistry", _FakeRegistry)
     code = registry.list_models_command(Namespace(tracking_uri=None, json=False))
     err = capsys.readouterr().err
-    assert code == 1
-    assert "Error: boom" in err
+    assert code == 1, "code is not valid"
+    assert "Error: boom" in err, "Error should be raised or set"
 
 
 def test_main_returns_error_when_mlflow_missing(
@@ -278,8 +278,8 @@ def test_main_returns_error_when_mlflow_missing(
     monkeypatch.setattr(registry, "_HAS_MLFLOW", False)
     code = registry.main(["list-models"])
     err = capsys.readouterr().err
-    assert code == 1
-    assert "MLflow not installed" in err
+    assert code == 1, "code is not valid"
+    assert "MLflow not installed" in err, "Condition must be true"
 
 
 def test_main_dispatch_list_models(monkeypatch: pytest.MonkeyPatch) -> None:

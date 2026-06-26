@@ -92,7 +92,7 @@ def test_has_meta_tensors_detects_module_parameters(
 ) -> None:
     """Ensure meta parameters inside named modules are detected."""
     model = fake_model_factory(modules=[meta_param])
-    assert utils.has_meta_tensors(model) is True
+    assert utils.has_meta_tensors(model) is True, "Condition must be true"
 
 
 @pytest.mark.timeout(30)
@@ -116,7 +116,7 @@ def test_has_meta_tensors_detects_meta_locations(
         kwargs["device"] = device_factory("meta")
 
     model = fake_model_factory(**kwargs)
-    assert utils.has_meta_tensors(model) is True
+    assert utils.has_meta_tensors(model) is True, "Condition must be true"
 
 
 @pytest.mark.timeout(30)
@@ -132,7 +132,7 @@ def test_has_meta_tensors_false_for_cpu_only(
         buffers=[cpu_param],
         device=device_factory("cpu"),
     )
-    assert utils.has_meta_tensors(model) is False
+    assert utils.has_meta_tensors(model) is False, "Condition must be true"
 
 
 @pytest.mark.timeout(30)
@@ -149,7 +149,7 @@ def test_safe_model_to_device_uses_to_empty_for_meta(
 
     model = fake_model_factory(parameters=[meta_param], to_empty=to_empty)
     assert utils.safe_model_to_device(model, device="cpu") == "moved"
-    assert call_state["device"] == "cpu"
+    assert call_state["device"] == "cpu", "Condition must be true"
 
 
 @pytest.mark.timeout(30)
@@ -187,7 +187,7 @@ def test_safe_model_to_device_uses_torch_module_to(
 
     model = FakeModel()
     assert utils.safe_model_to_device(model, device="cpu") == "torch-moved"
-    assert moved["device"] == "cpu"
+    assert moved["device"] == "cpu", "Condition must be true"
 
 
 @pytest.mark.timeout(30)
@@ -213,4 +213,4 @@ def test_safe_model_to_device_fallbacks_when_torch_missing(
 
     model = fake_model_factory(to=to)
     assert utils.safe_model_to_device(model, device="cpu") == "fallback-moved"
-    assert moved["device"] == "cpu"
+    assert moved["device"] == "cpu", "Condition must be true"

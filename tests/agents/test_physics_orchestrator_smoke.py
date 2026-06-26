@@ -20,7 +20,7 @@ class TestPhysicsOrchestratorInitialization:
         from agents.physics_orchestrator import PhysicsInspiredOrchestrator
 
         orch = PhysicsInspiredOrchestrator()
-        assert orch is not None
+        assert orch is not None, "orch must be initialized"
 
     def test_orchestrator_with_config(self):
         """Test initialization with config file."""
@@ -46,8 +46,8 @@ class TestForceVectorOperations:
         )
 
         x, y = force.get_components()
-        assert abs(x - 10.0) < 0.01  # cos(0) = 1
-        assert abs(y) < 0.01  # sin(0) = 0
+        assert abs(x - 10.0) < 0.01, "Condition must be true"
+        assert abs(y) < 0.01, "Condition must be true"
 
     def test_force_vector_components_45deg(self):
         """Test force vector at 45 degrees."""
@@ -62,8 +62,8 @@ class TestForceVectorOperations:
 
         x, y = force.get_components()
         # At 45 degrees, x and y should be equal
-        assert abs(x - y) < 0.01
-        assert abs(x - 10.0 * math.cos(math.pi / 4)) < 0.01
+        assert abs(x - y) < 0.01, "Condition must be true"
+        assert abs(x - 10.0 * math.cos(math.pi / 4)) < 0.01, "Condition must be true"
 
     def test_force_vector_components_3d(self):
         """Test 3D force vector projection."""
@@ -78,8 +78,8 @@ class TestForceVectorOperations:
 
         x, y = force.get_components()
         # 3D vectors project to 2D
-        assert x == 5.0 * 2.0  # magnitude * priority
-        assert y == 0.0
+        assert x == 5.0 * 2.0, "x is not valid"
+        assert y == 0.0, "y is not valid"
 
 
 class TestActionPathCalculations:
@@ -100,8 +100,8 @@ class TestActionPathCalculations:
 
         total = path.calculate_total_energy()
         # E_total = 50 + 30 - (3 * 5) + (2 * 10) = 50 + 30 - 15 + 20 = 85
-        assert total == 85.0
-        assert path.total_energy == 85.0
+        assert total == 85.0, "total is not valid"
+        assert path.total_energy == 85.0, "total_energy is not valid"
 
     def test_action_path_optimization_score(self):
         """Test optimization score calculation."""
@@ -124,8 +124,8 @@ class TestActionPathCalculations:
         score = path.calculate_optimization_score()
 
         # Score should be positive
-        assert score > 0
-        assert path.optimization_score == score
+        assert score > 0, "score must be greater than zero"
+        assert path.optimization_score == score, "optimization_score is not valid"
 
     def test_action_path_zero_energy_handling(self):
         """Test handling of zero/near-zero energy."""
@@ -148,8 +148,8 @@ class TestActionPathCalculations:
         score = path.calculate_optimization_score()
 
         # Should not raise division by zero
-        assert score is not None
-        assert score > 0  # Due to minimum denominator of 0.01
+        assert score is not None, "score must be initialized"
+        assert score > 0, "score must be greater than zero"
 
 
 class TestDecisionStateOperations:
@@ -167,11 +167,11 @@ class TestDecisionStateOperations:
             current_velocity=0.5,
         )
 
-        assert state.current_position == "task_a"
-        assert state.goal_position == "task_b"
-        assert state.available_resources == 0.8
-        assert state.time_available == 0.6
-        assert state.current_velocity == 0.5
+        assert state.current_position == "task_a", "current_position is not valid"
+        assert state.goal_position == "task_b", "goal_position is not valid"
+        assert state.available_resources == 0.8, "available_resources is not valid"
+        assert state.time_available == 0.6, "time_available is not valid"
+        assert state.current_velocity == 0.5, "current_velocity is not valid"
 
     def test_decision_state_with_context(self):
         """Test decision state with context dictionary."""
@@ -183,9 +183,9 @@ class TestDecisionStateOperations:
             context={"priority": "high", "department": "engineering"},
         )
 
-        assert "priority" in state.context
-        assert state.context["priority"] == "high"
-        assert state.context["department"] == "engineering"
+        assert "priority" in state.context, "Condition must be true"
+        assert state.context["priority"] == "high", "Condition must be true"
+        assert state.context["department"] == "engineering", "Condition must be true"
 
     def test_decision_state_with_forces(self):
         """Test decision state with active forces."""
@@ -200,8 +200,8 @@ class TestDecisionStateOperations:
             current_position="planning", goal_position="execution", active_forces=forces
         )
 
-        assert len(state.active_forces) == 2
-        assert state.active_forces[0].name == "urgency"
+        assert len(state.active_forces) == 2, "Collection must not be empty"
+        assert state.active_forces[0].name == "urgency", "name is not valid"
 
 
 class TestPhysicsOrchestratorDecisionMaking:
@@ -225,7 +225,7 @@ class TestPhysicsOrchestratorDecisionMaking:
         # Assess the situation
         assessment = orch.assess_situation(state)
 
-        assert assessment is not None
+        assert assessment is not None, "assessment must be initialized"
         assert isinstance(assessment, dict)
 
     def test_orchestrate_decision_simple(self):
@@ -246,7 +246,7 @@ class TestPhysicsOrchestratorDecisionMaking:
         # Request orchestration
         result = orch.orchestrate(state, paths)
 
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     def test_optimize_path_selection(self):
         """Test path optimization."""
@@ -293,8 +293,8 @@ class TestPhysicsOrchestratorDecisionMaking:
         # Find best path
         best_path = max(paths, key=lambda p: p.optimization_score)
 
-        assert best_path is not None
-        assert best_path.optimization_score > 0
+        assert best_path is not None, "best_path must be initialized"
+        assert best_path.optimization_score > 0, "optimization_score must be greater than zero"
 
 
 class TestActionTypeEnum:
@@ -305,18 +305,18 @@ class TestActionTypeEnum:
         from agents.physics_orchestrator import ActionType
 
         # Verify expected action types exist
-        assert ActionType.AUDIT is not None
-        assert ActionType.REFACTOR is not None
-        assert ActionType.TEST is not None
-        assert ActionType.DEPLOY is not None
+        assert ActionType.AUDIT is not None, "AUDIT must be initialized"
+        assert ActionType.REFACTOR is not None, "REFACTOR must be initialized"
+        assert ActionType.TEST is not None, "TEST must be initialized"
+        assert ActionType.DEPLOY is not None, "DEPLOY must be initialized"
 
     def test_action_type_string_values(self):
         """Test ActionType string representations."""
         from agents.physics_orchestrator import ActionType
 
-        assert ActionType.AUDIT.value == "audit"
-        assert ActionType.TEST.value == "test"
-        assert ActionType.DEPLOY.value == "deploy"
+        assert ActionType.AUDIT.value == "audit", "Value must be initialized"
+        assert ActionType.TEST.value == "test", "Value must be initialized"
+        assert ActionType.DEPLOY.value == "deploy", "Value must be initialized"
 
     def test_action_type_iteration(self):
         """Test iterating over ActionType enum."""
@@ -324,7 +324,7 @@ class TestActionTypeEnum:
 
         action_types = list(ActionType)
 
-        assert len(action_types) >= 5  # Should have multiple action types
+        assert len(action_types) >= 5, "Action_types must not be empty"
         assert all(isinstance(at, ActionType) for at in action_types)
 
 
@@ -337,7 +337,7 @@ class TestPhysicsOrchestratorEdgeCases:
 
         state = DecisionState(current_position="a", goal_position="b", context={})
 
-        assert state.context == {}
+        assert state.context == {}, "context is not valid"
 
     def test_zero_resources(self):
         """Test with zero available resources."""
@@ -347,7 +347,7 @@ class TestPhysicsOrchestratorEdgeCases:
             current_position="start", goal_position="end", available_resources=0.0
         )
 
-        assert state.available_resources == 0.0
+        assert state.available_resources == 0.0, "available_resources is not valid"
 
     def test_force_vector_zero_magnitude(self):
         """Test force vector with zero magnitude."""
@@ -356,8 +356,8 @@ class TestPhysicsOrchestratorEdgeCases:
         force = ForceVector(name="zero_force", magnitude=0.0, direction=0.0)
 
         x, y = force.get_components()
-        assert x == 0.0
-        assert y == 0.0
+        assert x == 0.0, "x is not valid"
+        assert y == 0.0, "y is not valid"
 
     def test_action_path_high_risk(self):
         """Test action path with very high risk."""
@@ -375,4 +375,4 @@ class TestPhysicsOrchestratorEdgeCases:
         score = path.calculate_optimization_score()
 
         # High risk should reduce score
-        assert score >= 0
+        assert score >= 0, "score must be greater than zero"

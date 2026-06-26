@@ -15,7 +15,9 @@ import pytest
 
 try:
     from hypothesis import given
-    from hypothesis import strategies as st # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+    from hypothesis import (
+        strategies as st,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+    )
 
     HAS_HYPOTHESIS = True
 except ImportError:
@@ -93,7 +95,7 @@ class TestConfigKeyProperties:
 
         normalized = normalize_key(key)
         double_normalized = normalize_key(normalized)
-        assert normalized == double_normalized
+        assert normalized == double_normalized, "normalized is not valid"
 
     @given(st.text(min_size=1, max_size=50))
     def test_key_validation_consistent(self, key: str) -> None:
@@ -104,7 +106,7 @@ class TestConfigKeyProperties:
 
         result1 = is_valid_key(key)
         result2 = is_valid_key(key)
-        assert result1 == result2
+        assert result1 == result2, "Result must not be empty"
 
     @given(
         st.text(min_size=1, max_size=20, alphabet="abcdefghijklmnopqrstuvwxyz"),
@@ -131,7 +133,7 @@ class TestConfigValueProperties:
         """Integer values roundtrip through string conversion."""
         string_form = str(value)
         restored = int(string_form)
-        assert restored == value
+        assert restored == value, "Value must be initialized"
 
     @given(st.floats(allow_nan=False, allow_infinity=False))
     def test_float_value_approximate_roundtrip(self, value: float) -> None:
@@ -139,23 +141,23 @@ class TestConfigValueProperties:
         string_form = str(value)
         restored = float(string_form)
         if value == 0:
-            assert restored == 0
+            assert restored == 0, "restored is not valid"
         else:
-            assert abs(restored - value) < abs(value) * 1e-10 or restored == value
+            assert abs(restored - value) < abs(value) * 1e-10 or restored == value, "Value must be initialized"
 
     @given(st.booleans())
     def test_boolean_value_roundtrip(self, value: bool) -> None:
         """Boolean values have consistent string representation."""
         string_form = str(value).lower()
         restored = string_form == "true"
-        assert restored == value
+        assert restored == value, "Value must be initialized"
 
     @given(st.text(max_size=200))
     def test_string_value_preserved(self, value: str) -> None:
         """String values are preserved through assignment."""
         config: dict[str, str] = {}
         config["key"] = value
-        assert config["key"] == value
+        assert config["key"] == value, "Value must be initialized"
 
 
 # ============================================================================
@@ -171,20 +173,20 @@ class TestConfigMergeProperties:
         """Merging with empty dict is identity."""
         empty: dict[str, int] = {}
         merged = {**empty, **config}
-        assert merged == config
+        assert merged == config, "merged is not valid"
 
     @given(st.dictionaries(st.text(min_size=1, max_size=20), st.integers(), max_size=10))
     def test_merge_empty_with_config_identity(self, config: dict[str, int]) -> None:
         """Merging empty with config gives config."""
         empty: dict[str, int] = {}
         merged = {**config, **empty}
-        assert merged == config
+        assert merged == config, "merged is not valid"
 
     @given(st.dictionaries(st.text(min_size=1, max_size=20), st.integers(), max_size=10))
     def test_merge_with_self_identity(self, config: dict[str, int]) -> None:
         """Merging config with itself is identity."""
         merged = {**config, **config}
-        assert merged == config
+        assert merged == config, "merged is not valid"
 
     @given(
         st.dictionaries(st.text(min_size=1, max_size=10), st.integers(), max_size=5),
@@ -196,7 +198,7 @@ class TestConfigMergeProperties:
         """Merged config contains all keys from both configs."""
         merged = {**config1, **config2}
         all_keys = set(config1.keys()) | set(config2.keys())
-        assert set(merged.keys()) == all_keys
+        assert set(merged.keys()) == all_keys, "Condition must be true"
 
 
 # ============================================================================
@@ -214,7 +216,7 @@ class TestConfigValidationProperties:
         def validate_positive(v: int) -> bool:
             return v > 0
 
-        assert validate_positive(value) is True
+        assert validate_positive(value) is True, "Value must be initialized"
 
     @given(st.integers(max_value=0))
     def test_non_positive_integer_validation(self, value: int) -> None:
@@ -223,7 +225,7 @@ class TestConfigValidationProperties:
         def validate_positive(v: int) -> bool:
             return v > 0
 
-        assert validate_positive(value) is False
+        assert validate_positive(value) is False, "Value must be initialized"
 
     @given(st.floats(min_value=0.0, max_value=1.0, allow_nan=False))
     def test_probability_validation(self, value: float) -> None:
@@ -232,7 +234,7 @@ class TestConfigValidationProperties:
         def validate_probability(v: float) -> bool:
             return 0.0 <= v <= 1.0
 
-        assert validate_probability(value) is True
+        assert validate_probability(value) is True, "Value must be initialized"
 
     @given(st.text(min_size=1, max_size=100))
     def test_non_empty_string_validation(self, value: str) -> None:
@@ -242,7 +244,7 @@ class TestConfigValidationProperties:
             return len(v.strip()) > 0
 
         has_content = len(value.strip()) > 0
-        assert validate_non_empty(value) == has_content
+        assert validate_non_empty(value) == has_content, "Value must be initialized"
 
 
 # ============================================================================
@@ -262,9 +264,9 @@ class TestDefaultValueProperties:
         """Get with default returns default for missing keys."""
         result = config.get(key, default)
         if key in config:
-            assert result == config[key]
+            assert result == config[key], "Result must not be empty"
         else:
-            assert result == default
+            assert result == default, "Result must not be empty"
 
     @given(
         st.dictionaries(st.text(min_size=1, max_size=20), st.integers(), min_size=1, max_size=10)
@@ -273,7 +275,7 @@ class TestDefaultValueProperties:
         """Get returns value for existing keys."""
         key = next(iter(config.keys()))
         result = config.get(key, -999999)
-        assert result == config[key]
+        assert result == config[key], "Result must not be empty"
 
 
 # ============================================================================
@@ -296,7 +298,7 @@ class TestPathResolutionProperties:
         separator = "."
         joined = separator.join(parts)
         split_parts = joined.split(separator)
-        assert split_parts == parts
+        assert split_parts == parts, "split_parts is not valid"
 
     @given(st.text(min_size=1, max_size=100, alphabet="abcdefghijklmnopqrstuvwxyz."))
     def test_path_normalization_consistent(self, path: str) -> None:
@@ -311,7 +313,7 @@ class TestPathResolutionProperties:
         normalized = normalize_path(path)
         double_normalized = normalize_path(normalized)
         # Normalization should be idempotent
-        assert normalized == double_normalized
+        assert normalized == double_normalized, "normalized is not valid"
 
 
 # ============================================================================
@@ -326,14 +328,14 @@ class TestTypeCoercionProperties:
     def test_int_to_float_coercion(self, value: int) -> None:
         """Integer to float coercion preserves value within float64 precision."""
         coerced = float(value)
-        assert coerced == value
+        assert coerced == value, "Value must be initialized"
 
     @given(st.booleans())
     def test_bool_to_int_coercion(self, value: bool) -> None:
         """Boolean to int coercion is 0 or 1."""
         coerced = int(value)
         assert coerced in (0, 1)
-        assert (coerced == 1) == value
+        assert (coerced == 1) == value, "Value must be initialized"
 
     @given(st.integers())
     def test_any_to_string_coercion(self, value: int) -> None:
@@ -347,4 +349,4 @@ class TestTypeCoercionProperties:
     def test_primitive_string_coercion_reversible(self, value: Any) -> None:
         """Primitive types can be converted to string and back (approximately)."""
         string_form = str(value)
-        assert len(string_form) > 0
+        assert len(string_form) > 0, "String_form must not be empty"

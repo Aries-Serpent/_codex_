@@ -26,9 +26,9 @@ class TestArchivalBundlingDetector:
         result = detect({"files": []})
 
         # Required fields
-        assert "id" in result
+        assert "id" in result, "Result must not be empty"
         assert isinstance(result["id"], str)
-        assert result["id"] == "archival-bundling"
+        assert result["id"] == "archival-bundling", "Result must not be empty"
 
 
 class TestArchivalBundleCreation:
@@ -57,8 +57,8 @@ class TestArchivalBundleCreation:
         with open(manifest_file, "r") as f:
             loaded = json.load(f)
 
-        assert loaded["version"] == "1.0"
-        assert len(loaded["files"]) == 2
+        assert loaded["version"] == "1.0", "Condition must be true"
+        assert len(loaded["files"]) == 2, "Collection must not be empty"
 
     def test_bundle_file_checksums(self, tmp_path):
         """Test that bundle files have checksums"""
@@ -69,8 +69,8 @@ class TestArchivalBundleCreation:
         sha256_hash = hashlib.sha256(test_file.read_bytes()).hexdigest()
 
         # Verify checksum format
-        assert len(sha256_hash) == 64  # SHA-256 is 64 hex chars
-        assert all(c in "0123456789abcdef" for c in sha256_hash)
+        assert len(sha256_hash) == 64, "Sha256_hash must not be empty"
+        assert all(c in "0123456789abcdef" for c in sha256_hash), "Condition must be true"
 
     def test_bundle_metadata(self):
         """Test bundle metadata structure"""
@@ -84,11 +84,11 @@ class TestArchivalBundleCreation:
         }
 
         # Validate required fields
-        assert "version" in metadata
-        assert "created_at" in metadata
-        assert "file_count" in metadata
+        assert "version" in metadata, "Data must not be empty"
+        assert "created_at" in metadata, "Data must not be empty"
+        assert "file_count" in metadata, "Data must not be empty"
         assert isinstance(metadata["file_count"], int)
-        assert metadata["file_count"] >= 0
+        assert metadata["file_count"] >= 0, "Value must be greater than zero"
 
 
 class TestArchivalBundleExtraction:
@@ -111,8 +111,8 @@ class TestArchivalBundleExtraction:
         with open(manifest_file, "r") as f:
             extracted = json.load(f)
 
-        assert extracted["version"] == "1.0"
-        assert len(extracted["files"]) == 1
+        assert extracted["version"] == "1.0", "Condition must be true"
+        assert len(extracted["files"]) == 1, "Collection must not be empty"
 
     def test_verify_extracted_checksums(self, tmp_path):
         """Test verifying checksums after extraction"""
@@ -127,7 +127,7 @@ class TestArchivalBundleExtraction:
         extracted_content = test_file.read_bytes()
         extracted_checksum = hashlib.sha256(extracted_content).hexdigest()
 
-        assert original_checksum == extracted_checksum
+        assert original_checksum == extracted_checksum, "original_checksum is not valid"
 
 
 class TestArchivalManifestValidation:
@@ -138,7 +138,7 @@ class TestArchivalManifestValidation:
         manifest = {"version": "1.0"}
 
         # Version should be present and valid
-        assert "version" in manifest
+        assert "version" in manifest, "Condition must be true"
         assert isinstance(manifest["version"], str)
         assert manifest["version"] in ["1.0", "1.1", "2.0"]
 
@@ -153,9 +153,9 @@ class TestArchivalManifestValidation:
 
         # Each file should have path and checksum
         for file_entry in manifest["files"]:
-            assert "path" in file_entry
-            assert "sha256" in file_entry
-            assert len(file_entry["sha256"]) == 64
+            assert "path" in file_entry, "Condition must be true"
+            assert "sha256" in file_entry, "Condition must be true"
+            assert len(file_entry["sha256"]) == 64, "Collection must not be empty"
 
     def test_validate_manifest_integrity(self, tmp_path):
         """Test manifest integrity validation"""
@@ -168,7 +168,7 @@ class TestArchivalManifestValidation:
         # Calculate manifest checksum
         manifest_checksum = hashlib.sha256(manifest_json.encode()).hexdigest()
 
-        assert len(manifest_checksum) == 64
+        assert len(manifest_checksum) == 64, "Manifest_checksum must not be empty"
 
 
 class TestArchivalCompliance:
@@ -177,7 +177,7 @@ class TestArchivalCompliance:
     def test_archival_compliance_checker_exists(self):
         """Test that archival compliance checker exists"""
         checker_path = Path("scripts/archival/check_archival_compliance.py")
-        assert checker_path.exists() or True  # May not exist in all environments
+        assert checker_path.exists() or True, "Condition must be true"
 
     def test_compliance_requirements(self):
         """Test archival compliance requirements"""
@@ -188,8 +188,8 @@ class TestArchivalCompliance:
             "compression_allowed": True,
         }
 
-        assert requirements["checksum_algorithm"] == "sha256"
-        assert requirements["manifest_required"] is True
+        assert requirements["checksum_algorithm"] == "sha256", "Condition must be true"
+        assert requirements["manifest_required"] is True, "Condition must be true"
 
     def test_compliance_validation(self):
         """Test compliance validation logic"""
@@ -208,7 +208,7 @@ class TestArchivalCompliance:
             ]
         )
 
-        assert is_compliant is True
+        assert is_compliant is True, "is_compliant is not valid"
 
 
 class TestArchivalProcesses:
@@ -224,9 +224,9 @@ class TestArchivalProcesses:
             "verify_bundle",
         ]
 
-        assert "create_manifest" in steps
-        assert "calculate_checksums" in steps
-        assert "verify_bundle" in steps
+        assert "create_manifest" in steps, "Condition must be true"
+        assert "calculate_checksums" in steps, "Condition must be true"
+        assert "verify_bundle" in steps, "Condition must be true"
 
     def test_archival_metadata_capture(self):
         """Test that metadata is captured during archival"""
@@ -238,9 +238,9 @@ class TestArchivalProcesses:
             "retention": "90_days",
         }
 
-        assert "timestamp" in metadata
-        assert "source" in metadata
-        assert "purpose" in metadata
+        assert "timestamp" in metadata, "Data must not be empty"
+        assert "source" in metadata, "Data must not be empty"
+        assert "purpose" in metadata, "Data must not be empty"
 
 
 if __name__ == "__main__":

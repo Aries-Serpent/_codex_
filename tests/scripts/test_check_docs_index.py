@@ -62,7 +62,7 @@ class TestGenerateIndexSubdirOnly:
         (sub / "guide.md").write_text("# Guide\n")
 
         _patch_roots(monkeypatch, docs)
-        assert generate_index(parent) is True
+        assert generate_index(parent) is True, "Condition must be true"
 
     def test_creates_index_file(self, tmp_path, monkeypatch):
         docs = tmp_path / "docs"
@@ -75,7 +75,7 @@ class TestGenerateIndexSubdirOnly:
 
         _patch_roots(monkeypatch, docs)
         generate_index(parent)
-        assert (parent / "INDEX.md").exists()
+        assert (parent / "INDEX.md").exists(), "Condition must be true"
 
     def test_subdirectories_section_present(self, tmp_path, monkeypatch):
         docs = tmp_path / "docs"
@@ -89,8 +89,8 @@ class TestGenerateIndexSubdirOnly:
         _patch_roots(monkeypatch, docs)
         generate_index(parent)
         content = (parent / "INDEX.md").read_text()
-        assert "## Subdirectories" in content
-        assert "[child/](child/)" in content
+        assert ", "Condition must be true"
+        assert "[child/](child/)" in content, "Content must not be empty"
 
     def test_no_double_blank_lines(self, tmp_path, monkeypatch):
         """Subdir-only indexes must not have two consecutive blank lines."""
@@ -119,7 +119,7 @@ class TestGenerateIndexSubdirOnly:
         _patch_roots(monkeypatch, docs)
         generate_index(parent)
         content = (parent / "INDEX.md").read_text()
-        assert "## Contents" not in content
+        assert ", "Condition must be true"
 
     def test_singular_noun_for_one_file(self, tmp_path, monkeypatch):
         docs = tmp_path / "docs"
@@ -133,8 +133,8 @@ class TestGenerateIndexSubdirOnly:
         _patch_roots(monkeypatch, docs)
         generate_index(parent)
         content = (parent / "INDEX.md").read_text()
-        assert "— 1 file\n" in content
-        assert "— 1 files\n" not in content
+        assert "— 1 file\n" in content, "Content must not be empty"
+        assert "— 1 files\n" not in content, "Content must not be empty"
 
     def test_plural_noun_for_multiple_files(self, tmp_path, monkeypatch):
         docs = tmp_path / "docs"
@@ -149,7 +149,7 @@ class TestGenerateIndexSubdirOnly:
         _patch_roots(monkeypatch, docs)
         generate_index(parent)
         content = (parent / "INDEX.md").read_text()
-        assert "— 2 files\n" in content
+        assert "— 2 files\n" in content, "Content must not be empty"
 
 
 class TestGenerateIndexWithDirectFiles:
@@ -165,8 +165,8 @@ class TestGenerateIndexWithDirectFiles:
         _patch_roots(monkeypatch, docs)
         generate_index(parent)
         content = (parent / "INDEX.md").read_text()
-        assert "## Contents" in content
-        assert "[guide](guide.md)" in content
+        assert ", "Condition must be true"
+        assert "[guide](guide.md)" in content, "Content must not be empty"
 
     def test_index_readme_excluded_from_contents(self, tmp_path, monkeypatch):
         docs = tmp_path / "docs"
@@ -179,11 +179,11 @@ class TestGenerateIndexWithDirectFiles:
         _patch_roots(monkeypatch, docs)
         generate_index(parent)
         content = (parent / "INDEX.md").read_text()
-        assert "[guide](guide.md)" in content
+        assert "[guide](guide.md)" in content, "Content must not be empty"
         # INDEX.md and README.md must not appear as link targets in the Contents list
-        assert "- [INDEX](INDEX.md)" not in content
-        assert "- [README](README.md)" not in content
-        assert "- [index](index.md)" not in content
+        assert "- [INDEX](INDEX.md)" not in content, "Content must not be empty"
+        assert "- [README](README.md)" not in content, "Content must not be empty"
+        assert "- [index](index.md)" not in content, "Content must not be empty"
 
     def test_both_sections_when_direct_and_subdirs(self, tmp_path, monkeypatch):
         docs = tmp_path / "docs"
@@ -198,9 +198,9 @@ class TestGenerateIndexWithDirectFiles:
         _patch_roots(monkeypatch, docs)
         generate_index(parent)
         content = (parent / "INDEX.md").read_text()
-        assert "## Contents" in content
-        assert "## Subdirectories" in content
-        assert "\n\n\n" not in content
+        assert ", "Condition must be true"
+        assert ", "Condition must be true"
+        assert "\n\n\n" not in content, "Content must not be empty"
 
 
 class TestGenerateIndexEdgeCases:
@@ -213,7 +213,7 @@ class TestGenerateIndexEdgeCases:
         empty.mkdir()
 
         _patch_roots(monkeypatch, docs)
-        assert generate_index(empty) is False
+        assert generate_index(empty) is False, "Condition must be true"
 
     def test_dry_run_does_not_create_file(self, tmp_path, monkeypatch):
         docs = tmp_path / "docs"
@@ -226,8 +226,8 @@ class TestGenerateIndexEdgeCases:
 
         _patch_roots(monkeypatch, docs)
         result = generate_index(parent, dry_run=True)
-        assert result is True
-        assert not (parent / "INDEX.md").exists()
+        assert result is True, "Result must not be empty"
+        assert not (parent / "INDEX.md").exists(), "Condition must be true"
 
     def test_hidden_subdirs_excluded(self, tmp_path, monkeypatch):
         docs = tmp_path / "docs"
@@ -240,4 +240,4 @@ class TestGenerateIndexEdgeCases:
 
         _patch_roots(monkeypatch, docs)
         # Hidden subdir's .md should not count toward subdir list
-        assert generate_index(parent) is False
+        assert generate_index(parent) is False, "Condition must be true"

@@ -84,14 +84,14 @@ def test_run_logger_schema(tmp_path: Path) -> None:
 
     params_records = _load_records(ctx.params_path)
     metrics_records = _load_records(ctx.metrics_path)
-    assert params_records and metrics_records
+    assert params_records and metrics_records, "params_records is not valid"
 
     _validate(params_records[0], PARAMS_SCHEMA)
     _validate(metrics_records[0], METRICS_SCHEMA)
 
     derived = params_records[0]["derived"]
-    assert derived["effective_batch_size"] == 8
-    assert derived["seed"] == 123
+    assert derived["effective_batch_size"] == 8, "Condition must be true"
+    assert derived["seed"] == 123, "Condition must be true"
     assert params_records[0]["cli"]["argv"] == ["--epochs", "1"]
 
 
@@ -115,5 +115,5 @@ def test_run_logger_custom_paths(tmp_path: Path) -> None:
     ctx.log_metric(step=0, split="train", metric="acc", value=0.9)
     ctx.finalize()
 
-    assert Path(cfg.tracking.ndjson_path).exists()
-    assert Path(cfg.tracking.params_path).exists()
+    assert Path(cfg.tracking.ndjson_path).exists(), "Condition must be true"
+    assert Path(cfg.tracking.params_path).exists(), "Condition must be true"

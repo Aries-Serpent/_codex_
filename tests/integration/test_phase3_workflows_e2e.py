@@ -62,10 +62,10 @@ class TestCompleteTrainingWorkflow:
         eval_results = {"test_loss": 0.25, "test_accuracy": 0.89}
 
         # Verify complete workflow
-        assert data_file.exists()
-        assert checkpoint_path.exists()
-        assert len(training_history) == config["epochs"]
-        assert eval_results["test_accuracy"] > 0.8
+        assert data_file.exists(), "Data must not be empty"
+        assert checkpoint_path.exists(), "Condition must be true"
+        assert len(training_history) == config["epochs"], "Training_history must not be empty"
+        assert eval_results["test_accuracy"] > 0.8, "Value must be greater than zero"
 
     def test_training_with_validation_and_checkpointing(self, tmp_path):
         """Test training with validation and periodic checkpointing."""
@@ -92,7 +92,7 @@ class TestCompleteTrainingWorkflow:
 
         # Verify checkpoints
         checkpoints = list(checkpoint_dir.glob("*.json"))
-        assert len(checkpoints) == 2  # Epochs 1 and 3
+        assert len(checkpoints) == 2, "Checkpoints must not be empty"
 
     def test_training_resume_from_checkpoint(self, tmp_path):
         """Test resuming training from checkpoint."""
@@ -121,8 +121,8 @@ class TestCompleteTrainingWorkflow:
             resumed_history.append({"epoch": epoch, "loss": 0.5 / (epoch + 1)})
 
         # Verify resume
-        assert start_epoch == 4
-        assert len(resumed_history) == 1  # Only epoch 4
+        assert start_epoch == 4, "start_epoch is not valid"
+        assert len(resumed_history) == 1, "Resumed_history must not be empty"
 
     def test_training_with_early_stopping(self):
         """Test training with early stopping."""
@@ -146,8 +146,8 @@ class TestCompleteTrainingWorkflow:
                 break
 
         # Should stop early
-        assert stopped_epoch is not None
-        assert stopped_epoch < len(val_losses) - 1
+        assert stopped_epoch is not None, "stopped_epoch must be initialized"
+        assert stopped_epoch < len(val_losses) - 1, "Val_losses must not be empty"
 
     def test_training_with_learning_rate_scheduling(self):
         """Test training with learning rate scheduling."""
@@ -166,9 +166,9 @@ class TestCompleteTrainingWorkflow:
             lr_schedule.append({"epoch": epoch, "lr": lr})
 
         # Verify schedule
-        assert lr_schedule[0]["lr"] == 0.001
-        assert lr_schedule[4]["lr"] == 0.0001
-        assert lr_schedule[8]["lr"] == 0.00001
+        assert lr_schedule[0]["lr"] == 0.001, "Condition must be true"
+        assert lr_schedule[4]["lr"] == 0.0001, "Condition must be true"
+        assert lr_schedule[8]["lr"] == 0.00001, "Condition must be true"
 
     def test_training_with_gradient_accumulation(self):
         """Test training with gradient accumulation."""
@@ -189,8 +189,8 @@ class TestCompleteTrainingWorkflow:
                 accumulated_gradients = []
 
         # Verify effective batch size
-        assert effective_batch_size == 32
-        assert len(accumulated_gradients) == 0  # All consumed
+        assert effective_batch_size == 32, "effective_batch_size is not valid"
+        assert len(accumulated_gradients) == 0, "Accumulated_gradients must not be empty"
 
     def test_training_with_mixed_precision(self):
         """Test training with mixed precision."""
@@ -209,8 +209,8 @@ class TestCompleteTrainingWorkflow:
         gradients = {"grad": scaled_loss / loss_scale}
 
         # Verify
-        assert model_dtype == "float16"
-        assert gradients["grad"] == 0.5
+        assert model_dtype == "float16", "model_dtype is not valid"
+        assert gradients["grad"] == 0.5, "Condition must be true"
 
     def test_training_saves_best_model(self, tmp_path):
         """Test training saves best model based on metric."""
@@ -230,9 +230,9 @@ class TestCompleteTrainingWorkflow:
                 best_model_path.write_text(json.dumps({"epoch": epoch, "accuracy": val_accuracy}))
 
         # Verify best saved
-        assert best_model_path.exists()
+        assert best_model_path.exists(), "Condition must be true"
         best_model = json.loads(best_model_path.read_text())
-        assert best_model["accuracy"] == pytest.approx(0.9)
+        assert best_model["accuracy"] == pytest.approx(0.9), "Condition must be true"
 
     def test_training_with_data_augmentation(self):
         """Test training with data augmentation."""
@@ -248,8 +248,8 @@ class TestCompleteTrainingWorkflow:
             augmented_data.append({"text": item["text"].upper(), "label": item["label"]})
 
         # Verify augmentation
-        assert len(augmented_data) == len(original_data) * 2
-        assert augmented_data[1]["text"] == "HELLO"
+        assert len(augmented_data) == len(original_data) * 2, "Augmented_data must not be empty"
+        assert augmented_data[1]["text"] == "HELLO", "Data must not be empty"
 
     def test_distributed_training_initialization(self):
         """Test distributed training initialization."""
@@ -265,9 +265,9 @@ class TestCompleteTrainingWorkflow:
         }
 
         # Verify initialization
-        assert distributed_config["world_size"] == 4
-        assert distributed_config["rank"] == 0
-        assert distributed_config["backend"] == "nccl"
+        assert distributed_config["world_size"] == 4, "Condition must be true"
+        assert distributed_config["rank"] == 0, "Condition must be true"
+        assert distributed_config["backend"] == "nccl", "Condition must be true"
 
 
 # =============================================================================
@@ -310,9 +310,9 @@ class TestCompleteRAGWorkflow:
         }
 
         # Verify complete pipeline
-        assert index_path.exists()
-        assert len(retrieved) == 2
-        assert len(response["sources"]) == 2
+        assert index_path.exists(), "Condition must be true"
+        assert len(retrieved) == 2, "Retrieved must not be empty"
+        assert len(response["sources"]) == 2, "Collection must not be empty"
 
     def test_rag_with_document_chunking(self):
         """Test RAG with large document chunking."""
@@ -326,8 +326,8 @@ class TestCompleteRAGWorkflow:
             chunks.append({"doc_id": f"doc1_chunk{len(chunks)}", "text": chunk})
 
         # Verify chunking
-        assert len(chunks) > 1
-        assert all(len(c["text"]) <= chunk_size for c in chunks)
+        assert len(chunks) > 1, "Chunks must not be empty"
+        assert all(len(c["text"]) <= chunk_size for c in chunks), "Collection must not be empty"
 
     def test_rag_with_metadata_filtering(self):
         """Test RAG with metadata-based filtering."""
@@ -344,8 +344,8 @@ class TestCompleteRAGWorkflow:
             doc for doc in documents if all(doc.get(k) == v for k, v in filters.items())
         ]
 
-        assert len(filtered_docs) == 2
-        assert all(d["language"] == "en" for d in filtered_docs)
+        assert len(filtered_docs) == 2, "Filtered_docs must not be empty"
+        assert all(d["language"] == "en" for d in filtered_docs), "Condition must be true"
 
     def test_rag_with_reranking(self):
         """Test RAG with result reranking."""
@@ -363,7 +363,7 @@ class TestCompleteRAGWorkflow:
         # Sort by rerank score
         reranked = sorted(initial_results, key=lambda x: x["rerank_score"], reverse=True)
 
-        assert reranked[0]["doc_id"] == "doc2"
+        assert reranked[0]["doc_id"] == "doc2", "Condition must be true"
 
     def test_rag_with_hybrid_search(self):
         """Test RAG with hybrid search (vector + keyword)."""
@@ -393,8 +393,8 @@ class TestCompleteRAGWorkflow:
                 combined[doc_id] = result["keyword_score"]
 
         # Verify hybrid
-        assert "doc2" in combined
-        assert combined["doc2"] == 0.75  # Average of 0.7 and 0.8
+        assert "doc2" in combined, "Condition must be true"
+        assert combined["doc2"] == 0.75, "Condition must be true"
 
     def test_rag_incremental_indexing(self, tmp_path):
         """Test RAG incremental indexing."""
@@ -417,8 +417,8 @@ class TestCompleteRAGWorkflow:
 
         # Verify incremental update
         updated_index = json.loads(index_path.read_text())
-        assert len(updated_index) == 3
-        assert "doc3" in updated_index
+        assert len(updated_index) == 3, "Updated_index must not be empty"
+        assert "doc3" in updated_index, "Condition must be true"
 
     def test_rag_with_query_expansion(self):
         """Test RAG with query expansion."""
@@ -435,7 +435,7 @@ class TestCompleteRAGWorkflow:
             # Mock search
             all_results.append({"query": query, "results": [f"result_{query}"]})
 
-        assert len(all_results) == 3
+        assert len(all_results) == 3, "All_results must not be empty"
 
     def test_rag_with_answer_validation(self):
         """Test RAG with answer validation."""
@@ -457,7 +457,7 @@ class TestCompleteRAGWorkflow:
         validation_score = validate_answer(generated_answer, source_context)
 
         # Should have high overlap
-        assert validation_score > 0.5
+        assert validation_score > 0.5, "validation_score must be greater than zero"
 
     def test_rag_multi_hop_reasoning(self):
         """Test RAG with multi-hop reasoning."""
@@ -479,8 +479,8 @@ class TestCompleteRAGWorkflow:
             ],
         }
 
-        assert len(final_answer["reasoning"]) == 2
-        assert final_answer["answer"] == "1847"
+        assert len(final_answer["reasoning"]) == 2, "Collection must not be empty"
+        assert final_answer["answer"] == "1847", "Condition must be true"
 
     def test_rag_with_confidence_scores(self):
         """Test RAG with confidence scoring."""
@@ -494,7 +494,7 @@ class TestCompleteRAGWorkflow:
                 result["retrieval_score"] * 0.6 + result["generation_score"] * 0.4
             )
 
-        assert results[0]["confidence"] == pytest.approx(0.88)
+        assert results[0]["confidence"] == pytest.approx(0.88), "Result must not be empty"
 
 
 # =============================================================================
@@ -539,8 +539,8 @@ class TestCompleteAgentWorkflow:
         }
 
         # Verify workflow
-        assert len(execution_log) == 3
-        assert result["status"] == "success"
+        assert len(execution_log) == 3, "Execution_log must not be empty"
+        assert result["status"] == "success", "Result must not be empty"
 
     def test_agent_coordination_workflow(self):
         """Test multi-agent coordination workflow."""
@@ -570,8 +570,8 @@ class TestCompleteAgentWorkflow:
         agents["reviewer"]["status"] = "completed"
 
         # Verify coordination
-        assert len(task_flow) == 3
-        assert all(a["status"] == "completed" for a in agents.values())
+        assert len(task_flow) == 3, "Task_flow must not be empty"
+        assert all(a["status"] == "completed" for a in agents.values()), "Value must be initialized"
 
     def test_agent_with_tool_usage(self):
         """Test agent workflow with tool usage."""
@@ -584,8 +584,8 @@ class TestCompleteAgentWorkflow:
         )
 
         # Verify tool usage
-        assert len(tool_sequence) == 2
-        assert tool_sequence[0]["tool"] == "calculator"
+        assert len(tool_sequence) == 2, "Tool_sequence must not be empty"
+        assert tool_sequence[0]["tool"] == "calculator", "Condition must be true"
 
     def test_agent_learning_from_feedback(self):
         """Test agent learning from feedback."""
@@ -606,7 +606,7 @@ class TestCompleteAgentWorkflow:
         successful = sum(1 for t in agent_memory["experiences"] if t["success"])
         agent_memory["success_rate"] = successful / len(agent_memory["experiences"])
 
-        assert agent_memory["success_rate"] == 0.75
+        assert agent_memory["success_rate"] == 0.75, "agent_mem is not valid"
 
     def test_agent_error_recovery(self):
         """Test agent error recovery workflow."""
@@ -635,8 +635,8 @@ class TestCompleteAgentWorkflow:
             execution_attempts.append(attempt)
 
         # Verify recovery
-        assert all(a["success"] for a in execution_attempts)
-        assert execution_attempts[1]["tries"] == 2  # Step 2 needed retry
+        assert all(a["success"] for a in execution_attempts), "Condition must be true"
+        assert execution_attempts[1]["tries"] == 2, "Condition must be true"
 
     def test_agent_state_persistence(self, tmp_path):
         """Test agent state persistence across sessions."""
@@ -660,8 +660,8 @@ class TestCompleteAgentWorkflow:
         loaded_state["completed_tasks"].append("task4")
 
         # Verify persistence
-        assert loaded_state["task_count"] == 7
-        assert len(loaded_state["completed_tasks"]) == 4
+        assert loaded_state["task_count"] == 7, "Count must be greater than zero"
+        assert len(loaded_state["completed_tasks"]) == 4, "Collection must not be empty"
 
     def test_agent_parallel_task_execution(self):
         """Test agent executing multiple tasks in parallel."""
@@ -697,8 +697,8 @@ class TestCompleteAgentWorkflow:
         task_a_context["current_step"] += 1
 
         # Verify context preserved
-        assert contexts["task_a"]["current_step"] == 4
-        assert contexts["task_b"]["current_step"] == 1
+        assert contexts["task_a"]["current_step"] == 4, "Condition must be true"
+        assert contexts["task_b"]["current_step"] == 1, "Condition must be true"
 
     def test_agent_delegation_workflow(self):
         """Test agent delegation to sub-agents."""
@@ -717,8 +717,8 @@ class TestCompleteAgentWorkflow:
             sub_agent["status"] = "completed"
 
         # Verify delegation
-        assert len(main_agent["sub_agents"]) == 3
-        assert all(sa["status"] == "completed" for sa in main_agent["sub_agents"])
+        assert len(main_agent["sub_agents"]) == 3, "Collection must not be empty"
+        assert all(sa["status"] == "completed" for sa in main_agent["sub_agents"]), "Condition must be true"
 
     def test_agent_monitoring_and_telemetry(self):
         """Test agent monitoring and telemetry collection."""
@@ -749,8 +749,8 @@ class TestCompleteAgentWorkflow:
             telemetry["execution_times"]
         )
 
-        assert telemetry["tasks_completed"] == 3
-        assert telemetry["avg_execution_time"] == pytest.approx(1.45)
+        assert telemetry["tasks_completed"] == 3, "Condition must be true"
+        assert telemetry["avg_execution_time"] == pytest.approx(1.45), "Condition must be true"
 
 
 # =============================================================================
@@ -777,8 +777,8 @@ class TestCompleteCLIWorkflow:
                 args[key] = value
 
         # Step 2: Validate
-        assert command == "train"
-        assert "model" in args
+        assert command == "train", "command is not valid"
+        assert "model" in args, "Condition must be true"
 
         # Step 3: Execute
         execution_result = {"command": command, "status": "success", "output_dir": args["output"]}
@@ -787,7 +787,7 @@ class TestCompleteCLIWorkflow:
         output_file = Path(args["output"]) / "results.json"
         output_file.write_text(json.dumps(execution_result))
 
-        assert output_file.exists()
+        assert output_file.exists(), "Condition must be true"
 
     def test_cli_config_file_loading(self, tmp_path):
         """Test CLI loading configuration from file."""
@@ -802,8 +802,8 @@ class TestCompleteCLIWorkflow:
         loaded_config = json.loads(config_file.read_text())
 
         # Verify
-        assert loaded_config["model"] == "test-model"
-        assert loaded_config["training"]["epochs"] == 10
+        assert loaded_config["model"] == "test-model", "Condition must be true"
+        assert loaded_config["training"]["epochs"] == 10, "Condition must be true"
 
     def test_cli_interactive_mode(self):
         """Test CLI interactive mode."""
@@ -818,8 +818,8 @@ class TestCompleteCLIWorkflow:
             else:
                 session["history"].append(cmd)
 
-        assert not session["active"]
-        assert len(session["history"]) == 3
+        assert not session["active"], "Condition must be true"
+        assert len(session["history"]) == 3, "Collection must not be empty"
 
     def test_cli_pipeline_chaining(self, tmp_path):
         """Test CLI pipeline command chaining."""
@@ -846,8 +846,8 @@ class TestCompleteCLIWorkflow:
                 output_path.write_text(json.dumps({"accuracy": 0.85}))
 
         # Verify pipeline
-        assert pipeline_state["model"] == "trained_model"
-        assert Path(pipeline[-1]["output"]).exists()
+        assert pipeline_state["model"] == "trained_model", "Condition must be true"
+        assert Path(pipeline[-1]["output"]).exists(), "Condition must be true"
 
     def test_cli_progress_reporting(self):
         """Test CLI progress reporting."""
@@ -863,8 +863,8 @@ class TestCompleteCLIWorkflow:
             progress_bars.append(f"[{bar}] {percentage:.0f}%")
 
         # Verify progress
-        assert len(progress_bars) == 11
-        assert "100%" in progress_bars[-1]
+        assert len(progress_bars) == 11, "Progress_bars must not be empty"
+        assert "100%" in progress_bars[-1], "Condition must be true"
 
     def test_cli_output_formatting(self):
         """Test CLI output formatting."""
@@ -880,8 +880,8 @@ class TestCompleteCLIWorkflow:
 
         table = "\n".join(table_rows)
 
-        assert "accuracy" in table
-        assert "0.856" in table
+        assert "accuracy" in table, "Condition must be true"
+        assert "0.856" in table, "Condition must be true"
 
     def test_cli_error_handling_and_messages(self):
         """Test CLI error handling and messages."""
@@ -898,7 +898,7 @@ class TestCompleteCLIWorkflow:
         if result["status"] == "error":
             error_output = f"Error: {result['message']}"
 
-        assert "Error:" in error_output
+        assert "Error:" in error_output, "Error should be raised or set"
 
     def test_cli_help_documentation(self):
         """Test CLI help documentation."""
@@ -921,8 +921,8 @@ class TestCompleteCLIWorkflow:
 
         help_output = "\n".join(help_text)
 
-        assert "train" in help_output
-        assert "--model" in help_output
+        assert "train" in help_output, "Condition must be true"
+        assert "--model" in help_output, "Condition must be true"
 
     def test_cli_environment_variable_support(self):
         """Test CLI environment variable support."""
@@ -936,9 +936,9 @@ class TestCompleteCLIWorkflow:
             "debug": env_vars.get("DEBUG", "false") == "true",
         }
 
-        assert config["model_path"] == "/models/gpt2"
-        assert config["batch_size"] == 32
-        assert config["debug"] is True
+        assert config["model_path"] == "/models/gpt2", "Condition must be true"
+        assert config["batch_size"] == 32, "Condition must be true"
+        assert config["debug"] is True, "Condition must be true"
 
     def test_cli_logging_configuration(self, tmp_path):
         """Test CLI logging configuration."""
@@ -958,5 +958,5 @@ class TestCompleteCLIWorkflow:
         log_file = Path(log_config["file"])
         log_file.write_text("\n".join(log_entries))
 
-        assert log_file.exists()
-        assert "CLI started" in log_file.read_text()
+        assert log_file.exists(), "Condition must be true"
+        assert "CLI started" in log_file.read_text(), "Condition must be true"

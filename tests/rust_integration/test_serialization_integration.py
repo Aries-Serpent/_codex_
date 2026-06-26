@@ -13,7 +13,7 @@ def test_agent_state_creation():
         from codex_engine import AgentState
 
         state = AgentState("agent_1", ["memory1", "memory2"])
-        assert state.id == "agent_1"
+        assert state.id == "agent_1", "id is not valid"
         assert state.memory == ["memory1", "memory2"]
     except ImportError:
         pytest.skip("codex_engine not built yet")
@@ -27,12 +27,12 @@ def test_agent_state_metrics():
         state = AgentState("agent_1", [])
 
         state.set_metric("accuracy", 0.95)
-        assert state.get_metric("accuracy") == 0.95
+        assert state.get_metric("accuracy") == 0.95, "Condition must be true"
 
         state.set_metric("loss", 0.05)
         keys = state.get_metric_keys()
-        assert "accuracy" in keys
-        assert "loss" in keys
+        assert "accuracy" in keys, "Condition must be true"
+        assert "loss" in keys, "Condition must be true"
     except ImportError:
         pytest.skip("codex_engine not built yet")
 
@@ -49,9 +49,9 @@ def test_serialization_round_trip():
         assert isinstance(serialized, bytes)
 
         deserialized = deserialize_state(serialized)
-        assert deserialized.id == "agent_1"
+        assert deserialized.id == "agent_1", "id is not valid"
         assert deserialized.memory == ["item1", "item2"]
-        assert deserialized.get_metric("score") == 0.98
+        assert deserialized.get_metric("score") == 0.98, "Condition must be true"
     except ImportError:
         pytest.skip("codex_engine not built yet")
 
@@ -129,7 +129,7 @@ def test_large_state_serialization():
         serialized = serialize_state(state)
         deserialized = deserialize_state(serialized)
 
-        assert len(deserialized.memory) == 10000
+        assert len(deserialized.memory) == 10000, "Collection must not be empty"
     except ImportError:
         pytest.skip("codex_engine not built yet")
 
@@ -144,8 +144,8 @@ def test_empty_state_serialization():
         serialized = serialize_state(state)
         deserialized = deserialize_state(serialized)
 
-        assert deserialized.id == "agent_1"
-        assert len(deserialized.memory) == 0
+        assert deserialized.id == "agent_1", "id is not valid"
+        assert len(deserialized.memory) == 0, "Collection must not be empty"
     except ImportError:
         pytest.skip("codex_engine not built yet")
 

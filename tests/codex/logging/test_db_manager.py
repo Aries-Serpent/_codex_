@@ -28,12 +28,12 @@ class TestDBManagerImports:
     def test_import_db_manager_class(self) -> None:
         from codex.logging.db_manager import DBManager
 
-        assert DBManager is not None
+        assert DBManager is not None, "DBManager must be initialized"
 
     def test_import_db_manager_singleton(self) -> None:
         from codex.logging.db_manager import db_manager
 
-        assert db_manager is not None
+        assert db_manager is not None, "db_manager must be initialized"
 
 
 class TestDBManagerInitialization:
@@ -43,7 +43,7 @@ class TestDBManagerInitialization:
         from codex.logging.db_manager import DBManager
 
         dm = DBManager()
-        assert dm.db_path is not None
+        assert dm.db_path is not None, "db_path must be initialized"
 
     def test_init_with_custom_path(self) -> None:
         from codex.logging.db_manager import DBManager
@@ -51,7 +51,7 @@ class TestDBManagerInitialization:
         with tempfile.TemporaryDirectory() as tmpdir:
             db_path = Path(tmpdir) / "test.db"
             dm = DBManager(db_path=db_path)
-            assert dm.db_path == db_path
+            assert dm.db_path == db_path, "db_path is not valid"
 
     def test_init_creates_parent_directory(self) -> None:
         from codex.logging.db_manager import DBManager
@@ -60,7 +60,7 @@ class TestDBManagerInitialization:
             db_path = Path(tmpdir) / "subdir" / "test.db"
             dm = DBManager(db_path=db_path)
             dm.init_schema()
-            assert db_path.parent.exists()
+            assert db_path.parent.exists(), "Condition must be true"
 
 
 class TestDBManagerSchema:
@@ -73,7 +73,7 @@ class TestDBManagerSchema:
             db_path = Path(tmpdir) / "test.db"
             dm = DBManager(db_path=db_path)
             dm.init_schema()
-            assert db_path.exists()
+            assert db_path.exists(), "Condition must be true"
 
     def test_init_schema_creates_session_events_table(self) -> None:
         from codex.logging.db_manager import DBManager
@@ -90,7 +90,7 @@ class TestDBManagerSchema:
             tables = cursor.fetchall()
             conn.close()
 
-            assert len(tables) == 1
+            assert len(tables) == 1, "Tables must not be empty"
 
     def test_init_schema_idempotent(self) -> None:
         from codex.logging.db_manager import DBManager
@@ -100,7 +100,7 @@ class TestDBManagerSchema:
             dm = DBManager(db_path=db_path)
             dm.init_schema()
             dm.init_schema()  # Second call should not raise
-            assert db_path.exists()
+            assert db_path.exists(), "Condition must be true"
 
 
 class TestDBManagerConnection:
@@ -115,7 +115,7 @@ class TestDBManagerConnection:
             dm.init_schema()
 
             conn = dm.get_connection()
-            assert conn is not None
+            assert conn is not None, "conn must be initialized"
             # Connection may be a proxy when pooling is enabled
             assert hasattr(conn, "execute")
             dm.close_connection(conn)
@@ -129,7 +129,7 @@ class TestDBManagerConnection:
             dm.init_schema()
 
             with dm.connection() as conn:
-                assert conn is not None
+                assert conn is not None, "conn must be initialized"
                 # Connection may be a proxy when pooling is enabled
                 assert hasattr(conn, "execute")
 
@@ -191,8 +191,8 @@ class TestDBManagerThreadSafety:
             for t in threads:
                 t.join()
 
-            assert len(errors) == 0
-            assert db_path.exists()
+            assert len(errors) == 0, "Errors must not be empty"
+            assert db_path.exists(), "Condition must be true"
 
     def test_concurrent_connections(self) -> None:
         from codex.logging.db_manager import DBManager
@@ -217,7 +217,7 @@ class TestDBManagerThreadSafety:
             for t in threads:
                 t.join()
 
-            assert len(errors) == 0
+            assert len(errors) == 0, "Errors must not be empty"
 
 
 class TestDBManagerSingleton:
@@ -226,7 +226,7 @@ class TestDBManagerSingleton:
     def test_singleton_exists(self) -> None:
         from codex.logging.db_manager import db_manager
 
-        assert db_manager is not None
+        assert db_manager is not None, "db_manager must be initialized"
 
     def test_singleton_is_db_manager(self) -> None:
         from codex.logging.db_manager import DBManager, db_manager

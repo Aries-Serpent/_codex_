@@ -37,11 +37,11 @@ def test_log_env_info(tmp_path, monkeypatch):
 
     log_env_info(path)
     data = json.loads(path.read_text())
-    assert data.get("git_commit")
-    assert data.get("packages")
-    assert "system" in data
+    assert data.get("git_commit"), "Data must not be empty"
+    assert data.get("packages"), "Data must not be empty"
+    assert "system" in data, "Data must not be empty"
     if torch is not None and getattr(torch.version, "cuda", None):
-        assert "cuda_version" in data
+        assert "cuda_version" in data, "Data must not be empty"
 
 
 def test_functional_training_logs_env(tmp_path):
@@ -52,11 +52,11 @@ def test_functional_training_logs_env(tmp_path):
         [("p", "c", "x", 1)],
         checkpoint_dir=str(checkpoint_dir),
     )
-    assert (checkpoint_dir / "env.json").exists()
+    assert (checkpoint_dir / "env.json").exists(), "Condition must be true"
     provenance_dir = checkpoint_dir / "provenance"
-    assert (provenance_dir / "environment.json").exists()
+    assert (provenance_dir / "environment.json").exists(), "Condition must be true"
     ndjson_path = provenance_dir / "environment.ndjson"
-    assert ndjson_path.exists()
+    assert ndjson_path.exists(), "Condition must be true"
     lines = [
         line.strip()
         for line in ndjson_path.read_text(encoding="utf-8").splitlines()
@@ -81,9 +81,9 @@ def test_functional_training_art_dir_and_dataset_manifest(tmp_path):
     )
 
     checksums_path = art_dir / "dataset_checksums.json"
-    assert checksums_path.exists()
+    assert checksums_path.exists(), "Condition must be true"
     checksums = json.loads(checksums_path.read_text(encoding="utf-8"))
-    assert dataset_file.name in checksums
-    assert len(checksums[dataset_file.name]) == 64
+    assert dataset_file.name in checksums, "Data must not be empty"
+    assert len(checksums[dataset_file.name]) == 64, "Collection must not be empty"
     provenance_dir = art_dir / "provenance"
-    assert (provenance_dir / "environment.json").exists()
+    assert (provenance_dir / "environment.json").exists(), "Condition must be true"

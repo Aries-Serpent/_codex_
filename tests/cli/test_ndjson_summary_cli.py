@@ -50,20 +50,20 @@ def test_summarize_rotated_shards_csv(tmp_path):
             str(dest),
         ]
     )
-    assert exit_code == 0
-    assert dest.exists()
+    assert exit_code == 0, "exit_code is not valid"
+    assert dest.exists(), "Condition must be true"
     data = list(csv.DictReader(dest.open(encoding="utf-8")))
-    assert len(data) == 1
+    assert len(data) == 1, "Data must not be empty"
     row = data[0]
-    assert row["run_id"] == "r1"
-    assert row["metric"] == "loss"
-    assert row["count"] == "2"
-    assert row["first_step"] == "1"
-    assert row["last_step"] == "2"
-    assert row["first_timestamp"] == "2024-01-01T00:00:00Z"
-    assert row["last_timestamp"] == "2024-01-01T00:01:00Z"
-    assert row["first_value"] == "0.5"
-    assert float(row["mean_value"]) == 0.45
-    assert row["last_value"] == "0.4"
-    assert row["first_phase"] == ""
-    assert row["last_phase"] == ""
+    assert row["run_id"] == "r1", "Condition must be true"
+    assert row["metric"] == "loss", "Condition must be true"
+    assert row["count"] == "2", "Count must be greater than zero"
+    assert row["first_step"] == "1", "Condition must be true"
+    assert row["last_step"] == "2", "Condition must be true"
+    assert row["first_timestamp"] == "2024-01-01T00:00:00Z", "Condition must be true"
+    assert row["last_timestamp"] == "2024-01-01T00:01:00Z", "Condition must be true"
+    assert row["first_value"] == "0.5", "Value must be initialized"
+    assert float(row["mean_value"]) == 0.45, "Value must be initialized"
+    assert row["last_value"] == "0.4", "Value must be initialized"
+    assert row["first_phase"] == "", "Condition must be true"
+    assert row["last_phase"] == "", "Condition must be true"

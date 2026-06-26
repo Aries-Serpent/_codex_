@@ -44,8 +44,8 @@ def test_duckdb_replace_append_fail(tmp_path: Path) -> None:
             "replace",
         ]
     )
-    assert err == ""
-    assert rc == 0 and json.loads(out)["ok"]
+    assert err == "", "err is not valid"
+    assert rc == 0 and json.loads(out)["ok"], "rc is not valid"
 
     rc, out, err = run_cli(
         [
@@ -62,8 +62,8 @@ def test_duckdb_replace_append_fail(tmp_path: Path) -> None:
             "append",
         ]
     )
-    assert err == ""
-    assert rc == 0 and json.loads(out)["ok"]
+    assert err == "", "err is not valid"
+    assert rc == 0 and json.loads(out)["ok"], "rc is not valid"
 
     rc, _out, err = run_cli(
         [
@@ -80,5 +80,5 @@ def test_duckdb_replace_append_fail(tmp_path: Path) -> None:
             "fail",
         ]
     )
-    assert rc != 0
-    assert "Error" in err or "error" in err
+    assert rc != 0, "rc is not valid"
+    assert "Error" in err or "error" in err, "Error should be raised or set"

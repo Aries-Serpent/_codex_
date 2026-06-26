@@ -24,7 +24,7 @@ def test_lite_sequence_evaluation_matches_shapes():
         ],
     )
     assert set(result) >= {"token_accuracy", "perplexity_proxy", "exact_match", "samples"}
-    assert result["samples"] == pytest.approx(2.0)
+    assert result["samples"] == pytest.approx(2.0), "Result must not be empty"
 
 
 def test_evaluate_model_dependency_error(monkeypatch):
@@ -33,4 +33,4 @@ def test_evaluate_model_dependency_error(monkeypatch):
     monkeypatch.setattr(module, "_HAS_DATASETS", False, raising=False)
     with pytest.raises(module.EvaluationDependencyError) as exc:
         module.evaluate_model(object(), object(), ["hello"])
-    assert "torch" in exc.value.missing
+    assert "torch" in exc.value.missing, "Value must be initialized"

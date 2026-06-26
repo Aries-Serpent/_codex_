@@ -25,11 +25,11 @@ class TestTFIDFProvider:
             from codex.rag.embeddings import TfidfEmbeddingProvider
 
             provider = TfidfEmbeddingProvider()
-            assert provider is not None
+            assert provider is not None, "provider must be initialized"
 
             # Verify provider has required methods
             assert hasattr(provider, "encode")
-            assert callable(provider.encode)
+            assert callable(provider.encode), "Condition must be true"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -42,11 +42,11 @@ class TestTFIDFProvider:
 
             # First call might initialize vocabulary
             result = provider.encode(["test document"])
-            assert result is not None
+            assert result is not None, "result must be initialized"
 
             # Subsequent calls should work
             result2 = provider.encode(["another document"])
-            assert result2 is not None
+            assert result2 is not None, "result2 must be initialized"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -65,12 +65,12 @@ class TestTFIDFProvider:
             emb2 = provider.encode(texts2)
 
             # Both should produce embeddings
-            assert emb1 is not None
-            assert emb2 is not None
+            assert emb1 is not None, "emb1 must be initialized"
+            assert emb2 is not None, "emb2 must be initialized"
 
             # Dimensions should be consistent or grow
-            assert emb1.shape[1] > 0
-            assert emb2.shape[1] > 0
+            assert emb1.shape[1] > 0, "Value must be greater than zero"
+            assert emb2.shape[1] > 0, "Value must be greater than zero"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -106,7 +106,7 @@ class TestTFIDFProvider:
             if hasattr(provider, "get_dimension"):
                 dim = provider.get_dimension()
                 assert isinstance(dim, int)
-                assert dim > 0
+                assert dim > 0, "dim must be greater than zero"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -122,7 +122,7 @@ class TestLocalSentenceTransformerProvider:
             # Should handle model loading or skip if not available
             try:
                 provider = LocalSentenceTransformerProvider()
-                assert provider is not None
+                assert provider is not None, "provider must be initialized"
             except (ImportError, OSError):
                 pytest.skip("SentenceTransformers not available or model download failed")
         except ImportError:
@@ -137,7 +137,7 @@ class TestLocalSentenceTransformerProvider:
 
             try:
                 provider = LocalSentenceTransformerProvider(model_name=custom_model)
-                assert provider.model_name == custom_model
+                assert provider.model_name == custom_model, "model_name is not valid"
             except (ImportError, OSError):
                 pytest.skip("Model not available")
         except ImportError:
@@ -153,7 +153,7 @@ class TestLocalSentenceTransformerProvider:
 
                 try:
                     provider = LocalSentenceTransformerProvider(cache_dir=str(cache_dir))
-                    assert provider.cache_dir == str(cache_dir)
+                    assert provider.cache_dir == str(cache_dir), "cache_dir is not valid"
                 except (ImportError, OSError):
                     pytest.skip("Model not available")
         except ImportError:
@@ -172,13 +172,13 @@ class TestLocalSentenceTransformerProvider:
 
                 # Should return dense embeddings
                 assert isinstance(embeddings, np.ndarray)
-                assert embeddings.shape[0] == 2
-                assert embeddings.shape[1] > 0  # Should have dimension
+                assert embeddings.shape[0] == 2, "Condition must be true"
+                assert embeddings.shape[1] > 0, "Value must be greater than zero"
 
                 # Check embeddings are normalized (common for sentence transformers)
                 norms = np.linalg.norm(embeddings, axis=1)
                 # May or may not be normalized, just check they're valid
-                assert np.all(norms > 0)
+                assert np.all(norms > 0), "norms must be greater than zero"
             except (ImportError, OSError, IndexError):
                 pytest.skip("Model not available")
         except ImportError:
@@ -196,7 +196,7 @@ class TestLocalSentenceTransformerProvider:
                 if hasattr(provider, "model"):
                     # Check model device - device attribute returns string directly
                     if hasattr(provider.model, "device"):
-                        assert str(provider.model.device) == "cpu"
+                        assert str(provider.model.device) == "cpu", "Condition must be true"
             except (ImportError, OSError):
                 pytest.skip("Model or PyTorch not available")
         except ImportError:
@@ -214,7 +214,7 @@ class TestOpenAIProvider:
             # Should handle missing API key gracefully
             try:
                 provider = OpenAIEmbeddingProvider()
-                assert provider is not None
+                assert provider is not None, "provider must be initialized"
             except (ImportError, ValueError, Exception):
                 pytest.skip("OpenAI not available or no API key")
         except ImportError:
@@ -245,8 +245,8 @@ class TestOpenAIProvider:
             mock_client.embeddings.create.assert_called_once()
 
             # Should return embeddings
-            assert embeddings is not None
-            assert len(embeddings) == 2
+            assert embeddings is not None, "embeddings must be initialized"
+            assert len(embeddings) == 2, "Embeddings must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -261,7 +261,7 @@ class TestOpenAIProvider:
                 if hasattr(provider, "get_dimension"):
                     dim = provider.get_dimension()
                     # OpenAI text-embedding-ada-002 is 1536 dimensions
-                    assert dim > 0
+                    assert dim > 0, "dim must be greater than zero"
             except (ImportError, ValueError):
                 pytest.skip("OpenAI not available")
         except ImportError:
@@ -278,11 +278,11 @@ class TestProviderSwitching:
 
             # Should return a provider (likely TF-IDF as fallback)
             provider = get_embedding_provider()
-            assert provider is not None
+            assert provider is not None, "provider must be initialized"
 
             # Should have encode method
             assert hasattr(provider, "encode")
-            assert callable(provider.encode)
+            assert callable(provider.encode), "Condition must be true"
         except (ImportError, AttributeError):
             pytest.skip("Function not available")
 
@@ -297,7 +297,7 @@ class TestProviderSwitching:
             for name in provider_names:
                 try:
                     provider = get_embedding_provider(provider_type=name)
-                    assert provider is not None
+                    assert provider is not None, "provider must be initialized"
                 except (ValueError, ImportError, Exception):
                     # Expected if provider not available
                     _ = None  # suppressed: no action needed
@@ -316,7 +316,7 @@ class TestProviderSwitching:
                 # Should fallback to TF-IDF
                 provider = get_embedding_provider(provider_type="tfidf")
 
-            assert provider is not None
+            assert provider is not None, "provider must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("Function not available")
 
@@ -361,7 +361,7 @@ class TestProviderCompatibility:
 
                 # Should return numpy array
                 assert isinstance(result, np.ndarray)
-                assert len(result) == 1
+                assert len(result) == 1, "Result must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -382,8 +382,8 @@ class TestProviderCompatibility:
 
             # First embedding should be similar
             # (may not be exact due to vocabulary differences)
-            assert single_emb.shape[1] > 0
-            assert batch_emb.shape[0] == 2
+            assert single_emb.shape[1] > 0, "Value must be greater than zero"
+            assert batch_emb.shape[0] == 2, "Condition must be true"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -405,7 +405,7 @@ class TestProviderEnvironmentConfig:
             try:
                 provider = get_embedding_provider()
                 # Should get TF-IDF provider
-                assert provider is not None
+                assert provider is not None, "provider must be initialized"
             finally:
                 # Restore original value
                 if old_value is not None:
@@ -429,7 +429,7 @@ class TestProviderEnvironmentConfig:
             try:
                 provider = LocalSentenceTransformerProvider()
                 # Should initialize (may fail on actual model download)
-                assert provider is not None
+                assert provider is not None, "provider must be initialized"
             except (ImportError, OSError):
                 pytest.skip("Model not available")
             finally:

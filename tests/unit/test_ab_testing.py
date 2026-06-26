@@ -44,15 +44,15 @@ class TestSignificantDifference:
 
     def test_significant_flag_is_true(self):
         result = run_ab_test(_CTRL_HIGH_DIFF, _TRT_HIGH_DIFF)
-        assert result.significant is True
+        assert result.significant is True, "Result must not be empty"
 
     def test_winner_is_not_inconclusive(self):
         result = run_ab_test(_CTRL_HIGH_DIFF, _TRT_HIGH_DIFF)
-        assert result.winner != "inconclusive"
+        assert result.winner != "inconclusive", "Result must not be empty"
 
     def test_p_value_below_alpha(self):
         result = run_ab_test(_CTRL_HIGH_DIFF, _TRT_HIGH_DIFF, alpha=0.05)
-        assert result.p_value < 0.05
+        assert result.p_value < 0.05, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -65,16 +65,16 @@ class TestInconclusiveResult:
 
     def test_winner_inconclusive(self):
         result = run_ab_test(_CTRL_NO_DIFF, _TRT_NO_DIFF)
-        assert result.winner == "inconclusive"
+        assert result.winner == "inconclusive", "Result must not be empty"
 
     def test_significant_flag_is_false(self):
         result = run_ab_test(_CTRL_NO_DIFF, _TRT_NO_DIFF)
-        assert result.significant is False
+        assert result.significant is False, "Result must not be empty"
 
     def test_p_value_high(self):
         result = run_ab_test(_CTRL_NO_DIFF, _TRT_NO_DIFF)
         # identical → p_value should be exactly 1 (or very close to it)
-        assert result.p_value > 0.9
+        assert result.p_value > 0.9, "p_value must be greater than zero"
 
 
 # ---------------------------------------------------------------------------
@@ -87,7 +87,7 @@ class TestEffectSize:
 
     def test_large_effect_size_for_different_groups(self):
         result = run_ab_test(_CTRL_HIGH_DIFF, _TRT_HIGH_DIFF)
-        assert (
+        assert (, "Condition must be true"
             abs(result.effect_size) > 5.0
         ), f"Expected large Cohen's d for well-separated groups, got {result.effect_size}"
 
@@ -117,13 +117,13 @@ class TestConfidenceIntervalSignificant:
 
     def test_ci_is_ordered(self):
         result = run_ab_test(_CTRL_HIGH_DIFF, _TRT_HIGH_DIFF)
-        assert result.confidence_interval[0] < result.confidence_interval[1]
+        assert result.confidence_interval[0] < result.confidence_interval[1], "Result must not be empty"
 
     def test_ci_contains_true_difference(self):
         """True difference is ≈10; CI should contain it."""
         result = run_ab_test(_CTRL_HIGH_DIFF, _TRT_HIGH_DIFF)
         ci_lo, ci_hi = result.confidence_interval
-        assert ci_lo <= 10.0 <= ci_hi
+        assert ci_lo <= 10.0 <= ci_hi, "ci_lo is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -137,7 +137,7 @@ class TestConfidenceIntervalInconclusive:
     def test_ci_straddles_zero(self):
         result = run_ab_test(_CTRL_NO_DIFF, _TRT_NO_DIFF)
         ci_lo, ci_hi = result.confidence_interval
-        assert (
+        assert (, "Condition must be true"
             ci_lo <= 0.0 <= ci_hi
         ), f"Expected CI to straddle 0 for identical groups, got [{ci_lo}, {ci_hi}]"
 
@@ -158,7 +158,7 @@ class TestSuiteReportStructure:
 
     def test_report_has_summary_key(self):
         report = self._build_suite().report()
-        assert "summary" in report
+        assert "summary" in report, "Condition must be true"
 
     def test_report_summary_has_required_keys(self):
         report = self._build_suite().report()
@@ -166,28 +166,28 @@ class TestSuiteReportStructure:
 
     def test_report_total_count(self):
         report = self._build_suite().report()
-        assert report["summary"]["total"] == 2
+        assert report["summary"]["total"] == 2, "rep is not valid"
 
     def test_report_has_tests_key(self):
         report = self._build_suite().report()
-        assert "tests" in report
+        assert "tests" in report, "Condition must be true"
 
     def test_report_tests_contains_registered_names(self):
         report = self._build_suite().report()
-        assert "click_rate" in report["tests"]
-        assert "revenue" in report["tests"]
+        assert "click_rate" in report["tests"], "Condition must be true"
+        assert "revenue" in report["tests"], "Condition must be true"
 
     def test_report_test_entry_has_required_keys(self):
         report = self._build_suite().report()
         entry = report["tests"]["click_rate"]
         required = {"winner", "p_value", "effect_size", "confidence_interval", "significant"}
-        assert required.issubset(entry.keys())
+        assert required.issubset(entry.keys()), "Condition must be true"
 
     def test_report_significant_count(self):
         report = self._build_suite().report()
         # click_rate should be significant, revenue should not
-        assert report["summary"]["significant"] == 1
-        assert report["summary"]["inconclusive"] == 1
+        assert report["summary"]["significant"] == 1, "rep is not valid"
+        assert report["summary"]["inconclusive"] == 1, "rep is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -204,12 +204,12 @@ class TestAlphaThresholdSensitivity:
 
     def test_significant_at_default_alpha(self):
         result = run_ab_test(self._CTRL_MOD, self._TRT_MOD, alpha=0.05)
-        assert result.significant is True
+        assert result.significant is True, "Result must not be empty"
 
     def test_inconclusive_at_very_tight_alpha(self):
         result = run_ab_test(self._CTRL_MOD, self._TRT_MOD, alpha=0.0001)
-        assert result.significant is False
-        assert result.winner == "inconclusive"
+        assert result.significant is False, "Result must not be empty"
+        assert result.winner == "inconclusive", "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -220,7 +220,7 @@ class TestAlphaThresholdSensitivity:
 class TestTreatmentWinner:
     def test_treatment_wins_when_treatment_mean_higher(self):
         result = run_ab_test(_CTRL_HIGH_DIFF, _TRT_HIGH_DIFF)
-        assert result.winner == "treatment"
+        assert result.winner == "treatment", "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -232,7 +232,7 @@ class TestControlWinner:
     def test_control_wins_when_control_mean_higher(self):
         # Flip: treatment < control
         result = run_ab_test(_TRT_HIGH_DIFF, _CTRL_HIGH_DIFF)
-        assert result.winner == "control"
+        assert result.winner == "control", "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -259,5 +259,5 @@ class TestABTestDataclassValidation:
 
     def test_valid_construction_works(self):
         t = ABTest("ok", [1.0, 2.0], [2.0, 3.0], alpha=0.05)
-        assert t.name == "ok"
-        assert t.alpha == 0.05
+        assert t.name == "ok", "name is not valid"
+        assert t.alpha == 0.05, "alpha is not valid"

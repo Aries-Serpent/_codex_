@@ -51,7 +51,7 @@ class TestJWTManipulation:
         )
 
         # Should reject invalid signature
-        assert response.status_code == 401
+        assert response.status_code == 401, "Response must not be empty"
 
     def test_expired_jwt_token(self, jwt_client):
         """Test rejection of expired JWT tokens."""
@@ -65,7 +65,7 @@ class TestJWTManipulation:
         )
 
         # Should reject expired token
-        assert response.status_code == 401
+        assert response.status_code == 401, "Response must not be empty"
 
     def test_jwt_algorithm_confusion(self, jwt_client):
         """Test protection against JWT algorithm confusion attacks."""
@@ -81,7 +81,7 @@ class TestJWTManipulation:
         )
 
         # Should reject "none" algorithm
-        assert response.status_code == 401
+        assert response.status_code == 401, "Response must not be empty"
 
     def test_jwt_with_modified_claims(self, jwt_client):
         """Test rejection of JWT with modified claims."""
@@ -93,7 +93,7 @@ class TestJWTManipulation:
         )
 
         # Should reject modified token
-        assert response.status_code == 401
+        assert response.status_code == 401, "Response must not be empty"
 
 
 class TestAPIKeyAttacks:
@@ -106,7 +106,7 @@ class TestAPIKeyAttacks:
         )
 
         # Should require authentication
-        assert response.status_code == 401
+        assert response.status_code == 401, "Response must not be empty"
 
     def test_invalid_api_key(self, secure_client):
         """Test rejection of invalid API keys."""
@@ -117,7 +117,7 @@ class TestAPIKeyAttacks:
         )
 
         # Should reject invalid key
-        assert response.status_code == 401
+        assert response.status_code == 401, "Response must not be empty"
 
     def test_api_key_timing_attack_resistance(self, secure_client):
         """Test resistance to timing attacks on API key validation."""
@@ -145,7 +145,7 @@ class TestAPIKeyAttacks:
         )
 
         # Should not accept API key in query param (logged in URLs)
-        assert response.status_code == 401
+        assert response.status_code == 401, "Response must not be empty"
 
 
 class TestRateLimitBypass:
@@ -161,7 +161,7 @@ class TestRateLimitBypass:
 
         # Some requests should be rate limited
         rate_limited = sum(1 for status in responses if status == 429)
-        assert rate_limited > 0 or all(
+        assert rate_limited > 0 or all(, "rate_limited must be greater than zero"
             s == 200 for s in responses
         ), "Rate limiting should trigger or all succeed"
 
@@ -176,7 +176,7 @@ class TestRateLimitBypass:
         # Should still hit rate limit
         sum(1 for status in responses if status == 429)
         # May or may not trigger depending on rate limit config
-        assert len(responses) == 50
+        assert len(responses) == 50, "Responses must not be empty"
 
     def test_rate_limit_per_key(self, secure_client):
         """Test rate limits are enforced per API key."""
@@ -217,7 +217,7 @@ class TestPayloadAttacks:
         )
 
         # Should return 422 Unprocessable Entity
-        assert response.status_code == 422
+        assert response.status_code == 422, "Response must not be empty"
 
     def test_sql_injection_in_model_name(self, secure_client):
         """Test SQL injection protection in model name."""
@@ -287,7 +287,7 @@ class TestAuthenticationExhaustion:
 
         # Server should still respond (not crash)
         response = secure_client.get("/health")
-        assert response.status_code == 200
+        assert response.status_code == 200, "Response must not be empty"
 
     def test_dictionary_attack_resistance(self, secure_client):
         """Test resistance to dictionary attacks."""
@@ -304,7 +304,7 @@ class TestAuthenticationExhaustion:
                 failed_attempts += 1
 
         # All should fail
-        assert failed_attempts == len(common_keys)
+        assert failed_attempts == len(common_keys), "Common_keys must not be empty"
 
 
 class TestHeaderInjection:
@@ -317,14 +317,14 @@ class TestHeaderInjection:
         response = secure_client.get("/health", headers={"User-Agent": malicious_header})
 
         # Should handle safely
-        assert response.status_code == 200
+        assert response.status_code == 200, "Response must not be empty"
 
     def test_host_header_injection(self, secure_client):
         """Test host header injection protection."""
         response = secure_client.get("/health", headers={"Host": "evil.com"})
 
         # Rejected by TrustedHostMiddleware
-        assert response.status_code == 400
+        assert response.status_code == 400, "Response must not be empty"
 
 
 class TestDenialOfService:
@@ -334,7 +334,7 @@ class TestDenialOfService:
         """Test resistance to slowloris attacks."""
         # Simulate slow request
         response = secure_client.get("/health")
-        assert response.status_code == 200
+        assert response.status_code == 200, "Response must not be empty"
 
     def test_regex_dos_protection(self, secure_client):
         """Test protection against ReDoS attacks."""
@@ -354,7 +354,7 @@ class TestDenialOfService:
         """Test protection against compressed payload attacks."""
         # Server should limit decompression
         response = secure_client.get("/health")
-        assert response.status_code == 200
+        assert response.status_code == 200, "Response must not be empty"
 
 
 # Security test configuration

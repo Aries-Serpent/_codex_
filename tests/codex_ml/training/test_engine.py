@@ -16,7 +16,7 @@ class TestNormalizeParams:
             from codex_ml.training.engine import _normalize_params
 
             result = _normalize_params({"key": "value"})
-            assert result == {"key": "value"}
+            assert result == {"key": "value"}, "Result must not be empty"
         except ImportError as exc:
             pytest.skip(f"Optional dependency missing: {exc}")
 
@@ -36,7 +36,7 @@ class TestNormalizeParams:
             from codex_ml.training.engine import _normalize_params
 
             result = _normalize_params({"key": None})
-            assert result == {}
+            assert result == {}, "Result must not be empty"
         except ImportError as exc:
             pytest.skip(f"Optional dependency missing: {exc}")
 
@@ -48,11 +48,11 @@ class TestNormalizeParams:
             result = _normalize_params(
                 {"str": "text", "int": 42, "float": 3.14, "bool": True, "none": None}
             )
-            assert result["str"] == "text"
-            assert result["int"] == 42
-            assert result["float"] == 3.14
-            assert result["bool"] == 1
-            assert "none" not in result
+            assert result["str"] == "text", "Result must not be empty"
+            assert result["int"] == 42, "Result must not be empty"
+            assert result["float"] == 3.14, "Result must not be empty"
+            assert result["bool"] == 1, "Result must not be empty"
+            assert "none" not in result, "Result must not be empty"
         except ImportError as exc:
             pytest.skip(f"Optional dependency missing: {exc}")
 
@@ -66,8 +66,8 @@ class TestTrainingEngine:
             from codex_ml.training.engine import TrainingEngine
 
             engine = TrainingEngine()
-            assert engine is not None
-            assert engine.enable_mlflow is False
+            assert engine is not None, "engine must be initialized"
+            assert engine.enable_mlflow is False, "enable_mlflow is not valid"
         except ImportError as exc:
             pytest.skip(f"Optional dependency missing: {exc}")
 
@@ -88,7 +88,7 @@ class TestTrainingEngine:
 
             engine = TrainingEngine()
             assert hasattr(engine, "start_run")
-            assert callable(engine.start_run)
+            assert callable(engine.start_run), "Condition must be true"
         except ImportError as exc:
             pytest.skip(f"Optional dependency missing: {exc}")
 
@@ -99,6 +99,6 @@ class TestTrainingEngine:
 
             engine = TrainingEngine(enable_mlflow=False)
             engine.start_run()
-            assert engine._active_run is None
+            assert engine._active_run is None, "_active_run is not valid"
         except ImportError as exc:
             pytest.skip(f"Optional dependency missing: {exc}")

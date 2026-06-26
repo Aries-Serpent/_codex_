@@ -33,9 +33,9 @@ def test_defaults_audit_flags_self(tmp_path: Path, capsys: pytest.CaptureFixture
     captured = capsys.readouterr().out.strip()
     payload = json.loads(captured)
 
-    assert rc == 0
-    assert payload["issues"] == 0
-    assert payload["files"] >= 1
+    assert rc == 0, "rc is not valid"
+    assert payload["issues"] == 0, "Condition must be true"
+    assert payload["files"] >= 1, "Value must be greater than zero"
 
 
 def test_defaults_audit_missing_self(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
@@ -49,5 +49,5 @@ def test_defaults_audit_missing_self(tmp_path: Path, capsys: pytest.CaptureFixtu
     captured = capsys.readouterr().out.strip()
     payload = json.loads(captured)
 
-    assert rc == 3
-    assert payload["issues"] >= 1
+    assert rc == 3, "rc is not valid"
+    assert payload["issues"] >= 1, "Value must be greater than zero"

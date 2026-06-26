@@ -22,9 +22,9 @@ class TestFunctionalTrainingDetector:
         from scripts.space_traversal.detectors.functional_training import detect
 
         result = detect({"files": []})
-        assert "id" in result
-        assert result["id"] == "functional_training"
-        assert "found_patterns" in result
+        assert "id" in result, "Result must not be empty"
+        assert result["id"] == "functional_training", "Result must not be empty"
+        assert "found_patterns" in result, "Result must not be empty"
 
 
 class TestReproducibilityFeatures:
@@ -33,23 +33,23 @@ class TestReproducibilityFeatures:
     def test_seed_configuration(self):
         """Test seed configuration for reproducibility."""
         config = {"seed": 42, "deterministic": True}
-        assert config["seed"] == 42
-        assert config["deterministic"] is True
+        assert config["seed"] == 42, "Condition must be true"
+        assert config["deterministic"] is True, "Condition must be true"
 
     def test_rng_management(self):
         """Test RNG state management capability."""
         rng_config = {"save_rng_state": True, "rng": "controlled"}
-        assert "rng" in rng_config
-        assert rng_config["save_rng_state"] is True
+        assert "rng" in rng_config, "Condition must be true"
+        assert rng_config["save_rng_state"] is True, "Condition must be true"
 
     def test_deterministic_flag(self):
         """Test deterministic mode flag."""
         # Verify deterministic flag can be set
         deterministic = True
-        assert deterministic is True
+        assert deterministic is True, "deterministic is not valid"
         # Configuration supports determinism
         config = {"deterministic": deterministic}
-        assert config["deterministic"] is True
+        assert config["deterministic"] is True, "Condition must be true"
 
 
 class TestCheckpointingSystem:
@@ -64,15 +64,15 @@ class TestCheckpointingSystem:
             "rng_state": {"random": 42},
             "config": {"seed": 42},
         }
-        assert "epoch" in checkpoint
-        assert "model_state_dict" in checkpoint
-        assert "config" in checkpoint
+        assert "epoch" in checkpoint, "Condition must be true"
+        assert "model_state_dict" in checkpoint, "Condition must be true"
+        assert "config" in checkpoint, "Condition must be true"
 
     def test_checkpoint_validation(self):
         """Test checkpoint validation."""
         checkpoint = {"epoch": 5, "model_state_dict": {}}
         # Validation checks
-        assert checkpoint["epoch"] >= 0
+        assert checkpoint["epoch"] >= 0, "Value must be greater than zero"
         assert isinstance(checkpoint["model_state_dict"], dict)
 
     def test_checkpoint_save_config(self):
@@ -82,8 +82,8 @@ class TestCheckpointingSystem:
             "checkpoint_frequency": 1,
             "save_format": "pytorch",
         }
-        assert "checkpoint_dir" in save_config
-        assert save_config["checkpoint_frequency"] > 0
+        assert "checkpoint_dir" in save_config, "Condition must be true"
+        assert save_config["checkpoint_frequency"] > 0, "Value must be greater than zero"
 
 
 class TestDataLoadingDeterminism:
@@ -97,14 +97,14 @@ class TestDataLoadingDeterminism:
             "seed": 42,
             "num_workers": 4,
         }
-        assert config["seed"] == 42
-        assert config["batch_size"] > 0
+        assert config["seed"] == 42, "Condition must be true"
+        assert config["batch_size"] > 0, "Value must be greater than zero"
 
     def test_deterministic_iteration(self):
         """Test deterministic data iteration setup."""
         # Verify deterministic iteration can be configured
         config = {"seed": 42, "shuffle": True}
-        assert config["seed"] is not None
+        assert config["seed"] is not None, "Value must be initialized"
 
 
 class TestTrainingConfiguration:
@@ -120,7 +120,7 @@ class TestTrainingConfiguration:
         }
         required = ["epochs", "learning_rate", "batch_size", "seed"]
         for field in required:
-            assert field in config
+            assert field in config, "Condition must be true"
 
     def test_config_validation_bounds(self):
         """Test configuration validation bounds."""
@@ -129,14 +129,14 @@ class TestTrainingConfiguration:
         batch_size = 32
 
         # Validation: positive values
-        assert epochs > 0
-        assert learning_rate > 0
-        assert batch_size > 0
+        assert epochs > 0, "epochs must be greater than zero"
+        assert learning_rate > 0, "learning_rate must be greater than zero"
+        assert batch_size > 0, "batch_size must be greater than zero"
 
         # Validation: reasonable ranges
-        assert 1 <= epochs <= 1000
-        assert 1e-6 <= learning_rate <= 1.0
-        assert 1 <= batch_size <= 1024
+        assert 1 <= epochs <= 1000, "1 is not valid"
+        assert 1e-6 <= learning_rate <= 1.0, "6 is not valid"
+        assert 1 <= batch_size <= 1024, "1 is not valid"
 
     def test_config_defaults(self):
         """Test default configuration values."""
@@ -146,8 +146,8 @@ class TestTrainingConfiguration:
             "gradient_clip_norm": 1.0,
             "deterministic": True,
         }
-        assert defaults["gradient_clip_norm"] == 1.0
-        assert defaults["deterministic"] is True
+        assert defaults["gradient_clip_norm"] == 1.0, "Condition must be true"
+        assert defaults["deterministic"] is True, "Condition must be true"
 
 
 class TestSafeguardsValidation:
@@ -171,8 +171,8 @@ class TestSafeguardsValidation:
         """Test gradient clipping safeguard."""
         max_grad_norm = 1.0
         # Safeguard: gradient clipping prevents explosion
-        assert max_grad_norm > 0
-        assert max_grad_norm <= 10.0  # Reasonable upper bound
+        assert max_grad_norm > 0, "max_grad_norm must be greater than zero"
+        assert max_grad_norm <= 10.0, "max_grad_norm is not valid"
 
     def test_error_handling_structure(self):
         """Test error handling structure."""
@@ -192,9 +192,9 @@ class TestMonitoringTelemetry:
             "epoch": 5,
             "learning_rate": 1e-4,
         }
-        assert "train_loss" in metrics
-        assert "epoch" in metrics
-        assert metrics["epoch"] >= 0
+        assert "train_loss" in metrics, "Condition must be true"
+        assert "epoch" in metrics, "Condition must be true"
+        assert metrics["epoch"] >= 0, "Value must be greater than zero"
 
     def test_telemetry_tracking_config(self):
         """Test telemetry tracking configuration."""
@@ -202,8 +202,8 @@ class TestMonitoringTelemetry:
             "enabled": True,
             "metrics": ["loss", "accuracy", "throughput"],
         }
-        assert telemetry_config["enabled"] is True
-        assert len(telemetry_config["metrics"]) > 0
+        assert telemetry_config["enabled"] is True, "Condition must be true"
+        assert len(telemetry_config["metrics"]) > 0, "Collection must not be empty"
 
 
 class TestExperimentTracking:
@@ -216,8 +216,8 @@ class TestExperimentTracking:
             "experiment_name": "test",
             "mlflow_tracking": True,
         }
-        assert "tracking_uri" in mlflow_config
-        assert mlflow_config["mlflow_tracking"] is True
+        assert "tracking_uri" in mlflow_config, "Condition must be true"
+        assert mlflow_config["mlflow_tracking"] is True, "Condition must be true"
 
     def test_file_logging_config(self):
         """Test file-based logging configuration."""
@@ -225,7 +225,7 @@ class TestExperimentTracking:
             "file_logging": True,
             "log_dir": "./logs",
         }
-        assert log_config["file_logging"] is True
+        assert log_config["file_logging"] is True, "Condition must be true"
 
 
 class TestOfflineMode:
@@ -238,8 +238,8 @@ class TestOfflineMode:
             "wandb_mode": "offline",
             "manifest": True,
         }
-        assert config["offline"] is True
-        assert config["manifest"] is True
+        assert config["offline"] is True, "Condition must be true"
+        assert config["manifest"] is True, "Condition must be true"
 
     def test_manifest_generation(self):
         """Test data manifest generation."""
@@ -247,7 +247,7 @@ class TestOfflineMode:
             "manifest": True,
             "checksum_algorithm": "sha256",
         }
-        assert "checksum_algorithm" in manifest_config
+        assert "checksum_algorithm" in manifest_config, "Condition must be true"
 
 
 class TestIntegrationScenarios:
@@ -262,9 +262,9 @@ class TestIntegrationScenarios:
             "checkpoint": {"frequency": 1},
             "monitor": {"metrics": ["loss"]},
         }
-        assert "setup" in pipeline
-        assert "checkpoint" in pipeline
-        assert pipeline["setup"]["deterministic"] is True
+        assert "setup" in pipeline, "Condition must be true"
+        assert "checkpoint" in pipeline, "Condition must be true"
+        assert pipeline["setup"]["deterministic"] is True, "Condition must be true"
 
     def test_reproducibility_workflow(self):
         """Test reproducibility workflow."""
@@ -274,4 +274,4 @@ class TestIntegrationScenarios:
             "rng_state_saved": True,
             "config_versioned": True,
         }
-        assert all(workflow.values())
+        assert all(workflow.values()), "Value must be initialized"

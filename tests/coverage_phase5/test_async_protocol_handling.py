@@ -26,6 +26,7 @@ class AsyncMessageQueue:
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_message_queue_enqueue():
     """Test enqueueing messages."""
     queue = AsyncMessageQueue()
@@ -38,6 +39,7 @@ async def test_message_queue_enqueue():
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_message_queue_fifo():
     """Test FIFO ordering."""
     queue = AsyncMessageQueue()
@@ -51,6 +53,7 @@ async def test_message_queue_fifo():
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_message_queue_concurrent_processing():
     """Test concurrent message processing."""
     queue = AsyncMessageQueue()
@@ -66,6 +69,7 @@ async def test_message_queue_concurrent_processing():
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_message_queue_timeout():
     """Test timeout on empty queue."""
     queue = AsyncMessageQueue()
@@ -75,6 +79,7 @@ async def test_message_queue_timeout():
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_concurrent_enqueue_dequeue():
     """Test concurrent enqueue/dequeue operations."""
     queue = AsyncMessageQueue()

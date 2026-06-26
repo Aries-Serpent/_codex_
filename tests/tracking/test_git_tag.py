@@ -13,7 +13,7 @@ import subprocess
 def test_current_commit(monkeypatch):
     mod = importlib.import_module("codex_ml.tracking.git_tag")
     monkeypatch.setattr(subprocess, "check_output", lambda *a, **k: "deadbeef\n")
-    assert mod.current_commit() == "deadbeef"
+    assert mod.current_commit() == "deadbeef", "Condition must be true"
 
 
 def test_current_commit_failure(monkeypatch):
@@ -23,4 +23,4 @@ def test_current_commit_failure(monkeypatch):
         raise OSError("fail")
 
     monkeypatch.setattr(subprocess, "check_output", boom)
-    assert mod.current_commit() is None
+    assert mod.current_commit() is None, "Condition must be true"

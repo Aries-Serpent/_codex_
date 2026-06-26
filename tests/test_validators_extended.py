@@ -73,15 +73,15 @@ class TestEmailValidation:
 
     def test_valid_email(self):
         """Test valid email."""
-        assert validate_email("test@example.com")
+        assert validate_email("test@example.com"), "Condition must be true"
 
     def test_valid_email_with_subdomain(self):
         """Test valid email with subdomain."""
-        assert validate_email("test@mail.example.com")
+        assert validate_email("test@mail.example.com"), "Condition must be true"
 
     def test_valid_email_with_plus_addressing(self):
         """Test valid email with plus addressing."""
-        assert validate_email("test+tag@example.com")
+        assert validate_email("test+tag@example.com"), "Condition must be true"
 
     def test_invalid_email_no_at_sign(self):
         """Test invalid email without @ sign."""
@@ -118,7 +118,7 @@ class TestEmailValidation:
 
     def test_email_case_insensitive(self):
         """Test email validation is case insensitive."""
-        assert validate_email("Test@Example.COM")
+        assert validate_email("Test@Example.COM"), "Condition must be true"
 
 
 class TestURLValidation:
@@ -126,23 +126,23 @@ class TestURLValidation:
 
     def test_valid_http_url(self):
         """Test valid HTTP URL."""
-        assert validate_url("http://example.com")
+        assert validate_url("http://example.com"), "Condition must be true"
 
     def test_valid_https_url(self):
         """Test valid HTTPS URL."""
-        assert validate_url("https://example.com")
+        assert validate_url("https://example.com"), "Condition must be true"
 
     def test_valid_url_with_path(self):
         """Test valid URL with path."""
-        assert validate_url("https://example.com/path/to/resource")
+        assert validate_url("https://example.com/path/to/resource"), "Condition must be true"
 
     def test_valid_url_with_query_string(self):
         """Test valid URL with query string."""
-        assert validate_url("https://example.com?key=value")
+        assert validate_url("https://example.com?key=value"), "Value must be initialized"
 
     def test_valid_url_with_port(self):
         """Test valid URL with port."""
-        assert validate_url("https://example.com:8080")
+        assert validate_url("https://example.com:8080"), "Condition must be true"
 
     def test_invalid_url_no_protocol(self):
         """Test invalid URL without protocol."""
@@ -161,11 +161,11 @@ class TestURLValidation:
 
     def test_valid_url_with_fragment(self):
         """Test valid URL with fragment."""
-        assert validate_url("https://example.com#section")
+        assert validate_url("https://example.com, "Condition must be true"
 
     def test_valid_url_with_authentication(self):
         """Test valid URL with authentication."""
-        assert validate_url("******example.com")
+        assert validate_url("******example.com"), "Condition must be true"
 
 
 class TestUsernameValidation:
@@ -173,19 +173,19 @@ class TestUsernameValidation:
 
     def test_valid_username(self):
         """Test valid username."""
-        assert validate_username("validuser")
+        assert validate_username("validuser"), "Condition must be true"
 
     def test_valid_username_with_numbers(self):
         """Test valid username with numbers."""
-        assert validate_username("user123")
+        assert validate_username("user123"), "Condition must be true"
 
     def test_valid_username_with_underscore(self):
         """Test valid username with underscore."""
-        assert validate_username("valid_user")
+        assert validate_username("valid_user"), "Condition must be true"
 
     def test_valid_username_with_hyphen(self):
         """Test valid username with hyphen."""
-        assert validate_username("valid-user")
+        assert validate_username("valid-user"), "Condition must be true"
 
     def test_invalid_username_too_short(self):
         """Test invalid username too short."""
@@ -204,11 +204,11 @@ class TestUsernameValidation:
 
     def test_valid_username_long(self):
         """Test valid long username."""
-        assert validate_username("a" * 100)
+        assert validate_username("a" * 100), "Condition must be true"
 
     def test_valid_username_minimum_length(self):
         """Test valid username at minimum length."""
-        assert validate_username("abc")
+        assert validate_username("abc"), "Condition must be true"
 
 
 class TestPasswordValidation:
@@ -216,11 +216,11 @@ class TestPasswordValidation:
 
     def test_valid_password(self):
         """Test valid password."""
-        assert validate_password("ValidPassword123!")
+        assert validate_password("ValidPassword123!"), "validate_passw is not valid"
 
     def test_valid_password_minimum_length(self):
         """Test valid password at minimum length."""
-        assert validate_password("12345678")
+        assert validate_password("12345678"), "validate_passw is not valid"
 
     def test_invalid_password_too_short(self):
         """Test invalid password too short."""
@@ -234,19 +234,19 @@ class TestPasswordValidation:
 
     def test_valid_password_with_special_characters(self):
         """Test valid password with special characters."""
-        assert validate_password("P@ssw0rd!#$%")
+        assert validate_password("P@ssw0rd!, "validate_passw is not valid"
 
     def test_valid_password_with_unicode(self):
         """Test valid password with Unicode characters."""
-        assert validate_password("パスワード1234")
+        assert validate_password("パスワード1234"), "validate_passw is not valid"
 
     def test_valid_password_long(self):
         """Test valid long password."""
-        assert validate_password("a" * 1000)
+        assert validate_password("a" * 1000), "validate_passw is not valid"
 
     def test_valid_password_with_spaces(self):
         """Test valid password with spaces."""
-        assert validate_password("pass word 1234")
+        assert validate_password("pass word 1234"), "validate_passw is not valid"
 
 
 class TestIntegerValidation:
@@ -254,15 +254,15 @@ class TestIntegerValidation:
 
     def test_valid_integer(self):
         """Test valid integer."""
-        assert validate_integer(42)
+        assert validate_integer(42), "Condition must be true"
 
     def test_valid_zero(self):
         """Test valid zero."""
-        assert validate_integer(0)
+        assert validate_integer(0), "Condition must be true"
 
     def test_valid_negative_integer(self):
         """Test valid negative integer."""
-        assert validate_integer(-42)
+        assert validate_integer(-42), "Condition must be true"
 
     def test_valid_integer_with_min(self):
         """Test valid integer with minimum."""
@@ -298,11 +298,11 @@ class TestIntegerValidation:
 
     def test_valid_large_integer(self):
         """Test valid large integer."""
-        assert validate_integer(1000000000000)
+        assert validate_integer(1000000000000), "Condition must be true"
 
     def test_valid_very_large_integer(self):
         """Test valid very large integer."""
-        assert validate_integer(2**63 - 1)
+        assert validate_integer(2**63 - 1), "Condition must be true"
 
 
 class TestStringValidation:
@@ -310,15 +310,15 @@ class TestStringValidation:
 
     def test_valid_string(self):
         """Test valid string."""
-        assert validate_string("hello")
+        assert validate_string("hello"), "Condition must be true"
 
     def test_valid_string_with_spaces(self):
         """Test valid string with spaces."""
-        assert validate_string("hello world")
+        assert validate_string("hello world"), "Condition must be true"
 
     def test_valid_string_with_special_characters(self):
         """Test valid string with special characters."""
-        assert validate_string("hello!@#$%")
+        assert validate_string("hello!@, "Condition must be true"
 
     def test_valid_string_with_min_length(self):
         """Test valid string with minimum length."""
@@ -354,15 +354,15 @@ class TestStringValidation:
 
     def test_valid_long_string(self):
         """Test valid long string."""
-        assert validate_string("a" * 10000)
+        assert validate_string("a" * 10000), "Condition must be true"
 
     def test_valid_string_with_unicode(self):
         """Test valid string with Unicode."""
-        assert validate_string("こんにちは世界")
+        assert validate_string("こんにちは世界"), "Condition must be true"
 
     def test_valid_string_with_newlines(self):
         """Test valid string with newlines."""
-        assert validate_string("hello\nworld")
+        assert validate_string("hello\nworld"), "Condition must be true"
 
 
 class TestValidationEdgeCases:
@@ -393,17 +393,17 @@ class TestValidationEdgeCases:
         try:
             validate_email("invalid")
         except ValidationError as e:
-            assert len(str(e)) > 0
+            assert len(str(e)) > 0, "Collection must not be empty"
 
     def test_multiple_validations_sequence(self):
         """Test sequence of validations."""
-        assert validate_username("validuser")
-        assert validate_email("user@example.com")
-        assert validate_password("SecurePassword123!")
+        assert validate_username("validuser"), "Condition must be true"
+        assert validate_email("user@example.com"), "Condition must be true"
+        assert validate_password("SecurePassword123!"), "validate_passw is not valid"
 
     def test_validation_with_extreme_values(self):
         """Test validation with extreme values."""
-        assert validate_string("a" * 1000000)  # Very long string
+        assert validate_string("a" * 1000000), "Condition must be true"
 
     def test_validation_type_consistency(self):
         """Test validation type consistency."""

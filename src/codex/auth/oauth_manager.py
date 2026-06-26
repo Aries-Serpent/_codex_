@@ -131,14 +131,14 @@ class OAuthManager:
         use_pkce: Optional[bool] = None,
     ) -> str:
         """Return the authorization redirect URL.
-        
+
         Args:
             state: State parameter for CSRF protection
             scopes: List of scopes (preferred)
             config: OAuth configuration (uses self.config if not provided)
             scope: Legacy string parameter with space-separated scopes
             use_pkce: Legacy parameter for PKCE support (ignored, always used)
-        
+
         Returns:
             Authorization URL with all parameters encoded
         """
@@ -147,7 +147,7 @@ class OAuthManager:
             raise ValueError("OAuth configuration is required")
         if not state:
             state = self.generate_state()
-        
+
         # Prefer scopes parameter, fall back to scope string, then config
         if scopes:
             final_scope = " ".join(scopes)
@@ -155,7 +155,7 @@ class OAuthManager:
             final_scope = scope
         else:
             final_scope = cfg.scope or " ".join(cfg.scopes or [])
-        
+
         params = {
             "client_id": cfg.client_id,
             "redirect_uri": cfg.redirect_uri,

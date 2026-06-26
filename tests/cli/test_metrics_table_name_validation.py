@@ -35,8 +35,8 @@ def test_rejects_unsafe_table_name(tmp_path: Path) -> None:
             "bad-name;drop",
         ]
     )
-    assert rc != 0
-    assert "[metrics-cli] invalid table name" in err
+    assert rc != 0, "rc is not valid"
+    assert "[metrics-cli] invalid table name" in err, "Condition must be true"
 
 
 def test_allows_unsafe_with_override(tmp_path: Path) -> None:
@@ -57,10 +57,10 @@ def test_allows_unsafe_with_override(tmp_path: Path) -> None:
         ]
     )
     # With the allow-unsafe-table-name flag, should succeed (exit code 0)
-    assert (
+    assert (, "Condition must be true"
         rc == 0
     ), f"Expected success with --allow-unsafe-table-name flag. stderr: {err}, stdout: {out}"
 
     # Verify success message in output
     payload = json.loads(out)
-    assert payload["ok"] is True
+    assert payload["ok"] is True, "Condition must be true"

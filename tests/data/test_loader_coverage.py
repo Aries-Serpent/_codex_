@@ -105,7 +105,7 @@ class TestModuleImport:
         try:
             from codex_ml.data import loader
 
-            assert loader is not None
+            assert loader is not None, "loader must be initialized"
         except ImportError as e:
             pytest.fail(f"Failed to import loader module: {e}")
 
@@ -120,8 +120,8 @@ class TestModuleImport:
             from codex_ml.data.loader import load_texts as load_texts
             from codex_ml.data.loader import stream_texts as stream_texts
 
-            assert CacheManifest is not None
-            assert DataPreparationError is not None
+            assert CacheManifest is not None, "CacheManifest must be initialized"
+            assert DataPreparationError is not None, "DataPreparationError must be initialized"
         except ImportError as e:
             pytest.skip(f"Some exports not available: {e}")
 
@@ -144,9 +144,9 @@ class TestCacheManifest:
                 checksum="abc123",
                 num_records=100,
             )
-            assert manifest.source == "test_source"
-            assert manifest.checksum == "abc123"
-            assert manifest.num_records == 100
+            assert manifest.source == "test_source", "source is not valid"
+            assert manifest.checksum == "abc123", "checksum is not valid"
+            assert manifest.num_records == 100, "num_records is not valid"
         except ImportError:
             pytest.skip("CacheManifest not available")
 
@@ -156,12 +156,12 @@ class TestCacheManifest:
             from codex_ml.data.loader import CacheManifest
 
             manifest = CacheManifest()
-            assert manifest.version == "1"
-            assert manifest.source == ""
-            assert manifest.encoding == "utf-8"
-            assert manifest.newline == "unix"
-            assert manifest.shard_index == 0
-            assert manifest.shard_total == 1
+            assert manifest.version == "1", "version is not valid"
+            assert manifest.source == "", "source is not valid"
+            assert manifest.encoding == "utf-8", "encoding is not valid"
+            assert manifest.newline == "unix", "newline is not valid"
+            assert manifest.shard_index == 0, "shard_index is not valid"
+            assert manifest.shard_total == 1, "shard_total is not valid"
         except ImportError:
             pytest.skip("CacheManifest not available")
 
@@ -173,10 +173,10 @@ class TestCacheManifest:
             manifest = CacheManifest(source="test", num_records=50)
             result = manifest.to_dict()
             assert isinstance(result, dict)
-            assert result["source"] == "test"
-            assert result["num_records"] == 50
-            assert "shard" in result
-            assert result["shard"]["index"] == 0
+            assert result["source"] == "test", "Result must not be empty"
+            assert result["num_records"] == 50, "Result must not be empty"
+            assert "shard" in result, "Result must not be empty"
+            assert result["shard"]["index"] == 0, "Result must not be empty"
         except ImportError:
             pytest.skip("CacheManifest not available")
 
@@ -188,9 +188,9 @@ class TestCacheManifest:
             manifest = CacheManifest(source="test_file", num_records=100)
             manifest_path = tmp_path / "manifest.json"
             manifest.write(manifest_path)
-            assert manifest_path.exists()
+            assert manifest_path.exists(), "Condition must be true"
             content = json.loads(manifest_path.read_text())
-            assert content["source"] == "test_file"
+            assert content["source"] == "test_file", "Content must not be empty"
         except ImportError:
             pytest.skip("CacheManifest not available")
 
@@ -210,9 +210,9 @@ class TestCacheManifest:
                 )
             )
             loaded = CacheManifest.load(manifest_path)
-            assert loaded is not None
-            assert loaded.source == "loaded_source"
-            assert loaded.num_records == 200
+            assert loaded is not None, "loaded must be initialized"
+            assert loaded.source == "loaded_source", "source is not valid"
+            assert loaded.num_records == 200, "num_records is not valid"
         except ImportError:
             pytest.skip("CacheManifest not available")
 
@@ -223,7 +223,7 @@ class TestCacheManifest:
 
             missing_path = tmp_path / "nonexistent.json"
             result = CacheManifest.load(missing_path)
-            assert result is None
+            assert result is None, "Result must not be empty"
         except ImportError:
             pytest.skip("CacheManifest not available")
 
@@ -235,7 +235,7 @@ class TestCacheManifest:
             invalid_path = tmp_path / "invalid.json"
             invalid_path.write_text("not valid json {{{")
             result = CacheManifest.load(invalid_path)
-            assert result is None  # Should handle gracefully
+            assert result is None, "Result must not be empty"
         except ImportError:
             pytest.skip("CacheManifest not available")
 
@@ -276,7 +276,7 @@ class TestDataPreparationError:
             try:
                 raise DataPreparationError(msg)
             except DataPreparationError as e:
-                assert str(e) == msg
+                assert str(e) == msg, "Condition must be true"
         except ImportError:
             pytest.skip("DataPreparationError not available")
 
@@ -297,7 +297,7 @@ class TestLoadTexts:
             texts = load_texts(str(temp_text_file))
             assert isinstance(texts, (list, Iterator))
             text_list = list(texts) if hasattr(texts, "__iter__") else texts
-            assert len(text_list) > 0
+            assert len(text_list) > 0, "Text_list must not be empty"
         except ImportError:
             pytest.skip("load_texts not available")
 
@@ -312,7 +312,7 @@ class TestLoadTexts:
             text_list = list(texts) if hasattr(texts, "__iter__") else texts
             # Empty file should return empty list or list with empty string
             assert isinstance(text_list, list)
-            assert len(text_list) <= 1
+            assert len(text_list) <= 1, "Text_list must not be empty"
         except ImportError:
             pytest.skip("load_texts not available")
 
@@ -344,7 +344,7 @@ class TestStreamTexts:
             stream = stream_texts(str(temp_jsonl_file))
             # Should not immediately load all data
             first = next(iter(stream))
-            assert first is not None
+            assert first is not None, "first must be initialized"
         except (ImportError, StopIteration, TypeError):
             pytest.skip("stream_texts not available or empty")
 
@@ -363,7 +363,7 @@ class TestLoadDataset:
             from codex_ml.data.loader import load_dataset
 
             dataset = load_dataset(str(temp_jsonl_file))
-            assert dataset is not None
+            assert dataset is not None, "dataset must be initialized"
         except ImportError:
             pytest.skip("load_dataset not available")
         except (ValueError, TypeError) as e:
@@ -378,7 +378,7 @@ class TestLoadDataset:
             from codex_ml.data.loader import load_dataset
 
             dataset = load_dataset(str(temp_jsonl_file), split="train")
-            assert dataset is not None
+            assert dataset is not None, "dataset must be initialized"
         except ImportError:
             pytest.skip("load_dataset not available")
         except TypeError:
@@ -402,7 +402,7 @@ class TestSeededShuffle:
             data = [1, 2, 3, 4, 5]
             result1 = seeded_shuffle(data.copy(), seed=42)
             result2 = seeded_shuffle(data.copy(), seed=42)
-            assert result1 == result2
+            assert result1 == result2, "Result must not be empty"
         except ImportError:
             pytest.skip("seeded_shuffle not available")
 
@@ -415,7 +415,7 @@ class TestSeededShuffle:
             result1 = seeded_shuffle(data.copy(), seed=42)
             result2 = seeded_shuffle(data.copy(), seed=123)
             # With high probability, results should differ
-            assert result1 != result2
+            assert result1 != result2, "Result must not be empty"
         except ImportError:
             pytest.skip("seeded_shuffle not available")
 
@@ -435,7 +435,7 @@ class TestTakeN:
 
             data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
             result = list(take_n(iter(data), 3))
-            assert len(result) == 3
+            assert len(result) == 3, "Result must not be empty"
             assert result == [1, 2, 3]
         except ImportError:
             pytest.skip("take_n not available")
@@ -447,7 +447,7 @@ class TestTakeN:
 
             data = [1, 2]
             result = list(take_n(iter(data), 10))
-            assert len(result) == 2
+            assert len(result) == 2, "Result must not be empty"
         except ImportError:
             pytest.skip("take_n not available")
 
@@ -458,7 +458,7 @@ class TestTakeN:
 
             data = [1, 2, 3]
             result = list(take_n(iter(data), 0))
-            assert len(result) == 0
+            assert len(result) == 0, "Result must not be empty"
         except ImportError:
             pytest.skip("take_n not available")
 
@@ -476,7 +476,7 @@ class TestApplySafetyFilter:
         try:
             from codex_ml.data.loader import apply_safety_filter
 
-            assert callable(apply_safety_filter)
+            assert callable(apply_safety_filter), "Condition must be true"
         except ImportError:
             pytest.skip("apply_safety_filter not available")
 
@@ -488,7 +488,7 @@ class TestApplySafetyFilter:
             texts = ["safe text", "another safe one"]
             result = apply_safety_filter(texts)
             # Should return filtered results
-            assert result is not None
+            assert result is not None, "result must be initialized"
         except ImportError:
             pytest.skip("apply_safety_filter not available")
         except TypeError:
@@ -509,7 +509,7 @@ class TestPrepareDataFromConfig:
         try:
             from codex_ml.data.loader import prepare_data_from_config
 
-            assert callable(prepare_data_from_config)
+            assert callable(prepare_data_from_config), "Data must not be empty"
         except ImportError:
             pytest.skip("prepare_data_from_config not available")
 
@@ -558,7 +558,7 @@ class TestEdgeCases:
             manifest_path = tmp_path / "manifest.json"
             manifest.write(manifest_path)
             loaded = CacheManifest.load(manifest_path)
-            assert loaded.source == manifest.source
+            assert loaded.source == manifest.source, "source is not valid"
         except ImportError:
             pytest.skip("CacheManifest not available")
 
@@ -568,9 +568,9 @@ class TestEdgeCases:
             from codex_ml.data.loader import CacheManifest
 
             manifest = CacheManifest(num_records=10_000_000)
-            assert manifest.num_records == 10_000_000
+            assert manifest.num_records == 10_000_000, "num_records is not valid"
             result = manifest.to_dict()
-            assert result["num_records"] == 10_000_000
+            assert result["num_records"] == 10_000_000, "Result must not be empty"
         except ImportError:
             pytest.skip("CacheManifest not available")
 
@@ -588,7 +588,7 @@ class TestConfigIntegration:
         try:
             from codex_ml.config import DataConfig
 
-            assert DataConfig is not None
+            assert DataConfig is not None, "DataConfig must be initialized"
         except ImportError:
             pytest.skip("DataConfig not available")
 
@@ -599,6 +599,6 @@ class TestConfigIntegration:
 
             # Check if DataConfig is imported in the module
             source = Path(loader.__file__).read_text()
-            assert "DataConfig" in source
+            assert "DataConfig" in source, "Data must not be empty"
         except (ImportError, TypeError):
             pytest.skip("loader module inspection failed")

@@ -14,7 +14,7 @@ def test_init_wandb_offline_returns_value_or_none():
     # This should not crash, regardless of whether wandb is installed
     result = init_wandb_offline()
     # Result can be None (if wandb not available) or a wandb run object
-    assert result is None or result is not None
+    assert result is None or result is not None, "result must be initialized"
 
 
 def test_init_mlflow_local_returns_value_or_none():
@@ -22,4 +22,4 @@ def test_init_mlflow_local_returns_value_or_none():
     # This should not crash, regardless of whether mlflow is installed
     result = init_mlflow_local()
     # Result can be None (if mlflow not available) or True
-    assert result is None or result is not None
+    assert result is None or result is not None, "result must be initialized"

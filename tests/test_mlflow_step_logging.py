@@ -89,7 +89,7 @@ def test_log_metrics_enforces_step(patched_mlflow):
 
     MU.log_metrics({"loss": 1.2}, step=5, enabled=True)
 
-    assert len(dummy.logged_metrics) == 1
+    assert len(dummy.logged_metrics) == 1, "Collection must not be empty"
     assert dummy.logged_metrics[0] == ("loss", 1.2, 5)
 
 
@@ -100,9 +100,9 @@ def test_log_metrics_multiple_values(patched_mlflow):
     metrics = {"loss": 1.23, "accuracy": 0.95, "f1_score": 0.87}
     MU.log_metrics(metrics, step=10, enabled=True)
 
-    assert len(dummy.logged_metrics) == 3
+    assert len(dummy.logged_metrics) == 3, "Collection must not be empty"
     expected = [("loss", 1.23, 10), ("accuracy", 0.95, 10), ("f1_score", 0.87, 10)]
-    assert dummy.logged_metrics == expected
+    assert dummy.logged_metrics == expected, "logged_metrics is not valid"
 
 
 def test_log_metrics_disabled_noop(patched_mlflow):
@@ -111,7 +111,7 @@ def test_log_metrics_disabled_noop(patched_mlflow):
 
     MU.log_metrics({"loss": 1.0}, step=1, enabled=False)
 
-    assert len(dummy.logged_metrics) == 0
+    assert len(dummy.logged_metrics) == 0, "Collection must not be empty"
 
 
 def test_log_metrics_none_enabled_noop(patched_mlflow):
@@ -120,7 +120,7 @@ def test_log_metrics_none_enabled_noop(patched_mlflow):
 
     MU.log_metrics({"loss": 1.0}, step=1, enabled=None)
 
-    assert len(dummy.logged_metrics) == 0
+    assert len(dummy.logged_metrics) == 0, "Collection must not be empty"
 
 
 def test_log_metrics_step_extraction(patched_mlflow):
@@ -145,7 +145,7 @@ def test_log_metrics_empty_dict(patched_mlflow):
 
     MU.log_metrics({}, step=1, enabled=True)
 
-    assert len(dummy.logged_metrics) == 0
+    assert len(dummy.logged_metrics) == 0, "Collection must not be empty"
 
 
 def test_log_metrics_type_conversion(patched_mlflow):
@@ -154,9 +154,9 @@ def test_log_metrics_type_conversion(patched_mlflow):
 
     MU.log_metrics({"int_val": 42, "float_val": 3.14}, step=1, enabled=True)
 
-    assert len(dummy.logged_metrics) == 2
-    assert dummy.logged_metrics[0][1] == 42
-    assert dummy.logged_metrics[1][1] == 3.14
+    assert len(dummy.logged_metrics) == 2, "Collection must not be empty"
+    assert dummy.logged_metrics[0][1] == 42, "Condition must be true"
+    assert dummy.logged_metrics[1][1] == 3.14, "Condition must be true"
 
 
 def test_log_metrics_step_zero(patched_mlflow):

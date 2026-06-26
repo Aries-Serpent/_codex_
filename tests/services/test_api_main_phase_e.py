@@ -117,17 +117,17 @@ class TestHealthEndpoint:
         mod = _reload_api(monkeypatch)
         with TestClient(mod.app) as client:
             resp = client.get("/health")
-        assert resp.status_code == 200
+        assert resp.status_code == 200, "status_code is not valid"
         data = resp.json()
-        assert data["status"] == "healthy"
-        assert "timestamp" in data
+        assert data["status"] == "healthy", "Data must not be empty"
+        assert "timestamp" in data, "Data must not be empty"
 
     def test_health_no_auth_required(self, monkeypatch):
         monkeypatch.setenv("CODEX_AUTH_MIDDLEWARE_ENABLED", "0")
         mod = _reload_api(monkeypatch)
         with TestClient(mod.app) as client:
             resp = client.get("/health")
-        assert resp.status_code == 200
+        assert resp.status_code == 200, "status_code is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -143,18 +143,18 @@ class TestReadinessEndpoint:
             del mod.app.state.model
         with TestClient(mod.app, raise_server_exceptions=False) as client:
             resp = client.get("/ready")
-        assert resp.status_code == 503
+        assert resp.status_code == 503, "status_code is not valid"
 
     def test_ready_after_model_load_200(self, monkeypatch):
         mod = _reload_api(monkeypatch)
         mod.app.state.model = object()  # Inject a fake model
         with TestClient(mod.app) as client:
             resp = client.get("/ready")
-        assert resp.status_code == 200
+        assert resp.status_code == 200, "status_code is not valid"
         data = resp.json()
-        assert data["status"] == "ready"
-        assert data["checks"]["model"] is True
-        assert data["checks"]["db"] is True
+        assert data["status"] == "ready", "Data must not be empty"
+        assert data["checks"]["model"] is True, "Data must not be empty"
+        assert data["checks"]["db"] is True, "Data must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -167,11 +167,11 @@ class TestStatusEndpoint:
         mod = _reload_api(monkeypatch)
         with TestClient(mod.app) as client:
             resp = client.get("/status")
-        assert resp.status_code == 200
+        assert resp.status_code == 200, "status_code is not valid"
         data = resp.json()
-        assert data["ok"] is True
-        assert "queue" in data
-        assert "jobs" in data
+        assert data["ok"] is True, "Data must not be empty"
+        assert "queue" in data, "Data must not be empty"
+        assert "jobs" in data, "Data must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -184,19 +184,19 @@ class TestEvaluateEndpoint:
         mod = _reload_api(monkeypatch)
         with TestClient(mod.app) as client:
             resp = client.post("/evaluate", json={"dataset": "my-data", "limit": 50})
-        assert resp.status_code == 200
+        assert resp.status_code == 200, "status_code is not valid"
         data = resp.json()
-        assert data["ok"] is True
-        assert data["dataset"] == "my-data"
-        assert data["limit"] == 50
-        assert "metrics" in data
+        assert data["ok"] is True, "Data must not be empty"
+        assert data["dataset"] == "my-data", "Data must not be empty"
+        assert data["limit"] == 50, "Data must not be empty"
+        assert "metrics" in data, "Data must not be empty"
 
     def test_evaluate_default_limit(self, monkeypatch):
         mod = _reload_api(monkeypatch)
         with TestClient(mod.app) as client:
             resp = client.post("/evaluate", json={"dataset": "test-set"})
-        assert resp.status_code == 200
-        assert resp.json()["limit"] == 100
+        assert resp.status_code == 200, "status_code is not valid"
+        assert resp.json()["limit"] == 100, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -209,22 +209,22 @@ class TestTrainEndpoint:
         mod = _reload_api(monkeypatch)
         with TestClient(mod.app) as client:
             resp = client.post("/train", json={"epochs": 2})
-        assert resp.status_code == 200
+        assert resp.status_code == 200, "status_code is not valid"
         data = resp.json()
-        assert data["ok"] is True
-        assert "job_id" in data
+        assert data["ok"] is True, "Data must not be empty"
+        assert "job_id" in data, "Data must not be empty"
 
     def test_train_default_epochs(self, monkeypatch):
         mod = _reload_api(monkeypatch)
         with TestClient(mod.app) as client:
             resp = client.post("/train", json={})
-        assert resp.status_code == 200
+        assert resp.status_code == 200, "status_code is not valid"
 
     def test_train_invalid_epochs_422(self, monkeypatch):
         mod = _reload_api(monkeypatch)
         with TestClient(mod.app, raise_server_exceptions=False) as client:
             resp = client.post("/train", json={"epochs": 0})
-        assert resp.status_code == 422
+        assert resp.status_code == 422, "status_code is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -239,19 +239,19 @@ class TestInferEndpoint:
         monkeypatch.setattr(mod, "enforce_content_policies", lambda _: None)
         with client:
             resp = client.post("/infer", json={"prompt": "hello"})
-        assert resp.status_code == 200
+        assert resp.status_code == 200, "status_code is not valid"
 
     def test_infer_empty_prompt_422(self, monkeypatch):
         mod, client = _make_client(monkeypatch)
         with client:
             resp = client.post("/infer", json={"prompt": ""})
-        assert resp.status_code == 422
+        assert resp.status_code == 422, "status_code is not valid"
 
     def test_infer_missing_prompt_422(self, monkeypatch):
         mod, client = _make_client(monkeypatch)
         with client:
             resp = client.post("/infer", json={})
-        assert resp.status_code == 422
+        assert resp.status_code == 422, "status_code is not valid"
 
     def test_infer_returns_completion_and_tokens(self, monkeypatch):
         mod = _reload_api(monkeypatch)
@@ -265,15 +265,15 @@ class TestInferEndpoint:
             resp = client.post("/infer", json={"prompt": "hi"})
         if resp.status_code == 200:
             data = resp.json()
-            assert "completion" in data
-            assert "tokens" in data
+            assert "completion" in data, "Data must not be empty"
+            assert "tokens" in data, "Data must not be empty"
             assert isinstance(data["tokens"], int)
 
     def test_infer_rate_key_returns_string(self, monkeypatch):
         mod = _reload_api(monkeypatch)
         req = MagicMock()
         key = mod._rate_key(req)
-        assert key == "infer"
+        assert key == "infer", "key is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -290,23 +290,23 @@ class TestMaskSecrets:
     def test_no_secrets_unchanged(self, monkeypatch):
         fn = self._get_fn(monkeypatch)
         text = "just a normal sentence"
-        assert fn(text) == text
+        assert fn(text) == text, "Condition must be true"
 
     def test_openai_key_masked(self, monkeypatch):
         fn = self._get_fn(monkeypatch)
         result = fn("My key is sk-abcdefghij1234567890 use it")
-        assert "sk-" not in result or "[SECRET]" in result
+        assert "sk-" not in result or "[SECRET]" in result, "Result must not be empty"
 
     def test_github_pat_masked(self, monkeypatch):
         fn = self._get_fn(monkeypatch)
         result = fn("token: ghp_" + "A" * 40)
-        assert "[SECRET]" in result
+        assert "[SECRET]" in result, "Result must not be empty"
 
     def test_disable_filter_env_passes_through(self, monkeypatch):
         monkeypatch.setenv("DISABLE_SECRET_FILTER", "1")  # pragma: allowlist secret
         mod = _reload_api(monkeypatch)
         text = "sk-abcdefghij1234567890"  # pragma: allowlist secret
-        assert mod._mask_secrets(text) == text
+        assert mod._mask_secrets(text) == text, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -319,25 +319,25 @@ class TestCoercePositiveInt:
         return _reload_api(monkeypatch)._coerce_positive_int
 
     def test_positive_int(self, monkeypatch):
-        assert self._fn(monkeypatch)(5) == 5
+        assert self._fn(monkeypatch)(5) == 5, "Condition must be true"
 
     def test_zero_returns_none(self, monkeypatch):
-        assert self._fn(monkeypatch)(0) is None
+        assert self._fn(monkeypatch)(0) is None, "Condition must be true"
 
     def test_negative_returns_none(self, monkeypatch):
-        assert self._fn(monkeypatch)(-1) is None
+        assert self._fn(monkeypatch)(-1) is None, "Condition must be true"
 
     def test_positive_float_int(self, monkeypatch):
-        assert self._fn(monkeypatch)(4.0) == 4
+        assert self._fn(monkeypatch)(4.0) == 4, "Condition must be true"
 
     def test_non_integer_float_returns_none(self, monkeypatch):
-        assert self._fn(monkeypatch)(3.5) is None
+        assert self._fn(monkeypatch)(3.5) is None, "Condition must be true"
 
     def test_bool_returns_none(self, monkeypatch):
-        assert self._fn(monkeypatch)(True) is None
+        assert self._fn(monkeypatch)(True) is None, "Condition must be true"
 
     def test_string_returns_none(self, monkeypatch):
-        assert self._fn(monkeypatch)("10") is None
+        assert self._fn(monkeypatch)("10") is None, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -351,22 +351,22 @@ class TestParseEnvContextLimit:
 
     def test_unset_returns_none(self, monkeypatch):
         monkeypatch.delenv("API_MAX_PROMPT_TOKENS", raising=False)
-        assert self._fn(monkeypatch)() is None
+        assert self._fn(monkeypatch)() is None, "Condition must be true"
 
     def test_valid_positive_int(self, monkeypatch):
         monkeypatch.setenv("API_MAX_PROMPT_TOKENS", "1024")
         mod = _reload_api(monkeypatch)
-        assert mod._parse_env_context_limit() == 1024
+        assert mod._parse_env_context_limit() == 1024, "Condition must be true"
 
     def test_zero_returns_none(self, monkeypatch):
         monkeypatch.setenv("API_MAX_PROMPT_TOKENS", "0")
         mod = _reload_api(monkeypatch)
-        assert mod._parse_env_context_limit() is None
+        assert mod._parse_env_context_limit() is None, "Condition must be true"
 
     def test_invalid_string_returns_none(self, monkeypatch):
         monkeypatch.setenv("API_MAX_PROMPT_TOKENS", "abc")
         mod = _reload_api(monkeypatch)
-        assert mod._parse_env_context_limit() is None
+        assert mod._parse_env_context_limit() is None, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -379,7 +379,7 @@ class TestResolveContextLimit:
         monkeypatch.setenv("API_MAX_PROMPT_TOKENS", "512")
         mod = _reload_api(monkeypatch)
         result = mod._resolve_context_limit(MagicMock(), MagicMock())
-        assert result == 512
+        assert result == 512, "Result must not be empty"
 
     def test_model_attribute_used_when_no_env(self, monkeypatch):
         monkeypatch.delenv("API_MAX_PROMPT_TOKENS", raising=False)
@@ -398,7 +398,7 @@ class TestResolveContextLimit:
         tokenizer = types.SimpleNamespace()
         model = types.SimpleNamespace()
         result = mod._resolve_context_limit(tokenizer, model)
-        assert result is None
+        assert result is None, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -411,19 +411,19 @@ class TestGetModelVocabSize:
         mod = _reload_api(monkeypatch)
         model = types.SimpleNamespace(config=types.SimpleNamespace(vocab_size=50257))
         result = mod._get_model_vocab_size(model)
-        assert result == 50257
+        assert result == 50257, "Result must not be empty"
 
     def test_from_direct_vocab_size(self, monkeypatch):
         mod = _reload_api(monkeypatch)
         model = types.SimpleNamespace(vocab_size=32000)
         result = mod._get_model_vocab_size(model)
-        assert result == 32000
+        assert result == 32000, "Result must not be empty"
 
     def test_returns_none_when_no_vocab_size(self, monkeypatch):
         mod = _reload_api(monkeypatch)
         model = types.SimpleNamespace()
         result = mod._get_model_vocab_size(model)
-        assert result is None
+        assert result is None, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -437,7 +437,7 @@ class TestApiKeyMiddleware:
         mod = _reload_api(monkeypatch)
         with TestClient(mod.app) as client:
             resp = client.get("/health")
-        assert resp.status_code == 200
+        assert resp.status_code == 200, "status_code is not valid"
 
     def test_wrong_api_key_blocked(self, monkeypatch):
         monkeypatch.setenv("API_KEY", "secret-key-12345")
@@ -446,14 +446,14 @@ class TestApiKeyMiddleware:
         mod = _reload_api(monkeypatch, auth_enabled=True)
         with TestClient(mod.app, raise_server_exceptions=False) as client:
             resp = client.get("/status", headers={"x-api-key": "wrong"})
-        assert resp.status_code == 401
+        assert resp.status_code == 401, "status_code is not valid"
 
     def test_correct_api_key_passes(self, monkeypatch):
         monkeypatch.setenv("API_KEY", "correct-key")
         mod = _reload_api(monkeypatch)
         with TestClient(mod.app) as client:
             resp = client.get("/status", headers={"x-api-key": "correct-key"})
-        assert resp.status_code == 200
+        assert resp.status_code == 200, "status_code is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -467,22 +467,22 @@ class TestEchoModel:
         model = mod._EchoModel(vocab_size=16)
         # Input shape is [[token1, token2, ...]] — a single batch of flat token ids.
         result = model([[1, 2, 3]])
-        assert "logits" in result
+        assert "logits" in result, "Result must not be empty"
 
     def test_echo_model_eval_returns_self(self, monkeypatch):
         mod = _reload_api(monkeypatch)
         model = mod._EchoModel()
-        assert model.eval() is model
+        assert model.eval() is model, "Condition must be true"
 
     def test_echo_model_empty_tokens(self, monkeypatch):
         mod = _reload_api(monkeypatch)
         model = mod._EchoModel(vocab_size=8)
         result = model([[]])
-        assert "logits" in result
+        assert "logits" in result, "Result must not be empty"
 
     def test_check_db_connection(self, monkeypatch):
         mod = _reload_api(monkeypatch)
-        assert mod.check_db_connection() is True
+        assert mod.check_db_connection() is True, "Condition must be true"
 
     def test_check_model_loaded_false_when_no_model(self, monkeypatch):
         mod = _reload_api(monkeypatch)

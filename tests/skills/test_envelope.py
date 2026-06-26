@@ -47,23 +47,23 @@ class TestExecutionEnvelopeSuccess:
         reg.register(manifest)
         env = ExecutionEnvelope(reg)
         result = env.run("test.skill", {"hello": "world"})
-        assert result.status == "ok"
-        assert result.data == {"echo": {"hello": "world"}}
+        assert result.status == "ok", "Result must not be empty"
+        assert result.data == {"echo": {"hello": "world"}}, "Result must not be empty"
 
     def test_result_has_trace_id(self):
         reg = SkillRegistry()
         reg.register(_make_manifest())
         env = ExecutionEnvelope(reg)
         result = env.run("test.skill", {})
-        assert result.trace_id
-        assert len(result.trace_id) > 10
+        assert result.trace_id, "Result must not be empty"
+        assert len(result.trace_id) > 10, "Collection must not be empty"
 
     def test_latency_ms_recorded(self):
         reg = SkillRegistry()
         reg.register(_make_manifest())
         env = ExecutionEnvelope(reg)
         result = env.run("test.skill", {})
-        assert result.metrics.latency_ms >= 0
+        assert result.metrics.latency_ms >= 0, "latency_ms must be greater than zero"
 
     def test_budget_consumed_after_run(self):
         reg = SkillRegistry()
@@ -71,7 +71,7 @@ class TestExecutionEnvelopeSuccess:
         env = ExecutionEnvelope(reg)
         env.run("test.skill", {})
         skill = reg.resolve("test.skill")
-        assert skill.budget_used["calls"] == 1  # type: ignore[index]
+        assert skill.budget_used["calls"] == 1, "Condition must be true"
 
 
 class TestExecutionEnvelopeErrors:
@@ -79,33 +79,33 @@ class TestExecutionEnvelopeErrors:
         reg = SkillRegistry()
         env = ExecutionEnvelope(reg)
         result = env.run("nonexistent.skill", {})
-        assert result.status == "error"
-        assert result.error is not None
-        assert result.error.type == "SkillNotFound"
+        assert result.status == "error", "Result must not be empty"
+        assert result.error is not None, "error must be initialized"
+        assert result.error.type == "SkillNotFound", "Result must not be empty"
 
     def test_handler_exception(self):
         reg = SkillRegistry()
         reg.register(_make_manifest(entrypoint=f"{_H}:_error_handler"))
         env = ExecutionEnvelope(reg)
         result = env.run("test.skill", {})
-        assert result.status == "error"
-        assert result.error is not None
-        assert "intentional error" in result.error.message
+        assert result.status == "error", "Result must not be empty"
+        assert result.error is not None, "error must be initialized"
+        assert "intentional error" in result.error.message, "Result must not be empty"
 
     def test_invalid_entrypoint(self):
         reg = SkillRegistry()
         reg.register(_make_manifest(entrypoint="no_colon_format"))
         env = ExecutionEnvelope(reg)
         result = env.run("test.skill", {})
-        assert result.status == "error"
-        assert result.error.type == "HandlerLoadError"  # type: ignore[union-attr]
+        assert result.status == "error", "Result must not be empty"
+        assert result.error.type == "HandlerLoadError", "Result must not be empty"
 
     def test_missing_module(self):
         reg = SkillRegistry()
         reg.register(_make_manifest(entrypoint="nonexistent.module:handler"))
         env = ExecutionEnvelope(reg)
         result = env.run("test.skill", {})
-        assert result.status == "error"
+        assert result.status == "error", "Result must not be empty"
 
 
 class TestExecutionEnvelopePolicy:
@@ -121,15 +121,15 @@ class TestExecutionEnvelopePolicy:
         )
         env = ExecutionEnvelope(reg)
         result = env.run("test.skill", {}, caller_id="unknown-agent")
-        assert result.status == "error"
-        assert result.error.type == "PolicyViolation"  # type: ignore[union-attr]
+        assert result.status == "error", "Result must not be empty"
+        assert result.error.type == "PolicyViolation", "Result must not be empty"
 
     def test_allowlist_star_allows_all(self):
         reg = SkillRegistry()
         reg.register(_make_manifest())
         env = ExecutionEnvelope(reg)
         result = env.run("test.skill", {}, caller_id="any-agent")
-        assert result.status == "ok"
+        assert result.status == "ok", "Result must not be empty"
 
     def test_budget_exhaustion_blocks(self):
         reg = SkillRegistry()
@@ -143,8 +143,8 @@ class TestExecutionEnvelopePolicy:
         reg.consume_budget("test.skill", calls=1)
         env = ExecutionEnvelope(reg)
         result = env.run("test.skill", {})
-        assert result.status == "error"
-        assert result.error.type == "PolicyViolation"  # type: ignore[union-attr]
+        assert result.status == "error", "Result must not be empty"
+        assert result.error.type == "PolicyViolation", "Result must not be empty"
 
 
 class TestExecutionEnvelopeTimeout:
@@ -153,9 +153,9 @@ class TestExecutionEnvelopeTimeout:
         reg.register(_make_manifest(entrypoint=f"{_H}:_slow_handler"))
         env = ExecutionEnvelope(reg)
         result = env.run("test.skill", {}, timeout_ms=100)
-        assert result.status == "error"
-        assert result.error.type == "TimeoutError"  # type: ignore[union-attr]
-        assert result.error.retryable is True  # type: ignore[union-attr]
+        assert result.status == "error", "Result must not be empty"
+        assert result.error.type == "TimeoutError", "Result must not be empty"
+        assert result.error.retryable is True, "Result must not be empty"
 
 
 class TestExecutionEnvelopeRetries:
@@ -180,8 +180,8 @@ class TestExecutionEnvelopeRetries:
         try:
             env = ExecutionEnvelope(reg)
             result = env.run("test.skill", {}, max_retries=3)
-            assert result.status == "ok"
-            assert len(call_count) == 3
+            assert result.status == "ok", "Result must not be empty"
+            assert len(call_count) == 3, "Call_count must not be empty"
         finally:
             if original is None:
                 delattr(mod, "flaky_handler")
@@ -201,8 +201,8 @@ class TestTelemetryEmission:
             env = ExecutionEnvelope(reg)
             env.run("test.skill", {})
             log_path = tmp_path / "events.jsonl"
-            assert log_path.exists()
+            assert log_path.exists(), "Condition must be true"
             content = log_path.read_text()
-            assert "test.skill" in content
+            assert "test.skill" in content, "Content must not be empty"
         finally:
             del os.environ["CODEX_SKILL_TELEMETRY_PATH"]

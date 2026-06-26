@@ -14,4 +14,4 @@ def test_most_recent_branch_returns_string():
     os.environ.setdefault("CODEX_GH_REPO", "_codex_")
     name = most_recent_branch()
     assert isinstance(name, str)
-    assert name  # non-empty
+    assert name, "name is not valid"

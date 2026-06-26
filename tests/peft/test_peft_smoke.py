@@ -33,4 +33,4 @@ def test_peft_get_trainable_parameters_works_on_plain_model():
         adapter = get_peft_registry().get(name)
         n = adapter.get_trainable_parameters(model)
         assert isinstance(n, int)
-        assert n > 0
+        assert n > 0, "n must be greater than zero"

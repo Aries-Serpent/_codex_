@@ -53,7 +53,7 @@ def test_json_companion_written(tmp_path):
             "scoring": cfg["scoring"],
         },
     )
-    assert js.exists()
+    assert js.exists(), "Condition must be true"
     data = json.loads(js.read_text())
-    assert "capabilities" in data
-    assert data["metrics_schema_version"] == "2.0.0"
+    assert "capabilities" in data, "Data must not be empty"
+    assert data["metrics_schema_version"] == "2.0.0", "Data must not be empty"

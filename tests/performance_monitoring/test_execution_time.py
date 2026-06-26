@@ -23,7 +23,7 @@ class TestDurationMeasurement:
 
         duration = (end_time - start_time).total_seconds()
 
-        assert duration == 1.5
+        assert duration == 1.5, "duration is not valid"
 
     def test_measure_test_suite_duration(self):
         """Test measuring total suite duration."""
@@ -31,7 +31,7 @@ class TestDurationMeasurement:
 
         total_duration = sum(test_durations)
 
-        assert total_duration == 5.5
+        assert total_duration == 5.5, "total_duration is not valid"
 
     def test_calculate_average_duration(self):
         """Test calculating average test duration."""
@@ -39,7 +39,7 @@ class TestDurationMeasurement:
 
         avg_duration = sum(test_durations) / len(test_durations)
 
-        assert avg_duration == 1.1
+        assert avg_duration == 1.1, "avg_duration is not valid"
 
     def test_calculate_percentile_durations(self):
         """Test calculating percentile durations."""
@@ -56,9 +56,9 @@ class TestDurationMeasurement:
         p90 = durations[p90_idx]
         p99 = durations[p99_idx]
 
-        assert p50 == 1.5
-        assert p90 == 8.0
-        assert p99 == 10.0
+        assert p50 == 1.5, "p50 is not valid"
+        assert p90 == 8.0, "p90 is not valid"
+        assert p99 == 10.0, "p99 is not valid"
 
     def test_measure_setup_teardown_overhead(self):
         """Test measuring fixture setup/teardown overhead."""
@@ -92,8 +92,8 @@ class TestSlowTestIdentification:
 
         slow_tests = [t for t in test_results if t["duration"] > threshold_seconds]
 
-        assert len(slow_tests) == 2
-        assert slow_tests[0]["name"] == "test_slow"
+        assert len(slow_tests) == 2, "Slow_tests must not be empty"
+        assert slow_tests[0]["name"] == "test_slow", "Condition must be true"
 
     def test_rank_tests_by_duration(self):
         """Test ranking tests by execution duration."""
@@ -106,8 +106,8 @@ class TestSlowTestIdentification:
 
         ranked = sorted(test_results, key=lambda x: x["duration"], reverse=True)
 
-        assert ranked[0]["name"] == "test_d"
-        assert ranked[-1]["name"] == "test_c"
+        assert ranked[0]["name"] == "test_d", "Condition must be true"
+        assert ranked[-1]["name"] == "test_c", "Condition must be true"
 
     def test_calculate_slow_test_impact(self):
         """Test calculating impact of slow tests on total time."""
@@ -138,7 +138,7 @@ class TestSlowTestIdentification:
         # Tests with no dependencies can run in parallel
         parallelizable = [t for t in test_results if not t["dependencies"]]
 
-        assert len(parallelizable) == 3
+        assert len(parallelizable) == 3, "Parallelizable must not be empty"
 
     def test_categorize_by_duration_bucket(self):
         """Test categorizing tests by duration buckets."""
@@ -168,8 +168,8 @@ class TestSlowTestIdentification:
             else:
                 buckets["very_slow"].append(test)
 
-        assert len(buckets["fast"]) == 2
-        assert len(buckets["very_slow"]) == 1
+        assert len(buckets["fast"]) == 2, "Collection must not be empty"
+        assert len(buckets["very_slow"]) == 1, "Collection must not be empty"
 
 
 class TestDurationTrends:
@@ -201,8 +201,8 @@ class TestDurationTrends:
         increase_percentage = ((current_duration - baseline_duration) / baseline_duration) * 100
         is_regression = increase_percentage > regression_threshold
 
-        assert increase_percentage == 75.0
-        assert is_regression
+        assert increase_percentage == 75.0, "increase_percentage is not valid"
+        assert is_regression, "is_regression is not valid"
 
     def test_calculate_moving_average_duration(self):
         """Test calculating moving average of durations."""
@@ -215,7 +215,7 @@ class TestDurationTrends:
             avg = sum(window) / window_size
             moving_averages.append(round(avg, 2))
 
-        assert len(moving_averages) == 5
+        assert len(moving_averages) == 5, "Moving_averages must not be empty"
 
     def test_predict_future_duration(self):
         """Test simple linear prediction of future duration."""
@@ -239,7 +239,7 @@ class TestDurationTrends:
         z_score = (current_duration - mean) / std_dev if std_dev > 0 else 0
         is_anomaly = abs(z_score) > 2  # More than 2 standard deviations
 
-        assert is_anomaly
+        assert is_anomaly, "is_anomaly is not valid"
 
 
 class TestPerformanceBaseline:
@@ -262,8 +262,8 @@ class TestPerformanceBaseline:
             },
         }
 
-        assert len(baseline["tests"]) == 3
-        assert baseline["summary"]["total"] == 4.5
+        assert len(baseline["tests"]) == 3, "Collection must not be empty"
+        assert baseline["summary"]["total"] == 4.5, "Condition must be true"
 
     def test_compare_against_baseline(self):
         """Test comparing current results against baseline."""
@@ -281,9 +281,9 @@ class TestPerformanceBaseline:
                 "change_percent": round(change, 1),
             }
 
-        assert comparisons["test_a"]["change_percent"] == 20.0
-        assert comparisons["test_b"]["change_percent"] == -10.0
-        assert comparisons["test_c"]["change_percent"] == 66.7
+        assert comparisons["test_a"]["change_percent"] == 20.0, "Condition must be true"
+        assert comparisons["test_b"]["change_percent"] == -10.0, "Condition must be true"
+        assert comparisons["test_c"]["change_percent"] == 66.7, "Condition must be true"
 
     def test_update_baseline(self):
         """Test updating baseline with new measurements."""
@@ -293,8 +293,8 @@ class TestPerformanceBaseline:
         # Merge with new measurements
         updated_baseline = {**old_baseline, **new_measurements}
 
-        assert updated_baseline["test_a"] == 1.1  # Updated
-        assert updated_baseline["test_c"] == 1.5  # New
+        assert updated_baseline["test_a"] == 1.1, "Condition must be true"
+        assert updated_baseline["test_c"] == 1.5, "Condition must be true"
 
     def test_baseline_versioning(self):
         """Test baseline versioning."""
@@ -306,8 +306,8 @@ class TestPerformanceBaseline:
 
         latest = max(baselines, key=lambda b: b["version"])
 
-        assert latest["version"] == 3
-        assert latest["avg_duration"] == 1.6
+        assert latest["version"] == 3, "Condition must be true"
+        assert latest["avg_duration"] == 1.6, "Condition must be true"
 
     def test_store_baseline_json(self):
         """Test storing baseline in JSON format."""
@@ -326,4 +326,4 @@ class TestPerformanceBaseline:
             baseline_file.write_text(json.dumps(baseline, indent=2))
 
             loaded = json.loads(baseline_file.read_text())
-            assert loaded["version"] == 1
+            assert loaded["version"] == 1, "Condition must be true"

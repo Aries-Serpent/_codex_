@@ -189,12 +189,12 @@ class TestManageTenantIndices:
             overlap=50,
         )
 
-        assert result.success is True
-        assert result.operation == IndexOperation.CREATE
-        assert result.tenant_id == "customer_a"
-        assert "docs" in result.index_names
-        assert "Successfully created" in result.message
-        assert "created_indices" in result.details
+        assert result.success is True, "Result must not be empty"
+        assert result.operation == IndexOperation.CREATE, "Result must not be empty"
+        assert result.tenant_id == "customer_a", "Result must not be empty"
+        assert "docs" in result.index_names, "Result must not be empty"
+        assert "Successfully created" in result.message, "Result must not be empty"
+        assert "created_indices" in result.details, "Result must not be empty"
 
     def test_create_operation_multiple_indices(
         self, temp_index_dir, sample_files, mock_sentence_transformer
@@ -208,11 +208,11 @@ class TestManageTenantIndices:
             files=sample_files,
         )
 
-        assert result.success is True
-        assert len(result.details["created_indices"]) == 3
-        assert "docs" in result.details["created_indices"]
-        assert "api" in result.details["created_indices"]
-        assert "faq" in result.details["created_indices"]
+        assert result.success is True, "Result must not be empty"
+        assert len(result.details["created_indices"]) == 3, "Collection must not be empty"
+        assert "docs" in result.details["created_indices"], "Result must not be empty"
+        assert "api" in result.details["created_indices"], "Result must not be empty"
+        assert "faq" in result.details["created_indices"], "Result must not be empty"
 
     def test_create_operation_missing_files(self, temp_index_dir):
         """Test CREATE operation fails without files"""
@@ -223,9 +223,9 @@ class TestManageTenantIndices:
             index_dir=temp_index_dir,
         )
 
-        assert result.success is False
-        assert result.operation == IndexOperation.CREATE
-        assert "'create' operation requires 'files' parameter" in result.message
+        assert result.success is False, "Result must not be empty"
+        assert result.operation == IndexOperation.CREATE, "Result must not be empty"
+        assert "'create' operation requires 'files' parameter" in result.message, "Result must not be empty"
 
     def test_create_operation_empty_files(self, temp_index_dir):
         """Test CREATE operation with empty files list"""
@@ -237,8 +237,8 @@ class TestManageTenantIndices:
             files=[],
         )
 
-        assert result.success is False
-        assert "'create' operation requires 'files' parameter" in result.message
+        assert result.success is False, "Result must not be empty"
+        assert "'create' operation requires 'files' parameter" in result.message, "Result must not be empty"
 
     def test_update_operation_success(
         self, temp_index_dir, sample_files, mock_sentence_transformer
@@ -252,7 +252,7 @@ class TestManageTenantIndices:
             index_dir=temp_index_dir,
             files=sample_files[:1],
         )
-        assert create_result.success is True
+        assert create_result.success is True, "Result must not be empty"
 
         # Now update it with more files
         update_result = manage_tenant_indices(
@@ -264,9 +264,9 @@ class TestManageTenantIndices:
             chunk_size=400,
         )
 
-        assert update_result.success is True
-        assert update_result.operation == IndexOperation.UPDATE
-        assert "Successfully updated" in update_result.message
+        assert update_result.success is True, "Result must not be empty"
+        assert update_result.operation == IndexOperation.UPDATE, "Result must not be empty"
+        assert "Successfully updated" in update_result.message, "Result must not be empty"
 
     def test_update_operation_nonexistent_index(
         self, temp_index_dir, sample_files, mock_sentence_transformer
@@ -281,8 +281,8 @@ class TestManageTenantIndices:
         )
 
         # Should succeed by creating new index
-        assert result.success is True
-        assert "updated_indices" in result.details
+        assert result.success is True, "Result must not be empty"
+        assert "updated_indices" in result.details, "Result must not be empty"
 
     def test_update_operation_missing_files(self, temp_index_dir):
         """Test UPDATE operation fails without files"""
@@ -293,8 +293,8 @@ class TestManageTenantIndices:
             index_dir=temp_index_dir,
         )
 
-        assert result.success is False
-        assert "'update' operation requires 'files' parameter" in result.message
+        assert result.success is False, "Result must not be empty"
+        assert "'update' operation requires 'files' parameter" in result.message, "Result must not be empty"
 
     def test_delete_operation_success(
         self, temp_index_dir, sample_files, mock_sentence_transformer
@@ -308,7 +308,7 @@ class TestManageTenantIndices:
             index_dir=temp_index_dir,
             files=sample_files,
         )
-        assert create_result.success is True
+        assert create_result.success is True, "Result must not be empty"
 
         # Now delete it
         delete_result = manage_tenant_indices(
@@ -318,9 +318,9 @@ class TestManageTenantIndices:
             index_dir=temp_index_dir,
         )
 
-        assert delete_result.success is True
-        assert delete_result.operation == IndexOperation.DELETE
-        assert "Successfully deleted" in delete_result.message
+        assert delete_result.success is True, "Result must not be empty"
+        assert delete_result.operation == IndexOperation.DELETE, "Result must not be empty"
+        assert "Successfully deleted" in delete_result.message, "Result must not be empty"
 
     def test_delete_operation_multiple_indices(
         self, temp_index_dir, sample_files, mock_sentence_transformer
@@ -343,8 +343,8 @@ class TestManageTenantIndices:
             index_dir=temp_index_dir,
         )
 
-        assert delete_result.success is True
-        assert len(delete_result.details["deleted_indices"]) == 2
+        assert delete_result.success is True, "Result must not be empty"
+        assert len(delete_result.details["deleted_indices"]) == 2, "Collection must not be empty"
 
     def test_delete_operation_nonexistent_index(self, temp_index_dir):
         """Test DELETE operation on non-existent index"""
@@ -356,8 +356,8 @@ class TestManageTenantIndices:
         )
 
         # Should succeed but report no deletions
-        assert result.success is False
-        assert "No indices deleted" in result.message
+        assert result.success is False, "Result must not be empty"
+        assert "No indices deleted" in result.message, "Result must not be empty"
 
     def test_delete_operation_partial_failure(
         self, temp_index_dir, sample_files, mock_sentence_transformer
@@ -381,8 +381,8 @@ class TestManageTenantIndices:
         )
 
         # Should partially succeed
-        assert "docs" in delete_result.details["deleted_indices"]
-        assert len(delete_result.details["deleted_indices"]) == 1
+        assert "docs" in delete_result.details["deleted_indices"], "Result must not be empty"
+        assert len(delete_result.details["deleted_indices"]) == 1, "Collection must not be empty"
 
     def test_merge_operation_success(self, temp_index_dir, sample_files, mock_sentence_transformer):
         """Test MERGE operation success"""
@@ -405,10 +405,10 @@ class TestManageTenantIndices:
             merge_name="all_content",
         )
 
-        assert merge_result.success is True
-        assert merge_result.operation == IndexOperation.MERGE
-        assert "Successfully merged" in merge_result.message
-        assert merge_result.details["merged_name"] == "all_content"
+        assert merge_result.success is True, "Result must not be empty"
+        assert merge_result.operation == IndexOperation.MERGE, "Result must not be empty"
+        assert "Successfully merged" in merge_result.message, "Result must not be empty"
+        assert merge_result.details["merged_name"] == "all_content", "Result must not be empty"
 
     def test_merge_operation_missing_merge_name(
         self, temp_index_dir, sample_files, mock_sentence_transformer
@@ -431,8 +431,8 @@ class TestManageTenantIndices:
             index_dir=temp_index_dir,
         )
 
-        assert merge_result.success is False
-        assert "'merge' operation requires 'merge_name' parameter" in merge_result.message
+        assert merge_result.success is False, "Result must not be empty"
+        assert "'merge' operation requires 'merge_name' parameter" in merge_result.message, "Result must not be empty"
 
     def test_merge_operation_single_index(
         self, temp_index_dir, sample_files, mock_sentence_transformer
@@ -456,7 +456,7 @@ class TestManageTenantIndices:
             merge_name="merged",
         )
 
-        assert merge_result.success is True
+        assert merge_result.success is True, "Result must not be empty"
 
     def test_merge_operation_nonexistent_indices(self, temp_index_dir):
         """Test MERGE operation with non-existent indices"""
@@ -468,8 +468,8 @@ class TestManageTenantIndices:
             merge_name="merged",
         )
 
-        assert result.success is False
-        assert "No valid indices found" in result.message
+        assert result.success is False, "Result must not be empty"
+        assert "No valid indices found" in result.message, "Result must not be empty"
 
     def test_list_operation_success(self, temp_index_dir, sample_files, mock_sentence_transformer):
         """Test LIST operation success"""
@@ -490,15 +490,15 @@ class TestManageTenantIndices:
             index_dir=temp_index_dir,
         )
 
-        assert list_result.success is True
-        assert list_result.operation == IndexOperation.LIST
-        assert "Found" in list_result.message
-        assert len(list_result.details["indices"]) == 2
+        assert list_result.success is True, "Result must not be empty"
+        assert list_result.operation == IndexOperation.LIST, "Result must not be empty"
+        assert "Found" in list_result.message, "Result must not be empty"
+        assert len(list_result.details["indices"]) == 2, "Collection must not be empty"
         # Extract 'name' field from dict list
         indices_list = list_result.details["indices"]
         index_names = [idx["name"] if isinstance(idx, dict) else idx for idx in indices_list]
-        assert "docs" in index_names
-        assert "api" in index_names
+        assert "docs" in index_names, "Condition must be true"
+        assert "api" in index_names, "Condition must be true"
 
     def test_list_operation_empty_tenant(self, temp_index_dir):
         """Test LIST operation with no indices"""
@@ -509,8 +509,8 @@ class TestManageTenantIndices:
             index_dir=temp_index_dir,
         )
 
-        assert result.success is True
-        assert "No indices found" in result.message
+        assert result.success is True, "Result must not be empty"
+        assert "No indices found" in result.message, "Result must not be empty"
 
     def test_list_operation_multiple_tenants(
         self, temp_index_dir, sample_files, mock_sentence_transformer
@@ -553,14 +553,14 @@ class TestManageTenantIndices:
         indices_a = [
             idx["name"] if isinstance(idx, dict) else idx for idx in list_a.details["indices"]
         ]
-        assert "docs" in indices_a
-        assert "api" not in indices_a
+        assert "docs" in indices_a, "Condition must be true"
+        assert "api" not in indices_a, "Condition must be true"
 
         indices_b = [
             idx["name"] if isinstance(idx, dict) else idx for idx in list_b.details["indices"]
         ]
-        assert "api" in indices_b
-        assert "docs" not in indices_b
+        assert "api" in indices_b, "Condition must be true"
+        assert "docs" not in indices_b, "Condition must be true"
 
     def test_invalid_operation(self, temp_index_dir):
         """Test invalid operation handling"""
@@ -571,8 +571,8 @@ class TestManageTenantIndices:
             index_dir=temp_index_dir,
         )
 
-        assert result.success is False
-        assert "Invalid operation" in result.message
+        assert result.success is False, "Result must not be empty"
+        assert "Invalid operation" in result.message, "Result must not be empty"
         assert "create, update, delete, merge, list" in result.message
 
     def test_operation_case_insensitive(
@@ -588,8 +588,8 @@ class TestManageTenantIndices:
             files=sample_files,
         )
 
-        assert result_upper.success is True
-        assert result_upper.operation == IndexOperation.CREATE
+        assert result_upper.success is True, "Result must not be empty"
+        assert result_upper.operation == IndexOperation.CREATE, "Result must not be empty"
 
         # Test mixed case
         result_mixed = manage_tenant_indices(
@@ -600,7 +600,7 @@ class TestManageTenantIndices:
             files=sample_files,
         )
 
-        assert result_mixed.success is True
+        assert result_mixed.success is True, "Result must not be empty"
 
     def test_custom_chunk_parameters(self, temp_index_dir, sample_files, mock_sentence_transformer):
         """Test CREATE with custom chunk_size and overlap"""
@@ -614,14 +614,14 @@ class TestManageTenantIndices:
             overlap=100,
         )
 
-        assert result.success is True
+        assert result.success is True, "Result must not be empty"
 
     def test_tenant_directory_creation(
         self, temp_index_dir, sample_files, mock_sentence_transformer
     ):
         """Test that tenant directories are created automatically"""
         tenant_dir = Path(temp_index_dir) / "customer_a"
-        assert not tenant_dir.exists()
+        assert not tenant_dir.exists(), "Condition must be true"
 
         manage_tenant_indices(
             tenant_id="customer_a",
@@ -631,8 +631,8 @@ class TestManageTenantIndices:
             files=sample_files,
         )
 
-        assert tenant_dir.exists()
-        assert (tenant_dir / "docs").exists()
+        assert tenant_dir.exists(), "Condition must be true"
+        assert (tenant_dir / "docs").exists(), "Condition must be true"
 
     def test_create_with_error_in_one_index(
         self, temp_index_dir, sample_files, mock_sentence_transformer
@@ -648,8 +648,8 @@ class TestManageTenantIndices:
         )
 
         # Both should succeed with valid files
-        assert result.success is True
-        assert len(result.details["created_indices"]) == 2
+        assert result.success is True, "Result must not be empty"
+        assert len(result.details["created_indices"]) == 2, "Collection must not be empty"
 
     def test_result_structure(self, temp_index_dir, sample_files, mock_sentence_transformer):
         """Test that TenantOperationResult has correct structure"""

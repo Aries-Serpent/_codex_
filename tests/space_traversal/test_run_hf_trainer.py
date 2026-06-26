@@ -113,7 +113,7 @@ def test_run_hf_trainer_accepts_empty_texts(monkeypatch, tmp_path):
         run_hf_trainer([], tmp_path / "empty_out", distributed=False, seed=0)
     except (ValueError, RuntimeError) as exc:
         # Acceptable: empty dataset raises a clear ValueError or RuntimeError
-        assert (
+        assert (, "Condition must be true"
             "empty" in str(exc).lower()
             or "dataset" in str(exc).lower()
             or "no samples" in str(exc).lower()
@@ -137,5 +137,5 @@ def test_prepare_dataset_missing_attention_mask(monkeypatch, tmp_path):
 
     ds = prepare_dataset(["hello world", "foo"], _MinimalTok())
     # Should not raise ValueError about missing columns
-    assert "input_ids" in ds.column_names
+    assert "input_ids" in ds.column_names, "Condition must be true"
     # attention_mask may or may not be present depending on tokenizer

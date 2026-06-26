@@ -45,7 +45,7 @@ class TestBudgetCap:
         def fast():
             return "done"
 
-        assert fast() == "done"
+        assert fast() == "done", "Condition must be true"
 
     @pytest.mark.flaky(reruns=2, reason="P2-timing: budget_cap timeout precision")
     @pytest.mark.timeout(90)
@@ -92,7 +92,7 @@ class TestBudgetCap:
             pass
 
         # Function name should be preserved or wrapped
-        assert callable(my_function)
+        assert callable(my_function), "Condition must be true"
 
 
 class TestDirichletBeliefUpdate:
@@ -106,7 +106,7 @@ class TestDirichletBeliefUpdate:
         beliefs = mod.DirichletBeliefs(options=["a", "b", "c"])
         prior_a = beliefs.alphas[0]
         beliefs.observe("a")
-        assert beliefs.alphas[0] > prior_a
+        assert beliefs.alphas[0] > prior_a, "Value must be greater than zero"
 
     def test_posterior_means_normalized(self):
         mod = _import("budget_uncertainty")
@@ -117,7 +117,7 @@ class TestDirichletBeliefUpdate:
         beliefs.observe("x")
         means = beliefs.posterior_means
         total = sum(means.values())
-        assert abs(total - 1.0) < 1e-9
+        assert abs(total - 1.0) < 1e-9, "Condition must be true"
 
     def test_best_option_tracks_observations(self):
         mod = _import("budget_uncertainty")
@@ -127,7 +127,7 @@ class TestDirichletBeliefUpdate:
         beliefs = mod.DirichletBeliefs(options=["win", "lose", "draw"])
         for _ in range(5):
             beliefs.observe("win")
-        assert beliefs.best_option == "win"
+        assert beliefs.best_option == "win", "best_option is not valid"
 
     def test_entropy_decreases_with_certainty(self):
         mod = _import("budget_uncertainty")
@@ -138,7 +138,7 @@ class TestDirichletBeliefUpdate:
         initial_entropy = beliefs.entropy
         for _ in range(20):
             beliefs.observe("a")
-        assert beliefs.entropy < initial_entropy
+        assert beliefs.entropy < initial_entropy, "entropy is not valid"
 
     def test_to_dict_is_serializable(self):
         mod = _import("budget_uncertainty")
@@ -148,7 +148,7 @@ class TestDirichletBeliefUpdate:
         beliefs = mod.DirichletBeliefs(options=["pass", "fail"])
         beliefs.observe("pass")
         data = beliefs.to_dict()
-        assert json.dumps(data)  # must not raise
+        assert json.dumps(data), "Data must not be empty"
 
     def test_budget_exceeded_on_timeout(self):
         mod = _import("budget_uncertainty")
@@ -186,7 +186,7 @@ class TestAutonomySchedulerBudgetExhaustion:
             elapsed = time.monotonic() - start
 
         # Loop must have returned very quickly (< 5s) due to budget exhaustion
-        assert elapsed < 5.0
+        assert elapsed < 5.0, "elapsed is not valid"
 
     def test_kill_switch_exits_immediately(self, tmp_path):
         mod = _import("autonomy_scheduler")
@@ -205,7 +205,7 @@ class TestAutonomySchedulerBudgetExhaustion:
             elapsed = time.monotonic() - start
 
         # Must exit almost instantly when kill-switch is set
-        assert elapsed < 2.0
+        assert elapsed < 2.0, "elapsed is not valid"
 
     def test_max_iterations_caps_loop(self, tmp_path):
         mod = _import("autonomy_scheduler")
@@ -242,7 +242,7 @@ class TestAutonomySchedulerBudgetExhaustion:
         ):
             mod.run_autonomy_loop()
 
-        assert len(call_count) <= 2
+        assert len(call_count) <= 2, "Call_count must not be empty"
 
 
 # ── agent_runner (Phase 7) — budget exhaustion ──────────────────────────────
@@ -261,7 +261,7 @@ class TestAgentRunnerBudgetExhaustion:
             mod.run_once(budget_seconds=5, dry_run=True)
             elapsed = time.monotonic() - start
 
-        assert elapsed < 10.0
+        assert elapsed < 10.0, "elapsed is not valid"
 
     def test_kill_switch_prevents_run(self, tmp_path):
         mod = _import("agent_runner")
@@ -296,7 +296,7 @@ class TestAgentRunnerBudgetExhaustion:
         for t in threads:
             t.join()
 
-        assert not errors
+        assert not errors, "Error should be raised or set"
 
 
 # ── session_tracker (Phase 2) — concurrent session creation ─────────────────
@@ -329,6 +329,6 @@ class TestSessionTrackerConcurrency:
         for t in threads:
             t.join()
 
-        assert not errors
+        assert not errors, "Error should be raised or set"
         # All session IDs must be unique
         assert len(set(ids)) == len(ids), f"Duplicate IDs: {ids}"

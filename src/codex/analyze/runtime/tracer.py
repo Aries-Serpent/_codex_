@@ -176,7 +176,7 @@ class RuntimeTracer:
                 return result.stdout
         except (ValueError, TypeError, RuntimeError) as exc:
             error_type = type(exc).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             # Ignore errors from --help execution - it's optional metadata collection.
             # Failures here don't prevent the main analysis.
             logger.debug("Help detection failed for %s: %s", entry_point, exc)
@@ -252,7 +252,7 @@ class RuntimeTracer:
                         stdin_input = input_file.read_text(encoding="utf-8")
                     except (IOError, OSError) as e:
                         error_type = type(e).__name__
-                        logger.debug(f"Exception: <ERROR_TYPE>")
+                        logger.debug("Exception: <ERROR_TYPE>")
                         logger.warning("Could not read input file %s: %s", input_file, e)
 
                 if enable_tracing:
@@ -344,7 +344,7 @@ class RuntimeTracer:
 
         except (ValueError, TypeError) as exc:
             error_type = type(exc).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             # Ignore errors during source code inspection - this is best-effort detection.
             # Missing type information doesn't prevent the rest of the analysis.
             logger.debug("Entry point probe failed for %s: %s", entry_point, exc)

@@ -61,7 +61,7 @@ class TestSafeTorchLoader:
         try:
             # Should load successfully with weights_only=True
             loaded = safe_load(temp_path, weights_only=True)
-            assert "weight" in loaded
+            assert "weight" in loaded, "Condition must be true"
             assert isinstance(loaded["weight"], torch.Tensor)
         finally:
             os.unlink(temp_path)
@@ -84,7 +84,7 @@ class TestSafeTorchLoader:
 
         try:
             loaded = safe_load(temp_path, map_location="cpu", weights_only=True)
-            assert loaded["weight"].device.type == "cpu"
+            assert loaded["weight"].device.type == "cpu", "type is not valid"
         finally:
             os.unlink(temp_path)
 
@@ -106,7 +106,7 @@ class TestSafePickle:
 
         try:
             loaded = safe_pickle_load(temp_path, use_restricted_unpickler=False)
-            assert loaded == data
+            assert loaded == data, "Data must not be empty"
         finally:
             os.unlink(temp_path)
 
@@ -121,8 +121,8 @@ class TestSafePickle:
         try:
             caplog.set_level("WARNING")
             loaded = safe_pickle_load(temp_path, use_restricted_unpickler=False)
-            assert loaded == data
-            assert "WITHOUT restriction" in caplog.text
+            assert loaded == data, "Data must not be empty"
+            assert "WITHOUT restriction" in caplog.text, "Condition must be true"
         finally:
             os.unlink(temp_path)
 
@@ -140,7 +140,7 @@ class TestSafePickle:
         unpickler = RestrictedUnpickler(buffer)
         loaded = unpickler.load()
 
-        assert loaded == safe_data
+        assert loaded == safe_data, "Data must not be empty"
 
     def test_restricted_unpickler_blocks_unsafe_types(self):
         """Test that RestrictedUnpickler blocks non-whitelisted types.
@@ -212,16 +212,16 @@ class TestSecurityMiddleware:
         mock_request.headers["content-length"] = "1000000"  # 1MB
 
         # Should not raise an error (would need full async test for actual validation)
-        assert middleware.MAX_FORM_SIZE == 10 * 1024 * 1024
+        assert middleware.MAX_FORM_SIZE == 10 * 1024 * 1024, "MAX_FORM_SIZE is not valid"
 
     def test_security_config_limits(self):
         """Test that APIConfig has appropriate security limits."""
         from services.api.config import APIConfig
 
-        assert APIConfig.MAX_UPLOAD_SIZE == 50 * 1024 * 1024  # 50MB
-        assert APIConfig.MAX_FIELD_SIZE == 1 * 1024 * 1024  # 1MB
-        assert APIConfig.MAX_FIELDS == 1000
-        assert APIConfig.REQUEST_TIMEOUT == 30
+        assert APIConfig.MAX_UPLOAD_SIZE == 50 * 1024 * 1024, "MAX_UPLOAD_SIZE is not valid"
+        assert APIConfig.MAX_FIELD_SIZE == 1 * 1024 * 1024, "MAX_FIELD_SIZE is not valid"
+        assert APIConfig.MAX_FIELDS == 1000, "MAX_FIELDS is not valid"
+        assert APIConfig.REQUEST_TIMEOUT == 30, "REQUEST_TIMEOUT is not valid"
 
 
 class TestMD5Usage:
@@ -235,7 +235,7 @@ class TestMD5Usage:
         hash_obj = hashlib.md5(data, usedforsecurity=False)
         digest = hash_obj.hexdigest()
 
-        assert len(digest) == 32  # MD5 produces 32 hex characters
+        assert len(digest) == 32, "Digest must not be empty"
 
     def test_sha256_for_security(self):
         """Test SHA256 is available for security purposes."""
@@ -245,7 +245,7 @@ class TestMD5Usage:
         hash_obj = hashlib.sha256(data)
         digest = hash_obj.hexdigest()
 
-        assert len(digest) == 64  # SHA256 produces 64 hex characters
+        assert len(digest) == 64, "Digest must not be empty"
 
 
 class TestSubprocessSecurity:
@@ -257,8 +257,8 @@ class TestSubprocessSecurity:
 
         # Safe: list form
         result = subprocess.run(["echo", "hello"], capture_output=True, text=True)
-        assert result.returncode == 0
-        assert "hello" in result.stdout
+        assert result.returncode == 0, "Result must not be empty"
+        assert "hello" in result.stdout, "Result must not be empty"
 
     def test_shlex_split_for_command_parsing(self):
         """Test shlex.split for safe command parsing."""
@@ -310,18 +310,18 @@ def test_security_utilities_exist():
     """Verify all security utilities are present."""
     utils_dir = Path(__file__).parent.parent.parent / "utils"
 
-    assert (utils_dir / "safe_torch_loader.py").exists()
-    assert (utils_dir / "safe_pickle.py").exists()
-    assert (utils_dir / "torch_resource_manager.py").exists()
+    assert (utils_dir / "safe_torch_loader.py").exists(), "Condition must be true"
+    assert (utils_dir / "safe_pickle.py").exists(), "Condition must be true"
+    assert (utils_dir / "torch_resource_manager.py").exists(), "Condition must be true"
 
 
 def test_security_documentation_exists():
     """Verify security documentation is present."""
     docs_dir = Path(__file__).parent.parent.parent / "docs"
 
-    assert (docs_dir / "SECURITY.md").exists()
-    assert (docs_dir / "PYTORCH_MIGRATION_GUIDE.md").exists()
-    assert (docs_dir / "ERROR_HANDLING_IMPROVEMENT_GUIDE.md").exists()
+    assert (docs_dir / "SECURITY.md").exists(), "Condition must be true"
+    assert (docs_dir / "PYTORCH_MIGRATION_GUIDE.md").exists(), "Condition must be true"
+    assert (docs_dir / "ERROR_HANDLING_IMPROVEMENT_GUIDE.md").exists(), "Error should be raised or set"
 
 
 if __name__ == "__main__":

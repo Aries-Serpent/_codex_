@@ -34,7 +34,7 @@ class TestHashFile:
             result = _hash_file(file_path)
             expected = hashlib.sha256(content).hexdigest()
 
-            assert result == expected
+            assert result == expected, "Result must not be empty"
 
     def test_hash_file_empty(self):
         """Test hashing empty file."""
@@ -45,7 +45,7 @@ class TestHashFile:
             result = _hash_file(file_path)
             expected = hashlib.sha256(b"").hexdigest()
 
-            assert result == expected
+            assert result == expected, "Result must not be empty"
 
     def test_hash_file_large(self):
         """Test hashing large file."""
@@ -57,7 +57,7 @@ class TestHashFile:
             result = _hash_file(file_path)
             expected = hashlib.sha256(content).hexdigest()
 
-            assert result == expected
+            assert result == expected, "Result must not be empty"
 
     def test_hash_file_binary(self):
         """Test hashing binary file."""
@@ -69,13 +69,13 @@ class TestHashFile:
             result = _hash_file(file_path)
             expected = hashlib.sha256(content).hexdigest()
 
-            assert result == expected
+            assert result == expected, "Result must not be empty"
 
     def test_hash_file_nonexistent(self):
         """Test hashing nonexistent file returns empty string."""
         nonexistent = Path("/nonexistent/path/file.txt")
         result = _hash_file(nonexistent)
-        assert result == ""
+        assert result == "", "Result must not be empty"
 
     def test_hash_file_permission_denied(self):
         """Test hashing file with permission denied returns empty string."""
@@ -85,7 +85,7 @@ class TestHashFile:
 
             with patch("pathlib.Path.read_bytes", side_effect=PermissionError):
                 result = _hash_file(file_path)
-                assert result == ""
+                assert result == "", "Result must not be empty"
 
     def test_hash_file_unicode(self):
         """Test hashing file with unicode content."""
@@ -97,7 +97,7 @@ class TestHashFile:
             result = _hash_file(file_path)
             expected = hashlib.sha256(content).hexdigest()
 
-            assert result == expected
+            assert result == expected, "Result must not be empty"
 
     def test_hash_file_consistency(self):
         """Test that hashing same file twice gives same result."""
@@ -108,7 +108,7 @@ class TestHashFile:
             result1 = _hash_file(file_path)
             result2 = _hash_file(file_path)
 
-            assert result1 == result2
+            assert result1 == result2, "Result must not be empty"
 
 
 class TestAssessSeverity:
@@ -117,52 +117,52 @@ class TestAssessSeverity:
     def test_assess_severity_acceptable(self):
         """Test severity assessment for acceptable ratio."""
         result = _assess_severity(0.05, acceptable=0.10, warning=0.20, critical=0.30)
-        assert result == "acceptable"
+        assert result == "acceptable", "Result must not be empty"
 
     def test_assess_severity_at_acceptable_boundary(self):
         """Test severity at acceptable boundary."""
         result = _assess_severity(0.10, acceptable=0.10, warning=0.20, critical=0.30)
-        assert result == "acceptable"
+        assert result == "acceptable", "Result must not be empty"
 
     def test_assess_severity_warning(self):
         """Test severity assessment for warning ratio."""
         result = _assess_severity(0.15, acceptable=0.10, warning=0.20, critical=0.30)
-        assert result == "warning"
+        assert result == "warning", "Result must not be empty"
 
     def test_assess_severity_at_warning_boundary(self):
         """Test severity at warning boundary."""
         result = _assess_severity(0.20, acceptable=0.10, warning=0.20, critical=0.30)
-        assert result == "warning"
+        assert result == "warning", "Result must not be empty"
 
     def test_assess_severity_high(self):
         """Test severity assessment for high ratio."""
         result = _assess_severity(0.25, acceptable=0.10, warning=0.20, critical=0.30)
-        assert result == "high"
+        assert result == "high", "Result must not be empty"
 
     def test_assess_severity_at_high_boundary(self):
         """Test severity at high boundary."""
         result = _assess_severity(0.30, acceptable=0.10, warning=0.20, critical=0.30)
-        assert result == "high"
+        assert result == "high", "Result must not be empty"
 
     def test_assess_severity_critical(self):
         """Test severity assessment for critical ratio."""
         result = _assess_severity(0.50, acceptable=0.10, warning=0.20, critical=0.30)
-        assert result == "critical"
+        assert result == "critical", "Result must not be empty"
 
     def test_assess_severity_zero_ratio(self):
         """Test severity with zero ratio."""
         result = _assess_severity(0.0, acceptable=0.10, warning=0.20, critical=0.30)
-        assert result == "acceptable"
+        assert result == "acceptable", "Result must not be empty"
 
     def test_assess_severity_one_ratio(self):
         """Test severity with ratio of 1.0."""
         result = _assess_severity(1.0, acceptable=0.10, warning=0.20, critical=0.30)
-        assert result == "critical"
+        assert result == "critical", "Result must not be empty"
 
     def test_assess_severity_custom_thresholds(self):
         """Test severity with custom thresholds."""
         result = _assess_severity(0.05, acceptable=0.01, warning=0.05, critical=0.10)
-        assert result == "warning"
+        assert result == "warning", "Result must not be empty"
 
 
 class TestDuplicationReport:
@@ -182,10 +182,10 @@ class TestDuplicationReport:
             recommendations=recommendations,
         )
 
-        assert report.stats == stats
-        assert report.duplicate_groups == duplicate_groups
-        assert report.content_duplicates == content_duplicates
-        assert report.recommendations == recommendations
+        assert report.stats == stats, "stats is not valid"
+        assert report.duplicate_groups == duplicate_groups, "duplicate_groups is not valid"
+        assert report.content_duplicates == content_duplicates, "Content must not be empty"
+        assert report.recommendations == recommendations, "recommendations is not valid"
 
     def test_duplication_report_empty(self):
         """Test creating empty DuplicationReport."""
@@ -196,10 +196,10 @@ class TestDuplicationReport:
             recommendations=[],
         )
 
-        assert report.stats == {}
-        assert report.duplicate_groups == []
-        assert report.content_duplicates == []
-        assert report.recommendations == []
+        assert report.stats == {}, "stats is not valid"
+        assert report.duplicate_groups == [], "duplicate_groups is not valid"
+        assert report.content_duplicates == [], "Content must not be empty"
+        assert report.recommendations == [], "recommendations is not valid"
 
 
 class TestDefaultExtensions:
@@ -207,12 +207,12 @@ class TestDefaultExtensions:
 
     def test_default_extensions_value(self):
         """Test DEFAULT_EXTENSIONS contains expected formats."""
-        assert ".py" in DEFAULT_EXTENSIONS
-        assert ".md" in DEFAULT_EXTENSIONS
-        assert ".yaml" in DEFAULT_EXTENSIONS
-        assert ".yml" in DEFAULT_EXTENSIONS
-        assert ".json" in DEFAULT_EXTENSIONS
-        assert ".txt" in DEFAULT_EXTENSIONS
+        assert ".py" in DEFAULT_EXTENSIONS, "Condition must be true"
+        assert ".md" in DEFAULT_EXTENSIONS, "Condition must be true"
+        assert ".yaml" in DEFAULT_EXTENSIONS, "Condition must be true"
+        assert ".yml" in DEFAULT_EXTENSIONS, "Condition must be true"
+        assert ".json" in DEFAULT_EXTENSIONS, "Condition must be true"
+        assert ".txt" in DEFAULT_EXTENSIONS, "Condition must be true"
 
     def test_default_extensions_is_tuple(self):
         """Test that DEFAULT_EXTENSIONS is a tuple."""
@@ -227,10 +227,10 @@ class TestAnalyzeDuplication:
         with tempfile.TemporaryDirectory() as tmpdir:
             report = analyze_duplication(tmpdir)
 
-            assert report.stats["total_files"] == 0
-            assert report.stats["duplicate_count"] == 0
-            assert report.stats["duplication_ratio"] == 0.0
-            assert report.stats["severity"] == "acceptable"
+            assert report.stats["total_files"] == 0, "rep is not valid"
+            assert report.stats["duplicate_count"] == 0, "Count must be greater than zero"
+            assert report.stats["duplication_ratio"] == 0.0, "rep is not valid"
+            assert report.stats["severity"] == "acceptable", "rep is not valid"
 
     def test_analyze_duplication_single_file(self):
         """Test analysis with single file."""
@@ -240,9 +240,9 @@ class TestAnalyzeDuplication:
 
             report = analyze_duplication(tmpdir)
 
-            assert report.stats["total_files"] == 1
-            assert report.stats["duplicate_count"] == 0
-            assert report.stats["duplication_ratio"] == 0.0
+            assert report.stats["total_files"] == 1, "rep is not valid"
+            assert report.stats["duplicate_count"] == 0, "Count must be greater than zero"
+            assert report.stats["duplication_ratio"] == 0.0, "rep is not valid"
 
     def test_analyze_duplication_duplicate_files_by_name(self):
         """Test detection of files with duplicate names."""
@@ -257,8 +257,8 @@ class TestAnalyzeDuplication:
             report = analyze_duplication(tmpdir)
 
             # test1 appears twice, so duplicate_count = 1
-            assert report.stats["duplicate_count"] == 1
-            assert len(report.duplicate_groups) > 0
+            assert report.stats["duplicate_count"] == 1, "Count must be greater than zero"
+            assert len(report.duplicate_groups) > 0, "Collection must not be empty"
 
     def test_analyze_duplication_duplicate_content(self):
         """Test detection of duplicate content."""
@@ -270,7 +270,7 @@ class TestAnalyzeDuplication:
 
             report = analyze_duplication(tmpdir)
 
-            assert len(report.content_duplicates) > 0
+            assert len(report.content_duplicates) > 0, "Collection must not be empty"
 
     def test_analyze_duplication_custom_extensions(self):
         """Test analysis with custom extensions."""
@@ -284,7 +284,7 @@ class TestAnalyzeDuplication:
             report = analyze_duplication(tmpdir, extensions=[".py"])
 
             # Should only find .py file
-            assert report.stats["total_files"] == 1
+            assert report.stats["total_files"] == 1, "rep is not valid"
 
     def test_analyze_duplication_severity_acceptable(self):
         """Test severity assessment for acceptable duplication."""
@@ -295,7 +295,7 @@ class TestAnalyzeDuplication:
 
             report = analyze_duplication(tmpdir)
 
-            assert report.stats["severity"] == "acceptable"
+            assert report.stats["severity"] == "acceptable", "rep is not valid"
 
     def test_analyze_duplication_severity_warning(self):
         """Test severity assessment for warning level duplication."""
@@ -325,9 +325,9 @@ class TestAnalyzeDuplication:
 
             report = analyze_duplication(tmpdir)
 
-            assert report.stats["total_files"] == 2
+            assert report.stats["total_files"] == 2, "rep is not valid"
             # Both files have same stem "file" so duplicate_count = 1
-            assert report.stats["duplicate_count"] == 1
+            assert report.stats["duplicate_count"] == 1, "Count must be greater than zero"
 
     def test_analyze_duplication_path_as_string(self):
         """Test analysis with path as string."""
@@ -338,7 +338,7 @@ class TestAnalyzeDuplication:
             # Pass path as string instead of Path object
             report = analyze_duplication(tmpdir)
 
-            assert report.stats["total_files"] == 1
+            assert report.stats["total_files"] == 1, "rep is not valid"
 
     def test_analyze_duplication_recommendations_generated(self):
         """Test that recommendations are generated."""
@@ -348,7 +348,7 @@ class TestAnalyzeDuplication:
 
             report = analyze_duplication(tmpdir)
 
-            assert len(report.recommendations) > 0
+            assert len(report.recommendations) > 0, "Collection must not be empty"
             assert all(isinstance(r, str) for r in report.recommendations)
 
     def test_analyze_duplication_stats_complete(self):
@@ -367,7 +367,7 @@ class TestAnalyzeDuplication:
                 "content_duplicate_groups",
                 "severity",
             }
-            assert set(report.stats.keys()) == expected_keys
+            assert set(report.stats.keys()) == expected_keys, "Condition must be true"
 
     def test_analyze_duplication_duplicate_groups_limited(self):
         """Test that duplicate groups are limited to top 20."""
@@ -381,7 +381,7 @@ class TestAnalyzeDuplication:
             report = analyze_duplication(tmpdir)
 
             # Should be limited to top 20
-            assert len(report.duplicate_groups) <= 20
+            assert len(report.duplicate_groups) <= 20, "Collection must not be empty"
 
     def test_analyze_duplication_content_duplicates_limited(self):
         """Test that content duplicates are limited to top 10."""
@@ -395,7 +395,7 @@ class TestAnalyzeDuplication:
             report = analyze_duplication(tmpdir)
 
             # Should be limited to top 10
-            assert len(report.content_duplicates) <= 10
+            assert len(report.content_duplicates) <= 10, "Collection must not be empty"
 
     def test_analyze_duplication_relative_paths(self):
         """Test that paths in report are relative."""
@@ -413,8 +413,8 @@ class TestAnalyzeDuplication:
                 all_paths.extend(group["paths"])
 
             for path in all_paths:
-                assert not path.startswith(tmpdir)
-                assert not path.startswith("/")
+                assert not path.startswith(tmpdir), "Condition must be true"
+                assert not path.startswith("/"), "Condition must be true"
 
     def test_analyze_duplication_hash_truncation(self):
         """Test that hashes are truncated to 16 characters."""
@@ -427,4 +427,4 @@ class TestAnalyzeDuplication:
 
             for dup in report.content_duplicates:
                 hash_val = dup["hash"]
-                assert len(hash_val) == 16
+                assert len(hash_val) == 16, "Hash_val must not be empty"

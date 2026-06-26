@@ -41,7 +41,7 @@ def test_group_validation_report(tmp_path: Path) -> None:
     )
     assert result.returncode == 0, result.stdout + result.stderr
     content = json.loads(report.read_text(encoding="utf-8"))
-    assert content["total"] >= 3
+    assert content["total"] >= 3, "Value must be greater than zero"
     assert content["counts"].get("fail", 0) == 0
 
 
@@ -72,8 +72,8 @@ telemetry:
         capture_output=True,
         text=True,
     )
-    assert result.returncode != 0
-    assert "required property" in result.stdout or "required property" in result.stderr
+    assert result.returncode != 0, "Result must not be empty"
+    assert "required property" in result.stdout or "required property" in result.stderr, "Result must not be empty"
 
 
 def test_malformed_config_is_rejected() -> None:
@@ -91,8 +91,8 @@ def test_malformed_config_is_rejected() -> None:
         capture_output=True,
         text=True,
     )
-    assert result.returncode != 0
-    assert (
+    assert result.returncode != 0, "Result must not be empty"
+    assert (, "Condition must be true"
         "failed to load config" in result.stdout
         or "required property" in result.stdout
         or "failed to load config" in result.stderr
@@ -117,7 +117,7 @@ def test_log_file_is_written(tmp_path: Path) -> None:
     )
     assert result.returncode == 0, result.stdout + result.stderr
     lines = log_path.read_text(encoding="utf-8").splitlines()
-    assert len(lines) == 1
+    assert len(lines) == 1, "Lines must not be empty"
     payload = json.loads(lines[0])
-    assert payload["total"] >= 1
-    assert payload["exit_code"] == 0
+    assert payload["total"] >= 1, "Value must be greater than zero"
+    assert payload["exit_code"] == 0, "Condition must be true"

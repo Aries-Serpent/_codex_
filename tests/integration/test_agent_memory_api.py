@@ -37,9 +37,9 @@ class TestAgentMemoryAPI:
             context={"file": "analyzer.py", "line": 42},
         )
 
-        assert memory_id is not None
+        assert memory_id is not None, "memory_id must be initialized"
         assert isinstance(memory_id, str)
-        assert len(memory_id) == 16  # SHA256 truncated to 16 chars
+        assert len(memory_id) == 16, "Memory_id must not be empty"
 
     def test_store_decision_multiple(self, memory_system):
         """Test storing multiple decisions."""
@@ -53,7 +53,7 @@ class TestAgentMemoryAPI:
             ids.append(mid)
 
         # All IDs should be unique
-        assert len(set(ids)) == 5
+        assert len(set(ids)) == 5, "Collection must not be empty"
 
     def test_retrieve_similar_context(self, memory_system):
         """Test retrieve_similar_context finds relevant memories."""
@@ -79,8 +79,8 @@ class TestAgentMemoryAPI:
         assert isinstance(results, list)
         # Results should have relevance scores
         if results:
-            assert "relevance_score" in results[0]
-            assert "content" in results[0]
+            assert "relevance_score" in results[0], "Result must not be empty"
+            assert "content" in results[0], "Result must not be empty"
 
     def test_retrieve_similar_context_empty(self, memory_system):
         """Test retrieve_similar_context with no matching memories."""
@@ -97,15 +97,15 @@ class TestAgentMemoryAPI:
 
         assert isinstance(patterns, list)
         # Should have at least the default patterns
-        assert len(patterns) >= 3
+        assert len(patterns) >= 3, "Patterns must not be empty"
 
         # Check pattern structure
         for pattern in patterns:
-            assert "pattern_id" in pattern
-            assert "name" in pattern
-            assert "triggers" in pattern
-            assert "recommended_actions" in pattern
-            assert "success_rate" in pattern
+            assert "pattern_id" in pattern, "Condition must be true"
+            assert "name" in pattern, "Condition must be true"
+            assert "triggers" in pattern, "Condition must be true"
+            assert "recommended_actions" in pattern, "Condition must be true"
+            assert "success_rate" in pattern, "Condition must be true"
 
     def test_get_pattern_library_default_patterns(self, memory_system):
         """Test that default patterns are initialized."""
@@ -113,9 +113,9 @@ class TestAgentMemoryAPI:
         pattern_names = [p["name"] for p in patterns]
 
         # Should have these default patterns
-        assert "Code Review Comment Resolution" in pattern_names
-        assert "Security Vulnerability Fix" in pattern_names
-        assert "Test Failure Debugging" in pattern_names
+        assert "Code Review Comment Resolution" in pattern_names, "Condition must be true"
+        assert "Security Vulnerability Fix" in pattern_names, "Condition must be true"
+        assert "Test Failure Debugging" in pattern_names, "Condition must be true"
 
     def test_invalidate_stale_contexts(self, memory_system):
         """Test invalidate_stale_contexts cleans up old memories."""
@@ -132,7 +132,7 @@ class TestAgentMemoryAPI:
 
         # Should return a count (may be 0 if memory is recent and accessed)
         assert isinstance(count, int)
-        assert count >= 0
+        assert count >= 0, "count must be positive"
 
     def test_invalidate_stale_contexts_respects_age(self, memory_system):
         """Test that invalidation respects age threshold."""
@@ -145,11 +145,11 @@ class TestAgentMemoryAPI:
 
         # Invalidate with 30 days (shouldn't affect recent)
         invalidated = memory_system.invalidate_stale_contexts(age_days=30)
-        assert invalidated >= 0  # Valid return value
+        assert invalidated >= 0, "invalidated must be greater than zero"
 
         # Recent memory should not be invalidated
         stats = memory_system.get_stats()
-        assert stats["memory_stats"]["total_memories"] >= 1
+        assert stats["memory_stats"]["total_memories"] >= 1, "Value must be greater than zero"
 
 
 class TestAgentMemoryIntegration:
@@ -159,12 +159,12 @@ class TestAgentMemoryIntegration:
         """Test complete task workflow with all API methods."""
         # 1. Start task
         frame = memory_system.start_task("Fix security vulnerability in auth module")
-        assert frame is not None
+        assert frame is not None, "frame must be initialized"
 
         # 2. Get patterns
         patterns = memory_system.get_pattern_library()
         security_patterns = [p for p in patterns if "security" in p["tags"]]
-        assert len(security_patterns) > 0
+        assert len(security_patterns) > 0, "Security_patterns must not be empty"
 
         # 3. Store decision
         memory_id = memory_system.store_decision(
@@ -173,7 +173,7 @@ class TestAgentMemoryIntegration:
             rationale="Follows OWASP guidelines",
             context={"pattern_used": security_patterns[0]["pattern_id"]},
         )
-        assert memory_id is not None
+        assert memory_id is not None, "memory_id must be initialized"
 
         # 4. Retrieve context for similar task
         similar = memory_system.retrieve_similar_context(
@@ -187,7 +187,7 @@ class TestAgentMemoryIntegration:
 
         # 6. Verify stats
         stats = memory_system.get_stats()
-        assert stats["memory_stats"]["total_memories"] >= 1
+        assert stats["memory_stats"]["total_memories"] >= 1, "Value must be greater than zero"
 
     def test_cross_session_context(self, memory_system):
         """Test that context persists across sessions."""

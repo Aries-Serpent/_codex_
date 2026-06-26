@@ -43,8 +43,8 @@ try:
     _codex_sqlite_auto()
 except (IOError, OSError) as e:
     error_type = type(e).__name__
-    logger.debug(f"Exception: <ERROR_TYPE>")
-    logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
+    logger.debug("Exception: <ERROR_TYPE>")
+    logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 import sys  # noqa: E402
 from datetime import datetime  # noqa: E402
 from pathlib import Path  # noqa: E402
@@ -314,12 +314,12 @@ def main(argv: Optional[list[str]] = None) -> int:
         return 0
     except (ValueError, SystemExit) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         print(str(exc), file=sys.stderr)
         return 2
     except (IOError, OSError) as exc:  # pragma: no cover - top-level guard
         error_type = type(exc).__name__
-        print(f"Unexpected error: <ERROR_TYPE>", file=sys.stderr)
+        print("Unexpected error: <ERROR_TYPE>", file=sys.stderr)
         return 1
 
 

@@ -25,5 +25,5 @@ def test_factory_and_class() -> None:
 
     c = reg.resolve_and_instantiate("cls", 1)
     f = reg.resolve_and_instantiate("factory", 2)
-    assert c.value == 1
-    assert f.value == 2
+    assert c.value == 1, "Value must be initialized"
+    assert f.value == 2, "Value must be initialized"

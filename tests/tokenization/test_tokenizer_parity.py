@@ -49,4 +49,4 @@ def test_fast_vs_slow_parity_smoke():
 
     # Parity usually holds; allow minor drift but enforce same length
     assert isinstance(f_ids, list) and isinstance(s_ids, list)
-    assert len(f_ids) == len(s_ids)
+    assert len(f_ids) == len(s_ids), "F_ids must not be empty"

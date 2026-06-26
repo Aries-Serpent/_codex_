@@ -43,6 +43,6 @@ def test_report_merge(tmp_path):
             f"{frag}:automation.performance",
         ]
     )
-    assert code == 0
+    assert code == 0, "code is not valid"
     data = json.loads(report.read_text(encoding="utf-8"))
-    assert data["automation"]["performance"] == {"a": 1}
+    assert data["automation"]["performance"] == {"a": 1}, "Data must not be empty"

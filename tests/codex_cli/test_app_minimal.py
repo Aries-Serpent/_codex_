@@ -12,8 +12,8 @@ class TestCodexCLIAppMinimal:
         # Create minimal app instance
         app_config = {"app_name": "codex", "debug": False, "version": "1.0.0"}
 
-        assert app_config["app_name"] == "codex"
-        assert app_config["version"] == "1.0.0"
+        assert app_config["app_name"] == "codex", "Condition must be true"
+        assert app_config["version"] == "1.0.0", "Condition must be true"
 
     def test_codex_cli_route_registration(self):
         """Test route registration in CLI app."""
@@ -24,9 +24,9 @@ class TestCodexCLIAppMinimal:
         routes["get"] = {"handler": "get_command"}
         routes["create"] = {"handler": "create_command"}
 
-        assert "list" in routes
-        assert "get" in routes
-        assert len(routes) == 3
+        assert "list" in routes, "Condition must be true"
+        assert "get" in routes, "Condition must be true"
+        assert len(routes) == 3, "Routes must not be empty"
 
     def test_codex_cli_request_handling(self):
         """Test request handling in app."""
@@ -35,8 +35,8 @@ class TestCodexCLIAppMinimal:
             return {"method": method, "result": params}
 
         result = handle_request("test.method", {"key": "value"})
-        assert result["method"] == "test.method"
-        assert result["result"]["key"] == "value"
+        assert result["method"] == "test.method", "Result must not be empty"
+        assert result["result"]["key"] == "value", "Result must not be empty"
 
     def test_codex_cli_error_responses(self):
         """Test error response generation."""
@@ -45,8 +45,8 @@ class TestCodexCLIAppMinimal:
             return {"error": {"code": error_code, "message": message}}
 
         error_resp = generate_error_response(-32600, "Invalid Request")
-        assert error_resp["error"]["code"] == -32600
-        assert "Invalid" in error_resp["error"]["message"]
+        assert error_resp["error"]["code"] == -32600, "Error should be raised or set"
+        assert "Invalid" in error_resp["error"]["message"], "Error should be raised or set"
 
 
 class TestCodexCLICommands:
@@ -55,22 +55,22 @@ class TestCodexCLICommands:
     def test_codex_list_command(self):
         """Test list command."""
         items = ["item1", "item2", "item3"]
-        assert len(items) == 3
+        assert len(items) == 3, "Items must not be empty"
 
     def test_codex_get_command(self):
         """Test get command."""
         item_id = "test-id-123"
-        assert len(item_id) > 0
+        assert len(item_id) > 0, "Item_id must not be empty"
 
     def test_codex_create_command(self):
         """Test create command."""
         created = True
-        assert created is True
+        assert created is True, "created is not valid"
 
     def test_codex_delete_command(self):
         """Test delete command."""
         deleted = True
-        assert deleted is True
+        assert deleted is True, "deleted is not valid"
 
 
 class TestCodexCLIIntegration:
@@ -81,8 +81,8 @@ class TestCodexCLIIntegration:
         # Should return response
         response = {"result": [], "error": None}
 
-        assert "result" in response
-        assert "error" in response
+        assert "result" in response, "Response must not be empty"
+        assert "error" in response, "Response must not be empty"
 
     def test_codex_cli_batch_requests(self):
         """Test batch request handling."""
@@ -92,7 +92,7 @@ class TestCodexCLIIntegration:
             {"method": "list", "params": {}},
         ]
 
-        assert len(batch) == 3
+        assert len(batch) == 3, "Batch must not be empty"
 
     def test_codex_cli_middleware_chain(self):
         """Test middleware chain processing."""
@@ -107,4 +107,4 @@ class TestCodexCLIIntegration:
         request = middleware1(request)
         request = middleware2(request)
 
-        assert "method" in request
+        assert "method" in request, "Condition must be true"

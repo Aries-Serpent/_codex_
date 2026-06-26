@@ -61,10 +61,10 @@ def test_experiment_overrides_and_manual_values(
             ],
         )
 
-    assert base_cfg.training.batch_size == 8
-    assert debug_cfg.training.batch_size == 2
-    assert tuned_cfg.training.batch_size == 4
-    assert str(tuned_cfg.training.log_dir) == str(tmp_path)
+    assert base_cfg.training.batch_size == 8, "batch_size is not valid"
+    assert debug_cfg.training.batch_size == 2, "batch_size is not valid"
+    assert tuned_cfg.training.batch_size == 4, "batch_size is not valid"
+    assert str(tuned_cfg.training.log_dir) == str(tmp_path), "Condition must be true"
 
 
 def test_seed_and_safeguard_overrides_are_respected(
@@ -88,7 +88,7 @@ def test_seed_and_safeguard_overrides_are_respected(
             ],
         )
 
-    assert cfg.training.seed == 123
-    assert cfg.training.deterministic is False
-    assert cfg.logging.tensorboard is True
-    assert str(cfg.training.metrics_out) == str(metrics_path)
+    assert cfg.training.seed == 123, "seed is not valid"
+    assert cfg.training.deterministic is False, "deterministic is not valid"
+    assert cfg.logging.tensorboard is True, "tensorboard is not valid"
+    assert str(cfg.training.metrics_out) == str(metrics_path), "Condition must be true"

@@ -90,8 +90,8 @@ def test_resume_error_is_recorded(monkeypatch, tmp_path) -> None:
         resume_from="/tmp/missing",
     )
     result = unified_training.run_unified_training(cfg, callbacks=[callback])
-    assert result["status"] == "ok"
-    assert callback.checkpoints
+    assert result["status"] == "ok", "Result must not be empty"
+    assert callback.checkpoints, "Condition must be true"
     recorded_state = callback.checkpoints[0]["state"]
-    assert recorded_state.get("resume_error")
-    assert recorded_state.get("resume_from") == "/tmp/missing"
+    assert recorded_state.get("resume_error"), "Error should be raised or set"
+    assert recorded_state.get("resume_from") == "/tmp/missing", "rec is not valid"

@@ -23,17 +23,17 @@ def client():
 
 def test_health_endpoint(client):
     resp = client.get("/health")
-    assert resp.status_code == 200
+    assert resp.status_code == 200, "status_code is not valid"
     data = resp.json()
     assert data["status"] in {"ok", "healthy"}
-    assert data["model_loaded"] is True
+    assert data["model_loaded"] is True, "Data must not be empty"
 
 
 def test_predict_stub_roundtrip(client):
     payload = {"inputs": ["hello", "world"]}
     resp = client.post("/predict", json=payload)
-    assert resp.status_code == 200
+    assert resp.status_code == 200, "status_code is not valid"
     data = resp.json()
-    assert data["model_name"] == "stub-model"
-    assert len(data["predictions"]) == 2
-    assert all("label" in pred for pred in data["predictions"])
+    assert data["model_name"] == "stub-model", "Data must not be empty"
+    assert len(data["predictions"]) == 2, "Collection must not be empty"
+    assert all("label" in pred for pred in data["predictions"]), "Data must not be empty"

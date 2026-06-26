@@ -41,15 +41,15 @@ def test_register_causal_lm_decorator_roundtrip():
         calls["model"] = instance
         return instance
 
-    assert get_registered_causal_lm("dummy") is not None
+    assert get_registered_causal_lm("dummy") is not None, "Value must be initialized"
 
     try:
         result = load_causal_lm("dummy", device="cpu", dtype="bf16", peft_cfg={"r": 8})
     finally:
         unregister_causal_lm("dummy")
 
-    assert result is calls["model"]
-    assert calls["device"] == "cpu"
-    assert calls["dtype"] == "bf16"
-    assert calls["peft_cfg"] == {"r": 8}
-    assert get_registered_causal_lm("dummy") is None
+    assert result is calls["model"], "Result must not be empty"
+    assert calls["device"] == "cpu", "Condition must be true"
+    assert calls["dtype"] == "bf16", "Condition must be true"
+    assert calls["peft_cfg"] == {"r": 8}, "Condition must be true"
+    assert get_registered_causal_lm("dummy") is None, "Condition must be true"

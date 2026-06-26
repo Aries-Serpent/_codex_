@@ -12,7 +12,7 @@ def test_read_file_with_auto_encoding(tmp_path: Path) -> None:
     target.write_text("héllo", encoding="utf-8")
 
     content = read_file(target, encoding="auto")
-    assert "héllo" in content
+    assert "héllo" in content, "Content must not be empty"
 
 
 def test_read_file_with_explicit_encoding(tmp_path: Path) -> None:
@@ -20,4 +20,4 @@ def test_read_file_with_explicit_encoding(tmp_path: Path) -> None:
     target.write_text("café", encoding="latin-1")
 
     content = read_file(target, encoding="latin-1")
-    assert "café" in content
+    assert "café" in content, "Content must not be empty"

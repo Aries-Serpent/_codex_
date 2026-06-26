@@ -32,8 +32,8 @@ class TestAgentQuantumState:
 
         agent1.entangle(agent2)
 
-        assert agent2 in agent1.entangled_agents
-        assert agent1 in agent2.entangled_agents
+        assert agent2 in agent1.entangled_agents, "Condition must be true"
+        assert agent1 in agent2.entangled_agents, "Condition must be true"
 
     def test_correlated_activation(self):
         """Entangled agents show correlated behavior"""
@@ -46,8 +46,8 @@ class TestAgentQuantumState:
         agent1.trigger()
 
         # agent2 should transition to waiting (correlation)
-        assert agent1.state == "active"
-        assert agent2.state == "waiting"
+        assert agent1.state == "active", "state is not valid"
+        assert agent2.state == "waiting", "state is not valid"
 
     def test_coherence_measurement(self):
         """Coherence measures agent coordination"""
@@ -60,13 +60,13 @@ class TestAgentQuantumState:
 
         # All idle = low coherence
         coherence_idle = agent1.measure_coherence()
-        assert coherence_idle == 0.0
+        assert coherence_idle == 0.0, "coherence_idle is not valid"
 
         # Activate agents = higher coherence
         agent2.state = "active"
         agent3.state = "active"
         coherence_active = agent1.measure_coherence()
-        assert coherence_active == 1.0
+        assert coherence_active == 1.0, "coherence_active is not valid"
 
 
 class TestQuantumAgentOrchestrator:
@@ -76,9 +76,9 @@ class TestQuantumAgentOrchestrator:
         """Agents are loaded correctly"""
         orchestrator = QuantumAgentOrchestrator()
 
-        assert "workflow-health-monitor" in orchestrator.agents
-        assert "ci-testing-agent" in orchestrator.agents
-        assert len(orchestrator.agents) >= 5
+        assert "workflow-health-monitor" in orchestrator.agents, "Condition must be true"
+        assert "ci-testing-agent" in orchestrator.agents, "Condition must be true"
+        assert len(orchestrator.agents) >= 5, "Collection must not be empty"
 
     def test_entanglement_calculation(self):
         """Entanglements are calculated from prerequisites and data flow"""
@@ -88,7 +88,7 @@ class TestQuantumAgentOrchestrator:
         ci_testing = orchestrator.agents["ci-testing-agent"]
 
         # ci-testing should be entangled with workflow-health-monitor
-        assert (
+        assert (, "Condition must be true"
             "workflow-health-monitor" in ci_testing.prerequisites
             or "ci-testing-agent" in orchestrator.entanglements.get("workflow-health-monitor", [])
         )
@@ -102,10 +102,10 @@ class TestQuantumAgentOrchestrator:
         )
 
         # Chain should start with primary agent
-        assert chain[0] == "workflow-health-monitor"
+        assert chain[0] == "workflow-health-monitor", "Condition must be true"
 
         # Chain should have length >= 1
-        assert len(chain) >= 1
+        assert len(chain) >= 1, "Chain must not be empty"
 
     def test_prerequisite_validation(self):
         """Prerequisites are validated in chain"""
@@ -113,11 +113,11 @@ class TestQuantumAgentOrchestrator:
 
         # Valid order
         valid_order = ["workflow-health-monitor", "ci-testing-agent", "test-alignment-fixer"]
-        assert orchestrator._prerequisites_satisfied(valid_order)
+        assert orchestrator._prerequisites_satisfied(valid_order), "orchestrat is not valid"
 
         # Invalid order (ci-testing-agent before prerequisite)
         invalid_order = ["ci-testing-agent", "workflow-health-monitor"]
-        assert not orchestrator._prerequisites_satisfied(invalid_order)
+        assert not orchestrator._prerequisites_satisfied(invalid_order), "not is not valid"
 
     def test_quantum_optimization(self):
         """Quantum optimization improves chain"""
@@ -140,10 +140,10 @@ class TestQuantumAgentOrchestrator:
         )
 
         # Both should have same agents, possibly different order
-        assert set(chain_unoptimized) == set(chain_optimized)
+        assert set(chain_unoptimized) == set(chain_optimized), "Condition must be true"
 
         # Optimized should satisfy prerequisites
-        assert orchestrator._prerequisites_satisfied(chain_optimized)
+        assert orchestrator._prerequisites_satisfied(chain_optimized), "orchestrat is not valid"
 
     def test_chain_plan_generation(self, tmp_path):
         """Chain plan is generated correctly"""
@@ -155,21 +155,21 @@ class TestQuantumAgentOrchestrator:
         plan = orchestrator.generate_chain_plan(chain, output_file)
 
         # Plan should have required keys
-        assert "chain" in plan
-        assert "agents" in plan
-        assert "estimated_cost" in plan
-        assert "entanglements" in plan
+        assert "chain" in plan, "Condition must be true"
+        assert "agents" in plan, "Condition must be true"
+        assert "estimated_cost" in plan, "Condition must be true"
+        assert "entanglements" in plan, "Condition must be true"
 
         # Plan should be saved to file
-        assert output_file.exists()
+        assert output_file.exists(), "Condition must be true"
 
         # Cost should be positive
-        assert plan["estimated_cost"] > 0
+        assert plan["estimated_cost"] > 0, "Value must be greater than zero"
 
         # Verify file content
         with open(output_file) as f:
             loaded_plan = json.load(f)
-        assert loaded_plan == plan
+        assert loaded_plan == plan, "loaded_plan is not valid"
 
 
 @pytest.mark.integration
@@ -186,12 +186,12 @@ class TestAgentChainExecution:
         )
 
         # Verify chain structure
-        assert len(chain) >= 1
-        assert chain[0] == "workflow-health-monitor"
+        assert len(chain) >= 1, "Chain must not be empty"
+        assert chain[0] == "workflow-health-monitor", "Condition must be true"
 
         # Verify all agents in chain exist
         for agent_name in chain:
-            assert agent_name in orchestrator.agents
+            assert agent_name in orchestrator.agents, "Condition must be true"
 
 
 class TestAgentCapabilityMatching:
@@ -211,7 +211,7 @@ class TestAgentCapabilityMatching:
         for cap in workflow_health.capabilities:
             outputs.update(cap.output_types)
 
-        assert "failures" in outputs or "failure_analysis" in outputs
+        assert "failures" in outputs or "failure_analysis" in outputs, "Condition must be true"
 
     def test_shared_prerequisites_entanglement(self):
         """Agents with shared prerequisites are entangled"""
@@ -225,7 +225,7 @@ class TestAgentCapabilityMatching:
 
         # If they share prerequisites, they should be entangled
         if shared_prereqs:
-            assert "coverage-roadmap-agent" in orchestrator.entanglements.get(
+            assert "coverage-roadmap-agent" in orchestrator.entanglements.get(, "Condition must be true"
                 "ci-testing-agent", []
             ) or "ci-testing-agent" in orchestrator.entanglements.get("coverage-roadmap-agent", [])
 
@@ -244,7 +244,7 @@ class TestQuantumAnnealingOptimization:
         )
 
         # Verify prerequisites are satisfied
-        assert orchestrator._prerequisites_satisfied(chain)
+        assert orchestrator._prerequisites_satisfied(chain), "orchestrat is not valid"
 
     def test_annealing_convergence(self):
         """Annealing optimization converges to solution"""
@@ -260,9 +260,9 @@ class TestQuantumAnnealingOptimization:
         optimized2 = orchestrator._quantum_optimize_chain(test_chain.copy())
 
         # Both should satisfy prerequisites
-        assert orchestrator._prerequisites_satisfied(optimized1)
-        assert orchestrator._prerequisites_satisfied(optimized2)
+        assert orchestrator._prerequisites_satisfied(optimized1), "orchestrat is not valid"
+        assert orchestrator._prerequisites_satisfied(optimized2), "orchestrat is not valid"
 
         # Both should have same agents
-        assert set(optimized1) == set(test_chain)
-        assert set(optimized2) == set(test_chain)
+        assert set(optimized1) == set(test_chain), "Condition must be true"
+        assert set(optimized2) == set(test_chain), "Condition must be true"

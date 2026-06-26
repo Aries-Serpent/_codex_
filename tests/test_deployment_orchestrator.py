@@ -37,13 +37,13 @@ class TestPhaseResult:
         )
 
         # No times set
-        assert result.duration_seconds is None
+        assert result.duration_seconds is None, "Result must not be empty"
 
         # Set times
         result.start_time = datetime(2025, 1, 1, 12, 0, 0, tzinfo=timezone.utc)
         result.end_time = datetime(2025, 1, 1, 12, 0, 5, tzinfo=timezone.utc)
 
-        assert result.duration_seconds == 5.0
+        assert result.duration_seconds == 5.0, "Result must not be empty"
 
     def test_phase_result_creation(self):
         """Test PhaseResult creation with all fields."""
@@ -56,10 +56,10 @@ class TestPhaseResult:
             errors=["error1"],
         )
 
-        assert result.phase == DeploymentPhase.PHASE_2_MERGE
-        assert result.status == PhaseStatus.SUCCESS
-        assert result.details["test"] == "value"
-        assert len(result.errors) == 1
+        assert result.phase == DeploymentPhase.PHASE_2_MERGE, "Result must not be empty"
+        assert result.status == PhaseStatus.SUCCESS, "Result must not be empty"
+        assert result.details["test"] == "value", "Result must not be empty"
+        assert len(result.errors) == 1, "Collection must not be empty"
 
 
 class TestDeploymentManifest:
@@ -74,11 +74,11 @@ class TestDeploymentManifest:
             started_at=datetime.now(timezone.utc),
         )
 
-        assert manifest.pr_number == 2207
-        assert manifest.source_branch == "0D_base_"
-        assert manifest.target_branch == "main"
-        assert manifest.status == PhaseStatus.PENDING
-        assert len(manifest.phase_results) == 0
+        assert manifest.pr_number == 2207, "pr_number is not valid"
+        assert manifest.source_branch == "0D_base_", "source_branch is not valid"
+        assert manifest.target_branch == "main", "target_branch is not valid"
+        assert manifest.status == PhaseStatus.PENDING, "status is not valid"
+        assert len(manifest.phase_results) == 0, "Collection must not be empty"
 
     def test_manifest_to_dict(self):
         """Test manifest conversion to dictionary."""
@@ -91,10 +91,10 @@ class TestDeploymentManifest:
 
         manifest_dict = manifest.to_dict()
 
-        assert manifest_dict["pr_number"] == 2207
-        assert manifest_dict["source_branch"] == "0D_base_"
-        assert manifest_dict["target_branch"] == "main"
-        assert manifest_dict["status"] == "pending"
+        assert manifest_dict["pr_number"] == 2207, "Condition must be true"
+        assert manifest_dict["source_branch"] == "0D_base_", "Condition must be true"
+        assert manifest_dict["target_branch"] == "main", "Condition must be true"
+        assert manifest_dict["status"] == "pending", "Condition must be true"
         assert isinstance(manifest_dict["phase_results"], list)
 
 
@@ -127,19 +127,19 @@ class TestDeploymentOrchestrator:
 
     def test_orchestrator_initialization(self, orchestrator, temp_output_dir):
         """Test orchestrator initialization."""
-        assert orchestrator.pr_number == 2207
-        assert orchestrator.dry_run is True
-        assert orchestrator.output_dir == temp_output_dir
-        assert orchestrator.manifest.pr_number == 2207
-        assert orchestrator.manifest.target_branch == "main"
+        assert orchestrator.pr_number == 2207, "pr_number is not valid"
+        assert orchestrator.dry_run is True, "dry_run is not valid"
+        assert orchestrator.output_dir == temp_output_dir, "output_dir is not valid"
+        assert orchestrator.manifest.pr_number == 2207, "pr_number is not valid"
+        assert orchestrator.manifest.target_branch == "main", "target_branch is not valid"
 
     def test_run_command_dry_run(self, orchestrator):
         """Test command execution in dry-run mode."""
         exit_code, stdout, stderr = orchestrator.run_command(["echo", "test"])
 
-        assert exit_code == 0
-        assert "[DRY RUN]" in stdout
-        assert stderr == ""
+        assert exit_code == 0, "exit_code is not valid"
+        assert "[DRY RUN]" in stdout, "Condition must be true"
+        assert stderr == "", "stderr is not valid"
 
     @patch("subprocess.run")
     def test_run_command_execution(self, mock_run, temp_output_dir):
@@ -160,20 +160,20 @@ class TestDeploymentOrchestrator:
 
         exit_code, stdout, _stderr = orchestrator.run_command(["echo", "test"])
 
-        assert exit_code == 0
-        assert stdout == "output"
+        assert exit_code == 0, "exit_code is not valid"
+        assert stdout == "output", "stdout is not valid"
         mock_run.assert_called_once()
 
     def test_phase_1_pre_deployment_verification(self, orchestrator):
         """Test Phase 1: Pre-Deployment Verification."""
         result = orchestrator.phase_1_pre_deployment_verification()
 
-        assert result.phase == DeploymentPhase.PHASE_1_PRE_DEPLOYMENT
+        assert result.phase == DeploymentPhase.PHASE_1_PRE_DEPLOYMENT, "Result must not be empty"
         assert result.status in [PhaseStatus.SUCCESS, PhaseStatus.FAILED]
-        assert result.start_time is not None
-        assert result.end_time is not None
-        assert "yaml_validation" in result.details
-        assert "security_scan" in result.details
+        assert result.start_time is not None, "start_time must be initialized"
+        assert result.end_time is not None, "end_time must be initialized"
+        assert "yaml_validation" in result.details, "Result must not be empty"
+        assert "security_scan" in result.details, "Result must not be empty"
 
     def test_phase_1_generates_report(self, orchestrator, temp_output_dir):
         """Test that Phase 1 generates a pre-check report."""
@@ -181,29 +181,29 @@ class TestDeploymentOrchestrator:
 
         # Check report file was created
         report_file = temp_output_dir / "pre_check_report_2207.json"
-        assert report_file.exists()
+        assert report_file.exists(), "rep is not valid"
 
         # Verify report content
         with open(report_file) as f:
             report_data = json.load(f)
 
-        assert "yaml_validation" in report_data
-        assert "security_scan" in report_data
+        assert "yaml_validation" in report_data, "Data must not be empty"
+        assert "security_scan" in report_data, "Data must not be empty"
 
     def test_phase_2_merge_execution_dry_run(self, orchestrator):
         """Test Phase 2: Merge Execution in dry-run mode."""
         result = orchestrator.phase_2_merge_execution()
 
-        assert result.phase == DeploymentPhase.PHASE_2_MERGE
-        assert result.status == PhaseStatus.SKIPPED
+        assert result.phase == DeploymentPhase.PHASE_2_MERGE, "Result must not be empty"
+        assert result.status == PhaseStatus.SKIPPED, "Result must not be empty"
         assert "Dry run" in result.details.get("reason", "")
 
     def test_phase_3_post_merge_validation_dry_run(self, orchestrator):
         """Test Phase 3: Post-Merge Validation in dry-run mode."""
         result = orchestrator.phase_3_post_merge_validation()
 
-        assert result.phase == DeploymentPhase.PHASE_3_POST_MERGE
-        assert result.status == PhaseStatus.SKIPPED
+        assert result.phase == DeploymentPhase.PHASE_3_POST_MERGE, "Result must not be empty"
+        assert result.status == PhaseStatus.SKIPPED, "Result must not be empty"
         assert "Dry run" in result.details.get("reason", "")
 
     @patch("scripts.deployment_orchestrator.time.sleep", return_value=None)
@@ -248,10 +248,10 @@ class TestDeploymentOrchestrator:
 
             result = live_orchestrator.phase_3_post_merge_validation()
 
-        assert result.status == PhaseStatus.SUCCESS
-        assert result.details["workflow_run_id"] == 12345
-        assert result.details["workflow_conclusion"] == "success"
-        assert "failed_jobs" not in result.details
+        assert result.status == PhaseStatus.SUCCESS, "Result must not be empty"
+        assert result.details["workflow_run_id"] == 12345, "Result must not be empty"
+        assert result.details["workflow_conclusion"] == "success", "Result must not be empty"
+        assert "failed_jobs" not in result.details, "Result must not be empty"
         mock_wait.assert_called_once()
         mock_run_cmd.assert_called_once()
 
@@ -298,11 +298,11 @@ class TestDeploymentOrchestrator:
 
             result = live_orchestrator.phase_3_post_merge_validation()
 
-        assert result.status == PhaseStatus.FAILED
-        assert result.details["workflow_run_id"] == 999
-        assert result.details["workflow_conclusion"] == "failure"
-        assert any(job["name"] == "tests" for job in result.details["failed_jobs"])
-        assert result.errors
+        assert result.status == PhaseStatus.FAILED, "Result must not be empty"
+        assert result.details["workflow_run_id"] == 999, "Result must not be empty"
+        assert result.details["workflow_conclusion"] == "failure", "Result must not be empty"
+        assert any(job["name"] == "tests" for job in result.details["failed_jobs"]), "Result must not be empty"
+        assert result.errors, "Result must not be empty"
 
     @patch("scripts.deployment_orchestrator.time.sleep", return_value=None)
     def test_phase_3_post_merge_validation_timeout(
@@ -340,9 +340,9 @@ class TestDeploymentOrchestrator:
 
             result = live_orchestrator.phase_3_post_merge_validation()
 
-        assert result.status == PhaseStatus.FAILED
-        assert result.details.get("timeout") is True
-        assert any("timed out" in error for error in result.errors)
+        assert result.status == PhaseStatus.FAILED, "Result must not be empty"
+        assert result.details.get("timeout") is True, "Result must not be empty"
+        assert any("timed out" in error for error in result.errors), "Result must not be empty"
 
     @patch("subprocess.run")
     def test_phase_3_workflow_completed_success(self, mock_run, temp_output_dir):
@@ -371,10 +371,10 @@ class TestDeploymentOrchestrator:
 
         result = orchestrator.phase_3_post_merge_validation()
 
-        assert result.status == PhaseStatus.SUCCESS
-        assert result.details["workflow_conclusion"] == "success"
-        assert result.details["workflow_status"] == "completed"
-        assert len(result.errors) == 0
+        assert result.status == PhaseStatus.SUCCESS, "Result must not be empty"
+        assert result.details["workflow_conclusion"] == "success", "Result must not be empty"
+        assert result.details["workflow_status"] == "completed", "Result must not be empty"
+        assert len(result.errors) == 0, "Collection must not be empty"
 
     @patch("subprocess.run")
     def test_phase_3_workflow_completed_failure(self, mock_run, temp_output_dir):
@@ -404,10 +404,10 @@ class TestDeploymentOrchestrator:
         result = orchestrator.phase_3_post_merge_validation()
 
         # CRITICAL: Must report FAILED, not SUCCESS
-        assert result.status == PhaseStatus.FAILED
-        assert result.details["workflow_conclusion"] == "failure"
-        assert len(result.errors) > 0
-        assert "failure" in result.errors[0]
+        assert result.status == PhaseStatus.FAILED, "Result must not be empty"
+        assert result.details["workflow_conclusion"] == "failure", "Result must not be empty"
+        assert len(result.errors) > 0, "Collection must not be empty"
+        assert "failure" in result.errors[0], "Result must not be empty"
 
     @patch("subprocess.run")
     def test_phase_3_workflow_in_progress(self, mock_run, temp_output_dir):
@@ -437,8 +437,8 @@ class TestDeploymentOrchestrator:
         result = orchestrator.phase_3_post_merge_validation()
 
         # CRITICAL: Must report IN_PROGRESS, not SUCCESS
-        assert result.status == PhaseStatus.IN_PROGRESS
-        assert result.details["workflow_status"] == "in_progress"
+        assert result.status == PhaseStatus.IN_PROGRESS, "Result must not be empty"
+        assert result.details["workflow_status"] == "in_progress", "Result must not be empty"
         assert "monitoring required" in result.details.get("monitoring", "").lower()
 
     @patch("subprocess.run")
@@ -469,9 +469,9 @@ class TestDeploymentOrchestrator:
         result = orchestrator.phase_3_post_merge_validation()
 
         # CRITICAL: Must report FAILED, not SUCCESS
-        assert result.status == PhaseStatus.FAILED
-        assert result.details["workflow_conclusion"] == "timed_out"
-        assert len(result.errors) > 0
+        assert result.status == PhaseStatus.FAILED, "Result must not be empty"
+        assert result.details["workflow_conclusion"] == "timed_out", "Result must not be empty"
+        assert len(result.errors) > 0, "Collection must not be empty"
 
     @patch("subprocess.run")
     def test_phase_3_workflow_cancelled(self, mock_run, temp_output_dir):
@@ -501,21 +501,21 @@ class TestDeploymentOrchestrator:
         result = orchestrator.phase_3_post_merge_validation()
 
         # CRITICAL: Must report FAILED, not SUCCESS
-        assert result.status == PhaseStatus.FAILED
-        assert result.details["workflow_conclusion"] == "cancelled"
-        assert len(result.errors) > 0
+        assert result.status == PhaseStatus.FAILED, "Result must not be empty"
+        assert result.details["workflow_conclusion"] == "cancelled", "Result must not be empty"
+        assert len(result.errors) > 0, "Collection must not be empty"
 
     def test_phase_4_health_check(self, orchestrator, temp_output_dir):
         """Test Phase 4: Health Check & Validation."""
         result = orchestrator.phase_4_health_check()
 
-        assert result.phase == DeploymentPhase.PHASE_4_HEALTH_CHECK
+        assert result.phase == DeploymentPhase.PHASE_4_HEALTH_CHECK, "Result must not be empty"
         assert result.status in [PhaseStatus.SUCCESS, PhaseStatus.FAILED]
-        assert "critical_files_check" in result.details
+        assert "critical_files_check" in result.details, "Result must not be empty"
 
         # Check health report was created
         health_report_file = temp_output_dir / "health_check_report_2207.json"
-        assert health_report_file.exists()
+        assert health_report_file.exists(), "health_rep is not valid"
 
     def test_phase_5_notification(self, orchestrator, temp_output_dir):
         """Test Phase 5: Notification & Documentation."""
@@ -531,17 +531,17 @@ class TestDeploymentOrchestrator:
 
         result = orchestrator.phase_5_notification()
 
-        assert result.phase == DeploymentPhase.PHASE_5_NOTIFICATION
-        assert result.status == PhaseStatus.SUCCESS
-        assert "summary_file" in result.details
-        assert "manifest_file" in result.details
+        assert result.phase == DeploymentPhase.PHASE_5_NOTIFICATION, "Result must not be empty"
+        assert result.status == PhaseStatus.SUCCESS, "Result must not be empty"
+        assert "summary_file" in result.details, "Result must not be empty"
+        assert "manifest_file" in result.details, "Result must not be empty"
 
         # Check files were created
         summary_file = Path(result.details["summary_file"])
         manifest_file = Path(result.details["manifest_file"])
 
-        assert summary_file.exists()
-        assert manifest_file.exists()
+        assert summary_file.exists(), "Condition must be true"
+        assert manifest_file.exists(), "Condition must be true"
 
     def test_deployment_summary_generation(self, orchestrator):
         """Test deployment summary markdown generation."""
@@ -565,11 +565,11 @@ class TestDeploymentOrchestrator:
 
         summary = orchestrator._generate_deployment_summary()
 
-        assert "Deployment Summary" in summary
-        assert "PR #2207" in summary
-        assert "Phase 1: Pre-Deployment Verification" in summary
-        assert "Phase 2: Merge Execution" in summary
-        assert "Test error" in summary
+        assert "Deployment Summary" in summary, "Condition must be true"
+        assert "PR, "Condition must be true"
+        assert "Phase 1: Pre-Deployment Verification" in summary, "Condition must be true"
+        assert "Phase 2: Merge Execution" in summary, "Condition must be true"
+        assert "Test error" in summary, "Error should be raised or set"
 
     def test_check_gh_auth(self, orchestrator):
         """Test GitHub CLI authentication check."""
@@ -585,7 +585,7 @@ class TestDeploymentOrchestrator:
         assert isinstance(success, bool)
 
         # Check that all phases were executed
-        assert len(orchestrator.manifest.phase_results) >= 5
+        assert len(orchestrator.manifest.phase_results) >= 5, "Collection must not be empty"
 
         # Verify notification phase ran
         notification_phases = [
@@ -593,7 +593,7 @@ class TestDeploymentOrchestrator:
             for r in orchestrator.manifest.phase_results
             if r.phase == DeploymentPhase.PHASE_5_NOTIFICATION
         ]
-        assert len(notification_phases) == 1
+        assert len(notification_phases) == 1, "Notification_phases must not be empty"
 
     def test_execute_creates_artifacts(self, orchestrator, temp_output_dir):
         """Test that execution creates all expected artifacts."""
@@ -601,15 +601,15 @@ class TestDeploymentOrchestrator:
 
         # Check for log file
         log_files = list(temp_output_dir.glob("deployment_2207_*.log"))
-        assert len(log_files) > 0
+        assert len(log_files) > 0, "Log_files must not be empty"
 
         # Check for manifest
         manifest_file = temp_output_dir / "deployment_manifest_2207.json"
-        assert manifest_file.exists()
+        assert manifest_file.exists(), "Condition must be true"
 
         # Check for summary
         summary_file = temp_output_dir / "deployment_summary_2207.md"
-        assert summary_file.exists()
+        assert summary_file.exists(), "Condition must be true"
 
     def test_execute_halts_when_phase_in_progress(self, live_orchestrator):
         """Ensure orchestrator pauses when a phase reports IN_PROGRESS."""
@@ -651,11 +651,11 @@ class TestDeploymentOrchestrator:
 
         success = live_orchestrator.execute()
 
-        assert success is False
-        assert live_orchestrator.manifest.status == PhaseStatus.IN_PROGRESS
+        assert success is False, "success is not valid"
+        assert live_orchestrator.manifest.status == PhaseStatus.IN_PROGRESS, "status is not valid"
 
         executed_phases = [result.phase for result in live_orchestrator.manifest.phase_results]
-        assert executed_phases == [
+        assert executed_phases == [, "executed_phases is not valid"
             DeploymentPhase.PHASE_1_PRE_DEPLOYMENT,
             DeploymentPhase.PHASE_2_MERGE,
             DeploymentPhase.PHASE_3_POST_MERGE,
@@ -675,7 +675,7 @@ class TestDeploymentOrchestrator:
         try:
             success = orchestrator.execute()
             # Should fail gracefully
-            assert success is False
+            assert success is False, "success is not valid"
         except Exception as _err:
             pytest.fail("Exception should be caught and handled")
         finally:
@@ -704,7 +704,7 @@ class TestDeploymentOrchestrator:
         orchestrator.phase_5_notification()
 
         # Check manifest status
-        assert orchestrator.manifest.status == PhaseStatus.FAILED
+        assert orchestrator.manifest.status == PhaseStatus.FAILED, "status is not valid"
 
 
 class TestCommandLineInterface:
@@ -718,10 +718,10 @@ class TestCommandLineInterface:
             text=True,
         )
 
-        assert result.returncode == 0
-        assert "Autonomous Deployment Orchestration" in result.stdout
-        assert "--pr-number" in result.stdout
-        assert "--dry-run" in result.stdout
+        assert result.returncode == 0, "Result must not be empty"
+        assert "Autonomous Deployment Orchestration" in result.stdout, "Result must not be empty"
+        assert "--pr-number" in result.stdout, "Result must not be empty"
+        assert "--dry-run" in result.stdout, "Result must not be empty"
 
     def test_cli_requires_pr_number(self):
         """Test that CLI requires --pr-number argument."""
@@ -731,8 +731,8 @@ class TestCommandLineInterface:
             text=True,
         )
 
-        assert result.returncode != 0
-        assert "required" in result.stderr.lower() or "error" in result.stderr.lower()
+        assert result.returncode != 0, "Result must not be empty"
+        assert "required" in result.stderr.lower() or "error" in result.stderr.lower(), "Result must not be empty"
 
 
 class TestPhaseEnum:
@@ -740,11 +740,11 @@ class TestPhaseEnum:
 
     def test_phase_values(self):
         """Test that all phases have correct values."""
-        assert "Phase 1" in DeploymentPhase.PHASE_1_PRE_DEPLOYMENT.value
-        assert "Phase 2" in DeploymentPhase.PHASE_2_MERGE.value
-        assert "Phase 3" in DeploymentPhase.PHASE_3_POST_MERGE.value
-        assert "Phase 4" in DeploymentPhase.PHASE_4_HEALTH_CHECK.value
-        assert "Phase 5" in DeploymentPhase.PHASE_5_NOTIFICATION.value
+        assert "Phase 1" in DeploymentPhase.PHASE_1_PRE_DEPLOYMENT.value, "Value must be initialized"
+        assert "Phase 2" in DeploymentPhase.PHASE_2_MERGE.value, "Value must be initialized"
+        assert "Phase 3" in DeploymentPhase.PHASE_3_POST_MERGE.value, "Value must be initialized"
+        assert "Phase 4" in DeploymentPhase.PHASE_4_HEALTH_CHECK.value, "Value must be initialized"
+        assert "Phase 5" in DeploymentPhase.PHASE_5_NOTIFICATION.value, "Value must be initialized"
 
 
 class TestPhaseStatusEnum:
@@ -752,8 +752,8 @@ class TestPhaseStatusEnum:
 
     def test_status_values(self):
         """Test that all status values are defined."""
-        assert PhaseStatus.PENDING.value == "pending"
-        assert PhaseStatus.IN_PROGRESS.value == "in_progress"
-        assert PhaseStatus.SUCCESS.value == "success"
-        assert PhaseStatus.FAILED.value == "failed"
-        assert PhaseStatus.SKIPPED.value == "skipped"
+        assert PhaseStatus.PENDING.value == "pending", "Value must be initialized"
+        assert PhaseStatus.IN_PROGRESS.value == "in_progress", "Value must be initialized"
+        assert PhaseStatus.SUCCESS.value == "success", "Value must be initialized"
+        assert PhaseStatus.FAILED.value == "failed", "Value must be initialized"
+        assert PhaseStatus.SKIPPED.value == "skipped", "Value must be initialized"

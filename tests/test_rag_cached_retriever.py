@@ -49,10 +49,10 @@ class TestLRUCache:
         """Test LRU cache initialization"""
         cache = LRUCache(maxsize=100)
 
-        assert cache.maxsize == 100
-        assert len(cache.cache) == 0
-        assert cache.hits == 0
-        assert cache.misses == 0
+        assert cache.maxsize == 100, "maxsize is not valid"
+        assert len(cache.cache) == 0, "Collection must not be empty"
+        assert cache.hits == 0, "hits is not valid"
+        assert cache.misses == 0, "misses is not valid"
 
     def test_get_miss(self):
         """Test cache miss on get"""
@@ -60,9 +60,9 @@ class TestLRUCache:
 
         result = cache.get("nonexistent")
 
-        assert result is None
-        assert cache.misses == 1
-        assert cache.hits == 0
+        assert result is None, "Result must not be empty"
+        assert cache.misses == 1, "misses is not valid"
+        assert cache.hits == 0, "hits is not valid"
 
     def test_put_and_get_hit(self):
         """Test putting value and getting cache hit"""
@@ -71,9 +71,9 @@ class TestLRUCache:
         cache.put("key1", "value1")
         result = cache.get("key1")
 
-        assert result == "value1"
-        assert cache.hits == 1
-        assert cache.misses == 0
+        assert result == "value1", "Result must not be empty"
+        assert cache.hits == 1, "hits is not valid"
+        assert cache.misses == 0, "misses is not valid"
 
     def test_put_updates_existing(self):
         """Test that putting existing key updates value"""
@@ -83,8 +83,8 @@ class TestLRUCache:
         cache.put("key1", "value2")
         result = cache.get("key1")
 
-        assert result == "value2"
-        assert len(cache.cache) == 1
+        assert result == "value2", "Result must not be empty"
+        assert len(cache.cache) == 1, "Collection must not be empty"
 
     def test_lru_eviction(self):
         """Test LRU eviction when maxsize exceeded"""
@@ -94,16 +94,16 @@ class TestLRUCache:
         cache.put("key1", "value1")
         cache.put("key2", "value2")
         cache.put("key3", "value3")
-        assert len(cache.cache) == 3
+        assert len(cache.cache) == 3, "Collection must not be empty"
 
         # Add one more - should evict key1 (oldest)
         cache.put("key4", "value4")
 
-        assert len(cache.cache) == 3
-        assert cache.get("key1") is None  # Evicted
-        assert cache.get("key2") == "value2"
-        assert cache.get("key3") == "value3"
-        assert cache.get("key4") == "value4"
+        assert len(cache.cache) == 3, "Collection must not be empty"
+        assert cache.get("key1") is None, "Condition must be true"
+        assert cache.get("key2") == "value2", "Value must be initialized"
+        assert cache.get("key3") == "value3", "Value must be initialized"
+        assert cache.get("key4") == "value4", "Value must be initialized"
 
     def test_lru_ordering_with_access(self):
         """Test that accessing items updates LRU order"""
@@ -119,10 +119,10 @@ class TestLRUCache:
         # Add new item - should evict key2 (now oldest)
         cache.put("key4", "value4")
 
-        assert cache.get("key1") == "value1"  # Still present
-        assert cache.get("key2") is None  # Evicted
-        assert cache.get("key3") == "value3"
-        assert cache.get("key4") == "value4"
+        assert cache.get("key1") == "value1", "Value must be initialized"
+        assert cache.get("key2") is None, "Condition must be true"
+        assert cache.get("key3") == "value3", "Value must be initialized"
+        assert cache.get("key4") == "value4", "Value must be initialized"
 
     def test_clear(self):
         """Test clearing cache"""
@@ -133,15 +133,15 @@ class TestLRUCache:
         cache.get("key1")
         cache.get("nonexistent")
 
-        assert len(cache.cache) > 0
-        assert cache.hits > 0
-        assert cache.misses > 0
+        assert len(cache.cache) > 0, "Collection must not be empty"
+        assert cache.hits > 0, "hits must be greater than zero"
+        assert cache.misses > 0, "misses must be greater than zero"
 
         cache.clear()
 
-        assert len(cache.cache) == 0
-        assert cache.hits == 0
-        assert cache.misses == 0
+        assert len(cache.cache) == 0, "Collection must not be empty"
+        assert cache.hits == 0, "hits is not valid"
+        assert cache.misses == 0, "misses is not valid"
 
     def test_get_stats(self):
         """Test cache statistics"""
@@ -160,11 +160,11 @@ class TestLRUCache:
 
         stats = cache.get_stats()
 
-        assert stats["size"] == 3
-        assert stats["maxsize"] == 100
-        assert stats["hits"] == 2
-        assert stats["misses"] == 2
-        assert stats["hit_rate"] == 0.5  # 2 hits out of 4 total
+        assert stats["size"] == 3, "Condition must be true"
+        assert stats["maxsize"] == 100, "Condition must be true"
+        assert stats["hits"] == 2, "Condition must be true"
+        assert stats["misses"] == 2, "Condition must be true"
+        assert stats["hit_rate"] == 0.5, "Condition must be true"
 
     def test_get_stats_empty_cache(self):
         """Test statistics on empty cache"""
@@ -172,10 +172,10 @@ class TestLRUCache:
 
         stats = cache.get_stats()
 
-        assert stats["size"] == 0
-        assert stats["hits"] == 0
-        assert stats["misses"] == 0
-        assert stats["hit_rate"] == 0.0
+        assert stats["size"] == 0, "Condition must be true"
+        assert stats["hits"] == 0, "Condition must be true"
+        assert stats["misses"] == 0, "Condition must be true"
+        assert stats["hit_rate"] == 0.0, "Condition must be true"
 
 
 @_skip_real_st_models
@@ -233,11 +233,11 @@ class TestCachedRetriever:
             normalize_queries=True,
         )
 
-        assert retriever is not None
-        assert retriever.cache_ttl == 3600
-        assert retriever.normalize_queries is True
-        assert retriever.query_cache.maxsize == 500
-        assert len(retriever.cache_timestamps) == 0
+        assert retriever is not None, "retriever must be initialized"
+        assert retriever.cache_ttl == 3600, "cache_ttl is not valid"
+        assert retriever.normalize_queries is True, "normalize_queries is not valid"
+        assert retriever.query_cache.maxsize == 500, "maxsize is not valid"
+        assert len(retriever.cache_timestamps) == 0, "Collection must not be empty"
 
     def test_query_normalization(self, sample_index):
         """Test query normalization"""
@@ -255,8 +255,8 @@ class TestCachedRetriever:
         normalized1 = retriever._normalize_query(q1)
         normalized2 = retriever._normalize_query(q2)
 
-        assert normalized1 == normalized2
-        assert normalized1 == "python programming"
+        assert normalized1 == normalized2, "normalized1 is not valid"
+        assert normalized1 == "python programming", "normalized1 is not valid"
 
     def test_query_normalization_disabled(self, sample_index):
         """Test that normalization can be disabled"""
@@ -270,7 +270,7 @@ class TestCachedRetriever:
         q = "  Python   Programming  "
         normalized = retriever._normalize_query(q)
 
-        assert normalized == q  # Should be unchanged
+        assert normalized == q, "normalized is not valid"
 
     def test_cache_key_generation(self, sample_index):
         """Test cache key generation"""
@@ -283,15 +283,15 @@ class TestCachedRetriever:
         # Same query should produce same key
         key1 = retriever._make_cache_key("Python programming", top_k=5, min_score=0.7)
         key2 = retriever._make_cache_key("Python programming", top_k=5, min_score=0.7)
-        assert key1 == key2
+        assert key1 == key2, "key1 is not valid"
 
         # Different queries should produce different keys
         key3 = retriever._make_cache_key("Machine learning", top_k=5, min_score=0.7)
-        assert key1 != key3
+        assert key1 != key3, "key1 is not valid"
 
         # Different parameters should produce different keys
         key4 = retriever._make_cache_key("Python programming", top_k=10, min_score=0.7)
-        assert key1 != key4
+        assert key1 != key4, "key1 is not valid"
 
     def test_cache_key_with_normalization(self, sample_index):
         """Test that normalized queries produce same cache keys"""
@@ -306,7 +306,7 @@ class TestCachedRetriever:
         key1 = retriever._make_cache_key("  Python   Programming  ", top_k=5, min_score=None)
         key2 = retriever._make_cache_key("python programming", top_k=5, min_score=None)
 
-        assert key1 == key2
+        assert key1 == key2, "key1 is not valid"
 
     def test_cache_hit(self, sample_index):
         """Test cache hit on repeated query"""
@@ -321,15 +321,15 @@ class TestCachedRetriever:
 
         # First query - cache miss
         results1 = retriever.query_with_cache(query, top_k=3)
-        assert len(results1) > 0
-        assert retriever.query_cache.misses == 1
-        assert retriever.query_cache.hits == 0
+        assert len(results1) > 0, "Results1 must not be empty"
+        assert retriever.query_cache.misses == 1, "misses is not valid"
+        assert retriever.query_cache.hits == 0, "hits is not valid"
 
         # Second query - cache hit
         results2 = retriever.query_with_cache(query, top_k=3)
-        assert results1 == results2
-        assert retriever.query_cache.hits == 1
-        assert retriever.query_cache.misses == 1
+        assert results1 == results2, "Result must not be empty"
+        assert retriever.query_cache.hits == 1, "hits is not valid"
+        assert retriever.query_cache.misses == 1, "misses is not valid"
 
     def test_cache_miss_different_params(self, sample_index):
         """Test cache miss with different parameters"""
@@ -343,14 +343,14 @@ class TestCachedRetriever:
 
         # Query with top_k=3
         results1 = retriever.query_with_cache(query, top_k=3)
-        assert len(results1) <= 3
+        assert len(results1) <= 3, "Results1 must not be empty"
 
         # Query with top_k=5 - should be cache miss
         results2 = retriever.query_with_cache(query, top_k=5)
-        assert len(results2) <= 5
+        assert len(results2) <= 5, "Results2 must not be empty"
 
         # Should have 2 misses (different params)
-        assert retriever.query_cache.misses == 2
+        assert retriever.query_cache.misses == 2, "misses is not valid"
 
     def test_cache_validity_check(self, sample_index):
         """Test cache validity based on TTL"""
@@ -364,19 +364,19 @@ class TestCachedRetriever:
         cache_key = retriever._make_cache_key("test", top_k=5, min_score=None)
 
         # Initially invalid (not in cache)
-        assert not retriever._is_cache_valid(cache_key)
+        assert not retriever._is_cache_valid(cache_key), "Condition must be true"
 
         # Add to cache
         retriever.cache_timestamps[cache_key] = time.time()
 
         # Should be valid immediately
-        assert retriever._is_cache_valid(cache_key)
+        assert retriever._is_cache_valid(cache_key), "Condition must be true"
 
         # Wait for TTL to expire
         time.sleep(1.1)
 
         # Should now be invalid
-        assert not retriever._is_cache_valid(cache_key)
+        assert not retriever._is_cache_valid(cache_key), "Condition must be true"
 
     def test_cache_expiration(self, sample_index):
         """Test that expired cache entries cause cache miss"""
@@ -391,14 +391,14 @@ class TestCachedRetriever:
 
         # First query
         retriever.query_with_cache(query, top_k=3)
-        assert retriever.query_cache.misses == 1
+        assert retriever.query_cache.misses == 1, "misses is not valid"
 
         # Wait for expiration
         time.sleep(1.1)
 
         # Second query after expiration - should be cache miss
         retriever.query_with_cache(query, top_k=3)
-        assert retriever.query_cache.misses == 2
+        assert retriever.query_cache.misses == 2, "misses is not valid"
 
     def test_clear_cache(self, sample_index):
         """Test clearing cache"""
@@ -412,14 +412,14 @@ class TestCachedRetriever:
         retriever.query_with_cache("Python", top_k=3)
         retriever.query_with_cache("Machine learning", top_k=3)
 
-        assert len(retriever.query_cache.cache) > 0
-        assert len(retriever.cache_timestamps) > 0
+        assert len(retriever.query_cache.cache) > 0, "Collection must not be empty"
+        assert len(retriever.cache_timestamps) > 0, "Collection must not be empty"
 
         # Clear cache
         retriever.clear_cache()
 
-        assert len(retriever.query_cache.cache) == 0
-        assert len(retriever.cache_timestamps) == 0
+        assert len(retriever.query_cache.cache) == 0, "Collection must not be empty"
+        assert len(retriever.cache_timestamps) == 0, "Collection must not be empty"
 
     def test_get_cache_stats(self, sample_index):
         """Test getting cache statistics"""
@@ -439,13 +439,13 @@ class TestCachedRetriever:
 
         stats = retriever.get_cache_stats()
 
-        assert stats["ttl"] == 3600
-        assert stats["normalize_queries"] is True
-        assert stats["size"] == 2  # Two unique queries
-        assert stats["hits"] == 1
-        assert stats["misses"] == 2
-        assert stats["valid_entries"] == 2
-        assert stats["hit_rate"] == 1.0 / 3.0
+        assert stats["ttl"] == 3600, "Condition must be true"
+        assert stats["normalize_queries"] is True, "Condition must be true"
+        assert stats["size"] == 2, "Condition must be true"
+        assert stats["hits"] == 1, "Condition must be true"
+        assert stats["misses"] == 2, "Condition must be true"
+        assert stats["valid_entries"] == 2, "Condition must be true"
+        assert stats["hit_rate"] == 1.0 / 3.0, "Condition must be true"
 
     def test_invalidate_expired(self, sample_index):
         """Test manual invalidation of expired entries"""
@@ -460,8 +460,8 @@ class TestCachedRetriever:
         retriever.query_with_cache("Python", top_k=3)
         retriever.query_with_cache("Machine learning", top_k=3)
 
-        assert len(retriever.query_cache.cache) == 2
-        assert len(retriever.cache_timestamps) == 2
+        assert len(retriever.query_cache.cache) == 2, "Collection must not be empty"
+        assert len(retriever.cache_timestamps) == 2, "Collection must not be empty"
 
         # Wait for expiration
         time.sleep(1.1)
@@ -470,8 +470,8 @@ class TestCachedRetriever:
         retriever.invalidate_expired()
 
         # Expired entries should be removed
-        assert len(retriever.query_cache.cache) == 0
-        assert len(retriever.cache_timestamps) == 0
+        assert len(retriever.query_cache.cache) == 0, "Collection must not be empty"
+        assert len(retriever.cache_timestamps) == 0, "Collection must not be empty"
 
     def test_cache_with_min_score(self, sample_index):
         """Test caching with min_score parameter"""
@@ -488,12 +488,12 @@ class TestCachedRetriever:
 
         # Same query should hit cache
         results2 = retriever.query_with_cache(query, top_k=5, min_score=0.5)
-        assert results1 == results2
-        assert retriever.query_cache.hits == 1
+        assert results1 == results2, "Result must not be empty"
+        assert retriever.query_cache.hits == 1, "hits is not valid"
 
         # Different min_score should miss cache
         retriever.query_with_cache(query, top_k=5, min_score=0.7)
-        assert retriever.query_cache.misses == 2
+        assert retriever.query_cache.misses == 2, "misses is not valid"
 
     def test_cache_stats_with_no_activity(self, sample_index):
         """Test cache stats with no queries"""
@@ -505,11 +505,11 @@ class TestCachedRetriever:
 
         stats = retriever.get_cache_stats()
 
-        assert stats["size"] == 0
-        assert stats["hits"] == 0
-        assert stats["misses"] == 0
-        assert stats["valid_entries"] == 0
-        assert stats["hit_rate"] == 0.0
+        assert stats["size"] == 0, "Condition must be true"
+        assert stats["hits"] == 0, "Condition must be true"
+        assert stats["misses"] == 0, "Condition must be true"
+        assert stats["valid_entries"] == 0, "Condition must be true"
+        assert stats["hit_rate"] == 0.0, "Condition must be true"
 
     def test_cache_with_special_characters(self, sample_index):
         """Test caching with special characters in query"""
@@ -525,5 +525,5 @@ class TestCachedRetriever:
         results1 = retriever.query_with_cache(query, top_k=3)
         results2 = retriever.query_with_cache(query, top_k=3)
 
-        assert results1 == results2
-        assert retriever.query_cache.hits == 1
+        assert results1 == results2, "Result must not be empty"
+        assert retriever.query_cache.hits == 1, "hits is not valid"

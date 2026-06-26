@@ -41,8 +41,8 @@ class TestTrainingErrorPaths:
             # Should create parent dirs automatically
             result = run_minimal_training({}, max_steps=1, run_dir=str(nested_dir))
 
-            assert "loss_final" in result
-            assert nested_dir.exists()
+            assert "loss_final" in result, "Result must not be empty"
+            assert nested_dir.exists(), "Condition must be true"
 
 
 class TestCheckpointErrorPaths:
@@ -151,7 +151,7 @@ class TestDALErrorPaths:
 
                 # Should all succeed
                 items = dal.recent_items(limit=10)
-                assert len(items) == 10
+                assert len(items) == 10, "Items must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("SqliteDAL not available")
 
@@ -191,7 +191,7 @@ class TestRAGErrorPaths:
             # If OpenAI is None, should be handled gracefully
             if OpenAI is None:
                 # Expected when openai not installed
-                assert True
+                assert True, "True is not valid"
         except ImportError:
             pytest.skip("embeddings module not available")
 
@@ -233,7 +233,7 @@ class TestLoggingErrorPaths:
                 with MetricLogger(log_file) as logger:
                     logger.log(step=0, loss=1.0)
 
-                assert log_file.exists()
+                assert log_file.exists(), "Condition must be true"
         except ImportError:
             pytest.skip("MetricLogger not available")
 
@@ -252,7 +252,7 @@ class TestConfigErrorPaths:
                 # Should handle gracefully
                 value = config.get_int("TEST_VAR", default=42)
                 # Should return default or raise clear error
-                assert value is not None
+                assert value is not None, "value must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("EnvVarConfig not available")
 
@@ -271,7 +271,7 @@ class TestEvaluationErrorPaths:
             metric.add_batch([], [])
             result = metric.compute()
             # With no predictions, accuracy should be 0.0
-            assert result == {"accuracy": 0.0}
+            assert result == {"accuracy": 0.0}, "Result must not be empty"
         except ImportError:
             pytest.skip("AccuracyMetric not available")
 

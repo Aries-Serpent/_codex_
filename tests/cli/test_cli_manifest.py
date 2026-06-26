@@ -40,8 +40,8 @@ def test_hash_and_readme_update(tmp_path):
         manifest_cli.app,
         ["hash", "--path", str(mpath), "--update-readme", str(readme)],
     )
-    assert res.exit_code == 0
+    assert res.exit_code == 0, "exit_code is not valid"
     out = res.stdout.strip().splitlines()[-1]
     assert re.fullmatch(r"[0-9a-f]{64}", out) and out == expected
     txt = readme.read_text(encoding="utf-8")
-    assert "<!-- manifest-digest:start -->" in txt and expected[:12] in txt
+    assert "<!-- manifest-digest:start -->" in txt and expected[:12] in txt, "Condition must be true"

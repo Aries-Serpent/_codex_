@@ -201,7 +201,7 @@ def _register_metric_from_plugin(
         )
     except RegistryConflictError as e:
         error_type = type(e).__name__
-        logger.warning(f"RegistryConflictError: <ERROR_TYPE>", exc_info=True)
+        logger.warning("RegistryConflictError: <ERROR_TYPE>", exc_info=True)
         if fn is None:
             append_error_entry(
                 "metric-plugin.register",
@@ -612,7 +612,7 @@ def chrf(preds: Sequence[str], targets: Sequence[str]) -> Optional[float]:
         return float(scorer.corpus_score(preds, [targets]).score)
     except (ImportError, AttributeError) as e:
         error_type = type(e).__name__
-        logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
+        logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
     # Fallback to nltk
     try:  # pragma: no cover - optional dependency
         from nltk.translate.chrf_score import corpus_chrf

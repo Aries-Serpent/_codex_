@@ -39,6 +39,6 @@ def test_overfit_smoke() -> None:
         optimiser.step()
         loss_history.append(float(loss.detach()))
 
-    assert loss_history[-1] < 1e-2
+    assert loss_history[-1] < 1e-2, "loss_hist is not valid"
     best_loss = min(loss_history)
-    assert loss_history[-1] <= best_loss + 1e-8
+    assert loss_history[-1] <= best_loss + 1e-8, "loss_hist is not valid"

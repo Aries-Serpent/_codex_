@@ -34,12 +34,12 @@ def test_adapter_initialization():
     """Test adapter initialization contract."""
     adapter = MockAdapter("test")
 
-    assert not adapter.initialized
+    assert not adapter.initialized, "Condition must be true"
 
     loop = asyncio.get_event_loop()
     loop.run_until_complete(adapter.initialize())
 
-    assert adapter.initialized
+    assert adapter.initialized, "Condition must be true"
 
 
 def test_adapter_shutdown():
@@ -50,7 +50,7 @@ def test_adapter_shutdown():
     loop.run_until_complete(adapter.initialize())
     loop.run_until_complete(adapter.shutdown())
 
-    assert not adapter.initialized
+    assert not adapter.initialized, "Condition must be true"
 
 
 def test_adapter_execute():
@@ -61,19 +61,20 @@ def test_adapter_execute():
     loop.run_until_complete(adapter.initialize())
     result = loop.run_until_complete(adapter.execute("test_cmd"))
 
-    assert result["status"] == "success"
-    assert result["command"] == "test_cmd"
+    assert result["status"] == "success", "Result must not be empty"
+    assert result["command"] == "test_cmd", "Result must not be empty"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_adapter_context_manager():
     """Test adapter as context manager."""
     adapter = MockAdapter("test")
 
-    assert not adapter.initialized
+    assert not adapter.initialized, "Condition must be true"
 
     await adapter.initialize()
-    assert adapter.initialized
+    assert adapter.initialized, "Condition must be true"
 
     await adapter.shutdown()
-    assert not adapter.initialized
+    assert not adapter.initialized, "Condition must be true"

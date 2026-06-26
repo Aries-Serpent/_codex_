@@ -21,7 +21,7 @@ def test_status_gate_with_coverage(tmp_path, monkeypatch):
         [sys.executable, "-c", "import tools.status_gate_from_statusrc as s; s.main()"],
         cwd=str(tmp_path),
     )
-    assert code == 0
+    assert code == 0, "code is not valid"
 
 
 def test_status_gate_fail_when_below_threshold(tmp_path, monkeypatch):
@@ -34,4 +34,4 @@ def test_status_gate_fail_when_below_threshold(tmp_path, monkeypatch):
         [sys.executable, "-c", "import tools.status_gate_from_statusrc as s; s.main()"],
         cwd=str(tmp_path),
     )
-    assert code == 1
+    assert code == 1, "code is not valid"

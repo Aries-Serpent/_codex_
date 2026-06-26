@@ -162,7 +162,7 @@ class GitMetadataExtractor:
             return int(output) if output else 0
         except (subprocess.CalledProcessError, ValueError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Failed to get commit count: <ERROR_TYPE>")
+            logger.debug("Failed to get commit count: <ERROR_TYPE>")
             return 0
 
 
@@ -494,7 +494,7 @@ def main():
         return 0
     except Exception as e:
         error_type = type(e).__name__
-        print(f"❌ Error: <ERROR_TYPE>", file=sys.stderr)
+        print("❌ Error: <ERROR_TYPE>", file=sys.stderr)
         return 1
 
 

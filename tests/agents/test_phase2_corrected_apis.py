@@ -58,7 +58,7 @@ class TestPhase2_MentalMappingModel_Corrected:
     def test_mental_mapping_model_initialization(self):
         """Table 4, Eq #1: Initialization test"""
         model = MentalMappingModel()
-        assert model is not None
+        assert model is not None, "model must be initialized"
         assert hasattr(model, "nodes")
         assert hasattr(model, "edges")
 
@@ -66,8 +66,8 @@ class TestPhase2_MentalMappingModel_Corrected:
         """Table 4, Eq #1: Basic operation coverage"""
         model = MentalMappingModel()
         node = model.create_node(node_type=NodeType.PROBLEM, content="Test problem")
-        assert node is not None
-        assert node.node_type == NodeType.PROBLEM
+        assert node is not None, "node must be initialized"
+        assert node.node_type == NodeType.PROBLEM, "node_type is not valid"
 
     def test_connect_nodes_in_model(self):
         """Table 4, Eq #1: Graph operations"""
@@ -80,7 +80,7 @@ class TestPhase2_MentalMappingModel_Corrected:
             target_id=node2.node_id,
             edge_type=EdgeType.LEADS_TO,
         )
-        assert edge is not None
+        assert edge is not None, "edge must be initialized"
 
     def test_mental_node_creation(self):
         """Table 4, Eq #1: Direct node creation"""
@@ -90,8 +90,8 @@ class TestPhase2_MentalMappingModel_Corrected:
             content="Test decision",
             timestamp="2024-01-01T00:00:00",
         )
-        assert node.node_id == "test-1"
-        assert node.node_type == NodeType.DECISION
+        assert node.node_id == "test-1", "node_id is not valid"
+        assert node.node_type == NodeType.DECISION, "node_type is not valid"
 
     def test_reasoning_step_creation(self):
         """Table 4, Eq #1: Reasoning chain elements"""
@@ -102,8 +102,8 @@ class TestPhase2_MentalMappingModel_Corrected:
             reasoning_type="deductive",
             confidence=0.8,
         )
-        assert step.confidence == 0.8
-        assert step.reasoning_type == "deductive"
+        assert step.confidence == 0.8, "confidence is not valid"
+        assert step.reasoning_type == "deductive", "reasoning_type is not valid"
 
 
 class TestPhase2_MentalMapping_EnumValidations:
@@ -111,25 +111,25 @@ class TestPhase2_MentalMapping_EnumValidations:
 
     def test_node_type_enum_all_values(self):
         """Table 4, Eq #2: Complete enum coverage"""
-        assert NodeType.PROBLEM.value == "problem"
-        assert NodeType.HYPOTHESIS.value == "hypothesis"
-        assert NodeType.EVIDENCE.value == "evidence"
-        assert NodeType.DECISION.value == "decision"
-        assert NodeType.ACTION.value == "action"
-        assert NodeType.OUTCOME.value == "outcome"
-        assert NodeType.REFLECTION.value == "reflection"
-        assert NodeType.LEARNING.value == "learning"
+        assert NodeType.PROBLEM.value == "problem", "Value must be initialized"
+        assert NodeType.HYPOTHESIS.value == "hypothesis", "Value must be initialized"
+        assert NodeType.EVIDENCE.value == "evidence", "Value must be initialized"
+        assert NodeType.DECISION.value == "decision", "Value must be initialized"
+        assert NodeType.ACTION.value == "action", "Value must be initialized"
+        assert NodeType.OUTCOME.value == "outcome", "Value must be initialized"
+        assert NodeType.REFLECTION.value == "reflection", "Value must be initialized"
+        assert NodeType.LEARNING.value == "learning", "Value must be initialized"
 
     def test_edge_type_enum_all_values(self):
         """Table 4, Eq #2: Edge type enum coverage"""
-        assert EdgeType.CAUSES.value == "causes"
-        assert EdgeType.SUPPORTS.value == "supports"
-        assert EdgeType.CONTRADICTS.value == "contradicts"
-        assert EdgeType.LEADS_TO.value == "leads_to"
-        assert EdgeType.SIMILAR_TO.value == "similar_to"
-        assert EdgeType.DEPENDS_ON.value == "depends_on"
-        assert EdgeType.REFINES.value == "refines"
-        assert EdgeType.VALIDATES.value == "validates"
+        assert EdgeType.CAUSES.value == "causes", "Value must be initialized"
+        assert EdgeType.SUPPORTS.value == "supports", "Value must be initialized"
+        assert EdgeType.CONTRADICTS.value == "contradicts", "Value must be initialized"
+        assert EdgeType.LEADS_TO.value == "leads_to", "Value must be initialized"
+        assert EdgeType.SIMILAR_TO.value == "similar_to", "Value must be initialized"
+        assert EdgeType.DEPENDS_ON.value == "depends_on", "Value must be initialized"
+        assert EdgeType.REFINES.value == "refines", "Value must be initialized"
+        assert EdgeType.VALIDATES.value == "validates", "Value must be initialized"
 
 
 # =============================================================================
@@ -143,7 +143,7 @@ class TestPhase2_PhysicsOrchestrator_Corrected:
     def test_orchestrator_initialization(self):
         """Table 4, Eq #1: Initialization test"""
         orch = PhysicsInspiredOrchestrator()
-        assert orch is not None
+        assert orch is not None, "orch must be initialized"
 
     def test_decision_state_initialization(self):
         """Table 4, Eq #1: DecisionState with actual signature"""
@@ -155,9 +155,9 @@ class TestPhase2_PhysicsOrchestrator_Corrected:
             current_velocity=5.0,
             context={},
         )
-        assert state.current_position == "start"
-        assert state.goal_position == "end"
-        assert state.available_resources == 100.0
+        assert state.current_position == "start", "current_position is not valid"
+        assert state.goal_position == "end", "goal_position is not valid"
+        assert state.available_resources == 100.0, "available_resources is not valid"
 
     def test_force_vector_creation(self):
         """Table 4, Eq #1: ForceVector with actual signature"""
@@ -167,8 +167,8 @@ class TestPhase2_PhysicsOrchestrator_Corrected:
             direction=1.57,
             priority=1.0,  # ~90 degrees
         )
-        assert force.name == "test_force"
-        assert force.magnitude == 0.8
+        assert force.name == "test_force", "name is not valid"
+        assert force.magnitude == 0.8, "magnitude is not valid"
 
     def test_force_vector_components(self):
         """Table 4, Eq #6: Operator wiring - vector decomposition"""
@@ -179,8 +179,8 @@ class TestPhase2_PhysicsOrchestrator_Corrected:
             priority=1.0,  # 45 degrees
         )
         x, y = force.get_components()
-        assert x > 0
-        assert y > 0
+        assert x > 0, "x must be greater than zero"
+        assert y > 0, "y must be greater than zero"
 
     def test_action_path_creation(self):
         """Table 4, Eq #1: ActionPath with actual signature"""
@@ -192,8 +192,8 @@ class TestPhase2_PhysicsOrchestrator_Corrected:
             friction=2.0,
             momentum=3.0,
         )
-        assert path.action_type == ActionType.TEST
-        assert path.description == "Run tests"
+        assert path.action_type == ActionType.TEST, "action_type is not valid"
+        assert path.description == "Run tests", "description is not valid"
 
     def test_action_path_energy_calculation(self):
         """Table 4, Eq #20: Euler integration - energy calculation"""
@@ -207,7 +207,7 @@ class TestPhase2_PhysicsOrchestrator_Corrected:
         )
         total = path.calculate_total_energy()
         assert isinstance(total, float)
-        assert total > 0
+        assert total > 0, "total must be greater than zero"
 
     def test_action_path_optimization_score(self):
         """Table 4, Eq #49: J = Coverage/Runtime optimization"""
@@ -229,14 +229,14 @@ class TestPhase2_PhysicsOrchestrator_EnumValidations:
 
     def test_action_type_enum_all_values(self):
         """Table 4, Eq #2: Complete ActionType enum coverage"""
-        assert ActionType.AUDIT.value == "audit"
-        assert ActionType.REFACTOR.value == "refactor"
-        assert ActionType.TEST.value == "test"
-        assert ActionType.DOCUMENT.value == "document"
-        assert ActionType.DEPLOY.value == "deploy"
-        assert ActionType.OPTIMIZE.value == "optimize"
-        assert ActionType.DEBUG.value == "debug"
-        assert ActionType.RESEARCH.value == "research"
+        assert ActionType.AUDIT.value == "audit", "Value must be initialized"
+        assert ActionType.REFACTOR.value == "refactor", "Value must be initialized"
+        assert ActionType.TEST.value == "test", "Value must be initialized"
+        assert ActionType.DOCUMENT.value == "document", "Value must be initialized"
+        assert ActionType.DEPLOY.value == "deploy", "Value must be initialized"
+        assert ActionType.OPTIMIZE.value == "optimize", "Value must be initialized"
+        assert ActionType.DEBUG.value == "debug", "Value must be initialized"
+        assert ActionType.RESEARCH.value == "research", "Value must be initialized"
 
     def test_action_type_enum_access(self):
         """Table 4, Eq #2: Enum member access"""
@@ -251,17 +251,17 @@ class TestPhase2_PhysicsOrchestrator_AdvancedClasses:
     def test_diffusion_flow_model_init(self):
         """Table 4, Eq #11: Advanced pattern initialization"""
         model = DiffusionFlowModel()
-        assert model is not None
+        assert model is not None, "model must be initialized"
 
     def test_energy_landscape_init(self):
         """Table 4, Eq #11: Energy landscape pattern"""
         landscape = EnergyLandscape()
-        assert landscape is not None
+        assert landscape is not None, "landscape must be initialized"
 
     def test_swarm_intelligence_init(self):
         """Table 4, Eq #11: Swarm intelligence pattern"""
         swarm = SwarmIntelligence()
-        assert swarm is not None
+        assert swarm is not None, "swarm must be initialized"
 
 
 # =============================================================================
@@ -288,7 +288,7 @@ class TestPhase2_QuantumGameTheory_Corrected:
             payoff_blue=payoff_blue,
             payoff_red=payoff_red,
         )
-        assert engine is not None
+        assert engine is not None, "engine must be initialized"
 
     @pytest.mark.skipif(not NUMPY_AVAILABLE, reason="numpy required")
     def test_classical_game_engine_initialization(self):
@@ -306,7 +306,7 @@ class TestPhase2_QuantumGameTheory_Corrected:
             payoff_blue=payoff_blue,
             payoff_red=payoff_red,
         )
-        assert engine is not None
+        assert engine is not None, "engine must be initialized"
 
     @pytest.mark.skipif(not NUMPY_AVAILABLE, reason="numpy required")
     def test_blue_red_team_simulator_initialization(self):
@@ -324,7 +324,7 @@ class TestPhase2_QuantumGameTheory_Corrected:
             payoff_blue=payoff_blue,
             payoff_red=payoff_red,
         )
-        assert sim is not None
+        assert sim is not None, "sim must be initialized"
 
     @pytest.mark.skipif(not NUMPY_AVAILABLE, reason="numpy required")
     def test_quantum_game_state_creation(self):
@@ -333,8 +333,8 @@ class TestPhase2_QuantumGameTheory_Corrected:
         red_strategy_state = StrategyState(team=TeamType.RED, strategies=["attack", "probe"])
 
         state = QuantumGameState(blue_state=blue_strategy_state, red_state=red_strategy_state)
-        assert state is not None
-        assert state.dimension == 4  # 2x2 strategies
+        assert state is not None, "state must be initialized"
+        assert state.dimension == 4, "dimension is not valid"
 
     @pytest.mark.skipif(not NUMPY_AVAILABLE, reason="numpy required")
     def test_strategy_state_creation(self):
@@ -343,7 +343,7 @@ class TestPhase2_QuantumGameTheory_Corrected:
         strategies = ["s1", "s2"]
 
         strategy = StrategyState(team=TeamType.BLUE, strategies=strategies)
-        assert strategy is not None
+        assert strategy is not None, "strategy must be initialized"
 
     @pytest.mark.skipif(not NUMPY_AVAILABLE, reason="numpy required")
     def test_payoff_operator_creation(self):
@@ -353,7 +353,7 @@ class TestPhase2_QuantumGameTheory_Corrected:
         payoff_matrix = np.array([[0.5, 0.5], [0.5, 0.5]])
 
         operator = PayoffOperator(payoff_matrix=payoff_matrix, team=TeamType.BLUE)
-        assert operator is not None
+        assert operator is not None, "operator must be initialized"
 
 
 class TestPhase2_QuantumGameTheory_EnumValidations:
@@ -382,8 +382,8 @@ class TestPhase2_CrossModule_Integration:
         # Physics orchestrator for decision making
         orch = PhysicsInspiredOrchestrator()
 
-        assert decision_node is not None
-        assert orch is not None
+        assert decision_node is not None, "decision_node must be initialized"
+        assert orch is not None, "orch must be initialized"
 
     def test_physics_orchestrator_with_mental_mapping(self):
         """Table 1, Eq #4: Decision tracking integration"""
@@ -398,8 +398,8 @@ class TestPhase2_CrossModule_Integration:
         model = MentalMappingModel()
         action_node = model.create_node(NodeType.ACTION, f"Execute {path.description}")
 
-        assert path is not None
-        assert action_node is not None
+        assert path is not None, "path must be initialized"
+        assert action_node is not None, "action_node must be initialized"
 
 
 # =============================================================================
@@ -419,20 +419,20 @@ class TestPhase2_Properties_And_Getters:
             timestamp="2024-01-01T00:00:00",
         )
 
-        assert node.confidence == 0.5  # Default
-        assert node.importance == 0.5  # Default
-        assert node.quality_score == 0.0
-        assert node.needs_review is False
-        assert node.review_count == 0
+        assert node.confidence == 0.5, "confidence is not valid"
+        assert node.importance == 0.5, "importance is not valid"
+        assert node.quality_score == 0.0, "quality_score is not valid"
+        assert node.needs_review is False, "needs_review is not valid"
+        assert node.review_count == 0, "Count must be greater than zero"
 
     def test_force_vector_properties(self):
         """Table 4, Eq #3: ForceVector properties"""
         force = ForceVector(name="test", magnitude=0.7, direction=1.0, priority=0.9)
 
-        assert force.name == "test"
-        assert force.magnitude == 0.7
-        assert force.direction == 1.0
-        assert force.priority == 0.9
+        assert force.name == "test", "name is not valid"
+        assert force.magnitude == 0.7, "magnitude is not valid"
+        assert force.direction == 1.0, "direction is not valid"
+        assert force.priority == 0.9, "priority is not valid"
 
     def test_action_path_calculated_properties(self):
         """Table 4, Eq #3: ActionPath calculated fields"""
@@ -459,8 +459,8 @@ class TestPhase2_EdgeCases_Invariants:
         """Table 1, Eq #56: Zero magnitude invariant"""
         force = ForceVector(name="zero", magnitude=0.0, direction=0.0)
         x, y = force.get_components()
-        assert x == 0.0
-        assert y == 0.0
+        assert x == 0.0, "x is not valid"
+        assert y == 0.0, "y is not valid"
 
     def test_action_path_minimal_energy(self):
         """Table 1, Eq #56: Minimal energy path"""
@@ -473,7 +473,7 @@ class TestPhase2_EdgeCases_Invariants:
             momentum=0.0,
         )
         total = path.calculate_total_energy()
-        assert total >= 0
+        assert total >= 0, "total must be greater than zero"
 
     def test_mental_node_confidence_bounds(self):
         """Table 1, Eq #56: Confidence stays in [0, 1]"""
@@ -484,13 +484,13 @@ class TestPhase2_EdgeCases_Invariants:
             timestamp="2024-01-01T00:00:00",
             confidence=0.9,
         )
-        assert 0.0 <= node.confidence <= 1.0
+        assert 0.0 <= node.confidence <= 1.0, "0 is not valid"
 
     def test_empty_mental_mapping_model(self):
         """Table 1, Eq #56: Empty model invariants"""
         model = MentalMappingModel()
         # Should not crash with no nodes/edges
-        assert model is not None
+        assert model is not None, "model must be initialized"
 
 
 if __name__ == "__main__":

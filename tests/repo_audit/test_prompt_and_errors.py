@@ -28,7 +28,7 @@ def test_error_record_includes_ra_refs(tmp_path: Path) -> None:
     )
     attach_ra_references(record, ["RA-1", "RA-4"])
     append_error_record(json_path, record)
-    assert json_path.exists()
+    assert json_path.exists(), "Condition must be true"
     stored = list(load_error_records(json_path))
     assert stored[0].ra_references == ["RA-1", "RA-4"]
 
@@ -51,8 +51,8 @@ def test_prepare_repo_status_prompt(tmp_path: Path) -> None:
         output_path=output_path,
     )
 
-    assert prompt_path.exists()
+    assert prompt_path.exists(), "Condition must be true"
     contents = prompt_path.read_text(encoding="utf-8")
-    assert "RA Policy Links" in contents
-    assert "Gate Summary" in contents
-    assert "repo_audit_scorecard.md" in contents
+    assert "RA Policy Links" in contents, "Content must not be empty"
+    assert "Gate Summary" in contents, "Content must not be empty"
+    assert "repo_audit_scorecard.md" in contents, "Content must not be empty"

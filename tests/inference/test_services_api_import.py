@@ -22,4 +22,4 @@ def test_services_api_module_import_smoke():
     except (ImportError, AttributeError) as exc:  # pragma: no cover - environment specific
         pytest.skip(f"services.api.main import skipped due to environment-specific error: {exc!r}")
     else:
-        assert module is not None
+        assert module is not None, "module must be initialized"

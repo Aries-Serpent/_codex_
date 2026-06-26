@@ -12,13 +12,13 @@ Output: Observable state snapshot (JSON, immutable)
 
 import asyncio
 import json
+import logging
 import subprocess
 import time
-from dataclasses import dataclass, asdict, field
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set
-import logging
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -143,8 +143,17 @@ class Observable:
         def serialize(obj):
             if isinstance(obj, datetime):
                 return obj.isoformat()
-            if isinstance(obj, (RepositoryState, AgentEcosystemState, TaskQueueState,
-                              EnvironmentMetrics, Event, ObservableMetadata)):
+            if isinstance(
+                obj,
+                (
+                    RepositoryState,
+                    AgentEcosystemState,
+                    TaskQueueState,
+                    EnvironmentMetrics,
+                    Event,
+                    ObservableMetadata,
+                ),
+            ):
                 return asdict(obj)
             return obj
 
@@ -205,16 +214,20 @@ class RepositoryObserver:
                 for line in log_result.stdout.strip().split("\n"):
                     if "|" in line:
                         parts = line.split("|")
-                        recent_commits.append({
-                            "hash": parts[0][:8],
-                            "message": parts[1],
-                            "timestamp": parts[2] if len(parts) > 2 else "",
-                        })
+                        recent_commits.append(
+                            {
+                                "hash": parts[0][:8],
+                                "message": parts[1],
+                                "timestamp": parts[2] if len(parts) > 2 else "",
+                            }
+                        )
 
             # Get last commit timestamp
             if recent_commits:
                 try:
-                    last_commit_time = datetime.fromisoformat(recent_commits[0]["timestamp"].replace("Z", "+00:00"))
+                    last_commit_time = datetime.fromisoformat(
+                        recent_commits[0]["timestamp"].replace("Z", "+00:00")
+                    )
                 except (ValueError, IndexError):
                     last_commit_time = datetime.now()
             else:
@@ -286,16 +299,18 @@ class AgentEcosystemObserver:
                     failing_count += 1
 
                 queue_depth = hash(agent_name) % 10  # Pseudo-random
-                agents.append(AgentStatus(
-                    agent_id=agent_name.lower().replace("-", "_"),
-                    name=agent_name,
-                    status=status,
-                    queue_depth=queue_depth,
-                    success_rate=success_rate,
-                    avg_latency_ms=latency,
-                    last_execution=datetime.now(),
-                    error_count=int((1 - success_rate) * 100),
-                ))
+                agents.append(
+                    AgentStatus(
+                        agent_id=agent_name.lower().replace("-", "_"),
+                        name=agent_name,
+                        status=status,
+                        queue_depth=queue_depth,
+                        success_rate=success_rate,
+                        avg_latency_ms=latency,
+                        last_execution=datetime.now(),
+                        error_count=int((1 - success_rate) * 100),
+                    )
+                )
                 total_queue_depth += queue_depth
                 total_success_rate += success_rate
                 total_latency_ms += latency
@@ -381,18 +396,18 @@ class EnvironmentObserver:
         """Collect current environment metrics."""
         try:
             import psutil
-            
+
             # CPU and memory
             cpu_percent = psutil.cpu_percent(interval=0.1)
             memory = psutil.virtual_memory()
             memory_percent = memory.percent
             memory_available_mb = memory.available / (1024 * 1024)
-            
+
             # Disk
             disk = psutil.disk_usage("/")
             disk_percent = disk.percent
             disk_available_mb = disk.free / (1024 * 1024)
-            
+
             # Network latency to GitHub (simple ping to DNS)
             try:
                 start = time.time()
@@ -404,7 +419,7 @@ class EnvironmentObserver:
                 network_latency_ms = (time.time() - start) * 1000
             except Exception:
                 network_latency_ms = None
-            
+
             return EnvironmentMetrics(
                 cpu_percent=cpu_percent,
                 memory_percent=memory_percent,
@@ -449,13 +464,15 @@ class EventObserver:
 
     def record_event(self, event_type: str, source: str, severity: str, data: Dict):
         """Record a new event."""
-        self.events.append(Event(
-            timestamp=datetime.now(),
-            event_type=event_type,
-            source=source,
-            severity=severity,
-            data=data,
-        ))
+        self.events.append(
+            Event(
+                timestamp=datetime.now(),
+                event_type=event_type,
+                source=source,
+                severity=severity,
+                data=data,
+            )
+        )
 
 
 class OODAObserver:
@@ -474,7 +491,7 @@ class OODAObserver:
 
         # Collect all observations in parallel
         loop = asyncio.get_event_loop()
-        
+
         repo_state = await loop.run_in_executor(None, self.repo_observer.observe)
         agent_state = await loop.run_in_executor(None, self.agent_observer.observe)
         task_state = await loop.run_in_executor(None, self.task_observer.observe)
@@ -484,12 +501,18 @@ class OODAObserver:
         observation_latency_ms = (time.time() - start_time) * 1000
 
         # Calculate state completeness (all sources collected)
-        state_completeness = 1.0 if all([
-            repo_state,
-            agent_state,
-            task_state,
-            env_metrics,
-        ]) else 0.8
+        state_completeness = (
+            1.0
+            if all(
+                [
+                    repo_state,
+                    agent_state,
+                    task_state,
+                    env_metrics,
+                ]
+            )
+            else 0.8
+        )
 
         metadata = ObservableMetadata(
             observation_latency_ms=observation_latency_ms,
@@ -528,12 +551,18 @@ class OODAObserver:
         observation_latency_ms = (time.time() - start_time) * 1000
 
         # Calculate state completeness
-        state_completeness = 1.0 if all([
-            repo_state,
-            agent_state,
-            task_state,
-            env_metrics,
-        ]) else 0.8
+        state_completeness = (
+            1.0
+            if all(
+                [
+                    repo_state,
+                    agent_state,
+                    task_state,
+                    env_metrics,
+                ]
+            )
+            else 0.8
+        )
 
         metadata = ObservableMetadata(
             observation_latency_ms=observation_latency_ms,

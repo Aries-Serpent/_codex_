@@ -17,21 +17,21 @@ class TestScrubOutput:
     def test_removes_safety_markers(self):
         text = "Hello ### RETRIEVED CONTEXT START ### secret ### RETRIEVED CONTEXT END ### world"
         result = OutputProcessor.scrub_output(text)
-        assert "RETRIEVED CONTEXT" not in result
-        assert "Hello" in result
-        assert "world" in result
+        assert "RETRIEVED CONTEXT" not in result, "Result must not be empty"
+        assert "Hello" in result, "Result must not be empty"
+        assert "world" in result, "Result must not be empty"
 
     def test_removes_user_query_markers(self):
         text = "### USER QUERY START ### q ### USER QUERY END ###"
         result = OutputProcessor.scrub_output(text)
-        assert "USER QUERY" not in result
+        assert "USER QUERY" not in result, "Result must not be empty"
 
     def test_custom_redaction_rules(self):
         rules = [{"pattern": r"\bSSN-\d{3}-\d{2}-\d{4}\b", "replacement": "[SSN_REDACTED]"}]
         text = "Patient SSN-123-45-6789 record"
         result = OutputProcessor.scrub_output(text, redaction_rules=rules)
-        assert "SSN-123" not in result
-        assert "[SSN_REDACTED]" in result
+        assert "SSN-123" not in result, "Result must not be empty"
+        assert "[SSN_REDACTED]" in result, "Result must not be empty"
 
     def test_multiple_redaction_rules(self):
         rules = [
@@ -40,29 +40,29 @@ class TestScrubOutput:
         ]
         text = "Config: secret123, password456"
         result = OutputProcessor.scrub_output(text, redaction_rules=rules)
-        assert "secret123" not in result
-        assert "password456" not in result
-        assert "[SECRET_REDACTED]" in result
-        assert "[PASSWORD_REDACTED]" in result
+        assert "secret123" not in result, "Result must not be empty"
+        assert "password456" not in result, "Result must not be empty"
+        assert "[SECRET_REDACTED]" in result, "Result must not be empty"
+        assert "[PASSWORD_REDACTED]" in result, "Result must not be empty"
 
     def test_no_redaction_rules(self):
         text = "Hello world"
         result = OutputProcessor.scrub_output(text)
-        assert result == "Hello world"
+        assert result == "Hello world", "Result must not be empty"
 
     def test_empty_string(self):
         result = OutputProcessor.scrub_output("")
-        assert result == ""
+        assert result == "", "Result must not be empty"
 
     def test_strips_whitespace(self):
         result = OutputProcessor.scrub_output("  padded  ")
-        assert result == "padded"
+        assert result == "padded", "Result must not be empty"
 
     def test_redaction_rule_without_pattern(self):
         rules = [{"replacement": "***"}]  # No pattern key
         text = "Hello"
         result = OutputProcessor.scrub_output(text, redaction_rules=rules)
-        assert result == "Hello"  # Should not crash
+        assert result == "Hello", "Result must not be empty"
 
 
 # ============================================================================
@@ -81,8 +81,8 @@ class TestExtractEvidenceTags:
             }
         ]
         evidence = OutputProcessor.extract_evidence_tags(output, docs)
-        assert len(evidence) >= 1
-        assert evidence[0]["source_id"] == "doc1"
+        assert len(evidence) >= 1, "Evidence must not be empty"
+        assert evidence[0]["source_id"] == "doc1", "Condition must be true"
 
     def test_no_matching_content(self):
         output = "Completely different text about cats"
@@ -94,17 +94,17 @@ class TestExtractEvidenceTags:
             }
         ]
         evidence = OutputProcessor.extract_evidence_tags(output, docs)
-        assert len(evidence) == 0
+        assert len(evidence) == 0, "Evidence must not be empty"
 
     def test_empty_docs(self):
         evidence = OutputProcessor.extract_evidence_tags("output", [])
-        assert evidence == []
+        assert evidence == [], "evidence is not valid"
 
     def test_short_doc_content_skipped(self):
         """Docs with content <= 20 chars should be skipped."""
         docs = [{"content": "short", "score": 0.9, "metadata": {"source_id": "x"}}]
         evidence = OutputProcessor.extract_evidence_tags("short", docs)
-        assert len(evidence) == 0
+        assert len(evidence) == 0, "Evidence must not be empty"
 
     def test_missing_metadata_defaults(self):
         output = "This is a long enough phrase to match. Plus more text for sentences."
@@ -117,7 +117,7 @@ class TestExtractEvidenceTags:
         ]
         evidence = OutputProcessor.extract_evidence_tags(output, docs)
         if evidence:
-            assert evidence[0]["source_id"] == "unknown"
+            assert evidence[0]["source_id"] == "unknown", "Condition must be true"
 
 
 # ============================================================================
@@ -132,24 +132,24 @@ class TestAddCitations:
             {"source_id": "src2", "score": 0.8},
         ]
         result = OutputProcessor.add_citations("Output text", evidence, "inline")
-        assert "Sources:" in result
-        assert "src1" in result
-        assert "src2" in result
+        assert "Sources:" in result, "Result must not be empty"
+        assert "src1" in result, "Result must not be empty"
+        assert "src2" in result, "Result must not be empty"
 
     def test_footnote_citations(self):
         evidence = [{"source_id": "doc_a", "score": 0.9}]
         result = OutputProcessor.add_citations("Output text", evidence, "footnote")
-        assert "References:" in result
-        assert "[1] doc_a" in result
+        assert "References:" in result, "Result must not be empty"
+        assert "[1] doc_a" in result, "Result must not be empty"
 
     def test_no_citations_style(self):
         evidence = [{"source_id": "x", "score": 0.5}]
         result = OutputProcessor.add_citations("Output text", evidence, "none")
-        assert result == "Output text"
+        assert result == "Output text", "Result must not be empty"
 
     def test_empty_evidence(self):
         result = OutputProcessor.add_citations("Output text", [], "inline")
-        assert result == "Output text"
+        assert result == "Output text", "Result must not be empty"
 
     def test_deduplicates_inline_sources(self):
         evidence = [
@@ -158,7 +158,7 @@ class TestAddCitations:
         ]
         result = OutputProcessor.add_citations("Output", evidence, "inline")
         # Should mention "same" only once
-        assert result.count("same") == 1
+        assert result.count("same") == 1, "Result must not be empty"
 
 
 # ============================================================================
@@ -169,14 +169,14 @@ class TestAddCitations:
 class TestPostprocessOutput:
     def test_basic_call(self):
         output, evidence = postprocess_output("Hello world")
-        assert output == "Hello world"
-        assert evidence == []
+        assert output == "Hello world", "output is not valid"
+        assert evidence == [], "evidence is not valid"
 
     def test_with_redaction(self):
         rules = [{"pattern": r"secret", "replacement": "[REDACTED]"}]
         output, evidence = postprocess_output("This is secret info", redaction_rules=rules)
-        assert "secret" not in output
-        assert "[REDACTED]" in output
+        assert "secret" not in output, "Condition must be true"
+        assert "[REDACTED]" in output, "Condition must be true"
 
     def test_with_docs_and_citations(self):
         docs = [
@@ -205,4 +205,4 @@ class TestPostprocessOutput:
             retrieved_docs=docs,
             include_citations=False,
         )
-        assert "Sources:" not in output
+        assert "Sources:" not in output, "Condition must be true"

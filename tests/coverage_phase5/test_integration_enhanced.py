@@ -118,49 +118,49 @@ class TestIntegrationBridgeInitialization:
         """✅ PATTERN: Complete initialization assertions."""
         bridge = IntegrationBridge("bridge_001")
 
-        assert bridge is not None
+        assert bridge is not None, "bridge must be initialized"
         assert isinstance(bridge, IntegrationBridge)
-        assert bridge.bridge_id == "bridge_001"
-        assert bridge.timeout_seconds == 30
-        assert bridge.status == IntegrationStatus.IDLE
-        assert bridge.message_count == 0
-        assert bridge.max_message_queue == 100
+        assert bridge.bridge_id == "bridge_001", "bridge_id is not valid"
+        assert bridge.timeout_seconds == 30, "timeout_seconds is not valid"
+        assert bridge.status == IntegrationStatus.IDLE, "status is not valid"
+        assert bridge.message_count == 0, "Count must be greater than zero"
+        assert bridge.max_message_queue == 100, "max_message_queue is not valid"
 
     def test_custom_timeout(self):
         """✅ PATTERN: Custom parameters."""
         bridge = IntegrationBridge("bridge_002", timeout_seconds=60)
 
-        assert bridge.timeout_seconds == 60
-        assert bridge.timeout_seconds > 30
-        assert bridge.timeout_seconds <= 300
+        assert bridge.timeout_seconds == 60, "timeout_seconds is not valid"
+        assert bridge.timeout_seconds > 30, "timeout_seconds must be greater than zero"
+        assert bridge.timeout_seconds <= 300, "timeout_seconds is not valid"
 
     def test_empty_bridge_id_rejected(self):
         """✅ PATTERN: Edge case - empty ID."""
         with pytest.raises(ValueError) as exc_info:
             IntegrationBridge("")
 
-        assert "bridge_id" in str(exc_info.value).lower()
+        assert "bridge_id" in str(exc_info.value).lower(), "Value must be initialized"
 
     def test_zero_timeout_rejected(self):
         """✅ PATTERN: Edge case - zero timeout."""
         with pytest.raises(ValueError) as exc_info:
             IntegrationBridge("bridge", timeout_seconds=0)
 
-        assert "positive" in str(exc_info.value).lower()
+        assert "positive" in str(exc_info.value).lower(), "Value must be initialized"
 
     def test_timeout_boundary_minimum(self):
         """✅ PATTERN: Boundary - minimum timeout."""
         bridge = IntegrationBridge("bridge", timeout_seconds=1)
 
-        assert bridge.timeout_seconds == 1
-        assert bridge.timeout_seconds >= 1
+        assert bridge.timeout_seconds == 1, "timeout_seconds is not valid"
+        assert bridge.timeout_seconds >= 1, "timeout_seconds must be greater than zero"
 
     def test_timeout_boundary_maximum(self):
         """✅ PATTERN: Boundary - maximum timeout."""
         bridge = IntegrationBridge("bridge", timeout_seconds=300)
 
-        assert bridge.timeout_seconds == 300
-        assert bridge.timeout_seconds <= 300
+        assert bridge.timeout_seconds == 300, "timeout_seconds is not valid"
+        assert bridge.timeout_seconds <= 300, "timeout_seconds is not valid"
 
 
 # ============================================================================
@@ -175,25 +175,25 @@ class TestBridgeConnectionManagement:
         """✅ PATTERN: Connection with state verification."""
         bridge = IntegrationBridge("bridge_001")
 
-        assert bridge.status == IntegrationStatus.IDLE
+        assert bridge.status == IntegrationStatus.IDLE, "status is not valid"
 
         result = bridge.connect()
 
-        assert result is True
-        assert bridge.status == IntegrationStatus.CONNECTED
-        assert bridge.status != IntegrationStatus.IDLE
+        assert result is True, "Result must not be empty"
+        assert bridge.status == IntegrationStatus.CONNECTED, "status is not valid"
+        assert bridge.status != IntegrationStatus.IDLE, "status is not valid"
 
     def test_connect_state_transitions(self):
         """✅ PATTERN: State machine verification."""
         bridge = IntegrationBridge("bridge_001")
 
         # Verify initial state
-        assert bridge.status == IntegrationStatus.IDLE
+        assert bridge.status == IntegrationStatus.IDLE, "status is not valid"
 
         # Connect
         bridge.connect()
-        assert bridge.status == IntegrationStatus.CONNECTED
-        assert bridge.status.value == 2
+        assert bridge.status == IntegrationStatus.CONNECTED, "status is not valid"
+        assert bridge.status.value == 2, "Value must be initialized"
 
     def test_disconnect_resets_state(self):
         """✅ PATTERN: Disconnect with state reset."""
@@ -203,9 +203,9 @@ class TestBridgeConnectionManagement:
 
         result = bridge.disconnect()
 
-        assert result is True
-        assert bridge.status == IntegrationStatus.IDLE
-        assert bridge.message_count == 0
+        assert result is True, "Result must not be empty"
+        assert bridge.status == IntegrationStatus.IDLE, "status is not valid"
+        assert bridge.message_count == 0, "Count must be greater than zero"
 
     def test_disconnect_without_connect(self):
         """✅ PATTERN: Edge case - disconnect without connect."""
@@ -213,8 +213,8 @@ class TestBridgeConnectionManagement:
 
         result = bridge.disconnect()
 
-        assert result is True
-        assert bridge.status == IntegrationStatus.IDLE
+        assert result is True, "Result must not be empty"
+        assert bridge.status == IntegrationStatus.IDLE, "status is not valid"
 
 
 # ============================================================================
@@ -232,9 +232,9 @@ class TestMessageSendingAndQueueing:
 
         result = bridge.send_message("Hello World")
 
-        assert result is True
-        assert bridge.message_count == 1
-        assert bridge.message_count > 0
+        assert result is True, "Result must not be empty"
+        assert bridge.message_count == 1, "Count must be greater than zero"
+        assert bridge.message_count > 0, "message_count must be positive"
 
     def test_send_multiple_messages(self):
         """✅ PATTERN: Multiple messages with accumulation."""
@@ -243,10 +243,10 @@ class TestMessageSendingAndQueueing:
 
         for i in range(5):
             result = bridge.send_message(f"Message {i}")
-            assert result is True
-            assert bridge.message_count == i + 1
+            assert result is True, "Result must not be empty"
+            assert bridge.message_count == i + 1, "Count must be greater than zero"
 
-        assert bridge.message_count == 5
+        assert bridge.message_count == 5, "Count must be greater than zero"
 
     def test_send_empty_message_rejected(self):
         """✅ PATTERN: Edge case - empty message."""
@@ -256,8 +256,8 @@ class TestMessageSendingAndQueueing:
         with pytest.raises(ValueError) as exc_info:
             bridge.send_message("")
 
-        assert "message" in str(exc_info.value).lower()
-        assert bridge.message_count == 0
+        assert "message" in str(exc_info.value).lower(), "Value must be initialized"
+        assert bridge.message_count == 0, "Count must be greater than zero"
 
     def test_send_queue_full_rejected(self):
         """✅ PATTERN: Boundary - queue full."""
@@ -272,8 +272,8 @@ class TestMessageSendingAndQueueing:
         with pytest.raises(RuntimeError) as exc_info:
             bridge.send_message("msg4")
 
-        assert "full" in str(exc_info.value).lower()
-        assert bridge.message_count == 3
+        assert "full" in str(exc_info.value).lower(), "Value must be initialized"
+        assert bridge.message_count == 3, "Count must be greater than zero"
 
     def test_send_boundary_at_queue_limit(self):
         """✅ PATTERN: Boundary - at queue limit."""
@@ -283,10 +283,10 @@ class TestMessageSendingAndQueueing:
 
         for i in range(5):
             result = bridge.send_message(f"msg{i}")
-            assert result is True
+            assert result is True, "Result must not be empty"
 
-        assert bridge.message_count == 5
-        assert bridge.message_count == bridge.max_message_queue
+        assert bridge.message_count == 5, "Count must be greater than zero"
+        assert bridge.message_count == bridge.max_message_queue, "Count must be greater than zero"
 
     def test_send_invalid_message_type(self):
         """✅ PATTERN: Edge case - wrong type."""
@@ -312,11 +312,11 @@ class TestRecoveryPipeline:
 
         result = pipeline.create_recovery_point("point_001", data)
 
-        assert result is True
-        assert "point_001" in pipeline.recovery_points
-        assert pipeline.recovery_points["point_001"]["id"] == "point_001"
-        assert pipeline.recovery_points["point_001"]["data"] == data
-        assert pipeline.recovery_points["point_001"]["created"] is True
+        assert result is True, "Result must not be empty"
+        assert "point_001" in pipeline.recovery_points, "Condition must be true"
+        assert pipeline.recovery_points["point_001"]["id"] == "point_001", "Condition must be true"
+        assert pipeline.recovery_points["point_001"]["data"] == data, "Data must not be empty"
+        assert pipeline.recovery_points["point_001"]["created"] is True, "Condition must be true"
 
     def test_create_multiple_recovery_points(self):
         """✅ PATTERN: Multiple points with count."""
@@ -325,10 +325,10 @@ class TestRecoveryPipeline:
         for i in range(3):
             pipeline.create_recovery_point(f"point_{i:03d}", {"epoch": i})
 
-        assert len(pipeline.recovery_points) == 3
-        assert "point_000" in pipeline.recovery_points
-        assert "point_001" in pipeline.recovery_points
-        assert "point_002" in pipeline.recovery_points
+        assert len(pipeline.recovery_points) == 3, "Collection must not be empty"
+        assert "point_000" in pipeline.recovery_points, "Condition must be true"
+        assert "point_001" in pipeline.recovery_points, "Condition must be true"
+        assert "point_002" in pipeline.recovery_points, "Condition must be true"
 
     def test_create_empty_point_id_rejected(self):
         """✅ PATTERN: Edge case - empty point ID."""
@@ -349,16 +349,16 @@ class TestRecoveryPipeline:
         pipeline = RecoveryPipeline()
         pipeline.create_recovery_point("point_001", {"state": "saved"})
 
-        assert pipeline.is_recovering is False
-        assert pipeline.recovery_count == 0
+        assert pipeline.is_recovering is False, "is_recovering is not valid"
+        assert pipeline.recovery_count == 0, "Count must be greater than zero"
 
         result = pipeline.initiate_recovery("point_001")
 
-        assert result["status"] == "recovering"
-        assert result["point_id"] == "point_001"
-        assert result["attempt"] == 1
-        assert pipeline.is_recovering is True
-        assert pipeline.recovery_count == 1
+        assert result["status"] == "recovering", "Result must not be empty"
+        assert result["point_id"] == "point_001", "Result must not be empty"
+        assert result["attempt"] == 1, "Result must not be empty"
+        assert pipeline.is_recovering is True, "is_recovering is not valid"
+        assert pipeline.recovery_count == 1, "Count must be greater than zero"
 
     def test_initiate_multiple_recoveries(self):
         """✅ PATTERN: Multiple recovery attempts."""
@@ -368,8 +368,8 @@ class TestRecoveryPipeline:
 
         for i in range(3):
             result = pipeline.initiate_recovery("point_001")
-            assert result["attempt"] == i + 1
-            assert pipeline.recovery_count == i + 1
+            assert result["attempt"] == i + 1, "Result must not be empty"
+            assert pipeline.recovery_count == i + 1, "Count must be greater than zero"
             pipeline.complete_recovery()
 
     def test_initiate_recovery_nonexistent_rejected(self):
@@ -393,7 +393,7 @@ class TestRecoveryPipeline:
         with pytest.raises(RuntimeError) as exc_info:
             pipeline.initiate_recovery("point_001")
 
-        assert "attempt" in str(exc_info.value).lower()
+        assert "attempt" in str(exc_info.value).lower(), "Value must be initialized"
 
     def test_complete_recovery(self):
         """✅ PATTERN: Recovery completion."""
@@ -401,12 +401,12 @@ class TestRecoveryPipeline:
         pipeline.create_recovery_point("point_001", {"state": "saved"})
         pipeline.initiate_recovery("point_001")
 
-        assert pipeline.is_recovering is True
+        assert pipeline.is_recovering is True, "is_recovering is not valid"
 
         result = pipeline.complete_recovery()
 
-        assert result is True
-        assert pipeline.is_recovering is False
+        assert result is True, "Result must not be empty"
+        assert pipeline.is_recovering is False, "is_recovering is not valid"
 
 
 # ============================================================================
@@ -421,31 +421,31 @@ class TestOperatorMutationDefense:
         """✅ PATTERN: > operator verification."""
         bridge = IntegrationBridge("bridge", timeout_seconds=30)
 
-        assert bridge.timeout_seconds > 0
-        assert bridge.timeout_seconds > 29
-        assert not (bridge.timeout_seconds > 30)
+        assert bridge.timeout_seconds > 0, "timeout_seconds must be greater than zero"
+        assert bridge.timeout_seconds > 29, "timeout_seconds must be greater than zero"
+        assert not (bridge.timeout_seconds > 30), "timeout_seconds must be greater than zero"
 
     def test_message_count_equals_exact_value(self):
         """✅ PATTERN: == operator verification."""
         bridge = IntegrationBridge("bridge")
         bridge.connect()
 
-        assert bridge.message_count == 0
+        assert bridge.message_count == 0, "Count must be greater than zero"
         bridge.send_message("msg")
-        assert bridge.message_count == 1
-        assert bridge.message_count != 0
-        assert bridge.message_count != 2
+        assert bridge.message_count == 1, "Count must be greater than zero"
+        assert bridge.message_count != 0, "Count must be greater than zero"
+        assert bridge.message_count != 2, "Count must be greater than zero"
 
     def test_status_enum_equality(self):
         """✅ PATTERN: Enum equality verification."""
         bridge = IntegrationBridge("bridge")
 
-        assert bridge.status == IntegrationStatus.IDLE
-        assert bridge.status != IntegrationStatus.CONNECTED
+        assert bridge.status == IntegrationStatus.IDLE, "status is not valid"
+        assert bridge.status != IntegrationStatus.CONNECTED, "status is not valid"
 
         bridge.connect()
-        assert bridge.status == IntegrationStatus.CONNECTED
-        assert bridge.status != IntegrationStatus.IDLE
+        assert bridge.status == IntegrationStatus.CONNECTED, "status is not valid"
+        assert bridge.status != IntegrationStatus.IDLE, "status is not valid"
 
     def test_queue_less_than_max(self):
         """✅ PATTERN: < operator verification."""
@@ -455,24 +455,24 @@ class TestOperatorMutationDefense:
 
         bridge.send_message("msg")
 
-        assert bridge.message_count < bridge.max_message_queue
-        assert bridge.message_count < 100
-        assert not (bridge.message_count < 1)
+        assert bridge.message_count < bridge.max_message_queue, "Count must be greater than zero"
+        assert bridge.message_count < 100, "Count must be greater than zero"
+        assert not (bridge.message_count < 1), "Count must be greater than zero"
 
     def test_recovery_count_accumulation(self):
         """✅ PATTERN: Accumulation with exact assertions."""
         pipeline = RecoveryPipeline()
         pipeline.create_recovery_point("p1", {"data": 1})
 
-        assert pipeline.recovery_count == 0
+        assert pipeline.recovery_count == 0, "Count must be greater than zero"
         pipeline.initiate_recovery("p1")
-        assert pipeline.recovery_count == 1
-        assert pipeline.recovery_count != 0
+        assert pipeline.recovery_count == 1, "Count must be greater than zero"
+        assert pipeline.recovery_count != 0, "Count must be greater than zero"
 
         pipeline.complete_recovery()
         pipeline.initiate_recovery("p1")
-        assert pipeline.recovery_count == 2
-        assert pipeline.recovery_count != 1
+        assert pipeline.recovery_count == 2, "Count must be greater than zero"
+        assert pipeline.recovery_count != 1, "Count must be greater than zero"
 
 
 if __name__ == "__main__":

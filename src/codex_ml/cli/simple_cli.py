@@ -61,8 +61,8 @@ def _seed_everything(seed: int) -> None:
             torch.cuda.manual_seed_all(seed)
     except (ImportError, AttributeError) as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
-        logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
+        logger.debug("Exception: <ERROR_TYPE>")
+        logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 
 
 @click.group()
@@ -155,7 +155,7 @@ def build_tokenizer(config_path: Path, dry_run: bool) -> None:
         result_path = run_tokenizer_train(str(config_path), dry_run=dry_run)
     except TokenizerPipelineError as exc:
         error_type = type(exc).__name__
-        logger.debug(f"TokenizerPipelineError: <ERROR_TYPE>")
+        logger.debug("TokenizerPipelineError: <ERROR_TYPE>")
         raise click.ClickException(str(exc)) from exc
     click.echo(str(result_path))
 

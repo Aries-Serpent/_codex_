@@ -100,13 +100,13 @@ def test_ensure_file_backend_sets_local_uri(tmp_path: Path, monkeypatch):
     decision = guard.ensure_file_backend_decision()
     uri = decision.effective_uri
     parsed = urlparse(uri)
-    assert parsed.scheme == "file"
+    assert parsed.scheme == "file", "scheme is not valid"
     path = Path(parsed.path)
-    assert path.name == "mlruns"
-    assert path.exists()
-    assert os.environ.get("MLFLOW_TRACKING_URI") == uri
-    assert os.environ.get("CODEX_MLFLOW_URI") == uri
-    assert decision.system_metrics_enabled is False
+    assert path.name == "mlruns", "name is not valid"
+    assert path.exists(), "Condition must be true"
+    assert os.environ.get("MLFLOW_TRACKING_URI") == uri, "Condition must be true"
+    assert os.environ.get("CODEX_MLFLOW_URI") == uri, "Condition must be true"
+    assert decision.system_metrics_enabled is False, "system_metrics_enabled is not valid"
 
 
 def test_plain_paths_are_normalised_to_file_uri(tmp_path: Path, monkeypatch):
@@ -119,12 +119,12 @@ def test_plain_paths_are_normalised_to_file_uri(tmp_path: Path, monkeypatch):
     decision = guard.ensure_file_backend_decision()
     uri = decision.effective_uri
     parsed = urlparse(uri)
-    assert parsed.scheme == "file"
-    assert os.environ["MLFLOW_TRACKING_URI"] == uri
-    assert os.environ["CODEX_MLFLOW_URI"] == uri
+    assert parsed.scheme == "file", "scheme is not valid"
+    assert os.environ["MLFLOW_TRACKING_URI"] == uri, "Condition must be true"
+    assert os.environ["CODEX_MLFLOW_URI"] == uri, "Condition must be true"
     path = Path(parsed.path)
-    assert path.name == "plain_runs"
-    assert path.exists()
+    assert path.name == "plain_runs", "name is not valid"
+    assert path.exists(), "Condition must be true"
 
 
 def test_bootstrap_blocks_remote_by_default(tmp_path: Path, monkeypatch):
@@ -137,9 +137,9 @@ def test_bootstrap_blocks_remote_by_default(tmp_path: Path, monkeypatch):
 
     decision = guard.bootstrap_offline_tracking_decision()
     parsed = urlparse(decision.effective_uri)
-    assert parsed.scheme == "file"
-    assert urlparse(os.environ["MLFLOW_TRACKING_URI"]).scheme == "file"
-    assert urlparse(os.environ["CODEX_MLFLOW_URI"]).scheme == "file"
+    assert parsed.scheme == "file", "scheme is not valid"
+    assert urlparse(os.environ["MLFLOW_TRACKING_URI"]).scheme == "file", "scheme is not valid"
+    assert urlparse(os.environ["CODEX_MLFLOW_URI"]).scheme == "file", "scheme is not valid"
     assert decision.fallback_reason in {"non_file_scheme", "non_local_host"}
 
 
@@ -151,9 +151,9 @@ def test_bootstrap_respects_allow_remote(monkeypatch):
     guard = _reload_guard()
 
     decision = guard.bootstrap_offline_tracking_decision()
-    assert decision.effective_uri == "https://remote.example/mlflow"
-    assert os.environ["MLFLOW_TRACKING_URI"] == decision.effective_uri
-    assert decision.allow_remote is True
+    assert decision.effective_uri == "https://remote.example/mlflow", "effective_uri is not valid"
+    assert os.environ["MLFLOW_TRACKING_URI"] == decision.effective_uri, "Condition must be true"
+    assert decision.allow_remote is True, "allow_remote is not valid"
 
 
 def test_summary_records_fallback_reason_when_downgraded(tmp_path, monkeypatch):
@@ -180,12 +180,12 @@ def test_summary_records_fallback_reason_when_downgraded(tmp_path, monkeypatch):
     lines = [json.loads(line) for line in summary_path.read_text().splitlines() if line]
     assert lines, "summary should contain at least one record"
     extra = lines[-1]["extra"]
-    assert extra["requested_uri"] == "https://example.com/mlflow"
-    assert extra["effective_uri"].startswith("file:///")
-    assert extra["fallback_reason"] == "non_local_uri"
-    assert extra["allow_remote_flag"] == ""
-    assert extra["allow_remote"] is False
-    assert extra["system_metrics_enabled"] is False
+    assert extra["requested_uri"] == "https://example.com/mlflow", "Condition must be true"
+    assert extra["effective_uri"].startswith("file:///"), "Condition must be true"
+    assert extra["fallback_reason"] == "non_local_uri", "Condition must be true"
+    assert extra["allow_remote_flag"] == "", "Condition must be true"
+    assert extra["allow_remote"] is False, "Condition must be true"
+    assert extra["system_metrics_enabled"] is False, "Condition must be true"
 
 
 def test_summary_records_allow_remote_and_uri_passthrough(tmp_path, monkeypatch):
@@ -212,9 +212,9 @@ def test_summary_records_allow_remote_and_uri_passthrough(tmp_path, monkeypatch)
     lines = [json.loads(line) for line in summary_path.read_text().splitlines() if line]
     assert lines, "summary should contain at least one record"
     extra = lines[-1]["extra"]
-    assert extra["requested_uri"] == "https://remote.example/mlflow"
-    assert extra["effective_uri"] == "https://remote.example/mlflow"
-    assert extra["fallback_reason"] == ""
-    assert extra["allow_remote_flag"] == "1"
-    assert extra["allow_remote"] is True
-    assert extra["system_metrics_enabled"] is False
+    assert extra["requested_uri"] == "https://remote.example/mlflow", "Condition must be true"
+    assert extra["effective_uri"] == "https://remote.example/mlflow", "Condition must be true"
+    assert extra["fallback_reason"] == "", "Condition must be true"
+    assert extra["allow_remote_flag"] == "1", "Condition must be true"
+    assert extra["allow_remote"] is True, "Condition must be true"
+    assert extra["system_metrics_enabled"] is False, "Condition must be true"

@@ -27,8 +27,8 @@ class TestInputSanitization:
         sanitized = user_input.replace("'", "''")
 
         # Assert
-        assert "OR '1'='1" in user_input  # Original contains injection
-        assert sanitized.count("''") > 0  # Escaped version safe
+        assert "OR '1'='1" in user_input, "Condition must be true"
+        assert sanitized.count("''") > 0, "Value must be greater than zero"
 
     def test_sql_injection_comment_removal(self):
         """Test SQL injection prevention with comment syntax."""
@@ -52,7 +52,7 @@ class TestInputSanitization:
 
         # Assert
         assert has_script_tag, "Should detect script tags"
-        assert "<script>" not in sanitized
+        assert "<script>" not in sanitized, "Condition must be true"
 
     def test_xss_event_handler_removal(self):
         """Test XSS prevention by removing event handlers."""
@@ -65,7 +65,7 @@ class TestInputSanitization:
 
         # Assert
         assert has_event_handler, "Should detect event handlers"
-        assert "onerror=" not in sanitized
+        assert "onerror=" not in sanitized, "Error should be raised or set"
 
     def test_command_injection_pipe_removal(self):
         """Test command injection prevention with pipe operator."""
@@ -78,7 +78,7 @@ class TestInputSanitization:
 
         # Assert
         assert has_pipe, "Should detect pipe operators"
-        assert "cat /etc/passwd" not in sanitized
+        assert "cat /etc/passwd" not in sanitized, "Condition must be true"
 
     def test_command_injection_semicolon_removal(self):
         """Test command injection prevention with semicolon."""
@@ -90,9 +90,9 @@ class TestInputSanitization:
         commands = user_input.split(";")
 
         # Assert
-        assert has_semicolon
-        assert len(commands) > 1
-        assert "rm -rf" in commands[1]
+        assert has_semicolon, "has_semicolon is not valid"
+        assert len(commands) > 1, "Commands must not be empty"
+        assert "rm -rf" in commands[1], "Condition must be true"
 
     def test_ldap_injection_wildcard_expansion(self):
         """Test LDAP injection prevention with wildcard."""
@@ -145,8 +145,8 @@ class TestTypeValidation:
 
         # Assert
         assert are_different, "Empty string and None should be different"
-        assert empty_is_falsy
-        assert none_is_none
+        assert empty_is_falsy, "empty_is_falsy is not valid"
+        assert none_is_none, "none_is_none is not valid"
 
     def test_type_conversion_string_to_int(self):
         """Test type conversion from string to integer."""
@@ -224,7 +224,7 @@ class TestBoundaryValues:
         above_max = 2147483648
 
         # Act & Assert
-        assert max_int < above_max
+        assert max_int < above_max, "max_int is not valid"
 
     def test_zero_boundary(self):
         """Test zero as boundary value."""
@@ -261,7 +261,7 @@ class TestBoundaryValues:
         first_element = arr[0]
 
         # Assert
-        assert first_element == 1
+        assert first_element == 1, "first_element is not valid"
 
     def test_array_index_boundary_last(self):
         """Test array access at last valid index."""
@@ -273,8 +273,8 @@ class TestBoundaryValues:
         last_element_by_index = arr[len(arr) - 1]
 
         # Assert
-        assert last_element == 3
-        assert last_element_by_index == 3
+        assert last_element == 3, "last_element is not valid"
+        assert last_element_by_index == 3, "last_element_by_index is not valid"
 
     def test_array_index_boundary_out_of_range(self):
         """Test array access at out-of-range index."""
@@ -299,8 +299,8 @@ class TestStringHandling:
         is_falsy = not empty
 
         # Assert
-        assert is_empty
-        assert is_falsy
+        assert is_empty, "is_empty is not valid"
+        assert is_falsy, "is_falsy is not valid"
 
     def test_very_long_string(self):
         """Test very long string handling."""
@@ -311,7 +311,7 @@ class TestStringHandling:
         length = len(long_string)
 
         # Assert
-        assert length == 1000000
+        assert length == 1000000, "Length must be greater than zero"
 
     def test_string_with_null_bytes(self):
         """Test string containing null bytes."""
@@ -333,7 +333,7 @@ class TestStringHandling:
         length = len(special_string)
 
         # Assert
-        assert length > 20
+        assert length > 20, "length must be positive"
         assert all(isinstance(c, str) for c in special_string)
 
     def test_unicode_string_handling(self):
@@ -350,7 +350,7 @@ class TestStringHandling:
         # Act & Assert
         for s in unicode_strings:
             assert isinstance(s, str)
-            assert len(s) > 0
+            assert len(s) > 0, "S must not be empty"
 
     def test_string_encoding_edge_cases(self):
         """Test string encoding conversions."""
@@ -362,7 +362,7 @@ class TestStringHandling:
         decoded = utf8_bytes.decode("utf-8")
 
         # Assert
-        assert decoded == original
+        assert decoded == original, "decoded is not valid"
 
     def test_whitespace_only_string(self):
         """Test string containing only whitespace."""
@@ -389,7 +389,7 @@ class TestNumericBoundaries:
         exceeds_max = overflow_value > max_int
 
         # Assert
-        assert exceeds_max
+        assert exceeds_max, "exceeds_max is not valid"
 
     def test_float_infinity(self):
         """Test infinity values."""
@@ -403,8 +403,8 @@ class TestNumericBoundaries:
         inf_greater_normal = positive_infinity > normal_float
 
         # Assert
-        assert inf_greater
-        assert inf_greater_normal
+        assert inf_greater, "inf_greater is not valid"
+        assert inf_greater_normal, "inf_greater_normal is not valid"
 
     def test_float_nan_handling(self):
         """Test NaN (Not a Number) handling."""
@@ -479,8 +479,8 @@ class TestCollectionOperations:
         first = single_list[0]
 
         # Assert
-        assert first == 1
-        assert len(single_list) == 1
+        assert first == 1, "first is not valid"
+        assert len(single_list) == 1, "Single_list must not be empty"
 
     def test_very_large_collection(self):
         """Test operations on very large collection."""
@@ -493,9 +493,9 @@ class TestCollectionOperations:
         last = large_list[-1]
 
         # Assert
-        assert length == 1000000
-        assert first == 0
-        assert last == 999999
+        assert length == 1000000, "Length must be greater than zero"
+        assert first == 0, "first is not valid"
+        assert last == 999999, "last is not valid"
 
     def test_collection_with_null_elements(self):
         """Test collection containing None elements."""
@@ -506,7 +506,7 @@ class TestCollectionOperations:
         none_count = collection.count(None)
 
         # Assert
-        assert none_count == 2
+        assert none_count == 2, "Count must be greater than zero"
 
     def test_collection_duplicate_handling(self):
         """Test handling of duplicate elements."""
@@ -528,7 +528,7 @@ class TestCollectionOperations:
         element = nested[1][1]
 
         # Assert
-        assert element == 4
+        assert element == 4, "element is not valid"
 
     def test_collection_iteration_boundary(self):
         """Test collection iteration at boundaries."""
@@ -541,4 +541,4 @@ class TestCollectionOperations:
             count += 1
 
         # Assert
-        assert count == len(collection)
+        assert count == len(collection), "Collection must not be empty"

@@ -48,7 +48,7 @@ def test_lora_parameters_trainable(tmp_path) -> None:
     # peft may wrap model with LoRA adapters — verify if applied
     has_lora = any("lora" in n.lower() for n in trainable)
     if has_lora:
-        assert any(
+        assert any(, "Condition must be true"
             "lora" not in n.lower() and not p.requires_grad for n, p in model.named_parameters()
         )
     else:

@@ -25,19 +25,19 @@ def test_infer_schema_handles_nested_objects_and_arrays():
         "labels": ["blue", "green"],
     }
     schema = infer_schema(sample)
-    assert schema["type"] == "object"
-    assert schema["properties"]["name"]["type"] == "string"
-    assert schema["properties"]["enabled"]["type"] == "boolean"
-    assert schema["properties"]["retries"]["type"] == "integer"
-    assert schema["properties"]["thresholds"]["type"] == "object"
-    assert schema["properties"]["labels"]["type"] == "array"
+    assert schema["type"] == "object", "Object must be initialized"
+    assert schema["properties"]["name"]["type"] == "string", "Condition must be true"
+    assert schema["properties"]["enabled"]["type"] == "boolean", "Condition must be true"
+    assert schema["properties"]["retries"]["type"] == "integer", "Condition must be true"
+    assert schema["properties"]["thresholds"]["type"] == "object", "Object must be initialized"
+    assert schema["properties"]["labels"]["type"] == "array", "Condition must be true"
 
 
 def test_build_schema_wraps_non_object_values():
     schema = build_schema([1, 2, 3], title="ArrayConfig")
-    assert schema["title"] == "ArrayConfig"
-    assert schema["properties"]["value"]["type"] == "array"
-    assert "required" in schema
+    assert schema["title"] == "ArrayConfig", "Condition must be true"
+    assert schema["properties"]["value"]["type"] == "array", "Value must be initialized"
+    assert "required" in schema, "Condition must be true"
 
 
 def test_generate_schema_cli(tmp_path: Path):
@@ -71,8 +71,8 @@ metadata:
     )
     assert result.returncode == 0, result.stdout + result.stderr
     schema = json.loads(output.read_text(encoding="utf-8"))
-    assert schema["title"] == "WidgetSchema"
-    assert schema["properties"]["name"]["type"] == "string"
-    assert schema["properties"]["retries"]["type"] == "integer"
-    assert schema["properties"]["metadata"]["type"] == "object"
-    assert schema["properties"]["features"]["type"] == "array"
+    assert schema["title"] == "WidgetSchema", "Condition must be true"
+    assert schema["properties"]["name"]["type"] == "string", "Condition must be true"
+    assert schema["properties"]["retries"]["type"] == "integer", "Condition must be true"
+    assert schema["properties"]["metadata"]["type"] == "object", "Data must not be empty"
+    assert schema["properties"]["features"]["type"] == "array", "Condition must be true"

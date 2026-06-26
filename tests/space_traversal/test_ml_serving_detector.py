@@ -17,11 +17,11 @@ def test_ml_serving_detector_basic():
 
     result = detect(file_index)
 
-    assert result["id"] == "ml-serving"
-    assert len(result["evidence_files"]) > 0
-    assert "serve" in result["found_patterns"] or "predict" in result["found_patterns"]
+    assert result["id"] == "ml-serving", "Result must not be empty"
+    assert len(result["evidence_files"]) > 0, "Collection must not be empty"
+    assert "serve" in result["found_patterns"] or "predict" in result["found_patterns"], "Result must not be empty"
     assert result["required_patterns"] == ["serve", "predict", "api"]
-    assert result["meta"]["layer"] == "inference"
+    assert result["meta"]["layer"] == "inference", "Result must not be empty"
 
 
 def test_ml_serving_detector_no_evidence():
@@ -30,9 +30,9 @@ def test_ml_serving_detector_no_evidence():
 
     result = detect(file_index)
 
-    assert result["id"] == "ml-serving"
-    assert len(result["evidence_files"]) == 0
-    assert len(result["found_patterns"]) == 0
+    assert result["id"] == "ml-serving", "Result must not be empty"
+    assert len(result["evidence_files"]) == 0, "Collection must not be empty"
+    assert len(result["found_patterns"]) == 0, "Collection must not be empty"
 
 
 def test_ml_serving_detector_api_patterns():
@@ -46,9 +46,9 @@ def test_ml_serving_detector_api_patterns():
 
     result = detect(file_index)
 
-    assert result["id"] == "ml-serving"
-    assert "api" in result["found_patterns"]
-    assert len(result["evidence_files"]) > 0
+    assert result["id"] == "ml-serving", "Result must not be empty"
+    assert "api" in result["found_patterns"], "Result must not be empty"
+    assert len(result["evidence_files"]) > 0, "Collection must not be empty"
 
 
 def test_ml_serving_detector_sorted_output():
@@ -64,6 +64,6 @@ def test_ml_serving_detector_sorted_output():
     result = detect(file_index)
 
     # Check that evidence files are sorted
-    assert result["evidence_files"] == sorted(result["evidence_files"])
+    assert result["evidence_files"] == sorted(result["evidence_files"]), "Result must not be empty"
     # Check that found patterns are sorted
-    assert result["found_patterns"] == sorted(result["found_patterns"])
+    assert result["found_patterns"] == sorted(result["found_patterns"]), "Result must not be empty"

@@ -116,12 +116,12 @@ def test_sentencepiece_tokenizer_batch_and_truncation(tmp_path: Path) -> None:
     text = "alpha beta gamma delta"
     full_ids = tokenizer.encode(text)
     truncated = tokenizer.encode(text, truncation="only_first", max_length=3)
-    assert len(truncated) == 3
-    assert tokenizer.decode(truncated) == tokenizer.decode(full_ids[:3])
+    assert len(truncated) == 3, "Truncated must not be empty"
+    assert tokenizer.decode(truncated) == tokenizer.decode(full_ids[:3]), "Condition must be true"
     batch = tokenizer.batch_encode(
         ["alpha beta", "gamma delta"], truncation="only_first", max_length=2
     )
-    assert all(len(seq) <= 2 for seq in batch)
+    assert all(len(seq) <= 2 for seq in batch), "Seq must not be empty"
 
 
 def test_sentencepiece_tokenizer_save_and_reload(tmp_path: Path) -> None:
@@ -131,26 +131,26 @@ def test_sentencepiece_tokenizer_save_and_reload(tmp_path: Path) -> None:
     tokenizer.save_pretrained(str(save_dir))
     model_copy = save_dir / Path(model_file).name
     vocab_copy = save_dir / Path(model_file).with_suffix(".vocab").name
-    assert model_copy.exists()
-    assert vocab_copy.exists()
+    assert model_copy.exists(), "Condition must be true"
+    assert vocab_copy.exists(), "Condition must be true"
     specials_candidates = [
         save_dir / Path(model_file).with_suffix(".special_tokens.json").name,
         save_dir / "special_tokens.json",
     ]
     specials_file = next((path for path in specials_candidates if path.exists()), None)
-    assert specials_file is not None
+    assert specials_file is not None, "specials_file must be initialized"
     data = json.loads(specials_file.read_text(encoding="utf-8"))
     if isinstance(data, dict):
-        assert "<extra>" in data
+        assert "<extra>" in data, "Data must not be empty"
     else:
-        assert "<extra>" in data
+        assert "<extra>" in data, "Data must not be empty"
 
     reloaded = SentencePieceTokenizer.from_pretrained(save_dir)
     text = "general kenobi"
     original = tokenizer.encode(text)
     restored = reloaded.encode(text)
-    assert original == restored
-    assert reloaded.special_tokens == ["<extra>"]
+    assert original == restored, "original is not valid"
+    assert reloaded.special_tokens == ["<extra>"], "special_tokens is not valid"
 
 
 def test_tokenizer_adapter_from_config(tmp_path: Path) -> None:
@@ -160,7 +160,7 @@ def test_tokenizer_adapter_from_config(tmp_path: Path) -> None:
     assert isinstance(tokenizer, SentencePieceTokenizer)
     text = "adapter config"
     ids = tokenizer.encode(text, truncation="longest_first", max_length=4)
-    assert ids == tokenizer.encode(text)[:4]
+    assert ids == tokenizer.encode(text)[:4], "ids is not valid"
 
 
 def test_tokenizer_adapter_from_config_directory(tmp_path: Path) -> None:

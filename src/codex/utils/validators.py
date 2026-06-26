@@ -58,8 +58,8 @@ def validate_file_structure(file_path: str) -> dict[str, bool]:
         content = path.read_text()
     except (IOError, OSError) as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
-        logger.error(f"Failed to read file: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
+        logger.error("Failed to read file: <ERROR_TYPE>")
         return issues
 
     lines = content.split("\n")
@@ -109,7 +109,7 @@ def validate_file_structure(file_path: str) -> dict[str, bool]:
             ast.parse(content)
         except SyntaxError as e:
             error_type = type(e).__name__
-            logger.debug(f"SyntaxError: <ERROR_TYPE>")
+            logger.debug("SyntaxError: <ERROR_TYPE>")
             issues["valid_syntax"] = False
             logger.error(f"Syntax error in {file_path}: <ERROR_TYPE>")
 
@@ -150,8 +150,8 @@ def validate_with_checksum(
         return True, sha
     except (IOError, OSError) as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
-        logger.error(f"Checksum validation failed: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
+        logger.error("Checksum validation failed: <ERROR_TYPE>")
         return False, ""
 
 
@@ -185,8 +185,8 @@ def validate_with_diff(
         return False, result.stdout
     except (IOError, OSError) as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
-        logger.error(f"Diff validation failed: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
+        logger.error("Diff validation failed: <ERROR_TYPE>")
         return False, ""
 
 
@@ -219,9 +219,9 @@ def validate_code_quality(file_path: str) -> dict[str, bool]:
                 logger.info(f"Python syntax valid: {file_path}")
             except SyntaxError as e:
                 error_type = type(e).__name__
-                logger.debug(f"SyntaxError: <ERROR_TYPE>")
+                logger.debug("SyntaxError: <ERROR_TYPE>")
                 checks["syntax_valid"] = False
-                logger.error(f"Python syntax error: <ERROR_TYPE>")
+                logger.error("Python syntax error: <ERROR_TYPE>")
 
         # Bash syntax check
         elif file_path.endswith(".sh"):
@@ -232,7 +232,7 @@ def validate_code_quality(file_path: str) -> dict[str, bool]:
 
     except (IOError, OSError) as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
-        logger.error(f"Code quality check failed: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
+        logger.error("Code quality check failed: <ERROR_TYPE>")
 
     return checks

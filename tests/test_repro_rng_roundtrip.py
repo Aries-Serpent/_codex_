@@ -28,7 +28,7 @@ def test_rng_roundtrip(tmp_path: Path):
     out = tmp_path / "rng.json"
     repro.save_rng(str(out), state)
     assert out.exists(), "RNG state file was not written"
-    assert json.loads(out.read_text(encoding="utf-8")).get("py_random_state") is not None
+    assert json.loads(out.read_text(encoding="utf-8")).get("py_random_state") is not None, "Value must be initialized"
 
     # 3) Mutate RNG streams
     _ = [random.random() for _ in range(5)]

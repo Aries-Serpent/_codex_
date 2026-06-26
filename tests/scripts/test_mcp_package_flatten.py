@@ -52,15 +52,15 @@ class TestPackageFlattenScript:
 
     def test_script_exists_and_executable(self, package_flatten_script):
         """Test that script exists and is executable"""
-        assert package_flatten_script.exists()
-        assert package_flatten_script.stat().st_mode & 0o111  # Check execute bit
+        assert package_flatten_script.exists(), "Condition must be true"
+        assert package_flatten_script.stat().st_mode & 0o111, "Condition must be true"
 
     def test_script_shows_usage_with_no_args(self, package_flatten_script):
         """Test that script shows usage when called with no arguments"""
         result = subprocess.run([str(package_flatten_script)], capture_output=True, text=True)
 
-        assert result.returncode != 0
-        assert "Usage:" in result.stdout or "Usage:" in result.stderr
+        assert result.returncode != 0, "Result must not be empty"
+        assert "Usage:" in result.stdout or "Usage:" in result.stderr, "Result must not be empty"
 
     def test_script_shows_help_with_help_flag(self, package_flatten_script):
         """Test --help flag displays help message"""
@@ -68,9 +68,9 @@ class TestPackageFlattenScript:
             [str(package_flatten_script), "--help"], capture_output=True, text=True
         )
 
-        assert "Usage:" in result.stdout
-        assert "source_dir" in result.stdout
-        assert "output_zip" in result.stdout
+        assert "Usage:" in result.stdout, "Result must not be empty"
+        assert "source_dir" in result.stdout, "Result must not be empty"
+        assert "output_zip" in result.stdout, "Result must not be empty"
 
     def test_script_validates_source_directory(self, package_flatten_script):
         """Test error handling for missing source directory"""
@@ -84,8 +84,8 @@ class TestPackageFlattenScript:
                 text=True,
             )
 
-            assert result.returncode != 0
-            assert "not found" in result.stderr or "not found" in result.stdout
+            assert result.returncode != 0, "Result must not be empty"
+            assert "not found" in result.stderr or "not found" in result.stdout, "Result must not be empty"
 
     def test_script_creates_zip_package(self, package_flatten_script, temp_source_dir):
         """Test basic package creation"""
@@ -135,9 +135,9 @@ class TestPackageFlattenScript:
                 manifest = json.loads(manifest_data)
 
                 # Validate manifest structure
-                assert "files" in manifest
+                assert "files" in manifest, "Condition must be true"
                 assert isinstance(manifest["files"], list)
-                assert len(manifest["files"]) > 0
+                assert len(manifest["files"]) > 0, "Collection must not be empty"
 
     def test_script_flattens_directory_structure(self, package_flatten_script, temp_source_dir):
         """Test that nested paths are flattened correctly"""
@@ -190,8 +190,8 @@ class TestPackageFlattenScript:
                 # Check first file has SHA256
                 if manifest["files"]:
                     first_file = manifest["files"][0]
-                    assert "sha256" in first_file
-                    assert len(first_file["sha256"]) == 64  # SHA256 is 64 hex chars
+                    assert "sha256" in first_file, "Condition must be true"
+                    assert len(first_file["sha256"]) == 64, "Collection must not be empty"
 
     def test_script_includes_file_sizes(self, package_flatten_script, temp_source_dir):
         """Test that manifest includes file sizes"""
@@ -218,8 +218,8 @@ class TestPackageFlattenScript:
                 # Check file sizes
                 if manifest["files"]:
                     first_file = manifest["files"][0]
-                    assert "size_bytes" in first_file
-                    assert first_file["size_bytes"] >= 0
+                    assert "size_bytes" in first_file, "Condition must be true"
+                    assert first_file["size_bytes"] >= 0, "Value must be greater than zero"
 
     def test_script_creates_readme(self, package_flatten_script, temp_source_dir):
         """Test that README_dataset.md is created"""
@@ -287,7 +287,7 @@ class TestPackageFlattenScript:
 
             # Should handle gracefully
             if result.returncode == 0:
-                assert output_zip.exists()
+                assert output_zip.exists(), "Condition must be true"
 
     def test_script_validates_bash_syntax(self, package_flatten_script):
         """Test that script has valid bash syntax"""

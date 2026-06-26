@@ -34,80 +34,80 @@ class TestPRSizeAnalyzer:
     def test_small_pr_classification(self):
         """Test that PRs with < 20 files are classified as small."""
         size, strategy = calculate_pr_size(10)
-        assert size == "small"
-        assert strategy == "full_validation"
+        assert size == "small", "size is not valid"
+        assert strategy == "full_validation", "strategy is not valid"
 
     def test_small_pr_boundary(self):
         """Test boundary condition at 19 files."""
         size, strategy = calculate_pr_size(19)
-        assert size == "small"
-        assert strategy == "full_validation"
+        assert size == "small", "size is not valid"
+        assert strategy == "full_validation", "strategy is not valid"
 
     def test_medium_pr_lower_boundary(self):
         """Test boundary condition at 20 files."""
         size, strategy = calculate_pr_size(20)
-        assert size == "medium"
-        assert strategy == "targeted_tests"
+        assert size == "medium", "size is not valid"
+        assert strategy == "targeted_tests", "strategy is not valid"
 
     def test_medium_pr_classification(self):
         """Test that PRs with 20-99 files are classified as medium."""
         size, strategy = calculate_pr_size(50)
-        assert size == "medium"
-        assert strategy == "targeted_tests"
+        assert size == "medium", "size is not valid"
+        assert strategy == "targeted_tests", "strategy is not valid"
 
     def test_medium_pr_upper_boundary(self):
         """Test boundary condition at 99 files."""
         size, strategy = calculate_pr_size(99)
-        assert size == "medium"
-        assert strategy == "targeted_tests"
+        assert size == "medium", "size is not valid"
+        assert strategy == "targeted_tests", "strategy is not valid"
 
     def test_large_pr_lower_boundary(self):
         """Test boundary condition at 100 files."""
         size, strategy = calculate_pr_size(100)
-        assert size == "large"
-        assert strategy == "smoke_tests"
+        assert size == "large", "size is not valid"
+        assert strategy == "smoke_tests", "strategy is not valid"
 
     def test_large_pr_classification(self):
         """Test that PRs with 100-499 files are classified as large."""
         size, strategy = calculate_pr_size(250)
-        assert size == "large"
-        assert strategy == "smoke_tests"
+        assert size == "large", "size is not valid"
+        assert strategy == "smoke_tests", "strategy is not valid"
 
     def test_large_pr_upper_boundary(self):
         """Test boundary condition at 499 files."""
         size, strategy = calculate_pr_size(499)
-        assert size == "large"
-        assert strategy == "smoke_tests"
+        assert size == "large", "size is not valid"
+        assert strategy == "smoke_tests", "strategy is not valid"
 
     def test_refactor_pr_lower_boundary(self):
         """Test boundary condition at 500 files."""
         size, strategy = calculate_pr_size(500)
-        assert size == "refactor"
-        assert strategy == "import_validation"
+        assert size == "refactor", "size is not valid"
+        assert strategy == "import_validation", "strategy is not valid"
 
     def test_refactor_pr_classification(self):
         """Test that PRs with 500+ files are classified as refactor."""
         size, strategy = calculate_pr_size(1000)
-        assert size == "refactor"
-        assert strategy == "import_validation"
+        assert size == "refactor", "size is not valid"
+        assert strategy == "import_validation", "strategy is not valid"
 
     def test_extreme_large_pr(self):
         """Test extremely large PR (edge case)."""
         size, strategy = calculate_pr_size(10000)
-        assert size == "refactor"
-        assert strategy == "import_validation"
+        assert size == "refactor", "size is not valid"
+        assert strategy == "import_validation", "strategy is not valid"
 
     def test_zero_files(self):
         """Test edge case with zero files changed."""
         size, strategy = calculate_pr_size(0)
-        assert size == "small"
-        assert strategy == "full_validation"
+        assert size == "small", "size is not valid"
+        assert strategy == "full_validation", "strategy is not valid"
 
     def test_single_file(self):
         """Test edge case with single file changed."""
         size, strategy = calculate_pr_size(1)
-        assert size == "small"
-        assert strategy == "full_validation"
+        assert size == "small", "size is not valid"
+        assert strategy == "full_validation", "strategy is not valid"
 
     @pytest.mark.parametrize(
         "files,expected_size,expected_strategy",
@@ -139,23 +139,23 @@ class TestValidationStrategyMapping:
     def test_full_validation_requires_all_tests(self):
         """Verify full_validation strategy means all tests run."""
         _, strategy = calculate_pr_size(10)
-        assert strategy == "full_validation"
+        assert strategy == "full_validation", "strategy is not valid"
         # In actual workflow, this would trigger all test suites
 
     def test_targeted_tests_for_medium_prs(self):
         """Verify targeted_tests strategy for medium PRs."""
         _, strategy = calculate_pr_size(50)
-        assert strategy == "targeted_tests"
+        assert strategy == "targeted_tests", "strategy is not valid"
         # In actual workflow, this would analyze changed files and run related tests
 
     def test_smoke_tests_for_large_prs(self):
         """Verify smoke_tests strategy for large PRs."""
         _, strategy = calculate_pr_size(200)
-        assert strategy == "smoke_tests"
+        assert strategy == "smoke_tests", "strategy is not valid"
         # In actual workflow, this would run only smoke tests
 
     def test_import_validation_for_refactor(self):
         """Verify import_validation strategy for refactor PRs."""
         _, strategy = calculate_pr_size(600)
-        assert strategy == "import_validation"
+        assert strategy == "import_validation", "strategy is not valid"
         # In actual workflow, this would verify imports only

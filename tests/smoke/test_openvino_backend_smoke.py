@@ -55,20 +55,20 @@ class TestOpenVINOBackendUnavailable:
         self.backend = _load_backend(mock_openvino=False)
 
     def test_ov_available_false(self):
-        assert self.backend._OV_AVAILABLE is False
+        assert self.backend._OV_AVAILABLE is False, "_OV_AVAILABLE is not valid"
 
     def test_devices_empty(self):
-        assert self.backend.DEVICES == []
+        assert self.backend.DEVICES == [], "DEVICES is not valid"
 
     def test_is_available_gpu_false(self):
-        assert self.backend.is_available("GPU") is False
+        assert self.backend.is_available("GPU") is False, "Condition must be true"
 
     def test_is_available_cpu_false(self):
         """CPU device via OV is also False when OV not installed."""
-        assert self.backend.is_available("CPU") is False
+        assert self.backend.is_available("CPU") is False, "Condition must be true"
 
     def test_available_devices_empty(self):
-        assert self.backend.available_devices() == []
+        assert self.backend.available_devices() == [], "Condition must be true"
 
     def test_infer_raises_runtime_error(self, tmp_path):
         """infer() must raise RuntimeError, not crash with AttributeError."""
@@ -78,8 +78,8 @@ class TestOpenVINOBackendUnavailable:
             self.backend.infer(str(fake_model), {}, device="GPU")
             assert False, "Expected RuntimeError"
         except RuntimeError as exc:
-            assert "GPU" in str(exc)
-            assert "unavailable" in str(exc).lower()
+            assert "GPU" in str(exc), "Condition must be true"
+            assert "unavailable" in str(exc).lower(), "Condition must be true"
 
 
 class TestOpenVINOBackendAvailable:
@@ -89,23 +89,23 @@ class TestOpenVINOBackendAvailable:
         self.backend = _load_backend(mock_openvino=True)
 
     def test_ov_available_true(self):
-        assert self.backend._OV_AVAILABLE is True
+        assert self.backend._OV_AVAILABLE is True, "_OV_AVAILABLE is not valid"
 
     def test_devices_populated(self):
-        assert "GPU" in self.backend.DEVICES
-        assert "CPU" in self.backend.DEVICES
+        assert "GPU" in self.backend.DEVICES, "Condition must be true"
+        assert "CPU" in self.backend.DEVICES, "Condition must be true"
 
     def test_is_available_gpu_true(self):
-        assert self.backend.is_available("GPU") is True
+        assert self.backend.is_available("GPU") is True, "Condition must be true"
 
     def test_is_available_npu_false(self):
         """NPU not in mock device list."""
-        assert self.backend.is_available("NPU") is False
+        assert self.backend.is_available("NPU") is False, "Condition must be true"
 
     def test_available_devices_list(self):
         devs = self.backend.available_devices()
         assert isinstance(devs, list)
-        assert "GPU" in devs
+        assert "GPU" in devs, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -143,7 +143,7 @@ class TestOpenVINOPhaseC:
 
     def test_gpu_is_available_live(self):
         """Sanity: GPU should be live-detected before any infer() call."""
-        assert self.backend.is_available("GPU") is True
+        assert self.backend.is_available("GPU") is True, "Condition must be true"
 
     def test_available_devices_contains_gpu_live(self):
         """available_devices() must list GPU when OV is live."""

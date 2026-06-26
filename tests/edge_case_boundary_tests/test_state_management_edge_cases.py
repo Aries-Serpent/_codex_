@@ -40,7 +40,7 @@ class TestStateTransitions:
             state_data["status"] = "running"
 
         # Assert
-        assert state_data["status"] == "running"
+        assert state_data["status"] == "running", "Data must not be empty"
 
     def test_state_rollback_scenario(self):
         """Test state rollback on failure."""
@@ -63,8 +63,8 @@ class TestStateTransitions:
         state["value"] = 2  # Partial update
 
         # Assert
-        assert state["value"] == 2
-        assert state["status"] == "pending"
+        assert state["value"] == 2, "Value must be initialized"
+        assert state["status"] == "pending", "Condition must be true"
 
     def test_state_consistency_violation(self):
         """Test detection of state consistency violations."""
@@ -174,7 +174,7 @@ class TestWorkflowEdgeCases:
         action_compensation_pairs = list(zip(actions, compensations))
 
         # Assert
-        assert len(action_compensation_pairs) == 2
+        assert len(action_compensation_pairs) == 2, "Action_compensation_pairs must not be empty"
         assert action_compensation_pairs[0] == ("create", "delete")
 
 
@@ -255,7 +255,7 @@ class TestConcurrencyEdgeCases:
         expected_value = num_threads * increments_per_thread
 
         # Assert (this would fail without synchronization)
-        assert expected_value == 200
+        assert expected_value == 200, "Value must be initialized"
 
     def test_deadlock_scenario(self):
         """Test detection of deadlock scenario."""
@@ -325,8 +325,8 @@ class TestConcurrencyEdgeCases:
         flag = True
 
         # Assert
-        assert shared_value == 100
-        assert flag
+        assert shared_value == 100, "Value must be initialized"
+        assert flag, "flag is not valid"
 
 
 class TestComplexStateScenarios:
@@ -343,7 +343,7 @@ class TestComplexStateScenarios:
         timed_out = elapsed > timeout
 
         # Assert
-        assert not timed_out  # Should not timeout immediately
+        assert not timed_out, "Condition must be true"
 
     def test_workflow_with_resource_limits(self):
         """Test workflow respecting resource limits."""

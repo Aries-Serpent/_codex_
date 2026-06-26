@@ -33,9 +33,9 @@ def test_rate_limit_blocks_requests_after_threshold(monkeypatch: pytest.MonkeyPa
         first = client.get("/status")
         second = client.get("/status")
 
-    assert first.status_code == 200
-    assert second.status_code == 429
-    assert second.json() == {"detail": "rate limit exceeded"}
+    assert first.status_code == 200, "status_code is not valid"
+    assert second.status_code == 429, "status_code is not valid"
+    assert second.json() == {"detail": "rate limit exceeded"}, "Condition must be true"
 
 
 def test_infer_rejects_prompts_beyond_context(monkeypatch: pytest.MonkeyPatch) -> None:
@@ -62,7 +62,7 @@ def test_infer_rejects_prompts_beyond_context(monkeypatch: pytest.MonkeyPatch) -
     with TestClient(module.app) as client:
         response = client.post("/infer", json={"prompt": "offline"})
 
-    assert response.status_code == 400
+    assert response.status_code == 400, "Response must not be empty"
     payload = response.json()["detail"]
-    assert payload["limit"] == 2
-    assert payload["tokens"] > payload["limit"]
+    assert payload["limit"] == 2, "Condition must be true"
+    assert payload["tokens"] > payload["limit"], "Value must be greater than zero"

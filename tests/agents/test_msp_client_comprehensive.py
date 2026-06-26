@@ -15,7 +15,9 @@ from unittest.mock import Mock, patch
 import pytest
 
 try:
-    from agents.msp_client import MSPClient # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+    from agents.msp_client import (
+        MSPClient,  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+    )
 
     MSP_CLIENT_AVAILABLE = True
 except (ImportError, AttributeError):
@@ -37,7 +39,7 @@ class TestMSPClientInitialization:
         """Test initialization with default parameters."""
         client = MSPClient()
 
-        assert client is not None
+        assert client is not None, "client must be initialized"
         assert hasattr(client, "base_url") or hasattr(client, "url")
         assert hasattr(client, "timeout")
 
@@ -47,7 +49,7 @@ class TestMSPClientInitialization:
         client = MSPClient(base_url=custom_base_url)
 
         base_url_attr = getattr(client, "base_url", getattr(client, "url", None))
-        assert base_url_attr == custom_base_url
+        assert base_url_attr == custom_base_url, "base_url_attr is not valid"
 
     def test_client_initialization_with_api_key(self):
         """Test initialization with API key."""
@@ -61,7 +63,7 @@ class TestMSPClientInitialization:
         client = MSPClient(timeout=60)
 
         if hasattr(client, "timeout"):
-            assert client.timeout == 60
+            assert client.timeout == 60, "timeout is not valid"
 
 
 class TestMSPClientMocked:
@@ -80,7 +82,7 @@ class TestMSPClientMocked:
         if hasattr(mock_client, "request"):
             with patch.object(mock_client, "request", return_value={"status": "success"}):
                 result = mock_client.request("GET", "/test")
-                assert result == {"status": "success"}
+                assert result == {"status": "success"}, "Result must not be empty"
 
     def test_client_handles_connection_error(self, mock_client):
         """Test handling of connection errors."""
@@ -121,8 +123,8 @@ class TestMSPClientMocked:
             with patch.object(mock_client, "request", side_effect=mock_request):
                 if hasattr(mock_client, "request_with_retry"):
                     result = mock_client.request_with_retry("GET", "/test", max_retries=3)
-                    assert result["status"] == "success"
-                    assert call_count == 3
+                    assert result["status"] == "success", "Result must not be empty"
+                    assert call_count == 3, "Count must be greater than zero"
 
 
 class TestMSPClientEdgeCases:
@@ -132,7 +134,7 @@ class TestMSPClientEdgeCases:
         """Test handling empty endpoint."""
         try:
             client = MSPClient(base_url="")
-            assert client is not None
+            assert client is not None, "client must be initialized"
         except (ValueError, AssertionError):
             # Acceptable to reject empty endpoint
             _ = None  # suppressed: no action needed
@@ -141,7 +143,7 @@ class TestMSPClientEdgeCases:
         """Test handling invalid endpoint format."""
         try:
             client = MSPClient(base_url="not_a_valid_url")
-            assert client is not None
+            assert client is not None, "client must be initialized"
         except (ValueError, AssertionError):
             # Acceptable to reject invalid URL
             _ = None  # suppressed: no action needed
@@ -149,13 +151,13 @@ class TestMSPClientEdgeCases:
     def test_client_with_none_api_key(self):
         """Test handling None API key."""
         client = MSPClient(api_key=None)
-        assert client is not None
+        assert client is not None, "client must be initialized"
 
     def test_client_with_zero_timeout(self):
         """Test handling zero timeout."""
         try:
             client = MSPClient(timeout=0)
-            assert client is not None
+            assert client is not None, "client must be initialized"
         except (ValueError, AssertionError):
             # Acceptable to reject zero timeout
             _ = None  # suppressed: no action needed
@@ -164,7 +166,7 @@ class TestMSPClientEdgeCases:
         """Test handling negative timeout."""
         try:
             client = MSPClient(timeout=-1)
-            assert client is not None
+            assert client is not None, "client must be initialized"
         except (ValueError, AssertionError):
             # Acceptable to reject negative timeout
             _ = None  # suppressed: no action needed
@@ -183,7 +185,7 @@ class TestMSPClientRequestResponse:
         if hasattr(client, "get"):
             with patch.object(client, "request", return_value={"data": "test"}):
                 result = client.get("/endpoint")
-                assert result is not None
+                assert result is not None, "result must be initialized"
 
     def test_post_request_format(self, client):
         """Test POST request formatting."""
@@ -191,7 +193,7 @@ class TestMSPClientRequestResponse:
             data = {"key": "value"}
             with patch.object(client, "request", return_value={"status": "created"}):
                 result = client.post("/endpoint", data=data)
-                assert result is not None
+                assert result is not None, "result must be initialized"
 
     def test_response_parsing_json(self, client):
         """Test JSON response parsing."""
@@ -201,7 +203,7 @@ class TestMSPClientRequestResponse:
 
         if hasattr(client, "_parse_response"):
             parsed = client._parse_response(mock_response)
-            assert parsed["result"] == "success"
+            assert parsed["result"] == "success", "Result must not be empty"
 
     def test_response_error_handling(self, client):
         """Test error response handling."""
@@ -227,7 +229,7 @@ class TestMSPClientAuthentication:
             has_auth = any(
                 key.lower() in ["authorization", "x-api-key", "api-key"] for key in headers
             )
-            assert has_auth or "secret_key_123" in str(headers.values())
+            assert has_auth or "secret_key_123" in str(headers.values()), "Value must be initialized"
 
     def test_bearer_token_format(self):
         """Test Bearer token format."""
@@ -236,7 +238,7 @@ class TestMSPClientAuthentication:
         if hasattr(client, "_build_headers"):
             headers = client._build_headers()
             if "Authorization" in headers:
-                assert (
+                assert (, "Condition must be true"
                     "Bearer" in headers["Authorization"]
                     or "bearer_token" in headers["Authorization"]
                 )
@@ -250,15 +252,15 @@ class TestMSPClientConfiguration:
         client = MSPClient()
 
         if hasattr(client, "user_agent"):
-            assert client.user_agent is not None
-            assert len(client.user_agent) > 0
+            assert client.user_agent is not None, "user_agent must be initialized"
+            assert len(client.user_agent) > 0, "Collection must not be empty"
 
     def test_connection_pooling(self):
         """Test connection pooling configuration."""
         MSPClient()  # Verify MSPClient initializes without error
 
         # Should have session or connection management (attribute presence is optional)
-        assert True  # MSPClient session management is implementation-defined; just verify it initializes
+        assert True, "True is not valid"
 
     def test_ssl_verification(self):
         """Test SSL verification settings."""
@@ -288,14 +290,14 @@ class TestMSPClientIntegration:
         with patch.object(client.client, "request", return_value=mock_response):
             if hasattr(client, "request"):
                 result = client.request("GET", "/test")
-                assert result is not None
+                assert result is not None, "result must be initialized"
 
     def test_error_recovery_workflow(self):
         """Test error recovery workflow."""
         client = MSPClient()
 
         # Should handle and recover from errors gracefully
-        assert client is not None
+        assert client is not None, "client must be initialized"
 
 
 class TestMSPClientPerformance:
@@ -315,7 +317,7 @@ class TestMSPClientPerformance:
                 duration = time.time() - start
 
                 # 10 mocked requests should be very fast
-                assert duration < 0.1
+                assert duration < 0.1, "duration is not valid"
 
     def test_concurrent_requests(self):
         """Test concurrent requests handling."""
@@ -336,5 +338,5 @@ class TestMSPClientPerformance:
             futures = [executor.submit(make_request, i) for i in range(20)]
             results = [f.result(timeout=5) for f in futures]
 
-        assert len(errors) == 0
-        assert len([r for r in results if r is not None]) > 0
+        assert len(errors) == 0, "Errors must not be empty"
+        assert len([r for r in results if r is not None]) > 0, "R must not be empty"

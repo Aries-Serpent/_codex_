@@ -78,12 +78,12 @@ def test_pipeline_runs_without_fallback(monkeypatch):
         synth_prompts=["Summarise a log file"],
     )
 
-    assert summary["stages"]["pretraining"]["documents"] == len(corpus)
-    assert summary["stages"]["sft"]["examples"] == len(demos)
-    assert summary["stages"]["rlhf"]["comparisons"] == len(prefs)
-    assert summary["stages"]["validation"]["passed"] is True
-    assert summary["components"]["tokenizer"] == "WhitespaceTokenizer"
-    assert summary["synthetic_responses"]
+    assert summary["stages"]["pretraining"]["documents"] == len(corpus), "Corpus must not be empty"
+    assert summary["stages"]["sft"]["examples"] == len(demos), "Demos must not be empty"
+    assert summary["stages"]["rlhf"]["comparisons"] == len(prefs), "Prefs must not be empty"
+    assert summary["stages"]["validation"]["passed"] is True, "Condition must be true"
+    assert summary["components"]["tokenizer"] == "WhitespaceTokenizer", "Condition must be true"
+    assert summary["synthetic_responses"], "Response must not be empty"
 
 
 def test_invalid_inputs_raise_helpful_errors():

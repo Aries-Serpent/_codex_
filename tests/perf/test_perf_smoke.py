@@ -17,5 +17,5 @@ def test_perf_smoke_loop():
         total += i
     elapsed = time.perf_counter() - start
     # Basic sanity threshold: loop should finish quickly on modern CPUs
-    assert elapsed < 1.0
-    assert total > 0
+    assert elapsed < 1.0, "elapsed is not valid"
+    assert total > 0, "total must be greater than zero"

@@ -119,48 +119,48 @@ class TestAudioProcessorInitialization:
         """✅ PATTERN: Complete initialization assertions."""
         processor = CognitiveBrainAudioProcessor()
 
-        assert processor is not None
+        assert processor is not None, "processor must be initialized"
         assert isinstance(processor, CognitiveBrainAudioProcessor)
-        assert processor.sample_rate == 16000
-        assert processor.channels == 1
-        assert processor.processed_frames == 0
-        assert processor.total_duration_ms == 0
-        assert processor.buffer == []
+        assert processor.sample_rate == 16000, "sample_rate is not valid"
+        assert processor.channels == 1, "channels is not valid"
+        assert processor.processed_frames == 0, "processed_frames is not valid"
+        assert processor.total_duration_ms == 0, "total_duration_ms is not valid"
+        assert processor.buffer == [], "buffer is not valid"
         assert isinstance(processor.buffer, list)
-        assert processor.is_initialized is True
-        assert processor.max_buffer_size == 1000
+        assert processor.is_initialized is True, "is_initialized is not valid"
+        assert processor.max_buffer_size == 1000, "max_buffer_size is not valid"
 
     def test_processor_custom_initialization(self):
         """✅ PATTERN: Custom parameters with exact assertions."""
         processor = CognitiveBrainAudioProcessor(sample_rate=44100, channels=2)
 
-        assert processor.sample_rate == 44100
-        assert processor.channels == 2
-        assert processor.sample_rate > 0
-        assert processor.channels > 0
-        assert processor.sample_rate <= 192000
-        assert processor.channels <= 8
+        assert processor.sample_rate == 44100, "sample_rate is not valid"
+        assert processor.channels == 2, "channels is not valid"
+        assert processor.sample_rate > 0, "sample_rate must be greater than zero"
+        assert processor.channels > 0, "channels must be greater than zero"
+        assert processor.sample_rate <= 192000, "sample_rate is not valid"
+        assert processor.channels <= 8, "channels is not valid"
 
     def test_processor_sample_rate_boundary_minimum(self):
         """✅ PATTERN: Boundary - minimum sample rate."""
         processor = CognitiveBrainAudioProcessor(sample_rate=8000)
-        assert processor.sample_rate == 8000
-        assert processor.sample_rate >= 8000
-        assert processor.sample_rate > 0
+        assert processor.sample_rate == 8000, "sample_rate is not valid"
+        assert processor.sample_rate >= 8000, "sample_rate must be greater than zero"
+        assert processor.sample_rate > 0, "sample_rate must be greater than zero"
 
     def test_processor_sample_rate_boundary_maximum(self):
         """✅ PATTERN: Boundary - maximum sample rate."""
         processor = CognitiveBrainAudioProcessor(sample_rate=192000)
-        assert processor.sample_rate == 192000
-        assert processor.sample_rate <= 192000
+        assert processor.sample_rate == 192000, "sample_rate is not valid"
+        assert processor.sample_rate <= 192000, "sample_rate is not valid"
 
     def test_processor_channels_boundary(self):
         """✅ PATTERN: Boundary - channel count."""
         for channels in [1, 2, 4, 8]:
             processor = CognitiveBrainAudioProcessor(channels=channels)
-            assert processor.channels == channels
-            assert processor.channels >= 1
-            assert processor.channels <= 8
+            assert processor.channels == channels, "channels is not valid"
+            assert processor.channels >= 1, "channels must be greater than zero"
+            assert processor.channels <= 8, "channels is not valid"
 
 
 # ============================================================================
@@ -180,15 +180,15 @@ class TestFrameProcessing:
 
         result = processor.process_frame(frame)
 
-        assert result is not None
+        assert result is not None, "result must be initialized"
         assert isinstance(result, dict)
-        assert result["processed"] is True
-        assert result["frame_id"] == 1
-        assert result["total_duration"] == 20
-        assert result["buffer_size"] == 1
-        assert processor.processed_frames == 1
-        assert processor.total_duration_ms == 20
-        assert len(processor.buffer) == 1
+        assert result["processed"] is True, "Result must not be empty"
+        assert result["frame_id"] == 1, "Result must not be empty"
+        assert result["total_duration"] == 20, "Result must not be empty"
+        assert result["buffer_size"] == 1, "Result must not be empty"
+        assert processor.processed_frames == 1, "processed_frames is not valid"
+        assert processor.total_duration_ms == 20, "total_duration_ms is not valid"
+        assert len(processor.buffer) == 1, "Collection must not be empty"
 
     def test_process_multiple_frames(self):
         """✅ PATTERN: State tracking across multiple calls."""
@@ -198,10 +198,10 @@ class TestFrameProcessing:
             frame = AudioFrame(16000, 1, 20, 0.5, b"data")
             result = processor.process_frame(frame)
 
-            assert result["frame_id"] == i + 1
-            assert processor.processed_frames == i + 1
-            assert processor.total_duration_ms == (i + 1) * 20
-            assert len(processor.buffer) == i + 1
+            assert result["frame_id"] == i + 1, "Result must not be empty"
+            assert processor.processed_frames == i + 1, "processed_frames is not valid"
+            assert processor.total_duration_ms == (i + 1) * 20, "total_duration_ms is not valid"
+            assert len(processor.buffer) == i + 1, "Collection must not be empty"
 
     def test_process_frame_invalid_sample_rate(self):
         """✅ PATTERN: Edge case - invalid sample rate."""
@@ -211,8 +211,8 @@ class TestFrameProcessing:
         with pytest.raises(ValueError) as exc_info:
             processor.process_frame(frame)
 
-        assert "sample_rate" in str(exc_info.value).lower()
-        assert "positive" in str(exc_info.value).lower()
+        assert "sample_rate" in str(exc_info.value).lower(), "Value must be initialized"
+        assert "positive" in str(exc_info.value).lower(), "Value must be initialized"
 
     def test_process_frame_negative_sample_rate(self):
         """✅ PATTERN: Edge case - negative sample rate."""
@@ -230,7 +230,7 @@ class TestFrameProcessing:
         with pytest.raises(ValueError) as exc_info:
             processor.process_frame(frame)
 
-        assert "channels" in str(exc_info.value).lower()
+        assert "channels" in str(exc_info.value).lower(), "Value must be initialized"
 
     def test_process_frame_invalid_duration(self):
         """✅ PATTERN: Edge case - invalid duration."""
@@ -240,7 +240,7 @@ class TestFrameProcessing:
         with pytest.raises(ValueError) as exc_info:
             processor.process_frame(frame)
 
-        assert "duration" in str(exc_info.value).lower()
+        assert "duration" in str(exc_info.value).lower(), "Value must be initialized"
 
     def test_process_frame_invalid_amplitude_type(self):
         """✅ PATTERN: Edge case - invalid amplitude type."""
@@ -257,7 +257,7 @@ class TestFrameProcessing:
         with pytest.raises(TypeError) as exc_info:
             processor.process_frame({"sample_rate": 16000})
 
-        assert "AudioFrame" in str(exc_info.value)
+        assert "AudioFrame" in str(exc_info.value), "Value must be initialized"
 
     def test_process_frame_amplitude_zero(self):
         """✅ PATTERN: Boundary - zero amplitude."""
@@ -265,8 +265,8 @@ class TestFrameProcessing:
         frame = AudioFrame(16000, 1, 20, 0.0, b"data")
 
         result = processor.process_frame(frame)
-        assert result["processed"] is True
-        assert processor.processed_frames == 1
+        assert result["processed"] is True, "Result must not be empty"
+        assert processor.processed_frames == 1, "processed_frames is not valid"
 
     def test_process_frame_amplitude_maximum(self):
         """✅ PATTERN: Boundary - maximum amplitude."""
@@ -274,8 +274,8 @@ class TestFrameProcessing:
         frame = AudioFrame(16000, 1, 20, 1.0, b"data")
 
         result = processor.process_frame(frame)
-        assert result["processed"] is True
-        assert len(processor.buffer) == 1
+        assert result["processed"] is True, "Result must not be empty"
+        assert len(processor.buffer) == 1, "Collection must not be empty"
 
     def test_process_frame_duration_minimum(self):
         """✅ PATTERN: Boundary - minimum duration."""
@@ -283,7 +283,7 @@ class TestFrameProcessing:
         frame = AudioFrame(16000, 1, 1, 0.5, b"data")
 
         result = processor.process_frame(frame)
-        assert result["total_duration"] == 1
+        assert result["total_duration"] == 1, "Result must not be empty"
 
     def test_process_frame_duration_large(self):
         """✅ PATTERN: Boundary - large duration."""
@@ -291,7 +291,7 @@ class TestFrameProcessing:
         frame = AudioFrame(16000, 1, 3600000, 0.5, b"data")
 
         result = processor.process_frame(frame)
-        assert result["total_duration"] == 3600000
+        assert result["total_duration"] == 3600000, "Result must not be empty"
 
 
 # ============================================================================
@@ -308,9 +308,9 @@ class TestBufferManagement:
 
         percentage = processor.get_buffer_fill_percentage()
 
-        assert percentage == 0.0
-        assert percentage >= 0.0
-        assert percentage <= 100.0
+        assert percentage == 0.0, "percentage is not valid"
+        assert percentage >= 0.0, "percentage must be greater than zero"
+        assert percentage <= 100.0, "percentage is not valid"
 
     def test_buffer_fill_percentage_half(self):
         """✅ PATTERN: Percentage calculation - half full."""
@@ -320,9 +320,9 @@ class TestBufferManagement:
 
         percentage = processor.get_buffer_fill_percentage()
 
-        assert percentage == 50.0
-        assert percentage > 0.0
-        assert percentage < 100.0
+        assert percentage == 50.0, "percentage is not valid"
+        assert percentage > 0.0, "percentage must be greater than zero"
+        assert percentage < 100.0, "percentage is not valid"
 
     def test_buffer_fill_percentage_full(self):
         """✅ PATTERN: Percentage calculation - full."""
@@ -331,8 +331,8 @@ class TestBufferManagement:
 
         percentage = processor.get_buffer_fill_percentage()
 
-        assert percentage == 100.0
-        assert percentage <= 100.0
+        assert percentage == 100.0, "percentage is not valid"
+        assert percentage <= 100.0, "percentage is not valid"
 
     def test_buffer_clear_empty(self):
         """✅ PATTERN: Edge case - clear empty buffer."""
@@ -340,9 +340,9 @@ class TestBufferManagement:
 
         count = processor.clear_buffer()
 
-        assert count == 0
-        assert len(processor.buffer) == 0
-        assert processor.buffer == []
+        assert count == 0, "Count must be greater than zero"
+        assert len(processor.buffer) == 0, "Collection must not be empty"
+        assert processor.buffer == [], "buffer is not valid"
 
     def test_buffer_clear_with_frames(self):
         """✅ PATTERN: Clear with frames."""
@@ -352,9 +352,9 @@ class TestBufferManagement:
 
         count = processor.clear_buffer()
 
-        assert count == 5
-        assert len(processor.buffer) == 0
-        assert processor.buffer == []
+        assert count == 5, "Count must be greater than zero"
+        assert len(processor.buffer) == 0, "Collection must not be empty"
+        assert processor.buffer == [], "buffer is not valid"
 
     def test_buffer_clear_resets_list(self):
         """✅ PATTERN: Verify buffer is new instance."""
@@ -364,8 +364,8 @@ class TestBufferManagement:
 
         processor.clear_buffer()
 
-        assert processor.buffer is not original_buffer
-        assert processor.buffer == []
+        assert processor.buffer is not original_buffer, "buffer is not valid"
+        assert processor.buffer == [], "buffer is not valid"
 
 
 # ============================================================================
@@ -381,14 +381,14 @@ class TestAudioSessionManagement:
         analyzer = AudioAnalyzer()
         session = analyzer.create_session("session_001", max_duration_seconds=3600)
 
-        assert session is not None
+        assert session is not None, "session must be initialized"
         assert isinstance(session, dict)
-        assert session["id"] == "session_001"
-        assert session["max_duration"] == 3600
-        assert session["frames"] == 0
-        assert session["is_active"] is True
-        assert "session_001" in analyzer.sessions
-        assert analyzer.current_session_id == "session_001"
+        assert session["id"] == "session_001", "Condition must be true"
+        assert session["max_duration"] == 3600, "Condition must be true"
+        assert session["frames"] == 0, "Condition must be true"
+        assert session["is_active"] is True, "Condition must be true"
+        assert "session_001" in analyzer.sessions, "Condition must be true"
+        assert analyzer.current_session_id == "session_001", "current_session_id is not valid"
 
     def test_create_multiple_sessions(self):
         """✅ PATTERN: Multiple session creation."""
@@ -398,11 +398,11 @@ class TestAudioSessionManagement:
             session_id = f"session_{i:03d}"
             analyzer.create_session(session_id)
 
-        assert len(analyzer.sessions) == 3
-        assert "session_000" in analyzer.sessions
-        assert "session_001" in analyzer.sessions
-        assert "session_002" in analyzer.sessions
-        assert analyzer.current_session_id == "session_002"
+        assert len(analyzer.sessions) == 3, "Collection must not be empty"
+        assert "session_000" in analyzer.sessions, "Condition must be true"
+        assert "session_001" in analyzer.sessions, "Condition must be true"
+        assert "session_002" in analyzer.sessions, "Condition must be true"
+        assert analyzer.current_session_id == "session_002", "current_session_id is not valid"
 
     def test_create_session_empty_id_rejected(self):
         """✅ PATTERN: Edge case - empty session ID."""
@@ -411,8 +411,8 @@ class TestAudioSessionManagement:
         with pytest.raises(ValueError) as exc_info:
             analyzer.create_session("")
 
-        assert "empty" in str(exc_info.value).lower()
-        assert len(analyzer.sessions) == 0
+        assert "empty" in str(exc_info.value).lower(), "Value must be initialized"
+        assert len(analyzer.sessions) == 0, "Collection must not be empty"
 
     def test_create_session_invalid_duration_zero(self):
         """✅ PATTERN: Edge case - zero duration."""
@@ -421,7 +421,7 @@ class TestAudioSessionManagement:
         with pytest.raises(ValueError) as exc_info:
             analyzer.create_session("session_001", max_duration_seconds=0)
 
-        assert "positive" in str(exc_info.value).lower()
+        assert "positive" in str(exc_info.value).lower(), "Value must be initialized"
 
     def test_create_session_invalid_duration_negative(self):
         """✅ PATTERN: Edge case - negative duration."""
@@ -437,7 +437,7 @@ class TestAudioSessionManagement:
         with pytest.raises(ValueError) as exc_info:
             analyzer.create_session("session_001", max_duration_seconds=86401)
 
-        assert "24" in str(exc_info.value) or "86400" in str(exc_info.value)
+        assert "24" in str(exc_info.value) or "86400" in str(exc_info.value), "Value must be initialized"
 
     def test_create_session_boundary_duration_maximum(self):
         """✅ PATTERN: Boundary - maximum allowed (24 hours)."""
@@ -445,8 +445,8 @@ class TestAudioSessionManagement:
 
         session = analyzer.create_session("session_001", max_duration_seconds=86400)
 
-        assert session["max_duration"] == 86400
-        assert session["max_duration"] <= 86400
+        assert session["max_duration"] == 86400, "Condition must be true"
+        assert session["max_duration"] <= 86400, "Condition must be true"
 
     def test_get_session_valid(self):
         """✅ PATTERN: Session retrieval."""
@@ -455,9 +455,9 @@ class TestAudioSessionManagement:
 
         session = analyzer.get_session("session_001")
 
-        assert session is not None
-        assert session["id"] == "session_001"
-        assert session["max_duration"] == 3600
+        assert session is not None, "session must be initialized"
+        assert session["id"] == "session_001", "Condition must be true"
+        assert session["max_duration"] == 3600, "Condition must be true"
 
     def test_get_session_nonexistent(self):
         """✅ PATTERN: Edge case - get nonexistent session."""
@@ -465,7 +465,7 @@ class TestAudioSessionManagement:
 
         session = analyzer.get_session("nonexistent")
 
-        assert session is None
+        assert session is None, "session is not valid"
 
     def test_get_session_invalid_type(self):
         """✅ PATTERN: Edge case - invalid session ID type."""
@@ -487,26 +487,26 @@ class TestOperatorMutationDefense:
         """✅ PATTERN: > operator verification."""
         processor = CognitiveBrainAudioProcessor(sample_rate=16000)
 
-        assert processor.sample_rate > 0
-        assert processor.sample_rate > 8000
-        assert not (processor.sample_rate > 16000)
+        assert processor.sample_rate > 0, "sample_rate must be greater than zero"
+        assert processor.sample_rate > 8000, "sample_rate must be greater than zero"
+        assert not (processor.sample_rate > 16000), "sample_rate must be greater than zero"
 
     def test_channels_equality_verification(self):
         """✅ PATTERN: == operator verification."""
         processor = CognitiveBrainAudioProcessor(channels=1)
 
-        assert processor.channels == 1
-        assert not (processor.channels == 2)
-        assert not (processor.channels == 0)
+        assert processor.channels == 1, "channels is not valid"
+        assert not (processor.channels == 2), "channels is not valid"
+        assert not (processor.channels == 0), "channels is not valid"
 
     def test_buffer_size_less_than_max(self):
         """✅ PATTERN: < operator verification."""
         processor = CognitiveBrainAudioProcessor()
         processor.buffer = [AudioFrame(16000, 1, 20, 0.5, b"data")] * 500
 
-        assert len(processor.buffer) < processor.max_buffer_size
-        assert len(processor.buffer) < 1001
-        assert not (len(processor.buffer) < 500)
+        assert len(processor.buffer) < processor.max_buffer_size, "Collection must not be empty"
+        assert len(processor.buffer) < 1001, "Collection must not be empty"
+        assert not (len(processor.buffer) < 500), "Collection must not be empty"
 
     def test_duration_accumulation_exact_values(self):
         """✅ PATTERN: Exact value assertion for accumulated values."""
@@ -517,15 +517,15 @@ class TestOperatorMutationDefense:
         frame3 = AudioFrame(16000, 1, 10, 0.5, b"data")
 
         processor.process_frame(frame1)
-        assert processor.total_duration_ms == 20
+        assert processor.total_duration_ms == 20, "total_duration_ms is not valid"
 
         processor.process_frame(frame2)
-        assert processor.total_duration_ms == 50
+        assert processor.total_duration_ms == 50, "total_duration_ms is not valid"
 
         processor.process_frame(frame3)
-        assert processor.total_duration_ms == 60
-        assert processor.total_duration_ms != 59
-        assert processor.total_duration_ms != 61
+        assert processor.total_duration_ms == 60, "total_duration_ms is not valid"
+        assert processor.total_duration_ms != 59, "total_duration_ms is not valid"
+        assert processor.total_duration_ms != 61, "total_duration_ms is not valid"
 
 
 if __name__ == "__main__":

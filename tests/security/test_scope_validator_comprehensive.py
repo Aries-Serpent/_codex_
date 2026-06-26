@@ -52,29 +52,29 @@ class TestTokenScope:
 
     def test_token_scope_read_repo(self):
         """Test READ_REPO scope."""
-        assert TokenScope.READ_REPO.value == TokenScope.READ_REPO
+        assert TokenScope.READ_REPO.value == TokenScope.READ_REPO, "Value must be initialized"
 
     def test_token_scope_write_repo(self):
         """Test WRITE_REPO scope."""
-        assert TokenScope.WRITE_REPO.value == TokenScope.WRITE_REPO
+        assert TokenScope.WRITE_REPO.value == TokenScope.WRITE_REPO, "Value must be initialized"
 
     def test_token_scope_admin_repo(self):
         """Test ADMIN_REPO scope."""
-        assert TokenScope.ADMIN_REPO.value == TokenScope.ADMIN_REPO
+        assert TokenScope.ADMIN_REPO.value == TokenScope.ADMIN_REPO, "Value must be initialized"
 
     def test_token_scope_delete_repo(self):
         """Test DELETE_REPO scope."""
-        assert TokenScope.DELETE_REPO.value == TokenScope.DELETE_REPO
+        assert TokenScope.DELETE_REPO.value == TokenScope.DELETE_REPO, "Value must be initialized"
 
     def test_token_scope_combination(self):
         """Test combining scopes."""
         combined = TokenScope.READ_REPO | TokenScope.WRITE_REPO
-        assert TokenScope.READ_REPO in combined
-        assert TokenScope.WRITE_REPO in combined
+        assert TokenScope.READ_REPO in combined, "Condition must be true"
+        assert TokenScope.WRITE_REPO in combined, "Condition must be true"
 
     def test_token_scope_none(self):
         """Test NONE scope."""
-        assert TokenScope.NONE.value == 0
+        assert TokenScope.NONE.value == 0, "Value must be initialized"
 
     def test_token_scope_all_repository_scopes(self):
         """Test all repository scopes exist."""
@@ -84,7 +84,7 @@ class TestTokenScope:
             TokenScope.ADMIN_REPO,
             TokenScope.DELETE_REPO,
         ]
-        assert len(scopes) == 4
+        assert len(scopes) == 4, "Scopes must not be empty"
 
     def test_token_scope_all_workflow_scopes(self):
         """Test all workflow scopes exist."""
@@ -93,7 +93,7 @@ class TestTokenScope:
             TokenScope.WRITE_WORKFLOW,
             TokenScope.ADMIN_WORKFLOW,
         ]
-        assert len(scopes) == 3
+        assert len(scopes) == 3, "Scopes must not be empty"
 
     def test_token_scope_all_issue_scopes(self):
         """Test all issue scopes exist."""
@@ -102,7 +102,7 @@ class TestTokenScope:
             TokenScope.WRITE_ISSUES,
             TokenScope.ADMIN_ISSUES,
         ]
-        assert len(scopes) == 3
+        assert len(scopes) == 3, "Scopes must not be empty"
 
     def test_token_scope_all_package_scopes(self):
         """Test all package scopes exist."""
@@ -111,7 +111,7 @@ class TestTokenScope:
             TokenScope.WRITE_PACKAGES,
             TokenScope.ADMIN_PACKAGES,
         ]
-        assert len(scopes) == 3
+        assert len(scopes) == 3, "Scopes must not be empty"
 
     def test_token_scope_all_org_scopes(self):
         """Test all org scopes exist."""
@@ -120,7 +120,7 @@ class TestTokenScope:
             TokenScope.WRITE_ORG,
             TokenScope.ADMIN_ORG,
         ]
-        assert len(scopes) == 3
+        assert len(scopes) == 3, "Scopes must not be empty"
 
     def test_token_scope_all_user_scopes(self):
         """Test all user scopes exist."""
@@ -128,7 +128,7 @@ class TestTokenScope:
             TokenScope.READ_USER,
             TokenScope.WRITE_USER,
         ]
-        assert len(scopes) == 2
+        assert len(scopes) == 2, "Scopes must not be empty"
 
     def test_token_scope_all_security_scopes(self):
         """Test all security scopes exist."""
@@ -137,7 +137,7 @@ class TestTokenScope:
             TokenScope.WRITE_SECURITY,
             TokenScope.ADMIN_SECURITY,
         ]
-        assert len(scopes) == 3
+        assert len(scopes) == 3, "Scopes must not be empty"
 
 
 # ============================================================================
@@ -150,7 +150,7 @@ class TestScopeValidator:
 
     def test_scope_validator_creation(self, scope_validator):
         """Test creating a scope validator."""
-        assert scope_validator is not None
+        assert scope_validator is not None, "scope_validator must be initialized"
 
     def test_validate_scope_has_required_scope(self, scope_validator, admin_token_scope):
         """Test validating token with required scope."""
@@ -186,25 +186,25 @@ class TestScopeValidator:
         write_scope = TokenScope.WRITE_REPO
         # Write should imply read in some contexts
         result = scope_validator.check_scope(write_scope, TokenScope.WRITE_REPO)
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_check_scope_has_scope(self, scope_validator):
         """Test checking if token has scope."""
         token_scope = TokenScope.READ_REPO | TokenScope.WRITE_REPO
         result = scope_validator.check_scope(token_scope, TokenScope.READ_REPO)
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_check_scope_missing_scope(self, scope_validator):
         """Test checking for missing scope."""
         token_scope = TokenScope.READ_REPO
         result = scope_validator.check_scope(token_scope, TokenScope.WRITE_REPO)
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_check_scope_empty_token_scope(self, scope_validator):
         """Test checking scope on token with no scopes."""
         token_scope = TokenScope.NONE
         result = scope_validator.check_scope(token_scope, TokenScope.READ_REPO)
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_get_implied_scopes(self, scope_validator):
         """Test getting implied scopes."""
@@ -214,20 +214,20 @@ class TestScopeValidator:
 
     def test_is_admin_scope(self, scope_validator):
         """Test checking if scope is admin."""
-        assert scope_validator.is_admin_scope(TokenScope.ADMIN_REPO) is True
-        assert scope_validator.is_admin_scope(TokenScope.READ_REPO) is False
+        assert scope_validator.is_admin_scope(TokenScope.ADMIN_REPO) is True, "scope_validat is not valid"
+        assert scope_validator.is_admin_scope(TokenScope.READ_REPO) is False, "scope_validat is not valid"
 
     def test_get_scope_category(self, scope_validator):
         """Test getting scope category."""
         category = scope_validator.get_scope_category(TokenScope.READ_REPO)
-        assert "repo" in category.lower() or category is not None
+        assert "repo" in category.lower() or category is not None, "category must be initialized"
 
     def test_scope_string_representation(self, scope_validator):
         """Test scope string representation."""
         scope = TokenScope.READ_REPO
         scope_str = scope_validator.scope_to_string(scope)
         assert isinstance(scope_str, str)
-        assert len(scope_str) > 0
+        assert len(scope_str) > 0, "Scope_str must not be empty"
 
     def test_parse_scope_string(self, scope_validator):
         """Test parsing scope from string."""
@@ -264,12 +264,12 @@ class TestScopeErrors:
     def test_insufficient_scope_error_message(self):
         """Test InsufficientScopeError message."""
         error = InsufficientScopeError("Missing write:repo")
-        assert "Missing write:repo" in str(error)
+        assert "Missing write:repo" in str(error), "Error should be raised or set"
 
     def test_invalid_scope_error_message(self):
         """Test InvalidScopeError message."""
         error = InvalidScopeError("Invalid scope format")
-        assert "Invalid scope format" in str(error)
+        assert "Invalid scope format" in str(error), "Error should be raised or set"
 
     def test_insufficient_scope_error_inheritance(self):
         """Test InsufficientScopeError inherits from ScopeError."""
@@ -316,7 +316,7 @@ class TestHierarchicalScopes:
         read_scope = TokenScope.READ_REPO
         # Read should not have write capabilities
         result = scope_validator.check_scope(read_scope, TokenScope.WRITE_REPO)
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_hierarchy_repo_scopes(self, scope_validator):
         """Test hierarchy of repo scopes."""
@@ -353,15 +353,15 @@ class TestScopeCombinations:
     def test_combine_repo_and_workflow_scopes(self):
         """Test combining repo and workflow scopes."""
         combined = TokenScope.READ_REPO | TokenScope.WRITE_WORKFLOW
-        assert TokenScope.READ_REPO in combined
-        assert TokenScope.WRITE_WORKFLOW in combined
+        assert TokenScope.READ_REPO in combined, "Condition must be true"
+        assert TokenScope.WRITE_WORKFLOW in combined, "Condition must be true"
 
     def test_combine_multiple_scopes(self):
         """Test combining multiple scopes."""
         scopes = TokenScope.READ_REPO | TokenScope.WRITE_ISSUES | TokenScope.ADMIN_WORKFLOW
-        assert TokenScope.READ_REPO in scopes
-        assert TokenScope.WRITE_ISSUES in scopes
-        assert TokenScope.ADMIN_WORKFLOW in scopes
+        assert TokenScope.READ_REPO in scopes, "Condition must be true"
+        assert TokenScope.WRITE_ISSUES in scopes, "Condition must be true"
+        assert TokenScope.ADMIN_WORKFLOW in scopes, "Condition must be true"
 
     def test_scope_intersection(self, scope_validator):
         """Test scope intersection."""
@@ -370,7 +370,7 @@ class TestScopeCombinations:
 
         # Both should have WRITE_REPO
         result = scope_validator.check_scope(scope1, TokenScope.WRITE_REPO)
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_scope_union(self, scope_validator):
         """Test scope union."""
@@ -378,8 +378,8 @@ class TestScopeCombinations:
         scope2 = TokenScope.WRITE_REPO
         union = scope1 | scope2
 
-        assert TokenScope.READ_REPO in union
-        assert TokenScope.WRITE_REPO in union
+        assert TokenScope.READ_REPO in union, "Condition must be true"
+        assert TokenScope.WRITE_REPO in union, "Condition must be true"
 
     def test_scope_difference(self, scope_validator):
         """Test scope difference."""
@@ -423,7 +423,7 @@ def test_scope_category_parametrized(scope_validator, scope, category):
 def test_scope_validation_parametrized(scope_validator, token_scope, required, should_pass):
     """Parametrized test for scope validation."""
     result = scope_validator.check_scope(token_scope, required)
-    assert result == should_pass
+    assert result == should_pass, "Result must not be empty"
 
 
 # ============================================================================
@@ -444,7 +444,7 @@ class TestEdgeCases:
     def test_check_scope_with_zero_scope(self, scope_validator):
         """Test checking zero scope."""
         result = scope_validator.check_scope(0, TokenScope.READ_REPO)
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_scope_validator_with_no_scopes(self, scope_validator):
         """Test validator with empty scopes."""

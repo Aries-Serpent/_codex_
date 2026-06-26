@@ -29,17 +29,17 @@ def test_config_validate_reports_success(tmp_path: Path):
             "report.md",
         ]
     )
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
 
     json_out = tmp_path / "report.json"
     md_out = tmp_path / "report.md"
-    assert json_out.exists()
-    assert md_out.exists()
+    assert json_out.exists(), "Condition must be true"
+    assert md_out.exists(), "Condition must be true"
 
     data = json.loads(json_out.read_text(encoding="utf-8"))
-    assert data["total_files"] == 1
-    assert data["num_failed"] == 0
-    assert data["num_ok"] == 1
+    assert data["total_files"] == 1, "Data must not be empty"
+    assert data["num_failed"] == 0, "Data must not be empty"
+    assert data["num_ok"] == 1, "Data must not be empty"
 
 
 def test_config_validate_reports_failure(tmp_path: Path):
@@ -58,9 +58,9 @@ def test_config_validate_reports_failure(tmp_path: Path):
             "report.md",
         ]
     )
-    assert rc == 1
+    assert rc == 1, "rc is not valid"
 
     json_out = tmp_path / "report.json"
     data = json.loads(json_out.read_text(encoding="utf-8"))
-    assert data["num_failed"] == 1
-    assert "Config validation error" in data["files"][0]["error"]
+    assert data["num_failed"] == 1, "Data must not be empty"
+    assert "Config validation error" in data["files"][0]["error"], "Data must not be empty"

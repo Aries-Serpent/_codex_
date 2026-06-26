@@ -40,13 +40,13 @@ class TestPhysicsOrchestratorInit:
     def test_orchestrator_basic_init(self):
         """Test basic initialization."""
         orch = PhysicsInspiredOrchestrator()
-        assert orch is not None
+        assert orch is not None, "orch must be initialized"
 
     def test_energy_landscape_init(self):
         """Test EnergyLandscape initialization (Table Eq #11)."""
         try:
             landscape = EnergyLandscape()
-            assert landscape is not None
+            assert landscape is not None, "landscape must be initialized"
         except TypeError:
             # May require parameters
             pytest.skip("EnergyLandscape requires parameters")
@@ -55,7 +55,7 @@ class TestPhysicsOrchestratorInit:
         """Test DiffusionFlowModel initialization (Table Eq #11)."""
         try:
             model = DiffusionFlowModel()
-            assert model is not None
+            assert model is not None, "model must be initialized"
         except TypeError:
             pytest.skip("DiffusionFlowModel requires parameters")
 
@@ -65,17 +65,17 @@ class TestActionTypeEnum:
 
     def test_action_type_enum_exists(self):
         """Verify ActionType enum."""
-        assert ActionType is not None
+        assert ActionType is not None, "ActionType must be initialized"
 
     def test_action_type_has_members(self):
         """Check ActionType has enum members."""
         members = list(ActionType)
-        assert len(members) > 0
+        assert len(members) > 0, "Members must not be empty"
 
     def test_action_type_iterate_all(self):
         """Iterate all ActionType values."""
         for action in ActionType:
-            assert action.value is not None
+            assert action.value is not None, "value must be initialized"
             assert isinstance(action.value, str)
 
 
@@ -86,7 +86,7 @@ class TestVectorTypes:
         """Test ForceVector initialization."""
         try:
             vec = ForceVector(x=1.0, y=2.0, z=3.0)
-            assert vec is not None
+            assert vec is not None, "vec must be initialized"
         except TypeError:
             # Try different constructor
             pytest.skip("ForceVector constructor signature differs")
@@ -95,7 +95,7 @@ class TestVectorTypes:
         """Test FlowVector initialization."""
         try:
             vec = FlowVector(position=(1.0, 2.0), velocity=(0.0, 0.0), gradient=(0.0, 0.0))
-            assert vec is not None
+            assert vec is not None, "vec must be initialized"
         except (TypeError, NameError):
             pytest.skip("FlowVector constructor differs")
 
@@ -107,50 +107,50 @@ class TestAdvancedPhysicsInit:
         """Test ChaoticAttractor initialization."""
         try:
             attractor = ChaoticAttractor(attractor_type="logistic")
-            assert attractor is not None
+            assert attractor is not None, "attractor must be initialized"
         except TypeError:
             pytest.skip("ChaoticAttractor requires different parameters")
 
     def test_fractal_analyzer_init(self):
         """Test FractalAnalyzer initialization."""
         analyzer = FractalAnalyzer()
-        assert analyzer is not None
+        assert analyzer is not None, "analyzer must be initialized"
 
     def test_fluid_channel_init(self):
         """Test FluidChannel initialization."""
         try:
             channel = FluidChannel(length=10.0, viscosity=0.001)
-            assert channel is not None
+            assert channel is not None, "channel must be initialized"
         except TypeError:
             pytest.skip("FluidChannel requires different parameters")
 
     def test_fluid_flow_scheduler_init(self):
         """Test FluidFlowScheduler initialization."""
         scheduler = FluidFlowScheduler()
-        assert scheduler is not None
+        assert scheduler is not None, "scheduler must be initialized"
 
     def test_em_field_router_init(self):
         """Test EMFieldRouter initialization."""
         router = EMFieldRouter()
-        assert router is not None
+        assert router is not None, "router must be initialized"
 
     def test_wave_propagator_init(self):
         """Test WavePropagator initialization."""
         try:
             propagator = WavePropagator(grid_size=10)
-            assert propagator is not None
+            assert propagator is not None, "propagator must be initialized"
         except TypeError:
             pytest.skip("WavePropagator requires different parameters")
 
     def test_relativity_scheduler_init(self):
         """Test RelativityScheduler initialization."""
         scheduler = RelativityScheduler()
-        assert scheduler is not None
+        assert scheduler is not None, "scheduler must be initialized"
 
     def test_advanced_orchestrator_init(self):
         """Test AdvancedPhysicsOrchestrator initialization."""
         orch = AdvancedPhysicsOrchestrator()
-        assert orch is not None
+        assert orch is not None, "orch must be initialized"
 
 
 class TestFluidChannelProperties:
@@ -167,7 +167,7 @@ class TestFluidChannelProperties:
                     if callable(channel.reynolds_number)
                     else channel.reynolds_number
                 )
-                assert re is not None
+                assert re is not None, "re must be initialized"
         except (TypeError, AttributeError):
             pytest.skip("FluidChannel API differs")
 
@@ -209,7 +209,7 @@ class TestRelativitySchedulerProperties:
         if hasattr(scheduler, "lorentz_factor"):
             try:
                 gamma = scheduler.lorentz_factor(velocity=0.5)
-                assert gamma > 0
+                assert gamma > 0, "gamma must be greater than zero"
             except TypeError:
                 pytest.skip("lorentz_factor requires different parameters")
 
@@ -222,7 +222,7 @@ class TestAdvancedOrchestratorMethods:
         orch = AdvancedPhysicsOrchestrator()
         if hasattr(orch, "get_status"):
             status = orch.get_status()
-            assert status is not None
+            assert status is not None, "status must be initialized"
 
 
 class TestChaoticAttractorMethods:
@@ -310,6 +310,6 @@ class TestFractalAnalyzerMethods:
 
                 data = np.array([[0, 0], [1, 1]])
                 dim = analyzer.box_counting_dimension(data)
-                assert dim is not None
+                assert dim is not None, "dim must be initialized"
             except (TypeError, ImportError):
                 pytest.skip("box_counting_dimension requires numpy")

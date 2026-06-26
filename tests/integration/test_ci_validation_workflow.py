@@ -48,8 +48,8 @@ class TestCIWorkflowIntegration:
 
         # Validate success
         assert result.returncode == 0, f"Script failed: {result.stderr}"
-        assert "✅ All Cargo.toml feature validations passed!" in result.stdout
-        assert "NameError" not in result.stderr
+        assert "✅ All Cargo.toml feature validations passed!" in result.stdout, "Result must not be empty"
+        assert "NameError" not in result.stderr, "Result must not be empty"
         # Ensure there are no json-related error messages in stderr
         if "json" in result.stderr.lower():
             assert "json.dumps" not in result.stderr, "json.dumps should not appear in error output"
@@ -65,7 +65,7 @@ class TestCIWorkflowIntegration:
         )
 
         # Valid Cargo.toml should return exit code 0
-        assert result.returncode == 0
+        assert result.returncode == 0, "Result must not be empty"
 
     def test_ci_script_no_import_errors(self) -> None:
         """Test that script has no import errors."""
@@ -82,8 +82,8 @@ class TestCIWorkflowIntegration:
         )
 
         assert result.returncode == 0, f"Import error: {result.stderr}"
-        assert "NameError" not in result.stderr
-        assert "ModuleNotFoundError" not in result.stderr or "tomli" in result.stderr
+        assert "NameError" not in result.stderr, "Result must not be empty"
+        assert "ModuleNotFoundError" not in result.stderr or "tomli" in result.stderr, "Result must not be empty"
 
     def test_ci_script_json_dumps_works(self) -> None:
         """
@@ -103,7 +103,7 @@ assert hasattr(vcf, 'json'), "json module not imported"
 
 # Verify json.dumps works (this was the failing line)
 result = vcf.json.dumps({{'test': ['value1', 'value2']}})
-assert 'test' in result
+assert 'test' in result, "Result must not be empty"
 print("✅ json.dumps works correctly")
 """
         result = subprocess.run(
@@ -114,7 +114,7 @@ print("✅ json.dumps works correctly")
         )
 
         assert result.returncode == 0, f"json.dumps test failed: {result.stderr}"
-        assert "✅ json.dumps works correctly" in result.stdout
+        assert "✅ json.dumps works correctly" in result.stdout, "Result must not be empty"
 
     def test_ci_script_with_invalid_cargo_toml(self, tmp_path: Path) -> None:
         """Test script correctly detects invalid Cargo.toml."""
@@ -147,7 +147,7 @@ sys.exit(0 if not is_valid else 1)  # Expect invalid (is_valid=False)
         )
 
         assert result.returncode == 0, f"Should detect invalid Cargo.toml: {result.stdout}"
-        assert "is_valid: False" in result.stdout
+        assert "is_valid: False" in result.stdout, "Result must not be empty"
 
     def test_ci_script_environment_variables(self) -> None:
         """Test script works with various CI environment variables."""
@@ -207,15 +207,15 @@ class TestRustSwarmCIWorkflow:
         )
 
         # Check expected output elements
-        assert "Validating Cargo.toml" in result.stdout
-        assert "Location:" in result.stdout
+        assert "Validating Cargo.toml" in result.stdout, "Result must not be empty"
+        assert "Location:" in result.stdout, "Result must not be empty"
 
         if result.returncode == 0:
-            assert "✅" in result.stdout
-            assert "Validated:" in result.stdout
-            assert "[features] section exists" in result.stdout
-            assert "'python' feature declared" in result.stdout
-            assert "'extension-module' feature declared" in result.stdout
+            assert "✅" in result.stdout, "Result must not be empty"
+            assert "Validated:" in result.stdout, "Result must not be empty"
+            assert "[features] section exists" in result.stdout, "Result must not be empty"
+            assert "'python' feature declared" in result.stdout, "Result must not be empty"
+            assert "'extension-module' feature declared" in result.stdout, "Result must not be empty"
 
 
 if __name__ == "__main__":

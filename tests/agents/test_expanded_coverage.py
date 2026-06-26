@@ -14,16 +14,16 @@ class TestMentalMappingExpanded:
         """Test NodeType enum."""
         from agents.mental_mapping import NodeType
 
-        assert NodeType.OBSERVATION is not None
-        assert NodeType.REASONING is not None
-        assert NodeType.DECISION is not None
+        assert NodeType.OBSERVATION is not None, "OBSERVATION must be initialized"
+        assert NodeType.REASONING is not None, "REASONING must be initialized"
+        assert NodeType.DECISION is not None, "DECISION must be initialized"
 
     def test_edge_type_enum(self):
         """Test EdgeType enum."""
         from agents.mental_mapping import EdgeType
 
-        assert EdgeType.CAUSES is not None
-        assert EdgeType.SUPPORTS is not None
+        assert EdgeType.CAUSES is not None, "CAUSES must be initialized"
+        assert EdgeType.SUPPORTS is not None, "SUPPORTS must be initialized"
 
     def test_mental_node_creation(self):
         """Test MentalNode can be created."""
@@ -38,9 +38,9 @@ class TestMentalMappingExpanded:
             timestamp=datetime.now(timezone.utc).isoformat(),
         )
 
-        assert node.node_id == "test-1"
-        assert node.node_type == NodeType.OBSERVATION
-        assert node.content == "Test observation"
+        assert node.node_id == "test-1", "node_id is not valid"
+        assert node.node_type == NodeType.OBSERVATION, "node_type is not valid"
+        assert node.content == "Test observation", "Content must not be empty"
 
     def test_mental_edge_creation(self):
         """Test MentalEdge can be created."""
@@ -54,10 +54,10 @@ class TestMentalMappingExpanded:
             weight=0.8,
         )
 
-        assert edge.source_id == "node1"
-        assert edge.target_id == "node2"
-        assert edge.edge_type == EdgeType.CAUSES
-        assert edge.weight == 0.8
+        assert edge.source_id == "node1", "source_id is not valid"
+        assert edge.target_id == "node2", "target_id is not valid"
+        assert edge.edge_type == EdgeType.CAUSES, "edge_type is not valid"
+        assert edge.weight == 0.8, "weight is not valid"
 
     def test_mental_mapping_model_init(self):
         """Test MentalMappingModel initialization."""
@@ -65,7 +65,7 @@ class TestMentalMappingExpanded:
 
         model = MentalMappingModel()
 
-        assert model is not None
+        assert model is not None, "model must be initialized"
         assert hasattr(model, "nodes")
         assert hasattr(model, "edges")
 
@@ -85,8 +85,8 @@ class TestMentalMappingExpanded:
 
         model.add_node(node)
 
-        assert "test-node" in model.nodes
-        assert model.nodes["test-node"] == node
+        assert "test-node" in model.nodes, "Condition must be true"
+        assert model.nodes["test-node"] == node, "Condition must be true"
 
 
 class TestQuantumGameTheoryExpanded:
@@ -105,7 +105,7 @@ class TestQuantumGameTheoryExpanded:
             # PayoffOperator requires payoff_matrix
             payoff_matrix = np.array([[1.0, 0.5], [0.5, 1.0]])
             operator = PayoffOperator(payoff_matrix=payoff_matrix)
-            assert operator.payoff_matrix is not None
+            assert operator.payoff_matrix is not None, "payoff_matrix must be initialized"
             assert operator.payoff_matrix.shape == (2, 2)
         except (ImportError, AttributeError) as e:
             pytest.skip(f"PayoffOperator requires numpy: {e}")
@@ -119,7 +119,7 @@ class TestQuantumGameTheoryExpanded:
                 blue_state=StrategyState(team="blue", strategies=["defend"]),
                 red_state=StrategyState(team="red", strategies=["attack"]),
             )
-            assert state is not None
+            assert state is not None, "state must be initialized"
         except (ImportError, AttributeError, TypeError):
             pytest.skip("QuantumGameState requires numpy")
 
@@ -146,7 +146,7 @@ class TestQuantumGameTheoryExpanded:
                 payoff_red=payoff_red,
             )
 
-            assert engine is not None
+            assert engine is not None, "engine must be initialized"
             assert hasattr(engine, "compute_nash_equilibrium") or hasattr(engine, "calculate")
         except (ImportError, AttributeError, TypeError) as e:
             pytest.skip(f"ClassicalGameEngine initialization failed: {e}")
@@ -159,8 +159,8 @@ class TestSelfHealingExpanded:
         """Test IssueType enum."""
         from agents.self_healing import IssueType
 
-        assert IssueType.BUILD_FAILURE is not None
-        assert IssueType.TEST_FAILURE is not None
+        assert IssueType.BUILD_FAILURE is not None, "BUILD_FAILURE must be initialized"
+        assert IssueType.TEST_FAILURE is not None, "TEST_FAILURE must be initialized"
 
     def test_remediation_action_creation(self):
         """Test RemediationAction can be created."""
@@ -173,9 +173,9 @@ class TestSelfHealingExpanded:
             commands=["Step 1", "Step 2"],
         )
 
-        assert action.action_id == "fix-1"
-        assert action.description == "Fix the build"
-        assert len(action.commands) == 2
+        assert action.action_id == "fix-1", "action_id is not valid"
+        assert action.description == "Fix the build", "description is not valid"
+        assert len(action.commands) == 2, "Collection must not be empty"
 
     def test_self_healing_engine_init(self):
         """Test SelfHealingEngine initialization."""
@@ -183,7 +183,7 @@ class TestSelfHealingExpanded:
 
         engine = SelfHealingEngine()
 
-        assert engine is not None
+        assert engine is not None, "engine must be initialized"
         assert hasattr(engine, "detect_issues") or hasattr(engine, "diagnose")
 
     def test_diagnostic_result_creation(self):
@@ -192,9 +192,9 @@ class TestSelfHealingExpanded:
 
         result = DiagnosticResult(health_score=0.9)
 
-        assert result.health_score == 0.9
-        assert result.issues == []
-        assert result.suggested_actions == []
+        assert result.health_score == 0.9, "Result must not be empty"
+        assert result.issues == [], "Result must not be empty"
+        assert result.suggested_actions == [], "Result must not be empty"
 
 
 class TestAgentMemoryExpanded:
@@ -204,14 +204,14 @@ class TestAgentMemoryExpanded:
         """Test agent_memory module import."""
         from agents import agent_memory
 
-        assert agent_memory is not None
+        assert agent_memory is not None, "agent_memory must be initialized"
 
     def test_has_classes(self):
         """Test agent_memory has expected classes."""
         try:
             from agents.agent_memory import AgentMemory
 
-            assert AgentMemory is not None
+            assert AgentMemory is not None, "AgentMemory must be initialized"
         except (ImportError, AttributeError):
             # May use different class names
             _ = None  # suppressed: no action needed
@@ -226,18 +226,18 @@ class TestAdvancedPhysicsCalculatorsExpanded:
 
         # Test henon type
         attractor = ChaoticAttractor(attractor_type="henon")
-        assert attractor.attractor_type == "henon"
+        assert attractor.attractor_type == "henon", "attractor_type is not valid"
 
         # Test rossler type
         attractor2 = ChaoticAttractor(attractor_type="rossler")
-        assert attractor2.attractor_type == "rossler"
+        assert attractor2.attractor_type == "rossler", "attractor_type is not valid"
 
     def test_fractal_analyzer_initialization(self):
         """Test FractalAnalyzer can be initialized."""
         from agents.advanced_physics_calculators import FractalAnalyzer
 
         analyzer = FractalAnalyzer()
-        assert analyzer is not None
+        assert analyzer is not None, "analyzer must be initialized"
 
     def test_fluid_channel_creation(self):
         """Test FluidChannel can be created."""
@@ -245,5 +245,5 @@ class TestAdvancedPhysicsCalculatorsExpanded:
 
         channel = FluidChannel(channel_id="pipe1", capacity=100.0)
 
-        assert channel.channel_id == "pipe1"
-        assert channel.capacity == 100.0
+        assert channel.channel_id == "pipe1", "channel_id is not valid"
+        assert channel.capacity == 100.0, "capacity is not valid"

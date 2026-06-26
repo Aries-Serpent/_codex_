@@ -21,9 +21,9 @@ class TestTokenType:
 
     def test_token_types(self):
         """Test token type enum values."""
-        assert TokenType.ACCESS.value == "access"
-        assert TokenType.REFRESH.value == "refresh"
-        assert TokenType.SESSION.value == "session"
+        assert TokenType.ACCESS.value == "access", "Value must be initialized"
+        assert TokenType.REFRESH.value == "refresh", "Value must be initialized"
+        assert TokenType.SESSION.value == "session", "Value must be initialized"
 
 
 class TestTokenClaims:
@@ -40,10 +40,10 @@ class TestTokenClaims:
             jti="token123",
         )
 
-        assert claims.sub == "user123"
-        assert claims.type == TokenType.ACCESS
-        assert claims.scope == "repo user"
-        assert claims.jti == "token123"
+        assert claims.sub == "user123", "sub is not valid"
+        assert claims.type == TokenType.ACCESS, "type is not valid"
+        assert claims.scope == "repo user", "scope is not valid"
+        assert claims.jti == "token123", "jti is not valid"
 
     def test_claims_to_dict(self):
         """Test converting claims to dictionary."""
@@ -57,9 +57,9 @@ class TestTokenClaims:
 
         data = claims.to_dict()
 
-        assert data["sub"] == "user123"
-        assert data["type"] == "access"
-        assert data["iat"] == now
+        assert data["sub"] == "user123", "Data must not be empty"
+        assert data["type"] == "access", "Data must not be empty"
+        assert data["iat"] == now, "Data must not be empty"
 
     def test_claims_from_dict(self):
         """Test creating claims from dictionary."""
@@ -77,9 +77,9 @@ class TestTokenClaims:
 
         claims = TokenClaims.from_dict(data)
 
-        assert claims.sub == "user123"
-        assert claims.type == TokenType.ACCESS
-        assert claims.scope == "repo"
+        assert claims.sub == "user123", "sub is not valid"
+        assert claims.type == TokenType.ACCESS, "type is not valid"
+        assert claims.scope == "repo", "scope is not valid"
 
 
 class TestSessionInfo:
@@ -98,9 +98,9 @@ class TestSessionInfo:
             mfa_verified=True,
         )
 
-        assert session.session_id == "session123"
-        assert session.user_id == "user123"
-        assert session.mfa_verified is True
+        assert session.session_id == "session123", "session_id is not valid"
+        assert session.user_id == "user123", "user_id is not valid"
+        assert session.mfa_verified is True, "mfa_verified is not valid"
 
     def test_session_is_active(self):
         """Test session activity check."""
@@ -112,7 +112,7 @@ class TestSessionInfo:
             last_activity=now,
         )
 
-        assert session.is_active() is True
+        assert session.is_active() is True, "Condition must be true"
 
     def test_session_is_inactive(self):
         """Test inactive session detection."""
@@ -124,7 +124,7 @@ class TestSessionInfo:
             last_activity=now - 2000,  # 33+ minutes ago
         )
 
-        assert session.is_active(timeout=1800) is False
+        assert session.is_active(timeout=1800) is False, "Condition must be true"
 
     def test_session_update_activity(self):
         """Test updating session activity."""
@@ -140,7 +140,7 @@ class TestSessionInfo:
         time.sleep(0.1)
         session.update_activity()
 
-        assert session.last_activity > old_activity
+        assert session.last_activity > old_activity, "last_activity must be greater than zero"
 
 
 class TestTokenManager:
@@ -150,34 +150,34 @@ class TestTokenManager:
         """Test token manager initialization."""
         manager = TokenManager()
 
-        assert manager is not None
-        assert manager._secret_key is not None
-        assert manager._revoked_tokens == set()
-        assert manager._sessions == {}
+        assert manager is not None, "manager must be initialized"
+        assert manager._secret_key is not None, "_secret_key must be initialized"
+        assert manager._revoked_tokens == set(), "_revoked_tokens is not valid"
+        assert manager._sessions == {}, "_sessions is not valid"
 
     def test_initialization_with_secret(self):
         """Test token manager initialization with provided secret."""
         secret = "test_secret_key_123"  # pragma: allowlist secret
         manager = TokenManager(secret_key=secret)
 
-        assert manager._secret_key == secret
+        assert manager._secret_key == secret, "_secret_key is not valid"
 
     def test_generate_access_token(self):
         """Test access token generation."""
         manager = TokenManager()
         token = manager.generate_access_token("user123", scope="repo")
 
-        assert token is not None
-        assert len(token) > 0
-        assert token.count(".") == 2  # JWT format: header.payload.signature
+        assert token is not None, "token must be initialized"
+        assert len(token) > 0, "Token must not be empty"
+        assert token.count(".") == 2, "Count must be greater than zero"
 
     def test_generate_refresh_token(self):
         """Test refresh token generation."""
         manager = TokenManager()
         token = manager.generate_refresh_token("user123")
 
-        assert token is not None
-        assert len(token) > 0
+        assert token is not None, "token must be initialized"
+        assert len(token) > 0, "Token must not be empty"
 
     def test_generate_session_token(self):
         """Test session token generation."""
@@ -186,14 +186,14 @@ class TestTokenManager:
             "user123", mfa_verified=True, ip_address="192.168.1.1", user_agent="Mozilla/5.0"
         )
 
-        assert token is not None
-        assert session_id is not None
-        assert session_id in manager._sessions
+        assert token is not None, "token must be initialized"
+        assert session_id is not None, "session_id must be initialized"
+        assert session_id in manager._sessions, "Condition must be true"
 
         session = manager._sessions[session_id]
-        assert session.user_id == "user123"
-        assert session.mfa_verified is True
-        assert session.ip_address == "192.168.1.1"
+        assert session.user_id == "user123", "user_id is not valid"
+        assert session.mfa_verified is True, "mfa_verified is not valid"
+        assert session.ip_address == "192.168.1.1", "ip_address is not valid"
 
     def test_validate_token_valid(self):
         """Test validating a valid token."""
@@ -202,8 +202,8 @@ class TestTokenManager:
 
         claims = manager.validate_token(token)
 
-        assert claims.sub == "user123"
-        assert claims.type == TokenType.ACCESS
+        assert claims.sub == "user123", "sub is not valid"
+        assert claims.type == TokenType.ACCESS, "type is not valid"
 
     def test_validate_token_expired(self):
         """Test validating an expired token."""
@@ -249,10 +249,10 @@ class TestTokenManager:
 
         new_access_token = manager.refresh_access_token(refresh_token)
 
-        assert new_access_token is not None
+        assert new_access_token is not None, "new_access_token must be initialized"
         claims = manager.validate_token(new_access_token)
-        assert claims.sub == "user123"
-        assert claims.type == TokenType.ACCESS
+        assert claims.sub == "user123", "sub is not valid"
+        assert claims.type == TokenType.ACCESS, "type is not valid"
 
     def test_refresh_access_token_invalid(self):
         """Test refreshing with invalid refresh token."""
@@ -270,7 +270,7 @@ class TestTokenManager:
 
         result = manager.revoke_token(token)
 
-        assert result is True
+        assert result is True, "Result must not be empty"
 
         # Token should now be invalid
         with pytest.raises(ValueError, match="Token revoked"):
@@ -282,13 +282,13 @@ class TestTokenManager:
         token, session_id = manager.generate_session_token("user123")
 
         # Session should exist
-        assert session_id in manager._sessions
+        assert session_id in manager._sessions, "Condition must be true"
 
         # Revoke token
         result = manager.revoke_token(token)
 
-        assert result is True
-        assert session_id not in manager._sessions
+        assert result is True, "Result must not be empty"
+        assert session_id not in manager._sessions, "Condition must be true"
 
     def test_revoke_all_user_tokens(self):
         """Test revoking all tokens for a user."""
@@ -303,9 +303,9 @@ class TestTokenManager:
         # Revoke all tokens for user123
         count = manager.revoke_all_user_tokens(user_id)
 
-        assert count == 2
+        assert count == 2, "Count must be greater than zero"
         # Different user's session should remain
-        assert len([s for s in manager._sessions.values() if s.user_id == "user456"]) == 1
+        assert len([s for s in manager._sessions.values() if s.user_id == "user456"]) == 1, "User_id must not be empty"
 
     def test_get_session(self):
         """Test getting session information."""
@@ -314,10 +314,10 @@ class TestTokenManager:
 
         session = manager.get_session(session_id)
 
-        assert session is not None
-        assert session.session_id == session_id
-        assert session.user_id == "user123"
-        assert session.mfa_verified is True
+        assert session is not None, "session must be initialized"
+        assert session.session_id == session_id, "session_id is not valid"
+        assert session.user_id == "user123", "user_id is not valid"
+        assert session.mfa_verified is True, "mfa_verified is not valid"
 
     def test_get_session_not_found(self):
         """Test getting non-existent session."""
@@ -325,7 +325,7 @@ class TestTokenManager:
 
         session = manager.get_session("nonexistent")
 
-        assert session is None
+        assert session is None, "session is not valid"
 
     def test_get_user_sessions(self):
         """Test getting all sessions for a user."""
@@ -339,8 +339,8 @@ class TestTokenManager:
 
         sessions = manager.get_user_sessions(user_id)
 
-        assert len(sessions) == 2
-        assert all(s.user_id == user_id for s in sessions)
+        assert len(sessions) == 2, "Sessions must not be empty"
+        assert all(s.user_id == user_id for s in sessions), "user_id is not valid"
 
     def test_cleanup_expired_sessions(self):
         """Test cleaning up expired sessions."""
@@ -362,9 +362,9 @@ class TestTokenManager:
         # Clean up
         count = manager.cleanup_expired_sessions()
 
-        assert count == 1
-        assert session1 in manager._sessions
-        assert "expired_session" not in manager._sessions
+        assert count == 1, "Count must be greater than zero"
+        assert session1 in manager._sessions, "Condition must be true"
+        assert "expired_session" not in manager._sessions, "Condition must be true"
 
     def test_session_activity_update(self):
         """Test session activity is updated on token validation."""
@@ -380,7 +380,7 @@ class TestTokenManager:
         manager.validate_token(token)
 
         session = manager.get_session(session_id)
-        assert session.last_activity > original_activity
+        assert session.last_activity > original_activity, "last_activity must be greater than zero"
 
 
 class TestTokenManagerIntegration:
@@ -397,12 +397,12 @@ class TestTokenManagerIntegration:
 
         # Step 2: Validate access token
         claims = manager.validate_token(access_token, TokenType.ACCESS)
-        assert claims.sub == user_id
+        assert claims.sub == user_id, "sub is not valid"
 
         # Step 3: Refresh access token
         new_access_token = manager.refresh_access_token(refresh_token)
         new_claims = manager.validate_token(new_access_token, TokenType.ACCESS)
-        assert new_claims.sub == user_id
+        assert new_claims.sub == user_id, "sub is not valid"
 
         # Step 4: Revoke tokens
         manager.revoke_token(access_token)
@@ -421,20 +421,20 @@ class TestTokenManagerIntegration:
 
         # Verify session exists
         session = manager.get_session(session_id)
-        assert session is not None
-        assert session.mfa_verified is True
+        assert session is not None, "session must be initialized"
+        assert session.mfa_verified is True, "mfa_verified is not valid"
 
         # Validate token updates activity
         claims = manager.validate_token(session_token)
-        assert claims.sub == user_id
+        assert claims.sub == user_id, "sub is not valid"
 
         # Get all user sessions
         sessions = manager.get_user_sessions(user_id)
-        assert len(sessions) == 1
+        assert len(sessions) == 1, "Sessions must not be empty"
 
         # Revoke session
         manager.revoke_token(session_token)
-        assert manager.get_session(session_id) is None
+        assert manager.get_session(session_id) is None, "Condition must be true"
 
     def test_multi_user_token_isolation(self):
         """Test token isolation between users."""
@@ -448,8 +448,8 @@ class TestTokenManagerIntegration:
         claims1 = manager.validate_token(user1_token)
         claims2 = manager.validate_token(user2_token)
 
-        assert claims1.sub == "user1"
-        assert claims2.sub == "user2"
+        assert claims1.sub == "user1", "sub is not valid"
+        assert claims2.sub == "user2", "sub is not valid"
 
         # Revoke user1 tokens
         manager.revoke_token(user1_token)
@@ -460,7 +460,7 @@ class TestTokenManagerIntegration:
 
         # User2 token should still be valid
         claims2_again = manager.validate_token(user2_token)
-        assert claims2_again.sub == "user2"
+        assert claims2_again.sub == "user2", "sub is not valid"
 
 
 if __name__ == "__main__":

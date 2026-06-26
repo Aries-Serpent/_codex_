@@ -50,22 +50,22 @@ class TestPerplexity:
 
     def test_zero_loss(self) -> None:
         # exp(0) = 1
-        assert perplexity(0.0) == 1.0
+        assert perplexity(0.0) == 1.0, "Condition must be true"
 
     def test_positive_loss(self) -> None:
         # exp(1) ≈ 2.718
         result = perplexity(1.0)
-        assert abs(result - math.e) < 1e-6
+        assert abs(result - math.e) < 1e-6, "Result must not be empty"
 
     def test_large_loss(self) -> None:
         # exp(2) ≈ 7.389
         result = perplexity(2.0)
-        assert abs(result - math.exp(2)) < 1e-6
+        assert abs(result - math.exp(2)) < 1e-6, "Result must not be empty"
 
     def test_negative_loss(self) -> None:
         # exp(-1) ≈ 0.368
         result = perplexity(-1.0)
-        assert abs(result - math.exp(-1)) < 1e-6
+        assert abs(result - math.exp(-1)) < 1e-6, "Result must not be empty"
 
 
 class TestPrecision:
@@ -98,7 +98,7 @@ class TestPrecision:
         preds = [2, 3, 0, 0]
         labels = [1, 0, 0, 0]
         result = precision(preds, labels)
-        assert result == 0.5  # 1 true positive, 2 predicted positive
+        assert result == 0.5, "Result must not be empty"
 
 
 class TestRecall:
@@ -130,7 +130,7 @@ class TestRecall:
         preds = [2, 0, 0, 0]
         labels = [1, 1, 0, 0]
         result = recall(preds, labels)
-        assert result == 0.5
+        assert result == 0.5, "Result must not be empty"
 
 
 class TestF1Score:
@@ -157,7 +157,7 @@ class TestF1Score:
         # Precision = 1/2, Recall = 1/2
         # F1 = 2 * 0.5 * 0.5 / 1.0 = 0.5
         result = f1_score(preds, labels)
-        assert abs(result - 0.5) < 1e-6
+        assert abs(result - 0.5) < 1e-6, "Result must not be empty"
 
     def test_f1_formula(self) -> None:
         # Test that F1 = 2 * P * R / (P + R)
@@ -167,7 +167,7 @@ class TestF1Score:
         # Precision = 2/3, Recall = 1.0
         # F1 = 2 * (2/3) * 1.0 / (2/3 + 1.0) = (4/3) / (5/3) = 4/5 = 0.8
         result = f1_score(preds, labels)
-        assert abs(result - 0.8) < 1e-6
+        assert abs(result - 0.8) < 1e-6, "Result must not be empty"
 
 
 class TestEdgeCases:
@@ -179,7 +179,7 @@ class TestEdgeCases:
         labels = [1, 0]
         # Should compute on the shorter length
         result = accuracy(preds, labels)
-        assert result == 1.0
+        assert result == 1.0, "Result must not be empty"
 
     def test_large_inputs(self) -> None:
         preds = [1] * 1000 + [0] * 1000
@@ -191,4 +191,4 @@ class TestEdgeCases:
 
         expected_exports = ["accuracy", "perplexity", "precision", "recall", "f1_score"]
         for name in expected_exports:
-            assert name in metrics_base.__all__
+            assert name in metrics_base.__all__, "Condition must be true"

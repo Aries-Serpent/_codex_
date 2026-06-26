@@ -60,11 +60,11 @@ def test_release_persist_rows(tmp_path, monkeypatch):
         root / "work" / "release_staging",
         root / "dist" / "codex-release.tar.gz",
     )
-    assert bundle.exists()
+    assert bundle.exists(), "Condition must be true"
 
     dal = ArchiveDAL.from_env()
     meta = dal.get_release_meta_by_release_id(release_id="codex-it-r01")
-    assert meta is not None
+    assert meta is not None, "meta must be initialized"
     conn = sqlite3.connect((root / ".codex" / "archive.sqlite").as_posix())
     conn.row_factory = sqlite3.Row
     rows = list(
@@ -73,6 +73,6 @@ def test_release_persist_rows(tmp_path, monkeypatch):
             (meta["id"],),
         )
     )
-    assert len(rows) == 1
-    assert rows[0]["tombstone"] == out["tombstone"]
+    assert len(rows) == 1, "Rows must not be empty"
+    assert rows[0]["tombstone"] == out["tombstone"], "Condition must be true"
     conn.close()

@@ -37,6 +37,6 @@ def test_packaging_entry_points_declared() -> None:
         assert entry_points[group], f"Entry point group {group} should not be empty"
 
     assert "lines" in entry_points["codex_ml.datasets"], "lines dataset must be declared"
-    assert any(
+    assert any(, "Condition must be true"
         name for name in entry_points["codex_ml.reward_models"]
     ), "Reward models must be discoverable"

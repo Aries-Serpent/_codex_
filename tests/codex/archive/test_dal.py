@@ -15,6 +15,7 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
+
  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
 class TestCursorRowToDict:
@@ -62,7 +63,7 @@ class TestCursorRowToDict:
         result = _cursor_row_to_dict(mock_cursor, row)
 
         # Should return empty dict when no description
-        assert result == {}
+        assert result == {}, "Result must not be empty"
 
     def test_cursor_row_to_dict_missing_col_info(self):
         """Test cursor row conversion with missing column info."""
@@ -77,7 +78,7 @@ class TestCursorRowToDict:
         result = _cursor_row_to_dict(mock_cursor, row)
 
         # Should use string representation as fallback
-        assert "123" in list(result.values())
+        assert "123" in list(result.values()), "Result must not be empty"
 
 
 class TestDecodeJsonField:
@@ -97,14 +98,14 @@ class TestDecodeJsonField:
         from codex.archive.dal import _decode_json_field
 
         result = _decode_json_field(None)
-        assert result == {}
+        assert result == {}, "Result must not be empty"
 
     def test_decode_json_field_empty_dict(self):
         """Test decoding empty JSON object."""
         from codex.archive.dal import _decode_json_field
 
         result = _decode_json_field("{}")
-        assert result == {}
+        assert result == {}, "Result must not be empty"
 
     def test_decode_json_field_memoryview(self):
         """Test decoding from memoryview."""
@@ -114,7 +115,7 @@ class TestDecodeJsonField:
         mv = memoryview(json_bytes)
         result = _decode_json_field(mv)
 
-        assert result == {"key": "value"}
+        assert result == {"key": "value"}, "Result must not be empty"
 
     def test_decode_json_field_bytearray(self):
         """Test decoding from bytearray."""
@@ -123,7 +124,7 @@ class TestDecodeJsonField:
         json_bytes = bytearray(b'{"key": "value"}')
         result = _decode_json_field(json_bytes)
 
-        assert result == {"key": "value"}
+        assert result == {"key": "value"}, "Result must not be empty"
 
     def test_decode_json_field_invalid_json(self):
         """Test decoding invalid JSON returns empty dict."""
@@ -147,7 +148,7 @@ class TestMaybeBytes:
         from codex.archive.dal import _maybe_bytes
 
         result = _maybe_bytes(None)
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_maybe_bytes_bytes(self):
         """Test _maybe_bytes with bytes."""
@@ -155,7 +156,7 @@ class TestMaybeBytes:
 
         data = b"test data"
         result = _maybe_bytes(data)
-        assert result == data
+        assert result == data, "Result must not be empty"
 
     def test_maybe_bytes_memoryview(self):
         """Test _maybe_bytes with memoryview."""
@@ -164,7 +165,7 @@ class TestMaybeBytes:
         data = b"test data"
         mv = memoryview(data)
         result = _maybe_bytes(mv)
-        assert result == data
+        assert result == data, "Result must not be empty"
 
     def test_maybe_bytes_bytearray(self):
         """Test _maybe_bytes with bytearray."""
@@ -172,7 +173,7 @@ class TestMaybeBytes:
 
         data = bytearray(b"test data")
         result = _maybe_bytes(data)
-        assert result == bytes(data)
+        assert result == bytes(data), "Result must not be empty"
 
 
 class TestArtifactRow:
@@ -193,10 +194,10 @@ class TestArtifactRow:
             object_url="s3://bucket/key",
         )
 
-        assert row.id == "art-001"
-        assert row.content_sha256 == "abc123"
-        assert row.size_bytes == 1024
-        assert row.compression == "zlib"
+        assert row.id == "art-001", "id is not valid"
+        assert row.content_sha256 == "abc123", "Content must not be empty"
+        assert row.size_bytes == 1024, "size_bytes is not valid"
+        assert row.compression == "zlib", "compression is not valid"
 
     def test_artifact_row_none_blob(self):
         """Test ArtifactRow with None blob."""
@@ -213,8 +214,8 @@ class TestArtifactRow:
             object_url=None,
         )
 
-        assert row.blob_bytes is None
-        assert row.object_url is None
+        assert row.blob_bytes is None, "blob_bytes is not valid"
+        assert row.object_url is None, "Object must be initialized"
 
 
 class TestItemRow:
@@ -238,10 +239,10 @@ class TestItemRow:
             tombstone_id="tomb-001",
         )
 
-        assert row.id == "item-001"
-        assert row.repo == "owner/repo"
-        assert row.path == "src/main.py"
-        assert row.metadata == metadata
+        assert row.id == "item-001", "Item must not be empty"
+        assert row.repo == "owner/repo", "repo is not valid"
+        assert row.path == "src/main.py", "path is not valid"
+        assert row.metadata == metadata, "Data must not be empty"
 
     def test_item_row_fields(self):
         """Test ItemRow contains all required fields."""
@@ -363,7 +364,7 @@ class TestBaseDALValidateIdentifier:
         from codex.archive.dal import BaseDAL
 
         result = BaseDAL.validate_identifier("repo", ["repo", "path", "sha"])
-        assert result == "repo"
+        assert result == "repo", "Result must not be empty"
 
     def test_validate_identifier_not_allowed(self):
         """Test validate_identifier with disallowed identifier."""
@@ -399,7 +400,7 @@ class TestSqliteDALBasics:
             url = f"sqlite:///{db_path}"
 
             dal = SqliteDAL.from_url(url)
-            assert dal is not None
+            assert dal is not None, "dal must be initialized"
             assert hasattr(dal, "conn") or hasattr(dal, "db_root")
 
     def test_sqlite_dal_from_url_default(self):
@@ -407,7 +408,7 @@ class TestSqliteDALBasics:
         from codex.archive.dal import SqliteDAL
 
         dal = SqliteDAL.from_url("sqlite://:memory:")
-        assert dal is not None
+        assert dal is not None, "dal must be initialized"
 
     def test_sqlite_dal_txn_context_manager(self):
         """Test SqliteDAL transaction context manager."""
@@ -435,9 +436,9 @@ class TestSqliteDALBasics:
             cur = dal.conn.execute("SELECT name FROM sqlite_master WHERE type='table'")
             tables = [row[0] for row in cur.fetchall()]
 
-            assert "artifact" in tables
-            assert "item" in tables
-            assert "event" in tables
+            assert "artifact" in tables, "Condition must be true"
+            assert "item" in tables, "Item must not be empty"
+            assert "event" in tables, "Condition must be true"
 
     def test_sqlite_dal_summary_empty(self):
         """Test SqliteDAL.summary on empty database."""
@@ -477,9 +478,9 @@ class TestSqliteDALInsertOperations:
                 object_url=None,
             )
 
-            assert "id" in result
-            assert result["content_sha256"] == "test_sha_123"
-            assert result["size_bytes"] == 1024
+            assert "id" in result, "Result must not be empty"
+            assert result["content_sha256"] == "test_sha_123", "Result must not be empty"
+            assert result["size_bytes"] == 1024, "Result must not be empty"
 
     def test_sqlite_dal_insert_item(self):
         """Test SqliteDAL.insert_item stores item."""
@@ -515,9 +516,9 @@ class TestSqliteDALInsertOperations:
                 archived_by="test_user",
             )
 
-            assert "id" in result
-            assert "tombstone_id" in result
-            assert result["tombstone_id"] == "tomb_001"
+            assert "id" in result, "Result must not be empty"
+            assert "tombstone_id" in result, "Result must not be empty"
+            assert result["tombstone_id"] == "tomb_001", "Result must not be empty"
 
     def test_sqlite_dal_insert_event(self):
         """Test SqliteDAL.insert_event stores event."""
@@ -563,7 +564,7 @@ class TestSqliteDALInsertOperations:
             # Verify event was stored
             cur = dal.conn.execute("SELECT COUNT(*) FROM event")
             count = cur.fetchone()[0]
-            assert count == 1
+            assert count == 1, "Count must be greater than zero"
 
 
 class TestSqliteDALFetchOperations:
@@ -606,10 +607,10 @@ class TestSqliteDALFetchOperations:
             # Fetch by tombstone
             item_row, artifact_row = dal.fetch_by_tombstone("tomb_xyz_123")
 
-            assert item_row.id == item_result["id"]
-            assert item_row.repo == "owner/repo"
-            assert item_row.tombstone_id == "tomb_xyz_123"
-            assert artifact_row.id == art_result["id"]
+            assert item_row.id == item_result["id"], "Result must not be empty"
+            assert item_row.repo == "owner/repo", "Item must not be empty"
+            assert item_row.tombstone_id == "tomb_xyz_123", "Item must not be empty"
+            assert artifact_row.id == art_result["id"], "Result must not be empty"
 
     def test_sqlite_dal_fetch_by_tombstone_not_found(self):
         """Test fetch_by_tombstone raises KeyError for missing tombstone."""
@@ -660,4 +661,4 @@ class TestSqliteDALFetchOperations:
 
             # Get recent items
             recent = dal.recent_items(limit=2)
-            assert len(recent) == 2
+            assert len(recent) == 2, "Recent must not be empty"

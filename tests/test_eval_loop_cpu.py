@@ -68,10 +68,10 @@ def test_evaluate_accumulates_cpu_metrics() -> None:
     )
 
     assert set(metrics) == {"eval_loss", "loss", "perplexity", "token_accuracy"}
-    assert 0.0 <= metrics["token_accuracy"] <= 1.0
+    assert 0.0 <= metrics["token_accuracy"] <= 1.0, "0 is not valid"
     assert metrics["perplexity"] == pytest.approx(math.exp(metrics["loss"]), rel=1e-3)
     assert metrics["eval_loss"] == pytest.approx(metrics["loss"], rel=1e-6)
-    assert model.training is True
+    assert model.training is True, "training is not valid"
 
 
 @pytest.mark.cpu
@@ -89,9 +89,9 @@ def test_evaluate_handles_none_loss_gracefully() -> None:
 
     # Metrics from the shim still propagate even if the explicit loss_fn returns None.
     assert set(metrics) == {"loss", "perplexity", "token_accuracy"}
-    assert 0.0 <= metrics["token_accuracy"] <= 1.0
+    assert 0.0 <= metrics["token_accuracy"] <= 1.0, "0 is not valid"
     assert metrics["perplexity"] == pytest.approx(math.exp(metrics["loss"]), rel=1e-3)
-    assert model.training is True
+    assert model.training is True, "training is not valid"
 
 
 @pytest.mark.cpu
@@ -109,11 +109,11 @@ def test_evaluate_writes_ndjson(tmp_path) -> None:
         ndjson_path=log_path,
     )
 
-    assert log_path.exists()
+    assert log_path.exists(), "Condition must be true"
     payloads = [json.loads(line) for line in log_path.read_text(encoding="utf-8").splitlines()]
-    assert len(payloads) == 1
+    assert len(payloads) == 1, "Payloads must not be empty"
     record = payloads[0]
-    assert record["batches"] == 1
+    assert record["batches"] == 1, "rec is not valid"
     for key, value in metrics.items():
-        assert key in record
-        assert record[key] == pytest.approx(value)
+        assert key in record, "Condition must be true"
+        assert record[key] == pytest.approx(value), "Value must be initialized"

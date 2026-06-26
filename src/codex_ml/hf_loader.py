@@ -271,8 +271,8 @@ def load_causal_lm(
         )
     except TypeError as e:
         error_type = type(e).__name__
-        logger.debug(f"TypeError: <ERROR_TYPE>")
-        logger.warning(f"TypeError: <ERROR_TYPE>", exc_info=True)
+        logger.debug("TypeError: <ERROR_TYPE>")
+        logger.warning("TypeError: <ERROR_TYPE>", exc_info=True)
         # Older versions of transformers do not support the ``torch_dtype`` kwarg.
         loader_kwargs.pop("torch_dtype", None)
         model = AutoModelForCausalLM.from_pretrained(

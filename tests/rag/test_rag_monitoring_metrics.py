@@ -33,7 +33,7 @@ class TestPerformanceMetrics:
                 # Should be able to retrieve metrics
                 if hasattr(metrics, "get_query_latency"):
                     recorded = metrics.get_query_latency(query_id)
-                    assert recorded == latency_ms or recorded is not None
+                    assert recorded == latency_ms or recorded is not None, "recorded must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("Monitoring module not available")
 
@@ -53,7 +53,7 @@ class TestPerformanceMetrics:
 
                 # Calculate throughput
                 throughput = doc_count / (duration_ms / 1000.0)  # docs per second
-                assert throughput > 0
+                assert throughput > 0, "throughput must be greater than zero"
         except (ImportError, AttributeError):
             pytest.skip("Monitoring module not available")
 
@@ -75,7 +75,7 @@ class TestPerformanceMetrics:
                     metrics.record_index_operation(op_name, duration)
 
                     # Should be recorded
-                    assert True
+                    assert True, "True is not valid"
         except (ImportError, AttributeError):
             pytest.skip("Monitoring module not available")
 
@@ -101,7 +101,7 @@ class TestMetricsAggregation:
                 if hasattr(metrics, "get_average_latency"):
                     avg = metrics.get_average_latency()
                     expected_avg = sum(latencies) / len(latencies)
-                    assert abs(avg - expected_avg) < 1.0 or avg > 0
+                    assert abs(avg - expected_avg) < 1.0 or avg > 0, "avg must be greater than zero"
         except (ImportError, AttributeError):
             pytest.skip("Monitoring module not available")
 
@@ -126,7 +126,7 @@ class TestMetricsAggregation:
                     metrics.get_latency_percentile(99)
 
                     # p95 should be higher than p50
-                    assert p95 >= p50 or (p95 is not None and p50 is not None)
+                    assert p95 >= p50 or (p95 is not None and p50 is not None), "p95 must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("Monitoring module not available")
 
@@ -143,12 +143,12 @@ class TestMetricsAggregation:
                 for i in range(100):
                     metrics.record_query_latency(f"query_{i}", 50)
                 elapsed = time.time() - start_time
-                assert elapsed >= 0
+                assert elapsed >= 0, "elapsed must be greater than zero"
 
                 # Calculate throughput
                 if hasattr(metrics, "get_throughput"):
                     throughput = metrics.get_throughput()
-                    assert throughput > 0  # queries per second
+                    assert throughput > 0, "throughput must be greater than zero"
         except (ImportError, AttributeError):
             pytest.skip("Monitoring module not available")
 
@@ -167,7 +167,7 @@ class TestIndexHealthMonitoring:
             if hasattr(health, "get_index_size"):
                 size = health.get_index_size()
                 assert isinstance(size, (int, float))
-                assert size >= 0
+                assert size >= 0, "size must be greater than zero"
         except (ImportError, AttributeError):
             pytest.skip("Monitoring module not available")
 
@@ -182,7 +182,7 @@ class TestIndexHealthMonitoring:
             if hasattr(health, "get_document_count"):
                 count = health.get_document_count()
                 assert isinstance(count, int)
-                assert count >= 0
+                assert count >= 0, "count must be positive"
         except (ImportError, AttributeError):
             pytest.skip("Monitoring module not available")
 
@@ -198,7 +198,7 @@ class TestIndexHealthMonitoring:
                 score = health.get_fragmentation_score()
                 # Should be between 0 and 1 (or 0-100)
                 assert isinstance(score, (int, float))
-                assert 0 <= score <= 100 or 0 <= score <= 1
+                assert 0 <= score <= 100 or 0 <= score <= 1, "0 is not valid"
         except (ImportError, AttributeError):
             pytest.skip("Monitoring module not available")
 
@@ -213,9 +213,9 @@ class TestIndexHealthMonitoring:
             if hasattr(health, "check_health"):
                 status = health.check_health()
                 # Should return status dict or boolean
-                assert status is not None
+                assert status is not None, "status must be initialized"
                 if isinstance(status, dict):
-                    assert "healthy" in status or "status" in status
+                    assert "healthy" in status or "status" in status, "Condition must be true"
         except (ImportError, AttributeError):
             pytest.skip("Monitoring module not available")
 
@@ -240,7 +240,7 @@ class TestErrorTracking:
                 # Should be logged
                 if hasattr(tracker, "get_error_count"):
                     count = tracker.get_error_count(error_type)
-                    assert count >= 1 or count is not None
+                    assert count >= 1 or count is not None, "count must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("Monitoring module not available")
 
@@ -262,7 +262,7 @@ class TestErrorTracking:
                 if hasattr(tracker, "get_error_rate"):
                     rate = tracker.get_error_rate()
                     # Should be around 10%
-                    assert 0.05 <= rate <= 0.15 or rate is not None
+                    assert 0.05 <= rate <= 0.15 or rate is not None, "05 must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("Monitoring module not available")
 
@@ -350,7 +350,7 @@ class TestMetricsExport:
                 # Should be string in Prometheus format
                 assert isinstance(prom_data, str)
                 # Should contain metric lines
-                assert len(prom_data) > 0 or prom_data == ""
+                assert len(prom_data) > 0 or prom_data == "", "Prom_data must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("Monitoring module not available")
 
@@ -378,7 +378,7 @@ class TestRealTimeMonitoring:
                 if hasattr(metrics, "stop_streaming"):
                     metrics.stop_streaming()
 
-                assert True
+                assert True, "True is not valid"
         except (ImportError, AttributeError):
             pytest.skip("Monitoring module not available")
 
@@ -402,7 +402,7 @@ class TestRealTimeMonitoring:
                     metrics.record_query_latency("query_1", 100)
 
                 # Callback should have been called
-                assert True  # was: 'len(callback_called) > 0' or True (always true); intent: optional env check
+                assert True, "True is not valid"
         except (ImportError, AttributeError):
             pytest.skip("Monitoring module not available")
 
@@ -477,7 +477,7 @@ class TestMetricsIntegration:
             if hasattr(metrics, "record_embedding_time"):
                 metrics.record_embedding_time(len(texts), duration)
 
-            assert embeddings is not None
+            assert embeddings is not None, "embeddings must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("Modules not available")
 
@@ -502,7 +502,7 @@ class TestMetricsIntegration:
                 metrics.record_query_latency("test_query", duration)
 
             # Results may be None if no index
-            assert results is not None or results is None
+            assert results is not None or results is None, "results must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("Modules not available")
 

@@ -86,5 +86,5 @@ def test_run_clean_checkpoint(tmp_path: Path) -> None:
 
     success, docs_out = validate.run_clean_checkpoint(csv_file)
 
-    assert success is True
-    assert docs_out.exists()
+    assert success is True, "success is not valid"
+    assert docs_out.exists(), "Condition must be true"

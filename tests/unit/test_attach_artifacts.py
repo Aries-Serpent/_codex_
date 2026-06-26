@@ -18,6 +18,6 @@ def test_log_dict_safe(tmp_path: Path, monkeypatch) -> None:
 
     artifact_path = tmp_path / "artifact.json"
     log_dict_safe({"a": 1}, artifact_path=str(artifact_path))
-    assert artifact_path.exists()
+    assert artifact_path.exists(), "Condition must be true"
     payload = json.loads(artifact_path.read_text())
-    assert payload["a"] == 1
+    assert payload["a"] == 1, "Condition must be true"

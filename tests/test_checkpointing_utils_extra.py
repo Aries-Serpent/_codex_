@@ -27,7 +27,7 @@ def test_save_and_resume_with_pickle(tmp_path, monkeypatch):
     mgr = ckpt.CheckpointManager(tmp_path)
     mgr.save(1, model=m)
     out = mgr.resume_from(tmp_path / "epoch-1")
-    assert out["meta"]["epoch"] == 1
+    assert out["meta"]["epoch"] == 1, "Condition must be true"
 
 
 def test_resume_missing_path_raises(tmp_path):

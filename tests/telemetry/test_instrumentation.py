@@ -29,4 +29,4 @@ def test_track_time_records_histogram():
     count_after = _get_histogram_count(REQUEST_LATENCY)
 
     if REQUEST_LATENCY:
-        assert count_after == count_before + 1
+        assert count_after == count_before + 1, "Count must be greater than zero"

@@ -15,7 +15,7 @@ import tempfile
 from pathlib import Path
 from unittest.mock import MagicMock
 
-import pytest # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+import pytest  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
 try:
     import torch
@@ -43,14 +43,14 @@ class TestTrainLoopEntryPoints:
 
         # Can't instantiate without all required fields, but can mock
         runtime = MagicMock(spec=ReasoningRuntime)
-        assert runtime is not None
+        assert runtime is not None, "runtime must be initialized"
 
     def test_train_config_validation(self):
         """Test training configuration validation."""
         from codex_ml.train_loop import ReasoningConfig
 
         config = ReasoningConfig(enabled=False)
-        assert config.enabled is False
+        assert config.enabled is False, "enabled is not valid"
 
     def test_training_dataset_setup(self):
         """Test training dataset can be set up."""
@@ -63,7 +63,7 @@ class TestTrainLoopEntryPoints:
                 vocab_size=50257,
                 seed=42,
             )
-            assert len(dataset) == 100
+            assert len(dataset) == 100, "Dataset must not be empty"
 
     def test_demo_epoch_generation(self):
         """Test demo epoch can be generated."""
@@ -72,7 +72,7 @@ class TestTrainLoopEntryPoints:
         epoch_result = demo_epoch(epoch=1, grad_accum=1)
 
         assert isinstance(epoch_result, dict)
-        assert "epoch" in epoch_result or len(epoch_result) > 0
+        assert "epoch" in epoch_result or len(epoch_result) > 0, "Epoch_result must not be empty"
 
     def test_record_metrics_entry_point(self):
         """Test metrics recording entry point."""
@@ -85,7 +85,7 @@ class TestTrainLoopEntryPoints:
         }
 
         # Should process without error
-        assert len(metrics) > 0
+        assert len(metrics) > 0, "Metrics must not be empty"
 
 
 # ============================================================================
@@ -111,11 +111,11 @@ class TestCheckpointLifecycle:
 
             # Should not raise
             save_checkpoint(state, ckpt_path)
-            assert ckpt_path.exists()
+            assert ckpt_path.exists(), "Condition must be true"
 
             # Load and verify
             loaded = load_checkpoint(ckpt_path, map_location="cpu")
-            assert loaded["epoch"] == 1
+            assert loaded["epoch"] == 1, "Condition must be true"
 
     def test_checkpoint_metadata_persistence(self):
         """Test checkpoint metadata is persisted."""
@@ -132,8 +132,8 @@ class TestCheckpointLifecycle:
             meta_file.write_text(json.dumps(metadata))
 
             loaded = json.loads(meta_file.read_text())
-            assert loaded["checkpoint_sha256"] == "abc123def456"
-            assert loaded["epoch"] == 5
+            assert loaded["checkpoint_sha256"] == "abc123def456", "Condition must be true"
+            assert loaded["epoch"] == 5, "Condition must be true"
 
     def test_checkpoint_resume_from_path(self):
         """Test resuming from checkpoint path."""
@@ -160,7 +160,7 @@ class TestCheckpointLifecycle:
             checkpoints = sorted(ckpt_dir.glob("checkpoint_*.json"))
             latest = checkpoints[-1]
 
-            assert latest.name == "checkpoint_3.json"
+            assert latest.name == "checkpoint_3.json", "name is not valid"
 
     def test_checkpoint_retention_policy(self):
         """Test checkpoint retention policy application."""
@@ -176,9 +176,9 @@ class TestCheckpointLifecycle:
             to_keep = all_ckpts[-2:]
             to_remove = all_ckpts[:-2]
 
-            assert len(to_keep) == 2
-            assert len(to_remove) == 3
-            assert to_keep[-1].name == "checkpoint_5.json"
+            assert len(to_keep) == 2, "To_keep must not be empty"
+            assert len(to_remove) == 3, "To_remove must not be empty"
+            assert to_keep[-1].name == "checkpoint_5.json", "name is not valid"
 
     def test_checkpoint_directory_structure(self):
         """Test checkpoint directory structure is created correctly."""
@@ -186,8 +186,8 @@ class TestCheckpointLifecycle:
             ckpt_dir = Path(tmpdir) / "training_artifacts" / "checkpoints"
             ckpt_dir.mkdir(parents=True, exist_ok=True)
 
-            assert ckpt_dir.exists()
-            assert ckpt_dir.parent.name == "training_artifacts"
+            assert ckpt_dir.exists(), "Condition must be true"
+            assert ckpt_dir.parent.name == "training_artifacts", "name is not valid"
 
 
 # ============================================================================
@@ -245,8 +245,8 @@ class TestCallbacksAndHooks:
 
         merged = merge_callback_results(base, addon)
 
-        assert merged["loss"] == 0.5
-        assert merged["f1"] == 0.92
+        assert merged["loss"] == 0.5, "Condition must be true"
+        assert merged["f1"] == 0.92, "Condition must be true"
 
     def test_evaluation_callback_integration(self):
         """Test evaluation callback integration."""
@@ -296,9 +296,9 @@ class TestTrainerConfiguration:
             save_steps=500,
         )
 
-        assert config.num_train_epochs == 3
-        assert config.per_device_train_batch_size == 8
-        assert config.learning_rate == 5e-5
+        assert config.num_train_epochs == 3, "num_train_epochs is not valid"
+        assert config.per_device_train_batch_size == 8, "per_device_train_batch_size is not valid"
+        assert config.learning_rate == 5e-5, "learning_rate is not valid"
 
     def test_build_trainer_args(self):
         """Test building training arguments."""
@@ -310,8 +310,8 @@ class TestTrainerConfiguration:
             per_device_train_batch_size=16,
         )
 
-        assert args.num_train_epochs == 1
-        assert args.per_device_train_batch_size == 16
+        assert args.num_train_epochs == 1, "num_train_epochs is not valid"
+        assert args.per_device_train_batch_size == 16, "per_device_train_batch_size is not valid"
 
     def test_load_training_arguments_from_config(self):
         """Test loading training arguments from config."""
@@ -327,7 +327,7 @@ per_device_train_batch_size: 8
 
             # Should load without error
             args = load_training_arguments(config_path)
-            assert args is not None
+            assert args is not None, "args must be initialized"
 
     def test_training_seed_setting(self):
         """Test seed setting for reproducibility."""
@@ -357,7 +357,7 @@ class TestTrainingLoopControl:
         from training.trainer import TrainingState
 
         state = TrainingState()
-        assert state is not None
+        assert state is not None, "state must be initialized"
 
     def test_training_state_attribute_access(self):
         """Test TrainingState attribute access."""
@@ -379,8 +379,8 @@ class TestTrainingLoopControl:
             save_steps=500,
         )
 
-        assert config.dir == "/tmp/checkpoints"
-        assert config.save_total_limit == 3
+        assert config.dir == "/tmp/checkpoints", "dir is not valid"
+        assert config.save_total_limit == 3, "save_total_limit is not valid"
 
     def test_trainer_initialization(self):
         """Test Trainer initialization."""
@@ -392,7 +392,7 @@ class TestTrainingLoopControl:
             args=MagicMock(),
         )
 
-        assert trainer is not None
+        assert trainer is not None, "trainer must be initialized"
 
     def test_epoch_loop_simulation(self):
         """Test simulated epoch loop execution."""
@@ -402,7 +402,7 @@ class TestTrainingLoopControl:
         for epoch in range(num_epochs):
             epochs_completed += 1
 
-        assert epochs_completed == num_epochs
+        assert epochs_completed == num_epochs, "epochs_completed is not valid"
 
     def test_batch_processing_simulation(self):
         """Test simulated batch processing."""
@@ -413,7 +413,7 @@ class TestTrainingLoopControl:
         for batch_idx in range(num_batches):
             total_items += batch_size
 
-        assert total_items == 32
+        assert total_items == 32, "Item must not be empty"
 
 
 # ============================================================================
@@ -431,7 +431,7 @@ class TestLossComputationAndGradients:
         # Simulate epoch loss computation
         avg_loss = sum(loss_values) / len(loss_values)
 
-        assert avg_loss == pytest.approx(0.425)
+        assert avg_loss == pytest.approx(0.425), "avg_loss is not valid"
 
     def test_gradient_accumulation_steps(self):
         """Test gradient accumulation configuration."""
@@ -439,7 +439,7 @@ class TestLossComputationAndGradients:
         batch_size = 8
         effective_batch = grad_accum_steps * batch_size
 
-        assert effective_batch == 32
+        assert effective_batch == 32, "effective_batch is not valid"
 
     def test_loss_backward_simulation(self):
         """Test loss backward pass simulation."""
@@ -459,8 +459,8 @@ class TestLossComputationAndGradients:
         # Backward pass would happen here
         optimizer.step()
 
-        assert optimizer.zero_grad.called
-        assert optimizer.step.called
+        assert optimizer.zero_grad.called, "Condition must be true"
+        assert optimizer.step.called, "Condition must be true"
 
     def test_learning_rate_scheduling(self):
         """Test learning rate scheduling."""
@@ -471,7 +471,7 @@ class TestLossComputationAndGradients:
         step = 500
         lr = initial_lr * (step / warmup_steps)
 
-        assert lr == pytest.approx(2.5e-5)
+        assert lr == pytest.approx(2.5e-5), "lr is not valid"
 
 
 # ============================================================================
@@ -494,7 +494,7 @@ class TestEvaluationDuringTraining:
             }
             eval_metrics.append(batch_result)
 
-        assert len(eval_metrics) == 4
+        assert len(eval_metrics) == 4, "Eval_metrics must not be empty"
 
     def test_eval_metrics_aggregation(self):
         """Test evaluation metrics aggregation."""
@@ -506,7 +506,7 @@ class TestEvaluationDuringTraining:
 
         avg_eval_loss = sum(r["eval_loss"] for r in eval_results) / len(eval_results)
 
-        assert avg_eval_loss == pytest.approx(0.40)
+        assert avg_eval_loss == pytest.approx(0.40), "avg_eval_loss is not valid"
 
     def test_eval_dataset_preparation(self):
         """Test evaluation dataset preparation."""
@@ -518,7 +518,7 @@ class TestEvaluationDuringTraining:
         tokenizer.return_value = {"input_ids": [[1, 2, 3]]}
 
         # Should prepare without error
-        assert len(texts) == 3
+        assert len(texts) == 3, "Texts must not be empty"
 
     def test_compute_metrics_callback(self):
         """Test compute_metrics callback."""
@@ -529,7 +529,7 @@ class TestEvaluationDuringTraining:
         eval_pred.label_ids = [1, 0]
 
         result = _compute_metrics(eval_pred)
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
 
 # ============================================================================
@@ -568,8 +568,8 @@ class TestResumeCapabilities:
 
             # Would save in real scenario
             # For testing, just verify structure
-            assert "epoch" in original_state
-            assert "optimizer_state" in original_state
+            assert "epoch" in original_state, "Condition must be true"
+            assert "optimizer_state" in original_state, "Condition must be true"
 
     def test_resume_epoch_calculation(self):
         """Test resume epoch calculation."""
@@ -577,7 +577,7 @@ class TestResumeCapabilities:
         total_epochs = 5
         remaining_epochs = total_epochs - checkpoint_epoch
 
-        assert remaining_epochs == 2
+        assert remaining_epochs == 2, "remaining_epochs is not valid"
 
     def test_step_resume_calculation(self):
         """Test step counting on resume."""
@@ -585,7 +585,7 @@ class TestResumeCapabilities:
         current_epoch_steps = 500
         total_steps_resumed = checkpoint_step + current_epoch_steps
 
-        assert total_steps_resumed == 1500
+        assert total_steps_resumed == 1500, "total_steps_resumed is not valid"
 
 
 if __name__ == "__main__":

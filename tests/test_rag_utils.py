@@ -113,13 +113,13 @@ class TestCheckForMetaTensors:
         with torch.device("meta"):
             model = torch.nn.Linear(10, 5)
         has_meta = check_for_meta_tensors(model)
-        assert has_meta is True
+        assert has_meta is True, "has_meta is not valid"
 
     def test_empty_model(self):
         """Test detection on model without parameters"""
         model = torch.nn.Module()  # Empty module with no parameters
         has_meta = check_for_meta_tensors(model)
-        assert has_meta is False
+        assert has_meta is False, "has_meta is not valid"
 
     def test_model_with_buffers_on_meta(self):
         """Test detection when buffers (not just parameters) are on meta device"""
@@ -132,7 +132,7 @@ class TestCheckForMetaTensors:
 
         model = ModelWithBuffer()
         has_meta = check_for_meta_tensors(model)
-        assert has_meta is True
+        assert has_meta is True, "has_meta is not valid"
 
 
 class TestSafeModelLoad:
@@ -146,7 +146,7 @@ class TestSafeModelLoad:
             result = safe_model_load(model, device="cpu")
 
         # Should return model unchanged
-        assert result is model
+        assert result is model, "Result must not be empty"
 
 
 class TestSafeModelLoadV2:
@@ -181,8 +181,8 @@ class TestSafeModelLoadV2:
         result = safe_model_load_v2(model, device="cpu")
 
         # Should succeed and return model on CPU
-        assert result is not None
-        assert next(result.parameters()).device.type == "cpu"
+        assert result is not None, "result must be initialized"
+        assert next(result.parameters()).device.type == "cpu", "Result must not be empty"
 
     def test_model_with_meta_tensors_reinit_strategy(self):
         """Test that models with meta tensors are handled via to_empty()"""
@@ -194,9 +194,9 @@ class TestSafeModelLoadV2:
         result = safe_model_load_v2(model, device="cpu")
 
         # Should succeed using to_empty() strategy
-        assert result is not None
+        assert result is not None, "result must be initialized"
         # Verify model is now on CPU (not meta)
-        assert next(result.parameters()).device.type == "cpu"
+        assert next(result.parameters()).device.type == "cpu", "Result must not be empty"
 
     def test_model_with_meta_tensors_to_empty_strategy(self):
         """Test Strategy 2: Use to_empty() for meta tensors"""
@@ -207,8 +207,8 @@ class TestSafeModelLoadV2:
         # to_empty() should handle meta tensors in PyTorch 2.0+
         result = safe_model_load_v2(model, device="cpu")
 
-        assert result is not None
-        assert next(result.parameters()).device.type == "cpu"
+        assert result is not None, "result must be initialized"
+        assert next(result.parameters()).device.type == "cpu", "Result must not be empty"
 
     def test_all_strategies_fail(self):
         """Test behavior when model doesn't support to_empty()"""
@@ -231,8 +231,8 @@ class TestSafeModelLoadV2:
 
         result = safe_model_load_v2(model, device="cpu")
 
-        assert result is not None
-        assert next(result.parameters()).device.type == "cpu"
+        assert result is not None, "result must be initialized"
+        assert next(result.parameters()).device.type == "cpu", "Result must not be empty"
 
     @pytest.mark.skipif(not is_cuda_available(), reason="CUDA not available")
     def test_cuda_device_when_unavailable(self):
@@ -245,7 +245,7 @@ class TestSafeModelLoadV2:
             try:
                 result = safe_model_load_v2(model, device="cuda")
                 # If it succeeds, verify the result is valid
-                assert result is not None
+                assert result is not None, "result must be initialized"
                 # It may have fallen back to CPU
                 device_type = next(result.parameters()).device.type
                 assert device_type in ["cuda", "cpu"]
@@ -255,8 +255,8 @@ class TestSafeModelLoadV2:
         else:
             # If CUDA is available, it should work
             result = safe_model_load_v2(model, device="cuda")
-            assert result is not None
-            assert next(result.parameters()).device.type == "cuda"
+            assert result is not None, "result must be initialized"
+            assert next(result.parameters()).device.type == "cuda", "Result must not be empty"
 
 
 class TestProvenanceMetadata:
@@ -275,10 +275,10 @@ class TestProvenanceMetadata:
             retrieval_score=0.85,
         )
 
-        assert prov.source_file == Path("test.md")
+        assert prov.source_file == Path("test.md"), "source_file is not valid"
         assert prov.line_range == (10, 20)
-        assert prov.chunk_id == "chunk_123"
-        assert prov.retrieval_score == 0.85
+        assert prov.chunk_id == "chunk_123", "chunk_id is not valid"
+        assert prov.retrieval_score == 0.85, "retrieval_score is not valid"
 
     def test_to_dict(self):
         """Test converting ProvenanceMetadata to dict"""
@@ -297,13 +297,13 @@ class TestProvenanceMetadata:
 
         result = prov.to_dict()
 
-        assert result["source_file"] == "test.md"
+        assert result["source_file"] == "test.md", "Result must not be empty"
         assert result["line_range"] == (10, 20)
-        assert result["chunk_id"] == "chunk_123"
-        assert result["embedding_model"] == "all-MiniLM-L6-v2"
-        assert result["retrieval_score"] == 0.85
+        assert result["chunk_id"] == "chunk_123", "Result must not be empty"
+        assert result["embedding_model"] == "all-MiniLM-L6-v2", "Result must not be empty"
+        assert result["retrieval_score"] == 0.85, "Result must not be empty"
         assert result["char_range"] == (100, 200)
-        assert result["metadata"] == {"key": "value"}
+        assert result["metadata"] == {"key": "value"}, "Result must not be empty"
 
     def test_from_dict(self):
         """Test creating ProvenanceMetadata from dict"""
@@ -320,12 +320,12 @@ class TestProvenanceMetadata:
 
         prov = ProvenanceMetadata.from_dict(data)
 
-        assert prov.source_file == Path("test.md")
+        assert prov.source_file == Path("test.md"), "source_file is not valid"
         assert prov.line_range == (10, 20)
-        assert prov.chunk_id == "chunk_123"
-        assert prov.retrieval_score == 0.85
+        assert prov.chunk_id == "chunk_123", "chunk_id is not valid"
+        assert prov.retrieval_score == 0.85, "retrieval_score is not valid"
         assert prov.char_range == (100, 200)
-        assert prov.metadata == {"key": "value"}
+        assert prov.metadata == {"key": "value"}, "Data must not be empty"
 
     def test_round_trip(self):
         """Test converting to dict and back"""
@@ -343,10 +343,10 @@ class TestProvenanceMetadata:
         dict_repr = original.to_dict()
         restored = ProvenanceMetadata.from_dict(dict_repr)
 
-        assert restored.source_file == original.source_file
-        assert restored.line_range == original.line_range
-        assert restored.chunk_id == original.chunk_id
-        assert restored.retrieval_score == original.retrieval_score
+        assert restored.source_file == original.source_file, "source_file is not valid"
+        assert restored.line_range == original.line_range, "line_range is not valid"
+        assert restored.chunk_id == original.chunk_id, "chunk_id is not valid"
+        assert restored.retrieval_score == original.retrieval_score, "retrieval_score is not valid"
 
 
 @skip_if_no_cuda
@@ -376,11 +376,11 @@ class TestIntegrationMetaTensorHandling:
             model = safe_model_load_v2(model, device="cpu")
 
             # Verify model is properly loaded
-            assert model is not None
-            assert not check_for_meta_tensors(model)
+            assert model is not None, "model must be initialized"
+            assert not check_for_meta_tensors(model), "Condition must be true"
 
             # Verify model can encode
             text = "This is a test sentence."
             embeddings = model.encode([text])
-            assert embeddings is not None
-            assert len(embeddings) > 0
+            assert embeddings is not None, "embeddings must be initialized"
+            assert len(embeddings) > 0, "Embeddings must not be empty"

@@ -166,8 +166,8 @@ class NDJSONLogger:
                     shutil.move(str(src), str(dst))
                 except (IOError, OSError) as e:
                     error_type = type(e).__name__
-                    logger.debug(f"Exception: <ERROR_TYPE>")
-                    logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
+                    logger.debug("Exception: <ERROR_TYPE>")
+                    logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 
     def write(self, record: dict[str, object]) -> None:
         line = json.dumps(record, ensure_ascii=False)
@@ -183,5 +183,5 @@ class NDJSONLogger:
                 handle.write(line + "\n")
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.warning("Exception: <ERROR_TYPE>", exc_info=True)

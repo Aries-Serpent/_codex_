@@ -15,7 +15,7 @@ def test_load_jsonl_splits(tmp_path: Path) -> None:
     path.write_text("\n".join(['{"text": "a"}', '{"text": "b"}']))
 
     train, val = load_jsonl(path, seed=0, val_fraction=0.5)
-    assert train or val
+    assert train or val, "train is not valid"
     assert set(train + val) <= {"a", "b"}
 
 
@@ -43,7 +43,7 @@ def test_dataset_registry_entrypoints(monkeypatch: pytest.MonkeyPatch) -> None:
     )
 
     fn = registry.data_loader_registry.get("demo")
-    assert callable(fn)
+    assert callable(fn), "Condition must be true"
 
     listed = registry.data_loader_registry.list()
-    assert "demo" in listed
+    assert "demo" in listed, "Condition must be true"

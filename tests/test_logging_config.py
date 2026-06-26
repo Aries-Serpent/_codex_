@@ -18,14 +18,14 @@ def test_default_log_db_is_path():
 
 def test_default_log_db_location():
     """Test that DEFAULT_LOG_DB points to expected location."""
-    assert str(DEFAULT_LOG_DB) == ".codex/session_logs.db"
+    assert str(DEFAULT_LOG_DB) == ".codex/session_logs.db", "Condition must be true"
 
 
 def test_default_log_db_parent_is_codex_dir():
     """Test that DEFAULT_LOG_DB parent directory is .codex."""
-    assert DEFAULT_LOG_DB.parent.name == ".codex"
+    assert DEFAULT_LOG_DB.parent.name == ".codex", "name is not valid"
 
 
 def test_default_log_db_filename():
     """Test that DEFAULT_LOG_DB filename is correct."""
-    assert DEFAULT_LOG_DB.name == "session_logs.db"
+    assert DEFAULT_LOG_DB.name == "session_logs.db", "name is not valid"

@@ -41,8 +41,8 @@ class TestPhysicsOrchestratorProperties:
         # Energy loss due to friction
         energy_after_friction = energy * (1 - friction)
 
-        assert energy_after_friction >= 0.0
-        assert energy_after_friction <= energy
+        assert energy_after_friction >= 0.0, "energy_after_friction must be greater than zero"
+        assert energy_after_friction <= energy, "energy_after_friction is not valid"
 
     @given(
         momentum=st.floats(
@@ -57,7 +57,7 @@ class TestPhysicsOrchestratorProperties:
         # Reconstructed momentum should match
         reconstructed_momentum = velocity * mass
 
-        assert abs(reconstructed_momentum - momentum) < 1e-6
+        assert abs(reconstructed_momentum - momentum) < 1e-6, "Condition must be true"
 
     @given(
         confidence=st.floats(min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False),
@@ -69,8 +69,8 @@ class TestPhysicsOrchestratorProperties:
         # But they can both be high or low
 
         # Property: Both should be valid probabilities
-        assert 0.0 <= confidence <= 1.0
-        assert 0.0 <= risk <= 1.0
+        assert 0.0 <= confidence <= 1.0, "0 is not valid"
+        assert 0.0 <= risk <= 1.0, "0 is not valid"
 
     @given(
         impact=st.floats(min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False),
@@ -82,7 +82,7 @@ class TestPhysicsOrchestratorProperties:
         # Common priority calculation: impact * urgency * confidence
         priority = impact * urgency * confidence
 
-        assert 0.0 <= priority <= 1.0
+        assert 0.0 <= priority <= 1.0, "0 is not valid"
         assert priority <= min(impact, urgency, confidence)
 
     @given(
@@ -109,7 +109,7 @@ class TestPhysicsOrchestratorProperties:
         dist_bc = abs(c - b)
         dist_ac = abs(c - a)
 
-        assert dist_ac <= dist_ab + dist_bc + 1e-6  # Small epsilon for float precision
+        assert dist_ac <= dist_ab + dist_bc + 1e-6, "dist_ac is not valid"
 
 
 class TestMemorySystemProperties:
@@ -136,10 +136,10 @@ class TestMemorySystemProperties:
         )
 
         # Invariants
-        assert entry.memory_id == memory_id
+        assert entry.memory_id == memory_id, "memory_id is not valid"
         assert entry.category in ["decision", "fact", "pattern", "lesson"]
-        assert 0.0 <= entry.confidence <= 1.0
-        assert entry.access_count >= 0
+        assert 0.0 <= entry.confidence <= 1.0, "0 is not valid"
+        assert entry.access_count >= 0, "access_count must be positive"
 
     @given(access_count=st.integers(min_value=0, max_value=1000000))
     def test_access_count_monotonic_increasing(self, access_count):
@@ -155,8 +155,8 @@ class TestMemorySystemProperties:
         # Simulate access
         new_count = entry.access_count + 1
 
-        assert new_count > entry.access_count
-        assert new_count >= 0
+        assert new_count > entry.access_count, "new_count must be positive"
+        assert new_count >= 0, "new_count must be positive"
 
     @given(
         tags=st.lists(
@@ -177,7 +177,7 @@ class TestMemorySystemProperties:
         )
 
         # Tags should be unique
-        assert len(entry.tags) == len(set(entry.tags))
+        assert len(entry.tags) == len(set(entry.tags)), "Collection must not be empty"
 
 
 class TestQuantumGameProperties:
@@ -201,10 +201,10 @@ class TestQuantumGameProperties:
         normalized = [p / total for p in probabilities]
 
         # Should sum to 1
-        assert abs(sum(normalized) - 1.0) < 1e-6
+        assert abs(sum(normalized) - 1.0) < 1e-6, "Condition must be true"
 
         # Each probability valid
-        assert all(0.0 <= p <= 1.0 for p in normalized)
+        assert all(0.0 <= p <= 1.0 for p in normalized), "0 is not valid"
 
     @given(
         strategies=st.lists(
@@ -240,8 +240,8 @@ class TestQuantumGameProperties:
 
         state = StrategyState(team="A", strategies=strategies, probabilities=probabilities)
 
-        assert len(state.strategies) == len(state.probabilities)
-        assert abs(sum(state.probabilities) - 1.0) < 1e-6
+        assert len(state.strategies) == len(state.probabilities), "Collection must not be empty"
+        assert abs(sum(state.probabilities) - 1.0) < 1e-6, "Condition must be true"
 
 
 class TestMathematicalProperties:
@@ -254,14 +254,14 @@ class TestMathematicalProperties:
     def test_euclidean_distance_properties(self, x, y):
         """Property: Euclidean distance properties."""
         # Distance to self is zero
-        assert abs(x - x) == 0.0
+        assert abs(x - x) == 0.0, "Condition must be true"
 
         # Distance is non-negative
         dist = abs(y - x)
-        assert dist >= 0.0
+        assert dist >= 0.0, "dist must be greater than zero"
 
         # Symmetry: dist(x,y) == dist(y,x)
-        assert abs(y - x) == abs(x - y)
+        assert abs(y - x) == abs(x - y), "Condition must be true"
 
     @given(
         values=st.lists(
@@ -281,7 +281,7 @@ class TestMathematicalProperties:
         min_val = min(values)
         max_val = max(values)
 
-        assert min_val <= mean <= max_val
+        assert min_val <= mean <= max_val, "min_val is not valid"
 
     @given(
         base=st.floats(min_value=0.1, max_value=10.0, allow_nan=False, allow_infinity=False),
@@ -292,11 +292,11 @@ class TestMathematicalProperties:
         result = base**exponent
 
         # Result should be positive for positive base
-        assert result > 0.0
+        assert result > 0.0, "result must be greater than zero"
 
         # exp(0) = 1
         if abs(exponent) < 1e-6:
-            assert abs(result - 1.0) < 1e-6
+            assert abs(result - 1.0) < 1e-6, "Result must not be empty"
 
     @given(
         temperature=st.floats(
@@ -311,12 +311,12 @@ class TestMathematicalProperties:
 
         # Should be valid probability-like value
         # Note: 0.0 is valid for physically inaccessible states (high E/T)
-        assert 0.0 <= prob <= 1.0
+        assert 0.0 <= prob <= 1.0, "0 is not valid"
 
         # Higher energy -> lower probability (monotonicity check)
         higher_energy = energy + 10.0
         higher_energy_prob = math.exp(-higher_energy / temperature)
-        assert higher_energy_prob <= prob
+        assert higher_energy_prob <= prob, "higher_energy_prob is not valid"
 
 
 class TestStateMachineProperties:
@@ -341,15 +341,15 @@ class TestStateMachineProperties:
 
         # No state should transition to itself directly
         for from_state, to_state in transitions:
-            assert from_state != to_state
+            assert from_state != to_state, "from_state is not valid"
 
     @given(coherence=st.floats(min_value=0.0, max_value=1.0, allow_nan=False, allow_infinity=False))
     def test_decision_state_coherence_preserved(self, coherence):
         """Property: Decision state preserves coherence value."""
         state = DecisionState(current_position="A", goal_position="B", coherence=coherence)
 
-        assert state.coherence == coherence
-        assert 0.0 <= state.coherence <= 1.0
+        assert state.coherence == coherence, "coherence is not valid"
+        assert 0.0 <= state.coherence <= 1.0, "0 is not valid"
 
 
 class TestDataStructureInvariants:
@@ -364,8 +364,8 @@ class TestDataStructureInvariants:
         reversed_once = list(reversed(items))
         reversed_twice = list(reversed(reversed_once))
 
-        assert reversed_twice == items
-        assert set(reversed_twice) == original_set
+        assert reversed_twice == items, "Item must not be empty"
+        assert set(reversed_twice) == original_set, "Condition must be true"
 
     @given(
         dictionary=st.dictionaries(
@@ -382,10 +382,10 @@ class TestDataStructureInvariants:
     def test_dict_keys_values_correspondence(self, dictionary):
         """Property: Dict keys and values maintain correspondence."""
         for key in dictionary:
-            assert key in dictionary
-            assert dictionary[key] == dictionary.get(key)
+            assert key in dictionary, "Condition must be true"
+            assert dictionary[key] == dictionary.get(key), "Condition must be true"
 
-        assert len(dictionary.keys()) == len(dictionary.values())
+        assert len(dictionary.keys()) == len(dictionary.values()), "Collection must not be empty"
 
     @given(
         elements=st.lists(
@@ -400,13 +400,13 @@ class TestDataStructureInvariants:
         element_set = set(elements)
 
         # Set size equals unique elements
-        assert len(element_set) == len(elements)
+        assert len(element_set) == len(elements), "Element_set must not be empty"
 
         # Adding existing element doesn't change size
         if elements:
             first_elem = elements[0]
             element_set.add(first_elem)
-            assert len(element_set) == len(elements)
+            assert len(element_set) == len(elements), "Element_set must not be empty"
 
 
 class TestCombinatorialProperties:
@@ -429,7 +429,7 @@ class TestCombinatorialProperties:
         comb_k = factorial(n) // (factorial(k) * factorial(n - k))
         comb_n_minus_k = factorial(n) // (factorial(n - k) * factorial(k))
 
-        assert comb_k == comb_n_minus_k
+        assert comb_k == comb_n_minus_k, "comb_k is not valid"
 
     @given(sequence=st.lists(st.integers(min_value=0, max_value=10), min_size=1, max_size=20))
     def test_permutation_length(self, sequence):
@@ -440,8 +440,8 @@ class TestCombinatorialProperties:
         permuted = sequence.copy()
         random.shuffle(permuted)
 
-        assert len(permuted) == original_length
-        assert set(permuted) == set(sequence)
+        assert len(permuted) == original_length, "Permuted must not be empty"
+        assert set(permuted) == set(sequence), "Condition must be true"
 
 
 # Configure hypothesis settings for thorough testing
@@ -472,4 +472,4 @@ class TestPropertyBasedSuite:
         free_energy = energy - temperature * 1.0
 
         # Property: Free energy should be less than internal energy at positive temp
-        assert free_energy <= energy
+        assert free_energy <= energy, "free_energy is not valid"

@@ -13,7 +13,7 @@ class TestApiClientImports:
         try:
             from src.codex.api import client
 
-            assert client is not None
+            assert client is not None, "client must be initialized"
         except ImportError:
             pytest.skip("Module not available or has unmet dependencies")
 
@@ -37,7 +37,7 @@ class TestApiClientInitialization:
 
             if hasattr(client, "ApiClient"):
                 api_client = client.ApiClient()
-                assert api_client is not None
+                assert api_client is not None, "api_client must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("ApiClient not available")
 
@@ -48,7 +48,7 @@ class TestApiClientInitialization:
 
             if hasattr(client, "ApiClient"):
                 api_client = client.ApiClient(base_url="http://localhost:8000")
-                assert api_client is not None
+                assert api_client is not None, "api_client must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("ApiClient not available")
 
@@ -59,7 +59,7 @@ class TestApiClientInitialization:
 
             if hasattr(client, "ApiClient"):
                 api_client = client.ApiClient(auth_token="test_token")
-                assert api_client is not None
+                assert api_client is not None, "api_client must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("ApiClient not available")
 
@@ -78,7 +78,7 @@ class TestApiClientRequests:
                     with patch.object(api_client, "get") as mock_get:
                         mock_get.return_value = {"status": "ok"}
                         result = api_client.get("/test")
-                        assert result["status"] == "ok"
+                        assert result["status"] == "ok", "Result must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("ApiClient.get not available")
 
@@ -93,7 +93,7 @@ class TestApiClientRequests:
                     with patch.object(api_client, "post") as mock_post:
                         mock_post.return_value = {"id": 1}
                         result = api_client.post("/test", {"data": "value"})
-                        assert result["id"] == 1
+                        assert result["id"] == 1, "Result must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("ApiClient.post not available")
 
@@ -122,6 +122,6 @@ class TestApiClientErrorHandling:
 
             if hasattr(client, "ApiClient"):
                 api_client = client.ApiClient(timeout=1)
-                assert api_client is not None
+                assert api_client is not None, "api_client must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("ApiClient not available")

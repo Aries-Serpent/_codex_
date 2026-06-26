@@ -87,7 +87,7 @@ class TestQuantumMemoryManagerErrors:
             manager.store_pattern(pattern)
 
         # STM should not exceed capacity (oldest evicted or consolidated)
-        assert len(manager.stm) <= 5
+        assert len(manager.stm) <= 5, "Collection must not be empty"
 
     def test_ltm_capacity_overflow(self, quantum_config):
         """Test behavior when LTM exceeds capacity."""
@@ -107,7 +107,7 @@ class TestQuantumMemoryManagerErrors:
                 manager.consolidate()
 
         # LTM should not exceed capacity
-        assert len(manager.ltm) <= 20
+        assert len(manager.ltm) <= 20, "Collection must not be empty"
 
     def test_retrieve_from_empty_memory(self, quantum_config):
         """Test retrieval when memory is empty."""
@@ -117,7 +117,7 @@ class TestQuantumMemoryManagerErrors:
         results = manager.retrieve_similar(query_features, k=5)
 
         # Should return empty list, not crash
-        assert results == []
+        assert results == [], "Result must not be empty"
 
     def test_memory_guided_decision_no_match(self, quantum_config):
         """Test memory-guided decision when no patterns match."""
@@ -138,7 +138,7 @@ class TestQuantumMemoryManagerErrors:
         decision = manager.memory_guided_decision(query_features, confidence_threshold=0.99)
 
         # Should return None (no confident match)
-        assert decision is None
+        assert decision is None, "decision is not valid"
 
 
 class TestPatternCompressorErrors:
@@ -217,7 +217,7 @@ class TestPatternCompressorErrors:
         compressed = compressor.compress(
             {"f1": 0.5, "f2": 0.3}, pattern_id="test", decision="approve", confidence=0.8
         )
-        assert len(compressed.compressed_features) <= 2
+        assert len(compressed.compressed_features) <= 2, "Collection must not be empty"
 
 
 class TestMemoryIntegrationErrors:
@@ -243,7 +243,7 @@ class TestMemoryIntegrationErrors:
         # Should handle missing compressor gracefully or raise error
         try:
             result = assessor.assess_with_memory(scenarios[0])
-            assert result is not None
+            assert result is not None, "result must be initialized"
         except AttributeError:
             # Expected if compressor is required
             _ = None  # suppressed: no action needed
@@ -269,7 +269,7 @@ class TestMemoryIntegrationErrors:
             _ = None  # suppressed: no action needed
 
         # System should still be usable
-        assert assessor.memory_manager is not None
+        assert assessor.memory_manager is not None, "memory_manager must be initialized"
 
 
 class TestCachePruningEdgeCases:
@@ -282,7 +282,7 @@ class TestCachePruningEdgeCases:
         # Prune empty cache
         result = manager.prune_by_age(max_age_hours=30 * 24)
 
-        assert result.aged_pruned == 0
+        assert result.aged_pruned == 0, "Result must not be empty"
 
     def test_prune_all_patterns_old(self, quantum_config):
         """Test when all patterns exceed age threshold."""
@@ -303,7 +303,7 @@ class TestCachePruningEdgeCases:
         result = manager.prune_by_age(max_age_hours=0.000001)  # ~0.0036 seconds
 
         # Most or all patterns should be removed
-        assert result.aged_pruned > 0
+        assert result.aged_pruned > 0, "aged_pruned must be greater than zero"
 
     def test_prune_by_access_empty_ltm(self, quantum_config):
         """Test LRU pruning when LTM is empty."""
@@ -311,7 +311,7 @@ class TestCachePruningEdgeCases:
 
         result = manager.prune_by_access(keep_top_n=10)
 
-        assert result.access_pruned == 0
+        assert result.access_pruned == 0, "Result must not be empty"
 
 
 class TestDecompressionBackwardCompatibility:
@@ -337,7 +337,7 @@ class TestDecompressionBackwardCompatibility:
         # Should decompress with fallback to uniform quantization
         decompressed = compressor.decompress(old_pattern)
         assert isinstance(decompressed, dict)
-        assert len(decompressed) > 0
+        assert len(decompressed) > 0, "Decompressed must not be empty"
 
     def test_decompress_missing_metadata(self):
         """Test decompression with missing metadata fields."""

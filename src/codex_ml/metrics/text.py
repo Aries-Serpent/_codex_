@@ -27,7 +27,7 @@ try:  # pragma: no cover - optional dependency
     import torch as _torch
 
     # Verify torch is functional
-    _ = _torch.Tensor  # type: ignore
+    _ = _torch.Tensor
 except (ImportError, AttributeError):  # pragma: no cover - torch may be unavailable in minimal envs
     _torch = None
     _HAS_TORCH = False

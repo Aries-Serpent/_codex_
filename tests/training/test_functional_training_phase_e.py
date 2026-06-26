@@ -39,14 +39,14 @@ class TestNormalizeIdentifier:
         self.ft = _import_ft()
 
     def test_none_returns_none(self):
-        assert self.ft._normalize_identifier(None) is None
+        assert self.ft._normalize_identifier(None) is None, "Condition must be true"
 
     def test_string_passthrough(self):
-        assert self.ft._normalize_identifier("some/model") == "some/model"
+        assert self.ft._normalize_identifier("some/model") == "some/model", "Condition must be true"
 
     def test_pathlike_conversion(self):
         result = self.ft._normalize_identifier(Path("/tmp/model"))
-        assert result == "/tmp/model"
+        assert result == "/tmp/model", "Result must not be empty"
 
     def test_os_fspath_used_for_pathlike(self):
         class FakePath:
@@ -54,7 +54,7 @@ class TestNormalizeIdentifier:
                 return "/custom/path"
 
         result = self.ft._normalize_identifier(FakePath())
-        assert result == "/custom/path"
+        assert result == "/custom/path", "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -67,34 +67,34 @@ class TestLooksLikeLocalSource:
         self.ft = _import_ft()
 
     def test_none_returns_false(self):
-        assert self.ft._looks_like_local_source(None) is False
+        assert self.ft._looks_like_local_source(None) is False, "Condition must be true"
 
     def test_relative_dot_slash(self):
-        assert self.ft._looks_like_local_source("./data/file.txt") is True
+        assert self.ft._looks_like_local_source("./data/file.txt") is True, "Data must not be empty"
 
     def test_parent_dot_dot_slash(self):
-        assert self.ft._looks_like_local_source("../models/bert") is True
+        assert self.ft._looks_like_local_source("../models/bert") is True, "Condition must be true"
 
     def test_absolute_path(self):
-        assert self.ft._looks_like_local_source("/usr/local/models") is True
+        assert self.ft._looks_like_local_source("/usr/local/models") is True, "Condition must be true"
 
     def test_hf_identifier_returns_false(self):
-        assert self.ft._looks_like_local_source("bert-base-uncased") is False
+        assert self.ft._looks_like_local_source("bert-base-uncased") is False, "Condition must be true"
 
     def test_hf_url_scheme(self):
-        assert self.ft._looks_like_local_source("hf://org/model") is False
+        assert self.ft._looks_like_local_source("hf://org/model") is False, "Condition must be true"
 
     def test_existing_path_as_local(self, tmp_path):
         p = tmp_path / "weights"
         p.mkdir()
-        assert self.ft._looks_like_local_source(str(p)) is True
+        assert self.ft._looks_like_local_source(str(p)) is True, "Condition must be true"
 
     def test_oserror_returns_false(self, monkeypatch):
         def raise_oserror(*_, **__):
             raise OSError("boom")
 
         monkeypatch.setattr(Path, "exists", raise_oserror)
-        assert self.ft._looks_like_local_source("some/relative/path") is False
+        assert self.ft._looks_like_local_source("some/relative/path") is False, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -108,12 +108,12 @@ class TestMaybeCollectSystemMetrics:
 
     def test_disabled_returns_none(self):
         result = self.ft._maybe_collect_system_metrics(False)
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_no_collector_returns_none(self, monkeypatch):
         monkeypatch.setattr(self.ft, "collect_system_metrics", None)
         result = self.ft._maybe_collect_system_metrics(True)
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_collector_returns_valid_dict(self, monkeypatch):
         monkeypatch.setattr(self.ft, "collect_system_metrics", lambda: {"cpu": 0.5, "mem": 2048})
@@ -127,9 +127,9 @@ class TestMaybeCollectSystemMetrics:
             lambda: {"cpu": 0.3, "label": "dev", "mem": 100},
         )
         result = self.ft._maybe_collect_system_metrics(True)
-        assert result is not None
-        assert "label" not in result
-        assert result["cpu"] == pytest.approx(0.3)
+        assert result is not None, "result must be initialized"
+        assert "label" not in result, "Result must not be empty"
+        assert result["cpu"] == pytest.approx(0.3), "Result must not be empty"
 
     def test_collector_raises_returns_none(self, monkeypatch):
         def boom():
@@ -137,18 +137,18 @@ class TestMaybeCollectSystemMetrics:
 
         monkeypatch.setattr(self.ft, "collect_system_metrics", boom)
         result = self.ft._maybe_collect_system_metrics(True)
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_collector_returns_non_dict_gives_none(self, monkeypatch):
         monkeypatch.setattr(self.ft, "collect_system_metrics", lambda: [1, 2, 3])
         result = self.ft._maybe_collect_system_metrics(True)
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_collector_returns_empty_dict_gives_none(self, monkeypatch):
         """Empty dicts contain no numeric values → should return None."""
         monkeypatch.setattr(self.ft, "collect_system_metrics", lambda: {})
         result = self.ft._maybe_collect_system_metrics(True)
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_integer_values_coerced_to_float(self, monkeypatch):
         monkeypatch.setattr(self.ft, "collect_system_metrics", lambda: {"pages": 512})
@@ -166,17 +166,17 @@ def test_import_migration_class_exists():
     # Functional training should also export or reference ImportMigration if present
     # If not present here, that's fine (it lives in agents/physics_orchestrator)
     # We just test the module-level _normalize_identifier is reachable
-    assert callable(ft._normalize_identifier)
+    assert callable(ft._normalize_identifier), "Condition must be true"
 
 
 def test_looks_like_local_source_edge_cases():
     ft = _import_ft()
-    assert ft._looks_like_local_source("") is False
-    assert ft._looks_like_local_source("/") is True
+    assert ft._looks_like_local_source("") is False, "Condition must be true"
+    assert ft._looks_like_local_source("/") is True, "Condition must be true"
 
 
 def test_maybe_collect_disabled_always_none():
     ft = _import_ft()
     # Even with a real collector configured, disabled=False must return None
     result = ft._maybe_collect_system_metrics(False)
-    assert result is None
+    assert result is None, "Result must not be empty"

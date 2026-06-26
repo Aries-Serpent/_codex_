@@ -50,7 +50,7 @@ def test_audit_runner_token_similarity_integration(tmp_path: Path):
     }
 
     ratio = audit_runner.duplication_ratio(evidence_files, file_cache, cfg)
-    assert 0.0 <= ratio <= 1.0
+    assert 0.0 <= ratio <= 1.0, "0 is not valid"
 
 
 def test_audit_runner_simple_heuristic_default(tmp_path: Path):
@@ -81,9 +81,9 @@ def test_audit_runner_simple_heuristic_default(tmp_path: Path):
     file_cache = {f: "content" for f in evidence_files}
 
     ratio = audit_runner.duplication_ratio(evidence_files, file_cache, cfg)
-    assert 0.0 <= ratio <= 1.0
+    assert 0.0 <= ratio <= 1.0, "0 is not valid"
     # Should detect "test" duplication
-    assert ratio > 0.0
+    assert ratio > 0.0, "ratio must be greater than zero"
 
 
 def test_audit_runner_coverage_integration(tmp_path: Path):
@@ -165,13 +165,13 @@ def test_audit_runner_coverage_integration(tmp_path: Path):
 
         # Check that coverage_map.json was created
         cov_map_path = artifacts_dir / "coverage_map.json"
-        assert cov_map_path.exists()
+        assert cov_map_path.exists(), "Condition must be true"
 
         # Check that scoring used coverage data
-        assert len(scored) > 0
-        assert scored[0]["id"] == "test-cap"
+        assert len(scored) > 0, "Scored must not be empty"
+        assert scored[0]["id"] == "test-cap", "sc is not valid"
         # Tests score should be influenced by coverage
-        assert "tests" in scored[0]["components"]
+        assert "tests" in scored[0]["components"], "Condition must be true"
 
     finally:
         ci.ROOT = original_root
@@ -219,14 +219,14 @@ def test_audit_runner_trends_integration(tmp_path: Path):
 
         # Check that trend report was created
         trends_dir = artifacts_dir / "trends"
-        assert trends_dir.exists()
+        assert trends_dir.exists(), "Condition must be true"
 
         trend_files = list(trends_dir.glob("trend_report_*.md"))
-        assert len(trend_files) > 0
+        assert len(trend_files) > 0, "Trend_files must not be empty"
 
         # Check markdown content
         report_content = trend_files[0].read_text()
-        assert "Capability Audit Trend Report" in report_content
+        assert "Capability Audit Trend Report" in report_content, "Content must not be empty"
 
     except OSError:
         # Trends may fail if no data, that's ok
@@ -252,7 +252,7 @@ def test_duplication_ratio_fallback():
 
     # Should not raise, should fallback
     ratio = audit_runner.duplication_ratio(evidence_files, file_cache, cfg)
-    assert 0.0 <= ratio <= 1.0
+    assert 0.0 <= ratio <= 1.0, "0 is not valid"
 
 
 def test_duplication_ratio_without_cache():
@@ -270,5 +270,5 @@ def test_duplication_ratio_without_cache():
     evidence_files = ["test.py", "test.md", "other.py"]
 
     ratio = audit_runner.duplication_ratio(evidence_files)
-    assert 0.0 <= ratio <= 1.0
-    assert ratio > 0.0  # Should detect "test" duplication
+    assert 0.0 <= ratio <= 1.0, "0 is not valid"
+    assert ratio > 0.0, "ratio must be greater than zero"

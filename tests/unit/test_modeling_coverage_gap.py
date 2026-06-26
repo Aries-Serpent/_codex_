@@ -32,56 +32,56 @@ class TestDtypeResolution:
         dtype = _resolve_dtype(None)
         import torch
 
-        assert dtype == torch.float32
+        assert dtype == torch.float32, "dtype is not valid"
 
     def test_resolve_dtype_explicit_float32(self):
         """Test resolving explicit float32."""
         dtype = _resolve_dtype("float32")
         import torch
 
-        assert dtype == torch.float32
+        assert dtype == torch.float32, "dtype is not valid"
 
     def test_resolve_dtype_fp32_alias(self):
         """Test resolving fp32 alias for float32."""
         dtype = _resolve_dtype("fp32")
         import torch
 
-        assert dtype == torch.float32
+        assert dtype == torch.float32, "dtype is not valid"
 
     def test_resolve_dtype_bfloat16(self):
         """Test resolving bfloat16 dtype."""
         dtype = _resolve_dtype("bfloat16")
         import torch
 
-        assert dtype == torch.bfloat16
+        assert dtype == torch.bfloat16, "dtype is not valid"
 
     def test_resolve_dtype_bf16_alias(self):
         """Test resolving bf16 alias for bfloat16."""
         dtype = _resolve_dtype("bf16")
         import torch
 
-        assert dtype == torch.bfloat16
+        assert dtype == torch.bfloat16, "dtype is not valid"
 
     def test_resolve_dtype_float16(self):
         """Test resolving float16 dtype."""
         dtype = _resolve_dtype("float16")
         import torch
 
-        assert dtype == torch.float16
+        assert dtype == torch.float16, "dtype is not valid"
 
     def test_resolve_dtype_fp16_alias(self):
         """Test resolving fp16 alias for float16."""
         dtype = _resolve_dtype("fp16")
         import torch
 
-        assert dtype == torch.float16
+        assert dtype == torch.float16, "dtype is not valid"
 
     def test_resolve_dtype_half_alias(self):
         """Test resolving half alias for float16."""
         dtype = _resolve_dtype("half")
         import torch
 
-        assert dtype == torch.float16
+        assert dtype == torch.float16, "dtype is not valid"
 
     def test_resolve_dtype_case_insensitive(self):
         """Test that dtype resolution is case-insensitive."""
@@ -90,7 +90,7 @@ class TestDtypeResolution:
         dtype_mixed = _resolve_dtype("Float32")
         import torch
 
-        assert dtype_lower == dtype_upper == dtype_mixed == torch.float32
+        assert dtype_lower == dtype_upper == dtype_mixed == torch.float32, "dtype_lower is not valid"
 
     def test_resolve_dtype_invalid_raises_error(self):
         """Test that invalid dtype raises ValueError."""
@@ -102,7 +102,7 @@ class TestDtypeResolution:
         dtype = resolve_dtype("float32")
         import torch
 
-        assert dtype == torch.float32
+        assert dtype == torch.float32, "dtype is not valid"
 
 
 class TestDeviceResolution:
@@ -111,17 +111,17 @@ class TestDeviceResolution:
     def test_resolve_device_cpu_explicit(self):
         """Test explicit cpu device."""
         device = _resolve_device("cpu")
-        assert device == "cpu"
+        assert device == "cpu", "device is not valid"
 
     def test_resolve_device_cuda_explicit(self):
         """Test explicit cuda device."""
         device = _resolve_device("cuda")
-        assert device == "cuda"
+        assert device == "cuda", "device is not valid"
 
     def test_resolve_device_cuda_with_index(self):
         """Test CUDA device with explicit index."""
         device = _resolve_device("cuda:0")
-        assert device == "cuda:0"
+        assert device == "cuda:0", "device is not valid"
 
     def test_resolve_device_auto_defaults(self):
         """Test auto device resolution."""
@@ -148,41 +148,41 @@ class TestLoraSettings:
     def test_lora_settings_defaults(self):
         """Test default LoRA settings."""
         lora = LoraSettings()
-        assert lora.enabled is False
-        assert lora.r == 8
-        assert lora.alpha == 16
-        assert lora.dropout == 0.0
+        assert lora.enabled is False, "enabled is not valid"
+        assert lora.r == 8, "r is not valid"
+        assert lora.alpha == 16, "alpha is not valid"
+        assert lora.dropout == 0.0, "dropout is not valid"
         assert lora.target_modules == ("q_proj", "v_proj")
-        assert lora.bias == "none"
-        assert lora.task_type == "CAUSAL_LM"
+        assert lora.bias == "none", "bias is not valid"
+        assert lora.task_type == "CAUSAL_LM", "task_type is not valid"
 
     def test_lora_settings_enabled(self):
         """Test enabling LoRA settings."""
         lora = LoraSettings(enabled=True, r=16, alpha=32)
-        assert lora.enabled is True
-        assert lora.r == 16
-        assert lora.alpha == 32
+        assert lora.enabled is True, "enabled is not valid"
+        assert lora.r == 16, "r is not valid"
+        assert lora.alpha == 32, "alpha is not valid"
 
     def test_lora_settings_custom_target_modules(self):
         """Test custom target modules."""
         custom_modules = ("q_proj", "v_proj", "k_proj")
         lora = LoraSettings(target_modules=custom_modules)
-        assert lora.target_modules == custom_modules
+        assert lora.target_modules == custom_modules, "target_modules is not valid"
 
     def test_lora_settings_custom_dropout(self):
         """Test custom dropout."""
         lora = LoraSettings(dropout=0.1)
-        assert lora.dropout == 0.1
+        assert lora.dropout == 0.1, "dropout is not valid"
 
     def test_lora_settings_custom_bias(self):
         """Test custom bias setting."""
         lora = LoraSettings(bias="all")
-        assert lora.bias == "all"
+        assert lora.bias == "all", "bias is not valid"
 
     def test_lora_settings_custom_task_type(self):
         """Test custom task type."""
         lora = LoraSettings(task_type="TOKEN_CLS")
-        assert lora.task_type == "TOKEN_CLS"
+        assert lora.task_type == "TOKEN_CLS", "task_type is not valid"
 
 
 class TestModelInitConfig:
@@ -191,11 +191,11 @@ class TestModelInitConfig:
     def test_model_init_config_minimal(self):
         """Test minimal ModelInitConfig."""
         config = ModelInitConfig(model_name="gpt2")
-        assert config.model_name == "gpt2"
-        assert config.tokenizer_name is None
-        assert config.dtype == "float32"
-        assert config.device == "auto"
-        assert config.trust_remote_code is False
+        assert config.model_name == "gpt2", "model_name is not valid"
+        assert config.tokenizer_name is None, "tokenizer_name is not valid"
+        assert config.dtype == "float32", "dtype is not valid"
+        assert config.device == "auto", "device is not valid"
+        assert config.trust_remote_code is False, "trust_remote_code is not valid"
 
     def test_model_init_config_full(self):
         """Test full ModelInitConfig with all parameters."""
@@ -210,14 +210,14 @@ class TestModelInitConfig:
             lora=lora,
             bf16_require_capability=True,
         )
-        assert config.model_name == "meta-llama/Llama-2-7b"
-        assert config.tokenizer_name == "meta-llama/Llama-2-7b"
-        assert config.dtype == "bfloat16"
-        assert config.device == "cuda"
-        assert config.trust_remote_code is True
-        assert config.load_config == {"load_in_4bit": True}
-        assert config.lora.enabled is True
-        assert config.bf16_require_capability is True
+        assert config.model_name == "meta-llama/Llama-2-7b", "model_name is not valid"
+        assert config.tokenizer_name == "meta-llama/Llama-2-7b", "tokenizer_name is not valid"
+        assert config.dtype == "bfloat16", "dtype is not valid"
+        assert config.device == "cuda", "device is not valid"
+        assert config.trust_remote_code is True, "trust_remote_code is not valid"
+        assert config.load_config == {"load_in_4bit": True}, "load_config is not valid"
+        assert config.lora.enabled is True, "enabled is not valid"
+        assert config.bf16_require_capability is True, "bf16_require_capability is not valid"
 
 
 class TestConfigCoercion:
@@ -228,17 +228,17 @@ class TestConfigCoercion:
         config_dict = {"model_name": "gpt2"}
         config = _coerce_config(config_dict)
         assert isinstance(config, ModelInitConfig)
-        assert config.model_name == "gpt2"
+        assert config.model_name == "gpt2", "model_name is not valid"
 
     def test_coerce_config_model_name_alias(self):
         """Test model_name resolution from aliases."""
         # Test 'name' alias
         config = _coerce_config({"name": "gpt2"})
-        assert config.model_name == "gpt2"
+        assert config.model_name == "gpt2", "model_name is not valid"
 
         # Test 'pretrained_model_name_or_path' alias
         config = _coerce_config({"pretrained_model_name_or_path": "gpt2"})
-        assert config.model_name == "gpt2"
+        assert config.model_name == "gpt2", "model_name is not valid"
 
     def test_coerce_config_tokenizer_name(self):
         """Test tokenizer_name extraction."""
@@ -248,7 +248,7 @@ class TestConfigCoercion:
                 "tokenizer_name": "gpt2",
             }
         )
-        assert config.tokenizer_name == "gpt2"
+        assert config.tokenizer_name == "gpt2", "tokenizer_name is not valid"
 
     def test_coerce_config_dtype_resolution(self):
         """Test dtype resolution in config."""
@@ -258,7 +258,7 @@ class TestConfigCoercion:
                 "dtype": "float32",
             }
         )
-        assert config.dtype == "float32"
+        assert config.dtype == "float32", "dtype is not valid"
 
     def test_coerce_config_dtype_alias(self):
         """Test torch_dtype alias."""
@@ -268,7 +268,7 @@ class TestConfigCoercion:
                 "torch_dtype": "float32",
             }
         )
-        assert config.dtype == "float32"
+        assert config.dtype == "float32", "dtype is not valid"
 
     def test_coerce_config_device_resolution(self):
         """Test device resolution in config."""
@@ -278,7 +278,7 @@ class TestConfigCoercion:
                 "device": "cpu",
             }
         )
-        assert config.device == "cpu"
+        assert config.device == "cpu", "device is not valid"
 
     def test_coerce_config_trust_remote_code(self):
         """Test trust_remote_code flag."""
@@ -288,7 +288,7 @@ class TestConfigCoercion:
                 "trust_remote_code": True,
             }
         )
-        assert config.trust_remote_code is True
+        assert config.trust_remote_code is True, "trust_remote_code is not valid"
 
     def test_coerce_config_load_config(self):
         """Test load_config extraction."""
@@ -299,7 +299,7 @@ class TestConfigCoercion:
                 "load_config": load_cfg,
             }
         )
-        assert config.load_config == load_cfg
+        assert config.load_config == load_cfg, "load_config is not valid"
 
     def test_coerce_config_load_kwargs_alias(self):
         """Test load_kwargs as alias for load_config."""
@@ -310,7 +310,7 @@ class TestConfigCoercion:
                 "load_kwargs": load_cfg,
             }
         )
-        assert config.load_config == load_cfg
+        assert config.load_config == load_cfg, "load_config is not valid"
 
     def test_coerce_config_lora_settings(self):
         """Test LoRA settings in config."""
@@ -324,9 +324,9 @@ class TestConfigCoercion:
                 },
             }
         )
-        assert config.lora.enabled is True
-        assert config.lora.r == 16
-        assert config.lora.alpha == 32
+        assert config.lora.enabled is True, "enabled is not valid"
+        assert config.lora.r == 16, "r is not valid"
+        assert config.lora.alpha == 32, "alpha is not valid"
 
     def test_coerce_config_use_lora_shorthand(self):
         """Test use_lora shorthand flag."""
@@ -336,7 +336,7 @@ class TestConfigCoercion:
                 "use_lora": True,
             }
         )
-        assert config.lora.enabled is True
+        assert config.lora.enabled is True, "enabled is not valid"
 
     def test_coerce_config_lora_rank_alias(self):
         """Test lora_rank as r alias."""
@@ -347,7 +347,7 @@ class TestConfigCoercion:
                 "lora_rank": 16,
             }
         )
-        assert config.lora.r == 16
+        assert config.lora.r == 16, "r is not valid"
 
     def test_coerce_config_bf16_require_capability(self):
         """Test bf16_require_capability flag."""
@@ -357,7 +357,7 @@ class TestConfigCoercion:
                 "bf16_require_capability": True,
             }
         )
-        assert config.bf16_require_capability is True
+        assert config.bf16_require_capability is True, "bf16_require_capability is not valid"
 
     def test_coerce_config_reproducibility_section(self):
         """Test bf16_require_capability in reproducibility section."""
@@ -369,7 +369,7 @@ class TestConfigCoercion:
                 },
             }
         )
-        assert config.bf16_require_capability is True
+        assert config.bf16_require_capability is True, "bf16_require_capability is not valid"
 
     def test_coerce_config_missing_model_name_raises_error(self):
         """Test that missing model_name raises ValueError."""
@@ -429,13 +429,13 @@ class TestDtypeMap:
 
     def test_dtype_map_contains_all_dtypes(self):
         """Test that _DTYPE_MAP contains expected dtypes."""
-        assert "float32" in _DTYPE_MAP
-        assert "fp32" in _DTYPE_MAP
-        assert "float16" in _DTYPE_MAP
-        assert "fp16" in _DTYPE_MAP
-        assert "half" in _DTYPE_MAP
-        assert "bfloat16" in _DTYPE_MAP
-        assert "bf16" in _DTYPE_MAP
+        assert "float32" in _DTYPE_MAP, "Condition must be true"
+        assert "fp32" in _DTYPE_MAP, "Condition must be true"
+        assert "float16" in _DTYPE_MAP, "Condition must be true"
+        assert "fp16" in _DTYPE_MAP, "Condition must be true"
+        assert "half" in _DTYPE_MAP, "Condition must be true"
+        assert "bfloat16" in _DTYPE_MAP, "Condition must be true"
+        assert "bf16" in _DTYPE_MAP, "Condition must be true"
 
     def test_dtype_map_values_are_torch_dtypes(self):
         """Test that all values in _DTYPE_MAP are torch dtypes."""

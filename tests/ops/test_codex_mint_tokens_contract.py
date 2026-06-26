@@ -88,8 +88,8 @@ def test_exchange_and_revoke_offline(monkeypatch):
 
     body = m._build_install_token_body("o/r1", "contents=read")
     token, exp = m._exchange_installation_token("app.jwt", "42", body=body)
-    assert token == "inst.token"
-    assert exp == "2099-01-01T00:00:00Z"
+    assert token == "inst.token", "token is not valid"
+    assert exp == "2099-01-01T00:00:00Z", "exp is not valid"
     m._revoke_installation_token(token)
 
 
@@ -109,5 +109,5 @@ def test_script_main_dry_run_parsing(monkeypatch, capsys):
         ]
     )
     captured = capsys.readouterr()
-    assert rc == 0
-    assert '"scoping_parsed": true' in captured.out.lower()
+    assert rc == 0, "rc is not valid"
+    assert '"scoping_parsed": true' in captured.out.lower(), "Condition must be true"

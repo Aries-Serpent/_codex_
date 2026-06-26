@@ -44,7 +44,7 @@ except ModuleNotFoundError:  # pragma: no cover - fallback for minimal envs
             return ConfigDict(**config)
         except TypeError as exc:
             error_type = type(exc).__name__
-            logger.debug(f"TypeError: <ERROR_TYPE>")
+            logger.debug("TypeError: <ERROR_TYPE>")
             # If ConfigDict rejects unknown keys, filter to known parameters
             valid_keys = {"extra", "arbitrary_types_allowed", "validate_assignment"}
             filtered = {k: v for k, v in config.items() if k in valid_keys}

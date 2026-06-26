@@ -55,8 +55,8 @@ def test_peft_hooks_with_stub(monkeypatch):
 
     model = types.SimpleNamespace()
     adapted = module.enable_peft(model, cfg, adapter_name="stub")
-    assert adapted.adapter_name == "stub"
-    assert adapted.cfg is cfg
+    assert adapted.adapter_name == "stub", "adapter_name is not valid"
+    assert adapted.cfg is cfg, "cfg is not valid"
 
     loaded = module.load_adapter_for_inference(model, "adapter-path")
-    assert loaded.loaded == "adapter-path"
+    assert loaded.loaded == "adapter-path", "loaded is not valid"

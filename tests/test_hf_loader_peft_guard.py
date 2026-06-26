@@ -49,6 +49,6 @@ def test_load_causal_lm_handles_missing_peft(monkeypatch, caplog):
     )
 
     assert isinstance(model, DummyModel)
-    assert captured["kwargs"].get("torch_dtype") == torch.float16
-    assert model.moves == ["cuda:0"]
-    assert any("LoRA not applied" in record.getMessage() for record in caplog.records)
+    assert captured["kwargs"].get("torch_dtype") == torch.float16, "Condition must be true"
+    assert model.moves == ["cuda:0"], "moves is not valid"
+    assert any("LoRA not applied" in record.getMessage() for record in caplog.records), "Condition must be true"

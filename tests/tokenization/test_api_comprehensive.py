@@ -62,12 +62,12 @@ def test_import_error_messages_are_descriptive():
     error_msg_sp = "SentencePieceTokenizer is unavailable; install codex-ml tokenization extras"
 
     # Verify messages contain key information
-    assert "unavailable" in error_msg_hf
-    assert "install" in error_msg_hf
-    assert "codex-ml" in error_msg_hf
+    assert "unavailable" in error_msg_hf, "Error should be raised or set"
+    assert "install" in error_msg_hf, "Error should be raised or set"
+    assert "codex-ml" in error_msg_hf, "Error should be raised or set"
 
-    assert "unavailable" in error_msg_sp
-    assert "install" in error_msg_sp
+    assert "unavailable" in error_msg_sp, "Error should be raised or set"
+    assert "install" in error_msg_sp, "Error should be raised or set"
 
 
 def test_legacy_proxy_call_with_warning():
@@ -90,7 +90,7 @@ def test_legacy_proxy_call_with_warning():
                 _ = None  # We're mainly testing the warning
 
             # Verify deprecation warning was issued
-            assert len(w) > 0
+            assert len(w) > 0, "W must not be empty"
             # The warning should be about deprecation
             # Note: actual warning may come from module-level code
 
@@ -145,9 +145,9 @@ def test_api_module_issues_deprecation_warning():
         )
 
         # Verify warning was captured
-        assert len(w) == 1
+        assert len(w) == 1, "W must not be empty"
         assert issubclass(w[0].category, DeprecationWarning)
-        assert "legacy" in str(w[0].message)
+        assert "legacy" in str(w[0].message), "Condition must be true"
 
 
 def test_legacy_tokenizer_proxy_has_slots():
@@ -156,7 +156,7 @@ def test_legacy_tokenizer_proxy_has_slots():
 
     # Verify __slots__ is defined (memory optimization)
     assert hasattr(_LegacyTokenizerProxy, "__slots__")
-    assert _LegacyTokenizerProxy.__slots__ == ()
+    assert _LegacyTokenizerProxy.__slots__ == (), "__slots__ is not valid"
 
 
 def test_legacy_tokenizer_has_docstring():
@@ -175,7 +175,7 @@ def test_api_exports_correct_names():
 
     # Verify expected exports
     expected = {"HFTokenizerAdapter", "SentencePieceTokenizer", "legacy_tokenizer"}
-    assert set(__all__) == expected
+    assert set(__all__) == expected, "Condition must be true"
 
 
 def test_deprecation_warning_message_format():
@@ -189,8 +189,8 @@ def test_deprecation_warning_message_format():
 
     # Verify messages are descriptive
     for msg in expected_messages:
-        assert "legacy" in msg or "deprecated" in msg
-        assert "codex_ml.tokenization" in msg
+        assert "legacy" in msg or "deprecated" in msg, "Condition must be true"
+        assert "codex_ml.tokenization" in msg, "Condition must be true"
 
 
 def test_proxy_getattr_with_none_canonical():
@@ -231,7 +231,7 @@ def test_module_level_warning_uses_correct_stacklevel():
         )
 
         # Verify stacklevel parameter works
-        assert len(w) == 1
+        assert len(w) == 1, "W must not be empty"
         # The warning should have correct stack information
 
 

@@ -34,9 +34,9 @@ def test_set_reproducible_reseeds_all():
         r_torch = real_torch.rand(1).item()
 
         set_reproducible(123)
-        assert random.random() == r_py
-        assert np.random.rand() == r_np
-        assert real_torch.rand(1).item() == r_torch
+        assert random.random() == r_py, "r is not valid"
+        assert np.random.rand() == r_np, "Condition must be true"
+        assert real_torch.rand(1).item() == r_torch, "Item must not be empty"
     finally:
         # Restore original torch in sys.modules
         if original_torch is not None:

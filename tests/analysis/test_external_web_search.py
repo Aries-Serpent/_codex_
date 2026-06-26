@@ -63,23 +63,23 @@ def test_external_search_uses_default_endpoint(monkeypatch: pytest.MonkeyPatch) 
     provider = ExternalWebSearch(enabled=True, http_get=fake_get, timeout=3.5)
     outcome = provider.search("python")
 
-    assert outcome["status"] == "ok"
-    assert captured["endpoint"] == ExternalWebSearch.DEFAULT_ENDPOINT
-    assert captured["params"] == {
+    assert outcome["status"] == "ok", "Condition must be true"
+    assert captured["endpoint"] == ExternalWebSearch.DEFAULT_ENDPOINT, "Condition must be true"
+    assert captured["params"] == {, "Condition must be true"
         "format": "json",
         "no_html": 1,
         "no_redirect": 1,
         "q": "python",
     }
-    assert captured["timeout"] == pytest.approx(3.5)
-    assert outcome["results"]
+    assert captured["timeout"] == pytest.approx(3.5), "Condition must be true"
+    assert outcome["results"], "Result must not be empty"
 
 
 def test_external_search_reports_unavailable_without_endpoint() -> None:
     provider = ExternalWebSearch(endpoint="", enabled=True)
     outcome = provider.search("python")
-    assert outcome["status"] == "unavailable"
-    assert outcome["reason"] == "no-endpoint"
+    assert outcome["status"] == "unavailable", "Condition must be true"
+    assert outcome["reason"] == "no-endpoint", "Condition must be true"
 
 
 def test_external_search_captures_http_errors() -> None:
@@ -93,8 +93,8 @@ def test_external_search_captures_http_errors() -> None:
     )
 
     outcome = provider.search("python")
-    assert outcome["status"] == "error"
-    assert "boom" in outcome["error"]
+    assert outcome["status"] == "error", "Error should be raised or set"
+    assert "boom" in outcome["error"], "Error should be raised or set"
 
 
 def test_external_search_handles_http_status_errors() -> None:
@@ -110,9 +110,9 @@ def test_external_search_handles_http_status_errors() -> None:
         http_get=fake_get,
     )
     outcome = provider.search("python")
-    assert outcome["status"] == "error"
-    assert outcome["status_code"] == 503
-    assert "bad response" in outcome["error"]
+    assert outcome["status"] == "error", "Error should be raised or set"
+    assert outcome["status_code"] == 503, "Condition must be true"
+    assert "bad response" in outcome["error"], "Response must not be empty"
 
 
 def test_external_search_success_normalises_payload(
@@ -134,10 +134,10 @@ def test_external_search_success_normalises_payload(
     response = _DummyResponse(payload)
 
     def fake_get(endpoint: str, params: dict[str, Any], timeout: float) -> _DummyResponse:
-        assert endpoint == "https://search.example/api"
-        assert params["q"] == "python"
-        assert params["format"] == "json"
-        assert timeout == pytest.approx(2.5)
+        assert endpoint == "https://search.example/api", "endpoint is not valid"
+        assert params["q"] == "python", "Condition must be true"
+        assert params["format"] == "json", "Condition must be true"
+        assert timeout == pytest.approx(2.5), "timeout is not valid"
         return response
 
     provider = ExternalWebSearch(
@@ -148,11 +148,11 @@ def test_external_search_success_normalises_payload(
     )
     outcome = provider.search("python")
 
-    assert outcome["status"] == "ok"
+    assert outcome["status"] == "ok", "Condition must be true"
     titles = [item["title"] for item in outcome["results"]]
-    assert "Python" in titles
-    assert "PyPI" in titles
-    assert all(item["provider"] == "external_web" for item in outcome["results"])
+    assert "Python" in titles, "Condition must be true"
+    assert "PyPI" in titles, "Condition must be true"
+    assert all(item["provider"] == "external_web" for item in outcome["results"]), "Result must not be empty"
 
 
 def test_external_search_supports_offline_index(tmp_path: Path) -> None:
@@ -176,19 +176,19 @@ def test_external_search_supports_offline_index(tmp_path: Path) -> None:
     provider = ExternalWebSearch(endpoint=str(index), enabled=True)
     outcome = provider.search("python")
 
-    assert outcome["status"] == "ok"
-    assert outcome["results"][0]["title"] == "Python"
+    assert outcome["status"] == "ok", "Condition must be true"
+    assert outcome["results"][0]["title"] == "Python", "Result must not be empty"
 
 
 def test_external_search_missing_offline_index(tmp_path: Path) -> None:
     provider = ExternalWebSearch(endpoint=str(tmp_path / "missing.json"), enabled=True)
     outcome = provider.search("python")
-    assert outcome["status"] == "error"
-    assert outcome["reason"] == "offline-missing"
+    assert outcome["status"] == "error", "Error should be raised or set"
+    assert outcome["reason"] == "offline-missing", "Condition must be true"
 
 
 def test_external_search_invalid_endpoint() -> None:
     provider = ExternalWebSearch(endpoint="ftp://example.com/index", enabled=True)
     outcome = provider.search("python")
-    assert outcome["status"] == "unavailable"
-    assert outcome["reason"] == "invalid-endpoint"
+    assert outcome["status"] == "unavailable", "Condition must be true"
+    assert outcome["reason"] == "invalid-endpoint", "Condition must be true"

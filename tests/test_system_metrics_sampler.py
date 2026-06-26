@@ -19,12 +19,12 @@ from codex_ml.monitoring.system_metrics import (
 def test_sample_system_metrics_basic():
     payload = sample_system_metrics()
     assert isinstance(payload, dict)
-    assert "cpu_percent" in payload
+    assert "cpu_percent" in payload, "Condition must be true"
     cpu_value = payload.get("cpu_percent")
     assert cpu_value is None or isinstance(cpu_value, (int, float))
 
     scalars = system_metrics_scalars(payload)
-    assert "cpu_percent" in scalars
+    assert "cpu_percent" in scalars, "Condition must be true"
     assert isinstance(scalars["cpu_percent"], float)
     if "mem_percent" in scalars:
         assert isinstance(scalars["mem_percent"], float)
@@ -47,4 +47,4 @@ def test_start_metrics_logger_collects_records():
     assert records, "expected at least one metrics sample"
     for entry in records:
         assert isinstance(entry, dict)
-        assert "cpu_percent" in entry
+        assert "cpu_percent" in entry, "Condition must be true"

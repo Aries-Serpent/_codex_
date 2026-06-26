@@ -111,8 +111,8 @@ def test_fuzz_train_config_valid_construction(model_name, batch_size, epochs, se
             seed=seed,
             device=device,
         )
-        assert cfg.batch_size == batch_size
-        assert cfg.epochs == epochs
+        assert cfg.batch_size == batch_size, "batch_size is not valid"
+        assert cfg.epochs == epochs, "epochs is not valid"
     except ValidationError:
         # Pydantic rejected it — valid outcome
         pass
@@ -143,8 +143,8 @@ def test_fuzz_train_config_boundary_numerics(
             grad_accum=grad_accum,
         )
         # If accepted, values must be positive
-        assert cfg.learning_rate > 0
-        assert cfg.batch_size >= 1
+        assert cfg.learning_rate > 0, "learning_rate must be greater than zero"
+        assert cfg.batch_size >= 1, "batch_size must be greater than zero"
     except ValidationError:
         pass  # invalid input rejected by Pydantic — expected behaviour
     except Exception as exc:  # noqa: BLE001
@@ -208,7 +208,7 @@ def test_fuzz_train_config_dtype_and_eval_split(dtype, eval_split):
     try:
         cfg = TrainConfig(dtype=dtype, eval_split=eval_split)
         if eval_split is not None and not math.isnan(eval_split):  # not NaN
-            assert 0.0 <= cfg.eval_split <= 1.0
+            assert 0.0 <= cfg.eval_split <= 1.0, "0 is not valid"
     except ValidationError:
         pass  # invalid config values rejected by Pydantic — expected behaviour in fuzz test
     except Exception as exc:  # noqa: BLE001
@@ -242,9 +242,9 @@ def test_fuzz_lora_config_construction(enable, r, lora_alpha, lora_dropout, task
             lora_dropout=lora_dropout,
             task_type=task_type,
         )
-        assert cfg.r >= 1
-        assert cfg.lora_alpha >= 1
-        assert 0.0 <= cfg.lora_dropout <= 1.0
+        assert cfg.r >= 1, "r must be greater than zero"
+        assert cfg.lora_alpha >= 1, "lora_alpha must be greater than zero"
+        assert 0.0 <= cfg.lora_dropout <= 1.0, "0 is not valid"
     except ValidationError:
         pass  # non-positive ranks/alpha rejected by Pydantic — expected behaviour in fuzz test
     except Exception as exc:  # noqa: BLE001

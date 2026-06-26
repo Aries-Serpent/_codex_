@@ -7,7 +7,7 @@ def test_parse_args_keep_latest_defaults_true():
     args = orchestrator._parse_args(
         ["--deduplicate", "--workflow", "validate.yml", "--branch", "main"]
     )
-    assert args.keep_latest is True
+    assert args.keep_latest is True, "keep_latest is not valid"
 
 
 def test_cancel_superseded_runs_delegates(monkeypatch):
@@ -33,6 +33,6 @@ def test_cancel_superseded_runs_delegates(monkeypatch):
         "owner/repo",
         ["token"],
     )
-    assert cancelled == 3
-    assert captured["keep_latest"] is True
-    assert captured["dry_run"] is False
+    assert cancelled == 3, "cancelled is not valid"
+    assert captured["keep_latest"] is True, "Condition must be true"
+    assert captured["dry_run"] is False, "Condition must be true"

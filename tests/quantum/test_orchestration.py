@@ -20,9 +20,9 @@ class TestThermodynamicTask:
         task = ThermodynamicTask(
             name="test_task", task_func=lambda: "result", energy=1.5, priority=TaskPriority.HIGH
         )
-        assert task.name == "test_task"
-        assert task.energy == 1.5
-        assert task.priority == TaskPriority.HIGH
+        assert task.name == "test_task", "name is not valid"
+        assert task.energy == 1.5, "energy is not valid"
+        assert task.priority == TaskPriority.HIGH, "priority is not valid"
 
     def test_calculate_free_energy(self):
         """Test Gibbs free energy calculation."""
@@ -30,7 +30,7 @@ class TestThermodynamicTask:
             name="task", task_func=lambda: None, energy=5.0, temperature=2.0, entropy=1.0
         )
         # G = E - TS = 5.0 - 2.0 * 1.0 = 3.0
-        assert task.calculate_free_energy() == pytest.approx(3.0)
+        assert task.calculate_free_energy() == pytest.approx(3.0), "Condition must be true"
 
     def test_task_comparison(self):
         """Test task comparison by free energy."""
@@ -41,7 +41,7 @@ class TestThermodynamicTask:
             name="low_priority", task_func=lambda: None, energy=5.0, temperature=1.0, entropy=0.1
         )
         # Lower free energy = higher priority
-        assert task1 < task2
+        assert task1 < task2, "task1 is not valid"
 
 
 class TestThermodynamicOrchestrator:
@@ -50,17 +50,17 @@ class TestThermodynamicOrchestrator:
     def test_orchestrator_creation(self):
         """Test creating an orchestrator."""
         orch = ThermodynamicOrchestrator(global_temperature=1.5, max_energy_per_cycle=10.0)
-        assert orch.global_temperature == 1.5
-        assert orch.max_energy_per_cycle == 10.0
-        assert orch.tasks == []
+        assert orch.global_temperature == 1.5, "global_temperature is not valid"
+        assert orch.max_energy_per_cycle == 10.0, "max_energy_per_cycle is not valid"
+        assert orch.tasks == [], "tasks is not valid"
 
     def test_register_task(self):
         """Test registering a task."""
         orch = ThermodynamicOrchestrator()
         task = ThermodynamicTask(name="task1", task_func=lambda: None)
         orch.register_task(task)
-        assert len(orch.tasks) == 1
-        assert orch.tasks[0] is task
+        assert len(orch.tasks) == 1, "Collection must not be empty"
+        assert orch.tasks[0] is task, "Condition must be true"
 
     def test_execute_thermodynamic_cycle_simple(self):
         """Test executing a simple task cycle."""
@@ -80,10 +80,10 @@ class TestThermodynamicOrchestrator:
 
         results = orch.execute_thermodynamic_cycle()
 
-        assert len(results["executed"]) == 1
-        assert results["executed"][0]["name"] == "task1"
-        assert results["total_energy_used"] == 2.0
-        assert "task1" in executed
+        assert len(results["executed"]) == 1, "Collection must not be empty"
+        assert results["executed"][0]["name"] == "task1", "Result must not be empty"
+        assert results["total_energy_used"] == 2.0, "Result must not be empty"
+        assert "task1" in executed, "Condition must be true"
 
     def test_execute_multiple_tasks(self):
         """Test executing multiple tasks."""
@@ -95,8 +95,8 @@ class TestThermodynamicOrchestrator:
 
         results = orch.execute_thermodynamic_cycle()
 
-        assert len(results["executed"]) == 3
-        assert results["total_energy_used"] == 6.0
+        assert len(results["executed"]) == 3, "Collection must not be empty"
+        assert results["total_energy_used"] == 6.0, "Result must not be empty"
 
     def test_energy_budget_enforcement(self):
         """Test that energy budget is enforced."""
@@ -110,8 +110,8 @@ class TestThermodynamicOrchestrator:
         results = orch.execute_thermodynamic_cycle()
 
         # Should only execute tasks within budget
-        assert results["total_energy_used"] <= 5.0
-        assert len(results["skipped"]) > 0
+        assert results["total_energy_used"] <= 5.0, "Result must not be empty"
+        assert len(results["skipped"]) > 0, "Collection must not be empty"
 
     def test_task_priority_ordering(self):
         """Test that tasks execute in priority order."""
@@ -157,7 +157,7 @@ class TestThermodynamicOrchestrator:
         orch.execute_thermodynamic_cycle()
 
         # Should execute in order: high, medium, low
-        assert execution_order[0] == "high"
+        assert execution_order[0] == "high", "execution_ is not valid"
 
     def test_task_failure_handling(self):
         """Test handling of task failures."""
@@ -171,8 +171,8 @@ class TestThermodynamicOrchestrator:
 
         results = orch.execute_thermodynamic_cycle()
 
-        assert len(results["failed"]) == 1
-        assert results["failed"][0]["name"] == "failing_task"
+        assert len(results["failed"]) == 1, "Collection must not be empty"
+        assert results["failed"][0]["name"] == "failing_task", "Result must not be empty"
 
     def test_optimize_task_order(self):
         """Test task order optimization using simulated annealing."""
@@ -189,7 +189,7 @@ class TestThermodynamicOrchestrator:
         optimal_order = orch.optimize_task_order()
 
         # task_b should come before task_a (dependency)
-        assert optimal_order.index("task_b") < optimal_order.index("task_a")
+        assert optimal_order.index("task_b") < optimal_order.index("task_a"), "optimal_ is not valid"
 
     def test_temperature_cooling(self):
         """Test system temperature cooling after work."""
@@ -201,7 +201,7 @@ class TestThermodynamicOrchestrator:
         results = orch.execute_thermodynamic_cycle()
 
         # Temperature should decrease after energy expenditure
-        assert results["final_temperature"] < orch.global_temperature
+        assert results["final_temperature"] < orch.global_temperature, "Result must not be empty"
 
 
 class TestThermodynamicLoadPriority:
@@ -219,8 +219,8 @@ class TestThermodynamicLoadPriority:
 
         # Should be sorted by priority
         names = [name for name, _ in priorities]
-        assert names[0] == "high"  # Lowest energy = highest priority
-        assert names[-1] == "low"  # Highest energy = lowest priority
+        assert names[0] == "high", "Condition must be true"
+        assert names[-1] == "low", "Condition must be true"
 
     def test_temperature_effect(self):
         """Test temperature effect on priorities."""
@@ -231,7 +231,7 @@ class TestThermodynamicLoadPriority:
         priorities_cold = calculate_thermodynamic_load_priority([task], 0.1)
 
         # Cold system has more extreme priorities
-        assert priorities_cold[0][1] < priorities_hot[0][1]
+        assert priorities_cold[0][1] < priorities_hot[0][1], "pri is not valid"
 
 
 @pytest.mark.integration
@@ -283,10 +283,10 @@ class TestOrchestrationIntegration:
 
         results = orch.execute_thermodynamic_cycle()
 
-        assert results_store["plugin_loaded"]
-        assert results_store["data_processed"]
-        assert results_store["cleanup_done"]
-        assert len(results["executed"]) == 3
+        assert results_store["plugin_loaded"], "Result must not be empty"
+        assert results_store["data_processed"], "Result must not be empty"
+        assert results_store["cleanup_done"], "Result must not be empty"
+        assert len(results["executed"]) == 3, "Collection must not be empty"
 
     def test_complex_dependency_management(self):
         """Test managing complex task dependencies."""
@@ -332,6 +332,6 @@ class TestOrchestrationIntegration:
         orch.execute_thermodynamic_cycle()
 
         # Verify dependency order
-        assert execution_log.index("init") < execution_log.index("load_config")
-        assert execution_log.index("load_config") < execution_log.index("load_plugins")
-        assert execution_log.index("load_plugins") < execution_log.index("start_service")
+        assert execution_log.index("init") < execution_log.index("load_config"), "Condition must be true"
+        assert execution_log.index("load_config") < execution_log.index("load_plugins"), "Condition must be true"
+        assert execution_log.index("load_plugins") < execution_log.index("start_service"), "Condition must be true"

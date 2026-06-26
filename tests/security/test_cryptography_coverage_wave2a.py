@@ -59,8 +59,8 @@ class TestCryptographyEncryption:
         )
 
         # Verify ciphertext is different from plaintext
-        assert ciphertext != sample_data
-        assert len(ciphertext) > 0
+        assert ciphertext != sample_data, "Data must not be empty"
+        assert len(ciphertext) > 0, "Ciphertext must not be empty"
 
         # Decrypt with private key
         plaintext = private_key.decrypt(
@@ -72,7 +72,7 @@ class TestCryptographyEncryption:
             ),
         )
 
-        assert plaintext == sample_data
+        assert plaintext == sample_data, "Data must not be empty"
 
     def test_rsa_encryption_with_label(self, rsa_key_pair, sample_data):
         """Test RSA-OAEP encryption with label."""
@@ -99,7 +99,7 @@ class TestCryptographyEncryption:
             ),
         )
 
-        assert plaintext == sample_data
+        assert plaintext == sample_data, "Data must not be empty"
 
     def test_rsa_encryption_wrong_label_fails(self, rsa_key_pair, sample_data):
         """Test that decryption fails with wrong label."""
@@ -143,7 +143,7 @@ class TestCryptographyEncryption:
         )
 
         # Verify signature with public key
-        assert len(signature) > 0
+        assert len(signature) > 0, "Signature must not be empty"
         public_key.verify(
             signature,
             sample_data,
@@ -215,7 +215,7 @@ class TestCryptographyEncryption:
         unpadder = crypto_padding.PKCS7(128).unpadder()
         plaintext = unpadder.update(plaintext_padded) + unpadder.finalize()
 
-        assert plaintext == sample_data
+        assert plaintext == sample_data, "Data must not be empty"
 
     def test_aes_encryption_decryption_gcm(self, sample_data):
         """Test AES encryption in GCM mode (authenticated)."""
@@ -242,7 +242,7 @@ class TestCryptographyEncryption:
         decryptor = cipher2.decryptor()
         plaintext = decryptor.update(ciphertext) + decryptor.finalize()
 
-        assert plaintext == sample_data
+        assert plaintext == sample_data, "Data must not be empty"
 
     def test_aes_gcm_authentication_failure_on_tampering(self, sample_data):
         """Test that GCM mode detects tampering."""
@@ -301,7 +301,7 @@ class TestCryptographyEncryption:
             hashes.SHA256(),
         )
 
-        assert len(signature) > 0
+        assert len(signature) > 0, "Signature must not be empty"
 
     def test_key_serialization_with_password(self, rsa_key_pair):
         """Test RSA key serialization with password encryption."""
@@ -316,7 +316,7 @@ class TestCryptographyEncryption:
         )
 
         # Verify it's encrypted (contains encryption info)
-        assert b"ENCRYPTED" in private_pem
+        assert b"ENCRYPTED" in private_pem, "Condition must be true"
 
     def test_hash_computation_sha256(self, sample_data):
         """Test SHA256 hash computation."""
@@ -327,7 +327,7 @@ class TestCryptographyEncryption:
         hash_value = digest.finalize()
 
         # Hash should be 32 bytes (256 bits)
-        assert len(hash_value) == 32
+        assert len(hash_value) == 32, "Hash_value must not be empty"
 
     def test_hash_computation_sha512(self, sample_data):
         """Test SHA512 hash computation."""
@@ -338,7 +338,7 @@ class TestCryptographyEncryption:
         hash_value = digest.finalize()
 
         # Hash should be 64 bytes (512 bits)
-        assert len(hash_value) == 64
+        assert len(hash_value) == 64, "Hash_value must not be empty"
 
     def test_hmac_generation_verification(self, sample_data):
         """Test HMAC generation and verification."""

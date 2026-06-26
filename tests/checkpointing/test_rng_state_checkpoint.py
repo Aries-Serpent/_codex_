@@ -39,9 +39,9 @@ def test_checkpoint_manager_persists_rng(tmp_path, disable_torch_profiler):
     restored_rand = random.random()
     restored_tensor = torch.rand(1)
 
-    assert abs(restored_rand - baseline_rand) < 1e-12
+    assert abs(restored_rand - baseline_rand) < 1e-12, "Condition must be true"
     assert torch.allclose(restored_tensor, baseline_tensor)
 
     meta = json.loads(path.with_suffix(".meta.json").read_text())
-    assert meta["metrics"]["loss"] == 1.0
-    assert meta.get("rng")
+    assert meta["metrics"]["loss"] == 1.0, "Condition must be true"
+    assert meta.get("rng"), "Condition must be true"

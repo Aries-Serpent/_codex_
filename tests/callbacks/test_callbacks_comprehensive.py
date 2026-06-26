@@ -50,9 +50,9 @@ class TestEarlyStoppingCallback:
         # Mock early stopping configuration
         config = {"patience": 3, "metric": "eval_loss", "mode": "min"}
 
-        assert config["patience"] == 3
-        assert config["metric"] == "eval_loss"
-        assert config["mode"] == "min"
+        assert config["patience"] == 3, "Condition must be true"
+        assert config["metric"] == "eval_loss", "Condition must be true"
+        assert config["mode"] == "min", "Condition must be true"
 
     def test_early_stopping_improvement(self, mock_trainer):
         """Test early stopping with improving metric"""
@@ -65,7 +65,7 @@ class TestEarlyStoppingCallback:
             if loss < best_score:
                 best_score = loss
 
-        assert best_score == 0.6
+        assert best_score == 0.6, "best_score is not valid"
 
 
 class TestModelCheckpointCallback:
@@ -80,8 +80,8 @@ class TestModelCheckpointCallback:
             "mode": "min",
         }
 
-        assert config["checkpoint_dir"] == temp_checkpoint_dir
-        assert config["save_best_only"] is True
+        assert config["checkpoint_dir"] == temp_checkpoint_dir, "Condition must be true"
+        assert config["save_best_only"] is True, "Condition must be true"
 
 
 if __name__ == "__main__":

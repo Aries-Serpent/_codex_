@@ -9,7 +9,7 @@ to specific exception types based on context analysis.
 import re
 import sys
 from pathlib import Path
-from typing import List, Tuple
+from typing import Tuple
 
 # Mapping of test context to specific exceptions
 EXCEPTION_MAPPING = {
@@ -88,7 +88,7 @@ def main():
             total_fixes += fixes
             print(f"✓ {py_file.relative_to('.')}: {fixes} exceptions fixed")
 
-    print(f"\nHealing Summary:")
+    print("\nHealing Summary:")
     print(f"  Files changed: {files_changed}")
     print(f"  Total fixes: {total_fixes}")
 

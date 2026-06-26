@@ -14,14 +14,14 @@ class TestStructuralEdgeCases:
     def test_empty_file_list(self):
         """Test with empty file list (offline, deterministic)."""
         result = structure_integrity.detect({"files": []})
-        assert result["id"] == "structural-integrity"
-        assert result["meta"]["risk_level"] == "low"
+        assert result["id"] == "structural-integrity", "Result must not be empty"
+        assert result["meta"]["risk_level"] == "low", "Result must not be empty"
 
     def test_single_file_no_pattern(self):
         """Test with single file, no pattern detected."""
         file_index = {"files": [{"path": "src/app.py"}]}
         result = structure_integrity.detect(file_index)
-        assert result["found_patterns"] == []
+        assert result["found_patterns"] == [], "Result must not be empty"
 
     def test_excluded_directories(self):
         """Test excluded directories don't trigger patterns."""
@@ -33,13 +33,13 @@ class TestStructuralEdgeCases:
             ]
         }
         result = structure_integrity.detect(file_index)
-        assert result["found_patterns"] == []
+        assert result["found_patterns"] == [], "Result must not be empty"
 
     def test_case_insensitive_shadow(self):
         """Test case-insensitive shadow detection."""
         file_index = {"files": [{"path": "TORCH/layer.py"}]}
         result = structure_integrity.detect(file_index)
-        assert "lib-shadowing" in result["found_patterns"]
+        assert "lib-shadowing" in result["found_patterns"], "Result must not be empty"
 
     def test_nested_paths(self):
         """Test deeply nested paths (bounded, offline)."""
@@ -50,7 +50,7 @@ class TestStructuralEdgeCases:
             ]
         }
         result = structure_integrity.detect(file_index)
-        assert "split-brain" in result["found_patterns"]
+        assert "split-brain" in result["found_patterns"], "Result must not be empty"
 
 
 class TestStructuralSafeguards:
@@ -64,7 +64,7 @@ class TestStructuralSafeguards:
 
         result = structure_integrity.detect({"files": files}, evidence_limit=5)
         # Should be bounded
-        assert len(result["evidence_files"]) < 100
+        assert len(result["evidence_files"]) < 100, "Collection must not be empty"
 
     def test_related_files_included(self):
         """Test related files are in evidence for safeguards."""
@@ -77,14 +77,14 @@ class TestStructuralSafeguards:
         """Test safeguards metadata is comprehensive."""
         result = structure_integrity.detect({"files": []})
         safeguards = result["meta"]["safeguards"]
-        assert "bounded" in safeguards
-        assert "deterministic" in safeguards
-        assert "validation" in safeguards
+        assert "bounded" in safeguards, "Condition must be true"
+        assert "deterministic" in safeguards, "Condition must be true"
+        assert "validation" in safeguards, "Condition must be true"
 
     def test_docs_keywords_complete(self):
         """Test docs_keywords include safeguard terms."""
         result = structure_integrity.detect({"files": []})
         keywords = result["docs_keywords"]
-        assert "validation" in keywords
-        assert "deterministic" in keywords
-        assert "safeguards" in keywords
+        assert "validation" in keywords, "Condition must be true"
+        assert "deterministic" in keywords, "Condition must be true"
+        assert "safeguards" in keywords, "Condition must be true"

@@ -65,4 +65,4 @@ class TestArithmeticOperations:
 
     def test_division_precision(self):
         result = divide(1.0, 3.0)
-        assert 0.33 < result < 0.34
+        assert 0.33 < result < 0.34, "Result must not be empty"

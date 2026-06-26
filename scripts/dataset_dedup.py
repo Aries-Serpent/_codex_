@@ -56,7 +56,7 @@ class ContentDeduplicator:
             return sha256.hexdigest()
         except Exception as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             print(f"Warning: Could not read {filepath}: <ERROR_TYPE>", file=sys.stderr)
             return ""
 

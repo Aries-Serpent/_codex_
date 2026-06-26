@@ -70,17 +70,17 @@ jobs:
 def test_workflow_inventory_initialization(temp_workflows_dir):
     """Test that inventory can be initialized."""
     inventory = WorkflowInventory(temp_workflows_dir)
-    assert inventory.workflows_dir == temp_workflows_dir
+    assert inventory.workflows_dir == temp_workflows_dir, "workflows_dir is not valid"
     assert isinstance(inventory.parser, WorkflowParser)
-    assert len(inventory.workflows) == 0
+    assert len(inventory.workflows) == 0, "Collection must not be empty"
 
 
 def test_scan_empty_directory(temp_workflows_dir):
     """Test scanning an empty directory."""
     inventory = WorkflowInventory(temp_workflows_dir)
     count = inventory.scan()
-    assert count == 0
-    assert len(inventory.workflows) == 0
+    assert count == 0, "Count must be greater than zero"
+    assert len(inventory.workflows) == 0, "Collection must not be empty"
 
 
 def test_scan_with_workflows(temp_workflows_dir, sample_workflow_content):
@@ -92,13 +92,13 @@ def test_scan_with_workflows(temp_workflows_dir, sample_workflow_content):
     inventory = WorkflowInventory(temp_workflows_dir)
     count = inventory.scan()
 
-    assert count == 1
-    assert "test.yml" in inventory.workflows
+    assert count == 1, "Count must be greater than zero"
+    assert "test.yml" in inventory.workflows, "Condition must be true"
 
     workflow = inventory.get_workflow("test.yml")
-    assert workflow is not None
-    assert workflow.name == "Test Workflow"
-    assert workflow.is_triggerable is True
+    assert workflow is not None, "workflow must be initialized"
+    assert workflow.name == "Test Workflow", "name is not valid"
+    assert workflow.is_triggerable is True, "is_triggerable is not valid"
 
 
 def test_scan_skips_disabled_workflows(temp_workflows_dir, sample_workflow_content):
@@ -113,9 +113,9 @@ def test_scan_skips_disabled_workflows(temp_workflows_dir, sample_workflow_conte
     inventory = WorkflowInventory(temp_workflows_dir)
     count = inventory.scan()
 
-    assert count == 1
-    assert "enabled.yml" in inventory.workflows
-    assert "disabled.yml.disabled" not in inventory.workflows
+    assert count == 1, "Count must be greater than zero"
+    assert "enabled.yml" in inventory.workflows, "Condition must be true"
+    assert "disabled.yml.disabled" not in inventory.workflows, "Condition must be true"
 
 
 def test_get_triggerable_workflows(
@@ -133,8 +133,8 @@ def test_get_triggerable_workflows(
     inventory.scan()
 
     triggerable = inventory.get_triggerable()
-    assert len(triggerable) == 1
-    assert triggerable[0].filename == "triggerable.yml"
+    assert len(triggerable) == 1, "Triggerable must not be empty"
+    assert triggerable[0].filename == "triggerable.yml", "filename is not valid"
 
 
 def test_get_reusable_workflows(
@@ -151,8 +151,8 @@ def test_get_reusable_workflows(
     inventory.scan()
 
     reusable = inventory.get_reusable()
-    assert len(reusable) == 1
-    assert reusable[0].filename == "reusable.yml"
+    assert len(reusable) == 1, "Reusable must not be empty"
+    assert reusable[0].filename == "reusable.yml", "filename is not valid"
 
 
 def test_get_by_trigger_type(temp_workflows_dir):
@@ -183,12 +183,12 @@ jobs:
     inventory.scan()
 
     push_workflows = inventory.get_by_trigger_type(TriggerType.PUSH)
-    assert len(push_workflows) == 1
-    assert push_workflows[0].filename == "push.yml"
+    assert len(push_workflows) == 1, "Push_workflows must not be empty"
+    assert push_workflows[0].filename == "push.yml", "filename is not valid"
 
     pr_workflows = inventory.get_by_trigger_type(TriggerType.PULL_REQUEST)
-    assert len(pr_workflows) == 1
-    assert pr_workflows[0].filename == "pr.yml"
+    assert len(pr_workflows) == 1, "Pr_workflows must not be empty"
+    assert pr_workflows[0].filename == "pr.yml", "filename is not valid"
 
 
 def test_get_stats(temp_workflows_dir, sample_workflow_content):
@@ -202,10 +202,10 @@ def test_get_stats(temp_workflows_dir, sample_workflow_content):
     inventory.scan()
 
     stats = inventory.get_stats()
-    assert stats.total_workflows == 3
-    assert stats.triggerable_workflows == 3
-    assert stats.total_jobs == 3
-    assert stats.total_triggers >= 3
+    assert stats.total_workflows == 3, "total_workflows is not valid"
+    assert stats.triggerable_workflows == 3, "triggerable_workflows is not valid"
+    assert stats.total_jobs == 3, "total_jobs is not valid"
+    assert stats.total_triggers >= 3, "total_triggers must be greater than zero"
 
 
 def test_list_workflows(temp_workflows_dir, sample_workflow_content):
@@ -232,7 +232,7 @@ def test_refresh_workflow(temp_workflows_dir, sample_workflow_content):
 
     # Verify initial state
     workflow = inventory.get_workflow("test.yml")
-    assert workflow.name == "Test Workflow"
+    assert workflow.name == "Test Workflow", "name is not valid"
 
     # Update the workflow file
     updated_content = sample_workflow_content.replace("Test Workflow", "Updated Workflow")
@@ -240,17 +240,17 @@ def test_refresh_workflow(temp_workflows_dir, sample_workflow_content):
 
     # Refresh and verify
     success = inventory.refresh_workflow("test.yml")
-    assert success is True
+    assert success is True, "success is not valid"
 
     workflow = inventory.get_workflow("test.yml")
-    assert workflow.name == "Updated Workflow"
+    assert workflow.name == "Updated Workflow", "name is not valid"
 
 
 def test_scan_nonexistent_directory():
     """Test scanning a directory that doesn't exist."""
     inventory = WorkflowInventory("/nonexistent/path")
     count = inventory.scan()
-    assert count == 0
+    assert count == 0, "Count must be greater than zero"
 
 
 def test_workflow_dependencies(temp_workflows_dir):
@@ -292,10 +292,10 @@ jobs:
 
     # Check dependencies
     deps = inventory.get_workflow_dependencies("caller.yml")
-    assert "reusable.yml" in deps
+    assert "reusable.yml" in deps, "Condition must be true"
 
     dependents = inventory.get_workflow_dependents("reusable.yml")
-    assert "caller.yml" in dependents
+    assert "caller.yml" in dependents, "Condition must be true"
 
 
 def test_force_refresh(temp_workflows_dir, sample_workflow_content):
@@ -312,7 +312,7 @@ def test_force_refresh(temp_workflows_dir, sample_workflow_content):
     # Scan with force_refresh
     count2 = inventory.scan(force_refresh=True)
 
-    assert count1 == count2 == 1
+    assert count1 == count2 == 1, "Count must be greater than zero"
 
 
 @pytest.mark.parametrize(
@@ -335,9 +335,9 @@ def test_scan_file_extensions(
     inventory.scan()
 
     if expected_found:
-        assert filename in inventory.workflows
+        assert filename in inventory.workflows, "Condition must be true"
     else:
-        assert filename not in inventory.workflows
+        assert filename not in inventory.workflows, "Condition must be true"
 
 
 def test_real_workflow_integration():
@@ -355,22 +355,22 @@ def test_real_workflow_integration():
 
     # Verify we found workflows
     assert count > 0, "Should find at least one workflow"
-    assert len(inventory.workflows) == count
+    assert len(inventory.workflows) == count, "Collection must not be empty"
 
     # Verify stats make sense
     stats = inventory.get_stats()
-    assert stats.total_workflows == count
-    assert stats.total_jobs >= 0
-    assert stats.total_triggers >= 0
+    assert stats.total_workflows == count, "Count must be greater than zero"
+    assert stats.total_jobs >= 0, "total_jobs must be greater than zero"
+    assert stats.total_triggers >= 0, "total_triggers must be greater than zero"
 
     # Verify triggerable workflows are identified
     triggerable = inventory.get_triggerable()
-    assert all(item.filename in inventory.workflows for item in triggerable)
+    assert all(item.filename in inventory.workflows for item in triggerable), "Item must not be empty"
 
     # Verify at least one workflow has proper metadata
     first_workflow = list(inventory.workflows.values())[0]
-    assert first_workflow.name is not None
-    assert first_workflow.file_path.exists()
+    assert first_workflow.name is not None, "name must be initialized"
+    assert first_workflow.file_path.exists(), "first_w is not valid"
     assert isinstance(first_workflow.jobs, dict)
 
 
@@ -380,7 +380,7 @@ def test_workflow_inventory_import_from_services():
     from src.services.workflow import WorkflowInventory
 
     # Verify both import paths work
-    assert WI is WorkflowInventory
+    assert WI is WorkflowInventory, "WI is not valid"
 
 
 def test_parser_handles_invalid_yaml(temp_workflows_dir):
@@ -395,7 +395,7 @@ def test_parser_handles_invalid_yaml(temp_workflows_dir):
     result = parser.parse_file(invalid_file)
 
     # Should return None for invalid YAML
-    assert result is None
+    assert result is None, "Result must not be empty"
 
 
 def test_parser_handles_invalid_utf8(temp_workflows_dir):
@@ -410,7 +410,7 @@ def test_parser_handles_invalid_utf8(temp_workflows_dir):
     result = parser.parse_file(invalid_file)
 
     # Should return None for invalid encoding
-    assert result is None
+    assert result is None, "Result must not be empty"
 
 
 def test_inventory_skips_corrupted_files(temp_workflows_dir, sample_workflow_content):
@@ -426,9 +426,9 @@ def test_inventory_skips_corrupted_files(temp_workflows_dir, sample_workflow_con
     count = inventory.scan()
 
     # Should successfully parse the valid one
-    assert count == 1
-    assert "valid.yml" in inventory.workflows
-    assert "invalid.yml" not in inventory.workflows
+    assert count == 1, "Count must be greater than zero"
+    assert "valid.yml" in inventory.workflows, "Condition must be true"
+    assert "invalid.yml" not in inventory.workflows, "Condition must be true"
 
 
 def test_parser_handles_missing_required_fields():
@@ -447,9 +447,9 @@ on: push
     result = parser.parse_content(content, Path("test.yml"))
 
     # Should still parse (jobs can be empty)
-    assert result is not None
-    assert result.name == "Test"
-    assert len(result.jobs) == 0
+    assert result is not None, "result must be initialized"
+    assert result.name == "Test", "Result must not be empty"
+    assert len(result.jobs) == 0, "Collection must not be empty"
 
 
 def test_workflow_dependencies_caller_uses_workflow(temp_workflows_dir):
@@ -485,7 +485,7 @@ jobs:
 
     # Check dependencies are detected
     deps = inventory.get_workflow_dependencies("caller.yml")
-    assert "reusable.yml" in deps
+    assert "reusable.yml" in deps, "Condition must be true"
 
 
 def test_schedule_trigger_parsing(temp_workflows_dir):
@@ -508,12 +508,12 @@ jobs:
     inventory.scan()
 
     wf = inventory.get_workflow("scheduled.yml")
-    assert wf is not None
-    assert len(wf.triggers) > 0
+    assert wf is not None, "wf must be initialized"
+    assert len(wf.triggers) > 0, "Collection must not be empty"
 
     # Find schedule trigger
     schedule_triggers = [t for t in wf.triggers if t.type.value == "schedule"]
-    assert len(schedule_triggers) > 0
+    assert len(schedule_triggers) > 0, "Schedule_triggers must not be empty"
 
 
 def test_workflow_with_if_condition(temp_workflows_dir):
@@ -534,8 +534,8 @@ jobs:
     inventory.scan()
 
     wf = inventory.get_workflow("conditional.yml")
-    assert wf is not None
-    assert "conditional-job" in wf.jobs
+    assert wf is not None, "wf must be initialized"
+    assert "conditional-job" in wf.jobs, "Condition must be true"
     # if_condition should be captured (uses 'if' alias)
 
 
@@ -543,14 +543,14 @@ def test_inventory_nonexistent_directory():
     """Test inventory with nonexistent directory."""
     inventory = WorkflowInventory("/nonexistent/path/to/workflows")
     count = inventory.scan()
-    assert count == 0
+    assert count == 0, "Count must be greater than zero"
 
 
 def test_refresh_nonexistent_workflow(temp_workflows_dir):
     """Test refreshing a workflow that doesn't exist."""
     inventory = WorkflowInventory(temp_workflows_dir)
     success = inventory.refresh_workflow("nonexistent.yml")
-    assert success is False
+    assert success is False, "success is not valid"
 
 
 def test_scan_continues_when_parser_raises(
@@ -563,8 +563,8 @@ def test_scan_continues_when_parser_raises(
     inventory = WorkflowInventory(temp_workflows_dir)
     monkeypatch.setattr(inventory.parser, "parse_file", raise_exception(RuntimeError("boom")))
 
-    assert inventory.scan() == 0
-    assert inventory.workflows == {}
+    assert inventory.scan() == 0, "invent is not valid"
+    assert inventory.workflows == {}, "workflows is not valid"
 
 
 def test_refresh_workflow_handles_parser_exception(
@@ -577,7 +577,7 @@ def test_refresh_workflow_handles_parser_exception(
     inventory = WorkflowInventory(temp_workflows_dir)
     monkeypatch.setattr(inventory.parser, "parse_file", raise_exception(RuntimeError("boom")))
 
-    assert inventory.refresh_workflow("test.yml") is False
+    assert inventory.refresh_workflow("test.yml") is False, "invent is not valid"
 
 
 def test_parser_with_list_trigger_format(temp_workflows_dir):
@@ -597,8 +597,8 @@ jobs:
     parser = WorkflowParser()
     workflow = parser.parse_content(content, temp_workflows_dir / "test.yml")
 
-    assert workflow is not None
-    assert len(workflow.triggers) == 2
+    assert workflow is not None, "workflow must be initialized"
+    assert len(workflow.triggers) == 2, "Collection must not be empty"
 
 
 def test_parser_with_string_trigger_format(temp_workflows_dir):
@@ -618,9 +618,9 @@ jobs:
     parser = WorkflowParser()
     workflow = parser.parse_content(content, temp_workflows_dir / "test.yml")
 
-    assert workflow is not None
-    assert len(workflow.triggers) == 1
-    assert workflow.triggers[0].type.value == "push"
+    assert workflow is not None, "workflow must be initialized"
+    assert len(workflow.triggers) == 1, "Collection must not be empty"
+    assert workflow.triggers[0].type.value == "push", "Value must be initialized"
 
 
 def test_job_with_needs_string(temp_workflows_dir):
@@ -645,9 +645,9 @@ jobs:
     inventory.scan()
 
     wf = inventory.get_workflow("needs.yml")
-    assert wf is not None
-    assert "second" in wf.jobs
-    assert wf.jobs["second"].needs == ["first"]
+    assert wf is not None, "wf must be initialized"
+    assert "second" in wf.jobs, "Condition must be true"
+    assert wf.jobs["second"].needs == ["first"], "needs is not valid"
 
 
 def test_job_with_timeout(temp_workflows_dir):
@@ -668,8 +668,8 @@ jobs:
     inventory.scan()
 
     wf = inventory.get_workflow("timeout.yml")
-    assert wf is not None
-    assert wf.jobs["test"].timeout_minutes == 60
+    assert wf is not None, "wf must be initialized"
+    assert wf.jobs["test"].timeout_minutes == 60, "timeout_minutes is not valid"
 
 
 def test_clear_parser_cache():
@@ -688,7 +688,7 @@ def test_clear_parser_cache():
     parser.clear_cache()
 
     # Cache should be empty
-    assert len(parser._cache) == 0
+    assert len(parser._cache) == 0, "Collection must not be empty"
 
 
 def test_workflow_run_trigger_with_workflows(temp_workflows_dir):
@@ -711,7 +711,7 @@ jobs:
     inventory.scan()
 
     wf = inventory.get_workflow("depends.yml")
-    assert wf is not None
+    assert wf is not None, "wf must be initialized"
 
 
 def test_job_with_invalid_needs_type(temp_workflows_dir):
@@ -732,9 +732,9 @@ jobs:
     inventory.scan()
 
     wf = inventory.get_workflow("bad_needs.yml")
-    assert wf is not None
+    assert wf is not None, "wf must be initialized"
     # needs should be None for invalid type
-    assert wf.jobs["test"].needs is None
+    assert wf.jobs["test"].needs is None, "needs is not valid"
 
 
 def test_workflow_with_string_permissions(temp_workflows_dir):
@@ -755,8 +755,8 @@ jobs:
     inventory.scan()
 
     wf = inventory.get_workflow("perms.yml")
-    assert wf is not None
-    assert "default" in wf.permissions
+    assert wf is not None, "wf must be initialized"
+    assert "default" in wf.permissions, "Condition must be true"
 
 
 def test_workflow_with_non_dict_env(temp_workflows_dir):
@@ -777,9 +777,9 @@ jobs:
     inventory.scan()
 
     wf = inventory.get_workflow("bad_env.yml")
-    assert wf is not None
+    assert wf is not None, "wf must be initialized"
     # env should be empty dict for invalid type
-    assert wf.env == {}
+    assert wf.env == {}, "env is not valid"
 
 
 def test_input_with_default_value(temp_workflows_dir):
@@ -810,11 +810,11 @@ jobs:
     inventory.scan()
 
     wf = inventory.get_workflow("inputs.yml")
-    assert wf is not None
-    assert "environment" in wf.inputs
-    assert wf.inputs["environment"].default == "staging"
-    assert "debug" in wf.inputs
-    assert wf.inputs["debug"].default is False
+    assert wf is not None, "wf must be initialized"
+    assert "environment" in wf.inputs, "Condition must be true"
+    assert wf.inputs["environment"].default == "staging", "default is not valid"
+    assert "debug" in wf.inputs, "Condition must be true"
+    assert wf.inputs["debug"].default is False, "default is not valid"
 
 
 def test_input_with_invalid_type(temp_workflows_dir):
@@ -839,12 +839,12 @@ jobs:
     parser = WorkflowParser()
     wf = parser.parse_content(content, temp_workflows_dir / "test.yml")
 
-    assert wf is not None
-    assert "test" in wf.inputs
+    assert wf is not None, "wf must be initialized"
+    assert "test" in wf.inputs, "Condition must be true"
     # Should fall back to STRING for invalid type
     from src.services.workflow.types import InputType
 
-    assert wf.inputs["test"].type == InputType.STRING
+    assert wf.inputs["test"].type == InputType.STRING, "type is not valid"
 
 
 def test_job_steps_count(temp_workflows_dir):
@@ -868,8 +868,8 @@ jobs:
     inventory.scan()
 
     wf = inventory.get_workflow("steps.yml")
-    assert wf is not None
-    assert wf.jobs["test"].steps == 4
+    assert wf is not None, "wf must be initialized"
+    assert wf.jobs["test"].steps == 4, "steps is not valid"
 
 
 def test_job_with_non_list_steps(temp_workflows_dir):
@@ -888,9 +888,9 @@ jobs:
     inventory.scan()
 
     wf = inventory.get_workflow("bad_steps.yml")
-    assert wf is not None
+    assert wf is not None, "wf must be initialized"
     # steps should be 0 for invalid type
-    assert wf.jobs["test"].steps == 0
+    assert wf.jobs["test"].steps == 0, "steps is not valid"
 
 
 def test_trigger_with_branches_filter(temp_workflows_dir):
@@ -916,12 +916,12 @@ jobs:
     inventory.scan()
 
     wf = inventory.get_workflow("branches.yml")
-    assert wf is not None
+    assert wf is not None, "wf must be initialized"
 
     # Check branches are parsed
     push_trigger = [t for t in wf.triggers if t.type.value == "push"][0]
-    assert push_trigger.branches is not None
-    assert "main" in push_trigger.branches
+    assert push_trigger.branches is not None, "branches must be initialized"
+    assert "main" in push_trigger.branches, "Condition must be true"
 
 
 def test_trigger_with_paths_filter(temp_workflows_dir):
@@ -945,11 +945,11 @@ jobs:
     inventory.scan()
 
     wf = inventory.get_workflow("paths.yml")
-    assert wf is not None
+    assert wf is not None, "wf must be initialized"
 
     push_trigger = [t for t in wf.triggers if t.type.value == "push"][0]
-    assert push_trigger.paths is not None
-    assert "src/**" in push_trigger.paths
+    assert push_trigger.paths is not None, "paths must be initialized"
+    assert "src/**" in push_trigger.paths, "Condition must be true"
 
 
 def test_trigger_with_types_filter(temp_workflows_dir):
@@ -971,11 +971,11 @@ jobs:
     inventory.scan()
 
     wf = inventory.get_workflow("types.yml")
-    assert wf is not None
+    assert wf is not None, "wf must be initialized"
 
     pr_trigger = [t for t in wf.triggers if t.type.value == "pull_request"][0]
-    assert pr_trigger.types is not None
-    assert "opened" in pr_trigger.types
+    assert pr_trigger.types is not None, "types must be initialized"
+    assert "opened" in pr_trigger.types, "Condition must be true"
 
 
 def test_trigger_with_string_branches(temp_workflows_dir):
@@ -997,9 +997,9 @@ jobs:
     parser = WorkflowParser()
     wf = parser.parse_content(content, temp_workflows_dir / "test.yml")
 
-    assert wf is not None
+    assert wf is not None, "wf must be initialized"
     push_trigger = [t for t in wf.triggers if t.type.value == "push"][0]
-    assert push_trigger.branches == ["main"]
+    assert push_trigger.branches == ["main"], "branches is not valid"
 
 
 def test_input_with_options(temp_workflows_dir):
@@ -1027,10 +1027,10 @@ jobs:
     inventory.scan()
 
     wf = inventory.get_workflow("choice.yml")
-    assert wf is not None
-    assert "environment" in wf.inputs
-    assert wf.inputs["environment"].options is not None
-    assert "dev" in wf.inputs["environment"].options
+    assert wf is not None, "wf must be initialized"
+    assert "environment" in wf.inputs, "Condition must be true"
+    assert wf.inputs["environment"].options is not None, "options must be initialized"
+    assert "dev" in wf.inputs["environment"].options, "Condition must be true"
 
 
 def test_workflow_metadata_properties(temp_workflows_dir):
@@ -1056,12 +1056,12 @@ jobs:
     inventory.scan()
 
     wf = inventory.get_workflow("props.yml")
-    assert wf is not None
+    assert wf is not None, "wf must be initialized"
 
     # Test properties
-    assert wf.filename == "props.yml"
-    assert wf.has_workflow_dispatch is True
-    assert len(wf.trigger_types) == 2
-    assert len(wf.job_ids) == 2
-    assert "test" in wf.job_ids
-    assert "build" in wf.job_ids
+    assert wf.filename == "props.yml", "filename is not valid"
+    assert wf.has_workflow_dispatch is True, "has_workflow_dispatch is not valid"
+    assert len(wf.trigger_types) == 2, "Collection must not be empty"
+    assert len(wf.job_ids) == 2, "Collection must not be empty"
+    assert "test" in wf.job_ids, "Condition must be true"
+    assert "build" in wf.job_ids, "Condition must be true"

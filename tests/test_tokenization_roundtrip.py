@@ -75,13 +75,13 @@ def test_encode_decode_roundtrip_padding() -> None:
         max_length=8,
     )
 
-    assert "input_ids" in encoding
-    assert "attention_mask" in encoding
-    assert len(encoding["input_ids"]) == 8
-    assert len(encoding["attention_mask"]) == 8
+    assert "input_ids" in encoding, "Condition must be true"
+    assert "attention_mask" in encoding, "Condition must be true"
+    assert len(encoding["input_ids"]) == 8, "Collection must not be empty"
+    assert len(encoding["attention_mask"]) == 8, "Collection must not be empty"
 
     decoded = tokenizer.decode(encoding["input_ids"])
-    assert decoded == text
+    assert decoded == text, "decoded is not valid"
 
     cached = encode_cached(
         tokenizer,
@@ -90,5 +90,5 @@ def test_encode_decode_roundtrip_padding() -> None:
         truncation=False,
         max_length=8,
     )
-    assert tokenizer.calls[text] == 1  # ensure cache hit
-    assert cached == encoding
+    assert tokenizer.calls[text] == 1, "Condition must be true"
+    assert cached == encoding, "cached is not valid"

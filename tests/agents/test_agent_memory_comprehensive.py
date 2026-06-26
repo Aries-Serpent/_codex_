@@ -46,12 +46,12 @@ class TestMemoryEntry:
             context={"scenario": "optimization"},
         )
 
-        assert entry.memory_id == "mem_001"
-        assert entry.category == "decision"
-        assert entry.content == "Choose option A over B"
-        assert entry.context["scenario"] == "optimization"
-        assert entry.confidence == 0.8  # Default
-        assert entry.access_count == 0
+        assert entry.memory_id == "mem_001", "memory_id is not valid"
+        assert entry.category == "decision", "category is not valid"
+        assert entry.content == "Choose option A over B", "Content must not be empty"
+        assert entry.context["scenario"] == "optimization", "Condition must be true"
+        assert entry.confidence == 0.8, "confidence is not valid"
+        assert entry.access_count == 0, "Count must be greater than zero"
 
     def test_memory_entry_with_custom_confidence(self):
         """Test memory with custom confidence."""
@@ -63,7 +63,7 @@ class TestMemoryEntry:
             confidence=0.95,
         )
 
-        assert entry.confidence == 0.95
+        assert entry.confidence == 0.95, "confidence is not valid"
 
     def test_memory_entry_with_tags(self):
         """Test memory with tags."""
@@ -75,8 +75,8 @@ class TestMemoryEntry:
             tags=["design", "creational", "python"],
         )
 
-        assert len(entry.tags) == 3
-        assert "design" in entry.tags
+        assert len(entry.tags) == 3, "Collection must not be empty"
+        assert "design" in entry.tags, "Condition must be true"
 
     def test_memory_entry_to_dict(self):
         """Test converting memory to dictionary."""
@@ -90,9 +90,9 @@ class TestMemoryEntry:
         data = entry.to_dict()
 
         assert isinstance(data, dict)
-        assert data["memory_id"] == "mem_004"
-        assert data["category"] == "lesson"
-        assert data["content"] == "Always validate input"
+        assert data["memory_id"] == "mem_004", "Data must not be empty"
+        assert data["category"] == "lesson", "Data must not be empty"
+        assert data["content"] == "Always validate input", "Data must not be empty"
 
     def test_memory_entry_from_dict(self):
         """Test creating memory from dictionary."""
@@ -111,19 +111,19 @@ class TestMemoryEntry:
 
         entry = MemoryEntry.from_dict(data)
 
-        assert entry.memory_id == "mem_005"
-        assert entry.access_count == 5
-        assert entry.confidence == 0.7
+        assert entry.memory_id == "mem_005", "memory_id is not valid"
+        assert entry.access_count == 5, "Count must be greater than zero"
+        assert entry.confidence == 0.7, "confidence is not valid"
 
     def test_memory_entry_access_tracking(self):
         """Test access count tracking."""
         entry = MemoryEntry(memory_id="mem_006", category="fact", content="Test", context={})
 
-        assert entry.access_count == 0
+        assert entry.access_count == 0, "Count must be greater than zero"
 
         # Simulate access
         entry.access_count += 1
-        assert entry.access_count == 1
+        assert entry.access_count == 1, "Count must be greater than zero"
 
 
 class TestContextFrame:
@@ -137,10 +137,10 @@ class TestContextFrame:
             start_time="2025-01-01T10:00:00",
         )
 
-        assert frame.frame_id == "frame_001"
-        assert frame.task_description == "Optimize database queries"
-        assert frame.status == "active"
-        assert frame.end_time is None
+        assert frame.frame_id == "frame_001", "frame_id is not valid"
+        assert frame.task_description == "Optimize database queries", "Data must not be empty"
+        assert frame.status == "active", "status is not valid"
+        assert frame.end_time is None, "end_time is not valid"
 
     def test_context_frame_with_memories(self):
         """Test frame with active memories."""
@@ -151,8 +151,8 @@ class TestContextFrame:
             active_memories=["mem_001", "mem_002", "mem_003"],
         )
 
-        assert len(frame.active_memories) == 3
-        assert "mem_001" in frame.active_memories
+        assert len(frame.active_memories) == 3, "Collection must not be empty"
+        assert "mem_001" in frame.active_memories, "Condition must be true"
 
     def test_context_frame_status_transitions(self):
         """Test frame status changes."""
@@ -162,13 +162,13 @@ class TestContextFrame:
             start_time="2025-01-01T12:00:00",
         )
 
-        assert frame.status == "active"
+        assert frame.status == "active", "status is not valid"
 
         frame.status = "completed"
         frame.end_time = "2025-01-01T13:00:00"
 
-        assert frame.status == "completed"
-        assert frame.end_time is not None
+        assert frame.status == "completed", "status is not valid"
+        assert frame.end_time is not None, "end_time must be initialized"
 
 
 class TestAgentMemory:
@@ -198,7 +198,7 @@ class TestAgentMemory:
         """Test AgentMemory initialization."""
         if hasattr(AgentMemory, "__init__"):
             memory = AgentMemory(db_path=str(temp_db))
-            assert memory is not None
+            assert memory is not None, "memory must be initialized"
 
     # ========== MEMORY STORAGE TESTS ==========
 
@@ -221,7 +221,7 @@ class TestAgentMemory:
                     getattr(memory_system, "get_memory", None) or memory_system.retrieve_memory
                 )
                 retrieved = get_method("test_001")
-                assert retrieved is not None
+                assert retrieved is not None, "retrieved must be initialized"
 
     def test_retrieve_memory_by_id(self, memory_system):
         """Test retrieving memory by ID."""
@@ -236,8 +236,8 @@ class TestAgentMemory:
             memory_system.add_memory(entry)
             retrieved = memory_system.get_memory("retrieve_001")
 
-            assert retrieved is not None
-            assert retrieved.memory_id == "retrieve_001"
+            assert retrieved is not None, "retrieved must be initialized"
+            assert retrieved.memory_id == "retrieve_001", "memory_id is not valid"
 
     def test_search_memories_by_category(self, memory_system):
         """Test searching memories by category."""
@@ -253,7 +253,7 @@ class TestAgentMemory:
                 memory_system.add_memory(entry)
 
             results = memory_system.search_memories(category="decision")
-            assert len(results) >= 5
+            assert len(results) >= 5, "Results must not be empty"
 
     def test_search_memories_by_tags(self, memory_system):
         """Test searching memories by tags."""
@@ -269,7 +269,7 @@ class TestAgentMemory:
             memory_system.add_memory(entry)
             results = memory_system.search_memories(tags=["design"])
 
-            assert len(results) >= 1
+            assert len(results) >= 1, "Results must not be empty"
 
     # ========== VECTOR OPERATIONS TESTS ==========
 
@@ -280,7 +280,7 @@ class TestAgentMemory:
             result = memory_system.add_vector(
                 memory_id="vec_001", vector=vector, metadata={"dimension": 5}
             )
-            assert result is not None
+            assert result is not None, "result must be initialized"
 
     def test_search_vectors_by_similarity(self, memory_system):
         """Test vector similarity search."""
@@ -294,7 +294,7 @@ class TestAgentMemory:
             query_vector = [0.95, 0.05, 0.0]
             results = memory_system.search_vectors(query_vector, top_k=2)
 
-            assert len(results) <= 2
+            assert len(results) <= 2, "Results must not be empty"
 
     # ========== CHUNK OPERATIONS TESTS ==========
 
@@ -305,7 +305,7 @@ class TestAgentMemory:
             result = memory_system.add_chunk(
                 chunk_id="chunk_001", text=chunk_text, metadata={"source": "test"}
             )
-            assert result is not None
+            assert result is not None, "result must be initialized"
 
     def test_retrieve_chunk(self, memory_system):
         """Test retrieving chunk by ID."""
@@ -314,7 +314,7 @@ class TestAgentMemory:
             memory_system.add_chunk("chunk_002", chunk_text)
 
             retrieved = memory_system.get_chunk("chunk_002")
-            assert retrieved is not None
+            assert retrieved is not None, "retrieved must be initialized"
 
     # ========== PATTERN LIBRARY TESTS ==========
 
@@ -328,7 +328,7 @@ class TestAgentMemory:
             }
 
             result = memory_system.save_pattern("singleton", pattern)
-            assert result is not None
+            assert result is not None, "result must be initialized"
 
     def test_load_pattern(self, memory_system):
         """Test loading a saved pattern."""
@@ -337,8 +337,8 @@ class TestAgentMemory:
             memory_system.save_pattern("factory", pattern)
 
             loaded = memory_system.load_pattern("factory")
-            assert loaded is not None
-            assert loaded["name"] == "factory"
+            assert loaded is not None, "loaded must be initialized"
+            assert loaded["name"] == "factory", "Condition must be true"
 
     # ========== PERSISTENCE TESTS ==========
 
@@ -360,8 +360,8 @@ class TestAgentMemory:
             memory2 = AgentMemory(db_path=str(temp_db))
             if hasattr(memory2, "get_memory"):
                 retrieved = memory2.get_memory("persist_001")
-                assert retrieved is not None
-                assert retrieved.content == "Persistent data"
+                assert retrieved is not None, "retrieved must be initialized"
+                assert retrieved.content == "Persistent data", "Data must not be empty"
 
     # ========== ERROR HANDLING TESTS ==========
 
@@ -369,7 +369,7 @@ class TestAgentMemory:
         """Test retrieving non-existent memory."""
         if hasattr(memory_system, "get_memory"):
             result = memory_system.get_memory("nonexistent_id")
-            assert result is None or result == {}
+            assert result is None or result == {}, "Result must not be empty"
 
     def test_add_duplicate_memory_id(self, memory_system):
         """Test handling duplicate memory IDs."""
@@ -406,7 +406,7 @@ class TestAgentMemory:
             duration = time.time() - start
 
             # Should complete in reasonable time
-            assert duration < 5.0  # 5 seconds for 100 entries
+            assert duration < 5.0, "duration is not valid"
 
     def test_search_performance(self, memory_system):
         """Test search performance with many entries."""
@@ -428,7 +428,7 @@ class TestAgentMemory:
             duration = time.time() - start
 
             # Search should be fast
-            assert duration < 1.0  # 1 second for search
+            assert duration < 1.0, "duration is not valid"
 
 
 class TestAgentMemoryEdgeCases:
@@ -447,14 +447,14 @@ class TestAgentMemoryEdgeCases:
         """Test handling empty memory content."""
         entry = MemoryEntry(memory_id="empty_001", category="fact", content="", context={})
 
-        assert entry.content == ""
+        assert entry.content == "", "Content must not be empty"
 
     def test_very_long_memory_content(self, temp_db):
         """Test storing very long content."""
         long_content = "A" * 10000  # 10KB of text
         entry = MemoryEntry(memory_id="long_001", category="fact", content=long_content, context={})
 
-        assert len(entry.content) == 10000
+        assert len(entry.content) == 10000, "Collection must not be empty"
 
     def test_special_characters_in_content(self):
         """Test special characters in memory."""
@@ -465,7 +465,7 @@ class TestAgentMemoryEdgeCases:
             context={},
         )
 
-        assert "!@#$%^&*()" in entry.content
+        assert "!@, "Condition must be true"
 
     def test_unicode_in_memory(self):
         """Test Unicode content."""
@@ -476,10 +476,10 @@ class TestAgentMemoryEdgeCases:
             context={},
         )
 
-        assert "テスト" in entry.content
+        assert "テスト" in entry.content, "Content must not be empty"
 
     def test_null_context(self):
         """Test handling null context."""
         entry = MemoryEntry(memory_id="null_ctx_001", category="fact", content="Test", context={})
 
-        assert entry.context == {}
+        assert entry.context == {}, "context is not valid"

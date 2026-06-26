@@ -16,7 +16,7 @@ Usage:
     from codex.brain.session_serializer import SessionSerializer
 
     serializer = SessionSerializer()
-    
+
     # Serialize complete session state
     state_dict = serializer.serialize_session_state(
         agent_state=agent,
@@ -24,10 +24,10 @@ Usage:
         decision_history=decisions,
         execution_progress=progress
     )
-    
+
     # Convert to JSON
     json_str = serializer.serialize_to_json(state_dict)
-    
+
     # Or binary format
     binary_data = serializer.serialize_to_binary(state_dict)
 """
@@ -36,10 +36,11 @@ from __future__ import annotations
 
 import json
 import logging
-import msgpack
-from dataclasses import dataclass, asdict, field
+from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
+
+import msgpack
 
 logger = logging.getLogger(__name__)
 
@@ -275,9 +276,7 @@ class SessionSerializer:
 
     # Private Methods
 
-    def _serialize_agent_state(
-        self, agent_state: Optional[AgentStateSnapshot]
-    ) -> Dict[str, Any]:
+    def _serialize_agent_state(self, agent_state: Optional[AgentStateSnapshot]) -> Dict[str, Any]:
         """Serialize agent state."""
         if not agent_state:
             return {

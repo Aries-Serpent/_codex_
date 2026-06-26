@@ -35,10 +35,10 @@ def test_severity_classification():
     env["SECURITY_SEVERITY_ENABLE"] = "1"
     subprocess.run([sys.executable, "scripts/security/classify_severity.py"], check=True, env=env)
     out = ART / "security_severity.json"
-    assert out.exists()
+    assert out.exists(), "Condition must be true"
     data = json.loads(out.read_text())
-    assert data["counts"]["high"] == 1
-    assert data["counts"]["medium"] == 1
-    assert data["counts"]["low"] == 1
-    assert data["counts"]["total"] == 3
-    assert "weights" in data
+    assert data["counts"]["high"] == 1, "Data must not be empty"
+    assert data["counts"]["medium"] == 1, "Data must not be empty"
+    assert data["counts"]["low"] == 1, "Data must not be empty"
+    assert data["counts"]["total"] == 3, "Data must not be empty"
+    assert "weights" in data, "Data must not be empty"

@@ -100,7 +100,7 @@ def test_encode_decode_roundtrip() -> None:
     # Test decode roundtrip
     text = tk.decode(ids)
     assert isinstance(text, str)
-    assert "hello" in text.lower()
+    assert "hello" in text.lower(), "Condition must be true"
 
 
 def test_decode_cache_returns_canonical_form(monkeypatch) -> None:
@@ -157,8 +157,8 @@ def test_decode_cache_returns_canonical_form(monkeypatch) -> None:
     ids = tk.encode("Hello World")
 
     # Cached decode should reflect the tokenizer's canonical lowercase output.
-    assert tk.decode(ids) == "hello world"
-    assert tk.decode(ids) == "hello world"
+    assert tk.decode(ids) == "hello world", "Condition must be true"
+    assert tk.decode(ids) == "hello world", "Condition must be true"
     assert tk.decode(ids, skip_special_tokens=False) == "hello world"
 
 
@@ -168,11 +168,11 @@ def test_padding_and_truncation() -> None:
 
     # Test that output respects max_length
     ids = tk.encode("a b c d e f g h i j")
-    assert len(ids) == 5
+    assert len(ids) == 5, "Ids must not be empty"
 
     # Test shorter input gets padded
     short_ids = tk.encode("hi")
-    assert len(short_ids) == 5
+    assert len(short_ids) == 5, "Short_ids must not be empty"
 
 
 def test_batch_encode_decode() -> None:
@@ -183,13 +183,13 @@ def test_batch_encode_decode() -> None:
     texts = ["hello", "world", "this is longer text"]
     batch = tk.batch_encode(texts)
 
-    assert len(batch) == len(texts)
+    assert len(batch) == len(texts), "Batch must not be empty"
     assert all(isinstance(x, list) for x in batch)
-    assert all(len(x) <= 8 for x in batch)  # Respects max_length
+    assert all(len(x) <= 8 for x in batch), "X must not be empty"
 
     # Test batch decoding
     decoded = tk.batch_decode(batch)
-    assert len(decoded) == len(texts)
+    assert len(decoded) == len(texts), "Decoded must not be empty"
     assert all(isinstance(text, str) for text in decoded)
 
 
@@ -200,7 +200,7 @@ def test_batch_encode_return_dict() -> None:
     # Test that return_dict=True returns a mapping
     result = tk.batch_encode(["hello", "world"], return_dict=True)
     assert isinstance(result, dict)
-    assert "input_ids" in result
+    assert "input_ids" in result, "Result must not be empty"
 
     # Test default behavior returns list of lists
     result_default = tk.batch_encode(["hello", "world"])
@@ -215,7 +215,7 @@ def test_tokenizer_properties() -> None:
     # Test vocab_size property
     vocab_size = tk.vocab_size
     assert isinstance(vocab_size, int)
-    assert vocab_size > 0
+    assert vocab_size > 0, "vocab_size must be greater than zero"
 
     # Test token ID properties (may be None for some tokenizers)
     pad_id = tk.pad_id
@@ -240,7 +240,7 @@ def test_special_tokens_handling() -> None:
     assert isinstance(ids_with_special, list)
     assert isinstance(ids_without_special, list)
     # With special tokens should typically be longer
-    assert len(ids_with_special) >= len(ids_without_special)
+    assert len(ids_with_special) >= len(ids_without_special), "Ids_with_special must not be empty"
 
 
 def test_raw_tokenizer_access() -> None:
@@ -251,9 +251,9 @@ def test_raw_tokenizer_access() -> None:
     raw_tk = tk.raw_tokenizer
     tokenizer = tk.tokenizer
 
-    assert raw_tk is not None
-    assert tokenizer is not None
-    assert raw_tk is tokenizer  # Should be the same object
+    assert raw_tk is not None, "raw_tk must be initialized"
+    assert tokenizer is not None, "tokenizer must be initialized"
+    assert raw_tk is tokenizer, "raw_tk is not valid"
 
 
 def test_batch_encode_plus_compatibility() -> None:
@@ -262,7 +262,7 @@ def test_batch_encode_plus_compatibility() -> None:
 
     result = tk.batch_encode_plus(["hello", "world"])
     assert isinstance(result, dict)
-    assert "input_ids" in result
+    assert "input_ids" in result, "Result must not be empty"
 
 
 @pytest.mark.parametrize("padding", [False, True, "max_length"])
@@ -278,7 +278,7 @@ def test_configuration_combinations(padding, truncation) -> None:
     assert isinstance(ids, list)
 
     if padding == "max_length" and max_length:
-        assert len(ids) == max_length
+        assert len(ids) == max_length, "Ids must not be empty"
 
 
 def test_error_handling() -> None:

@@ -22,7 +22,7 @@ def _load_module(path: Path, name: str) -> types.ModuleType:
         path = repo_root / path
     spec = importlib.util.spec_from_file_location(name, str(path))
     module = importlib.util.module_from_spec(spec)
-    assert spec and spec.loader
+    assert spec and spec.loader, "spec is not valid"
     spec.loader.exec_module(module)
     return module
 
@@ -52,12 +52,12 @@ class TestStemBasedDetection:
         context_index = _context_index_for(files)
         result = module.detect(context_index)
 
-        assert result["id"] == "duplication_ratio"
-        assert result["dup_ratio"] == 0.0
-        assert result["metrics"]["total_duplicates"] == 0
-        assert len(result["duplicate_groups"]) == 0
-        assert "analysis" in result["found_patterns"]
-        assert "detection" in result["found_patterns"]
+        assert result["id"] == "duplication_ratio", "Result must not be empty"
+        assert result["dup_ratio"] == 0.0, "Result must not be empty"
+        assert result["metrics"]["total_duplicates"] == 0, "Result must not be empty"
+        assert len(result["duplicate_groups"]) == 0, "Collection must not be empty"
+        assert "analysis" in result["found_patterns"], "Result must not be empty"
+        assert "detection" in result["found_patterns"], "Result must not be empty"
 
     def test_simple_duplication(self, tmp_path: Path):
         """Test detection of simple stem duplication."""
@@ -74,10 +74,10 @@ class TestStemBasedDetection:
         context_index = _context_index_for(files)
         result = module.detect(context_index)
 
-        assert result["dup_ratio"] > 0.0
-        assert result["counts"]["test"] == 2
-        assert "test" in result["duplicate_groups"]
-        assert len(result["duplicate_groups"]["test"]) == 2
+        assert result["dup_ratio"] > 0.0, "Value must be greater than zero"
+        assert result["counts"]["test"] == 2, "Result must not be empty"
+        assert "test" in result["duplicate_groups"], "Result must not be empty"
+        assert len(result["duplicate_groups"]["test"]) == 2, "Collection must not be empty"
 
     def test_multiple_duplicates(self, tmp_path: Path):
         """Test detection with multiple duplicate groups."""
@@ -96,10 +96,10 @@ class TestStemBasedDetection:
         context_index = _context_index_for(files)
         result = module.detect(context_index)
 
-        assert result["dup_ratio"] > 0.0
-        assert "foo" in result["duplicate_groups"]
-        assert "bar" in result["duplicate_groups"]
-        assert "baz" not in result["duplicate_groups"]
+        assert result["dup_ratio"] > 0.0, "Value must be greater than zero"
+        assert "foo" in result["duplicate_groups"], "Result must not be empty"
+        assert "bar" in result["duplicate_groups"], "Result must not be empty"
+        assert "baz" not in result["duplicate_groups"], "Result must not be empty"
 
     def test_high_duplication(self, tmp_path: Path):
         """Test detection with high duplication ratio."""
@@ -118,9 +118,9 @@ class TestStemBasedDetection:
         context_index = _context_index_for(files)
         result = module.detect(context_index)
 
-        assert result["dup_ratio"] >= 0.6  # 3 duplicates out of 5 files
-        assert result["counts"]["dup"] == 4
-        assert result["metrics"]["duplication_percentage"] >= 60.0
+        assert result["dup_ratio"] >= 0.6, "Value must be greater than zero"
+        assert result["counts"]["dup"] == 4, "Result must not be empty"
+        assert result["metrics"]["duplication_percentage"] >= 60.0, "Value must be greater than zero"
 
     def test_case_insensitive(self, tmp_path: Path):
         """Test that stem comparison is case-insensitive."""
@@ -137,8 +137,8 @@ class TestStemBasedDetection:
         context_index = _context_index_for(files)
         result = module.detect(context_index)
 
-        assert result["counts"]["test"] == 3
-        assert "test" in result["duplicate_groups"]
+        assert result["counts"]["test"] == 3, "Result must not be empty"
+        assert "test" in result["duplicate_groups"], "Result must not be empty"
 
 
 class TestEdgeCases:
@@ -151,9 +151,9 @@ class TestEdgeCases:
         context_index = {"files": []}
         result = module.detect(context_index)
 
-        assert result["dup_ratio"] == 0.0
-        assert result["evidence_count"] == 1  # max(0, 1)
-        assert len(result["duplicate_groups"]) == 0
+        assert result["dup_ratio"] == 0.0, "Result must not be empty"
+        assert result["evidence_count"] == 1, "Result must not be empty"
+        assert len(result["duplicate_groups"]) == 0, "Collection must not be empty"
 
     def test_single_file(self, tmp_path: Path):
         """Test with single file."""
@@ -165,9 +165,9 @@ class TestEdgeCases:
         context_index = _context_index_for(files)
         result = module.detect(context_index)
 
-        assert result["dup_ratio"] == 0.0
-        assert result["evidence_count"] == 1
-        assert len(result["duplicate_groups"]) == 0
+        assert result["dup_ratio"] == 0.0, "Result must not be empty"
+        assert result["evidence_count"] == 1, "Result must not be empty"
+        assert len(result["duplicate_groups"]) == 0, "Collection must not be empty"
 
     def test_all_same_stem(self, tmp_path: Path):
         """Test when all files have the same stem."""
@@ -185,9 +185,9 @@ class TestEdgeCases:
         context_index = _context_index_for(files)
         result = module.detect(context_index)
 
-        assert result["dup_ratio"] == 0.75  # 3 duplicates out of 4
-        assert result["counts"]["same"] == 4
-        assert result["metrics"]["total_duplicates"] == 3
+        assert result["dup_ratio"] == 0.75, "Result must not be empty"
+        assert result["counts"]["same"] == 4, "Result must not be empty"
+        assert result["metrics"]["total_duplicates"] == 3, "Result must not be empty"
 
     def test_special_characters_in_stem(self, tmp_path: Path):
         """Test files with special characters in names."""
@@ -204,8 +204,8 @@ class TestEdgeCases:
         context_index = _context_index_for(files)
         result = module.detect(context_index)
 
-        assert result["dup_ratio"] == 0.0  # All unique stems
-        assert result["evidence_count"] == 3
+        assert result["dup_ratio"] == 0.0, "Result must not be empty"
+        assert result["evidence_count"] == 3, "Result must not be empty"
 
 
 class TestDeterminism:
@@ -230,9 +230,9 @@ class TestDeterminism:
         result1 = module.detect(context_index)
         result2 = module.detect(context_index)
 
-        assert result1["dup_ratio"] == result2["dup_ratio"]
-        assert result1["counts"] == result2["counts"]
-        assert result1["duplicate_groups"] == result2["duplicate_groups"]
+        assert result1["dup_ratio"] == result2["dup_ratio"], "Result must not be empty"
+        assert result1["counts"] == result2["counts"], "Result must not be empty"
+        assert result1["duplicate_groups"] == result2["duplicate_groups"], "Result must not be empty"
 
     def test_sorted_duplicate_groups(self, tmp_path: Path):
         """Test that duplicate groups are sorted deterministically."""
@@ -252,7 +252,7 @@ class TestDeterminism:
         # Verify group is sorted
         if "test" in result["duplicate_groups"]:
             group = result["duplicate_groups"]["test"]
-            assert group == sorted(group)
+            assert group == sorted(group), "group is not valid"
 
     def test_reproducible_metrics(self, tmp_path: Path):
         """Test that metrics are reproducible."""
@@ -272,7 +272,7 @@ class TestDeterminism:
 
         # All runs should produce identical metrics
         for result in results[1:]:
-            assert result["metrics"] == results[0]["metrics"]
+            assert result["metrics"] == results[0]["metrics"], "Result must not be empty"
 
 
 class TestPatternDetection:
@@ -288,10 +288,10 @@ class TestPatternDetection:
         context_index = _context_index_for(files)
         result = module.detect(context_index)
 
-        assert "required_patterns" in result
-        assert "analysis" in result["required_patterns"]
-        assert "detection" in result["required_patterns"]
-        assert "reporting" in result["required_patterns"]
+        assert "required_patterns" in result, "Result must not be empty"
+        assert "analysis" in result["required_patterns"], "Result must not be empty"
+        assert "detection" in result["required_patterns"], "Result must not be empty"
+        assert "reporting" in result["required_patterns"], "Result must not be empty"
 
     def test_found_patterns(self, tmp_path: Path):
         """Test that found patterns are correctly identified."""
@@ -303,10 +303,10 @@ class TestPatternDetection:
         context_index = _context_index_for(files)
         result = module.detect(context_index)
 
-        assert "found_patterns" in result
-        assert "analysis" in result["found_patterns"]
-        assert "detection" in result["found_patterns"]
-        assert "reporting" in result["found_patterns"]
+        assert "found_patterns" in result, "Result must not be empty"
+        assert "analysis" in result["found_patterns"], "Result must not be empty"
+        assert "detection" in result["found_patterns"], "Result must not be empty"
+        assert "reporting" in result["found_patterns"], "Result must not be empty"
 
     def test_docs_keywords(self, tmp_path: Path):
         """Test that documentation keywords are provided."""
@@ -318,12 +318,12 @@ class TestPatternDetection:
         context_index = _context_index_for(files)
         result = module.detect(context_index)
 
-        assert "docs_keywords" in result
-        assert "duplication" in result["docs_keywords"]
-        assert "similarity" in result["docs_keywords"]
-        assert "analysis" in result["docs_keywords"]
-        assert "detection" in result["docs_keywords"]
-        assert "consistency" in result["docs_keywords"]
+        assert "docs_keywords" in result, "Result must not be empty"
+        assert "duplication" in result["docs_keywords"], "Result must not be empty"
+        assert "similarity" in result["docs_keywords"], "Result must not be empty"
+        assert "analysis" in result["docs_keywords"], "Result must not be empty"
+        assert "detection" in result["docs_keywords"], "Result must not be empty"
+        assert "consistency" in result["docs_keywords"], "Result must not be empty"
 
 
 class TestMetadata:
@@ -339,10 +339,10 @@ class TestMetadata:
         context_index = _context_index_for(files)
         result = module.detect(context_index)
 
-        assert "meta" in result
-        assert result["meta"]["method"] == "stem_based"
-        assert result["meta"]["deterministic"] is True
-        assert result["meta"]["offline"] is True
+        assert "meta" in result, "Result must not be empty"
+        assert result["meta"]["method"] == "stem_based", "Result must not be empty"
+        assert result["meta"]["deterministic"] is True, "Result must not be empty"
+        assert result["meta"]["offline"] is True, "Result must not be empty"
 
     def test_comprehensive_metrics(self, tmp_path: Path):
         """Test that comprehensive metrics are provided."""
@@ -359,10 +359,10 @@ class TestMetadata:
         context_index = _context_index_for(files)
         result = module.detect(context_index)
 
-        assert "metrics" in result
-        assert "total_duplicates" in result["metrics"]
-        assert "unique_stems" in result["metrics"]
-        assert "duplication_percentage" in result["metrics"]
+        assert "metrics" in result, "Result must not be empty"
+        assert "total_duplicates" in result["metrics"], "Result must not be empty"
+        assert "unique_stems" in result["metrics"], "Result must not be empty"
+        assert "duplication_percentage" in result["metrics"], "Result must not be empty"
         assert isinstance(result["metrics"]["duplication_percentage"], (int, float))
 
 
@@ -386,8 +386,8 @@ class TestAdditionalEdgeCases:
 
         # Different cases should be treated as different stems
         # (or same stem depending on implementation - verify consistency)
-        assert result["id"] == "duplication_ratio"
-        assert "duplicate_groups" in result
+        assert result["id"] == "duplication_ratio", "Result must not be empty"
+        assert "duplicate_groups" in result, "Result must not be empty"
 
     def test_hidden_files(self, tmp_path: Path):
         """Test detection handles hidden files (dotfiles) correctly."""
@@ -405,8 +405,8 @@ class TestAdditionalEdgeCases:
         result = module.detect(context_index)
 
         # Should detect .hidden duplication
-        assert result["dup_ratio"] >= 0.0
-        assert "metrics" in result
+        assert result["dup_ratio"] >= 0.0, "Value must be greater than zero"
+        assert "metrics" in result, "Result must not be empty"
 
     def test_large_duplicate_group(self, tmp_path: Path):
         """Test detection with a large group of files sharing same stem."""
@@ -423,9 +423,9 @@ class TestAdditionalEdgeCases:
         result = module.detect(context_index)
 
         # All 8 files share "duplicate" stem
-        assert result["dup_ratio"] > 0.8  # Very high duplication
-        assert "duplicate" in result["duplicate_groups"]
-        assert len(result["duplicate_groups"]["duplicate"]) == 8
+        assert result["dup_ratio"] > 0.8, "Value must be greater than zero"
+        assert "duplicate" in result["duplicate_groups"], "Result must not be empty"
+        assert len(result["duplicate_groups"]["duplicate"]) == 8, "Collection must not be empty"
 
     def test_mixed_unique_and_duplicate(self, tmp_path: Path):
         """Test accurate ratio calculation with mixed unique and duplicate files."""
@@ -450,9 +450,9 @@ class TestAdditionalEdgeCases:
         result = module.detect(context_index)
 
         # 6 duplicate files out of 9 total
-        assert 0.5 < result["dup_ratio"] < 0.8
-        assert result["metrics"]["total_duplicates"] == 6
-        assert len(result["duplicate_groups"]) == 2
+        assert 0.5 < result["dup_ratio"] < 0.8, "Result must not be empty"
+        assert result["metrics"]["total_duplicates"] == 6, "Result must not be empty"
+        assert len(result["duplicate_groups"]) == 2, "Collection must not be empty"
 
     def test_special_characters_in_names(self, tmp_path: Path):
         """Test detection with special characters in filenames."""
@@ -470,8 +470,8 @@ class TestAdditionalEdgeCases:
         result = module.detect(context_index)
 
         # Should handle special characters in stem
-        assert result["dup_ratio"] > 0.0
-        assert "test-file_v1.0" in result["duplicate_groups"]
+        assert result["dup_ratio"] > 0.0, "Value must be greater than zero"
+        assert "test-file_v1.0" in result["duplicate_groups"], "Result must not be empty"
 
     def test_numeric_stems(self, tmp_path: Path):
         """Test detection with numeric file stems."""
@@ -489,8 +489,8 @@ class TestAdditionalEdgeCases:
         result = module.detect(context_index)
 
         # Should handle numeric stems
-        assert "123" in result["duplicate_groups"]
-        assert len(result["duplicate_groups"]["123"]) == 2
+        assert "123" in result["duplicate_groups"], "Result must not be empty"
+        assert len(result["duplicate_groups"]["123"]) == 2, "Collection must not be empty"
 
     def test_deterministic_ordering(self, tmp_path: Path):
         """Test that detection produces deterministic, sorted output."""
@@ -512,9 +512,9 @@ class TestAdditionalEdgeCases:
 
         # All results should be identical (deterministic)
         for i in range(1, len(results)):
-            assert results[i]["dup_ratio"] == results[0]["dup_ratio"]
-            assert results[i]["duplicate_groups"] == results[0]["duplicate_groups"]
+            assert results[i]["dup_ratio"] == results[0]["dup_ratio"], "Result must not be empty"
+            assert results[i]["duplicate_groups"] == results[0]["duplicate_groups"], "Result must not be empty"
             # Evidence should be sorted
             if "evidence" in results[i]:
                 evidence_keys = list(results[i]["evidence"].keys())
-                assert evidence_keys == sorted(evidence_keys)
+                assert evidence_keys == sorted(evidence_keys), "evidence_keys is not valid"

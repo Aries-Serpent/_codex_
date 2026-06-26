@@ -18,8 +18,8 @@ def test_normalize_file_uri_variants(tmp_path):
         str(target),
     ]
     normalized = {normalize_mlflow_uri(v) for v in variants}
-    assert len(normalized) == 1
+    assert len(normalized) == 1, "Normalized must not be empty"
     uri = normalized.pop()
-    assert uri is not None
-    assert uri.startswith("file://")
-    assert uri.endswith("/mlruns")
+    assert uri is not None, "uri must be initialized"
+    assert uri.startswith("file://"), "Condition must be true"
+    assert uri.endswith("/mlruns"), "Condition must be true"

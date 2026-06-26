@@ -18,7 +18,7 @@ class TestInferModuleImport:
         try:
             from codex_ml.cli import infer
 
-            assert infer is not None
+            assert infer is not None, "infer must be initialized"
         except ImportError as e:
             pytest.skip(f"Module import failed: {e}")
 

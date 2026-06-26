@@ -19,9 +19,9 @@ class TestTicketComment:
             body="This is a test comment",
             public=True,
         )
-        assert comment.author_id == 12345
-        assert comment.body == "This is a test comment"
-        assert comment.public is True
+        assert comment.author_id == 12345, "author_id is not valid"
+        assert comment.body == "This is a test comment", "body is not valid"
+        assert comment.public is True, "public is not valid"
 
 
 class TestTicket:
@@ -34,10 +34,10 @@ class TestTicket:
             description="Test description",
             requester_id=12345,
         )
-        assert ticket.subject == "Test ticket"
-        assert ticket.description == "Test description"
-        assert ticket.requester_id == 12345
-        assert ticket.status == "new"  # Default value
+        assert ticket.subject == "Test ticket", "subject is not valid"
+        assert ticket.description == "Test description", "description is not valid"
+        assert ticket.requester_id == 12345, "requester_id is not valid"
+        assert ticket.status == "new", "status is not valid"
 
     def test_ticket_with_all_fields(self):
         """Test creating a ticket with all fields populated."""
@@ -66,12 +66,12 @@ class TestTicket:
             comment=comment,
         )
 
-        assert ticket.id == 99999
-        assert ticket.status == "open"
-        assert ticket.priority == "high"
-        assert len(ticket.tags) == 2
-        assert len(ticket.custom_fields) == 1
-        assert ticket.comment.body == "Initial comment"
+        assert ticket.id == 99999, "id is not valid"
+        assert ticket.status == "open", "status is not valid"
+        assert ticket.priority == "high", "priority is not valid"
+        assert len(ticket.tags) == 2, "Collection must not be empty"
+        assert len(ticket.custom_fields) == 1, "Collection must not be empty"
+        assert ticket.comment.body == "Initial comment", "body is not valid"
 
     def test_to_api_payload_create(self):
         """Test API payload generation for ticket creation."""
@@ -92,10 +92,10 @@ class TestTicket:
 
         payload = ticket.to_api_payload(for_create=True)
 
-        assert "ticket" in payload
-        assert payload["ticket"]["subject"] == "New ticket"
-        assert payload["ticket"]["priority"] == "high"
-        assert "comment" in payload["ticket"]
+        assert "ticket" in payload, "Condition must be true"
+        assert payload["ticket"]["subject"] == "New ticket", "Condition must be true"
+        assert payload["ticket"]["priority"] == "high", "Condition must be true"
+        assert "comment" in payload["ticket"], "Condition must be true"
 
 
 if __name__ == "__main__":

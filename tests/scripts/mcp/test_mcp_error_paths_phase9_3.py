@@ -71,7 +71,7 @@ class TestMainMissingTopicsFile:
         ]
         with patch("sys.argv", argv):
             result = main()
-        assert result == 1
+        assert result == 1, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -99,7 +99,7 @@ class TestMainValueErrorReturns1:
         ]
         with patch("sys.argv", argv):
             result = main()
-        assert result == 1
+        assert result == 1, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -131,4 +131,4 @@ class TestMainKeyboardInterruptReturns130:
                 side_effect=KeyboardInterrupt,
             ):
                 result = main()
-        assert result == 130
+        assert result == 130, "Result must not be empty"

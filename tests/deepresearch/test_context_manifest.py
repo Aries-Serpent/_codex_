@@ -23,10 +23,10 @@ def test_manifest_contains_apis(tmp_path):
         ],
         cwd=tmp_path,
     )
-    assert code == 0
+    assert code == 0, "code is not valid"
 
     manifest = json.loads(
         (tmp_path / "deepresearch/context_manifest.json").read_text(encoding="utf-8")
     )
     assert isinstance(manifest.get("apis"), list)
-    assert len(manifest["apis"]) == 2
+    assert len(manifest["apis"]) == 2, "Collection must not be empty"

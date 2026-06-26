@@ -29,13 +29,13 @@ from codex.cognitive.safety_guards import (
 
 class TestEnums:
     def test_audit_event_types(self):
-        assert AuditEventType.ADJUSTMENT_PROPOSED.value == "adjustment_proposed"
-        assert AuditEventType.RATE_LIMIT_HIT.value == "rate_limit_hit"
-        assert AuditEventType.SCOPE_VIOLATION.value == "scope_violation"
+        assert AuditEventType.ADJUSTMENT_PROPOSED.value == "adjustment_proposed", "Value must be initialized"
+        assert AuditEventType.RATE_LIMIT_HIT.value == "rate_limit_hit", "Value must be initialized"
+        assert AuditEventType.SCOPE_VIOLATION.value == "scope_violation", "Value must be initialized"
 
     def test_override_types(self):
-        assert OverrideType.PAUSE_AUTOMATION.value == "pause_automation"
-        assert OverrideType.BLOCK_RULE.value == "block_rule"
+        assert OverrideType.PAUSE_AUTOMATION.value == "pause_automation", "Value must be initialized"
+        assert OverrideType.BLOCK_RULE.value == "block_rule", "Value must be initialized"
 
 
 # ---------------------------------------------------------------------------
@@ -56,9 +56,9 @@ class TestAuditEvent:
         )
         d = event.to_dict()
         restored = AuditEvent.from_dict(d)
-        assert restored.id == event.id
-        assert restored.event_type == event.event_type
-        assert restored.actor == "system"
+        assert restored.id == event.id, "id is not valid"
+        assert restored.event_type == event.event_type, "event_type is not valid"
+        assert restored.actor == "system", "actor is not valid"
 
     def test_default_context(self):
         d = {
@@ -69,7 +69,7 @@ class TestAuditEvent:
             "details": {},
         }
         event = AuditEvent.from_dict(d)
-        assert event.context == {}
+        assert event.context == {}, "context is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -89,8 +89,8 @@ class TestRollbackRecord:
             reason="Wrong priority",
         )
         d = rec.to_dict()
-        assert d["id"] == "RB-001"
-        assert d["reason"] == "Wrong priority"
+        assert d["id"] == "RB-001", "Condition must be true"
+        assert d["reason"] == "Wrong priority", "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -102,16 +102,16 @@ class TestRateLimit:
     def test_allows_within_limit(self):
         rl = RateLimit("test_action", max_count=3, window_hours=1)
         allowed, msg = rl.check_and_increment()
-        assert allowed is True
-        assert "1/3" in msg
+        assert allowed is True, "allowed is not valid"
+        assert "1/3" in msg, "Condition must be true"
 
     def test_blocks_at_limit(self):
         rl = RateLimit("test_action", max_count=2, window_hours=1)
         rl.check_and_increment()
         rl.check_and_increment()
         allowed, msg = rl.check_and_increment()
-        assert allowed is False
-        assert "exceeded" in msg.lower()
+        assert allowed is False, "allowed is not valid"
+        assert "exceeded" in msg.lower(), "Condition must be true"
 
     def test_window_reset(self):
         rl = RateLimit("test_action", max_count=1, window_hours=1)
@@ -119,13 +119,13 @@ class TestRateLimit:
         # Force window expiry
         rl.window_start = datetime.now(timezone.utc) - timedelta(hours=2)
         allowed, _ = rl.check_and_increment()
-        assert allowed is True
+        assert allowed is True, "allowed is not valid"
 
     def test_reset_method(self):
         rl = RateLimit("test_action", max_count=1, window_hours=1)
         rl.check_and_increment()
         rl.reset()
-        assert rl.current_count == 0
+        assert rl.current_count == 0, "Count must be greater than zero"
 
 
 # ---------------------------------------------------------------------------
@@ -150,7 +150,7 @@ class TestScopeRestriction:
         scope = ScopeRestriction(name="default", description="test")
         adj = self._make_adjustment()
         allowed, reason = scope.check_adjustment(adj)
-        assert allowed is True
+        assert allowed is True, "allowed is not valid"
 
     def test_blocks_adjustment_type(self):
         scope = ScopeRestriction(
@@ -160,14 +160,14 @@ class TestScopeRestriction:
         )
         adj = self._make_adjustment(AdjustmentType.PRIORITY_INCREASE)
         allowed, reason = scope.check_adjustment(adj)
-        assert allowed is False
-        assert "blocked" in reason.lower()
+        assert allowed is False, "allowed is not valid"
+        assert "blocked" in reason.lower(), "Condition must be true"
 
     def test_blocks_rule(self):
         scope = ScopeRestriction(name="limited", description="test", blocked_rules=["R1"])
         adj = self._make_adjustment(rule_id="R1")
         allowed, reason = scope.check_adjustment(adj)
-        assert allowed is False
+        assert allowed is False, "allowed is not valid"
 
     def test_blocks_metric_type(self):
         scope = ScopeRestriction(
@@ -176,7 +176,7 @@ class TestScopeRestriction:
         adj = self._make_adjustment()
         adj.parameters["objective_template"] = {"metric_type": "coverage"}
         allowed, _ = scope.check_adjustment(adj)
-        assert allowed is False
+        assert allowed is False, "allowed is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -195,19 +195,19 @@ class TestAuditLog:
             "system",
             {"rule_id": "R1"},
         )
-        assert event.id == "AUD-000001"
+        assert event.id == "AUD-000001", "id is not valid"
 
     def test_get_events(self, audit_log):
         audit_log.log_event(AuditEventType.ADJUSTMENT_PROPOSED, "system", {})
         audit_log.log_event(AuditEventType.OVERRIDE_APPLIED, "admin", {})
         events = audit_log.get_events()
-        assert len(events) == 2
+        assert len(events) == 2, "Events must not be empty"
 
     def test_get_events_by_type(self, audit_log):
         audit_log.log_event(AuditEventType.ADJUSTMENT_PROPOSED, "system", {})
         audit_log.log_event(AuditEventType.OVERRIDE_APPLIED, "admin", {})
         events = audit_log.get_events(event_type=AuditEventType.OVERRIDE_APPLIED)
-        assert len(events) == 1
+        assert len(events) == 1, "Events must not be empty"
 
     def test_get_events_for_adjustment(self, audit_log):
         audit_log.log_event(
@@ -217,7 +217,7 @@ class TestAuditLog:
             AuditEventType.ADJUSTMENT_EXECUTED, "system", {"adjustment_id": "ADJ-1"}
         )
         events = audit_log.get_events_for_adjustment("ADJ-1")
-        assert len(events) == 2
+        assert len(events) == 2, "Events must not be empty"
 
     def test_persistence(self, tmp_path):
         path = tmp_path / "audit.json"
@@ -226,14 +226,14 @@ class TestAuditLog:
 
         log2 = AuditLog(log_path=path)
         events = log2.get_events()
-        assert len(events) == 1
+        assert len(events) == 1, "Events must not be empty"
 
     def test_truncation(self, tmp_path):
         log = AuditLog(log_path=tmp_path / "audit.json")
         # Log beyond the 10000 cap by setting events directly
         log._events = [{"dummy": i} for i in range(10001)]
         log._events = log._events[-10000:]
-        assert len(log._events) == 10000
+        assert len(log._events) == 10000, "Collection must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -260,38 +260,38 @@ class TestSafetyGuard:
         )
 
     def test_pause_and_resume(self, guard):
-        assert not guard.is_paused
+        assert not guard.is_paused, "Condition must be true"
         guard.pause_automation("admin", "maintenance")
-        assert guard.is_paused
+        assert guard.is_paused, "Condition must be true"
         guard.resume_automation("admin")
-        assert not guard.is_paused
+        assert not guard.is_paused, "Condition must be true"
 
     def test_check_adjustment_when_paused(self, guard):
         guard.pause_automation("admin")
         adj = self._make_adjustment()
         allowed, reason = guard.check_adjustment(adj)
-        assert allowed is False
-        assert "paused" in reason.lower()
+        assert allowed is False, "allowed is not valid"
+        assert "paused" in reason.lower(), "Condition must be true"
 
     def test_check_adjustment_allowed(self, guard):
         adj = self._make_adjustment()
         allowed, reason = guard.check_adjustment(adj)
-        assert allowed is True
+        assert allowed is True, "allowed is not valid"
 
     def test_block_and_unblock_rule(self, guard):
         guard.block_rule("R1", "admin", "testing")
         adj = self._make_adjustment(rule_id="R1")
         allowed, _ = guard.check_adjustment(adj)
-        assert allowed is False
+        assert allowed is False, "allowed is not valid"
 
         guard.unblock_rule("R1", "admin")
         allowed, _ = guard.check_adjustment(adj)
-        assert allowed is True
+        assert allowed is True, "allowed is not valid"
 
     def test_block_rule_idempotent(self, guard):
         guard.block_rule("R1", "admin")
         guard.block_rule("R1", "admin")
-        assert guard.scope.blocked_rules.count("R1") == 1
+        assert guard.scope.blocked_rules.count("R1") == 1, "Count must be greater than zero"
 
     def test_unblock_nonexistent_rule(self, guard):
         # Should not raise

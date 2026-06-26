@@ -53,12 +53,12 @@ class TestParseRequirements:
         )
         pkgs = sv.parse_requirements(lock)
         names = {p["name"] for p in pkgs}
-        assert "cryptography" in names
-        assert "requests" in names
-        assert "urllib3" in names
+        assert "cryptography" in names, "Condition must be true"
+        assert "requests" in names, "Condition must be true"
+        assert "urllib3" in names, "Condition must be true"
         # Version pinning extracted correctly
         crypto = next(p for p in pkgs if p["name"] == "cryptography")
-        assert crypto["version"] == "41.0.3"
+        assert crypto["version"] == "41.0.3", "Condition must be true"
 
     def test_skips_comment_and_blank_lines(self, tmp_path: Path) -> None:
         """Comment and blank lines are not parsed as packages."""
@@ -67,8 +67,8 @@ class TestParseRequirements:
             "# This is a comment\n\n" "requests==2.31.0\n" "-r base.txt\n",
         )
         pkgs = sv.parse_requirements(lock)
-        assert len(pkgs) == 1
-        assert pkgs[0]["name"] == "requests"
+        assert len(pkgs) == 1, "Pkgs must not be empty"
+        assert pkgs[0]["name"] == "requests", "Condition must be true"
 
     def test_deduplicates_packages(self, tmp_path: Path) -> None:
         """Duplicate package names appear only once in the output."""
@@ -77,7 +77,7 @@ class TestParseRequirements:
             "requests==2.31.0\n" "requests==2.31.0\n",
         )
         pkgs = sv.parse_requirements(lock)
-        assert len(pkgs) == 1
+        assert len(pkgs) == 1, "Pkgs must not be empty"
 
     def test_uv_lock_format(self, tmp_path: Path) -> None:
         """parse_requirements handles the uv.lock TOML-ish format."""
@@ -90,8 +90,8 @@ class TestParseRequirements:
         )
         pkgs = sv.parse_requirements(uv_lock)
         names = {p["name"] for p in pkgs}
-        assert "cryptography" in names
-        assert "requests" in names
+        assert "cryptography" in names, "Condition must be true"
+        assert "requests" in names, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -106,20 +106,20 @@ class TestVerifyPackageWithoutSigstore:
         """Without sigstore SDK, every package is 'unverified' (not error)."""
         with patch.object(sv, "_SIGSTORE_AVAILABLE", False):
             result = sv.verify_package("cryptography", "41.0.3")
-        assert result.status == "unverified"
-        assert "sigstore" in result.detail.lower()
+        assert result.status == "unverified", "Result must not be empty"
+        assert "sigstore" in result.detail.lower(), "Result must not be empty"
 
     def test_critical_flag_set_for_known_packages(self) -> None:
         """is_critical is True for packages in CRITICAL_PACKAGES."""
         with patch.object(sv, "_SIGSTORE_AVAILABLE", False):
             result = sv.verify_package("cryptography", "41.0.3")
-        assert result.is_critical is True
+        assert result.is_critical is True, "Result must not be empty"
 
     def test_non_critical_flag_for_unknown_packages(self) -> None:
         """is_critical is False for packages not in CRITICAL_PACKAGES."""
         with patch.object(sv, "_SIGSTORE_AVAILABLE", False):
             result = sv.verify_package("some-random-lib", "1.0.0")
-        assert result.is_critical is False
+        assert result.is_critical is False, "Result must not be empty"
 
     def test_to_dict_contains_required_keys(self) -> None:
         """VerificationResult.to_dict() contains all required JSON keys."""
@@ -158,8 +158,8 @@ class TestVerifyPackageWithSigstoreNoAttestation:
         ):
             result = sv._verify_with_sigstore("requests", "2.31.0")
 
-        assert result.status == "unverified"
-        assert "no sigstore attestation" in result.detail.lower()
+        assert result.status == "unverified", "Result must not be empty"
+        assert "no sigstore attestation" in result.detail.lower(), "Result must not be empty"
 
     def test_network_error_returns_error_status(self) -> None:
         """Network failures produce status='error', not an uncaught exception."""
@@ -176,8 +176,8 @@ class TestVerifyPackageWithSigstoreNoAttestation:
         ):
             result = sv._verify_with_sigstore("cryptography", "41.0.3")
 
-        assert result.status == "error"
-        assert "404" in result.detail
+        assert result.status == "error", "Result must not be empty"
+        assert "404" in result.detail, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -317,8 +317,8 @@ class TestVerifyPackageWithAttestation:
         ):
             result = sv._verify_with_sigstore("cryptography", "42.0.5")
 
-        assert result.status == "mismatch"
-        assert "mismatch" in result.detail.lower() or "failed" in result.detail.lower()
+        assert result.status == "mismatch", "Result must not be empty"
+        assert "mismatch" in result.detail.lower() or "failed" in result.detail.lower(), "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -346,19 +346,19 @@ class TestBuildReport:
         with patch.object(sv, "_SIGSTORE_AVAILABLE", False):
             report = sv.build_report(packages)
         summary = report["summary"]
-        assert summary["total"] == len(packages)
-        assert summary["verified"] == len(report["verified"])
-        assert summary["unverified"] == len(report["unverified"])
-        assert summary["errors"] == len(report["errors"])
+        assert summary["total"] == len(packages), "Packages must not be empty"
+        assert summary["verified"] == len(report["verified"]), "Collection must not be empty"
+        assert summary["unverified"] == len(report["unverified"]), "Collection must not be empty"
+        assert summary["errors"] == len(report["errors"]), "Collection must not be empty"
 
     def test_empty_package_list_returns_zeroes(self) -> None:
         """build_report with no packages returns all-zero summary."""
         with patch.object(sv, "_SIGSTORE_AVAILABLE", False):
             report = sv.build_report([])
-        assert report["summary"]["total"] == 0
-        assert report["summary"]["verified"] == 0
-        assert report["summary"]["unverified"] == 0
-        assert report["summary"]["errors"] == 0
+        assert report["summary"]["total"] == 0, "rep is not valid"
+        assert report["summary"]["verified"] == 0, "rep is not valid"
+        assert report["summary"]["unverified"] == 0, "rep is not valid"
+        assert report["summary"]["errors"] == 0, "Error should be raised or set"
 
 
 # ---------------------------------------------------------------------------
@@ -374,12 +374,12 @@ class TestMainCLI:
         lock = _make_lock_txt(tmp_path, "requests==2.31.0\n")
         with patch.object(sv, "_SIGSTORE_AVAILABLE", False):
             rc = sv.main(["--requirements", str(lock)])
-        assert rc == 0
+        assert rc == 0, "rc is not valid"
 
     def test_exit_2_on_missing_file(self, tmp_path: Path) -> None:
         """main() returns 2 when the requirements file does not exist."""
         rc = sv.main(["--requirements", str(tmp_path / "nonexistent.txt")])
-        assert rc == 2
+        assert rc == 2, "rc is not valid"
 
     def test_output_written_to_file(self, tmp_path: Path) -> None:
         """main() writes valid JSON to the --output path."""
@@ -387,10 +387,10 @@ class TestMainCLI:
         out = tmp_path / "report.json"
         with patch.object(sv, "_SIGSTORE_AVAILABLE", False):
             rc = sv.main(["--requirements", str(lock), "--output", str(out)])
-        assert rc == 0
-        assert out.exists()
+        assert rc == 0, "rc is not valid"
+        assert out.exists(), "Condition must be true"
         data = json.loads(out.read_text())
-        assert "summary" in data
+        assert "summary" in data, "Data must not be empty"
 
     def test_critical_only_flag_filters_packages(self, tmp_path: Path) -> None:
         """--critical-only only checks packages in CRITICAL_PACKAGES."""
@@ -404,9 +404,9 @@ class TestMainCLI:
         data = json.loads(out.read_text())
         checked_names = {p["name"] for p in data["verified"] + data["unverified"] + data["errors"]}
         # some-random-lib is not in CRITICAL_PACKAGES → should be excluded
-        assert "some-random-lib" not in checked_names
+        assert "some-random-lib" not in checked_names, "Condition must be true"
         # requests IS in CRITICAL_PACKAGES → should be included
-        assert "requests" in checked_names
+        assert "requests" in checked_names, "Condition must be true"
 
     def test_exit_1_on_critical_mismatch(self, tmp_path: Path) -> None:
         """main() returns 1 when a critical package has a signature mismatch."""
@@ -419,7 +419,7 @@ class TestMainCLI:
             patch.object(sv, "verify_package", return_value=mismatch_result),
         ):
             rc = sv.main(["--requirements", str(lock)])
-        assert rc == 1
+        assert rc == 1, "rc is not valid"
 
     def test_exit_0_on_non_critical_mismatch(self, tmp_path: Path) -> None:
         """main() returns 0 (with warning) when mismatch is on a non-critical package."""
@@ -432,4 +432,4 @@ class TestMainCLI:
             patch.object(sv, "verify_package", return_value=mismatch_result),
         ):
             rc = sv.main(["--requirements", str(lock)])
-        assert rc == 0
+        assert rc == 0, "rc is not valid"

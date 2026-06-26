@@ -12,23 +12,23 @@ class TestCoerceBool:
         """Test _coerce_bool with bool input."""
         from codex.archive.config import _coerce_bool
 
-        assert _coerce_bool(True) is True
-        assert _coerce_bool(False) is False
+        assert _coerce_bool(True) is True, "Condition must be true"
+        assert _coerce_bool(False) is False, "Condition must be true"
 
     def test_none_input(self):
         """Test _coerce_bool with None input."""
         from codex.archive.config import _coerce_bool
 
-        assert _coerce_bool(None) is False
+        assert _coerce_bool(None) is False, "Condition must be true"
         assert _coerce_bool(None, default=True) is True
 
     def test_int_input(self):
         """Test _coerce_bool with int input."""
         from codex.archive.config import _coerce_bool
 
-        assert _coerce_bool(1) is True
-        assert _coerce_bool(0) is False
-        assert _coerce_bool(42) is True
+        assert _coerce_bool(1) is True, "Condition must be true"
+        assert _coerce_bool(0) is False, "Condition must be true"
+        assert _coerce_bool(42) is True, "Condition must be true"
 
     def test_string_true_values(self):
         """Test _coerce_bool with true string values."""
@@ -48,7 +48,7 @@ class TestCoerceBool:
         """Test _coerce_bool with unknown string returns default."""
         from codex.archive.config import _coerce_bool
 
-        assert _coerce_bool("unknown") is False
+        assert _coerce_bool("unknown") is False, "Condition must be true"
         assert _coerce_bool("unknown", default=True) is True
 
 
@@ -126,28 +126,28 @@ class TestModuleConstants:
         """Test _ENV_BOOL_TRUE constant."""
         from codex.archive.config import _ENV_BOOL_TRUE
 
-        assert "1" in _ENV_BOOL_TRUE
-        assert "true" in _ENV_BOOL_TRUE
-        assert "yes" in _ENV_BOOL_TRUE
+        assert "1" in _ENV_BOOL_TRUE, "Condition must be true"
+        assert "true" in _ENV_BOOL_TRUE, "Condition must be true"
+        assert "yes" in _ENV_BOOL_TRUE, "Condition must be true"
 
     def test_env_bool_false(self):
         """Test _ENV_BOOL_FALSE constant."""
         from codex.archive.config import _ENV_BOOL_FALSE
 
-        assert "0" in _ENV_BOOL_FALSE
-        assert "false" in _ENV_BOOL_FALSE
-        assert "no" in _ENV_BOOL_FALSE
+        assert "0" in _ENV_BOOL_FALSE, "Condition must be true"
+        assert "false" in _ENV_BOOL_FALSE, "Condition must be true"
+        assert "no" in _ENV_BOOL_FALSE, "Condition must be true"
 
     def test_supported_backends(self):
         """Test _SUPPORTED_BACKENDS constant."""
         from codex.archive.config import _SUPPORTED_BACKENDS
 
-        assert "sqlite" in _SUPPORTED_BACKENDS
-        assert "postgres" in _SUPPORTED_BACKENDS
+        assert "sqlite" in _SUPPORTED_BACKENDS, "Condition must be true"
+        assert "postgres" in _SUPPORTED_BACKENDS, "Condition must be true"
 
     def test_logger_exists(self):
         """Test logger is configured."""
         from codex.archive.config import logger
 
-        assert logger is not None
-        assert logger.name == "codex.archive.config"
+        assert logger is not None, "logger must be initialized"
+        assert logger.name == "codex.archive.config", "name is not valid"

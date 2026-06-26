@@ -15,6 +15,7 @@ from src.services.github.exceptions import (
     RateLimitError,
     WorkflowTriggerError,
 )
+
  # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
  # pragma: allowlist secret
 
@@ -25,14 +26,14 @@ class TestGitHubClientInitialization:
         """Test basic client initialization with token."""
         token = "test_token_12345"
         client = GitHubClient(token=token)
-        assert client is not None
+        assert client is not None, "client must be initialized"
         assert hasattr(client, "token")
 
     def test_client_initialization_with_owner_repo(self):
         """Test client initialization with repository context."""
         token = "test_token"
         client = GitHubClient(token=token)
-        assert client is not None
+        assert client is not None, "client must be initialized"
 
     def test_client_initialization_raises_on_missing_token(self):
         """Test that initialization raises when token is missing."""
@@ -43,7 +44,7 @@ class TestGitHubClientInitialization:
         """Test client initialization with custom headers."""
         token = "test_token"
         client = GitHubClient(token=token)
-        assert client is not None
+        assert client is not None, "client must be initialized"
 
 
 class TestGitHubClientWorkflowOperations:
@@ -68,7 +69,7 @@ class TestGitHubClientWorkflowOperations:
                 ]
             }
             result = client.list_workflows()
-            assert result is not None
+            assert result is not None, "result must be initialized"
 
     def test_get_workflow_by_id(self, client):
         """Test retrieving workflow by ID."""
@@ -80,7 +81,7 @@ class TestGitHubClientWorkflowOperations:
                 "path": ".github/workflows/test.yml",
             }
             result = client.get_workflow(workflow_id)
-            assert result is not None
+            assert result is not None, "result must be initialized"
 
     def test_trigger_workflow_success(self, client):
         """Test successful workflow trigger."""
@@ -88,7 +89,7 @@ class TestGitHubClientWorkflowOperations:
         with patch.object(client, "_request") as mock_request:
             mock_request.return_value = {"status": 201}
             result = client.trigger_workflow(workflow_id, ref="main")
-            assert result is not None
+            assert result is not None, "result must be initialized"
 
     def test_trigger_workflow_with_inputs(self, client):
         """Test workflow trigger with inputs."""
@@ -97,7 +98,7 @@ class TestGitHubClientWorkflowOperations:
         with patch.object(client, "_request") as mock_request:
             mock_request.return_value = {"status": 201}
             result = client.trigger_workflow(workflow_id, ref="main", inputs=inputs)
-            assert result is not None
+            assert result is not None, "result must be initialized"
 
     def test_trigger_workflow_raises_on_error(self, client):
         """Test that trigger raises on error."""
@@ -132,7 +133,7 @@ class TestGitHubClientRunOperations:
                 ],
             }
             result = client.list_workflow_runs(workflow_id)
-            assert result is not None
+            assert result is not None, "result must be initialized"
 
     def test_get_workflow_run_success(self, client):
         """Test retrieving a specific workflow run."""
@@ -144,7 +145,7 @@ class TestGitHubClientRunOperations:
                 "conclusion": "success",
             }
             result = client.get_workflow_run(run_id)
-            assert result is not None
+            assert result is not None, "result must be initialized"
 
     def test_cancel_workflow_run_success(self, client):
         """Test canceling a workflow run."""
@@ -152,7 +153,7 @@ class TestGitHubClientRunOperations:
         with patch.object(client, "_request") as mock_request:
             mock_request.return_value = {"status": 202}
             result = client.cancel_workflow_run(run_id)
-            assert result is not None
+            assert result is not None, "result must be initialized"
 
     def test_rerun_workflow_run_success(self, client):
         """Test rerunning a workflow run."""
@@ -160,7 +161,7 @@ class TestGitHubClientRunOperations:
         with patch.object(client, "_request") as mock_request:
             mock_request.return_value = {"status": 201}
             result = client.rerun_workflow_run(run_id)
-            assert result is not None
+            assert result is not None, "result must be initialized"
 
     def test_list_workflow_jobs_success(self, client):
         """Test listing jobs in a workflow run."""
@@ -174,7 +175,7 @@ class TestGitHubClientRunOperations:
                 ],
             }
             result = client.list_workflow_jobs(run_id)
-            assert result is not None
+            assert result is not None, "result must be initialized"
 
 
 class TestGitHubClientErrorHandling:
@@ -226,7 +227,7 @@ class TestGitHubClientErrorHandling:
                 }
             }
             result = client.get_rate_limit_info()
-            assert result is not None
+            assert result is not None, "result must be initialized"
 
 
 class TestGitHubClientArtifactOperations:
@@ -252,7 +253,7 @@ class TestGitHubClientArtifactOperations:
                 ],
             }
             result = client.list_artifacts()
-            assert result is not None
+            assert result is not None, "result must be initialized"
 
     def test_get_artifact_download_url(self, client):
         """Test getting artifact download URL."""
@@ -260,7 +261,7 @@ class TestGitHubClientArtifactOperations:
         with patch.object(client, "_request") as mock_request:
             mock_request.return_value = {"url": "https://example.com/download"}
             result = client.get_artifact_download_url(artifact_id)
-            assert result is not None
+            assert result is not None, "result must be initialized"
 
     def test_delete_artifact_success(self, client):
         """Test artifact deletion."""
@@ -268,7 +269,7 @@ class TestGitHubClientArtifactOperations:
         with patch.object(client, "_request") as mock_request:
             mock_request.return_value = {"status": 204}
             result = client.delete_artifact(artifact_id)
-            assert result is not None
+            assert result is not None, "result must be initialized"
 
 
 class TestGitHubClientCheckRuns:
@@ -295,7 +296,7 @@ class TestGitHubClientCheckRuns:
                 ],
             }
             result = client.list_check_runs(ref)
-            assert result is not None
+            assert result is not None, "result must be initialized"
 
     def test_get_check_run_success(self, client):
         """Test retrieving a specific check run."""
@@ -307,4 +308,4 @@ class TestGitHubClientCheckRuns:
                 "status": "completed",
             }
             result = client.get_check_run(check_run_id)
-            assert result is not None
+            assert result is not None, "result must be initialized"

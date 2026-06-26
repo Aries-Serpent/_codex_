@@ -42,18 +42,18 @@ def test_lora_config_shapes_sanity():
     )
 
     # Validate config attributes
-    assert config.r == 8
-    assert config.lora_alpha == 16
+    assert config.r == 8, "r is not valid"
+    assert config.lora_alpha == 16, "lora_alpha is not valid"
     assert config.target_modules == ["q_proj", "v_proj"]
-    assert config.lora_dropout == 0.1
-    assert config.bias == "none"
-    assert config.task_type == "CAUSAL_LM"
+    assert config.lora_dropout == 0.1, "lora_dropout is not valid"
+    assert config.bias == "none", "bias is not valid"
+    assert config.task_type == "CAUSAL_LM", "task_type is not valid"
 
     # Validate config is serializable
     config_dict = config.to_dict()
     assert isinstance(config_dict, dict)
-    assert "r" in config_dict
-    assert "lora_alpha" in config_dict
+    assert "r" in config_dict, "Condition must be true"
+    assert "lora_alpha" in config_dict, "Condition must be true"
 
 
 def test_lora_available():
@@ -72,17 +72,17 @@ def test_lora_config_validation():
 
     # Valid config should not raise
     config = LoraConfig(r=16, lora_alpha=32)
-    assert config.r == 16
+    assert config.r == 16, "r is not valid"
 
     # Test different rank values
     for r in [4, 8, 16, 32, 64]:
         config = LoraConfig(r=r)
-        assert config.r == r
+        assert config.r == r, "r is not valid"
 
     # Test alpha scaling
     for alpha in [8, 16, 32]:
         config = LoraConfig(r=8, lora_alpha=alpha)
-        assert config.lora_alpha == alpha
+        assert config.lora_alpha == alpha, "lora_alpha is not valid"
 
 
 def test_lora_test_utils_available():
@@ -114,15 +114,15 @@ def test_lora_test_utils_available():
 
         # Test parameter count estimation
         params = get_lora_param_count(r=8, d_model=512, n_layers=2)
-        assert params > 0
-        assert params == (512 * 8 + 8 * 512) * 2 * 2  # (d*r + r*d) * 2_modules * 2_layers
+        assert params > 0, "params must be greater than zero"
+        assert params == (512 * 8 + 8 * 512) * 2 * 2, "params is not valid"
 
         # Test config creation and validation
         if is_peft_available():
             config = create_mock_lora_config(r=16)
-            assert config is not None
-            assert validate_lora_config_shape(config)
-            assert config.r == 16
+            assert config is not None, "config must be initialized"
+            assert validate_lora_config_shape(config), "validate_l is not valid"
+            assert config.r == 16, "r is not valid"
 
     except ImportError as e:
         pytest.skip(f"Test utils not available: {e}")

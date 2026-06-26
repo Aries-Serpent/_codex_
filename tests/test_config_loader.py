@@ -69,56 +69,56 @@ class TestConfigLoader:
     def test_initialization(self, temp_config_dir: Path) -> None:
         """Test ConfigLoader initialization."""
         loader = ConfigLoader(repo_root=temp_config_dir)
-        assert loader.repo_root == temp_config_dir
+        assert loader.repo_root == temp_config_dir, "repo_root is not valid"
         assert isinstance(loader.error_config, dict)
 
     def test_find_repo_root(self) -> None:
         """Test automatic repo root detection."""
         loader = ConfigLoader()
-        assert loader.repo_root.exists()
+        assert loader.repo_root.exists(), "Condition must be true"
         # Should find either .git or pyproject.toml
         has_git = (loader.repo_root / ".git").exists()
         has_pyproject = (loader.repo_root / "pyproject.toml").exists()
-        assert has_git or has_pyproject
+        assert has_git or has_pyproject, "has_git is not valid"
 
     def test_load_error_config(self, temp_config_dir: Path) -> None:
         """Test loading error configuration."""
         loader = ConfigLoader(repo_root=temp_config_dir)
-        assert "config_errors" in loader.error_config
-        assert "missing_config" in loader.error_config["config_errors"]
-        assert "defaults" in loader.error_config
+        assert "config_errors" in loader.error_config, "Error should be raised or set"
+        assert "missing_config" in loader.error_config["config_errors"], "Error should be raised or set"
+        assert "defaults" in loader.error_config, "Error should be raised or set"
 
     def test_get_error(self, temp_config_dir: Path) -> None:
         """Test retrieving structured error."""
         loader = ConfigLoader(repo_root=temp_config_dir)
         error = loader.get_error("config_errors", "missing_config")
 
-        assert error is not None
+        assert error is not None, "error must be initialized"
         assert isinstance(error, ErrorConfig)
-        assert error.code == "CONFIG_001"
-        assert error.message == "Missing configuration file"
-        assert error.severity == "error"
-        assert "exists" in error.resolution
+        assert error.code == "CONFIG_001", "Error should be raised or set"
+        assert error.message == "Missing configuration file", "Error should be raised or set"
+        assert error.severity == "error", "Error should be raised or set"
+        assert "exists" in error.resolution, "Error should be raised or set"
 
     def test_get_error_not_found(self, temp_config_dir: Path) -> None:
         """Test getting non-existent error returns None."""
         loader = ConfigLoader(repo_root=temp_config_dir)
         error = loader.get_error("nonexistent", "error")
-        assert error is None
+        assert error is None, "Error should be raised or set"
 
     def test_load_config_success(self, temp_config_dir: Path) -> None:
         """Test successful config loading."""
         loader = ConfigLoader(repo_root=temp_config_dir)
         cfg = loader.load_config("test", config_dir="conf")
 
-        assert cfg is not None
+        assert cfg is not None, "cfg must be initialized"
         # Handle both DictConfig and dict
         if hasattr(cfg, "app"):
-            assert cfg.app.name == "test_app"  # type: ignore
-            assert cfg.app.version == "1.0.0"  # type: ignore
+            assert cfg.app.name == "test_app", "name is not valid"
+            assert cfg.app.version == "1.0.0", "version is not valid"
         else:
-            assert cfg["app"]["name"] == "test_app"
-            assert cfg["app"]["version"] == "1.0.0"
+            assert cfg["app"]["name"] == "test_app", "Condition must be true"
+            assert cfg["app"]["version"] == "1.0.0", "Condition must be true"
 
     def test_load_config_with_overrides(self, temp_config_dir: Path) -> None:
         """Test config loading with overrides."""
@@ -127,24 +127,24 @@ class TestConfigLoader:
             "test", config_dir="conf", overrides=["app.debug=true", "database.port=3306"]
         )
 
-        assert cfg is not None
+        assert cfg is not None, "cfg must be initialized"
         # Handle both DictConfig and dict
         if hasattr(cfg, "app"):
-            assert cfg.app.debug is True  # type: ignore
-            assert cfg.database.port == 3306  # type: ignore
+            assert cfg.app.debug is True, "debug is not valid"
+            assert cfg.database.port == 3306, "Data must not be empty"
         else:
-            assert cfg["app"]["debug"] is True
-            assert cfg["database"]["port"] == 3306
+            assert cfg["app"]["debug"] is True, "Condition must be true"
+            assert cfg["database"]["port"] == 3306, "Data must not be empty"
 
     def test_load_config_missing_with_fallback(self, temp_config_dir: Path) -> None:
         """Test loading missing config with fallback enabled."""
         loader = ConfigLoader(repo_root=temp_config_dir)
         cfg = loader.load_config("nonexistent", config_dir="conf", allow_fallback=True)
 
-        assert cfg is not None
+        assert cfg is not None, "cfg must be initialized"
         # Should return empty config
         if hasattr(cfg, "__len__"):
-            assert len(cfg) == 0 or cfg == {}
+            assert len(cfg) == 0 or cfg == {}, "Cfg must not be empty"
 
     def test_load_config_missing_no_fallback(self, temp_config_dir: Path) -> None:
         """Test loading missing config without fallback raises exception."""
@@ -160,9 +160,9 @@ class TestConfigLoader:
 
         result = ConfigLoader._apply_overrides(data, overrides)
 
-        assert result["a"]["b"] == 10
-        assert result["c"] == 20
-        assert result["d"]["e"] == 30
+        assert result["a"]["b"] == 10, "Result must not be empty"
+        assert result["c"] == 20, "Result must not be empty"
+        assert result["d"]["e"] == 30, "Result must not be empty"
 
     def test_apply_overrides_invalid_format(self) -> None:
         """Test overrides with invalid format are skipped."""
@@ -170,17 +170,17 @@ class TestConfigLoader:
         overrides = ["invalid_override", "a=2"]
 
         result = ConfigLoader._apply_overrides(data, overrides)
-        assert result["a"] == 2
+        assert result["a"] == 2, "Result must not be empty"
 
     def test_error_config_format(self, temp_config_dir: Path) -> None:
         """Test error message formatting."""
         loader = ConfigLoader(repo_root=temp_config_dir)
         error = loader.get_error("config_errors", "missing_config")
 
-        assert error is not None
+        assert error is not None, "error must be initialized"
         formatted = error.format()
-        assert "[CONFIG_001]" in formatted
-        assert "Missing configuration file" in formatted
+        assert "[CONFIG_001]" in formatted, "Condition must be true"
+        assert "Missing configuration file" in formatted, "Condition must be true"
 
 
 class TestGlobalFunctions:
@@ -192,7 +192,7 @@ class TestGlobalFunctions:
         loader2 = get_loader()
 
         # Should return same instance
-        assert loader1 is loader2
+        assert loader1 is loader2, "loader1 is not valid"
         assert isinstance(loader1, ConfigLoader)
 
     def test_load_config_global(
@@ -208,7 +208,7 @@ class TestGlobalFunctions:
         monkeypatch.setattr(config_loader_module, "_global_loader", test_loader)
 
         cfg = load_config("test", config_dir="conf")
-        assert cfg is not None
+        assert cfg is not None, "cfg must be initialized"
 
     def test_load_error_config_global(
         self, temp_config_dir: Path, monkeypatch: pytest.MonkeyPatch
@@ -222,7 +222,7 @@ class TestGlobalFunctions:
 
         errors = load_error_config()
         assert isinstance(errors, dict)
-        assert "config_errors" in errors
+        assert "config_errors" in errors, "Error should be raised or set"
 
 
 class TestErrorConfig:
@@ -234,10 +234,10 @@ class TestErrorConfig:
             code="TEST_001", message="Test error", severity="error", resolution="Fix the test"
         )
 
-        assert error.code == "TEST_001"
-        assert error.message == "Test error"
-        assert error.severity == "error"
-        assert error.resolution == "Fix the test"
+        assert error.code == "TEST_001", "Error should be raised or set"
+        assert error.message == "Test error", "Error should be raised or set"
+        assert error.severity == "error", "Error should be raised or set"
+        assert error.resolution == "Fix the test", "Error should be raised or set"
 
     def test_error_config_format_simple(self) -> None:
         """Test error formatting without placeholders."""
@@ -246,7 +246,7 @@ class TestErrorConfig:
         )
 
         formatted = error.format()
-        assert formatted == "[TEST_001] Simple error"
+        assert formatted == "[TEST_001] Simple error", "Error should be raised or set"
 
     def test_error_config_format_with_kwargs(self) -> None:
         """Test error formatting with keyword arguments."""
@@ -258,7 +258,7 @@ class TestErrorConfig:
         )
 
         formatted = error.format(param="test_param", value=42)
-        assert formatted == "[TEST_002] Error with test_param: 42"
+        assert formatted == "[TEST_002] Error with test_param: 42", "Error should be raised or set"
 
 
 class TestEdgeCases:
@@ -282,8 +282,8 @@ class TestEdgeCases:
 
         loader = ConfigLoader(repo_root=temp_config_dir)
         # Should fall back to default error config
-        assert loader.error_config is not None
-        assert "defaults" in loader.error_config
+        assert loader.error_config is not None, "error_config must be initialized"
+        assert "defaults" in loader.error_config, "Error should be raised or set"
 
     def test_corrupted_error_config(self, temp_config_dir: Path) -> None:
         """Test handling of corrupted error config file."""
@@ -293,8 +293,8 @@ class TestEdgeCases:
 
         # Should fall back to default config
         loader = ConfigLoader(repo_root=temp_config_dir)
-        assert loader.error_config is not None
-        assert "defaults" in loader.error_config
+        assert loader.error_config is not None, "error_config must be initialized"
+        assert "defaults" in loader.error_config, "Error should be raised or set"
 
     def test_config_dir_not_exists(self, temp_config_dir: Path) -> None:
         """Test loading from non-existent directory."""
@@ -302,7 +302,7 @@ class TestEdgeCases:
         cfg = loader.load_config("test", config_dir="nonexistent", allow_fallback=True)
 
         # Should return empty fallback
-        assert cfg is not None
+        assert cfg is not None, "cfg must be initialized"
 
     def test_absolute_config_dir(self, temp_config_dir: Path) -> None:
         """Test loading with absolute config directory path."""
@@ -310,7 +310,7 @@ class TestEdgeCases:
         absolute_path = temp_config_dir / "conf"
 
         cfg = loader.load_config("test", config_dir=str(absolute_path))
-        assert cfg is not None
+        assert cfg is not None, "cfg must be initialized"
 
 
 class TestIntegration:
@@ -328,7 +328,7 @@ class TestIntegration:
         if "config_errors" in errors:
             assert isinstance(errors["config_errors"], dict)
             if "missing_config" in errors["config_errors"]:
-                assert "code" in errors["config_errors"]["missing_config"]
+                assert "code" in errors["config_errors"]["missing_config"], "Error should be raised or set"
 
     def test_load_existing_conf_config(self) -> None:
         """Test loading a config from actual conf directory."""
@@ -337,7 +337,7 @@ class TestIntegration:
         try:
             # Try to load any existing config
             cfg = loader.load_config("config", config_dir="conf", allow_fallback=True)
-            assert cfg is not None
+            assert cfg is not None, "cfg must be initialized"
         except (ValueError, TypeError) as e:
             # If it fails, should still get fallback
             pytest.skip(f"No config.yaml in conf/: {e}")
@@ -348,21 +348,21 @@ class TestIntegration:
         try:
             exc = MissingConfigException(missing_cfg_file="test.yaml", message="Test message")
             assert hasattr(exc, "missing_cfg_file")
-            assert exc.missing_cfg_file == "test.yaml"
+            assert exc.missing_cfg_file == "test.yaml", "missing_cfg_file is not valid"
         except TypeError:
             # When using Hydra's MissingConfigException, it has different signature
             # Just verify the exception can be instantiated with a message
             exc = MissingConfigException("test.yaml")
-            assert "test.yaml" in str(exc)
+            assert "test.yaml" in str(exc), "Condition must be true"
 
         # Test without explicit message
         try:
             exc2 = MissingConfigException(missing_cfg_file="test2.yaml")
-            assert "test2.yaml" in str(exc2)
+            assert "test2.yaml" in str(exc2), "Condition must be true"
         except TypeError:
             # Hydra's exception requires message as positional arg
             exc2 = MissingConfigException("test2.yaml")
-            assert "test2.yaml" in str(exc2)
+            assert "test2.yaml" in str(exc2), "Condition must be true"
 
 
 class TestConfigLoaderAdvanced:
@@ -373,7 +373,7 @@ class TestConfigLoaderAdvanced:
         loader = ConfigLoader(repo_root=temp_config_dir)
         # Should use repo_root/conf by default
         cfg = loader.load_config("test", config_dir=None, allow_fallback=True)
-        assert cfg is not None
+        assert cfg is not None, "cfg must be initialized"
 
     def test_dual_path_fallback(self, temp_config_dir: Path) -> None:
         """Test dual-path fallback to legacy configs/ location."""
@@ -388,13 +388,13 @@ class TestConfigLoaderAdvanced:
         # Try to load with conf/ path (should fallback to configs/)
         cfg = loader.load_config("legacy_test", config_dir="conf/training", allow_fallback=True)
 
-        assert cfg is not None
+        assert cfg is not None, "cfg must be initialized"
         if hasattr(cfg, "legacy"):
-            assert cfg.legacy is True  # type: ignore
-            assert cfg.value == 42  # type: ignore
+            assert cfg.legacy is True, "legacy is not valid"
+            assert cfg.value == 42, "Value must be initialized"
         else:
-            assert cfg["legacy"] is True
-            assert cfg["value"] == 42
+            assert cfg["legacy"] is True, "Condition must be true"
+            assert cfg["value"] == 42, "Value must be initialized"
 
     def test_apply_overrides_nested_creation(self) -> None:
         """Test creating deeply nested structures via overrides."""
@@ -403,8 +403,8 @@ class TestConfigLoaderAdvanced:
 
         result = ConfigLoader._apply_overrides(data, overrides)
 
-        assert result["a"]["b"]["c"]["d"] == 42
-        assert result["x"]["y"] == "test"
+        assert result["a"]["b"]["c"]["d"] == 42, "Result must not be empty"
+        assert result["x"]["y"] == "test", "Result must not be empty"
 
     def test_get_error_invalid_category(self, temp_config_dir: Path) -> None:
         """Test get_error with non-dict category returns None."""
@@ -413,7 +413,7 @@ class TestConfigLoaderAdvanced:
         loader.error_config["invalid_category"] = "not a dict"
 
         error = loader.get_error("invalid_category", "some_key")
-        assert error is None
+        assert error is None, "Error should be raised or set"
 
     def test_load_config_yaml_override_parsing(self, temp_config_dir: Path) -> None:
         """Test override value parsing for different types."""
@@ -430,12 +430,12 @@ class TestConfigLoaderAdvanced:
             ],
         )
 
-        assert cfg is not None
+        assert cfg is not None, "cfg must be initialized"
         # Verify different types are parsed correctly
         if hasattr(cfg, "int_val"):
-            assert cfg.int_val == 123  # type: ignore
+            assert cfg.int_val == 123, "int_val is not valid"
         else:
-            assert cfg["int_val"] == 123
+            assert cfg["int_val"] == 123, "Condition must be true"
 
 
 if __name__ == "__main__":

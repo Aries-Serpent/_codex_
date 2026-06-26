@@ -32,7 +32,7 @@ class TestFileIngestorEdgeCases:
                 f.write("")
                 f.flush()
                 result = ingestor.ingest(f.name)
-                assert result is not None
+                assert result is not None, "result must be initialized"
             os.unlink(f.name)
         except (ValueError, AttributeError):
             pass
@@ -79,7 +79,7 @@ class TestFileIngestorEdgeCases:
                     f.write("x" * 1000 + "\n")
                 f.flush()
                 result = ingestor.ingest(f.name)
-                assert result is not None
+                assert result is not None, "result must be initialized"
             os.unlink(f.name)
         except (ValueError, AttributeError, MemoryError):
             pass
@@ -113,7 +113,7 @@ class TestCSVIngestorEdgeCases:
                 f.write("1,2,3\n4,5,6\n")
                 f.flush()
                 result = ingestor.ingest(f.name)
-                assert result is not None
+                assert result is not None, "result must be initialized"
             os.unlink(f.name)
         except (ValueError, AttributeError):
             pass
@@ -147,7 +147,7 @@ class TestCSVIngestorEdgeCases:
                 f.write(",,\n")  # All null
                 f.flush()
                 result = ingestor.ingest(f.name)
-                assert result is not None
+                assert result is not None, "result must be initialized"
             os.unlink(f.name)
         except (ValueError, AttributeError):
             pass
@@ -181,7 +181,7 @@ class TestJSONIngestorEdgeCases:
                 f.write("{}")
                 f.flush()
                 result = ingestor.ingest(f.name)
-                assert result is not None
+                assert result is not None, "result must be initialized"
             os.unlink(f.name)
         except (ValueError, AttributeError):
             pass
@@ -263,8 +263,8 @@ class TestTokenizationEdgeCases:
         try:
             tokenizer = Tokenizer()
             tokens = tokenizer.encode("")
-            assert tokens is not None
-            assert len(tokens) == 0 or tokens == [0]  # Empty or BOS token
+            assert tokens is not None, "tokens must be initialized"
+            assert len(tokens) == 0 or tokens == [0], "Tokens must not be empty"
         except (ValueError, AttributeError):
             pass
 
@@ -287,7 +287,7 @@ class TestTokenizationEdgeCases:
             tokenizer = Tokenizer()
             special_text = "!@#$%^&*()_+-=[]{}|;:,.<>?"
             tokens = tokenizer.encode(special_text)
-            assert tokens is not None
+            assert tokens is not None, "tokens must be initialized"
         except (ValueError, AttributeError):
             pass
 
@@ -299,7 +299,7 @@ class TestTokenizationEdgeCases:
             tokenizer = Tokenizer()
             unicode_text = "你好世界 🌍 Привет"
             tokens = tokenizer.encode(unicode_text)
-            assert tokens is not None
+            assert tokens is not None, "tokens must be initialized"
         except (ValueError, AttributeError, UnicodeError):
             pass
 
@@ -310,8 +310,8 @@ class TestTokenizationEdgeCases:
         try:
             tokenizer = Tokenizer()
             text = tokenizer.decode([])
-            assert text is not None
-            assert text == ""
+            assert text is not None, "text must be initialized"
+            assert text == "", "text is not valid"
         except (ValueError, AttributeError):
             pass
 
@@ -426,7 +426,7 @@ class TestAPIRAGEndpoints:
         try:
             api = RAGAPI()
             result = api.index_documents([])
-            assert result is not None
+            assert result is not None, "result must be initialized"
         except (ValueError, AttributeError):
             pass
 
@@ -456,7 +456,7 @@ class TestUtilityFunctionBoundaries:
 
         try:
             result = parse_value("")
-            assert result is not None or result is None
+            assert result is not None or result is None, "result must be initialized"
         except (ValueError, AttributeError):
             pass
 
@@ -466,7 +466,7 @@ class TestUtilityFunctionBoundaries:
 
         try:
             result = parse_value(None)
-            assert result is None
+            assert result is None, "Result must not be empty"
         except (ValueError, AttributeError, TypeError):
             pass
 
@@ -476,7 +476,7 @@ class TestUtilityFunctionBoundaries:
 
         try:
             result = format_data({})
-            assert result is not None
+            assert result is not None, "result must be initialized"
         except (ValueError, AttributeError):
             pass
 
@@ -487,7 +487,7 @@ class TestUtilityFunctionBoundaries:
         try:
             nested = {"a": {"b": {"c": {"d": "value"}}}}
             result = format_data(nested)
-            assert result is not None
+            assert result is not None, "result must be initialized"
         except (ValueError, AttributeError, RecursionError):
             pass
 
@@ -511,7 +511,7 @@ class TestPerformanceUnderStress:
                     f.write(f"line {i}\n")
                 f.flush()
                 result = ingestor.ingest(f.name)
-                assert result is not None
+                assert result is not None, "result must be initialized"
             os.unlink(f.name)
         except (ValueError, AttributeError, MemoryError):
             pass
@@ -524,7 +524,7 @@ class TestPerformanceUnderStress:
             tokenizer = Tokenizer()
             texts = ["text" + str(i) for i in range(1000)]
             results = tokenizer.batch_encode(texts)
-            assert len(results) == len(texts)
+            assert len(results) == len(texts), "Results must not be empty"
         except (ValueError, AttributeError, NotImplementedError):
             pass
 

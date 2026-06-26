@@ -43,7 +43,7 @@ def _event(**kwargs) -> IngressEvent:
 class TestIngressEvent:
     def test_control_class_auto_derived(self):
         evt = IngressEvent(event_type="issue_comment", actor="mbaetiong")
-        assert evt.control_class == "ADVISORY_WRITE"
+        assert evt.control_class == "ADVISORY_WRITE", "control_class is not valid"
 
     def test_control_class_override(self):
         evt = IngressEvent(
@@ -51,7 +51,7 @@ class TestIngressEvent:
             actor="mbaetiong",
             control_class="READ_ONLY",
         )
-        assert evt.control_class == "READ_ONLY"
+        assert evt.control_class == "READ_ONLY", "control_class is not valid"
 
     def test_nonce_extracted_from_payload(self):
         evt = IngressEvent(
@@ -59,64 +59,64 @@ class TestIngressEvent:
             actor="mbaetiong",
             payload={"nonce": "xyz123"},
         )
-        assert evt.nonce == "xyz123"
+        assert evt.nonce == "xyz123", "nonce is not valid"
 
     def test_schedule_derives_read_only(self):
         evt = IngressEvent(event_type="schedule", actor="mbaetiong")
-        assert evt.control_class == "READ_ONLY"
+        assert evt.control_class == "READ_ONLY", "control_class is not valid"
 
 
 class TestIngressGateway:
     def test_kill_switch_denies(self):
         gw = _gw(kill_switch=True)
         d = gw.evaluate(_event())
-        assert not d.allowed
-        assert "kill_switch" in d.reason
+        assert not d.allowed, "Condition must be true"
+        assert "kill_switch" in d.reason, "Condition must be true"
 
     def test_mode_off_denies(self):
         gw = _gw(autonomy_mode=AutonomyMode.OFF)
         d = gw.evaluate(_event())
-        assert not d.allowed
-        assert "OFF" in d.reason
+        assert not d.allowed, "Condition must be true"
+        assert "OFF" in d.reason, "Condition must be true"
 
     def test_unknown_actor_denied(self):
         gw = _gw()
         d = gw.evaluate(_event(actor="evil-bot"))
-        assert not d.allowed
-        assert "allowlist" in d.reason
+        assert not d.allowed, "Condition must be true"
+        assert "allowlist" in d.reason, "Condition must be true"
 
     def test_known_actor_allowed(self):
         gw = _gw()
         d = gw.evaluate(_event(actor="mbaetiong"))
-        assert d.allowed
+        assert d.allowed, "Condition must be true"
 
     def test_replay_nonce_denied(self):
         gw = _gw()
         evt = _event(nonce="replay-nonce-abc")
         gw.evaluate(evt)  # first pass — registers nonce
         d = gw.evaluate(evt)  # second pass — should be denied
-        assert not d.allowed
-        assert "replay" in d.reason
+        assert not d.allowed, "Condition must be true"
+        assert "replay" in d.reason, "Condition must be true"
 
     def test_distinct_nonces_allowed(self):
         gw = _gw()
         d1 = gw.evaluate(_event(nonce="nonce-1"))
         d2 = gw.evaluate(_event(nonce="nonce-2"))
-        assert d1.allowed
-        assert d2.allowed
+        assert d1.allowed, "Condition must be true"
+        assert d2.allowed, "Condition must be true"
 
     def test_missing_event_type_denied(self):
         gw = _gw()
         evt = IngressEvent(event_type="", actor="mbaetiong")
         d = gw.evaluate(evt)
-        assert not d.allowed
-        assert "schema" in d.reason
+        assert not d.allowed, "Condition must be true"
+        assert "schema" in d.reason, "Condition must be true"
 
     def test_dry_run_returns_dry_run_result(self):
         gw = _gw(dry_run=True)
         d = gw.evaluate(_event())
-        assert d.is_dry_run
-        assert d.allowed  # dry_run counts as allowed
+        assert d.is_dry_run, "Condition must be true"
+        assert d.allowed, "Condition must be true"
 
     def test_custom_allowed_actors(self):
         gw = IngressGateway(
@@ -124,18 +124,18 @@ class TestIngressGateway:
             allowed_actors=frozenset({"custom-bot"}),
         )
         d = gw.evaluate(_event(actor="custom-bot"))
-        assert d.allowed
+        assert d.allowed, "Condition must be true"
 
     def test_env_actor_allowlist(self, monkeypatch):
         monkeypatch.setenv("CODEX_ALLOWED_ACTORS", "alice,bob")
         gw = IngressGateway(registry=_reg())
-        assert "alice" in gw._allowed_actors
-        assert "bob" in gw._allowed_actors
+        assert "alice" in gw._allowed_actors, "Condition must be true"
+        assert "bob" in gw._allowed_actors, "Condition must be true"
 
     def test_policy_version_propagated(self):
         gw = _gw()
         d = gw.evaluate(_event())
-        assert d.policy_version == "blueprint-v1"
+        assert d.policy_version == "blueprint-v1", "policy_version is not valid"
 
 
 class TestIngressDecision:
@@ -145,8 +145,8 @@ class TestIngressDecision:
             reason="ok",
             event=_event(),
         )
-        assert d.allowed
-        assert not d.is_dry_run
+        assert d.allowed, "Condition must be true"
+        assert not d.is_dry_run, "Condition must be true"
 
     def test_allowed_property_dry_run(self):
         d = IngressDecision(
@@ -154,8 +154,8 @@ class TestIngressDecision:
             reason="dry",
             event=_event(),
         )
-        assert d.allowed
-        assert d.is_dry_run
+        assert d.allowed, "Condition must be true"
+        assert d.is_dry_run, "Condition must be true"
 
     def test_denied_not_allowed(self):
         d = IngressDecision(
@@ -163,4 +163,4 @@ class TestIngressDecision:
             reason="nope",
             event=_event(),
         )
-        assert not d.allowed
+        assert not d.allowed, "Condition must be true"

@@ -31,7 +31,7 @@ class TestConfigConsolidation:
         legacy_roots = ["conf", "config"]
         for legacy_root in legacy_roots:
             legacy_path = repo_root / legacy_root
-            assert (
+            assert (, "Condition must be true"
                 legacy_path.exists()
             ), f"Legacy config root '{legacy_root}/' must exist for backward compat"
 
@@ -92,7 +92,7 @@ class TestConfigConsolidation:
         ]
 
         for section in required_sections:
-            assert (
+            assert (, "Condition must be true"
                 section in content
             ), f"CONFIGURATION_STRUCTURE.md must contain '{section}' section"
 
@@ -114,7 +114,7 @@ class TestConfigConsolidation:
         ]
 
         for keyword in migration_keywords:
-            assert (
+            assert (, "Condition must be true"
                 keyword.lower() in content.lower()
             ), f"Migration guide must mention '{keyword}' for gradual transition"
 
@@ -159,7 +159,7 @@ class TestHydraConfigAccess:
                 content = yaml_file.read_text()
                 parsed = yaml.safe_load(content)
                 # Basic validation - should parse without error
-                assert (
+                assert (, "Condition must be true"
                     parsed is not None or content.strip() == ""
                 ), f"YAML file {yaml_file.name} should parse correctly"
             except yaml.YAMLError as e:

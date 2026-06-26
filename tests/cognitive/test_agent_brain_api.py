@@ -88,9 +88,9 @@ class TestAgentSessionContext:
             continuation_prompt="@copilot go",
         )
         d = ctx.to_dict()
-        assert "session_id" in d
-        assert "next_actions" in d
-        assert "continuation_prompt" in d
+        assert "session_id" in d, "Condition must be true"
+        assert "next_actions" in d, "Condition must be true"
+        assert "continuation_prompt" in d, "Condition must be true"
 
     def test_to_json_valid(self):
         ctx = AgentSessionContext(
@@ -103,7 +103,7 @@ class TestAgentSessionContext:
             continuation_prompt="x",
         )
         data = json.loads(ctx.to_json())
-        assert data["agent_id"] == "a"
+        assert data["agent_id"] == "a", "Data must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -122,9 +122,9 @@ class TestCompletionReport:
             artifacts=["alerts.json"],
         )
         d = r.to_dict()
-        assert d["step_id"] == "SEC-01"
-        assert d["outcome"] == "success"
-        assert d["artifacts"] == ["alerts.json"]
+        assert d["step_id"] == "SEC-01", "Condition must be true"
+        assert d["outcome"] == "success", "Condition must be true"
+        assert d["artifacts"] == ["alerts.json"], "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -137,29 +137,29 @@ class TestAgentBrainAPI:
         api = _make_api(tmp_path)
         ctx = api.get_session_context()
         assert isinstance(ctx, AgentSessionContext)
-        assert ctx.agent_id == "copilot-coding-agent"
+        assert ctx.agent_id == "copilot-coding-agent", "agent_id is not valid"
 
     def test_session_context_has_next_actions(self, tmp_path: Path):
         api = _make_api(tmp_path)
         ctx = api.get_session_context()
-        assert len(ctx.next_actions) > 0
+        assert len(ctx.next_actions) > 0, "Collection must not be empty"
 
     def test_session_context_continuation_prompt_contains_copilot(self, tmp_path: Path):
         api = _make_api(tmp_path)
         ctx = api.get_session_context()
-        assert "@copilot" in ctx.continuation_prompt
+        assert "@copilot" in ctx.continuation_prompt, "Condition must be true"
 
     def test_session_context_respects_max_actions(self, tmp_path: Path):
         api = _make_api(tmp_path)
         ctx = api.get_session_context(max_actions=2)
-        assert len(ctx.next_actions) <= 2
+        assert len(ctx.next_actions) <= 2, "Collection must not be empty"
 
     def test_capabilities_filtered_for_scoped_agent(self, tmp_path: Path):
         api = _make_api(tmp_path, agent_id="codeql-alert-resolution-agent")
         ctx = api.get_session_context()
         # All returned actions should be from SECURITY_REMEDIATION
         areas = {p.area for p in ctx.next_actions}
-        assert areas <= {"SECURITY_REMEDIATION"}
+        assert areas <= {"SECURITY_REMEDIATION"}, "areas is not valid"
 
     def test_report_completion_returns_report(self, tmp_path: Path):
         api = _make_api(tmp_path)
@@ -170,20 +170,20 @@ class TestAgentBrainAPI:
             notes="done",
         )
         assert isinstance(report, CompletionReport)
-        assert report.step_id == "SEC-01"
-        assert report.outcome == "success"
+        assert report.step_id == "SEC-01", "step_id is not valid"
+        assert report.outcome == "success", "outcome is not valid"
 
     def test_report_completion_advances_orchestrator(self, tmp_path: Path):
         api = _make_api(tmp_path)
         api.report_completion(ImprovementArea.SECURITY_REMEDIATION, "SEC-01")
         completed = api._orch._state.completed_steps.get("SECURITY_REMEDIATION", [])
-        assert "SEC-01" in completed
+        assert "SEC-01" in completed, "Condition must be true"
 
     def test_get_continuation_prompt_is_string(self, tmp_path: Path):
         api = _make_api(tmp_path)
         p = api.get_continuation_prompt()
         assert isinstance(p, str)
-        assert "@copilot" in p
+        assert "@copilot" in p, "Condition must be true"
 
     def test_get_agent_capabilities_returns_list(self, tmp_path: Path):
         api = _make_api(tmp_path)
@@ -199,7 +199,7 @@ class TestAgentBrainAPI:
     def test_session_context_with_context_signals(self, tmp_path: Path):
         api = _make_api(tmp_path)
         ctx = api.get_session_context(session_context={"open_alerts": 120, "coverage_pct": 40})
-        assert ctx is not None
+        assert ctx is not None, "ctx must be initialized"
 
     def test_active_patterns_is_list(self, tmp_path: Path):
         api = _make_api(tmp_path)
@@ -209,13 +209,13 @@ class TestAgentBrainAPI:
     def test_continuation_from_shows_fresh_state(self, tmp_path: Path):
         api = _make_api(tmp_path)
         ctx = api.get_session_context()
-        assert "fresh" in ctx.continuation_from.lower()
+        assert "fresh" in ctx.continuation_from.lower(), "Condition must be true"
 
     def test_continuation_from_shows_completed_steps(self, tmp_path: Path):
         api = _make_api(tmp_path)
         api.report_completion(ImprovementArea.SECURITY_REMEDIATION, "SEC-01")
         ctx = api.get_session_context()
-        assert "SEC-01" in ctx.continuation_from
+        assert "SEC-01" in ctx.continuation_from, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -238,10 +238,10 @@ class TestAgentCapabilitiesMap:
 
     def test_copilot_coding_agent_has_all_areas(self):
         caps = AGENT_CAPABILITIES["copilot-coding-agent"]
-        assert set(caps) == set(ImprovementArea)
+        assert set(caps) == set(ImprovementArea), "Condition must be true"
 
     def test_codeql_agent_covers_security(self):
-        assert (
+        assert (, "Condition must be true"
             ImprovementArea.SECURITY_REMEDIATION
             in AGENT_CAPABILITIES["codeql-alert-resolution-agent"]
         )
@@ -265,7 +265,7 @@ class TestCognitiveBrain:
         cb = _make_brain(tmp_path)
         a1 = cb.for_agent("copilot-coding-agent")
         a2 = cb.for_agent("copilot-coding-agent")
-        assert a1 is a2
+        assert a1 is a2, "a1 is not valid"
 
     def test_session_returns_context(self, tmp_path: Path):
         cb = _make_brain(tmp_path)
@@ -284,66 +284,66 @@ class TestCognitiveBrain:
         cb = _make_brain(tmp_path)
         report = cb.advance("SECURITY_REMEDIATION", "SEC-01", outcome="success")
         assert isinstance(report, CompletionReport)
-        assert report.step_id == "SEC-01"
+        assert report.step_id == "SEC-01", "step_id is not valid"
 
     def test_advance_accepts_improvement_area_enum(self, tmp_path: Path):
         cb = _make_brain(tmp_path)
         report = cb.advance(ImprovementArea.CI_SELF_HEALING, "CI-01")
-        assert report.area == "CI_SELF_HEALING"
+        assert report.area == "CI_SELF_HEALING", "area is not valid"
 
     def test_help_returns_string(self, tmp_path: Path):
         cb = _make_brain(tmp_path)
         h = cb.help()
         assert isinstance(h, str)
-        assert "brain.session" in h
-        assert "brain.next" in h
-        assert "brain.advance" in h
-        assert "CODEBASE AGENCY POLICY" in h
+        assert "brain.session" in h, "Condition must be true"
+        assert "brain.next" in h, "Condition must be true"
+        assert "brain.advance" in h, "Condition must be true"
+        assert "CODEBASE AGENCY POLICY" in h, "Condition must be true"
 
     def test_help_lists_all_areas(self, tmp_path: Path):
         cb = _make_brain(tmp_path)
         h = cb.help()
         for area in ImprovementArea:
-            assert area.value in h
+            assert area.value in h, "Value must be initialized"
 
     def test_discover_returns_dict(self, tmp_path: Path):
         cb = _make_brain(tmp_path)
         d = cb.discover()
         assert isinstance(d, dict)
-        assert "improvement_areas" in d
-        assert "agent_routing" in d
-        assert "engine_equation" in d
-        assert "modules" in d
-        assert "quickstart" in d
+        assert "improvement_areas" in d, "Condition must be true"
+        assert "agent_routing" in d, "Condition must be true"
+        assert "engine_equation" in d, "Condition must be true"
+        assert "modules" in d, "Condition must be true"
+        assert "quickstart" in d, "Condition must be true"
 
     def test_discover_all_12_areas(self, tmp_path: Path):
         cb = _make_brain(tmp_path)
         d = cb.discover()
-        assert set(d["improvement_areas"]) == {a.value for a in ImprovementArea}
+        assert set(d["improvement_areas"]) == {a.value for a in ImprovementArea}, "Value must be initialized"
 
     def test_discover_is_json_serialisable(self, tmp_path: Path):
         cb = _make_brain(tmp_path)
         d = cb.discover()
         serialised = json.dumps(d)
-        assert len(serialised) > 100
+        assert len(serialised) > 100, "Serialised must not be empty"
 
     def test_health_returns_dict(self, tmp_path: Path):
         cb = _make_brain(tmp_path)
         h = cb.health()
-        assert "status" in h
-        assert "engine_ok" in h
-        assert "unfinished_plansets" in h
-        assert "issues" in h
+        assert "status" in h, "Condition must be true"
+        assert "engine_ok" in h, "Condition must be true"
+        assert "unfinished_plansets" in h, "Condition must be true"
+        assert "issues" in h, "Condition must be true"
 
     def test_health_engine_ok(self, tmp_path: Path):
         cb = _make_brain(tmp_path)
         h = cb.health()
-        assert h["engine_ok"] is True
+        assert h["engine_ok"] is True, "Condition must be true"
 
     def test_health_status_healthy(self, tmp_path: Path):
         cb = _make_brain(tmp_path)
         h = cb.health()
-        assert h["status"] == "healthy"
+        assert h["status"] == "healthy", "Condition must be true"
 
     def test_health_degraded_missing_planset_dir(self, tmp_path: Path):
         cb = CognitiveBrain(
@@ -351,14 +351,14 @@ class TestCognitiveBrain:
             state_path=tmp_path / "s.json",
         )
         h = cb.health()
-        assert h["status"] == "degraded"
-        assert len(h["issues"]) > 0
+        assert h["status"] == "degraded", "Condition must be true"
+        assert len(h["issues"]) > 0, "Collection must not be empty"
 
     def test_capabilities_property_returns_dict(self, tmp_path: Path):
         cb = _make_brain(tmp_path)
         caps = cb.capabilities
         assert isinstance(caps, dict)
-        assert "copilot-coding-agent" in caps
+        assert "copilot-coding-agent" in caps, "Condition must be true"
 
     def test_engine_attribute_is_engine(self, tmp_path: Path):
         cb = _make_brain(tmp_path)
@@ -383,19 +383,19 @@ class TestBrainSingleton:
     def test_brain_has_help(self):
         from codex.cognitive import brain
 
-        assert callable(brain.help)
+        assert callable(brain.help), "Condition must be true"
 
     def test_brain_has_discover(self):
         from codex.cognitive import brain
 
         d = brain.discover()
-        assert "improvement_areas" in d
+        assert "improvement_areas" in d, "Condition must be true"
 
     def test_brain_has_health(self):
         from codex.cognitive import brain
 
         h = brain.health()
-        assert "status" in h
+        assert "status" in h, "Condition must be true"
 
     def test_brain_for_agent_works(self):
         from codex.cognitive import brain
@@ -409,5 +409,5 @@ class TestBrainSingleton:
             brain,
         )
 
-        assert brain is not None
+        assert brain is not None, "brain must be initialized"
         assert issubclass(CognitiveBrain, object)

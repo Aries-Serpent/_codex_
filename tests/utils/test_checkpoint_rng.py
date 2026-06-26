@@ -22,7 +22,7 @@ def test_dump_load_rng_state():
     random.seed(456)
     load_rng_state(state)
     b = random.random()
-    assert a == b
+    assert a == b, "a is not valid"
 
 
 def test_checkpoint_manager_best_k(tmp_path: Path):
@@ -30,6 +30,6 @@ def test_checkpoint_manager_best_k(tmp_path: Path):
     for i, loss in enumerate([5, 3, 4, 2, 1], start=1):
         mgr.save(i, metrics={"val_loss": loss})
     best = json.loads((tmp_path / "best.json").read_text())["items"]
-    assert len(best) == 2
+    assert len(best) == 2, "Best must not be empty"
     losses = [item["metrics"]["val_loss"] for item in best]
-    assert losses == sorted(losses)
+    assert losses == sorted(losses), "losses is not valid"

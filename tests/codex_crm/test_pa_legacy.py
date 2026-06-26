@@ -47,10 +47,10 @@ class TestReadPaLegacy:
 
         result = read_pa_legacy(zip_path)
 
-        assert "manifest" in result
-        assert result["manifest"]["name"] == "TestFlow"
-        assert "flows" in result
-        assert "flow1" in result["flows"]
+        assert "manifest" in result, "Result must not be empty"
+        assert result["manifest"]["name"] == "TestFlow", "Result must not be empty"
+        assert "flows" in result, "Result must not be empty"
+        assert "flow1" in result["flows"], "Result must not be empty"
 
     def test_read_pa_legacy_multiple_flows(self, tmp_path):
         """Test reading PA package with multiple flows."""
@@ -67,7 +67,7 @@ class TestReadPaLegacy:
 
         result = read_pa_legacy(zip_path)
 
-        assert len(result["flows"]) >= 2
+        assert len(result["flows"]) >= 2, "Collection must not be empty"
 
     def test_read_pa_legacy_invalid_zip(self, tmp_path):
         """Test reading invalid ZIP raises error."""
@@ -105,13 +105,13 @@ class TestToTemplate:
 
         template = to_template(package)
 
-        assert "connections" in template
-        assert "flows" in template
-        assert "variables" in template
-        assert len(template["connections"]) == 1
-        assert template["connections"][0]["name"] == "connection1"
-        assert template["connections"][0]["type"] == "sql"
-        assert "${CONN_CONNECTION1}" in template["connections"][0]["placeholder"]
+        assert "connections" in template, "Condition must be true"
+        assert "flows" in template, "Condition must be true"
+        assert "variables" in template, "Condition must be true"
+        assert len(template["connections"]) == 1, "Collection must not be empty"
+        assert template["connections"][0]["name"] == "connection1", "Condition must be true"
+        assert template["connections"][0]["type"] == "sql", "Condition must be true"
+        assert "${CONN_CONNECTION1}" in template["connections"][0]["placeholder"], "Condition must be true"
 
     def test_to_template_empty_flows(self):
         """Test template conversion with empty flows."""
@@ -120,9 +120,9 @@ class TestToTemplate:
         package = {"flows": {}}
         template = to_template(package)
 
-        assert template["connections"] == []
-        assert template["flows"] == {}
-        assert template["variables"] == []
+        assert template["connections"] == [], "Condition must be true"
+        assert template["flows"] == {}, "Condition must be true"
+        assert template["variables"] == [], "Condition must be true"
 
     def test_to_template_no_resources(self):
         """Test template conversion with flow missing resources."""
@@ -131,7 +131,7 @@ class TestToTemplate:
         package = {"flows": {"flow1": {"definition": {}}}}
 
         template = to_template(package)
-        assert template["connections"] == []
+        assert template["connections"] == [], "Condition must be true"
 
     def test_to_template_missing_type(self):
         """Test template conversion with missing type defaults to unknown."""
@@ -140,4 +140,4 @@ class TestToTemplate:
         package = {"flows": {"flow1": {"definition": {"resources": {"conn": {}}}}}}
 
         template = to_template(package)
-        assert template["connections"][0]["type"] == "unknown"
+        assert template["connections"][0]["type"] == "unknown", "Condition must be true"

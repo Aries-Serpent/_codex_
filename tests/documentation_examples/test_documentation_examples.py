@@ -71,7 +71,7 @@ class TestREADMEExamples:
             if block.strip().startswith("from codex"):
                 continue
             if is_valid_python_syntax(block):
-                assert True
+                assert True, "True is not valid"
             else:
                 # Log but don't fail on syntax errors for doc examples
                 pass
@@ -120,8 +120,8 @@ class TestAPIDocExamples:
         for pattern in cli_patterns:
             # Just verify the pattern is a valid command structure
             parts = pattern.split()
-            assert len(parts) >= 2
-            assert parts[-1] == "--help"
+            assert len(parts) >= 2, "Parts must not be empty"
+            assert parts[-1] == "--help", "Condition must be true"
 
     def test_config_example_structure(self) -> None:
         """Test that config examples have correct structure."""
@@ -136,8 +136,8 @@ class TestAPIDocExamples:
                 "learning_rate": 1e-4,
             },
         }
-        assert "model" in example_config
-        assert "training" in example_config
+        assert "model" in example_config, "Condition must be true"
+        assert "training" in example_config, "Condition must be true"
         assert isinstance(example_config["training"]["epochs"], int)
 
     def test_hydra_config_example(self) -> None:
@@ -152,8 +152,8 @@ experiment_name: my_experiment
 output_dir: ./outputs
 """
         # Valid YAML structure
-        assert "defaults:" in hydra_example
-        assert "experiment_name:" in hydra_example
+        assert "defaults:" in hydra_example, "Condition must be true"
+        assert "experiment_name:" in hydra_example, "Condition must be true"
 
 
 # ============================================================================
@@ -180,8 +180,8 @@ class TestDocstringExamples:
             >>> len(dataset)
             1000
         """
-        assert "Example:" in example_docstring or "Examples:" in example_docstring
-        assert ">>>" in example_docstring
+        assert "Example:" in example_docstring or "Examples:" in example_docstring, "Condition must be true"
+        assert ">>>" in example_docstring, "Condition must be true"
 
     def test_class_docstring_example_format(self) -> None:
         """Test that class docstring examples follow correct format."""
@@ -193,7 +193,7 @@ class TestDocstringExamples:
             >>> trainer.train()
             >>> trainer.evaluate()
         """
-        assert ">>>" in example_docstring
+        assert ">>>" in example_docstring, "Condition must be true"
 
     def test_module_docstring_has_description(self) -> None:
         """Test that module docstrings have descriptions."""
@@ -206,7 +206,7 @@ class TestDocstringExamples:
         - Splitting data for training
         """
         lines = example_module_docstring.strip().split("\n")
-        assert len(lines) > 1  # More than just one line
+        assert len(lines) > 1, "Lines must not be empty"
 
 
 # ============================================================================
@@ -226,7 +226,7 @@ class TestTutorialExamples:
             "4. Run training",
             "5. Evaluate results",
         ]
-        assert len(tutorial_steps) >= 5
+        assert len(tutorial_steps) >= 5, "Tutorial_steps must not be empty"
         assert all(step.startswith(str(i)) for i, step in enumerate(tutorial_steps, 1))
 
     def test_evaluation_tutorial_steps(self) -> None:
@@ -237,7 +237,7 @@ class TestTutorialExamples:
             "Run evaluation",
             "Analyze metrics",
         ]
-        assert len(tutorial_steps) >= 4
+        assert len(tutorial_steps) >= 4, "Tutorial_steps must not be empty"
 
     def test_deployment_tutorial_steps(self) -> None:
         """Test that deployment tutorial steps are complete."""
@@ -247,7 +247,7 @@ class TestTutorialExamples:
             "Start the server",
             "Test the endpoint",
         ]
-        assert len(tutorial_steps) >= 4
+        assert len(tutorial_steps) >= 4, "Tutorial_steps must not be empty"
 
 
 # ============================================================================
@@ -269,7 +269,7 @@ class TestCodeSnippetValidation:
             "import yaml",
         ]
         for imp in imports:
-            assert is_valid_python_syntax(imp)
+            assert is_valid_python_syntax(imp), "Condition must be true"
 
     def test_function_definition_valid(self) -> None:
         """Test that function definitions are valid Python."""
@@ -279,7 +279,7 @@ class TestCodeSnippetValidation:
             "async def process(data: list) -> list:\n    pass",
         ]
         for func in functions:
-            assert is_valid_python_syntax(func)
+            assert is_valid_python_syntax(func), "Condition must be true"
 
     def test_class_definition_valid(self) -> None:
         """Test that class definitions are valid Python."""
@@ -289,7 +289,7 @@ class TestCodeSnippetValidation:
             "class Config:\n    model: str\n    epochs: int",
         ]
         for cls in classes:
-            assert is_valid_python_syntax(cls)
+            assert is_valid_python_syntax(cls), "Condition must be true"
 
     def test_decorator_usage_valid(self) -> None:
         """Test that decorator usage is valid Python."""
@@ -299,7 +299,7 @@ class TestCodeSnippetValidation:
             "@classmethod\ndef from_config(cls):\n    pass",
         ]
         for dec in decorated:
-            assert is_valid_python_syntax(dec)
+            assert is_valid_python_syntax(dec), "Condition must be true"
 
 
 # ============================================================================
@@ -324,8 +324,8 @@ training:
   learning_rate: 0.0001
 """
         # Check structure
-        assert "model:" in yaml_example
-        assert "training:" in yaml_example
+        assert "model:" in yaml_example, "Condition must be true"
+        assert "training:" in yaml_example, "Condition must be true"
 
     def test_json_config_example_valid(self) -> None:
         """Test that JSON config examples are valid."""
@@ -342,8 +342,8 @@ training:
     }
 }"""
         parsed = json.loads(json_example)
-        assert "model" in parsed
-        assert "training" in parsed
+        assert "model" in parsed, "Condition must be true"
+        assert "training" in parsed, "Condition must be true"
 
     def test_toml_config_example_structure(self) -> None:
         """Test that TOML config examples have correct structure."""
@@ -355,8 +355,8 @@ version = "1.0.0"
 [tool.pytest]
 testpaths = ["tests"]
 """
-        assert "[project]" in toml_example
-        assert "[tool.pytest]" in toml_example
+        assert "[project]" in toml_example, "Condition must be true"
+        assert "[tool.pytest]" in toml_example, "Condition must be true"
 
 
 # ============================================================================
@@ -375,8 +375,8 @@ class TestErrorMessageExamples:
             "Error: Model checkpoint not found at: /path/to/checkpoint",
         ]
         for msg in error_messages:
-            assert msg.startswith("Error:")
-            assert ":" in msg[6:]  # Has additional context
+            assert msg.startswith("Error:"), "Error should be raised or set"
+            assert ":" in msg[6:], "Condition must be true"
 
     def test_warning_message_format(self) -> None:
         """Test that warning messages follow consistent format."""
@@ -386,7 +386,7 @@ class TestErrorMessageExamples:
             "Warning: Checkpoint older than 24 hours",
         ]
         for msg in warning_messages:
-            assert msg.startswith("Warning:")
+            assert msg.startswith("Warning:"), "Condition must be true"
 
     def test_info_message_format(self) -> None:
         """Test that info messages follow consistent format."""
@@ -396,4 +396,4 @@ class TestErrorMessageExamples:
             "Info: Evaluation complete",
         ]
         for msg in info_messages:
-            assert msg.startswith("Info:")
+            assert msg.startswith("Info:"), "Condition must be true"

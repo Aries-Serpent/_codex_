@@ -21,7 +21,7 @@ class TestByteLevelTokenizer:
         text = "Hello, world! 🌍"
         ids = tokenizer.encode(text, add_special_tokens=False)
         decoded = tokenizer.decode(ids)
-        assert decoded == text
+        assert decoded == text, "decoded is not valid"
 
     def test_encode_decode_with_eos(self):
         """Test roundtrip with EOS token."""
@@ -30,11 +30,11 @@ class TestByteLevelTokenizer:
         ids = tokenizer.encode(text, add_special_tokens=True)
 
         # Should include EOS token
-        assert tokenizer.eos_token_id in ids
+        assert tokenizer.eos_token_id in ids, "Condition must be true"
 
         # Decode should skip EOS
         decoded = tokenizer.decode(ids, skip_special_tokens=True)
-        assert decoded == text
+        assert decoded == text, "decoded is not valid"
 
     def test_padding_to_max_length(self):
         """Padding should reach max_length."""
@@ -42,9 +42,9 @@ class TestByteLevelTokenizer:
         text = "short"
         ids = tokenizer.encode(text)
 
-        assert len(ids) == 50
+        assert len(ids) == 50, "Ids must not be empty"
         # Check that padding tokens exist
-        assert tokenizer.pad_token_id in ids
+        assert tokenizer.pad_token_id in ids, "Condition must be true"
 
     def test_truncation(self):
         """Truncation should limit length."""
@@ -52,7 +52,7 @@ class TestByteLevelTokenizer:
         long_text = "A" * 100
         ids = tokenizer.encode(long_text)
 
-        assert len(ids) == 10
+        assert len(ids) == 10, "Ids must not be empty"
 
     def test_truncation_with_eos_token(self):
         """EOS token should be preserved when truncation is needed."""
@@ -60,9 +60,9 @@ class TestByteLevelTokenizer:
         long_text = "A" * 100
         ids = tokenizer.encode(long_text, add_special_tokens=True)
 
-        assert len(ids) == 10
+        assert len(ids) == 10, "Ids must not be empty"
         # Verify EOS token is present at the end
-        assert ids[-1] == tokenizer.eos_token_id
+        assert ids[-1] == tokenizer.eos_token_id, "Condition must be true"
 
     def test_truncation_without_eos_token(self):
         """Truncation without EOS token should use full length."""
@@ -70,9 +70,9 @@ class TestByteLevelTokenizer:
         long_text = "A" * 100
         ids = tokenizer.encode(long_text, add_special_tokens=False)
 
-        assert len(ids) == 10
+        assert len(ids) == 10, "Ids must not be empty"
         # Should not contain EOS token
-        assert tokenizer.eos_token_id not in ids
+        assert tokenizer.eos_token_id not in ids, "Condition must be true"
 
     def test_no_padding_when_disabled(self):
         """No padding when padding != max_length."""
@@ -81,7 +81,7 @@ class TestByteLevelTokenizer:
         ids = tokenizer.encode(text)
 
         # Should not pad to max_length
-        assert len(ids) < 50
+        assert len(ids) < 50, "Ids must not be empty"
 
     def test_determinism(self):
         """Same input should produce same output."""
@@ -91,7 +91,7 @@ class TestByteLevelTokenizer:
         ids1 = tokenizer.encode(text)
         ids2 = tokenizer.encode(text)
 
-        assert ids1 == ids2
+        assert ids1 == ids2, "ids1 is not valid"
 
     def test_batch_operations(self):
         """Batch encode/decode should work."""
@@ -99,23 +99,23 @@ class TestByteLevelTokenizer:
         texts = ["Hello", "World", "Test"]
 
         batch_ids = tokenizer.batch_encode(texts)
-        assert len(batch_ids) == 3
+        assert len(batch_ids) == 3, "Batch_ids must not be empty"
 
         decoded = tokenizer.batch_decode(batch_ids)
-        assert decoded == texts
+        assert decoded == texts, "decoded is not valid"
 
     def test_vocab_size(self):
         """Vocab size should be 256 bytes + 3 special tokens."""
         tokenizer = ByteLevelTokenizer()
-        assert tokenizer.vocab_size == 259
+        assert tokenizer.vocab_size == 259, "vocab_size is not valid"
 
     def test_special_token_ids(self):
         """Special tokens should have reserved IDs."""
         tokenizer = ByteLevelTokenizer()
 
-        assert tokenizer.pad_token_id == 0
-        assert tokenizer.eos_token_id == 1
-        assert tokenizer.unk_token_id == 2
+        assert tokenizer.pad_token_id == 0, "pad_token_id is not valid"
+        assert tokenizer.eos_token_id == 1, "eos_token_id is not valid"
+        assert tokenizer.unk_token_id == 2, "unk_token_id is not valid"
 
     def test_custom_special_tokens(self):
         """Custom special token IDs should work."""
@@ -125,19 +125,19 @@ class TestByteLevelTokenizer:
             unk_token_id=12,
         )
 
-        assert tokenizer.pad_token_id == 10
-        assert tokenizer.eos_token_id == 11
-        assert tokenizer.unk_token_id == 12
+        assert tokenizer.pad_token_id == 10, "pad_token_id is not valid"
+        assert tokenizer.eos_token_id == 11, "eos_token_id is not valid"
+        assert tokenizer.unk_token_id == 12, "unk_token_id is not valid"
 
     def test_empty_string(self):
         """Empty string should encode/decode correctly."""
         tokenizer = ByteLevelTokenizer()
 
         ids = tokenizer.encode("", add_special_tokens=False)
-        assert len(ids) == 0
+        assert len(ids) == 0, "Ids must not be empty"
 
         decoded = tokenizer.decode(ids)
-        assert decoded == ""
+        assert decoded == "", "decoded is not valid"
 
     def test_unicode_handling(self):
         """Unicode characters should be handled correctly."""
@@ -153,7 +153,7 @@ class TestByteLevelTokenizer:
         for text in texts:
             ids = tokenizer.encode(text, add_special_tokens=False)
             decoded = tokenizer.decode(ids)
-            assert decoded == text
+            assert decoded == text, "decoded is not valid"
 
     def test_legacy_compatibility(self):
         """Legacy tokenize_example should work."""
@@ -183,10 +183,10 @@ class TestByteLevelTokenizer:
         batch_ids = tokenizer.batch_encode(texts)
 
         # All should be padded to same length
-        assert all(len(ids) == 30 for ids in batch_ids)
+        assert all(len(ids) == 30 for ids in batch_ids), "Ids must not be empty"
 
         decoded = tokenizer.batch_decode(batch_ids)
-        assert decoded == texts
+        assert decoded == texts, "decoded is not valid"
 
 
 class TestTokenizerConfig:
@@ -196,12 +196,12 @@ class TestTokenizerConfig:
         """Test default configuration values."""
         config = TokenizerConfig()
 
-        assert config.pad_token_id == 0
-        assert config.eos_token_id == 1
-        assert config.unk_token_id == 2
-        assert config.max_length is None
-        assert config.padding == "max_length"
-        assert config.truncation is True
+        assert config.pad_token_id == 0, "pad_token_id is not valid"
+        assert config.eos_token_id == 1, "eos_token_id is not valid"
+        assert config.unk_token_id == 2, "unk_token_id is not valid"
+        assert config.max_length is None, "Length must be greater than zero"
+        assert config.padding == "max_length", "Length must be greater than zero"
+        assert config.truncation is True, "truncation is not valid"
 
     def test_config_custom_values(self):
         """Test custom configuration values."""
@@ -211,9 +211,9 @@ class TestTokenizerConfig:
             truncation=False,
         )
 
-        assert config.pad_token_id == 5
-        assert config.max_length == 128
-        assert config.truncation is False
+        assert config.pad_token_id == 5, "pad_token_id is not valid"
+        assert config.max_length == 128, "Length must be greater than zero"
+        assert config.truncation is False, "truncation is not valid"
 
 
 class TestLegacyFunction:
@@ -225,5 +225,5 @@ class TestLegacyFunction:
 
         ids = tokenize_example("Hello")
         assert isinstance(ids, list)
-        assert len(ids) > 0
+        assert len(ids) > 0, "Ids must not be empty"
         assert all(isinstance(i, int) for i in ids)

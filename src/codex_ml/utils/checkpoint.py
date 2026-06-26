@@ -92,7 +92,7 @@ def _torch_load(source: Any, *, map_location: str | None = None) -> Any:
         return load_fn(source, **kwargs)
     except TypeError as exc:
         error_type = type(exc).__name__
-        logger.debug(f"TypeError: <ERROR_TYPE>")
+        logger.debug("TypeError: <ERROR_TYPE>")
         if _TORCH_SUPPORTS_WEIGHTS_ONLY and "weights_only" in str(exc):
             kwargs.pop("weights_only", None)
             return load_fn(source, **kwargs)
@@ -561,8 +561,8 @@ def load_checkpoint(
         _verify_checksums(ckpt_dir, strict=strict)
     except ValueError as e:
         error_type = type(e).__name__
-        logger.debug(f"ValueError: <ERROR_TYPE>")
-        logger.warning(f"ValueError: <ERROR_TYPE>", exc_info=True)
+        logger.debug("ValueError: <ERROR_TYPE>")
+        logger.warning("ValueError: <ERROR_TYPE>", exc_info=True)
         if strict:
             raise
 

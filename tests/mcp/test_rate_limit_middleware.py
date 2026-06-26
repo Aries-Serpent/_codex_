@@ -32,9 +32,9 @@ def test_rate_limit_throttling():
     client = TestClient(app)
 
     res1 = client.get("/ping")
-    assert res1.status_code == 200
+    assert res1.status_code == 200, "status_code is not valid"
     res2 = client.get("/ping")
-    assert res2.status_code == 200
+    assert res2.status_code == 200, "status_code is not valid"
 
     throttled = False
     for _ in range(5):

@@ -61,20 +61,20 @@ class TestBuildAttestation:
     def test_create_attestation(self):
         """Create build attestation."""
         attestation = BuildAttestation("github-actions", "2024-01-01T00:00:00Z")
-        assert attestation.builder == "github-actions"
+        assert attestation.builder == "github-actions", "builder is not valid"
 
     def test_add_artifacts(self):
         """Add artifacts to attestation."""
         attestation = BuildAttestation("ci", "2024-01-01T00:00:00Z")
         attestation.add_artifact("app.tar.gz", "sha256:abc123")
-        assert len(attestation.artifacts) == 1
+        assert len(attestation.artifacts) == 1, "Collection must not be empty"
 
     def test_compute_digest(self):
         """Compute attestation digest."""
         attestation = BuildAttestation("ci", "2024-01-01T00:00:00Z")
         attestation.source_commit = "abc123"
         digest = attestation.compute_digest()
-        assert digest.startswith("sha256:")
+        assert digest.startswith("sha256:"), "Condition must be true"
 
 
 # --- Health Probe Tests ---
@@ -134,7 +134,7 @@ class TestHealthProbes:
         """Healthy check returns healthy."""
         probe = HealthProbe("app")
         status = probe.check(lambda: True)
-        assert status == HealthStatus.HEALTHY
+        assert status == HealthStatus.HEALTHY, "status is not valid"
 
     def test_unhealthy_after_threshold(self):
         """Unhealthy after failure threshold."""
@@ -142,14 +142,14 @@ class TestHealthProbes:
         probe.failure_threshold = 2
         probe.check(lambda: False)
         status = probe.check(lambda: False)
-        assert status == HealthStatus.UNHEALTHY
+        assert status == HealthStatus.UNHEALTHY, "status is not valid"
 
     def test_degraded_during_failures(self):
         """Degraded during failures before threshold."""
         probe = HealthProbe("app")
         probe.failure_threshold = 3
         status = probe.check(lambda: False)
-        assert status == HealthStatus.DEGRADED
+        assert status == HealthStatus.DEGRADED, "status is not valid"
 
 
 # --- K8s Manifest Tests ---
@@ -229,8 +229,8 @@ class TestK8sManifests:
     def test_create_manifest(self):
         """Create K8s manifest."""
         manifest = K8sManifest("Service", "my-service")
-        assert manifest.kind == "Service"
-        assert manifest.name == "my-service"
+        assert manifest.kind == "Service", "kind is not valid"
+        assert manifest.name == "my-service", "name is not valid"
 
     def test_deployment_manifest(self):
         """Create deployment manifest."""
@@ -239,8 +239,8 @@ class TestK8sManifests:
         deployment.image = "my-app:v1.0.0"
         deployment.add_label("app", "my-app")
         result = deployment.to_dict()
-        assert result["kind"] == "Deployment"
-        assert result["spec"]["replicas"] == 3
+        assert result["kind"] == "Deployment", "Result must not be empty"
+        assert result["spec"]["replicas"] == 3, "Result must not be empty"
 
 
 # --- Helm Chart Tests ---
@@ -279,15 +279,15 @@ class TestHelmChart:
     def test_create_chart(self):
         """Create Helm chart."""
         chart = HelmChart("my-app", "1.0.0")
-        assert chart.name == "my-app"
-        assert chart.version == "1.0.0"
+        assert chart.name == "my-app", "name is not valid"
+        assert chart.version == "1.0.0", "version is not valid"
 
     def test_chart_values(self):
         """Add values to chart."""
         chart = HelmChart("my-app", "1.0.0")
         chart.add_value("replicas", 3)
         chart.add_value("image.tag", "v1.0.0")
-        assert chart.values["replicas"] == 3
+        assert chart.values["replicas"] == 3, "Value must be initialized"
 
     def test_chart_yaml(self):
         """Generate Chart.yaml."""
@@ -295,7 +295,7 @@ class TestHelmChart:
         chart.app_version = "1.0.0"
         chart.description = "My application"
         yaml = chart.to_chart_yaml()
-        assert yaml["name"] == "my-app"
+        assert yaml["name"] == "my-app", "Condition must be true"
 
 
 # --- Rollout/Rollback Tests ---
@@ -351,17 +351,17 @@ class TestRollout:
         """Deploy new version."""
         rollout = Rollout("my-app")
         rev = rollout.deploy("my-app:v1.0.0")
-        assert rev == 1
-        assert rollout.status == "deployed"
+        assert rev == 1, "rev is not valid"
+        assert rollout.status == "deployed", "status is not valid"
 
     def test_rollback(self):
         """Rollback to previous version."""
         rollout = Rollout("my-app")
         rollout.deploy("my-app:v1.0.0")
         rollout.deploy("my-app:v2.0.0")
-        assert rollout.current_revision == 2
+        assert rollout.current_revision == 2, "current_revision is not valid"
         rollout.rollback()
-        assert rollout.current_revision == 1
+        assert rollout.current_revision == 1, "current_revision is not valid"
 
     def test_rollback_to_specific(self):
         """Rollback to specific revision."""
@@ -370,7 +370,7 @@ class TestRollout:
         rollout.deploy("my-app:v2.0.0")
         rollout.deploy("my-app:v3.0.0")
         rollout.rollback(target_revision=1)
-        assert rollout.current_revision == 1
+        assert rollout.current_revision == 1, "current_revision is not valid"
 
 
 # --- Docker Image Tests ---
@@ -426,14 +426,14 @@ class TestDockerImage:
     def test_image_full_name(self):
         """Get full image name."""
         image = DockerImage("myrepo/myapp", "v1.0.0")
-        assert image.full_name() == "myrepo/myapp:v1.0.0"
+        assert image.full_name() == "myrepo/myapp:v1.0.0", "Condition must be true"
 
     def test_registry_push(self):
         """Push image to registry."""
         registry = ImageRegistry()
         image = DockerImage("myrepo/myapp", "v1.0.0")
         digest = registry.push(image)
-        assert digest.startswith("sha256:")
+        assert digest.startswith("sha256:"), "Condition must be true"
 
     def test_registry_list_tags(self):
         """List tags in registry."""
@@ -441,8 +441,8 @@ class TestDockerImage:
         registry.push(DockerImage("myrepo/myapp", "v1.0.0"))
         registry.push(DockerImage("myrepo/myapp", "v1.1.0"))
         tags = registry.list_tags("myrepo/myapp")
-        assert "v1.0.0" in tags
-        assert "v1.1.0" in tags
+        assert "v1.0.0" in tags, "Condition must be true"
+        assert "v1.1.0" in tags, "Condition must be true"
 
 
 # --- Environment Configuration Tests ---
@@ -475,5 +475,5 @@ class TestEnvironmentConfig:
         config = EnvironmentConfig("production")
         config.set_variable("LOG_LEVEL", "info")
         config.add_secret_ref("db-credentials")
-        assert config.variables["LOG_LEVEL"] == "info"
-        assert "db-credentials" in config.secrets
+        assert config.variables["LOG_LEVEL"] == "info", "Condition must be true"
+        assert "db-credentials" in config.secrets, "Condition must be true"

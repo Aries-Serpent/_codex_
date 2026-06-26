@@ -109,7 +109,7 @@ class TestListOperations:
 
         stats = measure_time(create_list, iterations=100)
 
-        assert PerformanceBaseline.check_threshold(
+        assert PerformanceBaseline.check_threshold(, "Perf is not valid"
             "list_creation_1000", stats["ops_per_sec"], "ops_per_sec"
         ), f"List creation too slow: {stats['ops_per_sec']:.0f} ops/sec"
 
@@ -138,7 +138,7 @@ class TestDictOperations:
 
         stats = measure_time(lookup_dict, iterations=100)
 
-        assert PerformanceBaseline.check_threshold(
+        assert PerformanceBaseline.check_threshold(, "Perf is not valid"
             "dict_lookup_10000", stats["ops_per_sec"], "ops_per_sec"
         ), f"Dict lookup too slow: {stats['ops_per_sec']:.0f} ops/sec"
 
@@ -164,7 +164,7 @@ class TestStringOperations:
 
         stats = measure_time(concat_strings, iterations=100)
 
-        assert PerformanceBaseline.check_threshold(
+        assert PerformanceBaseline.check_threshold(, "Perf is not valid"
             "string_concat_1000", stats["ops_per_sec"], "ops_per_sec"
         ), f"String concat too slow: {stats['ops_per_sec']:.0f} ops/sec"
 
@@ -195,7 +195,7 @@ class TestJSONOperations:
 
         stats = measure_time(serialize_json, iterations=100)
 
-        assert PerformanceBaseline.check_threshold(
+        assert PerformanceBaseline.check_threshold(, "Perf is not valid"
             "json_serialize_100", stats["ops_per_sec"], "ops_per_sec"
         ), f"JSON serialize too slow: {stats['ops_per_sec']:.0f} ops/sec"
 
@@ -229,7 +229,7 @@ class TestHashOperations:
 
         stats = measure_time(compute_hash, iterations=1000)
 
-        assert PerformanceBaseline.check_threshold(
+        assert PerformanceBaseline.check_threshold(, "Perf is not valid"
             "hash_computation_1000", stats["ops_per_sec"], "ops_per_sec"
         ), f"Hash computation too slow: {stats['ops_per_sec']:.0f} ops/sec"
 
@@ -245,7 +245,7 @@ class TestMemoryUsage:
 
         memory_mb = measure_memory(create_large_list)
 
-        assert PerformanceBaseline.check_threshold(
+        assert PerformanceBaseline.check_threshold(, "Perf is not valid"
             "memory_allocation_mb", memory_mb, "memory_mb"
         ), f"Memory usage too high: {memory_mb:.2f}MB"
 
@@ -283,7 +283,7 @@ class TestAgentMemoryPerformance:
             stats = measure_time(store_decision, iterations=50)
 
             # Should be able to store at least 10 decisions per second
-            assert (
+            assert (, "Condition must be true"
                 stats["ops_per_sec"] >= 10
             ), f"Decision storage too slow: {stats['ops_per_sec']:.1f} ops/sec"
 

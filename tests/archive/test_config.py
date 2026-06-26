@@ -16,11 +16,11 @@ from codex.archive import config as archive_config
 def test_archive_app_config_defaults(tmp_path: Path) -> None:
     cfg = archive_config.ArchiveAppConfig.load(env={})
     assert cfg.backend.backend == "sqlite" # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
-    assert cfg.backend.url.endswith(".codex/archive.sqlite")
-    assert cfg.logging.level == "info"
-    assert cfg.retry.max_attempts == 5
-    assert cfg.batch.concurrent == 4
-    assert cfg.performance.enabled is True
+    assert cfg.backend.url.endswith(".codex/archive.sqlite"), "Condition must be true"
+    assert cfg.logging.level == "info", "level is not valid"
+    assert cfg.retry.max_attempts == 5, "max_attempts is not valid"
+    assert cfg.batch.concurrent == 4, "concurrent is not valid"
+    assert cfg.performance.enabled is True, "enabled is not valid"
 
 
 def test_archive_app_config_env_overrides() -> None:
@@ -33,12 +33,12 @@ def test_archive_app_config_env_overrides() -> None:
         "CODEX_ARCHIVE_PERF_ENABLED": "0",
     }
     cfg = archive_config.ArchiveAppConfig.load(env=env)
-    assert cfg.backend.backend == "postgres"
-    assert cfg.backend.url.startswith("postgresql://")
-    assert cfg.logging.level == "debug"
-    assert cfg.retry.max_attempts == 2
-    assert cfg.batch.concurrent == 8
-    assert cfg.performance.enabled is False
+    assert cfg.backend.backend == "postgres", "backend is not valid"
+    assert cfg.backend.url.startswith("postgresql://"), "Condition must be true"
+    assert cfg.logging.level == "debug", "level is not valid"
+    assert cfg.retry.max_attempts == 2, "max_attempts is not valid"
+    assert cfg.batch.concurrent == 8, "concurrent is not valid"
+    assert cfg.performance.enabled is False, "enabled is not valid"
 
 
 def test_backend_config_infers_backend_from_url() -> None:
@@ -48,8 +48,8 @@ def test_backend_config_infers_backend_from_url() -> None:
 
     cfg = archive_config.ArchiveAppConfig.load(env=env)
 
-    assert cfg.backend.backend == "postgres"
-    assert cfg.backend.url == env["CODEX_ARCHIVE_URL"]
+    assert cfg.backend.backend == "postgres", "backend is not valid"
+    assert cfg.backend.url == env["CODEX_ARCHIVE_URL"], "url is not valid"
 
 
 def test_archive_app_config_file_precedence(tmp_path: Path) -> None:
@@ -69,10 +69,10 @@ def test_archive_app_config_file_precedence(tmp_path: Path) -> None:
         env={"CODEX_ARCHIVE_BACKEND": "postgres"},
     )
 
-    assert cfg.backend.backend == "postgres"
-    assert cfg.backend.url == "mariadb://example/db"
-    assert cfg.retry.max_attempts == 9
-    assert cfg.retry.initial_delay == pytest.approx(0.5)
+    assert cfg.backend.backend == "postgres", "backend is not valid"
+    assert cfg.backend.url == "mariadb://example/db", "url is not valid"
+    assert cfg.retry.max_attempts == 9, "max_attempts is not valid"
+    assert cfg.retry.initial_delay == pytest.approx(0.5), "initial_delay is not valid"
 
 
 def test_archive_app_config_env_can_reset_to_defaults(tmp_path: Path) -> None:
@@ -88,8 +88,8 @@ def test_archive_app_config_env_can_reset_to_defaults(tmp_path: Path) -> None:
         env={"CODEX_ARCHIVE_LOG_FORMAT": "text"},
     )
 
-    assert cfg.logging.level == "debug"
-    assert cfg.logging.format == "text"
+    assert cfg.logging.level == "debug", "level is not valid"
+    assert cfg.logging.format == "text", "format is not valid"
 
 
 def test_backend_config_rejects_unknown_backend() -> None:
@@ -100,6 +100,6 @@ def test_backend_config_rejects_unknown_backend() -> None:
 def test_retry_settings_to_retry_config_roundtrip() -> None:
     settings = archive_config.RetrySettings(enabled=True, max_attempts=3, seed=123)
     retry_cfg = settings.to_retry_config()
-    assert retry_cfg.max_attempts == 3
-    assert retry_cfg.enabled is True
-    assert retry_cfg.seed == 123
+    assert retry_cfg.max_attempts == 3, "max_attempts is not valid"
+    assert retry_cfg.enabled is True, "enabled is not valid"
+    assert retry_cfg.seed == 123, "seed is not valid"

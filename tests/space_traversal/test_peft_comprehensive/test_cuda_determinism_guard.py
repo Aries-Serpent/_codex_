@@ -34,5 +34,5 @@ def test_seed_all_invokes_torch_monkeypatched(monkeypatch) -> None:
     dummy = _DummyTorch()
     monkeypatch.setattr(unified_training, "torch", dummy)
     unified_training._seed_all(99)
-    assert dummy.manual_seed_calls == [99]
-    assert dummy.cuda.seed_calls == [99]
+    assert dummy.manual_seed_calls == [99], "manual_seed_calls is not valid"
+    assert dummy.cuda.seed_calls == [99], "seed_calls is not valid"

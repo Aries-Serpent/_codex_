@@ -59,7 +59,7 @@ def test_payoff_operator_to_hamiltonian_and_diag_and_expected_value():
 
     # |ψ⟩ = uniform 4-vector → ⟨ψ|diag|ψ⟩ = (1+2)/4 = 0.75
     psi = np.ones(4, dtype=complex) / 2
-    assert op.expected_value(psi) == pytest.approx(0.75)
+    assert op.expected_value(psi) == pytest.approx(0.75), "Value must be initialized"
 
 
 # ---------------------------------------------------------------------------
@@ -85,10 +85,10 @@ def test_reduced_density_matrix_blue_and_red():
 def test_break_entanglement_returns_product_state():
     qs = _basic_game_state()
     qs.apply_entangling_gate(strength=0.6)
-    assert qs.entangled is True
+    assert qs.entangled is True, "entangled is not valid"
     product = qs.break_entanglement()
-    assert product.entanglement_strength == 0.0
-    assert product.entangled is False
+    assert product.entanglement_strength == 0.0, "entanglement_strength is not valid"
+    assert product.entangled is False, "entangled is not valid"
     # Norm preserved
     norm = np.vdot(product.joint_wavefunction, product.joint_wavefunction).real
     assert norm == pytest.approx(1.0, abs=1e-6)
@@ -97,8 +97,8 @@ def test_break_entanglement_returns_product_state():
 def test_calculate_correlation_and_bell_inequality_zero_entanglement():
     qs = _basic_game_state()
     # No entanglement → correlation = 0, Bell not violated
-    assert qs.calculate_correlation() == 0.0
-    assert qs.violates_bell_inequality() is False
+    assert qs.calculate_correlation() == 0.0, "Condition must be true"
+    assert qs.violates_bell_inequality() is False, "Condition must be true"
 
 
 def test_calculate_correlation_with_entanglement():
@@ -106,7 +106,7 @@ def test_calculate_correlation_with_entanglement():
     qs.apply_entangling_gate(strength=1.0)
     val = qs.calculate_correlation()
     # Should be a finite scalar within the clipping bounds
-    assert -2.828 <= val <= 2.828
+    assert -2.828 <= val <= 2.828, "828 is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -129,15 +129,15 @@ def test_classical_best_response_red():
 def test_classical_calculate_alias_runs():
     eng = _classical_engine()
     result = eng.calculate()
-    assert "pi_blue" in result and "pi_red" in result
-    assert "iterations" in result
+    assert "pi_blue" in result and "pi_red" in result, "Result must not be empty"
+    assert "iterations" in result, "Result must not be empty"
 
 
 def test_classical_compute_nash_equilibrium_runs():
     eng = _classical_engine()
     result = eng.compute_nash_equilibrium()
-    assert "payoff_blue" in result
-    assert "history" in result
+    assert "payoff_blue" in result, "Result must not be empty"
+    assert "history" in result, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -153,40 +153,40 @@ def _quantum_engine(entanglement: float = 0.0) -> QuantumInspiredGameEngine:
 
 def test_quantum_engine_num_players_shorthand():
     qe = QuantumInspiredGameEngine(num_players=3)
-    assert qe.blue_state.num_strategies == 3
-    assert qe.red_state.num_strategies == 3
+    assert qe.blue_state.num_strategies == 3, "num_strategies is not valid"
+    assert qe.red_state.num_strategies == 3, "num_strategies is not valid"
 
 
 def test_quantum_engine_entangled_init_path():
     qe = _quantum_engine(entanglement=0.5)
-    assert qe.game_state.entanglement_strength == pytest.approx(0.5)
+    assert qe.game_state.entanglement_strength == pytest.approx(0.5), "entanglement_strength is not valid"
 
 
 def test_payoff_variance_and_risk_adjusted():
     qe = _quantum_engine()
     var_blue = qe.payoff_variance(TeamType.BLUE)
     var_red = qe.payoff_variance(TeamType.RED)
-    assert var_blue >= 0
-    assert var_red >= 0
+    assert var_blue >= 0, "var_blue must be greater than zero"
+    assert var_red >= 0, "var_red must be greater than zero"
 
     util_blue = qe.risk_adjusted_utility(TeamType.BLUE, risk_aversion=0.5)
     util_red = qe.risk_adjusted_utility(TeamType.RED, risk_aversion=0.5)
-    assert np.isfinite(util_blue)
-    assert np.isfinite(util_red)
+    assert np.isfinite(util_blue), "Condition must be true"
+    assert np.isfinite(util_red), "Condition must be true"
 
 
 def test_gradient_payoff_wrt_theta_and_policy_step():
     qe = _quantum_engine()
     g_blue = qe.gradient_payoff_wrt_theta(TeamType.BLUE, theta_current=0.1)
     g_red = qe.gradient_payoff_wrt_theta(TeamType.RED, theta_current=0.1)
-    assert np.isfinite(g_blue)
-    assert np.isfinite(g_red)
+    assert np.isfinite(g_blue), "Condition must be true"
+    assert np.isfinite(g_red), "Condition must be true"
 
     new_blue, new_red = qe.quantum_policy_gradient_step(
         learning_rate=0.05, theta_blue=0.2, theta_red=0.2
     )
-    assert np.isfinite(new_blue)
-    assert np.isfinite(new_red)
+    assert np.isfinite(new_blue), "Condition must be true"
+    assert np.isfinite(new_red), "Condition must be true"
 
 
 def test_apply_decoherence_full_gamma_collapses_state():
@@ -200,9 +200,9 @@ def test_apply_decoherence_full_gamma_collapses_state():
 def test_play_round_with_noise():
     qe = _quantum_engine()
     out = qe.play_round(theta_blue=0.1, theta_red=0.05, apply_noise=True, decoherence_gamma=0.3)
-    assert "blue_payoff" in out and "red_payoff" in out
-    assert np.isfinite(out["blue_payoff"])
-    assert np.isfinite(out["red_payoff"])
+    assert "blue_payoff" in out and "red_payoff" in out, "Condition must be true"
+    assert np.isfinite(out["blue_payoff"]), "Condition must be true"
+    assert np.isfinite(out["red_payoff"]), "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -225,11 +225,11 @@ def test_simulator_quantum_evaluate_hypothesis_and_history():
         blue_strategy_weights=np.array([1.0, 1.0]),
         red_strategy_weights=np.array([1.0, 1.0]),
     )
-    assert result["mode"] == "quantum"
-    assert "blue_payoff_variance" in result
-    assert "red_risk_adjusted_utility" in result
-    assert "measurement_probabilities" in result
-    assert sim.history[-1] is result
+    assert result["mode"] == "quantum", "Result must not be empty"
+    assert "blue_payoff_variance" in result, "Result must not be empty"
+    assert "red_risk_adjusted_utility" in result, "Result must not be empty"
+    assert "measurement_probabilities" in result, "Result must not be empty"
+    assert sim.history[-1] is result, "Result must not be empty"
 
 
 def test_simulator_classical_evaluate_hypothesis():
@@ -242,9 +242,9 @@ def test_simulator_classical_evaluate_hypothesis():
         mode="classical",
     )
     result = sim.evaluate_hypothesis("classical")
-    assert result["mode"] == "classical"
-    assert "gibbs_distribution" in result
-    assert "converged" in result
+    assert result["mode"] == "classical", "Result must not be empty"
+    assert "gibbs_distribution" in result, "Result must not be empty"
+    assert "converged" in result, "Result must not be empty"
 
 
 def test_simulator_compare_strategies_quantum():
@@ -258,9 +258,9 @@ def test_simulator_compare_strategies_quantum():
     )
     options = [np.array([1.0, 1.0]), np.array([2.0, 1.0])]
     result = sim.compare_strategies(blue_options=options, red_options=options)
-    assert result["total_configurations"] == 4
-    assert "best_for_blue" in result
-    assert "best_for_red" in result
+    assert result["total_configurations"] == 4, "Result must not be empty"
+    assert "best_for_blue" in result, "Result must not be empty"
+    assert "best_for_red" in result, "Result must not be empty"
 
 
 def test_simulator_compare_strategies_classical():
@@ -274,7 +274,7 @@ def test_simulator_compare_strategies_classical():
     )
     options = [np.array([1.0, 1.0]), np.array([1.0, 2.0])]
     result = sim.compare_strategies(blue_options=options, red_options=options)
-    assert result["total_configurations"] == 4
+    assert result["total_configurations"] == 4, "Result must not be empty"
 
 
 def test_simulator_run_simulation_quantum_and_classical():
@@ -289,9 +289,9 @@ def test_simulator_run_simulation_quantum_and_classical():
         noise_level=0.1,
     )
     out_q = sim_q.run_simulation(num_rounds=3, learning_rate=0.05)
-    assert out_q["num_rounds"] == 3
-    assert len(out_q["rounds"]) == 3
-    assert "final_blue_payoff" in out_q
+    assert out_q["num_rounds"] == 3, "Condition must be true"
+    assert len(out_q["rounds"]) == 3, "Collection must not be empty"
+    assert "final_blue_payoff" in out_q, "Condition must be true"
 
     sim_c = BlueRedTeamSimulator(
         blue_strategies=blue,
@@ -301,8 +301,8 @@ def test_simulator_run_simulation_quantum_and_classical():
         mode="classical",
     )
     out_c = sim_c.run_simulation(num_rounds=4, learning_rate=0.05)
-    assert out_c["num_rounds"] == 4
-    assert len(out_c["rounds"]) == 4
+    assert out_c["num_rounds"] == 4, "Condition must be true"
+    assert len(out_c["rounds"]) == 4, "Collection must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -318,14 +318,14 @@ def test_create_prisoners_dilemma_shape():
 
 def test_create_zero_sum_game_is_zero_sum():
     blue, red, p_blue, p_red = create_zero_sum_game(size=3, seed=42)
-    assert len(blue) == 3 and len(red) == 3
+    assert len(blue) == 3 and len(red) == 3, "Blue must not be empty"
     np.testing.assert_allclose(p_blue + p_red, 0.0)
 
 
 def test_create_security_game_shape():
     blue, red, p_blue, p_red = create_security_game()
-    assert len(blue) == 4
-    assert len(red) == 4
+    assert len(blue) == 4, "Blue must not be empty"
+    assert len(red) == 4, "Red must not be empty"
     assert p_blue.shape == (4, 4)
     assert p_red.shape == (4, 4)
     # payoff_red = 1 - payoff_blue

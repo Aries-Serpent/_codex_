@@ -76,10 +76,10 @@ def test_special_tokens_and_unk(tmp_path: Path):
     text = "hello <totally_unknown_token>"
     ids = sp.encode(text, out_type=int)
     # Should contain UNK id (1 per our trainer config above)
-    assert 1 in ids
+    assert 1 in ids, "Condition must be true"
     # BOS/EOS opt-in via add_bos/add_eos flags
     ids_be = sp.encode(text, out_type=int, add_bos=True, add_eos=True)
-    assert (2 in ids_be) and (3 in ids_be)
+    assert (2 in ids_be) and (3 in ids_be), "Condition must be true"
 
 
 def test_pad_and_truncation(tmp_path: Path):
@@ -90,9 +90,9 @@ def test_pad_and_truncation(tmp_path: Path):
     ids = sp.encode("lorem ipsum dolor sit amet", out_type=int)
     # pad:
     padded = (ids + [0] * max(0, max_len - len(ids)))[:max_len]
-    assert len(padded) == max_len
+    assert len(padded) == max_len, "Padded must not be empty"
     # truncation:
-    assert len(ids[:max_len]) <= max_len
+    assert len(ids[:max_len]) <= max_len, "Collection must not be empty"
 
 
 def test_batch_encode_decode_shapes(tmp_path: Path):
@@ -103,8 +103,8 @@ def test_batch_encode_decode_shapes(tmp_path: Path):
     assert isinstance(batch_ids, list) and all(isinstance(x, list) for x in batch_ids)
     # Decode each back; empty string stays empty
     back = [sp.decode(ids) for ids in batch_ids]
-    assert len(back) == len(batch)
-    assert back[-1] == "" or back[-1].strip() == ""
+    assert len(back) == len(batch), "Back must not be empty"
+    assert back[-1] == "" or back[-1].strip() == "", "Condition must be true"
 
 
 def test_sentencepiece_adapter_roundtrip(tmp_path: Path):
@@ -129,15 +129,15 @@ def test_sentencepiece_adapter_roundtrip(tmp_path: Path):
         )
         assert isinstance(ids, (list, tuple))
         assert all(isinstance(item, int) for item in ids)
-        assert len(ids) == 8
+        assert len(ids) == 8, "Ids must not be empty"
 
         decoded = tokenizer.decode(ids, skip_special_tokens=True)
         assert isinstance(decoded, str)
-        assert decoded.strip()
+        assert decoded.strip(), "Condition must be true"
     else:
         processor = spm.SentencePieceProcessor(model_file=model)
         ids = processor.encode(text, out_type=int)
         ids = (ids + [0] * 8)[:8]
         decoded = processor.decode(ids)
         assert isinstance(decoded, str)
-        assert decoded.strip()
+        assert decoded.strip(), "Condition must be true"

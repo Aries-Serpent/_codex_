@@ -30,10 +30,12 @@ _SUBMODULES = {
     "verify",
 }
 
+
 # Lazy-load __version__ to avoid cyclic import
 def __getattr__(name: str):
     if name == "__version__":
         from ._version import __version__
+
         return __version__
     if name in _SUBMODULES:
         import importlib

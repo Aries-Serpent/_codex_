@@ -30,7 +30,7 @@ def test_maybe_start_run_none_without_uri(monkeypatch):
             result = mlflow_utils.maybe_start_run()
 
             # Verify behavior
-            assert result is None
+            assert result is None, "Result must not be empty"
             mock_mlflow.start_run.assert_not_called()
             mock_mlflow.set_tracking_uri.assert_not_called()
 
@@ -39,7 +39,7 @@ def test_maybe_start_run_respects_env_disable(monkeypatch):
     """Tracking disabled when env flag is unset."""
     monkeypatch.setenv("MLFLOW_TRACKING_URI", "file:/tmp/mlruns")
     monkeypatch.delenv("CODEX_ENABLE_MLFLOW", raising=False)
-    assert mlflow_utils.maybe_start_run("r0") is None
+    assert mlflow_utils.maybe_start_run("r0") is None, "Condition must be true"
 
 
 def test_maybe_start_run_starts_with_uri_when_enabled(monkeypatch):
@@ -48,7 +48,7 @@ def test_maybe_start_run_starts_with_uri_when_enabled(monkeypatch):
     with mock.patch.object(mlflow_utils, "mlflow") as m:
         run = object()
         m.start_run.return_value = run
-        assert mlflow_utils.maybe_start_run("r1") is run
+        assert mlflow_utils.maybe_start_run("r1") is run, "Condition must be true"
         m.set_tracking_uri.assert_called_once()
     called_uri = m.set_tracking_uri.call_args[0][0]
     assert isinstance(called_uri, str) and called_uri.startswith("file:")
@@ -61,7 +61,7 @@ def test_maybe_start_run_accepts_truthy_env(monkeypatch):
     with mock.patch.object(mlflow_utils, "mlflow") as m:
         run = object()
         m.start_run.return_value = run
-        assert mlflow_utils.maybe_start_run("r2") is run
+        assert mlflow_utils.maybe_start_run("r2") is run, "Condition must be true"
 
 
 def test_maybe_start_run_arg_overrides_env(monkeypatch):

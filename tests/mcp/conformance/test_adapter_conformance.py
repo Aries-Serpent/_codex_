@@ -47,7 +47,7 @@ def sample_items() -> Iterable[dict[str, Any]]:
 def test_conformance_connect_health(adapter):
     h = adapter.health_check()
     assert isinstance(h, dict)
-    assert "status" in h
+    assert "status" in h, "Condition must be true"
 
 
 def test_conformance_upsert_query_delete(adapter):
@@ -56,7 +56,7 @@ def test_conformance_upsert_query_delete(adapter):
     adapter.upsert_batch(ns, items)
     res = adapter.query_top_k(ns, [1.0, 0.0], top_k=2)
     assert isinstance(res, list)
-    assert len(res) >= 1
+    assert len(res) >= 1, "Res must not be empty"
     # delete one
     delete_result = adapter.delete(ns, items[0]["id"])
     assert delete_result in (True, False)

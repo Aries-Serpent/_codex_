@@ -16,5 +16,5 @@ def test_registry_register_and_get() -> None:
     def foo() -> int:
         return 42
 
-    assert registry.get("foo")() == 42
-    assert "foo" in registry
+    assert registry.get("foo")() == 42, "Condition must be true"
+    assert "foo" in registry, "Condition must be true"

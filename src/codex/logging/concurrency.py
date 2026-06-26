@@ -194,7 +194,7 @@ class SQLiteConnectionPool:
             logger.info(f"WAL mode enabled for {self.db_path}")
         except sqlite3.Error as e:
             error_type = type(e).__name__
-            logger.warning(f"Failed to enable WAL mode: <ERROR_TYPE>")
+            logger.warning("Failed to enable WAL mode: <ERROR_TYPE>")
 
     def get_connection(self) -> sqlite3.Connection:
         """Get thread-local connection (creates if needed)."""
@@ -231,7 +231,7 @@ class SQLiteConnectionPool:
                     logger.debug(f"Closed connection for thread {thread_id}")
                 except sqlite3.Error as e:
                     error_type = type(e).__name__
-                    logger.warning(f"Error closing connection: <ERROR_TYPE>")
+                    logger.warning("Error closing connection: <ERROR_TYPE>")
                 finally:
                     del self._connections[thread_id]
                     self._thread_ids.discard(thread_id)
@@ -364,7 +364,7 @@ def save_metrics(
         logger.info(f"Metrics saved to {output_path}")
     except (IOError, OSError) as e:
         error_type = type(e).__name__
-        logger.error(f"Failed to save metrics: <ERROR_TYPE>")
+        logger.error("Failed to save metrics: <ERROR_TYPE>")
 
 
 def log_error(
@@ -382,4 +382,4 @@ def log_error(
             f.write(f"[{timestamp}] {context}: {error}\n")
     except (IOError, OSError) as e:
         error_type = type(e).__name__
-        logger.error(f"Failed to log error: <ERROR_TYPE>")
+        logger.error("Failed to log error: <ERROR_TYPE>")

@@ -14,7 +14,7 @@ def _load_mlflow_utils():
     repo = here.parents[2]
     path = (repo / "src" / "codex_ml" / "tracking" / "mlflow_utils.py").resolve()
     spec = importlib.util.spec_from_file_location("codex_ml._mlflow_utils_test", path)
-    assert spec and spec.loader
+    assert spec and spec.loader, "spec is not valid"
     mod = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = mod  # ensure annotations resolution sees module
     spec.loader.exec_module(mod)  # type: ignore[arg-type]
@@ -24,7 +24,7 @@ def _load_mlflow_utils():
 def test_mlflow_default_uri_constant():
     mod = _load_mlflow_utils()
     default_uri = mod.MLFLOW_DEFAULT_URI
-    assert default_uri == "file:./artifacts/mlruns"
+    assert default_uri == "file:./artifacts/mlruns", "default_uri is not valid"
 
 
 def test_mlflow_start_run_disabled_yields_none():
@@ -33,4 +33,4 @@ def test_mlflow_start_run_disabled_yields_none():
     start_run = mod.start_run
     cfg = MlflowConfig(enable=False)
     with start_run(cfg) as run:
-        assert run is None
+        assert run is None, "run is not valid"

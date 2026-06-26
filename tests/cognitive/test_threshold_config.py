@@ -39,11 +39,11 @@ def _state_path(tmp_path: Path, workflows: dict[str, dict]) -> Path:
 class TestActionThresholdConfig:
     def test_defaults_used_when_config_missing(self, tmp_path):
         proposer = ActionProposer(config_file=tmp_path / "missing.yaml")
-        assert proposer.confidence_threshold == 0.8
+        assert proposer.confidence_threshold == 0.8, "confidence_threshold is not valid"
         actions = proposer.propose_actions(
             [{"workflow": "wf", "severity": 0.8, "consecutive_failures": 3}]
         )
-        assert actions[0]["action_type"] == "rerun_workflow"
+        assert actions[0]["action_type"] == "rerun_workflow", "Condition must be true"
 
     def test_global_thresholds_loaded_from_yaml(self, tmp_path):
         cfg = tmp_path / "monitoring.yaml"
@@ -62,7 +62,7 @@ cognitive_brain:
         actions = proposer.propose_actions(
             [{"workflow": "wf", "severity": 0.75, "consecutive_failures": 4}]
         )
-        assert actions[0]["action_type"] == "rerun_workflow"
+        assert actions[0]["action_type"] == "rerun_workflow", "Condition must be true"
         skipped = proposer.execute_action(
             {
                 "action_type": "rerun_workflow",
@@ -72,7 +72,7 @@ cognitive_brain:
             },
             dry_run=False,
         )
-        assert skipped["status"] == "skipped"
+        assert skipped["status"] == "skipped", "Condition must be true"
 
     def test_per_workflow_override_applied(self, tmp_path):
         cfg = tmp_path / "monitoring.yaml"
@@ -98,8 +98,8 @@ cognitive_brain:
             {"action_type": "monitor", "workflow": "wf_default", "confidence": 0.9},
             dry_run=False,
         )
-        assert strict_result["status"] == "skipped"
-        assert default_result["status"] == "executed"
+        assert strict_result["status"] == "skipped", "Result must not be empty"
+        assert default_result["status"] == "executed", "Result must not be empty"
 
     def test_hot_reload_without_restart(self, tmp_path):
         cfg = tmp_path / "monitoring.yaml"
@@ -119,7 +119,7 @@ cognitive_brain:
             {"action_type": "monitor", "workflow": "wf", "confidence": 0.9},
             dry_run=False,
         )
-        assert before["status"] == "skipped"
+        assert before["status"] == "skipped", "bef is not valid"
 
         time.sleep(1.1)
         _write_config(
@@ -137,7 +137,7 @@ cognitive_brain:
             {"action_type": "monitor", "workflow": "wf", "confidence": 0.9},
             dry_run=False,
         )
-        assert after["status"] == "executed"
+        assert after["status"] == "executed", "Condition must be true"
 
 
 class TestSensorThresholdConfig:
@@ -156,8 +156,8 @@ class TestSensorThresholdConfig:
             config_file=tmp_path / "missing.yaml",
         )
         should_act, _, confidence = sensor.should_propose_action()
-        assert should_act is True
-        assert confidence == 0.75
+        assert should_act is True, "should_act is not valid"
+        assert confidence == 0.75, "confidence is not valid"
 
     def test_per_workflow_override_changes_decision(self, tmp_path):
         workflows = {
@@ -187,5 +187,5 @@ cognitive_brain:
         )
         sensor = MonitoringSensor(state_file=_state_path(tmp_path, workflows), config_file=cfg)
         should_act, _, confidence = sensor.should_propose_action()
-        assert should_act is False
-        assert confidence == 0.5
+        assert should_act is False, "should_act is not valid"
+        assert confidence == 0.5, "confidence is not valid"

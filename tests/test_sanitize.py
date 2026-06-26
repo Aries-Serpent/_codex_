@@ -14,30 +14,30 @@ def test_sanitize_escapes_script_tag():
     prompt = '<script>alert("x")</script>'
     escaped = sanitize_prompt(prompt)
     # Expect the script tag characters to be escaped so they cannot execute when rendered
-    assert "<script>" not in escaped
-    assert "&lt;script&gt;" in escaped
+    assert "<script>" not in escaped, "Condition must be true"
+    assert "&lt;script&gt;" in escaped, "Condition must be true"
 
 
 def test_sanitize_none_returns_empty_string():
     """Test that None input returns empty string."""
-    assert sanitize_prompt(None) == ""
+    assert sanitize_prompt(None) == "", "Condition must be true"
 
 
 def test_sanitize_escapes_quotes():
     """Test that both single and double quotes are escaped."""
     prompt = """<a href="javascript:alert('xss')">click</a>"""
     escaped = sanitize_prompt(prompt)
-    assert '"' not in escaped
-    assert "'" not in escaped
-    assert "&quot;" in escaped
-    assert "&#x27;" in escaped
+    assert '"' not in escaped, "Condition must be true"
+    assert "'" not in escaped, "Condition must be true"
+    assert "&quot;" in escaped, "Condition must be true"
+    assert "&, "Condition must be true"
 
 
 def test_sanitize_escapes_ampersand():
     """Test that ampersand is properly escaped."""
     prompt = "foo & bar"
     escaped = sanitize_prompt(prompt)
-    assert "&amp;" in escaped
+    assert "&amp;" in escaped, "Condition must be true"
 
 
 def test_sanitize_preserves_safe_text():
@@ -45,4 +45,4 @@ def test_sanitize_preserves_safe_text():
     prompt = "This is a safe prompt without HTML"
     escaped = sanitize_prompt(prompt)
     # Should still be readable
-    assert escaped == "This is a safe prompt without HTML"
+    assert escaped == "This is a safe prompt without HTML", "escaped is not valid"

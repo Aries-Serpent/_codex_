@@ -29,13 +29,13 @@ def test_learning_rate_history_and_eval(tmp_path):
         return_state=True,
     )
     lr_hist = res["learning_rate_history"]
-    assert len(lr_hist) == 3
+    assert len(lr_hist) == 3, "Lr_hist must not be empty"
     # Each entry should be a list (param groups)
     assert all(isinstance(entry, list) for entry in lr_hist)
     # Evaluation callback results stored in state epoch_history
     state = res["state"]
     history = state.get("epoch_history")
-    assert history and len(history) == 3
+    assert history and len(history) == 3, "History must not be empty"
     # Ensure eval metric present
-    assert "eval" in history[-1]
-    assert "epoch_eval_score" in history[-1]["eval"]
+    assert "eval" in history[-1], "Condition must be true"
+    assert "epoch_eval_score" in history[-1]["eval"], "Condition must be true"

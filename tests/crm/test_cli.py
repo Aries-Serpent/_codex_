@@ -27,12 +27,12 @@ def test_cli_import_pa_zip(tmp_path: Path) -> None:
     archive_path = _create_pa_zip(tmp_path)
     output_dir = tmp_path / "out"
     exit_code = cli.main(["import-pa-zip", "--in", str(archive_path), "--out", str(output_dir)])
-    assert exit_code == 0
+    assert exit_code == 0, "exit_code is not valid"
 
     generated = output_dir / "legacy_pa.template.json"
     data = json.loads(generated.read_text(encoding="utf-8"))
-    assert "flows" in data
-    assert "sample" in data["flows"]
+    assert "flows" in data, "Data must not be empty"
+    assert "sample" in data["flows"], "Data must not be empty"
 
 
 def test_cli_gen_diagram(tmp_path: Path) -> None:
@@ -48,21 +48,21 @@ def test_cli_gen_diagram(tmp_path: Path) -> None:
             str(output_file),
         ]
     )
-    assert exit_code == 0
+    assert exit_code == 0, "exit_code is not valid"
     contents = output_file.read_text(encoding="utf-8")
-    assert "Create" in contents
+    assert "Create" in contents, "Content must not be empty"
 
 
 def test_cli_evidence_pack(tmp_path: Path) -> None:
     output_dir = tmp_path / "evidence"
     exit_code = cli.main(["evidence-pack", "--out", str(output_dir)])
-    assert exit_code == 0
+    assert exit_code == 0, "exit_code is not valid"
     manifest = json.loads((output_dir / "manifest.json").read_text(encoding="utf-8"))
-    assert manifest["message"] == "Evidence pack placeholder"
+    assert manifest["message"] == "Evidence pack placeholder", "Condition must be true"
 
 
 def test_cli_apply_placeholders() -> None:
     exit_code = cli.main(["apply-zd"])
-    assert exit_code == 0
+    assert exit_code == 0, "exit_code is not valid"
     exit_code = cli.main(["apply-d365"])
-    assert exit_code == 0
+    assert exit_code == 0, "exit_code is not valid"

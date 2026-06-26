@@ -70,7 +70,7 @@ def test_checkpoint_resume(tmp_path) -> None:
     )
     run_custom_trainer(model, tok, train_ds, val_ds, cfg)
     ckpt = ckpt_dir / "step00000002.ptz"
-    assert ckpt.exists()
+    assert ckpt.exists(), "Condition must be true"
     cfg2 = TrainCfg(
         epochs=1,
         batch_size=2,
@@ -80,7 +80,7 @@ def test_checkpoint_resume(tmp_path) -> None:
         resume_from=str(ckpt),
     )
     result = run_custom_trainer(model, tok, train_ds, val_ds, cfg2)
-    assert result["global_step"] == 4
+    assert result["global_step"] == 4, "Result must not be empty"
     for k, v in base_state.items():
         # Cast to float to avoid "Boolean value of Tensor with more than one
         # element is ambiguous" when dtypes differ across torch versions.

@@ -29,9 +29,9 @@ class TestFileCache:
 
         try:
             add_result = cache.add(temp_path)
-            assert add_result
+            assert add_result, "Result must not be empty"
             stats = cache.stats()
-            assert stats["cached_files"] == 1
+            assert stats["cached_files"] == 1, "Condition must be true"
         finally:
             Path(temp_path).unlink()
 
@@ -45,7 +45,7 @@ class TestFileCache:
         try:
             cache.add(temp_path)
             content = cache.get(temp_path)
-            assert content == "test content"
+            assert content == "test content", "Content must not be empty"
         finally:
             Path(temp_path).unlink()
 
@@ -53,7 +53,7 @@ class TestFileCache:
         """Test cache miss on nonexistent file."""
         cache = FileCache()
         content = cache.get("/nonexistent/file.py")
-        assert content is None
+        assert content is None, "Content must not be empty"
 
     def test_cache_invalidation(self):
         """Test cache invalidation on file modification."""
@@ -76,12 +76,12 @@ class TestFileCache:
 
             # Should invalidate and refresh
             refreshed = cache.invalidate_if_modified(temp_path)
-            assert refreshed is True
+            assert refreshed is True, "refreshed is not valid"
             content = cache.get(temp_path)
             new_sha = cache.get_sha(temp_path)
 
-            assert content == "modified content"
-            assert original_sha != new_sha
+            assert content == "modified content", "Content must not be empty"
+            assert original_sha != new_sha, "original_sha is not valid"
         finally:
             Path(temp_path).unlink()
 
@@ -101,13 +101,13 @@ class TestSearchCache:
 
         # First call
         result1 = dummy_search("test")
-        assert result1 == "result for test"
-        assert call_count[0] == 1
+        assert result1 == "result for test", "Result must not be empty"
+        assert call_count[0] == 1, "Count must be greater than zero"
 
         # Second call (cached)
         result2 = dummy_search("test")
-        assert result2 == "result for test"
-        assert call_count[0] == 1  # Should not increment
+        assert result2 == "result for test", "Result must not be empty"
+        assert call_count[0] == 1, "Count must be greater than zero"
 
 
 class TestContextDiscovery:
@@ -117,7 +117,7 @@ class TestContextDiscovery:
         """Test git context discovery (requires git repo)."""
         context = discover_git_context()
         expected_keys = {"branch", "commit", "short_commit", "author", "email"}
-        assert expected_keys.issubset(context.keys())
+        assert expected_keys.issubset(context.keys()), "Condition must be true"
         for key in expected_keys:
             value = context[key]
             assert value is None or isinstance(value, str)

@@ -38,7 +38,7 @@ def test_prioritize_tickets_edge_cases():
 
     priorities = orchestrator.prioritize_tickets(tickets)
 
-    assert len(priorities) == 3
+    assert len(priorities) == 3, "Priorities must not be empty"
     scores = [score for _, score in priorities]
     assert scores == sorted(scores, reverse=True)
 
@@ -80,23 +80,23 @@ def test_rag_bridge_deterministic_ordering():
     ]
 
     contexts = bridge.retrieve_ticket_context("billing", tickets, top_k=2)
-    assert contexts
+    assert contexts, "contexts is not valid"
 
     ordered = sorted(contexts, key=lambda item: (-item.score, item.ticket_id))
-    assert contexts == ordered
+    assert contexts == ordered, "contexts is not valid"
 
 
 def test_metrics_registration_side_effects():
     register_zendesk_metrics()
     metrics.emit_counter("zendesk_api_calls_total", 2)
     diff_metric = metrics.get("zendesk_diff_operations")
-    assert diff_metric is not None
+    assert diff_metric is not None, "diff_metric must be initialized"
     diff_metric.observe(3)
 
     collector = MetricCollector()
     snapshots = export_zendesk_metrics(collector)
 
-    assert any(item["name"] == "zendesk_api_calls_total" for item in snapshots)
-    assert collector.get_gauge("zendesk_api_calls_total") == 2.0
-    assert collector.get_gauge("zendesk_diff_operations_count") == 1.0
-    assert collector.get_gauge("zendesk_diff_operations_sum") == 3.0
+    assert any(item["name"] == "zendesk_api_calls_total" for item in snapshots), "Item must not be empty"
+    assert collector.get_gauge("zendesk_api_calls_total") == 2.0, "collect is not valid"
+    assert collector.get_gauge("zendesk_diff_operations_count") == 1.0, "Count must be greater than zero"
+    assert collector.get_gauge("zendesk_diff_operations_sum") == 3.0, "collect is not valid"

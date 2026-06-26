@@ -23,4 +23,4 @@ def test_connector_offline_ok(tmp_path, monkeypatch):
         [sys.executable, "-c", "import tools.connectors.github_connector_check as c; c.main()"],
         cwd=str(tmp_path),
     )
-    assert code == 0
+    assert code == 0, "code is not valid"

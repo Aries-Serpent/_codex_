@@ -85,8 +85,8 @@ class TestExceptionHierarchy:
     def test_base_error(self):
         """Base error has code and timestamp."""
         err = CodexError("Test error", code="TEST_001")
-        assert err.code == "TEST_001"
-        assert err.timestamp > 0
+        assert err.code == "TEST_001", "code is not valid"
+        assert err.timestamp > 0, "timestamp must be greater than zero"
 
     def test_configuration_error(self):
         """Configuration error inherits from base."""
@@ -96,25 +96,25 @@ class TestExceptionHierarchy:
     def test_validation_error(self):
         """Validation error has field info."""
         err = ValidationError("Invalid value", field="email", value="bad@")
-        assert err.field == "email"
-        assert err.value == "bad@"
+        assert err.field == "email", "field is not valid"
+        assert err.value == "bad@", "Value must be initialized"
 
     def test_network_error(self):
         """Network error has status code."""
         err = NetworkError("Connection failed", status_code=503)
-        assert err.status_code == 503
+        assert err.status_code == 503, "status_code is not valid"
 
     def test_resource_not_found(self):
         """Resource not found error."""
         err = ResourceNotFoundError("User", "123")
-        assert err.resource_type == "User"
-        assert err.resource_id == "123"
+        assert err.resource_type == "User", "resource_type is not valid"
+        assert err.resource_id == "123", "resource_id is not valid"
 
     def test_timeout_error(self):
         """Timeout error."""
         err = TimeoutError("fetch_data", 30.0)
-        assert err.operation == "fetch_data"
-        assert err.timeout_seconds == 30.0
+        assert err.operation == "fetch_data", "Data must not be empty"
+        assert err.timeout_seconds == 30.0, "timeout_seconds is not valid"
 
 
 # --- Retry Logic Tests ---
@@ -175,8 +175,8 @@ class TestRetryLogic:
         config = RetryConfig(max_retries=3)
         retrier = Retrier(config)
         result = retrier.execute(lambda: "success")
-        assert result == "success"
-        assert len(retrier.attempts) == 1
+        assert result == "success", "Result must not be empty"
+        assert len(retrier.attempts) == 1, "Collection must not be empty"
 
     def test_retry_on_failure(self):
         """Retry on transient failure."""
@@ -191,8 +191,8 @@ class TestRetryLogic:
             return "success"
 
         result = retrier.execute(flaky)
-        assert result == "success"
-        assert len(retrier.attempts) == 3
+        assert result == "success", "Result must not be empty"
+        assert len(retrier.attempts) == 3, "Collection must not be empty"
 
     def test_max_retries_exceeded(self):
         """Raise after max retries."""
@@ -204,27 +204,27 @@ class TestRetryLogic:
 
         with pytest.raises(ValueError):
             retrier.execute(always_fail)
-        assert len(retrier.attempts) == 3  # Initial + 2 retries
+        assert len(retrier.attempts) == 3, "Collection must not be empty"
 
     def test_exponential_backoff(self):
         """Exponential backoff calculation."""
         config = RetryConfig(base_delay=1.0, exponential_base=2.0, max_delay=60.0)
-        assert config.get_delay(0) == 1.0
-        assert config.get_delay(1) == 2.0
-        assert config.get_delay(2) == 4.0
-        assert config.get_delay(3) == 8.0
+        assert config.get_delay(0) == 1.0, "Condition must be true"
+        assert config.get_delay(1) == 2.0, "Condition must be true"
+        assert config.get_delay(2) == 4.0, "Condition must be true"
+        assert config.get_delay(3) == 8.0, "Condition must be true"
 
     def test_max_delay_cap(self):
         """Delay should be capped at max."""
         config = RetryConfig(base_delay=1.0, max_delay=10.0)
-        assert config.get_delay(10) == 10.0
+        assert config.get_delay(10) == 10.0, "Condition must be true"
 
     @given(st.integers(min_value=0, max_value=10))
     @settings(max_examples=20)
     def test_delay_non_negative(self, attempt: int):
         """Property: delay is always non-negative."""
         config = RetryConfig()
-        assert config.get_delay(attempt) >= 0
+        assert config.get_delay(attempt) >= 0, "Value must be greater than zero"
 
 
 # --- Circuit Breaker Tests ---
@@ -308,18 +308,18 @@ class TestCircuitBreaker:
     def test_initially_closed(self):
         """Circuit starts closed."""
         cb = CircuitBreaker()
-        assert cb.state == CircuitState.CLOSED
-        assert cb.can_execute()
+        assert cb.state == CircuitState.CLOSED, "state is not valid"
+        assert cb.can_execute(), "Condition must be true"
 
     def test_open_after_failures(self):
         """Circuit opens after failure threshold."""
         cb = CircuitBreaker(failure_threshold=3)
         cb.record_failure()
         cb.record_failure()
-        assert cb.state == CircuitState.CLOSED
+        assert cb.state == CircuitState.CLOSED, "state is not valid"
         cb.record_failure()
-        assert cb.state == CircuitState.OPEN
-        assert not cb.can_execute()
+        assert cb.state == CircuitState.OPEN, "state is not valid"
+        assert not cb.can_execute(), "Condition must be true"
 
     def test_success_resets_count(self):
         """Success resets failure count."""
@@ -327,16 +327,16 @@ class TestCircuitBreaker:
         cb.record_failure()
         cb.record_failure()
         cb.record_success()
-        assert cb.failure_count == 0
+        assert cb.failure_count == 0, "Count must be greater than zero"
 
     def test_half_open_after_recovery(self):
         """Circuit half-opens after recovery timeout."""
         cb = CircuitBreaker(failure_threshold=1, recovery_timeout=0.01)
         cb.record_failure()
-        assert cb.state == CircuitState.OPEN
+        assert cb.state == CircuitState.OPEN, "state is not valid"
         time.sleep(0.02)
-        assert cb.can_execute()
-        assert cb.state == CircuitState.HALF_OPEN
+        assert cb.can_execute(), "Condition must be true"
+        assert cb.state == CircuitState.HALF_OPEN, "state is not valid"
 
     def test_close_after_success_threshold(self):
         """Circuit closes after success threshold in half-open."""
@@ -345,9 +345,9 @@ class TestCircuitBreaker:
         time.sleep(0.02)
         cb.can_execute()  # Transitions to HALF_OPEN
         cb.record_success()
-        assert cb.state == CircuitState.HALF_OPEN
+        assert cb.state == CircuitState.HALF_OPEN, "state is not valid"
         cb.record_success()
-        assert cb.state == CircuitState.CLOSED
+        assert cb.state == CircuitState.CLOSED, "state is not valid"
 
 
 # --- Dead Letter Queue Tests ---
@@ -409,14 +409,14 @@ class TestDeadLetterQueue:
         """Add message to DLQ."""
         dlq = DeadLetterQueue()
         dlq.add("failed message", "Processing error")
-        assert dlq.size() == 1
+        assert dlq.size() == 1, "Condition must be true"
 
     def test_max_size(self):
         """DLQ respects max size."""
         dlq = DeadLetterQueue(max_size=3)
         for i in range(5):
             dlq.add(f"msg_{i}", "error")
-        assert dlq.size() == 3
+        assert dlq.size() == 3, "Condition must be true"
 
     def test_retry_success(self):
         """Retry successfully processes messages."""
@@ -424,8 +424,8 @@ class TestDeadLetterQueue:
         dlq.add("msg1", "error")
         dlq.add("msg2", "error")
         successful = dlq.retry(lambda m: True)
-        assert successful == 2
-        assert dlq.size() == 0
+        assert successful == 2, "successful is not valid"
+        assert dlq.size() == 0, "Condition must be true"
 
     def test_retry_partial(self):
         """Partial retry success."""
@@ -433,8 +433,8 @@ class TestDeadLetterQueue:
         dlq.add("good", "error")
         dlq.add("bad", "error")
         successful = dlq.retry(lambda m: m == "good")
-        assert successful == 1
-        assert dlq.size() == 1
+        assert successful == 1, "successful is not valid"
+        assert dlq.size() == 1, "Condition must be true"
 
 
 # --- Self-Remediation Tests ---
@@ -499,14 +499,14 @@ class TestRemediationManager:
         manager = RemediationManager()
         action = RemediationAction("restart", lambda: True)
         manager.register_action(action)
-        assert "restart" in manager.actions
+        assert "restart" in manager.actions, "Condition must be true"
 
     def test_map_error_to_action(self):
         """Map error to action."""
         manager = RemediationManager()
         manager.register_action(RemediationAction("restart", lambda: True))
         manager.map_error_to_action("SERVICE_DOWN", "restart")
-        assert manager.error_mapping["SERVICE_DOWN"] == "restart"
+        assert manager.error_mapping["SERVICE_DOWN"] == "restart", "Error should be raised or set"
 
     def test_remediate_success(self):
         """Successful remediation."""
@@ -515,14 +515,14 @@ class TestRemediationManager:
         manager.map_error_to_action("FIXABLE", "fix")
         error = CodexError("Fixable error", code="FIXABLE")
         result = manager.remediate(error)
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_remediate_no_mapping(self):
         """No remediation for unmapped error."""
         manager = RemediationManager()
         error = CodexError("Unknown error", code="UNKNOWN")
         result = manager.remediate(error)
-        assert result is False
+        assert result is False, "Result must not be empty"
 
 
 # --- Fallback Tests ---
@@ -558,7 +558,7 @@ class TestFallbackChain:
         chain.add_handler(lambda: "first")
         chain.add_handler(lambda: "second")
         result = chain.execute()
-        assert result == "first"
+        assert result == "first", "Result must not be empty"
 
     def test_fallback_to_second(self):
         """Fallback to second handler."""
@@ -566,7 +566,7 @@ class TestFallbackChain:
         chain.add_handler(lambda: (_ for _ in ()).throw(ValueError("fail")))
         chain.add_handler(lambda: "second")
         result = chain.execute()
-        assert result == "second"
+        assert result == "second", "Result must not be empty"
 
     def test_all_fail(self):
         """All handlers fail."""

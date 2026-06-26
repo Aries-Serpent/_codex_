@@ -19,7 +19,7 @@ def test_basic_perplexity_and_accuracy():
 
     preds = [1, 2, 3]
     acc = token_accuracy(preds, [1, 0, 3])
-    assert acc == pytest.approx(2 / 3)
+    assert acc == pytest.approx(2 / 3), "acc is not valid"
 
 
 def test_bleu_and_rouge_identical(monkeypatch):

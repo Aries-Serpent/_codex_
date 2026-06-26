@@ -55,10 +55,10 @@ def test_validation_fails_on_missing_required(monkeypatch, tmp_path, capsys):
     with pytest.raises(SystemExit) as excinfo:
         validator.main()
 
-    assert excinfo.value.code == 1
+    assert excinfo.value.code == 1, "Value must be initialized"
     err = capsys.readouterr().err
-    assert str(missing_path) in err
-    assert "missing required files" in err
+    assert str(missing_path) in err, "Condition must be true"
+    assert "missing required files" in err, "Condition must be true"
 
 
 def test_validation_reports_zero_hits(monkeypatch, tmp_path, capsys):
@@ -81,7 +81,7 @@ def test_validation_reports_zero_hits(monkeypatch, tmp_path, capsys):
     with pytest.raises(SystemExit) as excinfo:
         validator.main()
 
-    assert excinfo.value.code == 1
+    assert excinfo.value.code == 1, "Value must be initialized"
     err = capsys.readouterr().err
-    assert "ripgrep patterns with zero hits" in err
-    assert "absent_pattern" in err
+    assert "ripgrep patterns with zero hits" in err, "Condition must be true"
+    assert "absent_pattern" in err, "Condition must be true"

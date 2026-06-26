@@ -76,7 +76,7 @@ class TestNetworkPartitionRecovery:
 
         partitioned_nodes = [n for n in nodes if n["status"] == "unreachable"]
 
-        assert len(partitioned_nodes) == 1
+        assert len(partitioned_nodes) == 1, "Partitioned_nodes must not be empty"
 
     def test_quorum_maintenance_during_partition(self, cluster_state):
         """Test quorum is maintained during partition."""
@@ -86,7 +86,7 @@ class TestNetworkPartitionRecovery:
         quorum = (total_nodes // 2) + 1
         has_quorum = healthy_nodes >= quorum
 
-        assert has_quorum is True
+        assert has_quorum is True, "has_quorum is not valid"
 
     def test_automatic_partition_healing(self):
         """Test automatic healing after partition resolves."""
@@ -94,7 +94,7 @@ class TestNetworkPartitionRecovery:
         # Simulate healing
         partition_resolved = True
 
-        assert partition_resolved is True
+        assert partition_resolved is True, "partition_resolved is not valid"
 
     def test_data_reconciliation_after_partition(self):
         """Test data reconciliation after partition heals."""
@@ -104,8 +104,8 @@ class TestNetworkPartitionRecovery:
         # Merge data after partition
         merged_data = {**node_a_data, **node_b_data}
 
-        assert len(merged_data) == 3
-        assert "key1" in merged_data
+        assert len(merged_data) == 3, "Merged_data must not be empty"
+        assert "key1" in merged_data, "Data must not be empty"
 
     def test_split_brain_prevention(self):
         """Test split-brain prevention mechanism."""
@@ -116,8 +116,8 @@ class TestNetworkPartitionRecovery:
         partition_a_active = partition_a_nodes > partition_b_nodes
         partition_b_active = False
 
-        assert partition_a_active is True
-        assert partition_b_active is False
+        assert partition_a_active is True, "partition_a_active is not valid"
+        assert partition_b_active is False, "partition_b_active is not valid"
 
     def test_recovery_time_after_partition(self, chaos_config):
         """Test recovery time after partition is within bounds."""
@@ -127,7 +127,7 @@ class TestNetworkPartitionRecovery:
         total_time = partition_duration_seconds + recovery_time_seconds
         max_allowed = chaos_config["recovery_timeout_seconds"]
 
-        assert total_time < max_allowed
+        assert total_time < max_allowed, "total_time is not valid"
 
 
 # ============================================================================
@@ -145,7 +145,7 @@ class TestResourceExhaustionRecovery:
         # Trigger memory cleanup
         memory_after_cleanup = 8000
 
-        assert memory_after_cleanup < memory_limit_mb * 0.8
+        assert memory_after_cleanup < memory_limit_mb * 0.8, "memory_after_cleanup is not valid"
 
     def test_cpu_throttling_detection_and_recovery(self, chaos_config):
         """Test detection and recovery from CPU throttling."""
@@ -154,7 +154,7 @@ class TestResourceExhaustionRecovery:
 
         is_throttled = cpu_usage > throttle_threshold
 
-        assert is_throttled is True
+        assert is_throttled is True, "is_throttled is not valid"
         # Should trigger scale-up or load shedding
 
     def test_disk_space_exhaustion_recovery(self):
@@ -164,7 +164,7 @@ class TestResourceExhaustionRecovery:
         # Trigger cleanup
         disk_after_cleanup = 75
 
-        assert disk_after_cleanup < critical_threshold
+        assert disk_after_cleanup < critical_threshold, "disk_after_cleanup is not valid"
 
     def test_connection_pool_exhaustion_recovery(self):
         """Test recovery from connection pool exhaustion."""
@@ -173,7 +173,7 @@ class TestResourceExhaustionRecovery:
         # Release idle connections
         active_after_cleanup = 50
 
-        assert active_after_cleanup < max_connections
+        assert active_after_cleanup < max_connections, "active_after_cleanup is not valid"
 
     def test_thread_pool_exhaustion_recovery(self):
         """Test recovery from thread pool exhaustion."""
@@ -182,7 +182,7 @@ class TestResourceExhaustionRecovery:
         # Wait for threads to complete
         active_after_wait = 100
 
-        assert active_after_wait < max_threads
+        assert active_after_wait < max_threads, "active_after_wait is not valid"
 
     def test_automatic_scaling_on_resource_pressure(self):
         """Test automatic scaling under resource pressure."""
@@ -193,7 +193,7 @@ class TestResourceExhaustionRecovery:
         should_scale = cpu_usage > scale_threshold
         new_replicas = current_replicas + 2 if should_scale else current_replicas
 
-        assert new_replicas == 5
+        assert new_replicas == 5, "new_replicas is not valid"
 
 
 # ============================================================================
@@ -211,7 +211,7 @@ class TestCascadingFailurePrevention:
 
         circuit_open = failure_count >= circuit_breaker_threshold
 
-        assert circuit_open is True
+        assert circuit_open is True, "circuit_open is not valid"
         # Circuit open prevents further calls
 
     def test_bulkhead_isolation(self):
@@ -220,7 +220,7 @@ class TestCascadingFailurePrevention:
 
         service_b_isolated = service_b_pool["available"] > 0
 
-        assert service_b_isolated is True
+        assert service_b_isolated is True, "service_b_isolated is not valid"
         # Service B not affected by Service A exhaustion
 
     def test_timeout_prevents_cascade(self):
@@ -230,7 +230,7 @@ class TestCascadingFailurePrevention:
 
         timed_out = slow_service_response_ms > timeout_ms
 
-        assert timed_out is True
+        assert timed_out is True, "timed_out is not valid"
         # Timeout prevents waiting indefinitely
 
     def test_rate_limiting_prevents_overload(self):
@@ -240,7 +240,7 @@ class TestCascadingFailurePrevention:
 
         should_throttle = requests_per_second > rate_limit
 
-        assert should_throttle is True
+        assert should_throttle is True, "should_throttle is not valid"
         # Rate limiting prevents overload
 
     def test_load_shedding_under_pressure(self):
@@ -250,7 +250,7 @@ class TestCascadingFailurePrevention:
 
         should_shed = system_load > shedding_threshold
 
-        assert should_shed is True
+        assert should_shed is True, "should_shed is not valid"
         # Drop low-priority requests
 
     def test_graceful_degradation_prevents_total_failure(self):
@@ -262,8 +262,8 @@ class TestCascadingFailurePrevention:
         available_services = critical_services
 
         # Verify only critical services remain
-        assert len(available_services) == len(critical_services)
-        assert len(available_services) < len(critical_services + non_critical_services)
+        assert len(available_services) == len(critical_services), "Available_services must not be empty"
+        assert len(available_services) < len(critical_services + non_critical_services), "Available_services must not be empty"
 
 
 # ============================================================================
@@ -281,7 +281,7 @@ class TestSelfHealingUnderChaos:
         restart_count = 1
         new_status = "running" if restart_count < max_restart_attempts else "failed"
 
-        assert new_status == "running"
+        assert new_status == "running", "new_status is not valid"
 
     def test_health_check_triggered_recovery(self):
         """Test health check triggers recovery."""
@@ -290,7 +290,7 @@ class TestSelfHealingUnderChaos:
 
         should_recover = consecutive_failures >= failure_threshold
 
-        assert should_recover is True
+        assert should_recover is True, "should_recover is not valid"
 
     def test_auto_remediation_during_chaos(self):
         """Test auto-remediation works during chaos."""
@@ -299,7 +299,7 @@ class TestSelfHealingUnderChaos:
 
         can_remediate = chaos_active and remediation_enabled
 
-        assert can_remediate is True
+        assert can_remediate is True, "can_remediate is not valid"
 
     def test_self_healing_confidence_scoring(self):
         """Test confidence scoring for self-healing actions."""
@@ -308,7 +308,7 @@ class TestSelfHealingUnderChaos:
 
         should_auto_apply = remediation_success_rate >= confidence_threshold
 
-        assert should_auto_apply is True
+        assert should_auto_apply is True, "should_auto_apply is not valid"
 
     def test_rollback_on_failed_healing(self):
         """Test rollback when self-healing fails."""
@@ -318,7 +318,7 @@ class TestSelfHealingUnderChaos:
 
         should_rollback = all_failed and healing_attempts >= max_attempts
 
-        assert should_rollback is True
+        assert should_rollback is True, "should_rollback is not valid"
 
 
 # ============================================================================
@@ -338,7 +338,7 @@ class TestChaosExperimentValidation:
 
         hypothesis_confirmed = service_available and latency_injected
 
-        assert hypothesis_confirmed is True
+        assert hypothesis_confirmed is True, "hypothesis_confirmed is not valid"
 
     def test_steady_state_verification(self):
         """Test steady state verification before/after chaos."""
@@ -359,7 +359,7 @@ class TestChaosExperimentValidation:
             abs(steady_state_before["availability"] - steady_state_after["availability"]) < 1.0
         )
 
-        assert availability_ok is True
+        assert availability_ok is True, "availability_ok is not valid"
 
     def test_blast_radius_containment(self, chaos_config):
         """Test chaos experiment blast radius is contained."""
@@ -368,7 +368,7 @@ class TestChaosExperimentValidation:
 
         blast_radius_percent = (affected_services / total_services) * 100
 
-        assert blast_radius_percent == 10.0
+        assert blast_radius_percent == 10.0, "blast_radius_percent is not valid"
         # Only 10% affected
 
     def test_safety_check_enforcement(self, chaos_config):
@@ -378,7 +378,7 @@ class TestChaosExperimentValidation:
 
         violates_safety = concurrent_experiments > safety["max_concurrent_experiments"]
 
-        assert violates_safety is True
+        assert violates_safety is True, "violates_safety is not valid"
         # Should block experiment
 
     def test_experiment_monitoring(self, chaos_config):
@@ -388,7 +388,7 @@ class TestChaosExperimentValidation:
 
         expected_data_points = experiment_duration // monitoring_interval
 
-        assert expected_data_points == 30
+        assert expected_data_points == 30, "Data must not be empty"
 
 
 # ============================================================================
@@ -409,7 +409,7 @@ class TestRecoveryTimeObjectives:
 
         mttr = sum(f["recovery_time_seconds"] for f in failures) / len(failures)
 
-        assert mttr == 90.0
+        assert mttr == 90.0, "mttr is not valid"
 
     def test_rto_compliance_under_chaos(self, chaos_config):
         """Test RTO compliance during chaos."""
@@ -418,7 +418,7 @@ class TestRecoveryTimeObjectives:
 
         within_rto = actual_recovery_seconds < target_rto
 
-        assert within_rto is True
+        assert within_rto is True, "within_rto is not valid"
 
     def test_recovery_sla_tracking(self):
         """Test tracking of recovery SLA compliance."""
@@ -430,7 +430,7 @@ class TestRecoveryTimeObjectives:
 
         meets_sla = sla_compliance_percent >= target_sla
 
-        assert meets_sla is True
+        assert meets_sla is True, "meets_sla is not valid"
 
 
 # ============================================================================
@@ -450,7 +450,7 @@ class TestResilienceTesting:
         # System should survive with 3/5 nodes
         system_operational = nodes_healthy >= (nodes_total // 2 + 1)
 
-        assert system_operational is True
+        assert system_operational is True, "system_operational is not valid"
 
     def test_redundancy_validation(self, cluster_state):
         """Test redundancy mechanisms work."""
@@ -462,7 +462,7 @@ class TestResilienceTesting:
 
         still_operational = healthy_after_failure > 0
 
-        assert still_operational is True
+        assert still_operational is True, "still_operational is not valid"
 
     def test_failover_mechanism(self):
         """Test failover to backup systems."""
@@ -470,7 +470,7 @@ class TestResilienceTesting:
 
         active_system = "secondary" if not primary_available else "primary"
 
-        assert active_system == "secondary"
+        assert active_system == "secondary", "active_system is not valid"
 
     def test_data_replication_consistency(self):
         """Test data replication maintains consistency."""
@@ -479,7 +479,7 @@ class TestResilienceTesting:
 
         consistent = primary_data == replica_data
 
-        assert consistent is True
+        assert consistent is True, "consistent is not valid"
 
     def test_multi_region_resilience(self):
         """Test resilience across multiple regions."""
@@ -491,7 +491,7 @@ class TestResilienceTesting:
 
         healthy_regions = [r for r in regions.values() if r["status"] == "healthy"]
 
-        assert len(healthy_regions) >= 2
+        assert len(healthy_regions) >= 2, "Healthy_regions must not be empty"
         # Service continues in other regions
 
 
@@ -512,7 +512,7 @@ class TestFailureInjectionRecovery:
 
         recovery_delta = abs(recovered_latency_ms - normal_latency_ms)
 
-        assert recovery_delta < 10
+        assert recovery_delta < 10, "recovery_delta is not valid"
 
     def test_error_injection_recovery(self):
         """Test recovery from injected errors."""
@@ -520,7 +520,7 @@ class TestFailureInjectionRecovery:
 
         recovered = error_rate_after < 1.0
 
-        assert recovered is True
+        assert recovered is True, "recovered is not valid"
 
     def test_packet_loss_recovery(self):
         """Test recovery from packet loss injection."""
@@ -528,7 +528,7 @@ class TestFailureInjectionRecovery:
         # After recovery
         recovered_loss_percent = 0.2
 
-        assert recovered_loss_percent < 1.0
+        assert recovered_loss_percent < 1.0, "recovered_loss_percent is not valid"
 
     def test_service_kill_recovery(self):
         """Test recovery from service kill."""
@@ -536,7 +536,7 @@ class TestFailureInjectionRecovery:
 
         service_running = restart_successful
 
-        assert service_running is True
+        assert service_running is True, "service_running is not valid"
 
     def test_dependency_failure_recovery(self):
         """Test recovery when dependency fails."""
@@ -544,7 +544,7 @@ class TestFailureInjectionRecovery:
 
         service_operational = fallback_activated
 
-        assert service_operational is True
+        assert service_operational is True, "service_operational is not valid"
 
 
 if __name__ == "__main__":

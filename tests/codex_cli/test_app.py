@@ -25,7 +25,7 @@ class TestAppModule:
         try:
             from codex_cli import app
 
-            assert app is not None
+            assert app is not None, "app must be initialized"
         except ImportError:
             pytest.skip("codex_cli.app not importable")
 
@@ -56,7 +56,7 @@ class TestTrackSmokeImpl:
         try:
             from codex_cli.app import _track_smoke_impl
 
-            assert callable(_track_smoke_impl)
+            assert callable(_track_smoke_impl), "Condition must be true"
         except ImportError:
             pytest.skip("codex_cli.app not importable")
 
@@ -81,7 +81,7 @@ class TestSplitSmokeImpl:
         try:
             from codex_cli.app import _split_smoke_impl
 
-            assert callable(_split_smoke_impl)
+            assert callable(_split_smoke_impl), "Condition must be true"
         except ImportError:
             pytest.skip("codex_cli.app not importable")
 
@@ -94,7 +94,7 @@ class TestSplitSmokeImpl:
             # Should work even without torch by falling back to random
             try:
                 _split_smoke_impl(1337)
-                assert mock_echo.called
+                assert mock_echo.called, "Condition must be true"
             except SystemExit:
                 # May exit if neither torch nor random available
                 _ = None  # suppressed: no action needed
@@ -110,7 +110,7 @@ class TestCheckpointSmokeImpl:
         try:
             from codex_cli.app import _checkpoint_smoke_impl
 
-            assert callable(_checkpoint_smoke_impl)
+            assert callable(_checkpoint_smoke_impl), "Condition must be true"
         except ImportError:
             pytest.skip("codex_cli.app not importable")
 
@@ -124,7 +124,7 @@ class TestCheckpointSmokeImpl:
             try:
                 _checkpoint_smoke_impl(out_dir)
                 # Should create stub file or real checkpoint
-                assert out_dir.exists()
+                assert out_dir.exists(), "Condition must be true"
             except (SystemExit, Exception):
                 _ = None  # May fail without torch
         except ImportError:
@@ -139,7 +139,7 @@ class TestDiscoverReasoningTemplates:
         try:
             from codex_cli.app import _discover_reasoning_templates
 
-            assert callable(_discover_reasoning_templates)
+            assert callable(_discover_reasoning_templates), "Condition must be true"
         except (ImportError, AttributeError):
             pytest.skip("_discover_reasoning_templates not accessible")
 
@@ -162,7 +162,7 @@ class TestLoadYaml:
         try:
             from codex_cli.app import _load_yaml
 
-            assert callable(_load_yaml)
+            assert callable(_load_yaml), "Condition must be true"
         except (ImportError, AttributeError):
             pytest.skip("_load_yaml not accessible")
 
@@ -175,7 +175,7 @@ class TestMainFunction:
         try:
             from codex_cli.app import main
 
-            assert callable(main)
+            assert callable(main), "Condition must be true"
         except ImportError:
             pytest.skip("codex_cli.app not importable")
 
@@ -188,7 +188,7 @@ class TestAppObject:
         try:
             from codex_cli.app import app
 
-            assert app is not None
+            assert app is not None, "app must be initialized"
         except ImportError:
             pytest.skip("codex_cli.app not importable")
 
@@ -210,7 +210,7 @@ class TestTyperClickFallback:
         try:
             from codex_cli.app import echo
 
-            assert callable(echo)
+            assert callable(echo), "Condition must be true"
         except ImportError:
             pytest.skip("codex_cli.app not importable")
 
@@ -220,7 +220,7 @@ class TestTyperClickFallback:
             from codex_cli.app import Exit
 
             # Should be either typer.Exit or custom SystemExit subclass
-            assert Exit is not None
+            assert Exit is not None, "Exit must be initialized"
         except ImportError:
             pytest.skip("codex_cli.app not importable")
 
@@ -233,7 +233,7 @@ class TestModuleImports:
         try:
             import codex_cli
 
-            assert codex_cli is not None
+            assert codex_cli is not None, "codex_cli must be initialized"
         except ImportError:
             pytest.skip("codex_cli package not importable")
 
@@ -242,7 +242,7 @@ class TestModuleImports:
         try:
             from codex_cli import app
 
-            assert app is not None
+            assert app is not None, "app must be initialized"
         except ImportError:
             pytest.skip("codex_cli.app not importable")
 
@@ -256,7 +256,7 @@ class TestPathConstants:
             from codex_cli.app import REASONING_TEMPLATE_ROOT
 
             path_str = str(REASONING_TEMPLATE_ROOT)
-            assert "configs" in path_str or "reasoning" in path_str
+            assert "configs" in path_str or "reasoning" in path_str, "Condition must be true"
         except ImportError:
             pytest.skip("codex_cli.app not importable")
 
@@ -266,6 +266,6 @@ class TestPathConstants:
             from codex_cli.app import REASONING_CURRICULA_ROOT, REASONING_TEMPLATE_ROOT
 
             # Curricula should be a subdirectory
-            assert REASONING_TEMPLATE_ROOT in REASONING_CURRICULA_ROOT.parents
+            assert REASONING_TEMPLATE_ROOT in REASONING_CURRICULA_ROOT.parents, "Condition must be true"
         except (ImportError, AssertionError):
             pytest.skip("Path relationship cannot be verified")

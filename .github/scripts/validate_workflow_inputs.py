@@ -10,10 +10,10 @@ Usage:
   python3 .github/scripts/validate_workflow_inputs.py --type discussion-numbers --value "${{ github.event.inputs.discussion_numbers }}"
 """
 
-import json
-import sys
 import argparse
+import json
 import os
+import sys
 from pathlib import Path
 
 
@@ -38,20 +38,20 @@ def validate_manifest_path(value):
             'mode': 'direct',
             'reason': 'manifest_path is empty, using direct mode'
         }
-    
+
     try:
         # Convert to Path object - this prevents shell injection
         manifest_path = Path(value.strip())
-        
+
         # Security checks:
         # 1. No absolute paths outside repo
         # 2. No parent directory traversal (..)
         # 3. Must be within repo bounds
-        
+
         # Resolve to absolute path to detect traversal
         abs_path = manifest_path.resolve()
         repo_root = Path.cwd().resolve()
-        
+
         # Check if path tries to escape repo
         if not str(abs_path).startswith(str(repo_root)):
             return {
@@ -60,7 +60,7 @@ def validate_manifest_path(value):
                 'reason': f'manifest_path escapes repo bounds: {abs_path}',
                 'error_type': 'path_traversal'
             }
-        
+
         # Check if file exists
         if not abs_path.is_file():
             return {
@@ -69,7 +69,7 @@ def validate_manifest_path(value):
                 'reason': f'manifest_path does not exist: {abs_path}',
                 'error_type': 'file_not_found'
             }
-        
+
         # Check if it's actually a manifest file (basic validation)
         if abs_path.suffix not in ['.json', '.yml', '.yaml']:
             return {
@@ -78,14 +78,14 @@ def validate_manifest_path(value):
                 'reason': f'manifest_path has invalid extension: {abs_path.suffix}',
                 'error_type': 'invalid_extension'
             }
-        
+
         return {
             'valid': True,
             'mode': 'manifest',
             'path': str(abs_path.relative_to(repo_root)),
             'reason': 'manifest_path validated successfully'
         }
-        
+
     except Exception as e:
         return {
             'valid': False,
@@ -118,11 +118,11 @@ def validate_discussion_numbers(value):
             'reason': 'discussion_numbers empty, using defaults',
             'using_defaults': True
         }
-    
+
     try:
         # Split by whitespace and commas
         raw_numbers = value.replace(',', ' ').split()
-        
+
         # Try to parse each as integer (safe - will raise ValueError if not)
         numbers = []
         for num_str in raw_numbers:
@@ -136,21 +136,21 @@ def validate_discussion_numbers(value):
                         'error_type': 'invalid_value'
                     }
                 numbers.append(num)
-        
+
         if not numbers:
             return {
                 'valid': False,
                 'reason': 'no valid discussion numbers found',
                 'error_type': 'empty_list'
             }
-        
+
         return {
             'valid': True,
             'numbers': numbers,
             'reason': f'Parsed {len(numbers)} discussion number(s)',
             'using_defaults': False
         }
-        
+
     except ValueError as e:
         return {
             'valid': False,
@@ -181,9 +181,9 @@ def main():
         default=True,
         help='Output JSON (default)'
     )
-    
+
     args = parser.parse_args()
-    
+
     # Validate based on type
     if args.type == 'manifest-path':
         result = validate_manifest_path(args.value)
@@ -191,10 +191,10 @@ def main():
         result = validate_discussion_numbers(args.value)
     else:
         result = {'valid': False, 'reason': 'Unknown validation type'}
-    
+
     # Output JSON
     print(json.dumps(result))
-    
+
     # Exit with appropriate code
     sys.exit(0 if result.get('valid', False) else 1)
 

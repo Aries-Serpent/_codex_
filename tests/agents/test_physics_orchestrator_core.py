@@ -19,9 +19,9 @@ class TestForceVector:
 
         force = ForceVector(name="gravity", magnitude=0.8, direction=math.pi / 2)
 
-        assert force.name == "gravity"
-        assert force.magnitude == 0.8
-        assert force.direction == math.pi / 2
+        assert force.name == "gravity", "name is not valid"
+        assert force.magnitude == 0.8, "magnitude is not valid"
+        assert force.direction == math.pi / 2, "direction is not valid"
 
     def test_get_components(self):
         """Test force vector component calculation."""
@@ -31,8 +31,8 @@ class TestForceVector:
         force = ForceVector(name="test", magnitude=1.0, direction=0.0, priority=1.0)
         x, y = force.get_components()
 
-        assert abs(x - 1.0) < 0.001
-        assert abs(y - 0.0) < 0.001
+        assert abs(x - 1.0) < 0.001, "Condition must be true"
+        assert abs(y - 0.0) < 0.001, "Condition must be true"
 
 
 class TestActionPath:
@@ -49,9 +49,9 @@ class TestActionPath:
             friction=2.0,
         )
 
-        assert path.action_type == ActionType.TEST
-        assert path.description == "Run tests"
-        assert path.potential_energy == 10.0
+        assert path.action_type == ActionType.TEST, "action_type is not valid"
+        assert path.description == "Run tests", "description is not valid"
+        assert path.potential_energy == 10.0, "potential_energy is not valid"
 
     def test_calculate_total_energy(self):
         """Test total energy calculation."""
@@ -70,7 +70,7 @@ class TestActionPath:
 
         # E = potential + kinetic - momentum*5 + friction*10
         # E = 10 + 5 - 10 + 10 = 15
-        assert energy == 15.0
+        assert energy == 15.0, "energy is not valid"
 
     def test_calculate_optimization_score(self):
         """Test optimization score calculation."""
@@ -90,7 +90,7 @@ class TestActionPath:
         path.calculate_total_energy()
         score = path.calculate_optimization_score()
 
-        assert score > 0
+        assert score > 0, "score must be greater than zero"
         assert isinstance(score, float)
 
 
@@ -108,10 +108,10 @@ class TestDecisionState:
             time_available=60.0,
         )
 
-        assert state.current_position == "start"
-        assert state.goal_position == "end"
-        assert state.available_resources == 100.0
-        assert state.time_available == 60.0
+        assert state.current_position == "start", "current_position is not valid"
+        assert state.goal_position == "end", "goal_position is not valid"
+        assert state.available_resources == 100.0, "available_resources is not valid"
+        assert state.time_available == 60.0, "time_available is not valid"
 
 
 class TestPhysicsInspiredOrchestrator:
@@ -123,7 +123,7 @@ class TestPhysicsInspiredOrchestrator:
 
         orchestrator = PhysicsInspiredOrchestrator()
 
-        assert orchestrator is not None
+        assert orchestrator is not None, "orchestrator must be initialized"
         assert hasattr(orchestrator, "orchestrate")
 
     def test_orchestrate_basic(self):
@@ -158,9 +158,9 @@ class TestPhysicsInspiredOrchestrator:
 
         # Check result is valid dict with expected structure
         assert isinstance(result, dict)
-        assert len(result) > 0
+        assert len(result) > 0, "Result must not be empty"
         # Result may vary - just ensure it returns something reasonable
-        assert any(
+        assert any(, "Condition must be true"
             key in result
             for key in ["recommended_path", "action_taken", "ranked_paths", "best_path"]
         )
@@ -174,7 +174,7 @@ class TestImportMigrationOrchestrator:
         try:
             from agents.physics_orchestrator import ImportMigrationOrchestrator
 
-            assert ImportMigrationOrchestrator is not None
+            assert ImportMigrationOrchestrator is not None, "ImportMigrationOrchestrator must be initialized"
         except ImportError:
             pytest.skip("ImportMigrationOrchestrator not available")
 
@@ -187,7 +187,7 @@ class TestAdvancedPhysicsPatterns:
         try:
             from agents.physics_orchestrator import DiffusionFlowModel
 
-            assert DiffusionFlowModel is not None
+            assert DiffusionFlowModel is not None, "DiffusionFlowModel must be initialized"
         except ImportError:
             pytest.skip("DiffusionFlowModel not available")
 
@@ -196,7 +196,7 @@ class TestAdvancedPhysicsPatterns:
         try:
             from agents.physics_orchestrator import EnergyLandscape
 
-            assert EnergyLandscape is not None
+            assert EnergyLandscape is not None, "EnergyLandscape must be initialized"
         except ImportError:
             pytest.skip("EnergyLandscape not available")
 
@@ -205,6 +205,6 @@ class TestAdvancedPhysicsPatterns:
         try:
             from agents.physics_orchestrator import SwarmIntelligence
 
-            assert SwarmIntelligence is not None
+            assert SwarmIntelligence is not None, "SwarmIntelligence must be initialized"
         except ImportError:
             pytest.skip("SwarmIntelligence not available")

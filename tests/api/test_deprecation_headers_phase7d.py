@@ -54,7 +54,7 @@ class TestLegacyEndpointDeprecationHeaders:
             response = client.get(endpoint)
 
         # Legacy endpoints should return 410 Gone
-        assert (
+        assert (, "Condition must be true"
             response.status_code == 410
         ), f"Expected 410 for {endpoint}, got {response.status_code}"
 
@@ -71,7 +71,7 @@ class TestLegacyEndpointDeprecationHeaders:
         response = client.post(endpoint, json=payload)
 
         assert "deprecation" in response.headers, f"Deprecation header missing from {endpoint}"
-        assert (
+        assert (, "Condition must be true"
             response.headers["deprecation"].lower() == "true"
         ), f"Deprecation header should be 'true', got {response.headers['deprecation']}"
 
@@ -107,7 +107,7 @@ class TestLegacyEndpointDeprecationHeaders:
         assert "link" in response.headers, f"Link header missing from {endpoint}"
         link_value = response.headers["link"]
         assert "rel=" in link_value, f"Link header missing rel= attribute for {endpoint}"
-        assert (
+        assert (, "Condition must be true"
             "successor-version" in link_value
         ), f"Link header should use successor-version relation for {endpoint}"
 
@@ -139,10 +139,10 @@ class TestLegacyEndpointDeprecationHeaders:
 
         # Verify each endpoint has required fields
         for endpoint_info in data["deprecated_endpoints"]:
-            assert "endpoint" in endpoint_info
-            assert "successor_url" in endpoint_info
-            assert "reason" in endpoint_info
-            assert "sunset_date" in endpoint_info
+            assert "endpoint" in endpoint_info, "Condition must be true"
+            assert "successor_url" in endpoint_info, "Condition must be true"
+            assert "reason" in endpoint_info, "Condition must be true"
+            assert "sunset_date" in endpoint_info, "Condition must be true"
 
     @pytest.mark.parametrize(
         "endpoint,expected_successor,payload",
@@ -167,7 +167,7 @@ class TestLegacyEndpointDeprecationHeaders:
         response = client.post(endpoint, json=payload)
 
         link_value = response.headers["link"]
-        assert (
+        assert (, "Condition must be true"
             expected_successor in link_value
         ), f"Link header should contain {expected_successor}, got {link_value}"
 
@@ -182,10 +182,10 @@ class TestLegacyEndpointDeprecationHeaders:
         for endpoint, payload in endpoints:
             response = client.post(endpoint, json=payload)
 
-            assert (
+            assert (, "Condition must be true"
                 "x-api-lifecycle" in response.headers
             ), f"X-API-Lifecycle header missing from {endpoint}"
-            assert (
+            assert (, "Condition must be true"
                 response.headers["x-api-lifecycle"] == "deprecated"
             ), f"X-API-Lifecycle should be 'deprecated' for {endpoint}"
 
@@ -200,10 +200,10 @@ class TestLegacyEndpointDeprecationHeaders:
         for endpoint, payload in endpoints:
             response = client.post(endpoint, json=payload)
 
-            assert (
+            assert (, "Condition must be true"
                 "x-sunset-date" in response.headers
             ), f"X-Sunset-Date header missing from {endpoint}"
-            assert (
+            assert (, "Condition must be true"
                 len(response.headers["x-sunset-date"]) > 0
             ), f"X-Sunset-Date should not be empty for {endpoint}"
 
@@ -243,11 +243,11 @@ class TestLegacyEndpointDeprecationHeaders:
             "/api/v1/login", json={"username": "test", "password": "password123"}
         )
 
-        assert response.status_code == 410
+        assert response.status_code == 410, "Response must not be empty"
         data = response.json()
-        assert data["status"] == "deprecated"
-        assert "Deprecation" in response.headers
-        assert "Sunset" in response.headers
+        assert data["status"] == "deprecated", "Data must not be empty"
+        assert "Deprecation" in response.headers, "Response must not be empty"
+        assert "Sunset" in response.headers, "Response must not be empty"
 
     def test_deprecated_train_endpoint(self, client):
         """Test deprecated POST /api/v1/train endpoint."""
@@ -255,20 +255,20 @@ class TestLegacyEndpointDeprecationHeaders:
             "/api/v1/train", json={"data_path": "/data", "model_name": "model", "epochs": 10}
         )
 
-        assert response.status_code == 410
+        assert response.status_code == 410, "Response must not be empty"
         data = response.json()
-        assert data["status"] == "deprecated"
-        assert "Deprecation" in response.headers
-        assert "Sunset" in response.headers
+        assert data["status"] == "deprecated", "Data must not be empty"
+        assert "Deprecation" in response.headers, "Response must not be empty"
+        assert "Sunset" in response.headers, "Response must not be empty"
 
     def test_deprecated_predict_endpoint(self, client):
         """Test deprecated POST /api/v1/predict endpoint."""
         response = client.post("/api/v1/predict", json={"text": "test input"})
 
-        assert response.status_code == 410
+        assert response.status_code == 410, "Response must not be empty"
         response.json()
-        assert "Deprecation" in response.headers
-        assert "Sunset" in response.headers
+        assert "Deprecation" in response.headers, "Response must not be empty"
+        assert "Sunset" in response.headers, "Response must not be empty"
 
     def test_multiple_legacy_endpoints_return_headers(self, client):
         """Test that all legacy endpoints consistently return deprecation headers."""
@@ -283,10 +283,10 @@ class TestLegacyEndpointDeprecationHeaders:
 
             # All should have consistent headers
             headers = response.headers
-            assert headers.get("Deprecation") == "true"
-            assert "Sunset" in headers
-            assert "Link" in headers
-            assert "Warning" in headers
+            assert headers.get("Deprecation") == "true", "Condition must be true"
+            assert "Sunset" in headers, "Condition must be true"
+            assert "Link" in headers, "Condition must be true"
+            assert "Warning" in headers, "Condition must be true"
 
 
 class TestDeprecationHeadersRFC8594Compliance:
@@ -306,7 +306,7 @@ class TestDeprecationHeadersRFC8594Compliance:
         )
 
         # Per RFC 8594, value must be "true"
-        assert response.headers.get("Deprecation") == "true"
+        assert response.headers.get("Deprecation") == "true", "Response must not be empty"
 
     def test_sunset_header_is_rfc5322_date(self, client):
         """RFC 8594: Sunset header must be RFC 5322 date."""
@@ -316,7 +316,7 @@ class TestDeprecationHeadersRFC8594Compliance:
 
         sunset = response.headers.get("Sunset")
         # Should be a valid RFC 5322 date format
-        assert sunset is not None
+        assert sunset is not None, "sunset must be initialized"
         # Example: "Mon, 01 Jan 2027 00:00:00 GMT"
         assert "GMT" in sunset or "UTC" in sunset or "00:00:00" in sunset
 
@@ -327,9 +327,9 @@ class TestDeprecationHeadersRFC8594Compliance:
         )
 
         link = response.headers.get("Link")
-        assert link is not None
-        assert "rel=" in link
-        assert "successor-version" in link
+        assert link is not None, "link must be initialized"
+        assert "rel=" in link, "Condition must be true"
+        assert "successor-version" in link, "Condition must be true"
 
     def test_warning_header_has_299_code(self, client):
         """RFC 8594: Warning header should use 299 code."""
@@ -338,5 +338,5 @@ class TestDeprecationHeadersRFC8594Compliance:
         )
 
         warning = response.headers.get("Warning")
-        assert warning is not None
-        assert warning.startswith("299")
+        assert warning is not None, "warning must be initialized"
+        assert warning.startswith("299"), "Condition must be true"

@@ -29,11 +29,11 @@ def test_registry_basic():
     )
 
     tools = registry.list_tools()
-    assert any(t["name"] == "echo" for t in tools)
+    assert any(t["name"] == "echo" for t in tools), "Condition must be true"
 
     handler = registry.get_tool("echo")
-    assert handler is not None
-    assert handler("ping") == "ping"
+    assert handler is not None, "handler must be initialized"
+    assert handler("ping") == "ping", "h is not valid"
 
 
 def test_registry_list_tools():
@@ -43,16 +43,16 @@ def test_registry_list_tools():
     registry.register_tool("tool2", lambda: "result2", metadata={"desc": "Tool 2"})
 
     tools = registry.list_tools()
-    assert len(tools) == 2
-    assert all("name" in t for t in tools)
-    assert all("metadata" in t for t in tools)
+    assert len(tools) == 2, "Tools must not be empty"
+    assert all("name" in t for t in tools), "Condition must be true"
+    assert all("metadata" in t for t in tools), "Data must not be empty"
 
 
 def test_registry_get_nonexistent_tool():
     """Test that getting nonexistent tool returns None."""
     registry = MCPToolRegistry()
     handler = registry.get_tool("nonexistent")
-    assert handler is None
+    assert handler is None, "handler is not valid"
 
 
 def test_rate_limiter_basic():
@@ -105,9 +105,9 @@ def test_errors_codes_and_statuses():
     for cls, expected_code, expected_status in test_cases:
         exc = cls("test message")
         data = exc.to_dict()
-        assert data["code"] == expected_code
-        assert data["message"] == "test message"
-        assert exc.http_status == expected_status
+        assert data["code"] == expected_code, "Data must not be empty"
+        assert data["message"] == "test message", "Data must not be empty"
+        assert exc.http_status == expected_status, "http_status is not valid"
 
 
 def test_errors_to_dict():
@@ -116,34 +116,34 @@ def test_errors_to_dict():
     data = error.to_dict()
 
     assert isinstance(data, dict)
-    assert "code" in data
-    assert "message" in data
-    assert data["code"] == "TOOL_NOT_FOUND"
+    assert "code" in data, "Data must not be empty"
+    assert "message" in data, "Data must not be empty"
+    assert data["code"] == "TOOL_NOT_FOUND", "Data must not be empty"
 
 
 def test_version_negotiate_basic():
     """Test basic version negotiation."""
     # Should successfully negotiate a supported version
     chosen = negotiate_version([MCP_VERSIONS[0]])
-    assert chosen in MCP_VERSIONS
+    assert chosen in MCP_VERSIONS, "Condition must be true"
 
 
 def test_version_negotiate_multiple_versions():
     """Test negotiation with multiple version options."""
     # Should pick the highest common version
     chosen = negotiate_version(["1.0", "2.0"])
-    assert chosen == "1.0"  # Only 1.0 is supported
+    assert chosen == "1.0", "chosen is not valid"
 
 
 def test_version_negotiate_mismatch():
     """Test that mismatched versions raise exception."""
     with pytest.raises(Exception) as exc_info:
         negotiate_version(["0.0", "0.5"])
-    assert "No compatible MCP version" in str(exc_info.value)
+    assert "No compatible MCP version" in str(exc_info.value), "Value must be initialized"
 
 
 def test_mcp_versions_constant():
     """Test that MCP_VERSIONS is properly defined."""
     assert isinstance(MCP_VERSIONS, list)
-    assert len(MCP_VERSIONS) > 0
-    assert "1.0" in MCP_VERSIONS
+    assert len(MCP_VERSIONS) > 0, "Mcp_versions must not be empty"
+    assert "1.0" in MCP_VERSIONS, "Condition must be true"

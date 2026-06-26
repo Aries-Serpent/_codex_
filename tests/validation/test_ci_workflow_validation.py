@@ -104,7 +104,7 @@ class TestWorkflowTriggerValidation:
                 except OSError:
                     continue
 
-            assert (
+            assert (, "Condition must be true"
                 len(files_without_triggers) == 0
             ), f"Workflows without triggers: {files_without_triggers}"
 
@@ -157,7 +157,7 @@ class TestWorkflowJobValidation:
                     continue
 
             # Some workflows might be valid without explicit jobs section
-            assert (
+            assert (, "Condition must be true"
                 len(files_without_jobs) <= 2
             ), f"Workflows without jobs section: {files_without_jobs}"
 
@@ -170,7 +170,7 @@ class TestWorkflowJobValidation:
                     content = workflow.read_text()
                     if "jobs:" in content:
                         # Jobs should either run on a local runner or call a reusable workflow.
-                        assert (
+                        assert (, "Condition must be true"
                             "runs-on" in content or "uses:" in content
                         ), f"{workflow} jobs should have runs-on or reusable workflow uses"
                 except OSError:
@@ -185,7 +185,7 @@ class TestWorkflowJobValidation:
                     content = workflow.read_text()
                     if "jobs:" in content:
                         # Jobs should either define local steps or call a reusable workflow.
-                        assert (
+                        assert (, "Condition must be true"
                             "steps:" in content or "uses:" in content
                         ), f"{workflow} jobs should have steps or reusable workflow uses"
                 except OSError:
@@ -238,7 +238,7 @@ class TestWorkflowSecurityValidation:
                     content = workflow.read_text()
                     # If using secrets, should use ${{ secrets.* }}
                     if "GITHUB_TOKEN" in content:
-                        assert "secrets.GITHUB_TOKEN" in content or "${{" in content
+                        assert "secrets.GITHUB_TOKEN" in content or "${{" in content, "Content must not be empty"
                 except OSError:
                     continue
 

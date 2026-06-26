@@ -27,13 +27,13 @@ def test_save_and_load_roundtrip(tmp_path) -> None:
         metadata=metadata,
         include_rng=False,
     )
-    assert state_path.exists()
+    assert state_path.exists(), "Condition must be true"
 
     loaded_state, loaded_meta = checkpoint_core.load_checkpoint(ckpt_dir)
-    assert loaded_state["model_state"] == payload["model_state"]
-    assert loaded_state["optimizer_state"] == payload["optimizer_state"]
-    assert loaded_meta.schema_version == checkpoint_core.SCHEMA_VERSION
-    assert loaded_meta.rng == {}  # include_rng was False
+    assert loaded_state["model_state"] == payload["model_state"], "Condition must be true"
+    assert loaded_state["optimizer_state"] == payload["optimizer_state"], "Condition must be true"
+    assert loaded_meta.schema_version == checkpoint_core.SCHEMA_VERSION, "schema_version is not valid"
+    assert loaded_meta.rng == {}, "rng is not valid"
 
 
 def test_deserialize_payload_prefers_weights_only_torch_load(
@@ -54,8 +54,8 @@ def test_deserialize_payload_prefers_weights_only_torch_load(
         types.SimpleNamespace(load=fake_load, __version__="2.2.0"),
     )
 
-    assert checkpoint_core._deserialize_payload(raw) == payload
-    assert captured["source_type"] == "BytesIO"
+    assert checkpoint_core._deserialize_payload(raw) == payload, "checkpoint_c is not valid"
+    assert captured["source_type"] == "BytesIO", "Condition must be true"
     assert captured["kwargs"] == {"map_location": "cpu", "weights_only": True}
 
 

@@ -69,7 +69,7 @@ class DatasetValidator:
             return True
         except ValidationError as exc:
             error_type = type(exc).__name__
-            logger.debug(f"ValidationError: <ERROR_TYPE>")
+            logger.debug("ValidationError: <ERROR_TYPE>")
             # ValidationError has a 'message' attribute when jsonschema is available
             error_msg = getattr(exc, "message", str(exc))
             if not _HAS_JSONSCHEMA:

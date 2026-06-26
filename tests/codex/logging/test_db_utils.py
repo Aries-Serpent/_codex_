@@ -44,7 +44,7 @@ class TestOpenDb:
         """Test opening database with explicit path."""
         db_path = str(tmp_path / "test.db")
         conn = open_db(db_path)
-        assert conn is not None
+        assert conn is not None, "conn must be initialized"
         conn.close()
 
     def test_open_db_creates_file(self, open_db, tmp_path):
@@ -52,7 +52,7 @@ class TestOpenDb:
         db_path = tmp_path / "test.db"
         conn = open_db(str(db_path))
         conn.close()
-        assert db_path.exists()
+        assert db_path.exists(), "Condition must be true"
 
     def test_open_db_from_env_var(self, open_db, tmp_path, clean_env):
         """Test opening database from environment variable."""
@@ -60,14 +60,14 @@ class TestOpenDb:
         os.environ["CODEX_DB_PATH"] = db_path
 
         conn = open_db()
-        assert conn is not None
+        assert conn is not None, "conn must be initialized"
         conn.close()
 
     def test_open_db_fallback_to_memory(self, open_db, clean_env):
         """Test fallback to in-memory database."""
         # With no path, no env vars, and no existing files
         conn = open_db()
-        assert conn is not None
+        assert conn is not None, "conn must be initialized"
         # In-memory databases still work
         conn.execute("CREATE TABLE test (id INTEGER)")
         conn.close()
@@ -85,19 +85,19 @@ class TestSanitizeTable:
 
     def test_valid_simple_name(self, sanitize):
         """Test valid simple table name."""
-        assert sanitize("users") == "users"
+        assert sanitize("users") == "users", "Condition must be true"
 
     def test_valid_name_with_numbers(self, sanitize):
         """Test valid name with numbers."""
-        assert sanitize("table123") == "table123"
+        assert sanitize("table123") == "table123", "Condition must be true"
 
     def test_valid_name_with_underscore(self, sanitize):
         """Test valid name with underscore."""
-        assert sanitize("my_table") == "my_table"
+        assert sanitize("my_table") == "my_table", "Condition must be true"
 
     def test_valid_name_starting_with_underscore(self, sanitize):
         """Test valid name starting with underscore."""
-        assert sanitize("_private") == "_private"
+        assert sanitize("_private") == "_private", "Condition must be true"
 
     def test_invalid_name_with_hyphen(self, sanitize):
         """Test invalid name with hyphen."""
@@ -134,7 +134,7 @@ class TestListTables:
         """Test listing tables in empty database."""
         conn = sqlite3.connect(":memory:")
         tables = list_tables(conn)
-        assert tables == []
+        assert tables == [], "tables is not valid"
         conn.close()
 
     def test_list_tables_with_tables(self, list_tables):
@@ -145,9 +145,9 @@ class TestListTables:
 
         tables = list_tables(conn)
 
-        assert "users" in tables
-        assert "logs" in tables
-        assert len(tables) == 2
+        assert "users" in tables, "Condition must be true"
+        assert "logs" in tables, "Condition must be true"
+        assert len(tables) == 2, "Tables must not be empty"
         conn.close()
 
 
@@ -168,10 +168,10 @@ class TestGetColumns:
 
         columns = get_columns(conn, "users")
 
-        assert "id" in columns
-        assert "name" in columns
-        assert "email" in columns
-        assert len(columns) == 3
+        assert "id" in columns, "Condition must be true"
+        assert "name" in columns, "Condition must be true"
+        assert "email" in columns, "Condition must be true"
+        assert len(columns) == 3, "Columns must not be empty"
         conn.close()
 
     def test_get_columns_preserves_case(self, get_columns):
@@ -181,8 +181,8 @@ class TestGetColumns:
 
         columns = get_columns(conn, "test")
 
-        assert "ID" in columns
-        assert "UserName" in columns
+        assert "ID" in columns, "Condition must be true"
+        assert "UserName" in columns, "Condition must be true"
         conn.close()
 
 
@@ -200,7 +200,7 @@ class TestInferProbableTable:
         """Test inference on empty database."""
         conn = sqlite3.connect(":memory:")
         result = infer_table(conn)
-        assert result is None
+        assert result is None, "Result must not be empty"
         conn.close()
 
     def test_infer_exact_match_session_events(self, infer_table):
@@ -211,7 +211,7 @@ class TestInferProbableTable:
 
         result = infer_table(conn)
 
-        assert result == "session_events"
+        assert result == "session_events", "Result must not be empty"
         conn.close()
 
     def test_infer_exact_match_logs(self, infer_table):
@@ -222,7 +222,7 @@ class TestInferProbableTable:
 
         result = infer_table(conn)
 
-        assert result == "logs"
+        assert result == "logs", "Result must not be empty"
         conn.close()
 
     def test_infer_by_column_score(self, infer_table):
@@ -242,7 +242,7 @@ class TestInferProbableTable:
 
         result = infer_table(conn)
 
-        assert result == "my_logs"
+        assert result == "my_logs", "Result must not be empty"
         conn.close()
 
 
@@ -270,9 +270,9 @@ class TestInferColumns:
 
         result = infer_columns(conn, "logs")
 
-        assert result["timestamp"] == "timestamp"
-        assert result["message"] == "message"
-        assert result["role"] == "role"
+        assert result["timestamp"] == "timestamp", "Result must not be empty"
+        assert result["message"] == "message", "Result must not be empty"
+        assert result["role"] == "role", "Result must not be empty"
         conn.close()
 
     def test_infer_columns_with_variants(self, infer_columns):
@@ -290,9 +290,9 @@ class TestInferColumns:
         result = infer_columns(conn, "logs")
 
         # Should find variants
-        assert result["timestamp"] == "ts"
-        assert result["message"] == "content"
-        assert result["role"] == "speaker"
+        assert result["timestamp"] == "ts", "Result must not be empty"
+        assert result["message"] == "content", "Result must not be empty"
+        assert result["role"] == "speaker", "Result must not be empty"
         conn.close()
 
 

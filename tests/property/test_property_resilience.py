@@ -90,7 +90,7 @@ class TestRetryProperties:
                 wrapped()
                 pytest.fail("Expected RetryExhausted")
             except RetryExhausted as exc:
-                assert (
+                assert (, "Condition must be true"
                     exc.attempts == max_retries + 1
                 ), f"attempts={exc.attempts} should equal max_retries+1={max_retries + 1}"
 
@@ -106,7 +106,7 @@ class TestRetryProperties:
 
         wrapped = retry_with_backoff(max_retries=max_retries)(succeeds)
         result = wrapped()
-        assert result == return_val
+        assert result == return_val, "Result must not be empty"
 
     @given(st.integers(min_value=1, max_value=5))
     @settings(max_examples=50)
@@ -132,7 +132,7 @@ class TestRetryProperties:
         with patch("codex.resilience.retry.time.sleep"):
             result = wrapped()
 
-        assert result == "ok"
+        assert result == "ok", "Result must not be empty"
         # Must have stopped after the second call (1 fail + 1 success)
         assert call_count == 2, f"Expected 2 calls (1 fail + 1 success), got {call_count}"
 
@@ -157,7 +157,7 @@ class TestRetryProperties:
             with pytest.raises(RetryExhausted):
                 wrapped()
 
-        assert call_count <= max_retries + 1
+        assert call_count <= max_retries + 1, "Count must be greater than zero"
 
 
 # ---------------------------------------------------------------------------
@@ -188,7 +188,7 @@ class TestCircuitBreakerProperties:
                 cb.call(always_fails)
             except RuntimeError:
                 pass  # expected: underlying error propagates while circuit stays CLOSED
-        assert (
+        assert (, "Condition must be true"
             cb.state is CircuitState.CLOSED
         ), f"Circuit should still be CLOSED after {failure_threshold - 1} failures"
 
@@ -197,7 +197,7 @@ class TestCircuitBreakerProperties:
             cb.call(always_fails)
         except RuntimeError:
             pass  # expected: final failure propagates and trips circuit to OPEN
-        assert (
+        assert (, "Condition must be true"
             cb.state is CircuitState.OPEN
         ), f"Circuit must be OPEN after {failure_threshold} consecutive failures"
 
@@ -220,7 +220,7 @@ class TestCircuitBreakerProperties:
             except RuntimeError:
                 pass  # expected: underlying error propagates while tripping the circuit
 
-        assert cb.state is CircuitState.OPEN
+        assert cb.state is CircuitState.OPEN, "state is not valid"
 
         # Next call must raise CircuitOpenError
         with pytest.raises(CircuitOpenError):
@@ -231,7 +231,7 @@ class TestCircuitBreakerProperties:
     def test_circuit_starts_closed(self, failure_threshold: int) -> None:
         """A freshly created circuit breaker must always be in CLOSED state."""
         cb = CircuitBreaker(failure_threshold=failure_threshold)
-        assert cb.state is CircuitState.CLOSED
+        assert cb.state is CircuitState.CLOSED, "state is not valid"
 
     @given(_failure_threshold)
     @settings(max_examples=50)
@@ -251,9 +251,9 @@ class TestCircuitBreakerProperties:
             except RuntimeError:
                 pass  # expected: underlying error propagates while tripping the circuit
 
-        assert cb.state is CircuitState.OPEN
+        assert cb.state is CircuitState.OPEN, "state is not valid"
         cb.reset()
-        assert cb.state is CircuitState.CLOSED
+        assert cb.state is CircuitState.CLOSED, "state is not valid"
 
     @given(st.integers(min_value=1, max_value=10), _fallback_values)
     @settings(max_examples=50)
@@ -264,7 +264,7 @@ class TestCircuitBreakerProperties:
         cb = CircuitBreaker(failure_threshold=failure_threshold)
 
         result = cb.call(lambda: expected)
-        assert result == expected
+        assert result == expected, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -297,7 +297,7 @@ class TestGracefulDegradationProperties:
             return expected
 
         result = succeeds()
-        assert result == expected
+        assert result == expected, "Result must not be empty"
 
     @given(_fallback_values)
     @settings(max_examples=50)
@@ -312,7 +312,7 @@ class TestGracefulDegradationProperties:
             _fail()
 
         # After the with block, result should be fallback
-        assert dg.result == fallback
+        assert dg.result == fallback, "Result must not be empty"
 
     @given(_fallback_values)
     @settings(max_examples=50)
@@ -351,4 +351,4 @@ class TestGracefulDegradationProperties:
 
         result = always_fails()
         assert len(call_log) == 1, "Fallback callable must be invoked exactly once"
-        assert result == fallback_val
+        assert result == fallback_val, "Result must not be empty"

@@ -19,9 +19,9 @@ class TestCacheBackend:
 
     def test_backend_values(self):
         """Test backend enum values."""
-        assert CacheBackend.MEMORY.value == "memory"
-        assert CacheBackend.REDIS.value == "redis"
-        assert CacheBackend.HYBRID.value == "hybrid"
+        assert CacheBackend.MEMORY.value == "memory", "Value must be initialized"
+        assert CacheBackend.REDIS.value == "redis", "Value must be initialized"
+        assert CacheBackend.HYBRID.value == "hybrid", "Value must be initialized"
 
 
 class TestDistributedCacheConfig:
@@ -31,9 +31,9 @@ class TestDistributedCacheConfig:
         """Test default configuration."""
         config = DistributedCacheConfig()
 
-        assert config.backend == CacheBackend.MEMORY
-        assert config.memory_max_size == 1000
-        assert config.redis_host == "localhost"
+        assert config.backend == CacheBackend.MEMORY, "backend is not valid"
+        assert config.memory_max_size == 1000, "memory_max_size is not valid"
+        assert config.redis_host == "localhost", "redis_host is not valid"
 
     def test_custom_config(self):
         """Test custom configuration."""
@@ -43,9 +43,9 @@ class TestDistributedCacheConfig:
             redis_port=6380,
         )
 
-        assert config.backend == CacheBackend.HYBRID
-        assert config.memory_max_size == 500
-        assert config.redis_port == 6380
+        assert config.backend == CacheBackend.HYBRID, "backend is not valid"
+        assert config.memory_max_size == 500, "memory_max_size is not valid"
+        assert config.redis_port == 6380, "redis_port is not valid"
 
 
 class TestMemoryCacheBackend:
@@ -61,20 +61,20 @@ class TestMemoryCacheBackend:
         backend.put("key1", {"data": "value"})
 
         result = backend.get("key1")
-        assert result == {"data": "value"}
+        assert result == {"data": "value"}, "Result must not be empty"
 
     def test_get_missing(self, backend):
         """Test getting missing key."""
         result = backend.get("nonexistent")
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_delete(self, backend):
         """Test delete operation."""
         backend.put("key1", "value")
         deleted = backend.delete("key1")
 
-        assert deleted is True
-        assert backend.get("key1") is None
+        assert deleted is True, "deleted is not valid"
+        assert backend.get("key1") is None, "Condition must be true"
 
     def test_clear(self, backend):
         """Test clear operation."""
@@ -83,15 +83,15 @@ class TestMemoryCacheBackend:
 
         backend.clear()
 
-        assert backend.get("key1") is None
-        assert backend.get("key2") is None
+        assert backend.get("key1") is None, "Condition must be true"
+        assert backend.get("key2") is None, "Condition must be true"
 
     def test_contains(self, backend):
         """Test contains check."""
         backend.put("key1", "value")
 
-        assert backend.contains("key1") is True
-        assert backend.contains("key2") is False
+        assert backend.contains("key1") is True, "Condition must be true"
+        assert backend.contains("key2") is False, "Condition must be true"
 
     def test_get_stats(self, backend):
         """Test getting stats."""
@@ -100,8 +100,8 @@ class TestMemoryCacheBackend:
 
         stats = backend.get_stats()
 
-        assert "hits" in stats
-        assert "misses" in stats
+        assert "hits" in stats, "Condition must be true"
+        assert "misses" in stats, "Condition must be true"
 
 
 class TestDistributedCache:
@@ -123,15 +123,15 @@ class TestDistributedCache:
     def test_get_missing(self, memory_cache):
         """Test getting missing key."""
         result = memory_cache.get("nonexistent")
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_delete(self, memory_cache):
         """Test delete operation."""
         memory_cache.put("query1", "data")
         deleted = memory_cache.delete("query1")
 
-        assert deleted is True
-        assert memory_cache.get("query1") is None
+        assert deleted is True, "deleted is not valid"
+        assert memory_cache.get("query1") is None, "mem is not valid"
 
     def test_clear(self, memory_cache):
         """Test clear operation."""
@@ -140,22 +140,22 @@ class TestDistributedCache:
 
         memory_cache.clear()
 
-        assert memory_cache.get("query1") is None
-        assert memory_cache.get("query2") is None
+        assert memory_cache.get("query1") is None, "mem is not valid"
+        assert memory_cache.get("query2") is None, "mem is not valid"
 
     def test_contains(self, memory_cache):
         """Test contains check."""
         memory_cache.put("query1", "data")
 
-        assert memory_cache.contains("query1") is True
-        assert memory_cache.contains("query2") is False
+        assert memory_cache.contains("query1") is True, "mem is not valid"
+        assert memory_cache.contains("query2") is False, "mem is not valid"
 
     def test_contains_operator(self, memory_cache):
         """Test 'in' operator."""
         memory_cache.put("query1", "data")
 
-        assert "query1" in memory_cache
-        assert "query2" not in memory_cache
+        assert "query1" in memory_cache, "Condition must be true"
+        assert "query2" not in memory_cache, "Condition must be true"
 
     def test_get_stats(self, memory_cache):
         """Test getting stats."""
@@ -164,9 +164,9 @@ class TestDistributedCache:
 
         stats = memory_cache.get_stats()
 
-        assert "backend" in stats
-        assert stats["backend"] == "memory"
-        assert "memory" in stats
+        assert "backend" in stats, "Condition must be true"
+        assert stats["backend"] == "memory", "Condition must be true"
+        assert "memory" in stats, "Condition must be true"
 
     def test_warm(self, memory_cache):
         """Test cache warming."""
@@ -178,8 +178,8 @@ class TestDistributedCache:
 
         count = memory_cache.warm(entries)
 
-        assert count == 3
-        assert memory_cache.get("query1") == {"result": 1}
+        assert count == 3, "Count must be greater than zero"
+        assert memory_cache.get("query1") == {"result": 1}, "Result must not be empty"
 
     def test_dict_key(self, memory_cache):
         """Test using dict as key."""
@@ -187,7 +187,7 @@ class TestDistributedCache:
         memory_cache.put(query, "results")
 
         result = memory_cache.get(query)
-        assert result == "results"
+        assert result == "results", "Result must not be empty"
 
     def test_complex_values(self, memory_cache):
         """Test storing complex values."""
@@ -202,7 +202,7 @@ class TestDistributedCache:
         memory_cache.put("query1", value)
         result = memory_cache.get("query1")
 
-        assert result == value
+        assert result == value, "Result must not be empty"
 
     def test_ttl(self, memory_cache):
         """Test TTL support."""
@@ -214,7 +214,7 @@ class TestDistributedCache:
         cache = DistributedCache(config)
 
         cache.put("query1", "data", ttl=100)  # Long TTL
-        assert cache.get("query1") is not None
+        assert cache.get("query1") is not None, "Value must be initialized"
 
 
 class TestHybridCache:
@@ -235,12 +235,12 @@ class TestHybridCache:
         hybrid_cache.put("query1", "data")
         result = hybrid_cache.get("query1")
 
-        assert result == "data"
+        assert result == "data", "Result must not be empty"
 
     def test_hybrid_stats(self, hybrid_cache):
         """Test hybrid cache stats."""
         stats = hybrid_cache.get_stats()
 
-        assert stats["backend"] == "hybrid"
-        assert "memory" in stats
-        assert "redis" in stats
+        assert stats["backend"] == "hybrid", "Condition must be true"
+        assert "memory" in stats, "Condition must be true"
+        assert "redis" in stats, "Condition must be true"

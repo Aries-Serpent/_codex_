@@ -73,8 +73,8 @@ class TestSampleDataclass:
     def test_sample_creation(self):
         """Verify Sample creation."""
         sample = Sample(prompt="test prompt", completion="test completion")
-        assert sample.prompt == "test prompt"
-        assert sample.completion == "test completion"
+        assert sample.prompt == "test prompt", "prompt is not valid"
+        assert sample.completion == "test completion", "completion is not valid"
 
     def test_sample_frozen(self):
         """Verify Sample is immutable."""
@@ -88,20 +88,20 @@ class TestSampleDataclass:
         s2 = Sample(prompt="q", completion="a")
         s3 = Sample(prompt="q", completion="b")
 
-        assert s1 == s2
-        assert s1 != s3
+        assert s1 == s2, "s1 is not valid"
+        assert s1 != s3, "s1 is not valid"
 
     def test_sample_empty_strings(self):
         """Verify Sample with empty strings."""
         sample = Sample(prompt="", completion="")
-        assert sample.prompt == ""
-        assert sample.completion == ""
+        assert sample.prompt == "", "prompt is not valid"
+        assert sample.completion == "", "completion is not valid"
 
     def test_sample_unicode(self):
         """Verify Sample with unicode text."""
         sample = Sample(prompt="你好", completion="世界")
-        assert sample.prompt == "你好"
-        assert sample.completion == "世界"
+        assert sample.prompt == "你好", "prompt is not valid"
+        assert sample.completion == "世界", "completion is not valid"
 
 
 class TestComputeFileChecksum:
@@ -114,7 +114,7 @@ class TestComputeFileChecksum:
 
         checksum = compute_file_checksum(test_file)
         assert isinstance(checksum, str)
-        assert len(checksum) == 64  # SHA256 hex digest length
+        assert len(checksum) == 64, "Checksum must not be empty"
 
     def test_checksum_deterministic(self, temp_data_dir: Path):
         """Verify checksum is deterministic."""
@@ -124,7 +124,7 @@ class TestComputeFileChecksum:
         checksum1 = compute_file_checksum(test_file)
         checksum2 = compute_file_checksum(test_file)
 
-        assert checksum1 == checksum2
+        assert checksum1 == checksum2, "checksum1 is not valid"
 
     def test_checksum_different_content(self, temp_data_dir: Path):
         """Verify different content produces different checksums."""
@@ -137,7 +137,7 @@ class TestComputeFileChecksum:
         checksum1 = compute_file_checksum(file1)
         checksum2 = compute_file_checksum(file2)
 
-        assert checksum1 != checksum2
+        assert checksum1 != checksum2, "checksum1 is not valid"
 
     def test_checksum_empty_file(self, temp_data_dir: Path):
         """Verify checksum of empty file."""
@@ -147,7 +147,7 @@ class TestComputeFileChecksum:
         checksum = compute_file_checksum(empty_file)
         # SHA256 of empty string
         expected = hashlib.sha256(b"").hexdigest()
-        assert checksum == expected
+        assert checksum == expected, "checksum is not valid"
 
     def test_checksum_binary_file(self, temp_data_dir: Path):
         """Verify checksum of binary file."""
@@ -156,7 +156,7 @@ class TestComputeFileChecksum:
 
         checksum = compute_file_checksum(binary_file)
         assert isinstance(checksum, str)
-        assert len(checksum) == 64
+        assert len(checksum) == 64, "Checksum must not be empty"
 
     def test_checksum_large_file(self, temp_data_dir: Path):
         """Verify checksum of large file (chunked reading)."""
@@ -165,7 +165,7 @@ class TestComputeFileChecksum:
         large_file.write_text("x" * 10000)
 
         checksum = compute_file_checksum(large_file)
-        assert len(checksum) == 64
+        assert len(checksum) == 64, "Checksum must not be empty"
 
 
 class TestLoadJsonl:
@@ -175,27 +175,27 @@ class TestLoadJsonl:
         """Verify basic JSONL loading."""
         data, metadata = load_jsonl(sample_jsonl_file)
 
-        assert len(data) == 3
-        assert data[0]["prompt"] == "What is AI?"
-        assert "checksum" in metadata
-        assert metadata["num_records"] == 3
+        assert len(data) == 3, "Data must not be empty"
+        assert data[0]["prompt"] == "What is AI?", "Data must not be empty"
+        assert "checksum" in metadata, "Data must not be empty"
+        assert metadata["num_records"] == 3, "Data must not be empty"
 
     def test_load_jsonl_metadata(self, sample_jsonl_file: Path):
         """Verify metadata includes checksum and count."""
         _data, metadata = load_jsonl(sample_jsonl_file)
 
-        assert "checksum" in metadata
-        assert "num_records" in metadata
-        assert metadata["num_records"] == 3
+        assert "checksum" in metadata, "Data must not be empty"
+        assert "num_records" in metadata, "Data must not be empty"
+        assert metadata["num_records"] == 3, "Data must not be empty"
 
     def test_load_jsonl_empty_file(self, temp_data_dir: Path):
         """Verify empty JSONL file handling."""
         empty_file = temp_data_dir / "empty.jsonl"
         empty_file.write_text("")
         data, metadata = load_jsonl(empty_file)
-        assert len(data) == 0
-        assert metadata["empty_file"] is True
-        assert metadata["num_records"] == 0
+        assert len(data) == 0, "Data must not be empty"
+        assert metadata["empty_file"] is True, "Data must not be empty"
+        assert metadata["num_records"] == 0, "Data must not be empty"
 
     def test_load_jsonl_malformed_lines(self, temp_data_dir: Path):
         """Verify malformed lines are skipped."""
@@ -208,8 +208,8 @@ class TestLoadJsonl:
 
         data, metadata = load_jsonl(malformed_file)
 
-        assert len(data) == 2
-        assert metadata["skipped_malformed"] == 2
+        assert len(data) == 2, "Data must not be empty"
+        assert metadata["skipped_malformed"] == 2, "Data must not be empty"
 
     def test_load_jsonl_utf8_bom(self, temp_data_dir: Path):
         """Verify UTF-8 BOM handling."""
@@ -219,8 +219,8 @@ class TestLoadJsonl:
 
         data, _metadata = load_jsonl(bom_file)
 
-        assert len(data) == 1
-        assert data[0]["text"] == "with BOM"
+        assert len(data) == 1, "Data must not be empty"
+        assert data[0]["text"] == "with BOM", "Data must not be empty"
 
     def test_load_jsonl_unicode_content(self, temp_data_dir: Path):
         """Verify unicode content handling."""
@@ -232,8 +232,8 @@ class TestLoadJsonl:
 
         records, _meta = load_jsonl(unicode_file)
 
-        assert len(records) == 3
-        assert records[0]["text"] == "你好世界"
+        assert len(records) == 3, "Records must not be empty"
+        assert records[0]["text"] == "你好世界", "rec is not valid"
 
     def test_load_jsonl_nested_objects(self, temp_data_dir: Path):
         """Verify nested JSON objects."""
@@ -243,7 +243,7 @@ class TestLoadJsonl:
 
         data, _metadata = load_jsonl(nested_file)
 
-        assert data[0]["outer"]["inner"]["deep"] == "value"
+        assert data[0]["outer"]["inner"]["deep"] == "value", "Data must not be empty"
 
     def test_load_jsonl_missing_file(self):
         """Verify error for missing file."""
@@ -260,16 +260,16 @@ class TestLoadCsv:
 
         assert isinstance(records, list)
         assert isinstance(meta, dict)
-        assert len(records) == 2  # Excluding header
-        assert records[0]["prompt"] == "Question 1"
+        assert len(records) == 2, "Records must not be empty"
+        assert records[0]["prompt"] == "Question 1", "rec is not valid"
 
     def test_load_csv_metadata(self, sample_csv_file: Path):
         """Verify CSV metadata."""
         _records, meta = load_csv(sample_csv_file)
 
-        assert "checksum" in meta
-        assert "num_records" in meta
-        assert meta["num_records"] == 2
+        assert "checksum" in meta, "Condition must be true"
+        assert "num_records" in meta, "Condition must be true"
+        assert meta["num_records"] == 2, "Condition must be true"
 
     def test_load_csv_quoted_fields(self, temp_data_dir: Path):
         """Verify quoted field handling."""
@@ -282,8 +282,8 @@ class TestLoadCsv:
 
         records, _meta = load_csv(quoted_file)
 
-        assert "comma" in records[0]["prompt"]
-        assert "Quoted" in records[1]["prompt"]
+        assert "comma" in records[0]["prompt"], "Condition must be true"
+        assert "Quoted" in records[1]["prompt"], "Condition must be true"
 
     def test_load_csv_empty_file(self, temp_data_dir: Path):
         """Verify empty CSV file handling."""
@@ -292,8 +292,8 @@ class TestLoadCsv:
 
         records, meta = load_csv(empty_file)
 
-        assert records == []
-        assert meta["empty_file"] is True
+        assert records == [], "records is not valid"
+        assert meta["empty_file"] is True, "Condition must be true"
 
     def test_load_csv_missing_file(self):
         """Verify error for missing CSV file."""
@@ -311,8 +311,8 @@ class TestLoadCsv:
 
         records, _meta = load_csv(unicode_file)
 
-        assert records[0]["text"] == "日本語"
-        assert records[1]["text"] == "Ελληνικά"
+        assert records[0]["text"] == "日本語", "rec is not valid"
+        assert records[1]["text"] == "Ελληνικά", "rec is not valid"
 
 
 class TestConnectorCacheRoot:
@@ -321,8 +321,8 @@ class TestConnectorCacheRoot:
     def test_resolve_default_cache(self):
         """Verify default cache location."""
         cache_root = _resolve_connector_cache_root()
-        assert cache_root.name == "connector_cache"
-        assert ".codex" in str(cache_root)
+        assert cache_root.name == "connector_cache", "name is not valid"
+        assert ".codex" in str(cache_root), "Condition must be true"
 
     def test_resolve_env_override(self, monkeypatch, tmp_path: Path):
         """Verify environment variable override."""
@@ -330,14 +330,14 @@ class TestConnectorCacheRoot:
         monkeypatch.setenv("CODEX_CONNECTOR_CACHE_ROOT", str(custom_cache))
 
         cache_root = _resolve_connector_cache_root()
-        assert cache_root == custom_cache
+        assert cache_root == custom_cache, "cache_root is not valid"
 
     def test_resolve_expanduser(self, monkeypatch):
         """Verify tilde expansion in cache path."""
         monkeypatch.setenv("CODEX_CONNECTOR_CACHE_ROOT", "~/test_cache")
 
         cache_root = _resolve_connector_cache_root()
-        assert "~" not in str(cache_root)
+        assert "~" not in str(cache_root), "Condition must be true"
 
 
 class TestConnectorUri:
@@ -365,7 +365,7 @@ class TestConnectorUri:
             assert isinstance(result, list)
         except (ValueError, RuntimeError) as e:
             # Expected if connector not fully mocked
-            assert "connector" in str(e).lower()
+            assert "connector" in str(e).lower(), "Condition must be true"
 
     def test_materialize_invalid_uri(self):
         """Verify error for invalid connector URI."""
@@ -396,8 +396,8 @@ class TestEdgeCases:
 
         # UPDATED: Unpack tuple return (records, metadata)
         data, metadata = load_jsonl(single_file)
-        assert len(data) == 1
-        assert metadata["num_records"] == 1
+        assert len(data) == 1, "Data must not be empty"
+        assert metadata["num_records"] == 1, "Data must not be empty"
 
     def test_jsonl_no_newline_at_end(self, temp_data_dir: Path):
         """Verify JSONL without trailing newline."""
@@ -406,7 +406,7 @@ class TestEdgeCases:
 
         # UPDATED: Unpack tuple return (records, metadata)
         data, _metadata = load_jsonl(no_newline)
-        assert len(data) == 1
+        assert len(data) == 1, "Data must not be empty"
 
     def test_csv_single_row(self, temp_data_dir: Path):
         """Verify CSV with single data row."""
@@ -418,7 +418,7 @@ class TestEdgeCases:
 
         # UPDATED: Unpack tuple return (records, metadata)
         data, _metadata = load_csv(single_row)
-        assert len(data) == 1
+        assert len(data) == 1, "Data must not be empty"
 
     def test_jsonl_whitespace_only_lines(self, temp_data_dir: Path):
         """Verify whitespace-only lines are skipped."""
@@ -432,7 +432,7 @@ class TestEdgeCases:
         # UPDATED: Unpack tuple return (records, metadata)
         data, _metadata = load_jsonl(whitespace_file)
         # Whitespace lines should be skipped
-        assert len(data) == 2
+        assert len(data) == 2, "Data must not be empty"
 
     def test_checksum_identical_files(self, temp_data_dir: Path):
         """Verify identical files have same checksum."""
@@ -446,7 +446,7 @@ class TestEdgeCases:
         checksum1 = compute_file_checksum(file1)
         checksum2 = compute_file_checksum(file2)
 
-        assert checksum1 == checksum2
+        assert checksum1 == checksum2, "checksum1 is not valid"
 
 
 if __name__ == "__main__":

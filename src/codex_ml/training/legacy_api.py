@@ -207,8 +207,8 @@ def _listify_texts(value: Any) -> list[str]:
         return [str(item) for item in list(value)]
     except TypeError as e:
         error_type = type(e).__name__
-        logger.debug(f"TypeError: <ERROR_TYPE>")
-        logger.warning(f"TypeError: <ERROR_TYPE>", exc_info=True)
+        logger.debug("TypeError: <ERROR_TYPE>")
+        logger.warning("TypeError: <ERROR_TYPE>", exc_info=True)
         return [str(value)]
 
 
@@ -524,8 +524,8 @@ def _stop_system_metrics_logger(logger: Any) -> None:
             stopper()
         except (ValueError, TypeError, RuntimeError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 
 
 def _coerce_config(raw: Mapping[str, Any]) -> TrainingRunConfig:
@@ -890,7 +890,7 @@ def run_functional_training(
                     )
                 except SafetyViolation as exc:
                     error_type = type(exc).__name__
-                    logger.debug(f"SafetyViolation: <ERROR_TYPE>")
+                    logger.debug("SafetyViolation: <ERROR_TYPE>")
                     match_ids: list[str] = []
                     for match in exc.decision.matches:
                         if isinstance(match, dict):
@@ -913,7 +913,7 @@ def run_functional_training(
                     moderation_decision = moderation_adapter.enforce(sanitized_text, stage=stage)
                 except ModerationRejection as exc:
                     error_type = type(exc).__name__
-                    logger.debug(f"ModerationRejection: <ERROR_TYPE>")
+                    logger.debug("ModerationRejection: <ERROR_TYPE>")
                     context = json.dumps(
                         {
                             "stage": stage,
@@ -1649,8 +1649,8 @@ def _evaluate_model(
             result["val_perplexity"] = float(math.exp(result["val_loss"]))
         except OverflowError as e:
             error_type = type(e).__name__
-            logger.debug(f"OverflowError: <ERROR_TYPE>")
-            logger.warning(f"OverflowError: <ERROR_TYPE>", exc_info=True)
+            logger.debug("OverflowError: <ERROR_TYPE>")
+            logger.warning("OverflowError: <ERROR_TYPE>", exc_info=True)
             result["val_perplexity"] = float("inf")
     if "token_accuracy" in metrics:
         result["val_token_accuracy"] = float(metrics["token_accuracy"])
@@ -1663,7 +1663,7 @@ def _evaluate_model(
         result.setdefault("num_batches", float(len(loader)))
     except TypeError as e:
         error_type = type(e).__name__
-        logger.debug(f"TypeError: <ERROR_TYPE>")
-        logger.warning(f"TypeError: <ERROR_TYPE>", exc_info=True)
+        logger.debug("TypeError: <ERROR_TYPE>")
+        logger.warning("TypeError: <ERROR_TYPE>", exc_info=True)
 
     return result

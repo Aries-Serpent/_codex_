@@ -27,10 +27,10 @@ def test_exact_detector_finds_identical_files():
         groups = detector.scan()
 
         # Should find one duplicate group with 2 files
-        assert len(groups) == 1
-        assert len(groups[0].member_files) == 2
-        assert groups[0].type == "exact-file"
-        assert groups[0].confidence == "high"
+        assert len(groups) == 1, "Groups must not be empty"
+        assert len(groups[0].member_files) == 2, "Collection must not be empty"
+        assert groups[0].type == "exact-file", "type is not valid"
+        assert groups[0].confidence == "high", "confidence is not valid"
 
 
 def test_exact_detector_ignores_different_files():
@@ -52,7 +52,7 @@ def test_exact_detector_ignores_different_files():
         groups = detector.scan()
 
         # Should find no duplicates
-        assert len(groups) == 0
+        assert len(groups) == 0, "Groups must not be empty"
 
 
 def test_exact_detector_respects_exclusions():
@@ -77,7 +77,7 @@ def test_exact_detector_respects_exclusions():
         groups = detector.scan()
 
         # Should find no duplicates (excluded)
-        assert len(groups) == 0
+        assert len(groups) == 0, "Groups must not be empty"
 
 
 def test_exact_detector_language_detection():
@@ -100,8 +100,8 @@ def test_exact_detector_language_detection():
         groups = detector.scan()
 
         # Should detect as Python
-        assert len(groups) == 1
-        assert groups[0].language == "python"
+        assert len(groups) == 1, "Groups must not be empty"
+        assert groups[0].language == "python", "language is not valid"
 
 
 def test_exact_detector_handles_empty_directory():
@@ -116,7 +116,7 @@ def test_exact_detector_handles_empty_directory():
         groups = detector.scan()
 
         # Should find no duplicates
-        assert len(groups) == 0
+        assert len(groups) == 0, "Groups must not be empty"
 
 
 if __name__ == "__main__":

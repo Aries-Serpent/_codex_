@@ -37,14 +37,14 @@ class TestStableChecksum:
         result1 = data_utils._stable_checksum_of_seq_repr(seq)
         result2 = data_utils._stable_checksum_of_seq_repr(seq)
 
-        assert result1 == result2
+        assert result1 == result2, "Result must not be empty"
 
     def test_checksum_different_for_different_sequences(self):
         """Test different sequences produce different checksums."""
         seq1 = [1, 2, 3]
         seq2 = [1, 2, 4]
 
-        assert data_utils._stable_checksum_of_seq_repr(
+        assert data_utils._stable_checksum_of_seq_repr(, "Data must not be empty"
             seq1
         ) != data_utils._stable_checksum_of_seq_repr(seq2)
 
@@ -53,7 +53,7 @@ class TestStableChecksum:
         result = data_utils._stable_checksum_of_seq_repr([])
 
         assert isinstance(result, str)
-        assert len(result) == 64  # SHA-256 hex digest length
+        assert len(result) == 64, "Result must not be empty"
 
 
 class TestSplitDataset:
@@ -64,17 +64,17 @@ class TestSplitDataset:
         items = list(range(100))
         train, val = data_utils.split_dataset(items, train_ratio=0.8, seed=42)
 
-        assert len(train) == 80
-        assert len(val) == 20
-        assert len(set(train) | set(val)) == 100  # No overlap
+        assert len(train) == 80, "Train must not be empty"
+        assert len(val) == 20, "Val must not be empty"
+        assert len(set(train) | set(val)) == 100, "Collection must not be empty"
 
     def test_basic_split_mapping(self):
         """Test split of a mapping."""
         items = {f"key_{i}": i for i in range(100)}
         train, val = data_utils.split_dataset(items, train_ratio=0.9, seed=42)
 
-        assert len(train) == 90
-        assert len(val) == 10
+        assert len(train) == 90, "Train must not be empty"
+        assert len(val) == 10, "Val must not be empty"
 
     def test_split_determinism(self):
         """Test split is deterministic with same seed."""
@@ -83,8 +83,8 @@ class TestSplitDataset:
         train1, val1 = data_utils.split_dataset(items, train_ratio=0.8, seed=123)
         train2, val2 = data_utils.split_dataset(items, train_ratio=0.8, seed=123)
 
-        assert train1 == train2
-        assert val1 == val2
+        assert train1 == train2, "train1 is not valid"
+        assert val1 == val2, "val1 is not valid"
 
     def test_split_different_seeds(self):
         """Test different seeds produce different splits."""
@@ -94,30 +94,30 @@ class TestSplitDataset:
         train2, _ = data_utils.split_dataset(items, train_ratio=0.8, seed=2)
 
         # Different seeds should produce different orderings
-        assert train1 != train2
+        assert train1 != train2, "train1 is not valid"
 
     def test_split_empty_sequence(self):
         """Test split of empty sequence."""
         train, val = data_utils.split_dataset([], train_ratio=0.8, seed=42)
 
-        assert train == []
-        assert val == []
+        assert train == [], "train is not valid"
+        assert val == [], "val is not valid"
 
     def test_split_ratio_zero(self):
         """Test split with zero train ratio."""
         items = list(range(10))
         train, val = data_utils.split_dataset(items, train_ratio=0.0, seed=42)
 
-        assert len(train) == 0
-        assert len(val) == 10
+        assert len(train) == 0, "Train must not be empty"
+        assert len(val) == 10, "Val must not be empty"
 
     def test_split_ratio_one(self):
         """Test split with train ratio of 1.0."""
         items = list(range(10))
         train, val = data_utils.split_dataset(items, train_ratio=1.0, seed=42)
 
-        assert len(train) == 10
-        assert len(val) == 0
+        assert len(train) == 10, "Train must not be empty"
+        assert len(val) == 0, "Val must not be empty"
 
     def test_split_invalid_ratio_negative(self):
         """Test split with invalid negative ratio."""
@@ -140,23 +140,23 @@ class TestSplitDataset:
                 items, train_ratio=0.8, seed=42, cache_path=cache_path
             )
 
-            assert cache_path.exists()
+            assert cache_path.exists(), "Condition must be true"
 
             # Second call - uses cache
             train2, val2 = data_utils.split_dataset(
                 items, train_ratio=0.8, seed=42, cache_path=cache_path
             )
 
-            assert train1 == train2
-            assert val1 == val2
+            assert train1 == train2, "train1 is not valid"
+            assert val1 == val2, "val1 is not valid"
 
             # Verify cache structure
             cache_data = json.loads(cache_path.read_text())
-            assert "length" in cache_data
-            assert "seed" in cache_data
-            assert "train_ratio" in cache_data
-            assert "train_idx" in cache_data
-            assert "val_idx" in cache_data
+            assert "length" in cache_data, "Data must not be empty"
+            assert "seed" in cache_data, "Data must not be empty"
+            assert "train_ratio" in cache_data, "Data must not be empty"
+            assert "train_idx" in cache_data, "Data must not be empty"
+            assert "val_idx" in cache_data, "Data must not be empty"
 
     def test_split_cache_invalidated_by_length(self):
         """Test cache is invalidated when data length changes."""
@@ -175,8 +175,8 @@ class TestSplitDataset:
                 items2, train_ratio=0.8, seed=42, cache_path=cache_path
             )
 
-            assert len(train1) == 16
-            assert len(train2) == 24  # New split, not from cache
+            assert len(train1) == 16, "Train1 must not be empty"
+            assert len(train2) == 24, "Train2 must not be empty"
 
 
 class TestSplitTexts:
@@ -187,8 +187,8 @@ class TestSplitTexts:
         texts = [f"text_{i}" for i in range(100)]
         train, val = data_utils.split_texts(texts, train_ratio=0.8, seed=42)
 
-        assert len(train) == 80
-        assert len(val) == 20
+        assert len(train) == 80, "Train must not be empty"
+        assert len(val) == 20, "Val must not be empty"
         assert all(isinstance(t, str) for t in train)
         assert all(isinstance(t, str) for t in val)
 
@@ -199,8 +199,8 @@ class TestSplitTexts:
         train1, val1 = data_utils.split_texts(texts, train_ratio=0.8, seed=123)
         train2, val2 = data_utils.split_texts(texts, train_ratio=0.8, seed=123)
 
-        assert train1 == train2
-        assert val1 == val2
+        assert train1 == train2, "train1 is not valid"
+        assert val1 == val2, "val1 is not valid"
 
 
 class TestDeterministicShuffle:
@@ -213,7 +213,7 @@ class TestDeterministicShuffle:
         result1 = data_utils.deterministic_shuffle(items, seed=42)
         result2 = data_utils.deterministic_shuffle(items, seed=42)
 
-        assert result1 == result2
+        assert result1 == result2, "Result must not be empty"
 
     def test_shuffle_different_seeds(self):
         """Test different seeds produce different orders."""
@@ -222,14 +222,14 @@ class TestDeterministicShuffle:
         result1 = data_utils.deterministic_shuffle(items, seed=1)
         result2 = data_utils.deterministic_shuffle(items, seed=2)
 
-        assert result1 != result2
+        assert result1 != result2, "Result must not be empty"
 
     def test_shuffle_preserves_elements(self):
         """Test shuffle preserves all elements."""
         items = [1, 2, 3, 4, 5]
         result = data_utils.deterministic_shuffle(items, seed=42)
 
-        assert sorted(result) == sorted(items)
+        assert sorted(result) == sorted(items), "Result must not be empty"
 
 
 class TestRequireTorch:
@@ -259,7 +259,7 @@ class TestEdgeCases:
         train, val = data_utils.split_dataset(items, train_ratio=0.5, seed=42)
 
         # With one item and 0.5 ratio, we get 0 train items
-        assert len(train) + len(val) == 1
+        assert len(train) + len(val) == 1, "Train must not be empty"
 
     def test_split_preserves_types(self):
         """Test split preserves item types."""
@@ -279,6 +279,6 @@ class TestEdgeCases:
         items = ["apple", "banana", "cherry", "date", "elderberry"]
         train, val = data_utils.split_dataset(items, train_ratio=0.8, seed=42)
 
-        assert len(train) == 4
-        assert len(val) == 1
+        assert len(train) == 4, "Train must not be empty"
+        assert len(val) == 1, "Val must not be empty"
         assert all(isinstance(item, str) for item in train + val)

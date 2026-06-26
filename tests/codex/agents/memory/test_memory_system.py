@@ -31,8 +31,8 @@ class TestJSONLBackend:
             query = MemoryQuery(agent_id="agent-1")
             results = backend.retrieve(query)
 
-            assert len(results) == 1
-            assert results[0].content == "Test memory"
+            assert len(results) == 1, "Results must not be empty"
+            assert results[0].content == "Test memory", "Result must not be empty"
 
     def test_text_search(self):
         """Test text-based memory search."""
@@ -45,8 +45,8 @@ class TestJSONLBackend:
             query = MemoryQuery(text="Python")
             results = backend.retrieve(query)
 
-            assert len(results) == 1
-            assert "Python" in results[0].content
+            assert len(results) == 1, "Results must not be empty"
+            assert "Python" in results[0].content, "Result must not be empty"
 
     def test_session_filter(self):
         """Test filtering by session ID."""
@@ -59,8 +59,8 @@ class TestJSONLBackend:
             query = MemoryQuery(session_id="session-1")
             results = backend.retrieve(query)
 
-            assert len(results) == 1
-            assert results[0].session_id == "session-1"
+            assert len(results) == 1, "Results must not be empty"
+            assert results[0].session_id == "session-1", "Result must not be empty"
 
     def test_delete(self):
         """Test memory deletion."""
@@ -71,10 +71,10 @@ class TestJSONLBackend:
             backend.store(entry)
 
             deleted_first = backend.delete(entry.id)
-            assert deleted_first is True
+            assert deleted_first is True, "deleted_first is not valid"
 
             deleted_second = backend.delete(entry.id)
-            assert deleted_second is False  # Already deleted
+            assert deleted_second is False, "deleted_second is not valid"
 
     def test_clear_session(self):
         """Test clearing all memories for a session."""
@@ -86,11 +86,11 @@ class TestJSONLBackend:
             backend.store(MemoryEntry(content="Memory 3", session_id="session-2"))
 
             count = backend.clear_session("session-1")
-            assert count == 2
+            assert count == 2, "Count must be greater than zero"
 
             query = MemoryQuery(session_id="session-2")
             results = backend.retrieve(query)
-            assert len(results) == 1
+            assert len(results) == 1, "Results must not be empty"
 
 
 class TestSQLiteBackend:
@@ -112,9 +112,9 @@ class TestSQLiteBackend:
             query = MemoryQuery(agent_id="agent-1")
             results = backend.retrieve(query)
 
-            assert len(results) == 1
-            assert results[0].content == {"key": "value"}
-            assert results[0].metadata["importance"] == "high"
+            assert len(results) == 1, "Results must not be empty"
+            assert results[0].content == {"key": "value"}, "Result must not be empty"
+            assert results[0].metadata["importance"] == "high", "Result must not be empty"
 
     def test_time_based_query(self):
         """Test querying by timestamp."""
@@ -130,8 +130,8 @@ class TestSQLiteBackend:
             query = MemoryQuery(since=datetime.now(timezone.utc) - timedelta(days=1))
             results = backend.retrieve(query)
 
-            assert len(results) == 1
-            assert results[0].content == "Recent memory"
+            assert len(results) == 1, "Results must not be empty"
+            assert results[0].content == "Recent memory", "Result must not be empty"
 
     def test_limit(self):
         """Test result limiting."""
@@ -144,7 +144,7 @@ class TestSQLiteBackend:
             query = MemoryQuery(limit=5)
             results = backend.retrieve(query)
 
-            assert len(results) == 5
+            assert len(results) == 5, "Results must not be empty"
 
     def test_stats(self):
         """Test statistics retrieval."""
@@ -152,13 +152,13 @@ class TestSQLiteBackend:
             backend = SQLiteMemoryBackend(Path(tmpdir) / "memories.db")
 
             stats = backend.get_stats()
-            assert stats["entry_count"] == 0
+            assert stats["entry_count"] == 0, "Count must be greater than zero"
 
             backend.store(MemoryEntry(content="Test"))
 
             stats = backend.get_stats()
-            assert stats["entry_count"] == 1
-            assert stats["backend"] == "sqlite"
+            assert stats["entry_count"] == 1, "Count must be greater than zero"
+            assert stats["backend"] == "sqlite", "Condition must be true"
 
 
 class TestMemoryManager:
@@ -176,8 +176,8 @@ class TestMemoryManager:
             manager.store("User prefers dark mode", metadata={"importance": "medium"})
             memories = manager.recall("dark mode")
 
-            assert len(memories) > 0
-            assert "dark mode" in memories[0].content
+            assert len(memories) > 0, "Memories must not be empty"
+            assert "dark mode" in memories[0].content, "Content must not be empty"
 
     def test_session_management(self):
         """Test session switching."""
@@ -195,13 +195,13 @@ class TestMemoryManager:
 
             # Recall from session 2
             memories = manager.recall_all()
-            assert len(memories) == 1
-            assert memories[0].session_id == "session-2"
+            assert len(memories) == 1, "Memories must not be empty"
+            assert memories[0].session_id == "session-2", "session_id is not valid"
 
             # Recall from session 1
             memories = manager.recall(session_id="session-1")
-            assert len(memories) == 1
-            assert memories[0].session_id == "session-1"
+            assert len(memories) == 1, "Memories must not be empty"
+            assert memories[0].session_id == "session-1", "session_id is not valid"
 
     def test_clear_session(self):
         """Test clearing session memories."""
@@ -216,7 +216,7 @@ class TestMemoryManager:
             manager.store("Memory 2")
 
             count = manager.clear_session()
-            assert count == 2
+            assert count == 2, "Count must be greater than zero"
 
             memories = manager.recall_all()
-            assert len(memories) == 0
+            assert len(memories) == 0, "Memories must not be empty"

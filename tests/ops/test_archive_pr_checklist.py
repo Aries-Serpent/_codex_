@@ -78,13 +78,13 @@ def test_evaluate_archive_pr_all_requirements_present(compliant_repo: Path) -> N
         changed_files=changed_files,
     )
 
-    assert result.ok is True
-    assert result.missing == []
-    assert result.has_adr
-    assert result.has_changelog
-    assert result.has_evidence
-    assert result.has_provenance
-    assert result.changed_files == sorted(changed_files)
+    assert result.ok is True, "Result must not be empty"
+    assert result.missing == [], "Result must not be empty"
+    assert result.has_adr, "Result must not be empty"
+    assert result.has_changelog, "Result must not be empty"
+    assert result.has_evidence, "Result must not be empty"
+    assert result.has_provenance, "Result must not be empty"
+    assert result.changed_files == sorted(changed_files), "Result must not be empty"
 
 
 @pytest.mark.parametrize(
@@ -112,8 +112,8 @@ def test_evaluate_archive_pr_flags_missing_requirements(
 
     result = evaluate_archive_pr(compliant_repo, changed_files=changed)
 
-    assert result.ok is False
-    assert expected_missing in result.missing
+    assert result.ok is False, "Result must not be empty"
+    assert expected_missing in result.missing, "Result must not be empty"
 
 
 def test_evaluate_archive_pr_reports_all_missing(non_compliant_repo: Path) -> None:
@@ -122,14 +122,14 @@ def test_evaluate_archive_pr_reports_all_missing(non_compliant_repo: Path) -> No
         changed_files=["docs/CHANGELOG.md"],
     )
 
-    assert result.ok is False
-    assert result.has_changelog is True
-    assert result.has_adr is False
-    assert result.has_evidence is False
-    assert result.has_provenance is False
-    assert "ADR in docs/arch/" in result.missing
-    assert "Evidence log delta (.codex/evidence/archive_ops.jsonl)" in result.missing
-    assert "Provenance artifact" in result.missing
+    assert result.ok is False, "Result must not be empty"
+    assert result.has_changelog is True, "Result must not be empty"
+    assert result.has_adr is False, "Result must not be empty"
+    assert result.has_evidence is False, "Result must not be empty"
+    assert result.has_provenance is False, "Result must not be empty"
+    assert "ADR in docs/arch/" in result.missing, "Result must not be empty"
+    assert "Evidence log delta (.codex/evidence/archive_ops.jsonl)" in result.missing, "Result must not be empty"
+    assert "Provenance artifact" in result.missing, "Result must not be empty"
 
 
 @pytest.mark.parametrize(
@@ -153,7 +153,7 @@ def test_provenance_hints_detect_common_patterns(compliant_repo: Path, relative_
         changed_files=[relative_path],
     )
 
-    assert result.has_provenance is True
+    assert result.has_provenance is True, "Result must not be empty"
 
 
 @pytest.mark.parametrize(
@@ -174,4 +174,4 @@ def test_provenance_hints_ignore_unrelated_paths(compliant_repo: Path, relative_
         changed_files=[relative_path],
     )
 
-    assert result.has_provenance is False
+    assert result.has_provenance is False, "Result must not be empty"

@@ -44,7 +44,7 @@ class TestConcurrentTraining:
             results = [future.result() for future in futures]
 
         # All should complete
-        assert len(results) == 5
+        assert len(results) == 5, "Results must not be empty"
         assert all(r < initial for r, initial in zip(results, initial_losses))
 
     def test_concurrent_metrics_logging(self):
@@ -76,10 +76,10 @@ class TestConcurrentTraining:
                 # Verify file exists and has entries
                 # Relaxed assertion: check we got at least the expected number of records
                 # since concurrent writes may produce more/fewer lines depending on interleaving
-                assert log_file.exists()
+                assert log_file.exists(), "Condition must be true"
                 lines = log_file.read_text().strip().split("\n")
-                assert len(lines) >= 15  # At least 3 threads * 5 steps
-                assert len(lines) <= 20  # Upper bound to catch unexpected logging bugs
+                assert len(lines) >= 15, "Lines must not be empty"
+                assert len(lines) <= 20, "Lines must not be empty"
                 # Validate each line is valid JSON
                 import json
 
@@ -105,8 +105,8 @@ class TestResourceLimits:
 
         result = train_epoch(model, large_dataloader, {})
 
-        assert result["num_batches"] == 100
-        assert result["loss_mean"] == 1.0
+        assert result["num_batches"] == 100, "Result must not be empty"
+        assert result["loss_mean"] == 1.0, "Result must not be empty"
 
     def test_many_small_files(self):
         """Test handling many small files."""
@@ -122,7 +122,7 @@ class TestResourceLimits:
 
                 # Verify all created
                 log_files = list(Path(tmpdir).glob("metrics_*.ndjson"))
-                assert len(log_files) == 50
+                assert len(log_files) == 50, "Log_files must not be empty"
         except ImportError:
             pytest.skip("MetricLogger not available")
 
@@ -151,10 +151,10 @@ class TestThreadSafety:
             sanitized = [f.result() for f in sanitize_futures]
 
         # All should complete
-        assert len(timestamps) == 20
-        assert len(sanitized) == 20
+        assert len(timestamps) == 20, "Timestamps must not be empty"
+        assert len(sanitized) == 20, "Sanitized must not be empty"
         assert all(isinstance(t, str) for t in timestamps)
-        assert all("<" not in s and ">" not in s for s in sanitized)
+        assert all("<" not in s and ">" not in s for s in sanitized), "Condition must be true"
 
     def test_concurrent_checkpoint_operations(self):
         """Test concurrent checkpoint directory operations."""
@@ -173,7 +173,7 @@ class TestThreadSafety:
             results = [f.result() for f in futures]
 
         # All should succeed
-        assert all(results)
+        assert all(results), "Result must not be empty"
 
 
 class TestStressTiming:
@@ -197,7 +197,7 @@ class TestStressTiming:
         elapsed = time.time() - start_time
 
         # Validate functional behavior: loss should decrease
-        assert loss < 100.0
+        assert loss < 100.0, "loss is not valid"
         # Log timing for informational purposes (no strict assertion)
         print(f"Completed 1000 operations in {elapsed:.3f} seconds")
 
@@ -215,4 +215,4 @@ class TestStressTiming:
             elapsed = time.time() - start_time
 
             # Should complete reasonably quickly
-            assert elapsed < 5.0
+            assert elapsed < 5.0, "elapsed is not valid"

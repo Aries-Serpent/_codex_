@@ -25,20 +25,20 @@ def test_sentencepiece_trainer_roundtrip(tmp_path: pathlib.Path) -> None:
     )
 
     pointer = tmp_path / "tok" / "tokenizer.pointer"
-    assert pointer.exists()
+    assert pointer.exists(), "Condition must be true"
 
     export_pointer = tmp_path / "export.pointer"
     tokenizer.save(str(export_pointer))
-    assert export_pointer.exists()
+    assert export_pointer.exists(), "exp is not valid"
 
     loaded = SPTokenizer.load(str(pointer))
     ids = loaded.encode("hello world", max_length=6, padding=True, truncation=True)
     assert isinstance(ids, list)
-    assert len(ids) == 6
+    assert len(ids) == 6, "Ids must not be empty"
 
     decoded = loaded.decode(ids)
     assert isinstance(decoded, str)
-    assert "hello" in decoded
+    assert "hello" in decoded, "Condition must be true"
 
 
 def test_sentencepiece_trainer_reproducible(tmp_path: pathlib.Path) -> None:
@@ -60,5 +60,5 @@ def test_sentencepiece_trainer_reproducible(tmp_path: pathlib.Path) -> None:
 
     model_a = (tmp_path / "tok_a" / "spm.model").read_bytes()
     model_b = (tmp_path / "tok_b" / "spm.model").read_bytes()
-    assert model_a == model_b
+    assert model_a == model_b, "model_a is not valid"
     assert tok_a.decode(tok_a.encode("determinism")) == tok_b.decode(tok_b.encode("determinism"))

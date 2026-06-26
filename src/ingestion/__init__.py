@@ -106,8 +106,8 @@ def detect_encoding(path: str | Path) -> str:
             return _io_text__detect_encoding(p)
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 
     # Fallback conservative detector: BOM checks, then try a few encodings
     try:
@@ -126,8 +126,8 @@ def detect_encoding(path: str | Path) -> str:
             return "utf-8"
     except (ValueError, TypeError) as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
-        logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
+        logger.debug("Exception: <ERROR_TYPE>")
+        logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 
     for enc in ("utf-8", "cp1252", "iso-8859-1"):
         try:
@@ -161,25 +161,25 @@ def _call_repo_read_text(
         result = _io_text_read_text(path, encoding=encoding, errors=errors)
     except TypeError as e:
         error_type = type(e).__name__
-        logger.debug(f"TypeError: <ERROR_TYPE>")
-        logger.warning(f"TypeError: <ERROR_TYPE>", exc_info=True)
+        logger.debug("TypeError: <ERROR_TYPE>")
+        logger.warning("TypeError: <ERROR_TYPE>", exc_info=True)
         try:
             # Older helper may accept (path, encoding)
             result = _io_text_read_text(path, encoding)
         except TypeError as e:
             error_type = type(e).__name__
-            logger.debug(f"TypeError: <ERROR_TYPE>")
-            logger.warning(f"TypeError: <ERROR_TYPE>", exc_info=True)
+            logger.debug("TypeError: <ERROR_TYPE>")
+            logger.warning("TypeError: <ERROR_TYPE>", exc_info=True)
             try:
                 # Very old: only path
                 result = _io_text_read_text(path)
             except (IOError, OSError) as exc:
                 error_type = type(exc).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.debug("Exception: <ERROR_TYPE>")
                 raise RuntimeError(f"repo read_text failed: {exc}") from exc
     except (IOError, OSError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         # Pass up other errors as runtime errors
         raise RuntimeError(f"repo read_text failed: {exc}") from exc
 
@@ -205,7 +205,7 @@ def _manual_read_text(
         raw = path.read_bytes()
     except (IOError, OSError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         raise RuntimeError(f"Failed to read bytes from {path}: {exc}") from exc
 
     enc = encoding
@@ -238,8 +238,8 @@ def _manual_read_text(
             text = text.lstrip("\ufeff")
     except (IOError, OSError) as e:
         error_type = type(e).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
-        logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
+        logger.debug("Exception: <ERROR_TYPE>")
+        logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
 
     return text, str(enc)
 
@@ -335,7 +335,7 @@ def ingest(
                     yield chunk
         except (IOError, OSError) as exc:
             error_type = type(exc).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             # Surface as runtime error to calling code (ingestion pipelines should catch)
             raise RuntimeError(f"Failed to stream file {file_path}: {exc}") from exc
 

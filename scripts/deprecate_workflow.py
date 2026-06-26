@@ -169,7 +169,7 @@ class WorkflowDeprecator:
             return True
         except Exception as e:
             error_type = type(e).__name__
-            print(f"❌ Failed to disable workflow: <ERROR_TYPE>")
+            print("❌ Failed to disable workflow: <ERROR_TYPE>")
             return False
 
     def archive_workflow(self) -> bool:
@@ -199,7 +199,7 @@ class WorkflowDeprecator:
             return True
         except Exception as e:
             error_type = type(e).__name__
-            print(f"❌ Failed to archive workflow: <ERROR_TYPE>")
+            print("❌ Failed to archive workflow: <ERROR_TYPE>")
             return False
 
     def create_deprecation_record(self, suite_file: str, references: list[dict[str, str]]) -> bool:
@@ -249,7 +249,7 @@ class WorkflowDeprecator:
             return True
         except Exception as e:
             error_type = type(e).__name__
-            print(f"❌ Failed to update deprecation log: <ERROR_TYPE>")
+            print("❌ Failed to update deprecation log: <ERROR_TYPE>")
             return False
 
     def generate_redirect_doc(self, suite_file: str) -> bool:
@@ -302,7 +302,7 @@ If you were referencing `{self.workflow_file}` in your code or documentation:
             return True
         except Exception as e:
             error_type = type(e).__name__
-            print(f"❌ Failed to create redirect document: <ERROR_TYPE>")
+            print("❌ Failed to create redirect document: <ERROR_TYPE>")
             return False
 
     def run(self, consolidated_suite: Optional[str] = None) -> bool:

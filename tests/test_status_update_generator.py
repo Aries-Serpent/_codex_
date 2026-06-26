@@ -64,9 +64,9 @@ def test_schema_is_valid_json():
     with open(SCHEMA) as f:
         schema = json.load(f)
 
-    assert schema["$schema"] == "https://json-schema.org/draft/2020-12/schema"
-    assert schema["title"] == "codex_status_update"
-    assert schema["type"] == "object"
+    assert schema["$schema"] == "https://json-schema.org/draft/2020-12/schema", "Condition must be true"
+    assert schema["title"] == "codex_status_update", "Condition must be true"
+    assert schema["type"] == "object", "Object must be initialized"
 
 
 def test_generator_runs_successfully():
@@ -78,7 +78,7 @@ def test_generator_runs_successfully():
     )
 
     assert result.returncode == 0, f"Generator failed: {result.stderr}"
-    assert "Status update saved to" in result.stdout
+    assert "Status update saved to" in result.stdout, "Result must not be empty"
 
 
 def test_generated_report_is_valid_json():
@@ -129,14 +129,14 @@ def test_metadata_structure():
 
     metadata = data["metadata"]
 
-    assert "title" in metadata
-    assert metadata["title"].startswith("📍 `_codex_` : Status Update")
-    assert "timestamp_utc" in metadata
-    assert "report_version" in metadata
-    assert metadata["template_version"] == "v1.2"
-    assert "git_context" in metadata
-    assert "branch" in metadata["git_context"]
-    assert "commit_sha" in metadata["git_context"]
+    assert "title" in metadata, "Data must not be empty"
+    assert metadata["title"].startswith("📍 `_codex_` : Status Update"), "Data must not be empty"
+    assert "timestamp_utc" in metadata, "Data must not be empty"
+    assert "report_version" in metadata, "Data must not be empty"
+    assert metadata["template_version"] == "v1.2", "Data must not be empty"
+    assert "git_context" in metadata, "Data must not be empty"
+    assert "branch" in metadata["git_context"], "Data must not be empty"
+    assert "commit_sha" in metadata["git_context"], "Data must not be empty"
 
 
 def test_snapshot_has_capabilities():
@@ -151,7 +151,7 @@ def test_snapshot_has_capabilities():
     capabilities = data["snapshot"]["capabilities"]
 
     assert isinstance(capabilities, list)
-    assert len(capabilities) > 0
+    assert len(capabilities) > 0, "Capabilities must not be empty"
 
     # Check first capability structure
     cap = capabilities[0]
@@ -185,17 +185,17 @@ def test_repro_registry():
 
     repro = data["snapshot"]["repro"]
 
-    assert "core_controls" in repro
-    assert "registry" in repro
+    assert "core_controls" in repro, "Condition must be true"
+    assert "registry" in repro, "Condition must be true"
     assert isinstance(repro["registry"], list)
-    assert len(repro["registry"]) > 0
+    assert len(repro["registry"]) > 0, "Collection must not be empty"
 
     # Check first registry entry
     entry = repro["registry"][0]
-    assert "id" in entry
-    assert "category" in entry
-    assert "control" in entry
-    assert "status" in entry
+    assert "id" in entry, "Condition must be true"
+    assert "category" in entry, "Condition must be true"
+    assert "control" in entry, "Condition must be true"
+    assert "status" in entry, "Condition must be true"
 
 
 def test_report_validates_against_schema():
@@ -226,7 +226,7 @@ def test_cli_integration():
     )
 
     assert result.returncode == 0, f"CLI failed: {result.stderr}"
-    assert "Status update saved to" in result.stdout
+    assert "Status update saved to" in result.stdout, "Result must not be empty"
 
 
 def test_validation_failure_exits_with_error():

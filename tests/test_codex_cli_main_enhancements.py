@@ -85,13 +85,13 @@ class TestIngestCommand:
     def test_ingest_help(self, cli_runner):
         """Test ingest --help."""
         result = cli_runner.invoke(app, ["ingest", "--help"])
-        assert result.exit_code == 0
-        assert "ingest" in result.stdout.lower()
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "ingest" in result.stdout.lower(), "Result must not be empty"
 
     def test_ingest_missing_source(self, cli_runner):
         """Test ingest without source argument."""
         result = cli_runner.invoke(app, ["ingest"])
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     def test_ingest_file_source(self, cli_runner, temp_repo_dir):
         """Test ingest with file source."""
@@ -101,8 +101,8 @@ class TestIngestCommand:
             )
 
             result = cli_runner.invoke(app, ["ingest", str(temp_repo_dir / "sample.py")])
-            assert result.exit_code == 0
-            assert "snap_123" in result.stdout or "snapshot" in result.stdout.lower()
+            assert result.exit_code == 0, "Result must not be empty"
+            assert "snap_123" in result.stdout or "snapshot" in result.stdout.lower(), "Result must not be empty"
 
     def test_ingest_with_manifest(self, cli_runner, temp_repo_dir, manifest_file):
         """Test ingest with manifest file."""
@@ -114,7 +114,7 @@ class TestIngestCommand:
             result = cli_runner.invoke(
                 app, ["ingest", str(temp_repo_dir), "--manifest", str(manifest_file)]
             )
-            assert result.exit_code == 0
+            assert result.exit_code == 0, "Result must not be empty"
 
     def test_ingest_with_custom_snapshot_id(self, cli_runner, temp_repo_dir):
         """Test ingest with custom snapshot ID."""
@@ -126,19 +126,19 @@ class TestIngestCommand:
             result = cli_runner.invoke(
                 app, ["ingest", str(temp_repo_dir), "--snapshot-id", "custom_snap"]
             )
-            assert result.exit_code == 0
+            assert result.exit_code == 0, "Result must not be empty"
 
     def test_ingest_invalid_source(self, cli_runner):
         """Test ingest with non-existent source."""
         with patch("codex.ingest.ingest", side_effect=FileNotFoundError("Source not found")):
             result = cli_runner.invoke(app, ["ingest", "/nonexistent/path"])
-            assert result.exit_code != 0
+            assert result.exit_code != 0, "Result must not be empty"
 
     def test_ingest_permission_error(self, cli_runner, temp_repo_dir):
         """Test ingest with permission error."""
         with patch("codex.ingest.ingest", side_effect=PermissionError("Access denied")):
             result = cli_runner.invoke(app, ["ingest", str(temp_repo_dir)])
-            assert result.exit_code != 0
+            assert result.exit_code != 0, "Result must not be empty"
 
 
 # ============================================================================
@@ -152,12 +152,12 @@ class TestAnalyzeCommand:
     def test_analyze_help(self, cli_runner):
         """Test analyze --help."""
         result = cli_runner.invoke(app, ["analyze", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_analyze_missing_snapshot(self, cli_runner):
         """Test analyze without snapshot ID."""
         result = cli_runner.invoke(app, ["analyze"])
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     def test_analyze_valid_snapshot(self, cli_runner):
         """Test analyze with valid snapshot ID."""
@@ -169,7 +169,7 @@ class TestAnalyzeCommand:
             }
 
             result = cli_runner.invoke(app, ["analyze", "snap_123"])
-            assert result.exit_code == 0
+            assert result.exit_code == 0, "Result must not be empty"
 
     def test_analyze_with_options(self, cli_runner):
         """Test analyze with various options."""
@@ -181,7 +181,7 @@ class TestAnalyzeCommand:
         """Test analyze with non-existent snapshot."""
         with patch("codex.analyze.analyze", side_effect=FileNotFoundError("Snapshot not found")):
             result = cli_runner.invoke(app, ["analyze", "nonexistent_snap"])
-            assert result.exit_code != 0
+            assert result.exit_code != 0, "Result must not be empty"
 
 
 # ============================================================================
@@ -195,12 +195,12 @@ class TestTransformCommand:
     def test_transform_help(self, cli_runner):
         """Test transform --help."""
         result = cli_runner.invoke(app, ["transform", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_transform_missing_snapshot(self, cli_runner):
         """Test transform without snapshot ID."""
         result = cli_runner.invoke(app, ["transform"])
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     def test_transform_valid_snapshot(self, cli_runner):
         """Test transform with valid snapshot."""
@@ -211,7 +211,7 @@ class TestTransformCommand:
             }
 
             result = cli_runner.invoke(app, ["transform", "snap_123"])
-            assert result.exit_code == 0
+            assert result.exit_code == 0, "Result must not be empty"
 
     def test_transform_with_mode(self, cli_runner):
         """Test transform with mode option."""
@@ -237,12 +237,12 @@ class TestVerifyCommand:
     def test_verify_help(self, cli_runner):
         """Test verify --help."""
         result = cli_runner.invoke(app, ["verify", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_verify_missing_args(self, cli_runner):
         """Test verify without required arguments."""
         result = cli_runner.invoke(app, ["verify"])
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     def test_verify_baseline_vs_patched(self, cli_runner):
         """Test verify comparing baseline vs patched."""
@@ -257,7 +257,7 @@ class TestVerifyCommand:
             result = cli_runner.invoke(
                 app, ["verify", "snap_baseline", "--patched", "snap_patched"]
             )
-            assert result.exit_code == 0
+            assert result.exit_code == 0, "Result must not be empty"
 
     def test_verify_with_format(self, cli_runner):
         """Test verify with output format."""
@@ -277,7 +277,7 @@ class TestListCommand:
     def test_list_help(self, cli_runner):
         """Test list --help."""
         result = cli_runner.invoke(app, ["list", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_list_snapshots(self, cli_runner):
         """Test listing snapshots."""
@@ -288,7 +288,7 @@ class TestListCommand:
             ]
 
             result = cli_runner.invoke(app, ["list"])
-            assert result.exit_code == 0
+            assert result.exit_code == 0, "Result must not be empty"
 
     def test_list_with_filter(self, cli_runner):
         """Test list with filter."""
@@ -314,12 +314,12 @@ class TestShowCommand:
     def test_show_help(self, cli_runner):
         """Test show --help."""
         result = cli_runner.invoke(app, ["show", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_show_missing_snapshot(self, cli_runner):
         """Test show without snapshot ID."""
         result = cli_runner.invoke(app, ["show"])
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     def test_show_valid_snapshot(self, cli_runner):
         """Test show snapshot details."""
@@ -332,7 +332,7 @@ class TestShowCommand:
             }
 
             result = cli_runner.invoke(app, ["show", "snap_123"])
-            assert result.exit_code == 0
+            assert result.exit_code == 0, "Result must not be empty"
 
     def test_show_with_format(self, cli_runner):
         """Test show with different output formats."""
@@ -344,7 +344,7 @@ class TestShowCommand:
         """Test show with non-existent snapshot."""
         with patch("codex.snapshot.get_snapshot", side_effect=FileNotFoundError("Not found")):
             result = cli_runner.invoke(app, ["show", "nonexistent"])
-            assert result.exit_code != 0
+            assert result.exit_code != 0, "Result must not be empty"
 
 
 # ============================================================================
@@ -380,18 +380,18 @@ class TestCLIErrorHandling:
     def test_invalid_command(self, cli_runner):
         """Test invalid command."""
         result = cli_runner.invoke(app, ["invalid_cmd"])
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     def test_command_with_invalid_flag(self, cli_runner):
         """Test command with invalid flag."""
         result = cli_runner.invoke(app, ["ingest", "--invalid-flag", "value"])
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     def test_exception_handling(self, cli_runner):
         """Test exception handling in commands."""
         with patch("codex.ingest.ingest", side_effect=Exception("Unexpected error")):
             result = cli_runner.invoke(app, ["ingest", "/some/path"])
-            assert result.exit_code != 0
+            assert result.exit_code != 0, "Result must not be empty"
 
 
 # ============================================================================
@@ -414,13 +414,13 @@ class TestOutputFormats:
         """Test list table output."""
         with patch("codex.snapshot.list_snapshots"):
             result = cli_runner.invoke(app, ["list"])
-            assert result.exit_code == 0
+            assert result.exit_code == 0, "Result must not be empty"
 
     def test_error_message_clarity(self, cli_runner):
         """Test error messages are clear."""
         result = cli_runner.invoke(app, ["ingest"])
         # Error message should be clear
-        assert len(result.stdout) > 0
+        assert len(result.stdout) > 0, "Collection must not be empty"
 
 
 # ============================================================================
@@ -442,11 +442,11 @@ class TestCLIIntegration:
 
                 # Ingest
                 ingest_result = cli_runner.invoke(app, ["ingest", str(temp_repo_dir)])
-                assert ingest_result.exit_code == 0
+                assert ingest_result.exit_code == 0, "Result must not be empty"
 
                 # Analyze
                 analyze_result = cli_runner.invoke(app, ["analyze", "snap_123"])
-                assert analyze_result.exit_code == 0
+                assert analyze_result.exit_code == 0, "Result must not be empty"
 
     def test_ingest_transform_verify_workflow(self, cli_runner, temp_repo_dir):
         """Test complete ingest→transform→verify workflow."""
@@ -473,13 +473,13 @@ class TestTyperFallback:
         """Test that Typer is available."""
         from codex.cli.main import TYPER_AVAILABLE
 
-        assert TYPER_AVAILABLE is True or TYPER_AVAILABLE is False
+        assert TYPER_AVAILABLE is True or TYPER_AVAILABLE is False, "TYPER_AVAILABLE is not valid"
 
     def test_app_initialization(self):
         """Test app is properly initialized."""
         from codex.cli.main import app
 
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
 
 # ============================================================================

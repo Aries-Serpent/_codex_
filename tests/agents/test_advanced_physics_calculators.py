@@ -74,8 +74,8 @@ class TestChaoticNeuralNetwork:
         """Test network initializes correctly."""
         cnn = ChaoticNeuralNetwork(num_neurons=10)
 
-        assert len(cnn.neurons) == 10
-        assert cnn.coupling_strength == 0.1
+        assert len(cnn.neurons) == 10, "Collection must not be empty"
+        assert cnn.coupling_strength == 0.1, "coupling_strength is not valid"
 
     def test_parameter_generation(self):
         """Test chaotic test parameter generation."""
@@ -84,14 +84,14 @@ class TestChaoticNeuralNetwork:
         param_ranges = [(0.0, 10.0), (0.0, 1.0), (-5.0, 5.0)]
         test_cases = cnn.generate_test_parameters(param_ranges, num_tests=50)
 
-        assert len(test_cases) == 50
+        assert len(test_cases) == 50, "Test_cases must not be empty"
 
         # Check parameters are within ranges
         for params in test_cases:
-            assert len(params) == 3
-            assert 0.0 <= params[0] <= 10.0
-            assert 0.0 <= params[1] <= 1.0
-            assert -5.0 <= params[2] <= 5.0
+            assert len(params) == 3, "Params must not be empty"
+            assert 0.0 <= params[0] <= 10.0, "0 is not valid"
+            assert 0.0 <= params[1] <= 1.0, "0 is not valid"
+            assert -5.0 <= params[2] <= 5.0, "0 is not valid"
 
     def test_parameter_generation_zero_tests(self):
         """Test generating zero test cases returns empty list."""
@@ -100,7 +100,7 @@ class TestChaoticNeuralNetwork:
         param_ranges = [(0.0, 10.0)]
         test_cases = cnn.generate_test_parameters(param_ranges, num_tests=0)
 
-        assert len(test_cases) == 0
+        assert len(test_cases) == 0, "Test_cases must not be empty"
         assert isinstance(test_cases, list)
 
 
@@ -138,10 +138,10 @@ class TestFractalAnalyzer:
 
         analysis = analyzer.analyze_code_tree(tree)
 
-        assert "depth" in analysis
-        assert "nodes" in analysis
-        assert "fractal_dimension" in analysis
-        assert analysis["nodes"] > 1
+        assert "depth" in analysis, "Condition must be true"
+        assert "nodes" in analysis, "Condition must be true"
+        assert "fractal_dimension" in analysis, "Condition must be true"
+        assert analysis["nodes"] > 1, "Value must be greater than zero"
 
 
 # =============================================================================
@@ -162,7 +162,7 @@ class TestFluidChannel:
 
         # Low flow / high viscosity = low Re (laminar)
         assert re < 2300, "Should be laminar flow"
-        assert not channel.is_turbulent()
+        assert not channel.is_turbulent(), "Condition must be true"
 
     def test_reynolds_number_turbulent(self):
         """Test Reynolds number calculation for turbulent flow."""
@@ -178,7 +178,7 @@ class TestFluidChannel:
 
         # High flow / low viscosity = high Re (turbulent)
         assert re > 2300, "Should be turbulent flow"
-        assert channel.is_turbulent()
+        assert channel.is_turbulent(), "Condition must be true"
 
     def test_flow_regime(self):
         """Test flow regime determination."""
@@ -186,11 +186,11 @@ class TestFluidChannel:
 
         # Test laminar
         regime = channel.flow_regime(velocity=0.1, viscosity=1.0)
-        assert regime == "laminar"
+        assert regime == "laminar", "regime is not valid"
 
         # Test turbulent
         regime = channel.flow_regime(velocity=100.0, viscosity=0.0001)
-        assert regime == "turbulent"
+        assert regime == "turbulent", "regime is not valid"
 
 
 class TestFluidFlowScheduler:
@@ -200,7 +200,7 @@ class TestFluidFlowScheduler:
         """Test scheduler initializes with channels."""
         scheduler = FluidFlowScheduler(num_channels=5)
 
-        assert len(scheduler.channels) == 5
+        assert len(scheduler.channels) == 5, "Collection must not be empty"
         assert all(isinstance(ch, FluidChannel) for ch in scheduler.channels.values())
 
     def test_flow_injection(self):
@@ -212,7 +212,7 @@ class TestFluidFlowScheduler:
         success = scheduler.inject_flow(channel_id, 50.0)
 
         assert success, "Should successfully inject flow"
-        assert scheduler.channels[channel_id].current_flow == 50.0
+        assert scheduler.channels[channel_id].current_flow == 50.0, "current_flow is not valid"
 
     def test_flow_injection_nonexistent_channel(self):
         """Test flow injection into non-existent channel."""
@@ -231,7 +231,7 @@ class TestFluidFlowScheduler:
 
         # Fill to near capacity
         success1 = scheduler.inject_flow(channel_id, 90.0)
-        assert success1
+        assert success1, "success1 is not valid"
 
         # Try to exceed capacity
         success2 = scheduler.inject_flow(channel_id, 20.0)
@@ -250,8 +250,8 @@ class TestEMFieldRouter:
         """Test EM field router initializes."""
         router = EMFieldRouter(grid_resolution=10)
 
-        assert router.grid_resolution == 10
-        assert len(router.charges) == 0
+        assert router.grid_resolution == 10, "grid_resolution is not valid"
+        assert len(router.charges) == 0, "Collection must not be empty"
 
     def test_charge_addition(self):
         """Test adding charges updates field."""
@@ -259,8 +259,8 @@ class TestEMFieldRouter:
 
         router.add_charge(np.array([0.5, 0.5]), charge=1.0)
 
-        assert len(router.charges) == 1
-        assert router.potential_field is not None
+        assert len(router.charges) == 1, "Collection must not be empty"
+        assert router.potential_field is not None, "potential_field must be initialized"
 
 
 # =============================================================================
@@ -275,7 +275,7 @@ class TestWavePropagator:
         """Test wave propagator initializes."""
         wave = WavePropagator(grid_size=30)
 
-        assert wave.grid_size == 30
+        assert wave.grid_size == 30, "grid_size is not valid"
         assert wave.field.shape == (30, 30)
 
     def test_source_addition(self):
@@ -284,7 +284,7 @@ class TestWavePropagator:
 
         wave.add_source(position=(15, 15), amplitude=1.0, frequency=1.0)
 
-        assert len(wave.sources) == 1
+        assert len(wave.sources) == 1, "Collection must not be empty"
 
 
 # =============================================================================
@@ -299,8 +299,8 @@ class TestRelativityScheduler:
         """Test scheduler initializes."""
         scheduler = RelativityScheduler(speed_of_light=100.0)
 
-        assert scheduler.c == 100.0
-        assert len(scheduler.agents) == 0
+        assert scheduler.c == 100.0, "c is not valid"
+        assert len(scheduler.agents) == 0, "Collection must not be empty"
 
     def test_agent_addition(self):
         """Test adding agents."""
@@ -312,8 +312,8 @@ class TestRelativityScheduler:
             velocity=np.array([10.0, 0.0]),
         )
 
-        assert "agent1" in scheduler.agents
-        assert scheduler.agents["agent1"]["clock_offset"] == 0.0
+        assert "agent1" in scheduler.agents, "Condition must be true"
+        assert scheduler.agents["agent1"]["clock_offset"] == 0.0, "Condition must be true"
 
     def test_lorentz_factor(self):
         """Test Lorentz factor calculation."""
@@ -340,12 +340,12 @@ class TestAdvancedPhysicsOrchestrator:
         """Test orchestrator initializes all components."""
         orchestrator = AdvancedPhysicsOrchestrator()
 
-        assert orchestrator.chaos is not None
-        assert orchestrator.fractal is not None
-        assert orchestrator.fluid is not None
-        assert orchestrator.em_field is not None
-        assert orchestrator.wave is not None
-        assert orchestrator.relativity is not None
+        assert orchestrator.chaos is not None, "chaos must be initialized"
+        assert orchestrator.fractal is not None, "fractal must be initialized"
+        assert orchestrator.fluid is not None, "fluid must be initialized"
+        assert orchestrator.em_field is not None, "em_field must be initialized"
+        assert orchestrator.wave is not None, "wave must be initialized"
+        assert orchestrator.relativity is not None, "relativity must be initialized"
 
     def test_status_reporting(self):
         """Test status reporting."""
@@ -353,12 +353,12 @@ class TestAdvancedPhysicsOrchestrator:
 
         status = orchestrator.get_status()
 
-        assert status["chaos"] == "active"
-        assert status["fractal"] == "active"
-        assert status["fluid"] == "active"
-        assert status["em_field"] == "active"
-        assert status["wave"] == "active"
-        assert status["relativity"] == "active"
+        assert status["chaos"] == "active", "Condition must be true"
+        assert status["fractal"] == "active", "Condition must be true"
+        assert status["fluid"] == "active", "Condition must be true"
+        assert status["em_field"] == "active", "Condition must be true"
+        assert status["wave"] == "active", "Condition must be true"
+        assert status["relativity"] == "active", "Condition must be true"
 
 
 if __name__ == "__main__":

@@ -31,12 +31,12 @@ def test_rng_capture_and_restore(tmp_path: Path) -> None:
 
     assert torch.allclose(torch.rand(3), baseline)
     assert np.allclose(np.random.rand(3), baseline_np)
-    assert random.random() == baseline_py
+    assert random.random() == baseline_py, "r is not valid"
 
     next_value = random.random()
     restored.restore()
-    assert random.random() == baseline_py
-    assert random.random() == next_value
+    assert random.random() == baseline_py, "r is not valid"
+    assert random.random() == next_value, "Value must be initialized"
 
 
 def test_set_seed_reproducible() -> None:

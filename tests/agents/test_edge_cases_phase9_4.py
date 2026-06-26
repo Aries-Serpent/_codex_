@@ -41,7 +41,7 @@ class TestEnergyLandscapeSinglePoint:
         state = EnergyState(configuration={"x": 0}, energy=0.5, entropy=0.1, temperature=1.0)
         landscape.add_state(state)
         result = landscape.minimize_free_energy()
-        assert result is state
+        assert result is state, "Result must not be empty"
 
     def test_single_state_select_returns_that_state(self) -> None:
         from agents.physics_orchestrator import EnergyLandscape, EnergyState
@@ -50,7 +50,7 @@ class TestEnergyLandscapeSinglePoint:
         state = EnergyState(configuration={"x": 0}, energy=0.5, entropy=0.1, temperature=1.0)
         landscape.add_state(state)
         selected = landscape.select_state()
-        assert selected is state
+        assert selected is state, "selected is not valid"
 
     def test_single_state_entropy_is_zero(self) -> None:
         from agents.physics_orchestrator import EnergyLandscape, EnergyState
@@ -69,13 +69,13 @@ class TestEnergyLandscapeSinglePoint:
         state = EnergyState(configuration={}, energy=1.0, entropy=0.0, temperature=2.0)
         landscape.add_state(state)
         landscape.cool_system(cooling_rate=0.5)
-        assert landscape.temperature == pytest.approx(1.0)
+        assert landscape.temperature == pytest.approx(1.0), "temperature is not valid"
 
     def test_empty_landscape_entropy_is_zero(self) -> None:
         from agents.physics_orchestrator import EnergyLandscape
 
         landscape = EnergyLandscape(temperature=1.0)
-        assert landscape.calculate_system_entropy() == 0.0
+        assert landscape.calculate_system_entropy() == 0.0, "l is not valid"
 
     def test_multi_state_entropy_positive(self) -> None:
         from agents.physics_orchestrator import EnergyLandscape, EnergyState
@@ -86,17 +86,17 @@ class TestEnergyLandscapeSinglePoint:
                 EnergyState(configuration={"e": e}, energy=e, entropy=0.0, temperature=1.0)
             )
         entropy = landscape.calculate_system_entropy()
-        assert entropy > 0.0
+        assert entropy > 0.0, "entropy must be greater than zero"
 
     def test_integrate_with_self_appraisal_returns_dict(self) -> None:
         from agents.physics_orchestrator import EnergyLandscape
 
         landscape = EnergyLandscape(temperature=1.0)
         result = landscape.integrate_with_self_appraisal(0.9, 0.8)
-        assert "free_energy" in result
-        assert "probability" in result
-        assert "system_entropy" in result
-        assert "recommendation" in result
+        assert "free_energy" in result, "Result must not be empty"
+        assert "probability" in result, "Result must not be empty"
+        assert "system_entropy" in result, "Result must not be empty"
+        assert "recommendation" in result, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -116,8 +116,8 @@ class TestSwarmIntelligenceSingleParticle:
             bounds=[(-1.0, 1.0)],
             max_iterations=3,
         )
-        assert "best_position" in result
-        assert "best_score" in result
+        assert "best_position" in result, "Result must not be empty"
+        assert "best_score" in result, "Result must not be empty"
 
     def test_coordinate_agents_moves_toward_target(self) -> None:
         from agents.physics_orchestrator import SwarmIntelligence
@@ -126,16 +126,16 @@ class TestSwarmIntelligenceSingleParticle:
         agents = [(0.0, 0.0), (2.0, 0.0)]
         target = (1.0, 1.0)
         new_positions = swarm.coordinate_agents(agents, target)
-        assert len(new_positions) == 2
+        assert len(new_positions) == 2, "New_positions must not be empty"
         # Each agent should have moved (position changed)
         for orig, new in zip(agents, new_positions):
-            assert new != orig
+            assert new != orig, "new is not valid"
 
     def test_num_agents_property_equals_num_particles(self) -> None:
         from agents.physics_orchestrator import SwarmIntelligence
 
         swarm = SwarmIntelligence(dimensions=2, num_particles=5)
-        assert swarm.num_agents == 5
+        assert swarm.num_agents == 5, "num_agents is not valid"
 
     def test_optimize_alias_works(self) -> None:
         from agents.physics_orchestrator import SwarmIntelligence
@@ -176,7 +176,7 @@ class TestSuperpositionExplorerSinglePath:
         path = self._make_path()
         explorer.add_path(path)
         selected, prob = explorer.measure_optimal_path()
-        assert selected is path
+        assert selected is path, "selected is not valid"
         assert prob == pytest.approx(1.0, abs=1e-9)
 
     def test_apply_interference_with_single_path_does_not_raise(self) -> None:
@@ -198,14 +198,14 @@ class TestSuperpositionExplorerSinglePath:
         explorer.apply_interference()
         # After interference, path is still recoverable
         selected, _ = explorer.measure_optimal_path()
-        assert selected is path
+        assert selected is path, "selected is not valid"
 
     def test_empty_explorer_no_superposition_state(self) -> None:
         from agents.physics_orchestrator import SuperpositionExplorer
 
         explorer = SuperpositionExplorer()
-        assert explorer.superposition_state is None
-        assert explorer.paths == []
+        assert explorer.superposition_state is None, "superposition_state is not valid"
+        assert explorer.paths == [], "paths is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -221,27 +221,27 @@ class TestQuantumStateNormalisation:
 
         qs = QuantumState(amplitudes={"a": complex(3.0, 0)})
         prob = qs.probability("a")
-        assert prob == pytest.approx(1.0)
+        assert prob == pytest.approx(1.0), "prob is not valid"
 
     def test_multiple_equal_amplitudes_normalised(self) -> None:
         from agents.physics_orchestrator import QuantumState
 
         qs = QuantumState(amplitudes={"a": complex(1, 0), "b": complex(1, 0)})
-        assert qs.probability("a") == pytest.approx(0.5)
-        assert qs.probability("b") == pytest.approx(0.5)
+        assert qs.probability("a") == pytest.approx(0.5), "Condition must be true"
+        assert qs.probability("b") == pytest.approx(0.5), "Condition must be true"
 
     def test_unknown_state_probability_is_zero(self) -> None:
         from agents.physics_orchestrator import QuantumState
 
         qs = QuantumState(amplitudes={"a": complex(1, 0)})
-        assert qs.probability("nonexistent") == 0.0
+        assert qs.probability("nonexistent") == 0.0, "Condition must be true"
 
     def test_collapse_returns_highest_prob_state(self) -> None:
         from agents.physics_orchestrator import QuantumState
 
         qs = QuantumState(amplitudes={"high": complex(3, 0), "low": complex(1, 0)})
         collapsed = qs.collapse()
-        assert collapsed == "high"
+        assert collapsed == "high", "collapsed is not valid"
 
     def test_apply_phase_does_not_change_probability(self) -> None:
         from agents.physics_orchestrator import QuantumState
@@ -275,7 +275,7 @@ class TestMentalMappingEdgeCases:
 
         model = MentalMappingModel()
         result = model.iterative_review()
-        assert result == []
+        assert result == [], "Result must not be empty"
 
     def test_empty_map_calculate_metrics_returns_dict(self) -> None:
         from agents.mental_mapping import MentalMappingModel
@@ -289,14 +289,14 @@ class TestMentalMappingEdgeCases:
 
         model = MentalMappingModel()
         node = model.create_node(NodeType.CONCEPT, content="low-conf", confidence=0.0)
-        assert node.needs_review is True
+        assert node.needs_review is True, "needs_review is not valid"
 
     def test_node_with_max_confidence_not_marked_for_review(self) -> None:
         from agents.mental_mapping import MentalMappingModel, NodeType
 
         model = MentalMappingModel()
         node = model.create_node(NodeType.CONCEPT, content="high-conf", confidence=1.0)
-        assert node.needs_review is False
+        assert node.needs_review is False, "needs_review is not valid"
 
     def test_connect_node_to_itself(self) -> None:
         from agents.mental_mapping import EdgeType, MentalMappingModel, NodeType
@@ -305,16 +305,16 @@ class TestMentalMappingEdgeCases:
         node = model.create_node(NodeType.CONCEPT, content="self-ref", confidence=1.0)
         # Self-connect should not raise (both nodes exist)
         edge = model.connect_nodes(node.node_id, node.node_id, edge_type=EdgeType.CAUSES)
-        assert edge is not None
-        assert edge.source_id == node.node_id
-        assert edge.target_id == node.node_id
+        assert edge is not None, "edge must be initialized"
+        assert edge.source_id == node.node_id, "source_id is not valid"
+        assert edge.target_id == node.node_id, "target_id is not valid"
 
     def test_get_reasoning_chain_on_empty_node(self) -> None:
         from agents.mental_mapping import MentalMappingModel, NodeType
 
         model = MentalMappingModel()
         node = model.create_node(NodeType.CONCEPT, content="no reasoning", confidence=1.0)
-        assert node.reasoning_chain == []
+        assert node.reasoning_chain == [], "reasoning_chain is not valid"
 
     def test_add_reasoning_step_to_node(self) -> None:
         from agents.mental_mapping import MentalMappingModel, NodeType
@@ -326,8 +326,8 @@ class TestMentalMappingEdgeCases:
             reasoning_type="deductive",
             confidence=0.9,
         )
-        assert step is not None
-        assert len(node.reasoning_chain) == 1
+        assert step is not None, "step must be initialized"
+        assert len(node.reasoning_chain) == 1, "Collection must not be empty"
 
     def test_node_mark_for_review_and_review(self) -> None:
         from agents.mental_mapping import MentalMappingModel, NodeType
@@ -335,24 +335,24 @@ class TestMentalMappingEdgeCases:
         model = MentalMappingModel()
         node = model.create_node(NodeType.CONCEPT, content="review me", confidence=1.0)
         node.mark_for_review("test_reason")
-        assert node.needs_review is True
+        assert node.needs_review is True, "needs_review is not valid"
         node.review(0.9, notes="looks good")
-        assert node.needs_review is False
-        assert node.quality_score == pytest.approx(0.9)
+        assert node.needs_review is False, "needs_review is not valid"
+        assert node.quality_score == pytest.approx(0.9), "quality_score is not valid"
 
     def test_bfs_on_empty_map_returns_empty(self) -> None:
         from agents.mental_mapping import MentalMappingModel
 
         model = MentalMappingModel()
         result = model.bfs()
-        assert result == []
+        assert result == [], "Result must not be empty"
 
     def test_dfs_on_empty_map_returns_empty(self) -> None:
         from agents.mental_mapping import MentalMappingModel
 
         model = MentalMappingModel()
         result = model.dfs()
-        assert result == []
+        assert result == [], "Result must not be empty"
 
     def test_get_connected_nodes_empty_map_returns_empty(self) -> None:
         from agents.mental_mapping import MentalMappingModel, NodeType
@@ -360,7 +360,7 @@ class TestMentalMappingEdgeCases:
         model = MentalMappingModel()
         node = model.create_node(NodeType.CONCEPT, content="isolated", confidence=1.0)
         connected = model.get_connected_nodes(node.node_id)
-        assert connected == []
+        assert connected == [], "connected is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -386,7 +386,7 @@ class TestQuantumInspiredGameEngineSingleStrategy:
             payoff_blue=payoff,
             payoff_red=payoff,
         )
-        assert engine is not None
+        assert engine is not None, "engine must be initialized"
 
     def test_single_strategy_payoffs_accessible(self) -> None:
         import agents.quantum_game_theory as qgt_module
@@ -481,7 +481,7 @@ class TestWorkflowNavigatorEdgeCases:
         nonexistent = tmp_path / "no_such_dir"
         # Should not raise on construction
         nav = WorkflowNavigator(workspace_dir=nonexistent)
-        assert nav is not None
+        assert nav is not None, "nav must be initialized"
 
     def test_step_with_both_command_and_uses_executes_command(self, tmp_path: Path) -> None:
         from agents.workflow_navigator import WorkflowStep
@@ -490,7 +490,7 @@ class TestWorkflowNavigatorEdgeCases:
         step = WorkflowStep(id="both", action="both", command="echo hello", uses="some.module")
         result = step.execute({"working_dir": str(tmp_path)})
         # command wins: should succeed
-        assert result["success"] is True
+        assert result["success"] is True, "Result must not be empty"
 
     def test_workflow_with_zero_steps(self, tmp_path: Path) -> None:
         from agents.workflow_navigator import Workflow, WorkflowFrequency, WorkflowNavigator
@@ -505,14 +505,14 @@ class TestWorkflowNavigatorEdgeCases:
         )
         nav.register_workflow(wf)
         retrieved = nav.get_workflow("EMPTY_WF")
-        assert retrieved is not None
-        assert len(retrieved.steps) == 0
+        assert retrieved is not None, "retrieved must be initialized"
+        assert len(retrieved.steps) == 0, "Collection must not be empty"
 
     def test_workflow_step_status_starts_pending(self) -> None:
         from agents.workflow_navigator import StepStatus, WorkflowStep
 
         step = WorkflowStep(id="s", action="a")
-        assert step.status == StepStatus.PENDING
+        assert step.status == StepStatus.PENDING, "status is not valid"
 
     def test_list_workflows_returns_registered(self, tmp_path: Path) -> None:
         from agents.workflow_navigator import WorkflowNavigator
@@ -549,9 +549,9 @@ class TestSimpleDictMemoryEdgeCases:
         mem.store("key", "first")
         mem.store("key", "second")
         result = mem.get_history("key", limit=1)
-        assert len(result) == 1
+        assert len(result) == 1, "Result must not be empty"
         _, val = result[0]
-        assert val == "second"
+        assert val == "second", "val is not valid"
 
     def test_search_empty_query_matches_all(self) -> None:
         mem = self._make_memory()
@@ -559,21 +559,21 @@ class TestSimpleDictMemoryEdgeCases:
         mem.store("b", 2, metadata={"type": "y"})
         # Empty query: all entries match (all metadata pass trivially)
         results = mem.search({})
-        assert len(results) == 2
+        assert len(results) == 2, "Results must not be empty"
 
     def test_search_with_no_metadata_match_returns_empty(self) -> None:
         mem = self._make_memory()
         mem.store("a", 1)  # no metadata
         results = mem.search({"tag": "missing"})
-        assert results == []
+        assert results == [], "Result must not be empty"
 
     def test_store_overwrite_keeps_history(self) -> None:
         mem = self._make_memory()
         mem.store("k", "v1")
         mem.store("k", "v2")
-        assert mem.retrieve("k") == "v2"
+        assert mem.retrieve("k") == "v2", "Condition must be true"
         history = mem.get_history("k")
-        assert len(history) == 2
+        assert len(history) == 2, "History must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -596,9 +596,9 @@ class TestLegacyAgentAdapterEdgeCases:
         orientation = adapter.orient(observation)
         decision = adapter.decide(orientation)
         result = adapter.act(decision)
-        assert result.success is False
-        assert len(result.errors) > 0
-        assert "legacy failure" in result.errors[0]
+        assert result.success is False, "Result must not be empty"
+        assert len(result.errors) > 0, "Collection must not be empty"
+        assert "legacy failure" in result.errors[0], "Result must not be empty"
 
     def test_adapter_with_working_legacy_agent_returns_success(self) -> None:
         from agents.cognitive_adapter import LegacyAgentAdapter
@@ -612,8 +612,8 @@ class TestLegacyAgentAdapterEdgeCases:
         orientation = adapter.orient(observation)
         decision = adapter.decide(orientation)
         result = adapter.act(decision)
-        assert result.success is True
-        assert result.output == {"processed": True}
+        assert result.success is True, "Result must not be empty"
+        assert result.output == {"processed": True}, "Result must not be empty"
 
     def test_adapter_with_execute_method_fallback(self) -> None:
         from agents.cognitive_adapter import LegacyAgentAdapter
@@ -627,8 +627,8 @@ class TestLegacyAgentAdapterEdgeCases:
         orientation = adapter.orient(observation)
         decision = adapter.decide(orientation)
         result = adapter.act(decision)
-        assert result.success is True
-        assert result.output == "executed"
+        assert result.success is True, "Result must not be empty"
+        assert result.output == "executed", "Result must not be empty"
 
     def test_adapter_callable_fallback(self) -> None:
         from agents.cognitive_adapter import LegacyAgentAdapter
@@ -642,7 +642,7 @@ class TestLegacyAgentAdapterEdgeCases:
         orientation = adapter.orient(observation)
         decision = adapter.decide(orientation)
         result = adapter.act(decision)
-        assert result.success is True
+        assert result.success is True, "Result must not be empty"
 
     def test_wrap_legacy_agent_returns_planner(self) -> None:
         from agents.cognitive_adapter import wrap_legacy_agent
@@ -652,4 +652,4 @@ class TestLegacyAgentAdapterEdgeCases:
                 return data
 
         planner = wrap_legacy_agent(SimpleAgent())
-        assert planner is not None
+        assert planner is not None, "planner must be initialized"

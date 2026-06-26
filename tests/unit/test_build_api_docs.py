@@ -34,10 +34,10 @@ class TestFilterModules:
         modules = ["test_package", "test_package.submodule", "nonexistent_module"]
         available, missing = build_api_docs.filter_modules(modules)
 
-        assert "test_package" in available
-        assert "test_package.submodule" in available
-        assert "nonexistent_module" not in available
-        assert "nonexistent_module" in missing
+        assert "test_package" in available, "Condition must be true"
+        assert "test_package.submodule" in available, "Condition must be true"
+        assert "nonexistent_module" not in available, "Condition must be true"
+        assert "nonexistent_module" in missing, "Condition must be true"
 
     def test_filter_modules_handles_import_errors(self, caplog):
         """Test that filter_modules gracefully handles import errors."""
@@ -46,9 +46,9 @@ class TestFilterModules:
         with caplog.at_level("WARNING"):
             available, missing = build_api_docs.filter_modules(modules)
 
-        assert len(available) == 0
-        assert len(missing) == 1
-        assert "Skipping" in caplog.text
+        assert len(available) == 0, "Available must not be empty"
+        assert len(missing) == 1, "Missing must not be empty"
+        assert "Skipping" in caplog.text, "Condition must be true"
 
     def test_filter_modules_rejects_missing_submodules(self, tmp_path, monkeypatch):
         """Test Priority 1 regression: submodules without dependencies are not
@@ -72,19 +72,19 @@ class TestFilterModules:
         available, missing = build_api_docs.filter_modules(modules)
 
         # Only the base package should be available
-        assert "fake_codex_ml" in available
+        assert "fake_codex_ml" in available, "Condition must be true"
         # Submodules should NOT be marked as available
-        assert "fake_codex_ml.peft" not in available
-        assert "fake_codex_ml.distributed" not in available
+        assert "fake_codex_ml.peft" not in available, "Condition must be true"
+        assert "fake_codex_ml.distributed" not in available, "Condition must be true"
         # Missing submodules should be tracked
-        assert "fake_codex_ml.peft" in missing
-        assert "fake_codex_ml.distributed" in missing
+        assert "fake_codex_ml.peft" in missing, "Condition must be true"
+        assert "fake_codex_ml.distributed" in missing, "Condition must be true"
 
     def test_filter_modules_empty_input(self):
         """Test filter_modules with empty input."""
         available, missing = build_api_docs.filter_modules([])
-        assert available == []
-        assert missing == []
+        assert available == [], "available is not valid"
+        assert missing == [], "missing is not valid"
 
 
 class TestModuleListBuilding:
@@ -108,11 +108,11 @@ class TestModuleListBuilding:
             build_api_docs.main()
 
         # Should include both core and optional modules
-        assert "codex.cli" in called_with["modules"]
-        assert "codex.logging" in called_with["modules"]
-        assert "codex_ml" in called_with["modules"]
-        assert "codex_ml.peft" in called_with["modules"]
-        assert "codex_ml.distributed" in called_with["modules"]
+        assert "codex.cli" in called_with["modules"], "Condition must be true"
+        assert "codex.logging" in called_with["modules"], "Condition must be true"
+        assert "codex_ml" in called_with["modules"], "Condition must be true"
+        assert "codex_ml.peft" in called_with["modules"], "Condition must be true"
+        assert "codex_ml.distributed" in called_with["modules"], "Condition must be true"
 
     def test_main_excludes_optional_when_skipped(self, monkeypatch):
         """Test that optional modules are excluded with --skip-optional."""
@@ -131,11 +131,11 @@ class TestModuleListBuilding:
             build_api_docs.main()
 
         # Should include only core modules
-        assert "codex.cli" in called_with["modules"]
-        assert "codex.logging" in called_with["modules"]
-        assert "codex_ml" not in called_with["modules"]
-        assert "codex_ml.peft" not in called_with["modules"]
-        assert "codex_ml.distributed" not in called_with["modules"]
+        assert "codex.cli" in called_with["modules"], "Condition must be true"
+        assert "codex.logging" in called_with["modules"], "Condition must be true"
+        assert "codex_ml" not in called_with["modules"], "Condition must be true"
+        assert "codex_ml.peft" not in called_with["modules"], "Condition must be true"
+        assert "codex_ml.distributed" not in called_with["modules"], "Condition must be true"
 
     def test_main_respects_env_var(self, monkeypatch):
         """Test that CODEX_SKIP_OPTIONAL_IMPORTS environment variable works."""
@@ -154,7 +154,7 @@ class TestModuleListBuilding:
             build_api_docs.main()
 
         # Should exclude optional modules due to env var
-        assert "codex_ml" not in called_with["modules"]
+        assert "codex_ml" not in called_with["modules"], "Condition must be true"
 
     def test_main_exits_when_no_modules_available(self, monkeypatch):
         """Test that main exits with code 2 when no modules are importable."""
@@ -165,7 +165,7 @@ class TestModuleListBuilding:
             with pytest.raises(SystemExit) as exc_info:
                 build_api_docs.main()
 
-            assert exc_info.value.code == 2
+            assert exc_info.value.code == 2, "Value must be initialized"
 
 
 class TestFailOnMissing:
@@ -185,7 +185,7 @@ class TestFailOnMissing:
             with pytest.raises(SystemExit) as exc_info:
                 build_api_docs.main()
 
-            assert exc_info.value.code == 3
+            assert exc_info.value.code == 3, "Value must be initialized"
 
     def test_fail_on_missing_succeeds_when_all_available(self, monkeypatch):
         """Test that --fail-on-missing succeeds when all modules are available."""
@@ -230,7 +230,7 @@ class TestLogging:
                 build_api_docs.main()
 
         # Logger should be set to DEBUG level
-        assert build_api_docs.logger.level <= 10  # DEBUG is 10
+        assert build_api_docs.logger.level <= 10, "level is not valid"
 
     def test_final_module_list_is_logged(self, monkeypatch, caplog):
         """Test that final module list is logged for visibility."""
@@ -246,6 +246,6 @@ class TestLogging:
             build_api_docs.main()
 
         # Should log the final module list
-        assert "Final module list to document" in caplog.text
-        assert "codex.cli" in caplog.text
-        assert "codex_ml" in caplog.text
+        assert "Final module list to document" in caplog.text, "Condition must be true"
+        assert "codex.cli" in caplog.text, "Condition must be true"
+        assert "codex_ml" in caplog.text, "Condition must be true"

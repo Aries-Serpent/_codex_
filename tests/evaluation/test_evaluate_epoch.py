@@ -35,8 +35,8 @@ def test_evaluate_basic():
     targets = torch.randint(0, 3, (8,))
     data = list(zip(inputs, targets))
     summary = evaluate_epoch(model, data, criterion, device="cpu")
-    assert "loss" in summary and "count" in summary
-    assert summary["count"] == 8
+    assert "loss" in summary and "count" in summary, "Count must be greater than zero"
+    assert summary["count"] == 8, "Count must be greater than zero"
 
 
 def test_evaluate_max_batches():
@@ -46,7 +46,7 @@ def test_evaluate_max_batches():
     targets = torch.randint(0, 3, (10,))
     data = list(zip(inputs, targets))
     summary = evaluate_epoch(model, data, criterion, device="cpu", max_batches=2)
-    assert summary["batches"] == 2
+    assert summary["batches"] == 2, "Condition must be true"
 
 
 def test_evaluate_metrics():
@@ -60,7 +60,7 @@ def test_evaluate_metrics():
         return (preds.argmax(dim=-1) == t).float().mean()
 
     summary = evaluate_epoch(model, data, criterion, metrics={"acc": accuracy})
-    assert "acc" in summary["metrics"]
+    assert "acc" in summary["metrics"], "Condition must be true"
 
 
 def test_evaluate_metrics_with_partial():
@@ -80,7 +80,7 @@ def test_evaluate_metrics_with_partial():
 
     # Should not raise AttributeError
     summary = evaluate_epoch(model, data, criterion, metrics={"top1": top1_acc})
-    assert "top1" in summary["metrics"]
+    assert "top1" in summary["metrics"], "Condition must be true"
 
 
 def test_evaluate_metrics_with_callable_class():
@@ -99,7 +99,7 @@ def test_evaluate_metrics_with_callable_class():
 
     # Should not raise AttributeError
     summary = evaluate_epoch(model, data, criterion, metrics={"acc": acc_metric})
-    assert "acc" in summary["metrics"]
+    assert "acc" in summary["metrics"], "Condition must be true"
 
 
 def test_evaluate_invalid_batch():

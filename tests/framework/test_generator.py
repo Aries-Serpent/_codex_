@@ -120,7 +120,7 @@ class Test{self.spec.class_name}_{self.spec.method_name}:
         result = orchestrator.{self.spec.method_name}({inputs_str})
 
         # Assert
-        assert result is not None
+        assert result is not None, "result must be initialized"
         # TODO: Add specific assertions for outputs
 
 '''

@@ -23,10 +23,10 @@ def test_round_trip():
     text = "hello world"
     ids = tok.encode(text)
     decoded = tok.decode(ids)
-    assert "hello" in decoded.lower()
+    assert "hello" in decoded.lower(), "Condition must be true"
 
     # Backward compatibility: both legacy and new properties are validated.
     # - pad_id/eos_id are integer aliases (legacy)
     # - pad_token_id may be None depending on tokenizer (newer property)
-    assert tok.pad_id >= 0 and tok.eos_id >= 0
-    assert tok.pad_token_id is None or tok.pad_token_id >= 0
+    assert tok.pad_id >= 0 and tok.eos_id >= 0, "pad_id must be greater than zero"
+    assert tok.pad_token_id is None or tok.pad_token_id >= 0, "pad_token_id must be greater than zero"

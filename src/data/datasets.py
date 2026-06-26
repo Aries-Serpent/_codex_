@@ -134,7 +134,7 @@ class TextClassificationDataset(BaseDataset):
                         self.samples.append((text, int(label)))
                     except (IOError, OSError) as exc:
                         error_type = type(exc).__name__
-                        logger.debug(f"Exception: <ERROR_TYPE>")
+                        logger.debug("Exception: <ERROR_TYPE>")
                         append_error(
                             "3.5",
                             "dataset parse",
@@ -143,7 +143,7 @@ class TextClassificationDataset(BaseDataset):
                         )
         except (IOError, OSError) as exc:
             error_type = type(exc).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             append_error("3.5", "dataset load", str(exc), str(self.file_path))
             raise
         if not self.samples:
@@ -175,7 +175,7 @@ def _collate_text_batch(
         )
     except (ValueError, TypeError, RuntimeError) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         append_error("3.5", "tokenize batch", str(exc), f"texts={len(texts)}")
         raise
     input_ids = encodings.get("input_ids")

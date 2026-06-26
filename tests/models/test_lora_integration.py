@@ -35,6 +35,6 @@ def test_lora_integration_applies_and_marks_trainable(monkeypatch):
 
     cfg = {"vocab_size": 10, "lora": {"enabled": True}}
     model = get_model("MiniLM", cfg)
-    assert calls["cfg"]["enabled"] is True
+    assert calls["cfg"]["enabled"] is True, "Condition must be true"
     trainable = [n for n, p in model.named_parameters() if p.requires_grad]
     assert trainable == ["lora.weight", "lora.bias"]

@@ -39,14 +39,14 @@ def test_apply_sla_stub_logs_metadata(tmp_path: Path) -> None:
         },
         dry_run=True,
     )
-    assert summary["processed"] == 1
+    assert summary["processed"] == 1, "Condition must be true"
     evidence_path = tmp_path / "d365_slas.jsonl"
     record = _last_record(evidence_path)
-    assert record["meta"]["commit"]
-    assert record["meta"]["python"]
-    assert record["meta"]["os"]
-    assert record["resource"] == "sla"
-    assert record["action"] == "Create"
+    assert record["meta"]["commit"], "rec is not valid"
+    assert record["meta"]["python"], "rec is not valid"
+    assert record["meta"]["os"], "rec is not valid"
+    assert record["resource"] == "sla", "rec is not valid"
+    assert record["action"] == "Create", "rec is not valid"
 
 
 def test_apply_routing_stub_logs_non_dry_run(tmp_path: Path) -> None:
@@ -63,9 +63,9 @@ def test_apply_routing_stub_logs_non_dry_run(tmp_path: Path) -> None:
         },
         dry_run=False,
     )
-    assert summary["dry_run"] is False
+    assert summary["dry_run"] is False, "Condition must be true"
     evidence_path = tmp_path / "d365_routing.jsonl"
     record = _last_record(evidence_path)
-    assert record["dry_run"] is False
-    assert record["action"] == "Update"
-    assert record["meta"]["commit"]
+    assert record["dry_run"] is False, "rec is not valid"
+    assert record["action"] == "Update", "rec is not valid"
+    assert record["meta"]["commit"], "rec is not valid"

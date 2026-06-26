@@ -38,46 +38,46 @@ class TestParseWhen:
     def test_parse_zulu_timestamp(self, parse_when):
         """Test parsing Zulu (Z) timestamp."""
         result = parse_when("2025-08-19T12:34:56Z")
-        assert result.year == 2025
-        assert result.month == 8
-        assert result.day == 19
-        assert result.hour == 12
-        assert result.minute == 34
-        assert result.second == 56
+        assert result.year == 2025, "Result must not be empty"
+        assert result.month == 8, "Result must not be empty"
+        assert result.day == 19, "Result must not be empty"
+        assert result.hour == 12, "Result must not be empty"
+        assert result.minute == 34, "Result must not be empty"
+        assert result.second == 56, "Result must not be empty"
         # Zulu should produce aware datetime
-        assert result.tzinfo is not None
+        assert result.tzinfo is not None, "tzinfo must be initialized"
 
     def test_parse_offset_aware_timestamp(self, parse_when):
         """Test parsing offset-aware timestamp."""
         result = parse_when("2025-08-19T12:34:56+00:00")
-        assert result.year == 2025
-        assert result.tzinfo is not None
+        assert result.year == 2025, "Result must not be empty"
+        assert result.tzinfo is not None, "tzinfo must be initialized"
 
     def test_parse_negative_offset_timestamp(self, parse_when):
         """Test parsing negative offset timestamp."""
         result = parse_when("2025-08-19T07:34:56-05:00")
-        assert result.year == 2025
-        assert result.hour == 7
-        assert result.tzinfo is not None
+        assert result.year == 2025, "Result must not be empty"
+        assert result.hour == 7, "Result must not be empty"
+        assert result.tzinfo is not None, "tzinfo must be initialized"
 
     def test_parse_naive_timestamp(self, parse_when):
         """Test parsing naive (no timezone) timestamp."""
         result = parse_when("2025-08-19T12:34:56")
-        assert result.year == 2025
+        assert result.year == 2025, "Result must not be empty"
         # Naive input returns naive datetime
-        assert result.tzinfo is None
+        assert result.tzinfo is None, "Result must not be empty"
 
     def test_parse_date_only(self, parse_when):
         """Test parsing date-only string."""
         result = parse_when("2025-08-19")
-        assert result.year == 2025
-        assert result.month == 8
-        assert result.day == 19
+        assert result.year == 2025, "Result must not be empty"
+        assert result.month == 8, "Result must not be empty"
+        assert result.day == 19, "Result must not be empty"
 
     def test_parse_with_whitespace(self, parse_when):
         """Test parsing timestamp with leading/trailing whitespace."""
         result = parse_when("  2025-08-19T12:34:56Z  ")
-        assert result.year == 2025
+        assert result.year == 2025, "Result must not be empty"
 
     def test_parse_non_string_raises_type_error(self, parse_when):
         """Test that non-string input raises TypeError."""
@@ -125,10 +125,10 @@ class TestBuildQuery:
             limit=None,
             offset=None,
         )
-        assert "SELECT" in sql
-        assert "FROM session_events" in sql
-        assert "ORDER BY ts ASC" in sql
-        assert params == []
+        assert "SELECT" in sql, "Condition must be true"
+        assert "FROM session_events" in sql, "Condition must be true"
+        assert "ORDER BY ts ASC" in sql, "Condition must be true"
+        assert params == [], "params is not valid"
 
     def test_build_query_with_session_filter(self, build_query, base_mapcol):
         """Test query with session_id filter."""
@@ -143,9 +143,9 @@ class TestBuildQuery:
             limit=None,
             offset=None,
         )
-        assert "WHERE" in sql
-        assert "session_id = ?" in sql
-        assert "test-session" in params
+        assert "WHERE" in sql, "Condition must be true"
+        assert "session_id = ?" in sql, "Condition must be true"
+        assert "test-session" in params, "Condition must be true"
 
     def test_build_query_with_role_filter(self, build_query, base_mapcol):
         """Test query with role filter."""
@@ -160,8 +160,8 @@ class TestBuildQuery:
             limit=None,
             offset=None,
         )
-        assert "role = ?" in sql
-        assert "user" in params
+        assert "role = ?" in sql, "Condition must be true"
+        assert "user" in params, "Condition must be true"
 
     def test_build_query_with_after_filter(self, build_query, base_mapcol):
         """Test query with after timestamp filter."""
@@ -176,8 +176,8 @@ class TestBuildQuery:
             limit=None,
             offset=None,
         )
-        assert "ts >= ?" in sql
-        assert "2025-01-01" in params
+        assert "ts >= ?" in sql, "ts must be greater than zero"
+        assert "2025-01-01" in params, "Condition must be true"
 
     def test_build_query_with_before_filter(self, build_query, base_mapcol):
         """Test query with before timestamp filter."""
@@ -192,8 +192,8 @@ class TestBuildQuery:
             limit=None,
             offset=None,
         )
-        assert "ts <= ?" in sql
-        assert "2025-12-31" in params
+        assert "ts <= ?" in sql, "ts is not valid"
+        assert "2025-12-31" in params, "Condition must be true"
 
     def test_build_query_with_limit(self, build_query, base_mapcol):
         """Test query with limit."""
@@ -208,8 +208,8 @@ class TestBuildQuery:
             limit=100,
             offset=None,
         )
-        assert "LIMIT ?" in sql
-        assert 100 in params
+        assert "LIMIT ?" in sql, "Condition must be true"
+        assert 100 in params, "Condition must be true"
 
     def test_build_query_with_offset(self, build_query, base_mapcol):
         """Test query with offset."""
@@ -224,8 +224,8 @@ class TestBuildQuery:
             limit=100,
             offset=50,
         )
-        assert "OFFSET ?" in sql
-        assert 50 in params
+        assert "OFFSET ?" in sql, "Condition must be true"
+        assert 50 in params, "Condition must be true"
 
     def test_build_query_desc_order(self, build_query, base_mapcol):
         """Test query with descending order."""
@@ -240,7 +240,7 @@ class TestBuildQuery:
             limit=None,
             offset=None,
         )
-        assert "ORDER BY ts DESC" in sql
+        assert "ORDER BY ts DESC" in sql, "Condition must be true"
 
     def test_build_query_invalid_order_defaults_to_asc(self, build_query, base_mapcol):
         """Test that invalid order defaults to ASC."""
@@ -255,7 +255,7 @@ class TestBuildQuery:
             limit=None,
             offset=None,
         )
-        assert "ORDER BY ts ASC" in sql
+        assert "ORDER BY ts ASC" in sql, "Condition must be true"
 
     def test_build_query_missing_required_columns_raises(self, build_query):
         """Test that missing required columns raises ValueError."""
@@ -290,15 +290,15 @@ class TestBuildQuery:
             limit=50,
             offset=10,
         )
-        assert "WHERE" in sql
-        assert "session_id = ?" in sql
-        assert "role = ?" in sql
-        assert "ts >= ?" in sql
-        assert "ts <= ?" in sql
-        assert "ORDER BY ts DESC" in sql
-        assert "LIMIT ?" in sql
-        assert "OFFSET ?" in sql
-        assert len(params) == 6
+        assert "WHERE" in sql, "Condition must be true"
+        assert "session_id = ?" in sql, "Condition must be true"
+        assert "role = ?" in sql, "Condition must be true"
+        assert "ts >= ?" in sql, "ts must be greater than zero"
+        assert "ts <= ?" in sql, "ts is not valid"
+        assert "ORDER BY ts DESC" in sql, "Condition must be true"
+        assert "LIMIT ?" in sql, "Condition must be true"
+        assert "OFFSET ?" in sql, "Condition must be true"
+        assert len(params) == 6, "Params must not be empty"
 
 
 class TestFormatText:
@@ -361,15 +361,15 @@ class TestFormatText:
     def test_format_text_basic(self, format_text, mock_rows, base_mapcol):
         """Test basic text formatting."""
         result = format_text(mock_rows, base_mapcol, show_meta=False)
-        assert "2025-01-01T10:00:00" in result
-        assert "(user)" in result
-        assert "Hello" in result
-        assert "[S1]" in result
+        assert "2025-01-01T10:00:00" in result, "Result must not be empty"
+        assert "(user)" in result, "Result must not be empty"
+        assert "Hello" in result, "Result must not be empty"
+        assert "[S1]" in result, "Result must not be empty"
 
     def test_format_text_with_metadata(self, format_text, mock_rows, base_mapcol):
         """Test text formatting with metadata shown."""
         result = format_text(mock_rows, base_mapcol, show_meta=True)
-        assert '{"key": "value"}' in result
+        assert '{"key": "value"}' in result, "Result must not be empty"
 
     def test_format_text_missing_columns_raises(self, format_text, mock_rows):
         """Test that missing required columns raises ValueError."""
@@ -384,7 +384,7 @@ class TestFormatText:
     def test_format_text_empty_rows(self, format_text, base_mapcol):
         """Test formatting empty row list."""
         result = format_text([], base_mapcol, show_meta=False)
-        assert result == ""
+        assert result == "", "Result must not be empty"
 
 
 class TestLogQueryEngine:
@@ -399,7 +399,7 @@ class TestLogQueryEngine:
 
     def test_engine_instantiation(self, engine):
         """Test that engine can be instantiated."""
-        assert engine is not None
+        assert engine is not None, "engine must be initialized"
 
     @patch("codex.logging.db_manager.db_manager")
     def test_search_basic(self, mock_db_manager, engine):
@@ -433,11 +433,11 @@ class TestLogQueryEngine:
 
         # Check that role was passed in the query
         call_args = mock_conn.execute.call_args
-        assert call_args is not None
+        assert call_args is not None, "call_args must be initialized"
         sql = call_args[0][0]
         params = call_args[0][1]
-        assert "role = ?" in sql
-        assert "user" in params
+        assert "role = ?" in sql, "Condition must be true"
+        assert "user" in params, "Condition must be true"
 
 
 class TestResolvDbPath:
@@ -455,12 +455,12 @@ class TestResolvDbPath:
         db_file = tmp_path / "test.db"
         db_file.touch()
         result = resolve_db_path(str(db_file))
-        assert "test.db" in result
+        assert "test.db" in result, "Result must not be empty"
 
     def test_resolve_nonexistent_path(self, resolve_db_path, tmp_path):
         """Test resolving a non-existent path."""
         result = resolve_db_path(str(tmp_path / "nonexistent.db"))
-        assert "nonexistent" in result
+        assert "nonexistent" in result, "Result must not be empty"
 
 
 class TestMain:
@@ -477,7 +477,7 @@ class TestMain:
             main(["--help"])
 
         # --help exits with code 0
-        assert exc_info.value.code == 0
+        assert exc_info.value.code == 0, "Value must be initialized"
 
     def test_main_exits_on_missing_db(self):
         """Test that main exits when database doesn't exist."""
@@ -485,4 +485,4 @@ class TestMain:
 
         # Should exit with error when db doesn't exist
         result = main(["--db", "/nonexistent/path/to/db.sqlite"])
-        assert result != 0 or result is None  # Allow None for early exit
+        assert result != 0 or result is None, "Result must not be empty"

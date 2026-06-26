@@ -30,6 +30,6 @@ def test_probe_json_with_hydra_missing() -> None:
     )
     assert proc.returncode == 0, proc.stderr
     payload = json.loads(proc.stdout)
-    assert payload.get("component") == "codex-train"
+    assert payload.get("component") == "codex-train", "Condition must be true"
     assert payload.get("ok") in {True, False}
-    assert "Traceback" not in (proc.stderr or "")
+    assert "Traceback" not in (proc.stderr or ""), "Condition must be true"

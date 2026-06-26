@@ -20,15 +20,15 @@ class TestWritePythonShim:
         with tempfile.TemporaryDirectory() as tmpdir:
             duplicate = Path(tmpdir) / "shim.py"
             write_python_shim(duplicate, "src.canonical.module")
-            assert duplicate.exists()
+            assert duplicate.exists(), "Condition must be true"
 
     def test_write_python_shim_creates_parent_dirs(self):
         """Test that write_python_shim creates parent directories."""
         with tempfile.TemporaryDirectory() as tmpdir:
             duplicate = Path(tmpdir) / "a" / "b" / "c" / "shim.py"
             write_python_shim(duplicate, "src.canonical.module")
-            assert duplicate.exists()
-            assert duplicate.parent.exists()
+            assert duplicate.exists(), "Condition must be true"
+            assert duplicate.parent.exists(), "Condition must be true"
 
     def test_write_python_shim_content_has_warning(self):
         """Test that shim file contains deprecation warning."""
@@ -36,8 +36,8 @@ class TestWritePythonShim:
             duplicate = Path(tmpdir) / "shim.py"
             write_python_shim(duplicate, "src.canonical.module")
             content = duplicate.read_text()
-            assert "DeprecationWarning" in content
-            assert "Deprecated shim" in content
+            assert "DeprecationWarning" in content, "Content must not be empty"
+            assert "Deprecated shim" in content, "Content must not be empty"
 
     def test_write_python_shim_content_has_import(self):
         """Test that shim file contains import statement."""
@@ -45,7 +45,7 @@ class TestWritePythonShim:
             duplicate = Path(tmpdir) / "shim.py"
             write_python_shim(duplicate, "src.canonical.module")
             content = duplicate.read_text()
-            assert "from canonical.module import *" in content
+            assert "from canonical.module import *" in content, "Content must not be empty"
 
     def test_write_python_shim_strips_src_prefix(self):
         """Test that write_python_shim strips 'src.' prefix."""
@@ -53,8 +53,8 @@ class TestWritePythonShim:
             duplicate = Path(tmpdir) / "shim.py"
             write_python_shim(duplicate, "src.canonical.module")
             content = duplicate.read_text()
-            assert "from canonical.module import *" in content
-            assert "from src.canonical.module import *" not in content
+            assert "from canonical.module import *" in content, "Content must not be empty"
+            assert "from src.canonical.module import *" not in content, "Content must not be empty"
 
     def test_write_python_shim_no_src_prefix(self):
         """Test write_python_shim with path that has no src prefix."""
@@ -62,7 +62,7 @@ class TestWritePythonShim:
             duplicate = Path(tmpdir) / "shim.py"
             write_python_shim(duplicate, "canonical.module")
             content = duplicate.read_text()
-            assert "from canonical.module import *" in content
+            assert "from canonical.module import *" in content, "Content must not be empty"
 
     def test_write_python_shim_auto_generated_comment(self):
         """Test that shim file has auto-generated comment."""
@@ -70,8 +70,8 @@ class TestWritePythonShim:
             duplicate = Path(tmpdir) / "shim.py"
             write_python_shim(duplicate, "src.canonical.module")
             content = duplicate.read_text()
-            assert "AUTO-GENERATED SHIM" in content
-            assert "DO NOT EDIT" in content
+            assert "AUTO-GENERATED SHIM" in content, "Content must not be empty"
+            assert "DO NOT EDIT" in content, "Content must not be empty"
 
     def test_write_python_shim_noqa_comments(self):
         """Test that shim file has noqa comments."""
@@ -86,9 +86,9 @@ class TestWritePythonShim:
         with tempfile.TemporaryDirectory() as tmpdir:
             duplicate = Path(tmpdir) / "a" / "b" / "c" / "d" / "e" / "shim.py"
             write_python_shim(duplicate, "src.canonical.module")
-            assert duplicate.exists()
+            assert duplicate.exists(), "Condition must be true"
             content = duplicate.read_text()
-            assert "from canonical.module import *" in content
+            assert "from canonical.module import *" in content, "Content must not be empty"
 
     def test_write_python_shim_multiple_calls(self):
         """Test write_python_shim with multiple calls."""
@@ -99,14 +99,14 @@ class TestWritePythonShim:
             write_python_shim(shim1, "src.module1")
             write_python_shim(shim2, "src.module2")
 
-            assert shim1.exists()
-            assert shim2.exists()
+            assert shim1.exists(), "Condition must be true"
+            assert shim2.exists(), "Condition must be true"
 
             content1 = shim1.read_text()
             content2 = shim2.read_text()
 
-            assert "from module1 import *" in content1
-            assert "from module2 import *" in content2
+            assert "from module1 import *" in content1, "Content must not be empty"
+            assert "from module2 import *" in content2, "Content must not be empty"
 
     def test_write_python_shim_special_characters_in_path(self):
         """Test with special characters in module path."""
@@ -114,7 +114,7 @@ class TestWritePythonShim:
             duplicate = Path(tmpdir) / "shim.py"
             write_python_shim(duplicate, "src.module_with_underscore")
             content = duplicate.read_text()
-            assert "from module_with_underscore import *" in content
+            assert "from module_with_underscore import *" in content, "Content must not be empty"
 
 
 class TestWriteMarkdownPointer:
@@ -125,7 +125,7 @@ class TestWriteMarkdownPointer:
         with tempfile.TemporaryDirectory() as tmpdir:
             duplicate = Path(tmpdir) / "README.md"
             write_markdown_pointer(duplicate, "docs/canonical/README.md")
-            assert duplicate.exists()
+            assert duplicate.exists(), "Condition must be true"
 
     def test_write_markdown_pointer_content(self):
         """Test the content of markdown pointer file."""
@@ -134,17 +134,17 @@ class TestWriteMarkdownPointer:
             canonical_path = "docs/canonical/README.md"
             write_markdown_pointer(duplicate, canonical_path)
             content = duplicate.read_text()
-            assert "consolidated" in content.lower()
-            assert "canonical" in content.lower()
-            assert canonical_path in content
+            assert "consolidated" in content.lower(), "Content must not be empty"
+            assert "canonical" in content.lower(), "Content must not be empty"
+            assert canonical_path in content, "Content must not be empty"
 
     def test_write_markdown_pointer_creates_parent_dirs(self):
         """Test that parent directories are created."""
         with tempfile.TemporaryDirectory() as tmpdir:
             duplicate = Path(tmpdir) / "a" / "b" / "c" / "README.md"
             write_markdown_pointer(duplicate, "docs/canonical/README.md")
-            assert duplicate.exists()
-            assert duplicate.parent.exists()
+            assert duplicate.exists(), "Condition must be true"
+            assert duplicate.parent.exists(), "Condition must be true"
 
     def test_write_markdown_pointer_with_nested_path(self):
         """Test with nested canonical path."""
@@ -153,7 +153,7 @@ class TestWriteMarkdownPointer:
             canonical_path = "docs/guides/advanced/README.md"
             write_markdown_pointer(duplicate, canonical_path)
             content = duplicate.read_text()
-            assert canonical_path in content
+            assert canonical_path in content, "Content must not be empty"
 
     def test_write_markdown_pointer_multiple_files(self):
         """Test creating multiple markdown pointers."""
@@ -164,8 +164,8 @@ class TestWriteMarkdownPointer:
             write_markdown_pointer(pointer1, "docs/canonical1.md")
             write_markdown_pointer(pointer2, "docs/canonical2.md")
 
-            assert pointer1.exists()
-            assert pointer2.exists()
+            assert pointer1.exists(), "Condition must be true"
+            assert pointer2.exists(), "Condition must be true"
 
 
 class TestWriteJsonPointer:
@@ -176,7 +176,7 @@ class TestWriteJsonPointer:
         with tempfile.TemporaryDirectory() as tmpdir:
             duplicate = Path(tmpdir) / "config.json"
             write_json_pointer(duplicate, "canonical/config.json")
-            assert duplicate.exists()
+            assert duplicate.exists(), "Condition must be true"
 
     def test_write_json_pointer_is_valid_json(self):
         """Test that output is valid JSON."""
@@ -190,8 +190,8 @@ class TestWriteJsonPointer:
             import json
 
             data = json.loads(content)
-            assert "$ref" in data
-            assert data["$ref"] == canonical_path
+            assert "$ref" in data, "Data must not be empty"
+            assert data["$ref"] == canonical_path, "Data must not be empty"
 
     def test_write_json_pointer_ref_format(self):
         """Test that $ref is properly formatted."""
@@ -200,14 +200,14 @@ class TestWriteJsonPointer:
             canonical_path = "path/to/canonical.json"
             write_json_pointer(duplicate, canonical_path)
             content = duplicate.read_text()
-            assert f'"{canonical_path}"' in content
+            assert f'"{canonical_path}"' in content, "Content must not be empty"
 
     def test_write_json_pointer_creates_parent_dirs(self):
         """Test that parent directories are created."""
         with tempfile.TemporaryDirectory() as tmpdir:
             duplicate = Path(tmpdir) / "a" / "b" / "config.json"
             write_json_pointer(duplicate, "canonical/config.json")
-            assert duplicate.exists()
+            assert duplicate.exists(), "Condition must be true"
 
     def test_write_json_pointer_backslash_conversion(self):
         """Test that backslashes are converted to forward slashes."""
@@ -217,7 +217,7 @@ class TestWriteJsonPointer:
             write_json_pointer(duplicate, canonical_path)
             content = duplicate.read_text()
             # Backslashes should be converted to forward slashes
-            assert "\\" not in content.split("$ref")[1].split("}")[0]
+            assert "\\" not in content.split("$ref")[1].split("}")[0], "Content must not be empty"
 
     def test_write_json_pointer_multiple_files(self):
         """Test creating multiple JSON pointers."""
@@ -228,8 +228,8 @@ class TestWriteJsonPointer:
             write_json_pointer(json1, "canonical/config1.json")
             write_json_pointer(json2, "canonical/config2.json")
 
-            assert json1.exists()
-            assert json2.exists()
+            assert json1.exists(), "Condition must be true"
+            assert json2.exists(), "Condition must be true"
 
 
 class TestWriteCsvPointer:
@@ -240,7 +240,7 @@ class TestWriteCsvPointer:
         with tempfile.TemporaryDirectory() as tmpdir:
             duplicate = Path(tmpdir) / "data.csv"
             write_csv_pointer(duplicate, "canonical/data.csv")
-            assert duplicate.exists()
+            assert duplicate.exists(), "Condition must be true"
 
     def test_write_csv_pointer_content(self):
         """Test the content of CSV pointer file."""
@@ -249,9 +249,9 @@ class TestWriteCsvPointer:
             canonical_path = "canonical/data.csv"
             write_csv_pointer(duplicate, canonical_path)
             content = duplicate.read_text()
-            assert "Consolidated" in content or "consolidated" in content
-            assert "canonical" in content
-            assert canonical_path in content
+            assert "Consolidated" in content or "consolidated" in content, "Content must not be empty"
+            assert "canonical" in content, "Content must not be empty"
+            assert canonical_path in content, "Content must not be empty"
 
     def test_write_csv_pointer_comment_format(self):
         """Test that content is in CSV comment format."""
@@ -259,14 +259,14 @@ class TestWriteCsvPointer:
             duplicate = Path(tmpdir) / "data.csv"
             write_csv_pointer(duplicate, "canonical/data.csv")
             content = duplicate.read_text()
-            assert content.startswith("#")
+            assert content.startswith(", "Content must not be empty"
 
     def test_write_csv_pointer_creates_parent_dirs(self):
         """Test that parent directories are created."""
         with tempfile.TemporaryDirectory() as tmpdir:
             duplicate = Path(tmpdir) / "a" / "b" / "data.csv"
             write_csv_pointer(duplicate, "canonical/data.csv")
-            assert duplicate.exists()
+            assert duplicate.exists(), "Condition must be true"
 
     def test_write_csv_pointer_multiple_files(self):
         """Test creating multiple CSV pointers."""
@@ -277,8 +277,8 @@ class TestWriteCsvPointer:
             write_csv_pointer(csv1, "canonical/data1.csv")
             write_csv_pointer(csv2, "canonical/data2.csv")
 
-            assert csv1.exists()
-            assert csv2.exists()
+            assert csv1.exists(), "Condition must be true"
+            assert csv2.exists(), "Condition must be true"
 
 
 class TestPyWarnConstant:
@@ -286,19 +286,19 @@ class TestPyWarnConstant:
 
     def test_py_warn_contains_warning_import(self):
         """Test that _PY_WARN contains warning import."""
-        assert "import warnings" in _PY_WARN
+        assert "import warnings" in _PY_WARN, "Condition must be true"
 
     def test_py_warn_contains_warn_call(self):
         """Test that _PY_WARN contains warn call."""
-        assert "warnings.warn" in _PY_WARN or "_warnings.warn" in _PY_WARN
+        assert "warnings.warn" in _PY_WARN or "_warnings.warn" in _PY_WARN, "Condition must be true"
 
     def test_py_warn_contains_deprecation_warning(self):
         """Test that _PY_WARN contains DeprecationWarning."""
-        assert "DeprecationWarning" in _PY_WARN
+        assert "DeprecationWarning" in _PY_WARN, "Condition must be true"
 
     def test_py_warn_contains_message(self):
         """Test that _PY_WARN contains deprecation message."""
-        assert "Deprecated shim" in _PY_WARN
+        assert "Deprecated shim" in _PY_WARN, "Condition must be true"
 
     def test_py_warn_is_string(self):
         """Test that _PY_WARN is a string."""
@@ -321,10 +321,10 @@ class TestShimIntegration:
             write_json_pointer(json_pointer, "canonical.json")
             write_csv_pointer(csv_pointer, "canonical.csv")
 
-            assert py_shim.exists()
-            assert md_pointer.exists()
-            assert json_pointer.exists()
-            assert csv_pointer.exists()
+            assert py_shim.exists(), "Condition must be true"
+            assert md_pointer.exists(), "Condition must be true"
+            assert json_pointer.exists(), "Condition must be true"
+            assert csv_pointer.exists(), "Condition must be true"
 
     def test_directory_hierarchy_maintained(self):
         """Test that directory hierarchy is properly maintained."""
@@ -332,9 +332,9 @@ class TestShimIntegration:
             deep_path = Path(tmpdir) / "a" / "b" / "c" / "d" / "e"
             write_python_shim(deep_path / "module.py", "src.canonical")
 
-            assert (deep_path / "module.py").exists()
-            assert (deep_path / "module.py").parent == deep_path
-            assert deep_path.parent == Path(tmpdir) / "a" / "b" / "c" / "d"
+            assert (deep_path / "module.py").exists(), "Condition must be true"
+            assert (deep_path / "module.py").parent == deep_path, "parent is not valid"
+            assert deep_path.parent == Path(tmpdir) / "a" / "b" / "c" / "d", "parent is not valid"
 
 
 class TestShimEdgeCases:
@@ -346,7 +346,7 @@ class TestShimEdgeCases:
             duplicate = Path(tmpdir) / "shim.py"
             write_python_shim(duplicate, "src.module.submodule.name")
             content = duplicate.read_text()
-            assert "from module.submodule.name import *" in content
+            assert "from module.submodule.name import *" in content, "Content must not be empty"
 
     def test_write_markdown_pointer_with_slashes(self):
         """Test write_markdown_pointer with various slash patterns."""
@@ -354,7 +354,7 @@ class TestShimEdgeCases:
             duplicate = Path(tmpdir) / "pointer.md"
             canonical_path = "docs/guides/advanced/topic/README.md"
             write_markdown_pointer(duplicate, canonical_path)
-            assert canonical_path in duplicate.read_text()
+            assert canonical_path in duplicate.read_text(), "Condition must be true"
 
     def test_write_json_pointer_windows_path_conversion(self):
         """Test write_json_pointer handles Windows paths correctly."""
@@ -365,6 +365,6 @@ class TestShimEdgeCases:
             write_json_pointer(duplicate, canonical_path)
             content = duplicate.read_text()
             # Should have forward slashes in JSON
-            assert (
+            assert (, "Condition must be true"
                 "docs/canonical/file.json" in content or "docs\\canonical\\file.json" not in content
             )

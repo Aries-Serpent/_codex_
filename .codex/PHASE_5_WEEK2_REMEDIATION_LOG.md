@@ -48,7 +48,7 @@ Phase 2 remediation focused on Tier 1 and Tier 4 broken script references from P
 
 | File | References Fixed | Status |
 |------|------------------|--------|
-| `docs/admin/security/ADMIN_TOKEN_SETUP.md` | 3 | ✅ Fixed |
+| `docs/admin/security/ADMIN_TOKEN_SETUP.md` | 3 | ✅ Fixed | <!-- pragma: allowlist secret -->
 | `docs/admin/integration/GITHUB_MCP_INTEGRATION_GUIDE.md` | 3 | ✅ Fixed |
 | Phase 1 Plan docs | 2 | ✅ Cross-referenced |
 | Security policy docs | 2 | 📍 Partial (2 remain) |

@@ -15,7 +15,7 @@ from codex_ml.cli.main import cli
 
 
 def test_codexml_cli_help():
-    assert cli(["--help"]) == 0
+    assert cli(["--help"]) == 0, "Condition must be true"
 
 
 def test_codexml_cli_skips_eval(monkeypatch):
@@ -45,22 +45,22 @@ def test_codexml_cli_skips_eval(monkeypatch):
     # Explicitly disable evaluation via config; CLI should exit cleanly and not call evaluate
     with pytest.raises(SystemExit) as excinfo:
         cli(["pipeline.steps=[evaluate]", "eval=null", "hydra.run.dir=."])
-    assert excinfo.value.code == 0
-    assert called["eval"] is False
+    assert excinfo.value.code == 0, "Value must be initialized"
+    assert called["eval"] is False, "Condition must be true"
 
     GlobalHydra.instance().clear()
 
     with pytest.raises(SystemExit):
         cli(["eval=null"])
-    assert called["eval"] is False
+    assert called["eval"] is False, "Condition must be true"
 
     GlobalHydra.instance().clear()
 
     # With default config (no eval=null), the CLI should attempt evaluation
     with pytest.raises(SystemExit) as excinfo:
         cli(["hydra.run.dir=."])
-    assert excinfo.value.code == 0
-    assert called["eval"] is True
+    assert excinfo.value.code == 0, "Value must be initialized"
+    assert called["eval"] is True, "Condition must be true"
 
 
 def test_run_training_invokes_functional_entry(monkeypatch):
@@ -99,9 +99,9 @@ def test_run_training_invokes_functional_entry(monkeypatch):
     cli_main.run_training(cfg, output_dir="ignored_root")
 
     assert captured["argv"][:4] == ["--output-dir", "my_runs", "--texts", "hi"]
-    assert "--val-texts" in captured["argv"]
-    assert "training.epochs=2" in captured["argv"]
-    assert "training.lr=1e-05" in captured["argv"]
-    assert "training.lora.r=4" in captured["argv"]
-    assert "training.lora.alpha=16" in captured["argv"]
-    assert "training.lora.dropout=0.2" in captured["argv"]
+    assert "--val-texts" in captured["argv"], "Condition must be true"
+    assert "training.epochs=2" in captured["argv"], "Condition must be true"
+    assert "training.lr=1e-05" in captured["argv"], "Condition must be true"
+    assert "training.lora.r=4" in captured["argv"], "Condition must be true"
+    assert "training.lora.alpha=16" in captured["argv"], "Condition must be true"
+    assert "training.lora.dropout=0.2" in captured["argv"], "Condition must be true"

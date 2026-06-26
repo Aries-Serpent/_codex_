@@ -20,15 +20,15 @@ def test_manifest_stable_and_changes_on_tamper(tmp_path: Path):
     out = tmp_path / "artifacts/data_manifest.jsonl"
     manifest_for_paths([a, b], out)
     lines = out.read_text().strip().splitlines()
-    assert len(lines) == 2
+    assert len(lines) == 2, "Lines must not be empty"
     rows = [json.loads(L) for L in lines]
     # sha matches helper
     for r in rows:
         p = Path(r["path"])
-        assert r["sha256"] == _sha256_file(p)
-        assert r["bytes"] == p.stat().st_size
+        assert r["sha256"] == _sha256_file(p), "Condition must be true"
+        assert r["bytes"] == p.stat().st_size, "Condition must be true"
     # tamper 'a' and see changed checksum
     a.write_text("HELLO CODEX!\n")
     manifest_for_paths([a], out)  # overwrite with just 'a'
     tampered = json.loads(out.read_text().strip())
-    assert tampered["sha256"] == _sha256_file(a)
+    assert tampered["sha256"] == _sha256_file(a), "Condition must be true"

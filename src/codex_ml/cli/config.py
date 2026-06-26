@@ -134,7 +134,7 @@ def register_configs() -> None:
             from hydra.core.config_store import ConfigStore
         except ImportError as e:
             error_type = type(e).__name__
-            logger.debug(f"hydra not available: <ERROR_TYPE>")
+            logger.debug("hydra not available: <ERROR_TYPE>")
             from config_legacy.core.config_store import ConfigStore
 
         from codex_ml.utils.hydra_cs import safe_exists

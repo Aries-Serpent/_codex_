@@ -75,9 +75,9 @@ def test_build_embeddings(sample_ndjson):
         batch_size=2,
     )
 
-    assert embeddings.shape[0] == 3  # 3 documents
-    assert embeddings.shape[1] == 384  # MiniLM dimension
-    assert len(documents) == 3
+    assert embeddings.shape[0] == 3, "Condition must be true"
+    assert embeddings.shape[1] == 384, "Condition must be true"
+    assert len(documents) == 3, "Documents must not be empty"
 
 
 def test_faiss_store_create_and_save(sample_ndjson, temp_index_dir):
@@ -91,8 +91,8 @@ def test_faiss_store_create_and_save(sample_ndjson, temp_index_dir):
     store = FAISSStore(index_dir=temp_index_dir, index_name="test")
     store.create_index(embeddings, documents)
 
-    assert store.index is not None
-    assert store.index.ntotal == 3
+    assert store.index is not None, "index must be initialized"
+    assert store.index.ntotal == 3, "ntotal is not valid"
 
     # Save and verify files exist
     store.save()
@@ -101,9 +101,9 @@ def test_faiss_store_create_and_save(sample_ndjson, temp_index_dir):
     docs_path = Path(temp_index_dir) / "test.docs.jsonl"
     meta_path = Path(temp_index_dir) / "test.meta.json"
 
-    assert index_path.exists()
-    assert docs_path.exists()
-    assert meta_path.exists()
+    assert index_path.exists(), "Condition must be true"
+    assert docs_path.exists(), "Condition must be true"
+    assert meta_path.exists(), "Condition must be true"
 
 
 def test_faiss_store_load_and_search(sample_ndjson, temp_index_dir):
@@ -123,16 +123,16 @@ def test_faiss_store_load_and_search(sample_ndjson, temp_index_dir):
     store2 = FAISSStore(index_dir=temp_index_dir, index_name="test")
     store2.load()
 
-    assert store2.index is not None
-    assert len(store2.documents) == 3
+    assert store2.index is not None, "index must be initialized"
+    assert len(store2.documents) == 3, "Collection must not be empty"
 
     # Search
     query_vector = embeddings[0]  # Use first document as query
     results = store2.search(query_vector, top_k=2)
 
-    assert len(results) == 2
-    assert results[0]["document"]["id"] == "doc1"  # Should match itself
-    assert results[0]["score"] > 0.9  # High similarity
+    assert len(results) == 2, "Results must not be empty"
+    assert results[0]["document"]["id"] == "doc1", "Result must not be empty"
+    assert results[0]["score"] > 0.9, "Value must be greater than zero"
 
 
 def test_retrieval_engine_search(sample_ndjson, temp_index_dir):
@@ -160,7 +160,7 @@ def test_retrieval_engine_search(sample_ndjson, temp_index_dir):
         top_k=2,
     )
 
-    assert len(results) == 2
-    assert "document_id" in results[0]
-    assert "content" in results[0]
-    assert "score" in results[0]
+    assert len(results) == 2, "Results must not be empty"
+    assert "document_id" in results[0], "Result must not be empty"
+    assert "content" in results[0], "Result must not be empty"
+    assert "score" in results[0], "Result must not be empty"

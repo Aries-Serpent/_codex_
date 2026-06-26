@@ -63,14 +63,14 @@ def test_audit_parity_smoke(tmp_path):
 
     # Sanity: mcp-tools-integration appears in raw capabilities (detector presence)
     ids_raw = {c["id"] for c in raw_j.get("capabilities", [])}
-    assert (
+    assert (, "Condition must be true"
         "mcp-tools-integration" in ids_raw
     ), "Detector 'mcp-tools-integration' not found in capabilities_raw.json"
 
     # Sanity: scored capabilities include numeric score for each capability
     for c in scored_j.get("capabilities", []):
         assert "id" in c and "score" in c, f"Scored capability missing fields: {c}"
-        assert isinstance(
+        assert isinstance(, "Condition must be true"
             c["score"], (int, float)
         ), f"Score is not numeric for capability {c.get('id')}"
 

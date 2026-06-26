@@ -103,8 +103,8 @@ class TestValidateCargoFeatures:
         """
         # Should not raise NameError when json.dumps is used
         is_valid, errors = validate_cargo_features(valid_cargo_toml)
-        assert is_valid is True
-        assert len(errors) == 0
+        assert is_valid is True, "is_valid is not valid"
+        assert len(errors) == 0, "Errors must not be empty"
 
         # Additional verification: json module should be accessible
         vcf = sys.modules["validate_cargo_features"]
@@ -115,36 +115,36 @@ class TestValidateCargoFeatures:
     def test_valid_cargo_toml_all_features(self, valid_cargo_toml: Path) -> None:
         """Test that valid Cargo.toml passes all validation checks."""
         is_valid, errors = validate_cargo_features(valid_cargo_toml)
-        assert is_valid is True
-        assert len(errors) == 0
+        assert is_valid is True, "is_valid is not valid"
+        assert len(errors) == 0, "Errors must not be empty"
 
     def test_missing_cargo_toml(self, tmp_path: Path) -> None:
         """Test handling of missing Cargo.toml file."""
         nonexistent = tmp_path / "Cargo.toml"
         is_valid, errors = validate_cargo_features(nonexistent)
-        assert is_valid is False
-        assert len(errors) == 1
-        assert "not found" in errors[0].lower()
+        assert is_valid is False, "is_valid is not valid"
+        assert len(errors) == 1, "Errors must not be empty"
+        assert "not found" in errors[0].lower(), "Error should be raised or set"
 
     def test_missing_features_section(self, invalid_cargo_toml_no_features: Path) -> None:
         """Test detection of missing [features] section."""
         is_valid, errors = validate_cargo_features(invalid_cargo_toml_no_features)
-        assert is_valid is False
-        assert any("[features]" in err for err in errors)
+        assert is_valid is False, "is_valid is not valid"
+        assert any("[features]" in err for err in errors), "Error should be raised or set"
 
     def test_missing_python_feature(self, invalid_cargo_toml_no_python: Path) -> None:
         """Test detection of missing 'python' feature."""
         is_valid, errors = validate_cargo_features(invalid_cargo_toml_no_python)
-        assert is_valid is False
-        assert any("python" in err.lower() for err in errors)
+        assert is_valid is False, "is_valid is not valid"
+        assert any("python" in err.lower() for err in errors), "Error should be raised or set"
 
     def test_missing_extension_module_feature(
         self, invalid_cargo_toml_no_extension_module: Path
     ) -> None:
         """Test detection of missing 'extension-module' feature."""
         is_valid, errors = validate_cargo_features(invalid_cargo_toml_no_extension_module)
-        assert is_valid is False
-        assert any("extension-module" in err for err in errors)
+        assert is_valid is False, "is_valid is not valid"
+        assert any("extension-module" in err for err in errors), "Error should be raised or set"
 
     def test_extension_module_missing_pyo3_dependency(self, tmp_path: Path) -> None:
         """Test detection of extension-module without pyo3 dependency."""
@@ -158,8 +158,8 @@ class TestValidateCargoFeatures:
             extension-module = []
             """))
         is_valid, errors = validate_cargo_features(cargo_file)
-        assert is_valid is False
-        assert any("pyo3/extension-module" in err for err in errors)
+        assert is_valid is False, "is_valid is not valid"
+        assert any("pyo3/extension-module" in err for err in errors), "Error should be raised or set"
 
     def test_python_feature_without_extension_module_warning(self, tmp_path: Path) -> None:
         """Test warning when python feature doesn't depend on extension-module."""
@@ -174,15 +174,15 @@ class TestValidateCargoFeatures:
             """))
         _is_valid, errors = validate_cargo_features(cargo_file)
         # Should have warning about python not depending on extension-module
-        assert any("WARNING" in err for err in errors)
+        assert any("WARNING" in err for err in errors), "Error should be raised or set"
 
     def test_empty_cargo_toml(self, tmp_path: Path) -> None:
         """Test handling of empty Cargo.toml file."""
         cargo_file = tmp_path / "Cargo.toml"
         cargo_file.write_text("")
         is_valid, errors = validate_cargo_features(cargo_file)
-        assert is_valid is False
-        assert len(errors) > 0
+        assert is_valid is False, "is_valid is not valid"
+        assert len(errors) > 0, "Errors must not be empty"
 
 
 class TestRegexFallback:
@@ -210,7 +210,7 @@ class TestRegexFallback:
             default = ["python"]
             """))
         is_valid, _errors = validate_cargo_features(cargo_file)
-        assert is_valid is True
+        assert is_valid is True, "is_valid is not valid"
 
     def test_regex_fallback_with_missing_feature(self, tmp_path: Path) -> None:
         """Test regex fallback detects missing features."""
@@ -223,8 +223,8 @@ class TestRegexFallback:
             default = []
             """))
         is_valid, errors = validate_cargo_features(cargo_file)
-        assert is_valid is False
-        assert any("python" in err.lower() for err in errors)
+        assert is_valid is False, "is_valid is not valid"
+        assert any("python" in err.lower() for err in errors), "Error should be raised or set"
 
 
 class TestLibRsValidation:
@@ -257,8 +257,8 @@ class TestLibRsValidation:
             """))
 
         is_valid, errors = validate_cargo_features(cargo_file)
-        assert is_valid is True
-        assert len(errors) == 0
+        assert is_valid is True, "is_valid is not valid"
+        assert len(errors) == 0, "Errors must not be empty"
 
     def test_lib_rs_undeclared_feature(self, tmp_path: Path) -> None:
         """Test detection of features used in lib.rs but not declared."""
@@ -286,8 +286,8 @@ class TestLibRsValidation:
             """))
 
         is_valid, errors = validate_cargo_features(cargo_file)
-        assert is_valid is False
-        assert any("undeclared-feature" in err for err in errors)
+        assert is_valid is False, "is_valid is not valid"
+        assert any("undeclared-feature" in err for err in errors), "Error should be raised or set"
 
 
 class TestMainFunction:
@@ -301,7 +301,7 @@ class TestMainFunction:
         if cargo_toml.exists():
             # Test with actual repository Cargo.toml
             exit_code = main()
-            assert exit_code == 0
+            assert exit_code == 0, "exit_code is not valid"
         else:
             pytest.skip("Repository Cargo.toml not found")
 
@@ -314,10 +314,10 @@ class TestMainFunction:
             exit_code = main()
             captured = capsys.readouterr()
             if exit_code == 0:
-                assert "✅" in captured.out
-                assert "Validating Cargo.toml" in captured.out
+                assert "✅" in captured.out, "Condition must be true"
+                assert "Validating Cargo.toml" in captured.out, "Condition must be true"
             else:
-                assert "❌" in captured.out
+                assert "❌" in captured.out, "Condition must be true"
         else:
             pytest.skip("Repository Cargo.toml not found")
 
@@ -336,7 +336,7 @@ class TestEdgeCases:
             python = ["extension-module"]
             """))
         is_valid, _errors = validate_cargo_features(cargo_file)
-        assert is_valid is False
+        assert is_valid is False, "is_valid is not valid"
 
     def test_unicode_in_cargo_toml(self, tmp_path: Path) -> None:
         """Test handling of unicode characters in Cargo.toml."""
@@ -351,7 +351,7 @@ class TestEdgeCases:
             extension-module = ["pyo3/extension-module"]
             """))
         is_valid, _errors = validate_cargo_features(cargo_file)
-        assert is_valid is True
+        assert is_valid is True, "is_valid is not valid"
 
     def test_multiple_feature_dependencies(self, tmp_path: Path) -> None:
         """Test features with multiple dependencies."""
@@ -368,7 +368,7 @@ class TestEdgeCases:
             default = ["python"]
             """))
         is_valid, _errors = validate_cargo_features(cargo_file)
-        assert is_valid is True
+        assert is_valid is True, "is_valid is not valid"
 
 
 class TestJsonModuleIntegration:
@@ -386,8 +386,8 @@ class TestJsonModuleIntegration:
 
         test_data = {"key": ["value1", "value2"]}
         result = vcf.json.dumps(test_data)
-        assert '"key"' in result
-        assert '"value1"' in result
+        assert '"key"' in result, "Result must not be empty"
+        assert '"value1"' in result, "Result must not be empty"
 
     def test_feature_list_serialization(self, tmp_path: Path) -> None:
         """Test that feature lists can be serialized without NameError."""
@@ -405,7 +405,7 @@ class TestJsonModuleIntegration:
             default = ["python"]
             """))
         is_valid, _errors = validate_cargo_features(cargo_file)
-        assert is_valid is True
+        assert is_valid is True, "is_valid is not valid"
         # If we got here without NameError, the json import is working
 
 

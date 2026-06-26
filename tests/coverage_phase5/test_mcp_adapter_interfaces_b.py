@@ -17,8 +17,8 @@ def test_adapter_registry_register():
     adapter = SimpleAdapter("test")
     registry["test"] = adapter
 
-    assert "test" in registry
-    assert registry["test"] == adapter
+    assert "test" in registry, "Condition must be true"
+    assert registry["test"] == adapter, "Condition must be true"
 
 
 def test_adapter_registry_lookup():
@@ -26,8 +26,8 @@ def test_adapter_registry_lookup():
     registry = {"test": SimpleAdapter("test")}
 
     adapter = registry.get("test")
-    assert adapter is not None
-    assert adapter.name == "test"
+    assert adapter is not None, "adapter must be initialized"
+    assert adapter.name == "test", "name is not valid"
 
 
 def test_adapter_registry_list():
@@ -38,8 +38,8 @@ def test_adapter_registry_list():
     }
 
     names = list(registry.keys())
-    assert len(names) == 2
-    assert "adapter1" in names
+    assert len(names) == 2, "Names must not be empty"
+    assert "adapter1" in names, "Condition must be true"
 
 
 def test_adapter_registry_unregister():
@@ -48,4 +48,4 @@ def test_adapter_registry_unregister():
 
     del registry["test"]
 
-    assert "test" not in registry
+    assert "test" not in registry, "Condition must be true"

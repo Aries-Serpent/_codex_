@@ -11,7 +11,7 @@ class TestServerState:
         try:
             from src.mcp.lifecycle import ServerState
 
-            assert ServerState is not None
+            assert ServerState is not None, "ServerState must be initialized"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -20,14 +20,14 @@ class TestServerState:
         try:
             from src.mcp.lifecycle import ServerState
 
-            assert ServerState.UNINITIALIZED.value == "uninitialized"
-            assert ServerState.INITIALIZING.value == "initializing"
-            assert ServerState.READY.value == "ready"
-            assert ServerState.RUNNING.value == "running"
-            assert ServerState.DRAINING.value == "draining"
-            assert ServerState.STOPPING.value == "stopping"
-            assert ServerState.STOPPED.value == "stopped"
-            assert ServerState.ERROR.value == "error"
+            assert ServerState.UNINITIALIZED.value == "uninitialized", "Value must be initialized"
+            assert ServerState.INITIALIZING.value == "initializing", "Value must be initialized"
+            assert ServerState.READY.value == "ready", "Value must be initialized"
+            assert ServerState.RUNNING.value == "running", "Value must be initialized"
+            assert ServerState.DRAINING.value == "draining", "Value must be initialized"
+            assert ServerState.STOPPING.value == "stopping", "Value must be initialized"
+            assert ServerState.STOPPED.value == "stopped", "Value must be initialized"
+            assert ServerState.ERROR.value == "error", "Value must be initialized"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -37,7 +37,7 @@ class TestServerState:
             from src.mcp.lifecycle import VALID_TRANSITIONS, ServerState
 
             assert isinstance(VALID_TRANSITIONS, dict)
-            assert ServerState.UNINITIALIZED in VALID_TRANSITIONS
+            assert ServerState.UNINITIALIZED in VALID_TRANSITIONS, "Condition must be true"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -51,8 +51,8 @@ class TestInvalidStateTransition:
             from src.mcp.lifecycle import InvalidStateTransition, ServerState
 
             exc = InvalidStateTransition(ServerState.STOPPED, ServerState.RUNNING)
-            assert exc.current == ServerState.STOPPED
-            assert exc.target == ServerState.RUNNING
+            assert exc.current == ServerState.STOPPED, "current is not valid"
+            assert exc.target == ServerState.RUNNING, "target is not valid"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -62,8 +62,8 @@ class TestInvalidStateTransition:
             from src.mcp.lifecycle import InvalidStateTransition, ServerState
 
             exc = InvalidStateTransition(ServerState.STOPPED, ServerState.RUNNING)
-            assert "stopped" in str(exc)
-            assert "running" in str(exc)
+            assert "stopped" in str(exc), "Condition must be true"
+            assert "running" in str(exc), "Condition must be true"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -77,8 +77,8 @@ class TestHealthStatus:
             from src.mcp.lifecycle import HealthStatus
 
             status = HealthStatus(healthy=True, message="OK")
-            assert status.healthy is True
-            assert status.message == "OK"
+            assert status.healthy is True, "healthy is not valid"
+            assert status.message == "OK", "message is not valid"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -88,7 +88,7 @@ class TestHealthStatus:
             from src.mcp.lifecycle import HealthStatus
 
             status = HealthStatus(healthy=False)
-            assert status.message == ""
+            assert status.message == "", "message is not valid"
             assert isinstance(status.details, dict)
             assert isinstance(status.timestamp, float)
         except ImportError:
@@ -101,7 +101,7 @@ class TestHealthStatus:
 
             details = {"cpu": 50, "memory": 75}
             status = HealthStatus(healthy=True, details=details)
-            assert status.details == details
+            assert status.details == details, "details is not valid"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -115,7 +115,7 @@ class TestLifecycleConfig:
             from src.mcp.lifecycle import LifecycleConfig
 
             config = LifecycleConfig()
-            assert config is not None
+            assert config is not None, "config must be initialized"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -125,10 +125,10 @@ class TestLifecycleConfig:
             from src.mcp.lifecycle import LifecycleConfig
 
             config = LifecycleConfig()
-            assert config.shutdown_timeout_seconds == 30.0
-            assert config.health_check_interval_seconds == 10.0
-            assert config.drain_timeout_seconds == 60.0
-            assert config.max_concurrent_requests == 100
+            assert config.shutdown_timeout_seconds == 30.0, "shutdown_timeout_seconds is not valid"
+            assert config.health_check_interval_seconds == 10.0, "health_check_interval_seconds is not valid"
+            assert config.drain_timeout_seconds == 60.0, "drain_timeout_seconds is not valid"
+            assert config.max_concurrent_requests == 100, "max_concurrent_requests is not valid"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -138,8 +138,8 @@ class TestLifecycleConfig:
             from src.mcp.lifecycle import LifecycleConfig
 
             config = LifecycleConfig(shutdown_timeout_seconds=60.0, max_concurrent_requests=200)
-            assert config.shutdown_timeout_seconds == 60.0
-            assert config.max_concurrent_requests == 200
+            assert config.shutdown_timeout_seconds == 60.0, "shutdown_timeout_seconds is not valid"
+            assert config.max_concurrent_requests == 200, "max_concurrent_requests is not valid"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -153,7 +153,7 @@ class TestLifecycleManager:
             from src.mcp.lifecycle import LifecycleManager
 
             manager = LifecycleManager()
-            assert manager is not None
+            assert manager is not None, "manager must be initialized"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -164,7 +164,7 @@ class TestLifecycleManager:
 
             config = LifecycleConfig(shutdown_timeout_seconds=45.0)
             manager = LifecycleManager(config=config)
-            assert manager is not None
+            assert manager is not None, "manager must be initialized"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -175,7 +175,7 @@ class TestLifecycleManager:
 
             manager = LifecycleManager()
             # Access internal state (for testing)
-            assert manager._state == ServerState.UNINITIALIZED
+            assert manager._state == ServerState.UNINITIALIZED, "_state is not valid"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -208,7 +208,7 @@ class TestStateTransitions:
         try:
             from src.mcp.lifecycle import VALID_TRANSITIONS, ServerState
 
-            assert ServerState.INITIALIZING in VALID_TRANSITIONS[ServerState.UNINITIALIZED]
+            assert ServerState.INITIALIZING in VALID_TRANSITIONS[ServerState.UNINITIALIZED], "Condition must be true"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -217,7 +217,7 @@ class TestStateTransitions:
         try:
             from src.mcp.lifecycle import VALID_TRANSITIONS, ServerState
 
-            assert ServerState.READY in VALID_TRANSITIONS[ServerState.INITIALIZING]
+            assert ServerState.READY in VALID_TRANSITIONS[ServerState.INITIALIZING], "Condition must be true"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -226,7 +226,7 @@ class TestStateTransitions:
         try:
             from src.mcp.lifecycle import VALID_TRANSITIONS, ServerState
 
-            assert ServerState.RUNNING in VALID_TRANSITIONS[ServerState.READY]
+            assert ServerState.RUNNING in VALID_TRANSITIONS[ServerState.READY], "Condition must be true"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -235,7 +235,7 @@ class TestStateTransitions:
         try:
             from src.mcp.lifecycle import VALID_TRANSITIONS, ServerState
 
-            assert ServerState.DRAINING in VALID_TRANSITIONS[ServerState.RUNNING]
+            assert ServerState.DRAINING in VALID_TRANSITIONS[ServerState.RUNNING], "Condition must be true"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -244,7 +244,7 @@ class TestStateTransitions:
         try:
             from src.mcp.lifecycle import VALID_TRANSITIONS, ServerState
 
-            assert ServerState.STOPPING in VALID_TRANSITIONS[ServerState.DRAINING]
+            assert ServerState.STOPPING in VALID_TRANSITIONS[ServerState.DRAINING], "Condition must be true"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -253,7 +253,7 @@ class TestStateTransitions:
         try:
             from src.mcp.lifecycle import VALID_TRANSITIONS, ServerState
 
-            assert ServerState.STOPPED in VALID_TRANSITIONS[ServerState.STOPPING]
+            assert ServerState.STOPPED in VALID_TRANSITIONS[ServerState.STOPPING], "Condition must be true"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -262,7 +262,7 @@ class TestStateTransitions:
         try:
             from src.mcp.lifecycle import VALID_TRANSITIONS, ServerState
 
-            assert ServerState.INITIALIZING in VALID_TRANSITIONS[ServerState.STOPPED]
+            assert ServerState.INITIALIZING in VALID_TRANSITIONS[ServerState.STOPPED], "Condition must be true"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -271,7 +271,7 @@ class TestStateTransitions:
         try:
             from src.mcp.lifecycle import VALID_TRANSITIONS, ServerState
 
-            assert ServerState.STOPPING in VALID_TRANSITIONS[ServerState.ERROR]
-            assert ServerState.INITIALIZING in VALID_TRANSITIONS[ServerState.ERROR]
+            assert ServerState.STOPPING in VALID_TRANSITIONS[ServerState.ERROR], "Error should be raised or set"
+            assert ServerState.INITIALIZING in VALID_TRANSITIONS[ServerState.ERROR], "Error should be raised or set"
         except ImportError:
             pytest.skip("Module not available")

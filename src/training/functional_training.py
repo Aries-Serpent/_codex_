@@ -178,8 +178,8 @@ def _looks_like_local_source(identifier: os.PathLike[str] | str | None) -> bool:
         return Path(norm).expanduser().exists()
     except OSError as e:
         error_type = type(e).__name__
-        logger.debug(f"OSError: <ERROR_TYPE>")
-        logger.warning(f"OSError: <ERROR_TYPE>", exc_info=True)
+        logger.debug("OSError: <ERROR_TYPE>")
+        logger.warning("OSError: <ERROR_TYPE>", exc_info=True)
         return False
 
 
@@ -259,7 +259,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                     )
                 except (IOError, OSError) as e:
                     error_type = type(e).__name__
-                    logger.debug(f"Exception: <ERROR_TYPE>")
+                    logger.debug("Exception: <ERROR_TYPE>")
                     logger.warning(
                         f"Exception: {e}", exc_info=True
                     )  # Metadata write failure; continue training
@@ -498,7 +498,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
             model = get_peft_model(model, lcfg)
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             logger.warning(
                 f"Exception: {e}", exc_info=True
             )  # PEFT configuration failed; use base model
@@ -531,7 +531,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
             metrics_path.unlink()
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             logger.warning(
                 f"Exception: {e}", exc_info=True
             )  # File deletion failed; continue with training
@@ -629,7 +629,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
                 load_rng_state(rng)
         except (ValueError, TypeError, RuntimeError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             logger.warning(
                 f"Exception: {e}", exc_info=True
             )  # RNG state restore failed; use default initialization
@@ -705,7 +705,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
                     mlf.log_params(_as_flat_params(params))
                 except (ValueError, TypeError, RuntimeError) as e:
                     error_type = type(e).__name__
-                    logger.debug(f"Exception: <ERROR_TYPE>")
+                    logger.debug("Exception: <ERROR_TYPE>")
                     logger.warning(
                         f"Exception: {e}", exc_info=True
                     )  # MLflow parameter logging failed; continue training
@@ -793,7 +793,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
                                 mlf.log_metrics({"train/loss": loss_val}, step=global_step)
                             except (ValueError, TypeError, RuntimeError) as e:
                                 error_type = type(e).__name__
-                                logger.debug(f"Exception: <ERROR_TYPE>")
+                                logger.debug("Exception: <ERROR_TYPE>")
                                 logger.warning(
                                     f"Exception: {e}", exc_info=True
                                 )  # MLflow metric logging failed; continue training
@@ -840,7 +840,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
                                 _codex_log_all(global_step, numeric_metrics, loggers)
                             except (ValueError, TypeError, RuntimeError) as e:
                                 error_type = type(e).__name__
-                                logger.debug(f"Exception: <ERROR_TYPE>")
+                                logger.debug("Exception: <ERROR_TYPE>")
                                 logger.warning(
                                     f"Exception: {e}", exc_info=True
                                 )  # Codex logging failed; continue training
@@ -852,7 +852,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
                                 )
                             except (ValueError, TypeError, RuntimeError) as e:
                                 error_type = type(e).__name__
-                                logger.debug(f"Exception: <ERROR_TYPE>")
+                                logger.debug("Exception: <ERROR_TYPE>")
                                 logger.warning(
                                     f"Exception: {e}", exc_info=True
                                 )  # MLflow eval metric logging failed; continue training
@@ -898,7 +898,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
                                 )
                             except (ValueError, TypeError, RuntimeError) as e:
                                 error_type = type(e).__name__
-                                logger.debug(f"Exception: <ERROR_TYPE>")
+                                logger.debug("Exception: <ERROR_TYPE>")
                                 logger.warning(
                                     f"Exception: {e}", exc_info=True
                                 )  # MLflow privacy metric logging failed; continue training
@@ -912,7 +912,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
                             )
                     except (ValueError, TypeError, RuntimeError) as e:
                         error_type = type(e).__name__
-                        logger.debug(f"Exception: <ERROR_TYPE>")
+                        logger.debug("Exception: <ERROR_TYPE>")
                         logger.warning(
                             f"Exception: {e}", exc_info=True
                         )  # Privacy accounting failed; continue training
@@ -922,7 +922,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
                     system_logger.stop()
                 except (ValueError, TypeError, RuntimeError) as e:
                     error_type = type(e).__name__
-                    logger.debug(f"Exception: <ERROR_TYPE>")
+                    logger.debug("Exception: <ERROR_TYPE>")
                     logger.warning(
                         f"Exception: {e}", exc_info=True
                     )  # System logger cleanup failed; continue
@@ -959,7 +959,7 @@ def run_custom_trainer(model, tokenizer, train_ds, val_ds, cfg: TrainCfg) -> dic
                         continue  # Artifact logging failed; try next artifact
             except (ValueError, TypeError, RuntimeError) as e:
                 error_type = type(e).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.debug("Exception: <ERROR_TYPE>")
                 logger.warning(
                     f"Exception: {e}", exc_info=True
                 )  # MLflow final metrics logging failed; continue

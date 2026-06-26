@@ -158,7 +158,7 @@ The CSV format supported these columns:
 
     except Exception as e:
         error_type = type(e).__name__
-        logger.error(f"Migration failed: <ERROR_TYPE>", exc_info=True)
+        logger.error("Migration failed: <ERROR_TYPE>", exc_info=True)
         return 2
 
 

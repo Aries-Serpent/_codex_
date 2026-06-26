@@ -11,7 +11,7 @@ class TestGitHubSecretsManager:
         try:
             from src.agent.secrets import GitHubSecretsManager
 
-            assert GitHubSecretsManager is not None
+            assert GitHubSecretsManager is not None, "GitHubSecretsManager must be initialized"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -21,7 +21,7 @@ class TestGitHubSecretsManager:
             from src.agent.secrets import GitHubSecretsManager
 
             manager = GitHubSecretsManager()
-            assert manager is not None
+            assert manager is not None, "manager must be initialized"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -31,9 +31,9 @@ class TestGitHubSecretsManager:
             from src.agent.secrets import GitHubSecretsManager
 
             manager = GitHubSecretsManager()
-            assert manager.owner is None
-            assert manager.repo is None
-            assert manager.token is None
+            assert manager.owner is None, "owner is not valid"
+            assert manager.repo is None, "repo is not valid"
+            assert manager.token is None, "token is not valid"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -43,9 +43,9 @@ class TestGitHubSecretsManager:
             from src.agent.secrets import GitHubSecretsManager
 
             manager = GitHubSecretsManager(owner="test-owner", repo="test-repo", token="test-token")
-            assert manager.owner == "test-owner"
-            assert manager.repo == "test-repo"
-            assert manager.token == "test-token"
+            assert manager.owner == "test-owner", "owner is not valid"
+            assert manager.repo == "test-repo", "repo is not valid"
+            assert manager.token == "test-token", "token is not valid"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -67,7 +67,7 @@ class TestGitHubSecretsManager:
 
             manager = GitHubSecretsManager()
             result = manager.setup_phase10_secrets("arg1", "arg2", key="value")
-            assert result == {}
+            assert result == {}, "Result must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 

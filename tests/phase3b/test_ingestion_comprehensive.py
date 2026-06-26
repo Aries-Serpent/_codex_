@@ -12,7 +12,7 @@ class TestCSVIngestor:
     def test_csv_parser_init(self):
         """Test CSV parser initialization"""
         parser = {}
-        assert parser is not None
+        assert parser is not None, "parser must be initialized"
 
     def test_parse_csv_line(self):
         """Test parsing CSV line"""
@@ -21,7 +21,7 @@ class TestCSVIngestor:
             return line.split(",")
 
         result = parse_csv("a,b,c")
-        assert len(result) == 3
+        assert len(result) == 3, "Result must not be empty"
 
     def test_parse_csv_with_quotes(self):
         """Test parsing CSV with quotes"""
@@ -33,7 +33,7 @@ class TestCSVIngestor:
             return line.split(",")
 
         result = parse_csv('"a","b","c"')
-        assert len(result) >= 2
+        assert len(result) >= 2, "Result must not be empty"
 
     def test_parse_csv_empty_line(self):
         """Test parsing empty CSV line"""
@@ -42,7 +42,7 @@ class TestCSVIngestor:
             return line.split(",") if line else []
 
         result = parse_csv("")
-        assert result == []
+        assert result == [], "Result must not be empty"
 
     def test_csv_header_parsing(self):
         """Test parsing CSV headers"""
@@ -51,7 +51,7 @@ class TestCSVIngestor:
             return line.split(",")
 
         result = parse_header("name,age,city")
-        assert "name" in result
+        assert "name" in result, "Result must not be empty"
 
     def test_csv_with_special_chars(self):
         """Test CSV with special characters"""
@@ -68,7 +68,7 @@ class TestJSONIngestor:
     def test_json_parser_init(self):
         """Test JSON parser initialization"""
         parser = {}
-        assert parser is not None
+        assert parser is not None, "parser must be initialized"
 
     def test_parse_json_object(self):
         """Test parsing JSON object"""
@@ -76,7 +76,7 @@ class TestJSONIngestor:
 
         data = '{"key": "value"}'
         parsed = json.loads(data)
-        assert parsed["key"] == "value"
+        assert parsed["key"] == "value", "Value must be initialized"
 
     def test_parse_json_array(self):
         """Test parsing JSON array"""
@@ -84,7 +84,7 @@ class TestJSONIngestor:
 
         data = "[1, 2, 3]"
         parsed = json.loads(data)
-        assert len(parsed) == 3
+        assert len(parsed) == 3, "Parsed must not be empty"
 
     def test_parse_json_nested(self):
         """Test parsing nested JSON"""
@@ -92,7 +92,7 @@ class TestJSONIngestor:
 
         data = '{"outer": {"inner": "value"}}'
         parsed = json.loads(data)
-        assert parsed["outer"]["inner"] == "value"
+        assert parsed["outer"]["inner"] == "value", "Value must be initialized"
 
     def test_json_null_handling(self):
         """Test JSON null handling"""
@@ -100,7 +100,7 @@ class TestJSONIngestor:
 
         data = '{"key": null}'
         parsed = json.loads(data)
-        assert parsed["key"] is None
+        assert parsed["key"] is None, "Condition must be true"
 
     def test_json_boolean_handling(self):
         """Test JSON boolean handling"""
@@ -108,8 +108,8 @@ class TestJSONIngestor:
 
         data = '{"true_val": true, "false_val": false}'
         parsed = json.loads(data)
-        assert parsed["true_val"] is True
-        assert parsed["false_val"] is False
+        assert parsed["true_val"] is True, "Condition must be true"
+        assert parsed["false_val"] is False, "Condition must be true"
 
 
 class TestFileIngestor:
@@ -118,7 +118,7 @@ class TestFileIngestor:
     def test_file_reader_init(self):
         """Test file reader initialization"""
         reader = {}
-        assert reader is not None
+        assert reader is not None, "reader must be initialized"
 
     def test_read_text_file(self):
         """Test reading text file"""
@@ -127,7 +127,7 @@ class TestFileIngestor:
             return {"path": path, "type": "text"}
 
         result = read_file("/path/to/file.txt")
-        assert result["type"] == "text"
+        assert result["type"] == "text", "Result must not be empty"
 
     def test_read_binary_file(self):
         """Test reading binary file"""
@@ -137,7 +137,7 @@ class TestFileIngestor:
             return {"binary": is_binary}
 
         result = read_file("data.bin")
-        assert result["binary"] is True
+        assert result["binary"] is True, "Result must not be empty"
 
     def test_file_encoding_detection(self):
         """Test file encoding detection"""
@@ -161,7 +161,7 @@ class TestFileIngestor:
             return {"path": path}
 
         result = read_file("")
-        assert result is None
+        assert result is None, "Result must not be empty"
 
 
 class TestEncodingDetection:
@@ -178,7 +178,7 @@ class TestEncodingDetection:
                 return None
 
         result = detect_encoding(b"hello")
-        assert result == "utf-8"
+        assert result == "utf-8", "Result must not be empty"
 
     def test_detect_latin1(self):
         """Test detecting Latin-1"""
@@ -196,7 +196,7 @@ class TestEncodingDetection:
     def test_unicode_handling(self):
         """Test unicode character handling"""
         data = "café"
-        assert "é" in data
+        assert "é" in data, "Data must not be empty"
 
     def test_mixed_encoding_detection(self):
         """Test mixed encoding scenarios"""
@@ -204,7 +204,7 @@ class TestEncodingDetection:
         def is_mixed(data):
             return len(data) > 0
 
-        assert is_mixed(b"mixed") is True
+        assert is_mixed(b"mixed") is True, "Condition must be true"
 
 
 class TestTextSplitting:
@@ -217,7 +217,7 @@ class TestTextSplitting:
             return text.split(delim)
 
         result = split("a,b,c", ",")
-        assert len(result) == 3
+        assert len(result) == 3, "Result must not be empty"
 
     def test_split_by_lines(self):
         """Test splitting by lines"""
@@ -226,7 +226,7 @@ class TestTextSplitting:
             return text.split("\n")
 
         result = split_lines("line1\nline2\nline3")
-        assert len(result) == 3
+        assert len(result) == 3, "Result must not be empty"
 
     def test_split_empty_string(self):
         """Test splitting empty string"""
@@ -235,7 +235,7 @@ class TestTextSplitting:
             return text.split() if text else []
 
         result = split("")
-        assert result == []
+        assert result == [], "Result must not be empty"
 
     def test_chunk_text(self):
         """Test chunking text"""
@@ -244,7 +244,7 @@ class TestTextSplitting:
             return [text[i : i + size] for i in range(0, len(text), size)]
 
         result = chunk("abcdefghij", 3)
-        assert len(result) == 4
+        assert len(result) == 4, "Result must not be empty"
 
     def test_chunk_preserves_content(self):
         """Test chunks preserve content"""
@@ -255,7 +255,7 @@ class TestTextSplitting:
 
         original = "hello world"
         result = chunk(original, 3)
-        assert result == original
+        assert result == original, "Result must not be empty"
 
 
 class TestIOOperations:
@@ -268,7 +268,7 @@ class TestIOOperations:
             return {"op": "read", "path": path}
 
         result = read("/file.txt")
-        assert result["op"] == "read"
+        assert result["op"] == "read", "Result must not be empty"
 
     def test_write_operation(self):
         """Test write operation"""
@@ -277,7 +277,7 @@ class TestIOOperations:
             return {"op": "write", "path": path, "data": data}
 
         result = write("/file.txt", "content")
-        assert result["op"] == "write"
+        assert result["op"] == "write", "Result must not be empty"
 
     def test_append_operation(self):
         """Test append operation"""
@@ -286,7 +286,7 @@ class TestIOOperations:
             return {"op": "append", "path": path}
 
         result = append("/file.txt", "more")
-        assert result["op"] == "append"
+        assert result["op"] == "append", "Result must not be empty"
 
     def test_seek_operation(self):
         """Test seek operation"""
@@ -295,7 +295,7 @@ class TestIOOperations:
             return {"position": pos}
 
         result = seek(None, 100)
-        assert result["position"] == 100
+        assert result["position"] == 100, "Result must not be empty"
 
 
 class TestStreamProcessing:
@@ -304,7 +304,7 @@ class TestStreamProcessing:
     def test_stream_reader_init(self):
         """Test stream reader initialization"""
         reader = {}
-        assert reader is not None
+        assert reader is not None, "reader must be initialized"
 
     def test_read_from_stream(self):
         """Test reading from stream"""
@@ -315,7 +315,7 @@ class TestStreamProcessing:
         mock_stream = Mock()
         mock_stream.read.return_value = "data"
         result = read_stream(mock_stream)
-        assert result == "data"
+        assert result == "data", "Result must not be empty"
 
     def test_write_to_stream(self):
         """Test writing to stream"""
@@ -328,7 +328,7 @@ class TestStreamProcessing:
         mock_stream = Mock()
         mock_stream.write.return_value = 10
         result = write_stream(mock_stream, "data")
-        assert result == 10
+        assert result == 10, "Result must not be empty"
 
     def test_stream_close(self):
         """Test closing stream"""
@@ -353,8 +353,8 @@ class TestDataValidation:
         def is_valid(data):
             return data is not None and len(data) > 0
 
-        assert is_valid("data") is True
-        assert is_valid("") is False
+        assert is_valid("data") is True, "Data must not be empty"
+        assert is_valid("") is False, "Condition must be true"
 
     def test_validate_type(self):
         """Test type validation"""
@@ -366,8 +366,8 @@ class TestDataValidation:
             except Exception as _err:
                 return False
 
-        assert is_valid_int("123") is True
-        assert is_valid_int("abc") is False
+        assert is_valid_int("123") is True, "Condition must be true"
+        assert is_valid_int("abc") is False, "Condition must be true"
 
     def test_validate_range(self):
         """Test range validation"""
@@ -384,8 +384,8 @@ class TestDataValidation:
         def is_email(s):
             return "@" in s and "." in s.split("@")[1] if "@" in s else False
 
-        assert is_email("test@example.com") is True
-        assert is_email("invalid") is False
+        assert is_email("test@example.com") is True, "Condition must be true"
+        assert is_email("invalid") is False, "Condition must be true"
 
 
 class TestErrorHandling:
@@ -401,7 +401,7 @@ class TestErrorHandling:
                 return None
 
         result = read_safe("/nonexistent")
-        assert result is not None or result is None  # Either way is OK
+        assert result is not None or result is None, "result must be initialized"
 
     def test_handle_bad_encoding(self):
         """Test handling bad encoding"""
@@ -413,7 +413,7 @@ class TestErrorHandling:
                 return None
 
         result = decode_safe(b"\xff\xfe", "utf-8")
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_handle_invalid_format(self):
         """Test handling invalid format"""
@@ -429,7 +429,7 @@ class TestErrorHandling:
                 return None
 
         result = parse_safe("invalid json", "json")
-        assert result is None
+        assert result is None, "Result must not be empty"
 
 
 class TestIngestionIntegration:
@@ -447,7 +447,7 @@ class TestIngestionIntegration:
             return len(items)
 
         result = pipeline("a,b,c")
-        assert result == 3
+        assert result == 3, "Result must not be empty"
 
     def test_file_to_stream(self):
         """Test file to stream conversion"""
@@ -456,7 +456,7 @@ class TestIngestionIntegration:
             return {"source": "file", "target": "stream"}
 
         result = file_to_stream("/file.txt")
-        assert result["source"] == "file"
+        assert result["source"] == "file", "Result must not be empty"
 
     def test_stream_to_structured_data(self):
         """Test stream to structured data"""
@@ -465,7 +465,7 @@ class TestIngestionIntegration:
             return {"type": "structured", "source": "stream"}
 
         result = stream_to_data(Mock())
-        assert result["type"] == "structured"
+        assert result["type"] == "structured", "Result must not be empty"
 
 
 class TestIngestionEdgeCases:
@@ -477,8 +477,8 @@ class TestIngestionEdgeCases:
         def process(data):
             return len(data) if data else 0
 
-        assert process("") == 0
-        assert process(None) == 0
+        assert process("") == 0, "Condition must be true"
+        assert process(None) == 0, "Condition must be true"
 
     def test_very_large_file(self):
         """Test very large file"""
@@ -486,18 +486,18 @@ class TestIngestionEdgeCases:
         def can_process_size(size):
             return size < 10 * 1024 * 1024 * 1024  # 10GB limit
 
-        assert can_process_size(1024) is True
-        assert can_process_size(10 * 1024 * 1024 * 1024 + 1) is False
+        assert can_process_size(1024) is True, "Condition must be true"
+        assert can_process_size(10 * 1024 * 1024 * 1024 + 1) is False, "Condition must be true"
 
     def test_special_characters_in_data(self):
         """Test special characters"""
         data = "data\x00with\x00nulls"
-        assert "\x00" in data
+        assert "\x00" in data, "Data must not be empty"
 
     def test_unicode_data(self):
         """Test unicode data"""
         data = "你好世界"
-        assert len(data) == 4
+        assert len(data) == 4, "Data must not be empty"
 
     def test_mixed_line_endings(self):
         """Test mixed line endings"""
@@ -506,7 +506,7 @@ class TestIngestionEdgeCases:
             return text.replace("\r\n", "\n").split("\n")
 
         result = split_lines("a\r\nb\nc\rd")
-        assert len(result) >= 3
+        assert len(result) >= 3, "Result must not be empty"
 
 
 class TestIngestionMutationKillers:
@@ -537,8 +537,8 @@ class TestIngestionMutationKillers:
         def is_valid(x):
             return x is not None
 
-        assert is_valid("data") is True
-        assert is_valid(None) is False
+        assert is_valid("data") is True, "Data must not be empty"
+        assert is_valid(None) is False, "Condition must be true"
 
     def test_comparison_operators(self):
         """Test comparisons"""

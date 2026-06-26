@@ -69,12 +69,12 @@ def test_experiment_index_builds_summary(tmp_path: Path):
             str(md_out_path),
         ]
     )
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
 
-    assert json_out_path.exists()
-    assert md_out_path.exists()
+    assert json_out_path.exists(), "Condition must be true"
+    assert md_out_path.exists(), "Condition must be true"
 
     data = json.loads(json_out_path.read_text(encoding="utf-8"))
-    assert data["total_runs"] == 2
+    assert data["total_runs"] == 2, "Data must not be empty"
     modes = {r["mode"] for r in data["runs"]}
     assert modes == {"train", "eval"}

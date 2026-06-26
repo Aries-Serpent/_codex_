@@ -95,29 +95,29 @@ class TestContextMessage:
 
     def test_message_creation(self, sample_message):
         """Test creating a context message."""
-        assert sample_message.sender == "test_sender"
-        assert sample_message.receiver == "test_receiver"
-        assert sample_message.message_type == "test"
-        assert sample_message.payload == {"test_key": "test_value"}
+        assert sample_message.sender == "test_sender", "sender is not valid"
+        assert sample_message.receiver == "test_receiver", "receiver is not valid"
+        assert sample_message.message_type == "test", "message_type is not valid"
+        assert sample_message.payload == {"test_key": "test_value"}, "Value must be initialized"
 
     def test_message_to_json(self, sample_message):
         """Test serializing message to JSON."""
         json_str = sample_message.to_json()
         assert isinstance(json_str, str)
         data = json.loads(json_str)
-        assert data["sender"] == "test_sender"
-        assert data["payload"]["test_key"] == "test_value"
+        assert data["sender"] == "test_sender", "Data must not be empty"
+        assert data["payload"]["test_key"] == "test_value", "Data must not be empty"
 
     def test_message_from_json(self):
         """Test deserializing message from JSON."""
         json_str = '{"sender":"sender1","receiver":"receiver1","message_type":"test","payload":{"key":"value"},"timestamp":"2026-01-16T10:00:00Z","request_id":"req123"}'
         msg = ContextMessage.from_json(json_str)
-        assert msg.sender == "sender1"
-        assert msg.payload["key"] == "value"
+        assert msg.sender == "sender1", "sender is not valid"
+        assert msg.payload["key"] == "value", "Value must be initialized"
 
     def test_message_validate_valid(self, sample_message):
         """Test validation of a valid message."""
-        assert sample_message.validate() is True
+        assert sample_message.validate() is True, "Condition must be true"
 
     def test_message_validate_missing_sender(self):
         """Test validation fails for missing sender."""
@@ -127,15 +127,15 @@ class TestContextMessage:
             message_type="test",
             payload={},
         )
-        assert msg.validate() is False
+        assert msg.validate() is False, "Condition must be true"
 
     def test_message_round_trip(self, sample_message):
         """Test JSON serialization/deserialization round trip."""
         json_str = sample_message.to_json()
         restored = ContextMessage.from_json(json_str)
-        assert restored.sender == sample_message.sender
-        assert restored.receiver == sample_message.receiver
-        assert restored.payload == sample_message.payload
+        assert restored.sender == sample_message.sender, "sender is not valid"
+        assert restored.receiver == sample_message.receiver, "receiver is not valid"
+        assert restored.payload == sample_message.payload, "payload is not valid"
 
 
 # ============================================================================
@@ -150,7 +150,7 @@ class TestBridgeLock:
         """Test creating a bridge lock."""
         lock_path = temp_bridge_dir / "test.lock"
         lock = BridgeLock(lock_path)
-        assert lock.lock_path == lock_path
+        assert lock.lock_path == lock_path, "lock_path is not valid"
 
     def test_lock_acquire_release(self, temp_bridge_dir):
         """Test acquiring and releasing a lock."""
@@ -158,8 +158,8 @@ class TestBridgeLock:
         lock = BridgeLock(lock_path)
 
         # Acquire lock
-        assert lock.acquire(timeout=1) is True
-        assert lock_path.exists()
+        assert lock.acquire(timeout=1) is True, "Condition must be true"
+        assert lock_path.exists(), "Condition must be true"
 
         # Release lock
         lock.release()
@@ -172,10 +172,10 @@ class TestBridgeLock:
         lock2 = BridgeLock(lock_path)
 
         # First lock succeeds
-        assert lock1.acquire(timeout=0.1) is True
+        assert lock1.acquire(timeout=0.1) is True, "Condition must be true"
 
         # Second lock should timeout
-        assert lock2.acquire(timeout=0.1) is False
+        assert lock2.acquire(timeout=0.1) is False, "Condition must be true"
 
         lock1.release()
 
@@ -184,7 +184,7 @@ class TestBridgeLock:
         lock_path = temp_bridge_dir / "test.lock"
 
         with bridge_lock(lock_path, timeout=1):
-            assert lock_path.exists()
+            assert lock_path.exists(), "Condition must be true"
 
         # Lock released after context
 
@@ -200,9 +200,9 @@ class TestBridgeManagerInit:
     def test_init_default(self, temp_bridge_dir):
         """Test default initialization."""
         bridge = BridgeManager(bridge_dir=temp_bridge_dir)
-        assert bridge.bridge_dir == temp_bridge_dir
-        assert bridge.mode == BridgeMode.NAMED_PIPE
-        assert bridge.owner_only is True
+        assert bridge.bridge_dir == temp_bridge_dir, "bridge_dir is not valid"
+        assert bridge.mode == BridgeMode.NAMED_PIPE, "mode is not valid"
+        assert bridge.owner_only is True, "owner_only is not valid"
 
     def test_init_with_custom_mode(self, temp_bridge_dir):
         """Test initialization with custom mode."""
@@ -210,17 +210,17 @@ class TestBridgeManagerInit:
             bridge_dir=temp_bridge_dir,
             mode=BridgeMode.UNIX_SOCKET,
         )
-        assert bridge.mode == BridgeMode.UNIX_SOCKET
+        assert bridge.mode == BridgeMode.UNIX_SOCKET, "mode is not valid"
 
     def test_init_creates_bridge_dir(self, tmp_path):
         """Test initialization creates bridge directory."""
         bridge_dir = tmp_path / "new_bridge"
-        assert not bridge_dir.exists()
+        assert not bridge_dir.exists(), "Condition must be true"
 
         # Initialize with non-existent directory
         # This might auto-create or require creation
         bridge = BridgeManager(bridge_dir=bridge_dir, require_auth=False)
-        assert bridge.bridge_dir == bridge_dir
+        assert bridge.bridge_dir == bridge_dir, "bridge_dir is not valid"
 
     def test_init_with_auth_token(self, temp_bridge_dir):
         """Test initialization with authentication token."""
@@ -229,7 +229,7 @@ class TestBridgeManagerInit:
                 bridge_dir=temp_bridge_dir,
                 require_auth=True,
             )
-            assert bridge.auth_token == "test_token_123"
+            assert bridge.auth_token == "test_token_123", "auth_token is not valid"
 
     def test_init_missing_auth_token_warning(self, temp_bridge_dir, caplog):
         """Test warning when required auth token is missing."""
@@ -240,7 +240,7 @@ class TestBridgeManagerInit:
                     require_auth=True,
                 )
             # Should log warning about missing token
-            assert any("CODEX_BRIDGE_TOKEN" in record.message for record in caplog.records)
+            assert any("CODEX_BRIDGE_TOKEN" in record.message for record in caplog.records), "Condition must be true"
 
     def test_init_protocol_v2_disabled(self, temp_bridge_dir):
         """Test initialization with protocol v2 disabled."""
@@ -248,7 +248,7 @@ class TestBridgeManagerInit:
             bridge_dir=temp_bridge_dir,
             use_protocol_v2=False,
         )
-        assert bridge.use_protocol_v2 is False
+        assert bridge.use_protocol_v2 is False, "use_protocol_v2 is not valid"
 
     def test_init_compression_settings(self, temp_bridge_dir):
         """Test compression configuration."""
@@ -256,7 +256,7 @@ class TestBridgeManagerInit:
             bridge_dir=temp_bridge_dir,
             enable_compression=True,
         )
-        assert bridge.enable_compression is True
+        assert bridge.enable_compression is True, "enable_compression is not valid"
 
 
 # ============================================================================
@@ -440,7 +440,7 @@ class TestBridgeManagerAudit:
         # Log should contain ISO format timestamp
         if audit_file.exists():
             content = audit_file.read_text()
-            assert "test_event" in content or audit_file.exists()
+            assert "test_event" in content or audit_file.exists(), "Content must not be empty"
 
     def test_audit_log_authentication_attempt(self, temp_bridge_dir):
         """Test audit logging for authentication attempts."""
@@ -452,7 +452,7 @@ class TestBridgeManagerAudit:
         )
         bridge._audit_log("AUTH_ATTEMPT", {"source": "127.0.0.1", "status": "success"})
         # Should create audit entry without errors
-        assert audit_file.exists() or True  # Audit may be optional
+        assert audit_file.exists() or True, "Condition must be true"
 
 
 # ============================================================================
@@ -524,7 +524,7 @@ class TestBridgeManagerCleanup:
         bridge = BridgeManager(bridge_dir=temp_bridge_dir)
         lock_file = temp_bridge_dir / "bridge.lock"
         if lock_file.exists():
-            assert lock_file.exists()
+            assert lock_file.exists(), "Condition must be true"
         bridge.cleanup()
         # Lock files should be cleaned up
 
@@ -586,7 +586,7 @@ class TestBridgeManagerErrors:
             return_value=None,
         ):
             result = bridge_manager_named_pipe.read_message()
-            assert result is None
+            assert result is None, "Result must not be empty"
 
 
 # ============================================================================
@@ -631,7 +631,7 @@ class TestBridgeManagerIntegration:
             bridge_dir=temp_bridge_dir,
             audit_file=audit_file,
         )
-        assert bridge.audit_file == audit_file or audit_file.exists()
+        assert bridge.audit_file == audit_file or audit_file.exists(), "audit_file is not valid"
 
     def test_bridge_lifecycle(self, temp_bridge_dir):
         """Test complete bridge lifecycle."""
@@ -640,7 +640,7 @@ class TestBridgeManagerIntegration:
             require_auth=False,
         )
         # Initialize
-        assert bridge.bridge_dir == temp_bridge_dir
+        assert bridge.bridge_dir == temp_bridge_dir, "bridge_dir is not valid"
 
         # Create message
         message = ContextMessage(
@@ -707,7 +707,7 @@ class TestBridgeManagerEdgeCases:
         )
         json_str = message.to_json()
         restored = ContextMessage.from_json(json_str)
-        assert restored.payload["unicode"] == "测试🚀"
+        assert restored.payload["unicode"] == "测试🚀", "rest is not valid"
 
     def test_zero_timeout(self, bridge_manager_named_pipe):
         """Test read with zero timeout."""

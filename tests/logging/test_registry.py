@@ -16,10 +16,10 @@ def test_ndjson_logger_basic(tmp_path: Path):
     logger.log({"type": "batch", "loss": 0.1})
     logger.close()
     content = (tmp_path / "metrics.ndjson").read_text().strip()
-    assert content
+    assert content, "Content must not be empty"
     rec = json.loads(content)
-    assert rec["loss"] == 0.1
-    assert "mem_rss_mb" not in rec
+    assert rec["loss"] == 0.1, "Condition must be true"
+    assert "mem_rss_mb" not in rec, "Condition must be true"
 
 
 def test_ndjson_sys_metrics(tmp_path: Path):
@@ -31,7 +31,7 @@ def test_ndjson_sys_metrics(tmp_path: Path):
     # psutil may not be installed; if missing metrics absent (acceptable)
     # If present then fields appear
     # This assertion is tolerant:
-    assert "loss" in rec
+    assert "loss" in rec, "Condition must be true"
 
 
 def test_build_loggers_multiple_records(tmp_path: Path):
@@ -47,13 +47,13 @@ def test_build_loggers_multiple_records(tmp_path: Path):
 
     # Verify all records written
     lines = (tmp_path / "metrics.ndjson").read_text().strip().splitlines()
-    assert len(lines) == 10
+    assert len(lines) == 10, "Lines must not be empty"
 
     # Verify correct values
     for i, line in enumerate(lines):
         rec = json.loads(line)
-        assert rec["batch_id"] == i
-        assert abs(rec["loss"] - 0.1 * i) < 1e-6
+        assert rec["batch_id"] == i, "Condition must be true"
+        assert abs(rec["loss"] - 0.1 * i) < 1e-6, "Condition must be true"
 
 
 def test_ndjson_logger_special_characters(tmp_path: Path):
@@ -74,8 +74,8 @@ def test_ndjson_logger_special_characters(tmp_path: Path):
     # Verify it can be parsed back
     content = (tmp_path / "metrics.ndjson").read_text().strip()
     rec = json.loads(content)
-    assert "quotes" in rec["message"]
-    assert "🚀" in rec["unicode"]
+    assert "quotes" in rec["message"], "Condition must be true"
+    assert "🚀" in rec["unicode"], "Condition must be true"
 
 
 def test_ndjson_logger_empty_record(tmp_path: Path):
@@ -98,7 +98,7 @@ def test_build_loggers_creates_output_dir(tmp_path: Path):
     nested_dir = tmp_path / "deeply" / "nested" / "path"
 
     # Directory doesn't exist initially
-    assert not nested_dir.exists()
+    assert not nested_dir.exists(), "Condition must be true"
 
     loggers = build_loggers({"output_dir": str(nested_dir), "sys_metrics": False})
     logger = loggers[0]
@@ -106,8 +106,8 @@ def test_build_loggers_creates_output_dir(tmp_path: Path):
     logger.close()
 
     # Directory and file should be created
-    assert nested_dir.exists()
-    assert (nested_dir / "metrics.ndjson").exists()
+    assert nested_dir.exists(), "Condition must be true"
+    assert (nested_dir / "metrics.ndjson").exists(), "Condition must be true"
 
 
 def test_ndjson_logger_large_numbers(tmp_path: Path):
@@ -128,7 +128,7 @@ def test_ndjson_logger_large_numbers(tmp_path: Path):
     # Verify numbers are preserved correctly
     content = (tmp_path / "metrics.ndjson").read_text().strip()
     rec = json.loads(content)
-    assert rec["very_large"] == 1e100
-    assert rec["very_small"] == 1e-100
-    assert rec["negative"] == -1e50
-    assert rec["int"] == 999999999999
+    assert rec["very_large"] == 1e100, "Condition must be true"
+    assert rec["very_small"] == 1e-100, "Condition must be true"
+    assert rec["negative"] == -1e50, "Condition must be true"
+    assert rec["int"] == 999999999999, "Condition must be true"

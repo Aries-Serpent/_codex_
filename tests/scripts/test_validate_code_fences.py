@@ -16,7 +16,7 @@ class TestCheckCodeFences:
         )
 
         issues = check_code_fences(md_file)
-        assert len(issues) == 0
+        assert len(issues) == 0, "Issues must not be empty"
 
     def test_unclosed_fence(self, tmp_path):
         """Test detection of unclosed fence"""
@@ -26,9 +26,9 @@ class TestCheckCodeFences:
         )
 
         issues = check_code_fences(md_file)
-        assert len(issues) == 1
-        assert issues[0]["type"] == "unclosed_fence"
-        assert issues[0]["line"] == 3
+        assert len(issues) == 1, "Issues must not be empty"
+        assert issues[0]["type"] == "unclosed_fence", "Condition must be true"
+        assert issues[0]["line"] == 3, "Condition must be true"
 
     def test_indented_fences(self, tmp_path):
         """Test that indented fences are properly matched"""
@@ -47,7 +47,7 @@ class TestCheckCodeFences:
         issues = check_code_fences(md_file)
         # Should detect properly - indented fences not currently handled
         # This documents current behavior
-        assert len(issues) == 0 or issues[0]["type"] == "unclosed_fence"
+        assert len(issues) == 0 or issues[0]["type"] == "unclosed_fence", "Issues must not be empty"
 
     def test_nested_fence_detection(self, tmp_path):
         """Test detection of nested fences"""
@@ -59,7 +59,7 @@ class TestCheckCodeFences:
         issues = check_code_fences(md_file)
         # Should detect nested fence
         nested = [i for i in issues if i["type"] == "nested_fence"]
-        assert len(nested) >= 1
+        assert len(nested) >= 1, "Nested must not be empty"
 
     def test_multiple_unclosed_fences(self, tmp_path):
         """Test detection of multiple unclosed fences"""
@@ -71,7 +71,7 @@ class TestCheckCodeFences:
         issues = check_code_fences(md_file)
         unclosed = [i for i in issues if i["type"] == "unclosed_fence"]
         # At least one unclosed fence detected
-        assert len(unclosed) >= 1
+        assert len(unclosed) >= 1, "Unclosed must not be empty"
 
     def test_empty_file(self, tmp_path):
         """Test handling of empty file"""
@@ -79,7 +79,7 @@ class TestCheckCodeFences:
         md_file.write_text("")
 
         issues = check_code_fences(md_file)
-        assert len(issues) == 0
+        assert len(issues) == 0, "Issues must not be empty"
 
 
 class TestFixCodeFences:
@@ -93,9 +93,9 @@ class TestFixCodeFences:
         issues = check_code_fences(md_file)
         result = fix_code_fences(md_file, issues, dry_run=False)
 
-        assert result is True
+        assert result is True, "Result must not be empty"
         content = md_file.read_text()
-        assert content.endswith("```\n")
+        assert content.endswith("```\n"), "Content must not be empty"
 
     def test_dry_run_returns_true(self, tmp_path):
         """Test that dry-run returns True for fixable issues"""
@@ -105,10 +105,10 @@ class TestFixCodeFences:
         issues = check_code_fences(md_file)
         result = fix_code_fences(md_file, issues, dry_run=True)
 
-        assert result is True
+        assert result is True, "Result must not be empty"
         # Content should not change in dry-run
         content = md_file.read_text()
-        assert content == "```python\ncode\n"
+        assert content == "```python\ncode\n", "Content must not be empty"
 
     def test_no_changes_returns_false(self, tmp_path):
         """Test that no changes returns False"""
@@ -118,7 +118,7 @@ class TestFixCodeFences:
         issues = check_code_fences(md_file)
         result = fix_code_fences(md_file, issues, dry_run=False)
 
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_fix_multiple_unclosed_fences(self, tmp_path):
         """Test fixing multiple unclosed fences"""
@@ -128,10 +128,10 @@ class TestFixCodeFences:
         issues = check_code_fences(md_file)
         result = fix_code_fences(md_file, issues, dry_run=False)
 
-        assert result is True
+        assert result is True, "Result must not be empty"
         content = md_file.read_text()
         # Should have at least one closing fence added
-        assert "```\n" in content
+        assert "```\n" in content, "Content must not be empty"
 
     def test_nested_fence_not_auto_fixed(self, tmp_path):
         """Test that nested fences are detected but file structure may still be fixed for unclosed fences"""
@@ -141,8 +141,8 @@ class TestFixCodeFences:
 
         issues = check_code_fences(md_file)
         # This should detect nested fence AND unclosed fence
-        assert len(issues) >= 1
-        assert any(i["type"] == "nested_fence" for i in issues)
+        assert len(issues) >= 1, "Issues must not be empty"
+        assert any(i["type"] == "nested_fence" for i in issues), "in is not valid"
 
         result = fix_code_fences(md_file, issues, dry_run=False)
         # Result will be True because unclosed fences are fixed
@@ -151,7 +151,7 @@ class TestFixCodeFences:
 
         # Nested fence detection should not cause script to crash
         content = md_file.read_text()
-        assert "```python\n" in content
+        assert "```python\n" in content, "Content must not be empty"
 
 
 class TestEdgeCases:
@@ -163,12 +163,12 @@ class TestEdgeCases:
         md_file.write_text("```python\ncode")  # No newline at end
 
         issues = check_code_fences(md_file)
-        assert len(issues) >= 1
+        assert len(issues) >= 1, "Issues must not be empty"
 
         # Fix should handle this
         fix_code_fences(md_file, issues, dry_run=False)
         content = md_file.read_text()
-        assert content.endswith("```\n")
+        assert content.endswith("```\n"), "Content must not be empty"
 
     def test_multiple_languages(self, tmp_path):
         """Test multiple different language fences"""
@@ -188,4 +188,4 @@ class TestEdgeCases:
         )
 
         issues = check_code_fences(md_file)
-        assert len(issues) == 0
+        assert len(issues) == 0, "Issues must not be empty"

@@ -19,13 +19,13 @@ def test_line_dataset_manifest_includes_source_and_shuffled_checksums(tmp_path: 
     lines = load_line_dataset(str(dataset), seed=17, manifest_path=manifest_path)
 
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-    assert manifest["source"] == str(dataset.resolve())
+    assert manifest["source"] == str(dataset.resolve()), "Data must not be empty"
 
     expected_source_checksum = hashlib.sha256(dataset.read_bytes()).hexdigest()
-    assert manifest["source_checksum"] == expected_source_checksum
+    assert manifest["source_checksum"] == expected_source_checksum, "Condition must be true"
 
     expected_shuffled_checksum = hashlib.sha256("\n".join(lines).encode("utf-8")).hexdigest()
-    assert manifest["shuffled_checksum"] == expected_shuffled_checksum
+    assert manifest["shuffled_checksum"] == expected_shuffled_checksum, "Condition must be true"
 
 
 def test_line_dataset_manifest_is_stable_across_runs(tmp_path: Path) -> None:
@@ -40,4 +40,4 @@ def test_line_dataset_manifest_is_stable_across_runs(tmp_path: Path) -> None:
     load_line_dataset(str(dataset), seed=5, manifest_path=manifest_path_b)
     manifest_b = json.loads(manifest_path_b.read_text(encoding="utf-8"))
 
-    assert manifest_a == manifest_b
+    assert manifest_a == manifest_b, "manifest_a is not valid"

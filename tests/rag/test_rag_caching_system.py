@@ -28,7 +28,7 @@ class TestEmbeddingCache:
             with tempfile.TemporaryDirectory() as tmpdir:
                 config = EmbeddingCacheConfig(enable_disk_cache=True, disk_cache_path=tmpdir)
                 cache = EmbeddingCache(config)
-                assert cache is not None
+                assert cache is not None, "cache must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("Cache module not available")
 
@@ -67,7 +67,7 @@ class TestEmbeddingCache:
                 # Try to get non-existent entry
                 result = cache.get("non_existent_text")
 
-                assert result is None
+                assert result is None, "Result must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("Cache module not available")
 
@@ -108,7 +108,7 @@ class TestEmbeddingCache:
 
                 # Some early items should be evicted
                 # (depending on eviction policy: LRU, LFU, etc.)
-                assert cache is not None
+                assert cache is not None, "cache must be initialized"
         except (ImportError, AttributeError, TypeError):
             pytest.skip("Cache module not available or doesn't support max_size")
 
@@ -134,7 +134,7 @@ class TestDocumentCache:
             cached_doc = cache.get(doc_id)
 
             if cached_doc is not None:
-                assert "content" in cached_doc or cached_doc == content
+                assert "content" in cached_doc or cached_doc == content, "Content must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("Cache module not available")
 
@@ -154,7 +154,7 @@ class TestDocumentCache:
             cached_doc = cache.get(doc_id)
 
             if cached_doc is not None and isinstance(cached_doc, dict):
-                assert "embedding" in cached_doc or cached_doc.get("content") == content
+                assert "embedding" in cached_doc or cached_doc.get("content") == content, "Content must not be empty"
         except (ImportError, AttributeError, TypeError):
             pytest.skip("Cache module not available or doesn't support embeddings")
 
@@ -202,7 +202,7 @@ class TestQueryCache:
             cached_results = cache.get(query)
 
             if cached_results is not None:
-                assert cached_results == results
+                assert cached_results == results, "Result must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("Cache module not available")
 
@@ -225,13 +225,13 @@ class TestQueryCache:
             cached_results = cache.get(cache_key)
 
             if cached_results is not None:
-                assert cached_results == results
+                assert cached_results == results, "Result must not be empty"
 
             # Different filters should miss
             different_filters = {"source": "other"}
             other_results = cache.get(f"{query}:{json.dumps(different_filters, sort_keys=True)}")
             # Should be None or different
-            assert other_results != results or other_results is None
+            assert other_results != results or other_results is None, "Result must not be empty"
         except (ImportError, AttributeError, TypeError):
             pytest.skip("Cache module not available or doesn't support filters")
 
@@ -250,7 +250,7 @@ class TestQueryCache:
 
             # Immediate retrieval should work
             immediate = cache.get(query)
-            assert immediate is not None or immediate == results
+            assert immediate is not None or immediate == results, "immediate must be initialized"
 
             # Wait for TTL to expire
             time.sleep(1.5)
@@ -258,7 +258,7 @@ class TestQueryCache:
             # Should be expired
             expired = cache.get(query)
             # May or may not implement TTL
-            assert expired is None or expired == results
+            assert expired is None or expired == results, "Result must not be empty"
         except (ImportError, AttributeError, TypeError):
             pytest.skip("Cache module not available or doesn't support TTL")
 
@@ -283,8 +283,8 @@ class TestCacheInvalidation:
                     cache.clear()
 
                     # Should be empty
-                    assert cache.get("text1") is None
-                    assert cache.get("text2") is None
+                    assert cache.get("text1") is None, "Condition must be true"
+                    assert cache.get("text2") is None, "Condition must be true"
         except (ImportError, AttributeError):
             pytest.skip("Cache module not available")
 
@@ -305,9 +305,9 @@ class TestCacheInvalidation:
                     cache.delete("text1")
 
                     # text1 should be gone
-                    assert cache.get("text1") is None
+                    assert cache.get("text1") is None, "Condition must be true"
                     # text2 should remain
-                    assert cache.get("text2") is not None or True
+                    assert cache.get("text2") is not None or True, "Value must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("Cache module not available")
 
@@ -329,10 +329,10 @@ class TestCacheInvalidation:
                     cache.invalidate_pattern("user_1_*")
 
                     # user_1 items should be gone
-                    assert cache.get("user_1_doc") is None
-                    assert cache.get("user_1_query") is None
+                    assert cache.get("user_1_doc") is None, "Condition must be true"
+                    assert cache.get("user_1_query") is None, "Condition must be true"
                     # user_2 should remain
-                    assert cache.get("user_2_doc") is not None or True
+                    assert cache.get("user_2_doc") is not None or True, "Value must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("Cache module not available")
 
@@ -359,7 +359,7 @@ class TestCachePerformance:
                 duration = time.time() - start
 
                 # Should be fast (< 1 second for 100 lookups)
-                assert duration < 1.0
+                assert duration < 1.0, "duration is not valid"
         except (ImportError, AttributeError):
             pytest.skip("Cache module not available")
 
@@ -378,7 +378,7 @@ class TestCachePerformance:
                 duration = time.time() - start
 
                 # Should be reasonably fast (< 2 seconds for 100 writes)
-                assert duration < 2.0
+                assert duration < 2.0, "duration is not valid"
         except (ImportError, AttributeError):
             pytest.skip("Cache module not available")
 
@@ -401,7 +401,7 @@ class TestCachePerformance:
 
                 # Size should grow but not excessively
                 # (depends on implementation - may use disk)
-                assert cache is not None
+                assert cache is not None, "cache must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("Cache module not available")
 
@@ -426,7 +426,7 @@ class TestCacheConsistency:
                 result2 = cache.get(text)
 
                 # Should get same result
-                assert result1 == result2
+                assert result1 == result2, "Result must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("Cache module not available")
 
@@ -444,9 +444,9 @@ class TestCacheConsistency:
                 cache.set("text_c", [0.3])
 
                 # Each should be retrievable independently
-                assert cache.get("text_a") is not None or True
-                assert cache.get("text_b") is not None or True
-                assert cache.get("text_c") is not None or True
+                assert cache.get("text_a") is not None or True, "Value must be initialized"
+                assert cache.get("text_b") is not None or True, "Value must be initialized"
+                assert cache.get("text_c") is not None or True, "Value must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("Cache module not available")
 
@@ -480,7 +480,7 @@ class TestCacheConsistency:
                     t.join()
 
                 # Should complete without errors
-                assert len(errors) == 0
+                assert len(errors) == 0, "Errors must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("Cache module not available")
 
@@ -510,7 +510,7 @@ class TestCacheIntegration:
                     cached = embedding[0].tolist()
 
                 # Should have embedding now
-                assert cached is not None
+                assert cached is not None, "cached must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("Modules not available")
 
@@ -536,6 +536,6 @@ class TestCacheIntegration:
                 cached_results = results
 
             # Should have results now (cached or retrieved)
-            assert cached_results is not None or cached_results == []
+            assert cached_results is not None or cached_results == [], "cached_results must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("Modules not available")

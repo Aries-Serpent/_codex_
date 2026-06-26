@@ -76,10 +76,10 @@ def optimizer(config, monitor):
 
 def test_initialization(optimizer):
     """Test optimizer initialization."""
-    assert optimizer.config.uncertainty
-    assert optimizer.h_bar == 1.0
-    assert optimizer.uncertainty_threshold == 0.1
-    assert len(optimizer.test_history) == 0
+    assert optimizer.config.uncertainty, "Condition must be true"
+    assert optimizer.h_bar == 1.0, "h_bar is not valid"
+    assert optimizer.uncertainty_threshold == 0.1, "uncertainty_threshold is not valid"
+    assert len(optimizer.test_history) == 0, "Collection must not be empty"
 
 
 def test_update_test_metrics(optimizer):
@@ -95,19 +95,19 @@ def test_update_test_metrics(optimizer):
 
     optimizer.update_test_metrics(metrics)
 
-    assert "test_001" in optimizer.test_history
-    assert optimizer.test_history["test_001"] == metrics
+    assert "test_001" in optimizer.test_history, "Condition must be true"
+    assert optimizer.test_history["test_001"] == metrics, "Condition must be true"
 
 
 def test_calculate_priority_new_test(optimizer):
     """Test priority calculation for new test."""
     priority = optimizer.calculate_priority("test_new", 2000.0)
 
-    assert priority.test_id == "test_new"
-    assert priority.priority_score == 0.5
-    assert priority.uncertainty == 1.0
-    assert priority.recommended_action == "run"
-    assert "no history" in priority.reasoning.lower()
+    assert priority.test_id == "test_new", "test_id is not valid"
+    assert priority.priority_score == 0.5, "priority_score is not valid"
+    assert priority.uncertainty == 1.0, "uncertainty is not valid"
+    assert priority.recommended_action == "run", "recommended_action is not valid"
+    assert "no history" in priority.reasoning.lower(), "Condition must be true"
 
 
 def test_calculate_priority_high_risk_test(optimizer):
@@ -124,9 +124,9 @@ def test_calculate_priority_high_risk_test(optimizer):
 
     priority = optimizer.calculate_priority("test_high_risk", 2000.0)
 
-    assert priority.test_id == "test_high_risk"
-    assert priority.priority_score > 0.7  # High priority
-    assert priority.recommended_action == "run"
+    assert priority.test_id == "test_high_risk", "test_id is not valid"
+    assert priority.priority_score > 0.7, "priority_score must be greater than zero"
+    assert priority.recommended_action == "run", "recommended_action is not valid"
 
 
 def test_calculate_priority_low_value_test(optimizer):
@@ -143,8 +143,8 @@ def test_calculate_priority_low_value_test(optimizer):
 
     priority = optimizer.calculate_priority("test_low_value", 2000.0)
 
-    assert priority.test_id == "test_low_value"
-    assert priority.priority_score < 0.4  # Low priority
+    assert priority.test_id == "test_low_value", "Value must be initialized"
+    assert priority.priority_score < 0.4, "priority_score is not valid"
     assert priority.recommended_action in ["skip", "defer"]
 
 
@@ -164,7 +164,7 @@ def test_uncertainty_principle(optimizer):
 
     # Uncertainty product should be ≥ ℏ/2
     min_uncertainty = optimizer.h_bar / 2.0
-    assert priority.uncertainty >= min_uncertainty
+    assert priority.uncertainty >= min_uncertainty, "uncertainty must be greater than zero"
 
 
 def test_optimize_test_schedule_within_budget(optimizer):
@@ -188,13 +188,13 @@ def test_optimize_test_schedule_within_budget(optimizer):
     # Optimize with 30s budget (should select 3 tests)
     selected, priorities = optimizer.optimize_test_schedule(tests, 30.0, 2000.0)
 
-    assert len(selected) <= 3
-    assert len(priorities) == 5
+    assert len(selected) <= 3, "Selected must not be empty"
+    assert len(priorities) == 5, "Priorities must not be empty"
 
     # Higher-priority tests should be selected first
     if len(selected) > 1:
         for i in range(len(selected) - 1):
-            assert (
+            assert (, "Condition must be true"
                 priorities[selected[i]].priority_score >= priorities[selected[i + 1]].priority_score
             )
 
@@ -217,8 +217,8 @@ def test_optimize_test_schedule_unlimited_budget(optimizer):
     selected, _priorities = optimizer.optimize_test_schedule(tests, 1000.0, 2000.0)
 
     # All tests should be selected with large budget
-    assert len(selected) == 3
-    assert set(selected) == set(tests)
+    assert len(selected) == 3, "Selected must not be empty"
+    assert set(selected) == set(tests), "Condition must be true"
 
 
 def test_optimize_test_schedule_zero_budget(optimizer):
@@ -239,7 +239,7 @@ def test_optimize_test_schedule_zero_budget(optimizer):
     selected, _priorities = optimizer.optimize_test_schedule(tests, 0.0, 2000.0)
 
     # No tests should be selected with zero budget
-    assert len(selected) == 0
+    assert len(selected) == 0, "Selected must not be empty"
 
 
 def test_optimize_test_schedule_unknown_tests(optimizer):
@@ -249,7 +249,7 @@ def test_optimize_test_schedule_unknown_tests(optimizer):
     selected, _priorities = optimizer.optimize_test_schedule(tests, 25.0, 2000.0)
 
     # Should handle unknown tests (default 10s each)
-    assert len(selected) <= 2  # 25s budget, 10s per test
+    assert len(selected) <= 2, "Selected must not be empty"
 
 
 def test_compute_uncertainty_bound(optimizer):
@@ -259,18 +259,18 @@ def test_compute_uncertainty_bound(optimizer):
 
     bound = optimizer.compute_uncertainty_bound(energy, time)
 
-    assert bound == 0.24
-    assert bound >= optimizer.h_bar / 2.0 or bound < optimizer.h_bar / 2.0  # Can be either
+    assert bound == 0.24, "bound is not valid"
+    assert bound >= optimizer.h_bar / 2.0 or bound < optimizer.h_bar / 2.0, "bound must be greater than zero"
 
 
 def test_get_statistics_empty(optimizer):
     """Test statistics with no test history."""
     stats = optimizer.get_statistics()
 
-    assert stats["total_tests"] == 0
-    assert stats["avg_execution_time"] == 0.0
-    assert stats["avg_failure_rate"] == 0.0
-    assert stats["avg_coverage"] == 0.0
+    assert stats["total_tests"] == 0, "Condition must be true"
+    assert stats["avg_execution_time"] == 0.0, "Condition must be true"
+    assert stats["avg_failure_rate"] == 0.0, "Condition must be true"
+    assert stats["avg_coverage"] == 0.0, "Condition must be true"
 
 
 def test_get_statistics_with_data(optimizer):
@@ -289,10 +289,10 @@ def test_get_statistics_with_data(optimizer):
 
     stats = optimizer.get_statistics()
 
-    assert stats["total_tests"] == 3
-    assert abs(stats["avg_execution_time"] - 10.0) < 0.01  # (5 + 10 + 15) / 3
-    assert abs(stats["avg_failure_rate"] - 0.1) < 0.01  # (0.0 + 0.1 + 0.2) / 3
-    assert abs(stats["avg_coverage"] - 0.3) < 0.01  # (0.0 + 0.3 + 0.6) / 3
+    assert stats["total_tests"] == 3, "Condition must be true"
+    assert abs(stats["avg_execution_time"] - 10.0) < 0.01, "Condition must be true"
+    assert abs(stats["avg_failure_rate"] - 0.1) < 0.01, "Condition must be true"
+    assert abs(stats["avg_coverage"] - 0.3) < 0.01, "Condition must be true"
 
 
 def test_recency_factor_recent_failure(optimizer):
@@ -322,7 +322,7 @@ def test_recency_factor_recent_failure(optimizer):
     priority_old = optimizer.calculate_priority("test_old", 2000.0)
 
     # Recent failure should have higher priority
-    assert priority_recent.priority_score > priority_old.priority_score
+    assert priority_recent.priority_score > priority_old.priority_score, "priority_score must be greater than zero"
 
 
 def test_execution_time_penalty(optimizer):
@@ -352,7 +352,7 @@ def test_execution_time_penalty(optimizer):
     priority_slow = optimizer.calculate_priority("test_slow", 2000.0)
 
     # Fast test should have higher or equal priority
-    assert priority_fast.priority_score >= priority_slow.priority_score
+    assert priority_fast.priority_score >= priority_slow.priority_score, "priority_score must be greater than zero"
 
 
 def test_integration_with_monitor():
@@ -398,13 +398,13 @@ def test_integration_with_monitor():
         priority = optimizer.calculate_priority("test_monitored", 2000.0)
 
         # Verify metrics were recorded
-        assert priority.test_id == "test_monitored"
+        assert priority.test_id == "test_monitored", "test_id is not valid"
 
         # Optimize schedule
         tests = ["test_monitored"]
         selected, _priorities = optimizer.optimize_test_schedule(tests, 10.0, 2000.0)
 
-        assert len(selected) == 1
+        assert len(selected) == 1, "Selected must not be empty"
     finally:
         Path(db_path).unlink(missing_ok=True)
 
@@ -425,6 +425,6 @@ def test_priority_deterministic(optimizer):
     priority1 = optimizer.calculate_priority("test_deterministic", 2000.0)
     priority2 = optimizer.calculate_priority("test_deterministic", 2000.0)
 
-    assert priority1.priority_score == priority2.priority_score
-    assert priority1.uncertainty == priority2.uncertainty
-    assert priority1.recommended_action == priority2.recommended_action
+    assert priority1.priority_score == priority2.priority_score, "priority_score is not valid"
+    assert priority1.uncertainty == priority2.uncertainty, "uncertainty is not valid"
+    assert priority1.recommended_action == priority2.recommended_action, "recommended_action is not valid"

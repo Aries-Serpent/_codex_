@@ -7,7 +7,7 @@ Test module for sanity.
 
 def test_sanity():
     # Minimal gating test to validate setup
-    assert 1 + 1 == 2
+    assert 1 + 1 == 2, "1 is not valid"
 
 
 def test_package_import():

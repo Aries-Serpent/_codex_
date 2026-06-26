@@ -43,9 +43,9 @@ def test_server_listtools_request() -> None:
     response: Optional[dict[str, Any]] = _run(server.handle_request(request))
 
     # Assert: JSON-RPC response structure
-    assert response is not None
-    assert response["jsonrpc"] == "2.0"
-    assert response["id"] == "abc"
+    assert response is not None, "response must be initialized"
+    assert response["jsonrpc"] == "2.0", "Response must not be empty"
+    assert response["id"] == "abc", "Response must not be empty"
 
     result = response["result"]
     # Requirement: result must be a plain list
@@ -76,7 +76,7 @@ def test_server_notification_handling() -> None:
     response = _run(server.handle_request(request))
 
     # Requirement: notifications must NOT produce a response
-    assert response is None
+    assert response is None, "Response must not be empty"
 
 
 def test_server_negotiate_version() -> None:
@@ -100,14 +100,14 @@ def test_server_negotiate_version() -> None:
     response: Optional[dict[str, Any]] = _run(server.handle_request(request))
 
     # Assert: JSON-RPC response structure
-    assert response is not None
-    assert response["jsonrpc"] == "2.0"
-    assert response["id"] == "vneg"
+    assert response is not None, "response must be initialized"
+    assert response["jsonrpc"] == "2.0", "Response must not be empty"
+    assert response["id"] == "vneg", "Response must not be empty"
 
     # Requirement: result must be a plain string (the negotiated version)
     result = response["result"]
     assert isinstance(result, str)
-    assert result == "1.0"
+    assert result == "1.0", "Result must not be empty"
 
 
 def test_server_negotiate_version_no_overlap() -> None:
@@ -130,12 +130,12 @@ def test_server_negotiate_version_no_overlap() -> None:
     response: Optional[dict[str, Any]] = _run(server.handle_request(request))
 
     # Assert: JSON-RPC error response
-    assert response is not None
-    assert response["jsonrpc"] == "2.0"
-    assert response["id"] == "vneg-no-overlap"
-    assert "error" in response
-    assert response["error"]["code"] == -32602
-    assert "No compatible version found" in response["error"]["message"]
+    assert response is not None, "response must be initialized"
+    assert response["jsonrpc"] == "2.0", "Response must not be empty"
+    assert response["id"] == "vneg-no-overlap", "Response must not be empty"
+    assert "error" in response, "Response must not be empty"
+    assert response["error"]["code"] == -32602, "Response must not be empty"
+    assert "No compatible version found" in response["error"]["message"], "Response must not be empty"
 
 
 async def _stdio_round_trip() -> bytes:
@@ -162,7 +162,7 @@ async def _stdio_round_trip() -> bytes:
     reader.feed_eof()
 
     message = await transport.read_message()
-    assert message["id"] == 1
+    assert message["id"] == 1, "Condition must be true"
 
     await transport.write_message({"ok": True})
     return writer.buffer
@@ -170,8 +170,8 @@ async def _stdio_round_trip() -> bytes:
 
 def test_stdio_transport_round_trip() -> None:
     output = _run(_stdio_round_trip())
-    assert output.endswith(b"\n")
-    assert b'"ok":true' in output
+    assert output.endswith(b"\n"), "Condition must be true"
+    assert b'"ok":true' in output, "Condition must be true"
 
 
 def test_stdio_transport_raises_error_on_invalid_json() -> None:
@@ -197,7 +197,7 @@ def test_stdio_transport_handles_wait_for_timeout(monkeypatch: pytest.MonkeyPatc
         reader = asyncio.StreamReader()
         transport = StdioTransport(reader=reader, writer=None)
         monkeypatch.setattr(asyncio, "wait_for", _close_and_raise_timeout)
-        assert await transport.read_message() is None
+        assert await transport.read_message() is None, "Condition must be true"
 
     _run(_exercise())
 
@@ -241,7 +241,7 @@ def test_stdio_transport_builds_writer_from_event_loop(monkeypatch: pytest.Monke
         writer = await transport._get_writer()
         return isinstance(writer, _FakeWriter)
 
-    assert _run(_verify_writer_creation()) is True
+    assert _run(_verify_writer_creation()) is True, "Condition must be true"
 
 
 def test_stdio_transport_returns_none_for_blank_lines() -> None:
@@ -252,7 +252,7 @@ def test_stdio_transport_returns_none_for_blank_lines() -> None:
         reader.feed_eof()
         return await transport.read_message()
 
-    assert _run(_exercise()) is None
+    assert _run(_exercise()) is None, "Condition must be true"
 
 
 def test_stdio_transport_returns_none_for_eof() -> None:
@@ -262,7 +262,7 @@ def test_stdio_transport_returns_none_for_eof() -> None:
         eof_reader.feed_eof()
         return await eof_transport.read_message()
 
-    assert _run(_exercise()) is None
+    assert _run(_exercise()) is None, "Condition must be true"
 
 
 def test_stdio_transport_rejects_invalid_encoding() -> None:
@@ -351,7 +351,7 @@ def test_close_swallows_writer_wait_closed_errors() -> None:
         await transport.close()
         return writer.closed
 
-    assert _run(_exercise()) is True
+    assert _run(_exercise()) is True, "Condition must be true"
 
 
 def test_mock_stdio_transport_buffers_messages() -> None:

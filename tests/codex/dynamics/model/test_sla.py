@@ -22,9 +22,9 @@ class TestSLAPauseCondition:
             operator="equals",
             value="paused",
         )
-        assert condition.field == "status"
-        assert condition.operator == "equals"
-        assert condition.value == "paused"
+        assert condition.field == "status", "field is not valid"
+        assert condition.operator == "equals", "operator is not valid"
+        assert condition.value == "paused", "Value must be initialized"
 
     def test_evaluate_equals(self):
         """Test evaluating equals operator."""
@@ -34,8 +34,8 @@ class TestSLAPauseCondition:
             value="paused",
         )
 
-        assert condition.evaluate({"status": "paused"}) is True
-        assert condition.evaluate({"status": "active"}) is False
+        assert condition.evaluate({"status": "paused"}) is True, "Condition must be true"
+        assert condition.evaluate({"status": "active"}) is False, "Condition must be true"
 
     def test_evaluate_contains(self):
         """Test evaluating contains operator."""
@@ -45,8 +45,8 @@ class TestSLAPauseCondition:
             value="hold",
         )
 
-        assert condition.evaluate({"tags": "on_hold"}) is True
-        assert condition.evaluate({"tags": "active"}) is False
+        assert condition.evaluate({"tags": "on_hold"}) is True, "Condition must be true"
+        assert condition.evaluate({"tags": "active"}) is False, "Condition must be true"
 
 
 class TestSLAPolicy:
@@ -60,9 +60,9 @@ class TestSLAPolicy:
             target_minutes=60,
             effective_date=datetime.now(UTC).isoformat(),
         )
-        assert policy.name == "test_policy"
-        assert policy.metric == SLAMetric.FIRST_RESPONSE
-        assert policy.target_minutes == 60
+        assert policy.name == "test_policy", "name is not valid"
+        assert policy.metric == SLAMetric.FIRST_RESPONSE, "Response must not be empty"
+        assert policy.target_minutes == 60, "target_minutes is not valid"
 
     def test_policy_with_pause_conditions(self):
         """Test policy with pause conditions."""
@@ -80,9 +80,9 @@ class TestSLAPolicy:
             effective_date=datetime.now(UTC).isoformat(),
         )
 
-        assert len(policy.pause_conditions) == 1
-        assert policy.is_paused({"status": "paused"}) is True
-        assert policy.is_paused({"status": "active"}) is False
+        assert len(policy.pause_conditions) == 1, "Collection must not be empty"
+        assert policy.is_paused({"status": "paused"}) is True, "Condition must be true"
+        assert policy.is_paused({"status": "active"}) is False, "Condition must be true"
 
     def test_calculate_deadline(self):
         """Test SLA deadline calculation."""
@@ -98,7 +98,7 @@ class TestSLAPolicy:
         deadline = policy.calculate_deadline(start)
 
         expected = start + timedelta(minutes=60)
-        assert abs((deadline - expected).total_seconds()) < 1
+        assert abs((deadline - expected).total_seconds()) < 1, "Condition must be true"
 
     def test_policy_diff(self):
         """Test diff method for policy comparison."""
@@ -117,8 +117,8 @@ class TestSLAPolicy:
         )
 
         patches = policy1.diff(policy2)
-        assert len(patches) > 0
-        assert any(p["path"] == "/target_minutes" for p in patches)
+        assert len(patches) > 0, "Patches must not be empty"
+        assert any(p["path"] == "/target_minutes" for p in patches), "Condition must be true"
 
     def test_to_d365_format(self):
         """Test conversion to D365 API format."""
@@ -139,10 +139,10 @@ class TestSLAPolicy:
 
         d365_format = policy.to_d365_format()
 
-        assert d365_format["name"] == "test_policy"
-        assert d365_format["slametric"] == "first_response"
-        assert d365_format["successconditions"]["target_minutes"] == 60
-        assert len(d365_format["pauseconfiguration"]) == 1
+        assert d365_format["name"] == "test_policy", "d365_f is not valid"
+        assert d365_format["slametric"] == "first_response", "Response must not be empty"
+        assert d365_format["successconditions"]["target_minutes"] == 60, "d365_f is not valid"
+        assert len(d365_format["pauseconfiguration"]) == 1, "Collection must not be empty"
 
 
 class TestSLAPolicyRegistry:
@@ -154,7 +154,7 @@ class TestSLAPolicyRegistry:
             policies=[],
             last_updated=datetime.now(UTC).isoformat(),
         )
-        assert len(registry.policies) == 0
+        assert len(registry.policies) == 0, "Collection must not be empty"
 
     def test_add_policy(self):
         """Test adding a policy to registry."""
@@ -171,7 +171,7 @@ class TestSLAPolicyRegistry:
         )
 
         registry.add_policy(policy)
-        assert len(registry.policies) == 1
+        assert len(registry.policies) == 1, "Collection must not be empty"
 
     def test_get_policy(self):
         """Test retrieving a policy from registry."""
@@ -189,11 +189,11 @@ class TestSLAPolicyRegistry:
         )
 
         retrieved = registry.get_policy("test_policy")
-        assert retrieved is not None
-        assert retrieved.name == "test_policy"
+        assert retrieved is not None, "retrieved must be initialized"
+        assert retrieved.name == "test_policy", "name is not valid"
 
         missing = registry.get_policy("nonexistent")
-        assert missing is None
+        assert missing is None, "missing is not valid"
 
 
 if __name__ == "__main__":

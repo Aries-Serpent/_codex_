@@ -30,8 +30,8 @@ def test_allow_rule_preserves_original_text_when_overriding_block():
 
     result = filters.evaluate(text)
 
-    assert result.allowed is True
-    assert result.sanitized_text == text
+    assert result.allowed is True, "Result must not be empty"
+    assert result.sanitized_text == text, "Result must not be empty"
 
 
 def test_block_rule_redacts_text_when_not_overridden():
@@ -40,8 +40,8 @@ def test_block_rule_redacts_text_when_not_overridden():
 
     result = filters.evaluate(text)
 
-    assert result.allowed is False
-    assert result.sanitized_text == "{REDACTED} production"
+    assert result.allowed is False, "Result must not be empty"
+    assert result.sanitized_text == "{REDACTED} production", "Result must not be empty"
 
 
 def test_allow_rule_retains_redactions_for_secret_matches():
@@ -73,5 +73,5 @@ def test_allow_rule_retains_redactions_for_secret_matches():
 
     result = filters.evaluate(text)
 
-    assert result.allowed is True
-    assert result.sanitized_text == "drop database schema_example {REDACTED}"
+    assert result.allowed is True, "Result must not be empty"
+    assert result.sanitized_text == "drop database schema_example {REDACTED}", "Result must not be empty"

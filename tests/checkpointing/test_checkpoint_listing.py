@@ -9,7 +9,7 @@ class TestCheckpointListing:
     def test_list_empty_dir(self, tmp_path):
         """Test listing empty directory."""
         result = list_checkpoints(tmp_path)
-        assert result == []
+        assert result == [], "Result must not be empty"
 
     def test_list_checkpoints(self, tmp_path):
         """Test listing checkpoints."""
@@ -18,7 +18,7 @@ class TestCheckpointListing:
         (tmp_path / "checkpoint_2.pt").touch()
 
         result = list_checkpoints(tmp_path)
-        assert len(result) == 2
+        assert len(result) == 2, "Result must not be empty"
 
     def test_retention_policy(self):
         """Test retention policy logic."""
@@ -34,5 +34,5 @@ class TestCheckpointListing:
             keep_days=30,
         )
 
-        assert len(keep) == 2
-        assert len(delete) == 1
+        assert len(keep) == 2, "Keep must not be empty"
+        assert len(delete) == 1, "Delete must not be empty"

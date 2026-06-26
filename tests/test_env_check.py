@@ -23,8 +23,8 @@ def test_run_health_check(monkeypatch, tmp_path):
     monkeypatch.setattr(env_check, "_run", fake_run)
 
     result = env_check.run_health_check(tmp_path)
-    assert all(code == 0 for code in result.values())
-    assert len(calls) == 3
+    assert all(code == 0 for code in result.values()), "Result must not be empty"
+    assert len(calls) == 3, "Calls must not be empty"
 
 
 def test_main_aggregates_return_codes(monkeypatch, tmp_path):
@@ -36,4 +36,4 @@ def test_main_aggregates_return_codes(monkeypatch, tmp_path):
         lambda root: {"env_snapshot_rc": 0, "dependency_audit_rc": 1, "secret_scan_rc": 0},
     )
     rc = env_check.main(["--repo-root", str(tmp_path)])
-    assert rc == 1
+    assert rc == 1, "rc is not valid"

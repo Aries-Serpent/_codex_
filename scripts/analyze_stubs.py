@@ -81,7 +81,7 @@ def scan_for_stubs(source_dirs):
 
             except Exception as e:
                 error_type = type(e).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.debug("Exception: <ERROR_TYPE>")
                 print(f"Warning: Failed to scan {py_file}: <ERROR_TYPE>")
 
     return stubs

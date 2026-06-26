@@ -50,7 +50,7 @@ def test_session_query_cli(tmp_path):
         "2025-01-01T00:00:00Z\tS1\tuser\thi",
         "2025-01-01T00:00:01Z\tS1\tassistant\tyo",
     ]
-    assert lines == expected
+    assert lines == expected, "lines is not valid"
 
 
 def test_session_query_cli_session_with_last(tmp_path):
@@ -79,4 +79,4 @@ def test_session_query_cli_session_with_last(tmp_path):
         "2025-01-01T00:00:01Z\tS1\tassistant\tyo",
         "2025-01-01T00:00:02Z\tS1\ttool\tstep",
     ]
-    assert lines == expected
+    assert lines == expected, "lines is not valid"

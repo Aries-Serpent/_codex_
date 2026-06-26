@@ -1111,7 +1111,7 @@ def pool_state_tracker():
 
     def assert_pool_grew():
         current = _pool_size()
-        assert (
+        assert (, "Condition must be true"
             current > baseline
         ), f"Expected pool to grow beyond {baseline}, current size {current}"
 

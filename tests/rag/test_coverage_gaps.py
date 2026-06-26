@@ -161,8 +161,8 @@ class TestMultiIndexRetriever:
 
         mir.retrievers = [r1, r2]
         results = mir.query("test query", top_k=2)
-        assert len(results) == 2
-        assert results[0]["index_name"] == "idx1"
+        assert len(results) == 2, "Results must not be empty"
+        assert results[0]["index_name"] == "idx1", "Result must not be empty"
 
     def test_query_handles_retriever_exception(self):
         from codex.rag import retriever as _mod
@@ -175,7 +175,7 @@ class TestMultiIndexRetriever:
         mir.retrievers = [r1]
 
         results = mir.query("test", top_k=5)
-        assert results == []
+        assert results == [], "Result must not be empty"
 
     def test_get_stats_delegates_to_retrievers(self):
         from codex.rag import retriever as _mod
@@ -185,7 +185,7 @@ class TestMultiIndexRetriever:
         r1.get_stats.return_value = {"index": "idx1", "num_chunks": 10}
         mir.retrievers = [r1]
         stats = mir.get_stats()
-        assert stats[0]["index"] == "idx1"
+        assert stats[0]["index"] == "idx1", "Condition must be true"
 
 
 # ===========================================================================
@@ -210,28 +210,28 @@ class TestCachedRetriever:
 
     def test_normalize_query_lowercases_and_strips(self):
         cr = self._make_cached_retriever()
-        assert cr._normalize_query("  Hello WORLD  ") == "hello world"
+        assert cr._normalize_query("  Hello WORLD  ") == "hello world", "Condition must be true"
 
     def test_normalize_query_off_returns_original(self):
         cr = self._make_cached_retriever()
         cr.normalize_queries = False
-        assert cr._normalize_query("  Hello  ") == "  Hello  "
+        assert cr._normalize_query("  Hello  ") == "  Hello  ", "Condition must be true"
 
     def test_make_cache_key_is_deterministic(self):
         cr = self._make_cached_retriever()
         k1 = cr._make_cache_key("test query", 5, None)
         k2 = cr._make_cache_key("test query", 5, None)
-        assert k1 == k2
+        assert k1 == k2, "k1 is not valid"
 
     def test_make_cache_key_varies_with_params(self):
         cr = self._make_cached_retriever()
         k1 = cr._make_cache_key("test", 5, None)
         k2 = cr._make_cache_key("test", 10, None)
-        assert k1 != k2
+        assert k1 != k2, "k1 is not valid"
 
     def test_is_cache_valid_false_for_missing_key(self):
         cr = self._make_cached_retriever()
-        assert cr._is_cache_valid("nonexistent_key") is False
+        assert cr._is_cache_valid("nonexistent_key") is False, "Condition must be true"
 
     def test_is_cache_valid_becomes_false_after_explicit_invalidation(self):
         """Verify that removing the timestamp entry invalidates _is_cache_valid.
@@ -247,11 +247,11 @@ class TestCachedRetriever:
         key = "k1"
         cr.query_cache.put(key, [{"text": "cached"}])
         cr.cache_timestamps[key] = time.time()
-        assert cr._is_cache_valid(key) is True
+        assert cr._is_cache_valid(key) is True, "Condition must be true"
 
         # Remove timestamp entry — this is the authoritative invalidation path.
         cr.cache_timestamps.pop(key, None)
-        assert cr._is_cache_valid(key) is False
+        assert cr._is_cache_valid(key) is False, "Condition must be true"
 
     def test_is_cache_valid_false_for_expired_entry(self):
         import time
@@ -259,7 +259,7 @@ class TestCachedRetriever:
         cr = self._make_cached_retriever()
         cr.cache_ttl = 0  # immediately expired
         cr.cache_timestamps["k1"] = time.time() - 1
-        assert cr._is_cache_valid("k1") is False
+        assert cr._is_cache_valid("k1") is False, "Condition must be true"
 
     def test_cache_hit_returns_cached_results(self):
         import time
@@ -272,7 +272,7 @@ class TestCachedRetriever:
 
         with patch.object(cr, "query", side_effect=AssertionError("should not call")):
             results = cr.query_with_cache("hello", top_k=5)
-        assert results == cached
+        assert results == cached, "Result must not be empty"
 
     def test_cache_miss_calls_query_and_caches(self):
         cr = self._make_cached_retriever()
@@ -281,9 +281,9 @@ class TestCachedRetriever:
         with patch.object(cr, "query", return_value=expected):
             results = cr.query_with_cache("new query", top_k=5)
 
-        assert results == expected
+        assert results == expected, "Result must not be empty"
         key = cr._make_cache_key("new query", 5, None)
-        assert cr.query_cache.get(key) == expected
+        assert cr.query_cache.get(key) == expected, "Condition must be true"
 
     def test_clear_cache_empties_all(self):
         import time
@@ -292,12 +292,12 @@ class TestCachedRetriever:
         cr.query_cache.put("k1", [])
         cr.cache_timestamps["k1"] = time.time()
         cr.clear_cache()
-        assert len(cr.cache_timestamps) == 0
+        assert len(cr.cache_timestamps) == 0, "Collection must not be empty"
 
     def test_get_cache_stats_includes_ttl(self):
         cr = self._make_cached_retriever()
         stats = cr.get_cache_stats()
-        assert stats["ttl"] == 60
+        assert stats["ttl"] == 60, "Condition must be true"
 
     def test_invalidate_expired_removes_stale_entries(self):
         import time
@@ -307,7 +307,7 @@ class TestCachedRetriever:
         cr.cache_timestamps["k1"] = time.time() - 1
         cr.query_cache.put("k1", [])
         cr.invalidate_expired()
-        assert "k1" not in cr.cache_timestamps
+        assert "k1" not in cr.cache_timestamps, "Condition must be true"
 
 
 # ===========================================================================
@@ -332,7 +332,7 @@ class TestRAGRetriever:
                 index_dir=str(tmp_path),
                 index_name="test",
             )
-        assert rr._retriever is mock_retriever
+        assert rr._retriever is mock_retriever, "_retriever is not valid"
 
     def test_query_delegates_to_retriever(self, tmp_path):
         from codex.rag import retriever as _mod
@@ -363,7 +363,7 @@ class TestHasMetaTensorsSubmoduleWalk:
             buffers=lambda: iter([]),
             named_modules=lambda: [("sub", submod)],
         )
-        assert has_meta_tensors(model) is True
+        assert has_meta_tensors(model) is True, "has_meta_tens is not valid"
 
     def test_submodule_with_meta_device_param_returns_true(self):
         from codex.rag.utils import has_meta_tensors
@@ -378,7 +378,7 @@ class TestHasMetaTensorsSubmoduleWalk:
             buffers=lambda: iter([]),
             named_modules=lambda: [("sub", submod)],
         )
-        assert has_meta_tensors(model) is True
+        assert has_meta_tensors(model) is True, "has_meta_tens is not valid"
 
     def test_submodule_with_meta_buffer_returns_true(self):
         from codex.rag.utils import has_meta_tensors
@@ -392,7 +392,7 @@ class TestHasMetaTensorsSubmoduleWalk:
             buffers=lambda: iter([]),
             named_modules=lambda: [("sub", submod)],
         )
-        assert has_meta_tensors(model) is True
+        assert has_meta_tensors(model) is True, "has_meta_tens is not valid"
 
     def test_model_device_attribute_meta_returns_true(self):
         from codex.rag.utils import has_meta_tensors
@@ -403,14 +403,14 @@ class TestHasMetaTensorsSubmoduleWalk:
             buffers=lambda: iter([]),
             device=device,
         )
-        assert has_meta_tensors(model) is True
+        assert has_meta_tensors(model) is True, "has_meta_tens is not valid"
 
     def test_exception_in_has_meta_tensors_returns_none(self):
         from codex.rag.utils import has_meta_tensors
 
         model = SimpleNamespace(parameters=MagicMock(side_effect=RuntimeError("boom")))
         result = has_meta_tensors(model)
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_named_parameters_typeerror_fallback(self):
         from codex.rag.utils import has_meta_tensors
@@ -427,7 +427,7 @@ class TestHasMetaTensorsSubmoduleWalk:
             named_modules=lambda: [("sub", submod)],
         )
         result = has_meta_tensors(model)
-        assert result is False
+        assert result is False, "Result must not be empty"
 
     def test_named_buffers_typeerror_fallback(self):
         from codex.rag.utils import has_meta_tensors
@@ -444,7 +444,7 @@ class TestHasMetaTensorsSubmoduleWalk:
             named_modules=lambda: [("sub", submod)],
         )
         result = has_meta_tensors(model)
-        assert result is False
+        assert result is False, "Result must not be empty"
 
 
 # ===========================================================================
@@ -459,7 +459,7 @@ class TestSafeModelToDevice:
         model = object()
         with patch("codex.rag.utils.has_meta_tensors", return_value=None):
             result = safe_model_to_device(model, device="cpu")
-        assert result is model
+        assert result is model, "Result must not be empty"
 
     def test_raises_when_meta_tensors_and_no_to_empty(self):
         from codex.rag.utils import safe_model_to_device
@@ -481,7 +481,7 @@ class TestSafeModelToDevice:
         with patch("codex.rag.utils.has_meta_tensors", return_value=True):
             result = safe_model_to_device(model, device="cpu")
         model.to_empty.assert_called_once_with(device="cpu")
-        assert result is model
+        assert result is model, "Result must not be empty"
 
     def test_meta_path_skips_reset_when_no_modules(self):
         from codex.rag.utils import safe_model_to_device
@@ -492,7 +492,7 @@ class TestSafeModelToDevice:
 
         with patch("codex.rag.utils.has_meta_tensors", return_value=True):
             result = safe_model_to_device(model, device="cpu")
-        assert result is materialized
+        assert result is materialized, "Result must not be empty"
 
     def test_import_error_falls_back_to_try_model_to(self):
         from codex.rag.utils import safe_model_to_device
@@ -502,7 +502,7 @@ class TestSafeModelToDevice:
 
         with patch("codex.rag.utils.has_meta_tensors", side_effect=ImportError("no torch")):
             result = safe_model_to_device(model, device="cpu")
-        assert result is model
+        assert result is model, "Result must not be empty"
 
     def test_generic_exception_raises_runtime_error(self):
         from codex.rag.utils import safe_model_to_device
@@ -524,7 +524,7 @@ class TestTryModelTo:
         model = MagicMock()
         model.to.return_value = model
         result = _try_model_to(model, "cpu")
-        assert result is model
+        assert result is model, "Result must not be empty"
         model.to.assert_called()
 
     def test_typeerror_fallback_to_positional(self):
@@ -533,14 +533,14 @@ class TestTryModelTo:
         model = MagicMock()
         model.to.side_effect = [TypeError("no kwargs"), model]
         result = _try_model_to(model, "cpu")
-        assert result is model
+        assert result is model, "Result must not be empty"
 
     def test_returns_model_when_no_to_method(self):
         from codex.rag.utils import _try_model_to
 
         model = SimpleNamespace()  # no .to()
         result = _try_model_to(model, "cpu")
-        assert result is model
+        assert result is model, "Result must not be empty"
 
 
 # ===========================================================================
@@ -635,4 +635,4 @@ class TestManageTenantIndicesError:
             index_names=["idx1"],
             index_dir=str(tmp_path),
         )
-        assert result.success is False
+        assert result.success is False, "Result must not be empty"

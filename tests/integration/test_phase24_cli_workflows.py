@@ -57,7 +57,7 @@ def test_phase24_cli_error_recovery():
     with pytest.raises(ValueError, match="config not found"):
         cli.run(["train", "--config", "missing.yaml"])
     result = cli.run(["train", "--config", "valid.yaml"])
-    assert result.returncode == 0
+    assert result.returncode == 0, "Result must not be empty"
 
 
 @pytest.mark.integration

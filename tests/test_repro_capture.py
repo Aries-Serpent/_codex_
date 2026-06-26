@@ -20,8 +20,8 @@ def test_capture_environment_writes_files(tmp_path: Path, monkeypatch: pytest.Mo
     capture_environment(tmp_path)
     pip_freeze = (tmp_path / "pip_freeze.txt").read_text(encoding="utf-8")
     env_vars = json.loads((tmp_path / "env_vars.json").read_text(encoding="utf-8"))
-    assert pip_freeze
-    assert env_vars["TEST_SECRET_KEY"] == "<redacted>"
+    assert pip_freeze, "pip_freeze is not valid"
+    assert env_vars["TEST_SECRET_KEY"] == "<redacted>", "Condition must be true"
 
     locks_dir = tmp_path / "dependency_locks"
     expected_locks = {

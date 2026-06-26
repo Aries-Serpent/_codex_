@@ -46,8 +46,8 @@ class TestCheckpointUtilities:
         """Test checkpoint path is constructed correctly."""
         with tempfile.TemporaryDirectory() as tmpdir:
             path = Path(tmpdir) / "checkpoint.pt"
-            assert path.parent == Path(tmpdir)
-            assert path.suffix == ".pt"
+            assert path.parent == Path(tmpdir), "parent is not valid"
+            assert path.suffix == ".pt", "suffix is not valid"
 
     def test_checkpoint_metadata_exists(self):
         """Test checkpoint metadata can be created and serialized."""
@@ -59,8 +59,8 @@ class TestCheckpointUtilities:
         }
         json_str = json.dumps(metadata)
         parsed = json.loads(json_str)
-        assert parsed["epoch"] == 1
-        assert parsed["step"] == 100
+        assert parsed["epoch"] == 1, "Condition must be true"
+        assert parsed["step"] == 100, "Condition must be true"
 
     def test_checkpoint_integrity_check(self):
         """Test checkpoint integrity verification."""
@@ -72,17 +72,17 @@ class TestCheckpointUtilities:
 
             # Compute checksum
             checksum1 = sha256sum(test_file)
-            assert checksum1
-            assert len(checksum1) == 64  # SHA256 hex string
+            assert checksum1, "checksum1 is not valid"
+            assert len(checksum1) == 64, "Checksum1 must not be empty"
 
             # Same file should have same checksum
             checksum2 = sha256sum(test_file)
-            assert checksum1 == checksum2
+            assert checksum1 == checksum2, "checksum1 is not valid"
 
             # Modified file should have different checksum
             test_file.write_text("modified content", encoding="utf-8")
             checksum3 = sha256sum(test_file)
-            assert checksum1 != checksum3
+            assert checksum1 != checksum3, "checksum1 is not valid"
 
     def test_checkpoint_metadata_schema(self):
         """Test checkpoint metadata includes required fields."""
@@ -92,9 +92,9 @@ class TestCheckpointUtilities:
             "global_step": 100,
             "timestamp": "2024-01-01",
         }
-        assert "checkpoint_sha256" in metadata
-        assert metadata["epoch"] >= 0
-        assert metadata["global_step"] >= 0
+        assert "checkpoint_sha256" in metadata, "Data must not be empty"
+        assert metadata["epoch"] >= 0, "Value must be greater than zero"
+        assert metadata["global_step"] >= 0, "Value must be greater than zero"
 
     @pytest.mark.skipif(not HAS_TORCH, reason="torch required")
     def test_torch_save_load_cycle(self):
@@ -107,7 +107,7 @@ class TestCheckpointUtilities:
             torch.save(state, path)
 
             loaded = torch.load(path, weights_only=False)
-            assert "tensor" in loaded
+            assert "tensor" in loaded, "Condition must be true"
             assert torch.allclose(loaded["tensor"], state["tensor"])
 
     def test_checkpoint_file_operations(self):
@@ -121,9 +121,9 @@ class TestCheckpointUtilities:
             metadata = {"epoch": 1, "step": 100}
             ckpt_path.write_text(json.dumps(metadata))
 
-            assert ckpt_path.exists()
+            assert ckpt_path.exists(), "Condition must be true"
             loaded = json.loads(ckpt_path.read_text())
-            assert loaded["epoch"] == 1
+            assert loaded["epoch"] == 1, "Condition must be true"
 
     def test_checkpoint_retention_logic(self):
         """Test checkpoint retention policy application."""
@@ -140,9 +140,9 @@ class TestCheckpointUtilities:
         to_keep = checkpoints[-keep_last:]
         to_remove = checkpoints[:-keep_last]
 
-        assert len(to_keep) == 2
-        assert len(to_remove) == 3
-        assert to_keep[-1]["epoch"] == 5
+        assert len(to_keep) == 2, "To_keep must not be empty"
+        assert len(to_remove) == 3, "To_remove must not be empty"
+        assert to_keep[-1]["epoch"] == 5, "Condition must be true"
 
 
 # ============================================================================
@@ -161,7 +161,7 @@ class TestRNGStateManagement:
         random.seed(42)
         val2 = random.random()
 
-        assert val1 == val2
+        assert val1 == val2, "val1 is not valid"
 
     def test_python_random_state_preservation(self):
         """Test Python random state can be saved and restored."""
@@ -176,7 +176,7 @@ class TestRNGStateManagement:
         random.setstate(state1)
         vals_restored = [random.random() for _ in range(5)]
 
-        assert vals == vals_restored
+        assert vals == vals_restored, "vals is not valid"
 
     @pytest.mark.skipif(not HAS_TORCH, reason="torch required")
     def test_torch_rng_seeding(self):
@@ -208,10 +208,10 @@ class TestRNGStateManagement:
         from codex_ml.train_loop import _set_seed
 
         seed1 = _set_seed(42)
-        assert seed1 == 42
+        assert seed1 == 42, "seed1 is not valid"
 
         seed2 = _set_seed(None)  # Should use default
-        assert seed2 == 1234  # Default seed from train_loop
+        assert seed2 == 1234, "seed2 is not valid"
 
 
 # ============================================================================
@@ -238,7 +238,7 @@ class TestDeterminismHelpers:
         os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":16:8"
 
         torch.use_deterministic_algorithms(False)  # Start with False
-        assert not torch.are_deterministic_algorithms_enabled()
+        assert not torch.are_deterministic_algorithms_enabled(), "Condition must be true"
 
     def test_dtype_resolution(self):
         """Test dtype resolution from string."""
@@ -246,17 +246,17 @@ class TestDeterminismHelpers:
 
         # Test valid dtypes
         dtype_fp32 = _resolve_dtype("float32")
-        assert dtype_fp32 is not None or dtype_fp32 is None  # May be None if torch unavailable
+        assert dtype_fp32 is not None or dtype_fp32 is None, "dtype_fp32 must be initialized"
 
         dtype_bf16 = _resolve_dtype("bfloat16")
-        assert dtype_bf16 is not None or dtype_bf16 is None
+        assert dtype_bf16 is not None or dtype_bf16 is None, "dtype_bf16 must be initialized"
 
     def test_device_resolution(self):
         """Test device resolution from string."""
         from codex_ml.train_loop import _resolve_device
 
         device_cpu = _resolve_device("cpu")
-        assert device_cpu is not None or device_cpu is None
+        assert device_cpu is not None or device_cpu is None, "device_cpu must be initialized"
 
         _resolve_device("cuda")
         # Should return None if cuda unavailable
@@ -277,7 +277,7 @@ class TestModelInitialization:
         mock_model.eval = MagicMock(return_value=mock_model)
 
         result = mock_model.to("cpu")
-        assert result is mock_model
+        assert result is mock_model, "Result must not be empty"
         mock_model.to.assert_called_once_with("cpu")
 
     def test_model_state_dict_structure(self):
@@ -288,8 +288,8 @@ class TestModelInitialization:
             "layer2.weight": MagicMock(shape=(5, 3)),
         }
 
-        assert "layer1.weight" in state_dict
-        assert len(state_dict) == 3
+        assert "layer1.weight" in state_dict, "Condition must be true"
+        assert len(state_dict) == 3, "State_dict must not be empty"
 
     def test_model_config_serialization(self):
         """Test model config can be serialized."""
@@ -303,8 +303,8 @@ class TestModelInitialization:
         json_str = json.dumps(config)
         loaded = json.loads(json_str)
 
-        assert loaded["hidden_size"] == 768
-        assert loaded["num_layers"] == 12
+        assert loaded["hidden_size"] == 768, "Condition must be true"
+        assert loaded["num_layers"] == 12, "Condition must be true"
 
     @patch("codex_ml.train_loop.instantiate_model")
     def test_model_loading_with_registry(self, mock_instantiate):
@@ -317,7 +317,7 @@ class TestModelInitialization:
         model = _load_or_create_model(identifier="gpt2", device="cpu", dtype="float32")
 
         # Mock was called (if registry available)
-        assert mock_model is not None or model is not None
+        assert mock_model is not None or model is not None, "mock_model must be initialized"
 
     def test_model_parameter_counting(self):
         """Test model parameter counting utility."""
@@ -349,7 +349,7 @@ class TestModelInitialization:
                 tensor.numel.return_value = 50
 
         params = count_params(state_dict)
-        assert params == 150
+        assert params == 150, "params is not valid"
 
 
 # ============================================================================
@@ -365,7 +365,7 @@ class TestTrainingConfiguration:
         from training.trainer import TrainingState
 
         state = TrainingState()
-        assert state is not None
+        assert state is not None, "state must be initialized"
 
     def test_training_args_parsing(self):
         """Test training arguments can be parsed."""
@@ -377,8 +377,8 @@ class TestTrainingConfiguration:
             per_device_train_batch_size=8,
         )
 
-        assert args.num_train_epochs == 1
-        assert args.per_device_train_batch_size == 8
+        assert args.num_train_epochs == 1, "num_train_epochs is not valid"
+        assert args.per_device_train_batch_size == 8, "per_device_train_batch_size is not valid"
 
     def test_training_config_snapshot(self):
         """Test training config can be snapshotted to JSON."""
@@ -392,7 +392,7 @@ class TestTrainingConfiguration:
         snapshot = json.dumps(config)
         loaded = json.loads(snapshot)
 
-        assert loaded == config
+        assert loaded == config, "loaded is not valid"
 
     def test_hf_trainer_config_validation(self):
         """Test HuggingFace trainer config validation."""
@@ -404,8 +404,8 @@ class TestTrainingConfiguration:
             per_device_train_batch_size=8,
         )
 
-        assert config.num_train_epochs == 1
-        assert config.output_dir == "/tmp/test"
+        assert config.num_train_epochs == 1, "num_train_epochs is not valid"
+        assert config.output_dir == "/tmp/test", "output_dir is not valid"
 
 
 # ============================================================================
@@ -422,10 +422,10 @@ class TestCapabilityDetectors:
 
         with tempfile.TemporaryDirectory() as tmpdir:
             test_path = Path(tmpdir)
-            assert test_path.exists()
+            assert test_path.exists(), "Condition must be true"
 
             nonexistent = Path(tmpdir) / "nonexistent"
-            assert not nonexistent.exists()
+            assert not nonexistent.exists(), "Condition must be true"
 
     def test_file_counting(self):
         """Test file counting in directory."""
@@ -440,7 +440,7 @@ class TestCapabilityDetectors:
             (tmppath / "file3.txt").touch()
 
             py_files = list(tmppath.glob("*.py"))
-            assert len(py_files) == 2
+            assert len(py_files) == 2, "Py_files must not be empty"
 
     def test_content_pattern_matching(self):
         """Test content pattern matching in files."""
@@ -451,19 +451,19 @@ class TestCapabilityDetectors:
             test_file.write_text("import torch\nimport transformers\n")
 
             content = test_file.read_text()
-            assert "torch" in content
-            assert "transformers" in content
+            assert "torch" in content, "Content must not be empty"
+            assert "transformers" in content, "Content must not be empty"
 
     def test_detector_result_scoring(self):
         """Test capability detector result scoring."""
         from codex_ml.detectors.core import clamp01
 
         # Test clamping to [0, 1]
-        assert clamp01(0.5) == 0.5
-        assert clamp01(-0.5) == 0.0
-        assert clamp01(1.5) == 1.0
-        assert clamp01(0.0) == 0.0
-        assert clamp01(1.0) == 1.0
+        assert clamp01(0.5) == 0.5, "Condition must be true"
+        assert clamp01(-0.5) == 0.0, "Condition must be true"
+        assert clamp01(1.5) == 1.0, "Condition must be true"
+        assert clamp01(0.0) == 0.0, "Condition must be true"
+        assert clamp01(1.0) == 1.0, "Condition must be true"
 
     def test_detector_result_structure(self):
         """Test DetectorResult has expected structure."""
@@ -475,9 +475,9 @@ class TestCapabilityDetectors:
             evidence=["test_created", "test_passing"],
         )
 
-        assert result.score == 0.75
-        assert result.category == "testing"
-        assert len(result.evidence) == 2
+        assert result.score == 0.75, "Result must not be empty"
+        assert result.category == "testing", "Result must not be empty"
+        assert len(result.evidence) == 2, "Collection must not be empty"
 
 
 # ============================================================================
@@ -498,8 +498,8 @@ class TestMetricsAndLogging:
             "step": 100,
         }
 
-        assert "loss" in metrics
-        assert metrics["loss"] == 0.5
+        assert "loss" in metrics, "Condition must be true"
+        assert metrics["loss"] == 0.5, "Condition must be true"
 
     def test_metrics_serialization(self):
         """Test metrics can be serialized to JSON."""
@@ -513,8 +513,8 @@ class TestMetricsAndLogging:
         json_str = json.dumps(metrics)
         loaded = json.loads(json_str)
 
-        assert loaded["epoch"] == 1
-        assert loaded["loss"] == 0.5
+        assert loaded["epoch"] == 1, "Condition must be true"
+        assert loaded["loss"] == 0.5, "Condition must be true"
 
     def test_logging_handler_creation(self):
         """Test logging handler can be created."""
@@ -522,7 +522,7 @@ class TestMetricsAndLogging:
         formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
         handler.setFormatter(formatter)
 
-        assert handler.formatter is not None
+        assert handler.formatter is not None, "formatter must be initialized"
 
     def test_metrics_aggregation(self):
         """Test metrics aggregation logic."""
@@ -533,7 +533,7 @@ class TestMetricsAndLogging:
         ]
 
         avg_loss = sum(m["loss"] for m in batch_metrics) / len(batch_metrics)
-        assert 0.45 - 0.01 < avg_loss < 0.45 + 0.01
+        assert 0.45 - 0.01 < avg_loss < 0.45 + 0.01, "01 is not valid"
 
 
 # ============================================================================
@@ -553,8 +553,8 @@ class TestEvaluationUtilities:
             "eval_runtime": 10.5,
         }
 
-        assert "eval_loss" in eval_metrics
-        assert eval_metrics["eval_loss"] == 0.45
+        assert "eval_loss" in eval_metrics, "Condition must be true"
+        assert eval_metrics["eval_loss"] == 0.45, "Condition must be true"
 
     def test_predictions_shape(self):
         """Test prediction tensor shapes."""
@@ -564,8 +564,8 @@ class TestEvaluationUtilities:
         predictions = MagicMock()
         predictions.shape = (batch_size, num_classes)
 
-        assert predictions.shape[0] == batch_size
-        assert predictions.shape[1] == num_classes
+        assert predictions.shape[0] == batch_size, "Condition must be true"
+        assert predictions.shape[1] == num_classes, "Condition must be true"
 
     def test_metric_computation_mock(self):
         """Test metric computation with mocked predictions."""
@@ -577,7 +577,7 @@ class TestEvaluationUtilities:
 
         # Should not raise
         result = _compute_metrics(predictions)
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     def test_eval_dataset_preparation(self):
         """Test evaluation dataset preparation."""
@@ -587,7 +587,7 @@ class TestEvaluationUtilities:
         tokenizer = MagicMock()
         tokenizer.return_value = {"input_ids": [[1, 2, 3]]}
 
-        assert len(texts) == 3
+        assert len(texts) == 3, "Texts must not be empty"
 
 
 # ============================================================================
@@ -606,7 +606,7 @@ class TestEdgeCasesAndErrorHandling:
             ckpt_dir = Path(tmpdir)
 
             checkpoints = list(ckpt_dir.glob("checkpoint_*.pt"))
-            assert len(checkpoints) == 0
+            assert len(checkpoints) == 0, "Checkpoints must not be empty"
 
     def test_corrupted_metadata_file(self):
         """Test handling of corrupted metadata."""
@@ -626,7 +626,7 @@ class TestEdgeCasesAndErrorHandling:
             # Missing "batch_size"
         }
 
-        assert "batch_size" not in config
+        assert "batch_size" not in config, "Condition must be true"
 
     def test_invalid_dtype_specification(self):
         """Test handling of invalid dtype."""
@@ -634,7 +634,7 @@ class TestEdgeCasesAndErrorHandling:
 
         # Should handle gracefully
         result = _resolve_dtype("invalid_dtype")
-        assert result is None or result is not None  # Graceful handling
+        assert result is None or result is not None, "result must be initialized"
 
     def test_nonexistent_model_loading(self):
         """Test handling of nonexistent model."""
@@ -651,14 +651,14 @@ class TestEdgeCasesAndErrorHandling:
         batch_size = 0
 
         # Should handle or raise appropriate error
-        assert batch_size == 0
+        assert batch_size == 0, "batch_size is not valid"
 
     def test_negative_learning_rate_handling(self):
         """Test handling of negative learning rate."""
         lr = -1e-4
 
         # Should fail validation
-        assert lr < 0
+        assert lr < 0, "lr is not valid"
 
 
 if __name__ == "__main__":

@@ -46,14 +46,14 @@ class TestEmitEvent:
             emit_jsonl=True,
             emit_otel=False,
         )
-        assert telemetry_path.exists()
+        assert telemetry_path.exists(), "Condition must be true"
         lines = telemetry_path.read_text().strip().split("\n")
-        assert len(lines) == 1
+        assert len(lines) == 1, "Lines must not be empty"
         record = json.loads(lines[0])
-        assert record["skill_id"] == "doc.retriever.core"
-        assert record["status"] == "ok"
-        assert record["latency_ms"] == 123
-        assert record["trace_id"] == "test-trace-001"
+        assert record["skill_id"] == "doc.retriever.core", "rec is not valid"
+        assert record["status"] == "ok", "rec is not valid"
+        assert record["latency_ms"] == 123, "rec is not valid"
+        assert record["trace_id"] == "test-trace-001", "rec is not valid"
 
     def test_emit_no_jsonl_does_not_write(self, telemetry_path, sample_metrics):
         emit_event(
@@ -65,7 +65,7 @@ class TestEmitEvent:
             emit_jsonl=False,
             emit_otel=False,
         )
-        assert not telemetry_path.exists()
+        assert not telemetry_path.exists(), "Condition must be true"
 
     def test_emit_returns_telemetry_event(self, telemetry_path, sample_metrics):
         from codex.skills.models import TelemetryEvent
@@ -79,7 +79,7 @@ class TestEmitEvent:
             emit_jsonl=True,
         )
         assert isinstance(event, TelemetryEvent)
-        assert event.status == "error"
+        assert event.status == "error", "Error should be raised or set"
 
     def test_multiple_events_append(self, telemetry_path, sample_metrics):
         for i in range(3):
@@ -92,7 +92,7 @@ class TestEmitEvent:
                 emit_jsonl=True,
             )
         lines = telemetry_path.read_text().strip().split("\n")
-        assert len(lines) == 3
+        assert len(lines) == 3, "Lines must not be empty"
 
 
 class TestReadEvents:
@@ -106,16 +106,16 @@ class TestReadEvents:
             emit_jsonl=True,
         )
         events = read_events(telemetry_path)
-        assert len(events) == 1
-        assert events[0].skill_id == "s1"
+        assert len(events) == 1, "Events must not be empty"
+        assert events[0].skill_id == "s1", "skill_id is not valid"
 
     def test_read_events_empty_file_returns_empty(self, tmp_path):
         log = tmp_path / "empty.jsonl"
         log.write_text("")
-        assert read_events(log) == []
+        assert read_events(log) == [], "Condition must be true"
 
     def test_read_events_missing_file_returns_empty(self, tmp_path):
-        assert read_events(tmp_path / "nonexistent.jsonl") == []
+        assert read_events(tmp_path / "nonexistent.jsonl") == [], "Condition must be true"
 
     def test_read_events_skips_malformed_lines(self, telemetry_path, sample_metrics):
         emit_event(
@@ -128,7 +128,7 @@ class TestReadEvents:
         )
         telemetry_path.write_text(telemetry_path.read_text() + "not valid json\n")
         events = read_events(telemetry_path)
-        assert len(events) == 1  # malformed line skipped
+        assert len(events) == 1, "Events must not be empty"
 
 
 class TestSummariseEvents:
@@ -144,9 +144,9 @@ class TestSummariseEvents:
             )
         events = read_events(telemetry_path)
         summary = summarise_events(events)
-        assert summary["total"] == 3
-        assert summary["ok"] == 2
-        assert summary["error"] == 1
+        assert summary["total"] == 3, "Condition must be true"
+        assert summary["ok"] == 2, "Condition must be true"
+        assert summary["error"] == 1, "Error should be raised or set"
 
     def test_summary_avg_latency(self, telemetry_path):
         metrics_100 = ExecutionMetrics(latency_ms=100, budget_used=BudgetUsed())
@@ -169,26 +169,26 @@ class TestSummariseEvents:
         )
         events = read_events(telemetry_path)
         summary = summarise_events(events)
-        assert summary["avg_latency_ms"] == 150.0
+        assert summary["avg_latency_ms"] == 150.0, "Condition must be true"
 
     def test_summary_empty_events(self):
         summary = summarise_events([])
-        assert summary["total"] == 0
-        assert summary["avg_latency_ms"] == 0
+        assert summary["total"] == 0, "Condition must be true"
+        assert summary["avg_latency_ms"] == 0, "Condition must be true"
 
 
 class TestSkillInvocationSpan:
     def test_span_no_otel_yields_none(self):
         with patch("importlib.util.find_spec", return_value=None):
             with skill_invocation_span("test.skill") as span:
-                assert span is None
+                assert span is None, "span is not valid"
 
     def test_span_context_manager_runs_body(self):
         executed = []
         with patch("importlib.util.find_spec", return_value=None):
             with skill_invocation_span("test.skill", capability_tags=["test"]):
                 executed.append(True)
-        assert executed == [True]
+        assert executed == [True], "executed is not valid"
 
     def test_span_propagates_exceptions(self):
         with patch("importlib.util.find_spec", return_value=None):

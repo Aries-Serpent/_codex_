@@ -36,8 +36,8 @@ class TestSessionDB:
 
     def test_db_initialization(self, db):
         """Test database initialization"""
-        assert Path(db.db_path).exists()
-        assert db.archive_dir.exists()
+        assert Path(db.db_path).exists(), "Condition must be true"
+        assert db.archive_dir.exists(), "Condition must be true"
 
     def test_schema_creation(self, db):
         """Test schema is created correctly"""
@@ -47,9 +47,9 @@ class TestSessionDB:
         cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
         tables = [row[0] for row in cursor.fetchall()]
 
-        assert "sessions" in tables
-        assert "session_metadata" in tables
-        assert "session_events" in tables
+        assert "sessions" in tables, "Condition must be true"
+        assert "session_metadata" in tables, "Data must not be empty"
+        assert "session_events" in tables, "Condition must be true"
 
         conn.close()
 
@@ -82,8 +82,8 @@ class TestSessionDB:
         cursor.execute("SELECT archive_status FROM sessions ORDER BY session_id")
         statuses = [row[0] for row in cursor.fetchall()]
 
-        assert "active" in statuses
-        assert "archived" in statuses
+        assert "active" in statuses, "Condition must be true"
+        assert "archived" in statuses, "Condition must be true"
 
         conn.close()
 
@@ -106,8 +106,8 @@ class TestSessionDB:
             result = db.archive_session("test-session", session_data)
 
         # Verify archive path contains year/month
-        assert "2026/03" in result
-        assert "test-session.parquet" in result
+        assert "2026/03" in result, "Result must not be empty"
+        assert "test-session.parquet" in result, "Result must not be empty"
 
     def test_get_archive_candidates(self, db):
         """Test identifying archive candidates"""
@@ -140,8 +140,8 @@ class TestSessionDB:
         # Get candidates
         candidates = db.get_archive_candidates(days=90)
 
-        assert "old-session" in candidates
-        assert "recent-session" not in candidates
+        assert "old-session" in candidates, "Condition must be true"
+        assert "recent-session" not in candidates, "Condition must be true"
 
     def test_mark_deleted(self, db):
         """Test marking session as deleted"""
@@ -171,7 +171,7 @@ class TestSessionDB:
         status = cursor.fetchone()[0]
         conn.close()
 
-        assert status == "deleted"
+        assert status == "deleted", "status is not valid"
 
     def test_cache_session(self, db):
         """Test session caching"""
@@ -179,9 +179,9 @@ class TestSessionDB:
 
         db._cache_session("test", session_data)
 
-        assert "test" in db._cache
-        assert db._cache["test"] == session_data
-        assert db.cache_current_size > 0
+        assert "test" in db._cache, "Condition must be true"
+        assert db._cache["test"] == session_data, "Data must not be empty"
+        assert db.cache_current_size > 0, "cache_current_size must be greater than zero"
 
     def test_cache_size_limit(self, db):
         """Test cache respects size limit"""
@@ -194,7 +194,7 @@ class TestSessionDB:
             db._cache_session(f"session-{i}", session_data)
 
         # Cache should not exceed limit
-        assert db.cache_current_size <= db.cache_max_size
+        assert db.cache_current_size <= db.cache_max_size, "cache_current_size is not valid"
 
     def test_get_archive_stats(self, db):
         """Test archive statistics"""
@@ -222,10 +222,10 @@ class TestSessionDB:
 
         stats = db.get_archive_stats()
 
-        assert stats["active_sessions"] == 1
-        assert stats["archived_sessions"] == 1
-        assert "total_archive_size_mb" in stats
-        assert "cache_size_mb" in stats
+        assert stats["active_sessions"] == 1, "Condition must be true"
+        assert stats["archived_sessions"] == 1, "Condition must be true"
+        assert "total_archive_size_mb" in stats, "Condition must be true"
+        assert "cache_size_mb" in stats, "Condition must be true"
 
 
 class TestArchiveIntegrity:
@@ -252,14 +252,14 @@ class TestArchiveIntegrity:
         }
 
         # Verify structure
-        assert "version" in index
-        assert "created" in index
-        assert "sessions" in index
-        assert "statistics" in index
+        assert "version" in index, "Condition must be true"
+        assert "created" in index, "Condition must be true"
+        assert "sessions" in index, "Condition must be true"
+        assert "statistics" in index, "Condition must be true"
 
-        assert len(index["sessions"]) == 1
-        assert "session_id" in index["sessions"][0]
-        assert "archive_location" in index["sessions"][0]
+        assert len(index["sessions"]) == 1, "Collection must not be empty"
+        assert "session_id" in index["sessions"][0], "Condition must be true"
+        assert "archive_location" in index["sessions"][0], "Condition must be true"
 
 
 class TestPerformance:
@@ -274,8 +274,8 @@ class TestPerformance:
         cold_threshold = 500  # ms
         cached_threshold = 50  # ms
 
-        assert cold_threshold > cached_threshold
-        assert cold_threshold < 1000  # Cold should still be reasonable
+        assert cold_threshold > cached_threshold, "cold_threshold must be greater than zero"
+        assert cold_threshold < 1000, "cold_threshold is not valid"
 
 
 def run_tests():

@@ -56,23 +56,23 @@ def parse_tiered(code: str) -> ParseResult:
         return ParseResult(mode="ast", ast_tree=ast.parse(code))
     except SyntaxError as e:
         error_type = type(e).__name__
-        logger.debug(f"SyntaxError: <ERROR_TYPE>")
-        logger.warning(f"SyntaxError: <ERROR_TYPE>", exc_info=True)
+        logger.debug("SyntaxError: <ERROR_TYPE>")
+        logger.warning("SyntaxError: <ERROR_TYPE>", exc_info=True)
     # Secondary: LibCST (formatting-preserving)
     if cst is not None:
         try:
             return ParseResult(mode="cst", cst_tree=cst.parse_module(code))
         except (ValueError, TypeError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
     # Tertiary: Parso (tolerant/partial)
     if parso is not None:
         try:
             return ParseResult(mode="parso", parso_tree=parso.parse(code))
         except (ValueError, TypeError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.warning(f"Exception: <ERROR_TYPE>", exc_info=True)
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
     # Last resort: degraded
     return ParseResult(mode="degraded", degraded=True)

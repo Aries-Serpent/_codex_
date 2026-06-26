@@ -21,8 +21,8 @@ class TestPython312Integration:
     def test_python_version_check(self):
         """Verify we're running on Python 3.12."""
         assert sys.version_info >= (3, 12), f"Expected Python 3.12+, got {sys.version_info}"
-        assert sys.version_info.major == 3
-        assert sys.version_info.minor >= 12
+        assert sys.version_info.major == 3, "major is not valid"
+        assert sys.version_info.minor >= 12, "minor must be greater than zero"
 
     def test_repository_structure_intact(self):
         """Verify repository structure is intact."""
@@ -36,7 +36,7 @@ class TestPython312Integration:
 
         # Key files should exist
         assert (repo_root / "pyproject.toml").exists(), "pyproject.toml missing"
-        assert (repo_root / "pytest.ini").exists() or (repo_root / "pyproject.toml").exists()
+        assert (repo_root / "pytest.ini").exists() or (repo_root / "pyproject.toml").exists(), "Condition must be true"
 
     def test_core_imports_work(self):
         """Test that core modules can be imported."""
@@ -46,7 +46,7 @@ class TestPython312Integration:
         try:
             import tomllib
 
-            assert tomllib is not None
+            assert tomllib is not None, "tomllib must be initialized"
         except ImportError:
             pytest.fail("tomllib should be available on Python 3.12")
 
@@ -84,7 +84,7 @@ class TestPython312Integration:
                 _ = None  # suppressed: no action needed
 
             # At least the main package should import
-            assert codex_ml is not None
+            assert codex_ml is not None, "codex_ml must be initialized"
 
         except ImportError as e:
             pytest.skip(f"codex_ml not available: {e}")
@@ -102,8 +102,8 @@ class TestCLIIntegration:
             text=True,
         )
 
-        assert result.returncode == 0
-        assert "Python 3." in result.stdout or "Python 3." in result.stderr
+        assert result.returncode == 0, "Result must not be empty"
+        assert "Python 3." in result.stdout or "Python 3." in result.stderr, "Result must not be empty"
 
     def test_pip_works(self):
         """Verify pip works in Python 3.12."""
@@ -114,8 +114,8 @@ class TestCLIIntegration:
             timeout=30,
         )
 
-        assert result.returncode == 0
-        assert "pip" in result.stdout.lower()
+        assert result.returncode == 0, "Result must not be empty"
+        assert "pip" in result.stdout.lower(), "Result must not be empty"
 
     def test_pytest_works(self):
         """Verify pytest works in Python 3.12."""
@@ -126,8 +126,8 @@ class TestCLIIntegration:
             timeout=30,
         )
 
-        assert result.returncode == 0
-        assert "pytest" in result.stdout.lower()
+        assert result.returncode == 0, "Result must not be empty"
+        assert "pytest" in result.stdout.lower(), "Result must not be empty"
 
     @pytest.mark.slow
     def test_dependency_checker_runs(self):
@@ -148,7 +148,7 @@ class TestCLIIntegration:
 
         # Should run (exit code 0 or 1 depending on compatibility)
         assert result.returncode in [0, 1]
-        assert "Python 3.12 Dependency Compatibility Checker" in result.stdout
+        assert "Python 3.12 Dependency Compatibility Checker" in result.stdout, "Result must not be empty"
 
 
 @pytest.mark.integration
@@ -157,6 +157,7 @@ class TestAsyncWorkflows:
     """Test async workflows in Python 3.12."""
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_basic_async_workflow(self):
         """Test basic async workflow."""
         import asyncio
@@ -175,10 +176,11 @@ class TestAsyncWorkflows:
         # Process them
         processed = await asyncio.gather(*[process_data(item) for item in items])
 
-        assert len(processed) == 5
-        assert all(item["processed"] for item in processed)
+        assert len(processed) == 5, "Processed must not be empty"
+        assert all(item["processed"] for item in processed), "Item must not be empty"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_async_context_manager_workflow(self):
         """Test async context manager workflow."""
         import asyncio
@@ -199,12 +201,13 @@ class TestAsyncWorkflows:
                 return False
 
         async with AsyncResource() as resource:
-            assert resource.opened
-            assert not resource.closed
+            assert resource.opened, "Condition must be true"
+            assert not resource.closed, "Condition must be true"
 
-        assert resource.closed
+        assert resource.closed, "Condition must be true"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_async_generator_workflow(self):
         """Test async generator workflow."""
         import asyncio
@@ -256,9 +259,9 @@ class TestDataProcessingWorkflow:
         with open(json_file, "r") as f:
             loaded = json.load(f)
 
-        assert loaded == data
-        assert loaded["config"]["model"] == "test-model"
-        assert len(loaded["results"]) == 3
+        assert loaded == data, "Data must not be empty"
+        assert loaded["config"]["model"] == "test-model", "Condition must be true"
+        assert len(loaded["results"]) == 3, "Collection must not be empty"
 
     def test_toml_workflow(self, tmp_path):
         """Test TOML processing workflow."""
@@ -287,9 +290,9 @@ python_files = ["test_*.py"]
             with open(toml_file, "rb") as f:
                 config = tomllib.load(f)
 
-            assert config["project"]["name"] == "test-project"
-            assert "numpy" in config["project"]["dependencies"]
-            assert config["tool"]["pytest"]["ini_options"]["testpaths"] == ["tests"]
+            assert config["project"]["name"] == "test-project", "Condition must be true"
+            assert "numpy" in config["project"]["dependencies"], "Condition must be true"
+            assert config["tool"]["pytest"]["ini_options"]["testpaths"] == ["tests"], "Condition must be true"
 
     def test_text_processing_workflow(self, tmp_path):
         """Test text processing workflow."""
@@ -305,8 +308,8 @@ python_files = ["test_*.py"]
         # Transform
         processed_lines = [line.strip().upper() for line in data.split("\n") if line.strip()]
 
-        assert len(processed_lines) == 100
-        assert all("LINE" in line for line in processed_lines)
+        assert len(processed_lines) == 100, "Processed_lines must not be empty"
+        assert all("LINE" in line for line in processed_lines), "Condition must be true"
 
 
 @pytest.mark.integration
@@ -343,17 +346,18 @@ class TestFullSystemIntegration:
                 data = tomllib.load(f)
 
             # Should have expected sections
-            assert "project" in data
-            assert "build-system" in data
+            assert "project" in data, "Data must not be empty"
+            assert "build-system" in data, "Data must not be empty"
 
             # Should have Python requirement
             if "requires-python" in data["project"]:
                 requires = data["project"]["requires-python"]
-                assert "3.11" in requires or "3.12" in requires
+                assert "3.11" in requires or "3.12" in requires, "Condition must be true"
         except ImportError:
             pytest.skip("tomllib not available")
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_concurrent_operations(self):
         """Test concurrent operations work correctly."""
         import asyncio
@@ -366,9 +370,9 @@ class TestFullSystemIntegration:
         tasks = [task(i) for i in range(100)]
         results = await asyncio.gather(*tasks)
 
-        assert len(results) == 100
-        assert results[0] == 0
-        assert results[99] == 198
+        assert len(results) == 100, "Results must not be empty"
+        assert results[0] == 0, "Result must not be empty"
+        assert results[99] == 198, "Result must not be empty"
 
 
 @pytest.mark.integration
@@ -383,7 +387,7 @@ class TestBackwardCompatibility:
             return x.upper()
 
         result = test_func("hello")
-        assert result == "HELLO"
+        assert result == "HELLO", "Result must not be empty"
 
     def test_typing_compatibility(self):
         """Test typing compatibility."""
@@ -398,4 +402,4 @@ class TestBackwardCompatibility:
             return list(data.keys()) if data else None
 
         test_data = {"a": 1, "b": 2}
-        assert old_style(test_data) == new_style(test_data)
+        assert old_style(test_data) == new_style(test_data), "Data must not be empty"

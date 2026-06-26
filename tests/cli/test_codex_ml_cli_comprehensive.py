@@ -46,7 +46,7 @@ class TestHelperFunctions:
             from codex_ml.cli.codex_cli import _csv_list
 
             result = _csv_list("")
-            assert result == []
+            assert result == [], "Result must not be empty"
         except ImportError:
             pytest.skip("codex_ml.cli.codex_cli not available")
 
@@ -56,7 +56,7 @@ class TestHelperFunctions:
             from codex_ml.cli.codex_cli import _csv_list
 
             result = _csv_list("single")
-            assert result == ["single"]
+            assert result == ["single"], "Result must not be empty"
         except ImportError:
             pytest.skip("codex_ml.cli.codex_cli not available")
 
@@ -71,7 +71,7 @@ class TestUpdatePath:
 
             target = {}
             _update_path(target, "a.b.c", "value")
-            assert target["a"]["b"]["c"] == "value"
+            assert target["a"]["b"]["c"] == "value", "Value must be initialized"
         except ImportError:
             pytest.skip("codex_ml.cli.codex_cli not available")
 
@@ -82,7 +82,7 @@ class TestUpdatePath:
 
             target = {}
             _update_path(target, "key", "value")
-            assert target["key"] == "value"
+            assert target["key"] == "value", "Value must be initialized"
         except ImportError:
             pytest.skip("codex_ml.cli.codex_cli not available")
 
@@ -93,7 +93,7 @@ class TestUpdatePath:
 
             target = {"a": {"b": {}}}
             _update_path(target, "a.b.c", "value")
-            assert target["a"]["b"]["c"] == "value"
+            assert target["a"]["b"]["c"] == "value", "Value must be initialized"
         except ImportError:
             pytest.skip("codex_ml.cli.codex_cli not available")
 
@@ -108,8 +108,8 @@ class TestCLIGroup:
 
             runner = CliRunner()
             result = runner.invoke(codex, ["--help"])
-            assert result.exit_code == 0
-            assert "Codex command line interface" in result.output
+            assert result.exit_code == 0, "Result must not be empty"
+            assert "Codex command line interface" in result.output, "Result must not be empty"
         except ImportError:
             pytest.skip("codex_ml.cli.codex_cli not available")
 
@@ -120,8 +120,8 @@ class TestCLIGroup:
 
             runner = CliRunner()
             result = runner.invoke(codex, ["tokenizer", "--help"])
-            assert result.exit_code == 0
-            assert "Tokenizer pipeline utilities" in result.output
+            assert result.exit_code == 0, "Result must not be empty"
+            assert "Tokenizer pipeline utilities" in result.output, "Result must not be empty"
         except ImportError:
             pytest.skip("codex_ml.cli.codex_cli not available")
 
@@ -136,8 +136,8 @@ class TestTokenizerCommands:
 
             runner = CliRunner()
             result = runner.invoke(codex, ["tokenizer", "train", "--help"])
-            assert result.exit_code == 0
-            assert "--config" in result.output
+            assert result.exit_code == 0, "Result must not be empty"
+            assert "--config" in result.output, "Result must not be empty"
         except ImportError:
             pytest.skip("codex_ml.cli.codex_cli not available")
 
@@ -148,7 +148,7 @@ class TestTokenizerCommands:
 
             runner = CliRunner()
             result = runner.invoke(codex, ["tokenizer", "validate", "--help"])
-            assert result.exit_code == 0
+            assert result.exit_code == 0, "Result must not be empty"
         except ImportError:
             pytest.skip("codex_ml.cli.codex_cli not available")
 
@@ -159,7 +159,7 @@ class TestTokenizerCommands:
 
             runner = CliRunner()
             result = runner.invoke(codex, ["tokenizer", "encode", "--help"])
-            assert result.exit_code == 0
+            assert result.exit_code == 0, "Result must not be empty"
         except ImportError:
             pytest.skip("codex_ml.cli.codex_cli not available")
 
@@ -170,7 +170,7 @@ class TestTokenizerCommands:
 
             runner = CliRunner()
             result = runner.invoke(codex, ["tokenizer", "decode", "--help"])
-            assert result.exit_code == 0
+            assert result.exit_code == 0, "Result must not be empty"
         except ImportError:
             pytest.skip("codex_ml.cli.codex_cli not available")
 
@@ -185,9 +185,9 @@ class TestConfigSweepCommand:
 
             runner = CliRunner()
             result = runner.invoke(codex, ["config-sweep", "--help"])
-            assert result.exit_code == 0
-            assert "--base-config" in result.output
-            assert "--seeds" in result.output
+            assert result.exit_code == 0, "Result must not be empty"
+            assert "--base-config" in result.output, "Result must not be empty"
+            assert "--seeds" in result.output, "Result must not be empty"
         except ImportError:
             pytest.skip("codex_ml.cli.codex_cli not available")
 
@@ -234,10 +234,10 @@ class TestTrainCommand:
 
             runner = CliRunner()
             result = runner.invoke(codex, ["train", "--help"])
-            assert result.exit_code == 0
-            assert "--config" in result.output
-            assert "--resume" in result.output
-            assert "--seed" in result.output
+            assert result.exit_code == 0, "Result must not be empty"
+            assert "--config" in result.output, "Result must not be empty"
+            assert "--resume" in result.output, "Result must not be empty"
+            assert "--seed" in result.output, "Result must not be empty"
         except ImportError:
             pytest.skip("codex_ml.cli.codex_cli not available")
 
@@ -248,8 +248,8 @@ class TestTrainCommand:
 
             runner = CliRunner()
             result = runner.invoke(codex, ["train", "--help"])
-            assert result.exit_code == 0
-            assert "--mlflow" in result.output or "mlflow" in result.output.lower()
+            assert result.exit_code == 0, "Result must not be empty"
+            assert "--mlflow" in result.output or "mlflow" in result.output.lower(), "Result must not be empty"
         except ImportError:
             pytest.skip("codex_ml.cli.codex_cli not available")
 
@@ -264,8 +264,8 @@ class TestResumeCommand:
 
             runner = CliRunner()
             result = runner.invoke(codex, ["resume", "--help"])
-            assert result.exit_code == 0
-            assert "manifest" in result.output.lower()
+            assert result.exit_code == 0, "Result must not be empty"
+            assert "manifest" in result.output.lower(), "Result must not be empty"
         except ImportError:
             pytest.skip("codex_ml.cli.codex_cli not available")
 
@@ -280,8 +280,8 @@ class TestMetricsServerCommand:
 
             runner = CliRunner()
             result = runner.invoke(codex, ["metrics-server", "--help"])
-            assert result.exit_code == 0
-            assert "--port" in result.output
+            assert result.exit_code == 0, "Result must not be empty"
+            assert "--port" in result.output, "Result must not be empty"
         except ImportError:
             pytest.skip("codex_ml.cli.codex_cli not available")
 
@@ -312,8 +312,8 @@ class TestRepoMapCommand:
 
             runner = CliRunner()
             result = runner.invoke(codex, ["repo-map", "--help"])
-            assert result.exit_code == 0
-            assert "--reasoning" in result.output
+            assert result.exit_code == 0, "Result must not be empty"
+            assert "--reasoning" in result.output, "Result must not be empty"
         except ImportError:
             pytest.skip("codex_ml.cli.codex_cli not available")
 
@@ -328,9 +328,9 @@ class TestDeployCommand:
 
             runner = CliRunner()
             result = runner.invoke(codex, ["deploy", "--help"])
-            assert result.exit_code == 0
-            assert "--config" in result.output
-            assert "--dry-run" in result.output
+            assert result.exit_code == 0, "Result must not be empty"
+            assert "--config" in result.output, "Result must not be empty"
+            assert "--dry-run" in result.output, "Result must not be empty"
         except ImportError:
             pytest.skip("codex_ml.cli.codex_cli not available")
 
@@ -361,8 +361,8 @@ class TestStatusReportCommand:
 
             runner = CliRunner()
             result = runner.invoke(codex, ["status-report", "--help"])
-            assert result.exit_code == 0
-            assert "--run-metadata-dir" in result.output
+            assert result.exit_code == 0, "Result must not be empty"
+            assert "--run-metadata-dir" in result.output, "Result must not be empty"
         except ImportError:
             pytest.skip("codex_ml.cli.codex_cli not available")
 
@@ -377,9 +377,9 @@ class TestEvaluateCommand:
 
             runner = CliRunner()
             result = runner.invoke(codex, ["evaluate", "--help"])
-            assert result.exit_code == 0
-            assert "--config" in result.output
-            assert "--metrics-only" in result.output
+            assert result.exit_code == 0, "Result must not be empty"
+            assert "--config" in result.output, "Result must not be empty"
+            assert "--metrics-only" in result.output, "Result must not be empty"
         except ImportError:
             pytest.skip("codex_ml.cli.codex_cli not available")
 
@@ -390,8 +390,8 @@ class TestEvaluateCommand:
 
             runner = CliRunner()
             result = runner.invoke(codex, ["evaluate", "--help"])
-            assert result.exit_code == 0
-            assert "--metrics-sink" in result.output
+            assert result.exit_code == 0, "Result must not be empty"
+            assert "--metrics-sink" in result.output, "Result must not be empty"
         except ImportError:
             pytest.skip("codex_ml.cli.codex_cli not available")
 
@@ -406,9 +406,9 @@ class TestPrepareDataCommand:
 
             runner = CliRunner()
             result = runner.invoke(codex, ["prepare-data", "--help"])
-            assert result.exit_code == 0
-            assert "--config" in result.output
-            assert "--seed" in result.output
+            assert result.exit_code == 0, "Result must not be empty"
+            assert "--config" in result.output, "Result must not be empty"
+            assert "--seed" in result.output, "Result must not be empty"
         except ImportError:
             pytest.skip("codex_ml.cli.codex_cli not available")
 
@@ -423,9 +423,9 @@ class TestExportEnvCommand:
 
             runner = CliRunner()
             result = runner.invoke(codex, ["export-env", "--help"])
-            assert result.exit_code == 0
-            assert "--output" in result.output
-            assert "--seed" in result.output
+            assert result.exit_code == 0, "Result must not be empty"
+            assert "--output" in result.output, "Result must not be empty"
+            assert "--seed" in result.output, "Result must not be empty"
         except ImportError:
             pytest.skip("codex_ml.cli.codex_cli not available")
 
@@ -439,7 +439,7 @@ class TestMainFunction:
             from codex_ml.cli.codex_cli import main
 
             exit_code = main(["--help"])
-            assert exit_code == 0
+            assert exit_code == 0, "exit_code is not valid"
         except (ImportError, SystemExit):
             pytest.skip("codex_ml.cli.codex_cli not available or exits")
 
@@ -453,7 +453,7 @@ class TestMainFunction:
             from codex_ml.cli.codex_cli import main
 
             exit_code = main(["invalid-command"])
-            assert exit_code != 0
+            assert exit_code != 0, "exit_code is not valid"
         except (ImportError, SystemExit):
             pytest.skip("codex_ml.cli.codex_cli not available or exits")
         except AttributeError as exc:
@@ -476,7 +476,7 @@ class TestHashDataset:
 
             hash_result = _hash_dataset(test_file)
             assert isinstance(hash_result, str)
-            assert len(hash_result) == 64  # SHA256 hex digest length
+            assert len(hash_result) == 64, "Hash_result must not be empty"
         except ImportError:
             pytest.skip("codex_ml.cli.codex_cli not available")
 
@@ -494,7 +494,7 @@ class TestHashDataset:
 
             hash1 = _hash_dataset(file1)
             hash2 = _hash_dataset(file2)
-            assert hash1 == hash2
+            assert hash1 == hash2, "hash1 is not valid"
         except ImportError:
             pytest.skip("codex_ml.cli.codex_cli not available")
 
@@ -511,7 +511,7 @@ class TestHashDataset:
 
             hash1 = _hash_dataset(file1)
             hash2 = _hash_dataset(file2)
-            assert hash1 != hash2
+            assert hash1 != hash2, "hash1 is not valid"
         except ImportError:
             pytest.skip("codex_ml.cli.codex_cli not available")
 
@@ -528,7 +528,7 @@ class TestGetTokenizerPipeline:
             pipeline1 = _get_tokenizer_pipeline()
             # Second call should return same cached instance
             pipeline2 = _get_tokenizer_pipeline()
-            assert pipeline1 is pipeline2
+            assert pipeline1 is pipeline2, "pipeline1 is not valid"
         except ImportError:
             pytest.skip("tokenizer pipeline not available")
         except AttributeError as _err:

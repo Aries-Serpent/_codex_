@@ -37,8 +37,8 @@ def _serialise_path(path: Path, root: Path) -> str:
         return path.relative_to(root).as_posix()
     except ValueError as e:
         error_type = type(e).__name__
-        logger.debug(f"ValueError: <ERROR_TYPE>")
-        logger.warning(f"ValueError: <ERROR_TYPE>", exc_info=True)
+        logger.debug("ValueError: <ERROR_TYPE>")
+        logger.warning("ValueError: <ERROR_TYPE>", exc_info=True)
         return path.as_posix()
 
 

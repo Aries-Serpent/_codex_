@@ -21,8 +21,8 @@ jobs:
 """
     parser = WorkflowParser()
     workflow = parser.parse(yaml_content)
-    assert workflow.name == "Test Workflow"
-    assert "test" in workflow.jobs
+    assert workflow.name == "Test Workflow", "name is not valid"
+    assert "test" in workflow.jobs, "Condition must be true"
 
 
 @pytest.mark.integration
@@ -55,9 +55,9 @@ jobs:
     inventory = WorkflowInventory(workflows_dir)
     count = inventory.scan()
 
-    assert count == 1
-    assert "test.yml" in inventory.workflows
-    assert inventory.workflows["test.yml"].name == "Test Workflow"
+    assert count == 1, "Count must be greater than zero"
+    assert "test.yml" in inventory.workflows, "Condition must be true"
+    assert inventory.workflows["test.yml"].name == "Test Workflow", "name is not valid"
 
 
 @pytest.mark.integration
@@ -89,14 +89,14 @@ jobs:
 
     # Test get_workflow method
     workflow1 = inventory.get_workflow("workflow1.yml")
-    assert workflow1 is not None
-    assert workflow1.name == "Workflow 1"
+    assert workflow1 is not None, "workflow1 must be initialized"
+    assert workflow1.name == "Workflow 1", "name is not valid"
 
     # Test list_workflows method
     all_workflows = inventory.list_workflows()
-    assert len(all_workflows) == 2
-    assert "workflow1.yml" in all_workflows
-    assert "workflow2.yml" in all_workflows
+    assert len(all_workflows) == 2, "All_workflows must not be empty"
+    assert "workflow1.yml" in all_workflows, "Condition must be true"
+    assert "workflow2.yml" in all_workflows, "Condition must be true"
 
 
 @pytest.mark.integration
@@ -116,4 +116,4 @@ jobs:
     parser = WorkflowParser()
     workflow = parser.parse(yaml_content)
     # WorkflowJob uses Pydantic model with `needs` field
-    assert workflow.jobs["test"].needs == ["build"]
+    assert workflow.jobs["test"].needs == ["build"], "needs is not valid"

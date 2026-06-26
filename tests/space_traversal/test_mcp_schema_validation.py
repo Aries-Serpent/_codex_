@@ -22,10 +22,10 @@ def test_detect_no_schemas():
 
     result = mcp_schema_validation.detect(file_index)
 
-    assert result["id"] == "mcp-schema-validation"
-    assert result["found_patterns"] == []
+    assert result["id"] == "mcp-schema-validation", "Result must not be empty"
+    assert result["found_patterns"] == [], "Result must not be empty"
     assert result["required_patterns"] == ["BaseModel", "OpenAPI"]
-    assert "docs_keywords" in result
+    assert "docs_keywords" in result, "Result must not be empty"
 
 
 def test_detect_base_model():
@@ -49,8 +49,8 @@ class User(BaseModel):
 
         result = mcp_schema_validation.detect(file_index)
 
-        assert "BaseModel" in result["found_patterns"]
-        assert str(py_file) in result["evidence_files"]
+        assert "BaseModel" in result["found_patterns"], "Result must not be empty"
+        assert str(py_file) in result["evidence_files"], "Result must not be empty"
 
 
 def test_detect_pydantic_import():
@@ -74,7 +74,7 @@ from typing import Optional
         result = mcp_schema_validation.detect(file_index)
 
         # Should find evidence even without BaseModel class
-        assert str(py_file) in result["evidence_files"]
+        assert str(py_file) in result["evidence_files"], "Result must not be empty"
 
 
 def test_detect_openapi_yaml():
@@ -88,8 +88,8 @@ def test_detect_openapi_yaml():
 
     result = mcp_schema_validation.detect(file_index)
 
-    assert "OpenAPI" in result["found_patterns"]
-    assert "docs/api/openapi.yaml" in result["evidence_files"]
+    assert "OpenAPI" in result["found_patterns"], "Result must not be empty"
+    assert "docs/api/openapi.yaml" in result["evidence_files"], "Result must not be empty"
 
 
 def test_detect_openapi_yml():
@@ -103,8 +103,8 @@ def test_detect_openapi_yml():
 
     result = mcp_schema_validation.detect(file_index)
 
-    assert "OpenAPI" in result["found_patterns"]
-    assert "specs/openapi.yml" in result["evidence_files"]
+    assert "OpenAPI" in result["found_patterns"], "Result must not be empty"
+    assert "specs/openapi.yml" in result["evidence_files"], "Result must not be empty"
 
 
 def test_detect_both_patterns():
@@ -127,9 +127,9 @@ class APISchema(BaseModel):
 
         result = mcp_schema_validation.detect(file_index)
 
-        assert "BaseModel" in result["found_patterns"]
-        assert "OpenAPI" in result["found_patterns"]
-        assert len(result["evidence_files"]) == 2
+        assert "BaseModel" in result["found_patterns"], "Result must not be empty"
+        assert "OpenAPI" in result["found_patterns"], "Result must not be empty"
+        assert len(result["evidence_files"]) == 2, "Collection must not be empty"
 
 
 def test_evidence_deduplication():
@@ -155,7 +155,7 @@ class Product(BaseModel):
         result = mcp_schema_validation.detect(file_index)
 
         # File should appear only once even with multiple BaseModel occurrences
-        assert len(result["evidence_files"]) == len(set(result["evidence_files"]))
+        assert len(result["evidence_files"]) == len(set(result["evidence_files"])), "Collection must not be empty"
 
 
 def test_sorted_output():
@@ -178,9 +178,9 @@ def test_sorted_output():
         result = mcp_schema_validation.detect(file_index)
 
         # found_patterns should be sorted
-        assert result["found_patterns"] == sorted(result["found_patterns"])
+        assert result["found_patterns"] == sorted(result["found_patterns"]), "Result must not be empty"
         # evidence_files should be sorted
-        assert result["evidence_files"] == sorted(result["evidence_files"])
+        assert result["evidence_files"] == sorted(result["evidence_files"]), "Result must not be empty"
 
 
 def test_docs_keywords_present():
@@ -189,7 +189,7 @@ def test_docs_keywords_present():
 
     result = mcp_schema_validation.detect(file_index)
 
-    assert "docs_keywords" in result
+    assert "docs_keywords" in result, "Result must not be empty"
     expected_keywords = [
         "mcp",
         "schema",
@@ -200,7 +200,7 @@ def test_docs_keywords_present():
         "type-safety",
     ]
     for keyword in expected_keywords:
-        assert keyword in result["docs_keywords"]
+        assert keyword in result["docs_keywords"], "Result must not be empty"
 
 
 def test_safeguards_metadata():
@@ -209,11 +209,11 @@ def test_safeguards_metadata():
 
     result = mcp_schema_validation.detect(file_index)
 
-    assert "meta" in result
-    assert "safeguards" in result["meta"]
+    assert "meta" in result, "Result must not be empty"
+    assert "safeguards" in result["meta"], "Result must not be empty"
     expected_safeguards = ["validation", "type-safety", "error-handling", "input-sanitization"]
     for safeguard in expected_safeguards:
-        assert safeguard in result["meta"]["safeguards"]
+        assert safeguard in result["meta"]["safeguards"], "Result must not be empty"
 
 
 def test_detector_version():
@@ -222,8 +222,8 @@ def test_detector_version():
 
     result = mcp_schema_validation.detect(file_index)
 
-    assert "detector_version" in result["meta"]
-    assert result["meta"]["detector_version"] == "1.2"
+    assert "detector_version" in result["meta"], "Result must not be empty"
+    assert result["meta"]["detector_version"] == "1.2", "Result must not be empty"
 
 
 def test_category_mcp():
@@ -232,7 +232,7 @@ def test_category_mcp():
 
     result = mcp_schema_validation.detect(file_index)
 
-    assert result["meta"]["category"] == "mcp"
+    assert result["meta"]["category"] == "mcp", "Result must not be empty"
 
 
 def test_non_python_files_ignored():
@@ -248,8 +248,8 @@ def test_non_python_files_ignored():
     result = mcp_schema_validation.detect(file_index)
 
     # Should not crash and should return empty results
-    assert result["found_patterns"] == []
-    assert result["evidence_files"] == []
+    assert result["found_patterns"] == [], "Result must not be empty"
+    assert result["evidence_files"] == [], "Result must not be empty"
 
 
 def test_file_read_error_handling():
@@ -263,9 +263,9 @@ def test_file_read_error_handling():
     # Should not crash on file read error
     result = mcp_schema_validation.detect(file_index)
 
-    assert result["id"] == "mcp-schema-validation"
+    assert result["id"] == "mcp-schema-validation", "Result must not be empty"
     # File won't be in evidence since it couldn't be read
-    assert len(result["evidence_files"]) == 0
+    assert len(result["evidence_files"]) == 0, "Collection must not be empty"
 
 
 def test_empty_file_index():
@@ -274,9 +274,9 @@ def test_empty_file_index():
 
     result = mcp_schema_validation.detect(file_index)
 
-    assert result["id"] == "mcp-schema-validation"
-    assert result["found_patterns"] == []
-    assert result["evidence_files"] == []
+    assert result["id"] == "mcp-schema-validation", "Result must not be empty"
+    assert result["found_patterns"] == [], "Result must not be empty"
+    assert result["evidence_files"] == [], "Result must not be empty"
 
 
 def test_deterministic_output():
@@ -297,5 +297,5 @@ def test_deterministic_output():
 
         # All results should be identical
         for i in range(1, len(results)):
-            assert results[i]["found_patterns"] == results[0]["found_patterns"]
-            assert results[i]["evidence_files"] == results[0]["evidence_files"]
+            assert results[i]["found_patterns"] == results[0]["found_patterns"], "Result must not be empty"
+            assert results[i]["evidence_files"] == results[0]["evidence_files"], "Result must not be empty"

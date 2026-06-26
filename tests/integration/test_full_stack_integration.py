@@ -74,7 +74,7 @@ class TestEndToEndWorkflows:
         ]
 
         all_passed = all(step["status"] == "success" for step in pipeline_steps)
-        assert all_passed is True
+        assert all_passed is True, "all_passed is not valid"
 
     def test_service_discovery_and_registration(self):
         """Test service discovery and registration flow."""
@@ -87,7 +87,7 @@ class TestEndToEndWorkflows:
         # Discover services
         api_services = [s for s in service_registry if s.startswith("api")]
 
-        assert len(api_services) == 2
+        assert len(api_services) == 2, "Api_services must not be empty"
 
     def test_load_balancing_and_routing(self):
         """Test load balancing and request routing."""
@@ -100,8 +100,8 @@ class TestEndToEndWorkflows:
         healthy_backends = [b for b in backends if b["healthy"]]
         total_weight = sum(b["weight"] for b in healthy_backends)
 
-        assert len(healthy_backends) == 3
-        assert total_weight == 4
+        assert len(healthy_backends) == 3, "Healthy_backends must not be empty"
+        assert total_weight == 4, "total_weight is not valid"
 
     def test_health_check_propagation(self, mock_services):
         """Test health check propagation through system."""
@@ -112,7 +112,7 @@ class TestEndToEndWorkflows:
                 overall_health = "degraded"
                 break
 
-        assert overall_health == "healthy"
+        assert overall_health == "healthy", "overall_health is not valid"
 
     def test_auto_scaling_integration(self):
         """Test auto-scaling integration."""
@@ -123,7 +123,7 @@ class TestEndToEndWorkflows:
         should_scale = current_load > scale_up_threshold
         new_replicas = current_replicas + 2 if should_scale else current_replicas
 
-        assert new_replicas == 5
+        assert new_replicas == 5, "new_replicas is not valid"
 
     def test_metrics_collection_end_to_end(self):
         """Test metrics collection from all services."""
@@ -135,7 +135,7 @@ class TestEndToEndWorkflows:
         }
 
         # Verify all metrics exist and numeric values are non-negative
-        assert all(
+        assert all(, "Condition must be true"
             isinstance(v, (int, float)) and v >= 0
             for v in metrics.values()
             if isinstance(v, (int, float))
@@ -151,7 +151,7 @@ class TestEndToEndWorkflows:
         }
 
         should_alert = alert["value"] > alert["threshold"]
-        assert should_alert is True
+        assert should_alert is True, "should_alert is not valid"
 
     def test_log_aggregation_flow(self):
         """Test log aggregation from multiple sources."""
@@ -162,7 +162,7 @@ class TestEndToEndWorkflows:
         ]
 
         total_logs = sum(source["logs"] for source in log_sources)
-        assert total_logs == 6500
+        assert total_logs == 6500, "total_logs is not valid"
 
     def test_distributed_tracing_validation(self):
         """Test distributed tracing across services."""
@@ -176,7 +176,7 @@ class TestEndToEndWorkflows:
         }
 
         total_duration = sum(span["duration_ms"] for span in trace["spans"])
-        assert total_duration == 65
+        assert total_duration == 65, "total_duration is not valid"
 
     def test_configuration_propagation(self):
         """Test configuration propagation to all services."""
@@ -186,7 +186,7 @@ class TestEndToEndWorkflows:
         # All services should have the config
         propagated = {service: config for service in services}
 
-        assert len(propagated) == len(services)
+        assert len(propagated) == len(services), "Propagated must not be empty"
 
 
 # ============================================================================
@@ -205,7 +205,7 @@ class TestMultiServiceIntegration:
         route_count = len(gateway["routes"])
         backend_count = len(backends)
 
-        assert route_count == backend_count
+        assert route_count == backend_count, "Count must be greater than zero"
 
     def test_database_cache_application_integration(self):
         """Test database, cache, and application integration."""
@@ -213,8 +213,8 @@ class TestMultiServiceIntegration:
         cache_hit = True
         database_query = not cache_hit
 
-        assert cache_hit is True
-        assert database_query is False
+        assert cache_hit is True, "cache_hit is not valid"
+        assert database_query is False, "Data must not be empty"
 
     def test_message_queue_workers_integration(self):
         """Test message queue with worker services."""
@@ -224,7 +224,7 @@ class TestMultiServiceIntegration:
         total_processing = sum(w["processing"] for w in workers)
         remaining = queue["messages"] - total_processing
 
-        assert remaining == 65
+        assert remaining == 65, "remaining is not valid"
 
     def test_authentication_authorization_flow(self):
         """Test complete authentication and authorization flow."""
@@ -236,7 +236,7 @@ class TestMultiServiceIntegration:
         ]
 
         flow_success = all(step["success"] for step in auth_steps)
-        assert flow_success is True
+        assert flow_success is True, "flow_success is not valid"
 
     def test_service_mesh_integration(self):
         """Test service mesh integration."""
@@ -249,7 +249,7 @@ class TestMultiServiceIntegration:
         all_features_enabled = all(
             v == "enabled" or v == "exponential" for v in mesh_config.values()
         )
-        assert all_features_enabled is True
+        assert all_features_enabled is True, "all_features_enabled is not valid"
 
     def test_external_api_integrations(self):
         """Test external API integrations."""
@@ -260,7 +260,7 @@ class TestMultiServiceIntegration:
         ]
 
         all_available = all(api["status"] == "available" for api in external_apis)
-        assert all_available is True
+        assert all_available is True, "all_available is not valid"
 
     def test_storage_service_coordination(self):
         """Test storage service coordination."""
@@ -271,7 +271,7 @@ class TestMultiServiceIntegration:
         }
 
         all_available = all(s["available"] for s in storage_services.values())
-        assert all_available is True
+        assert all_available is True, "all_available is not valid"
 
     def test_monitoring_stack_integration(self):
         """Test monitoring stack integration."""
@@ -282,7 +282,7 @@ class TestMultiServiceIntegration:
         }
 
         stack_complete = all(list(v.values())[0] for v in monitoring.values())
-        assert stack_complete is True
+        assert stack_complete is True, "stack_complete is not valid"
 
     def test_security_scanning_pipeline(self):
         """Test security scanning pipeline integration."""
@@ -293,7 +293,7 @@ class TestMultiServiceIntegration:
         ]
 
         all_passed = all(result["passed"] for result in scan_results)
-        assert all_passed is True
+        assert all_passed is True, "all_passed is not valid"
 
     def test_backup_restore_flow(self):
         """Test backup and restore flow."""
@@ -312,7 +312,7 @@ class TestMultiServiceIntegration:
         backup_success = all(s["success"] for s in backup_steps)
         restore_success = all(s["success"] for s in restore_steps)
 
-        assert backup_success and restore_success
+        assert backup_success and restore_success, "backup_success is not valid"
 
 
 # ============================================================================
@@ -335,7 +335,7 @@ class TestSystemLevelValidation:
         ]
 
         total_traffic = [s["old"] + s["new"] for s in steps]
-        assert all(t == 100 for t in total_traffic)
+        assert all(t == 100 for t in total_traffic), "t is not valid"
 
     def test_rolling_update_validation(self, system_config):
         """Test rolling update validation."""
@@ -343,7 +343,7 @@ class TestSystemLevelValidation:
         total_replicas = system_config["services"]["api"]["replicas"]
 
         min_available = total_replicas - max_unavailable
-        assert min_available >= 2
+        assert min_available >= 2, "min_available must be greater than zero"
 
     def test_blue_green_deployment(self):
         """Test blue-green deployment."""
@@ -354,8 +354,8 @@ class TestSystemLevelValidation:
         blue_env["active"] = False
         green_env["active"] = True
 
-        assert green_env["active"] is True
-        assert blue_env["active"] is False
+        assert green_env["active"] is True, "Condition must be true"
+        assert blue_env["active"] is False, "Condition must be true"
 
     def test_canary_deployment(self):
         """Test canary deployment."""
@@ -363,7 +363,7 @@ class TestSystemLevelValidation:
         canary = {"version": "v1.1", "traffic": 5}
 
         total_traffic = stable["traffic"] + canary["traffic"]
-        assert total_traffic == 100
+        assert total_traffic == 100, "total_traffic is not valid"
 
     def test_feature_flag_integration(self):
         """Test feature flag integration."""
@@ -373,7 +373,7 @@ class TestSystemLevelValidation:
         }
 
         enabled_features = [f for f, v in features.items() if v["enabled"]]
-        assert len(enabled_features) == 1
+        assert len(enabled_features) == 1, "Enabled_features must not be empty"
 
     def test_ab_testing_framework(self):
         """Test A/B testing framework."""
@@ -383,7 +383,7 @@ class TestSystemLevelValidation:
         ]
 
         total_allocation = sum(v["allocation"] for v in variants)
-        assert total_allocation == 100
+        assert total_allocation == 100, "total_allocation is not valid"
 
     def test_multi_region_coordination(self):
         """Test multi-region coordination."""
@@ -394,7 +394,7 @@ class TestSystemLevelValidation:
         }
 
         active_regions = [r for r in regions.values() if r["status"] == "active"]
-        assert len(active_regions) == 3
+        assert len(active_regions) == 3, "Active_regions must not be empty"
 
     def test_disaster_recovery_drill(self):
         """Test disaster recovery drill."""
@@ -403,7 +403,7 @@ class TestSystemLevelValidation:
         # Failover
         failover_region["status"] = "active"
 
-        assert failover_region["status"] == "active"
+        assert failover_region["status"] == "active", "Condition must be true"
 
     def test_data_migration_validation(self):
         """Test data migration validation."""
@@ -411,7 +411,7 @@ class TestSystemLevelValidation:
         migrated_records = 10000
 
         migration_complete = source_records == migrated_records
-        assert migration_complete is True
+        assert migration_complete is True, "migration_complete is not valid"
 
     def test_system_capacity_testing(self):
         """Test system capacity limits."""
@@ -421,7 +421,7 @@ class TestSystemLevelValidation:
         headroom = max_requests_per_second - current_requests
         headroom_percent = (headroom / max_requests_per_second) * 100
 
-        assert headroom_percent == 25.0
+        assert headroom_percent == 25.0, "headroom_percent is not valid"
 
 
 if __name__ == "__main__":

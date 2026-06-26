@@ -54,7 +54,7 @@ def test_pipeline_reproducible():
     )
     summary1 = run_codex_symbolic_pipeline(corpus=corpus, demos=demos, prefs=prefs, **cfgs)
     summary2 = run_codex_symbolic_pipeline(corpus=corpus, demos=demos, prefs=prefs, **cfgs)
-    assert summary1 == summary2
+    assert summary1 == summary2, "summary1 is not valid"
 
 
 def test_pretrain_empty_corpus_raises():
@@ -86,12 +86,12 @@ def test_reward_model_accuracy_and_loss():
     model = pretrain(corpus, PretrainCfg())
     model = sft(model, demos, SFTCfg(batch_size=1))
     rm = train_reward_model(prefs, model)
-    assert rm.meta["accuracy"] == 1.0
+    assert rm.meta["accuracy"] == 1.0, "Condition must be true"
     computed = loss_sft(model, demos)
     manual = -sum(math.log(model.meta["token_probs"][t]) for t in ["a", "b"]) / 2
     assert math.isclose(computed, manual)
-    assert model.meta["tokens_seen"] == 4
-    assert model.meta["tokens_seen_sft"] == 2
+    assert model.meta["tokens_seen"] == 4, "Condition must be true"
+    assert model.meta["tokens_seen_sft"] == 2, "Condition must be true"
 
 
 def test_sft_empty_demos_raises():
@@ -140,7 +140,7 @@ def test_rlhf_deterministic():
     rm = train_reward_model(prefs, M1a)
     M2a = rlhf_ppo(M1a, rm, RLHFCfg())
     M2b = rlhf_ppo(M1b, rm, RLHFCfg())
-    assert M2a.meta["token_probs"] == M2b.meta["token_probs"]
+    assert M2a.meta["token_probs"] == M2b.meta["token_probs"], "Condition must be true"
 
 
 def test_reward_model_deterministic():
@@ -149,7 +149,7 @@ def test_reward_model_deterministic():
     model = sft(model, demos, SFTCfg(batch_size=1))
     rm1 = train_reward_model(prefs, model, RewardModelCfg(seed=0))
     rm2 = train_reward_model(prefs, model, RewardModelCfg(seed=0))
-    assert rm1.meta["weights"] == rm2.meta["weights"]
+    assert rm1.meta["weights"] == rm2.meta["weights"], "Condition must be true"
 
 
 def test_regularizer_penalises_dangerous_tokens():
@@ -161,5 +161,5 @@ def test_regularizer_penalises_dangerous_tokens():
         "stage",
         {"token_probs": {"rm": 1.0}, "base_token_probs": {"rm": 1.0}},
     )
-    assert regularizer(safe) == 0.0
-    assert regularizer(dangerous) == pytest.approx(1.0)
+    assert regularizer(safe) == 0.0, "Condition must be true"
+    assert regularizer(dangerous) == pytest.approx(1.0), "Condition must be true"

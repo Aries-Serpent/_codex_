@@ -29,11 +29,11 @@ def test_hydra_train_prints_cfg(monkeypatch, tmp_path):
         text=True,
         env=env,
     )
-    assert proc.returncode == 0
+    assert proc.returncode == 0, "returncode is not valid"
     output = proc.stdout.strip()
     if output.startswith("{"):
         payload = json.loads(output)
-        assert payload.get("ok") is False
+        assert payload.get("ok") is False, "Condition must be true"
         assert "hydra-core" in payload.get("reason", "")
     else:
-        assert "train:" in output or "epochs:" in output
+        assert "train:" in output or "epochs:" in output, "Condition must be true"

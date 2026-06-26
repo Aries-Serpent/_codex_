@@ -37,8 +37,8 @@ def test_run_functional_training_resume(tmp_path):
         # ValueError: remote HF identifier used without an explicit commit-hash
         #   revision (CODEX_HF_REVISION / HF_REVISION env var not set in CI).
         pytest.skip(f"HuggingFace model unavailable (no network/revision in CI): {exc}")
-    assert first is not None
-    assert first["resumed_from"] is None
+    assert first is not None, "first must be initialized"
+    assert first["resumed_from"] is None, "Condition must be true"
     if first.get("checkpoint_dir") is None:
         pytest.skip("functional training checkpointing requires optional deps")
 
@@ -46,8 +46,8 @@ def test_run_functional_training_resume(tmp_path):
     resumed_config["max_epochs"] = 3
 
     second = run_functional_training(resumed_config, resume=True)
-    assert second["resumed_from"] is not None
-    assert any(metric["epoch"] == 2 for metric in second["metrics"])
+    assert second["resumed_from"] is not None, "Value must be initialized"
+    assert any(metric["epoch"] == 2 for metric in second["metrics"]), "Condition must be true"
 
     checkpoint_root = tmp_path / "run" / "checkpoints"
-    assert (checkpoint_root / "epoch-2").exists()
+    assert (checkpoint_root / "epoch-2").exists(), "Condition must be true"

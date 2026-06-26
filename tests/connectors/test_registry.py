@@ -30,6 +30,6 @@ def test_registry_get_and_register():
     conn = get_connector("dummy")
     assert isinstance(conn, DummyConnector)
     available = list_connectors()
-    assert "local" in available and "remote" in available
+    assert "local" in available and "remote" in available, "Condition must be true"
     with pytest.raises(KeyError):
         get_connector("missing")

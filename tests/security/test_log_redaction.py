@@ -18,7 +18,7 @@ def test_log_redaction(tmp_path: Path) -> None:
     secret = "ghp_" + "A" * 36  # pragma: allowlist secret
     write_ndjson(p, {"text": secret})
     data = json.loads(p.read_text().strip())
-    assert "REDACTED" in data["text"]
+    assert "REDACTED" in data["text"], "Data must not be empty"
     redactions = data.get("redactions", {}).get("text", {})
     assert redactions.get("secrets", 0) >= 1
 
@@ -27,12 +27,12 @@ def test_write_ndjson_creates_parent_dirs(tmp_path: Path) -> None:
     nested = tmp_path / "nested" / "logs" / "events.ndjson"
     write_ndjson(nested, {"text": "hello", "value": 1})
 
-    assert nested.exists()
+    assert nested.exists(), "Condition must be true"
     lines = nested.read_text(encoding="utf-8").splitlines()
-    assert len(lines) == 1
+    assert len(lines) == 1, "Lines must not be empty"
     data = json.loads(lines[0])
-    assert data["text"] == "hello"
-    assert data.get("value") == 1
+    assert data["text"] == "hello", "Data must not be empty"
+    assert data.get("value") == 1, "Data must not be empty"
 
 
 def test_write_ndjson_rotates(tmp_path: Path, monkeypatch) -> None:

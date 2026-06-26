@@ -24,11 +24,11 @@ class TestEnvVarConfig:
         from codex.config.env_vars import EnvVarConfig
 
         config = EnvVarConfig(name="TEST_VAR")
-        assert config.name == "TEST_VAR"
-        assert config.default is None
-        assert config.validator is None
-        assert config.required is False
-        assert config.description == ""
+        assert config.name == "TEST_VAR", "name is not valid"
+        assert config.default is None, "default is not valid"
+        assert config.validator is None, "validator is not valid"
+        assert config.required is False, "required is not valid"
+        assert config.description == "", "description is not valid"
 
     def test_create_config_with_defaults(self):
         """Test creating config with default value."""
@@ -39,8 +39,8 @@ class TestEnvVarConfig:
             default="default_value",
             description="A test variable",
         )
-        assert config.default == "default_value"
-        assert config.description == "A test variable"
+        assert config.default == "default_value", "Value must be initialized"
+        assert config.description == "A test variable", "description is not valid"
 
     def test_create_config_with_validator(self):
         """Test creating config with validator."""
@@ -53,16 +53,16 @@ class TestEnvVarConfig:
             name="TEST_VAR",
             validator=validator,
         )
-        assert config.validator is not None
-        assert config.validator("1") is True
-        assert config.validator("2") is False
+        assert config.validator is not None, "validator must be initialized"
+        assert config.validator("1") is True, "Condition must be true"
+        assert config.validator("2") is False, "Condition must be true"
 
     def test_create_required_config(self):
         """Test creating required environment variable config."""
         from codex.config.env_vars import EnvVarConfig
 
         config = EnvVarConfig(name="REQUIRED_VAR", required=True)
-        assert config.required is True
+        assert config.required is True, "required is not valid"
 
 
 class TestEnvironmentManager:
@@ -94,8 +94,8 @@ class TestEnvironmentManager:
         from codex.config.env_vars import EnvironmentManager
 
         manager = EnvironmentManager(lazy_validation=True)
-        assert manager._lazy_validation is True
-        assert manager._validated is False
+        assert manager._lazy_validation is True, "_lazy_validation is not valid"
+        assert manager._validated is False, "_validated is not valid"
 
     def test_instantiation_with_eager_validation(self, clean_env):
         """Test that manager validates on init by default."""
@@ -103,42 +103,42 @@ class TestEnvironmentManager:
 
         # Should not raise with no required vars
         manager = EnvironmentManager(lazy_validation=False)
-        assert manager is not None
+        assert manager is not None, "manager must be initialized"
 
     def test_get_existing_env_var(self, manager):
         """Test getting an existing environment variable."""
         os.environ["CODEX_FORCE_CPU"] = "1"
         result = manager.get("CODEX_FORCE_CPU")
-        assert result == "1"
+        assert result == "1", "Result must not be empty"
 
     def test_get_with_default_fallback(self, manager):
         """Test getting env var with default fallback."""
         result = manager.get("CODEX_NONEXISTENT", default="fallback")
-        assert result == "fallback"
+        assert result == "fallback", "Result must not be empty"
 
     def test_get_with_configured_default(self, manager):
         """Test getting env var with configured default."""
         result = manager.get("CODEX_SESSION_LOG_DIR")
-        assert result == ".codex/sessions"
+        assert result == ".codex/sessions", "Result must not be empty"
 
     def test_get_session_id_generates_uuid(self, manager, clean_env):
         """Test that session ID is generated if not set."""
         session_id = manager.get_session_id()
         # Verify it's a valid UUID
         uuid.UUID(session_id)
-        assert session_id is not None
+        assert session_id is not None, "session_id must be initialized"
 
     def test_get_session_id_uses_env_value(self, manager, clean_env):
         """Test that session ID uses env value if set."""
         os.environ["CODEX_SESSION_ID"] = "test-session-123"
         session_id = manager.get_session_id()
-        assert session_id == "test-session-123"
+        assert session_id == "test-session-123", "session_id is not valid"
 
     def test_get_session_id_caches_value(self, manager, clean_env):
         """Test that session ID is cached after first call."""
         session_id1 = manager.get_session_id()
         session_id2 = manager.get_session_id()
-        assert session_id1 == session_id2
+        assert session_id1 == session_id2, "session_id1 is not valid"
 
     def test_get_log_dir_creates_directory(self, clean_env, tmp_path):
         """Test that get_log_dir creates directory if not exists."""
@@ -151,8 +151,8 @@ class TestEnvironmentManager:
         manager = EnvironmentManager(lazy_validation=True)
         result = manager.get_log_dir()
 
-        assert result.exists()
-        assert result.is_dir()
+        assert result.exists(), "Result must not be empty"
+        assert result.is_dir(), "Result must not be empty"
 
     def test_get_db_path(self, clean_env, tmp_path):
         """Test getting database path."""
@@ -165,34 +165,34 @@ class TestEnvironmentManager:
         manager = EnvironmentManager(lazy_validation=True)
         result = manager.get_db_path()
 
-        assert str(result).endswith("test.db")
+        assert str(result).endswith("test.db"), "Result must not be empty"
 
     def test_is_sqlite_pool_enabled_false(self, manager, clean_env):
         """Test SQLite pool disabled by default."""
         os.environ["CODEX_SQLITE_POOL"] = "0"
-        assert manager.is_sqlite_pool_enabled() is False
+        assert manager.is_sqlite_pool_enabled() is False, "Condition must be true"
 
     def test_is_sqlite_pool_enabled_true(self, manager, clean_env):
         """Test SQLite pool enabled."""
         os.environ["CODEX_SQLITE_POOL"] = "1"
-        assert manager.is_sqlite_pool_enabled() is True
+        assert manager.is_sqlite_pool_enabled() is True, "Condition must be true"
 
     def test_dump_config_returns_dict(self, manager):
         """Test that dump_config returns dictionary."""
         result = manager.dump_config()
         assert isinstance(result, dict)
-        assert "CODEX_SESSION_LOG_DIR" in result
+        assert "CODEX_SESSION_LOG_DIR" in result, "Result must not be empty"
 
     def test_validate_method(self, manager):
         """Test explicit validate method."""
         manager.validate()
-        assert manager._validated is True
+        assert manager._validated is True, "_validated is not valid"
 
     def test_validate_idempotent(self, manager):
         """Test that validate can be called multiple times."""
         manager.validate()
         manager.validate()  # Should not raise
-        assert manager._validated is True
+        assert manager._validated is True, "_validated is not valid"
 
 
 class TestEnvironmentManagerValidation:
@@ -230,7 +230,7 @@ class TestEnvironmentManagerValidation:
         os.environ["CODEX_FORCE_CPU"] = "1"
 
         manager = EnvironmentManager(lazy_validation=False)
-        assert manager is not None
+        assert manager is not None, "manager must be initialized"
 
 
 class TestGlobalEnvManager:
@@ -240,7 +240,7 @@ class TestGlobalEnvManager:
         """Test that global env_manager exists."""
         from codex.config.env_vars import env_manager
 
-        assert env_manager is not None
+        assert env_manager is not None, "env_manager must be initialized"
 
     def test_global_instance_is_environment_manager(self):
         """Test that global instance is EnvironmentManager."""

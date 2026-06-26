@@ -48,7 +48,7 @@ def test_package_cli_summarizes_metrics(tmp_path: Path) -> None:
 
     assert result.returncode == 0, result.stderr
     payload = json.loads(result.stdout)
-    assert payload["rows"] == len(metrics)
-    assert payload["metrics"]["loss"]["min"] == 1.0
-    assert payload["metrics"]["loss"]["max"] == 2.0
-    assert payload["metrics"]["loss"]["count"] == 2
+    assert payload["rows"] == len(metrics), "Metrics must not be empty"
+    assert payload["metrics"]["loss"]["min"] == 1.0, "Condition must be true"
+    assert payload["metrics"]["loss"]["max"] == 2.0, "Condition must be true"
+    assert payload["metrics"]["loss"]["count"] == 2, "Count must be greater than zero"

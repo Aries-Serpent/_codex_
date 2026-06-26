@@ -60,35 +60,35 @@ class TestChunkText:
         text = "This is a test. " * 100  # ~1600 chars
         chunks = chunk_text(text, chunk_size=500, overlap=50)
 
-        assert len(chunks) > 0
-        assert all(len(chunk[2]) <= 500 for chunk in chunks)
+        assert len(chunks) > 0, "Chunks must not be empty"
+        assert all(len(chunk[2]) <= 500 for chunk in chunks), "Collection must not be empty"
         assert all(isinstance(chunk, tuple) for chunk in chunks)
-        assert all(len(chunk) == 3 for chunk in chunks)
+        assert all(len(chunk) == 3 for chunk in chunks), "Chunk must not be empty"
 
     def test_empty_text(self):
         """Test chunking empty text"""
         chunks = chunk_text("", chunk_size=100, overlap=10)
-        assert len(chunks) == 0
+        assert len(chunks) == 0, "Chunks must not be empty"
 
     def test_small_text(self):
         """Test chunking text smaller than chunk_size"""
         text = "Small text"
         chunks = chunk_text(text, chunk_size=100, overlap=10)
-        assert len(chunks) == 1
-        assert chunks[0][2] == text
+        assert len(chunks) == 1, "Chunks must not be empty"
+        assert chunks[0][2] == text, "Condition must be true"
 
     def test_overlap(self):
         """Test that chunks have proper overlap"""
         text = "A" * 1000
         chunks = chunk_text(text, chunk_size=200, overlap=50)
 
-        assert len(chunks) > 1
+        assert len(chunks) > 1, "Chunks must not be empty"
         # Check positions show overlap
         for i in range(len(chunks) - 1):
             current_end = chunks[i][1]
             next_start = chunks[i + 1][0]
             # Overlap should be approximately 50 chars
-            assert current_end - next_start >= 40  # Allow some variance
+            assert current_end - next_start >= 40, "next_start must be greater than zero"
 
     def test_invalid_params(self):
         """Test invalid parameters"""
@@ -113,14 +113,14 @@ class TestEmbedChunks:
         embeddings = embed_chunks(chunks)
 
         assert isinstance(embeddings, np.ndarray)
-        assert len(embeddings) == len(chunks)
-        assert embeddings.shape[1] > 0  # Has embedding dimension
+        assert len(embeddings) == len(chunks), "Embeddings must not be empty"
+        assert embeddings.shape[1] > 0, "Value must be greater than zero"
 
     def test_empty_chunks(self):
         """Test embedding empty chunks"""
         embeddings = embed_chunks([])
         assert isinstance(embeddings, np.ndarray)
-        assert len(embeddings) == 0
+        assert len(embeddings) == 0, "Embeddings must not be empty"
 
     def test_custom_model_profile(self):
         """Test with custom model profile"""
@@ -134,8 +134,8 @@ class TestEmbedChunks:
         }
         embeddings = embed_chunks(chunks, model_profile=model_profile)
 
-        assert len(embeddings) == 2
-        assert embeddings.shape[1] == 384  # Expected dimension for this model
+        assert len(embeddings) == 2, "Embeddings must not be empty"
+        assert embeddings.shape[1] == 384, "Condition must be true"
 
 
 class TestPersistAndLoadIndex:
@@ -162,10 +162,10 @@ class TestPersistAndLoadIndex:
                 index_dir=tmpdir,
             )
 
-            assert index_path.exists()
-            assert (index_path / "index.faiss").exists()
-            assert (index_path / "chunks.json").exists()
-            assert (index_path / "metadata.json").exists()
+            assert index_path.exists(), "Condition must be true"
+            assert (index_path / "index.faiss").exists(), "Condition must be true"
+            assert (index_path / "chunks.json").exists(), "Condition must be true"
+            assert (index_path / "metadata.json").exists(), "Data must not be empty"
 
             # Load index
             loaded_index, loaded_chunks, loaded_metadata = load_index(
@@ -174,11 +174,11 @@ class TestPersistAndLoadIndex:
                 index_dir=tmpdir,
             )
 
-            assert loaded_index is not None
-            assert loaded_index.ntotal == 3
-            assert len(loaded_chunks) == 3
-            assert loaded_metadata["test"] == "metadata"
-            assert loaded_metadata["index_name"] == "test_index"
+            assert loaded_index is not None, "loaded_index must be initialized"
+            assert loaded_index.ntotal == 3, "ntotal is not valid"
+            assert len(loaded_chunks) == 3, "Loaded_chunks must not be empty"
+            assert loaded_metadata["test"] == "metadata", "Data must not be empty"
+            assert loaded_metadata["index_name"] == "test_index", "Data must not be empty"
 
     def test_load_nonexistent_index(self):
         """Test loading non-existent index"""
@@ -247,8 +247,8 @@ class TestBuildIndexFromFiles:
                 overlap=50,
             )
 
-            assert index_path.exists()
-            assert (index_path / "index.faiss").exists()
+            assert index_path.exists(), "Condition must be true"
+            assert (index_path / "index.faiss").exists(), "Condition must be true"
 
             # Load and verify
             loaded_index, chunks, metadata = load_index(
@@ -257,10 +257,10 @@ class TestBuildIndexFromFiles:
                 index_dir=str(index_dir),
             )
 
-            assert loaded_index.ntotal > 0
-            assert len(chunks) > 0
-            assert metadata["total_files"] == 3
-            assert metadata["total_chunks"] > 0
+            assert loaded_index.ntotal > 0, "ntotal must be greater than zero"
+            assert len(chunks) > 0, "Chunks must not be empty"
+            assert metadata["total_files"] == 3, "Data must not be empty"
+            assert metadata["total_chunks"] > 0, "Value must be greater than zero"
 
     def test_build_from_empty_list(self):
         """Test building index from empty file list"""
@@ -294,13 +294,13 @@ class TestBuildIndexFromFiles:
                 index_dir=str(index_dir),
             )
 
-            assert index_path.exists()
+            assert index_path.exists(), "Condition must be true"
             loaded_index, _, _ = load_index(
                 index_name="test",
                 tenant_id="test",
                 index_dir=str(index_dir),
             )
-            assert loaded_index.ntotal > 0
+            assert loaded_index.ntotal > 0, "ntotal must be greater than zero"
 
 
 @_skip_real_st_models
@@ -344,7 +344,7 @@ class TestEndToEnd:
             )
 
             # Verify index was created
-            assert index_path.exists()
+            assert index_path.exists(), "Condition must be true"
 
             # Load and inspect
             index, chunks, metadata = load_index(
@@ -353,10 +353,10 @@ class TestEndToEnd:
                 index_dir=str(index_dir),
             )
 
-            assert index.ntotal > 0
-            assert len(chunks) > 0
-            assert all("text" in chunk for chunk in chunks)
-            assert metadata["total_files"] == 3
+            assert index.ntotal > 0, "ntotal must be greater than zero"
+            assert len(chunks) > 0, "Chunks must not be empty"
+            assert all("text" in chunk for chunk in chunks), "Condition must be true"
+            assert metadata["total_files"] == 3, "Data must not be empty"
 
 
 class TestIndexerEdgeCases:
@@ -367,14 +367,14 @@ class TestIndexerEdgeCases:
         text = "First sentence.\nSecond sentence! Third sentence? Fourth sentence. "
         chunks = chunk_text(text, chunk_size=30, overlap=10)
 
-        assert len(chunks) > 0
+        assert len(chunks) > 0, "Chunks must not be empty"
 
     def test_chunk_text_with_no_delimiters(self):
         """Test chunking text with no sentence delimiters"""
         text = "a" * 500
         chunks = chunk_text(text, chunk_size=100, overlap=20)
 
-        assert len(chunks) > 0
+        assert len(chunks) > 0, "Chunks must not be empty"
 
     def test_persist_index_with_extensive_metadata(self):
         """Test persisting index with rich metadata"""
@@ -403,8 +403,8 @@ class TestIndexerEdgeCases:
                 index_dir=tmpdir,
             )
 
-            assert loaded_meta["source"] == "test_source"
-            assert loaded_meta["version"] == "1.0"
+            assert loaded_meta["source"] == "test_source", "Condition must be true"
+            assert loaded_meta["version"] == "1.0", "Condition must be true"
 
     def test_load_index_with_missing_chunks_file(self):
         """Test loading index when chunks.json is missing"""
@@ -429,8 +429,8 @@ class TestIndexerEdgeCases:
                 index_dir=tmpdir,
             )
 
-            assert index is not None
-            assert len(loaded_chunks) == 0
+            assert index is not None, "index must be initialized"
+            assert len(loaded_chunks) == 0, "Loaded_chunks must not be empty"
 
 
 class TestManageTenantIndices:
@@ -445,8 +445,8 @@ class TestManageTenantIndices:
             result = manage_tenant_indices(
                 tenant_id="test", operation="invalid_op", index_names=["idx1"], index_dir=tmpdir
             )
-            assert not result.success
-            assert "Invalid operation" in result.message
+            assert not result.success, "Result must not be empty"
+            assert "Invalid operation" in result.message, "Result must not be empty"
 
     def test_create_missing_files(self):
         """Test CREATE operation without files parameter"""
@@ -457,8 +457,8 @@ class TestManageTenantIndices:
             result = manage_tenant_indices(
                 tenant_id="test", operation="create", index_names=["idx1"], index_dir=tmpdir
             )
-            assert not result.success
-            assert "requires 'files' parameter" in result.message
+            assert not result.success, "Result must not be empty"
+            assert "requires 'files' parameter" in result.message, "Result must not be empty"
 
     def test_list_empty(self):
         """Test LIST operation with no indices"""
@@ -469,8 +469,8 @@ class TestManageTenantIndices:
             result = manage_tenant_indices(
                 tenant_id="test", operation="list", index_names=[], index_dir=tmpdir
             )
-            assert result.success
-            assert len(result.index_names) == 0
+            assert result.success, "Result must not be empty"
+            assert len(result.index_names) == 0, "Collection must not be empty"
 
     def test_delete_nonexistent(self):
         """Test DELETE operation on non-existent index"""
@@ -481,7 +481,7 @@ class TestManageTenantIndices:
             result = manage_tenant_indices(
                 tenant_id="test", operation="delete", index_names=["nonexistent"], index_dir=tmpdir
             )
-            assert not result.success
+            assert not result.success, "Result must not be empty"
 
     def test_merge_missing_param(self):
         """Test MERGE operation without merge_name"""
@@ -492,8 +492,8 @@ class TestManageTenantIndices:
             result = manage_tenant_indices(
                 tenant_id="test", operation="merge", index_names=["idx1", "idx2"], index_dir=tmpdir
             )
-            assert not result.success
-            assert "requires 'merge_name' parameter" in result.message
+            assert not result.success, "Result must not be empty"
+            assert "requires 'merge_name' parameter" in result.message, "Result must not be empty"
 
     def test_update_missing_files(self):
         """Test UPDATE operation without files parameter"""
@@ -504,8 +504,8 @@ class TestManageTenantIndices:
             result = manage_tenant_indices(
                 tenant_id="test", operation="update", index_names=["idx1"], index_dir=tmpdir
             )
-            assert not result.success
-            assert "requires 'files' parameter" in result.message
+            assert not result.success, "Result must not be empty"
+            assert "requires 'files' parameter" in result.message, "Result must not be empty"
 
 
 @_skip_real_st_models
@@ -516,7 +516,7 @@ class TestEmbedChunksErrorPaths:
         """Test embed_chunks with empty chunks returns empty array"""
         embeddings = embed_chunks([])
         assert isinstance(embeddings, np.ndarray)
-        assert len(embeddings) == 0
+        assert len(embeddings) == 0, "Embeddings must not be empty"
 
     def test_embed_chunks_import_error_coverage(self):
         """
@@ -528,8 +528,8 @@ class TestEmbedChunksErrorPaths:
         chunks = [(0, 10, "Test text for embedding")]
         embeddings = embed_chunks(chunks)
         assert isinstance(embeddings, np.ndarray)
-        assert len(embeddings) == 1
-        assert embeddings.shape[1] > 0  # Has embedding dimension
+        assert len(embeddings) == 1, "Embeddings must not be empty"
+        assert embeddings.shape[1] > 0, "Value must be greater than zero"
 
 
 class TestLoadIndexErrorPaths:
@@ -679,6 +679,6 @@ class TestLoadIndexErrorPaths:
                 index_dir=tmpdir,
             )
 
-            assert index is not None
-            assert len(loaded_chunks) == 1
-            assert metadata == {}  # Empty dict when file missing
+            assert index is not None, "index must be initialized"
+            assert len(loaded_chunks) == 1, "Loaded_chunks must not be empty"
+            assert metadata == {}, "Data must not be empty"

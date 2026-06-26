@@ -13,6 +13,7 @@ except ImportError:
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_json_rpc_missing_jsonrpc_field():
     """Test that missing jsonrpc field is handled gracefully."""
     registry = ToolRegistry()
@@ -27,10 +28,11 @@ async def test_json_rpc_missing_jsonrpc_field():
     response = await server.handle_request(request)
 
     # Should still work or return error
-    assert response is not None or response is None
+    assert response is not None or response is None, "response must be initialized"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_json_rpc_invalid_params():
     """Test handling of invalid params in JSON-RPC request."""
     registry = ToolRegistry()
@@ -46,10 +48,11 @@ async def test_json_rpc_invalid_params():
     response = await server.handle_request(request)
 
     # Should handle gracefully
-    assert response is not None
+    assert response is not None, "response must be initialized"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_json_rpc_null_params():
     """Test handling of null params."""
     registry = ToolRegistry()
@@ -66,10 +69,11 @@ async def test_json_rpc_null_params():
     response = await server.handle_request(request)
 
     # Should still work
-    assert response is not None
+    assert response is not None, "response must be initialized"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_json_rpc_timeout_handling():
     """Test handling of timeouts in JSON-RPC requests."""
     registry = ToolRegistry()

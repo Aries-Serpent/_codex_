@@ -48,11 +48,11 @@ class TestQueueOperations:
         queue.append(Job("job-1", {"task": "process"}))
         queue.append(Job("job-2", {"task": "index"}))
 
-        assert len(queue) == 2
+        assert len(queue) == 2, "Queue must not be empty"
 
         job = queue.popleft()
-        assert job.job_id == "job-1"
-        assert len(queue) == 1
+        assert job.job_id == "job-1", "job_id is not valid"
+        assert len(queue) == 1, "Queue must not be empty"
 
     def test_priority_queue(self):
         """Priority queue orders by priority."""
@@ -81,9 +81,9 @@ class TestQueueOperations:
         item1 = pq.pop()
         item2 = pq.pop()
         item3 = pq.pop()
-        assert item1 == "high priority"
-        assert item2 == "medium priority"
-        assert item3 == "low priority"
+        assert item1 == "high priority", "Item must not be empty"
+        assert item2 == "medium priority", "Item must not be empty"
+        assert item3 == "low priority", "Item must not be empty"
 
     def test_queue_size_limit(self):
         """Queue respects size limits."""
@@ -134,8 +134,8 @@ class TestJobProcessing:
 
         result = execute_job(job, double_value)
 
-        assert result.status == JobStatus.COMPLETED
-        assert result.result == 20
+        assert result.status == JobStatus.COMPLETED, "Result must not be empty"
+        assert result.result == 20, "Result must not be empty"
 
     def test_job_failure_handling(self):
         """Job failures are handled gracefully."""
@@ -157,8 +157,8 @@ class TestJobProcessing:
 
         result = execute_job(job, failing_processor)
 
-        assert result.status == JobStatus.FAILED
-        assert "Processing error" in result.error
+        assert result.status == JobStatus.FAILED, "Result must not be empty"
+        assert "Processing error" in result.error, "Result must not be empty"
 
     def test_job_retry_logic(self):
         """Failed jobs are retried."""
@@ -195,8 +195,8 @@ class TestJobProcessing:
 
         success = retryable.execute(flaky_processor)
 
-        assert success
-        assert retryable.attempts == 3
+        assert success, "success is not valid"
+        assert retryable.attempts == 3, "attempts is not valid"
 
 
 class TestWorkerPool:
@@ -222,15 +222,15 @@ class TestWorkerPool:
 
         pool = WorkerPool(num_workers=4)
 
-        assert len(pool.workers) == 4
+        assert len(pool.workers) == 4, "Collection must not be empty"
 
         w1 = pool.acquire_worker()
         _ = pool.acquire_worker()  # Acquire second worker
 
-        assert len(pool.available) == 2
+        assert len(pool.available) == 2, "Collection must not be empty"
 
         pool.release_worker(w1)
-        assert len(pool.available) == 3
+        assert len(pool.available) == 3, "Collection must not be empty"
 
     def test_worker_load_balancing(self):
         """Work is distributed across workers."""
@@ -257,9 +257,9 @@ class TestWorkerPool:
             balancer.assign_job(j)
 
         # Should be evenly distributed
-        assert balancer.job_counts["w1"] == 3
-        assert balancer.job_counts["w2"] == 3
-        assert balancer.job_counts["w3"] == 3
+        assert balancer.job_counts["w1"] == 3, "Count must be greater than zero"
+        assert balancer.job_counts["w2"] == 3, "Count must be greater than zero"
+        assert balancer.job_counts["w3"] == 3, "Count must be greater than zero"
 
 
 class TestDeadLetterQueue:
@@ -282,8 +282,8 @@ class TestDeadLetterQueue:
 
         dlq.add(failed_job, "Max retries exceeded")
 
-        assert len(dlq.items) == 1
-        assert dlq.items[0]["error"] == "Max retries exceeded"
+        assert len(dlq.items) == 1, "Collection must not be empty"
+        assert dlq.items[0]["error"] == "Max retries exceeded", "Item must not be empty"
 
     def test_dlq_replay(self):
         """DLQ jobs can be replayed."""
@@ -310,9 +310,9 @@ class TestDeadLetterQueue:
 
         replayed = dlq.replay_all()
 
-        assert len(replayed) == 1
-        assert replayed[0].status == JobStatus.PENDING
-        assert len(dlq.items) == 0
+        assert len(replayed) == 1, "Replayed must not be empty"
+        assert replayed[0].status == JobStatus.PENDING, "status is not valid"
+        assert len(dlq.items) == 0, "Collection must not be empty"
 
 
 class TestRateLimiting:
@@ -345,10 +345,10 @@ class TestRateLimiting:
 
         # Should allow initial burst
         for _ in range(10):
-            assert bucket.consume()
+            assert bucket.consume(), "Condition must be true"
 
         # Should deny after bucket empty
-        assert not bucket.consume()
+        assert not bucket.consume(), "Condition must be true"
 
     def test_sliding_window_rate_limiter(self):
         """Sliding window rate limiter works correctly."""
@@ -372,6 +372,6 @@ class TestRateLimiting:
         limiter = SlidingWindowRateLimiter(max_requests=5, window_seconds=1)
 
         for _ in range(5):
-            assert limiter.is_allowed()
+            assert limiter.is_allowed(), "Condition must be true"
 
-        assert not limiter.is_allowed()
+        assert not limiter.is_allowed(), "Condition must be true"

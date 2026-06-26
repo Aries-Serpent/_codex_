@@ -53,8 +53,8 @@ def test_train_cli_sanitises_dataset(monkeypatch):
     monkeypatch.setattr("codex_ml.cli.train.run_training", _stub_run_training)
     cfg = OmegaConf.create(_make_base_cfg())
     _run_from_cfg(cfg)
-    assert calls.get("called")
-    assert "«REDACTED:SECRET»" in cfg.dataset.train_texts[0]
+    assert calls.get("called"), "Condition must be true"
+    assert "«REDACTED:SECRET»" in cfg.dataset.train_texts[0], "Data must not be empty"
 
 
 def test_train_cli_respects_disable_flag(monkeypatch):
@@ -66,7 +66,7 @@ def test_train_cli_respects_disable_flag(monkeypatch):
     cfg.sanitize_prompts = False
     original = cfg.dataset.train_texts[0]
     _run_from_cfg(cfg)
-    assert cfg.dataset.train_texts[0] == original
+    assert cfg.dataset.train_texts[0] == original, "Data must not be empty"
 
 
 def test_evaluate_cli_sanitises_config():
@@ -76,9 +76,9 @@ def test_evaluate_cli_sanitises_config():
         "prompts": ["AKIA0000000000000000"],
     }
     count = _sanitize_eval_config(cfg_map)
-    assert count >= 1
-    assert "«REDACTED:SECRET»" in cfg_map["dataset"]["texts"][0]
-    assert "«REDACTED:SECRET»" in cfg_map["prompts"][0]
+    assert count >= 1, "count must be positive"
+    assert "«REDACTED:SECRET»" in cfg_map["dataset"]["texts"][0], "Data must not be empty"
+    assert "«REDACTED:SECRET»" in cfg_map["prompts"][0], "Condition must be true"
 
 
 def test_evaluate_cli_disable_flag():
@@ -88,6 +88,6 @@ def test_evaluate_cli_disable_flag():
         "prompts": ["AKIA0000000000000000"],
     }
     count = _sanitize_eval_config(cfg_map)
-    assert count == 0
-    assert cfg_map["dataset"]["texts"][0] == "sk-test-secret-123"
-    assert cfg_map["prompts"][0] == "AKIA0000000000000000"
+    assert count == 0, "Count must be greater than zero"
+    assert cfg_map["dataset"]["texts"][0] == "sk-test-secret-123", "Data must not be empty"
+    assert cfg_map["prompts"][0] == "AKIA0000000000000000", "Condition must be true"

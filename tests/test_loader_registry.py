@@ -24,8 +24,8 @@ def test_register_and_get_model():
     try:
         factory = get_model("dummy-model")
         produced = factory(device_map="cpu")
-        assert produced["model"] == "dummy"
-        assert "dummy-model" in list_models()
+        assert produced["model"] == "dummy", "Condition must be true"
+        assert "dummy-model" in list_models(), "Condition must be true"
     finally:
         unregister_model("dummy-model")
 
@@ -62,11 +62,11 @@ def test_get_model_entry_points_can_enable_after_initial_disabled_call(monkeypat
     )
     models_api._load_entry_points_once.cache_clear()
 
-    assert models_api.get_model("missing-model") is None
+    assert models_api.get_model("missing-model") is None, "Condition must be true"
 
     monkeypatch.setenv("CODEX_PLUGINS_ENTRYPOINTS", "1")
-    assert models_api.get_model("missing-model") is None
-    assert calls == [True]
+    assert models_api.get_model("missing-model") is None, "Condition must be true"
+    assert calls == [True], "calls is not valid"
 
     models_api._load_entry_points_once.cache_clear()
 
@@ -84,8 +84,8 @@ def test_modeling_prefers_registry():
 
     try:
         model, tokenizer = modeling.load_model_and_tokenizer("registry-demo")
-        assert model == "m"
-        assert tokenizer == "t"
+        assert model == "m", "model is not valid"
+        assert tokenizer == "t", "tokenizer is not valid"
     finally:
         unregister_model("registry-demo")
 
@@ -111,11 +111,11 @@ def test_loader_prefers_registry_kwargs():
             lora_r=4,
             extra_flag=True,
         )
-        assert res.__class__ is object
-        assert captured["model_name"] == "loader-demo"
-        assert captured["lora_enabled"] is True
-        assert captured["dtype"] == "fp16"
-        assert captured["device_map"] == "cpu"
-        assert captured["extra_flag"] is True
+        assert res.__class__ is object, "Object must be initialized"
+        assert captured["model_name"] == "loader-demo", "Condition must be true"
+        assert captured["lora_enabled"] is True, "Condition must be true"
+        assert captured["dtype"] == "fp16", "Condition must be true"
+        assert captured["device_map"] == "cpu", "Condition must be true"
+        assert captured["extra_flag"] is True, "Condition must be true"
     finally:
         unregister_model("loader-demo")

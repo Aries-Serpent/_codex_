@@ -26,9 +26,9 @@ def test_audit_event_dataclass():
     )
 
     data = asdict(event)
-    assert data["event_type"] == "audit_complete"
-    assert data["repo_name"] == "test-repo"
-    assert data["avg_score"] == 0.85
+    assert data["event_type"] == "audit_complete", "Data must not be empty"
+    assert data["repo_name"] == "test-repo", "Data must not be empty"
+    assert data["avg_score"] == 0.85, "Data must not be empty"
 
 
 def test_webhook_delivery_dataclass():
@@ -44,8 +44,8 @@ def test_webhook_delivery_dataclass():
         timestamp=time.time(),
     )
 
-    assert delivery.success is True
-    assert delivery.status_code == 200
+    assert delivery.success is True, "success is not valid"
+    assert delivery.status_code == 200, "status_code is not valid"
 
 
 @patch("scripts.space_traversal.webhooks.urlopen")
@@ -72,9 +72,9 @@ def test_send_webhook_success(mock_urlopen):
 
     result = send_webhook("https://example.com/webhook", event)
 
-    assert result.success is True
-    assert result.status_code == 200
-    assert mock_urlopen.called
+    assert result.success is True, "Result must not be empty"
+    assert result.status_code == 200, "Result must not be empty"
+    assert mock_urlopen.called, "Condition must be true"
 
 
 @patch("scripts.space_traversal.webhooks.urlopen")
@@ -105,7 +105,7 @@ def test_send_webhook_with_secret(mock_urlopen):
     request = call_args[0][0]
     # Headers are stored with title case but accessed case-insensitively
     headers_lower = {k.lower(): v for k, v in request.headers.items()}
-    assert "x-audit-signature" in headers_lower
+    assert "x-audit-signature" in headers_lower, "Condition must be true"
 
 
 @patch("scripts.space_traversal.webhooks.urlopen")
@@ -131,14 +131,14 @@ def test_send_slack_notification(mock_urlopen):
 
     result = send_slack_notification("https://hooks.slack.com/test", event)
 
-    assert result.success is True
+    assert result.success is True, "Result must not be empty"
 
     # Verify Slack payload format
     call_args = mock_urlopen.call_args
     request = call_args[0][0]
     payload = json.loads(request.data.decode())
-    assert "attachments" in payload
-    assert payload["attachments"][0]["color"] == "good"  # No regressions
+    assert "attachments" in payload, "Condition must be true"
+    assert payload["attachments"][0]["color"] == "good", "Condition must be true"
 
 
 @patch("scripts.space_traversal.webhooks.urlopen")
@@ -164,11 +164,11 @@ def test_send_slack_notification_with_regressions(mock_urlopen):
 
     result = send_slack_notification("https://hooks.slack.com/test", event)
 
-    assert result.success is True
+    assert result.success is True, "Result must not be empty"
     call_args = mock_urlopen.call_args
     request = call_args[0][0]
     payload = json.loads(request.data.decode())
-    assert payload["attachments"][0]["color"] == "warning"  # Has regressions
+    assert payload["attachments"][0]["color"] == "warning", "Condition must be true"
 
 
 @patch("scripts.space_traversal.webhooks.urlopen")
@@ -194,13 +194,13 @@ def test_send_teams_notification(mock_urlopen):
 
     result = send_teams_notification("https://teams.webhook.com/test", event)
 
-    assert result.success is True
+    assert result.success is True, "Result must not be empty"
 
     call_args = mock_urlopen.call_args
     request = call_args[0][0]
     payload = json.loads(request.data.decode())
-    assert payload["@type"] == "MessageCard"
-    assert "Audit Complete" in payload["sections"][0]["activityTitle"]
+    assert payload["@type"] == "MessageCard", "Condition must be true"
+    assert "Audit Complete" in payload["sections"][0]["activityTitle"], "Condition must be true"
 
 
 def test_create_event_from_audit():
@@ -223,9 +223,9 @@ def test_create_event_from_audit():
         event_type="audit_complete",
     )
 
-    assert event.repo_name == "test-repo"
-    assert event.capability_count == 3
-    assert event.regression_count == 1
-    assert event.avg_score == pytest.approx((0.90 + 0.85 + 0.60) / 3)
-    assert event.details["high_count"] == 2  # 0.90 and 0.85 (>=0.85)
-    assert event.details["low_count"] == 1  # 0.60
+    assert event.repo_name == "test-repo", "repo_name is not valid"
+    assert event.capability_count == 3, "Count must be greater than zero"
+    assert event.regression_count == 1, "Count must be greater than zero"
+    assert event.avg_score == pytest.approx((0.90 + 0.85 + 0.60) / 3), "avg_score is not valid"
+    assert event.details["high_count"] == 2, "Count must be greater than zero"
+    assert event.details["low_count"] == 1, "Count must be greater than zero"

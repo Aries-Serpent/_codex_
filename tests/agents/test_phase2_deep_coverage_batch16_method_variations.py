@@ -26,7 +26,7 @@ class TestMethodVariations_PhysicsOrchestrator:
 
         for dt in [0.001, 0.01, 0.1, 0.5, 1.0, 5.0]:
             result = orch.evolve_state(state, dt=dt)
-            assert result is not None or result is None
+            assert result is not None or result is None, "result must be initialized"
 
     def test_hamiltonian_all_omega_values(self):
         """Test harmonic_hamiltonian with all omega ranges"""
@@ -36,7 +36,7 @@ class TestMethodVariations_PhysicsOrchestrator:
 
         for omega in [0.1, 0.5, 1.0, 2.0, 5.0, 10.0]:
             H = evolver.harmonic_hamiltonian(q=1.0, p=0.5, omega=omega)
-            assert H is not None
+            assert H is not None, "H must be initialized"
 
     def test_swarm_all_particle_counts(self):
         """Test SwarmIntelligence with various particle counts"""
@@ -44,7 +44,7 @@ class TestMethodVariations_PhysicsOrchestrator:
 
         for count in [1, 2, 5, 10, 20, 50, 100]:
             swarm = SwarmIntelligence(num_particles=count)
-            assert swarm.num_particles == count
+            assert swarm.num_particles == count, "Count must be greater than zero"
 
     def test_quantum_operator_all_grid_sizes(self):
         """Test QuantumOperator with all grid sizes"""
@@ -52,7 +52,7 @@ class TestMethodVariations_PhysicsOrchestrator:
 
         for size in [2, 4, 8, 16, 32, 64]:
             op = QuantumOperator(grid_size=size)
-            assert op.grid_size == size
+            assert op.grid_size == size, "grid_size is not valid"
 
 
 class TestMethodVariations_QuantumGame:
@@ -66,7 +66,7 @@ class TestMethodVariations_QuantumGame:
 
         for team in teams:
             state = StrategyState(team, np.array([0.5, 0.5]))
-            assert state is not None
+            assert state is not None, "state must be initialized"
 
     def test_game_state_all_entanglement_strengths(self):
         """Test QuantumGameState with all entanglement values"""
@@ -77,7 +77,7 @@ class TestMethodVariations_QuantumGame:
 
         for strength in [0.0, 0.1, 0.25, 0.5, 0.75, 0.9, 1.0]:
             state = QuantumGameState(blue, red, entanglement_strength=strength)
-            assert state.entanglement_strength == strength
+            assert state.entanglement_strength == strength, "entanglement_strength is not valid"
 
     def test_payoff_matrices_all_sizes(self):
         """Test with various payoff matrix sizes"""
@@ -90,7 +90,7 @@ class TestMethodVariations_QuantumGame:
         payoff_r = np.array([[3, 5], [0, 1]])
 
         engine = QuantumInspiredGameEngine(blue, red, payoff_b, payoff_r)
-        assert engine is not None
+        assert engine is not None, "engine must be initialized"
 
 
 class TestMethodVariations_MentalMapping:
@@ -111,7 +111,7 @@ class TestMethodVariations_MentalMapping:
 
         for node_type in node_types:
             node = model.create_node(node_type, {})
-            assert node is not None
+            assert node is not None, "node must be initialized"
 
     def test_connect_nodes_all_edge_types(self):
         """Test connect_nodes with all EdgeType values"""
@@ -203,7 +203,7 @@ class TestMethodVariations_WorkflowNavigator:
         for count in [0, 1, 2, 5, 10, 50]:
             steps = [WorkflowStep(f"s{i}", f"Step {i}") for i in range(count)]
             workflow_id = navigator.create_workflow(f"wf_{count}", steps)
-            assert len(navigator.workflows[workflow_id]) == count
+            assert len(navigator.workflows[workflow_id]) == count, "Collection must not be empty"
 
     def test_navigate_all_indices(self):
         """Test navigation to all valid indices"""
@@ -217,8 +217,8 @@ class TestMethodVariations_WorkflowNavigator:
 
         for i in range(10):
             result = navigator.navigate_to(step_index=i)
-            assert result
-            assert navigator.current_step_index == i
+            assert result, "Result must not be empty"
+            assert navigator.current_step_index == i, "current_step_index is not valid"
 
 
 class TestMethodVariations_SelfHealing:
@@ -239,7 +239,7 @@ class TestMethodVariations_SelfHealing:
             issue = DetectedIssue(
                 issue_type=IssueType.SYNTAX_ERROR, severity=severity, description="Test"
             )
-            assert issue.severity == severity
+            assert issue.severity == severity, "severity is not valid"
 
     def test_all_issue_types(self):
         """Test DetectedIssue with all issue types"""
@@ -251,7 +251,7 @@ class TestMethodVariations_SelfHealing:
             issue = DetectedIssue(
                 issue_type=issue_type, severity=IssueSeverity.MEDIUM, description="Test"
             )
-            assert issue.issue_type == issue_type
+            assert issue.issue_type == issue_type, "issue_type is not valid"
 
 
 class TestMethodVariations_AdvancedCalculators:
@@ -272,8 +272,8 @@ class TestMethodVariations_AdvancedCalculators:
 
         for cross_section, length in dimensions:
             channel = FluidChannel(name="test", cross_section=cross_section, length=length)
-            assert channel.cross_section == cross_section
-            assert channel.length == length
+            assert channel.cross_section == cross_section, "cross_section is not valid"
+            assert channel.length == length, "Length must be greater than zero"
 
     def test_fractal_analyzer_various_dimensions(self):
         """Test FractalAnalyzer with various point dimensions"""
@@ -285,7 +285,7 @@ class TestMethodVariations_AdvancedCalculators:
         for dim in [1, 2, 3, 5]:
             points = np.random.rand(50, dim)
             dimension = analyzer.box_counting_dimension(points)
-            assert dimension is not None or dimension is None
+            assert dimension is not None or dimension is None, "dimension must be initialized"
 
 
 class TestMethodVariations_DeveloperOrchestrator:
@@ -320,7 +320,7 @@ class TestMethodVariations_DeveloperOrchestrator:
 
         for code in code_samples:
             result = orch.validate_code(code=code)
-            assert result is not None or result is None
+            assert result is not None or result is None, "result must be initialized"
 
 
 class TestCombinatorial_ParameterCombinations:
@@ -336,8 +336,8 @@ class TestCombinatorial_ParameterCombinations:
         for energy in energies:
             for entropy in entropies:
                 state = EnergyState(configuration={}, energy=energy, entropy=entropy)
-                assert state.energy == energy
-                assert state.entropy == entropy
+                assert state.energy == energy, "energy is not valid"
+                assert state.entropy == entropy, "entropy is not valid"
 
     def test_decision_state_all_combinations(self):
         """Test DecisionState with all parameter combinations"""
@@ -355,7 +355,7 @@ class TestCombinatorial_ParameterCombinations:
                 state = DecisionState(
                     current_position=pos, goal_position="goal", active_forces=forces
                 )
-                assert state.current_position == pos
+                assert state.current_position == pos, "current_position is not valid"
 
 
 class TestOptionalParameters_AllMethods:
@@ -375,7 +375,7 @@ class TestOptionalParameters_AllMethods:
 
         # Test with defaults
         result = orch.assess_situation(state)
-        assert result is not None or result is None
+        assert result is not None or result is None, "result must be initialized"
 
         # Test optimize_path with correct parameters (ranked_paths and state)
         test_path = ActionPath(
@@ -387,7 +387,7 @@ class TestOptionalParameters_AllMethods:
             impact=0.7,
         )
         result = orch.optimize_path(ranked_paths=[test_path], state=state)
-        assert result is not None or result is None
+        assert result is not None or result is None, "result must be initialized"
 
     def test_all_optional_parameters_memory(self):
         """Test AgentMemory methods with optional parameters"""

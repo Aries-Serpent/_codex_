@@ -35,9 +35,9 @@ def test_complete_workflow():
     agg.store_metrics("func2", metrics2)
 
     # Verify workflow
-    assert len(list(module.walk())) == 3
-    assert graph.detect_cycles() == []
-    assert agg.summary()["total_entities"] == 2
+    assert len(list(module.walk())) == 3, "Collection must not be empty"
+    assert graph.detect_cycles() == [], "Condition must be true"
+    assert agg.summary()["total_entities"] == 2, "Condition must be true"
 
 
 def test_node_to_graph():
@@ -66,10 +66,10 @@ def test_node_to_graph():
             graph.add_edge(node.parent.node_id, node.node_id)
 
     # Verify graph structure
-    assert "root" in graph.nodes
-    assert "child1" in graph.nodes
-    assert "child2" in graph.nodes
-    assert len(graph.detect_cycles()) == 0
+    assert "root" in graph.nodes, "Condition must be true"
+    assert "child1" in graph.nodes, "Condition must be true"
+    assert "child2" in graph.nodes, "Condition must be true"
+    assert len(graph.detect_cycles()) == 0, "Collection must not be empty"
 
 
 def test_metrics_across_modules():
@@ -99,8 +99,8 @@ def test_metrics_across_modules():
         agg.store_metrics(f"mod2_func{i}", m)
 
     summary = agg.summary()
-    assert summary["total_entities"] == 8
-    assert summary["total_lines_of_code"] > 0
+    assert summary["total_entities"] == 8, "Condition must be true"
+    assert summary["total_lines_of_code"] > 0, "Value must be greater than zero"
 
 
 def test_cycle_detection_with_nodes():
@@ -113,7 +113,7 @@ def test_cycle_detection_with_nodes():
     graph.add_edge("C", "A")
 
     cycles = graph.detect_cycles()
-    assert len(cycles) == 1
+    assert len(cycles) == 1, "Cycles must not be empty"
     assert set(cycles[0]) == {"A", "B", "C"}
 
 
@@ -134,13 +134,13 @@ def test_serialization_roundtrip():
     data = node.to_dict()
 
     # Verify all fields are serialized
-    assert data["node_id"] == "test_node"
-    assert data["type"] == "class"
-    assert data["name"] == "TestClass"
-    assert data["docstring"] == "Test class docstring"
-    assert data["decorators"] == ["@dataclass"]
-    assert data["type_hints"] == {"attr": "str"}
-    assert data["metadata"] == {"complexity": 5}
+    assert data["node_id"] == "test_node", "Data must not be empty"
+    assert data["type"] == "class", "Data must not be empty"
+    assert data["name"] == "TestClass", "Data must not be empty"
+    assert data["docstring"] == "Test class docstring", "Data must not be empty"
+    assert data["decorators"] == ["@dataclass"], "Data must not be empty"
+    assert data["type_hints"] == {"attr": "str"}, "Data must not be empty"
+    assert data["metadata"] == {"complexity": 5}, "Data must not be empty"
 
 
 def test_multiple_cycles_detection():
@@ -157,11 +157,11 @@ def test_multiple_cycles_detection():
     graph.add_edge("E", "C")
 
     cycles = graph.detect_cycles()
-    assert len(cycles) == 2
+    assert len(cycles) == 2, "Cycles must not be empty"
 
 
 def test_empty_metrics_summary():
     """Test summary with no metrics stored."""
     agg = MetricsAggregator()
     summary = agg.summary()
-    assert summary == {}
+    assert summary == {}, "summary is not valid"

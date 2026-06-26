@@ -27,4 +27,4 @@ def test_example_configs_validate():
     code = subprocess.call(
         [sys.executable, str(TOOL), "--root", str(CFG_ROOT), "--schema", str(SCHEMA)]
     )
-    assert code == 0
+    assert code == 0, "code is not valid"

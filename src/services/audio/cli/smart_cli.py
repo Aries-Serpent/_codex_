@@ -196,7 +196,7 @@ def main() -> int:
         return 1
     except (ValueError, TypeError) as exc:
         error_type = type(exc).__name__
-        print(f"❌ Error: <ERROR_TYPE>")
+        print("❌ Error: <ERROR_TYPE>")
         return 1
 
 

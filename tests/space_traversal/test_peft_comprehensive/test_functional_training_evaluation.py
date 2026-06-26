@@ -32,7 +32,7 @@ class DummyDataset(torch.utils.data.Dataset):
         return cls(mapping)
 
     def with_format(self, fmt: str) -> "DummyDataset":
-        assert fmt == "torch"
+        assert fmt == "torch", "fmt is not valid"
         return self
 
 
@@ -135,6 +135,6 @@ def test_run_functional_training_appends_validation_metrics(monkeypatch):
     }
 
     result = training.run_functional_training(config)
-    assert "metrics" in result
-    assert "val_loss" in result["metrics"]
-    assert "val_perplexity" in result["metrics"]
+    assert "metrics" in result, "Result must not be empty"
+    assert "val_loss" in result["metrics"], "Result must not be empty"
+    assert "val_perplexity" in result["metrics"], "Result must not be empty"

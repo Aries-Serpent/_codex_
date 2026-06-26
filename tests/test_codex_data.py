@@ -19,10 +19,10 @@ def test_load_dataset_deterministic(tmp_path: Path) -> None:
     first = load_dataset(cfg)
     second = load_dataset(cfg)
 
-    assert first.train == second.train
-    assert first.val == second.val
-    assert first.test == second.test
-    assert second.from_cache is True
+    assert first.train == second.train, "train is not valid"
+    assert first.val == second.val, "val is not valid"
+    assert first.test == second.test, "test is not valid"
+    assert second.from_cache is True, "from_cache is not valid"
 
 
 def test_load_dataset_cache_hit(tmp_path: Path) -> None:
@@ -32,17 +32,17 @@ def test_load_dataset_cache_hit(tmp_path: Path) -> None:
     cfg = DataConfig(dataset_path=data_path, seed=1, cache_dir=tmp_path / "cache")
     first = load_dataset(cfg)
     cache_file = first.cache_path
-    assert cache_file is not None and cache_file.exists()
+    assert cache_file is not None and cache_file.exists(), "cache_file must be initialized"
 
     # Remove the source file to ensure the cache is used on subsequent calls
     data_path.unlink()
     cached = load_dataset(cfg)
 
-    assert cached.from_cache is True
-    assert cached.train == first.train
-    assert cached.val == first.val
-    assert cached.test == first.test
-    assert cache_file.exists()
+    assert cached.from_cache is True, "from_cache is not valid"
+    assert cached.train == first.train, "train is not valid"
+    assert cached.val == first.val, "val is not valid"
+    assert cached.test == first.test, "test is not valid"
+    assert cache_file.exists(), "Condition must be true"
 
 
 def test_load_dataset_invalidation_on_change(tmp_path: Path) -> None:
@@ -52,19 +52,19 @@ def test_load_dataset_invalidation_on_change(tmp_path: Path) -> None:
 
     cfg = DataConfig(dataset_path=data_path, cache_dir=tmp_path / "cache")
     first = load_dataset(cfg)
-    assert first.cache_path is not None
+    assert first.cache_path is not None, "cache_path must be initialized"
 
     # Modify the dataset to force a checksum change
     updated_records = initial_records + [{"id": 99, "text": "new"}]
     data_path.write_text("\n".join([json.dumps(r) for r in updated_records]), encoding="utf-8")
 
     refreshed = load_dataset(cfg)
-    assert refreshed.cache_path is not None
-    assert refreshed.cache_path != first.cache_path
-    assert refreshed.from_cache is False
+    assert refreshed.cache_path is not None, "cache_path must be initialized"
+    assert refreshed.cache_path != first.cache_path, "cache_path is not valid"
+    assert refreshed.from_cache is False, "from_cache is not valid"
 
     # Changing the loader version also invalidates the cache
     cfg.loader_version = "2.0"
     versioned = load_dataset(cfg)
-    assert versioned.cache_path is not None
-    assert versioned.cache_path != refreshed.cache_path
+    assert versioned.cache_path is not None, "cache_path must be initialized"
+    assert versioned.cache_path != refreshed.cache_path, "cache_path is not valid"

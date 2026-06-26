@@ -27,4 +27,4 @@ def test_apply_lora_if_available_identity_without_peft():
     model = Dummy()
     wrapped = apply_lora_if_available(model)
     # If `peft` is not installed, helper returns the model unchanged.
-    assert wrapped is model
+    assert wrapped is model, "wrapped is not valid"

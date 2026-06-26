@@ -19,9 +19,9 @@ def test_tool_discovery():
     registry.register_tool("tool2", lambda x: x * 2, schema={}, metadata={"desc": "Tool 2"})
 
     tools = registry.list_tools()
-    assert len(tools) == 2
-    assert any(t["name"] == "tool1" for t in tools)
-    assert any(t["name"] == "tool2" for t in tools)
+    assert len(tools) == 2, "Tools must not be empty"
+    assert any(t["name"] == "tool1" for t in tools), "Condition must be true"
+    assert any(t["name"] == "tool2" for t in tools), "Condition must be true"
 
 
 def test_tool_registration_with_metadata():
@@ -32,8 +32,8 @@ def test_tool_registration_with_metadata():
 
     tools = registry.list_tools()
     tool = next(t for t in tools if t["name"] == "kb.search")
-    assert tool["metadata"]["description"] == "Search knowledge base"
-    assert "search" in tool["metadata"]["tags"]
+    assert tool["metadata"]["description"] == "Search knowledge base", "Data must not be empty"
+    assert "search" in tool["metadata"]["tags"], "Data must not be empty"
 
 
 def test_tool_registration_with_schema():
@@ -44,8 +44,8 @@ def test_tool_registration_with_schema():
 
     tools = registry.list_tools()
     tool = next(t for t in tools if t["name"] == "search")
-    assert tool["schema"]["type"] == "object"
-    assert "query" in tool["schema"]["properties"]
+    assert tool["schema"]["type"] == "object", "Object must be initialized"
+    assert "query" in tool["schema"]["properties"], "Condition must be true"
 
 
 def test_tool_execution():
@@ -58,16 +58,16 @@ def test_tool_execution():
     registry.register_tool("echo", echo_tool)
 
     handler = registry.get_tool("echo")
-    assert handler is not None
+    assert handler is not None, "handler must be initialized"
     result = handler({"message": "hello"})
-    assert result["echo"] == "hello"
+    assert result["echo"] == "hello", "Result must not be empty"
 
 
 def test_tool_not_found():
     """Test handling of non-existent tool."""
     registry = MCPToolRegistry()
     handler = registry.get_tool("nonexistent")
-    assert handler is None
+    assert handler is None, "handler is not valid"
 
 
 def test_tool_overwrite():
@@ -78,7 +78,7 @@ def test_tool_overwrite():
 
     handler = registry.get_tool("tool")
     result = handler(None)
-    assert result == "v2"
+    assert result == "v2", "Result must not be empty"
 
 
 def test_multiple_tool_execution():
@@ -105,8 +105,8 @@ def test_tool_with_complex_return():
     handler = registry.get_tool("complex")
     result = handler({})
 
-    assert result["status"] == "success"
-    assert len(result["data"]["items"]) == 3
+    assert result["status"] == "success", "Result must not be empty"
+    assert len(result["data"]["items"]) == 3, "Collection must not be empty"
 
 
 def test_tool_list_excludes_handlers():
@@ -118,9 +118,9 @@ def test_tool_list_excludes_handlers():
     tool = tools[0]
 
     # Handler should not be in the list output
-    assert "handler" not in tool
-    assert "name" in tool
-    assert "metadata" in tool
+    assert "handler" not in tool, "Condition must be true"
+    assert "name" in tool, "Condition must be true"
+    assert "metadata" in tool, "Data must not be empty"
 
 
 def test_tool_with_error_handling():
@@ -137,7 +137,7 @@ def test_tool_with_error_handling():
 
     # Success case
     result = handler({"fail": False})
-    assert result["success"] is True
+    assert result["success"] is True, "Result must not be empty"
 
     # Failure case
     with pytest.raises(ValueError):
@@ -159,7 +159,7 @@ def test_ita_endpoint_integration_pattern():
 
     handler = registry.get_tool("kb.search")
     result = handler({"query": "test"})
-    assert "results" in result
+    assert "results" in result, "Result must not be empty"
 
 
 def test_tool_registration_with_confirmation():
@@ -171,7 +171,7 @@ def test_tool_registration_with_confirmation():
     )
 
     handler = registry.get_tool("dangerous")
-    assert handler is not None
+    assert handler is not None, "handler must be initialized"
 
 
 def test_tool_checksum_validation():
@@ -181,8 +181,8 @@ def test_tool_checksum_validation():
     schema = {"type": "object"}
     checksum = compute_tool_checksum("tool", schema)
 
-    assert len(checksum) == 64  # SHA-256 hex length
-    assert checksum.isalnum()
+    assert len(checksum) == 64, "Checksum must not be empty"
+    assert checksum.isalnum(), "Condition must be true"
 
 
 def test_tool_discovery_by_metadata():
@@ -195,7 +195,7 @@ def test_tool_discovery_by_metadata():
     tools = registry.list_tools()
     search_tools = [t for t in tools if t["metadata"].get("category") == "search"]
 
-    assert len(search_tools) == 2
+    assert len(search_tools) == 2, "Search_tools must not be empty"
 
 
 def test_tool_versioning():
@@ -209,8 +209,8 @@ def test_tool_versioning():
     tools = registry.list_tools()
     active_tools = [t for t in tools if not t["metadata"].get("deprecated", False)]
 
-    assert len(active_tools) == 1
-    assert active_tools[0]["name"] == "versioned"
+    assert len(active_tools) == 1, "Active_tools must not be empty"
+    assert active_tools[0]["name"] == "versioned", "Condition must be true"
 
 
 def test_concurrent_tool_access():
@@ -232,8 +232,8 @@ def test_concurrent_tool_access():
     for t in threads:
         t.join()
 
-    assert len(results) == 10
-    assert all(r == "test" for r in results)
+    assert len(results) == 10, "Results must not be empty"
+    assert all(r == "test" for r in results), "Result must not be empty"
 
 
 def test_tool_lifecycle():
@@ -253,13 +253,13 @@ def test_tool_lifecycle():
 
     # List
     tools = registry.list_tools()
-    assert any(t["name"] == "lifecycle" for t in tools)
+    assert any(t["name"] == "lifecycle" for t in tools), "Condition must be true"
 
     # Execute
     handler = registry.get_tool("lifecycle")
     result = handler({"test": "data"})
-    assert result["stage"] == "executed"
-    assert result["input"]["test"] == "data"
+    assert result["stage"] == "executed", "Result must not be empty"
+    assert result["input"]["test"] == "data", "Result must not be empty"
 
 
 def test_tool_integration_with_validation():
@@ -278,7 +278,7 @@ def test_tool_integration_with_validation():
 
     # Valid input
     result = handler({"field1": "a", "field2": "b"})
-    assert result["status"] == "ok"
+    assert result["status"] == "ok", "Result must not be empty"
 
     # Invalid input
     with pytest.raises(ValueError):
@@ -293,10 +293,10 @@ def test_tool_registry_state_isolation():
     reg1.register_tool("tool1", lambda x: "reg1")
     reg2.register_tool("tool2", lambda x: "reg2")
 
-    assert reg1.get_tool("tool1") is not None
-    assert reg1.get_tool("tool2") is None
-    assert reg2.get_tool("tool2") is not None
-    assert reg2.get_tool("tool1") is None
+    assert reg1.get_tool("tool1") is not None, "Value must be initialized"
+    assert reg1.get_tool("tool2") is None, "Condition must be true"
+    assert reg2.get_tool("tool2") is not None, "Value must be initialized"
+    assert reg2.get_tool("tool1") is None, "Condition must be true"
 
 
 def test_tool_with_state():
@@ -311,9 +311,9 @@ def test_tool_with_state():
     registry.register_tool("counter", stateful_tool)
 
     handler = registry.get_tool("counter")
-    assert handler({})["count"] == 1
-    assert handler({})["count"] == 2
-    assert handler({})["count"] == 3
+    assert handler({})["count"] == 1, "Count must be greater than zero"
+    assert handler({})["count"] == 2, "Count must be greater than zero"
+    assert handler({})["count"] == 3, "Count must be greater than zero"
 
 
 def test_tool_integration_end_to_end():
@@ -330,13 +330,13 @@ def test_tool_integration_end_to_end():
 
     # Discover
     tools = registry.list_tools()
-    assert len(tools) == 3
+    assert len(tools) == 3, "Tools must not be empty"
 
     # Execute each
     echo_result = registry.get_tool("echo")({"test": "data"})
     upper_result = registry.get_tool("upper")({"text": "hello"})
     search_result = registry.get_tool("search")({"query": "test"})
 
-    assert echo_result == {"test": "data"}
-    assert upper_result["result"] == "HELLO"
-    assert "results" in search_result
+    assert echo_result == {"test": "data"}, "Result must not be empty"
+    assert upper_result["result"] == "HELLO", "Result must not be empty"
+    assert "results" in search_result, "Result must not be empty"

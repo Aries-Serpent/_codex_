@@ -212,7 +212,7 @@ class PluginRegistry:
                 logger.info(f"Loaded plugin module: {module_name}")
             except (IOError, OSError) as e:
                 error_type = type(e).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
+                logger.debug("Exception: <ERROR_TYPE>")
                 logger.error(f"Failed to load plugin {plugin_file}: <ERROR_TYPE>")
 
     def reload_plugin(self, name: str):

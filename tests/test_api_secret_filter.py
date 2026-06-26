@@ -28,6 +28,6 @@ def test_secret_filtering_masks_keys():
     client = TestClient(app)
     payload = {"prompt": "send sk-abcdef1234567890 now"}
     resp = client.post("/infer", json=payload)
-    assert resp.status_code == 200
+    assert resp.status_code == 200, "status_code is not valid"
     data = resp.json()
-    assert "[SECRET]" in data["completion"]
+    assert "[SECRET]" in data["completion"], "Data must not be empty"

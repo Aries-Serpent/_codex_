@@ -21,7 +21,7 @@ def test_save_and_load_roundtrip(tmp_path: Path) -> None:
     state = {"epoch": 1, "loss": 0.5}
     save_checkpoint(state, target)
     loaded = load_checkpoint(target)
-    assert loaded == state
+    assert loaded == state, "loaded is not valid"
 
 
 def test_prunes_old_checkpoints(tmp_path: Path) -> None:
@@ -58,4 +58,4 @@ def test_load_checkpoint_pickle_fallback_when_torch_available(
     monkeypatch.setattr(checkpoint_manager, "torch", dummy_torch)
 
     loaded = checkpoint_manager.load_checkpoint(target)
-    assert loaded == payload
+    assert loaded == payload, "loaded is not valid"

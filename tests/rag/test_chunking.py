@@ -22,20 +22,20 @@ class TestChunkingPipeline:
     def test_chunk_empty_text(self, pipeline):
         """Test handling of empty text."""
         chunks = pipeline.chunk_text("")
-        assert chunks == []
+        assert chunks == [], "chunks is not valid"
 
     def test_chunk_none_text(self, pipeline):
         """Test handling of None text."""
         chunks = pipeline.chunk_text(None)
-        assert chunks == []
+        assert chunks == [], "chunks is not valid"
 
     def test_chunk_small_text(self, pipeline):
         """Test chunking text smaller than chunk size."""
         text = "Hello world"
         chunks = pipeline.chunk_text(text)
 
-        assert len(chunks) == 1
-        assert chunks[0].content == text
+        assert len(chunks) == 1, "Chunks must not be empty"
+        assert chunks[0].content == text, "Content must not be empty"
 
     def test_chunk_with_metadata(self, pipeline):
         """Test that metadata is preserved in chunks."""
@@ -44,9 +44,9 @@ class TestChunkingPipeline:
 
         chunks = pipeline.chunk_text(text, metadata=metadata)
 
-        assert len(chunks) >= 1
-        assert chunks[0].metadata["source"] == "test"
-        assert chunks[0].metadata["type"] == "example"
+        assert len(chunks) >= 1, "Chunks must not be empty"
+        assert chunks[0].metadata["source"] == "test", "Data must not be empty"
+        assert chunks[0].metadata["type"] == "example", "Data must not be empty"
 
     def test_chunk_large_text(self, pipeline):
         """Test chunking text larger than chunk size."""
@@ -54,9 +54,9 @@ class TestChunkingPipeline:
 
         chunks = pipeline.chunk_text(text)
 
-        assert len(chunks) > 1
+        assert len(chunks) > 1, "Chunks must not be empty"
         for chunk in chunks:
-            assert chunk.length > 0
+            assert chunk.length > 0, "length must be positive"
 
     def test_chunk_indices_are_valid(self, pipeline):
         """Test that chunk indices are valid."""
@@ -65,9 +65,9 @@ class TestChunkingPipeline:
         chunks = pipeline.chunk_text(text)
 
         for chunk in chunks:
-            assert chunk.start_index >= 0
-            assert chunk.end_index <= len(text)
-            assert chunk.start_index < chunk.end_index
+            assert chunk.start_index >= 0, "start_index must be greater than zero"
+            assert chunk.end_index <= len(text), "Text must not be empty"
+            assert chunk.start_index < chunk.end_index, "start_index is not valid"
 
 
 class TestChunk:
@@ -83,7 +83,7 @@ class TestChunk:
             end_index=11,
         )
 
-        assert chunk.length == 11
+        assert chunk.length == 11, "Length must be greater than zero"
 
     def test_chunk_metadata_default(self):
         """Test default metadata is empty dict."""
@@ -91,4 +91,4 @@ class TestChunk:
 
         chunk = Chunk(content="Test", start_index=0, end_index=4)
 
-        assert chunk.metadata == {}
+        assert chunk.metadata == {}, "Data must not be empty"

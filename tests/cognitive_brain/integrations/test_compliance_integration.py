@@ -104,8 +104,8 @@ class TestAuditResult:
             business_impact=0.8,
             violations=[],
         )
-        assert audit.audit_id == "AUDIT-001"
-        assert audit.score == 0.95
+        assert audit.audit_id == "AUDIT-001", "audit_id is not valid"
+        assert audit.score == 0.95, "score is not valid"
 
     def test_invalid_score(self):
         """Test audit result with invalid score"""
@@ -138,16 +138,16 @@ class TestQuantumComplianceAssessor:
     def test_initialization_with_superposition(self, config, monitor, repository):
         """Test assessor initializes with superposition enabled"""
         assessor = QuantumComplianceAssessor(config, monitor, repository, enable_superposition=True)
-        assert assessor.enable_superposition is True
-        assert assessor.engine is not None
+        assert assessor.enable_superposition is True, "enable_superposition is not valid"
+        assert assessor.engine is not None, "engine must be initialized"
 
     def test_initialization_without_superposition(self, config, monitor, repository):
         """Test assessor initializes without superposition"""
         assessor = QuantumComplianceAssessor(
             config, monitor, repository, enable_superposition=False
         )
-        assert assessor.enable_superposition is False
-        assert assessor.engine is None
+        assert assessor.enable_superposition is False, "enable_superposition is not valid"
+        assert assessor.engine is None, "engine is not valid"
 
     def test_assess_high_score_low_risk(self, quantum_assessor):
         """Test assessment for high compliance score with low risk"""
@@ -162,11 +162,11 @@ class TestQuantumComplianceAssessor:
 
         assessment = quantum_assessor.assess_compliance(audit)
 
-        assert assessment.decision == ComplianceDecision.APPROVE
-        assert assessment.used_superposition is True
-        assert assessment.confidence > 0.25  # Best of 4 options (uniform would be 0.25)
-        assert assessment.coherence > 0.0
-        assert assessment.evaluation_time_ms > 0
+        assert assessment.decision == ComplianceDecision.APPROVE, "decision is not valid"
+        assert assessment.used_superposition is True, "used_superposition is not valid"
+        assert assessment.confidence > 0.25, "confidence must be greater than zero"
+        assert assessment.coherence > 0.0, "coherence must be greater than zero"
+        assert assessment.evaluation_time_ms > 0, "evaluation_time_ms must be greater than zero"
 
     def test_assess_medium_score_medium_risk(self, quantum_assessor):
         """Test assessment for medium compliance score with medium risk"""
@@ -181,12 +181,12 @@ class TestQuantumComplianceAssessor:
 
         assessment = quantum_assessor.assess_compliance(audit)
 
-        assert assessment.decision in [
+        assert assessment.decision in [, "Condition must be true"
             ComplianceDecision.APPROVE_WITH_MONITORING,
             ComplianceDecision.CONDITIONAL_APPROVAL,
         ]
-        assert assessment.used_superposition is True
-        assert assessment.coherence > 0.0
+        assert assessment.used_superposition is True, "used_superposition is not valid"
+        assert assessment.coherence > 0.0, "coherence must be greater than zero"
 
     def test_assess_low_score_high_risk(self, quantum_assessor):
         """Test assessment for low compliance score with high risk"""
@@ -201,9 +201,9 @@ class TestQuantumComplianceAssessor:
 
         assessment = quantum_assessor.assess_compliance(audit)
 
-        assert assessment.decision == ComplianceDecision.REJECT
-        assert assessment.used_superposition is True
-        assert assessment.confidence > 0.5
+        assert assessment.decision == ComplianceDecision.REJECT, "decision is not valid"
+        assert assessment.used_superposition is True, "used_superposition is not valid"
+        assert assessment.confidence > 0.5, "confidence must be greater than zero"
 
     def test_classical_assessment_high_score(self, classical_assessor):
         """Test classical assessment for high score"""
@@ -218,10 +218,10 @@ class TestQuantumComplianceAssessor:
 
         assessment = classical_assessor.assess_compliance(audit)
 
-        assert assessment.decision == ComplianceDecision.APPROVE
-        assert assessment.used_superposition is False
-        assert assessment.coherence == 0.0  # Classical has no coherence
-        assert assessment.confidence == 0.95
+        assert assessment.decision == ComplianceDecision.APPROVE, "decision is not valid"
+        assert assessment.used_superposition is False, "used_superposition is not valid"
+        assert assessment.coherence == 0.0, "coherence is not valid"
+        assert assessment.confidence == 0.95, "confidence is not valid"
 
     def test_classical_assessment_medium_score(self, classical_assessor):
         """Test classical assessment for medium score"""
@@ -236,9 +236,9 @@ class TestQuantumComplianceAssessor:
 
         assessment = classical_assessor.assess_compliance(audit)
 
-        assert assessment.decision == ComplianceDecision.APPROVE_WITH_MONITORING
-        assert assessment.used_superposition is False
-        assert assessment.confidence == 0.75
+        assert assessment.decision == ComplianceDecision.APPROVE_WITH_MONITORING, "decision is not valid"
+        assert assessment.used_superposition is False, "used_superposition is not valid"
+        assert assessment.confidence == 0.75, "confidence is not valid"
 
     def test_classical_assessment_low_score(self, classical_assessor):
         """Test classical assessment for low score"""
@@ -253,9 +253,9 @@ class TestQuantumComplianceAssessor:
 
         assessment = classical_assessor.assess_compliance(audit)
 
-        assert assessment.decision == ComplianceDecision.REJECT
-        assert assessment.used_superposition is False
-        assert assessment.confidence == 0.85
+        assert assessment.decision == ComplianceDecision.REJECT, "decision is not valid"
+        assert assessment.used_superposition is False, "used_superposition is not valid"
+        assert assessment.confidence == 0.85, "confidence is not valid"
 
     def test_conditional_approval_low_cost(self, classical_assessor):
         """Test conditional approval for marginal score with low remediation cost"""
@@ -270,8 +270,8 @@ class TestQuantumComplianceAssessor:
 
         assessment = classical_assessor.assess_compliance(audit)
 
-        assert assessment.decision == ComplianceDecision.CONDITIONAL_APPROVAL
-        assert assessment.confidence == 0.60
+        assert assessment.decision == ComplianceDecision.CONDITIONAL_APPROVAL, "decision is not valid"
+        assert assessment.confidence == 0.60, "confidence is not valid"
 
 
 class TestQuantumVsClassical:
@@ -293,9 +293,9 @@ class TestQuantumVsClassical:
         for audit in audits:
             assessment = quantum_assessor.assess_compliance(audit)
             assert isinstance(assessment.decision, ComplianceDecision)
-            assert 0.0 <= assessment.confidence <= 1.0
-            assert assessment.coherence > 0.0
-            assert assessment.used_superposition is True
+            assert 0.0 <= assessment.confidence <= 1.0, "0 is not valid"
+            assert assessment.coherence > 0.0, "coherence must be greater than zero"
+            assert assessment.used_superposition is True, "used_superposition is not valid"
 
     def test_classical_produces_valid_assessments(self, classical_assessor):
         """Test classical assessor produces valid assessments"""
@@ -313,9 +313,9 @@ class TestQuantumVsClassical:
         for audit in audits:
             assessment = classical_assessor.assess_compliance(audit)
             assert isinstance(assessment.decision, ComplianceDecision)
-            assert 0.0 <= assessment.confidence <= 1.0
-            assert assessment.coherence == 0.0
-            assert assessment.used_superposition is False
+            assert 0.0 <= assessment.confidence <= 1.0, "0 is not valid"
+            assert assessment.coherence == 0.0, "coherence is not valid"
+            assert assessment.used_superposition is False, "used_superposition is not valid"
 
     def test_performance_tracking(self, quantum_assessor, monitor):
         """Test that quantum assessor records performance metrics"""
@@ -324,7 +324,7 @@ class TestQuantumVsClassical:
         assessment = quantum_assessor.assess_compliance(audit)
 
         # Check metrics were recorded
-        assert assessment.evaluation_time_ms > 0
+        assert assessment.evaluation_time_ms > 0, "evaluation_time_ms must be greater than zero"
 
         # Verify coherence was tracked
         health = monitor.get_feature_health("superposition")
@@ -340,11 +340,11 @@ class TestQuantumVsClassical:
         classical_assessment = classical_assessor.assess_compliance(audit)
 
         # Quantum reasoning should mention superposition
-        assert (
+        assert (, "Condition must be true"
             "superposition" in quantum_assessment.reasoning.lower()
             or "quantum" in quantum_assessment.reasoning.lower()
         )
-        assert len(quantum_assessment.reasoning) > 50
+        assert len(quantum_assessment.reasoning) > 50, "Collection must not be empty"
 
         # Classical reasoning should be clear
-        assert len(classical_assessment.reasoning) > 20
+        assert len(classical_assessment.reasoning) > 20, "Collection must not be empty"

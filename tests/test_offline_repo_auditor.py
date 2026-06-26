@@ -33,11 +33,11 @@ def test_collect_and_render_markdown(tmp_path):
 
     auditor = IntuitiveAptitude(debug=True)
     summary = auditor.collect(str(tmp_path))
-    assert "module/core.py" in summary.py_structs
-    assert any("TODO" in f.line for f in summary.stubs)
+    assert "module/core.py" in summary.py_structs, "Condition must be true"
+    assert any("TODO" in f.line for f in summary.stubs), "Condition must be true"
 
     out_path = tmp_path / "AUDIT.md"
     auditor.render_markdown(str(out_path), repo="test/repo")
     text = out_path.read_text(encoding="utf-8")
-    assert "Repo Map" in text
-    assert "Capability Audit Table" in text
+    assert "Repo Map" in text, "Condition must be true"
+    assert "Capability Audit Table" in text, "Condition must be true"

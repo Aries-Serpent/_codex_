@@ -56,8 +56,8 @@ def test_training_contract_rejects_bad_step():
         train_epoch(_BadModel(), [{"input_ids": [1, 2]}], state={})
 
     result = train_epoch(_GoodModel(), [{"input_ids": [1, 2]}, {"input_ids": [3, 4]}], state={})
-    assert result["loss_mean"] == 1.0
-    assert result["loss_last"] == 1.0
+    assert result["loss_mean"] == 1.0, "Result must not be empty"
+    assert result["loss_last"] == 1.0, "Result must not be empty"
 
 
 def test_run_metrics_evaluation_logs_tags(tmp_path):
@@ -83,13 +83,13 @@ def test_run_metrics_evaluation_logs_tags(tmp_path):
         enable_mlflow=False,
     )
 
-    assert summary["metrics"]["simple_accuracy"] == 0.5
+    assert summary["metrics"]["simple_accuracy"] == 0.5, "Condition must be true"
 
     ndjson_lines = ndjson_path.read_text(encoding="utf-8").splitlines()
-    assert any(json.loads(line).get("run_id") == "eval-123" for line in ndjson_lines)
+    assert any(json.loads(line).get("run_id") == "eval-123" for line in ndjson_lines), "Condition must be true"
 
     csv_rows = csv_path.read_text(encoding="utf-8").splitlines()
-    assert "eval-123" in csv_rows[-1]
+    assert "eval-123" in csv_rows[-1], "Condition must be true"
 
 
 def test_security_helpers_and_packaging(tmp_path, monkeypatch):
@@ -109,10 +109,10 @@ def test_security_helpers_and_packaging(tmp_path, monkeypatch):
     package_path = tmp_path / "pkg.tar.gz"
     result = build_service_package(model_dir, package_path, metadata={"run_id": "pkg-1"})
 
-    assert package_path.exists()
-    assert result["run_id"] == "pkg-1"
+    assert package_path.exists(), "Condition must be true"
+    assert result["run_id"] == "pkg-1", "Result must not be empty"
     with tarfile.open(package_path, "r:gz") as tar:
         names = tar.getnames()
-        assert "manifest.json" in names
+        assert "manifest.json" in names, "Condition must be true"
         manifest = json.loads(tar.extractfile("manifest.json").read())
-        assert manifest["run_id"] == "pkg-1"
+        assert manifest["run_id"] == "pkg-1", "Condition must be true"

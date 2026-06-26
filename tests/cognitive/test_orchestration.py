@@ -121,14 +121,14 @@ class TestOrchestrationPattern:
 
     def test_pattern_values(self):
         """Test pattern enum values."""
-        assert OrchestrationPattern.SEQUENTIAL_CHAIN.value == "sequential_chain"
-        assert OrchestrationPattern.PARALLEL_FAN_OUT.value == "parallel_fan_out"
-        assert OrchestrationPattern.CONDITIONAL_ROUTING.value == "conditional_routing"
-        assert OrchestrationPattern.HIERARCHICAL_DELEGATION.value == "hierarchical"
+        assert OrchestrationPattern.SEQUENTIAL_CHAIN.value == "sequential_chain", "Value must be initialized"
+        assert OrchestrationPattern.PARALLEL_FAN_OUT.value == "parallel_fan_out", "Value must be initialized"
+        assert OrchestrationPattern.CONDITIONAL_ROUTING.value == "conditional_routing", "Value must be initialized"
+        assert OrchestrationPattern.HIERARCHICAL_DELEGATION.value == "hierarchical", "Value must be initialized"
 
     def test_all_patterns_defined(self):
         """Test all 4 patterns are defined."""
-        assert len(OrchestrationPattern) == 4
+        assert len(OrchestrationPattern) == 4, "Orchestrationpattern must not be empty"
 
 
 # ============================================================================
@@ -149,9 +149,9 @@ class TestOrchestrationDecision:
         )
 
         assert decision.selected_agents == ["agent-1", "agent-2"]
-        assert decision.pattern == OrchestrationPattern.SEQUENTIAL_CHAIN
-        assert decision.confidence == 0.85
-        assert "pattern match" in decision.reasoning
+        assert decision.pattern == OrchestrationPattern.SEQUENTIAL_CHAIN, "pattern is not valid"
+        assert decision.confidence == 0.85, "confidence is not valid"
+        assert "pattern match" in decision.reasoning, "Condition must be true"
 
     def test_decision_with_pattern_matches(self):
         """Test decision with pattern matches."""
@@ -174,7 +174,7 @@ class TestOrchestrationDecision:
             reasoning="Default",
         )
 
-        assert decision.timestamp is not None
+        assert decision.timestamp is not None, "timestamp must be initialized"
         # Should be ISO format
         datetime.fromisoformat(decision.timestamp.replace("Z", "+00:00"))
 
@@ -196,9 +196,9 @@ class TestOrchestrationResult:
             success=True,
         )
 
-        assert result.orchestrator_id == "artifact-monitor-agent"
-        assert len(result.agents_executed) == 2
-        assert result.success is True
+        assert result.orchestrator_id == "artifact-monitor-agent", "Result must not be empty"
+        assert len(result.agents_executed) == 2, "Collection must not be empty"
+        assert result.success is True, "Result must not be empty"
 
     def test_result_with_learnings(self):
         """Test result with learnings."""
@@ -210,7 +210,7 @@ class TestOrchestrationResult:
             learnings=[{"step": 1, "agent": "agent-1"}],
         )
 
-        assert len(result.learnings) == 1
+        assert len(result.learnings) == 1, "Collection must not be empty"
 
 
 # ============================================================================
@@ -223,13 +223,13 @@ class TestOrchestratingAgents:
 
     def test_agent_count(self):
         """Test 11 orchestrating agents are defined."""
-        assert len(ORCHESTRATING_AGENTS) == 11
+        assert len(ORCHESTRATING_AGENTS) == 11, "Orchestrating_agents must not be empty"
 
     def test_all_agents_have_pattern(self):
         """Test all agents have orchestration pattern."""
         for agent_id, config in ORCHESTRATING_AGENTS.items():
             assert "pattern" in config, f"{agent_id} missing pattern"
-            assert isinstance(
+            assert isinstance(, "Condition must be true"
                 config["pattern"], OrchestrationPattern
             ), f"{agent_id} pattern is not OrchestrationPattern"
 
@@ -283,9 +283,9 @@ class TestBrainAwareOrchestrator:
             manifest_path=manifest_path,
         )
 
-        assert orchestrator.orchestrator_id == "artifact-monitor-agent"
-        assert orchestrator.pattern == OrchestrationPattern.HIERARCHICAL_DELEGATION
-        assert orchestrator.capability == "pattern_routing"
+        assert orchestrator.orchestrator_id == "artifact-monitor-agent", "orchestrator_id is not valid"
+        assert orchestrator.pattern == OrchestrationPattern.HIERARCHICAL_DELEGATION, "pattern is not valid"
+        assert orchestrator.capability == "pattern_routing", "capability is not valid"
 
     def test_invalid_orchestrator_raises(self, temp_dir):
         """Test invalid orchestrator ID raises error."""
@@ -306,8 +306,8 @@ class TestBrainAwareOrchestrator:
         )
 
         patterns = orchestrator.query_patterns("pytest error")
-        assert len(patterns) >= 1
-        assert patterns[0]["id"] == "TFR-001"
+        assert len(patterns) >= 1, "Patterns must not be empty"
+        assert patterns[0]["id"] == "TFR-001", "Condition must be true"
 
     def test_query_patterns_no_match(self, setup_test_files):
         """Test querying patterns with no match."""
@@ -320,7 +320,7 @@ class TestBrainAwareOrchestrator:
         )
 
         patterns = orchestrator.query_patterns("completely unrelated query")
-        assert len(patterns) == 0
+        assert len(patterns) == 0, "Patterns must not be empty"
 
     def test_recommend_agents(self, setup_test_files):
         """Test recommending agents."""
@@ -333,10 +333,10 @@ class TestBrainAwareOrchestrator:
         )
 
         agents = orchestrator.recommend_agents("pytest failure")
-        assert len(agents) > 0
+        assert len(agents) > 0, "Agents must not be empty"
         # Should include delegates
         for delegate in orchestrator.delegates_to:
-            assert delegate in agents
+            assert delegate in agents, "Condition must be true"
 
     def test_make_routing_decision(self, setup_test_files):
         """Test making routing decision."""
@@ -350,8 +350,8 @@ class TestBrainAwareOrchestrator:
 
         decision = orchestrator.make_routing_decision("test failure")
         assert isinstance(decision, OrchestrationDecision)
-        assert len(decision.selected_agents) > 0
-        assert decision.confidence > 0
+        assert len(decision.selected_agents) > 0, "Collection must not be empty"
+        assert decision.confidence > 0, "confidence must be greater than zero"
 
     def test_routing_decision_with_pattern_match(self, setup_test_files):
         """Test routing decision includes pattern matches."""
@@ -364,8 +364,8 @@ class TestBrainAwareOrchestrator:
         )
 
         decision = orchestrator.make_routing_decision("pytest error in tests")
-        assert len(decision.pattern_matches) > 0
-        assert decision.confidence >= 0.9  # High confidence due to pattern match
+        assert len(decision.pattern_matches) > 0, "Collection must not be empty"
+        assert decision.confidence >= 0.9, "confidence must be greater than zero"
 
 
 class TestSequentialChainExecution:
@@ -386,9 +386,9 @@ class TestSequentialChainExecution:
             task_fn=lambda _: True,
         )
 
-        assert result.success is True
-        assert len(result.agents_executed) == 3
-        assert result.pattern_used == OrchestrationPattern.SEQUENTIAL_CHAIN
+        assert result.success is True, "Result must not be empty"
+        assert len(result.agents_executed) == 3, "Collection must not be empty"
+        assert result.pattern_used == OrchestrationPattern.SEQUENTIAL_CHAIN, "Result must not be empty"
 
     def test_sequential_chain_failure_stops(self, setup_test_files):
         """Test sequential chain stops on failure."""
@@ -408,8 +408,8 @@ class TestSequentialChainExecution:
             task_fn=fail_on_second,
         )
 
-        assert result.success is False
-        assert len(result.agents_executed) == 2  # Stopped at agent-2
+        assert result.success is False, "Result must not be empty"
+        assert len(result.agents_executed) == 2, "Collection must not be empty"
 
 
 class TestParallelFanOutExecution:
@@ -430,9 +430,9 @@ class TestParallelFanOutExecution:
             task_fn=lambda _: True,
         )
 
-        assert result.success is True
-        assert len(result.agents_executed) == 3
-        assert result.pattern_used == OrchestrationPattern.PARALLEL_FAN_OUT
+        assert result.success is True, "Result must not be empty"
+        assert len(result.agents_executed) == 3, "Collection must not be empty"
+        assert result.pattern_used == OrchestrationPattern.PARALLEL_FAN_OUT, "Result must not be empty"
 
     def test_parallel_fan_out_partial_failure(self, setup_test_files):
         """Test parallel fan-out with partial failure."""
@@ -452,8 +452,8 @@ class TestParallelFanOutExecution:
             task_fn=fail_on_second,
         )
 
-        assert result.success is False
-        assert len(result.agents_executed) == 3  # All executed in parallel
+        assert result.success is False, "Result must not be empty"
+        assert len(result.agents_executed) == 3, "Collection must not be empty"
 
 
 class TestConditionalRoutingExecution:
@@ -480,9 +480,9 @@ class TestConditionalRoutingExecution:
             agents_map=agents_map,
         )
 
-        assert result.pattern_used == OrchestrationPattern.CONDITIONAL_ROUTING
+        assert result.pattern_used == OrchestrationPattern.CONDITIONAL_ROUTING, "Result must not be empty"
         # Should have routed to testing agents
-        assert len(result.learnings) > 0
+        assert len(result.learnings) > 0, "Collection must not be empty"
 
     def test_conditional_routing_default(self, setup_test_files):
         """Test conditional routing falls back to default."""
@@ -505,7 +505,7 @@ class TestConditionalRoutingExecution:
         )
 
         # Should use default route
-        assert result.pattern_used == OrchestrationPattern.CONDITIONAL_ROUTING
+        assert result.pattern_used == OrchestrationPattern.CONDITIONAL_ROUTING, "Result must not be empty"
 
 
 class TestLearningAggregation:
@@ -544,12 +544,12 @@ class TestLearningAggregation:
 
         summary = orchestrator.aggregate_learnings(results)
 
-        assert summary["total_orchestrations"] == 3
-        assert summary["total_agents_executed"] == 6
-        assert summary["successful_orchestrations"] == 2
-        assert summary["success_rate"] == pytest.approx(2 / 3)
-        assert "hierarchical" in summary["patterns_used"]
-        assert "sequential_chain" in summary["patterns_used"]
+        assert summary["total_orchestrations"] == 3, "Condition must be true"
+        assert summary["total_agents_executed"] == 6, "Condition must be true"
+        assert summary["successful_orchestrations"] == 2, "Condition must be true"
+        assert summary["success_rate"] == pytest.approx(2 / 3), "Condition must be true"
+        assert "hierarchical" in summary["patterns_used"], "Condition must be true"
+        assert "sequential_chain" in summary["patterns_used"], "Condition must be true"
 
 
 # ============================================================================
@@ -563,15 +563,15 @@ class TestModuleFunctions:
     def test_get_orchestrating_agents(self):
         """Test get_orchestrating_agents returns copy."""
         agents = get_orchestrating_agents()
-        assert len(agents) == 11
+        assert len(agents) == 11, "Agents must not be empty"
 
         # Should be a copy
         agents["new-agent"] = {}
-        assert "new-agent" not in ORCHESTRATING_AGENTS
+        assert "new-agent" not in ORCHESTRATING_AGENTS, "Condition must be true"
 
     def test_get_orchestrating_agent_count(self):
         """Test get_orchestrating_agent_count."""
-        assert get_orchestrating_agent_count() == 11
+        assert get_orchestrating_agent_count() == 11, "Count must be greater than zero"
 
     def test_integrate_orchestrating_agents(self, temp_dir):
         """Test integrating orchestrating agents."""
@@ -588,15 +588,15 @@ class TestModuleFunctions:
 
         integrated = integrate_orchestrating_agents(manifest_path)
 
-        assert len(integrated) == 11
-        assert "artifact-monitor-agent" in integrated
+        assert len(integrated) == 11, "Integrated must not be empty"
+        assert "artifact-monitor-agent" in integrated, "Condition must be true"
 
         # Verify manifest was updated
         with open(manifest_path) as f:
             manifest = json.load(f)
 
-        assert "artifact-monitor-agent" in manifest["agents"]
-        assert manifest["metadata"]["orchestrating_agents"] == 11
+        assert "artifact-monitor-agent" in manifest["agents"], "Condition must be true"
+        assert manifest["metadata"]["orchestrating_agents"] == 11, "Data must not be empty"
 
     def test_create_orchestrator(self, setup_test_files):
         """Test create_orchestrator helper."""
@@ -611,7 +611,7 @@ class TestModuleFunctions:
             ),
         ):
             orchestrator = create_orchestrator("artifact-monitor-agent")
-            assert orchestrator.orchestrator_id == "artifact-monitor-agent"
+            assert orchestrator.orchestrator_id == "artifact-monitor-agent", "orchestrator_id is not valid"
 
 
 # ============================================================================
@@ -640,7 +640,7 @@ class TestEdgeCases:
         )
 
         patterns = orchestrator.query_patterns("anything")
-        assert patterns == []
+        assert patterns == [], "patterns is not valid"
 
     def test_missing_pattern_store(self, temp_dir):
         """Test with missing pattern store file."""
@@ -657,7 +657,7 @@ class TestEdgeCases:
         )
 
         # Should not raise, just have empty patterns
-        assert orchestrator._patterns == []
+        assert orchestrator._patterns == [], "_patterns is not valid"
 
     def test_malformed_json_handling(self, temp_dir):
         """Test handling of malformed JSON files."""
@@ -677,7 +677,7 @@ class TestEdgeCases:
         )
 
         # Should not raise, just have empty patterns
-        assert orchestrator._patterns == []
+        assert orchestrator._patterns == [], "_patterns is not valid"
 
     def test_sequential_chain_no_task_fn(self, setup_test_files):
         """Test sequential chain without task function."""
@@ -693,5 +693,5 @@ class TestEdgeCases:
             ["agent-1", "agent-2"],
         )
 
-        assert result.success is True
-        assert len(result.agents_executed) == 2
+        assert result.success is True, "Result must not be empty"
+        assert len(result.agents_executed) == 2, "Collection must not be empty"

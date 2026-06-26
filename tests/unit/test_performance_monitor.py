@@ -52,7 +52,7 @@ class TestHealthyRun:
         monitor = _make_monitor()
         _feed_stable_loss(monitor, n=10, loss=0.5)
         anomalies = monitor.record(PerformanceSnapshot(epoch=11, loss=0.51))
-        assert anomalies == []
+        assert anomalies == [], "anomalies is not valid"
 
     def test_no_alert_fired_when_healthy(self) -> None:
         mock_mgr = MagicMock()
@@ -73,15 +73,15 @@ class TestLossSpike:
         _feed_stable_loss(monitor, n=5, loss=1.0)
         # 3× spike should trigger (> 2× factor)
         anomalies = monitor.record(PerformanceSnapshot(epoch=6, loss=3.5))
-        assert len(anomalies) == 1
-        assert "Loss spike" in anomalies[0]
+        assert len(anomalies) == 1, "Anomalies must not be empty"
+        assert "Loss spike" in anomalies[0], "Condition must be true"
 
     def test_loss_below_threshold_no_anomaly(self) -> None:
         monitor = _make_monitor(loss_spike_factor=2.0, min_samples=3)
         _feed_stable_loss(monitor, n=5, loss=1.0)
         # 1.8× — below factor of 2.0
         anomalies = monitor.record(PerformanceSnapshot(epoch=6, loss=1.8))
-        assert anomalies == []
+        assert anomalies == [], "anomalies is not valid"
 
     def test_loss_spike_fires_alert(self) -> None:
         mock_mgr = MagicMock()
@@ -90,7 +90,7 @@ class TestLossSpike:
         monitor.record(PerformanceSnapshot(epoch=6, loss=4.0))
         mock_mgr.alert.assert_called_once()
         event = mock_mgr.alert.call_args[0][0]
-        assert "Loss spike" in event.message
+        assert "Loss spike" in event.message, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -105,8 +105,8 @@ class TestThroughputDrop:
             monitor.record(PerformanceSnapshot(epoch=epoch, throughput=100.0))
         # 50% drop
         anomalies = monitor.record(PerformanceSnapshot(epoch=6, throughput=50.0))
-        assert len(anomalies) == 1
-        assert "Throughput drop" in anomalies[0]
+        assert len(anomalies) == 1, "Anomalies must not be empty"
+        assert "Throughput drop" in anomalies[0], "Condition must be true"
 
     def test_throughput_small_drop_no_anomaly(self) -> None:
         monitor = _make_monitor(throughput_drop_pct=30.0, min_samples=3)
@@ -114,7 +114,7 @@ class TestThroughputDrop:
             monitor.record(PerformanceSnapshot(epoch=epoch, throughput=100.0))
         # 20% drop — below threshold
         anomalies = monitor.record(PerformanceSnapshot(epoch=6, throughput=80.0))
-        assert anomalies == []
+        assert anomalies == [], "anomalies is not valid"
 
     def test_throughput_alert_contains_details(self) -> None:
         mock_mgr = MagicMock()
@@ -124,7 +124,7 @@ class TestThroughputDrop:
         monitor.record(PerformanceSnapshot(epoch=6, throughput=40.0))
         mock_mgr.alert.assert_called_once()
         event = mock_mgr.alert.call_args[0][0]
-        assert "Throughput drop" in event.message
+        assert "Throughput drop" in event.message, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -139,8 +139,8 @@ class TestLatencySpike:
             monitor.record(PerformanceSnapshot(epoch=epoch, latency_ms=10.0))
         # 4× spike
         anomalies = monitor.record(PerformanceSnapshot(epoch=6, latency_ms=45.0))
-        assert len(anomalies) == 1
-        assert "Latency spike" in anomalies[0]
+        assert len(anomalies) == 1, "Anomalies must not be empty"
+        assert "Latency spike" in anomalies[0], "Condition must be true"
 
     def test_latency_below_factor_no_anomaly(self) -> None:
         monitor = _make_monitor(latency_spike_factor=3.0, min_samples=3)
@@ -148,7 +148,7 @@ class TestLatencySpike:
             monitor.record(PerformanceSnapshot(epoch=epoch, latency_ms=10.0))
         # 2.5× — below 3.0 factor
         anomalies = monitor.record(PerformanceSnapshot(epoch=6, latency_ms=25.0))
-        assert anomalies == []
+        assert anomalies == [], "anomalies is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -165,7 +165,7 @@ class TestMinSamplesGuard:
         monitor.record(PerformanceSnapshot(epoch=2, loss=1.0))
         # 10× spike but only 2 baseline samples
         anomalies = monitor.record(PerformanceSnapshot(epoch=3, loss=10.0))
-        assert anomalies == []
+        assert anomalies == [], "anomalies is not valid"
         mock_mgr.alert.assert_not_called()
 
     def test_alert_fires_once_min_samples_met(self) -> None:
@@ -175,7 +175,7 @@ class TestMinSamplesGuard:
             monitor.record(PerformanceSnapshot(epoch=epoch, loss=1.0))
         # Now 3 baseline samples — spike should trigger
         anomalies = monitor.record(PerformanceSnapshot(epoch=4, loss=5.0))
-        assert anomalies != []
+        assert anomalies != [], "anomalies is not valid"
         mock_mgr.alert.assert_called_once()
 
 
@@ -192,7 +192,7 @@ class TestAlertFailureSafety:
         _feed_stable_loss(monitor, n=5, loss=1.0)
         # Should not raise even though alert raises
         result = monitor.record(PerformanceSnapshot(epoch=6, loss=5.0))
-        assert "Loss spike" in result[0]  # anomaly still returned
+        assert "Loss spike" in result[0], "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -203,11 +203,11 @@ class TestAlertFailureSafety:
 class TestFromEnv:
     def test_default_thresholds(self) -> None:
         t = PerformanceThresholds.from_env()
-        assert t.loss_spike_factor == 2.0
-        assert t.throughput_drop_pct == 30.0
-        assert t.latency_spike_factor == 3.0
-        assert t.window_size == 10
-        assert t.min_samples == 3
+        assert t.loss_spike_factor == 2.0, "loss_spike_factor is not valid"
+        assert t.throughput_drop_pct == 30.0, "throughput_drop_pct is not valid"
+        assert t.latency_spike_factor == 3.0, "latency_spike_factor is not valid"
+        assert t.window_size == 10, "window_size is not valid"
+        assert t.min_samples == 3, "min_samples is not valid"
 
     def test_env_overrides(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setenv("CODEX_PERF_LOSS_SPIKE_FACTOR", "5.0")
@@ -216,11 +216,11 @@ class TestFromEnv:
         monkeypatch.setenv("CODEX_PERF_WINDOW_SIZE", "15")
         monkeypatch.setenv("CODEX_PERF_MIN_SAMPLES", "5")
         t = PerformanceThresholds.from_env()
-        assert t.loss_spike_factor == 5.0
-        assert t.throughput_drop_pct == 20.0
-        assert t.latency_spike_factor == 4.0
-        assert t.window_size == 15
-        assert t.min_samples == 5
+        assert t.loss_spike_factor == 5.0, "loss_spike_factor is not valid"
+        assert t.throughput_drop_pct == 20.0, "throughput_drop_pct is not valid"
+        assert t.latency_spike_factor == 4.0, "latency_spike_factor is not valid"
+        assert t.window_size == 15, "window_size is not valid"
+        assert t.min_samples == 5, "min_samples is not valid"
 
     def test_from_env_monitor_factory(self, monkeypatch: pytest.MonkeyPatch) -> None:
         # Ensure from_env creates a monitor without error (no channels configured)
@@ -231,7 +231,7 @@ class TestFromEnv:
         ):
             monkeypatch.delenv(var, raising=False)
         monitor = PerformanceMonitor.from_env(run_id="env-test")
-        assert monitor._run_id == "env-test"
+        assert monitor._run_id == "env-test", "_run_id is not valid"
         assert isinstance(monitor._thresholds, PerformanceThresholds)
 
 
@@ -243,12 +243,12 @@ class TestFromEnv:
 class TestPerformanceSnapshot:
     def test_timestamp_auto_set(self) -> None:
         snap = PerformanceSnapshot(epoch=1, loss=0.5)
-        assert snap.timestamp
-        assert "T" in snap.timestamp  # ISO-8601 format
+        assert snap.timestamp, "Condition must be true"
+        assert "T" in snap.timestamp, "Condition must be true"
 
     def test_metadata_default_empty(self) -> None:
         snap = PerformanceSnapshot(epoch=1)
-        assert snap.metadata == {}
+        assert snap.metadata == {}, "Data must not be empty"
 
     def test_multiple_anomalies_reported(self) -> None:
         """All three metrics can fire at once."""
@@ -265,4 +265,4 @@ class TestPerformanceSnapshot:
         anomalies = monitor.record(
             PerformanceSnapshot(epoch=6, loss=5.0, throughput=30.0, latency_ms=50.0)
         )
-        assert len(anomalies) == 3
+        assert len(anomalies) == 3, "Anomalies must not be empty"

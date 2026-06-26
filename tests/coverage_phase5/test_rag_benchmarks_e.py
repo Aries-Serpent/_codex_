@@ -32,7 +32,7 @@ class BenchmarkFixture:
 def test_benchmark_fixture_4_init():
     """Test benchmark fixture initialization."""
     fixture = BenchmarkFixture("bench4")
-    assert fixture.name == "bench4"
+    assert fixture.name == "bench4", "name is not valid"
 
 
 def test_benchmark_fixture_4_record():
@@ -40,8 +40,8 @@ def test_benchmark_fixture_4_record():
     fixture = BenchmarkFixture("bench4")
     fixture.record_metric("latency", 42.5, "ms")
 
-    assert len(fixture.results) == 1
-    assert fixture.results[0].value == 42.5
+    assert len(fixture.results) == 1, "Collection must not be empty"
+    assert fixture.results[0].value == 42.5, "Result must not be empty"
 
 
 def test_benchmark_fixture_4_retrieve():
@@ -50,7 +50,7 @@ def test_benchmark_fixture_4_retrieve():
     fixture.record_metric("throughput", 1000.0, "ops/sec")
 
     value = fixture.get_metric("throughput")
-    assert value == 1000.0
+    assert value == 1000.0, "Value must be initialized"
 
 
 def test_benchmark_fixture_4_missing():
@@ -58,4 +58,4 @@ def test_benchmark_fixture_4_missing():
     fixture = BenchmarkFixture("bench4")
     value = fixture.get_metric("nonexistent")
 
-    assert value == -1.0
+    assert value == -1.0, "Value must be initialized"

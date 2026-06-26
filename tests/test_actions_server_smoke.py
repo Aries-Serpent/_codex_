@@ -36,7 +36,7 @@ def test_server_health_and_branches_smoke(tmp_path):
     )
     try:
         time.sleep(1.5)
-        assert _get("http://localhost:8010/healthz")["ok"] is True
+        assert _get("http://localhost:8010/healthz")["ok"] is True, "Condition must be true"
         branches = _get("http://localhost:8010/repo/branches")
         assert isinstance(branches, list)
     finally:

@@ -13,8 +13,8 @@ def test_resolve_dtype_and_device_no_crash():
     resolve_device = mod._resolve_device
 
     # dtype resolution should tolerate missing torch and unknown values
-    assert resolve_dtype(None) is None
-    assert resolve_dtype("unknown") is None
+    assert resolve_dtype(None) is None, "Condition must be true"
+    assert resolve_dtype("unknown") is None, "Condition must be true"
     out_f32 = resolve_dtype("f32")
     out_bf16 = resolve_dtype("bf16")
     out_fp16 = resolve_dtype("fp16")
@@ -27,7 +27,7 @@ def test_resolve_dtype_and_device_no_crash():
             # If torch.float32 is a real torch dtype, compare directly
             # If it's a mock, just verify it's not None
             if hasattr(torch, "float32") and hasattr(torch.float32, "dtype"):
-                assert out_f32 == torch.float32 or out_f32 is None
+                assert out_f32 == torch.float32 or out_f32 is None, "out_f32 is not valid"
             else:
                 # Mock torch or missing attribute - just verify not None or is None
                 assert out_f32 in (None, torch.float32) or str(out_f32) in (
@@ -56,4 +56,4 @@ def test_resolve_dtype_and_device_no_crash():
 
         assert isinstance(dev, torch.device) or str(dev) == "cpu" or dev == "cpu"
     except ImportError:
-        assert dev == "cpu"
+        assert dev == "cpu", "dev is not valid"

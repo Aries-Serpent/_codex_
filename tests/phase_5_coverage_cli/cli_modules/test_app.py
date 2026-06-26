@@ -34,7 +34,7 @@ class TestAppEcho:
     def test_echo_function_exists(self) -> None:
         """Test that echo function exists."""
         assert hasattr(app, "echo")
-        assert callable(app.echo)
+        assert callable(app.echo), "Condition must be true"
 
     def test_echo_is_callable(self) -> None:
         """Test echo can be called."""
@@ -56,7 +56,7 @@ class TestAppExit:
     def test_exit_can_be_instantiated(self) -> None:
         """Test Exit can be instantiated."""
         exit_obj = app.Exit(code=0)
-        assert exit_obj is not None
+        assert exit_obj is not None, "exit_obj must be initialized"
 
     def test_exit_with_code(self) -> None:
         """Test Exit with specific code."""
@@ -73,7 +73,7 @@ class TestAppTrackSmokeImpl:
     def test_track_smoke_impl_exists(self) -> None:
         """Test that _track_smoke_impl function exists."""
         assert hasattr(app, "_track_smoke_impl")
-        assert callable(app._track_smoke_impl)
+        assert callable(app._track_smoke_impl), "Condition must be true"
 
     def test_track_smoke_impl_with_none(self) -> None:
         """Test _track_smoke_impl with None path."""
@@ -98,7 +98,7 @@ class TestAppSplitSmokeImpl:
     def test_split_smoke_impl_exists(self) -> None:
         """Test that _split_smoke_impl function exists."""
         assert hasattr(app, "_split_smoke_impl")
-        assert callable(app._split_smoke_impl)
+        assert callable(app._split_smoke_impl), "Condition must be true"
 
     def test_split_smoke_impl_with_seed_zero(self) -> None:
         """Test _split_smoke_impl with seed 0."""
@@ -122,11 +122,11 @@ class TestAppFramework:
     def test_framework_selected(self) -> None:
         """Test that CLI framework is selected."""
         # Either Typer or Click should be selected
-        assert app._USE_TYPER is True or app._USE_TYPER is False
+        assert app._USE_TYPER is True or app._USE_TYPER is False, "_USE_TYPER is not valid"
 
     def test_echo_from_selected_framework(self) -> None:
         """Test echo is from selected framework."""
-        assert callable(app.echo)
+        assert callable(app.echo), "Condition must be true"
 
         # Try to call it
         try:
@@ -144,8 +144,8 @@ class TestAppImportHandling:
     def test_handles_missing_typer(self) -> None:
         """Test graceful handling if Typer missing."""
         # Framework should still be usable (might fall back to Click)
-        assert app.echo is not None
-        assert app.Exit is not None
+        assert app.echo is not None, "echo must be initialized"
+        assert app.Exit is not None, "Exit must be initialized"
 
     def test_handles_missing_click(self) -> None:
         """Test graceful handling if Click missing."""

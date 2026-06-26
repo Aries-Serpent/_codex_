@@ -119,7 +119,7 @@ def smell_main(
             max_args = smells.get("max_arguments", {}).get("threshold", max_args)
     except (IOError, OSError) as e:
         error_type = type(e).__name__
-        logger.debug(f"Config load skipped: <ERROR_TYPE>")
+        logger.debug("Config load skipped: <ERROR_TYPE>")
 
     src_root = Path("src")
     if not src_root.exists():

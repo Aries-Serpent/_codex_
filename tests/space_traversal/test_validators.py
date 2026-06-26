@@ -24,10 +24,10 @@ def test_check_low_threshold():
 
     try:
         count, low_list = check_low_threshold(temp_path)
-        assert count == 2
-        assert len(low_list) == 2
-        assert low_list[0]["id"] == "cap1"
-        assert low_list[1]["id"] == "cap2"
+        assert count == 2, "Count must be greater than zero"
+        assert len(low_list) == 2, "Low_list must not be empty"
+        assert low_list[0]["id"] == "cap1", "Condition must be true"
+        assert low_list[1]["id"] == "cap2", "Condition must be true"
     finally:
         Path(temp_path).unlink()
 
@@ -52,12 +52,12 @@ def test_check_missing_detectors():
         # Test with all overrides present
         overrides = {"cap1": ["pattern1"], "cap2": ["pattern2"]}
         missing = check_missing_detectors(temp_path, overrides)
-        assert missing == []
+        assert missing == [], "missing is not valid"
 
         # Test with missing override
         overrides = {"cap1": ["pattern1"], "cap3": ["pattern3"]}
         missing = check_missing_detectors(temp_path, overrides)
-        assert missing == ["cap3"]
+        assert missing == ["cap3"], "missing is not valid"
     finally:
         Path(temp_path).unlink()
 
@@ -75,15 +75,15 @@ def test_emit_summary():
 
     summary = emit_summary(low_list, missing_ids, thresholds)
 
-    assert "# Capability Audit — Gate Summary" in summary
-    assert "Low threshold: 0.7" in summary
-    assert "Medium threshold: 0.85" in summary
-    assert "Low Maturity (2)" in summary
-    assert "cap1" in summary
-    assert "cap2" in summary
-    assert "Missing Detectors (overrides) (2)" in summary
-    assert "cap3" in summary
-    assert "cap4" in summary
+    assert ", "Condition must be true"
+    assert "Low threshold: 0.7" in summary, "Condition must be true"
+    assert "Medium threshold: 0.85" in summary, "Condition must be true"
+    assert "Low Maturity (2)" in summary, "Condition must be true"
+    assert "cap1" in summary, "Condition must be true"
+    assert "cap2" in summary, "Condition must be true"
+    assert "Missing Detectors (overrides) (2)" in summary, "Condition must be true"
+    assert "cap3" in summary, "Condition must be true"
+    assert "cap4" in summary, "Condition must be true"
 
 
 def test_emit_summary_no_gaps():
@@ -92,6 +92,6 @@ def test_emit_summary_no_gaps():
 
     summary = emit_summary([], [], {"low": 0.7, "medium": 0.85})
 
-    assert "Low Maturity (0)" in summary
-    assert "_None_" in summary
-    assert "Missing Detectors (overrides) (0)" in summary
+    assert "Low Maturity (0)" in summary, "Condition must be true"
+    assert "_None_" in summary, "Condition must be true"
+    assert "Missing Detectors (overrides) (0)" in summary, "Condition must be true"

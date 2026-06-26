@@ -31,7 +31,7 @@ class TestPasswordHasher:
         h = PasswordHasher()
         h1 = h.hash("same-password")
         h2 = h.hash("same-password")
-        assert h1 != h2  # different salts → different hashes
+        assert h1 != h2, "h1 is not valid"
 
     def test_hash_empty_password_raises(self):
         h = PasswordHasher()
@@ -58,7 +58,7 @@ class TestUser:
             password_hash="x:y",
             roles=["user", "admin"],
         )
-        assert user.has_role("admin") is True
+        assert user.has_role("admin") is True, "Condition must be true"
 
     def test_has_role_false(self):
         user = User(
@@ -67,7 +67,7 @@ class TestUser:
             email="alice@example.com",
             password_hash="x:y",
         )
-        assert user.has_role("admin") is False
+        assert user.has_role("admin") is False, "Condition must be true"
 
     def test_to_dict_omits_password_hash(self):
         user = User(
@@ -77,9 +77,9 @@ class TestUser:
             password_hash="secret-hash",
         )
         d = user.to_dict()
-        assert "password_hash" not in d
-        assert d["username"] == "alice"
-        assert d["email"] == "alice@example.com"
+        assert "password_hash" not in d, "Condition must be true"
+        assert d["username"] == "alice", "Condition must be true"
+        assert d["email"] == "alice@example.com", "Condition must be true"
 
     def test_to_dict_contains_expected_keys(self):
         user = User(
@@ -98,7 +98,7 @@ class TestUser:
             "created_at",
             "updated_at",
         ):
-            assert key in d
+            assert key in d, "Condition must be true"
 
     def test_requires_identifier(self):
         with pytest.raises(ValueError, match="At least one identifier"):
@@ -125,20 +125,20 @@ class TestUserStore:
     def test_create_user_success(self):
         store = UserStore()
         user = store.create_user("bob", "bob@example.com", "Str0ngPass!")
-        assert user.username == "bob"
-        assert user.email == "bob@example.com"
-        assert user.is_active is True
-        assert "user" in user.roles
+        assert user.username == "bob", "username is not valid"
+        assert user.email == "bob@example.com", "email is not valid"
+        assert user.is_active is True, "is_active is not valid"
+        assert "user" in user.roles, "Condition must be true"
 
     def test_create_user_normalises_email(self):
         store = UserStore()
         user = store.create_user("carol", "Carol@Example.COM", "Str0ngPass!")
-        assert user.email == "carol@example.com"
+        assert user.email == "carol@example.com", "email is not valid"
 
     def test_create_user_custom_roles(self):
         store = UserStore()
         user = store.create_user("dave", "dave@example.com", "Str0ngPass!", roles=["admin"])
-        assert user.roles == ["admin"]
+        assert user.roles == ["admin"], "roles is not valid"
 
     def test_create_user_duplicate_username_raises(self):
         store = UserStore()
@@ -170,28 +170,28 @@ class TestUserStore:
         store = UserStore()
         created = store.create_user("hank", "hank@example.com", "Str0ngPass!")
         found = store.find_by_username("hank")
-        assert found is not None
-        assert found.user_id == created.user_id
+        assert found is not None, "found must be initialized"
+        assert found.user_id == created.user_id, "user_id is not valid"
 
     def test_find_by_username_missing(self):
         store = UserStore()
-        assert store.find_by_username("nobody") is None
+        assert store.find_by_username("nobody") is None, "st is not valid"
 
     def test_find_by_email(self):
         store = UserStore()
         created = store.create_user("iris", "iris@example.com", "Str0ngPass!")
         found = store.find_by_email("iris@example.com")
-        assert found is not None
-        assert found.user_id == created.user_id
+        assert found is not None, "found must be initialized"
+        assert found.user_id == created.user_id, "user_id is not valid"
 
     def test_get_user(self):
         store = UserStore()
         created = store.create_user("jan", "jan@example.com", "Str0ngPass!")
-        assert store.get_user(created.user_id) is created
+        assert store.get_user(created.user_id) is created, "st is not valid"
 
     def test_get_user_missing(self):
         store = UserStore()
-        assert store.get_user("nonexistent-id") is None
+        assert store.get_user("nonexistent-id") is None, "st is not valid"
 
     # ------------------------------------------------------------------ #
     # deactivate / delete                                                  #
@@ -201,7 +201,7 @@ class TestUserStore:
         store = UserStore()
         user = store.create_user("ken", "ken@example.com", "Str0ngPass!")
         store.deactivate_user(user.user_id)
-        assert store.get_user(user.user_id).is_active is False
+        assert store.get_user(user.user_id).is_active is False, "is_active is not valid"
 
     def test_list_users_excludes_inactive_by_default(self):
         store = UserStore()
@@ -210,21 +210,21 @@ class TestUserStore:
         store.deactivate_user(inactive_user.user_id)
         users = store.list_users()
         ids = [u.user_id for u in users]
-        assert active_user.user_id in ids
-        assert inactive_user.user_id not in ids
+        assert active_user.user_id in ids, "Condition must be true"
+        assert inactive_user.user_id not in ids, "Condition must be true"
 
     def test_list_users_includes_inactive_when_requested(self):
         store = UserStore()
         u = store.create_user("nat", "nat@example.com", "Str0ngPass!")
         store.deactivate_user(u.user_id)
         users = store.list_users(include_inactive=True)
-        assert any(x.user_id == u.user_id for x in users)
+        assert any(x.user_id == u.user_id for x in users), "user_id is not valid"
 
     def test_delete_user(self):
         store = UserStore()
         user = store.create_user("oliver", "oliver@example.com", "Str0ngPass!")
         store.delete_user(user.user_id)
-        assert store.get_user(user.user_id) is None
+        assert store.get_user(user.user_id) is None, "st is not valid"
 
     def test_delete_nonexistent_raises(self):
         store = UserStore()
@@ -244,7 +244,7 @@ class TestUserStore:
             store.authenticate("pat", "OldPass123!")
         # Verify new password works
         authenticated = store.authenticate("pat", "NewPass456!")
-        assert authenticated.user_id == user.user_id
+        assert authenticated.user_id == user.user_id, "user_id is not valid"
 
     # ------------------------------------------------------------------ #
     # authenticate                                                         #
@@ -254,13 +254,13 @@ class TestUserStore:
         store = UserStore()
         user = store.create_user("quinn", "quinn@example.com", "Str0ngPass!")
         result = store.authenticate("quinn", "Str0ngPass!")
-        assert result.user_id == user.user_id
+        assert result.user_id == user.user_id, "Result must not be empty"
 
     def test_authenticate_by_email(self):
         store = UserStore()
         user = store.create_user("rex", "rex@example.com", "Str0ngPass!")
         result = store.authenticate("rex@example.com", "Str0ngPass!")
-        assert result.user_id == user.user_id
+        assert result.user_id == user.user_id, "Result must not be empty"
 
     def test_authenticate_wrong_password_raises(self):
         store = UserStore()
@@ -278,7 +278,7 @@ class TestUserStore:
         password = "  Str0ngPass!  "
         user = store.create_user("uma", "uma@example.com", password)
         authenticated = store.authenticate("uma", password)
-        assert authenticated.user_id == user.user_id
+        assert authenticated.user_id == user.user_id, "user_id is not valid"
 
     def test_authenticate_inactive_user_raises(self):
         store = UserStore()

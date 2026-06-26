@@ -55,9 +55,9 @@ def test_hf_tokenizer_adapter_basic(tmp_path):
     adapter = HFTokenizerAdapter(str(tokenizer_json))
 
     # Basic properties
-    assert adapter.vocab_size > 0
-    assert adapter.pad_token_id >= 0
-    assert adapter.eos_token_id >= 0
+    assert adapter.vocab_size > 0, "vocab_size must be greater than zero"
+    assert adapter.pad_token_id >= 0, "pad_token_id must be greater than zero"
+    assert adapter.eos_token_id >= 0, "eos_token_id must be greater than zero"
 
     # Encode/decode roundtrip
     text = "hello world"
@@ -89,7 +89,7 @@ def test_sentencepiece_adapter_basic(tmp_path):
     )
 
     # Verify model was created
-    assert model_path.exists()
+    assert model_path.exists(), "Condition must be true"
 
     # Test encode/decode - API contract requires these methods
     text = "hello world"
@@ -118,5 +118,5 @@ def test_sentencepiece_adapter_load(tmp_path):
     loaded = adapter2.train_or_load(corpus_file, vocab_size=100)
 
     # Should load existing model rather than retrain
-    assert loaded is not None
-    assert model_path.exists()
+    assert loaded is not None, "loaded must be initialized"
+    assert model_path.exists(), "Condition must be true"

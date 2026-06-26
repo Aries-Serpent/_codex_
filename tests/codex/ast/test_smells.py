@@ -14,25 +14,25 @@ class TestSmellSeverity:
         """Test INFO severity value."""
         from codex.ast.smells import SmellSeverity
 
-        assert SmellSeverity.INFO.value == "info"
+        assert SmellSeverity.INFO.value == "info", "Value must be initialized"
 
     def test_warning_value(self):
         """Test WARNING severity value."""
         from codex.ast.smells import SmellSeverity
 
-        assert SmellSeverity.WARNING.value == "warning"
+        assert SmellSeverity.WARNING.value == "warning", "Value must be initialized"
 
     def test_error_value(self):
         """Test ERROR severity value."""
         from codex.ast.smells import SmellSeverity
 
-        assert SmellSeverity.ERROR.value == "error"
+        assert SmellSeverity.ERROR.value == "error", "Value must be initialized"
 
     def test_critical_value(self):
         """Test CRITICAL severity value."""
         from codex.ast.smells import SmellSeverity
 
-        assert SmellSeverity.CRITICAL.value == "critical"
+        assert SmellSeverity.CRITICAL.value == "critical", "Value must be initialized"
 
 
 class TestSmellCategory:
@@ -42,25 +42,25 @@ class TestSmellCategory:
         """Test COMPLEXITY category value."""
         from codex.ast.smells import SmellCategory
 
-        assert SmellCategory.COMPLEXITY.value == "complexity"
+        assert SmellCategory.COMPLEXITY.value == "complexity", "Value must be initialized"
 
     def test_naming_value(self):
         """Test NAMING category value."""
         from codex.ast.smells import SmellCategory
 
-        assert SmellCategory.NAMING.value == "naming"
+        assert SmellCategory.NAMING.value == "naming", "Value must be initialized"
 
     def test_structure_value(self):
         """Test STRUCTURE category value."""
         from codex.ast.smells import SmellCategory
 
-        assert SmellCategory.STRUCTURE.value == "structure"
+        assert SmellCategory.STRUCTURE.value == "structure", "Value must be initialized"
 
     def test_security_value(self):
         """Test SECURITY category value."""
         from codex.ast.smells import SmellCategory
 
-        assert SmellCategory.SECURITY.value == "security"
+        assert SmellCategory.SECURITY.value == "security", "Value must be initialized"
 
 
 class TestCodeSmell:
@@ -80,14 +80,14 @@ class TestCodeSmell:
             line_end=50,
         )
 
-        assert smell.rule_id == "RULE001"
-        assert smell.message == "Function too complex"
-        assert smell.severity == SmellSeverity.WARNING
-        assert smell.category == SmellCategory.COMPLEXITY
-        assert smell.line_start == 10
-        assert smell.line_end == 50
-        assert smell.suggestion is None
-        assert smell.metadata == {}
+        assert smell.rule_id == "RULE001", "rule_id is not valid"
+        assert smell.message == "Function too complex", "message is not valid"
+        assert smell.severity == SmellSeverity.WARNING, "severity is not valid"
+        assert smell.category == SmellCategory.COMPLEXITY, "category is not valid"
+        assert smell.line_start == 10, "line_start is not valid"
+        assert smell.line_end == 50, "line_end is not valid"
+        assert smell.suggestion is None, "suggestion is not valid"
+        assert smell.metadata == {}, "Data must not be empty"
 
     def test_with_suggestion(self):
         """Test CodeSmell with suggestion."""
@@ -104,7 +104,7 @@ class TestCodeSmell:
             suggestion="Use a more descriptive name",
         )
 
-        assert smell.suggestion == "Use a more descriptive name"
+        assert smell.suggestion == "Use a more descriptive name", "suggestion is not valid"
 
     def test_to_dict(self):
         """Test to_dict serialization."""
@@ -124,15 +124,15 @@ class TestCodeSmell:
 
         result = smell.to_dict()
 
-        assert result["rule_id"] == "RULE003"
-        assert result["message"] == "Duplicate code detected"
-        assert result["severity"] == "error"
-        assert result["category"] == "duplication"
-        assert result["file"] == "src/main.py"
-        assert result["line_start"] == 100
-        assert result["line_end"] == 150
-        assert result["suggestion"] == "Extract to common function"
-        assert result["metadata"]["similarity"] == 0.95
+        assert result["rule_id"] == "RULE003", "Result must not be empty"
+        assert result["message"] == "Duplicate code detected", "Result must not be empty"
+        assert result["severity"] == "error", "Result must not be empty"
+        assert result["category"] == "duplication", "Result must not be empty"
+        assert result["file"] == "src/main.py", "Result must not be empty"
+        assert result["line_start"] == 100, "Result must not be empty"
+        assert result["line_end"] == 150, "Result must not be empty"
+        assert result["suggestion"] == "Extract to common function", "Result must not be empty"
+        assert result["metadata"]["similarity"] == 0.95, "Result must not be empty"
 
 
 class TestSmellRule:
@@ -154,10 +154,10 @@ class TestSmellRule:
             detector=dummy_detector,
         )
 
-        assert rule.rule_id == "COMPLEX001"
-        assert rule.name == "High Complexity"
-        assert rule.enabled is True
-        assert callable(rule.detector)
+        assert rule.rule_id == "COMPLEX001", "rule_id is not valid"
+        assert rule.name == "High Complexity", "name is not valid"
+        assert rule.enabled is True, "enabled is not valid"
+        assert callable(rule.detector), "Condition must be true"
 
     def test_disabled_rule(self):
         """Test SmellRule when disabled."""
@@ -173,7 +173,7 @@ class TestSmellRule:
             enabled=False,
         )
 
-        assert rule.enabled is False
+        assert rule.enabled is False, "enabled is not valid"
 
 
 class TestModuleLevel:
@@ -183,5 +183,5 @@ class TestModuleLevel:
         """Test logger is configured."""
         from codex.ast.smells import logger
 
-        assert logger is not None
-        assert logger.name == "codex.ast.smells"
+        assert logger is not None, "logger must be initialized"
+        assert logger.name == "codex.ast.smells", "name is not valid"

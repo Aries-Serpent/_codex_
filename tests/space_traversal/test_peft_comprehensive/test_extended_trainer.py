@@ -91,15 +91,15 @@ def test_extended_trainer_runs_and_checkpoints(tmp_path: Path) -> None:
     trainer.train()
 
     checkpoint_files = sorted(tmp_path.glob("*.pt"))
-    assert len(checkpoint_files) == 1
+    assert len(checkpoint_files) == 1, "Checkpoint_files must not be empty"
     state = torch.load(
         checkpoint_files[0], map_location="cpu", weights_only=False
     )  # nosec B614 - Test checkpoint with optimizer state requires weights_only=False
     assert state["epoch"] in {1, 2}
-    assert "model_state" in state
+    assert "model_state" in state, "Condition must be true"
     steps_per_epoch = len(train_loader)
     expected_steps = 2 * math.ceil(steps_per_epoch / 2)
-    assert optimizer.step_calls == expected_steps
+    assert optimizer.step_calls == expected_steps, "step_calls is not valid"
 
 
 @skip_if_stub
@@ -146,7 +146,7 @@ def test_trainer_seed_calls_repro(monkeypatch: pytest.MonkeyPatch) -> None:
         ),
     )
     trainer.close()
-    assert recorded["seed"] == 99
+    assert recorded["seed"] == 99, "rec is not valid"
 
 
 @skip_if_stub
@@ -177,6 +177,6 @@ def test_trainer_writes_metrics_ndjson(tmp_path: Path) -> None:
     trainer.train()
     trainer.close()
 
-    assert metrics_path.exists()
+    assert metrics_path.exists(), "Condition must be true"
     payload = metrics_path.read_text(encoding="utf-8")
-    assert '"epoch": 1' in payload
+    assert '"epoch": 1' in payload, "Condition must be true"

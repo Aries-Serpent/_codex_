@@ -34,8 +34,8 @@ def test_composite_writer_degrades(tmp_path: Path, capsys) -> None:
     ndjson = NdjsonWriter(tmp_path / "metrics.ndjson")
     writer = CompositeWriter([ndjson, FailingWriter(), DisabledWriter()])
     captured = capsys.readouterr()
-    assert "[tracking] degraded writers:" in captured.err
-    assert "dummy (unavailable)" in captured.err
+    assert "[tracking] degraded writers:" in captured.err, "Condition must be true"
+    assert "dummy (unavailable)" in captured.err, "Condition must be true"
     assert writer.disabled_components == (("dummy", "unavailable"),)
     row = {
         "timestamp": time.time(),
@@ -51,5 +51,5 @@ def test_composite_writer_degrades(tmp_path: Path, capsys) -> None:
     writer.close()
     data = (tmp_path / "metrics.ndjson").read_text(encoding="utf-8").strip().splitlines()
     record = json.loads(data[0])
-    assert record["metric"] == "acc"
-    assert record["schema_version"] == "v1"
+    assert record["metric"] == "acc", "rec is not valid"
+    assert record["schema_version"] == "v1", "rec is not valid"

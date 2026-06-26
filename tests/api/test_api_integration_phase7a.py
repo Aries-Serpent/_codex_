@@ -21,7 +21,7 @@ class TestAPIServiceIntegration:
                 self.data = []
 
         service = MockService()
-        assert service is not None
+        assert service is not None, "service must be initialized"
 
     def test_service_basic_operation(self):
         """Test basic service operation"""
@@ -36,7 +36,7 @@ class TestAPIServiceIntegration:
 
         service = MockService()
         result = service.add_item("test")
-        assert result == "test"
+        assert result == "test", "Result must not be empty"
 
     def test_service_with_state(self):
         """Test service maintains state"""
@@ -50,8 +50,8 @@ class TestAPIServiceIntegration:
                 return self.counter
 
         service = MockService()
-        assert service.increment() == 1
-        assert service.increment() == 2
+        assert service.increment() == 1, "Condition must be true"
+        assert service.increment() == 2, "Condition must be true"
 
     def test_multiple_service_instances_independent(self):
         """Test multiple service instances are independent"""
@@ -67,8 +67,8 @@ class TestAPIServiceIntegration:
         service1 = MockService()
         service2 = MockService()
         service1.increment()
-        assert service1.counter == 1
-        assert service2.counter == 0
+        assert service1.counter == 1, "Count must be greater than zero"
+        assert service2.counter == 0, "Count must be greater than zero"
 
     def test_service_with_dependencies(self):
         """Test service with dependencies"""
@@ -86,7 +86,7 @@ class TestAPIServiceIntegration:
 
         dep = Dependency()
         service = Service(dep)
-        assert service.get_computed_value() == 84
+        assert service.get_computed_value() == 84, "Value must be initialized"
 
     def test_service_error_handling(self):
         """Test service error handling"""
@@ -98,7 +98,7 @@ class TestAPIServiceIntegration:
                 return value * 2
 
         service = Service()
-        assert service.process(5) == 10
+        assert service.process(5) == 10, "Condition must be true"
         with pytest.raises(ValueError):
             service.process(-1)
 
@@ -115,7 +115,7 @@ class TestAPIServiceIntegration:
                 return self.dep.get_value()
 
         service = Service(mock_dep)
-        assert service.get_value() == 100
+        assert service.get_value() == 100, "Value must be initialized"
 
     def test_service_method_chaining(self):
         """Test service method chaining"""
@@ -136,7 +136,7 @@ class TestAPIServiceIntegration:
                 return self.value
 
         result = Service().add(5).multiply(2).get()
-        assert result == 10
+        assert result == 10, "Result must not be empty"
 
     def test_service_with_list_operations(self):
         """Test service with list operations"""
@@ -156,11 +156,11 @@ class TestAPIServiceIntegration:
                 self.items = []
 
         service = Service()
-        assert service.add_item("a") == 1
-        assert service.add_item("b") == 2
-        assert len(service.get_items()) == 2
+        assert service.add_item("a") == 1, "Item must not be empty"
+        assert service.add_item("b") == 2, "Item must not be empty"
+        assert len(service.get_items()) == 2, "Collection must not be empty"
         service.clear()
-        assert len(service.get_items()) == 0
+        assert len(service.get_items()) == 0, "Collection must not be empty"
 
     def test_integration_scenario_0(self):
         """Test integration scenario 0"""
@@ -170,7 +170,7 @@ class TestAPIServiceIntegration:
                 return 0
 
         service = Service()
-        assert service.compute() == 0
+        assert service.compute() == 0, "Condition must be true"
 
     def test_integration_scenario_1(self):
         """Test integration scenario 1"""
@@ -180,7 +180,7 @@ class TestAPIServiceIntegration:
                 return 1
 
         service = Service()
-        assert service.compute() == 1
+        assert service.compute() == 1, "Condition must be true"
 
     def test_integration_scenario_2(self):
         """Test integration scenario 2"""
@@ -190,7 +190,7 @@ class TestAPIServiceIntegration:
                 return 2
 
         service = Service()
-        assert service.compute() == 2
+        assert service.compute() == 2, "Condition must be true"
 
     def test_integration_scenario_3(self):
         """Test integration scenario 3"""
@@ -200,7 +200,7 @@ class TestAPIServiceIntegration:
                 return 3
 
         service = Service()
-        assert service.compute() == 3
+        assert service.compute() == 3, "Condition must be true"
 
     def test_integration_scenario_4(self):
         """Test integration scenario 4"""
@@ -210,7 +210,7 @@ class TestAPIServiceIntegration:
                 return 4
 
         service = Service()
-        assert service.compute() == 4
+        assert service.compute() == 4, "Condition must be true"
 
     def test_integration_scenario_5(self):
         """Test integration scenario 5"""
@@ -220,7 +220,7 @@ class TestAPIServiceIntegration:
                 return 5
 
         service = Service()
-        assert service.compute() == 5
+        assert service.compute() == 5, "Condition must be true"
 
     def test_integration_scenario_6(self):
         """Test integration scenario 6"""
@@ -230,7 +230,7 @@ class TestAPIServiceIntegration:
                 return 6
 
         service = Service()
-        assert service.compute() == 6
+        assert service.compute() == 6, "Condition must be true"
 
     def test_integration_scenario_7(self):
         """Test integration scenario 7"""
@@ -240,7 +240,7 @@ class TestAPIServiceIntegration:
                 return 7
 
         service = Service()
-        assert service.compute() == 7
+        assert service.compute() == 7, "Condition must be true"
 
     def test_integration_scenario_8(self):
         """Test integration scenario 8"""
@@ -250,7 +250,7 @@ class TestAPIServiceIntegration:
                 return 8
 
         service = Service()
-        assert service.compute() == 8
+        assert service.compute() == 8, "Condition must be true"
 
     def test_integration_scenario_9(self):
         """Test integration scenario 9"""
@@ -260,7 +260,7 @@ class TestAPIServiceIntegration:
                 return 9
 
         service = Service()
-        assert service.compute() == 9
+        assert service.compute() == 9, "Condition must be true"
 
     def test_integration_scenario_10(self):
         """Test integration scenario 10"""
@@ -270,7 +270,7 @@ class TestAPIServiceIntegration:
                 return 10
 
         service = Service()
-        assert service.compute() == 10
+        assert service.compute() == 10, "Condition must be true"
 
     def test_integration_scenario_11(self):
         """Test integration scenario 11"""
@@ -280,7 +280,7 @@ class TestAPIServiceIntegration:
                 return 11
 
         service = Service()
-        assert service.compute() == 11
+        assert service.compute() == 11, "Condition must be true"
 
     def test_integration_scenario_12(self):
         """Test integration scenario 12"""
@@ -290,7 +290,7 @@ class TestAPIServiceIntegration:
                 return 12
 
         service = Service()
-        assert service.compute() == 12
+        assert service.compute() == 12, "Condition must be true"
 
     def test_integration_scenario_13(self):
         """Test integration scenario 13"""
@@ -300,7 +300,7 @@ class TestAPIServiceIntegration:
                 return 13
 
         service = Service()
-        assert service.compute() == 13
+        assert service.compute() == 13, "Condition must be true"
 
     def test_integration_scenario_14(self):
         """Test integration scenario 14"""
@@ -310,7 +310,7 @@ class TestAPIServiceIntegration:
                 return 14
 
         service = Service()
-        assert service.compute() == 14
+        assert service.compute() == 14, "Condition must be true"
 
     def test_integration_scenario_15(self):
         """Test integration scenario 15"""
@@ -320,7 +320,7 @@ class TestAPIServiceIntegration:
                 return 15
 
         service = Service()
-        assert service.compute() == 15
+        assert service.compute() == 15, "Condition must be true"
 
     def test_integration_scenario_16(self):
         """Test integration scenario 16"""
@@ -330,7 +330,7 @@ class TestAPIServiceIntegration:
                 return 16
 
         service = Service()
-        assert service.compute() == 16
+        assert service.compute() == 16, "Condition must be true"
 
     def test_integration_scenario_17(self):
         """Test integration scenario 17"""
@@ -340,7 +340,7 @@ class TestAPIServiceIntegration:
                 return 17
 
         service = Service()
-        assert service.compute() == 17
+        assert service.compute() == 17, "Condition must be true"
 
     def test_integration_scenario_18(self):
         """Test integration scenario 18"""
@@ -350,7 +350,7 @@ class TestAPIServiceIntegration:
                 return 18
 
         service = Service()
-        assert service.compute() == 18
+        assert service.compute() == 18, "Condition must be true"
 
     def test_integration_scenario_19(self):
         """Test integration scenario 19"""
@@ -360,7 +360,7 @@ class TestAPIServiceIntegration:
                 return 19
 
         service = Service()
-        assert service.compute() == 19
+        assert service.compute() == 19, "Condition must be true"
 
     def test_integration_scenario_20(self):
         """Test integration scenario 20"""
@@ -370,7 +370,7 @@ class TestAPIServiceIntegration:
                 return 20
 
         service = Service()
-        assert service.compute() == 20
+        assert service.compute() == 20, "Condition must be true"
 
     def test_integration_scenario_21(self):
         """Test integration scenario 21"""
@@ -380,7 +380,7 @@ class TestAPIServiceIntegration:
                 return 21
 
         service = Service()
-        assert service.compute() == 21
+        assert service.compute() == 21, "Condition must be true"
 
     def test_integration_scenario_22(self):
         """Test integration scenario 22"""
@@ -390,7 +390,7 @@ class TestAPIServiceIntegration:
                 return 22
 
         service = Service()
-        assert service.compute() == 22
+        assert service.compute() == 22, "Condition must be true"
 
     def test_integration_scenario_23(self):
         """Test integration scenario 23"""
@@ -400,7 +400,7 @@ class TestAPIServiceIntegration:
                 return 23
 
         service = Service()
-        assert service.compute() == 23
+        assert service.compute() == 23, "Condition must be true"
 
     def test_integration_scenario_24(self):
         """Test integration scenario 24"""
@@ -410,7 +410,7 @@ class TestAPIServiceIntegration:
                 return 24
 
         service = Service()
-        assert service.compute() == 24
+        assert service.compute() == 24, "Condition must be true"
 
     def test_integration_scenario_25(self):
         """Test integration scenario 25"""
@@ -420,7 +420,7 @@ class TestAPIServiceIntegration:
                 return 25
 
         service = Service()
-        assert service.compute() == 25
+        assert service.compute() == 25, "Condition must be true"
 
     def test_integration_scenario_26(self):
         """Test integration scenario 26"""
@@ -430,7 +430,7 @@ class TestAPIServiceIntegration:
                 return 26
 
         service = Service()
-        assert service.compute() == 26
+        assert service.compute() == 26, "Condition must be true"
 
     def test_integration_scenario_27(self):
         """Test integration scenario 27"""
@@ -440,7 +440,7 @@ class TestAPIServiceIntegration:
                 return 27
 
         service = Service()
-        assert service.compute() == 27
+        assert service.compute() == 27, "Condition must be true"
 
     def test_integration_scenario_28(self):
         """Test integration scenario 28"""
@@ -450,7 +450,7 @@ class TestAPIServiceIntegration:
                 return 28
 
         service = Service()
-        assert service.compute() == 28
+        assert service.compute() == 28, "Condition must be true"
 
     def test_integration_scenario_29(self):
         """Test integration scenario 29"""
@@ -460,7 +460,7 @@ class TestAPIServiceIntegration:
                 return 29
 
         service = Service()
-        assert service.compute() == 29
+        assert service.compute() == 29, "Condition must be true"
 
     def test_integration_scenario_30(self):
         """Test integration scenario 30"""
@@ -470,7 +470,7 @@ class TestAPIServiceIntegration:
                 return 30
 
         service = Service()
-        assert service.compute() == 30
+        assert service.compute() == 30, "Condition must be true"
 
     def test_integration_scenario_31(self):
         """Test integration scenario 31"""
@@ -480,7 +480,7 @@ class TestAPIServiceIntegration:
                 return 31
 
         service = Service()
-        assert service.compute() == 31
+        assert service.compute() == 31, "Condition must be true"
 
     def test_integration_scenario_32(self):
         """Test integration scenario 32"""
@@ -490,7 +490,7 @@ class TestAPIServiceIntegration:
                 return 32
 
         service = Service()
-        assert service.compute() == 32
+        assert service.compute() == 32, "Condition must be true"
 
     def test_integration_scenario_33(self):
         """Test integration scenario 33"""
@@ -500,7 +500,7 @@ class TestAPIServiceIntegration:
                 return 33
 
         service = Service()
-        assert service.compute() == 33
+        assert service.compute() == 33, "Condition must be true"
 
     def test_integration_scenario_34(self):
         """Test integration scenario 34"""
@@ -510,7 +510,7 @@ class TestAPIServiceIntegration:
                 return 34
 
         service = Service()
-        assert service.compute() == 34
+        assert service.compute() == 34, "Condition must be true"
 
     def test_integration_scenario_35(self):
         """Test integration scenario 35"""
@@ -520,7 +520,7 @@ class TestAPIServiceIntegration:
                 return 35
 
         service = Service()
-        assert service.compute() == 35
+        assert service.compute() == 35, "Condition must be true"
 
     def test_integration_scenario_36(self):
         """Test integration scenario 36"""
@@ -530,7 +530,7 @@ class TestAPIServiceIntegration:
                 return 36
 
         service = Service()
-        assert service.compute() == 36
+        assert service.compute() == 36, "Condition must be true"
 
     def test_integration_scenario_37(self):
         """Test integration scenario 37"""
@@ -540,7 +540,7 @@ class TestAPIServiceIntegration:
                 return 37
 
         service = Service()
-        assert service.compute() == 37
+        assert service.compute() == 37, "Condition must be true"
 
     def test_integration_scenario_38(self):
         """Test integration scenario 38"""
@@ -550,7 +550,7 @@ class TestAPIServiceIntegration:
                 return 38
 
         service = Service()
-        assert service.compute() == 38
+        assert service.compute() == 38, "Condition must be true"
 
     def test_integration_scenario_39(self):
         """Test integration scenario 39"""
@@ -560,7 +560,7 @@ class TestAPIServiceIntegration:
                 return 39
 
         service = Service()
-        assert service.compute() == 39
+        assert service.compute() == 39, "Condition must be true"
 
 
 class TestAPIClientIntegration:
@@ -574,7 +574,7 @@ class TestAPIClientIntegration:
                 self.base_url = base_url
 
         client = APIClient("http://localhost:8000")
-        assert client.base_url == "http://localhost:8000"
+        assert client.base_url == "http://localhost:8000", "base_url is not valid"
 
     def test_api_client_with_headers(self):
         """Test API client with headers"""
@@ -585,7 +585,7 @@ class TestAPIClientIntegration:
                 self.headers = headers or {}
 
         client = APIClient("http://localhost:8000", {"Authorization": "******"})
-        assert "Authorization" in client.headers
+        assert "Authorization" in client.headers, "Condition must be true"
 
     def test_api_client_request_building(self):
         """Test API client request building"""
@@ -599,7 +599,7 @@ class TestAPIClientIntegration:
 
         client = APIClient("http://localhost:8000")
         url = client.build_url("users")
-        assert "users" in url
+        assert "users" in url, "Condition must be true"
 
     @patch("requests.get")
     def test_api_client_get_request(self, mock_get):
@@ -618,7 +618,7 @@ class TestAPIClientIntegration:
 
         client = APIClient("http://localhost:8000")
         result = client.get_users()
-        assert "users" in result
+        assert "users" in result, "Result must not be empty"
 
     @patch("requests.post")
     def test_api_client_post_request(self, mock_post):
@@ -637,7 +637,7 @@ class TestAPIClientIntegration:
 
         client = APIClient("http://localhost:8000")
         result = client.create_user({"name": "John"})
-        assert result["id"] == 1
+        assert result["id"] == 1, "Result must not be empty"
 
     def test_api_client_error_handling(self):
         """Test API client error handling"""
@@ -671,7 +671,7 @@ class TestAPIClientIntegration:
                 return False
 
         client = APIClient()
-        assert client.retry_request()
+        assert client.retry_request(), "Condition must be true"
 
     def test_api_client_caching(self):
         """Test API client caching"""
@@ -688,7 +688,7 @@ class TestAPIClientIntegration:
         client = APIClient()
         result1 = client.get_cached("test", lambda: "value")
         result2 = client.get_cached("test", lambda: "different")
-        assert result1 == result2 == "value"
+        assert result1 == result2 == "value", "Result must not be empty"
 
     def test_api_client_connection_pooling(self):
         """Test API client connection pooling"""
@@ -706,7 +706,7 @@ class TestAPIClientIntegration:
 
         pool = ConnectionPool()
         conn = pool.get_connection()
-        assert conn == "connection"
+        assert conn == "connection", "conn is not valid"
 
     def test_client_variant_0(self):
         """Test client variant 0"""
@@ -716,7 +716,7 @@ class TestAPIClientIntegration:
                 self.id = 0
 
         client = Client()
-        assert client.id == 0
+        assert client.id == 0, "id is not valid"
 
     def test_client_variant_1(self):
         """Test client variant 1"""
@@ -726,7 +726,7 @@ class TestAPIClientIntegration:
                 self.id = 1
 
         client = Client()
-        assert client.id == 1
+        assert client.id == 1, "id is not valid"
 
     def test_client_variant_2(self):
         """Test client variant 2"""
@@ -736,7 +736,7 @@ class TestAPIClientIntegration:
                 self.id = 2
 
         client = Client()
-        assert client.id == 2
+        assert client.id == 2, "id is not valid"
 
     def test_client_variant_3(self):
         """Test client variant 3"""
@@ -746,7 +746,7 @@ class TestAPIClientIntegration:
                 self.id = 3
 
         client = Client()
-        assert client.id == 3
+        assert client.id == 3, "id is not valid"
 
     def test_client_variant_4(self):
         """Test client variant 4"""
@@ -756,7 +756,7 @@ class TestAPIClientIntegration:
                 self.id = 4
 
         client = Client()
-        assert client.id == 4
+        assert client.id == 4, "id is not valid"
 
     def test_client_variant_5(self):
         """Test client variant 5"""
@@ -766,7 +766,7 @@ class TestAPIClientIntegration:
                 self.id = 5
 
         client = Client()
-        assert client.id == 5
+        assert client.id == 5, "id is not valid"
 
     def test_client_variant_6(self):
         """Test client variant 6"""
@@ -776,7 +776,7 @@ class TestAPIClientIntegration:
                 self.id = 6
 
         client = Client()
-        assert client.id == 6
+        assert client.id == 6, "id is not valid"
 
     def test_client_variant_7(self):
         """Test client variant 7"""
@@ -786,7 +786,7 @@ class TestAPIClientIntegration:
                 self.id = 7
 
         client = Client()
-        assert client.id == 7
+        assert client.id == 7, "id is not valid"
 
     def test_client_variant_8(self):
         """Test client variant 8"""
@@ -796,7 +796,7 @@ class TestAPIClientIntegration:
                 self.id = 8
 
         client = Client()
-        assert client.id == 8
+        assert client.id == 8, "id is not valid"
 
     def test_client_variant_9(self):
         """Test client variant 9"""
@@ -806,7 +806,7 @@ class TestAPIClientIntegration:
                 self.id = 9
 
         client = Client()
-        assert client.id == 9
+        assert client.id == 9, "id is not valid"
 
     def test_client_variant_10(self):
         """Test client variant 10"""
@@ -816,7 +816,7 @@ class TestAPIClientIntegration:
                 self.id = 10
 
         client = Client()
-        assert client.id == 10
+        assert client.id == 10, "id is not valid"
 
     def test_client_variant_11(self):
         """Test client variant 11"""
@@ -826,7 +826,7 @@ class TestAPIClientIntegration:
                 self.id = 11
 
         client = Client()
-        assert client.id == 11
+        assert client.id == 11, "id is not valid"
 
     def test_client_variant_12(self):
         """Test client variant 12"""
@@ -836,7 +836,7 @@ class TestAPIClientIntegration:
                 self.id = 12
 
         client = Client()
-        assert client.id == 12
+        assert client.id == 12, "id is not valid"
 
     def test_client_variant_13(self):
         """Test client variant 13"""
@@ -846,7 +846,7 @@ class TestAPIClientIntegration:
                 self.id = 13
 
         client = Client()
-        assert client.id == 13
+        assert client.id == 13, "id is not valid"
 
     def test_client_variant_14(self):
         """Test client variant 14"""
@@ -856,7 +856,7 @@ class TestAPIClientIntegration:
                 self.id = 14
 
         client = Client()
-        assert client.id == 14
+        assert client.id == 14, "id is not valid"
 
     def test_client_variant_15(self):
         """Test client variant 15"""
@@ -866,7 +866,7 @@ class TestAPIClientIntegration:
                 self.id = 15
 
         client = Client()
-        assert client.id == 15
+        assert client.id == 15, "id is not valid"
 
     def test_client_variant_16(self):
         """Test client variant 16"""
@@ -876,7 +876,7 @@ class TestAPIClientIntegration:
                 self.id = 16
 
         client = Client()
-        assert client.id == 16
+        assert client.id == 16, "id is not valid"
 
     def test_client_variant_17(self):
         """Test client variant 17"""
@@ -886,7 +886,7 @@ class TestAPIClientIntegration:
                 self.id = 17
 
         client = Client()
-        assert client.id == 17
+        assert client.id == 17, "id is not valid"
 
     def test_client_variant_18(self):
         """Test client variant 18"""
@@ -896,7 +896,7 @@ class TestAPIClientIntegration:
                 self.id = 18
 
         client = Client()
-        assert client.id == 18
+        assert client.id == 18, "id is not valid"
 
     def test_client_variant_19(self):
         """Test client variant 19"""
@@ -906,7 +906,7 @@ class TestAPIClientIntegration:
                 self.id = 19
 
         client = Client()
-        assert client.id == 19
+        assert client.id == 19, "id is not valid"
 
     def test_client_variant_20(self):
         """Test client variant 20"""
@@ -916,7 +916,7 @@ class TestAPIClientIntegration:
                 self.id = 20
 
         client = Client()
-        assert client.id == 20
+        assert client.id == 20, "id is not valid"
 
     def test_client_variant_21(self):
         """Test client variant 21"""
@@ -926,7 +926,7 @@ class TestAPIClientIntegration:
                 self.id = 21
 
         client = Client()
-        assert client.id == 21
+        assert client.id == 21, "id is not valid"
 
     def test_client_variant_22(self):
         """Test client variant 22"""
@@ -936,7 +936,7 @@ class TestAPIClientIntegration:
                 self.id = 22
 
         client = Client()
-        assert client.id == 22
+        assert client.id == 22, "id is not valid"
 
     def test_client_variant_23(self):
         """Test client variant 23"""
@@ -946,7 +946,7 @@ class TestAPIClientIntegration:
                 self.id = 23
 
         client = Client()
-        assert client.id == 23
+        assert client.id == 23, "id is not valid"
 
     def test_client_variant_24(self):
         """Test client variant 24"""
@@ -956,7 +956,7 @@ class TestAPIClientIntegration:
                 self.id = 24
 
         client = Client()
-        assert client.id == 24
+        assert client.id == 24, "id is not valid"
 
     def test_client_variant_25(self):
         """Test client variant 25"""
@@ -966,7 +966,7 @@ class TestAPIClientIntegration:
                 self.id = 25
 
         client = Client()
-        assert client.id == 25
+        assert client.id == 25, "id is not valid"
 
     def test_client_variant_26(self):
         """Test client variant 26"""
@@ -976,7 +976,7 @@ class TestAPIClientIntegration:
                 self.id = 26
 
         client = Client()
-        assert client.id == 26
+        assert client.id == 26, "id is not valid"
 
     def test_client_variant_27(self):
         """Test client variant 27"""
@@ -986,7 +986,7 @@ class TestAPIClientIntegration:
                 self.id = 27
 
         client = Client()
-        assert client.id == 27
+        assert client.id == 27, "id is not valid"
 
     def test_client_variant_28(self):
         """Test client variant 28"""
@@ -996,7 +996,7 @@ class TestAPIClientIntegration:
                 self.id = 28
 
         client = Client()
-        assert client.id == 28
+        assert client.id == 28, "id is not valid"
 
     def test_client_variant_29(self):
         """Test client variant 29"""
@@ -1006,7 +1006,7 @@ class TestAPIClientIntegration:
                 self.id = 29
 
         client = Client()
-        assert client.id == 29
+        assert client.id == 29, "id is not valid"
 
     def test_client_variant_30(self):
         """Test client variant 30"""
@@ -1016,7 +1016,7 @@ class TestAPIClientIntegration:
                 self.id = 30
 
         client = Client()
-        assert client.id == 30
+        assert client.id == 30, "id is not valid"
 
     def test_client_variant_31(self):
         """Test client variant 31"""
@@ -1026,7 +1026,7 @@ class TestAPIClientIntegration:
                 self.id = 31
 
         client = Client()
-        assert client.id == 31
+        assert client.id == 31, "id is not valid"
 
     def test_client_variant_32(self):
         """Test client variant 32"""
@@ -1036,7 +1036,7 @@ class TestAPIClientIntegration:
                 self.id = 32
 
         client = Client()
-        assert client.id == 32
+        assert client.id == 32, "id is not valid"
 
     def test_client_variant_33(self):
         """Test client variant 33"""
@@ -1046,7 +1046,7 @@ class TestAPIClientIntegration:
                 self.id = 33
 
         client = Client()
-        assert client.id == 33
+        assert client.id == 33, "id is not valid"
 
     def test_client_variant_34(self):
         """Test client variant 34"""
@@ -1056,7 +1056,7 @@ class TestAPIClientIntegration:
                 self.id = 34
 
         client = Client()
-        assert client.id == 34
+        assert client.id == 34, "id is not valid"
 
     def test_client_variant_35(self):
         """Test client variant 35"""
@@ -1066,7 +1066,7 @@ class TestAPIClientIntegration:
                 self.id = 35
 
         client = Client()
-        assert client.id == 35
+        assert client.id == 35, "id is not valid"
 
     def test_client_variant_36(self):
         """Test client variant 36"""
@@ -1076,7 +1076,7 @@ class TestAPIClientIntegration:
                 self.id = 36
 
         client = Client()
-        assert client.id == 36
+        assert client.id == 36, "id is not valid"
 
     def test_client_variant_37(self):
         """Test client variant 37"""
@@ -1086,7 +1086,7 @@ class TestAPIClientIntegration:
                 self.id = 37
 
         client = Client()
-        assert client.id == 37
+        assert client.id == 37, "id is not valid"
 
     def test_client_variant_38(self):
         """Test client variant 38"""
@@ -1096,7 +1096,7 @@ class TestAPIClientIntegration:
                 self.id = 38
 
         client = Client()
-        assert client.id == 38
+        assert client.id == 38, "id is not valid"
 
     def test_client_variant_39(self):
         """Test client variant 39"""
@@ -1106,4 +1106,4 @@ class TestAPIClientIntegration:
                 self.id = 39
 
         client = Client()
-        assert client.id == 39
+        assert client.id == 39, "id is not valid"

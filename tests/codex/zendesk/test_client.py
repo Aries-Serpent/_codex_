@@ -13,7 +13,7 @@ class TestZendeskClientImports:
         try:
             from src.codex.zendesk import client
 
-            assert client is not None
+            assert client is not None, "client must be initialized"
         except ImportError:
             pytest.skip("Module not available or has unmet dependencies")
 
@@ -28,7 +28,7 @@ class TestZendeskClientOperations:
 
             if hasattr(client, "ZendeskClient"):
                 zd = client.ZendeskClient()
-                assert zd is not None
+                assert zd is not None, "zd must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("ZendeskClient not available")
 
@@ -41,7 +41,7 @@ class TestZendeskClientOperations:
                 with patch.object(client, "get_tickets") as mock_get:
                     mock_get.return_value = [{"id": 1}, {"id": 2}]
                     tickets = client.get_tickets()
-                    assert len(tickets) == 2
+                    assert len(tickets) == 2, "Tickets must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("get_tickets not available")
 
@@ -54,7 +54,7 @@ class TestZendeskClientOperations:
                 with patch.object(client, "create_ticket") as mock_create:
                     mock_create.return_value = {"id": 123}
                     ticket = client.create_ticket({"subject": "Test"})
-                    assert ticket["id"] == 123
+                    assert ticket["id"] == 123, "Condition must be true"
         except (ImportError, AttributeError):
             pytest.skip("create_ticket not available")
 
@@ -69,7 +69,7 @@ class TestZendeskClientConfiguration:
 
             if hasattr(client, "ZendeskClient"):
                 zd = client.ZendeskClient(subdomain="test", api_token="token123")
-                assert zd is not None
+                assert zd is not None, "zd must be initialized"
         except (ImportError, AttributeError):
             pytest.skip("ZendeskClient not available")
 
@@ -82,6 +82,6 @@ class TestZendeskClientConfiguration:
                 with patch.object(client, "validate_credentials") as mock_validate:
                     mock_validate.return_value = True
                     result = client.validate_credentials("token123")
-                    assert result is True
+                    assert result is True, "Result must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("validate_credentials not available")

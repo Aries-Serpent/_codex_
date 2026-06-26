@@ -28,7 +28,7 @@ class TestMemoryExhaustion:
         try:
             soft_limit, hard_limit = resource.getrlimit(resource.RLIMIT_AS)
             # -1 means unlimited on some platforms
-            assert soft_limit >= -1
+            assert soft_limit >= -1, "soft_limit must be greater than zero"
         except (ValueError, OSError):
             # Not available on all platforms
             pass
@@ -37,7 +37,7 @@ class TestMemoryExhaustion:
         """Test garbage collection under memory pressure."""
         gc.collect()
         collected = gc.collect()
-        assert collected >= 0
+        assert collected >= 0, "collected must be greater than zero"
 
     def test_large_object_allocation_failure(self):
         """Test handling of large object allocation failure."""
@@ -61,7 +61,7 @@ class TestMemoryExhaustion:
         gc.collect()
         final_objects = len(gc.get_objects())
         # Should be roughly similar (some variation expected)
-        assert final_objects < initial_objects + 10000
+        assert final_objects < initial_objects + 10000, "Object must be initialized"
 
     def test_circular_reference_cleanup(self):
         """Test cleanup of circular references."""
@@ -93,7 +93,7 @@ class TestMemoryExhaustion:
         gen = large_generator()
         # Generator doesn't hold all items in memory
         first = next(gen)
-        assert first == 0
+        assert first == 0, "first is not valid"
 
 
 class TestFileDescriptorExhaustion:
@@ -103,8 +103,8 @@ class TestFileDescriptorExhaustion:
         """Test checking file descriptor limits."""
         try:
             soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
-            assert soft > 0
-            assert hard >= soft
+            assert soft > 0, "soft must be greater than zero"
+            assert hard >= soft, "hard must be greater than zero"
         except (ValueError, OSError):
             pass
 
@@ -124,14 +124,14 @@ class TestFileDescriptorExhaustion:
                 except (IOError, OSError):
                     pass
 
-        assert len(files) > 0
+        assert len(files) > 0, "Files must not be empty"
 
     def test_context_manager_fd_cleanup(self):
         """Test fd cleanup with context manager."""
         import tempfile
 
         with tempfile.NamedTemporaryFile() as f:
-            assert f.file is not None
+            assert f.file is not None, "file must be initialized"
 
         # File should be closed after context exit
 
@@ -182,7 +182,7 @@ class TestThreadPoolExhaustion:
 
         # Count should return to initial (within reasonable margin)
         final_count = threading.active_count()
-        assert final_count <= initial_count + 5
+        assert final_count <= initial_count + 5, "Count must be greater than zero"
 
     def test_daemon_thread_exit(self):
         """Test daemon thread exit."""
@@ -195,7 +195,7 @@ class TestThreadPoolExhaustion:
         t.start()
         t.join(timeout=1)
 
-        assert len(daemon_ran) > 0
+        assert len(daemon_ran) > 0, "Daemon_ran must not be empty"
 
     def test_thread_join_timeout(self):
         """Test thread join with timeout."""
@@ -208,7 +208,7 @@ class TestThreadPoolExhaustion:
         t.join(timeout=0.1)
 
         # Should timeout
-        assert t.is_alive()
+        assert t.is_alive(), "Condition must be true"
 
 
 class TestConnectionPoolExhaustion:
@@ -217,7 +217,7 @@ class TestConnectionPoolExhaustion:
     def test_pool_size_configuration(self):
         """Test pool size configuration."""
         pool_config = {"max_connections": 10, "timeout": 5}
-        assert pool_config["max_connections"] > 0
+        assert pool_config["max_connections"] > 0, "Value must be greater than zero"
 
     def test_connection_acquisition_timeout(self):
         """Test connection acquisition timeout."""
@@ -236,7 +236,7 @@ class TestConnectionPoolExhaustion:
         conn = mock_pool.get_connection()
         mock_pool.release_connection(conn)
 
-        assert mock_pool.release_connection.called
+        assert mock_pool.release_connection.called, "Condition must be true"
 
     def test_connection_error_recovery(self):
         """Test connection error recovery."""
@@ -253,7 +253,7 @@ class TestConnectionPoolExhaustion:
 
         # Retry
         conn = mock_pool.get_connection()
-        assert conn is not None
+        assert conn is not None, "conn must be initialized"
 
 
 class TestCacheExhaustion:
@@ -277,8 +277,8 @@ class TestCacheExhaustion:
         add_to_cache("c", 3)
         add_to_cache("d", 4)  # Should evict "a"
 
-        assert "a" not in cache
-        assert len(cache) == 3
+        assert "a" not in cache, "Condition must be true"
+        assert len(cache) == 3, "Cache must not be empty"
 
     def test_cache_hit_miss_tracking(self):
         """Test cache hit/miss tracking."""
@@ -293,8 +293,8 @@ class TestCacheExhaustion:
         if "z" not in cache:
             stats["misses"] += 1
 
-        assert stats["hits"] == 1
-        assert stats["misses"] == 1
+        assert stats["hits"] == 1, "Condition must be true"
+        assert stats["misses"] == 1, "Condition must be true"
 
     def test_cache_invalidation_pattern(self):
         """Test cache invalidation pattern."""
@@ -304,7 +304,7 @@ class TestCacheExhaustion:
         if "key" in cache:
             del cache["key"]
 
-        assert "key" not in cache
+        assert "key" not in cache, "Condition must be true"
 
     def test_cache_size_limits(self):
         """Test cache respects size limits."""
@@ -315,7 +315,7 @@ class TestCacheExhaustion:
         for i in range(max_items):
             cache[f"key_{i}"] = "x" * 50
 
-        assert len(cache) <= max_items
+        assert len(cache) <= max_items, "Cache must not be empty"
 
 
 class TestRateLimitingRecovery:
@@ -329,7 +329,7 @@ class TestRateLimitingRecovery:
         for i in range(5):
             request_times.append(time.time())
 
-        assert len(request_times) <= rate_limit
+        assert len(request_times) <= rate_limit, "Request_times must not be empty"
 
     def test_backoff_strategy(self):
         """Test backoff strategy."""
@@ -345,14 +345,14 @@ class TestRateLimitingRecovery:
                 attempt += 1
                 if attempt < max_attempts:
                     delay = base_delay * (2**attempt)
-                    assert delay > 0
+                    assert delay > 0, "delay must be greater than zero"
 
     def test_rate_limit_reset(self):
         """Test rate limit reset."""
         current_time = time.time()
         reset_time = current_time + 60  # Reset in 60 seconds
 
-        assert reset_time > current_time
+        assert reset_time > current_time, "reset_time must be greater than zero"
 
 
 class TestProcessExhaustion:
@@ -374,7 +374,7 @@ class TestProcessExhaustion:
             proc.wait(timeout=1)
 
             # Process should be cleaned up
-            assert proc.returncode is not None
+            assert proc.returncode is not None, "returncode must be initialized"
         except (ImportError, AttributeError, ModuleNotFoundError):
             pass
 
@@ -387,7 +387,7 @@ class TestProcessExhaustion:
 
             # Always clean up
             stdout, stderr = proc.communicate(timeout=1)
-            assert proc.returncode is not None
+            assert proc.returncode is not None, "returncode must be initialized"
         except (AttributeError, OSError, RuntimeError):
             pass
 
@@ -403,7 +403,7 @@ class TestDeadlockPrevention:
         # Always acquire in same order
         with lock1:
             with lock2:
-                assert True
+                assert True, "True is not valid"
 
     def test_lock_timeout(self):
         """Test lock acquisition timeout."""
@@ -411,7 +411,7 @@ class TestDeadlockPrevention:
 
         # This should succeed
         acquired = lock.acquire(timeout=1)
-        assert acquired
+        assert acquired, "acquired is not valid"
         lock.release()
 
     def test_recursive_lock(self):
@@ -420,7 +420,7 @@ class TestDeadlockPrevention:
 
         with lock:
             with lock:
-                assert True
+                assert True, "True is not valid"
 
     def test_condition_variable_signaling(self):
         """Test condition variable signaling."""

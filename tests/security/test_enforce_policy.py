@@ -19,7 +19,7 @@ pytestmark = pytest.mark.skipif(not TOOL.exists(), reason="policy tool missing")
 
 def test_policy_skips_without_policy_file(tmp_path):
     code = subprocess.call([sys.executable, str(TOOL.resolve())], cwd=str(tmp_path))
-    assert code == 0
+    assert code == 0, "code is not valid"
 
 
 def test_policy_schema_validation_runs(tmp_path, monkeypatch):

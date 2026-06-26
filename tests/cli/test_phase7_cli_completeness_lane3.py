@@ -58,23 +58,23 @@ class TestCLICompleteness:
         """VARIANT 1: tokenizer list-models command should exist."""
         result = cli_runner.invoke(tokenizer_group, ["list-models", "--help"])
         # Command may not exist yet; we'll add it
-        assert "list-models" in result.output or result.exit_code == 2
+        assert "list-models" in result.output or result.exit_code == 2, "Result must not be empty"
 
     def test_tokenizer_encode_with_model_option(self, cli_runner):
         """Tokenizer encode should support --model option for variant selection."""
         result = cli_runner.invoke(tokenizer_group, ["encode", "hello world", "--help"])
-        assert result.exit_code == 0
-        assert "--tokenizer" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "--tokenizer" in result.output, "Result must not be empty"
 
     def test_tokenizer_decode_with_verify_option(self, cli_runner):
         """Tokenizer decode should support --verify for roundtrip validation."""
         result = cli_runner.invoke(tokenizer_group, ["decode", "1", "2", "3", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_tokenizer_stats_with_format_option(self, cli_runner):
         """Tokenizer stats should support --format option."""
         result = cli_runner.invoke(tokenizer_group, ["stats", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     # ==========================================================================
     # VARIANT 2: Repro Commands — Add 'checkpoint' subcommand
@@ -89,18 +89,18 @@ class TestCLICompleteness:
     def test_repro_seed_with_persist_option(self, cli_runner):
         """Repro seed should support --persist option."""
         result = cli_runner.invoke(repro_group, ["seed", "--help"])
-        assert result.exit_code == 0
-        assert "seed" in result.output.lower()
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "seed" in result.output.lower(), "Result must not be empty"
 
     def test_repro_env_with_include_option(self, cli_runner):
         """Repro env should support --include option for selective capture."""
         result = cli_runner.invoke(repro_group, ["env", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_repro_system_with_interval_option(self, cli_runner):
         """Repro system should support --interval for sampling frequency."""
         result = cli_runner.invoke(repro_group, ["system", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     # ==========================================================================
     # VARIANT 3: Auth Commands — Add 'refresh-token' subcommand
@@ -110,26 +110,26 @@ class TestCLICompleteness:
         """VARIANT 3: auth refresh-token command should be added."""
         result = cli_runner.invoke(auth_group, ["refresh-token", "--help"])
         # Will fail until implemented
-        assert result.exit_code != 0 or "refresh" in result.output.lower()
+        assert result.exit_code != 0 or "refresh" in result.output.lower(), "Result must not be empty"
 
     def test_auth_register_help_text(self, cli_runner):
         """Auth register should have complete help documentation."""
         result = cli_runner.invoke(auth_group, ["register", "--help"])
-        assert result.exit_code == 0
-        assert "register" in result.output.lower()
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "register" in result.output.lower(), "Result must not be empty"
         # Should document all required options
-        assert "--username" in result.output or "username" in result.output
+        assert "--username" in result.output or "username" in result.output, "Result must not be empty"
 
     def test_auth_login_help_text(self, cli_runner):
         """Auth login should have complete help documentation."""
         result = cli_runner.invoke(auth_group, ["login", "--help"])
-        assert result.exit_code == 0
-        assert "login" in result.output.lower()
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "login" in result.output.lower(), "Result must not be empty"
 
     def test_auth_status_help_text(self, cli_runner):
         """Auth status should have complete help documentation."""
         result = cli_runner.invoke(auth_group, ["status", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     # ==========================================================================
     # VARIANT 4: Logs Commands — Add 'export-data' subcommand
@@ -139,22 +139,22 @@ class TestCLICompleteness:
         """VARIANT 4: logs export-data command should be added."""
         result = cli_runner.invoke(logs, ["export-data", "--help"])
         # Will fail until implemented
-        assert result.exit_code != 0 or "export" in result.output.lower()
+        assert result.exit_code != 0 or "export" in result.output.lower(), "Result must not be empty"
 
     def test_logs_init_help_text(self, cli_runner):
         """Logs init should have complete help documentation."""
         result = cli_runner.invoke(logs, ["init", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_logs_ingest_help_text(self, cli_runner):
         """Logs ingest should have complete help documentation."""
         result = cli_runner.invoke(logs, ["ingest", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_logs_query_help_text(self, cli_runner):
         """Logs query should have complete help documentation."""
         result = cli_runner.invoke(logs, ["query", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     # ==========================================================================
     # VARIANT 5: Duplication Commands — Add 'baseline' subcommand
@@ -164,23 +164,23 @@ class TestCLICompleteness:
         """VARIANT 5: duplication baseline command should be added."""
         result = cli_runner.invoke(duplication_group, ["baseline", "--help"])
         # Will fail until implemented
-        assert result.exit_code != 0 or "baseline" in result.output.lower()
+        assert result.exit_code != 0 or "baseline" in result.output.lower(), "Result must not be empty"
 
     def test_duplication_check_help_text(self, cli_runner):
         """Duplication check should have complete help documentation."""
         result = cli_runner.invoke(duplication_group, ["check", "--help"])
-        assert result.exit_code == 0
-        assert "duplication" in result.output.lower()
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "duplication" in result.output.lower(), "Result must not be empty"
 
     def test_duplication_report_help_text(self, cli_runner):
         """Duplication report should have complete help documentation."""
         result = cli_runner.invoke(duplication_group, ["report", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_duplication_compare_help_text(self, cli_runner):
         """Duplication compare should have complete help documentation."""
         result = cli_runner.invoke(duplication_group, ["compare", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     # ==========================================================================
     # VARIANT 6+7: Error Message Standardization (2 command groups)
@@ -200,7 +200,7 @@ class TestCLICompleteness:
         # The 'check' command may not require --path if PATH is positional
         if result.exit_code != 0:
             # Has error - should be formatted well
-            assert (
+            assert (, "Condition must be true"
                 "Error" in result.output
                 or "error" in result.output.lower()
                 or result.exit_code == 2
@@ -212,7 +212,7 @@ class TestCLICompleteness:
         result1 = cli_runner.invoke(logs, ["query"])
 
         # Both should exit with non-zero codes
-        assert result1.exit_code != 0
+        assert result1.exit_code != 0, "Result must not be empty"
 
     # ==========================================================================
     # Edge Case Tests
@@ -221,9 +221,9 @@ class TestCLICompleteness:
     def test_cli_help_includes_all_groups(self, cli_runner):
         """Main CLI help should document all command groups."""
         result = cli_runner.invoke(cli, ["--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
         # Should show available commands (look for Commands section in Click output)
-        assert (
+        assert (, "Condition must be true"
             "Commands:" in result.output
             or "commands:" in result.output.lower()
             or len(result.output) > 100
@@ -232,39 +232,39 @@ class TestCLICompleteness:
     def test_tokenizer_group_help(self, cli_runner):
         """Tokenizer group help should list all subcommands."""
         result = cli_runner.invoke(tokenizer_group, ["--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_repro_group_help(self, cli_runner):
         """Repro group help should list all subcommands."""
         result = cli_runner.invoke(repro_group, ["--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_auth_group_help(self, cli_runner):
         """Auth group help should list all subcommands."""
         result = cli_runner.invoke(auth_group, ["--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_logs_group_help(self, cli_runner):
         """Logs group help should list all subcommands."""
         result = cli_runner.invoke(logs, ["--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_duplication_group_help(self, cli_runner):
         """Duplication group help should list all subcommands."""
         result = cli_runner.invoke(duplication_group, ["--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_invalid_subcommand_error_message(self, cli_runner):
         """Invalid subcommand should show helpful error."""
         result = cli_runner.invoke(cli, ["invalid-command"])
-        assert result.exit_code != 0
-        assert "Error" in result.output or "no such command" in result.output.lower()
+        assert result.exit_code != 0, "Result must not be empty"
+        assert "Error" in result.output or "no such command" in result.output.lower(), "Result must not be empty"
 
     def test_missing_required_option_error_message(self, cli_runner, temp_dir):
         """Missing required options should show clear error."""
         # This will test error standardization
         result = cli_runner.invoke(logs, ["query"])
-        assert result.exit_code != 0
+        assert result.exit_code != 0, "Result must not be empty"
 
     # ==========================================================================
     # Roundtrip and Integration Tests
@@ -274,7 +274,7 @@ class TestCLICompleteness:
         """Tokenizer encode/decode should support roundtrip if tokens available."""
         # This is a complex integration test
         result = cli_runner.invoke(tokenizer_group, ["encode", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_all_command_groups_have_help(self, cli_runner):
         """All command groups should have help text."""
@@ -282,8 +282,8 @@ class TestCLICompleteness:
 
         for group in groups:
             result = cli_runner.invoke(group, ["--help"])
-            assert result.exit_code == 0
-            assert result.output  # Should have non-empty output
+            assert result.exit_code == 0, "Result must not be empty"
+            assert result.output, "Result must not be empty"
 
     def test_all_commands_have_examples_or_help(self, cli_runner):
         """Each command should document usage via examples or help."""
@@ -298,9 +298,9 @@ class TestCLICompleteness:
 
         for group, cmd in critical_commands:
             result = cli_runner.invoke(group, [cmd, "--help"])
-            assert result.exit_code == 0
+            assert result.exit_code == 0, "Result must not be empty"
             # Help should contain at least command name
-            assert cmd in result.output.lower() or len(result.output) > 20
+            assert cmd in result.output.lower() or len(result.output) > 20, "Collection must not be empty"
 
 
 class TestCLICommandVariantsImplementation:
@@ -350,7 +350,7 @@ class TestCLICommandVariantsImplementation:
         # (Either all show "Error:" or all show "❌" or similar pattern)
         if error_messages:
             # Just verify errors were captured
-            assert len(error_messages) > 0
+            assert len(error_messages) > 0, "Error_messages must not be empty"
 
 
 class TestCLIDocumentationCompleteness:
@@ -385,13 +385,13 @@ class TestCLIDocumentationCompleteness:
     def test_help_includes_option_descriptions(self, cli_runner):
         """Command help should describe all available options."""
         result = cli_runner.invoke(logs, ["query", "--help"])
-        assert result.exit_code == 0
-        assert "--sql" in result.output  # Required option should be documented
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "--sql" in result.output, "Result must not be empty"
 
     def test_help_includes_examples(self, cli_runner):
         """Commands should ideally include usage examples in help."""
         result = cli_runner.invoke(duplication_group, ["check", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
         # Check for common indicator of examples
         output_lower = result.output.lower()
         assert "codex" in output_lower or "examples" in output_lower or "usage" in output_lower

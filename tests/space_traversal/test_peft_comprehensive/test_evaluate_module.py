@@ -70,13 +70,13 @@ def test_evaluate_records_losses(tmp_path: Path) -> None:
 
     metrics = evaluate(model, tokenizer, dataset, output_path=out_file)
 
-    assert metrics["count"] == 2
-    assert metrics["loss"] == pytest.approx(0.5)
+    assert metrics["count"] == 2, "Count must be greater than zero"
+    assert metrics["loss"] == pytest.approx(0.5), "Condition must be true"
 
     with out_file.open("r", encoding="utf-8") as handle:
         lines = [json.loads(line) for line in handle]
-    assert len(lines) == 2
-    assert all("loss" in line for line in lines)
+    assert len(lines) == 2, "Lines must not be empty"
+    assert all("loss" in line for line in lines), "Condition must be true"
 
 
 def test_evaluate_skips_empty_samples(tmp_path: Path) -> None:
@@ -86,4 +86,4 @@ def test_evaluate_skips_empty_samples(tmp_path: Path) -> None:
     out_file = tmp_path / "metrics.ndjson"
 
     metrics = evaluate(model, tokenizer, dataset, output_path=out_file)
-    assert metrics["count"] == 1
+    assert metrics["count"] == 1, "Count must be greater than zero"

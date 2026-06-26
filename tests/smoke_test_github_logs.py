@@ -106,10 +106,10 @@ def test_type_creation():
             html_url="https://github.com/test",
         )
 
-        assert check_run.id == 12345
-        assert check_run.is_completed
-        assert check_run.is_successful
-        assert not check_run.is_failed
+        assert check_run.id == 12345, "id is not valid"
+        assert check_run.is_completed, "Condition must be true"
+        assert check_run.is_successful, "Condition must be true"
+        assert not check_run.is_failed, "Condition must be true"
 
         print("✓ CheckRun type creation works")
 

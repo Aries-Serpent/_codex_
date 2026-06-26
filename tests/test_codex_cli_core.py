@@ -35,22 +35,22 @@ class TestCLIImports:
     def test_import_cli(self) -> None:
         from codex.cli import cli
 
-        assert cli is not None
+        assert cli is not None, "cli must be initialized"
 
     def test_import_logs_group(self) -> None:
         from codex.cli import logs
 
-        assert logs is not None
+        assert logs is not None, "logs must be initialized"
 
     def test_import_tokenizer_group(self) -> None:
         from codex.cli import tokenizer_group
 
-        assert tokenizer_group is not None
+        assert tokenizer_group is not None, "tokenizer_group must be initialized"
 
     def test_import_repro_group(self) -> None:
         from codex.cli import repro_group
 
-        assert repro_group is not None
+        assert repro_group is not None, "repro_group must be initialized"
 
     def test_import_allowed_tasks(self, cli_module) -> None:
         ALLOWED_TASKS = getattr(cli_module, "ALLOWED_TASKS", None)
@@ -66,15 +66,15 @@ class TestAllowedTasks:
 
     def test_contains_ingest(self, cli_module) -> None:
         ALLOWED_TASKS = getattr(cli_module, "ALLOWED_TASKS", None)
-        assert "ingest" in ALLOWED_TASKS
+        assert "ingest" in ALLOWED_TASKS, "Condition must be true"
 
     def test_contains_ci(self, cli_module) -> None:
         ALLOWED_TASKS = getattr(cli_module, "ALLOWED_TASKS", None)
-        assert "ci" in ALLOWED_TASKS
+        assert "ci" in ALLOWED_TASKS, "Condition must be true"
 
     def test_contains_pool_fix(self, cli_module) -> None:
         ALLOWED_TASKS = getattr(cli_module, "ALLOWED_TASKS", None)
-        assert "pool-fix" in ALLOWED_TASKS
+        assert "pool-fix" in ALLOWED_TASKS, "Condition must be true"
 
     def test_task_has_callable_and_description(self, cli_module) -> None:
         ALLOWED_TASKS = getattr(cli_module, "ALLOWED_TASKS", None)
@@ -91,29 +91,29 @@ class TestCLIHelp:
 
         runner = CliRunner()
         result = runner.invoke(cli, ["--help"])
-        assert result.exit_code == 0
-        assert "Codex CLI" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "Codex CLI" in result.output, "Result must not be empty"
 
     def test_logs_help(self) -> None:
         from codex.cli import cli
 
         runner = CliRunner()
         result = runner.invoke(cli, ["logs", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_tasks_help(self) -> None:
         from codex.cli import cli
 
         runner = CliRunner()
         result = runner.invoke(cli, ["tasks", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_run_help(self) -> None:
         from codex.cli import cli
 
         runner = CliRunner()
         result = runner.invoke(cli, ["run", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
 
 class TestTasksCommand:
@@ -124,22 +124,22 @@ class TestTasksCommand:
 
         runner = CliRunner()
         result = runner.invoke(cli, ["tasks"])
-        assert result.exit_code == 0
-        assert "Whitelisted maintenance tasks" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "Whitelisted maintenance tasks" in result.output, "Result must not be empty"
 
     def test_tasks_lists_ingest(self) -> None:
         from codex.cli import cli
 
         runner = CliRunner()
         result = runner.invoke(cli, ["tasks"])
-        assert "ingest" in result.output
+        assert "ingest" in result.output, "Result must not be empty"
 
     def test_tasks_lists_ci(self) -> None:
         from codex.cli import cli
 
         runner = CliRunner()
         result = runner.invoke(cli, ["tasks"])
-        assert "ci" in result.output
+        assert "ci" in result.output, "Result must not be empty"
 
 
 class TestRunCommand:
@@ -150,16 +150,16 @@ class TestRunCommand:
 
         runner = CliRunner()
         result = runner.invoke(cli, ["run"])
-        assert result.exit_code == 0
-        assert "Whitelisted maintenance tasks" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "Whitelisted maintenance tasks" in result.output, "Result must not be empty"
 
     def test_run_invalid_task_fails(self) -> None:
         from codex.cli import cli
 
         runner = CliRunner()
         result = runner.invoke(cli, ["run", "invalid_task"])
-        assert result.exit_code != 0
-        assert "not allowed" in result.output.lower()
+        assert result.exit_code != 0, "Result must not be empty"
+        assert "not allowed" in result.output.lower(), "Result must not be empty"
 
 
 class TestLogsGroup:
@@ -170,21 +170,21 @@ class TestLogsGroup:
 
         runner = CliRunner()
         result = runner.invoke(cli, ["logs", "init", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_logs_ingest_command_exists(self) -> None:
         from codex.cli import cli
 
         runner = CliRunner()
         result = runner.invoke(cli, ["logs", "ingest", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_logs_query_command_exists(self) -> None:
         from codex.cli import cli
 
         runner = CliRunner()
         result = runner.invoke(cli, ["logs", "query", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
 
 class TestTokenizerGroup:
@@ -195,21 +195,21 @@ class TestTokenizerGroup:
 
         runner = CliRunner()
         result = runner.invoke(cli, ["tokenizer", "encode", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_tokenizer_decode_help(self) -> None:
         from codex.cli import cli
 
         runner = CliRunner()
         result = runner.invoke(cli, ["tokenizer", "decode", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_tokenizer_stats_help(self) -> None:
         from codex.cli import cli
 
         runner = CliRunner()
         result = runner.invoke(cli, ["tokenizer", "stats", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
 
 class TestReproGroup:
@@ -220,22 +220,22 @@ class TestReproGroup:
 
         runner = CliRunner()
         result = runner.invoke(cli, ["repro", "seed", "--help"])
-        assert result.exit_code == 0
-        assert "--seed" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "--seed" in result.output, "Result must not be empty"
 
     def test_repro_env_help(self) -> None:
         from codex.cli import cli
 
         runner = CliRunner()
         result = runner.invoke(cli, ["repro", "env", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_repro_system_help(self) -> None:
         from codex.cli import cli
 
         runner = CliRunner()
         result = runner.invoke(cli, ["repro", "system", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
 
 class TestSessionLoggerCommand:
@@ -246,9 +246,9 @@ class TestSessionLoggerCommand:
 
         runner = CliRunner()
         result = runner.invoke(cli, ["session-logger", "--help"])
-        assert result.exit_code == 0
-        assert "--role" in result.output
-        assert "--message" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "--role" in result.output, "Result must not be empty"
+        assert "--message" in result.output, "Result must not be empty"
 
 
 class TestViewerCommand:
@@ -259,9 +259,9 @@ class TestViewerCommand:
 
         runner = CliRunner()
         result = runner.invoke(cli, ["viewer", "--help"])
-        assert result.exit_code == 0
-        assert "--session-id" in result.output
-        assert "--format" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "--session-id" in result.output, "Result must not be empty"
+        assert "--format" in result.output, "Result must not be empty"
 
 
 class TestQueryLogsCommand:
@@ -272,9 +272,9 @@ class TestQueryLogsCommand:
 
         runner = CliRunner()
         result = runner.invoke(cli, ["query-logs", "--help"])
-        assert result.exit_code == 0
-        assert "--search" in result.output
-        assert "--role" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "--search" in result.output, "Result must not be empty"
+        assert "--role" in result.output, "Result must not be empty"
 
 
 class TestValidateEnvCommand:
@@ -285,7 +285,7 @@ class TestValidateEnvCommand:
 
         runner = CliRunner()
         result = runner.invoke(cli, ["validate-env", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
 
 class TestInitDbCommand:
@@ -296,8 +296,8 @@ class TestInitDbCommand:
 
         runner = CliRunner()
         result = runner.invoke(cli, ["init-db", "--help"])
-        assert result.exit_code == 0
-        assert "--db-path" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "--db-path" in result.output, "Result must not be empty"
 
 
 class TestExportEnvCommand:
@@ -308,9 +308,9 @@ class TestExportEnvCommand:
 
         runner = CliRunner()
         result = runner.invoke(cli, ["export-env", "--help"])
-        assert result.exit_code == 0
-        assert "--format" in result.output
-        assert "--output" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "--format" in result.output, "Result must not be empty"
+        assert "--output" in result.output, "Result must not be empty"
 
 
 class TestListSessionsCommand:
@@ -321,9 +321,9 @@ class TestListSessionsCommand:
 
         runner = CliRunner()
         result = runner.invoke(cli, ["list-sessions", "--help"])
-        assert result.exit_code == 0
-        assert "--limit" in result.output
-        assert "--format" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "--limit" in result.output, "Result must not be empty"
+        assert "--format" in result.output, "Result must not be empty"
 
 
 class TestCleanLogsCommand:
@@ -334,10 +334,10 @@ class TestCleanLogsCommand:
 
         runner = CliRunner()
         result = runner.invoke(cli, ["clean-logs", "--help"])
-        assert result.exit_code == 0
-        assert "--older-than" in result.output
-        assert "--dry-run" in result.output
-        assert "--yes" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "--older-than" in result.output, "Result must not be empty"
+        assert "--dry-run" in result.output, "Result must not be empty"
+        assert "--yes" in result.output, "Result must not be empty"
 
 
 class TestDuplicationGroup:
@@ -348,25 +348,25 @@ class TestDuplicationGroup:
 
         runner = CliRunner()
         result = runner.invoke(cli, ["duplication", "check", "--help"])
-        assert result.exit_code == 0
-        assert "--min-lines" in result.output
-        assert "--threshold" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "--min-lines" in result.output, "Result must not be empty"
+        assert "--threshold" in result.output, "Result must not be empty"
 
     def test_duplication_report_help(self) -> None:
         from codex.cli import cli
 
         runner = CliRunner()
         result = runner.invoke(cli, ["duplication", "report", "--help"])
-        assert result.exit_code == 0
-        assert "--output" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "--output" in result.output, "Result must not be empty"
 
     def test_duplication_compare_help(self) -> None:
         from codex.cli import cli
 
         runner = CliRunner()
         result = runner.invoke(cli, ["duplication", "compare", "--help"])
-        assert result.exit_code == 0
-        assert "--baseline" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "--baseline" in result.output, "Result must not be empty"
 
 
 class TestTrainCommand:
@@ -377,8 +377,8 @@ class TestTrainCommand:
 
         runner = CliRunner()
         result = runner.invoke(cli, ["train", "--help"])
-        assert result.exit_code == 0
-        assert "--engine" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "--engine" in result.output, "Result must not be empty"
 
 
 class TestResumeCommand:
@@ -389,7 +389,7 @@ class TestResumeCommand:
 
         runner = CliRunner()
         result = runner.invoke(cli, ["resume", "--help"])
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
 
 class TestMissingCommand:
@@ -400,7 +400,7 @@ class TestMissingCommand:
         if _missing_command:
             cmd = _missing_command("test", "Test message", "Test help")
             assert isinstance(cmd, click.Command)
-            assert cmd.name == "test"
+            assert cmd.name == "test", "name is not valid"
         else:
             pytest.skip("_missing_command not available")
 
@@ -410,7 +410,7 @@ class TestEmitGroupHelp:
 
     def test_emit_group_help_exists(self, cli_module) -> None:
         _emit_group_help = getattr(cli_module, "_emit_group_help", None)
-        assert callable(_emit_group_help)
+        assert callable(_emit_group_help), "Condition must be true"
 
 
 class TestRegisterClickCommand:
@@ -418,7 +418,7 @@ class TestRegisterClickCommand:
 
     def test_register_click_command_exists(self, cli_module) -> None:
         _register_click_command = getattr(cli_module, "_register_click_command", None)
-        assert callable(_register_click_command)
+        assert callable(_register_click_command), "Condition must be true"
 
 
 class TestRegisterTyperApp:
@@ -426,7 +426,7 @@ class TestRegisterTyperApp:
 
     def test_register_typer_app_exists(self, cli_module) -> None:
         _register_typer_app = getattr(cli_module, "_register_typer_app", None)
-        assert callable(_register_typer_app)
+        assert callable(_register_typer_app), "Condition must be true"
 
 
 class TestCLIWithoutSubcommand:
@@ -437,8 +437,8 @@ class TestCLIWithoutSubcommand:
 
         runner = CliRunner()
         result = runner.invoke(cli, [])
-        assert result.exit_code == 0
-        assert "Available subcommands" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "Available subcommands" in result.output, "Result must not be empty"
 
 
 class TestWorkflowScanCommand:
@@ -449,8 +449,8 @@ class TestWorkflowScanCommand:
 
         runner = CliRunner()
         result = runner.invoke(cli, ["workflow-scan", "--help"])
-        assert result.exit_code == 0
-        assert "--workflows-dir" in result.output or "-d" in result.output
+        assert result.exit_code == 0, "Result must not be empty"
+        assert "--workflows-dir" in result.output or "-d" in result.output, "Result must not be empty"
 
 
 class TestPrintTaskWhitelist:
@@ -458,7 +458,7 @@ class TestPrintTaskWhitelist:
 
     def test_print_task_whitelist_exists(self, cli_module) -> None:
         _print_task_whitelist = getattr(cli_module, "_print_task_whitelist", None)
-        assert callable(_print_task_whitelist)
+        assert callable(_print_task_whitelist), "Condition must be true"
 
 
 class TestRunIngest:
@@ -466,7 +466,7 @@ class TestRunIngest:
 
     def test_run_ingest_exists(self, cli_module) -> None:
         _run_ingest = getattr(cli_module, "_run_ingest", None)
-        assert callable(_run_ingest)
+        assert callable(_run_ingest), "Condition must be true"
 
 
 class TestRunCi:
@@ -474,7 +474,7 @@ class TestRunCi:
 
     def test_run_ci_exists(self, cli_module) -> None:
         _run_ci = getattr(cli_module, "_run_ci", None)
-        assert callable(_run_ci)
+        assert callable(_run_ci), "Condition must be true"
 
 
 class TestFixPool:
@@ -483,7 +483,7 @@ class TestFixPool:
     def test_fix_pool_exists(self) -> None:
         from codex.cli import _fix_pool
 
-        assert callable(_fix_pool)
+        assert callable(_fix_pool), "Condition must be true"
 
     def test_fix_pool_with_none(self) -> None:
         from codex.cli import _fix_pool

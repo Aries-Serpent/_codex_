@@ -190,7 +190,7 @@ def _run_black(file_path: Path) -> Optional[str]:
             return file_path.read_text(encoding="utf-8")
     except (FileNotFoundError, subprocess.TimeoutExpired) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         logger.debug("Black formatting skipped for %s: %s", file_path, exc)
     return None
 
@@ -214,7 +214,7 @@ def _run_isort(file_path: Path) -> Optional[str]:
             return file_path.read_text(encoding="utf-8")
     except (FileNotFoundError, subprocess.TimeoutExpired) as exc:
         error_type = type(exc).__name__
-        logger.debug(f"Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")
         logger.debug("Isort formatting skipped for %s: %s", file_path, exc)
     return None
 
@@ -362,7 +362,7 @@ def transform(
                                 break  # Only suggest once per file
                 except SyntaxError as e:
                     error_type = type(e).__name__
-                    logger.debug(f"SyntaxError: <ERROR_TYPE>")
+                    logger.debug("SyntaxError: <ERROR_TYPE>")
                     logger.warning(
                         f"SyntaxError: {e}", exc_info=True
                     )  # Skip files with syntax errors
@@ -387,7 +387,7 @@ def transform(
 
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
             result.errors.append(f"Error processing {file_path}: {e}")
             logger.error("Transform error for %s: %s", file_path, e)
 

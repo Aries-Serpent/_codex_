@@ -126,10 +126,10 @@ class TestMonitorOffloadCandidates:
             results = scan_repository(repo_root)
 
             # Verify structure
-            assert "metadata" in results
-            assert "summary" in results
-            assert "candidates" in results
-            assert results["metadata"]["repo_root"] == str(repo_root)
+            assert "metadata" in results, "Result must not be empty"
+            assert "summary" in results, "Result must not be empty"
+            assert "candidates" in results, "Result must not be empty"
+            assert results["metadata"]["repo_root"] == str(repo_root), "Result must not be empty"
             assert isinstance(results["summary"]["total_candidates"], int)
 
     def test_json_report_generation(self):
@@ -153,8 +153,8 @@ class TestMonitorOffloadCandidates:
 
             # Verify structure
             parsed = json.loads(json_str)
-            assert parsed["metadata"]["criteria"]["temp_files_age_days"] == 90
-            assert parsed["metadata"]["criteria"]["large_file_size_mb"] == 1.0
+            assert parsed["metadata"]["criteria"]["temp_files_age_days"] == 90, "Data must not be empty"
+            assert parsed["metadata"]["criteria"]["large_file_size_mb"] == 1.0, "Data must not be empty"
 
     @pytest.mark.parametrize(
         "category,age,size,expected",
@@ -190,7 +190,7 @@ class TestMonitorOffloadCandidates:
             / "monitor_offload_candidates.py"
         )
         spec = importlib.util.spec_from_file_location("monitor_offload_candidates", module_path)
-        assert spec and spec.loader is not None
+        assert spec and spec.loader is not None, "loader must be initialized"
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
         scan_repository = module.scan_repository
@@ -203,8 +203,8 @@ class TestMonitorOffloadCandidates:
 
             results = scan_repository(repo_root)
             candidate_paths = {c["path"] for c in results["candidates"]}
-            assert "docs/manual.md" not in candidate_paths
-            assert "uv.lock" not in candidate_paths
+            assert "docs/manual.md" not in candidate_paths, "Condition must be true"
+            assert "uv.lock" not in candidate_paths, "Condition must be true"
 
 
 @pytest.mark.skipif(True, reason="Integration test - requires full repository setup")
@@ -222,5 +222,5 @@ def test_integration_scan_real_repo():
     results = scan_repository(repo_root)
 
     # Basic sanity checks
-    assert results["summary"]["total_candidates"] >= 0
-    assert results["metadata"]["repo_root"] == str(repo_root)
+    assert results["summary"]["total_candidates"] >= 0, "Value must be greater than zero"
+    assert results["metadata"]["repo_root"] == str(repo_root), "Result must not be empty"

@@ -55,4 +55,4 @@ def test_overfit_tiny(tmp_path) -> None:
     model = MiniLM(MiniLMConfig(vocab_size=10, n_layers=1, d_model=16, n_heads=2, max_seq_len=10))
     cfg = TrainCfg(epochs=3, batch_size=2, log_every=1, save_every=0, checkpoint_dir=str(tmp_path))
     result = run_custom_trainer(model, tok, train_ds, val_ds, cfg)
-    assert result["history"][0] > result["history"][-1]
+    assert result["history"][0] > result["history"][-1], "Value must be greater than zero"

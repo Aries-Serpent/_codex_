@@ -26,8 +26,8 @@ try:
     NUMPY_AVAILABLE = True
 except ImportError as e:
     error_type = type(e).__name__
-    logger.debug(f"ImportError: <ERROR_TYPE>")
-    logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
+    logger.debug("ImportError: <ERROR_TYPE>")
+    logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
     np = None
     NUMPY_AVAILABLE = False
 
@@ -158,7 +158,7 @@ class SeedManager:
                         torch.use_deterministic_algorithms(True)
                     except RuntimeError as e:
                         error_type = type(e).__name__
-                        logger.debug(f"RuntimeError: <ERROR_TYPE>")
+                        logger.debug("RuntimeError: <ERROR_TYPE>")
                         logger.warning(
                             f"torch.use_deterministic_algorithms(True) failed: {e}. "
                             "Some operations may not be fully deterministic."

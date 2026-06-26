@@ -31,7 +31,7 @@ def test_valid_payload():
     payload = {"id": 1, "method": "test.method"}
     valid, msg = validate_payload(payload)
 
-    assert valid
+    assert valid, "valid is not valid"
 
 
 def test_payload_missing_id():
@@ -39,8 +39,8 @@ def test_payload_missing_id():
     payload = {"method": "test"}
     valid, msg = validate_payload(payload)
 
-    assert not valid
-    assert "id" in msg
+    assert not valid, "Condition must be true"
+    assert "id" in msg, "Condition must be true"
 
 
 def test_payload_missing_method():
@@ -48,8 +48,8 @@ def test_payload_missing_method():
     payload = {"id": 1}
     valid, msg = validate_payload(payload)
 
-    assert not valid
-    assert "method" in msg
+    assert not valid, "Condition must be true"
+    assert "method" in msg, "Condition must be true"
 
 
 def test_payload_invalid_id_type():
@@ -57,8 +57,8 @@ def test_payload_invalid_id_type():
     payload = {"id": [1, 2], "method": "test"}
     valid, msg = validate_payload(payload)
 
-    assert not valid
-    assert "id" in msg
+    assert not valid, "Condition must be true"
+    assert "id" in msg, "Condition must be true"
 
 
 def test_payload_invalid_method_type():
@@ -66,8 +66,8 @@ def test_payload_invalid_method_type():
     payload = {"id": 1, "method": 123}
     valid, msg = validate_payload(payload)
 
-    assert not valid
-    assert "method" in msg
+    assert not valid, "Condition must be true"
+    assert "method" in msg, "Condition must be true"
 
 
 def test_payload_invalid_params_type():
@@ -75,8 +75,8 @@ def test_payload_invalid_params_type():
     payload = {"id": 1, "method": "test", "params": "invalid"}
     valid, msg = validate_payload(payload)
 
-    assert not valid
-    assert "params" in msg
+    assert not valid, "Condition must be true"
+    assert "params" in msg, "Condition must be true"
 
 
 def test_payload_with_dict_params():
@@ -84,7 +84,7 @@ def test_payload_with_dict_params():
     payload = {"id": 1, "method": "test", "params": {"key": "value"}}
     valid, msg = validate_payload(payload)
 
-    assert valid
+    assert valid, "valid is not valid"
 
 
 def test_payload_with_list_params():
@@ -92,7 +92,7 @@ def test_payload_with_list_params():
     payload = {"id": 1, "method": "test", "params": [1, 2, 3]}
     valid, msg = validate_payload(payload)
 
-    assert valid
+    assert valid, "valid is not valid"
 
 
 def test_payload_with_null_params():
@@ -100,7 +100,7 @@ def test_payload_with_null_params():
     payload = {"id": 1, "method": "test", "params": None}
     valid, msg = validate_payload(payload)
 
-    assert valid
+    assert valid, "valid is not valid"
 
 
 def test_empty_payload():
@@ -108,7 +108,7 @@ def test_empty_payload():
     payload = {}
     valid, msg = validate_payload(payload)
 
-    assert not valid
+    assert not valid, "Condition must be true"
 
 
 def test_payload_extra_fields():
@@ -116,4 +116,4 @@ def test_payload_extra_fields():
     payload = {"id": 1, "method": "test", "jsonrpc": "2.0", "extra": "data"}
     valid, msg = validate_payload(payload)
 
-    assert valid
+    assert valid, "valid is not valid"

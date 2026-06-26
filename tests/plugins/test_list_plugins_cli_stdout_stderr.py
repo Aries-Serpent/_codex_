@@ -24,11 +24,11 @@ def test_json_output_stays_on_stdout() -> None:
         text=True,
         env=env,
     )
-    assert proc.returncode == 0
+    assert proc.returncode == 0, "returncode is not valid"
     data = json.loads(proc.stdout)
     assert isinstance(data, dict)
     # Allow warnings but check that critical output is on stdout
-    assert (
+    assert (, "Condition must be true"
         proc.stderr.strip() == ""
         or "WARNING" in proc.stderr
         or "Exception occurred" in proc.stderr

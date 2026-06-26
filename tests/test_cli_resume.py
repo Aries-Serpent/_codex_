@@ -17,8 +17,8 @@ def test_resume_cli_requires_checkpoint(tmp_path: Path):
     manifest.write_text(json.dumps({"config_path": str(tmp_path / "cfg.yaml")}), encoding="utf-8")
     runner = CliRunner()
     result = runner.invoke(resume_cmd, [str(manifest)])
-    assert result.exit_code != 0
-    assert "checkpoint" in result.output.lower()
+    assert result.exit_code != 0, "Result must not be empty"
+    assert "checkpoint" in result.output.lower(), "Result must not be empty"
 
 
 def test_resume_cli_calls_training(monkeypatch, tmp_path: Path):
@@ -56,6 +56,6 @@ def test_resume_cli_calls_training(monkeypatch, tmp_path: Path):
 
     runner = CliRunner()
     result = runner.invoke(resume_cmd, [str(manifest)])
-    assert result.exit_code == 0
-    assert called["resume"] is True
-    assert called["resume_from"] == str(ckpt)
+    assert result.exit_code == 0, "Result must not be empty"
+    assert called["resume"] is True, "Condition must be true"
+    assert called["resume_from"] == str(ckpt), "Condition must be true"

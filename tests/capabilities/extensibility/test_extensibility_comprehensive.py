@@ -84,26 +84,26 @@ class TestPluginContract:
         """Plugin must have a name."""
         plugin = SamplePlugin()
         assert isinstance(plugin.name(), str)
-        assert len(plugin.name()) > 0
+        assert len(plugin.name()) > 0, "Collection must not be empty"
 
     def test_plugin_has_version(self):
         """Plugin must have a version."""
         plugin = SamplePlugin()
         assert isinstance(plugin.version(), str)
-        assert len(plugin.version()) > 0
+        assert len(plugin.version()) > 0, "Collection must not be empty"
 
     def test_plugin_initialization(self):
         """Plugin must initialize correctly."""
         plugin = SamplePlugin()
         result = plugin.initialize({"setting": "value"})
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_plugin_execute_after_init(self):
         """Plugin must execute after initialization."""
         plugin = SamplePlugin()
         plugin.initialize({})
         result = plugin.execute("test_input")
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     def test_plugin_execute_before_init_fails(self):
         """Plugin must fail if executed before initialization."""
@@ -174,30 +174,30 @@ class TestPluginRegistry:
         """Register plugin in registry."""
         registry = PluginRegistry()
         registry.register(SamplePlugin)
-        assert "sample_plugin" in registry.list_plugins()
+        assert "sample_plugin" in registry.list_plugins(), "Condition must be true"
 
     def test_get_plugin(self):
         """Get plugin class from registry."""
         registry = PluginRegistry()
         registry.register(SamplePlugin)
         plugin_cls = registry.get("sample_plugin")
-        assert plugin_cls == SamplePlugin
+        assert plugin_cls == SamplePlugin, "plugin_cls is not valid"
 
     def test_instantiate_plugin(self):
         """Instantiate plugin from registry."""
         registry = PluginRegistry()
         registry.register(SamplePlugin)
         instance = registry.instantiate("sample_plugin", {"test": "config"})
-        assert instance is not None
-        assert instance.name() == "sample_plugin"
+        assert instance is not None, "instance must be initialized"
+        assert instance.name() == "sample_plugin", "Condition must be true"
 
     def test_unregister_plugin(self):
         """Unregister plugin from registry."""
         registry = PluginRegistry()
         registry.register(SamplePlugin)
         result = registry.unregister("sample_plugin")
-        assert result is True
-        assert "sample_plugin" not in registry.list_plugins()
+        assert result is True, "Result must not be empty"
+        assert "sample_plugin" not in registry.list_plugins(), "Condition must be true"
 
 
 # --- Version Compatibility Matrix Tests ---
@@ -237,7 +237,7 @@ class TestVersionCompatibility:
         """Add compatibility entry."""
         compat = VersionCompatibility()
         compat.add_compatibility("my_plugin", "1.0.0", ["2.0", "2.1", "2.2"])
-        assert "my_plugin" in compat.matrix
+        assert "my_plugin" in compat.matrix, "Condition must be true"
 
     def test_check_compatible(self):
         """Check compatible versions."""
@@ -305,35 +305,35 @@ class TestPluginSandbox:
     def test_allowed_module(self):
         """Allowed modules should pass."""
         sandbox = PluginSandbox()
-        assert sandbox.is_module_allowed("json")
-        assert sandbox.is_module_allowed("math")
+        assert sandbox.is_module_allowed("json"), "s is not valid"
+        assert sandbox.is_module_allowed("math"), "s is not valid"
 
     def test_denied_module(self):
         """Denied modules should fail."""
         sandbox = PluginSandbox()
-        assert not sandbox.is_module_allowed("os")
-        assert not sandbox.is_module_allowed("subprocess")
+        assert not sandbox.is_module_allowed("os"), "Condition must be true"
+        assert not sandbox.is_module_allowed("subprocess"), "Condition must be true"
 
     def test_validate_safe_code(self):
         """Safe code should pass validation."""
         sandbox = PluginSandbox()
         code = "import json\ndef process(x): return json.dumps(x)"
         violations = sandbox.validate_plugin_code(code)
-        assert len(violations) == 0
+        assert len(violations) == 0, "Violations must not be empty"
 
     def test_validate_unsafe_code(self):
         """Unsafe code should fail validation."""
         sandbox = PluginSandbox()
         code = "import os\nos.system('rm -rf /')"
         violations = sandbox.validate_plugin_code(code)
-        assert len(violations) > 0
+        assert len(violations) > 0, "Violations must not be empty"
 
     def test_validate_eval_denied(self):
         """Eval should be denied."""
         sandbox = PluginSandbox()
         code = "eval('malicious')"
         violations = sandbox.validate_plugin_code(code)
-        assert len(violations) > 0
+        assert len(violations) > 0, "Violations must not be empty"
 
     def test_run_plugin_success(self):
         """Run plugin successfully in sandbox."""
@@ -341,7 +341,7 @@ class TestPluginSandbox:
         plugin = SamplePlugin()
         plugin.initialize({})
         result = sandbox.run(plugin, "test")
-        assert result["success"] is True
+        assert result["success"] is True, "Result must not be empty"
 
 
 # --- Self-Healing Discovery Tests ---
@@ -402,8 +402,8 @@ class TestSelfHealingDiscovery:
         registry = PluginRegistry()
         discovery = SelfHealingDiscovery(registry)
         plugin = discovery.discover_plugin("sample", SamplePlugin)
-        assert plugin is not None
-        assert "sample_plugin" in registry.list_plugins()
+        assert plugin is not None, "plugin must be initialized"
+        assert "sample_plugin" in registry.list_plugins(), "Condition must be true"
 
     def test_failed_discovery_tracked(self):
         """Failed discovery should track failures."""
@@ -414,14 +414,14 @@ class TestSelfHealingDiscovery:
             raise RuntimeError("Load failed")
 
         plugin = discovery.discover_plugin("bad_plugin", failing_loader)
-        assert plugin is None
-        assert discovery.get_failure_count("bad_plugin") == 3  # max retries
+        assert plugin is None, "plugin is not valid"
+        assert discovery.get_failure_count("bad_plugin") == 3, "Count must be greater than zero"
 
     def test_should_retry(self):
         """Should retry up to max retries."""
         registry = PluginRegistry()
         discovery = SelfHealingDiscovery(registry)
-        assert discovery.should_retry("new_plugin")
+        assert discovery.should_retry("new_plugin"), "Condition must be true"
 
     def test_health_status(self):
         """Health status should be accurate."""
@@ -429,7 +429,7 @@ class TestSelfHealingDiscovery:
         registry.register(SamplePlugin)
         discovery = SelfHealingDiscovery(registry)
         status = discovery.get_health_status()
-        assert status["total_registered"] == 1
+        assert status["total_registered"] == 1, "Condition must be true"
 
 
 # --- Entry Point Discovery Tests ---
@@ -463,21 +463,21 @@ class TestEntryPointLoader:
         """Register entry point."""
         loader = EntryPointLoader()
         loader.register_entry_point("codex.plugins", "my_plugin", "my_package.plugins:MyPlugin")
-        assert "my_plugin" in loader.list_entry_points("codex.plugins")
+        assert "my_plugin" in loader.list_entry_points("codex.plugins"), "Condition must be true"
 
     def test_list_entry_points(self):
         """List entry points in group."""
         loader = EntryPointLoader()
         loader.register_entry_point("codex.plugins", "plugin1", "path1")
         loader.register_entry_point("codex.plugins", "plugin2", "path2")
-        assert len(loader.list_entry_points("codex.plugins")) == 2
+        assert len(loader.list_entry_points("codex.plugins")) == 2, "Collection must not be empty"
 
     def test_get_entry_point(self):
         """Get entry point path."""
         loader = EntryPointLoader()
         loader.register_entry_point("codex.plugins", "my_plugin", "my_package:MyPlugin")
         path = loader.get_entry_point("codex.plugins", "my_plugin")
-        assert path == "my_package:MyPlugin"
+        assert path == "my_package:MyPlugin", "path is not valid"
 
 
 # --- ABI Version Negotiation Tests ---
@@ -524,21 +524,21 @@ class TestABINegotiation:
         host = ABIVersion(2, 1, 0)
         negotiator = ABINegotiator(host)
         result = negotiator.negotiate(ABIVersion(2, 0, 0))
-        assert result["compatible"] is True
+        assert result["compatible"] is True, "Result must not be empty"
 
     def test_incompatible_major(self):
         """Incompatible major versions should fail."""
         host = ABIVersion(2, 0, 0)
         negotiator = ABINegotiator(host)
         result = negotiator.negotiate(ABIVersion(3, 0, 0))
-        assert result["compatible"] is False
+        assert result["compatible"] is False, "Result must not be empty"
 
     def test_incompatible_minor(self):
         """Host minor less than required should fail."""
         host = ABIVersion(2, 0, 0)
         negotiator = ABINegotiator(host)
         result = negotiator.negotiate(ABIVersion(2, 1, 0))
-        assert result["compatible"] is False
+        assert result["compatible"] is False, "Result must not be empty"
 
     @given(
         st.integers(min_value=1, max_value=10),
@@ -551,4 +551,4 @@ class TestABINegotiation:
         version = ABIVersion(major, minor, patch)
         negotiator = ABINegotiator(version)
         result = negotiator.negotiate(version)
-        assert result["compatible"] is True
+        assert result["compatible"] is True, "Result must not be empty"

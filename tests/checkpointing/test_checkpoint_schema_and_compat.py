@@ -26,8 +26,8 @@ def test_schema_v2_roundtrip() -> None:
     schema_v2.validate_manifest(manifest)
     obj = schema_v2.from_dict(manifest)
     roundtrip = schema_v2.to_dict(obj)
-    assert roundtrip["schema"] == schema_v2.SCHEMA_ID
-    assert roundtrip["run"]["id"] == "run-1"
+    assert roundtrip["schema"] == schema_v2.SCHEMA_ID, "Condition must be true"
+    assert roundtrip["run"]["id"] == "run-1", "Condition must be true"
 
     upgraded = schema_v2.upgrade_from_v1(
         {
@@ -35,8 +35,8 @@ def test_schema_v2_roundtrip() -> None:
             "weights": {"format": "pt", "bytes": 1},
         }
     )
-    assert upgraded["schema"] == schema_v2.SCHEMA_ID
-    assert upgraded["run"]["id"] == "legacy"
+    assert upgraded["schema"] == schema_v2.SCHEMA_ID, "Condition must be true"
+    assert upgraded["run"]["id"] == "legacy", "Condition must be true"
 
 
 def test_checkpoint_compat_emits_warning(monkeypatch) -> None:
@@ -54,5 +54,5 @@ def test_checkpoint_compat_emits_warning(monkeypatch) -> None:
     with warnings.catch_warnings(record=True) as captured:
         warnings.simplefilter("always")
         compat.save_checkpoint("/tmp/ckpt", state={}, meta={})
-    assert calls
-    assert any("deprecated" in str(w.message) for w in captured)
+    assert calls, "calls is not valid"
+    assert any("deprecated" in str(w.message) for w in captured), "Condition must be true"

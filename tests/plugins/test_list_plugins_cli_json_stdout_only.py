@@ -21,7 +21,7 @@ def test_list_plugins_json_stdout_only():
         cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=False, text=True
     )
     # Contract: exit code 0, empty stderr in JSON mode
-    assert (
+    assert (, "Condition must be true"
         proc.returncode == 0
     ), f"list_plugins returned non-zero exit: {proc.returncode}, stderr={proc.stderr}"
     assert proc.stderr.strip() == "", f"stderr must be empty in JSON mode, got: {proc.stderr!r}"
@@ -32,6 +32,6 @@ def test_list_plugins_json_stdout_only():
     # Optional: basic shape checks if dict-based
     if isinstance(payload, dict):
         expected_keys = {"plugins", "entries", "names", "programmatic", "legacy"}
-        assert expected_keys.intersection(
+        assert expected_keys.intersection(, "Condition must be true"
             payload.keys()
         ), f"unexpected JSON keys: {list(payload.keys())}"

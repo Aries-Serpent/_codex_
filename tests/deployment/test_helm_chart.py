@@ -27,5 +27,5 @@ def test_helm_template_renders() -> None:
     result = subprocess.run(
         ["helm", "template", "test-release", "deploy/helm"], capture_output=True
     )
-    assert result.returncode == 0
-    assert b"Deployment" in result.stdout
+    assert result.returncode == 0, "Result must not be empty"
+    assert b"Deployment" in result.stdout, "Result must not be empty"

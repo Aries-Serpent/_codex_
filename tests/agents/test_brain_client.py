@@ -69,16 +69,16 @@ def _http_error(code: int, msg: str = "Error") -> urllib.error.HTTPError:
 class TestUrlResolution:
     def test_explicit_base_url_wins(self) -> None:
         b = BrainClient(base_url="http://custom:9999")
-        assert b.base_url == "http://custom:9999"
+        assert b.base_url == "http://custom:9999", "base_url is not valid"
 
     def test_explicit_base_url_strips_trailing_slash(self) -> None:
         b = BrainClient(base_url="http://custom:9999/")
-        assert b.base_url == "http://custom:9999"
+        assert b.base_url == "http://custom:9999", "base_url is not valid"
 
     def test_codex_cli_api_url_env_var(self) -> None:
         with patch.dict(os.environ, {"CODEX_CLI_API_URL": "http://env-url:8000"}, clear=False):
             b = BrainClient()
-        assert b.base_url == "http://env-url:8000"
+        assert b.base_url == "http://env-url:8000", "base_url is not valid"
 
     def test_copilot_cli_base_url_fallback(self) -> None:
         env = {"COPILOT_CLI_BASE_URL": "http://copilot-url:7777"}
@@ -87,7 +87,7 @@ class TestUrlResolution:
             with patch.dict(os.environ, {}, clear=False):
                 os.environ.pop("CODEX_CLI_API_URL", None)
                 b = BrainClient()
-        assert b.base_url == "http://copilot-url:7777"
+        assert b.base_url == "http://copilot-url:7777", "base_url is not valid"
 
     def test_default_url_when_no_env(self) -> None:
         env_copy = {
@@ -97,7 +97,7 @@ class TestUrlResolution:
         }
         with patch.dict(os.environ, env_copy, clear=True):
             b = BrainClient()
-        assert b.base_url == _DEFAULT_URL
+        assert b.base_url == _DEFAULT_URL, "base_url is not valid"
 
     def test_codex_cli_api_url_takes_priority_over_copilot(self) -> None:
         env = {
@@ -106,7 +106,7 @@ class TestUrlResolution:
         }
         with patch.dict(os.environ, env, clear=False):
             b = BrainClient()
-        assert b.base_url == "http://primary:8765"
+        assert b.base_url == "http://primary:8765", "base_url is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -121,7 +121,7 @@ class TestAuthHeader:
         ):
             b = BrainClient(base_url="http://x")
             hdr = b._auth_header()
-        assert hdr == {"Authorization": "Bearer masterkey123"}
+        assert hdr == {"Authorization": "Bearer masterkey123"}, "hdr is not valid"
 
     def test_backup_key_fallback(self) -> None:
         env_copy = {k: v for k, v in os.environ.items() if k != "CODEX_MASTER_KEY"}
@@ -129,14 +129,14 @@ class TestAuthHeader:
         with patch.dict(os.environ, env_copy, clear=True):
             b = BrainClient(base_url="http://x")
             hdr = b._auth_header()
-        assert hdr == {"Authorization": "Bearer backupkey456"}
+        assert hdr == {"Authorization": "Bearer backupkey456"}, "hdr is not valid"
 
     def test_empty_when_no_keys(self) -> None:
         env_copy = {k: v for k, v in os.environ.items() if k not in _AUTH_ENV_VARS}
         with patch.dict(os.environ, env_copy, clear=True):
             b = BrainClient(base_url="http://x")
             hdr = b._auth_header()
-        assert hdr == {}
+        assert hdr == {}, "hdr is not valid"
 
     def test_whitespace_only_key_ignored(self) -> None:
         env_copy = {k: v for k, v in os.environ.items() if k not in _AUTH_ENV_VARS}
@@ -144,7 +144,7 @@ class TestAuthHeader:
         with patch.dict(os.environ, env_copy, clear=True):
             b = BrainClient(base_url="http://x")
             hdr = b._auth_header()
-        assert hdr == {}
+        assert hdr == {}, "hdr is not valid"
 
     def test_master_key_stripped(self) -> None:
         with patch.dict(
@@ -152,7 +152,7 @@ class TestAuthHeader:
         ):
             b = BrainClient(base_url="http://x")
             hdr = b._auth_header()
-        assert hdr == {"Authorization": "Bearer trimmed"}
+        assert hdr == {"Authorization": "Bearer trimmed"}, "hdr is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -164,22 +164,22 @@ class TestIsAvailable:
     def test_true_when_server_healthy(self) -> None:
         b = BrainClient(base_url="http://x")
         with patch("urllib.request.urlopen", return_value=_make_response({"status": "ok"})):
-            assert b.is_available() is True
+            assert b.is_available() is True, "Condition must be true"
 
     def test_false_when_server_returns_non_ok(self) -> None:
         b = BrainClient(base_url="http://x")
         with patch("urllib.request.urlopen", return_value=_make_response({"status": "degraded"})):
-            assert b.is_available() is False
+            assert b.is_available() is False, "Condition must be true"
 
     def test_false_when_network_error(self) -> None:
         b = BrainClient(base_url="http://x")
         with patch("urllib.request.urlopen", side_effect=OSError("refused")):
-            assert b.is_available() is False
+            assert b.is_available() is False, "Condition must be true"
 
     def test_false_when_http_error(self) -> None:
         b = BrainClient(base_url="http://x")
         with patch("urllib.request.urlopen", side_effect=_http_error(503)):
-            assert b.is_available() is False
+            assert b.is_available() is False, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -198,8 +198,8 @@ class TestHealth:
         b = BrainClient(base_url="http://x")
         with patch("urllib.request.urlopen", return_value=_make_response(payload)):
             result = b.health()
-        assert result["status"] == "ok"
-        assert result["repo_root"] == "/repo"
+        assert result["status"] == "ok", "Result must not be empty"
+        assert result["repo_root"] == "/repo", "Result must not be empty"
 
     def test_raises_on_http_error(self) -> None:
         b = BrainClient(base_url="http://x")
@@ -236,8 +236,8 @@ class TestRunCommand:
         payload = self._run_response("git status --short", "M file.py")
         with patch("urllib.request.urlopen", return_value=_make_response(payload)):
             result = b.run_command("git status --short")
-        assert result["stdout"] == "M file.py"
-        assert result["returncode"] == 0
+        assert result["stdout"] == "M file.py", "Result must not be empty"
+        assert result["returncode"] == 0, "Result must not be empty"
 
     def test_passes_cwd_and_env(self) -> None:
         b = BrainClient(base_url="http://x")
@@ -252,8 +252,8 @@ class TestRunCommand:
         with patch("urllib.request.urlopen", side_effect=fake_urlopen):
             b.run_command("echo hi", cwd="/tmp", env={"FOO": "bar"})
 
-        assert captured_body["cwd"] == "/tmp"
-        assert captured_body["env"] == {"FOO": "bar"}
+        assert captured_body["cwd"] == "/tmp", "Condition must be true"
+        assert captured_body["env"] == {"FOO": "bar"}, "Condition must be true"
 
     def test_raises_on_http_error(self) -> None:
         b = BrainClient(base_url="http://x")
@@ -283,8 +283,8 @@ class TestProxyRequest:
         payload = self._proxy_response(200, {"name": "_codex_"})
         with patch("urllib.request.urlopen", return_value=_make_response(payload)):
             result = b.proxy_request("GET", "https://api.github.com/repos/Aries-Serpent/_codex_")
-        assert result["status_code"] == 200
-        assert result["body"]["name"] == "_codex_"
+        assert result["status_code"] == 200, "Result must not be empty"
+        assert result["body"]["name"] == "_codex_", "Result must not be empty"
 
     def test_method_uppercased(self) -> None:
         b = BrainClient(base_url="http://x")
@@ -298,7 +298,7 @@ class TestProxyRequest:
         with patch("urllib.request.urlopen", side_effect=fake_urlopen):
             b.proxy_request("get", "https://example.com")
 
-        assert captured_body["method"] == "GET"
+        assert captured_body["method"] == "GET", "Condition must be true"
 
     def test_passes_params_and_body(self) -> None:
         b = BrainClient(base_url="http://x")
@@ -312,8 +312,8 @@ class TestProxyRequest:
         with patch("urllib.request.urlopen", side_effect=fake_urlopen):
             b.proxy_request("POST", "https://example.com", params={"p": "1"}, body={"key": "val"})
 
-        assert captured_body["params"] == {"p": "1"}
-        assert captured_body["body"] == {"key": "val"}
+        assert captured_body["params"] == {"p": "1"}, "Condition must be true"
+        assert captured_body["body"] == {"key": "val"}, "Condition must be true"
 
     def test_raises_on_http_error(self) -> None:
         b = BrainClient(base_url="http://x")
@@ -341,8 +341,8 @@ class TestMemoryState:
         b = BrainClient(base_url="http://x")
         with patch("urllib.request.urlopen", return_value=_make_response(payload)):
             result = b.memory_state()
-        assert result["stm_count"] == 5
-        assert result["ltm_count"] == 2
+        assert result["stm_count"] == 5, "Result must not be empty"
+        assert result["ltm_count"] == 2, "Result must not be empty"
 
     def test_raises_on_401(self) -> None:
         b = BrainClient(base_url="http://x")
@@ -374,17 +374,17 @@ class TestMemorySearch:
         with patch("urllib.request.urlopen", side_effect=fake_urlopen):
             b.memory_search("D_CAPABLE test", limit=10)
 
-        assert len(captured_urls) == 1
-        assert "D_CAPABLE+test" in captured_urls[0] or "D_CAPABLE%20test" in captured_urls[0]
-        assert "limit=10" in captured_urls[0]
+        assert len(captured_urls) == 1, "Captured_urls must not be empty"
+        assert "D_CAPABLE+test" in captured_urls[0] or "D_CAPABLE%20test" in captured_urls[0], "Condition must be true"
+        assert "limit=10" in captured_urls[0], "Condition must be true"
 
     def test_returns_items(self) -> None:
         payload = {"items": [{"key": "k1", "value": "v1", "tier": "stm"}], "total": 1}
         b = BrainClient(base_url="http://x")
         with patch("urllib.request.urlopen", return_value=_make_response(payload)):
             result = b.memory_search("k1")
-        assert result["total"] == 1
-        assert result["items"][0]["key"] == "k1"
+        assert result["total"] == 1, "Result must not be empty"
+        assert result["items"][0]["key"] == "k1", "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -406,7 +406,7 @@ class TestConvenienceHelpers:
         b = BrainClient(base_url="http://x")
         with patch("urllib.request.urlopen", return_value=_make_response(payload)):
             result = b.git_status()
-        assert result == "M src/foo.py"
+        assert result == "M src/foo.py", "Result must not be empty"
 
     def test_git_log_returns_list(self) -> None:
         payload = {
@@ -422,8 +422,8 @@ class TestConvenienceHelpers:
         with patch("urllib.request.urlopen", return_value=_make_response(payload)):
             result = b.git_log(5)
         assert isinstance(result, list)
-        assert len(result) == 2
-        assert "abc1234" in result[0]
+        assert len(result) == 2, "Result must not be empty"
+        assert "abc1234" in result[0], "Result must not be empty"
 
     def test_github_repo_info_extracts_body(self) -> None:
         proxy_payload = {
@@ -437,8 +437,8 @@ class TestConvenienceHelpers:
         b = BrainClient(base_url="http://x")
         with patch("urllib.request.urlopen", return_value=_make_response(proxy_payload)):
             result = b.github_repo_info()
-        assert result["name"] == "_codex_"
-        assert result["default_branch"] == "main"
+        assert result["name"] == "_codex_", "Result must not be empty"
+        assert result["default_branch"] == "main", "Result must not be empty"
 
     def test_github_workflow_runs_extracts_list(self) -> None:
         proxy_payload = {
@@ -452,8 +452,8 @@ class TestConvenienceHelpers:
         b = BrainClient(base_url="http://x")
         with patch("urllib.request.urlopen", return_value=_make_response(proxy_payload)):
             result = b.github_workflow_runs(per_page=1)
-        assert len(result) == 1
-        assert result[0]["name"] == "CI"
+        assert len(result) == 1, "Result must not be empty"
+        assert result[0]["name"] == "CI", "Result must not be empty"
 
     def test_github_workflow_runs_empty_on_bad_body(self) -> None:
         proxy_payload = {
@@ -467,7 +467,7 @@ class TestConvenienceHelpers:
         b = BrainClient(base_url="http://x")
         with patch("urllib.request.urlopen", return_value=_make_response(proxy_payload)):
             result = b.github_workflow_runs()
-        assert result == []
+        assert result == [], "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -478,7 +478,7 @@ class TestConvenienceHelpers:
 class TestBaseUrlValidation:
     def test_bare_host_port_normalised_to_http(self) -> None:
         b = BrainClient(base_url="localhost:8765")
-        assert b.base_url == "http://localhost:8765"
+        assert b.base_url == "http://localhost:8765", "base_url is not valid"
 
     def test_invalid_scheme_raises(self) -> None:
         with pytest.raises(BrainClientError, match="Invalid base URL"):
@@ -490,7 +490,7 @@ class TestBaseUrlValidation:
 
     def test_valid_https_accepted(self) -> None:
         b = BrainClient(base_url="https://remote-brain.example.com:9000")
-        assert b.base_url == "https://remote-brain.example.com:9000"
+        assert b.base_url == "https://remote-brain.example.com:9000", "base_url is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -528,10 +528,10 @@ class TestAuthHeaderSentOnRequests:
             b = BrainClient(base_url="http://x")
             with patch("urllib.request.urlopen", side_effect=fake):
                 b.memory_state()
-        assert len(captured) == 1
+        assert len(captured) == 1, "Captured must not be empty"
         # urllib capitalises the first letter of each header word
         auth = captured[0].get("Authorization") or captured[0].get("authorization")
-        assert auth == "Bearer secretkey"
+        assert auth == "Bearer secretkey", "auth is not valid"
 
     def test_memory_search_sends_auth_header(self) -> None:
         captured, fake = self._capture_headers({"items": [], "total": 0})
@@ -539,9 +539,9 @@ class TestAuthHeaderSentOnRequests:
             b = BrainClient(base_url="http://x")
             with patch("urllib.request.urlopen", side_effect=fake):
                 b.memory_search("test query")
-        assert len(captured) == 1
+        assert len(captured) == 1, "Captured must not be empty"
         auth = captured[0].get("Authorization") or captured[0].get("authorization")
-        assert auth == "Bearer searchkey"
+        assert auth == "Bearer searchkey", "auth is not valid"
 
     def test_no_auth_header_when_no_key(self) -> None:
         captured, fake = self._capture_headers({"status": "ok"})
@@ -550,9 +550,9 @@ class TestAuthHeaderSentOnRequests:
             b = BrainClient(base_url="http://x")
             with patch("urllib.request.urlopen", side_effect=fake):
                 b.health()
-        assert len(captured) == 1
+        assert len(captured) == 1, "Captured must not be empty"
         auth = captured[0].get("Authorization") or captured[0].get("authorization")
-        assert auth is None
+        assert auth is None, "auth is not valid"
 
     def test_backup_key_sent_when_master_absent(self) -> None:
         payload = {
@@ -571,6 +571,6 @@ class TestAuthHeaderSentOnRequests:
             b = BrainClient(base_url="http://x")
             with patch("urllib.request.urlopen", side_effect=fake):
                 b.memory_state()
-        assert len(captured) == 1
+        assert len(captured) == 1, "Captured must not be empty"
         auth = captured[0].get("Authorization") or captured[0].get("authorization")
-        assert auth == "Bearer backuptoken"
+        assert auth == "Bearer backuptoken", "auth is not valid"

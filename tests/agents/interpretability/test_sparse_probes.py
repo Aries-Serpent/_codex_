@@ -15,10 +15,10 @@ class TestSparseLinearProbe:
 
         probe = SparseLinearProbe()
 
-        assert probe.weights == []
-        assert probe.bias == []
-        assert probe.sparsity_threshold == 0.1
-        assert probe.concept_names == []
+        assert probe.weights == [], "weights is not valid"
+        assert probe.bias == [], "bias is not valid"
+        assert probe.sparsity_threshold == 0.1, "sparsity_threshold is not valid"
+        assert probe.concept_names == [], "concept_names is not valid"
 
     def test_from_dimensions_basic(self):
         """Test creating probe from dimensions."""
@@ -28,11 +28,11 @@ class TestSparseLinearProbe:
             num_concepts=5, input_dim=10, sparsity_threshold=0.2, seed=42
         )
 
-        assert len(probe.weights) == 5  # num_concepts rows
-        assert len(probe.weights[0]) == 10  # input_dim columns
-        assert len(probe.bias) == 5
-        assert probe.sparsity_threshold == 0.2
-        assert len(probe.concept_names) == 5
+        assert len(probe.weights) == 5, "Collection must not be empty"
+        assert len(probe.weights[0]) == 10, "Collection must not be empty"
+        assert len(probe.bias) == 5, "Collection must not be empty"
+        assert probe.sparsity_threshold == 0.2, "sparsity_threshold is not valid"
+        assert len(probe.concept_names) == 5, "Collection must not be empty"
 
     def test_from_dimensions_determinism(self):
         """Test probe initialization is deterministic with same seed."""
@@ -42,8 +42,8 @@ class TestSparseLinearProbe:
 
         probe2 = SparseLinearProbe.from_dimensions(num_concepts=3, input_dim=4, seed=123)
 
-        assert probe1.weights == probe2.weights
-        assert probe1.bias == probe2.bias
+        assert probe1.weights == probe2.weights, "weights is not valid"
+        assert probe1.bias == probe2.bias, "bias is not valid"
 
     def test_from_dimensions_different_seeds(self):
         """Test different seeds produce different weights."""
@@ -53,7 +53,7 @@ class TestSparseLinearProbe:
 
         probe2 = SparseLinearProbe.from_dimensions(num_concepts=3, input_dim=4, seed=2)
 
-        assert probe1.weights != probe2.weights
+        assert probe1.weights != probe2.weights, "weights is not valid"
 
     def test_concept_names_generated(self):
         """Test concept names are auto-generated."""
@@ -73,7 +73,7 @@ class TestSparseLinearProbe:
         for row in probe.weights:
             for val in row:
                 # Values should generally be small (within 3 std devs of 0)
-                assert abs(val) < 1.0
+                assert abs(val) < 1.0, "Condition must be true"
 
     def test_bias_are_small_initialization(self):
         """Test biases are initialized with small values."""
@@ -83,7 +83,7 @@ class TestSparseLinearProbe:
 
         # Bias should be initialized with std ~ 0.01
         for val in probe.bias:
-            assert abs(val) < 0.5
+            assert abs(val) < 0.5, "Condition must be true"
 
 
 class TestModuleLevelFlags:
@@ -100,8 +100,8 @@ class TestModuleLevelFlags:
         """Test logger is configured."""
         from agents.interpretability.sparse_probes import logger
 
-        assert logger is not None
-        assert logger.name == "agents.interpretability.sparse_probes"
+        assert logger is not None, "logger must be initialized"
+        assert logger.name == "agents.interpretability.sparse_probes", "name is not valid"
 
 
 class TestEdgeCases:
@@ -113,9 +113,9 @@ class TestEdgeCases:
 
         probe = SparseLinearProbe.from_dimensions(num_concepts=1, input_dim=1, seed=42)
 
-        assert len(probe.weights) == 1
-        assert len(probe.weights[0]) == 1
-        assert len(probe.bias) == 1
+        assert len(probe.weights) == 1, "Collection must not be empty"
+        assert len(probe.weights[0]) == 1, "Collection must not be empty"
+        assert len(probe.bias) == 1, "Collection must not be empty"
 
     def test_large_dimensions(self):
         """Test probe with larger dimensions."""
@@ -123,9 +123,9 @@ class TestEdgeCases:
 
         probe = SparseLinearProbe.from_dimensions(num_concepts=100, input_dim=50, seed=42)
 
-        assert len(probe.weights) == 100
-        assert len(probe.weights[0]) == 50
-        assert len(probe.concept_names) == 100
+        assert len(probe.weights) == 100, "Collection must not be empty"
+        assert len(probe.weights[0]) == 50, "Collection must not be empty"
+        assert len(probe.concept_names) == 100, "Collection must not be empty"
 
     def test_custom_sparsity_threshold(self):
         """Test probe with custom sparsity threshold."""
@@ -135,4 +135,4 @@ class TestEdgeCases:
             num_concepts=3, input_dim=4, sparsity_threshold=0.5, seed=42
         )
 
-        assert probe.sparsity_threshold == 0.5
+        assert probe.sparsity_threshold == 0.5, "sparsity_threshold is not valid"

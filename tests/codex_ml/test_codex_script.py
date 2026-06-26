@@ -31,14 +31,14 @@ class TestInitDeterminismFromEnv:
         with patch.dict(os.environ, {}, clear=True):
             # Use the function from the module
             result = codex_script._init_determinism_from_env()
-            assert result["determinism_enabled"] is False
+            assert result["determinism_enabled"] is False, "Result must not be empty"
 
     def test_enabled_when_env_set(self) -> None:
         """Test determinism is enabled when CODEX_DETERMINISM=1."""
         with patch.dict(os.environ, {"CODEX_DETERMINISM": "1", "CODEX_SEED": "42"}, clear=True):
             result = codex_script._init_determinism_from_env()
-            assert result["determinism_enabled"] is True
-            assert result["seed"] == 42
+            assert result["determinism_enabled"] is True, "Result must not be empty"
+            assert result["seed"] == 42, "Result must not be empty"
 
     def test_custom_seed(self) -> None:
         """Test custom seed from environment."""
@@ -48,13 +48,13 @@ class TestInitDeterminismFromEnv:
             clear=True,
         ):
             result = codex_script._init_determinism_from_env()
-            assert result["seed"] == 123
+            assert result["seed"] == 123, "Result must not be empty"
 
     def test_default_seed_is_42(self) -> None:
         """Test default seed is 42."""
         with patch.dict(os.environ, {"CODEX_DETERMINISM": "1"}, clear=True):
             result = codex_script._init_determinism_from_env()
-            assert result["seed"] == 42
+            assert result["seed"] == 42, "Result must not be empty"
 
     def test_custom_num_threads(self) -> None:
         """Test custom num_threads from environment."""
@@ -64,19 +64,19 @@ class TestInitDeterminismFromEnv:
             clear=True,
         ):
             result = codex_script._init_determinism_from_env()
-            assert result["num_threads"] == 4
+            assert result["num_threads"] == 4, "Result must not be empty"
 
     def test_default_num_threads_is_1(self) -> None:
         """Test default num_threads is 1."""
         with patch.dict(os.environ, {"CODEX_DETERMINISM": "1"}, clear=True):
             result = codex_script._init_determinism_from_env()
-            assert result["num_threads"] == 1
+            assert result["num_threads"] == 1, "Result must not be empty"
 
     def test_disabled_returns_minimal_dict(self) -> None:
         """Test disabled returns only determinism_enabled key."""
         with patch.dict(os.environ, {"CODEX_DETERMINISM": "0"}, clear=True):
             result = codex_script._init_determinism_from_env()
-            assert result == {"determinism_enabled": False}
+            assert result == {"determinism_enabled": False}, "Result must not be empty"
 
     @patch("random.seed")
     def test_sets_python_random_seed(self, mock_seed: MagicMock) -> None:
@@ -110,7 +110,7 @@ class TestInitDeterminismFromEnv:
             with patch.dict("sys.modules", {"numpy": None}):
                 # Should not raise
                 result = codex_script._init_determinism_from_env()
-                assert result["determinism_enabled"] is True
+                assert result["determinism_enabled"] is True, "Result must not be empty"
 
     def test_handles_torch_import_error(self) -> None:
         """Test handles PyTorch import error gracefully."""
@@ -118,7 +118,7 @@ class TestInitDeterminismFromEnv:
             with patch.dict("sys.modules", {"torch": None}):
                 # Should not raise
                 result = codex_script._init_determinism_from_env()
-                assert result["determinism_enabled"] is True
+                assert result["determinism_enabled"] is True, "Result must not be empty"
 
     def test_raises_unexpected_torch_determinism_errors(self) -> None:
         """Unexpected runtime failures in torch determinism path should not be swallowed."""
@@ -138,7 +138,7 @@ class TestInitDeterminismFromEnv:
             with patch.dict("sys.modules", {"tensorflow": None}):
                 # Should not raise
                 result = codex_script._init_determinism_from_env()
-                assert result["determinism_enabled"] is True
+                assert result["determinism_enabled"] is True, "Result must not be empty"
 
 
 class TestDeterminismEnvironmentVariables:
@@ -184,17 +184,17 @@ class TestDeterminismReturnValue:
         """Test enabled returns all expected keys."""
         with patch.dict(os.environ, {"CODEX_DETERMINISM": "1"}, clear=True):
             result = codex_script._init_determinism_from_env()
-            assert "determinism_enabled" in result
-            assert "seed" in result
-            assert "num_threads" in result
+            assert "determinism_enabled" in result, "Result must not be empty"
+            assert "seed" in result, "Result must not be empty"
+            assert "num_threads" in result, "Result must not be empty"
 
     def test_disabled_returns_only_enabled_key(self) -> None:
         """Test disabled returns only determinism_enabled key."""
         with patch.dict(os.environ, {}, clear=True):
             result = codex_script._init_determinism_from_env()
-            assert "determinism_enabled" in result
-            assert "seed" not in result
-            assert "num_threads" not in result
+            assert "determinism_enabled" in result, "Result must not be empty"
+            assert "seed" not in result, "Result must not be empty"
+            assert "num_threads" not in result, "Result must not be empty"
 
 
 class TestModuleLevelInitialization:
@@ -205,7 +205,7 @@ class TestModuleLevelInitialization:
         # This is tricky to test since it's initialized at import time
         # Just verify the module structure is as expected
         # The module should have the internal summary
-        assert (
+        assert (, "Condition must be true"
             hasattr(codex_script, "_TestModuleLevelInitialization__determinism_summary")
             or hasattr(codex_script, "_codex_script__determinism_summary")
             or "_init_determinism_from_env" in dir(codex_script)

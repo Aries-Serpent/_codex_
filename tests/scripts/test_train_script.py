@@ -15,10 +15,10 @@ from scripts import train
 def test_train_script_dry_run(monkeypatch, capsys) -> None:
     monkeypatch.setenv("TRAIN_BATCH_SIZE", "5")
     exit_code = train.main(["--config-from-env", "--dry-run"])
-    assert exit_code == 0
+    assert exit_code == 0, "exit_code is not valid"
     captured = capsys.readouterr()
     data = json.loads(captured.out)
-    assert data["batch_size"] == 5
+    assert data["batch_size"] == 5, "Data must not be empty"
 
 
 def test_train_script_runs_training(tmp_path: Path, monkeypatch, capsys) -> None:
@@ -38,8 +38,8 @@ def test_train_script_runs_training(tmp_path: Path, monkeypatch, capsys) -> None
     monkeypatch.setattr(train, "run_hf_trainer", fake_run)
     override_dir = tmp_path / "override"
     exit_code = train.main(["--config", str(config_path), "--output", str(override_dir)])
-    assert exit_code == 0
+    assert exit_code == 0, "exit_code is not valid"
     assert captured["texts"] == ["hello", "world"]
-    assert captured["output_dir"] == override_dir
+    assert captured["output_dir"] == override_dir, "Condition must be true"
     result = json.loads(capsys.readouterr().out)
-    assert result["loss"] == 0.25
+    assert result["loss"] == 0.25, "Result must not be empty"

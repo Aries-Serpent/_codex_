@@ -168,8 +168,8 @@ class TestRawDataRecord:
             content={"key": "value"},
             metadata={"source": "test"},
         )
-        assert record.source_type == DataSourceType.PATTERN_STORE
-        assert "key" in record.content
+        assert record.source_type == DataSourceType.PATTERN_STORE, "Data must not be empty"
+        assert "key" in record.content, "Content must not be empty"
 
     def test_to_dict(self):
         """Test converting record to dictionary."""
@@ -179,9 +179,9 @@ class TestRawDataRecord:
             content={"action": "test"},
         )
         data = record.to_dict()
-        assert data["source_type"] == "action_log"
-        assert "timestamp" in data
-        assert data["content"]["action"] == "test"
+        assert data["source_type"] == "action_log", "Data must not be empty"
+        assert "timestamp" in data, "Data must not be empty"
+        assert data["content"]["action"] == "test", "Data must not be empty"
 
     def test_from_dict(self):
         """Test creating record from dictionary."""
@@ -192,8 +192,8 @@ class TestRawDataRecord:
             "metadata": {},
         }
         record = RawDataRecord.from_dict(data)
-        assert record.source_type == DataSourceType.PATTERN_STORE
-        assert record.content["test"] is True
+        assert record.source_type == DataSourceType.PATTERN_STORE, "Data must not be empty"
+        assert record.content["test"] is True, "Content must not be empty"
 
 
 class TestPatternSample:
@@ -208,9 +208,9 @@ class TestPatternSample:
             resolution="Fix it",
             success=True,
         )
-        assert sample.pattern_id == "TEST-001"
-        assert len(sample.symptoms) == 2
-        assert sample.success is True
+        assert sample.pattern_id == "TEST-001", "pattern_id is not valid"
+        assert len(sample.symptoms) == 2, "Collection must not be empty"
+        assert sample.success is True, "success is not valid"
 
     def test_to_dict_and_back(self):
         """Test round-trip conversion."""
@@ -225,8 +225,8 @@ class TestPatternSample:
         data = original.to_dict()
         restored = PatternSample.from_dict(data)
 
-        assert restored.pattern_id == original.pattern_id
-        assert restored.features == original.features
+        assert restored.pattern_id == original.pattern_id, "pattern_id is not valid"
+        assert restored.features == original.features, "features is not valid"
 
 
 class TestFeatureExtractor:
@@ -238,10 +238,10 @@ class TestFeatureExtractor:
         text = "pytest collection error with ImportError in test file"
         features = extractor.extract_text_features(text)
 
-        assert "category_testing_count" in features
-        assert features["category_testing_present"] == 1.0
-        assert "text_length" in features
-        assert "word_count" in features
+        assert "category_testing_count" in features, "Count must be greater than zero"
+        assert features["category_testing_present"] == 1.0, "Condition must be true"
+        assert "text_length" in features, "Length must be greater than zero"
+        assert "word_count" in features, "Count must be greater than zero"
 
     def test_extract_error_keywords(self):
         """Test extracting error keywords."""
@@ -249,9 +249,9 @@ class TestFeatureExtractor:
         text = "Traceback (most recent call last): TypeError: invalid argument"
         features = extractor.extract_text_features(text)
 
-        assert features["has_error_keywords"] == 1.0
-        assert features["error_keyword_count"] >= 1
-        assert features["has_python_traceback"] == 1.0
+        assert features["has_error_keywords"] == 1.0, "Error should be raised or set"
+        assert features["error_keyword_count"] >= 1, "Value must be greater than zero"
+        assert features["has_python_traceback"] == 1.0, "Condition must be true"
 
     def test_categorize_symptoms(self):
         """Test categorizing symptoms."""
@@ -275,8 +275,8 @@ class TestDataPipeline:
             records = pipeline.load_pattern_store()
 
             # Should have pattern records + learning log entry
-            assert len(records) >= 2
-            assert any(r.content.get("id") == "TFR-001" for r in records)
+            assert len(records) >= 2, "Records must not be empty"
+            assert any(r.content.get("id") == "TFR-001" for r in records), "Content must not be empty"
 
     def test_load_action_log(self, sample_action_log):
         """Test loading action log."""
@@ -288,8 +288,8 @@ class TestDataPipeline:
             pipeline = DataPipeline(action_log_path=f.name)
             records = pipeline.load_action_log()
 
-            assert len(records) == 2
-            assert all(r.source_type == DataSourceType.ACTION_LOG for r in records)
+            assert len(records) == 2, "Records must not be empty"
+            assert all(r.source_type == DataSourceType.ACTION_LOG for r in records), "Data must not be empty"
 
     def test_generate_training_samples(self, sample_pattern_store):
         """Test generating training samples."""
@@ -301,7 +301,7 @@ class TestDataPipeline:
             pipeline.extract_all_data()
             samples = pipeline.generate_training_samples()
 
-            assert len(samples) > 0
+            assert len(samples) > 0, "Samples must not be empty"
             assert all(isinstance(s, PatternSample) for s in samples)
 
     def test_split_dataset(self, sample_patterns):
@@ -312,7 +312,7 @@ class TestDataPipeline:
         train, val, test = pipeline.split_dataset(train_ratio=0.6, validation_ratio=0.2)
 
         total = len(train) + len(val) + len(test)
-        assert total == len(sample_patterns)
+        assert total == len(sample_patterns), "Sample_patterns must not be empty"
 
     def test_export_samples(self, sample_patterns):
         """Test exporting samples."""
@@ -323,10 +323,10 @@ class TestDataPipeline:
             pipeline._samples = sample_patterns
             pipeline.export_samples(output_path)
 
-            assert output_path.exists()
+            assert output_path.exists(), "Condition must be true"
             with open(output_path) as f:
                 loaded = json.load(f)
-            assert len(loaded) == len(sample_patterns)
+            assert len(loaded) == len(sample_patterns), "Loaded must not be empty"
 
     def test_get_statistics(self, sample_patterns):
         """Test getting statistics."""
@@ -335,9 +335,9 @@ class TestDataPipeline:
 
         stats = pipeline.get_statistics()
 
-        assert stats["total_samples"] == len(sample_patterns)
-        assert "testing" in stats["samples_by_category"]
-        assert "ci_cd" in stats["samples_by_category"]
+        assert stats["total_samples"] == len(sample_patterns), "Sample_patterns must not be empty"
+        assert "testing" in stats["samples_by_category"], "Condition must be true"
+        assert "ci_cd" in stats["samples_by_category"], "Condition must be true"
 
 
 class TestTrainingDataGenerator:
@@ -348,8 +348,8 @@ class TestTrainingDataGenerator:
         generator = TrainingDataGenerator(sample_patterns)
         texts, labels = generator.generate_classification_data()
 
-        assert len(texts) == len(sample_patterns)
-        assert len(labels) == len(sample_patterns)
+        assert len(texts) == len(sample_patterns), "Texts must not be empty"
+        assert len(labels) == len(sample_patterns), "Labels must not be empty"
         assert all(isinstance(t, str) for t in texts)
 
     def test_generate_recommendation_data(self, sample_patterns):
@@ -357,16 +357,16 @@ class TestTrainingDataGenerator:
         generator = TrainingDataGenerator(sample_patterns)
         symptoms, resolutions = generator.generate_recommendation_data()
 
-        assert len(symptoms) == len(sample_patterns)
-        assert len(resolutions) == len(sample_patterns)
+        assert len(symptoms) == len(sample_patterns), "Symptoms must not be empty"
+        assert len(resolutions) == len(sample_patterns), "Resolutions must not be empty"
 
     def test_generate_success_prediction_data(self, sample_patterns):
         """Test generating success prediction data."""
         generator = TrainingDataGenerator(sample_patterns)
         features, labels = generator.generate_success_prediction_data()
 
-        assert len(features) == len(sample_patterns)
-        assert len(labels) == len(sample_patterns)
+        assert len(features) == len(sample_patterns), "Features must not be empty"
+        assert len(labels) == len(sample_patterns), "Labels must not be empty"
         assert all(isinstance(lbl, bool) for lbl in labels)
 
     def test_to_feature_matrix(self, sample_patterns):
@@ -374,9 +374,9 @@ class TestTrainingDataGenerator:
         generator = TrainingDataGenerator(sample_patterns)
         matrix, feature_names = generator.to_feature_matrix()
 
-        assert len(matrix) == len(sample_patterns)
-        assert len(feature_names) > 0
-        assert all(len(row) == len(feature_names) for row in matrix)
+        assert len(matrix) == len(sample_patterns), "Matrix must not be empty"
+        assert len(feature_names) > 0, "Feature_names must not be empty"
+        assert all(len(row) == len(feature_names) for row in matrix), "Row must not be empty"
 
 
 class TestPatternDataset:
@@ -386,17 +386,17 @@ class TestPatternDataset:
         """Test basic dataset operations."""
         dataset = PatternDataset(sample_patterns)
 
-        assert len(dataset) == len(sample_patterns)
-        assert dataset[0] == sample_patterns[0]
-        assert list(dataset) == sample_patterns
+        assert len(dataset) == len(sample_patterns), "Dataset must not be empty"
+        assert dataset[0] == sample_patterns[0], "Data must not be empty"
+        assert list(dataset) == sample_patterns, "Data must not be empty"
 
     def test_filter_by_category(self, sample_patterns):
         """Test filtering by category."""
         dataset = PatternDataset(sample_patterns)
         testing_samples = dataset.filter_by_category("testing")
 
-        assert len(testing_samples) < len(dataset)
-        assert all(s.category == "testing" for s in testing_samples)
+        assert len(testing_samples) < len(dataset), "Testing_samples must not be empty"
+        assert all(s.category == "testing" for s in testing_samples), "category is not valid"
 
     def test_filter_by_success(self, sample_patterns):
         """Test filtering by success."""
@@ -404,17 +404,17 @@ class TestPatternDataset:
         success_samples = dataset.filter_by_success(True)
         failure_samples = dataset.filter_by_success(False)
 
-        assert all(s.success for s in success_samples)
-        assert all(not s.success for s in failure_samples)
+        assert all(s.success for s in success_samples), "Condition must be true"
+        assert all(not s.success for s in failure_samples), "Condition must be true"
 
     def test_get_categories(self, sample_patterns):
         """Test getting categories."""
         dataset = PatternDataset(sample_patterns)
         categories = dataset.get_categories()
 
-        assert "testing" in categories
-        assert "ci_cd" in categories
-        assert "security" in categories
+        assert "testing" in categories, "Condition must be true"
+        assert "ci_cd" in categories, "Condition must be true"
+        assert "security" in categories, "Condition must be true"
 
     def test_save_and_load(self, sample_patterns):
         """Test saving and loading dataset."""
@@ -426,8 +426,8 @@ class TestPatternDataset:
 
             loaded = PatternDataset.load(path)
 
-            assert len(loaded) == len(original)
-            assert loaded[0].pattern_id == original[0].pattern_id
+            assert len(loaded) == len(original), "Loaded must not be empty"
+            assert loaded[0].pattern_id == original[0].pattern_id, "pattern_id is not valid"
 
 
 # ============================================================================
@@ -449,9 +449,9 @@ class TestTfidfVectorizer:
 
         vectors = vectorizer.fit_transform(texts)
 
-        assert len(vectors) == 3
+        assert len(vectors) == 3, "Vectors must not be empty"
         assert all(isinstance(v, list) for v in vectors)
-        assert all(len(v) > 0 for v in vectors)
+        assert all(len(v) > 0 for v in vectors), "V must not be empty"
 
     def test_transform_after_fit(self):
         """Test transforming new texts after fitting."""
@@ -461,7 +461,7 @@ class TestTfidfVectorizer:
 
         new_vectors = vectorizer.transform(["new pytest test error"])
 
-        assert len(new_vectors) == 1
+        assert len(new_vectors) == 1, "New_vectors must not be empty"
 
     def test_get_feature_names(self):
         """Test getting feature names."""
@@ -471,7 +471,7 @@ class TestTfidfVectorizer:
         names = vectorizer.get_feature_names()
 
         assert isinstance(names, list)
-        assert len(names) > 0
+        assert len(names) > 0, "Names must not be empty"
 
     def test_save_and_load(self):
         """Test saving and loading vectorizer."""
@@ -484,8 +484,8 @@ class TestTfidfVectorizer:
 
             loaded = TfidfVectorizer.load(path)
 
-            assert loaded._vocabulary == vectorizer._vocabulary
-            assert loaded._fitted is True
+            assert loaded._vocabulary == vectorizer._vocabulary, "_vocabulary is not valid"
+            assert loaded._fitted is True, "_fitted is not valid"
 
 
 class TestNaiveBayesClassifier:
@@ -518,10 +518,10 @@ class TestNaiveBayesClassifier:
         classifier.fit(X, y)
         probas = classifier.predict_proba([[0.5, 0.5]])
 
-        assert len(probas) == 1
-        assert "a" in probas[0]
-        assert "b" in probas[0]
-        assert abs(sum(probas[0].values()) - 1.0) < 0.01
+        assert len(probas) == 1, "Probas must not be empty"
+        assert "a" in probas[0], "Condition must be true"
+        assert "b" in probas[0], "Condition must be true"
+        assert abs(sum(probas[0].values()) - 1.0) < 0.01, "Value must be initialized"
 
 
 class TestSymptomClassifier:
@@ -535,8 +535,8 @@ class TestSymptomClassifier:
         result = classifier.predict(["pytest collection error", "ImportError"])
 
         assert isinstance(result, ClassificationResult)
-        assert result.predicted_category in classifier.get_categories()
-        assert 0 <= result.confidence <= 1
+        assert result.predicted_category in classifier.get_categories(), "Result must not be empty"
+        assert 0 <= result.confidence <= 1, "Result must not be empty"
 
     def test_predict_batch(self, sample_patterns):
         """Test batch prediction."""
@@ -549,7 +549,7 @@ class TestSymptomClassifier:
         ]
         results = classifier.predict_batch(symptoms_list)
 
-        assert len(results) == 2
+        assert len(results) == 2, "Results must not be empty"
         assert all(isinstance(r, ClassificationResult) for r in results)
 
     def test_save_and_load(self, sample_patterns):
@@ -562,7 +562,7 @@ class TestSymptomClassifier:
             loaded = SymptomClassifier.load(tmpdir)
 
             result = loaded.predict(["pytest error"])
-            assert result.predicted_category in loaded.get_categories()
+            assert result.predicted_category in loaded.get_categories(), "Result must not be empty"
 
     def test_evaluate(self, sample_patterns):
         """Test evaluation."""
@@ -571,9 +571,9 @@ class TestSymptomClassifier:
 
         metrics = classifier.evaluate(sample_patterns)
 
-        assert "accuracy" in metrics
-        assert "total_samples" in metrics
-        assert "category_scores" in metrics
+        assert "accuracy" in metrics, "Condition must be true"
+        assert "total_samples" in metrics, "Condition must be true"
+        assert "category_scores" in metrics, "Condition must be true"
 
 
 # ============================================================================
@@ -588,21 +588,21 @@ class TestCosineSimilarity:
         """Test similarity of identical vectors."""
         vec = [1.0, 2.0, 3.0]
         sim = CosineSimilarity.compute(vec, vec)
-        assert abs(sim - 1.0) < 0.01
+        assert abs(sim - 1.0) < 0.01, "Condition must be true"
 
     def test_orthogonal_vectors(self):
         """Test similarity of orthogonal vectors."""
         vec1 = [1.0, 0.0]
         vec2 = [0.0, 1.0]
         sim = CosineSimilarity.compute(vec1, vec2)
-        assert abs(sim) < 0.01
+        assert abs(sim) < 0.01, "Condition must be true"
 
     def test_zero_vector(self):
         """Test with zero vector."""
         vec1 = [0.0, 0.0]
         vec2 = [1.0, 2.0]
         sim = CosineSimilarity.compute(vec1, vec2)
-        assert sim == 0.0
+        assert sim == 0.0, "sim is not valid"
 
 
 class TestJaccardSimilarity:
@@ -612,21 +612,21 @@ class TestJaccardSimilarity:
         """Test similarity of identical sets."""
         s = {"a", "b", "c"}
         sim = JaccardSimilarity.compute(s, s)
-        assert sim == 1.0
+        assert sim == 1.0, "sim is not valid"
 
     def test_disjoint_sets(self):
         """Test similarity of disjoint sets."""
         s1 = {"a", "b"}
         s2 = {"c", "d"}
         sim = JaccardSimilarity.compute(s1, s2)
-        assert sim == 0.0
+        assert sim == 0.0, "sim is not valid"
 
     def test_overlapping_sets(self):
         """Test similarity of overlapping sets."""
         s1 = {"a", "b", "c"}
         s2 = {"b", "c", "d"}
         sim = JaccardSimilarity.compute(s1, s2)
-        assert 0 < sim < 1
+        assert 0 < sim < 1, "0 is not valid"
 
 
 class TestResolutionIndex:
@@ -640,7 +640,7 @@ class TestResolutionIndex:
 
         results = index.search(["pytest collection error", "ImportError"])
 
-        assert len(results) > 0
+        assert len(results) > 0, "Results must not be empty"
         assert all(isinstance(r[0], PatternSample) for r in results)
         assert all(isinstance(r[1], float) for r in results)
 
@@ -649,8 +649,8 @@ class TestResolutionIndex:
         index = ResolutionIndex()
         index.build(sample_patterns)
 
-        assert index.size() == len(sample_patterns)
-        assert len(index.get_categories()) > 0
+        assert index.size() == len(sample_patterns), "Sample_patterns must not be empty"
+        assert len(index.get_categories()) > 0, "Collection must not be empty"
 
     def test_filter_by_category(self, sample_patterns):
         """Test filtering search by category."""
@@ -659,7 +659,7 @@ class TestResolutionIndex:
 
         results = index.search(["error"], category="testing")
 
-        assert all(r[0].category == "testing" for r in results)
+        assert all(r[0].category == "testing" for r in results), "Result must not be empty"
 
     def test_save_and_load(self, sample_patterns):
         """Test saving and loading index."""
@@ -672,7 +672,7 @@ class TestResolutionIndex:
 
             loaded = ResolutionIndex.load(path)
 
-            assert loaded.size() == index.size()
+            assert loaded.size() == index.size(), "Condition must be true"
 
 
 class TestResolutionRecommender:
@@ -686,7 +686,7 @@ class TestResolutionRecommender:
         result = recommender.recommend(["pytest collection error", "ImportError"])
 
         assert isinstance(result, RecommendationResult)
-        assert len(result.recommendations) > 0
+        assert len(result.recommendations) > 0, "Collection must not be empty"
         assert all(isinstance(r, Recommendation) for r in result.recommendations)
 
     def test_recommend_from_text(self, sample_patterns):
@@ -696,7 +696,7 @@ class TestResolutionRecommender:
 
         result = recommender.recommend_from_text("pytest error with ImportError")
 
-        assert isinstance(
+        assert isinstance(, "Condition must be true"
             result.recommendations, (list, tuple, set, dict)
         )  # May or may not find matches
 
@@ -710,7 +710,7 @@ class TestResolutionRecommender:
 
         if top:
             assert isinstance(top, Recommendation)
-            assert 0 <= top.confidence <= 1
+            assert 0 <= top.confidence <= 1, "0 is not valid"
 
     def test_save_and_load(self, sample_patterns):
         """Test saving and loading recommender."""
@@ -731,8 +731,8 @@ class TestResolutionRecommender:
 
         metrics = recommender.evaluate(sample_patterns)
 
-        assert "hit_rate_at_1" in metrics
-        assert "total_samples" in metrics
+        assert "hit_rate_at_1" in metrics, "Condition must be true"
+        assert "total_samples" in metrics, "Condition must be true"
 
 
 class TestSuccessPredictor:
@@ -745,7 +745,7 @@ class TestSuccessPredictor:
 
         prob = predictor.predict({"success_rate": 0.9, "symptom_count": 3})
 
-        assert 0 <= prob <= 1
+        assert 0 <= prob <= 1, "0 is not valid"
 
     def test_predict_sample(self, sample_patterns):
         """Test predicting for a sample."""
@@ -754,7 +754,7 @@ class TestSuccessPredictor:
 
         prob = predictor.predict_sample(sample_patterns[0])
 
-        assert 0 <= prob <= 1
+        assert 0 <= prob <= 1, "0 is not valid"
 
     def test_save_and_load(self, sample_patterns):
         """Test saving and loading predictor."""
@@ -768,7 +768,7 @@ class TestSuccessPredictor:
             loaded = SuccessPredictor.load(path)
 
             prob = loaded.predict({"success_rate": 0.8})
-            assert 0 <= prob <= 1
+            assert 0 <= prob <= 1, "0 is not valid"
 
     def test_evaluate(self, sample_patterns):
         """Test evaluation."""
@@ -777,11 +777,11 @@ class TestSuccessPredictor:
 
         metrics = predictor.evaluate(sample_patterns)
 
-        assert "accuracy" in metrics
-        assert "precision" in metrics
-        assert "recall" in metrics
-        assert "f1" in metrics
-        assert "confusion_matrix" in metrics
+        assert "accuracy" in metrics, "Condition must be true"
+        assert "precision" in metrics, "Condition must be true"
+        assert "recall" in metrics, "Condition must be true"
+        assert "f1" in metrics, "Condition must be true"
+        assert "confusion_matrix" in metrics, "Condition must be true"
 
 
 # ============================================================================
@@ -821,7 +821,7 @@ class TestMLPipelineIntegration:
             classification = classifier.predict(test_symptoms)
             recommendations = recommender.recommend(test_symptoms)
 
-            assert classification.predicted_category is not None
+            assert classification.predicted_category is not None, "predicted_category must be initialized"
             assert isinstance(recommendations, RecommendationResult)
 
     def test_model_persistence(self, sample_patterns):
@@ -847,10 +847,10 @@ class TestMLPipelineIntegration:
 
             # Verify they work
             result = loaded_classifier.predict(["test error"])
-            assert result.predicted_category is not None
+            assert result.predicted_category is not None, "predicted_category must be initialized"
 
             recs = loaded_recommender.recommend(["error"])
             assert isinstance(recs, RecommendationResult)
 
             prob = loaded_predictor.predict({"success_rate": 0.9})
-            assert 0 <= prob <= 1
+            assert 0 <= prob <= 1, "0 is not valid"

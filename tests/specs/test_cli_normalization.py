@@ -34,6 +34,6 @@ def _parse(argv: list[str]) -> dict:
 def test_flag_equivalence():
     a = _parse(["repo_admin_bootstrap", "--owner", "o", "--repo", "r"])
     b = _parse(["repo_admin_bootstrap", "--owner=o", "--repo=r"])
-    assert a["cmd"] == b["cmd"] == "repo_admin_bootstrap"
-    assert a["owner"] == b["owner"] == "o"
-    assert a["repo"] == b["repo"] == "r"
+    assert a["cmd"] == b["cmd"] == "repo_admin_bootstrap", "Condition must be true"
+    assert a["owner"] == b["owner"] == "o", "Condition must be true"
+    assert a["repo"] == b["repo"] == "r", "Condition must be true"

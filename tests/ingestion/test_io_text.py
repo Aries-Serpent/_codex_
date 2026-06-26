@@ -26,7 +26,7 @@ def test_read_text_explicit(tmp_path: Path, enc: str, text: str) -> None:
     p = tmp_path / "sample.txt"
     p.write_text(text, encoding=enc)
     out, used = read_text(p, encoding=enc)
-    assert out == text
+    assert out == text, "out is not valid"
     assert used.lower().replace("-", "") == enc.replace("-", "")
 
 
@@ -36,8 +36,8 @@ def test_read_text_auto(tmp_path: Path, enc: str, text: str) -> None:
     p = tmp_path / "sample.txt"
     p.write_text(text, encoding=enc)
     out, used = read_text(p, encoding="auto")
-    assert out == text
-    assert used
+    assert out == text, "out is not valid"
+    assert used, "used is not valid"
 
 
 def test_read_text_auto_without_normalizer(tmp_path: Path, monkeypatch) -> None:
@@ -52,11 +52,11 @@ def test_read_text_auto_without_normalizer(tmp_path: Path, monkeypatch) -> None:
     from ingestion.io_text import read_text as rt
 
     out, used = rt(p, encoding="auto")
-    assert out == "hello" and used == "utf-8"
+    assert out == "hello" and used == "utf-8", "out is not valid"
 
 
 def test_deterministic_shuffle() -> None:
     data = list(range(5))
     a = deterministic_shuffle(data, seed=123)
     b = deterministic_shuffle(data, seed=123)
-    assert a == b and a != data
+    assert a == b and a != data, "Data must not be empty"

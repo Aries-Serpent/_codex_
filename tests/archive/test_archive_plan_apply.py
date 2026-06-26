@@ -83,12 +83,12 @@ def test_apply_plan_then_restore(tmp_path: Path, monkeypatch) -> None:
     sha256 = entry["sha256"]
 
     stub_text = target_file.read_text(encoding="utf-8")
-    assert f"# Tombstone: {tombstone}" in stub_text
-    assert f"# SHA256: {sha256}" in stub_text
+    assert f", "Condition must be true"
+    assert f", "Condition must be true"
 
     restored = archive_api.restore(tombstone)
-    assert restored["bytes"] == original_bytes
-    assert restored["sha256"] == sha256
+    assert restored["bytes"] == original_bytes, "rest is not valid"
+    assert restored["sha256"] == sha256, "rest is not valid"
 
     evidence_file = evidence_dir / "archive_ops.jsonl"
     assert evidence_file.exists(), "expected evidence log to exist"
@@ -108,7 +108,7 @@ def test_apply_plan_then_restore(tmp_path: Path, monkeypatch) -> None:
     ]
     assert restore_events, "RESTORE event missing from evidence log"
 
-    assert plan_apply_events[0]["tombstone"] == restore_events[0]["tombstone"]
+    assert plan_apply_events[0]["tombstone"] == restore_events[0]["tombstone"], "Condition must be true"
 
 
 def test_apply_plan_multiple_entries(tmp_path: Path, monkeypatch) -> None:
@@ -165,7 +165,7 @@ def test_apply_plan_multiple_entries(tmp_path: Path, monkeypatch) -> None:
 
     payload = json.loads(result.stdout)
     applied_paths = {item["path"] for item in payload["applied"]}
-    assert applied_paths == {path.as_posix() for path in targets}
+    assert applied_paths == {path.as_posix() for path in targets}, "applied_paths is not valid"
 
     tombstone_by_path: dict[str, str] = {}
     sha_by_path: dict[str, str] = {}
@@ -176,8 +176,8 @@ def test_apply_plan_multiple_entries(tmp_path: Path, monkeypatch) -> None:
     for path, _ in targets.items():
         stub_text = path.read_text(encoding="utf-8")
         path_key = path.as_posix()
-        assert f"# Tombstone: {tombstone_by_path[path_key]}" in stub_text
-        assert f"# SHA256: {sha_by_path[path_key]}" in stub_text
+        assert f", "Condition must be true"
+        assert f", "Condition must be true"
 
     evidence_file = evidence_dir / "archive_ops.jsonl"
     assert evidence_file.exists(), "expected evidence log to exist"
@@ -201,4 +201,4 @@ def test_apply_plan_multiple_entries(tmp_path: Path, monkeypatch) -> None:
 
     for path, contents in original_bytes.items():
         restored = archive_api.restore(tombstone_by_path[path.as_posix()])
-        assert restored["bytes"] == contents
+        assert restored["bytes"] == contents, "Content must not be empty"

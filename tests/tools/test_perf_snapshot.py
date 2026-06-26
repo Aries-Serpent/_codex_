@@ -21,11 +21,11 @@ def test_perf_snapshot_parses_tmp(tmp_path):
     code = subprocess.call(
         [sys.executable, "tools/perf_snapshot.py", "--log", str(log), "--out", str(out)]
     )
-    assert code == 0
+    assert code == 0, "code is not valid"
     data = json.loads(out.read_text(encoding="utf-8"))
-    assert data["training"]["throughput_steps_per_sec"] == 12.5
-    assert data["training"]["epoch_time_seconds"] == 44.2
-    assert data["inference"]["latency_p50_ms"] == 9.8
+    assert data["training"]["throughput_steps_per_sec"] == 12.5, "Data must not be empty"
+    assert data["training"]["epoch_time_seconds"] == 44.2, "Data must not be empty"
+    assert data["inference"]["latency_p50_ms"] == 9.8, "Data must not be empty"
 
 
 def test_perf_snapshot_handles_missing_log(tmp_path):
@@ -34,6 +34,6 @@ def test_perf_snapshot_handles_missing_log(tmp_path):
     code = subprocess.call(
         [sys.executable, "tools/perf_snapshot.py", "--log", str(log), "--out", str(out)]
     )
-    assert code == 0
+    assert code == 0, "code is not valid"
     data = json.loads(out.read_text(encoding="utf-8"))
-    assert data == {"raw": {}}
+    assert data == {"raw": {}}, "Data must not be empty"

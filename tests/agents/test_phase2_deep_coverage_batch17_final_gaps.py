@@ -31,7 +31,7 @@ class TestUncoveredPaths_PhysicsOrchestrator:
 
         for action_type in action_types:
             path = ActionPath(action_type=action_type, description=f"test_{action_type.value}")
-            assert path.action_type == action_type
+            assert path.action_type == action_type, "action_type is not valid"
 
     def test_force_vector_all_directions(self):
         """Test ForceVector with various direction vectors"""
@@ -48,7 +48,7 @@ class TestUncoveredPaths_PhysicsOrchestrator:
 
         for direction in directions:
             force = ForceVector("test", 1.0, direction)
-            assert force.direction == direction
+            assert force.direction == direction, "direction is not valid"
 
     def test_energy_landscape_various_temperatures(self):
         """Test EnergyLandscape across temperature range"""
@@ -58,7 +58,7 @@ class TestUncoveredPaths_PhysicsOrchestrator:
 
         for temp in temps:
             landscape = EnergyLandscape(temperature=temp)
-            assert landscape.temperature == temp
+            assert landscape.temperature == temp, "temperature is not valid"
 
 
 class TestUncoveredPaths_QuantumGame:
@@ -90,7 +90,7 @@ class TestUncoveredPaths_QuantumGame:
 
         for blue, red in strategies:
             engine = QuantumInspiredGameEngine(blue, red, payoff_b, payoff_r)
-            assert engine is not None
+            assert engine is not None, "engine must be initialized"
 
 
 class TestUncoveredPaths_MentalMapping:
@@ -118,8 +118,8 @@ class TestUncoveredPaths_MentalMapping:
             n2 = model.create_node(node_type, {"key": "value", "index": 1})
 
             # Verify both created
-            assert n1 is not None
-            assert n2 is not None
+            assert n1 is not None, "n1 must be initialized"
+            assert n2 is not None, "n2 must be initialized"
 
     def test_all_edge_types_comprehensive(self):
         """Test all EdgeType enum values comprehensively"""
@@ -166,8 +166,8 @@ class TestUncoveredPaths_MentalMapping:
                 )
 
             metrics = model.calculate_metrics()
-            assert metrics["num_nodes"] == size
-            assert metrics["num_edges"] == size - 1
+            assert metrics["num_nodes"] == size, "Condition must be true"
+            assert metrics["num_edges"] == size - 1, "Condition must be true"
 
 
 class TestUncoveredPaths_SelfHealing:
@@ -216,11 +216,11 @@ class TestUncoveredPaths_AdvancedCalculators:
 
         # Using name
         c1 = FluidChannel(name="pipe1", cross_section=1.0, length=10.0)
-        assert c1.name == "pipe1"
+        assert c1.name == "pipe1", "name is not valid"
 
         # Using channel_id (if different from name)
         c2 = FluidChannel(name="pipe2", cross_section=2.0, length=20.0)
-        assert c2.cross_section == 2.0
+        assert c2.cross_section == 2.0, "cross_section is not valid"
 
 
 class TestUncoveredPaths_WorkflowNavigator:
@@ -235,12 +235,12 @@ class TestUncoveredPaths_WorkflowNavigator:
         # Empty workflow
         wf1 = navigator.create_workflow("empty", [])
         status1 = navigator.get_workflow_status(wf1)
-        assert status1["total_steps"] == 0
+        assert status1["total_steps"] == 0, "Condition must be true"
 
         # Single step
         wf2 = navigator.create_workflow("single", [WorkflowStep("s1", "Step 1")])
         status2 = navigator.get_workflow_status(wf2)
-        assert status2["total_steps"] == 1
+        assert status2["total_steps"] == 1, "Condition must be true"
 
         # Multiple steps
         wf3 = navigator.create_workflow(
@@ -252,7 +252,7 @@ class TestUncoveredPaths_WorkflowNavigator:
             ],
         )
         status3 = navigator.get_workflow_status(wf3)
-        assert status3["total_steps"] == 3
+        assert status3["total_steps"] == 3, "Condition must be true"
 
     def test_suggest_next_action_all_scenarios(self):
         """Test suggest_next_action in all scenarios"""
@@ -262,7 +262,7 @@ class TestUncoveredPaths_WorkflowNavigator:
 
         # No workflow
         suggestion = navigator.suggest_next_action()
-        assert suggestion is None
+        assert suggestion is None, "suggestion is not valid"
 
         # With workflow
         steps = [WorkflowStep("s1", "Step 1")]
@@ -270,7 +270,7 @@ class TestUncoveredPaths_WorkflowNavigator:
         navigator.current_workflow_id = wf_id
 
         suggestion = navigator.suggest_next_action()
-        assert suggestion is not None
+        assert suggestion is not None, "suggestion must be initialized"
 
 
 class TestRarelyUsed_AllModules:
@@ -282,11 +282,11 @@ class TestRarelyUsed_AllModules:
 
         # Default config
         orch1 = PhysicsOrchestrator()
-        assert orch1 is not None
+        assert orch1 is not None, "orch1 must be initialized"
 
         # Access config
         config = orch1.config
-        assert config is not None
+        assert config is not None, "config must be initialized"
 
     def test_agent_memory_statistics_method(self):
         """Test AgentMemory statistics method"""
@@ -342,10 +342,10 @@ class TestCompleteCodePaths_Integration:
 
         # Verify all components worked
         stored = memory.retrieve_memory("decision")
-        assert stored is not None
+        assert stored is not None, "stored must be initialized"
 
         metrics = mental_map.calculate_metrics()
-        assert metrics["num_nodes"] >= 1
+        assert metrics["num_nodes"] >= 1, "Value must be greater than zero"
 
     def test_error_handling_chain(self):
         """Test error handling propagation through modules"""
@@ -361,9 +361,9 @@ class TestCompleteCodePaths_Integration:
         result3 = model.shortest_path("fake1", "fake2")
 
         # All should handle gracefully
-        assert result1 is None or result1 is not None
+        assert result1 is None or result1 is not None, "result1 must be initialized"
         assert result2 in [True, False]
-        assert result3 is None
+        assert result3 is None, "Result must not be empty"
 
 
 if __name__ == "__main__":

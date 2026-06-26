@@ -34,5 +34,5 @@ def test_status_report_verbose_and_artifacts(tmp_path):
     )
     assert proc.returncode in (0, 1)
     report_text = output_path.read_text(encoding="utf-8")
-    assert "Artifacts:" in report_text
-    assert (REPO_ROOT / ".codex/status").exists()
+    assert "Artifacts:" in report_text, "Condition must be true"
+    assert (REPO_ROOT / ".codex/status").exists(), "Condition must be true"

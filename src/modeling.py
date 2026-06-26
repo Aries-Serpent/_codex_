@@ -136,7 +136,7 @@ def _resolve_dtype(name: str | None) -> torch.dtype:
         return _DTYPE_MAP[name.lower()]
     except KeyError as exc:
         error_type = type(exc).__name__
-        logger.debug(f"KeyError: <ERROR_TYPE>")
+        logger.debug("KeyError: <ERROR_TYPE>")
         raise ValueError(
             f"Unsupported dtype '{name}'. Expected one of {sorted(_DTYPE_MAP)}"
         ) from exc

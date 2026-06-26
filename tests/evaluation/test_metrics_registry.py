@@ -40,8 +40,8 @@ def test_evaluation_ndjson_roundtrip(tmp_path: Path):
     ]
     assert all({"step", "metric", "value"} <= set(r) for r in got)
     # Deterministic order preserved
-    assert got[0]["metric"] == "loss"
-    assert got[1]["metric"] == "accuracy"
+    assert got[0]["metric"] == "loss", "Condition must be true"
+    assert got[1]["metric"] == "accuracy", "Condition must be true"
 
 
 @pytest.mark.smoke
@@ -53,4 +53,4 @@ def test_evaluation_csv_optional(tmp_path: Path):
     out.write_text(header + "".join(rows), encoding="utf-8")
     lines = out.read_text(encoding="utf-8").splitlines()
     assert lines[0].strip() == "step,metric,value,split"
-    assert len(lines) == 3
+    assert len(lines) == 3, "Lines must not be empty"

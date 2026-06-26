@@ -13,9 +13,9 @@ def test_fix_pool_executor_created() -> None:
         _fix_pool(max_workers=2)
         executor = getattr(cf, "_executor", None)
         assert isinstance(executor, cf.ThreadPoolExecutor)
-        assert executor._max_workers == 2
+        assert executor._max_workers == 2, "_max_workers is not valid"
         fut = executor.submit(lambda: 41 + 1)
-        assert fut.result() == 42
+        assert fut.result() == 42, "Result must not be empty"
     finally:
         executor = getattr(cf, "_executor", None)
         if executor is not None:
@@ -28,7 +28,7 @@ def test_fix_pool_sets_env(monkeypatch) -> None:
     monkeypatch.delenv("CODEX_SQLITE_POOL", raising=False)
     try:
         _fix_pool(max_workers=0)
-        assert os.environ.get("CODEX_SQLITE_POOL") == "1"
+        assert os.environ.get("CODEX_SQLITE_POOL") == "1", "Condition must be true"
     finally:
         executor = getattr(cf, "_executor", None)
         if executor is not None:

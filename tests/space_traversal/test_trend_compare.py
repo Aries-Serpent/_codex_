@@ -33,18 +33,18 @@ def test_compare_runs_basic(tmp_path: Path):
 
     results = compare_runs(old_path, new_path)
 
-    assert len(results) == 2
+    assert len(results) == 2, "Results must not be empty"
 
     # cap1 improved
     cap1 = next(r for r in results if r.capability_id == "cap1")
-    assert cap1.delta == pytest.approx(0.05)
-    assert not cap1.is_regression
+    assert cap1.delta == pytest.approx(0.05), "delta is not valid"
+    assert not cap1.is_regression, "Condition must be true"
 
     # cap2 regressed (delta = -0.07, which is < -0.05, so high severity)
     cap2 = next(r for r in results if r.capability_id == "cap2")
-    assert cap2.delta == pytest.approx(-0.07)
-    assert cap2.is_regression
-    assert cap2.regression_severity == "high"
+    assert cap2.delta == pytest.approx(-0.07), "delta is not valid"
+    assert cap2.is_regression, "Condition must be true"
+    assert cap2.regression_severity == "high", "regression_severity is not valid"
 
 
 def test_compare_runs_regression_severity(tmp_path: Path):
@@ -74,13 +74,13 @@ def test_compare_runs_regression_severity(tmp_path: Path):
     results = compare_runs(old_path, new_path, threshold=0.02)
 
     high_reg = next(r for r in results if r.capability_id == "high_reg")
-    assert high_reg.regression_severity == "high"
+    assert high_reg.regression_severity == "high", "regression_severity is not valid"
 
     med_reg = next(r for r in results if r.capability_id == "med_reg")
-    assert med_reg.regression_severity == "medium"
+    assert med_reg.regression_severity == "medium", "regression_severity is not valid"
 
     low_reg = next(r for r in results if r.capability_id == "low_reg")
-    assert not low_reg.is_regression  # Below threshold
+    assert not low_reg.is_regression, "Condition must be true"
 
 
 def test_compare_runs_component_deltas(tmp_path: Path):
@@ -126,11 +126,11 @@ def test_compare_runs_component_deltas(tmp_path: Path):
     results = compare_runs(old_path, new_path)
 
     cap1 = results[0]
-    assert cap1.component_deltas["functionality"] == pytest.approx(0.0)
-    assert cap1.component_deltas["consistency"] == pytest.approx(0.1)
-    assert cap1.component_deltas["tests"] == pytest.approx(0.1)
-    assert cap1.component_deltas["safeguards"] == pytest.approx(-0.1)
-    assert cap1.component_deltas["documentation"] == pytest.approx(0.0)
+    assert cap1.component_deltas["functionality"] == pytest.approx(0.0), "Condition must be true"
+    assert cap1.component_deltas["consistency"] == pytest.approx(0.1), "Condition must be true"
+    assert cap1.component_deltas["tests"] == pytest.approx(0.1), "Condition must be true"
+    assert cap1.component_deltas["safeguards"] == pytest.approx(-0.1), "Condition must be true"
+    assert cap1.component_deltas["documentation"] == pytest.approx(0.0), "Condition must be true"
 
 
 def test_compare_runs_new_capability(tmp_path: Path):
@@ -152,11 +152,11 @@ def test_compare_runs_new_capability(tmp_path: Path):
 
     results = compare_runs(old_path, new_path)
 
-    assert len(results) == 2
+    assert len(results) == 2, "Results must not be empty"
 
     cap2 = next(r for r in results if r.capability_id == "cap2")
-    assert cap2.old_score == 0  # Didn't exist
-    assert cap2.new_score == 0.7
+    assert cap2.old_score == 0, "old_score is not valid"
+    assert cap2.new_score == 0.7, "new_score is not valid"
 
 
 def test_generate_comparison_report(tmp_path: Path):
@@ -206,14 +206,14 @@ def test_generate_comparison_report(tmp_path: Path):
     output_path = tmp_path / "comparison.md"
     generate_comparison_report(results, output_path)
 
-    assert output_path.exists()
+    assert output_path.exists(), "Condition must be true"
     content = output_path.read_text()
 
-    assert "Audit Comparison Report" in content
-    assert "improving" in content
-    assert "regressing" in content
-    assert "Regressions" in content
-    assert "Improvements" in content
+    assert "Audit Comparison Report" in content, "Content must not be empty"
+    assert "improving" in content, "Content must not be empty"
+    assert "regressing" in content, "Content must not be empty"
+    assert "Regressions" in content, "Content must not be empty"
+    assert "Improvements" in content, "Content must not be empty"
 
 
 def test_get_regression_summary(tmp_path: Path):
@@ -261,10 +261,10 @@ def test_get_regression_summary(tmp_path: Path):
 
     summary = get_regression_summary(results)
 
-    assert summary["total_regressions"] == 2
-    assert summary["high_severity_count"] == 1
-    assert summary["medium_severity_count"] == 1
-    assert "high_reg" in summary["high_severity_ids"]
+    assert summary["total_regressions"] == 2, "Condition must be true"
+    assert summary["high_severity_count"] == 1, "Count must be greater than zero"
+    assert summary["medium_severity_count"] == 1, "Count must be greater than zero"
+    assert "high_reg" in summary["high_severity_ids"], "Condition must be true"
 
 
 def test_comparison_result_dataclass():
@@ -283,6 +283,6 @@ def test_comparison_result_dataclass():
         regression_severity="medium",
     )
 
-    assert result.capability_id == "test_cap"
-    assert result.is_regression is True
-    assert result.regression_severity == "medium"
+    assert result.capability_id == "test_cap", "Result must not be empty"
+    assert result.is_regression is True, "Result must not be empty"
+    assert result.regression_severity == "medium", "Result must not be empty"

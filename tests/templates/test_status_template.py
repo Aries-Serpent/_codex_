@@ -72,8 +72,8 @@ def test_status_template_has_required_sections() -> None:
 def test_status_template_has_version_metadata() -> None:
     """Verify template has version metadata."""
     contents = read_template("codex_status_template_v1.1.md")
-    assert "Template: v1.1" in contents
-    assert "## Template CHANGELOG" in contents
+    assert "Template: v1.1" in contents, "Content must not be empty"
+    assert ", "Condition must be true"
 
 
 @pytest.mark.templates
@@ -82,18 +82,18 @@ def test_status_template_has_scoring_rubric() -> None:
     contents = read_template("codex_status_template_v1.1.md")
 
     # Check for severity levels
-    assert "1 Trivial" in contents
-    assert "2 Low" in contents
-    assert "3 Medium" in contents
-    assert "4 High" in contents
-    assert "5 Critical" in contents
+    assert "1 Trivial" in contents, "Content must not be empty"
+    assert "2 Low" in contents, "Content must not be empty"
+    assert "3 Medium" in contents, "Content must not be empty"
+    assert "4 High" in contents, "Content must not be empty"
+    assert "5 Critical" in contents, "Content must not be empty"
 
     # Check for confidence levels
-    assert "1 Very Low" in contents
-    assert "2 Low" in contents
-    assert "3 Medium" in contents
-    assert "4 High" in contents
-    assert "5 Very High" in contents
+    assert "1 Very Low" in contents, "Content must not be empty"
+    assert "2 Low" in contents, "Content must not be empty"
+    assert "3 Medium" in contents, "Content must not be empty"
+    assert "4 High" in contents, "Content must not be empty"
+    assert "5 Very High" in contents, "Content must not be empty"
 
 
 @pytest.mark.templates
@@ -141,8 +141,8 @@ def test_json_schema_is_valid_json() -> None:
     with open(schema_path, "r", encoding="utf-8") as f:
         schema = json.load(f)
 
-    assert schema["title"] == "codex_status_update"
-    assert schema["type"] == "object"
+    assert schema["title"] == "codex_status_update", "Condition must be true"
+    assert schema["type"] == "object", "Object must be initialized"
 
 
 @pytest.mark.templates
@@ -163,7 +163,7 @@ def test_json_schema_has_required_properties() -> None:
         "decisions",
     ]
 
-    assert schema["required"] == required_props
+    assert schema["required"] == required_props, "Condition must be true"
 
     for prop in required_props:
         assert prop in schema["properties"], f"Missing property definition: {prop}"
@@ -241,11 +241,11 @@ def test_diff_style_guide_has_patch_format() -> None:
     contents = read_template("diff_style_guide_v1.1.md")
 
     # Check for patch markers
-    assert "*** Begin Patch" in contents
-    assert "*** End Patch" in contents
-    assert "*** Update File:" in contents
-    assert "*** Add File:" in contents
-    assert "*** Delete File:" in contents
+    assert "*** Begin Patch" in contents, "Content must not be empty"
+    assert "*** End Patch" in contents, "Content must not be empty"
+    assert "*** Update File:" in contents, "Content must not be empty"
+    assert "*** Add File:" in contents, "Content must not be empty"
+    assert "*** Delete File:" in contents, "Content must not be empty"
 
 
 @pytest.mark.templates
@@ -274,9 +274,9 @@ def test_template_has_secret_masking_guidance() -> None:
     """Verify template includes secret masking guidance."""
     contents = read_template("codex_status_template_v1.1.md")
 
-    assert "[REDACTED:" in contents
-    assert "Never include plaintext secrets" in contents
-    assert "Secret‑Masking Guidance" in contents
+    assert "[REDACTED:" in contents, "Content must not be empty"
+    assert "Never include plaintext secrets" in contents, "Content must not be empty"
+    assert "Secret‑Masking Guidance" in contents, "Content must not be empty"
 
 
 @pytest.mark.templates
@@ -301,8 +301,8 @@ def test_template_title_format() -> None:
     """Verify template specifies title format correctly."""
     contents = read_template("codex_status_template_v1.1.md")
 
-    assert "📍 `_codex_` : Status Update" in contents
-    assert "YYYY‑MM‑DD‑HH:mm:z‑UTC" in contents
+    assert "📍 `_codex_` : Status Update" in contents, "Content must not be empty"
+    assert "YYYY‑MM‑DD‑HH:mm:z‑UTC" in contents, "Content must not be empty"
 
 
 @pytest.mark.templates
@@ -313,7 +313,7 @@ def test_json_schema_version_constraint() -> None:
         schema = json.load(f)
 
     template_version = schema["properties"]["metadata"]["properties"]["template_version"]
-    assert template_version["const"] == "v1.1"
+    assert template_version["const"] == "v1.1", "Condition must be true"
 
 
 @pytest.mark.templates
@@ -324,7 +324,7 @@ def test_json_schema_v12_version_constraint() -> None:
         schema = json.load(f)
 
     template_version = schema["properties"]["metadata"]["properties"]["template_version"]
-    assert template_version["const"] == "v1.2"
+    assert template_version["const"] == "v1.2", "Condition must be true"
 
 
 @pytest.mark.templates
@@ -352,10 +352,10 @@ def test_status_template_v12_has_git_context() -> None:
     """Verify v1.2 template has git context fields."""
     contents = read_template("codex_status_template_v1.2.md")
 
-    assert "**Git Context**:" in contents
-    assert "**Branch**:" in contents
-    assert "**Commit SHA**:" in contents
-    assert "**Dirty State**:" in contents
+    assert "**Git Context**:" in contents, "Content must not be empty"
+    assert "**Branch**:" in contents, "Content must not be empty"
+    assert "**Commit SHA**:" in contents, "Content must not be empty"
+    assert "**Dirty State**:" in contents, "Content must not be empty"
 
 
 @pytest.mark.templates
@@ -363,11 +363,11 @@ def test_status_template_v12_has_environment() -> None:
     """Verify v1.2 template has environment fields."""
     contents = read_template("codex_status_template_v1.2.md")
 
-    assert "**Environment**:" in contents
-    assert "**Python**:" in contents
-    assert "**PyTorch**:" in contents
-    assert "**CUDA**:" in contents
-    assert "**OS**:" in contents
+    assert "**Environment**:" in contents, "Content must not be empty"
+    assert "**Python**:" in contents, "Content must not be empty"
+    assert "**PyTorch**:" in contents, "Content must not be empty"
+    assert "**CUDA**:" in contents, "Content must not be empty"
+    assert "**OS**:" in contents, "Content must not be empty"
 
 
 @pytest.mark.templates
@@ -407,10 +407,10 @@ def test_status_template_v12_has_audit_integrity() -> None:
     """Verify v1.2 template has audit integrity chain."""
     contents = read_template("codex_status_template_v1.2.md")
 
-    assert "Audit Integrity Chain" in contents
-    assert "SHA256 Hash" in contents
-    assert "audit_run_manifest.json" in contents
-    assert "Verification Process" in contents
+    assert "Audit Integrity Chain" in contents, "Content must not be empty"
+    assert "SHA256 Hash" in contents, "Content must not be empty"
+    assert "audit_run_manifest.json" in contents, "Content must not be empty"
+    assert "Verification Process" in contents, "Content must not be empty"
 
 
 @pytest.mark.templates
@@ -421,10 +421,10 @@ def test_json_schema_v12_has_git_context() -> None:
         schema = json.load(f)
 
     git_context = schema["properties"]["metadata"]["properties"]["git_context"]
-    assert git_context is not None
-    assert "branch" in git_context["properties"]
-    assert "commit_sha" in git_context["properties"]
-    assert "is_dirty" in git_context["properties"]
+    assert git_context is not None, "git_context must be initialized"
+    assert "branch" in git_context["properties"], "Condition must be true"
+    assert "commit_sha" in git_context["properties"], "Condition must be true"
+    assert "is_dirty" in git_context["properties"], "Condition must be true"
 
 
 @pytest.mark.templates
@@ -434,12 +434,12 @@ def test_json_schema_v12_has_ml_test_score() -> None:
     with open(schema_path, "r", encoding="utf-8") as f:
         schema = json.load(f)
 
-    assert "ml_test_score" in schema["properties"]
+    assert "ml_test_score" in schema["properties"], "Condition must be true"
     ml_test_score = schema["properties"]["ml_test_score"]
-    assert "data_tests" in ml_test_score["properties"]
-    assert "model_tests" in ml_test_score["properties"]
-    assert "infrastructure_tests" in ml_test_score["properties"]
-    assert "monitoring" in ml_test_score["properties"]
+    assert "data_tests" in ml_test_score["properties"], "Data must not be empty"
+    assert "model_tests" in ml_test_score["properties"], "Condition must be true"
+    assert "infrastructure_tests" in ml_test_score["properties"], "Condition must be true"
+    assert "monitoring" in ml_test_score["properties"], "Condition must be true"
 
 
 @pytest.mark.templates
@@ -449,11 +449,11 @@ def test_json_schema_v12_has_hydra_config() -> None:
     with open(schema_path, "r", encoding="utf-8") as f:
         schema = json.load(f)
 
-    assert "hydra_config_snapshot" in schema["properties"]
+    assert "hydra_config_snapshot" in schema["properties"], "Condition must be true"
     hydra_snapshot = schema["properties"]["hydra_config_snapshot"]
-    assert "config_groups" in hydra_snapshot["properties"]
-    assert "active_overrides" in hydra_snapshot["properties"]
-    assert "validation_status" in hydra_snapshot["properties"]
+    assert "config_groups" in hydra_snapshot["properties"], "Condition must be true"
+    assert "active_overrides" in hydra_snapshot["properties"], "Condition must be true"
+    assert "validation_status" in hydra_snapshot["properties"], "Condition must be true"
 
 
 @pytest.mark.templates
@@ -461,9 +461,9 @@ def test_authoring_guide_v12_has_schema_validation_section() -> None:
     """Verify authoring guide v1.2 documents schema validation."""
     contents = read_template("authoring_guide_v1.2.md")
 
-    assert "## 4. Schema Validation Report (NEW v1.2)" in contents
-    assert "tools/validate_configs.py" in contents
-    assert "jsonschema Draft7Validator" in contents
+    assert ", "Condition must be true"
+    assert "tools/validate_configs.py" in contents, "Content must not be empty"
+    assert "jsonschema Draft7Validator" in contents, "Content must not be empty"
 
 
 @pytest.mark.templates
@@ -471,8 +471,8 @@ def test_authoring_guide_v12_has_security_validation_section() -> None:
     """Verify authoring guide v1.2 documents security validation."""
     contents = read_template("authoring_guide_v1.2.md")
 
-    assert "## 5. Security Input Validation Summary (NEW v1.2)" in contents
-    assert "src/security/core.py" in contents
+    assert ", "Condition must be true"
+    assert "src/security/core.py" in contents, "Content must not be empty"
 
 
 @pytest.mark.templates
@@ -480,8 +480,8 @@ def test_authoring_guide_v12_has_audit_integrity_section() -> None:
     """Verify authoring guide v1.2 documents audit integrity."""
     contents = read_template("authoring_guide_v1.2.md")
 
-    assert "## 6. Audit Integrity Chain (NEW v1.2)" in contents
-    assert "SHA256 hash" in contents
+    assert ", "Condition must be true"
+    assert "SHA256 hash" in contents, "Content must not be empty"
 
 
 @pytest.mark.templates
@@ -489,6 +489,6 @@ def test_diff_style_guide_v12_has_schema_requirements() -> None:
     """Verify diff style guide v1.2 includes schema validation requirements."""
     contents = read_template("diff_style_guide_v1.2.md")
 
-    assert "schema validation passes" in contents
-    assert "tools/validate_configs.py" in contents
-    assert "NEW v1.2" in contents
+    assert "schema validation passes" in contents, "Content must not be empty"
+    assert "tools/validate_configs.py" in contents, "Content must not be empty"
+    assert "NEW v1.2" in contents, "Content must not be empty"

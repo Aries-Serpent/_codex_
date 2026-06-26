@@ -18,8 +18,8 @@ try:
     _HAS_BOTO3 = True
 except ImportError as e:
     error_type = type(e).__name__
-    logger.debug(f"ImportError: <ERROR_TYPE>")
-    logger.warning(f"ImportError: <ERROR_TYPE>", exc_info=True)
+    logger.debug("ImportError: <ERROR_TYPE>")
+    logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
     _HAS_BOTO3 = False
     logger.warning("boto3 not installed. AWS EventBridge support disabled.")
 
@@ -52,8 +52,8 @@ class AWSEventPublisher(EventPublisher):
             logger.info(f"AWS EventBridge client initialized (region={self.region_name})")
         except (ValueError, TypeError, RuntimeError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.warning(f"Failed to initialize AWS EventBridge client: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.warning("Failed to initialize AWS EventBridge client: <ERROR_TYPE>")
             self.client = None
 
     def publish(self, event: Event) -> bool:
@@ -91,8 +91,8 @@ class AWSEventPublisher(EventPublisher):
 
         except (ValueError, TypeError, RuntimeError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.error(f"Failed to publish to AWS EventBridge: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.error("Failed to publish to AWS EventBridge: <ERROR_TYPE>")
             return False
 
     def publish_batch(self, events: list[Event]) -> bool:
@@ -138,8 +138,8 @@ class AWSEventPublisher(EventPublisher):
 
             except (ValueError, TypeError, RuntimeError) as e:
                 error_type = type(e).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
-                logger.error(f"Failed to publish batch to AWS EventBridge: <ERROR_TYPE>")
+                logger.debug("Exception: <ERROR_TYPE>")
+                logger.error("Failed to publish batch to AWS EventBridge: <ERROR_TYPE>")
                 all_success = False
 
         return all_success

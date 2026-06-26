@@ -39,5 +39,5 @@ def test_checkpoint_records_git_commit(tmp_path):
     commit = subprocess.check_output(
         ["git", "-C", str(repo_root), "rev-parse", "HEAD"], text=True
     ).strip()
-    assert extra["git_commit"] == commit
-    assert "system" in extra
+    assert extra["git_commit"] == commit, "Condition must be true"
+    assert "system" in extra, "Condition must be true"

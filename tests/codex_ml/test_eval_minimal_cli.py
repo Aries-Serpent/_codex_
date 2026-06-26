@@ -44,9 +44,9 @@ def test_eval_minimal_invokes_eval_loop(tmp_path, monkeypatch):
         ]
     )
 
-    assert rc == 0
-    assert len(dummy.calls) == 1
+    assert rc == 0, "rc is not valid"
+    assert len(dummy.calls) == 1, "Collection must not be empty"
     call = dummy.calls[0]
-    assert call["checkpoint"] == str(ckpt)
+    assert call["checkpoint"] == str(ckpt), "Condition must be true"
     assert "batch_size" in call["config"].get("eval", {})
-    assert Path(call["run_dir"]).exists()
+    assert Path(call["run_dir"]).exists(), "Condition must be true"

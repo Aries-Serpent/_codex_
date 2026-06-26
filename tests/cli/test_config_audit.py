@@ -23,27 +23,27 @@ def test_config_audit_first_ok(tmp_path: Path) -> None:
     cfg = tmp_path / "config.yaml"
     cfg.write_text("defaults:\n  - _self_\n  - dataset: base\n", encoding="utf-8")
     proc = _run_config("--audit", "first", "--path", str(cfg))
-    assert proc.returncode == 0
+    assert proc.returncode == 0, "returncode is not valid"
     payload = json.loads(proc.stdout)
-    assert payload["ok"] is True
-    assert payload["position"] == 0
-    assert payload["_self_"] is True
+    assert payload["ok"] is True, "Condition must be true"
+    assert payload["position"] == 0, "Condition must be true"
+    assert payload["_self_"] is True, "Condition must be true"
 
 
 def test_config_audit_missing_self(tmp_path: Path) -> None:
     cfg = tmp_path / "config.yaml"
     cfg.write_text("defaults:\n  - dataset: base\n", encoding="utf-8")
     proc = _run_config("--audit", "first", "--path", str(cfg))
-    assert proc.returncode == 3
+    assert proc.returncode == 3, "returncode is not valid"
     payload = json.loads(proc.stdout)
-    assert payload["_self_"] is False
-    assert payload["ok"] is False
+    assert payload["_self_"] is False, "Condition must be true"
+    assert payload["ok"] is False, "Condition must be true"
 
 
 def test_config_audit_missing_file(tmp_path: Path) -> None:
     missing = tmp_path / "nope.yaml"
     proc = _run_config("--path", str(missing))
-    assert proc.returncode == 2
+    assert proc.returncode == 2, "returncode is not valid"
     payload = json.loads(proc.stdout)
-    assert payload["_self_"] is False
-    assert payload["position"] is None
+    assert payload["_self_"] is False, "Condition must be true"
+    assert payload["position"] is None, "Condition must be true"

@@ -17,7 +17,7 @@ from tools.export_to_parquet import _ensure_within_base
     ["table", "schema.table", "schema_name.table_2024"],
 )
 def test_validate_identifier_accepts_valid(identifier):
-    assert _validate_identifier(identifier) == identifier
+    assert _validate_identifier(identifier) == identifier, "Condition must be true"
 
 
 @pytest.mark.parametrize(
@@ -38,7 +38,7 @@ def test_ensure_within_base_accepts_child(tmp_path):
     base = tmp_path
     child = base / "sub" / "dir"
     resolved = _ensure_within_base(child, base)
-    assert resolved == child.resolve()
+    assert resolved == child.resolve(), "resolved is not valid"
 
 
 def test_ensure_within_base_blocks_escape(tmp_path):

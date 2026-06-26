@@ -73,31 +73,31 @@ class TestRotationTrigger:
             RotationTrigger.MANUAL,
             RotationTrigger.POLICY_CHANGE,
         ]
-        assert len(triggers) == 6
+        assert len(triggers) == 6, "Triggers must not be empty"
 
     def test_rotation_trigger_scheduled(self):
         """Test scheduled trigger."""
-        assert RotationTrigger.SCHEDULED.value == "scheduled"
+        assert RotationTrigger.SCHEDULED.value == "scheduled", "Value must be initialized"
 
     def test_rotation_trigger_expiry(self):
         """Test expiry trigger."""
-        assert RotationTrigger.EXPIRY.value == "expiry"
+        assert RotationTrigger.EXPIRY.value == "expiry", "Value must be initialized"
 
     def test_rotation_trigger_security_event(self):
         """Test security event trigger."""
-        assert RotationTrigger.SECURITY_EVENT.value == "security_event"
+        assert RotationTrigger.SECURITY_EVENT.value == "security_event", "Value must be initialized"
 
     def test_rotation_trigger_exposure(self):
         """Test exposure trigger."""
-        assert RotationTrigger.EXPOSURE.value == "exposure"
+        assert RotationTrigger.EXPOSURE.value == "exposure", "Value must be initialized"
 
     def test_rotation_trigger_manual(self):
         """Test manual trigger."""
-        assert RotationTrigger.MANUAL.value == "manual"
+        assert RotationTrigger.MANUAL.value == "manual", "Value must be initialized"
 
     def test_rotation_trigger_policy_change(self):
         """Test policy change trigger."""
-        assert RotationTrigger.POLICY_CHANGE.value == "policy_change"
+        assert RotationTrigger.POLICY_CHANGE.value == "policy_change", "Value must be initialized"
 
 
 # ============================================================================
@@ -116,23 +116,23 @@ class TestTokenState:
             TokenState.REVOKED,
             TokenState.EXPIRED,
         ]
-        assert len(states) == 4
+        assert len(states) == 4, "States must not be empty"
 
     def test_token_state_active(self):
         """Test active state."""
-        assert TokenState.ACTIVE.value == "active"
+        assert TokenState.ACTIVE.value == "active", "Value must be initialized"
 
     def test_token_state_rotating(self):
         """Test rotating state."""
-        assert TokenState.ROTATING.value == "rotating"
+        assert TokenState.ROTATING.value == "rotating", "Value must be initialized"
 
     def test_token_state_revoked(self):
         """Test revoked state."""
-        assert TokenState.REVOKED.value == "revoked"
+        assert TokenState.REVOKED.value == "revoked", "Value must be initialized"
 
     def test_token_state_expired(self):
         """Test expired state."""
-        assert TokenState.EXPIRED.value == "expired"
+        assert TokenState.EXPIRED.value == "expired", "Value must be initialized"
 
 
 # ============================================================================
@@ -145,13 +145,13 @@ class TestTokenMetadata:
 
     def test_token_metadata_creation(self, token_metadata):
         """Test creating token metadata."""
-        assert token_metadata.token_id == "token_123"
-        assert token_metadata.state == TokenState.ACTIVE
-        assert token_metadata.rotation_count == 0
+        assert token_metadata.token_id == "token_123", "Data must not be empty"
+        assert token_metadata.state == TokenState.ACTIVE, "Data must not be empty"
+        assert token_metadata.rotation_count == 0, "Data must not be empty"
 
     def test_token_metadata_is_expired_false(self, token_metadata):
         """Test is_expired returns False for valid token."""
-        assert token_metadata.is_expired() is False
+        assert token_metadata.is_expired() is False, "Data must not be empty"
 
     def test_token_metadata_is_expired_true(self):
         """Test is_expired returns True for expired token."""
@@ -160,12 +160,12 @@ class TestTokenMetadata:
             created_at=datetime.now(UTC),
             expires_at=datetime.now(UTC) - timedelta(hours=1),
         )
-        assert metadata.is_expired() is True
+        assert metadata.is_expired() is True, "Data must not be empty"
 
     def test_token_metadata_days_until_expiry(self, token_metadata):
         """Test days_until_expiry calculation."""
         days = token_metadata.days_until_expiry()
-        assert days >= 89 and days <= 91
+        assert days >= 89 and days <= 91, "days must be greater than zero"
 
     def test_token_metadata_days_until_expiry_expired(self):
         """Test days_until_expiry for expired token."""
@@ -174,7 +174,7 @@ class TestTokenMetadata:
             created_at=datetime.now(UTC),
             expires_at=datetime.now(UTC) - timedelta(hours=1),
         )
-        assert metadata.days_until_expiry() == 0
+        assert metadata.days_until_expiry() == 0, "Data must not be empty"
 
     def test_token_metadata_should_rotate_expiry_trigger(self, token_metadata, rotation_policy):
         """Test should_rotate detects expiry."""
@@ -184,8 +184,8 @@ class TestTokenMetadata:
             expires_at=datetime.now(UTC) + timedelta(days=6),  # Less than 7 days
         )
         should_rotate, trigger = metadata.should_rotate(rotation_policy)
-        assert should_rotate is True
-        assert trigger == RotationTrigger.EXPIRY
+        assert should_rotate is True, "should_rotate is not valid"
+        assert trigger == RotationTrigger.EXPIRY, "trigger is not valid"
 
     def test_token_metadata_should_rotate_age_trigger(self, rotation_policy):
         """Test should_rotate detects max age."""
@@ -196,7 +196,7 @@ class TestTokenMetadata:
             expires_at=datetime.now(UTC) + timedelta(days=90),
         )
         should_rotate, trigger = metadata.should_rotate(rotation_policy)
-        assert should_rotate is True
+        assert should_rotate is True, "should_rotate is not valid"
 
     def test_token_metadata_should_rotate_no_trigger(self, token_metadata, rotation_policy):
         """Test should_rotate returns False when no trigger."""
@@ -211,8 +211,8 @@ class TestTokenMetadata:
             expires_at=datetime.now(UTC) + timedelta(days=90),
             scopes=["read:repo", "write:repo", "admin:org"],
         )
-        assert len(metadata.scopes) == 3
-        assert "read:repo" in metadata.scopes
+        assert len(metadata.scopes) == 3, "Collection must not be empty"
+        assert "read:repo" in metadata.scopes, "Data must not be empty"
 
     def test_token_metadata_last_used_tracking(self):
         """Test last_used timestamp tracking."""
@@ -223,7 +223,7 @@ class TestTokenMetadata:
             expires_at=now + timedelta(days=90),
             last_used=now,
         )
-        assert metadata.last_used == now
+        assert metadata.last_used == now, "Data must not be empty"
 
     def test_token_metadata_rotation_count_increment(self):
         """Test rotation count tracking."""
@@ -233,7 +233,7 @@ class TestTokenMetadata:
             expires_at=datetime.now(UTC) + timedelta(days=90),
             rotation_count=5,
         )
-        assert metadata.rotation_count == 5
+        assert metadata.rotation_count == 5, "Data must not be empty"
 
     def test_token_metadata_different_providers(self):
         """Test with different token providers."""
@@ -245,7 +245,7 @@ class TestTokenMetadata:
                 expires_at=datetime.now(UTC) + timedelta(days=90),
                 provider=provider,
             )
-            assert metadata.provider == provider
+            assert metadata.provider == provider, "Data must not be empty"
 
 
 # ============================================================================
@@ -259,9 +259,9 @@ class TestRotationPolicy:
     def test_rotation_policy_default_values(self):
         """Test default policy values."""
         policy = RotationPolicy()
-        assert policy.max_token_age_days == 90
-        assert policy.rotate_before_expiry_days == 7
-        assert policy.grace_period_hours == 24
+        assert policy.max_token_age_days == 90, "max_token_age_days is not valid"
+        assert policy.rotate_before_expiry_days == 7, "rotate_before_expiry_days is not valid"
+        assert policy.grace_period_hours == 24, "grace_period_hours is not valid"
 
     def test_rotation_policy_custom_values(self):
         """Test custom policy values."""
@@ -270,14 +270,14 @@ class TestRotationPolicy:
             rotate_before_expiry_days=14,
             grace_period_hours=48,
         )
-        assert policy.max_token_age_days == 60
-        assert policy.rotate_before_expiry_days == 14
-        assert policy.grace_period_hours == 48
+        assert policy.max_token_age_days == 60, "max_token_age_days is not valid"
+        assert policy.rotate_before_expiry_days == 14, "rotate_before_expiry_days is not valid"
+        assert policy.grace_period_hours == 48, "grace_period_hours is not valid"
 
     def test_rotation_policy_with_max_rotation_count(self):
         """Test max_rotation_count setting."""
         policy = RotationPolicy(max_rotation_count=24)
-        assert policy.max_rotation_count == 24
+        assert policy.max_rotation_count == 24, "Count must be greater than zero"
 
     def test_rotation_policy_zero_values(self):
         """Test with zero values."""
@@ -285,7 +285,7 @@ class TestRotationPolicy:
             max_token_age_days=0,
             rotate_before_expiry_days=0,
         )
-        assert policy.max_token_age_days == 0
+        assert policy.max_token_age_days == 0, "max_token_age_days is not valid"
 
     def test_rotation_policy_large_values(self):
         """Test with large values."""
@@ -294,7 +294,7 @@ class TestRotationPolicy:
             rotate_before_expiry_days=60,
             grace_period_hours=720,
         )
-        assert policy.max_token_age_days == 365
+        assert policy.max_token_age_days == 365, "max_token_age_days is not valid"
 
 
 # ============================================================================
@@ -307,30 +307,30 @@ class TestTokenRotationManager:
 
     def test_token_manager_creation(self, token_manager):
         """Test creating a token manager."""
-        assert token_manager is not None
-        assert token_manager.policy is not None
+        assert token_manager is not None, "token_manager must be initialized"
+        assert token_manager.policy is not None, "policy must be initialized"
 
     def test_token_manager_register_token(self, token_manager, token_metadata):
         """Test registering a token."""
         result = token_manager.register_token(token_metadata)
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     def test_token_manager_get_token(self, token_manager, token_metadata):
         """Test getting a token."""
         token_manager.register_token(token_metadata)
         result = token_manager.get_token("token_123")
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     def test_token_manager_get_nonexistent_token(self, token_manager):
         """Test getting nonexistent token."""
         result = token_manager.get_token("nonexistent")
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_token_manager_list_tokens(self, token_manager, token_metadata):
         """Test listing tokens."""
         token_manager.register_token(token_metadata)
         tokens = token_manager.list_tokens()
-        assert len(tokens) >= 1
+        assert len(tokens) >= 1, "Tokens must not be empty"
 
     def test_token_manager_list_tokens_empty(self, token_manager):
         """Test listing tokens when empty."""
@@ -352,19 +352,19 @@ class TestTokenRotationManager:
         """Test marking token for rotation."""
         token_manager.register_token(token_metadata)
         result = token_manager.mark_for_rotation("token_123", RotationTrigger.MANUAL)
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     def test_token_manager_rotate_token(self, token_manager, token_metadata):
         """Test rotating a token."""
         token_manager.register_token(token_metadata)
         new_token = token_manager.rotate_token("token_123")
-        assert new_token is not None
+        assert new_token is not None, "new_token must be initialized"
 
     def test_token_manager_revoke_token(self, token_manager, token_metadata):
         """Test revoking a token."""
         token_manager.register_token(token_metadata)
         result = token_manager.revoke_token("token_123")
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     def test_token_manager_get_rotation_stats(self, token_manager, token_metadata):
         """Test getting rotation statistics."""
@@ -382,7 +382,7 @@ class TestTokenRotationManager:
         """Test updating last_used timestamp."""
         token_manager.register_token(token_metadata)
         result = token_manager.update_last_used("token_123")
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
 
 # ============================================================================
@@ -403,7 +403,7 @@ class TestRotationScenarios:
         """Test emergency rotation on security event."""
         token_manager.register_token(token_metadata)
         result = token_manager.mark_for_rotation("token_123", RotationTrigger.SECURITY_EVENT)
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     def test_scenario_grace_period_during_rotation(
         self, token_manager, token_metadata, rotation_policy
@@ -411,7 +411,7 @@ class TestRotationScenarios:
         """Test grace period during rotation."""
         token_manager.register_token(token_metadata)
         old_metadata = token_manager.get_token("token_123")
-        assert old_metadata.state == TokenState.ACTIVE
+        assert old_metadata.state == TokenState.ACTIVE, "Data must not be empty"
 
         token_manager.rotate_token("token_123")
 
@@ -434,7 +434,7 @@ class TestRotationScenarios:
             token_manager.register_token(token)
 
         all_tokens = token_manager.list_tokens()
-        assert len(all_tokens) == 5
+        assert len(all_tokens) == 5, "All_tokens must not be empty"
 
     def test_scenario_max_rotation_limit(self, token_manager, rotation_policy):
         """Test max rotation count enforcement."""
@@ -478,7 +478,7 @@ def test_token_expiry_rotation_parametrized(rotation_policy, days_remaining, sho
     )
     should_rotate_result, trigger = metadata.should_rotate(rotation_policy)
     if should_rotate:
-        assert should_rotate_result is True or should_rotate_result is False
+        assert should_rotate_result is True or should_rotate_result is False, "Result must not be empty"
     else:
         assert isinstance(should_rotate_result, bool)
 
@@ -502,7 +502,7 @@ def test_token_provider_parametrized(provider):
         expires_at=datetime.now(UTC) + timedelta(days=90),
         provider=provider,
     )
-    assert metadata.provider == provider
+    assert metadata.provider == provider, "Data must not be empty"
 
 
 @pytest.mark.parametrize(
@@ -522,7 +522,7 @@ def test_token_state_transitions_parametrized(state):
         expires_at=datetime.now(UTC) + timedelta(days=90),
         state=state,
     )
-    assert metadata.state == state
+    assert metadata.state == state, "Data must not be empty"
 
 
 # ============================================================================
@@ -541,7 +541,7 @@ class TestEdgeCases:
             created_at=old_date,
             expires_at=datetime.now(UTC) + timedelta(days=90),
         )
-        assert metadata.is_expired() is False
+        assert metadata.is_expired() is False, "Data must not be empty"
 
     def test_token_with_immediate_expiry(self):
         """Test token expiring immediately."""
@@ -550,7 +550,7 @@ class TestEdgeCases:
             created_at=datetime.now(UTC),
             expires_at=datetime.now(UTC),
         )
-        assert metadata.is_expired() is True
+        assert metadata.is_expired() is True, "Data must not be empty"
 
     def test_token_with_empty_scopes(self):
         """Test token with no scopes."""
@@ -560,7 +560,7 @@ class TestEdgeCases:
             expires_at=datetime.now(UTC) + timedelta(days=90),
             scopes=[],
         )
-        assert len(metadata.scopes) == 0
+        assert len(metadata.scopes) == 0, "Collection must not be empty"
 
     def test_token_with_many_scopes(self):
         """Test token with many scopes."""
@@ -571,7 +571,7 @@ class TestEdgeCases:
             expires_at=datetime.now(UTC) + timedelta(days=90),
             scopes=scopes,
         )
-        assert len(metadata.scopes) == 100
+        assert len(metadata.scopes) == 100, "Collection must not be empty"
 
     def test_token_high_rotation_count(self):
         """Test token with high rotation count."""
@@ -581,4 +581,4 @@ class TestEdgeCases:
             expires_at=datetime.now(UTC) + timedelta(days=90),
             rotation_count=999,
         )
-        assert metadata.rotation_count == 999
+        assert metadata.rotation_count == 999, "Data must not be empty"

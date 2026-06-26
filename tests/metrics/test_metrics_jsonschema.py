@@ -37,7 +37,7 @@ def test_metrics_history_matches_schema(tmp_path: Path, monkeypatch):
     record_metrics(prefix="train", epoch=1, metrics={"loss": 0.9, "acc": 0.1}, config_id="cfg-1")
 
     history_path = Path("artifacts") / "metrics.json"
-    assert history_path.exists()
+    assert history_path.exists(), "hist is not valid"
     history = json.loads(history_path.read_text(encoding="utf-8"))
     assert isinstance(history, list) and len(history) >= 2
 

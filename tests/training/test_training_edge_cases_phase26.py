@@ -55,7 +55,7 @@ class TestTrainingEdgeCases:
         small_dataset = [{"data": i} for i in range(3)]
         batch_size = 100
         # Should adjust batch size or handle gracefully
-        assert len(small_dataset) < batch_size
+        assert len(small_dataset) < batch_size, "Small_dataset must not be empty"
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_training_nan_loss(self):
@@ -63,13 +63,13 @@ class TestTrainingEdgeCases:
         # Simulate NaN loss scenario
         nan_loss = float("nan")
         # Should detect and handle NaN loss
-        assert np.isnan(nan_loss)
+        assert np.isnan(nan_loss), "Condition must be true"
 
     def test_training_inf_loss(self):
         """Test training when loss becomes infinite"""
         inf_loss = float("inf")
         # Should detect and handle infinite loss
-        assert np.isinf(inf_loss)
+        assert np.isinf(inf_loss), "Condition must be true"
 
     def test_training_gradient_explosion_placeholder(self):
         """Test training with exploding gradients"""
@@ -83,7 +83,7 @@ class TestTrainingEdgeCases:
         # Simulate very small gradients
         small_gradient = torch.tensor([1e-10, 1e-10, 1e-10])
         # Should detect vanishing gradients
-        assert torch.max(torch.abs(small_gradient)) < 1e-5
+        assert torch.max(torch.abs(small_gradient)) < 1e-5, "t is not valid"
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     def test_training_out_of_memory(self):
@@ -133,7 +133,7 @@ class TestTrainingEdgeCases:
         """Test training with learning rate = 0"""
         lr = 0.0
         # Should reject or warn about zero learning rate
-        assert lr == 0.0
+        assert lr == 0.0, "lr is not valid"
         pytest.skip("Test not fully implemented - placeholder for edge case coverage")
 
     # ========== Phase 27.1 Sub-batch B1: Dataset Edge Cases (5 tests) ==========
@@ -148,7 +148,7 @@ class TestTrainingEdgeCases:
             batch_count = sum(1 for _ in dataloader)
 
             # Should complete without error, with 0 batches
-            assert batch_count == 0
+            assert batch_count == 0, "Count must be greater than zero"
             mock_dataloader.assert_called_once()
 
     def test_training_single_sample_batch(self):
@@ -163,7 +163,7 @@ class TestTrainingEdgeCases:
         try:
             output = batch_norm(single_sample)
             # Should handle or error on single sample
-            assert output.shape == single_sample.shape
+            assert output.shape == single_sample.shape, "shape is not valid"
         except (ValueError, RuntimeError):
             # Expected for some configurations
             _ = None  # suppressed: no action needed
@@ -177,8 +177,8 @@ class TestTrainingEdgeCases:
         full_batches = dataset_size // batch_size  # 3 full batches
         last_batch_size = dataset_size % batch_size  # 4 remaining
 
-        assert full_batches == 3
-        assert last_batch_size == 4
+        assert full_batches == 3, "full_batches is not valid"
+        assert last_batch_size == 4, "last_batch_size is not valid"
 
         # Create batches
         batches = [torch.randn(batch_size, 10) for _ in range(full_batches)]
@@ -187,8 +187,8 @@ class TestTrainingEdgeCases:
         # Loss calculation should handle different batch sizes
         for batch in batches:
             loss = torch.mean(batch**2)
-            assert not torch.isnan(loss)
-            assert not torch.isinf(loss)
+            assert not torch.isnan(loss), "Condition must be true"
+            assert not torch.isinf(loss), "Condition must be true"
 
     def test_training_corrupted_data_samples(self):
         """Test training handles corrupted/invalid data samples"""
@@ -201,14 +201,14 @@ class TestTrainingEdgeCases:
         ]
 
         for sample in good_samples:
-            assert not torch.isnan(sample).any()
-            assert not torch.isinf(sample).any()
+            assert not torch.isnan(sample).any(), "Condition must be true"
+            assert not torch.isinf(sample).any(), "Condition must be true"
 
         for sample in bad_samples[:2]:  # Skip empty for now
-            assert torch.isnan(sample).any() or torch.isinf(sample).any()
+            assert torch.isnan(sample).any() or torch.isinf(sample).any(), "t is not valid"
 
         # Should detect and skip/handle bad samples
-        assert len(bad_samples[2]) == 0
+        assert len(bad_samples[2]) == 0, "Collection must not be empty"
 
     def test_training_extremely_large_batch(self):
         """Test training prevents OOM with extremely large batch"""
@@ -219,14 +219,14 @@ class TestTrainingEdgeCases:
         if requested_batch_size > max_batch_size:
             # Should chunk or reduce batch size
             actual_batch_size = min(requested_batch_size, max_batch_size)
-            assert actual_batch_size == max_batch_size
+            assert actual_batch_size == max_batch_size, "actual_batch_size is not valid"
 
         # Memory estimation
         element_size = 4  # float32
         tensor_elements = 10000 * 512 * 512
         estimated_memory_mb = (tensor_elements * element_size) / (1024 * 1024)
 
-        assert estimated_memory_mb > 1000  # Over 1GB, should chunk
+        assert estimated_memory_mb > 1000, "estimated_memory_mb must be greater than zero"
 
     # ========== Phase 27.1 Sub-batch B2: Loss & Gradient Issues (5 tests) ==========
 
@@ -235,38 +235,38 @@ class TestTrainingEdgeCases:
         # Simulate NaN loss
         loss = torch.tensor(float("nan"), requires_grad=True)
 
-        assert torch.isnan(loss)
+        assert torch.isnan(loss), "t is not valid"
 
         # Early stopping should trigger
         should_stop = torch.isnan(loss).item()
-        assert should_stop is True
+        assert should_stop is True, "should_stop is not valid"
 
         # Rollback mechanism check
         previous_loss = torch.tensor(1.5)
         if torch.isnan(loss):
             loss = previous_loss  # Rollback
 
-        assert not torch.isnan(loss)
-        assert loss == 1.5
+        assert not torch.isnan(loss), "Condition must be true"
+        assert loss == 1.5, "loss is not valid"
 
     def test_training_inf_loss_detection(self):
         """Test training detects and handles infinite loss"""
         # Simulate infinite loss
         loss = torch.tensor(float("inf"), requires_grad=True)
 
-        assert torch.isinf(loss)
+        assert torch.isinf(loss), "t is not valid"
 
         # Clipping mechanism
         max_loss = 1000.0
         if torch.isinf(loss):
             loss = torch.tensor(max_loss)
 
-        assert not torch.isinf(loss)
-        assert loss == max_loss
+        assert not torch.isinf(loss), "Condition must be true"
+        assert loss == max_loss, "loss is not valid"
 
         # Warning should be logged
         warning_triggered = torch.isinf(torch.tensor(float("inf")))
-        assert warning_triggered
+        assert warning_triggered, "warning_triggered is not valid"
 
     def test_training_gradient_explosion(self):
         """Test training handles exploding gradients"""
@@ -275,7 +275,7 @@ class TestTrainingEdgeCases:
 
         # Calculate gradient norm
         grad_norm = torch.norm(gradients)
-        assert grad_norm > 1e9
+        assert grad_norm > 1e9, "grad_norm must be greater than zero"
 
         # Gradient clipping
         max_norm = 1.0
@@ -284,7 +284,7 @@ class TestTrainingEdgeCases:
             clipped_gradients = gradients * clip_coef
 
             clipped_norm = torch.norm(clipped_gradients)
-            assert clipped_norm <= max_norm * 1.01  # Allow small tolerance
+            assert clipped_norm <= max_norm * 1.01, "clipped_norm is not valid"
 
     def test_training_gradient_vanishing(self):
         """Test training detects vanishing gradients"""
@@ -293,17 +293,17 @@ class TestTrainingEdgeCases:
 
         # Calculate gradient norm
         grad_norm = torch.norm(gradients)
-        assert grad_norm < 1e-9
+        assert grad_norm < 1e-9, "grad_norm is not valid"
 
         # Detection threshold
         vanishing_threshold = 1e-7
         is_vanishing = grad_norm < vanishing_threshold
-        assert is_vanishing
+        assert is_vanishing, "is_vanishing is not valid"
 
         # Strategy: increase learning rate or change architecture
         if is_vanishing:
             warning_message = f"Vanishing gradient detected: norm={grad_norm:.2e}"
-            assert "Vanishing gradient" in warning_message
+            assert "Vanishing gradient" in warning_message, "Condition must be true"
 
     def test_training_gradient_accumulation_edge(self):
         """Test gradient accumulation with edge cases"""
@@ -319,7 +319,7 @@ class TestTrainingEdgeCases:
         averaged_grad = accumulated_grad / accumulation_steps
 
         assert averaged_grad.shape == (10,)
-        assert not torch.isnan(averaged_grad).any()
+        assert not torch.isnan(averaged_grad).any(), "Condition must be true"
 
         # Update timing check
         update_step = 0
@@ -327,7 +327,7 @@ class TestTrainingEdgeCases:
             if (step + 1) % accumulation_steps == 0:
                 update_step += 1
 
-        assert update_step == 3  # Should update 3 times in 12 steps
+        assert update_step == 3, "update_step is not valid"
 
     # ========== Phase 27.1 Sub-batch B3: Resource Constraints (4 tests) ==========
 
@@ -343,14 +343,14 @@ class TestTrainingEdgeCases:
 
                 # If OOM occurs, reduce batch size
                 reduced_batch_size = 16  # Reduced from 32
-                assert reduced_batch_size < 32
+                assert reduced_batch_size < 32, "reduced_batch_size is not valid"
 
             except MemoryError:
                 # Recovery strategy
                 if torch.cuda.is_available():
                     torch.cuda.empty_cache()
                 reduced_batch_size = 8
-                assert reduced_batch_size == 8
+                assert reduced_batch_size == 8, "reduced_batch_size is not valid"
 
     def test_training_disk_space_full(self):
         """Test training handles disk space full error"""
@@ -367,10 +367,10 @@ class TestTrainingEdgeCases:
                     with open(checkpoint_path, "w") as f:
                         f.write("checkpoint data")
                 except OSError as e:
-                    assert "No space left" in str(e)
+                    assert "No space left" in str(e), "Condition must be true"
                     # Cleanup strategy
                     cleanup_triggered = True
-                    assert cleanup_triggered
+                    assert cleanup_triggered, "cleanup_triggered is not valid"
         finally:
             if os.path.exists(checkpoint_path):
                 os.unlink(checkpoint_path)
@@ -398,7 +398,7 @@ class TestTrainingEdgeCases:
 
         # Defragmentation check
         remaining = [a for a in allocations if a is not None]
-        assert len(remaining) == 5
+        assert len(remaining) == 5, "Remaining must not be empty"
 
     def test_training_checkpoint_corruption(self):
         """Test training validates and recovers from corrupted checkpoints.
@@ -432,8 +432,8 @@ class TestTrainingEdgeCases:
                 "loss": 0.0,
             }
 
-            assert "epoch" in fallback_checkpoint
-            assert fallback_checkpoint["epoch"] == 0
+            assert "epoch" in fallback_checkpoint, "Condition must be true"
+            assert fallback_checkpoint["epoch"] == 0, "Condition must be true"
 
         finally:
             if os.path.exists(corrupted_path):
@@ -479,7 +479,7 @@ class TestTrainingEdgeCases:
             try:
                 torch.randn(10000, 10000, 10000, device="cuda")
             except RuntimeError as e:
-                assert "out of memory" in str(e).lower()
+                assert "out of memory" in str(e).lower(), "Condition must be true"
 
     def test_training_mixed_device_tensors(self):
         """Test training with tensors on different devices"""

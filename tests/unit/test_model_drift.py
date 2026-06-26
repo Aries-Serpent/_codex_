@@ -59,7 +59,7 @@ class TestJensenShannonDivergence:
             raw_p = [rng.random() + 0.001 for _ in range(n)]
             raw_q = [rng.random() + 0.001 for _ in range(n)]
             jsd = jensen_shannon_divergence(raw_p, raw_q)
-            assert 0.0 <= jsd <= 1.0 + 1e-9
+            assert 0.0 <= jsd <= 1.0 + 1e-9, "0 is not valid"
 
     def test_mismatched_lengths_raises(self):
         with pytest.raises(ValueError, match="same length"):
@@ -87,10 +87,10 @@ class TestJSDDriftDetection:
         current = [0.05] * 50  # all low-confidence
         result = detector.check(current, epoch=1)
 
-        assert result.drift_detected is True
-        assert result.js_divergence is not None
-        assert result.js_divergence > 0.05
-        assert any("JSD" in r for r in result.reasons)
+        assert result.drift_detected is True, "Result must not be empty"
+        assert result.js_divergence is not None, "js_divergence must be initialized"
+        assert result.js_divergence > 0.05, "js_divergence must be greater than zero"
+        assert any("JSD" in r for r in result.reasons), "Result must not be empty"
 
     def test_similar_distributions_no_jsd_drift(self):
         """Near-identical distributions should not trigger JSD drift."""
@@ -103,11 +103,11 @@ class TestJSDDriftDetection:
         current = [0.8 + 0.01 * (i % 5) for i in range(50)]
         result = detector.check(current, epoch=1)
 
-        assert result.js_divergence is not None
-        assert result.js_divergence < 0.1
+        assert result.js_divergence is not None, "js_divergence must be initialized"
+        assert result.js_divergence < 0.1, "Result must not be empty"
         # JSD alone should not trigger drift
         jsd_triggered = any("JSD" in r for r in result.reasons)
-        assert not jsd_triggered
+        assert not jsd_triggered, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -127,10 +127,10 @@ class TestConfidenceDropDetection:
         scores = [0.2, 0.3, 0.25, 0.35, 0.28]
         result = detector.check(scores, epoch=3)
 
-        assert result.drift_detected is True
-        assert result.confidence_dropped is True
-        assert result.confidence_stats is not None
-        assert result.confidence_stats.mean_confidence < 0.6
+        assert result.drift_detected is True, "Result must not be empty"
+        assert result.confidence_dropped is True, "Result must not be empty"
+        assert result.confidence_stats is not None, "confidence_stats must be initialized"
+        assert result.confidence_stats.mean_confidence < 0.6, "Result must not be empty"
 
     def test_high_mean_confidence_no_alert(self):
         detector = ModelDriftDetector(
@@ -141,8 +141,8 @@ class TestConfidenceDropDetection:
         scores = [0.9, 0.85, 0.92, 0.88, 0.91]
         result = detector.check(scores, epoch=1)
 
-        assert result.confidence_dropped is False
-        assert not any("mean_confidence" in r for r in result.reasons)
+        assert result.confidence_dropped is False, "Result must not be empty"
+        assert not any("mean_confidence" in r for r in result.reasons), "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -164,9 +164,9 @@ class TestLowConfidenceRateDetection:
         scores = [0.2] * 40 + [0.8] * 10
         result = detector.check(scores, epoch=2)
 
-        assert result.drift_detected is True
-        assert result.confidence_stats.low_confidence_rate > 0.3
-        assert any("low_confidence_rate" in r for r in result.reasons)
+        assert result.drift_detected is True, "Result must not be empty"
+        assert result.confidence_stats.low_confidence_rate > 0.3, "low_confidence_rate must be greater than zero"
+        assert any("low_confidence_rate" in r for r in result.reasons), "Result must not be empty"
 
     def test_low_low_confidence_rate_no_drift(self):
         detector = ModelDriftDetector(
@@ -180,7 +180,7 @@ class TestLowConfidenceRateDetection:
         result = detector.check(scores, epoch=2)
 
         low_rate_triggered = any("low_confidence_rate" in r for r in result.reasons)
-        assert not low_rate_triggered
+        assert not low_rate_triggered, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -202,9 +202,9 @@ class TestNoDriftStableData:
 
         result = detector.check(stable_scores, epoch=5)
 
-        assert result.drift_detected is False
-        assert result.reasons == []
-        assert "No drift" in result.summary()
+        assert result.drift_detected is False, "Result must not be empty"
+        assert result.reasons == [], "Result must not be empty"
+        assert "No drift" in result.summary(), "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -217,12 +217,12 @@ class TestBaselineManagement:
 
     def test_no_baseline_initially(self):
         detector = ModelDriftDetector()
-        assert detector.has_baseline() is False
+        assert detector.has_baseline() is False, "detect is not valid"
 
     def test_update_baseline_sets_flag(self):
         detector = ModelDriftDetector()
         detector.update_baseline([0.9, 0.8, 0.7])
-        assert detector.has_baseline() is True
+        assert detector.has_baseline() is True, "detect is not valid"
 
     def test_check_without_baseline_skips_jsd(self):
         """When no baseline is set, JSD should be None (no JSD check)."""
@@ -232,25 +232,25 @@ class TestBaselineManagement:
             low_confidence_rate_threshold=1.0,
         )
         result = detector.check([0.9, 0.85, 0.88], epoch=0)
-        assert result.js_divergence is None
+        assert result.js_divergence is None, "Result must not be empty"
 
     def test_reset_clears_baseline_and_history(self):
         detector = ModelDriftDetector()
         detector.update_baseline([0.9, 0.8])
         detector.check([0.7, 0.6], epoch=1)
-        assert detector.has_baseline()
-        assert len(detector.history()) == 1
+        assert detector.has_baseline(), "detect is not valid"
+        assert len(detector.history()) == 1, "Collection must not be empty"
 
         detector.reset()
-        assert not detector.has_baseline()
-        assert detector.history() == []
+        assert not detector.has_baseline(), "Condition must be true"
+        assert detector.history() == [], "detect is not valid"
 
     def test_update_baseline_replaces_previous(self):
         detector = ModelDriftDetector()
         detector.update_baseline([0.9] * 10)
         old_dist = detector._baseline_dist[:]
         detector.update_baseline([0.1] * 10)
-        assert detector._baseline_dist != old_dist
+        assert detector._baseline_dist != old_dist, "_baseline_dist is not valid"
 
     def test_update_baseline_empty_raises(self):
         detector = ModelDriftDetector()
@@ -282,13 +282,13 @@ class TestDriftResultShape:
     def test_summary_drift(self):
         result = self._make_result(True)
         s = result.summary()
-        assert "DRIFT DETECTED" in s
-        assert "epoch=3" in s
+        assert "DRIFT DETECTED" in s, "Condition must be true"
+        assert "epoch=3" in s, "Condition must be true"
 
     def test_summary_no_drift(self):
         result = self._make_result(False)
         s = result.summary()
-        assert "No drift detected" in s
+        assert "No drift detected" in s, "Condition must be true"
 
     def test_to_dict_keys(self):
         result = self._make_result(True)
@@ -303,13 +303,13 @@ class TestDriftResultShape:
             "reasons",
             "confidence_stats",
         }
-        assert expected_keys.issubset(set(d.keys()))
+        assert expected_keys.issubset(set(d.keys())), "Condition must be true"
 
     def test_to_dict_values(self):
         result = self._make_result(True)
         d = result.to_dict()
-        assert d["drift_detected"] is True
-        assert d["epoch"] == 3
+        assert d["drift_detected"] is True, "Condition must be true"
+        assert d["epoch"] == 3, "Condition must be true"
         assert isinstance(d["reasons"], list)
         assert isinstance(d["confidence_stats"], dict)
 
@@ -325,21 +325,21 @@ class TestConfidenceStats:
     def test_all_high_confidence(self):
         scores = [0.9, 0.95, 0.85, 0.92, 0.88]
         stats = ConfidenceStats.from_scores(scores, low_conf_threshold=0.5)
-        assert stats.mean_confidence == pytest.approx(sum(scores) / len(scores))
-        assert stats.low_confidence_rate == 0.0
-        assert stats.n_samples == 5
-        assert stats.entropy >= -1e-9  # floating-point safe lower bound
-        assert stats.entropy <= 1.0 + 1e-9
+        assert stats.mean_confidence == pytest.approx(sum(scores) / len(scores)), "Scores must not be empty"
+        assert stats.low_confidence_rate == 0.0, "low_confidence_rate is not valid"
+        assert stats.n_samples == 5, "n_samples is not valid"
+        assert stats.entropy >= -1e-9, "entropy must be greater than zero"
+        assert stats.entropy <= 1.0 + 1e-9, "entropy is not valid"
 
     def test_all_low_confidence(self):
         scores = [0.1, 0.2, 0.15, 0.18, 0.12]
         stats = ConfidenceStats.from_scores(scores, low_conf_threshold=0.5)
-        assert stats.low_confidence_rate == 1.0
+        assert stats.low_confidence_rate == 1.0, "low_confidence_rate is not valid"
 
     def test_mixed_confidence(self):
         scores = [0.9, 0.9, 0.1, 0.1]
         stats = ConfidenceStats.from_scores(scores, low_conf_threshold=0.5)
-        assert stats.low_confidence_rate == pytest.approx(0.5)
+        assert stats.low_confidence_rate == pytest.approx(0.5), "low_confidence_rate is not valid"
 
     def test_empty_raises(self):
         with pytest.raises(ValueError, match="non-empty"):
@@ -356,7 +356,7 @@ class TestConfidenceStats:
             "entropy",
             "n_samples",
         ):
-            assert key in d
+            assert key in d, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -378,15 +378,15 @@ class TestFirstEpochBaseline:
 
         # Before baseline
         r0 = detector.check(baseline_scores, epoch=0)
-        assert r0.js_divergence is None  # no baseline yet
+        assert r0.js_divergence is None, "js_divergence is not valid"
 
         # Manually set baseline (simulating train_loop auto-set)
         detector.update_baseline(baseline_scores)
 
         # Now drift should be detected
         r1 = detector.check(shifted_scores, epoch=1)
-        assert r1.js_divergence is not None
-        assert r1.drift_detected is True
+        assert r1.js_divergence is not None, "js_divergence must be initialized"
+        assert r1.drift_detected is True, "drift_detected is not valid"
 
 
 # ---------------------------------------------------------------------------

@@ -28,7 +28,7 @@ def test_sigstore_mock_fallback_when_package_absent(monkeypatch):
     # The module must define HAS_SIGSTORE and it must be False
     # (sigstore was None when the module was imported above)
     if hasattr(sc_mod, "HAS_SIGSTORE"):
-        assert sc_mod.HAS_SIGSTORE is False
+        assert sc_mod.HAS_SIGSTORE is False, "HAS_SIGSTORE is not valid"
 
 
 def test_sigstore_real_sign_attempted_when_package_present(tmp_path):

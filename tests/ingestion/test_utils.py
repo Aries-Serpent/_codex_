@@ -8,7 +8,7 @@ from ingestion import utils
 def test_deterministic_shuffle_reproducible():
     first = utils.deterministic_shuffle([1, 2, 3, 4], seed=42)
     second = utils.deterministic_shuffle([1, 2, 3, 4], seed=42)
-    assert first == second
+    assert first == second, "first is not valid"
     assert first != [1, 2, 3, 4]
 
 
@@ -20,7 +20,7 @@ def test_detect_encoding_and_manual_read(tmp_path, monkeypatch):
     monkeypatch.setattr(utils, "_io_read_text", None)
 
     detected = utils._detect_encoding(sample)
-    assert detected == "utf-8"
+    assert detected == "utf-8", "detected is not valid"
 
     text = utils.read_text(sample)
-    assert text.strip() == "hello world"
+    assert text.strip() == "hello world", "Condition must be true"

@@ -42,7 +42,7 @@ class TestFallbackExit:
         """Test creating _FallbackExit instance."""
         exit_exc = _FallbackExit(1)
         assert isinstance(exit_exc, SystemExit)
-        assert exit_exc.code == 1
+        assert exit_exc.code == 1, "code is not valid"
 
     def test_fallback_exit_default_code(self):
         """Test _FallbackExit with default code."""
@@ -57,27 +57,27 @@ class TestFallbackEcho:
         """Test _fallback_echo outputs to stdout by default."""
         _fallback_echo("test message")
         captured = capsys.readouterr()
-        assert "test message" in captured.out
+        assert "test message" in captured.out, "Condition must be true"
 
     def test_fallback_echo_stderr(self, capsys):
         """Test _fallback_echo outputs to stderr when err=True."""
         _fallback_echo("error message", err=True)
         captured = capsys.readouterr()
-        assert "error message" in captured.err
+        assert "error message" in captured.err, "Error should be raised or set"
 
     def test_fallback_echo_various_types(self, capsys):
         """Test _fallback_echo with various object types."""
         _fallback_echo(123)
         captured = capsys.readouterr()
-        assert "123" in captured.out
+        assert "123" in captured.out, "Condition must be true"
 
         _fallback_echo(None)
         captured = capsys.readouterr()
-        assert "None" in captured.out
+        assert "None" in captured.out, "Condition must be true"
 
         _fallback_echo({"key": "value"})
         captured = capsys.readouterr()
-        assert "key" in captured.out
+        assert "key" in captured.out, "Condition must be true"
 
 
 class TestFallbackOption:
@@ -86,22 +86,22 @@ class TestFallbackOption:
     def test_fallback_option_with_default(self):
         """Test _fallback_option returns default value."""
         result = _fallback_option("my_default")
-        assert result == "my_default"
+        assert result == "my_default", "Result must not be empty"
 
     def test_fallback_option_none_default(self):
         """Test _fallback_option with None default."""
         result = _fallback_option(None)
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_fallback_option_ignores_extra_args(self):
         """Test _fallback_option ignores extra arguments."""
         result = _fallback_option("default", "arg1", "arg2", key="value")
-        assert result == "default"
+        assert result == "default", "Result must not be empty"
 
     def test_fallback_option_no_default(self):
         """Test _fallback_option without default argument."""
         result = _fallback_option()
-        assert result is None
+        assert result is None, "Result must not be empty"
 
 
 class TestFallbackTyper:
@@ -110,8 +110,8 @@ class TestFallbackTyper:
     def test_fallback_typer_creation(self):
         """Test creating _FallbackTyper instance."""
         typer = _FallbackTyper(help="Test help")
-        assert typer._help_text == "Test help"
-        assert typer._commands == {}
+        assert typer._help_text == "Test help", "_help_text is not valid"
+        assert typer._commands == {}, "_commands is not valid"
 
     def test_fallback_typer_command_registration(self):
         """Test command registration."""
@@ -121,8 +121,8 @@ class TestFallbackTyper:
         def test_cmd(arg1):
             return arg1
 
-        assert "test-cmd" in typer._commands
-        assert typer._commands["test-cmd"][0] is test_cmd
+        assert "test-cmd" in typer._commands, "Condition must be true"
+        assert typer._commands["test-cmd"][0] is test_cmd, "Condition must be true"
 
     def test_fallback_typer_custom_command_name(self):
         """Test command registration with custom name."""
@@ -132,7 +132,7 @@ class TestFallbackTyper:
         def my_func():
             pass
 
-        assert "custom-name" in typer._commands
+        assert "custom-name" in typer._commands, "Condition must be true"
 
     def test_fallback_typer_print_app_help(self, capsys):
         """Test printing app help."""
@@ -148,9 +148,9 @@ class TestFallbackTyper:
 
         typer_app._print_app_help()
         captured = capsys.readouterr()
-        assert "App help text" in captured.out
-        assert "cmd1" in captured.out
-        assert "cmd2" in captured.out
+        assert "App help text" in captured.out, "Condition must be true"
+        assert "cmd1" in captured.out, "Condition must be true"
+        assert "cmd2" in captured.out, "Condition must be true"
 
     def test_fallback_typer_print_command_help(self, capsys):
         """Test printing command help."""
@@ -163,8 +163,8 @@ class TestFallbackTyper:
         cmd_func, sig = typer_app._commands["my-command"]
         typer_app._print_command_help("my-command", sig)
         captured = capsys.readouterr()
-        assert "my-command" in captured.out
-        assert "ARG1" in captured.out
+        assert "my-command" in captured.out, "Condition must be true"
+        assert "ARG1" in captured.out, "Condition must be true"
 
     def test_fallback_typer_no_arguments(self, monkeypatch):
         """Test calling typer with no arguments."""
@@ -177,7 +177,7 @@ class TestFallbackTyper:
         monkeypatch.setattr(sys, "argv", ["test"])
         with pytest.raises(SystemExit) as exc_info:
             typer_app()
-        assert exc_info.value.code == 0
+        assert exc_info.value.code == 0, "Value must be initialized"
 
     def test_fallback_typer_help_flag(self, monkeypatch):
         """Test calling typer with --help flag."""
@@ -186,7 +186,7 @@ class TestFallbackTyper:
         monkeypatch.setattr(sys, "argv", ["test", "--help"])
         with pytest.raises(SystemExit) as exc_info:
             typer_app()
-        assert exc_info.value.code == 0
+        assert exc_info.value.code == 0, "Value must be initialized"
 
     def test_fallback_typer_unknown_command(self, monkeypatch):
         """Test calling typer with unknown command."""
@@ -199,7 +199,7 @@ class TestFallbackTyper:
         monkeypatch.setattr(sys, "argv", ["test", "unknown"])
         with pytest.raises(SystemExit) as exc_info:
             typer_app()
-        assert exc_info.value.code == 1
+        assert exc_info.value.code == 1, "Value must be initialized"
 
     def test_fallback_typer_command_help(self, monkeypatch):
         """Test calling typer command with --help."""
@@ -212,7 +212,7 @@ class TestFallbackTyper:
         monkeypatch.setattr(sys, "argv", ["test", "my-cmd", "--help"])
         with pytest.raises(SystemExit) as exc_info:
             typer_app()
-        assert exc_info.value.code == 0
+        assert exc_info.value.code == 0, "Value must be initialized"
 
     def test_fallback_typer_path_conversion(self, monkeypatch, tmp_path):
         """Test Path parameter conversion."""
@@ -230,7 +230,7 @@ class TestFallbackTyper:
         monkeypatch.setattr(sys, "argv", ["test", "cmd-with-path", str(test_file)])
         typer_app()
         assert isinstance(received_arg, Path)
-        assert received_arg.name == "test.txt"
+        assert received_arg.name == "test.txt", "name is not valid"
 
     def test_fallback_typer_string_parameter(self, monkeypatch):
         """Test string parameter handling."""
@@ -244,7 +244,7 @@ class TestFallbackTyper:
 
         monkeypatch.setattr(sys, "argv", ["test", "cmd", "hello"])
         typer_app()
-        assert received_arg == "hello"
+        assert received_arg == "hello", "received_arg is not valid"
 
 
 class TestFormatContext:
@@ -253,27 +253,27 @@ class TestFormatContext:
     def test_format_context_none(self):
         """Test formatting None context."""
         result = _format_context(None)
-        assert result == "None"
+        assert result == "None", "Result must not be empty"
 
     def test_format_context_string(self):
         """Test formatting string context."""
         result = _format_context("error message")
-        assert result == "error message"
+        assert result == "error message", "Result must not be empty"
 
     def test_format_context_dict(self):
         """Test formatting dict context."""
         context = {"key": "value", "number": 42}
         result = _format_context(context)
-        assert "key" in result
-        assert "value" in result
-        assert "42" in result
+        assert "key" in result, "Result must not be empty"
+        assert "value" in result, "Result must not be empty"
+        assert "42" in result, "Result must not be empty"
 
     def test_format_context_dict_with_exception(self):
         """Test formatting dict with non-JSON-serializable objects."""
         context = {"exc": Exception("test error")}
         result = _format_context(context)
         assert isinstance(result, str)
-        assert "Exception" in result or "test error" in result
+        assert "Exception" in result or "test error" in result, "Result must not be empty"
 
 
 class TestResolveRoot:
@@ -282,14 +282,14 @@ class TestResolveRoot:
     def test_resolve_root_with_directory(self, tmp_path):
         """Test _resolve_root with directory path."""
         result = _resolve_root(tmp_path)
-        assert result == tmp_path
+        assert result == tmp_path, "Result must not be empty"
 
     def test_resolve_root_with_file(self, tmp_path):
         """Test _resolve_root with file path."""
         test_file = tmp_path / "test.txt"
         test_file.write_text("test")
         result = _resolve_root(test_file)
-        assert result == tmp_path
+        assert result == tmp_path, "Result must not be empty"
 
     def test_resolve_root_nested_path(self, tmp_path):
         """Test _resolve_root with nested file path."""
@@ -298,7 +298,7 @@ class TestResolveRoot:
         test_file = subdir / "file.txt"
         test_file.write_text("test")
         result = _resolve_root(test_file)
-        assert result == subdir
+        assert result == subdir, "Result must not be empty"
 
 
 class TestLoadTokenizer:
@@ -312,7 +312,7 @@ class TestLoadTokenizer:
         path = Path("tokenizer.json")
 
         result = _load_tokenizer(path, step="test")
-        assert result is mock_tokenizer
+        assert result is mock_tokenizer, "Result must not be empty"
 
     @patch("tokenization.cli.build_tokenizer")
     def test_load_tokenizer_not_found(self, mock_build):
@@ -343,7 +343,7 @@ class TestAppendErrorBlock:
         monkeypatch.setattr("tokenization.cli._ERROR_REPORT_DIR", error_dir)
 
         _append_error_block("test_step", "test message", None)
-        assert error_dir.exists()
+        assert error_dir.exists(), "Error should be raised or set"
 
     def test_append_error_block_with_context(self, tmp_path, monkeypatch):
         """Test _append_error_block with context information."""
@@ -352,7 +352,7 @@ class TestAppendErrorBlock:
 
         context = {"key": "value"}
         _append_error_block("step1", "message", context)
-        assert error_dir.exists()
+        assert error_dir.exists(), "Error should be raised or set"
 
     def test_append_error_block_with_custom_question(self, tmp_path, monkeypatch):
         """Test _append_error_block with custom question."""
@@ -361,7 +361,7 @@ class TestAppendErrorBlock:
 
         question = "Custom question?"
         _append_error_block("step1", "message", None, question=question)
-        assert error_dir.exists()
+        assert error_dir.exists(), "Error should be raised or set"
 
     def test_append_error_block_appends_to_file(self, tmp_path, monkeypatch):
         """Test that _append_error_block appends to existing file."""
@@ -373,7 +373,7 @@ class TestAppendErrorBlock:
 
         # Find the created log file
         log_files = list(error_dir.glob("*.md"))
-        assert len(log_files) > 0
+        assert len(log_files) > 0, "Log_files must not be empty"
 
 
 class TestFailFunction:
@@ -413,7 +413,7 @@ class TestVocabCommand:
 
         vocab(Path("tokenizer.json"), limit=0)
         captured = capsys.readouterr()
-        assert "50000" in captured.out
+        assert "50000" in captured.out, "Condition must be true"
 
     @patch("tokenization.cli._load_tokenizer")
     def test_vocab_with_vocab_size_property(self, mock_load, capsys):
@@ -453,7 +453,7 @@ class TestVocabCommand:
 
         vocab(Path("tokenizer.json"), limit=3)
         captured = capsys.readouterr()
-        assert "token_" in captured.out
+        assert "token_" in captured.out, "Condition must be true"
 
     @patch("tokenization.cli._load_tokenizer")
     def test_vocab_without_convert_ids_to_tokens(self, mock_load, capsys):
@@ -464,7 +464,7 @@ class TestVocabCommand:
 
         vocab(Path("tokenizer.json"), limit=5)
         captured = capsys.readouterr()
-        assert "skipping" in captured.out.lower() or "lack" in captured.out.lower()
+        assert "skipping" in captured.out.lower() or "lack" in captured.out.lower(), "Condition must be true"
 
 
 class TestInspectCommand:
@@ -519,8 +519,8 @@ class TestAppCreation:
 
     def test_app_exists(self):
         """Test that app is created."""
-        assert app is not None
+        assert app is not None, "app must be initialized"
 
     def test_app_is_callable(self):
         """Test that app is callable."""
-        assert callable(app)
+        assert callable(app), "Condition must be true"

@@ -17,10 +17,10 @@ def test_decide_offline_prefers_file_uri(monkeypatch, tmp_path):
     monkeypatch.setenv("MLFLOW_TRACKING_URI", "")
     decision = decide_offline(prefer_offline=True, allow_remote=False, mlruns_dir=tmp_path)
 
-    assert decision.offline is True
-    assert decision.mlflow_tracking_uri.startswith("file:")
+    assert decision.offline is True, "offline is not valid"
+    assert decision.mlflow_tracking_uri.startswith("file:"), "Condition must be true"
     exports = export_env_lines(decision)
-    assert "MLFLOW_TRACKING_URI" in exports
+    assert "MLFLOW_TRACKING_URI" in exports, "Condition must be true"
 
 
 def test_ndjson_logger_writes_and_rotates(tmp_path):
@@ -31,7 +31,7 @@ def test_ndjson_logger_writes_and_rotates(tmp_path):
     for idx in range(3):
         logger.write({"step": idx})
 
-    assert log_path.exists()
+    assert log_path.exists(), "Condition must be true"
     rotated = log_path.with_name(log_path.name + ".1")
-    assert rotated.exists()
-    assert "step" in log_path.read_text()
+    assert rotated.exists(), "Condition must be true"
+    assert "step" in log_path.read_text(), "Condition must be true"

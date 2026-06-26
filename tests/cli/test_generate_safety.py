@@ -79,10 +79,10 @@ def test_generate_blocks_disallowed_prompt(monkeypatch: pytest.MonkeyPatch, tmp_
     module = _load_generate_module(monkeypatch, "clean output")
     with pytest.raises(SystemExit) as excinfo:
         module.main(["--prompt", "forbidden prompt", "--safety-policy", str(policy)])
-    assert "Safety violation (prompt)" in str(excinfo.value)
+    assert "Safety violation (prompt)" in str(excinfo.value), "Value must be initialized"
     log_file = tmp_path / "events.ndjson"
     entries = [json.loads(line) for line in log_file.read_text().splitlines()]
-    assert any(entry["rule_id"] == "block-forbidden" for entry in entries)
+    assert any(entry["rule_id"] == "block-forbidden" for entry in entries), "Condition must be true"
 
 
 def test_generate_bypass_outputs_redacted(monkeypatch: pytest.MonkeyPatch, tmp_path: Path, capsys):
@@ -98,7 +98,7 @@ def test_generate_bypass_outputs_redacted(monkeypatch: pytest.MonkeyPatch, tmp_p
         ]
     )
     captured = capsys.readouterr().out.strip()
-    assert "«REDACTED" in captured or "{REDACTED}" in captured
+    assert "«REDACTED" in captured or "{REDACTED}" in captured, "Condition must be true"
     log_file = tmp_path / "events.ndjson"
     entries = [json.loads(line) for line in log_file.read_text().splitlines()]
     assert any(entry["action"] in {"bypass", "redact"} for entry in entries)

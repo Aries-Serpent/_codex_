@@ -14,8 +14,8 @@ class TestDependencyGraph:
 
         graph = DependencyGraph()
 
-        assert graph.nodes == set()
-        assert len(graph.edges) == 0
+        assert graph.nodes == set(), "nodes is not valid"
+        assert len(graph.edges) == 0, "Collection must not be empty"
 
     def test_add_node(self):
         """Test adding a node."""
@@ -24,7 +24,7 @@ class TestDependencyGraph:
         graph = DependencyGraph()
         graph.add_node("A")
 
-        assert "A" in graph.nodes
+        assert "A" in graph.nodes, "Condition must be true"
 
     def test_add_multiple_nodes(self):
         """Test adding multiple nodes."""
@@ -35,7 +35,7 @@ class TestDependencyGraph:
         graph.add_node("B")
         graph.add_node("C")
 
-        assert len(graph.nodes) == 3
+        assert len(graph.nodes) == 3, "Collection must not be empty"
 
     def test_add_edge(self):
         """Test adding an edge."""
@@ -44,9 +44,9 @@ class TestDependencyGraph:
         graph = DependencyGraph()
         graph.add_edge("A", "B")
 
-        assert "A" in graph.nodes
-        assert "B" in graph.nodes
-        assert "B" in graph.edges["A"]
+        assert "A" in graph.nodes, "Condition must be true"
+        assert "B" in graph.nodes, "Condition must be true"
+        assert "B" in graph.edges["A"], "Condition must be true"
 
     def test_add_edge_creates_nodes(self):
         """Test adding edge creates nodes automatically."""
@@ -55,8 +55,8 @@ class TestDependencyGraph:
         graph = DependencyGraph()
         graph.add_edge("X", "Y")
 
-        assert "X" in graph.nodes
-        assert "Y" in graph.nodes
+        assert "X" in graph.nodes, "Condition must be true"
+        assert "Y" in graph.nodes, "Condition must be true"
 
     def test_detect_cycles_no_cycles(self):
         """Test cycle detection with no cycles."""
@@ -69,7 +69,7 @@ class TestDependencyGraph:
 
         cycles = graph.detect_cycles()
 
-        assert cycles == []
+        assert cycles == [], "cycles is not valid"
 
     def test_detect_cycles_simple_cycle(self):
         """Test detecting a simple cycle."""
@@ -82,7 +82,7 @@ class TestDependencyGraph:
 
         cycles = graph.detect_cycles()
 
-        assert len(cycles) == 1
+        assert len(cycles) == 1, "Cycles must not be empty"
         assert set(cycles[0]) == {"A", "B", "C"}
 
     def test_detect_cycles_self_loop(self):
@@ -94,8 +94,8 @@ class TestDependencyGraph:
 
         cycles = graph.detect_cycles()
 
-        assert len(cycles) == 1
-        assert cycles[0] == ["A"]
+        assert len(cycles) == 1, "Cycles must not be empty"
+        assert cycles[0] == ["A"], "Condition must be true"
 
     def test_detect_cycles_multiple_cycles(self):
         """Test detecting multiple independent cycles."""
@@ -111,7 +111,7 @@ class TestDependencyGraph:
 
         cycles = graph.detect_cycles()
 
-        assert len(cycles) == 2
+        assert len(cycles) == 2, "Cycles must not be empty"
 
     def test_detect_cycles_empty_graph(self):
         """Test cycle detection on empty graph."""
@@ -121,7 +121,7 @@ class TestDependencyGraph:
 
         cycles = graph.detect_cycles()
 
-        assert cycles == []
+        assert cycles == [], "cycles is not valid"
 
     def test_detect_cycles_single_node(self):
         """Test cycle detection with single node no edges."""
@@ -132,7 +132,7 @@ class TestDependencyGraph:
 
         cycles = graph.detect_cycles()
 
-        assert cycles == []
+        assert cycles == [], "cycles is not valid"
 
     def test_complex_graph(self):
         """Test with more complex graph structure."""
@@ -148,4 +148,4 @@ class TestDependencyGraph:
 
         cycles = graph.detect_cycles()
 
-        assert cycles == []  # No cycles in this structure
+        assert cycles == [], "cycles is not valid"

@@ -43,12 +43,12 @@ def test_list_plugins_handles_missing_registry(monkeypatch, capsys) -> None:
     plugins_pkg.programmatic = programmatic
 
     rc = cli.main(["--format", "json"])
-    assert rc == 0
+    assert rc == 0, "rc is not valid"
     captured = capsys.readouterr()
-    assert "Traceback" not in (captured.err or "")
+    assert "Traceback" not in (captured.err or ""), "Condition must be true"
     payload = json.loads(captured.out)
-    assert payload["legacy"]["models"] == []
-    assert payload["legacy"]["tokenizers"] == []
-    assert payload["legacy"]["datasets"] == []
-    assert payload["programmatic"]["names"] == []
-    assert payload["programmatic"]["discovered"] == []
+    assert payload["legacy"]["models"] == [], "Condition must be true"
+    assert payload["legacy"]["tokenizers"] == [], "Condition must be true"
+    assert payload["legacy"]["datasets"] == [], "Data must not be empty"
+    assert payload["programmatic"]["names"] == [], "Condition must be true"
+    assert payload["programmatic"]["discovered"] == [], "Condition must be true"

@@ -17,11 +17,11 @@ def test_status_reporting_detector_basic():
 
     result = detect(file_index)
 
-    assert result["id"] == "status-reporting"
-    assert len(result["evidence_files"]) > 0
-    assert "status" in result["found_patterns"] or "report" in result["found_patterns"]
+    assert result["id"] == "status-reporting", "Result must not be empty"
+    assert len(result["evidence_files"]) > 0, "Collection must not be empty"
+    assert "status" in result["found_patterns"] or "report" in result["found_patterns"], "Result must not be empty"
     assert result["required_patterns"] == ["status", "report", "audit"]
-    assert result["meta"]["layer"] == "operations"
+    assert result["meta"]["layer"] == "operations", "Result must not be empty"
 
 
 def test_status_reporting_detector_no_evidence():
@@ -30,9 +30,9 @@ def test_status_reporting_detector_no_evidence():
 
     result = detect(file_index)
 
-    assert result["id"] == "status-reporting"
-    assert len(result["evidence_files"]) == 0
-    assert len(result["found_patterns"]) == 0
+    assert result["id"] == "status-reporting", "Result must not be empty"
+    assert len(result["evidence_files"]) == 0, "Collection must not be empty"
+    assert len(result["found_patterns"]) == 0, "Collection must not be empty"
 
 
 def test_status_reporting_detector_audit_patterns():
@@ -46,10 +46,10 @@ def test_status_reporting_detector_audit_patterns():
 
     result = detect(file_index)
 
-    assert result["id"] == "status-reporting"
-    assert "audit" in result["found_patterns"]
-    assert "report" in result["found_patterns"]
-    assert len(result["evidence_files"]) > 0
+    assert result["id"] == "status-reporting", "Result must not be empty"
+    assert "audit" in result["found_patterns"], "Result must not be empty"
+    assert "report" in result["found_patterns"], "Result must not be empty"
+    assert len(result["evidence_files"]) > 0, "Collection must not be empty"
 
 
 def test_status_reporting_detector_sorted_output():
@@ -65,6 +65,6 @@ def test_status_reporting_detector_sorted_output():
     result = detect(file_index)
 
     # Check that evidence files are sorted
-    assert result["evidence_files"] == sorted(result["evidence_files"])
+    assert result["evidence_files"] == sorted(result["evidence_files"]), "Result must not be empty"
     # Check that found patterns are sorted
-    assert result["found_patterns"] == sorted(result["found_patterns"])
+    assert result["found_patterns"] == sorted(result["found_patterns"]), "Result must not be empty"

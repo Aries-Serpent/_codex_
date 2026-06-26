@@ -110,7 +110,7 @@ class SaaSKnowledgeLoader:
             return data
         except (json.JSONDecodeError, OSError) as e:
             error_type = type(e).__name__
-            logger.error(f"Failed to load Zendesk index: <ERROR_TYPE>")
+            logger.error("Failed to load Zendesk index: <ERROR_TYPE>")
             return {}
 
     def load_d365_policies(self) -> dict[str, Any]:
@@ -130,7 +130,7 @@ class SaaSKnowledgeLoader:
             return data
         except (json.JSONDecodeError, OSError) as e:
             error_type = type(e).__name__
-            logger.error(f"Failed to load D365 policies: <ERROR_TYPE>")
+            logger.error("Failed to load D365 policies: <ERROR_TYPE>")
             return {}
 
     def collect_training_documents(

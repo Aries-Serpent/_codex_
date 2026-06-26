@@ -28,11 +28,11 @@ def test_iter_text_uses_configured_chunk_size(monkeypatch):
     cfg = module.TrainTokenizerConfig(corpus_glob=[], streaming=True, stream_chunk_size=128)
     output = list(module._iter_text(["foo.txt", "bar.txt"], cfg))
 
-    assert calls == [
+    assert calls == [, "calls is not valid"
         ("foo.txt", "auto", 128),
         ("bar.txt", "auto", 128),
     ]
-    assert output == [
+    assert output == [, "output is not valid"
         "foo.txt-line-1\n",
         "foo.txt-line-2\n",
         "bar.txt-line-1\n",
@@ -57,7 +57,7 @@ def test_iter_text_uses_default_chunk_size_when_streaming(monkeypatch):
     cfg = module.TrainTokenizerConfig(corpus_glob=[], streaming=True)
     output = list(module._iter_text(["only.txt"], cfg))
 
-    assert seen == [module.DEFAULT_STREAM_CHUNK_SIZE]
+    assert seen == [module.DEFAULT_STREAM_CHUNK_SIZE], "seen is not valid"
     assert output == ["full\n", "text"]
 
 
@@ -73,8 +73,8 @@ def test_iter_text_reads_entire_file_when_streaming_disabled(monkeypatch):
     cfg = module.TrainTokenizerConfig(corpus_glob=[], streaming=False)
     output = list(module._iter_text(["file.txt"], cfg))
 
-    assert seen == [None]
-    assert output == ["all-at-once"]
+    assert seen == [None], "seen is not valid"
+    assert output == ["all-at-once"], "output is not valid"
 
 
 def test_iter_text_streams_progressively(monkeypatch):
@@ -95,9 +95,9 @@ def test_iter_text_streams_progressively(monkeypatch):
     iterator = module._iter_text(["stream.txt"], cfg)
     gen = iter(iterator)
 
-    assert next(gen) == "line-0\n"
-    assert yielded == [0]
-    assert next(gen) == "line-1\n"
+    assert next(gen) == "line-0\n", "Condition must be true"
+    assert yielded == [0], "yielded is not valid"
+    assert next(gen) == "line-1\n", "Condition must be true"
     assert yielded == [0, 1]
 
 

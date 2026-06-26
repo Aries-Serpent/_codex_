@@ -24,7 +24,7 @@ class TestValidateModuleImport:
         try:
             from codex_ml.cli import validate
 
-            assert validate is not None
+            assert validate is not None, "validate must be initialized"
         except ImportError as e:
             pytest.skip(f"Module import failed: {e}")
 
@@ -37,9 +37,9 @@ class TestValidateModuleImport:
                 log_event,
             )
 
-            assert callable(capture_exceptions)
-            assert callable(init_json_logging)
-            assert callable(log_event)
+            assert callable(capture_exceptions), "Condition must be true"
+            assert callable(init_json_logging), "Condition must be true"
+            assert callable(log_event), "Condition must be true"
         except ImportError as e:
             pytest.skip(f"Import failed: {e}")
 
@@ -52,7 +52,7 @@ class TestValidationErrorFormatting:
         try:
             from codex_ml.cli.validate import _format_validation_error
 
-            assert callable(_format_validation_error)
+            assert callable(_format_validation_error), "Error should be raised or set"
         except ImportError as e:
             pytest.skip(f"Function import failed: {e}")
 
@@ -88,7 +88,7 @@ class TestYAMLSupport:
         try:
             from codex_ml.utils.yaml_support import safe_load
 
-            assert callable(safe_load)
+            assert callable(safe_load), "Condition must be true"
         except ImportError as e:
             pytest.skip(f"safe_load import failed: {e}")
 
@@ -141,8 +141,8 @@ class TestConfigValidation:
 
         # Basic validation - should be valid YAML
         assert isinstance(config, dict)
-        assert "training" in config
-        assert config["training"]["epochs"] == 10
+        assert "training" in config, "Condition must be true"
+        assert config["training"]["epochs"] == 10, "Condition must be true"
 
     def test_validate_invalid_yaml_syntax(self):
         """Test handling of invalid YAML syntax."""
@@ -168,8 +168,8 @@ class TestConfigValidation:
         incomplete_config = {"training": {}}  # Missing required fields
 
         # This should be flagged as incomplete
-        assert "epochs" not in incomplete_config["training"]
-        assert "batch_size" not in incomplete_config["training"]
+        assert "epochs" not in incomplete_config["training"], "Condition must be true"
+        assert "batch_size" not in incomplete_config["training"], "Condition must be true"
 
 
 class TestDiffValidation:
@@ -204,8 +204,8 @@ class TestDiffValidation:
         )
 
         # Should detect difference in epochs
-        assert len(diff) > 0
-        assert any("epochs" in line for line in diff)
+        assert len(diff) > 0, "Diff must not be empty"
+        assert any("epochs" in line for line in diff), "Condition must be true"
 
 
 class TestOptionalDependencies:
@@ -242,6 +242,6 @@ class TestOptionalDependencies:
 
             # May be None if not available
             if validate_config_file is not None:
-                assert callable(validate_config_file)
+                assert callable(validate_config_file), "Condition must be true"
         except ImportError:
             _ = None  # Module not available - skip test

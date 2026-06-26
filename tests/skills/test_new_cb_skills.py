@@ -39,32 +39,32 @@ def fresh_registry():
 class TestSkillRegistryDiscovery:
     def test_pda_loop_logger_registered(self, fresh_registry):
         skill = fresh_registry.resolve("pda.loop.logger")
-        assert skill is not None
-        assert skill.skill_id == "pda.loop.logger"
+        assert skill is not None, "skill must be initialized"
+        assert skill.skill_id == "pda.loop.logger", "skill_id is not valid"
 
     def test_ci_monitor_proactive_registered(self, fresh_registry):
         skill = fresh_registry.resolve("ci.monitor.proactive")
-        assert skill is not None
-        assert skill.skill_id == "ci.monitor.proactive"
+        assert skill is not None, "skill must be initialized"
+        assert skill.skill_id == "ci.monitor.proactive", "skill_id is not valid"
 
     def test_pda_loop_logger_has_cognitive_brain_tag(self, fresh_registry):
         skill = fresh_registry.resolve("pda.loop.logger")
-        assert "cognitive-brain" in skill.manifest.capability_tags
+        assert "cognitive-brain" in skill.manifest.capability_tags, "Condition must be true"
 
     def test_ci_monitor_proactive_has_cognitive_brain_tag(self, fresh_registry):
         skill = fresh_registry.resolve("ci.monitor.proactive")
-        assert "cognitive-brain" in skill.manifest.capability_tags
+        assert "cognitive-brain" in skill.manifest.capability_tags, "Condition must be true"
 
     def test_pda_loop_logger_has_pda_loop_config(self, fresh_registry):
         skill = fresh_registry.resolve("pda.loop.logger")
-        assert skill.manifest.pda_loop is not None
+        assert skill.manifest.pda_loop is not None, "pda_loop must be initialized"
         assert isinstance(skill.manifest.pda_loop, PDALoopConfig)
-        assert skill.manifest.pda_loop.enabled is True
+        assert skill.manifest.pda_loop.enabled is True, "enabled is not valid"
 
     def test_ci_monitor_proactive_has_pda_loop_config(self, fresh_registry):
         skill = fresh_registry.resolve("ci.monitor.proactive")
-        assert skill.manifest.pda_loop is not None
-        assert skill.manifest.pda_loop.enabled is True
+        assert skill.manifest.pda_loop is not None, "pda_loop must be initialized"
+        assert skill.manifest.pda_loop.enabled is True, "enabled is not valid"
 
     def test_total_cognitive_brain_skills(self, fresh_registry):
         cb_skills = fresh_registry.list(capability_tag="cognitive-brain")
@@ -83,16 +83,16 @@ class TestSkillRegistryDiscovery:
 
 class TestPDALoopConfig:
     def test_pda_loop_config_field_on_manifest(self):
-        assert "pda_loop" in SkillManifest.model_fields
+        assert "pda_loop" in SkillManifest.model_fields, "Condition must be true"
 
     def test_pda_loop_config_defaults(self):
         cfg = PDALoopConfig()
-        assert cfg.enabled is True
-        assert cfg.aftermath_store == ".codex/aftermath/pda_iterations.jsonl"
+        assert cfg.enabled is True, "enabled is not valid"
+        assert cfg.aftermath_store == ".codex/aftermath/pda_iterations.jsonl", "aftermath_store is not valid"
 
     def test_manifest_without_pda_loop_is_valid(self):
         m = SkillManifest(id="test.skill", name="Test", entrypoint="os:getcwd")
-        assert m.pda_loop is None
+        assert m.pda_loop is None, "pda_loop is not valid"
 
     def test_manifest_with_pda_loop_parsed(self):
         import yaml
@@ -109,9 +109,9 @@ pda_loop:
 """
         data = yaml.safe_load(raw)
         m = SkillManifest.model_validate(data)
-        assert m.pda_loop is not None
-        assert m.pda_loop.plan == "plan step"
-        assert m.pda_loop.do == "do step"
+        assert m.pda_loop is not None, "pda_loop must be initialized"
+        assert m.pda_loop.plan == "plan step", "plan is not valid"
+        assert m.pda_loop.do == "do step", "do is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -122,28 +122,28 @@ pda_loop:
 class TestPDALoopLoggerHandler:
     def test_missing_action_returns_error(self):
         result = pda_run({})
-        assert result["status"] == "error"
-        assert "action" in result["message"]
+        assert result["status"] == "error", "Result must not be empty"
+        assert "action" in result["message"], "Result must not be empty"
 
     def test_unknown_action_returns_error(self):
         result = pda_run({"action": "nonexistent"})
-        assert result["status"] == "error"
+        assert result["status"] == "error", "Result must not be empty"
 
     def test_summarize_empty_returns_ok(self):
         result = pda_run({"action": "summarize", "limit": 5})
-        assert result["status"] == "ok"
-        assert "entries" in result
+        assert result["status"] == "ok", "Result must not be empty"
+        assert "entries" in result, "Result must not be empty"
         assert isinstance(result["entries"], list)
 
     def test_query_returns_ok(self):
         result = pda_run({"action": "query", "limit": 1})
-        assert result["status"] == "ok"
-        assert "entries" in result
+        assert result["status"] == "ok", "Result must not be empty"
+        assert "entries" in result, "Result must not be empty"
 
     def test_log_failure_missing_fields(self):
         result = pda_run({"action": "log_failure"})
-        assert result["status"] == "error"
-        assert "Missing fields" in result["message"]
+        assert result["status"] == "error", "Result must not be empty"
+        assert "Missing fields" in result["message"], "Result must not be empty"
 
     def test_log_failure_writes_entry(self):
         result = pda_run(
@@ -154,13 +154,13 @@ class TestPDALoopLoggerHandler:
                 "error_text": "unit test error",
             }
         )
-        assert result["status"] == "ok"
-        assert result["entry"]["pattern_id"] == "RP-PYTEST-SKILL-TEST"
-        assert result["entry"]["type"] == "failure"
+        assert result["status"] == "ok", "Result must not be empty"
+        assert result["entry"]["pattern_id"] == "RP-PYTEST-SKILL-TEST", "Result must not be empty"
+        assert result["entry"]["type"] == "failure", "Result must not be empty"
 
     def test_log_fix_missing_fields(self):
         result = pda_run({"action": "log_fix"})
-        assert result["status"] == "error"
+        assert result["status"] == "error", "Result must not be empty"
 
     def test_log_fix_writes_entry(self):
         result = pda_run(
@@ -172,8 +172,8 @@ class TestPDALoopLoggerHandler:
                 "verification_passed": True,
             }
         )
-        assert result["status"] == "ok"
-        assert result["entry"]["verification_passed"] is True
+        assert result["status"] == "ok", "Result must not be empty"
+        assert result["entry"]["verification_passed"] is True, "Result must not be empty"
 
     def test_log_session_writes_entry(self):
         result = pda_run(
@@ -184,8 +184,8 @@ class TestPDALoopLoggerHandler:
                 "commit": "abc1234",
             }
         )
-        assert result["status"] == "ok"
-        assert result["entry"]["type"] == "session"
+        assert result["status"] == "ok", "Result must not be empty"
+        assert result["entry"]["type"] == "session", "Result must not be empty"
 
     def test_query_with_pattern_filter(self):
         # First write a known entry
@@ -197,8 +197,8 @@ class TestPDALoopLoggerHandler:
             }
         )
         result = pda_run({"action": "query", "pattern_id": "RP-QUERY-FILTER-TEST"})
-        assert result["status"] == "ok"
-        assert all(e["pattern_id"] == "RP-QUERY-FILTER-TEST" for e in result["entries"])
+        assert result["status"] == "ok", "Result must not be empty"
+        assert all(e["pattern_id"] == "RP-QUERY-FILTER-TEST" for e in result["entries"]), "Result must not be empty"
 
     def test_summarize_after_fix_shows_success_rate(self):
         pid = "RP-SUCCESS-RATE-TEST"
@@ -207,10 +207,10 @@ class TestPDALoopLoggerHandler:
             {"action": "log_fix", "session": "S293", "pattern_id": pid, "verification_passed": True}
         )
         result = pda_run({"action": "summarize", "pattern_id": pid})
-        assert result["status"] == "ok"
+        assert result["status"] == "ok", "Result must not be empty"
         matching = [e for e in result["entries"] if e["pattern_id"] == pid]
         if matching:
-            assert matching[0]["success_rate"] > 0
+            assert matching[0]["success_rate"] > 0, "Value must be greater than zero"
 
 
 # ---------------------------------------------------------------------------
@@ -221,13 +221,13 @@ class TestPDALoopLoggerHandler:
 class TestCIMonitorProactiveHandler:
     def test_missing_repo_returns_error(self):
         result = monitor_run({"token": "fake-token"})
-        assert result["status"] == "error"
-        assert "repo" in result["message"]
+        assert result["status"] == "error", "Result must not be empty"
+        assert "repo" in result["message"], "Result must not be empty"
 
     def test_missing_token_returns_error(self):
         result = monitor_run({"repo": "owner/repo"})
-        assert result["status"] == "error"
-        assert "token" in result["message"]
+        assert result["status"] == "error", "Result must not be empty"
+        assert "token" in result["message"], "Result must not be empty"
 
     def test_invalid_token_dry_run_returns_structured_error(self):
         # With an invalid token + dry_run=True, the monitor may fail at the
@@ -243,7 +243,7 @@ class TestCIMonitorProactiveHandler:
         )
         # Must always return a dict with "status"
         assert isinstance(result, dict)
-        assert "status" in result
+        assert "status" in result, "Result must not be empty"
 
     def test_entrypoint_is_callable(self, fresh_registry):
         import importlib
@@ -252,4 +252,4 @@ class TestCIMonitorProactiveHandler:
         mod_path, func_name = skill.manifest.entrypoint.rsplit(":", 1)
         mod = importlib.import_module(mod_path)
         fn = getattr(mod, func_name)
-        assert callable(fn)
+        assert callable(fn), "Condition must be true"

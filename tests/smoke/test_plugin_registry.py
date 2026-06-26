@@ -21,7 +21,7 @@ def _pip(*args: str) -> None:
 def test_entrypoint_discovery(tmp_path: Path):
     # Install the local sandbox plugin in editable mode (no network).
     pkg_root = Path(__file__).parent.parent / "plugins" / "_sandbox_pkg"
-    assert (pkg_root / "pyproject.toml").exists()
+    assert (pkg_root / "pyproject.toml").exists(), "Condition must be true"
     _pip("install", "-e", str(pkg_root))
     try:
         from codex_ml.plugins.registry import discover, get  # type: ignore
@@ -31,8 +31,8 @@ def test_entrypoint_discovery(tmp_path: Path):
         Dummy = eps["dummy"]
         inst = Dummy()
         assert hasattr(inst, "predict"), "Dummy plugin should define predict()"
-        assert inst.predict("x") == "x"
-        assert get("dummy") is Dummy
+        assert inst.predict("x") == "x", "Condition must be true"
+        assert get("dummy") is Dummy, "Condition must be true"
     finally:
         # Best-effort cleanup
         _pip("uninstall", "-y", "codex-dummy-plugin")

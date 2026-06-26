@@ -8,8 +8,8 @@ from security import secrets as sec
 
 
 def test_secret_entropy_thresholds():
-    assert not sec.check_secret_entropy("short")
-    assert sec.check_secret_entropy("Aa1!sufficient-secret")
+    assert not sec.check_secret_entropy("short"), "Condition must be true"
+    assert sec.check_secret_entropy("Aa1!sufficient-secret"), "Condition must be true"
 
 
 def test_rotate_secret_with_custom_policy():
@@ -21,8 +21,8 @@ def test_rotate_secret_with_custom_policy():
             return alphabet[0]
 
     rotated = sec.rotate_secret(state, policy=policy, generator=DeterministicRandom())
-    assert rotated
-    assert rotated in state.history
+    assert rotated, "rotated is not valid"
+    assert rotated in state.history, "Condition must be true"
 
 
 def test_detect_secret_reuse():

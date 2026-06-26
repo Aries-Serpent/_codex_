@@ -26,28 +26,28 @@ class TestEventType:
     """Tests for EventType enum."""
 
     def test_model_training_events(self) -> None:
-        assert EventType.MODEL_TRAINING_STARTED.value == "model.training.started"
-        assert EventType.MODEL_TRAINING_COMPLETED.value == "model.training.completed"
-        assert EventType.MODEL_TRAINING_FAILED.value == "model.training.failed"
+        assert EventType.MODEL_TRAINING_STARTED.value == "model.training.started", "Value must be initialized"
+        assert EventType.MODEL_TRAINING_COMPLETED.value == "model.training.completed", "Value must be initialized"
+        assert EventType.MODEL_TRAINING_FAILED.value == "model.training.failed", "Value must be initialized"
 
     def test_model_lifecycle_events(self) -> None:
-        assert EventType.MODEL_REGISTERED.value == "model.registered"
-        assert EventType.MODEL_DEPLOYED.value == "model.deployed"
-        assert EventType.MODEL_RETIRED.value == "model.retired"
+        assert EventType.MODEL_REGISTERED.value == "model.registered", "Value must be initialized"
+        assert EventType.MODEL_DEPLOYED.value == "model.deployed", "Value must be initialized"
+        assert EventType.MODEL_RETIRED.value == "model.retired", "Value must be initialized"
 
     def test_monitoring_events(self) -> None:
-        assert EventType.DRIFT_DETECTED.value == "drift.detected"
-        assert EventType.DATASET_UPDATED.value == "dataset.updated"
+        assert EventType.DRIFT_DETECTED.value == "drift.detected", "Value must be initialized"
+        assert EventType.DATASET_UPDATED.value == "dataset.updated", "Data must not be empty"
 
     def test_pipeline_events(self) -> None:
-        assert EventType.PIPELINE_STARTED.value == "pipeline.started"
-        assert EventType.PIPELINE_COMPLETED.value == "pipeline.completed"
-        assert EventType.PIPELINE_FAILED.value == "pipeline.failed"
+        assert EventType.PIPELINE_STARTED.value == "pipeline.started", "Value must be initialized"
+        assert EventType.PIPELINE_COMPLETED.value == "pipeline.completed", "Value must be initialized"
+        assert EventType.PIPELINE_FAILED.value == "pipeline.failed", "Value must be initialized"
 
     def test_enum_iteration(self) -> None:
         # Verify all event types can be iterated
         event_types = list(EventType)
-        assert len(event_types) == 11
+        assert len(event_types) == 11, "Event_types must not be empty"
 
 
 class TestOptionalEventPublishers:
@@ -56,7 +56,7 @@ class TestOptionalEventPublishers:
     def test_returns_provider_map_with_current_values(self) -> None:
         publishers = events_module.get_optional_event_publishers()
 
-        assert publishers == {
+        assert publishers == {, "publishers is not valid"
             "azure": events_module.AzureEventPublisher,
             "aws": events_module.AWSEventPublisher,
         }
@@ -65,7 +65,7 @@ class TestOptionalEventPublishers:
         monkeypatch.setattr(events_module, "AzureEventPublisher", None)
         monkeypatch.setattr(events_module, "AWSEventPublisher", None)
 
-        assert events_module.get_optional_event_publishers() == {
+        assert events_module.get_optional_event_publishers() == {, "Condition must be true"
             "azure": None,
             "aws": None,
         }
@@ -82,7 +82,7 @@ class TestOptionalEventPublishers:
         monkeypatch.setattr(events_module, "AzureEventPublisher", AzurePublisher)
         monkeypatch.setattr(events_module, "AWSEventPublisher", AWSPublisher)
 
-        assert events_module.get_optional_event_publishers() == {
+        assert events_module.get_optional_event_publishers() == {, "Condition must be true"
             "azure": AzurePublisher,
             "aws": AWSPublisher,
         }
@@ -98,12 +98,12 @@ class TestEvent:
             data={"model_id": "123"},
         )
 
-        assert event.event_type == EventType.MODEL_TRAINING_STARTED
-        assert event.source == "test_source"
-        assert event.data == {"model_id": "123"}
-        assert event.event_id is not None
-        assert event.timestamp is not None
-        assert event.metadata == {}
+        assert event.event_type == EventType.MODEL_TRAINING_STARTED, "event_type is not valid"
+        assert event.source == "test_source", "source is not valid"
+        assert event.data == {"model_id": "123"}, "Data must not be empty"
+        assert event.event_id is not None, "event_id must be initialized"
+        assert event.timestamp is not None, "timestamp must be initialized"
+        assert event.metadata == {}, "Data must not be empty"
 
     def test_auto_generated_fields(self) -> None:
         event = Event(
@@ -113,8 +113,8 @@ class TestEvent:
         )
 
         # event_id should be a valid UUID string
-        assert len(event.event_id) == 36
-        assert "-" in event.event_id
+        assert len(event.event_id) == 36, "Collection must not be empty"
+        assert "-" in event.event_id, "Condition must be true"
 
         # timestamp should be ISO format
         datetime.fromisoformat(event.timestamp)
@@ -127,8 +127,8 @@ class TestEvent:
             metadata={"severity": "high", "alert": True},
         )
 
-        assert event.metadata["severity"] == "high"
-        assert event.metadata["alert"] is True
+        assert event.metadata["severity"] == "high", "Data must not be empty"
+        assert event.metadata["alert"] is True, "Data must not be empty"
 
     def test_to_dict(self) -> None:
         event = Event(
@@ -140,11 +140,11 @@ class TestEvent:
         result = event.to_dict()
 
         assert isinstance(result, dict)
-        assert result["event_type"] == "pipeline.completed"
-        assert result["source"] == "pipeline_runner"
-        assert result["data"] == {"duration_seconds": 120}
-        assert "event_id" in result
-        assert "timestamp" in result
+        assert result["event_type"] == "pipeline.completed", "Result must not be empty"
+        assert result["source"] == "pipeline_runner", "Result must not be empty"
+        assert result["data"] == {"duration_seconds": 120}, "Result must not be empty"
+        assert "event_id" in result, "Result must not be empty"
+        assert "timestamp" in result, "Result must not be empty"
 
     def test_to_json(self) -> None:
         event = Event(
@@ -157,8 +157,8 @@ class TestEvent:
 
         # Should be valid JSON
         parsed = json.loads(json_str)
-        assert parsed["event_type"] == "model.registered"
-        assert parsed["source"] == "registry"
+        assert parsed["event_type"] == "model.registered", "Condition must be true"
+        assert parsed["source"] == "registry", "Condition must be true"
 
     def test_event_uniqueness(self) -> None:
         event1 = Event(
@@ -173,7 +173,7 @@ class TestEvent:
         )
 
         # Each event should have unique ID
-        assert event1.event_id != event2.event_id
+        assert event1.event_id != event2.event_id, "event_id is not valid"
 
 
 class TestEventBus:
@@ -189,9 +189,9 @@ class TestEventBus:
 
         result = bus.publish(event)
 
-        assert result is True
-        assert len(bus.event_history) == 1
-        assert bus.event_history[0] == event
+        assert result is True, "Result must not be empty"
+        assert len(bus.event_history) == 1, "Collection must not be empty"
+        assert bus.event_history[0] == event, "Condition must be true"
 
     def test_publish_batch(self) -> None:
         bus = EventBus()
@@ -203,8 +203,8 @@ class TestEventBus:
 
         result = bus.publish_batch(events)
 
-        assert result is True
-        assert len(bus.event_history) == 3
+        assert result is True, "Result must not be empty"
+        assert len(bus.event_history) == 3, "Collection must not be empty"
 
     def test_subscribe_and_receive(self) -> None:
         bus = EventBus()
@@ -222,8 +222,8 @@ class TestEventBus:
         )
         bus.publish(event)
 
-        assert len(received_events) == 1
-        assert received_events[0] == event
+        assert len(received_events) == 1, "Received_events must not be empty"
+        assert received_events[0] == event, "Condition must be true"
 
     def test_subscribe_different_event_types(self) -> None:
         bus = EventBus()
@@ -248,8 +248,8 @@ class TestEventBus:
             )
         )
 
-        assert len(training_events) == 1
-        assert len(deployment_events) == 1
+        assert len(training_events) == 1, "Training_events must not be empty"
+        assert len(deployment_events) == 1, "Deployment_events must not be empty"
 
     def test_unsubscribe(self) -> None:
         bus = EventBus()
@@ -266,7 +266,7 @@ class TestEventBus:
             )
         )
 
-        assert len(received_events) == 0
+        assert len(received_events) == 0, "Received_events must not be empty"
 
     def test_get_history_all(self) -> None:
         bus = EventBus()
@@ -275,7 +275,7 @@ class TestEventBus:
 
         history = bus.get_history()
 
-        assert len(history) == 2
+        assert len(history) == 2, "History must not be empty"
 
     def test_get_history_filtered(self) -> None:
         bus = EventBus()
@@ -285,17 +285,17 @@ class TestEventBus:
 
         history = bus.get_history(EventType.MODEL_DEPLOYED)
 
-        assert len(history) == 2
-        assert all(e.event_type == EventType.MODEL_DEPLOYED for e in history)
+        assert len(history) == 2, "History must not be empty"
+        assert all(e.event_type == EventType.MODEL_DEPLOYED for e in history), "event_type is not valid"
 
     def test_clear_history(self) -> None:
         bus = EventBus()
         bus.publish(Event(event_type=EventType.MODEL_RETIRED, source="s", data={}))
-        assert len(bus.event_history) == 1
+        assert len(bus.event_history) == 1, "Collection must not be empty"
 
         bus.clear_history()
 
-        assert len(bus.event_history) == 0
+        assert len(bus.event_history) == 0, "Collection must not be empty"
 
     def test_callback_exception_handling(self) -> None:
         bus = EventBus()
@@ -309,8 +309,8 @@ class TestEventBus:
         event = Event(event_type=EventType.PIPELINE_FAILED, source="s", data={})
         result = bus.publish(event)
 
-        assert result is True
-        assert len(bus.event_history) == 1
+        assert result is True, "Result must not be empty"
+        assert len(bus.event_history) == 1, "Collection must not be empty"
 
     def test_multiple_subscribers_same_event(self) -> None:
         bus = EventBus()
@@ -323,8 +323,8 @@ class TestEventBus:
         bus.publish(Event(event_type=EventType.DATASET_UPDATED, source="s", data={}))
 
         # Both subscribers should receive the event
-        assert len(received1) == 1
-        assert len(received2) == 1
+        assert len(received1) == 1, "Received1 must not be empty"
+        assert len(received2) == 1, "Received2 must not be empty"
 
 
 class TestAbstractClasses:
@@ -388,7 +388,7 @@ class TestEventBusIntegration:
             )
         )
 
-        assert len(workflow_events) == 3
-        assert workflow_events[0].event_type == EventType.MODEL_TRAINING_STARTED
-        assert workflow_events[1].event_type == EventType.MODEL_TRAINING_COMPLETED
-        assert workflow_events[2].event_type == EventType.MODEL_REGISTERED
+        assert len(workflow_events) == 3, "Workflow_events must not be empty"
+        assert workflow_events[0].event_type == EventType.MODEL_TRAINING_STARTED, "event_type is not valid"
+        assert workflow_events[1].event_type == EventType.MODEL_TRAINING_COMPLETED, "event_type is not valid"
+        assert workflow_events[2].event_type == EventType.MODEL_REGISTERED, "event_type is not valid"

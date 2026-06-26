@@ -20,7 +20,7 @@ _SKIP_DOCKER_BUILD = (DOCKER is None) or os.environ.get("CI", "") == "true"
 def test_cpu_dockerfile_builds() -> None:
     cmd = ["docker", "build", "--target", "cpu-runtime", "-t", "codex:test-cpu", "."]
     result = subprocess.run(cmd, capture_output=True, timeout=1800)  # 30 min timeout
-    assert result.returncode == 0
+    assert result.returncode == 0, "Result must not be empty"
 
 
 @pytest.mark.slow
@@ -28,4 +28,4 @@ def test_cpu_dockerfile_builds() -> None:
 def test_gpu_dockerfile_builds() -> None:
     cmd = ["docker", "build", "--target", "gpu-runtime", "-t", "codex:test-gpu", "."]
     result = subprocess.run(cmd, capture_output=True, timeout=1800)  # 30 min timeout
-    assert result.returncode == 0
+    assert result.returncode == 0, "Result must not be empty"

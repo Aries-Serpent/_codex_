@@ -50,22 +50,22 @@ def test_export_environment_creates_artifacts(monkeypatch: pytest.MonkeyPatch, t
     freeze_txt = out_dir / "pip-freeze.txt"
     ndjson = out_dir / "environment.ndjson"
 
-    assert env_json.exists()
-    assert freeze_txt.exists()
-    assert ndjson.exists()
+    assert env_json.exists(), "Condition must be true"
+    assert freeze_txt.exists(), "Condition must be true"
+    assert ndjson.exists(), "Condition must be true"
 
     # Concise summary is returned and persisted as NDJSON.
-    assert summary["seed"] == 123
-    assert summary["command"] == "unit-test"
+    assert summary["seed"] == 123, "Condition must be true"
+    assert summary["command"] == "unit-test", "Condition must be true"
     expected_serialized = json.dumps(hardware, sort_keys=True, default=repr, separators=(",", ":"))
     expected_fingerprint = hashlib.sha256(expected_serialized.encode("utf-8")).hexdigest()
-    assert summary["hardware_fingerprint"] == expected_fingerprint
+    assert summary["hardware_fingerprint"] == expected_fingerprint, "Condition must be true"
 
     loaded = provenance.load_environment_summary(out_dir)
-    assert loaded == summary
+    assert loaded == summary, "loaded is not valid"
 
     details = json.loads(env_json.read_text())
-    assert "pip_freeze" in details
+    assert "pip_freeze" in details, "Condition must be true"
     assert isinstance(details["pip_freeze"], list)
-    assert summary["pip_freeze_count"] == len(details["pip_freeze"])
-    assert details.get("hardware") == hardware
+    assert summary["pip_freeze_count"] == len(details["pip_freeze"]), "Collection must not be empty"
+    assert details.get("hardware") == hardware, "Condition must be true"

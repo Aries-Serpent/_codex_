@@ -49,8 +49,8 @@ class TestNormaliseSnapshot:
         obj = SampleData(name="test", value=123)
         result = _normalise_snapshot(obj)
         assert isinstance(result, dict)
-        assert result["name"] == "test"
-        assert result["value"] == 123
+        assert result["name"] == "test", "Result must not be empty"
+        assert result["value"] == 123, "Result must not be empty"
 
     def test_normalise_snapshot_list(self):
         """Test normalizing lists."""
@@ -82,11 +82,11 @@ class TestNormaliseSnapshot:
         """Test normalizing primitive types."""
         from codex_ml.train_loop import _normalise_snapshot
 
-        assert _normalise_snapshot("string") == "string"
-        assert _normalise_snapshot(42) == 42
-        assert _normalise_snapshot(3.14) == 3.14
-        assert _normalise_snapshot(True) is True
-        assert _normalise_snapshot(None) is None
+        assert _normalise_snapshot("string") == "string", "_n is not valid"
+        assert _normalise_snapshot(42) == 42, "_n is not valid"
+        assert _normalise_snapshot(3.14) == 3.14, "_n is not valid"
+        assert _normalise_snapshot(True) is True, "_n is not valid"
+        assert _normalise_snapshot(None) is None, "_n is not valid"
 
 
 class TestSnapshotPayload:
@@ -97,7 +97,7 @@ class TestSnapshotPayload:
         from codex_ml.train_loop import _snapshot_payload
 
         result = _snapshot_payload(None)
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_snapshot_payload_dict(self):
         """Test snapshot_payload with dict."""
@@ -105,21 +105,21 @@ class TestSnapshotPayload:
 
         data = {"key": "value"}
         result = _snapshot_payload(data)
-        assert result == {"key": "value"}
+        assert result == {"key": "value"}, "Result must not be empty"
 
     def test_snapshot_payload_non_mapping(self):
         """Test snapshot_payload with non-mapping data."""
         from codex_ml.train_loop import _snapshot_payload
 
         result = _snapshot_payload([1, 2, 3])
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_snapshot_payload_empty_dict(self):
         """Test snapshot_payload with empty dict."""
         from codex_ml.train_loop import _snapshot_payload
 
         result = _snapshot_payload({})
-        assert result == {}
+        assert result == {}, "Result must not be empty"
 
 
 class TestApplyMetadataToState:
@@ -132,7 +132,7 @@ class TestApplyMetadataToState:
         state = {"loss": 0.5}
         metadata = {"rollout_ring": "test"}
         _apply_metadata_to_state(state, metadata)
-        assert state["metadata"] == {"rollout_ring": "test"}
+        assert state["metadata"] == {"rollout_ring": "test"}, "Data must not be empty"
 
     def test_apply_metadata_to_state_none_metadata(self):
         """Test applying None metadata to state."""
@@ -140,7 +140,7 @@ class TestApplyMetadataToState:
 
         state = {"loss": 0.5}
         _apply_metadata_to_state(state, None)
-        assert state["metadata"] == {}
+        assert state["metadata"] == {}, "Data must not be empty"
 
     def test_apply_metadata_to_state_missing_rollout_ring(self):
         """Test that warning is logged when rollout_ring is missing."""
@@ -167,10 +167,10 @@ class TestWriteJsonReport:
             _write_json_report(output_dir, "test.json", payload)
 
             report_file = output_dir / "test.json"
-            assert report_file.exists()
+            assert report_file.exists(), "rep is not valid"
 
             content = json.loads(report_file.read_text())
-            assert content == payload
+            assert content == payload, "Content must not be empty"
 
     def test_write_json_report_none_output_dir(self):
         """Test write_json_report with None output_dir."""
@@ -189,7 +189,7 @@ class TestWriteJsonReport:
 
             # Should not create file for empty payload
             report_file = output_dir / "test.json"
-            assert not report_file.exists()
+            assert not report_file.exists(), "Condition must be true"
 
     def test_write_json_report_creates_directory(self):
         """Test write_json_report creates output directory if missing."""
@@ -201,7 +201,7 @@ class TestWriteJsonReport:
             _write_json_report(output_dir, "test.json", payload)
 
             report_file = output_dir / "test.json"
-            assert report_file.exists()
+            assert report_file.exists(), "rep is not valid"
 
 
 class TestResolveDtype:
@@ -212,7 +212,7 @@ class TestResolveDtype:
         from codex_ml.train_loop import _resolve_dtype
 
         result = _resolve_dtype(None)
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_resolve_dtype_fp32(self):
         """Test resolve_dtype with fp32."""
@@ -222,7 +222,7 @@ class TestResolveDtype:
             import torch
 
             result = _resolve_dtype("fp32")
-            assert result == torch.float32
+            assert result == torch.float32, "Result must not be empty"
         except ImportError:
             pytest.skip("torch not installed")
 
@@ -234,7 +234,7 @@ class TestResolveDtype:
             import torch
 
             result = _resolve_dtype("float32")
-            assert result == torch.float32
+            assert result == torch.float32, "Result must not be empty"
         except ImportError:
             pytest.skip("torch not installed")
 
@@ -246,7 +246,7 @@ class TestResolveDtype:
             import torch
 
             result = _resolve_dtype("f32")
-            assert result == torch.float32
+            assert result == torch.float32, "Result must not be empty"
         except ImportError:
             pytest.skip("torch not installed")
 
@@ -258,7 +258,7 @@ class TestResolveDtype:
             import torch
 
             result = _resolve_dtype("fp16")
-            assert result == torch.float16
+            assert result == torch.float16, "Result must not be empty"
         except ImportError:
             pytest.skip("torch not installed")
 
@@ -270,7 +270,7 @@ class TestResolveDtype:
             import torch
 
             result = _resolve_dtype("FP32")
-            assert result == torch.float32
+            assert result == torch.float32, "Result must not be empty"
         except ImportError:
             pytest.skip("torch not installed")
 
@@ -279,7 +279,7 @@ class TestResolveDtype:
         from codex_ml.train_loop import _resolve_dtype
 
         result = _resolve_dtype("invalid_dtype")
-        assert result is None
+        assert result is None, "Result must not be empty"
 
 
 class TestResolveDevice:
@@ -291,14 +291,14 @@ class TestResolveDevice:
 
         result = _resolve_device(None)
         # Should return a device object (CPU or CUDA if available)
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     def test_resolve_device_cpu(self):
         """Test resolve_device with cpu."""
         from codex_ml.train_loop import _resolve_device
 
         result = _resolve_device("cpu")
-        assert str(result) == "cpu"
+        assert str(result) == "cpu", "Result must not be empty"
 
     def test_resolve_device_invalid(self):
         """Test resolve_device with invalid device."""
@@ -306,7 +306,7 @@ class TestResolveDevice:
 
         # Should return CPU as fallback
         result = _resolve_device("invalid_device_xyz")
-        assert str(result) == "cpu"
+        assert str(result) == "cpu", "Result must not be empty"
 
 
 class TestLoadOrCreateModel:
@@ -319,8 +319,8 @@ class TestLoadOrCreateModel:
         provided_model = MagicMock()
         model, created = _load_or_create_model(provided_model, None, {})
 
-        assert model is provided_model
-        assert created is False
+        assert model is provided_model, "model is not valid"
+        assert created is False, "created is not valid"
 
     def test_load_or_create_model_no_model_no_name(self):
         """Test when no model and no model_name provided."""
@@ -328,8 +328,8 @@ class TestLoadOrCreateModel:
 
         model, created = _load_or_create_model(None, None, {})
 
-        assert model is None
-        assert created is False
+        assert model is None, "model is not valid"
+        assert created is False, "created is not valid"
 
     def test_load_or_create_model_with_instantiate(self):
         """Test model instantiation when function is available."""
@@ -341,8 +341,8 @@ class TestLoadOrCreateModel:
 
             model, created = _load_or_create_model(None, "test_model", {"param": "value"})
 
-            assert model is mock_model
-            assert created is True
+            assert model is mock_model, "model is not valid"
+            assert created is True, "created is not valid"
             mock_instantiate.assert_called_once_with("test_model", {"param": "value"})
 
 
@@ -383,12 +383,12 @@ class TestToyDataset:
             import torch
 
             dataset = ToyDataset(num_samples=10, seq_len=20, vocab_size=100, seed=42)
-            assert len(dataset) == 10
+            assert len(dataset) == 10, "Dataset must not be empty"
 
             # Get an item
             item = dataset[0]
             assert item.shape == (20,)
-            assert item.dtype == torch.long
+            assert item.dtype == torch.long, "Item must not be empty"
         except ImportError:
             pytest.skip("torch not installed")
 
@@ -400,7 +400,7 @@ class TestToyDataset:
             import torch
 
             dataset = ToyDataset(num_samples=5, seq_len=15, vocab_size=50, seed=42)
-            assert len(dataset) == 5
+            assert len(dataset) == 5, "Dataset must not be empty"
         except ImportError:
             pytest.skip("torch not installed")
 
@@ -439,7 +439,7 @@ class TestReasoningRuntime:
             threshold=0.5,
         )
 
-        assert runtime.should_capture() is True
+        assert runtime.should_capture() is True, "Condition must be true"
 
     def test_reasoning_runtime_should_capture_zero_limit(self):
         """Test should_capture with zero limit (unlimited)."""
@@ -456,7 +456,7 @@ class TestReasoningRuntime:
             threshold=0.5,
         )
 
-        assert runtime.should_capture() is True
+        assert runtime.should_capture() is True, "Condition must be true"
 
     def test_reasoning_runtime_should_capture_exceeded_limit(self):
         """Test should_capture when limit is exceeded."""
@@ -474,7 +474,7 @@ class TestReasoningRuntime:
             traces_written=3,
         )
 
-        assert runtime.should_capture() is False
+        assert runtime.should_capture() is False, "Condition must be true"
 
     def test_reasoning_runtime_on_new_epoch(self):
         """Test on_new_epoch resets counter."""
@@ -493,7 +493,7 @@ class TestReasoningRuntime:
         )
 
         runtime.on_new_epoch()
-        assert runtime.traces_written == 0
+        assert runtime.traces_written == 0, "traces_written is not valid"
 
     def test_reasoning_runtime_bind_model(self):
         """Test bind_model attaches to harness."""

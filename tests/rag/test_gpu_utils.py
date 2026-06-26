@@ -36,7 +36,7 @@ class TestCheckCudaAvailable:
         with patch.dict("sys.modules", {"torch": mock_torch}):
             result = check_cuda_available()
 
-            assert result is True
+            assert result is True, "Result must not be empty"
             mock_torch.cuda.is_available.assert_called_once()
             mock_torch.cuda.get_device_name.assert_called_once_with(0)
 
@@ -48,7 +48,7 @@ class TestCheckCudaAvailable:
         with patch.dict("sys.modules", {"torch": mock_torch}):
             result = check_cuda_available()
 
-            assert result is False
+            assert result is False, "Result must not be empty"
             mock_torch.cuda.is_available.assert_called_once()
 
     def test_cuda_check_import_error(self):
@@ -56,7 +56,7 @@ class TestCheckCudaAvailable:
         with patch.dict("sys.modules", {"torch": None}):
             with patch("builtins.__import__", side_effect=ImportError("No module named 'torch'")):
                 result = check_cuda_available()
-                assert result is False
+                assert result is False, "Result must not be empty"
 
     def test_cuda_check_exception(self):
         """Test when CUDA check raises an exception."""
@@ -66,7 +66,7 @@ class TestCheckCudaAvailable:
         with patch.dict("sys.modules", {"torch": mock_torch}):
             result = check_cuda_available()
 
-            assert result is False
+            assert result is False, "Result must not be empty"
 
 
 class TestGetGpuMemory:
@@ -84,8 +84,8 @@ class TestGetGpuMemory:
         with patch.dict("sys.modules", {"torch": mock_torch}):
             free, total = get_gpu_memory()
 
-            assert free == 8_000_000_000
-            assert total == 16_000_000_000
+            assert free == 8_000_000_000, "free is not valid"
+            assert total == 16_000_000_000, "total is not valid"
             mock_torch.cuda.mem_get_info.assert_called_once()
 
     def test_gpu_memory_cuda_unavailable(self):
@@ -96,8 +96,8 @@ class TestGetGpuMemory:
         with patch.dict("sys.modules", {"torch": mock_torch}):
             free, total = get_gpu_memory()
 
-            assert free == 0
-            assert total == 0
+            assert free == 0, "free is not valid"
+            assert total == 0, "total is not valid"
             mock_torch.cuda.mem_get_info.assert_not_called()
 
     def test_gpu_memory_torch_not_installed(self):
@@ -105,8 +105,8 @@ class TestGetGpuMemory:
         with patch.dict("sys.modules", {"torch": None}):
             with patch("builtins.__import__", side_effect=ImportError("No module named 'torch'")):
                 free, total = get_gpu_memory()
-                assert free == 0
-                assert total == 0
+                assert free == 0, "free is not valid"
+                assert total == 0, "total is not valid"
 
     def test_gpu_memory_exception(self):
         """Test when getting GPU memory raises exception."""
@@ -117,8 +117,8 @@ class TestGetGpuMemory:
         with patch.dict("sys.modules", {"torch": mock_torch}):
             free, total = get_gpu_memory()
 
-            assert free == 0
-            assert total == 0
+            assert free == 0, "free is not valid"
+            assert total == 0, "total is not valid"
 
 
 class TestSelectDevice:
@@ -131,7 +131,7 @@ class TestSelectDevice:
 
         device = select_device(prefer_gpu=True)
 
-        assert device == "cuda"
+        assert device == "cuda", "device is not valid"
         mock_check_cuda.assert_called_once()
 
     @patch("codex.rag.gpu_utils.check_cuda_available")
@@ -141,7 +141,7 @@ class TestSelectDevice:
 
         device = select_device(prefer_gpu=True)
 
-        assert device == "cpu"
+        assert device == "cpu", "device is not valid"
         mock_check_cuda.assert_called_once()
 
     @patch("codex.rag.gpu_utils.check_cuda_available")
@@ -150,7 +150,7 @@ class TestSelectDevice:
         # check_cuda_available should not be called when prefer_gpu=False
         device = select_device(prefer_gpu=False)
 
-        assert device == "cpu"
+        assert device == "cpu", "device is not valid"
         mock_check_cuda.assert_not_called()
 
     @patch("codex.rag.gpu_utils.check_cuda_available")
@@ -160,7 +160,7 @@ class TestSelectDevice:
 
         device = select_device()  # No argument, should default to prefer_gpu=True
 
-        assert device == "cuda"
+        assert device == "cuda", "device is not valid"
         mock_check_cuda.assert_called_once()
 
 
@@ -180,7 +180,7 @@ class TestGetOptimalBatchSize:
         # available_memory = 8_000_000_000 * 0.8 = 6_400_000_000
         # max_batch_size = 6_400_000_000 / 1536 = 4,166,666
         # Clamped to max 512
-        assert batch_size == 512
+        assert batch_size == 512, "batch_size is not valid"
         mock_get_gpu_memory.assert_called_once()
 
     @patch("codex.rag.gpu_utils.get_gpu_memory")
@@ -196,7 +196,7 @@ class TestGetOptimalBatchSize:
         # available_memory = 100_000_000 * 0.8 = 80_000_000
         # max_batch_size = 80_000_000 / 1536 = 52,083
         # Clamped to max 512
-        assert batch_size == 512
+        assert batch_size == 512, "batch_size is not valid"
         mock_get_gpu_memory.assert_called_once()
 
     @patch("codex.rag.gpu_utils.get_gpu_memory")
@@ -212,7 +212,7 @@ class TestGetOptimalBatchSize:
         # available_memory = 5_000_000 * 0.8 = 4_000_000
         # max_batch_size = 4_000_000 / 1536 = 2604
         # Would give 2604, but should be within range [8, 512]
-        assert 8 <= batch_size <= 512
+        assert 8 <= batch_size <= 512, "8 is not valid"
 
     @patch("codex.rag.gpu_utils.get_gpu_memory")
     def test_optimal_batch_size_cpu_fallback(self, mock_get_gpu_memory):
@@ -223,7 +223,7 @@ class TestGetOptimalBatchSize:
         batch_size = get_optimal_batch_size()
 
         # Should return default CPU batch size
-        assert batch_size == 32
+        assert batch_size == 32, "batch_size is not valid"
         mock_get_gpu_memory.assert_called_once()
 
     @patch("codex.rag.gpu_utils.get_gpu_memory")
@@ -240,7 +240,7 @@ class TestGetOptimalBatchSize:
         # With larger embedding dim, batch size should be smaller
         # bytes_per_embedding = 768 * 4 = 3072 (double the default)
         # So batch size should be smaller proportionally
-        assert batch_size == 512  # Still clamped to max
+        assert batch_size == 512, "batch_size is not valid"
         mock_get_gpu_memory.assert_called_once()
 
     @patch("codex.rag.gpu_utils.get_gpu_memory")
@@ -253,7 +253,7 @@ class TestGetOptimalBatchSize:
         )
 
         # Lower safety factor = less available memory used
-        assert batch_size == 512  # Still max because we have plenty of memory
+        assert batch_size == 512, "batch_size is not valid"
         mock_get_gpu_memory.assert_called_once()
 
 
@@ -277,7 +277,7 @@ class TestTryGpuIndex:
         with patch.dict("sys.modules", {"torch": mock_torch, "faiss": mock_faiss}):
             result = try_gpu_index(mock_index, None, device="cuda")
 
-            assert result == mock_gpu_index
+            assert result == mock_gpu_index, "Result must not be empty"
             mock_faiss.StandardGpuResources.assert_called_once()
             mock_faiss.index_cpu_to_gpu.assert_called_once_with(mock_resources, 0, mock_index)
 
@@ -288,7 +288,7 @@ class TestTryGpuIndex:
 
         result = try_gpu_index(mock_index, None, device="cpu")
 
-        assert result == mock_index
+        assert result == mock_index, "Result must not be empty"
         mock_check_cuda.assert_not_called()
 
     @patch("codex.rag.gpu_utils.check_cuda_available")
@@ -299,7 +299,7 @@ class TestTryGpuIndex:
 
         result = try_gpu_index(mock_index, None, device="cuda")
 
-        assert result == mock_index
+        assert result == mock_index, "Result must not be empty"
         mock_check_cuda.assert_called_once()
 
     def test_try_gpu_index_faiss_cpu_only(self):
@@ -316,7 +316,7 @@ class TestTryGpuIndex:
         with patch.dict("sys.modules", {"torch": mock_torch, "faiss": mock_faiss}):
             result = try_gpu_index(mock_index, None, device="cuda")
 
-            assert result == mock_index
+            assert result == mock_index, "Result must not be empty"
 
     def test_try_gpu_index_conversion_error(self):
         """Test when GPU conversion fails with exception."""
@@ -335,7 +335,7 @@ class TestTryGpuIndex:
             result = try_gpu_index(mock_index, None, device="cuda")
 
             # Should return original index on error
-            assert result == mock_index
+            assert result == mock_index, "Result must not be empty"
 
     def test_try_gpu_index_faiss_import_error(self):
         """Test when FAISS is not installed."""
@@ -346,7 +346,7 @@ class TestTryGpuIndex:
         with patch.dict("sys.modules", {"torch": mock_torch, "faiss": None}):
             with patch("builtins.__import__", side_effect=ImportError("No module named 'faiss'")):
                 result = try_gpu_index(mock_index, None, device="cuda")
-                assert result == mock_index
+                assert result == mock_index, "Result must not be empty"
 
 
 # Integration tests
@@ -364,14 +364,14 @@ class TestGpuUtilsIntegration:
         # Get optimal batch size (should work regardless of GPU)
         batch_size = get_optimal_batch_size()
         assert isinstance(batch_size, int)
-        assert batch_size >= 8
+        assert batch_size >= 8, "batch_size must be greater than zero"
 
         # Check memory (should return (0, 0) if no GPU)
         free, total = get_gpu_memory()
         assert isinstance(free, int)
         assert isinstance(total, int)
-        assert free >= 0
-        assert total >= 0
+        assert free >= 0, "free must be greater than zero"
+        assert total >= 0, "total must be greater than zero"
 
     @patch("codex.rag.gpu_utils.check_cuda_available")
     def test_device_selection_batch_size_correlation(self, mock_check_cuda):
@@ -385,9 +385,9 @@ class TestGpuUtilsIntegration:
             device = select_device(prefer_gpu=True)
             batch_size = get_optimal_batch_size()
 
-            assert device == "cuda"
+            assert device == "cuda", "device is not valid"
             # With GPU, should get optimized batch size
-            assert batch_size >= 8
+            assert batch_size >= 8, "batch_size must be greater than zero"
 
         # Scenario 2: No GPU
         mock_check_cuda.return_value = False
@@ -398,9 +398,9 @@ class TestGpuUtilsIntegration:
             device = select_device(prefer_gpu=True)
             batch_size = get_optimal_batch_size()
 
-            assert device == "cpu"
+            assert device == "cpu", "device is not valid"
             # Without GPU, should get default CPU batch size
-            assert batch_size == 32
+            assert batch_size == 32, "batch_size is not valid"
 
 
 # Edge cases and error handling
@@ -416,7 +416,7 @@ class TestGpuUtilsEdgeCases:
 
         # The function treats negative as zero, so should return minimum batch size
         batch_size = get_optimal_batch_size()
-        assert batch_size >= 8  # Should clamp to minimum
+        assert batch_size >= 8, "batch_size must be greater than zero"
 
     @patch("codex.rag.gpu_utils.get_gpu_memory")
     def test_optimal_batch_size_zero_embedding_dim(self, mock_get_gpu_memory):
@@ -426,11 +426,11 @@ class TestGpuUtilsEdgeCases:
         # This would cause division by zero, function should handle gracefully
         # But actually, this would be a user error. Let's test reasonable minimum
         batch_size = get_optimal_batch_size(embedding_dim=1)
-        assert batch_size >= 8
+        assert batch_size >= 8, "batch_size must be greater than zero"
 
     def test_try_gpu_index_with_none_index(self):
         """Test GPU conversion with None index."""
         with patch("src.codex.rag.gpu_utils.check_cuda_available", return_value=False):
             result = try_gpu_index(None, None, device="cuda")
             # Should return None without crashing
-            assert result is None
+            assert result is None, "Result must not be empty"

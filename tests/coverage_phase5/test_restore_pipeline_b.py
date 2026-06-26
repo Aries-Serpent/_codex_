@@ -1,4 +1,5 @@
 import asyncio
+
 """Test restore pipeline module 1."""
 
 from __future__ import annotations
@@ -39,34 +40,38 @@ class RestorePipeline:
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_restore_pipeline_1_init():
     """Test restore pipeline initialization."""
     pipeline = RestorePipeline("disaster_recovery_1")
-    assert pipeline.name == "disaster_recovery_1"
+    assert pipeline.name == "disaster_recovery_1", "name is not valid"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_restore_pipeline_1_discover():
     """Test artifact discovery."""
     pipeline = RestorePipeline("dr")
     artifacts = await asyncio.wait_for(pipeline.discover_artifacts(), timeout=30)
 
-    assert len(artifacts) > 0
-    assert pipeline.phase == RestorePhase.DISCOVERING
+    assert len(artifacts) > 0, "Artifacts must not be empty"
+    assert pipeline.phase == RestorePhase.DISCOVERING, "phase is not valid"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_restore_pipeline_1_validate():
     """Test artifact validation."""
     pipeline = RestorePipeline("dr")
     await asyncio.wait_for(pipeline.discover_artifacts(), timeout=30)
     result = await asyncio.wait_for(pipeline.validate_artifacts(), timeout=30)
 
-    assert result is True
-    assert pipeline.phase == RestorePhase.VALIDATING
+    assert result is True, "Result must not be empty"
+    assert pipeline.phase == RestorePhase.VALIDATING, "phase is not valid"
 
 
 @pytest.mark.asyncio
+@pytest.mark.timeout(30)
 async def test_restore_pipeline_1_restore():
     """Test pipeline restore."""
     pipeline = RestorePipeline("dr")
@@ -74,5 +79,5 @@ async def test_restore_pipeline_1_restore():
     await asyncio.wait_for(pipeline.validate_artifacts(), timeout=30)
     result = await asyncio.wait_for(pipeline.restore(), timeout=30)
 
-    assert result is True
-    assert pipeline.phase == RestorePhase.VERIFIED
+    assert result is True, "Result must not be empty"
+    assert pipeline.phase == RestorePhase.VERIFIED, "phase is not valid"

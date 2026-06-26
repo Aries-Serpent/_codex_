@@ -44,38 +44,38 @@ class TestParseDependencySpec:
     def test_simple_package(self):
         """Test parsing simple package name."""
         name, constraint, is_conditional = parse_dependency_spec("numpy")
-        assert name == "numpy"
-        assert constraint is None
-        assert is_conditional is False
+        assert name == "numpy", "name is not valid"
+        assert constraint is None, "constraint is not valid"
+        assert is_conditional is False, "is_conditional is not valid"
 
     def test_package_with_version(self):
         """Test parsing package with version constraint."""
         name, constraint, is_conditional = parse_dependency_spec("numpy>=1.26,<3")
-        assert name == "numpy"
+        assert name == "numpy", "name is not valid"
         assert constraint == ">=1.26,<3"
-        assert is_conditional is False
+        assert is_conditional is False, "is_conditional is not valid"
 
     def test_package_with_extras(self):
         """Test parsing package with extras."""
         name, constraint, is_conditional = parse_dependency_spec("ray[serve]>=2.9,<3")
-        assert name == "ray"
+        assert name == "ray", "name is not valid"
         assert constraint == ">=2.9,<3"
-        assert is_conditional is False
+        assert is_conditional is False, "is_conditional is not valid"
 
     def test_package_with_exact_version(self):
         """Test parsing package with exact version."""
         name, constraint, is_conditional = parse_dependency_spec("hydra-core==1.3.2")
-        assert name == "hydra-core"
-        assert constraint == "==1.3.2"
-        assert is_conditional is False
+        assert name == "hydra-core", "name is not valid"
+        assert constraint == "==1.3.2", "constraint is not valid"
+        assert is_conditional is False, "is_conditional is not valid"
 
     def test_conditional_dependency(self):
         """Test parsing conditional dependency with environment marker."""
         name, _constraint, is_conditional = parse_dependency_spec(
             "importlib-metadata; python_version < '3.10'"
         )
-        assert name == "importlib-metadata"
-        assert is_conditional is True
+        assert name == "importlib-metadata", "Data must not be empty"
+        assert is_conditional is True, "is_conditional is not valid"
 
 
 class TestCheckPackagePy312Support:
@@ -100,9 +100,9 @@ class TestCheckPackagePy312Support:
 
         result = check_package_py312_support("numpy")
 
-        assert result["name"] == "numpy"
-        assert result["supports_312"] is True
-        assert result["error"] is None
+        assert result["name"] == "numpy", "Result must not be empty"
+        assert result["supports_312"] is True, "Result must not be empty"
+        assert result["error"] is None, "Result must not be empty"
 
     @patch("subprocess.run")
     def test_package_with_312_explicit(self, mock_run):
@@ -118,7 +118,7 @@ class TestCheckPackagePy312Support:
 
         result = check_package_py312_support("test")
 
-        assert result["supports_312"] is True
+        assert result["supports_312"] is True, "Result must not be empty"
 
     @patch("subprocess.run")
     def test_package_query_error(self, mock_run):
@@ -131,8 +131,8 @@ class TestCheckPackagePy312Support:
 
         result = check_package_py312_support("nonexistent-package")
 
-        assert result["error"] is not None
-        assert "Failed to query PyPI" in result["error"]
+        assert result["error"] is not None, "Value must be initialized"
+        assert "Failed to query PyPI" in result["error"], "Result must not be empty"
 
     @patch("subprocess.run")
     def test_timeout_handling(self, mock_run):
@@ -143,7 +143,7 @@ class TestCheckPackagePy312Support:
 
         result = check_package_py312_support("slow-package")
 
-        assert result["error"] == "Timeout querying PyPI"
+        assert result["error"] == "Timeout querying PyPI", "Result must not be empty"
 
 
 class TestLoadDependenciesFromPyproject:
@@ -154,7 +154,7 @@ class TestLoadDependenciesFromPyproject:
         deps = load_dependencies_from_pyproject()
 
         assert isinstance(deps, list)
-        assert len(deps) > 0
+        assert len(deps) > 0, "Deps must not be empty"
 
         # Check for known dependencies
         dep_names = [parse_dependency_spec(d)[0] for d in deps]
@@ -165,7 +165,7 @@ class TestLoadDependenciesFromPyproject:
         deps = load_dependencies_from_pyproject()
 
         # Should include both main and optional dependencies
-        assert len(deps) > 30  # We know there are 37+ core dependencies
+        assert len(deps) > 30, "Deps must not be empty"
 
 
 class TestMain:
@@ -190,7 +190,7 @@ class TestMain:
         with patch("builtins.print"):  # Suppress output
             exit_code = main()
 
-        assert exit_code == 0
+        assert exit_code == 0, "exit_code is not valid"
 
     @patch("check_py312_deps.load_dependencies_from_pyproject")
     @patch("check_py312_deps.check_package_py312_support")
@@ -211,7 +211,7 @@ class TestMain:
         with patch("builtins.print"):  # Suppress output
             exit_code = main()
 
-        assert exit_code == 1
+        assert exit_code == 1, "exit_code is not valid"
 
 
 @pytest.mark.integration
@@ -232,4 +232,4 @@ class TestIntegration:
 
         # Script should run (may pass or fail depending on actual compatibility)
         assert result.returncode in [0, 1]
-        assert "Python 3.12 Dependency Compatibility Checker" in result.stdout
+        assert "Python 3.12 Dependency Compatibility Checker" in result.stdout, "Result must not be empty"

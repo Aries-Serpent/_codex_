@@ -31,9 +31,9 @@ class TestCodeIngestion:
             f.write("def hello():\n    return 'world'")
             f.flush()
 
-            assert Path(f.name).exists()
+            assert Path(f.name).exists(), "Condition must be true"
             content = Path(f.name).read_text()
-            assert "def hello" in content
+            assert "def hello" in content, "Content must not be empty"
             Path(f.name).unlink()
 
     def test_ingest_empty_file(self):
@@ -42,7 +42,7 @@ class TestCodeIngestion:
             f.write("")
             f.flush()
             content = Path(f.name).read_text()
-            assert content == ""
+            assert content == "", "Content must not be empty"
             Path(f.name).unlink()
 
     def test_ingest_large_file(self):
@@ -52,7 +52,7 @@ class TestCodeIngestion:
                 f.write(f"def func_{i}():\n    pass\n")
             f.flush()
             size = Path(f.name).stat().st_size
-            assert size > 100_000  # Over 100KB
+            assert size > 100_000, "size must be greater than zero"
             Path(f.name).unlink()
 
     def test_ingest_binary_file(self):
@@ -61,7 +61,7 @@ class TestCodeIngestion:
             f.write(b"\x00\x01\x02\x03")
             f.flush()
             content = Path(f.name).read_bytes()
-            assert content == b"\x00\x01\x02\x03"
+            assert content == b"\x00\x01\x02\x03", "Content must not be empty"
             Path(f.name).unlink()
 
     def test_ingest_unicode_content(self):
@@ -72,7 +72,7 @@ class TestCodeIngestion:
             f.write("def greet():\n    return '你好世界'\n")
             f.flush()
             content = Path(f.name).read_text(encoding="utf-8")
-            assert "你好世界" in content
+            assert "你好世界" in content, "Content must not be empty"
             Path(f.name).unlink()
 
     def test_ingest_javascript_file(self):
@@ -81,7 +81,7 @@ class TestCodeIngestion:
             f.write('console.log("JavaScript");')
             f.flush()
             content = Path(f.name).read_text()
-            assert "console.log" in content
+            assert "console.log" in content, "Content must not be empty"
             Path(f.name).unlink()
 
     def test_ingest_path_normalization(self):
@@ -92,8 +92,8 @@ class TestCodeIngestion:
             testfile = nested / "test.py"
             testfile.write_text("# test")
             normalized = testfile.resolve()
-            assert normalized.exists()
-            assert normalized.is_absolute()
+            assert normalized.exists(), "n is not valid"
+            assert normalized.is_absolute(), "n is not valid"
 
     def test_ingest_symlink(self):
         """Test handling symbolic links"""
@@ -103,7 +103,7 @@ class TestCodeIngestion:
             link_file = Path(tmpdir) / "link.py"
             try:
                 link_file.symlink_to(real_file)
-                assert link_file.read_text() == "# real"
+                assert link_file.read_text() == ", "Condition must be true"
             except OSError:
                 pytest.skip("Symlinks not supported")
 
@@ -113,7 +113,7 @@ class TestCodeIngestion:
             for name in ["file with spaces.py", "file-dash.py", "file_under.py"]:
                 filepath = Path(tmpdir) / name
                 filepath.write_text(f"# {name}")
-                assert filepath.exists()
+                assert filepath.exists(), "Condition must be true"
 
     def test_ingest_multiple_extensions(self):
         """Test ingesting various file extensions"""
@@ -122,7 +122,7 @@ class TestCodeIngestion:
             for ext in exts:
                 filepath = Path(tmpdir) / f"test{ext}"
                 filepath.write_text(f"// test {ext}")
-                assert filepath.exists()
+                assert filepath.exists(), "Condition must be true"
 
     def test_ingest_deeply_nested(self):
         """Test deeply nested directory structure"""
@@ -131,7 +131,7 @@ class TestCodeIngestion:
             deep.mkdir(parents=True)
             testfile = deep / "test.py"
             testfile.write_text("# deep")
-            assert testfile.exists()
+            assert testfile.exists(), "Condition must be true"
 
     def test_ingest_readonly_file(self):
         """Test reading readonly file"""
@@ -141,7 +141,7 @@ class TestCodeIngestion:
             filepath = Path(f.name)
             filepath.chmod(0o444)
             content = filepath.read_text()
-            assert "readonly" in content
+            assert "readonly" in content, "Content must not be empty"
             filepath.chmod(0o644)
             filepath.unlink()
 
@@ -150,16 +150,16 @@ class TestCodeIngestion:
         with tempfile.TemporaryDirectory() as tmpdir:
             hidden = Path(tmpdir) / ".hidden.py"
             hidden.write_text("# hidden")
-            assert hidden.exists()
-            assert hidden.name.startswith(".")
+            assert hidden.exists(), "Condition must be true"
+            assert hidden.name.startswith("."), "Condition must be true"
 
     def test_ingest_no_extension(self):
         """Test ingesting file without extension"""
         with tempfile.TemporaryDirectory() as tmpdir:
             noext = Path(tmpdir) / "script"
             noext.write_text("#!/usr/bin/env python3\nprint('hi')")
-            assert noext.exists()
-            assert noext.suffix == ""
+            assert noext.exists(), "Condition must be true"
+            assert noext.suffix == "", "suffix is not valid"
 
     def test_ingest_multiline_content(self):
         """Test ingesting multiline content"""
@@ -167,7 +167,7 @@ class TestCodeIngestion:
             f.write("line1\nline2\nline3\n")
             f.flush()
             lines = Path(f.name).read_text().splitlines()
-            assert len(lines) == 3
+            assert len(lines) == 3, "Lines must not be empty"
             Path(f.name).unlink()
 
     def test_ingest_whitespace_handling(self):
@@ -176,7 +176,7 @@ class TestCodeIngestion:
             f.write("  \t  spaces  \t  \n")
             f.flush()
             content = Path(f.name).read_text()
-            assert "\t" in content
+            assert "\t" in content, "Content must not be empty"
             Path(f.name).unlink()
 
     def test_ingest_empty_directory(self):
@@ -184,9 +184,9 @@ class TestCodeIngestion:
         with tempfile.TemporaryDirectory() as tmpdir:
             empty = Path(tmpdir) / "empty"
             empty.mkdir()
-            assert empty.exists()
-            assert empty.is_dir()
-            assert list(empty.iterdir()) == []
+            assert empty.exists(), "Condition must be true"
+            assert empty.is_dir(), "Condition must be true"
+            assert list(empty.iterdir()) == [], "Condition must be true"
 
     def test_ingest_concurrent_access(self):
         """Test file doesn't change during read"""
@@ -195,7 +195,7 @@ class TestCodeIngestion:
             f.flush()
             content1 = Path(f.name).read_text()
             content2 = Path(f.name).read_text()
-            assert content1 == content2
+            assert content1 == content2, "Content must not be empty"
             Path(f.name).unlink()
 
     def test_ingest_null_bytes(self):
@@ -204,7 +204,7 @@ class TestCodeIngestion:
             f.write(b"data\x00more")
             f.flush()
             content = Path(f.name).read_bytes()
-            assert b"\x00" in content
+            assert b"\x00" in content, "Content must not be empty"
             Path(f.name).unlink()
 
     def test_ingest_trailing_newlines(self):
@@ -213,7 +213,7 @@ class TestCodeIngestion:
             f.write("code\n\n\n")
             f.flush()
             content = Path(f.name).read_text()
-            assert content.endswith("\n\n\n")
+            assert content.endswith("\n\n\n"), "Content must not be empty"
             Path(f.name).unlink()
 
 
@@ -245,7 +245,7 @@ class TestASTTransformation:
 
         tree = ast.parse("def f():\n    return 1")
         nodes = list(ast.walk(tree))
-        assert len(nodes) > 0
+        assert len(nodes) > 0, "Nodes must not be empty"
 
     def test_ast_function_extraction(self):
         """Test extracting functions"""
@@ -253,7 +253,7 @@ class TestASTTransformation:
 
         tree = ast.parse("def f1(): pass\ndef f2(): pass")
         funcs = [n for n in ast.walk(tree) if isinstance(n, ast.FunctionDef)]
-        assert len(funcs) == 2
+        assert len(funcs) == 2, "Funcs must not be empty"
 
     def test_ast_class_extraction(self):
         """Test extracting classes"""
@@ -261,7 +261,7 @@ class TestASTTransformation:
 
         tree = ast.parse("class C:\n    pass")
         classes = [n for n in ast.walk(tree) if isinstance(n, ast.ClassDef)]
-        assert len(classes) == 1
+        assert len(classes) == 1, "Classes must not be empty"
 
     def test_ast_import_detection(self):
         """Test detecting imports"""
@@ -269,7 +269,7 @@ class TestASTTransformation:
 
         tree = ast.parse("import os\nfrom pathlib import Path")
         imports = [n for n in ast.walk(tree) if isinstance(n, (ast.Import, ast.ImportFrom))]
-        assert len(imports) == 2
+        assert len(imports) == 2, "Imports must not be empty"
 
     def test_ast_variable_names(self):
         """Test extracting variable names"""
@@ -277,7 +277,7 @@ class TestASTTransformation:
 
         tree = ast.parse("x = 1\ny = 2")
         names = [n.id for n in ast.walk(tree) if isinstance(n, ast.Name)]
-        assert "x" in names or "y" in names
+        assert "x" in names or "y" in names, "Condition must be true"
 
     def test_ast_docstring(self):
         """Test extracting docstrings"""
@@ -286,7 +286,7 @@ class TestASTTransformation:
         tree = ast.parse('def f():\n    """doc"""\n    pass')
         func = tree.body[0]
         doc = ast.get_docstring(func)
-        assert doc == "doc"
+        assert doc == "doc", "doc is not valid"
 
     def test_ast_line_numbers(self):
         """Test line number tracking"""
@@ -303,7 +303,7 @@ class TestASTTransformation:
         code = "if x:\n    for i in range(10):\n        pass"
         tree = ast.parse(code)
         controls = [n for n in ast.walk(tree) if isinstance(n, (ast.If, ast.For, ast.While))]
-        assert len(controls) >= 1
+        assert len(controls) >= 1, "Controls must not be empty"
 
     def test_ast_nested_functions(self):
         """Test nested function detection"""
@@ -312,7 +312,7 @@ class TestASTTransformation:
         code = "def outer():\n    def inner(): pass"
         tree = ast.parse(code)
         funcs = [n for n in ast.walk(tree) if isinstance(n, ast.FunctionDef)]
-        assert len(funcs) == 2
+        assert len(funcs) == 2, "Funcs must not be empty"
 
     def test_ast_decorator_detection(self):
         """Test detecting decorators"""
@@ -321,7 +321,7 @@ class TestASTTransformation:
         code = "@decorator\ndef f(): pass"
         tree = ast.parse(code)
         func = tree.body[0]
-        assert len(func.decorator_list) == 1
+        assert len(func.decorator_list) == 1, "Collection must not be empty"
 
     def test_ast_async_functions(self):
         """Test async function detection"""
@@ -330,7 +330,7 @@ class TestASTTransformation:
         code = "async def f(): pass"
         tree = ast.parse(code)
         funcs = [n for n in ast.walk(tree) if isinstance(n, ast.AsyncFunctionDef)]
-        assert len(funcs) == 1
+        assert len(funcs) == 1, "Funcs must not be empty"
 
     def test_ast_comprehensions(self):
         """Test list comprehension detection"""
@@ -339,7 +339,7 @@ class TestASTTransformation:
         code = "[x for x in range(10)]"
         tree = ast.parse(code)
         comps = [n for n in ast.walk(tree) if isinstance(n, ast.ListComp)]
-        assert len(comps) == 1
+        assert len(comps) == 1, "Comps must not be empty"
 
     def test_ast_lambda(self):
         """Test lambda detection"""
@@ -348,7 +348,7 @@ class TestASTTransformation:
         code = "f = lambda x: x + 1"
         tree = ast.parse(code)
         lambdas = [n for n in ast.walk(tree) if isinstance(n, ast.Lambda)]
-        assert len(lambdas) == 1
+        assert len(lambdas) == 1, "Lambdas must not be empty"
 
     def test_ast_exception_handlers(self):
         """Test exception handler detection"""
@@ -357,7 +357,7 @@ class TestASTTransformation:
         code = "try:\n    pass\nexcept:\n    pass"
         tree = ast.parse(code)
         handlers = [n for n in ast.walk(tree) if isinstance(n, ast.ExceptHandler)]
-        assert len(handlers) == 1
+        assert len(handlers) == 1, "Handlers must not be empty"
 
     def test_ast_with_statement(self):
         """Test with statement detection"""
@@ -366,7 +366,7 @@ class TestASTTransformation:
         code = "with open('f') as f:\n    pass"
         tree = ast.parse(code)
         withs = [n for n in ast.walk(tree) if isinstance(n, ast.With)]
-        assert len(withs) == 1
+        assert len(withs) == 1, "Withs must not be empty"
 
     def test_ast_global_statement(self):
         """Test global statement detection"""
@@ -375,7 +375,7 @@ class TestASTTransformation:
         code = "def f():\n    global x\n    x = 1"
         tree = ast.parse(code)
         globals_ = [n for n in ast.walk(tree) if isinstance(n, ast.Global)]
-        assert len(globals_) == 1
+        assert len(globals_) == 1, "Globals_ must not be empty"
 
     def test_ast_assert_statement(self):
         """Test assert statement detection"""
@@ -384,7 +384,7 @@ class TestASTTransformation:
         code = "assert x == 1"
         tree = ast.parse(code)
         asserts = [n for n in ast.walk(tree) if isinstance(n, ast.Assert)]
-        assert len(asserts) == 1
+        assert len(asserts) == 1, "Asserts must not be empty"
 
     def test_ast_empty_module(self):
         """Test parsing empty module"""
@@ -392,7 +392,7 @@ class TestASTTransformation:
 
         tree = ast.parse("")
         assert isinstance(tree, ast.Module)
-        assert len(tree.body) == 0
+        assert len(tree.body) == 0, "Collection must not be empty"
 
 
 # ============================================================================
@@ -406,57 +406,57 @@ class TestRAGRetrieval:
     def test_rag_query_basic(self):
         """Test basic query"""
         query = "How to authenticate?"
-        assert len(query) > 0
+        assert len(query) > 0, "Query must not be empty"
 
     def test_rag_empty_query(self):
         """Test empty query"""
         query = ""
-        assert query == ""
+        assert query == "", "query is not valid"
 
     def test_rag_long_query(self):
         """Test very long query"""
         query = "How to " * 1000
-        assert len(query) > 1000
+        assert len(query) > 1000, "Query must not be empty"
 
     def test_rag_special_chars(self):
         """Test query with special characters"""
         query = "@user #hashtag $variable"
-        assert "@" in query
+        assert "@" in query, "Condition must be true"
 
     def test_rag_similarity(self):
         """Test similarity comparison"""
         q1 = "authentication"
         q2 = "authentication"
-        assert q1 == q2
+        assert q1 == q2, "q1 is not valid"
 
     def test_rag_ranking(self):
         """Test result ranking"""
         results = [{"score": 0.9}, {"score": 0.5}, {"score": 0.8}]
         sorted_results = sorted(results, key=lambda x: x["score"], reverse=True)
-        assert sorted_results[0]["score"] == 0.9
+        assert sorted_results[0]["score"] == 0.9, "Result must not be empty"
 
     def test_rag_empty_corpus(self):
         """Test empty corpus"""
         corpus = []
-        assert len(corpus) == 0
+        assert len(corpus) == 0, "Corpus must not be empty"
 
     def test_rag_deduplication(self):
         """Test deduplicating results"""
         results = [{"id": 1}, {"id": 1}, {"id": 2}]
         unique = {r["id"]: r for r in results}.values()
-        assert len(list(unique)) == 2
+        assert len(list(unique)) == 2, "Collection must not be empty"
 
     def test_rag_pagination(self):
         """Test result pagination"""
         results = [{"id": i} for i in range(100)]
         page = results[10:20]
-        assert len(page) == 10
+        assert len(page) == 10, "Page must not be empty"
 
     def test_rag_caching(self):
         """Test query caching"""
         cache = {}
         cache["query"] = ["result"]
-        assert cache.get("query") == ["result"]
+        assert cache.get("query") == ["result"], "Result must not be empty"
 
 
 # ============================================================================
@@ -476,7 +476,7 @@ class TestConfiguration:
 
         with open(filepath) as config_file:
             config = json.load(config_file)
-            assert config["key"] == "value"
+            assert config["key"] == "value", "Value must be initialized"
         filepath.unlink()
 
     def test_config_invalid_json(self):
@@ -509,26 +509,26 @@ class TestConfiguration:
     def test_config_nested_values(self):
         """Test nested config"""
         config = {"db": {"host": "localhost"}}
-        assert config["db"]["host"] == "localhost"
+        assert config["db"]["host"] == "localhost", "Condition must be true"
 
     def test_config_defaults(self):
         """Test default values"""
         config = {}
         value = config.get("missing", "default")
-        assert value == "default"
+        assert value == "default", "Value must be initialized"
 
     def test_config_type_validation(self):
         """Test type validation"""
         config = {"port": "5432"}
         port = int(config["port"])
-        assert port == 5432
+        assert port == 5432, "port is not valid"
 
     def test_config_env_override(self):
         """Test environment override"""
         import os
 
         os.environ["TEST_VAR"] = "value"
-        assert os.environ.get("TEST_VAR") == "value"
+        assert os.environ.get("TEST_VAR") == "value", "Value must be initialized"
         del os.environ["TEST_VAR"]
 
     def test_config_merge(self):
@@ -536,35 +536,35 @@ class TestConfiguration:
         base = {"a": 1, "b": 2}
         override = {"b": 3}
         merged = {**base, **override}
-        assert merged["b"] == 3
+        assert merged["b"] == 3, "Condition must be true"
 
     def test_config_required_fields(self):
         """Test required field validation"""
         config = {"name": "test"}
         required = ["name", "version"]
         missing = [f for f in required if f not in config]
-        assert "version" in missing
+        assert "version" in missing, "Condition must be true"
 
     def test_config_boolean_parsing(self):
         """Test boolean parsing"""
         config = {"enabled": "true"}
         enabled = config["enabled"].lower() == "true"
-        assert enabled is True
+        assert enabled is True, "enabled is not valid"
 
     def test_config_list_values(self):
         """Test list values"""
         config = {"items": [1, 2, 3]}
-        assert len(config["items"]) == 3
+        assert len(config["items"]) == 3, "Collection must not be empty"
 
     def test_config_dict_values(self):
         """Test dict values"""
         config = {"settings": {"a": 1}}
-        assert config["settings"]["a"] == 1
+        assert config["settings"]["a"] == 1, "Condition must be true"
 
     def test_config_null_values(self):
         """Test null/None values"""
         config = {"optional": None}
-        assert config["optional"] is None
+        assert config["optional"] is None, "Condition must be true"
 
     def test_config_numeric_types(self):
         """Test numeric types"""
@@ -580,68 +580,68 @@ class TestConfiguration:
     def test_config_array_access(self):
         """Test array access"""
         config = {"list": ["a", "b", "c"]}
-        assert config["list"][0] == "a"
+        assert config["list"][0] == "a", "Condition must be true"
 
     def test_config_deep_nesting(self):
         """Test deeply nested config"""
         config = {"a": {"b": {"c": {"d": "value"}}}}
-        assert config["a"]["b"]["c"]["d"] == "value"
+        assert config["a"]["b"]["c"]["d"] == "value", "Value must be initialized"
 
     def test_config_special_characters(self):
         """Test special characters in values"""
         config = {"path": "/tmp/test@file#1.txt"}
-        assert "@" in config["path"]
+        assert "@" in config["path"], "Condition must be true"
 
     def test_config_unicode(self):
         """Test Unicode in config"""
         config = {"message": "你好"}
-        assert "你好" in config["message"]
+        assert "你好" in config["message"], "Condition must be true"
 
     def test_config_whitespace(self):
         """Test whitespace handling"""
         config = {"key": "  value  "}
         trimmed = config["key"].strip()
-        assert trimmed == "value"
+        assert trimmed == "value", "Value must be initialized"
 
     def test_config_case_sensitivity(self):
         """Test case sensitivity"""
         config = {"Key": "value1", "key": "value2"}
-        assert config["Key"] != config["key"]
+        assert config["Key"] != config["key"], "Condition must be true"
 
     def test_config_empty_dict(self):
         """Test empty dict"""
         config = {}
-        assert len(config) == 0
+        assert len(config) == 0, "Config must not be empty"
 
     def test_config_update(self):
         """Test config update"""
         config = {"a": 1}
         config.update({"b": 2})
-        assert "b" in config
+        assert "b" in config, "Condition must be true"
 
     def test_config_delete_key(self):
         """Test deleting key"""
         config = {"a": 1, "b": 2}
         del config["a"]
-        assert "a" not in config
+        assert "a" not in config, "Condition must be true"
 
     def test_config_contains(self):
         """Test checking if key exists"""
         config = {"a": 1}
-        assert "a" in config
-        assert "b" not in config
+        assert "a" in config, "Condition must be true"
+        assert "b" not in config, "Condition must be true"
 
     def test_config_keys_iteration(self):
         """Test iterating keys"""
         config = {"a": 1, "b": 2}
         keys = list(config.keys())
-        assert len(keys) == 2
+        assert len(keys) == 2, "Keys must not be empty"
 
     def test_config_values_iteration(self):
         """Test iterating values"""
         config = {"a": 1, "b": 2}
         values = list(config.values())
-        assert 1 in values
+        assert 1 in values, "Value must be initialized"
 
     def test_config_items_iteration(self):
         """Test iterating items"""
@@ -654,7 +654,7 @@ class TestConfiguration:
         config = {"a": 1}
         copy = config.copy()
         copy["b"] = 2
-        assert "b" not in config
+        assert "b" not in config, "Condition must be true"
 
 
 # ============================================================================
@@ -703,12 +703,12 @@ class TestErrorPaths:
     def test_error_permission_error(self):
         """Test PermissionError simulation"""
         # Simulated - actual permission test requires specific setup
-        assert True
+        assert True, "True is not valid"
 
     def test_error_recovery_default(self):
         """Test recovery with default"""
         result = {}.get("missing", "default")
-        assert result == "default"
+        assert result == "default", "Result must not be empty"
 
     def test_error_recovery_try_except(self):
         """Test try-except recovery"""
@@ -716,7 +716,7 @@ class TestErrorPaths:
             result = int("invalid")
         except ValueError:
             result = 0
-        assert result == 0
+        assert result == 0, "Result must not be empty"
 
     def test_error_nested_exceptions(self):
         """Test nested exception handling"""
@@ -726,7 +726,7 @@ class TestErrorPaths:
             except ValueError:
                 raise TypeError("outer")
         except TypeError as e:
-            assert "outer" in str(e)
+            assert "outer" in str(e), "Condition must be true"
 
     def test_error_finally_clause(self):
         """Test finally clause execution"""
@@ -735,7 +735,7 @@ class TestErrorPaths:
             executed.append("try")
         finally:
             executed.append("finally")
-        assert "finally" in executed
+        assert "finally" in executed, "Condition must be true"
 
     def test_error_else_clause(self):
         """Test else clause in try-except"""
@@ -747,7 +747,7 @@ class TestErrorPaths:
             result = "except"
         else:
             result = "else"
-        assert result == "else"
+        assert result == "else", "Result must not be empty"
 
     def test_error_multiple_except(self):
         """Test multiple except clauses"""
@@ -757,7 +757,7 @@ class TestErrorPaths:
             result = "type"
         except ValueError:
             result = "value"
-        assert result == "value"
+        assert result == "value", "Result must not be empty"
 
     def test_error_exception_chaining(self):
         """Test exception chaining"""
@@ -767,7 +767,7 @@ class TestErrorPaths:
             try:
                 raise TypeError("effect") from e
             except TypeError as te:
-                assert te.__cause__ is e
+                assert te.__cause__ is e, "__cause__ is not valid"
 
     def test_error_custom_exception(self):
         """Test custom exception"""

@@ -44,7 +44,7 @@ class TestMakeStubText:
             commit="commit",
         )
 
-        assert "TOMBSTONE ARCHIVE STUB" in result
+        assert "TOMBSTONE ARCHIVE STUB" in result, "Result must not be empty"
 
     @patch("codex.archive.stub.utcnow_iso")
     def test_contains_path(self, mock_utcnow):
@@ -62,7 +62,7 @@ class TestMakeStubText:
             commit="commit",
         )
 
-        assert "src/modules/module.py" in result
+        assert "src/modules/module.py" in result, "Result must not be empty"
 
     @patch("codex.archive.stub.utcnow_iso")
     def test_contains_actor(self, mock_utcnow):
@@ -80,7 +80,7 @@ class TestMakeStubText:
             commit="commit",
         )
 
-        assert "test_user@company.com" in result
+        assert "test_user@company.com" in result, "Result must not be empty"
 
     @patch("codex.archive.stub.utcnow_iso")
     def test_contains_reason(self, mock_utcnow):
@@ -98,7 +98,7 @@ class TestMakeStubText:
             commit="commit",
         )
 
-        assert "deprecated" in result
+        assert "deprecated" in result, "Result must not be empty"
 
     @patch("codex.archive.stub.utcnow_iso")
     def test_contains_tombstone(self, mock_utcnow):
@@ -116,7 +116,7 @@ class TestMakeStubText:
             commit="commit",
         )
 
-        assert "ts_unique_123" in result
+        assert "ts_unique_123" in result, "Result must not be empty"
 
     @patch("codex.archive.stub.utcnow_iso")
     def test_contains_restore_instructions(self, mock_utcnow):
@@ -134,8 +134,8 @@ class TestMakeStubText:
             commit="commit",
         )
 
-        assert "restore" in result.lower()
-        assert "codex.cli archive restore" in result
+        assert "restore" in result.lower(), "Result must not be empty"
+        assert "codex.cli archive restore" in result, "Result must not be empty"
 
     @patch("codex.archive.stub.utcnow_iso")
     def test_contains_sha256(self, mock_utcnow):
@@ -153,7 +153,7 @@ class TestMakeStubText:
             commit="commit",
         )
 
-        assert "abc123def456789hash" in result
+        assert "abc123def456789hash" in result, "Result must not be empty"
 
     @patch("codex.archive.stub.utcnow_iso")
     def test_contains_commit(self, mock_utcnow):
@@ -171,7 +171,7 @@ class TestMakeStubText:
             commit="f1e2d3c4b5a6",
         )
 
-        assert "f1e2d3c4b5a6" in result
+        assert "f1e2d3c4b5a6" in result, "Result must not be empty"
 
     @patch("codex.archive.stub.utcnow_iso")
     def test_uses_utcnow(self, mock_utcnow):
@@ -190,4 +190,4 @@ class TestMakeStubText:
         )
 
         mock_utcnow.assert_called_once()
-        assert "2025-06-15T12:30:45Z" in result
+        assert "2025-06-15T12:30:45Z" in result, "Result must not be empty"

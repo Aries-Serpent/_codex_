@@ -11,5 +11,5 @@ def test_chat_env_cleanup(tmp_path, monkeypatch):
     db = tmp_path / "chat.db"
     monkeypatch.delenv("CODEX_SESSION_ID", raising=False)
     with ChatSession(session_id="cleanup", db_path=str(db)):
-        assert os.getenv("CODEX_SESSION_ID") == "cleanup"
-    assert os.getenv("CODEX_SESSION_ID") is None
+        assert os.getenv("CODEX_SESSION_ID") == "cleanup", "Condition must be true"
+    assert os.getenv("CODEX_SESSION_ID") is None, "Condition must be true"

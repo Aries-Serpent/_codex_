@@ -36,12 +36,12 @@ class TestFeatureStoreApp:
     def test_register_command_exists(self) -> None:
         """Test that register command exists."""
         assert hasattr(feature_store, "register")
-        assert callable(feature_store.register)
+        assert callable(feature_store.register), "Condition must be true"
 
     def test_list_command_exists(self) -> None:
         """Test that list command exists."""
         assert hasattr(feature_store, "list")
-        assert callable(feature_store.list)
+        assert callable(feature_store.list), "Condition must be true"
 
 
 @pytest.mark.skipif(feature_store is None, reason="feature_store not importable")
@@ -55,8 +55,8 @@ class TestFeatureStoreCommands:
         sig = inspect.signature(feature_store.register)
         params = list(sig.parameters.keys())
         # Should have name and version at minimum
-        assert "name" in params
-        assert "version" in params
+        assert "name" in params, "Condition must be true"
+        assert "version" in params, "Condition must be true"
 
     def test_list_has_proper_signature(self) -> None:
         """Test list command has proper parameters."""
@@ -64,7 +64,7 @@ class TestFeatureStoreCommands:
 
         sig = inspect.signature(feature_store.list)
         # list has optional parameters
-        assert len(sig.parameters) > 0
+        assert len(sig.parameters) > 0, "Collection must not be empty"
 
 
 @pytest.mark.skipif(feature_store is None, reason="feature_store not importable")
@@ -79,7 +79,7 @@ class TestFeatureStoreIntegration:
             runner = CliRunner()
             result = runner.invoke(feature_store.app, ["--help"])
             # Should not crash
-            assert result is not None
+            assert result is not None, "result must be initialized"
         except ImportError:
             pytest.skip("Typer not available")
 
@@ -93,7 +93,7 @@ class TestFeatureStoreUtilities:
         try:
             from codex_ml.features.feature_store import FeatureGroup
 
-            assert FeatureGroup is not None
+            assert FeatureGroup is not None, "FeatureGroup must be initialized"
         except ImportError:
             pytest.skip("FeatureGroup not importable")
 
@@ -102,7 +102,7 @@ class TestFeatureStoreUtilities:
         try:
             from codex_ml.features.feature_store import FeatureStore
 
-            assert FeatureStore is not None
+            assert FeatureStore is not None, "FeatureStore must be initialized"
         except ImportError:
             pytest.skip("FeatureStore not importable")
 
@@ -116,7 +116,7 @@ class TestFeatureStoreImports:
         try:
             import typer
 
-            assert typer is not None
+            assert typer is not None, "typer must be initialized"
         except ImportError:
             pytest.skip("Typer not installed")
 
@@ -126,7 +126,7 @@ class TestFeatureStoreImports:
             from rich.console import Console
             from rich.table import Table
 
-            assert Console is not None
-            assert Table is not None
+            assert Console is not None, "Console must be initialized"
+            assert Table is not None, "Table must be initialized"
         except ImportError:
             pytest.skip("Rich not installed")

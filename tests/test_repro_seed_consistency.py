@@ -36,7 +36,7 @@ def test_set_reproducible_repeatable():
     np2 = np.random.rand()
     t2 = torch.rand(1) if torch is not None else None
 
-    assert py1 == py2 and np1 == np2
+    assert py1 == py2 and np1 == np2, "py1 is not valid"
     if torch is not None and t1 is not None and t2 is not None:
         # Use tolerance for potential numerical differences in CI
         assert torch.allclose(t1, t2, rtol=1e-5, atol=1e-7), f"Tensors not close: {t1} vs {t2}"

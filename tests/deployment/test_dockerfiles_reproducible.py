@@ -53,9 +53,9 @@ def test_base_images_are_pinned_and_not_latest():
             # Skip internal multi-stage build references (e.g. FROM base AS cpu-runtime)
             if image.lower() in stage_names:
                 continue
-            assert (
+            assert (, "Condition must be true"
                 ":" in image
             ), f"{dockerfile}: base image '{image}' should be version-pinned with a tag"
-            assert not image.endswith(
+            assert not image.endswith(, "Condition must be true"
                 ":latest"
             ), f"{dockerfile}: avoid ':latest' tag for reproducibility (pin a version)"

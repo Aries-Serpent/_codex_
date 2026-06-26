@@ -43,15 +43,15 @@ class TestCheckCrossReferences:
 
     def test_should_skip_git_dir(self, mod):
         p = Path(".git/config")
-        assert mod._should_skip(p) is True
+        assert mod._should_skip(p) is True, "Condition must be true"
 
     def test_should_skip_pycache(self, mod):
         p = Path("src/__pycache__/module.cpython-312.pyc")
-        assert mod._should_skip(p) is True
+        assert mod._should_skip(p) is True, "Condition must be true"
 
     def test_should_not_skip_normal_md(self, mod):
         p = Path("docs/guide.md")
-        assert mod._should_skip(p) is False
+        assert mod._should_skip(p) is False, "Condition must be true"
 
     def test_resolve_ref_absolute_path(self, mod, tmp_path):
         target = tmp_path / "target.md"
@@ -69,13 +69,13 @@ class TestCheckCrossReferences:
         target = tmp_path / "docs" / "other.md"
         target.touch()
         result = mod._resolve_ref("other.md", source_file)
-        assert result == target or result is None
+        assert result == target or result is None, "Result must not be empty"
 
     def test_scan_file_no_links(self, mod, tmp_path):
         md = tmp_path / "clean.md"
         md.write_text("# Title\n\nJust prose.\n", encoding="utf-8")
         broken = mod.scan_file(md)
-        assert broken == []
+        assert broken == [], "broken is not valid"
 
     def test_scan_file_with_broken_link(self, mod, tmp_path):
         md = tmp_path / "page.md"
@@ -90,25 +90,25 @@ class TestCheckCrossReferences:
         source.write_text("[valid link](target.md)\n", encoding="utf-8")
         broken = mod.scan_file(source)
         # Valid link should NOT appear in broken list
-        assert all("target.md" not in str(item) for item in broken)
+        assert all("target.md" not in str(item) for item in broken), "Item must not be empty"
 
     def test_skip_external_links(self, mod, tmp_path):
         md = tmp_path / "page.md"
         md.write_text("[external](https://example.com/page.html)\n", encoding="utf-8")
         broken = mod.scan_file(md)
-        assert broken == []
+        assert broken == [], "broken is not valid"
 
     def test_skip_anchor_links(self, mod, tmp_path):
         md = tmp_path / "page.md"
         md.write_text("[anchor](#section)\n", encoding="utf-8")
         broken = mod.scan_file(md)
-        assert broken == []
+        assert broken == [], "broken is not valid"
 
     def test_skip_numeric_placeholder_links(self, mod, tmp_path):
         md = tmp_path / "page.md"
         md.write_text("[placeholder](1)\n", encoding="utf-8")
         broken = mod.scan_file(md)
-        assert broken == []
+        assert broken == [], "broken is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -129,36 +129,36 @@ class TestCheckDeferralLanguage:
 
     def test_scan_clean_text(self, mod):
         violations = mod.scan("This PR adds tests and fixes bugs.")
-        assert violations == []
+        assert violations == [], "violations is not valid"
 
     def test_scan_detects_deferral_phrase(self, mod):
         text = "Will fix this in a future PR."
         violations = mod.scan(text)
-        assert len(violations) >= 1
+        assert len(violations) >= 1, "Violations must not be empty"
 
     def test_scan_future_task(self, mod):
         text = "This will be addressed in a future task."
         violations = mod.scan(text)
-        assert len(violations) >= 1
+        assert len(violations) >= 1, "Violations must not be empty"
 
     def test_line_is_exempt_deferral_triggers_list(self, mod):
         # Lines that reference the scanner's own constant should be exempt
-        assert mod._line_is_exempt("DEFERRAL_TRIGGERS = [...]") is True
+        assert mod._line_is_exempt("DEFERRAL_TRIGGERS = [...]") is True, "Condition must be true"
 
     def test_line_is_not_exempt_genuine_deferral(self, mod):
         # A genuine deferral line is NOT exempt
         line = "I will handle this in a follow-up PR."
-        assert mod._line_is_exempt(line) is False
+        assert mod._line_is_exempt(line) is False, "Condition must be true"
 
     def test_load_text_from_string(self, mod, tmp_path):
         result = mod._load_text("hello world")
-        assert result == "hello world"
+        assert result == "hello world", "Result must not be empty"
 
     def test_load_text_from_file(self, mod, tmp_path):
         f = tmp_path / "input.txt"
         f.write_text("file content\n", encoding="utf-8")
         result = mod._load_text(str(f))
-        assert result == "file content\n"
+        assert result == "file content\n", "Result must not be empty"
 
     def test_scan_code_block_not_flagged(self, mod):
         text = (
@@ -170,19 +170,19 @@ class TestCheckDeferralLanguage:
         )
         violations = mod.scan(text)
         # Lines inside fenced code blocks should not be flagged
-        assert len(violations) == 0
+        assert len(violations) == 0, "Violations must not be empty"
 
     def test_scan_returns_violation_keys(self, mod):
         violations = mod.scan("Will fix this in a future session.")
         if violations:
             v = violations[0]
-            assert "line_no" in v
-            assert "line" in v
+            assert "line_no" in v, "Condition must be true"
+            assert "line" in v, "Condition must be true"
 
     def test_deferral_ml_classifier_unavailable_returns_false(self, mod):
         cls = mod.DeferralMLClassifier()
-        assert cls.predict("Will fix later") is False
-        assert cls.is_available() is False
+        assert cls.predict("Will fix later") is False, "Condition must be true"
+        assert cls.is_available() is False, "Condition must be true"
 
 
 # ---------------------------------------------------------------------------
@@ -218,8 +218,8 @@ class TestBatchScanIntegration:
             failures=[],
             batches_run=1,
         )
-        assert result.ok is True
-        assert result.failures == []
+        assert result.ok is True, "Result must not be empty"
+        assert result.failures == [], "Result must not be empty"
 
     def test_batch_scan_result_failure(self, mod):
         result = mod.BatchScanResult(
@@ -233,12 +233,12 @@ class TestBatchScanIntegration:
             failures=["test::failed"],
             batches_run=1,
         )
-        assert not result.ok
-        assert "test::failed" in result.failures
+        assert not result.ok, "Result must not be empty"
+        assert "test::failed" in result.failures, "Result must not be empty"
 
     def test_batch_scan_runner_construction(self, mod):
         runner = mod.BatchScanRunner(workers=2, batch_size=10)
-        assert runner is not None
+        assert runner is not None, "runner must be initialized"
 
     def test_batch_scan_runner_preview_no_error(self, mod):
         """preview() should return without raising even when preflight is absent."""
@@ -277,23 +277,23 @@ class TestCiPatternPipeline:
         artefact = tmp_path / "report.json"
         report = {"status": "ok", "fixed": 0, "checked": 0, "patterns": {}}
         mod._write_artefact(str(artefact), report, recorded=0, pipeline_status="ok")
-        assert artefact.exists()
+        assert artefact.exists(), "Condition must be true"
         import json
 
         loaded = json.loads(artefact.read_text())
-        assert loaded["pipeline_status"] == "ok"
+        assert loaded["pipeline_status"] == "ok", "Condition must be true"
 
     def test_print_report_no_error(self, mod, capsys):
         report = {"status": "ok", "fixed": 0, "checked": 0, "patterns": {}}
         mod._print_report(report, check_only=False)
         captured = capsys.readouterr()
-        assert "CI PATTERN PIPELINE — SUMMARY" in captured.out
+        assert "CI PATTERN PIPELINE — SUMMARY" in captured.out, "Condition must be true"
 
     def test_write_artefact_nested_dir(self, mod, tmp_path):
         """_write_artefact creates parent dirs automatically."""
         artefact = tmp_path / "nested" / "deep" / "report.json"
         mod._write_artefact(str(artefact), {"foo": "bar"}, recorded=1, pipeline_status="success")
-        assert artefact.exists()
+        assert artefact.exists(), "Condition must be true"
 
 
 # ---------------------------------------------------------------------------

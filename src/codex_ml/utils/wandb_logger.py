@@ -81,8 +81,8 @@ class WandBLogger:
             logger.info(f"✓ W&B initialized (mode={mode}, project={self.project})")
         except (ValueError, TypeError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.warning(f"Failed to initialize W&B: <ERROR_TYPE>. Using fallback.")
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.warning("Failed to initialize W&B: <ERROR_TYPE>. Using fallback.")
             self.wandb_available = False
             self._init_fallback()
 
@@ -112,8 +112,8 @@ class WandBLogger:
                 wandb.log(metrics, step=step)
             except (ImportError, AttributeError) as e:
                 error_type = type(e).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
-                logger.warning(f"W&B logging failed: <ERROR_TYPE>")
+                logger.debug("Exception: <ERROR_TYPE>")
+                logger.warning("W&B logging failed: <ERROR_TYPE>")
                 self._log_fallback(metrics, step)
         else:
             self._log_fallback(metrics, step)
@@ -138,8 +138,8 @@ class WandBLogger:
                 logger.info("✓ W&B session finished")
             except (ImportError, AttributeError) as e:
                 error_type = type(e).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
-                logger.warning(f"Failed to finish W&B: <ERROR_TYPE>")
+                logger.debug("Exception: <ERROR_TYPE>")
+                logger.warning("Failed to finish W&B: <ERROR_TYPE>")
 
 
 def init_wandb(

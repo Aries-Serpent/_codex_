@@ -10,7 +10,7 @@ class TestCheckpointRecovery:
         checkpoint = {"epoch": 5, "model_state": {}}
 
         # Assert
-        assert checkpoint["epoch"] == 5
+        assert checkpoint["epoch"] == 5, "Condition must be true"
 
     def test_checkpoint_load_basic(self):
         """Test basic checkpoint loading."""
@@ -18,7 +18,7 @@ class TestCheckpointRecovery:
         checkpoint_path = "checkpoints/model_epoch_5.pt" # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 
         # Assert
-        assert "epoch_5" in checkpoint_path
+        assert "epoch_5" in checkpoint_path, "Condition must be true"
 
     def test_checkpoint_metadata(self):
         """Test checkpoint metadata."""
@@ -26,8 +26,8 @@ class TestCheckpointRecovery:
         metadata = {"epoch": 10, "global_step": 1000, "loss": 0.5}
 
         # Assert
-        assert "epoch" in metadata
-        assert "global_step" in metadata
+        assert "epoch" in metadata, "Data must not be empty"
+        assert "global_step" in metadata, "Data must not be empty"
 
     def test_checkpoint_optimizer_state(self):
         """Test checkpoint with optimizer state."""
@@ -35,7 +35,7 @@ class TestCheckpointRecovery:
         checkpoint = {"optimizer_state_dict": {"param_groups": []}}
 
         # Assert
-        assert "optimizer_state_dict" in checkpoint
+        assert "optimizer_state_dict" in checkpoint, "Condition must be true"
 
     def test_checkpoint_scheduler_state(self):
         """Test checkpoint with scheduler state."""
@@ -43,7 +43,7 @@ class TestCheckpointRecovery:
         checkpoint = {"scheduler_state_dict": {"last_epoch": 10}}
 
         # Assert
-        assert "scheduler_state_dict" in checkpoint
+        assert "scheduler_state_dict" in checkpoint, "Condition must be true"
 
     def test_checkpoint_random_state(self):
         """Test checkpoint with random state."""
@@ -51,7 +51,7 @@ class TestCheckpointRecovery:
         checkpoint = {"random_state": {"torch": None, "numpy": None, "python": None}}
 
         # Assert
-        assert "random_state" in checkpoint
+        assert "random_state" in checkpoint, "Condition must be true"
 
     def test_checkpoint_resume_training(self):
         """Test resuming training from checkpoint."""
@@ -59,7 +59,7 @@ class TestCheckpointRecovery:
         resume_from = "checkpoints/latest.pt"
 
         # Assert
-        assert resume_from is not None
+        assert resume_from is not None, "resume_from must be initialized"
 
     def test_checkpoint_best_model(self):
         """Test saving best model checkpoint."""
@@ -67,7 +67,7 @@ class TestCheckpointRecovery:
         is_best = True
 
         # Assert
-        assert is_best is True
+        assert is_best is True, "is_best is not valid"
 
     def test_checkpoint_versioning(self):
         """Test checkpoint versioning."""
@@ -75,7 +75,7 @@ class TestCheckpointRecovery:
         version = "1.0.0"
 
         # Assert
-        assert version is not None
+        assert version is not None, "version must be initialized"
 
     def test_checkpoint_corruption_detection(self):
         """Test checkpoint corruption detection."""
@@ -83,7 +83,7 @@ class TestCheckpointRecovery:
         checksum = "abc123def456"
 
         # Assert
-        assert len(checksum) > 0
+        assert len(checksum) > 0, "Checksum must not be empty"
 
     def test_checkpoint_atomic_save(self):
         """Test atomic checkpoint saving."""
@@ -91,7 +91,7 @@ class TestCheckpointRecovery:
         atomic = True
 
         # Assert
-        assert atomic is True
+        assert atomic is True, "atomic is not valid"
 
     def test_checkpoint_cleanup_old(self):
         """Test cleanup of old checkpoints."""
@@ -99,7 +99,7 @@ class TestCheckpointRecovery:
         keep_last_n = 5
 
         # Assert
-        assert keep_last_n > 0
+        assert keep_last_n > 0, "keep_last_n must be greater than zero"
 
     def test_checkpoint_cloud_upload(self):
         """Test checkpoint cloud upload."""
@@ -107,7 +107,7 @@ class TestCheckpointRecovery:
         upload_to_cloud = True
 
         # Assert
-        assert upload_to_cloud is True
+        assert upload_to_cloud is True, "upload_to_cloud is not valid"
 
     def test_checkpoint_partial_load(self):
         """Test partial checkpoint loading."""
@@ -115,7 +115,7 @@ class TestCheckpointRecovery:
         load_only = ["model_state_dict"]
 
         # Assert
-        assert "model_state_dict" in load_only
+        assert "model_state_dict" in load_only, "Condition must be true"
 
     def test_checkpoint_strict_load(self):
         """Test strict checkpoint loading."""
@@ -123,7 +123,7 @@ class TestCheckpointRecovery:
         strict = True
 
         # Assert
-        assert strict is True
+        assert strict is True, "strict is not valid"
 
     def test_checkpoint_non_strict_load(self):
         """Test non-strict checkpoint loading."""
@@ -131,7 +131,7 @@ class TestCheckpointRecovery:
         strict = False
 
         # Assert
-        assert strict is False
+        assert strict is False, "strict is not valid"
 
     def test_checkpoint_map_location(self):
         """Test checkpoint map location."""
@@ -147,7 +147,7 @@ class TestCheckpointRecovery:
         weights_only = True
 
         # Assert
-        assert weights_only is True
+        assert weights_only is True, "weights_only is not valid"
 
     def test_checkpoint_interval_steps(self):
         """Test checkpoint interval by steps."""
@@ -155,7 +155,7 @@ class TestCheckpointRecovery:
         save_steps = 500
 
         # Assert
-        assert save_steps > 0
+        assert save_steps > 0, "save_steps must be greater than zero"
 
     def test_checkpoint_interval_epochs(self):
         """Test checkpoint interval by epochs."""
@@ -163,7 +163,7 @@ class TestCheckpointRecovery:
         save_epochs = 1
 
         # Assert
-        assert save_epochs > 0
+        assert save_epochs > 0, "save_epochs must be greater than zero"
 
     def test_checkpoint_naming_convention(self):
         """Test checkpoint naming convention."""
@@ -171,7 +171,7 @@ class TestCheckpointRecovery:
         name_template = "checkpoint-{epoch:04d}-{step:08d}.pt"
 
         # Assert
-        assert "{epoch" in name_template
+        assert "{epoch" in name_template, "Condition must be true"
 
     def test_checkpoint_symlink_latest(self):
         """Test checkpoint symlink to latest."""
@@ -179,7 +179,7 @@ class TestCheckpointRecovery:
         create_symlink = True
 
         # Assert
-        assert create_symlink is True
+        assert create_symlink is True, "create_symlink is not valid"
 
     def test_checkpoint_recovery_log(self):
         """Test checkpoint recovery logging."""
@@ -187,7 +187,7 @@ class TestCheckpointRecovery:
         log_recovery = True
 
         # Assert
-        assert log_recovery is True
+        assert log_recovery is True, "log_recovery is not valid"
 
     def test_checkpoint_validation_after_load(self):
         """Test checkpoint validation after loading."""
@@ -195,7 +195,7 @@ class TestCheckpointRecovery:
         validate = True
 
         # Assert
-        assert validate is True
+        assert validate is True, "validate is not valid"
 
     def test_checkpoint_distributed_save(self):
         """Test checkpoint saving in distributed mode."""
@@ -203,4 +203,4 @@ class TestCheckpointRecovery:
         save_on_rank_0_only = True
 
         # Assert
-        assert save_on_rank_0_only is True
+        assert save_on_rank_0_only is True, "save_on_rank_0_only is not valid"

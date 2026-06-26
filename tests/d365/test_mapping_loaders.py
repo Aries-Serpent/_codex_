@@ -21,9 +21,9 @@ def _evidence_dir(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
 
 def test_load_all_mappings_valid() -> None:
     payload = load_all_mappings(Path("configs/deployment/mapping"))
-    assert payload["routing"]["count"] >= 1
-    assert payload["routing"]["deferred"] == 0
-    assert payload["sla"]["count"] >= 1
+    assert payload["routing"]["count"] >= 1, "Value must be greater than zero"
+    assert payload["routing"]["deferred"] == 0, "Condition must be true"
+    assert payload["sla"]["count"] >= 1, "Value must be greater than zero"
 
 
 def test_invalid_sla_row_deferred(tmp_path: Path) -> None:
@@ -33,8 +33,8 @@ def test_invalid_sla_row_deferred(tmp_path: Path) -> None:
         encoding="utf-8",
     )
     result = load_sla(bad_csv)
-    assert result.deferred == 1
+    assert result.deferred == 1, "Result must not be empty"
     evidence_path = tmp_path / "evidence" / "deferred.jsonl"
     record = json.loads(evidence_path.read_text(encoding="utf-8").strip().splitlines()[-1])
-    assert record["phase"] == "mapping-validation"
-    assert record["meta"]["commit"]
+    assert record["phase"] == "mapping-validation", "rec is not valid"
+    assert record["meta"]["commit"], "rec is not valid"

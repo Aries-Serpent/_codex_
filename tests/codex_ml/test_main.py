@@ -31,14 +31,14 @@ class TestBuildParser:
     def test_parser_prog_name(self) -> None:
         """Test parser prog name is set correctly."""
         parser = build_parser()
-        assert parser.prog == "codex-ml"
+        assert parser.prog == "codex-ml", "prog is not valid"
 
     def test_has_version_argument(self) -> None:
         """Test parser has --version argument."""
         parser = build_parser()
         # Parse with --version flag
         args = parser.parse_args(["--version"])
-        assert args.version is True
+        assert args.version is True, "version is not valid"
 
     def test_has_forward_argument(self) -> None:
         """Test parser has --forward argument."""
@@ -57,8 +57,8 @@ class TestBuildParser:
         """Test default argument values."""
         parser = build_parser()
         args = parser.parse_args([])
-        assert args.version is False
-        assert args.forward is None
+        assert args.version is False, "version is not valid"
+        assert args.forward is None, "forward is not valid"
 
 
 class TestResolveVersion:
@@ -73,14 +73,14 @@ class TestResolveVersion:
         """Test version is either a valid version or 'unknown'."""
         version = _resolve_version()
         # Should be either a version string or "unknown"
-        assert version == "unknown" or len(version) > 0
+        assert version == "unknown" or len(version) > 0, "Version must not be empty"
 
     @patch("codex_ml.main.importlib.import_module")
     def test_handles_import_error(self, mock_import: MagicMock) -> None:
         """Test handles import error gracefully."""
         mock_import.side_effect = ImportError("No module")
         version = _resolve_version()
-        assert version == "unknown"
+        assert version == "unknown", "version is not valid"
 
     @patch("codex_ml.main.importlib.import_module")
     def test_handles_missing_version_attr(self, mock_import: MagicMock) -> None:
@@ -88,7 +88,7 @@ class TestResolveVersion:
         mock_module = MagicMock(spec=[])  # No __version__
         mock_import.return_value = mock_module
         version = _resolve_version()
-        assert version == "unknown"
+        assert version == "unknown", "version is not valid"
 
     @patch("codex_ml.main.importlib.import_module")
     def test_returns_module_version(self, mock_import: MagicMock) -> None:
@@ -97,7 +97,7 @@ class TestResolveVersion:
         mock_module.__version__ = "1.2.3"
         mock_import.return_value = mock_module
         version = _resolve_version()
-        assert version == "1.2.3"
+        assert version == "1.2.3", "version is not valid"
 
 
 class TestForwardToCli:
@@ -144,7 +144,7 @@ class TestMain:
         with patch("builtins.print") as mock_print:
             result = main(["--version"])
             mock_print.assert_called_once()
-            assert result == 0
+            assert result == 0, "Result must not be empty"
 
     def test_no_args_prints_help(self) -> None:
         """Test no arguments prints help."""
@@ -152,13 +152,13 @@ class TestMain:
             result = main([])
             mock_stdout.getvalue()
             # Should contain help text or print help
-            assert result == 0
+            assert result == 0, "Result must not be empty"
 
     def test_version_returns_zero(self) -> None:
         """Test --version returns exit code 0."""
         with patch("builtins.print"):
             result = main(["--version"])
-            assert result == 0
+            assert result == 0, "Result must not be empty"
 
     @patch("codex_ml.main._forward_to_cli")
     def test_forward_calls_cli_forwarder(self, mock_forward: MagicMock) -> None:
@@ -166,7 +166,7 @@ class TestMain:
         mock_forward.return_value = 0
         result = main(["--forward", "subcommand"])
         mock_forward.assert_called_once()
-        assert result == 0
+        assert result == 0, "Result must not be empty"
 
     @patch("codex_ml.main._forward_to_cli")
     def test_forward_passes_arguments(self, mock_forward: MagicMock) -> None:
@@ -180,7 +180,7 @@ class TestMain:
         """Test --forward exit code is propagated."""
         mock_forward.return_value = 42
         result = main(["--forward", "failing_command"])
-        assert result == 42
+        assert result == 42, "Result must not be empty"
 
     def test_version_and_forward_combined(self) -> None:
         """Test --version with --forward."""
@@ -190,7 +190,7 @@ class TestMain:
                 result = main(["--version", "--forward", "cmd"])
                 # Should print version AND forward
                 mock_forward.assert_called_once()
-                assert result == 5
+                assert result == 5, "Result must not be empty"
 
     @patch("codex_ml.main._forward_to_cli")
     def test_forward_empty_list(self, mock_forward: MagicMock) -> None:
@@ -207,25 +207,25 @@ class TestMainHelpOutput:
         """Test help contains program name."""
         parser = build_parser()
         help_text = parser.format_help()
-        assert "codex-ml" in help_text
+        assert "codex-ml" in help_text, "Condition must be true"
 
     def test_help_contains_version_option(self) -> None:
         """Test help mentions --version."""
         parser = build_parser()
         help_text = parser.format_help()
-        assert "--version" in help_text
+        assert "--version" in help_text, "Condition must be true"
 
     def test_help_contains_forward_option(self) -> None:
         """Test help mentions --forward."""
         parser = build_parser()
         help_text = parser.format_help()
-        assert "--forward" in help_text
+        assert "--forward" in help_text, "Condition must be true"
 
     def test_help_contains_epilog(self) -> None:
         """Test help contains epilog with CLI reference."""
         parser = build_parser()
         help_text = parser.format_help()
-        assert "codex_ml.cli" in help_text
+        assert "codex_ml.cli" in help_text, "Condition must be true"
 
 
 class TestMainEdgeCases:
@@ -251,7 +251,7 @@ class TestMainEdgeCases:
         with patch("builtins.print") as mock_print:
             # Should only print once
             main(["--version"])
-            assert mock_print.call_count == 1
+            assert mock_print.call_count == 1, "Count must be greater than zero"
 
 
 class TestForwardToCliEdgeCases:

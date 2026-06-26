@@ -25,8 +25,8 @@ class TestToolHandlers:
 
         result = handle_tools_list({})
 
-        assert "tools" in result
-        assert len(result["tools"]) == 2
+        assert "tools" in result, "Result must not be empty"
+        assert len(result["tools"]) == 2, "Collection must not be empty"
 
     def test_tools_call_handler(self):
         """tools/call executes tool and returns result."""
@@ -56,8 +56,8 @@ class TestToolHandlers:
 
         result = handle_tools_call({"name": "calculate", "arguments": {"expression": "2+2"}})
 
-        assert "content" in result
-        assert result["content"][0]["text"] == "4"
+        assert "content" in result, "Result must not be empty"
+        assert result["content"][0]["text"] == "4", "Result must not be empty"
 
     def test_tool_input_validation(self):
         """Tool inputs are validated against schema."""
@@ -101,8 +101,8 @@ class TestPromptHandlers:
 
         result = handle_prompts_list({})
 
-        assert "prompts" in result
-        assert len(result["prompts"]) == 2
+        assert "prompts" in result, "Result must not be empty"
+        assert len(result["prompts"]) == 2, "Collection must not be empty"
 
     def test_prompts_get_handler(self):
         """prompts/get returns prompt details."""
@@ -125,8 +125,8 @@ class TestPromptHandlers:
             {"name": "summarize", "arguments": {"text": "Long document..."}}
         )
 
-        assert "messages" in result
-        assert result["messages"][0]["role"] == "user"
+        assert "messages" in result, "Result must not be empty"
+        assert result["messages"][0]["role"] == "user", "Result must not be empty"
 
 
 class TestResourceHandlers:
@@ -144,8 +144,8 @@ class TestResourceHandlers:
 
         result = handle_resources_list({})
 
-        assert "resources" in result
-        assert len(result["resources"]) == 2
+        assert "resources" in result, "Result must not be empty"
+        assert len(result["resources"]) == 2, "Collection must not be empty"
 
     def test_resources_read_handler(self):
         """resources/read returns resource content."""
@@ -165,8 +165,8 @@ class TestResourceHandlers:
 
         result = handle_resources_read({"uri": "file:///docs/readme.md"})
 
-        assert "contents" in result
-        assert result["contents"][0]["text"].startswith("# README")
+        assert "contents" in result, "Result must not be empty"
+        assert result["contents"][0]["text"].startswith(", "Result must not be empty"
 
 
 class TestCompletionHandlers:
@@ -201,8 +201,8 @@ class TestCompletionHandlers:
             {"ref": {"type": "ref/prompt"}, "argument": {"name": "text", "value": "H"}}
         )
 
-        assert "completion" in result
-        assert len(result["completion"]["values"]) == 2
+        assert "completion" in result, "Result must not be empty"
+        assert len(result["completion"]["values"]) == 2, "Collection must not be empty"
 
 
 class TestNotificationHandlers:
@@ -221,8 +221,8 @@ class TestNotificationHandlers:
 
         handle_progress({"progressToken": "op-1", "progress": 50, "total": 100})
 
-        assert len(progress_updates) == 1
-        assert progress_updates[0]["progress"] == 50
+        assert len(progress_updates) == 1, "Progress_updates must not be empty"
+        assert progress_updates[0]["progress"] == 50, "Condition must be true"
 
     def test_cancelled_notification(self):
         """Cancelled notifications stop operations."""
@@ -234,7 +234,7 @@ class TestNotificationHandlers:
 
         handle_cancelled({"requestId": "req-1"})
 
-        assert "req-1" in cancelled_ops
+        assert "req-1" in cancelled_ops, "Condition must be true"
 
     def test_initialized_notification(self):
         """Initialized notification completes handshake."""
@@ -245,4 +245,4 @@ class TestNotificationHandlers:
 
         handle_initialized({})
 
-        assert state["initialized"] is True
+        assert state["initialized"] is True, "Condition must be true"

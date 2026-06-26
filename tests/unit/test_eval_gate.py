@@ -35,9 +35,9 @@ from codex_ml.continuous_learning.eval_gate import EvalGate, EvalGateResult
 class TestEvalGateResult:
     def test_default_fields(self):
         r = EvalGateResult(passed=True)
-        assert r.passed is True
-        assert r.reasons == []
-        assert r.metrics == {}
+        assert r.passed is True, "passed is not valid"
+        assert r.reasons == [], "reasons is not valid"
+        assert r.metrics == {}, "metrics is not valid"
 
     def test_to_dict_structure(self):
         r = EvalGateResult(
@@ -46,7 +46,7 @@ class TestEvalGateResult:
             metrics={"accuracy": 0.7},
         )
         d = r.to_dict()
-        assert d == {
+        assert d == {, "d is not valid"
             "passed": False,
             "reasons": ["some reason"],
             "metrics": {"accuracy": 0.7},
@@ -58,8 +58,8 @@ class TestEvalGateResult:
         d = r.to_dict()
         d["reasons"].append("extra")
         d["metrics"]["b"] = 2
-        assert r.reasons == ["x"]
-        assert r.metrics == {"a": 1}
+        assert r.reasons == ["x"], "reasons is not valid"
+        assert r.metrics == {"a": 1}, "metrics is not valid"
 
 
 # ---------------------------------------------------------------------------
@@ -71,13 +71,13 @@ class TestEvalGateNoThresholds:
     def test_always_passes_empty_metrics(self):
         gate = EvalGate()
         result = gate.evaluate({})
-        assert result.passed is True
-        assert result.reasons == []
+        assert result.passed is True, "Result must not be empty"
+        assert result.reasons == [], "Result must not be empty"
 
     def test_always_passes_with_metrics(self):
         gate = EvalGate()
         result = gate.evaluate({"accuracy": 0.5, "loss": 99.0})
-        assert result.passed is True
+        assert result.passed is True, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -89,27 +89,27 @@ class TestMinAccuracy:
     def test_pass_accuracy_above_threshold(self):
         gate = EvalGate(min_accuracy=0.80)
         result = gate.evaluate({"accuracy": 0.85})
-        assert result.passed is True
-        assert result.reasons == []
+        assert result.passed is True, "Result must not be empty"
+        assert result.reasons == [], "Result must not be empty"
 
     def test_fail_accuracy_below_threshold(self):
         gate = EvalGate(min_accuracy=0.80)
         result = gate.evaluate({"accuracy": 0.75})
-        assert result.passed is False
-        assert len(result.reasons) == 1
-        assert "min_accuracy=0.8" in result.reasons[0]
-        assert "accuracy=0.7500" in result.reasons[0]
+        assert result.passed is False, "Result must not be empty"
+        assert len(result.reasons) == 1, "Collection must not be empty"
+        assert "min_accuracy=0.8" in result.reasons[0], "Result must not be empty"
+        assert "accuracy=0.7500" in result.reasons[0], "Result must not be empty"
 
     def test_fail_accuracy_key_missing(self):
         gate = EvalGate(min_accuracy=0.80)
         result = gate.evaluate({"loss": 0.3})
-        assert result.passed is False
-        assert any("missing" in r for r in result.reasons)
+        assert result.passed is False, "Result must not be empty"
+        assert any("missing" in r for r in result.reasons), "Result must not be empty"
 
     def test_boundary_accuracy_exactly_threshold(self):
         gate = EvalGate(min_accuracy=0.80)
         result = gate.evaluate({"accuracy": 0.80})
-        assert result.passed is True
+        assert result.passed is True, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -121,25 +121,25 @@ class TestMaxLoss:
     def test_pass_loss_below_threshold(self):
         gate = EvalGate(max_loss=0.5)
         result = gate.evaluate({"loss": 0.3})
-        assert result.passed is True
+        assert result.passed is True, "Result must not be empty"
 
     def test_fail_loss_above_threshold(self):
         gate = EvalGate(max_loss=0.5)
         result = gate.evaluate({"loss": 0.7})
-        assert result.passed is False
-        assert any("max_loss=0.5" in r for r in result.reasons)
-        assert any("loss=0.7000" in r for r in result.reasons)
+        assert result.passed is False, "Result must not be empty"
+        assert any("max_loss=0.5" in r for r in result.reasons), "Result must not be empty"
+        assert any("loss=0.7000" in r for r in result.reasons), "Result must not be empty"
 
     def test_fail_loss_key_missing(self):
         gate = EvalGate(max_loss=0.5)
         result = gate.evaluate({"accuracy": 0.9})
-        assert result.passed is False
-        assert any("missing" in r for r in result.reasons)
+        assert result.passed is False, "Result must not be empty"
+        assert any("missing" in r for r in result.reasons), "Result must not be empty"
 
     def test_boundary_loss_exactly_threshold(self):
         gate = EvalGate(max_loss=0.5)
         result = gate.evaluate({"loss": 0.5})
-        assert result.passed is True
+        assert result.passed is True, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -152,44 +152,44 @@ class TestMinImprovementPct:
         # 0.83 → 0.85: (+0.02/0.83)*100 ≈ 2.41% > 1.0%
         gate = EvalGate(min_improvement_pct=1.0)
         result = gate.evaluate({"accuracy": 0.85, "baseline_accuracy": 0.83})
-        assert result.passed is True
+        assert result.passed is True, "Result must not be empty"
 
     def test_fail_insufficient_improvement(self):
         # 0.85 → 0.855: (+0.005/0.85)*100 ≈ 0.59% < 1.0%
         gate = EvalGate(min_improvement_pct=1.0)
         result = gate.evaluate({"accuracy": 0.855, "baseline_accuracy": 0.85})
-        assert result.passed is False
-        assert any("min_improvement_pct=1.0%" in r for r in result.reasons)
+        assert result.passed is False, "Result must not be empty"
+        assert any("min_improvement_pct=1.0%" in r for r in result.reasons), "Result must not be empty"
 
     def test_fail_negative_improvement(self):
         # New model is worse than baseline
         gate = EvalGate(min_improvement_pct=1.0)
         result = gate.evaluate({"accuracy": 0.80, "baseline_accuracy": 0.85})
-        assert result.passed is False
+        assert result.passed is False, "Result must not be empty"
 
     def test_fail_accuracy_key_missing(self):
         gate = EvalGate(min_improvement_pct=1.0)
         result = gate.evaluate({"baseline_accuracy": 0.80})
-        assert result.passed is False
-        assert any("'accuracy' key missing" in r for r in result.reasons)
+        assert result.passed is False, "Result must not be empty"
+        assert any("'accuracy' key missing" in r for r in result.reasons), "Result must not be empty"
 
     def test_fail_baseline_accuracy_key_missing(self):
         gate = EvalGate(min_improvement_pct=1.0)
         result = gate.evaluate({"accuracy": 0.85})
-        assert result.passed is False
-        assert any("'baseline_accuracy' key missing" in r for r in result.reasons)
+        assert result.passed is False, "Result must not be empty"
+        assert any("'baseline_accuracy' key missing" in r for r in result.reasons), "Result must not be empty"
 
     def test_fail_baseline_accuracy_zero(self):
         gate = EvalGate(min_improvement_pct=1.0)
         result = gate.evaluate({"accuracy": 0.85, "baseline_accuracy": 0.0})
-        assert result.passed is False
-        assert any("must be > 0" in r for r in result.reasons)
+        assert result.passed is False, "Result must not be empty"
+        assert any("must be > 0" in r for r in result.reasons), "be must be greater than zero"
 
     def test_boundary_improvement_exactly_threshold(self):
         # baseline=0.8, new=0.808 → improvement = (0.008/0.8)*100 = 1.0%
         gate = EvalGate(min_improvement_pct=1.0)
         result = gate.evaluate({"accuracy": 0.808, "baseline_accuracy": 0.8})
-        assert result.passed is True
+        assert result.passed is True, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -202,23 +202,23 @@ class TestCombinedThresholds:
         gate = EvalGate(min_accuracy=0.80, max_loss=0.5, min_improvement_pct=1.0)
         metrics = {"accuracy": 0.85, "loss": 0.42, "baseline_accuracy": 0.83}
         result = gate.evaluate(metrics)
-        assert result.passed is True
-        assert result.reasons == []
+        assert result.passed is True, "Result must not be empty"
+        assert result.reasons == [], "Result must not be empty"
 
     def test_multiple_failures_accumulated(self):
         gate = EvalGate(min_accuracy=0.90, max_loss=0.3, min_improvement_pct=5.0)
         # accuracy 0.80 < 0.90, loss 0.5 > 0.3, improvement ~2.4% < 5%
         metrics = {"accuracy": 0.80, "loss": 0.50, "baseline_accuracy": 0.78}
         result = gate.evaluate(metrics)
-        assert result.passed is False
-        assert len(result.reasons) == 3
+        assert result.passed is False, "Result must not be empty"
+        assert len(result.reasons) == 3, "Collection must not be empty"
 
     def test_partial_failure_single_reason(self):
         gate = EvalGate(min_accuracy=0.90, max_loss=0.5)
         # accuracy fails, loss passes
         result = gate.evaluate({"accuracy": 0.80, "loss": 0.3})
-        assert result.passed is False
-        assert len(result.reasons) == 1
+        assert result.passed is False, "Result must not be empty"
+        assert len(result.reasons) == 1, "Collection must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -232,14 +232,14 @@ class TestMetricsCopy:
         original = {"accuracy": 0.9, "loss": 0.1}
         result = gate.evaluate(original)
         original["accuracy"] = 0.0  # mutate original
-        assert result.metrics["accuracy"] == 0.9  # result not affected
+        assert result.metrics["accuracy"] == 0.9, "Result must not be empty"
 
     def test_to_dict_metrics_copy(self):
         gate = EvalGate()
         result = gate.evaluate({"accuracy": 0.9})
         d = result.to_dict()
         d["metrics"]["accuracy"] = 0.0
-        assert result.metrics["accuracy"] == 0.9
+        assert result.metrics["accuracy"] == 0.9, "Result must not be empty"
 
 
 # ---------------------------------------------------------------------------
@@ -250,12 +250,12 @@ class TestMetricsCopy:
 class TestEvalGateConfiguration:
     def test_attributes_stored(self):
         gate = EvalGate(min_accuracy=0.75, max_loss=1.0, min_improvement_pct=2.5)
-        assert gate.min_accuracy == 0.75
-        assert gate.max_loss == 1.0
-        assert gate.min_improvement_pct == 2.5
+        assert gate.min_accuracy == 0.75, "min_accuracy is not valid"
+        assert gate.max_loss == 1.0, "max_loss is not valid"
+        assert gate.min_improvement_pct == 2.5, "min_improvement_pct is not valid"
 
     def test_defaults_are_none(self):
         gate = EvalGate()
-        assert gate.min_accuracy is None
-        assert gate.max_loss is None
-        assert gate.min_improvement_pct is None
+        assert gate.min_accuracy is None, "min_accuracy is not valid"
+        assert gate.max_loss is None, "max_loss is not valid"
+        assert gate.min_improvement_pct is None, "min_improvement_pct is not valid"

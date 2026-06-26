@@ -35,8 +35,8 @@ def test_bestk_and_keep_last(tmp_path: Path) -> None:
     assert dirs == ["epoch-0003", "epoch-0004"]
 
     index_path = root / "best_index.json"
-    assert index_path.exists()
+    assert index_path.exists(), "Condition must be true"
     best_index = json.loads(index_path.read_text(encoding="utf-8"))
-    assert len(best_index) <= 2
+    assert len(best_index) <= 2, "Best_index must not be empty"
     for entry in best_index:
         assert entry["path"] in {"epoch-0003", "epoch-0004"}

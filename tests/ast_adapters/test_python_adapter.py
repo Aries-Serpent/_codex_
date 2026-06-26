@@ -13,9 +13,9 @@ def test_python_adapter_initialization():
     """Test PythonASTAdapter initialization."""
     adapter = PythonASTAdapter()
 
-    assert adapter.file_path is None
-    assert adapter.root_node is None
-    assert adapter._cst_tree is None
+    assert adapter.file_path is None, "file_path is not valid"
+    assert adapter.root_node is None, "root_node is not valid"
+    assert adapter._cst_tree is None, "_cst_tree is not valid"
 
 
 def test_python_adapter_parse_simple_function():
@@ -29,14 +29,14 @@ def hello_world():
     adapter = PythonASTAdapter()
     root = adapter.parse(source)
 
-    assert root is not None
-    assert root.node_type == "module"
-    assert len(root.children) > 0
+    assert root is not None, "root must be initialized"
+    assert root.node_type == "module", "node_type is not valid"
+    assert len(root.children) > 0, "Collection must not be empty"
 
     # Find the function
     functions = adapter.find_nodes_by_type("function")
-    assert len(functions) == 1
-    assert functions[0].name == "hello_world"
+    assert len(functions) == 1, "Functions must not be empty"
+    assert functions[0].name == "hello_world", "name is not valid"
 
 
 def test_python_adapter_parse_class():
@@ -57,12 +57,12 @@ class TestClass:
 
     # Find the class
     classes = adapter.find_nodes_by_type("class")
-    assert len(classes) == 1
-    assert classes[0].name == "TestClass"
+    assert len(classes) == 1, "Classes must not be empty"
+    assert classes[0].name == "TestClass", "name is not valid"
 
     # Find methods
     functions = adapter.find_nodes_by_type("function")
-    assert len(functions) == 2
+    assert len(functions) == 2, "Functions must not be empty"
 
 
 def test_python_adapter_parse_with_decorators():
@@ -78,11 +78,11 @@ def decorated_function():
     adapter.parse(source)
 
     functions = adapter.find_nodes_by_type("function")
-    assert len(functions) == 1
+    assert len(functions) == 1, "Functions must not be empty"
 
     func = functions[0]
-    assert "decorators" in func.metadata
-    assert len(func.metadata["decorators"]) == 2
+    assert "decorators" in func.metadata, "Data must not be empty"
+    assert len(func.metadata["decorators"]) == 2, "Collection must not be empty"
 
 
 def test_python_adapter_parse_with_type_hints():
@@ -96,12 +96,12 @@ def typed_function(name: str, age: int = 0) -> str:
     adapter.parse(source)
 
     functions = adapter.find_nodes_by_type("function")
-    assert len(functions) == 1
+    assert len(functions) == 1, "Functions must not be empty"
 
     func = functions[0]
-    assert "parameters" in func.metadata
-    assert len(func.metadata["parameters"]) == 2
-    assert "return_type" in func.metadata
+    assert "parameters" in func.metadata, "Data must not be empty"
+    assert len(func.metadata["parameters"]) == 2, "Collection must not be empty"
+    assert "return_type" in func.metadata, "Data must not be empty"
 
 
 def test_python_adapter_parse_imports():
@@ -119,8 +119,8 @@ from typing import Dict, List
     imports = adapter.find_nodes_by_type("import")
     import_froms = adapter.find_nodes_by_type("import_from")
 
-    assert len(imports) >= 2  # os and sys
-    assert len(import_froms) >= 1  # pathlib and typing
+    assert len(imports) >= 2, "Imports must not be empty"
+    assert len(import_froms) >= 1, "Import_froms must not be empty"
 
 
 def test_python_adapter_parse_assignments():
@@ -135,7 +135,7 @@ z = [1, 2, 3]
     adapter.parse(source)
 
     assignments = adapter.find_nodes_by_type("assignment")
-    assert len(assignments) >= 3
+    assert len(assignments) >= 3, "Assignments must not be empty"
 
 
 def test_python_adapter_parse_invalid_syntax():
@@ -169,12 +169,12 @@ def standalone_function():
 
     stats = adapter.get_stats()
 
-    assert "module" in stats
-    assert stats["module"] == 1
-    assert "class" in stats
-    assert stats["class"] == 1
-    assert "function" in stats
-    assert stats["function"] == 3  # 2 methods + 1 standalone
+    assert "module" in stats, "Condition must be true"
+    assert stats["module"] == 1, "Condition must be true"
+    assert "class" in stats, "Condition must be true"
+    assert stats["class"] == 1, "Condition must be true"
+    assert "function" in stats, "Condition must be true"
+    assert stats["function"] == 3, "Condition must be true"
 
 
 def test_python_adapter_traverse():
@@ -194,8 +194,8 @@ class OuterClass:
 
     all_nodes = adapter.traverse()
 
-    assert len(all_nodes) > 0
-    assert root in all_nodes
+    assert len(all_nodes) > 0, "All_nodes must not be empty"
+    assert root in all_nodes, "Condition must be true"
 
 
 def test_python_adapter_extract_docstring():
@@ -214,11 +214,11 @@ def documented_function():
     adapter.parse(source)
 
     functions = adapter.find_nodes_by_type("function")
-    assert len(functions) == 1
+    assert len(functions) == 1, "Functions must not be empty"
 
     func = functions[0]
-    assert "docstring" in func.metadata
-    assert "comprehensive" in func.metadata["docstring"]
+    assert "docstring" in func.metadata, "Data must not be empty"
+    assert "comprehensive" in func.metadata["docstring"], "Data must not be empty"
 
 
 def test_python_adapter_extract_class_bases():
@@ -232,11 +232,11 @@ class DerivedClass(BaseClass, MixinClass):
     adapter.parse(source)
 
     classes = adapter.find_nodes_by_type("class")
-    assert len(classes) == 1
+    assert len(classes) == 1, "Classes must not be empty"
 
     cls = classes[0]
-    assert "bases" in cls.metadata
-    assert len(cls.metadata["bases"]) == 2
+    assert "bases" in cls.metadata, "Data must not be empty"
+    assert len(cls.metadata["bases"]) == 2, "Collection must not be empty"
 
 
 def test_python_adapter_real_file():
@@ -247,9 +247,9 @@ def test_python_adapter_real_file():
     if test_file.exists():
         root = adapter.parse_file(test_file)
 
-        assert root is not None
-        assert root.node_type == "module"
+        assert root is not None, "root must be initialized"
+        assert root.node_type == "module", "node_type is not valid"
 
         # This file should have multiple test functions
         functions = adapter.find_nodes_by_type("function")
-        assert len(functions) > 10  # We have many test functions
+        assert len(functions) > 10, "Functions must not be empty"

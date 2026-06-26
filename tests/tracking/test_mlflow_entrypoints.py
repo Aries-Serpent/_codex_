@@ -24,7 +24,7 @@ def test_configure_mlflow_blocks_remote_uri(monkeypatch):
     monkeypatch.delenv("MLFLOW_TRACKING_URI", raising=False)
     effective = configure_mlflow_uri("http://example.invalid")
     assert effective.startswith("file:"), effective
-    assert os.environ["MLFLOW_TRACKING_URI"].startswith("file:")
+    assert os.environ["MLFLOW_TRACKING_URI"].startswith("file:"), "Condition must be true"
     assert os.environ.get("CODEX_MLFLOW_URI", "").startswith("file:")
 
 
@@ -39,4 +39,4 @@ def test_sitecustomize_enforces_local_backend(monkeypatch):
         del sys.modules["sitecustomize"]
     module = importlib.import_module("sitecustomize")
     importlib.reload(module)
-    assert os.environ["MLFLOW_TRACKING_URI"].startswith("file:")
+    assert os.environ["MLFLOW_TRACKING_URI"].startswith("file:"), "Condition must be true"

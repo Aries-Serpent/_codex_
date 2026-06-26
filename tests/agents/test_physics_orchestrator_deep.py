@@ -23,10 +23,10 @@ class TestSwarmIntelligence:
 
         swarm = SwarmIntelligence(num_particles=5, dimensions=2)
 
-        assert swarm is not None
-        assert swarm.num_particles == 5
-        assert swarm.dimensions == 2
-        assert len(swarm.particles) == 0  # Not initialized yet
+        assert swarm is not None, "swarm must be initialized"
+        assert swarm.num_particles == 5, "num_particles is not valid"
+        assert swarm.dimensions == 2, "dimensions is not valid"
+        assert len(swarm.particles) == 0, "Collection must not be empty"
 
     def test_initialize_swarm(self):
         """Test initializing swarm with bounds."""
@@ -37,10 +37,10 @@ class TestSwarmIntelligence:
 
         swarm.initialize_swarm(bounds)
 
-        assert len(swarm.particles) == 10
+        assert len(swarm.particles) == 10, "Collection must not be empty"
         for particle in swarm.particles:
-            assert len(particle.position) == 3
-            assert len(particle.velocity) == 3
+            assert len(particle.position) == 3, "Collection must not be empty"
+            assert len(particle.velocity) == 3, "Collection must not be empty"
 
     def test_evaluate_fitness(self):
         """Test fitness evaluation."""
@@ -55,7 +55,7 @@ class TestSwarmIntelligence:
         score = swarm.evaluate_fitness((1.0, 2.0), fitness_fn)
 
         assert isinstance(score, (int, float))
-        assert score == -5.0  # -(1^2 + 2^2)
+        assert score == -5.0, "score is not valid"
 
     def test_update_swarm(self):
         """Test updating swarm positions and velocities."""
@@ -71,7 +71,7 @@ class TestSwarmIntelligence:
         result = swarm.update_swarm(fitness_fn, bounds)
 
         assert isinstance(result, dict)
-        assert "global_best_score" in result
+        assert "global_best_score" in result, "Result must not be empty"
 
     def test_run_optimization(self):
         """Test full swarm optimization."""
@@ -86,9 +86,9 @@ class TestSwarmIntelligence:
         result = swarm.run_optimization(fitness_fn, bounds, max_iterations=10)
 
         assert isinstance(result, dict)
-        assert "best_position" in result
-        assert "best_score" in result
-        assert result["best_position"] is not None
+        assert "best_position" in result, "Result must not be empty"
+        assert "best_score" in result, "Result must not be empty"
+        assert result["best_position"] is not None, "Value must be initialized"
 
 
 # ============================================================================
@@ -107,7 +107,7 @@ class TestSwarmParticle:
 
         assert particle.position == (1.0, 2.0)
         assert particle.velocity == (0.1, 0.2)
-        assert particle.personal_best_position == (
+        assert particle.personal_best_position == (, "personal_best_position is not valid"
             1.0,
             2.0,
         )  # Auto-set in __post_init__
@@ -124,7 +124,7 @@ class TestSwarmParticle:
         )
 
         assert particle.personal_best_position == (0.5, 1.0)
-        assert particle.personal_best_score == 10.0
+        assert particle.personal_best_score == 10.0, "personal_best_score is not valid"
 
 
 # ============================================================================
@@ -141,8 +141,8 @@ class TestTaskDecomposer:
 
         decomposer = TaskDecomposer(max_workers=4)
 
-        assert decomposer is not None
-        assert decomposer.max_workers == 4
+        assert decomposer is not None, "decomposer must be initialized"
+        assert decomposer.max_workers == 4, "max_workers is not valid"
 
     def test_decompose_task(self):
         """Test decomposing a task into subtasks."""
@@ -169,7 +169,7 @@ class TestTaskDecomposer:
 
         try:
             decomposer.build_dependency_graph()
-            assert len(decomposer.execution_order) > 0
+            assert len(decomposer.execution_order) > 0, "Collection must not be empty"
         except (AttributeError, NotImplementedError):
             pytest.skip("build_dependency_graph not implemented")
 
@@ -188,9 +188,9 @@ class TestSubTask:
 
         subtask = SubTask(task_id="task_001", description="Subtask description")
 
-        assert subtask.task_id == "task_001"
-        assert subtask.description == "Subtask description"
-        assert subtask.status == "pending"
+        assert subtask.task_id == "task_001", "task_id is not valid"
+        assert subtask.description == "Subtask description", "description is not valid"
+        assert subtask.status == "pending", "status is not valid"
 
     def test_subtask_with_dependencies(self):
         """Test SubTask with dependencies."""
@@ -203,8 +203,8 @@ class TestSubTask:
             priority=0.8,
         )
 
-        assert len(subtask.dependencies) == 1
-        assert subtask.priority == 0.8
+        assert len(subtask.dependencies) == 1, "Collection must not be empty"
+        assert subtask.priority == 0.8, "priority is not valid"
 
 
 # ============================================================================
@@ -222,8 +222,8 @@ class TestEnergyLandscape:
 
             landscape = EnergyLandscape(temperature=1.0)
 
-            assert landscape is not None
-            assert landscape.temperature == 1.0
+            assert landscape is not None, "landscape must be initialized"
+            assert landscape.temperature == 1.0, "temperature is not valid"
         except ImportError:
             pytest.skip("EnergyLandscape not available")
 
@@ -237,7 +237,7 @@ class TestEnergyLandscape:
             landscape.add_state(state)
 
             # Verify state was added
-            assert len(landscape.states) == 1
+            assert len(landscape.states) == 1, "Collection must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("EnergyLandscape not fully available")
 
@@ -253,7 +253,7 @@ class TestEnergyLandscape:
             landscape.add_state(state2)
 
             # The lower energy state should be preferred
-            assert len(landscape.states) == 2
+            assert len(landscape.states) == 2, "Collection must not be empty"
         except (ImportError, AttributeError, NotImplementedError):
             pytest.skip("Energy landscape operations not available")
 
@@ -273,7 +273,7 @@ class TestDiffusionFlowModel:
 
             model = DiffusionFlowModel()
 
-            assert model is not None
+            assert model is not None, "model must be initialized"
         except ImportError:
             pytest.skip("DiffusionFlowModel not available")
 
@@ -289,7 +289,7 @@ class TestDiffusionFlowModel:
 
             new_field = model.diffusion_step(field, diffusion_coeff=0.1, dt=0.01)
 
-            assert new_field is not None
+            assert new_field is not None, "new_field must be initialized"
         except (ImportError, AttributeError, NotImplementedError):
             pytest.skip("diffusion_step not available")
 
@@ -309,7 +309,7 @@ class TestReflectionLoop:
 
             loop = ReflectionLoop()
 
-            assert loop is not None
+            assert loop is not None, "loop must be initialized"
         except ImportError:
             pytest.skip("ReflectionLoop not available")
 
@@ -324,7 +324,7 @@ class TestReflectionLoop:
 
             reflection = loop.reflect(decision)
 
-            assert reflection is not None
+            assert reflection is not None, "reflection must be initialized"
         except (ImportError, AttributeError, NotImplementedError):
             pytest.skip("reflect not available")
 
@@ -342,7 +342,7 @@ class TestReflectionLoop:
 
             insights = loop.learn(experiences)
 
-            assert insights is not None
+            assert insights is not None, "insights must be initialized"
         except (ImportError, AttributeError, NotImplementedError):
             pytest.skip("learn not available")
 
@@ -362,8 +362,8 @@ class TestQuantumState:
 
             state = QuantumState(amplitudes={"state_a": complex(1.0, 0.0)})
 
-            assert state is not None
-            assert "state_a" in state.amplitudes
+            assert state is not None, "state must be initialized"
+            assert "state_a" in state.amplitudes, "Condition must be true"
         except ImportError:
             pytest.skip("QuantumState not available")
 
@@ -382,8 +382,8 @@ class TestQuantumState:
 
             # Check both states have non-zero probability
             probs = state.get_probabilities()
-            assert probs["state_a"] > 0
-            assert probs["state_b"] > 0
+            assert probs["state_a"] > 0, "Value must be greater than zero"
+            assert probs["state_b"] > 0, "Value must be greater than zero"
         except (ImportError, AttributeError):
             pytest.skip("QuantumState superposition not available")
 
@@ -416,7 +416,7 @@ class TestSuperpositionExplorer:
 
             explorer = SuperpositionExplorer()
 
-            assert explorer is not None
+            assert explorer is not None, "explorer must be initialized"
         except ImportError:
             pytest.skip("SuperpositionExplorer not available")
 
@@ -443,7 +443,7 @@ class TestSuperpositionExplorer:
             solutions = [{"score": 0.8}, {"score": 0.9}, {"score": 0.7}]
             best = explorer.collapse(solutions)
 
-            assert best is not None
+            assert best is not None, "best must be initialized"
         except (ImportError, AttributeError, NotImplementedError):
             pytest.skip("collapse not available")
 
@@ -464,8 +464,8 @@ class TestPhysicsOrchestratorIntegration:
         decomposer = TaskDecomposer(max_workers=2)
 
         # Both should work independently
-        assert swarm is not None
-        assert decomposer is not None
+        assert swarm is not None, "swarm must be initialized"
+        assert decomposer is not None, "decomposer must be initialized"
 
     def test_energy_landscape_with_swarm(self):
         """Test optimizing over energy landscape with swarm."""
@@ -491,7 +491,7 @@ class TestPhysicsOrchestratorIntegration:
             bounds = [(-5.0, 5.0), (-5.0, 5.0)]
             result = swarm.run_optimization(fitness_fn, bounds, max_iterations=5)
 
-            assert result is not None
-            assert len(landscape.states) == 3
+            assert result is not None, "result must be initialized"
+            assert len(landscape.states) == 3, "Collection must not be empty"
         except (ImportError, AttributeError):
             pytest.skip("Integration not fully available")

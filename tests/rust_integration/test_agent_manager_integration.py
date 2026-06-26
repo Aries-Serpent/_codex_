@@ -14,8 +14,8 @@ def test_agent_manager_creation():
         from codex_engine import AgentManager
 
         manager = AgentManager(max_agents=10)
-        assert manager.get_max_agents() == 10
-        assert manager.get_active_count() == 0
+        assert manager.get_max_agents() == 10, "Condition must be true"
+        assert manager.get_active_count() == 0, "Count must be greater than zero"
     except ImportError:
         pytest.skip("codex_engine not built yet")
 
@@ -26,9 +26,9 @@ def test_agent_manager_properties():
         from codex_engine import AgentManager
 
         manager = AgentManager(max_agents=25)
-        assert manager.get_max_agents() == 25
-        assert manager.get_active_count() == 0
-        assert manager.list_active_agents() == []
+        assert manager.get_max_agents() == 25, "Condition must be true"
+        assert manager.get_active_count() == 0, "Count must be greater than zero"
+        assert manager.list_active_agents() == [], "Condition must be true"
     except ImportError:
         pytest.skip("codex_engine not built yet")
 
@@ -49,7 +49,7 @@ def test_agent_spawning_capacity():
 
         time.sleep(0.1)
         # Should not exceed max
-        assert manager.get_active_count() <= 5
+        assert manager.get_active_count() <= 5, "Count must be greater than zero"
     except ImportError:
         pytest.skip("codex_engine not built yet")
 
@@ -111,7 +111,7 @@ def test_agent_manager_concurrent_access():
             concurrent.futures.wait(futures)
 
         time.sleep(0.2)
-        assert manager.get_active_count() <= 50
+        assert manager.get_active_count() <= 50, "Count must be greater than zero"
     except ImportError:
         pytest.skip("codex_engine not built yet")
 

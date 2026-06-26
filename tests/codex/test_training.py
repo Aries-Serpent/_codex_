@@ -39,7 +39,7 @@ def test_config_hash_stable() -> None:
     cfg = {"a": 1, "b": {"c": 2}}
     first = _codex_config_hash(cfg)
     second = _codex_config_hash(dict(cfg))
-    assert first == second
+    assert first == second, "first is not valid"
 
 
 class _Dummy:
@@ -56,5 +56,5 @@ def test_build_safe_ckpt_payload(extra):
     from codex.training import _build_safe_ckpt_payload
 
     payload = _build_safe_ckpt_payload(_Dummy(), _Dummy(), epoch=3, extra=extra)
-    assert payload["meta"].get("saved_at")
-    assert payload["model_state_dict"]
+    assert payload["meta"].get("saved_at"), "Condition must be true"
+    assert payload["model_state_dict"], "Condition must be true"

@@ -197,7 +197,7 @@ class _SummaryRotator:
                     size = self.path.stat().st_size
                 except FileNotFoundError as e:
                     error_type = type(e).__name__
-                    logger.debug(f"FileNotFoundError: <ERROR_TYPE>")
+                    logger.debug("FileNotFoundError: <ERROR_TYPE>")
                     size = 0
                 if size > 0:
                     self._rotate()
@@ -210,7 +210,7 @@ class _SummaryRotator:
             size = self.path.stat().st_size
         except FileNotFoundError as e:
             error_type = type(e).__name__
-            logger.debug(f"FileNotFoundError: <ERROR_TYPE>")
+            logger.debug("FileNotFoundError: <ERROR_TYPE>")
             return
         if size + incoming_bytes <= self.max_bytes:
             return
@@ -795,7 +795,7 @@ try:
     MLFLOW_CLIENT_AVAILABLE = True
 except ImportError as e:
     error_type = type(e).__name__
-    logger.debug(f"ImportError: <ERROR_TYPE>")
+    logger.debug("ImportError: <ERROR_TYPE>")
     MlflowClient = None
     MLFLOW_CLIENT_AVAILABLE = False
 
@@ -843,8 +843,8 @@ class MLflowMetricWriter:
             logger.info(f"MLflow initialized: {self.tracking_uri}")
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.error(f"Failed to initialize MLflow: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.error("Failed to initialize MLflow: <ERROR_TYPE>")
             self._initialized = False
 
     def write(self, metrics: dict[str, float], step: int = 0) -> bool:
@@ -872,8 +872,8 @@ class MLflowMetricWriter:
             return True
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.warning(f"Failed to log metrics to MLflow: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.warning("Failed to log metrics to MLflow: <ERROR_TYPE>")
             return False
 
     def write_metric(self, key: str, value: float, step: int = 0) -> bool:
@@ -924,8 +924,8 @@ class MLflowParamWriter:
             return True
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.warning(f"Failed to log params: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.warning("Failed to log params: <ERROR_TYPE>")
             return False
 
     def write_config(self, config: dict[str, Any], prefix: str = "") -> bool:
@@ -993,8 +993,8 @@ class MLflowArtifactWriter:
             return True
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.warning(f"Failed to log artifact: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.warning("Failed to log artifact: <ERROR_TYPE>")
             return False
 
     def log_dict(
@@ -1017,8 +1017,8 @@ class MLflowArtifactWriter:
             return True
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.warning(f"Failed to log dict artifact: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.warning("Failed to log dict artifact: <ERROR_TYPE>")
             return False
 
     def log_model(
@@ -1065,7 +1065,7 @@ class MLflowArtifactWriter:
                     mlflow.pytorch.log_model(model, artifact_path)
                 except ImportError as e:
                     error_type = type(e).__name__
-                    logger.debug(f"ImportError: <ERROR_TYPE>")
+                    logger.debug("ImportError: <ERROR_TYPE>")
                     logger.warning("mlflow.pytorch is not available; cannot log PyTorch model.")
                     return False
             else:
@@ -1077,7 +1077,7 @@ class MLflowArtifactWriter:
                     is_sklearn = isinstance(model, BaseEstimator)
                 except ImportError as e:
                     error_type = type(e).__name__
-                    logger.debug(f"ImportError: <ERROR_TYPE>")
+                    logger.debug("ImportError: <ERROR_TYPE>")
                     # Fallback: check characteristic methods (may have false positives)
                     model_module = getattr(type(model), "__module__", "")
                     has_fit = callable(getattr(model, "fit", None))
@@ -1092,7 +1092,7 @@ class MLflowArtifactWriter:
                         mlflow.sklearn.log_model(model, artifact_path)
                     except ImportError as e:
                         error_type = type(e).__name__
-                        logger.debug(f"ImportError: <ERROR_TYPE>")
+                        logger.debug("ImportError: <ERROR_TYPE>")
                         logger.warning(
                             "mlflow.sklearn is not available; cannot log scikit-learn model."
                         )
@@ -1103,8 +1103,8 @@ class MLflowArtifactWriter:
             return True
         except (ValueError, TypeError, RuntimeError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.warning(f"Failed to log model: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.warning("Failed to log model: <ERROR_TYPE>")
             return False
 
 
@@ -1141,8 +1141,8 @@ class MLflowRunManager:
             self._run.__enter__()
         except (ImportError, AttributeError) as e:
             error_type = type(e).__name__
-            logger.debug(f"Exception: <ERROR_TYPE>")
-            logger.warning(f"Failed to start MLflow run: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")
+            logger.warning("Failed to start MLflow run: <ERROR_TYPE>")
 
         return self
 
@@ -1153,8 +1153,8 @@ class MLflowRunManager:
                 self._run.__exit__(exc_type, exc_val, exc_tb)
             except (ValueError, TypeError, RuntimeError) as e:
                 error_type = type(e).__name__
-                logger.debug(f"Exception: <ERROR_TYPE>")
-                logger.warning(f"Failed to end MLflow run: <ERROR_TYPE>")
+                logger.debug("Exception: <ERROR_TYPE>")
+                logger.warning("Failed to end MLflow run: <ERROR_TYPE>")
             finally:
                 self._run = None
         return False

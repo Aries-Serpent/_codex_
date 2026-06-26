@@ -130,7 +130,7 @@ class TestQuantumRetrievalWithMCPMetrics:
             # Could record metrics about the retrieval
             # metrics.record_retrieval(...)
 
-            assert len(results) == 1
+            assert len(results) == 1, "Results must not be empty"
 
         except ImportError:
             pytest.skip("MCP metrics not available")
@@ -177,11 +177,11 @@ class TestQuantumRetrievalWithCoVe:
         # 2. Are the quantum scores consistent?
         # 3. Is the entropy optimization working correctly?
 
-        assert len(results) > 0
+        assert len(results) > 0, "Results must not be empty"
         for result in results:
-            assert "quantum_amplitude" in result.metadata
-            assert "energy_state" in result.metadata
-            assert "entropy_contribution" in result.metadata
+            assert "quantum_amplitude" in result.metadata, "Result must not be empty"
+            assert "energy_state" in result.metadata, "Result must not be empty"
+            assert "entropy_contribution" in result.metadata, "Result must not be empty"
 
 
 class TestQuantumRetrievalWithQuantumGameTheory:
@@ -225,7 +225,7 @@ class TestQuantumRetrievalWithQuantumGameTheory:
         )
 
         # Quantum scores could inform strategy selection
-        assert len(results) > 0
+        assert len(results) > 0, "Results must not be empty"
 
         # Could use quantum game theory to evaluate strategies
         try:
@@ -279,11 +279,11 @@ class TestEndToEndQuantumRAG:
         )
 
         # 4. Verify results
-        assert len(results) <= 2
+        assert len(results) <= 2, "Results must not be empty"
         for result in results:
-            assert result.score > 0.0
-            assert "quantum_amplitude" in result.metadata
-            assert result.metadata["scoring_method"] == "quantum-thermodynamic"
+            assert result.score > 0.0, "score must be greater than zero"
+            assert "quantum_amplitude" in result.metadata, "Result must not be empty"
+            assert result.metadata["scoring_method"] == "quantum-thermodynamic", "Result must not be empty"
 
     def test_temporal_relevance_decay(self):
         """Test that older documents have lower relevance over time."""
@@ -320,7 +320,7 @@ class TestEndToEndQuantumRAG:
         )
 
         # More recent documents should score higher
-        assert len(results) == 3
+        assert len(results) == 3, "Results must not be empty"
 
         # Results are sorted by score, so check temporal ordering effect
         # (Note: exact ordering depends on all factors, but newer should generally be favored)
@@ -359,13 +359,13 @@ class TestEndToEndQuantumRAG:
         )
 
         # Should get diverse results with lower entropy
-        assert len(results) == 3
+        assert len(results) == 3, "Results must not be empty"
 
         # Calculate total entropy of results
         total_entropy = sum(result.metadata.get("entropy_contribution", 0.0) for result in results)
 
         # Entropy should be reasonable (not too high)
-        assert total_entropy >= 0.0
+        assert total_entropy >= 0.0, "total_entropy must be greater than zero"
 
 
 class TestPhysicsIntegration:
@@ -391,7 +391,7 @@ class TestPhysicsIntegration:
             query="test", chunks=[chunk], top_k=1, current_time=2000.0
         )
 
-        assert len(results) == 1
+        assert len(results) == 1, "Results must not be empty"
         result = results[0]
 
         # Parse amplitude
@@ -400,7 +400,7 @@ class TestPhysicsIntegration:
 
         # Verify score matches |amplitude|²
         # (We can't easily parse complex from string here, but we verify it's present)
-        assert "j)" in amplitude_str or ")" in amplitude_str
+        assert "j)" in amplitude_str or ")" in amplitude_str, "Condition must be true"
 
     def test_energy_state_calculation(self):
         """Test that energy states are calculated correctly."""
@@ -423,11 +423,11 @@ class TestPhysicsIntegration:
             query="test", chunks=[chunk], top_k=1, current_time=2000.0
         )
 
-        assert len(results) == 1
+        assert len(results) == 1, "Results must not be empty"
         energy = results[0].metadata["energy_state"]
 
         # Energy should be positive
-        assert energy > 0.0
+        assert energy > 0.0, "energy must be greater than zero"
 
         # Energy should incorporate topic frequency and temporal factors
         # E = h * topic_freq + k * (1 - temporal_score)
@@ -466,6 +466,6 @@ def test_quantum_retrieval_performance():
     elapsed = time.time() - start
 
     # Should complete reasonably fast (adjust threshold as needed)
-    assert elapsed < 5.0  # 5 seconds for 100 documents
+    assert elapsed < 5.0, "elapsed is not valid"
 
-    assert len(results) == 10
+    assert len(results) == 10, "Results must not be empty"

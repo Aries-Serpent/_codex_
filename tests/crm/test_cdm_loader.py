@@ -8,12 +8,12 @@ def test_load_cdm_packaged_resources():
     assert model, "Expected canonical data model to include at least one entity"
     assert "assignment" in model, "Assignment entity should be present in packaged CSV data"
     first_field = model["assignment"][0]
-    assert first_field.name
-    assert first_field.key
+    assert first_field.name, "Condition must be true"
+    assert first_field.key, "Condition must be true"
 
 
 def test_load_mapping_packaged_resources():
     mappings = load_mapping()
     assert mappings, "Expected mapping data to include at least one scope"
-    assert "assignment_d365" in mappings
+    assert "assignment_d365" in mappings, "Condition must be true"
     assert mappings["assignment_d365"], "D365 mapping should expose CDM keys"

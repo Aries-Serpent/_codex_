@@ -17,9 +17,9 @@ from codex_ml.models.factory import (
 def test_validate_lora_config_passes():
     cfg = validate_lora_config({"r": 4, "alpha": 8, "dropout": 0.25})
     assert isinstance(cfg, LoraBuildCfg)
-    assert cfg.r == 4
-    assert cfg.alpha == 8
-    assert cfg.dropout == 0.25
+    assert cfg.r == 4, "r is not valid"
+    assert cfg.alpha == 8, "alpha is not valid"
+    assert cfg.dropout == 0.25, "dropout is not valid"
 
 
 def test_validate_lora_config_rejects():
@@ -40,4 +40,4 @@ def test_quantization_env_fallback(monkeypatch):
 
     monkeypatch.setenv(ENV_QUANTIZATION, "8bit")
     create_model(builder)
-    assert called.get("load_in_8bit") is True
+    assert called.get("load_in_8bit") is True, "Condition must be true"

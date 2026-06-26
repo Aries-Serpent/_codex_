@@ -15,7 +15,8 @@ Part of Phase 26: Coverage 70% → 75-80%
 from unittest.mock import Mock, patch
 
 import pytest
- # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
+
+# pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 from codex_ml.safety.filters import (
     REDACT_PLACEHOLDER,
     SafetyFilters,
@@ -31,17 +32,17 @@ class TestSafetyFiltersEdgeCases:
         """Test filters handle empty string input."""
         filters = SafetyFilters.from_defaults()
         result = sanitize_prompt("", filters=filters)
-        assert result.allowed is True
-        assert result.sanitized_text == ""
-        assert len(result.matches) == 0
+        assert result.allowed is True, "Result must not be empty"
+        assert result.sanitized_text == "", "Result must not be empty"
+        assert len(result.matches) == 0, "Collection must not be empty"
 
     def test_whitespace_only_input(self):
         """Test filters handle whitespace-only input."""
         filters = SafetyFilters.from_defaults()
         for text in [" ", "\n", "\t", "   \n\t  "]:
             result = sanitize_prompt(text, filters=filters)
-            assert result.allowed is True
-            assert result.sanitized_text.strip() == ""
+            assert result.allowed is True, "Result must not be empty"
+            assert result.sanitized_text.strip() == "", "Result must not be empty"
 
     def test_extremely_long_input(self):
         """Test filters handle very long input strings."""
@@ -49,8 +50,8 @@ class TestSafetyFiltersEdgeCases:
         # 1MB of text
         long_text = "safe text " * 100000
         result = sanitize_prompt(long_text, filters=filters)
-        assert result.allowed is True
-        assert len(result.sanitized_text) > 0
+        assert result.allowed is True, "Result must not be empty"
+        assert len(result.sanitized_text) > 0, "Collection must not be empty"
 
     def test_unicode_edge_cases(self):
         """Test filters handle various Unicode characters."""
@@ -64,7 +65,7 @@ class TestSafetyFiltersEdgeCases:
         ]
         for text in test_cases:
             result = sanitize_prompt(text, filters=filters)
-            assert result.sanitized_text is not None
+            assert result.sanitized_text is not None, "sanitized_text must be initialized"
 
     def test_nested_secret_patterns(self):
         """Test redaction of nested/obfuscated secrets."""
@@ -76,9 +77,9 @@ class TestSafetyFiltersEdgeCases:
         ]
         for text in test_cases:
             result = sanitize_prompt(text, filters=filters)
-            assert result.allowed is True
+            assert result.allowed is True, "Result must not be empty"
             # Either redacted or matches found (allow list can neutralize)
-            assert REDACT_PLACEHOLDER in result.sanitized_text or len(result.matches) > 0
+            assert REDACT_PLACEHOLDER in result.sanitized_text or len(result.matches) > 0, "Collection must not be empty"
 
     def test_regex_dos_prevention(self):
         """Test that regex patterns don't cause ReDoS."""
@@ -90,16 +91,16 @@ class TestSafetyFiltersEdgeCases:
         start = time.time()
         result = sanitize_prompt(text, filters=filters)
         duration = time.time() - start
-        assert duration < 5.0  # Should complete in <5 seconds
-        assert result.sanitized_text is not None
+        assert duration < 5.0, "duration is not valid"
+        assert result.sanitized_text is not None, "sanitized_text must be initialized"
 
     def test_null_byte_handling(self):
         """Test filters handle null bytes safely."""
         filters = SafetyFilters.from_defaults()
         text = "safe\x00text\x00here"
         result = sanitize_prompt(text, filters=filters)
-        assert result.sanitized_text is not None
-        assert "\x00" not in result.sanitized_text or result.allowed
+        assert result.sanitized_text is not None, "sanitized_text must be initialized"
+        assert "\x00" not in result.sanitized_text or result.allowed, "Result must not be empty"
 
     def test_control_character_handling(self):
         """Test filters handle control characters."""
@@ -107,7 +108,7 @@ class TestSafetyFiltersEdgeCases:
         # Various control characters
         text = "text\x01\x02\x03\x04\x05"
         result = sanitize_prompt(text, filters=filters)
-        assert result.sanitized_text is not None
+        assert result.sanitized_text is not None, "sanitized_text must be initialized"
 
     def test_mixed_newline_formats(self):
         """Test filters handle different newline formats."""
@@ -119,7 +120,7 @@ class TestSafetyFiltersEdgeCases:
         ]
         for text in test_cases:
             result = sanitize_prompt(text, filters=filters)
-            assert result.sanitized_text is not None
+            assert result.sanitized_text is not None, "sanitized_text must be initialized"
 
 
 class TestPolicyRuleEdgeCases:
@@ -132,7 +133,7 @@ class TestPolicyRuleEdgeCases:
         text = "safe_api_key=test123"
         result = sanitize_prompt(text, filters=filters)
         # Should be handled consistently
-        assert result.sanitized_text is not None
+        assert result.sanitized_text is not None, "sanitized_text must be initialized"
 
     def test_case_sensitivity_edge_cases(self):
         """Test case-sensitive vs case-insensitive matching."""
@@ -159,7 +160,7 @@ class TestPolicyRuleEdgeCases:
         ]
         for text in test_cases:
             result = sanitize_prompt(text, filters=filters)
-            assert result.sanitized_text is not None
+            assert result.sanitized_text is not None, "sanitized_text must be initialized"
 
     def test_special_regex_characters(self):
         """Test patterns containing regex special characters."""
@@ -168,7 +169,7 @@ class TestPolicyRuleEdgeCases:
         for char in special_chars:
             text = f"test{char}value"
             result = sanitize_prompt(text, filters=filters)
-            assert result.sanitized_text is not None
+            assert result.sanitized_text is not None, "sanitized_text must be initialized"
 
 
 class TestClassifierIntegrationEdgeCases:
@@ -181,7 +182,7 @@ class TestClassifierIntegrationEdgeCases:
         text = "test input"
         # Should work even if classifier can't be imported
         result = sanitize_prompt(text, filters=filters)
-        assert result.sanitized_text is not None
+        assert result.sanitized_text is not None, "sanitized_text must be initialized"
 
     @patch("codex_ml.safety.filters.importlib.import_module")
     def test_classifier_import_error(self, mock_import):
@@ -190,7 +191,7 @@ class TestClassifierIntegrationEdgeCases:
         filters = SafetyFilters.from_defaults()
         text = "test input"
         result = sanitize_prompt(text, filters=filters)
-        assert result.sanitized_text is not None
+        assert result.sanitized_text is not None, "sanitized_text must be initialized"
 
     @patch("codex_ml.safety.filters.importlib.import_module")
     def test_classifier_exception_handling(self, mock_import):
@@ -206,7 +207,7 @@ class TestClassifierIntegrationEdgeCases:
             text = "test input"
             # Should handle exception gracefully
             result = sanitize_prompt(text, filters=filters)
-            assert result.sanitized_text is not None
+            assert result.sanitized_text is not None, "sanitized_text must be initialized"
 
 
 class TestBypassMechanismEdgeCases:
@@ -219,7 +220,7 @@ class TestBypassMechanismEdgeCases:
         text = "rm -rf / --no-preserve-root"
         result = sanitize_prompt(text, filters=filters)
         # Bypass should allow anything
-        assert result.allowed is True
+        assert result.allowed is True, "Result must not be empty"
 
     @patch.dict("os.environ", {"CODEX_SAFETY_BYPASS": "true"})
     def test_bypass_various_truthy_values(self):
@@ -227,7 +228,7 @@ class TestBypassMechanismEdgeCases:
         filters = SafetyFilters.from_defaults()
         text = "dangerous input"
         result = sanitize_prompt(text, filters=filters)
-        assert result.allowed is True
+        assert result.allowed is True, "Result must not be empty"
 
     @patch.dict("os.environ", {}, clear=True)
     def test_no_bypass_by_default(self):
@@ -236,7 +237,7 @@ class TestBypassMechanismEdgeCases:
         text = "rm -rf /"
         result = sanitize_output(text, filters=filters)
         # Should block dangerous command
-        assert result.allowed is False or len(result.blocked_rules) > 0
+        assert result.allowed is False or len(result.blocked_rules) > 0, "Allowed must not be empty"
 
 
 class TestRedactionEdgeCases:
@@ -249,7 +250,7 @@ class TestRedactionEdgeCases:
         result = sanitize_prompt(text, filters=filters)
         # Should redact all secrets
         redact_count = result.sanitized_text.count(REDACT_PLACEHOLDER)
-        assert redact_count >= 1
+        assert redact_count >= 1, "redact_count must be positive"
 
     def test_secret_at_boundaries(self):
         """Test redaction of secrets at text boundaries."""
@@ -261,7 +262,7 @@ class TestRedactionEdgeCases:
         ]
         for text in test_cases:
             result = sanitize_prompt(text, filters=filters)
-            assert REDACT_PLACEHOLDER in result.sanitized_text or result.allowed
+            assert REDACT_PLACEHOLDER in result.sanitized_text or result.allowed, "Result must not be empty"
 
     def test_partial_secret_patterns(self):
         """Test handling of partial secret-like patterns."""
@@ -273,7 +274,7 @@ class TestRedactionEdgeCases:
         ]
         for text in test_cases:
             result = sanitize_prompt(text, filters=filters)
-            assert result.sanitized_text is not None
+            assert result.sanitized_text is not None, "sanitized_text must be initialized"
 
 
 class TestPerformanceEdgeCases:
@@ -289,8 +290,8 @@ class TestPerformanceEdgeCases:
         start = time.time()
         result = sanitize_prompt(text, filters=filters)
         duration = time.time() - start
-        assert duration < 10.0  # Should complete in reasonable time
-        assert result.sanitized_text is not None
+        assert duration < 10.0, "duration is not valid"
+        assert result.sanitized_text is not None, "sanitized_text must be initialized"
 
     def test_deeply_nested_patterns(self):
         """Test handling of deeply nested pattern structures."""
@@ -298,7 +299,7 @@ class TestPerformanceEdgeCases:
         # Nested structures
         text = "{{{{secret}}}} [[[[key]]]]"
         result = sanitize_prompt(text, filters=filters)
-        assert result.sanitized_text is not None
+        assert result.sanitized_text is not None, "sanitized_text must be initialized"
 
     @pytest.mark.parametrize("size", [1000, 10000, 100000])
     def test_varying_input_sizes(self, size):
@@ -306,8 +307,8 @@ class TestPerformanceEdgeCases:
         filters = SafetyFilters.from_defaults()
         text = "safe text " * (size // 10)
         result = sanitize_prompt(text, filters=filters)
-        assert result.allowed is True
-        assert len(result.sanitized_text) > 0
+        assert result.allowed is True, "Result must not be empty"
+        assert len(result.sanitized_text) > 0, "Collection must not be empty"
 
 
 class TestConcurrencyEdgeCases:
@@ -318,7 +319,7 @@ class TestConcurrencyEdgeCases:
         filters = SafetyFilters.from_defaults()
         # Use same filter instance multiple times
         results = [sanitize_prompt(f"test{i}", filters=filters) for i in range(100)]
-        assert all(r.sanitized_text is not None for r in results)
+        assert all(r.sanitized_text is not None for r in results), "sanitized_text must be initialized"
 
     def test_thread_safety_indication(self):
         """Test that filters work with threading (basic check)."""
@@ -337,8 +338,8 @@ class TestConcurrencyEdgeCases:
         for t in threads:
             t.join()
 
-        assert len(results) == 10
-        assert all(r.sanitized_text is not None for r in results)
+        assert len(results) == 10, "Results must not be empty"
+        assert all(r.sanitized_text is not None for r in results), "sanitized_text must be initialized"
 
 
 # Edge case markers for pytest

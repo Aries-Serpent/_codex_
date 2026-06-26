@@ -51,7 +51,7 @@ def test_import_ndjson_cli_idempotent(tmp_path: Path):
             "SELECT COUNT(*) FROM session_events WHERE session_id=?",
             (session_id,),
         ).fetchone()[0]
-    assert count == len(events)
+    assert count == len(events), "Events must not be empty"
 
     proc2 = _run_cli(cmd, log_dir)
     assert proc2.returncode == 0, proc2.stderr
@@ -60,4 +60,4 @@ def test_import_ndjson_cli_idempotent(tmp_path: Path):
             "SELECT COUNT(*) FROM session_events WHERE session_id=?",
             (session_id,),
         ).fetchone()[0]
-    assert count2 == len(events)
+    assert count2 == len(events), "Events must not be empty"

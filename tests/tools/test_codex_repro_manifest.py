@@ -28,13 +28,13 @@ def test_build_manifest_handles_missing_inputs(tmp_path: Path):
         exp_index_path=exp,
         local_gate_path=gate,
     )
-    assert "summary" in manifest
+    assert "summary" in manifest, "Condition must be true"
     s = manifest["summary"]
-    assert s["environment"]["available"] is False
-    assert s["dependencies"]["available"] is False
-    assert s["gaps"]["available"] is False
-    assert s["experiments"]["available"] is False
-    assert s["local_gate"]["available"] is False
+    assert s["environment"]["available"] is False, "Condition must be true"
+    assert s["dependencies"]["available"] is False, "Condition must be true"
+    assert s["gaps"]["available"] is False, "Condition must be true"
+    assert s["experiments"]["available"] is False, "Condition must be true"
+    assert s["local_gate"]["available"] is False, "Condition must be true"
 
 
 def test_build_manifest_with_minimal_inputs(tmp_path: Path):
@@ -137,25 +137,25 @@ def test_build_manifest_with_minimal_inputs(tmp_path: Path):
     )
 
     s = manifest["summary"]
-    assert s["environment"]["available"] is True
-    assert s["environment"]["python_version"] == "3.11.0"
-    assert "CODEX_MODE" in s["environment"]["codex_env_var_keys"]
+    assert s["environment"]["available"] is True, "Condition must be true"
+    assert s["environment"]["python_version"] == "3.11.0", "Condition must be true"
+    assert "CODEX_MODE" in s["environment"]["codex_env_var_keys"], "Condition must be true"
 
-    assert s["dependencies"]["available"] is True
-    assert s["dependencies"]["total_packages"] == 2
-    assert s["dependencies"]["direct_dependencies"] == 1
+    assert s["dependencies"]["available"] is True, "Condition must be true"
+    assert s["dependencies"]["total_packages"] == 2, "Condition must be true"
+    assert s["dependencies"]["direct_dependencies"] == 1, "Condition must be true"
 
-    assert s["gaps"]["available"] is True
-    assert s["gaps"]["total_gaps"] == 2
-    assert s["gaps"]["by_status"]["open"] == 1
+    assert s["gaps"]["available"] is True, "Condition must be true"
+    assert s["gaps"]["total_gaps"] == 2, "Condition must be true"
+    assert s["gaps"]["by_status"]["open"] == 1, "Condition must be true"
 
-    assert s["experiments"]["available"] is True
-    assert s["experiments"]["total_runs"] == 2
-    assert "conf/train.yaml" in s["experiments"]["unique_config_paths"]
+    assert s["experiments"]["available"] is True, "Condition must be true"
+    assert s["experiments"]["total_runs"] == 2, "Condition must be true"
+    assert "conf/train.yaml" in s["experiments"]["unique_config_paths"], "Condition must be true"
 
-    assert s["local_gate"]["available"] is True
-    assert s["local_gate"]["overall_returncode"] == 1
-    assert "pytest_codex_ml" in s["local_gate"]["failed_commands"]
+    assert s["local_gate"]["available"] is True, "Condition must be true"
+    assert s["local_gate"]["overall_returncode"] == 1, "Condition must be true"
+    assert "pytest_codex_ml" in s["local_gate"]["failed_commands"], "Condition must be true"
 
 
 def test_main_writes_files(tmp_path: Path, monkeypatch):
@@ -184,9 +184,9 @@ def test_main_writes_files(tmp_path: Path, monkeypatch):
             str(md_out),
         ]
     )
-    assert rc == 0
-    assert json_out.exists()
-    assert md_out.exists()
+    assert rc == 0, "rc is not valid"
+    assert json_out.exists(), "Condition must be true"
+    assert md_out.exists(), "Condition must be true"
 
     data = json.loads(json_out.read_text(encoding="utf-8"))
-    assert "summary" in data
+    assert "summary" in data, "Data must not be empty"

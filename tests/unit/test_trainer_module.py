@@ -121,8 +121,8 @@ def trainer(tmp_path: Path) -> Trainer:
 
 def test_trainer_runs_epochs(trainer: Trainer, tmp_path: Path) -> None:
     history = trainer.train(epochs=2)
-    assert history["train_loss"]
-    assert "val_metric" in history
+    assert history["train_loss"], "hist is not valid"
+    assert "val_metric" in history, "Condition must be true"
 
 
 def test_metric_mode_validation(tmp_path: Path) -> None:
@@ -180,8 +180,8 @@ def test_checkpoint_config_accepted_with_real_torch(
         keep_best_k=1,
         loss_fn=lambda outputs, targets: FakeTensor(0.0),
     )
-    assert trainer.config.checkpoint is not None
-    assert trainer.config.checkpoint.directory == str(ckpt_dir)
+    assert trainer.config.checkpoint is not None, "checkpoint must be initialized"
+    assert trainer.config.checkpoint.directory == str(ckpt_dir), "directory is not valid"
     if not runtime_has_real_torch:
         # Stub runtime: this test only validates initialization acceptance semantics.
         return
@@ -207,4 +207,4 @@ def test_real_torch_checkpoint_persistence(tmp_path: Path) -> None:
     )
     trainer.train(epochs=1)
     checkpoint_files = list(ckpt_dir.glob("*.pt"))
-    assert checkpoint_files
+    assert checkpoint_files, "checkpoint_files is not valid"

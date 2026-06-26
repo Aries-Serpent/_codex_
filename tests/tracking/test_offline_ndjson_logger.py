@@ -18,7 +18,7 @@ def test_ndjson_logger_rotation(tmp_path):
     for index in range(50):
         logger.write({"index": index, "message": "x" * 10})
 
-    assert path.exists()
+    assert path.exists(), "Condition must be true"
     with path.open("r", encoding="utf-8") as handle:
         for line in handle:
             if line.strip():

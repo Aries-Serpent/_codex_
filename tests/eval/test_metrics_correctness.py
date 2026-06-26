@@ -35,5 +35,5 @@ def test_bleu_known_value():
 def test_rouge_l_known_value():
     pytest.importorskip("rouge_score")
     result = M.rouge_l(["a b"], ["a b"], lowercase=False)
-    assert result is not None
-    assert result["rougeL_f"] == pytest.approx(1.0)
+    assert result is not None, "result must be initialized"
+    assert result["rougeL_f"] == pytest.approx(1.0), "Result must not be empty"

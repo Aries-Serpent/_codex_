@@ -137,7 +137,7 @@ def has_meta_tensors(model: Any) -> Optional[bool]:
         return False
     except (ValueError, TypeError, RuntimeError) as e:
         error_type = type(e).__name__
-        logger.warning(f"Error checking for meta tensors: <ERROR_TYPE>")
+        logger.warning("Error checking for meta tensors: <ERROR_TYPE>")
         return None
 
 
@@ -271,7 +271,7 @@ def safe_model_to_device(
         if "to_empty" in str(e):
             raise
         # Otherwise, model doesn't support .to() method - return as-is
-        logger.warning(f"Model does not support device transfer: <ERROR_TYPE>")
+        logger.warning("Model does not support device transfer: <ERROR_TYPE>")
         return model
     except (ValueError, TypeError, RuntimeError) as e:
         error_type = type(e).__name__

@@ -77,7 +77,7 @@ class ThreadSafeSessionDB:
             yield conn
         except sqlite3.OperationalError as e:
             error_type = type(e).__name__
-            logger.error(f"Database error: <ERROR_TYPE>")
+            logger.error("Database error: <ERROR_TYPE>")
             log_error(e, "database_operation", self.errors_path)
             raise
 
@@ -194,7 +194,7 @@ class ThreadSafeSessionDB:
 
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.error(f"Schema initialization failed: <ERROR_TYPE>")
+            logger.error("Schema initialization failed: <ERROR_TYPE>")
             log_error(e, "schema_init", self.errors_path)
             raise
 
@@ -229,7 +229,7 @@ class ThreadSafeSessionDB:
             return DeadlockRecovery.retry_with_backoff(_insert, max_retries=3)
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.error(f"Failed to insert session: <ERROR_TYPE>")
+            logger.error("Failed to insert session: <ERROR_TYPE>")
             log_error(e, "insert_session", self.errors_path)
             return False
 
@@ -290,7 +290,7 @@ class ThreadSafeSessionDB:
             return DeadlockRecovery.retry_with_backoff(_query, max_retries=3)
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.error(f"Failed to query sessions: <ERROR_TYPE>")
+            logger.error("Failed to query sessions: <ERROR_TYPE>")
             log_error(e, "query_sessions", self.errors_path)
             return []
 
@@ -340,7 +340,7 @@ class ThreadSafeSessionDB:
             return DeadlockRecovery.retry_with_backoff(_search, max_retries=3)
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.error(f"Failed to search sessions: <ERROR_TYPE>")
+            logger.error("Failed to search sessions: <ERROR_TYPE>")
             log_error(e, "search_sessions", self.errors_path)
             return []
 
@@ -404,7 +404,7 @@ class ThreadSafeSessionDB:
             logger.info("Connection pool cleaned up")
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.error(f"Error during cleanup: <ERROR_TYPE>")
+            logger.error("Error during cleanup: <ERROR_TYPE>")
             log_error(e, "cleanup", self.errors_path)
 
     def __enter__(self):

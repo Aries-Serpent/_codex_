@@ -29,7 +29,7 @@ class TestCircuitBreaker:
         """Test circuit breaker starts in closed state."""
         breaker = {"state": CircuitState.CLOSED, "failure_count": 0, "threshold": 5}
 
-        assert breaker["state"] == CircuitState.CLOSED
+        assert breaker["state"] == CircuitState.CLOSED, "Condition must be true"
 
     def test_circuit_breaker_tracks_failures(self):
         """Test circuit breaker tracks consecutive failures."""
@@ -39,7 +39,7 @@ class TestCircuitBreaker:
         for _ in range(3):
             breaker["failure_count"] += 1
 
-        assert breaker["failure_count"] == 3
+        assert breaker["failure_count"] == 3, "Count must be greater than zero"
 
     def test_circuit_breaker_opens_on_threshold(self):
         """Test circuit breaker opens when threshold exceeded."""
@@ -49,7 +49,7 @@ class TestCircuitBreaker:
         if breaker["failure_count"] >= breaker["threshold"]:
             breaker["state"] = CircuitState.OPEN
 
-        assert breaker["state"] == CircuitState.OPEN
+        assert breaker["state"] == CircuitState.OPEN, "Condition must be true"
 
     def test_circuit_breaker_rejects_when_open(self):
         """Test circuit breaker rejects requests when open."""
@@ -57,7 +57,7 @@ class TestCircuitBreaker:
 
         can_execute = breaker["state"] != CircuitState.OPEN
 
-        assert can_execute is False
+        assert can_execute is False, "can_execute is not valid"
 
     def test_circuit_breaker_half_open_retry(self):
         """Test circuit breaker transitions to half-open for retry."""
@@ -68,7 +68,7 @@ class TestCircuitBreaker:
         if current_time - breaker["last_failure_time"] > breaker["retry_timeout"]:
             breaker["state"] = CircuitState.HALF_OPEN
 
-        assert breaker["state"] == CircuitState.HALF_OPEN
+        assert breaker["state"] == CircuitState.HALF_OPEN, "Condition must be true"
 
     def test_circuit_breaker_reset_on_success(self):
         """Test circuit breaker resets on successful call in half-open state."""
@@ -79,8 +79,8 @@ class TestCircuitBreaker:
             breaker["state"] = CircuitState.CLOSED
             breaker["failure_count"] = 0
 
-        assert breaker["state"] == CircuitState.CLOSED
-        assert breaker["failure_count"] == 0
+        assert breaker["state"] == CircuitState.CLOSED, "Condition must be true"
+        assert breaker["failure_count"] == 0, "Count must be greater than zero"
 
     def test_circuit_breaker_reopens_on_half_open_failure(self):
         """Test circuit breaker reopens on failure in half-open state."""
@@ -89,7 +89,7 @@ class TestCircuitBreaker:
         # Failure in half-open
         breaker["state"] = CircuitState.OPEN
 
-        assert breaker["state"] == CircuitState.OPEN
+        assert breaker["state"] == CircuitState.OPEN, "Condition must be true"
 
 
 class TestRetryLogic:
@@ -106,7 +106,7 @@ class TestRetryLogic:
             attempts.append(attempt)
             # Would sleep(backoff_delay) in real code
 
-        assert len(attempts) == 3
+        assert len(attempts) == 3, "Attempts must not be empty"
 
     def test_retry_with_exponential_backoff(self):
         """Test retry with exponential backoff."""
@@ -133,8 +133,8 @@ class TestRetryLogic:
             jittered = delay + random.uniform(0, 0.1 * delay)
             delays.append(jittered)
 
-        assert all(d > 0 for d in delays)
-        assert len(delays) == 3
+        assert all(d > 0 for d in delays), "d must be greater than zero"
+        assert len(delays) == 3, "Delays must not be empty"
 
     def test_retry_max_attempts(self):
         """Test retry respects max attempts limit."""
@@ -144,7 +144,7 @@ class TestRetryLogic:
         while attempt < max_attempts:
             attempt += 1
 
-        assert attempt == 3
+        assert attempt == 3, "attempt is not valid"
 
     def test_retry_preserves_error_context(self):
         """Test retry preserves original error information."""
@@ -159,7 +159,7 @@ class TestRetryLogic:
             error_context = original_error.copy()
             error_context["attempts"] = [1, 2]
 
-        assert error_context["type"] == "TimeoutError"
+        assert error_context["type"] == "TimeoutError", "Error should be raised or set"
 
 
 class TestFallbackMechanisms:
@@ -175,7 +175,7 @@ class TestFallbackMechanisms:
         except ValueError:
             result = "default_value"
 
-        assert result == "default_value"
+        assert result == "default_value", "Result must not be empty"
 
     def test_fallback_to_cached_value(self):
         """Test fallback to cached/previous value."""
@@ -185,7 +185,7 @@ class TestFallbackMechanisms:
         if current_value is None:
             current_value = cache.get("last_value")
 
-        assert current_value == 42
+        assert current_value == 42, "Value must be initialized"
 
     def test_fallback_to_backup_service(self):
         """Test fallback to backup service."""
@@ -199,7 +199,7 @@ class TestFallbackMechanisms:
         else:
             service = None
 
-        assert service == "backup"
+        assert service == "backup", "service is not valid"
 
     def test_cascading_fallbacks(self):
         """Test cascading fallback strategy."""
@@ -214,7 +214,7 @@ class TestFallbackMechanisms:
             sources["primary"] or sources["secondary"] or sources["tertiary"] or sources["default"]
         )
 
-        assert result == {"value": 123}
+        assert result == {"value": 123}, "Result must not be empty"
 
     def test_fallback_preserves_partial_results(self):
         """Test fallback preserves partial results."""
@@ -223,7 +223,7 @@ class TestFallbackMechanisms:
         if sum(partial_result.values()) < 100:
             fallback = "use_partial_result"
 
-        assert fallback == "use_partial_result"
+        assert fallback == "use_partial_result", "Result must not be empty"
 
 
 class TestFailureRecovery:
@@ -243,7 +243,7 @@ class TestFailureRecovery:
             except ConnectionError:
                 pass
 
-        assert "success" in attempts
+        assert "success" in attempts, "Condition must be true"
 
     def test_recovery_with_state_restoration(self):
         """Test recovery restores previous state."""
@@ -252,7 +252,7 @@ class TestFailureRecovery:
         # Recovery
         current_state = checkpoint.copy()
 
-        assert current_state["step"] == 100
+        assert current_state["step"] == 100, "Condition must be true"
 
     def test_recovery_logs_failure_details(self):
         """Test recovery process logs failure details."""
@@ -265,8 +265,8 @@ class TestFailureRecovery:
                 {"error_type": type(e).__name__, "message": str(e), "timestamp": time()}
             )
 
-        assert len(failures) == 1
-        assert failures[0]["error_type"] == "ValueError"
+        assert len(failures) == 1, "Failures must not be empty"
+        assert failures[0]["error_type"] == "ValueError", "Value must be initialized"
 
     def test_recovery_validates_restored_state(self):
         """Test recovery validates restored state."""
@@ -274,7 +274,7 @@ class TestFailureRecovery:
 
         is_valid = restored_state.get("valid", False)
 
-        assert is_valid is True
+        assert is_valid is True, "is_valid is not valid"
 
     def test_partial_recovery(self):
         """Test partial recovery on partial failure."""
@@ -285,7 +285,7 @@ class TestFailureRecovery:
             else:
                 break
 
-        assert len(results) == 3
+        assert len(results) == 3, "Results must not be empty"
 
 
 class TestIdempotency:
@@ -300,7 +300,7 @@ class TestIdempotency:
         result1 = idempotent_op(5)
         result2 = idempotent_op(5)
 
-        assert result1 == result2 == 10
+        assert result1 == result2 == 10, "Result must not be empty"
 
     def test_idempotent_upsert(self):
         """Test idempotent upsert operation."""
@@ -314,7 +314,7 @@ class TestIdempotency:
         state["key"] = "value"
         result2 = state
 
-        assert result1 == result2
+        assert result1 == result2, "Result must not be empty"
 
     def test_idempotent_with_request_id(self):
         """Test idempotency using request IDs."""
@@ -328,8 +328,8 @@ class TestIdempotency:
         result1 = idempotent_execute("req_1", lambda: "result")
         result2 = idempotent_execute("req_1", lambda: "result")
 
-        assert result1 == result2
-        assert len(executed) == 1
+        assert result1 == result2, "Result must not be empty"
+        assert len(executed) == 1, "Executed must not be empty"
 
     def test_idempotent_state_update(self):
         """Test idempotent state updates."""
@@ -342,7 +342,7 @@ class TestIdempotency:
         increment_if_needed(state)
         increment_if_needed(state)
 
-        assert state["count"] == 1
+        assert state["count"] == 1, "Count must be greater than zero"
 
 
 class TestTimeoutHandling:
@@ -357,7 +357,7 @@ class TestTimeoutHandling:
         elapsed = 1.5
         timed_out = elapsed > timeout
 
-        assert timed_out is True
+        assert timed_out is True, "timed_out is not valid"
 
     def test_timeout_with_cancellation(self):
         """Test cancelling operation on timeout."""
@@ -372,8 +372,8 @@ class TestTimeoutHandling:
             cancelled = True
             operation_result = None
 
-        assert cancelled is True
-        assert operation_result is None
+        assert cancelled is True, "cancelled is not valid"
+        assert operation_result is None, "Result must not be empty"
 
     def test_timeout_per_operation(self):
         """Test individual operation timeouts."""
@@ -384,7 +384,7 @@ class TestTimeoutHandling:
         timeouts["operation_3"] = 2.0
 
         min_timeout = min(timeouts.values())
-        assert min_timeout == 2.0
+        assert min_timeout == 2.0, "min_timeout is not valid"
 
     def test_timeout_graceful_shutdown(self):
         """Test graceful shutdown on timeout."""
@@ -395,7 +395,7 @@ class TestTimeoutHandling:
             if time() < time() + 5:  # Would check actual timeout
                 completed.append(op)
 
-        assert len(completed) <= len(operations)
+        assert len(completed) <= len(operations), "Completed must not be empty"
 
 
 class TestResourceCleanup:
@@ -413,8 +413,8 @@ class TestResourceCleanup:
             resources.clear()
             cleanup_called = True
 
-        assert cleanup_called is True
-        assert len(resources) == 0
+        assert cleanup_called is True, "cleanup_called is not valid"
+        assert len(resources) == 0, "Resources must not be empty"
 
     def test_cleanup_on_exception(self):
         """Test cleanup executes on exception."""
@@ -430,8 +430,8 @@ class TestResourceCleanup:
             resources.clear()
             cleanup_called = True
 
-        assert cleanup_called is True
-        assert len(resources) == 0
+        assert cleanup_called is True, "cleanup_called is not valid"
+        assert len(resources) == 0, "Resources must not be empty"
 
     def test_cleanup_order(self):
         """Test cleanup happens in reverse order."""
@@ -463,4 +463,4 @@ class TestResourceCleanup:
             except Exception as e:
                 cleanup_errors.append(str(e))
 
-        assert len(cleanup_errors) == 0
+        assert len(cleanup_errors) == 0, "Cleanup_errors must not be empty"

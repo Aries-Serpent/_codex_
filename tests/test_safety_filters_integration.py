@@ -37,22 +37,22 @@ def test_sanitize_prompt_redacts_common_tokens() -> None:
     text = f"{_password_kv()} {_aws_token()} {_slack_token()} {_google_api_key()} {_api_key_kv()}"
     result = sanitize_prompt(text, SafetyConfig())
     redacted = result["text"]
-    assert "supersecret" not in redacted
-    assert _aws_token() not in redacted
-    assert _slack_token() not in redacted
-    assert _google_api_key() not in redacted
-    assert _api_key_kv() not in redacted
-    assert "«REDACTED:SECRET»" in redacted
+    assert "supersecret" not in redacted, "Condition must be true"
+    assert _aws_token() not in redacted, "Condition must be true"
+    assert _slack_token() not in redacted, "Condition must be true"
+    assert _google_api_key() not in redacted, "Condition must be true"
+    assert _api_key_kv() not in redacted, "Condition must be true"
+    assert "«REDACTED:SECRET»" in redacted, "Condition must be true"
 
 
 def test_policy_yaml_safe_loading_and_overrides() -> None:
     bad_yaml = "!!python/object/apply:os.system ['echo hacked']"
     safe_text = sanitize_prompt("hello", SafetyConfig(), policy_yaml=bad_yaml)
-    assert safe_text["text"] == "hello"
+    assert safe_text["text"] == "hello", "Condition must be true"
 
     policy_yaml = "regex:\n  - token"
     augmented = sanitize_prompt("token here", SafetyConfig(), policy_yaml=policy_yaml)
-    assert augmented["text"] == "«REDACTED:SECRET» here"
+    assert augmented["text"] == "«REDACTED:SECRET» here", "Condition must be true"
 
 
 def test_training_invokes_prompt_sanitizer(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
@@ -101,5 +101,5 @@ def test_training_invokes_prompt_sanitizer(monkeypatch: pytest.MonkeyPatch, tmp_
         raise
 
     assert calls, "sanitize_prompt should be invoked during training"
-    assert any("«REDACTED:SECRET»" in entry for entry in calls)
+    assert any("«REDACTED:SECRET»" in entry for entry in calls), "Condition must be true"
     assert "metrics" in result and isinstance(result["metrics"], list)

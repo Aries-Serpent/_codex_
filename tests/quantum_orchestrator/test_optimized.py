@@ -43,7 +43,7 @@ class TestVectorizedEvolution:
         assert evolved.shape == (N, 4)
 
         # Check all spinors are still finite
-        assert np.all(np.isfinite(evolved))
+        assert np.all(np.isfinite(evolved)), "Condition must be true"
 
     def test_batch_normalize(self):
         """Test batch normalization."""
@@ -79,7 +79,7 @@ class TestVectorizedEvolution:
 
         # Check subluminal (|j| <= c)
         current_mags = np.linalg.norm(currents, axis=1)
-        assert np.all(current_mags <= constants.c)
+        assert np.all(current_mags <= constants.c), "current_mags is not valid"
 
     def test_batch_compute_probabilities(self):
         """Test batch probability computation."""
@@ -97,9 +97,9 @@ class TestVectorizedEvolution:
         probs = evolution.batch_compute_probabilities(spinors)
 
         # Check all arrays have correct length
-        assert len(probs["total"]) == N
-        assert len(probs["positive_energy"]) == N
-        assert len(probs["negative_energy"]) == N
+        assert len(probs["total"]) == N, "Collection must not be empty"
+        assert len(probs["positive_energy"]) == N, "Collection must not be empty"
+        assert len(probs["negative_energy"]) == N, "Collection must not be empty"
 
         # Check total probability is 1
         np.testing.assert_allclose(probs["total"], 1.0, rtol=1e-10)
@@ -128,7 +128,7 @@ class TestVectorizedEvolution:
         assert helicity.shape == (N,)
 
         # Check bounds (helicity should be in [-1, 1])
-        assert np.all(np.abs(helicity) <= 1.0)
+        assert np.all(np.abs(helicity) <= 1.0), "Condition must be true"
 
     def test_batch_compute_zitterbewegung(self):
         """Test batch zitterbewegung computation."""
@@ -149,10 +149,10 @@ class TestVectorizedEvolution:
         assert amplitudes.shape == (N,)
 
         # Check all positive
-        assert np.all(amplitudes >= 0)
+        assert np.all(amplitudes >= 0), "amplitudes must be greater than zero"
 
         # Check bounds (amplitude <= 2.0, max is 1.0 when P+=P-=0.5)
-        assert np.all(amplitudes <= 2.0)
+        assert np.all(amplitudes <= 2.0), "amplitudes is not valid"
 
 
 class TestSpatialIndex:
@@ -174,13 +174,13 @@ class TestSpatialIndex:
         neighbors = index.query_neighbors(query_pos, positions, radius=5.0)
 
         # Should at least find itself
-        assert len(neighbors) >= 1
-        assert 0 in neighbors
+        assert len(neighbors) >= 1, "Neighbors must not be empty"
+        assert 0 in neighbors, "Condition must be true"
 
         # Verify all neighbors are within radius
         for idx in neighbors:
             dist = np.linalg.norm(positions[idx] - query_pos)
-            assert dist <= 5.0
+            assert dist <= 5.0, "dist is not valid"
 
 
 class TestBatchGradientComputer:
@@ -206,7 +206,7 @@ class TestBatchGradientComputer:
         assert gradients.shape == (N, 5)
 
         # Check all finite
-        assert np.all(np.isfinite(gradients))
+        assert np.all(np.isfinite(gradients)), "Condition must be true"
 
 
 class TestBatchStateOperations:
@@ -228,7 +228,7 @@ class TestBatchStateOperations:
         assert batch.positions.shape == (3, 5)
         assert batch.velocities.shape == (3, 5)
         assert batch.masses.shape == (3,)
-        assert len(batch.task_ids) == 3
+        assert len(batch.task_ids) == 3, "Collection must not be empty"
 
         # Modify batch state
         batch.spinors *= 0.9
@@ -240,7 +240,7 @@ class TestBatchStateOperations:
         for task_id in batch.task_ids:
             task = orch.state.tasks[task_id]
             # Spinor should be modified
-            assert np.linalg.norm(task.spinor.components) < 1.0
+            assert np.linalg.norm(task.spinor.components) < 1.0, "Condition must be true"
 
 
 class TestVectorizedPerformance:
@@ -271,7 +271,7 @@ class TestVectorizedPerformance:
         assert evolved.shape == (N, 4)
 
         # Vectorized should be reasonably fast
-        assert vectorized_time < 1.0  # Should complete in under 1 second
+        assert vectorized_time < 1.0, "vectorized_time is not valid"
 
 
 class TestIntegrationWithOrchestrator:

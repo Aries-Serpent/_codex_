@@ -14,10 +14,10 @@ def test_register_and_get() -> None:
     class Foo:
         pass
 
-    assert "foo" in reg.names()
+    assert "foo" in reg.names(), "Condition must be true"
     item = reg.get("foo")
-    assert item is not None
-    assert item.obj is Foo
+    assert item is not None, "item must be initialized"
+    assert item.obj is Foo, "Item must not be empty"
 
 
 def test_case_insensitive_override() -> None:
@@ -31,4 +31,4 @@ def test_case_insensitive_override() -> None:
     class B:
         pass
 
-    assert reg.get("a").obj is B
+    assert reg.get("a").obj is B, "Object must be initialized"

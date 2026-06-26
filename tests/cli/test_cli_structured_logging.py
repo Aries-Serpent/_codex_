@@ -23,5 +23,5 @@ def test_eval_override_failure_sets_nonzero_exit() -> None:
         text=True,
         check=False,
     )
-    assert "env override failed" in (proc.stderr or "")
-    assert "override_failed" in (proc.stderr or "")
+    assert "env override failed" in (proc.stderr or ""), "Condition must be true"
+    assert "override_failed" in (proc.stderr or ""), "Condition must be true"

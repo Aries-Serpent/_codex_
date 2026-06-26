@@ -15,15 +15,15 @@ def test_append_evidence_writes_record(tmp_path: Path, monkeypatch: pytest.Monke
     evidence.append_evidence("record.ndjson", {"foo": "bar"})
 
     out_file = tmp_path / "record.ndjson"
-    assert out_file.exists()
+    assert out_file.exists(), "Condition must be true"
     payload = json.loads(out_file.read_text().strip())
-    assert payload.get("meta")
-    assert payload.get("foo") == "bar"
+    assert payload.get("meta"), "Condition must be true"
+    assert payload.get("foo") == "bar", "Condition must be true"
 
 
 def test_utc_now_format() -> None:
     from codex.evidence import utc_now
 
     stamp = utc_now()
-    assert stamp.endswith("Z")
-    assert "T" in stamp
+    assert stamp.endswith("Z"), "Condition must be true"
+    assert "T" in stamp, "Condition must be true"

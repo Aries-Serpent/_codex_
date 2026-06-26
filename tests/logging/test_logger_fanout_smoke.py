@@ -44,7 +44,7 @@ def test_logger_fanout_two_backends():
 
     # Both backends saw events and data
     for backend in (a, b):
-        assert backend.events[0].startswith("start:")
-        assert backend.events[-1] == "end"
-        assert backend.params and backend.params[0]["lr"] == 0.001
-        assert backend.metrics and backend.metrics[0]["metrics"]["loss"] == 1.23
+        assert backend.events[0].startswith("start:"), "Condition must be true"
+        assert backend.events[-1] == "end", "Condition must be true"
+        assert backend.params and backend.params[0]["lr"] == 0.001, "Condition must be true"
+        assert backend.metrics and backend.metrics[0]["metrics"]["loss"] == 1.23, "Condition must be true"

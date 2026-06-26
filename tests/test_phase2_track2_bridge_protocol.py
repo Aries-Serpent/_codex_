@@ -21,7 +21,7 @@ class TestMessageSerialization:
         """Test simple message serialization."""
         message = {"type": "request", "id": 1, "method": "get_user", "params": {"user_id": 123}}
         serialized = message
-        assert serialized["type"] == "request"
+        assert serialized["type"] == "request", "Condition must be true"
 
     def test_complex_message_serialization(self):
         """Test complex message serialization."""
@@ -31,8 +31,8 @@ class TestMessageSerialization:
             "result": {"user": {"id": 123, "name": "Alice", "permissions": ["read", "write"]}},
             "timestamp": datetime.now().isoformat(),
         }
-        assert "result" in message
-        assert "timestamp" in message
+        assert "result" in message, "Result must not be empty"
+        assert "timestamp" in message, "Condition must be true"
 
     def test_message_compression(self):
         """Test message compression."""
@@ -42,7 +42,7 @@ class TestMessageSerialization:
             "min_size_bytes": 1024,
             "compression_level": 6,
         }
-        assert compression["compression_level"] > 0
+        assert compression["compression_level"] > 0, "Value must be greater than zero"
 
     def test_binary_message_handling(self):
         """Test binary message handling."""
@@ -52,7 +52,7 @@ class TestMessageSerialization:
             "data": "iVBORw0KGgoAAAANSUhEUgAAAA==",
             "size": 32,
         }
-        assert binary_msg["size"] > 0
+        assert binary_msg["size"] > 0, "Value must be greater than zero"
 
     def test_batch_message_serialization(self):
         """Test batch message serialization."""
@@ -64,7 +64,7 @@ class TestMessageSerialization:
                 {"id": 3, "method": "method3"},
             ],
         }
-        assert len(batch["messages"]) == 3
+        assert len(batch["messages"]) == 3, "Collection must not be empty"
 
     def test_streaming_message_serialization(self):
         """Test streaming message serialization."""
@@ -74,12 +74,12 @@ class TestMessageSerialization:
             "chunk_size": 8192,
             "total_chunks": 10,
         }
-        assert stream["chunk_size"] > 0
+        assert stream["chunk_size"] > 0, "Value must be greater than zero"
 
     def test_message_versioning(self):
         """Test message format versioning."""
         message = {"version": "1.0", "type": "request", "content": {}}
-        assert message["version"] is not None
+        assert message["version"] is not None, "Value must be initialized"
 
 
 class TestMessageDeserialization:
@@ -89,7 +89,7 @@ class TestMessageDeserialization:
         """Test simple message deserialization."""
         raw = {"type": "response", "status": "ok"}
         msg = raw
-        assert msg["status"] == "ok"
+        assert msg["status"] == "ok", "Condition must be true"
 
     def test_nested_message_deserialization(self):
         """Test nested message deserialization."""
@@ -97,7 +97,7 @@ class TestMessageDeserialization:
             "type": "response",
             "data": {"user": {"id": 1, "name": "Alice"}, "metadata": {"version": "v1"}},
         }
-        assert raw["data"]["user"]["name"] == "Alice"
+        assert raw["data"]["user"]["name"] == "Alice", "Data must not be empty"
 
     def test_validation_during_deserialization(self):
         """Test validation during deserialization."""
@@ -107,7 +107,7 @@ class TestMessageDeserialization:
             "check_ranges": True,
             "strict_mode": False,
         }
-        assert validation["check_required_fields"]
+        assert validation["check_required_fields"], "Condition must be true"
 
     def test_error_message_deserialization(self):
         """Test error message deserialization."""
@@ -117,7 +117,7 @@ class TestMessageDeserialization:
             "message": "Internal server error",
             "details": {"timestamp": datetime.now().isoformat()},
         }
-        assert error_msg["code"] is not None
+        assert error_msg["code"] is not None, "err must be initialized"
 
 
 class TestProtocolNegotiation:
@@ -131,7 +131,7 @@ class TestProtocolNegotiation:
             "server_version": "1.0",
             "supported_features": ["compression", "encryption", "streaming"],
         }
-        assert handshake["client_version"] == handshake["server_version"]
+        assert handshake["client_version"] == handshake["server_version"], "h is not valid"
 
     def test_version_compatibility(self):
         """Test version compatibility."""
@@ -141,7 +141,7 @@ class TestProtocolNegotiation:
             "compatible": True,
             "requires_upgrade": False,
         }
-        assert compatibility["compatible"]
+        assert compatibility["compatible"], "Condition must be true"
 
     def test_feature_negotiation(self):
         """Test feature negotiation."""
@@ -150,12 +150,12 @@ class TestProtocolNegotiation:
             "server_features": ["compression", "encryption", "streaming"],
             "agreed_features": ["compression", "encryption"],
         }
-        assert len(negotiation["agreed_features"]) > 0
+        assert len(negotiation["agreed_features"]) > 0, "Collection must not be empty"
 
     def test_timeout_during_negotiation(self):
         """Test timeout during negotiation."""
         timeout = {"timeout_seconds": 30, "retries": 3, "backoff_seconds": 5}
-        assert timeout["timeout_seconds"] > 0
+        assert timeout["timeout_seconds"] > 0, "Value must be greater than zero"
 
     def test_protocol_fallback(self):
         """Test protocol fallback."""
@@ -164,7 +164,7 @@ class TestProtocolNegotiation:
             "fallback_protocol": "http1.1",
             "auto_fallback": True,
         }
-        assert fallback["fallback_protocol"] is not None
+        assert fallback["fallback_protocol"] is not None, "Value must be initialized"
 
 
 class TestConnectionManagement:
@@ -178,7 +178,7 @@ class TestConnectionManagement:
             "created_at": datetime.now(),
             "remote_addr": "192.168.1.1",
         }
-        assert connection["status"] == "established"
+        assert connection["status"] == "established", "Condition must be true"
 
     def test_connection_keep_alive(self):
         """Test keep-alive mechanism."""
@@ -188,12 +188,12 @@ class TestConnectionManagement:
             "timeout_seconds": 60,
             "ping_payload": "ping",
         }
-        assert keep_alive["enabled"]
+        assert keep_alive["enabled"], "Condition must be true"
 
     def test_connection_multiplexing(self):
         """Test connection multiplexing."""
         multiplexing = {"enabled": True, "max_streams": 100, "flow_control": True}
-        assert multiplexing["max_streams"] > 0
+        assert multiplexing["max_streams"] > 0, "Value must be greater than zero"
 
     def test_connection_pooling(self):
         """Test connection pooling."""
@@ -203,7 +203,7 @@ class TestConnectionManagement:
             "idle_timeout_seconds": 300,
             "current_size": 8,
         }
-        assert pool["current_size"] >= pool["min_connections"]
+        assert pool["current_size"] >= pool["min_connections"], "Value must be greater than zero"
 
     def test_graceful_connection_closure(self):
         """Test graceful connection closure."""
@@ -213,7 +213,7 @@ class TestConnectionManagement:
             "flush_messages": True,
             "notify_peer": True,
         }
-        assert closure["flush_messages"]
+        assert closure["flush_messages"], "Condition must be true"
 
     def test_connection_backoff_strategy(self):
         """Test connection backoff strategy."""
@@ -223,7 +223,7 @@ class TestConnectionManagement:
             "exponential_base": 2,
             "max_retries": 10,
         }
-        assert backoff["max_retries"] > 0
+        assert backoff["max_retries"] > 0, "Value must be greater than zero"
 
 
 class TestErrorHandling:
@@ -238,7 +238,7 @@ class TestErrorHandling:
             "E004": {"description": "Not found", "http_code": 404},
             "E005": {"description": "Server error", "http_code": 500},
         }
-        assert errors["E001"]["http_code"] == 400
+        assert errors["E001"]["http_code"] == 400, "Error should be raised or set"
 
     def test_error_propagation(self):
         """Test error propagation."""
@@ -247,7 +247,7 @@ class TestErrorHandling:
             "wrapped_error": "Failed to establish connection",
             "user_error": "Service unavailable",
         }
-        assert error_chain["original_error"] is not None
+        assert error_chain["original_error"] is not None, "err must be initialized"
 
     def test_retry_logic(self):
         """Test retry logic."""
@@ -257,7 +257,7 @@ class TestErrorHandling:
             "backoff_strategy": "exponential",
             "jitter": True,
         }
-        assert retry["max_attempts"] > 1
+        assert retry["max_attempts"] > 1, "Value must be greater than zero"
 
     def test_circuit_breaker_pattern(self):
         """Test circuit breaker pattern."""
@@ -277,7 +277,7 @@ class TestErrorHandling:
             "cache_result": True,
             "ttl_seconds": 300,
         }
-        assert fallback["enabled"]
+        assert fallback["enabled"], "Condition must be true"
 
     def test_error_logging_and_monitoring(self):
         """Test error logging and monitoring."""
@@ -287,7 +287,7 @@ class TestErrorHandling:
             "alert_on_critical": True,
             "error_rate_threshold": 0.01,
         }
-        assert monitoring["log_errors"]
+        assert monitoring["log_errors"], "Error should be raised or set"
 
 
 class TestEncryptionAndSecurity:
@@ -302,7 +302,7 @@ class TestEncryptionAndSecurity:
             "certificate": "/etc/ssl/cert.pem",
             "key": "/etc/ssl/key.pem",
         }
-        assert tls["enabled"]
+        assert tls["enabled"], "Condition must be true"
 
     def test_message_signing(self):
         """Test message signing."""
@@ -312,7 +312,7 @@ class TestEncryptionAndSecurity:
             "key": "secret_key",
             "verify_on_receive": True,
         }
-        assert signing["verify_on_receive"]
+        assert signing["verify_on_receive"], "Condition must be true"
 
     def test_message_encryption(self):
         """Test message encryption."""
@@ -322,7 +322,7 @@ class TestEncryptionAndSecurity:
             "key_derivation": "PBKDF2",
             "iv_size": 12,
         }
-        assert encryption["iv_size"] > 0
+        assert encryption["iv_size"] > 0, "Value must be greater than zero"
 
     def test_certificate_validation(self):
         """Test certificate validation."""
@@ -332,7 +332,7 @@ class TestEncryptionAndSecurity:
             "trusted_ca_certs": "/etc/ssl/certs",
             "crl_check": False,
         }
-        assert validation["validate_cert"]
+        assert validation["validate_cert"], "Condition must be true"
 
 
 class TestFlowControl:
@@ -346,7 +346,7 @@ class TestFlowControl:
             "burst_size": 2000,
             "enforcement": "drop",
         }
-        assert rate_limit["messages_per_second"] > 0
+        assert rate_limit["messages_per_second"] > 0, "Value must be greater than zero"
 
     def test_window_based_flow_control(self):
         """Test window-based flow control."""
@@ -356,7 +356,7 @@ class TestFlowControl:
             "min_window_size": 1024,
             "auto_adjust": True,
         }
-        assert flow_control["initial_window_size"] > 0
+        assert flow_control["initial_window_size"] > 0, "Value must be greater than zero"
 
     def test_backpressure_handling(self):
         """Test backpressure handling."""
@@ -366,7 +366,7 @@ class TestFlowControl:
             "pause_threshold": 0.8,
             "resume_threshold": 0.5,
         }
-        assert backpressure["pause_threshold"] > backpressure["resume_threshold"]
+        assert backpressure["pause_threshold"] > backpressure["resume_threshold"], "Value must be greater than zero"
 
 
 class TestLoadBalancing:
@@ -380,7 +380,7 @@ class TestLoadBalancing:
             "health_check_interval": 10,
             "connection_timeout": 5,
         }
-        assert len(strategy["servers"]) == 3
+        assert len(strategy["servers"]) == 3, "Collection must not be empty"
 
     def test_sticky_session_handling(self):
         """Test sticky session handling."""
@@ -390,13 +390,13 @@ class TestLoadBalancing:
             "cookie_name": "JSESSIONID",
             "ttl_seconds": 3600,
         }
-        assert sticky["enabled"]
+        assert sticky["enabled"], "Condition must be true"
 
     def test_server_weight_configuration(self):
         """Test server weight configuration."""
         weights = {"powerful_server": 3, "normal_server": 2, "weak_server": 1}
         total_weight = sum(weights.values())
-        assert total_weight == 6
+        assert total_weight == 6, "total_weight is not valid"
 
 
 class TestProtocolExtensions:
@@ -405,7 +405,7 @@ class TestProtocolExtensions:
     def test_custom_header_support(self):
         """Test custom header support."""
         headers = {"x-request-id": "req_123", "x-client-version": "1.0", "x-compression": "gzip"}
-        assert "x-request-id" in headers
+        assert "x-request-id" in headers, "Condition must be true"
 
     def test_metadata_propagation(self):
         """Test metadata propagation."""
@@ -414,7 +414,7 @@ class TestProtocolExtensions:
             "span_id": "span_xyz",
             "baggage": {"user_id": "user_123"},
         }
-        assert metadata["trace_id"] is not None
+        assert metadata["trace_id"] is not None, "Value must be initialized"
 
     def test_callback_handler_support(self):
         """Test callback handler support."""
@@ -424,7 +424,7 @@ class TestProtocolExtensions:
             "on_message": "handle_message",
             "on_error": "handle_error",
         }
-        assert len(callbacks) == 4
+        assert len(callbacks) == 4, "Callbacks must not be empty"
 
 
 class TestPerformanceOptimization:
@@ -433,7 +433,7 @@ class TestPerformanceOptimization:
     def test_message_batching(self):
         """Test message batching."""
         batching = {"enabled": True, "batch_size": 100, "max_delay_ms": 50, "compression": True}
-        assert batching["batch_size"] > 0
+        assert batching["batch_size"] > 0, "Value must be greater than zero"
 
     def test_caching_strategy(self):
         """Test caching strategy."""
@@ -443,9 +443,9 @@ class TestPerformanceOptimization:
             "max_entries": 10000,
             "eviction_policy": "lru",
         }
-        assert caching["enabled"]
+        assert caching["enabled"], "Condition must be true"
 
     def test_connection_reuse(self):
         """Test connection reuse."""
         reuse = {"enabled": True, "pool_size": 20, "idle_timeout_seconds": 300, "metrics": True}
-        assert reuse["pool_size"] > 0
+        assert reuse["pool_size"] > 0, "Value must be greater than zero"

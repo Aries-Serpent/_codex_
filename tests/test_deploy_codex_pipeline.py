@@ -47,9 +47,9 @@ def test_reproducible(tmp_path):
     )
     # Ensure expected artefacts are produced
     for fn in ["summary.json", "metrics.json", "seeds.json", "tokenizer.json"]:
-        assert (out1 / fn).is_file()
+        assert (out1 / fn).is_file(), "Condition must be true"
     for stage in ["M0", "M1", "RM", "M2"]:
-        assert (out1 / "checkpoints" / f"{stage}.json").is_file()
+        assert (out1 / "checkpoints" / f"{stage}.json").is_file(), "Condition must be true"
     main(
         [
             "--corpus",
@@ -67,7 +67,7 @@ def test_reproducible(tmp_path):
         summary1 = json.load(f)
     with (out2 / "summary.json").open() as f:
         summary2 = json.load(f)
-    assert summary1 == summary2
+    assert summary1 == summary2, "summary1 is not valid"
 
 
 def test_empty_corpus(tmp_path):

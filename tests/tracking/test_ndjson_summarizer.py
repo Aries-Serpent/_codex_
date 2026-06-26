@@ -45,29 +45,29 @@ def test_summarize_rotated_shards_to_csv(tmp_path: Path, monkeypatch: pytest.Mon
     assert rotated, "expected rotation to produce suffixed shards"
 
     exit_code = ndjson_summary.main(["summarize", "--input", str(run_dir), "--output", "csv"])
-    assert exit_code == 0
+    assert exit_code == 0, "exit_code is not valid"
     output_path = run_dir / "metrics_summary.csv"
-    assert output_path.exists()
+    assert output_path.exists(), "Condition must be true"
 
     rows = _read_csv(output_path)
-    assert len(rows) == 2
+    assert len(rows) == 2, "Rows must not be empty"
 
     loss_row = next(row for row in rows if row["metric"] == "loss")
-    assert loss_row["count"] == "5"
-    assert loss_row["first_step"] == "0"
-    assert loss_row["last_step"] == "4"
-    assert loss_row["first_phase"] == "train"
-    assert loss_row["last_phase"] == "train"
-    assert loss_row["first_value"] == "1.0"
-    assert loss_row["last_value"].startswith("0.")
+    assert loss_row["count"] == "5", "Count must be greater than zero"
+    assert loss_row["first_step"] == "0", "Condition must be true"
+    assert loss_row["last_step"] == "4", "Condition must be true"
+    assert loss_row["first_phase"] == "train", "Condition must be true"
+    assert loss_row["last_phase"] == "train", "Condition must be true"
+    assert loss_row["first_value"] == "1.0", "Value must be initialized"
+    assert loss_row["last_value"].startswith("0."), "Value must be initialized"
 
     confusion_row = next(row for row in rows if row["metric"] == "confusion")
     assert confusion_row["last_manifest_id"], "structured metric should link manifest id"
-    assert confusion_row["first_manifest_id"] == confusion_row["last_manifest_id"]
-    assert confusion_row["first_phase"] == "eval"
-    assert confusion_row["last_phase"] == "eval"
-    assert confusion_row["first_value"] == ""
-    assert confusion_row["last_value"] == ""
+    assert confusion_row["first_manifest_id"] == confusion_row["last_manifest_id"], "Condition must be true"
+    assert confusion_row["first_phase"] == "eval", "Condition must be true"
+    assert confusion_row["last_phase"] == "eval", "Condition must be true"
+    assert confusion_row["first_value"] == "", "Value must be initialized"
+    assert confusion_row["last_value"] == "", "Value must be initialized"
 
 
 def test_summarize_to_parquet_when_available(
@@ -82,10 +82,10 @@ def test_summarize_to_parquet_when_available(
     logger.close()
 
     exit_code = ndjson_summary.main(["summarize", "--input", str(run_dir), "--output", "parquet"])
-    assert exit_code == 0
+    assert exit_code == 0, "exit_code is not valid"
     parquet_path = run_dir / "metrics_summary.parquet"
-    assert parquet_path.exists()
+    assert parquet_path.exists(), "Condition must be true"
 
     frame = pandas.read_parquet(parquet_path)
-    assert set(frame["metric"]) == {"accuracy"}
-    assert int(frame.iloc[0]["count"]) == 3
+    assert set(frame["metric"]) == {"accuracy"}, "Condition must be true"
+    assert int(frame.iloc[0]["count"]) == 3, "Count must be greater than zero"

@@ -42,15 +42,15 @@ def error_messages():
 
 def test_context_initialization(test_context):
     """Test context fixture initialization."""
-    assert test_context.name == "test_run"
-    assert "key" in test_context.data
+    assert test_context.name == "test_run", "name is not valid"
+    assert "key" in test_context.data, "Data must not be empty"
 
 
 def test_context_data_access(test_context):
     """Test accessing context data."""
-    assert test_context.data["key"] == "value"
+    assert test_context.data["key"] == "value", "Data must not be empty"
     test_context.data["new_key"] = "new_value"
-    assert test_context.data["new_key"] == "new_value"
+    assert test_context.data["new_key"] == "new_value", "Data must not be empty"
 
 
 def test_context_results_tracking(test_context):
@@ -58,20 +58,20 @@ def test_context_results_tracking(test_context):
     test_context.results.append("result1")
     test_context.results.append("result2")
 
-    assert len(test_context.results) == 2
+    assert len(test_context.results) == 2, "Collection must not be empty"
 
 
 def test_sample_messages_count(sample_messages):
     """Test sample messages fixture."""
-    assert len(sample_messages) == 3
+    assert len(sample_messages) == 3, "Sample_messages must not be empty"
 
 
 def test_sample_messages_structure(sample_messages):
     """Test sample messages have correct structure."""
     for msg in sample_messages:
-        assert "id" in msg
-        assert "method" in msg
-        assert "params" in msg or "error" in msg
+        assert "id" in msg, "Condition must be true"
+        assert "method" in msg, "Condition must be true"
+        assert "params" in msg or "error" in msg, "Error should be raised or set"
 
 
 def test_sample_messages_ids(sample_messages):
@@ -82,19 +82,19 @@ def test_sample_messages_ids(sample_messages):
 
 def test_error_messages_count(error_messages):
     """Test error messages fixture."""
-    assert len(error_messages) == 2
+    assert len(error_messages) == 2, "Error_messages must not be empty"
 
 
 def test_error_messages_structure(error_messages):
     """Test error messages have correct structure."""
     for msg in error_messages:
-        assert "id" in msg
-        assert "error" in msg
-        assert "code" in msg["error"]
-        assert "message" in msg["error"]
+        assert "id" in msg, "Condition must be true"
+        assert "error" in msg, "Error should be raised or set"
+        assert "code" in msg["error"], "Error should be raised or set"
+        assert "message" in msg["error"], "Error should be raised or set"
 
 
 def test_fixture_isolation(test_context):
     """Test that fixtures are properly isolated."""
     # Each test should get a fresh context
-    assert len(test_context.results) == 0
+    assert len(test_context.results) == 0, "Collection must not be empty"

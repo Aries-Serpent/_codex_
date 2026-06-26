@@ -381,7 +381,7 @@ def main():
 
     except Exception as e:
         error_type = type(e).__name__
-        logger.error(f"Unexpected error: <ERROR_TYPE>", exc_info=True)
+        logger.error("Unexpected error: <ERROR_TYPE>", exc_info=True)
         # Still try to generate partial report if we have results
         if 'results' in locals():
             generate_markdown_report(owner, repo, args.pr, results, output_path)

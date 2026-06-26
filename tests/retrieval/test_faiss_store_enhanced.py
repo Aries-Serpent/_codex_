@@ -38,15 +38,15 @@ class TestFAISSStoreInitialization:
     def test_init_default(self, temp_index_dir):
         """Test default initialization"""
         store = FAISSStore(index_dir=temp_index_dir)
-        assert store.index_name == "default"
-        assert store.index is None
-        assert store.dimension is None
-        assert store.max_vectors == MAX_VECTORS
+        assert store.index_name == "default", "index_name is not valid"
+        assert store.index is None, "index is not valid"
+        assert store.dimension is None, "dimension is not valid"
+        assert store.max_vectors == MAX_VECTORS, "max_vectors is not valid"
 
     def test_init_custom_name(self, temp_index_dir):
         """Test initialization with custom name"""
         store = FAISSStore(index_dir=temp_index_dir, index_name="custom")
-        assert store.index_name == "custom"
+        assert store.index_name == "custom", "index_name is not valid"
 
     def test_init_invalid_name(self, temp_index_dir):
         """Test initialization with invalid index name"""
@@ -62,10 +62,10 @@ class TestFAISSStoreHealthCheck:
         store = FAISSStore(index_dir=temp_index_dir)
         health = store.health_check()
 
-        assert health["faiss_available"] is True
-        assert health["index_loaded"] is False
-        assert health["healthy"] is False
-        assert health["num_vectors"] == 0
+        assert health["faiss_available"] is True, "Condition must be true"
+        assert health["index_loaded"] is False, "Condition must be true"
+        assert health["healthy"] is False, "Condition must be true"
+        assert health["num_vectors"] == 0, "Condition must be true"
 
     def test_health_check_loaded(self, temp_index_dir, sample_embeddings, sample_documents):
         """Test health check on loaded store"""
@@ -73,11 +73,11 @@ class TestFAISSStoreHealthCheck:
         store.create_index(sample_embeddings, sample_documents)
 
         health = store.health_check()
-        assert health["healthy"] is True
-        assert health["index_loaded"] is True
-        assert health["num_vectors"] == 10
-        assert health["num_documents"] == 10
-        assert health["dimension"] == 128
+        assert health["healthy"] is True, "Condition must be true"
+        assert health["index_loaded"] is True, "Condition must be true"
+        assert health["num_vectors"] == 10, "Condition must be true"
+        assert health["num_documents"] == 10, "Condition must be true"
+        assert health["dimension"] == 128, "Condition must be true"
 
 
 class TestFAISSStoreIndexCreation:
@@ -88,10 +88,10 @@ class TestFAISSStoreIndexCreation:
         store = FAISSStore(index_dir=temp_index_dir)
         store.create_index(sample_embeddings, sample_documents)
 
-        assert store.index is not None
-        assert store.dimension == 128
-        assert store.index.ntotal == 10
-        assert len(store.documents) == 10
+        assert store.index is not None, "index must be initialized"
+        assert store.dimension == 128, "dimension is not valid"
+        assert store.index.ntotal == 10, "ntotal is not valid"
+        assert len(store.documents) == 10, "Collection must not be empty"
 
     def test_create_index_invalid_type(self, temp_index_dir, sample_documents):
         """Test creating index with invalid embedding type"""
@@ -123,10 +123,10 @@ class TestFAISSStorePersistence:
         store2 = FAISSStore(index_dir=temp_index_dir, index_name="test")
         store2.load()
 
-        assert store2.index is not None
-        assert store2.dimension == 128
-        assert store2.index.ntotal == 10
-        assert len(store2.documents) == 10
+        assert store2.index is not None, "index must be initialized"
+        assert store2.dimension == 128, "dimension is not valid"
+        assert store2.index.ntotal == 10, "ntotal is not valid"
+        assert len(store2.documents) == 10, "Collection must not be empty"
 
 
 class TestFAISSStoreSearch:
@@ -140,7 +140,7 @@ class TestFAISSStoreSearch:
         query = sample_embeddings[0]
         results = store.search(query, top_k=3)
 
-        assert len(results) == 3
+        assert len(results) == 3, "Results must not be empty"
         # FIX: Handle both old and new result format
         # Try multiple possible key names for the result ID
         result_id = None
@@ -148,11 +148,11 @@ class TestFAISSStoreSearch:
             if key in results[0]:
                 result_id = results[0][key]
                 break
-        assert (
+        assert (, "Condition must be true"
             result_id == 0
         ), f"Expected first result to be vector 0, got {result_id}. Result keys: {results[0].keys()}"
-        assert 0.0 <= results[0]["score"] <= 1.0
-        assert "document" in results[0]
+        assert 0.0 <= results[0]["score"] <= 1.0, "Result must not be empty"
+        assert "document" in results[0], "Result must not be empty"
 
     def test_search_without_index(self, temp_index_dir):
         """Test search without loaded index"""

@@ -164,7 +164,7 @@ def main() -> int:
         print(f"✓ pytest version {pytest.__version__}")
     except ImportError as e:
         error_type = type(e).__name__
-        print(f"✗ pytest NOT FOUND: <ERROR_TYPE>")
+        print("✗ pytest NOT FOUND: <ERROR_TYPE>")
         all_passed = False
     print()
 

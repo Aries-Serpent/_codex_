@@ -18,7 +18,7 @@ class TestGenerateModuleImport:
         try:
             from codex_ml.cli import generate
 
-            assert generate is not None
+            assert generate is not None, "generate must be initialized"
         except ImportError as e:
             pytest.skip(f"Module import failed: {e}")
 

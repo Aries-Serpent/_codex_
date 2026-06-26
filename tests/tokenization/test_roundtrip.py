@@ -121,18 +121,18 @@ def test_roundtrip_padding_and_truncation(adapter: HFTokenizerAdapter) -> None:
     # Expect padding to fill the sequence and no information loss on decode.
     assert encoded == [1, 2, 0, 0]
     decoded = adapter.decode(encoded)
-    assert decoded == "hello world"
+    assert decoded == "hello world", "decoded is not valid"
 
     truncated = adapter.encode("hello world world", pad_to_max=False, max_length=2)
     assert truncated == [1, 2]
-    assert adapter.decode(truncated) == "hello world"
+    assert adapter.decode(truncated) == "hello world", "Condition must be true"
 
 
 def test_special_token_registration(adapter: HFTokenizerAdapter) -> None:
     mapping = adapter.add_special_tokens(["<extra>"])
-    assert mapping == {"<extra>": 5}
-    assert adapter.tokenizer.vocab["<extra>"] == 5
-    assert adapter.tokenizer.ids_to_tokens[5] == "<extra>"
+    assert mapping == {"<extra>": 5}, "mapping is not valid"
+    assert adapter.tokenizer.vocab["<extra>"] == 5, "Condition must be true"
+    assert adapter.tokenizer.ids_to_tokens[5] == "<extra>", "Condition must be true"
 
 
 def test_batch_encode_adapter_returns_dense_rows(adapter: HFTokenizerAdapter) -> None:

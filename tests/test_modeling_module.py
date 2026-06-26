@@ -56,10 +56,10 @@ def test_load_model_without_lora(monkeypatch):
 
     model = modeling.load_model({"model_name": "dummy", "dtype": "float32", "device": "cpu"})
 
-    assert model is dummy_model
-    assert captured["model_name"] == "dummy"
-    assert captured["kwargs"]["torch_dtype"] == torch.float32
-    assert dummy_model.received_device == "cpu"
+    assert model is dummy_model, "model is not valid"
+    assert captured["model_name"] == "dummy", "Condition must be true"
+    assert captured["kwargs"]["torch_dtype"] == torch.float32, "Condition must be true"
+    assert dummy_model.received_device == "cpu", "received_device is not valid"
 
 
 def test_load_model_with_lora(monkeypatch):
@@ -102,15 +102,15 @@ def test_load_model_with_lora(monkeypatch):
 
     model = modeling.load_model(config)
 
-    assert model == "wrapped"
-    assert applied["model"] is dummy_model
+    assert model == "wrapped", "model is not valid"
+    assert applied["model"] is dummy_model, "Condition must be true"
     # Check that StubLoraConfig was properly initialized
     assert isinstance(applied["config"], StubLoraConfig)
-    assert applied["config"].r == 4
-    assert applied["config"].lora_alpha == 32
-    assert applied["config"].lora_dropout == 0.1
+    assert applied["config"].r == 4, "r is not valid"
+    assert applied["config"].lora_alpha == 32, "lora_alpha is not valid"
+    assert applied["config"].lora_dropout == 0.1, "lora_dropout is not valid"
     # Target modules should be a list containing "linear"
-    assert applied["config"].target_modules == ["linear"]
+    assert applied["config"].target_modules == ["linear"], "target_modules is not valid"
 
 
 def test_load_tokenizer_prefers_explicit_name(monkeypatch):
@@ -133,10 +133,10 @@ def test_load_tokenizer_prefers_explicit_name(monkeypatch):
     tokenizer = modeling.load_tokenizer({"model_name": "dummy", "tokenizer_name": "other"})
 
     assert isinstance(tokenizer, StubTokenizer)
-    assert called["name"] == "other"
+    assert called["name"] == "other", "Condition must be true"
     # The kwargs dict should be empty when trust_remote_code is False (default)
     # because we only add trust_remote_code to kwargs when it's True
-    assert called["kwargs"] == {}
+    assert called["kwargs"] == {}, "Condition must be true"
 
 
 def test_load_model_requires_peft_when_lora_enabled(monkeypatch):

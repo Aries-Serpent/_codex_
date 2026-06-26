@@ -177,7 +177,7 @@ class TestRetrievalAccuracy:
             # Should return empty list or None, not crash
             assert results is None or isinstance(results, list)
             if isinstance(results, list):
-                assert len(results) == 0
+                assert len(results) == 0, "Results must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -219,9 +219,9 @@ class TestIndexManagement:
                 indexer = CodexIndexer(index_path=str(index_path))
 
                 # Verify indexer is initialized
-                assert indexer is not None
+                assert indexer is not None, "indexer must be initialized"
                 if hasattr(indexer, "index_path"):
-                    assert indexer.index_path is not None
+                    assert indexer.index_path is not None, "index_path must be initialized"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -239,7 +239,7 @@ class TestIndexManagement:
             result = indexer.add_document(doc_id=doc_id, content=content)
 
             # Should return success indicator
-            assert result is not None
+            assert result is not None, "result must be initialized"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -281,7 +281,7 @@ class TestIndexManagement:
                 indexer2 = CodexIndexer(index_path=str(index_path))
 
                 # Should load existing index
-                assert indexer2 is not None
+                assert indexer2 is not None, "indexer2 must be initialized"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -299,12 +299,12 @@ class TestIndexManagement:
             # Get statistics
             if hasattr(indexer, "get_stats"):
                 stats = indexer.get_stats()
-                assert stats is not None
+                assert stats is not None, "stats must be initialized"
                 assert isinstance(stats, dict)
             elif hasattr(indexer, "size"):
                 size = indexer.size()
                 assert isinstance(size, int)
-                assert size >= 0
+                assert size >= 0, "size must be greater than zero"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -335,7 +335,7 @@ class TestRAGPerformance:
                 assert duration < 5.0, f"Batch {batch_size} took too long: {duration}s"
 
                 # Should return correct number of embeddings
-                assert len(embeddings) == batch_size
+                assert len(embeddings) == batch_size, "Embeddings must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -384,8 +384,8 @@ class TestRAGEdgeCases:
             # Test empty string
             try:
                 result = provider.encode([""])
-                assert result is not None
-                assert len(result) > 0
+                assert result is not None, "result must be initialized"
+                assert len(result) > 0, "Result must not be empty"
             except ValueError:
                 # Acceptable to reject empty input
                 _ = None  # suppressed: no action needed
@@ -405,8 +405,8 @@ class TestRAGEdgeCases:
             result = provider.encode([long_text])
 
             # Should handle long text
-            assert result is not None
-            assert len(result) > 0
+            assert result is not None, "result must be initialized"
+            assert len(result) > 0, "Result must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -427,8 +427,8 @@ class TestRAGEdgeCases:
 
             for text in special_texts:
                 result = provider.encode([text])
-                assert result is not None
-                assert len(result) > 0
+                assert result is not None, "result must be initialized"
+                assert len(result) > 0, "Result must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -447,7 +447,7 @@ class TestRAGEdgeCases:
             result = indexer.add_document(doc_id, content)
 
             # Should handle duplicates (update or skip)
-            assert result is not None or result is None
+            assert result is not None or result is None, "result must be initialized"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -482,7 +482,7 @@ class TestRAGEdgeCases:
 
             # Should complete without errors
             assert len(errors) == 0, f"Concurrent operations had errors: {errors}"
-            assert len(results) == 10
+            assert len(results) == 10, "Results must not be empty"
         except ImportError:
             pytest.skip("Module not available")
 
@@ -536,7 +536,7 @@ class TestRAGIntegration:
             try:
                 indexer.add_document(doc_id="meta_doc", content="Test content", metadata=metadata)
                 # Should handle metadata
-                assert True
+                assert True, "True is not valid"
             except TypeError:
                 # Method may not support metadata parameter
                 _ = None  # suppressed: no action needed

@@ -51,7 +51,7 @@ def test_cli_zendesk_help(cli_runner: CliRunner, mock_deps):
     result = cli_runner.invoke(cli_zendesk.app, ["--help"])
     if result.exit_code not in (0, 2):
         pytest.skip(f"cli_zendesk help unavailable: {result.exit_code}")
-    assert "Usage" in result.output or "usage" in result.output.lower()
+    assert "Usage" in result.output or "usage" in result.output.lower(), "Result must not be empty"
 
 
 def test_cli_zendesk_subcommand_help(cli_runner: CliRunner, mock_deps):

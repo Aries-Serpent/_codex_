@@ -133,7 +133,7 @@ class FenceFixerConfig:
             print("Warning: PyYAML not available, using defaults", file=sys.stderr)
         except Exception as e:
             error_type = type(e).__name__
-            print(f"Warning: Error loading config: <ERROR_TYPE>", file=sys.stderr)
+            print("Warning: Error loading config: <ERROR_TYPE>", file=sys.stderr)
 
 
 class LanguageDetector:

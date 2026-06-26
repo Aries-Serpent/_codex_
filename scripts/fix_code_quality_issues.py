@@ -74,7 +74,7 @@ def get_ruff_statistics() -> dict:
         return stats
     except Exception as e:
         error_type = type(e).__name__
-        print(f"⚠️  Could not get statistics: <ERROR_TYPE>")
+        print("⚠️  Could not get statistics: <ERROR_TYPE>")
         return {}
 
 

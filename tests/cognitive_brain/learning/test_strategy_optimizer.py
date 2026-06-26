@@ -39,11 +39,11 @@ def test_qlearning_initialization():
     """Test 1: Q-Learning initializes correctly."""
     ql = QLearning(learning_rate=0.1, discount_factor=0.99, epsilon=0.1)
 
-    assert ql.learning_rate == 0.1
-    assert ql.discount_factor == 0.99
-    assert ql.epsilon == 0.1
-    assert len(ql.q_table) == 0
-    assert ql.episode_count == 0
+    assert ql.learning_rate == 0.1, "learning_rate is not valid"
+    assert ql.discount_factor == 0.99, "Count must be greater than zero"
+    assert ql.epsilon == 0.1, "epsilon is not valid"
+    assert len(ql.q_table) == 0, "Collection must not be empty"
+    assert ql.episode_count == 0, "Count must be greater than zero"
 
 
 def test_qlearning_action_selection():
@@ -59,7 +59,7 @@ def test_qlearning_action_selection():
 
     # Should always select best action with epsilon=0
     action = ql.select_action(state, actions)
-    assert action == "action_1"
+    assert action == "action_1", "action is not valid"
 
 
 def test_qlearning_update_rule():
@@ -86,7 +86,7 @@ def test_qlearning_update_rule():
     expected_q = initial_q + 0.1 * (reward + 0.9 * 1.0 - initial_q)
     actual_q = ql._get_q_value(state, action)
 
-    assert abs(actual_q - expected_q) < 1e-6
+    assert abs(actual_q - expected_q) < 1e-6, "Condition must be true"
 
 
 def test_qlearning_exploration_decay():
@@ -98,8 +98,8 @@ def test_qlearning_exploration_decay():
     # Simulate episode end
     ql.update("state_0", "action_0", 1.0, "state_1", done=True)
 
-    assert ql.epsilon < initial_epsilon
-    assert ql.epsilon >= ql.epsilon_min
+    assert ql.epsilon < initial_epsilon, "epsilon is not valid"
+    assert ql.epsilon >= ql.epsilon_min, "epsilon must be greater than zero"
 
 
 def test_qlearning_convergence_simple():
@@ -117,7 +117,7 @@ def test_qlearning_convergence_simple():
 
     # Q-value should converge near reward / (1 - gamma) = 1.0 / 0.1 = 10
     q_value = ql._get_q_value(state, action)
-    assert q_value > 5.0  # Should be high after convergence
+    assert q_value > 5.0, "q_value must be greater than zero"
 
 
 # ============================================================================
@@ -129,10 +129,10 @@ def test_dqn_initialization():
     """Test 6: DQN initializes correctly."""
     dqn = DQN(learning_rate=0.001, buffer_capacity=1000, batch_size=32)
 
-    assert dqn.learning_rate == 0.001
-    assert dqn.batch_size == 32
-    assert len(dqn.replay_buffer) == 0
-    assert dqn.step_count == 0
+    assert dqn.learning_rate == 0.001, "learning_rate is not valid"
+    assert dqn.batch_size == 32, "batch_size is not valid"
+    assert len(dqn.replay_buffer) == 0, "Collection must not be empty"
+    assert dqn.step_count == 0, "Count must be greater than zero"
 
 
 def test_dqn_replay_buffer():
@@ -143,11 +143,11 @@ def test_dqn_replay_buffer():
     for i in range(50):
         buffer.add(f"state_{i}", f"action_{i}", float(i), f"next_state_{i}", False)
 
-    assert len(buffer) == 50
+    assert len(buffer) == 50, "Buffer must not be empty"
 
     # Sample batch
     batch = buffer.sample(10)
-    assert len(batch) == 10
+    assert len(batch) == 10, "Batch must not be empty"
     assert all(isinstance(exp, Experience) for exp in batch)
 
 
@@ -163,7 +163,7 @@ def test_dqn_target_network():
         dqn.update(f"state_{i}", "action_0", 1.0, f"state_{i + 1}", done=False)
 
     # Target weights should be updated
-    assert "action_0" in dqn.target_weights
+    assert "action_0" in dqn.target_weights, "Condition must be true"
 
 
 def test_dqn_training_step():
@@ -179,8 +179,8 @@ def test_dqn_training_step():
         dqn.update(state, action, reward, next_state, done=False)
 
     # Should have performed updates
-    assert dqn.update_count > 0
-    assert len(dqn.loss_history) > 0
+    assert dqn.update_count > 0, "update_count must be positive"
+    assert len(dqn.loss_history) > 0, "Collection must not be empty"
 
 
 def test_dqn_convergence():
@@ -207,7 +207,7 @@ def test_dqn_convergence():
     # Average reward should improve
     early_avg = np.mean(rewards[:10])
     late_avg = np.mean(rewards[-10:])
-    assert late_avg >= early_avg  # Should maintain or improve
+    assert late_avg >= early_avg, "late_avg must be greater than zero"
 
 
 # ============================================================================
@@ -223,10 +223,10 @@ def test_ppo_policy_network():
     probs = ppo._get_action_probs(state)
 
     # Check probabilities sum to 1
-    assert abs(sum(probs.values()) - 1.0) < 1e-6
+    assert abs(sum(probs.values()) - 1.0) < 1e-6, "Value must be initialized"
 
     # Check all probabilities in [0, 1]
-    assert all(0 <= p <= 1 for p in probs.values())
+    assert all(0 <= p <= 1 for p in probs.values()), "Value must be initialized"
 
 
 def test_ppo_value_network():
@@ -241,7 +241,7 @@ def test_ppo_value_network():
 
     # Update value
     ppo.value_weights[state] = 5.0
-    assert ppo._get_value(state) == 5.0
+    assert ppo._get_value(state) == 5.0, "Value must be initialized"
 
 
 def test_ppo_advantage_calculation():
@@ -281,7 +281,7 @@ def test_ppo_advantage_calculation():
 
     advantages = ppo._compute_advantages()
 
-    assert len(advantages) == 3
+    assert len(advantages) == 3, "Advantages must not be empty"
     assert all(isinstance(adv, float) for adv in advantages)
 
 
@@ -300,7 +300,7 @@ def test_ppo_clip_objective():
         ppo.update(state, action, reward, next_state, done)
 
     # Should have updated policy
-    assert ppo.policy_updates > 0
+    assert ppo.policy_updates > 0, "policy_updates must be greater than zero"
 
 
 # ============================================================================
@@ -312,10 +312,10 @@ def test_strategy_optimizer_initialization():
     """Test 15: StrategyOptimizer creates properly."""
     optimizer = StrategyOptimizer(algorithm_type=AlgorithmType.Q_LEARNING)
 
-    assert optimizer.algorithm_type == AlgorithmType.Q_LEARNING
-    assert optimizer.algorithm is not None
+    assert optimizer.algorithm_type == AlgorithmType.Q_LEARNING, "algorithm_type is not valid"
+    assert optimizer.algorithm is not None, "algorithm must be initialized"
     assert isinstance(optimizer.algorithm, QLearning)
-    assert optimizer.episode_count == 0
+    assert optimizer.episode_count == 0, "Count must be greater than zero"
 
 
 def test_algorithm_selection():
@@ -342,7 +342,7 @@ def test_algorithm_selection():
     ]
 
     algo = optimizer.select_algorithm(simple_outcomes)
-    assert algo == AlgorithmType.Q_LEARNING
+    assert algo == AlgorithmType.Q_LEARNING, "algo is not valid"
 
     # Complex problem -> PPO
     complex_outcomes = [
@@ -364,7 +364,7 @@ def test_algorithm_selection():
     ]
 
     algo = optimizer.select_algorithm(complex_outcomes)
-    assert algo == AlgorithmType.PPO
+    assert algo == AlgorithmType.PPO, "algo is not valid"
 
 
 def test_performance_tracking():
@@ -393,9 +393,9 @@ def test_performance_tracking():
     # Optimize
     results = optimizer.optimize_strategy(outcomes, max_episodes=50)
 
-    assert "improvement_percentage" in results
-    assert "episodes_trained" in results
-    assert results["episodes_trained"] > 0
+    assert "improvement_percentage" in results, "Result must not be empty"
+    assert "episodes_trained" in results, "Result must not be empty"
+    assert results["episodes_trained"] > 0, "Value must be greater than zero"
 
 
 def test_convergence_detection():
@@ -406,12 +406,12 @@ def test_convergence_detection():
     # Create stable reward history (converged)
     optimizer.training_history = [0.5] * 150
 
-    assert optimizer._check_convergence()
+    assert optimizer._check_convergence(), "Condition must be true"
 
     # Create varying rewards (not converged)
     optimizer.training_history = [float(i % 10) / 10 for i in range(150)]
 
-    assert not optimizer._check_convergence()
+    assert not optimizer._check_convergence(), "Condition must be true"
 
 
 def test_outcome_analyzer_integration():
@@ -421,7 +421,7 @@ def test_outcome_analyzer_integration():
         outcome_analyzer=analyzer, algorithm_type=AlgorithmType.Q_LEARNING
     )
 
-    assert optimizer.outcome_analyzer is analyzer
+    assert optimizer.outcome_analyzer is analyzer, "outcome_analyzer is not valid"
 
     # Create and analyze outcome
     outcome = LearningOutcome(
@@ -448,7 +448,7 @@ def test_outcome_analyzer_integration():
     )
 
     # Check reward is calculated
-    assert analyzed.reward is not None
+    assert analyzed.reward is not None, "reward must be initialized"
     assert isinstance(analyzed.reward, float)
 
 
@@ -484,9 +484,9 @@ def test_strategy_improvement_target():
     results = optimizer.optimize_strategy(outcomes, max_episodes=200, target_improvement=0.20)
 
     # Check improvement
-    assert "improvement_percentage" in results
-    assert results["improvement_percentage"] is not None
-    assert results["episodes_trained"] > 0
+    assert "improvement_percentage" in results, "Result must not be empty"
+    assert results["improvement_percentage"] is not None, "Value must be initialized"
+    assert results["episodes_trained"] > 0, "Value must be greater than zero"
 
 
 def test_strategy_application():
@@ -518,7 +518,7 @@ def test_strategy_application():
     state = "state_c1_p1"
     action = optimizer.apply_strategy(state)
 
-    assert action is not None
+    assert action is not None, "action must be initialized"
     assert isinstance(action, str)
 
 
@@ -547,18 +547,18 @@ def test_metrics_export():
     results = optimizer.optimize_strategy(outcomes, max_episodes=10)
 
     # Check metrics
-    assert "algorithm" in results
-    assert "episodes_trained" in results
-    assert "baseline_performance" in results
-    assert "final_performance" in results
-    assert "improvement_percentage" in results
-    assert "training_history" in results
+    assert "algorithm" in results, "Result must not be empty"
+    assert "episodes_trained" in results, "Result must not be empty"
+    assert "baseline_performance" in results, "Result must not be empty"
+    assert "final_performance" in results, "Result must not be empty"
+    assert "improvement_percentage" in results, "Result must not be empty"
+    assert "training_history" in results, "Result must not be empty"
 
     # Get strategy metrics
     metrics = optimizer.get_metrics()
-    assert metrics is not None
+    assert metrics is not None, "metrics must be initialized"
     assert isinstance(metrics, StrategyMetrics)
-    assert metrics.algorithm_type == AlgorithmType.Q_LEARNING
+    assert metrics.algorithm_type == AlgorithmType.Q_LEARNING, "algorithm_type is not valid"
 
 
 # ============================================================================
@@ -598,9 +598,9 @@ def test_full_pipeline_qlearning():
     results = optimizer.optimize_strategy(outcomes, max_episodes=100)
 
     # Verify results
-    assert results["episodes_trained"] > 0
-    assert "policy" in results
-    assert len(optimizer.training_history) > 0
+    assert results["episodes_trained"] > 0, "Value must be greater than zero"
+    assert "policy" in results, "Result must not be empty"
+    assert len(optimizer.training_history) > 0, "Collection must not be empty"
 
 
 def test_full_pipeline_dqn():
@@ -629,8 +629,8 @@ def test_full_pipeline_dqn():
     # Optimize
     results = optimizer.optimize_strategy(outcomes, max_episodes=50)
 
-    assert results["algorithm"] == "dqn"
-    assert results["episodes_trained"] > 0
+    assert results["algorithm"] == "dqn", "Result must not be empty"
+    assert results["episodes_trained"] > 0, "Value must be greater than zero"
 
 
 def test_full_pipeline_ppo():
@@ -659,8 +659,8 @@ def test_full_pipeline_ppo():
     # Optimize
     results = optimizer.optimize_strategy(outcomes, max_episodes=40)
 
-    assert results["algorithm"] == "ppo"
-    assert results["episodes_trained"] > 0
+    assert results["algorithm"] == "ppo", "Result must not be empty"
+    assert results["episodes_trained"] > 0, "Value must be greater than zero"
 
 
 if __name__ == "__main__":
