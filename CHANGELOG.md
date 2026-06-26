@@ -34,7 +34,7 @@
 
 | File | Change | Purpose |
 |------|--------|---------|
-| `src/codex/governance/rbac.py` | Added pragma allowlist comment (line 25) | Suppress false-positive secret |
+| `src/codex/governance/rbac.py` | Added pragma allowlist comment (line 25) | Suppress false-positive secret | <!-- pragma: allowlist secret -->
 | `tests/conftest.py` | Fixed malformed assert syntax (line 1114) | Enable test collection |
 | `docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md` | Added session entry | REQ-4 compliance |
 | `CHANGELOG.md` | Added work documentation | REQ-5 compliance |
@@ -72,7 +72,7 @@
 | Package | Issue | Resolution | Status |
 |---------|-------|-----------|--------|
 | **P0** | Auth Tests environment | pytest verified installed, dependencies configured | ✅ RESOLVED |
-| **P1** | Secrets baseline enforcement | No detect-secrets alerts, baseline clean | ✅ RESOLVED |
+| **P1** | Secrets baseline enforcement | No detect-secrets alerts, baseline clean | ✅ RESOLVED | <!-- pragma: allowlist secret -->
 | **P2** | Phase 12.2 compliance | 100% score (REQ-1..REQ-6 all passing) | ✅ RESOLVED |
 
 #### Phase 12.2 Compliance Status
@@ -83,7 +83,7 @@
 | REQ-3 (Tests Pass) | ✅ 100% | Latest CI run in progress (neutral state) |
 | REQ-4 (Accountability) | ✅ 100% | Updated in latest commit |
 | REQ-5 (CHANGELOG) | ✅ 100% | Updated in latest commit |
-| REQ-6 (Secrets) | ✅ 100% | No secrets detected in diff |
+| REQ-6 (Secrets) | ✅ 100% | No secrets detected in diff | <!-- pragma: allowlist secret -->
 | **Composite Score** | **100%** | **APPROVED** |
 
 #### Validation Results
@@ -126,7 +126,7 @@
 | REQ-5 (CHANGELOG) | ✅ PASS | Updated in this commit |
 | Code Quality (13 CodeQL issues) | ✅ PASS | All fixed in commit a94bc077 |
 | Action Versions | ✅ PASS | github-script@v8 enforced |
-| Secrets Baseline | ⏳ REVIEW | Flagged strings require pragma allowlist or baseline sync |
+| Secrets Baseline | ⏳ REVIEW | Flagged strings require pragma allowlist or baseline sync | <!-- pragma: allowlist secret -->
 
 #### CI Status Summary
 - ❌ Auth Tests Workflow: pytest environment issue (expected — CI env may differ from CI env)
