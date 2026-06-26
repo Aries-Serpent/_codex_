@@ -24,7 +24,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any
 
-from codex.authz import AuditLogger, PermissionValidator, RoleManager
+from ..authz import AuditLogger, PermissionValidator, RoleManager
 
 
 # ---------------------------------------------------------------------------

@@ -26,7 +26,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import TYPE_CHECKING
 
-from codex.authz import AuditLogger
+from ..authz import AuditLogger
 
 if TYPE_CHECKING:
     from .rbac import Action, RBACEnforcer, ResourceType
