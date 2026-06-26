@@ -16,8 +16,7 @@ compliance across open PRs. Tracks:
 Usage
 -----
     python scripts/ci/wec_health_monitor.py [--json] [--verbose]
-    python scripts/ci/wec_health_monitor.py --summary [--days N]
-    python scripts/ci/wec_health_monitor.py --trends [--export FILE]
+    python scripts/ci/wec_health_monitor.py [--export FILE]
 """
 
 from __future__ import annotations
@@ -28,7 +27,7 @@ import logging
 import subprocess
 import sys
 from dataclasses import dataclass, asdict
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -146,9 +145,10 @@ def check_req_compliance(pr_number: int) -> tuple[bool, bool]:
             text=True,
             cwd=REPO_ROOT,
         )
-        # Both must be satisfied
-        req_ok = result.returncode == 0
-        return req_ok, req_ok
+        output = result.stdout
+        req4_ok = "✅ REQ-4:" in output
+        req5_ok = "✅ REQ-5:" in output
+        return req4_ok, req5_ok
     except Exception as e:
         logger.debug(f"REQ check failed for PR #{pr_number}: {e}")
         return False, False
@@ -173,8 +173,16 @@ def get_workflow_metrics(pr_number: int) -> tuple[int, float]:
         if not checks:
             return 0, 1.0
         
-        passed = sum(1 for c in checks if c.get("status") == "PASS")
-        total = len(checks)
+        completed_checks = [c for c in checks if c.get("status") == "COMPLETED"]
+        if not completed_checks:
+            return len(checks), 1.0
+
+        passed = sum(
+            1
+            for c in completed_checks
+            if c.get("conclusion") in {"SUCCESS", "SKIPPED", "NEUTRAL"}
+        )
+        total = len(completed_checks)
         pass_rate = passed / total if total > 0 else 1.0
         
         return total, pass_rate
@@ -201,11 +209,12 @@ def calculate_time_to_merge(pr: dict[str, Any]) -> float:
 
 def calculate_health_score(summary: HealthSummary) -> float:
     """Calculate overall health score (0.0 - 1.0)."""
+    merge_speed_score = 1.0 - min(1.0, summary.avg_merge_time_hours / 24.0)
     score = (
         HEALTH_WEIGHTS["wec_compliance_rate"] * summary.wec_compliance_rate +
         HEALTH_WEIGHTS["workflow_pass_rate"] * summary.avg_workflow_pass_rate +
         HEALTH_WEIGHTS["req_compliance_rate"] * summary.req_compliance_rate +
-        HEALTH_WEIGHTS["merge_speed"] * min(1.0, summary.avg_merge_time_hours / 24.0)
+        HEALTH_WEIGHTS["merge_speed"] * merge_speed_score
     )
     return min(1.0, max(0.0, score))
 
@@ -330,7 +339,8 @@ def _print_health_report(summary: HealthSummary) -> None:
     wec_contrib = HEALTH_WEIGHTS["wec_compliance_rate"] * summary.wec_compliance_rate
     req_contrib = HEALTH_WEIGHTS["req_compliance_rate"] * summary.req_compliance_rate
     wf_contrib = HEALTH_WEIGHTS["workflow_pass_rate"] * summary.avg_workflow_pass_rate
-    merge_contrib = HEALTH_WEIGHTS["merge_speed"] * min(1.0, summary.avg_merge_time_hours / 24.0)
+    merge_speed_score = 1.0 - min(1.0, summary.avg_merge_time_hours / 24.0)
+    merge_contrib = HEALTH_WEIGHTS["merge_speed"] * merge_speed_score
     
     print(f"  • WEC Compliance:    {wec_contrib:.2f} ({HEALTH_WEIGHTS['wec_compliance_rate']:.0%} weight)")
     print(f"  • Workflow Success:  {wf_contrib:.2f} ({HEALTH_WEIGHTS['workflow_pass_rate']:.0%} weight)")
@@ -385,23 +395,10 @@ def main(argv: list[str] | None = None) -> int:
         help="Verbose output",
     )
     parser.add_argument(
-        "--summary",
-        action="store_true",
-        default=False,
-        help="Generate summary report and save",
-    )
-    parser.add_argument(
         "--export",
         metavar="FILE",
         default="",
         help="Export report to JSON file",
-    )
-    parser.add_argument(
-        "--days",
-        type=int,
-        default=7,
-        metavar="N",
-        help="Number of days for trend analysis (default: 7)",
     )
     
     args = parser.parse_args(argv)

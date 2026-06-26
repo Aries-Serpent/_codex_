@@ -2093,17 +2093,24 @@ def validate_wec_compliance(
         Tuple of (is_compliant: bool, issues: list[str])
         where issues contains human-readable compliance violations
     """
-    import json as _json
-
     issues: list[str] = []
 
     # Step 1: Fetch PR body and extract WEC state
     try:
         result = subprocess.run(
-            ["gh", "pr", "view", pr_number, "--json", "body", "--jq", ".body"],
+            [
+                "gh",
+                "pr",
+                "view",
+                pr_number,
+                "--json",
+                "body,headRefName",
+            ],
             capture_output=True, text=True, check=True,
         )
-        pr_body = result.stdout.strip()
+        pr_data = json.loads(result.stdout)
+        pr_body = (pr_data.get("body") or "").strip()
+        head_ref = pr_data.get("headRefName") or ""
     except subprocess.CalledProcessError:
         issues.append(f"❌ Could not fetch PR #{pr_number} body")
         return False, issues
@@ -2112,22 +2119,20 @@ def validate_wec_compliance(
 
     # Step 2: Define required workflows by merge target
     # (Map from WEC_CANONICAL_ITEMS.md)
+    is_agent_pr = head_ref.startswith(("copilot/", "feature/"))
+    required_workflows = {
+        "pre-merge-validation.yml",
+        "comment-review-gate.yml",
+        "deferral-language-gate.yml",
+        "workflow-execution-gate.yml",
+    }
+    if is_agent_pr:
+        required_workflows.add("agent-auth-delegation.yml")
+
     if merge_target == "main":
-        required_workflows = {
-            "pre-merge-validation.yml",
-            "comment-review-gate.yml",
-            "deferral-language-gate.yml",
-            "agent-auth-delegation.yml",
-            "workflow-execution-gate.yml",
-        }
+        pass
     elif merge_target == "0D_base_":
-        required_workflows = {
-            "pre-merge-validation.yml",
-            "comment-review-gate.yml",
-            "deferral-language-gate.yml",
-            "agent-auth-delegation.yml",
-            "workflow-execution-gate.yml",
-        }
+        pass
     else:
         issues.append(f"⚠  Unknown merge target: {merge_target}")
         return False, issues
@@ -2198,7 +2203,7 @@ def check_wec_compliance(
         if verbose:
             print("\n📖 Remediation steps:")
             print("   1. Ensure all required workflows are selected in WEC")
-            print("   2. Run: python session_wrapup_autofix.py --select-merge-required --pr-number {pr_number}")
+            print(f"   2. Run: python session_wrapup_autofix.py --select-merge-required --pr-number {pr_number}")
             print("   3. Update AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)")
             print("   4. Update CHANGELOG.md with [Unreleased] section (REQ-5)")
 

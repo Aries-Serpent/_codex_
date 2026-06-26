@@ -263,13 +263,16 @@ jobs:
           # ─────────────────────────────────────────────────────────────────────────
           echo "🔍 Phase 4: Checking WEC compliance as approval prerequisite..."
           if command -v python3 &> /dev/null; then
+            set +e
             WEC_CHECK=$(python3 scripts/ci/session_wrapup_autofix.py \
               --pr-number "$TARGET_PR" \
               --check-wec-compliance \
-              --merge-target "main" 2>&1 || echo "WEC_CHECK_FAILED")
-            if echo "$WEC_CHECK" | grep -q "WEC COMPLIANCE: PASSED"; then
+              --merge-target "main" 2>&1)
+            WEC_STATUS=$?
+            set -e
+            if [ "$WEC_STATUS" -eq 0 ] && echo "$WEC_CHECK" | grep -q "WEC COMPLIANCE: PASSED"; then
               echo "✅ WEC compliance check passed — prerequisite satisfied"
-            elif [ "$WEC_CHECK" = "WEC_CHECK_FAILED" ]; then
+            elif [ "$WEC_STATUS" -eq 2 ]; then
               echo "⚠️ WEC check skipped (script not available) — proceeding with approval evaluation"
             else
               echo "⚠️ WEC compliance check did not pass — approval will proceed with caution"

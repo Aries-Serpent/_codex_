@@ -115,7 +115,7 @@ If a maintainer manually edits the WEC during the session:
 **Actions:**
 1. **Run Compliance Check:**
    ```bash
-   python scripts/ci/session_wrapup_autofix.py --check --pr N
+   python scripts/ci/session_wrapup_autofix.py --check --pr-number N
    ```
 2. **Validate REQ-4 & REQ-5:**
    - ✅ AGENT_ACCOUNTABILITY_REPORT.md was updated in this session

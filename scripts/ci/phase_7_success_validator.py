@@ -36,7 +36,7 @@ import logging
 import subprocess
 import sys
 from dataclasses import dataclass, asdict, field
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -362,8 +362,11 @@ def validate_all_criteria(evaluation_days: int = 30) -> PhaseValidationResult:
     total_count = len(criteria)
     all_passed = passed_count == total_count
     
-    # Calculate weighted overall score
-    overall_score = sum(c.actual_value * c.weight for c in criteria) / sum(c.weight for c in criteria)
+    # Calculate weighted overall score as the fraction of weighted criteria passed.
+    total_weight = sum(c.weight for c in criteria)
+    overall_score = (
+        sum(c.weight for c in criteria if c.passed) / total_weight if total_weight else 0.0
+    )
     
     # Determine recommendation and next actions
     if all_passed:
@@ -399,6 +402,11 @@ def validate_all_criteria(evaluation_days: int = 30) -> PhaseValidationResult:
 
 def print_validation_report(result: PhaseValidationResult) -> None:
     """Print human-readable validation report."""
+    def _format_value(criterion: SuccessCriterion, value: float) -> str:
+        if "minutes" in criterion.name.lower():
+            return f"{value:.1f} minutes"
+        return f"{value:.1%}"
+
     print()
     print("=" * 80)
     print(f"🎯 Phase 6-7 Success Criteria Validation — {result.timestamp}")
@@ -413,8 +421,8 @@ def print_validation_report(result: PhaseValidationResult) -> None:
     for criterion in result.criteria:
         op_str = "≥" if criterion.operator == "gte" else "≤"
         print(f"  {criterion.status_emoji} {criterion.name}")
-        print(f"     Threshold: {criterion.threshold:.1%} ({op_str})")
-        print(f"     Actual: {criterion.actual_value:.1%}")
+        print(f"     Threshold: {_format_value(criterion, criterion.threshold)} ({op_str})")
+        print(f"     Actual: {_format_value(criterion, criterion.actual_value)}")
     print()
     
     print(f"📌 Recommendation:")

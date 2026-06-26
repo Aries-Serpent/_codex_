@@ -234,7 +234,7 @@ gh workflow run test-variables-api.yml --repo Aries-Serpent/_codex_ --ref 0D_bas
 
 ```bash
 # Before final commit, ALWAYS run:
-python scripts/ci/session_wrapup_autofix.py --check --pr N
+python scripts/ci/session_wrapup_autofix.py --check --pr-number N
 
 # Expected output: REQ-4 ✅, REQ-5 ✅, WEC valid ✅
 ```

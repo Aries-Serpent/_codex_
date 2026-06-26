@@ -12,6 +12,10 @@ name: Phase 12.2 Compliance Check
     - cron: "0 9 * * 1"
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   pull-requests: write
@@ -149,4 +153,3 @@ jobs:
         if: steps.compliance.outcome == 'failure' && needs.detect-merge.outputs.is_merge == 'true'
         run: |
           echo "::warning::Phase 12.2 compliance check found issues on merge commit. Review governance-report artifact."
-
