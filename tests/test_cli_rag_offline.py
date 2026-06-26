@@ -85,14 +85,14 @@ class TestTfidfIntegration:
         result = runner.invoke(app, ["list", "--tenant-id", "test"])
 
         # Should succeed even if no indices exist
-        assert result.exit_code == 0
+        assert result.exit_code == 0, "Result must not be empty"
 
     def test_stats_command(self, runner):
         """Test stats command error handling."""
         result = runner.invoke(app, ["stats", "--index-name", "nonexistent", "--tenant-id", "test"])
 
         # Should fail gracefully
-        assert result.exit_code == 1
+        assert result.exit_code == 1, "Result must not be empty"
         assert "not found" in result.stdout.lower() or "error" in result.stdout.lower()
 
     def test_help_commands(self, runner):
@@ -116,7 +116,7 @@ class TestProviderSelection:
             # Create provider
             provider = TfidfEmbeddingProvider(max_features=384)
             assert provider is not None
-            assert provider.get_dimension() == 384
+            assert provider.get_dimension() == 384, "Provider must be initialized"
         except ImportError as e:
             pytest.skip(f"Required dependencies not available: {e}")
 
@@ -140,7 +140,7 @@ class TestProviderSelection:
             else:
                 embeddings = provider.encode(texts)
 
-            assert embeddings.shape[0] == 3
+            assert embeddings.shape[0] == 3, "Embeddings must have valid shape"
         except ImportError as e:
             pytest.skip(f"Required dependencies not available: {e}")
 
@@ -183,14 +183,14 @@ class TestOfflineCapability:
 
             # Chunk text
             chunks = chunk_text(text, chunk_size=50, overlap=10)
-            assert len(chunks) > 0
+            assert len(chunks) > 0, "Length must be valid"
 
             # Encode chunks
             texts = [chunk[2] for chunk in chunks]
             embeddings = provider.encode(texts)
 
             # Verify embeddings
-            assert embeddings.shape[0] == len(chunks)
+            assert embeddings.shape[0] == len(chunks), "Embeddings must have valid shape"
             assert embeddings.shape[1] <= 384  # May be less for small corpus
             assert embeddings.shape[1] > 0  # But must have some dimensions
 
@@ -234,7 +234,7 @@ class TestOfflineCapability:
             )
 
             # Verify index was created
-            assert index_path.exists()
+            assert index_path.exists(), "Assertion must pass"
             assert (index_path / "index.faiss").exists()
             assert (index_path / "chunks.json").exists()
 

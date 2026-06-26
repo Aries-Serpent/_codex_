@@ -7,6 +7,14 @@ Priority 1 - CRITICAL gap (0% → 80%)
 
 from unittest.mock import MagicMock, Mock, patch
 
+
+@pytest.fixture(autouse=True)
+def cleanup_mocks():
+    """Automatically reset all mocks after each test."""
+    yield
+    mock.patch.stopall()
+
+
 from codex.rag.gpu_utils import (
     check_cuda_available,
     get_gpu_memory,

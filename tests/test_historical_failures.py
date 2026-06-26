@@ -115,66 +115,66 @@ Artifact 'coverage-reports' not found in workflow run
         """Test detection of import errors"""
         report = agent.analyze_logs("test-import", import_error_log)
 
-        assert report.root_cause == "import_error"
-        assert report.confidence >= 0.85
+        assert report.root_cause == "import_error", "Assertion must pass"
+        assert report.confidence >= 0.85, "Assertion must pass"
         assert report.severity in ["high", "critical"]
-        assert report.auto_fixable is True
+        assert report.auto_fixable is True, "Assertion must pass"
 
     def test_rust_compile_error_detection(self, agent, rust_compile_error_log):
         """Test detection of Rust compilation errors"""
         report = agent.analyze_logs("test-rust", rust_compile_error_log)
 
-        assert report.root_cause == "rust_compile_error"
-        assert report.confidence >= 0.90
-        assert report.severity == "critical"
+        assert report.root_cause == "rust_compile_error", "Assertion must pass"
+        assert report.confidence >= 0.90, "Assertion must pass"
+        assert report.severity == "critical", "Assertion must pass"
         assert "error[E" in str(report.findings)
 
     def test_disk_full_detection(self, agent, disk_full_log):
         """Test detection of disk space issues"""
         report = agent.analyze_logs("test-disk", disk_full_log)
 
-        assert report.root_cause == "disk_full"
-        assert report.confidence >= 0.95
-        assert report.severity == "critical"
-        assert report.auto_fixable is True
+        assert report.root_cause == "disk_full", "Assertion must pass"
+        assert report.confidence >= 0.95, "Assertion must pass"
+        assert report.severity == "critical", "Assertion must pass"
+        assert report.auto_fixable is True, "Assertion must pass"
 
         # Check remediation suggests disk cleanup
-        assert any("disk" in str(r).lower() for r in report.remediation)
+        assert any("disk" in str(r).lower() for r in report.remediation), "Assertion must pass"
 
     def test_timeout_detection(self, agent, timeout_log):
         """Test detection of timeout issues"""
         report = agent.analyze_logs("test-timeout", timeout_log)
 
-        assert report.root_cause == "timeout"
-        assert report.confidence >= 0.80
-        assert report.severity == "medium"
-        assert report.auto_fixable is True
+        assert report.root_cause == "timeout", "Assertion must pass"
+        assert report.confidence >= 0.80, "Assertion must pass"
+        assert report.severity == "medium", "Assertion must pass"
+        assert report.auto_fixable is True, "Assertion must pass"
 
     def test_cache_miss_detection(self, agent, cache_miss_log):
         """Test detection of cache misses"""
         report = agent.analyze_logs("test-cache", cache_miss_log)
 
-        assert report.root_cause == "cache_miss"
-        assert report.confidence >= 0.70
-        assert report.severity == "low"
-        assert report.auto_fixable is True
+        assert report.root_cause == "cache_miss", "Assertion must pass"
+        assert report.confidence >= 0.70, "Assertion must pass"
+        assert report.severity == "low", "Assertion must pass"
+        assert report.auto_fixable is True, "Assertion must pass"
 
     def test_dependency_error_detection(self, agent, dependency_error_log):
         """Test detection of dependency errors"""
         report = agent.analyze_logs("test-dep", dependency_error_log)
 
-        assert report.root_cause == "dependency_error"
-        assert report.confidence >= 0.85
-        assert report.severity == "high"
-        assert report.auto_fixable is True
+        assert report.root_cause == "dependency_error", "Assertion must pass"
+        assert report.confidence >= 0.85, "Assertion must pass"
+        assert report.severity == "high", "Assertion must pass"
+        assert report.auto_fixable is True, "Assertion must pass"
 
     def test_artifact_missing_detection(self, agent, artifact_missing_log):
         """Test detection of missing artifacts"""
         report = agent.analyze_logs("test-artifact", artifact_missing_log)
 
-        assert report.root_cause == "artifact_missing"
-        assert report.confidence >= 0.80
-        assert report.severity == "medium"
+        assert report.root_cause == "artifact_missing", "Assertion must pass"
+        assert report.confidence >= 0.80, "Assertion must pass"
+        assert report.severity == "medium", "Assertion must pass"
 
     def test_multi_failure_prioritization(self, agent):
         """Test handling of multiple failure types"""
@@ -188,14 +188,14 @@ No space left on device
 
         # Should prioritize critical issues (disk full or compile error)
         assert report.severity in ["critical", "high"]
-        assert len(report.findings) >= 2
+        assert len(report.findings) >= 2, "Length must be valid"
 
     def test_confidence_scoring(self, agent, disk_full_log):
         """Test confidence score calculation"""
         report = agent.analyze_logs("test-confidence", disk_full_log)
 
         # High confidence for clear patterns
-        assert 0.0 <= report.confidence <= 1.0
+        assert 0.0 <= report.confidence <= 1.0, "Assertion must pass"
         assert report.confidence >= 0.85  # Disk full should be very clear
 
     def test_json_output_schema(self, agent, import_error_log):
@@ -222,7 +222,7 @@ class TestIntegration:
         """Test agent initializes correctly"""
         agent = CIDiagnosticAgent()
         assert agent is not None
-        assert len(agent.patterns) > 0
+        assert len(agent.patterns) > 0, "Length must be valid"
 
     def test_end_to_end_analysis(self, tmp_path):
         """Test complete analysis workflow"""
@@ -237,7 +237,7 @@ class TestIntegration:
 
         # Verify report
         assert report.root_cause is not None
-        assert report.confidence > 0
+        assert report.confidence > 0, "Assertion must pass"
 
         # Test report generation
         md_report = report.to_markdown()
@@ -265,7 +265,7 @@ def test_pattern_coverage(failure_type, expected_pattern):
 
     # Check pattern exists
     patterns = {p["id"]: p for p in agent.patterns}
-    assert failure_type in patterns
+    assert failure_type in patterns, "Assertion must pass"
 
     # Verify pattern can match expected strings
     import re

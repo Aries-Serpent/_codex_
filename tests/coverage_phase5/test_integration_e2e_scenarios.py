@@ -19,13 +19,13 @@ class EndToEndScenario:
 
     async def execute_step(self, step: str) -> bool:
         # Simulate step execution
-        await asyncio.sleep(0.01)
+        await asyncio.wait_for(asyncio.sleep(0.01), timeout=1.5)
         self.results[step] = {"status": "completed"}
         return True
 
     async def run(self) -> bool:
         for step in self.steps:
-            if not await self.execute_step(step):
+            if not await asyncio.wait_for(self.execute_step(step), timeout=30):
                 return False
         return True
 
@@ -38,7 +38,7 @@ async def test_e2e_initialization_sequence():
     scenario.add_step("connect_service")
     scenario.add_step("initialize_resources")
 
-    success = await scenario.run()
+    success = await asyncio.wait_for(scenario.run(), timeout=30)
 
     assert success
     assert len(scenario.results) == 3
@@ -54,7 +54,7 @@ async def test_e2e_request_response_cycle():
     scenario.add_step("format_response")
     scenario.add_step("send_response")
 
-    success = await scenario.run()
+    success = await asyncio.wait_for(scenario.run(), timeout=30)
 
     assert success
     assert len(scenario.steps) == 5
@@ -68,7 +68,7 @@ async def test_e2e_error_handling():
     scenario.add_step("catch_error")
     scenario.add_step("log_error")
 
-    success = await scenario.run()
+    success = await asyncio.wait_for(scenario.run(), timeout=30)
 
     assert success
 
@@ -81,7 +81,7 @@ async def test_e2e_complex_workflow():
     for i in range(10):
         scenario.add_step(f"process_{i}")
 
-    success = await scenario.run()
+    success = await asyncio.wait_for(scenario.run(), timeout=30)
 
     assert success
     assert len(scenario.results) == 10

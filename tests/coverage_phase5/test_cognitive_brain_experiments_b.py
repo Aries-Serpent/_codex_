@@ -1,3 +1,4 @@
+import asyncio
 """Test cognitive brain experiment validation 1."""
 
 from __future__ import annotations
@@ -41,7 +42,7 @@ async def test_experiment_1_config():
 async def test_experiment_1_run():
     """Test experiment 1 execution."""
     harness = ExperimentHarness("exp1")
-    result = await harness.run()
+    result = await asyncio.wait_for(harness.run(), timeout=30)
 
     assert result["status"] == "success"
     assert result["exp_id"] == "exp1"

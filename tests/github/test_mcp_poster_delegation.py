@@ -6,6 +6,14 @@ mocked urllib responses (no real network calls, no secrets required).
 
 from __future__ import annotations
 
+
+@pytest.fixture(autouse=True)
+def cleanup_mocks():
+    """Automatically reset all mocks after each test."""
+    yield
+    mock.patch.stopall()
+
+
 import json
 import unittest.mock as mock
 

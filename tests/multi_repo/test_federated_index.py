@@ -42,11 +42,11 @@ def test_federation_basic():
         )
 
         out = ART / "federated_index.json"
-        assert out.exists()
+        assert out.exists(), "Assertion must pass"
         data = json.loads(out.read_text())
 
-        assert data["total_scanned"] == 1
-        assert len(data["repositories"]) == 1
+        assert data["total_scanned"] == 1, "Data must not be empty"
+        assert len(data["repositories"]) == 1, "Length must be valid"
         repo = data["repositories"][0]
         assert "training" in repo["capabilities"]
         assert "checkpoint" in repo["capabilities"]
@@ -60,4 +60,4 @@ def test_federation_disabled():
     env["FEDERATION_ENABLE"] = "0"
     subprocess.run([sys.executable, "scripts/multi_repo/federated_index.py"], check=True, env=env)
 
-    assert not (ART / "federated_index.json").exists()
+    assert not (ART / "federated_index.json").exists(), "Assertion must pass"
