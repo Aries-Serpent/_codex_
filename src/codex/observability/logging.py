@@ -203,8 +203,11 @@ class ObservabilityLogger:
                 metadata={"task_type": "generate_code"},
             )
         """
+        DEBUG_THRESHOLD = "debug"
         level = logging.ERROR if status == "error" else (
-            logging.WARNING if status == "failure" else logging.INFO
+            logging.WARNING if status == "failure" else (
+                logging.DEBUG if status == DEBUG_THRESHOLD else logging.INFO
+            )
         )
         record = _build_record(
             session_id=self.session_id,
