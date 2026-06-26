@@ -227,7 +227,7 @@ jobs:
           EOF
 
       - name: Commit dashboard updates
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: "chore: update performance dashboard [skip ci]"
           file_pattern: ".codex/PHASE_8_3_PERFORMANCE_DASHBOARD.md"
