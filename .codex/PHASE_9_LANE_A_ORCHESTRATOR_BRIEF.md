@@ -21,7 +21,7 @@ This brief has full execution authority. No approval gates. Execute as planned.
 
 **Lead Agent:** `agent-orchestrator` v1.2.0  
 **Role:** Coordinate multi-agent workflows across all three Phase 9 tracks  
-**Authority Level:** E_ADVISORY + D_CAPABLE delegation (semanti routing authority)  
+**Authority Level:** E_ADVISORY + D_CAPABLE delegation (semantic routing authority)  
 **Duration:** 8 days (2026-06-30 → 2026-07-07)  
 
 **Objective:** Orchestrate parallel execution of Track 9.1 (Audit & Validation), Track 9.2 (Execution & Healing), and Track 9.3 (Deployment & Gates) through unified semantic routing and capability-based delegation.
