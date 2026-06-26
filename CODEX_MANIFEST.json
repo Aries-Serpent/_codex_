@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-06-26T00:44:27Z",
+  "generated_at": "2026-06-26T05:12:23Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -951,6 +951,18 @@
       "autonomy_model": "E"
     },
     {
+      "name": "self-healing-orchestrator-agent",
+      "role": "orchestrator",
+      "enforcement_tier": "PARTIAL",
+      "autonomy_model": "D_CAPABLE"
+    },
+    {
+      "name": "branch-divergence-resolution-agent",
+      "role": "specialist",
+      "enforcement_tier": "PARTIAL",
+      "autonomy_model": "E"
+    },
+    {
       "name": "post-accountability-to-discussion",
       "role": "utility",
       "enforcement_tier": "PARTIAL",
@@ -1602,6 +1614,11 @@
       "name": "phase-8-3-perf-monitor",
       "enforcement_tier": "PARTIAL",
       "has_concurrency": true
+    },
+    {
+      "name": "phase-9-daily-standup",
+      "enforcement_tier": "GROUNDED",
+      "has_concurrency": false
     },
     {
       "name": "post-accountability-to-discussion",
@@ -2359,9 +2376,9 @@
   "operating_model": {
     "current": "E",
     "target": "D",
-    "d_capable_agents": 9,
+    "d_capable_agents": 10,
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "f1043c5e067af860926bef6cd22b5ed22602e20777be0b6df137c1ef549b38e9"
+  "integrity_sha256": "1c4345a17972ba3f8914c9e92b4ca83c6e122971f12c963591edbbf662a6540d"
 }

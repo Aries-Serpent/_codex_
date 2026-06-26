@@ -1,7 +1,7 @@
 version: 2.0.0
-last_updated: '2026-06-11T06:30:00Z'
-total_agents: 159
-active_agents: 145
+last_updated: '2026-06-26T04:25:00Z'
+total_agents: 161
+active_agents: 147
 archived_agents: 14
 agents:
 - id: github-app-manager
@@ -3803,6 +3803,65 @@ agents:
   - session_branch_management
   - zero_d_base_routing
   - integration_branch_management
+- id: self-healing-orchestrator-agent
+  name: Self-Healing Orchestrator Agent
+  version: 1.0.0
+  file: .github/agents/self-healing-orchestrator-agent.md
+  status: active
+  maturity: production
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: ci_cd
+  subcategory: healing_orchestration
+  description: 'Orchestrates autonomous self-healing loops across CI failure patterns (RP-001 through RP-004+). Coordinates pattern recognition, fix application, verification, and escalation across agents.'
+  added_in_pr: Phase9
+  sprint: Sprint 6
+  physics_model:
+    primary: automation
+    secondary: orchestration
+  enforcement_tier: PARTIAL
+  autonomy_model: D_CAPABLE
+  handoff_protocol: structured
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: orchestrator
+  capability_tags:
+  - ci_healing
+  - pattern_orchestration
+  - cascade_coordination
+  - autonomous_fix_dispatch
+- id: branch-divergence-resolution-agent
+  name: Branch Divergence Resolution Agent
+  version: 1.1.0
+  file: .github/agents/branch-divergence-resolution-agent.md
+  status: active
+  maturity: production
+  has_prompts: false
+  has_tests: false
+  has_docs: true
+  has_src: false
+  category: ci_cd
+  subcategory: branch_management
+  description: 'Production-ready Copilot custom agent that detects, classifies, and resolves branch divergence between staging (0D_base_) and default (main) branches.'
+  added_in_pr: Phase9
+  sprint: Sprint 6
+  physics_model:
+    primary: automation
+    secondary: merge_management
+  enforcement_tier: PARTIAL
+  autonomy_model: E
+  handoff_protocol: none
+  accepts_handoff_from: []
+  consolidation_priority: false
+  role: specialist
+  capability_tags:
+  - branch_divergence_detection
+  - branch_classification
+  - auto_merge_resolution
+  - pipeline_merge_protocol
+
 - id: post-accountability-to-discussion
   name: Post Accountability to Discussion Workflow
   version: 1.0.0
