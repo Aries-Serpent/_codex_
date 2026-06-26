@@ -41,7 +41,7 @@ jobs:
 
       - name: Analyze issue with GitHub Copilot
         id: triage
-        uses: mvkaran/gh-copilot@latest
+        uses: mvkaran/gh-copilot@v1.0.0
         with:
           copilot-token: ${{ secrets.CODEX_MASTER_KEY }}
           github-mcp-token: ${{ secrets.CODEX_MASTER_KEY }}
