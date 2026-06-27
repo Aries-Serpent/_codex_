@@ -86,10 +86,16 @@ def perplexity(
 def token_accuracy(
     preds: Sequence,
     targets: Sequence[int],
+    ignore_index: int = -100,
 ) -> float:
-    """DEPRECATED: Use metrics.compute_token_accuracy() instead."""
+    """DEPRECATED: Use metrics.compute_token_accuracy() instead.
+    
+    Backward-compatible token accuracy wrapper that uses token_stats.
+    """
     _deprecation_warning("token_accuracy", "compute_token_accuracy")
-    return _compute_token_accuracy(preds, targets)
+    # Use token_stats for backward compatibility
+    stats = token_stats(preds, targets, ignore_index=ignore_index)
+    return stats["accuracy"]
 
 
 def accuracy(predictions: Iterable[int], targets: Iterable[int]) -> float:
@@ -116,19 +122,34 @@ def rouge_l(predictions: Sequence[str], references: Sequence[str]) -> float:
 
 
 def token_stats(
-    preds: Sequence[int],
-    targets: Sequence[int],
+    pred_tokens: Iterable,
+    target_tokens: Iterable[int],
     *,
     ignore_index: int = -100,
-) -> dict[str, int]:
-    """DEPRECATED: No direct replacement; compute_token_accuracy() covers most use cases."""
+) -> dict[str, float]:
+    """DEPRECATED: No direct replacement; compute_token_accuracy() covers most use cases.
+    
+    Return token-level statistics including accuracy.
+    """
     _deprecation_warning("token_stats", "compute_token_accuracy")
-    # Legacy implementation: count valid, masked tokens
-    valid_indices = [i for i, y in enumerate(targets) if int(y) != ignore_index]
+    preds = [int(p) for p in _materialise(pred_tokens)]
+    targs = [int(t) for t in _materialise(target_tokens)]
+    _ensure_equal_length(preds, targs, "token_stats")
+    total = 0
+    correct = 0
+    for p, t in zip(preds, targs, strict=False):
+        if t == ignore_index:
+            continue
+        total += 1
+        if p == t:
+            correct += 1
+    errors = total - correct
+    acc = float(correct / total) if total else 0.0
     return {
-        "total_tokens": len(targets),
-        "valid_tokens": len(valid_indices),
-        "ignored_tokens": len(targets) - len(valid_indices),
+        "total": float(total),
+        "correct": float(correct),
+        "errors": float(errors),
+        "accuracy": acc,
     }
 
 
@@ -168,46 +189,37 @@ def macro_f1(predictions: Iterable[int], targets: Iterable[int]) -> float:
 def forward_transfer(baseline: Sequence[float], adapted: Sequence[float]) -> float:
     """Compute forward transfer metric (no replacement in unified API).
 
-    Forward transfer = (adapted_loss - baseline_loss) / baseline_loss
-
-    This metric is not consolidated into unified API as it's task-specific.
+    Measures improvement on new tasks.
+    Forward transfer = average(adapted - baseline)
     """
     warnings.warn(
         "eval.metrics.forward_transfer() is not in unified API; using legacy implementation",
         DeprecationWarning,
         stacklevel=2,
     )
-    if not baseline or not adapted:
-        return 0.0
-    if len(baseline) != len(adapted):
-        raise MetricError("forward_transfer", "expected equal lengths")
-
-    baseline_loss = sum(baseline) / len(baseline)
-    adapted_loss = sum(adapted) / len(adapted)
-
-    if baseline_loss == 0:
-        return 0.0
-    return float((baseline_loss - adapted_loss) / baseline_loss)
+    base = [float(x) for x in _materialise(baseline)]
+    new = [float(x) for x in _materialise(adapted)]
+    _ensure_equal_length(base, new, "forward_transfer")
+    improvements = [n - b for b, n in zip(base, new, strict=False)]
+    return float(sum(improvements) / len(improvements)) if improvements else 0.0
 
 
 def backward_transfer(previous: Sequence[float], current: Sequence[float]) -> float:
     """Compute backward transfer metric (no replacement in unified API).
 
     Backward transfer measures if learning on new tasks hurts performance on old tasks.
+    backward_transfer = average(current - previous)
     """
     warnings.warn(
         "eval.metrics.backward_transfer() is not in unified API; using legacy implementation",
         DeprecationWarning,
         stacklevel=2,
     )
-    if not previous or not current:
-        return 0.0
-    if len(previous) != len(current):
-        raise MetricError("backward_transfer", "expected equal lengths")
-
-    prev_acc = sum(previous) / len(previous)
-    curr_acc = sum(current) / len(current)
-    return float(prev_acc - curr_acc)
+    prev = [float(x) for x in _materialise(previous)]
+    curr = [float(x) for x in _materialise(current)]
+    _ensure_equal_length(prev, curr, "backward_transfer")
+    deltas = [curr_i - prev_i for curr_i, prev_i in zip(curr, prev, strict=False)]
+    return float(sum(deltas) / len(deltas)) if deltas else 0.0
 
 
 def average_forgetting(history: Sequence[Sequence[float]]) -> float:
@@ -220,19 +232,22 @@ def average_forgetting(history: Sequence[Sequence[float]]) -> float:
         DeprecationWarning,
         stacklevel=2,
     )
-    if not history or len(history) < 2:
+    stages = [list(float(x) for x in _materialise(stage)) for stage in history]
+    if not stages:
+        raise MetricError("average_forgetting", "history must contain at least one stage")
+    length = len(stages[0])
+    for stage in stages[1:]:
+        if len(stage) != length:
+            raise MetricError("average_forgetting", "all stages must share the same length")
+    if len(stages) == 1:
         return 0.0
-
-    total_forgetting = 0.0
-    num_tasks = len(history)
-
-    for i in range(num_tasks):
-        peak = max(history[i])
-        final = history[i][-1]
-        forgetting = max(0.0, peak - final)
-        total_forgetting += forgetting
-
-    return float(total_forgetting / num_tasks)
+    latest = stages[-1]
+    forgetting = []
+    for task_idx in range(length):
+        best = max(stage[task_idx] for stage in stages[:-1])
+        current = latest[task_idx]
+        forgetting.append(max(0.0, best - current))
+    return float(sum(forgetting) / len(forgetting)) if forgetting else 0.0
 
 
 def run_unit_tests(code_str: str, tests_dir: str) -> dict[str, int]:  # pragma: no cover - legacy
@@ -242,4 +257,49 @@ def run_unit_tests(code_str: str, tests_dir: str) -> dict[str, int]:  # pragma: 
         DeprecationWarning,
         stacklevel=2,
     )
-    return {"passed": 0, "failed": 0, "errors": 0}
+    import re
+    import subprocess
+    import tempfile
+    from pathlib import Path
+
+    tmpdir = Path(tempfile.mkdtemp())
+    try:
+        mod = tmpdir / "candidate.py"
+        mod.write_text(code_str, encoding="utf-8")
+        proc = subprocess.run(
+            ["pytest", "-q", tests_dir], cwd=str(tmpdir), capture_output=True, text=True
+        )
+        out = proc.stdout + proc.stderr
+
+        def _count(pattern: str) -> int:
+            matches = re.findall(pattern, out)
+            return int(matches[-1]) if matches else 0
+
+        return {
+            "passed": _count(r"\b(\d+)\s+passed\b"),
+            "failed": _count(r"\b(\d+)\s+failed\b"),
+            "errors": _count(r"\b(\d+)\s+errors?\b"),
+        }
+    finally:
+        import shutil
+        shutil.rmtree(tmpdir, ignore_errors=True)
+
+
+def _materialise(sequence: Iterable) -> list:
+    """Convert an iterable to a list (helper function)."""
+    return list(sequence)
+
+
+def _ensure_equal_length(a: Sequence, b: Sequence, metric: str) -> None:
+    """Ensure two sequences have equal length (helper function).
+    
+    Args:
+        a: First sequence
+        b: Second sequence
+        metric: Metric name for error message
+        
+    Raises:
+        MetricError: If sequences have different lengths
+    """
+    if len(a) != len(b):
+        raise MetricError(metric, f"expected equal lengths, got {len(a)} and {len(b)}")
