@@ -1,29 +1,29 @@
-# Session Context — 2026-06-27T00:35:52Z
+# Session Context — 2026-06-27T01:34:23Z
 **Branch:** `copilot/explore-codebase-chronicle`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4799` (✅)
-- GraphQL remaining: `4986` (✅)
+- REST remaining: `4775` (✅)
+- GraphQL remaining: `4999` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
 ## 🚨 Recent CI Failures (last 5 runs)
+- **Pre-Flight CI Validation** — `failure` on `copilot/explore-codebase-chronicle` (2026-06-27)
+- **Authentication Tests** — `failure` on `copilot/explore-codebase-chronicle` (2026-06-27)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-27)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-27)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-27)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-27)
-- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-27)
+- **RAG Module Tests** — `failure` on `copilot/explore-codebase-chronicle` (2026-06-27)
+- **Pre-Flight CI Validation** — `failure` on `copilot/explore-codebase-chronicle` (2026-06-27)
 
 ## 📝 Recent Commits
-- `273b9d7f` Apply remaining changes — copilot-swe-agent[bot] (2026-06-27)
-- `3d99772a` Merge pull request #5106 from Aries-Serpent/copilot/fix-governance-compliance-ga — Statix (2026-06-27)
-- `736897b2` fix: implement proper exit code 2 handling for WEC compliance validation errors — copilot-swe-agent[bot] (2026-06-27)
-- `8ced852f` docs: fix CLI flag names for session_wrapup_autofix.py in Phase 6-7 documentatio — copilot-swe-agent[bot] (2026-06-27)
-- `8817259c` fix: address remaining documentation and flag naming issues in Phase 6-7 PR — copilot-swe-agent[bot] (2026-06-26)
-- `b63a2d11` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-06-26)
-- `8497d330` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-06-26)
-- `eb2aca21` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-06-26)
+- `5a736165` Apply remaining changes — copilot-swe-agent[bot] (2026-06-27)
+- `e2928aae` Add Phase 3 completion documentation — copilot-swe-agent[bot] (2026-06-27)
+- `c5be7fcd` Phase 3 Complete: Migrate test imports to unified API with full backward compati — copilot-swe-agent[bot] (2026-06-27)
+- `31c25373` FINAL SESSION SUMMARY: Elite codebase campaign 91→99/100 health foundation compl — copilot-swe-agent[bot] (2026-06-27)
+- `6967998b` Phase 2: Consolidated ML metrics into unified API — copilot-swe-agent[bot] (2026-06-27)
+- `a88280fa` Phase 2: Consolidate test and dev dependencies into unified dev group (-30MB) — copilot-swe-agent[bot] (2026-06-27)
+- `ecfcf694` PHASE 3 WEEK 1 COMPLETE + WEEK 2 ACTIVE + PHASE 4 READY: All next actions execut — copilot-swe-agent[bot] (2026-06-27)
+- `90def2f2` Phase 5: Complete - Tokenizer Module Consolidation Report — copilot-swe-agent[bot] (2026-06-27)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
