@@ -1,10 +1,10 @@
-# Session Context — 2026-06-27T00:32:01Z
+# Session Context — 2026-06-27T00:35:52Z
 **Branch:** `copilot/explore-codebase-chronicle`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4800` (✅)
-- GraphQL remaining: `4993` (✅)
+- REST remaining: `4799` (✅)
+- GraphQL remaining: `4986` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -16,6 +16,7 @@
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-27)
 
 ## 📝 Recent Commits
+- `273b9d7f` Apply remaining changes — copilot-swe-agent[bot] (2026-06-27)
 - `3d99772a` Merge pull request #5106 from Aries-Serpent/copilot/fix-governance-compliance-ga — Statix (2026-06-27)
 - `736897b2` fix: implement proper exit code 2 handling for WEC compliance validation errors — copilot-swe-agent[bot] (2026-06-27)
 - `8ced852f` docs: fix CLI flag names for session_wrapup_autofix.py in Phase 6-7 documentatio — copilot-swe-agent[bot] (2026-06-27)
@@ -23,7 +24,6 @@
 - `b63a2d11` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-06-26)
 - `8497d330` chore(d00): update session context digest [skip ci] — github-actions[bot] (2026-06-26)
 - `eb2aca21` chore(auth): write provenance session token [skip ci] — github-actions[bot] (2026-06-26)
-- `6b963253` fix(docs): auto-update accountability report + CHANGELOG [cognitive-preflight][s — github-actions[bot] (2026-06-26)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
