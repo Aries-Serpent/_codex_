@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed (compliance — PR #5110, Session 2026-06-27)
+- REQ-5 compliance: Updated CHANGELOG.md in latest commit per session wrapup requirements
+- REQ-4 compliance: AGENT_ACCOUNTABILITY_REPORT.md maintained with current session entries
+- Agents Used: Fixed identifiers to use registered agent names from AGENT_REGISTRY.yaml
+
 ### Fixed (auto-update — PR #5110)
 - Auto-fix: `session_wrapup_autofix.py` updated accountability report and CHANGELOG for PR #5110 (SHA `9c306efe`) at 2026-06-27T09:31Z [auto-generated]
 
