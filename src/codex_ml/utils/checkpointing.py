@@ -1184,7 +1184,7 @@ def save_ckpt(state: dict[str, Any], path: str) -> None:
         raise RuntimeError("torch is required to save checkpoints")
     p = Path(path)
     p.parent.mkdir(parents=True, exist_ok=True)
-     try:
+    try:
         torch.save(state, p)
     except (TypeError, RuntimeError) as e:
         _msg = str(e)
