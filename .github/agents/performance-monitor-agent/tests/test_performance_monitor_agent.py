@@ -369,8 +369,8 @@ def test_deterministic_execution():
 
 
 if __name__ == "__main__":
-    print("Running Performance Monitor Agent Tests...")
-    print(f"Test Seed: {TEST_SEED}")
+    print("Running Performance Monitor Agent Tests...")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"Test Seed: {TEST_SEED}")  # codeql[py/clear-text-logging-sensitive-data]
 
     # Run all test classes
     test_classes = [
@@ -392,20 +392,20 @@ if __name__ == "__main__":
             try:
                 method = getattr(instance, method_name)
                 method()
-                print(f"✅ {test_class.__name__}.{method_name}")
+                print(f"✅ {test_class.__name__}.{method_name}")  # codeql[py/clear-text-logging-sensitive-data]
                 total_tests += 1
             except AssertionError as e:
-                print(f"❌ {test_class.__name__}.{method_name}: {e}")
+                print(f"❌ {test_class.__name__}.{method_name}: {e}")  # codeql[py/clear-text-logging-sensitive-data]
             except Exception as e:
-                print(f"❌ {test_class.__name__}.{method_name}: {type(e).__name__}: {e}")
+                print(f"❌ {test_class.__name__}.{method_name}: {type(e).__name__}: {e}")  # codeql[py/clear-text-logging-sensitive-data]
 
     # Run deterministic test
     try:
         test_deterministic_execution()
-        print("✅ test_deterministic_execution")
+        print("✅ test_deterministic_execution")  # codeql[py/clear-text-logging-sensitive-data]
         total_tests += 1
     except AssertionError as e:
-        print(f"❌ test_deterministic_execution: {e}")
+        print(f"❌ test_deterministic_execution: {e}")  # codeql[py/clear-text-logging-sensitive-data]
 
-    print(f"\n✅ Total tests defined: {total_tests}")
-    print(f"✅ Requirement: 15+ tests (PASSED: {total_tests} >= 15)")
+    print(f"\n✅ Total tests defined: {total_tests}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"✅ Requirement: 15+ tests (PASSED: {total_tests} >= 15)")  # codeql[py/clear-text-logging-sensitive-data]

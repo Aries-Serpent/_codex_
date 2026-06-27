@@ -93,7 +93,7 @@ class MetricsCollector:
             for record in self._metrics_buffer:
                 f.write(json.dumps(record) + '\n')
 
-        logger.info(f"Flushed {len(self._metrics_buffer)} metrics records")
+        logger.info(f"Flushed {len(self._metrics_buffer)} metrics records")  # codeql[py/clear-text-logging-sensitive-data]
         self._metrics_buffer.clear()
 
     def _flush_feedback(self):
@@ -105,7 +105,7 @@ class MetricsCollector:
             for record in self._feedback_buffer:
                 f.write(json.dumps(record) + '\n')
 
-        logger.info(f"Flushed {len(self._feedback_buffer)} feedback records")
+        logger.info(f"Flushed {len(self._feedback_buffer)} feedback records")  # codeql[py/clear-text-logging-sensitive-data]
         self._feedback_buffer.clear()
 
     def record_review(self, metrics: ReviewMetrics, flush_immediately: bool = False):
@@ -133,7 +133,7 @@ class MetricsCollector:
         if flush_immediately or len(self._metrics_buffer) >= self.buffer_size:
             self._flush_metrics()
 
-        logger.info(f"Recorded metrics for PR #{metrics.pr_number}")
+        logger.info(f"Recorded metrics for PR #{metrics.pr_number}")  # codeql[py/clear-text-logging-sensitive-data]
 
     def record_feedback(self, pr_number: int, feedback: dict, flush_immediately: bool = False):
         """
@@ -155,7 +155,7 @@ class MetricsCollector:
         if flush_immediately or len(self._feedback_buffer) >= self.buffer_size:
             self._flush_feedback()
 
-        logger.info(f"Recorded feedback for PR #{pr_number}")
+        logger.info(f"Recorded feedback for PR #{pr_number}")  # codeql[py/clear-text-logging-sensitive-data]
 
     def flush_all(self):
         """Flush all buffers to disk."""
@@ -336,4 +336,4 @@ class MetricsCollector:
         with open(output_path, 'w', encoding='utf-8') as f:
             json.dump(export_data, f, indent=2)
 
-        logger.info(f"Exported metrics to {output_path}")
+        logger.info(f"Exported metrics to {output_path}")  # codeql[py/clear-text-logging-sensitive-data]

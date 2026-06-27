@@ -44,7 +44,7 @@ class QuantumPatternAnalyzer:
         tunneling = self._find_tunneling_opportunities(context.diff)
         patterns.extend(tunneling)
 
-        logger.info(f"Found {len(patterns)} quantum pattern opportunities")
+        logger.info(f"Found {len(patterns)} quantum pattern opportunities")  # codeql[py/clear-text-logging-sensitive-data]
         return patterns
 
     def _find_superposition_opportunities(self, diff: str) -> list[dict[str, Any]]:

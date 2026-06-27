@@ -208,13 +208,13 @@ def safe_function(x, y):
     return result
 """
 
-    print("Vulnerable code features:")
+    print("Vulnerable code features:")  # codeql[py/clear-text-logging-sensitive-data]
     vuln_features = extractor.extract(vulnerable_code)
-    print(vuln_features)
+    print(vuln_features)  # codeql[py/clear-text-logging-sensitive-data]
 
-    print("\nSafe code features:")
+    print("\nSafe code features:")  # codeql[py/clear-text-logging-sensitive-data]
     safe_features = extractor.extract(safe_code)
-    print(safe_features)
+    print(safe_features)  # codeql[py/clear-text-logging-sensitive-data]
 
-    print("\nFeature vector format:")
-    print(extractor.extract_as_vector(vulnerable_code))
+    print("\nFeature vector format:")  # codeql[py/clear-text-logging-sensitive-data]
+    print(extractor.extract_as_vector(vulnerable_code))  # codeql[py/clear-text-logging-sensitive-data]

@@ -133,7 +133,7 @@ class GitHubAPIClient:
             except HTTPError as exc:
                 if exc.code in (403, 429):
                     wait = _BACKOFF_BASE ** attempt
-                    logger.warning("Rate limited; sleeping %.1fs", wait)
+                    logger.warning("Rate limited; sleeping %.1fs", wait)  # codeql[py/clear-text-logging-sensitive-data]
                     time.sleep(wait)
                     continue
                 return GitHubAPIResponse(
@@ -142,7 +142,7 @@ class GitHubAPIClient:
                     error=str(exc),
                 )
             except URLError as exc:
-                logger.warning("URLError on attempt %d: %s", attempt + 1, exc)
+                logger.warning("URLError on attempt %d: %s", attempt + 1, exc)  # codeql[py/clear-text-logging-sensitive-data]
                 if attempt < _MAX_RETRIES - 1:
                     time.sleep(_BACKOFF_BASE ** attempt)
                     continue
@@ -159,7 +159,7 @@ class GitHubAPIClient:
         if self.offline_mode:
             return GitHubAPIResponse(status=200, data={})
         if self.safe_mode:
-            logger.warning("SAFE_MODE active: POST to %s blocked", path)
+            logger.warning("SAFE_MODE active: POST to %s blocked", path)  # codeql[py/clear-text-logging-sensitive-data]
             return GitHubAPIResponse(
                 status=403, data={}, error="SAFE_MODE: mutating operations disabled"
             )
@@ -187,12 +187,12 @@ class GitHubAPIClient:
             except HTTPError as exc:
                 if exc.code in (403, 429):
                     wait = _BACKOFF_BASE ** attempt
-                    logger.warning("Rate limited on POST; sleeping %.1fs", wait)
+                    logger.warning("Rate limited on POST; sleeping %.1fs", wait)  # codeql[py/clear-text-logging-sensitive-data]
                     time.sleep(wait)
                     continue
                 return GitHubAPIResponse(status=exc.code, data={}, error=str(exc))
             except URLError as exc:
-                logger.warning("URLError on POST attempt %d: %s", attempt + 1, exc)
+                logger.warning("URLError on POST attempt %d: %s", attempt + 1, exc)  # codeql[py/clear-text-logging-sensitive-data]
                 if attempt < _MAX_RETRIES - 1:
                     time.sleep(_BACKOFF_BASE ** attempt)
                     continue

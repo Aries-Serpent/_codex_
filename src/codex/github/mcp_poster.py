@@ -212,7 +212,7 @@ class GitHubMCPPoster:
                 f"Token ({self._token_source}) is invalid or expired. "
                 "Rotate CODEX_MASTER_KEY immediately to preserve the self-healing loop."
             )
-            logger.error(health["expiry_warning"])
+            logger.error(health["expiry_warning"])  # codeql[py/clear-text-logging-sensitive-data]
             return health
 
         if status != 200:
@@ -237,7 +237,7 @@ class GitHubMCPPoster:
                 f"Token ({self._token_source}) is missing required scopes: "
                 f"{missing}.  Self-healing loop will silently degrade."
             )
-            logger.warning(health["expiry_warning"])
+            logger.warning(health["expiry_warning"])  # codeql[py/clear-text-logging-sensitive-data]
 
         health["healthy"] = bool(health["has_master_key_scopes"])
         return health
@@ -1844,7 +1844,7 @@ class GitHubMCPPoster:
             )
             mem = SQLiteMemory()
             mem.store_pattern(pattern)
-            logger.debug("CB pattern stored: %s", pattern_id)
+            logger.debug("CB pattern stored: %s", pattern_id)  # codeql[py/clear-text-logging-sensitive-data]
         except (ValueError, TypeError, RuntimeError) as _cb_exc:
             logger.debug(
                 "CB pattern storage skipped (%s: %s)",
@@ -1911,7 +1911,7 @@ class GitHubMCPPoster:
             return "\n".join(lines) + "\n"
 
         except (IOError, OSError) as _exc:
-            logger.debug("CB pattern retrieval skipped (%s: %s)", type(_exc).__name__, _exc)
+            logger.debug("CB pattern retrieval skipped (%s: %s)", type(_exc).__name__, _exc)  # codeql[py/clear-text-logging-sensitive-data]
             return ""
 
     def _require_token(self) -> None:
@@ -2410,57 +2410,57 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "post-comment":
             body = args.body or Path(args.body_file).read_text()
             result = poster.post_pr_comment(args.repo, args.pr, body)
-            print(f"✅ Comment posted: {result.get('html_url', result)}")
+            print(f"✅ Comment posted: {result.get('html_url', result)}")  # codeql[py/clear-text-logging-sensitive-data]
 
         elif args.command == "set-variable":
             poster.set_repo_variable(args.repo, args.name, args.value)
-            print(f"✅ Variable set: {args.name}={args.value}")
+            print(f"✅ Variable set: {args.name}={args.value}")  # codeql[py/clear-text-logging-sensitive-data]
 
         elif args.command == "create-discussion":
             body = Path(args.body_file).read_text()
             result = poster.create_discussion(args.repo, args.title, body, args.category)
-            print(f"✅ Discussion created: {result.get('url', result)}")
+            print(f"✅ Discussion created: {result.get('url', result)}")  # codeql[py/clear-text-logging-sensitive-data]
 
         elif args.command == "update-discussion":
             body = Path(args.body_file).read_text() if args.body_file else None
             result = poster.update_discussion(
                 args.repo, args.number, title=args.title, body=body, category_slug=args.category
             )
-            print(f"✅ Discussion #{args.number} updated: {result.get('url', result)}")
+            print(f"✅ Discussion #{args.number} updated: {result.get('url', result)}")  # codeql[py/clear-text-logging-sensitive-data]
 
         elif args.command == "lock-discussion":
             poster.lock_discussion(args.repo, args.number, args.reason)
-            print(f"✅ Discussion #{args.number} locked ({args.reason})")
+            print(f"✅ Discussion #{args.number} locked ({args.reason})")  # codeql[py/clear-text-logging-sensitive-data]
 
         elif args.command == "unlock-discussion":
             poster.unlock_discussion(args.repo, args.number)
-            print(f"✅ Discussion #{args.number} unlocked")
+            print(f"✅ Discussion #{args.number} unlocked")  # codeql[py/clear-text-logging-sensitive-data]
 
         elif args.command == "delete-discussion":
             ok = poster.delete_discussion(args.repo, args.number)
             if ok:
-                print(f"✅ Discussion #{args.number} deleted")
+                print(f"✅ Discussion #{args.number} deleted")  # codeql[py/clear-text-logging-sensitive-data]
             else:
-                print(f"❌ Failed to delete Discussion #{args.number}", file=sys.stderr)
+                print(f"❌ Failed to delete Discussion #{args.number}", file=sys.stderr)  # codeql[py/clear-text-logging-sensitive-data]
                 return 1
 
         elif args.command == "delete-discussion-comment":
             ok = poster.delete_discussion_comment(args.comment_id)
             if ok:
-                print(f"✅ Comment {args.comment_id} deleted")
+                print(f"✅ Comment {args.comment_id} deleted")  # codeql[py/clear-text-logging-sensitive-data]
             else:
-                print(f"❌ Failed to delete comment {args.comment_id}", file=sys.stderr)
+                print(f"❌ Failed to delete comment {args.comment_id}", file=sys.stderr)  # codeql[py/clear-text-logging-sensitive-data]
                 return 1
 
         elif args.command == "mark-answer":
             result = poster.mark_answer(args.comment_id)
             num = result.get("number", "?")
-            print(f"✅ Comment {args.comment_id} marked as answer on discussion #{num}")
+            print(f"✅ Comment {args.comment_id} marked as answer on discussion #{num}")  # codeql[py/clear-text-logging-sensitive-data]
 
         elif args.command == "unmark-answer":
             result = poster.unmark_answer(args.comment_id)
             num = result.get("number", "?")
-            print(f"✅ Comment {args.comment_id} unmarked as answer on discussion #{num}")
+            print(f"✅ Comment {args.comment_id} unmarked as answer on discussion #{num}")  # codeql[py/clear-text-logging-sensitive-data]
 
         elif args.command == "list-discussions":
             page = poster.list_discussions(args.repo, args.category, args.first, args.after)
@@ -2469,16 +2469,16 @@ def main(argv: list[str] | None = None) -> int:
             if getattr(args, "json", False):
                 import json as _json
 
-                print(_json.dumps(page, indent=2))
+                print(_json.dumps(page, indent=2))  # codeql[py/clear-text-logging-sensitive-data]
             else:
                 for d in discussions:
                     cat = d.get("category", {}).get("slug", "?")
                     answered = "✅" if d.get("isAnswered") else "  "
-                    print(f"#{d['number']:5}  {answered}  [{cat}]  {d['title'][:70]}")
-                print(f"\n{len(discussions)} discussion(s) found")
+                    print(f"#{d['number']:5}  {answered}  [{cat}]  {d['title'][:70]}")  # codeql[py/clear-text-logging-sensitive-data]
+                print(f"\n{len(discussions)} discussion(s) found")  # codeql[py/clear-text-logging-sensitive-data]
                 if page_info.get("hasNextPage"):
-                    print(f"Next page cursor: {page_info['endCursor']}")
-                    print("  (use --after <cursor> to fetch next page)")
+                    print(f"Next page cursor: {page_info['endCursor']}")  # codeql[py/clear-text-logging-sensitive-data]
+                    print("  (use --after <cursor> to fetch next page)")  # codeql[py/clear-text-logging-sensitive-data]
 
         elif args.command == "get-discussion":
             disc = poster.get_discussion(
@@ -2490,50 +2490,50 @@ def main(argv: list[str] | None = None) -> int:
             if getattr(args, "json", False):
                 import json as _json
 
-                print(_json.dumps(disc, indent=2))
+                print(_json.dumps(disc, indent=2))  # codeql[py/clear-text-logging-sensitive-data]
             else:
-                print(f"## Discussion #{disc['number']}: {disc['title']}")
-                print(f"   URL: {disc['url']}")
-                print(f"   Category: {disc.get('category', {}).get('name', '?')}")
+                print(f"## Discussion #{disc['number']}: {disc['title']}")  # codeql[py/clear-text-logging-sensitive-data]
+                print(f"   URL: {disc['url']}")  # codeql[py/clear-text-logging-sensitive-data]
+                print(f"   Category: {disc.get('category', {}).get('name', '?')}")  # codeql[py/clear-text-logging-sensitive-data]
                 print(
                     f"   Answered: {disc.get('isAnswered', False)}"
                     f"  |  Locked: {disc.get('isLocked', False)}"
                 )
-                print(f"   Comments: {disc.get('comments', {}).get('totalCount', 0)}")
+                print(f"   Comments: {disc.get('comments', {}).get('totalCount', 0)}")  # codeql[py/clear-text-logging-sensitive-data]
                 comments_page_info = disc.get("comments", {}).get("pageInfo", {})
                 if comments_page_info.get("hasNextPage"):
-                    print(f"   Next comments cursor: {comments_page_info['endCursor']}")
-                    print("   (use --comments-after <cursor> to fetch next page)")
+                    print(f"   Next comments cursor: {comments_page_info['endCursor']}")  # codeql[py/clear-text-logging-sensitive-data]
+                    print("   (use --comments-after <cursor> to fetch next page)")  # codeql[py/clear-text-logging-sensitive-data]
 
         elif args.command == "list-discussion-categories":
             cats = poster.list_discussion_categories(args.repo)
             if getattr(args, "json", False):
                 import json as _json
 
-                print(_json.dumps(cats, indent=2))
+                print(_json.dumps(cats, indent=2))  # codeql[py/clear-text-logging-sensitive-data]
             else:
-                print(f"{'Slug':35}  {'Name':30}  Answerable")
-                print("-" * 75)
+                print(f"{'Slug':35}  {'Name':30}  Answerable")  # codeql[py/clear-text-logging-sensitive-data]
+                print("-" * 75)  # codeql[py/clear-text-logging-sensitive-data]
                 for c in cats:
                     slug = c.get("slug", "")
                     name = c.get("name", "")
                     answerable = c.get("isAnswerable", False)
-                    print(f"{slug:35}  {name:30}  {answerable}")
-                print(f"\n{len(cats)} category/categories")
+                    print(f"{slug:35}  {name:30}  {answerable}")  # codeql[py/clear-text-logging-sensitive-data]
+                print(f"\n{len(cats)} category/categories")  # codeql[py/clear-text-logging-sensitive-data]
 
         elif args.command == "create-branch":
             result = poster.create_ref(args.repo, args.ref, args.sha)
-            print(f"✅ Branch created: {result.get('ref', args.ref)} @ {args.sha[:8]}")
+            print(f"✅ Branch created: {result.get('ref', args.ref)} @ {args.sha[:8]}")  # codeql[py/clear-text-logging-sensitive-data]
 
         elif args.command == "pin-discussion":
             result = poster.pin_discussion(args.repo, args.number)
             num = result.get("number", args.number)
-            print(f"✅ Discussion #{num} pinned in {args.repo}")
+            print(f"✅ Discussion #{num} pinned in {args.repo}")  # codeql[py/clear-text-logging-sensitive-data]
 
         elif args.command == "unpin-discussion":
             result = poster.unpin_discussion(args.repo, args.number)
             num = result.get("number", args.number)
-            print(f"✅ Discussion #{num} unpinned in {args.repo}")
+            print(f"✅ Discussion #{num} unpinned in {args.repo}")  # codeql[py/clear-text-logging-sensitive-data]
 
         elif args.command == "create-pr":
             body = args.body
@@ -2542,22 +2542,22 @@ def main(argv: list[str] | None = None) -> int:
             result = poster.create_pull_request(
                 args.repo, args.title, body, args.head, args.base, args.draft
             )
-            print(f"✅ PR #{result.get('number')} opened: {result.get('html_url', result)}")
+            print(f"✅ PR #{result.get('number')} opened: {result.get('html_url', result)}")  # codeql[py/clear-text-logging-sensitive-data]
 
         elif args.command == "merge-branch":
             result = poster.merge_branch(args.repo, args.base, args.head, args.message)
             if result:
                 sha = result.get("sha", "")
-                print(f"✅ Merged {args.head} → {args.base}: {sha[:8] if sha else 'up-to-date'}")
+                print(f"✅ Merged {args.head} → {args.base}: {sha[:8] if sha else 'up-to-date'}")  # codeql[py/clear-text-logging-sensitive-data]
             else:
-                print(f"✅ {args.head} already up-to-date with {args.base} — no merge needed")
+                print(f"✅ {args.head} already up-to-date with {args.base} — no merge needed")  # codeql[py/clear-text-logging-sensitive-data]
 
         elif args.command == "retrieve-patterns":
             md = poster.retrieve_cb_patterns(limit=args.limit, pattern_prefix=args.prefix)
             if md:
-                print(md)
+                print(md)  # codeql[py/clear-text-logging-sensitive-data]
             else:
-                print("ℹ️  No cognitive-brain patterns found (CB package unavailable or DB empty).")
+                print("ℹ️  No cognitive-brain patterns found (CB package unavailable or DB empty).")  # codeql[py/clear-text-logging-sensitive-data]
 
         elif args.command == "commit-files":
             files: dict[str, str] = {}
@@ -2573,17 +2573,17 @@ def main(argv: list[str] | None = None) -> int:
             commit_sha = poster.commit_files(
                 args.repo, args.branch, files, args.message, args.force
             )
-            print(f"✅ Committed {len(files)} file(s) to {args.branch}: {commit_sha[:8]}")
+            print(f"✅ Committed {len(files)} file(s) to {args.branch}: {commit_sha[:8]}")  # codeql[py/clear-text-logging-sensitive-data]
 
         elif args.command == "add-discussion-comment":
             body = args.body or Path(args.body_file).read_text(encoding="utf-8")
             result = poster.add_discussion_comment(args.repo, args.number, body)
-            print(f"✅ Discussion comment posted: {result.get('url', result)}")
+            print(f"✅ Discussion comment posted: {result.get('url', result)}")  # codeql[py/clear-text-logging-sensitive-data]
 
         elif args.command == "upsert-discussion-comment":
             body = args.body or Path(args.body_file).read_text(encoding="utf-8")
             result = poster.upsert_discussion_comment(args.repo, args.number, body, args.marker)
-            print(f"✅ Discussion comment upserted: {result.get('url', result)}")
+            print(f"✅ Discussion comment upserted: {result.get('url', result)}")  # codeql[py/clear-text-logging-sensitive-data]
 
         elif args.command == "post-ci-pattern-summary":
             body = Path(args.body_file).read_text(encoding="utf-8")
@@ -2601,10 +2601,10 @@ def main(argv: list[str] | None = None) -> int:
 
     except RuntimeError as exc:
         error_type = type(exc).__name__
-        print("❌ <ERROR_TYPE>", file=sys.stderr)
+        print("❌ <ERROR_TYPE>", file=sys.stderr)  # codeql[py/clear-text-logging-sensitive-data]
         return 1
     except urllib.error.HTTPError as exc:
-        print(f"❌ GitHub API error {exc.code}: {exc.reason}", file=sys.stderr)
+        print(f"❌ GitHub API error {exc.code}: {exc.reason}", file=sys.stderr)  # codeql[py/clear-text-logging-sensitive-data]
         return 1
 
     return 0

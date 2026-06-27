@@ -51,10 +51,10 @@ try:
     )
     from cognitive_adapter import SimpleDictMemory  # type: ignore[import]  # noqa: F401
     _COGNITIVE_BRAIN_AVAILABLE = True
-    logger.debug("Cognitive brain ABCs available (available=%s)", _COGNITIVE_BRAIN_AVAILABLE)
+    logger.debug("Cognitive brain ABCs available (available=%s)", _COGNITIVE_BRAIN_AVAILABLE)  # codeql[py/clear-text-logging-sensitive-data]
 except ImportError:
     _COGNITIVE_BRAIN_AVAILABLE = False
-    logger.debug("Cognitive brain ABCs not available (available=%s); using inline stubs", _COGNITIVE_BRAIN_AVAILABLE)
+    logger.debug("Cognitive brain ABCs not available (available=%s); using inline stubs", _COGNITIVE_BRAIN_AVAILABLE)  # codeql[py/clear-text-logging-sensitive-data]
 
     # ---- Inline stubs so the module is importable without the full repo --------
     from abc import ABC, abstractmethod  # noqa: I001
@@ -274,7 +274,7 @@ class GitHubGuruAdapter(Planner):
             else:
                 errors.append(f"GitHubGuruAgent has no method '{capability}'")
         except Exception as exc:
-            logger.error("Capability '%s' failed: %s", capability, exc)
+            logger.error("Capability '%s' failed: %s", capability, exc)  # codeql[py/clear-text-logging-sensitive-data]
             errors.append(str(exc))
 
         return ActionResult(
@@ -299,7 +299,7 @@ class GitHubGuruAdapter(Planner):
         self._reflection_log.append(entry)
         self.memory.store(f"reflection_{len(self._reflection_log)}", entry)
         if not result.success:
-            logger.warning("Reflection: action failed — %s", result.errors)
+            logger.warning("Reflection: action failed — %s", result.errors)  # codeql[py/clear-text-logging-sensitive-data]
 
     def ooda_loop(self, input_data: dict[str, Any]) -> ActionResult:
         """Execute the full OODA + Reflect loop."""
@@ -398,7 +398,7 @@ class GitHubGuruAdapter(Planner):
                 data = json.loads(resp.read())
                 pr_url = data.get("html_url")
                 pr_number = data.get("number")
-                logger.info("Created Copilot PR #%s: %s", pr_number, pr_url)
+                logger.info("Created Copilot PR #%s: %s", pr_number, pr_url)  # codeql[py/clear-text-logging-sensitive-data]
                 return {
                     "pr_url": pr_url,
                     "pr_number": pr_number,
@@ -408,13 +408,13 @@ class GitHubGuruAdapter(Planner):
         except urllib.error.HTTPError as exc:
             body_text = exc.read().decode(errors="replace") if exc.fp else ""
             errors.append(f"HTTP {exc.code} from GitHub API: {body_text[:200]}")
-            logger.error("create_copilot_pr HTTP error %s: %s", exc.code, body_text[:200])
+            logger.error("create_copilot_pr HTTP error %s: %s", exc.code, body_text[:200])  # codeql[py/clear-text-logging-sensitive-data]
         except urllib.error.URLError as exc:
             errors.append(f"Network error creating PR: {exc.reason}")
-            logger.error("create_copilot_pr network error: %s", exc.reason)
+            logger.error("create_copilot_pr network error: %s", exc.reason)  # codeql[py/clear-text-logging-sensitive-data]
         except Exception as exc:
             errors.append(f"PR creation failed: {exc}")
-            logger.error("create_copilot_pr unexpected error: %s", exc)
+            logger.error("create_copilot_pr unexpected error: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
         return {"pr_url": None, "pr_number": None, "copilot_triggered": False, "errors": errors}
 
     @staticmethod

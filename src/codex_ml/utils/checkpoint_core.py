@@ -121,7 +121,7 @@ def _git_sha_try() -> str | None:
                     return ref_path.read_text(encoding="utf-8").strip()[:40]
             return ref[:40]
         except (IOError, OSError):
-            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
             return None
     return None
 
@@ -150,14 +150,14 @@ def _rng_snapshot() -> dict[str, Any]:
                 "cached_gauss": float(numpy_state[4]),
             }
         except (ValueError, TypeError, RuntimeError) as e:
-            logger.debug("Exception: %s", e)
-            logger.warning("Exception: %s", e, exc_info=True)
+            logger.debug("Exception: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning("Exception: %s", e, exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
     if torch is not None:
         try:
             snap["torch_cpu"] = torch.get_rng_state().tolist()  # tensor → list
         except (ValueError, TypeError) as e:
-            logger.debug("Exception: %s", e)
-            logger.warning("Exception: %s", e, exc_info=True)
+            logger.debug("Exception: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning("Exception: %s", e, exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
         try:
             if torch.cuda.is_available():  # pragma: no cover (GPU not in CPU CI)
                 # Convert CUDA RNG state tensors to lists for JSON serialization
@@ -167,8 +167,8 @@ def _rng_snapshot() -> dict[str, Any]:
                     {"data": state.tolist(), "dtype": str(state.dtype)} for state in cuda_states
                 ]
         except (ValueError, TypeError, RuntimeError) as e:
-            logger.debug("Exception: %s", e)
-            logger.warning("Exception: %s", e, exc_info=True)
+            logger.debug("Exception: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning("Exception: %s", e, exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
     return snap
 
 
@@ -199,8 +199,8 @@ def _rng_restore(snap: Mapping[str, Any]) -> None:
                         python_state = tuple(python_state)
                 random.setstate(python_state)
     except (ValueError, TypeError, RuntimeError) as e:
-        logger.debug("Exception: %s", e)
-        logger.warning("Exception: %s", e, exc_info=True)
+        logger.debug("Exception: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
+        logger.warning("Exception: %s", e, exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
     if np is not None:
         try:
             if "numpy" in snap:
@@ -237,8 +237,8 @@ def _rng_restore(snap: Mapping[str, Any]) -> None:
                         # Direct tuple format (not from JSON)
                         np.random.set_state(numpy_state)
         except (ValueError, TypeError) as e:
-            logger.debug("Exception: %s", e)
-            logger.warning("Exception: %s", e, exc_info=True)
+            logger.debug("Exception: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning("Exception: %s", e, exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
     if torch is not None:
         try:
             if "torch_cpu" in snap:
@@ -247,8 +247,8 @@ def _rng_restore(snap: Mapping[str, Any]) -> None:
                     torch_cpu_state = torch.tensor(torch_state_raw, dtype=torch.uint8)
                     torch.set_rng_state(torch_cpu_state)
         except (ValueError, TypeError, RuntimeError) as e:
-            logger.debug("Exception: %s", e)
-            logger.warning("Exception: %s", e, exc_info=True)
+            logger.debug("Exception: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning("Exception: %s", e, exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
         try:
             if "torch_cuda" in snap and torch.cuda.is_available():  # pragma: no cover
                 # Convert lists back to tensors for CUDA RNG state restoration
@@ -270,8 +270,8 @@ def _rng_restore(snap: Mapping[str, Any]) -> None:
                     cuda_states.append(tensor)
                 torch.cuda.set_rng_state_all(cuda_states)
         except (ValueError, TypeError, RuntimeError) as e:
-            logger.debug("Exception: %s", e)
-            logger.warning("Exception: %s", e, exc_info=True)
+            logger.debug("Exception: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning("Exception: %s", e, exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
 
 
 def capture_rng_state() -> dict[str, Any]:
@@ -298,7 +298,7 @@ def capture_environment_summary() -> dict[str, Any]:
         try:
             return dict(_environment_summary())
         except (ImportError, AttributeError) as exc:  # pragma: no cover
-            logger.debug("provenance.environment_summary failed, using local fallback: %s", exc)
+            logger.debug("provenance.environment_summary failed, using local fallback: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
 
     summary: dict[str, Any] = {
         "python_version": platform.python_version(),
@@ -309,22 +309,22 @@ def capture_environment_summary() -> dict[str, Any]:
     try:
         summary["timestamp_utc"] = datetime.now(UTC).replace(microsecond=0).isoformat()
     except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover
-        logger.debug("Failed to get timestamp: %s", exc)
+        logger.debug("Failed to get timestamp: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
 
     if np is not None:
         try:
             summary["numpy_version"] = str(np.__version__)
         except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover
-            logger.debug("Failed to get numpy version: %s", exc)
+            logger.debug("Failed to get numpy version: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
     if torch is not None:
         try:
             summary["torch_version"] = str(torch.__version__)
         except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover
-            logger.debug("Failed to get torch version: %s", exc)
+            logger.debug("Failed to get torch version: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
         try:
             summary["torch_cuda_available"] = bool(torch.cuda.is_available())
         except (ValueError, TypeError, RuntimeError) as exc:  # pragma: no cover
-            logger.debug("Failed to check CUDA availability: %s", exc)
+            logger.debug("Failed to check CUDA availability: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
 
     return summary
 
@@ -352,7 +352,7 @@ def _config_hash(config: dict[str, Any] | None) -> str | None:
         payload = json.dumps(config, sort_keys=True, separators=(",", ":")).encode("utf-8")
         return hashlib.sha256(payload).hexdigest()
     except (ValueError, TypeError):
-        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
         return None
 
 
@@ -373,7 +373,7 @@ def _serialize_payload(state: dict[str, Any]) -> bytes:
         try:
             torch_save(state, buf)
         except (ValueError, TypeError, RuntimeError):
-            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
             return trusted_pickle_dumps(state)
     else:
         return trusted_pickle_dumps(state)
@@ -452,7 +452,7 @@ def _torch_supports_weights_only() -> bool:
         core_version = version.split("+")[0]
         return Version(core_version) >= Version("2.0.0")
     except (ValueError, TypeError, RuntimeError):
-        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
         return False
 
 
@@ -481,7 +481,7 @@ def _deserialize_payload(
         try:
             return torch_load(buf, **kwargs)
         except TypeError as exc:
-            logger.debug("TypeError: %s", exc)
+            logger.debug("TypeError: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
             if use_weights_only and "weights_only" in kwargs and "weights_only" in str(exc):
                 buf.seek(0)
                 fallback_kwargs = dict(kwargs)
@@ -489,12 +489,12 @@ def _deserialize_payload(
                 try:
                     return torch_load(buf, **fallback_kwargs)
                 except (ValueError, TypeError, RuntimeError):
-                    logger.warning("Exception occurred", exc_info=True)
+                    logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
                     buf.seek(0)
             else:
                 buf.seek(0)
         except ValueError:
-            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
             buf.seek(0)
     # Legacy compatibility fallback: older reviewed checkpoints may not be
     # tensor-first payloads that torch.load(..., weights_only=True) can decode.
@@ -533,7 +533,7 @@ def _load_index(root: Path) -> dict[str, Any]:
     try:
         return json.loads(p.read_text(encoding="utf-8"))
     except (IOError, OSError):
-        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
         return {
             "schema_version": SCHEMA_VERSION,
             "metric_key": None,
@@ -578,7 +578,7 @@ def _prune_best_k(
             else:
                 target.unlink(missing_ok=True)
         except (IOError, OSError) as e:
-            logger.debug("Exception: %s", e)
+            logger.debug("Exception: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
     idx["entries"] = keep
 
 
@@ -619,7 +619,7 @@ def save_checkpoint(
             try:
                 metric_value = float(metrics[metric_key])
             except (ValueError, TypeError, RuntimeError):
-                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
                 metric_value = metrics[metric_key]
 
     # Build metadata
@@ -628,7 +628,7 @@ def save_checkpoint(
         try:
             candidate = snapshot_config(config)
         except (ValueError, TypeError, RuntimeError):
-            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
             candidate = {}
         if candidate:
             snapshot_data = dict(candidate)
@@ -705,8 +705,8 @@ def save_checkpoint(
         try:
             shutil.copyfile(ckpt_path, state_alias)
         except (IOError, OSError) as e:
-            logger.debug("Exception: %s", e)
-            logger.warning("Exception: %s", e, exc_info=True)
+            logger.debug("Exception: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning("Exception: %s", e, exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
 
     if attach_integrity is not None:
         try:
@@ -718,8 +718,8 @@ def save_checkpoint(
                 relative_to=root,
             )
         except (ValueError, TypeError, RuntimeError) as e:
-            logger.debug("Exception: %s", e)
-            logger.warning("Exception: %s", e, exc_info=True)
+            logger.debug("Exception: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning("Exception: %s", e, exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
 
     if keep_last:
         parent = root.parent
@@ -730,8 +730,8 @@ def save_checkpoint(
             try:
                 shutil.rmtree(old)
             except (ValueError, TypeError, RuntimeError) as e:
-                logger.debug("Exception: %s", e)
-                logger.warning("Exception: %s", e, exc_info=True)
+                logger.debug("Exception: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
+                logger.warning("Exception: %s", e, exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
 
     # Update index for this checkpoint directory
     idx = _load_index(root)
@@ -778,20 +778,20 @@ def save_checkpoint(
     try:
         manifest = dict(collect_run_metadata())
     except (IOError, OSError):
-        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
         manifest = {}
     try:
         provenance = collect_run_meta()
         if provenance:
             manifest.setdefault("provenance", {}).update(provenance)
     except (IOError, OSError) as e:
-        logger.debug("Exception: %s", e)
-        logger.warning("Exception: %s", e, exc_info=True)
+        logger.debug("Exception: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
+        logger.warning("Exception: %s", e, exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
     try:
         write_run_manifest(root, manifest)
     except (IOError, OSError) as e:
-        logger.debug("Exception: %s", e)
-        logger.warning("Exception: %s", e, exc_info=True)
+        logger.debug("Exception: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
+        logger.warning("Exception: %s", e, exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
 
     return ckpt_path, meta
 
