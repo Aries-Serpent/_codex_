@@ -25,8 +25,10 @@ except ImportError as e:
     error_type = type(e).__name__
     logger.debug("ImportError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
     logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
-    print("Error: typer and rich are required for CLI. Install with: pip install typer rich")  # codeql[py/clear-text-logging-sensitive-data]
-    sys.exit(1)
+    # Raise ImportError instead of sys.exit(1) to allow pytest collection
+    raise ImportError(
+        "typer and rich are required for CLI. Install with: pip install typer rich"
+    ) from e
 
 import builtins
 

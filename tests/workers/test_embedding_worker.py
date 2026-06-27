@@ -15,6 +15,8 @@ Phase 48: Coverage improvement for 0% coverage module.
 import os
 from unittest.mock import MagicMock
 
+import pytest
+
 
 @pytest.fixture(autouse=True)
 def cleanup_mocks():
