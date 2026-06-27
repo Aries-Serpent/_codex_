@@ -12,7 +12,7 @@ import logging
 from collections import defaultdict, deque
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
-from typing import Any, Dict, List
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -28,8 +28,8 @@ class PatternNode:
     confidence: float
     frequency: int
     success_rate: float
-    tags: List[str] = field(default_factory=list)
-    metrics: Dict[str, Any] = field(default_factory=dict)
+    tags: list[str] = field(default_factory=list)
+    metrics: dict[str, Any] = field(default_factory=dict)
     created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     last_accessed: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
 
@@ -50,7 +50,7 @@ class PatternEdge:
     target_id: str
     relationship_type: str  # "causes", "mitigates", "correlates_with", "precedes"
     weight: float  # 0.0 - 1.0 confidence
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
     created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
 
 
@@ -72,10 +72,10 @@ class PatternGraph:
 
     def __init__(self):
         """Initialize empty graph."""
-        self.nodes: Dict[str, PatternNode] = {}
-        self.edges: List[PatternEdge] = []
-        self.adjacency: Dict[str, List[PatternEdge]] = defaultdict(list)
-        self.reverse_adjacency: Dict[str, List[PatternEdge]] = defaultdict(list)
+        self.nodes: dict[str, PatternNode] = {}
+        self.edges: list[PatternEdge] = []
+        self.adjacency: dict[str, list[PatternEdge]] = defaultdict(list)
+        self.reverse_adjacency: dict[str, list[PatternEdge]] = defaultdict(list)
 
     def add_node(self, node: PatternNode) -> None:
         """Add a pattern node to the graph."""
@@ -95,7 +95,7 @@ class PatternGraph:
 
         logger.debug(f"Added edge: {edge.source_id} -> {edge.target_id}")
 
-    def get_related_patterns(self, pattern_id: str, depth: int = 1) -> List[PatternNode]:
+    def get_related_patterns(self, pattern_id: str, depth: int = 1) -> list[PatternNode]:
         """
         Get patterns related to a given pattern.
 
@@ -124,7 +124,7 @@ class PatternGraph:
 
         return related
 
-    def find_causal_chains(self, pattern_id: str, max_length: int = 5) -> List[List[str]]:
+    def find_causal_chains(self, pattern_id: str, max_length: int = 5) -> list[list[str]]:
         """
         Find causal chains starting from a pattern.
 
@@ -132,7 +132,7 @@ class PatternGraph:
         """
         chains = []
 
-        def dfs(current_id: str, chain: List[str], length: int):
+        def dfs(current_id: str, chain: list[str], length: int):
             if length >= max_length:
                 return
 
@@ -145,7 +145,7 @@ class PatternGraph:
         dfs(pattern_id, [pattern_id], 0)
         return chains
 
-    def find_mitigation_paths(self, risk_pattern_id: str) -> List[List[str]]:
+    def find_mitigation_paths(self, risk_pattern_id: str) -> list[list[str]]:
         """
         Find patterns that mitigate a given risk pattern.
 
@@ -154,7 +154,7 @@ class PatternGraph:
         paths = []
         visited = set()
 
-        def dfs(current_id: str, path: List[str]):
+        def dfs(current_id: str, path: list[str]):
             if current_id in visited:
                 return
             visited.add(current_id)
@@ -168,7 +168,7 @@ class PatternGraph:
         dfs(risk_pattern_id, [risk_pattern_id])
         return paths
 
-    def query_patterns(self, query: Dict[str, Any]) -> List[PatternNode]:
+    def query_patterns(self, query: dict[str, Any]) -> list[PatternNode]:
         """
         Query patterns by various criteria.
 
@@ -201,7 +201,7 @@ class PatternGraph:
 
         return results
 
-    def compute_node_metrics(self, node_id: str) -> Dict[str, Any]:
+    def compute_node_metrics(self, node_id: str) -> dict[str, Any]:
         """Compute graph metrics for a node."""
         if node_id not in self.nodes:
             return {}
@@ -232,7 +232,7 @@ class PatternGraph:
             "node_frequency": node.frequency,
         }
 
-    def compute_graph_metrics(self) -> Dict[str, Any]:
+    def compute_graph_metrics(self) -> dict[str, Any]:
         """Compute overall graph metrics."""
         num_nodes = len(self.nodes)
         num_edges = len(self.edges)
@@ -330,7 +330,7 @@ class PatternGraph:
 
         return "\n".join(lines)
 
-    def export_json(self) -> Dict[str, Any]:
+    def export_json(self) -> dict[str, Any]:
         """Export graph to JSON format."""
         nodes_data = []
         for node_id, node in self.nodes.items():
@@ -370,7 +370,7 @@ class GraphBuilder:
         """Initialize graph builder."""
         self.graph = PatternGraph()
 
-    def add_patterns(self, patterns: List[Any]) -> None:
+    def add_patterns(self, patterns: list[Any]) -> None:
         """Add patterns as nodes to graph."""
         for pattern in patterns:
             node = PatternNode(
@@ -480,7 +480,7 @@ class GraphBuilder:
 
         return False
 
-    def build_complete_graph(self, patterns: List[Any]) -> PatternGraph:
+    def build_complete_graph(self, patterns: list[Any]) -> PatternGraph:
         """Build complete graph from patterns."""
         # Add all patterns as nodes
         self.add_patterns(patterns)

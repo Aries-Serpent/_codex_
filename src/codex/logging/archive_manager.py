@@ -16,7 +16,7 @@ import time
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 try:
     import pandas as pd
@@ -72,7 +72,7 @@ class ArchiveManager:
         self.retention_log_path = Path(".codex/archive/retention_log.json")
 
         self.archive_dir.mkdir(parents=True, exist_ok=True)
-        self._cache: Dict[str, tuple[Dict[str, Any], float]] = {}
+        self._cache: dict[str, tuple[dict[str, Any], float]] = {}
         self._cache_size_bytes = 0
 
     def archive_session(self, session_id: str) -> Optional[ArchivedSession]:
@@ -127,7 +127,7 @@ class ArchiveManager:
             logger.error(f"Error archiving session {session_id}: <ERROR_TYPE>")
             return None
 
-    def get_archived_session(self, session_id: str) -> Optional[Dict[str, Any]]:
+    def get_archived_session(self, session_id: str) -> Optional[dict[str, Any]]:
         """
         Retrieve archived session from cold storage.
 
@@ -215,7 +215,7 @@ class ArchiveManager:
             logger.error(f"Error retrieving archived session {session_id}: <ERROR_TYPE>")
             return None
 
-    def identify_archive_candidates(self, days: int = 90) -> List[str]:
+    def identify_archive_candidates(self, days: int = 90) -> list[str]:
         """
         Identify sessions older than threshold for archiving.
 
@@ -254,7 +254,7 @@ class ArchiveManager:
             logger.error("Error identifying archive candidates: <ERROR_TYPE>")
             return []
 
-    def purge_old_archives(self, iterations: int = 30) -> Dict[str, Any]:
+    def purge_old_archives(self, iterations: int = 30) -> dict[str, Any]:
         """
         Purge archived sessions older than retention threshold.
 
@@ -324,7 +324,7 @@ class ArchiveManager:
             logger.error("Error purging old archives: <ERROR_TYPE>")
             return report
 
-    def update_archive_index(self) -> Dict[str, Any]:
+    def update_archive_index(self) -> dict[str, Any]:
         """
         Rebuild archive index from current archive directory.
 
@@ -391,7 +391,7 @@ class ArchiveManager:
             return {"sessions": [], "statistics": {}}
 
     # Private methods
-    def _extract_session(self, session_id: str) -> Optional[Dict[str, Any]]:
+    def _extract_session(self, session_id: str) -> Optional[dict[str, Any]]:
         """Extract session data from SQLite."""
         try:
             conn = sqlite3.connect(self.db_path)
@@ -487,7 +487,7 @@ class ArchiveManager:
             error_type = type(e).__name__
             logger.error(f"Error marking session deleted: {session_id}: <ERROR_TYPE>")
 
-    def _add_to_cache(self, session_id: str, session_data: Dict[str, Any]) -> None:
+    def _add_to_cache(self, session_id: str, session_data: dict[str, Any]) -> None:
         """Add session to LRU cache."""
         data_size = len(json.dumps(session_data))
 
@@ -503,7 +503,7 @@ class ArchiveManager:
         self._cache[session_id] = (session_data, time.time())
         self._cache_size_bytes += data_size
 
-    def _log_retention_action(self, report: Dict[str, Any]) -> None:
+    def _log_retention_action(self, report: dict[str, Any]) -> None:
         """Log retention/purge actions."""
         try:
             retention_log = {"version": "1.0", "created": datetime.now().isoformat()}

@@ -16,7 +16,7 @@ import sqlite3
 import threading
 import time
 from contextlib import contextmanager
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from .concurrency import (
     DeadlockRecovery,
@@ -198,7 +198,7 @@ class ThreadSafeSessionDB:
             log_error(e, "schema_init", self.errors_path)
             raise
 
-    def insert_session(self, session: Dict[str, Any]) -> bool:
+    def insert_session(self, session: dict[str, Any]) -> bool:
         """Insert session with write lock and deadlock recovery."""
 
         def _insert():
@@ -233,7 +233,7 @@ class ThreadSafeSessionDB:
             log_error(e, "insert_session", self.errors_path)
             return False
 
-    def get_session(self, session_id: str) -> Optional[Dict[str, Any]]:
+    def get_session(self, session_id: str) -> Optional[dict[str, Any]]:
         """Get session by ID (thread-safe read)."""
 
         def _get():
@@ -257,7 +257,7 @@ class ThreadSafeSessionDB:
         agent_name: Optional[str] = None,
         days: int = 7,
         limit: int = 100,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Query sessions with optional filters (thread-safe read)."""
 
         def _query():
@@ -316,7 +316,7 @@ class ThreadSafeSessionDB:
             log_error(e, "update_session_status", self.errors_path)
             return False
 
-    def search_sessions(self, query: str, limit: int = 50) -> List[Dict[str, Any]]:
+    def search_sessions(self, query: str, limit: int = 50) -> list[dict[str, Any]]:
         """Search sessions by query string (thread-safe read)."""
 
         def _search():
@@ -383,7 +383,7 @@ class ThreadSafeSessionDB:
             log_error(e, "archive_session", self.errors_path)
             return False
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get current lock metrics."""
         return self._metrics.to_dict()
 

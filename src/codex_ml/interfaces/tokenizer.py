@@ -85,7 +85,7 @@ class TokenizerAdapter(ABC):
     Backwards-compatibility notes:
     - Older code expects `pad_id` and `eos_id` properties; newer callers may use
       `pad_token_id` / `eos_token_id`. Both are provided by implementations.
-    - `batch_encode` may return a List[List[int]] by default; adapters MAY also
+    - `batch_encode` may return a list[list[int]] by default; adapters MAY also
       support returning a Hugging Face-style dict when requested.
     """
 
@@ -367,7 +367,7 @@ class HFTokenizer(TokenizerAdapter):
     """Lightweight wrapper around `transformers.AutoTokenizer`.
 
     This adapter intentionally preserves compatibility with both usage patterns:
-    - Returns List[List[int]] by default for `batch_encode(...)`.
+    - Returns list[list[int]] by default for `batch_encode(...)`.
     - Accepts `return_dict=True` to return the raw Hugging Face-style mapping.
     - Provides both old (pad_id / eos_id) and new (pad_token_id / eos_token_id)
       property names.
@@ -520,7 +520,7 @@ class HFTokenizer(TokenizerAdapter):
     ) -> list[list[int]] | dict[str, Any]:
         """Batch encode texts.
 
-        - By default returns List[List[int]] of input_ids for adapter consistency.
+        - By default returns list[list[int]] of input_ids for adapter consistency.
         - If return_dict=True, returns the raw Hugging Face-style dict, preserving
           backward compatibility with prior usages expecting a mapping.
         """

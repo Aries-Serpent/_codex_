@@ -13,7 +13,7 @@ import math
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -54,9 +54,9 @@ class PatternRecord:
     frequency: int
     created_at: datetime
     last_accessed: datetime
-    tags: List[str] = field(default_factory=list)
+    tags: list[str] = field(default_factory=list)
     policy: RetentionPolicy = RetentionPolicy.STANDARD
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 class PolicyBase:
@@ -180,7 +180,7 @@ class RetentionPolicyManager:
         self.config = config or RetentionConfig()
         self.policies = self._initialize_policies()
 
-    def _initialize_policies(self) -> Dict[RetentionPolicy, PolicyBase]:
+    def _initialize_policies(self) -> dict[RetentionPolicy, PolicyBase]:
         """Initialize all policy instances."""
         return {
             RetentionPolicy.EVERGREEN: EvergreenPolicy(self.config),
@@ -244,8 +244,8 @@ class RetentionPolicyManager:
         return pattern
 
     def cleanup(
-        self, patterns: List[PatternRecord], now: Optional[datetime] = None
-    ) -> tuple[List[PatternRecord], List[str]]:
+        self, patterns: list[PatternRecord], now: Optional[datetime] = None
+    ) -> tuple[list[PatternRecord], list[str]]:
         """
         Run cleanup cycle on patterns.
 
@@ -277,8 +277,8 @@ class RetentionPolicyManager:
         return retained, pruned
 
     def batch_cleanup(
-        self, all_patterns: List[PatternRecord], now: Optional[datetime] = None
-    ) -> Dict[str, Any]:
+        self, all_patterns: list[PatternRecord], now: Optional[datetime] = None
+    ) -> dict[str, Any]:
         """
         Run cleanup on batch of patterns.
 
@@ -317,7 +317,7 @@ class RetentionPolicyManager:
         """Get retention window for policy in days."""
         return self.policies[policy].get_retention_window()
 
-    def get_policy_distribution(self, patterns: List[PatternRecord]) -> Dict[str, int]:
+    def get_policy_distribution(self, patterns: list[PatternRecord]) -> dict[str, int]:
         """Get distribution of patterns by policy."""
         distribution = {p.value: 0 for p in RetentionPolicy}
 
@@ -327,8 +327,8 @@ class RetentionPolicyManager:
         return distribution
 
     def generate_retention_report(
-        self, patterns: List[PatternRecord], now: Optional[datetime] = None
-    ) -> Dict[str, Any]:
+        self, patterns: list[PatternRecord], now: Optional[datetime] = None
+    ) -> dict[str, Any]:
         """Generate comprehensive retention report."""
         if now is None:
             now = datetime.now(timezone.utc)

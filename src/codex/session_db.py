@@ -12,7 +12,7 @@ import logging
 import sqlite3
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 try:
     import pandas as pd
@@ -98,7 +98,7 @@ class SessionDB:
         conn.commit()
         conn.close()
 
-    def archive_session(self, session_id: str, session_data: Dict[str, Any]) -> str:
+    def archive_session(self, session_id: str, session_data: dict[str, Any]) -> str:
         """Archive a session to Parquet storage
 
         Args:
@@ -163,7 +163,7 @@ class SessionDB:
         conn.commit()
         conn.close()
 
-    def get_session(self, session_id: str, use_cache: bool = True) -> Optional[Dict[str, Any]]:
+    def get_session(self, session_id: str, use_cache: bool = True) -> Optional[dict[str, Any]]:
         """Get session (from cache, DB, or archive)
 
         Args:
@@ -210,7 +210,7 @@ class SessionDB:
 
         return row_dict
 
-    def _cache_session(self, session_id: str, session_data: Dict[str, Any]):
+    def _cache_session(self, session_id: str, session_data: dict[str, Any]):
         """Cache session with size limit"""
         # Simple size estimation
         data_size = len(json.dumps(session_data).encode("utf-8"))
@@ -226,7 +226,7 @@ class SessionDB:
         self._cache[session_id] = session_data
         self.cache_current_size += data_size
 
-    def get_archive_candidates(self, days: int = 90) -> List[str]:
+    def get_archive_candidates(self, days: int = 90) -> list[str]:
         """Get list of session IDs older than N days
 
         Args:
@@ -318,7 +318,7 @@ class SessionDB:
         logger.info(f"Cleaned up {deleted_count} old archives (>30 iterations)")
         return deleted_count
 
-    def get_archive_stats(self) -> Dict[str, Any]:
+    def get_archive_stats(self) -> dict[str, Any]:
         """Get archive statistics"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()

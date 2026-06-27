@@ -14,7 +14,7 @@ import json
 import logging
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from .concurrency import ReadWriteLock, log_error, save_metrics
 
@@ -77,7 +77,7 @@ class ThreadSafeSessionEmbeddings:
         # Concurrency primitives
         self._rw_lock = ReadWriteLock(timeout=60.0)
         self._index = None
-        self._metadata: Dict[str, Dict[str, Any]] = {}
+        self._metadata: dict[str, dict[str, Any]] = {}
         self._model = None
 
         # Load or initialize index
@@ -137,8 +137,8 @@ class ThreadSafeSessionEmbeddings:
         self,
         session_id: str,
         description: str,
-        patterns: List[str],
-        keywords: List[str],
+        patterns: list[str],
+        keywords: list[str],
     ) -> bool:
         """Add session to index (exclusive write)."""
 
@@ -189,7 +189,7 @@ class ThreadSafeSessionEmbeddings:
         self,
         query_session_id: str,
         k: int = 5,
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Find similar sessions (concurrent read with read-write lock)."""
 
         def _find():
@@ -309,7 +309,7 @@ class ThreadSafeSessionEmbeddings:
             log_error(e, "save_index", self.errors_path)
             return False
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get lock metrics."""
         return self._rw_lock.metrics.to_dict()
 

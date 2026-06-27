@@ -113,7 +113,7 @@ def split_dataset(
 
     Returns
     -------
-    (List[T], List[T])
+    (list[T], list[T])
         Train and validation lists.
     """
     if not 0.0 <= float(train_ratio) <= 1.0:
@@ -219,7 +219,7 @@ def split_texts(
 
     Returns
     -------
-    (List[str], List[str])
+    (list[str], list[str])
         Train and validation text lists.
     """
     items = list(texts)

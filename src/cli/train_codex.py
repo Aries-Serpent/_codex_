@@ -8,7 +8,7 @@ Full implementation should be restored from git history or rebuilt.
 """
 
 import argparse
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -25,7 +25,7 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def _merge(args: argparse.Namespace, config: Dict[str, Any]) -> Dict[str, Any]:
+def _merge(args: argparse.Namespace, config: dict[str, Any]) -> dict[str, Any]:
     """Merge CLI arguments with configuration dictionary.
 
     CLI arguments take precedence over config values when provided.
@@ -43,8 +43,8 @@ def _merge(args: argparse.Namespace, config: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def run_training(
-    config: Dict[str, Any], output_path: Optional[str] = None, resume: bool = False
-) -> Dict[str, Any]:
+    config: dict[str, Any], output_path: Optional[str] = None, resume: bool = False
+) -> dict[str, Any]:
     """Run training with the provided configuration.
 
     Args:

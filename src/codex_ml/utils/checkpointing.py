@@ -1491,7 +1491,7 @@ class CheckpointManager:
 
         Returns
         -------
-        Dict[str, Any]
+        dict[str, Any]
             The metadata returned from :meth:`resume_from` with the resolved
             checkpoint ``path`` included.
         """

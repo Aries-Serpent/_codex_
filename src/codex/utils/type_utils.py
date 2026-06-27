@@ -22,19 +22,19 @@ def safe_isinstance(obj: Any, typ: Any) -> bool:
         True if obj is an instance of typ, False otherwise
 
     Examples:
-        >>> from typing import Optional, List
+        >>> from typing import Optional
         >>> safe_isinstance(5, int)
         True
         >>> safe_isinstance(5, Optional[int])
         True
         >>> safe_isinstance(None, Optional[int])
         True
-        >>> safe_isinstance([1, 2, 3], List[int])
+        >>> safe_isinstance([1, 2, 3], list[int])
         True
-        >>> safe_isinstance(['a', 'b'], List[int])
+        >>> safe_isinstance(['a', 'b'], list[int])
         False
     """
-    # Get the origin of the type (e.g., list from List[int])
+    # Get the origin of the type (e.g., list from list[int])
     origin = get_origin(typ)
 
     # If no origin, it's a regular type

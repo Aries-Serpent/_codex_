@@ -14,7 +14,7 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +32,7 @@ class Pattern:
     usage_count: int
     created_at: datetime
     last_used: Optional[datetime]
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -47,7 +47,7 @@ class PastDecision:
     outcome_quality: float  # 0-1
     impact_score: float
     lessons_learned: str
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 @dataclass
@@ -69,8 +69,8 @@ class RiskAssessment:
     """Assessment of risks in current state."""
 
     overall_risk_level: str  # critical, high, medium, low
-    identified_risks: List[str]
-    mitigation_strategies: List[str]
+    identified_risks: list[str]
+    mitigation_strategies: list[str]
     probability: float  # 0-1
     potential_impact: str
 
@@ -84,7 +84,7 @@ class Opportunity:
     roi_estimate: float
     difficulty: str  # easy, medium, hard
     time_to_value_hours: float
-    required_agents: List[str]
+    required_agents: list[str]
     priority: int  # 1=critical, 5=low
 
 
@@ -93,11 +93,11 @@ class Orientation:
     """Rich context for decision-maker."""
 
     timestamp: datetime
-    relevant_patterns: List[Pattern]
-    decision_precedents: List[PastDecision]
-    agent_candidates: List[AgentCapability]
+    relevant_patterns: list[Pattern]
+    decision_precedents: list[PastDecision]
+    agent_candidates: list[AgentCapability]
     risk_assessment: RiskAssessment
-    opportunities: List[Opportunity]
+    opportunities: list[Opportunity]
     context_summary: str
     confidence_baseline: float  # How confident we are in the context
 
@@ -113,7 +113,7 @@ class PatternRetriever:
         observable_state: Any,
         top_k: int = 10,
         threshold: float = 0.75,
-    ) -> List[Pattern]:
+    ) -> list[Pattern]:
         """Retrieve top-k patterns relevant to current state."""
         try:
             # In production, use semantic similarity to rank patterns
@@ -167,7 +167,7 @@ class DecisionPrecedentRetriever:
         current_state: Any,
         top_k: int = 5,
         similarity_threshold: float = 0.8,
-    ) -> List[PastDecision]:
+    ) -> list[PastDecision]:
         """Retrieve similar past decisions and outcomes."""
         try:
             # In production, use semantic similarity to find past decisions
@@ -218,7 +218,7 @@ class AgentCapabilityAnalyzer:
         self,
         observable_state: Any,
         decision_type: str = "general",
-    ) -> List[AgentCapability]:
+    ) -> list[AgentCapability]:
         """Get agents suitable for the current state."""
         try:
             # In production, use semantic matching with agent capabilities
@@ -321,8 +321,8 @@ class OpportunityDetector:
     def detect_opportunities(
         self,
         observable_state: Any,
-        decision_precedents: List[PastDecision],
-    ) -> List[Opportunity]:
+        decision_precedents: list[PastDecision],
+    ) -> list[Opportunity]:
         """Detect improvement opportunities."""
         try:
             opportunities = []

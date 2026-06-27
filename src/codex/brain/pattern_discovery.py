@@ -15,7 +15,7 @@ from collections import Counter, defaultdict
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -55,10 +55,10 @@ class Pattern:
     confidence: float = 0.0
     first_seen: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     last_seen: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
-    occurrences: List[Dict[str, Any]] = field(default_factory=list)
-    metrics: Dict[str, Any] = field(default_factory=dict)
-    tags: List[str] = field(default_factory=list)
-    improvement_areas: List[ImprovementArea] = field(default_factory=list)
+    occurrences: list[dict[str, Any]] = field(default_factory=list)
+    metrics: dict[str, Any] = field(default_factory=dict)
+    tags: list[str] = field(default_factory=list)
+    improvement_areas: list[ImprovementArea] = field(default_factory=list)
 
 
 @dataclass
@@ -66,9 +66,9 @@ class PatternOccurrence:
     """A single occurrence of a pattern."""
 
     timestamp: datetime
-    context: Dict[str, Any]
+    context: dict[str, Any]
     outcome: Optional[str] = None  # success, failure, neutral
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 class PatternClassifier:
@@ -84,7 +84,7 @@ class PatternClassifier:
     }
 
     @staticmethod
-    def classify(event: Dict[str, Any]) -> PatternType:
+    def classify(event: dict[str, Any]) -> PatternType:
         """Classify an event into a pattern type."""
         event_str = json.dumps(event).lower()
 
@@ -188,7 +188,7 @@ class TaggingEngine:
     }
 
     @staticmethod
-    def tag_pattern(pattern: Pattern) -> List[str]:
+    def tag_pattern(pattern: Pattern) -> list[str]:
         """Generate tags for a pattern."""
         content = f"{pattern.name} {pattern.description}".lower()
         tags = []
@@ -213,17 +213,17 @@ class PatternDiscovery:
     def __init__(self, frequency_threshold: int = 3):
         """Initialize pattern discovery."""
         self.frequency_threshold = frequency_threshold
-        self.patterns: Dict[str, Pattern] = {}
-        self.event_sequences: List[Dict[str, Any]] = []
+        self.patterns: dict[str, Pattern] = {}
+        self.event_sequences: list[dict[str, Any]] = []
         self.classifier = PatternClassifier()
         self.scorer = PatternScorer()
         self.tagger = TaggingEngine()
 
-    def add_event(self, event: Dict[str, Any]) -> None:
+    def add_event(self, event: dict[str, Any]) -> None:
         """Add an event for pattern analysis."""
         self.event_sequences.append(event)
 
-    def discover(self, events: Optional[List[Dict[str, Any]]] = None) -> List[Pattern]:
+    def discover(self, events: Optional[list[dict[str, Any]]] = None) -> list[Pattern]:
         """
         Discover patterns from events.
 
@@ -274,7 +274,7 @@ class PatternDiscovery:
             if len(events) >= 1:
                 self._create_pattern(event_key, events)
 
-    def _generate_event_key(self, event: Dict[str, Any], ptype: PatternType) -> str:
+    def _generate_event_key(self, event: dict[str, Any], ptype: PatternType) -> str:
         """Generate a unique key for similar events."""
         # Normalize event for grouping
         key_parts = [ptype.value]
@@ -287,7 +287,7 @@ class PatternDiscovery:
 
         return "|".join(key_parts)
 
-    def _create_pattern(self, event_key: str, events: List[Dict[str, Any]]) -> None:
+    def _create_pattern(self, event_key: str, events: list[dict[str, Any]]) -> None:
         """Create or update a pattern from grouped events."""
         if event_key not in self.patterns:
             # New pattern
@@ -326,7 +326,7 @@ class PatternDiscovery:
         # Tag pattern
         pattern.tags = self.tagger.tag_pattern(pattern)
 
-    def _generate_pattern_name(self, event: Dict[str, Any], ptype: PatternType) -> str:
+    def _generate_pattern_name(self, event: dict[str, Any], ptype: PatternType) -> str:
         """Generate a descriptive name for a pattern."""
         if "name" in event:
             return event["name"]
@@ -336,7 +336,7 @@ class PatternDiscovery:
         return f"{action}_{resource}_{ptype.value}"
 
     def _generate_pattern_description(
-        self, events: List[Dict[str, Any]], ptype: PatternType
+        self, events: list[dict[str, Any]], ptype: PatternType
     ) -> str:
         """Generate a description for a pattern."""
         freq = len(events)
@@ -347,7 +347,7 @@ class PatternDiscovery:
             f"with {success_rate * 100:.1f}% success rate"
         )
 
-    def _calculate_success_rate(self, events: List[Dict[str, Any]]) -> float:
+    def _calculate_success_rate(self, events: list[dict[str, Any]]) -> float:
         """Calculate success rate from events."""
         if not events:
             return 0.5
@@ -356,7 +356,7 @@ class PatternDiscovery:
 
         return successes / len(events)
 
-    def get_promoted_patterns(self, score_threshold: float = 0.60) -> List[Pattern]:
+    def get_promoted_patterns(self, score_threshold: float = 0.60) -> list[Pattern]:
         """Get patterns ready for promotion to LTM."""
         candidates = []
         now = datetime.now(timezone.utc)
@@ -372,7 +372,7 @@ class PatternDiscovery:
 
         return candidates
 
-    def export_patterns(self) -> Dict[str, Any]:
+    def export_patterns(self) -> dict[str, Any]:
         """Export discovered patterns as JSON."""
         return {
             "discovery_timestamp": datetime.now(timezone.utc).isoformat(),
@@ -385,7 +385,7 @@ class MetricsCalculator:
     """Calculates metrics for discovered patterns."""
 
     @staticmethod
-    def calculate_pattern_metrics(pattern: Pattern) -> Dict[str, Any]:
+    def calculate_pattern_metrics(pattern: Pattern) -> dict[str, Any]:
         """Calculate metrics for a pattern."""
         outcomes = [o.outcome for o in pattern.occurrences if o.outcome]
         outcome_counts = Counter(outcomes) if outcomes else Counter()
@@ -406,7 +406,7 @@ class MetricsCalculator:
         }
 
     @staticmethod
-    def calculate_discovery_metrics(patterns: List[Pattern]) -> Dict[str, Any]:
+    def calculate_discovery_metrics(patterns: list[Pattern]) -> dict[str, Any]:
         """Calculate overall discovery metrics."""
         if not patterns:
             return {

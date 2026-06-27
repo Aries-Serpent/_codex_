@@ -15,7 +15,7 @@ from __future__ import annotations
 import logging
 import time
 from contextlib import contextmanager
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Callable, Optional
 
 from .concurrency import ArchiveOperationLock, log_error, save_metrics
 
@@ -105,7 +105,7 @@ class ThreadSafeArchive:
                 lock.release()
         return False
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get lock metrics."""
         return self._archive_lock.metrics.to_dict()
 
@@ -189,7 +189,7 @@ class ArchiveSessionGuard:
         session_ids: list[str],
         archive_func: Callable,
         max_workers: int = 5,
-    ) -> Dict[str, bool]:
+    ) -> dict[str, bool]:
         """Archive multiple sessions in parallel with per-session locks."""
         import concurrent.futures
 

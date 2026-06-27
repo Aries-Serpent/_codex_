@@ -18,7 +18,7 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from .ooda_actor import ExecutionReport, OODAactor
 from .ooda_decider import DecisionDirective, OODADecider
@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 class CycleMetrics:
     """Metrics for a single OODA cycle."""
 
-    phase_latencies: Dict[str, float]  # ms per phase
+    phase_latencies: dict[str, float]  # ms per phase
     decision_confidence: float
     execution_success_rate: float
     total_agents_involved: int
@@ -77,7 +77,7 @@ class CycleRecorder:
     def __init__(self, db_path: Path = Path(".codex/ooda_cycles.jsonl")):
         self.db_path = db_path
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
-        self.in_memory_buffer: List[CycleRecord] = []
+        self.in_memory_buffer: list[CycleRecord] = []
 
     def record_cycle(self, cycle: CycleRecord):
         """Record a cycle to persistent storage."""
@@ -93,7 +93,7 @@ class CycleRecorder:
         except Exception as e:
             logger.error(f"Failed to record cycle: {e}")
 
-    def get_recent_cycles(self, limit: int = 100) -> List[CycleRecord]:
+    def get_recent_cycles(self, limit: int = 100) -> list[CycleRecord]:
         """Get recent cycles from buffer."""
         return self.in_memory_buffer[-limit:]
 
@@ -400,7 +400,7 @@ class OODAOrchestrator:
         """Get current metrics."""
         return self.recorder.get_cycle_metrics()
 
-    def get_recent_cycles(self, limit: int = 10) -> List[CycleRecord]:
+    def get_recent_cycles(self, limit: int = 10) -> list[CycleRecord]:
         """Get recent cycle records."""
         return self.recorder.get_recent_cycles(limit)
 
@@ -435,7 +435,7 @@ class ParallelOODAOrchestrator(OODAOrchestrator):
     def __init__(self, repo_path: Path = Path("."), max_concurrent_cycles: int = 5):
         super().__init__(repo_path)
         self.executor = ThreadPoolExecutor(max_workers=max_concurrent_cycles)
-        self.cycles: Dict[str, Any] = {}
+        self.cycles: dict[str, Any] = {}
 
     def start_cycle(self, context: Optional[Any] = None) -> str:
         """Start a new cycle (non-blocking)."""
@@ -454,7 +454,7 @@ class ParallelOODAOrchestrator(OODAOrchestrator):
             logger.error(f"Failed to get cycle result {cycle_id}: {e}")
             return None
 
-    def get_completed_cycles(self) -> Dict[str, CycleRecord]:
+    def get_completed_cycles(self) -> dict[str, CycleRecord]:
         """Get all completed cycles."""
         completed = {}
         for cycle_id, future in self.cycles.items():

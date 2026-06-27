@@ -471,7 +471,7 @@ def manage_tenant_indices(
         index_names: List of index names to operate on
         index_dir: Base directory for tenant indices
         **kwargs: Additional operation-specific parameters:
-            - files: List[Path] for 'create' operation
+            - files: list[Path] for 'create' operation
             - chunk_size: int for 'create' operation
             - overlap: int for 'create' operation
             - merge_name: str for 'merge' operation
