@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Fixed (PR #5106 CI/Review Remediation)
+- Corrected the new Phase 6-7 governance tooling by fixing WEC health-monitor score semantics, Phase 7 success-validator reporting/aggregation, and WEC compliance branch-conditional requirements in `scripts/ci/wec_health_monitor.py`, `scripts/ci/phase_7_success_validator.py`, and `scripts/ci/session_wrapup_autofix.py`.
+- Restored the top-level `json` import in `scripts/ci/session_wrapup_autofix.py` after local WEC-compliance verification exposed the missing import path introduced during the follow-up remediation.
+- Hardened the Phase 6-7 workflow/docs follow-up by fixing the `auto-approve-workflows.yml` WEC-check exit handling, restoring required concurrency in `phase-12-2-compliance-check.yml`, and correcting `--pr-number` / metrics examples in the related documentation.
+
 ### Fixed (Actionlint Compliance Refresh — PR #5103)
 - Removed the redundant legacy `pr_number` manual-dispatch input from `.github/workflows/auto-approve-workflows.yml`, keeping the workflow within GitHub's 10-input `workflow_dispatch` limit while preserving the active `target_pr` dispatch path.
 - Updated the workflow's internal manual-dispatch references to use `target_pr` consistently so the actionlint failure on PR #5103 is resolved without changing approval behavior.

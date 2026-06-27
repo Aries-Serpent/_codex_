@@ -43,6 +43,7 @@ from __future__ import annotations
 
 import argparse
 import functools
+import json
 import logging
 import os
 import re
@@ -2069,6 +2070,162 @@ def auto_fix_all_missing(
 
 
 # ---------------------------------------------------------------------------
+# WEC Compliance Validation (Phase 3.1)
+# ---------------------------------------------------------------------------
+
+def validate_wec_compliance(
+    pr_number: str,
+    merge_target: str = "main",
+) -> tuple[bool, list[str], bool]:
+    """Validate that WEC state is compliant with merge requirements.
+
+    This is the compliance validation gate for Phase 3.1 that ensures:
+
+    1. All required workflows for the merge target are present in WEC
+    2. All required workflows are checked (enabled) in the WEC block
+    3. REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md) is updated
+    4. REQ-5 (CHANGELOG.md) is updated with [Unreleased] section
+
+    Args:
+        pr_number: The PR number to validate
+        merge_target: Target branch for merge ("main" or "0D_base_")
+
+    Returns:
+        Tuple of (is_compliant: bool, issues: list[str], is_error: bool)
+        where:
+            - is_compliant: True if validation passed
+            - issues: list of human-readable violations or errors
+            - is_error: True if validation could not be performed (error state)
+    """
+    issues: list[str] = []
+    is_error = False
+
+    # Step 1: Fetch PR body and extract WEC state
+    try:
+        result = subprocess.run(
+            [
+                "gh",
+                "pr",
+                "view",
+                pr_number,
+                "--json",
+                "body,headRefName",
+            ],
+            capture_output=True, text=True, check=True,
+        )
+        pr_data = json.loads(result.stdout)
+        pr_body = (pr_data.get("body") or "").strip()
+        head_ref = pr_data.get("headRefName") or ""
+    except subprocess.CalledProcessError:
+        issues.append(f"❌ Could not fetch PR #{pr_number} body")
+        return False, issues, True
+
+    wec_state = _extract_wec_state(pr_body)
+
+    # Step 2: Define required workflows by merge target
+    # (Map from WEC_CANONICAL_ITEMS.md)
+    is_agent_pr = head_ref.startswith(("copilot/", "feature/"))
+    required_workflows = {
+        "pre-merge-validation.yml",
+        "comment-review-gate.yml",
+        "deferral-language-gate.yml",
+        "workflow-execution-gate.yml",
+    }
+    if is_agent_pr:
+        required_workflows.add("agent-auth-delegation.yml")
+
+    if merge_target == "main":
+        pass
+    elif merge_target == "0D_base_":
+        pass
+    else:
+        issues.append(f"⚠  Unknown merge target: {merge_target}")
+        return False, issues
+
+    # Step 3: Validate all required workflows are present and checked
+    for workflow in required_workflows:
+        # Check both with and without .yml suffix (normalize names)
+        workflow_base = workflow.replace(".yml", "")
+        found_checked = False
+
+        for wec_name, is_checked in wec_state.items():
+            wec_base = wec_name.replace(".yml", "")
+            if wec_base == workflow_base and is_checked:
+                found_checked = True
+                break
+
+        if not found_checked:
+            issues.append(
+                f"❌ Required workflow '{workflow}' not checked in WEC "
+                f"(merge target: {merge_target})"
+            )
+
+    # Step 4: Validate REQ-4 (AGENT_ACCOUNTABILITY_REPORT.md updated)
+    if not _last_commit_changed(ACCOUNTABILITY_REPORT):
+        issues.append(
+            "❌ REQ-4 violation: AGENT_ACCOUNTABILITY_REPORT.md not updated in last commit"
+        )
+
+    # Step 5: Validate REQ-5 (CHANGELOG.md updated)
+    if not _last_commit_changed(CHANGELOG) or not _changelog_has_unreleased():
+        issues.append(
+            "❌ REQ-5 violation: CHANGELOG.md not updated or missing [Unreleased] section"
+        )
+
+    is_compliant = len(issues) == 0
+    return is_compliant, issues, is_error
+
+
+def check_wec_compliance(
+    pr_number: str,
+    merge_target: str = "main",
+    verbose: bool = False,
+) -> int:
+    """CLI wrapper for WEC compliance validation (returns exit code for CI gates).
+
+    Usage:
+        python session_wrapup_autofix.py --check-wec-compliance --pr-number 5104
+
+    Exit codes:
+        0  = All checks passed (compliant)
+        1  = One or more compliance violations detected
+        2  = Could not perform validation (error)
+    """
+    is_compliant, issues, is_error = validate_wec_compliance(pr_number, merge_target)
+
+    print(f"\n📋 WEC Compliance Check — PR #{pr_number} (target: {merge_target})")
+    print("=" * 70)
+
+    if is_error:
+        print("❌ WEC COMPLIANCE: ERROR")
+        for issue in issues:
+            print(f"   {issue}")
+        if verbose:
+            print("\n📖 Troubleshooting:")
+            print("   - Verify PR number is correct")
+            print("   - Verify GitHub API access (gh pr view)")
+            print("   - Check GitHub CLI configuration")
+        return 2
+    elif is_compliant:
+        print("✅ WEC COMPLIANCE: PASSED")
+        print(f"   All required workflows are checked and configured correctly.")
+        return 0
+    else:
+        print("❌ WEC COMPLIANCE: FAILED")
+        for issue in issues:
+            print(f"   {issue}")
+
+        if verbose:
+            print("\n📖 Remediation steps:")
+            print("   1. Ensure all required workflows are selected in WEC")
+            print(f"   2. Run: python session_wrapup_autofix.py --select-merge-required --pr-number {pr_number}")
+            print("   3. Update AGENT_ACCOUNTABILITY_REPORT.md (REQ-4)")
+            print("   4. Update CHANGELOG.md with [Unreleased] section (REQ-5)")
+
+        return 1
+
+
+# ---------------------------------------------------------------------------
 # Issue resolution verification helper
 # ---------------------------------------------------------------------------
 
@@ -2286,6 +2443,26 @@ def main(argv: list[str] | None = None) -> int:
             "(first call for this PR) a default block is printed."
         ),
     )
+    parser.add_argument(
+        "--check-wec-compliance",
+        action="store_true",
+        default=False,
+        dest="check_wec_compliance",
+        help=(
+            "(Phase 3.1) Validate WEC compliance against merge target requirements. "
+            "Checks that all required workflows are present and checked, REQ-4 and "
+            "REQ-5 are satisfied. Exits 0 if compliant, 1 if violations detected. "
+            "Requires --pr-number."
+        ),
+    )
+    parser.add_argument(
+        "--merge-target",
+        default="main",
+        metavar="BRANCH",
+        dest="merge_target",
+        help="Target branch for merge compliance check (main or 0D_base_)",
+    )
+
 
     args = parser.parse_args(argv)
 
@@ -2300,6 +2477,18 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     sha = args.sha or _short_sha()
+
+    # --check-wec-compliance (Phase 3.1): Validate WEC compliance
+    if getattr(args, "check_wec_compliance", False):
+        if args.pr_number == "unknown":
+            print("❌ --check-wec-compliance requires --pr-number", file=sys.stderr)
+            return 1
+        merge_target = getattr(args, "merge_target", "main")
+        return check_wec_compliance(
+            pr_number=args.pr_number,
+            merge_target=merge_target,
+            verbose=True,
+        )
 
     # --update-pr-description: MANDATORY session-close gate (S177 compliance)
     # Unconditionally refresh PR description with scorecard + follow-up + WEC.
