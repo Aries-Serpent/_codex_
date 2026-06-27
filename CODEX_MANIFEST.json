@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "generated_at": "2026-06-26T19:43:18Z",
+  "generated_at": "2026-06-27T00:42:05Z",
   "agents": [
     {
       "name": "github-app-manager",
@@ -1603,7 +1603,7 @@
     {
       "name": "phase-12-2-compliance-check",
       "enforcement_tier": "GROUNDED",
-      "has_concurrency": false
+      "has_concurrency": true
     },
     {
       "name": "phase-8-1-health-monitor",
@@ -2380,5 +2380,5 @@
     "transition_active": true
   },
   "violation_rate_30d": 0.0,
-  "integrity_sha256": "38bab92856c77a287e7d790eff1e4afea3d714e856a5e357e4db57c14ba41133"
+  "integrity_sha256": "966eb4d499a3e0e53f802b20cf14bc7355f6be7a2cc3752571eb5e9aeaca2b4c"
 }
