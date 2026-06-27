@@ -113,8 +113,8 @@ def maybe_export_metrics(app=None, port: int = 9000, *, fallback_dir: Path | str
     _FALLBACK_PATH = None
     _FALLBACK_REASON = None
 
-    counters = {"requests_total": Counter("requests_total", "Total requests")}
-    gauges = {"queue_depth": Gauge("queue_depth", "Queue depth")}
+    counters = {"requests_total": Counter("requests_total", "Total requests")}  # type: ignore[dict-item]
+    gauges = {"queue_depth": Gauge("queue_depth", "Queue depth")}  # type: ignore[dict-item]
     return counters, gauges
 
 

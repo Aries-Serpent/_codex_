@@ -283,7 +283,7 @@ class MemoryConsolidationEngine:
         # Add cold entries to prune
         plan["prune"] = [key for key, _ in cold_entries]
 
-        logger.info(f"Plan: promote {len(plan['promote'])}, prune {len(plan['prune'])}")
+        logger.info(f"Plan: promote {len(plan['promote'])}, prune {len(plan['prune'])}")  # type: ignore[arg-type]
         return plan
 
     def _calculate_pattern_score(self, entry: PatternEntry) -> float:

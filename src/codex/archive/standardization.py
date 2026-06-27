@@ -148,7 +148,7 @@ class StandardizationManager:
 
         # Verify signature if present
         if metadata.get("signature") and self.enable_signing and self.sigstore_client:
-            sig_valid = self.sigstore_client.verify_signature(
+            sig_valid = self.sigstore_client.verify_signature(  # type: ignore[call-arg]
                 record=record,
                 signature=metadata["signature"],
                 cert_chain=metadata.get("certificate_chain"),

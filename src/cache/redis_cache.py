@@ -87,7 +87,7 @@ class RedisCache(CacheBackend):
             self._redis = redis.Redis(connection_pool=pool)
 
             # Test connection
-            self._redis.ping()
+            self._redis.ping()  # type: ignore[attr-defined]
             self._connected = True
             logger.info(
                 f"Connected to Redis at {self.host}:{self.port}/{self.db}"
@@ -202,7 +202,7 @@ class RedisCache(CacheBackend):
         stats = dict(self._stats)
 
         if self._local_cache:
-            stats["local"] = self._local_cache.get_stats()
+            stats["local"] = self._local_cache.get_stats()  # type: ignore[assignment]
 
         if self._connected and self._redis:
             try:
@@ -216,13 +216,13 @@ class RedisCache(CacheBackend):
             except Exception as e:
                 logger.error(f"Redis info error: {e}")
         else:
-            stats["redis"] = {"connected": False}
+            stats["redis"] = {"connected": False}  # type: ignore[assignment]
 
         return stats
 
     def scan_keys(self, pattern: str = "*", count: int = 100) -> list[str]:
         """Scan for keys matching pattern."""
-        keys = []
+        keys = []  # type: ignore[var-annotated]
 
         if self._connected and self._redis:
             try:

@@ -304,7 +304,7 @@ class ArgparseJSONParser(argparse.ArgumentParser):
         self._logger = logging.getLogger("codex")
         super().__init__(*a, **k)
 
-    def error(self, message: str) -> None:
+    def error(self, message: str) -> None:  # type: ignore[override]
         usage = self.format_usage().strip()
         log_event(
             self._logger,

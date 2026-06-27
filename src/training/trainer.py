@@ -63,8 +63,8 @@ except (ValueError, TypeError):  # pragma: no cover - propagate a consistent run
         def no_grad() -> _NoOpNoGrad:
             return _NoOpNoGrad()
 
-    torch = _TorchStub()
-    nn = Any
+    torch = _TorchStub()  # type: ignore[assignment]
+    nn = Any  # type: ignore[assignment]
     GradScaler = _NoOpScaler
 
     def autocast(*, enabled: bool = False):
@@ -678,7 +678,7 @@ class Trainer:
                 start_epoch,
                 cfg.epochs,
             )
-            return self.history[-1] if self.history else {}
+            return self.history[-1] if self.history else {}  # type: ignore[return-value]
 
         for epoch in range(start_epoch, cfg.epochs + 1):
             self.state.epoch = epoch
@@ -697,7 +697,7 @@ class Trainer:
             # Checkpoint epoch
             self._checkpoint_epoch(epoch, epoch_metrics)
 
-        return self.history[-1] if self.history else {}
+        return self.history[-1] if self.history else {}  # type: ignore[return-value]
 
     def _train_epoch(self) -> MutableMapping[str, float]:
         """Train for one epoch and return metrics."""
@@ -733,7 +733,7 @@ class Trainer:
         """Perform optimizer step with gradient clipping if configured."""
         if cfg.max_grad_norm is not None:
             self.scaler.unscale_(self.simple.optimizer)
-            torch.nn.utils.clip_grad_norm_(
+            torch.nn.utils.clip_grad_norm_(  # type: ignore[attr-defined]
                 self.simple.model.parameters(), cfg.max_grad_norm
             )
         self.scaler.step(self.simple.optimizer)
@@ -770,7 +770,7 @@ class Trainer:
         if self._metrics_path is not None:
             try:
                 record = {"epoch": epoch, "global_step": self.state.global_step}
-                record.update({k: float(v) for k, v in epoch_metrics.items()})
+                record.update({k: float(v) for k, v in epoch_metrics.items()})  # type: ignore[misc]
                 append_ndjson(record, self._metrics_path)
             except (IOError, OSError) as exc:  # pragma: no cover - diagnostics only
                 LOGGER.debug("Failed to write metrics NDJSON: %s", exc)

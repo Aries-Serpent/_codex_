@@ -15,7 +15,7 @@ import logging
 from typing import Optional
 
 from src.rag.pipelines.embedding import EmbeddingPipeline
-from src.rag.pipelines.retrieval import InMemoryVectorStore, Retrieval
+from src.rag.pipelines.retrieval import InMemoryVectorStore, Retrieval  # type: ignore[attr-defined]
 
 logger = logging.getLogger(__name__)
 
@@ -127,7 +127,7 @@ class CachedRetrieval:
 
 # Monkey-patch retrieval.py to return proper results
 # This is a workaround until Retrieval class is fixed
-class Retrieval:
+class Retrieval:  # type: ignore[no-redef]
     """Placeholder retrieval class."""
 
     def __init__(self, embedding_pipeline, vector_store_backend):

@@ -42,7 +42,7 @@ except ImportError as e:
     error_type = type(e).__name__
     logger.debug("ImportError: <ERROR_TYPE>")
     logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
-    AzureEventPublisher = None
+    AzureEventPublisher = None  # type: ignore[misc,assignment]
 
 try:
     from .aws_events import AWSEventPublisher
@@ -50,7 +50,7 @@ except ImportError as e:
     error_type = type(e).__name__
     logger.debug("ImportError: <ERROR_TYPE>")
     logger.warning("ImportError: <ERROR_TYPE>", exc_info=True)
-    AWSEventPublisher = None
+    AWSEventPublisher = None  # type: ignore[misc,assignment]
 
 
 def get_optional_event_publishers() -> dict[str, type[EventPublisher] | None]:

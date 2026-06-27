@@ -50,8 +50,8 @@ try:
     _SESSION_LOGGER_AVAILABLE = True
 except Exception:  # pragma: no cover – optional integration
     _SESSION_LOGGER_AVAILABLE = False
-    _get_session_id = None  # type: ignore[assignment]
-    _session_log_event = None  # type: ignore[assignment]
+    _get_session_id = None
+    _session_log_event = None
 
 
 # ── Internal Python logger (standard library) ─────────────────────────────────

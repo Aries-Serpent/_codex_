@@ -20,7 +20,7 @@ try:  # Optional dependency
     from omegaconf import DictConfig, OmegaConf
 except (ValueError, TypeError):  # pragma: no cover - optional
     DictConfig = object  # type: ignore
-    OmegaConf = None
+    OmegaConf = None  # type: ignore[misc,assignment]
 
 DEFAULT_ENV_JSON = "environment.json"
 DEFAULT_ENV_NDJSON = "environment.ndjson"

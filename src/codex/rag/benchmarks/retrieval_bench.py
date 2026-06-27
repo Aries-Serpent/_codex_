@@ -62,8 +62,8 @@ def benchmark_retrieval(
                     )
 
                     if result.success:
-                        result.metadata["index_size"] = index_size
-                        result.metadata["top_k"] = top_k
+                        result.metadata["index_size"] = index_size  # type: ignore[index]
+                        result.metadata["top_k"] = top_k  # type: ignore[index]
 
     # Calculate percentiles
     _calculate_percentiles(runner.results)

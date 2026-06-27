@@ -54,8 +54,8 @@ try:
     _MONITORING_AVAILABLE = True
 except Exception:  # pragma: no cover – graceful degradation
     _MONITORING_AVAILABLE = False
-    _global_registry = None  # type: ignore[assignment]
-    Histogram = None  # type: ignore[assignment]
+    _global_registry = None
+    Histogram = None
 
 
 # ── Data structures ───────────────────────────────────────────────────────────

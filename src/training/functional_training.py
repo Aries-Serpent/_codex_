@@ -34,7 +34,7 @@ import torch.nn.functional as F
 from codex_ml.logging.file_logger import FileLogger
 from codex_ml.logging.run_metadata import log_run_metadata
 from codex_ml.telemetry import EXAMPLES_PROCESSED, TRAIN_STEP_DURATION, track_time
-from codex_ml.utils.checkpointing import (
+from codex_ml.utils.checkpointing import (  # type: ignore[attr-defined]
     dump_rng_state,
     load_rng_state,
     load_training_checkpoint,
@@ -46,7 +46,7 @@ from codex_ml.utils.hf_pinning import ensure_pinned_kwargs, load_from_pretrained
 
 logger = logging.getLogger(__name__)
 
-clip_grad_norm_ = torch.nn.utils.clip_grad_norm_
+clip_grad_norm_ = torch.nn.utils.clip_grad_norm_  # type: ignore[attr-defined]
 DataLoader = torch.utils.data.DataLoader
 
 # ruff: noqa: I001
@@ -55,8 +55,8 @@ DataLoader = torch.utils.data.DataLoader
 try:  # pragma: no cover - optional config dependency
     from omegaconf import DictConfig, OmegaConf
 except (ImportError, AttributeError):  # pragma: no cover - omegaconf not installed
-    DictConfig = Any
-    OmegaConf = None
+    DictConfig = Any  # type: ignore[misc,assignment]
+    OmegaConf = None  # type: ignore[misc,assignment]
 
 try:  # pragma: no cover - optional logging dependency
     from codex_ml.monitoring.codex_logging import (
@@ -83,7 +83,7 @@ except (IOError, OSError):  # pragma: no cover - metrics optional
 try:  # pragma: no cover - optional manifest helper
     from codex_ml.data.checksums import manifest_for_paths
 except (IOError, OSError):  # pragma: no cover - optional dependency missing
-    manifest_for_paths = None
+    manifest_for_paths = None  # type: ignore[assignment]
 
 
 try:  # pragma: no cover - optional model registry
@@ -291,7 +291,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         run_hf_trainer(texts, args.output_dir, val_texts=val_texts, **kw)
     else:
         # Minimal custom path that mirrors HF inputs and labels suitable for CausalLM
-        from datasets import Dataset
+        from datasets import Dataset  # type: ignore[attr-defined]
         from transformers import AutoTokenizer
 
         model_cfg = training_cfg.get(

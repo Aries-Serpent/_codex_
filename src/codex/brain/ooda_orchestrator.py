@@ -185,7 +185,7 @@ class OODAOrchestrator:
         """Execute one complete OODA cycle."""
         cycle_id = str(uuid.uuid4())[:8]
         start_time = time.time()
-        phase_latencies = {}
+        phase_latencies = {}  # type: ignore[var-annotated]
 
         try:
             # Execute OODA phases
@@ -315,19 +315,19 @@ class OODAOrchestrator:
             timestamp=datetime.now(),
             observable=Observable(
                 timestamp=datetime.now(),
-                repository=None,
-                agents=None,
-                tasks=None,
-                environment=None,
+                repository=None,  # type: ignore[arg-type]
+                agents=None,  # type: ignore[arg-type]
+                tasks=None,  # type: ignore[arg-type]
+                environment=None,  # type: ignore[arg-type]
                 events=[],
-                metadata=None,
+                metadata=None,  # type: ignore[arg-type]
             ),
             orientation=Orientation(
                 timestamp=datetime.now(),
                 relevant_patterns=[],
                 decision_precedents=[],
                 agent_candidates=[],
-                risk_assessment=None,
+                risk_assessment=None,  # type: ignore[arg-type]
                 opportunities=[],
                 context_summary="Error",
                 confidence_baseline=0.0,
@@ -335,7 +335,7 @@ class OODAOrchestrator:
             decision=DecisionDirective(
                 decision_id="error",
                 timestamp=datetime.now(),
-                action=None,
+                action=None,  # type: ignore[arg-type]
                 candidates=[],
                 confidence=0.0,
                 assigned_agents=[],

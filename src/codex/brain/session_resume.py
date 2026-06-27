@@ -55,7 +55,7 @@ class ResumeResult:
     session_id: str
     state: dict[str, Any]
     error_message: Optional[str] = None
-    warnings: list[str] = None
+    warnings: list[str] = None  # type: ignore[assignment]
 
     def __post_init__(self):
         if self.warnings is None:
@@ -72,7 +72,7 @@ class RepositoryDivergence:
     current_commit: str
     checkpoint_commit: str
     uncommitted_changes: int
-    conflicts: list[str] = None
+    conflicts: list[str] = None  # type: ignore[assignment]
 
     def __post_init__(self):
         if self.conflicts is None:

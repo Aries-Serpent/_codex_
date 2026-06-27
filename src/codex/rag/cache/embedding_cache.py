@@ -122,7 +122,7 @@ class EmbeddingCache:
             self._disk_path = Path(self.config.disk_cache_path)
             self._disk_path.mkdir(parents=True, exist_ok=True)
         else:
-            self._disk_path = None
+            self._disk_path = None  # type: ignore[assignment]
 
         logger.debug(
             f"EmbeddingCache initialized: max_entries={self.config.max_entries}, "

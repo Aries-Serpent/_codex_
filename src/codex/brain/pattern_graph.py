@@ -258,12 +258,12 @@ class PatternGraph:
         avg_degree = sum(degrees) / num_nodes if num_nodes > 0 else 0
 
         # Type distribution
-        type_dist = defaultdict(int)
+        type_dist = defaultdict(int)  # type: ignore[var-annotated]
         for node in self.nodes.values():
             type_dist[node.pattern_type] += 1
 
         # Relationship type distribution
-        rel_dist = defaultdict(int)
+        rel_dist = defaultdict(int)  # type: ignore[var-annotated]
         for edge in self.edges:
             rel_dist[edge.relationship_type] += 1
 

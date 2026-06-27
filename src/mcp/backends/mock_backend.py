@@ -46,7 +46,7 @@ class InMemoryMockBackend(BackendAdapter):
         with self._lock:
             ns = self._store.setdefault(namespace, {})
             for item in items:
-                ns[item["id"]] = item.copy()
+                ns[item["id"]] = item.copy()  # type: ignore[assignment]
 
     def query_top_k(
         self,

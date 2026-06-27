@@ -38,7 +38,7 @@ try:
     TORCH_AVAILABLE = hasattr(torch, "manual_seed")
 except (ImportError, AttributeError):
     # AttributeError can occur from sitecustomize.py
-    torch = None
+    torch = None  # type: ignore[assignment]
     TORCH_AVAILABLE = False
 
 

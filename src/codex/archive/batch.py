@@ -206,8 +206,8 @@ class BatchRestore:
             "status": status,
         }
         if metrics is not None and performance_enabled:
-            result["duration_ms"] = round(metrics.duration_ms, 3)
-            result["metrics"] = metrics.to_dict()
+            result["duration_ms"] = round(metrics.duration_ms, 3)  # type: ignore[assignment]
+            result["metrics"] = metrics.to_dict()  # type: ignore[assignment]
         if detail:
             result["detail"] = detail
         return result

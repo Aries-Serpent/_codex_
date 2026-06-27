@@ -12,14 +12,14 @@ from collections.abc import Iterable, Mapping  # noqa: E402
 try:  # pragma: no cover - torch optional in tests
     import torch
 except (ImportError, AttributeError):  # pragma: no cover - torch optional in tests
-    torch = None
+    torch = None  # type: ignore[assignment]
 
 
 def _safe_float(value: object) -> float:
     try:
         if hasattr(value, "item"):
             return float(value.item())
-        return float(value)
+        return float(value)  # type: ignore[arg-type]
     except (ImportError, AttributeError):
         logger.warning("Exception occurred", exc_info=True)
         return 0.0
@@ -126,13 +126,13 @@ def batch_metrics(outputs: object, batch: Mapping[str, object] | object) -> dict
             target = labels
             if hasattr(target, "to") and getattr(target, "device", None) != preds.device:
                 target = target.to(preds.device)
-            common = min(preds.shape[-1], target.shape[-1])
+            common = min(preds.shape[-1], target.shape[-1])  # type: ignore[union-attr]
             if common > 0:
                 # Create mask to ignore -100 labels (standard ignore_index)
-                mask = target[..., :common] != -100
+                mask = target[..., :common] != -100  # type: ignore[index]
                 if mask.any():
                     masked_preds = preds[..., :common][mask]
-                    masked_target = target[..., :common][mask]
+                    masked_target = target[..., :common][mask]  # type: ignore[index]
                     accuracy_tensor = (masked_preds == masked_target).float()
                     record["token_accuracy"] = float(accuracy_tensor.mean().item())
                 else:

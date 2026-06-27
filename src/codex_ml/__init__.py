@@ -44,17 +44,17 @@ except (
                 f"Optional dependency for '{self._name}' is missing; install codex-ml[configs]"
             )
 
-    PretrainingConfig = _MissingConfig("PretrainingConfig")
-    SFTConfig = _MissingConfig("SFTConfig")
-    RLHFConfig = _MissingConfig("RLHFConfig")
-    TrainingWeights = _MissingConfig("TrainingWeights")
-    ValidationThresholds = _MissingConfig("ValidationThresholds")
+    PretrainingConfig = _MissingConfig("PretrainingConfig")  # type: ignore[misc,assignment]
+    SFTConfig = _MissingConfig("SFTConfig")  # type: ignore[misc,assignment]
+    RLHFConfig = _MissingConfig("RLHFConfig")  # type: ignore[misc,assignment]
+    TrainingWeights = _MissingConfig("TrainingWeights")  # type: ignore[misc,assignment]
+    ValidationThresholds = _MissingConfig("ValidationThresholds")  # type: ignore[misc,assignment]
 
 try:  # pragma: no cover - optional dependency tree
     from .pipeline import run_codex_pipeline
 except (ImportError, AttributeError):  # pragma: no cover - degrade gracefully when configs missing
 
-    def run_codex_pipeline(*_args, **_kwargs):
+    def run_codex_pipeline(*_args, **_kwargs):  # type: ignore[misc]
         raise RuntimeError("Optional dependencies for run_codex_pipeline are missing")
 
 
@@ -88,11 +88,11 @@ except (
             msg = f"Metrics module unavailable; {self._name} requires optional extras"
             raise AttributeError(msg)
 
-    MetricRegistry = _MissingMetric("MetricRegistry")
-    F1Score = _MissingMetric("F1Score")
-    RecallScore = _MissingMetric("RecallScore")
-    BLEUScore = _MissingMetric("BLEUScore")
-    TokenAccuracy = _MissingMetric("TokenAccuracy")
+    MetricRegistry = _MissingMetric("MetricRegistry")  # type: ignore[misc,assignment]
+    F1Score = _MissingMetric("F1Score")  # type: ignore[misc,assignment]
+    RecallScore = _MissingMetric("RecallScore")  # type: ignore[misc,assignment]
+    BLEUScore = _MissingMetric("BLEUScore")  # type: ignore[misc,assignment]
+    TokenAccuracy = _MissingMetric("TokenAccuracy")  # type: ignore[misc,assignment]
     get_metric = _MissingMetric("get_metric")
     register_metric = _MissingMetric("register_metric")
     list_metrics = _MissingMetric("list_metrics")
@@ -145,13 +145,13 @@ except (
             )
 
     run_codex_symbolic_pipeline = _MissingSymbolic("run_codex_symbolic_pipeline")
-    Weights = _MissingSymbolic("Weights")
-    PretrainCfg = _MissingSymbolic("PretrainCfg")
-    SFTCfg = _MissingSymbolic("SFTCfg")
-    RewardModelCfg = _MissingSymbolic("RewardModelCfg")
-    RLHFCfg = _MissingSymbolic("RLHFCfg")
-    ModelHandle = _MissingSymbolic("ModelHandle")
-    RewardModelHandle = _MissingSymbolic("RewardModelHandle")
+    Weights = _MissingSymbolic("Weights")  # type: ignore[misc,assignment]
+    PretrainCfg = _MissingSymbolic("PretrainCfg")  # type: ignore[misc,assignment]
+    SFTCfg = _MissingSymbolic("SFTCfg")  # type: ignore[misc,assignment]
+    RewardModelCfg = _MissingSymbolic("RewardModelCfg")  # type: ignore[misc,assignment]
+    RLHFCfg = _MissingSymbolic("RLHFCfg")  # type: ignore[misc,assignment]
+    ModelHandle = _MissingSymbolic("ModelHandle")  # type: ignore[misc,assignment]
+    RewardModelHandle = _MissingSymbolic("RewardModelHandle")  # type: ignore[misc,assignment]
 
 
 _EXPORT_MAP = {

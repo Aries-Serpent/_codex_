@@ -154,7 +154,7 @@ class PatternScorer:
         # Consistency confidence (0.0-0.2)
         if pattern.occurrences:
             # Variance in outcomes
-            outcomes = [o.outcome for o in pattern.occurrences if o.outcome]
+            outcomes = [o.outcome for o in pattern.occurrences if o.outcome]  # type: ignore[attr-defined]
             if outcomes:
                 outcome_counts = Counter(outcomes)
                 max_count = max(outcome_counts.values())
@@ -321,7 +321,7 @@ class PatternDiscovery:
                 outcome=event.get("outcome"),
                 metadata=event.get("metadata", {}),
             )
-            pattern.occurrences.append(occurrence)
+            pattern.occurrences.append(occurrence)  # type: ignore[arg-type]
 
         # Tag pattern
         pattern.tags = self.tagger.tag_pattern(pattern)
@@ -387,7 +387,7 @@ class MetricsCalculator:
     @staticmethod
     def calculate_pattern_metrics(pattern: Pattern) -> dict[str, Any]:
         """Calculate metrics for a pattern."""
-        outcomes = [o.outcome for o in pattern.occurrences if o.outcome]
+        outcomes = [o.outcome for o in pattern.occurrences if o.outcome]  # type: ignore[attr-defined]
         outcome_counts = Counter(outcomes) if outcomes else Counter()
 
         return {
@@ -401,7 +401,7 @@ class MetricsCalculator:
             ),
             "outcome_distribution": dict(outcome_counts),
             "unique_contexts": len(
-                set(json.dumps(o.context, sort_keys=True) for o in pattern.occurrences)
+                set(json.dumps(o.context, sort_keys=True) for o in pattern.occurrences)  # type: ignore[attr-defined]
             ),
         }
 

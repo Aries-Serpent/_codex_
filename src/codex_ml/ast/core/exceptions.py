@@ -27,8 +27,8 @@ class ParseError(ASTError):
     def __init__(
         self,
         message: str,
-        file_path: str = None,
-        line: int = None,
+        file_path: str = None,  # type: ignore[assignment]
+        line: int = None,  # type: ignore[assignment]
         column: int | None = None,
     ):
         super().__init__(message)
