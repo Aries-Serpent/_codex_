@@ -112,9 +112,8 @@ class JSONLMemoryBackend(MemoryProtocol):
                     matches.append(entry)
 
                 except (json.JSONDecodeError, KeyError, ValueError) as e:
-                    error_type = type(e).__name__
-                    logger.debug("Exception: <ERROR_TYPE>")
-                    logger.warning("Skipping invalid memory entry: <ERROR_TYPE>")
+                    logger.debug(f"Exception: {type(e).__name__}")
+                    logger.warning(f"Skipping invalid memory entry: {type(e).__name__}")
                     continue
 
         # Sort by timestamp descending and limit

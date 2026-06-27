@@ -175,8 +175,7 @@ class RuntimeTracer:
             if result.exit_code == 0 and result.stdout:
                 return result.stdout
         except (ValueError, TypeError, RuntimeError) as exc:
-            error_type = type(exc).__name__
-            logger.debug("Exception: <ERROR_TYPE>")
+            logger.debug(f"Exception: {type(exc).__name__}")
             # Ignore errors from --help execution - it's optional metadata collection.
             # Failures here don't prevent the main analysis.
             logger.debug("Help detection failed for %s: %s", entry_point, exc)
