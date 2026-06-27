@@ -15,7 +15,7 @@ Run with: pytest tests/security/test_hardening_integration.py -v
 """
 
 from __future__ import annotations
-
+ # pragma: allowlist secret
 import pytest
 from pathlib import Path
 from unittest.mock import Mock, patch, AsyncMock
