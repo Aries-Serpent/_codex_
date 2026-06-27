@@ -188,131 +188,185 @@ class OODAOrchestrator:
         phase_latencies = {}
 
         try:
-            # Phase 1: OBSERVE
-            observe_start = time.time()
-            observable = self.observer.observe()
-            phase_latencies["observe"] = (time.time() - observe_start) * 1000
-
-            # Phase 2: ORIENT
-            orient_start = time.time()
-            orientation = self.orienter.orient(observable)
-            phase_latencies["orient"] = (time.time() - orient_start) * 1000
-
-            # Phase 3: DECIDE
-            decide_start = time.time()
-            decision = self.decider.decide(
-                observable,
-                orientation,
-                d_mode_authority=True,  # Full authority
-            )
-            phase_latencies["decide"] = (time.time() - decide_start) * 1000
-
-            # Phase 4: ACT
-            act_start = time.time()
-            execution_report = self.actor.act(decision, timeout_seconds=60)
-            phase_latencies["act"] = (time.time() - act_start) * 1000
+            # Execute OODA phases
+            observable = self._execute_observe_phase(phase_latencies)
+            orientation = self._execute_orient_phase(observable, phase_latencies)
+            decision = self._execute_decide_phase(observable, orientation, phase_latencies)
+            execution_report = self._execute_act_phase(decision, phase_latencies)
 
             # Store execution report for loop closure
             self.previous_execution_report = execution_report
 
-            # Calculate metrics
-            duration_ms = (time.time() - start_time) * 1000
-            success = execution_report.success_rate > 0
-
-            metrics = CycleMetrics(
-                phase_latencies=phase_latencies,
-                decision_confidence=decision.confidence,
-                execution_success_rate=execution_report.success_rate,
-                total_agents_involved=len(execution_report.agents_executed),
-                side_effects_count=len(execution_report.side_effects),
+            # Create successful cycle record
+            return self._create_cycle_record(
+                cycle_id,
+                start_time,
+                phase_latencies,
+                observable,
+                orientation,
+                decision,
+                execution_report,
             )
-
-            # Create cycle record
-            cycle = CycleRecord(
-                cycle_id=cycle_id,
-                timestamp=datetime.now(),
-                observable=observable,
-                orientation=orientation,
-                decision=decision,
-                execution_report=execution_report,
-                duration_ms=duration_ms,
-                success=success,
-                metrics=metrics,
-            )
-
-            # Record cycle
-            self.recorder.record_cycle(cycle)
-
-            logger.info(
-                f"Cycle {cycle_id}: {duration_ms:.0f}ms, "
-                f"confidence={decision.confidence:.2%}, "
-                f"success={execution_report.success_rate:.2%}"
-            )
-
-            return cycle
 
         except Exception as e:
             logger.error(f"Cycle {cycle_id} failed: {e}")
             duration_ms = (time.time() - start_time) * 1000
+            return self._create_error_cycle(cycle_id, duration_ms, phase_latencies)
 
-            # Return error cycle record
-            return CycleRecord(
-                cycle_id=cycle_id,
+    def _execute_observe_phase(self, phase_latencies: dict) -> Observable:
+        """Execute OBSERVE phase."""
+        observe_start = time.time()
+        observable = self.observer.observe()
+        phase_latencies["observe"] = (time.time() - observe_start) * 1000
+        return observable
+
+    def _execute_orient_phase(
+        self,
+        observable: Observable,
+        phase_latencies: dict,
+    ) -> Orientation:
+        """Execute ORIENT phase."""
+        orient_start = time.time()
+        orientation = self.orienter.orient(observable)
+        phase_latencies["orient"] = (time.time() - orient_start) * 1000
+        return orientation
+
+    def _execute_decide_phase(
+        self,
+        observable: Observable,
+        orientation: Orientation,
+        phase_latencies: dict,
+    ) -> DecisionDirective:
+        """Execute DECIDE phase."""
+        decide_start = time.time()
+        decision = self.decider.decide(
+            observable,
+            orientation,
+            d_mode_authority=True,  # Full authority
+        )
+        phase_latencies["decide"] = (time.time() - decide_start) * 1000
+        return decision
+
+    def _execute_act_phase(
+        self,
+        decision: DecisionDirective,
+        phase_latencies: dict,
+    ) -> ExecutionReport:
+        """Execute ACT phase."""
+        act_start = time.time()
+        execution_report = self.actor.act(decision, timeout_seconds=60)
+        phase_latencies["act"] = (time.time() - act_start) * 1000
+        return execution_report
+
+    def _create_cycle_record(
+        self,
+        cycle_id: str,
+        start_time: float,
+        phase_latencies: dict,
+        observable: Observable,
+        orientation: Orientation,
+        decision: DecisionDirective,
+        execution_report: ExecutionReport,
+    ) -> CycleRecord:
+        """Create a successful cycle record."""
+        duration_ms = (time.time() - start_time) * 1000
+        success = execution_report.success_rate > 0
+
+        metrics = CycleMetrics(
+            phase_latencies=phase_latencies,
+            decision_confidence=decision.confidence,
+            execution_success_rate=execution_report.success_rate,
+            total_agents_involved=len(execution_report.agents_executed),
+            side_effects_count=len(execution_report.side_effects),
+        )
+
+        cycle = CycleRecord(
+            cycle_id=cycle_id,
+            timestamp=datetime.now(),
+            observable=observable,
+            orientation=orientation,
+            decision=decision,
+            execution_report=execution_report,
+            duration_ms=duration_ms,
+            success=success,
+            metrics=metrics,
+        )
+
+        # Record cycle
+        self.recorder.record_cycle(cycle)
+
+        logger.info(
+            f"Cycle {cycle_id}: {duration_ms:.0f}ms, "
+            f"confidence={decision.confidence:.2%}, "
+            f"success={execution_report.success_rate:.2%}"
+        )
+
+        return cycle
+
+    def _create_error_cycle(
+        self,
+        cycle_id: str,
+        duration_ms: float,
+        phase_latencies: dict,
+    ) -> CycleRecord:
+        """Create an error cycle record."""
+        return CycleRecord(
+            cycle_id=cycle_id,
+            timestamp=datetime.now(),
+            observable=Observable(
                 timestamp=datetime.now(),
-                observable=Observable(
-                    timestamp=datetime.now(),
-                    repository=None,
-                    agents=None,
-                    tasks=None,
-                    environment=None,
-                    events=[],
-                    metadata=None,
-                ),
-                orientation=Orientation(
-                    timestamp=datetime.now(),
-                    relevant_patterns=[],
-                    decision_precedents=[],
-                    agent_candidates=[],
-                    risk_assessment=None,
-                    opportunities=[],
-                    context_summary="Error",
-                    confidence_baseline=0.0,
-                ),
-                decision=DecisionDirective(
-                    decision_id="error",
-                    timestamp=datetime.now(),
-                    action=None,
-                    candidates=[],
-                    confidence=0.0,
-                    assigned_agents=[],
-                    parallel_execution=False,
-                    guardrail_checks=[],
-                    audit_id="",
-                    decision_rationale=f"Cycle error: {e}",
-                    requires_approval=True,
-                ),
-                execution_report=ExecutionReport(
-                    timestamp=datetime.now(),
-                    decision_id="error",
-                    agents_executed=[],
-                    results=[],
-                    outcomes_matched=False,
-                    side_effects=[],
-                    duration_ms=0,
-                    success_rate=0.0,
-                    impact_score=0.0,
-                    next_observable_delta={},
-                ),
-                duration_ms=duration_ms,
-                success=False,
-                metrics=CycleMetrics(
-                    phase_latencies=phase_latencies,
-                    decision_confidence=0.0,
-                    execution_success_rate=0.0,
-                    total_agents_involved=0,
-                    side_effects_count=0,
-                ),
-            )
+                repository=None,
+                agents=None,
+                tasks=None,
+                environment=None,
+                events=[],
+                metadata=None,
+            ),
+            orientation=Orientation(
+                timestamp=datetime.now(),
+                relevant_patterns=[],
+                decision_precedents=[],
+                agent_candidates=[],
+                risk_assessment=None,
+                opportunities=[],
+                context_summary="Error",
+                confidence_baseline=0.0,
+            ),
+            decision=DecisionDirective(
+                decision_id="error",
+                timestamp=datetime.now(),
+                action=None,
+                candidates=[],
+                confidence=0.0,
+                assigned_agents=[],
+                parallel_execution=False,
+                guardrail_checks=[],
+                audit_id="",
+                decision_rationale="Cycle error occurred",
+                requires_approval=True,
+            ),
+            execution_report=ExecutionReport(
+                timestamp=datetime.now(),
+                decision_id="error",
+                agents_executed=[],
+                results=[],
+                outcomes_matched=False,
+                side_effects=[],
+                duration_ms=0,
+                success_rate=0.0,
+                impact_score=0.0,
+                next_observable_delta={},
+            ),
+            duration_ms=duration_ms,
+            success=False,
+            metrics=CycleMetrics(
+                phase_latencies=phase_latencies,
+                decision_confidence=0.0,
+                execution_success_rate=0.0,
+                total_agents_involved=0,
+                side_effects_count=0,
+            ),
+        )
 
     def run_continuous(
         self,
