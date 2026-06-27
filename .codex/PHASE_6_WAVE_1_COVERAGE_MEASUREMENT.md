@@ -13,14 +13,77 @@
 Lane 1 test collection fixes are **PARTIALLY SUCCESSFUL**:
 - ✅ The 2 target files (mlflow_utils, cli_phase10) now import correctly
 - ✅ All 28 Lane 1 tests execute and pass
-- ❌ **367 additional collection errors** prevent full test suite execution
-- ❌ **Coverage measurement BLOCKED** — cannot measure with 367 collection errors
+- ✅ Found and fixed corrupted assertions in 2 additional test files (syntax errors)
+- ❌ **~365 additional collection errors remain** (down from 367)
+- ❌ **Coverage measurement BLOCKED** — cannot measure with 365+ collection errors
+- ⚠️ **Lane 1 tests only achieve 4.32% coverage** (far below 70% threshold)
 
-**Gate Determination: UNABLE TO VALIDATE — Collection errors are a blocker**
+**Gate Determination: 🛑 BLOCKED — Cannot Proceed to Promotion**
+
+**Root Cause:** Systemic test suite collection errors + corrupted test files prevent:
+1. Full test suite execution
+2. Accurate coverage measurement  
+3. Gate threshold validation (70% requirement)
+
+**Required Action:** Resolve collection errors or escalate decision to @mbaetiong
 
 ---
 
-## Detailed Findings
+## CRITICAL UPDATE: Syntax Errors Discovered and Fixed
+
+### Additional Findings During Remediation
+
+During investigation of collection errors, discovered and fixed **corrupted assertion statements** in test files:
+
+#### Issue: Malformed Assertions
+Multiple test files contain assertions with syntax errors from apparent automated corruption:
+
+**Example 1 - `tests/cli/test_phase7_cli_completeness_lane3.py:225`**
+```python
+# BEFORE (CORRUPTED):
+assert (, "Condition must be true"
+    "Commands:" in result.output
+    or "commands:" in result.output.lower()
+    or len(result.output) > 100
+)
+
+# AFTER (FIXED):
+assert (
+    "Commands:" in result.output
+    or "commands:" in result.output.lower()
+    or len(result.output) > 100
+), "Condition must be true"
+```
+
+**Example 2 - `tests/cli/test_tokenization_cli_comprehensive.py:157`**
+```python
+# BEFORE (CORRUPTED):
+assert result.exit_code == 0 or "inspect" not in str(, "Result must not be empty"
+    app.registered_commands if hasattr(app, "registered_commands") else []
+)
+
+# AFTER (FIXED):
+assert result.exit_code == 0 or "inspect" not in str(
+    app.registered_commands if hasattr(app, "registered_commands") else []
+), "Result must not be empty"
+```
+
+#### Fixes Applied
+- ✅ `tests/cli/test_phase7_cli_completeness_lane3.py` — Fixed 2 corrupted assertions
+- ✅ `tests/cli/test_tokenization_cli_comprehensive.py` — Fixed 1 corrupted assertion
+- **Commit:** `e06c42bf` — "fix: Repair corrupted assertion statements in CLI test files (syntax errors)"
+
+---
+
+## Updated Collection Error Assessment
+
+After syntax error fixes, collection errors remain at **~365 (down from 367)**:
+- Syntax errors in assertions: ✅ RESOLVED (-2)
+- Missing pytest imports: Still ~15-20
+- Broken fixtures/dependencies: Still ~100+
+- Other import/attribute errors: Still ~200+
+
+**Conclusion:** Fixes helped but do not resolve systemic collection errors
 
 ### Lane 1 Fixes — Success Verification
 
@@ -73,13 +136,17 @@ Failed:      0 (tests never reached)
 
 **Collection Error Distribution:**
 
-| Error Type | Count | Examples |
-|------------|-------|----------|
-| `NameError: name 'pytest' is not defined` | ~15-20 | `tests/scripts/test_check_py312_deps.py:10`, `tests/workers/test_embedding_worker.py:x` |
-| `AttributeError` (missing module attributes) | ~20-30 | `tests/security/test_github_provider.py` (lib.GEN_EMAIL missing) |
-| `ValueError: torch.__spec__ is not set` | ~5-10 | `tests/unit/test_checkpointing.py` |
-| `ImportError` (missing/broken imports) | ~100+ | Distributed across multiple test directories |
-| `Other` (various collection issues) | ~200+ | See full pytest output below |
+| Error Type | Count | Examples | Severity |
+|------------|-------|----------|----------|
+| `NameError: name 'pytest' is not defined` | ~15-20 | `tests/scripts/test_check_py312_deps.py:10`, `tests/workers/test_embedding_worker.py:x` | MEDIUM |
+| `SyntaxError` (malformed assertions) | ~5-10 | `tests/cli/test_phase7_cli_completeness_lane3.py:225` (`assert (, "..."`) | **CRITICAL** |
+| `SyntaxError` (unclosed parentheses) | ~3-5 | `tests/cli/test_tokenization_cli_comprehensive.py:157` | **CRITICAL** |
+| `AttributeError` (missing module attributes) | ~20-30 | `tests/security/test_github_provider.py` (lib.GEN_EMAIL missing) | MEDIUM |
+| `ValueError: torch.__spec__ is not set` | ~5-10 | `tests/unit/test_checkpointing.py` | MEDIUM |
+| `ImportError` (missing/broken imports) | ~100+ | Distributed across multiple test directories | MEDIUM |
+| `Other` (various collection issues) | ~200+ | See full pytest output below | MIXED |
+
+**🛑 CRITICAL DISCOVERY:** Test files contain **corrupted assertion statements** with malformed syntax
 
 ---
 
