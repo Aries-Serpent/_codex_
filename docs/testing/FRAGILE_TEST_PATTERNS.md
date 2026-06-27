@@ -544,9 +544,13 @@ grep -r "reason=" tests/ --include="*.py" | grep flaky
 ```python
 # Before
 @pytest.mark.flaky(reruns=2, reason="P2-timing: TTL precision")
+def test_example():
+    pass
 
 # After (once fixed)
 @pytest.mark.flaky(reruns=1, reason="P2-timing: polling-based validation")
+def test_example():
+    pass
 # Or remove entirely if test is stable
 ```
 

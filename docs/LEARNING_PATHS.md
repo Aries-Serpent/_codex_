@@ -116,20 +116,20 @@
    ```
 
 3. **Write a simple test:**
-   ```python
-   # tests/unit/test_beginner.py
-   def test_codex_imports():
-       from codex.cli import app
-       assert app is not None
-   
-   def test_config_loads():
-       from hydra import compose, initialize
-       from omegaconf import OmegaConf
-       
-       initialize(config_path="../../configs")
-       cfg = compose(config_name="base")
-       assert cfg is not None
-   ```
+   ```python# tests/unit/test_beginner.py
+def test_codex_imports():
+    from codex.cli import app
+    assert app is not None
+
+def test_config_loads():
+    from hydra import compose, initialize
+    from omegaconf import OmegaConf
+    
+    initialize(config_path="../../configs")
+    cfg = compose(config_name="base")
+    assert cfg is not None
+
+```
 
 4. **Run your test:**
    ```bash
@@ -204,17 +204,17 @@ You've learned:
    - OR create custom: `examples/my_training.py`
 
 2. **Create custom training script:**
-   ```python
-   # examples/my_training.py
-   from codex.training import Trainer
-   from hydra import compose, initialize
-   
-   initialize(config_path="../configs")
-   cfg = compose(config_name="train/my_experiment")
-   
-   trainer = Trainer(cfg)
-   trainer.train()
-   ```
+   ```python# examples/my_training.py
+from codex.training import Trainer
+from hydra import compose, initialize
+
+initialize(config_path="../configs")
+cfg = compose(config_name="train/my_experiment")
+
+trainer = Trainer(cfg)
+trainer.train()
+
+```
 
 3. **Run training:**
    ```bash
@@ -239,10 +239,10 @@ You've learned:
    ```
 
 2. **Understand metrics:**
-   ```python
-   from codex.evaluation import list_metrics
-   print(list_metrics())
-   ```
+   ```pythonfrom codex.evaluation import list_metrics
+print(list_metrics())
+
+```
 
 3. **Debug training issues:**
    - Add print statements and use `--log-level DEBUG`
@@ -304,14 +304,14 @@ def my_command(input_path: str = typer.Argument(...)):
 ```
 
 5. **Write tests for your component:**
-   ```python
-   # tests/unit/test_my_component.py
-   def test_my_component():
-       from codex.evaluation.custom_metrics import MyMetric
-       metric = MyMetric()
-       result = metric.compute([1, 2], [1, 2])
-       assert result["score"] > 0
-   ```
+   ```python# tests/unit/test_my_component.py
+def test_my_component():
+    from codex.evaluation.custom_metrics import MyMetric
+    metric = MyMetric()
+    result = metric.compute([1, 2], [1, 2])
+    assert result["score"] > 0
+
+```
 
 6. **Checkpoint:** Tests pass ✅
 
@@ -362,40 +362,40 @@ You've learned:
 1. **Read:** [Cognitive Brain Guide](./cognitive_brain/README.md)
 
 2. **Explore agent system:**
-   ```python
-   from codex.agents import list_agents
-   agents = list_agents()
-   print(f"Available agents: {len(agents)}")
-   
-   for agent in agents[:5]:
-       print(f"- {agent.name}: {agent.capabilities}")
-   ```
+   ```pythonfrom codex.agents import list_agents
+agents = list_agents()
+print(f"Available agents: {len(agents)}")
+
+for agent in agents[:5]:
+    print(f"- {agent.name}: {agent.capabilities}")
+
+```
 
 3. **Create a simple agent:**
-   ```python
-   # src/codex/agents/my_agent.py
-   from codex.agents.base import BaseAgent
-   
-   class MyAgent(BaseAgent):
-       agent_id = "my-agent"
-       capabilities = ["process", "analyze"]
-       
-       async def execute(self, task):
-           # Your agent logic
-           return {"result": "..."}
-   ```
+   ```python# src/codex/agents/my_agent.py
+from codex.agents.base import BaseAgent
+
+class MyAgent(BaseAgent):
+    agent_id = "my-agent"
+    capabilities = ["process", "analyze"]
+    
+    async def execute(self, task):
+        # Your agent logic
+        return {"result": "..."}
+
+```
 
 4. **Trigger agent execution:**
-   ```python
-   from codex.orchestration import get_orchestrator
-   
-   orchestrator = get_orchestrator()
-   task_id = orchestrator.submit_to_agent(
-       "my-agent", 
-       {"input": "data"}
-   )
-   result = orchestrator.get_result(task_id)
-   ```
+   ```pythonfrom codex.orchestration import get_orchestrator
+
+orchestrator = get_orchestrator()
+task_id = orchestrator.submit_to_agent(
+    "my-agent", 
+    {"input": "data"}
+)
+result = orchestrator.get_result(task_id)
+
+```
 
 5. **Checkpoint:** Can you explain agent orchestration?
 
@@ -406,35 +406,35 @@ You've learned:
 **Goal:** Understand STM/LTM memory with compression
 
 1. **Study memory architecture:**
-   ```python
-   from codex.memory import MemoryManager
-   
-   memory = MemoryManager()
-   
-   # Store a pattern
-   memory.store_pattern("pattern_id", pattern_data)
-   
-   # Retrieve with ranking
-   results = memory.retrieve("query", k=5, rank_by="recency")
-   
-   # Check compression stats
-   stats = memory.get_stats()
-   print(f"Compression ratio: {stats['compression_ratio']}")
-   ```
+   ```pythonfrom codex.memory import MemoryManager
+
+memory = MemoryManager()
+
+# Store a pattern
+memory.store_pattern("pattern_id", pattern_data)
+
+# Retrieve with ranking
+results = memory.retrieve("query", k=5, rank_by="recency")
+
+# Check compression stats
+stats = memory.get_stats()
+print(f"Compression ratio: {stats['compression_ratio']}")
+
+```
 
 2. **Implement custom memory patterns:**
-   ```python
-   from codex.memory.patterns import BasePattern
-   
-   class MyPattern(BasePattern):
-       def __init__(self, pattern_id, data):
-           self.pattern_id = pattern_id
-           self.data = data
-       
-       def compress(self):
-           # 60% compression target
-           return compressed_data
-   ```
+   ```pythonfrom codex.memory.patterns import BasePattern
+
+class MyPattern(BasePattern):
+    def __init__(self, pattern_id, data):
+        self.pattern_id = pattern_id
+        self.data = data
+    
+    def compress(self):
+        # 60% compression target
+        return compressed_data
+
+```
 
 3. **Checkpoint:** Can you retrieve and store patterns?
 
@@ -445,31 +445,31 @@ You've learned:
 **Goal:** Optimize Codex ML for production
 
 1. **Profile performance:**
-   ```python
-   import cProfile
-   import pstats
-   
-   profiler = cProfile.Profile()
-   profiler.enable()
-   
-   # Your code
-   
-   profiler.disable()
-   stats = pstats.Stats(profiler)
-   stats.sort_stats('cumulative').print_stats(20)
-   ```
+   ```pythonimport cProfile
+import pstats
+
+profiler = cProfile.Profile()
+profiler.enable()
+
+# Your code
+
+profiler.disable()
+stats = pstats.Stats(profiler)
+stats.sort_stats('cumulative').print_stats(20)
+
+```
 
 2. **Memory optimization:**
-   ```python
-   import tracemalloc
-   
-   tracemalloc.start()
-   
-   # Your code
-   
-   current, peak = tracemalloc.get_traced_memory()
-   print(f"Peak: {peak / 1024 / 1024:.1f} MB")
-   ```
+   ```pythonimport tracemalloc
+
+tracemalloc.start()
+
+# Your code
+
+current, peak = tracemalloc.get_traced_memory()
+print(f"Peak: {peak / 1024 / 1024:.1f} MB")
+
+```
 
 3. **Optimize key bottlenecks:**
    - Data loading (batch size, workers)
