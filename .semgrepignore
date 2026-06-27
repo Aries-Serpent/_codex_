@@ -1,6 +1,22 @@
-# Semgrep ignore patterns for false positives
-# This file excludes utility scripts and tools from certain Semgrep checks
-# that produce false positives for URL validation and similar patterns.
+# Semgrep ignore patterns — exclude third-party, vendor, and environment code
+
+# Virtual environments (development only, not part of deliverable)
+venv/
+venv_test/
+env/
+.venv/
+
+# Vendor dependencies (Pip vendor packages)
+/venv_test/lib/
+
+# Package caches
+__pycache__/
+*.egg-info/
+.eggs/
+
+# Build artifacts
+build/
+dist/
 
 # Fix scripts often contain URL patterns for validation/remediation
 fix_*.py
@@ -11,6 +27,10 @@ tools/**
 # Utility scripts often work with URLs for validation or processing
 scripts/**
 
-# Note: This does not exclude these paths from all security scanning,
-# only from Semgrep rules that may flag legitimate URL operations as suspicious.
-# Critical security issues will still be caught by other tools (Bandit, Safety).
+# Node/JavaScript dependencies
+node_modules/
+
+# IDE and local development files
+.vscode/
+.idea/
+.DS_Store

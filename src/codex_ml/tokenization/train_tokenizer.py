@@ -40,13 +40,13 @@ main = _legacy_train_tokenizer.main
 __all__ = ["TrainTokenizerConfig", "main", "run", "train"]
 
 
-def train(cfg: TrainTokenizerConfig) -> Path:
+def train(cfg: TrainTokenizerConfig) -> Path:  # type: ignore[no-redef]
     """Train a tokenizer and return the output directory."""
 
     return _legacy_train_tokenizer.train(cfg)
 
 
-def run(cfg: TrainTokenizerConfig) -> Path:
+def run(cfg: TrainTokenizerConfig) -> Path:  # type: ignore[no-redef]
     """Backward compatible alias for :func:`train`."""
 
     return train(cfg)

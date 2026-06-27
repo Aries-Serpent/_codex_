@@ -17,7 +17,7 @@ import time
 import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -30,10 +30,10 @@ class AgentResult:
     agent_name: str
     task_id: str
     status: str  # success, failure, timeout, error
-    output: Dict[str, Any]
+    output: dict[str, Any]
     duration_ms: float
     error_message: Optional[str] = None
-    side_effects: List[str] = field(default_factory=list)
+    side_effects: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -52,14 +52,14 @@ class ExecutionReport:
 
     timestamp: datetime
     decision_id: str
-    agents_executed: List[str]
-    results: List[AgentResult]
+    agents_executed: list[str]
+    results: list[AgentResult]
     outcomes_matched: bool
-    side_effects: List[SideEffect]
+    side_effects: list[SideEffect]
     duration_ms: float
     success_rate: float
     impact_score: float  # 0-1, how much impact the action had
-    next_observable_delta: Dict[str, Any]  # Changes to feed into next observe
+    next_observable_delta: dict[str, Any]  # Changes to feed into next observe
 
 
 class AgentDispatcher:
@@ -74,10 +74,10 @@ class AgentDispatcher:
 
     def select_agents(
         self,
-        candidate_agents: List[str],
+        candidate_agents: list[str],
         count: int = 3,
         strategy: str = "round_robin",
-    ) -> List[str]:
+    ) -> list[str]:
         """Select best agents for execution."""
         try:
             # Filter to available agents
@@ -99,7 +99,7 @@ class AgentDispatcher:
             logger.error(f"Failed to select agents: {e}")
             return list(self.available_agents.keys())[:count]
 
-    async def dispatch_async(self, agent_id: str, task: Dict[str, Any]) -> AgentResult:
+    async def dispatch_async(self, agent_id: str, task: dict[str, Any]) -> AgentResult:
         """Dispatch task to agent asynchronously."""
         try:
             task_id = str(uuid.uuid4())[:8]
@@ -139,8 +139,8 @@ class OutcomeValidator:
 
     def validate_outcomes(
         self,
-        results: List[AgentResult],
-        success_criteria: List[str],
+        results: list[AgentResult],
+        success_criteria: list[str],
     ) -> bool:
         """Validate that outcomes match expectations."""
         try:
@@ -155,7 +155,7 @@ class OutcomeValidator:
             logger.error(f"Outcome validation failed: {e}")
             return False
 
-    def detect_side_effects(self, results: List[AgentResult]) -> List[SideEffect]:
+    def detect_side_effects(self, results: list[AgentResult]) -> list[SideEffect]:
         """Detect unintended side effects from execution."""
         side_effects = []
 

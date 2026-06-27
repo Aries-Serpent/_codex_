@@ -296,7 +296,7 @@ class SessionContextInjector:
         session_num: int = meta.get("session_number", 0)
 
         # CB-003: compress pattern numerical features when the set is large.
-        # PatternCompressor works on Dict[str, float]; we extract recency-weighted
+        # PatternCompressor works on dict[str, float]; we extract recency-weighted
         # scores from pattern metadata for compression, then restore.
         if len(patterns_raw) >= 10:
             patterns_raw = self._compress_patterns(patterns_raw)

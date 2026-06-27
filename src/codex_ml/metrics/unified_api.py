@@ -119,7 +119,7 @@ def compute_bleu(
     norm_refs: list[list[str]] = []
     if len(references) > 0 and isinstance(references[0], str):
         # single reference per hypothesis
-        norm_refs = [[r] for r in references]
+        norm_refs = [[r] for r in references]  # type: ignore[list-item]
     else:
         norm_refs = references  # type: ignore
 
@@ -629,10 +629,10 @@ def batch_metrics_from_outputs(
             # ROUGE-1 (F1)
             rouge1_scores = []
             for pred, ref in zip(text_preds, text_refs, strict=False):
-                pred_tokens = set(_tokenize(str(pred)))
-                ref_tokens = set(_tokenize(str(ref)))
+                pred_tokens = set(_tokenize(str(pred)))  # type: ignore[assignment]
+                ref_tokens = set(_tokenize(str(ref)))  # type: ignore[assignment]
                 if pred_tokens and ref_tokens:
-                    overlap = len(pred_tokens & ref_tokens)
+                    overlap = len(pred_tokens & ref_tokens)  # type: ignore[operator]
                     precision = overlap / len(pred_tokens)
                     recall = overlap / len(ref_tokens)
                     if precision + recall > 0:

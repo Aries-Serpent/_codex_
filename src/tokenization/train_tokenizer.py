@@ -43,7 +43,7 @@ try:  # pragma: no cover - optional dependency
     from omegaconf import MISSING
 except (ImportError, AttributeError):  # pragma: no cover - optional dependency
     hydra = None
-    MISSING = object()
+    MISSING = object()  # type: ignore[assignment]
 
 
 if hydra is not None:
@@ -57,10 +57,10 @@ else:
 try:  # pragma: no cover - optional dependency
     import sentencepiece as spm
 except (ImportError, AttributeError) as exc:  # pragma: no cover
-    spm = None
+    spm = None  # type: ignore[assignment]
     _SPM_ERROR = exc
 else:  # pragma: no cover - import succeeded
-    _SPM_ERROR = None
+    _SPM_ERROR = None  # type: ignore[assignment]
 
 from tokenizers import (  # noqa: E402
     SentencePieceUnigramTokenizer,
@@ -77,7 +77,7 @@ DEFAULT_STREAM_CHUNK_SIZE = 1024 * 1024  # 1 MiB chunks when streaming
 
 @dataclass
 class TrainTokenizerConfig:
-    corpus_glob: Sequence[str] | str = MISSING
+    corpus_glob: Sequence[str] | str = MISSING  # type: ignore[assignment]
     model_type: str = "unigram"  # "bpe" or "unigram"
     vocab_size: int = 8000
     character_coverage: float = 0.9995

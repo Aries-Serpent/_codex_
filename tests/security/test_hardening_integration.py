@@ -99,9 +99,9 @@ class TestLayer2NumericValidation:
     def test_numeric_nan_inf_protection(self) -> None:
         """Prevent NaN and Infinity in numeric parameters."""
         validator = NumericValidator(min_value=0, max_value=100)
-        with pytest.raises(ValueError, match="NaN"):
+        with pytest.raises(ValueError, match=r"cannot be NaN"):
             validator.validate(float("nan"))
-        with pytest.raises(ValueError, match="infinity"):
+        with pytest.raises(ValueError, match=r"cannot be infinity"):
             validator.validate(float("inf"))
 
 

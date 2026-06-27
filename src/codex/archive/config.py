@@ -380,10 +380,10 @@ def _merge(current: _T, override: _T) -> _T:
     if current == override:
         return current
     cls = type(current)
-    defaults = asdict(cls())
-    payload = asdict(current)
+    defaults = asdict(cls())  # type: ignore[call-overload]
+    payload = asdict(current)  # type: ignore[call-overload]
     explicit_fields = getattr(override, "_codex_explicit_fields", None)
-    for key, value in asdict(override).items():
+    for key, value in asdict(override).items():  # type: ignore[call-overload]
         if explicit_fields is not None and key not in explicit_fields:
             continue
         default_value = defaults.get(key)

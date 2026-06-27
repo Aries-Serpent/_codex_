@@ -57,7 +57,7 @@ def benchmark_embedding_providers(
                 # Calculate throughput
                 if result.success:
                     throughput = size / (result.duration_ms / 1000)
-                    result.metadata["throughput_texts_per_sec"] = throughput
+                    result.metadata["throughput_texts_per_sec"] = throughput  # type: ignore[index]
 
         except Exception as e:
             runner.results.append(

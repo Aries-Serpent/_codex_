@@ -634,6 +634,16 @@ Package any part of the codebase for ChatGPT Project uploads with the MCP Packag
 
 All primary documentation now lives in the [`docs/`](docs/) directory.
 
+### 🎓 Getting Started (New!)
+
+Start here if you're new to Codex ML:
+
+- **[📖 5-Minute Onboarding Quickstart](docs/ONBOARDING_QUICKSTART.md)** — Install and run your first example in 5 minutes
+- **[📚 Learning Paths](docs/LEARNING_PATHS.md)** — Choose a structured learning journey (Beginner → Intermediate → Advanced)
+- **[🏗️ Complete Architecture Guide](docs/ARCHITECTURE.md)** — Understand the 5-layer architecture with Mermaid diagrams
+- **[🆘 Troubleshooting Guide](docs/TROUBLESHOOTING.md)** — Fix 25+ common issues
+- **[📑 Documentation Index](docs/DOCUMENTATION_INDEX.md)** — Central hub for all documentation
+
 ### 📁 repository Organization
 
 | Directory | Purpose |

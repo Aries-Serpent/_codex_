@@ -458,7 +458,7 @@ class AdaptivePathOptimizer:
             best_path.metadata["optimization_type"] = "adaptive"
             best_path.metadata["rounds"] = round_idx + 1
 
-        return best_path
+        return best_path  # type: ignore[return-value]
 
 
 def compare_paths(path_a: ExecutionPath, path_b: ExecutionPath) -> dict[str, Any]:

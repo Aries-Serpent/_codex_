@@ -133,7 +133,7 @@ try:
     _ = torch.Tensor
     _HAS_TORCH = True
 except Exception:
-    torch = None
+    torch = None  # type: ignore[assignment]
     optim = None
     StepLR = None
     DataLoader = None
@@ -207,7 +207,7 @@ except (ImportError, AttributeError):
 
 if _HAS_TORCH:
 
-    class ToyDataset(Dataset):
+    class ToyDataset(Dataset):  # type: ignore[valid-type,misc]
         def __init__(
             self,
             *,
@@ -234,7 +234,7 @@ if _HAS_TORCH:
 
 else:
 
-    class ToyDataset:
+    class ToyDataset:  # type: ignore[no-redef]
         def __len__(self) -> int:  # pragma: no cover - defensive
             return 0
 
@@ -393,7 +393,7 @@ _DEFAULT_SEED = 1234
 
 def _normalise_snapshot(value: Any) -> Any:
     if is_dataclass(value):
-        return _normalise_snapshot(asdict(value))
+        return _normalise_snapshot(asdict(value))  # type: ignore[arg-type]
     if isinstance(value, Mapping):
         return {str(key): _normalise_snapshot(item) for key, item in value.items()}
     if isinstance(value, (list, tuple, set)):
@@ -447,7 +447,7 @@ def _render_evaluation_report(output_dir: Path | None, state: Mapping[str, Any])
 def _set_seed(seed: Optional[int]) -> int:
     if seed in (None, 0):
         seed = _DEFAULT_SEED
-    resolved_seed = int(seed)
+    resolved_seed = int(seed)  # type: ignore[arg-type]
     random.seed(resolved_seed)
     try:
         import numpy as np
@@ -1186,13 +1186,13 @@ def run_training(
     default_art_dir = Path(art_dir) if art_dir is not None else Path("runs/train_loop")
     art_dir_path: Path | None = default_art_dir
     try:
-        art_dir_path.mkdir(parents=True, exist_ok=True)
+        art_dir_path.mkdir(parents=True, exist_ok=True)  # type: ignore[union-attr]
         if _telemetry_ndjson_enabled() and _telemetry_sample_rate() > 0:
-            telemetry_file = art_dir_path / "telemetry.ndjson"
+            telemetry_file = art_dir_path / "telemetry.ndjson"  # type: ignore[operator]
             telemetry_file.touch(exist_ok=True)
-        metrics_ndjson = art_dir_path / "metrics.ndjson"
+        metrics_ndjson = art_dir_path / "metrics.ndjson"  # type: ignore[operator]
         metrics_ndjson.touch(exist_ok=True)
-        metrics_json = art_dir_path / "metrics.json"
+        metrics_json = art_dir_path / "metrics.json"  # type: ignore[operator]
         if not metrics_json.exists():
             metrics_json.write_text("[]\n", encoding="utf-8")
     except (IOError, OSError) as exc:
@@ -1918,7 +1918,7 @@ def run_training(
                         try:
                             _batch = next(loader_iter)
                         except StopIteration:
-                            loader_iter = iter(train_loader)
+                            loader_iter = iter(train_loader)  # type: ignore[arg-type]
                             _batch = next(loader_iter)
                         finally:
                             load_duration = time.perf_counter() - load_start
@@ -2303,10 +2303,10 @@ def run_training(
     if _ALERTING_AVAILABLE and _TrainingAlertManager is not None:
         try:
             _final_loss = result.get("learning_rate_history") and state.get("avg_loss")
-            _final_loss_val: float = float(_final_loss) if _final_loss is not None else 0.0
+            _final_loss_val: float = float(_final_loss) if _final_loss is not None else 0.0  # type: ignore[arg-type]
             _TrainingAlertManager.from_env().alert_training_complete(
                 run_id=_TRAIN_RUN_ID,
-                epochs=int(result.get("epochs", 0)),
+                epochs=int(result.get("epochs", 0)),  # type: ignore[arg-type]
                 final_loss=_final_loss_val,
                 wall_time_sec=result.get("wall_time_sec", 0),
             )

@@ -38,7 +38,7 @@ logger = logging.getLogger(__name__)
 try:
     import torch
 except (ImportError, AttributeError):  # pragma: no cover
-    torch = None
+    torch = None  # type: ignore[assignment]
 
 try:
     import numpy as np
@@ -48,12 +48,12 @@ except (ImportError, AttributeError):  # pragma: no cover
 try:  # packaging is optional but preferred for version parsing
     from packaging.version import Version
 except (ImportError, AttributeError):  # pragma: no cover - treated as unavailable
-    Version = None
+    Version = None  # type: ignore[misc,assignment]
 
 try:  # provenance extras are optional
     from .provenance import environment_summary as _environment_summary
 except (IOError, OSError):  # pragma: no cover - optional dependency failures tolerated
-    _environment_summary = None
+    _environment_summary = None  # type: ignore[assignment]
 
 from .atomic_io import safe_write_bytes, safe_write_text  # noqa: E402
 from .runmeta import collect_run_meta  # noqa: E402
@@ -62,7 +62,7 @@ from .safe_pickle import safe_pickle_load_bytes, trusted_pickle_dumps  # noqa: E
 try:
     from .checkpoint_integrity import attach_integrity, snapshot_config
 except (ImportError, AttributeError):  # pragma: no cover - optional dependency issues tolerated
-    attach_integrity = None
+    attach_integrity = None  # type: ignore[assignment]
 
     def snapshot_config(_config: object) -> dict[str, Any]:  # type: ignore
         return {}

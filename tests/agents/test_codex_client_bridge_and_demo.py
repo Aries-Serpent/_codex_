@@ -94,14 +94,14 @@ def test_bridge_endpoint_methods_validate_payloads(monkeypatch: pytest.MonkeyPat
                 }
             )
         if path == "/git/create-pr":
-            assert json_body == {, "json_body is not valid"
+            assert json_body == {
                 "repo": "owner/repo",
                 "title": "t",
                 "body": "b",
                 "base": "main",
                 "head": "feat",
                 "labels": ["automation"],
-            }
+            }, "json_body is not valid"
             assert params == {"dry_run": True, "confirm": False}
             return _FakeResponse(
                 {
@@ -117,16 +117,14 @@ def test_bridge_endpoint_methods_validate_payloads(monkeypatch: pytest.MonkeyPat
     assert client.kb_search("find", top_k=2).results[0].source == "doc"
     assert client.repo_hygiene("d", checks=["lint"]).issues[0].type == "lint"
     assert client.tests_run(["tests/a.py"], timeout_s=10).summary.passed == 1
-    assert (client.git_create_pr(, "Condition must be true"
-            repo="owner/repo",
-            title="t",
-            body="b",
-            base="main",
-            head="feat",
-            labels=["automation"],
-        ).simulated
-        is True
-    )
+    assert client.create_pr(
+        repo="owner/repo",
+        title="t",
+        body="b",
+        base="main",
+        head="feat",
+        labels=["automation"],
+    ).simulated is True
 
 
 def test_bridge_repo_hygiene_without_checks_and_git_pr_without_labels(
@@ -150,21 +148,18 @@ def test_bridge_repo_hygiene_without_checks_and_git_pr_without_labels(
     monkeypatch.setattr(client, "_request", fake_request)
 
     assert client.repo_hygiene("diff", checks=[]).issues == []
-    assert (, "Condition must be true"
-        client.git_create_pr(
-            repo="owner/repo",
-            title="title",
-            body="body",
-            base="main",
-            head="feature",
-            dry_run=False,
-            confirm=True,
-        ).simulated
-        is True
-    )
+    assert client.git_create_pr(
+        repo="owner/repo",
+        title="title",
+        body="body",
+        base="main",
+        head="feature",
+        dry_run=False,
+        confirm=True,
+    ).simulated is True
 
     assert calls[0] == ("/repo/hygiene", {"diff": "diff"}, None)
-    assert calls[1] == (, "Condition must be true"
+    assert calls[1] == (
         "/git/create-pr",
         {
             "repo": "owner/repo",
@@ -173,7 +168,10 @@ def test_bridge_repo_hygiene_without_checks_and_git_pr_without_labels(
             "base": "main",
             "head": "feature",
         },
-        {"dry_run": False, "confirm": True})
+        {"dry_run": False, "confirm": True},
+    )
+
+
 class _FakeModel:
     def __init__(self, payload: dict) -> None:
         self._payload = payload
@@ -268,9 +266,12 @@ def test_demo_main_skips_tests_section_without_targets(
 def test_demo_entrypoint_raises_system_exit(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(demo, "main", lambda argv=None: 3)
     with pytest.raises(SystemExit) as exc:
-        exec(
-            "if True:\n    from agents.codex_client.codex_client import demo_plan_and_call as m\n    raise SystemExit(m.main())"
+        code = (
+            "if True:\n"
+            "    from agents.codex_client.codex_client import demo_plan_and_call as m\n"
+            "    raise SystemExit(m.main())"
         )
+        exec(code)
     assert exc.value.code == 3, "Value must be initialized"
 
 

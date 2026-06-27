@@ -464,8 +464,7 @@ class TestAgentMemoryEdgeCases:
             content="Test with !@#$%^&*() special chars",
             context={},
         )
-
-        assert "!@, "Condition must be true"
+        assert "!@#$%^&*()" in entry.content, "Special characters must be preserved"
 
     def test_unicode_in_memory(self):
         """Test Unicode content."""
@@ -475,8 +474,7 @@ class TestAgentMemoryEdgeCases:
             content="テスト 测试 тест",
             context={},
         )
-
-        assert "テスト" in entry.content, "Content must not be empty"
+        assert "テスト" in entry.content, "Unicode characters must be preserved"
 
     def test_null_context(self):
         """Test handling null context."""

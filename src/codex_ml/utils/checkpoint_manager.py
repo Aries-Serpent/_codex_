@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 try:  # pragma: no cover - optional torch dependency
     import torch
 except (IOError, OSError):  # pragma: no cover - torch missing
-    torch = None
+    torch = None  # type: ignore[assignment]
 
 __all__ = ["load_checkpoint", "save_checkpoint"]
 
@@ -62,7 +62,7 @@ def load_checkpoint(path: str | os.PathLike[str]) -> dict[str, Any]:
             import inspect
 
             if "weights_only" in inspect.signature(torch.load).parameters:
-                load_kwargs["weights_only"] = True
+                load_kwargs["weights_only"] = True  # type: ignore[assignment]
             data = torch.load(target, **load_kwargs)  # nosec B614 - weights_only=True set above when available
         except (
             RuntimeError,

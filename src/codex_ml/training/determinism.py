@@ -24,7 +24,7 @@ try:
 
     TORCH_AVAILABLE = hasattr(torch, "manual_seed")
 except (ImportError, AttributeError):
-    torch = None
+    torch = None  # type: ignore[assignment]
     TORCH_AVAILABLE = False
 
 

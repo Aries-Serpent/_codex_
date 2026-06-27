@@ -15,7 +15,7 @@ from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Optional
 
 
 class CampaignStatus(Enum):
@@ -37,11 +37,11 @@ class CampaignPhase:
     phase_id: str
     name: str
     description: str
-    parallel_agents: List[str]
-    gate_condition: Optional[Callable[[Dict[str, Any]], bool]] = None
+    parallel_agents: list[str]
+    gate_condition: Optional[Callable[[dict[str, Any]], bool]] = None
     timeout_seconds: int = 600
-    artifacts: List[str] = field(default_factory=list)
-    metrics_expected: List[str] = field(default_factory=list)
+    artifacts: list[str] = field(default_factory=list)
+    metrics_expected: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -52,9 +52,9 @@ class CampaignDefinition:
     name: str
     description: str
     category: str
-    objectives: List[str]
-    phases: List[CampaignPhase]
-    success_criteria: List[str]
+    objectives: list[str]
+    phases: list[CampaignPhase]
+    success_criteria: list[str]
     escalation_threshold: int = 3
     rollback_strategy: str = "revert_and_alert"  # or "commit_and_alert"
 
@@ -65,8 +65,8 @@ class PhaseExecutionResult:
 
     phase_id: str
     status: str  # "passed" | "failed" | "timeout"
-    agent_results: Dict[str, Dict[str, Any]] = field(default_factory=dict)
-    artifacts_collected: List[Path] = field(default_factory=list)
+    agent_results: dict[str, dict[str, Any]] = field(default_factory=dict)
+    artifacts_collected: list[Path] = field(default_factory=list)
     duration_seconds: float = 0.0
     error_message: Optional[str] = None
 
@@ -78,12 +78,12 @@ class CampaignExecution:
     campaign_id: str
     activation_time: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     current_phase_index: int = 0
-    agent_results: Dict[str, Any] = field(default_factory=dict)
-    phase_results: List[PhaseExecutionResult] = field(default_factory=list)
+    agent_results: dict[str, Any] = field(default_factory=dict)
+    phase_results: list[PhaseExecutionResult] = field(default_factory=list)
     iterations: int = 0
     status: CampaignStatus = CampaignStatus.IDLE
-    artifacts_collected: Dict[str, Path] = field(default_factory=dict)
-    error_messages: List[str] = field(default_factory=list)
+    artifacts_collected: dict[str, Path] = field(default_factory=dict)
+    error_messages: list[str] = field(default_factory=list)
 
     def duration_seconds(self) -> float:
         """Calculate total execution duration."""
@@ -145,7 +145,7 @@ class CampaignOrchestrator:
             },
         )
 
-    def execute_phase(self, phase_index: int) -> List[str]:
+    def execute_phase(self, phase_index: int) -> list[str]:
         """
         Execute a phase by launching agents in parallel.
 
@@ -191,9 +191,9 @@ class CampaignOrchestrator:
 
     def monitor_agents(
         self,
-        agent_ids: List[str],
+        agent_ids: list[str],
         timeout_seconds: int,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Poll agents until completion or timeout.
 
@@ -233,7 +233,7 @@ class CampaignOrchestrator:
         self.execution.agent_results.update(results)
         return results
 
-    def verify_gate(self, phase_index: int, agent_results: Dict[str, Any]) -> bool:
+    def verify_gate(self, phase_index: int, agent_results: dict[str, Any]) -> bool:
         """
         Evaluate gate condition for phase completion.
 
@@ -394,7 +394,7 @@ cc: @mbaetiong
         # Save campaign execution record
         self._save_execution_record()
 
-    def _update_pattern_store(self, learnings: Dict[str, Any]) -> None:
+    def _update_pattern_store(self, learnings: dict[str, Any]) -> None:
         """Update pattern learning store with campaign outcomes."""
         try:
             if self.pattern_store_path.exists():
@@ -443,7 +443,7 @@ cc: @mbaetiong
         except (IOError, OSError) as e:
             self._log_event("execution_record_error", {"error": str(e)})
 
-    def _log_event(self, event_type: str, data: Dict[str, Any]) -> None:
+    def _log_event(self, event_type: str, data: dict[str, Any]) -> None:
         """Log campaign event for observability."""
         {
             "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -459,7 +459,7 @@ class CampaignRegistryLoader:
     """Load campaign definitions from CAMPAIGN_REGISTRY.yaml."""
 
     @staticmethod
-    def load_registry(registry_path: Path) -> Dict[str, CampaignDefinition]:
+    def load_registry(registry_path: Path) -> dict[str, CampaignDefinition]:
         """Load all campaigns from registry file."""
         import yaml
 
@@ -477,7 +477,7 @@ class CampaignRegistryLoader:
         return campaigns
 
     @staticmethod
-    def parse_campaign(campaign_data: Dict[str, Any]) -> CampaignDefinition:
+    def parse_campaign(campaign_data: dict[str, Any]) -> CampaignDefinition:
         """Parse a campaign definition from registry data."""
         phases = []
         for phase_data in campaign_data.get("phases", []):

@@ -140,7 +140,7 @@ class TestCostGateLifecycle:
     # -- Checkbox detection with bold markers --------------------------------
 
     def test_approval_detected_with_bold_markers(self):
-        assert _is_approved(, "Condition must be true"
+        assert _is_approved(
             PR_BODY_WITH_APPROVAL
         ), "Approval must be detected even when checkbox text is wrapped in **bold**"
 

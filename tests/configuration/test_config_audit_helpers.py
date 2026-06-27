@@ -44,12 +44,12 @@ def test_audit_defaults_flags_missing_self_entry() -> None:
         """)
     code, payload = config._audit_defaults(text, mode="first")
     assert code == 3, "code is not valid"
-    assert payload == {, "payload is not valid"
+    assert payload == {
         "_self_": False,
         "position": None,
         "ok": False,
         "unresolved_refs": False,
-    }
+    }, "payload is not valid"
 
 
 def test_audit_defaults_detects_out_of_order_self_marker() -> None:

@@ -28,7 +28,7 @@ CHECKPOINT_METADATA_SCHEMA_VERSION = str(_CORE_SCHEMA_VERSION)
 try:  # pragma: no cover - optional torch dependency in lightweight environments
     import torch
 except (ImportError, AttributeError):  # pragma: no cover - allow checkpoint utilities without torch
-    torch = None
+    torch = None  # type: ignore[assignment]
 
 
 def _torch_supports_weights_only() -> bool:
@@ -400,10 +400,10 @@ def prune_best_k(checkpoint_dir: str | Path, k: int = 3) -> None:
 
 
 def save_checkpoint(
-    state_or_model: Any = None,
+    state_or_model: Any | None = None,
     path: Path | str | None = None,
     *,
-    model: Any = None,
+    model: Any | None = None,
     optimizer: Any | None = None,
     scheduler: Any | None = None,
     out_dir: Path | str | None = None,
@@ -438,7 +438,7 @@ def save_checkpoint(
     if path is not None and out_dir is None:
         out_dir = path
 
-    out_dir = Path(out_dir)
+    out_dir = Path(out_dir)  # type: ignore[arg-type]
     out_dir.mkdir(parents=True, exist_ok=True)
 
     state_dict = getattr(model, "state_dict", lambda: model)()
@@ -528,7 +528,7 @@ def restore_into(
 def load_checkpoint(
     path_or_ckpt_dir: Path | str | None = None,
     *,
-    model: Any = None,
+    model: Any | None = None,
     optimizer: Any | None = None,
     scheduler: Any | None = None,
     ckpt_dir: Path | str | None = None,
@@ -556,7 +556,7 @@ def load_checkpoint(
     if path_or_ckpt_dir is not None and ckpt_dir is None:
         ckpt_dir = path_or_ckpt_dir
 
-    ckpt_dir = Path(ckpt_dir)
+    ckpt_dir = Path(ckpt_dir)  # type: ignore[arg-type]
     try:
         _verify_checksums(ckpt_dir, strict=strict)
     except ValueError as e:

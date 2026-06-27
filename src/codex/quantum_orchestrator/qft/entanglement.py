@@ -349,7 +349,7 @@ class EntanglementManager:
         pair = self.get_pair(task_a)
 
         # For true Bell states, we get maximum violation
-        if pair.bell_state in [
+        if pair.bell_state in [  # type: ignore[union-attr]
             BellState.PHI_PLUS,
             BellState.PHI_MINUS,
             BellState.PSI_PLUS,
@@ -497,7 +497,7 @@ class TransactionalTaskGroup:
 
         # Check if any have been measured
         measured = any(
-            self.entanglement.get_pair(tid) and self.entanglement.get_pair(tid).measured
+            self.entanglement.get_pair(tid) and self.entanglement.get_pair(tid).measured  # type: ignore[union-attr]
             for tid in task_ids
         )
 

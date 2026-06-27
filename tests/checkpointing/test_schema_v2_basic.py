@@ -44,6 +44,6 @@ def test_new_manifest_includes_digest(monkeypatch):
     monkeypatch.setattr("codex_ml.checkpointing.schema_v2.time.time", lambda: 100.0)
     manifest = new_manifest("r", 1, 0)
     assert manifest["run_id"] == "r", "Condition must be true"
-    assert manifest["digest"] == compute_manifest_digest(, "Condition must be true"
+    assert manifest["digest"] == compute_manifest_digest(
         {k: v for k, v in manifest.items() if k != "digest"}
-    )
+    ), "digest should match computed value"

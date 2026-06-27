@@ -21,7 +21,7 @@ class ASTAnalyzer(ABC):
             def __init__(self, threshold: int = 10):
                 self.threshold = threshold
 
-            def analyze(self, node: StandardizedASTNode) -> List[Finding]:
+            def analyze(self, node: StandardizedASTNode) -> list[Finding]:
                 if node.type != "function":
                     return []
                 complexity = self._calculate_complexity(node)

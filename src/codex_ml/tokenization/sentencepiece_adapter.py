@@ -249,7 +249,7 @@ class SentencePieceAdapter:
                 f"SentencePieceAdapter.encode requires a str input, got {type(text).__name__}"
             )
 
-        encoded = list(self.sp.encode(text, out_type=int))
+        encoded = list(self.sp.encode(text, out_type=int))  # type: ignore[attr-defined]
 
         # Apply padding if requested
         if padding and max_length is not None:
@@ -274,7 +274,7 @@ class SentencePieceAdapter:
         ids_list = list(ids)
         if any(not isinstance(i, int) for i in ids_list):
             raise ValueError("SentencePieceAdapter.decode requires int ids")
-        return self.sp.decode(ids_list)
+        return self.sp.decode(ids_list)  # type: ignore[attr-defined]
 
     def batch_encode(
         self,

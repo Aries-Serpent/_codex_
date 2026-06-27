@@ -122,7 +122,7 @@ class WandBLogger:
         """Write metrics to NDJSON fallback."""
         entry = {"metrics": metrics}
         if step is not None:
-            entry["step"] = step
+            entry["step"] = step  # type: ignore[assignment]
 
         with open(self.fallback_log, "a", encoding="utf-8") as f:
             json.dump(entry, f)

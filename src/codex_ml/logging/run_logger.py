@@ -145,7 +145,7 @@ class RunLogger:
     def log_params(
         self,
         *,
-        cli: Any = None,
+        cli: Any | None = None,
         config: Mapping[str, Any] | None = None,
         derived: Mapping[str, Any] | None = None,
         metadata: Mapping[str, Any] | None = None,

@@ -37,7 +37,7 @@ from codex_ml.utils.hf_revision import get_hf_revision  # noqa: E402
 try:  # pragma: no cover - optional dependency
     from transformers import AutoTokenizer as _AutoTokenizer
 except (ImportError, AttributeError):  # pragma: no cover - optional dependency
-    _AutoTokenizer = None
+    _AutoTokenizer = None  # type: ignore[misc,assignment]
 
 
 def _resolve_auto_tokenizer():
@@ -85,7 +85,7 @@ class TokenizerAdapter(ABC):
     Backwards-compatibility notes:
     - Older code expects `pad_id` and `eos_id` properties; newer callers may use
       `pad_token_id` / `eos_token_id`. Both are provided by implementations.
-    - `batch_encode` may return a List[List[int]] by default; adapters MAY also
+    - `batch_encode` may return a list[list[int]] by default; adapters MAY also
       support returning a Hugging Face-style dict when requested.
     """
 
@@ -367,7 +367,7 @@ class HFTokenizer(TokenizerAdapter):
     """Lightweight wrapper around `transformers.AutoTokenizer`.
 
     This adapter intentionally preserves compatibility with both usage patterns:
-    - Returns List[List[int]] by default for `batch_encode(...)`.
+    - Returns list[list[int]] by default for `batch_encode(...)`.
     - Accepts `return_dict=True` to return the raw Hugging Face-style mapping.
     - Provides both old (pad_id / eos_id) and new (pad_token_id / eos_token_id)
       property names.
@@ -419,7 +419,7 @@ class HFTokenizer(TokenizerAdapter):
                 if not tj.exists():
                     raise FileNotFoundError(f"tokenizer.json not found in {artifacts_dir}")
                 self._tk = PreTrainedTokenizerFast(tokenizer_file=str(tj))  # type: ignore
-                self._tk.add_special_tokens(
+                self._tk.add_special_tokens(  # type: ignore[attr-defined]
                     {
                         "pad_token": "[PAD]",  # nosec B105
                         "bos_token": "[BOS]",  # nosec B105
@@ -449,13 +449,13 @@ class HFTokenizer(TokenizerAdapter):
             self.padding = padding
             self.truncation = truncation
             self.max_length = max_length
-            self._decode_cache: OrderedDict[tuple[tuple[int, ...], bool], str] = OrderedDict()
+            self._decode_cache: OrderedDict[tuple[tuple[int, ...], bool], str] = OrderedDict()  # type: ignore[no-redef]
             return
 
         self.padding = padding
         self.truncation = truncation
         self.max_length = max_length
-        self._decode_cache: OrderedDict[tuple[tuple[int, ...], bool], str] = OrderedDict()
+        self._decode_cache: OrderedDict[tuple[tuple[int, ...], bool], str] = OrderedDict()  # type: ignore[no-redef]
 
     def _encode_call_kwargs(self, add_special_tokens: bool) -> dict[str, Any]:
         """Construct kwargs for tokenizer.encode / tokenizer.__call__."""
@@ -520,7 +520,7 @@ class HFTokenizer(TokenizerAdapter):
     ) -> list[list[int]] | dict[str, Any]:
         """Batch encode texts.
 
-        - By default returns List[List[int]] of input_ids for adapter consistency.
+        - By default returns list[list[int]] of input_ids for adapter consistency.
         - If return_dict=True, returns the raw Hugging Face-style dict, preserving
           backward compatibility with prior usages expecting a mapping.
         """
@@ -582,7 +582,7 @@ class HFTokenizer(TokenizerAdapter):
         """Return a Hugging Face-style encoding dict (compatibility alias)."""
         # Accept extra kwargs for compatibility; forward to batch_encode via return_dict
         _ = kwargs  # intentionally accepted but ignored
-        return self.batch_encode(texts, add_special_tokens=add_special_tokens, return_dict=True)
+        return self.batch_encode(texts, add_special_tokens=add_special_tokens, return_dict=True)  # type: ignore[return-value]
 
     def decode(self, ids: Iterable[int], *, skip_special_tokens: bool = True) -> str:
         """Decode a list of token ids back to a string."""

@@ -31,7 +31,7 @@ try:  # optional dependency
 
     _HAS_PROM = True
 except (ConnectionError, TimeoutError):  # pragma: no cover - optional
-    Counter = Histogram = None
+    Counter = Histogram = None  # type: ignore[misc,assignment]
     _HAS_PROM = False
 
 REQUEST_LATENCY = Histogram("data_load_seconds", "Time spent loading data") if _HAS_PROM else None

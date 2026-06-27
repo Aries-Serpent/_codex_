@@ -111,7 +111,7 @@ def _random_seed_with_snapshot(a: Optional[Any] = None, version: int = 2) -> Non
 
 
 if getattr(random.seed, "__codex_wrapped__", False) is False:  # pragma: no cover - guard
-    _random_seed_with_snapshot.__codex_wrapped__ = True
+    _random_seed_with_snapshot.__codex_wrapped__ = True  # type: ignore[attr-defined]
     random.seed = _random_seed_with_snapshot
 
 if TORCH_AVAILABLE:
@@ -141,8 +141,8 @@ if TORCH_AVAILABLE:
         return result
 
     if getattr(torch.manual_seed, "__codex_wrapped__", False) is False:  # pragma: no cover - guard
-        _torch_manual_seed_with_snapshot.__codex_wrapped__ = True
-        torch.manual_seed = _torch_manual_seed_with_snapshot
+        _torch_manual_seed_with_snapshot.__codex_wrapped__ = True  # type: ignore[attr-defined]
+        torch.manual_seed = _torch_manual_seed_with_snapshot  # type: ignore[assignment]
 
 
 @runtime_checkable
@@ -278,7 +278,7 @@ def _resolve_format(value: Optional[str]) -> SaveFormat:
     fmt = (value or "auto").lower()
     if fmt not in {"auto", "torch", "pickle"}:
         raise ValueError(f"unsupported checkpoint format: {value}")
-    return fmt
+    return fmt  # type: ignore[return-value]
 
 
 def _pickle_dump(path: Path, payload: Mapping[str, Any]) -> None:
@@ -329,13 +329,15 @@ def _torch_dump(path: Path, payload: Mapping[str, Any]) -> None:
             or "profiler" in _msg
         ):
             logger.warning(
-                "torch.save compat error (PyTorch 2.x + Python 3.12), retrying with pickle_protocol=2: %s",  # noqa: E501
+                "torch.save compat error (PyTorch 2.x + Python 3.12), retrying without extra parameters: %s",  # noqa: E501
                 e,
             )
             try:
-                torch.save(dict(payload), path, pickle_protocol=2)
+                # Retry without pickle_protocol which is not a valid torch.save parameter
+                # PyTorch 2.x handles pickle protocol automatically
+                torch.save(dict(payload), path)
             except (IOError, OSError) as e2:
-                logger.error("torch.save failed even with pickle_protocol=2: %s", e2)
+                logger.error("torch.save failed on retry: %s", e2)
                 raise
         else:
             raise
@@ -937,9 +939,10 @@ def build_payload_bytes(
             or "isinstance() arg 2 must be a type" in _msg
             or "FloatStorage" in _msg
         ):
-            logger.warning("torch.save compat error, retrying with pickle_protocol=2: %s", e)
+            logger.warning("torch.save compat error, retrying without extra parameters: %s", e)
             buf = io.BytesIO()
-            torch.save(state, buf, pickle_protocol=2)
+            # PyTorch 2.x handles pickle protocol automatically; don't pass pickle_protocol
+            torch.save(state, buf)
         else:
             raise
     return buf.getvalue()
@@ -1189,8 +1192,9 @@ def save_ckpt(state: dict[str, Any], path: str) -> None:
             "issubclass() arg 2 must be a class" in _msg
             or "isinstance() arg 2 must be a type" in _msg
         ):
-            logger.warning("torch.save compat error, retrying with pickle_protocol=2: %s", e)
-            torch.save(state, p, pickle_protocol=2)
+            logger.warning("torch.save compat error, retrying without extra parameters: %s", e)
+            # PyTorch 2.x handles pickle protocol automatically; don't pass pickle_protocol
+            torch.save(state, p)
         else:
             raise
     _write_checksum_manifest(p)
@@ -1269,10 +1273,11 @@ class CheckpointManager:
                     or "isinstance() arg 2 must be a type" in _msg
                 ):
                     logger.warning(
-                        "torch.save compat error, retrying with pickle_protocol=2: %s",
+                        "torch.save compat error, retrying without extra parameters: %s",
                         e,
                     )
-                    torch.save(state, ep_dir / "state.pt", pickle_protocol=2)
+                    # PyTorch 2.x handles pickle protocol automatically; don't pass pickle_protocol
+                    torch.save(state, ep_dir / "state.pt")
                 else:
                     raise
         else:  # pragma: no cover - fallback path
@@ -1491,7 +1496,7 @@ class CheckpointManager:
 
         Returns
         -------
-        Dict[str, Any]
+        dict[str, Any]
             The metadata returned from :meth:`resume_from` with the resolved
             checkpoint ``path`` included.
         """

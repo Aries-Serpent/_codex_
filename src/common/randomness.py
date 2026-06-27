@@ -32,7 +32,7 @@ except (ImportError, AttributeError):  # pragma: no cover
 try:
     import torch
 except (ImportError, AttributeError):  # pragma: no cover
-    torch = None
+    torch = None  # type: ignore[assignment]
 
 
 def set_seed(seed: int | None) -> int:

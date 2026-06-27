@@ -335,9 +335,9 @@ def _emit_summary(
     )
     extras = dict(extra or {})
     if extras:
-        payload["extra"] = _normalise_summary_extra(extras)
+        payload["extra"] = _normalise_summary_extra(extras)  # type: ignore[assignment]
     else:
-        payload["extra"] = OrderedDict()
+        payload["extra"] = OrderedDict()  # type: ignore[assignment]
     _write_deterministic_json(summary_path, payload)
 
 
@@ -517,7 +517,7 @@ class NdjsonWriter(BaseWriter):
     def close(self) -> None:
         if getattr(self, "_manifest_logger", None) is not None:
             try:
-                self._manifest_logger.close()
+                self._manifest_logger.close()  # type: ignore[union-attr]
             except (ValueError, TypeError, RuntimeError):  # pragma: no cover
                 logger.debug("Suppressed exception in handler", exc_info=True)
         try:

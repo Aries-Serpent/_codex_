@@ -1,7 +1,7 @@
 """Permission validation for authorization system."""
 
 from dataclasses import dataclass
-from typing import Optional, Set
+from typing import Optional
 
 
 @dataclass
@@ -20,7 +20,7 @@ class PermissionValidator:
 
     def __init__(self):
         """Initialize permission validator."""
-        self._permissions: Set[str] = set()
+        self._permissions: set[str] = set()
         self._role_permissions: dict = {}
 
     def register_permission(self, permission: Permission) -> bool:
