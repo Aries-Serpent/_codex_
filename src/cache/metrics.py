@@ -96,7 +96,11 @@ class CacheMonitor:
         total_evictions = sum(m.evictions for m in metrics_list)
         total_size = max((m.total_size_bytes for m in metrics_list), default=0)
 
-        hit_rate = (total_hits / (total_hits + total_misses) * 100) if (total_hits + total_misses) > 0 else 0.0
+        hit_rate = (
+            (total_hits / (total_hits + total_misses) * 100)
+            if (total_hits + total_misses) > 0
+            else 0.0
+        )
 
         return {
             "namespace": namespace,

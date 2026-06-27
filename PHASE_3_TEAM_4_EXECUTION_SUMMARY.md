@@ -223,7 +223,7 @@ async def register(body: RegisterRequest, request: Request):
     _enforce_rate_limit(_register_limiter, request)
     
     # Continue with registration...
-    return auth.register(username, email, body.password)
+    return auth.register(username, email, body.password)  # pragma: allowlist secret
 ```
 
 ### API Endpoint `/api/files/upload`

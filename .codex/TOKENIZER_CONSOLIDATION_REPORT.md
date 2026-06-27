@@ -11,13 +11,13 @@ Successfully consolidated tokenization modules from 3 legacy locations into 1 ca
 ### Consolidation Map
 ```
 Before:
-├── tokenization/                 (24K, root shim)
-├── src/tokenization/             (41K, legacy re-exports)
-├── src/tokenizer/                (5K, minimal module)
-└── src/codex_ml/tokenization/    (102K, canonical - SOURCE OF TRUTH)
+├── tokenization/                 (24K, root shim)  # pragma: allowlist secret
+├── src/tokenization/             (41K, legacy re-exports)  # pragma: allowlist secret
+├── src/tokenizer/                (5K, minimal module)  # pragma: allowlist secret
+└── src/codex_ml/tokenization/    (102K, canonical - SOURCE OF TRUTH)  # pragma: allowlist secret
 
 After (completed Phase 1-3):
-└── src/codex_ml/tokenization/    (102K, canonical - SINGLE SOURCE OF TRUTH)
+└── src/codex_ml/tokenization/    (102K, canonical - SINGLE SOURCE OF TRUTH)  # pragma: allowlist secret
     └── Deprecation layer routes legacy imports to canonical
 ```
 
@@ -69,20 +69,20 @@ Added deprecation warnings to all 3 legacy modules:
 
 1. **src/tokenization/__init__.py**
    ```python
-   DeprecationWarning: "src.tokenization is deprecated and will be removed 
-   in version 2.0. Use src.codex_ml.tokenization instead."
+   DeprecationWarning: "src.tokenization is deprecated and will be removed  # pragma: allowlist secret 
+   in version 2.0. Use src.codex_ml.tokenization instead."  # pragma: allowlist secret
    ```
 
 2. **tokenization/__init__.py** (root)
    ```python
-   DeprecationWarning: "The root tokenization module is deprecated and will 
-   be removed in version 2.0. Use src.codex_ml.tokenization instead."
+   DeprecationWarning: "The root tokenization module is deprecated and will  # pragma: allowlist secret 
+   be removed in version 2.0. Use src.codex_ml.tokenization instead."  # pragma: allowlist secret
    ```
 
 3. **src/tokenizer/__init__.py**
    ```python
-   DeprecationWarning: "src.tokenizer is deprecated and will be removed 
-   in version 2.0. Use src.codex_ml.tokenization instead."
+   DeprecationWarning: "src.tokenizer is deprecated and will be removed  # pragma: allowlist secret 
+   in version 2.0. Use src.codex_ml.tokenization instead."  # pragma: allowlist secret
    ```
 
 ### ✅ Phase 4: Test & Verify
@@ -90,11 +90,11 @@ All import paths verified functional:
 
 ```
 ✓ Core API imports work from canonical module
-✓ train_tokenizer submodule accessible (lazy-loads)
+✓ train_tokenizer submodule accessible (lazy-loads)  # pragma: allowlist secret
 ✓ api submodule accessible
 ✓ test_streaming_ingest.py import path works
 ✓ conftest.py import path works
-✓ test_train_tokenizer_streaming.py import path works
+✓ test_train_tokenizer_streaming.py import path works  # pragma: allowlist secret
 ✓ test_production_readiness_gaps.py import path works
 ✓ symbolic_pipeline.py import path works
 ✓ All legacy imports emit deprecation warnings
@@ -104,13 +104,13 @@ All import paths verified functional:
 ### ✅ Phase 5: Calculate Savings
 ```
 Redundant code before consolidation:
-  - src/tokenization:      41,512 bytes (1,245 lines)
-  - tokenization (root):    4,720 bytes (  179 lines)
-  - src/tokenizer:          5,587 bytes (  175 lines)
+  - src/tokenization:      41,512 bytes (1,245 lines)  # pragma: allowlist secret
+  - tokenization (root):    4,720 bytes (  179 lines)  # pragma: allowlist secret
+  - src/tokenizer:          5,587 bytes (  175 lines)  # pragma: allowlist secret
   - Total:                 51,819 bytes (1,599 lines)
 
 Canonical module:
-  - src/codex_ml/tokenization: 102,408 bytes (2,951 lines)
+  - src/codex_ml/tokenization: 102,408 bytes (2,951 lines)  # pragma: allowlist secret
 
 Consolidation benefits:
   - Single source of truth established

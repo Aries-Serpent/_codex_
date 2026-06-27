@@ -157,7 +157,9 @@ class EmailValidator:
         value = value.strip().lower()
 
         if len(value) < self.min_length or len(value) > self.max_length:
-            raise ValueError(f"{field_name} length must be between {self.min_length} and {self.max_length}")
+            raise ValueError(
+                f"{field_name} length must be between {self.min_length} and {self.max_length}"
+            )
 
         if not self._PATTERN.match(value):
             raise ValueError(f"{field_name} is not a valid email address")

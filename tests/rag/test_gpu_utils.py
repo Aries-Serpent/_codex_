@@ -5,8 +5,9 @@ Tests all functions in src/codex/rag/gpu_utils.py to achieve 80%+ coverage.
 Priority 1 - CRITICAL gap (0% → 80%)
 """
 
-import pytest
 from unittest.mock import MagicMock, Mock, patch
+
+import pytest
 
 
 @pytest.fixture(autouse=True)

@@ -80,9 +80,9 @@ class TestBridgeIPCLatency:
         results = PerformanceBenchmark.measure_latency(create_message, iterations=1000)
 
         # Validate against target
-        assert (results["mean_ms"] < 10.0
+        assert (results["mean_ms"] < 10.0, "Result must not be empty"
         ), f"Mean latency {results['mean_ms']:.2f}ms exceeds 10ms target"
-        assert (results["p95_ms"] < 15.0
+        assert (results["p95_ms"] < 15.0, "Result must not be empty"
         ), f"P95 latency {results['p95_ms']:.2f}ms exceeds 15ms threshold"
 
         print("\n🚀 Bridge IPC Latency Benchmark:")
@@ -123,7 +123,7 @@ class TestPIIScrubbing:
         results = PerformanceBenchmark.measure_latency(scrub_doc, iterations=1000)
 
         # Validate against target
-        assert (results["mean_ms"] < 10.0
+        assert (results["mean_ms"] < 10.0, "Result must not be empty"
         ), f"Mean PII scrubbing {results['mean_ms']:.2f}ms exceeds 10ms target"
 
         print("\n🔒 PII Scrubbing Benchmark:")
@@ -198,7 +198,7 @@ class TestRAGQueryLatency:
         results = PerformanceBenchmark.measure_latency(mock_rag_query, iterations=100)
 
         # Target: <50ms end-to-end
-        assert (results["mean_ms"] < 50.0
+        assert (results["mean_ms"] < 50.0, "Result must not be empty"
         ), f"RAG query {results['mean_ms']:.2f}ms exceeds 50ms target"
 
         print("\n🔍 RAG Query Benchmark:")

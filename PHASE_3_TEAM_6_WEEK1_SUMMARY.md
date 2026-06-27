@@ -13,7 +13,7 @@ Phase 3 Team 6 successfully completed all three Week 1 priority tasks, achieving
 
 | Target | Result | Status |
 |--------|--------|--------|
-| Tokenizer consolidation | -75 MB | ✅ EXCEEDED |
+| Tokenizer consolidation | -75 MB | ✅ EXCEEDED | <!-- pragma: allowlist secret -->
 | Test deps merge | -30 MB | ✅ ACHIEVED |
 | ML metrics consolidation | -25 MB | ✅ ACHIEVED |
 | **Total savings** | **-130 MB** | ✅ **ON TARGET** |
@@ -84,7 +84,7 @@ Removed duplicates (9 packages):
 
 Added ML deps to dev (from test group):
   transformers, torch, datasets, accelerate
-  sentencepiece, tokenizers, responses, pyotp
+  sentencepiece, tokenizers, responses, pyotp  # pragma: allowlist secret
 ```
 
 #### Files Modified:

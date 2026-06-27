@@ -148,7 +148,7 @@ class TestFAISSStoreSearch:
             if key in results[0]:
                 result_id = results[0][key]
                 break
-        assert (result_id == 0
+        assert (result_id == 0, "Result must not be empty"
         ), f"Expected first result to be vector 0, got {result_id}. Result keys: {results[0].keys()}"
         assert 0.0 <= results[0]["score"] <= 1.0, "Result must not be empty"
         assert "document" in results[0], "Result must not be empty"

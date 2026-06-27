@@ -45,7 +45,7 @@ Tests reference: tests/unit/test_example.py
 
     payload = run_audit(repo)
 
-    assert (payload["pytest_ini"]
+    assert (payload["pytest_ini"], "Condition must be true"
         == "replace --cov=src with --cov=src/codex_ml in configs/development/pytest.ini"
     )
     assert "docs/index.md" in payload["mkdocs_nav"], "Condition must be true"

@@ -215,7 +215,7 @@ def test_end_to_end_compliance_workflow(temp_db):
         ComplianceDecision.REJECT,
     ]
     assert 0.0 <= assessment.confidence <= 1.0, "0 is not valid"
-    assert (assessment.coherence >= 0.0
+    assert (assessment.coherence >= 0.0, "coherence must be greater than zero"
     )  # Coherence should be non-negative (relaxed threshold for initial test)
 
     # Verify monitoring

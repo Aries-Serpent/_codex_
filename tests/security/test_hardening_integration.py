@@ -15,22 +15,24 @@ Run with: pytest tests/security/test_hardening_integration.py -v
 """
 
 from __future__ import annotations
- # pragma: allowlist secret
-import pytest
+
 from pathlib import Path
-from unittest.mock import Mock, patch, AsyncMock
+from unittest.mock import Mock
+
+# pragma: allowlist secret
+import pytest
 
 # Import validators
 try:
     from codex.security.validators import (
-        StringValidator,
-        EmailValidator,
-        NumericValidator,
         BatchSizeValidator,
-        LearningRateValidator,
-        PathValidator,
-        FileTypeValidator,
+        EmailValidator,
         FileSizeValidator,
+        FileTypeValidator,
+        LearningRateValidator,
+        NumericValidator,
+        PathValidator,
+        StringValidator,
         XSSValidator,
     )
 except ImportError as e:
@@ -48,7 +50,7 @@ class TestLayer1StringValidation:
     def test_basic_string_validation(self) -> None:
         """Basic string input validation."""
         validator = StringValidator(min_length=1, max_length=100)
-        assert validator.validate("hello") == "hello"
+        assert validator.validate("hello") == "hello", "validat is not valid"
 
     def test_sql_injection_prevention(self) -> None:
         """OWASP A01: SQL injection prevention."""
@@ -76,8 +78,8 @@ class TestLayer2NumericValidation:
         """OWASP A01: Batch size DoS / OOM prevention."""
         validator = BatchSizeValidator()
         # Valid batch sizes
-        assert validator.validate(32) == 32.0
-        assert validator.validate(256) == 256.0
+        assert validator.validate(32) == 32.0, "validat is not valid"
+        assert validator.validate(256) == 256.0, "validat is not valid"
         # Invalid: too large (OOM attack)
         with pytest.raises(ValueError, match="exceeds maximum"):
             validator.validate(100000)
@@ -86,8 +88,8 @@ class TestLayer2NumericValidation:
         """OWASP A01: Learning rate sanity validation."""
         validator = LearningRateValidator()
         # Valid learning rates
-        assert validator.validate(0.001) == 0.001
-        assert validator.validate(0.1) == 0.1
+        assert validator.validate(0.001) == 0.001, "validat is not valid"
+        assert validator.validate(0.1) == 0.1, "validat is not valid"
         # Invalid: too small or too large
         with pytest.raises(ValueError):
             validator.validate(1e-10)  # Too small
@@ -146,9 +148,9 @@ class TestLayer4XSSPrevention:
         """OWASP A07: HTML entity escaping."""
         dangerous = "<script>alert('xss')</script>"
         escaped = XSSValidator.escape_html(dangerous)
-        assert "&lt;" in escaped
-        assert "&gt;" in escaped
-        assert "script" in escaped
+        assert "&lt;" in escaped, "Condition must be true"
+        assert "&gt;" in escaped, "Condition must be true"
+        assert "script" in escaped, "Condition must be true"
 
     def test_xss_pattern_detection(self) -> None:
         """OWASP A07: Detect XSS patterns."""
@@ -186,7 +188,7 @@ class TestAPIInputValidation:
         """OWASP A02: Validate email in registration."""
         validator = EmailValidator()
         # Valid email
-        assert validator.validate("user@example.com") == "user@example.com"
+        assert validator.validate("user@example.com") == "user@example.com", "validat is not valid"
         # Invalid email
         with pytest.raises(ValueError):
             validator.validate("notanemail")
@@ -203,8 +205,8 @@ class TestAPIInputValidation:
             pattern=re.compile(r"^[a-zA-Z0-9_-]+$")
         )
         # Valid usernames
-        assert validator.validate("user_123") == "user_123"
-        assert validator.validate("john-doe") == "john-doe"
+        assert validator.validate("user_123") == "user_123", "validat is not valid"
+        assert validator.validate("john-doe") == "john-doe", "validat is not valid"
         # Invalid: too short
         with pytest.raises(ValueError):
             validator.validate("ab")
@@ -222,7 +224,7 @@ class TestFileUploadValidation:
         # Valid file type
         valid_file = tmp_path / "report.pdf"
         valid_file.write_text("pdf")
-        assert validator.validate(valid_file) == valid_file
+        assert validator.validate(valid_file) == valid_file, "validat is not valid"
         # Invalid: executable
         invalid_file = tmp_path / "malware.exe"
         invalid_file.write_text("exe")
@@ -235,7 +237,7 @@ class TestFileUploadValidation:
         # Small file
         small_file = tmp_path / "small.txt"
         small_file.write_text("small")
-        assert validator.validate(small_file) == small_file
+        assert validator.validate(small_file) == small_file, "validat is not valid"
         # Large file
         large_file = tmp_path / "large.txt"
         large_file.write_text("x" * 10000)
@@ -258,7 +260,7 @@ class TestOWASPA01Injection:
             disallow_chars="';--"
         )
         # Normal query
-        assert validator.validate("SELECT * FROM users") == "SELECT * FROM users"
+        assert validator.validate("SELECT * FROM users") == "SELECT * FROM users", "validat is not valid"
         # SQL injection
         with pytest.raises(ValueError):
             validator.validate("'; DROP TABLE users; --")
@@ -277,7 +279,7 @@ class TestOWASPA02Auth:
         """Email validation prevents auth bypass."""
         validator = EmailValidator()
         # Normal email
-        assert validator.validate("user@example.com") == "user@example.com"
+        assert validator.validate("user@example.com") == "user@example.com", "validat is not valid"
         # Injection attempt with newline
         with pytest.raises(ValueError):
             validator.validate("user@example.com\nAdministrator: yes")
@@ -292,12 +294,12 @@ class TestOWASPA03SensitiveData:
         validator = StringValidator(min_length=8, max_length=128)
         password = "SuperSecret123!"
         result = validator.validate(password)
-        assert result == password
+        assert result == password, "Result must not be empty"
         # Error messages should not contain password
         try:
             validator.validate("short")
         except ValueError as e:
-            assert "short" not in str(e).lower() or "password" not in str(e).lower()
+            assert "short" not in str(e).lower() or "password" not in str(e).lower(), "Condition must be true"
 
 
 class TestOWASPA05AccessControl:
@@ -324,15 +326,15 @@ class TestOWASPA07XSS:
         dangerous_input = '<img src=x onerror="alert(\'xss\')">'
         escaped = XSSValidator.escape_html(dangerous_input)
         # Ensure tags are escaped
-        assert "&lt;" in escaped
-        assert "&gt;" in escaped
+        assert "&lt;" in escaped, "Condition must be true"
+        assert "&gt;" in escaped, "Condition must be true"
 
     def test_reflected_xss_prevention(self) -> None:
         """Detect reflected XSS patterns."""
         patterns = XSSValidator.detect_xss_patterns(
             "?search=<script>alert('xss')</script>"
         )
-        assert len(patterns) > 0
+        assert len(patterns) > 0, "Patterns must not be empty"
 
 
 # ============================================================================
@@ -347,7 +349,7 @@ class TestRateLimitingProtection:
         """Prevent DoS via huge batch sizes."""
         validator = BatchSizeValidator()
         # Normal batch size
-        assert validator.validate(128) == 128.0
+        assert validator.validate(128) == 128.0, "validat is not valid"
         # DoS: huge batch size
         with pytest.raises(ValueError):
             validator.validate(1000000)
@@ -356,7 +358,7 @@ class TestRateLimitingProtection:
         """Prevent DoS via extremely long strings."""
         validator = StringValidator(min_length=1, max_length=1000)
         # Normal string
-        assert validator.validate("hello world") == "hello world"
+        assert validator.validate("hello world") == "hello world", "validat is not valid"
         # DoS: gigantic string
         with pytest.raises(ValueError):
             validator.validate("x" * 1000000)
@@ -380,7 +382,7 @@ class TestCSRFProtection:
         manager = CSRFTokenManager()
         token = manager.generate_token()
         assert isinstance(token, str)
-        assert len(token) > 20
+        assert len(token) > 20, "Token must not be empty"
 
     def test_csrf_token_validation(self) -> None:
         """Generated CSRF tokens validate correctly."""
@@ -391,8 +393,8 @@ class TestCSRFProtection:
 
         manager = CSRFTokenManager()
         token = manager.generate_token()
-        assert manager.validate_token(token) is True
-        assert manager.validate_token("invalid_token") is False
+        assert manager.validate_token(token) is True, "Condition must be true"
+        assert manager.validate_token("invalid_token") is False, "Condition must be true"
 
 
 # ============================================================================
@@ -414,11 +416,11 @@ class TestAuthenticationValidation:
         # Valid ******
         request.headers = {"Authorization": "******"}
         token = RequestValidator.validate_auth_header(request)
-        assert token == "******"
+        assert token == "******", "token is not valid"
 
         # Invalid format
         request.headers = {"Authorization": "Basic dXNlcjpwYXNz"}
-        assert RequestValidator.validate_auth_header(request) is None
+        assert RequestValidator.validate_auth_header(request) is None, "RequestValidat is not valid"
 
     def test_content_type_validation(self) -> None:
         """OWASP A04: Validate content type."""
@@ -430,11 +432,11 @@ class TestAuthenticationValidation:
         request = Mock()
         # Valid JSON content type
         request.headers = {"content-type": "application/json"}
-        assert RequestValidator.validate_json_content_type(request) is True
+        assert RequestValidator.validate_json_content_type(request) is True, "Content must not be empty"
 
         # Invalid content type
         request.headers = {"content-type": "application/x-www-form-urlencoded"}
-        assert RequestValidator.validate_json_content_type(request) is False
+        assert RequestValidator.validate_json_content_type(request) is False, "Content must not be empty"
 
 
 # ============================================================================
@@ -457,8 +459,8 @@ class TestSecurityValidationChain:
         # Valid registration
         email = email_validator.validate("user@example.com")
         username = username_validator.validate("john_doe")
-        assert email == "user@example.com"
-        assert username == "john_doe"
+        assert email == "user@example.com", "email is not valid"
+        assert username == "john_doe", "username is not valid"
 
         # Attack attempts
         with pytest.raises(ValueError):

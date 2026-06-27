@@ -261,7 +261,7 @@ class TestSessionMetrics:
 
         assert result["active"] >= 1, "Value must be greater than zero"
         assert result["archived"] >= 1, "Value must be greater than zero"
-        assert (result["total"]
+        assert (result["total"], "Result must not be empty"
             == result["active"]
             + result["completed"]
             + result["error"]
@@ -292,7 +292,7 @@ class TestSessionMetrics:
 
         captured = capsys.readouterr()
         assert rc == 0, "rc is not valid"
-        assert "Archived" in captured.out or "archived" in captured.out.lower(
+        assert "Archived" in captured.out or "archived" in captured.out.lower(, "Condition must be true"
         ), "Condition must be true"
         assert "Total" in captured.out or "total" in captured.out.lower(), "Condition must be true"
 

@@ -151,7 +151,7 @@ class TestDataValidation:
         validation_rules = {"score": {"min": 0.0, "max": 1.0}}
         valid_record = {"score": 0.5}
         invalid_record = {"score": 1.5}
-        assert (validation_rules["score"]["min"]
+        assert (validation_rules["score"]["min"], "Condition must be true"
             <= valid_record["score"]
             <= validation_rules["score"]["max"]
         )

@@ -338,7 +338,7 @@ The _codex_ ML framework contains a sophisticated technology stack spanning **34
 
 | Optimization | Risk | Mitigation | Rollback |
 |--------------|------|-----------|----------|
-| Tokenizer consolidation | Very Low | Update imports in 3 files, test | Revert import (1 edit) |
+| Tokenizer consolidation | Very Low | Update imports in 3 files, test | Revert import (1 edit) | <!-- pragma: allowlist secret -->
 | RAG lazy loading | Low | Feature flag testing, canary | Disable flag (1 config) |
 | FastAPI removal | Medium | API endpoint testing, load tests | Revert (1 day) |
 | Version unpinning | Medium | CI compatibility matrix | Return to pins (1 PR) |

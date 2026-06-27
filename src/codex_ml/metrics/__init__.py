@@ -20,18 +20,6 @@ from .api import (
 )
 from .evaluator import batch_metrics
 
-# Import unified API - these are the canonical implementations
-from .unified_api import (
-    batch_metrics_from_outputs,
-    compute_accuracy,
-    compute_bleu,
-    compute_classification_metrics,
-    compute_f1,
-    compute_perplexity,
-    compute_rouge_l,
-    compute_token_accuracy,
-)
-
 # Backward compatibility: legacy imports still available
 from .generative import bleu, rouge_l
 from .metric_implementations import (
@@ -43,6 +31,18 @@ from .metric_implementations import (
 )
 from .reward import reward_mean, reward_success_rate
 from .text import perplexity, token_accuracy
+
+# Import unified API - these are the canonical implementations
+from .unified_api import (
+    batch_metrics_from_outputs,
+    compute_accuracy,
+    compute_bleu,
+    compute_classification_metrics,
+    compute_f1,
+    compute_perplexity,
+    compute_rouge_l,
+    compute_token_accuracy,
+)
 
 __all__ = [
     # Unified API (canonical implementations) - PREFERRED

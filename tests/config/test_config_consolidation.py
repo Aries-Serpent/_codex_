@@ -31,7 +31,7 @@ class TestConfigConsolidation:
         legacy_roots = ["conf", "config"]
         for legacy_root in legacy_roots:
             legacy_path = repo_root / legacy_root
-            assert (legacy_path.exists()
+            assert (legacy_path.exists(), "Condition must be true"
             ), f"Legacy config root '{legacy_root}/' must exist for backward compat"
 
     def test_configuration_structure_documentation_exists(self):
@@ -91,7 +91,7 @@ class TestConfigConsolidation:
         ]
 
         for section in required_sections:
-            assert (section in content
+            assert (section in content, "Content must not be empty"
             ), f"CONFIGURATION_STRUCTURE.md must contain '{section}' section"
 
     def test_migration_guide_completeness(self):
@@ -112,7 +112,7 @@ class TestConfigConsolidation:
         ]
 
         for keyword in migration_keywords:
-            assert (keyword.lower() in content.lower()
+            assert (keyword.lower() in content.lower(), "Content must not be empty"
             ), f"Migration guide must mention '{keyword}' for gradual transition"
 
     def test_changelog_documents_consolidation(self):
@@ -156,7 +156,7 @@ class TestHydraConfigAccess:
                 content = yaml_file.read_text()
                 parsed = yaml.safe_load(content)
                 # Basic validation - should parse without error
-                assert (parsed is not None or content.strip() == ""
+                assert (parsed is not None or content.strip() == "", "parsed must be initialized"
                 ), f"YAML file {yaml_file.name} should parse correctly"
             except yaml.YAMLError as e:
                 pytest.fail(f"YAML parsing failed for {yaml_file}: {e}")

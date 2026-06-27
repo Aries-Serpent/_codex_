@@ -49,7 +49,7 @@ The _codex_ codebase spans **2,955 test files** across **40 source modules** wit
 | src/codex | 20.1% | 259 | Largest module, heavily used; 207 files untested |
 | src/common | 22.2% | 9 | Shared utilities, 7 files untested |
 | src/codex_utils | 25.0% | 4 | Helper functions, 3 files untested |
-| src/tokenization | 28.6% | 7 | Text processing pipeline |
+| src/tokenization | 28.6% | 7 | Text processing pipeline | <!-- pragma: allowlist secret -->
 | src/utils | 30.0% | 10 | General utilities |
 | src/rag | 33.3% | 6 | Retrieval-augmented generation |
 | src/evaluation | 33.3% | 12 | Model evaluation framework |
@@ -128,12 +128,12 @@ Many tests are skipped due to environment constraints:
 
 | File | Complexity | Most Complex Function | Lines |
 |------|-----------|----------------------|-------|
-| src/codex/github/mcp_poster.py | HIGH | `create_token()` (CC=27) | 127 |
+| src/codex/github/mcp_poster.py | HIGH | `create_token()` (CC=27) | 127 | <!-- pragma: allowlist secret -->
 | src/cognitive_brain/integrations/compliance_integration.py | HIGH | `assess_compliance()` (CC=24) | 78 |
 | src/codex/retrieval/stores/faiss_store.py | HIGH | `load()` (CC=19) | 91 |
 | src/codex/logging/session_db.py | HIGH | `insert_session()` (CC=22) | 112 |
 | src/codex_ml/utils/checkpointing.py | HIGH | `save()` (CC=25) | 118 |
-| src/security/providers/github_provider.py | HIGH | `create_token()` (CC=28) | 127 |
+| src/security/providers/github_provider.py | HIGH | `create_token()` (CC=28) | 127 | <!-- pragma: allowlist secret -->
 | src/bridge_manager.py | VERY HIGH | `__init__()` (CC=31) | 130 |
 | src/workflow_refactor.py | HIGH | `ensure_self_hosted_runner()` (CC=20) | 70 |
 
@@ -663,7 +663,7 @@ EXCELLENT (80-100%):  13 modules
 GOOD (50-80%):  7 modules
 ├─ src/data                      60.0%
 ├─ src/verification             50.0%
-├─ src/tokenizer                50.0%
+├─ src/tokenizer                50.0%  # pragma: allowlist secret
 ├─ src/config                   50.0%
 ├─ src/training                 47.1%
 ├─ src/agent                    57.1%

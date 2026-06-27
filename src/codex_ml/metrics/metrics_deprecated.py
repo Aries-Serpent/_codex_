@@ -25,11 +25,18 @@ logger = logging.getLogger(__name__)
 # Import unified implementations
 from codex_ml.metrics.unified_api import (
     compute_accuracy as _compute_accuracy,
+)
+from codex_ml.metrics.unified_api import (
     compute_bleu as _compute_bleu,
+)
+from codex_ml.metrics.unified_api import (
     compute_f1 as _compute_f1,
+)
+from codex_ml.metrics.unified_api import (
     compute_perplexity as _compute_perplexity,
+)
+from codex_ml.metrics.unified_api import (
     compute_rouge_l as _compute_rouge_l,
-    compute_token_accuracy as _compute_token_accuracy,
 )
 
 __all__ = [
@@ -80,7 +87,9 @@ def perplexity(
 ) -> float:
     """DEPRECATED: Use metrics.compute_perplexity() instead."""
     _deprecation_warning("perplexity", "compute_perplexity")
-    return _compute_perplexity(logits_or_nll, targets, from_logits=from_logits, ignore_index=ignore_index, epsilon=epsilon)
+    return _compute_perplexity(
+        logits_or_nll, targets, from_logits=from_logits, ignore_index=ignore_index, epsilon=epsilon
+    )
 
 
 def token_accuracy(
@@ -89,7 +98,7 @@ def token_accuracy(
     ignore_index: int = -100,
 ) -> float:
     """DEPRECATED: Use metrics.compute_token_accuracy() instead.
-    
+
     Backward-compatible token accuracy wrapper that uses token_stats.
     """
     _deprecation_warning("token_accuracy", "compute_token_accuracy")
@@ -128,7 +137,7 @@ def token_stats(
     ignore_index: int = -100,
 ) -> dict[str, float]:
     """DEPRECATED: No direct replacement; compute_token_accuracy() covers most use cases.
-    
+
     Return token-level statistics including accuracy.
     """
     _deprecation_warning("token_stats", "compute_token_accuracy")
@@ -282,6 +291,7 @@ def run_unit_tests(code_str: str, tests_dir: str) -> dict[str, int]:  # pragma: 
         }
     finally:
         import shutil
+
         shutil.rmtree(tmpdir, ignore_errors=True)
 
 
@@ -292,12 +302,12 @@ def _materialise(sequence: Iterable) -> list:
 
 def _ensure_equal_length(a: Sequence, b: Sequence, metric: str) -> None:
     """Ensure two sequences have equal length (helper function).
-    
+
     Args:
         a: First sequence
         b: Second sequence
         metric: Metric name for error message
-        
+
     Raises:
         MetricError: If sequences have different lengths
     """

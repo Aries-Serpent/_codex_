@@ -47,7 +47,7 @@ Deploy Quantum Cognitive Brain to production with enterprise-grade reliability, 
 deploy/kubernetes/
 ├── namespace.yaml
 ├── configmap.yaml
-├── secrets.yaml (template)
+├── secrets.yaml (template)  # pragma: allowlist secret
 ├── deployment.yaml
 ├── service.yaml
 ├── hpa.yaml (Horizontal Pod Autoscaler)
@@ -471,11 +471,11 @@ async def readiness_check():
 class CognitiveBrainClient:
     """Client SDK for Quantum Cognitive Brain API."""
 
-    def __init__(self, base_url: str, api_key: str):
+    def __init__(self, base_url: str, api_key: str):  # pragma: allowlist secret
         self.base_url = base_url
-        self.api_key = api_key
+        self.api_key = api_key  # pragma: allowlist secret
         self.session = requests.Session()
-        self.session.headers.update({"Authorization": f"Bearer {api_key}"})
+        self.session.headers.update({"Authorization": f"Bearer {api_key}"})  # pragma: allowlist secret
 
     def assess(self, scenario: Dict) -> AssessmentResponse:
         """Assess compliance scenario."""

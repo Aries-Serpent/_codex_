@@ -224,7 +224,7 @@ class TestHelpers:
     def test_allowed_tasks_has_entries(self):
         assert len(ALLOWED_TASKS) >= 1, "Allowed_tasks must not be empty"
         for name, (func, desc) in ALLOWED_TASKS.items():
-            assert callable(func
+            assert callable(func, "Condition must be true"
         ), "Condition must be true"
             assert isinstance(desc, str)
 

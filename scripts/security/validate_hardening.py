@@ -18,17 +18,16 @@ from typing import Any
 sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
 
 from codex.security.validators import (
-    StringValidator,
-    EmailValidator,
-    NumericValidator,
     BatchSizeValidator,
-    LearningRateValidator,
-    PathValidator,
-    FileTypeValidator,
+    EmailValidator,
     FileSizeValidator,
+    FileTypeValidator,
+    LearningRateValidator,
+    NumericValidator,
+    PathValidator,
+    StringValidator,
     XSSValidator,
 )
-
 
 # ============================================================================
 # Test Report
@@ -397,7 +396,7 @@ def test_layer4_xss_prevention() -> None:
             "XSS event handler detection",
             "XSS",
             True,
-            f"Detected event handler pattern"
+            "Detected event handler pattern"
         )
     except Exception as e:
         report.record("XSS event handler detection", "XSS", False, str(e))

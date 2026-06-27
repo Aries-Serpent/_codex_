@@ -75,7 +75,7 @@ The architecture follows a **layered microservice model** with clear separation 
 │   ├── __init__.py                 # Main CLI shim
 │   ├── train_codex.py              # Training orchestrator
 │   ├── pipeline.py                 # Pipeline runner
-│   └── task_sequence.py            # Task sequencing
+│   └── task_sequence.py            # Task sequencing  # pragma: allowlist secret
 │
 ├── codex_bridge/                   # Rust-Python Bridge
 ├── mcp/                            # Model Context Protocol
@@ -98,7 +98,7 @@ The architecture follows a **layered microservice model** with clear separation 
 
 .codex/                             # Project Infrastructure
 ├── train_codex.py                  # Training orchestration
-├── task_sequence.py                # Multi-stage workflows
+├── task_sequence.py                # Multi-stage workflows  # pragma: allowlist secret
 ├── update_runner.py                # Update management
 ├── workflow.py                     # Workflow definitions
 └── [15+ scripts]
@@ -149,7 +149,7 @@ The architecture follows a **layered microservice model** with clear separation 
 │  │  Supporting Modules:                                         │   │
 │  │  ├─ PEFT (Parameter-Efficient Fine-tuning)                  │   │
 │  │  ├─ RL (Reinforcement Learning)                             │   │
-│  │  ├─ Tokenization (Token processing)                         │   │
+│  │  ├─ Tokenization (Token processing)                         │   │  # pragma: allowlist secret
 │  │  └─ ContinuousLearning (Online learning)                    │   │
 │  └──────────────────────────────────────────────────────────────┘   │
 └────────────┬─────────────────────────────────────────────┬──────────┘

@@ -90,7 +90,7 @@ class TestCLIHelp:
         # Version output should contain version number
         output = result.stdout + result.stderr
         # Adjust assertion based on actual version format
-        assert (result.returncode == 0
+        assert (result.returncode == 0, "Result must not be empty"
             or "version" in output.lower()
             or any(c.isdigit() for c in output)
         )
@@ -127,7 +127,7 @@ class TestCLICommands:
             cwd=REPO_ROOT,
         )
         # Should fail with non-zero exit code when file doesn't exist
-        assert result.returncode != 0 or not nonexistent.exists(
+        assert result.returncode != 0 or not nonexistent.exists(, "Result must not be empty"
         ), "Result must not be empty"
 
     def test_command_with_missing_required_args_shows_error(self) -> None:
@@ -140,7 +140,7 @@ class TestCLICommands:
             cwd=REPO_ROOT,
         )
         output = result.stdout + result.stderr
-        assert (result.returncode != 0
+        assert (result.returncode != 0, "Result must not be empty"
             or "required" in output.lower()
             or "missing" in output.lower()
             or "error" in output.lower()

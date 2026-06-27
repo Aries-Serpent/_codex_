@@ -102,11 +102,11 @@ Two packages with known vulnerabilities are **intentionally monitored** with doc
 #### Implemented Patterns (✅ Verified)
 | Component | File | Pattern | Status |
 |-----------|------|---------|--------|
-| JWT Token Management | `src/codex/auth/token_manager.py` | PyJWT 2.13.0 with algorithm verification | ✅ SECURE |
+| JWT Token Management | `src/codex/auth/token_manager.py` | PyJWT 2.13.0 with algorithm verification | ✅ SECURE | <!-- pragma: allowlist secret -->
 | MFA Support | `src/codex/auth/mfa_provider.py` | TOTP-based 2FA | ✅ IMPLEMENTED |
 | OAuth Integration | `src/integrations/github_app_auth.py` | GitHub App OAuth flow | ✅ SECURE |
-| Session Management | `src/codex/auth/authenticator.py` | Session token management | ✅ IMPLEMENTED |
-| Password Hashing | `src/codex/auth/user_store.py` | PBKDF2 with 600k iterations | ✅ HARDENED |
+| Session Management | `src/codex/auth/authenticator.py` | Session token management | ✅ IMPLEMENTED | <!-- pragma: allowlist secret -->
+| Password Hashing | `src/codex/auth/user_store.py` | PBKDF2 with 600k iterations | ✅ HARDENED | <!-- pragma: allowlist secret -->
 | Middleware Auth | `src/mcp/server/middleware/auth.py` | ****** validation | ✅ IMPLEMENTED |
 
 #### Recommendations
@@ -128,7 +128,7 @@ Two packages with known vulnerabilities are **intentionally monitored** with doc
 | Vulnerability | Mitigation | Status |
 |---------------|-----------|--------|
 | **A1: Injection** | Parameterized queries, input validation | ✅ PROTECTED |
-| **A2: Auth Flaws** | JWT, OAuth, MFA, password hashing | ✅ PROTECTED |
+| **A2: Auth Flaws** | JWT, OAuth, MFA, password hashing | ✅ PROTECTED | <!-- pragma: allowlist secret -->
 | **A3: Sensitive Data** | Encryption, PII redaction, GDPR compliance | ✅ PROTECTED |
 | **A4: XXE** | Safe XML parsing, disabled external entities | ✅ PROTECTED |
 | **A5: Access Control** | RBAC patterns, permission checks | ✅ IMPLEMENTED |
@@ -184,7 +184,7 @@ Two packages with known vulnerabilities are **intentionally monitored** with doc
 |---------|---|--------|
 | **PII Detection** | Regex patterns for emails, phones, SSNs, cards, AWS keys | ✅ ACTIVE |
 | **PII Scrubbing** | `codex.knowledge.pii.scrub()` module | ✅ IMPLEMENTED |
-| **Data Redaction** | Automatic masking via `mask_sensitive()` | ✅ ACTIVE |
+| **Data Redaction** | Automatic masking via `mask_sensitive()` | ✅ ACTIVE | <!-- pragma: allowlist secret -->
 | **GDPR Handling** | Documented compliance in `src/utils/sensitive_data.py` | ✅ DOCUMENTED |
 | **Consent Management** | Framework for tracking user consent | ✅ FRAMEWORK |
 | **Right to Delete** | Data purge mechanisms documented | ✅ MECHANISM |
@@ -252,9 +252,9 @@ Two packages with known vulnerabilities are **intentionally monitored** with doc
 #### Tools Configured
 | Tool | Purpose | Status |
 |------|---------|--------|
-| Gitleaks | Pre-commit secret detection | ✅ ACTIVE |
-| detect-secrets | Baseline maintenance | ✅ MAINTAINED |
-| GitHub Secrets Scanning | Repository-level detection | ✅ ENABLED |
+| Gitleaks | Pre-commit secret detection | ✅ ACTIVE | <!-- pragma: allowlist secret -->
+| detect-secrets | Baseline maintenance | ✅ MAINTAINED | <!-- pragma: allowlist secret -->
+| GitHub Secrets Scanning | Repository-level detection | ✅ ENABLED | <!-- pragma: allowlist secret -->
 | bandit | Code scanning | ✅ CONFIGURED |
 
 ---
@@ -284,7 +284,7 @@ Where:
 |------|------|-----------|--------|-------|--------|
 | Unpatched diskcache 5.6.3 | Dependency | 2 (requires write access) | 4 (RCE) | 12 | MONITORED |
 | Unpatched sqlitedict 2.1.0 | Dependency | 2 (requires write access) | 4 (RCE) | 12 | MONITORED |
-| Token expiration not enforced | Auth | 1 (mitigated) | 3 (session hijack) | 6 | LOW RISK |
+| Token expiration not enforced | Auth | 1 (mitigated) | 3 (session hijack) | 6 | LOW RISK | <!-- pragma: allowlist secret -->
 
 #### Low Priority Issues (Risk Score <10)
 ✅ CodeQL medium findings (1,153) - code quality patterns, not exploitable
@@ -383,11 +383,11 @@ Where:
 
 | Rank | Improvement | Risk Reduction | Effort | Timeline | Impact |
 |------|-------------|---|---|---|---|
-| 1 | **Token Lifecycle Management** | Prevents 40% of session hijacking | Medium | 2 weeks | CRITICAL |
+| 1 | **Token Lifecycle Management** | Prevents 40% of session hijacking | Medium | 2 weeks | CRITICAL | <!-- pragma: allowlist secret -->
 | 2 | **Rate Limiting on Auth** | Prevents 80% of brute force attempts | Low | 1 week | HIGH |
 | 3 | **Enforce MFA for Admins** | Prevents 60% of privilege escalation | Medium | 2 weeks | CRITICAL |
 | 4 | **GDPR Data Retention Policy** | Enables compliance audit | Medium | 3 weeks | HIGH |
-| 5 | **Centralized Secrets Vault** | Prevents 50% of secret leaks | High | 4 weeks | CRITICAL |
+| 5 | **Centralized Secrets Vault** | Prevents 50% of secret leaks | High | 4 weeks | CRITICAL | <!-- pragma: allowlist secret -->
 | 6 | **Expanded Audit Logging** | Improves incident detection by 70% | Medium | 2 weeks | HIGH |
 | 7 | **Network Segmentation** | Reduces attack surface 30% | High | 6 weeks | MEDIUM |
 | 8 | **Automated SAST in CI** | Catches 90% of new vulnerabilities | Low | 1 week | HIGH |
@@ -404,14 +404,14 @@ WEEK 1-2: Quick Wins
 └─ MFA enablement (3-5 days)
 
 WEEK 3-4: Authentication Hardening
-├─ Token lifecycle implementation (3-5 days)
+├─ Token lifecycle implementation (3-5 days)  # pragma: allowlist secret
 ├─ Session management enhancement (2-3 days)
 └─ Login attempt monitoring (2-3 days)
 
 MONTH 2: Data Protection
 ├─ GDPR policy documentation (1 week)
 ├─ Data retention automation (1-2 weeks)
-├─ Secrets vault migration (2-3 weeks)
+├─ Secrets vault migration (2-3 weeks)  # pragma: allowlist secret
 └─ Audit logging expansion (1-2 weeks)
 
 MONTH 3+: Strategic Security

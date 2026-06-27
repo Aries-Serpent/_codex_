@@ -9,8 +9,8 @@ Verifies:
 """
 
 import pytest
+
 from src.rag.caching import RAGCache, get_rag_cache, set_rag_cache
-from src.cache.local_cache import LocalLRUCache
 
 
 class TestRAGCache:
@@ -26,14 +26,14 @@ class TestRAGCache:
 
         # Second call - hit
         result = cache.get_embedding(text)
-        assert result is not None
+        assert result is not None, "result must be initialized"
         assert result["embedding"] == [0.1, 0.2, 0.3]
 
     def test_embedding_cache_miss(self):
         """Test embedding cache miss."""
         cache = RAGCache()
         result = cache.get_embedding("nonexistent")
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_query_cache_hit(self):
         """Test query result cache hit."""
@@ -49,7 +49,7 @@ class TestRAGCache:
 
         # Second call - hit
         cached = cache.get_query_result(query)
-        assert cached == results
+        assert cached == results, "Result must not be empty"
 
     def test_query_cache_with_filters(self):
         """Test query caching with filters."""
@@ -61,7 +61,7 @@ class TestRAGCache:
         cache.set_query_result(query, results, filters=filters)
         cached = cache.get_query_result(query, filters=filters)
 
-        assert cached == results
+        assert cached == results, "Result must not be empty"
 
     def test_embedding_key_generation(self):
         """Test embedding cache key generation."""
@@ -69,7 +69,7 @@ class TestRAGCache:
         key1 = cache._make_embedding_key("hello")
         key2 = cache._make_embedding_key("hello")
 
-        assert key1 == key2  # Same text = same key
+        assert key1 == key2, "key1 is not valid"
 
     def test_query_key_generation(self):
         """Test query cache key generation."""
@@ -78,8 +78,8 @@ class TestRAGCache:
         key2 = cache._make_query_key("search", top_k=10)
         key3 = cache._make_query_key("search", top_k=20)
 
-        assert key1 == key2  # Same query and top_k
-        assert key1 != key3  # Different top_k
+        assert key1 == key2, "key1 is not valid"
+        assert key1 != key3, "key1 is not valid"
 
     def test_cache_stats(self):
         """Test cache statistics."""
@@ -90,7 +90,7 @@ class TestRAGCache:
         cache.get_embedding("text2")
 
         stats = cache.get_stats()
-        assert "hits" in stats or "reports" in stats
+        assert "hits" in stats or "reports" in stats, "Condition must be true"
 
 
 class TestGlobalRAGCache:
@@ -101,7 +101,7 @@ class TestGlobalRAGCache:
         cache1 = get_rag_cache()
         cache2 = get_rag_cache()
 
-        assert cache1 is cache2
+        assert cache1 is cache2, "cache1 is not valid"
 
     def test_set_rag_cache(self):
         """Test setting global RAG cache."""
@@ -109,7 +109,7 @@ class TestGlobalRAGCache:
         set_rag_cache(new_cache)
 
         retrieved = get_rag_cache()
-        assert retrieved is new_cache
+        assert retrieved is new_cache, "retrieved is not valid"
 
 
 class TestCachedEmbeddingPipeline:
@@ -123,11 +123,11 @@ class TestCachedEmbeddingPipeline:
 
         # First embedding (compute)
         result1 = pipeline.embed_text("test text")
-        assert result1.embedding is not None
+        assert result1.embedding is not None, "embedding must be initialized"
 
         # Second embedding (should be from cache)
         result2 = pipeline.embed_text("test text")
-        assert result2.embedding == result1.embedding
+        assert result2.embedding == result1.embedding, "Result must not be empty"
 
     def test_batch_embedding_partial_cache(self):
         """Test batch embedding with partial cache hits."""
@@ -143,8 +143,8 @@ class TestCachedEmbeddingPipeline:
             ["cached text", "new text 1", "new text 2"]
         )
 
-        assert len(results) == 3
-        assert all(r.embedding for r in results)
+        assert len(results) == 3, "Results must not be empty"
+        assert all(r.embedding for r in results), "Result must not be empty"
 
 
 class TestCachedRetrieval:
@@ -169,8 +169,8 @@ class TestCachedRetrieval:
         # Second query (should be from cache)
         results2 = retrieval.retrieve("Python")
 
-        assert len(results1) > 0
-        assert results1 == results2
+        assert len(results1) > 0, "Results1 must not be empty"
+        assert results1 == results2, "Result must not be empty"
 
 
 if __name__ == "__main__":
