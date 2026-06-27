@@ -37,6 +37,11 @@ def __getattr__(name: str) -> Any:
             stacklevel=2,
         )
         return _get_tokenizer
+    # Lazy-load submodules like train_tokenizer, api, cli
+    if name in ("train_tokenizer", "api", "cli"):
+        import importlib
+
+        return importlib.import_module(f".{name}", __name__)
     return _lazy_load_export(name)
 
 
@@ -50,6 +55,9 @@ __all__ = [
     "SPTokenizer",
     "TokenizerAdapter",
     "WhitespaceTokenizer",
+    "api",
+    "cli",
     "load_tokenizer",
     "pad_sequences",
+    "train_tokenizer",
 ]

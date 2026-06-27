@@ -391,7 +391,7 @@ if _SPM_STUB_FLAG and _SPM_STUB is not None:
     def _stub_sentencepiece(monkeypatch, tmp_path):
         """Stub SentencePiece training for deterministic unit tests."""
         try:
-            from src.tokenization import train_tokenizer as train_module
+            from src.codex_ml.tokenization import train_tokenizer as train_module
         except ModuleNotFoundError:
             yield
             return

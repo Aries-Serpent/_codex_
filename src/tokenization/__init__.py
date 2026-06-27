@@ -16,8 +16,16 @@ Author: Codex Team
 """
 
 import logging
+import warnings as _warnings
 
 logger = logging.getLogger(__name__)
+
+_warnings.warn(
+    "src.tokenization is deprecated and will be removed in version 2.0. "
+    "Use src.codex_ml.tokenization instead.",
+    DeprecationWarning,
+    stacklevel=2,
+)
 
 __all__: list[str] = []
 

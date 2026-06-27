@@ -63,8 +63,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -e ./baseline[test] || pip install -e ./baseline
-          pip install -e ./patched[test] || pip install -e ./patched
+          pip install -e ./baseline[dev] || pip install -e ./baseline
+          pip install -e ./patched[dev] || pip install -e ./patched
 
       - name: Create artifacts directory
         run: mkdir -p artifacts

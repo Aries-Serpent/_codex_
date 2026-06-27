@@ -81,7 +81,7 @@ jobs:
         run: |
           python -m pip install --quiet --upgrade pip
           # Install project in editable mode for mcp_poster imports
-          pip install --quiet -e ".[test]" 2>/dev/null || pip install --quiet -e "." 2>/dev/null || true
+          pip install --quiet -e ".[dev]" 2>/dev/null || pip install --quiet -e "." 2>/dev/null || true
 
       # -----------------------------------------------------------------------
       # Step 1: Build the tokenized continuation chain

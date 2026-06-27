@@ -8,7 +8,7 @@ import math
 
 import pytest
 
-from codex_ml.eval.metrics import bleu, perplexity, rouge_l, token_accuracy
+from codex_ml.metrics.metrics_deprecated import bleu, perplexity, rouge_l, token_accuracy
 
 
 def test_basic_perplexity_and_accuracy():

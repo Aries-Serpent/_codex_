@@ -18,11 +18,11 @@ from codex_ml.codex_structured_logging import (
     log_event,
     run_cmd,
 )
-from codex_ml.eval.metrics import (
-    accuracy,
-    classification_f1,
-    perplexity,
-    token_accuracy,
+from codex_ml.metrics import (
+    compute_accuracy,
+    compute_f1,
+    compute_perplexity,
+    compute_token_accuracy,
 )
 from codex_ml.registry.models import get_model
 from codex_ml.utils.checkpoint import load_checkpoint
@@ -67,10 +67,10 @@ _, _HAS_MLFLOW = optional_import("mlflow")
 
 
 METRIC_FUNCS = {
-    "accuracy": accuracy,
-    "token_accuracy": token_accuracy,
-    "f1": classification_f1,
-    "perplexity": perplexity,
+    "accuracy": compute_accuracy,
+    "token_accuracy": compute_token_accuracy,
+    "f1": compute_f1,
+    "perplexity": compute_perplexity,
 }
 
 _ = run_cmd
@@ -378,7 +378,7 @@ def _run_dataset_evaluation(
     metric_results: dict[str, Any] = {}
     if "accuracy" in metric_names:
         try:
-            metric_results["accuracy"] = accuracy(predictions, targets)
+            metric_results["accuracy"] = compute_accuracy(predictions, targets)
         except (IOError, OSError):
             metric_results["accuracy"] = 0.0
 

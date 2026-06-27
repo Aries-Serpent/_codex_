@@ -19,7 +19,14 @@ from typing import Any, Optional, TypeVar  # noqa: E402
 
 from codex_ml.config import DataConfig, EvaluationConfig  # noqa: E402
 from codex_ml.data.loader import CacheManifest  # noqa: E402
-from codex_ml.eval import metrics  # noqa: E402
+from codex_ml.metrics import (  # noqa: E402
+    compute_accuracy,
+    compute_f1,
+    compute_perplexity,
+    compute_token_accuracy,
+    compute_bleu,
+    compute_rouge_l,
+)
 from codex_ml.metrics.registry import (
     append_error_entry,  # noqa: E402
     list_metrics,  # noqa: E402
@@ -347,14 +354,13 @@ def _compute_metrics(
         registry_metrics = {}
 
     for metric_name in metric_names:
-        key = metric_name.lower()
         if key == "perplexity":
             values, targs, from_logits = _collect_perplexity_inputs(records)
-            results[metric_name] = metrics.perplexity(values, targs, from_logits=from_logits)
+            results[metric_name] = compute_perplexity(values, targs, from_logits=from_logits)
         elif key == "accuracy":
             if not all(value is not None for value in predictions + targets):
                 raise EvaluationError("accuracy requires prediction and target fields")
-            results[metric_name] = metrics.accuracy(predictions, targets)
+            results[metric_name] = compute_accuracy(predictions, targets)
         elif key in {"token_accuracy", "accuracy@token"}:
             pred_tokens: list[int] = []
             target_tokens: list[int] = []
@@ -369,51 +375,27 @@ def _compute_metrics(
                     )
                 pred_tokens.extend(pred_seq)
                 target_tokens.extend(target_seq)
-            results[metric_name] = metrics.token_accuracy(pred_tokens, target_tokens)
+            results[metric_name] = compute_token_accuracy(pred_tokens, target_tokens)
         elif key in {"micro_f1", "macro_f1", "f1"}:
             if not all(value is not None for value in predictions + targets):
                 raise EvaluationError(f"{metric_name} requires prediction and target fields")
             pred_encoded, label_mapping = _encode_labels(predictions, metric_name)
             targ_encoded, _ = _encode_labels(targets, metric_name, fallback=label_mapping)
             if key == "macro_f1":
-                results[metric_name] = metrics.macro_f1(pred_encoded, targ_encoded)
+                results[metric_name] = compute_f1(pred_encoded, targ_encoded, average="macro")
             else:
-                results[metric_name] = metrics.micro_f1(pred_encoded, targ_encoded)
+                results[metric_name] = compute_f1(pred_encoded, targ_encoded, average="micro")
         elif key == "bleu":
             if not all(isinstance(value, str) for value in predictions + targets):
                 raise EvaluationError("BLEU requires string predictions and targets")
-            bleu_fn = get_registered_metric("bleu")
-            bleu_score = bleu_fn(preds=predictions, targets=targets)
-            if bleu_score is None:
-                raise EvaluationError("BLEU metric requires sacrebleu or nltk to be installed")
+            bleu_score = compute_bleu(predictions, targets)
             results[metric_name] = bleu_score
         elif key == "rouge_l":
             if not all(isinstance(value, str) for value in predictions + targets):
                 raise EvaluationError("ROUGE-L requires string predictions and targets")
-            rouge_fn = get_registered_metric("rouge_l")
-            rouge_score = rouge_fn(preds=predictions, targets=targets)
-            if rouge_score is None:
-                raise EvaluationError("rouge_score package is required for ROUGE-L")
-            # Handle both float and dict returns for compatibility
-            if isinstance(rouge_score, dict):
-                # Different ROUGE implementations may return the F1 score under different keys.
-                # The order below reflects the most common conventions:
-                #   - "rougeL_f": used by the `rouge-score` package (F1 score for ROUGE-L)
-                #   - "rougeL": sometimes used for the F1 score (legacy or alternate APIs)
-                #   - "f": generic F1 key (some custom or older implementations)
-                #   - "fmeasure": another possible F1 key (rare)
-                # We check in this order to prefer the most standard/precise keys first.
-                for key_candidate in ["rougeL_f", "rougeL", "f", "fmeasure"]:
-                    if key_candidate in rouge_score:
-                        results[metric_name] = rouge_score[key_candidate]
-                        break
-                else:
-                    raise EvaluationError(
-                        f"ROUGE-L returned dict without expected keys: {list(rouge_score.keys())}"
-                    )
-            else:
-                # Direct float/numeric return
-                results[metric_name] = rouge_score
+            rouge_score = compute_rouge_l(predictions, targets)
+            # Unified API always returns float
+            results[metric_name] = rouge_score
         else:
             if key in registry_metrics:
                 _, metric_fn = registry_metrics[key]

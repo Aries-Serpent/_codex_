@@ -105,13 +105,13 @@ fi
 ---
 
 ### A-004 — Sandbox dependency cache layer
-**What:** In the Copilot SWE agent environment configuration (if configurable), pre-install the full `pyproject.toml` dependency set. Alternatively, add a `.devcontainer/setup.sh` that runs `pip install -e ".[test]"` on container startup.
+**What:** In the Copilot SWE agent environment configuration (if configurable), pre-install the full `pyproject.toml` dependency set. Alternatively, add a `.devcontainer/setup.sh` that runs `pip install -e ".[dev]"` on container startup.
 
 **Effect:** `pip install -e .` no longer hangs. Agent can run the full test suite in one command.
 
 ```bash
 # .devcontainer/setup.sh
-pip install -e ".[test]" --quiet
+pip install -e ".[dev]" --quiet
 ```
 
 ---

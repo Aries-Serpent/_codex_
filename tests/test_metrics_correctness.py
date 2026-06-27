@@ -8,7 +8,7 @@ import math
 
 import pytest
 
-from codex_ml.eval import metrics as M
+from codex_ml.metrics import metrics_deprecated as M
 
 
 def test_perplexity_from_logits():

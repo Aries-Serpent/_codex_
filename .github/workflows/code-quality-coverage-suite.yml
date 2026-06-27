@@ -131,7 +131,7 @@ jobs:
           pip install pytest==8.4.2 pytest-xdist==3.8.0 pytest-timeout==2.4.0 pytest-cov==5.0.0 pytest-asyncio==1.3.0
 
 
-          pip install -e ".[test]"
+          pip install -e ".[dev]"
           # Additional coverage tools
           pip install 'pytest>=9.0,<10' 'pytest-cov>=7.0,<8' 'coverage>=7.10.6,<8'
           # Install pytest-xdist for parallel test execution and pytest-timeout
@@ -210,7 +210,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -e ".[dev,test]"
+          pip install -e ".[dev]"
           pip install ruff mypy bandit pylint radon
 
       - name: Run Ruff linting (Observation Mode)

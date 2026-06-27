@@ -281,7 +281,7 @@ RuntimeWarning: Hydra extras plugin (`hydra.extra`) is unavailable
 
 1. **Install with test extras:**
    ```bash
-   pip install -e '.[test]'
+   pip install -e '.[dev]'
    ```
 
 2. **Or install hydra-core:**

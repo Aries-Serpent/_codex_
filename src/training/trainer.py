@@ -661,7 +661,6 @@ class Trainer:
         cfg = self.config
         if epochs is not None:
             cfg.epochs = int(epochs)
-        grad_steps = cfg.gradient_accumulation_steps
         completed_epoch = max(0, self.state.epoch)
         start_epoch = completed_epoch + 1
 
@@ -683,66 +682,99 @@ class Trainer:
 
         for epoch in range(start_epoch, cfg.epochs + 1):
             self.state.epoch = epoch
-            running_loss = 0.0
-            num_batches = 0
-            self._zero_grad()
-
-            for step, batch in enumerate(self.train_loader, start=1):
-                inputs, labels = self._prepare_batch(batch)
-                with autocast(enabled=cfg.mixed_precision):
-                    outputs = self._forward(inputs)
-                    loss = self.loss_fn(outputs, labels)
-                loss_value = float(loss.detach().cpu().item())
-                running_loss += loss_value
-                num_batches += 1
-                scaled_loss = loss / grad_steps
-                self.scaler.scale(scaled_loss).backward()
-
-                should_step = step % grad_steps == 0 or step == len(self.train_loader)
-                if should_step:
-                    if cfg.max_grad_norm is not None:
-                        self.scaler.unscale_(self.simple.optimizer)
-                        torch.nn.utils.clip_grad_norm_(
-                            self.simple.model.parameters(), cfg.max_grad_norm
-                        )
-                    self.scaler.step(self.simple.optimizer)
-                    self.scaler.update()
-                    self._zero_grad()
-                    self.state.global_step += 1
-
-                if (
-                    cfg.log_every_n_steps
-                    and should_step
-                    and (self.state.global_step % cfg.log_every_n_steps == 0)
-                ):
-                    log_metrics(
-                        self._logging_session,
-                        {"train_loss": running_loss / max(1, num_batches)},
-                        self.state.global_step,
-                    )
-
-            avg_loss = running_loss / max(1, num_batches)
-            epoch_metrics: MutableMapping[str, float] = {"train_loss": float(avg_loss)}
-
+            
+            # Train epoch
+            epoch_metrics = self._train_epoch()
+            
+            # Validate epoch
             if self.val_loader is not None:
-                try:
-                    eval_metrics = self.evaluate()
-                    epoch_metrics.update(eval_metrics)
-                except (IOError, OSError) as exc:  # pragma: no cover - evaluation robustness
-                    LOGGER.warning("Validation failed at epoch %s: %s", epoch, exc)
-
+                self._validate_epoch(epoch, epoch_metrics)
+            
+            # Record history and metrics
             self.history.append(dict(epoch_metrics))
             log_metrics(self._logging_session, epoch_metrics, epoch)
-            if self._metrics_path is not None:
-                try:
-                    record = {"epoch": epoch, "global_step": self.state.global_step}
-                    record.update({k: float(v) for k, v in epoch_metrics.items()})
-                    append_ndjson(record, self._metrics_path)
-                except (IOError, OSError) as exc:  # pragma: no cover - diagnostics only
-                    LOGGER.debug("Failed to write metrics NDJSON: %s", exc)
-            self._save_checkpoint(epoch, epoch_metrics)
+            
+            # Checkpoint epoch
+            self._checkpoint_epoch(epoch, epoch_metrics)
 
         return self.history[-1] if self.history else {}
+
+    def _train_epoch(self) -> MutableMapping[str, float]:
+        """Train for one epoch and return metrics."""
+        cfg = self.config
+        grad_steps = cfg.gradient_accumulation_steps
+        running_loss = 0.0
+        num_batches = 0
+        self._zero_grad()
+
+        for step, batch in enumerate(self.train_loader, start=1):
+            inputs, labels = self._prepare_batch(batch)
+            with autocast(enabled=cfg.mixed_precision):
+                outputs = self._forward(inputs)
+                loss = self.loss_fn(outputs, labels)
+            loss_value = float(loss.detach().cpu().item())
+            running_loss += loss_value
+            num_batches += 1
+            scaled_loss = loss / grad_steps
+            self.scaler.scale(scaled_loss).backward()
+
+            should_step = step % grad_steps == 0 or step == len(self.train_loader)
+            if should_step:
+                self._optimizer_step(cfg)
+                self.state.global_step += 1
+
+            if cfg.log_every_n_steps and should_step:
+                self._log_step_metrics(running_loss, num_batches)
+
+        avg_loss = running_loss / max(1, num_batches)
+        return {"train_loss": float(avg_loss)}
+
+    def _optimizer_step(self, cfg: TrainerConfig) -> None:
+        """Perform optimizer step with gradient clipping if configured."""
+        if cfg.max_grad_norm is not None:
+            self.scaler.unscale_(self.simple.optimizer)
+            torch.nn.utils.clip_grad_norm_(
+                self.simple.model.parameters(), cfg.max_grad_norm
+            )
+        self.scaler.step(self.simple.optimizer)
+        self.scaler.update()
+        self._zero_grad()
+
+    def _log_step_metrics(self, running_loss: float, num_batches: int) -> None:
+        """Log metrics for current step."""
+        if self.state.global_step % self.config.log_every_n_steps == 0:
+            log_metrics(
+                self._logging_session,
+                {"train_loss": running_loss / max(1, num_batches)},
+                self.state.global_step,
+            )
+
+    def _validate_epoch(
+        self,
+        epoch: int,
+        epoch_metrics: MutableMapping[str, float],
+    ) -> None:
+        """Validate for current epoch and update metrics."""
+        try:
+            eval_metrics = self.evaluate()
+            epoch_metrics.update(eval_metrics)
+        except (IOError, OSError) as exc:  # pragma: no cover - evaluation robustness
+            LOGGER.warning("Validation failed at epoch %s: %s", epoch, exc)
+
+    def _checkpoint_epoch(
+        self,
+        epoch: int,
+        epoch_metrics: Mapping[str, float],
+    ) -> None:
+        """Handle checkpoint saving and metrics recording."""
+        if self._metrics_path is not None:
+            try:
+                record = {"epoch": epoch, "global_step": self.state.global_step}
+                record.update({k: float(v) for k, v in epoch_metrics.items()})
+                append_ndjson(record, self._metrics_path)
+            except (IOError, OSError) as exc:  # pragma: no cover - diagnostics only
+                LOGGER.debug("Failed to write metrics NDJSON: %s", exc)
+        self._save_checkpoint(epoch, epoch_metrics)
 
     def close(self) -> None:
         shutdown_logging(self._logging_session)

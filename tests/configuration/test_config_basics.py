@@ -21,65 +21,59 @@ class TestConfigFileOperations:
         """Test loading YAML configuration file."""
         yaml = pytest.importorskip("yaml")
 
-        test_dir = Path(tempfile.mkdtemp())
-        config_file = test_dir / "config.yaml"
+        # Use context manager for safe tempfile cleanup
+        with tempfile.TemporaryDirectory() as tmpdir:
+            test_dir = Path(tmpdir)
+            config_file = test_dir / "config.yaml"
 
-        config_data = {
-            "app_name": "test-app",
-            "version": "1.0",
-            "settings": {
-                "debug": True,
-                "port": 8080,
-            },
-        }
+            config_data = {
+                "app_name": "test-app",
+                "version": "1.0",
+                "settings": {
+                    "debug": True,
+                    "port": 8080,
+                },
+            }
 
-        config_file.write_text(yaml.dump(config_data))
-        loaded = yaml.safe_load(config_file.read_text())
+            config_file.write_text(yaml.dump(config_data))
+            loaded = yaml.safe_load(config_file.read_text())
 
-        assert loaded["app_name"] == "test-app", "Condition must be true"
-        assert loaded["settings"]["debug"] is True, "Condition must be true"
-
-        # Cleanup
-        import shutil
-
-        shutil.rmtree(test_dir)
+            assert loaded["app_name"] == "test-app", "Condition must be true"
+            assert loaded["settings"]["debug"] is True, "Condition must be true"
+            # Cleanup is automatic via context manager
 
     def test_load_json_config(self):
         """Test loading JSON configuration file."""
-        test_dir = Path(tempfile.mkdtemp())
-        config_file = test_dir / "config.json"
+        # Use context manager for safe tempfile cleanup
+        with tempfile.TemporaryDirectory() as tmpdir:
+            test_dir = Path(tmpdir)
+            config_file = test_dir / "config.json"
 
-        config_data = {
-            "app_name": "test-app",
-            "version": "1.0",
-            "settings": {
-                "debug": True,
-                "port": 8080,
-            },
-        }
+            config_data = {
+                "app_name": "test-app",
+                "version": "1.0",
+                "settings": {
+                    "debug": True,
+                    "port": 8080,
+                },
+            }
 
-        config_file.write_text(json.dumps(config_data, indent=2))
-        loaded = json.loads(config_file.read_text())
+            config_file.write_text(json.dumps(config_data, indent=2))
+            loaded = json.loads(config_file.read_text())
 
-        assert loaded["app_name"] == "test-app", "Condition must be true"
-        assert loaded["settings"]["debug"] is True, "Condition must be true"
-
-        # Cleanup
-        import shutil
-
-        shutil.rmtree(test_dir)
+            assert loaded["app_name"] == "test-app", "Condition must be true"
+            assert loaded["settings"]["debug"] is True, "Condition must be true"
+            # Cleanup is automatic via context manager
 
     def test_config_file_not_found_handling(self):
         """Test handling of missing configuration file."""
-        test_dir = Path(tempfile.mkdtemp())
-        missing_file = test_dir / "nonexistent.json"
+        # Use context manager for safe tempfile cleanup
+        with tempfile.TemporaryDirectory() as tmpdir:
+            test_dir = Path(tmpdir)
+            missing_file = test_dir / "nonexistent.json"
 
-        assert not missing_file.exists(), "Condition must be true"
-
-        # Cleanup
-        import shutil
-
-        shutil.rmtree(test_dir)
+            assert not missing_file.exists(), "Condition must be true"
+            # Cleanup is automatic via context manager
 
 
 class TestEnvironmentVariableConfig:

@@ -400,41 +400,63 @@ class IngestionPipeline:
         )
 
         if parallel and len(file_paths) > 1:
-            # Parallel processing
-            with ThreadPoolExecutor(max_workers=self.config.max_workers) as executor:
-                futures = {
-                    executor.submit(self._ingest_with_retry, path): path for path in file_paths
-                }
-
-                for future in as_completed(futures):
-                    path = futures[future]
-                    try:
-                        result = future.result()
-                        self._update_batch_result(batch_result, result)
-                    except (IOError, OSError) as e:
-                        error_msg = f"Failed to process {path}: {e}"
-                        batch_result.errors.append(error_msg)
-                        batch_result.failed += 1
-                        logger.error(error_msg)
+            self._process_parallel(file_paths, batch_result)
         else:
-            # Sequential processing
-            for path in file_paths:
-                try:
-                    result = self._ingest_with_retry(path)
-                    self._update_batch_result(batch_result, result)
-                except (IOError, OSError) as e:
-                    if not self.config.continue_on_error:
-                        raise
-                    error_msg = f"Failed to process {path}: {e}"
-                    batch_result.errors.append(error_msg)
-                    batch_result.failed += 1
-                    logger.error(error_msg)
+            self._process_sequential(file_paths, batch_result)
 
         batch_result.total_time_seconds = time.time() - start_time
-
         logger.info(batch_result.summary())
 
         return batch_result
+
+    def _process_parallel(
+        self,
+        file_paths: Sequence[str | Path],
+        batch_result: BatchIngestionResult,
+    ) -> None:
+        """Process files in parallel using ThreadPoolExecutor."""
+        with ThreadPoolExecutor(max_workers=self.config.max_workers) as executor:
+            futures = {
+                executor.submit(self._ingest_with_retry, path): path
+                for path in file_paths
+            }
+
+            for future in as_completed(futures):
+                path = futures[future]
+                try:
+                    result = future.result()
+                    self._update_batch_result(batch_result, result)
+                except (IOError, OSError) as e:
+                    self._handle_ingestion_error(
+                        batch_result, path, e
+                    )
+
+    def _process_sequential(
+        self,
+        file_paths: Sequence[str | Path],
+        batch_result: BatchIngestionResult,
+    ) -> None:
+        """Process files sequentially."""
+        for path in file_paths:
+            try:
+                result = self._ingest_with_retry(path)
+                self._update_batch_result(batch_result, result)
+            except (IOError, OSError) as e:
+                if not self.config.continue_on_error:
+                    raise
+                self._handle_ingestion_error(batch_result, path, e)
+
+    def _handle_ingestion_error(
+        self,
+        batch_result: BatchIngestionResult,
+        path: str | Path,
+        error: Exception,
+    ) -> None:
+        """Handle ingestion error and update batch result."""
+        error_msg = f"Failed to process {path}: {error}"
+        batch_result.errors.append(error_msg)
+        batch_result.failed += 1
+        logger.error(error_msg)
 
     def ingest_directory(
         self,
