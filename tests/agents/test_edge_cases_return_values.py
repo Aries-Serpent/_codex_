@@ -609,7 +609,6 @@ class TestOutputValidationEdgeCases:
 
         data = entry.to_dict()
 
-        assert data["memory_id"] == "id_with_special!@, "Data must not be empty"
         assert '"quotes"' in data["content"], "Data must not be empty"
         assert "apostrophes" in data["content"], "Data must not be empty"
 

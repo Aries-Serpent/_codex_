@@ -180,9 +180,8 @@ class TestAgentConfigFiles:
                 # Validate each document is valid YAML
                 for i, doc in enumerate(documents):
                     if doc is not None:
-                        assert isinstance(, "Condition must be true"
-                            doc, dict
-                        ), f"Document {i} in {config_file} is not a dict: {type(doc)}"
+                        error_msg = f"Document {i} in {config_file} is not a dict: {type(doc)}"
+                        assert isinstance(doc, dict), error_msg
             except yaml.YAMLError as e:
                 pytest.fail(f"Invalid YAML in {config_file}: {e}")
 
