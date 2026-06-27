@@ -5473,3 +5473,24 @@ and the CI gate requirement.
 - `tests/zendesk/test_json_generator.py` — Fixed malformed assertion
 
 ---
+
+## Session: 2026-06-27T11:55Z — Test File Syntax Fixes
+
+**Objective**: Fix "Phase 2 — session_tracker.py" CI failure
+
+**Issues Resolved**:
+1. ✅ tests/autonomy/test_session_tracker.py:213
+   - Malformed assertion: `assert not (, "Condition must be true"`
+   - Fixed to: `assert not (tmp_path / f"session_{session_id}.json").exists(), "dry-run must not write any files"`
+
+2. ✅ tests/autonomy/test_session_tracker.py:293
+   - Malformed assertion with split condition
+   - Fixed to valid format with proper message
+
+3. ✅ tests/autonomy/test_session_tracker.py:262
+   - Malformed assertion with incorrect syntax
+   - Fixed to: `assert result["total"] == (sum of categories), "Total must equal sum of all categories"`
+
+**Status**: test_session_tracker.py now compiles successfully ✅
+
+---
