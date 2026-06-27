@@ -2076,7 +2076,7 @@ def auto_fix_all_missing(
 def validate_wec_compliance(
     pr_number: str,
     merge_target: str = "main",
-) -> tuple[bool, list[str]]:
+) -> tuple[bool, list[str], bool]:
     """Validate that WEC state is compliant with merge requirements.
 
     This is the compliance validation gate for Phase 3.1 that ensures:
@@ -2091,10 +2091,14 @@ def validate_wec_compliance(
         merge_target: Target branch for merge ("main" or "0D_base_")
 
     Returns:
-        Tuple of (is_compliant: bool, issues: list[str])
-        where issues contains human-readable compliance violations
+        Tuple of (is_compliant: bool, issues: list[str], is_error: bool)
+        where:
+            - is_compliant: True if validation passed
+            - issues: list of human-readable violations or errors
+            - is_error: True if validation could not be performed (error state)
     """
     issues: list[str] = []
+    is_error = False
 
     # Step 1: Fetch PR body and extract WEC state
     try:
@@ -2114,7 +2118,7 @@ def validate_wec_compliance(
         head_ref = pr_data.get("headRefName") or ""
     except subprocess.CalledProcessError:
         issues.append(f"❌ Could not fetch PR #{pr_number} body")
-        return False, issues
+        return False, issues, True
 
     wec_state = _extract_wec_state(pr_body)
 
@@ -2169,7 +2173,7 @@ def validate_wec_compliance(
         )
 
     is_compliant = len(issues) == 0
-    return is_compliant, issues
+    return is_compliant, issues, is_error
 
 
 def check_wec_compliance(
@@ -2187,12 +2191,22 @@ def check_wec_compliance(
         1  = One or more compliance violations detected
         2  = Could not perform validation (error)
     """
-    is_compliant, issues = validate_wec_compliance(pr_number, merge_target)
+    is_compliant, issues, is_error = validate_wec_compliance(pr_number, merge_target)
 
     print(f"\n📋 WEC Compliance Check — PR #{pr_number} (target: {merge_target})")
     print("=" * 70)
 
-    if is_compliant:
+    if is_error:
+        print("❌ WEC COMPLIANCE: ERROR")
+        for issue in issues:
+            print(f"   {issue}")
+        if verbose:
+            print("\n📖 Troubleshooting:")
+            print("   - Verify PR number is correct")
+            print("   - Verify GitHub API access (gh pr view)")
+            print("   - Check GitHub CLI configuration")
+        return 2
+    elif is_compliant:
         print("✅ WEC COMPLIANCE: PASSED")
         print(f"   All required workflows are checked and configured correctly.")
         return 0
