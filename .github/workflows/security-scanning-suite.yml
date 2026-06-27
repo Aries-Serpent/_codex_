@@ -67,15 +67,15 @@ jobs:
       matrix:
         language: ['python', 'javascript']
     steps:
-      - uses: actions/checkout@v7 # v6.0.3
-      - uses: github/codeql-action/init@5e316336eb4f107009e477d4bfbfff13d7250fae # v4
+      - uses: actions/checkout@v5
+      - uses: github/codeql-action/init@v4
         with:
           languages: ${{ matrix.language }}
           queries: +security-extended,security-and-quality
-      - uses: github/codeql-action/autobuild@5e316336eb4f107009e477d4bfbfff13d7250fae # v4
+      - uses: github/codeql-action/autobuild@v4
       - name: Perform CodeQL Analysis
         id: codeql
-        uses: github/codeql-action/analyze@5e316336eb4f107009e477d4bfbfff13d7250fae # v4
+        uses: github/codeql-action/analyze@v4
         with:
           category: "/language:${{ matrix.language }}"
           # Persist SARIF locally so it can be packaged into the run artifact
@@ -143,10 +143,10 @@ jobs:
       contents: read
       security-events: write
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v5
 
       - name: Run Semgrep with SARIF output
-        uses: returntocorp/semgrep-action@11a8ea2dfc5b1c4ab8be72a230e87fbf1e7e7e88 # v1
+        uses: returntocorp/semgrep-action@v1
         with:
           generateSarif: true
           config: >-
@@ -155,7 +155,7 @@ jobs:
             p/owasp-top-ten
 
       - name: Upload SARIF to GitHub Security
-        uses: github/codeql-action/upload-sarif@5e316336eb4f107009e477d4bfbfff13d7250fae # v4
+        uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
           sarif_file: semgrep.sarif
@@ -213,7 +213,7 @@ jobs:
       (github.event_name == 'schedule') ||
       (github.event_name == 'workflow_dispatch' && (inputs.scan-type == 'all' || inputs.scan-type == 'dependency'))
     steps:
-      - uses: actions/checkout@v7 # v6.0.3
+      - uses: actions/checkout@v5 # v6.0.3
       - uses: ./.github/actions/setup-python-cached
         with:
           python-version: ${{ env.PYTHON_VERSION }}
@@ -306,7 +306,7 @@ jobs:
     if: |
       (github.event_name == 'workflow_dispatch' && inputs.scan-type == 'all')
     steps:
-      - uses: actions/checkout@v7 # v6.0.3
+      - uses: actions/checkout@v5 # v6.0.3
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup-python-cached
@@ -392,7 +392,7 @@ jobs:
       (github.event_name == 'schedule' && github.event.schedule == '0 3 * * 0') ||
       (github.event_name == 'workflow_dispatch' && inputs.scan-type == 'all')
     steps:
-      - uses: actions/checkout@v7 # v6.0.3
+      - uses: actions/checkout@v5 # v6.0.3
       - uses: ./.github/actions/setup-python-cached
         with:
           python-version: ${{ env.PYTHON_VERSION }}
@@ -492,7 +492,7 @@ jobs:
       issues: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v7 # v6.0.3
+        uses: actions/checkout@v5 # v6.0.3
 
       - name: CacheManager health check
         continue-on-error: true
@@ -751,7 +751,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v7 # v6.0.3
+        uses: actions/checkout@v5 # v6.0.3
         with:
           token: ${{ secrets.CODEX_MASTER_KEY || secrets.GITHUB_TOKEN }}
           fetch-depth: 1

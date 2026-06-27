@@ -40,10 +40,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v5
 
       - name: Run Semgrep with SARIF output
-        uses: returntocorp/semgrep-action@11a8ea2dfc5b1c4ab8be72a230e87fbf1e7e7e88 # v1
+        uses: returntocorp/semgrep-action@v1
         with:
           generateSarif: true
           config: >-
@@ -52,7 +52,7 @@ jobs:
             p/owasp-top-ten
 
       - name: Upload SARIF to GitHub Security
-        uses: github/codeql-action/upload-sarif@5e316336eb4f107009e477d4bfbfff13d7250fae # v4
+        uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
           sarif_file: semgrep.sarif
