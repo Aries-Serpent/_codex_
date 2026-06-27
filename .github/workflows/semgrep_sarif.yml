@@ -1,13 +1,97 @@
 name: Semgrep SAST (SARIF Upload)
 on:
-  workflow_dispatch: null
+  push:
+    branches: [main, develop, copilot/**]
+  pull_request:
+    branches: [main, develop]
+  schedule:
+    - cron: '0 3 * * *'  # Daily at 3 AM
+  workflow_dispatch:
+    inputs:
+      fail-on-severity:
+        description: 'Severity level to fail on'
+        required: false
+        type: choice
+        options:
+          - 'CRITICAL'
+          - 'HIGH'
+          - 'MEDIUM'
+          - 'INFO'
+        default: 'HIGH'
+  workflow_call:
+    inputs:
+      fail-on-severity:
+        description: 'Severity level to fail on'
+        required: false
+        type: string
+        default: 'HIGH'
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
-permissions: {}
+
+permissions:
+  contents: read
+  security-events: write
+
 jobs:
-  noop:
+  semgrep:
+    name: Semgrep Security Analysis
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
-    - run: "echo \"disabled \u2014 stub only\""
-    timeout-minutes: 60
+      - uses: actions/checkout@v7
+
+      - name: Run Semgrep with SARIF output
+        uses: returntocorp/semgrep-action@11a8ea2dfc5b1c4ab8be72a230e87fbf1e7e7e88 # v1
+        with:
+          generateSarif: true
+          config: >-
+            p/security-audit
+            p/python
+            p/owasp-top-ten
+
+      - name: Upload SARIF to GitHub Security
+        uses: github/codeql-action/upload-sarif@5e316336eb4f107009e477d4bfbfff13d7250fae # v4
+        if: always()
+        with:
+          sarif_file: semgrep.sarif
+          category: 'semgrep'
+
+      - name: Parse Semgrep results for blocking
+        if: always()
+        id: parse
+        shell: bash
+        run: |
+          set -euo pipefail
+          FAIL_SEVERITY="${{ inputs.fail-on-severity || 'HIGH' }}"
+          
+          # Extract results from SARIF
+          if [ -f "semgrep.sarif" ]; then
+            # Count HIGH/CRITICAL findings using jq
+            CRITICAL_COUNT=$(jq '[.runs[0].results[] | select(.level == "error")] | length' semgrep.sarif 2>/dev/null || echo "0")
+            HIGH_COUNT=$(jq '[.runs[0].results[] | select(.level == "warning")] | length' semgrep.sarif 2>/dev/null || echo "0")
+            
+            echo "critical_findings=${CRITICAL_COUNT}" >> "$GITHUB_OUTPUT"
+            echo "high_findings=${HIGH_COUNT}" >> "$GITHUB_OUTPUT"
+            
+            if [[ "$FAIL_SEVERITY" == "CRITICAL" && "$CRITICAL_COUNT" -gt 0 ]]; then
+              echo "::error::Semgrep found ${CRITICAL_COUNT} CRITICAL findings"
+              exit 1
+            elif [[ "$FAIL_SEVERITY" == "HIGH" && ("$CRITICAL_COUNT" -gt 0 || "$HIGH_COUNT" -gt 0) ]]; then
+              echo "::error::Semgrep found ${CRITICAL_COUNT} CRITICAL and ${HIGH_COUNT} HIGH findings"
+              exit 1
+            fi
+          fi
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Semgrep Security Scan Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**CRITICAL Findings:** ${{ steps.parse.outputs.critical_findings || 0 }}" >> $GITHUB_STEP_SUMMARY
+          echo "**HIGH Findings:** ${{ steps.parse.outputs.high_findings || 0 }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Fail Severity Level:** ${{ inputs.fail-on-severity || 'HIGH' }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "[View scan results in GitHub Security tab]" >> $GITHUB_STEP_SUMMARY

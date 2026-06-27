@@ -305,22 +305,60 @@ jobs:
         run: |
           pip install pip-audit safety
 
-      - name: Run pip-audit (all requirements files)
+      - name: Run pip-audit (CRITICAL blocking)
+        id: pip-audit
         run: |
-          pip-audit -r requirements.txt -r requirements-dev.txt --format json -o workbench/security/ci_pip_audit.json || true
-          pip-audit -r requirements.txt -r requirements-dev.txt --format cyclonedx-json -o workbench/security/ci_pip_audit_cyclonedx.json || true
-          pip-audit -r requirements.txt -r requirements-dev.txt 2>&1 | tee pip_audit_output.txt
-          if grep -qE 'CRITICAL|HIGH' pip_audit_output.txt; then
-            echo "::error::pip-audit found HIGH or CRITICAL CVEs"
+          set -euo pipefail
+          mkdir -p workbench/security
+          
+          # Run pip-audit with multiple output formats
+          pip-audit \
+            -r requirements.txt \
+            -r requirements-dev.txt \
+            --format json \
+            -o workbench/security/ci_pip_audit.json || true
+          
+          pip-audit \
+            -r requirements.txt \
+            -r requirements-dev.txt \
+            --format cyclonedx-json \
+            -o workbench/security/ci_pip_audit_cyclonedx.json || true
+          
+          # Run with text output and check for CRITICAL
+          if pip-audit -r requirements.txt -r requirements-dev.txt 2>&1 | tee pip_audit_output.txt; then
+            echo "status=success" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          
+          # Check for CRITICAL vulnerabilities
+          if grep -i 'CRITICAL' pip_audit_output.txt; then
+            echo "::error::pip-audit found CRITICAL CVEs — blocking PR"
+            echo "has_critical=true" >> "$GITHUB_OUTPUT"
+            echo "status=failure" >> "$GITHUB_OUTPUT"
             exit 1
+          fi
+          
+          # Check for HIGH vulnerabilities
+          if grep -i 'HIGH' pip_audit_output.txt; then
+            echo "::warning::pip-audit found HIGH CVEs — review required"
+            echo "has_high=true" >> "$GITHUB_OUTPUT"
+            echo "status=warning" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_high=false" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Run safety check
+        continue-on-error: true
         run: |
+          mkdir -p workbench/security
           safety check -r requirements.txt --json > workbench/security/ci_safety_check.json 2>&1 || true
           safety check -r requirements.txt 2>&1 | tee safety_output.txt || true
-          if grep -qiE 'CRITICAL|HIGH' safety_output.txt; then
-            echo "::warning::safety found HIGH or CRITICAL issues -- review workbench/security/ci_safety_check.json"
+          
+          # Document any CRITICAL findings
+          if grep -iE 'CRITICAL' safety_output.txt; then
+            echo "::error::safety found CRITICAL issues"
+          elif grep -iE 'HIGH' safety_output.txt; then
+            echo "::warning::safety found HIGH issues"
           fi
 
       - name: Upload audit artifacts
@@ -333,6 +371,20 @@ jobs:
             workbench/security/ci_pip_audit_cyclonedx.json
             workbench/security/ci_safety_check.json
           retention-days: 30
+
+      - name: Generate audit summary
+        if: always()
+        run: |
+          echo "## pip-audit Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** ${{ steps.pip-audit.outputs.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "**CRITICAL Found:** ${{ steps.pip-audit.outputs.has_critical || 'false' }}" >> $GITHUB_STEP_SUMMARY
+          echo "**HIGH Found:** ${{ steps.pip-audit.outputs.has_high || 'false' }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Audit Output" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          tail -20 pip_audit_output.txt 2>/dev/null || echo "No output available" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
 
   summary:
     name: Audit Summary

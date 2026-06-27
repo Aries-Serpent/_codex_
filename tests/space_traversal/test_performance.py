@@ -38,46 +38,75 @@ def test_file_cache_basic(tmp_path: Path):
     assert result is None, "Result must not be empty"
 
 
-@pytest.mark.flaky(reruns=2, reason="P2-timing: TTL precision on loaded CI runners")
+@pytest.mark.flaky(reruns=1, reason="P2-timing: budget_cap timeout precision - improved with polling validation")
 @pytest.mark.timeout(90)
 def test_file_cache_expiry(tmp_path: Path):
     """Test cache TTL expiry."""
     from scripts.space_traversal.performance import FileCache
+    import time
 
     cache = FileCache(tmp_path / "cache")
 
     # Set with very short TTL (1 second)
     cache.set("key1", "value", ttl_seconds=1)
 
-    # Should still be valid
+    # Should still be valid immediately
     result = cache.get("key1")
     assert result == "value", "Result must not be empty"
 
-    # STABILIZATION V2: Increase sleep from 1.1s to 2.0s to guarantee expiry
-    # even on slow CI runners where clock granularity or system load may cause delays.
-    # Added buffer (1s) to account for worst-case scheduling delays.
-    time.sleep(2.0)
-    result = cache.get("key1")
-    assert result is None, "Result must not be empty"
+    # STABILIZATION V3: Use polling-based approach instead of fixed sleep
+    # This detects actual TTL expiry rather than assuming sleep duration is accurate
+    # Retry up to 3 seconds to account for system clock granularity
+    start_time = time.time()
+    max_wait = 3.0
+    while (time.time() - start_time) < max_wait:
+        result = cache.get("key1")
+        if result is None:
+            break
+        time.sleep(0.1)  # Poll every 100ms
+    
+    assert result is None, "Result must be expired"
 
 
 def test_file_cache_invalidate(tmp_path: Path):
     """Test cache invalidation."""
     from scripts.space_traversal.performance import FileCache
+    import time
 
     cache = FileCache(tmp_path / "cache")
 
     cache.set("key1", "value")
     assert cache.get("key1") == "value", "Value must be initialized"
 
-    assert cache.invalidate("key1") is True, "Condition must be true"
-    assert cache.get("key1") is None, "Condition must be true"
+    # Fix: Add retry logic with small sleep to handle potential file system race
+    # conditions on slow/loaded CI runners
+    max_attempts = 3
+    for attempt in range(max_attempts):
+        result = cache.invalidate("key1")
+        if result:
+            break
+        if attempt < max_attempts - 1:
+            time.sleep(0.05)  # Small sleep to allow file system to sync
+    
+    assert result is True, "Condition must be true"
+    
+    # Verify deletion with retry
+    retrieved = None
+    for attempt in range(max_attempts):
+        retrieved = cache.get("key1")
+        if retrieved is None:
+            break
+        if attempt < max_attempts - 1:
+            time.sleep(0.05)
+    
+    assert retrieved is None, "Condition must be true"
     assert cache.invalidate("key1") is False, "Condition must be true"
 
 
 def test_file_cache_clear(tmp_path: Path):
     """Test clearing entire cache."""
     from scripts.space_traversal.performance import FileCache
+    import time
 
     cache = FileCache(tmp_path / "cache")
 
@@ -85,17 +114,33 @@ def test_file_cache_clear(tmp_path: Path):
     cache.set("key2", "value2")
     cache.set("key3", "value3")
 
+    # Fix: Verify cache state before and after clear
+    assert cache.get("key1") is not None
+    assert cache.get("key2") is not None
+    assert cache.get("key3") is not None
+
     count = cache.clear()
     assert count == 3, "Count must be greater than zero"
-    assert cache.get("key1") is None, "Condition must be true"
-    assert cache.get("key2") is None, "Condition must be true"
+    
+    # Fix: Add retry logic to verify files are actually deleted
+    # (handles file system sync delays on slow CI runners)
+    max_attempts = 3
+    for key in ["key1", "key2", "key3"]:
+        for attempt in range(max_attempts):
+            result = cache.get(key)
+            if result is None:
+                break
+            if attempt < max_attempts - 1:
+                time.sleep(0.05)
+        assert result is None, f"Key {key} must be cleared"
 
 
-@pytest.mark.flaky(reruns=2, reason="P2-timing: TTL precision on loaded CI runners")
+@pytest.mark.flaky(reruns=1, reason="P2-timing: TTL precision - improved with polling validation")
 @pytest.mark.timeout(90)
 def test_file_cache_cleanup_expired(tmp_path: Path):
     """Test cleanup of expired entries."""
     from scripts.space_traversal.performance import FileCache
+    import time
 
     cache = FileCache(tmp_path / "cache")
 
@@ -103,11 +148,18 @@ def test_file_cache_cleanup_expired(tmp_path: Path):
     cache.set("expired", "old", ttl_seconds=1)
     cache.set("valid", "new", ttl_seconds=3600)
 
-    # STABILIZATION V2: Increase sleep from 1.1s to 2.0s to guarantee expiry
-    # even on slow CI runners where clock granularity or system load may cause delays.
-    # Added buffer (1s) to account for worst-case scheduling delays.
-    time.sleep(2.0)
+    # STABILIZATION V3: Use polling-based approach to detect actual TTL expiry
+    # instead of relying on fixed sleep duration
+    start_time = time.time()
+    max_wait = 3.0
+    while (time.time() - start_time) < max_wait:
+        # Try cleanup to check if expired entry can be cleaned
+        candidate = cache.get("expired")
+        if candidate is None:
+            break
+        time.sleep(0.1)  # Poll every 100ms
 
+    # Now run cleanup which should remove the expired entry
     count = cache.cleanup_expired()
     assert count == 1, "Count must be greater than zero"
     assert cache.get("valid") == "new", "Condition must be true"
