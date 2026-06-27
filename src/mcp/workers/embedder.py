@@ -68,7 +68,7 @@ class EmbeddingWorker:
     def __init__(
         self,
         config: EmbeddingWorkerConfig | None = None,
-        embedding_pipeline: Any = None,
+        embedding_pipeline: Any | None = None,
     ) -> None:
         """Initialize the embedding worker."""
         self.config = config or EmbeddingWorkerConfig()

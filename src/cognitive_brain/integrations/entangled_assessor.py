@@ -106,7 +106,7 @@ class EntangledComplianceSecurityAssessor:
         security_scanner: Optional[MockSecurityScanner] = None,
         entanglement_mgr: EntanglementManager = None,
         entanglement_manager: EntanglementManager = None,
-        config: Any = None,  # Accept but ignore for compatibility
+        config: Any | None = None,  # Accept but ignore for compatibility
     ):
         """
         Initialize entangled assessor.

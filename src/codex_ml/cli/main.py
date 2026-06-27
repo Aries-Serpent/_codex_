@@ -637,7 +637,7 @@ else:
 
     else:  # pragma: no cover - hydra missing
 
-        def main(cfg: Any = None) -> None:
+        def main(cfg: Any | None = None) -> None:
             raise ImportError(
                 "hydra-core is required to use codex_ml.cli.main; "
                 "install it with `pip install hydra-core`."

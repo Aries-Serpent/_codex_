@@ -400,10 +400,10 @@ def prune_best_k(checkpoint_dir: str | Path, k: int = 3) -> None:
 
 
 def save_checkpoint(
-    state_or_model: Any = None,
+    state_or_model: Any | None = None,
     path: Path | str | None = None,
     *,
-    model: Any = None,
+    model: Any | None = None,
     optimizer: Any | None = None,
     scheduler: Any | None = None,
     out_dir: Path | str | None = None,
@@ -528,7 +528,7 @@ def restore_into(
 def load_checkpoint(
     path_or_ckpt_dir: Path | str | None = None,
     *,
-    model: Any = None,
+    model: Any | None = None,
     optimizer: Any | None = None,
     scheduler: Any | None = None,
     ckpt_dir: Path | str | None = None,

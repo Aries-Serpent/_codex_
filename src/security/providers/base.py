@@ -300,7 +300,7 @@ class ProviderConfig:
         self.provider_type = provider_type
         self.config = config
 
-    def get(self, key: str, default: Any = None) -> Any:
+    def get(self, key: str, default: Any | None = None) -> Any:
         """Get configuration value.
 
         Args:

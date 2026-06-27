@@ -149,7 +149,7 @@ class _AwaitableDict(dict[str, Any]):
     ``await``.  It is intentionally *not* part of the public API.
     """
 
-    def __init__(self, *args: Any, loader: Any = None, **kwargs: Any) -> None:
+    def __init__(self, *args: Any, loader: Any | None = None, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
         self._loader = loader
 

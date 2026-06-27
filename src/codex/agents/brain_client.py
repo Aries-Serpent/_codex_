@@ -322,7 +322,7 @@ class BrainClient:
         url: str,
         headers: Optional[dict[str, str]] = None,
         params: Optional[dict[str, str]] = None,
-        body: Any = None,
+        body: Any | None = None,
         timeout: int = 30,
     ) -> dict[str, Any]:
         """Proxy an HTTP request through the server (secondary agent API mechanism).
@@ -429,7 +429,7 @@ class BrainClient:
         """
         return self._get("/api/ooda/metrics")
 
-    def ooda_process(self, input_data: Any, context: Any = None) -> dict[str, Any]:
+    def ooda_process(self, input_data: Any, context: Any | None = None) -> dict[str, Any]:
         """Route input through the OODA cognitive orchestrator.
 
         Parameters

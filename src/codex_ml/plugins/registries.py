@@ -39,7 +39,7 @@ def _instantiate_tokenizer(alias: str, **kwargs: Any) -> Any:
     return get_tokenizer(alias, **kwargs)
 
 
-def _merge_model_cfg(cfg: Any = None, **overrides: Any) -> dict[str, Any]:
+def _merge_model_cfg(cfg: Any | None = None, **overrides: Any) -> dict[str, Any]:
     merged: dict[str, Any] = {}
     if cfg is not None:
         if not isinstance(cfg, Mapping):
@@ -52,7 +52,7 @@ def _merge_model_cfg(cfg: Any = None, **overrides: Any) -> dict[str, Any]:
     return merged
 
 
-def _instantiate_model(alias: str, cfg: Any = None, **kwargs: Any) -> Any:
+def _instantiate_model(alias: str, cfg: Any | None = None, **kwargs: Any) -> Any:
     from codex_ml.models.registry import get_model
 
     merged_cfg = _merge_model_cfg(cfg, **kwargs)
@@ -434,7 +434,7 @@ def _tokenizer_tiny_vocab_offline(**kwargs: Any):
 
 
 @models.register("minilm", backend="codex_ml.models.registry", target="MiniLM")
-def _model_minilm(cfg: Any = None, **kwargs: Any):
+def _model_minilm(cfg: Any | None = None, **kwargs: Any):
     """Expose the MiniLM reference model through the plugin catalogue."""
 
     return _instantiate_model("MiniLM", cfg, **kwargs)
@@ -445,7 +445,7 @@ def _model_minilm(cfg: Any = None, **kwargs: Any):
     backend="codex_ml.models.registry",
     target="decoder_only",
 )
-def _model_decoder_only(cfg: Any = None, **kwargs: Any):
+def _model_decoder_only(cfg: Any | None = None, **kwargs: Any):
     """Expose the decoder-only transformer baseline."""
 
     return _instantiate_model("decoder_only", cfg, **kwargs)
@@ -457,7 +457,7 @@ def _model_decoder_only(cfg: Any = None, **kwargs: Any):
     target="gpt2-offline",
     offline_default=True,
 )
-def _model_gpt2_offline(cfg: Any = None, **kwargs: Any):
+def _model_gpt2_offline(cfg: Any | None = None, **kwargs: Any):
     """Instantiate the offline GPT-2 checkpoint when weights are present locally."""
 
     config = _merge_model_cfg(cfg, **kwargs)
@@ -481,7 +481,7 @@ def _model_gpt2_offline(cfg: Any = None, **kwargs: Any):
     target="tinyllama-offline",
     offline_default=True,
 )
-def _model_tinyllama_offline(cfg: Any = None, **kwargs: Any):
+def _model_tinyllama_offline(cfg: Any | None = None, **kwargs: Any):
     """Instantiate the offline TinyLLaMA checkpoint when weights are present locally."""
 
     config = _merge_model_cfg(cfg, **kwargs)
@@ -505,7 +505,7 @@ def _model_tinyllama_offline(cfg: Any = None, **kwargs: Any):
     target="TinySequenceModel",
     offline_default=True,
 )
-def _model_tiny_sequence_offline(cfg: Any = None, **kwargs: Any):
+def _model_tiny_sequence_offline(cfg: Any | None = None, **kwargs: Any):
     """Instantiate the scripted offline sequence model."""
 
     from codex_ml.models.offline_tiny import TinySequenceModel

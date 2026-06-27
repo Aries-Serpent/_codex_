@@ -121,7 +121,7 @@ def _normalise_mapping(config: Mapping[str, Any]) -> MutableMapping[str, Any]:
     return dict(config)
 
 
-def _resolve_value(mapping: Mapping[str, Any], *keys: str, default: Any = None) -> Any:
+def _resolve_value(mapping: Mapping[str, Any], *keys: str, default: Any | None = None) -> Any:
     for key in keys:
         if key in mapping:
             return mapping[key]

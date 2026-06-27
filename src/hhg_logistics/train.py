@@ -243,7 +243,7 @@ def _save_adapters(model, out_dir: Path, save_adapters: bool = True) -> None:
             logger.warning("Saving adapters failed: %s", exc)
 
 
-def _resolve_model_value(model_cfg: DictConfig, key: str, default: Any = None):
+def _resolve_model_value(model_cfg: DictConfig, key: str, default: Any | None = None):
     for path in (key, f"model.{key}"):
         value = OmegaConf.select(model_cfg, path)
         if value is not None:

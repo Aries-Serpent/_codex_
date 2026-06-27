@@ -1200,7 +1200,7 @@ def run_functional_training(
         val_texts = [str(item) for item in val_ds] if val_ds else None
         return _ft_train(train_texts, config=train_cfg, val_texts=val_texts, model=model)
 
-    def _lookup(*keys: str, default: Any = None) -> Any:
+    def _lookup(*keys: str, default: Any | None = None) -> Any:
         for key in keys:
             if (
                 isinstance(training_mapping, Mapping)
@@ -1503,7 +1503,7 @@ def build_dataloader(
     dataset: Any = None,
     cfg: TrainingRunConfig | Mapping[str, Any] | None = None,
     *,
-    data_path: Any = None,
+    data_path: Any | None = None,
     batch_size: int = 8,
     shuffle: bool = True,
     **kwargs: Any,

@@ -228,7 +228,7 @@ def create_model(
     device: Any = None,
     enable_peft: Optional[bool] = None,
     lora_cfg: Any = None,
-    quantization: Any = None,
+    quantization: Any | None = None,
 ) -> Any:
     """Instantiate a model and optionally apply dtype/device and PEFT adapters."""
 
