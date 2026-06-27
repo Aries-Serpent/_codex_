@@ -74,7 +74,7 @@ def test_server_health_and_branches_smoke(tmp_path):
                 if health_response.get("ok") is True:
                     server_ready = True
                     break
-            except Exception:
+            except Exception as _err:
                 time.sleep(0.5)
         
         assert server_ready, f"Server failed to start within {max_startup_time}s"
