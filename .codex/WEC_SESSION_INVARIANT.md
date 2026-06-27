@@ -289,7 +289,7 @@ git log --all --pretty=format:"%B" | grep -A 20 "## 🔄 Workflow Execution Chec
 python scripts/ci/wec_enforcer.py --validate-body --pr N
 
 # 3. If recovery needed: run autofix
-python scripts/ci/session_wrapup_autofix.py --fix-wec --pr N
+python scripts/ci/session_wrapup_autofix.py --fix-wec --pr-number N
 
 # 4. Re-run compliance check to verify
 python scripts/ci/phase_12_2_compliance_dashboard.py --check
@@ -305,7 +305,7 @@ python scripts/ci/phase_12_2_compliance_dashboard.py --check
 **Recovery:**
 ```bash
 # 1. Run autofix to update files and stage them
-python scripts/ci/session_wrapup_autofix.py --auto-update --pr N
+python scripts/ci/session_wrapup_autofix.py --auto-update --pr-number N
 
 # 2. Amend the last commit to include updated files
 git add CHANGELOG.md docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md

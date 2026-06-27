@@ -64,7 +64,7 @@ git diff HEAD~1 HEAD -- docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
 **Automatic Remediation:**
 ```bash
 # 1. Run autofix tool to update file
-python scripts/ci/session_wrapup_autofix.py --auto-update --pr N
+python scripts/ci/session_wrapup_autofix.py --auto-update --pr-number N
 
 # 2. Stage and commit
 git add docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md
@@ -83,7 +83,7 @@ git push --force-with-lease
 ### Prevention Strategy
 
 **For Copilot Agents:**
-- ✅ Always run `python scripts/ci/session_wrapup_autofix.py --check --pr N` before final commit
+- ✅ Always run `python scripts/ci/session_wrapup_autofix.py --check --pr-number N` before final commit
 - ✅ If check fails: immediately run `--auto-update` to populate file
 - ✅ Include governance compliance status in session summary comment
 - ✅ Verify file is in final commit before session end
@@ -139,7 +139,7 @@ git diff HEAD~1 HEAD -- CHANGELOG.md | head -20
 
 **Automatic Remediation:**
 ```bash
-python scripts/ci/session_wrapup_autofix.py --auto-update --pr N
+python scripts/ci/session_wrapup_autofix.py --auto-update --pr-number N
 git add CHANGELOG.md
 git commit --amend --no-edit
 git push --force-with-lease

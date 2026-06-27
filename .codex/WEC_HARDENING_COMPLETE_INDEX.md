@@ -246,7 +246,7 @@
 
 🔴 PRE-COMMIT
 └─ [ ] Run compliance check:
-      python scripts/ci/session_wrapup_autofix.py --check --pr N
+      python scripts/ci/session_wrapup_autofix.py --check --pr-number N
 └─ [ ] Expected output: REQ-4 ✅, REQ-5 ✅, WEC valid ✅
 └─ [ ] If any check fails:
       └─ [ ] For REQ-4/REQ-5: run --auto-update
