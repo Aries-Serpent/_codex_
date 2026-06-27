@@ -1,10 +1,10 @@
-# Session Context — 2026-06-27T22:13:18Z
+# Session Context — 2026-06-27T22:19:41Z
 **Branch:** `copilot/0d-base`  **PR:** none  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4993` (✅)
-- GraphQL remaining: `4998` (✅)
+- REST remaining: `4992` (✅)
+- GraphQL remaining: `4991` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
@@ -16,6 +16,7 @@
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-27)
 
 ## 📝 Recent Commits
+- `e2cc4f85` Apply remaining changes — copilot-swe-agent[bot] (2026-06-27)
 - `cafa3348` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-06-27)
 - `7140c0b8` Merge pull request #5110 from Aries-Serpent/copilot/chronicle-improve-cost-tips — Statix (2026-06-27)
 - `1fcd3588` chore: auto-merge 1 automated commit(s) from 0D_base_ [skip ci] — github-actions[bot] (2026-06-27)
@@ -23,7 +24,6 @@
 - `e8bbc767` fix(test): resolve malformed assertions and syntax errors blocking CI validation — copilot-swe-agent[bot] (2026-06-27)
 - `ef39d35a` chore(compliance): update accountability report and changelog for test assertion — copilot-swe-agent[bot] (2026-06-27)
 - `48c64fff` fix(test): fix malformed assertions and syntax errors in agent test files — copilot-swe-agent[bot] (2026-06-27)
-- `400c3bdf` chore(compliance): update accountability and changelog - session_tracker.py fixe — copilot-swe-agent[bot] (2026-06-27)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
