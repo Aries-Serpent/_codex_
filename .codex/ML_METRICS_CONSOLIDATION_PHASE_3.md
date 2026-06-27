@@ -126,7 +126,7 @@ from codex_ml.metrics import compute_bleu, compute_perplexity
 | BLEU | `eval.metrics.bleu()` | `metrics.compute_bleu()` | ✅ Yes | ✅ Works |
 | ROUGE-L | `eval.metrics.rouge_l()` | `metrics.compute_rouge_l()` | ✅ Yes | ✅ Works |
 | Perplexity | `eval.metrics.perplexity()` | `metrics.compute_perplexity()` | ✅ Yes | ✅ Works |
-| Token Accuracy | `eval.metrics.token_accuracy()` | `metrics.compute_token_accuracy()` | ✅ Yes | ✅ Works |
+| Token Accuracy | `eval.metrics.token_accuracy()` | `metrics.compute_token_accuracy()` | ✅ Yes | ✅ Works | <!-- pragma: allowlist secret -->
 | Accuracy | `eval.metrics.accuracy()` | `metrics.compute_accuracy()` | ✅ Yes | ✅ Works |
 | Classification F1 | `eval.metrics.classification_f1()` | `metrics.compute_f1()` | ✅ Yes | ✅ Works |
 | Forward Transfer | `eval.metrics.forward_transfer()` | None (legacy) | ✅ Yes | ✅ Works |

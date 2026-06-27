@@ -21,11 +21,11 @@ from codex_ml.config import DataConfig, EvaluationConfig  # noqa: E402
 from codex_ml.data.loader import CacheManifest  # noqa: E402
 from codex_ml.metrics import (  # noqa: E402
     compute_accuracy,
+    compute_bleu,
     compute_f1,
     compute_perplexity,
-    compute_token_accuracy,
-    compute_bleu,
     compute_rouge_l,
+    compute_token_accuracy,
 )
 from codex_ml.metrics.registry import (
     append_error_entry,  # noqa: E402

@@ -39,6 +39,7 @@ __all__ = [
 # BLEU Metric (consolidated from 4 implementations)
 # ============================================================================
 
+
 def _tokenize(s: str) -> list[str]:
     """Tokenize string into words."""
     return [t for t in s.strip().split() if t]
@@ -160,6 +161,7 @@ def compute_bleu(
 # ROUGE-L Metric (consolidated from 4 implementations)
 # ============================================================================
 
+
 def compute_rouge_l(
     predictions: Sequence[str],
     references: Sequence[str],
@@ -216,6 +218,7 @@ def compute_rouge_l(
 # Perplexity Metric (consolidated from 3 implementations)
 # ============================================================================
 
+
 def compute_perplexity(
     logits_or_nll: Iterable[Any],
     targets: Iterable[int],
@@ -252,7 +255,9 @@ def compute_perplexity(
         if not logits_list:
             raise ValueError("logit sequence is empty")
         if len(logits_list) != len(tgt):
-            raise ValueError(f"logits and targets length mismatch: {len(logits_list)} vs {len(tgt)}")
+            raise ValueError(
+                f"logits and targets length mismatch: {len(logits_list)} vs {len(tgt)}"
+            )
 
         valid_indices = [i for i, y in enumerate(tgt) if int(y) != ignore_index]
         if not valid_indices:
@@ -320,6 +325,7 @@ def compute_perplexity(
 # Token Accuracy Metric (consolidated from 2 implementations)
 # ============================================================================
 
+
 def compute_token_accuracy(
     logits: Any,
     targets: Any,
@@ -370,6 +376,7 @@ def compute_token_accuracy(
 # Classification Metrics (consolidated from 2 implementations)
 # ============================================================================
 
+
 def compute_accuracy(
     predictions: Sequence[int],
     targets: Sequence[int],
@@ -385,7 +392,7 @@ def compute_accuracy(
         Accuracy as float in range [0, 1]
     """
     if len(predictions) != len(targets):
-        raise ValueError(f"predictions and targets length mismatch")
+        raise ValueError("predictions and targets length mismatch")
     if len(predictions) == 0:
         return 0.0
     matches = sum(1 for p, t in zip(predictions, targets, strict=False) if p == t)
@@ -440,12 +447,14 @@ def compute_f1(
         scores = []
         for label in labels:
             tp = sum(
-                1
-                for p, t in zip(predictions, targets, strict=False)
-                if p == label and t == label
+                1 for p, t in zip(predictions, targets, strict=False) if p == label and t == label
             )
-            fp = sum(1 for p, t in zip(predictions, targets, strict=False) if p == label and t != label)
-            fn = sum(1 for p, t in zip(predictions, targets, strict=False) if p != label and t == label)
+            fp = sum(
+                1 for p, t in zip(predictions, targets, strict=False) if p == label and t != label
+            )
+            fn = sum(
+                1 for p, t in zip(predictions, targets, strict=False) if p != label and t == label
+            )
             scores.append(_precision_recall_f(tp, fp, fn))
         return sum(scores) / len(scores) if scores else 0.0
 
@@ -455,12 +464,14 @@ def compute_f1(
         total = len(targets)
         for label in labels:
             tp = sum(
-                1
-                for p, t in zip(predictions, targets, strict=False)
-                if p == label and t == label
+                1 for p, t in zip(predictions, targets, strict=False) if p == label and t == label
             )
-            fp = sum(1 for p, t in zip(predictions, targets, strict=False) if p == label and t != label)
-            fn = sum(1 for p, t in zip(predictions, targets, strict=False) if p != label and t == label)
+            fp = sum(
+                1 for p, t in zip(predictions, targets, strict=False) if p == label and t != label
+            )
+            fn = sum(
+                1 for p, t in zip(predictions, targets, strict=False) if p != label and t == label
+            )
             weight = sum(1 for t in targets if t == label) / total if total else 0.0
             scores.append(weight * _precision_recall_f(tp, fp, fn))
         return sum(scores) if scores else 0.0
@@ -493,6 +504,7 @@ def compute_classification_metrics(
 # ============================================================================
 # Batch Metrics from Model Outputs
 # ============================================================================
+
 
 def batch_metrics_from_outputs(
     outputs: Any,
@@ -590,7 +602,9 @@ def batch_metrics_from_outputs(
         try:
             # Exact match
             exact_matches = sum(
-                1 for p, r in zip(text_preds, text_refs, strict=False) if str(p).strip() == str(r).strip()
+                1
+                for p, r in zip(text_preds, text_refs, strict=False)
+                if str(p).strip() == str(r).strip()
             )
             record["exact_match"] = exact_matches / len(text_preds)
 
@@ -602,7 +616,11 @@ def batch_metrics_from_outputs(
                 if pred_tokens and ref_tokens:
                     overlap = len(set(pred_tokens) & set(ref_tokens))
                     precision = overlap / len(pred_tokens)
-                    brevity = 1.0 if len(pred_tokens) >= len(ref_tokens) else len(pred_tokens) / len(ref_tokens)
+                    brevity = (
+                        1.0
+                        if len(pred_tokens) >= len(ref_tokens)
+                        else len(pred_tokens) / len(ref_tokens)
+                    )
                     bleu1_scores.append(brevity * precision)
                 else:
                     bleu1_scores.append(0.0)

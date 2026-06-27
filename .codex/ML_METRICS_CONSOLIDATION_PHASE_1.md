@@ -115,7 +115,7 @@ ML metrics implementation is **4-way duplicated** across:
 ### Key Functions (eval/evaluator.py)
 
 ```python
-def evaluate_model(model, tokenizer, texts) → dict[str, float]
+def evaluate_model(model, tokenizer, texts) → dict[str, float]  # pragma: allowlist secret
 def run_evaluator(model_name, texts) → dict[str, float]
 def evaluate_constant(predictions, targets) → float
 def evaluate_dataloader(dataloader, metrics_sink) → dict
@@ -211,7 +211,7 @@ src/codex_ml/metrics/
 ├── _optional_bleu_rouge.py      27 (BLEU/ROUGE wrapper)
 ├── generation.py                170 (BLEU/ROUGE core + brevity)
 ├── generative.py                131 (wrapper)
-├── text.py                       56 (perplexity, token_accuracy)
+├── text.py                       56 (perplexity, token_accuracy)  # pragma: allowlist secret
 ├── classification.py             64 (F1, accuracy)
 ├── evaluator.py                  56 (evaluator interface)
 ├── registry.py                  636 (main registry)
@@ -382,7 +382,7 @@ This module will:
 ```
 codex_ml.metrics.__init__.py
 ├── → metrics.api (public interface)
-│   ├── → .text (token_accuracy, perplexity)
+│   ├── → .text (token_accuracy, perplexity)  # pragma: allowlist secret
 │   ├── → .generation (bleu, rouge_l)
 │   ├── → .classification (f1, accuracy)
 │   └── → .registry (get_metric, list_metrics)

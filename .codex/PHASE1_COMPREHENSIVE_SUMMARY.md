@@ -161,9 +161,9 @@ Runtime (Libraries, External Services)
 | **PII Detection** | ✅ ACTIVE | 1,989 patterns found and protected |
 | **Data Protection** | ✅ VERIFIED | 6,866 patterns detected |
 | **Audit Logging** | ✅ COMPLETE | All events logged separately |
-| **Secrets Management** | ✅ HARDENED | No hardcoded secrets, env vars enforced |
+| **Secrets Management** | ✅ HARDENED | No hardcoded secrets, env vars enforced | <!-- pragma: allowlist secret -->
 | **Access Control** | ✅ RBAC | Role-based permissions, least privilege |
-| **Tools** | ✅ ACTIVE | Gitleaks, detect-secrets, bandit, CodeQL |
+| **Tools** | ✅ ACTIVE | Gitleaks, detect-secrets, bandit, CodeQL | <!-- pragma: allowlist secret -->
 
 **OWASP Top 10 Protection:**
 - ✅ SQL Injection - Parameterized queries enforced

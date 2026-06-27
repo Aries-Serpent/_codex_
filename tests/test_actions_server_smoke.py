@@ -34,7 +34,7 @@ def _get(url: str, timeout: int = 5, max_retries: int = 5):
     parts = urlsplit(url)
     if parts.scheme != "http" or parts.hostname != "localhost" or parts.port != 8010:
         raise ValueError(f"unexpected smoke-test URL: {url!r}")
-    
+
     last_error = None
     for attempt in range(max_retries):
         try:
@@ -47,7 +47,7 @@ def _get(url: str, timeout: int = 5, max_retries: int = 5):
             if attempt < max_retries - 1:
                 time.sleep(0.5 * (2 ** attempt))  # Exponential backoff
             continue
-    
+
     raise last_error or TimeoutError(f"Failed to connect after {max_retries} retries")
 
 
@@ -66,7 +66,7 @@ def test_server_health_and_branches_smoke(tmp_path):
         max_startup_time = 10
         start_time = time.time()
         server_ready = False
-        
+
         while time.time() - start_time < max_startup_time:
             try:
                 # Test with retry logic built in
@@ -76,9 +76,9 @@ def test_server_health_and_branches_smoke(tmp_path):
                     break
             except Exception as _err:
                 time.sleep(0.5)
-        
+
         assert server_ready, f"Server failed to start within {max_startup_time}s"
-        
+
         # Now test branches endpoint
         branches = _get("http://localhost:8010/repo/branches", timeout=5, max_retries=3)
         assert isinstance(branches, list), "branches must be a list"

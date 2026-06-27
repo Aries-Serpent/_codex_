@@ -29,8 +29,8 @@ compute_rouge_l(predictions, references) → float
 # Perplexity (consolidated from 3 implementations)
 compute_perplexity(logits_or_nll, targets, from_logits=True, ignore_index=-100) → float
 
-# Token Accuracy (consolidated from 2 implementations)
-compute_token_accuracy(logits, targets) → float
+# Token Accuracy (consolidated from 2 implementations)  # pragma: allowlist secret
+compute_token_accuracy(logits, targets) → float  # pragma: allowlist secret
 
 # Classification Accuracy
 compute_accuracy(predictions, targets) → float
@@ -84,7 +84,7 @@ from .unified_api import (
     compute_bleu,
     compute_rouge_l,
     compute_perplexity,
-    compute_token_accuracy,
+    compute_token_accuracy,  # pragma: allowlist secret
     compute_accuracy,
     compute_f1,
     compute_classification_metrics,
@@ -93,7 +93,7 @@ from .unified_api import (
 
 # Legacy (Phase 1) - DEPRECATED but still available
 from .generative import bleu, rouge_l
-from .text import perplexity, token_accuracy
+from .text import perplexity, token_accuracy  # pragma: allowlist secret
 ```
 
 ### 2. `src/codex_ml/eval/metrics.py`
@@ -170,7 +170,7 @@ bleu_score = bleu(preds, refs)  # ⚠️ DeprecationWarning: use compute_bleu() 
 ✓ BLEU score: 0.0025 (0.0 <= score <= 1.0: True)
 ✓ ROUGE-L score: 0.8333 (0.0 <= score <= 1.0: True)
 ✓ Perplexity: 1.6487 (expected: 1.6487, match: True)
-✓ Token Accuracy: 0.5000 (0.0 <= acc <= 1.0: True)
+✓ Token Accuracy: 0.5000 (0.0 <= acc <= 1.0: True)  # pragma: allowlist secret
 ✓ All unified_api functions work correctly!
 ```
 

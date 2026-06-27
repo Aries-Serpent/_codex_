@@ -19,8 +19,8 @@ AAIS Contribution: +2.5 points
 
 from .base import CacheBackend, CacheResult
 from .local_cache import LocalLRUCache
-from .redis_cache import RedisCache
 from .metrics import CacheMetrics, CacheMonitor
+from .redis_cache import RedisCache
 
 __all__ = [
     "CacheBackend",

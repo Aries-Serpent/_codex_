@@ -102,7 +102,9 @@ class CachedEmbeddingPipeline:
             for idx, result in zip(uncached_indices, uncached_results):
                 results.insert(idx, result)
 
-        logger.info(f"Embedded {len(texts)} texts: {len(results) - len(uncached_texts)} cached, {len(uncached_texts)} computed")
+        logger.info(
+            f"Embedded {len(texts)} texts: {len(results) - len(uncached_texts)} cached, {len(uncached_texts)} computed"  # noqa: E501
+        )
 
         return results
 

@@ -87,7 +87,7 @@ class TestEffectSize:
 
     def test_large_effect_size_for_different_groups(self):
         result = run_ab_test(_CTRL_HIGH_DIFF, _TRT_HIGH_DIFF)
-        assert (abs(result.effect_size) > 5.0
+        assert (abs(result.effect_size) > 5.0, "Value must be greater than zero"
         ), f"Expected large Cohen's d for well-separated groups, got {result.effect_size}"
 
     def test_zero_effect_size_for_identical_groups(self):
@@ -136,7 +136,7 @@ class TestConfidenceIntervalInconclusive:
     def test_ci_straddles_zero(self):
         result = run_ab_test(_CTRL_NO_DIFF, _TRT_NO_DIFF)
         ci_lo, ci_hi = result.confidence_interval
-        assert (ci_lo <= 0.0 <= ci_hi
+        assert (ci_lo <= 0.0 <= ci_hi, "ci_lo is not valid"
         ), f"Expected CI to straddle 0 for identical groups, got [{ci_lo}, {ci_hi}]"
 
 

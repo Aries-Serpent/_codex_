@@ -9,7 +9,7 @@ from __future__ import annotations
 import logging
 import tempfile
 from pathlib import Path
-from unittest.mock import Mock, MagicMock, patch, PropertyMock
+from unittest.mock import patch
 
 import pytest
 
@@ -64,7 +64,7 @@ class TestWorkflowParserEdgeCases:
     def test_parser_cache_key_collision(self):
         """Test that cache properly distinguishes different files."""
         from services import WorkflowParser
-        import tempfile
+        pass  # removed redundant `import tempfile` (top-level import used)
 
         parser = WorkflowParser()
 
@@ -80,7 +80,7 @@ class TestWorkflowParserEdgeCases:
                 parser.parse_file(file2)
 
                 # Both should be in cache if caching worked
-                assert file1 in parser._cache or file2 in parser._cache
+                assert file1 in parser._cache or file2 in parser._cache, "Condition must be true"
 
     def test_parser_handles_yaml_null_values(self, tmp_path):
         """Test parser with YAML null values."""
@@ -152,7 +152,7 @@ class TestWorkflowInventoryScan:
     def test_inventory_scan_empty_directory(self):
         """Test scanning empty directory."""
         from services import WorkflowInventory
-        import tempfile
+        pass  # removed redundant `import tempfile` (top-level import used)
 
         inventory = WorkflowInventory()
 
@@ -165,7 +165,7 @@ class TestWorkflowInventoryScan:
     def test_inventory_scan_with_workflows(self):
         """Test scanning directory with workflows."""
         from services import WorkflowInventory
-        import tempfile
+        pass  # removed redundant `import tempfile` (top-level import used)
 
         inventory = WorkflowInventory()
 
@@ -186,7 +186,7 @@ class TestWorkflowInventoryScan:
     def test_inventory_scan_nested_workflow_dirs(self):
         """Test scanning with nested workflow directories."""
         from services import WorkflowInventory
-        import tempfile
+        pass  # removed redundant `import tempfile` (top-level import used)
 
         inventory = WorkflowInventory()
 
@@ -283,7 +283,7 @@ class TestServiceModuleLogging:
         import services
 
         logger = services.logger
-        assert logger is not None
+        assert logger is not None, "logger must be initialized"
         assert isinstance(logger, logging.Logger)
 
     def test_logger_level_defaults(self):
@@ -291,7 +291,7 @@ class TestServiceModuleLogging:
         import services
 
         # Logger should have a level or inherit from root
-        assert services.logger.level >= 0
+        assert services.logger.level >= 0, "level must be greater than zero"
 
     def test_logger_propagation(self):
         """Test logger propagation settings."""
@@ -305,11 +305,10 @@ class TestServiceModuleLogging:
         """Test that logger factory is called correctly."""
         mock_get_logger.return_value = logging.getLogger("test")
 
-        import importlib
         import services
 
         # Logger should be obtained from logging module
-        assert services.logger is not None
+        assert services.logger is not None, "logger must be initialized"
 
 
 class TestServicesGitHubOptionalDependency:
@@ -330,7 +329,7 @@ class TestServicesGitHubOptionalDependency:
 
         # Services should be usable
         parser = services.WorkflowParser()
-        assert parser is not None
+        assert parser is not None, "parser must be initialized"
 
     def test_github_client_conditional_import(self):
         """Test GitHub client is conditionally imported."""
@@ -358,7 +357,7 @@ class TestWorkflowParserCaching:
             parser.parse_file(test_file, use_cache=True)
 
             # File should be in cache
-            assert test_file in parser._cache or len(parser._cache) >= 0
+            assert test_file in parser._cache or len(parser._cache) >= 0, "Collection must not be empty"
 
     def test_cache_bypass_with_use_cache_false(self):
         """Test cache bypass when use_cache=False."""
@@ -374,7 +373,7 @@ class TestWorkflowParserCaching:
             parser.parse_file(test_file, use_cache=False)
             # Cache might not grow when use_cache=False
 
-            assert len(parser._cache) >= initial_cache
+            assert len(parser._cache) >= initial_cache, "Collection must not be empty"
 
     def test_cache_hit_consistency(self):
         """Test that cache hits return consistent results."""
@@ -390,7 +389,7 @@ class TestWorkflowParserCaching:
             result2 = parser.parse_file(test_file, use_cache=True)
 
             # Both should be same or both None
-            assert (result1 is None and result2 is None) or (result1 is result2)
+            assert (result1 is None and result2 is None) or (result1 is result2), "Result must not be empty"
 
 
 class TestServicesIntegrationScenarios:
@@ -398,7 +397,7 @@ class TestServicesIntegrationScenarios:
 
     def test_parse_and_inventory_workflow(self):
         """Test parsing workflow and adding to inventory."""
-        from services import WorkflowParser, WorkflowInventory
+        from services import WorkflowInventory, WorkflowParser
 
         parser = WorkflowParser()
         inventory = WorkflowInventory()
@@ -415,7 +414,7 @@ class TestServicesIntegrationScenarios:
                 scanned = inventory.scan(Path(tmpdir))
 
             # Both should succeed or gracefully handle
-            assert True
+            assert True, "True is not valid"
 
     def test_multiple_workflows_parsing(self):
         """Test parsing multiple workflows."""

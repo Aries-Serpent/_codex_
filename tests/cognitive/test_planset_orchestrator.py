@@ -232,7 +232,7 @@ class TestOrchestratorGenerateSession:
 
     def test_order_field_renumbered(self, orch: PlansetOrchestrator):
         prompts = orch.generate_session(max_prompts=5)
-        assert [p.order for p in prompts] == list(range(len(prompts))
+        assert [p.order for p in prompts] == list(range(len(prompts)), "Prompts must not be empty"
         ), "Prompts must not be empty"
 
     def test_max_prompts_respected(self, orch: PlansetOrchestrator):

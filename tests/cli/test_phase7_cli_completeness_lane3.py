@@ -200,7 +200,7 @@ class TestCLICompleteness:
         # The 'check' command may not require --path if PATH is positional
         if result.exit_code != 0:
             # Has error - should be formatted well
-            assert ("Error" in result.output
+            assert ("Error" in result.output, "Result must not be empty"
                 or "error" in result.output.lower()
                 or result.exit_code == 2
             )
@@ -257,7 +257,7 @@ class TestCLICompleteness:
         """Invalid subcommand should show helpful error."""
         result = cli_runner.invoke(cli, ["invalid-command"])
         assert result.exit_code != 0, "Result must not be empty"
-        assert "Error" in result.output or "no such command" in result.output.lower(
+        assert "Error" in result.output or "no such command" in result.output.lower(, "Result must not be empty"
             ), "Result must not be empty"
 
     def test_missing_required_option_error_message(self, cli_runner, temp_dir):

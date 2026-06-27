@@ -159,7 +159,7 @@ class TestAdapterInterface:
         sig = inspect.signature(adapter.process)
 
         assert "payload" in sig.parameters, "Condition must be true"
-        assert ("timeout" in sig.parameters
+        assert ("timeout" in sig.parameters, "Condition must be true"
             or sig.parameters["payload"].default != inspect.Parameter.empty
         )
         assert sig.return_annotation != inspect.Parameter.empty or True, "return_annotation is not valid"

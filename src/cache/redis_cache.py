@@ -89,9 +89,7 @@ class RedisCache(CacheBackend):
             # Test connection
             self._redis.ping()  # type: ignore[attr-defined]
             self._connected = True
-            logger.info(
-                f"Connected to Redis at {self.host}:{self.port}/{self.db}"
-            )
+            logger.info(f"Connected to Redis at {self.host}:{self.port}/{self.db}")
 
         except ImportError:
             logger.warning("redis package not installed. Install with: pip install redis")

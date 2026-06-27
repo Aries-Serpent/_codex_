@@ -37,9 +37,9 @@ from codex_ml.metrics.metrics_deprecated import (  # noqa: F401
     micro_f1,
     perplexity,
     rouge_l,
+    run_unit_tests,
     token_accuracy,
     token_stats,
-    run_unit_tests,
 )
 
 __all__ = [

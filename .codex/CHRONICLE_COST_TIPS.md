@@ -88,7 +88,7 @@ Cost optimization opportunities identified from technical analysis. Focus on red
 | Local embeddings (Sentence-BERT) | 90-100% | Medium | 1 week |
 | Embedding caching (FAISS) | 95% duplicate calls | Low | 3 days |
 | Batch API calls | 30-40% latency overhead reduced | Low | 2 days |
-| Token optimization | 20-30% fewer tokens | Medium | 1-2 weeks |
+| Token optimization | 20-30% fewer tokens | Medium | 1-2 weeks | <!-- pragma: allowlist secret -->
 | **Total Potential** | **50-100% cost reduction** | | |
 
 ### 4. **Infrastructure Costs**

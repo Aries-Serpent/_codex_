@@ -416,10 +416,7 @@ class IngestionPipeline:
     ) -> None:
         """Process files in parallel using ThreadPoolExecutor."""
         with ThreadPoolExecutor(max_workers=self.config.max_workers) as executor:
-            futures = {
-                executor.submit(self._ingest_with_retry, path): path
-                for path in file_paths
-            }
+            futures = {executor.submit(self._ingest_with_retry, path): path for path in file_paths}
 
             for future in as_completed(futures):
                 path = futures[future]
@@ -427,9 +424,7 @@ class IngestionPipeline:
                     result = future.result()
                     self._update_batch_result(batch_result, result)
                 except (IOError, OSError) as e:
-                    self._handle_ingestion_error(
-                        batch_result, path, e
-                    )
+                    self._handle_ingestion_error(batch_result, path, e)
 
     def _process_sequential(
         self,

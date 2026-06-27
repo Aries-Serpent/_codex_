@@ -160,7 +160,7 @@ XSSValidator.detect_xss_patterns(value)     # Pattern detection
 class RegisterRequest(BaseModel):
     username: str = Field(..., min_length=1, max_length=150)
     email: str = Field(..., min_length=3, max_length=254)
-    password: str = Field(..., min_length=8, max_length=128)
+    password: str = Field(..., min_length=8, max_length=128)  # pragma: allowlist secret
 ```
 
 **Hardening**: Add validators to route handler
@@ -280,19 +280,19 @@ app.add_middleware(RateLimitMiddleware, requests_per_minute=60)
 app.add_middleware(AuditLoggingMiddleware, log_sensitive_paths=True)
 
 # CSRF Protection - OWASP A02
-csrf_manager = CSRFTokenManager(token_lifetime=3600)
+csrf_manager = CSRFTokenManager(token_lifetime=3600)  # pragma: allowlist secret
 
-@router.get("/csrf-token")
-async def get_csrf_token():
-    return {"csrf_token": csrf_manager.generate_token()}
+@router.get("/csrf-token")  # pragma: allowlist secret
+async def get_csrf_token():  # pragma: allowlist secret
+    return {"csrf_token": csrf_manager.generate_token()}  # pragma: allowlist secret
 
 @router.post("/sensitive-operation")
 async def sensitive_operation(
     body: SensitiveRequest,
-    csrf_token: str = Header()
+    csrf_token: str = Header()  # pragma: allowlist secret
 ):
-    if not csrf_manager.validate_token(csrf_token):
-        raise HTTPException(403, "Invalid CSRF token")
+    if not csrf_manager.validate_token(csrf_token):  # pragma: allowlist secret
+        raise HTTPException(403, "Invalid CSRF token")  # pragma: allowlist secret
     # Process operation
     ...
 ```
@@ -309,7 +309,7 @@ async def sensitive_operation(
 | **T2: API Endpoints** | 6 endpoints × 3-5 test cases | test_hardening_integration.py |
 | **T3: OWASP Top 10** | 10 categories × 2-3 test cases | test_hardening_integration.py |
 | **T4: Rate Limiting** | 3 DoS scenarios | test_hardening_integration.py |
-| **T5: CSRF Protection** | 5 token scenarios | test_hardening_integration.py |
+| **T5: CSRF Protection** | 5 token scenarios | test_hardening_integration.py | <!-- pragma: allowlist secret -->
 | **T6: Auth/Authz** | 4 authentication flows | test_hardening_integration.py |
 | **Integration Tests** | 3 complete flows | test_hardening_integration.py |
 

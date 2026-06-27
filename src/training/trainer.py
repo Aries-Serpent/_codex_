@@ -682,18 +682,18 @@ class Trainer:
 
         for epoch in range(start_epoch, cfg.epochs + 1):
             self.state.epoch = epoch
-            
+
             # Train epoch
             epoch_metrics = self._train_epoch()
-            
+
             # Validate epoch
             if self.val_loader is not None:
                 self._validate_epoch(epoch, epoch_metrics)
-            
+
             # Record history and metrics
             self.history.append(dict(epoch_metrics))
             log_metrics(self._logging_session, epoch_metrics, epoch)
-            
+
             # Checkpoint epoch
             self._checkpoint_epoch(epoch, epoch_metrics)
 

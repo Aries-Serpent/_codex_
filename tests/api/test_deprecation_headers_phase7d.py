@@ -54,7 +54,7 @@ class TestLegacyEndpointDeprecationHeaders:
             response = client.get(endpoint)
 
         # Legacy endpoints should return 410 Gone
-        assert (response.status_code == 410
+        assert (response.status_code == 410, "Response must not be empty"
         ), f"Expected 410 for {endpoint}, got {response.status_code}"
 
     @pytest.mark.parametrize(
@@ -70,7 +70,7 @@ class TestLegacyEndpointDeprecationHeaders:
         response = client.post(endpoint, json=payload)
 
         assert "deprecation" in response.headers, f"Deprecation header missing from {endpoint}"
-        assert (response.headers["deprecation"].lower() == "true"
+        assert (response.headers["deprecation"].lower() == "true", "Response must not be empty"
         ), f"Deprecation header should be 'true', got {response.headers['deprecation']}"
 
     @pytest.mark.parametrize(
@@ -105,7 +105,7 @@ class TestLegacyEndpointDeprecationHeaders:
         assert "link" in response.headers, f"Link header missing from {endpoint}"
         link_value = response.headers["link"]
         assert "rel=" in link_value, f"Link header missing rel= attribute for {endpoint}"
-        assert ("successor-version" in link_value
+        assert ("successor-version" in link_value, "Value must be initialized"
         ), f"Link header should use successor-version relation for {endpoint}"
 
     @pytest.mark.parametrize(
@@ -164,7 +164,7 @@ class TestLegacyEndpointDeprecationHeaders:
         response = client.post(endpoint, json=payload)
 
         link_value = response.headers["link"]
-        assert (expected_successor in link_value
+        assert (expected_successor in link_value, "Value must be initialized"
         ), f"Link header should contain {expected_successor}, got {link_value}"
 
     def test_x_api_lifecycle_header_present(self, client):
@@ -178,9 +178,9 @@ class TestLegacyEndpointDeprecationHeaders:
         for endpoint, payload in endpoints:
             response = client.post(endpoint, json=payload)
 
-            assert ("x-api-lifecycle" in response.headers
+            assert ("x-api-lifecycle" in response.headers, "Response must not be empty"
             ), f"X-API-Lifecycle header missing from {endpoint}"
-            assert (response.headers["x-api-lifecycle"] == "deprecated"
+            assert (response.headers["x-api-lifecycle"] == "deprecated", "Response must not be empty"
             ), f"X-API-Lifecycle should be 'deprecated' for {endpoint}"
 
     def test_x_sunset_date_header_present(self, client):
@@ -194,9 +194,9 @@ class TestLegacyEndpointDeprecationHeaders:
         for endpoint, payload in endpoints:
             response = client.post(endpoint, json=payload)
 
-            assert ("x-sunset-date" in response.headers
+            assert ("x-sunset-date" in response.headers, "Response must not be empty"
             ), f"X-Sunset-Date header missing from {endpoint}"
-            assert (len(response.headers["x-sunset-date"]) > 0
+            assert (len(response.headers["x-sunset-date"]) > 0, "Collection must not be empty"
             ), f"X-Sunset-Date should not be empty for {endpoint}"
 
     def test_all_legacy_endpoints_documented(self, client):

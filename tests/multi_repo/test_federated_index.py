@@ -40,7 +40,7 @@ def test_federation_basic():
         env = os.environ.copy()
         env["FEDERATION_ENABLE"] = "1"
         env["FEDERATION_REPO_PATHS"] = str(repo_path)
-        
+
         # Add timeout to subprocess and wait for completion
         try:
             result = subprocess.run(
@@ -59,9 +59,9 @@ def test_federation_basic():
         start_time = time.time()
         while not out.exists() and (time.time() - start_time) < max_wait:
             time.sleep(0.1)
-        
+
         assert out.exists(), "Assertion must pass - output file not created"
-        
+
         data = json.loads(out.read_text())
         assert data["total_scanned"] == 1, "Data must not be empty"
         assert len(data["repositories"]) == 1, "Length must be valid"
@@ -78,7 +78,7 @@ def test_federation_disabled():
 
     env = os.environ.copy()
     env["FEDERATION_ENABLE"] = "0"
-    
+
     # Add timeout to subprocess to prevent hanging
     try:
         subprocess.run(

@@ -144,12 +144,12 @@ def test_status_audit_full_run(status_audit_script, tmp_path):
 
     # Assertions
     assert result.returncode == 0, f"Command failed with code {result.returncode}:\n{result.stderr}"
-    assert ("SUCCESS" in result.stdout or result.returncode == 0
+    assert ("SUCCESS" in result.stdout or result.returncode == 0, "Result must not be empty"
     ), f"Expected success indicator in output:\n{result.stdout}"
 
     # Verify report was created
     reports = list(output_dir.glob("codex_status_update_*.md"))
-    assert (len(reports) > 0
+    assert (len(reports) > 0, "Reports must not be empty"
     ), f"No reports generated in {output_dir}. Files: {list(output_dir.iterdir())}"
 
 

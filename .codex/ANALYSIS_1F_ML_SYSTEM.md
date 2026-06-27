@@ -61,7 +61,7 @@ Location: /src/codex_ml/modeling/codex_model.py
 Capabilities:
 - HuggingFace causal LM wrapper
 - LoRA adapter application
-- Tokenizer initialization
+- Tokenizer initialization  # pragma: allowlist secret
 - Device/dtype configuration
 - Optional import pattern (reduces startup overhead)
 ```
@@ -147,10 +147,10 @@ Verified Scenarios:
 
 #### Data Processing Stages
 ```
-Raw Input → Tokenization → Batching → Distribution → Model
+Raw Input → Tokenization → Batching → Distribution → Model  # pragma: allowlist secret
 
 Components:
-- Tokenizer integration (HF + SentencePiece)
+- Tokenizer integration (HF + SentencePiece)  # pragma: allowlist secret
 - Batch processing middleware
 - Cache layer (TTL + eviction)
 - Data loader determinism
@@ -750,7 +750,7 @@ None identified. System is production-ready.
 |-----------|-----------|-----------|----------|--------|
 | Model Initialization | 19 | 100% | High | ✅ |
 | Data Pipeline | 44 | 100% | High | ✅ |
-| Tokenization | 37 | 100% | 71.2% | ✅ |
+| Tokenization | 37 | 100% | 71.2% | ✅ | <!-- pragma: allowlist secret -->
 | Training Loop | 55 | 100% | High | ✅ |
 | Checkpointing | 30 | 100% | High | ✅ |
 | OODA System | TBD | TBD | Medium | ⚠️ |

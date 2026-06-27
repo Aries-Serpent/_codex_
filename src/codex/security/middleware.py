@@ -199,9 +199,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             self._request_counts[client_ip] = []
 
         # Remove old entries
-        self._request_counts[client_ip] = [
-            t for t in self._request_counts[client_ip] if t > cutoff
-        ]
+        self._request_counts[client_ip] = [t for t in self._request_counts[client_ip] if t > cutoff]
 
         # Check limit
         count = len(self._request_counts[client_ip])
@@ -220,9 +218,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 
         # Add rate limit headers
         response.headers["X-RateLimit-Limit"] = str(self.requests_per_minute)
-        response.headers["X-RateLimit-Remaining"] = str(
-            max(0, self.requests_per_minute - count)
-        )
+        response.headers["X-RateLimit-Remaining"] = str(max(0, self.requests_per_minute - count))
         response.headers["X-RateLimit-Reset"] = str(int(now + 60))
 
         return response
@@ -265,9 +261,7 @@ class AuditLoggingMiddleware(BaseHTTPMiddleware):
         start_time = time.time()
 
         # Determine if this is a sensitive path
-        is_sensitive = any(
-            request.url.path.startswith(p) for p in self.sensitive_paths
-        )
+        is_sensitive = any(request.url.path.startswith(p) for p in self.sensitive_paths)
 
         if is_sensitive and self.log_sensitive_paths:
             logger.info(

@@ -26,7 +26,7 @@ import json
 import logging
 import subprocess
 import sys
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -169,10 +169,10 @@ def get_workflow_metrics(pr_number: int) -> tuple[int, float]:
         )
         data = json.loads(result.stdout)
         checks = data.get("statusCheckRollup", [])
-        
+
         if not checks:
             return 0, 1.0
-        
+
         completed_checks = [c for c in checks if c.get("status") == "COMPLETED"]
         if not completed_checks:
             return len(checks), 1.0
@@ -184,7 +184,7 @@ def get_workflow_metrics(pr_number: int) -> tuple[int, float]:
         )
         total = len(completed_checks)
         pass_rate = passed / total if total > 0 else 1.0
-        
+
         return total, pass_rate
     except Exception as e:
         logger.debug(f"Failed to get workflow metrics for PR #{pr_number}: {e}")
@@ -197,7 +197,7 @@ def calculate_time_to_merge(pr: dict[str, Any]) -> float:
         created_at_str = pr.get("createdAt", "")
         if not created_at_str:
             return 0.0
-        
+
         created_at = datetime.fromisoformat(created_at_str.replace("Z", "+00:00"))
         now = datetime.now(timezone.utc)
         delta = now - created_at
@@ -234,42 +234,42 @@ def determine_health_status(score: float) -> str:
 def generate_health_report(json_output: bool = False, verbose: bool = False) -> HealthSummary | None:
     """Generate comprehensive health report for all open PRs."""
     logger.info("📊 Generating WEC Health Report...")
-    
+
     # Fetch all open PRs
     prs = get_open_prs()
     if not prs:
         logger.warning("No open PRs found")
         return None
-    
+
     pr_metrics: list[PRHealthMetrics] = []
     req4_count = 0
     req5_count = 0
     wec_count = 0
     total_workflow_pass = 0.0
     total_merge_time = 0.0
-    
+
     for pr in prs:
         pr_number = pr["number"]
-        
+
         if verbose:
             logger.info(f"  Checking PR #{pr_number}...")
-        
+
         # Check compliance
         wec_ok = check_wec_compliance(pr_number)
         req4_ok, req5_ok = check_req_compliance(pr_number)
         workflow_count, pass_rate = get_workflow_metrics(pr_number)
         merge_time = calculate_time_to_merge(pr)
-        
+
         if wec_ok:
             wec_count += 1
         if req4_ok:
             req4_count += 1
         if req5_ok:
             req5_count += 1
-        
+
         total_workflow_pass += pass_rate
         total_merge_time += merge_time
-        
+
         metrics = PRHealthMetrics(
             pr_number=pr_number,
             wec_compliant=wec_ok,
@@ -282,14 +282,14 @@ def generate_health_report(json_output: bool = False, verbose: bool = False) -> 
             last_checked=datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         )
         pr_metrics.append(metrics)
-    
+
     # Calculate aggregate metrics
     total_prs = len(prs)
     wec_compliance_rate = wec_count / total_prs if total_prs > 0 else 0.0
     req_compliance_rate = (req4_count + req5_count) / (2 * total_prs) if total_prs > 0 else 0.0
     avg_workflow_pass_rate = total_workflow_pass / total_prs if total_prs > 0 else 0.0
     avg_merge_time = total_merge_time / total_prs if total_prs > 0 else 0.0
-    
+
     summary = HealthSummary(
         timestamp=datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         total_prs=total_prs,
@@ -302,16 +302,16 @@ def generate_health_report(json_output: bool = False, verbose: bool = False) -> 
         status="",  # Will calculate below
         prs=[m.to_dict() for m in pr_metrics],
     )
-    
+
     # Calculate health score and status
     summary.health_score = calculate_health_score(summary)
     summary.status = determine_health_status(summary.health_score)
-    
+
     if json_output:
         print(json.dumps(summary.to_dict(), indent=2))
     else:
         _print_health_report(summary)
-    
+
     return summary
 
 
@@ -322,10 +322,10 @@ def _print_health_report(summary: HealthSummary) -> None:
     print(f"🏥 WEC Health Monitor Report — {summary.timestamp}")
     print("=" * 80)
     print()
-    
+
     print(f"📊 Overall Health: {summary.status} ({summary.health_score:.1%})")
     print()
-    
+
     print("📈 Metrics:")
     print(f"  • Total Open PRs:           {summary.total_prs}")
     print(f"  • WEC Compliant:            {summary.wec_compliant_count}/{summary.total_prs} ({summary.wec_compliance_rate:.1%})")
@@ -333,7 +333,7 @@ def _print_health_report(summary: HealthSummary) -> None:
     print(f"  • Avg Workflow Pass Rate:   {summary.avg_workflow_pass_rate:.1%}")
     print(f"  • Avg Merge Time:           {summary.avg_merge_time_hours:.1f} hours")
     print()
-    
+
     # Health score breakdown
     print("🎯 Health Score Components:")
     wec_contrib = HEALTH_WEIGHTS["wec_compliance_rate"] * summary.wec_compliance_rate
@@ -341,13 +341,13 @@ def _print_health_report(summary: HealthSummary) -> None:
     wf_contrib = HEALTH_WEIGHTS["workflow_pass_rate"] * summary.avg_workflow_pass_rate
     merge_speed_score = 1.0 - min(1.0, summary.avg_merge_time_hours / 24.0)
     merge_contrib = HEALTH_WEIGHTS["merge_speed"] * merge_speed_score
-    
+
     print(f"  • WEC Compliance:    {wec_contrib:.2f} ({HEALTH_WEIGHTS['wec_compliance_rate']:.0%} weight)")
     print(f"  • Workflow Success:  {wf_contrib:.2f} ({HEALTH_WEIGHTS['workflow_pass_rate']:.0%} weight)")
     print(f"  • REQ Compliance:    {req_contrib:.2f} ({HEALTH_WEIGHTS['req_compliance_rate']:.0%} weight)")
     print(f"  • Merge Speed:       {merge_contrib:.2f} ({HEALTH_WEIGHTS['merge_speed']:.0%} weight)")
     print()
-    
+
     if summary.total_prs <= 10:
         print("📋 PR Details:")
         for pr in summary.prs:
@@ -356,7 +356,7 @@ def _print_health_report(summary: HealthSummary) -> None:
                   f"WEC={pr['wec_compliant']}, "
                   f"Workflows={pr['workflow_pass_rate']:.0%}, "
                   f"Age={pr['time_to_merge_hours']:.1f}h")
-    
+
     print()
     print("=" * 80)
 
@@ -400,20 +400,20 @@ def main(argv: list[str] | None = None) -> int:
         default="",
         help="Export report to JSON file",
     )
-    
+
     args = parser.parse_args(argv)
-    
+
     # Generate report
     summary = generate_health_report(json_output=args.json, verbose=args.verbose)
-    
+
     if summary is None:
         return 1
-    
+
     # Export if requested
     if args.export:
         export_path = Path(args.export)
         save_health_report(summary, export_path)
-    
+
     return 0
 
 

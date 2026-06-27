@@ -15,8 +15,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -65,17 +64,17 @@ class TestServicesModuleInitialization:
     def test_module_imports_successfully(self):
         """Test that services module can be imported."""
         import services
-        assert services is not None
+        assert services is not None, "services must be initialized"
 
     def test_workflow_inventory_imported(self):
         """Test that WorkflowInventory is available."""
         from services import WorkflowInventory
-        assert WorkflowInventory is not None
+        assert WorkflowInventory is not None, "WorkflowInventory must be initialized"
 
     def test_workflow_parser_imported(self):
         """Test that WorkflowParser is available."""
         from services import WorkflowParser
-        assert WorkflowParser is not None
+        assert WorkflowParser is not None, "WorkflowParser must be initialized"
 
     def test_all_exports_defined(self):
         """Test that __all__ is properly defined."""
@@ -86,12 +85,12 @@ class TestServicesModuleInitialization:
     def test_workflow_parser_in_exports(self):
         """Test that WorkflowParser is in __all__."""
         from services import __all__
-        assert "WorkflowParser" in __all__
+        assert "WorkflowParser" in __all__, "Condition must be true"
 
     def test_workflow_inventory_in_exports(self):
         """Test that WorkflowInventory is in __all__."""
         from services import __all__
-        assert "WorkflowInventory" in __all__
+        assert "WorkflowInventory" in __all__, "Condition must be true"
 
     def test_types_exported(self):
         """Test that workflow types are exported."""
@@ -102,7 +101,7 @@ class TestServicesModuleInitialization:
             WorkflowMetadata,
             WorkflowTrigger,
         )
-        assert all(
+        assert all(, "Condition must be true"
             [
                 WorkflowDependency,
                 WorkflowInput,
@@ -114,8 +113,8 @@ class TestServicesModuleInitialization:
 
     def test_all_exported_items_accessible(self):
         """Test that all items in __all__ are accessible."""
-        from services import __all__
         import services
+        from services import __all__
 
         for item_name in __all__:
             assert hasattr(services, item_name)
@@ -150,7 +149,7 @@ class TestWorkflowParserBasic:
         from services import WorkflowParser
 
         parser = WorkflowParser()
-        assert parser is not None
+        assert parser is not None, "parser must be initialized"
         assert isinstance(parser, WorkflowParser)
 
     def test_parser_has_cache_attribute(self):
@@ -167,7 +166,7 @@ class TestWorkflowParserBasic:
 
         parser = WorkflowParser()
         assert hasattr(parser, "parse_file")
-        assert callable(parser.parse_file)
+        assert callable(parser.parse_file), "Condition must be true"
 
     def test_parser_parse_file_accepts_path(self):
         """Test that parse_file accepts Path objects."""
@@ -183,7 +182,7 @@ class TestWorkflowParserBasic:
         from services import WorkflowParser
 
         parser = WorkflowParser()
-        assert len(parser._cache) == 0
+        assert len(parser._cache) == 0, "Collection must not be empty"
 
     def test_multiple_parser_instances_independent(self):
         """Test that multiple parser instances have independent caches."""
@@ -192,7 +191,7 @@ class TestWorkflowParserBasic:
         parser1 = WorkflowParser()
         parser2 = WorkflowParser()
 
-        assert parser1._cache is not parser2._cache
+        assert parser1._cache is not parser2._cache, "_cache is not valid"
 
 
 class TestWorkflowParserFileHandling:
@@ -204,7 +203,7 @@ class TestWorkflowParserFileHandling:
 
         parser = WorkflowParser()
         result = parser.parse_file(Path("/tmp/nonexistent_workflow_test_file.yml"))
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_parse_file_valid_file(self, temp_workflow_file):
         """Test parsing a valid workflow file."""
@@ -224,7 +223,7 @@ class TestWorkflowParserFileHandling:
         result2 = parser.parse_file(temp_workflow_file, use_cache=True)
 
         # Second call should use cache
-        assert temp_workflow_file in parser._cache or result1 is None
+        assert temp_workflow_file in parser._cache or result1 is None, "Result must not be empty"
 
     def test_parse_file_with_cache_disabled(self, temp_workflow_file):
         """Test that cache can be bypassed."""
@@ -236,7 +235,7 @@ class TestWorkflowParserFileHandling:
         initial_cache_size = len(parser._cache)
         result2 = parser.parse_file(temp_workflow_file, use_cache=False)
         # Cache size should remain same
-        assert len(parser._cache) >= initial_cache_size
+        assert len(parser._cache) >= initial_cache_size, "Collection must not be empty"
 
 
 class TestWorkflowParserYAMLHandling:
@@ -298,31 +297,31 @@ class TestWorkflowTypes:
         """Test that WorkflowMetadata type exists."""
         from services import WorkflowMetadata
 
-        assert WorkflowMetadata is not None
+        assert WorkflowMetadata is not None, "WorkflowMetadata must be initialized"
 
     def test_workflow_trigger_type_exists(self):
         """Test that WorkflowTrigger type exists."""
         from services import WorkflowTrigger
 
-        assert WorkflowTrigger is not None
+        assert WorkflowTrigger is not None, "WorkflowTrigger must be initialized"
 
     def test_workflow_job_type_exists(self):
         """Test that WorkflowJob type exists."""
         from services import WorkflowJob
 
-        assert WorkflowJob is not None
+        assert WorkflowJob is not None, "WorkflowJob must be initialized"
 
     def test_workflow_input_type_exists(self):
         """Test that WorkflowInput type exists."""
         from services import WorkflowInput
 
-        assert WorkflowInput is not None
+        assert WorkflowInput is not None, "WorkflowInput must be initialized"
 
     def test_workflow_dependency_type_exists(self):
         """Test that WorkflowDependency type exists."""
         from services import WorkflowDependency
 
-        assert WorkflowDependency is not None
+        assert WorkflowDependency is not None, "WorkflowDependency must be initialized"
 
 
 # ============================================================================
@@ -338,7 +337,7 @@ class TestWorkflowInventoryBasic:
         from services import WorkflowInventory
 
         inventory = WorkflowInventory()
-        assert inventory is not None
+        assert inventory is not None, "inventory must be initialized"
         assert isinstance(inventory, WorkflowInventory)
 
     def test_inventory_methods_exist(self):
@@ -358,7 +357,7 @@ class TestWorkflowInventoryBasic:
 
         inv1 = WorkflowInventory()
         inv2 = WorkflowInventory()
-        assert inv1 is not inv2
+        assert inv1 is not inv2, "inv1 is not valid"
 
 
 # ============================================================================
@@ -437,7 +436,7 @@ class TestGitHubClientImport:
         import services
 
         # Should have graceful handling
-        assert "logger" in dir(services)
+        assert "logger" in dir(services), "Condition must be true"
 
 
 # ============================================================================
@@ -452,28 +451,28 @@ class TestWorkflowSubmoduleIntegration:
         """Test that workflow submodule imports correctly."""
         from services.workflow import WorkflowInventory, WorkflowParser
 
-        assert WorkflowInventory is not None
-        assert WorkflowParser is not None
+        assert WorkflowInventory is not None, "WorkflowInventory must be initialized"
+        assert WorkflowParser is not None, "WorkflowParser must be initialized"
 
     def test_workflow_types_module(self):
         """Test that workflow types module exists."""
         from services.workflow import types
 
-        assert types is not None
+        assert types is not None, "types must be initialized"
         assert hasattr(types, "WorkflowMetadata")
 
     def test_workflow_parser_module(self):
         """Test that parser module exists."""
         from services.workflow import parser
 
-        assert parser is not None
+        assert parser is not None, "parser must be initialized"
         assert hasattr(parser, "WorkflowParser")
 
     def test_workflow_inventory_module(self):
         """Test that inventory module exists."""
         from services.workflow import inventory
 
-        assert inventory is not None
+        assert inventory is not None, "inventory must be initialized"
         assert hasattr(inventory, "WorkflowInventory")
 
 
@@ -514,14 +513,15 @@ class TestServicesAPIContract:
 
     def test_inventory_scan_method_signature(self):
         """Test that inventory scan method has expected signature."""
-        from services import WorkflowInventory
         import inspect
+
+        from services import WorkflowInventory
 
         inventory = WorkflowInventory()
         if hasattr(inventory, "scan"):
             sig = inspect.signature(inventory.scan)
             # Should have directory or path parameter
-            assert len(sig.parameters) >= 1
+            assert len(sig.parameters) >= 1, "Collection must not be empty"
 
 
 # ============================================================================
@@ -537,7 +537,7 @@ class TestServicesLogging:
         import services
 
         # Logger name should relate to services module
-        assert "services" in services.logger.name.lower() or services.logger.name == "__main__"
+        assert "services" in services.logger.name.lower() or services.logger.name == "__main__", "name is not valid"
 
     def test_logger_works_during_imports(self):
         """Test that logger works during module import."""
@@ -546,7 +546,7 @@ class TestServicesLogging:
         # Should be able to use logger
         initial_handlers = len(services.logger.handlers)
         # Logger should have been initialized
-        assert services.logger is not None
+        assert services.logger is not None, "logger must be initialized"
 
 
 # ============================================================================
@@ -560,9 +560,10 @@ class TestServicesWithMockDependencies:
     @patch("services.workflow.parser.yaml.safe_load")
     def test_parser_with_mocked_yaml_loader(self, mock_yaml):
         """Test parser with mocked YAML loader."""
-        from services import WorkflowParser
-        from pathlib import Path
         import tempfile
+        from pathlib import Path
+
+        from services import WorkflowParser
 
         mock_yaml.return_value = {"name": "test", "jobs": {}}
 
@@ -578,9 +579,10 @@ class TestServicesWithMockDependencies:
 
     def test_inventory_with_path_variations(self):
         """Test inventory scan with various path inputs."""
-        from services import WorkflowInventory
         import tempfile
         from pathlib import Path
+
+        from services import WorkflowInventory
 
         inventory = WorkflowInventory()
 
@@ -613,13 +615,13 @@ class TestServicesRegression:
         parser2 = WorkflowParser()
 
         # Both should have empty cache
-        assert len(parser1._cache) == 0
-        assert len(parser2._cache) == 0
+        assert len(parser1._cache) == 0, "Collection must not be empty"
+        assert len(parser2._cache) == 0, "Collection must not be empty"
 
         # Modifying one should not affect the other
         parser1._cache[Path("test")] = MagicMock()
-        assert len(parser1._cache) == 1
-        assert len(parser2._cache) == 0
+        assert len(parser1._cache) == 1, "Collection must not be empty"
+        assert len(parser2._cache) == 0, "Collection must not be empty"
 
     def test_parser_reset_between_tests(self):
         """Test that parser state is independent between instantiations."""
@@ -627,7 +629,7 @@ class TestServicesRegression:
 
         for _ in range(3):
             parser = WorkflowParser()
-            assert len(parser._cache) == 0
+            assert len(parser._cache) == 0, "Collection must not be empty"
 
     def test_all_exports_remain_stable(self):
         """Test that module exports remain consistent."""
@@ -638,12 +640,13 @@ class TestServicesRegression:
 
         # Re-import and check
         import importlib
+
         import services
 
         importlib.reload(services)
         from services import __all__ as reloaded_all
 
-        assert set(reloaded_all) == current_exports
+        assert set(reloaded_all) == current_exports, "Condition must be true"
 
 
 if __name__ == "__main__":
