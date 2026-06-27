@@ -43,7 +43,7 @@ class TestMetaTensorValidation:
 
         # Create a minimal model
         model = factory.create(model_type="tiny", device="cpu")
-        assert model is not None
+        assert model is not None, "model must be initialized"
 
         # Check no meta tensors
         meta_params = [
@@ -65,7 +65,7 @@ class TestMetaTensorValidation:
             import torch.nn as nn
             model = nn.Linear(10, 10)
             result = validate_model_ready(model)
-            assert result is True
+            assert result is True, "Result must not be empty"
         except (ImportError, NotImplementedError):
             pytest.skip("validate_model_ready not implemented")
 
@@ -160,7 +160,7 @@ class TestPEFTCompatibility:
         
         # Should return model unchanged if PEFT unavailable
         result = build_lora(model, cfg)
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
 
 @pytest.mark.skipif(torch is None, reason="PyTorch not installed")
@@ -176,14 +176,14 @@ class TestModelInitialization:
 
         # Test string input
         result = _resolve_dtype("fp32")
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
         result = _resolve_dtype("bf16")
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
         # Test None input
         result = _resolve_dtype(None)
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     def test_model_factory_quantization_config(self):
         """Quantization config should be properly validated."""
@@ -197,8 +197,8 @@ class TestModelInitialization:
             os.environ.pop("CODEX_ML_QUANTIZATION", None)
             
             factory = create_model_factory()
-            assert factory is not None
-        except Exception:
+            assert factory is not None, "factory must be initialized"
+        except Exception as _err:
             pytest.skip("Factory initialization failed")
 
     def test_model_forward_pass_ready(self):

@@ -115,7 +115,7 @@ class TestSetSeed:
     def test_set_seed_with_valid_integer(self):
         """Test _set_seed with a valid integer seed."""
         result = _set_seed(42)
-        assert result == 42
+        assert result == 42, "Result must not be empty"
         assert isinstance(result, int)
 
     @pytest.mark.unit
@@ -123,14 +123,14 @@ class TestSetSeed:
         """Test _set_seed with zero seed."""
         result = _set_seed(0)
         assert isinstance(result, int)
-        assert result >= 0
+        assert result >= 0, "result must be greater than zero"
 
     @pytest.mark.unit
     def test_set_seed_with_none(self):
         """Test _set_seed with None seed."""
         result = _set_seed(None)
         assert isinstance(result, int)
-        assert result >= 0
+        assert result >= 0, "result must be greater than zero"
 
     @pytest.mark.unit
     def test_set_seed_determinism(self):
@@ -149,7 +149,7 @@ class TestSetSeed:
     def test_set_seed_with_various_values(self, seed_val):
         """Test _set_seed with various seed values."""
         result = _set_seed(seed_val)
-        assert result == seed_val
+        assert result == seed_val, "Result must not be empty"
 
 
 class TestNowTs:
@@ -160,8 +160,8 @@ class TestNowTs:
         """Test that _now_ts returns properly formatted ISO 8601 timestamp."""
         ts = _now_ts()
         assert isinstance(ts, str)
-        assert ts.endswith("Z")
-        assert "T" in ts
+        assert ts.endswith("Z"), "Condition must be true"
+        assert "T" in ts, "Condition must be true"
 
     @pytest.mark.unit
     def test_now_ts_parseable(self):
@@ -176,16 +176,16 @@ class TestNowTs:
         """Test that multiple calls return increasing timestamps."""
         ts1 = _now_ts()
         ts2 = _now_ts()
-        assert ts1 <= ts2
+        assert ts1 <= ts2, "ts1 is not valid"
 
     @pytest.mark.unit
     def test_now_ts_contains_date_time(self):
         """Test that timestamp contains both date and time."""
         ts = _now_ts()
         parts = ts.replace("Z", "").split("T")
-        assert len(parts) == 2
-        assert len(parts[0].split("-")) == 3  # YYYY-MM-DD
-        assert len(parts[1].split(":")) == 3  # HH:MM:SS
+        assert len(parts) == 2, "Parts must not be empty"
+        assert len(parts[0].split("-")) == 3, "Collection must not be empty"
+        assert len(parts[1].split(":")) == 3, "Collection must not be empty"
 
 
 class TestResolveDtype:
@@ -195,25 +195,25 @@ class TestResolveDtype:
     def test_resolve_dtype_float32(self):
         """Test resolving float32 dtype."""
         dtype = _resolve_dtype("float32")
-        assert dtype == torch.float32
+        assert dtype == torch.float32, "dtype is not valid"
 
     @pytest.mark.unit
     def test_resolve_dtype_float64(self):
         """Test resolving float64 dtype."""
         dtype = _resolve_dtype("float64")
-        assert dtype == torch.float64
+        assert dtype == torch.float64, "dtype is not valid"
 
     @pytest.mark.unit
     def test_resolve_dtype_int32(self):
         """Test resolving int32 dtype."""
         dtype = _resolve_dtype("int32")
-        assert dtype == torch.int32
+        assert dtype == torch.int32, "dtype is not valid"
 
     @pytest.mark.unit
     def test_resolve_dtype_int64(self):
         """Test resolving int64 dtype."""
         dtype = _resolve_dtype("int64")
-        assert dtype == torch.int64
+        assert dtype == torch.int64, "dtype is not valid"
 
     @pytest.mark.unit
     @pytest.mark.parametrize(
@@ -229,7 +229,7 @@ class TestResolveDtype:
     def test_resolve_dtype_various(self, dtype_str, expected):
         """Test resolving various dtype strings."""
         dtype = _resolve_dtype(dtype_str)
-        assert dtype == expected
+        assert dtype == expected, "dtype is not valid"
 
     @pytest.mark.unit
     def test_resolve_dtype_case_insensitive(self):
@@ -237,7 +237,7 @@ class TestResolveDtype:
         dtype1 = _resolve_dtype("float32")
         dtype2 = _resolve_dtype("FLOAT32")
         dtype3 = _resolve_dtype("Float32")
-        assert dtype1 == dtype2 == dtype3
+        assert dtype1 == dtype2 == dtype3, "dtype1 is not valid"
 
 
 class TestResolveDevice:
@@ -247,20 +247,20 @@ class TestResolveDevice:
     def test_resolve_device_cpu(self):
         """Test resolving CPU device."""
         device = _resolve_device("cpu")
-        assert device == torch.device("cpu")
+        assert device == torch.device("cpu"), "device is not valid"
 
     @pytest.mark.unit
     def test_resolve_device_cuda_if_available(self):
         """Test resolving CUDA device."""
         device = _resolve_device("cuda")
         expected = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        assert device == expected
+        assert device == expected, "device is not valid"
 
     @pytest.mark.unit
     def test_resolve_device_auto_fallback(self):
         """Test that invalid device falls back to CPU."""
         device = _resolve_device("invalid_device_xyz")
-        assert device == torch.device("cpu")
+        assert device == torch.device("cpu"), "device is not valid"
 
     @pytest.mark.unit
     @pytest.mark.parametrize("device_str", ["cpu", "cuda:0", "mps"])
@@ -289,31 +289,31 @@ class TestCoerceReasoningConfig:
         """Test coercing config from dictionary."""
         config = {"enabled": True, "depth": 3}
         result = _coerce_reasoning_config(config)
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     @pytest.mark.unit
     def test_coerce_from_bool_true(self):
         """Test coercing config from boolean True."""
         result = _coerce_reasoning_config(True)
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
     @pytest.mark.unit
     def test_coerce_from_bool_false(self):
         """Test coercing config from boolean False."""
         result = _coerce_reasoning_config(False)
-        assert result is None or result is False
+        assert result is None or result is False, "Result must not be empty"
 
     @pytest.mark.unit
     def test_coerce_from_none(self):
         """Test coercing config from None."""
         result = _coerce_reasoning_config(None)
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     @pytest.mark.unit
     def test_coerce_from_empty_dict(self):
         """Test coercing config from empty dictionary."""
         result = _coerce_reasoning_config({})
-        assert result is not None or result is None
+        assert result is not None or result is None, "result must be initialized"
 
     @pytest.mark.unit
     def test_coerce_preserves_dict_content(self):
@@ -321,7 +321,7 @@ class TestCoerceReasoningConfig:
         config = {"enabled": True, "depth": 5, "max_tokens": 2000}
         result = _coerce_reasoning_config(config)
         if result and hasattr(result, "enabled"):
-            assert result.enabled == True
+            assert result.enabled == True, "Result must not be empty"
 
     @pytest.mark.unit
     @pytest.mark.parametrize(
@@ -354,14 +354,14 @@ class TestToyDataset:
     def test_toy_dataset_creation(self):
         """Test creating a ToyDataset instance."""
         dataset = ToyDataset(num_samples=100, num_features=10)
-        assert dataset is not None
-        assert len(dataset) == 100
+        assert dataset is not None, "dataset must be initialized"
+        assert len(dataset) == 100, "Dataset must not be empty"
 
     @pytest.mark.unit
     def test_toy_dataset_length(self):
         """Test ToyDataset length property."""
         dataset = ToyDataset(num_samples=50, num_features=5)
-        assert len(dataset) == 50
+        assert len(dataset) == 50, "Dataset must not be empty"
 
     @pytest.mark.unit
     def test_toy_dataset_getitem(self):
@@ -391,7 +391,7 @@ class TestToyDataset:
     def test_toy_dataset_various_sizes(self, num_samples, num_features):
         """Test ToyDataset with various dimensions."""
         dataset = ToyDataset(num_samples=num_samples, num_features=num_features)
-        assert len(dataset) == num_samples
+        assert len(dataset) == num_samples, "Dataset must not be empty"
         x, y = dataset[0]
         assert x.shape == (num_features,)
 
@@ -401,8 +401,8 @@ class TestToyDataset:
         dataset = ToyDataset(num_samples=100, num_features=10)
         loader = DataLoader(dataset, batch_size=32)
         batch = next(iter(loader))
-        assert len(batch) == 2
-        assert batch[0].shape[0] <= 32
+        assert len(batch) == 2, "Batch must not be empty"
+        assert batch[0].shape[0] <= 32, "Condition must be true"
 
 
 # ============================================================================
@@ -417,34 +417,34 @@ class TestReasoningRuntime:
     def test_reasoning_runtime_creation(self, mock_reasoning_config):
         """Test creating a ReasoningRuntime instance."""
         runtime = ReasoningRuntime(**mock_reasoning_config)
-        assert runtime is not None
+        assert runtime is not None, "runtime must be initialized"
 
     @pytest.mark.unit
     def test_reasoning_runtime_fields(self):
         """Test ReasoningRuntime has expected fields."""
         runtime = ReasoningRuntime(enabled=True, depth=3)
         assert hasattr(runtime, "enabled")
-        assert runtime.enabled == True
+        assert runtime.enabled == True, "enabled is not valid"
 
     @pytest.mark.unit
     def test_reasoning_runtime_with_defaults(self):
         """Test ReasoningRuntime with default values."""
         runtime = ReasoningRuntime()
-        assert runtime is not None
+        assert runtime is not None, "runtime must be initialized"
 
     @pytest.mark.unit
     @pytest.mark.parametrize("enabled", [True, False])
     def test_reasoning_runtime_enabled_flag(self, enabled):
         """Test ReasoningRuntime enabled flag."""
         runtime = ReasoningRuntime(enabled=enabled)
-        assert runtime.enabled == enabled
+        assert runtime.enabled == enabled, "enabled is not valid"
 
     @pytest.mark.unit
     @pytest.mark.parametrize("depth", [1, 3, 5, 10])
     def test_reasoning_runtime_depth(self, depth):
         """Test ReasoningRuntime with various depths."""
         runtime = ReasoningRuntime(depth=depth)
-        assert runtime.depth == depth
+        assert runtime.depth == depth, "depth is not valid"
 
 
 # ============================================================================
@@ -463,7 +463,7 @@ class TestAttemptResume:
         epoch, metadata = _attempt_resume(
             mock_model, mock_optimizer, mock_scheduler, temp_checkpoint_dir
         )
-        assert epoch == 0
+        assert epoch == 0, "epoch is not valid"
         assert isinstance(metadata, dict)
 
     @pytest.mark.unit
@@ -472,7 +472,7 @@ class TestAttemptResume:
         epoch, metadata = _attempt_resume(
             mock_model, mock_optimizer, mock_scheduler, "/nonexistent/path"
         )
-        assert epoch == 0
+        assert epoch == 0, "epoch is not valid"
         assert isinstance(metadata, dict)
 
     @pytest.mark.unit
@@ -504,7 +504,7 @@ class TestAttemptResume:
         """Test that _attempt_resume returns tuple of (epoch, metadata)."""
         result = _attempt_resume(mock_model, mock_optimizer, mock_scheduler, temp_checkpoint_dir)
         assert isinstance(result, tuple)
-        assert len(result) == 2
+        assert len(result) == 2, "Result must not be empty"
 
 
 # ============================================================================
@@ -561,8 +561,8 @@ class TestRunTrainingIntegration:
                 _set_seed(42)
                 _set_seed(42)
                 # Both should initialize with same seed
-                assert True
-            except Exception:
+                assert True, "True is not valid"
+            except Exception as _err:
                 pytest.skip("run_training integration test setup incomplete")
 
     @pytest.mark.integration
@@ -570,11 +570,11 @@ class TestRunTrainingIntegration:
         """Test that run_training creates output directory."""
         with tempfile.TemporaryDirectory() as tmpdir:
             output_dir = os.path.join(tmpdir, "output")
-            assert not os.path.exists(output_dir)
+            assert not os.path.exists(output_dir), "Condition must be true"
 
             # Just verify the path creation logic works
             os.makedirs(output_dir, exist_ok=True)
-            assert os.path.exists(output_dir)
+            assert os.path.exists(output_dir), "Condition must be true"
 
 
 # ============================================================================
@@ -666,7 +666,7 @@ class TestParametrizedScenarios:
         loader = DataLoader(dataset, batch_size=batch_size)
 
         for batch in loader:
-            assert batch[0].shape[0] <= batch_size
+            assert batch[0].shape[0] <= batch_size, "Condition must be true"
             break
 
     @pytest.mark.unit

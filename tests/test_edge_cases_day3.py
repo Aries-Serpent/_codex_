@@ -21,7 +21,7 @@ class TestModelEdgeCases:
 
         model = nn.Identity()
         params = list(model.parameters())
-        assert len(params) == 0
+        assert len(params) == 0, "Params must not be empty"
 
     def test_model_very_large_parameters(self):
         """Should handle models with large parameter counts."""
@@ -34,7 +34,7 @@ class TestModelEdgeCases:
         # 1M parameters
         model = nn.Linear(1000, 1000)
         param_count = sum(p.numel() for p in model.parameters())
-        assert param_count >= 1_000_000
+        assert param_count >= 1_000_000, "param_count must be positive"
 
     def test_model_mixed_dtypes(self):
         """Should handle models with mixed parameter dtypes."""
@@ -49,7 +49,7 @@ class TestModelEdgeCases:
         ])
         
         dtypes = {p.dtype for p in model.parameters()}
-        assert len(dtypes) >= 1
+        assert len(dtypes) >= 1, "Dtypes must not be empty"
 
     def test_model_with_buffers(self):
         """Should handle models with registered buffers."""
@@ -63,7 +63,7 @@ class TestModelEdgeCases:
         model.register_buffer("running_mean", torch.zeros(10))
         
         buffers = list(model.buffers())
-        assert len(buffers) > 0
+        assert len(buffers) > 0, "Buffers must not be empty"
 
     def test_model_with_hooks(self):
         """Should handle models with registered hooks."""
@@ -84,7 +84,7 @@ class TestModelEdgeCases:
         # Forward pass should trigger hook
         x = torch.randn(2, 10)
         _ = model(x)
-        assert len(hook_called) > 0
+        assert len(hook_called) > 0, "Hook_called must not be empty"
 
 
 class TestTokenizationEdgeCases:
@@ -121,7 +121,7 @@ class TestTokenizationEdgeCases:
         try:
             long_text = " ".join(["word"] * 10000)
             result = tokenizer.encode(long_text, max_length=512, truncation=True)
-            assert len(result) <= 512
+            assert len(result) <= 512, "Result must not be empty"
         except (ValueError, TypeError):
             pytest.skip("Long sequence handling not fully implemented")
 
@@ -139,7 +139,7 @@ class TestTokenizationEdgeCases:
         try:
             text_with_nulls = "hello\x00world"
             result = tokenizer.encode(text_with_nulls)
-            assert result is not None
+            assert result is not None, "result must be initialized"
         except (ValueError, UnicodeError):
             pytest.skip("Null byte handling not specified")
 
@@ -157,7 +157,7 @@ class TestTokenizationEdgeCases:
         try:
             text = "Hello 😊 World 🌍"
             result = tokenizer.encode(text)
-            assert len(result) > 0
+            assert len(result) > 0, "Result must not be empty"
         except (ValueError, UnicodeError):
             pytest.skip("Emoji handling not fully implemented")
 
@@ -175,7 +175,7 @@ class TestTokenizationEdgeCases:
         try:
             text = "aaaaaabbbbbbcccccc"
             result = tokenizer.encode(text)
-            assert len(result) > 0
+            assert len(result) > 0, "Result must not be empty"
         except (ValueError, TypeError):
             pytest.skip("Repeated character handling failed")
 
@@ -192,7 +192,7 @@ class TestPipelineEdgeCases:
 
         try:
             pipeline = Pipeline({"steps": []})
-            assert pipeline is not None
+            assert pipeline is not None, "pipeline must be initialized"
         except (TypeError, ValueError):
             pytest.skip("Empty pipeline not handled")
 
@@ -243,7 +243,7 @@ class TestPipelineEdgeCases:
 
         try:
             pipeline = Pipeline({"step_timeout": 1.0})
-            assert pipeline is not None
+            assert pipeline is not None, "pipeline must be initialized"
         except (TypeError, NotImplementedError):
             pytest.skip("Pipeline timeout not implemented")
 
@@ -266,7 +266,7 @@ class TestDataValidation:
         
         try:
             result = validate_schema(data, schema)
-            assert result is True
+            assert result is True, "Result must not be empty"
         except (TypeError, NotImplementedError):
             pytest.skip("Schema validation not implemented")
 
@@ -314,7 +314,7 @@ class TestDataValidation:
 
         try:
             validate_range(50, min_val=0, max_val=100)
-            assert True  # Should pass
+            assert True, "True is not valid"
             
             with pytest.raises((ValueError, AssertionError)):
                 validate_range(150, min_val=0, max_val=100)
@@ -351,7 +351,7 @@ class TestConcurrency:
             for t in threads:
                 t.join()
             
-            assert len(results) == 5
+            assert len(results) == 5, "Results must not be empty"
         except (NotImplementedError, RuntimeError):
             pytest.skip("Concurrent registry access not tested")
 
@@ -366,7 +366,7 @@ class TestConcurrency:
             files = [f"file_{i}.txt" for i in range(4)]
             # Would need actual files to test
             result = load_data_parallel(files, num_workers=4)
-            assert result is not None or True
+            assert result is not None or True, "result must be initialized"
         except (TypeError, FileNotFoundError):
             pytest.skip("Parallel loading not available")
 
@@ -390,7 +390,7 @@ class TestIntegration:
             factory = create_model_factory()
             if factory:
                 model = factory.create("tiny", device="cpu")
-                assert model is not None
+                assert model is not None, "model must be initialized"
         except (FileNotFoundError, NotImplementedError):
             pytest.skip("End-to-end integration not available")
 
@@ -436,7 +436,7 @@ class TestIntegration:
                 new_model = nn.Linear(10, 10)
                 new_model.load_state_dict(torch.load(Path(tmpdir) / "model.pt"))
                 
-                assert new_model is not None
+                assert new_model is not None, "new_model must be initialized"
             except (IOError, RuntimeError):
                 pytest.skip("Checkpoint recovery failed")
 
@@ -464,7 +464,7 @@ class TestPerformanceCharacteristics:
             elapsed = time.time() - start
             
             # Should process 100 texts reasonably fast
-            assert elapsed < 10.0  # 10 seconds for 100 texts
+            assert elapsed < 10.0, "elapsed is not valid"
         except (NotImplementedError, TypeError):
             pytest.skip("Batch encoding performance not tested")
 
@@ -491,7 +491,7 @@ class TestPerformanceCharacteristics:
         elapsed = time.time() - start
         
         # 10 forward passes should be fast
-        assert elapsed < 1.0  # 1 second for 10 passes
+        assert elapsed < 1.0, "elapsed is not valid"
 
     def test_memory_efficiency(self):
         """Should not leak memory."""
@@ -513,7 +513,7 @@ class TestPerformanceCharacteristics:
         
         gc.collect()
         # If we reach here without OOM, test passes
-        assert True
+        assert True, "True is not valid"
 
 
 if __name__ == "__main__":

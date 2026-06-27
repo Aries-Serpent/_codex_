@@ -43,7 +43,7 @@ def test_file_cache_basic(tmp_path: Path):
 def test_file_cache_expiry(tmp_path: Path):
     """Test cache TTL expiry."""
     from scripts.space_traversal.performance import FileCache
-    import time
+    pass  # removed redundant `import time` (top-level import used)
 
     cache = FileCache(tmp_path / "cache")
 
@@ -71,7 +71,7 @@ def test_file_cache_expiry(tmp_path: Path):
 def test_file_cache_invalidate(tmp_path: Path):
     """Test cache invalidation."""
     from scripts.space_traversal.performance import FileCache
-    import time
+    pass  # removed redundant `import time` (top-level import used)
 
     cache = FileCache(tmp_path / "cache")
 
@@ -106,7 +106,7 @@ def test_file_cache_invalidate(tmp_path: Path):
 def test_file_cache_clear(tmp_path: Path):
     """Test clearing entire cache."""
     from scripts.space_traversal.performance import FileCache
-    import time
+    pass  # removed redundant `import time` (top-level import used)
 
     cache = FileCache(tmp_path / "cache")
 
@@ -115,9 +115,9 @@ def test_file_cache_clear(tmp_path: Path):
     cache.set("key3", "value3")
 
     # Fix: Verify cache state before and after clear
-    assert cache.get("key1") is not None
-    assert cache.get("key2") is not None
-    assert cache.get("key3") is not None
+    assert cache.get("key1") is not None, "Value must be initialized"
+    assert cache.get("key2") is not None, "Value must be initialized"
+    assert cache.get("key3") is not None, "Value must be initialized"
 
     count = cache.clear()
     assert count == 3, "Count must be greater than zero"
@@ -140,7 +140,7 @@ def test_file_cache_clear(tmp_path: Path):
 def test_file_cache_cleanup_expired(tmp_path: Path):
     """Test cleanup of expired entries."""
     from scripts.space_traversal.performance import FileCache
-    import time
+    pass  # removed redundant `import time` (top-level import used)
 
     cache = FileCache(tmp_path / "cache")
 

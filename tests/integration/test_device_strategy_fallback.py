@@ -75,7 +75,7 @@ class TestDeviceStrategyFallback:
             config = DeviceConfig.auto_detect(prefer_mps=True)
 
             # Assert: Should either use MPS or fall back to CPU
-            assert config.device in (
+            assert config.device in (, "Condition must be true"
                 "mps",
                 "cpu",
             ), f"Device should be mps or cpu, got {config.device}"

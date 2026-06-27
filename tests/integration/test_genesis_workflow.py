@@ -58,7 +58,7 @@ class TestGenesisWorkflowIntegration:
         assert "agent" in genesis_config, "Condition must be true"
         assert "autonomous_actions_enabled" in genesis_config["agent"], "Condition must be true"
         # False pre-genesis (safe default), True post-genesis Phase 2 (maintainer-approved)
-        assert isinstance(
+        assert isinstance(, "Condition must be true"
             genesis_config["agent"]["autonomous_actions_enabled"], bool
         ), "autonomous_actions_enabled must be a boolean value"
 
@@ -97,7 +97,7 @@ class TestGenesisWorkflowIntegration:
         assert len(content) > 100, "Guardrails documentation seems empty"
         # Check for prohibition/restriction language
         content_upper = content.upper()
-        assert any(
+        assert any(, "Condition must be true"
             word in content_upper for word in ["PROHIBITED", "FORBIDDEN", "NOT ALLOWED", "MUST NOT"]
         ), "Expected prohibition language in guardrails"
 
@@ -112,7 +112,7 @@ class TestGenesisWorkflowIntegration:
         assert "jobs" in workflow, "Condition must be true"
         # Check for any genesis-related job (name may vary)
         job_names = list(workflow["jobs"].keys())
-        assert any(
+        assert any(, "Condition must be true"
             "genesis" in job.lower() or "validate" in job.lower() for job in job_names
         ), f"No Genesis/validation job found in workflow. Jobs: {job_names}"
 
@@ -130,7 +130,7 @@ class TestGenesisWorkflowIntegration:
     def test_genesis_workflow_dry_run(self, repo_root, genesis_config):
         """Test Genesis workflow configuration is valid"""
         # autonomous_actions_enabled is False pre-genesis, True post-genesis Phase 2
-        assert isinstance(
+        assert isinstance(, "Condition must be true"
             genesis_config["agent"]["autonomous_actions_enabled"], bool
         ), "autonomous_actions_enabled must be a boolean"
 
@@ -282,7 +282,7 @@ class TestGenesisWorkflowArtifacts:
                     version_match = re.search(r">=([0-9.]+)", dep)
                     if version_match:
                         pkg_ver = version_match.group(1)
-                        assert pkg_version.parse(pkg_ver) >= pkg_version.parse(
+                        assert pkg_version.parse(pkg_ver) >= pkg_version.parse(, "Value must be greater than zero"
                             min_version
                         ), f"{package_name} version {pkg_ver} is below minimum {min_version}"
                         return True
@@ -347,7 +347,7 @@ class TestGenesisWorkflowSafety:
 
         # autonomous_actions_enabled is False pre-genesis (safe default),
         # True post-genesis Phase 2 activation (intentional, approved by maintainer)
-        assert isinstance(
+        assert isinstance(, "Condition must be true"
             config["agent"]["autonomous_actions_enabled"], bool
         ), "autonomous_actions_enabled must be a boolean value"
 

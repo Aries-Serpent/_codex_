@@ -20,7 +20,7 @@ class TestDtypeResolution:
             pytest.skip("_resolve_dtype not available")
 
         result = _resolve_dtype(None)
-        assert result is None  # Mutant: ==/!=
+        assert result is None, "Result must not be empty"
 
     def test_resolve_dtype_fp32_string(self):
         """Mutant: 'fp32' string should resolve correctly."""
@@ -31,7 +31,7 @@ class TestDtypeResolution:
 
         result = _resolve_dtype("fp32")
         # Must not be None
-        assert result is not None  # Mutant: is/is not
+        assert result is not None, "result must be initialized"
 
     def test_resolve_dtype_bf16_string(self):
         """Mutant: 'bf16' string should resolve correctly."""
@@ -41,7 +41,7 @@ class TestDtypeResolution:
             pytest.skip("_resolve_dtype not available")
 
         result = _resolve_dtype("bf16")
-        assert result is not None  # Mutant: is/is not
+        assert result is not None, "result must be initialized"
 
     def test_resolve_dtype_case_insensitive(self):
         """Mutant: dtype resolution should be case-insensitive."""
@@ -54,7 +54,7 @@ class TestDtypeResolution:
         result_upper = _resolve_dtype("FP32")
         
         # Both should resolve to same type
-        assert result_lower is not None and result_upper is not None  # Mutant: and/or
+        assert result_lower is not None and result_upper is not None, "result_lower must be initialized"
 
 
 class TestLoraConfiguration:
@@ -68,7 +68,7 @@ class TestLoraConfiguration:
             pytest.skip("LoraBuildCfg not available")
 
         cfg = LoraBuildCfg(r=8)
-        assert cfg.r > 0  # Mutant: >/<=/>=/</!=/==
+        assert cfg.r > 0, "r must be greater than zero"
 
     def test_lora_alpha_positive(self):
         """Mutant: LoRA alpha must be positive."""
@@ -78,7 +78,7 @@ class TestLoraConfiguration:
             pytest.skip("LoraBuildCfg not available")
 
         cfg = LoraBuildCfg(alpha=16)
-        assert cfg.alpha > 0  # Mutant: >/<=
+        assert cfg.alpha > 0, "alpha must be greater than zero"
 
     def test_lora_dropout_range(self):
         """Mutant: LoRA dropout should be in [0, 1]."""
@@ -88,7 +88,7 @@ class TestLoraConfiguration:
             pytest.skip("LoraBuildCfg not available")
 
         cfg = LoraBuildCfg(dropout=0.1)
-        assert 0.0 <= cfg.dropout <= 1.0  # Mutant: comparison operators
+        assert 0.0 <= cfg.dropout <= 1.0, "0 is not valid"
 
     def test_lora_target_modules_not_empty(self):
         """Mutant: target modules should not be empty."""
@@ -98,7 +98,7 @@ class TestLoraConfiguration:
             pytest.skip("LoraBuildCfg not available")
 
         cfg = LoraBuildCfg(target_modules=["q_proj", "v_proj"])
-        assert len(cfg.target_modules) > 0  # Mutant: >/<=
+        assert len(cfg.target_modules) > 0, "Collection must not be empty"
 
     def test_lora_default_rank_8(self):
         """Mutant: default LoRA rank should be exactly 8."""
@@ -108,7 +108,7 @@ class TestLoraConfiguration:
             pytest.skip("LoraBuildCfg not available")
 
         cfg = LoraBuildCfg()
-        assert cfg.r == 8  # Mutant: ==/!=
+        assert cfg.r == 8, "r is not valid"
 
 
 class TestBatchProcessing:
@@ -129,7 +129,7 @@ class TestBatchProcessing:
             texts = ["hello", "world"]
             result = tokenizer.batch_encode_plus(texts)
             if result:
-                assert len(result) > 0  # Mutant: >/<=
+                assert len(result) > 0, "Result must not be empty"
         except (NotImplementedError, TypeError):
             pytest.skip("batch_encode_plus not available")
 
@@ -149,7 +149,7 @@ class TestBatchProcessing:
             result = tokenizer.batch_encode_plus(texts)
             if result and "input_ids" in result:
                 # Result should handle all inputs
-                assert result is not None  # Mutant: is/is not
+                assert result is not None, "result must be initialized"
         except (NotImplementedError, TypeError):
             pytest.skip("batch_encode_plus not available")
 
@@ -169,7 +169,7 @@ class TestPipelineState:
             
             # Minimal test
             pipeline = Pipeline({})
-            assert pipeline is not None  # Mutant: is/is not
+            assert pipeline is not None, "pipeline must be initialized"
         except (TypeError, NotImplementedError):
             pytest.skip("Pipeline not fully available")
 
@@ -183,7 +183,7 @@ class TestPipelineState:
         try:
             # Test error handling
             pipeline = Pipeline({"error_handling": "raise"})
-            assert pipeline is not None  # Mutant: is/is not
+            assert pipeline is not None, "pipeline must be initialized"
         except (TypeError, NotImplementedError):
             pytest.skip("Pipeline error handling not available")
 
@@ -200,7 +200,7 @@ class TestConfigValidation:
 
         try:
             config = ConfigSchema(batch_size=32)
-            assert config.batch_size > 0  # Mutant: >/<=
+            assert config.batch_size > 0, "batch_size must be greater than zero"
         except (TypeError, ValueError):
             pytest.skip("ConfigSchema validation not available")
 
@@ -213,7 +213,7 @@ class TestConfigValidation:
 
         try:
             config = ConfigSchema(learning_rate=0.001)
-            assert config.learning_rate > 0  # Mutant: >/<=
+            assert config.learning_rate > 0, "learning_rate must be greater than zero"
         except (TypeError, ValueError):
             pytest.skip("ConfigSchema validation not available")
 
@@ -227,7 +227,7 @@ class TestConfigValidation:
         try:
             cfg_dict = {"model": "test", "batch_size": 32}
             config = load_config(cfg_dict)
-            assert config is not None  # Mutant: is/is not
+            assert config is not None, "config must be initialized"
         except (TypeError, ValueError):
             pytest.skip("Config loading not available")
 
@@ -247,7 +247,7 @@ class TestRegistryLookup:
             registry.register("key", "value")
             
             result = registry.get("key")
-            assert result is not None  # Mutant: is/is not
+            assert result is not None, "result must be initialized"
         except (TypeError, KeyError, NotImplementedError):
             pytest.skip("Registry operations not available")
 
@@ -262,8 +262,8 @@ class TestRegistryLookup:
             registry = Registry()
             registry.register("exists", "value")
             
-            assert "exists" in registry  # Mutant: in/not in
-            assert "missing" not in registry  # Mutant: in/not in
+            assert "exists" in registry, "Condition must be true"
+            assert "missing" not in registry, "Condition must be true"
         except (TypeError, NotImplementedError):
             pytest.skip("Registry contains not available")
 
@@ -296,7 +296,7 @@ class TestDeviceHandling:
             pytest.skip("PyTorch not available")
 
         device = torch.device("cpu")
-        assert device.type == "cpu"  # Mutant: ==/!=
+        assert device.type == "cpu", "type is not valid"
 
     def test_device_type_not_meta(self):
         """Mutant: device should not be meta after init."""
@@ -306,7 +306,7 @@ class TestDeviceHandling:
             pytest.skip("PyTorch not available")
 
         device = torch.device("cpu")
-        assert device.type != "meta"  # Mutant: ==/!=
+        assert device.type != "meta", "type is not valid"
 
     def test_parameter_device_consistency(self):
         """Mutant: all parameters should be on same device."""
@@ -320,7 +320,7 @@ class TestDeviceHandling:
         devices = {p.device.type for p in model.parameters()}
         
         # Should have exactly one device type
-        assert len(devices) == 1  # Mutant: ==/!= with comparison operators
+        assert len(devices) == 1, "Devices must not be empty"
 
 
 class TestTypeCoercion:
@@ -330,14 +330,14 @@ class TestTypeCoercion:
         """Mutant: string should convert to int correctly."""
         try:
             batch_size = int("32")
-            assert batch_size == 32  # Mutant: ==/!=
+            assert batch_size == 32, "batch_size is not valid"
         except ValueError:
             pytest.fail("String to int conversion failed")
 
     def test_int_to_float_conversion(self):
         """Mutant: int should convert to float correctly."""
         lr = float(1) / 1000
-        assert 0.0009 < lr < 0.0011  # Mutant: comparison operators
+        assert 0.0009 < lr < 0.0011, "0009 is not valid"
 
     def test_none_vs_default(self):
         """Mutant: None value should use default."""
@@ -345,7 +345,7 @@ class TestTypeCoercion:
         default = "default_value"
         result = value or default
         
-        assert result == default  # Mutant: ==/!=
+        assert result == default, "Result must not be empty"
 
 
 if __name__ == "__main__":

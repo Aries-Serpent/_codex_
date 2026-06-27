@@ -25,7 +25,7 @@ class TestDataLoading:
             
             try:
                 data = load_json_data(f.name)
-                assert data is not None
+                assert data is not None, "data must be initialized"
                 assert isinstance(data, (dict, list))
             except (IOError, json.JSONDecodeError):
                 pytest.skip("JSON loading failed")
@@ -45,7 +45,7 @@ class TestDataLoading:
             
             try:
                 data = load_csv_data(f.name)
-                assert data is not None
+                assert data is not None, "data must be initialized"
             except (IOError, ValueError):
                 pytest.skip("CSV loading failed")
             finally:
@@ -71,8 +71,8 @@ class TestDataLoading:
                 df.to_parquet(f.name)
                 
                 data = load_parquet_data(f.name)
-                assert data is not None
-            except Exception:
+                assert data is not None, "data must be initialized"
+            except Exception as _err:
                 pytest.skip("Parquet loading failed")
             finally:
                 Path(f.name).unlink()
@@ -86,7 +86,7 @@ class TestDataLoading:
 
         try:
             loader = StreamingDataLoader(batch_size=32)
-            assert loader is not None
+            assert loader is not None, "loader must be initialized"
         except (TypeError, NotImplementedError):
             pytest.skip("StreamingDataLoader not implemented")
 
@@ -105,7 +105,7 @@ class TestDataTransformation:
             cleaner = TextCleaner()
             text = "  Hello  World  \n"
             result = cleaner.transform(text)
-            assert result is not None
+            assert result is not None, "result must be initialized"
         except (TypeError, NotImplementedError):
             pytest.skip("TextCleaner not implemented")
 
@@ -120,7 +120,7 @@ class TestDataTransformation:
             normalizer = Normalizer(min_val=0, max_val=100)
             values = [10, 50, 90]
             result = normalizer.transform(values)
-            assert result is not None
+            assert result is not None, "result must be initialized"
         except (TypeError, NotImplementedError):
             pytest.skip("Normalizer not implemented")
 
@@ -135,7 +135,7 @@ class TestDataTransformation:
             transform = TokenizationTransform()
             text = "Hello world"
             result = transform.transform(text)
-            assert result is not None
+            assert result is not None, "result must be initialized"
         except (TypeError, NotImplementedError):
             pytest.skip("TokenizationTransform not implemented")
 
@@ -152,7 +152,7 @@ class TestDataTransformation:
                 ("upper", lambda x: x.upper()),
             ])
             result = chain.transform("  hello  ")
-            assert result is not None
+            assert result is not None, "result must be initialized"
         except (TypeError, NotImplementedError):
             pytest.skip("ChainedTransform not implemented")
 
@@ -166,8 +166,8 @@ class TestDataTransformation:
         try:
             data = [1, 2, 3, 4, 5]
             result = batch_transform(data, lambda x: x * 2, batch_size=2)
-            assert result is not None
-            assert len(result) == 5
+            assert result is not None, "result must be initialized"
+            assert len(result) == 5, "Result must not be empty"
         except (TypeError, NotImplementedError):
             pytest.skip("batch_transform not implemented")
 
@@ -184,7 +184,7 @@ class TestRAGIndexHealth:
 
         try:
             index = get_rag_index()
-            assert index is not None
+            assert index is not None, "index must be initialized"
         except (FileNotFoundError, NotImplementedError):
             pytest.skip("RAG index not available in this environment")
 
@@ -198,7 +198,7 @@ class TestRAGIndexHealth:
         try:
             index = RAGIndex()
             results = index.retrieve("test query", k=5)
-            assert results is not None
+            assert results is not None, "results must be initialized"
             assert isinstance(results, (list, tuple))
         except (FileNotFoundError, NotImplementedError, TypeError):
             pytest.skip("RAG retrieval not available")
@@ -279,7 +279,7 @@ class TestCheckpointing:
                 checkpoint_path = Path(tmpdir) / "model.pt"
                 
                 save_checkpoint(model, checkpoint_path)
-                assert checkpoint_path.exists()
+                assert checkpoint_path.exists(), "Condition must be true"
             except (TypeError, NotImplementedError):
                 pytest.skip("save_checkpoint not implemented")
 
@@ -304,7 +304,7 @@ class TestCheckpointing:
                 save_checkpoint(model, checkpoint_path)
                 loaded_model = load_checkpoint(checkpoint_path)
                 
-                assert loaded_model is not None
+                assert loaded_model is not None, "loaded_model must be initialized"
             except (TypeError, FileNotFoundError):
                 pytest.skip("Checkpoint save/load not fully implemented")
 
@@ -328,8 +328,8 @@ class TestCheckpointing:
                 torch.save(checkpoint, f.name)
                 
                 loaded = torch.load(f.name)
-                assert loaded["epoch"] == 10
-                assert loaded["step"] == 1000
+                assert loaded["epoch"] == 10, "Condition must be true"
+                assert loaded["step"] == 1000, "Condition must be true"
                 
                 Path(f.name).unlink()
         except (TypeError, NotImplementedError):
@@ -376,7 +376,7 @@ class TestErrorHandling:
         try:
             result = process_data([])
             # Should either return empty or handle gracefully
-            assert result is not None or result == []
+            assert result is not None or result == [], "result must be initialized"
         except (TypeError, NotImplementedError):
             pytest.skip("Empty data handling not implemented")
 
@@ -410,7 +410,7 @@ class TestMemoryManagement:
             batches = list(batch_process(data, batch_size=100))
             
             # Should have 100 batches (10000/100)
-            assert len(batches) == 100
+            assert len(batches) == 100, "Batches must not be empty"
         except (TypeError, NotImplementedError):
             pytest.skip("batch_process not implemented")
 

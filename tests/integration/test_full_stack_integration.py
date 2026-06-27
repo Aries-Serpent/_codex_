@@ -135,7 +135,7 @@ class TestEndToEndWorkflows:
         }
 
         # Verify all metrics exist and numeric values are non-negative
-        assert all(
+        assert all(, "Condition must be true"
             isinstance(v, (int, float)) and v >= 0
             for v in metrics.values()
             if isinstance(v, (int, float))

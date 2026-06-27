@@ -47,7 +47,7 @@ class TestBoundaryConditions:
         assert isinstance(value, (int, float))
         if isinstance(value, float):
             if not (value != value):  # not NaN
-                assert value == value or value != value
+                assert value == value or value != value, "Value must be initialized"
 
     # String boundaries
     @pytest.mark.parametrize("string_val", [
@@ -63,9 +63,9 @@ class TestBoundaryConditions:
     def test_string_boundaries(self, string_val):
         """Test string operations at boundaries."""
         assert isinstance(string_val, str)
-        assert len(string_val) >= 0
+        assert len(string_val) >= 0, "String_val must not be empty"
         if string_val:
-            assert string_val == string_val
+            assert string_val == string_val, "string_val is not valid"
 
     # Collection boundaries
     @pytest.mark.parametrize("collection_val", [
@@ -79,7 +79,7 @@ class TestBoundaryConditions:
     def test_collection_boundaries(self, collection_val):
         """Test collection operations at boundaries."""
         assert isinstance(collection_val, list)
-        assert len(collection_val) >= 0
+        assert len(collection_val) >= 0, "Collection_val must not be empty"
         for item in collection_val:
             _ = item
 
@@ -87,8 +87,8 @@ class TestBoundaryConditions:
     @pytest.mark.parametrize("none_val", [None])
     def test_none_handling(self, none_val):
         """Test None/null value handling."""
-        assert none_val is None
-        assert type(none_val) is type(None)
+        assert none_val is None, "none_val is not valid"
+        assert type(none_val) is type(None), "Condition must be true"
 
     def test_zero_division_edge_case(self):
         """Test edge case of zero division."""
@@ -100,7 +100,7 @@ class TestBoundaryConditions:
         count = 0
         for _ in []:
             count += 1
-        assert count == 0
+        assert count == 0, "Count must be greater than zero"
 
     def test_single_element_iteration(self):
         """Test iteration with single element."""
@@ -108,8 +108,8 @@ class TestBoundaryConditions:
         count = 0
         for item in items:
             count += 1
-            assert item == 42
-        assert count == 1
+            assert item == 42, "Item must not be empty"
+        assert count == 1, "Count must be greater than zero"
 
 
 class TestTypeEdgeCases:
@@ -141,7 +141,7 @@ class TestTypeEdgeCases:
         """Test that different types don't match."""
         val1 = base()
         val2 = other()
-        assert type(val1) != type(val2)
+        assert type(val1) != type(val2), "Condition must be true"
 
     @pytest.mark.parametrize("union_val", [
         1,
@@ -157,15 +157,15 @@ class TestTypeEdgeCases:
         elif isinstance(union_val, str):
             assert isinstance(union_val, str)
         elif union_val is None:
-            assert union_val is None
+            assert union_val is None, "union_val is not valid"
 
     @pytest.mark.parametrize("optional_val", [1, None, "value", [], 0, False])
     def test_optional_type_handling(self, optional_val: Optional[Any]):
         """Test optional type handling."""
         if optional_val is not None:
-            assert optional_val is not None
+            assert optional_val is not None, "optional_val must be initialized"
         else:
-            assert optional_val is None
+            assert optional_val is None, "optional_val is not valid"
 
     @pytest.mark.parametrize("value,target_type,expected", [
         ("42", int, 42),
@@ -178,29 +178,29 @@ class TestTypeEdgeCases:
         try:
             result = target_type(value)
             if target_type == float:
-                assert abs(result - expected) < 1e-9
+                assert abs(result - expected) < 1e-9, "Result must not be empty"
             else:
-                assert result == expected or str(result).lower() == str(expected).lower()
+                assert result == expected or str(result).lower() == str(expected).lower(), "Result must not be empty"
         except (ValueError, TypeError):
             pass  # Some conversions may fail
 
     def test_bool_type_edge_cases(self):
         """Test bool type edge cases."""
-        assert bool(0) is False
-        assert bool(1) is True
-        assert bool("") is False
-        assert bool("x") is True
-        assert bool([]) is False
-        assert bool([1]) is True
-        assert bool(None) is False
+        assert bool(0) is False, "Condition must be true"
+        assert bool(1) is True, "Condition must be true"
+        assert bool("") is False, "Condition must be true"
+        assert bool("x") is True, "Condition must be true"
+        assert bool([]) is False, "Condition must be true"
+        assert bool([1]) is True, "Condition must be true"
+        assert bool(None) is False, "Condition must be true"
 
     def test_numeric_type_mixing(self):
         """Test mixing numeric types."""
-        assert 1 + 1.0 == 2.0
-        assert 1 + True == 2
-        assert 0 + False == 0
-        assert 1.0 == 1
-        assert 0.0 == 0
+        assert 1 + 1.0 == 2.0, "0 is not valid"
+        assert 1 + True == 2, "True is not valid"
+        assert 0 + False == 0, "False is not valid"
+        assert 1.0 == 1, "0 is not valid"
+        assert 0.0 == 0, "0 is not valid"
 
 
 class TestStringEdgeCases:
@@ -209,15 +209,15 @@ class TestStringEdgeCases:
     @pytest.mark.parametrize("empty_str", [""])
     def test_empty_string(self, empty_str):
         """Test empty string."""
-        assert len(empty_str) == 0
-        assert bool(empty_str) is False
-        assert empty_str == ""
+        assert len(empty_str) == 0, "Empty_str must not be empty"
+        assert bool(empty_str) is False, "Condition must be true"
+        assert empty_str == "", "empty_str is not valid"
 
     @pytest.mark.parametrize("whitespace", [" ", "\t", "\n", "\r"])
     def test_whitespace_strings(self, whitespace):
         """Test strings containing only whitespace."""
-        assert len(whitespace) > 0
-        assert whitespace.strip() == ""
+        assert len(whitespace) > 0, "Whitespace must not be empty"
+        assert whitespace.strip() == "", "Condition must be true"
 
     @pytest.mark.parametrize("special_char", [
         "!@#$%^&*()",
@@ -228,7 +228,7 @@ class TestStringEdgeCases:
     def test_special_characters(self, special_char):
         """Test strings with special characters."""
         assert isinstance(special_char, str)
-        assert len(special_char) > 0
+        assert len(special_char) > 0, "Special_char must not be empty"
 
     @pytest.mark.parametrize("unicode_str", [
         "Latin",
@@ -238,37 +238,37 @@ class TestStringEdgeCases:
     def test_unicode_strings(self, unicode_str):
         """Test Unicode strings."""
         assert isinstance(unicode_str, str)
-        assert len(unicode_str) > 0
-        assert unicode_str == unicode_str
+        assert len(unicode_str) > 0, "Unicode_str must not be empty"
+        assert unicode_str == unicode_str, "unicode_str is not valid"
 
     @pytest.mark.parametrize("long_str_len", [100, 1000, 10000])
     def test_very_long_strings(self, long_str_len):
         """Test very long strings."""
         long_str = "x" * long_str_len
-        assert len(long_str) == long_str_len
-        assert long_str[0] == "x"
-        assert long_str[-1] == "x"
+        assert len(long_str) == long_str_len, "Long_str must not be empty"
+        assert long_str[0] == "x", "Condition must be true"
+        assert long_str[-1] == "x", "Condition must be true"
 
     @pytest.mark.parametrize("case_variant", ["abc", "ABC", "Abc", "aBc"])
     def test_string_case_variants(self, case_variant):
         """Test string case variations."""
-        assert len(case_variant) == 3
-        assert case_variant.lower() == "abc"
-        assert case_variant.upper() == "ABC"
+        assert len(case_variant) == 3, "Case_variant must not be empty"
+        assert case_variant.lower() == "abc", "Condition must be true"
+        assert case_variant.upper() == "ABC", "Condition must be true"
 
     @pytest.mark.parametrize("newline_type", ["\n", "\r\n", "\r"])
     def test_newline_variations(self, newline_type):
         """Test different newline representations."""
         test_str = f"line1{newline_type}line2"
-        assert "line1" in test_str
-        assert "line2" in test_str
+        assert "line1" in test_str, "Condition must be true"
+        assert "line2" in test_str, "Condition must be true"
 
     def test_string_encoding_edge_cases(self):
         """Test string encoding edge cases."""
         test_str = "hello"
         encoded = test_str.encode("utf-8")
         decoded = encoded.decode("utf-8")
-        assert decoded == test_str
+        assert decoded == test_str, "decoded is not valid"
 
 
 class TestCollectionEdgeCases:
@@ -277,7 +277,7 @@ class TestCollectionEdgeCases:
     @pytest.mark.parametrize("empty_collection", [[], {}, set(), tuple()])
     def test_empty_collections(self, empty_collection):
         """Test empty collections."""
-        assert len(empty_collection) == 0
+        assert len(empty_collection) == 0, "Empty_collection must not be empty"
 
     @pytest.mark.parametrize("single_item", [
         [1],
@@ -287,7 +287,7 @@ class TestCollectionEdgeCases:
     ])
     def test_single_item_collections(self, single_item):
         """Test collections with single item."""
-        assert len(single_item) == 1
+        assert len(single_item) == 1, "Single_item must not be empty"
 
     @pytest.mark.parametrize("duplicates", [
         [1, 1, 1, 1],
@@ -296,8 +296,8 @@ class TestCollectionEdgeCases:
     ])
     def test_duplicate_items(self, duplicates):
         """Test collections with duplicates."""
-        assert len(duplicates) > 0
-        assert duplicates[0] == duplicates[-1]
+        assert len(duplicates) > 0, "Duplicates must not be empty"
+        assert duplicates[0] == duplicates[-1], "Condition must be true"
 
     @pytest.mark.parametrize("nested_depth", range(1, 6))
     def test_nested_collections(self, nested_depth):
@@ -305,65 +305,69 @@ class TestCollectionEdgeCases:
         nested = [[[]]]
         for _ in range(nested_depth - 1):
             nested = [nested]
-        assert nested is not None
+        assert nested is not None, "nested must be initialized"
 
     @pytest.mark.parametrize("falsy_values", [0, "", [], {}, None, False])
     def test_falsy_in_collection(self, falsy_values):
         """Test falsy values in collections."""
         collection = [falsy_values]
-        assert len(collection) == 1
+        assert len(collection) == 1, "Collection must not be empty"
 
     @pytest.mark.parametrize("large_size", [100, 1000, 10000])
     def test_large_collections(self, large_size):
         """Test large collections."""
         large_list = list(range(large_size))
-        assert len(large_list) == large_size
-        assert large_list[0] == 0
-        assert large_list[-1] == large_size - 1
+        assert len(large_list) == large_size, "Large_list must not be empty"
+        assert large_list[0] == 0, "Condition must be true"
+        assert large_list[-1] == large_size - 1, "Condition must be true"
 
     def test_dict_edge_cases(self):
         """Test dict edge cases."""
         d = {None: "none", "": "empty", 0: "zero", False: "false"}
-        assert None in d
-        assert "" in d
-        assert 0 in d
+        assert None in d, "Condition must be true"
+        assert "" in d, "Condition must be true"
+        assert 0 in d, "Condition must be true"
 
     def test_set_edge_cases(self):
         """Test set edge cases."""
         s = {1, 1, 1, 1}
-        assert len(s) == 1
-        assert 1 in s
+        assert len(s) == 1, "S must not be empty"
+        assert 1 in s, "Condition must be true"
 
 
 class TestAsyncConcurrencyEdgeCases:
     """Async/concurrency edge cases (40+ test cases)"""
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_empty_async_operation(self):
         """Test empty async operation."""
         async def empty_coro():
             pass
         result = await empty_coro()
-        assert result is None
+        assert result is None, "Result must not be empty"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_immediate_return(self):
         """Test async function that returns immediately."""
         async def immediate():
             return 42
         result = await immediate()
-        assert result == 42
+        assert result == 42, "Result must not be empty"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_async_with_delay(self):
         """Test async function with delay."""
         async def delayed():
             await asyncio.sleep(0.01)
             return "done"
         result = await delayed()
-        assert result == "done"
+        assert result == "done", "Result must not be empty"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_async_exception_handling(self):
         """Test async exception handling."""
         async def failing_coro():
@@ -383,16 +387,17 @@ class TestAsyncConcurrencyEdgeCases:
         thread.start()
         thread.join(timeout=1.0)
         
-        assert len(result) == 1
+        assert len(result) == 1, "Result must not be empty"
 
     def test_timeout_edge_case(self):
         """Test operation timeout."""
         start = time.time()
         time.sleep(0.01)
         elapsed = time.time() - start
-        assert elapsed >= 0.01
+        assert elapsed >= 0.01, "elapsed must be greater than zero"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_concurrent_tasks(self):
         """Test concurrent async tasks."""
         async def task(n):
@@ -401,10 +406,11 @@ class TestAsyncConcurrencyEdgeCases:
         
         tasks = [task(i) for i in range(5)]
         results = await asyncio.gather(*tasks)
-        assert len(results) == 5
+        assert len(results) == 5, "Results must not be empty"
         assert results == [0, 2, 4, 6, 8]
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     async def test_race_condition_simulation(self):
         """Test race condition simulation."""
         counter = {"value": 0}
@@ -415,7 +421,7 @@ class TestAsyncConcurrencyEdgeCases:
                 counter["value"] += 1
         
         await asyncio.gather(increment(), increment(), increment())
-        assert counter["value"] == 3
+        assert counter["value"] == 3, "Value must be initialized"
 
 
 class TestErrorHandlingEdgeCases:
@@ -480,7 +486,7 @@ class TestErrorHandlingEdgeCases:
         try:
             raise ValueError("arg1", "arg2")
         except ValueError as e:
-            assert len(e.args) == 2
+            assert len(e.args) == 2, "Collection must not be empty"
 
     def test_finally_execution(self):
         """Test finally block execution."""
@@ -489,7 +495,7 @@ class TestErrorHandlingEdgeCases:
             pass
         finally:
             executed = True
-        assert executed is True
+        assert executed is True, "executed is not valid"
 
 
 class TestStateManagementEdgeCases:
@@ -498,32 +504,32 @@ class TestStateManagementEdgeCases:
     def test_state_initialization(self):
         """Test state initialization."""
         state = {}
-        assert len(state) == 0
+        assert len(state) == 0, "State must not be empty"
 
     def test_state_update(self):
         """Test state update."""
         state = {"value": 1}
         state["value"] = 2
-        assert state["value"] == 2
+        assert state["value"] == 2, "Value must be initialized"
 
     def test_state_deletion(self):
         """Test state deletion."""
         state = {"key": "value"}
         del state["key"]
-        assert "key" not in state
+        assert "key" not in state, "Condition must be true"
 
     def test_state_reset(self):
         """Test state reset."""
         state = {"a": 1, "b": 2}
         state.clear()
-        assert len(state) == 0
+        assert len(state) == 0, "State must not be empty"
 
     def test_state_transition_valid(self):
         """Test valid state transition."""
         state = "init"
         if state == "init":
             state = "running"
-        assert state == "running"
+        assert state == "running", "state is not valid"
 
     def test_state_transition_invalid(self):
         """Test invalid state transition."""
@@ -538,7 +544,7 @@ class TestStateManagementEdgeCases:
         state = {"counter": 0}
         state["counter"] += 1
         state["counter"] += 1
-        assert state["counter"] == 2
+        assert state["counter"] == 2, "Count must be greater than zero"
 
     def test_state_rollback_simulation(self):
         """Test state rollback simulation."""
@@ -548,7 +554,7 @@ class TestStateManagementEdgeCases:
         
         # Rollback
         state = original_state
-        assert state["value"] == 1
+        assert state["value"] == 1, "Value must be initialized"
 
 
 class TestIntegrationEdgeCases:
@@ -560,7 +566,7 @@ class TestIntegrationEdgeCases:
         data.append(1)
         data.append(2)
         data.append(3)
-        assert len(data) == 3
+        assert len(data) == 3, "Data must not be empty"
 
     def test_multi_step_operation(self):
         """Test multi-step operation."""
@@ -568,15 +574,15 @@ class TestIntegrationEdgeCases:
         result = result * 2  # 2
         result = result + 3  # 5
         result = result * 2  # 10
-        assert result == 10
+        assert result == 10, "Result must not be empty"
 
     def test_pipeline_with_transforms(self):
         """Test pipeline with multiple transforms."""
         data = [1, 2, 3, 4, 5]
         result = [x * 2 for x in data]  # [2, 4, 6, 8, 10]
         result = [x + 1 for x in result]  # [3, 5, 7, 9, 11]
-        assert len(result) == 5
-        assert result[0] == 3
+        assert len(result) == 5, "Result must not be empty"
+        assert result[0] == 3, "Result must not be empty"
 
     def test_resource_lifecycle(self):
         """Test resource lifecycle."""
@@ -590,9 +596,9 @@ class TestIntegrationEdgeCases:
         
         resource = Resource()
         resource.acquire()
-        assert resource.acquired is True
+        assert resource.acquired is True, "acquired is not valid"
         resource.release()
-        assert resource.acquired is False
+        assert resource.acquired is False, "acquired is not valid"
 
     def test_error_recovery_pattern(self):
         """Test error recovery pattern."""
@@ -609,7 +615,7 @@ class TestIntegrationEdgeCases:
             except ValueError:
                 pass
         
-        assert success is True
+        assert success is True, "success is not valid"
 
     def test_cascading_operations(self):
         """Test cascading operations."""
@@ -619,7 +625,7 @@ class TestIntegrationEdgeCases:
         for op in operations:
             value = op(value)
         
-        assert value == 6  # ((1 * 2) + 10) // 2 = 12 // 2 = 6
+        assert value == 6, "Value must be initialized"
 
     def test_dependency_resolution(self):
         """Test dependency resolution."""
@@ -648,7 +654,7 @@ class TestIntegrationEdgeCases:
         module_a_operate()
         module_b_operate()
         
-        assert shared_state["value"] == 11
+        assert shared_state["value"] == 11, "Value must be initialized"
 
 
 class TestBoundaryInteractions:
@@ -663,7 +669,7 @@ class TestBoundaryInteractions:
     def test_min_max_boundary_pairs(self, min_max_pair):
         """Test min/max boundary pairs."""
         min_val, max_val = min_max_pair
-        assert min_val <= max_val or min_val > max_val
+        assert min_val <= max_val or min_val > max_val, "min_val must be greater than zero"
 
     @pytest.mark.parametrize("off_by_one", [
         (0, 1),
@@ -674,32 +680,32 @@ class TestBoundaryInteractions:
     def test_off_by_one_errors(self, off_by_one):
         """Test off-by-one boundary conditions."""
         a, b = off_by_one
-        assert b == a + 1
-        assert b - a == 1
+        assert b == a + 1, "b is not valid"
+        assert b - a == 1, "a is not valid"
 
     def test_empty_vs_none(self):
         """Test empty vs None distinction."""
         empty_list = []
         none_value = None
-        assert empty_list != none_value
-        assert empty_list is not none_value
-        assert len(empty_list) == 0
-        assert none_value is None
+        assert empty_list != none_value, "Value must be initialized"
+        assert empty_list is not none_value, "Value must be initialized"
+        assert len(empty_list) == 0, "Empty_list must not be empty"
+        assert none_value is None, "Value must be initialized"
 
     def test_zero_vs_false(self):
         """Test zero vs False distinction."""
         zero = 0
         false = False
-        assert zero == false  # They are equal
-        assert zero is not false  # But not identical
+        assert zero == false, "zero is not valid"
+        assert zero is not false, "zero is not valid"
 
     def test_empty_string_vs_none(self):
         """Test empty string vs None."""
         empty_str = ""
         none_val = None
-        assert empty_str != none_val
-        assert bool(empty_str) is False
-        assert none_val is None
+        assert empty_str != none_val, "empty_str is not valid"
+        assert bool(empty_str) is False, "Condition must be true"
+        assert none_val is None, "none_val is not valid"
 
     @pytest.mark.parametrize("comparison", [
         ([], []),
@@ -710,8 +716,8 @@ class TestBoundaryInteractions:
     def test_empty_collection_equality(self, comparison):
         """Test empty collection equality."""
         a, b = comparison
-        assert a == b
-        assert len(a) == len(b)
+        assert a == b, "a is not valid"
+        assert len(a) == len(b), "A must not be empty"
 
 
 class TestParametrizedCombinations:
@@ -735,7 +741,7 @@ class TestParametrizedCombinations:
             coll = collection_type(range(size))
         else:
             coll = collection_type(range(size))
-        assert len(coll) == size
+        assert len(coll) == size, "Coll must not be empty"
 
     @pytest.mark.parametrize("encoding", ["utf-8", "ascii", "latin-1"])
     @pytest.mark.parametrize("text", ["hello", "123"])
@@ -744,7 +750,7 @@ class TestParametrizedCombinations:
         try:
             encoded = text.encode(encoding)
             decoded = encoded.decode(encoding)
-            assert decoded == text
+            assert decoded == text, "decoded is not valid"
         except (UnicodeEncodeError, UnicodeDecodeError):
             pass  # Some combinations may fail
 
@@ -756,14 +762,14 @@ class TestEdgeCaseRecovery:
         """Test recovery from empty list."""
         lst = []
         lst.append(1)
-        assert len(lst) == 1
+        assert len(lst) == 1, "Lst must not be empty"
 
     def test_recovery_from_none(self):
         """Test recovery from None."""
         value = None
         if value is None:
             value = 0
-        assert value == 0
+        assert value == 0, "Value must be initialized"
 
     def test_recovery_from_error(self):
         """Test recovery from error."""
@@ -772,20 +778,20 @@ class TestEdgeCaseRecovery:
             raise ValueError("error")
         except ValueError:
             result = "recovered"
-        assert result == "recovered"
+        assert result == "recovered", "Result must not be empty"
 
     def test_recovery_with_default(self):
         """Test recovery with default value."""
         value = None
         value = value or "default"
-        assert value == "default"
+        assert value == "default", "Value must be initialized"
 
     def test_accumulation_with_empty_start(self):
         """Test accumulation starting from empty."""
         total = 0
         for i in range(5):
             total += i
-        assert total == 10
+        assert total == 10, "total is not valid"
 
     def test_chained_operations_resilience(self):
         """Test resilience in chained operations."""
@@ -793,7 +799,7 @@ class TestEdgeCaseRecovery:
         data.append(1)
         if data:
             data.extend([2, 3])
-        assert len(data) == 3
+        assert len(data) == 3, "Data must not be empty"
 
 
 if __name__ == "__main__":
@@ -818,7 +824,7 @@ class TestExtendedBoundaryConditions:
     def test_list_size_boundaries(self, list_size):
         """Test lists of various sizes."""
         lst = list(range(list_size))
-        assert len(lst) == list_size
+        assert len(lst) == list_size, "Lst must not be empty"
 
     @pytest.mark.parametrize("string_content", [
         "", "a", "ab", "abc", "test",
@@ -828,17 +834,17 @@ class TestExtendedBoundaryConditions:
     ])
     def test_string_content_variations(self, string_content):
         """Test strings with various content."""
-        assert len(string_content) >= 0
+        assert len(string_content) >= 0, "String_content must not be empty"
 
     @pytest.mark.parametrize("value", range(20))
     def test_range_0_to_20(self, value):
         """Test values from 0 to 20."""
-        assert 0 <= value < 20
+        assert 0 <= value < 20, "Value must be initialized"
 
     @pytest.mark.parametrize("negative_value", range(-20, 0))
     def test_negative_range(self, negative_value):
         """Test negative values."""
-        assert negative_value < 0
+        assert negative_value < 0, "Value must be initialized"
 
 
 class TestExtendedTypeVariations:
@@ -862,7 +868,7 @@ class TestExtendedTypeVariations:
     def test_collection_sizes(self, collection):
         """Test collections of varying sizes."""
         assert isinstance(collection, list)
-        assert len(collection) >= 0
+        assert len(collection) >= 0, "Collection must not be empty"
 
     @pytest.mark.parametrize("value", [None, 0, False, "", [], {}])
     def test_falsy_values_comprehensive(self, value):
@@ -882,7 +888,7 @@ class TestExtendedStringVariations:
     ])
     def test_string_patterns(self, text):
         """Test various string patterns."""
-        assert len(text) > 0
+        assert len(text) > 0, "Text must not be empty"
 
     @pytest.mark.parametrize("empty_or_nonempty", ["", "x"])
     @pytest.mark.parametrize("length", [1, 5, 10, 100])
@@ -892,7 +898,7 @@ class TestExtendedStringVariations:
             test_str = empty_or_nonempty * length
         else:
             test_str = ""
-        assert len(test_str) >= 0
+        assert len(test_str) >= 0, "Test_str must not be empty"
 
     @pytest.mark.parametrize("char_code", range(32, 127))
     def test_ascii_characters(self, char_code):
@@ -922,7 +928,7 @@ class TestExtendedCollectionVariations:
     def test_dict_variations(self, dict_size):
         """Test dicts of various sizes."""
         d = {f"key{i}": i for i in range(dict_size)}
-        assert len(d) == dict_size
+        assert len(d) == dict_size, "D must not be empty"
 
     @pytest.mark.parametrize("tuple_content", [
         (),
@@ -940,7 +946,7 @@ class TestExtendedCollectionVariations:
     def test_set_variations(self, set_size):
         """Test sets of various sizes."""
         s = set(range(set_size))
-        assert len(s) == set_size
+        assert len(s) == set_size, "S must not be empty"
 
 
 class TestExtendedErrorVariations:
@@ -977,13 +983,14 @@ class TestExtendedErrorVariations:
             raise ValueError("error")
         except ValueError:
             result = recovery_value
-        assert result == recovery_value
+        assert result == recovery_value, "Result must not be empty"
 
 
 class TestExtendedAsyncVariations:
     """Extended async variations (80+ tests)"""
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.parametrize("delay_ms", [0, 1, 5, 10])
     async def test_async_delays(self, delay_ms):
         """Test async operations with various delays."""
@@ -992,9 +999,10 @@ class TestExtendedAsyncVariations:
             return delay_ms
         
         result = await delayed_op()
-        assert result == delay_ms
+        assert result == delay_ms, "Result must not be empty"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.parametrize("task_count", [1, 2, 3, 5])
     async def test_async_task_counts(self, task_count):
         """Test async with various task counts."""
@@ -1004,7 +1012,7 @@ class TestExtendedAsyncVariations:
         
         tasks = [simple_task() for _ in range(task_count)]
         results = await asyncio.gather(*tasks)
-        assert len(results) == task_count
+        assert len(results) == task_count, "Results must not be empty"
 
 
 class TestExtendedStateVariations:
@@ -1014,7 +1022,7 @@ class TestExtendedStateVariations:
     def test_state_initialization_variations(self, initial_value):
         """Test state initialization with various values."""
         state = {"value": initial_value}
-        assert state["value"] == initial_value
+        assert state["value"] == initial_value, "Value must be initialized"
 
     @pytest.mark.parametrize("transitions", [
         ["a"],
@@ -1027,7 +1035,7 @@ class TestExtendedStateVariations:
         current_state = transitions[0]
         for next_state in transitions[1:]:
             current_state = next_state
-        assert current_state == transitions[-1]
+        assert current_state == transitions[-1], "current_state is not valid"
 
     @pytest.mark.parametrize("update_count", [0, 1, 2, 5, 10])
     def test_state_multiple_updates(self, update_count):
@@ -1035,7 +1043,7 @@ class TestExtendedStateVariations:
         state = {"counter": 0}
         for _ in range(update_count):
             state["counter"] += 1
-        assert state["counter"] == update_count
+        assert state["counter"] == update_count, "Count must be greater than zero"
 
 
 class TestExtendedIntegrationVariations:
@@ -1049,7 +1057,7 @@ class TestExtendedIntegrationVariations:
     ])
     def test_operation_sequences(self, operation_sequence):
         """Test sequences of operations."""
-        assert len(operation_sequence) >= 2
+        assert len(operation_sequence) >= 2, "Operation_sequence must not be empty"
 
     @pytest.mark.parametrize("pipeline_stages", [1, 2, 3, 4, 5])
     def test_pipeline_stages(self, pipeline_stages):
@@ -1057,13 +1065,13 @@ class TestExtendedIntegrationVariations:
         value = 1
         for _ in range(pipeline_stages):
             value = value * 2
-        assert value > 0
+        assert value > 0, "value must be greater than zero"
 
     @pytest.mark.parametrize("dependency_count", [1, 2, 3, 4, 5])
     def test_dependency_counts(self, dependency_count):
         """Test systems with various dependency counts."""
         deps = {f"dep{i}": [] for i in range(dependency_count)}
-        assert len(deps) == dependency_count
+        assert len(deps) == dependency_count, "Deps must not be empty"
 
 
 class TestExtendedCombinations:
@@ -1074,7 +1082,7 @@ class TestExtendedCombinations:
     def test_collection_fill_combinations(self, size, fill_value):
         """Test collection creation with various sizes and fill values."""
         collection = [fill_value] * size
-        assert len(collection) == size
+        assert len(collection) == size, "Collection must not be empty"
 
     @pytest.mark.parametrize("start", [0, 1, 10])
     @pytest.mark.parametrize("end", [0, 1, 5, 10, 20])
@@ -1082,7 +1090,7 @@ class TestExtendedCombinations:
         """Test range combinations."""
         if start <= end:
             r = list(range(start, end))
-            assert len(r) == (end - start)
+            assert len(r) == (end - start), "R must not be empty"
 
     @pytest.mark.parametrize("transform1", [lambda x: x * 2, lambda x: x + 1])
     @pytest.mark.parametrize("transform2", [lambda x: x * 3, lambda x: x - 1])
@@ -1091,7 +1099,7 @@ class TestExtendedCombinations:
         value = 1
         value = transform1(value)
         value = transform2(value)
-        assert value > 0
+        assert value > 0, "value must be greater than zero"
 
     @pytest.mark.parametrize("type1", [int, str, list])
     @pytest.mark.parametrize("type2", [int, str, list])
@@ -1099,8 +1107,8 @@ class TestExtendedCombinations:
         """Test pairs of types."""
         v1 = type1()
         v2 = type2()
-        assert type(v1) == type1
-        assert type(v2) == type2
+        assert type(v1) == type1, "Condition must be true"
+        assert type(v2) == type2, "Condition must be true"
 
 
 
@@ -1111,7 +1119,7 @@ class TestComprehensiveNumericEdgeCases:
     @pytest.mark.parametrize("value2", range(0, 5))
     def test_numeric_addition_matrix(self, value1, value2):
         """Test addition with value matrix."""
-        assert value1 + value2 >= 0
+        assert value1 + value2 >= 0, "value2 must be greater than zero"
 
     @pytest.mark.parametrize("divisor", [1, 2, 3, 4, 5, 10])
     @pytest.mark.parametrize("dividend", [0, 1, 10, 20, 100])
@@ -1119,7 +1127,7 @@ class TestComprehensiveNumericEdgeCases:
         """Test division with value matrix."""
         if divisor != 0:
             result = dividend / divisor
-            assert result >= 0
+            assert result >= 0, "result must be greater than zero"
 
     @pytest.mark.parametrize("sign", [1, -1])
     @pytest.mark.parametrize("magnitude", [0, 1, 10, 100, 1000])
@@ -1132,13 +1140,13 @@ class TestComprehensiveNumericEdgeCases:
     def test_powers_of_two(self, exponent):
         """Test powers of two."""
         value = 2 ** exponent
-        assert value > 0
+        assert value > 0, "value must be greater than zero"
 
     @pytest.mark.parametrize("precision", [1, 2, 5, 10, 100])
     def test_decimal_precision(self, precision):
         """Test decimal precision levels."""
         value = 1.0 / precision
-        assert 0 < value <= 1.0
+        assert 0 < value <= 1.0, "Value must be initialized"
 
 
 class TestComprehensiveStringEdgeCases:
@@ -1156,14 +1164,14 @@ class TestComprehensiveStringEdgeCases:
     def test_string_repetition(self, repeat_count):
         """Test string repetition."""
         result = "a" * repeat_count
-        assert len(result) == repeat_count
+        assert len(result) == repeat_count, "Result must not be empty"
 
     @pytest.mark.parametrize("char", ["a", "z", "A", "Z", "0", "9", " "])
     @pytest.mark.parametrize("count", [1, 5, 10, 100])
     def test_character_repetition_matrix(self, char, count):
         """Test character repetition matrix."""
         result = char * count
-        assert len(result) == count
+        assert len(result) == count, "Result must not be empty"
 
     @pytest.mark.parametrize("words", [
         ["hello"],
@@ -1174,7 +1182,7 @@ class TestComprehensiveStringEdgeCases:
     def test_string_joining(self, words):
         """Test string joining."""
         result = "".join(words)
-        assert len(result) > 0 or len(words) == 0
+        assert len(result) > 0 or len(words) == 0, "Result must not be empty"
 
     @pytest.mark.parametrize("delimiter", ["", " ", ",", "-", "_"])
     @pytest.mark.parametrize("parts", [["a"], ["a", "b"], ["x", "y", "z"]])
@@ -1192,8 +1200,8 @@ class TestComprehensiveCollectionEdgeCases:
     def test_list_of_duplicates(self, item, count):
         """Test lists with duplicate items."""
         lst = [item] * count
-        assert len(lst) == count
-        assert all(x == item for x in lst)
+        assert len(lst) == count, "Lst must not be empty"
+        assert all(x == item for x in lst), "Item must not be empty"
 
     @pytest.mark.parametrize("start", [0, 1, 10])
     @pytest.mark.parametrize("stop", [1, 10, 20, 100])
@@ -1202,7 +1210,7 @@ class TestComprehensiveCollectionEdgeCases:
         """Test range with various parameters."""
         if start < stop:
             r = list(range(start, stop, step))
-            assert len(r) > 0
+            assert len(r) > 0, "R must not be empty"
 
     @pytest.mark.parametrize("transform", [
         lambda x: x,
@@ -1214,15 +1222,15 @@ class TestComprehensiveCollectionEdgeCases:
     def test_list_comprehension_transforms(self, transform, source):
         """Test list comprehension with various transforms."""
         result = [transform(x) for x in source]
-        assert len(result) == len(source)
+        assert len(result) == len(source), "Result must not be empty"
 
     @pytest.mark.parametrize("key", ["a", "b", "key", "test"])
     @pytest.mark.parametrize("value", [0, 1, "", "value"])
     def test_dict_key_value_pairs(self, key, value):
         """Test dict construction with key-value pairs."""
         d = {key: value}
-        assert len(d) == 1
-        assert d[key] == value
+        assert len(d) == 1, "D must not be empty"
+        assert d[key] == value, "Value must be initialized"
 
     @pytest.mark.parametrize("nested_depth", range(1, 6))
     @pytest.mark.parametrize("size", [1, 2, 3])
@@ -1231,7 +1239,7 @@ class TestComprehensiveCollectionEdgeCases:
         result = []
         for _ in range(nested_depth):
             result = [result] * size
-        assert result is not None
+        assert result is not None, "result must be initialized"
 
 
 class TestComprehensiveTypeConversions:
@@ -1266,14 +1274,14 @@ class TestComprehensiveTypeConversions:
         """Test list to tuple conversion."""
         result = tuple(value)
         assert isinstance(result, tuple)
-        assert len(result) == len(value)
+        assert len(result) == len(value), "Result must not be empty"
 
     @pytest.mark.parametrize("value", [(1,), (1, 2), (1, 2, 3)])
     def test_tuple_to_list_conversion(self, value):
         """Test tuple to list conversion."""
         result = list(value)
         assert isinstance(result, list)
-        assert len(result) == len(value)
+        assert len(result) == len(value), "Result must not be empty"
 
     @pytest.mark.parametrize("value", [[1, 2, 3], (1, 2, 3)])
     def test_sequence_to_set_conversion(self, value):
@@ -1317,15 +1325,16 @@ class TestComprehensiveErrorScenarios:
         for _ in range(attempts):
             try:
                 count += 1
-            except Exception:
+            except (AttributeError, OSError, RuntimeError):
                 pass
-        assert count == attempts
+        assert count == attempts, "Count must be greater than zero"
 
 
 class TestComprehensiveAsyncConcurrency:
     """Comprehensive async/concurrency scenarios (100+ tests)"""
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.parametrize("task_id", range(5))
     async def test_simple_async_tasks(self, task_id):
         """Test simple async tasks."""
@@ -1334,9 +1343,10 @@ class TestComprehensiveAsyncConcurrency:
             return task_id
         
         result = await task()
-        assert result == task_id
+        assert result == task_id, "Result must not be empty"
 
     @pytest.mark.asyncio
+    @pytest.mark.timeout(30)
     @pytest.mark.parametrize("delay", [0.001, 0.005, 0.01])
     async def test_async_delays_precision(self, delay):
         """Test async delays with precision."""
@@ -1347,7 +1357,7 @@ class TestComprehensiveAsyncConcurrency:
             return elapsed >= delay * 0.8  # Allow 20% variance
         
         result = await delayed()
-        assert result is True
+        assert result is True, "Result must not be empty"
 
     def test_threading_scenarios(self):
         """Test threading scenarios."""
@@ -1362,7 +1372,7 @@ class TestComprehensiveAsyncConcurrency:
         for t in threads:
             t.join()
         
-        assert len(results) == 3
+        assert len(results) == 3, "Results must not be empty"
 
 
 class TestComprehensiveStateManagement:
@@ -1376,14 +1386,14 @@ class TestComprehensiveStateManagement:
         state = {"value": initial}
         for _ in range(steps):
             state["value"] += increment
-        assert state["value"] == initial + (increment * steps)
+        assert state["value"] == initial + (increment * steps), "Value must be initialized"
 
     @pytest.mark.parametrize("state_key", ["state", "value", "data", "result"])
     @pytest.mark.parametrize("state_value", [None, 0, "", []])
     def test_state_key_value_pairs(self, state_key, state_value):
         """Test state with various key-value pairs."""
         state = {state_key: state_value}
-        assert state[state_key] == state_value
+        assert state[state_key] == state_value, "Value must be initialized"
 
     @pytest.mark.parametrize("transitions", [
         ["start", "end"],
@@ -1395,6 +1405,6 @@ class TestComprehensiveStateManagement:
         current = transitions[0]
         for next_state in transitions[1:]:
             current = next_state
-        assert current == transitions[-1]
+        assert current == transitions[-1], "current is not valid"
 
 

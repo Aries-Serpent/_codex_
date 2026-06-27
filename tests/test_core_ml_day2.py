@@ -28,7 +28,7 @@ class TestConfigurationManagement:
         
         try:
             config = load_config(config_dict)
-            assert config is not None
+            assert config is not None, "config must be initialized"
         except (TypeError, ValueError):
             pytest.skip("Config loading not fully implemented")
 
@@ -49,7 +49,7 @@ batch_size: 32
             
             try:
                 config = load_config(f.name)
-                assert config is not None
+                assert config is not None, "config must be initialized"
             except (IOError, ValueError):
                 pytest.skip("YAML config loading not available")
             finally:
@@ -69,7 +69,7 @@ batch_size: 32
                 learning_rate=0.001,
                 batch_size=32,
             )
-            assert config.batch_size > 0
+            assert config.batch_size > 0, "batch_size must be greater than zero"
         except (TypeError, ValueError):
             pytest.skip("Type validation not implemented")
 
@@ -82,10 +82,10 @@ batch_size: 32
 
         try:
             defaults = get_default_config()
-            assert defaults is not None
+            assert defaults is not None, "defaults must be initialized"
             
             # Should have reasonable defaults
-            assert "learning_rate" in defaults or "lr" in defaults
+            assert "learning_rate" in defaults or "lr" in defaults, "Condition must be true"
         except (NotImplementedError, KeyError):
             pytest.skip("Default config not available")
 
@@ -102,7 +102,7 @@ batch_size: 32
             os.environ["CODEX_ML_BATCH_SIZE"] = "64"
             config = load_config_with_env()
             # Check if env vars are applied (implementation dependent)
-            assert config is not None
+            assert config is not None, "config must be initialized"
         except (NotImplementedError, ValueError):
             pytest.skip("Env variable injection not implemented")
         finally:
@@ -126,7 +126,7 @@ class TestRegistrySystem:
                 return "test"
             
             registry.register("test_plugin", dummy_plugin)
-            assert "test_plugin" in registry
+            assert "test_plugin" in registry, "Condition must be true"
         except (NotImplementedError, TypeError):
             pytest.skip("Registry registration not implemented")
 
@@ -142,8 +142,8 @@ class TestRegistrySystem:
             registry.register("test", lambda: 42)
             
             plugin = registry.get("test")
-            assert plugin is not None
-            assert callable(plugin)
+            assert plugin is not None, "plugin must be initialized"
+            assert callable(plugin), "Condition must be true"
         except (NotImplementedError, KeyError):
             pytest.skip("Registry lookup not implemented")
 
@@ -170,8 +170,8 @@ class TestRegistrySystem:
             second = registry.get("counted")
             
             # Check if caching is implemented (may not be)
-            assert first is not None
-            assert second is not None
+            assert first is not None, "first must be initialized"
+            assert second is not None, "second must be initialized"
         except (NotImplementedError, TypeError):
             pytest.skip("Registry caching not implemented")
 
@@ -184,7 +184,7 @@ class TestRegistrySystem:
 
         try:
             registry = Registry(require_version="1.0.0")
-            assert registry is not None
+            assert registry is not None, "registry must be initialized"
         except (NotImplementedError, ValueError):
             pytest.skip("Version compatibility not implemented")
 
@@ -209,7 +209,7 @@ class TestPipelineExecution:
             }
             
             pipeline = Pipeline(config)
-            assert pipeline is not None
+            assert pipeline is not None, "pipeline must be initialized"
         except (TypeError, ValueError):
             pytest.skip("Pipeline creation not fully implemented")
 
@@ -233,7 +233,7 @@ class TestPipelineExecution:
             
             # Would need actual pipeline implementation
             # to verify execution order
-            assert True
+            assert True, "True is not valid"
         except (NotImplementedError, AttributeError):
             pytest.skip("Pipeline step execution not implemented")
 
@@ -255,7 +255,7 @@ class TestPipelineExecution:
             
             pipeline = Pipeline(config)
             # Pipeline should have error handling config
-            assert pipeline is not None
+            assert pipeline is not None, "pipeline must be initialized"
         except (TypeError, NotImplementedError):
             pytest.skip("Pipeline error handling not implemented")
 
@@ -274,7 +274,7 @@ class TestPipelineExecution:
                 pass
             
             # Verify cleanup occurred (implementation dependent)
-            assert True
+            assert True, "True is not valid"
         except (TypeError, NotImplementedError):
             pytest.skip("Pipeline resource cleanup not implemented")
 
@@ -319,7 +319,7 @@ class TestModelRegistryHelpers:
 
         try:
             info = get_model_info("gpt2")
-            assert info is not None or True  # May not exist
+            assert info is not None or True, "info must be initialized"
         except (KeyError, NotImplementedError):
             pytest.skip("get_model_info not implemented")
 
@@ -355,7 +355,7 @@ class TestDataPipeline:
                 batch_size=32,
             )
             # May fail with invalid path, but should not raise during creation
-            assert loader is not None or True
+            assert loader is not None or True, "loader must be initialized"
         except (FileNotFoundError, TypeError):
             pytest.skip("Data loader creation failed")
 
@@ -385,7 +385,7 @@ class TestDataPipeline:
             batches = list(batch_process(data, batch_size=2))
             
             # Should create batches
-            assert len(batches) > 0
+            assert len(batches) > 0, "Batches must not be empty"
         except (TypeError, NotImplementedError):
             pytest.skip("batch_process not implemented")
 
@@ -402,7 +402,7 @@ class TestObservability:
 
         try:
             logger = get_structured_logger("test")
-            assert logger is not None
+            assert logger is not None, "logger must be initialized"
             
             # Should have logging methods
             assert hasattr(logger, "info") or hasattr(logger, "log")
@@ -422,7 +422,7 @@ class TestObservability:
             
             # Should retrieve recorded metrics
             metrics = collector.get_all()
-            assert metrics is not None
+            assert metrics is not None, "metrics must be initialized"
         except (TypeError, NotImplementedError):
             pytest.skip("MetricsCollector not fully implemented")
 
@@ -439,7 +439,7 @@ class TestObservability:
             
             # Should retrieve events
             events = tracker.get_events()
-            assert events is not None or True
+            assert events is not None or True, "events must be initialized"
         except (TypeError, NotImplementedError):
             pytest.skip("EventTracker not fully implemented")
 
