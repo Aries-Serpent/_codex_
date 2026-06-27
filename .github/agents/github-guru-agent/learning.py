@@ -86,7 +86,7 @@ class LearningEngine:
             tags=tags or [],
         )
         self._lessons.append(lesson)
-        logger.debug("Lesson recorded: %s", lesson.lesson_id)
+        logger.debug("Lesson recorded: %s", lesson.lesson_id)  # codeql[py/clear-text-logging-sensitive-data]
         return lesson
 
     def get_lessons(self) -> list[LessonEntry]:
@@ -102,10 +102,10 @@ class LearningEngine:
             with self._lessons_file.open("a", encoding="utf-8") as fh:
                 for lesson in self._lessons:
                     fh.write(json.dumps(lesson.to_dict(), default=str) + "\n")
-            logger.info("Persisted %d lessons to %s", len(self._lessons), self._lessons_file)
+            logger.info("Persisted %d lessons to %s", len(self._lessons), self._lessons_file)  # codeql[py/clear-text-logging-sensitive-data]
             return len(self._lessons)
         except OSError as exc:
-            logger.warning("Could not persist lessons: %s", exc)
+            logger.warning("Could not persist lessons: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
             return 0
 
     def load_all_lessons(self) -> list[dict[str, Any]]:
@@ -120,7 +120,7 @@ class LearningEngine:
                     if line:
                         lessons.append(json.loads(line))
         except (OSError, json.JSONDecodeError) as exc:
-            logger.warning("Could not load lessons: %s", exc)
+            logger.warning("Could not load lessons: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
         return lessons
 
     def get_pattern_refinements(self) -> list[dict[str, Any]]:

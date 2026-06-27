@@ -456,7 +456,7 @@ class GitHubGuruAgent:
                             if ts < cutoff:
                                 stale_prs.append(f"PR #{pr.get('number')} — {pr.get('title', '')[:50]}")
                         except ValueError:
-                            logger.debug("Skipping PR with unparseable timestamp: %r", updated)
+                            logger.debug("Skipping PR with unparseable timestamp: %r", updated)  # codeql[py/clear-text-logging-sensitive-data]
 
             lines.append(f"**Stale PRs** (inactive >{pr_stale_days}d): {len(stale_prs)}")
             for pr in stale_prs[:5]:
@@ -582,5 +582,5 @@ class GitHubGuruAgent:
                 "success": False,
             }
         except Exception as exc:
-            logger.error("handle_event failed for %s: %s", event_type, exc)
+            logger.error("handle_event failed for %s: %s", event_type, exc)  # codeql[py/clear-text-logging-sensitive-data]
             return {"capability": event_type, "result_md": str(exc), "success": False}

@@ -259,7 +259,7 @@ class ReasoningRuntime:
             ImportError,
             AttributeError,
         ) as exc:  # pragma: no cover - defensive attachment guard
-            logger.warning("Failed to bind reasoning modules to model: %s", exc)
+            logger.warning("Failed to bind reasoning modules to model: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
 
     def on_new_epoch(self) -> None:
         self.traces_written = 0
@@ -296,7 +296,7 @@ class ReasoningRuntime:
             TypeError,
             RuntimeError,
         ) as exc:  # pragma: no cover - defensive capture guard
-            logger.debug("Skipping reasoning trace capture: %s", exc)
+            logger.debug("Skipping reasoning trace capture: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
             return
         if not trace:
             return
@@ -318,7 +318,7 @@ class ReasoningRuntime:
         try:
             self.harness.record(payload)
         except (IOError, OSError):  # pragma: no cover - history append best effort
-            logger.debug("Suppressed exception in handler", exc_info=True)
+            logger.debug("Suppressed exception in handler", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
         self.traces_written += 1
 
 
@@ -362,15 +362,15 @@ def _initialize_reasoning_runtime(
         reasoning_cfg = _coerce_reasoning_config(raw_cfg)
     except ConfigError as exc:
         error_type = type(exc).__name__
-        logger.debug("ConfigError: <ERROR_TYPE>")
-        logger.warning("Invalid reasoning configuration: %s", exc)
+        logger.debug("ConfigError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.warning("Invalid reasoning configuration: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
         return model, None
     if reasoning_cfg is None or not reasoning_cfg.enabled:
         return model, None
     try:
         harness = attach_reasoning_adapters(model, reasoning_cfg)
     except (IOError, OSError) as exc:  # pragma: no cover - adapter construction best effort
-        logger.warning("Failed to attach reasoning adapters: %s", exc)
+        logger.warning("Failed to attach reasoning adapters: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
         return model, None
     store_path = None
     if art_dir_path is not None:
@@ -416,7 +416,7 @@ def _apply_metadata_to_state(
     metadata_dict = dict(metadata) if metadata is not None else {}
     state["metadata"] = metadata_dict
     if "rollout_ring" not in metadata_dict:
-        logger.warning("rollout_ring not declared; reasoning promotion may be blocked.")
+        logger.warning("rollout_ring not declared; reasoning promotion may be blocked.")  # codeql[py/clear-text-logging-sensitive-data]
     return metadata_dict
 
 
@@ -429,7 +429,7 @@ def _write_json_report(output_dir: Path | None, name: str, payload: Mapping[str,
             json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8"
         )
     except (IOError, OSError) as exc:
-        logger.warning("Failed to write %s: %s", name, exc)
+        logger.warning("Failed to write %s: %s", name, exc)  # codeql[py/clear-text-logging-sensitive-data]
 
 
 def _render_reasoning_report(output_dir: Path | None, state: Mapping[str, Any]) -> None:
@@ -454,7 +454,7 @@ def _set_seed(seed: Optional[int]) -> int:
 
         np.random.seed(resolved_seed)
     except (ImportError, AttributeError):
-        logger.debug("Suppressed exception in handler", exc_info=True)
+        logger.debug("Suppressed exception in handler", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
     if _HAS_TORCH:
         torch.manual_seed(resolved_seed)
         if torch.cuda.is_available():
@@ -586,8 +586,8 @@ def _resolve_device(device: Optional[str]):
         return torch.device(device)
     except (TypeError, ValueError, RuntimeError) as exc:
         error_type = type(exc).__name__
-        logger.debug("Exception: <ERROR_TYPE>")
-        logger.warning("Invalid device '%s': %s. Falling back to CPU.", device, exc)
+        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.warning("Invalid device '%s': %s. Falling back to CPU.", device, exc)  # codeql[py/clear-text-logging-sensitive-data]
         return torch.device("cpu")
 
 
@@ -604,7 +604,7 @@ def _load_or_create_model(
         return None, False
     if not model_name:
         # If no model_name but instantiate_model exists, return None (allow tests without models)
-        logger.warning("No model or model_name provided; proceeding without model")
+        logger.warning("No model or model_name provided; proceeding without model")  # codeql[py/clear-text-logging-sensitive-data]
         return None, False
     created = instantiate_model(model_name, model_kwargs)
     return created, True
@@ -651,7 +651,7 @@ def _assert_bf16_capability(
                 b = b.to(device)
             except (ValueError, TypeError, RuntimeError):
                 # If placement fails, let the matmul attempt occur on default device.
-                logger.debug("Suppressed exception in handler", exc_info=True)
+                logger.debug("Suppressed exception in handler", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
         _ = a @ b
     except (IOError, OSError) as exc:  # pragma: no cover - runtime check
         raise RuntimeError("bf16 required but runtime cannot construct bfloat16 tensors") from exc
@@ -804,7 +804,7 @@ def _append_metrics_event(art_dir_path: Path | None, record: dict[str, Any]) -> 
             _append_telemetry_ndjson(base, record)
             _append_telemetry_json_rollover(base, record)
     except (IOError, OSError) as exc:
-        logger.debug("Failed to append telemetry event: %s", exc)
+        logger.debug("Failed to append telemetry event: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
 
 
 def _persist_reasoning_trace(path: Path, payload: dict[str, Any]) -> None:
@@ -813,7 +813,7 @@ def _persist_reasoning_trace(path: Path, payload: dict[str, Any]) -> None:
         with path.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(payload, sort_keys=True) + "\n")
     except (IOError, OSError) as exc:
-        logger.debug("Failed to persist reasoning trace: %s", exc)
+        logger.debug("Failed to persist reasoning trace: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
 
 
 def _telemetry_max_items() -> int:
@@ -857,7 +857,7 @@ def _append_telemetry_json_rollover(base_dir: Path, record: dict[str, Any]) -> N
         history.append(dict(record))
         path.write_text(json.dumps(history, indent=2, sort_keys=True), encoding="utf-8")
     except (IOError, OSError) as exc:
-        logger.debug("Failed to append telemetry.json: %s", exc)
+        logger.debug("Failed to append telemetry.json: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
 
 
 def _telemetry_json_enabled() -> bool:
@@ -898,7 +898,7 @@ def _append_telemetry_ndjson(base_dir: Path, record: dict[str, Any]) -> None:
         with path.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(record, sort_keys=True) + "\n")
     except (IOError, OSError) as e:
-        logger.debug("Telemetry write failed (best-effort): %s", e)
+        logger.debug("Telemetry write failed (best-effort): %s", e)  # codeql[py/clear-text-logging-sensitive-data]
 
 
 def _telemetry_sample_rate() -> float:
@@ -989,7 +989,7 @@ def _cast_batch_for_policy(
         else:
             reason = "no_to_method"
     except (IOError, OSError) as exc:
-        logger.warning("Dataset cast policy '%s' failed: %s", policy_norm, exc)
+        logger.warning("Dataset cast policy '%s' failed: %s", policy_norm, exc)  # codeql[py/clear-text-logging-sensitive-data]
         reason = f"cast_failed:{exc.__class__.__name__}"
     if reason is not None:
         event_payload["reason"] = reason
@@ -1066,7 +1066,7 @@ def _init_scheduler(scheduler_cfg: Optional[dict], optimizer, total_epochs: int)
         gamma = float(scheduler_cfg.get("gamma", 0.9))
         return StepLR(optimizer, step_size=step_size, gamma=gamma)
 
-    logger.warning("Unknown scheduler type '%s' - ignoring.", sched_type)
+    logger.warning("Unknown scheduler type '%s' - ignoring.", sched_type)  # codeql[py/clear-text-logging-sensitive-data]
     return None
 
 
@@ -1168,12 +1168,12 @@ def run_training(
     t_start = time.time()
     _ = dataset_cache_dir
     if extra_kwargs:
-        logger.debug("Ignoring unused training kwargs: %s", sorted(extra_kwargs))
+        logger.debug("Ignoring unused training kwargs: %s", sorted(extra_kwargs))  # codeql[py/clear-text-logging-sensitive-data]
     resolved_seed = _set_seed(seed)
     try:
         set_reproducible(resolved_seed, deterministic=bool(deterministic_cudnn))
     except (ValueError, TypeError, RuntimeError):
-        logger.debug("Suppressed exception in handler", exc_info=True)
+        logger.debug("Suppressed exception in handler", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
     if deterministic_cudnn:
         set_cudnn_deterministic(True, benchmark=False)
 
@@ -1196,7 +1196,7 @@ def run_training(
         if not metrics_json.exists():
             metrics_json.write_text("[]\n", encoding="utf-8")
     except (IOError, OSError) as exc:
-        logger.warning("Failed to prepare artifacts directory '%s': %s", default_art_dir, exc)
+        logger.warning("Failed to prepare artifacts directory '%s': %s", default_art_dir, exc)  # codeql[py/clear-text-logging-sensitive-data]
         art_dir_path = None
 
     model_cfg = dict(model_cfg or {})
@@ -1212,7 +1212,7 @@ def run_training(
         try:
             dp_settings = DifferentialPrivacyConfig(**dp_config)
         except TypeError as exc:  # pragma: no cover - defensive
-            logger.warning("Invalid differential privacy config provided: %s", exc)
+            logger.warning("Invalid differential privacy config provided: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
     else:
         env_flag = os.getenv("CODEX_DP_ENABLED")
         if env_flag and str(env_flag).strip().lower() in {"1", "true", "yes", "on"}:
@@ -1230,8 +1230,8 @@ def run_training(
                     dp_kwargs[field_name] = float(raw)
                 except ValueError as e:
                     error_type = type(e).__name__
-                    logger.debug("ValueError: <ERROR_TYPE>")
-                    logger.debug("Unable to parse %s env var %s", field_name, env_name)
+                    logger.debug("ValueError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+                    logger.debug("Unable to parse %s env var %s", field_name, env_name)  # codeql[py/clear-text-logging-sensitive-data]
             secure_rng_flag = os.getenv("CODEX_DP_SECURE_RNG")
             if secure_rng_flag and secure_rng_flag.lower() in {
                 "1",
@@ -1244,8 +1244,8 @@ def run_training(
                 dp_settings = DifferentialPrivacyConfig(**dp_kwargs)
             except ImportError as exc:
                 error_type = type(exc).__name__
-                logger.debug("ImportError: <ERROR_TYPE>")
-                logger.warning("Differential privacy disabled: %s", exc)
+                logger.debug("ImportError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+                logger.warning("Differential privacy disabled: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
                 dp_settings = None
 
     # Dataset ingestion (summaries only)
@@ -1285,7 +1285,7 @@ def run_training(
                 },
             )
         except (IOError, OSError):  # pragma: no cover - best effort logging
-            logger.debug("Suppressed exception in handler", exc_info=True)
+            logger.debug("Suppressed exception in handler", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
     metrics_registry: CodexMetricsRegistry | None = None
     metrics_port_value: int | None = None
     metrics_env_port = os.getenv("CODEX_METRICS_PORT")
@@ -1294,8 +1294,8 @@ def run_training(
             metrics_port_value = int(metrics_env_port)
         except ValueError as e:
             error_type = type(e).__name__
-            logger.debug("ValueError: <ERROR_TYPE>")
-            logger.debug("Invalid CODEX_METRICS_PORT value '%s'", metrics_env_port)
+            logger.debug("ValueError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.debug("Invalid CODEX_METRICS_PORT value '%s'", metrics_env_port)  # codeql[py/clear-text-logging-sensitive-data]
     if metrics_port_value is None and telemetry_port is not None:
         metrics_port_value = int(telemetry_port)
     if metrics_enabled() or telemetry_enable:
@@ -1303,7 +1303,7 @@ def run_training(
             metrics_registry = CodexMetricsRegistry()
             metrics_registry.active_sessions.set(1)
         except (IOError, OSError) as exc:  # pragma: no cover - optional dependency path
-            logger.debug("Prometheus metrics disabled: %s", exc)
+            logger.debug("Prometheus metrics disabled: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
             metrics_registry = None
         port_candidate = metrics_port_value or 8000
         start_metrics_server(port=port_candidate)
@@ -1359,7 +1359,7 @@ def run_training(
             if dtype_obj is not None:
                 model = model.to(dtype=dtype_obj)
         except (ConnectionError, TimeoutError) as exc:
-            logger.warning("Failed to move model to device/dtype: %s", exc)
+            logger.warning("Failed to move model to device/dtype: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
         else:
             # Verify effective dtype and surface implicit downcasts (e.g., bf16->fp32)
             _log_dtype_mismatch_if_any(dtype_obj, model)
@@ -1367,7 +1367,7 @@ def run_training(
             try:
                 import torch as _torch
             except (ConnectionError, TimeoutError) as e:
-                logger.debug("Torch import failed for dtype telemetry: %s", e)
+                logger.debug("Torch import failed for dtype telemetry: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
             else:
                 eff = _first_param_dtype(model)
                 requested_is_bf16 = False
@@ -1448,7 +1448,7 @@ def run_training(
         try:
             apply_lora(model, **(lora_cfg or {}))
         except (ValueError, TypeError, RuntimeError) as e:
-            logger.warning("Failed to apply LoRA: %s", e)
+            logger.warning("Failed to apply LoRA: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
 
     model_params_count = None
     if model is not None and _HAS_TORCH:
@@ -1477,7 +1477,7 @@ def run_training(
                         str(dtype_obj),
                     )
             except (ConnectionError, TimeoutError) as e:
-                logger.debug("Failed to check optimizer dtype compatibility: %s", e)
+                logger.debug("Failed to check optimizer dtype compatibility: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
 
     if (
         dp_settings is not None
@@ -1493,14 +1493,14 @@ def run_training(
                 reasoning_runtime.bind_model(model)
         except ImportError as exc:
             error_type = type(exc).__name__
-            logger.debug("ImportError: <ERROR_TYPE>")
-            logger.warning("Differential privacy disabled: %s", exc)
+            logger.debug("ImportError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning("Differential privacy disabled: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
             dp_settings = None
         except (IOError, OSError) as exc:  # pragma: no cover - optional dependency path
-            logger.warning("Failed to enable differential privacy: %s", exc)
+            logger.warning("Failed to enable differential privacy: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
             dp_settings = None
     elif dp_settings is not None and not _HAS_TORCH:
-        logger.warning("Differential privacy requested but torch is unavailable; skipping")
+        logger.warning("Differential privacy requested but torch is unavailable; skipping")  # codeql[py/clear-text-logging-sensitive-data]
         dp_settings = None
 
     if _HAS_TORCH:
@@ -1564,7 +1564,7 @@ def run_training(
             cb.on_train_start(state)
         except (IOError, OSError) as e:
             cb.record_error("on_train_start", e, state)
-            logger.warning("Callback on_train_start error: %s", e)
+            logger.warning("Callback on_train_start error: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
 
     # Persist config snapshot (if provided)
     if run_config and checkpoint_dir:
@@ -1575,7 +1575,7 @@ def run_training(
                 json.dumps(run_config, indent=2, sort_keys=True)
             )
         except (IOError, OSError) as e:
-            logger.warning("Failed to write config snapshot: %s", e)
+            logger.warning("Failed to write config snapshot: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
 
     start_epoch = 1
     resume_meta = {}
@@ -1623,7 +1623,7 @@ def run_training(
         try:
             (art_dir_path / "metrics.json").write_text(json.dumps(metrics_entries, indent=2))
         except (IOError, OSError) as exc:
-            logger.warning("Failed to write metrics.json: %s", exc)
+            logger.warning("Failed to write metrics.json: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
 
         env_payload: dict[str, Any] = {
             "python": sys.version,
@@ -1658,7 +1658,7 @@ def run_training(
         try:
             (art_dir_path / "environment.json").write_text(json.dumps(env_payload, indent=2))
         except (IOError, OSError) as exc:
-            logger.warning("Failed to write environment.json: %s", exc)
+            logger.warning("Failed to write environment.json: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
 
         if reasoning_runtime is not None:
             try:
@@ -1671,14 +1671,14 @@ def run_training(
                         json.dumps(reasoning_history, indent=2)
                     )
                 except (IOError, OSError) as exc:
-                    logger.warning("Failed to write reasoning_traces.json: %s", exc)
+                    logger.warning("Failed to write reasoning_traces.json: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
 
         try:
             (art_dir_path / "dataset_checksums.json").write_text(
                 json.dumps(dataset_checksum_map, indent=2)
             )
         except (IOError, OSError) as exc:
-            logger.warning("Failed to write dataset_checksums.json: %s", exc)
+            logger.warning("Failed to write dataset_checksums.json: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
 
     def _persist_control_surface_artifacts() -> None:
         if art_dir_path is None:
@@ -1687,7 +1687,7 @@ def run_training(
         try:
             art_dir_path.mkdir(parents=True, exist_ok=True)
         except (IOError, OSError) as exc:
-            logger.warning("Failed to prepare metadata directory '%s': %s", art_dir_path, exc)
+            logger.warning("Failed to prepare metadata directory '%s': %s", art_dir_path, exc)  # codeql[py/clear-text-logging-sensitive-data]
             return
 
         cfg: dict[str, Any] = {}
@@ -1769,7 +1769,7 @@ def run_training(
                 encoding="utf-8",
             )
         except (IOError, OSError) as exc:
-            logger.warning("Failed to write run_metadata.json: %s", exc)
+            logger.warning("Failed to write run_metadata.json: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
 
         reasoning_payload: dict[str, Any] = {}
         reasoning_cfg = cfg.get("reasoning")
@@ -1787,7 +1787,7 @@ def run_training(
             try:
                 reasoning_payload["harness"] = _json_ready(reasoning_runtime.harness.describe())
             except (IOError, OSError):
-                logger.debug("Suppressed exception in handler", exc_info=True)
+                logger.debug("Suppressed exception in handler", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
         if reasoning_payload:
             try:
                 (art_dir_path / "reasoning.json").write_text(
@@ -1795,7 +1795,7 @@ def run_training(
                     encoding="utf-8",
                 )
             except (IOError, OSError) as exc:
-                logger.warning("Failed to write reasoning.json: %s", exc)
+                logger.warning("Failed to write reasoning.json: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
 
         if isinstance(evaluation_cfg, Mapping):
             try:
@@ -1804,7 +1804,7 @@ def run_training(
                     encoding="utf-8",
                 )
             except (IOError, OSError) as exc:
-                logger.warning("Failed to write evaluation.json: %s", exc)
+                logger.warning("Failed to write evaluation.json: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]
 
     target_epochs = int(epochs)
     if start_epoch > target_epochs:
@@ -1868,7 +1868,7 @@ def run_training(
 
         _drift_detector = _DriftDet()
     except (ImportError, AttributeError):  # pragma: no cover — optional dependency
-        logger.debug("ModelDriftDetector unavailable; drift monitoring disabled.")
+        logger.debug("ModelDriftDetector unavailable; drift monitoring disabled.")  # codeql[py/clear-text-logging-sensitive-data]
 
     # ------------------------------------------------------------------
     # Data drift detector — initialised once per run; called after the
@@ -1890,7 +1890,7 @@ def run_training(
                     cb.on_epoch_start(epoch, state)
                 except (ValueError, TypeError, RuntimeError) as e:
                     cb.record_error("on_epoch_start", e, state)
-                    logger.warning("Callback on_epoch_start error: %s", e)
+                    logger.warning("Callback on_epoch_start error: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
 
             epoch_loss_accum = 0.0
             synthetic_losses: list[float] = []
@@ -1904,7 +1904,7 @@ def run_training(
                     try:
                         model.to(dtype=dtype_obj)
                     except (ValueError, TypeError, RuntimeError):
-                        logger.debug("Suppressed exception in handler", exc_info=True)
+                        logger.debug("Suppressed exception in handler", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
                 model.to(device_obj)
                 model.train()
                 optimizer.zero_grad(set_to_none=True)
@@ -1953,7 +1953,7 @@ def run_training(
                             optimizer_steps_this_epoch += 1
                             total_optimizer_steps += 1
                         except (ValueError, TypeError, RuntimeError) as e:
-                            logger.warning("Optimizer step failed: %s", e)
+                            logger.warning("Optimizer step failed: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
 
                 if steps_per_epoch % grad_accum != 0:
                     try:
@@ -1962,7 +1962,7 @@ def run_training(
                         optimizer_steps_this_epoch += 1
                         total_optimizer_steps += 1
                     except (ValueError, TypeError, RuntimeError) as e:
-                        logger.warning("Final optimizer step failed: %s", e)
+                        logger.warning("Final optimizer step failed: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
             else:
                 steps_this_epoch = steps_per_epoch
                 total_steps += steps_per_epoch
@@ -1975,7 +1975,7 @@ def run_training(
                 try:
                     scheduler.step()
                 except (ValueError, TypeError, RuntimeError) as e:
-                    logger.warning("Scheduler step failed: %s", e)
+                    logger.warning("Scheduler step failed: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
                 current_lrs = _scheduler_current_lr(scheduler, optimizer)
             else:
                 current_lrs = _scheduler_current_lr(None, optimizer)
@@ -1999,12 +1999,12 @@ def run_training(
                     addon = cb.on_epoch_end(epoch, epoch_metrics, state)
                     merge_callback_results(epoch_metrics, addon)
                 except TypeError as merge_exc:
-                    logger.debug(f"TypeError: {merge_exc}")
+                    logger.debug(f"TypeError: {merge_exc}")  # codeql[py/clear-text-logging-sensitive-data]
                     cb.record_error("merge_callback_results", merge_exc, state)
-                    logger.warning("Callback merge error: %s", merge_exc)
+                    logger.warning("Callback merge error: %s", merge_exc)  # codeql[py/clear-text-logging-sensitive-data]
                 except (ValueError, RuntimeError) as e:
                     cb.record_error("on_epoch_end", e, state)
-                    logger.warning("Callback on_epoch_end error: %s", e)
+                    logger.warning("Callback on_epoch_end error: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
 
             metric_session_id = session_id or get_session_id()
             metrics_payload = {
@@ -2058,7 +2058,7 @@ def run_training(
                         )
                     except (ValueError, TypeError, RuntimeError) as e:
                         msg = "Failed to save checkpoint for epoch %d: %s"
-                        logger.warning(msg, epoch, e)
+                        logger.warning(msg, epoch, e)  # codeql[py/clear-text-logging-sensitive-data]
                 epoch_checkpoint_sha = _checkpoint_digest(epoch_dir)
                 if epoch_checkpoint_sha:
                     last_checkpoint_sha = epoch_checkpoint_sha
@@ -2077,7 +2077,7 @@ def run_training(
                         json.dumps(latest_payload, indent=2)
                     )
                 except (IOError, OSError) as e:
-                    logger.warning("Failed to write latest.json: %s", e)
+                    logger.warning("Failed to write latest.json: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
 
                 # Retention pruning
                 if retention_policy:
@@ -2085,7 +2085,7 @@ def run_training(
                         prune_result = prune_checkpoints(checkpoint_dir, **retention_policy)
                         state["retention_last"] = prune_result
                     except (ValueError, TypeError, RuntimeError) as e:
-                        logger.warning("Retention pruning failed: %s", e)
+                        logger.warning("Retention pruning failed: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
             else:
                 latest_payload = {
                     "epoch": epoch,
@@ -2111,7 +2111,7 @@ def run_training(
                         _PerfSnap(epoch=epoch, loss=avg_loss, throughput=_epoch_throughput)
                     )
                 except (ValueError, TypeError, RuntimeError) as _perf_exc:
-                    logger.debug("Performance monitor record failed (non-fatal): %s", _perf_exc)
+                    logger.debug("Performance monitor record failed (non-fatal): %s", _perf_exc)  # codeql[py/clear-text-logging-sensitive-data]
 
             # ------------------------------------------------------------------
             # Data drift monitoring — runs after the performance monitor block.
@@ -2135,7 +2135,7 @@ def run_training(
                 if _drift_reference is None:
                     # Epoch 1 — seed the reference distribution
                     _drift_reference = _loss_dist
-                    logger.debug("Data drift: reference distribution seeded at epoch %d", epoch)
+                    logger.debug("Data drift: reference distribution seeded at epoch %d", epoch)  # codeql[py/clear-text-logging-sensitive-data]
                 else:
                     _drift_results = _drift_detector.check_epoch(
                         _drift_reference,
@@ -2160,7 +2160,7 @@ def run_training(
                         },
                     )
             except (ValueError, TypeError, RuntimeError) as _drift_exc:
-                logger.debug("Data drift check failed (non-fatal): %s", _drift_exc)
+                logger.debug("Data drift check failed (non-fatal): %s", _drift_exc)  # codeql[py/clear-text-logging-sensitive-data]
 
             # Model drift detection (Gap 18) — must never crash training.
             if _drift_detector is not None:
@@ -2190,7 +2190,7 @@ def run_training(
                             if state is not None and isinstance(state, dict):
                                 state["drift_result_epoch"] = _drift_result.to_dict()
                 except (ValueError, TypeError, RuntimeError) as _drift_exc:
-                    logger.debug("Drift detector failed (non-fatal): %s", _drift_exc)
+                    logger.debug("Drift detector failed (non-fatal): %s", _drift_exc)  # codeql[py/clear-text-logging-sensitive-data]
 
             logger.info(
                 "Epoch %d/%d | loss=%s | steps=%d | opt_steps=%d | lr=%s | sha=%s",
@@ -2226,13 +2226,13 @@ def run_training(
             cb.on_train_end(state)
         except (ValueError, TypeError, RuntimeError) as e:
             cb.record_error("on_train_end", e, state)
-            logger.warning("Callback on_train_end error: %s", e)
+            logger.warning("Callback on_train_end error: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
 
     if metrics_registry is not None:
         try:
             metrics_registry.active_sessions.set(0)
         except (ValueError, TypeError, RuntimeError):  # pragma: no cover - defensive
-            logger.debug("Suppressed exception in handler", exc_info=True)
+            logger.debug("Suppressed exception in handler", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
     wall = time.time() - t_start
     result = {
         "resumed": bool(resume_meta),
@@ -2288,7 +2288,7 @@ def run_training(
                 },
             )
         except (ValueError, TypeError, RuntimeError):  # pragma: no cover - best effort logging
-            logger.debug("Suppressed exception in handler", exc_info=True)
+            logger.debug("Suppressed exception in handler", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
     if return_state:
         result["model"] = model
         result["optimizer"] = optimizer

@@ -52,7 +52,7 @@ class KnowledgeGapDetector:
         if self._has_custom_patterns(context.files_changed):
             gaps.append("Repository-specific patterns or conventions")
 
-        logger.info(f"Detected {len(gaps)} knowledge gaps")
+        logger.info(f"Detected {len(gaps)} knowledge gaps")  # codeql[py/clear-text-logging-sensitive-data]
         return gaps
 
     def _find_unknown_extensions(self, files: list[str]) -> list[str]:

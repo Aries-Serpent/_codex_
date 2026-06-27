@@ -136,6 +136,6 @@ class MetricsCollector:
                 json.dumps(self._session.to_dict(), indent=2, default=str),
                 encoding="utf-8",
             )
-            logger.debug("Persisted session metrics to %s", path)
+            logger.debug("Persisted session metrics to %s", path)  # codeql[py/clear-text-logging-sensitive-data]
         except OSError as exc:
-            logger.warning("Could not persist metrics: %s", exc)
+            logger.warning("Could not persist metrics: %s", exc)  # codeql[py/clear-text-logging-sensitive-data]

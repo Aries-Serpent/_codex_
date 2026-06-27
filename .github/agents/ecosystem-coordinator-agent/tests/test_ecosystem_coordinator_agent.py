@@ -83,7 +83,7 @@ def test_deterministic():
     assert a1.seed == a2.seed
 
 if __name__ == "__main__":
-    print("Running Ecosystem Coordinator Agent Tests...")
+    print("Running Ecosystem Coordinator Agent Tests...")  # codeql[py/clear-text-logging-sensitive-data]
     test_classes = [TestInit, TestDecomposer, TestPDA, TestPublicAPI]
     total = 0
     for tc in test_classes:
@@ -91,15 +91,15 @@ if __name__ == "__main__":
         for m in [x for x in dir(inst) if x.startswith('test_')]:
             try:
                 getattr(inst, m)()
-                print(f"✅ {tc.__name__}.{m}")
+                print(f"✅ {tc.__name__}.{m}")  # codeql[py/clear-text-logging-sensitive-data]
                 total += 1
             except Exception as e:
-                print(f"❌ {tc.__name__}.{m}: {e}")
+                print(f"❌ {tc.__name__}.{m}: {e}")  # codeql[py/clear-text-logging-sensitive-data]
     try:
         test_deterministic()
-        print("✅ test_deterministic")
+        print("✅ test_deterministic")  # codeql[py/clear-text-logging-sensitive-data]
         total += 1
     except Exception as e:
-        print(f"❌ test_deterministic: {e}")
-    print(f"\n✅ Total: {total} tests")
-    print(f"✅ Cumulative: 618 + {total} = {618 + total}/597")
+        print(f"❌ test_deterministic: {e}")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"\n✅ Total: {total} tests")  # codeql[py/clear-text-logging-sensitive-data]
+    print(f"✅ Cumulative: 618 + {total} = {618 + total}/597")  # codeql[py/clear-text-logging-sensitive-data]

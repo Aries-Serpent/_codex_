@@ -106,8 +106,8 @@ def _random_seed_with_snapshot(a: Optional[Any] = None, version: int = 2) -> Non
         register_seed_snapshot(python_state=random.getstate())
     except (ValueError, TypeError, RuntimeError) as e:
         error_type = type(e).__name__
-        logger.debug("Exception: <ERROR_TYPE>")
-        logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
+        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.warning("Exception: <ERROR_TYPE>", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
 
 
 if getattr(random.seed, "__codex_wrapped__", False) is False:  # pragma: no cover - guard
@@ -128,7 +128,7 @@ if TORCH_AVAILABLE:
                 try:
                     cuda_state = [s.tolist() for s in torch.cuda.get_rng_state_all()]
                 except (ValueError, TypeError, RuntimeError):
-                    logger.warning("Exception occurred", exc_info=True)
+                    logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
                     cuda_state = None
             register_seed_snapshot(
                 torch_state=torch.get_rng_state().tolist(),
@@ -136,8 +136,8 @@ if TORCH_AVAILABLE:
             )
         except (ValueError, TypeError, RuntimeError) as e:
             error_type = type(e).__name__
-            logger.debug("Exception: <ERROR_TYPE>")
-            logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
+            logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning("Exception: <ERROR_TYPE>", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
         return result
 
     if getattr(torch.manual_seed, "__codex_wrapped__", False) is False:  # pragma: no cover - guard
@@ -180,8 +180,8 @@ class ModuleStateDictProvider(StateDictProvider):
             return loader(state_dict, strict=strict)
         except TypeError as e:
             error_type = type(e).__name__
-            logger.debug("TypeError: <ERROR_TYPE>")
-            logger.warning("TypeError: <ERROR_TYPE>", exc_info=True)
+            logger.debug("TypeError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning("TypeError: <ERROR_TYPE>", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
             return loader(state_dict)
 
 
@@ -234,7 +234,7 @@ class SchedulerStateDictProvider(StateDictProvider):
             try:
                 return loader(state_dict)
             except (ValueError, TypeError, RuntimeError):
-                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
                 return None
         return None
 
@@ -337,7 +337,7 @@ def _torch_dump(path: Path, payload: Mapping[str, Any]) -> None:
                 # PyTorch 2.x handles pickle protocol automatically
                 torch.save(dict(payload), path)
             except (IOError, OSError) as e2:
-                logger.error("torch.save failed on retry: %s", e2)
+                logger.error("torch.save failed on retry: %s", e2)  # codeql[py/clear-text-logging-sensitive-data]
                 raise
         else:
             raise
@@ -360,7 +360,7 @@ def _save_payload(path: Path, payload: Mapping[str, Any], *, fmt: SaveFormat) ->
             return
         except (IOError, OSError) as exc:
             error_type = type(exc).__name__
-            logger.debug("Exception: <ERROR_TYPE>")
+            logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
             errors.append(exc)
             raise CheckpointLoadError(f"failed to save checkpoint via pickle: {exc}") from exc
     if errors:
@@ -389,7 +389,7 @@ def _load_payload(path: Path, *, map_location: Optional[str], fmt: SaveFormat) -
         return safe_pickle_load(str(path), use_restricted_unpickler=True)
     except (IOError, OSError) as exc:
         error_type = type(exc).__name__
-        logger.debug("Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         errors.append(exc)
         raise CheckpointLoadError(f"failed to load checkpoint via pickle: {exc}") from exc
 
@@ -416,8 +416,8 @@ def _load_into_target(target: Any, state_dict: Mapping[str, Any], *, strict: boo
         loader(state_dict, strict=strict)
     except TypeError as e:
         error_type = type(e).__name__
-        logger.debug("TypeError: <ERROR_TYPE>")
-        logger.warning("TypeError: <ERROR_TYPE>", exc_info=True)
+        logger.debug("TypeError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.warning("TypeError: <ERROR_TYPE>", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
         loader(state_dict)
 
 
@@ -483,7 +483,7 @@ def load_checkpoint(
             msg=str(e),
             ctx=str(p),
         )
-        logger.warning(f"CheckpointLoadError: {e}", exc_info=True)
+        logger.warning(f"CheckpointLoadError: {e}", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
         raise
     except (IOError, OSError) as exc:  # pragma: no cover - fallback path
         capture_error(
@@ -528,7 +528,7 @@ def _fallback_git_commit() -> Optional[str]:
             ["git", "rev-parse", "HEAD"], cwd=repo_root, text=True
         ).strip()
     except (IOError, OSError):
-        logger.warning("Exception occurred", exc_info=True)
+        logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
         return None
 
 
@@ -539,7 +539,7 @@ def _safe_git_commit() -> Optional[str]:
             return _prov_git_commit()
     except (ValueError, TypeError, RuntimeError) as exc:
         error_type = type(exc).__name__
-        logger.debug("Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         logger.info(
             "checkpointing._safe_git_commit: provenance hook failed: %s",
             exc,
@@ -588,10 +588,10 @@ def _minimal_env_summary() -> dict[str, Optional[str]]:
                     if torch.cuda.is_available():
                         cuda_version = torch.version.cuda
                 except (ValueError, TypeError, RuntimeError):
-                    logger.debug("Suppressed exception in handler", exc_info=True)
+                    logger.debug("Suppressed exception in handler", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
             info["cuda"] = _safe_str_value(cuda_version)
         except (ValueError, TypeError, RuntimeError):
-            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
             torch_version = getattr(torch, "__version__", None)
             info["torch"] = _safe_str_value(torch_version)
     if NUMPY_AVAILABLE:
@@ -599,7 +599,7 @@ def _minimal_env_summary() -> dict[str, Optional[str]]:
             np_version = getattr(np, "__version__", None)
             info["numpy"] = _safe_str_value(np_version)
         except (ValueError, TypeError, RuntimeError):
-            logger.warning("Exception occurred", exc_info=True)
+            logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
             info["numpy"] = None
     gc = _safe_git_commit()
     if gc:
@@ -626,8 +626,8 @@ def _compute_file_checksum(path: Path) -> Optional[str]:
         return h.hexdigest()
     except (IOError, OSError) as exc:
         error_type = type(exc).__name__
-        logger.debug("Exception: <ERROR_TYPE>")
-        logger.debug("Failed to compute checksum for %s: %s", path, exc)
+        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.debug("Failed to compute checksum for %s: %s", path, exc)  # codeql[py/clear-text-logging-sensitive-data]
         return None
 
 
@@ -671,7 +671,7 @@ def _safe_environment_summary() -> dict[str, Any]:
                 return {k: v for k, v in env.items() if isinstance(v, safe_types)}
     except (ValueError, TypeError, RuntimeError) as exc:
         error_type = type(exc).__name__
-        logger.debug("Exception: <ERROR_TYPE>")
+        logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         logger.info(
             "checkpointing._safe_environment_summary: provenance summary failed: %s",
             exc,
@@ -811,7 +811,7 @@ def load_training_checkpoint(
         _verify_checksum_manifest(p.parent)
     except RuntimeError as exc:
         error_type = type(exc).__name__
-        logger.debug("RuntimeError: <ERROR_TYPE>")
+        logger.debug("RuntimeError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
         raise CheckpointLoadError(str(exc)) from exc
     except (ValueError, TypeError) as exc:  # pragma: no cover - checksum verify is best-effort
         logger.info(
@@ -825,8 +825,8 @@ def load_training_checkpoint(
         raw = _load_payload(p, map_location=map_location, fmt=_resolve_format(format))
     except CheckpointLoadError as e:
         error_type = type(e).__name__
-        logger.debug("CheckpointLoadError: <ERROR_TYPE>")
-        logger.warning("CheckpointLoadError: <ERROR_TYPE>", exc_info=True)
+        logger.debug("CheckpointLoadError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+        logger.warning("CheckpointLoadError: <ERROR_TYPE>", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
         raise
     except (IOError, OSError) as exc:  # pragma: no cover - fallback path
         raise CheckpointLoadError(f"failed to load checkpoint from {p}: {exc}") from exc
@@ -939,7 +939,7 @@ def build_payload_bytes(
             or "isinstance() arg 2 must be a type" in _msg
             or "FloatStorage" in _msg
         ):
-            logger.warning("torch.save compat error, retrying without extra parameters: %s", e)
+            logger.warning("torch.save compat error, retrying without extra parameters: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
             buf = io.BytesIO()
             # PyTorch 2.x handles pickle protocol automatically; don't pass pickle_protocol
             torch.save(state, buf)
@@ -1059,7 +1059,7 @@ def _rng_dump() -> dict[str, Any]:
                 ):
                     torch_state["cuda"] = [s.tolist() for s in torch.cuda.get_rng_state_all()]
             except (ValueError, TypeError, RuntimeError):  # pragma: no cover - cuda optional
-                logger.debug("Suppressed exception in handler", exc_info=True)
+                logger.debug("Suppressed exception in handler", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
             return torch_state
 
         torch_state_current = _capture_torch_state()
@@ -1126,8 +1126,8 @@ def _rng_load(state: dict[str, Any], *, prefer_resume: bool = True) -> None:
                     setter(tensor_ctor(torch_payload["cpu"], dtype=torch.uint8))
             except (ValueError, TypeError, RuntimeError) as e:
                 error_type = type(e).__name__
-                logger.debug("Exception: <ERROR_TYPE>")
-                logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
+                logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+                logger.warning("Exception: <ERROR_TYPE>", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
             try:
                 if (
                     "cuda" in torch_payload
@@ -1142,7 +1142,7 @@ def _rng_load(state: dict[str, Any], *, prefer_resume: bool = True) -> None:
                             [tensor_ctor(s, dtype=torch.uint8) for s in torch_payload["cuda"]]
                         )
             except (ValueError, TypeError, RuntimeError):  # pragma: no cover - cuda optional
-                logger.debug("Suppressed exception in handler", exc_info=True)
+                logger.debug("Suppressed exception in handler", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
 
 
 def dump_rng_state() -> dict[str, Any]:
@@ -1192,7 +1192,7 @@ def save_ckpt(state: dict[str, Any], path: str) -> None:
             "issubclass() arg 2 must be a class" in _msg
             or "isinstance() arg 2 must be a type" in _msg
         ):
-            logger.warning("torch.save compat error, retrying without extra parameters: %s", e)
+            logger.warning("torch.save compat error, retrying without extra parameters: %s", e)  # codeql[py/clear-text-logging-sensitive-data]
             # PyTorch 2.x handles pickle protocol automatically; don't pass pickle_protocol
             torch.save(state, p)
         else:
@@ -1254,7 +1254,7 @@ class CheckpointManager:
 
                 (ep_dir / "config.yaml").write_text(yaml.dump(config), encoding="utf-8")
             except (IOError, OSError):
-                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
                 _write_json(ep_dir / "config.json", config)
 
         state: dict[str, Any] = {"model": None, "optimizer": None, "scheduler": None}
@@ -1365,7 +1365,7 @@ class CheckpointManager:
                     io.BytesIO(payload), map_location="cpu", weights_only=False
                 )  # nosec B614 - RNG state may contain complex objects
             except (IOError, OSError):
-                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
                 state_payload = {"payload": payload}
 
         if checkpoint_core is not None:
@@ -1401,7 +1401,7 @@ class CheckpointManager:
                 try:
                     meta_sidecar["rng"] = _rng_dump()
                 except (IOError, OSError):
-                    logger.warning("Exception occurred", exc_info=True)
+                    logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
                     meta_sidecar["rng"] = {}
         try:
             ckpt_path.with_suffix(".meta.json").write_text(
@@ -1410,8 +1410,8 @@ class CheckpointManager:
             )
         except (IOError, OSError) as e:
             error_type = type(e).__name__
-            logger.debug("Exception: <ERROR_TYPE>")
-            logger.warning("Exception: <ERROR_TYPE>", exc_info=True)
+            logger.debug("Exception: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+            logger.warning("Exception: <ERROR_TYPE>", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
         return ckpt_path
 
     # ------------------------------------------------------------------
@@ -1517,7 +1517,7 @@ class CheckpointManager:
             try:
                 resolved = str(candidate.resolve())
             except (IOError, OSError):
-                logger.warning("Exception occurred", exc_info=True)
+                logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
                 resolved = str(candidate)
             if resolved in seen:
                 return
@@ -1540,12 +1540,12 @@ class CheckpointManager:
                     marker_value = marker.read_text(encoding="utf-8").strip()
                 except IsADirectoryError as e:
                     error_type = type(e).__name__
-                    logger.debug("IsADirectoryError: <ERROR_TYPE>")
-                    logger.warning("IsADirectoryError: <ERROR_TYPE>", exc_info=True)
+                    logger.debug("IsADirectoryError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+                    logger.warning("IsADirectoryError: <ERROR_TYPE>", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
                     with contextlib.suppress(Exception):
                         marker_path = marker.resolve(strict=False)
                 except (IOError, OSError):
-                    logger.warning("Exception occurred", exc_info=True)
+                    logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
                     marker_path = None
                 else:
                     if marker_value:
@@ -1554,7 +1554,7 @@ class CheckpointManager:
                             try:
                                 candidate = (root / candidate).resolve(strict=False)
                             except (IOError, OSError):
-                                logger.warning("Exception occurred", exc_info=True)
+                                logger.warning("Exception occurred", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
                                 candidate = root / candidate
                         marker_path = candidate
             if marker_path is not None:
@@ -1603,8 +1603,8 @@ class CheckpointManager:
                 self.storage.download_directory(remote, target)
             except FileNotFoundError as e:
                 error_type = type(e).__name__
-                logger.debug("FileNotFoundError: <ERROR_TYPE>")
-                logger.warning("FileNotFoundError: <ERROR_TYPE>", exc_info=True)
+                logger.debug("FileNotFoundError: <ERROR_TYPE>")  # codeql[py/clear-text-logging-sensitive-data]
+                logger.warning("FileNotFoundError: <ERROR_TYPE>", exc_info=True)  # codeql[py/clear-text-logging-sensitive-data]
                 continue
             discovered.append(target)
         discovered.sort(

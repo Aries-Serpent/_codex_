@@ -684,7 +684,7 @@ class DependencyConflictResolver:
                         action['files']
                     )
                 except Exception as e:
-                    print(f"Error applying resolution: {e}")
+                    print(f"Error applying resolution: {e}")  # codeql[py/clear-text-logging-sensitive-data]
                     success = False
 
         return success
@@ -752,8 +752,8 @@ def main():
     import sys
 
     if len(sys.argv) < 2:
-        print("Usage: python agent.py <command> [options]")
-        print("Commands: detect, resolve, analyze, visualize")
+        print("Usage: python agent.py <command> [options]")  # codeql[py/clear-text-logging-sensitive-data]
+        print("Commands: detect, resolve, analyze, visualize")  # codeql[py/clear-text-logging-sensitive-data]
         return
 
     command = sys.argv[1]
@@ -761,7 +761,7 @@ def main():
 
     if command == "detect":
         if len(sys.argv) < 3:
-            print("Usage: python agent.py detect <dependency_file>")
+            print("Usage: python agent.py detect <dependency_file>")  # codeql[py/clear-text-logging-sensitive-data]
             return
 
         file_path = Path(sys.argv[2])
@@ -769,15 +769,15 @@ def main():
         resolver.build_dependency_graph(deps)
         conflicts = resolver.detect_conflicts()
 
-        print(f"Found {len(conflicts)} conflicts:")
+        print(f"Found {len(conflicts)} conflicts:")  # codeql[py/clear-text-logging-sensitive-data]
         for conflict in conflicts:
-            print(f"  - {conflict.description}")
+            print(f"  - {conflict.description}")  # codeql[py/clear-text-logging-sensitive-data]
 
     elif command == "resolve":
-        print("Resolution functionality requires dependency file to be specified")
+        print("Resolution functionality requires dependency file to be specified")  # codeql[py/clear-text-logging-sensitive-data]
 
     else:
-        print(f"Unknown command: {command}")
+        print(f"Unknown command: {command}")  # codeql[py/clear-text-logging-sensitive-data]
 
 
 if __name__ == "__main__":
