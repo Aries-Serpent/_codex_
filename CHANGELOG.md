@@ -2,6 +2,22 @@
 
 ## [Unreleased]
 
+### Fixed (malformed test assertions — PR #5110, Session 2026-06-27T11:48Z)
+- Fixed 5 critical agent test files with malformed assertions from health sweep corruption (commit 35903f1e)
+- test_agent_memory_comprehensive.py: Added missing assertions in special_characters and unicode tests, removed duplicate assertion
+- test_agent_orchestration.py: Restructured malformed assertion with proper condition grouping (lines 90-93)
+- test_codex_client_bridge_and_demo.py: Removed orphaned assertion lines, restored _FakeModel class definition, refactored long line in exec() call
+- test_custom_agent_functional.py: Refactored long f-string assertion into separate variable assignment (line 183)
+- test_edge_cases_return_values.py: Verified previously fixed file compiles successfully
+- All files validated: Python syntax compilation passed, ruff linting E,F,I checks passed
+- Commit: `48c64fff`
+
+### Fixed (compliance — PR #5110, Session 2026-06-27T11:48Z)
+- REQ-4: Updated AGENT_ACCOUNTABILITY_REPORT.md with session entry documenting test assertion fixes
+- REQ-5: Updated CHANGELOG.md with test assertion fix documentation
+- REQ-14: Added valid agent identifier (autonomous-test-healer-agent) to Agents Used section
+- All 3 compliance requirements verified passing
+
 ### Fixed (auto-fix patterns — PR #5110, Session 2026-06-27)
 - Applied auto-fix patterns for test assertions, imports, and compliance (commit 98aac391)
 - Pattern 6: Fixed test assertion issues (catch-all handlers, tautological comparisons)
