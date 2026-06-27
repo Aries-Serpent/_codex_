@@ -24,8 +24,9 @@ def test_cli_help():
     env = {**os.environ, "PYTHONPATH": str(Path(__file__).resolve().parents[1] / "src")}
     proc = subprocess.run(cmd, check=True, capture_output=True, text=True, env=env)
     # Accept both Typer-style and Hydra fallback help outputs.
-    assert (, "Condition must be true"
+    assert (
         "Codex ML CLI" in proc.stdout
         or "Commands" in proc.stdout
         or "Hydra-managed pipeline entrypoint" in proc.stdout
-    )
+    
+    ), "Condition must be true"

@@ -101,26 +101,28 @@ class TestScopeValidator:
     def test_has_any_scope_success(self):
         """Test has_any_scope with at least one match."""
         validator = ScopeValidator(["repo:read"])
-        assert (, "Condition must be true"
+        assert (
             validator.has_any_scope(
                 [
                     TokenScope.WRITE_REPO,
                     TokenScope.READ_REPO,
                 ]
-            )
+            
+        ), "Condition must be true"
             is True
         )
 
     def test_has_any_scope_failure(self):
         """Test has_any_scope with no matches."""
         validator = ScopeValidator(["repo:read"])
-        assert (, "Condition must be true"
+        assert (
             validator.has_any_scope(
                 [
                     TokenScope.WRITE_WORKFLOW,
                     TokenScope.ADMIN_REPO,
                 ]
-            )
+            
+        ), "Condition must be true"
             is False
         )
 

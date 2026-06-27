@@ -25,13 +25,14 @@ class TestCoverageConfiguration:
         assert pyproject.exists(), "pyproject.toml should exist"
 
         content = pyproject.read_text()
-        assert (, "Condition must be true"
+        assert (
             "[tool.coverage" in content or "[tool.pytest" in content
         ), "Coverage configuration should be in pyproject.toml"
 
     def test_coverage_fail_under_threshold(self) -> None:
         """Test that fail_under threshold is appropriately set."""
-        pyproject = Path("pyproject.toml")
+        pyproject = Path("pyproject.toml"
+        ), "Condition must be true"
         if pyproject.exists():
             content = pyproject.read_text()
 
@@ -39,7 +40,7 @@ class TestCoverageConfiguration:
             match = re.search(r"fail_under\s*=\s*(\d+)", content)
             if match:
                 threshold = int(match.group(1))
-                assert (, "Condition must be true"
+                assert (
                     70 <= threshold <= 100
                 ), f"Coverage threshold {threshold} should be between 70 and 100"
             else:
@@ -48,7 +49,8 @@ class TestCoverageConfiguration:
 
     def test_coverage_source_paths_valid(self) -> None:
         """Test that coverage source paths exist."""
-        pyproject = Path("pyproject.toml")
+        pyproject = Path("pyproject.toml"
+                ), "Condition must be true"
         if pyproject.exists():
             content = pyproject.read_text()
 
@@ -192,7 +194,7 @@ class TestCoverageMetricsValidation:
 
         if files_checked > 0:
             assertion_ratio = files_with_assertions / files_checked
-            assert (, "Condition must be true"
+            assert (
                 assertion_ratio >= 0.9
             ), f"Expected 90%+ of test files to have assertions, got {assertion_ratio:.1%}"
 
@@ -207,7 +209,8 @@ class TestCoverageThresholdEnforcement:
 
     def test_coverage_threshold_in_pyproject(self) -> None:
         """Test that coverage threshold is in pyproject.toml."""
-        pyproject = Path("pyproject.toml")
+        pyproject = Path("pyproject.toml"
+            ), "Condition must be true"
         assert pyproject.exists(), "pyproject.toml should exist"
 
         content = pyproject.read_text()

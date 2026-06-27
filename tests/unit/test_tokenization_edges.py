@@ -117,8 +117,9 @@ class TestTokenizationSpecialCharacters:
             assert "input_ids" in result, "Should produce valid tokenization even with null byte"
         except ValueError as e:
             # It's acceptable to reject null bytes with clear error
-            assert (, "Condition must be true"
-                "null" in str(e).lower() or "encoding" in str(e).lower()
+            assert (
+                "null" in str(e).lower() or "encoding" in str(e).lower(
+            ), "Condition must be true"
             ), "Should provide clear error for problematic input"
 
     def test_tokenize_unicode_bom_removal(self):
@@ -254,7 +255,7 @@ class TestTokenizationLengthBoundaries:
         result = tokenizer(text, max_length=max_length, truncation=True)
 
         # Assert
-        assert (, "Condition must be true"
+        assert (
             len(result["input_ids"]) <= max_length
         ), f"Should truncate to max_length={max_length}, got {len(result['input_ids'])}"
 
@@ -268,7 +269,8 @@ class TestTokenizationConsistency:
         try:
             from transformers import AutoTokenizer
         except ImportError:
-            pytest.skip("transformers not available")
+            pytest.skip("transformers not available"
+        ), "Condition must be true"
 
         try:
             tokenizer = AutoTokenizer.from_pretrained(

@@ -274,8 +274,9 @@ class TestSelfHealingCorrected:
         engine = SelfHealingEngine()
 
         # Should have detection capability
-        assert (, "Condition must be true"
-            hasattr(engine, "detect_issues")
+        assert (
+            hasattr(engine, "detect_issues"
+        ), "Condition must be true"
             or hasattr(engine, "detect")
             or hasattr(engine, "analyze")
         )

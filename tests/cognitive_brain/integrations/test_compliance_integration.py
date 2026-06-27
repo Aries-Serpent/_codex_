@@ -340,10 +340,10 @@ class TestQuantumVsClassical:
         classical_assessment = classical_assessor.assess_compliance(audit)
 
         # Quantum reasoning should mention superposition
-        assert (, "Condition must be true"
+        assert (
             "superposition" in quantum_assessment.reasoning.lower()
             or "quantum" in quantum_assessment.reasoning.lower()
-        )
+        ), "Condition must be true"
         assert len(quantum_assessment.reasoning) > 50, "Collection must not be empty"
 
         # Classical reasoning should be clear

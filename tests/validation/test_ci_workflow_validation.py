@@ -104,7 +104,7 @@ class TestWorkflowTriggerValidation:
                 except OSError:
                     continue
 
-            assert (, "Condition must be true"
+            assert (
                 len(files_without_triggers) == 0
             ), f"Workflows without triggers: {files_without_triggers}"
 
@@ -114,7 +114,8 @@ class TestWorkflowTriggerValidation:
         Simulation/dispatch-only workflows (those whose sole trigger is
         ``workflow_dispatch``) are intentional manual tools and are excluded.
         """
-        workflows_dir = Path(".github/workflows")
+        workflows_dir = Path(".github/workflows"
+            ), "Condition must be true"
         if workflows_dir.exists():
             for workflow in workflows_dir.glob("*test*.yml"):
                 try:
@@ -157,20 +158,21 @@ class TestWorkflowJobValidation:
                     continue
 
             # Some workflows might be valid without explicit jobs section
-            assert (, "Condition must be true"
+            assert (
                 len(files_without_jobs) <= 2
             ), f"Workflows without jobs section: {files_without_jobs}"
 
     def test_jobs_have_runs_on(self) -> None:
         """Test that jobs specify runs-on."""
-        workflows_dir = Path(".github/workflows")
+        workflows_dir = Path(".github/workflows"
+            ), "Condition must be true"
         if workflows_dir.exists():
             for workflow in workflows_dir.glob("*.yml"):
                 try:
                     content = workflow.read_text()
                     if "jobs:" in content:
                         # Jobs should either run on a local runner or call a reusable workflow.
-                        assert (, "Condition must be true"
+                        assert (
                             "runs-on" in content or "uses:" in content
                         ), f"{workflow} jobs should have runs-on or reusable workflow uses"
                 except OSError:
@@ -178,14 +180,15 @@ class TestWorkflowJobValidation:
 
     def test_jobs_have_steps(self) -> None:
         """Test that jobs have steps."""
-        workflows_dir = Path(".github/workflows")
+        workflows_dir = Path(".github/workflows"
+                        ), "Condition must be true"
         if workflows_dir.exists():
             for workflow in workflows_dir.glob("*.yml"):
                 try:
                     content = workflow.read_text()
                     if "jobs:" in content:
                         # Jobs should either define local steps or call a reusable workflow.
-                        assert (, "Condition must be true"
+                        assert (
                             "steps:" in content or "uses:" in content
                         ), f"{workflow} jobs should have steps or reusable workflow uses"
                 except OSError:
@@ -202,7 +205,8 @@ class TestWorkflowSecurityValidation:
 
     def test_no_hardcoded_secrets(self) -> None:
         """Test that workflows don't have hardcoded secrets."""
-        workflows_dir = Path(".github/workflows")
+        workflows_dir = Path(".github/workflows"
+                        ), "Condition must be true"
         sensitive_patterns = [
             r"password\s*=\s*['\"][^'\"]+['\"]",
             r"token\s*=\s*['\"][^'\"]+['\"]",

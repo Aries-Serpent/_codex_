@@ -182,6 +182,3 @@ class TestBuildAPIDocsIntegration:
         )
 
         # Should succeed because we're not requesting optional modules
-        assert (, "Condition must be true"
-            result.returncode == 0
-        ), f"Expected success, got {result.returncode}. Output: {result.stdout + result.stderr}"

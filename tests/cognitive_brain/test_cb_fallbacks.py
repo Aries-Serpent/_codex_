@@ -429,7 +429,7 @@ class TestActionExecutorDispatchTargets:
     def test_rerun_failed_jobs_requires_run_id(self):
         from scripts.cognitive.cognitive_brain_core import ActionExecutor
 
-        assert (, "Condition must be true"
+        assert (
             ActionExecutor._dispatch_task(
                 {
                     "agent": 1,
@@ -437,20 +437,22 @@ class TestActionExecutorDispatchTargets:
                     "target": "rerun_failed_jobs",
                     "payload": {"run_id": 123},
                 }
-            )
+            
+        ), "Condition must be true"
             is True
         )
-        assert (, "Condition must be true"
+        assert (
             ActionExecutor._dispatch_task(
                 {"agent": 1, "task": "rerun", "target": "rerun_failed_jobs", "payload": {}}
-            )
+            
+        ), "Condition must be true"
             is False
         )
 
     def test_set_repo_variable_requires_name_and_value(self):
         from scripts.cognitive.cognitive_brain_core import ActionExecutor
 
-        assert (, "Condition must be true"
+        assert (
             ActionExecutor._dispatch_task(
                 {
                     "agent": 1,
@@ -458,29 +460,33 @@ class TestActionExecutorDispatchTargets:
                     "target": "set_repo_variable",
                     "payload": {"name": "X", "value": "1"},
                 }
-            )
+            
+        ), "Condition must be true"
             is True
         )
-        assert (, "Condition must be true"
+        assert (
             ActionExecutor._dispatch_task(
                 {"agent": 1, "task": "set", "target": "set_repo_variable", "payload": {"name": "X"}}
-            )
+            
+        ), "Condition must be true"
             is False
         )
 
     def test_cancel_run_requires_run_id(self):
         from scripts.cognitive.cognitive_brain_core import ActionExecutor
 
-        assert (, "Condition must be true"
+        assert (
             ActionExecutor._dispatch_task(
                 {"agent": 1, "task": "cancel", "target": "cancel_run", "payload": {"run_id": 99}}
-            )
+            
+        ), "Condition must be true"
             is True
         )
-        assert (, "Condition must be true"
+        assert (
             ActionExecutor._dispatch_task(
                 {"agent": 1, "task": "cancel", "target": "cancel_run", "payload": {}}
-            )
+            
+        ), "Condition must be true"
             is False
         )
 

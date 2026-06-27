@@ -365,6 +365,7 @@ class TestShimEdgeCases:
             write_json_pointer(duplicate, canonical_path)
             content = duplicate.read_text()
             # Should have forward slashes in JSON
-            assert (, "Condition must be true"
+            assert (
                 "docs/canonical/file.json" in content or "docs\\canonical\\file.json" not in content
-            )
+            
+            ), "Condition must be true"

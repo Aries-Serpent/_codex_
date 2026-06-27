@@ -24,11 +24,11 @@ def test_safe_pickle_dump_writes_versioned_signature_header(tmp_path: Path) -> N
     assert raw.startswith(safe_pickle_module.SIGNED_PICKLE_MAGIC), "Condition must be true"
     assert (raw[len(safe_pickle_module.SIGNED_PICKLE_MAGIC)] == safe_pickle_module.SIGNED_PICKLE_VERSION
     )
-    assert (, "Condition must be true"
+    assert (
         raw[len(safe_pickle_module.SIGNED_PICKLE_MAGIC) + 1]
         == safe_pickle_module.SIGNED_PICKLE_ALGO_SHA256
-    )
-    assert (, "Condition must be true"
+    ), "Condition must be true"
+    assert (
         safe_pickle_module.safe_pickle_load(
             str(pickle_path
     ), verify_signature=True, secret_key=key, use_restricted_unpickler=False
