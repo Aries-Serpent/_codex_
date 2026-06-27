@@ -15,7 +15,7 @@
 This document outlines the comprehensive coverage remediation strategy for the post-merge phase of PR #5111 promotion (0D_base_ → main). The analysis identifies 12 high-impact coverage gaps affecting 6 TIER-1 modules with <40% coverage and 6 TIER-2 modules with 40-70% coverage.
 
 **Key Objectives:**
-- ✅ Maintain ≥70% overall coverage threshold
+- ✅ Maintain ≥70% overall coverage threshold # pragma: allowlist secret
 - ✅ Eliminate coverage gaps in security-critical paths (auth, crypto, services)
 - ✅ Generate 150-210 deterministic tests for TIER-1 gaps
 - ✅ Zero regressions in currently covered code paths

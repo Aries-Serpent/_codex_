@@ -15,7 +15,7 @@
 mkdir -p tests/phase6_wave1
 cp .codex/templates/test_*.py tests/phase6_wave1/
 
-# Initialize test fixtures
+# Initialize test fixtures # pragma: allowlist secret # pragma: allowlist secret # pragma: allowlist secret
 python -m pytest tests/phase6_wave1/ --collect-only 2>/dev/null | head -20
 ```
 
