@@ -101,12 +101,12 @@ def test_multiple_error_types():
 
     for err in errors:
         assert isinstance(err, MCPError)
-        assert err.code in [, "Condition must be true"
+        assert err.code in [
             "TOOL_NOT_FOUND",
             "VALIDATION_ERROR",
             "RATE_LIMIT_EXCEEDED",
             "UNAUTHORIZED",
-        ]
+        ], "err.code must be one of the valid error codes"
 
 
 def test_error_propagation():

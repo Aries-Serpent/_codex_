@@ -2,6 +2,26 @@
 
 ## [Unreleased]
 
+### Fixed (malformed test assertions — PR #5110, Session 2026-06-27T12:17Z)
+- Fixed 11 critical test files with malformed assertions and syntax errors blocking CI validation (commit ef39d35a+)
+- coverage_phase5_lane1_template.py: Fixed malformed dictionary return statement with incomplete bracket and string literal (lines 512-516)
+- test_cli_rag_offline.py: Fixed malformed list assertion with incomplete bracket syntax (line 74)
+- test_historical_failures.py: Fixed dangling string assertion (line 244)
+- test_config_audit_helpers.py: Fixed malformed dictionary assertion with incomplete opening bracket (line 47)
+- test_bestk.py: Fixed incomplete isinstance() call with missing closing parenthesis (line 146)
+- test_schema_v2_basic.py: Fixed incomplete function call argument in compute_manifest_digest() (line 47)
+- test_status_report.py: Fixed dangling string assertion (line 41)
+- test_exhaustive_30pct.py: Fixed malformed list assertion in loop (line 169)
+- test_integration.py: Fixed malformed list assertion for compliance decision (line 211)
+- test_phase_10_3_ooda_cycles.py: Fixed malformed list assertion for risk level (line 125)
+- test_error_handling_extended.py: Fixed malformed list assertion for error codes (line 104)
+- All files validated: Python syntax compilation passed
+
+### Fixed (compliance — PR #5110, Session 2026-06-27T12:17Z)
+- REQ-4: Updated AGENT_ACCOUNTABILITY_REPORT.md with session entry documenting malformed assertion fixes
+- REQ-5: Updated CHANGELOG.md with test assertion fix documentation
+- REQ-14: Added valid agent identifier (autonomous-test-healer-agent) to Agents Used section
+
 ### Fixed (malformed test assertions — PR #5110, Session 2026-06-27T11:48Z)
 - Fixed 5 critical agent test files with malformed assertions from health sweep corruption (commit 35903f1e)
 - test_agent_memory_comprehensive.py: Added missing assertions in special_characters and unicode tests, removed duplicate assertion

@@ -512,8 +512,9 @@ def create_router(config=None):
             return {
                 "jsonrpc": "2.0",
                 "result": None,
-                "id": request.get("id"
-        ), "status"
+                "id": request.get("id"),
+                "status": "ok"
+            }
 
         def queue_task(self, task):
             self.pending_count += 1
