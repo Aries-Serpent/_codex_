@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import pytest
 
-from codex_ml.eval.metrics import (
+from codex_ml.metrics.metrics_deprecated import (
     average_forgetting,
     backward_transfer,
     forward_transfer,

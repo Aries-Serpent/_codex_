@@ -34,6 +34,8 @@ from codex_ml.metrics.unified_api import (
 
 __all__ = [
     "MetricError",
+    "_materialise",
+    "_ensure_equal_length",
     "accuracy",
     "average_forgetting",
     "backward_transfer",
@@ -45,6 +47,7 @@ __all__ = [
     "micro_f1",
     "perplexity",
     "rouge_l",
+    "run_unit_tests",
     "token_accuracy",
     "token_stats",
 ]
