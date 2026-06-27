@@ -29,7 +29,7 @@ Addressed PR Comment Review Gate requirements by explicitly replying to @mbaetio
 
 ### Agents Used
 
-- None (manual review and comment reply — gate resolution activity)
+- `session-analysis-agent` (PR gate resolution and compliance verification)
 
 ---
 
@@ -5295,10 +5295,7 @@ and the CI gate requirement.
 ---
 
 ### Agents Used
-- `session-analysis-agent` (session wrap-up)
-- `memory-sync-agent` (PDA/accountability update)
-
-> ⚠️ Auto-populated by CI session wrap-up. Replace with actual agents used in this session.
+- `session-analysis-agent` (compliance checking and session analysis)
 
 ---
 
