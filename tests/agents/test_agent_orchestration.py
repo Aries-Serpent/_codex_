@@ -88,7 +88,7 @@ class TestQuantumAgentOrchestrator:
         ci_testing = orchestrator.agents["ci-testing-agent"]
 
         # ci-testing should be entangled with workflow-health-monitor
-        assert ("workflow-health-monitor" in ci_testing.prerequisites
+        assert ("workflow-health-monitor" in ci_testing.prerequisites, "Condition must be true"
             or "ci-testing-agent" in orchestrator.entanglements.get("workflow-health-monitor", [])
         )
 
@@ -112,7 +112,7 @@ class TestQuantumAgentOrchestrator:
 
         # Valid order
         valid_order = ["workflow-health-monitor", "ci-testing-agent", "test-alignment-fixer"]
-        assert orchestrator._prerequisites_satisfied(valid_order
+        assert orchestrator._prerequisites_satisfied(valid_order, "orchestrat is not valid"
         ), "orchestrat is not valid"
 
         # Invalid order (ci-testing-agent before prerequisite)

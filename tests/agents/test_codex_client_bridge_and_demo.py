@@ -117,7 +117,7 @@ def test_bridge_endpoint_methods_validate_payloads(monkeypatch: pytest.MonkeyPat
     assert client.kb_search("find", top_k=2).results[0].source == "doc"
     assert client.repo_hygiene("d", checks=["lint"]).issues[0].type == "lint"
     assert client.tests_run(["tests/a.py"], timeout_s=10).summary.passed == 1
-    assert (client.git_create_pr(
+    assert (client.git_create_pr(, "Condition must be true"
             repo="owner/repo",
             title="t",
             body="b",

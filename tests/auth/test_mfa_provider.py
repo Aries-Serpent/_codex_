@@ -61,7 +61,7 @@ class TestMFASecret: # pragma: allowlist secret # pragma: allowlist secret # pra
 
         uri = secret.get_provisioning_uri("test@example.com")
 
-        assert uri.startswith("otpauth://totp/"
+        assert uri.startswith("otpauth://totp/", "Condition must be true"
         ), "Condition must be true"
         assert "secret=JBSWY3DPEHPK3PXP" in uri, "Condition must be true"
         assert "issuer=Codex" in uri, "Condition must be true"

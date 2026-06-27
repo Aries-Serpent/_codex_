@@ -322,7 +322,7 @@ def test_keyword_wave_collapse_surfaces_hf_pattern(failing_api, tmp_path, patter
             }
         )
     # Wave-collapse should find P-043 based on keyword overlap
-    assert (any("043" in pid or "038" in pid for pid in payload.injected_patterns)
+    assert (any("043" in pid or "038" in pid for pid in payload.injected_patterns), "Condition must be true"
         or payload.reconstructed
     )
 

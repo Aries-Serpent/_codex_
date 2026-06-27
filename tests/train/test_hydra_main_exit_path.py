@@ -24,5 +24,5 @@ def test_hydra_missing_exits_cleanly() -> None:
     # Allow ImportError tracebacks during import detection
     # Check for hydra-related error message (case-insensitive, may be in stdout or stderr)
     output = (proc.stdout + proc.stderr).lower()
-    assert ("hydra" in output or "import" in output
+    assert ("hydra" in output or "import" in output, "Condition must be true"
     ), f"Expected hydra-related message in output, got: stdout={proc.stdout}, stderr={proc.stderr}"

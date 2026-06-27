@@ -35,7 +35,7 @@ import json
 import logging
 import subprocess
 import sys
-from dataclasses import dataclass, asdict, field
+from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -145,10 +145,10 @@ def evaluate_wec_compliance() -> SuccessCriterion:
                 actual_value=0.0,
                 passed=False,
             )
-        
+
         data = json.loads(result.stdout)
         compliance_rate = data.get("wec_compliance_rate", 0.0)
-        
+
         passed = compliance_rate >= SUCCESS_CRITERIA["wec_compliance_rate"]
         return SuccessCriterion(
             name="WEC Compliance Rate",
@@ -180,7 +180,7 @@ def evaluate_auto_approval_success() -> SuccessCriterion:
             text=True,
             check=True,
         )
-        
+
         runs = json.loads(result.stdout)
         if not runs:
             return SuccessCriterion(
@@ -190,10 +190,10 @@ def evaluate_auto_approval_success() -> SuccessCriterion:
                 actual_value=1.0,  # No runs to fail
                 passed=True,
             )
-        
+
         successful = sum(1 for r in runs if r.get("conclusion") == "success")
         success_rate = successful / len(runs) if runs else 0.0
-        
+
         passed = success_rate >= SUCCESS_CRITERIA["auto_approval_success_rate"]
         return SuccessCriterion(
             name="Auto-Approval Success Rate",
@@ -225,7 +225,7 @@ def evaluate_pre_merge_pass_rate() -> SuccessCriterion:
             text=True,
             check=True,
         )
-        
+
         runs = json.loads(result.stdout)
         if not runs:
             return SuccessCriterion(
@@ -235,10 +235,10 @@ def evaluate_pre_merge_pass_rate() -> SuccessCriterion:
                 actual_value=1.0,
                 passed=True,
             )
-        
+
         successful = sum(1 for r in runs if r.get("conclusion") == "success")
         pass_rate = successful / len(runs) if runs else 0.0
-        
+
         passed = pass_rate >= SUCCESS_CRITERIA["pre_merge_pass_rate"]
         return SuccessCriterion(
             name="Pre-Merge Validation Pass Rate",
@@ -270,7 +270,7 @@ def evaluate_workflow_execution_time() -> SuccessCriterion:
             text=True,
             check=True,
         )
-        
+
         runs = json.loads(result.stdout)
         if not runs:
             return SuccessCriterion(
@@ -280,9 +280,9 @@ def evaluate_workflow_execution_time() -> SuccessCriterion:
                 actual_value=0.0,
                 passed=True,
             )
-        
+
         avg_time = sum(r.get("durationMinutes", 0) for r in runs) / len(runs) if runs else 0.0
-        
+
         passed = avg_time <= SUCCESS_CRITERIA["avg_workflow_time_minutes"]
         return SuccessCriterion(
             name="Avg Workflow Execution Time (minutes)",
@@ -322,10 +322,10 @@ def evaluate_health_score() -> SuccessCriterion:
                 actual_value=0.0,
                 passed=False,
             )
-        
+
         data = json.loads(result.stdout)
         health_score = data.get("health_score", 0.0)
-        
+
         passed = health_score >= SUCCESS_CRITERIA["health_score"]
         return SuccessCriterion(
             name="Overall Health Score",
@@ -349,7 +349,7 @@ def evaluate_health_score() -> SuccessCriterion:
 def validate_all_criteria(evaluation_days: int = 30) -> PhaseValidationResult:
     """Validate all Phase 6-7 success criteria."""
     logger.info(f"🔍 Validating Phase 6-7 Success Criteria ({evaluation_days}-day evaluation)...")
-    
+
     criteria = [
         evaluate_wec_compliance(),
         evaluate_auto_approval_success(),
@@ -357,17 +357,17 @@ def validate_all_criteria(evaluation_days: int = 30) -> PhaseValidationResult:
         evaluate_workflow_execution_time(),
         evaluate_health_score(),
     ]
-    
+
     passed_count = sum(1 for c in criteria if c.passed)
     total_count = len(criteria)
     all_passed = passed_count == total_count
-    
+
     # Calculate weighted overall score as the fraction of weighted criteria passed.
     total_weight = sum(c.weight for c in criteria)
     overall_score = (
         sum(c.weight for c in criteria if c.passed) / total_weight if total_weight else 0.0
     )
-    
+
     # Determine recommendation and next actions
     if all_passed:
         recommendation = "✅ Phase 6-7 success criteria SATISFIED — autonomous campaign ready for deployment"
@@ -384,7 +384,7 @@ def validate_all_criteria(evaluation_days: int = 30) -> PhaseValidationResult:
             "Re-run validation after fixes applied",
             "Schedule remediation meeting with team",
         ]
-    
+
     result = PhaseValidationResult(
         timestamp=datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         evaluation_period_days=evaluation_days,
@@ -396,7 +396,7 @@ def validate_all_criteria(evaluation_days: int = 30) -> PhaseValidationResult:
         recommendation=recommendation,
         next_actions=next_actions,
     )
-    
+
     return result
 
 
@@ -412,11 +412,11 @@ def print_validation_report(result: PhaseValidationResult) -> None:
     print(f"🎯 Phase 6-7 Success Criteria Validation — {result.timestamp}")
     print("=" * 80)
     print()
-    
+
     print(f"Status: {result.status_emoji} {result.pass_count}/{result.total_count} criteria passed")
     print(f"Overall Score: {result.overall_score:.1%}")
     print()
-    
+
     print("📋 Criteria Evaluation:")
     for criterion in result.criteria:
         op_str = "≥" if criterion.operator == "gte" else "≤"
@@ -424,16 +424,16 @@ def print_validation_report(result: PhaseValidationResult) -> None:
         print(f"     Threshold: {_format_value(criterion, criterion.threshold)} ({op_str})")
         print(f"     Actual: {_format_value(criterion, criterion.actual_value)}")
     print()
-    
-    print(f"📌 Recommendation:")
+
+    print("📌 Recommendation:")
     print(f"  {result.recommendation}")
     print()
-    
+
     print("🚀 Next Actions:")
     for i, action in enumerate(result.next_actions, 1):
         print(f"  {i}. {action}")
     print()
-    
+
     print("=" * 80)
 
 
@@ -488,25 +488,25 @@ def main(argv: list[str] | None = None) -> int:
         metavar="N",
         help="Evaluation period in days (default: 30)",
     )
-    
+
     args = parser.parse_args(argv)
-    
+
     # Run validation
     result = validate_all_criteria(evaluation_days=args.days)
-    
+
     if args.json:
         print(json.dumps(result.to_dict(), indent=2))
     else:
         print_validation_report(result)
-    
+
     # Save report if requested
     if args.report:
         save_validation_report(result, Path(args.report))
-    
+
     # Exit with appropriate status code
     if args.validate_all:
         return 0 if result.all_passed else 1
-    
+
     return 0
 
 

@@ -171,7 +171,7 @@ def test_rename_without_adr_is_flagged():
         finally:
             os.chdir(previous_cwd)
         assert original_relative in result.missing_adr, "Rename without ADR should be flagged"
-        assert (original_relative in result.missing_evidence
+        assert (original_relative in result.missing_evidence, "Result must not be empty"
         ), "Rename without evidence should be flagged"
         assert result.return_code == 2, "Missing ADR should cause failure return code"
     finally:
@@ -225,7 +225,7 @@ def test_copy_does_not_require_tombstone():
             os.chdir(previous_cwd)
 
         # Copy operations should NOT be flagged for missing tombstone, ADR, or evidence
-        assert (original_relative not in result.missing_stub
+        assert (original_relative not in result.missing_stub, "Result must not be empty"
         ), "Copy should not require tombstone stub"
         assert original_relative not in result.missing_adr, "Copy should not require ADR"
         assert original_relative not in result.missing_evidence, "Copy should not require evidence"

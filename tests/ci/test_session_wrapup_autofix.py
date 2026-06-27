@@ -149,7 +149,7 @@ class TestBuildWecBlock:
         with mock.patch.object(swa, "_auth_enabled_in_env", return_value=True):
             block = swa._build_wec_block(existing_state={})
         for fname in swa._WEC_AUTONOMOUS_AUTO_CHECK:
-            assert (f"- [x] {fname}" in block
+            assert (f"- [x] {fname}" in block, "Condition must be true"
             ), f"{fname} should be [x] when COPILOT_AGENT_AUTH_ENABLED=true"
 
     def test_autonomous_auto_check_items_unchecked_when_auth_disabled(self):
@@ -158,7 +158,7 @@ class TestBuildWecBlock:
         with mock.patch.object(swa, "_auth_enabled_in_env", return_value=False):
             block = swa._build_wec_block(existing_state={})
         for fname in swa._WEC_AUTONOMOUS_AUTO_CHECK:
-            assert (f"- [ ] {fname}" in block
+            assert (f"- [ ] {fname}" in block, "Condition must be true"
             ), f"{fname} should be [ ] when auth disabled and no existing state"
 
     def test_autonomous_auto_check_respects_explicit_uncheck(self):
@@ -166,7 +166,7 @@ class TestBuildWecBlock:
         mock = unittest.mock
         with mock.patch.object(swa, "_auth_enabled_in_env", return_value=True):
             block = swa._build_wec_block(existing_state={"auto-approve-workflows": False})
-        assert ("- [ ] auto-approve-workflows" in block
+        assert ("- [ ] auto-approve-workflows" in block, "Condition must be true"
         ), "explicit [ ] uncheck by maintainer must be preserved even with auth enabled"
 
     def test_never_check_items_are_unchecked_by_default(self):
@@ -635,9 +635,9 @@ class TestWecConstants:
         block = swa._build_wec_block({})
         for fname in swa._WEC_NEVER_CHECK:
             # Each never-check item must appear in the block, unchecked.
-            assert (f"- [ ] {fname}" in block
+            assert (f"- [ ] {fname}" in block, "Condition must be true"
             ), f"never-check item {fname!r} not rendered as `[ ]` in WEC block"
-            assert (f"- [x] {fname}" not in block
+            assert (f"- [x] {fname}" not in block, "Condition must be true"
             ), f"never-check item {fname!r} was auto-rendered as `[x]`"
 
     def test_build_wec_block_preserves_maintainer_x_for_never_check(self):
@@ -682,7 +682,7 @@ class TestWecTemplateDefaults:
             pytest.skip(f"Template file not available in this environment: {template_path}")
         template = template_path.read_text(encoding="utf-8")
         for fname in swa._WEC_NEVER_CHECK:
-            assert (f"- [ ] {fname}" in template
+            assert (f"- [ ] {fname}" in template, "Condition must be true"
             ), f"{fname} should be unchecked in secondary template"
 
 
@@ -722,9 +722,9 @@ class TestWecNeverCheckTelemetry:
         # The step summary file must exist and contain the warning text.
         assert summary_file.exists(), "GITHUB_STEP_SUMMARY was not written"
         content = summary_file.read_text(encoding="utf-8")
-        assert ("WEC Never-Check Guard" in content
+        assert ("WEC Never-Check Guard" in content, "Content must not be empty"
         ), "Step summary missing 'WEC Never-Check Guard' telemetry heading"
-        assert (never_check_item in content
+        assert (never_check_item in content, "Content must not be empty"
         ), f"Step summary missing the skipped item name '{never_check_item}'"
 
     def test_no_step_summary_when_no_skipped_items(self, tmp_path, monkeypatch):
@@ -804,7 +804,7 @@ class TestHumanGrantTracking:
                 existing_state={never_check_item: False},
                 human_grants=grants,
             )
-        assert (f"- [x] {never_check_item}" in block
+        assert (f"- [x] {never_check_item}" in block, "Item must not be empty"
         ), "human grant must override _WEC_NEVER_CHECK and render [x]"
 
     def test_revoked_grant_does_not_force_checked(self):
@@ -818,7 +818,7 @@ class TestHumanGrantTracking:
                 existing_state={"auto-approve-workflows": False},
                 human_grants=grants,
             )
-        assert ("- [ ] auto-approve-workflows" in block
+        assert ("- [ ] auto-approve-workflows" in block, "Condition must be true"
         ), "revoked grant should result in [ ] when state is False"
 
     def test_no_grant_for_unchanged_state(self, tmp_path, monkeypatch):

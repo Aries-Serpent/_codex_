@@ -27,23 +27,23 @@ CODEX_MASTER_KEY (Tier 1: Full authority)
     ↓ (if unavailable)
 CODEX_BACKUP_KEY (Tier 2: Backup authority)
     ↓ (if unavailable)
-github.token (Tier 3: Installation token - LIMITED)
+github.token (Tier 3: Installation token - LIMITED)  # pragma: allowlist secret
 ```
 
 ### Token Scope Matrix
 
-| Token | Scope | actions:write | Variables API | Secrets API | Notes |
+| Token | Scope | actions:write | Variables API | Secrets API | Notes | <!-- pragma: allowlist secret -->
 |-------|-------|---------------|---------------|-------------|-------|
 | **CODEX_MASTER_KEY** | repo, workflow, actions:write | ✅ YES | ✅ YES | ✅ YES | Primary auth; full authority |
 | **CODEX_BACKUP_KEY** | repo, workflow, actions:write | ✅ YES | ✅ YES | ✅ YES | Fallback if primary exhausted |
-| **github.token** | repo (limited) | ❌ **NO** | ❌ **NO** | ❌ **NO** | Installation token; insufficient for auto-approve |
+| **github.token** | repo (limited) | ❌ **NO** | ❌ **NO** | ❌ **NO** | Installation token; insufficient for auto-approve | <!-- pragma: allowlist secret -->
 
 ### Why `github.token` Fails for Approvals
 
 ```
 ❌ FAILS because:
-- github.token = GITHUB_TOKEN environment variable
-- GITHUB_TOKEN is installation token with only "repo" scope
+- github.token = GITHUB_TOKEN environment variable  # pragma: allowlist secret
+- GITHUB_TOKEN is installation token with only "repo" scope  # pragma: allowlist secret
 - auto-approve requires "actions:write" scope
 - API call: POST /repos/{owner}/{repo}/actions/runs/{id}/approve-deployment
 - Result: HTTP 403 Forbidden
@@ -85,7 +85,7 @@ Not all workflows require approval. Here's which ones can benefit from auto-appr
 | pre-merge-validation.yml | ❌ NO | Auto-runs on push; no approval needed |
 | comment-review-gate.yml | ❌ NO | Auto-runs; only requires manual review in UI |
 | deferral-language-gate.yml | ❌ NO | Auto-validates; non-blocking |
-| agent-auth-delegation.yml | ⚠️ CONDITIONAL | Auto-approves only if token present; else manual |
+| agent-auth-delegation.yml | ⚠️ CONDITIONAL | Auto-approves only if token present; else manual | <!-- pragma: allowlist secret -->
 | workflow-execution-gate.yml | ✅ YES | May require approval if deployment impact detected |
 | copilot-agent-checkin.yml | ❌ NO | Informational; no approval needed |
 | copilot-agent-session-done.yml | ❌ NO | Session completion; non-blocking |
@@ -123,7 +123,7 @@ Not all workflows require approval. Here's which ones can benefit from auto-appr
 7. If approval succeeds:
    workflow continues and completes
    ↓
-8. If approval fails (token invalid, scope insufficient):
+8. If approval fails (token invalid, scope insufficient):  # pragma: allowlist secret
    run remains pending; manual approval required
 ```
 
@@ -160,7 +160,7 @@ GH_TOKEN=$CODEX_MASTER_KEY gh run approve RUN_ID
 
 **Symptom:**
 ```
-❌ Auto-approval failed: token is null or invalid
+❌ Auto-approval failed: token is null or invalid  # pragma: allowlist secret
 ```
 
 **Root Cause:**
@@ -322,7 +322,7 @@ jobs:
 ```python
 # scripts/ci/auto_approve_with_wec.py (pseudocode)
 
-def auto_approve_with_wec(pr_number, token):
+def auto_approve_with_wec(pr_number, token):  # pragma: allowlist secret
     """Approve workflows that are checked in WEC."""
     
     # 1. Fetch PR and extract WEC
@@ -340,7 +340,7 @@ def auto_approve_with_wec(pr_number, token):
             # 4. Attempt approval
             try:
                 gh_api("POST /repos/{owner}/{repo}/actions/runs/{id}/approve-deployment",
-                       headers={"Authorization": f"token {token}"})
+                       headers={"Authorization": f"token {token}"})  # pragma: allowlist secret
                 log(f"✅ Approved: {workflow_name}")
             except Exception as e:
                 if "403" in str(e):
@@ -424,4 +424,4 @@ def auto_approve_with_wec(pr_number, token):
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.0.0 | 2026-06-26 | Initial guide: token hierarchy, failure scenarios, recovery procedures |
+| 1.0.0 | 2026-06-26 | Initial guide: token hierarchy, failure scenarios, recovery procedures | <!-- pragma: allowlist secret -->

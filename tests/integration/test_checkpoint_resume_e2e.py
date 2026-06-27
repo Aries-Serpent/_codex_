@@ -73,7 +73,7 @@ class TestCheckpointResumeFullWorkflow:
             loaded_state_2, loaded_meta_2 = load_checkpoint(str(ckpt2_dir))
 
             assert loaded_state_2["step"] == 200, "Step should be updated in new checkpoint"
-            assert (loaded_meta_2["loss"] < loaded_meta_1["loss"]
+            assert (loaded_meta_2["loss"] < loaded_meta_1["loss"], "Condition must be true"
             ), "Loss should have decreased during training"
 
             # Assert schema versioning
@@ -81,7 +81,7 @@ class TestCheckpointResumeFullWorkflow:
             with open(metadata_file, encoding="utf-8") as f:
                 saved_metadata = json.load(f)
 
-            assert (saved_metadata.get("_schema_version") == SCHEMA_VERSION
+            assert (saved_metadata.get("_schema_version") == SCHEMA_VERSION, "Data must not be empty"
             ), "Schema version should be tracked"
 
         finally:
@@ -123,7 +123,7 @@ class TestCheckpointResumeFullWorkflow:
             with pytest.warns(UserWarning, match="schema"):
                 loaded_state, loaded_meta = load_checkpoint(str(ckpt_dir))
 
-                assert (loaded_state == state
+                assert (loaded_state == state, "loaded_state is not valid"
                 ), "Should still load state despite schema version mismatch"
 
         finally:
@@ -353,7 +353,7 @@ class TestCheckpointResumeErrorRecovery:
             load_checkpoint(nonexistent)
 
         error_msg = str(exc_info.value)
-        assert ("weights" in error_msg.lower() or "found" in error_msg.lower()
+        assert ("weights" in error_msg.lower() or "found" in error_msg.lower(), "Error should be raised or set"
         ), "Error should indicate what file is missing"
 
     def test_checkpoint_save_to_readonly_directory_error(self):
@@ -386,7 +386,7 @@ class TestCheckpointResumeErrorRecovery:
                 pytest.skip("Read-only directory test skipped (permissions allowed)")
             except (PermissionError, OSError) as e:
                 # Expected: should raise permission error
-                assert ("permission" in str(e).lower() or "access" in str(e).lower()
+                assert ("permission" in str(e).lower() or "access" in str(e).lower(), "Condition must be true"
                 ), "Should raise permission-related error"
 
         finally:

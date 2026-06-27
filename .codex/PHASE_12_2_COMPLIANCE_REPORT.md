@@ -15,7 +15,7 @@
 | **REQ-3** — Tests Pass | ✅ PASS | CI run in progress or inconclusive: status=in_progress, conclusion=. Assuming pass. |
 | **REQ-4** — Accountability Report Updated | ❌ FAIL | docs/accountability/AGENT_ACCOUNTABILITY_REPORT.md was NOT updated in the last commit |
 | **REQ-5** — CHANGELOG in Last Commit | ❌ FAIL | CHANGELOG.md was NOT updated in the last commit |
-| **REQ-6** — No Secrets Committed | ✅ PASS | No secrets detected in diff (detect-secrets not installed — used heuristic scan) |
+| **REQ-6** — No Secrets Committed | ✅ PASS | No secrets detected in diff (detect-secrets not installed — used heuristic scan) | <!-- pragma: allowlist secret -->
 
 ---
 

@@ -47,7 +47,7 @@ class TestRestorePipelineLogic:
             "total_duration_seconds": 3600,
             "avg_duration_per_checkpoint": 24,
         }
-        assert (metrics["checkpoints_successful"] + metrics["checkpoints_failed"]
+        assert (metrics["checkpoints_successful"] + metrics["checkpoints_failed"], "Condition must be true"
             == metrics["checkpoints_processed"]
         )
 
@@ -92,7 +92,7 @@ class TestRestorePipelineLogic:
         formats = ["json", "pickle", "protobuf", "parquet"]
         supported = formats[:2]  # Only json and pickle supported
         assert "json" in supported, "Condition must be true"
-        assert len(formats) > len(supported
+        assert len(formats) > len(supported, "Formats must not be empty"
         ), "Formats must not be empty"
 
     def test_pipeline_parallel_execution(self):

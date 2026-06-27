@@ -2208,7 +2208,7 @@ def check_wec_compliance(
         return 2
     elif is_compliant:
         print("✅ WEC COMPLIANCE: PASSED")
-        print(f"   All required workflows are checked and configured correctly.")
+        print("   All required workflows are checked and configured correctly.")
         return 0
     else:
         print("❌ WEC COMPLIANCE: FAILED")

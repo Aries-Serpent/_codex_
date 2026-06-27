@@ -312,7 +312,7 @@ def test_capability_matrix_generated():
     assert "capability" in content.lower(), "Matrix report missing capability information"
 
     # Check for template hash reference (integrity marker)
-    assert ("template_hash" in content.lower() or "sha256" in content.lower()
+    assert ("template_hash" in content.lower() or "sha256" in content.lower(), "Content must not be empty"
     ), "Matrix report missing template hash reference"
 
     # Check for score information

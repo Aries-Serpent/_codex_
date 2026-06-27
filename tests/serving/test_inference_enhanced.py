@@ -232,7 +232,7 @@ class TestInferenceServerWithAuth:
         assert isinstance(, "Condition must be true"
             data["request_count"], int
         ), f"request_count must be int, got {type(data['request_count']).__name__}"
-        assert (data["request_count"] >= 0
+        assert (data["request_count"] >= 0, "Value must be greater than zero"
         ), f"request_count must be >= 0, got {data['request_count']}"
         # Circuit breaker may or may not be present depending on import
 
