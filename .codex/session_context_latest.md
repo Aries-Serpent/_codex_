@@ -1,32 +1,42 @@
-# Session Context — 2026-06-27T08:53:15Z
+# Session Context — 2026-06-27T09:27:59Z
 **Branch:** `copilot/chronicle-improve-cost-tips`  **PR:** #5110  **Access:** `rest, graphql, gh_cli`
 
 ## 🔌 Access Strategy
 - Recommended method chain: `rest → graphql → gh_cli`
-- REST remaining: `4937` (✅)
-- GraphQL remaining: `4980` (✅)
+- REST remaining: `4960` (✅)
+- GraphQL remaining: `4994` (✅)
 - gh CLI: ✅
 - CodeQL CLI: ❌
 
-## 📋 PR #5110 — Initiate Phase 3 Wave 5: 4-lane autonomous campaign execution with agent-orchestrator coordination
+## 📋 PR #5110 — Deploy Phase 3 Wave 5 auto-dispatch framework with autonomous checkpoint decisions
 State: `open`  Draft: `False`  Branch: `copilot/chronicle-improve-cost-tips` → `0D_base_`
+
+### ❌ 13 Failing CI Check(s)
+- `Autonomy CI Gate (all 7 phases)` (failure)
+- `⚡ Approve action_required runs (post-delegation)` (cancelled)
+- `Activate token delegation` (cancelled)
+- `Post rescue comment on failure` (cancelled)
+- `⏳ Auto-approved — agent is pre-authorized` (cancelled)
+- `🛡️ Restore required PR checkboxes` (cancelled)
+- `🧠 Cognitive Pre-flight Check` (cancelled)
+- `⚡ Approve action_required runs (post-delegation)` (cancelled)
 
 ## 🚨 Recent CI Failures (last 5 runs)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-27)
 - **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-27)
-- **Validation Pipeline** — `failure` on `copilot/chronicle-improve-cost-tips` (2026-06-27)
-- **Autonomy Phase CI Matrix** — `failure` on `copilot/chronicle-improve-cost-tips` (2026-06-27)
-- **Code Example Validation** — `failure` on `copilot/chronicle-improve-cost-tips` (2026-06-27)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-27)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-27)
+- **Admin Action — T-03 security_events Scope Gate** — `failure` on `main` (2026-06-27)
 
 ## 📝 Recent Commits
+- `c49cd0e8` session: phase3-wave5-campaign-initiation complete — autonomous execution active — copilot-swe-agent[bot] (2026-06-27)
+- `9adacc46` docs: finalize Phase 3 Wave 5 coordination index and campaign hub — copilot-swe-agent[bot] (2026-06-27)
+- `d5bc70fb` chore: deploy Phase 3 Wave 5 framework — lane briefs, day 1 checkpoints, auto-di — copilot-swe-agent[bot] (2026-06-27)
+- `efc5b152` initiate: Phase 3 Wave 5 auto-dispatch — 4-lane parallel campaign execution star — copilot-swe-agent[bot] (2026-06-27)
 - `214faf12` chore: update compliance docs for Phase 3 Wave 5 campaign initiation (PR gate re — copilot-swe-agent[bot] (2026-06-27)
 - `6471b44f` fix(ci): auto-sync .secrets.baseline and add pragma to test false-positives [ski — copilot-swe-agent[bot] (2026-06-27)
 - `a8c740ba` Merge branch '0D_base_' into copilot/chronicle-improve-cost-tips — Statix (2026-06-27)
 - `e609ebaa` Phase 3 Wave 5 Auto-Dispatch: 4-lane execution initiated (L1-L4 active, D-mode a — GitHub Copilot (2026-06-27)
-- `50a0d617` Phase 3 Wave 5 Lane 2: ML Validation Suite - 278 tests created (69% complete, Da — GitHub Copilot (2026-06-27)
-- `f6c2c71d` Phase 3 Wave 5 Lane 1 - Hour 0-24 Complete (Security Audit, Threat Model, Mutati — copilot-swe-agent[bot] (2026-06-27)
-- `e4c92a78` Phase 3 Wave 5 Lane 1 - Hour 0-24 Initialization Complete (Security Audit + Thre — copilot-swe-agent[bot] (2026-06-27)
-- `b47b3f81` Add Wave 5 Phase 2 comprehensive index & deliverables tracker — copilot-swe-agent[bot] (2026-06-27)
 
 ## ⚙️ Repository Variables (live)
 - `COPILOT_AGENT_AUTH_ENABLED` = `true`
