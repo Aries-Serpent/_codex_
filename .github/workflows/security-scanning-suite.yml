@@ -129,6 +129,82 @@ jobs:
           if-no-files-found: warn
           retention-days: 30
 
+  semgrep-scan:
+    name: Semgrep SAST Scanning
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    if: |
+      (github.event_name == 'push') ||
+      (github.event_name == 'pull_request') ||
+      (github.event_name == 'schedule') ||
+      (github.event_name == 'workflow_dispatch' && (inputs.scan-type == 'all' || inputs.scan-type == 'semgrep')) ||
+      github.event_name == 'workflow_call'
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Run Semgrep with SARIF output
+        uses: returntocorp/semgrep-action@11a8ea2dfc5b1c4ab8be72a230e87fbf1e7e7e88 # v1
+        with:
+          generateSarif: true
+          config: >-
+            p/security-audit
+            p/python
+            p/owasp-top-ten
+
+      - name: Upload SARIF to GitHub Security
+        uses: github/codeql-action/upload-sarif@5e316336eb4f107009e477d4bfbfff13d7250fae # v4
+        if: always()
+        with:
+          sarif_file: semgrep.sarif
+          category: 'semgrep'
+
+      - name: Parse Semgrep results for enforcement
+        if: always()
+        id: parse
+        shell: bash
+        run: |
+          set -euo pipefail
+          
+          # Extract results from SARIF
+          if [ -f "semgrep.sarif" ]; then
+            # Count CRITICAL/HIGH findings using jq
+            CRITICAL_COUNT=$(jq '[.runs[0].results[] | select(.level == "error")] | length' semgrep.sarif 2>/dev/null || echo "0")
+            HIGH_COUNT=$(jq '[.runs[0].results[] | select(.level == "warning")] | length' semgrep.sarif 2>/dev/null || echo "0")
+            
+            echo "critical_findings=${CRITICAL_COUNT}" >> "$GITHUB_OUTPUT"
+            echo "high_findings=${HIGH_COUNT}" >> "$GITHUB_OUTPUT"
+            
+            # Always warn on HIGH/CRITICAL (not blocking on scheduled scans)
+            if [ "${CRITICAL_COUNT}" -gt 0 ]; then
+              echo "::warning::Semgrep found ${CRITICAL_COUNT} CRITICAL findings"
+            fi
+            if [ "${HIGH_COUNT}" -gt 0 ]; then
+              echo "::warning::Semgrep found ${HIGH_COUNT} HIGH findings"
+            fi
+          fi
+
+      - name: Upload Semgrep report
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: security-suite-semgrep
+          path: semgrep.sarif
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Semgrep Security Scan Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**CRITICAL Findings:** ${{ steps.parse.outputs.critical_findings || 0 }}" >> $GITHUB_STEP_SUMMARY
+          echo "**HIGH Findings:** ${{ steps.parse.outputs.high_findings || 0 }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "[View full results in GitHub Security tab]" >> $GITHUB_STEP_SUMMARY
+
   dependency-scan:
     name: Dependency Security Scan
     runs-on: ubuntu-latest

@@ -135,7 +135,7 @@ def test_file_cache_clear(tmp_path: Path):
         assert result is None, f"Key {key} must be cleared"
 
 
-@pytest.mark.flaky(reruns=1, reason="P2-timing: TTL precision - improved with polling validation")
+@pytest.mark.flaky(reruns=1, reason="P2-timing: TTL precision - improved with deterministic validation")
 @pytest.mark.timeout(90)
 def test_file_cache_cleanup_expired(tmp_path: Path):
     """Test cleanup of expired entries."""
@@ -148,18 +148,12 @@ def test_file_cache_cleanup_expired(tmp_path: Path):
     cache.set("expired", "old", ttl_seconds=1)
     cache.set("valid", "new", ttl_seconds=3600)
 
-    # STABILIZATION V3: Use polling-based approach to detect actual TTL expiry
-    # instead of relying on fixed sleep duration
-    start_time = time.time()
-    max_wait = 3.0
-    while (time.time() - start_time) < max_wait:
-        # Try cleanup to check if expired entry can be cleaned
-        candidate = cache.get("expired")
-        if candidate is None:
-            break
-        time.sleep(0.1)  # Poll every 100ms
+    # STABILIZATION V3: Wait for TTL to pass, then cleanup
+    # Note: Do NOT call get() on expired entry as it auto-deletes on read
+    # Instead, wait and then call cleanup_expired directly
+    time.sleep(1.5)  # Wait for TTL to expire
 
-    # Now run cleanup which should remove the expired entry
+    # Now run cleanup which should remove the expired entry file
     count = cache.cleanup_expired()
     assert count == 1, "Count must be greater than zero"
     assert cache.get("valid") == "new", "Condition must be true"

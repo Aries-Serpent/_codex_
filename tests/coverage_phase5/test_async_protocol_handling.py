@@ -8,6 +8,28 @@ from typing import Any, Dict
 import pytest
 
 
+# STABILIZATION V3: Add fixture to reset event loop state between tests
+# This prevents async state leaks where event loop handles persist across tests
+@pytest.fixture(autouse=True)
+def reset_event_loop():
+    """Reset event loop state after each test to prevent state leaks."""
+    yield
+    # Cleanup: close any pending tasks and reset the event loop
+    try:
+        loop = asyncio.get_event_loop()
+        if loop.is_running():
+            loop.stop()
+        # Cancel all remaining tasks
+        pending = asyncio.all_tasks(loop)
+        for task in pending:
+            task.cancel()
+        # Wait for cancellation to propagate
+        loop.run_until_complete(asyncio.gather(*pending, return_exceptions=True))
+    except RuntimeError:
+        # Event loop might already be closed in some environments
+        pass
+
+
 class AsyncMessageQueue:
     def __init__(self, max_size: int = 100):
         self.queue: asyncio.Queue = asyncio.Queue(maxsize=max_size)

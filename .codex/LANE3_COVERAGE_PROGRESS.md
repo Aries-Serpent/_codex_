@@ -64,11 +64,121 @@
 
 ---
 
-## Next Steps
+## Deliverables Completed ✅
 
-1. Detailed gap analysis per module (identify untested functions/branches)
-2. Risk scoring (which gaps pose highest regression risk)
-3. Phase gate definition with concrete thresholds
-4. Roadmap document generation
-5. Test generation strategy per module
+1. ✅ Baseline metrics established (all 5 modules)
+2. ✅ Phase gates defined with quantified thresholds
+3. ✅ Risk assessment completed (regression risk per gap)
+4. ✅ Detailed gap analyses created:
+   - `.codex/COVERAGE_ROADMAP_PHASE4.md` — Master roadmap
+   - `.codex/GAP_ANALYSIS_SERVICES.md` — Services module deep dive
+   - `.codex/GAP_ANALYSIS_MCP.md` — MCP module deep dive
+   - `.codex/TEST_GENERATION_PRIORITY_MATRIX.md` — Test generation strategy
+
+---
+
+## Phase 4A Execution Plan (READY FOR ACTIVATION)
+
+**Timeline:** Week of 2026-06-30 through 2026-07-04
+
+**Team Allocation:**
+- Engineer A: services module (github/client.py, workflow, crawler)
+- Engineer B: mcp module (auth, lifecycle, embeddings) + tools
+
+**Tests to Write (Phase 4A):**
+- services: 21 tests (github client 8, inventory 4, tools 5, misc 4)
+- mcp: 17 tests (auth 6, lifecycle 7, middleware 4)
+- **Total:** 42 tests
+
+**Coverage Gates:**
+- services: 7.4% → 25%
+- mcp: 16.7% → 25%
+- tools: 20% → 35%
+- codex_ml: 10.5% → 25% (pending codex_ml gap analysis)
+
+**Success Criteria:**
+- All 42 tests written, passing
+- Coverage targets met for Phase 4A
+- Zero test flakiness (100% pass in random order)
+- CI time: <30 min with 4 workers
+
+---
+
+## Key Findings
+
+### Critical Insights
+
+1. **codex_plans is a stub module**
+   - No source files to test; existing tests are orphaned
+   - Recommendation: Clarify scope in Phase 4A before proceeding
+   
+2. **services has highest regression risk**
+   - github/client.py — 14 public APIs largely untested
+   - audio/workflow/transcription.py — complex state machine, critical path
+   - crawler/content_diff.py — diff algorithms untested
+   
+3. **mcp lifecycle is foundational**
+   - auth.py — 7 public functions, authentication critical
+   - lifecycle.py — state machine, protocol foundation
+   - Both are blockers for higher-level tests
+
+4. **codex_ml has excellent test foundation but large gap**
+   - 121 existing tests for 407 files
+   - Focus Phase 4B on core config, hf_loader, model_registry
+
+5. **tools has inverse coverage problem**
+   - 48 test files for 4 source files (excellent ratio)
+   - But only 20% coverage → tests likely incomplete or outdated
+
+---
+
+## Risk Register
+
+| Risk ID | Module | Description | Mitigation | Owner |
+|---------|--------|-------------|-----------|-------|
+| R1 | codex_plans | Empty/stub module | Clarify scope in Phase 4A | Coverage team |
+| R2 | services, codex_ml | Large modules, slow feedback loops | Parallel execution (pytest-xdist) | CI team |
+| R3 | mcp | Foundational APIs untested | Prioritize auth.py, lifecycle.py | Coverage team |
+| R4 | codex_ml | High interdependencies | Use public API mocking | Test generation team |
+| R5 | All modules | Test isolation issues | Run random order; fix flaky tests | QA team |
+
+---
+
+## Repository Structure Reference
+
+```
+.codex/
+├── LANE3_COVERAGE_PROGRESS.md          ← You are here
+├── COVERAGE_ROADMAP_PHASE4.md          ← Master roadmap (17.4 KB)
+├── GAP_ANALYSIS_SERVICES.md            ← Services gaps (9.3 KB)
+├── GAP_ANALYSIS_MCP.md                 ← MCP gaps (5.9 KB)
+├── TEST_GENERATION_PRIORITY_MATRIX.md  ← Test strategy (8.0 KB)
+└── plans/
+    └── COVERAGE_THRESHOLD_ROADMAP.md   (existing, referenced)
+```
+
+Total documentation: ~41 KB
+
+---
+
+## Next Actions
+
+1. **Phase 4A activation (2026-06-30):**
+   - [ ] Clarify codex_plans scope
+   - [ ] Begin implementing A1-A4 priority tests
+   - [ ] Daily sync on progress vs. targets
+
+2. **Monitoring (ongoing):**
+   - [ ] Track coverage % by module (daily)
+   - [ ] Watch for test flakiness (random order execution)
+   - [ ] Monitor CI time budget
+
+3. **Phase 4B planning (2026-07-07):**
+   - [ ] Complete Phase 4A tests
+   - [ ] Begin C1-C6 priority tests
+   - [ ] Gap analysis for codex_ml (detailed)
+
+---
+
+**Status:** ✅ PHASE 4 BASELINE COMPLETE — READY FOR PHASE 4A EXECUTION
 

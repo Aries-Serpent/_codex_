@@ -232,17 +232,43 @@ jobs:
           head -20 mypy-output.txt >> $GITHUB_STEP_SUMMARY || echo "No issues found" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
 
-      - name: Run Bandit security analysis (Observation Mode)
+      - name: Run Bandit security analysis (ENFORCED)
         id: bandit
-        continue-on-error: true
         run: |
+          set -euo pipefail
+          
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "## Security Analysis (Bandit)" >> $GITHUB_STEP_SUMMARY
+          echo "## Security Analysis (Bandit) — ENFORCED" >> $GITHUB_STEP_SUMMARY
+          
+          # Run Bandit with JSON output
           bandit -r src/ -f json -o bandit-report.json || true
           bandit -r src/ -f txt | tee bandit-output.txt || true
+          
+          # Parse results for blocking
+          CRITICAL_COUNT=$(jq '[.results[] | select(.severity == "HIGH" and .confidence == "HIGH")] | length' bandit-report.json 2>/dev/null || echo "0")
+          HIGH_COUNT=$(jq '[.results[] | select(.severity == "HIGH")] | length' bandit-report.json 2>/dev/null || echo "0")
+          
+          echo "critical_findings=${CRITICAL_COUNT}" >> "$GITHUB_OUTPUT"
+          echo "high_findings=${HIGH_COUNT}" >> "$GITHUB_OUTPUT"
+          
+          # Add findings to summary
+          echo "**High Severity Issues:** ${HIGH_COUNT}" >> $GITHUB_STEP_SUMMARY
+          echo "**Critical Issues:** ${CRITICAL_COUNT}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
-          tail -20 bandit-output.txt >> $GITHUB_STEP_SUMMARY || echo "No issues found" >> $GITHUB_STEP_SUMMARY
+          tail -30 bandit-output.txt >> $GITHUB_STEP_SUMMARY || echo "No issues found" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
+          
+          # Fail if CRITICAL issues found
+          if [ "${CRITICAL_COUNT}" -gt 0 ]; then
+            echo "::error::Bandit found ${CRITICAL_COUNT} CRITICAL security issues — blocking"
+            exit 1
+          fi
+          
+          # Warning if HIGH issues found
+          if [ "${HIGH_COUNT}" -gt 0 ]; then
+            echo "::warning::Bandit found ${HIGH_COUNT} HIGH severity issues — review required"
+          fi
 
       - name: Calculate code complexity (Observation Mode)
         id: complexity
