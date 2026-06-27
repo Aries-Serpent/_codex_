@@ -172,7 +172,7 @@ def _register_click_command(
     try:
         module = importlib.import_module(module_path)
         command = getattr(module, attr)
-    except (IOError, OSError) as exc:  # pragma: no cover - optional dependency path
+    except (IOError, OSError, ImportError, ModuleNotFoundError, AttributeError) as exc:  # pragma: no cover - optional dependency path
         message = f"{name} command unavailable: {exc}"
         group.add_command(_missing_command(name, message, help_text))
         return
@@ -199,7 +199,7 @@ def _register_typer_app(
     try:
         module = importlib.import_module(module_path)
         app = getattr(module, attr)
-    except (IOError, OSError) as exc:  # pragma: no cover - optional dependency path
+    except (IOError, OSError, ImportError, ModuleNotFoundError, AttributeError) as exc:  # pragma: no cover - optional dependency path
         message = f"{name} command unavailable: {exc}"
         group.add_command(_missing_command(name, message, help_text))
         return
