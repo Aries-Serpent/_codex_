@@ -57,7 +57,7 @@ Total:           167 tests (100%)
 ### Command to Validate Coverage
 ```bash
 # Install test dependencies if needed
-pip install -e ".[test]"
+pip install -e ".[dev]"
 
 # Run branch coverage tests with coverage measurement
 pytest tests/branch_coverage/ \
