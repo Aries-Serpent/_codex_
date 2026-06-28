@@ -379,7 +379,7 @@ def _resolve_offline_support_file(
     target="gpt2-offline",
     offline_default=True,
 )
-def _tokenizer_gpt2_offline(**kwargs -> None: Any):
+def _tokenizer_gpt2_offline(**kwargs: Any):
     """Resolve GPT-2 tokenizer files from offline caches only."""
 
     resolved = _resolve_offline_tokenizer_path(
@@ -399,7 +399,7 @@ def _tokenizer_gpt2_offline(**kwargs -> None: Any):
     target="tinyllama-offline",
     offline_default=True,
 )
-def _tokenizer_tinyllama_offline(**kwargs -> None: Any):
+def _tokenizer_tinyllama_offline(**kwargs: Any):
     """Resolve TinyLLaMA tokenizer assets without network access."""
 
     resolved = _resolve_offline_tokenizer_path(
@@ -419,7 +419,7 @@ def _tokenizer_tinyllama_offline(**kwargs -> None: Any):
     target="TinyVocabTokenizer",
     offline_default=True,
 )
-def _tokenizer_tiny_vocab_offline(**kwargs -> None: Any):
+def _tokenizer_tiny_vocab_offline(**kwargs: Any):
     """Load the bundled static vocabulary tokenizer without network access."""
 
     resolved = _resolve_offline_tokenizer_path(
@@ -434,7 +434,7 @@ def _tokenizer_tiny_vocab_offline(**kwargs -> None: Any):
 
 
 @models.register("minilm", backend="codex_ml.models.registry", target="MiniLM")
-def _model_minilm(cfg -> None: Any | None = None, **kwargs: Any):
+def _model_minilm(cfg: Any | None = None, **kwargs: Any):
     """Expose the MiniLM reference model through the plugin catalogue."""
 
     return _instantiate_model("MiniLM", cfg, **kwargs)
@@ -445,7 +445,7 @@ def _model_minilm(cfg -> None: Any | None = None, **kwargs: Any):
     backend="codex_ml.models.registry",
     target="decoder_only",
 )
-def _model_decoder_only(cfg -> None: Any | None = None, **kwargs: Any):
+def _model_decoder_only(cfg: Any | None = None, **kwargs: Any):
     """Expose the decoder-only transformer baseline."""
 
     return _instantiate_model("decoder_only", cfg, **kwargs)
@@ -457,7 +457,7 @@ def _model_decoder_only(cfg -> None: Any | None = None, **kwargs: Any):
     target="gpt2-offline",
     offline_default=True,
 )
-def _model_gpt2_offline(cfg -> None: Any | None = None, **kwargs: Any):
+def _model_gpt2_offline(cfg: Any | None = None, **kwargs: Any):
     """Instantiate the offline GPT-2 checkpoint when weights are present locally."""
 
     config = _merge_model_cfg(cfg, **kwargs)
@@ -481,7 +481,7 @@ def _model_gpt2_offline(cfg -> None: Any | None = None, **kwargs: Any):
     target="tinyllama-offline",
     offline_default=True,
 )
-def _model_tinyllama_offline(cfg -> None: Any | None = None, **kwargs: Any):
+def _model_tinyllama_offline(cfg: Any | None = None, **kwargs: Any):
     """Instantiate the offline TinyLLaMA checkpoint when weights are present locally."""
 
     config = _merge_model_cfg(cfg, **kwargs)
@@ -505,7 +505,7 @@ def _model_tinyllama_offline(cfg -> None: Any | None = None, **kwargs: Any):
     target="TinySequenceModel",
     offline_default=True,
 )
-def _model_tiny_sequence_offline(cfg -> None: Any | None = None, **kwargs: Any):
+def _model_tiny_sequence_offline(cfg: Any | None = None, **kwargs: Any):
     """Instantiate the scripted offline sequence model."""
 
     from codex_ml.models.offline_tiny import TinySequenceModel
@@ -530,7 +530,7 @@ def _model_tiny_sequence_offline(cfg -> None: Any | None = None, **kwargs: Any):
 
 
 @datasets.register("lines", backend="codex_ml.data.registry", target="lines")
-def _dataset_lines(**kwargs -> None: Any):
+def _dataset_lines(**kwargs: Any):
     """Load a plain-text dataset with deterministic shuffling support."""
 
     return _instantiate_dataset("lines", **kwargs)
@@ -542,7 +542,7 @@ def _dataset_lines(**kwargs -> None: Any):
     target="offline:tiny-corpus",
     offline_default=True,
 )
-def _dataset_tiny_corpus(**kwargs -> None: Any):
+def _dataset_tiny_corpus(**kwargs: Any):
     """Load the bundled tiny corpus fixture exclusively from local paths."""
 
     resolved = _resolve_offline_dataset_path(
@@ -557,32 +557,32 @@ def _dataset_tiny_corpus(**kwargs -> None: Any):
 
 
 @metrics.register("accuracy@token", backend="codex_ml.metrics.registry")
-def _metric_token_accuracy(**kwargs -> None: Any):
+def _metric_token_accuracy(**kwargs: Any):
     return _instantiate_metric("accuracy@token", **kwargs)
 
 
 @metrics.register("ppl", backend="codex_ml.metrics.registry")
-def _metric_perplexity(**kwargs -> None: Any):
+def _metric_perplexity(**kwargs: Any):
     return _instantiate_metric("ppl", **kwargs)
 
 
 @metrics.register("exact_match", backend="codex_ml.metrics.registry")
-def _metric_exact_match(**kwargs -> None: Any):
+def _metric_exact_match(**kwargs: Any):
     return _instantiate_metric("exact_match", **kwargs)
 
 
 @metrics.register("f1", backend="codex_ml.metrics.registry")
-def _metric_f1(**kwargs -> None: Any):
+def _metric_f1(**kwargs: Any):
     return _instantiate_metric("f1", **kwargs)
 
 
 @metrics.register("dist-1", backend="codex_ml.metrics.registry")
-def _metric_dist_1(**kwargs -> None: Any):
+def _metric_dist_1(**kwargs: Any):
     return _instantiate_metric("dist-1", **kwargs)
 
 
 @metrics.register("dist-2", backend="codex_ml.metrics.registry")
-def _metric_dist_2(**kwargs -> None: Any):
+def _metric_dist_2(**kwargs: Any):
     return _instantiate_metric("dist-2", **kwargs)
 
 
@@ -592,7 +592,7 @@ def _metric_dist_2(**kwargs -> None: Any):
     target="offline:weighted-accuracy",
     offline_default=True,
 )
-def _metric_weighted_accuracy(**kwargs -> None: Any):
+def _metric_weighted_accuracy(**kwargs: Any):
     """Expose the weighted accuracy metric with offline JSON fixtures."""
 
     resolved = _resolve_offline_metric_path(
@@ -612,7 +612,7 @@ def _metric_weighted_accuracy(**kwargs -> None: Any):
     target="functional",
     offline_default=True,
 )
-def _trainer_functional(**kwargs -> None: Any):
+def _trainer_functional(**kwargs: Any):
     """Expose the functional trainer with optional bound keyword arguments."""
 
     from codex_ml.registry.trainers import get_trainer
@@ -658,7 +658,7 @@ def _trainer_functional(**kwargs -> None: Any):
     target="HeuristicRewardModel",
     offline_default=True,
 )
-def _reward_model_heuristic(**kwargs -> None: Any):
+def _reward_model_heuristic(**kwargs: Any):
     """Return the deterministic heuristic reward model for offline usage."""
 
     from codex_ml.interfaces.reward_model import HeuristicRewardModel
@@ -672,7 +672,7 @@ def _reward_model_heuristic(**kwargs -> None: Any):
     target="LengthRewardModel",
     offline_default=True,
 )
-def _reward_model_length_offline(**kwargs -> None: Any):
+def _reward_model_length_offline(**kwargs: Any):
     """Load the configurable length-based reward model from offline data."""
 
     from codex_ml.reward_models.simple import LengthRewardModel
@@ -707,7 +707,7 @@ def _reward_model_length_offline(**kwargs -> None: Any):
     target="ScriptedAgent",
     offline_default=True,
 )
-def _rl_agent_scripted_offline(**kwargs -> None: Any):
+def _rl_agent_scripted_offline(**kwargs: Any):
     """Instantiate the deterministic scripted RL agent."""
 
     from codex_ml.rl.scripted_agent import ScriptedAgent
@@ -732,29 +732,29 @@ def _rl_agent_scripted_offline(**kwargs -> None: Any):
 # Entry-point loaders ------------------------------------------------------
 
 
-def load_tokenizer_entry_points(flag -> None: bool = False, group: str = "codex_ml.tokenizers"):
+def load_tokenizer_entry_points(flag: bool = False, group: str = "codex_ml.tokenizers"):
     return _load(tokenizers, group, flag)
 
 
-def load_model_entry_points(flag -> None: bool = False, group: str = "codex_ml.models"):
+def load_model_entry_points(flag: bool = False, group: str = "codex_ml.models"):
     return _load(models, group, flag)
 
 
-def load_dataset_entry_points(flag -> None: bool = False, group: str = "codex_ml.datasets"):
+def load_dataset_entry_points(flag: bool = False, group: str = "codex_ml.datasets"):
     return _load(datasets, group, flag)
 
 
-def load_metric_entry_points(flag -> None: bool = False, group: str = "codex_ml.metrics"):
+def load_metric_entry_points(flag: bool = False, group: str = "codex_ml.metrics"):
     return _load(metrics, group, flag)
 
 
-def load_trainer_entry_points(flag -> None: bool = False, group: str = "codex_ml.trainers"):
+def load_trainer_entry_points(flag: bool = False, group: str = "codex_ml.trainers"):
     return _load(trainers, group, flag)
 
 
-def load_reward_model_entry_points(flag -> None: bool = False, group: str = "codex_ml.reward_models"):
+def load_reward_model_entry_points(flag: bool = False, group: str = "codex_ml.reward_models"):
     return _load(reward_models, group, flag)
 
 
-def load_rl_agent_entry_points(flag -> None: bool = False, group: str = "codex_ml.rl_agents"):
+def load_rl_agent_entry_points(flag: bool = False, group: str = "codex_ml.rl_agents"):
     return _load(rl_agents, group, flag)
