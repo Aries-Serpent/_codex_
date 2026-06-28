@@ -13,7 +13,9 @@ Addressed CI rescue comment from @mbaetiong (comment_id: 4824474818) and cogniti
 - ✅ **Blocking Comment Resolution**: Reviewed and verified fix for "Illegal raise NoneType" in src/codex/consolidation/async_utils.py (commit e036d078)
   * Issue: `execute_with_retry` could raise `None` if no exceptions caught
   * Fix: Added proper null check at lines 218-223 with fallback RuntimeError
-- ✅ **CodeQL Configuration**: Addressed "1 configuration not found" error with config file path consistency
+- ✅ **CodeQL Configuration Fix**: Added Go language configuration to .codeql/codeql-config.yml and .github/codeql-config.yml (commit 9fc79ac5)
+  * Issue: "1 configuration not found" error due to missing Go configuration while Go files exist in tools/github-secrets-cli/
+  * Fix: Added Go version 1.21 configuration to resolve CodeQL workflow
 - ✅ **REQ-4 Compliance**: Updated AGENT_ACCOUNTABILITY_REPORT.md in this commit
 - ✅ **REQ-5 Compliance**: Updated CHANGELOG.md in this commit
 - ✅ **CI Failure Resolution**: Fixed compliance check failures requiring REQ-4/REQ-5 in latest commit
