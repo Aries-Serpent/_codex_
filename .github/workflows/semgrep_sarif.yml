@@ -46,10 +46,26 @@ jobs:
         uses: returntocorp/semgrep-action@713efdd345f3035192eaa63f56867b88e63e4e5d
         with:
           generateSarif: true
+          output: semgrep.sarif
           config: >-
             p/security-audit
             p/python
             p/owasp-top-ten
+      
+      - name: Verify SARIF file exists
+        if: always()
+        run: |
+          if [ -f "semgrep.sarif" ]; then
+            echo "✅ semgrep.sarif file found"
+            ls -lh semgrep.sarif
+          else
+            echo "⚠️ semgrep.sarif not found at expected location"
+            echo "Checking for SARIF files in working directory..."
+            find . -maxdepth 1 -name "*.sarif" -type f -exec ls -lh {} \;
+            echo "Listing all files in working directory:"
+            ls -la
+            exit 1
+          fi
 
       - name: Upload SARIF to GitHub Security
         uses: github/codeql-action/upload-sarif@9cea5827c668a1fe7165dbce6e80c3f9cf3f83ac
