@@ -121,39 +121,57 @@
 
 ---
 
-### Wave 4: MyPy Type Hardening ✅ PHASE 1-4 COMPLETE
-- **Agent:** mypy-manager-agent
-- **Agent ID:** wave4-mypy-hardening
-- **Timeline:** Continuous (completed in 7.1 min) ✅
+### Wave 4: MyPy Type Hardening 🟡 PHASE 5 IN PROGRESS
+- **Agent:** mypy-manager-agent (autonomous execution)
+- **Agent ID:** wave4-phase5-type-resolution
+- **Timeline:** 10-15 hours (5 stages) — Current: 20 min elapsed
 - **Target:** 100% strict mode compliance, Python 3.12+
-- **Status:** 🟢 COMPLETE (Phases 1-4 delivered)
-- **Progress:** 13.1% reduction (1,130 → 982 errors)
-- **Last Update:** 2026-06-28T01:19:00Z
+- **Status:** 🟡 IN PROGRESS (Phase 5 Stage 1 initiating)
+- **Progress:** 0% Phase 5 (Phases 1-4: 13.1% complete)
+- **Last Update:** 2026-06-28T01:30:00Z
 
-**Execution Results:**
-- ✅ Phase 1: Legacy type hints (List→list, Dict→dict) — Complete
-- ✅ Phase 2: Strict type checking compliance (no-untyped-def) — 58.4% reduction (261 fixes)
-- ✅ Phase 3: Python 3.12+ compatibility (type-arg) — 63.4% reduction (147 fixes)
-- ✅ Phase 4: Return type declarations — 5 critical fixes
+**Phase 5 Baseline (Stage 0 Complete):**
+- Mypy Errors: 2,576 (strict mode after syntax corrections)
+- Previous Phases: 1,130 → 982 (13.1% reduction, 370+ fixes)
+- Pre-Phase Syntax Fixes: 36 files corrected, 428 insertions/deletions
+- Target: 2,576 → ≤850 (67%+ reduction, 1,726+ fixes)
 
-**Metrics:**
-| Metric | Value | Status |
-|--------|-------|--------|
-| **MyPy Errors Reduced** | 1,130 → 982 (-13.1%) | ✅ |
-| **Auto-fixes Applied** | 370+ | ✅ |
-| **Files Modified** | 230+ | ✅ |
-| **[no-untyped-def]** | 447 → 186 (-58.4%) | ✅ |
-| **[type-arg]** | 232 → 85 (-63.4%) | ✅ |
-| **Commits** | 4 incremental | ✅ |
-| **Breaking Changes** | 0 | ✅ |
+**Execution Results (Pre-Phase Preparation):**
+- ✅ Syntax Corrections: 36 files, broken annotations fixed
+- ✅ Error Analysis: 2,576 errors categorized by type
+- ✅ Fixability Assessment: ~75% of errors automatically fixable
+- ✅ 5-Stage Execution Plan: Documented and ready
+- ✅ Commit Strategy: Batched approach approved
 
-**Next Phase (Phase 5):**
-- Remaining [no-untyped-def]: 186 errors
-- Remaining [no-any-return]: 158 errors
-- Estimated effort: 10-15 hours to reduce 75%+
-- Roadmap: 982 → 250 errors (75%+ total reduction)
+**Phase 5 Error Breakdown:**
+| Error Type | Count | Est. Fixes | Priority | Stage |
+|-----------|-------|-----------|----------|-------|
+| no-untyped-def | 989 | 450+ | CRITICAL | 1, 4 |
+| type-arg | 426 | 200+ | HIGH | 2 |
+| no-any-return | 269 | 130+ | HIGH | 3 |
+| untyped-decorator | 199 | 100 | MEDIUM | 4 |
+| no-untyped-call | 186 | 90 | MEDIUM | 4 |
+| **Subtotal (Top 5)** | **2,069** | **970+** | — | — |
+| Other (20+ types) | 507 | 150+ | LOW | 5 |
 
-**Checkpoint File:** `.codex/PHASE_6_WAVE4_EXECUTION_REPORT_SESSION_1.md`
+**Current Stage: 1 (Test Functions)**
+- Scope: 188 errors in 7 test files
+- Approach: Add `-> None` to all test methods
+- Expected: 2,576 → 2,399 (177 fixes, 7% reduction)
+- Risk: ✅ LOW
+
+**Checkpoint Files:**
+- `.codex/PHASE_6_WAVE4_PHASE5_EXECUTION_STRATEGY.md` — 5-stage plan
+- `.codex/PHASE_6_WAVE4_PHASE5_EXECUTION_REPORT.md` — Progress tracking
+- `scripts/ci/fix_phase5_stage1.py` — Stage 1 automation
+
+**Next Phase (Stages 2-5):**
+- Stage 2 (Generics): 2 hours, 226 fixes expected
+- Stage 3 (Return Types): 3 hours, 119 fixes expected
+- Stage 4 (Decorators): 2 hours, 225 fixes expected
+- Stage 5 (Final): 3 hours, remaining errors
+
+**Estimated Completion:** 2026-06-28 + 10-15 hours (continuous execution)
 
 ---
 
